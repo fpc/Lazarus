@@ -1044,7 +1044,7 @@ procedure TVisualTree.GetPackageList;
 var
   Node: PVirtualNode;
   Data: PData;
-  Package: TPackage;
+  MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
 begin
   Node := FVST.GetFirst;
@@ -1053,13 +1053,13 @@ begin
     Data := FVST.GetNodeData(Node);
     if Data^.DataType = 1 then
     begin
-      Package := SerializablePackages.Items[Data^.PID];
-      if Package <> nil then
+      MetaPkg := SerializablePackages.Items[Data^.PID];
+      if MetaPkg <> nil then
       begin
         if (FVST.CheckState[Node] = csCheckedNormal) or (FVST.CheckState[Node] = csMixedNormal) then
-          Package.Checked := True
+          MetaPkg.Checked := True
         else if FVST.CheckState[Node] = csUncheckedNormal then
-          Package.Checked := False
+          MetaPkg.Checked := False
       end;
     end;
     if Data^.DataType = 2 then
@@ -1081,7 +1081,7 @@ procedure TVisualTree.UpdatePackageStates;
 var
   Node: PVirtualNode;
   Data: PData;
-  Package: TPackage;
+  MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
 begin
   SerializablePackages.GetPackageStates;
@@ -1091,11 +1091,11 @@ begin
     Data := FVST.GetNodeData(Node);
     if (Data^.DataType = 1) then
     begin
-      Package := SerializablePackages.Items[Data^.PID];
-      if Package <> nil then
+      MetaPkg := SerializablePackages.Items[Data^.PID];
+      if MetaPkg <> nil then
       begin
-        Data^.PackageState := Package.PackageState;
-        Data^.InstallState := SerializablePackages.GetPackageInstallState(Package);
+        Data^.PackageState := MetaPkg.PackageState;
+        Data^.InstallState := SerializablePackages.GetPackageInstallState(MetaPkg);
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
       end;
@@ -1119,7 +1119,7 @@ procedure TVisualTree.UpdatePackageUStatus;
 var
   Node: PVirtualNode;
   Data, ParentData: PData;
-  Package: TPackage;
+  MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
 begin
   Node := FVST.GetFirst;
@@ -1128,13 +1128,13 @@ begin
     Data := FVST.GetNodeData(Node);
     if (Data^.DataType = 1) then
     begin
-      Package := SerializablePackages.Items[Data^.PID];
-      if Package <> nil then
+      MetaPkg := SerializablePackages.Items[Data^.PID];
+      if MetaPkg <> nil then
       begin
-        Data^.DownloadZipURL := Package.DownloadZipURL;
-        Data^.HasUpdate := Package.HasUpdate;
-        Data^.DisableInOPM := Package.DisableInOPM;
-        Data^.Rating := Package.Rating;
+        Data^.DownloadZipURL := MetaPkg.DownloadZipURL;
+        Data^.HasUpdate := MetaPkg.HasUpdate;
+        Data^.DisableInOPM := MetaPkg.DisableInOPM;
+        Data^.Rating := MetaPkg.Rating;
         FVST.IsDisabled[Node] := Data^.DisableInOPM;
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
@@ -1710,7 +1710,7 @@ var
  DownColumn: Integer;
  R: TRect;
  PackageName: String;
- Package: TPackage;
+ MetaPkg: TMetaPackage;
 begin
   Node := FVST.GetNodeAt(X, Y);
   if Node <> nil then
@@ -1733,9 +1733,9 @@ begin
              Data^.Rating := Trunc((FHoverP.X - R.Left - 1)/16) + 1;
              if Data^.Rating > 5 then
                Data^.Rating := 5;
-             Package := SerializablePackages.Items[Data^.PID];
-             if Package <> nil then
-               Package.Rating := Data^.Rating;
+             MetaPkg := SerializablePackages.Items[Data^.PID];
+             if MetaPkg <> nil then
+               MetaPkg.Rating := Data^.Rating;
              if Data^.PackageDisplayName <> '' then
                PackageName := Data^.PackageDisplayName
              else

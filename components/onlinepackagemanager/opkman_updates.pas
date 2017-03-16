@@ -115,8 +115,8 @@ type
     procedure DoOnUpdate;
     procedure Load;
     procedure Save;
-    procedure AssignPackageData(APackage: TPackage);
-    procedure ResetPackageData(APackage: TPackage);
+    procedure AssignPackageData(AMetaPackage: TMetaPackage);
+    procedure ResetPackageData(AMetaPackage: TMetaPackage);
     procedure CheckForOpenSSL;
     function IsTimeToUpdate: Boolean;
   protected
@@ -271,7 +271,7 @@ var
   Path, SubPath: String;
   PackageName: String;
   LazarusPkgName: String;
-  Package: TPackage;
+  MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
   HasUpdate: Boolean;
 begin
@@ -284,19 +284,19 @@ begin
   begin
     Path := 'Package' + IntToStr(I) + '/';
     PackageName := FXML.GetValue(Path + 'Name', '');
-    Package := SerializablePackages.FindPackage(PackageName, fpbPackageName);
-    if Package <> nil then
+    MetaPkg := SerializablePackages.FindMetaPackage(PackageName, fpbPackageName);
+    if MetaPkg <> nil then
     begin
       HasUpdate := False;
-      Package.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
-      Package.DisableInOPM := FXML.GetValue(Path + 'DisableInOPM', False);
-      Package.Rating := FXML.GetValue(Path + 'Rating', 0);
+      MetaPkg.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
+      MetaPkg.DisableInOPM := FXML.GetValue(Path + 'DisableInOPM', False);
+      MetaPkg.Rating := FXML.GetValue(Path + 'Rating', 0);
       LazarusPkgCount := FXML.GetValue(Path + 'Count', 0);
       for J := 0 to LazarusPkgCount - 1 do
       begin
         SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
         LazarusPkgName := FXML.GetValue(SubPath + 'Name', '');
-        LazarusPkg := Package.FindLazarusPackage(LazarusPkgName);
+        LazarusPkg := MetaPkg.FindLazarusPackage(LazarusPkgName);
         if LazarusPkg <> nil then
         begin
           LazarusPkg.UpdateVersion := FXML.GetValue(SubPath + 'UpdateVersion', '');
@@ -312,7 +312,7 @@ begin
             HasUpdate := LazarusPkg.HasUpdate;
         end;
       end;
-      Package.HasUpdate := HasUpdate;
+      MetaPkg.HasUpdate := HasUpdate;
     end;
   end;
   Synchronize(@DoOnUpdate);
@@ -322,7 +322,7 @@ procedure TUpdates.Save;
 var
   I, J: Integer;
   Path, SubPath: String;
-  Package: TPackage;
+  MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
 begin
   if (not Assigned(SerializablePackages)) or (SerializablePackages.Count = 0) then
@@ -332,12 +332,12 @@ begin
   FXML.SetDeleteValue('Count/Value', SerializablePackages.Count, 0);
   for I := 0 to SerializablePackages.Count - 1 do
   begin
-    Package := SerializablePackages.Items[I];
+    MetaPkg := SerializablePackages.Items[I];
     Path := 'Package' + IntToStr(I) + '/';
-    FXML.SetDeleteValue(Path + 'Name', Package.Name, '');
-    FXML.SetDeleteValue(Path + 'DownloadZipURL', Package.DownloadZipURL, '');
-    FXML.SetDeleteValue(Path + 'DisableInOPM', Package.DisableInOPM, False);
-    FXML.SetDeleteValue(Path + 'Rating', Package.Rating, 0);
+    FXML.SetDeleteValue(Path + 'Name', MetaPkg.Name, '');
+    FXML.SetDeleteValue(Path + 'DownloadZipURL', MetaPkg.DownloadZipURL, '');
+    FXML.SetDeleteValue(Path + 'DisableInOPM', MetaPkg.DisableInOPM, False);
+    FXML.SetDeleteValue(Path + 'Rating', MetaPkg.Rating, 0);
     FXML.SetDeleteValue(Path + 'Count', SerializablePackages.Items[I].LazarusPackages.Count, 0);
     for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
     begin
@@ -353,18 +353,18 @@ begin
   FXML.Flush;
 end;
 
-procedure TUpdates.AssignPackageData(APackage: TPackage);
+procedure TUpdates.AssignPackageData(AMetaPackage: TMetaPackage);
 var
   I: Integer;
   HasUpdate: Boolean;
   LazarusPkg: TLazarusPackage;
 begin
   HasUpdate := False;
-  APackage.DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
-  APackage.DisableInOPM := FUpdatePackage.FUpdatePackageData.DisableInOPM;
+  AMetaPackage.DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
+  AMetaPackage.DisableInOPM := FUpdatePackage.FUpdatePackageData.DisableInOPM;
   for I := 0 to FUpdatePackage.FUpdateLazPackages.Count - 1 do
   begin
-    LazarusPkg := APackage.FindLazarusPackage(TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).Name);
+    LazarusPkg := AMetaPackage.FindLazarusPackage(TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).Name);
     if LazarusPkg <> nil then
     begin
       LazarusPkg.UpdateVersion := TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).Version;
@@ -379,20 +379,20 @@ begin
         HasUpdate := LazarusPkg.HasUpdate;
     end;
   end;
-  APackage.HasUpdate := HasUpdate;
+  AMetaPackage.HasUpdate := HasUpdate;
 end;
 
-procedure TUpdates.ResetPackageData(APackage: TPackage);
+procedure TUpdates.ResetPackageData(AMetaPackage: TMetaPackage);
 var
   I: Integer;
   LazarusPkg: TLazarusPackage;
 begin
-  APackage.DownloadZipURL := '';
-  APackage.DisableInOPM := False;
-  APackage.HasUpdate := False;
-  for I := 0 to APackage.LazarusPackages.Count - 1 do
+  AMetaPackage.DownloadZipURL := '';
+  AMetaPackage.DisableInOPM := False;
+  AMetaPackage.HasUpdate := False;
+  for I := 0 to AMetaPackage.LazarusPackages.Count - 1 do
   begin
-    LazarusPkg := APackage.FindLazarusPackage(TLazarusPackage(APackage.LazarusPackages.Items[I]).Name);
+    LazarusPkg := AMetaPackage.FindLazarusPackage(TLazarusPackage(AMetaPackage.LazarusPackages.Items[I]).Name);
     if LazarusPkg <> nil then
     begin
       LazarusPkg.HasUpdate := False;

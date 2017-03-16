@@ -178,9 +178,9 @@ type
     property DependenciesAsString: String read GetDependenciesAsString write SetDependenciesAsString;
   end;
 
-  {TPackage}
+  {TMetaPackage}
 
-  TPackage = class(TCollectionItem)
+  TMetaPackage = class(TCollectionItem)
   private
     FName: String;
     FDisplayName: String;
@@ -242,26 +242,27 @@ type
   { TSerializablePackages }
 
   TFindPackageBy = (fpbPackageName, fpbRepositoryFilename);
+
   TSerializablePackages = class
   private
-    FPackages: TCollection;
+    FMetaPackages: TCollection;
     FLastError: String;
     FOnProcessJSON: TNotifyEvent;
     function GetCount: Integer;
     function GetDownloadCount: Integer;
     function GetExtractCount: Integer;
     function GetInstallCount: Integer;
-    function GetItem(const AIndex: Integer): TPackage;
-    procedure SetItem(const AIndex: Integer; const APackage: TPackage);
+    function GetItem(const AIndex: Integer): TMetaPackage;
+    procedure SetItem(const AIndex: Integer; const AMetaPackage: TMetaPackage);
     procedure DoGetPackageDependencies(const APkgFileName: String; ASL: TStringList; ALevel: Integer);
-    function JSONToPackageData(const APackageData: TJSONData; var APackage: TPackage): Boolean;
-    function JSONToLazarusPackages(const APackageData: TJSONData; var APackage: TPackage): Boolean;
-    function PackageDataToJSON(APackage: TPackage; var APackageData: TJSONObject): Boolean;
-    function LazarusPackagesToJSON(APackage: TPackage; var ALazarusPkgsArr: TJSONArray): Boolean;
-    function IsPackageDownloaded(const APackage: TPackage): Boolean;
-    function IsPackageExtracted(const APackage: TPackage): Boolean;
+    function JSONToPackageData(const APackageData: TJSONData; var AMetaPackage: TMetaPackage): Boolean;
+    function JSONToLazarusPackages(const APackageData: TJSONData; var AMetaPackage: TMetaPackage): Boolean;
+    function PackageDataToJSON(AMetaPackage: TMetaPackage; var APackageData: TJSONObject): Boolean;
+    function LazarusPackagesToJSON(AMetaPackage: TMetaPackage; var ALazarusPkgsArr: TJSONArray): Boolean;
+    function IsPackageDownloaded(const AMetaPackage: TMetaPackage): Boolean;
+    function IsPackageExtracted(const AMetaPackage: TMetaPackage): Boolean;
     function IsPackageInstalled(const ALazarusPkg: TLazarusPackage; const APackageBaseDir: String): Boolean;
-    function AtLeastOneLazPkgInstalled(const APackage: TPackage): Boolean;
+    function AtLeastOneLazPkgInstalled(const AMetaPackage: TMetaPackage): Boolean;
     function GetPackageVersion(const APath: String): String;
     function GetPackageDescription(const APath: String): String;
     function GetPackageLicense(const APath: String): String;
@@ -270,9 +271,9 @@ type
     destructor Destroy; override;
   public
     procedure Clear;
-    function AddPackage(const AName: String): TPackage;
+    function AddMetaPackage(const AName: String): TMetaPackage;
     procedure DeletePackage(const AIndex: Integer);
-    function FindPackage(const AValue: String; const AFindPackageBy: TFindPackageBy): TPackage;
+    function FindMetaPackage(const AValue: String; const AFindPackageBy: TFindPackageBy): TMetaPackage;
     function FindPackageIndex(const AValue: String; const AFindPackageBy: TFindPackageBy): Integer;
     function FindLazarusPackage(const APackageName: String): TLazarusPackage;
     function JSONToPackages(JSON: TJSONStringType): Boolean;
@@ -284,7 +285,7 @@ type
     function Cleanup: Integer;
     function IsDependencyOk(PackageDependency: TPackageDependency; DependencyPackage: TLazarusPackage): Boolean;
     function IsInstalledVersionOk(PackageDependency: TPackageDependency; InstalledVersion: String): Boolean;
-    function GetPackageInstallState(const APackage: TPackage): Integer; overload;
+    function GetPackageInstallState(const AMetaPackage: TMetaPackage): Integer; overload;
     procedure DeleteDownloadedZipFiles;
     procedure Sort(const ASortType: TSortType; const ASortOrder: TSortOrder);
   public
@@ -292,7 +293,7 @@ type
     property DownloadCount: Integer read GetDownloadCount;
     property ExtractCount: Integer read GetExtractCount;
     property InstallCount: Integer read GetInstallCount;
-    property Items[Index: Integer]: TPackage read GetItem write SetItem;
+    property Items[Index: Integer]: TMetaPackage read GetItem write SetItem;
     property LastError: String read FlastError;
     property OnProcessJSON: TNotifyEvent read FOnProcessJSON write FOnProcessJSON;
   end;
@@ -492,8 +493,8 @@ begin
   inherited Destroy;
 end;
 
-{ TPackage }
-function TPackage.GetDownloadable: Boolean;
+{ TMetaPackage }
+function TMetaPackage.GetDownloadable: Boolean;
 begin
   case PackageAction of
     paDownloadTo, paUpdate:
@@ -506,7 +507,7 @@ begin
   end;
 end;
 
-function TPackage.GetExtractable: Boolean;
+function TMetaPackage.GetExtractable: Boolean;
 begin
   case PackageAction of
      paDownloadTo, paUpdate:
@@ -519,12 +520,12 @@ begin
    end;
 end;
 
-constructor TPackage.Create;
+constructor TMetaPackage.Create;
 begin
   FLazarusPackages := TCollection.Create(TLazarusPackage);
 end;
 
-destructor TPackage.Destroy;
+destructor TMetaPackage.Destroy;
 var
   I: Integer;
 begin
@@ -535,7 +536,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TPackage.ChangePackageStates(const AChangeType: TChangeType;
+procedure TMetaPackage.ChangePackageStates(const AChangeType: TChangeType;
   APackageState: TPackageState);
 var
   I: Integer;
@@ -567,7 +568,7 @@ begin
   end;
 end;
 
-function TPackage.FindLazarusPackage(const APackageName: String): TLazarusPackage;
+function TMetaPackage.FindLazarusPackage(const APackageName: String): TLazarusPackage;
 var
   I: Integer;
 begin
@@ -584,13 +585,13 @@ end;
 
 constructor TSerializablePackages.Create;
 begin
-  FPackages := TCollection.Create(TPackage);
+  FMetaPackages := TCollection.Create(TMetaPackage);
 end;
 
 destructor TSerializablePackages.Destroy;
 begin
   Clear;
-  FPackages.Free;
+  FMetaPackages.Free;
   inherited Destroy;
 end;
 
@@ -600,12 +601,12 @@ var
 begin
   for I := Count - 1 downto 0 do
     Items[I].Free;
-  FPackages.Clear;
+  FMetaPackages.Clear;
 end;
 
 function TSerializablePackages.GetCount: Integer;
 begin
-  Result := FPackages.Count;
+  Result := FMetaPackages.Count;
 end;
 
 function TSerializablePackages.GetDownloadCount: Integer;
@@ -639,20 +640,18 @@ begin
         Inc(Result);
 end;
 
-function TSerializablePackages.GetItem(const AIndex: Integer): TPackage;
+function TSerializablePackages.GetItem(const AIndex: Integer): TMetaPackage;
 begin
-  Result := nil;
-  if AIndex > FPackages.Count - 1 then
-    Exit;
-  Result := TPackage(FPackages.Items[AIndex]);
+  if AIndex > FMetaPackages.Count - 1 then
+    Exit(nil);
+  Result := TMetaPackage(FMetaPackages.Items[AIndex]);
 end;
 
-procedure TSerializablePackages.SetItem(const AIndex: Integer;
-  const APackage: TPackage);
+procedure TSerializablePackages.SetItem(const AIndex: Integer; const AMetaPackage: TMetaPackage);
 begin
-  if AIndex > FPackages.Count - 1 then
+  if AIndex > FMetaPackages.Count - 1 then
     Exit;
-  FPackages.Items[AIndex] := TPackage(APackage);
+  FMetaPackages.Items[AIndex] := AMetaPackage;
 end;
 
 procedure TSerializablePackages.DoGetPackageDependencies(const APkgFileName: String;
@@ -688,31 +687,30 @@ begin
   end;
 end;
 
-function TSerializablePackages.AddPackage(const AName: String): TPackage;
+function TSerializablePackages.AddMetaPackage(const AName: String): TMetaPackage;
 var
-  Package: TPackage;
+  MetaPackage: TMetaPackage;
 begin
-  Result := nil;
-  Package := FindPackage(AName, fpbPackageName);
-  if Package <> nil then
+  MetaPackage := FindMetaPackage(AName, fpbPackageName);
+  if MetaPackage <> nil then
   begin
     FLastError := rsMainFrm_PackageNameAlreadyExists;
-    Exit;
+    Exit(nil);
   end;
-  Result := TPackage(FPackages.Add);
+  Result := TMetaPackage(FMetaPackages.Add);
   Result.FLazarusPackages := TCollection.Create(TLazarusPackage);
   Result.Name := AName;
 end;
 
 procedure TSerializablePackages.DeletePackage(const AIndex: Integer);
 begin
-  if AIndex > FPackages.Count - 1 then
+  if AIndex > FMetaPackages.Count - 1 then
     Exit;
-  FPackages.Delete(AIndex);
+  FMetaPackages.Delete(AIndex);
 end;
 
-function TSerializablePackages.FindPackage(const AValue: String;
-  const AFindPackageBy: TFindPackageBy): TPackage;
+function TSerializablePackages.FindMetaPackage(const AValue: String;
+  const AFindPackageBy: TFindPackageBy): TMetaPackage;
 var
   I: Integer;
   NeedToBreak: Boolean;
@@ -773,39 +771,39 @@ begin
 end;
 
 function TSerializablePackages.JSONToPackageData(const APackageData: TJSONData;
-  var APackage: TPackage): Boolean;
+  var AMetaPackage: TMetaPackage): Boolean;
 var
   PackageData: TJSONObject;
 begin
   Result := True;
   try
     PackageData := TJSONObject(APackageData);
-    APackage := TPackage(FPackages.Add);
+    AMetaPackage := TMetaPackage(FMetaPackages.Add);
     //need to change
-    APackage.Name := PackageData.Get('Name');
-    APackage.DisplayName := PackageData.Get('DisplayName');
-    APackage.Category := PackageData.Get('Category');
-    APackage.RepositoryFileName := PackageData.Get('RepositoryFileName');
-    APackage.RepositoryFileSize := PackageData.Get('RepositoryFileSize');
-    APackage.RepositoryFileHash := PackageData.Get('RepositoryFileHash');
-    APackage.RepositoryDate := VarToDateTime(PackageData.Get('RepositoryDate'));
-    APackage.PackageBaseDir := PackageData.Get('PackageBaseDir');
-    if APackage.PackageBaseDir <> '' then
-      APackage.PackageBaseDir := StringReplace(APackage.PackageBaseDir, '\/', PathDelim, [rfReplaceAll]);;
-    APackage.HomePageURL := PackageData.Get('HomePageURL');
-    APackage.DownloadURL := PackageData.Get('DownloadURL');
-    APackage.SVNURL := PackageData.Get('SVNURL');
+    AMetaPackage.Name := PackageData.Get('Name');
+    AMetaPackage.DisplayName := PackageData.Get('DisplayName');
+    AMetaPackage.Category := PackageData.Get('Category');
+    AMetaPackage.RepositoryFileName := PackageData.Get('RepositoryFileName');
+    AMetaPackage.RepositoryFileSize := PackageData.Get('RepositoryFileSize');
+    AMetaPackage.RepositoryFileHash := PackageData.Get('RepositoryFileHash');
+    AMetaPackage.RepositoryDate := VarToDateTime(PackageData.Get('RepositoryDate'));
+    AMetaPackage.PackageBaseDir := PackageData.Get('PackageBaseDir');
+    if AMetaPackage.PackageBaseDir <> '' then
+      AMetaPackage.PackageBaseDir := StringReplace(AMetaPackage.PackageBaseDir, '\/', PathDelim, [rfReplaceAll]);;
+    AMetaPackage.HomePageURL := PackageData.Get('HomePageURL');
+    AMetaPackage.DownloadURL := PackageData.Get('DownloadURL');
+    AMetaPackage.SVNURL := PackageData.Get('SVNURL');
   except
     on E: Exception do
     begin
       Result := False;
-      FlastError := '"' + APackage.Name + '": ' + E.Message;
+      FlastError := '"' + AMetaPackage.Name + '": ' + E.Message;
     end;
   end;
 end;
 
 function TSerializablePackages.JSONToLazarusPackages(const APackageData: TJSONData;
-  var APackage: TPackage): Boolean;
+  var AMetaPackage: TMetaPackage): Boolean;
 var
   LazarusPkgsArr: TJSONArray;
   LazarusPkgsObj: TJSONObject;
@@ -815,13 +813,13 @@ begin
   Result := True;
   try
     LazarusPkgsArr := TJSONArray(APackageData);
-    APackage.LazarusPackages := TCollection.Create(TLazarusPackage);
+    AMetaPackage.LazarusPackages := TCollection.Create(TLazarusPackage);
     for I := 0 to LazarusPkgsArr.Count - 1 do
     begin
       if LazarusPkgsArr.Items[I].JSONType = jtObject then
       begin
        LazarusPkgsObj := TJSONObject(LazarusPkgsArr.Items[I]);
-       LazarusPkg := TLazarusPackage(APackage.LazarusPackages.Add);
+       LazarusPkg := TLazarusPackage(AMetaPackage.LazarusPackages.Add);
        //need to change
        LazarusPkg.Name := LazarusPkgsObj.Get('Name');
        LazarusPkg.Description := LazarusPkgsObj.Get('Description');
@@ -852,21 +850,17 @@ var
   Data: TJSONData;
   Parser: TJSONParser;
   I: Integer;
-  Package: TPackage;
+  MetaPackage: TMetaPackage;
 begin
   Clear;
   if Trim(JSON) = '' then
-  begin
-    Result := False;
-    Exit;
-  end
-  else
-    Result := True;
+    Exit(False);
+  Result := True;
   Parser := TJSONParser.Create(JSON);
   try
     Data := Parser.Parse;
     try
-      Package := nil;
+      MetaPackage := nil;
       try
         if Data.JSONType = jtObject then
         begin
@@ -876,12 +870,12 @@ begin
               FOnProcessJSON(Self);
             if Data.Items[I].JSONType = jtObject then
             begin
-              if not JSONToPackageData(Data.Items[I], Package) then
+              if not JSONToPackageData(Data.Items[I], MetaPackage) then
                 Result := False;
             end
             else if Data.Items[I].JSONType = jtArray then
             begin
-              if not JSONToLazarusPackages(Data.Items[I], Package) then
+              if not JSONToLazarusPackages(Data.Items[I], MetaPackage) then
                 Result := False;
             end;
           end;
@@ -899,7 +893,7 @@ begin
   end;
 end;
 
-function TSerializablePackages.LazarusPackagesToJSON(APackage: TPackage;
+function TSerializablePackages.LazarusPackagesToJSON(AMetaPackage: TMetaPackage;
  var ALazarusPkgsArr: TJSONArray): Boolean;
 var
   LazarusPkg: TLazarusPackage;
@@ -910,9 +904,9 @@ begin
   Result := True;
   try
     ALazarusPkgsArr := TJSONArray.Create;
-    for I := 0 to APackage.FLazarusPackages.Count - 1 do
+    for I := 0 to AMetaPackage.FLazarusPackages.Count - 1 do
     begin
-      LazarusPkg := TLazarusPackage(APackage.FLazarusPackages.Items[I]);
+      LazarusPkg := TLazarusPackage(AMetaPackage.FLazarusPackages.Items[I]);
       LazarusPkgObj := TJSONObject.Create;
       //need to change
       LazarusPkgObj.Add('Name', LazarusPkg.Name);
@@ -943,26 +937,26 @@ begin
   end;
 end;
 
-function TSerializablePackages.IsPackageDownloaded(const APackage: TPackage): Boolean;
+function TSerializablePackages.IsPackageDownloaded(const AMetaPackage: TMetaPackage): Boolean;
 var
   FileName: String;
 begin
-  FileName := Options.LocalRepositoryArchive + APackage.RepositoryFileName;
+  FileName := Options.LocalRepositoryArchive + AMetaPackage.RepositoryFileName;
   Result := (FileExists(FileName)) and
-//            (MD5Print(MD5File(FileName)) = APackage.RepositoryFileHash) and
-            (FileUtil.FileSize(FileName) = APackage.RepositoryFileSize);
+//            (MD5Print(MD5File(FileName)) = AMetaPackage.RepositoryFileHash) and
+            (FileUtil.FileSize(FileName) = AMetaPackage.RepositoryFileSize);
 end;
 
-function TSerializablePackages.IsPackageExtracted(const APackage: TPackage): Boolean;
+function TSerializablePackages.IsPackageExtracted(const AMetaPackage: TMetaPackage): Boolean;
 var
   I: Integer;
   LazarusPkg: TLazarusPackage;
 begin
   Result := True;
-  for I := 0 to APackage.FLazarusPackages.Count - 1 do
+  for I := 0 to AMetaPackage.FLazarusPackages.Count - 1 do
   begin
-    LazarusPkg := TLazarusPackage(APackage.FLazarusPackages.Items[I]);
-    LazarusPkg.FPackageAbsolutePath := Options.LocalRepositoryPackages + APackage.PackageBaseDir
+    LazarusPkg := TLazarusPackage(AMetaPackage.FLazarusPackages.Items[I]);
+    LazarusPkg.FPackageAbsolutePath := Options.LocalRepositoryPackages + AMetaPackage.PackageBaseDir
                                       + LazarusPkg.FPackageRelativePath + LazarusPkg.Name;
     if not FileExists(LazarusPkg.FPackageAbsolutePath) then
     begin
@@ -1096,30 +1090,30 @@ begin
   end;
 end;
 
-function TSerializablePackages.GetPackageInstallState(const APackage: TPackage): Integer;
+function TSerializablePackages.GetPackageInstallState(const AMetaPackage: TMetaPackage): Integer;
 var
   I: Integer;
   LazarusPkg: TLazarusPackage;
   InstCnt: Integer;
 begin
   InstCnt := 0;
-  for I := 0 to APackage.LazarusPackages.Count - 1 do
+  for I := 0 to AMetaPackage.LazarusPackages.Count - 1 do
   begin
-    LazarusPkg := TLazarusPackage(APackage.LazarusPackages.Items[I]);
-    if IsPackageInstalled(LazarusPkg, APackage.PackageBaseDir) then
+    LazarusPkg := TLazarusPackage(AMetaPackage.LazarusPackages.Items[I]);
+    if IsPackageInstalled(LazarusPkg, AMetaPackage.PackageBaseDir) then
       Inc(InstCnt);
   end;
   case InstCnt of
     0: Result := 0;
     1..High(Integer):
-        if InstCnt < APackage.LazarusPackages.Count then
+        if InstCnt < AMetaPackage.LazarusPackages.Count then
           Result := 2
         else
           Result := 1;
   end;
 end;
 
-function TSerializablePackages.PackageDataToJSON(APackage: TPackage;
+function TSerializablePackages.PackageDataToJSON(AMetaPackage: TMetaPackage;
  var APackageData: TJSONObject): Boolean;
 var
   PackageBaseDir: String;
@@ -1128,28 +1122,28 @@ begin
   Result := True;
   try
     APackageData := TJSONObject.Create;
-    APackageData.Add('Name', TPackage(APackage).Name);
-    APackageData.Add('DisplayName', APackage.DisplayName);
-    APackageData.Add('Category', TPackage(APackage).Category);
-    APackageData.Add('RepositoryFileName', TPackage(APackage).RepositoryFileName);
-    APackageData.Add('RepositoryFileSize', TPackage(APackage).RepositoryFileSize);
-    APackageData.Add('RepositoryFileHash', TPackage(APackage).RepositoryFileHash);
-    APackageData.Add('RepositoryDate', TPackage(APackage).RepositoryDate);
-    PackageBaseDir := TPackage(APackage).PackageBaseDir;
+    APackageData.Add('Name', AMetaPackage.Name);
+    APackageData.Add('DisplayName', AMetaPackage.DisplayName);
+    APackageData.Add('Category', AMetaPackage.Category);
+    APackageData.Add('RepositoryFileName', AMetaPackage.RepositoryFileName);
+    APackageData.Add('RepositoryFileSize', AMetaPackage.RepositoryFileSize);
+    APackageData.Add('RepositoryFileHash', AMetaPackage.RepositoryFileHash);
+    APackageData.Add('RepositoryDate', AMetaPackage.RepositoryDate);
+    PackageBaseDir := AMetaPackage.PackageBaseDir;
     if Trim(PackageBaseDir) <> '' then
     begin
       PackageBaseDir := AppendPathDelim(PackageBaseDir);
       PackageBaseDir := StringReplace(PackageBaseDir, PathDelim, '\/', [rfReplaceAll]);
     end;
     APackageData.Add('PackageBaseDir', PackageBaseDir);
-    APackageData.Add('HomePageURL', TPackage(APackage).HomePageURL);
-    APackageData.Add('DownloadURL', TPackage(APackage).DownloadURL);
-    APackageData.Add('SVNURL', TPackage(APackage).SVNURL);
+    APackageData.Add('HomePageURL', AMetaPackage.HomePageURL);
+    APackageData.Add('DownloadURL', AMetaPackage.DownloadURL);
+    APackageData.Add('SVNURL', AMetaPackage.SVNURL);
   except
     on E: Exception do
     begin
       Result := False;
-      FlastError := '"' + TPackage(APackage).Name + '": ' + E.Message;
+      FlastError := '"' + AMetaPackage.Name + '": ' + E.Message;
     end;
   end;
 end;
@@ -1160,7 +1154,7 @@ var
   PackageData: TJSONObject;
   LazarusPkgsArr: TJSONArray;
   I: Integer;
-  Package: TPackage;
+  MetaPackage: TMetaPackage;
 begin
   Result := True;
   PackageObject := TJSONObject.Create;
@@ -1168,12 +1162,12 @@ begin
     LazarusPkgsArr := nil;
     PackageData := nil;
     try
-      for I := 0 to FPackages.Count - 1 do
+      for I := 0 to FMetaPackages.Count - 1 do
       begin
-        Package := TPackage(FPackages.Items[I]);
-        if not LazarusPackagesToJSON(Package, LazarusPkgsArr) then
+        MetaPackage := TMetaPackage(FMetaPackages.Items[I]);
+        if not LazarusPackagesToJSON(MetaPackage, LazarusPkgsArr) then
           Result := False;
-        if not PackageDataToJSON(Package, PackageData) then
+        if not PackageDataToJSON(MetaPackage, PackageData) then
           Result := False;
         PackageObject.Add('PackageData' + IntToStr(I), PackageData);
         PackageObject.Add('PackageFiles' + IntToStr(I), LazarusPkgsArr);
@@ -1311,14 +1305,14 @@ begin
   end;
 end;
 
-function TSerializablePackages.AtLeastOneLazPkgInstalled(const APackage: TPackage): Boolean;
+function TSerializablePackages.AtLeastOneLazPkgInstalled(const AMetaPackage: TMetaPackage): Boolean;
 var
   I: Integer;
 begin
   Result := False;
-  for I := 0 to APackage.LazarusPackages.Count - 1 do
+  for I := 0 to AMetaPackage.LazarusPackages.Count - 1 do
   begin
-    if IsPackageInstalled(TLazarusPackage(APackage.FLazarusPackages.Items[I]), APackage.PackageBaseDir) then
+    if IsPackageInstalled(TLazarusPackage(AMetaPackage.FLazarusPackages.Items[I]), AMetaPackage.PackageBaseDir) then
     begin
       Result := True;
       Break;
@@ -1370,37 +1364,37 @@ end;
 
 function SortByNameAsc(Item1, Item2: TCollectionItem): Integer;
 var
-  Package1, Package2: TPackage;
+  Package1, Package2: TMetaPackage;
 begin
-  Package1 := TPackage(Item1);
-  Package2 := TPackage(Item2);
+  Package1 := TMetaPackage(Item1);
+  Package2 := TMetaPackage(Item2);
   Result := CompareText(Package1.FDisplayName, Package2.FDisplayName);
 end;
 
 function SortByNameDsc(Item1, Item2: TCollectionItem): Integer;
 var
-  Package1, Package2: TPackage;
+  Package1, Package2: TMetaPackage;
 begin
-  Package1 := TPackage(Item1);
-  Package2 := TPackage(Item2);
+  Package1 := TMetaPackage(Item1);
+  Package2 := TMetaPackage(Item2);
   Result := CompareText(Package2.FDisplayName, Package1.FDisplayName);
 end;
 
 function SortByDateAsc(Item1, Item2: TCollectionItem): Integer;
 var
-  Package1, Package2: TPackage;
+  Package1, Package2: TMetaPackage;
 begin
-  Package1 := TPackage(Item1);
-  Package2 := TPackage(Item2);
+  Package1 := TMetaPackage(Item1);
+  Package2 := TMetaPackage(Item2);
   Result := CompareDate(Package1.RepositoryDate, Package2.RepositoryDate);
 end;
 
 function SortByDateDsc(Item1, Item2: TCollectionItem): Integer;
 var
-  Package1, Package2: TPackage;
+  Package1, Package2: TMetaPackage;
 begin
-  Package1 := TPackage(Item1);
-  Package2 := TPackage(Item2);
+  Package1 := TMetaPackage(Item1);
+  Package2 := TMetaPackage(Item2);
   Result := CompareDate(Package2.RepositoryDate, Package1.RepositoryDate);
 end;
 
@@ -1410,14 +1404,14 @@ begin
   case ASortType of
     stName:
       if ASortOrder = soAscendent then
-        FPackages.Sort(@SortByNameAsc)
+        FMetaPackages.Sort(@SortByNameAsc)
       else if ASortOrder = soDescendent then
-        FPackages.Sort(@SortByNameDsc);
+        FMetaPackages.Sort(@SortByNameDsc);
     stDate:
       if ASortOrder = soAscendent then
-        FPackages.Sort(@SortByDateAsc)
+        FMetaPackages.Sort(@SortByDateAsc)
       else if ASortOrder = soDescendent then
-        FPackages.Sort(@SortByDateDsc)
+        FMetaPackages.Sort(@SortByDateDsc)
   end;
 end;
 

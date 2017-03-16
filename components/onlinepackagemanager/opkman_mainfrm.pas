@@ -393,20 +393,20 @@ end;
 procedure TMainFrm.DoOnUpdate(Sender: TObject);
 var
   I, J: Integer;
-  Package: TPackage;
+  MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
 begin
   VisualTree.UpdatePackageUStatus;
   // Pass the online package info as package links to IDE.
   for I := 0 to SerializablePackages.Count - 1 do
   begin
-    Package := SerializablePackages.Items[I];
-    for J := 0 to Package.LazarusPackages.Count - 1 do
+    MetaPkg := SerializablePackages.Items[I];
+    for J := 0 to MetaPkg.LazarusPackages.Count - 1 do
     begin
-      LazarusPkg := TLazarusPackage(Package.LazarusPackages.Items[J]);
-      //DebugLn(['OPM DoOnUpdate: Package.Name=', Package.Name,
-      //         ', Package.DisplayName=', Package.DisplayName]);
-      PkgLinks.AddOnlineLink(Package.DownloadZipURL, Package.Name, LazarusPkg.Version);
+      LazarusPkg := TLazarusPackage(MetaPkg.LazarusPackages.Items[J]);
+      //DebugLn(['OPM DoOnUpdate: Package.Name=', MetaPkg.Name,
+      //         ', Package.DisplayName=', MetaPkg.DisplayName]);
+      PkgLinks.AddOnlineLink(MetaPkg.DownloadZipURL, MetaPkg.Name, LazarusPkg.Version);
     end;
   end;
 end;
@@ -916,7 +916,7 @@ procedure TMainFrm.miResetRatingClick(Sender: TObject);
 var
   Data: PData;
   Node: PVirtualNode;
-  Package: TPackage;
+  MetaPkg: TMetaPackage;
 begin
   if MessageDlgEx(rsMainFrm_miResetRating + '?', mtConfirmation, [mbYes, mbNo], Self) = mrNo then
     Exit;
@@ -927,9 +927,9 @@ begin
     if Data^.DataType = 1 then
     begin
       Data^.Rating := 0;
-      Package := SerializablePackages.FindPackage(Data^.PackageName, fpbPackageName);
-      if Package <> nil then
-        Package.Rating := 0;
+      MetaPkg := SerializablePackages.FindMetaPackage(Data^.PackageName, fpbPackageName);
+      if MetaPkg <> nil then
+        MetaPkg.Rating := 0;
       VisualTree.VST.ReinitNode(Node, False);
       VisualTree.VST.RepaintNode(Node);
     end;

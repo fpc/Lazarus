@@ -960,7 +960,7 @@ end;
 function TCreateRepositoryPackagefr.CreateJSON(var AErrMsg: String): Boolean;
 var
   SerializablePackages: TSerializablePackages;
-  Package: TPackage;
+  MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
   RootNode, Node: PVirtualNode;
   RootData, Data: PData;
@@ -978,24 +978,24 @@ begin
     if RootNode <> nil then
     begin
       RootData := FVSTPackages.GetNodeData(RootNode);
-      Package := SerializablePackages.AddPackage(RootData^.FName);
-      Package.Category := TranslateCategories(RootData^.FCategory);
-      Package.RepositoryFileName := ExtractFileName(FPackageFile);
-      Package.RepositoryFileSize := FileUtil.FileSize(FPackageFile);
-      Package.RepositoryFileHash := MD5Print(MD5File(FPackageFile));
-      Package.RepositoryDate := Trunc(now);
-      Package.PackageBaseDir := RootData^.FPackageBaseDir;
-      Package.DisplayName := RootData^.FDisplayName;
-      Package.HomePageURL := RootData^.FHomePageURL;
-      Package.DownloadURL := RootData^.FDownloadURL;
-      Package.SVNURL := RootData^.FSVNURL;
+      MetaPkg := SerializablePackages.AddMetaPackage(RootData^.FName);
+      MetaPkg.Category := TranslateCategories(RootData^.FCategory);
+      MetaPkg.RepositoryFileName := ExtractFileName(FPackageFile);
+      MetaPkg.RepositoryFileSize := FileUtil.FileSize(FPackageFile);
+      MetaPkg.RepositoryFileHash := MD5Print(MD5File(FPackageFile));
+      MetaPkg.RepositoryDate := Trunc(now);
+      MetaPkg.PackageBaseDir := RootData^.FPackageBaseDir;
+      MetaPkg.DisplayName := RootData^.FDisplayName;
+      MetaPkg.HomePageURL := RootData^.FHomePageURL;
+      MetaPkg.DownloadURL := RootData^.FDownloadURL;
+      MetaPkg.SVNURL := RootData^.FSVNURL;
       Node := FVSTPackages.GetFirstChild(RootNode);
       while Assigned(Node) do
       begin
         if FVSTPackages.CheckState[Node] = csCheckedNormal then
         begin
           Data := FVSTPackages.GetNodeData(Node);
-          LazarusPkg := TLazarusPackage(Package.LazarusPackages.Add);
+          LazarusPkg := TLazarusPackage(MetaPkg.LazarusPackages.Add);
           LazarusPkg.Name := Data^.FName;
           LazarusPkg.PackageRelativePath := Data^.FPackageRelativePath;
           LazarusPkg.Version := TPackageVersion.Create;

@@ -57,7 +57,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     FVST: TVirtualStringTree;
-    FPackage: TPackage;
+    FMetaPackage: TMetaPackage;
     FSortCol: Integer;
     FSortDir: opkman_VirtualTrees.TSortDirection;
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -199,15 +199,15 @@ begin
     Exit;
   end;
   CanClose := False;
-  if FPackage.DisplayName <> '' then
-    SD.FileName := 'update_' + FPackage.DisplayName
+  if FMetaPackage.DisplayName <> '' then
+    SD.FileName := 'update_' + FMetaPackage.DisplayName
   else
-    SD.FileName := 'update_' + FPackage.Name;
+    SD.FileName := 'update_' + FMetaPackage.Name;
   if SD.Execute then
   begin
     UpdatePkg := TUpdatePackage.Create;
     try
-      UpdatePkg.UpdatePackageData.Name := FPackage.Name;
+      UpdatePkg.UpdatePackageData.Name := FMetaPackage.Name;
       UpdatePkg.UpdatePackageData.DownloadZipURL := edLinkToZip.Text;
 
       Node := FVST.GetFirst;
@@ -344,13 +344,13 @@ var
 begin
   for I := 0 to SerializablePackages.Count - 1 do
   begin
-    FPackage := SerializablePackages.Items[I];
-    if FPackage.Checked then
+    FMetaPackage := SerializablePackages.Items[I];
+    if FMetaPackage.Checked then
     begin
-      Caption := Caption + ' "' + FPackage.DisplayName +'"';
-      for J := 0 to FPackage.LazarusPackages.Count - 1 do
+      Caption := Caption + ' "' + FMetaPackage.DisplayName +'"';
+      for J := 0 to FMetaPackage.LazarusPackages.Count - 1 do
       begin
-        LazarusPkg := TLazarusPackage(FPackage.LazarusPackages.Items[J]);
+        LazarusPkg := TLazarusPackage(FMetaPackage.LazarusPackages.Items[J]);
         if LazarusPkg.Checked then
         begin
           Node := FVST.AddChild(nil);
