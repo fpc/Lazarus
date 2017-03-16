@@ -558,11 +558,9 @@ msgctxt "opkman_const.rsmainfrm_vstheadercolumn_installed"
 msgid "Installed"
 msgstr "Asenettu"
 
-#: opkman_const.rsmainfrm_vstheadercolumn_packagefile
-#, fuzzy
-#| msgid "Package file(.lpk)"
-msgid "Package file (.lpk)"
-msgstr "Pakettitiedosto (.lpk)"
+#: opkman_const.rsmainfrm_vstheadercolumn_lazaruspackage
+msgid "Lazarus Package (.lpk)"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagename
 msgid "Packages"
