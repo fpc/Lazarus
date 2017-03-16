@@ -439,7 +439,7 @@ procedure TSeriesPointer.DrawSize(ADrawer: IChartDrawer;
   var
     p: array of TPoint;
     pt: TDoublePoint;
-    phi, sinphi, cosphi, dPhi: Double;
+    phi, sinphi, cosphi, dPhi: Math.float;
     i: Integer;
   begin
     case AStyle of
@@ -447,7 +447,8 @@ procedure TSeriesPointer.DrawSize(ADrawer: IChartDrawer;
       psFullStar : begin dPhi := pi / 6; SetLength(p, 13); end;
     end;
     phi := 0;
-    for i := 0 to High(p) do begin
+    for i := 0 to High(p) do 
+    begin
       SinCos(phi, sinphi, cosphi);
       pt := DoublePoint(ASize.X * cosPhi, ASize.Y * sinPhi);
       if odd(i) and (AStyle = psFullStar) then

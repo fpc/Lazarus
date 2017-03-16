@@ -611,7 +611,7 @@ var
   d, dist: Integer;
   phi: Double;
   rx, ry: Integer;
-  cosphi, sinphi: Double;
+  cosphi, sinphi: Math.float;
 begin
   Result := inherited;
 
@@ -768,7 +768,7 @@ var
   rx, ry: Integer;
   d, dPerim: Integer;
   p: TPoint;
-  phi, sinPhi, cosPhi: Double;
+  phi, sinPhi, cosPhi: Math.float;
 begin
   if AYIdx = 0 then begin
     Result := inherited;

@@ -451,8 +451,11 @@ end;
 function TChartTextElement.GetTextShiftNeeded: Boolean;
 var
   textdir: TDoublePoint;
+  lSin, lCos: Math.float;
 begin
-  SinCos(-GetLabelAngle, textdir.y, textdir.x);
+  SinCos(-GetLabelAngle, lSin, lCos);
+  textdir.y := lSin;
+  textdir.x := lCos;
   Result := DotProduct(textdir, FInsideDir) > 0;
 end;
 
