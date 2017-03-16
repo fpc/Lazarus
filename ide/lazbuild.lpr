@@ -313,7 +313,7 @@ end;
 
 procedure TLazBuildApplication.PackageGraphAddPackage(Pkg: TLazPackage);
 begin
-  if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
+  if FileExists(Pkg.FileName) then LazPackageLinks.AddUserLink(Pkg);
 end;
 
 function TLazBuildApplication.PackageGraphCheckInterPkgFiles(
@@ -365,7 +365,7 @@ end;
 function TLazBuildApplication.BuildFile(Filename: string): boolean;
 var
   OriginalFilename: string;
-  Package: TPackageLink;
+  Package: TLazPackageLink;
 begin
   Result:=false;
   OriginalFilename:=FileName;
@@ -383,7 +383,7 @@ begin
       if not Init then exit;
       // Apparently not found, could be a known but not installed package
       // so try and get package filename from all other known packages
-      Package:=PkgLinks.FindLinkWithPkgName(OriginalFileName);
+      Package:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(OriginalFileName));
       if Package=nil then begin
         // Not found after everything we tried
         Error(ErrorFileNotFound,'package not found: '+OriginalFilename);
@@ -459,7 +459,7 @@ begin
   else
     CompilePackage(APackage,Flags);
 
-  PkgLinks.SaveUserLinks(true);
+  LazPackageLinks.SaveUserLinks(true);
 
   Result:=true;
 end;
@@ -500,7 +500,7 @@ begin
     PackageGraph.AddPackage(Result);
   end;
   // save package file links
-  PkgLinks.SaveUserLinks;
+  LazPackageLinks.SaveUserLinks;
 end;
 
 function TLazBuildApplication.BuildLazarusIDE: boolean;
@@ -1032,7 +1032,7 @@ function TLazBuildApplication.AddPackagesToInstallList(
 var
   i: integer;
   Package: TLazPackage;
-  PackageLink: TPackageLink;
+  PackageLink: TLazPackageLink;
   PackageName:string;
   PkgFilename: String;
   ErrorMsg: String;
@@ -1053,7 +1053,7 @@ begin
     if CompareFileExt(PackageNamesOrFiles[i],'.lpk')=0 then
       PkgFilename:=ExpandFileNameUTF8(PackageNamesOrFiles[i])
     else if IsValidIdent(PackageNamesOrFiles[i]) then begin
-      PackageLink:=PkgLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]);
+      PackageLink:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]));
       if PackageLink=nil then
       begin
         ErrorMsg+='Can not find package '+PackageNamesOrFiles[i]+', so it is not marked for installation.'+LineEnding;
@@ -1090,7 +1090,7 @@ begin
   end;
   // save list
   MiscellaneousOptions.Save;
-  PkgLinks.SaveUserLinks(true);
+  LazPackageLinks.SaveUserLinks(true);
 
   Result:=true;
 end;
@@ -1125,7 +1125,7 @@ begin
     end;
     if ConsoleVerbosity>=0 then
       debugln(['Hint: (lazarus) registering package link "'+PkgFilename+'".']);
-    PkgLinks.AddUserLink(Package);
+    LazPackageLinks.AddUserLink(Package);
   end;
   if ErrorMsg<>'' then begin
     ErrorMsg:=UTF8Trim(ErrorMsg);
@@ -1133,7 +1133,7 @@ begin
     exit;
   end;
 
-  PkgLinks.SaveUserLinks(true);
+  LazPackageLinks.SaveUserLinks(true);
   Result:=true;
 end;
 
@@ -1238,8 +1238,8 @@ begin
   OnGetDependencyOwnerDirectory:=@GetDependencyOwnerDirectory;
 
   // package links
-  PkgLinks:=TPackageLinks.Create;
-  PkgLinks.UpdateAll;
+  LazPackageLinks:=TLazPackageLinks.Create;
+  LazPackageLinks.UpdateAll;
 
   // package graph
   PackageGraph:=TLazPackageGraph.Create;
@@ -1439,7 +1439,7 @@ begin
     FreeThenNil(PackageGraph);
   end;
 
-  FreeThenNil(PkgLinks);
+  FreeThenNil(LazPackageLinks);
   FreeThenNil(TheCompiler);
   FreeAndNil(ExtToolConsole);
   FreeThenNil(GlobalMacroList);
