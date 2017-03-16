@@ -550,7 +550,7 @@ msgstr "Установлен"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package (.lpk)"
-msgstr ""
+msgstr "Пакет Lazarus (.lpk)"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagename
 msgid "Packages"
