@@ -50,6 +50,7 @@ type
   TOnPackageInstallProgress = procedure(Sender: TObject; ACnt, ATotCnt: Integer; APackgaName: String; AInstallMessage: TInstallMessage) of object;
   TOnPackageInstallError = procedure(Sender: TObject; APackageName, AErrMsg: String) of object;
   TOnPackageInstallCompleted = procedure(Sender: TObject; ANeedToRebuild: Boolean; AInstallStatus: TInstallStatus) of object;
+
   TPackageInstaller = class
   private
     FNeedToBreak: Boolean;
@@ -59,18 +60,18 @@ type
     FStarted: Boolean;
     FInstallStatus: TInstallStatus;
     FToInstall: TStringList;
-    FPackageFileName: String;
-    FUnresolvedPackageFileName: String;
+    FFileName: String;
+    FUnresolvedFileName: String;
     FOnPackageInstallProgress: TOnPackageInstallProgress;
     FOnPackageInstallError: TOnPackageInstallError;
     FOnPackageInstallCompleted: TOnPackageInstallCompleted;
-    function OpenPackage(const APackageFileName: String): TIDEPackage;
-    function IsPackageInTheList(const APackageFileName: String): Boolean;
+    function OpenPackage(const AFileName: String): TIDEPackage;
+    function IsPackageInTheList(const AFileName: String): Boolean;
     function HasUnresolvedDependency(AName: String): Boolean;
-    function CompilePackage(const AIDEPackage: TIDEPackage; APackageFile: TPackageFile): Integer;
+    function CompilePackage(const AIDEPackage: TIDEPackage; ALazarusPkg: TLazarusPackage): Integer;
     function InstallPackage: Boolean;
-    procedure DoOnPackageInstallProgress(const AInstallMessage: TInstallMessage; APackageFile: TPackageFile);
-    procedure DoOnPackageInstallError(const AInstallMessage: TInstallMessage; APackageFile: TPackageFile);
+    procedure DoOnPackageInstallProgress(const AInstallMessage: TInstallMessage; ALazarusPkg: TLazarusPackage);
+    procedure DoOnPackageInstallError(const AInstallMessage: TInstallMessage; ALazarusPkg: TLazarusPackage);
     procedure Execute;
   public
     constructor Create;
@@ -102,16 +103,16 @@ begin
   inherited Destroy;
 end;
 
-function TPackageInstaller.OpenPackage(const APackageFileName: String): TIDEPackage;
+function TPackageInstaller.OpenPackage(const AFileName: String): TIDEPackage;
 var
   I: Integer;
 begin
   Result := nil;
-  if PackageEditingInterface.DoOpenPackageFile(APackageFileName, [pofRevert, pofDoNotOpenEditor], True) = mrOk then
+  if PackageEditingInterface.DoOpenPackageFile(AFileName, [pofRevert, pofDoNotOpenEditor], True) = mrOk then
   begin
     for I := 0 to PackageEditingInterface.GetPackageCount - 1 do
     begin
-      if UpperCase(PackageEditingInterface.GetPackages(I).Filename) = UpperCase(APackageFileName) then
+      if UpperCase(PackageEditingInterface.GetPackages(I).Filename) = UpperCase(AFileName) then
       begin
         Result := PackageEditingInterface.GetPackages(I);
         Break;
@@ -120,20 +121,20 @@ begin
   end;
 end;
 
-function TPackageInstaller.IsPackageInTheList(const APackageFileName: String): Boolean;
+function TPackageInstaller.IsPackageInTheList(const AFileName: String): Boolean;
 var
   P, I: Integer;
-  PackageFileName: String;
+  PkgFileName: String;
 begin
   Result := False;
   for I := 0 to FToInstall.Count - 1 do
   begin
     P := Pos('  ', FToInstall.Strings[I]);
     if P <> 0 then
-      PackageFileName := Copy(FToInstall.Strings[I], 1, P - 1)
+      PkgFileName := Copy(FToInstall.Strings[I], 1, P - 1)
     else
-      PackageFileName := FToInstall.Strings[I];
-    if UpperCase(PackageFileName) = UpperCase(APackageFileName) then
+      PkgFileName := FToInstall.Strings[I];
+    if UpperCase(PkgFileName) = UpperCase(AFileName) then
     begin
       Result := True;
       Break;
@@ -149,23 +150,23 @@ begin
   P := Pos('  ', AName);
   if P > 0 then
   begin
-    FPackageFileName := Copy(AName, 1, P - 1);
+    FFileName := Copy(AName, 1, P - 1);
     Delete(AName, 1, P);
-    FUnresolvedPackageFileName := Trim(AName);
+    FUnresolvedFileName := Trim(AName);
     Result := True;
   end
   else
-    FPackageFileName := AName;
+    FFileName := AName;
 end;
 
 function TPackageInstaller.CompilePackage(const AIDEPackage: TIDEPackage;
-  APackageFile: TPackageFile): Integer;
+  ALazarusPkg: TLazarusPackage): Integer;
 begin
   Result := -1;
   {$if declared(lcl_version)}
    {$if (lcl_major > 0) and (lcl_minor > 6)}
      //DoCompilePackage function is only available with Laz 1.7 +
-     DoOnPackageInstallProgress(imCompilePackage, APackageFile);
+     DoOnPackageInstallProgress(imCompilePackage, ALazarusPkg);
      Result := PackageEditingInterface.DoCompilePackage(AIDEPackage, [pcfCleanCompile, pcfDoNotSaveEditorFiles], False);
    {$endif}
   {$endif}
@@ -178,10 +179,10 @@ var
   NewPackageID: TLazPackageID;
 begin
   Result := False;
-  P := Pos('.lpk', FPackageFileName);
+  P := Pos('.lpk', FFileName);
   if P <> 0 then
   begin
-    PackageName := Copy(FPackageFileName, 1, P - 1);
+    PackageName := Copy(FFileName, 1, P - 1);
     NewPackageID := TLazPackageID.Create;
     if NewPackageID.StringToID(PackageName) then
     begin
@@ -192,18 +193,18 @@ begin
 end;
 
 procedure TPackageInstaller.DoOnPackageInstallProgress(const AInstallMessage: TInstallMessage;
-  APackageFile: TPackageFile);
+  ALazarusPkg: TLazarusPackage);
 begin
   if AInstallMessage = imPackageCompleted then
-     APackageFile.PackageStates := APackageFile.PackageStates + [psInstalled];
+     ALazarusPkg.PackageStates := ALazarusPkg.PackageStates + [psInstalled];
   if Assigned(FOnPackageInstallProgress) then
-    FOnPackageInstallProgress(Self, FCnt, FTotCnt, FPackageFileName, AInstallMessage);
+    FOnPackageInstallProgress(Self, FCnt, FTotCnt, FFileName, AInstallMessage);
   if AInstallMessage <> imPackageCompleted then
     Sleep(1000);
 end;
 
 procedure TPackageInstaller.DoOnPackageInstallError(const AInstallMessage: TInstallMessage;
-  APackageFile: TPackageFile);
+  ALazarusPkg: TLazarusPackage);
 var
   ErrMsg: String;
 begin
@@ -215,12 +216,12 @@ begin
     imInstallPackageError:
       ErrMsg := rsProgressFrm_Error9;
     imDependencyError:
-      ErrMsg := Format(rsProgressFrm_Error4, [FUnresolvedPackageFileName]);
+      ErrMsg := Format(rsProgressFrm_Error4, [FUnresolvedFileName]);
     end;
-  APackageFile.PackageStates := APackageFile.PackageStates - [psInstalled];
-  APackageFile.PackageStates := APackageFile.PackageStates + [psError];
+  ALazarusPkg.PackageStates := ALazarusPkg.PackageStates - [psInstalled];
+  ALazarusPkg.PackageStates := ALazarusPkg.PackageStates + [psError];
   if Assigned(FOnPackageInstallError) then
-    FOnPackageInstallError(Self, FPackageFileName, ErrMsg);
+    FOnPackageInstallError(Self, FFileName, ErrMsg);
   Sleep(1000);
 end;
 
@@ -230,7 +231,7 @@ var
   IDEPackage: TIDEPackage;
   PkgInstallInIDEFlags: TPkgInstallInIDEFlags;
   ErrCnt: Integer;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
   CanGo: Boolean;
   CompRes: Integer;
 begin
@@ -242,63 +243,63 @@ begin
     if NeedToBreak then
       Break;
     CanGo := not HasUnresolvedDependency(FToInstall.Strings[I]);
-    PackageFile := SerializablePackages.FindPackageFile(FPackageFileName);
+    LazarusPkg := SerializablePackages.FindLazarusPackage(FFileName);
     if CanGo then
     begin
       Inc(FCnt);
       if not FNeedToRebuild then
-        FNeedToRebuild := PackageFile.PackageType in [ptRunAndDesignTime, ptDesigntime];
-      DoOnPackageInstallProgress(imOpenPackage, PackageFile);
-      IDEPackage := OpenPackage(PackageFile.PackageAbsolutePath);
+        FNeedToRebuild := LazarusPkg.PackageType in [ptRunAndDesignTime, ptDesigntime];
+      DoOnPackageInstallProgress(imOpenPackage, LazarusPkg);
+      IDEPackage := OpenPackage(LazarusPkg.PackageAbsolutePath);
       if IDEPackage <> nil then
       begin
-        DoOnPackageInstallProgress(imOpenPackageSuccess, PackageFile);
-        CompRes := CompilePackage(IDEPAckage, PackageFile);
+        DoOnPackageInstallProgress(imOpenPackageSuccess, LazarusPkg);
+        CompRes := CompilePackage(IDEPAckage, LazarusPkg);
         case CompRes of
           -1, 1:
             begin
               if CompRes = 1 then
               begin
-                DoOnPackageInstallProgress(imCompilePackageSuccess, PackageFile);
+                DoOnPackageInstallProgress(imCompilePackageSuccess, LazarusPkg);
                 if PackageAction = paUpdate then
-                  if PackageFile.ForceNotify then
-                    if PackageFile.InternalVersion > PackageFile.InternalVersionOld then
-                      PackageFile.InternalVersionOld := PackageFile.InternalVersion;
+                  if LazarusPkg.ForceNotify then
+                    if LazarusPkg.InternalVersion > LazarusPkg.InternalVersionOld then
+                      LazarusPkg.InternalVersionOld := LazarusPkg.InternalVersion;
               end;
-              if PackageFile.PackageType in [ptRunAndDesignTime, ptDesigntime] then
+              if LazarusPkg.PackageType in [ptRunAndDesignTime, ptDesigntime] then
               begin
-                DoOnPackageInstallProgress(imInstallPackage, PackageFile);
+                DoOnPackageInstallProgress(imInstallPackage, LazarusPkg);
                 if InstallPackage then
-                  DoOnPackageInstallProgress(imInstallpackageSuccess, PackageFile)
+                  DoOnPackageInstallProgress(imInstallpackageSuccess, LazarusPkg)
                 else
                 begin
                   Inc(ErrCnt);
-                  DoOnPackageInstallError(imInstallPackageError, PackageFile);
+                  DoOnPackageInstallError(imInstallPackageError, LazarusPkg);
                 end;
               end;
             end;
           else
             begin
               Inc(ErrCnt);
-              DoOnPackageInstallError(imCompilePackageError, PackageFile);
+              DoOnPackageInstallError(imCompilePackageError, LazarusPkg);
             end;
         end;
       end
       else
       begin
         Inc(ErrCnt);
-        DoOnPackageInstallError(imOpenPackageError, PackageFile);
+        DoOnPackageInstallError(imOpenPackageError, LazarusPkg);
       end;
-      DoOnPackageInstallProgress(imPackageCompleted, PackageFile);
+      DoOnPackageInstallProgress(imPackageCompleted, LazarusPkg);
     end
     else
     begin
       Inc(FCnt);
-      DoOnPackageInstallProgress(imOpenPackage, PackageFile);
-      DoOnPackageInstallProgress(imOpenPackageSuccess, PackageFile);
+      DoOnPackageInstallProgress(imOpenPackage, LazarusPkg);
+      DoOnPackageInstallProgress(imOpenPackageSuccess, LazarusPkg);
       Inc(ErrCnt);
-      DoOnPackageInstallError(imDependencyError, PackageFile);
-      DoOnPackageInstallProgress(imPackageCompleted, PackageFile);
+      DoOnPackageInstallError(imDependencyError, LazarusPkg);
+      DoOnPackageInstallProgress(imPackageCompleted, LazarusPkg);
     end;
   end;
   if InstallPackageList.Count > 0 then
@@ -323,7 +324,7 @@ procedure TPackageInstaller.StartInstall;
 var
   I, J, K: Integer;
   PackageList: TObjectList;
-  PackageFile, DependecyPackage: TPackageFile;
+  LazarusPkg, DependecyPackage: TLazarusPackage;
   PackageDependency: TPackageDependency;
   DependencyFound: Boolean;
 begin
@@ -335,24 +336,26 @@ begin
   try
     for I := 0 to SerializablePackages.Count - 1 do
     begin
-      for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
+      for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
       begin
-        PackageFile := TPackageFile(SerializablePackages.Items[I].PackageFiles.Items[J]);
-        if PackageFile.IsInstallable then
+        LazarusPkg := TLazarusPackage(SerializablePackages.Items[I].LazarusPackages.Items[J]);
+        if LazarusPkg.IsInstallable then
         begin
-          SerializablePackages.GetPackageDependencies(PackageFile.Name, PackageList, True, True);
+          SerializablePackages.GetPackageDependencies(LazarusPkg.Name, PackageList, True, True);
           if PackageList.Count > 0 then
           begin
             DependencyFound := True;
             for K := 0 to PackageList.Count - 1 do
             begin
               PackageDependency := TPackageDependency(PackageList.Items[K]);
-              DependecyPackage := SerializablePackages.FindPackageFile(TPackageDependency(PackageList.Items[k]).PackageFileName + '.lpk');
+              DependecyPackage := SerializablePackages.FindLazarusPackage(PackageDependency.PkgFileName + '.lpk');
               if DependecyPackage <> nil then
               begin
-                if not ((DependecyPackage.PackageState = psInstalled) and (SerializablePackages.IsInstalledVersionOk(PackageDependency, DependecyPackage.VersionAsString))) then
+                if not ((DependecyPackage.PackageState = psInstalled)
+                and (SerializablePackages.IsInstalledVersionOk(PackageDependency, DependecyPackage.VersionAsString))) then
                 begin
-                  if ((DependecyPackage.IsInstallable) and (SerializablePackages.IsDependencyOk(PackageDependency, DependecyPackage))) then
+                  if ((DependecyPackage.IsInstallable)
+                  and (SerializablePackages.IsDependencyOk(PackageDependency, DependecyPackage))) then
                   begin
                     if not IsPackageInTheList(DependecyPackage.Name) then
                       FToInstall.Add(DependecyPackage.Name);
@@ -367,12 +370,12 @@ begin
            end;
            if (not DependencyFound) then
            begin
-             if (not IsPackageInTheList(PackageFile.Name)) then
-               FToInstall.Add(PackageFile.Name + '  ' + DependecyPackage.Name)
+             if (not IsPackageInTheList(LazarusPkg.Name)) then
+               FToInstall.Add(LazarusPkg.Name + '  ' + DependecyPackage.Name)
            end
          end;
-         if (not IsPackageInTheList(PackageFile.Name)) then
-            FToInstall.Add(PackageFile.Name);
+         if (not IsPackageInTheList(LazarusPkg.Name)) then
+            FToInstall.Add(LazarusPkg.Name);
         end;
       end;
     end;

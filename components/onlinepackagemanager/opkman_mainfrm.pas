@@ -394,19 +394,19 @@ procedure TMainFrm.DoOnUpdate(Sender: TObject);
 var
   I, J: Integer;
   Package: TPackage;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
 begin
   VisualTree.UpdatePackageUStatus;
   // Pass the online package info as package links to IDE.
   for I := 0 to SerializablePackages.Count - 1 do
   begin
     Package := SerializablePackages.Items[I];
-    for J := 0 to Package.PackageFiles.Count - 1 do
+    for J := 0 to Package.LazarusPackages.Count - 1 do
     begin
-      PackageFile := TPackageFile(Package.PackageFiles.Items[J]);
+      LazarusPkg := TLazarusPackage(Package.LazarusPackages.Items[J]);
       //DebugLn(['OPM DoOnUpdate: Package.Name=', Package.Name,
       //         ', Package.DisplayName=', Package.DisplayName]);
-      PkgLinks.AddOnlineLink(Package.DownloadZipURL, Package.Name, PackageFile.Version);
+      PkgLinks.AddOnlineLink(Package.DownloadZipURL, Package.Name, LazarusPkg.Version);
     end;
   end;
 end;
@@ -954,7 +954,7 @@ begin
       begin
         Data := VisualTree.VST.GetNodeData(Node);
         if (Data^.DataType = 2) then
-          SL.Add(Data^.PackageFileName);
+          SL.Add(Data^.LazarusPackageName);
       end;
       Node := VisualTree.VST.GetNext(Node);
     end;
@@ -991,7 +991,7 @@ begin
         while Node <> nil do
         begin
           Data := VisualTree.VST.GetNodeData(Node);
-          if UpperCase(Trim(Data^.PackageFileName)) = UpperCase(Trim(SL.Strings[I])) then
+          if UpperCase(Trim(Data^.LazarusPackageName)) = UpperCase(Trim(SL.Strings[I])) then
           begin
             VisualTree.VST.CheckState[Node] := csCheckedNormal;
             Inc(CheckCount);
@@ -1084,7 +1084,7 @@ begin
 
   cbFilterBy.Clear;
   cbFilterBy.Items.Add(rsMainFrm_VSTHeaderColumn_PackageName);
-  cbFilterBy.Items.Add(rsMainFrm_VSTHeaderColumn_PackageFile);
+  cbFilterBy.Items.Add(rsMainFrm_VSTHeaderColumn_LazarusPackage);
   cbFilterBy.Items.Add(rsMainFrm_VSTText_PackageCategory);
   cbFilterBy.Items.Add(rsMainFrm_VSTText_PackageStatus);
   cbFilterBy.Items.Add(rsMainFrm_VSTText_Version);

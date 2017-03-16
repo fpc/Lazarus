@@ -906,7 +906,7 @@ var
   JSON: TJSONStringType;
   Ms: TMemoryStream;
   UpdatePackage: TUpdatePackage;
-  UpdatePackageFiles: TUpdatePackageFiles;
+  UpdateLazPkgs: TUpdateLazPackages;
 begin
   Result := False;
   pnMessage.Caption := rsCreateRepositoryPackageFrm_Message6;
@@ -927,11 +927,11 @@ begin
         if FVSTPackages.CheckState[Node] = csCheckedNormal then
         begin
           Data := FVSTPackages.GetNodeData(Node);
-          UpdatePackageFiles := TUpdatePackageFiles(UpdatePackage.UpdatePackageFiles.Add);
-          UpdatePackageFiles.Name := Data^.FName;
-          UpdatePackageFiles.Version := Data^.FVersionAsString;
-          UpdatePackageFiles.ForceNotify := False;
-          UpdatePackageFiles.InternalVersion := 1;
+          UpdateLazPkgs := TUpdateLazPackages(UpdatePackage.UpdateLazPackages.Add);
+          UpdateLazPkgs.Name := Data^.FName;
+          UpdateLazPkgs.Version := Data^.FVersionAsString;
+          UpdateLazPkgs.ForceNotify := False;
+          UpdateLazPkgs.InternalVersion := 1;
         end;
         Node := FVSTPackages.GetNextSibling(Node);
       end;
@@ -961,7 +961,7 @@ function TCreateRepositoryPackagefr.CreateJSON(var AErrMsg: String): Boolean;
 var
   SerializablePackages: TSerializablePackages;
   Package: TPackage;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
   RootNode, Node: PVirtualNode;
   RootData, Data: PData;
   JSON: TJSONStringType;
@@ -995,20 +995,20 @@ begin
         if FVSTPackages.CheckState[Node] = csCheckedNormal then
         begin
           Data := FVSTPackages.GetNodeData(Node);
-          PackageFile := TPackageFile(Package.PackageFiles.Add);
-          PackageFile.Name := Data^.FName;
-          PackageFile.PackageRelativePath := Data^.FPackageRelativePath;
-          PackageFile.Version := TPackageVersion.Create;
-          PackageFile.Version.AsString := Data^.FVersionAsString;
-          PackageFile.Description := Data^.FDescription;
-          PackageFile.Author := Data^.FAuthor;
-          PackageFile.LazCompatibility := Data^.FLazCompatibility;
-          PackageFile.FPCCompatibility := Data^.FFPCCompatibility;
-          PackageFile.SupportedWidgetSet := Data^.FSupportedWidgetSet;
-          PackageFile.PackageType := Data^.FPackageType;
-          PackageFile.Dependencies := TPackageDependencies.Create(TPackageDependency);
-          PackageFile.Dependencies.SetDependenciesAsString(Data^.FDependenciesAsString);
-          PackageFile.License := Data^.FLicense;
+          LazarusPkg := TLazarusPackage(Package.LazarusPackages.Add);
+          LazarusPkg.Name := Data^.FName;
+          LazarusPkg.PackageRelativePath := Data^.FPackageRelativePath;
+          LazarusPkg.Version := TPackageVersion.Create;
+          LazarusPkg.Version.AsString := Data^.FVersionAsString;
+          LazarusPkg.Description := Data^.FDescription;
+          LazarusPkg.Author := Data^.FAuthor;
+          LazarusPkg.LazCompatibility := Data^.FLazCompatibility;
+          LazarusPkg.FPCCompatibility := Data^.FFPCCompatibility;
+          LazarusPkg.SupportedWidgetSet := Data^.FSupportedWidgetSet;
+          LazarusPkg.PackageType := Data^.FPackageType;
+          LazarusPkg.Dependencies := TPackageDependencies.Create(TPackageDependency);
+          LazarusPkg.Dependencies.SetDependenciesAsString(Data^.FDependenciesAsString);
+          LazarusPkg.License := Data^.FLicense;
         end;
         Node := FVSTPackages.GetNextSibling(Node);
       end;
@@ -1038,7 +1038,7 @@ end;
 
 procedure TCreateRepositoryPackagefr.DoOnZipCompleted(Sender: TObject);
 var
-  ErrMsg: String;
+  ErrMsg, JsonUpd: String;
 begin
   ErrMsg := '';
   if not CreateJSON(ErrMsg) then
@@ -1074,9 +1074,11 @@ begin
         Uploader.OnUploadError := @DoOnUploadError;
         Uploader.OnUploadCompleted := @DoOnUploadCompleted;
         if cbJSONForUpdates.Checked then
-          Uploader.StartUpload(cSubmitURL_Zip, cSubmitURL_JSON, FPackageFile, FDestDir + FPackageName + '.json', FDestDir + 'update_' + FPackageName + '.json')
+          JsonUpd := FDestDir + 'update_' + FPackageName + '.json'
         else
-          Uploader.StartUpload(cSubmitURL_Zip, cSubmitURL_JSON, FPackageFile, FDestDir + FPackageName + '.json', '')
+          JsonUpd := '';
+        Uploader.StartUpload(cSubmitURL_Zip, cSubmitURL_JSON, FPackageFile,
+              FDestDir + FPackageName + '.json', JsonUpd);
       end;
   end;
 end;

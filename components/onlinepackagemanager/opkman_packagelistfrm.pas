@@ -130,7 +130,7 @@ var
   I, J: Integer;
   Node: PVirtualNode;
   Data: PData;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
   ChkCnt, InvCnt: Integer;
 begin
   SetupControls(ATyp);
@@ -140,14 +140,14 @@ begin
   begin
     if ATyp = 0 then
     begin
-      for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1  do
+      for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1  do
       begin
-        PackageFile := TPackageFile(SerializablePackages.Items[I].PackageFiles.Items[J]);
-        if (PackageFile.Checked) and (psInstalled in PackageFile.PackageStates) then
+        LazarusPkg := TLazarusPackage(SerializablePackages.Items[I].LazarusPackages.Items[J]);
+        if (LazarusPkg.Checked) and (psInstalled in LazarusPkg.PackageStates) then
         begin
           Node := FVST.AddChild(nil);
           Data := FVST.GetNodeData(Node);
-          Data^.FName := PackageFile.Name + '(' + PackageFile.InstalledFileVersion + ')';
+          Data^.FName := LazarusPkg.Name + '(' + LazarusPkg.InstalledFileVersion + ')';
           Data^.FImageIndex := 1;
         end;
       end;

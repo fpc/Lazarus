@@ -184,8 +184,8 @@ end;
 
 procedure TCreateJSONForUpdatesFrm.bCreateClick(Sender: TObject);
 var
-  UpdatePackage: TUpdatePackage;
-  UpdatePackageFiles: TUpdatePackageFiles;
+  UpdatePkg: TUpdatePackage;
+  UpdateLazPkgs: TUpdateLazPackages;
   JSON: TJSONStringType;
   Ms: TMemoryStream;
   Node: PVirtualNode;
@@ -205,10 +205,10 @@ begin
     SD.FileName := 'update_' + FPackage.Name;
   if SD.Execute then
   begin
-    UpdatePackage := TUpdatePackage.Create;
+    UpdatePkg := TUpdatePackage.Create;
     try
-      UpdatePackage.UpdatePackageData.Name := FPackage.Name;
-      UpdatePackage.UpdatePackageData.DownloadZipURL := edLinkToZip.Text;
+      UpdatePkg.UpdatePackageData.Name := FPackage.Name;
+      UpdatePkg.UpdatePackageData.DownloadZipURL := edLinkToZip.Text;
 
       Node := FVST.GetFirst;
       while Assigned(Node) do
@@ -216,16 +216,16 @@ begin
         if FVST.CheckState[Node] = csCheckedNormal then
         begin
           Data := FVST.GetNodeData(Node);
-          UpdatePackageFiles := TUpdatePackageFiles(UpdatePackage.UpdatePackageFiles.Add);
-          UpdatePackageFiles.Name := Data^.FName;
-          UpdatePackageFiles.Version := Data^.FVersion;
-          UpdatePackageFiles.ForceNotify := Data^.FForceNotify;
-          UpdatePackageFiles.InternalVersion := Data^.FInternalVersion;
+          UpdateLazPkgs := TUpdateLazPackages(UpdatePkg.UpdateLazPackages.Add);
+          UpdateLazPkgs.Name := Data^.FName;
+          UpdateLazPkgs.Version := Data^.FVersion;
+          UpdateLazPkgs.ForceNotify := Data^.FForceNotify;
+          UpdateLazPkgs.InternalVersion := Data^.FInternalVersion;
         end;
         Node := FVST.GetNext(Node);
       end;
       JSON := '';
-      if UpdatePackage.SaveToJSON(JSON) then
+      if UpdatePkg.SaveToJSON(JSON) then
       begin
         JSON := StringReplace(JSON, '\/', '/', [rfReplaceAll]);
         Ms := TMemoryStream.Create;
@@ -241,11 +241,11 @@ begin
       end
       else
       begin
-        ErrMsg := StringReplace(UpdatePackage.LastError, '"', '', [rfReplaceAll]);
+        ErrMsg := StringReplace(UpdatePkg.LastError, '"', '', [rfReplaceAll]);
         MessageDlgEx(rsCreateJSONForUpdatesFrm_Error1 + sLineBreak + '"' + ErrMsg + '"', mtError, [mbOk], Self);
       end;
     finally
-      UpdatePackage.Free;
+      UpdatePkg.Free;
     end;
   end;
   if CanClose then
@@ -340,7 +340,7 @@ var
   I, J: Integer;
   Node: PVirtualNode;
   Data: PData;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
 begin
   for I := 0 to SerializablePackages.Count - 1 do
   begin
@@ -348,17 +348,17 @@ begin
     if FPackage.Checked then
     begin
       Caption := Caption + ' "' + FPackage.DisplayName +'"';
-      for J := 0 to FPackage.PackageFiles.Count - 1 do
+      for J := 0 to FPackage.LazarusPackages.Count - 1 do
       begin
-        PackageFile := TPackageFile(FPackage.PackageFiles.Items[J]);
-        if PackageFile.Checked then
+        LazarusPkg := TLazarusPackage(FPackage.LazarusPackages.Items[J]);
+        if LazarusPkg.Checked then
         begin
           Node := FVST.AddChild(nil);
           Node^.CheckType := ctTriStateCheckBox;
           FVST.CheckState[Node] := csCheckedNormal;
           Data := FVST.GetNodeData(Node);
-          Data^.FName := PackageFile.Name;
-          Data^.FVersion := PackageFile.VersionAsString;
+          Data^.FName := LazarusPkg.Name;
+          Data^.FVersion := LazarusPkg.VersionAsString;
           Data^.FForceNotify := False;
           Data^.FInternalVersion := 1;
           Data^.FImageIndex := 1;

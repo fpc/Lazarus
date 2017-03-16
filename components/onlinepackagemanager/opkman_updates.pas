@@ -44,9 +44,9 @@ const
 
 type
 
-  { TUpdatePackageFiles }
+  { TUpdateLazPackages }
 
-  TUpdatePackageFiles = class(TCollectionItem)
+  TUpdateLazPackages = class(TCollectionItem)
   private
     FName: String;
     FVersion: String;
@@ -81,7 +81,7 @@ type
   TUpdatePackage = class(TPersistent)
   private
     FUpdatePackageData: TUpdatePackageData;
-    FUpdatePackageFiles: TCollection;
+    FUpdateLazPackages: TCollection;
     FLastError: String;
     procedure Clear;
   public
@@ -92,7 +92,7 @@ type
     property LastError: String read FLastError;
   published
     property UpdatePackageData: TUpdatePackageData read FUpdatePackageData write FUpdatePackageData;
-    property UpdatePackageFiles: TCollection read FUpdatePackageFiles write FUpdatePackageFiles;
+    property UpdateLazPackages: TCollection read FUpdateLazPackages write FUpdateLazPackages;
   end;
 
   { TUpdates }
@@ -143,15 +143,15 @@ var
   I: Integer;
 begin
   FUpdatePackageData.Clear;
-  for I := FUpdatePackageFiles.Count - 1 downto 0 do
-    FUpdatePackageFiles.Items[I].Free;
-  FUpdatePackageFiles.Clear;
+  for I := FUpdateLazPackages.Count - 1 downto 0 do
+    FUpdateLazPackages.Items[I].Free;
+  FUpdateLazPackages.Clear;
 end;
 
 constructor TUpdatePackage.Create;
 begin
   FUpdatePackageData := TUpdatePackageData.Create;
-  FUpdatePackageFiles := TCollection.Create(TUpdatePackageFiles);
+  FUpdateLazPackages := TCollection.Create(TUpdateLazPackages);
 end;
 
 destructor TUpdatePackage.Destroy;
@@ -159,9 +159,9 @@ var
   I: Integer;
 begin
   FUpdatePackageData.Free;
-  for I := FUpdatePackageFiles.Count - 1 downto 0 do
-    FUpdatePackageFiles.Items[I].Free;
-  FUpdatePackageFiles.Free;
+  for I := FUpdateLazPackages.Count - 1 downto 0 do
+    FUpdateLazPackages.Items[I].Free;
+  FUpdateLazPackages.Free;
   inherited Destroy;
 end;
 
@@ -266,13 +266,13 @@ end;
 procedure TUpdates.Load;
 var
   PackageCount: Integer;
-  PackageFileCount: Integer;
+  LazarusPkgCount: Integer;
   I, J: Integer;
   Path, SubPath: String;
   PackageName: String;
-  PackageFileName: String;
+  LazarusPkgName: String;
   Package: TPackage;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
   HasUpdate: Boolean;
 begin
   if (not Assigned(SerializablePackages)) or (SerializablePackages.Count = 0) then
@@ -291,25 +291,25 @@ begin
       Package.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
       Package.DisableInOPM := FXML.GetValue(Path + 'DisableInOPM', False);
       Package.Rating := FXML.GetValue(Path + 'Rating', 0);
-      PackageFileCount := FXML.GetValue(Path + 'Count', 0);
-      for J := 0 to PackageFileCount - 1 do
+      LazarusPkgCount := FXML.GetValue(Path + 'Count', 0);
+      for J := 0 to LazarusPkgCount - 1 do
       begin
         SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
-        PackageFileName := FXML.GetValue(SubPath + 'Name', '');
-        PackageFile := Package.FindPackageFile(PackageFileName);
-        if PackageFile <> nil then
+        LazarusPkgName := FXML.GetValue(SubPath + 'Name', '');
+        LazarusPkg := Package.FindLazarusPackage(LazarusPkgName);
+        if LazarusPkg <> nil then
         begin
-          PackageFile.UpdateVersion := FXML.GetValue(SubPath + 'UpdateVersion', '');
-          PackageFile.ForceNotify := FXML.GetValue(SubPath + 'ForceNotify', False);
-          PackageFile.InternalVersion := FXML.GetValue(SubPath + 'InternalVersion', 0);;
-          PackageFile.InternalVersionOld := FXML.GetValue(SubPath + 'InternalVersionOld', 0);
-          PackageFile.HasUpdate := (PackageFile.UpdateVersion <> '') and (PackageFile.InstalledFileVersion <> '') and
-                                   (
-                                     ((not PackageFile.ForceNotify) and (PackageFile.UpdateVersion > PackageFile.InstalledFileVersion)) or
-                                     ((PackageFile.ForceNotify) and (PackageFile.InternalVersion > PackageFile.InternalVersionOld))
-                                   );
+          LazarusPkg.UpdateVersion := FXML.GetValue(SubPath + 'UpdateVersion', '');
+          LazarusPkg.ForceNotify := FXML.GetValue(SubPath + 'ForceNotify', False);
+          LazarusPkg.InternalVersion := FXML.GetValue(SubPath + 'InternalVersion', 0);;
+          LazarusPkg.InternalVersionOld := FXML.GetValue(SubPath + 'InternalVersionOld', 0);
+          LazarusPkg.HasUpdate := (LazarusPkg.UpdateVersion <> '') and (LazarusPkg.InstalledFileVersion <> '') and
+             (
+               ((not LazarusPkg.ForceNotify) and (LazarusPkg.UpdateVersion > LazarusPkg.InstalledFileVersion)) or
+               ((LazarusPkg.ForceNotify) and (LazarusPkg.InternalVersion > LazarusPkg.InternalVersionOld))
+             );
           if not HasUpdate then
-            HasUpdate := PackageFile.HasUpdate;
+            HasUpdate := LazarusPkg.HasUpdate;
         end;
       end;
       Package.HasUpdate := HasUpdate;
@@ -323,7 +323,7 @@ var
   I, J: Integer;
   Path, SubPath: String;
   Package: TPackage;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
 begin
   if (not Assigned(SerializablePackages)) or (SerializablePackages.Count = 0) then
     Exit;
@@ -338,16 +338,16 @@ begin
     FXML.SetDeleteValue(Path + 'DownloadZipURL', Package.DownloadZipURL, '');
     FXML.SetDeleteValue(Path + 'DisableInOPM', Package.DisableInOPM, False);
     FXML.SetDeleteValue(Path + 'Rating', Package.Rating, 0);
-    FXML.SetDeleteValue(Path + 'Count', SerializablePackages.Items[I].PackageFiles.Count, 0);
-    for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
+    FXML.SetDeleteValue(Path + 'Count', SerializablePackages.Items[I].LazarusPackages.Count, 0);
+    for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
     begin
       SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
-      PackageFile := TPackageFile(SerializablePackages.Items[I].PackageFiles.Items[J]);
-      FXML.SetDeleteValue(SubPath + 'Name', PackageFile.Name, '');
-      FXML.SetDeleteValue(SubPath + 'UpdateVersion', PackageFile.UpdateVersion, '');
-      FXML.SetDeleteValue(SubPath + 'ForceNotify', PackageFile.ForceNotify, False);
-      FXML.SetDeleteValue(SubPath + 'InternalVersion', PackageFile.InternalVersion, 0);
-      FXML.SetDeleteValue(SubPath + 'InternalVersionOld', PackageFile.InternalVersionOld, 0);
+      LazarusPkg := TLazarusPackage(SerializablePackages.Items[I].LazarusPackages.Items[J]);
+      FXML.SetDeleteValue(SubPath + 'Name', LazarusPkg.Name, '');
+      FXML.SetDeleteValue(SubPath + 'UpdateVersion', LazarusPkg.UpdateVersion, '');
+      FXML.SetDeleteValue(SubPath + 'ForceNotify', LazarusPkg.ForceNotify, False);
+      FXML.SetDeleteValue(SubPath + 'InternalVersion', LazarusPkg.InternalVersion, 0);
+      FXML.SetDeleteValue(SubPath + 'InternalVersionOld', LazarusPkg.InternalVersionOld, 0);
     end;
   end;
   FXML.Flush;
@@ -357,26 +357,26 @@ procedure TUpdates.AssignPackageData(APackage: TPackage);
 var
   I: Integer;
   HasUpdate: Boolean;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
 begin
   HasUpdate := False;
   APackage.DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
   APackage.DisableInOPM := FUpdatePackage.FUpdatePackageData.DisableInOPM;
-  for I := 0 to FUpdatePackage.FUpdatePackageFiles.Count - 1 do
+  for I := 0 to FUpdatePackage.FUpdateLazPackages.Count - 1 do
   begin
-    PackageFile := APackage.FindPackageFile(TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).Name);
-    if PackageFile <> nil then
+    LazarusPkg := APackage.FindLazarusPackage(TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).Name);
+    if LazarusPkg <> nil then
     begin
-      PackageFile.UpdateVersion := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).Version;
-      PackageFile.ForceNotify := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).ForceNotify;
-      PackageFile.InternalVersion := TUpdatePackageFiles(FUpdatePackage.FUpdatePackageFiles.Items[I]).InternalVersion;
-      PackageFile.HasUpdate := (PackageFile.UpdateVersion <> '') and (PackageFile.InstalledFileVersion <> '') and
-                               (
-                                 ((not PackageFile.ForceNotify) and (PackageFile.UpdateVersion > PackageFile.InstalledFileVersion)) or
-                                 ((PackageFile.ForceNotify) and (PackageFile.InternalVersion > PackageFile.InternalVersionOld))
-                               );
+      LazarusPkg.UpdateVersion := TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).Version;
+      LazarusPkg.ForceNotify := TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).ForceNotify;
+      LazarusPkg.InternalVersion := TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).InternalVersion;
+      LazarusPkg.HasUpdate := (LazarusPkg.UpdateVersion <> '') and (LazarusPkg.InstalledFileVersion <> '') and
+         (
+           ((not LazarusPkg.ForceNotify) and (LazarusPkg.UpdateVersion > LazarusPkg.InstalledFileVersion)) or
+           ((LazarusPkg.ForceNotify) and (LazarusPkg.InternalVersion > LazarusPkg.InternalVersionOld))
+         );
       if not HasUpdate then
-        HasUpdate := PackageFile.HasUpdate;
+        HasUpdate := LazarusPkg.HasUpdate;
     end;
   end;
   APackage.HasUpdate := HasUpdate;
@@ -385,21 +385,21 @@ end;
 procedure TUpdates.ResetPackageData(APackage: TPackage);
 var
   I: Integer;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
 begin
   APackage.DownloadZipURL := '';
   APackage.DisableInOPM := False;
   APackage.HasUpdate := False;
-  for I := 0 to APackage.PackageFiles.Count - 1 do
+  for I := 0 to APackage.LazarusPackages.Count - 1 do
   begin
-    PackageFile := APackage.FindPackageFile(TPackageFile(APackage.PackageFiles.Items[I]).Name);
-    if PackageFile <> nil then
+    LazarusPkg := APackage.FindLazarusPackage(TLazarusPackage(APackage.LazarusPackages.Items[I]).Name);
+    if LazarusPkg <> nil then
     begin
-      PackageFile.HasUpdate := False;
-      PackageFile.UpdateVersion := '';
-      PackageFile.ForceNotify := False;
-      PackageFile.InternalVersion := 0;
-      PackageFile.InternalVersionOld := 0;
+      LazarusPkg.HasUpdate := False;
+      LazarusPkg.UpdateVersion := '';
+      LazarusPkg.ForceNotify := False;
+      LazarusPkg.InternalVersion := 0;
+      LazarusPkg.InternalVersionOld := 0;
     end;
   end;
 end;

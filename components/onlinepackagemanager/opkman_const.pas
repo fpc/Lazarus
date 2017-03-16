@@ -65,7 +65,7 @@ resourcestring
   //main form
   rsPackagesFound = '(%s packages found)';
   rsMainFrm_VSTHeaderColumn_PackageName = 'Packages';
-  rsMainFrm_VSTHeaderColumn_PackageFile = 'Package file (.lpk)';
+  rsMainFrm_VSTHeaderColumn_LazarusPackage = 'Lazarus Package (.lpk)';
   rsMainFrm_VSTHeaderColumn_Repository = 'Repository';
   rsMainFrm_VSTHeaderColumn_Installed = 'Installed';
   rsMainFrm_VSTHeaderColumn_Update = 'Update';

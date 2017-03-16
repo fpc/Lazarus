@@ -49,7 +49,7 @@ type
     PackageName: String;
     PackageDisplayName: String;
     Category: String;
-    PackageFileName: String;
+    LazarusPackageName: String;
     Version: String;
     InstalledVersion: String;
     UpdateVersion: String;
@@ -78,7 +78,7 @@ type
     Rating: Integer;
   end;
 
-  TFilterBy = (fbPackageName, fbPackageFileName, fbPackageCategory, fbPackageState,
+  TFilterBy = (fbPackageName, fbLazarusPackageName, fbPackageCategory, fbPackageState,
                fbVersion, fbDescription, fbAuthor, fbLazCompatibility, fbFPCCompatibility,
                fbSupportedWidgetsets, fbPackageType, fbDependecies, fbLicense);
 
@@ -296,7 +296,7 @@ var
   I, J: Integer;
   RootNode, Node, ChildNode, GrandChildNode: PVirtualNode;
   RootData, Data, ChildData, GrandChildData: PData;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
   UniqueID: Integer;
 begin
   FVST.OnExpanding := nil;
@@ -328,31 +328,31 @@ begin
        Data^.RepositoryDate := SerializablePackages.Items[I].RepositoryDate;
        FVST.IsDisabled[Node] := Data^.DisableInOPM;
        Data^.DataType := 1;
-       for J := 0 to SerializablePackages.Items[I].PackageFiles.Count - 1 do
+       for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
        begin
-         //add packagefiles(DataType = 2)
-         PackageFile := TPackageFile(SerializablePackages.Items[I].PackageFiles.Items[J]);
+         //add LazarusPackages(DataType = 2)
+         LazarusPkg := TLazarusPackage(SerializablePackages.Items[I].LazarusPackages.Items[J]);
          ChildNode := FVST.AddChild(Node);
          ChildNode^.CheckType := ctTriStateCheckBox;
          FVST.IsDisabled[ChildNode] := FVST.IsDisabled[ChildNode^.Parent];
          ChildData := FVST.GetNodeData(ChildNode);
          ChildData^.PID := I;
          ChildData^.PFID := J;
-         ChildData^.PackageFileName := PackageFile.Name;
-         ChildData^.InstalledVersion := PackageFile.InstalledFileVersion;
-         ChildData^.UpdateVersion := PackageFile.UpdateVersion;
-         ChildData^.Version := PackageFile.VersionAsString;
-         ChildData^.PackageState := PackageFile.PackageState;
-         ChildData^.HasUpdate := PackageFile.HasUpdate;
+         ChildData^.LazarusPackageName := LazarusPkg.Name;
+         ChildData^.InstalledVersion := LazarusPkg.InstalledFileVersion;
+         ChildData^.UpdateVersion := LazarusPkg.UpdateVersion;
+         ChildData^.Version := LazarusPkg.VersionAsString;
+         ChildData^.PackageState := LazarusPkg.PackageState;
+         ChildData^.HasUpdate := LazarusPkg.HasUpdate;
          ChildData^.DataType := 2;
          //add description(DataType = 3)
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          if ChildData^.InstalledVersion <> '' then
-           GrandChildData^.Description := PackageFile.InstalledFileDescription
+           GrandChildData^.Description := LazarusPkg.InstalledFileDescription
          else
-           GrandChildData^.Description := PackageFile.Description;
+           GrandChildData^.Description := LazarusPkg.Description;
          GrandChildData^.DataType := 3;
          Inc(UniqueID);
          CreateButton(UniqueID, GrandChildData);
@@ -361,40 +361,40 @@ begin
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
-         GrandChildData^.Author := PackageFile.Author;
+         GrandChildData^.Author := LazarusPkg.Author;
          GrandChildData^.DataType := 4;
          //add lazcompatibility(DataType = 5)
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
-         GrandChildData^.LazCompatibility := PackageFile.LazCompatibility;
+         GrandChildData^.LazCompatibility := LazarusPkg.LazCompatibility;
          GrandChildData^.DataType := 5;
          //add fpccompatibility(DataType = 6)
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
-         GrandChildData^.FPCCompatibility := PackageFile.FPCCompatibility;
+         GrandChildData^.FPCCompatibility := LazarusPkg.FPCCompatibility;
          GrandChildData^.DataType := 6;
          //add widgetset(DataType = 7)
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
-         GrandChildData^.SupportedWidgetSet := PackageFile.SupportedWidgetSet;
+         GrandChildData^.SupportedWidgetSet := LazarusPkg.SupportedWidgetSet;
          GrandChildData^.DataType := 7;
          //add packagetype(DataType = 8)
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
-         GrandChildData^.PackageType := PackageFile.PackageType;
+         GrandChildData^.PackageType := LazarusPkg.PackageType;
          GrandChildData^.DataType := 8;
          //add license(DataType = 9)
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
          if ChildData^.InstalledVersion <> '' then
-           GrandChildData^.License := PackageFile.InstalledFileLincese
+           GrandChildData^.License := LazarusPkg.InstalledFileLincese
          else
-           GrandChildData^.License := PackageFile.License;
+           GrandChildData^.License := LazarusPkg.License;
          GrandChildData^.DataType := 9;
          Inc(UniqueID);
          CreateButton(UniqueID, GrandChildData);
@@ -403,7 +403,7 @@ begin
          GrandChildNode := FVST.AddChild(ChildNode);
          FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
          GrandChildData := FVST.GetNodeData(GrandChildNode);
-         GrandChildData^.Dependencies := PackageFile.DependenciesAsString;
+         GrandChildData^.Dependencies := LazarusPkg.DependenciesAsString;
          GrandChildData^.DataType := 10;
        end;
        //add miscellaneous(DataType = 11)
@@ -509,11 +509,11 @@ begin
       case Data^.DataType of
         3: begin
              Text := Data^.Description;
-             FrmCaption := rsMainFrm_VSTText_Desc + ' "' + ParentData^.PackageFileName  + '"';
+             FrmCaption := rsMainFrm_VSTText_Desc + ' "' + ParentData^.LazarusPackageName  + '"';
            end;
         9: begin
              Text := Data^.License;
-             FrmCaption := rsMainFrm_VSTText_Lic  + ' "' + ParentData^.PackageFileName  + '"';
+             FrmCaption := rsMainFrm_VSTText_Lic  + ' "' + ParentData^.LazarusPackageName  + '"';
            end;
       end;
       Break;
@@ -802,11 +802,11 @@ procedure TVisualTree.FilterTree(const AFilterBy: TFilterBy; const AText:
   procedure HideShowParentNodes(const ANode: PVirtualNode; AShow: Boolean);
   var
     Level: Integer;
-    RepositoryNode, PackageNode, PackageFileNode: PVirtualNode;
+    RepositoryNode, PackageNode, LazarusPkgNode: PVirtualNode;
   begin
     RepositoryNode := nil;
     PackageNode := nil;
-    PackageFileNode := nil;
+    LazarusPkgNode := nil;
     Level := FVST.GetNodeLevel(ANode);
     case Level of
       1: begin
@@ -816,12 +816,12 @@ procedure TVisualTree.FilterTree(const AFilterBy: TFilterBy; const AText:
       2: begin
            RepositoryNode := ANode^.Parent^.Parent;
            PackageNode := ANode^.Parent;
-           PackageFileNode := ANode;
+           LazarusPkgNode := ANode;
          end;
       3: begin
            RepositoryNode := ANode^.Parent^.Parent^.Parent;
            PackageNode := ANode^.Parent^.Parent;
-           PackageFileNode := ANode^.Parent;
+           LazarusPkgNode := ANode^.Parent;
          end;
     end;
     if Level = 1 then
@@ -852,14 +852,14 @@ procedure TVisualTree.FilterTree(const AFilterBy: TFilterBy; const AText:
     begin
       if AShow then
       begin
-        FVST.IsVisible[PackageFileNode] := True;
+        FVST.IsVisible[LazarusPkgNode] := True;
         FVST.IsVisible[PackageNode] := True;
         FVST.IsVisible[RepositoryNode] := True;
       end
       else
       begin
-        FVST.IsVisible[PackageFileNode] := False;
-        HideShowParentNodes(PackageFileNode, AShow);
+        FVST.IsVisible[LazarusPkgNode] := False;
+        HideShowParentNodes(LazarusPkgNode, AShow);
       end;
     end;
   end;
@@ -905,10 +905,10 @@ begin
           if (Data^.DataType = 1) then
             FilterNode(Node, Data^.PackageName);
         end;
-      fbPackageFileName:
+      fbLazarusPackageName:
         begin
           if (Data^.DataType = 2) then
-            FilterNode(Node, Data^.PackageFileName);
+            FilterNode(Node, Data^.LazarusPackageName);
         end;
       fbPackageCategory:
         begin
@@ -1045,7 +1045,7 @@ var
   Node: PVirtualNode;
   Data: PData;
   Package: TPackage;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
 begin
   Node := FVST.GetFirst;
   while Assigned(Node) do
@@ -1064,13 +1064,13 @@ begin
     end;
     if Data^.DataType = 2 then
     begin
-      PackageFile := TPackageFile(SerializablePackages.Items[Data^.PID].PackageFiles.Items[Data^.PFID]);
-      if PackageFile <> nil then
+      LazarusPkg := TLazarusPackage(SerializablePackages.Items[Data^.PID].LazarusPackages.Items[Data^.PFID]);
+      if LazarusPkg <> nil then
       begin
         if FVST.CheckState[Node] = csCheckedNormal then
-          PackageFile.Checked := True
+          LazarusPkg.Checked := True
         else if FVST.CheckState[Node] = csUncheckedNormal then
-          PackageFile.Checked := False
+          LazarusPkg.Checked := False
       end;
     end;
     Node := FVST.GetNext(Node);
@@ -1082,7 +1082,7 @@ var
   Node: PVirtualNode;
   Data: PData;
   Package: TPackage;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
 begin
   SerializablePackages.GetPackageStates;
   Node := FVST.GetFirst;
@@ -1102,11 +1102,11 @@ begin
     end;
     if Data^.DataType = 2 then
     begin
-      PackageFile := TPackageFile(SerializablePackages.Items[Data^.PID].PackageFiles.Items[Data^.PFID]);
-      if PackageFile <> nil then
+      LazarusPkg := TLazarusPackage(SerializablePackages.Items[Data^.PID].LazarusPackages.Items[Data^.PFID]);
+      if LazarusPkg <> nil then
       begin
-        Data^.InstalledVersion := PackageFile.InstalledFileVersion;
-        Data^.PackageState := PackageFile.PackageState;
+        Data^.InstalledVersion := LazarusPkg.InstalledFileVersion;
+        Data^.PackageState := LazarusPkg.PackageState;
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
       end;
@@ -1120,7 +1120,7 @@ var
   Node: PVirtualNode;
   Data, ParentData: PData;
   Package: TPackage;
-  PackageFile: TPackageFile;
+  LazarusPkg: TLazarusPackage;
 begin
   Node := FVST.GetFirst;
   while Assigned(Node) do
@@ -1142,11 +1142,11 @@ begin
     end;
     if Data^.DataType = 2 then
     begin
-      PackageFile := TPackageFile(SerializablePackages.Items[Data^.PID].PackageFiles.Items[Data^.PFID]);
-      if PackageFile <> nil then
+      LazarusPkg := TLazarusPackage(SerializablePackages.Items[Data^.PID].LazarusPackages.Items[Data^.PFID]);
+      if LazarusPkg <> nil then
       begin
-        Data^.UpdateVersion := PackageFile.UpdateVersion;
-        Data^.HasUpdate := PackageFile.HasUpdate;
+        Data^.UpdateVersion := LazarusPkg.UpdateVersion;
+        Data^.HasUpdate := LazarusPkg.HasUpdate;
         FVST.IsDisabled[Node] := FVST.IsDisabled[Node^.Parent];
         FVST.ReinitNode(Node, False);
         FVST.RepaintNode(Node);
@@ -1160,13 +1160,13 @@ begin
       begin
         case Data^.DataType of
           3: if ParentData^.InstalledVersion <> '' then
-               Data^.Description := PackageFile.InstalledFileDescription
+               Data^.Description := LazarusPkg.InstalledFileDescription
              else
-               Data^.Description := PackageFile.Description;
+               Data^.Description := LazarusPkg.Description;
           9: if ParentData^.InstalledVersion <> '' then
-               Data^.License := PackageFile.InstalledFileLincese
+               Data^.License := LazarusPkg.InstalledFileLincese
              else
-               Data^.License := PackageFile.License;
+               Data^.License := LazarusPkg.License;
         end;
         if Assigned(Data^.Button) then
           Data^.Button.Enabled := not FVST.IsDisabled[Node];
@@ -1235,8 +1235,8 @@ var
   Data, DataSearch: PData;
   Msg: String;
   PackageList: TObjectList;
-  PackageFileName: String;
-  DependencyPackage: TPackageFile;
+  PkgFileName: String;
+  DependencyPkg: TLazarusPackage;
   I: Integer;
 begin
   Result := mrNone;
@@ -1250,10 +1250,10 @@ begin
       begin
         PackageList := TObjectList.Create(True);
         try
-          SerializablePackages.GetPackageDependencies(Data^.PackageFileName, PackageList, True, True);
+          SerializablePackages.GetPackageDependencies(Data^.LazarusPackageName, PackageList, True, True);
           for I := 0 to PackageList.Count - 1 do
           begin
-            PackageFileName := TPackageDependency(PackageList.Items[I]).PackageFileName + '.lpk';
+            PkgFileName := TPackageDependency(PackageList.Items[I]).PkgFileName + '.lpk';
             NodeSearch := VST.GetFirst;
             while Assigned(NodeSearch) do
             begin
@@ -1262,15 +1262,15 @@ begin
                 DataSearch := FVST.GetNodeData(NodeSearch);
                 if DataSearch^.DataType = 2 then
                 begin
-                  DependencyPackage := TPackageFile(SerializablePackages.Items[DataSearch^.PID].PackageFiles.Items[DataSearch^.PFID]);
+                  DependencyPkg := TLazarusPackage(SerializablePackages.Items[DataSearch^.PID].LazarusPackages.Items[DataSearch^.PFID]);
                   if (FVST.CheckState[NodeSearch] <> csCheckedNormal) and
-                       (UpperCase(DataSearch^.PackageFileName) = UpperCase(PackageFileName)) and
-                         ((SerializablePackages.IsDependencyOk(TPackageDependency(PackageList.Items[I]), DependencyPackage)) and
-                           ((not (DependencyPackage.PackageState = psInstalled)) or ((DependencyPackage.PackageState = psInstalled) and (not (SerializablePackages.IsInstalledVersionOk(TPackageDependency(PackageList.Items[I]), DataSearch^.InstalledVersion)))))) then
+                       (UpperCase(DataSearch^.LazarusPackageName) = UpperCase(PkgFileName)) and
+                         ((SerializablePackages.IsDependencyOk(TPackageDependency(PackageList.Items[I]), DependencyPkg)) and
+                           ((not (DependencyPkg.PackageState = psInstalled)) or ((DependencyPkg.PackageState = psInstalled) and (not (SerializablePackages.IsInstalledVersionOk(TPackageDependency(PackageList.Items[I]), DataSearch^.InstalledVersion)))))) then
                   begin
                     if (Result = mrNone) or (Result = mrYes) then
                     begin
-                      Msg := Format(rsMainFrm_rsPackageDependency0, [Data^.PackageFileName, DataSearch^.PackageFileName]);
+                      Msg := Format(rsMainFrm_rsPackageDependency0, [Data^.LazarusPackageName, DataSearch^.LazarusPackageName]);
                       Result := MessageDlgEx(Msg, mtConfirmation, [mbYes, mbYesToAll, mbNo, mbNoToAll, mbCancel], TForm(FVST.Parent.Parent));
                       if Result in [mrNo, mrNoToAll] then
                         MessageDlgEx(rsMainFrm_rsPackageDependency1, mtInformation, [mbOk], TForm(FVST.Parent.Parent));
@@ -1333,7 +1333,7 @@ begin
          else if (Data1^.DataType > Data2^.DataType) then
            Result := 1
          else if (Data1^.DataType = 2) and (Data1^.DataType = 2) then
-           Result := CompareText(Data1^.PackageFileName, Data2^.PackageFileName);
+           Result := CompareText(Data1^.LazarusPackageName, Data2^.LazarusPackageName);
        end;
     1: if (Data1^.DataType = 1) and (Data1^.DataType = 1) then
          Result := Data2^.InstallState - Data1^.InstallState;
@@ -1409,7 +1409,7 @@ begin
              CellText := Data^.PackageName
            else
              CellText := Data^.PackageDisplayName;
-        2: CellText := Data^.PackageFileName;
+        2: CellText := Data^.LazarusPackageName;
         3: CellText := rsMainFrm_VSTText_Description;
         4: CellText := rsMainFrm_VSTText_Author;
         5: CellText := rsMainFrm_VSTText_LazCompatibility;
