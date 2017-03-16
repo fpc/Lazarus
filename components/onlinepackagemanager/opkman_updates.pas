@@ -303,11 +303,7 @@ begin
           LazarusPkg.ForceNotify := FXML.GetValue(SubPath + 'ForceNotify', False);
           LazarusPkg.InternalVersion := FXML.GetValue(SubPath + 'InternalVersion', 0);;
           LazarusPkg.InternalVersionOld := FXML.GetValue(SubPath + 'InternalVersionOld', 0);
-          LazarusPkg.HasUpdate := (LazarusPkg.UpdateVersion <> '') and (LazarusPkg.InstalledFileVersion <> '') and
-             (
-               ((not LazarusPkg.ForceNotify) and (LazarusPkg.UpdateVersion > LazarusPkg.InstalledFileVersion)) or
-               ((LazarusPkg.ForceNotify) and (LazarusPkg.InternalVersion > LazarusPkg.InternalVersionOld))
-             );
+          LazarusPkg.RefreshHasUpdate;
           if not HasUpdate then
             HasUpdate := LazarusPkg.HasUpdate;
         end;
@@ -358,23 +354,21 @@ var
   I: Integer;
   HasUpdate: Boolean;
   LazarusPkg: TLazarusPackage;
+  UpdLazPkgs: TUpdateLazPackages;
 begin
   HasUpdate := False;
   AMetaPackage.DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
   AMetaPackage.DisableInOPM := FUpdatePackage.FUpdatePackageData.DisableInOPM;
   for I := 0 to FUpdatePackage.FUpdateLazPackages.Count - 1 do
   begin
-    LazarusPkg := AMetaPackage.FindLazarusPackage(TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).Name);
+    UpdLazPkgs := TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]);
+    LazarusPkg := AMetaPackage.FindLazarusPackage(UpdLazPkgs.Name);
     if LazarusPkg <> nil then
     begin
-      LazarusPkg.UpdateVersion := TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).Version;
-      LazarusPkg.ForceNotify := TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).ForceNotify;
-      LazarusPkg.InternalVersion := TUpdateLazPackages(FUpdatePackage.FUpdateLazPackages.Items[I]).InternalVersion;
-      LazarusPkg.HasUpdate := (LazarusPkg.UpdateVersion <> '') and (LazarusPkg.InstalledFileVersion <> '') and
-         (
-           ((not LazarusPkg.ForceNotify) and (LazarusPkg.UpdateVersion > LazarusPkg.InstalledFileVersion)) or
-           ((LazarusPkg.ForceNotify) and (LazarusPkg.InternalVersion > LazarusPkg.InternalVersionOld))
-         );
+      LazarusPkg.UpdateVersion := UpdLazPkgs.Version;
+      LazarusPkg.ForceNotify := UpdLazPkgs.ForceNotify;
+      LazarusPkg.InternalVersion := UpdLazPkgs.InternalVersion;
+      LazarusPkg.RefreshHasUpdate;
       if not HasUpdate then
         HasUpdate := LazarusPkg.HasUpdate;
     end;

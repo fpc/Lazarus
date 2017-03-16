@@ -148,6 +148,7 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
   public
+    function RefreshHasUpdate: Boolean;
     property Version: TPackageVersion read FVersion write FVersion;
     property Dependencies: TPackageDependencies read FDependencies write FDependencies;
     property PackageStates: TPackageStates read FPackageStates write FPackageStates;
@@ -491,6 +492,15 @@ begin
   if Assigned(FDependencies) then
     FreeAndNil(FDependencies);
   inherited Destroy;
+end;
+
+function TLazarusPackage.RefreshHasUpdate: Boolean;
+begin
+  FHasUpdate := (FUpdateVersion <> '') and (FInstalledFileVersion <> '') and
+     (
+       ((not FForceNotify) and (FUpdateVersion > FInstalledFileVersion)) or
+       ((FForceNotify) and (FInternalVersion > FInternalVersionOld))
+     );
 end;
 
 { TMetaPackage }
