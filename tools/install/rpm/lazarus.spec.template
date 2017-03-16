@@ -95,7 +95,7 @@ update-desktop-database &> /dev/null ||:
 %{_mandir}/*/*
 
 %changelog
-* Mon Jun 21 2012 Mattias Gaertner <mattias@freepascal.org> 1.0-0
+* Thu Jun 21 2012 Mattias Gaertner <mattias@freepascal.org> 1.0-0
 - 128x128 icon, chmhelp
 * Sat Sep 9 2006 Mattias Gaertner <mattias@freepascal.org> 0.9.18-0
 - Initial build.
