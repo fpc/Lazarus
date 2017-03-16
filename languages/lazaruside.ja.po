@@ -15784,12 +15784,20 @@ msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "グローバル"
 
+#: lazarusidestrconsts.lispldonline
+msgid "Online"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "パッケージリンク"
 
 #: lazarusidestrconsts.lispldshowgloballinksin
 msgid "Show global links in "
+msgstr ""
+
+#: lazarusidestrconsts.lispldshowonlinelinks
+msgid "Show online links"
 msgstr ""
 
 #: lazarusidestrconsts.lispldshowuserlinksin

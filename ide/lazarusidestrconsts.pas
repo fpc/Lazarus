@@ -310,7 +310,7 @@ resourcestring
   lisCannotOpenForm = 'Cannot open form "%s".';
   lisConvert = 'Convert';
   lisPLDShowGlobalLinksIn = 'Show global links in ';
-  lisPLDShowOnlineLinks = 'Show online links ';
+  lisPLDShowOnlineLinks = 'Show online links';
   lisPLDShowUserLinksIn = 'Show user links in ';
   lrsPLDLpkFileValid = 'lpk file valid (%s)';
   lrsPLDLpkFileInvalid = 'lpk file invalid (%s)';

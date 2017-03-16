@@ -15501,6 +15501,10 @@ msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Celkový"
 
+#: lazarusidestrconsts.lispldonline
+msgid "Online"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Odkazy balíčku"
@@ -15508,6 +15512,10 @@ msgstr "Odkazy balíčku"
 #: lazarusidestrconsts.lispldshowgloballinksin
 msgid "Show global links in "
 msgstr "Ukázat souhrnné odkaz v "
+
+#: lazarusidestrconsts.lispldshowonlinelinks
+msgid "Show online links"
+msgstr ""
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "

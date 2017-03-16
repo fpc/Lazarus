@@ -16017,12 +16017,20 @@ msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "全局"
 
+#: lazarusidestrconsts.lispldonline
+msgid "Online"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "包链接"
 
 #: lazarusidestrconsts.lispldshowgloballinksin
 msgid "Show global links in "
+msgstr ""
+
+#: lazarusidestrconsts.lispldshowonlinelinks
+msgid "Show online links"
 msgstr ""
 
 #: lazarusidestrconsts.lispldshowuserlinksin

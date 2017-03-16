@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-14 01:25+0300\n"
+"PO-Revision-Date: 2017-03-17 01:07+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -15402,6 +15402,10 @@ msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Глобальные"
 
+#: lazarusidestrconsts.lispldonline
+msgid "Online"
+msgstr "Сетевые"
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Ссылки на пакеты"
@@ -15409,6 +15413,10 @@ msgstr "Ссылки на пакеты"
 #: lazarusidestrconsts.lispldshowgloballinksin
 msgid "Show global links in "
 msgstr "Показывать глобальные ссылки в "
+
+#: lazarusidestrconsts.lispldshowonlinelinks
+msgid "Show online links"
+msgstr "Показывать сетевые ссылки"
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
