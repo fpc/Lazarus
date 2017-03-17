@@ -4521,7 +4521,7 @@ end;
 function TCustomTreeView.GetRealIndent: Integer;
 begin
   if FIndent=0 then
-    Result := MulDiv(FIndent, Font.PixelsPerInch, 96)
+    Result := MulDiv(15, Font.PixelsPerInch, 96)
   else
     Result := FIndent;
 end;
