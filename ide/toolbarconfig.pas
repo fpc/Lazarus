@@ -49,6 +49,7 @@ type
 
   TToolBarConfig = class(TForm)
     btnAdd: TSpeedButton;
+    btnAddDivider: TSpeedButton;
     btnCancel: TButton;
     btnClear: TSpeedButton;
     btnHelp: TBitBtn;
@@ -59,7 +60,7 @@ type
     FilterEdit: TTreeFilterEdit;
     lblMenuTree: TLabel;
     lblToolbar: TLabel;
-    lbSelect: TLabel;
+    lblSelect: TLabel;
     lvToolbar: TListView;
     miAll: TMenuItem;
     miCustom: TMenuItem;
@@ -67,7 +68,6 @@ type
     miDesign: TMenuItem;
     miHTML: TMenuItem;
     pnlButtons: TButtonPanel;
-    sbAddDivider: TSpeedButton;
     Splitter1: TSplitter;
     TV: TTreeView;
     procedure btnClearClick(Sender: TObject);
@@ -189,13 +189,13 @@ begin
   btnMoveUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   btnMoveDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   btnClear.LoadGlyphFromResourceName(HINSTANCE,'menu_close');
-  sbAddDivider.LoadGlyphFromResourceName(HINSTANCE, 'menu_divider16');
+  btnAddDivider.LoadGlyphFromResourceName(HINSTANCE, 'menu_divider16');
 
   btnAdd.Hint      := lisCoolBarAddSelected;
   btnRemove.Hint   := lisCoolBarRemoveSelected;
   btnMoveUp.Hint   := lisCoolBarMoveSelectedUp;
   btnMoveDown.Hint := lisCoolBarMoveSelectedDown;
-  sbAddDivider.Hint:= lisCoolBarAddDivider;
+  btnAddDivider.Hint:= lisCoolBarAddDivider;
   btnClear.Hint    := lisCoolBarClearSelection;
 
   TV.Images := IDEImages.Images_16;
@@ -203,7 +203,7 @@ begin
   // default image to be used when none is available
   defImageIndex := IDEImages.LoadImage(16, 'execute');
   // Image for divider
-  divImageIndex := IDEImages.Images_16.Add(sbAddDivider.Glyph,nil);
+  divImageIndex := IDEImages.Images_16.Add(btnAddDivider.Glyph,nil);
 
   MainList := TStringList.Create;
   MainList.OwnsObjects:= True; // it should be the default, but just to make sure...
@@ -421,7 +421,7 @@ procedure TToolBarConfig.lvToolbarSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
   lbToolbarSelectionChange(Sender);
-  lbSelect.Caption:= IntToStr(lvToolbar.ItemIndex)+ ' / ' + IntToStr(lvToolbar.Items.Count);
+  lblSelect.Caption:= IntToStr(lvToolbar.ItemIndex)+ ' / ' + IntToStr(lvToolbar.Items.Count);
   btnClear.Enabled:= lvToolbar.Selected <> nil;
   btnRemove.Enabled:= btnClear.Enabled;
 end;
