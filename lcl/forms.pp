@@ -1801,6 +1801,7 @@ function GetFirstParentForm(Control:TControl): TCustomForm;
 function ValidParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
 function GetDesignerForm(APersistent: TPersistent): TCustomForm;
 function FindRootDesigner(APersistent: TPersistent): TIDesigner;
+function GetParentDesignControl(Control: TControl): TCustomDesignControl;
 function NeedParentDesignControl(Control: TControl): TCustomDesignControl;
 
 function IsAccel(VK: word; const Str: string): Boolean;
@@ -2006,7 +2007,7 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-function NeedParentDesignControl(Control: TControl): TCustomDesignControl;
+function GetParentDesignControl(Control: TControl): TCustomDesignControl;
 var
   SControl: TControl;
 begin
@@ -2017,7 +2018,15 @@ begin
   if Control is TCustomDesignControl then
     Result := TCustomDesignControl(Control)
   else
-    raise EInvalidOperation.CreateFmt(rsControlHasNoParentFormOrFrame, [SControl.Name]);
+    Result := nil;
+end;
+
+//------------------------------------------------------------------------------
+function NeedParentDesignControl(Control: TControl): TCustomDesignControl;
+begin
+  Result := GetParentDesignControl(Control);
+  if Result=nil then
+    raise EInvalidOperation.CreateFmt(rsControlHasNoParentFormOrFrame, [Control.Name]);
 end;
 
 //------------------------------------------------------------------------------
