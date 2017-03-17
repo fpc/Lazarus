@@ -1672,15 +1672,17 @@ function TTreeNode.DisplayExpandSignLeft: integer;
 var
   TV: TCustomTreeView;
   l: LongInt;
+  RealIndent: Integer;
 begin
   Result := 0;
   TV := TreeView;
+  RealIndent := TV.GetRealIndent;
   if TV = nil then Exit;
   l := Level;
   if not (tvoShowRoot in TV.Options) then
-    inc(Result, TV.Indent * (l - 1) + (TV.Indent shr 2) + TV.BorderWidth - TV.FScrolledLeft)
+    inc(Result, RealIndent * (l - 1) + (RealIndent shr 2) + TV.BorderWidth - TV.FScrolledLeft)
   else
-    inc(Result, TV.Indent * l + TV.BorderWidth - TV.FScrolledLeft);
+    inc(Result, RealIndent * l + TV.BorderWidth - TV.FScrolledLeft);
 end;
 
 function TTreeNode.DisplayExpandSignRect: TRect;
@@ -1690,7 +1692,7 @@ begin
   begin
     Result.Left := DisplayExpandSignLeft;
     Result.Top := Top;
-    Result.Right := Result.Left + TreeView.Indent;
+    Result.Right := Result.Left + TreeView.GetRealIndent;
     Result.Bottom := Top + Height;
   end;
 end;
@@ -1699,7 +1701,7 @@ function TTreeNode.DisplayExpandSignRight: integer;
 begin
   Result := DisplayExpandSignLeft;
   if TreeView <> nil then
-    inc(Result, TreeView.Indent);
+    inc(Result, TreeView.GetRealIndent);
 end;
 
 function TTreeNode.DisplayIconLeft: integer;
@@ -1741,7 +1743,7 @@ begin
   Result := DisplayTextLeft;
   TV := TreeView;
   if TV <> nil then
-    Inc(Result, TV.Canvas.TextWidth(Text) + TV.Indent div 2);
+    Inc(Result, TV.Canvas.TextWidth(Text) + TV.GetRealIndent div 2);
 end;
 
 function TTreeNode.AlphaSort: Boolean;
@@ -3219,7 +3221,7 @@ begin
   Items.KeepCollapsedNodes:=KeepCollapsedNodes;
   FScrollBars:=ssBoth;
   FDragImage := TDragImageList.CreateSize(32, 32);
-  FIndent:=15;
+  FIndent:=0;
   FChangeTimer := TTimer.Create(Self);
   FChangeTimer.Enabled := False;
   FChangeTimer.Interval := 1;
@@ -3288,6 +3290,26 @@ begin
     TControlCanvas(Canvas).FreeHandle;
   FLastHorzScrollInfo.cbSize := 0;
   FLastVertScrollInfo.cbSize := 0;
+end;
+
+procedure TCustomTreeView.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double
+  );
+begin
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion);
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    DisableAutoSizing;
+    try
+      if not (tvoAutoItemHeight in Options) then
+        DefaultItemHeight := Round(DefaultItemHeight*AYProportion);
+      FIndent := Round(FIndent*AXProportion);
+      FExpandSignSize := Round(FExpandSignSize*AXProportion);
+    finally
+      EnableAutoSizing;
+    end;
+  end;
 end;
 
 procedure TCustomTreeView.DoCreateNodeClass(var NewNodeClass: TTreeNodeClass);
@@ -3624,7 +3646,7 @@ begin
     inc(Cnt);
     if (Cnt < LargeItemCount) then
     begin
-      i := Node.DisplayTextRight + ScrolledLeft + Indent div 2;
+      i := Node.DisplayTextRight + ScrolledLeft + GetRealIndent div 2;
     end else
     begin
       // computing DisplayTextRight is too expensive when the tree
@@ -4496,6 +4518,14 @@ begin
     Result := DefaultTreeNodeExpandSignSize;
 end;
 
+function TCustomTreeView.GetRealIndent: Integer;
+begin
+  if FIndent=0 then
+    Result := MulDiv(FIndent, Font.PixelsPerInch, 96)
+  else
+    Result := FIndent;
+end;
+
 function TCustomTreeView.GetRightClickSelect: boolean;
 begin
   Result:=(tvoRightClickSelect in FOptions);
@@ -4746,7 +4776,7 @@ end;
 procedure TCustomTreeView.DoPaintNode(Node: TTreeNode);
 var
   NodeRect: TRect;
-  VertMid, VertDelta, RealExpandSignSize: integer;
+  VertMid, VertDelta, RealExpandSignSize, RealIndent: integer;
   NodeSelected, HasExpandSign: boolean;
 
   function InvertColor(AColor: TColor): TColor;
@@ -4816,14 +4846,14 @@ var
       Result := DrawTreeLines(CurNode.Parent);
       if ShowLines then
       begin
-        CurMid := Result + (Indent shr 1);
+        CurMid := Result + (RealIndent shr 1);
         if CurNode = Node then
         begin
           // draw horizontal line
           if HasExpandSign then
-            DrawHorzLine(VertMid, CurMid + RealExpandSignSize div 2, Result + Indent)
+            DrawHorzLine(VertMid, CurMid + RealExpandSignSize div 2, Result + RealIndent)
           else
-            DrawHorzLine(VertMid, CurMid, Result + Indent);
+            DrawHorzLine(VertMid, CurMid, Result + RealIndent);
         end;
 
         if (CurNode.GetNextVisibleSibling <> nil) then
@@ -4865,12 +4895,12 @@ var
             DrawVertLine(CurMid, NodeRect.Top, VertMid);
         end;
       end;
-      inc(Result, Indent);
+      inc(Result, RealIndent);
     end else
     begin
       Result := BorderWidth - FScrolledLeft;
       if CurNode <> nil then // indent first level of tree with ShowRoot = false a bit
-        inc(Result, Indent shr 2);
+        inc(Result, RealIndent shr 2);
     end;
   end;
 
@@ -4980,10 +5010,10 @@ var
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
           // Pen.Style:=TreeLinePenStyle; ToDo: not yet implemented in all widgetsets
-          x:=Node.DisplayExpandSignRight+Indent div 2;
+          x:=Node.DisplayExpandSignRight+RealIndent div 2;
           MoveTo(x,NodeRect.Bottom-3);
           LineTo(x,NodeRect.Bottom-2);
-          x:=Node.DisplayExpandSignRight+Indent;
+          x:=Node.DisplayExpandSignRight+RealIndent;
           LineTo(x,NodeRect.Bottom-2);
           Pen.Style:=psSolid;
 
@@ -5003,7 +5033,7 @@ var
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
           //Pen.Style:=TreeLinePenStyle; ToDo: not yet implemented in all widgetsets
-          x:=Node.DisplayExpandSignLeft+Indent div 2;
+          x:=Node.DisplayExpandSignLeft+RealIndent div 2;
           MoveTo(x,NodeRect.Top+1);
           x:=Node.DisplayExpandSignRight;
           LineTo(x,NodeRect.Top+1);
@@ -5025,7 +5055,7 @@ var
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
           //Pen.Style:=TreeLinePenStyle; ToDo: not yet implemented in all widgetsets
-          x:=Node.DisplayExpandSignLeft+Indent div 2;
+          x:=Node.DisplayExpandSignLeft+RealIndent div 2;
           MoveTo(x,NodeRect.Bottom-3);
           LineTo(x,NodeRect.Bottom-2);
           x:=Node.DisplayExpandSignRight;
@@ -5125,6 +5155,7 @@ var
   OverlayIndex: Integer;
 begin
   RealExpandSignSize := GetRealExpandSignSize;
+  RealIndent := GetRealIndent;
   NodeRect := Node.DisplayRect(False);
   if (NodeRect.Bottom < 0) or (NodeRect.Top >= ClientHeight) then
     Exit;
@@ -5161,7 +5192,7 @@ begin
 
     // draw expand sign
     if HasExpandSign then
-      DrawExpandSign(x - Indent + (Indent shr 1), VertMid, Node.Expanded);
+      DrawExpandSign(x - RealIndent + (RealIndent shr 1), VertMid, Node.Expanded);
 
     // draw state icon
     if (StateImages <> nil) then
@@ -5222,7 +5253,7 @@ begin
     begin
       CurTextRect := NodeRect;
       CurTextRect.Left := x;
-      CurTextRect.Right := x + TextWidth(Node.Text) + Indent div 2;
+      CurTextRect.Right := x + TextWidth(Node.Text) + RealIndent div 2;
       DrawNodeText(NodeSelected, CurTextRect, Node.Text);
     end;
 

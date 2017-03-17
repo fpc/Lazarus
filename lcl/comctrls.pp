@@ -3315,7 +3315,6 @@ type
     function GetKeepCollapsedNodes: boolean;
     function GetMultiSelect: Boolean;
     function GetReadOnly: boolean;
-    function GetRealExpandSignSize: integer;
     function GetRightClickSelect: boolean;
     function GetRowSelect: boolean;
     function GetSelection: TTreeNode;
@@ -3399,6 +3398,8 @@ type
       Stage: TCustomDrawStage): Boolean; virtual;
     function CustomDrawItem(Node: TTreeNode; State: TCustomDrawState;
       Stage: TCustomDrawStage; var PaintImages: Boolean): Boolean; virtual;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
     function GetDragImages: TDragImageList; override;
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
@@ -3429,6 +3430,8 @@ type
     procedure EndEditing(Cancel: boolean = false); virtual;
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
     procedure Expand(Node: TTreeNode); virtual;
+    function GetRealExpandSignSize: integer;
+    function GetRealIndent: Integer;
     procedure GetImageIndex(Node: TTreeNode); virtual;
     procedure GetSelectedIndex(Node: TTreeNode); virtual;
     procedure InitializeWnd; override;
@@ -3469,7 +3472,7 @@ type
     property HideSelection: Boolean
       read GetHideSelection write SetHideSelection default True;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
-    property Indent: Integer read FIndent write SetIndent default 15;
+    property Indent: Integer read FIndent write SetIndent default 0;
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnAddition: TTVExpandedEvent read FOnAddition write FOnAddition;
     property OnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent
