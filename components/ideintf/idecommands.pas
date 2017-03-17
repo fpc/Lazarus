@@ -1634,6 +1634,8 @@ function TIDESpecialCommand.GetCaption: string;
 begin
   if FCaption<>'' then
     Result:=FCaption
+  else if (FCommand<>nil) and (FCommand.LocalizedName<>'') then
+    Result:=FCommand.LocalizedName
   else
     Result:=FName;
 end;
