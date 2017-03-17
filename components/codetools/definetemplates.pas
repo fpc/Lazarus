@@ -774,9 +774,11 @@ type
     FullVersion: string; // Version.Release.Patch
     ConfigFiles: TFPCConfigFileStateList;
     UnitPaths: TStrings;
+    IncludePaths: TStrings;
     Defines: TStringToStringTree; // macro to value
     Undefines: TStringToStringTree; // macro
     Units: TStringToStringTree; // unit name to file name
+    Includes: TStringToStringTree; // inc name to file name
     ErrorMsg: string;
     ErrorTranslatedMsg: string;
     Caches: TFPCTargetConfigCaches;
@@ -1052,16 +1054,20 @@ function ParseFPCVerbose(List: TStrings; // fpc -va output
                          out ConfigFiles: TStrings; // prefix '-' for file not found, '+' for found and read
                          out RealCompilerFilename: string; // what compiler is used by fpc
                          out UnitPaths: TStrings; // unit search paths
+                         out IncludePaths: TStrings; // inc search paths
                          out Defines, Undefines: TStringToStringTree): boolean;
 function RunFPCVerbose(const CompilerFilename, TestFilename: string;
                        out ConfigFiles: TStrings;
                        out RealCompilerFilename: string;
                        out UnitPaths: TStrings;
+                       out IncludePaths: TStrings;
                        out Defines, Undefines: TStringToStringTree;
                        const Options: string = ''): boolean;
-function GatherUnitsInSearchPaths(SearchPaths: TStrings;
+procedure GatherUnitsInSearchPaths(SearchUnitPaths, SearchIncludePaths: TStrings;
                     const OnProgress: TDefinePoolProgress;
-                    CheckFPMkInst: boolean = false): TStringToStringTree; // unit names to full file name
+                    out Units: TStringToStringTree;
+                    out Includes: TStringToStringTree;
+                    CheckFPMkInst: boolean = false); // unit names to full file name
 function GatherUnitSourcesInDirectory(Directory: string;
                     MaxLevel: integer = 1): TStringToStringTree; // unit names to full file name
 procedure AdjustFPCSrcRulesForPPUPaths(Units: TStringToStringTree;
@@ -1555,7 +1561,8 @@ end;
 
 function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
   ConfigFiles: TStrings; out RealCompilerFilename: string; out
-  UnitPaths: TStrings; out Defines, Undefines: TStringToStringTree): boolean;
+  UnitPaths: TStrings; out IncludePaths: TStrings; out Defines,
+  Undefines: TStringToStringTree): boolean;
 
   procedure UndefineSymbol(const MacroName: string);
   begin
@@ -1678,6 +1685,16 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         DebugLn('Using unit path: "',NewPath,'"');
         {$ENDIF}
         UnitPaths.Add(NewPath);
+      end else if (StrLComp(@UpLine[CurPos], 'USING INCLUDE PATH: ', 20) = 0) then begin
+        Inc(CurPos, 20);
+        NewPath:=GetForcedPathDelims(copy(Line,CurPos,len));
+        if not FilenameIsAbsolute(NewPath) then
+          NewPath:=ExpFile(NewPath);
+        NewPath:=ChompPathDelim(TrimFilename(NewPath));
+        {$IFDEF VerboseFPCSrcScan}
+        DebugLn('Using include path: "',NewPath,'"');
+        {$ENDIF}
+        IncludePaths.Add(NewPath);
       end;
     end;
   end;
@@ -1689,6 +1706,7 @@ begin
   ConfigFiles:=TStringList.Create;
   RealCompilerFilename:='';
   UnitPaths:=TStringList.Create;
+  IncludePaths:=TStringList.Create;
   Defines:=TStringToStringTree.Create(false);
   Undefines:=TStringToStringTree.Create(false);
   try
@@ -1699,6 +1717,7 @@ begin
     if not Result then begin
       FreeAndNil(ConfigFiles);
       FreeAndNil(UnitPaths);
+      FreeAndNil(IncludePaths);
       FreeAndNil(Undefines);
       FreeAndNil(Defines);
     end;
@@ -1707,8 +1726,8 @@ end;
 
 function RunFPCVerbose(const CompilerFilename, TestFilename: string;
   out ConfigFiles: TStrings; out RealCompilerFilename: string;
-  out UnitPaths: TStrings; out Defines, Undefines: TStringToStringTree;
-  const Options: string): boolean;
+  out UnitPaths: TStrings; out IncludePaths: TStrings;
+  out Defines, Undefines: TStringToStringTree; const Options: string): boolean;
 var
   Params: String;
   Filename: String;
@@ -1720,6 +1739,7 @@ begin
   ConfigFiles:=nil;
   RealCompilerFilename:='';
   UnitPaths:=nil;
+  IncludePaths:=nil;
   Defines:=nil;
   Undefines:=nil;
 
@@ -1747,20 +1767,20 @@ begin
       exit;
     end;
     Result:=ParseFPCVerbose(List,WorkDir,ConfigFiles,RealCompilerFilename,
-                            UnitPaths,Defines,Undefines);
+                            UnitPaths,IncludePaths,Defines,Undefines);
   finally
     List.Free;
     DeleteFileUTF8(TestFilename);
   end;
 end;
 
-function GatherUnitsInSearchPaths(SearchPaths: TStrings;
-  const OnProgress: TDefinePoolProgress; CheckFPMkInst: boolean
-  ): TStringToStringTree;
+procedure GatherUnitsInSearchPaths(SearchUnitPaths, SearchIncludePaths: TStrings;
+  const OnProgress: TDefinePoolProgress; out Units: TStringToStringTree;
+  out Includes: TStringToStringTree; CheckFPMkInst: boolean);
 { returns a stringtree,
   where name is unitname and value is the full file name
 
-  SearchPaths are searched from last to start
+  SearchUnitsPaths are searched from last to start
   first found wins
   pas, pp, p replaces ppu
 
@@ -1789,57 +1809,91 @@ var
   ShortFilename: String;
   Filename: String;
   Ext: String;
-  Unit_Name, PkgName, FPMFilename, FPMSourcePath, Line, SrcFilename: String;
+  File_Name, PkgName, FPMFilename, FPMSourcePath, Line, SrcFilename: String;
   AVLNode: TAVLTreeNode;
   S2SItem: PStringToStringTreeItem;
   FPMToUnitTree: TStringToPointerTree;// pkgname to TStringToStringTree (unitname to source filename)
   sl: TStringListUTF8;
   PkgUnitToFilename: TStringToStringTree;
 begin
-  Result:=TStringToStringTree.Create(false);
+  // units sources
+  Units:=TStringToStringTree.Create(false);
   FileCount:=0;
   Abort:=false;
-  for i:=SearchPaths.Count-1 downto 0 do begin
-    Directory:=TrimAndExpandDirectory(SearchPaths[i]);
-    if (Directory='') then continue;
-    if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
-      repeat
-        inc(FileCount);
-        if (FileCount mod 100=0) and Assigned(OnProgress) then begin
-          OnProgress(nil, 0, -1, Format(ctsScannedFiles, [IntToStr(FileCount)]
-            ), Abort);
-          if Abort then break;
-        end;
-        ShortFilename:=FileInfo.Name;
-        if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
-          continue;
-        //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
-        Filename:=Directory+ShortFilename;
-        Ext:=LowerCase(ExtractFileExt(ShortFilename));
-        if (Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu') then begin
-          Unit_Name:=ExtractFileNameOnly(Filename);
-          if (not Result.Contains(Unit_Name))
-          or ((Ext<>'.ppu') and (CompareFileExt(Result[Unit_Name],'ppu',false)=0))
-          then
-            Result[Unit_Name]:=Filename;
-        end;
-      until FindNextUTF8(FileInfo)<>0;
+  if Assigned(SearchUnitPaths) then
+    for i:=SearchUnitPaths.Count-1 downto 0 do begin
+      Directory:=TrimAndExpandDirectory(SearchUnitPaths[i]);
+      if (Directory='') then continue;
+      if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
+        repeat
+          inc(FileCount);
+          if (FileCount mod 100=0) and Assigned(OnProgress) then begin
+            OnProgress(nil, 0, -1, Format(ctsScannedFiles, [IntToStr(FileCount)]
+              ), Abort);
+            if Abort then break;
+          end;
+          ShortFilename:=FileInfo.Name;
+          if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
+            continue;
+          //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
+          Filename:=Directory+ShortFilename;
+          Ext:=LowerCase(ExtractFileExt(ShortFilename));
+          if (Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu') then begin
+            File_Name:=ExtractFileNameOnly(Filename);
+            if (not Units.Contains(File_Name))
+            or ((Ext<>'.ppu') and (CompareFileExt(Units[File_Name],'ppu',false)=0))
+            then
+              Units[File_Name]:=Filename;
+          end;
+        until FindNextUTF8(FileInfo)<>0;
+      end;
+      FindCloseUTF8(FileInfo);
     end;
-    FindCloseUTF8(FileInfo);
-  end;
 
+  // inc files
+  Includes:=TStringToStringTree.Create(false);
+  if Assigned(SearchIncludePaths) then
+    for i:=SearchIncludePaths.Count-1 downto 0 do begin
+      Directory:=TrimAndExpandDirectory(SearchIncludePaths[i]);
+      if (Directory='') then continue;
+      if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
+        repeat
+          inc(FileCount);
+          if (FileCount mod 100=0) and Assigned(OnProgress) then begin
+            OnProgress(nil, 0, -1, Format(ctsScannedFiles, [IntToStr(FileCount)]
+              ), Abort);
+            if Abort then break;
+          end;
+          ShortFilename:=FileInfo.Name;
+          if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
+            continue;
+          //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
+          Filename:=Directory+ShortFilename;
+          Ext:=LowerCase(ExtractFileExt(ShortFilename));
+          if (Ext='.inc') then begin
+            File_Name:=ExtractFileNameOnly(Filename);
+            if (not Includes.Contains(File_Name))
+            then
+              Includes[File_Name]:=Filename;
+          end;
+        until FindNextUTF8(FileInfo)<>0;
+      end;
+      FindCloseUTF8(FileInfo);
+    end;
+
+  // units ppu
   if CheckFPMkInst then begin
     // try to resolve .ppu files via fpmkinst .fpm files
     FPMToUnitTree:=nil;
     try
-      AVLNode:=Result.Tree.FindLowest;
+      AVLNode:=Units.Tree.FindLowest;
       while AVLNode<>nil do begin
         S2SItem:=PStringToStringTreeItem(AVLNode.Data);
-        Unit_Name:=S2SItem^.Name;
+        File_Name:=S2SItem^.Name;
         Filename:=S2SItem^.Value; // trimmed and expanded filename
         //if Pos('lazmkunit',Filename)>0 then
         //  debugln(['GatherUnitsInSearchPaths ===== ',Filename]);
-        AVLNode:=Result.Tree.FindSuccessor(AVLNode);
+        AVLNode:=Units.Tree.FindSuccessor(AVLNode);
         if CompareFileExt(Filename,'ppu',false)<>0 then continue;
         // check if filename has the form
         //                  /something/lib/fpc/<FPCVer>/units/<FPCTarget>/<pkgname>/
@@ -1899,11 +1953,11 @@ begin
 
         PkgUnitToFilename:=TStringToStringTree(FPMToUnitTree[PkgName]);
         if PkgUnitToFilename=nil then continue;
-        SrcFilename:=PkgUnitToFilename[Unit_Name];
+        SrcFilename:=PkgUnitToFilename[File_Name];
         if SrcFilename<>'' then begin
           // unit source found in fppkg -> replace ppu with src file
           //debugln(['GatherUnitsInSearchPaths ppu=',Filename,' -> fppkg src=',SrcFilename]);
-          Result[Unit_Name]:=SrcFilename;
+          Units[File_Name]:=SrcFilename;
         end;
       end;
     finally
@@ -8236,6 +8290,7 @@ begin
   FreeAndNil(Defines);
   FreeAndNil(Undefines);
   FreeAndNil(UnitPaths);
+  FreeAndNil(IncludePaths);
   FreeAndNil(Units);
 end;
 
@@ -8292,6 +8347,7 @@ begin
   if not CompareStringTrees(Defines,Item.Defines) then exit;
   if not CompareStringTrees(Undefines,Item.Undefines) then exit;
   if not CompareStrings(UnitPaths,Item.UnitPaths) then exit;
+  if not CompareStrings(IncludePaths,Item.IncludePaths) then exit;
   if not CompareStringTrees(Units,Item.Units) then exit;
   Result:=true;
 end;
@@ -8299,6 +8355,27 @@ end;
 procedure TFPCTargetConfigCache.Assign(Source: TPersistent);
 var
   Item: TFPCTargetConfigCache;
+
+  procedure AssignStringTree(var Dest: TStringToStringTree; const Src: TStringToStringTree);
+  begin
+    if Src<>nil then begin
+      if Dest=nil then Dest:=TStringToStringTree.Create(false);
+      Dest.Assign(Src);
+    end else begin
+      FreeAndNil(Dest);
+    end;
+  end;
+
+  procedure AssignStringList(var Dest: TStrings; const Src: TStrings);
+  begin
+    if Src<>nil then begin
+      if Dest=nil then Dest:=TStringList.Create;
+      Dest.Assign(Src);
+    end else begin
+      FreeAndNil(Dest);
+    end;
+  end;
+
 begin
   if Source is TFPCTargetConfigCache then begin
     Item:=TFPCTargetConfigCache(Source);
@@ -8317,30 +8394,13 @@ begin
     FullVersion:=Item.FullVersion;
     HasPPUs:=Item.HasPPUs;
     ConfigFiles.Assign(Item.ConfigFiles);
-    if Item.Defines<>nil then begin
-      if Defines=nil then Defines:=TStringToStringTree.Create(false);
-      Defines.Assign(Item.Defines);
-    end else begin
-      FreeAndNil(Defines);
-    end;
-    if Item.Undefines<>nil then begin
-      if Undefines=nil then Undefines:=TStringToStringTree.Create(false);
-      Undefines.Assign(Item.Undefines);
-    end else begin
-      FreeAndNil(Undefines);
-    end;
-    if Item.UnitPaths<>nil then begin
-      if UnitPaths=nil then UnitPaths:=TStringList.Create;
-      UnitPaths.Assign(Item.UnitPaths);
-    end else begin
-      FreeAndNil(UnitPaths);
-    end;
-    if Item.Units<>nil then begin
-      if Units=nil then Units:=TStringToStringTree.Create(false);
-      Units.Assign(Item.Units);
-    end else begin
-      FreeAndNil(Units);
-    end;
+
+    AssignStringTree(Defines,Item.Defines);
+    AssignStringTree(Undefines,Item.Undefines);
+    AssignStringList(UnitPaths,Item.UnitPaths);
+    AssignStringList(IncludePaths,Item.IncludePaths);
+    AssignStringTree(Units,Item.Units);
+    AssignStringTree(Includes,Item.Includes);
 
     ErrorMsg:=Item.ErrorMsg;
     ErrorTranslatedMsg:=Item.ErrorTranslatedMsg;
@@ -8358,11 +8418,72 @@ var
   i: Integer;
   p: Integer;
   StartPos: Integer;
-  List: TStringList;
-  UnitList: TStringList;
-  Unit_Name: String;
   Filename: String;
-  BaseDir: String;
+
+  procedure LoadPathsFor(out ADest: TStrings; const ASubPath: string);
+  var
+    i: Integer;
+    List: TStringList;
+    BaseDir: String;
+  begin
+    // Paths: format: semicolon separated compressed list
+    List:=TStringList.Create;
+    try
+      s:=XMLConfig.GetValue(Path+ASubPath+'Value','');
+      List.Delimiter:=';';
+      List.StrictDelimiter:=true;
+      List.DelimitedText:=s;
+      ADest:=Decompress1FileList(List);
+      BaseDir:=TrimFilename(AppendPathDelim(XMLConfig.GetValue(Path+ASubPath+'BaseDir','')));
+      if BaseDir<>'' then
+        for i:=0 to ADest.Count-1 do
+          ADest[i]:=ChompPathDelim(TrimFilename(BaseDir+ADest[i]))
+      else
+        for i:=ADest.Count-1 downto 0 do
+          if ADest[i]='' then
+            ADest.Delete(i)
+          else
+            ADest[i]:=ChompPathDelim(TrimFilename(ADest[i]));
+      // do not sort, order is important (e.g. for httpd.ppu)
+    finally
+      List.Free;
+    end;
+  end;
+
+  procedure LoadFilesFor(var ADest: TStringToStringTree; const ASubPath: string);
+  var
+    i: Integer;
+    List: TStringList;
+    File_Name: String;
+    FileList: TStringList;
+  begin
+    // files: format: ASubPath+Values semicolon separated list of compressed filename
+    List:=TStringList.Create;
+    FileList:=nil;
+    try
+      SubPath:=Path+ASubPath+'Value';
+      s:=XMLConfig.GetValue(SubPath,'');
+      List.Delimiter:=';';
+      List.StrictDelimiter:=true;
+      List.DelimitedText:=s;
+      FileList:=Decompress1FileList(List);
+      for i:=0 to FileList.Count-1 do begin
+        Filename:=TrimFilename(FileList[i]);
+        File_Name:=ExtractFileNameOnly(Filename);
+        if (File_Name='') or not IsDottedIdentifier(File_Name) then begin
+          DebugLn(['Warning: [TFPCTargetConfigCache.LoadFromXMLConfig] invalid filename "',File_Name,'" in "',XMLConfig.Filename,'" at "',SubPath,'"']);
+          continue;
+        end;
+        if ADest=nil then
+          ADest:=TStringToStringTree.Create(false);
+        ADest[File_Name]:=Filename;
+      end;
+    finally
+      List.Free;
+      FileList.Free;
+    end;
+  end;
+
 begin
   Clear;
 
@@ -8412,54 +8533,13 @@ begin
     end;
   end;
 
-  // UnitPaths: format: semicolon separated compressed list
-  List:=TStringList.Create;
-  try
-    s:=XMLConfig.GetValue(Path+'UnitPaths/Value','');
-    List.Delimiter:=';';
-    List.StrictDelimiter:=true;
-    List.DelimitedText:=s;
-    UnitPaths:=Decompress1FileList(List);
-    BaseDir:=TrimFilename(AppendPathDelim(XMLConfig.GetValue(Path+'UnitPaths/BaseDir','')));
-    if BaseDir<>'' then
-      for i:=0 to UnitPaths.Count-1 do
-        UnitPaths[i]:=ChompPathDelim(TrimFilename(BaseDir+UnitPaths[i]))
-    else
-      for i:=UnitPaths.Count-1 downto 0 do
-        if UnitPaths[i]='' then
-          UnitPaths.Delete(i)
-        else
-          UnitPaths[i]:=ChompPathDelim(TrimFilename(UnitPaths[i]));
-    // do not sort, order is important (e.g. for httpd.ppu)
-  finally
-    List.Free;
-  end;
+  // Paths
+  LoadPathsFor(UnitPaths,'UnitPaths/');
+  LoadPathsFor(IncludePaths,'IncludePaths/');
 
-  // units: format: Units/Values semicolon separated list of compressed filename
-  List:=TStringList.Create;
-  UnitList:=nil;
-  try
-    SubPath:=Path+'Units/Value';
-    s:=XMLConfig.GetValue(SubPath,'');
-    List.Delimiter:=';';
-    List.StrictDelimiter:=true;
-    List.DelimitedText:=s;
-    UnitList:=Decompress1FileList(List);
-    for i:=0 to UnitList.Count-1 do begin
-      Filename:=TrimFilename(UnitList[i]);
-      Unit_Name:=ExtractFileNameOnly(Filename);
-      if (Unit_Name='') or not IsDottedIdentifier(Unit_Name) then begin
-        DebugLn(['Warning: [TFPCTargetConfigCache.LoadFromXMLConfig] invalid unitname "',Unit_Name,'" in "',XMLConfig.Filename,'" at "',SubPath,'"']);
-        continue;
-      end;
-      if Units=nil then
-        Units:=TStringToStringTree.Create(false);
-      Units[Unit_Name]:=Filename;
-    end;
-  finally
-    List.Free;
-    UnitList.Free;
-  end;
+  // Files
+  LoadFilesFor(Units,'Units/');
+  LoadFilesFor(Includes,'Includes/');
 end;
 
 procedure TFPCTargetConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -8469,12 +8549,74 @@ var
   Item: PStringToStringTreeItem;
   Cnt: Integer;
   SubPath: String;
-  UnitList: TStringList;
-  Filename: String;
-  List: TStringList;
   s: String;
-  BaseDir: string;
-  RelativeUnitPaths: TStringList;
+
+  procedure SavePathsFor(const ASource: TStrings; const ASubPath: string);
+  var
+    List: TStringList;
+    RelativeUnitPaths: TStringList;
+    BaseDir: string;
+  begin
+    // Paths: write as semicolon separated compressed list
+    s:='';
+    BaseDir:='';
+    if ASource<>nil then begin
+      List:=nil;
+      RelativeUnitPaths:=nil;
+      try
+        RelativeUnitPaths:=MakeRelativeFileList(ASource,BaseDir);
+        List:=Compress1FileList(RelativeUnitPaths);
+        // do not sort, order is important (e.g. for httpd.ppu)
+        List.Delimiter:=';';
+        List.StrictDelimiter:=true;
+        s:=List.DelimitedText;
+      finally
+        RelativeUnitPaths.Free;
+        List.Free;
+      end;
+    end;
+    XMLConfig.SetDeleteValue(Path+ASubPath+'BaseDir',BaseDir,'');
+    XMLConfig.SetDeleteValue(Path+ASubPath+'Value',s,'');
+  end;
+
+  procedure SaveFilesFor(const ASource: TStringToStringTree; const ASubPath: string);
+  var
+    List: TStringList;
+    FileList: TStringList;
+    Filename: String;
+  begin
+    // Files: ASubPath+Values semicolon separated list of compressed filenames
+    // Files contains thousands of file names. This needs compression.
+    s:='';
+    List:=nil;
+    FileList:=TStringList.Create;
+    try
+      if ASource<>nil then begin
+        // Create a string list of filenames
+        Node:=ASource.Tree.FindLowest;
+        while Node<>nil do begin
+          Item:=PStringToStringTreeItem(Node.Data);
+          Filename:=Item^.Value;
+          FileList.Add(Filename);
+          Node:=ASource.Tree.FindSuccessor(Node);
+        end;
+        // Sort the strings.
+        FileList.CaseSensitive:=true;
+        FileList.Sort;
+        // Compress the file names
+        List:=Compress1FileList(FileList);
+        // and write the semicolon separated list
+        List.Delimiter:=';';
+        List.StrictDelimiter:=true;
+        s:=List.DelimitedText;
+      end;
+    finally
+      List.Free;
+      FileList.Free;
+    end;
+    XMLConfig.SetDeleteValue(Path+ASubPath+'Value',s,'');
+  end;
+
 begin
   XMLConfig.SetDeleteValue(Path+'TargetOS',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU',TargetCPU,'');
@@ -8522,57 +8664,13 @@ begin
   end;
   XMLConfig.SetDeleteValue(Path+'Undefines/Values',s,'');
 
-  // UnitPaths: write as semicolon separated compressed list
-  s:='';
-  BaseDir:='';
-  if UnitPaths<>nil then begin
-    List:=nil;
-    RelativeUnitPaths:=nil;
-    try
-      RelativeUnitPaths:=MakeRelativeFileList(UnitPaths,BaseDir);
-      List:=Compress1FileList(RelativeUnitPaths);
-      // do not sort, order is important (e.g. for httpd.ppu)
-      List.Delimiter:=';';
-      List.StrictDelimiter:=true;
-      s:=List.DelimitedText;
-    finally
-      RelativeUnitPaths.Free;
-      List.Free;
-    end;
-  end;
-  XMLConfig.SetDeleteValue(Path+'UnitPaths/BaseDir',BaseDir,'');
-  XMLConfig.SetDeleteValue(Path+'UnitPaths/Value',s,'');
+  // Paths
+  SavePathsFor(UnitPaths, 'UnitPaths/');
+  SavePathsFor(IncludePaths, 'IncludePaths/');
 
-  // Units: Units/Values semicolon separated list of compressed filenames
-  // Units contains thousands of file names. This needs compression.
-  s:='';
-  List:=nil;
-  UnitList:=TStringList.Create;
-  try
-    if Units<>nil then begin
-      // Create a string list of filenames
-      Node:=Units.Tree.FindLowest;
-      while Node<>nil do begin
-        Item:=PStringToStringTreeItem(Node.Data);
-        Filename:=Item^.Value;
-        UnitList.Add(Filename);
-        Node:=Units.Tree.FindSuccessor(Node);
-      end;
-      // Sort the strings.
-      UnitList.CaseSensitive:=true;
-      UnitList.Sort;
-      // Compress the file names
-      List:=Compress1FileList(UnitList);
-      // and write the semicolon separated list
-      List.Delimiter:=';';
-      List.StrictDelimiter:=true;
-      s:=List.DelimitedText;
-    end;
-  finally
-    List.Free;
-    UnitList.Free;
-  end;
-  XMLConfig.SetDeleteValue(Path+'Units/Value',s,'');
+  // Files
+  SaveFilesFor(Units, 'Units/');
+  SaveFilesFor(Includes, 'Includes/');
 end;
 
 procedure TFPCTargetConfigCache.LoadFromFile(Filename: string);
@@ -8673,9 +8771,9 @@ end;
 function TFPCTargetConfigCache.Update(TestFilename: string;
   ExtraOptions: string; const OnProgress: TDefinePoolProgress): boolean;
 var
+  i: Integer;
   OldOptions: TFPCTargetConfigCache;
   CfgFiles: TStrings;
-  i: Integer;
   Filename: string;
   CfgFileExists: Boolean;
   CfgFileDate: Integer;
@@ -8684,6 +8782,16 @@ var
   InfoTypes: TFPCInfoTypes;
   BaseDir: String;
   FullFilename: String;
+
+  procedure PreparePaths(APaths: TStrings);
+  var
+    i: Integer;
+  begin
+    if APaths<>nil then
+      for i:=0 to APaths.Count-1 do
+        APaths[i]:=ChompPathDelim(TrimFilename(APaths[i]));
+  end;
+
 begin
   OldOptions:=TFPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
@@ -8719,10 +8827,9 @@ begin
       // run fpc and parse output
       HasPPUs:=false;
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
-                    Defines,Undefines,ExtraOptions);
-      if UnitPaths<>nil then
-        for i:=0 to UnitPaths.Count-1 do
-          UnitPaths[i]:=ChompPathDelim(TrimFilename(UnitPaths[i]));
+                    IncludePaths,Defines,Undefines,ExtraOptions);
+      PreparePaths(UnitPaths);
+      PreparePaths(IncludePaths);
       // store the real compiler file and date
       if (RealCompiler<>'') and FileExistsCached(RealCompiler) then begin
         RealCompilerDate:=FileAgeCached(RealCompiler);
@@ -8747,14 +8854,11 @@ begin
             CfgFileDate:=FileAgeCached(Filename);
           ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
         end;
-      // gather all units in all unit search paths
-      if (UnitPaths<>nil) and (UnitPaths.Count>0) then begin
-        Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress,true);
-      end
-      else begin
+      // gather all units in all unit and inc files search paths
+      GatherUnitsInSearchPaths(UnitPaths,IncludePaths,OnProgress,Units,Includes,true);
+      if (UnitPaths=nil) or (UnitPaths.Count=0) then begin
         if CTConsoleVerbosity>=-1 then
           debugln(['Warning: [TFPCTargetConfigCache.Update] no unit paths: ',Compiler,' ',ExtraOptions]);
-        Units:=TStringToStringTree.Create(false);
       end;
       // check if the system ppu exists
       HasPPUs:=CompareFileExt(Units['system'],'ppu',false)=0;
