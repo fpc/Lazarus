@@ -14,7 +14,7 @@ interface
 
 uses
   Math, Types, SysUtils, Classes, LCLProc,Controls, ExtCtrls, StdCtrls, Buttons,
-  Forms, GraphType, Graphics, LMessages, Themes;
+  Forms, GraphType, Graphics, LMessages, Themes, LCLType;
 
 type
   TButtonOrder  = (boDefault, boCloseCancelOK, boCloseOKCancel);
@@ -78,6 +78,7 @@ type
     procedure UpdateButtonOrder;
     procedure UpdateSizes;
     procedure UpdateButtonLayout;
+    procedure UpdateButtonSize;
     function IsLastButton(AControl: TControl): boolean;
   protected
     function CreateControlBorderSpacing: TControlBorderSpacing; override;
@@ -90,6 +91,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAlign(Value: TAlign); override;
     procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
+    procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -370,6 +372,40 @@ begin
   AdjustSize;
 end;
 
+procedure TCustomButtonPanel.UpdateButtonSize;
+var
+  AParent: TCustomDesignControl;
+  Details: TThemedElementDetails;
+  DefButtonSize: TSize;
+  btn: TPanelBitBtn;
+begin
+  AParent := GetParentDesignControl(Self);
+  if AParent=nil then
+    Exit;
+
+  Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
+  DefButtonSize := ThemeServices.GetDetailSize(Details);
+
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.UpdateButtonSize'){$ENDIF};
+  try
+    for btn in FButtons do
+    begin
+      if btn = nil then Continue;
+      if Application.Scaled and AParent.Scaled then
+      begin
+        btn.Constraints.MinWidth := MulDiv(DefButtonSize.cx, AParent.PixelsPerInch, ScreenInfo.PixelsPerInchX);
+        btn.Constraints.MinHeight := MulDiv(DefButtonSize.cy, AParent.PixelsPerInch, ScreenInfo.PixelsPerInchY);
+      end else
+      begin
+        btn.Constraints.MinWidth := DefButtonSize.cx;
+        btn.Constraints.MinHeight := DefButtonSize.cy;
+      end;
+    end;
+  finally
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.UpdateButtonSize'){$ENDIF};
+  end;
+end;
+
 procedure TCustomButtonPanel.SetAlign(Value: TAlign);
 begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.SetAlign'){$ENDIF};
@@ -386,6 +422,13 @@ end;
 procedure TCustomButtonPanel.CMAppShowBtnGlyphChanged(var Message: TLMessage);
 begin
   NotifyControls(Message.msg);
+end;
+
+procedure TCustomButtonPanel.CMShowingChanged(var Message: TLMessage);
+begin
+  inherited;
+
+  UpdateButtonSize;
 end;
 
 procedure TCustomButtonPanel.SetButtonOrder(Value: TButtonOrder);
@@ -490,23 +533,14 @@ const
   KINDS: array[TPanelButton] of TBitBtnKind = (
     bkOK, bkCancel, bkClose, bkHelp
   );
-
-var
-  Details: TThemedElementDetails;
-  DefButtonSize: TSize;
 begin
   if FButtons[AButton] <> nil then Exit;
-
-  Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
-  DefButtonSize := ThemeServices.GetDetailSize(Details);
 
   FButtons[AButton] := TPanelBitBtn.Create(Self);
   with FButtons[AButton] do
   begin
     Name     := NAMES[AButton];
     Kind     := KINDS[AButton];
-    Constraints.MinWidth := DefButtonSize.cx;
-    Constraints.MinHeight := DefButtonSize.cy;
     AutoSize := true;
     TabOrder := Ord(AButton); //initial order
     Align    := alCustom;
