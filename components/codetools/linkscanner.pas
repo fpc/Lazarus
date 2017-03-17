@@ -829,6 +829,8 @@ function dbgs(s: TLSDirectiveKind): string; overload;
 
 implementation
 
+uses
+  CodeToolManager, DefineTemplates;
 
 // useful procs ----------------------------------------------------------------
 
@@ -3968,6 +3970,9 @@ var
   end;
 
   function SearchCasedInIncPath(const RelFilename: string): boolean;
+  var
+    CfgCache: TFPCTargetConfigCache;
+    UnitSet: TFPCUnitSetCache;
   begin
     if FilenameIsAbsolute(FMainSourceFilename) then begin
       // main source has absolute filename
@@ -3989,6 +3994,17 @@ var
       NewCode:=LoadSourceCaseLoUp(RelFilename,true);
       Result:=(NewCode<>nil);
       if Result then exit;
+    end;
+
+    // then search the include file from fpc.cfg (-Fi option)
+    UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+    if UnitSet<>nil then begin
+      CfgCache:=UnitSet.GetConfigCache(false);
+      if CfgCache.Includes.GetString(AFilename,ExpFilename) then begin
+        NewCode:=LoadSourceCaseLoUp(ExpFilename);
+        Result:=(NewCode<>nil);
+        if Result then exit;
+      end;
     end;
 
     // then search the include file in the include path

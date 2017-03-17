@@ -1871,7 +1871,7 @@ begin
           Filename:=Directory+ShortFilename;
           Ext:=LowerCase(ExtractFileExt(ShortFilename));
           if (Ext='.inc') then begin
-            File_Name:=ExtractFileNameOnly(Filename);
+            File_Name:=ExtractFileName(Filename);
             if (not Includes.Contains(File_Name))
             then
               Includes[File_Name]:=Filename;
