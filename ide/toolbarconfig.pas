@@ -48,26 +48,26 @@ type
   { TToolBarConfig }
 
   TToolBarConfig = class(TForm)
-    btnHelp: TBitBtn;
     btnAdd: TSpeedButton;
+    btnCancel: TButton;
+    btnClear: TSpeedButton;
+    btnHelp: TBitBtn;
     btnMoveDown: TSpeedButton;
     btnMoveUp: TSpeedButton;
     btnOK: TButton;
-    btnCancel: TButton;
     btnRemove: TSpeedButton;
-    lbSelect: TLabel;
+    FilterEdit: TTreeFilterEdit;
     lblMenuTree: TLabel;
     lblToolbar: TLabel;
+    lbSelect: TLabel;
     lvToolbar: TListView;
     miAll: TMenuItem;
-    miDesign: TMenuItem;
-    miDebug: TMenuItem;
-    miHTML: TMenuItem;
     miCustom: TMenuItem;
+    miDebug: TMenuItem;
+    miDesign: TMenuItem;
+    miHTML: TMenuItem;
     pnlButtons: TButtonPanel;
-    FilterEdit: TTreeFilterEdit;
     sbAddDivider: TSpeedButton;
-    btnClear: TSpeedButton;
     Splitter1: TSplitter;
     TV: TTreeView;
     procedure btnClearClick(Sender: TObject);
@@ -133,19 +133,19 @@ type
   { TIDEToolbarBase }
 
   TIDEToolbarBase = class(TComponent)
-   private
-   protected
-     FToolBar: TToolBar;
-     procedure AddButton(ACommand: TIDEButtonCommand);
-     procedure AddDivider;
-     procedure CopyFromOptions(Options: TIDEToolBarOptionsBase);
-     procedure PositionAtEnd(AToolBar: TToolBar; AButton: TToolButton);
-     procedure PostCopyOptions; virtual;
-   public
-     //constructor Create(AOwner: TComponent); override;
-     //destructor Destroy; override;
-     property ToolBar: TToolBar read FToolBar;
-   end;
+  private
+  protected
+    FToolBar: TToolBar;
+    procedure AddButton(ACommand: TIDEButtonCommand);
+    procedure AddDivider;
+    procedure CopyFromOptions(Options: TIDEToolBarOptionsBase);
+    procedure PositionAtEnd(AToolBar: TToolBar; AButton: TToolButton);
+    procedure PostCopyOptions; virtual;
+  public
+    //constructor Create(AOwner: TComponent); override;
+    //destructor Destroy; override;
+    property ToolBar: TToolBar read FToolBar;
+  end;
 
 const
   cIDEToolbarDivider = '---------------';
