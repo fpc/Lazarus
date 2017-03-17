@@ -16606,7 +16606,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         <seealso>
           <link id="#lcl.ComCtrls.TCustomListview.HotTrack">TCustomListView.HotTrack</link>
         </seealso>
-      <short>Additionally a highlight/underline tree-item when mouse is over it.</short>
+      <short>Additionally highlight/underline tree-item when mouse is over it.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Images">
