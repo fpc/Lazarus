@@ -100,8 +100,7 @@ type
     procedure EndUpdate;
     function IsUpdate: Boolean;
     procedure UpdateStatistics;
-    procedure UpdateSubmenuGroupBox(selMI: TMenuItem; selBox: TShadowBoxBase;
-      boxIsRoot:boolean);
+    procedure UpdateSubmenuGroupBox(selMI: TMenuItem; selBox: TShadowBoxBase);
     procedure UpdateItemInfo(aMenu: TMenu; aMenuItem: TMenuItem;
       aShadowBox: TShadowBoxBase; aPropEditHook: TPropertyEditorHook);
     //property EditedMenu: TMenu read FEditedMenu;
@@ -485,7 +484,7 @@ begin
     AddItemBelowButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_below');
     AddSubMenuButton.LoadGlyphFromResourceName(HINSTANCE,'add_submenu_right');
   end;
-  UpdateSubmenuGroupBox(nil, nil, False);
+  UpdateSubmenuGroupBox(nil, nil);
   FDesigner.VariableGlyphsInMenuBar:=isInMenubar;
 end;
 
@@ -539,7 +538,7 @@ begin
     DeepestNestingLevelLabel.Caption:=Format(lisMenuEditorDeepestNestedMenuLevelS, [lisMenuEditorNA]);
     PopupAssignmentsCountLabel.Caption:=Format(lisMenuEditorPopupAssignmentsS,[lisMenuEditorNA]);
     StatisticsGroupBox.Enabled:=False;
-    UpdateSubmenuGroupBox(nil, nil, False);
+    UpdateSubmenuGroupBox(nil, nil);
     ButtonsGroupBox.Enabled:=False;
     FPopupAssignmentsListBox.Visible:=False;
     FGUIEnabled:=False;
@@ -655,8 +654,7 @@ begin
   end;
 end;
 
-procedure TMenuDesignerForm.UpdateSubmenuGroupBox(selMI: TMenuItem;
-  selBox: TShadowBoxBase; boxIsRoot: boolean);
+procedure TMenuDesignerForm.UpdateSubmenuGroupBox(selMI: TMenuItem; selBox: TShadowBoxBase);
 var
   Groups: TByteArray;
 begin
@@ -685,7 +683,7 @@ begin
     Caption:=Format(lisMenuEditorEditingSSNoMenuitemSelected,
                     [aMenu.Owner.Name, aMenu.Name]);
     ButtonsGroupBox.Enabled:=False;
-    UpdateSubmenuGroupBox(nil, nil, False);
+    UpdateSubmenuGroupBox(nil, nil);
   end
   else begin
     method:=GetMethodProp(aMenuItem, 'OnClick');
@@ -695,7 +693,7 @@ begin
     Caption:=Format(lisMenuEditorSSSOnClickS,
                     [aMenu.Owner.Name, aMenu.Name, aMenuItem.Name, s]);
     ButtonsGroupBox.Enabled:=True;
-    UpdateSubmenuGroupBox(aMenuItem, aShadowBox, aShadowBox.Level=0);
+    UpdateSubmenuGroupBox(aMenuItem, aShadowBox);
   end;
 end;
 

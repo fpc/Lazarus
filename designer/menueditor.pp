@@ -1544,7 +1544,7 @@ begin
   begin
     selBox:=SelectedShadowBox;
     if (selBox.LastRIValue <> mi.RadioItem) then
-      FDesigner.FGui.UpdateSubmenuGroupBox(FSelectedMenuItem, selBox, selBox=FRootBox);
+      FDesigner.FGui.UpdateSubmenuGroupBox(FSelectedMenuItem, selBox);
   end;
 end;
 
