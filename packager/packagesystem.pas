@@ -50,7 +50,7 @@ uses
   Forms, Controls, Dialogs, LCLProc,
   // LazUtils
   FileUtil, LazFileCache, LazLogger, LazFileUtils, LazUTF8,
-  Laz2_XMLCfg, laz2_XMLRead, AvgLvlTree,
+  Laz2_XMLCfg, laz2_XMLRead,
   // codetools
   FileProcs, DefineTemplates, CodeCache,
   BasicCodeTools, NonPascalCodeTools, SourceChanger, CodeToolsStructs,

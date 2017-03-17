@@ -1235,7 +1235,6 @@ end;
 function TLazPackageLinks.AddUserLink(APackage: TIDEPackage): TPackageLink;
 var
   OldLink: TPackageLink;
-  NewLink: TPackageLink;
 begin
   DebugLn(['TLazPackageLinks.AddUserLink: APackage=', APackage.Filename]);
   BeginUpdate;
@@ -1262,7 +1261,6 @@ end;
 
 function TLazPackageLinks.AddUserLink(const PkgFilename, PkgName: string): TPackageLink;
 var
-  NewLink: TPackageLink;
   LPK: TXMLConfig;
   PkgVersion: TPkgVersion;
 begin
