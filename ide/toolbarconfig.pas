@@ -185,6 +185,7 @@ begin
   lvToolbar.OwnerDraw := True;
   {$ENDIF}
   pnlButtons.Color := clBtnFace;
+  lblSelect.Caption := '';
   // load button images
   btnAdd.LoadGlyphFromResourceName(HInstance, 'arrow_right');
   btnRemove.LoadGlyphFromResourceName(HInstance, 'arrow_left');

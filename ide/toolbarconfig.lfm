@@ -213,7 +213,8 @@ object ToolBarConfig: TToolBarConfig
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 6
     Caption = 'lblSelect'
-    ParentColor = False
+    Color = clDefault
+    Transparent = False
   end
   object pnlButtons: TButtonPanel
     Left = 6
