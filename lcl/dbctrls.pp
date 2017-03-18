@@ -450,6 +450,7 @@ Type
     procedure DataChange(Sender: TObject); override;
     procedure DoSelectionChange(User: Boolean); override;
     procedure InitializeWnd; override;
+    procedure DestroyWnd; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
@@ -799,6 +800,7 @@ Type
   protected
     procedure CloseUp; override;
     procedure InitializeWnd; override;
+    procedure DestroyWnd; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;

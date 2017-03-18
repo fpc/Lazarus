@@ -57,6 +57,13 @@ begin
     Text := '';
 end;
 
+procedure TDBLookupComboBox.DestroyWnd;
+begin
+  inherited;
+  //after handle destroy Items address changes
+  FLookup.ControlItems := Items;
+end;
+
 procedure TDBLookupComboBox.Select;
 begin
   FDataLink.UpdateData;
