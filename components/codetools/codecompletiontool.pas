@@ -8474,7 +8474,9 @@ procedure TCodeCompletionCodeTool.GuessProcDefBodyMapping(ProcDefNodes,
     AVLNodeExt:=NodeExtTree.FindLowest;
     while AVLNodeExt<>nil do begin
       NodeExt:=TCodeTreeNodeExtension(AVLNodeExt.Data);
-      if (not SkipNodesWithData) or (NodeExt.Data=nil) then begin
+      AVLNodeExt:=NodeExtTree.FindSuccessor(AVLNodeExt);
+      if (not SkipNodesWithData) or (NodeExt.Data=nil)
+      or (ProcNodeHasSpecifier(NodeExt.Node,psEXTERNAL)) then begin
         {$IFDEF VerboseUpdateProcBodySignatures}
         if NodeExtTree=ProcBodyNodes then
           debugln(['CreateNameTree body without corresponding def: ',NodeExt.Txt])
@@ -8491,7 +8493,6 @@ procedure TCodeCompletionCodeTool.GuessProcDefBodyMapping(ProcDefNodes,
           Result:=TAVLTree.Create(@CompareCodeTreeNodeExtMethodHeaders);
         Result.Add(NewNodeExt);
       end;
-      AVLNodeExt:=NodeExtTree.FindSuccessor(AVLNodeExt);
     end;
   end;
 
@@ -9062,9 +9063,10 @@ begin
       MissingNode:=ClassProcs.FindHighest;
       while (MissingNode<>nil) do begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
+        MissingNode:=ClassProcs.FindPrecessor(MissingNode);
+        if ProcNodeHasSpecifier(ANodeExt.Node,psEXTERNAL) then continue;
         CreateCodeForMissingProcBody(ANodeExt,Indent);
         InsertProcBody(ANodeExt,InsertPos,Indent);
-        MissingNode:=ClassProcs.FindPrecessor(MissingNode);
       end;
       
     end else begin
@@ -9084,11 +9086,13 @@ begin
       NearestNodeValid:=false;
       while (MissingNode<>nil) do begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
-        ExistingNode:=ProcBodyNodes.Find(MissingNode.Data);
+        MissingNode:=ClassProcs.FindPrecessor(MissingNode);
+        ExistingNode:=ProcBodyNodes.Find(ANodeExt);
         {$IFDEF VerboseCreateMissingClassProcBodies}
         DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',ExistingNode<>nil]);
         {$ENDIF}
-        if ExistingNode=nil then begin
+        if (ExistingNode=nil) and (not ProcNodeHasSpecifier(ANodeExt.Node,psEXTERNAL))
+        then begin
           {$IFDEF VerboseCreateMissingClassProcBodies}
           DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',TCodeTreeNodeExtension(ExistingNode.Data).Txt]);
           {$ENDIF}
@@ -9097,8 +9101,8 @@ begin
           mipAlphabetically:
             begin
               // search alphabetically nearest proc body
-              ExistingNode:=ProcBodyNodes.FindNearest(MissingNode.Data);
-              cmp:=CompareCodeTreeNodeExtMethodHeaders(ExistingNode.Data,MissingNode.Data);
+              ExistingNode:=ProcBodyNodes.FindNearest(ANodeExt);
+              cmp:=CompareCodeTreeNodeExtMethodHeaders(ExistingNode.Data,ANodeExt);
               if (cmp<0) then begin
                 AnAVLNode:=ProcBodyNodes.FindSuccessor(ExistingNode);
                 if AnAVLNode<>nil then begin
@@ -9159,7 +9163,6 @@ begin
           CreateCodeForMissingProcBody(ANodeExt,Indent);
           InsertProcBody(ANodeExt,InsertPos,0);
         end;
-        MissingNode:=ClassProcs.FindPrecessor(MissingNode);
       end;
     end;
     Result:=true;
