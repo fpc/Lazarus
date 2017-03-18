@@ -3623,7 +3623,10 @@ begin
       if FDatalink.BOF then aPos := 0 else
       if FDatalink.EOF then aPos := aRange
       else
+      begin
         aPos := FDataLink.DataSet.RecNo - 1; // RecNo is 1 based
+        FDataLink.DataSet.UpdateCursorPos;
+      end;
       if aPos<0 then aPos:=0;
       if aRange=0 then aRange:=1; // there's always 1 (new) row
     end else begin
