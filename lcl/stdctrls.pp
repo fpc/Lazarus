@@ -487,6 +487,10 @@ type
 
   TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable, lbVirtual);
   TSelectionChangeEvent = procedure(Sender: TObject; User: boolean) of object;
+  TListBoxOption = (
+    lboDrawFocusRect // draw focus rect in case of owner drawing
+    );
+  TListBoxOptions = set of TListBoxOption;
 
   { TCustomListBox }
 
@@ -507,6 +511,7 @@ type
     FOnDrawItem: TDrawItemEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelectionChange: TSelectionChangeEvent;
+    FOptions: TListBoxOptions;
     FScrollWidth: Integer;
     FSorted: boolean;
     FStyle: TListBoxStyle;
@@ -514,6 +519,7 @@ type
     function GetCount: Integer;
     function GetScrollWidth: Integer;
     function GetTopIndex: Integer;
+    function IsOptionsStored: Boolean;
     procedure RaiseIndexOutOfBounds(AIndex: integer);
     procedure SetColumns(const AValue: Integer);
     procedure SetScrollWidth(const AValue: Integer);
@@ -615,6 +621,7 @@ type
     property OnSelectionChange: TSelectionChangeEvent read FOnSelectionChange
                                                       write FOnSelectionChange;
     property OnUTF8KeyPress;
+    property Options: TListBoxOptions read FOptions write FOptions stored IsOptionsStored;
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
@@ -683,6 +690,7 @@ type
     property OnShowHint;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property Options;
     property ParentBidiMode;
     property ParentColor;
     property ParentShowHint;
