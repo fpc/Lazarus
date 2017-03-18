@@ -180,18 +180,10 @@ begin
       GetThemePartSize(GetTheme(Details.Element), 0, Details.Part, Details.State, @R, TS_TRUE, Result);
     end
     else
-    begin
       Result := inherited GetDetailSize(Details);
-      Result.cx := MulDiv(Result.cx, ScreenInfo.PixelsPerInchX, 96);
-      Result.cy := MulDiv(Result.cy, ScreenInfo.PixelsPerInchY, 96);
-    end;
   end
   else
-  begin
     Result := inherited GetDetailSize(Details);
-    Result.cx := MulDiv(Result.cx, ScreenInfo.PixelsPerInchX, 96);
-    Result.cy := MulDiv(Result.cy, ScreenInfo.PixelsPerInchY, 96);
-  end;
 end;
 
 function TWin32ThemeServices.GetDetailRegion(DC: HDC;

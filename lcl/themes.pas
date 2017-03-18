@@ -1897,6 +1897,10 @@ begin
       if Details.Part in [WP_SMALLCLOSEBUTTON, WP_MDICLOSEBUTTON, WP_MDIHELPBUTTON, WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, WP_MDISYSBUTTON] then
         Result := Size(9, 9);
   end;
+  if (Result.cx>0) then
+    Result.cx := MulDiv(Result.cx, ScreenInfo.PixelsPerInchX, 96);
+  if (Result.cy>0) then
+    Result.cy := MulDiv(Result.cy, ScreenInfo.PixelsPerInchY, 96);
 end;
 
 function TThemeServices.GetDetailRegion(DC: HDC;
