@@ -51,7 +51,6 @@ type
     btnAdd: TSpeedButton;
     btnAddDivider: TSpeedButton;
     btnCancel: TButton;
-    btnClear: TSpeedButton;
     btnHelp: TBitBtn;
     btnMoveDown: TSpeedButton;
     btnMoveUp: TSpeedButton;
@@ -70,13 +69,13 @@ type
     pnlButtons: TButtonPanel;
     Splitter1: TSplitter;
     TV: TTreeView;
-    procedure btnClearClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
-    procedure btnShowClick(Sender: TObject);
-    procedure btnHideClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure lbToolbarSelectionChange(Sender: TObject);
+    procedure lvToolbarDblClick(Sender: TObject);
+    procedure lvToolbarEnterExit(Sender: TObject);
+    procedure TVDblClick(Sender: TObject);
+    procedure UpdateButtonsState;
     procedure btnAddClick(Sender: TObject);
     procedure btnAddDividerClick(Sender: TObject);
     procedure btnMoveDownClick(Sender: TObject);
@@ -93,8 +92,11 @@ type
     divImageIndex: Integer;
     // Main list related entries
     MainList: TStringList;
+    procedure AddCommand;
+    procedure AddTailItem;
     function GetMainListIndex(Item: TListItem): Integer;
     procedure InsertMainListItem (Item,NextItem: TListItem);
+    procedure RemoveCommand;
     procedure RemoveMainListItem (Item:TListItem);
     procedure ExchangeMainListItem (Item1,Item2: TListItem);
     procedure SetupCaptions;
@@ -188,15 +190,15 @@ begin
   btnRemove.LoadGlyphFromResourceName(HInstance, 'arrow_left');
   btnMoveUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   btnMoveDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
-  btnClear.LoadGlyphFromResourceName(HINSTANCE,'menu_close');
   btnAddDivider.LoadGlyphFromResourceName(HINSTANCE, 'menu_divider16');
+
+  btnAddDivider.Caption:='---';
 
   btnAdd.Hint      := lisCoolBarAddSelected;
   btnRemove.Hint   := lisCoolBarRemoveSelected;
   btnMoveUp.Hint   := lisCoolBarMoveSelectedUp;
   btnMoveDown.Hint := lisCoolBarMoveSelectedDown;
   btnAddDivider.Hint:= lisCoolBarAddDivider;
-  btnClear.Hint    := lisCoolBarClearSelection;
 
   TV.Images := IDEImages.Images_16;
   lvToolbar.SmallImages := IDEImages.Images_16;
@@ -218,9 +220,19 @@ begin
   Image.Free;
 end;
 
-procedure TToolBarConfig.btnClearClick(Sender: TObject);
+procedure TToolBarConfig.lvToolbarDblClick(Sender: TObject);
 begin
-  lvToolbar.Selected := nil;
+  RemoveCommand;
+end;
+
+procedure TToolBarConfig.lvToolbarEnterExit(Sender: TObject);
+begin
+  UpdateButtonsState;
+end;
+
+procedure TToolBarConfig.TVDblClick(Sender: TObject);
+begin
+  AddCommand;
 end;
 
 procedure TToolBarConfig.btnHelpClick(Sender: TObject);
@@ -228,32 +240,22 @@ begin
   OpenUrl('http://wiki.freepascal.org/IDE_Window:_Toolbar_Config');
 end;
 
-procedure TToolBarConfig.btnShowClick(Sender: TObject);
-begin
-  lvToolbar.Columns[1].Visible:= true;
-end;
-
-procedure TToolBarConfig.btnHideClick(Sender: TObject);
-begin
-  lvToolbar.Columns[1].Visible:= false;
-end;
-
-procedure TToolBarConfig.lbToolbarSelectionChange(Sender: TObject);
+procedure TToolBarConfig.UpdateButtonsState;
 var
   i: Integer;
 begin
-  i := lvToolbar.ItemIndex;
-  btnRemove.Enabled := i > -1;
-  btnMoveUp.Enabled := i > 0;
-  btnMoveDown.Enabled := (i > -1) and (i < lvToolbar.Items.Count-1);
+  i:=lvToolbar.ItemIndex;
+
+  btnAdd.Enabled:={(ActiveControl=TV) and} (Assigned(TV.Selected) and Assigned((TV.Selected).Data));
+  btnRemove.Enabled:=(ActiveControl=lvToolbar) and (i>-1) and (i<lvToolbar.Items.Count-1);
+  btnMoveUp.Enabled:=(ActiveControl=lvToolbar) and (i>0) and (i<lvToolbar.Items.Count-1);
+  btnMoveDown.Enabled:=(ActiveControl=lvToolbar) and (i>-1) and (i<lvToolbar.Items.Count-2);
+  btnAddDivider.Enabled:=(ActiveControl=lvToolbar);
 end;
 
 procedure TToolBarConfig.TVSelectionChanged(Sender: TObject);
-var
-  n: TTreeNode;
 begin
-  n := TV.Selected;
-  btnAdd.Enabled := (Assigned(n) and Assigned(n.Data));
+  UpdateButtonsState;
 end;
 
 function TToolBarConfig.GetMainListIndex(Item: TListItem): Integer;
@@ -316,6 +318,12 @@ begin
 end;
 
 procedure TToolBarConfig.btnAddClick(Sender: TObject);
+begin
+  AddCommand;
+end;
+
+
+procedure TToolBarConfig.AddCommand;
 var
   n, nNext: TTreeNode;
   ACaption: string;
@@ -325,7 +333,6 @@ begin
   n := TV.Selected;
   if (Assigned(n) and Assigned(n.Data)) then
   begin
-    btnAdd.Enabled := False;
     anIndex:= lvToolbar.ItemIndex;
     ACaption:= TIDEButtonCommand(n.Data).Caption;
     DeleteAmpersands(ACaption);
@@ -352,15 +359,21 @@ begin
      // lvToolbar.ItemIndex := lvToolbar.Items.Count-1;
       InsertMainListItem(lvItem,Nil);
     end;
-    lbToolbarSelectionChange(lblToolbar);
+    lvToolbar.ItemIndex := lvToolbar.ItemIndex+1;
     nNext := TV.Selected.GetNext;
     TV.Selected.Visible:= False;
     if nNext <> nil then
       TV.Selected := nNext;
+    UpdateButtonsState;
   end;
 end;
 
 procedure TToolBarConfig.btnRemoveClick(Sender: TObject);
+begin
+  RemoveCommand;
+end;
+
+procedure TToolBarConfig.RemoveCommand;
 Var
   mi: TIDEButtonCommand;
   n: TTreeNode;
@@ -368,20 +381,20 @@ Var
   lvItem: TListItem;
 begin
   I := lvToolbar.ItemIndex;
-  if I > -1 then begin
+  if (ActiveControl=lvToolbar) and (i>-1) and (i<lvToolbar.Items.Count-1) then
+  begin
     lvItem := lvToolbar.Items[I];
     mi := TIDEButtonCommand(lvItem.Data);
     RemoveMainListItem(lvItem);
     lvToolbar.Items.Delete(lvToolbar.ItemIndex);
     if I < lvToolbar.Items.Count then
       lvToolbar.Selected := lvToolbar.Items[I]; // Qt Workaround
-    lbToolbarSelectionChange(lvToolbar);
     if assigned(mi) then begin
       n:= TV.Items.FindNodeWithData(mi);
       if n<>nil then
         n.Visible:= True;
     end;
-    TVSelectionChanged(TV);
+    UpdateButtonsState;
   end;
 end;
 
@@ -420,10 +433,12 @@ end;
 procedure TToolBarConfig.lvToolbarSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
-  lbToolbarSelectionChange(Sender);
-  lblSelect.Caption:= IntToStr(lvToolbar.ItemIndex)+ ' / ' + IntToStr(lvToolbar.Items.Count);
-  btnClear.Enabled:= lvToolbar.Selected <> nil;
-  btnRemove.Enabled:= btnClear.Enabled;
+  UpdateButtonsState;
+
+  if lvToolbar.ItemIndex<lvToolbar.Items.Count-1 then
+    lblSelect.Caption:=Format('%d / %d', [lvToolbar.ItemIndex+1, lvToolbar.Items.Count-1])
+  else
+    lblSelect.Caption:=Format('%d+ / %d', [lvToolbar.ItemIndex, lvToolbar.Items.Count-1])
 end;
 
 
@@ -432,6 +447,7 @@ var
   lvItem: TListItem;
   anIndex: Integer;
 begin
+  if not (ActiveControl=lvToolbar) then Exit;
   anIndex := lvToolbar.ItemIndex;
   if anIndex > -1 then
     lvItem := lvToolbar.Items.Insert(anIndex)
@@ -453,9 +469,9 @@ procedure TToolBarConfig.btnMoveDownClick(Sender: TObject);
 var
   Index1,Index2: Integer;
 begin
-  if lvToolbar.ItemIndex = -1 then
-    Exit;
-  if lvToolbar.ItemIndex < lvToolbar.Items.Count - 1 then begin
+  if (ActiveControl=lvToolbar) and (lvToolbar.ItemIndex>-1)
+    and (lvToolbar.ItemIndex<lvToolbar.Items.Count-2) then
+  begin
     Index1 := lvToolbar.ItemIndex;
     Index2 := Index1+1;
     lvToolbar.Items.Exchange(Index1,Index2);
@@ -471,9 +487,9 @@ procedure TToolBarConfig.btnMoveUpClick(Sender: TObject);
 var
   Index1,Index2: Integer;
 begin
-  if lvToolbar.ItemIndex = -1 then
-    exit;
-  if lvToolbar.ItemIndex > 0 then begin
+  if (ActiveControl=lvToolbar) and (lvToolbar.ItemIndex>0)
+    and (lvToolbar.ItemIndex<lvToolbar.Items.Count-1) then
+  begin
     Index1:= lvToolbar.ItemIndex;
     Index2:= Index1-1;
     lvToolbar.Items.Exchange(Index1, Index2);
@@ -597,6 +613,24 @@ begin
   //  lvItem.SubItems.Add(IntToStr(PMask));
 end;
 
+procedure TToolBarConfig.AddTailItem;
+var
+  lvItem: TListItem;
+begin
+  { Tail item is an extra item, added at the end of list for
+    make possible to select place for inserting new command
+    "after last command".
+    In MainList it presented as extra divider at the end of list.
+    In lvToolbar it presented as extra divider at the end of list
+    with empty caption (only spaces).
+    TToolBarConfig.SaveSettings excludes this item from saving.
+    In lvToolbar this item may only be selected, any actions
+    with it are prohibited. }
+
+  lvItem := lvToolbar.Items.Add;
+  lvItem.Caption:= '                              ';
+end;
+
 procedure TToolBarConfig.FillToolBar;
 var
   I: Integer;
@@ -610,7 +644,10 @@ begin
     mi := aListItem.Item;
     aCaption := MainList.Strings[I];
     if aCaption = cIDEToolbarDivider then
-      AddDivider
+      if i<(MainList.Count-1) then
+        AddDivider
+      else
+        AddTailItem  // add tail item instead extra divider at the end of list
     else
       AddToolBarItem(mi);
     aListItem.LvIndex:= lvToolbar.Items.Count - 1;
@@ -636,7 +673,11 @@ begin
     end;
     AddListItem(MI);
   end;
+
+  AddListItem(nil);  // add extra divider at the end of list. This extra divider
+                     // will presented in lvToolbar as "tail item" (see comment in AddTailItem)
   FillToolBar;
+  lvToolbar.ItemIndex:=lvToolbar.Items.Count-1;
 end;
 
 procedure TToolBarConfig.SaveSettings(SL: TStringList);
@@ -645,7 +686,7 @@ var
   I: Integer;
 begin
   SL.Clear;
-  for i := 0 to MainList.Count - 1 do
+  for i := 0 to MainList.Count - 2 do  // excluding tail item
   begin
     lvItem := TLvItem(MainList.Objects[I]);
     if MainList[I] = cIDEToolbarDivider then

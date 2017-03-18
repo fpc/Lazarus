@@ -4715,7 +4715,6 @@ resourcestring
   lisCoolbarMoveSelectedUp = 'Move selected toolbar item up';
   lisCoolbarMoveSelectedDown = 'Move selected toolbar item down';
   lisCoolbarAddDivider = 'Add Divider';
-  lisCoolbarClearSelection = 'Clear selection';
   lisToolbarConfiguration = 'Toolbar Configuration';
   lisCoolbarAvailableCommands = 'Available commands';
   lisCoolbarToolbarCommands = 'Toolbar commands';
