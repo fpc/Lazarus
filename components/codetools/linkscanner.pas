@@ -4000,7 +4000,7 @@ var
     UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
     if UnitSet<>nil then begin
       CfgCache:=UnitSet.GetConfigCache(false);
-      if CfgCache.Includes.GetString(AFilename,ExpFilename) then begin
+      if Assigned(CfgCache) and CfgCache.Includes.GetString(AFilename,ExpFilename) then begin
         NewCode:=LoadSourceCaseLoUp(ExpFilename);
         Result:=(NewCode<>nil);
         if Result then exit;
