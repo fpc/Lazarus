@@ -8350,6 +8350,7 @@ begin
   if not CompareStrings(UnitPaths,Item.UnitPaths) then exit;
   if not CompareStrings(IncludePaths,Item.IncludePaths) then exit;
   if not CompareStringTrees(Units,Item.Units) then exit;
+  if not CompareStringTrees(Includes,Item.Includes) then exit;
   Result:=true;
 end;
 
