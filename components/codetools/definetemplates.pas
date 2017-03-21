@@ -8292,6 +8292,7 @@ begin
   FreeAndNil(UnitPaths);
   FreeAndNil(IncludePaths);
   FreeAndNil(Units);
+  FreeAndNil(Includes);
 end;
 
 function TFPCTargetConfigCache.Equals(Item: TFPCTargetConfigCache;
@@ -8856,7 +8857,7 @@ begin
         end;
       // gather all units in all unit and inc files search paths
       GatherUnitsInSearchPaths(UnitPaths,IncludePaths,OnProgress,Units,Includes,true);
-      if (UnitPaths=nil) or (UnitPaths.Count=0) then begin
+      if (UnitPaths.Count=0) then begin
         if CTConsoleVerbosity>=-1 then
           debugln(['Warning: [TFPCTargetConfigCache.Update] no unit paths: ',Compiler,' ',ExtraOptions]);
       end;
