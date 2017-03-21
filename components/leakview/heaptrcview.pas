@@ -561,7 +561,7 @@ begin
   IDECommandCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
   if IDECommandCategory <> nil then
   begin
-    IDECommand := RegisterIDECommand(IDECommandCategory, rsLeakView, rsLeakView, IDEShortCutX, nil, @IDEMenuClicked);
+    IDECommand := RegisterIDECommand(IDECommandCategory, 'Leaks and Traces', rsLeakView, IDEShortCutX, nil, @IDEMenuClicked);
     if IDECommand <> nil then
     begin
       IDEButtonCommand := RegisterIDEButtonCommand(IDECommand);

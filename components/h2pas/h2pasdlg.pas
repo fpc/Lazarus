@@ -202,9 +202,9 @@ begin
   // register IDE shortcut and menu item
   Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Cat:=IDECommandList.FindCategoryByName(CommandCategoryToolMenuName);
-  CmdH2PasTool := RegisterIDECommand(Cat                 ,
-         h2pH2Pas, h2pCreateUnitsFromCHeaderFiles, Key, nil, @ExecuteH2PasTool);
-  RegisterIDEMenuCommand(itmSecondaryTools, h2pH2PasTool, h2pH2Pas, nil, nil,
+  CmdH2PasTool := RegisterIDECommand(Cat,
+         'H2Pas ...', h2pCreateUnitsFromCHeaderFiles, Key, nil, @ExecuteH2PasTool);
+  RegisterIDEMenuCommand(itmSecondaryTools, 'H2PasTool', h2pH2Pas, nil, nil,
                          CmdH2PasTool);
 
   // register text converter tools
@@ -839,7 +839,7 @@ begin
   // add a menu item to easily create a Search and replace from the current
   // selection or line of the source editor.
   fSrcEditAddSearchReplaceMenuItem:=RegisterIDEMenuCommand(SrcEditSection,
-      h2pAddSearchAndReplaceToolBeforeH2pas,
+      'Add "search and replace" tool before H2Pas',
       h2pAddSearchAndReplaceToolBeforeH2pas,
       @OnAddSearchAndReplaceBeforeH2PasClick);
 end;

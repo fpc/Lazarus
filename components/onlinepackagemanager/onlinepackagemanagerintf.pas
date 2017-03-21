@@ -55,11 +55,11 @@ begin
   IDECommandCategory := IDECommandList.FindCategoryByName('Components');
   if IDECommandCategory <> nil then
   begin
-    IDECommand := RegisterIDECommand(IDECommandCategory, rsLazarusPackageManager, rsLazarusPackageManager, IDEShortCutX, nil, @IDEMenuSectionClicked);
+    IDECommand := RegisterIDECommand(IDECommandCategory, 'Online Package Manager', rsLazarusPackageManager, IDEShortCutX, nil, @IDEMenuSectionClicked);
     if IDECommand <> nil then
       RegisterIDEButtonCommand(IDECommand);
   end;
-  RegisterIDEMenuCommand(itmPkgGraphSection, rsLazarusPackageManager, rsLazarusPackageManager, nil, @IDEMenuSectionClicked);
+  RegisterIDEMenuCommand(itmPkgGraphSection, 'Online Package Manager', rsLazarusPackageManager, nil, @IDEMenuSectionClicked);
 end;
 
 end.
