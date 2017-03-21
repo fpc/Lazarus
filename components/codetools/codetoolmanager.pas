@@ -6471,9 +6471,24 @@ end;
 
 //-----------------------------------------------------------------------------
 
+function FindIncFileInCfgCache(const Name: string; out ExpFilename: string): boolean;
+var
+  CfgCache: TFPCTargetConfigCache;
+  UnitSet: TFPCUnitSetCache;
+begin
+  // search the include file in directories defines in fpc.cfg (by -Fi option)
+  UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+  if UnitSet<>nil then begin
+    CfgCache:=UnitSet.GetConfigCache(false);
+    Result:=Assigned(CfgCache) and Assigned(CfgCache.Includes)
+      and CfgCache.Includes.GetString(Name,ExpFilename);
+  end;
+end;
+
 initialization
   CodeToolBoss:=TCodeToolManager.Create;
   OnFindOwnerOfCodeTreeNode:=@GetOwnerForCodeTreeNode;
+  BasicCodeTools.FindIncFileInCfgCache:=@FindIncFileInCfgCache;
 
 
 finalization
