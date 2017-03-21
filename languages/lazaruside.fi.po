@@ -7086,10 +7086,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Yksittäinen"
 
-#: lazarusidestrconsts.liscoolbarclearselection
-msgid "Clear selection"
-msgstr "Tyhjennä valinta"
-
 #: lazarusidestrconsts.liscoolbarcodeexplorer
 msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
 msgid "Code Explorer"

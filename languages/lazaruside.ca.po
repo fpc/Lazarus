@@ -7371,10 +7371,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr ""
 
-#: lazarusidestrconsts.liscoolbarclearselection
-msgid "Clear selection"
-msgstr ""
-
 #: lazarusidestrconsts.liscoolbarcodeexplorer
 msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
 msgid "Code Explorer"
