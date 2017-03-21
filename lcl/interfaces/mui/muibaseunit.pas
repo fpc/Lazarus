@@ -1580,15 +1580,146 @@ begin
   //writeln('ShiftState AROS: ', HexStr(Pointer(State)), ' and ', HexStr(Pointer(IEQUALIFIER_LALT)),' -> ', HexStr(Pointer(Result)));
 end;
 
-function Dispatcher(cl: PIClass; Obj: PObject_; Msg: intuition.PMsg): longword;
+
+{ ######################################################################
+  DRAW Event for Dispatcher}
+function DrawEvent(cl: PIClass; Obj: PObject_; Msg: intuition.PMsg): longword;
 var
+  MUIB: TMUIObject;
+  Buffered: Boolean;
   ri: PMUI_RenderInfo;
   rp: PRastPort;
+  li: pLayer_Info;
   clip: Pointer;
+  WithScrollbars: Boolean;
+  PaintX, PaintY: Integer;
+  PaintH, PaintW: Integer;
+begin
+  MUIB := TMUIObject(INST_DATA(cl, Pointer(obj))^);
+  //sysdebugln('->>DRAW');
+  //if (PMUIP_Draw(msg)^.Flags and MADF_DRAWOBJECT = 0) then
+  // Exit;
+  Buffered := True;
+  rp := nil;
+  ri := MUIRenderInfo(Obj);
+  if Assigned(ri) then
+    rp := ri^.mri_RastPort;
+  if Assigned(rp) then
+  begin
+    MUIB := TMUIObject(INST_DATA(cl, Pointer(obj))^);
+    clip := MUI_AddClipping(ri, Obj_Left(obj), Obj_top(Obj),
+        Obj_Width(Obj), Obj_Height(Obj));
+    try
+      if Assigned(MUIB) then
+      begin
+        if MUIB.FirstPaint and (MUIB is TMUIGroupBox) then
+        begin
+          MUIB.FirstPaint := False;
+          TWinControl(MUIB.pasobject).InvalidateClientRectCache(True);
+        end;
+        //writeln('-->Draw ', muib.classname, ' ', HexStr(MUIB.FMUICanvas));
+        //if MUIB.MUIDrawing then
+        WithScrollbars := Assigned(MUIB.VScroll) and Assigned(MUIB.HScroll);
+        //
+        if (MUIB.FChilds.Count = 0) or ((MUIB.FChilds.Count = 2) and WithScrollbars) then
+        begin
+          //PMUIP_Draw(msg)^.Flags := MADF_DRAWOBJECT;
+          //Result := DoSuperMethodA(cl, obj, msg);
+          if MUIB.MUIDrawing then
+            Result := DoSuperMethodA(cl, obj, msg);
+        end else
+        begin
+          {.$ifndef MorphOS} // makes strong flicker on MorphOS
+          if MUIB is TMuiGroup then
+            Result := DoSuperMethodA(cl, obj, msg);
+          {.$endif}
+        end;
+          //Result := DoSuperMethodA(cl, obj, msg);
+        Buffered := True; //not MUIB.MUIDrawing;//(MUIB.FChilds.Count = 0) or ((MUIB.FChilds.Count = 2) and WithScrollbars);
+        if MUIB is TMUIWindow then
+        begin
+          PaintX := Obj_Left(Obj);
+          PaintY := Obj_Top(Obj);
+          PaintW := Obj_Width(Obj);
+          PaintH := Obj_Height(Obj);
+        end else
+        begin
+          PaintX := Obj_MLeft(Obj);
+          PaintY := Obj_MTop(Obj);
+          PaintW := Obj_MWidth(Obj);
+          PaintH := Obj_MHeight(Obj);
+        end;
+        // make sure we stay inside the window (MOS/Amiga need this)
+        PaintW := Min(PaintW, (ri^.mri_Window^.Width - PaintX) - ri^.mri_Window^.BorderRight);
+        PaintH := Min(PaintH, (ri^.mri_Window^.Height - PaintY) - ri^.mri_Window^.BorderBottom);
+        //
+        if WithScrollbars then
+        begin
+          if MUIB.VScroll.Visible then
+            PaintW := PaintW - MUIB.VScroll.Width;
+          If MUIB.HScroll.Visible then
+            PaintH := PaintH - MUIB.HScroll.Height;
+          //writeln('-->Draw ', muib.classname, ' ', HexStr(MUIB.FMUICanvas));
+        end;
+        if Buffered then
+        begin
+          MUIB.FMUICanvas.DrawRect := Rect(0, 0, PaintW, PaintH);
+          MUIB.FMUICanvas.RastPort := CreateRastPortA;
+          li := NewLayerInfo();
+          MUIB.FMUICanvas.RastPort^.Bitmap := AllocBitMap(PaintW, PaintH, rp^.Bitmap^.Depth, BMF_MINPLANES or BMF_DISPLAYABLE, rp^.Bitmap);
+          MUIB.FMUICanvas.RastPort^.Layer := CreateUpFrontHookLayer(li, MUIB.FMUICanvas.RastPort^.Bitmap, 0, 0, PaintW - 1, PaintH - 1, LAYERSIMPLE, nil, nil);
+          ClipBlit(rp, PaintX, PaintY, MUIB.FMUICanvas.RastPort, 0, 0, PaintW, PaintH, $00C0);
+        end else
+        begin
+          MUIB.FMUICanvas.RastPort := rp;
+          MUIB.FMUICanvas.DrawRect :=
+              Rect(PaintX, PaintY, PaintW, PaintH);
+        end;
+        MUIB.FMUICanvas.Offset.X := 0;
+        MUIB.FMUICanvas.Offset.Y := 0;
+        MUIB.FMUICanvas.Position.X := 0;
+        MUIB.FMUICanvas.Position.Y := 0;
+        MUIB.FMUICanvas.RenderInfo := ri;
+        MUIB.FMUICanvas.DeInitCanvas;
+        MUIB.FMUICanvas.InitCanvas;
+        //writeln('-->Draw ', MUIB.FMUICanvas.DrawRect.Top, ', ', MUIB.FMUICanvas.DrawRect.Bottom);
+        MUIB.DoRedraw;
+        if Assigned(MUIB.FOnDraw) then
+        begin
+          MUIB.FOnDraw(MUIB);
+        end;
+        MUIB.FMUICanvas.DeInitCanvas;
+        if Buffered and Assigned(MUIB.FMUICanvas.RastPort) then
+        begin
+          ClipBlit(MUIB.FMUICanvas.RastPort, 0,0, rp, PaintX, PaintY, PaintW, PaintH, $00C0);
+          DeleteLayer(0, MUIB.FMUICanvas.RastPort^.layer);
+          DisposeLayerInfo(li);
+          MUIB.FMUICanvas.RastPort^.layer := nil;
+          FreeBitmap(MUIB.FMUICanvas.RastPort^.Bitmap);
+          FreeRastPortA(MUIB.FMUICanvas.RastPort);
+          MUIB.FMUICanvas.RastPort := nil;
+        end;
+        //writeln('<--Draw ', muib.classname);
+      end;
+    finally
+      MUI_RemoveClipRegion(ri, clip);
+      MUIB.FMUICanvas.RastPort := nil;
+    end;
+    MUIB.DoChildRedraw();
+  end;
+  Result := 0;
+end;
+{END Draw event
+########################################################################}
+
+
+function Dispatcher(cl: PIClass; Obj: PObject_; Msg: intuition.PMsg): longword;
+var
   MUIB: TMUIObject;
   MUIParent: TMUIObject;
   p: TMUIObject;
   HEMsg: PMUIP_HandleEvent;
+  ri: PMUI_RenderInfo;
   iMsg: PIntuiMessage;
   winObj: PObject_;
   relX, relY: Integer;
@@ -1601,15 +1732,10 @@ var
   Win: PWindow;
   CurTime: Int64;
   MUIWin: TMUIWindow;
-  Buffered: Boolean;
-  WithScrollbars: Boolean;
-  PaintX, PaintY: Integer;
-  PaintH, PaintW: Integer;
   IsSysKey: Boolean;
   EatEvent: Boolean;
   Key: Char;
   i: Integer;
-  li: pLayer_Info;
   {$ifdef AmigaOS4}
   data: PIntuiWheelData;
   {$endif}
@@ -1667,117 +1793,7 @@ begin
 // ################# DRAW EVENT ########################################
     MUIM_Draw:
     begin
-      //sysdebugln('->>DRAW');
-      //if (PMUIP_Draw(msg)^.Flags and MADF_DRAWOBJECT <> 0) then
-      // Exit;
-      rp := nil;
-      ri := MUIRenderInfo(Obj);
-      if Assigned(ri) then
-        rp := ri^.mri_RastPort;
-      if Assigned(rp) then
-      begin
-        MUIB := TMUIObject(INST_DATA(cl, Pointer(obj))^);
-        clip := MUI_AddClipping(ri, Obj_Left(obj), Obj_top(Obj),
-            Obj_Width(Obj), Obj_Height(Obj));
-        try
-          if Assigned(MUIB) then
-          begin
-            if MUIB.FirstPaint and (MUIB is TMUIGroupBox) then
-            begin
-              MUIB.FirstPaint := False;
-              TWinControl(MUIB.pasobject).InvalidateClientRectCache(True);
-            end;
-            //writeln('-->Draw ', muib.classname, ' ', HexStr(MUIB.FMUICanvas));
-            //if MUIB.MUIDrawing then
-            WithScrollbars := Assigned(MUIB.VScroll) and Assigned(MUIB.HScroll);
-            //
-            if (MUIB.FChilds.Count = 0) or ((MUIB.FChilds.Count = 2) and WithScrollbars) then
-            begin
-              //PMUIP_Draw(msg)^.Flags := MADF_DRAWOBJECT;
-              //Result := DoSuperMethodA(cl, obj, msg);
-              if MUIB.MUIDrawing then
-                Result := DoSuperMethodA(cl, obj, msg);
-            end else
-            begin
-              {.$ifndef MorphOS} // makes strong flicker on MorphOS
-              if MUIB is TMuiGroup then
-                Result := DoSuperMethodA(cl, obj, msg);
-              {.$endif}
-            end;
-              //Result := DoSuperMethodA(cl, obj, msg);
-            Buffered := True; //not MUIB.MUIDrawing;//(MUIB.FChilds.Count = 0) or ((MUIB.FChilds.Count = 2) and WithScrollbars);
-            if MUIB is TMUIWindow then
-            begin
-              PaintX := Obj_Left(Obj);
-              PaintY := Obj_Top(Obj);
-              PaintW := Obj_Width(Obj);
-              PaintH := Obj_Height(Obj);
-            end else
-            begin
-              PaintX := Obj_MLeft(Obj);
-              PaintY := Obj_MTop(Obj);
-              PaintW := Obj_MWidth(Obj);
-              PaintH := Obj_MHeight(Obj);
-            end;
-            // make sure we stay inside the window (MOS/Amiga need this)
-            PaintW := Min(PaintW, (ri^.mri_Window^.Width - PaintX) - ri^.mri_Window^.BorderRight);
-            PaintH := Min(PaintH, (ri^.mri_Window^.Height - PaintY) - ri^.mri_Window^.BorderBottom);
-            //
-            if WithScrollbars then
-            begin
-              if MUIB.VScroll.Visible then
-                PaintW := PaintW - MUIB.VScroll.Width;
-              If MUIB.HScroll.Visible then
-                PaintH := PaintH - MUIB.HScroll.Height;
-              //writeln('-->Draw ', muib.classname, ' ', HexStr(MUIB.FMUICanvas));
-            end;
-            if Buffered then
-            begin
-              MUIB.FMUICanvas.DrawRect := Rect(0, 0, PaintW, PaintH);
-              MUIB.FMUICanvas.RastPort := CreateRastPortA;
-              li := NewLayerInfo();
-              MUIB.FMUICanvas.RastPort^.Bitmap := AllocBitMap(PaintW, PaintH, rp^.Bitmap^.Depth, BMF_MINPLANES or BMF_DISPLAYABLE, rp^.Bitmap);
-              MUIB.FMUICanvas.RastPort^.Layer := CreateUpFrontHookLayer(li, MUIB.FMUICanvas.RastPort^.Bitmap, 0, 0, PaintW - 1, PaintH - 1, LAYERSIMPLE, nil, nil);
-              ClipBlit(rp, PaintX, PaintY, MUIB.FMUICanvas.RastPort, 0, 0, PaintW, PaintH, $00C0);
-            end else
-            begin
-              MUIB.FMUICanvas.RastPort := rp;
-              MUIB.FMUICanvas.DrawRect :=
-                  Rect(PaintX, PaintY, PaintW, PaintH);
-            end;
-            MUIB.FMUICanvas.Offset.X := 0;
-            MUIB.FMUICanvas.Offset.Y := 0;
-            MUIB.FMUICanvas.Position.X := 0;
-            MUIB.FMUICanvas.Position.Y := 0;
-            MUIB.FMUICanvas.RenderInfo := ri;
-            MUIB.FMUICanvas.DeInitCanvas;
-            MUIB.FMUICanvas.InitCanvas;
-            //writeln('-->Draw ', MUIB.FMUICanvas.DrawRect.Top, ', ', MUIB.FMUICanvas.DrawRect.Bottom);
-            MUIB.DoRedraw;
-            if Assigned(MUIB.FOnDraw) then
-            begin
-              MUIB.FOnDraw(MUIB);
-            end;
-            MUIB.FMUICanvas.DeInitCanvas;
-            if Buffered and Assigned(MUIB.FMUICanvas.RastPort) then
-            begin
-              ClipBlit(MUIB.FMUICanvas.RastPort, 0,0, rp, PaintX, PaintY, PaintW, PaintH, $00C0);
-              DeleteLayer(0, MUIB.FMUICanvas.RastPort^.layer);
-              DisposeLayerInfo(li);
-              MUIB.FMUICanvas.RastPort^.layer := nil;
-              FreeBitmap(MUIB.FMUICanvas.RastPort^.Bitmap);
-              FreeRastPortA(MUIB.FMUICanvas.RastPort);
-              MUIB.FMUICanvas.RastPort := nil;
-            end;
-            //writeln('<--Draw ', muib.classname);
-          end;
-        finally
-          MUI_RemoveClipRegion(ri, clip);
-          MUIB.FMUICanvas.RastPort := nil;
-        end;
-        MUIB.DoChildRedraw();
-      end;
-      Result := 0;
+      Result := DrawEvent(cl, obj, Msg);
     end;
 // ################# Handle EVENT ######################################
     MUIM_HANDLEEVENT: begin
