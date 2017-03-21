@@ -437,6 +437,14 @@ begin
     raise Exception.Create(rsNoWidgetSet);
   end;
   WidgetSet.AppInit(ScreenInfo);
+  {$IFDEF DARWIN}
+  // Mac OSX (all WS) return 72 PPI for 100% scaling.
+  // The LCL needs 96 PPI for correct
+  //   a) font size scaling (Height/Size ratio)
+  //   b) High-DPI scaling (Application.Scaled)
+  ScreenInfo.PixelsPerInchX := MulDiv(ScreenInfo.PixelsPerInchX, 96, 72);
+  ScreenInfo.PixelsPerInchY := MulDiv(ScreenInfo.PixelsPerInchY, 96, 72);
+  {$ENDIF}
   ScreenInfo.Initialized := True;
   Screen.UpdateScreen;
   // set that we are initialized => all exceptions will be handled by our HandleException

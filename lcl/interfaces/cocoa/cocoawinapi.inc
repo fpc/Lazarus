@@ -1875,9 +1875,9 @@ begin
   // todo: change implementation for printers
   case Index of
     HORZSIZE:
-      Result := Round(NSScreen.mainScreen.frame.size.width / 96 * 25.4);
+      Result := Round(NSScreen.mainScreen.frame.size.width / 72 * 25.4);
     VERTSIZE:
-      Result := Round(NSScreen.mainScreen.frame.size.height / 96 * 25.4);
+      Result := Round(NSScreen.mainScreen.frame.size.height / 72 * 25.4);
     HORZRES:
       Result := Round(NSScreen.mainScreen.frame.size.width);
     BITSPIXEL:
@@ -1887,9 +1887,9 @@ begin
     SIZEPALETTE:
       Result := 0;
     LOGPIXELSX:
-      Result := 96;
+      Result := 72;
     LOGPIXELSY:
-      Result := 96;
+      Result := 72;
     VERTRES:
       Result := Round(NSScreen.mainScreen.frame.size.height);
     NUMRESERVED:
