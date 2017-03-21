@@ -11131,9 +11131,8 @@ begin
     //Find start of identifier
     AtomRect := Rect(-1,-1,-1,-1);
     SrcEdit.EditorComponent.GetWordBoundsAtRowCol(CaretPos, AtomStartPos, AtomEndPos);
-    AtomRect.TopLeft := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomStartPos, CaretPos.y+1));
+    AtomRect.TopLeft := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomStartPos, CaretPos.y));
     AtomRect.BottomRight := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomEndPos, CaretPos.y+1));
-    Inc(AtomRect.Bottom, SrcEdit.EditorComponent.LineHeight);
 
     SrcEdit.ActivateHint(AtomRect, BaseURL, SmartHintStr, AutoShown, False);
   end;

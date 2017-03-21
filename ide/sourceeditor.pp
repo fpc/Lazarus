@@ -48,7 +48,7 @@ uses
   // LCL
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
   LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
-  ClipBrd, HelpIntfs, Messages,
+  ClipBrd, HelpIntfs, Messages, LMessages,
   // LazControls
   ExtendedNotebook,
   // LazUtils
@@ -1924,13 +1924,13 @@ begin
   begin
     FAutoHintMousePos := Mouse.CursorPos;
     if not(HintIsVisible and (FLastHint = AHint)) then
-      ShowHint(ScreenRect.TopLeft,AHint,AMouseOffset);
+      ShowHint(Point(ScreenRect.Left, ScreenRect.Bottom),AHint,AMouseOffset);
   end else
   begin
     if HintIsVisible and (FLastHint = AHint) then
       HideIfVisible
     else
-      ShowHint(ScreenRect.TopLeft,AHint,AMouseOffset);
+      ShowHint(Point(ScreenRect.Left, ScreenRect.Bottom),AHint,AMouseOffset);
   end;
   FAutoHideHintTimer.Enabled := AAutoShown;
 end;
@@ -2044,13 +2044,14 @@ begin
     if OkX then FAutoHintMousePos.x := Cur.x;
     if OkY then FAutoHintMousePos.y := Cur.y;
 
-    if (not IsRectEmpty(FScreenRect)) and PtInRect(FScreenRect, Cur) then
+    if (not IsRectEmpty(FScreenRect)) then
     begin
       // Do not close, if mouse still over the same word, that triggered the hint
+      if PtInRect(FScreenRect, Cur) then
         Exit;
     end else
     begin
-      // Do not close if mouse moves towards the hint. Allow mouse to enter hint
+      // Fallback if FScreenRect is empty
       OkX := OkX or
              ( (FAutoHintMousePos.x <= hw.Left + MaxJitter) and
                (Cur.x > FAutoHintMousePos.x - MaxJitter) and (Cur.x <= hw.Left + hw.Width + MaxJitter)
@@ -10666,8 +10667,12 @@ begin
     if FHints.PtIsOnHint(Mouse.CursorPos) then begin // ignore any action over Hint
       if FHints.CurHintWindow.Active then
         exit;
-      if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE)or
-         ((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) {$ENDIF}
+      if (Msg = WM_MOUSEMOVE)
+         or (Msg = LM_MOUSELEAVE)
+         {$IFDEF WINDOWS}
+         or (Msg = WM_NCMOUSEMOVE)
+         or ((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST))
+         {$ENDIF}
       then
         exit;
     end;
