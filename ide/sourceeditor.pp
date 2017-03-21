@@ -3332,7 +3332,9 @@ var
   NewOptions: TSynSearchOptions;
   ALeft,ATop:integer;
   DlgResult: TModalResult;
+  AState: TLazFindReplaceState;
 begin
+  LazFindReplaceDialog.SaveState(AState);
   LazFindReplaceDialog.ResetUserHistory;
   //debugln('TSourceEditor.StartFindAndReplace A LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
   if ReadOnly then Replace := False;
@@ -3384,7 +3386,10 @@ begin
   InputHistoriesSO.FindOptions:=LazFindReplaceDialog.Options*SaveOptions;
   InputHistoriesSO.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
   if DlgResult = mrCancel then
+  begin
+    LazFindReplaceDialog.RestoreState(AState);
     exit;
+  end;
   //debugln('TSourceEditor.StartFindAndReplace B LazFindReplaceDialog.FindText="',dbgstr(LazFindReplaceDialog.FindText),'"');
 
   Replace:=ssoReplace in LazFindReplaceDialog.Options;
