@@ -3577,7 +3577,10 @@ begin
       if FDatalink.BOF then aPos := 0 else
       if FDatalink.EOF then aPos := aRange
       else
+      begin
         aPos := FDataLink.DataSet.RecNo - 1; // RecNo is 1 based
+        FDataLink.DataSet.UpdateCursorPos; // FPC 3 bug #31532 workaround
+      end;
       if aPos<0 then aPos:=0;
     end else begin
       aRange := 6;

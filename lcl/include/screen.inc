@@ -431,7 +431,17 @@ begin
     Result := MonitorFromRect(R, MonitorDefault);
   end
   else
-    Result := nil;
+  if (MonitorHandle = 0) and (MonitorDefault = mdNull) then
+    Result := nil
+  else
+  begin
+    // the user expects some monitor but handle wasn't found -> the monitor list has probably changed
+    UpdateMonitors;
+    for i := 0 to MonitorCount - 1 do
+      if Monitors[i].Handle = MonitorHandle then
+        Exit(Monitors[i]);
+    RaiseGDBException('TScreen.MonitorFromPoint'); // internal error
+  end;
 end;
 
 function TScreen.MonitorFromRect(const Rect: TRect;
@@ -486,7 +496,17 @@ begin
     end;
   end
   else
-    Result := nil;
+  if (MonitorHandle = 0) and (MonitorDefault = mdNull) then
+    Result := nil
+  else
+  begin
+    // the user expects some monitor but handle wasn't found -> the monitor list has probably changed
+    UpdateMonitors;
+    for i := 0 to MonitorCount - 1 do
+      if Monitors[i].Handle = MonitorHandle then
+        Exit(Monitors[i]);
+    RaiseGDBException('TScreen.MonitorFromRect'); // internal error
+  end;
 end;
 
 function TScreen.MonitorFromWindow(const Handle: THandle;
@@ -506,7 +526,17 @@ begin
     Result := MonitorFromRect(R, MonitorDefault);
   end
   else
-    Result := nil;
+  if (MonitorHandle = 0) and (MonitorDefault = mdNull) then
+    Result := nil
+  else
+  begin
+    // the user expects some monitor but handle wasn't found -> the monitor list has probably changed
+    UpdateMonitors;
+    for i := 0 to MonitorCount - 1 do
+      if Monitors[i].Handle = MonitorHandle then
+        Exit(Monitors[i]);
+    RaiseGDBException('TScreen.MonitorFromWindow'); // internal error
+  end;
 end;
 
 procedure GetScreenFontsList(FontList: TStrings);
