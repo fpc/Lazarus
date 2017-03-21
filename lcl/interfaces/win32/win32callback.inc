@@ -2338,6 +2338,11 @@ begin
     WM_IME_SETCONTEXT,
     WM_IME_STARTCOMPOSITION:
       SetLMessageAndParams(Msg, True);
+    WM_DISPLAYCHANGE:
+    begin
+      if Application.MainFormHandle = Window then
+        Screen.UpdateMonitors;
+    end;
   else
     // pass along user defined messages
     if Msg >= WM_USER then
