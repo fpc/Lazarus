@@ -230,7 +230,7 @@ end;
 
 procedure TLazFindReplaceDialog.SaveState(out AState: TLazFindReplaceState);
 begin
-  FillChar(AState, SizeOf(TLazFindReplaceState), 0);
+  FillChar(AState{%H-}, SizeOf(TLazFindReplaceState), 0);
   AState.Options:=Options;
   AState.FindText:=FindText;
   AState.ReplaceText:=ReplaceText;
