@@ -114,7 +114,8 @@ type
     procedure EndTextRender(var ALayout: TCarbonTextLayout);
     
     procedure SetAntialiasing(AValue: Boolean);
-    function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
+    function GetBlendModeFromROP(ROP: DWORD) : CGBlendMode;
+    function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef; BlendMode: CGBlendMode = kCGBlendModeNormal): Boolean;
     procedure SetCGFillping(Ctx: CGContextRef; Width, Height: Integer);  // Width and Height must be negative to flip the image
     procedure RestoreCGFillping(Ctx: CGContextRef; Width, Height: Integer); // Width and Height must be negative to restore
   public
@@ -734,23 +735,41 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.GetBlendModeFromROP
+  Params:  ROP - The raster operation. See TCopyMode
+  Returns: The CGBlendMode corresponding to this operation if such mode exists,
+           the default kCGBlendModeNormal otherwise
+
+  Converts a TCopoyMode raster operation to a BlendMode
+ ------------------------------------------------------------------------------}
+function TCarbonDeviceContext.GetBlendModeFromROP(ROP: DWORD) : CGBlendMode;
+begin
+  case ROP of
+    cmSrcPaint  : result := kCGBlendModeNormal;
+    cmSrcInvert : result := kCGBlendModeExclusion;
+  else result := kCGBlendModeNormal;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.DrawCGImage
   Params:  X, Y - Left, Top
            Width, Height
            CGImage
+           BlendMode
   Returns: If the function succeeds
 
   Draws CGImage into CGContext
  ------------------------------------------------------------------------------}
 function TCarbonDeviceContext.DrawCGImage(X, Y, Width, Height: Integer;
-  CGImage: CGImageRef): Boolean;
+  CGImage: CGImageRef; BlendMode: CGBlendMode): Boolean;
 begin
   Result := False;
   
   // save dest context
   CGContextSaveGState(CGContext);
 
-  CGContextSetBlendMode(CGContext, kCGBlendModeNormal);
+  CGContextSetBlendMode(CGContext, BlendMode);
   try
     SetCGFillping(CGContext, Width, Height);
     if OSError(
@@ -1537,7 +1556,7 @@ begin
     if not UseLayer then
     begin
       // Normal drawing
-      Result := DrawCGImage(X, Y, Width, Height, Image);
+      Result := DrawCGImage(X, Y, Width, Height, Image, GetBlendModeFromROP(Rop));
     end
     else
     begin
