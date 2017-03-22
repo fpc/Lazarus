@@ -1068,6 +1068,8 @@ type
     procedure SetIconFont(const AValue: TFont);
     procedure SetMenuFont(const AValue: TFont);
     procedure SetSystemFont(const AValue: TFont);
+    function UpdatedMonitor(AHandle: HMONITOR; ADefault: TMonitorDefaultTo;
+      AErrorMsg: string): TMonitor;
     procedure UpdateLastActive;
     procedure RestoreLastActive;
     procedure AddHandler(HandlerType: TScreenNotification;
