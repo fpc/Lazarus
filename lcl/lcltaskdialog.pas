@@ -442,10 +442,6 @@ begin
       LDefaultFont.Name := 'Arial';
   end;
   {$ENDIF}
-
-  {$IFDEF DARWIN}
-  LDefaultFont.Size := 13;
-  {$ENDIF}
 end;
 
 const
