@@ -195,7 +195,8 @@ type
     cmsDefault_unicodestring, { makes the default string type in $h+ mode unicodestring rather than
                                 ansistring; similarly, char becomes unicodechar rather than ansichar }
     cmsTypeHelpers,
-    cmsBlocks
+    cmsBlocks,
+    cmsExternalClass    { allow  class external [pkgname] name [symbol] }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -797,7 +798,8 @@ const
     'FINALFIELDS',
     'UNICODESTRINGS',
     'TYPEHELPERS',
-    'BLOCKS'
+    'BLOCKS',
+    'EXTERNALCLASS'
     );
 
   // upper case

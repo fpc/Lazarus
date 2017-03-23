@@ -225,6 +225,7 @@ type
     function IsClassNode(Node: TCodeTreeNode): boolean; // class, not object
     function FindInheritanceNode(ClassNode: TCodeTreeNode): TCodeTreeNode;
     function FindHelperForNode(HelperNode: TCodeTreeNode): TCodeTreeNode;
+    function FindClassExternalNode(ClassNode: TCodeTreeNode): TCodeTreeNode;
     function IdentNodeIsInVisibleClassSection(Node: TCodeTreeNode; Visibility: TClassSectionVisibility): Boolean;
 
     // records
@@ -3064,6 +3065,19 @@ begin
     Result:=Result.NextBrother;
   if (Result<>nil) and (Result.Desc<>ctnHelperFor) then
     Result:=nil;
+end;
+
+function TPascalReaderTool.FindClassExternalNode(ClassNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  if ClassNode=nil then exit;
+  Result:=ClassNode.FirstChild;
+  while (Result<>nil) do
+    begin
+    if Result.Desc=ctnClassExternal then exit;
+    if Result.Desc in AllClassBaseSections then exit(nil);
+    Result:=Result.NextBrother;
+    end;
 end;
 
 function TPascalReaderTool.FindTypeOfForwardNode(TypeNode: TCodeTreeNode

@@ -4359,9 +4359,11 @@ begin
       end;
       if UpAtomIs('EXTERNAL') then begin
         if (ClassDesc in [ctnObjCClass,ctnObjCCategory])
+        or (cmsExternalClass in Scanner.CompilerModeSwitches)
         or Scanner.Values.IsDefined('CPUJVM') then begin
           // objcclass external [name '']
           // cpujvm: class external '' [name '']
+          // externalclass: class external [''] name ''
           CreateChildNode;
           CurNode.Desc:=ctnClassExternal;
           ReadNextAtom;

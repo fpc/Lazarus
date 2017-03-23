@@ -8935,6 +8935,13 @@ begin
     {$ENDIF}
     exit(true);
   end;
+  if FindClassExternalNode(CodeCompleteClassNode)<>nil then begin
+    // external class has no implementations
+    {$IF defined(CTDEBUG) or defined(VerboseCreateMissingClassProcBodies)}
+    debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies external ',CodeCompleteClassNode.DescAsString]);
+    {$ENDIF}
+    exit(true);
+  end;
   
   Result:=false;
   Beauty:=FSourceChangeCache.BeautifyCodeOptions;
