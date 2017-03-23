@@ -148,7 +148,7 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
   public
-    function RefreshHasUpdate: Boolean;
+    procedure RefreshHasUpdate;
     property Version: TPackageVersion read FVersion write FVersion;
     property Dependencies: TPackageDependencies read FDependencies write FDependencies;
     property PackageStates: TPackageStates read FPackageStates write FPackageStates;
@@ -436,7 +436,8 @@ end;
 
 function TLazarusPackage.GetVersionAsString: String;
 begin
-  Result := FVersion.AsString;
+  Result := IntToStr(FVersion.Major) + '.' + IntToStr(FVersion.Minor) + '.' +
+            IntToStr(FVersion.Release) + '.' + IntToStr(FVersion.Build);
 end;
 
 procedure TLazarusPackage.SetVersionAsString(const AValue: String);
@@ -494,7 +495,7 @@ begin
   inherited Destroy;
 end;
 
-function TLazarusPackage.RefreshHasUpdate: Boolean;
+procedure TLazarusPackage.RefreshHasUpdate;
 begin
   FHasUpdate := (FUpdateVersion <> '') and (FInstalledFileVersion <> '') and
      (
