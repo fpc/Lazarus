@@ -50,6 +50,7 @@ type
 
   TMuiCheckMark = class(TMuiArea)
   protected
+    FCheckWidth: Integer;
     FullWidth: Integer;
     CheckLabel: TMuiText;
     procedure SetParent(const AValue: TMUIObject); override;
@@ -66,6 +67,7 @@ type
   public
     constructor Create(const Params: TAParamList); overload; reintroduce; virtual;
     destructor Destroy; override;
+    procedure SetOwnSize; override;
   end;
 
   { TMuiRadioButton }
@@ -845,9 +847,15 @@ var
   ObjType: LongInt;
 begin
   if self is TMUIRadioButton then
+  begin
+    FCheckWidth := 16;
     ObjType := MUIO_Radio
+  end
   else
+  begin
+    FCheckWidth := 20;
     ObjType := MUIO_Checkmark;
+  end;
   if ObjType = MUIO_Radio then
   begin
     Tags.AddTags([
@@ -912,37 +920,23 @@ procedure TMuiCheckMark.SetTop(ATop: Integer);
 begin
   inherited;
   if Assigned(CheckLabel) then
-  begin
-    CheckLabel.Top := Top;
-  end;
+    CheckLabel.Top := Top + (FCheckWidth  div 2 - CheckLabel.Height div 2);
 end;
 
 procedure TMuiCheckMark.SetWidth(AWidth: Integer);
 begin
   FullWidth := AWidth;
-  if Self is TMUIRadioButton then
-  begin
-    inherited SetWidth(16);
-  end else
-  begin
-    inherited SetWidth(20);
-  end;
+  inherited SetWidth(FCheckWidth);
   if Assigned(CheckLabel) and (CheckLabel.Visible) then
   begin
-    CheckLabel.Left := Left + Height + 2;
-    CheckLabel.Width := FullWidth - (Height + 2);
+    CheckLabel.Left := Left + FCheckWidth + 2;
+    CheckLabel.Width := FullWidth - (FCheckWidth + 2);
   end;
 end;
 
 procedure TMuiCheckMark.SetHeight(AHeight: Integer);
 begin
-  if Self is TMUIRadioButton then
-  begin
-    inherited SetHeight(16);
-  end else
-  begin
-    inherited SetHeight(20);
-  end;
+  inherited SetHeight(FCheckWidth);
   SetWidth(FullWidth);
   if Assigned(CheckLabel) and (CheckLabel.Visible) then
     CheckLabel.Height := Height;
@@ -951,6 +945,44 @@ end;
 function TMuiCheckMark.GetWidth(): Integer;
 begin
   Result := FullWidth;
+end;
+
+procedure TMuiCheckMark.SetOwnSize;
+var
+  w: Integer;
+  MinMax: TMUI_MinMax;
+begin
+  // try to get current Width from the Item
+  w := GetAttribute(MUIA_Width);
+  // ups Width is zero -> inital Size so we ask for min max
+  if w = 0 then
+  begin
+    // ask the checkmark for min max
+    FillChar(MinMax, SizeOf(MinMax), 0);
+    DoMethod([MUIM_AskMinMax, NativeUInt(@MinMax)]);
+    // in principle we only want the width
+    w := MinMax.DefWidth;
+  end;
+  // better recheck if the width and height is really set
+  if w > 0 then
+  begin
+    // strange on Amiga the height is sometimes the Height = 0
+    // sadly read the MinMax does not work always return 0, so we just put a default here
+    if CheckLabel.Height = 0 then
+      CheckLabel.Height := 16;
+    FCheckWidth := w;
+    // set the coords for the label
+    if Assigned(CheckLabel) and (CheckLabel.Visible) then
+    begin
+      CheckLabel.Left := Left + FCheckWidth + 2;
+      CheckLabel.Width := FullWidth - (FCheckWidth + 2);
+      CheckLabel.Top := Top + w  div 2 - CheckLabel.Height div 2;
+      // lets do it :-)
+      CheckLabel.SetOwnSize;
+    end;
+  end;
+  // let the checkmark set its size
+  inherited;
 end;
 
 procedure TMuiCheckMark.SetVisible(const AValue: Boolean);
