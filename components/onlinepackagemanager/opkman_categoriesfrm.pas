@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, Graphics, ExtCtrls, StdCtrls,
+  Forms, Controls, Graphics, ExtCtrls, StdCtrls, ButtonPanel,
   // OpkMan
   opkman_const, opkman_common, opkman_VirtualTrees;
 
@@ -39,11 +39,9 @@ type
   { TCategoriesFrm }
 
   TCategoriesFrm = class(TForm)
-    bCancel: TButton;
-    bOk: TButton;
+    ButtonPanel1: TButtonPanel;
     imTree: TImageList;
     lbMessage: TLabel;
-    pnButtons: TPanel;
     pnMessage: TPanel;
     procedure bOkClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
@@ -236,11 +234,11 @@ begin
   FModRes := mrNone;
   Caption := rsCategoriesFrm_Caption;
   lbMessage.Caption := rsCategoriesFrm_lbMessage_Caption;
-  bOk.Caption := rsCategoriesFrm_bYes_Caption;
-  bCancel.Caption := rsCategoriesFrm_bCancel_Caption;
-  bOk.Top := (pnButtons.Height - bOk.Height) div 2;
-  bCancel.Top := (pnButtons.Height - bCancel.Height) div 2;
-  pnMessage.Height := lbMessage.Top + lbMessage.Height + 5;
+  //bOk.Caption := rsCategoriesFrm_bYes_Caption;
+  //bCancel.Caption := rsCategoriesFrm_bCancel_Caption;
+  //bOk.Top := (pnButtons.Height - bOk.Height) div 2;
+  //bCancel.Top := (pnButtons.Height - bCancel.Height) div 2;
+  //pnMessage.Height := lbMessage.Top + lbMessage.Height + 5;
 end;
 
 function TCategoriesFrm.CheckNode(const AName: String): Boolean;
