@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, ButtonPanel,
   // OpkMan
   opkman_const, opkman_common, opkman_options, opkman_VirtualTrees;
 
@@ -40,13 +40,11 @@ type
 
   TRepositoriesFrm = class(TForm)
     bEdit: TButton;
-    bCancel: TButton;
     bDelete: TButton;
     bAdd: TButton;
-    bOk: TButton;
+    ButtonPanel1: TButtonPanel;
     imTree: TImageList;
     pnBottom: TPanel;
-    pnBottom1: TPanel;
     procedure bAddClick(Sender: TObject);
     procedure bOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -96,8 +94,8 @@ begin
   bAdd.Caption := rsRepositories_bAdd_Caption;
   bEdit.Caption := rsRepositories_bEdit_Caption;
   bDelete.Caption := rsRepositories_bDelete_Caption;
-  bOk.Caption := rsRepositories_bOk_Caption;
-  bCancel.Caption := rsRepositories_bCancel_Caption;
+  //ButtonPanel1.OKButton.Caption := rsRepositories_bOk_Caption;
+  //ButtonPanel1.CancelButton.Caption := rsRepositories_bCancel_Caption;
 
   FVST := TVirtualStringTree.Create(nil);
   with FVST do
