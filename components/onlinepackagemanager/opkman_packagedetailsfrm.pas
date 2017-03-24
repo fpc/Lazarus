@@ -29,16 +29,15 @@ interface
 
 uses
   // LCL
-  Forms, StdCtrls, ExtCtrls;
+  Forms, StdCtrls, ExtCtrls, ButtonPanel;
 
 type
 
   { TPackageDetailsFrm }
 
   TPackageDetailsFrm = class(TForm)
-    bOk: TButton;
+    ButtonPanel: TButtonPanel;
     mDetails: TMemo;
-    pnButtons: TPanel;
     procedure FormKeyPress(Sender: TObject; var Key: char);
   private
 
