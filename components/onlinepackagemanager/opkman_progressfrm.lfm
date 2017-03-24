@@ -1,11 +1,11 @@
 object ProgressFrm: TProgressFrm
-  Left = 534
-  Height = 284
-  Top = 243
+  Left = 513
+  Height = 320
+  Top = 288
   Width = 502
   BorderIcons = []
   Caption = 'Downloading packages'
-  ClientHeight = 284
+  ClientHeight = 320
   ClientWidth = 502
   Color = clBtnFace
   Constraints.MinHeight = 240
@@ -15,53 +15,21 @@ object ProgressFrm: TProgressFrm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyPress = FormKeyPress
-  OnResize = FormResize
   OnShow = FormShow
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
   LCLVersion = '1.7'
-  object pnButtons: TPanel
-    Left = 0
-    Height = 41
-    Top = 243
-    Width = 502
-    Align = alBottom
-    BevelOuter = bvNone
-    ClientHeight = 41
-    ClientWidth = 502
-    TabOrder = 0
-    object bCancel: TButton
-      Left = 192
-      Height = 26
-      Top = 7
-      Width = 96
-      Caption = 'Cancel'
-      ModalResult = 2
-      OnClick = bCancelClick
-      TabOrder = 0
-    end
-    object cbExtractOpen: TCheckBox
-      Left = 16
-      Height = 19
-      Top = 11
-      Width = 138
-      Caption = 'Extract after download'
-      Checked = True
-      State = cbChecked
-      TabOrder = 1
-    end
-  end
   object pnLabels: TPanel
     Left = 0
-    Height = 243
+    Height = 249
     Top = 0
     Width = 497
     Align = alClient
     BorderSpacing.Right = 5
     BevelOuter = bvNone
-    ClientHeight = 243
+    ClientHeight = 249
     ClientWidth = 497
-    TabOrder = 1
+    TabOrder = 0
     object lbPackageData: TLabel
       Left = 88
       Height = 1
@@ -96,7 +64,7 @@ object ProgressFrm: TProgressFrm
       ParentColor = False
     end
     object lbPackage: TLabel
-      Left = 16
+      Left = 8
       Height = 15
       Top = 12
       Width = 47
@@ -104,7 +72,7 @@ object ProgressFrm: TProgressFrm
       ParentColor = False
     end
     object lbSpeed: TLabel
-      Left = 16
+      Left = 8
       Height = 15
       Top = 34
       Width = 35
@@ -112,7 +80,7 @@ object ProgressFrm: TProgressFrm
       ParentColor = False
     end
     object lbElapsed: TLabel
-      Left = 16
+      Left = 8
       Height = 15
       Top = 56
       Width = 43
@@ -120,7 +88,7 @@ object ProgressFrm: TProgressFrm
       ParentColor = False
     end
     object lbRemaining: TLabel
-      Left = 16
+      Left = 8
       Height = 15
       Top = 78
       Width = 60
@@ -128,39 +96,77 @@ object ProgressFrm: TProgressFrm
       ParentColor = False
     end
     object pb: TProgressBar
-      Left = 16
-      Height = 20
-      Top = 164
-      Width = 473
-      Anchors = [akLeft, akRight, akBottom]
+      AnchorSideTop.Control = lbReceived
+      AnchorSideTop.Side = asrBottom
+      Left = 8
+      Height = 19
+      Top = 171
+      Width = 481
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
       TabOrder = 0
     end
     object pbTotal: TProgressBar
-      Left = 16
+      AnchorSideTop.Control = lbReceivedTotal
+      AnchorSideTop.Side = asrBottom
+      Left = 8
       Height = 20
-      Top = 208
-      Width = 473
-      Anchors = [akLeft, akRight, akBottom]
+      Top = 217
+      Width = 481
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
       TabOrder = 1
     end
     object lbReceived: TLabel
-      Left = 16
+      Left = 8
       Height = 15
-      Top = 149
+      Top = 150
       Width = 50
       Anchors = [akLeft, akBottom]
       Caption = 'Received:'
       ParentColor = False
     end
     object lbReceivedTotal: TLabel
-      Left = 16
+      AnchorSideTop.Control = pb
+      AnchorSideTop.Side = asrBottom
+      Left = 8
       Height = 15
-      Top = 193
+      Top = 196
       Width = 74
-      Anchors = [akLeft, akBottom]
+      BorderSpacing.Top = 6
       Caption = 'Received total'
       ParentColor = False
     end
+  end
+  object bpCancel: TButtonPanel
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 34
+    Top = 280
+    Width = 490
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    CancelButton.OnClick = bCancelClick
+    TabOrder = 2
+    ShowButtons = [pbCancel]
+  end
+  object cbExtractOpen: TCheckBox
+    Left = 6
+    Height = 19
+    Top = 255
+    Width = 490
+    Align = alBottom
+    BorderSpacing.Around = 6
+    Caption = 'Extract after download'
+    Checked = True
+    State = cbChecked
+    TabOrder = 1
   end
   object imTree: TImageList
     left = 123

@@ -29,17 +29,16 @@ interface
 uses
   SysUtils,
   // LCL
-  Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls, ExtCtrls,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls, ExtCtrls, ButtonPanel,
   // OpkMan
   opkman_installer, opkman_common, opkman_const, opkman_downloader, opkman_zipper,
-  opkman_VirtualTrees;
+  opkman_VirtualTrees, Classes;
 
 type
 
   { TProgressFrm }
 
   TProgressFrm = class(TForm)
-    bCancel: TButton;
     cbExtractOpen: TCheckBox;
     imTree: TImageList;
     lbElapsed: TLabel;
@@ -54,15 +53,14 @@ type
     lbSpeedData: TLabel;
     pb: TProgressBar;
     pbTotal: TProgressBar;
+    bpCancel: TButtonPanel;
     pnLabels: TPanel;
-    pnButtons: TPanel;
     tmWait: TTimer;
     procedure bCancelClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: char);
-    procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure tmWaitTimer(Sender: TObject);
   private
@@ -203,11 +201,6 @@ begin
     FSuccess := False;
     Close;
   end;
-end;
-
-procedure TProgressFrm.FormResize(Sender: TObject);
-begin
-  bCancel.Left := (Self.Width - bCancel.Width) div 2;
 end;
 
 procedure TProgressFrm.DoOnPackageDownloadProgress(Sender: TObject; AFrom, ATo: String;
@@ -503,7 +496,7 @@ end;
 procedure TProgressFrm.bCancelClick(Sender: TObject);
 begin
   Self.Caption := rsProgressFrm_Info4;
-  bCancel.Enabled := False;
+  bpCancel.CancelButton.Enabled := False;
   FCanClose := True;
   case FType of
     0: begin
@@ -580,10 +573,10 @@ begin
   lbSpeedData.Caption := rsProgressFrm_lbSpeedCalc_Caption;
   lbElapsed.Caption := rsProgressFrm_lbElapsed_Caption;
   lbRemaining.Caption := rsProgressFrm_lbRemaining_Caption;
-  pb.Top := lbReceived.Top + lbReceived.Height + 1;
-  pbTotal.Top := lbReceivedTotal.Top + lbReceivedTotal.Height + 1;
-  bCancel.Top := (pnButtons.Height - bCancel.Height) div 2;
-  cbExtractOpen.Top := bCancel.Top + (bCancel.Height - cbExtractOpen.Height) div 2;
+  //pb.Top := lbReceived.Top + lbReceived.Height + 1;
+  //pbTotal.Top := lbReceivedTotal.Top + lbReceivedTotal.Height + 1;
+  //bCancel.Top := (bpCancel.Height - bCancel.Height) div 2;
+  //cbExtractOpen.Top := bCancel.Top + (bCancel.Height - cbExtractOpen.Height) div 2;
   Application.ProcessMessages;
 end;
 
