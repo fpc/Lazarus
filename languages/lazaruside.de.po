@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-04 16:45+0100\n"
+"PO-Revision-Date: 2017-03-23 16:05+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1765,7 +1765,7 @@ msgstr "Case"
 
 #: lazarusidestrconsts.dlgfoldpasclass
 msgid "Class/Object"
-msgstr "Klasse/Objekt"
+msgstr "Class/Object"
 
 #: lazarusidestrconsts.dlgfoldpasclasssection
 msgid "public/private"
@@ -1777,7 +1777,7 @@ msgstr "Except/Finally"
 
 #: lazarusidestrconsts.dlgfoldpasfordo
 msgid "For/Do"
-msgstr ""
+msgstr "For/Do"
 
 #: lazarusidestrconsts.dlgfoldpasifdef
 msgid "{$IfDef}"
@@ -1798,22 +1798,22 @@ msgstr "Begin/End (Prozedur)"
 #: lazarusidestrconsts.dlgfoldpasprocedure
 msgctxt "lazarusidestrconsts.dlgfoldpasprocedure"
 msgid "Procedure"
-msgstr "Prozedur"
+msgstr "Procedure"
 
 #: lazarusidestrconsts.dlgfoldpasprogram
 msgctxt "lazarusidestrconsts.dlgfoldpasprogram"
 msgid "Program"
-msgstr "Programm"
+msgstr "Program"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
 msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
-msgstr "Aufnehmen"
+msgstr "Record"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
-msgstr "Wiederholen"
+msgstr "Repeat"
 
 #: lazarusidestrconsts.dlgfoldpasslashcomment
 msgid "Comment //"
@@ -1847,11 +1847,11 @@ msgstr "Var/Type (global)"
 
 #: lazarusidestrconsts.dlgfoldpaswhiledo
 msgid "While/Do"
-msgstr ""
+msgstr "While/Do"
 
 #: lazarusidestrconsts.dlgfoldpaswithdo
 msgid "With/Do"
-msgstr ""
+msgstr "With/Do"
 
 #: lazarusidestrconsts.dlgfoldxmlcdata
 msgid "CData"
@@ -2308,7 +2308,7 @@ msgstr "Wort unter Cursor hervorheben"
 
 #: lazarusidestrconsts.dlgmarkupoutline
 msgid "Outline (global)"
-msgstr ""
+msgstr "Außenlinie (global)"
 
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
@@ -2415,7 +2415,7 @@ msgstr "Haupteinstellungen"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
 msgid "Word Brackets on caret (global)"
-msgstr ""
+msgstr "Wortklammern am Cursor (global)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
@@ -2949,7 +2949,7 @@ msgstr "Erweiterte Pascal-Schlüsselwort-Einstellungen"
 
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
 msgid "Markup (on caret)"
-msgstr ""
+msgstr "Auszeichnung (am Cursor)"
 
 #: lazarusidestrconsts.dlgpaskeywordsmatches
 msgid "Matching Keywords"
@@ -2957,7 +2957,7 @@ msgstr "Passende Schlüsselwörter"
 
 #: lazarusidestrconsts.dlgpaskeywordsoutline
 msgid "Outline"
-msgstr ""
+msgstr "Außenlinie"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
@@ -7926,7 +7926,7 @@ msgstr "(Vorgabe)"
 
 #: lazarusidestrconsts.lisdefaultsectionofmethods
 msgid "Default section of methods"
-msgstr ""
+msgstr "Vorgabe-Abschnitt der Methoden"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
@@ -21083,4 +21083,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
