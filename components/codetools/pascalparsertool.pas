@@ -1009,6 +1009,8 @@ function TPascalParserTool.KeyWordFuncClassIdentifier: boolean;
     MyEnum: (MyEnumm1, MyEnumm2 := 2, MyEnummy3);
     MySet: set of (MyEnummy4 := 4 , MyEnummy5);
     MyRange: 3..5;
+    Name: integer; external name '$Name';
+    Name: integer external name '$Name';
   examples for type:
     TCompareFunc = function(const Item1, Item2: T): Integer;
 }
@@ -3356,10 +3358,12 @@ var
 
   function CanExternal: Boolean; inline;
   begin
-    Result:=(CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
-      and ((CurNode.Parent.Parent.Desc in AllCodeSections)
-           or ((CurNode.Parent.Parent.Desc in (AllClassBaseSections+AllClassInterfaces))
-              and Scanner.Values.IsDefined('CPUJVM')));
+    if (CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
+      and (CurNode.Parent.Parent.Desc in AllCodeSections) then exit(true);
+    if (CurNode.Parent.Desc in (AllClassBaseSections+AllClassInterfaces))
+        and ((cmsExternalClass in Scanner.CompilerModeSwitches)
+             or Scanner.Values.IsDefined('CPUJVM')) then exit(true);
+    Result:=false;
   end;
 
   function CanPublic: Boolean; inline;
