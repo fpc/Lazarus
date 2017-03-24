@@ -42,16 +42,16 @@ type
   TCleanDirectoryDialog = class(TForm)
     ButtonPanel: TButtonPanel;
     DirBrowseButton: TButton;
-    KeepTextFilesCheckbox: TCHECKBOX;
-    SubDirsCheckbox: TCHECKBOX;
-    SimpleSyntaxKeepCheckbox: TCHECKBOX;
-    KeepCombobox: TCOMBOBOX;
-    KeepGroupbox: TGROUPBOX;
-    SimpleSyntaxRemoveCheckbox: TCHECKBOX;
-    RemoveCombobox: TCOMBOBOX;
-    DirCombobox: TCOMBOBOX;
-    DirGroupbox: TGROUPBOX;
-    RemoveGroupbox: TGROUPBOX;
+    KeepTextFilesCheckbox: TCheckBox;
+    SubDirsCheckbox: TCheckBox;
+    SimpleSyntaxKeepCheckbox: TCheckBox;
+    KeepCombobox: TComboBox;
+    KeepGroupbox: TGroupBox;
+    SimpleSyntaxRemoveCheckbox: TCheckBox;
+    RemoveCombobox: TComboBox;
+    DirCombobox: TComboBox;
+    DirGroupbox: TGroupBox;
+    RemoveGroupbox: TGroupBox;
     procedure CleanDirectoryDialogCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
