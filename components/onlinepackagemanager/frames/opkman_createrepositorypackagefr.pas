@@ -170,8 +170,6 @@ begin
   bCancel.Hint := rsCreateRepositoryPackageFrm_bCancel_Hint;
   bSubmit.Visible := ATyp = 0;
   cbJSONForUpdates.Visible := ATyp = 0;
-  pnB.Height := bSubmit.Height + 1;
-  pnB.Top := (pnButtons.Height - pnB.Height) div 2;
   bCreate.Visible := ATyp = 0;
 
   FVSTPackages := TVirtualStringTree.Create(nil);
@@ -482,11 +480,11 @@ end;
 
 procedure TCreateRepositoryPackagefr.pnBrowseResize(Sender: TObject);
 begin
-  edPackageDir.Top := (pnBrowse.Height - edPackageDir.Height) div 2;
-  lbPackageDir.Left := 100;
-  lbPackageDir.Top := edPackageDir.Top + (edPackageDir.Height - lbPackageDir.Height) div 2;
-  edPackageDir.Left := lbPackagedir.Left + lbPackagedir.Width + 5;
-  edPackageDir.Width := pnBrowse.Width - edPackageDir.Left - 120;
+  //edPackageDir.Top := (pnBrowse.Height - edPackageDir.Height) div 2;
+  //lbPackageDir.Left := 100;
+  //lbPackageDir.Top := edPackageDir.Top + (edPackageDir.Height - lbPackageDir.Height) div 2;
+  //edPackageDir.Left := lbPackagedir.Left + lbPackagedir.Width + 5;
+  //edPackageDir.Width := pnBrowse.Width - edPackageDir.Left - 120;
 end;
 
 procedure TCreateRepositoryPackagefr.spCategoriesClick(Sender: TObject);
