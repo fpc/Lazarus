@@ -7049,16 +7049,17 @@ begin
   if Result <> mrOK then
     Exit;
 
-  Process := TProcessUTF8.Create(nil);
-  try
-    ExeCmdLine := MainBuildBoss.GetRunCommandLine;
-    if ExeCmdLine='' then
-    begin
-      IDEMessageDialog(lisUnableToRun, lisLaunchingApplicationInvalid,
-        mtError,[mbCancel]);
-      Exit(mrNone);
-    end;
+  ExeCmdLine := MainBuildBoss.GetRunCommandLine;
+  if ExeCmdLine='' then
+  begin
+    IDEMessageDialog(lisUnableToRun, lisLaunchingApplicationInvalid,
+      mtError,[mbCancel]);
+    Exit(mrNone);
+  end;
 
+  Process := TProcessUTF8.Create(nil);
+
+  try
     if ExeCmdLine[1]='"' then
     begin
       ExeFileStart := 2;
@@ -7098,6 +7099,14 @@ begin
         mtError,[mbCancel]);
       Exit(mrNone);
     end;
+
+    {$ifdef darwin}
+    if Project1.UseAppBundle then
+    begin
+      Process.Parameters.Insert(0,Process.Executable);
+      Process.Executable := '/usr/bin/open';
+    end;
+    {$endif}
 
     Process.Execute;
   finally
