@@ -584,7 +584,7 @@ end;
 
 function TBuildManager.GetRunCommandLine: string;
 var
-  TFN: string;  // Target Filename
+  TargetFilename: string;
 begin
   Result := '';
   if Project1=nil then exit;
@@ -596,14 +596,16 @@ begin
     Result := Project1.RunParameterOptions.CmdLineParams;
     if GlobalMacroList.SubstituteStr(Result) then
     begin
-      TFN := GetTargetFilename;
-      if (TFN <> '') and (TFN[Length(TFN)] in AllowDirectorySeparators) then
-        TFN += ExtractFileNameOnly(Project1.CompilerOptions.GetDefaultMainSourceFileName);
-      TFN := '"'+TFN+'"';
+      TargetFilename := GetTargetFilename;
+      if (TargetFilename <> '')
+      and (TargetFilename[Length(TargetFilename)] in AllowDirectorySeparators) then
+        TargetFilename += ExtractFileNameOnly(
+                         Project1.CompilerOptions.GetDefaultMainSourceFileName);
+      TargetFilename := '"'+TargetFilename+'"';
       if Result='' then
-        Result:=TFN
+        Result:=TargetFilename
       else
-        Result:=TFN+' '+Result;
+        Result:=TargetFilename+' '+Result;
     end else
       Result:='';
   end else begin

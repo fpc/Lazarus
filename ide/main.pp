@@ -7041,6 +7041,7 @@ var
   Process: TProcessUTF8;
   ExeCmdLine, ExeWorkingDirectory: string;
   ExeFileEnd, ExeFileStart: Integer;
+  RunAppBundle: Boolean;
 begin
   debugln(['TMainIDE.DoRunProjectWithoutDebug START']);
   if Project1=nil then
@@ -7060,8 +7061,10 @@ begin
   end;
 
   Process := TProcessUTF8.Create(nil);
-
   try
+    RunAppBundle:={$IFDEF Darwin}true{$ELSE}false{$ENDIF};
+    RunAppBundle:=RunAppBundle and Project1.UseAppBundle;
+
     if ExeCmdLine[1]='"' then
     begin
       ExeFileStart := 2;
@@ -7076,7 +7079,13 @@ begin
 
     Process.Executable := Copy(ExeCmdLine, ExeFileStart, ExeFileEnd-ExeFileStart);
     Process.Parameters.Text := Copy(ExeCmdLine, ExeFileEnd+ExeFileStart, High(Integer));
-    if not FileIsExecutable(Process.Executable) then
+
+    if RunAppBundle and FileExistsUTF8(Process.Executable)
+    and FileExistsUTF8('/usr/bin/open') then
+    begin
+      Process.Parameters.Insert(0,Process.Executable);
+      Process.Executable := '/usr/bin/open';
+    end else if not FileIsExecutable(Process.Executable) then
     begin
       if Project1.RunParameterOptions.UseLaunchingApplication then
         IDEMessageDialog(lisLaunchingApplicationInvalid,
@@ -7106,14 +7115,6 @@ begin
         mtError,[mbCancel]);
       Exit(mrNone);
     end;
-
-    {$ifdef darwin}
-    if Project1.UseAppBundle then
-    begin
-      Process.Parameters.Insert(0,Process.Executable);
-      Process.Executable := '/usr/bin/open';
-    end;
-    {$endif}
 
     Process.Execute;
   finally
