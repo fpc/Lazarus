@@ -6365,6 +6365,7 @@ resourcestring
   lismpCStyle = 'C style: " => \"';
   lismpTrimClipboardContents = '&Trim clipboard contents';
   lismpPreview = '&Preview';
+  lisUnableToRun2 = 'Unable to run "%s"';
 implementation
 
 end.

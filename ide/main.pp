@@ -7042,6 +7042,7 @@ var
   ExeCmdLine, ExeWorkingDirectory: string;
   ExeFileEnd, ExeFileStart: Integer;
 begin
+  debugln(['TMainIDE.DoRunProjectWithoutDebug START']);
   if Project1=nil then
     Exit(mrNone);
 
@@ -7050,6 +7051,7 @@ begin
     Exit;
 
   ExeCmdLine := MainBuildBoss.GetRunCommandLine;
+  debugln(['TMainIDE.DoRunProjectWithoutDebug ExeCmdLine="',ExeCmdLine,'"']);
   if ExeCmdLine='' then
   begin
     IDEMessageDialog(lisUnableToRun, lisLaunchingApplicationInvalid,
@@ -7076,10 +7078,15 @@ begin
     Process.Parameters.Text := Copy(ExeCmdLine, ExeFileEnd+ExeFileStart, High(Integer));
     if not FileIsExecutable(Process.Executable) then
     begin
-      IDEMessageDialog(lisLaunchingApplicationInvalid,
-        Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
-               [Process.Executable, LineEnding, LineEnding+LineEnding]),
-        mtError, [mbOK]);
+      if Project1.RunParameterOptions.UseLaunchingApplication then
+        IDEMessageDialog(lisLaunchingApplicationInvalid,
+          Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
+                 [Process.Executable, LineEnding, LineEnding+LineEnding]),
+          mtError, [mbOK])
+      else
+        IDEMessageDialog(lisUnableToRun,
+          Format(lisUnableToRun2, [Process.Executable]),
+          mtError, [mbOK]);
       Exit(mrNone);
     end;
 
