@@ -795,6 +795,7 @@ type
     property OnClick;
     property OnClose;
     property OnCloseQuery;
+    property OnConstrainedResize;
     property OnContextPopup;
     property OnCreate;
     property OnDblClick;
