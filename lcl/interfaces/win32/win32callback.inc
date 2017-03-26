@@ -297,15 +297,12 @@ begin
     if WinControl.Controls[i] is TWinControl then
     begin
       ChildControl := TWinControl(WinControl.Controls[i]);
-      if Enable then
-      begin
-        if ChildControl.Enabled then
-          EnableWindow(ChildControl.Handle, true);
-      end
-      else
-        EnableWindow(ChildControl.Handle, false);
 
-      EnableChildWindows(ChildControl, Enable);   // Recursive call
+      if not Enable or ChildControl.Enabled then
+      begin
+        EnableWindow(ChildControl.Handle, Enable and ChildControl.Enabled);
+        EnableChildWindows(ChildControl, Enable and ChildControl.Enabled);  // Recursive call
+      end;
     end;
   end;
 end;
