@@ -662,6 +662,7 @@ type
       ClientRect: TRect;      // Cache for ClientRect - GetBorderWidth need for Bidi
       ScrollWidth: Integer;   // ClientWidth-FixedWidth
       ScrollHeight: Integer;  // ClientHeight-FixedHeight
+      HScrollBarNetRange: Integer; //ScrollBar Range-Page
       VisibleGrid: TRect;     // Visible non fixed rectangle of cellcoordinates
       MaxClientXY: Tpoint;    // VisibleGrid.BottomRight (pixel) coordinates
       ValidRows: boolean;     // true if there are not fixed columns to show
@@ -900,6 +901,7 @@ type
     procedure WMGetDlgCode(var Msg: TLMNoParams); message LM_GETDLGCODE;
   protected
     fGridState: TGridState;
+    function RTLSign: Integer;
     class procedure WSRegisterClass; override;
     procedure AddSelectedRange;
     procedure AdjustClientRect(var ARect: TRect); override;
@@ -3319,7 +3321,10 @@ begin
     ClipArea := ClientRect;
     if Flat then
       InflateRect(ClipArea, -1, -1);
-    Inc(ClipArea.Left, FGCache.FixedWidth);
+    if BiDiMode <> bdRightToLeft then
+      Inc(ClipArea.Left, FGCache.FixedWidth)
+    else
+      Dec(ClipArea.Right, FGCache.FixedWidth);
     ScrollWindowEx(Handle, DeltaX, 0, @ClipArea, @ClipArea, 0, nil, ScrollFlags);
   end;
   if DeltaY<>0 then
@@ -4513,13 +4518,18 @@ begin
     SB_THUMBPOSITION,
     SB_THUMBTRACK: begin
       if (message.ScrollCode=SB_THUMBPOSITION) or (goThumbTracking in Options) then
-        TrySmoothScrollBy(message.Pos-SP.x, 0);
+      begin
+        if BiDiMode = bdRightToLeft then
+          TrySmoothScrollBy(FGCache.HScrollBarNetRange-message.Pos-SP.x, 0)
+        else
+          TrySmoothScrollBy(message.Pos-SP.x, 0);
+      end;
       message.Result := 0;
     end;
-    SB_PAGELEFT: TrySmoothScrollBy(-(ClientWidth-FGCache.FixedWidth), 0);
-    SB_PAGERIGHT: TrySmoothScrollBy(ClientWidth-FGCache.FixedWidth, 0);
-    SB_LINELEFT: TrySmoothScrollBy(-DefaultColWidth, 0);
-    SB_LINERIGHT: TrySmoothScrollBy(DefaultColWidth, 0);
+    SB_PAGELEFT: TrySmoothScrollBy(-(ClientWidth-FGCache.FixedWidth)*RTLSign, 0);
+    SB_PAGERIGHT: TrySmoothScrollBy((ClientWidth-FGCache.FixedWidth)*RTLSign, 0);
+    SB_LINELEFT: TrySmoothScrollBy(-DefaultColWidth*RTLSign, 0);
+    SB_LINERIGHT: TrySmoothScrollBy(DefaultColWidth*RTLSign, 0);
   end;
 
   if EditorMode then
@@ -4727,7 +4737,7 @@ begin
     TopLeftChanged;
 
   NewTopLeftXY := GetPxTopLeft;
-  ScrollBy(OldTopLeftXY.x-NewTopLeftXY.x, OldTopLeftXY.y-NewTopLeftXY.y);
+  ScrollBy((OldTopLeftXY.x-NewTopLeftXY.x)*RTLSign, OldTopLeftXY.y-NewTopLeftXY.y);
 
   //Result is false if this function failed due to a too high/wide cell (applicable only if goSmoothScroll not used)
   Result :=
@@ -4883,42 +4893,41 @@ end;
 procedure TCustomGrid.GetSBRanges(const HsbVisible, VsbVisible: boolean; out
   HsbRange, VsbRange, HsbPage, VsbPage, HsbPos, VsbPos: Integer);
 begin
-  with FGCache do begin
-
-    HsbRange := 0;
-    HsbPos := 0;
-    if HsbVisible then begin
-      if not GetSmoothScroll(SB_Horz) then begin
-        if (MaxTopLeft.x>=0) and (MaxTopLeft.x<=ColCount-1) then
-          HsbRange := integer(PtrUInt(AccumWidth[MaxTopLeft.x]))+ClientWidth-FixedWidth
-      end
-      else
-        HsbRange:=GridWidth - GetBorderWidth;
-      if (FTopLeft.x>=0) and (FTopLeft.x<=ColCount-1) then
-        HsbPos := integer(PtrUInt(AccumWidth[FTopLeft.x]))+TLColOff-FixedWidth;
-    end;
-
-    VsbRange := 0;
-    VsbPos := 0;
-    if VsbVisible then begin
-      if not GetSmoothScroll(SB_Vert) then begin
-        if (MaxTopLeft.y>=0) and (MaxTopLeft.y<=RowCount-1)  then
-          VsbRange := integer(PtrUInt(AccumHeight[MaxTopLeft.y]))+ClientHeight-FixedHeight
-      end
-      else
-        VSbRange:= GridHeight - GetBorderWidth;
-      if (FTopLeft.y>=0) and (FTopLeft.y<=RowCount-1) then
-        VsbPos := integer(PtrUInt(AccumHeight[FTopLeft.y]))+TLRowOff-FixedHeight;
-    end;
-
-    HsbPage := ClientWidth;
-    VSbPage := ClientHeight;
-
-    {$ifdef dbgscroll}
-    DebugLn('GetSBRanges: HRange=%d HPage=%d HPos=%d VRange=%d VPage=%d VPos=%d',
-      [HSbRange,HsbPage,HsbPos, VsbRange, VsbPage, VsbPos]);
-    {$endif}
+  HsbRange := 0;
+  HsbPos := 0;
+  if HsbVisible then begin
+    if not GetSmoothScroll(SB_Horz) then begin
+      if (FGCache.MaxTopLeft.x>=0) and (FGCache.MaxTopLeft.x<=ColCount-1) then
+        HsbRange := integer(PtrUInt(FGCache.AccumWidth[FGCache.MaxTopLeft.x]))+ClientWidth-FGCache.FixedWidth
+    end
+    else
+      HsbRange:=GridWidth - GetBorderWidth;
+    if (FTopLeft.x>=0) and (FTopLeft.x<=ColCount-1) then
+      HsbPos := integer(PtrUInt(FGCache.AccumWidth[FTopLeft.x]))+FGCache.TLColOff-FGCache.FixedWidth;
   end;
+
+  VsbRange := 0;
+  VsbPos := 0;
+  if VsbVisible then begin
+    if not GetSmoothScroll(SB_Vert) then begin
+      if (FGCache.MaxTopLeft.y>=0) and (FGCache.MaxTopLeft.y<=RowCount-1)  then
+        VsbRange := integer(PtrUInt(FGCache.AccumHeight[FGCache.MaxTopLeft.y]))+ClientHeight-FGCache.FixedHeight
+    end
+    else
+      VSbRange:= GridHeight - GetBorderWidth;
+    if (FTopLeft.y>=0) and (FTopLeft.y<=RowCount-1) then
+      VsbPos := integer(PtrUInt(FGCache.AccumHeight[FTopLeft.y]))+FGCache.TLRowOff-FGCache.FixedHeight;
+  end;
+
+  HsbPage := ClientWidth;
+  VSbPage := ClientHeight;
+
+  FGCache.HScrollBarNetRange := HsbRange-HsbPage;
+
+  {$ifdef dbgscroll}
+  DebugLn('GetSBRanges: HRange=%d HPage=%d HPos=%d VRange=%d VPage=%d VPos=%d',
+    [HSbRange,HsbPage,HsbPos, VsbRange, VsbPage, VsbPos]);
+  {$endif}
 end;
 
 procedure TCustomGrid.GetSelectedState(AState: TGridDrawState; out
@@ -8775,6 +8784,13 @@ end;
 procedure TCustomGrid.RowHeightsChanged;
 begin
   //
+end;
+
+function TCustomGrid.RTLSign: Integer;
+const
+  cRTLSign: array[TBiDiMode] of Integer = (1, -1, 1, 1);
+begin
+  Result := cRTLSign[BiDiMode];
 end;
 
 procedure TCustomGrid.SaveColumns(cfg: TXMLConfig; Version: integer);
