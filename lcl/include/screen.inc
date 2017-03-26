@@ -265,12 +265,8 @@ begin
 end;
 
 procedure TScreen.UpdateScreen;
-var
-  DC: HDC;
 begin
-  DC := GetDC(0);
-  FPixelsPerInch := GetDeviceCaps(DC, LOGPIXELSX);
-  ReleaseDC(0, DC);
+  FPixelsPerInch := ScreenInfo.PixelsPerInchX;
 end;
 
 procedure TScreen.RemoveAllHandlersOfObject(AnObject: TObject);
