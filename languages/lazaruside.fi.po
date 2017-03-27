@@ -18298,6 +18298,10 @@ msgstr "Muutujan nimeäminen lähdekoodissa ei onnistu."
 msgid "Unable to run"
 msgstr "Suoritus ei onnistu"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Ankkurikontrollin asettaminen ei onnistu"

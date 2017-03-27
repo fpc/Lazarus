@@ -19084,6 +19084,10 @@ msgstr "Impossível renomear variíavel no fonte."
 msgid "Unable to run"
 msgstr "Impossível executar"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Impossível definir lado ancoragem do controle."

@@ -19866,6 +19866,10 @@ msgstr "לא ניתן לשנות את שם המשתנה בקוד המקור."
 msgid "Unable to run"
 msgstr "לא ניתן להריץ"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "לא ניתן לקבוע את צד העיגון בפקד"

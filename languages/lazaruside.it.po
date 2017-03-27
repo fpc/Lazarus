@@ -18629,6 +18629,10 @@ msgstr "Impossibile rinominare variabile nel sorgente."
 msgid "Unable to run"
 msgstr "Impossibile eseguire"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Impossibile impostare il controllo AnchorSide"

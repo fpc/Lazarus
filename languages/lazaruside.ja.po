@@ -19022,6 +19022,10 @@ msgstr "ソース内の変数名を変更できません。"
 msgid "Unable to run"
 msgstr "実行できません"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "アンカーサイドコントロールを設置できません。"

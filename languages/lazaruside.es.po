@@ -18610,6 +18610,10 @@ msgstr "No se ha podido renombrar la variable en la fuente."
 msgid "Unable to run"
 msgstr "No es posible ejecutar"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "No se puede establecer el control AnchorSide"

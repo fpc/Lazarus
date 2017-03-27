@@ -19165,6 +19165,10 @@ msgstr "Nepavyko pirminiame kode pervadinti kintamąjį."
 msgid "Unable to run"
 msgstr "Startuoti nepavyko"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Kraštą pririšti prie komponentės neįmanoma"

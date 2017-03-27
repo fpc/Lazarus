@@ -19235,6 +19235,10 @@ msgstr "无法重命名源代码中的变量."
 msgid "Unable to run"
 msgstr "无法运行"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "无法设置锚边"

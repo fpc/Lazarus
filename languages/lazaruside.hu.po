@@ -18463,6 +18463,10 @@ msgstr "Változó átnevezése a forrásban nem lehetséges."
 msgid "Unable to run"
 msgstr "Futtatás nem lehetséges"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "AnchorSide vezérlő beállítása nem lehetséges"

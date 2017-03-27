@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-17 01:07+0300\n"
+"PO-Revision-Date: 2017-03-28 01:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -18460,6 +18460,10 @@ msgstr "Невозможно переименовать переменную в 
 #: lazarusidestrconsts.lisunabletorun
 msgid "Unable to run"
 msgstr "Запуск невозможен"
+
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr "Невозможно запустить \"%s\""
 
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"

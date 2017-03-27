@@ -18560,6 +18560,10 @@ msgstr "Nelze přejmenovat proměnnou ve zdrojovém souboru."
 msgid "Unable to run"
 msgstr "Nelze spustit"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Nelze nastavit AnchorSide Control"

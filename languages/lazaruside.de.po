@@ -18456,6 +18456,10 @@ msgstr "Die Variable im Quelltext kann nicht umbenannt werden."
 msgid "Unable to run"
 msgstr "Kann nicht starten"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Kann Ankerseiten-Kontrollelement nicht setzen"
@@ -21083,3 +21087,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

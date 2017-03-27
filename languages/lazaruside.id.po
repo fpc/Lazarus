@@ -19363,6 +19363,10 @@ msgstr "Tidak bisa mengganti nama variabel dalam sumber."
 msgid "Unable to run"
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Tidak bisa men-set Kontrol AnchorSide"

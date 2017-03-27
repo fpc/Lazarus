@@ -19504,6 +19504,10 @@ msgstr "Nemožno premenovať premennú v zdrojovom kóde."
 msgid "Unable to run"
 msgstr "Nemožno spustiť"
 
+#: lazarusidestrconsts.lisunabletorun2
+msgid "Unable to run \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Nemožno nastaviť AnchorSide prvku"
