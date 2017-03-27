@@ -262,6 +262,7 @@ type
     xtByte,        // byte
     xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH, COPY (1.1)
     xtVariant,     // variant
+    xtJSValue,     // jsvalue only in Pas2JS, similar to variant
     xtNil          // nil  = pointer, class, procedure, method, ...
     );
   // Do not define: TExpressionTypeDescs = set of TExpressionTypeDesc;
@@ -310,6 +311,7 @@ var
     'Byte',
     'CompilerFunc',
     'Variant',
+    'JSValue',
     'Nil'
   );
 
@@ -329,7 +331,7 @@ const
   xtAllStringTypes = [xtConstString, xtShortString, xtString, xtAnsiString];
   xtAllWideStringTypes = [xtConstString, xtWideString, xtUnicodeString];
   xtAllPointerTypes = [xtPointer, xtNil];
-  xtAllTypeHelperTypes = xtAllPredefinedTypes-[xtCompilerFunc,xtVariant,xtNil];
+  xtAllTypeHelperTypes = xtAllPredefinedTypes-[xtCompilerFunc,xtVariant,xtJSValue,xtNil];
 
   xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar];
   xtAllWideStringCompatibleTypes = xtAllWideStringTypes+[xtWideChar,xtChar];
@@ -1083,7 +1085,7 @@ procedure FreeListOfPFindContext(var ListOfPFindContext: TFPList);
 function ListOfPFindContextToStr(const ListOfPFindContext: TFPList): string;
 function dbgsFC(const Context: TFindContext): string;
 
-function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
+function PredefinedIdentToExprTypeDesc(Identifier: PChar; Compiler: TPascalCompiler): TExpressionTypeDesc;
 function dbgs(const Flags: TFindDeclarationFlags): string; overload;
 function dbgs(const Flags: TFoundDeclarationFlags): string; overload;
 function dbgs(const vat: TVariableAtomType): string; overload;
@@ -1232,7 +1234,8 @@ begin
   end;
 end;
 
-function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
+function PredefinedIdentToExprTypeDesc(Identifier: PChar;
+  Compiler: TPascalCompiler): TExpressionTypeDesc;
 begin
   // predefined identifiers
   if CompareIdentifiers(Identifier,'NIL')=0 then
@@ -1296,6 +1299,8 @@ begin
     Result:=xtConstBoolean
   else if CompareIdentifiers(Identifier,'VARIANT')=0 then
     Result:=xtVariant
+  else if (Compiler=pcPas2js) and (CompareIdentifiers(Identifier,'JSVALUE')=0) then
+    Result:=xtJSValue
   else if IsWordBuiltInFunc.DoItCaseInsensitive(Identifier) then
     Result:=xtCompilerFunc
 
@@ -9943,7 +9948,7 @@ var
 begin
   Result:=CleanExpressionType;
   IdentPos:=@Src[StartPos];
-  Result.Desc:=PredefinedIdentToExprTypeDesc(IdentPos);
+  Result.Desc:=PredefinedIdentToExprTypeDesc(IdentPos,Scanner.PascalCompiler);
 
   {$IFDEF ShowExprEval}
   debugln('TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier ',
@@ -11984,7 +11989,7 @@ begin
     // predefined identifier
     Params.Flags:=OldFlags;
     Result:=CleanExpressionType;
-    Result.Desc:=PredefinedIdentToExprTypeDesc(Params.Identifier);
+    Result.Desc:=PredefinedIdentToExprTypeDesc(Params.Identifier,Scanner.PascalCompiler);
   end;
 end;
 
@@ -12165,6 +12170,7 @@ begin
     xtLongWord,
     xtCompilerFunc,
     xtVariant,
+    xtJSValue,
     xtNil:
       RaiseTermHasNoIterator;
     xtString,

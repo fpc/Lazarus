@@ -196,7 +196,7 @@ type
                                 ansistring; similarly, char becomes unicodechar rather than ansichar }
     cmsTypeHelpers,
     cmsBlocks,
-    cmsExternalClass    { allow  class external [pkgname] name [symbol] }
+    cmsExternalClass      { allow  class external [pkgname] name [symbol] }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -261,7 +261,7 @@ const
   );
 
 type
-  TPascalCompiler = (pcFPC, pcDelphi);
+  TPascalCompiler = (pcFPC, pcDelphi, pcPas2js);
   
 type
   TLSSkippingDirective = (
@@ -533,6 +533,7 @@ type
     function GetDirectives(Index: integer): PLSDirective; inline;
     function GetDirectivesSorted(Index: integer): PLSDirective; inline;
     procedure SetCompilerMode(const AValue: TCompilerMode);
+    procedure SetPascalCompiler(const AValue: TPascalCompiler);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
     procedure SortDirectives;
     function InternalIfDirective: boolean;
@@ -721,7 +722,7 @@ type
     property CompilerMode: TCompilerMode read FCompilerMode write SetCompilerMode;
     property CompilerModeSwitches: TCompilerModeSwitches
                          read FCompilerModeSwitches write FCompilerModeSwitches;
-    property PascalCompiler: TPascalCompiler read FPascalCompiler write FPascalCompiler;
+    property PascalCompiler: TPascalCompiler read FPascalCompiler write SetPascalCompiler;
     property ScanTill: TLinkScannerRange read FScanTill write SetScanTill;
         
     procedure Clear;
@@ -804,7 +805,7 @@ const
 
   // upper case
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
-        'FPC', 'DELPHI'
+        'FPC', 'DELPHI', 'PAS2JS'
      );
 
 const
@@ -2037,7 +2038,7 @@ begin
   SourceName:='';
   CommentStyle:=CommentNone;
   CommentLevel:=0;
-  PascalCompiler:=pcFPC;
+  FPascalCompiler:=pcFPC;
   CompilerMode:=cmFPC;
   FNestedComments:=cmsNested_comment in DefaultCompilerModeSwitches[CompilerMode];
   IfLevel:=0;
@@ -2052,9 +2053,14 @@ begin
 
   // compiler
   s:=FInitValues.Variables[PascalCompilerDefine];
-  for pc:=Low(TPascalCompiler) to High(TPascalCompiler) do
-    if (s=PascalCompilerNames[pc]) then
-      PascalCompiler:=pc;
+  if s<>'' then begin
+    for pc:=Low(TPascalCompiler) to High(TPascalCompiler) do
+      if (s=PascalCompilerNames[pc]) then
+        PascalCompiler:=pc;
+  end else if InitialValues.IsDefined('pas2js') then
+    PascalCompiler:=pcPas2js
+  else if InitialValues.IsDefined('delphi') and not InitialValues.IsDefined('fpc') then
+    PascalCompiler:=pcDelphi;
 
   // compiler mode
   for cm:=Low(TCompilerMode) to High(TCompilerMode) do
@@ -3448,7 +3454,7 @@ function TLinkScanner.ModeSwitchDirective: boolean;
 var
   ValStart: LongInt;
   ModeSwitch: TCompilerModeSwitch;
-  s: TCompilerModeSwitches;
+  Switches: TCompilerModeSwitches;
 begin
   if StoreDirectives then
     FDirectives[FDirectivesCount-1].Kind:=lsdkModeSwitch;
@@ -3461,17 +3467,17 @@ begin
     if CompareUpToken(CompilerModeSwitchNames[ModeSwitch],Src,ValStart,SrcPos)
     then begin
       Result:=true;
-      s:=[ModeSwitch];
+      Switches:=[ModeSwitch];
       case ModeSwitch of
-      cmsObjectiveC2: Include(s,cmsObjectiveC1);
+      cmsObjectiveC2: Include(Switches,cmsObjectiveC1);
       end;
       if (SrcPos<=SrcLen) and (Src[SrcPos]='-') then begin
-        FCompilerModeSwitches:=FCompilerModeSwitches-s;
+        FCompilerModeSwitches:=FCompilerModeSwitches-Switches;
         case ModeSwitch of
         cmsDefault_unicodestring:  Values.Undefine('FPC_UNICODESTRINGS');
         end;
       end else begin
-        FCompilerModeSwitches:=FCompilerModeSwitches+s;
+        FCompilerModeSwitches:=FCompilerModeSwitches+Switches;
         case ModeSwitch of
         cmsDefault_unicodestring:  Values.Variables['FPC_UNICODESTRINGS'] := '1';
         end;
@@ -4526,6 +4532,15 @@ begin
   FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
   FNestedComments:=cmsNested_comment in CompilerModeSwitches;
   Values.Variables[CompilerModeVars[FCompilerMode]]:='1';
+end;
+
+procedure TLinkScanner.SetPascalCompiler(const AValue: TPascalCompiler);
+begin
+  if FPascalCompiler=AValue then Exit;
+  FPascalCompiler:=AValue;
+  case PascalCompiler of
+  pcPas2js: ;
+  end;
 end;
 
 procedure TLinkScanner.SetDirectiveValueWithSequence(

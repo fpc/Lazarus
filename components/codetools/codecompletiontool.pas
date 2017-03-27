@@ -6431,6 +6431,7 @@ begin
   xtShortInt,
   xtByte: AddAssignment('0');
   xtVariant: begin AddAssignment('0'); AddAssignment(''''''); end;
+  xtJSValue: begin AddAssignment('0'); AddAssignment(''''''); AddAssignment('nil'); AddAssignment('false'); end;
   end;
   if Statements.Count=0 then begin
     MoveCursorToAtomPos(IdentAtom);

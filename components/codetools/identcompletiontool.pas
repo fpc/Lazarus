@@ -1364,7 +1364,7 @@ procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
 var
   NewItem: TIdentifierListItem;
   ProcNode: TCodeTreeNode;
-  HidddnUnits: String;
+  HiddenUnits: String;
   p: PChar;
   SystemTool: TFindDeclarationTool;
   I: TExpressionTypeDesc;
@@ -1497,6 +1497,8 @@ begin
             AddBaseType(PChar(ExpressionTypeDescNames[I]));
       end;
     end;
+    if Scanner.PascalCompiler=pcPas2js then
+      AddBaseType(PChar(ExpressionTypeDescNames[xtJSValue]));
     AddBaseConstant('True');
     AddBaseConstant('False');
     //the nil constant doesn't belong to system context, therefore it is added in next step
@@ -1505,9 +1507,9 @@ begin
   begin
     AddBaseConstant(PChar(ExpressionTypeDescNames[xtNil]));
     // system units
-    HidddnUnits:=Scanner.GetHiddenUsedUnits;
-    if HidddnUnits<>'' then begin
-      p:=PChar(HidddnUnits);
+    HiddenUnits:=Scanner.GetHiddenUsedUnits;
+    if HiddenUnits<>'' then begin
+      p:=PChar(HiddenUnits);
       while p^<>#0 do begin
         while p^=',' do inc(p);
         if GetIdentLen(p)>0 then
