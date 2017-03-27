@@ -21,7 +21,7 @@
 
 {
  }
-unit ipf;
+unit ipf_fix;
 {$I direct.inc}
 interface
 
