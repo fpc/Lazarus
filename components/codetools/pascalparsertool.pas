@@ -3358,9 +3358,9 @@ var
 
   function CanExternal: Boolean; inline;
   begin
-    if (CurNode.Parent.Desc in [ctnVarSection,ctnClassClassVar])
+    if (CurNode.Parent.Desc=ctnVarSection)
       and (CurNode.Parent.Parent.Desc in AllCodeSections) then exit(true);
-    if (CurNode.Parent.Desc in (AllClassBaseSections+AllClassInterfaces))
+    if (CurNode.Parent.Desc in (AllClassBaseSections+AllClassSubSections+AllClassInterfaces))
         and ((cmsExternalClass in Scanner.CompilerModeSwitches)
              or Scanner.Values.IsDefined('CPUJVM')) then exit(true);
     Result:=false;
@@ -3426,7 +3426,7 @@ begin
     ReadNextAtom;
   end;
   //if UpAtomIs('EXTERNAL') then
-  //  debugln(['TPascalParserTool.ReadVariableType ',CurNode.Parent.Parent.DescAsString,' ',CurNode.Parent.DescAsString,' ',CurNode.DescAsString]);
+  //  debugln(['TPascalParserTool.ReadVariableType Parent.Parent=',CurNode.Parent.Parent.DescAsString,' Parent=',CurNode.Parent.DescAsString,' Cur=',CurNode.DescAsString,' CanExternal=',CanExternal]);
   if ((UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL'))
       and CanExternal)
   or (UpAtomIs('PUBLIC') and CanPublic) then
