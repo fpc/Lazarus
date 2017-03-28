@@ -47,7 +47,7 @@ uses
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
   ExtCtrls, Forms, ComCtrls, Types, LMessages, Calendar, LazUTF8, LCLIntf,
-  Themes, CalControlWrapper;
+  LCLProc, Themes, CalControlWrapper;
 
 const
   { We will deal with the NullDate value the special way. It will be especially
@@ -174,6 +174,8 @@ type
     FUpDown: TCustomUpDown;
     FOnChange: TNotifyEvent;
     FOnCheckBoxChange: TNotifyEvent;
+    FOnChangeHandler: TMethodList;
+    FOnCheckBoxChangeHandler: TMethodList;
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     FEffectiveDateDisplayOrder: TDateDisplayOrder;
@@ -334,9 +336,15 @@ type
     procedure SetDateTimeJumpMinMax(const AValue: TDateTime);
     procedure ArrangeCtrls; virtual;
     procedure Change; virtual;
+    procedure CheckBoxChange; virtual;
     procedure DoDropDown; virtual;
     procedure DoCloseUp; virtual;
     procedure DoAutoCheck; virtual;
+
+    procedure AddHandlerOnChange(const AOnChange: TNotifyEvent;
+      AsFirst: Boolean = False);
+    procedure AddHandlerOnCheckBoxChange(const AOnCheckBoxChange: TNotifyEvent;
+      AsFirst: Boolean = False);
 
     property BorderStyle default bsSingle;
     property AutoSize default True;
@@ -417,6 +425,11 @@ type
   {TDateTimePicker}
 
   TDateTimePicker = class(TCustomDateTimePicker)
+  public
+    procedure AddHandlerOnChange(const AOnChange: TNotifyEvent;
+      AsFirst: Boolean = False);
+    procedure AddHandlerOnCheckBoxChange(const AOnCheckBoxChange: TNotifyEvent;
+      AsFirst: Boolean = False);
   public
     property DateTime;
     property CalendarWrapperClass;
@@ -597,6 +610,20 @@ type
     destructor Destroy; override;
   published
   end;
+
+{ TDateTimePicker }
+
+procedure TDateTimePicker.AddHandlerOnChange(const AOnChange: TNotifyEvent;
+  AsFirst: Boolean);
+begin
+  inherited AddHandlerOnChange(AOnChange, AsFirst);
+end;
+
+procedure TDateTimePicker.AddHandlerOnCheckBoxChange(
+  const AOnCheckBoxChange: TNotifyEvent; AsFirst: Boolean);
+begin
+  inherited AddHandlerOnCheckBoxChange(AOnCheckBoxChange, AsFirst);
+end;
 
 procedure TDTCalendarForm.SetClosingCalendarForm;
 begin
@@ -3063,6 +3090,8 @@ procedure TCustomDateTimePicker.Change;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
+  if FOnChangeHandler<>nil then
+    FOnChangeHandler.CallNotifyEvents(Self);
 end;
 
 procedure TCustomDateTimePicker.SelectDate;
@@ -3443,10 +3472,18 @@ begin
   CheckTextEnabled;
   SetFocusIfPossible;
 
+  CheckBoxChange;
+
+  Invalidate;
+end;
+
+procedure TCustomDateTimePicker.CheckBoxChange;
+begin
   if Assigned(FOnCheckBoxChange) then
     FOnCheckBoxChange(Self);
 
-  Invalidate;
+  if FOnCheckBoxChangeHandler<>nil then
+    FOnCheckBoxChangeHandler.CallNotifyEvents(Self);
 end;
 
 procedure TCustomDateTimePicker.SetFocusIfPossible;
@@ -3859,12 +3896,30 @@ begin
   SetDateMode(dmComboBox);
 end;
 
+procedure TCustomDateTimePicker.AddHandlerOnChange(
+  const AOnChange: TNotifyEvent; AsFirst: Boolean);
+begin
+  if FOnChangeHandler=nil then
+    FOnChangeHandler := TMethodList.Create;
+  FOnChangeHandler.Add(TMethod(AOnChange), not AsFirst);
+end;
+
+procedure TCustomDateTimePicker.AddHandlerOnCheckBoxChange(
+  const AOnCheckBoxChange: TNotifyEvent; AsFirst: Boolean);
+begin
+  if FOnCheckBoxChangeHandler=nil then
+    FOnCheckBoxChangeHandler := TMethodList.Create;
+  FOnCheckBoxChangeHandler.Add(TMethod(AOnCheckBoxChange), not AsFirst);
+end;
+
 destructor TCustomDateTimePicker.Destroy;
 begin
   FDoNotArrangeControls := True;
   DestroyArrowBtn;
   DestroyUpDown;
   SetShowCheckBox(False);
+  FOnChangeHandler.Free;
+  FOnCheckBoxChangeHandler.Free;
 
   inherited Destroy;
 end;
