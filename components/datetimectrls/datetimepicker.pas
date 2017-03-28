@@ -3444,7 +3444,7 @@ begin
   SetFocusIfPossible;
 
   if Assigned(FOnCheckBoxChange) then
-    FOnCheckBoxChange(Sender);
+    FOnCheckBoxChange(Self);
 
   Invalidate;
 end;
