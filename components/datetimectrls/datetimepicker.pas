@@ -2992,11 +2992,11 @@ procedure TCustomDateTimePicker.CreateWnd;
 begin
   inherited CreateWnd;
 
+  UpdateDate;
   if FDoNotArrangeControls then begin { This field is set to True in constructor.
     Its purpose is to prevent control anchoring until this point. That's because
     on Linux Lazarus crashes when control is dropped on form in designer if
     particular anchoring code executes before CreateWnd has done its job. }
-    UpdateDate;
     FDoNotArrangeControls := False;
     ArrangeCtrls;
   end;
