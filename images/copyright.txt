@@ -6,3 +6,51 @@ Public domain Tango https://packages.debian.org/sid/tango-icon-theme
 
 Creative Commons. Author and source mentioned.
 - pkg_sortalphabetically.png, originally sort_ascend.png by Momenticons (got from findicons.com)
+
+---
+
+Following images were created by FTurtle:
+
+menu directory:
+
+menu_clear_all_bookmarks.png
+menu_clear_file_bookmarks.png
+menu_goto_bookmark0.png
+menu_goto_bookmark1.png
+menu_goto_bookmark2.png
+menu_goto_bookmark3.png
+menu_goto_bookmark4.png
+menu_goto_bookmark5.png
+menu_goto_bookmark6.png
+menu_goto_bookmark7.png
+menu_goto_bookmark8.png
+menu_goto_bookmark9.png
+menu_search_next_bookmark.png
+menu_search_previous_bookmark.png
+menu_search_set_bookmark.png
+menu_set_free_bookmark.png
+menu_toggle_bookmark0.png
+menu_toggle_bookmark1.png
+menu_toggle_bookmark2.png
+menu_toggle_bookmark3.png
+menu_toggle_bookmark4.png
+menu_toggle_bookmark5.png
+menu_toggle_bookmark6.png
+menu_toggle_bookmark7.png
+menu_toggle_bookmark8.png
+menu_toggle_bookmark9.png
+
+sourceeditor directory:
+
+bookmark0.png
+bookmark1.png
+bookmark2.png
+bookmark3.png
+bookmark4.png
+bookmark5.png
+bookmark6.png
+bookmark7.png
+bookmark8.png
+bookmark9.png
+
+---

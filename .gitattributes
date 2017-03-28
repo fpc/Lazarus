@@ -6411,6 +6411,7 @@ images/actions/laz_wand.png -text svneol=unset#image/png
 images/actions/preferences.xpm svneol=native#text/plain
 images/bookmark.res -text
 images/bookmark.sh svneol=native#text/plain
+images/bookmark_images.bat svneol=native#text/plain
 images/bookmark_list.txt svneol=native#text/plain
 images/btn_downarrow.png -text
 images/codeexplorer/ce_class.png -text
@@ -6709,6 +6710,8 @@ images/menu/menu_build_file.png -text svneol=unset#image/png
 images/menu/menu_build_lazarus.png -text svneol=unset#image/png
 images/menu/menu_build_run_file.png -text
 images/menu/menu_clean.png -text svneol=unset#image/png
+images/menu/menu_clear_all_bookmarks.png -text
+images/menu/menu_clear_file_bookmarks.png -text
 images/menu/menu_close.png -text svneol=unset#image/png
 images/menu/menu_close_all.png -text svneol=unset#image/png
 images/menu/menu_codetoolsdefineseditor.png -text svneol=unset#image/png
@@ -6725,6 +6728,16 @@ images/menu/menu_environment_options.png -text svneol=unset#image/png
 images/menu/menu_exit.png -text svneol=unset#image/png
 images/menu/menu_file_print.png -text
 images/menu/menu_file_revert.png -text svneol=unset#image/png
+images/menu/menu_goto_bookmark0.png -text
+images/menu/menu_goto_bookmark1.png -text
+images/menu/menu_goto_bookmark2.png -text
+images/menu/menu_goto_bookmark3.png -text
+images/menu/menu_goto_bookmark4.png -text
+images/menu/menu_goto_bookmark5.png -text
+images/menu/menu_goto_bookmark6.png -text
+images/menu/menu_goto_bookmark7.png -text
+images/menu/menu_goto_bookmark8.png -text
+images/menu/menu_goto_bookmark9.png -text
 images/menu/menu_goto_line.png -text svneol=unset#image/png
 images/menu/menu_help.png -text svneol=unset#image/png
 images/menu/menu_indent.png -text svneol=unset#image/png
@@ -6773,12 +6786,23 @@ images/menu/menu_search_previous_bookmark.png -text
 images/menu/menu_search_replace.png -text svneol=unset#image/png
 images/menu/menu_search_set_bookmark.png -text svneol=unset#image/png
 images/menu/menu_select_all.png -text svneol=unset#image/png
+images/menu/menu_set_free_bookmark.png -text
 images/menu/menu_stepinto.png -text svneol=unset#image/png
 images/menu/menu_stepinto_instr.png -text svneol=unset#image/png
 images/menu/menu_stepout.png -text svneol=unset#image/png
 images/menu/menu_stepover.png -text svneol=unset#image/png
 images/menu/menu_stepover_instr.png -text svneol=unset#image/png
 images/menu/menu_stop.png -text svneol=unset#image/png
+images/menu/menu_toggle_bookmark0.png -text
+images/menu/menu_toggle_bookmark1.png -text
+images/menu/menu_toggle_bookmark2.png -text
+images/menu/menu_toggle_bookmark3.png -text
+images/menu/menu_toggle_bookmark4.png -text
+images/menu/menu_toggle_bookmark5.png -text
+images/menu/menu_toggle_bookmark6.png -text
+images/menu/menu_toggle_bookmark7.png -text
+images/menu/menu_toggle_bookmark8.png -text
+images/menu/menu_toggle_bookmark9.png -text
 images/menu/menu_tool_check_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_dfm_to_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_diff.png -text svneol=unset#image/png

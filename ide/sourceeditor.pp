@@ -1615,7 +1615,7 @@ begin
     AParent:=SrcEditSubMenuGotoBookmarks;
       for I := 0 to 9 do
         RegisterIDEMenuCommand(AParent,'GotoBookmark'+IntToStr(I),
-            uemBookmarkN+IntToStr(I), nil, @ExecuteIdeMenuClick, nil, 'bookmark'+IntToStr(I));
+            uemBookmarkN+IntToStr(I), nil, @ExecuteIdeMenuClick, nil, 'menu_goto_bookmark'+IntToStr(I));
       SrcEditMenuNextBookmark:=RegisterIDEMenuCommand(AParent,
           'Goto next Bookmark',uemNextBookmark, nil,
           @ExecuteIdeMenuClick, nil, 'menu_search_next_bookmark');
@@ -1630,13 +1630,13 @@ begin
     AParent:=SrcEditSubMenuToggleBookmarks;
       for I := 0 to 9 do
         RegisterIDEMenuCommand(AParent, 'ToggleBookmark'+IntToStr(I),
-            uemBookmarkN+IntToStr(I), nil, @ExecuteIdeMenuClick, nil, 'bookmark'+IntToStr(I));
+            uemBookmarkN+IntToStr(I), nil, @ExecuteIdeMenuClick, nil, 'menu_toggle_bookmark'+IntToStr(I));
       SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(AParent,
-          'Set a free Bookmark',uemSetFreeBookmark, nil, @ExecuteIdeMenuClick);
+          'Set a free Bookmark',uemSetFreeBookmark, nil, @ExecuteIdeMenuClick, nil, 'menu_set_free_bookmark');
       SrcEditMenuClearFileBookmark:=RegisterIDEMenuCommand(AParent,
-          'Clear Bookmark for current file',srkmecClearBookmarkForFile, nil, @ExecuteIdeMenuClick);
+          'Clear Bookmark for current file',srkmecClearBookmarkForFile, nil, @ExecuteIdeMenuClick, nil, 'menu_clear_file_bookmarks');
       SrcEditMenuClearAllBookmark:=RegisterIDEMenuCommand(AParent,
-          'Clear all Bookmark',srkmecClearAllBookmark, nil, @ExecuteIdeMenuClick);
+          'Clear all Bookmark',srkmecClearAllBookmark, nil, @ExecuteIdeMenuClick, nil, 'menu_clear_all_bookmarks');
   {%endregion}
 
   {%region *** Debug Section ***}
