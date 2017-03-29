@@ -227,6 +227,16 @@ var
 
       MMessage^.Result := Windows.SendMessage(Handle, ScrollMsg, SystemWParam, HWND(nil));
     end;
+
+    if (MMessage^.Result = 0)
+    and ((Sender is TCustomListView)
+      or (Sender is TCustomComboBox)
+      or (Sender is TCustomFloatSpinEdit))
+    then // the above 3 controls need windows to handle wheel messages
+      MMessage^.Result := CallDefaultWindowProc(Handle, MMessage^.Msg, TLMessage(Message).WParam, TLMessage(Message).LParam);
+
+    if (MMessage^.Result = 0) and (TControl(Sender).Parent <> nil) then // send unhandled scroll messages to parent
+      TControl(Sender).Parent.WindowProc(TLMessage(Message));
   end;
 
 begin
