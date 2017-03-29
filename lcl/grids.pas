@@ -1081,7 +1081,7 @@ type
     procedure ResetDefaultColWidths; virtual;
     procedure ResetEditor;
     procedure ResetLastMove;
-    procedure ResetOffset(chkCol, ChkRow: Boolean);
+    function ResetOffset(chkCol, ChkRow: Boolean): Boolean;
     procedure ResetSizes; virtual;
     procedure ResizeColumn(aCol, aWidth: Integer);
     procedure ResizeRow(aRow, aHeight: Integer);
@@ -3410,7 +3410,7 @@ end;
 function TCustomGrid.ScrollToCell(const aCol, aRow: Integer;
   const ForceFullyVisible: Boolean): Boolean;
 var
-  RNew: TRect;
+  RNew, RNewStored: TRect;
   OldTopLeft:TPoint;
   Xinc,YInc: Integer;
   CHeight,CWidth: Integer;
@@ -3436,9 +3436,10 @@ begin
     RNew:=CellRect(aCol,aRow);
     if UseRightToLeftAlignment then begin
       XInc := RNew.Right;
-      RNew.Right := FlipX(RNew.Left);
-      RNew.Left := FlipX(XInc);
+      RNew.Right := FlipX(RNew.Left)+1;
+      RNew.Left := FlipX(XInc)+1;
     end;
+    RNewStored := RNew;
 
     Xinc := 0;
     if RNew.Right <= FGCache.FixedWidth+GetBorderWidth then
@@ -3517,20 +3518,28 @@ begin
 
   Result:=not PointIgual(OldTopleft,FTopLeft)
     or TLColOffChanged or TLRowOffChanged;
-  if Result then begin
-    if not PointIgual(OldTopleft,FTopLeft) then
-      doTopleftChange(False)
-    else
-      VisualChange;
-  end else
-  if not (goDontScrollPartCell in Options) or ForceFullyVisible then
-  begin
-    RNew:=CellRect(aCol,aRow);
-    ResetOffset(
-      not GetSmoothScroll(SB_Horz) or
-      (RNew.Left < FGCache.FixedWidth+GetBorderWidth), // partially visible on left
-      (not GetSmoothScroll(SB_Vert) or
-      (RNew.Top < FGCache.FixedHeight+GetBorderWidth))); // partially visible on top
+
+  BeginUpdate;
+  try
+    if Result then begin
+      if not PointIgual(OldTopleft,FTopLeft) then
+        doTopleftChange(False)
+      else
+        VisualChange;
+    end;
+    if not (goDontScrollPartCell in Options) or ForceFullyVisible then
+    begin
+      RNew := RNewStored;
+      if ResetOffset(
+        not GetSmoothScroll(SB_Horz) or
+        (RNew.Left < FGCache.FixedWidth+GetBorderWidth), // partially visible on left
+        (not GetSmoothScroll(SB_Vert) or
+        (RNew.Top < FGCache.FixedHeight+GetBorderWidth))) // partially visible on top
+      then
+        Result := True;
+    end;
+  finally
+    EndUpdate(Result);
   end;
 end;
 
@@ -3820,17 +3829,17 @@ begin
   end;
 end;
 
-procedure TCustomGrid.ResetOffset(chkCol, ChkRow: Boolean);
+function TCustomGrid.ResetOffset(chkCol, ChkRow: Boolean): Boolean;
 begin
-  with FGCache do begin
-    if ChkCol then ChkCol:=TLColOff<>0;
-    if ChkCol then TlColOff:=0;
-    if ChkRow then ChkRow:=TLRowOff<>0;
-    if ChkRow then TlRowOff:=0;
-    if ChkRow or ChkCol then begin
-      CacheVisibleGrid;
-      VisualChange;
-    end;
+  if ChkCol then ChkCol:=FGCache.TLColOff<>0;
+  if ChkCol then FGCache.TlColOff:=0;
+  if ChkRow then ChkRow:=FGCache.TLRowOff<>0;
+  if ChkRow then FGCache.TlRowOff:=0;
+  Result := ChkRow or ChkCol;
+  if Result then
+  begin
+    CacheVisibleGrid;
+    VisualChange;
   end;
 end;
 
