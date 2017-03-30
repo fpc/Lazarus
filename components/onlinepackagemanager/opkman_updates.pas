@@ -479,8 +479,14 @@ begin
         begin
           MS.Position := 0;
           SetLength(AJSON, MS.Size);
+
           MS.Read(Pointer(AJSON)^, Length(AJSON));
           Result := Length(AJSON) > 0;
+          {since the class name has changed form "UpdatePackageFiles" to "UpdateLazPackages",
+          we have to replace the references in the old JSONs(we don't have access to the files, they are
+          located at the developers update page.}
+          if Result then
+            AJSON := StringReplace(AJSON, 'UpdatePackageFiles', 'UpdateLazPackages', [rfReplaceAll, rfIgnoreCase]);
         end;
       end;
     except
