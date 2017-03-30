@@ -59,6 +59,7 @@ type
     cbCheckForUpdates: TComboBox;
     cbRemoteRepository: TComboBox;
     cbSelectProfile: TComboBox;
+    cbRegularIcons: TCheckBox;
     edLocalRepositoryUpdate: TDirectoryEdit;
     edLocalRepositoryPackages: TDirectoryEdit;
     edLocalRepositoryArchive: TDirectoryEdit;
@@ -179,6 +180,7 @@ begin
   Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
   Options.CheckForUpdates := cbCheckForUpdates.ItemIndex;
   Options.DaysToShowNewPackages := spDaysToShowNewPackages.Value;
+  Options.ShowRegularIcons := cbRegularIcons.Checked;
 
   Options.ProxyEnabled := cbProxy.Checked;
   Options.ProxyServer := edProxyServer.Text;
@@ -411,6 +413,9 @@ begin
     lbLastUpdate.Caption := rsOptions_lbLastUpdate_Caption + FormatDateTime('YYYY.MM.DD  hh:mm:ss', Options.LastUpdate);
   lbDaysToShowNewPackages.Caption := rsOptions_lbDaysToShowNewPackages_Caption;
   spDaysToShowNewPackages.Value := Options.DaysToShowNewPackages;
+  cbRegularIcons.Checked := Options.ShowRegularIcons;
+  cbRegularIcons.Caption := rsOptions_cbRegular_Caption;
+
   //spDaysToShowNewPackages.Top := lbDaysToShowNewPackages.Top + 1 + (lbDaysToShowNewPackages.Height - spDaysToShowNewPackages.Height) div 2;
   //spDaysToShowNewPackages.Left := lbDaysToShowNewPackages.Left + lbDaysToShowNewPackages.Canvas.GetTextWidth(lbDaysToShowNewPackages.Caption) + 10;
 

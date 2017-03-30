@@ -1352,7 +1352,8 @@ begin
   if Column = 0 then
   begin
     case Data^.DataType of
-      1: if (Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages) then
+      1: if ((Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages)) and
+            ((not Options.ShowRegularIcons) or ((Options.ShowRegularIcons) and (Data^.InstallState = 0))) then
            ImageIndex := 25
          else
            ImageIndex := 1;

@@ -61,6 +61,7 @@ type
     FCheckForUpdates: Integer;
     FLastUpdate: TDateTime;
     FDaysToShowNewPackages: Integer;
+    FShowRegularIcons: Boolean;
     FChanged: Boolean;
     FLastDownloadDir: String;
     FLastPackageDirSrc: String;
@@ -93,6 +94,7 @@ type
     property CheckForUpdates: Integer read FCheckForUpdates write FCheckForUpdates;
     property LastUpdate: TDateTime read FLastUpdate write FLastUpdate;
     property DaysToShowNewPackages: Integer read FDaysToShowNewPackages write FDaysToShowNewPackages;
+    property ShowRegularIcons: Boolean read FShowRegularIcons write FShowRegularIcons;
     property UserProfile: Integer read FUserProfile write FUserProfile;
     property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
     property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
@@ -175,6 +177,7 @@ begin
   FCheckForUpdates := FXML.GetValue('General/CheckForUpdates/Value', 0);
   FLastUpdate := FXML.GetExtendedValue('General/LastUpdate/Value', 0.0);
   FDaysToShowNewPackages := FXML.GetValue('General/DaysToShowNewPackages/Value', 31);
+  FShowRegularIcons := FXML.GetValue('General/ShowRegularIcons/Value', False);
 
   FProxySettings.FEnabled := FXML.GetValue('Proxy/Enabled/Value', False);
   FProxySettings.FServer := FXML.GetValue('Proxy/Server/Value', '');
@@ -204,6 +207,7 @@ begin
   FXML.SetDeleteValue('General/CheckForUpdates/Value', FCheckForUpdates, 0);
   FXML.SetDeleteExtendedValue('General/LastUpdate/Value', FLastUpdate, 0.0);
   FXML.SetDeleteValue('General/DaysToShowNewPackages/Value', FDaysToShowNewPackages, 31);
+  FXML.SetDeleteValue('General/ShowRegularIcons/Value', FShowRegularIcons, False);
 
   FXML.SetDeleteValue('Proxy/Enabled/Value', FProxySettings.FEnabled, false);
   FXML.SetDeleteValue('Proxy/Server/Value', FProxySettings.FServer, '');
@@ -234,6 +238,7 @@ begin
   FCheckForUpdates := 0;
   FLastUpdate := 0.0;
   FDaysToShowNewPackages := 31;
+  FShowRegularIcons := False;
 
   FProxySettings.FEnabled := False;
   FProxySettings.FServer := '';
