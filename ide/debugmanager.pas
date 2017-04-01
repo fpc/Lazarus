@@ -582,7 +582,7 @@ function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
 
   procedure ResolveFromDbg;
   begin
-    Filename := AUnitinfo.DbgFullName;
+    Filename := AUnitinfo.FileName;
     Result := Filename <> '';
     debugln(DBG_LOCATION_INFO, ['ResolveFromDbg Init Filename=', Filename]);
     if Result then
