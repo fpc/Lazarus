@@ -333,7 +333,7 @@ const
   xtAllPointerTypes = [xtPointer, xtNil];
   xtAllTypeHelperTypes = xtAllPredefinedTypes-[xtCompilerFunc,xtVariant,xtJSValue,xtNil];
 
-  xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar];
+  xtAllStringCompatibleTypes = xtAllStringTypes+[xtChar,xtJSValue];
   xtAllWideStringCompatibleTypes = xtAllWideStringTypes+[xtWideChar,xtChar];
 
   xtAllIntegerConvertibles = xtAllIntegerTypes;
@@ -8362,6 +8362,7 @@ begin
   // -> setup compiler dependent tables
   case Scanner.PascalCompiler of
   pcDelphi: WordIsPredefinedIdentifier:=WordIsPredefinedDelphiIdentifier;
+  pcPas2js: WordIsPredefinedIdentifier:=WordIsPredefinedPas2jsIdentifier;
   else
     WordIsPredefinedIdentifier:=WordIsPredefinedFPCIdentifier;
   end;
@@ -11141,6 +11142,7 @@ begin
       and (ExpressionType.Desc in xtAllBooleanConvertibles))
     or ((TargetType.Desc in xtAllPointerTypes)
       and (ExpressionType.Desc in xtAllPointerConvertibles))
+    or (TargetType.Desc=xtJSValue)
     then
       Result:=tcCompatible
     else if (TargetType.Desc=xtContext) then begin
@@ -12920,6 +12922,8 @@ begin
       end;
     xtConstBoolean:
       Result:=ExpressionTypeDescNames[xtBoolean];
+    xtJSValue:
+      Result:=ExpressionTypeDescNames[ExprType.Desc];
     xtNil:
       RaiseTermNotSimple;
   else

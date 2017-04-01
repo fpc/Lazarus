@@ -155,6 +155,7 @@ var
   WordIsCustomOperator,
   WordIsPredefinedFPCIdentifier,
   WordIsPredefinedDelphiIdentifier,
+  WordIsPredefinedPas2jsIdentifier,
   UnexpectedKeyWordInBeginBlock,
   UnexpectedKeyWordInAsmBlock,
   UnexpectedKeyWordInAsmPas2JSBlock,
@@ -1778,6 +1779,32 @@ begin
     Add('BREAK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PCHAR'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
+  WordIsPredefinedPas2jsIdentifier:=TKeyWordFunctionList.Create('WordIsPredefinedPas2jsIdentifier');
+  KeyWordLists.Add(WordIsPredefinedPas2jsIdentifier);
+  with WordIsPredefinedPas2jsIdentifier do begin
+    Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WORDBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DOUBLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FALSE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('HIGH'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PRED'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SINGLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STRING'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SUCC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BREAK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('JSVALUE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
