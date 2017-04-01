@@ -1369,6 +1369,7 @@ var
   SystemTool: TFindDeclarationTool;
   I: TExpressionTypeDesc;
   InSystemContext: Boolean;
+  FPCFulVersion: LongInt;
 begin
   if CleanPos=0 then ;
 
@@ -1382,14 +1383,17 @@ begin
   if InSystemContext and (Context.Node.Desc in AllPascalStatements) then
   begin
     // see fpc/compiler/psystem.pp
+    FPCFulVersion:=StrToIntDef(Scanner.Values['FPC_FULLVERSION'],0);
     AddCompilerProcedure('Assert','Condition:Boolean;const Message:String');
     AddCompilerFunction('Assigned','P:Pointer','Boolean');
     AddCompilerFunction('Addr','var X','Pointer');
     AddCompilerFunction('BitSizeOf','Identifier','Integer');
     AddCompilerProcedure('Break','');
     AddCompilerFunction('Concat','S1:String;S2:String[...;Sn:String]', 'String');
+    if FPCFulVersion>=30100 then
+      AddCompilerFunction('Concat','A1:Array;[...;An:Array]', 'Array');
     AddCompilerProcedure('Continue','');
-    if StrToIntDef(Scanner.Values['FPC_FULLVERSION'],0)>=30100 then
+    if FPCFulVersion>=30100 then
     begin
       // FromPosition and Count parameters are optional
       AddCompilerFunction('Copy','const S:string[;FromPosition,Count:Integer]', 'string');
@@ -1401,11 +1405,12 @@ begin
     end;
     AddCompilerProcedure('Dec','var X:Ordinal;N:Integer=1');
     AddCompilerFunction('Default','T:Type','const');
-    if StrToIntDef(Scanner.Values['FPC_FULLVERSION'],0)>=30100 then //Delete and Insert are available as intrinsic since FPC 3.1
+    if FPCFulVersion>=30100 then //Delete and Insert are available as intrinsic since FPC 3.1
     begin
       AddCompilerProcedure('Delete','var S:string;Index,Count:Integer');
       AddCompilerProcedure('Delete','var A:array;Index,Count:Integer');
       AddCompilerProcedure('Insert','const Source:string;var Dest:string;Index:Integer');
+      AddCompilerProcedure('Insert','Item; var A:array;Index:Integer');
     end;
     AddCompilerProcedure('Dispose','var X:Pointer');
     AddCompilerProcedure('Exclude','var S:Set;X:Ordinal');
@@ -2960,6 +2965,7 @@ var
 
   var
     IsPointedSystem: Boolean = False;
+    FPCFullVersion: LongInt;
   begin
     MoveCursorToAtomPos(ProcNameAtom);
     ReadPriorAtom;
@@ -2978,13 +2984,15 @@ var
     or UpAtomIs('IF') or UpAtomIs('THEN') or UpAtomIs('ELSE')
     then begin
       // see fpc/compiler/psystem.pp
+      FPCFullVersion:=StrToIntDef(Scanner.Values['FPC_FULLVERSION'],0);
       AddCompilerProc('Assert','Condition:Boolean;const Message:String');
       AddCompilerProc('Assigned','P:Pointer','Boolean');
       AddCompilerProc('Addr','var X','Pointer');
       AddCompilerProc('BitSizeOf','Identifier','Integer');
       AddCompilerProc('Concat','S1:String;S2:String[...;Sn:String]', 'String');
-      if StrToIntDef(Scanner.Values['FPC_FULLVERSION'],0)>=30100 then // FromPosition and Count parameters are optional
+      if FPCFullVersion>=30100 then // FromPosition and Count parameters are optional
       begin
+        AddCompilerProc('Concat','A1:Array[;...An:Array]', 'Array');
         AddCompilerProc('Copy','const S:string[;FromPosition,Count:Integer]', 'string');
         AddCompilerProc('Copy','const A:array[;FromPosition,Count:Integer]', 'string');
       end else
@@ -3000,11 +3008,12 @@ var
       AddCompilerProc('Finalize','var X');
       AddCompilerProc('get_frame','','Pointer');
       AddCompilerProc('High','Arg:TypeOrVariable','Ordinal');
-      if StrToIntDef(Scanner.Values['FPC_FULLVERSION'],0)>=30100 then //Delete and Insert are available as intrinsic since FPC 3.1
+      if FPCFullVersion>=30100 then //Delete and Insert are available as intrinsic since FPC 3.1
       begin
         AddCompilerProc('Delete','var S:string;Index,Count:Integer');
         AddCompilerProc('Delete','var A:array;Index,Count:Integer');
         AddCompilerProc('Insert','const Source:string;var Dest:string;Index:Integer');
+        AddCompilerProc('Insert','Item; var A:array;Index:Integer');
       end;
       AddCompilerProc('Inc','var X:Ordinal;N:Integer=1');
       AddCompilerProc('Include','var S:Set;X:Ordinal');
