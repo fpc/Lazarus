@@ -1864,7 +1864,7 @@ type
 
 var
   AllWindows: TFPList;
-  List: PGList;
+  List,orgList: PGList;
   Window: PGTKWindow;
   ATransientWindow: PTransientWindow;
   LCLObject: TObject;
@@ -1891,6 +1891,7 @@ begin
 
     // find all currently visible gtkwindows
     List := gdk_window_get_toplevels;
+    orgList := List;
     while List <> nil do
     begin
       if (List^.Data <> nil)
@@ -1932,6 +1933,11 @@ begin
         end;
       end;
       list := g_list_next(list);
+    end;
+    if Assigned(orgList) then
+    begin
+      g_list_free(orgList);
+      list:=nil; orgList:=nil;
     end;
 
     if AllWindows=nil then exit;

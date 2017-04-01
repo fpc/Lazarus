@@ -727,7 +727,7 @@ end;
 
 procedure ClearTopLevelsFocus(Win: PGtkWidget);
 var
-  List: PGList;
+  List, orgList: PGList;
   Window: PGtkWindow;
   event: PGdkEvent;
   TopLevelWin: PGdkWindow;
@@ -737,6 +737,7 @@ begin
     exit;
 
   List := gdk_window_get_toplevels;
+  orgList:=List;
   while List <> nil do
   begin
     TopLevelWin := PGdkWindow(List^.Data);
@@ -760,6 +761,8 @@ begin
     end;
     list := g_list_next(list);
   end;
+  if Assigned(orgList) then
+    g_list_free(orgList);
 end;
 
 function gtkfrmactivateAfter({%H-}widget: PGtkWidget; {%H-}Event : PgdkEventFocus;

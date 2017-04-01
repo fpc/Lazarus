@@ -7226,14 +7226,15 @@ const
 
   function GetGroup: PGSList;
   var
-    Item: PGList;
+    Item, orgList: PGList;
     parent : PGTKWidget;
   begin
     Result := nil;
     parent := gtk_widget_get_parent({%H-}Pointer(hndMenu));
     if parent = nil then Exit;
 
-    Item := gtk_container_children(PGTKContainer(parent));
+    Item := gtk_container_get_children(PGTKContainer(parent));
+    orgList := Item;
     while Item <> nil do
     begin
       if (Item^.Data <> {%H-}Pointer(hndMenu)) // exclude ourself
@@ -7245,6 +7246,8 @@ const
       end;
       Item := Item^.Next;
     end;
+    if Assigned(orgList) then
+      g_list_free(orgList);
   end;
 
 var
