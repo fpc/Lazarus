@@ -5959,7 +5959,6 @@ var
   begin
     // the icon will be painted instead of the toggle
     // of a normal gtkcheckmenuitem
-
     if LCLMenuItem.HasIcon then
     begin
       GTK_MENU_ITEM(MenuItemWidget)^.flag0:=
@@ -5970,6 +5969,8 @@ var
       if OldCheckMenuItemDrawProc = nil then
         OldCheckMenuItemDrawProc := CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator;
       CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator := @DrawMenuItemIcon;
+
+      MinHeightWidget := MenuItemWidget;
     end
     else
       MinHeightWidget := nil;
