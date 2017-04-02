@@ -158,7 +158,6 @@ var
   WordIsPredefinedPas2jsIdentifier,
   UnexpectedKeyWordInBeginBlock,
   UnexpectedKeyWordInAsmBlock,
-  UnexpectedKeyWordInAsmPas2JSBlock,
   UnexpectedKeyWordInBrackets
     : TKeyWordFunctionList;
   UpChars: array[char] of char;
@@ -1400,29 +1399,6 @@ begin
   
   UnexpectedKeyWordInAsmBlock:=TKeyWordFunctionList.Create('UnexpectedKeyWordInAsmBlock');
   KeyWordLists.Add(UnexpectedKeyWordInAsmBlock);
-  with UnexpectedKeyWordInAsmBlock do begin
-    Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('FUNCTION',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('IMPLEMENTATION',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('INTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('LIBRARY',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('RESOURCESTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('THREADVAR',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
-  end;
-
-  UnexpectedKeyWordInAsmPas2JSBlock:=TKeyWordFunctionList.Create('UnexpectedKeyWordInAsmPas2JSBlock');
-  KeyWordLists.Add(UnexpectedKeyWordInAsmPas2JSBlock);
   with UnexpectedKeyWordInAsmBlock do begin
     Add('ASSEMBLER',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
