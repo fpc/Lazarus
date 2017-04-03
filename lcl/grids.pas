@@ -1512,6 +1512,7 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnGetCellHint;
     property OnGetCheckboxState;
     property OnGetEditMask;
     property OnGetEditText;
