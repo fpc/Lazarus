@@ -1,0 +1,198 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: fppkg_mainfrm.sactarchivepackages
+msgid "create archive(s) for package(s)"
+msgstr ""
+
+#: fppkg_mainfrm.sactbuildpackages
+msgid "build package(s)"
+msgstr ""
+
+#: fppkg_mainfrm.sactcleanpackages
+msgid "clean package(s)"
+msgstr ""
+
+#: fppkg_mainfrm.sactcompilepackages
+msgid "compile packages"
+msgstr ""
+
+#: fppkg_mainfrm.sactdownloadpackages
+msgid "download packages"
+msgstr ""
+
+#: fppkg_mainfrm.sactfixbroken
+msgid "fix broken packages"
+msgstr ""
+
+#: fppkg_mainfrm.sactinitializefppkg
+msgid "initialize fppkg"
+msgstr ""
+
+#: fppkg_mainfrm.sactinstallpackages
+msgid "install package(s)"
+msgstr ""
+
+#: fppkg_mainfrm.sactupdate
+msgid "update repository"
+msgstr ""
+
+#: fppkg_mainfrm.serractionfailed
+msgid ""
+"Failed to %s: \n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: fppkg_mainfrm.smsgactionsucceeded
+msgid "%s succeeded."
+msgstr ""
+
+#: tfppkgform.archivebutton.caption
+msgid "Archive"
+msgstr ""
+
+#: tfppkgform.archivebutton.hint
+msgid "Create archive of package"
+msgstr ""
+
+#: tfppkgform.buildbutton.caption
+msgid "Build"
+msgstr ""
+
+#: tfppkgform.buildbutton.hint
+msgid "Build package"
+msgstr ""
+
+#: tfppkgform.caption
+msgid "FppkgForm"
+msgstr ""
+
+#: tfppkgform.categorieslabel.caption
+msgid "Categories:"
+msgstr ""
+
+#: tfppkgform.cleanbutton.caption
+msgid "Clean"
+msgstr ""
+
+#: tfppkgform.cleanbutton.hint
+msgid "Clean package"
+msgstr ""
+
+#: tfppkgform.compilebutton.caption
+msgid "Compile"
+msgstr ""
+
+#: tfppkgform.compilebutton.hint
+msgid "Compile package"
+msgstr ""
+
+#: tfppkgform.downloadbutton.caption
+msgid "Download"
+msgstr ""
+
+#: tfppkgform.downloadbutton.hint
+msgid "Download package"
+msgstr ""
+
+#: tfppkgform.fixbrokenbutton.caption
+msgid "Fix broken"
+msgstr ""
+
+#: tfppkgform.installbutton.caption
+msgid "Install"
+msgstr ""
+
+#: tfppkgform.installbutton.hint
+msgid "Install package"
+msgstr ""
+
+#: tfppkgform.menuitem1.caption
+msgid "&Tools"
+msgstr ""
+
+#: tfppkgform.menuitem2.caption
+msgid "&Options..."
+msgstr ""
+
+#: tfppkgform.menuitem3.caption
+msgid "&Help"
+msgstr ""
+
+#: tfppkgform.menuitem4.caption
+msgid "&About"
+msgstr ""
+
+#: tfppkgform.micleanmessages.caption
+msgid "Clean messages"
+msgstr ""
+
+#: tfppkgform.miexit.caption
+msgid "&Exit"
+msgstr ""
+
+#: tfppkgform.mifile.caption
+msgid "&File"
+msgstr ""
+
+#: tfppkgform.miselect.caption
+msgid "Select"
+msgstr ""
+
+#: tfppkgform.mishowdetails.caption
+msgid "Show details"
+msgstr ""
+
+#: tfppkgform.miunselect.caption
+msgid "Unselect"
+msgstr ""
+
+#: tfppkgform.packagelistview.columns[0].caption
+msgid "Name"
+msgstr ""
+
+#: tfppkgform.packagelistview.columns[1].caption
+msgid "State"
+msgstr ""
+
+#: tfppkgform.packagelistview.columns[2].caption
+msgid "Installed"
+msgstr ""
+
+#: tfppkgform.packagelistview.columns[3].caption
+msgid "Available"
+msgstr ""
+
+#: tfppkgform.packagelistview.columns[4].caption
+msgid "Description"
+msgstr ""
+
+#: tfppkgform.searchbutton.hint
+msgid "Search for keywords"
+msgstr ""
+
+#: tfppkgform.searchlabel.caption
+msgid "Search"
+msgstr ""
+
+#: tfppkgform.supportcheckgroup.caption
+msgid "Support"
+msgstr ""
+
+#: tfppkgform.supportcheckgroup.hint
+msgid "Filter packages on support level"
+msgstr ""
+
+#: tfppkgform.toolbar.caption
+msgid "ToolBar"
+msgstr ""
+
+#: tfppkgform.updatebutton.caption
+msgid "Update"
+msgstr ""
+
+#: tfppkgform.updatebutton.hint
+msgid "Update packages list"
+msgstr ""
+
