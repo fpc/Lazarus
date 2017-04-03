@@ -8882,7 +8882,7 @@ var
   c: Char;
 begin
   if ConsoleVerbosity>0 then
-    DebugLn('Hint: (lazarus) TMainIDE.OnDesignerPasteComponent A');
+    DebugLn('Hint: (lazarus) TMainIDE.DesignerPasteComponent A');
 
   // check the class of the new component
   NewClassName:=FindLFMClassName(TxtCompStream);
@@ -8929,7 +8929,7 @@ begin
     FormEditor1.CreateChildComponentsFromStream(BinCompStream,
                 ARegComp.ComponentClass,LookupRoot,ParentControl,NewComponents);
     if NewComponents.Count=0 then begin
-      DebugLn('Error: (lazarus) TMainIDE.OnDesignerPasteComponent FAILED FormEditor1.CreateChildComponentFromStream');
+      DebugLn('Error: (lazarus) TMainIDE.DesignerPasteComponent FAILED FormEditor1.CreateChildComponentFromStream');
       exit;
     end;
 
@@ -11167,7 +11167,7 @@ procedure TMainIDE.DesignerActivated(Sender: TObject);
 begin
   {$IFDEF VerboseIDEDisplayState}
   if DisplayState<>dsForm then begin
-    debugln(['TMainIDE.OnDesignerActivated ']);
+    debugln(['TMainIDE.DesignerActivated ']);
     DumpStack;
   end;
   {$ENDIF}
@@ -11178,7 +11178,7 @@ begin
     TheControlSelection.AssignPersistent(LastFormActivated);
   {$IFDEF VerboseComponentPalette}
   DebugLn('***');
-  DebugLn(['** TMainIDE.OnDesignerActivated: Calling UpdateIDEComponentPalette(true)',
+  DebugLn(['** TMainIDE.DesignerActivated: Calling UpdateIDEComponentPalette(true)',
            ', IDEStarted=', FIDEStarted, ' **']);
   {$ENDIF}
   MainIDEBar.UpdateIDEComponentPalette(true);
@@ -11401,7 +11401,7 @@ var
         end else begin
           // unable to rename method in source
           // this is just a nice to have feature -> ignore the error
-          DebugLn(['Error: (lazarus) TMainIDE.OnDesignerRenameComponent.RenameMethods failed OldMethodName="',CurMethodName,'" NewMethodName="',NewMethodName,'" Error=',CodeToolBoss.ErrorMessage]);
+          DebugLn(['Error: (lazarus) TMainIDE.DesignerRenameComponent.RenameMethods failed OldMethodName="',CurMethodName,'" NewMethodName="',NewMethodName,'" Error=',CodeToolBoss.ErrorMessage]);
         end;
       end;
       ApplyCodeToolChanges;
@@ -11420,7 +11420,7 @@ var
   s: String;
   OldOpenEditorsOnCodeToolChange: Boolean;
 begin
-  DebugLn('Hint: (lazarus) TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
+  DebugLn('Hint: (lazarus) TMainIDE.DesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
   if not IsValidIdent(NewName) then
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, [Newname]));
   if WordIsKeyWord.DoItCaseInsensitive(PChar(NewName))
@@ -11500,7 +11500,7 @@ begin
         AComponent.Name,NewName,AComponent.ClassName,true);
       ApplyBossResult(lisUnableToRenameVariableInSource);
     end else begin
-      RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
+      RaiseException('TMainIDE.DesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
     end;
 
     // rename inherited components
@@ -11525,7 +11525,7 @@ var
 begin
   ADesigner:=TDesigner(Sender);
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
-  //debugln('TMainIDE.OnDesignerViewLFM ',AnUnitInfo.Filename);
+  //debugln('TMainIDE.DesignerViewLFM ',AnUnitInfo.Filename);
   DesignerCloseQuery(Sender);
   if AnUnitInfo.OpenEditorInfoCount > 0 then
     EditorInfo := AnUnitInfo.OpenEditorInfo[0]
@@ -11552,7 +11552,7 @@ var
 begin
   ADesigner:=TDesigner(Sender);
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
-  debugln('Hint: (lazarus) TMainIDE.OnDesignerSaveAsXML ',AnUnitInfo.Filename);
+  debugln('Hint: (lazarus) TMainIDE.DesignerSaveAsXML ',AnUnitInfo.Filename);
 
   SaveAsFileExt:='.xml';
   SaveAsFilename:=ChangeFileExt(AnUnitInfo.Filename,SaveAsFileExt);
