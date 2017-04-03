@@ -4126,6 +4126,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.SetBorderStyle(NewStyle: TBorderStyle);
 begin
+  if FBorderStyle = NewStyle then Exit;
   FBorderStyle := NewStyle;
   if HandleAllocated then
     TWSWinControlClass(WidgetSetClass).SetBorderStyle(Self, NewStyle);

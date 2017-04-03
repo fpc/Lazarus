@@ -361,6 +361,8 @@ end;
 class procedure TWin32WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
   RecreateWnd(AWinControl);
+  if AWinControl.HandleObjectShouldBeVisible then
+    AWinControl.HandleNeeded;
 end;
 
 class procedure TWin32WSWinControl.SetChildZPosition(
