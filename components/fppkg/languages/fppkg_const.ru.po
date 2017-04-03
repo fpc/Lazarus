@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: fppkg_const.rsaboutform
 msgid "About form"
@@ -63,7 +65,7 @@ msgstr "Ошибка fppkg %s: результат %d%s%s"
 
 #: fppkg_const.rsfreepascalpackagemanagerforlazarus
 msgid "Free Pascal package manager for Lazarus"
-msgstr "Средство управления пакетами Free Pascal для Lazarus"
+msgstr "Диспетчер пакетов Free Pascal для Lazarus"
 
 #: fppkg_const.rsglobalinstalldir
 msgid "Global install dir"
@@ -103,5 +105,5 @@ msgstr "Удалённый репозиторий"
 
 #: fppkg_const.rsshowfppkgpackagemanager
 msgid "Show Fppkg Package Manager"
-msgstr ""
+msgstr "Показать диспетчер пакетов Fppkg"
 
