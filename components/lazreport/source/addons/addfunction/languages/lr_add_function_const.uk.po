@@ -1,0 +1,219 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2017-03-30 01:38+0300\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: lr_add_function_const.sdatecategory
+msgid "Date"
+msgstr "Дата"
+
+#: lr_add_function_const.sdescriptionabs
+msgid "ABS(<Number>)/Returns absolute value <Number>"
+msgstr "ABS(<Number>)/Повертає модуль значення <Number>."
+
+#: lr_add_function_const.sdescriptionchr
+msgid "CHR(<Code>)/Returns symbol of ASCII code <Code>."
+msgstr "CHR(<Code>)/Повертає символ коду ASCII <Code>."
+
+#: lr_add_function_const.sdescriptioncomparestr
+msgid "COMPARESTR(<String1>,<String2>)/Compares two strings. Returns the position where begins the difference between the strings or 0 if strings are equivalent."
+msgstr "COMPARESTR(<String1>,<String2>)/Порівнює два рядки. Повертає позицію початку відмінностей між рядками або 0, якщо рядки рівні."
+
+#: lr_add_function_const.sdescriptioncreatedate
+msgid "CREATEDATE(<String>)/Converts <String> string to string that contains date to use it in SQL clause. To use this function put the string with desired date format to TfrAddFunctionLibrary.FormatDate property."
+msgstr "CREATEDATE(<String>)/Перетворює <String> на рядок з датою для використання у виразі SQL. Для використання цієї функції слід помістити рядок з бажаним форматом дати у властивість TfrAddFunctionLibrary.FormatDate."
+
+#: lr_add_function_const.sdescriptioncreatenum
+msgid "CREATENUM(<String>)/Converts <String> string to string that contains numeric value to use it in SQL clause."
+msgstr "CREATENUM(<String>)/Перетворює <String> на рядок з числовим значенням для використання у виразі SQL."
+
+#: lr_add_function_const.sdescriptioncreatestr
+msgid "CREATESTR(<String>)/Adds quotes to the <String> string to use it in SQL clause."
+msgstr "CREATESTR(<String>)/Додає лапки в <String> для використання у виразі SQL."
+
+#: lr_add_function_const.sdescriptiondatediff
+msgid "DATEDIFF(<Date1>,<Date2>,<var String>)/Returns the difference between two dates <Date1> and <Date2>. Result is in the string <String> in format \"days;months;years\"."
+msgstr "DATEDIFF(<Date1>,<Date2>,<var String>)/Повертає різницю між датами <Date1> і <Date2>. Результатом є рядок <String> у форматі \"дні;місяці;роки\"."
+
+#: lr_add_function_const.sdescriptiondatetostr
+msgid "DATETOSTR(<Date>)/Converts date <Date> to string and returns the result."
+msgstr "DATETOSTR(<Date>)/Перетворює дату <Date> на рядок і повертає результат."
+
+#: lr_add_function_const.sdescriptiondayspermonth
+msgid "DAYSPERMONTH(<Year>,<Month>)/Returns days in the given month <Month> of the year <Year>."
+msgstr "DAYSPERMONTH(<Year>,<Month>)/Повертає кількість днів у заданому місяці <Month> року <Year>."
+
+#: lr_add_function_const.sdescriptiondelete
+msgid "DELETE(<String>,<DelFrom>,<DelCount>)/Deletes <DelCount> symbols starting at position <DelFrom> in the given string <String> and returns the result."
+msgstr "DELETE(<String>,<DelFrom>,<DelCount>)/Видаляє з заданого рядка <String> <DelCount> символів, починаючи з позиції <DelFrom>, і повертає результат."
+
+#: lr_add_function_const.sdescriptionendpos
+msgid "ENDPOS(<String>,<SubStr>)/Returns position of substring <SubStr> in the string <String> starting at the end of the string."
+msgstr "ENDPOS(<String>,<SubStr>)/Повертає позицію підрядка <SubStr> в рядку <String>, починаючи з кінця рядка."
+
+#: lr_add_function_const.sdescriptionextractword
+msgid "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Returns word number <WordNo> from the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Повертає слово з номером <WordNo> з рядка <String>. <Delimiters> містить список роздільників слів."
+
+#: lr_add_function_const.sdescriptionfirstdayofnextmonth
+msgid "FIRSTDAYOFNEXTMONTH(<Date>)/Returns the date of first day of the next month of date <Date>."
+msgstr "FIRSTDAYOFNEXTMONTH(<Date>)/Повертає дату першого дня наступного місяця для дати <Date>."
+
+#: lr_add_function_const.sdescriptionfirstdayofprevmonth
+msgid "FIRSTDAYOFPREVMONTH(<Date>)/Returns the date of first day of the previous month of date <Date>."
+msgstr "FIRSTDAYOFPREVMONTH(<Date>)/Повертає дату першого дня попереднього місяця для дати <Date>."
+
+#: lr_add_function_const.sdescriptionincdate
+msgid "INCDATE(<Date>,<String>)/Increments the date <Date> by given number of days, months and years passed in the <String> parameter in format \"days;months;years\". Returns the result date."
+msgstr "INCDATE(<Date>,<String>)/Збільшує дату <Date> на задану кількість днів, місяців і років, передану в параметрі <String> у формату \"дні;місяці;роки\". Повертає результуючу дату."
+
+#: lr_add_function_const.sdescriptionincday
+msgid "INCDAY(<Date>,<Number>)/Increments the date <Date> by given number of days <Number> and returns the result date."
+msgstr "INCDAY(<Date>,<Number>)/Збільшує дату <Date> на задане число днів <Number> і повертає результуючу дату."
+
+#: lr_add_function_const.sdescriptionincmonth
+msgid "INCMONTH(<Date>,<Number>)/Increments the date <Date> by given number of months <Number> and returns the result date."
+msgstr "INCMONTH(<Date>,<Number>)/Збільшує дату <Date> на задане число місяців <Number> і повертає результуючу дату."
+
+#: lr_add_function_const.sdescriptioninctime
+msgid "INCTIME(<Time>,<String>)/Increments the time <Time> by given number of hours, minutes, seconds and milliseconds passed in the <String> parameter in format \"h;min;sec;msec\". Returns the result time."
+msgstr "INCTIME(<Time>,<String>)/Збільшує час <Time> на задану кількість годин, хвилин, секунд і мілісекунд, передану в параметрі <String> у форматі \"години;хвилини;секунди;мілісекунди\". Повертає результуючий час."
+
+#: lr_add_function_const.sdescriptionincyear
+msgid "INCYEAR(<Date>,<Number>)/Increments the date <Date> by given number of years <Number> and returns the result date."
+msgstr "INCYEAR(<Date>,<Number>)/Збільшує дату <Date> на задане число років <Number> і повертає результуючу дату."
+
+#: lr_add_function_const.sdescriptioninsert
+msgid "INSERT(<SubStr>,<String>,<InsertFrom>)/Inserts <SubStr> substring into <String> string starting at position <InsertFrom> and returns the result."
+msgstr "INSERT(<SubStr>,<String>,<InsertFrom>)/Вставляє підрядок <SubStr> в рядок <String>, починаючи з позиції <InsertFrom>, і повертає результат."
+
+#: lr_add_function_const.sdescriptionisleapyear
+msgid "ISLEAPYEAR(<Year>)/Returns True if <Year> year is leap year."
+msgstr "ISLEAPYEAR(<Year>)/Повертає True, якщо рік <Year> є високосним."
+
+#: lr_add_function_const.sdescriptionisrangedate
+msgid "ISRANGEDATE(<Date1>,<Date2>,<Date3>)/Returns True if date <Date3> is between <Date1> and <Date2>."
+msgstr "ISRANGEDATE(<Date1>,<Date2>,<Date3>)/Повертає True, якщо дата <Date3> знаходиться між датами <Date1> і <Date2>."
+
+#: lr_add_function_const.sdescriptionisrangenum
+msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is between <Number1> and <Number2>."
+msgstr "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Повертає True, якщо число <Number3> знаходиться між числами <Number1> і <Number2>."
+
+#: lr_add_function_const.sdescriptioniswordpresent
+msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Визначає, чи є слово <Word> в рядку <String>. <Delimiters> містить список роздільників слів."
+
+#: lr_add_function_const.sdescriptionlastdayofprevmonth
+msgid "LASTDAYOFPREVMONTH(<Date>)/Returns the date of last day of the previous month of date <Date>."
+msgstr "LASTDAYOFPREVMONTH(<Date>)/Повертає дату останнього дня попереднього місяця для дати <Date>."
+
+#: lr_add_function_const.sdescriptionleftcopy
+msgid "LEFTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the begin of the string."
+msgstr "LEFTCOPY(<String>,<Count>)/Копіює кількість <Count> символів з рядка <String>, починаючи з її початку."
+
+#: lr_add_function_const.sdescriptionnpos
+msgid "NPOS(<SubStr>,<String>,<SubStrNo>)/Returns position of <SubStrNo>-th substring <SubStr> inclusion in the string <String>."
+msgstr "NPOS(<SubStr>,<String>,<SubStrNo>)/Повертає позицію <SubStrNo>-го входження підрядка <SubStr> в рядку <String>."
+
+#: lr_add_function_const.sdescriptionpadcenter
+msgid "PADCENTER(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin and end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADCENTER(<String>,<Length>,<Symbol>)/Додає символи <Symbol> на початок і в кінець рядка <String>, збільшуючи її довжину до <Length>, і повертає результат."
+
+#: lr_add_function_const.sdescriptionpadleft
+msgid "PADLEFT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADLEFT(<String>,<Length>,<Symbol>)/Додає символи <Symbol> на початок і в кінець рядка <String>, збільшуючи її довжину до <Length>, і повертає результат."
+
+#: lr_add_function_const.sdescriptionpadright
+msgid "PADRIGHT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADRIGHT(<String>,<Length>,<Symbol>)/Додає символи <Symbol> в кінець рядка <String>, збільшуючи її довжину до <Length>, і повертає результат."
+
+#: lr_add_function_const.sdescriptionreplacestr
+msgid "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Replaces all inclusions of <SubStr1> string to the <SubStr2> string in the string <String> and returns the result."
+msgstr "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Замінює в рядку <String> всі входження підрядка <SubStr1> на <SubStr2> і повертає результат."
+
+#: lr_add_function_const.sdescriptionreplicate
+msgid "REPLICATE(<Symbol>,<Length>)/Returns the string with length <Length> that consists of symbols <Symbol>."
+msgstr "REPLICATE(<Symbol>,<Length>)/Повертає рядок довжиною <Length>, що складається з символів <Symbol>."
+
+#: lr_add_function_const.sdescriptionrightcopy
+msgid "RIGHTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the end of the string."
+msgstr "RIGHTCOPY(<String>,<Count>)/Копіює кількість <Count> символів з рядка <String>, починаючи з її кінця."
+
+#: lr_add_function_const.sdescriptionstrtodatedef
+msgid "STRTODATEDEF(<String>,<DefDate>)/Converts <String> string to date. If conversion fails, returns default value <DefDate>."
+msgstr "STRTODATEDEF(<String>,<DefDate>)/Перетворює рядок <String> на дату. Якщо перетворити не вдалось, повертає типове значення <DefDate>."
+
+#: lr_add_function_const.sdescriptionstrtofloat
+msgid "STRTOFLOAT(<String>)/Converts <String> string to the float value."
+msgstr "STRTOFLOAT(<String>)/Перетворює рядок <String> на дійсне число."
+
+#: lr_add_function_const.sdescriptionstrtofloatdef
+msgid "STRTOFLOATDEF(<String>,<DefValue>)/Converts <String> string to float value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOFLOATDEF(<String>,<DefValue>)/Перетворює рядок <String> на дійсне число. Якщо перетворити не вдалось, повертає типове значення <DefValue>."
+
+#: lr_add_function_const.sdescriptionstrtoint
+msgid "STRTOINT(<String>)/Converts <String> string to the integer value."
+msgstr "STRTOINT(<String>)/Перетворює рядок <String> на ціле число."
+
+#: lr_add_function_const.sdescriptionstrtointdef
+msgid "STRTOINTDEF(<String>,<DefValue>)/Converts <String> string to integer value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOINTDEF(<String>,<DefValue>)/Перетворює рядок <String> на ціле число. Якщо перетворити не вдалось, повертає типове значення <DefValue>."
+
+#: lr_add_function_const.sdescriptionswap
+msgid "SWAP(<var var1>,<var var2>)/Swaps the variables var1 and var2."
+msgstr "SWAP(<var var1>,<var var2>)/Обмінює значення змінних var1 і var2."
+
+#: lr_add_function_const.sdescriptiontimetostr
+msgid "TIMETOSTR(<Time>)/Converts time <Time> to string and returns the result."
+msgstr "TIMETOSTR(<Time>)/Перетворює час <Time> на рядок і повертає результат."
+
+#: lr_add_function_const.sdescriptiontrimleft
+msgid "TRIMLEFT(<String>)/Trims all left spaces from the string <String> and returns the result."
+msgstr "TRIMLEFT(<String>)/Обрізає всі пробіли ліворуч в рядку <String> і повертає результат."
+
+#: lr_add_function_const.sdescriptiontrimright
+msgid "TRIMRIGHT(<String>)/Trims all right spaces from the string <String> and returns the result."
+msgstr "TRIMRIGHT(<String>)/Обрізає всі пробіли праворуч в рядку <String> і повертає результат."
+
+#: lr_add_function_const.sdescriptionvaliddate
+msgid "VALIDDATE(<String>)/Returns True if <String> string is valid date."
+msgstr "VALIDDATE(<String>)/Повертає True, якщо рядок <String> є коректною датою."
+
+#: lr_add_function_const.sdescriptionvalidfloat
+msgid "VALIDFLOAT(<String>)/Returns True if <String> is valid float value."
+msgstr "VALIDFLOAT(<String>)/Повертає True, якщо рядок <String> є коректним дійсним значенням."
+
+#: lr_add_function_const.sdescriptionvalidint
+msgid "VALIDINT(<String>)/Returns True if <String> is valid integer value."
+msgstr "VALIDINT(<String>)/Повертає True, якщо рядок <String> є коректним цілим значенням."
+
+#: lr_add_function_const.sdescriptionwordcount
+msgid "WORDCOUNT(<String>,<Delimiters>)/Returns number of words in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDCOUNT(<String>,<Delimiters>)/Повертає кількість слів у рядку <String>. <Delimiters> містить список роздільників слів."
+
+#: lr_add_function_const.sdescriptionwordposition
+msgid "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Returns position of word number <WordNo> in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Повертає позицію слова номер <WordNo> в рядку <String>. <Delimiters> містить список роздільників слів."
+
+#: lr_add_function_const.smathcategory
+msgid "Math"
+msgstr "Математичні"
+
+#: lr_add_function_const.sothercategory
+msgid "Other"
+msgstr "Інші"
+
+#: lr_add_function_const.sstringcategory
+msgid "String"
+msgstr "Рядкові"
+

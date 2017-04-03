@@ -1,0 +1,75 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2017-03-30 09:54+0300\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: opkman_zip.serrbufsizechange
+msgid "Changing buffer size is not allowed while (un)zipping."
+msgstr "Не можна змінювати розмір буфера під час упаковування/розпаковування."
+
+#: opkman_zip.serrcorruptzip
+msgid "Corrupt ZIP file %s."
+msgstr "Файл ZIP %s пошкоджений."
+
+#: opkman_zip.serrencryptionnotsupported
+msgid "Cannot unzip item \"%s\": encryption is not supported."
+msgstr "Неможливо розархівувати \"%s\": шифрування не підтримується."
+
+#: opkman_zip.serrfilechange
+msgid "Changing output file name is not allowed while (un)zipping."
+msgstr "Не дозволяється змінювати назву вихідного файлу під час упаковування/розпаковування."
+
+#: opkman_zip.serrfiledoesnotexist
+msgid "File \"%s\" does not exist."
+msgstr "Файл \"%s\" не знайдено."
+
+#: opkman_zip.serrinvalidcrc
+msgid "Invalid CRC checksum while unzipping %s."
+msgstr "Неправильна контрольна сума CRC при розпаковуванні %s."
+
+#: opkman_zip.serrmaxentries
+msgid "Encountered %d file entries; maximum supported is %d."
+msgstr "Виявлено %d файлових записів; найбільше підтримується %d."
+
+#: opkman_zip.serrmissingarchivename
+msgid "Missing archive filename in streamed entry %d."
+msgstr "У виведеному запису %d відсутня назва архівного файлу."
+
+#: opkman_zip.serrmissingfilename
+msgid "Missing filename in entry %d."
+msgstr "Запис %d не містить назви файлу."
+
+#: opkman_zip.serrnofilename
+msgid "No archive filename for examine operation."
+msgstr "Не задано назви архівного файлу для проведення операції перевірки."
+
+#: opkman_zip.serrnostream
+msgid "No stream is opened."
+msgstr "Не відкрито жодного потоку."
+
+#: opkman_zip.serrpatchsetnotsupported
+msgid "Cannot unzip item \"%s\": patch sets are not supported."
+msgstr "Неможливо розархівувати \"%s\": набори замінюваних даних не підтримуються."
+
+#: opkman_zip.serrpostoolarge
+msgid "Position/offset %d is larger than maximum supported %d."
+msgstr "Позиція/зсув %d більші, ніж найбільше підтримуване %d."
+
+#: opkman_zip.serrunsupportedcompressionformat
+msgid "Unsupported compression format %d."
+msgstr "Формат стискання %d не підтримується."
+
+#: opkman_zip.serrunsupportedmultiplediskscd
+msgid "A central directory split over multiple disks is unsupported."
+msgstr "Розташування центрального каталогу на декількох дисках не підтримується."
+

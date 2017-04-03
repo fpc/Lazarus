@@ -1,7 +1,7 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-03-01 20:20+0200\n"
+"PO-Revision-Date: 2017-03-23 22:57+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,95 +18,95 @@ msgstr "Перевірка PO-файлів ..."
 
 #: pocheckerconsts.rs_lang_af_za
 msgid "Afrikaans"
-msgstr ""
+msgstr "Африкаанс"
 
 #: pocheckerconsts.rs_lang_all
 msgid "All languages"
-msgstr ""
+msgstr "Всі мови"
 
 #: pocheckerconsts.rs_lang_ar
 msgid "Arabic"
-msgstr ""
+msgstr "Арабська"
 
 #: pocheckerconsts.rs_lang_ca
 msgid "Catalan"
-msgstr ""
+msgstr "Каталонська"
 
 #: pocheckerconsts.rs_lang_cs
 msgid "Czech"
-msgstr ""
+msgstr "Чеська"
 
 #: pocheckerconsts.rs_lang_de
 msgid "German"
-msgstr ""
+msgstr "Німецька"
 
 #: pocheckerconsts.rs_lang_en
 msgid "English"
-msgstr ""
+msgstr "Англійська"
 
 #: pocheckerconsts.rs_lang_es
 msgid "Spanish"
-msgstr ""
+msgstr "Іспанська"
 
 #: pocheckerconsts.rs_lang_fi
 msgid "Finnish"
-msgstr ""
+msgstr "Фінська"
 
 #: pocheckerconsts.rs_lang_fr
 msgid "French"
-msgstr ""
+msgstr "Французька"
 
 #: pocheckerconsts.rs_lang_he
 msgid "Hebrew"
-msgstr ""
+msgstr "Іврит"
 
 #: pocheckerconsts.rs_lang_hu
 msgid "Hungarian"
-msgstr ""
+msgstr "Угорська"
 
 #: pocheckerconsts.rs_lang_id
 msgid "Indonesian"
-msgstr ""
+msgstr "Індонезійська"
 
 #: pocheckerconsts.rs_lang_it
 msgid "Italian"
-msgstr ""
+msgstr "Італійська"
 
 #: pocheckerconsts.rs_lang_ja
 msgid "Japanese"
-msgstr ""
+msgstr "Японська"
 
 #: pocheckerconsts.rs_lang_lt
 msgid "Lithuanian"
-msgstr ""
+msgstr "Литовська"
 
 #: pocheckerconsts.rs_lang_nl
 msgid "Dutch"
-msgstr ""
+msgstr "Голландська"
 
 #: pocheckerconsts.rs_lang_pl
 msgid "Polish"
-msgstr ""
+msgstr "Польська"
 
 #: pocheckerconsts.rs_lang_pt
 msgid "Portuguese"
-msgstr ""
+msgstr "Португальська"
 
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
-msgstr ""
+msgstr "Бразильська португальська"
 
 #: pocheckerconsts.rs_lang_ru
 msgid "Russian"
-msgstr ""
+msgstr "Російська"
 
 #: pocheckerconsts.rs_lang_sk
 msgid "Slovak"
-msgstr ""
+msgstr "Словацька"
 
 #: pocheckerconsts.rs_lang_tr
 msgid "Turkish"
-msgstr ""
+msgstr "Турецька"
 
 #: pocheckerconsts.rs_lang_uk
 msgid "Ukrainian"
@@ -114,7 +114,7 @@ msgstr "Українська"
 
 #: pocheckerconsts.rs_lang_zh_cn
 msgid "Chinese, simplified"
-msgstr ""
+msgstr "Спрощена китайська"
 
 #: pocheckerconsts.salllanguages
 msgid "All Languages"
@@ -122,7 +122,7 @@ msgstr "Всі мови"
 
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
-msgstr ""
+msgstr "Неможливо записати файл%s%s%s%sВи можете натиснути \"Повтор\", щоб знову спробувати оновити цю родину перекладів і продовжити."
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
@@ -158,7 +158,7 @@ msgstr "Копіювати в буфер"
 
 #: pocheckerconsts.screatingiconxofy
 msgid "Creating icon nr. %d of %d"
-msgstr ""
+msgstr "Створення діаграми %d з %d"
 
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
@@ -212,7 +212,7 @@ msgstr "Графічний підсумок"
 
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
-msgstr "GUI інструмент перевірки po-файлів"
+msgstr "Інструмент з ГІК для перевірки po-файлів"
 
 #: pocheckerconsts.sidentifiernotfoundin
 msgid "Identifier [%s] not found in %s"
@@ -320,19 +320,19 @@ msgstr "%s: %5.1f%% неперекладених рядків."
 
 #: pocheckerconsts.sprocessingtranslationfamily
 msgid "Processing translation family..."
-msgstr ""
+msgstr "Обробка родини перекладів..."
 
 #: pocheckerconsts.sprocessingtranslationfamilyof
 msgid "Processing translation family %s of %s"
-msgstr ""
+msgstr "Обробка родини перекладів %s з %s"
 
 #: pocheckerconsts.srefreshalltranslationfamilies
 msgid "Refresh all translation families"
-msgstr ""
+msgstr "Оновити всі родини перекладів"
 
 #: pocheckerconsts.srefreshcurrenttranslationfamily
 msgid "Refresh current translation family"
-msgstr ""
+msgstr "Оновити поточну родину перекладів"
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -372,7 +372,7 @@ msgstr "Вибрати &всі"
 
 #: pocheckerconsts.sselectbasictests
 msgid "Select &Basic"
-msgstr ""
+msgstr "Вибрати &базові"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -432,21 +432,21 @@ msgstr "Переклад"
 
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics per language:"
-msgstr ""
+msgstr "Статистика перекладу для мови:"
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"
-msgstr ""
+msgstr "Проблемні файли"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
-msgstr ""
+msgstr "&Зняти вибір"
 
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
-msgstr ""
+msgstr "Зняти вибір зі всіх файлів"
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"
-msgstr ""
+msgstr "Неперекладені рядки (всього: %s)"
 

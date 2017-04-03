@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-01 18:27+0200\n"
+"PO-Revision-Date: 2017-03-23 22:51+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Конвертувати"
 #: tlazconverterform.caption
 msgctxt "TLAZCONVERTERFORM.CAPTION"
 msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
-msgstr "Codepage LazConverter для PAS, LFM, LRS, LRT та INC файлів v0.0.6"
+msgstr "Конвертер кодових сторінок LazConverter для файлів PAS, LFM, LRS, LRT та INC v0.0.6"
 
 #: tlazconverterform.label1.caption
 msgid "Path to your project:"

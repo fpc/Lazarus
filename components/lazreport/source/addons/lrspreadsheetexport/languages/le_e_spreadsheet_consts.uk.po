@@ -1,0 +1,127 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2017-03-30 09:26+0300\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: le_e_spreadsheet_consts.sallinonepage
+msgid "All in one page"
+msgstr "Все на одній сторінці"
+
+#: le_e_spreadsheet_consts.sallpages
+msgid "All pages"
+msgstr "Всі сторінки"
+
+#: le_e_spreadsheet_consts.sautocreatefile
+msgid "Auto create file"
+msgstr "Створювати файл автоматично"
+
+#: le_e_spreadsheet_consts.schunkseach
+msgid "Chunks. Each chunk has (rows):"
+msgstr "Шматками. рядків у шматку:"
+
+#: le_e_spreadsheet_consts.scurrentpage
+msgid "Current page"
+msgstr "Поточна сторінка"
+
+#: le_e_spreadsheet_consts.sdatagrouping
+msgid "Data grouping"
+msgstr "Групування даних"
+
+#: le_e_spreadsheet_consts.sdeleteemptyrows
+msgid "Delete empty rows"
+msgstr "Видаляти порожні рядки"
+
+#: le_e_spreadsheet_consts.senterpagenumbers
+msgid ""
+"Enter page numbers and/or page ranges,\n"
+"separated by commas. For example, 1,3,5-12\n"
+msgstr ""
+"Введіть номери і/або діапазони сторінок,\n"
+"розділені комами. Наприклад, 1,3,5-12\n"
+
+#: le_e_spreadsheet_consts.sexportpagefooter
+msgid "Export page footer"
+msgstr "Експортувати нижній колонтитул"
+
+#: le_e_spreadsheet_consts.sexportpageheader
+msgid "Export page header"
+msgstr "Експортувати верхній колонтитул"
+
+#: le_e_spreadsheet_consts.sexportpictures
+msgid "Export pictures"
+msgstr "Експортувати зображення"
+
+#: le_e_spreadsheet_consts.sexportprintrange
+msgid "Export print range"
+msgstr "Експортувати діапазон друук"
+
+#: le_e_spreadsheet_consts.sexportreportsummary
+msgid "Export report summary"
+msgstr "Експортувати підсумок звіту"
+
+#: le_e_spreadsheet_consts.sexportreporttitle
+msgid "Export report title"
+msgstr "Експортувати заголовок звіту"
+
+#: le_e_spreadsheet_consts.sexportsettings
+msgid "Export settings"
+msgstr "Параметри експорту"
+
+#: le_e_spreadsheet_consts.sexporttospreadsheet
+msgid "Export to spreadsheet"
+msgstr "Експорт в електронну таблицю"
+
+#: le_e_spreadsheet_consts.sexporturl
+msgid "Export URL"
+msgstr "Експортувати адреси URL"
+
+#: le_e_spreadsheet_consts.sgeneral
+msgid "General"
+msgstr "Загальні"
+
+#: le_e_spreadsheet_consts.slikethereport
+msgid "Like the report"
+msgstr "Як звіт"
+
+#: le_e_spreadsheet_consts.smergecells
+msgid "Merge cells"
+msgstr "Об'єднати комірки"
+
+#: le_e_spreadsheet_consts.sonlyonecomponent
+msgid "Only one TlrSpreadSheetExport component allowed."
+msgstr "Дозволяється наявність лише одного примірника TlrSpreadSheetExport"
+
+#: le_e_spreadsheet_consts.sopenafterexport
+msgid "Open after export"
+msgstr "Відкривати після експорту"
+
+#: le_e_spreadsheet_consts.spagebreaks
+msgid "Page breaks"
+msgstr "Розриви сторінок"
+
+#: le_e_spreadsheet_consts.spagename
+msgid "Page %d"
+msgstr "Сторінка %d"
+
+#: le_e_spreadsheet_consts.spagerange
+msgid "Page range"
+msgstr "Діапазон друку"
+
+#: le_e_spreadsheet_consts.spages
+msgid "Pages:"
+msgstr "Сторінки:"
+
+#: le_e_spreadsheet_consts.sreportpagename
+msgid "Report"
+msgstr "Звіт"
+

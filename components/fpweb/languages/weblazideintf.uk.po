@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-01 19:56+0200\n"
+"PO-Revision-Date: 2017-03-23 23:22+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -75,7 +75,7 @@ msgstr "Модуль Web DataProvider"
 
 #: weblazideintf.rswebdataprovi2
 msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
-msgstr "Модуль WEB DataProvider%sМодуль даних для керування запитами даних для WEB (HTTP) застосунків, які використовують компоненити WebDataProvider."
+msgstr "Модуль WEB DataProvider%sМодуль даних для керування запитами даних для WEB (HTTP) застосунків, які використовують компоненти WebDataProvider."
 
 #: weblazideintf.rswebextdirect
 msgid "Web Ext.Direct Module"

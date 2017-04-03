@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-01-10 00:23+0200\n"
+"PO-Revision-Date: 2017-03-29 01:45+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -137,7 +137,7 @@ msgstr "Помилки"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr "Невідомий DOM елемент як батьківський для вибранного елементу: \"%s\""
+msgstr "Невідомий DOM елемент як батьківський для вибраного елементу: \"%s\""
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
@@ -359,7 +359,7 @@ msgstr "&Завантажити"
 
 #: lazdemsg.smakeskelfromsource
 msgid "Make new document from source file"
-msgstr "Згенерувати новий документ з файлу поч. коду"
+msgstr "Згенерувати новий документ з сирцевого файлу"
 
 #: lazdemsg.smarkselection
 msgid "Mark selection %s"

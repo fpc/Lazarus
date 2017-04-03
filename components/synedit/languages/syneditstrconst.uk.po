@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-02-10 14:58+0200\n"
+"PO-Revision-Date: 2017-03-02 23:41+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -487,11 +487,11 @@ msgstr "Без дії"
 
 #: syneditstrconst.syns_emcoverviewguttergotomark
 msgid "Jump to Mark (Overview Gutter)"
-msgstr ""
+msgstr "Перехід до маркера (поле огляду)"
 
 #: syneditstrconst.syns_emcoverviewgutterscrollto
 msgid "Scroll (Overview Gutter)"
-msgstr ""
+msgstr "Прокрутка (поле огляду)"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
@@ -499,11 +499,11 @@ msgstr "Швидкий Вибір Вставки"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
-msgstr ""
+msgstr "Встановлювати курсори на кінцях вибраних рядків"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr ""
+msgstr "Перемкнути додатковий курсор"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
@@ -535,7 +535,7 @@ msgstr "Вибір перетягуванням"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
 msgid "\"Caret on up if not dragged\",yes,no"
-msgstr ""
+msgstr "\"Курсор при відпусканні кнопки миші, якщо без перетягування\",так,ні"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
@@ -547,19 +547,19 @@ msgstr "Вибір рядка (вибрати негайно)"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
-msgstr "Вибір"
+msgstr "Вибірка"
 
 #: syneditstrconst.syns_emcstartselectlines
 msgid "Selection (lines)"
-msgstr "Вибір (рядки)"
+msgstr "Вибірка (рядки)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
-msgstr ""
+msgstr "Вибірка (елементи)"
 
 #: syneditstrconst.syns_emcstartselectwords
 msgid "Selection (words)"
-msgstr "Вибір (слова)"
+msgstr "Вибірка (слова)"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"

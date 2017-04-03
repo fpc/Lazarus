@@ -1,7 +1,7 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-02-11 02:30+0200\n"
+"PO-Revision-Date: 2017-03-29 01:41+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,7 +49,7 @@ msgstr "Налагоджувач зазнав помилки при спробі
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
 msgctxt "gdbmistringconstants.gdbmierroronruncommandwithwarning"
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
-msgstr "%0:s%0:sВ доповнення до помилки зустрілось наступне попередження:%0:s%0:s%1:s"
+msgstr "%0:s%0:sНа доповнення до помилки зустрілось таке попередження:%0:s%0:s%1:s"
 
 #: gdbmistringconstants.gdbmierrorstategenericinfo
 msgctxt "gdbmistringconstants.gdbmierrorstategenericinfo"
@@ -133,17 +133,17 @@ msgstr "Критична помилка: \"%s\""
 #: gdbmistringconstants.gdbmigdbinternalerror
 msgctxt "gdbmistringconstants.gdbmigdbinternalerror"
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
-msgstr ""
+msgstr "В GDB трапилась внутрішня помилка: %0:sНатисніть \"Гаразд\", щоб продовжити зневадження. Це може бути НЕБЕЗПЕЧНО.%0:sНатисніть \"Зупинити\" для припинення сеансу зневадження."
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
 msgctxt "gdbmistringconstants.gdbmigdbinternalerrorinfo"
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
-msgstr ""
+msgstr "Під час виконання команди: %0:s\"%2:s\"%0:sgdb повідомив:%0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
 msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres"
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
-msgstr "Натисніть кнопку \"Пропустити\" щоб продовжити налагодження. Це може бути небезпечно. Натисніть кнопку \"Скасувати\", щоб зупинити відладчик.%0:sВийняток: %1:s з повідомленням \"%2:s\"%0:sКонтекст: %4:s. Стан: %5:s %0:s%0:s%3:s"
+msgstr "Натисніть кнопку \"Пропустити\" щоб продовжити налагодження. Це може бути небезпечно. Натисніть кнопку \"Скасувати\", щоб зупинити відладчик.%0:sВиняток: %1:s з повідомленням \"%2:s\"%0:sКонтекст: %4:s. Стан: %5:s %0:s%0:s%3:s"
 
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgctxt "gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition"
@@ -162,7 +162,7 @@ msgstr "Налагоджувач досяг несподіваного %1:s%0:s%
 
 #: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
-msgstr ""
+msgstr "Зневаджувач GNU через SSH дозволяє проводити віддалене зневадження через з’єднання SSH. Детальніше дивіться у файлі docs/RemoteDebugging.txt. Клієнт SSH має міститися в шляху. Використайте SSH_Startup_Options для задання назви віддаленої машини і, за потреби, назви користувача. Параметром Remote_GDB_Exe задається назва файлу GDB на віддаленій машині."
 
 #: gdbmistringconstants.lisresponsecontinue
 msgid "Response: %sContinue ?"
@@ -170,7 +170,7 @@ msgstr "Відповідь: %sПродовжити ?"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
 msgid "Unexpected result:%sThe debugger will terminate"
-msgstr "Неочікуваний результат:%sНалагоджувач завершить роботу"
+msgstr "Неочікуваний результат:%sЗневаджувач завершить роботу"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
@@ -178,7 +178,7 @@ msgstr "Не вдалося ініціалізувати зневаджувач"
 
 #: gdbmistringconstants.synffailedtoinitializethedebuggersetpascalfailed
 msgid "Failed to initialize the debugger (set pascal failed)"
-msgstr ""
+msgstr "Не вдалось ініціалізувати зневаджувач (помилка переведення в режим Паскаля)"
 
 #: gdbmistringconstants.synffailedtoloadapplicationexecutable
 msgid "Failed to load application executable"
@@ -186,5 +186,5 @@ msgstr "Не вдалось завантажити виконуваний фай
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
-msgstr ""
+msgstr "Зневаджувачу не вдалось установити всі точки зупинки при ініціалізації.%0:sСлід перевірити, що всі сирці були скомпільовані зі зневаджувальною інформацією.%0:sНатисніть Гаразд, щоб знехтувати і продовжити."
 

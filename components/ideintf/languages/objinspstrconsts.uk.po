@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-02-09 02:16+0200\n"
+"PO-Revision-Date: 2017-03-02 21:59+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -147,7 +147,7 @@ msgstr "Видалити все"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
-msgstr ""
+msgstr "Отримати мітки"
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
@@ -1180,7 +1180,7 @@ msgstr "Метод \"%s\" несумісний з цією подією (%s).%s�
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Метод \"%s\" не опублікований.%sНатисніть Скасувати для повернення,%sнатисніть Знехтувати для примусового виконання."
+msgstr "Метод \"%s\" не опубліковано.%sНатисніть Скасувати для повернення,%sнатисніть Знехтувати для примусового виконання."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"

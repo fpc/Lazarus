@@ -1,0 +1,391 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2017-03-30 14:03+0300\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Lokalize 1.5\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: tachartstrconsts.descolor
+msgid "Color"
+msgstr "Колір"
+
+#: tachartstrconsts.desdatapointeditor
+msgid "DataPoints editor"
+msgstr "Редактор точок даних"
+
+#: tachartstrconsts.desdeleterow
+msgid "Delete row"
+msgstr "Видалити рядок"
+
+#: tachartstrconsts.desinsertrow
+msgid "Insert row"
+msgstr "Вставити рядок"
+
+#: tachartstrconsts.destext
+msgid "Text"
+msgstr "Текст"
+
+#: tachartstrconsts.rsadd
+msgid "Add"
+msgstr "Додати"
+
+#: tachartstrconsts.rsareaseries
+msgid "Area series"
+msgstr "Діаграма з областями"
+
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr "Автоматичний масштаб"
+
+#: tachartstrconsts.rsbarseries
+msgid "Bar series"
+msgstr "Гістограма"
+
+#: tachartstrconsts.rsbottom
+msgid "Bottom"
+msgstr "Нижня"
+
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr "Діаграма розмаху"
+
+#: tachartstrconsts.rsbsbdiagonal
+msgid "backward-diagonal hatch"
+msgstr "зворотна діагональна штриховка"
+
+#: tachartstrconsts.rsbsclear
+msgctxt "tachartstrconsts.rsbsclear"
+msgid "no fill"
+msgstr "без заливки"
+
+#: tachartstrconsts.rsbscross
+msgid "crossed"
+msgstr "перехресна штриховка"
+
+#: tachartstrconsts.rsbsdiagcross
+msgid "diagonally crossed"
+msgstr "діагональна перехресна штриховка"
+
+#: tachartstrconsts.rsbsfdiagonal
+msgid "forward-diagonal hatch"
+msgstr "пряма діагональна штриховка"
+
+#: tachartstrconsts.rsbshorizontal
+msgid "horizontally hatched"
+msgstr "горизонтальна штриховка"
+
+#: tachartstrconsts.rsbsimage
+msgid "image fill"
+msgstr "заливка зображенням"
+
+#: tachartstrconsts.rsbspattern
+msgid "pattern fill"
+msgstr "заливка візерунком"
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr "Діаграма з B-сплайнами"
+
+#: tachartstrconsts.rsbssolid
+msgid "solid fill"
+msgstr "суцільна заливка"
+
+#: tachartstrconsts.rsbsvertical
+msgid "vertically hatched"
+msgstr "вертикальна штриховка"
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubble series"
+msgstr "Бульбашкова діаграма"
+
+#: tachartstrconsts.rscirclesymbol
+msgid "Circle"
+msgstr "Круг"
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr "Діаграма з картою кольорів"
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr "Лінія сталої"
+
+#: tachartstrconsts.rscrosssymbol
+msgid "Plus"
+msgstr "Плюс"
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr "Діаграма з кубічними сплайнами"
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr "Масштаб нормального розподілу"
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr "Клацання точки даних"
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr "Перехрестя точки даних"
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr "Перетягування точки даних"
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
+msgstr "Спливна підказка точки даних"
+
+#: tachartstrconsts.rsdelete
+msgid "Delete"
+msgstr "Видалити"
+
+#: tachartstrconsts.rsdiagcrosssymbol
+msgid "Cross"
+msgstr "Хрест"
+
+#: tachartstrconsts.rsdiamondsymbol
+msgid "Diamond"
+msgstr "Ромб"
+
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr "Вимірювання відстані"
+
+#: tachartstrconsts.rsdowntrianglesymbol
+msgid "Down triangle"
+msgstr "Трикутник з вершиною донизу"
+
+#: tachartstrconsts.rsfieldseries
+msgid "Vector field series"
+msgstr "Діаграма з векторним полем"
+
+#: tachartstrconsts.rsfullstarsymbol
+msgid "Star (full)"
+msgstr "Зірка (повна)"
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr "Діаграма за функцією"
+
+#: tachartstrconsts.rshexagonsymbol
+msgid "Hexagon"
+msgstr "Шестикутник"
+
+#: tachartstrconsts.rshidden
+msgid "hidden"
+msgstr "прихована"
+
+#: tachartstrconsts.rshighbracketsymbol
+msgid "High bracket"
+msgstr "Дужка вгорі"
+
+#: tachartstrconsts.rshorbarsymbol
+msgid "Horizontal bar"
+msgstr "Горизонтальна риска"
+
+#: tachartstrconsts.rsinvalidlogbase
+msgid "Logarithm base must be > 0 and <> 1."
+msgstr "Основа логарифма має бути > 0 і <> 1."
+
+#: tachartstrconsts.rsinverted
+msgid "inverted"
+msgstr "зворотна"
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr "Діаграма за методом найменших квадратів"
+
+#: tachartstrconsts.rsleft
+msgid "Left"
+msgstr "Ліва"
+
+#: tachartstrconsts.rsleftbracketsymbol
+msgid "Left bracket"
+msgstr "Дужка ліворуч"
+
+#: tachartstrconsts.rslefttrianglesymbol
+msgid "Left triangle"
+msgstr "Трикутник з вершиною ліворуч"
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr "Лінійний масштаб"
+
+#: tachartstrconsts.rslineseries
+msgid "Line series"
+msgstr "Графік"
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr "Логарифмічний масштаб"
+
+#: tachartstrconsts.rslowbracketsymbol
+msgid "Low bracket"
+msgstr "Дужка внизу"
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
+msgstr "Манхеттенська діаграма"
+
+#: tachartstrconsts.rsmovedown
+msgid "Down"
+msgstr "Вниз"
+
+#: tachartstrconsts.rsmoveup
+msgid "Up"
+msgstr "Вгору"
+
+#: tachartstrconsts.rsnosymbol
+msgid "(none)"
+msgstr "(немає)"
+
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr "Біржова діаграма"
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr "Панорамування клацанням"
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr "Панорамування перетягуванням"
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr "Панорамування коліщатком миші"
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr "Діаграма з параметричними кривими"
+
+#: tachartstrconsts.rspieseries
+msgid "Pie series"
+msgstr "Кругова діаграма"
+
+#: tachartstrconsts.rspointsymbol
+msgid "Point"
+msgstr "Точка"
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr "Пелюсткова діаграма"
+
+#: tachartstrconsts.rspsclear
+msgctxt "tachartstrconsts.rspsclear"
+msgid "no line"
+msgstr "немає лінії"
+
+#: tachartstrconsts.rspsdash
+msgid "dashed line"
+msgstr "штрихова лінія"
+
+#: tachartstrconsts.rspsdashdot
+msgid "dash-dot"
+msgstr "штрихпунктирна лінія"
+
+#: tachartstrconsts.rspsdashdotdot
+msgid "dash-dot-dot"
+msgstr "штрихпунктирна лінія з двома крапками"
+
+#: tachartstrconsts.rspsdot
+msgid "dotted line"
+msgstr "пунктирна лінія"
+
+#: tachartstrconsts.rspsinsideframe
+msgid "solid (inside frame)"
+msgstr "суцільна лінія (всередині рамки)"
+
+#: tachartstrconsts.rspspattern
+msgid "patterned line"
+msgstr "лінія з візерунком"
+
+#: tachartstrconsts.rspssolid
+msgid "solid line"
+msgstr "суцільна лінія"
+
+#: tachartstrconsts.rsrectanglesymbol
+msgid "Rectangle"
+msgstr "Прямокутник"
+
+#: tachartstrconsts.rsright
+msgid "Right"
+msgstr "Права"
+
+#: tachartstrconsts.rsrightbracketsymbol
+msgid "Right bracket"
+msgstr "Дужка праворуч"
+
+#: tachartstrconsts.rsrighttrianglesymbol
+msgid "Right triangle"
+msgstr "Трикутник з вершиною праворуч"
+
+#: tachartstrconsts.rsstarsymbol
+msgid "Star (lines)"
+msgstr "Зірка (з ліній)"
+
+#: tachartstrconsts.rstop
+msgid "Top"
+msgstr "Верхня"
+
+#: tachartstrconsts.rstrianglesymbol
+msgid "Triangle"
+msgstr "Трикутник"
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Користувацький"
+
+#: tachartstrconsts.rsuserdefinedtool
+msgctxt "tachartstrconsts.rsuserdefinedtool"
+msgid "User-defined"
+msgstr "Користувацький"
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr "Користувацька діаграма"
+
+#: tachartstrconsts.rsvertbarsymbol
+msgid "Vertical bar"
+msgstr "Вертикальна риска"
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr "Змінення масштабу клацанням"
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr "Змінення масштабу перетягуванням"
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
+msgstr "Змінення масштабу коліщатком миші"
+
+#: tachartstrconsts.sesserieseditortitle
+msgid "Edit series"
+msgstr "Редактор діаграм"
+
+#: tachartstrconsts.tasaxistransformseditortitle
+msgid "Edit axis transformations"
+msgstr "Редактор масштабів осей"
+
+#: tachartstrconsts.tasfailedsubcomponentrename
+msgid "Failed to rename components: %s"
+msgstr "Неможливо перейменувати компоненти: %s"
+
+#: tachartstrconsts.tastoolseditortitle
+msgid "Edit tools"
+msgstr "Редактор засобів діаграм"
+

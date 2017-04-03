@@ -1,10 +1,10 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-11-14 00:51+0200\n"
+"PO-Revision-Date: 2017-03-30 22:42+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -52,7 +52,7 @@ msgstr "Будь-який"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
-msgstr "Вікно для ІСР Lazarus. Його можна прикріпити, як Оглядач коду або Редактор FPDoc. Також буде створено елемент у меню Перегляд і сполучення клавіш."
+msgstr "Вікно для ІСР Lazarus. Його можна прикріпити, як Оглядач коду або Редактор FPDoc. Також буде створено елемент у меню Перегляд і сполучення клавіш.Вікно для ІСР Lazarus. Його можна прикріпити, як Оглядач коду або Редактор FPDoc. Також буде створено елемент у меню Перегляд і сполучення клавіш."
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -270,11 +270,11 @@ msgstr "Встановіть курсор редактора початково�
 
 #: codystrconsts.crsdeclarevariable
 msgid "Declare Variable"
-msgstr "Оголосити Змінну"
+msgstr "Оголосити змінну"
 
 #: codystrconsts.crsdeclarevariable2
 msgid "Declare Variable ..."
-msgstr "Оголосити Змінну ..."
+msgstr "Оголосити змінну ..."
 
 #: codystrconsts.crsdeclarevariable3
 msgid "Declare variable \"%s\""
@@ -306,7 +306,7 @@ msgstr "Помилка: курсор знаходиться не в модулі
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
-msgstr "Помилка: курсор в редакторі слід встановити на виклику або оголошенні процедури"
+msgstr "Помилка: курсор в редакторі слід встановити на виклику або оголошенні процедуриПомилка: курсор в редакторі слід встановити на виклику або оголошенні процедури"
 
 #: codystrconsts.crsexact
 msgid "exact"
@@ -407,11 +407,11 @@ msgstr "Вікно ІСР, прикріплюване"
 #: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
 msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
-msgstr "Якщо ідентифікатор додано до розділу implementation і потрібно додати необхідний модуль, додайте до розділу uses в implementation"
+msgstr "Якщо ідентифікатор додано до розділу implementation і потрібно додати необхідний модуль, додайте до розділу uses в implementationЯкщо ідентифікатор додано до розділу implementation і потрібно додати необхідний модуль, додайте до розділу uses в implementation"
 
 #: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
 msgid "If unchecked list also procedures with same name and incompatible parameter lists."
-msgstr "Якщо не позначено, показує також процедури з такими ж назвами і несумісними списками параметрів."
+msgstr "Якщо не позначено, показує також процедури з такими ж назвами і несумісними списками параметрів.Якщо не позначено, показує також процедури з такими ж назвами і несумісними списками параметрів."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
@@ -439,11 +439,11 @@ msgstr "Вставить виклик успадкованого"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert File Contents at Cursor ..."
-msgstr "Вставити вміст файлу у позицію курсора ..."
+msgstr "Вставити вміст файлу в позицію курсора ..."
 
 #: codystrconsts.crsinsertint64idyyyyddmmhhnnss
 msgid "Insert int64 ID YYYYDDMMhhnnss"
-msgstr ""
+msgstr "Вставити int64 ID РРРРДДММггххсс"
 
 #: codystrconsts.crsjump
 msgid "Jump"
@@ -519,7 +519,7 @@ msgstr "Немає проекту"
 
 #: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
 msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
-msgstr "Примітка: назва форми має бути коректним ідентифікатором Паскаля і унікальною у всьому ІСР, включно з пакетами. Додавайте до початку назви скорочення назви пакета. Префікси \"IDE\", \"Laz\", \"Pkg\" вже використовуються в самому ІСР."
+msgstr "Примітка: назва форми має бути коректним ідентифікатором Паскаля і унікальною у всьому ІСР, включно з пакетами. Додавайте до початку назви скорочення назви пакета. Префікси \"IDE\", \"Laz\", \"Pkg\" вже використовуються в самому ІСР.Примітка: назва форми має бути коректним ідентифікатором Паскаля і унікальною у всьому ІСР, включно з пакетами. Додавайте до початку назви скорочення назви пакета. Префікси \"IDE\", \"Laz\", \"Pkg\" вже використовуються в самому ІСР."
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
@@ -611,7 +611,7 @@ msgstr "Виберіть якийсь код у Редакторі коду"
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
 msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
-msgstr "Виберіть у Редакторі коду якийсь код для нового блоку \"With\". Кандидатів для виразу with не знайдено."
+msgstr "Виберіть у Редакторі коду якийсь код для нового блоку \"With\". Кандидатів для виразу with не знайдено.Виберіть у Редакторі коду якийсь код для нового блоку \"With\". Кандидатів для виразу with не знайдено."
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
@@ -758,9 +758,8 @@ msgid "The identifier \"%s\" is already defined."
 msgstr "Ідентифікатор \"%s\" вже визначений."
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
-#, fuzzy,badformat
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
-msgstr "Пакет з такою назвою вже завантажено.% SВідкритий пакет:% s% sНовий пакет:% s% sМоже бути завантажений тільки один такий пакет."
+msgstr "Пакет з такою назвою вже завантажено.%sВідкритий пакет: %s%sНовий пакет: %s%sМоже бути завантажений тільки один такий пакет."
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
@@ -772,7 +771,7 @@ msgstr "Модуль \"%s\"%sє частиною \"%s\".%sВін не може �
 
 #: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
 msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
-msgstr "Модуль знаходиться в сирцях Free Pascal, але ppu-file не встановлено. Можливо цей модуль не доступний для даної цільової платформи."
+msgstr "Модуль знаходиться в сирцях Free Pascal, але ppu-file не встановлено. Можливо цей модуль не доступний для даної цільової платформи.Модуль знаходиться в сирцях Free Pascal, але ppu-file не встановлено. Можливо цей модуль не доступний для даної цільової платформи."
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -783,18 +782,16 @@ msgid "Type"
 msgstr "Тип"
 
 #: codystrconsts.crsunabletodelete
-#, fuzzy,badformat
 msgid "Unable to delete \"%s\""
-msgstr "Неможливо видалити \"s\""
+msgstr "Неможливо видалити \"%s\""
 
 #: codystrconsts.crsunabletoreadfile
 msgid "Unable to read file \"%s\"."
 msgstr "Неможливо прочитати файл \"%s\"."
 
 #: codystrconsts.crsunabletorenameto
-#, fuzzy,badformat
 msgid "unable to rename \"%s\" to \"%s\""
-msgstr "неможливо змінити назву файлу \"s\" на \"%s\""
+msgstr "неможливо змінити назву файлу \"%s\" на \"%s\""
 
 #: codystrconsts.crsunit
 msgid "Unit"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-01 19:33+0200\n"
+"PO-Revision-Date: 2017-03-23 23:12+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -75,7 +75,7 @@ msgstr "&Гаразд"
 
 #: ldd_consts.ldd_openexistingfile
 msgid "Open existing file"
-msgstr "Відкрити існуючий файл"
+msgstr "Відкрити наявний файл"
 
 #: ldd_consts.ldd_options
 msgid "Options"
@@ -151,15 +151,15 @@ msgstr "Виберіть відомий словник даних"
 
 #: ldd_consts.serrselectdir
 msgid "Please select an existing directory"
-msgstr "Виберіть існуючу директорію"
+msgstr "Виберіть наявну директорію"
 
 #: ldd_consts.serrselectexe
 msgid "Please select an existing database desktop application"
-msgstr "Виберіть існуючу настільну програму баз даних"
+msgstr "Виберіть наявну настільну програму для баз даних"
 
 #: ldd_consts.serrselectfile
 msgid "Please select an existing data dictionary file"
-msgstr "Виберіть існуючий файл словника даних"
+msgstr "Виберіть наявний файл словника даних"
 
 #: ldd_consts.sfromfile
 msgid "from file: "

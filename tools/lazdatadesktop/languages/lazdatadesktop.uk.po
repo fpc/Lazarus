@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-01-10 00:51+0200\n"
+"PO-Revision-Date: 2017-03-23 23:02+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -352,7 +352,7 @@ msgstr "Нове &поле"
 
 #: lazdatadeskstr.sld_actionnewfieldh
 msgid "Create a new field in the current table"
-msgstr "Створити нове поле в поточнй таблиці"
+msgstr "Створити нове поле в поточній таблиці"
 
 #: lazdatadeskstr.sld_actionnewh
 msgid "Create a new Data Dictionary"
@@ -658,7 +658,7 @@ msgstr "&Оновлення"
 
 #: lazdatadeskstr.sld_updateexistingtables
 msgid "Update existing tables"
-msgstr "Оновити існуючі таблиці"
+msgstr "Оновити наявні таблиці"
 
 #: lazdatadeskstr.sld_username
 msgid "Username"

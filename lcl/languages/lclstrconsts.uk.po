@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-01 19:28+0200\n"
+"PO-Revision-Date: 2017-03-29 02:11+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -362,7 +362,7 @@ msgstr "Врахування регістру"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
 msgid "Control of class '%s' can't have control of class '%s' as a child"
-msgstr "Елемент управління класу '%s' не може мати наслідником елемент класу '%s'"
+msgstr "Елемент управління класу '%s' не може мати нащадком елемент класу '%s'"
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
@@ -500,7 +500,7 @@ msgstr "Зберегти файл як"
 
 #: lclstrconsts.rsfdopenfile
 msgid "Open existing file"
-msgstr "Відкрити існуючий файл"
+msgstr "Відкрити наявний файл"
 
 #: lclstrconsts.rsfdoverwritefile
 msgid "Overwrite file ?"
@@ -641,7 +641,7 @@ msgstr "Історія:"
 
 #: lclstrconsts.rsgtkoptionclass
 msgid "--class classname     Following Xt conventions, the class of a program is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
-msgstr "--class classname     Відповідно до домовленостей Xt, класом програмим є її назва з великої літери. Напр., назвою класу для gimp є  \"Gimp\". Якщо вказано --class, клас програми буде встановлено в \"classname\"."
+msgstr "--class classname     Відповідно до домовленостей Xt, класом програми є її назва з великої літери. Наприклад, назвою класу для gimp є \"Gimp\". Якщо вказано --class, клас програми буде встановлено в \"classname\"."
 
 #: lclstrconsts.rsgtkoptiondebug
 msgid "--gtk-debug flags     Turn on specific Gtk+ trace/debug messages."
@@ -970,7 +970,7 @@ msgstr "  змінений "
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
-msgstr "Сиваво-зелений"
+msgstr "Сиво-зелений"
 
 #: lclstrconsts.rsmtauthentication
 msgid "Authentication"
@@ -1073,7 +1073,7 @@ msgstr "Пурпуровий"
 
 #: lclstrconsts.rsqtoptiondograb
 msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."
-msgstr "-dograb (лише під X11), запуск під налаголжувачем може спричинити неявний -nograb, використайте -dograb щоб перевизначити. Потрібен QT_DEBUG."
+msgstr "-dograb (лише під X11), запуск під зневаджувачем може спричинити неявний -nograb, використайте -dograb щоб перевизначити. Потрібен QT_DEBUG."
 
 #: lclstrconsts.rsqtoptiongraphicsstyle
 msgid "-graphicssystem param, sets the backend to be used for on-screen widgets and QPixmaps. Available options are native, raster and opengl. OpenGL is still unstable."
@@ -1093,7 +1093,7 @@ msgstr "-session session, відновлює програму з поперед�
 
 #: lclstrconsts.rsqtoptionstyle
 msgid "-style style or -style=style, sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style  command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
-msgstr "-style style або -style=style, задає стиль GUI програми. Можливі значення: motif, windows, та platinum. Якщо ви зібрали Qt з додатковими стилями ябо маєте додаткові стилі як плагіни вони будуть доступні для опцій командного рядка -style. ПРИМІТКА: Не всі стилі доступні на всіх платформах. Якщо параметр style не існує Qt запустить програму з типовим стилем (windows)."
+msgstr "-style style або -style=style, задає стиль ГІК програми. Можливі значення: motif, windows, та platinum. Якщо ви зібрали Qt з додатковими стилями або маєте додаткові стилі як плагіни, вони будуть доступні для опцій командного рядка -style. ПРИМІТКА: Не всі стилі доступні на всіх платформах. Якщо параметр style не існує Qt запустить програму з типовим стилем (windows)."
 
 #: lclstrconsts.rsqtoptionstylesheet
 msgid "-stylesheet stylesheet or -stylesheet=stylesheet, sets the application Style Sheet. The value must be a path to a file that contains the Style Sheet. Note: Relative URLs in the Style Sheet file are relative to the Style Sheet file's path."
@@ -1484,7 +1484,7 @@ msgstr "Хибний тип маркера: очікується %s"
 
 #: lclstrconsts.sparinvalidfloat
 msgid "Invalid floating point number: %s"
-msgstr "Хибне число з плаваючою крапкою: %s"
+msgstr "Хибне число з рухомою комою: %s"
 
 #: lclstrconsts.sparinvalidinteger
 msgid "Invalid integer number: %s"

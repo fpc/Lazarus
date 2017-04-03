@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-01 19:34+0200\n"
+"PO-Revision-Date: 2017-03-23 23:13+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -175,7 +175,7 @@ msgstr "Вивести з-під керування версіями (залиш
 
 #: svnclasses.rsrepositorypath
 msgid "Repository path"
-msgstr "Шлях до репозиторію"
+msgstr "Шлях до сховища"
 
 #: svnclasses.rsrevert
 msgid "Revert"

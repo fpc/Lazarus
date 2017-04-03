@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-01 20:07+0200\n"
+"PO-Revision-Date: 2017-03-23 23:24+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -510,11 +510,11 @@ msgstr "Параметри форматування JCF"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
-msgstr ""
+msgstr "Форматування коду JEDI для %sСправді відформатувати всі (%s) файли в проекті?"
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
 msgid "JEDI Code Format of %sStart formatting?"
-msgstr ""
+msgstr "Форматування коду JEDI для %sПочати форматування?"
 
 #: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
 msgid "&Break lines that are longer than max line length"
@@ -807,7 +807,7 @@ msgstr "Додати або видал&ити begin і end з одиничних
 
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
-msgstr "Алфавітно"
+msgstr "За алфавітом"
 
 #: jcfuiconsts.listransformbreakoncomment
 msgid "Break on &comment"
@@ -895,7 +895,7 @@ msgstr "&Ігнорувати невикористовувані парамет�
 
 #: jcfuiconsts.liswarningswarnaboutunusedparameters
 msgid "Warn about &unused parameters"
-msgstr "Попереждувати про неви&користовувані параметри"
+msgstr "Попереджувати про неви&користовувані параметри"
 
 #: jcfuiconsts.liswarningswarnings
 msgid "Warnings"

@@ -1,0 +1,83 @@
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2017-03-30 21:35+0300\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: sqlitecompstrings.sadd
+msgid "Add"
+msgstr "Додати"
+
+#: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
+msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
+msgstr "Таблиця з назвою \"%s\" вже є. Ви впевнені, що бажаєте замінити її?%sВсі дані буде втрачено."
+
+#: sqlitecompstrings.sclose
+msgid "Close"
+msgstr "Закрити"
+
+#: sqlitecompstrings.screateedittable
+msgid "Create/Edit Table"
+msgstr "Створення/редагування таблиці"
+
+#: sqlitecompstrings.screatetable
+msgid "Create Table"
+msgstr "Створити таблицю"
+
+#: sqlitecompstrings.sdelete
+msgid "Delete"
+msgstr "Видалити"
+
+#: sqlitecompstrings.sfieldname
+msgid "Field Name"
+msgstr "Назва поля"
+
+#: sqlitecompstrings.sfieldtype
+msgid "Field Type"
+msgstr "Тип поля"
+
+#: sqlitecompstrings.sfilenamenotsetitsnotpossibletocreateeditatable
+msgid "File name not set: it's not possible to create/edit a table."
+msgstr "Не задано назву файлу: неможливо створити/змінити таблицю."
+
+#: sqlitecompstrings.sfilepath
+msgid "File Path: %s"
+msgstr "Шлях до файлу: %s"
+
+#: sqlitecompstrings.sitsnotallowedfieldswiththesamename
+msgid "Fields with identical names are not allowed."
+msgstr "Поля з однаковими назвами не дозволені."
+
+#: sqlitecompstrings.sitwasnotpossibletocreatethetable
+msgid "It was not possible to create the table."
+msgstr "Не вдалось створити таблицю."
+
+#: sqlitecompstrings.snofieldsaddedtablewillnotbecreated
+msgid "No fields added. Table will not be created."
+msgstr "Не додано поля. Таблицю не буде створено."
+
+#: sqlitecompstrings.stablecreatedsuccessfully
+msgid "Table created successfully."
+msgstr "Таблицю успішно створено."
+
+#: sqlitecompstrings.stableeditorfieldtypenotrecognized
+msgid "Field type not recognized."
+msgstr "Тип поля не розпізнано."
+
+#: sqlitecompstrings.stablename
+msgid "Table Name: %s"
+msgstr "Назва таблиці: %s"
+
+#: sqlitecompstrings.stablenamenotsetitsnotpossibletocreateeditatable
+msgid "Table name not set: it's not possible to create/edit a table."
+msgstr "Назву таблиці не задано: неможливо створити/змінити таблицю."
+

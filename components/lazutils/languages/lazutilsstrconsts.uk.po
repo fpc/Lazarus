@@ -1,7 +1,7 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-03-01 19:47+0200\n"
+"PO-Revision-Date: 2017-03-02 23:31+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,26 +15,26 @@ msgstr ""
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
+msgstr "складова %s не існує або є посиланням на відсутній об'єкт"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
+msgstr "складова %s не існує або є посиланням на відсутній об'єкт"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
 msgid "a directory component in %s is not a directory"
-msgstr ""
+msgstr "складова %s не є каталогом"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
-msgstr ""
+msgstr "складова %s не є каталогом"
 
 #: lazutilsstrconsts.lrsboolean
 msgid "boolean"
-msgstr ""
+msgstr "логічний тип"
 
 #: lazutilsstrconsts.lrscannotexecute
 msgid "can not execute %s"
@@ -62,11 +62,11 @@ msgstr "файл \"%s\" є текою, а не виконуваним файло
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
 msgid "%s has a circular symbolic link"
-msgstr ""
+msgstr "%s має циклічне символьне посилання"
 
 #: lazutilsstrconsts.lrsinsufficientmemory
 msgid "insufficient memory"
-msgstr ""
+msgstr "нестача пам'яті"
 
 #: lazutilsstrconsts.lrsinvalidcharset
 msgctxt "lazutilsstrconsts.lrsinvalidcharset"
@@ -98,7 +98,7 @@ msgstr "  змінено "
 
 #: lazutilsstrconsts.lrsnodeset
 msgid "node set"
-msgstr ""
+msgstr "набір елементів"
 
 #: lazutilsstrconsts.lrsnumber
 msgid "number"
@@ -106,11 +106,11 @@ msgstr "число"
 
 #: lazutilsstrconsts.lrsparserbadaxisname
 msgid "Invalid axis name"
-msgstr ""
+msgstr "Неправильна назва осі"
 
 #: lazutilsstrconsts.lrsparserbadnodetype
 msgid "Invalid node type"
-msgstr ""
+msgstr "Неправильний тип елемента"
 
 #: lazutilsstrconsts.lrsparserexpectedleftbracket
 msgid "Expected \"(\""
@@ -126,15 +126,15 @@ msgstr "Очікується \"]\" після предиката"
 
 #: lazutilsstrconsts.lrsparsergarbageafterexpression
 msgid "Unrecognized input after expression"
-msgstr ""
+msgstr "Нерозпізнаний вміст після виразу"
 
 #: lazutilsstrconsts.lrsparserinvalidnodetest
 msgid "Invalid node test (syntax error)"
-msgstr ""
+msgstr "Не вдалось перевірити елемент (синтаксична помилка)"
 
 #: lazutilsstrconsts.lrsparserinvalidprimexpr
 msgid "Invalid primary expression"
-msgstr ""
+msgstr "Неправильний первинний вираз"
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
 msgid "program file not found %s"
@@ -154,7 +154,7 @@ msgstr "Неправильний символ"
 
 #: lazutilsstrconsts.lrsscannermalformedqname
 msgid "Expected \"*\" or local part after colon"
-msgstr ""
+msgstr "Після двокрапки очікується \"*\" або локальна частина назви"
 
 #: lazutilsstrconsts.lrsscannerunclosedstring
 msgid "String literal was not closed"
@@ -167,7 +167,7 @@ msgstr "  розмір "
 
 #: lazutilsstrconsts.lrsstring
 msgid "string"
-msgstr ""
+msgstr "рядковий тип"
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
