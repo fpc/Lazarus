@@ -896,6 +896,10 @@ msgstr "Si cette option est cochée, les paquets sont toujours de nouveau télé
 msgid "Use proxy"
 msgstr "Utiliser proxy"
 
+#: opkman_const.rsoptions_cbregular_caption
+msgid "Show regular icon for newly added packages after install"
+msgstr ""
+
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
 msgstr "Utiliser un profil qui convient mieux"

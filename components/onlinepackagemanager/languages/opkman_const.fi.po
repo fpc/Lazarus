@@ -911,6 +911,10 @@ msgstr "Jos tämä vaihtoehto on valittu niin paketit ovat aina uudelleen ladatt
 msgid "Use proxy"
 msgstr "Käytä välityspalvelinta"
 
+#: opkman_const.rsoptions_cbregular_caption
+msgid "Show regular icon for newly added packages after install"
+msgstr ""
+
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
 msgstr ""

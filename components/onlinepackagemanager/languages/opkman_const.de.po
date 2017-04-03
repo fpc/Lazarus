@@ -891,6 +891,10 @@ msgstr "Wenn diese Einstellung aktiviert ist, dann werden die Packages vor der I
 msgid "Use proxy"
 msgstr "Proxy verwenden"
 
+#: opkman_const.rsoptions_cbregular_caption
+msgid "Show regular icon for newly added packages after install"
+msgstr ""
+
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
 msgstr "Wählen Sie ein Profil, das am besten zu Ihnen passt."
