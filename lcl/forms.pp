@@ -271,7 +271,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
   public
-    property DesignTimeDPI: Integer read FDesignTimePPI write SetDesignTimePPI stored False; deprecated 'Use DesignTimePPI instead. DesignTimeDPI will be removed in 1.8';
+    property DesignTimeDPI: Integer read FDesignTimePPI write SetDesignTimePPI stored False; deprecated {$IFNDEF FPDOC}'Use DesignTimePPI instead. DesignTimeDPI will be removed in 1.8'{$ENDIF};
     property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch stored False;
     property Scaled: Boolean read FScaled write SetScaled default True;
