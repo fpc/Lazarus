@@ -292,9 +292,9 @@
           <var>Font</var>
         </short>
         <descr>
-          <p>New <var>TFont</var> instances are initialized with the values in this structure.</p>
-          <p>About font default values: The default font is chosen by the interfaces depending on the context. </p>
-          <p>For example, there can be a different default font for a button and a groupbox.</p>
+          New <var>TFont</var> instances are initialized with the values in this structure.<br/>
+          About font default values: The default font is chosen by the interfaces depending on the context. <br/>
+          For example, there can be a different default font for a button and a groupbox.<br/>
         </descr>
         <seealso>
           <link id="TFontData"/>
@@ -324,16 +324,16 @@
         <descr>The <var>Style</var> of the <var>Text</var> to be drawn in a rectangle<br/>
            <br/>
             * Alignment :  TextRect Only: horizontal alignment<br/>
-   <!--         <li>Layout    : TextRect Only: vertical alignment</li>
-            <li>SingleLine: boolean;    If WordBreak is false then process #13, #10 as standard chars and perform no Line breaking.</li>
-            <li>Clipping  : boolean;    TextRect Only: Clip Text to passed Rectangle</li>
-            <li>ExpandTabs: boolean;    currently ignored</li>
-            <li>ShowPrefix: boolean;    TextRect Only: Process first single ampersand per line as an underscore and draw double ampersand as a single ampersand</li>
-            <li>Wordbreak : boolean;    TextRect Only: If line of text is too long to fit between left and right boundaries,   try to break into multiple lines between words</li>
-            <li>Opaque    : boolean;    TextRect: Fills background with current Brush</li>
-            <li>Opaque    :             TextOut : Fills background with current foreground color</li>
-            <li>SystemFont: Boolean;    Use the system font instead of Canvas Font</li>
-            <li>RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)</li>  -->
+            * Layout    : TextRect Only: vertical alignment<br/>
+            * SingleLine: boolean;    If WordBreak is false then process #13, #10 as standard chars and perform no Line breaking.<br/>
+            * Clipping  : boolean;    TextRect Only: Clip Text to passed Rectangle<br/>
+            * ExpandTabs: boolean;    currently ignored<br/>
+            * ShowPrefix: boolean;    TextRect Only: Process first single ampersand per line as an underscore and draw double ampersand as a single ampersand<br/>
+            * Wordbreak : boolean;    TextRect Only: If line of text is too long to fit between left and right boundaries,   try to break into multiple lines between words<br/>
+            * Opaque    : boolean;    TextRect: Fills background with current Brush<br/>
+            * Opaque    :             TextOut : Fills background with current foreground color<br/>
+            * SystemFont: Boolean;    Use the system font instead of Canvas Font<br/>
+            * RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)<br/>
           <br/>
         </descr>
       </element>
@@ -3609,30 +3609,30 @@ If the file is not of the right format, an exception will be generated.</descr>
             <var>Icon</var>, you can 
             <var>LoadFromFile</var> a bitmap file, whereas if the class is 
             <var>TIcon</var> you could only read  .ICO files.<br/>
-          <ul>
-            <li>
+          <br/>
+            * 
               <var>LoadFromFile</var> - Reads a picture from disk. The 
-              <var>TGraphic</var> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.</li>
-            <li>
-              <var>SaveToFile</var> - Writes the picture to disk.</li>
-            <li>
-              <var>LoadFromClipboardFormat</var> - ToDo: Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.</li>
-            <li>
-              <var>SaveToClipboardFormats</var> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.</li>
-            <li>
+              <var>TGraphic</var> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.<br/>
+            * 
+              <var>SaveToFile</var> - Writes the picture to disk.<br/>
+            * 
+              <var>LoadFromClipboardFormat</var> - ToDo: Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.<br/>
+            * 
+              <var>SaveToClipboardFormats</var> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.<br/>
+            * 
               <var>SupportsClipboardFormat</var> - Returns true if the given clipboard format  is supported by 
               
               
               
               <var>LoadFromClipboardFormat</var>
-            </li>
-            <li>
+            <br/>
+            * 
               <var>Assign</var> - Copies the contents of the given 
               
               
               
-              <var>TPicture</var>.  Used most often in  the implementation of TPicture properties.</li>
-            <li>
+              <var>TPicture</var>.  Used most often in  the implementation of TPicture properties.<br/>
+            * 
               <var>RegisterFileFormat</var> - Register a new 
               
               
@@ -3641,8 +3641,8 @@ If the file is not of the right format, an exception will be generated.</descr>
               
               
               
-              <var>LoadFromFile</var>.</li>
-            <li>
+              <var>LoadFromFile</var>.<br/>
+            * 
               <var>RegisterClipboardFormat</var> - Registers a new 
               
               
@@ -3651,18 +3651,18 @@ If the file is not of the right format, an exception will be generated.</descr>
               
               
               
-              <var>LoadFromClipboardFormat</var>.</li>
-            <li>
+              <var>LoadFromClipboardFormat</var>.<br/>
+            * 
               <var>UnRegisterGraphicClass</var> - Removes all references to the specified 
               
               
               
-              <var>TGraphic</var> class and all its descendants from the file format and clipboard format internal lists.</li>
-            <li>
-              <var>Height</var> - The native, unstretched, height of the picture.</li>
-            <li>
-              <var>Width</var> - The native, unstretched, width of the picture.</li>
-            <li>
+              <var>TGraphic</var> class and all its descendants from the file format and clipboard format internal lists.<br/>
+            * 
+              <var>Height</var> - The native, unstretched, height of the picture.<br/>
+            * 
+              <var>Width</var> - The native, unstretched, width of the picture.<br/>
+            * 
               <var>Graphic</var> - The 
               
               
@@ -3672,30 +3672,30 @@ If the file is not of the right format, an exception will be generated.</descr>
               
               
               <var>TPicture</var>
-            </li>
-            <li>
-              <var>Bitmap</var> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned.</li>
-            <li>
-              <var>Pixmap</var> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.</li>
-            <li>
+            <br/>
+            * 
+              <var>Bitmap</var> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned.<br/>
+            * 
+              <var>Pixmap</var> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.<br/>
+            * 
               <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (
               
               
               
-              <var>TPortableNetworkGraphic</var>) is returned.</li>
-            <li>
+              <var>TPortableNetworkGraphic</var>) is returned.<br/>
+            * 
               <var>PNM</var> - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (
               
               
               
-              <var>TPortableAnyMapGraphic</var>) is returned.</li>
-            <li>
+              <var>TPortableAnyMapGraphic</var>) is returned.<br/>
+            * 
               <var>Jpeg</var> - Returns a jpeg. If the contents is not already a jpeg, the contents are thrown away and a blank jpeg (
               
               
               
-              <var>TJPegImage</var>) is returned.</li>
-          </ul>
+              <var>TJPegImage</var>) is returned.<br/>
+          <br/>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -6049,14 +6049,14 @@ Calling the <var>MoveTo</var>
 	  <br/>
 	  <b>Note:</b>
           The exact text position depends on the specified rectangle, the <var>TextStyle</var> of the canvas, and the <var>X, Y</var> coordinates:
-          <ul>
-            <li><var>TextStyle.Alignment = taLeftJustify</var>: Text begins at <var>X</var></li>
-            <li><var>TextStyle.Alignment = taCenter</var>: Text center is in the center of the rectangle (horizontally)</li>
-            <li><var>TextStyle.Alignment = taRightJustify</var>: Text ends at right edge of the rectangle</li>
-            <li><var>TextStyle.Layout = tlTop</var>: Top of the text is at <var>Y</var></li>
-            <li><var>TextStyle.Layout = tlCenter</var>: Text center is in the center of the rectangle (vertically)</li>
-            <li><var>TextStyle.Layout = tlBottom</var>: Text sits above the the bottom edge of the rectangle</li>
-          </ul>
+          <br/>
+            * <var>TextStyle.Alignment = taLeftJustify</var>: Text begins at <var>X</var><br/>
+            * <var>TextStyle.Alignment = taCenter</var>: Text center is in the center of the rectangle (horizontally)<br/>
+            * <var>TextStyle.Alignment = taRightJustify</var>: Text ends at right edge of the rectangle<br/>
+            * <var>TextStyle.Layout = tlTop</var>: Top of the text is at <var>Y</var><br/>
+            * <var>TextStyle.Layout = tlCenter</var>: Text center is in the center of the rectangle (vertically)<br/>
+            * <var>TextStyle.Layout = tlBottom</var>: Text sits above the the bottom edge of the rectangle<br/>
+          <br/>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -6358,7 +6358,7 @@ Calling the <var>MoveTo</var>
       <element name="TBitmapImage">
         <short>The place where the actual image of a bitmap is stored</short>
         <descr>
-          <p>Descendant of TSharedImage for TBitmap.</p>
+          Descendant of TSharedImage for TBitmap.<br/>
           <var>If a TBitmap is assigned to another TBitmap, only the reference count will be increased and both will share the same TBitmapImage</var>
         </descr>
         <errors/>
@@ -6515,12 +6515,12 @@ Calling the <var>MoveTo</var>
         <short>
           <var>TBitmap</var> is the data of an image, and can be loaded from a file, stream or resource in .bmp  or .xpm format</short>
         <descr>
-          <p>
-            <var>TBitmap</var> is the data of an image. The image can be loaded from a file, stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)</p>
-          <p>The loading routine automatically recognizes the format, so it is also used to load the images from Delphi form streams (e.g. .dfm files) or FreePascal/Lazarus form streams (.lfm)</p>
-          <p>When the handle is created, it is up to the interface (gtk, win32, ...) to convert it automatically to the best internal format. That is why the <var>Handle</var> is interface dependent.</p>
-          <p>To access the raw data, see <link id="#lcl.IntfGraphics.TLazIntfImage">TLazIntfImage</link>
-          </p>
+          
+            <var>TBitmap</var> is the data of an image. The image can be loaded from a file, stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)<br/>
+          The loading routine automatically recognizes the format, so it is also used to load the images from Delphi form streams (e.g. .dfm files) or FreePascal/Lazarus form streams (.lfm)<br/>
+          When the handle is created, it is up to the interface (gtk, win32, ...) to convert it automatically to the best internal format. That is why the <var>Handle</var> is interface dependent.<br/>
+          To access the raw data, see <link id="#lcl.IntfGraphics.TLazIntfImage">TLazIntfImage</link>
+          <br/>
         </descr>
         <seealso>
           <link id="#lcl.IntfGraphics.TLazIntfImage"/>
@@ -7454,9 +7454,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TBitmap.Canvas">
         <short>The canvas on which this bitmap is drawn</short>
         <descr>
-          <p>The Canvas is where all the drawing and painting is performed.</p>
-          <p>The properties are described in <link id="Controls.TCanvas">TCanvas</link>
-          </p>
+          The Canvas is where all the drawing and painting is performed.<br/>
+          The properties are described in <link id="Controls.TCanvas">TCanvas</link>
+          <br/>
         </descr>
         <seealso>
           <link id="Graphics.TCanvas"/>
@@ -7754,9 +7754,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>TIcon</var>  - icons, small images typically associated with applications, controls, etc.</short>
         <descr>
-          <p>Icons can be loaded from .ICO files, or from Lazarus resources.</p>
-          <p>An icon resource typically contains several versions of the same image, in multiple resolutions and color depths. </p>
-          <p>When loading, the largest/most colourful image is loaded as the <var>Bitmap</var> property, and so can be handled as any other bitmap.</p>
+          Icons can be loaded from .ICO files, or from Lazarus resources.<br/>
+          An icon resource typically contains several versions of the same image, in multiple resolutions and color depths. <br/>
+          When loading, the largest/most colourful image is loaded as the <var>Bitmap</var> property, and so can be handled as any other bitmap.<br/>
         </descr>
         <errors>Writing to icon files is not (yet) implemented.</errors>
       </element>
@@ -8639,9 +8639,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>Jpeg</var>  - returns a JPEG image</short>
         <descr>
-          <p>
-            <var>Jpeg</var>  - returns a JPEG image</p>
-          <p>If the contents is not already a JPEG image, the contents are thrown away and a blank JPEG is returned</p>
+          
+            <var>Jpeg</var>  - returns a JPEG image<br/>
+          If the contents is not already a JPEG image, the contents are thrown away and a blank JPEG is returned<br/>
         </descr>
       </element>
       <element name="TPicture.PNM">
@@ -8652,22 +8652,22 @@ Checks for the presence of a valid Lazarus Resource, then uses
           
           <b>PortableAnyMapGraphic </b>image</short>
         <descr>
-          <p>
+          
             <var>PNM </var>- a 
             
             
             
-            <b>PortableAnyMapGraphic </b>image</p>
-          <p>Reads a PNM image. If it is not a valid PNM image, the contents are thrown away and a blank PNM is generated</p>
+            <b>PortableAnyMapGraphic </b>image<br/>
+          Reads a PNM image. If it is not a valid PNM image, the contents are thrown away and a blank PNM is generated<br/>
         </descr>
       </element>
       <element name="TJPEGImage">
         <short>
           <var>TJPEGImage</var> - a class for handling images stored in JPEG (compressed) format</short>
         <descr>
-          <p>
-            <b>JPEG</b> images are very commonly used for storing digital photographs. They can represent detailed colour photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality. </p>
-          <p>The properties <var>CompressionQuality</var> (an integer between 1 and 100, with 100 representing the best quality) and <var>Performance</var> (an enumerated variable with two states: <var>BestQuality</var> or <var>BestSpeed</var> ie compression) can be used to determine the balance between efficiency of storage and quality of picture.</p>
+          
+            <b>JPEG</b> images are very commonly used for storing digital photographs. They can represent detailed colour photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality. <br/>
+          The properties <var>CompressionQuality</var> (an integer between 1 and 100, with 100 representing the best quality) and <var>Performance</var> (an enumerated variable with two states: <var>BestQuality</var> or <var>BestSpeed</var> ie compression) can be used to determine the balance between efficiency of storage and quality of picture.<br/>
         </descr>
       </element>
       <element name="TJPEGImage.InitFPImageReader">
@@ -8682,9 +8682,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TJPEGImage.CompressionQuality">
         <short>Determine the compression quality for this image</short>
         <descr>
-          <p>Extreme compression can lead to loss of quality at the expense of a small file size</p>
-          <p>Allowed range is 1..100 </p>
-          <p>100 = best quality, 25 = pretty awful</p>
+          Extreme compression can lead to loss of quality at the expense of a small file size<br/>
+          Allowed range is 1..100 <br/>
+          100 = best quality, 25 = pretty awful<br/>
         </descr>
       </element>
       <element name="TJPEGImage.GrayScale">
@@ -8749,19 +8749,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TJPEGImage.GetDefaultFPWriter"/>
       <topic name="Progress">
         <short>Monitoring the progress of drawing a complicated Graphic</short>
-        <descr>
-          <p>
+        <descr><p>
             <var>TProgressEvent</var> is a generic progress notification event which may be used by 
-            
-            
-            
-            
-            
-            
-            <var>TGraphic</var> classes with computationally intensive (slow) operations, such as loading, storing, or transforming image data.</p>
-          <table>
-            <caption>Event params:
-</caption>
+            <var>TGraphic</var> classes with computationally intensive (slow) operations, such as loading, storing, or transforming image data.<br/>
+            </p><table>
+            <caption>Event params:</caption>
             <tr>
               <td>Stage</td>
               <td>Indicates whether this call to the <var>OnProgress</var> event is to prepare for, process, or clean up after a graphic operation.  If <var>OnProgress</var> is called at all, the first call for a graphic operation will be with <var>Stage = psStarting</var>, to allow the <var>OnProgress</var> event handler to allocate whatever resources it needs to process subsequent progress notifications.  After <var>Stage = psStarting</var>, you are guaranteed that  <var>OnProgress</var> will be called again with 
@@ -11080,13 +11072,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
           
           <var>Source</var> of the call.</short>
         <descr>
-          <p>
+          
             <var>Assign</var>: find out about the 
             
             
-            <var>Source</var> of the call.</p>
-          <p>If the   <var>BitMap</var> data are already in use, the data are shared; if not, a new  <var>BitMap</var> is produced
-</p>
+            <var>Source</var> of the call.<br/>
+          If the   <var>BitMap</var> data are already in use, the data are shared; if not, a new  <var>BitMap</var> is produced
+<br/>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -11397,9 +11389,9 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TCustomBitmap.Canvas">
         <short>The <var>Canvas</var> on which this bitmap is drawn</short>
         <descr>
-          <p>The Canvas is where all the drawing and painting is performed.</p>
-          <p>The properties are described in <link id="Controls.TCanvas">TCanvas</link>
-          </p>
+          The Canvas is where all the drawing and painting is performed.<br/>
+          The properties are described in <link id="Controls.TCanvas">TCanvas</link>
+          <br/>
         </descr>
         <seealso>
           <link id="Graphics.TCanvas"/>
@@ -11726,11 +11718,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>IdentEntry</var> - checks that a given Entry exists in a Map of  colour names</short>
         <descr>
-          <p>
+          
             <var>IdentEntry</var> - checks that a given Entry exists in a Map of  colour names
-</p>
-          <p>A list of system <var>Colors</var> is specified as a look-up table of indices (Entry) and names (MapEntry)</p>
-          <p>This function checks that the value in 
+<br/>
+          A list of system <var>Colors</var> is specified as a look-up table of indices (Entry) and names (MapEntry)<br/>
+          This function checks that the value in 
           
           <var>Entry</var> is within the permitted range, and returns the data pair 
           
@@ -11739,8 +11731,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
           <var>Name</var> of the corresponding colour in 
           
           <var>MapEntry</var>.
-</p>
-          <p>If <var>Entry</var> is out of range the Result is False</p>
+<br/>
+          If <var>Entry</var> is out of range the Result is False<br/>
         </descr>
         <errors>If <var>Entry</var> is out of the range [0..High(Colours)] the Result is returned as False
 </errors>
