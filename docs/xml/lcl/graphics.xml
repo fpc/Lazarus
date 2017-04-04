@@ -316,15 +316,15 @@
       <!-- enumeration value Visibility: default -->
       <element name="TTextLayout.tlBottom">
         <short/>
+        <descr/>
       </element>
       <!-- record type Visibility: default -->
       <element name="TTextStyle">
         <short>The <var>Style</var> of the <var>Text</var> to be drawn in a rectangle</short>
-        <descr>
-          <p>The <var>Style</var> of the <var>Text</var> to be drawn in a rectangle</p>
-          <ul>
-            <li>Alignment :  TextRect Only: horizontal alignment</li>
-            <li>Layout    : TextRect Only: vertical alignment</li>
+        <descr>The <var>Style</var> of the <var>Text</var> to be drawn in a rectangle<br/>
+           <br/>
+            * Alignment :  TextRect Only: horizontal alignment<br/>
+   <!--         <li>Layout    : TextRect Only: vertical alignment</li>
             <li>SingleLine: boolean;    If WordBreak is false then process #13, #10 as standard chars and perform no Line breaking.</li>
             <li>Clipping  : boolean;    TextRect Only: Clip Text to passed Rectangle</li>
             <li>ExpandTabs: boolean;    currently ignored</li>
@@ -333,8 +333,8 @@
             <li>Opaque    : boolean;    TextRect: Fills background with current Brush</li>
             <li>Opaque    :             TextOut : Fills background with current foreground color</li>
             <li>SystemFont: Boolean;    Use the system font instead of Canvas Font</li>
-            <li>RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)</li>
-          </ul>
+            <li>RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)</li>  -->
+          <br/>
         </descr>
       </element>
       <!-- variable Visibility: default -->
@@ -1763,8 +1763,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
         <short>The <var>Font</var>  to be used for drawing <var>Text</var>
         </short>
         <descr>
-          <p>Most of the data about the font are dealt with by the protected procedures GetData and SetData which operate on TFontData</p>
-          <p>Individual properties such as Character Set, colour and size can be accessed in the public area</p>
+          Most of the data about the font are dealt with by the protected procedures GetData and SetData which operate on TFontData<br/>
+          Individual properties such as Character Set, colour and size can be accessed in the public area<br/>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -2104,10 +2104,9 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- constructor Visibility: public -->
       <element name="TFont.Create">
         <descr>
-          <p>
             <var>Create</var> - constructor for 
             <var>TFont</var>: Opens a new instance of the class , calling inherited 
-            <var>Create</var> and sets defaults for character set, colour, size etc</p>
+            <var>Create</var> and sets defaults for character set, colour, size etc
         </descr>
         <short>
           <var>Create</var> - constructor for 
@@ -2133,12 +2132,10 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
         <short>
           <var>Assign</var> - copies the source settings to itself</short>
         <descr>
-          <p>Method: <var>TFont.Assign</var>
-          </p>
-          <p>
-            <var>Source</var>: another font</p>
-          <p>Returns:  nothing</p>
-          <p>Copies the source settings to itself</p>
+          Method: <var>TFont.Assign</var>
+          <var>Source</var>: another font<br/>
+          Returns:  nothing<br/>
+          Copies the source settings to itself<br/>
         </descr>
         <seealso>
           <link id="#rtl.Classes.TPersistent.Assign"/>
@@ -3594,65 +3591,27 @@ If the file is not of the right format, an exception will be generated.</descr>
       <element name="TPicture">
         <short>
           <var>TPicture</var> is a  
-          
-          
-          
           <var>TGraphic</var>  container, used in place of a  
-          
-          
-          
           <var>TGraphic</var> if the graphic can be of any 
-          
-          
-          
           <var>TGraphic</var> class.</short>
         <descr>
-          <p>
             <var>TPicture</var> is a 
-            
-            
-            
             <var>TGraphic</var> container.  It is used in place of a 
-            
-            
-            
             <var>TGraphic</var> if the graphic can be of any 
-            
-            
-            
-            <var>TGraphic</var> class. </p>
-          <p>It is not a direct descendant of <var>TGraphic</var>, so you will not see <var>TGraphic</var> listed in the <var>Inheritance</var> chart, but it contains a property <var>Graphic</var>, of type <var>TGraphic</var>, so can contain all the properties of a <var>TGraphic</var>
-          </p>
-          <p>Defines many <b>private</b> methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc</p>
-          <p>It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a <var>Canvas</var> property.</p>
-          <p>
+            <var>TGraphic</var> class. <br/>
+          It is not a direct descendant of <var>TGraphic</var>, so you will not see <var>TGraphic</var> listed in the <var>Inheritance</var> chart, but it contains a property <var>Graphic</var>, of type <var>TGraphic</var>, so can contain all the properties of a <var>TGraphic</var>
+          <br/>
+          Defines many <b>private</b> methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc<br/>
+          It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a <var>Canvas</var> property.<br/>
             <var>LoadFromFile</var> and 
-            
-            
-            
             <var>SaveToFile</var> are polymorphic. For example, if the 
-            
-            
-            
             <var>TPicture</var> is holding an 
-            
-            
-            
             <var>Icon</var>, you can 
-            
-            
-            
             <var>LoadFromFile</var> a bitmap file, whereas if the class is 
-            
-            
-            
-            <var>TIcon</var> you could only read  .ICO files.</p>
+            <var>TIcon</var> you could only read  .ICO files.<br/>
           <ul>
             <li>
               <var>LoadFromFile</var> - Reads a picture from disk. The 
-              
-              
-              
               <var>TGraphic</var> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.</li>
             <li>
               <var>SaveToFile</var> - Writes the picture to disk.</li>
@@ -4736,11 +4695,10 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- constructor Visibility: public -->
       <element name="TCanvas.Create">
         <descr>
-          <p>
             <var>Create</var> - constructor for 
             <var>TCanvas</var>: calls inherited 
-            <var>Create</var> and sets defaults for many properties and actions</p>
-          <p>Initialises Font, Pen and Brush, makes event handlers for these, sets up defaults for Alignment, Layout, Clipping and opacity</p>
+            <var>Create</var> and sets defaults for many properties and actions<br/>
+          Initialises Font, Pen and Brush, makes event handlers for these, sets up defaults for Alignment, Layout, Clipping and opacity
         </descr>
         <short>
           <var>Create</var> - constructor for 
@@ -4919,11 +4877,11 @@ Zero degrees is at the 3 o'clock position.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Chord">
         <descr>
-          <p>Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg</p>
-          <p>Use Chord to draw a filled Chord-shape on the canvas. </p>
-          <p>The angles angle1 and angle2 are 1/16th of a degree. For example, a full circle equals 5760(16*360). </p>
-          <p>Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.</p>
-          <p>Alternatively the starting and ending points may be specified as radial points (sx, sy, ex, ey)</p>
+          Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg<br/>
+          Use Chord to draw a filled Chord-shape on the canvas. <br/>
+          The angles angle1 and angle2 are 1/16th of a degree. For example, a full circle equals 5760(16*360). <br/>
+          Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.<br/>
+          Alternatively the starting and ending points may be specified as radial points (sx, sy, ex, ey)<br/>
         </descr>
         <short>Draw a filled-chord shape starting and finishing at the specified angular positions on the circumference</short>
       </element>
@@ -5345,10 +5303,10 @@ Use <var>Ellipse</var>
         <short>
           <var>RadialPie</var> - draw a filled pie-shaped wedge on the canvas with specified start and end coordinates, and starting and ending angular positions</short>
         <descr>
-          <p>Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer</p>
-          <p>Use Pie to draw a filled pie-shaped wedge on the canvas.</p>
-          <p>The angles StartAngle16Deg and EndAngle16Deg are 1/16th of a degree. For example, a full circle equals 5760 (16*360).</p>
-          <p>Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.</p>
+          Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer<br/>
+          Use Pie to draw a filled pie-shaped wedge on the canvas.<br/>
+          The angles StartAngle16Deg and EndAngle16Deg are 1/16th of a degree. For example, a full circle equals 5760 (16*360).<br/>
+          Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.<br/>
         </descr>
       </element>
       <!-- argument Visibility: default -->

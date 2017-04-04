@@ -6038,8 +6038,8 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       <element name="TIdleTimer.OnTimer" link="#LCL.CustomTimer.TCustomTimer.OnTimer"/>
       <element name="TIdleTimer.OnStartTimer" link="#LCL.CustomTimer.TCustomTimer.OnStartTimer"/>
       <element name="TIdleTimer.OnStopTimer" link="#LCL.CustomTimer.TCustomTimer.OnStopTimer"/>
-    <element name="TFlowPanel"><short>Container with flow layout of controls placed in it.</short><descr>Use TFloatPanel if you need a container with float layout. The Anchors and Align properties of child controls are ignored. 
-<p>The floating direction is determined with <link id="#LCLBase.extctrls.TCustomFlowPanel.FlowStyle">FlowStyle</link> property.</p>
+    <element name="TFlowPanel"><short>Container with flow layout of controls placed in it.</short><descr>Use TFloatPanel if you need a container with float layout. The Anchors and Align properties of child controls are ignored.<br/>
+The floating direction is determined with <link id="#LCLBase.extctrls.TCustomFlowPanel.FlowStyle">FlowStyle</link> property.<br/>
         </descr>
       </element><element name="TCustomFlowPanel.AutoWrap"><short>Determine if controls in TCustomFlowPanel are wrapped.</short>
       </element><element name="TCustomFlowPanel.ControlList"><short>Use ControlList to set extra options of flow panel controls.</short>
