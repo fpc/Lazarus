@@ -1,0 +1,211 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
+
+#: fppkg_mainfrm.sactarchivepackages
+msgid "create archive(s) for package(s)"
+msgstr "создание архивов для пакетов"
+
+#: fppkg_mainfrm.sactbuildpackages
+msgid "build package(s)"
+msgstr "сборка пакетов"
+
+#: fppkg_mainfrm.sactcleanpackages
+msgid "clean package(s)"
+msgstr "очистка пакетов"
+
+#: fppkg_mainfrm.sactcompilepackages
+msgid "compile packages"
+msgstr "компиляция пакетов"
+
+#: fppkg_mainfrm.sactdownloadpackages
+msgid "download packages"
+msgstr "загрузка пакетов"
+
+#: fppkg_mainfrm.sactfixbroken
+msgid "fix broken packages"
+msgstr "исправление проблемных пакетов"
+
+#: fppkg_mainfrm.sactinitializefppkg
+msgid "initialize fppkg"
+msgstr "инициализация fppkg"
+
+#: fppkg_mainfrm.sactinstallpackages
+msgid "install package(s)"
+msgstr "установка пакетов"
+
+#: fppkg_mainfrm.sactupdate
+msgid "update repository"
+msgstr "обновление репозитория"
+
+#: fppkg_mainfrm.serractionfailed
+msgid ""
+"Failed to %s: \n"
+"\n"
+"%s\n"
+msgstr ""
+"Ошибка при выполнении действия \"%s\": \n"
+"\n"
+"%s\n"
+
+#: fppkg_mainfrm.smsgactionsucceeded
+msgid "%s succeeded."
+msgstr "Действие \"%s\" успешно завершено."
+
+#: tfppkgform.archivebutton.caption
+msgid "Archive"
+msgstr "Архивировать"
+
+#: tfppkgform.archivebutton.hint
+msgid "Create archive of package"
+msgstr "Создать архив пакета"
+
+#: tfppkgform.buildbutton.caption
+msgid "Build"
+msgstr "Собрать"
+
+#: tfppkgform.buildbutton.hint
+msgid "Build package"
+msgstr "Собрать пакет"
+
+#: tfppkgform.caption
+msgid "FppkgForm"
+msgstr "Диспетчер пакетов Fppkg"
+
+#: tfppkgform.categorieslabel.caption
+msgid "Categories:"
+msgstr "Категории:"
+
+#: tfppkgform.cleanbutton.caption
+msgid "Clean"
+msgstr "Очистить"
+
+#: tfppkgform.cleanbutton.hint
+msgid "Clean package"
+msgstr "Очистить пакет"
+
+#: tfppkgform.compilebutton.caption
+msgid "Compile"
+msgstr "Компилировать"
+
+#: tfppkgform.compilebutton.hint
+msgid "Compile package"
+msgstr "Компилировать пакет"
+
+#: tfppkgform.downloadbutton.caption
+msgid "Download"
+msgstr "Загрузить"
+
+#: tfppkgform.downloadbutton.hint
+msgid "Download package"
+msgstr "Загрузить пакет"
+
+#: tfppkgform.fixbrokenbutton.caption
+msgid "Fix broken"
+msgstr "Исправить"
+
+#: tfppkgform.installbutton.caption
+msgid "Install"
+msgstr "Установить"
+
+#: tfppkgform.installbutton.hint
+msgid "Install package"
+msgstr "Установить пакет"
+
+#: tfppkgform.menuitem1.caption
+msgid "&Tools"
+msgstr "Се&рвис"
+
+#: tfppkgform.menuitem2.caption
+msgid "&Options..."
+msgstr "П&араметры..."
+
+#: tfppkgform.menuitem3.caption
+msgid "&Help"
+msgstr "&Справка"
+
+#: tfppkgform.menuitem4.caption
+msgid "&About"
+msgstr "&О программе"
+
+#: tfppkgform.micleanmessages.caption
+msgid "Clean messages"
+msgstr "Очистить сообщения"
+
+#: tfppkgform.miexit.caption
+msgid "&Exit"
+msgstr "В&ыход"
+
+#: tfppkgform.mifile.caption
+msgid "&File"
+msgstr "&Файл"
+
+#: tfppkgform.miselect.caption
+msgid "Select"
+msgstr "Выбрать"
+
+#: tfppkgform.mishowdetails.caption
+msgid "Show details"
+msgstr "Показать подробности"
+
+#: tfppkgform.miunselect.caption
+msgid "Unselect"
+msgstr "Снять выбор"
+
+#: tfppkgform.packagelistview.columns[0].caption
+msgid "Name"
+msgstr "Имя"
+
+#: tfppkgform.packagelistview.columns[1].caption
+msgid "State"
+msgstr "Состояние"
+
+#: tfppkgform.packagelistview.columns[2].caption
+msgid "Installed"
+msgstr "Установлен"
+
+#: tfppkgform.packagelistview.columns[3].caption
+msgid "Available"
+msgstr "Доступен"
+
+#: tfppkgform.packagelistview.columns[4].caption
+msgid "Description"
+msgstr "Описание"
+
+#: tfppkgform.searchbutton.hint
+msgid "Search for keywords"
+msgstr "Искать ключевые слова"
+
+#: tfppkgform.searchlabel.caption
+msgid "Search"
+msgstr "Поиск"
+
+#: tfppkgform.supportcheckgroup.caption
+msgid "Support"
+msgstr "Поддержка"
+
+#: tfppkgform.supportcheckgroup.hint
+msgid "Filter packages on support level"
+msgstr "Фильтровать пакеты по уровню поддержки"
+
+#: tfppkgform.toolbar.caption
+msgid "ToolBar"
+msgstr "Инструментальная панель"
+
+#: tfppkgform.updatebutton.caption
+msgid "Update"
+msgstr "Обновить"
+
+#: tfppkgform.updatebutton.hint
+msgid "Update packages list"
+msgstr "Обновить список пакетов"
+
