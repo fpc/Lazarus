@@ -3039,7 +3039,7 @@ end;
 
 function TCustomDBGrid.MouseButtonAllowed(Button: TMouseButton): boolean;
 begin
-  Result:= (Button=mbLeft) or (dgAnyButtonCanSelect in Options);
+  Result:= FDataLink.Active and ((Button=mbLeft) or (dgAnyButtonCanSelect in Options));
 end;
 
 procedure TCustomDBGrid.DrawAllRows;
