@@ -71,11 +71,10 @@ Otherwise it returns a number 2..4.
 It does not check for malicious codepoints like #$c0#$80, nor for non defined codepoints like #$f3#$a0#$87#$b9.
 
 Use UTF8CharacterLength to step through a string with a simple loop:
-<p><code>while p^&lt;&gt;#0 do begin
-  inc(p,UTF8CharacterLength(p));
-end;
-</code>
-          </p>
+<br/>                                                                            
+while p^&lt;&gt;#0 do begin<br/>                                                                                                            
+  inc(p,UTF8CharacterLength(p));<br/>
+end;<br/>
 
 Even if p contains invalid UTF-8 it will run through the string without overflow.</descr>
         <errors/>
