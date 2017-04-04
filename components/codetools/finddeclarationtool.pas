@@ -6028,6 +6028,9 @@ begin
   ctnClass:
     if Scanner.Values.IsDefined('CPUJVM') then
       BaseClassName:='JLObject'
+    else if (Scanner.PascalCompiler=pcPas2js)
+    and (FindClassExternalNode(ClassNode)<>nil) then
+      exit // external root class has no ancestor
     else
       BaseClassName:='TObject';
   ctnDispinterface:
