@@ -237,7 +237,8 @@ type
     pfMainUnitIsPascalSource,// main unit is pascal, even it does not end in .pas/.pp
     pfMainUnitHasUsesSectionForAllUnits,// add new units to main uses section
     pfMainUnitHasCreateFormStatements,// add/remove Application.CreateForm statements
-    pfMainUnitHasTitleStatement,// add/remove Application.Title:= statements
+    pfMainUnitHasTitleStatement,// add/remove Application.Title:= statement
+    pfMainUnitHasScaledStatement,// add/remove Application.Scaled:= statement
     pfRunnable, // project can be run
     pfAlwaysBuild, // skip IDE's smart check if compilation is needed and always compile
     pfUseDesignTimePackages, // compile design time packages to project
@@ -555,6 +556,7 @@ const
                          pfMainUnitHasUsesSectionForAllUnits,
                          pfMainUnitHasCreateFormStatements,
                          pfMainUnitHasTitleStatement,
+                         pfMainUnitHasScaledStatement,
                          pfRunnable,
                          pfLRSFilesInOutputDirectory,
                          pfSaveJumpHistory,
@@ -566,6 +568,7 @@ const
       'MainUnitHasUsesSectionForAllUnits',
       'MainUnitHasCreateFormStatements',
       'MainUnitHasTitleStatement',
+      'MainUnitHasScaledStatement',
       'Runnable',
       'AlwaysBuild',
       'UseDesignTimePackages',

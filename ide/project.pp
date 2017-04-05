@@ -2779,6 +2779,7 @@ begin
     SetFlag(pfMainUnitHasUsesSectionForAllUnits, OldProjectType in [ptProgram,ptApplication]);
     SetFlag(pfMainUnitHasCreateFormStatements, OldProjectType in [ptApplication]);
     SetFlag(pfMainUnitHasTitleStatement,OldProjectType in [ptApplication]);
+    SetFlag(pfMainUnitHasScaledStatement,OldProjectType in [ptApplication]);
     SetFlag(pfRunnable, OldProjectType in [ptProgram,ptApplication,ptCustomProgram]);
   end;
   Flags:=Flags-[pfUseDefaultCompilerOptions];
@@ -5843,7 +5844,7 @@ begin
 
   if (MainUnitID>=0) then begin
     if Requires(PackageGraph.LCLPackage,true)
-    and (Flags*[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]<>[])
+    and (Flags*[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,pfMainUnitHasScaledStatement]<>[])
     then begin
       // this is a probably a LCL project where the main source only contains
       // automatic code

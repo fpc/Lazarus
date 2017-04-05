@@ -4968,7 +4968,8 @@ var
     OldScaled, NewScaled: Boolean;
   begin
     Result := True;
-    if (AProject.MainUnitID < 0) then
+    if (AProject.MainUnitID < 0) or
+      (not (pfMainUnitHasScaledStatement in AProject.Flags)) then
       Exit;
     OldScaled := GetScaled;
 

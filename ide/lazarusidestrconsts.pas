@@ -2635,8 +2635,10 @@ resourcestring
     +'section containing all units of project';
   lisMainUnitHasApplicationCreateFormStatements = 'Main unit has Application.CreateForm statements';
   lisUsedForAutoCreatedForms = 'Used for auto-created forms.';
-  lisMainUnitHasApplicationTitleStatements = 'Main unit has Application.Title statements';
+  lisMainUnitHasApplicationTitleStatement = 'Main unit has Application.Title statement';
   lisIdeMaintainsTheTitleInMainUnit = 'The IDE maintains the title in main unit.';
+  lisMainUnitHasApplicationScaledStatement = 'Main unit has Application.Scaled statement';
+  lisIdeMaintainsScaledInMainUnit = 'The IDE maintains Application.Scaled (Hi-DPI) in main unit.';
   lisProjectIsRunnable = 'Project is runnable';
   lisProjectIsRunnableHint = 'Generates a binary executable which can be run.';
   lisUseDesignTimePackages = 'Use design time packages';

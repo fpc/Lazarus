@@ -1323,7 +1323,7 @@ constructor TProjectSimpleProgramDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameSimpleProgram;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,pfMainUnitHasScaledStatement]
               +[pfUseDefaultCompilerOptions];
 end;
 
@@ -1373,7 +1373,7 @@ constructor TProjectProgramDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameProgram;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,pfMainUnitHasScaledStatement]
               +[pfUseDefaultCompilerOptions];
 end;
 
@@ -1435,7 +1435,8 @@ begin
   Name:=ProjDescNameCustomProgram;
   Flags:=Flags-[pfMainUnitHasUsesSectionForAllUnits,
                 pfMainUnitHasCreateFormStatements,
-                pfMainUnitHasTitleStatement]
+                pfMainUnitHasTitleStatement,
+                pfMainUnitHasScaledStatement]
               +[pfUseDefaultCompilerOptions];
   FAddMainSource:=true;
 end;
@@ -1505,7 +1506,7 @@ constructor TProjectConsoleApplicationDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameConsoleApplication;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,pfMainUnitHasScaledStatement]
               +[pfUseDefaultCompilerOptions];
 end;
 
@@ -1675,7 +1676,7 @@ constructor TProjectLibraryDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameLibrary;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,pfMainUnitHasScaledStatement]
               +[pfUseDefaultCompilerOptions];
 end;
 

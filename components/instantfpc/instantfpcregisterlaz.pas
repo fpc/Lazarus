@@ -58,7 +58,7 @@ constructor TProjectInstantFPCDescriptor.Create;
 begin
   inherited Create;
   Name:=ProjDescNameInstantFPCProject;
-  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]
+  Flags:=Flags-[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,pfMainUnitHasScaledStatement]
               +[pfUseDefaultCompilerOptions];
 end;
 

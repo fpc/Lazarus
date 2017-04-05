@@ -10,13 +10,13 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
   DesignTop = 188
   object Bevel1: TBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
+    AnchorSideTop.Control = MainUnitHasScaledStatementCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 120
+    Top = 125
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -26,9 +26,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = MainUnitIsPascalSourceCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 30
-    Width = 324
+    Height = 19
+    Top = 25
+    Width = 262
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
     ParentShowHint = False
@@ -40,9 +40,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = MainUnitHasUsesSectionForAllUnitsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 60
-    Width = 324
+    Height = 19
+    Top = 50
+    Width = 262
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasCreateFormStatementsCheckBox'
     ParentShowHint = False
@@ -53,9 +53,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 24
+    Height = 19
     Top = 0
-    Width = 244
+    Width = 198
     Caption = 'MainUnitIsPascalSourceCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -66,9 +66,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = MainUnitHasCreateFormStatementsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 90
-    Width = 270
+    Height = 19
+    Top = 75
+    Width = 218
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasTitleStatementCheckBox'
     ParentShowHint = False
@@ -79,42 +79,42 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Bevel1
     Left = 0
-    Height = 24
-    Top = 126
-    Width = 150
+    Height = 19
+    Top = 131
+    Width = 122
     BorderSpacing.Top = 6
     Caption = 'RunnableCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 5
   end
   object AlwaysBuildCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = UseDesignTimePkgsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 186
-    Width = 168
+    Height = 19
+    Top = 181
+    Width = 136
     BorderSpacing.Top = 6
     Caption = 'AlwaysBuildCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 6
+    TabOrder = 7
   end
   object LRSInOutputDirCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AlwaysBuildCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 216
-    Width = 190
+    Height = 19
+    Top = 206
+    Width = 154
     BorderSpacing.Top = 6
     Caption = 'LRSInOutputDirCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 8
   end
   object ResourceGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
@@ -124,7 +124,7 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 81
-    Top = 246
+    Top = 231
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -137,29 +137,29 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 56
+    ClientHeight = 61
     ClientWidth = 532
-    TabOrder = 8
+    TabOrder = 9
     object UseFPCResourcesRadioButton: TRadioButton
       Left = 6
-      Height = 22
-      Top = 28
+      Height = 25
+      Top = 6
       Width = 520
       Caption = 'UseFPCResourcesRadioButton'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 0
     end
     object UseLRSFilesRadioButton: TRadioButton
       Left = 6
-      Height = 22
-      Top = 6
+      Height = 24
+      Top = 31
       Width = 520
       Caption = 'UseLRSFilesRadioButton'
       Checked = True
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 0
+      TabOrder = 1
       TabStop = True
     end
   end
@@ -168,23 +168,23 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = RunnableCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
+    Height = 19
     Top = 156
-    Width = 221
+    Width = 179
     BorderSpacing.Top = 6
     Caption = 'UseDesignTimePkgsCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 6
   end
   object PathDelimLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PathDelimComboBox
     AnchorSideTop.Side = asrCenter
     Left = 0
-    Height = 20
-    Top = 346
-    Width = 105
+    Height = 15
+    Top = 331
+    Width = 83
     Caption = 'PathDelimLabel'
     ParentColor = False
   end
@@ -196,7 +196,7 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 333
+    Top = 318
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -207,14 +207,28 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = Bevel2
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Left = 111
-    Height = 28
-    Top = 342
+    Left = 89
+    Height = 23
+    Top = 327
     Width = 259
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    ItemHeight = 20
-    TabOrder = 9
+    ItemHeight = 15
+    TabOrder = 10
     Text = 'PathDelimComboBox'
+  end
+  object MainUnitHasScaledStatementCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 100
+    Width = 229
+    BorderSpacing.Top = 6
+    Caption = 'MainUnitHasScaledStatementCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
   end
 end
