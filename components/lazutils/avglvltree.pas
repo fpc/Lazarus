@@ -25,6 +25,22 @@ uses
 
 type
 
+  { TAvgLvlTree and TAvgLvlTreeNode for backwards compatibility.
+    They used to be fully implemented here but now inherit from TAVLTreeNode and TAvlTree.
+  }
+  TAvgLvlTreeNode = TAVLTreeNode;
+
+  TAvgLvlTree = class(TAvlTree)
+  private
+    FOwnsObjects: boolean;
+  public
+    procedure DisposeNode(aNode: TAVLTreeNode); override;
+    procedure FreeAndDelete(ANode: TAVLTreeNode); overload;
+    property OwnsObjects: boolean read FOwnsObjects write FOwnsObjects;
+  end;
+
+  { TIndexedAVLTreeNode }
+
   TIndexedAVLTreeNode = class(TAvlTreeNode)
   public
     LeftCount: SizeInt; // number of nodes in the Left side
@@ -354,6 +370,28 @@ function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer): intege
 begin
   Result:=CompareFilenamesIgnoreCase(String(Key),
                                      PStringToStringItem(Data)^.Name);
+end;
+
+{ TAvgLvlTree }
+
+procedure TAvgLvlTree.DisposeNode(aNode: TAVLTreeNode);
+begin
+  if FOwnsObjects then
+  begin
+    TObject(aNode.Data).Free;
+    aNode.Data := nil;
+    aNode.Free;
+  end
+  else
+    inherited DisposeNode(aNode);
+end;
+
+procedure TAvgLvlTree.FreeAndDelete(ANode: TAVLTreeNode);
+begin
+  if FOwnsObjects then
+    Delete(ANode)
+  else
+    inherited FreeAndDelete(aNode);
 end;
 
 { TPointerToPointerEnumerator }
