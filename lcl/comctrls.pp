@@ -1984,7 +1984,8 @@ type
   (
     tbfPressed,     // set while mouse is pressed on button
     tbfArrowPressed,// set while mouse is pressed on arrow button
-    tbfMouseInArrow // set while mouse is on arrow button
+    tbfMouseInArrow,// set while mouse is on arrow button
+    tbfDropDownMenuShown // set while dropdownmenu is shown
   );
   TToolButtonFlags = set of TToolButtonFlag;
 

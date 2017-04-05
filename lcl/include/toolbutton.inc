@@ -569,13 +569,18 @@ procedure TToolButton.MouseLeave;
 begin
   // DebugLn('TToolButton.MouseLeave ',Name);
   inherited MouseLeave;
-  if (not MouseCapture) and ([tbfPressed, tbfArrowPressed, tbfMouseInArrow] * FToolButtonFlags <> []) then
+
+  if not(tbfDropDownMenuShown in FToolButtonFlags) then
   begin
-    Exclude(FToolButtonFlags, tbfPressed);
-    Exclude(FToolButtonFlags, tbfArrowPressed);
-    Exclude(FToolButtonFlags, tbfMouseInArrow);
+    if (not MouseCapture)
+    and ([tbfPressed, tbfArrowPressed, tbfMouseInArrow] * FToolButtonFlags <> []) then
+    begin
+      Exclude(FToolButtonFlags, tbfPressed);
+      Exclude(FToolButtonFlags, tbfArrowPressed);
+      Exclude(FToolButtonFlags, tbfMouseInArrow);
+    end;
+    SetMouseInControl(false);
   end;
-  SetMouseInControl(false);
 end;
 
 procedure TToolButton.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -894,7 +899,14 @@ begin
   Result := (not (csDesigning in ComponentState)) and
     ((Assigned(DropdownMenu) and (DropdownMenu.AutoPopup)) or Assigned(MenuItem)) and Assigned(FToolBar);
   if Result then
-    Result := FToolBar.CheckMenuDropdown(Self);
+  begin
+    Include(FToolButtonFlags, tbfDropDownMenuShown);
+    try
+      Result := FToolBar.CheckMenuDropdown(Self);
+    finally
+      Exclude(FToolButtonFlags, tbfDropDownMenuShown);
+    end;
+  end;
 end;
 
 procedure TToolButton.Click;
