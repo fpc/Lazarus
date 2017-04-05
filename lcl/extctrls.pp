@@ -1436,7 +1436,7 @@ type
 
   { TCtrlBands }
 
-  TCtrlBands = class (specialize TFPGObjectList<TCtrlBand>)
+  TCtrlBands = class ({$IFDEF FPDoc}TFPGObjectList{$ELSE}specialize TFPGObjectList<TCtrlBand>{$ENDIF})
   public
     function GetIndex(AControl: TControl): Integer;
   end;
