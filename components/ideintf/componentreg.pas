@@ -24,7 +24,7 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils, typinfo, AVL_Tree, fgl,
+  Classes, SysUtils, typinfo, Laz_AVL_Tree, fgl,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}

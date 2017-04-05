@@ -54,13 +54,13 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, AVL_Tree, contnrs, process,
+  Classes, SysUtils, contnrs, process, Laz_AVL_Tree,
   // CodeTools
   CodeToolsStrConsts, ExprEval, DirectoryCacher, BasicCodeTools,
   CodeToolsStructs, KeywordFuncLists, LinkScanner, FileProcs,
   // LazUtils
   LazUtilities, LazUTF8, LazUTF8Classes, LazFileUtils, UTF8Process,
-  LazFileCache, LazDbgLog, Laz2_XMLCfg;
+  LazFileCache, LazDbgLog, AvgLvlTree, Laz2_XMLCfg;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;
@@ -1811,7 +1811,7 @@ var
   Ext: String;
   File_Name, PkgName, FPMFilename, FPMSourcePath, Line, SrcFilename: String;
   AVLNode: TAVLTreeNode;
-  S2SItem: PStringToStringTreeItem;
+  S2SItem: PStringToStringItem;
   FPMToUnitTree: TStringToPointerTree;// pkgname to TStringToStringTree (unitname to source filename)
   sl: TStringListUTF8;
   PkgUnitToFilename: TStringToStringTree;
@@ -1888,7 +1888,7 @@ begin
     try
       AVLNode:=Units.Tree.FindLowest;
       while AVLNode<>nil do begin
-        S2SItem:=PStringToStringTreeItem(AVLNode.Data);
+        S2SItem:=PStringToStringItem(AVLNode.Data);
         File_Name:=S2SItem^.Name;
         Filename:=S2SItem^.Value; // trimmed and expanded filename
         //if Pos('lazmkunit',Filename)>0 then
@@ -2189,11 +2189,10 @@ begin
   end;
 end;
 
-function CreateFPCTemplate(Config: TFPCTargetConfigCache; Owner: TObject
-  ): TDefineTemplate;
+function CreateFPCTemplate(Config: TFPCTargetConfigCache; Owner: TObject): TDefineTemplate;
 var
   Node: TAVLTreeNode;
-  StrItem: PStringToStringTreeItem;
+  StrItem: PStringToStringItem;
   NewDefTempl: TDefineTemplate;
   TargetOS: String;
   SrcOS: String;
@@ -2242,7 +2241,7 @@ begin
   if Config.Defines<>nil then begin
     Node:=Config.Defines.Tree.FindLowest;
     while Node<>nil do begin
-      StrItem:=PStringToStringTreeItem(Node.Data);
+      StrItem:=PStringToStringItem(Node.Data);
       NewDefTempl:=TDefineTemplate.Create('Define '+StrItem^.Name,
            'Macro',StrItem^.Name,StrItem^.Value,da_DefineRecurse);
       Result.AddChild(NewDefTempl);
@@ -2253,7 +2252,7 @@ begin
   if Config.Undefines<>nil then begin
     Node:=Config.Undefines.Tree.FindLowest;
     while Node<>nil do begin
-      StrItem:=PStringToStringTreeItem(Node.Data);
+      StrItem:=PStringToStringItem(Node.Data);
       NewDefTempl:=TDefineTemplate.Create('Undefine '+StrItem^.Name,
            'Macro',StrItem^.Name,'',da_UndefineRecurse);
       Result.AddChild(NewDefTempl);
@@ -2265,16 +2264,14 @@ begin
   Result.SetDefineOwner(Owner,true);
 end;
 
-function CreateFPCTemplate(Config: TFPCUnitSetCache; Owner: TObject
-  ): TDefineTemplate; overload;
+function CreateFPCTemplate(Config: TFPCUnitSetCache; Owner: TObject): TDefineTemplate; overload;
 begin
   Result:=CreateFPCTemplate(Config.GetConfigCache(false),Owner);
   Result.AddChild(TDefineTemplate.Create('UnitSet','UnitSet identifier',
                   UnitSetMacroName,Config.GetUnitSetID,da_DefineRecurse));
 end;
 
-function CreateFPCSourceTemplate(FPCSrcDir: string; Owner: TObject
-  ): TDefineTemplate;
+function CreateFPCSourceTemplate(FPCSrcDir: string; Owner: TObject): TDefineTemplate;
 const
   RTLPkgDirs: array[1..4] of string = ('rtl-console','rtl-extra','rtl-objpas','rtl-unicode');
 var
@@ -2690,7 +2687,7 @@ procedure CheckPPUSources(PPUFiles, UnitToSource,
   var Duplicates, Missing: TStringToStringTree);
 var
   Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   Unit_Name: String;
   Filename: String;
   SrcFilename: string;
@@ -2708,7 +2705,7 @@ begin
     raise Exception.Create('CheckPPUSources Missing is case sensitive');
   Node:=PPUFiles.Tree.FindLowest;
   while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
+    Item:=PStringToStringItem(Node.Data);
     Unit_Name:=Item^.Name;
     Filename:=Item^.Value;
     if CompareFileExt(Filename,'.ppu',false)=0 then begin
@@ -5646,20 +5643,10 @@ begin
 end;
 
 procedure TDefineTree.ConsistencyCheck;
-{$IF FPC_FULLVERSION<30101}
-var
-  CurResult: LongInt;
-{$ENDIF}
 begin
   if FFirstDefineTemplate<>nil then
     FFirstDefineTemplate.ConsistencyCheck;
-  {$IF FPC_FULLVERSION<30101}
-  CurResult:=FCache.ConsistencyCheck;
-  if CurResult<>0 then
-    RaiseCatchableException(IntToStr(CurResult));
-  {$ELSE}
   FCache.ConsistencyCheck;
-  {$ENDIF}
 end;
 
 procedure TDefineTree.CalcMemSize(Stats: TCTMemStats);
@@ -8548,7 +8535,7 @@ procedure TFPCTargetConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   Cnt: Integer;
   SubPath: String;
   s: String;
@@ -8597,7 +8584,7 @@ var
         // Create a string list of filenames
         Node:=ASource.Tree.FindLowest;
         while Node<>nil do begin
-          Item:=PStringToStringTreeItem(Node.Data);
+          Item:=PStringToStringItem(Node.Data);
           Filename:=Item^.Value;
           FileList.Add(Filename);
           Node:=ASource.Tree.FindSuccessor(Node);
@@ -8639,7 +8626,7 @@ begin
   if Defines<>nil then begin
     Node:=Defines.Tree.FindLowest;
     while Node<>nil do begin
-      Item:=PStringToStringTreeItem(Node.Data);
+      Item:=PStringToStringItem(Node.Data);
       if IsValidIdent(Item^.Name) then begin
         inc(Cnt);
         SubPath:=Path+'Defines/Macro'+IntToStr(Cnt)+'/';
@@ -8657,7 +8644,7 @@ begin
   if Undefines<>nil then begin
     Node:=Undefines.Tree.FindLowest;
     while Node<>nil do begin
-      Item:=PStringToStringTreeItem(Node.Data);
+      Item:=PStringToStringItem(Node.Data);
       inc(Cnt);
       if s<>'' then s:=s+',';
       s:=s+Item^.Name;

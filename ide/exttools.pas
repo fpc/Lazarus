@@ -34,14 +34,15 @@ unit ExtTools;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, math, process, Pipes,
+  // RTL + FCL
+  Classes, SysUtils, math, process, Pipes, Laz_AVL_Tree,
+  // LCL
   LCLIntf, Forms, Dialogs,
   {$IFDEF VerboseExtToolThread}
   LCLProc,
   {$ENDIF}
   // CodeTools
-  FileProcs, CodeToolsStructs,
+  FileProcs, //CodeToolsStructs,
   // LazUtils
   FileUtil, AvgLvlTree, LazFileUtils, UTF8Process, LazUTF8,
   // IDEIntf
@@ -982,7 +983,7 @@ var
   end;
 
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: PPointerToPointerItem;
   Info: PInfo;
 begin

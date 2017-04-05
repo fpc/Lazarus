@@ -31,7 +31,7 @@ unit NonPascalCodeTools;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, KeywordFuncLists, FileProcs;
+  SysUtils, KeywordFuncLists, FileProcs;
 
 // C
 function CompareCIdentifiers(Identifier1, Identifier2: PChar): integer;

@@ -40,15 +40,18 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, contnrs, TypInfo, types, FileProcs, LazFileUtils,
-  BasicCodeTools, CodeToolsStrConsts, LazFileCache, LazMethodList,
+  Classes, SysUtils, contnrs, TypInfo, types, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils, LazFileCache, LazMethodList, LazDbgLog, AvgLvlTree,
+  // Codetools
+  FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, FindOverloads, CodeBeautifier,
-  FindDeclarationCache, DirectoryCacher, AVL_Tree,
+  FindDeclarationCache, DirectoryCacher,
   PPUCodeTools, LFMTrees, DirectivesTree, CodeCompletionTemplater,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
-  CTUnitGraph, ExtractProcTool, LazDbgLog, CodeCompletionTool;
+  CTUnitGraph, ExtractProcTool;
 
 type
   TCodeToolManager = class;
@@ -6303,7 +6306,7 @@ var
   UnitSetCache: TFPCUnitSetCache;
   aConfigCache: TFPCTargetConfigCache;
   Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
 begin
   UnitSetCache:=FPCDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
   if UnitSetCache=nil then begin
@@ -6318,7 +6321,7 @@ begin
   if (aConfigCache=nil) or (aConfigCache.Units=nil) then exit;
   Node:=aConfigCache.Units.Tree.FindLowest;
   while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
+    Item:=PStringToStringItem(Node.Data);
     Iterate(Item^.Value);
     Node:=aConfigCache.Units.Tree.FindSuccessor(Node);
   end;
@@ -6353,10 +6356,6 @@ begin
 end;
 
 procedure TCodeToolManager.ConsistencyCheck;
-{$IF FPC_FULLVERSION<30101}
-var
-  CurResult: LongInt;
-{$ENDIF}
 begin
   if FCurCodeTool<>nil then begin
     FCurCodeTool.ConsistencyCheck;
@@ -6366,17 +6365,8 @@ begin
   SourceCache.ConsistencyCheck;
   GlobalValues.ConsistencyCheck;
   SourceChangeCache.ConsistencyCheck;
-  {$IF FPC_FULLVERSION<30101}
-  CurResult:=FPascalTools.ConsistencyCheck;
-  if CurResult<>0 then
-    RaiseCatchableException(IntToStr(CurResult));
-  CurResult:=FDirectivesTools.ConsistencyCheck;
-  if CurResult<>0 then
-    RaiseCatchableException(IntToStr(CurResult));
-  {$ELSE}
   FPascalTools.ConsistencyCheck;
   FDirectivesTools.ConsistencyCheck;
-  {$ENDIF}
 end;
 
 procedure TCodeToolManager.WriteDebugReport(WriteTool,

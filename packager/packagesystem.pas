@@ -45,15 +45,15 @@ uses
   MemCheck,
   {$ENDIF}
   // FPC
-  Classes, SysUtils, contnrs, strutils, AVL_Tree,
+  Classes, SysUtils, contnrs, strutils, Laz_AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, LCLProc,
   // LazUtils
   FileUtil, LazFileCache, LazLogger, LazFileUtils, LazUTF8,
-  Laz2_XMLCfg, laz2_XMLRead,
+  Laz2_XMLCfg, laz2_XMLRead, AvgLvlTree,
   // codetools
   FileProcs, DefineTemplates, CodeCache,
-  BasicCodeTools, NonPascalCodeTools, SourceChanger, CodeToolsStructs,
+  BasicCodeTools, NonPascalCodeTools, SourceChanger,
   CodeToolManager, DirectoryCacher,
   // IDEIntf,
   IDEExternToolIntf, IDEDialogs, IDEMsgIntf, CompOptsIntf, LazIDEIntf, MacroDefIntf,
@@ -3258,7 +3258,7 @@ var
   Cache: TFPCUnitSetCache;
   CfgCache: TFPCTargetConfigCache;
   Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   Filename: String;
   UnitToSrcTree: TStringToStringTree;
   CurUnitName: String;
@@ -3295,7 +3295,7 @@ begin
 
     Node:=CfgCache.Units.Tree.FindLowest;
     while Node<>nil do begin
-      Item:=PStringToStringTreeItem(Node.Data);
+      Item:=PStringToStringItem(Node.Data);
       Node:=CfgCache.Units.Tree.FindSuccessor(Node);
       Filename:=Item^.Value;
       if PkgOutDirs.Contains(ExtractFilePath(Filename)) then begin

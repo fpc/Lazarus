@@ -38,17 +38,17 @@ interface
 
 uses
   // RTL + LCL
-  Classes, SysUtils, resource, reswriter, fgl,
+  Classes, SysUtils, resource, reswriter, fgl, Laz_AVL_Tree,
   // LCL
-  Controls, Dialogs, LCLProc, LResources,
+  Controls, LCLProc, LResources,
   // LazUtils
-  LazFileUtils, AvgLvlTree, Laz2_XMLCfg,
+  LazFileUtils, Laz2_XMLCfg,
   // Codetools
   KeywordFuncLists, BasicCodeTools, CodeToolManager, CodeCache,
   // IdeIntf
   ProjectIntf, ProjectResourcesIntf, CompOptsIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, DialogProcs,
+  LazarusIDEStrConsts, DialogProcs,
   W32Manifest, W32VersionInfo, ProjectIcon, ProjectUserResources;
 
 type
@@ -238,7 +238,7 @@ type
 
   TResourceTypesCache = class
   public
-    Tree: TAvgLvlTree; //
+    Tree: TAvlTree; //
     constructor Create;
     destructor Destroy; override;
     procedure Parse(Code: TCodeBuffer;
@@ -249,7 +249,7 @@ type
 
 constructor TResourceTypesCache.Create;
 begin
-  Tree:=TAvgLvlTree.Create(@CompareResTypCacheItems);
+  Tree:=TAvlTree.Create(@CompareResTypCacheItems);
 end;
 
 destructor TResourceTypesCache.Destroy;
@@ -262,7 +262,7 @@ end;
 procedure TResourceTypesCache.Parse(Code: TCodeBuffer; out
   HasLRSIncludeDirective, HasRDirective: boolean);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: TResourceTypesCacheItem;
 begin
   Node := Tree.FindKey(Code, @CompareCodeWithResTypCacheItem);

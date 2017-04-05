@@ -37,9 +37,12 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeCache,
-  CodeAtom, CustomCodeTool, PascalParserTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree, LazFileUtils, LazDbgLog;
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils, LazDbgLog,
+  // Codetools
+  FileProcs, CodeToolsStrConsts, CodeTree, CodeCache, CodeAtom,
+  PascalParserTool, KeywordFuncLists, BasicCodeTools, LinkScanner;
 
 type
   TPascalHintModifier = (

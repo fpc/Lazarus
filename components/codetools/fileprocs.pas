@@ -40,7 +40,7 @@ uses
   Windows,
   {$ENDIF}
   // RTL + FCL
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
   // CodeTools
   CodeToolsStrConsts,
   // LazUtils
@@ -48,8 +48,7 @@ uses
   {$IFDEF EnableWrapperFunctions}
   LazDbgLog,
   {$ENDIF}
-  LazLogger, LazUTF8, LazFileCache,
-  LazFileUtils, LazUTF8Classes;
+  LazLogger, LazFileCache, LazFileUtils, LazUTF8, LazUTF8Classes;
 
 type
   TFPCStreamSeekType = int64;

@@ -37,18 +37,20 @@ unit InstallPkgSetDlg;
 interface
 
 uses
-  Classes, SysUtils, contnrs,
+  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  // LCL
   LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  ExtCtrls, ComCtrls, ImgList, TreeFilterEdit,
+  ExtCtrls, ComCtrls, ImgList,
+  // LazControls
+  TreeFilterEdit,
   // Codetools
   BasicCodeTools,
   // LazUtils
-  LazFileUtils, AvgLvlTree, Laz2_XMLCfg,
+  LazFileUtils, Laz2_XMLCfg,
   // IdeIntf
   PackageDependencyIntf, PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs, IDEWindowIntf,
   // IDE
-  LazarusIDEStrConsts, InputHistory,
-  LazConf, PackageDefs, PackageSystem, LPKCache;
+  LazarusIDEStrConsts, InputHistory, LazConf, PackageDefs, PackageSystem, LPKCache;
 
 type
   TOnCheckInstallPackageList =
@@ -536,7 +538,7 @@ end;
 
 procedure TInstallPkgSetDialog.UpdateAvailablePackages(Immediately: boolean);
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   FilteredBranch: TTreeFilterBranch;
   Info: TLPKInfo;
   List: TStringList;

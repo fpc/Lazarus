@@ -50,11 +50,14 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, TypInfo, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
+  Classes, SysUtils, TypInfo, Laz_AVL_Tree,
+  // Codetools
+  CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
   ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  CodeCache, AVL_Tree, LFMTrees, SourceChanger,
-  CustomCodeTool, CodeToolsStructs, LazFileUtils, LazFileCache;
+  CodeCache, LFMTrees, SourceChanger, CustomCodeTool, CodeToolsStructs,
+  // LazUtils
+  LazFileUtils, LazFileCache, AvgLvlTree;
 
 type
   TStandardCodeTool = class;

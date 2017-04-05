@@ -30,9 +30,10 @@ unit CacheCodeTools;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // Codetools
   FileProcs, CodeCache, KeywordFuncLists, CustomCodeTool,
-  BasicCodeTools, FindDeclarationTool, AVL_Tree;
+  BasicCodeTools, FindDeclarationTool;
 
 type
 

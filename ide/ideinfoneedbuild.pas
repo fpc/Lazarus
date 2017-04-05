@@ -30,9 +30,14 @@ unit IDEInfoNeedBuild;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ButtonPanel, LCLType,
-  AvgLvlTree, LazUtilities,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  Forms, Controls, StdCtrls, ButtonPanel, LCLType,
+  // LazUtils
+  LazUtilities,
+  // IdeIntf
   IDEWindowIntf, LazIDEIntf, ProjectIntf, PackageIntf,
+  // IDE
   LazarusIDEStrConsts, PackageDefs, PackageSystem, Project, InputHistory,
   EnvironmentOpts, IDEProcs, BuildManager;
 
@@ -70,7 +75,7 @@ type
     FIdleConnected: boolean;
     FMainTarget: TObject;
     FSkipDesignTimePackages: boolean;
-    FTargetToItem: TAvgLvlTree; // tree of TInfoNeedBuildItem sorted for Target
+    FTargetToItem: TAvlTree; // tree of TInfoNeedBuildItem sorted for Target
     FTargets: TFPList; // topologically sorted list of TInfoNeedBuildItem, last=main
     procedure FillTargets;
     function ProjectAsTarget(AProject: TProject): string;
@@ -130,7 +135,7 @@ procedure TIDEInfoNeedBuildDlg.FormCreate(Sender: TObject);
 var
   Target: String;
 begin
-  FTargetToItem:=TAvgLvlTree.Create(@CompareInfoNeedBuildItemWithTargets);
+  FTargetToItem:=TAvlTree.Create(@CompareInfoNeedBuildItemWithTargets);
   FTargets:=TFPList.Create;
 
   Caption:=lisWhatNeedsBuilding;

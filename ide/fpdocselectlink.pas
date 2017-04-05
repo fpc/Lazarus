@@ -30,9 +30,14 @@ unit FPDocSelectLink;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics,
-  ExtCtrls, StdCtrls, ButtonPanel, FileUtil, LazFileUtils, LCLType, AvgLvlTree,
-  Laz2_DOM, PackageIntf, ProjectIntf,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, LCLType, Forms, Controls, Graphics, ExtCtrls, StdCtrls, ButtonPanel,
+  // LazUtils
+  FileUtil, LazFileUtils, Laz2_DOM,
+  // IdeIntf
+  PackageIntf, ProjectIntf,
+  // IDE
   CodeHelp, LazarusIDEStrConsts, PackageSystem, PackageDefs;
 
 type
@@ -61,7 +66,7 @@ type
     FTextColor: TColor;
     FTop: integer;
     FVisibleItems: integer;
-    FTree: TAvgLvlTree; // tree of TFPDocLinkCompletionItem
+    FTree: TAvlTree; // tree of TFPDocLinkCompletionItem
     function GetCount: integer;
     function GetItems(Index: integer): TFPDocLinkCompletionItem;
     procedure SetSorted(const AValue: Boolean);
@@ -585,7 +590,7 @@ end;
 constructor TFPDocLinkCompletionList.Create;
 begin
   FItems:=TFPList.Create;
-  FTree:=TAvgLvlTree.Create(@CompareFPDocLinkCompletionItem);
+  FTree:=TAvlTree.Create(@CompareFPDocLinkCompletionItem);
 end;
 
 destructor TFPDocLinkCompletionList.Destroy;
@@ -610,7 +615,7 @@ end;
 
 procedure TFPDocLinkCompletionList.Sort;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   i: Integer;
 begin
   if FSorted then exit;

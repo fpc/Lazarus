@@ -30,8 +30,8 @@ unit CustomNonFormDesigner;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Graphics, GraphType, Forms, Controls,
-  IDEProcs, FormEditingIntf;
+  Classes, SysUtils,
+  FormEditingIntf;
   
 type
 

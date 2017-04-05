@@ -22,8 +22,11 @@ unit ShellCtrls;
 interface
 
 uses
-  Classes, SysUtils, Forms, Graphics, LCLType, AvgLvlTree,
-  ComCtrls, LCLProc, FileUtil, LazFileUtils, LazUtf8, LCLStrConsts;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  Forms, Graphics, ComCtrls, LCLProc, LCLStrConsts,
+  // LazUtils
+  FileUtil, LazFileUtils;
 
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -637,7 +640,7 @@ var
   FileItem: TFileItem;
   i: Integer;
   MaskStrings: TStringList;
-  FileTree: TAvgLvlTree;
+  FileTree: TAvlTree;
   ShortFilename: AnsiString;
   j: Integer;
   {$if defined(windows) and not defined(wince)}
@@ -658,7 +661,7 @@ begin
   // The string list implements support for multiple masks separated
   // by semi-colon ";"
   MaskStrings := TStringList.Create;
-  FileTree:=TAvgLvlTree.Create(@STVCompareFiles);
+  FileTree:=TAvlTree.Create(@STVCompareFiles);
   try
     {$ifdef NotLiteralFilenames}
     MaskStrings.CaseSensitive := False;

@@ -94,10 +94,12 @@ unit H2PasTool;
 interface
 
 uses
-  Classes, SysUtils, CodeToolsStructs, AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  AvgLvlTree,
+  // Codetools
   FileProcs, BasicCodeTools, CCodeParserTool,
-  NonPascalCodeTools, KeywordFuncLists, CodeCache,
-  CodeTree, CodeAtom;
+  NonPascalCodeTools, KeywordFuncLists, CodeCache, CodeTree, CodeAtom;
   
 const
   DefaultMaxPascalIdentLen = 70;

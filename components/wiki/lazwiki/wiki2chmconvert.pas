@@ -33,13 +33,16 @@ unit Wiki2CHMConvert;
 interface
 
 uses
-  Classes, SysUtils, Wiki2HTMLConvert, Wiki2XHTMLConvert, LazLogger, laz2_DOM,
+  Classes, SysUtils,
   {$IFDEF EnableWikiCHMWriter}
   wikichmwriter, wikichmfilewriter, wikichmsitemap,
   {$ELSE}
   chmwriter, chmfilewriter, chmsitemap,
   {$ENDIF}
-  LazUTF8, LazFileUtils, CodeToolsStructs;
+  // LazUtils
+  LazLogger, LazUTF8, LazFileUtils, AvgLvlTree,
+  // LazWiki
+  Wiki2HTMLConvert, Wiki2XHTMLConvert;
 
 const
   CHMImagesDir = '/images/';

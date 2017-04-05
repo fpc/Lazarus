@@ -53,7 +53,7 @@ unit etQuickFixes;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   Menus, Dialogs, Controls,
   // LazUtils
@@ -925,11 +925,11 @@ var
   end;
 
 var
-  Tree: TAvgLvlTree;
-  Node: TAvgLvlTreeNode;
+  Tree: TAvlTree;
+  Node: TAvlTreeNode;
   i: Integer;
 begin
-  Tree:=TAvgLvlTree.Create(@CompareMsgLinesSrcPos);
+  Tree:=TAvlTree.Create(@CompareMsgLinesSrcPos);
   try
     // get all messages to hide and sort them for position
     if Msg=nil then begin

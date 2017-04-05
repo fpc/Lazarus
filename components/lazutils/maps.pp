@@ -24,9 +24,9 @@ unit Maps;
 interface
 
 uses
-  Classes, SysUtils, Math, typinfo,
+  Classes, SysUtils, Math, typinfo, Laz_AVL_Tree,
   // LazUtils
-  FPCAdds, AvgLvlTree;
+  FPCAdds;
   
 type
   TMapIdType = (itu1, its1, itu2, its2, itu4, its4, itu8, its8, itu16, its16,
@@ -86,16 +86,16 @@ type
 
   TBaseMap = class(TPersistent)
   private
-    FTree: TAvgLvlTree;
+    FTree: TAvlTree;
     FIdType: TMapIdType;
     FDataSize: Cardinal;
     FFirst: PMapItem;   // First element of our linkedlist
     FLast: PMapItem;    // Last element of our linkedlist
     FIterators: TList;  // A List of iterators iterating us
-    function FindNode(const AId): TAvgLvlTreeNode;
+    function FindNode(const AId): TAvlTreeNode;
     function FindItem(const AId): PMapItem;
-    procedure FreeData(ANode: TAvgLvlTreeNode);
-    function TreeCompareID(Sender: TAvgLvlTree; AItem1, AItem2: Pointer): Integer;
+    procedure FreeData(ANode: TAvlTreeNode);
+    function TreeCompareID(Sender: TAvlTree; AItem1, AItem2: Pointer): Integer;
     //--
     procedure IteratorAdd(AIterator: TBaseMapIterator);
     procedure IteratorRemove(AIterator: TBaseMapIterator);
@@ -252,12 +252,12 @@ begin
   inherited Create;
   FIdType := AIdType;
   FDataSize := ADataSize;
-  FTree := TAvgLvlTree.CreateObjectCompare(@TreeCompareID);
+  FTree := TAvlTree.CreateObjectCompare(@TreeCompareID);
 end;
 
 function TBaseMap.Delete(const AId): Boolean;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   n: integer;
 begin
   Node := FindNode(AId);
@@ -303,7 +303,7 @@ end;
 
 function TBaseMap.FindItem(const AId): PMapItem;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node := FindNode(AId);
   if Node = nil
@@ -311,7 +311,7 @@ begin
   else Result := Node.Data;
 end;
 
-function TBaseMap.FindNode(const AId): TAvgLvlTreeNode;
+function TBaseMap.FindNode(const AId): TAvlTreeNode;
 var
   Item: TMapItem;
 begin
@@ -319,7 +319,7 @@ begin
   Result := FTree.Find(@Item);
 end;
 
-procedure TBaseMap.FreeData(ANode: TAvgLvlTreeNode);
+procedure TBaseMap.FreeData(ANode: TAvlTreeNode);
 begin
   if ANode = nil then Exit;
   FreeData(ANode.Left);
@@ -359,7 +359,7 @@ procedure TBaseMap.InternalAdd(const AId, AData);
 var
   item: PMapItem;
   p: Pointer;
-  Node, NewNode: TAvgLvlTreeNode;
+  Node, NewNode: TAvlTreeNode;
 begin
   if FindNode(AId) <> nil
   then begin
@@ -465,7 +465,7 @@ procedure TBaseMap.ReleaseData(ADataPtr: Pointer);
 begin
 end;
 
-function TBaseMap.TreeCompareID(Sender: TAvgLvlTree; AItem1, AItem2: Pointer): Integer;
+function TBaseMap.TreeCompareID(Sender: TAvlTree; AItem1, AItem2: Pointer): Integer;
 var
   Item1: PMapItem absolute AItem1;
   Item2: PMapItem absolute AItem2;
@@ -541,7 +541,7 @@ end;
 function TBaseMapIterator.InternalLocate(const AId): Boolean;
 var
   C: Integer;
-  Node, LastNext: TAvgLvlTreeNode;
+  Node, LastNext: TAvlTreeNode;
   Item: TMapItem;
 begin
   ValidateMap;

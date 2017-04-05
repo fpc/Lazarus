@@ -34,8 +34,9 @@ unit CodeExplOpts;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils,
+  // RTL + FCL
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
   LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
   // CodeTools
   BasicCodeTools, FileProcs,
@@ -154,7 +155,7 @@ type
     FObserverCategories: TCEObserverCategories;
     FFollowCursor: boolean;
     FMode : TCodeExplorerMode;
-    FObserverIgnoreConstants: TAvgLvlTree;// tree of AnsiString
+    FObserverIgnoreConstants: TAvlTree;// tree of AnsiString
     FOptionsFilename: string;
     FPage: TCodeExplorerPage;
     FRefresh: TCodeExplorerRefresh;
@@ -218,7 +219,7 @@ type
     // Observer
     property ObserveCharConst: boolean read FObserveCharConst write SetObserveCharConst default DefaultCOureCharConst;
     property ObserverCategories: TCEObserverCategories read FObserverCategories write SetObserverCategories default DefaultCodeObserverCategories;
-    property ObserverIgnoreConstants: TAvgLvlTree read FObserverIgnoreConstants;
+    property ObserverIgnoreConstants: TAvlTree read FObserverIgnoreConstants;
     property COIgnoreConstInFuncs: TStringToStringTree read FCOIgnoreConstInFuncs;
     property LongParamListCount: integer read FLongParamListCount write SetLongParamListCount default DefaultCOLongParamListCount;
     property LongProcLineCount: integer read FLongProcLineCount write SetLongProcLineCount default DefaultCOLongProcLineCount;
@@ -448,7 +449,7 @@ end;
 constructor TCodeExplorerOptions.Create;
 begin
   FOptionsFilename:=AppendPathDelim(GetPrimaryConfigPath)+'codeexploreroptions.xml';
-  FObserverIgnoreConstants:=TAvgLvlTree.Create(TListSortCompare(@CompareAtom));
+  FObserverIgnoreConstants:=TAvlTree.Create(TListSortCompare(@CompareAtom));
   FCOIgnoreConstInFuncs:=TStringToStringTree.Create(false);
   Clear;
   LoadDefaults_COIgnoreConstants;
@@ -730,7 +731,7 @@ end;
 
 function TCodeExplorerOptions.CreateListOfCOIgnoreConstants: TStrings;
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   s: String;
 begin
   Result:=TStringList.Create;
@@ -745,7 +746,7 @@ end;
 
 procedure TCodeExplorerOptions.Clear_COIgnoreConstants;
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   s: String;
 begin
   if FObserverIgnoreConstants.Count=0 then exit;
@@ -787,7 +788,7 @@ end;
 
 function TCodeExplorerOptions.CreateListOfCOIgnoreConstInFuncs: TStrings;
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   s: String;
 begin
   Result:=TStringList.Create;

@@ -30,7 +30,7 @@ unit CTUnitGroupGraph;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, CTUnitGraph;
+  Classes, SysUtils, Laz_AVL_Tree, CTUnitGraph;
 
 type
   TUGGroup = class;

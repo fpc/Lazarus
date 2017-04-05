@@ -50,7 +50,7 @@ begin
   FResourceCacheDescriptorClass := TPenHandleCacheDescriptor;
 end;
 
-function TPenHandleCache.CompareDescriptors(Tree: TAvgLvlTree; Desc1,
+function TPenHandleCache.CompareDescriptors(Tree: TAvlTree; Desc1,
   Desc2: Pointer): integer;
 var
   Descriptor1: TPenHandleCacheDescriptor absolute Desc1;
@@ -74,7 +74,7 @@ end;
 
 function TPenHandleCache.FindPen(APen: TLCLHandle): TResourceCacheItem;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   ANode := FItems.FindKey(@APen,
                           TListSortCompare(@ComparePHandleWithResourceCacheItem));
@@ -88,7 +88,7 @@ function TPenHandleCache.FindPenDesc(const AExtPen: TExtLogPen;
   const APattern: TPenPattern): TPenHandleCacheDescriptor;
 var
   ExtPenAndPattern: TExtPenAndPattern;
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   ExtPenAndPattern.ExtPen := AExtPen;
   ExtPenAndPattern.Pattern := APattern;

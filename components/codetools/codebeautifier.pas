@@ -109,8 +109,10 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // Codetools
   FileProcs, KeywordFuncLists, CodeCache, BasicCodeTools,
+  // LazUtils
   LazUtilities;
   
 type

@@ -31,8 +31,9 @@ unit ChangeDeclarationTool;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, contnrs, CodeAtom, CodeCache,
-  FileProcs, CodeTree, ExtractProcTool, FindDeclarationTool,
+  Classes, SysUtils, Laz_AVL_Tree, contnrs,
+  // Codetools
+  CodeAtom, CodeCache, FileProcs, CodeTree, ExtractProcTool, FindDeclarationTool,
   BasicCodeTools, KeywordFuncLists, LinkScanner, SourceChanger;
 
 type

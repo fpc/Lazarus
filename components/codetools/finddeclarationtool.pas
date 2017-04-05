@@ -77,10 +77,13 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils, LazUtilities,
+  // Codetools
+  CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
-  DirectoryCacher, AVL_Tree, PascalParserTool,
-  PascalReaderTool, FileProcs, LazFileUtils, LazUtilities, LazUTF8,
+  DirectoryCacher, PascalParserTool, PascalReaderTool, FileProcs,
   DefineTemplates, FindDeclarationCache;
 
 type
@@ -11687,22 +11690,10 @@ begin
     ANodeCache.ConsistencyCheck;
     ANodeCache:=ANodeCache.Next;
   end;
-  if FDependentCodeTools<>nil then begin
-    {$IF FPC_FULLVERSION<30101}
-    if FDependentCodeTools.ConsistencyCheck<>0 then
-      raise Exception.Create('');
-    {$ELSE}
+  if FDependentCodeTools<>nil then
     FDependentCodeTools.ConsistencyCheck;
-    {$ENDIF}
-  end;
-  if FDependsOnCodeTools<>nil then begin
-    {$IF FPC_FULLVERSION<30101}
-    if FDependsOnCodeTools.ConsistencyCheck<>0 then
-      raise Exception.Create('');
-    {$ELSE}
+  if FDependsOnCodeTools<>nil then
     FDependsOnCodeTools.ConsistencyCheck;
-    {$ENDIF}
-  end;
 end;
 
 procedure TFindDeclarationTool.CalcMemSize(Stats: TCTMemStats);

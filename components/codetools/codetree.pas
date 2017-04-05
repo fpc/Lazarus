@@ -42,8 +42,11 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  AVL_Tree, LazDbgLog;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  LazDbgLog,
+  // Codetools
+  FileProcs, CodeToolsStructs, BasicCodeTools;
 
 //-----------------------------------------------------------------------------
 

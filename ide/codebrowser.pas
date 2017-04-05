@@ -45,20 +45,19 @@ unit CodeBrowser;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, types, AVL_Tree,
-  LCLProc, LResources, Forms, Controls, Graphics, Dialogs, Clipbrd, StdCtrls,
-  ExtCtrls, ComCtrls, Buttons, Menus, HelpIntfs, LCLIntf,
+  // RTL + FCL
+  Classes, SysUtils, types, Laz_AVL_Tree,
+  // LCL
+  LCLProc, Forms, Controls, Graphics, Dialogs, Clipbrd, StdCtrls,
+  ExtCtrls, ComCtrls, Buttons, Menus, HelpIntfs,
   // CodeTools
-  BasicCodeTools, DefineTemplates, CodeTree, CodeCache,
-  CodeToolsStructs, CodeToolManager, PascalParserTool, LinkScanner, FileProcs,
-  CodeIndex, StdCodeTools, SourceLog, CustomCodeTool,
+  BasicCodeTools, DefineTemplates, CodeTree, CodeCache, CodeToolManager,
+  PascalParserTool, LinkScanner, FileProcs, CodeIndex, StdCodeTools, SourceLog,
   // LazUtils
-  LazFileUtils, LazUtilities,
+  LazFileUtils, LazUtilities, AvgLvlTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
-  IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf,
-  IDEExternToolIntf,
+  IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf, IDEExternToolIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
   IDEOptionDefs, etFPCMsgParser, BasePkgManager, EnvironmentOpts;
@@ -1364,7 +1363,7 @@ var
     Filename: String;
     ConfigCache: TFPCTargetConfigCache;
     Node: TAVLTreeNode;
-    Item: PStringToStringTreeItem;
+    Item: PStringToStringItem;
   begin
     // use unitset of the lazarus source directory
     LazDir:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory);
@@ -1379,7 +1378,7 @@ var
     if (ConfigCache=nil) or (ConfigCache.Units=nil) then exit;
     Node:=ConfigCache.Units.Tree.FindLowest;
     while Node<>nil do begin
-      Item:=PStringToStringTreeItem(Node.Data);
+      Item:=PStringToStringItem(Node.Data);
       Filename:=Item^.Value;
       if (CompareFileExt(Filename,'ppu',false)=0) then begin
         // search source in fpc sources

@@ -30,10 +30,19 @@ unit CodeToolsDefPreview;
 interface
 
 uses
-  Classes, SysUtils, Math,
-  LCLProc, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, Buttons, ComCtrls, ExtCtrls, LazFileUtils, AVGLvlTree,
-  SynEdit, DefineTemplates, ExprEval, IDEWindowIntf, IDEHelpIntf,
+  Classes, SysUtils, Math, Laz_AVL_Tree,
+  // LCL
+  LCLProc, Forms, Controls, Graphics, Dialogs, ButtonPanel, Buttons,
+  StdCtrls, ComCtrls, ExtCtrls,
+  // LazUtils
+  LazFileUtils,
+  // Codetools
+  DefineTemplates, ExprEval,
+  // SynEdit
+  SynEdit,
+  // IdeIntf
+  IDEWindowIntf, IDEHelpIntf,
+  // IDE
   EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions, IDEProcs;
 
 type
@@ -79,7 +88,7 @@ type
       {%H-}Selected: Boolean);
   private
     FDefineTree: TDefineTree;
-    FNodeValues: TAvgLvlTree;
+    FNodeValues: TAvlTree;
     fReport: TStringList;
     procedure SetDefineTree(const AValue: TDefineTree);
     procedure UpdateValues;
@@ -232,7 +241,7 @@ procedure TCodeToolsDefinesDialog.UpdateValues;
 
   procedure AddNodeReport(Prefix: string; DefTempl: TDefineTemplate);
   var
-    AVLNode: TAvgLvlTreeNode;
+    AVLNode: TAvlTreeNode;
     NodeValues: TCodeToolsDefinesNodeValues;
     s: String;
   begin
@@ -356,7 +365,7 @@ var
   SelTreeNode: TTreeNode;
   SelDefNode: TDefineTemplate;
   s: string;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   NodeValues: TCodeToolsDefinesNodeValues;
 begin
   SelTreeNode:=ParsedTemplatesTreeView.Selected;
@@ -427,7 +436,7 @@ begin
   NewNodeValues.ExpressionResult:=ExpressionResult;
   NewNodeValues.Execute:=Execute;
   if FNodeValues=nil then
-    FNodeValues:=TAvgLvlTree.Create(@CompareNodeValues);
+    FNodeValues:=TAvlTree.Create(@CompareNodeValues);
   FNodeValues.Add(NewNodeValues);
 end;
 

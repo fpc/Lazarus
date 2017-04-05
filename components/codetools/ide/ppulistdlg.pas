@@ -30,9 +30,11 @@ unit PPUListDlg;
 interface
 
 uses
-  Classes, SysUtils, contnrs, math, LCLProc, FileUtil, Forms,
-  Controls, Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree,
+  Classes, SysUtils, contnrs, math, Laz_AVL_Tree,
+  // LCL
+  LCLProc, FileUtil, Forms, Controls, Dialogs, ButtonPanel, Grids, StdCtrls,
   ExtCtrls, ComCtrls,
+  AvgLvlTree,
   // IDEIntf
   ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   PackageIntf,
@@ -129,10 +131,10 @@ type
     FMainItem: TPPUDlgListItem;
     FProject: TLazProject;
     FIdleConnected: boolean;
-    FSearchingItems: TAvgLvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
-    FItems: TAvgLvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
+    FSearchingItems: TAvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
+    FItems: TAvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
     FSort: array[1..3] of TPPUListSortRec;
-    FDlgLinkedFiles: TAvgLvlTree; // tree of TPPUDlgLinkedFile sorted for ID, file, flags
+    FDlgLinkedFiles: TAvlTree; // tree of TPPUDlgLinkedFile sorted for ID, file, flags
     procedure SetProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
 
@@ -149,7 +151,7 @@ type
 
     // units grid
     procedure UpdateUnitsGrid;
-    function CompareUnits({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    function CompareUnits({%H-}Tree: TAvlTree; Data1, Data2: Pointer): integer;
     procedure JumpToUnit(TheUnitName: string);
 
     // units info
@@ -254,9 +256,9 @@ end;
 
 procedure TPPUListDialog.FormCreate(Sender: TObject);
 begin
-  FSearchingItems:=TAvgLvlTree.Create(@ComparePPUListItems);
-  FItems:=TAvgLvlTree.Create(@ComparePPUListItems);
-  FDlgLinkedFiles:=TAvgLvlTree.Create(@ComparePPULinkedFiles);
+  FSearchingItems:=TAvlTree.Create(@ComparePPUListItems);
+  FItems:=TAvlTree.Create(@ComparePPUListItems);
+  FDlgLinkedFiles:=TAvlTree.Create(@ComparePPULinkedFiles);
 
   FSort[1].Category:=plsOSize;
   FSort[2].Category:=plsName;
@@ -562,17 +564,17 @@ procedure TPPUListDialog.UpdateUnitsGrid;
 
 var
   Grid: TStringGrid;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: TPPUDlgListItem;
   Row: Integer;
   s: String;
   TotalPPUBytes, TotalOBytes: int64;
-  SortedItems: TAvgLvlTree;
+  SortedItems: TAvlTree;
 begin
   Grid:=UnitsStringGrid;
   Grid.BeginUpdate;
 
-  SortedItems:=TAvgLvlTree.CreateObjectCompare(@CompareUnits);
+  SortedItems:=TAvlTree.CreateObjectCompare(@CompareUnits);
   try
     Node:=FItems.FindLowest;
     TotalPPUBytes:=0;
@@ -679,7 +681,7 @@ begin
     dec(Result);
 end;
 
-function TPPUListDialog.CompareUnits(Tree: TAvgLvlTree; Data1, Data2: Pointer
+function TPPUListDialog.CompareUnits(Tree: TAvlTree; Data1, Data2: Pointer
   ): integer;
 
   function CompareInt(const a,b: int64; Reverse: boolean): integer;
@@ -838,7 +840,7 @@ function TPPUListDialog.FindUsesPath(UsingUnit, UsedUnit: TPPUDlgListItem): TFPL
   Result is a list of TPPUDlgListItem
 }
 var
-  Visited: TAvgLvlTree;
+  Visited: TAvlTree;
 
   function Search(Item: TPPUDlgListItem; Path: TFPList): boolean;
   var
@@ -864,7 +866,7 @@ var
 begin
   Result:=TFPList.Create;
   if (UsingUnit=nil) or (UsedUnit=nil) then exit;
-  Visited:=TAvgLvlTree.Create(@ComparePPUListItems);
+  Visited:=TAvlTree.Create(@ComparePPUListItems);
   try
     if Search(UsedUnit,Result) then
       Result.Add(UsedUnit);
@@ -912,7 +914,7 @@ procedure TPPUListDialog.UpdateLinkedFilesTreeView;
   end;
 
 var
-  PPUNode, DlgLinkedFileNode: TAvgLvlTreeNode;
+  PPUNode, DlgLinkedFileNode: TAvlTreeNode;
   Item: TPPUDlgListItem;
   PPULinkedFile: TPPULinkedFile;
   DlgLinkedFile: TPPUDlgLinkedFile;
@@ -976,7 +978,7 @@ const
   MaxNonIdleTime = (1/86400)/2;
 var
   StartTime: TDateTime;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: TPPUDlgListItem;
   AnUnitName: String;
   InFilename: String;
@@ -1130,7 +1132,7 @@ end;
 
 function TPPUListDialog.FindUnit(AnUnitName: string): TPPUDlgListItem;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=FItems.FindKey(Pointer(AnUnitName),@CompareUnitNameWithPPUListItem);
   if Node=nil then

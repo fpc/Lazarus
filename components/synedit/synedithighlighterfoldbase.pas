@@ -57,8 +57,13 @@ unit SynEditHighlighterFoldBase;
 interface
 
 uses
-  SysUtils, Classes, math, LCLProc, SynEditHighlighter, SynEditTypes,
-  LazSynEditText, AvgLvlTree, LazClasses;
+  SysUtils, Classes, math, Laz_AVL_Tree,
+  // LCL
+  LCLProc,
+  // LazUtils
+  LazClasses,
+  // SynEdit
+  SynEditHighlighter, SynEditTypes, LazSynEditText;
 
 const
   NullRange = TSynEditRange(nil);
@@ -532,7 +537,7 @@ type
   private
     FAllocatedCount: integer;
     FHighlighterClass: TSynCustomHighlighterClass;
-    FItems: TAvgLvlTree;
+    FItems: TAvlTree;
   public
     constructor Create(TheHighlighterClass: TSynCustomHighlighterClass);
     destructor Destroy; override;
@@ -2484,7 +2489,7 @@ constructor TSynCustomHighlighterRanges.Create(
   TheHighlighterClass: TSynCustomHighlighterClass);
 begin
   Allocate;
-  FItems:=TAvgLvlTree.Create(@CompareSynHighlighterRanges);
+  FItems:=TAvlTree.Create(@CompareSynHighlighterRanges);
 end;
 
 destructor TSynCustomHighlighterRanges.Destroy;
@@ -2502,7 +2507,7 @@ end;
 function TSynCustomHighlighterRanges.GetEqual(Range: TSynCustomHighlighterRange
   ): TSynCustomHighlighterRange;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   if Range=nil then exit(nil);
   Node:=FItems.Find(Range);

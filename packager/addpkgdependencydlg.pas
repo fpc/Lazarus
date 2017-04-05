@@ -5,7 +5,7 @@ unit AddPkgDependencyDlg;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, fgl,
+  Classes, SysUtils, Laz_AVL_Tree, fgl,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ButtonPanel, LCLProc,
   // LazControls

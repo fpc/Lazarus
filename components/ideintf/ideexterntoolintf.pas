@@ -14,8 +14,13 @@ unit IDEExternToolIntf;
 interface
 
 uses
-  Classes, SysUtils, Math, TypInfo, UTF8Process, AvgLvlTree,
-  ObjInspStrConsts, LazLogger, LazFileUtils, LazFileCache, Menus, LCLProc;
+  Classes, SysUtils, Math, Laz_AVL_Tree,
+  // LCL
+  LCLProc,
+  // LazUtils
+  UTF8Process, LazFileUtils, LazFileCache,
+  // IdeIntf
+  ObjInspStrConsts, LazLogger, Menus;
 
 const
   SubToolFPC = 'FPC';
@@ -188,11 +193,11 @@ type
     FMaxLine: integer;
     FMinLine: integer;
   protected
-    FTree: TAvgLvlTree;
-    FCurrent: TAvgLvlTreeNode;
+    FTree: TAvlTree;
+    FCurrent: TAvlTreeNode;
     function GetCurrent: TMessageLine; inline;
   public
-    constructor Create(Tree: TAvgLvlTree; const aFilename: string;
+    constructor Create(Tree: TAvlTree; const aFilename: string;
       aMinLine, aMaxLine: integer);
     function GetEnumerator: TMessageLineEnumerator;
     function MoveNext: boolean;
@@ -215,10 +220,10 @@ type
     FMessageLineClass: TMessageLineClass;
     FOnMarksFixed: TETMarksFixedEvent;
     FOwner: TObject;
-    FSortedForSrcPos: TAvgLvlTree; // tree of TMessageLine sorted for Filename, Line, Column, OutputIndex, Index
+    FSortedForSrcPos: TAvlTree; // tree of TMessageLine sorted for Filename, Line, Column, OutputIndex, Index
     FUpdateSortedSrcPos: boolean;
     fChangedHandler: TMethodList;
-    fMarkedFixed: TAvgLvlTree; // list of TMessageLine
+    fMarkedFixed: TAvlTree; // list of TMessageLine
     function GetItems(Index: integer): TMessageLine;
     procedure SetBaseDirectory(const AValue: string);
     procedure LineChanged(Line: TMessageLine);
@@ -1009,7 +1014,7 @@ begin
   Result:=TMessageLine(FCurrent.Data);
 end;
 
-constructor TMessageLineEnumerator.Create(Tree: TAvgLvlTree;
+constructor TMessageLineEnumerator.Create(Tree: TAvlTree;
   const aFilename: string; aMinLine, aMaxLine: integer);
 begin
   FTree:=Tree;
@@ -1637,7 +1642,7 @@ begin
   InitCriticalSection(FCritSec);
   FMessageLineClass:=aMsgLineClass;
   fItems:=TFPList.Create;
-  FSortedForSrcPos:=TAvgLvlTree.Create(@CompareMsgLinesSrcPos);
+  FSortedForSrcPos:=TAvlTree.Create(@CompareMsgLinesSrcPos);
   FUpdateSortedSrcPos:=true;
   fChangedHandler:=TMethodList.Create;
 end;
@@ -1752,14 +1757,14 @@ procedure TMessageLines.MarkFixed(MsgLine: TMessageLine);
 begin
   //debugln(['TMessageLines.MarkFixed ',MsgLine.Msg,' ',MsgLine.Line,',',MsgLine.Column]);
   if fMarkedFixed=nil then
-    fMarkedFixed:=TAvgLvlTree.Create;
+    fMarkedFixed:=TAvlTree.Create;
   if fMarkedFixed.Find(MsgLine)=nil then
     fMarkedFixed.Add(MsgLine);
 end;
 
 procedure TMessageLines.ApplyFixedMarks;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Msg: TMessageLine;
   List: TFPList;
 begin
@@ -1810,7 +1815,7 @@ procedure TMessageLines.SourceLinesInserted(Filename: string; Line,
 // adjust Line numbers in all messages
 var
   CmpLine: TMessageLine;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   MsgLine: TMessageLine;
 begin
   if (Filename='') or (Count<=0) then exit;
@@ -1842,7 +1847,7 @@ procedure TMessageLines.SourceLinesDeleted(Filename: string; FirstLine,
 // adjust Line numbers in all messages and mark lines in range as deleted
 var
   CmpLine: TMessageLine;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   MsgLine: TMessageLine;
 begin
   if (Filename='') or (Count<=0) then exit;

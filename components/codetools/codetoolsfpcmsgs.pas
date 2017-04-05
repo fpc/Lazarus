@@ -42,7 +42,11 @@ unit CodeToolsFPCMsgs;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, LazUTF8Classes, AVL_Tree;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  LazUTF8Classes,
+  // Codetools
+  FileProcs;
 
 type
   TfmiSpecialItem = (

@@ -24,8 +24,10 @@ unit ComponentTreeView;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LCLProc, AvgLvlTree, Dialogs, Controls, ComCtrls,
-  Graphics, ExtCtrls,
+  Classes, SysUtils, TypInfo, Laz_AVL_Tree,
+  // LCL
+  LCLProc, Dialogs, Controls, ComCtrls, Graphics,
+  // IdeIntf
   ObjInspStrConsts, PropEdits, PropEditUtils;
   
 type
@@ -100,14 +102,14 @@ type
 
   TComponentWalker = class
     FComponentTV: TComponentTreeView;
-    FCandidates: TAvgLvlTree;
+    FCandidates: TAvlTree;
     FLookupRoot: TComponent;
     FNode: TTreeNode;
   protected
     procedure GetOwnedPersistents(AComponent: TComponent; AProc: TGetPersistentProc);
   public
     constructor Create(
-      ATreeView: TComponentTreeView; ACandidates: TAvgLvlTree;
+      ATreeView: TComponentTreeView; ACandidates: TAvlTree;
       ALookupRoot: TComponent; ANode: TTreeNode);
 
     procedure Walk(AComponent: TComponent);
@@ -161,7 +163,7 @@ begin
 end;
 
 constructor TComponentWalker.Create(ATreeView: TComponentTreeView;
-  ACandidates: TAvgLvlTree; ALookupRoot: TComponent; ANode: TTreeNode);
+  ACandidates: TAvlTree; ALookupRoot: TComponent; ANode: TTreeNode);
 begin
   {$IFDEF VerboseComponentTVWalker}
   debugln(['TComponentWalker.Create ALookupRoot=',DbgSName(ALookupRoot)]);
@@ -176,7 +178,7 @@ procedure TComponentWalker.Walk(AComponent: TComponent);
 var
   OldNode: TTreeNode;
   Candidate: TComponentCandidate;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   Root: TComponent;
 begin
   if csDestroying in AComponent.ComponentState then exit;
@@ -617,7 +619,7 @@ end;
 
 procedure TComponentTreeView.RebuildComponentNodes;
 var
-  Candidates: TAvgLvlTree; // tree of TComponentCandidate sorted for aPersistent (CompareComponentCandidates)
+  Candidates: TAvlTree; // tree of TComponentCandidate sorted for aPersistent (CompareComponentCandidates)
   RootObject: TPersistent;
   RootComponent: TComponent absolute RootObject;
 
@@ -684,7 +686,7 @@ begin
     RootObject:=nil;
   if RootObject <> nil then
   begin
-    Candidates:=TAvgLvlTree.Create(TListSortCompare(@CompareComponentCandidates));
+    Candidates:=TAvlTree.Create(TListSortCompare(@CompareComponentCandidates));
     try
       // first add the lookup root
       RootNode := Items.Add(nil, CreateNodeCaption(RootObject));

@@ -42,8 +42,12 @@ interface
 {off $DEFINE VerboseSrcChanger}
 
 uses
-  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
-  typinfo, LinkScanner, AVL_Tree, KeywordFuncLists, LazDbgLog;
+  Classes, SysUtils, typinfo, Laz_AVL_Tree,
+  // LazUtils
+  LazDbgLog,
+  // Codetools
+  FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools, LinkScanner,
+  KeywordFuncLists;
   
 type
   // Insert policy types for class parts (properties, variables, method defs)
@@ -844,8 +848,7 @@ begin
   Result:=true;
 end;
 
-function TSourceChangeCache.IndentLine(LineStartPos, IndentDiff: integer
-  ): boolean;
+function TSourceChangeCache.IndentLine(LineStartPos, IndentDiff: integer): boolean;
 var
   OldIndent: LongInt;
   NewIndent: Integer;
@@ -906,18 +909,8 @@ begin
 end;
 
 procedure TSourceChangeCache.ConsistencyCheck;
-{$IF FPC_FULLVERSION<30101}
-var
-  CurResult: LongInt;
-{$ENDIF}
 begin
-  {$IF FPC_FULLVERSION<30101}
-  CurResult:=FEntries.ConsistencyCheck;
-  if CurResult<>0 then
-    RaiseCatchableException(IntToStr(CurResult));
-  {$ELSE}
   FEntries.ConsistencyCheck;
-  {$ENDIF}
   BeautifyCodeOptions.ConsistencyCheck;
 end;
 

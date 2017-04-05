@@ -27,9 +27,9 @@ interface
 uses
   // RTL + FCL
   Classes, SysUtils, Math, fpImage, FPReadBMP, FPWriteBMP, BMPComn,
-  FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff, FPTiffCmn,
+  FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff, FPTiffCmn, Laz_AVL_Tree,
   // LazUtils
-  FPCAdds, AvgLvlTree,
+  FPCAdds,
   // LCL
   LCLType, LCLversion, LCLProc, GraphType, IcnsTypes;
 
@@ -290,8 +290,8 @@ type
 
   TLazAVLPalette = class(TFPPalette)
   protected
-    FAVLPalette: TAvgLvlTree; // tree of PLazAVLPaletteEntry 'color to index'
-    FAVLNodes: PAvgLvlTreeNode;// 'index to node' array
+    FAVLPalette: TAvlTree; // tree of PLazAVLPaletteEntry 'color to index'
+    FAVLNodes: PAvlTreeNode;// 'index to node' array
     procedure SetCount(NewCount: integer); override;
     procedure SetColor(Index: integer; const NewColor: TFPColor); override;
     function CompareEntries(Index1, Index2: integer): integer;
@@ -4350,7 +4350,7 @@ end;
 procedure TLazAVLPalette.SetCount(NewCount: integer);
 var
   NewAVLPalEntry: PLazAVLPaletteEntry;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   CurAVLPalEntry: PLazAVLPaletteEntry;
   Index: Integer;
 begin
@@ -4368,7 +4368,7 @@ begin
   inherited SetCount(NewCount);
   // create tree if not already done
   if (FAVLPalette=nil) and (FCount>0) then
-    FAVLPalette:=TAvgLvlTree.Create(TListSortCompare(@CompareLazAVLPaletteEntries));
+    FAVLPalette:=TAvlTree.Create(TListSortCompare(@CompareLazAVLPaletteEntries));
   if FAVLPalette=nil then exit;
   // add new colors to 'color to index' tree and 'index to node' array
   while FAVLPalette.Count<FCount do begin
@@ -4382,7 +4382,7 @@ end;
 
 procedure TLazAVLPalette.SetColor(Index: integer; const NewColor: TFPColor);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Entry: PLazAVLPaletteEntry;
 begin
   if Index=FCount then
@@ -4413,7 +4413,7 @@ end;
 
 function TLazAVLPalette.IndexOf(const AColor: TFPColor): integer;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   if FAVLPalette<>nil then
     Node:=FAVLPalette.FindKey(@AColor,TListSortCompare(@ComparePFPColorAndLazAVLPalEntry))
@@ -4461,7 +4461,7 @@ end;
 
 procedure TLazAVLPalette.CheckConsistency;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Entry: PLazAVLPaletteEntry;
   i: Integer;
 begin

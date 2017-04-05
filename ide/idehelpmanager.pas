@@ -32,24 +32,25 @@ unit IDEHelpManager;
 interface
 
 uses
-  // FCL+LCL
-  Classes, SysUtils, AVL_Tree, LCLProc, LCLIntf, LCLType, Forms, Controls,
-  Buttons, StdCtrls, Dialogs, ExtCtrls, FileProcs, Graphics, ButtonPanel,
-  LConvEncoding, lazutf8classes, LazFileUtils,
+  // RTL + FCL
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, LCLIntf, LCLType, FileProcs, Forms, Controls, ComCtrls, StdCtrls,
+  Dialogs, Graphics, Buttons, ButtonPanel,
+  // LazUtils
+  LConvEncoding, LazUTF8Classes, LazFileUtils,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   // IDEIntf
-  PropEdits, ObjectInspector, ProjectIntf, TextTools,
+  PropEdits, ObjectInspector, TextTools,
   IDEDialogs, LazHelpIntf, LazHelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf,
-  IDEMsgIntf, PackageIntf, LazIDEIntf, HelpIntfs, ComCtrls, IDEHelpIntf,
+  IDEMsgIntf, PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
   IDEExternToolIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
-  ObjInspExt, EnvironmentOpts, AboutFrm, Project, MainBar,
-  IDEFPDocFileSearch, PackageDefs, PackageSystem,
-  HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
-  IDEWindowHelp, CodeBrowser;
+  LazarusIDEStrConsts, DialogProcs, ObjInspExt, EnvironmentOpts, AboutFrm,
+  Project, MainBar, IDEFPDocFileSearch, PackageDefs, PackageSystem, HelpOptions,
+  MainIntf, LazConf, HelpFPCMessages, CodeHelp, IDEWindowHelp, CodeBrowser;
 
 type
 

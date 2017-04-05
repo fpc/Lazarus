@@ -14,10 +14,9 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, glib2, pango,
+  Classes, SysUtils, glib2, pango, Laz_AVL_Tree,
   // LCL
-  LCLProc, LCLType, AvgLvlTree, Gtk2Def,
-  LCLResCache;
+  LCLProc, LCLType, Gtk2Def, LCLResCache;
   
 type
   TGtkFontCacheDescriptor = class;
@@ -62,8 +61,8 @@ type
     procedure RemoveItem(Item: TResourceCacheItem); override;
   public
     constructor Create;
-    function CompareItems({%H-}Tree: TAvgLvlTree; Item1, Item2: Pointer): integer; override;
-    function CompareDescriptors({%H-}Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
+    function CompareItems({%H-}Tree: TAvlTree; Item1, Item2: Pointer): integer; override;
+    function CompareDescriptors({%H-}Tree: TAvlTree; Desc1, Desc2: Pointer): integer; override;
     function FindGtkFont(TheGtkFont: TGtkIntfFont): TGtkFontCacheItem;
     function FindGtkFontDesc(const LogFont: TLogFont;
                            const LongFontName: string): TGtkFontCacheDescriptor;
@@ -161,15 +160,13 @@ begin
   FResourceCacheDescriptorClass:=TGtkFontCacheDescriptor;
 end;
 
-function TGtkFontCache.CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer
-  ): integer;
+function TGtkFontCache.CompareItems(Tree: TAvlTree; Item1, Item2: Pointer): integer;
 begin
   Result:=ComparePointers(TGtkFontCacheItem(Item1).GtkFont,
                           TGtkFontCacheItem(Item2).GtkFont);
 end;
 
-function TGtkFontCache.CompareDescriptors(Tree: TAvgLvlTree; Desc1,
-  Desc2: Pointer): integer;
+function TGtkFontCache.CompareDescriptors(Tree: TAvlTree; Desc1, Desc2: Pointer): integer;
 var
   Descriptor1: TGtkFontCacheDescriptor;
   Descriptor2: TGtkFontCacheDescriptor;
@@ -184,7 +181,7 @@ end;
 
 function TGtkFontCache.FindGtkFont(TheGtkFont: TGtkIntfFont): TGtkFontCacheItem;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   ANode:=FItems.Findkey(TheGtkFont,TListSortCompare(@CompareGtkFontWithResItem));
   if ANode<>nil then
@@ -197,7 +194,7 @@ function TGtkFontCache.FindGtkFontDesc(const LogFont: TLogFont;
   const LongFontName: string): TGtkFontCacheDescriptor;
 var
   LogFontAndName: TLogFontAndName;
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   LogFontAndName.LogFont:=LogFont;
   LogFontAndName.LongFontName:=LongFontName;
@@ -209,8 +206,7 @@ begin
     Result:=nil;
 end;
 
-function TGtkFontCache.FindADescriptor(TheGtkFont: TGtkIntfFont
-  ): TGtkFontCacheDescriptor;
+function TGtkFontCache.FindADescriptor(TheGtkFont: TGtkIntfFont): TGtkFontCacheDescriptor;
 var
   Item: TGtkFontCacheItem;
 begin
@@ -253,8 +249,7 @@ begin
   end;
 end;
 
-function TGtkFontCache.AddWithoutName(TheGtkFont: TGtkIntfFont
-  ): TGtkFontCacheDescriptor;
+function TGtkFontCache.AddWithoutName(TheGtkFont: TGtkIntfFont): TGtkFontCacheDescriptor;
 var
   LogFont: TLogFont;
   LongFontName: string;
@@ -288,7 +283,7 @@ end;
 
 procedure TGtkFontCache.DumpDescriptors;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   Desc: TGtkFontCacheDescriptor;
   i: Integer;
 begin

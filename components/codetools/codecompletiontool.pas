@@ -85,7 +85,7 @@ uses
   MemCheck,
   {$ENDIF}
   // RTL + FCL
-  Classes, SysUtils, contnrs, AVL_Tree,
+  Classes, SysUtils, contnrs, Laz_AVL_Tree,
   // CodeTools
   FileProcs, CodeToolsStrConsts, StdCodeTools,
   CodeTree, CodeAtom, CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
@@ -95,7 +95,7 @@ uses
   CodeCompletionTemplater,
   {$ENDIF}
   // LazUtils
-  LazFileUtils, LazDbgLog;
+  LazFileUtils, LazDbgLog, AvgLvlTree;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,

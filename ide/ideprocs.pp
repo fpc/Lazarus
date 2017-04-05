@@ -31,12 +31,11 @@ interface
 
 uses
   // RTL + LCL
-  Classes, SysUtils, LCLProc, StdCtrls, ExtCtrls,
+  Classes, SysUtils, LCLProc, StdCtrls, ExtCtrls, Laz_AVL_Tree,
   // CodeTools
   BasicCodeTools, SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, LazUTF8, lazutf8classes,
-  AvgLvlTree, Laz2_XMLCfg,
+  FileUtil, LazFileUtils, LazFileCache, LazUTF8, lazutf8classes, Laz2_XMLCfg, AvgLvlTree,
   // IDE
   IDECmdLine, LazConf;
 
@@ -1035,7 +1034,7 @@ end;
 procedure SaveStringToStringTree(XMLConfig: TXMLConfig;
   Tree: TStringToStringTree; const Path: string);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: PStringToStringItem;
   i: Integer;
   SubPath: String;

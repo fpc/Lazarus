@@ -37,8 +37,11 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, SourceLog, LinkScanner, FileProcs, LazFileUtils, LazFileCache,
-  DirectoryCacher, Avl_Tree, Laz2_XMLCfg, LazDbgLog;
+  Classes, SysUtils, Laz_Avl_Tree,
+  // Codetools
+  SourceLog, LinkScanner, FileProcs, DirectoryCacher,
+  // LazUtils
+  LazFileUtils, LazFileCache, Laz2_XMLCfg, LazDbgLog;
 
 const
   IncludeLinksFileVersion = 2;
@@ -1169,21 +1172,9 @@ end;
 procedure TCodeCache.ConsistencyCheck;
 // 0 = ok
 var ANode: TAVLTreeNode;
-  {$IF FPC_FULLVERSION<30101}
-  CurResult: LongInt;
-  {$ENDIF}
 begin
-  {$IF FPC_FULLVERSION<30101}
-  CurResult:=FItems.ConsistencyCheck;
-  if CurResult<>0 then
-    RaiseCatchableException(IntToStr(CurResult));
-  CurResult:=FIncludeLinks.ConsistencyCheck;
-  if CurResult<>0 then
-    RaiseCatchableException(IntToStr(CurResult));
-  {$ELSE}
   FItems.ConsistencyCheck;
   FIncludeLinks.ConsistencyCheck;
-  {$ENDIF}
   ANode:=FItems.FindLowest;
   while ANode<>nil do begin
     if ANode.Data=nil then

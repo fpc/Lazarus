@@ -13,7 +13,8 @@ unit LazFileCache;
 interface
 
 uses
-  Classes, SysUtils, LazDbgLog, AVL_Tree, LazFileUtils;
+  Classes, SysUtils, Laz_AVL_Tree,
+  LazDbgLog, LazFileUtils;
 
 type
   TFileStateCacheItemFlag = (

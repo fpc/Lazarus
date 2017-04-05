@@ -18,7 +18,9 @@ unit LazConfigStorage;
 interface
 
 uses
-  Classes, SysUtils, typinfo, AvgLvlTree, LazLogger;
+  Classes, SysUtils, typinfo, Laz_AVL_Tree,
+  // LazUtils
+  LazLogger, AvgLvlTree;
   
 type
   { TConfigStorage }
@@ -93,7 +95,7 @@ type
     Name: string;
     Value: string;
     Parent: TConfigMemStorageNode;
-    Children: TAvgLvlTree; // tree of TConfigMemStorageNode
+    Children: TAvlTree; // tree of TConfigMemStorageNode
     procedure ClearChilds;
     constructor Create(AParent: TConfigMemStorageNode; const AName: string);
     destructor Destroy; override;
@@ -173,7 +175,7 @@ end;
 procedure SaveStringToStringTree(Config: TConfigStorage; const Path: string;
   Tree: TStringToStringTree);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: PStringToStringItem;
   i: Integer;
   SubPath: String;
@@ -709,7 +711,7 @@ end;
 
 procedure TConfigMemStorage.CreateChilds(Node: TConfigMemStorageNode);
 begin
-  Node.Children:=TAvgLvlTree.Create(@CompareConfigMemStorageNodes);
+  Node.Children:=TAvlTree.Create(@CompareConfigMemStorageNodes);
 end;
 
 procedure TConfigMemStorage.Modify(const APath: string;
@@ -718,7 +720,7 @@ var
   Node: TConfigMemStorageNode;
   p: PChar;
   StartPos: PChar;
-  ChildNode: TAvgLvlTreeNode;
+  ChildNode: TAvlTreeNode;
   Child: TConfigMemStorageNode;
   NewName: string;
 begin
@@ -912,7 +914,7 @@ procedure TConfigMemStorage.SaveToConfig(Config: TConfigStorage;
 
   procedure Save(Node: TConfigMemStorageNode; SubPath: string);
   var
-    ChildNode: TAvgLvlTreeNode;
+    ChildNode: TAvlTreeNode;
     Child: TConfigMemStorageNode;
     Names: String;
   begin
@@ -996,7 +998,7 @@ procedure TConfigMemStorage.WriteDebugReport;
 
   procedure w(Node: TConfigMemStorageNode; Prefix: string);
   var
-    AVLNode: TAvgLvlTreeNode;
+    AVLNode: TAvlTreeNode;
   begin
     if Node=nil then exit;
     DebugLn(['TConfigMemStorage.WriteDebugReport ',Prefix,'Name="',Node.Name,'" Value="',Node.Value,'"']);
@@ -1018,7 +1020,7 @@ end;
 
 procedure TConfigMemStorageNode.ClearChilds;
 var
-  OldChilds: TAvgLvlTree;
+  OldChilds: TAvlTree;
 begin
   if Children<>nil then begin
     OldChilds:=Children;

@@ -59,7 +59,7 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, TypInfo, types, strutils, AVL_Tree,
+  Math, Classes, SysUtils, TypInfo, types, strutils, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, LCLIntf, LResources, HelpIntfs, InterfaceBase, LCLPlatformDef,
   ComCtrls, Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls,
@@ -71,7 +71,7 @@ uses
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
-  LConvEncoding, Laz2_XMLCfg, LazLogger,
+  LConvEncoding, Laz2_XMLCfg, LazLogger, AvgLvlTree,
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // IDE interface
@@ -11910,7 +11910,7 @@ var
   AnUnitInfo: TUnitInfo;
   AnIDesigner: TIDesigner;
   HasResources: Boolean;
-  FileItem: PStringToStringTreeItem;
+  FileItem: PStringToStringItem;
 begin
   if FNeedUpdateHighlighters then begin
     {$IFDEF VerboseIdle}

@@ -171,7 +171,7 @@ type
     
   TAutoSizeCtrlData = class
   private
-    FChilds: TAvgLvlTree;// tree of TAutoSizeCtrlData
+    FChilds: TAvlTree;// tree of TAutoSizeCtrlData
     function GetChildren(AControl: TControl): TAutoSizeCtrlData;
     procedure DoMoveNonAlignedChildren(Side: TAnchorKind;
                                    var MoveDiff: integer; FindMinimum: boolean);
@@ -257,12 +257,12 @@ end;
 
 function TAutoSizeCtrlData.GetChildren(AControl: TControl): TAutoSizeCtrlData;
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
 begin
   if AControl=nil then exit(nil);
   if AControl=Control then RaiseGDBException('TAutoSizeCtrlData.GetChilds');
   if FChilds=nil then
-    FChilds:=TAvgLvlTree.Create(@CompareAutoSizeCtrlDatas);
+    FChilds:=TAvlTree.Create(@CompareAutoSizeCtrlDatas);
   AVLNode:=FChilds.FindKey(AControl,@CompareControlWithAutoSizeCtrlData);
   if AVLNode<>nil then
     Result:=TAutoSizeCtrlData(AVLNode.Data)

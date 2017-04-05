@@ -34,7 +34,7 @@ unit AddToProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   Forms, Controls, Buttons, ComCtrls, StdCtrls, Dialogs, ButtonPanel,
   // LazUtils

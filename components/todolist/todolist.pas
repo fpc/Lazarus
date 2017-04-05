@@ -59,14 +59,18 @@ unit TodoList;
 interface
 
 uses
-  // FCL, RTL, LCL
-  Classes, SysUtils, Math, LCLProc, Forms, Controls, Dialogs, StrUtils,
-  ComCtrls, ActnList, AvgLvlTree, LazUTF8Classes, LCLType, ButtonPanel,
-  CodeCache, CodeToolManager, BasicCodeTools, FileProcs, LazFileUtils,
-  LazFileCache, LclIntf, StdCtrls, XMLPropStorage,
+  // FCL, RTL
+  Classes, SysUtils, Math, StrUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
+  ActnList, ButtonPanel, XMLPropStorage,
+  // LazUtils
+  AvgLvlTree, LazUTF8Classes, LazFileUtils, LazFileCache,
+  // Codetools
+  CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
   // IDEIntf
   LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf, IDEUtils,
-  // IDE
+  // ToDoList
   ToDoListStrConsts;
 
 
@@ -178,7 +182,7 @@ type
     FLoadingOptions: boolean;
     fStartFilename: String;
     FOnOpenFile  : TOnOpenFile;
-    fScannedFiles: TAvgLvlTree;// tree of TTLScannedFile
+    fScannedFiles: TAvlTree;// tree of TTLScannedFile
 
     procedure SetIDEItem(AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
@@ -255,7 +259,7 @@ var
   i: integer;
   St : String;
   CurOwner: TObject;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   CurFile: TTLScannedFile;
   Units: TStrings;
   CurProject: TLazProject;
@@ -633,7 +637,7 @@ end;
 procedure TIDETodoWindow.FormCreate(Sender: TObject);
 begin
   fUpdating := False;
-  fScannedFiles := TAvgLvlTree.Create(@CompareTLScannedFiles);
+  fScannedFiles := TAvlTree.Create(@CompareTLScannedFiles);
 
   Caption := lisToDoList;
 
@@ -787,7 +791,7 @@ end;
 procedure TIDETodoWindow.ScanFile(aFileName: string);
 var
   ExpandedFilename: String;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   Tool: TCodeTool;
   Code: TCodeBuffer;
   CurFile: TTLScannedFile;

@@ -25,7 +25,9 @@ unit EasyLazFreeType;
 interface
 
 uses
-  Classes, SysUtils, LazFreeType, TTTypes, TTRASTER, AvgLvlTree, fpimage, Types, lazutf8;
+  Classes, SysUtils, fpimage, Laz_AVL_Tree,
+  // LazUtils                     // Note: Types must be after TTTypes for PByte.
+  LazUTF8, LazFreeType, TTRASTER, TTTypes, Types;
 
 type
   TGlyphRenderQuality = (grqMonochrome, grqLowQuality, grqHighQuality);
@@ -229,7 +231,7 @@ type
     FClearType: boolean;
     FNamesArray: array of string;
     FCollection: TCustomFreeTypeFontCollection;
-    function FindGlyphNode(Index: Integer): TAvgLvlTreeNode;
+    function FindGlyphNode(Index: Integer): TAvlTreeNode;
     function GetCharIndex(AUnicodeChar: integer): integer;
     function GetDPI: integer;
     function GetFamily: string;
@@ -265,7 +267,7 @@ type
     FFaceLoaded: boolean;
     FInstance: TT_Instance;
     FInstanceCreated : boolean;
-    FGlyphTable: TAvgLvlTree;
+    FGlyphTable: TAvlTree;
     FCharMap: TT_CharMap;
     FCharmapOk, FCharmapSymbol: boolean;
     FAscentValue, FDescentValue, FLineGapValue, FLargeLineGapValue, FCapHeight: single;
@@ -920,7 +922,7 @@ begin
     if (a[i] = 'Italic') or (a[i] = 'Oblique') then result += [ftsItalic];
 end;
 
-function TFreeTypeFont.FindGlyphNode(Index: Integer): TAvgLvlTreeNode;
+function TFreeTypeFont.FindGlyphNode(Index: Integer): TAvlTreeNode;
 var DataValue: integer;
 begin
   Result:=FGlyphTable.Root;
@@ -977,8 +979,9 @@ begin
 end;
 
 function TFreeTypeFont.GetGlyph(Index: integer): TFreeTypeGlyph;
-var node: TAvgLvlTreeNode;
-    lGlyph: TFreeTypeGlyph;
+var
+  node: TAvlTreeNode;
+  lGlyph: TFreeTypeGlyph;
 begin
   if not CheckInstance then
   begin
@@ -1433,7 +1436,7 @@ begin
   FCharmapOk := false;
   FPointSize := 10;
   FDPI := 96;
-  FGlyphTable := TAvgLvlTree.Create;
+  FGlyphTable := TAvlTree.Create;
   FHinted := true;
   FWidthFactor := 1;
   FClearType := false;

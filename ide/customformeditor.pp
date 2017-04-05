@@ -38,12 +38,13 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  // LCL+FCL
-  Classes, SysUtils, TypInfo, Math,
+  // RTL+FCL
+  Classes, SysUtils, TypInfo, Math, Laz_AVL_Tree,
+  // LCL
   LCLIntf, LCLType, LCLProc, LResources, LCLMemManager, Controls, Graphics,
   Forms, Menus, Dialogs,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, AvgLvlTree,
+  FileUtil, LazFileUtils, LazFileCache,
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // IDEIntf
@@ -72,20 +73,20 @@ type
     FOnSelectFrame: TSelectFrameEvent;
     FSelection: TPersistentSelectionList;
     FObj_Inspector: TObjectInspectorDlg;
-    FDefineProperties: TAvgLvlTree;// tree of TDefinePropertiesCacheItem
+    FDefineProperties: TAvlTree;// tree of TDefinePropertiesCacheItem
     FStandardDefinePropertiesRegistered: Boolean;
     FDesignerBaseClasses: TFPList; // list of TComponentClass
     FDesignerMediatorClasses: TFPList;// list of TDesignerMediatorClass
     FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
     function GetPropertyEditorHook: TPropertyEditorHook;
     function FindDefinePropertyNode(const APersistentClassName: string
-                                    ): TAvgLvlTreeNode;
+                                    ): TAvlTreeNode;
     procedure FrameCompGetCreationClass(Sender: TObject;
       var NewComponentClass: TComponentClass);
     function OnPropHookGetAncestorInstProp(const InstProp: TInstProp;
                                       out AncestorInstProp: TInstProp): boolean;
   protected
-    FNonFormForms: TAvgLvlTree; // tree of TNonControlDesignerForm sorted for LookupRoot
+    FNonFormForms: TAvlTree; // tree of TNonControlDesignerForm sorted for LookupRoot
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
@@ -109,7 +110,7 @@ type
     function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; override;
     procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); override;
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
-    function FindNonFormFormNode(LookupRoot: TComponent): TAvgLvlTreeNode;
+    function FindNonFormFormNode(LookupRoot: TComponent): TAvlTreeNode;
 
     //because we only meet ObjInspectore here, not in abstract ancestor
     procedure DoOnNodeGetImageIndex(APersistent: TPersistent; var AImageIndex: integer); virtual;
@@ -454,7 +455,7 @@ var
   l: Integer;
 begin
   inherited Create;
-  FNonFormForms := TAvgLvlTree.Create(@CompareNonFormDesignerForms);
+  FNonFormForms := TAvlTree.Create(@CompareNonFormDesignerForms);
   FSelection := TPersistentSelectionList.Create;
   FDesignerBaseClasses:=TFPList.Create;
   FDesignerMediatorClasses:=TFPList.Create;
@@ -809,7 +810,7 @@ end;
 
 function TCustomFormEditor.FindNonFormForm(LookupRoot: TComponent): TNonFormProxyDesignerForm;
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
 begin
   AVLNode := FindNonFormFormNode(LookupRoot);
   if AVLNode <> nil then
@@ -1739,7 +1740,7 @@ var
   APersistent: TPersistent;
   CacheItem: TDefinePropertiesCacheItem;
   DefinePropertiesReader: TDefinePropertiesReader;
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   OldClassName: String;
   DefinePropertiesPersistent: TDefinePropertiesPersistent;
 
@@ -1897,7 +1898,7 @@ end;
 procedure TCustomFormEditor.RegisterDefineProperty(const APersistentClassName,
   Identifier: string);
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   CacheItem: TDefinePropertiesCacheItem;
 begin
   //DebugLn('TCustomFormEditor.RegisterDefineProperty ',APersistentClassName,' ',Identifier);
@@ -2080,7 +2081,7 @@ begin
   end;
 end;
 
-function TCustomFormEditor.FindNonFormFormNode(LookupRoot: TComponent): TAvgLvlTreeNode;
+function TCustomFormEditor.FindNonFormFormNode(LookupRoot: TComponent): TAvlTreeNode;
 begin
   Result := FNonFormForms.FindKey(Pointer(LookupRoot),
                                    @CompareLookupRootAndNonFormDesignerForm);
@@ -2245,11 +2246,10 @@ begin
 end;
 
 function TCustomFormEditor.FindDefinePropertyNode(
-  const APersistentClassName: string): TAvgLvlTreeNode;
+  const APersistentClassName: string): TAvlTreeNode;
 begin
   if FDefineProperties=nil then
-    FDefineProperties:=
-                   TAvgLvlTree.Create(TListSortCompare(@CompareDefPropCacheItems));
+    FDefineProperties:=TAvlTree.Create(TListSortCompare(@CompareDefPropCacheItems));
   Result:=FDefineProperties.FindKey(PChar(APersistentClassName),
                     TListSortCompare(@ComparePersClassNameAndDefPropCacheItem));
 end;

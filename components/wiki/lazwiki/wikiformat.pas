@@ -27,9 +27,13 @@ unit WikiFormat;
 interface
 
 uses
-  Classes, SysUtils, WikiParser, WikiStrConsts, laz2_XMLRead, LazFileUtils,
-  laz2_DOM, LazLogger, LazUTF8, AvgLvlTree, KeywordFuncLists, CodeToolsStructs,
-  BasicCodeTools;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils, laz2_XMLRead, laz2_DOM, LazLogger, LazUTF8, AvgLvlTree,
+  // Codetools
+  BasicCodeTools, KeywordFuncLists,
+  // LazWiki
+  WikiParser, WikiStrConsts;
 
 type
   TWiki2FormatConverter = class;
@@ -70,8 +74,8 @@ type
     FImagesDir: string;
     FOutputDir: string;
     fPages: TFPList; // list of TW2FormatPage
-    fPagesSortFilename: TAvgLvlTree; // TW2FormatPage sorted for WikiFilename
-    fPagesSortDocumentName: TAvgLvlTree; // TW2FormatPage sorted for WikiDocumentName
+    fPagesSortFilename: TAvlTree; // TW2FormatPage sorted for WikiFilename
+    fPagesSortDocumentName: TAvlTree; // TW2FormatPage sorted for WikiDocumentName
     FPageClass: TW2FormatPageClass;
     function GetPages(Index: integer): TW2FormatPage;
     procedure SetOutputDir(AValue: string);
@@ -164,8 +168,8 @@ constructor TWiki2FormatConverter.Create;
 begin
   FPageClass:=TW2FormatPage;
   fPages:=TFPList.Create;
-  fPagesSortFilename:=TAvgLvlTree.Create(@ComparePagesWithFilenames);
-  fPagesSortDocumentName:=TAvgLvlTree.Create(@ComparePagesWithDocumentNames);
+  fPagesSortFilename:=TAvlTree.Create(@ComparePagesWithFilenames);
+  fPagesSortDocumentName:=TAvlTree.Create(@ComparePagesWithDocumentNames);
   FTitle:='FPC/Lazarus Wiki (offline, generated '+DatetoStr(Now)+')';
   FImagesDir:='images';
   FNoWarnBaseURLs:=TStringToStringTree.Create(true);
@@ -193,10 +197,9 @@ begin
   FNoWarnBaseURLs.Clear;
 end;
 
-function TWiki2FormatConverter.GetPageWithFilename(Filename: string
-  ): TW2FormatPage;
+function TWiki2FormatConverter.GetPageWithFilename(Filename: string): TW2FormatPage;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   if Filename='' then exit(nil);
   Node:=fPagesSortFilename.FindKey(Pointer(Filename),@CompareFilenameWithPage);
@@ -209,7 +212,7 @@ end;
 function TWiki2FormatConverter.GetPageWithDocumentName(DocumentName: string
   ): TW2FormatPage;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   if DocumentName='' then exit(nil);
   Node:=fPagesSortDocumentName.FindKey(Pointer(DocumentName),@CompareDocumentNameWithPage);
@@ -291,7 +294,7 @@ end;
 procedure TWiki2FormatConverter.GetPageTranslations(DocumentName: string; out
   LangToPage: TStringToPointerTree);
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   Page: TW2FormatPage;
 begin
   LangToPage:=TStringToPointerTree.Create(false);

@@ -35,10 +35,10 @@ uses
   // RTL
   Classes, SysUtils, strutils, math,
   // CodeTools
-  KeywordFuncLists, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, FileProcs,
+  KeywordFuncLists, CodeToolsFPCMsgs, {CodeToolsStructs,} CodeCache, FileProcs,
   CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog,
   // LazUtils
-  LConvEncoding, LazUTF8, FileUtil, LazFileUtils,
+  LConvEncoding, LazUTF8, FileUtil, LazFileUtils, AvgLvlTree,
   // IDEIntf
   IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, MacroIntf,
   IDEUtils, LazFileCache,

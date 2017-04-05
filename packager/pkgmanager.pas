@@ -51,9 +51,9 @@ uses
   LCLProc, Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
   // LazUtils
   LazUTF8, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache, StringHashList,
-  Translations,
+  Translations, AvgLvlTree,
   // Codetools
-  CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
+  CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,
   FileProcs, CodeTree,
   // IDE Interface
   NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, PackageLinkIntf,
@@ -2123,7 +2123,7 @@ var
 
   function CheckNewFilesDoNotExist: boolean;
   var
-    S2SItem: PStringToStringTreeItem;
+    S2SItem: PStringToStringItem;
     OldFilename: String;
     NewFilename: String;
     ConflictFile: TIDEOwnedFile;
@@ -2256,7 +2256,7 @@ var
     OutFilename: String;
     CurUnitName: String;
     Ext: String;
-    S2SItem: PStringToStringTreeItem;
+    S2SItem: PStringToStringItem;
     OldFilename: String;
     SeparateOutDir: Boolean;
     r: TModalResult;

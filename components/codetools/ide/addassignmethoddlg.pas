@@ -30,8 +30,12 @@ unit AddAssignMethodDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, ButtonPanel, StdCtrls, ComCtrls, Menus, AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LResources, Forms, Controls, Graphics,
+  Dialogs, ButtonPanel, StdCtrls, ComCtrls, Menus,
+  // LazUtils
+  FileUtil,
   // Codetools
   CodeCache, CodeToolManager, FileProcs, PascalParserTool,
   BasicCodeTools, CodeTree, FindDeclarationTool,

@@ -29,12 +29,13 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Types, Classes, Math,
-  AvgLvlTree, LazUTF8, LazUTF8Classes,
-  LCLStrConsts, LResources, LCLIntf, LCLType,
-  FileUtil, LMessages, ImgList, ActnList, GraphType,
-  Themes, WSLCLClasses, LCLClasses, LCLProc,
-  Graphics, Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons;
+  SysUtils, Types, Classes, Math, Laz_AVL_Tree,
+  // LazUtils
+  LazUTF8, LazUTF8Classes,
+  // LCL
+  LCLStrConsts, LResources, LCLIntf, LCLType, LMessages, WSLCLClasses, LCLProc,
+  GraphType, Graphics, ImgList, ActnList, Themes, Menus, Controls, Forms,
+  StdCtrls, ExtCtrls, ToolWin, Buttons;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
@@ -3720,7 +3721,7 @@ type
     function DefaultGetNodeText(Node: TTreeNode): string;
   public
     NodeText: string;
-    Children: TAvgLvlTree;
+    Children: TAvlTree;
     constructor Create(FirstTreeNode: TTreeNode; const GetNodeTextEvent: TTVGetNodeText = nil);
     constructor Create(TreeView: TCustomTreeView; const GetNodeTextEvent: TTVGetNodeText = nil);
     destructor Destroy; override;

@@ -37,10 +37,17 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, ComCtrls, LCLType,
-  LCLIntf, LazUTF8, AvgLvlTree, LazFileUtils, Menus, strutils, IDEOptionDefs,
-  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEProcs, Project,
-  MainIntf, Clipbrd, ActnList, IDECommands, TreeFilterEdit;
+  Classes, SysUtils, strutils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, LCLType, LCLIntf, Forms, Controls, Graphics, ComCtrls, Menus, Clipbrd,
+  ActnList,
+  // LazControls
+  TreeFilterEdit,
+  // LazUtils
+  LazUTF8, LazFileUtils,
+  // IDE
+  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEProcs,
+  Project, MainIntf, IDECommands;
 
 
 type
@@ -100,7 +107,7 @@ type
     fUpdateCount: integer;
     FSearchInListPhrases: string;
     fFiltered: Boolean;
-    fFilenameToNode: TAvgLvlTree; // TTreeNode sorted for Text
+    fFilenameToNode: TAvlTree; // TTreeNode sorted for Text
     procedure SetSkipped(const AValue: integer);
     procedure AddNode(Line: string; MatchPos: TLazSearchMatchPos);
   public
@@ -1051,7 +1058,7 @@ procedure TLazSearchResultTV.AddNode(Line: string; MatchPos: TLazSearchMatchPos)
 var
   Node: TTreeNode;
   ChildNode: TTreeNode;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
 begin
   if MatchPos=nil then exit;
   AVLNode:=fFilenameToNode.FindKey(PChar(MatchPos.FileName),@CompareFilenameWithTVNode);
@@ -1085,7 +1092,7 @@ begin
   fUpdateStrings:= TStringList.Create;
   FSearchInListPhrases := '';
   fFiltered := False;
-  fFilenameToNode:=TAvgLvlTree.Create(@CompareTVNodeTextAsFilename);
+  fFilenameToNode:=TAvlTree.Create(@CompareTVNodeTextAsFilename);
 end;//Create
 
 Destructor TLazSearchResultTV.Destroy;

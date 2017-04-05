@@ -32,9 +32,12 @@ unit CodeToolsStructs;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, LazFileUtils, LazUtilities, LazDbgLog,
-  AVL_Tree, BasicCodeTools;
-  
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  LazUtilities, LazDbgLog, AvgLvlTree,
+  // Codetools
+  BasicCodeTools;
+
 type
   TResourcestringInsertPolicy = (
     rsipNone,          // do not add/insert
@@ -110,150 +113,13 @@ type
     property Items[Key: Pointer]: Pointer read GetItems write SetItems; default;
   end;
 
-  TStringMap = class;
+  { TIdentStringToStringTree }
 
-  TStringMapItem = record
-    Name: string;
-  end;
-  PStringMapItem = ^TStringMapItem;
-
-  { TStringMapEnumerator }
-
-  TStringMapEnumerator = class
-  protected
-    FTree: TAVLTree;
-    FCurrent: TAVLTreeNode;
-  public
-    constructor Create(Tree: TAVLTree);
-    function MoveNext: boolean;
-    // "Current" is implemented by the descendant classes
-  end;
-
-  { TStringMap }
-
-  TStringMap = class
+  TIdentStringToStringTree = class(TStringToStringTree)
   private
-    FCompareKeyItemFunc: TListSortCompare;
-    FTree: TAVLTree;// tree of PStringMapItem
-    FCaseSensitive: boolean;
-    function GetCompareItemsFunc: TListSortCompare;
   protected
-    procedure DisposeItem(p: PStringMapItem); virtual;
-    function ItemsAreEqual(p1, p2: PStringMapItem): boolean; virtual;
-    function CreateCopy(Src: PStringMapItem): PStringMapItem; virtual;
   public
-    constructor Create(TheCaseSensitive: boolean);
-    destructor Destroy; override;
-    procedure Clear; virtual;
-    function Contains(const s: string): boolean;
-    function ContainsIdentifier(P: PChar): boolean;
     function FindNodeWithIdentifierAsPrefix(P: PChar): TAVLTreeNode;
-    procedure GetNames(List: TStrings);
-    procedure Remove(const Name: string); virtual;
-    property CaseSensitive: boolean read FCaseSensitive;
-    property Tree: TAVLTree read FTree; // tree of PStringMapItem
-    function GetNodeData(AVLNode: TAVLTreeNode): PStringMapItem; inline;
-    function Count: integer;
-    function FindNode(const s: string): TAVLTreeNode;
-    function Equals(OtherTree: TStringMap): boolean; reintroduce;
-    procedure Assign(Source: TStringMap); virtual;
-    procedure WriteDebugReport; virtual;
-    function CalcMemSize: PtrUint; virtual;
-    property CompareItemsFunc: TListSortCompare read GetCompareItemsFunc;
-    property CompareKeyItemFunc: TListSortCompare read FCompareKeyItemFunc;
-    procedure SetCompareFuncs(
-            const NewCompareItemsFunc, NewCompareKeyItemFunc: TListSortCompare);
-  end;
-
-  TStringToStringTreeItem = record
-    Name: string;
-    Value: string;
-  end;
-  PStringToStringTreeItem = ^TStringToStringTreeItem;
-
-  TStringToStringTree = class;
-
-  { TStringToStringTreeEnumerator }
-
-  TStringToStringTreeEnumerator = class(TStringMapEnumerator)
-  private
-    function GetCurrent: PStringToStringTreeItem;
-  public
-    property Current: PStringToStringTreeItem read GetCurrent;
-  end;
-
-  { TStringToStringTree }
-
-  TStringToStringTree = class(TStringMap)
-  private
-    function GetStrings(const s: string): string;
-    procedure SetStrings(const s: string; const AValue: string);
-  protected
-    procedure DisposeItem(p: PStringMapItem); override;
-    function ItemsAreEqual(p1, p2: PStringMapItem): boolean; override;
-    function CreateCopy(Src: PStringMapItem): PStringMapItem; override;
-  public
-    function GetString(const Name: string; out Value: string): boolean;
-    procedure Add(const Name, Value: string); virtual;
-    procedure AddNames(List: TStrings);
-    property Strings[const s: string]: string read GetStrings write SetStrings; default;
-    function GetNodeData(AVLNode: TAVLTreeNode): PStringToStringTreeItem; inline;
-    function AsText: string;
-    procedure WriteDebugReport; override;
-    function CalcMemSize: PtrUint; override;
-    function GetEnumerator: TStringToStringTreeEnumerator;
-  end;
-
-  TStringToPointerTree = class;
-
-  TStringToPointerTreeItem = record
-    Name: string;
-    Value: Pointer;
-  end;
-  PStringToPointerTreeItem = ^TStringToPointerTreeItem;
-
-  { TStringToPointerTreeEnumerator }
-
-  TStringToPointerTreeEnumerator = class(TStringMapEnumerator)
-  private
-    function GetCurrent: PStringToPointerTreeItem;
-  public
-    property Current: PStringToPointerTreeItem read GetCurrent;
-  end;
-
-  { TStringToPointerTree - Tree contains PStringToPointerTreeItem }
-
-  TStringToPointerTree = class(TStringMap)
-  private
-    FFreeValues: boolean;
-    function GetItems(const s: string): Pointer;
-    procedure SetItems(const s: string; AValue: Pointer);
-  protected
-    procedure DisposeItem(p: PStringMapItem); override;
-    function ItemsAreEqual(p1, p2: PStringMapItem): boolean; override;
-    function CreateCopy(Src: PStringMapItem): PStringMapItem; override;
-  public
-    function GetItem(const Name: string; out Value: Pointer): boolean;
-    procedure Add(const Name: string; const Value: Pointer); virtual;
-    property Items[const s: string]: Pointer read GetItems write SetItems; default;
-    function GetNodeData(AVLNode: TAVLTreeNode): PStringToPointerTreeItem; inline;
-    procedure Assign(Source: TStringMap); override;
-    function GetEnumerator: TStringToPointerTreeEnumerator;
-    property FreeValues: boolean read FFreeValues write FFreeValues;
-  end;
-
-  { TFilenameToStringTree }
-
-  TFilenameToStringTree = class(TStringToStringTree)
-  public
-    constructor Create(CaseInsensitive: boolean); // false = system default
-  end;
-
-  { TFilenameToPointerTree }
-
-  TFilenameToPointerTree = class(TStringToPointerTree)
-  public
-    constructor Create(CaseInsensitive: boolean); // false = system default
   end;
 
   TStringTree = class;
@@ -308,30 +174,27 @@ function ComparePointerToPointerItems(Data1, Data2: Pointer): integer;
 function ComparePointerAndP2PItem(Key, Data: Pointer): integer;
 
 // case sensitive
-function CompareStringToStringItems(Data1, Data2: Pointer): integer;
-function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
-function CompareIdentifierAndStringToStringTreeItem(Identifier, Data: Pointer): integer;
+//function CompareStringToStringItems(Data1, Data2: Pointer): integer;
+//function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
+//function CompareIdentifierAndStringToStringTreeItem(Identifier, Data: Pointer): integer;
 function CompareIdentifierPrefixAndStringToStringTreeItem(Identifier, Data: Pointer): integer;
 
 // case insensitive
-function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
-function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
-function CompareIdentifierAndStringToStringTreeItemI(Identifier, Data: Pointer): integer;
+//function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
+//function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
+//function CompareIdentifierAndStringToStringTreeItemI(Identifier, Data: Pointer): integer;
 function CompareIdentifierPrefixAndStringToStringTreeItemI(Identifier, Data: Pointer): integer;
 
-function CompareFilenameToStringItems(Data1, Data2: Pointer): integer;
-function CompareFilenameAndFilenameToStringTreeItem(Key, Data: Pointer): integer;
+//function CompareFilenameToStringItems(Data1, Data2: Pointer): integer;
+//function CompareFilenameAndFilenameToStringTreeItem(Key, Data: Pointer): integer;
 
-function CompareFilenameToStringItemsI(Data1, Data2: Pointer): integer;
-function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer): integer;
+//function CompareFilenameToStringItemsI(Data1, Data2: Pointer): integer;
+//function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer): integer;
 
 function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 
-{$IF FPC_FULLVERSION<20601}
-  {$DEFINE EnableAVLFindPointerFix}
-{$ENDIF}
-function AVLFindPointer(Tree: TAVLTree; Data: Pointer): TAVLTreeNode; {$IFNDEF EnableAVLFindPointerFix}inline;{$ENDIF}
-procedure AVLRemovePointer(Tree: TAVLTree; Data: Pointer); {$IFNDEF EnableAVLFindPointerFix}inline;{$ENDIF}
+function AVLFindPointer(Tree: TAVLTree; Data: Pointer): TAVLTreeNode; inline;
+procedure AVLRemovePointer(Tree: TAVLTree; Data: Pointer); inline;
 
 implementation
 
@@ -349,7 +212,7 @@ var
 begin
   Result:=ComparePointers(Key,P2PItem^.Key);
 end;
-
+{
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
 begin
   Result:=CompareStr(PStringToStringTreeItem(Data1)^.Name,
@@ -393,16 +256,15 @@ begin
       Result:=-1;
   end;
 end;
-
-function CompareIdentifierPrefixAndStringToStringTreeItem(Identifier,
-  Data: Pointer): integer;
+}
+function CompareIdentifierPrefixAndStringToStringTreeItem(Identifier, Data: Pointer): integer;
 var
   Id: PChar absolute Identifier;
-  Item: PStringToStringTreeItem absolute Data;
+  Item: PStringToStringItem absolute Data;
 begin
   Result:=-CompareIdentifiersCaseSensitive(Id,PChar(Item^.Name));
 end;
-
+{
 function CompareStringAndStringToStringTreeItemI(Key, Data: Pointer): integer;
 begin
   Result:=CompareText(String(Key),PStringToStringTreeItem(Data)^.Name);
@@ -428,18 +290,16 @@ begin
       Result:=-1;
   end;
 end;
-
-function CompareIdentifierPrefixAndStringToStringTreeItemI(Identifier,
-  Data: Pointer): integer;
+}
+function CompareIdentifierPrefixAndStringToStringTreeItemI(Identifier, Data: Pointer): integer;
 var
   Id: PChar absolute Identifier;
-  Item: PStringToStringTreeItem absolute Data;
+  Item: PStringToStringItem absolute Data;
 begin
   Result:=-CompareIdentifiers(Id,PChar(Item^.Name));
 end;
-
-function CompareFilenameAndFilenameToStringTreeItem(Key, Data: Pointer
-  ): integer;
+{
+function CompareFilenameAndFilenameToStringTreeItem(Key, Data: Pointer): integer;
 begin
   Result:=CompareFilenames(String(Key),PStringToStringTreeItem(Data)^.Name);
 end;
@@ -450,13 +310,12 @@ begin
                                      PStringToStringTreeItem(Data2)^.Name);
 end;
 
-function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer
-  ): integer;
+function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer): integer;
 begin
   Result:=CompareFilenamesIgnoreCase(String(Key),
                                      PStringToStringTreeItem(Data)^.Name);
 end;
-
+}
 function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 begin
   Result:=CompareStr(AnsiString(Data1),AnsiString(Data2));
@@ -464,32 +323,12 @@ end;
 
 function AVLFindPointer(Tree: TAVLTree; Data: Pointer): TAVLTreeNode;
 begin
-  {$IFDEF EnableAVLFindPointerFix}
-  Result:=Tree.FindLeftMost(Data);
-  while (Result<>nil) do begin
-    if Result.Data=Data then break;
-    Result:=Tree.FindSuccessor(Result);
-    if Result=nil then exit;
-    if Tree.OnCompare(Data,Result.Data)<>0 then exit(nil);
-  end;
-  {$ELSE}
   Result:=Tree.FindPointer(Data);
-  {$ENDIF}
 end;
 
 procedure AVLRemovePointer(Tree: TAVLTree; Data: Pointer);
-{$IFDEF EnableAVLFindPointerFix}
-var
-  Node: TAVLTreeNode;
-{$ENDIF}
 begin
-  {$IFDEF EnableAVLFindPointerFix}
-  Node:=AVLFindPointer(Tree,Data);
-  if Node<>nil then
-    Tree.Delete(Node);
-  {$ELSE}
   Tree.RemovePointer(Data);
-  {$ENDIF}
 end;
 
 { TPointerToPointerTree }
@@ -568,8 +407,7 @@ begin
   end;
 end;
 
-function TPointerToPointerTree.GetNodeData(AVLNode: TAVLTreeNode
-  ): PPointerToPointerItem;
+function TPointerToPointerTree.GetNodeData(AVLNode: TAVLTreeNode): PPointerToPointerItem;
 begin
   Result:=PPointerToPointerItem(AVLNode.Data);
 end;
@@ -616,349 +454,14 @@ begin
   Result:=TAVLTreeNode.Create;
 end;
 
-{ TFilenameToPointerTree }
+{ TIdentStringToStringTree }
 
-constructor TFilenameToPointerTree.Create(CaseInsensitive: boolean);
-begin
-  inherited Create(true);
-  if CaseInsensitive then
-    SetCompareFuncs(@CompareFilenameToStringItemsI,
-                    @CompareFilenameAndFilenameToStringTreeItemI)
-  else
-    SetCompareFuncs(@CompareFilenameToStringItems,
-                    @CompareFilenameAndFilenameToStringTreeItem);
-end;
-
-{ TStringToPointerTree }
-
-function TStringToPointerTree.GetItems(const s: string): Pointer;
-var
-  Node: TAVLTreeNode;
-begin
-  Node:=FindNode(s);
-  if Node<>nil then
-    Result:=PStringToPointerTreeItem(Node.Data)^.Value
-  else
-    Result:=nil;
-end;
-
-procedure TStringToPointerTree.SetItems(const s: string; AValue: Pointer);
-var
-  Node: TAVLTreeNode;
-  NewItem: PStringToPointerTreeItem;
-begin
-  Node:=FindNode(s);
-  if Node<>nil then begin
-    NewItem:=PStringToPointerTreeItem(Node.Data);
-    if FreeValues then
-      TObject(NewItem^.Value).Free;
-    NewItem^.Value:=AValue;
-  end else begin
-    New(NewItem);
-    NewItem^.Name:=s;
-    NewItem^.Value:=AValue;
-    FTree.Add(NewItem);
-  end;
-end;
-
-procedure TStringToPointerTree.DisposeItem(p: PStringMapItem);
-var
-  Item: PStringToPointerTreeItem absolute p;
-begin
-  if FreeValues then
-    TObject(Item^.Value).Free;
-  Dispose(Item);
-end;
-
-function TStringToPointerTree.ItemsAreEqual(p1, p2: PStringMapItem): boolean;
-var
-  Item1: PStringToPointerTreeItem absolute p1;
-  Item2: PStringToPointerTreeItem absolute p2;
-begin
-  Result:=(Item1^.Name=Item2^.Name)
-      and (Item1^.Value=Item2^.Value);
-end;
-
-function TStringToPointerTree.CreateCopy(Src: PStringMapItem): PStringMapItem;
-var
-  SrcItem: PStringToPointerTreeItem absolute Src;
-  NewItem: PStringToPointerTreeItem;
-begin
-  New(NewItem);
-  NewItem^.Name:=SrcItem^.Name;
-  NewItem^.Value:=SrcItem^.Value;
-  Result:=PStringMapItem(NewItem);
-end;
-
-function TStringToPointerTree.GetItem(const Name: string; out Value: Pointer
-  ): boolean;
-var
-  Node: TAVLTreeNode;
-begin
-  Node:=FindNode(Name);
-  if Node<>nil then begin
-    Value:=PStringToPointerTreeItem(Node.Data)^.Value;
-    Result:=true;
-  end else begin
-    Result:=false;
-  end;
-end;
-
-procedure TStringToPointerTree.Add(const Name: string; const Value: Pointer);
-begin
-  Items[Name]:=Value;
-end;
-
-function TStringToPointerTree.GetNodeData(AVLNode: TAVLTreeNode
-  ): PStringToPointerTreeItem;
-begin
-  Result:=PStringToPointerTreeItem(AVLNode.Data);
-end;
-
-procedure TStringToPointerTree.Assign(Source: TStringMap);
-var
-  Node: TAVLTreeNode;
-  Item: PStringToPointerTreeItem;
-begin
-  if (Source=nil) or (Source.ClassType<>ClassType) then
-    raise Exception.Create('invalid class');
-  Clear;
-  Node:=Source.Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToPointerTreeItem(Node.Data);
-    Items[Item^.Name]:=Item^.Value;
-    Node:=Source.Tree.FindSuccessor(Node);
-  end;
-end;
-
-function TStringToPointerTree.GetEnumerator: TStringToPointerTreeEnumerator;
-begin
-  Result:=TStringToPointerTreeEnumerator.Create(FTree);
-end;
-
-{ TStringMapEnumerator }
-
-constructor TStringMapEnumerator.Create(Tree: TAVLTree);
-begin
-  FTree:=Tree;
-end;
-
-function TStringMapEnumerator.MoveNext: boolean;
-begin
-  if FCurrent=nil then
-    FCurrent:=FTree.FindLowest
-  else
-    FCurrent:=FTree.FindSuccessor(FCurrent);
-  Result:=FCurrent<>nil;
-end;
-
-{ TStringToPointerTreeEnumerator }
-
-function TStringToPointerTreeEnumerator.GetCurrent: PStringToPointerTreeItem;
-begin
-  Result:=PStringToPointerTreeItem(FCurrent.Data);
-end;
-
-{ TStringMap }
-
-function TStringMap.GetCompareItemsFunc: TListSortCompare;
-begin
-  Result:=Tree.OnCompare;
-end;
-
-function TStringMap.FindNode(const s: string): TAVLTreeNode;
-begin
-  Result:=FTree.FindKey(Pointer(s),FCompareKeyItemFunc);
-end;
-
-procedure TStringMap.DisposeItem(p: PStringMapItem);
-begin
-  Dispose(p);
-end;
-
-function TStringMap.ItemsAreEqual(p1, p2: PStringMapItem): boolean;
-begin
-  Result:=p1^.Name=p2^.Name;
-end;
-
-function TStringMap.CreateCopy(Src: PStringMapItem): PStringMapItem;
-begin
-  New(Result);
-  Result^.Name:=Src^.Name;
-end;
-
-constructor TStringMap.Create(TheCaseSensitive: boolean);
-begin
-  FCaseSensitive:=TheCaseSensitive;
-  if CaseSensitive then begin
-    FCompareKeyItemFunc:=@CompareStringAndStringToStringTreeItem;
-    FTree:=TMTAVLTree.Create(@CompareStringToStringItems);
-  end else begin
-    FCompareKeyItemFunc:=@CompareStringAndStringToStringTreeItemI;
-    FTree:=TMTAVLTree.Create(@CompareStringToStringItemsI);
-  end;
-end;
-
-destructor TStringMap.Destroy;
-begin
-  Clear;
-  FTree.Free;
-  FTree:=nil;
-  inherited Destroy;
-end;
-
-procedure TStringMap.Clear;
-var
-  Node: TAVLTreeNode;
-begin
-  Node:=FTree.FindLowest;
-  while Node<>nil do begin
-    DisposeItem(PStringMapItem(Node.Data));
-    Node:=FTree.FindSuccessor(Node);
-  end;
-  FTree.Clear;
-end;
-
-function TStringMap.Contains(const s: string): boolean;
-begin
-  Result:=FindNode(s)<>nil;
-end;
-
-function TStringMap.ContainsIdentifier(P: PChar): boolean;
+function TIdentStringToStringTree.FindNodeWithIdentifierAsPrefix(P: PChar): TAVLTreeNode;
 begin
   if CaseSensitive then
-    Result:=FTree.FindKey(p,@CompareIdentifierAndStringToStringTreeItem)<>nil
+    Result:=Tree.FindKey(p,@CompareIdentifierPrefixAndStringToStringTreeItem)
   else
-    Result:=FTree.FindKey(p,@CompareIdentifierAndStringToStringTreeItemI)<>nil;
-end;
-
-function TStringMap.FindNodeWithIdentifierAsPrefix(P: PChar): TAVLTreeNode;
-begin
-  if CaseSensitive then
-    Result:=FTree.FindKey(p,@CompareIdentifierPrefixAndStringToStringTreeItem)
-  else
-    Result:=FTree.FindKey(p,@CompareIdentifierPrefixAndStringToStringTreeItemI);
-end;
-
-procedure TStringMap.GetNames(List: TStrings);
-var
-  Node: TAVLTreeNode;
-  Item: PStringMapItem;
-begin
-  Node:=Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringMapItem(Node.Data);
-    List.Add(Item^.Name);
-    Node:=Tree.FindSuccessor(Node);
-  end;
-end;
-
-procedure TStringMap.Remove(const Name: string);
-var
-  Node: TAVLTreeNode;
-  Item: PStringMapItem;
-begin
-  Node:=FindNode(Name);
-  if Node<>nil then begin
-    Item:=PStringMapItem(Node.Data);
-    FTree.Delete(Node);
-    DisposeItem(Item);
-  end;
-end;
-
-function TStringMap.GetNodeData(AVLNode: TAVLTreeNode): PStringMapItem;
-begin
-  Result:=PStringMapItem(AVLNode.Data);
-end;
-
-function TStringMap.Count: integer;
-begin
-  Result:=Tree.Count;
-end;
-
-function TStringMap.Equals(OtherTree: TStringMap): boolean;
-var
-  Node: TAVLTreeNode;
-  OtherNode: TAVLTreeNode;
-  OtherItem: PStringMapItem;
-  Item: PStringMapItem;
-begin
-  Result:=false;
-  if (OtherTree=nil) or (OtherTree.ClassType<>ClassType) then exit;
-  if Tree.Count<>OtherTree.Tree.Count then exit;
-  Node:=Tree.FindLowest;
-  OtherNode:=OtherTree.Tree.FindLowest;
-  while Node<>nil do begin
-    if OtherNode=nil then exit;
-    Item:=PStringMapItem(Node.Data);
-    OtherItem:=PStringMapItem(OtherNode.Data);
-    if not ItemsAreEqual(Item,OtherItem) then exit;
-    OtherNode:=OtherTree.Tree.FindSuccessor(OtherNode);
-    Node:=Tree.FindSuccessor(Node);
-  end;
-  if OtherNode<>nil then exit;
-  Result:=true;
-end;
-
-procedure TStringMap.Assign(Source: TStringMap);
-var
-  SrcNode: TAVLTreeNode;
-  SrcItem: PStringMapItem;
-begin
-  if (Source=nil) or (Source.ClassType<>ClassType) then
-    raise Exception.Create('invalid class');
-  Clear;
-  SrcNode:=Source.Tree.FindLowest;
-  while SrcNode<>nil do begin
-    SrcItem:=PStringMapItem(SrcNode.Data);
-    Tree.Add(CreateCopy(SrcItem));
-    SrcNode:=Source.Tree.FindSuccessor(SrcNode);
-  end;
-end;
-
-procedure TStringMap.WriteDebugReport;
-var
-  Node: TAVLTreeNode;
-  Item: PStringMapItem;
-begin
-  DebugLn(['TStringMap.WriteDebugReport ',Tree.Count]);
-  Node:=Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringMapItem(Node.Data);
-    DebugLn([Item^.Name]);
-    Node:=Tree.FindSuccessor(Node);
-  end;
-end;
-
-function TStringMap.CalcMemSize: PtrUint;
-var
-  Node: TAVLTreeNode;
-  Item: PStringMapItem;
-begin
-  Result:=PtrUInt(InstanceSize)
-    +PtrUInt(FTree.InstanceSize)
-    +PtrUint(FTree.Count)*SizeOf(TAVLTreeNode);
-  Node:=FTree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringMapItem(Node.Data);
-    inc(Result,MemSizeString(Item^.Name)
-       +SizeOf(TStringMapItem));
-    Node:=FTree.FindSuccessor(Node);
-  end;
-end;
-
-procedure TStringMap.SetCompareFuncs(const NewCompareItemsFunc,
-  NewCompareKeyItemFunc: TListSortCompare);
-begin
-  FCompareKeyItemFunc:=NewCompareKeyItemFunc;
-  Tree.OnCompare:=NewCompareItemsFunc;
-end;
-
-{ TStringToStringTreeEnumerator }
-
-function TStringToStringTreeEnumerator.GetCurrent: PStringToStringTreeItem;
-begin
-  Result:=PStringToStringTreeItem(FCurrent.Data);
+    Result:=Tree.FindKey(p,@CompareIdentifierPrefixAndStringToStringTreeItemI);
 end;
 
 { TStringTreeEnumerator }
@@ -980,164 +483,6 @@ begin
   else
     FCurrent:=FTree.Tree.FindSuccessor(FCurrent);
   Result:=FCurrent<>nil;
-end;
-
-{ TStringToStringTree }
-
-function TStringToStringTree.GetStrings(const s: string): string;
-var
-  Node: TAVLTreeNode;
-begin
-  Node:=FindNode(s);
-  if Node<>nil then
-    Result:=PStringToStringTreeItem(Node.Data)^.Value
-  else
-    Result:='';
-end;
-
-procedure TStringToStringTree.SetStrings(const s: string; const AValue: string);
-var
-  Node: TAVLTreeNode;
-  NewItem: PStringToStringTreeItem;
-begin
-  Node:=FindNode(s);
-  if Node<>nil then begin
-    PStringToStringTreeItem(Node.Data)^.Value:=AValue;
-  end else begin
-    New(NewItem);
-    NewItem^.Name:=s;
-    NewItem^.Value:=AValue;
-    FTree.Add(NewItem);
-  end;
-end;
-
-procedure TStringToStringTree.DisposeItem(p: PStringMapItem);
-var
-  Item: PStringToStringTreeItem absolute p;
-begin
-  Dispose(Item);
-end;
-
-function TStringToStringTree.ItemsAreEqual(p1, p2: PStringMapItem): boolean;
-var
-  Item1: PStringToStringTreeItem absolute p1;
-  Item2: PStringToStringTreeItem absolute p2;
-begin
-  Result:=(Item1^.Name=Item2^.Name)
-      and (Item1^.Value=Item2^.Value);
-end;
-
-function TStringToStringTree.CreateCopy(Src: PStringMapItem): PStringMapItem;
-var
-  SrcItem: PStringToStringTreeItem absolute Src;
-  NewItem: PStringToStringTreeItem;
-begin
-  New(NewItem);
-  NewItem^.Name:=SrcItem^.Name;
-  NewItem^.Value:=SrcItem^.Value;
-  Result:=PStringMapItem(NewItem);
-end;
-
-function TStringToStringTree.GetString(const Name: string; out Value: string
-  ): boolean;
-var
-  Node: TAVLTreeNode;
-begin
-  Node:=FindNode(Name);
-  if Node<>nil then begin
-    Value:=PStringToStringTreeItem(Node.Data)^.Value;
-    Result:=true;
-  end else begin
-    Result:=false;
-  end;
-end;
-
-procedure TStringToStringTree.Add(const Name, Value: string);
-begin
-  Strings[Name]:=Value;
-end;
-
-procedure TStringToStringTree.AddNames(List: TStrings);
-var
-  i: Integer;
-  aName: String;
-begin
-  if List=nil then exit;
-  for i:=0 to List.Count-1 do begin
-    aName:=List[i];
-    if not Contains(aName) then
-      Strings[aName]:='';
-  end;
-end;
-
-function TStringToStringTree.GetNodeData(AVLNode: TAVLTreeNode
-  ): PStringToStringTreeItem;
-begin
-  Result:=PStringToStringTreeItem(AVLNode.Data);
-end;
-
-function TStringToStringTree.AsText: string;
-var
-  Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
-begin
-  Result:='';
-  Node:=Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
-    Result:=Result+Item^.Name+'='+Item^.Value+LineEnding;
-    Node:=Tree.FindSuccessor(Node);
-  end;
-end;
-
-procedure TStringToStringTree.WriteDebugReport;
-var
-  Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
-begin
-  DebugLn(['TStringToStringTree.WriteDebugReport ',Tree.Count]);
-  Node:=Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
-    DebugLn([Item^.Name,'=',Item^.Value]);
-    Node:=Tree.FindSuccessor(Node);
-  end;
-end;
-
-function TStringToStringTree.CalcMemSize: PtrUint;
-var
-  Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
-begin
-  Result:=PtrUInt(InstanceSize)
-    +PtrUInt(FTree.InstanceSize)
-    +PtrUint(FTree.Count)*SizeOf(TAVLTreeNode);
-  Node:=FTree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
-    inc(Result,MemSizeString(Item^.Name)
-       +MemSizeString(Item^.Value)
-       +SizeOf(TStringToStringTreeItem));
-    Node:=FTree.FindSuccessor(Node);
-  end;
-end;
-
-function TStringToStringTree.GetEnumerator: TStringToStringTreeEnumerator;
-begin
-  Result:=TStringToStringTreeEnumerator.Create(FTree);
-end;
-
-{ TFilenameToStringTree }
-
-constructor TFilenameToStringTree.Create(CaseInsensitive: boolean);
-begin
-  inherited Create(true);
-  if CaseInsensitive then
-    SetCompareFuncs(@CompareFilenameToStringItemsI,
-                    @CompareFilenameAndFilenameToStringTreeItemI)
-  else
-    SetCompareFuncs(@CompareFilenameToStringItems,
-                    @CompareFilenameAndFilenameToStringTreeItem);
 end;
 
 { TStringTree }

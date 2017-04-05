@@ -47,7 +47,7 @@ uses
   MemCheck,
   {$ENDIF}
   // RTL + FCL
-  Classes, SysUtils, math, AVL_Tree,
+  Classes, SysUtils, math, Laz_AVL_Tree,
   // CodeTools
   CodeToolsStrConsts, CodeToolMemManager, FileProcs, ExprEval, SourceLog,
   KeywordFuncLists, BasicCodeTools,

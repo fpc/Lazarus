@@ -37,8 +37,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, LazFileUtils,
-  BasicCodeTools, KeywordFuncLists, CodeCache, AVL_Tree, ExprEval, CodeTree;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // Codetools
+  FileProcs, BasicCodeTools, KeywordFuncLists, CodeCache, ExprEval, CodeTree;
 
 type
   TCompilerDirectiveNodeDesc = word;

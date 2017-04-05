@@ -37,7 +37,7 @@ interface
 
 uses
   // RTL + LCL
-  Classes, SysUtils,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   Dialogs,
   // LazUtils
@@ -147,8 +147,8 @@ type
 
   TIHIgnoreIDEQuestionList = class(TIgnoreIDEQuestionList)
   private
-    FItems: TAvgLvlTree; // tree of TIgnoreIDEQuestionItem
-    function FindNode(const Identifier: string): TAvgLvlTreeNode;
+    FItems: TAvlTree; // tree of TIgnoreIDEQuestionItem
+    function FindNode(const Identifier: string): TAvlTreeNode;
   public
     constructor Create;
     destructor Destroy; override;
@@ -828,14 +828,14 @@ end;
 
 { TIHIgnoreIDEQuestionList }
 
-function TIHIgnoreIDEQuestionList.FindNode(const Identifier: string): TAvgLvlTreeNode;
+function TIHIgnoreIDEQuestionList.FindNode(const Identifier: string): TAvlTreeNode;
 begin
   Result:=FItems.FindKey(Pointer(Identifier),@CompareAnsiStringWithIHIgnoreItem);
 end;
 
 constructor TIHIgnoreIDEQuestionList.Create;
 begin
-  FItems:=TAvgLvlTree.Create(@CompareIHIgnoreItems);
+  FItems:=TAvlTree.Create(@CompareIHIgnoreItems);
 end;
 
 destructor TIHIgnoreIDEQuestionList.Destroy;
@@ -853,7 +853,7 @@ end;
 function TIHIgnoreIDEQuestionList.Add(const Identifier: string;
   const Duration: TIgnoreQuestionDuration; const Flag: string): TIgnoreIDEQuestionItem;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=FindNode(Identifier);
   if Node<>nil then begin
@@ -869,7 +869,7 @@ end;
 
 procedure TIHIgnoreIDEQuestionList.Delete(const Identifier: string);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=FindNode(Identifier);
   if Node<>nil then
@@ -878,7 +878,7 @@ end;
 
 function TIHIgnoreIDEQuestionList.Find(const Identifier: string): TIgnoreIDEQuestionItem;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=FindNode(Identifier);
   if Node<>nil then
@@ -925,7 +925,7 @@ procedure TIHIgnoreIDEQuestionList.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   i: Integer;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: TIgnoreIDEQuestionItem;
   SubPath: String;
 begin

@@ -32,13 +32,14 @@ unit etMessageFrame;
 interface
 
 uses
-  Math, strutils, Classes, SysUtils,
-  UTF8Process, FileProcs, LazFileCache,
-  LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, SynEdit,
-  LResources, Forms, Buttons, ExtCtrls, Controls, LMessages,
-  LCLType, Graphics, LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd,
-  Dialogs, StdCtrls,
-  SynEditMarks,
+  Math, strutils, Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, LCLIntf,
+  Graphics, Themes, ImgList, GraphType, Menus, Clipbrd, Dialogs, StdCtrls,
+  // LazUtils
+  UTF8Process, FileProcs, LazFileCache, LazUTF8Classes, LazFileUtils, LazUTF8,
+  // SynEdit
+  SynEdit, SynEditMarks,
   // IDEIntf
   IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf,
   IDECommands, IDEDialogs, ProjectIntf, CompOptsIntf, LazIDEIntf,
@@ -878,7 +879,7 @@ function TLMsgWndView.ApplySrcChanges(Changes: TETSingleSrcChanges): boolean;
 var
   Queue: TETSingleSrcChanges;
   Change: TETSrcChange;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   aFilename: String;
 begin
   Result:=false;
@@ -3550,7 +3551,7 @@ end;
 
 procedure TMessagesFrame.ApplyMultiSrcChanges(Changes: TETMultiSrcChanges);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   for Node in Changes.PendingChanges do
     ApplySrcChanges(TETSingleSrcChanges(Node.Data));

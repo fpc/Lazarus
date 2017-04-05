@@ -38,8 +38,8 @@ type
   TPatternBitmapCache = class
   private
     FLock: TCriticalSection;
-    FList: TAvgLvlTree;
-    function InternalCompare(Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    FList: TAvlTree;
+    function InternalCompare(Tree: TAvlTree; Data1, Data2: Pointer): integer;
   protected
     procedure Lock;
     procedure UnLock;
@@ -130,8 +130,7 @@ end;
 { TPatternBitmapCache }
 
 
-function TPatternBitmapCache.InternalCompare(Tree: TAvgLvlTree; Data1,
-  Data2: Pointer): integer;
+function TPatternBitmapCache.InternalCompare(Tree: TAvlTree; Data1, Data2: Pointer): integer;
 var
   Bmp1: TPatternBitmap absolute Data1;
   Bmp2: TPatternBitmap absolute Data2;
@@ -160,7 +159,7 @@ begin
   debugln(['TPatternBitmapCache.Create']);
   {$endif}
   FLock := TCriticalSection.Create;
-  FList := TAvgLvlTree.CreateObjectCompare(@InternalCompare);
+  FList := TAvlTree.CreateObjectCompare(@InternalCompare);
 end;
 
 destructor TPatternBitmapCache.Destroy;
@@ -216,7 +215,7 @@ end;
 function TPatternBitmapCache.FindBitmap(AColorBG, AColorFG: TColor): TPatternBitmap;
 var
   PatternRec: TPatternRec;
-  Res: TAvgLvlTreeNode;
+  Res: TAvlTreeNode;
 begin
   Lock;
   Result := nil;

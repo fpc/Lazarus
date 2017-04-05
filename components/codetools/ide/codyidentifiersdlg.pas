@@ -38,13 +38,18 @@ unit CodyIdentifiersDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, avl_tree, contnrs, Forms,
-  Controls, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
-  Buttons, Menus, PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
-  CompOptsIntf, IDEDialogs, IDEMsgIntf, IDEExternToolIntf, CodeCache,
-  BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary, CodeTree,
+  Classes, SysUtils, LCLProc, contnrs, Laz_AVL_Tree,
+  // LCL
+  Forms, Controls, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType, Buttons, Menus,
+  // IdeIntf
+  PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
+  CompOptsIntf, IDEDialogs, IDEMsgIntf, IDEExternToolIntf,
+  // Codetools
+  CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary, CodeTree,
   LinkScanner, DefineTemplates, CodeToolsStructs, FindDeclarationTool,
-  CodyStrConsts, CodyUtils, CodyOpts, FileProcs, LazFileUtils, LazFileCache;
+  CodyStrConsts, CodyUtils, CodyOpts, FileProcs,
+  // LazUtils
+  LazFileUtils, LazFileCache, AvgLvlTree;
 
 const
   PackageNameFPCSrcDir = 'FPCSrcDir';
@@ -690,7 +695,7 @@ end;
 procedure TCodyUnitDictionary.CheckFiles;
 var
   aFilename: String;
-  StrItem: PStringToStringTreeItem;
+  StrItem: PStringToStringItem;
   List: TStringList;
   UDGroup: TUDUnitGroup;
   CurUnit: TUDUnit;

@@ -36,7 +36,7 @@ uses
   Classes, SysUtils, contnrs,
   LCLProc, Forms, Controls, Grids, LResources, Dialogs, Buttons, StdCtrls, ExtCtrls,
   // LazUtils
-  LazFileUtils, LazUTF8Classes, LazUTF8,
+  LazFileUtils, LazUTF8Classes, LazUTF8, AvgLvlTree,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses,
   // codetools

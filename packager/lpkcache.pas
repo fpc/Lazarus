@@ -51,10 +51,11 @@ unit LPKCache;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
   LCLProc,
   // LazUtils
-  LazFileUtils, AvgLvlTree, Laz2_XMLCfg, LazLoggerBase, LazMethodList,
+  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazMethodList,
   // IdeIntf
   PackageDependencyIntf, PackageIntf,
   // IDE
@@ -125,8 +126,8 @@ type
   private
     FCritSec: TRTLCriticalSection;
     FLPKReader: TIPSLPKReader;
-    fLPKByFilename: TAvgLvlTree; // tree of TLPKInfo sorted for LPKFilename
-    fLPKByID: TAvgLvlTree; // tree of TLPKInfo sorted for ID
+    fLPKByFilename: TAvlTree; // tree of TLPKInfo sorted for LPKFilename
+    fLPKByID: TAvlTree; // tree of TLPKInfo sorted for ID
     fEvents: array[TLPKInfoCacheEvent] of TMethodList;
     fAvailableFiles: TStrings; // used by OnIterateAvailablePackages
     procedure QueueEmpty;
@@ -156,8 +157,8 @@ type
     function FindPkgInfoWithFilename(aFilename: string): TLPKInfo; // requires crit sec
     function FindPkgInfoWithID(PkgID: TLazPackageID): TLPKInfo; // requires crit sec
     function FindPkgInfoWithIDAsString(PkgID: string): TLPKInfo; // requires crit sec
-    property LPKByFilename: TAvgLvlTree read fLPKByFilename; // tree of TLPKInfo sorted for LPKFilename
-    property LPKByID: TAvgLvlTree read fLPKByID; // tree of TLPKInfo sorted for ID
+    property LPKByFilename: TAvlTree read fLPKByFilename; // tree of TLPKInfo sorted for LPKFilename
+    property LPKByID: TAvlTree read fLPKByID; // tree of TLPKInfo sorted for ID
 
     // thread safe
     function IsValidLPKFilename(LPKFilename: string): boolean;
@@ -389,7 +390,7 @@ end;
 
 function TLPKInfoCache.FindPkgInfoWithFilename(aFilename: string): TLPKInfo;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=fLPKByFilename.FindKey(Pointer(aFilename),@CompareFilenameWithIPSPkgInfo);
   if Node<>nil then
@@ -400,7 +401,7 @@ end;
 
 function TLPKInfoCache.FindPkgInfoWithID(PkgID: TLazPackageID): TLPKInfo;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=fLPKByID.FindKey(Pointer(PkgID),@ComparePkgIDWithIPSPkgInfo);
   if Node<>nil then
@@ -518,8 +519,8 @@ var
   e: TLPKInfoCacheEvent;
 begin
   InitCriticalSection(FCritSec);
-  fLPKByFilename:=TAvgLvlTree.Create(@CompareIPSPkgInfosWithFilename);
-  fLPKByID:=TAvgLvlTree.Create(@CompareIPSPkgInfos);
+  fLPKByFilename:=TAvlTree.Create(@CompareIPSPkgInfosWithFilename);
+  fLPKByID:=TAvlTree.Create(@CompareIPSPkgInfos);
   for e:=Low(TLPKInfoCacheEvent) to high(TLPKInfoCacheEvent) do
     fEvents[e]:=TMethodList.Create;
 end;

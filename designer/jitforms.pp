@@ -46,9 +46,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, TypInfo,
+  Classes, SysUtils, TypInfo, Laz_AVL_Tree,
   // LCL
-  Forms, Controls, Dialogs, LResources, LCLMemManager, LCLIntf, LCLProc,
+  Forms, Controls, Dialogs, LResources, LCLMemManager, LCLProc,
   //LazUtils
   AvgLvlTree,
   // CodeTools
@@ -56,7 +56,7 @@ uses
   // IdeIntf
   PackageDependencyIntf, PropEditUtils, PropEdits, UnitResources, IDEDialogs,
   // IDE
-  IDEProcs, PackageDefs, BasePkgManager, DesignerProcs;
+  IDEProcs, PackageDefs;
 
 type
   //----------------------------------------------------------------------------
@@ -274,7 +274,7 @@ type
   TJITMethods = class
   private
     fClearing: boolean;
-    fMethods: TAvgLvlTree;// sorted with CompareJITMethod
+    fMethods: TAvlTree; // sorted with CompareJITMethod
     procedure InternalAdd(const AMethod: TJITMethod);
     procedure InternalRemove(const AMethod: TJITMethod);
   public
@@ -2014,7 +2014,7 @@ end;
 
 constructor TJITMethods.Create;
 begin
-  fMethods:=TAvgLvlTree.Create(@CompareJITMethod);
+  fMethods:=TAvlTree.Create(@CompareJITMethod);
 end;
 
 destructor TJITMethods.Destroy;
@@ -2045,7 +2045,7 @@ function TJITMethods.Find(aClass: TClass;
   const aMethodName: shortstring): TJITMethod;
 var
   CurMethod: TJITMethod;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Comp: LongInt;
 begin
   //DebugLn(['TJITMethods.Find  Class=',dbgsname(aClass),' aMethodName=',aMethodName]);
@@ -2098,9 +2098,9 @@ end;
 procedure TJITMethods.DeleteAllOfClass(aClass: TClass);
 var
   CurMethod: TJITMethod;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Comp: LongInt;
-  NextNode: TAvgLvlTreeNode;
+  NextNode: TAvlTreeNode;
 begin
   Node:=fMethods.Root;
   while (Node<>nil) do begin

@@ -26,9 +26,9 @@ interface
 
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
-  Classes, SysUtils, Math, TypInfo, Types,
+  Classes, SysUtils, Math, TypInfo, Types, Laz_AVL_Tree,
   // LazUtils
-  FPCAdds, AvgLvlTree, LazFileUtils, LazMethodList, LazUTF8, LazUTF8Classes,
+  FPCAdds, LazFileUtils, LazMethodList, LazUTF8, LazUTF8Classes,
   {$IFnDEF WithOldDebugln} LazLogger, {$ENDIF}
   // LCL
   LCLStrConsts, LCLType;
@@ -55,7 +55,7 @@ type
 
   TDebugLCLItems = class
   private
-    FItems: TAvgLvlTree;// tree of TDebugLCLItemInfo
+    FItems: TAvlTree;// tree of TDebugLCLItemInfo
     FName: string;
   public
     constructor Create(const TheName: string);
@@ -428,7 +428,7 @@ var
   DebugNestPrefix: PChar = nil;
   DebugNestAtBOL: Boolean;
   {$ENDIF}
-  LineInfoCache: TAvgLvlTree = nil;
+  LineInfoCache: TAvlTree = nil;
 
 function DeleteAmpersands(var Str : String) : Longint;
 // Replace all &x with x
@@ -1002,12 +1002,12 @@ end;
 
 function GetLineInfo(Addr: Pointer; UseCache: boolean): string;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   Item: PLineInfoCacheItem;
 begin
   if UseCache then begin
     if LineInfoCache=nil then
-      LineInfoCache:=TAvgLvlTree.Create(@CompareLineInfoCacheItems);
+      LineInfoCache:=TAvlTree.Create(@CompareLineInfoCacheItems);
     ANode:=LineInfoCache.FindKey(Addr,@CompareAddrWithLineInfoCacheItem);
     if ANode=nil then begin
       Result:=BackTraceStrFunc(Addr);
@@ -3013,7 +3013,7 @@ end;
 
 procedure FreeLineInfoCache;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   Item: PLineInfoCacheItem;
 begin
   if LineInfoCache=nil then exit;
@@ -3032,7 +3032,7 @@ end;
 constructor TDebugLCLItems.Create(const TheName: string);
 begin
   FName:=TheName;
-  FItems:=TAvgLvlTree.Create(@CompareDebugLCLItemInfos);
+  FItems:=TAvlTree.Create(@CompareDebugLCLItemInfos);
 end;
 
 destructor TDebugLCLItems.Destroy;
@@ -3042,10 +3042,9 @@ begin
   inherited Destroy;
 end;
 
-function TDebugLCLItems.FindInfo(p: Pointer; CreateIfNotExists: boolean
-  ): TDebugLCLItemInfo;
+function TDebugLCLItems.FindInfo(p: Pointer; CreateIfNotExists: boolean): TDebugLCLItemInfo;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   ANode:=FItems.FindKey(p,@CompareItemWithDebugLCLItemInfo);
   if ANode<>nil then

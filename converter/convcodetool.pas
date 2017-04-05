@@ -31,19 +31,19 @@ unit ConvCodeTool;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, contnrs, strutils, Forms, Controls, Dialogs,
+  // RTL + FCL
+  Classes, SysUtils, contnrs, strutils,
+  // LCL
+  Forms, Controls,
   // CodeTools
-  CodeToolManager, StdCodeTools, CodeTree, CodeAtom, FileProcs,
-  FindDeclarationTool, LFMTrees,
-  ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs,
+  CodeToolManager, CodeTree, CodeAtom, FileProcs, KeywordFuncLists, BasicCodeTools,
+  LinkScanner, CodeCache, SourceChanger, CodeToolsStructs,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, AvgLvlTree,
   // IdeIntf
-  LazIDEIntf, IDEExternToolIntf,
+  IDEExternToolIntf,
   // IDE
-  FormEditor, LazarusIDEStrConsts,
+  LazarusIDEStrConsts,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit, ReplaceFuncsUnit;
 

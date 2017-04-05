@@ -30,13 +30,15 @@ unit FindRenameIdentifier;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, AVL_Tree, LCLProc, Forms, Controls, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, ButtonPanel, LclIntf,
+  // RTL + FCL
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
+  LclIntf,
   // CodeTools
-  FileProcs, CTUnitGraph, CodeTree, CodeCache, CodeToolManager, CodeToolsStructs,
+  FileProcs, CTUnitGraph, CodeTree, CodeCache, CodeToolManager,
   // LazUtils
-  LazFileUtils, LazFileCache, laz2_DOM,
+  LazFileUtils, LazFileCache, laz2_DOM, AvgLvlTree,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
   LazIDEIntf, IDEDialogs, InputHistory, SearchResultView, CodeHelp;
@@ -372,7 +374,7 @@ var
   CHResult: TCodeHelpParseResult;
   CHElement: TCodeHelpElement;
   FPDocFilename: String;
-  S2SItem: PStringToStringTreeItem;
+  S2SItem: PStringToStringItem;
 begin
   Result:=mrCancel;
   PascalFilenames:=nil;

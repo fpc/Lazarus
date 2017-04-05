@@ -35,7 +35,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   InterfaceBase, LCLPlatformDef, LCLProc, Dialogs, Forms, Controls,
   // CodeTools

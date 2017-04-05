@@ -32,11 +32,9 @@ unit TabOrderDlg;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, Buttons, ExtCtrls, StdCtrls, ComCtrls, LCLType, LCLProc,
-  // LazUtils
-  AvgLvlTree,
   // IdeIntf
   PropEdits, IDEDialogs,
   //IDE
@@ -64,9 +62,9 @@ type
     FUpdating: Boolean;
     procedure SwapNodes(ANode1, ANode2, NewSelected: TTreeNode);
     procedure CheckButtonsEnabled;
-    procedure CreateCandidates(OwnerComponent: TComponent; Candidates: TAvgLvlTree);
+    procedure CreateCandidates(OwnerComponent: TComponent; Candidates: TAvlTree);
     procedure CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode;
-      Candidates: TAvgLvlTree);
+      Candidates: TAvlTree);
     procedure RefreshTree;
     procedure OnSomethingChanged;
     procedure OnPersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: boolean);
@@ -321,7 +319,7 @@ begin
 end;
 
 procedure TTabOrderDialog.CreateCandidates(OwnerComponent: TComponent;
-  Candidates: TAvgLvlTree);
+  Candidates: TAvlTree);
 var
   i: Integer;
   AComponent: TComponent;
@@ -345,7 +343,7 @@ begin
   end;
 end;
 
-procedure TTabOrderDialog.CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode; Candidates: TAvgLvlTree);
+procedure TTabOrderDialog.CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode; Candidates: TAvlTree);
 // Add all controls in Designer to ItemTreeview.
 var
   AControl: TControl;
@@ -390,7 +388,7 @@ end;
 procedure TTabOrderDialog.RefreshTree;
 var
   LookupRoot: TPersistent;
-  Candidates: TAvgLvlTree;
+  Candidates: TAvlTree;
 begin
   if not IsVisible then Exit;
   ItemTreeview.BeginUpdate;
@@ -398,7 +396,7 @@ begin
     ItemTreeview.Items.Clear;
     LookupRoot := GlobalDesignHook.LookupRoot;
     if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
-      Candidates := TAvgLvlTree.Create;
+      Candidates := TAvlTree.Create;
       try
         CreateCandidates(TComponent(LookupRoot), Candidates);
         CreateNodes(TWinControl(LookupRoot), nil, Candidates);

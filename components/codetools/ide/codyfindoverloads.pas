@@ -44,15 +44,17 @@ unit CodyFindOverloads;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, contnrs,
+  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  // LazUtils
   FileUtil, LazLoggerBase, LazUtilities,
-  Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, StdCtrls, Grids, ComCtrls,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Grids, ComCtrls,
+  // Codetools
   CodeToolManager, CodeTree, CodeCache, FindDeclarationTool,
   PascalParserTool, BasicCodeTools, CTUnitGraph, FileProcs, StdCodeTools,
-  CodeGraph,
-  LazIDEIntf, IDEWindowIntf, ProjectIntf,
-  CodyUtils, CodyStrConsts;
+  CodeGraph, CodyUtils, CodyStrConsts,
+  // IdeIntf
+  LazIDEIntf, IDEWindowIntf, ProjectIntf;
 
 type
   TCFOUnit = class(TUGUnit)

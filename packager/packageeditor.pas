@@ -39,9 +39,9 @@ uses
   ExtCtrls, LCLType, LCLProc,
   TreeFilterEdit,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache,
+  FileUtil, LazFileUtils, LazFileCache, AvgLvlTree,
   // IDEIntf
-  IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf, CodeToolsStructs,
+  IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf,
   FormEditingIntf, PackageDependencyIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
   NewItemIntf, IDEWindowIntf, IDEDialogs, ComponentReg,
   // IDE

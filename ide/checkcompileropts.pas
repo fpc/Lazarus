@@ -32,17 +32,19 @@ unit CheckCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, FileUtil,
-  Clipbrd, StdCtrls, AVL_Tree, Menus, ExtCtrls, ButtonPanel, ComCtrls,
-  // codetools
-  CodeToolManager, FileProcs, LazFileCache, LazFileUtils, LazUTF8,
-  DefineTemplates, CodeToolsStructs,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  Forms, Controls, Dialogs, Clipbrd, StdCtrls, Menus, ExtCtrls, ButtonPanel, ComCtrls,
+  // LazUtils
+  LazFileCache, FileUtil, LazFileUtils, LazUTF8, AvgLvlTree,
+  // Codetools
+  CodeToolManager, FileProcs, DefineTemplates,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf, IDEDialogs,
   PackageIntf, IDEMsgIntf,
   // IDE
   Project, PackageSystem, IDEProcs,
-  LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf;
+  LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros;
 
 type
   TCompilerOptionsTest = (
@@ -528,7 +530,7 @@ var
   MinPPU: String;
   MaxPPU: String;
   Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   
   procedure CheckFileAge(const aFilename: string);
   var
@@ -599,7 +601,7 @@ begin
   // b) not updated
   Node:=CfgCache.Units.Tree.FindLowest;
   while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
+    Item:=PStringToStringItem(Node.Data);
     if (Item^.Value<>'') and (CompareFileExt(Item^.Value,'.ppu',false)=0) then
       CheckFileAge(Item^.Value);
     Node:=CfgCache.Units.Tree.FindSuccessor(Node);

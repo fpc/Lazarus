@@ -9,7 +9,7 @@ uses
   Buttons, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
   ComCtrls, Forms, Graphics, Themes, LCLType, LCLIntf, LCLProc,
   // LazUtils
-  LazUTF8, LazFileUtils, Laz2_XMLCfg,
+  LazFileUtils, Laz2_XMLCfg,
   // IdeIntf
   IDEDialogs,
   // IDE

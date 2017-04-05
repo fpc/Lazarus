@@ -35,12 +35,15 @@ unit ChangeClassDialog;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, AVGLvlTree, LFMTrees, CodeCache, CodeToolManager, LCLType,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, LCLType, LResources, Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
+  // Codetools
+  LFMTrees, CodeCache, CodeToolManager,
+  // IdeIntf
+  ComponentReg, PropEdits, ComponentEditors, FormEditingIntf, SrcEditorIntf,
   // IDE
-  SrcEditorIntf, PropEdits, LazarusIDEStrConsts, ComponentReg, ComponentEditors,
-  FormEditingIntf, IDEDialogs, CheckLFMDlg, Project, MainIntf, ExtCtrls,
-  ButtonPanel;
+  LazarusIDEStrConsts, IDEDialogs, CheckLFMDlg, Project, MainIntf;
 
 type
 
@@ -59,7 +62,7 @@ type
     procedure NewClassComboBoxKeyUp(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
   private
-    FClasses: TAvgLvlTree;
+    FClasses: TAvlTree;
     FNewClass: TClass;
     FThePersistent: TPersistent;
     procedure SetNewClass(const AValue: TClass);
@@ -70,7 +73,7 @@ type
     procedure FillAncestorListBox(AClass: TClass; AListBox: TListBox);
     procedure AddClass(const AClass: TPersistentClass);
     procedure AddComponentClass(const AClass: TComponentClass);
-    function CompareClasses({%H-}Tree: TAvgLvlTree; Class1, Class2: TClass): integer;
+    function CompareClasses({%H-}Tree: TAvlTree; Class1, Class2: TClass): integer;
   public
     destructor Destroy; override;
     procedure FillNewClassComboBox;
@@ -351,7 +354,7 @@ end;
 
 procedure TChangeClassDlg.UpdateNewInfo;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   FNewClass:=nil;
   if FClasses<>nil then begin
@@ -405,7 +408,7 @@ begin
   AddClass(AClass);
 end;
 
-function TChangeClassDlg.CompareClasses(Tree: TAvgLvlTree; Class1,Class2: TClass): integer;
+function TChangeClassDlg.CompareClasses(Tree: TAvlTree; Class1,Class2: TClass): integer;
 // sort:
 //   transforming ThePersistent to descending classes is easy
 //   transforming ThePersistent to ascending classes is medium
@@ -461,12 +464,12 @@ end;
 
 procedure TChangeClassDlg.FillNewClassComboBox;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   List: TStringList;
 begin
   // create/clear tree
   if FClasses=nil then
-    FClasses:=TAvgLvlTree.CreateObjectCompare(TObjectSortCompare(@CompareClasses))
+    FClasses:=TAvlTree.CreateObjectCompare(TObjectSortCompare(@CompareClasses))
   else
     FClasses.Clear;
   // add class of ThePersistent

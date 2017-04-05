@@ -48,12 +48,14 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, typinfo, FileProcs, LazFileUtils,
-  CodeTree, CodeAtom, CodeCache, CustomCodeTool, CodeToolsStrConsts,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, AvgLvlTree, AVL_Tree,
-  SourceChanger, FindDeclarationTool, PascalReaderTool, PascalParserTool,
-  CodeToolsStructs, ExprEval, LazDbgLog, crc;
-  
+  Classes, SysUtils, typinfo, crc, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils, LazDbgLog, AvgLvlTree,
+  // Codetools
+  FileProcs, CodeTree, CodeAtom, CodeCache, CustomCodeTool, CodeToolsStrConsts,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, SourceChanger,
+  FindDeclarationTool, PascalReaderTool, PascalParserTool, ExprEval;
+
 type
   TIdentCompletionTool = class;
   TIdentifierHistoryList = class;
@@ -236,13 +238,13 @@ type
     FFilteredList: TFPList; // list of TIdentifierListItem
     FFlags: TIdentifierListFlags;
     FHistory: TIdentifierHistoryList;
-    FItems: TAvgLvlTree; // tree of TIdentifierListItem (completely sorted)
+    FItems: TAvlTree;     // tree of TIdentifierListItem (completely sorted)
     FIdentView: TAVLTree; // tree of TIdentifierListItem sorted for identifiers
     FUsedTools: TAVLTree; // tree of TFindDeclarationTool
     FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
     FStartContext: TFindContext;
-    function CompareIdentListItems({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    function CompareIdentListItems({%H-}Tree: TAvlTree; Data1, Data2: Pointer): integer;
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure SetSortForHistory(AValue: boolean);
     procedure SetSortForScope(AValue: boolean);
@@ -554,8 +556,7 @@ end;
 
 { TIdentifierList }
 
-function TIdentifierList.CompareIdentListItems(Tree: TAvgLvlTree; Data1,
-  Data2: Pointer): integer;
+function TIdentifierList.CompareIdentListItems(Tree: TAvlTree; Data1, Data2: Pointer): integer;
 var
   Item1: TIdentifierListItem absolute Data1;
   Item2: TIdentifierListItem absolute Data2;
@@ -610,7 +611,7 @@ end;
 
 procedure TIdentifierList.UpdateFilteredList;
 var
-  AnAVLNode: TAvgLvlTreeNode;
+  AnAVLNode: TAvlTreeNode;
   CurItem: TIdentifierListItem;
 begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
@@ -676,7 +677,7 @@ end;
 constructor TIdentifierList.Create;
 begin
   FFlags:=[ilfFilteredListNeedsUpdate];
-  FItems:=TAvgLvlTree.CreateObjectCompare(@CompareIdentListItems);
+  FItems:=TAvlTree.CreateObjectCompare(@CompareIdentListItems);
   FIdentView:=TAVLTree.Create(@CompareIdentListItemsForIdents);
   FIdentSearchItem:=TIdentifierListSearchItem.Create;
   FCreatedIdentifiers:=TFPList.Create;
@@ -868,7 +869,7 @@ function TIdentifierList.CompletePrefix(const OldPrefix: string): string;
 // search all identifiers beginning with Prefix
 // and return the biggest shared prefix of all of them
 var
-  AnAVLNode: TAvgLvlTreeNode;
+  AnAVLNode: TAvlTreeNode;
   CurItem: TIdentifierListItem;
   FoundFirst: Boolean;
   SamePos: Integer;
@@ -909,7 +910,7 @@ function TIdentifierList.CalcMemSize: PtrUInt;
 var
   i: Integer;
   Node: TAVLTreeNode;
-  AvgNode: TAvgLvlTreeNode;
+  AvgNode: TAvlTreeNode;
   li: TIdentifierListItem;
   hli: TIdentHistListItem;
 begin
@@ -929,7 +930,7 @@ begin
     inc(Result,FHistory.CalcMemSize);
   end;
   if FItems<>nil then begin
-    {%H-}inc(Result,FItems.Count*SizeOf(TAvgLvlTreeNode));
+    {%H-}inc(Result,FItems.Count*SizeOf(TAvlTreeNode));
     AvgNode:=FItems.FindLowest;
     while AvgNode<>nil do begin
       li:=TIdentifierListItem(AvgNode.Data);
@@ -2505,7 +2506,7 @@ end;
 procedure TIdentCompletionTool.AddCompilerDirectiveMacros(Directive: string);
 var
   Macros: TStringToStringTree;
-  StrItem: PStringToStringTreeItem;
+  StrItem: PStringToStringItem;
   CodeBufs: TAVLTree;
   AVLNode: TAVLTreeNode;
 

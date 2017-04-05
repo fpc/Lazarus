@@ -33,8 +33,10 @@ unit FindOverloads;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, BasicCodeTools, CodeTree, CodeGraph,
-  CodeCache, FindDeclarationTool, AVL_Tree, FindDeclarationCache, StdCodeTools;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // Codetools
+  FileProcs, BasicCodeTools, CodeTree, CodeGraph,
+  CodeCache, FindDeclarationTool, FindDeclarationCache, StdCodeTools;
 
 type
   TOverloadsGraphEdge = class;

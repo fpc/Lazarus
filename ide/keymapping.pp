@@ -32,11 +32,11 @@ unit KeyMapping;
 interface
 
 uses
-  Classes, SysUtils, contnrs,
+  Classes, SysUtils, contnrs, Laz_AVL_Tree,
   // LCL
   Forms, LCLType, LCLProc,
   // LazUtils
-  AvgLvlTree, Laz2_XMLCfg,
+  Laz2_XMLCfg,
   // SynEdit
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit, SynPluginMultiCaret,
   // IdeIntf
@@ -163,8 +163,8 @@ type
     fRelations: TFPList;    // list of TKeyCommandRelation
     fCategories: TFPList;   // list of TKeyCommandCategory
     fExtToolCount: integer;
-    fLoadedKeyCommands: TAvgLvlTree; // tree of TLoadedKeyCommand sorted for name
-    fCmdRelCache: TAvgLvlTree; // cache for TKeyCommandRelation sorted for command
+    fLoadedKeyCommands: TAvlTree; // tree of TLoadedKeyCommand sorted for name
+    fCmdRelCache: TAvlTree; // cache for TKeyCommandRelation sorted for command
     function AddRelation(CmdRel: TKeyCommandRelation): Integer;
     function GetRelation(Index: integer): TKeyCommandRelation;
     function GetRelationCount: integer;
@@ -2571,8 +2571,8 @@ begin
   FRelations:=TFPList.Create;
   fCategories:=TFPList.Create;
   fExtToolCount:=0;
-  fLoadedKeyCommands:=TAvgLvlTree.Create(@CompareLoadedKeyCommands);
-  fCmdRelCache:=TAvgLvlTree.Create(@CompareCmdRels);
+  fLoadedKeyCommands:=TAvlTree.Create(@CompareLoadedKeyCommands);
+  fCmdRelCache:=TAvlTree.Create(@CompareCmdRels);
 end;
 
 destructor TKeyCommandRelationList.Destroy;
@@ -3200,7 +3200,7 @@ end;
 function TKeyCommandRelationList.SetKeyCommandToLoadedValues(Cmd: TKeyCommandRelation
   ): TLoadedKeyCommand;
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
 begin
   AVLNode:=fLoadedKeyCommands.FindKey(Pointer(Cmd.Name),@CompareNameWithLoadedKeyCommand);
   if AVLNode=nil then begin
@@ -3349,7 +3349,7 @@ var
   Shift1, Shift2: TShiftState;
   Cnt: LongInt;
   SubPath: String;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   LoadedKey: TLoadedKeyCommand;
 begin
   //debugln('TKeyCommandRelationList.LoadFromXMLConfig A ');
@@ -3480,7 +3480,7 @@ function TKeyCommandRelationList.SaveToXMLConfig(
 
 var a: integer;
   Name: String;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   LoadedKey: TLoadedKeyCommand;
   Cnt: Integer;
   SubPath: String;
@@ -3570,7 +3570,7 @@ end;
 
 function TKeyCommandRelationList.FindByCommand(ACommand: word): TKeyCommandRelation;
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
 begin
   AVLNode:=fCmdRelCache.FindKey({%H-}Pointer(PtrUInt(ACommand)), @CompareCmdWithCmdRel);
   if Assigned(AVLNode) then
@@ -3609,7 +3609,7 @@ end;
 procedure TKeyCommandRelationList.AssignTo(ASynEditKeyStrokes: TSynEditKeyStrokes;
   IDEWindowClass: TCustomFormClass; ACommandOffsetOffset: Integer = 0);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   ccid: Word;
   CategoryMatches: Boolean;
   ToBeFreedKeys: TObjectList;
@@ -3691,7 +3691,7 @@ var
 var
   i, j: integer;
   Key: TSynEditKeyStroke;
-  KeyStrokesByCmds: TAvgLvlTree;
+  KeyStrokesByCmds: TAvlTree;
   KeyList: TKeyStrokeList;
   CurRelation: TKeyCommandRelation;
   POUsed: Boolean;
@@ -3705,7 +3705,7 @@ begin
      But the IDE requires unique values.
      The unique values in the plugin (+ KeyOffset) can not be used, as they are not at fixed numbers
   *)
-  KeyStrokesByCmds:=TAvgLvlTree.Create(@CompareCmd);
+  KeyStrokesByCmds:=TAvlTree.Create(@CompareCmd);
   ToBeFreedKeys:=TObjectList.Create;
   POUsed:=ASynEditKeyStrokes.UsePluginOffset;
   SequentialWithCtrl:=TFPList.Create;

@@ -19,9 +19,9 @@ unit LCLResCache;
 interface
 
 uses
-  Classes, SysUtils, Types,
+  Classes, SysUtils, Types, Laz_AVL_Tree,
   // LazUtils
-  FPCAdds, AvgLvlTree,
+  FPCAdds,
   // LCL
   LCLType, LCLProc, WSReferences,
   syncobjs; // This FCL unit must be in the end.
@@ -77,8 +77,8 @@ type
 
   TResourceCache = class
   protected
-    FItems: TAvgLvlTree;
-    FDescriptors: TAvgLvlTree;
+    FItems: TAvlTree;
+    FDescriptors: TAvlTree;
     FDestroying: boolean;
     FResourceCacheDescriptorClass: TResourceCacheDescriptorClass;
     FResourceCacheItemClass: TResourceCacheItemClass;
@@ -95,8 +95,8 @@ type
     constructor Create;
     procedure Clear;
     destructor Destroy; override;
-    function CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer): integer; virtual;
-    function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; virtual; abstract;
+    function CompareItems(Tree: TAvlTree; Item1, Item2: Pointer): integer; virtual;
+    function CompareDescriptors(Tree: TAvlTree; Desc1, Desc2: Pointer): integer; virtual; abstract;
     procedure ConsistencyCheck;
     procedure Lock;
     procedure Unlock;
@@ -138,8 +138,7 @@ type
     constructor Create(TheDataSize: integer);
     function FindDescriptor(DescPtr: Pointer): TBlockResourceCacheDescriptor;
     function AddResource(Handle: TLCLHandle; DescPtr: Pointer): TBlockResourceCacheDescriptor;
-    function CompareDescriptors(Tree: TAvgLvlTree;
-                                Desc1, Desc2: Pointer): integer; override;
+    function CompareDescriptors(Tree: TAvlTree; Desc1, Desc2: Pointer): integer; override;
   public
     property DataSize: integer read FDataSize;
     property OnCompareDescPtrWithDescriptor: TListSortCompare
@@ -373,8 +372,8 @@ end;
 constructor TResourceCache.Create;
 begin
   FMaxUnusedItem := 100;
-  FItems := TAvgLvlTree.CreateObjectCompare(@CompareItems);
-  FDescriptors := TAvgLvlTree.CreateObjectCompare(@CompareDescriptors);
+  FItems := TAvlTree.CreateObjectCompare(@CompareItems);
+  FDescriptors := TAvlTree.CreateObjectCompare(@CompareDescriptors);
   FResourceCacheItemClass := TResourceCacheItem;
   FResourceCacheDescriptorClass := TResourceCacheDescriptor;
   FLock := TCriticalSection.Create;
@@ -400,7 +399,7 @@ begin
   inherited Destroy;
 end;
 
-function TResourceCache.CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer): integer;
+function TResourceCache.CompareItems(Tree: TAvlTree; Item1, Item2: Pointer): integer;
 begin
   Result := CompareLCLHandles(TResourceCacheItem(Item1).Handle,
                               TResourceCacheItem(Item2).Handle);
@@ -408,7 +407,7 @@ end;
 
 procedure TResourceCache.ConsistencyCheck;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   Item: TResourceCacheItem;
   Desc: TResourceCacheDescriptor;
   Desc2: TResourceCacheDescriptor;
@@ -478,7 +477,7 @@ end;
 
 function THandleResourceCache.FindItem(Handle: TLCLHandle): TResourceCacheItem;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   ANode := FItems.FindKey(@Handle,
                           TListSortCompare(@ComparePHandleWithResourceCacheItem));
@@ -500,7 +499,7 @@ end;
 
 function TBlockResourceCache.FindDescriptor(DescPtr: Pointer): TBlockResourceCacheDescriptor;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   ANode := FDescriptors.FindKey(DescPtr,FOnCompareDescPtrWithDescriptor);
   if ANode <> nil then
@@ -544,8 +543,7 @@ begin
   FDescriptors.Add(Result);
 end;
 
-function TBlockResourceCache.CompareDescriptors(Tree: TAvgLvlTree; Desc1,
-  Desc2: Pointer): integer;
+function TBlockResourceCache.CompareDescriptors(Tree: TAvlTree; Desc1, Desc2: Pointer): integer;
 begin
   Result := CompareMemRange(TBlockResourceCacheDescriptor(Desc1).Data,
                             TBlockResourceCacheDescriptor(Desc2).Data,

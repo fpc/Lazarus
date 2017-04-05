@@ -35,9 +35,7 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, TypInfo, Types,
-  // LazUtils
-  AvgLvlTree,
+  Classes, SysUtils, TypInfo, Types, Laz_AVL_Tree,
   // LCL
   LCLStrConsts, LCLType, LCLProc, GraphType, Graphics, LMessages, LCLIntf,
   InterfaceBase, ImgList, PropertyStorage, Menus, ActnList, LCLClasses,
@@ -976,11 +974,11 @@ type
 
   { TLazAccessibleObjectEnumerator }
 
-  TLazAccessibleObjectEnumerator = class(TAvgLvlTreeNodeEnumerator)
+  TLazAccessibleObjectEnumerator = class(TAvlTreeNodeEnumerator)
   private
     function GetCurrent: TLazAccessibleObject;
   public
-    property Current: TLazAccessibleObject read GetCurrent;
+    property CurrentObj: TLazAccessibleObject read GetCurrent;
   end;
 
   { TLazAccessibleObject }
@@ -991,7 +989,7 @@ type
     FPosition: TPoint;
     FSize: TSize;
     // only for GetChildAccessibleObject(Index)
-    FLastSearchNode: TAvgLvlTreeNode;
+    FLastSearchNode: TAvlTreeNode;
     FLastSearchIndex: Integer;
     FLastSearchInSubcontrols: Boolean;
     function GetHandle: PtrInt;
@@ -1001,7 +999,7 @@ type
     procedure SetPosition(AValue: TPoint);
     procedure SetSize(AValue: TSize);
   protected
-    FChildrenSortedForDataObject: TAvgLvlTree; // of TLazAccessibleObject
+    FChildrenSortedForDataObject: TAvlTree; // of TLazAccessibleObject
     FAccessibleDescription: TCaption;
     FAccessibleValue: TCaption;
     FAccessibleRole: TLazAccessibilityRole;

@@ -18,9 +18,14 @@ unit EduMenu;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, StdCtrls, ComCtrls,
-  AvgLvlTree, Controls, ExtCtrls,
-  LazConfigStorage, IDEOptionsIntf, MenuIntf, IDEImagesIntf, LazIDEIntf,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, LResources, Forms, StdCtrls, ComCtrls, Controls, ExtCtrls,
+  // LazUtils
+  AvgLvlTree, LazConfigStorage,
+  // IdeIntf
+  IDEOptionsIntf, MenuIntf, IDEImagesIntf,
+  // Education
   EduOptions;
 
 type
@@ -367,7 +372,7 @@ end;
 
 function TEduMenuOptions.Save(Config: TConfigStorage): TModalResult;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: PStringToStringItem;
   Cnt: Integer;
 begin

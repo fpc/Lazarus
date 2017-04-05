@@ -38,7 +38,15 @@ unit FileReferenceList;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileProcs, LazFileUtils, AvgLvlTree, IDEProcs;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc,
+  // Codetools
+  FileProcs,
+  // LazUtils
+  LazFileUtils,
+  // IDE
+  IDEProcs;
   
 type
   { TFileReference }
@@ -65,7 +73,7 @@ type
   private
     FOnChanged: TNotifyEvent;
     FTimeStamp: integer;
-    FTree: TAvgLvlTree; // tree of TFileReference sorted for filename
+    FTree: TAvlTree; // tree of TFileReference sorted for filename
     FFlags: TFileReferenceFlags;
     FSearchPath: string;
     FUpdateLock: integer;
@@ -110,7 +118,7 @@ end;
 procedure TFileReferenceList.UpdateSearchPath;
 var
   SearchPathLen: Integer;
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   StartPos: Integer;
   CurFileLen: Integer;
   CurFileName: String;
@@ -212,7 +220,7 @@ end;
 
 procedure TFileReferenceList.AddFilename(const Filename: string);
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   NewFileRef: TFileReference;
 begin
   if Filename='' then exit;
@@ -226,14 +234,14 @@ begin
   NewFileRef:=TFileReference.Create;
   NewFileRef.fFilename:=Filename;
   inc(NewFileRef.fReferenceCount);
-  if FTree=nil then FTree:=TAvgLvlTree.Create(@CompareFileReferences);
+  if FTree=nil then FTree:=TAvlTree.Create(@CompareFileReferences);
   FTree.Add(NewFileRef);
   Invalidate;
 end;
 
 procedure TFileReferenceList.RemoveFilename(const Filename: string);
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
   CurFileRef: TFileReference;
 begin
   if Filename='' then exit;
@@ -251,7 +259,7 @@ end;
 
 function TFileReferenceList.GetFileReference(const Filename: string): TFileReference;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   Result:=nil;
   if FTree=nil then exit;
@@ -268,7 +276,7 @@ end;
 
 function TFileReferenceList.CreateFileList: TStringList;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   Result:=TStringList.Create;
   if FTree=nil then exit;

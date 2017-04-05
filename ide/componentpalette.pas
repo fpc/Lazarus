@@ -38,11 +38,15 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, fgl, LCLType,
-  Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
-  LazFileUtils, LazFileCache, PropEdits, LCLProc, MainBase, LazarusIDEStrConsts,
-  FormEditingIntf, LazIDEIntf, IDEImagesIntf,
-  ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
+  Classes, SysUtils, fgl, Laz_AVL_Tree,
+  // LCL
+  LCLType, LCLProc, Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
+  // LazUtils
+  LazFileUtils, LazFileCache,
+  // IdeIntf
+  FormEditingIntf, LazIDEIntf, IDEImagesIntf, PropEdits, ComponentReg,
+  // IDE
+  MainBase, LazarusIDEStrConsts, DesignerProcs, PackageDefs, EnvironmentOpts;
 
 const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';

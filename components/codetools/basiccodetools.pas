@@ -39,8 +39,11 @@ unit BasicCodeTools;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, SourceLog, KeywordFuncLists, FileProcs,
-  LazFileUtils, LazUTF8, strutils;
+  Classes, SysUtils, strutils, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils, LazUTF8,
+  // Codetools
+  SourceLog, KeywordFuncLists, FileProcs;
 
 //----------------------------------------------------------------------------
 { These functions are used by the codetools }

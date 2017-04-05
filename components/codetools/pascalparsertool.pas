@@ -42,9 +42,10 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom, ExprEval,
-  CustomCodeTool, MultiKeyWordListTool, KeywordFuncLists,
-  CodeToolsStructs, LinkScanner, CodeCache, AVL_Tree;
+  Classes, SysUtils,
+  // Codetools
+  FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom, ExprEval,
+  MultiKeyWordListTool, KeywordFuncLists, CodeToolsStructs, LinkScanner, CodeCache;
 
 type
   TProcHeadAttribute = (

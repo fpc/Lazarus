@@ -37,12 +37,16 @@ unit PkgGraphExplorer;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls,
-  StdCtrls, Menus, Dialogs, Graphics, LCLType, ExtCtrls, ButtonPanel,
-  AVL_Tree, contnrs, LCLIntf,
-  IDECommands, PackageIntf, IDEImagesIntf, LazIDEIntf,
+  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  // LCL
+  LCLProc, Forms, Controls, ComCtrls, StdCtrls, Menus,
+  LCLType, ExtCtrls, ButtonPanel, LCLIntf,
+  // IdeIntf
+  IDECommands, PackageIntf, IDEImagesIntf,
+  // LazControls
   LvlGraphCtrl,
-  LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
+  // IDE
+  LazarusIDEStrConsts, IDEProcs, IDEOptionDefs,
   Project, PackageDefs, PackageSystem, PackageEditor, CleanPkgDeps;
   
 const

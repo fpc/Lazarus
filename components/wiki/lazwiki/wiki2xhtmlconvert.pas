@@ -25,8 +25,13 @@ unit Wiki2XHTMLConvert;
 interface
 
 uses
-  Classes, SysUtils, WikiFormat, WikiParser, laz2_DOM, LazLogger, LazFileUtils,
-  laz2_XMLWrite, LazUTF8, BasicCodeTools, KeywordFuncLists, CodeToolsStructs;
+  Classes, SysUtils,
+  // LazUtils
+  laz2_XMLWrite, LazUTF8, laz2_DOM, LazLogger, LazFileUtils, AvgLvlTree,
+  // CodeTools
+  BasicCodeTools, KeywordFuncLists,
+  // LazWiki
+  WikiFormat, WikiParser;
 
 type
   TW2XHTMLStackItem = record

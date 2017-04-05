@@ -42,11 +42,11 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   InterfaceBase, Forms, Controls, LCLProc,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, AvgLvlTree, Laz2_XMLCfg, Laz2_DOM,
+  FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
   KeywordFuncLists, BasicCodeTools,
@@ -379,11 +379,11 @@ type
 
   TCompilerMsgIDFlagsEnumerator = class
   protected
-    FTree: TAvgLvlTree;
-    FCurrent: TAvgLvlTreeNode;
+    FTree: TAvlTree;
+    FCurrent: TAvlTreeNode;
     function GetCurrent: PCompilerMsgIdFlag; inline;
   public
-    constructor Create(Tree: TAvgLvlTree);
+    constructor Create(Tree: TAvlTree);
     function GetEnumerator: TCompilerMsgIDFlagsEnumerator; inline;
     function MoveNext: Boolean;
     property Current: PCompilerMsgIdFlag read GetCurrent;
@@ -395,8 +395,8 @@ type
   private
     FChangeStamp: int64;
     fLastSavedStamp: int64;
-    fTree: TAvgLvlTree; // tree of TCompilerMsgIdFlag
-    function FindNode(MsgId: integer): TAvgLvlTreeNode;
+    fTree: TAvlTree; // tree of TCompilerMsgIdFlag
+    function FindNode(MsgId: integer): TAvlTreeNode;
   protected
     function GetValues(MsgId: integer): TCompilerFlagValue; override;
     function GetModified: boolean; override;
@@ -1012,7 +1012,7 @@ begin
   Result:=PCompilerMsgIdFlag(FCurrent.Data);
 end;
 
-constructor TCompilerMsgIDFlagsEnumerator.Create(Tree: TAvgLvlTree);
+constructor TCompilerMsgIDFlagsEnumerator.Create(Tree: TAvlTree);
 begin
   FTree:=Tree;
 end;
@@ -4611,7 +4611,7 @@ begin
   Result:=fTree.Count;
 end;
 
-function TCompilerMsgIDFlags.FindNode(MsgId: integer): TAvgLvlTreeNode;
+function TCompilerMsgIDFlags.FindNode(MsgId: integer): TAvlTreeNode;
 var
   Flag: TCompilerMsgIdFlag;
 begin
@@ -4621,7 +4621,7 @@ end;
 
 function TCompilerMsgIDFlags.GetValues(MsgId: integer): TCompilerFlagValue;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=FindNode(MsgId);
   if Node<>nil then
@@ -4646,7 +4646,7 @@ end;
 procedure TCompilerMsgIDFlags.SetValues(MsgId: integer;
   AValue: TCompilerFlagValue);
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Flag: PCompilerMsgIdFlag;
 begin
   Node:=FindNode(MsgId);
@@ -4680,7 +4680,7 @@ end;
 
 constructor TCompilerMsgIDFlags.Create;
 begin
-  fTree:=TAvgLvlTree.Create(@CompareCompMsgIdFlag);
+  fTree:=TAvlTree.Create(@CompareCompMsgIdFlag);
 end;
 
 destructor TCompilerMsgIDFlags.Destroy;
@@ -4692,7 +4692,7 @@ end;
 
 procedure TCompilerMsgIDFlags.Clear;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Flag: PCompilerMsgIdFlag;
 begin
   Node:=fTree.FindLowest;
@@ -4707,7 +4707,7 @@ end;
 procedure TCompilerMsgIDFlags.Assign(Source: TPersistent);
 var
   Src: TCompilerMsgIDFlags;
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   SrcFlag, Flag: PCompilerMsgIdFlag;
 begin
   if Source is TCompilerMsgIDFlags then begin
@@ -4735,8 +4735,8 @@ end;
 function TCompilerMsgIDFlags.Equals(Obj: TObject): boolean;
 var
   Other: TCompilerMsgIDFlags;
-  MyNode: TAvgLvlTreeNode;
-  OtherNode: TAvgLvlTreeNode;
+  MyNode: TAvlTreeNode;
+  OtherNode: TAvlTreeNode;
   MyFlag: PCompilerMsgIdFlag;
   OtherFlag: PCompilerMsgIdFlag;
 begin
@@ -4791,7 +4791,7 @@ end;
 function TCompilerMsgIDFlags.CreateDiff(Tool: TCompilerDiffTool;
   Other: TCompilerMsgIDFlags): boolean;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Flag: PCompilerMsgIdFlag;
   OtherFlag: TCompilerFlagValue;
 begin

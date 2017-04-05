@@ -28,11 +28,13 @@ unit BuildProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Math, AVL_Tree, Forms, Controls,
-  Dialogs, ButtonPanel, StdCtrls, ComCtrls, Masks, LCLIntf,
-  FileProcs, LazFileUtils, LazFileCache, LazUtilities,
+  Classes, SysUtils, Math, Laz_AVL_Tree,
+  // LCL
+  Forms, Controls, Dialogs, ButtonPanel, StdCtrls, ComCtrls, Masks, LCLIntf,
+  // LazUtils
+  LazFileUtils, LazFileCache, LazUtilities, AvgLvlTree,
   // codetools
-  CodeToolManager, DirectoryCacher, CodeToolsStructs,
+  FileProcs, CodeToolManager, DirectoryCacher,
   // IDEIntf
   IDEDialogs, IDEImagesIntf, PackageIntf,
   // IDE
@@ -518,7 +520,7 @@ function TCleanBuildProjectDialog.DeleteFiles: TModalResult;
 var
   Files: TFilenameToStringTree;
   Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   MaskList: TMaskList;
   Filename: String;
   SourceFiles: TStringList;
@@ -531,7 +533,7 @@ begin
     // warn before deleting sources
     Node:=Files.Tree.FindLowest;
     while Node<>nil do begin
-      Item:=PStringToStringTreeItem(Node.Data);
+      Item:=PStringToStringItem(Node.Data);
       Filename:=Item^.Name;
       if MaskList.Matches(ExtractFilename(Filename)) then
         SourceFiles.Add(Filename);
@@ -549,7 +551,7 @@ begin
     Node:=Files.Tree.FindLowest;
     Quiet:=false;
     while Node<>nil do begin
-      Item:=PStringToStringTreeItem(Node.Data);
+      Item:=PStringToStringItem(Node.Data);
       Node:=Files.Tree.FindSuccessor(Node);
       Filename:=Item^.Name;
       //debugln(['TBuildProjectDialog.DeleteFiles ',Filename,' ',FileExistsUTF8(Filename)]);

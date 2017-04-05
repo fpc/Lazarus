@@ -43,10 +43,13 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, TypInfo, FileProcs, LazFileUtils, CodeToolsStrConsts,
-  CodeTree, CodeCache, PascalParserTool, CodeCompletionTool, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, AVL_Tree, CodeToolsStructs,
-  SourceChanger, FindDeclarationTool, ChangeDeclarationTool;
+  Classes, SysUtils, TypInfo, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils,
+  // Codetools
+  FileProcs, CodeToolsStrConsts, CodeTree, CodeCache, PascalParserTool,
+  CodeCompletionTool, KeywordFuncLists, BasicCodeTools, LinkScanner,
+  CodeToolsStructs, SourceChanger, FindDeclarationTool, ChangeDeclarationTool;
 
 type
   { TEventsCodeTool }

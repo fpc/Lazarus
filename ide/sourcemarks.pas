@@ -38,10 +38,14 @@ unit SourceMarks;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, Graphics, Controls, LCLProc,
-  MenuIntf,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  Graphics, Controls, LCLProc,
+  // SynEdit
   SynEdit, SynEditMarks, SynEditMarkupGutterMark,
-  SrcEditorIntf, IDEExternToolIntf,
+  // IdeIntf
+  MenuIntf, SrcEditorIntf, IDEExternToolIntf,
+  // IDE
   etSrcEditMarks;
   
 type

@@ -32,12 +32,12 @@ unit SourceFileManager;
 interface
 
 uses
-  Classes, SysUtils, typinfo, math, AVL_Tree, fpjson,
+  Classes, SysUtils, typinfo, math, fpjson, Laz_AVL_Tree,
   // LCL
   Controls, Forms, Dialogs, LCLIntf, LCLType, LCLProc, LclStrConsts,
   LResources, LCLMemManager,
   // LazUtils
-  LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazUTF8,
+  LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazUTF8, AvgLvlTree,
   // Codetools
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
@@ -3710,7 +3710,7 @@ var
   FirstDependency: TPkgDependency;
   PkgList: TFPList;
   i: Integer;
-  S2SItem: PStringToStringTreeItem;
+  S2SItem: PStringToStringItem;
   AnUnitName: String;
   AFilename: String;
   UnitList: TViewUnitEntries;

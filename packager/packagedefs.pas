@@ -38,13 +38,13 @@ interface
 
 uses
   // FCL, LCL
-  Classes, SysUtils, contnrs, typinfo, AVL_Tree,
+  Classes, SysUtils, contnrs, typinfo, Laz_AVL_Tree,
   LCLProc, LCLType, LResources, Graphics, Controls, Forms, Dialogs,
   // Codetools
   FileProcs, FileUtil, LazConfigStorage, Laz2_XMLCfg, BasicCodeTools,
   DefineTemplates, CodeToolManager, CodeCache, CodeToolsCfgScript, CodeToolsStructs,
   // LazUtils
-  LazFileUtils, LazFileCache, LazUTF8,
+  LazFileUtils, LazFileCache, LazUTF8, AvgLvlTree,
   // IDEIntf
   PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, IDEOptionsIntf,
   PackageDependencyIntf, PackageIntf, IDEDialogs, ComponentReg,

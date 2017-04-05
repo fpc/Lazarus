@@ -25,7 +25,7 @@ unit WikiSearchOptions;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLogger, BasicCodeTools,
+  Classes, SysUtils, FileUtil, LazLogger, AvgLvlTree, BasicCodeTools,
   CodeToolsStructs, WikiHelpManager, WikiStrConsts, WikiFormat, Forms, Controls,
   Graphics, Dialogs, ExtCtrls, StdCtrls, ComCtrls, Grids;
 
@@ -325,7 +325,7 @@ end;
 
 function TWikiSearchOptsWnd.GetLanguages: string;
 var
-  S2SItem: PStringToStringTreeItem;
+  S2SItem: PStringToStringItem;
 begin
   Result:='';
   if not FLanguages.Contains('') then

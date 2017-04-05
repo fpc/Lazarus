@@ -36,11 +36,11 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
   // CodeTools
-  CodeToolsStructs, FileProcs,
+  FileProcs,
   // LazUtils
-  LazUTF8, LazFileCache, LazFileUtils, LazUtilities, LazDbgLog;
+  LazUTF8, LazFileCache, LazFileUtils, LazUtilities, AvgLvlTree, LazDbgLog;
 
 // verbosity
 { $DEFINE CTDEBUG}

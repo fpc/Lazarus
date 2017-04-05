@@ -39,21 +39,24 @@ unit CodeHelp;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, LCLType, LCLProc, Forms, Controls, FileUtil, Dialogs,
+  // RTL + FCL
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, Forms, Controls, Dialogs,
   // CodeTools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
   FileProcs, DefineTemplates, CodeToolsStructs,
   // LazUtils
-  AvgLvlTree, LazFileUtils, LazUTF8, LazFileCache, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
+  AvgLvlTree, FileUtil, LazFileUtils, LazUTF8, LazFileCache,
+  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   // SynEdit
   SynHighlighterPas,
   // IDEIntf
   IDECommands, IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf,
   IDEDialogs, IDEHelpIntf, LazIDEIntf, IDEExternToolIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, CompilerOptions, IDEProcs, PackageDefs,
+  EditorOptions, LazarusIDEStrConsts, IDEProcs, PackageDefs,
   EnvironmentOpts, TransferMacros, PackageSystem, DialogProcs, KeyMapping;
 
 const
@@ -231,10 +234,10 @@ type
 
   TCodeHelpManager = class(TComponent)
   private
-    FDocs: TAvgLvlTree;// tree of loaded TLazFPDocFile
+    FDocs: TAvlTree;// tree of loaded TLazFPDocFile
     FHandlers: array[TCodeHelpManagerHandler] of TMethodList;
     FPasHighlighter: TSynPasSyn;
-    FSrcToDocMap: TAvgLvlTree; // tree of TCHSourceToFPDocFile sorted for SourceFilename
+    FSrcToDocMap: TAvlTree; // tree of TCHSourceToFPDocFile sorted for SourceFilename
     FDeclarationCache: TDeclarationInheritanceCache;
     procedure AddHandler(HandlerType: TCodeHelpManagerHandler;
                          const AMethod: TMethod; {%H-}AsLast: boolean = false);
@@ -1182,7 +1185,7 @@ var
   CurUnitName: String;
   UnitSet: TFPCUnitSetCache;
   IsInFPCSrc: Boolean;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
 begin
   Result:='';
   NewOwner:=nil;
@@ -1354,8 +1357,8 @@ end;
 constructor TCodeHelpManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FDocs:=TAvgLvlTree.Create(@CompareLazFPDocFilenames);
-  FSrcToDocMap:=TAvgLvlTree.Create(@CompareLDSrc2DocSrcFilenames);
+  FDocs:=TAvlTree.Create(@CompareLazFPDocFilenames);
+  FSrcToDocMap:=TAvlTree.Create(@CompareLDSrc2DocSrcFilenames);
   FDeclarationCache:=TDeclarationInheritanceCache.Create(
                                   @CodeToolBoss.FindDeclarationAndOverload,
                                   @CodeToolBoss.GetCodeTreeNodesDeletedStep);
@@ -1375,7 +1378,7 @@ end;
 
 function TCodeHelpManager.FindFPDocFile(const Filename: string): TLazFPDocFile;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=FDocs.FindKey(Pointer(Filename),@CompareAnsistringWithLazFPDocFile);
   if Node<>nil then
@@ -1705,7 +1708,7 @@ var
 
 var
   CodeBuf: TCodeBuffer;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   MapEntry: TCHSourceToFPDocFile;
 begin
   Result:='';
@@ -1802,7 +1805,7 @@ var
   CacheWasUsed: boolean;
   AnOwner: TObject;
   FPDocFilename: String;
-  S2SItem: PStringToStringTreeItem;
+  S2SItem: PStringToStringItem;
 begin
   for S2SItem in SrcFilenames do begin
     SrcFilename:=S2SItem^.Name;
@@ -3171,7 +3174,7 @@ end;
 
 procedure TCodeHelpManager.FreeDocs;
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
 begin
   AVLNode:=FDocs.FindLowest;
   while AVLNode<>nil do begin

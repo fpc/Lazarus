@@ -35,12 +35,13 @@ unit UnitDependencies;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, types, math, AVL_Tree,
+  // RTL + FCL
+  Classes, SysUtils, types, math, Laz_AVL_Tree,
+  // LCL
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus, Clipbrd,
   // CodeTools
-  CodeToolManager, DefineTemplates, CodeToolsStructs, CTUnitGraph, CTUnitGroupGraph,
-  FileProcs, CodeCache,
+  CodeToolManager, DefineTemplates, CTUnitGraph, CTUnitGroupGraph,
+  FileProcs, CodeCache, AvgLvlTree,
   // LazUtils
   LazLogger, LazFileUtils, LazFileCache, LazUtilities, LazUTF8, LvlGraphCtrl,
   // IDE interface

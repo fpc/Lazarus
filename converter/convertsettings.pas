@@ -30,13 +30,13 @@ unit ConvertSettings;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls, Buttons, ButtonPanel, ComCtrls, LCLProc,
+  Forms, Controls, Dialogs, StdCtrls, Buttons, ButtonPanel, ComCtrls,
   // LazUtils
-  FileUtil, LazFileUtils, DividerBevel, LazConfigStorage,
+  FileUtil, LazFileUtils, DividerBevel, LazConfigStorage, AvgLvlTree,
   // CodeTools
-  CodeToolsStructs, CodeToolManager, CodeCache,
+  CodeToolManager, CodeCache,
   // IdeIntf
   BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf,
   // IDE
@@ -335,7 +335,7 @@ end;
 procedure TConvertSettings.SaveStringToStringTree(Path: string; Tree: TStringToStringTree);
 var
   Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   SubPath: String;
   i: Integer;
 begin
@@ -344,7 +344,7 @@ begin
   Node:=Tree.Tree.FindLowest;
   i:=0;
   while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
+    Item:=PStringToStringItem(Node.Data);
     SubPath:=Path+'Item'+IntToStr(i)+'/';
     fConfigStorage.SetDeleteValue(SubPath+'Name',Item^.Name,'');
     fConfigStorage.SetDeleteValue(SubPath+'Value',Item^.Value,'');

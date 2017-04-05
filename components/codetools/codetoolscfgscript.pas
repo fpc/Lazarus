@@ -53,8 +53,9 @@ unit CodeToolsCfgScript;
 interface
 
 uses
-  Classes, SysUtils, BasicCodeTools, AVL_Tree, KeywordFuncLists, FileProcs,
-  typinfo, CodeToolsStrConsts;
+  Classes, SysUtils, typinfo, Laz_AVL_Tree,
+  // Codetools
+  BasicCodeTools, KeywordFuncLists, FileProcs, CodeToolsStrConsts;
 
 type
   TCTCSValueType = (

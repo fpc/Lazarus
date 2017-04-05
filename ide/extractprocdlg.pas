@@ -32,11 +32,14 @@ unit ExtractProcDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AVL_Tree, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, Buttons, StdCtrls, ButtonPanel,
-  BasicCodeTools, CodeTree, CodeCache, CodeToolManager,
-  ExtractProcTool,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  Forms, Controls, Dialogs, ExtCtrls, StdCtrls, ButtonPanel, LCLProc,
+  // Codetools
+  BasicCodeTools, CodeTree, CodeCache, CodeToolManager, ExtractProcTool,
+  // IdeIntf
   IDEHelpIntf, IDEDialogs,
+  // IDE
   LazarusIDEStrConsts, IDEProcs, MiscOptions;
 
 type

@@ -30,8 +30,11 @@ unit CodeIndex;
 interface
 
 uses
-  SysUtils, AVL_Tree, CodeTree, CodeCache,
-  LazFileUtils, StdCodeTools, CodeToolsStructs;
+  SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils,
+  // Codetools
+  CodeTree, CodeCache, StdCodeTools, CodeToolsStructs;
 
 type
   TCodeBrowserUnit = class;

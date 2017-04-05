@@ -39,7 +39,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, AVL_Tree, KeywordFuncLists;
+  SysUtils,
+  // Codetools
+  FileProcs, KeywordFuncLists;
 
 type
   TCommonAtomFlag = (

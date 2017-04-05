@@ -18,9 +18,16 @@ unit EduSpeedButtons;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, LResources, Forms, StdCtrls, ExtCtrls,
-  LazConfigStorage, ComCtrls, Buttons, IDEOptionsIntf, EduOptions,
-  ObjectInspector, LazIDEIntf, IDEImagesIntf, Dialogs, AvgLvlTree;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  Controls, Graphics, LResources, Forms, StdCtrls, ExtCtrls, Dialogs,
+  ComCtrls, Buttons,
+  // LazUtils
+  LazConfigStorage, AvgLvlTree,
+  // IdeIntf
+  IDEOptionsIntf, LazIDEIntf, IDEImagesIntf,
+  // Education
+  EduOptions;
 
 type
 
@@ -139,7 +146,7 @@ end;
 
 function TEduSpeedButtonsOptions.Save(Config: TConfigStorage): TModalResult;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: PStringToStringItem;
   Cnt: Integer;
 begin

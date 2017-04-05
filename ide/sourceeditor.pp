@@ -44,15 +44,15 @@ uses
   {$ENDIF}
   SynEditMouseCmds,
   // RTL + FCL
-  Classes, SysUtils, StrUtils, types, Math, RegExpr,
+  Classes, SysUtils, StrUtils, types, Math, RegExpr, Laz_AVL_Tree,
   // LCL
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
-  LCLProc, LCLType, LResources, LCLIntf, FileUtil, LazFileUtils,
+  LCLProc, LCLType, LCLIntf, FileUtil, LazFileUtils,
   ClipBrd, HelpIntfs, Messages, LMessages,
   // LazControls
   ExtendedNotebook,
   // LazUtils
-  LConvEncoding, LazUTF8Classes, LazFileCache, LazUTF8, AvgLvlTree,
+  LConvEncoding, LazUTF8Classes, LazFileCache, LazUTF8,
   LazLoggerBase, LazLogger, Translations,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
@@ -635,7 +635,7 @@ type
     FNotebook: TExtendedNotebook;
     FBaseCaption: String;
     FIsClosing: Boolean;
-    FSrcEditsSortedForFilenames: TAvgLvlTree; // TSourceEditorInterface sorted for Filename
+    FSrcEditsSortedForFilenames: TAvlTree; // TSourceEditorInterface sorted for Filename
     TabPopUpMenu, SrcPopUpMenu, DbgPopUpMenu: TPopupMenu;
     procedure ApplyPageIndex;
     procedure ExecuteEditorItemClick(Sender: TObject);
@@ -1856,13 +1856,13 @@ procedure TBrowseEditorTabHistoryDialog.Show(aForward: Boolean);
 var
   I: Integer;
   xPage: TCustomPage;
-  xIndex: TAvgLvlTree;
+  xIndex: TAvlTree;
 begin
   if FNotebook.PageCount <= 1 then
     Exit;
 
   FEditorList.Items.BeginUpdate;
-  xIndex := TAvgLvlTree.Create;
+  xIndex := TAvlTree.Create;
   try
     FEditorList.Items.Clear;
     for I := 0 to FNotebook.FHistoryList.Count-1 do
@@ -6163,7 +6163,7 @@ begin
 
   FSourceEditorList := TFPList.Create;
   FHistoryList := TFPList.Create;
-  FSrcEditsSortedForFilenames := TAvgLvlTree.Create(@CompareSrcEditIntfWithFilename);
+  FSrcEditsSortedForFilenames := TAvlTree.Create(@CompareSrcEditIntfWithFilename);
 
   FHistoryDlg := TBrowseEditorTabHistoryDialog.CreateNew(Self);
   FOnEditorPageCaptionUpdate := TMethodList.Create;
@@ -8059,7 +8059,7 @@ end;
 function TSourceNotebook.SourceEditorIntfWithFilename(const Filename: string
   ): TSourceEditorInterface;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=FSrcEditsSortedForFilenames.FindKey(Pointer(Filename),@CompareFilenameWithSrcEditIntf);
   if Node<>nil then

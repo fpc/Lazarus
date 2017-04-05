@@ -30,8 +30,9 @@ unit CodyNodeInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, ComCtrls, StdCtrls,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, ComCtrls, StdCtrls,
   // IDEIntf
   SrcEditorIntf,
   // CodeTools

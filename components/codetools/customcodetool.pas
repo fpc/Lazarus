@@ -43,9 +43,12 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // Codetools
+  FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
-  LazFileUtils, LazUtilities, AVL_Tree, LazDbgLog;
+  // LazUtils
+  LazFileUtils, LazUtilities, LazDbgLog;
 
 type
   TCodeToolPhase = (

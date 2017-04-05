@@ -12,7 +12,7 @@ uses
   // Codetools
   CodeToolsStructs,
   // LazUtils
-  FileUtil,
+  FileUtil, AvgLvlTree,
   // IDE, converter
   LazarusIDEStrConsts, ConverterTypes;
 

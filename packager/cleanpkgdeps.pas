@@ -32,9 +32,13 @@ unit CleanPkgDeps;
 interface
 
 uses
-  Classes, SysUtils, contnrs, FileUtil, AvgLvlTree, LazLogger,
-  Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls,
-  Buttons, LazarusIDEStrConsts, Project, PackageDefs, IDEImagesIntf;
+  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  // LCL
+  Forms, Controls, ComCtrls, ExtCtrls, StdCtrls, Buttons,
+  // IdeIntf
+  IDEImagesIntf,
+  // IDE
+  LazarusIDEStrConsts, Project, PackageDefs;
 
 const
   CPDProjectName = '-Project-';
@@ -310,7 +314,7 @@ end;
 function TCleanPkgDepsDlg.FindAlternativeRoute(Dependency,
   StartDependency: TPkgDependency): TFPList;
 var
-  Visited: TAvgLvlTree;
+  Visited: TAvlTree;
 
   function Search(Pkg: TLazPackage; Level: integer; var AltRoute: TFPList): boolean;
   var
@@ -344,7 +348,7 @@ begin
   Result:=nil;
   if Dependency=nil then exit;
   if Dependency.RequiredPackage=nil then exit;
-  Visited:=TAvgLvlTree.Create;
+  Visited:=TAvlTree.Create;
   try
     CurDependency:=StartDependency;
     while CurDependency<>nil do begin

@@ -111,12 +111,12 @@ uses
   MemCheck,
   {$ENDIF}
   // RTL + FCL
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
   // CodeTools
-  FileProcs, CodeToolsStructs, BasicCodeTools, KeywordFuncLists, LinkScanner,
-  CodeCache, CodeTree, NonPascalCodeTools,
+  FileProcs, BasicCodeTools, KeywordFuncLists, CodeCache, CodeTree,
+  NonPascalCodeTools, CodeToolsStructs,
   // LazUtils
-  LazFileUtils;
+  LazFileUtils, AvgLvlTree;
 
 type
   TCCodeNodeDesc = word;
@@ -352,7 +352,7 @@ type
     LinkCount: integer;
     Links: PCHFileLink;
     LinksCapacity: integer;
-    Macros: TStringToStringTree;
+    Macros: TIdentStringToStringTree;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -493,7 +493,7 @@ end;
 
 constructor TCHeaderFileMerger.Create;
 begin
-  Macros:=TStringToStringTree.Create(true);
+  Macros:=TIdentStringToStringTree.Create(true);
 end;
 
 destructor TCHeaderFileMerger.Destroy;
@@ -558,7 +558,7 @@ var
     p: LongInt;
     MacroValue: string;
     MacroNode: TAVLTreeNode;
-    MacroItem: PStringToStringTreeItem;
+    MacroItem: PStringToStringItem;
     Src: String;
     BracketLvl: Integer;
   begin
@@ -592,7 +592,7 @@ var
         MacroNode:=Macros.FindNodeWithIdentifierAsPrefix(StartP);
         if MacroNode<>nil then begin
           // macro found
-          MacroItem:=PStringToStringTreeItem(MacroNode.Data);
+          MacroItem:=PStringToStringItem(MacroNode.Data);
           MacroValue:=MacroItem^.Value;
           //debugln(['Append MacroName=',MacroItem^.Name,' Src=',GetIdentifier(@Src[AtomStart]),' Value=',dbgstr(MacroValue)]);
           // write source in front of macro

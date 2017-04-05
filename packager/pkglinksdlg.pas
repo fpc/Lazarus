@@ -37,13 +37,13 @@ unit PkgLinksDlg;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   Forms, Controls, StdCtrls, Buttons, Grids, ExtCtrls, ComCtrls, Menus,
   // Codetools
   FileProcs,
   // LazUtils
-  AvgLvlTree, LazUTF8, LazFileUtils, LazFileCache,
+  LazUTF8, LazFileUtils, LazFileCache,
   // IdeIntf
   PackageLinkIntf, PackageIntf,
   // IDE
@@ -106,7 +106,7 @@ type
     FCountLPKInvalid: integer;
     FCountOnlineLinks: Integer;
     FCountUserLinks: Integer;
-    FLinks: TAvglVLTree;// tree of TPkgLinkInfo sorted for name and version
+    FLinks: TAVLTree;// tree of TPkgLinkInfo sorted for name and version
     FCollectingOrigin: TPkgLinkOrigin;
     procedure RescanGlobalLinks;
     procedure UpdateFacets;
@@ -267,19 +267,19 @@ var
   end;
 
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Link: TPkgLinkInfo;
   i: Integer;
   OriginStr: String;
   Info: TLPKInfo;
-  NextNode: TAvgLvlTreeNode;
+  NextNode: TAvlTreeNode;
   s: String;
 begin
   // collect links
   ClearLinks;
 
   if FLinks=nil then
-    FLinks:=TAvgLvlTree.Create(@ComparePackageLinks);
+    FLinks:=TAVLTree.Create(@ComparePackageLinks);
   if ShowGlobalLinksCheckBox.Checked then begin
     FCollectingOrigin:=ploGlobal;
     LazPackageLinks.IteratePackages(false,@IteratePackages,[ploGlobal]);
@@ -459,7 +459,7 @@ end;
 function TPackageLinksDialog.GetLinkWithEffectiveFilename(Filename: string;
   Origins: TPkgLinkOrigins): TPkgLinkInfo;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=FLinks.FindLowest;
   while Node<>nil do begin

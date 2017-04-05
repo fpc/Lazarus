@@ -30,11 +30,15 @@ unit lfmUnitResource;
 interface
 
 uses
-  Classes, SysUtils,
-  // packages
-  LResources, Forms, CodeCache, CodeToolManager,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  Forms,
+  // LazUtils
+  LazFileCache, LazFileUtils,
+  // Codetools
+  CodeCache, CodeToolManager,
   // IDEIntf
-  UnitResources, SrcEditorIntf, LazFileCache, LazFileUtils, AvgLvlTree,
+  UnitResources, SrcEditorIntf,
   // IDE
   CheckLFMDlg;
 
@@ -62,7 +66,7 @@ type
   end;
 
 var
-  LFMUnitResCache: TAvgLvlTree;
+  LFMUnitResCache: TAvlTree;
 
 function CompareLFMUnitResCacheItems(Cache1, Cache2: Pointer): integer;
 var
@@ -85,7 +89,7 @@ end;
 function GetLFMUnitResCache(UnitFilename: string; AutoCreate: boolean
   ): TLFMUnitResCacheItem;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
 begin
   Node:=LFMUnitResCache.FindKey(Pointer(UnitFilename),@CompareFilenameWithLFMUnitResCacheItem);
   if Node<>nil then begin
@@ -152,7 +156,7 @@ end;
 initialization
   RegisterUnitResourcefileFormat(TLFMUnitResourcefileFormat);
   LFMUnitResourceFileFormat:=TLFMUnitResourcefileFormat;
-  LFMUnitResCache:=TAvgLvlTree.Create(@CompareLFMUnitResCacheItems);
+  LFMUnitResCache:=TAvlTree.Create(@CompareLFMUnitResCacheItems);
 finalization
   LFMUnitResCache.FreeAndClear;
   FreeAndNil(LFMUnitResCache);

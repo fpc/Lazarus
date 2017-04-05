@@ -37,9 +37,10 @@ interface
 { $DEFINE HardExceptions}
 
 uses
-  Classes, SysUtils, FileProcs, BasicCodeTools, CodeTree, LinkScanner,
-  AVL_Tree, PascalParserTool, KeywordFuncLists,
-  CodeToolMemManager;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // Codetools
+  FileProcs, BasicCodeTools, CodeTree, LinkScanner,
+  PascalParserTool, KeywordFuncLists, CodeToolMemManager;
 
 type
   {
@@ -489,12 +490,7 @@ var
   Entry: PInterfaceIdentCacheEntry;
 begin
   if FItems<>nil then begin
-    {$IF FPC_FULLVERSION<30101}
-    if FItems.ConsistencyCheck<>0 then
-      RaiseCatchableException('');
-    {$ELSE}
     FItems.ConsistencyCheck;
-    {$ENDIF}
     Node:=FItems.FindLowest;
     while Node<>nil do begin
       Entry:=PInterfaceIdentCacheEntry(Node.Data);
@@ -1054,14 +1050,8 @@ end;
 
 procedure TCodeTreeNodeCache.ConsistencyCheck;
 begin
-  if (FItems<>nil) then begin
-    {$IF FPC_FULLVERSION<30101}
-    if FItems.ConsistencyCheck<>0 then
-      raise Exception.Create('');
-    {$ELSE}
+  if (FItems<>nil) then
     FItems.ConsistencyCheck;
-    {$ENDIF}
-  end;
   if Owner<>nil then begin
     if Owner.Cache<>Self then
       raise Exception.Create('');

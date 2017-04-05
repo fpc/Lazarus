@@ -38,18 +38,18 @@ interface
 {$I ide.inc}
 
 uses
-  // FCL+LCL
-  Classes, SysUtils, types, LCLProc, LCLType, Forms, Controls, Graphics,
-  Dialogs, Buttons, ComCtrls, Menus, AvgLvlTree, StdCtrls, ExtCtrls,
+  // RTL+FCL
+  Classes, SysUtils, types, Laz_AVL_Tree,
+  // LCL
+  LCLProc, LCLType, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, StdCtrls, ExtCtrls,
   // CodeTools
   FileProcs, BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom,
   CodeCache, CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,
   PascalParserTool,
-  // IDE Intf
+  // IDEIntf
   LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf, IDEDialogs,
   // IDE
-  KeyMapping, LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory,
-  IDEProcs, CodeExplOpts;
+  LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, CodeExplOpts;
 
 type
   TCodeExplorerView = class;
@@ -238,8 +238,8 @@ type
     function OnExpandedStateGetNodeText(Node: TTreeNode): string;
   protected
     fLastCodeTool: TCodeTool;
-    fCodeSortedForStartPos: TAvgLvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos, secondary EndPos
-    fNodesWithPath: TAvgLvlTree; // tree of TViewNodeData sorted for Path and Params
+    fCodeSortedForStartPos: TAvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos, secondary EndPos
+    fNodesWithPath: TAvlTree; // tree of TViewNodeData sorted for Path and Params
     procedure ApplyCodeFilter;
     procedure ApplyDirectivesFilter;
     function CompareCodeNodes(Node1, Node2: TTreeNode): integer;
@@ -522,7 +522,7 @@ begin
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuItemClick;
   CERenameIDEMenuCommand.OnClick:=@RenameMenuItemClick;
 
-  fNodesWithPath:=TAvgLvlTree.Create(@CompareViewNodePathsAndParams);
+  fNodesWithPath:=TAvlTree.Create(@CompareViewNodePathsAndParams);
 
   Application.AddOnUserInputHandler(@OnUserInput);
   LazarusIDE.AddHandlerOnIDEClose(@OnCloseIDE);
@@ -2512,7 +2512,7 @@ var
   end;
 
 var
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   Node: TTreeNode;
   NodeData: TViewNodeData;
 begin
@@ -2553,8 +2553,7 @@ begin
     if (NodeData<>nil) and (NodeData.StartPos>0)
     and (NodeData.EndPos>=NodeData.StartPos) then begin
       if fCodeSortedForStartPos=nil then
-        fCodeSortedForStartPos:=
-              TAvgLvlTree.Create(TListSortCompare(@CompareViewNodeDataStartPos));
+        fCodeSortedForStartPos:=TAvlTree.Create(TListSortCompare(@CompareViewNodeDataStartPos));
       fCodeSortedForStartPos.Add(TVNode);
     end;
     TVNode:=TVNode.GetNext;
@@ -2705,7 +2704,7 @@ procedure TCodeExplorerView.CreateNodePath(ACodeTool: TCodeTool;
   aNodeData: TObject);
 var
   NodeData: TViewNodeData absolute aNodeData;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
 begin
   if NodeData.CTNode.Desc=ctnProcedure then
     NodeData.Path:=GetCTNodePath(ACodeTool,NodeData.CTNode);
@@ -2727,7 +2726,7 @@ procedure TCodeExplorerView.AddImplementationNode(ACodeTool: TCodeTool;
   CodeNode: TCodeTreeNode);
 var
   NodeData: TViewNodeData;
-  AVLNode: TAvgLvlTreeNode;
+  AVLNode: TAvlTreeNode;
   DeclData: TViewNodeData;
 begin
   if (CodeNode.Desc=ctnProcedure)

@@ -18,10 +18,15 @@ unit EduCompPalette;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, ComCtrls, ExtCtrls, StdCtrls, AvgLvlTree,
-  FormEditingIntf, LazConfigStorage, IDEOptionsIntf, ComponentReg,
-  IDEImagesIntf, LazIDEIntf, LCLType,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, LCLType, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  ExtCtrls, StdCtrls,
+  // LazUtils
+  LazConfigStorage, AvgLvlTree,
+  // IdeIntf
+  FormEditingIntf, IDEOptionsIntf, ComponentReg, IDEImagesIntf,
+  // Education
   EduOptions;
 
 type
@@ -442,7 +447,7 @@ end;
 
 function TEduComponentPaletteOptions.Save(Config: TConfigStorage): TModalResult;
 var
-  Node: TAvgLvlTreeNode;
+  Node: TAvlTreeNode;
   Item: PStringToStringItem;
   Cnt: Integer;
 begin

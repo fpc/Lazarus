@@ -51,11 +51,12 @@ unit ExtractProcTool;
 interface
 
 uses
-  Classes, SysUtils, math, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  Classes, SysUtils, math, Laz_AVL_Tree,
+  // Codetools
+  FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CodeCache, CustomCodeTool, PascalReaderTool,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree, SourceChanger,
-  FindDeclarationTool;
+  LinkScanner, SourceChanger, FindDeclarationTool;
   
 type
   TExtractedProcVariableType = (

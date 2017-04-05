@@ -40,12 +40,20 @@ unit ViewUnit_Dlg;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, Buttons, StdCtrls,
-  LazarusIdeStrConsts, IDEProcs, CustomFormEditor, LCLType, LCLIntf,
-  ExtCtrls, ButtonPanel, Menus, AVL_Tree, ComCtrls,
-  PackageDefs, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit,
-  CodeToolsStructs, CodeToolManager, FileProcs,
-  lazutf8sysutils, LazFileUtils, LazFileCache;
+  SysUtils, Classes, Laz_AVL_Tree,
+  // LCL
+  LCLType, LCLIntf,
+  Controls, Forms, Buttons, StdCtrls, ExtCtrls, ButtonPanel, Menus, ComCtrls,
+  // LazUtils
+  LazUTF8SysUtils, LazFileUtils, LazFileCache, AvgLvlTree,
+  // Codetools
+  CodeToolManager, FileProcs,
+  // LazControls
+  ListFilterEdit,
+  // IdeIntf
+  IDEWindowIntf, IDEHelpIntf, IDEImagesIntf,
+  // IDE
+  LazarusIdeStrConsts, IDEProcs, CustomFormEditor, PackageDefs;
 
 type
   TIDEProjectItem = (
@@ -526,7 +534,7 @@ end;
 
 procedure TViewUnitDialog.UpdateEntries;
 var
-  F2SItem: PStringToStringTreeItem;
+  F2SItem: PStringToStringItem;
 begin
   fEntries.Clear;
   for F2SItem in fFoundFiles do

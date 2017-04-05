@@ -31,8 +31,11 @@ unit NonControlDesigner;
 interface
 
 uses
-  Classes, SysUtils, Math, LCLProc, Graphics, GraphType, Forms, Controls,
-  IDEProcs, DesignerProcs, FormEditingIntf, CustomNonFormDesigner;
+  Classes, SysUtils, Math,
+  // LCL
+  LCLProc, Graphics, GraphType, Forms, Controls,
+  // IdeIntf
+  FormEditingIntf, CustomNonFormDesigner;
   
 type
 

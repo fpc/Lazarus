@@ -40,7 +40,7 @@ interface
 
 uses
   // RTL + FCL
-  SysUtils, Math, Types, Classes, Contnrs,
+  SysUtils, Math, Types, Classes, Contnrs, Laz_AVL_Tree,
   FPImage, FPCanvas,
   FPWriteBMP,              // bmp support
   FPWritePNG, PNGComn,     // png support
@@ -49,7 +49,7 @@ uses
   FPReadTiff, FPTiffCmn,   // tiff support
   FPReadGif,
   // LazUtils
-  FPCAdds, LazUTF8Classes, FileUtil, AvgLvlTree,
+  FPCAdds, LazUTF8Classes,
   // LCL
   LCLVersion, LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
   IntfGraphics, GraphType, IcnsTypes, GraphMath, WSReferences;
@@ -489,7 +489,7 @@ type
     procedure RemoveItem(Item: TResourceCacheItem); override;
   public
     constructor Create;
-    function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
+    function CompareDescriptors(Tree: TAvlTree; Desc1, Desc2: Pointer): integer; override;
     function FindFont(TheFont: TLCLHandle): TResourceCacheItem;
     function FindFontDesc(const LogFont: TLogFont;
                           const LongFontName: string): TFontHandleCacheDescriptor;
@@ -627,7 +627,7 @@ type
     procedure RemoveItem(Item: TResourceCacheItem); override;
   public
     constructor Create;
-    function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; override;
+    function CompareDescriptors(Tree: TAvlTree; Desc1, Desc2: Pointer): integer; override;
     function FindPen(APen: TLCLHandle): TResourceCacheItem;
     function FindPenDesc(const AExtPen: TExtLogPen;
                          const APattern: TPenPattern): TPenHandleCacheDescriptor;

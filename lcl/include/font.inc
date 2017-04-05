@@ -42,7 +42,7 @@ begin
   FResourceCacheDescriptorClass := TFontHandleCacheDescriptor;
 end;
 
-function TFontHandleCache.CompareDescriptors(Tree: TAvgLvlTree; Desc1,
+function TFontHandleCache.CompareDescriptors(Tree: TAvlTree; Desc1,
   Desc2: Pointer): integer;
 var
   Descriptor1: TFontHandleCacheDescriptor absolute Desc1;
@@ -57,7 +57,7 @@ end;
 
 function TFontHandleCache.FindFont(TheFont: TLCLHandle): TResourceCacheItem;
 var
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   ANode := FItems.FindKey(@TheFont,
                           TListSortCompare(@ComparePHandleWithResourceCacheItem));
@@ -71,7 +71,7 @@ function TFontHandleCache.FindFontDesc(const LogFont: TLogFont;
   const LongFontName: string): TFontHandleCacheDescriptor;
 var
   LogFontAndName: TLogFontAndName;
-  ANode: TAvgLvlTreeNode;
+  ANode: TAvlTreeNode;
 begin
   LogFontAndName.LogFont := LogFont;
   LogFontAndName.LongFontName := LongFontName;
