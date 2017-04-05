@@ -1465,13 +1465,40 @@ function TAnchorDockMaster.CloseUnneededControls(Tree: TAnchorDockLayoutTree
 var
   i: Integer;
   AControl: TControl;
+  TreeNodeControl: TAnchorDockLayoutTreeNode;
+
+  function ParentsIdentical: Boolean;
+  var
+    ParentForm: TCustomForm;
+    ParentAnchorDockLayoutTreeNode: TAnchorDockLayoutTreeNode;
+    Parent1, Parent2: String;
+  begin
+    ParentForm := GetParentForm(AControl, True);
+    if Assigned(ParentForm) then
+      Parent1 := ParentForm.Name
+    else
+      Parent1 := '';
+
+    Parent2 := '';
+    ParentAnchorDockLayoutTreeNode := TreeNodeControl;
+    while Assigned(ParentAnchorDockLayoutTreeNode.Parent) do begin
+      Parent2 := ParentAnchorDockLayoutTreeNode.Name;
+      ParentAnchorDockLayoutTreeNode := ParentAnchorDockLayoutTreeNode.Parent;
+    end;
+    Result := Parent1 = Parent2;
+
+//    DebugLn('TAnchorDockMaster.ParentsIdentical [', Parent1, '] [', Parent2, ']');
+  end;
+
 begin
   i:=ControlCount-1;
   while i>=0 do begin
     AControl:=Controls[i];
+    TreeNodeControl:=Tree.Root.FindChildNode(AControl.Name,true);
     if DockedControlIsVisible(AControl)
-    and (Tree.Root.FindChildNode(AControl.Name,true)=nil)
-    and (Application.MainForm<>AControl) then begin
+    and (Application.MainForm<>AControl)
+    and ((TreeNodeControl=nil) or not ParentsIdentical)
+    then begin
       DisableControlAutoSizing(AControl);
       // AControl is currently on a visible site, but not in the Tree
       // => close site
