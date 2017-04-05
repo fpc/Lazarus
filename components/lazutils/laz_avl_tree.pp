@@ -1436,6 +1436,11 @@ end;
 procedure TAVLTreeNodeMemManager.DisposeNode(ANode: TAVLTreeNode);
 begin
   if ANode=nil then exit;
+  if FCount < 0 then
+    raise Exception.CreateFmt(
+      'TAVLTreeNodeMemManag.DisposeNode: FCount (%d) is negative. Should not happen.'
+     +' FFreeCount=%d, FMinFree=%d, FMaxFreeRatio=%d.',
+      [FCount, FFreeCount, FMinFree, FMaxFreeRatio]);
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add ANode to Free list
