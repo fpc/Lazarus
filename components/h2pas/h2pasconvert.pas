@@ -23,7 +23,8 @@ unit H2PasConvert;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, LCLProc, Forms, Controls, Dialogs, LResources, XMLPropStorage,
+  Classes, SysUtils, Laz_AVL_Tree, LCLProc, Forms, Controls, Dialogs,
+  LResources, XMLPropStorage,
   LazConfigStorage, FileUtil, LazFileUtils, LazFileCache, LazUTF8Classes,
   // CodeTools
   CodeAtom, CodeTree, KeywordFuncLists, NonPascalCodeTools, BasicCodeTools,
@@ -2064,10 +2065,10 @@ begin
       Tool.Title:='h2pas';
       Tool.H2PasFile:=AFile;
       Tool.TargetFilename:=TextConverter.Filename;
-      Tool.Filename:=GetH2PasFilename;
+      Tool.Executable:=GetH2PasFilename;
       Tool.CmdLineParams:=AFile.GetH2PasParameters(Tool.TargetFilename);
       Tool.WorkingDirectory:=Project.BaseDir;
-      DebugLn(['TH2PasConverter.ConvertFile Tool.Filename="',Tool.Filename,'" Tool.CmdLineParams="',Tool.CmdLineParams,'"']);
+      DebugLn(['TH2PasConverter.ConvertFile Tool.Executable="',Tool.Executable,'" Tool.CmdLineParams="',Tool.CmdLineParams,'"']);
       Tool.Scanners.Add(SubToolH2Pas);
       if not RunExternalTool(Tool) then
         exit(mrAbort);
