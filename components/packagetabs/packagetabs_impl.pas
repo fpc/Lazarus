@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, Types, Contnrs, Controls, SrcEditorIntf, StdCtrls, Buttons,
   ComCtrls, Forms, LazFileUtils, PackageIntf, Graphics, Menus, LazIDEIntf,
   ExtCtrls, IDEImagesIntf, Laz2_XMLCfg, IDECommands, LCLIntf,
-  IDEOptionsIntf, packagetabsstr, Clipbrd, LCLProc;
+  IDEOptionsIntf, ProjectIntf, packagetabsstr, Clipbrd, LCLProc;
 
 type
   TPackageTabButton = class(TSpeedButton)
@@ -835,6 +835,7 @@ var
   xPkgItem: TGroupItem;
   xGroupTitle, xCaptionToSort: string;
   xGroupType: TGroupType;
+  xProjectFile: TLazProjectFile;
 begin
   xActBtn := nil;
   FRecreateToolBar.FLastFiles.Clear;
@@ -852,7 +853,8 @@ begin
         xEditor := FWindow.Items[I];
         FRecreateToolBar.FLastFiles.Add(xEditor.FileName);
         xPackage := nil;
-        if xEditor.GetProjectFile.IsPartOfProject then
+        xProjectFile := xEditor.GetProjectFile;
+        if (xProjectFile<>nil) and xProjectFile.IsPartOfProject then
         begin
           xGroupType := gtProject;
           xGroupTitle := LazarusIDE.ActiveProject.GetTitleOrName
