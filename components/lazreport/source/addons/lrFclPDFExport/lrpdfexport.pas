@@ -32,7 +32,7 @@
  Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.
 }
 
-{$IF (FPC_FULLVERSION < 30101)}
+{$IF (FPC_FULLVERSION < 30002)}
 !!! This component compiled only FPC 3.1.1 or hight
 {$ENDIF}
 

@@ -372,7 +372,9 @@ end;
 begin
   if gTTFontCache.Count = 0 then
   begin
+    {$IF (FPC_FULLVERSION >= 30101)}
     gTTFontCache.BuildFontCacheIgnoresErrors:=true;
+    {$ENDIF}
     CreateFontDirList;
     gTTFontCache.BuildFontCache;
   end;
@@ -749,11 +751,13 @@ end;
 
 procedure TlrPdfExportFilter.WriteURL(X, Y, W, H: TPDFFloat; AUrlText: string);
 begin
+  {$IF (FPC_FULLVERSION >= 30101)}
   X := ConvetUnits(X);
   Y := ConvetUnits(Y);
   W := ConvetUnits(W);
   H := ConvetUnits(H);
   FCurPage.AddExternalLink(X, Y + H, W, H, AUrlText, false);
+  {$ENDIF}
 end;
 
 procedure TlrPdfExportFilter.DrawLine(X1, Y1, X2, Y2: TPDFFloat;
