@@ -103,6 +103,7 @@ type
     procedure SetOnObjectCompare(const AValue: TObjectSortCompare);
     procedure SetCompares(const NewCompare: TListSortCompare;
                           const NewObjectCompare: TObjectSortCompare);
+    procedure SetNodeClass(const AValue: TAVLTreeNodeClass);
   public
     constructor Create(const OnCompareMethod: TListSortCompare);
     constructor CreateObjectCompare(const OnCompareMethod: TObjectSortCompare);
@@ -110,7 +111,7 @@ type
     destructor Destroy; override;
     property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
     property OnObjectCompare: TObjectSortCompare read FOnObjectCompare write SetOnObjectCompare;
-    property NodeClass: TAVLTreeNodeClass read FNodeClass write FNodeClass; // used for new nodes
+    property NodeClass: TAVLTreeNodeClass read FNodeClass write SetNodeClass; // used for new nodes
     procedure SetNodeManager(NewMgr: TBaseAVLTreeNodeManager;
                              AutoFree: boolean = false);
     function NewNode: TAVLTreeNode; virtual; // create a node outside the tree
@@ -498,6 +499,17 @@ begin
   end;
 end;
 
+procedure TAVLTree.SetNodeClass(const AValue: TAVLTreeNodeClass);
+begin
+  if FNodeClass=AValue then Exit;
+  if Count>0 then
+    raise Exception.Create(ClassName+'.SetNodeClass Count='+IntToStr(Count)
+      +' Old='+fNodeMgr.ClassName+' New='+AValue.ClassName);
+  FNodeClass:=AValue;
+  if fNodeMgr=LazNodeMemManager then
+    fNodeMgr:=nil;
+end;
+
 procedure TAVLTree.BalanceAfterInsert(ANode: TAVLTreeNode);
 var
   OldParent, OldRight, OldLeft: TAVLTreeNode;
@@ -687,7 +699,7 @@ begin
   DisposeNode(ANode);
 end;
 
-function TAvlTree.Remove(Data: Pointer): boolean;
+function TAVLTree.Remove(Data: Pointer): boolean;
 var
   ANode: TAvlTreeNode;
 begin
@@ -699,7 +711,7 @@ begin
     Result:=false;
 end;
 
-function TAvlTree.RemovePointer(Data: Pointer): boolean;
+function TAVLTree.RemovePointer(Data: Pointer): boolean;
 var
   ANode: TAvlTreeNode;
 begin
@@ -1206,7 +1218,7 @@ begin
   if IsEqual(aTree,true) then exit;
   Clear;
   SetCompares(aTree.OnCompare,aTree.OnObjectCompare);
-  FNodeClass:=aTree.NodeClass;
+  NodeClass:=aTree.NodeClass;
   if aTree.Root<>nil then
     AssignNode(fRoot,aTree.Root);
   FCount:=aTree.Count;

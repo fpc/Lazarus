@@ -380,10 +380,8 @@ begin
   begin
     TObject(aNode.Data).Free;
     aNode.Data := nil;
-    aNode.Free;
-  end
-  else
-    inherited DisposeNode(aNode);
+  end;
+  inherited DisposeNode(aNode);
 end;
 
 procedure TAvgLvlTree.FreeAndDelete(ANode: TAVLTreeNode);
@@ -837,7 +835,7 @@ end;
 
 procedure TIndexedAVLTree.Init;
 begin
-  FNodeClass:=TIndexedAVLTreeNode;
+  NodeClass:=TIndexedAVLTreeNode;
 end;
 
 procedure TIndexedAVLTree.NodeAdded(aNode: TAvlTreeNode);
