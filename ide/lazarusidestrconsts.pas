@@ -3001,10 +3001,10 @@ resourcestring
   srkmecInsertLine            = 'Break line, leave cursor';
   srkmecChar                  = 'Char';
   srkmecImeStr                = 'Ime Str';
-  srkmecCut                   = 'Cut selection to clipboard';
-  srkmecCopy                  = 'Copy selection to clipboard';
-  srkmecPaste                 = 'Paste clipboard to current position';
-  srkmecMultiPaste            = 'MultiPaste clipboard to current position';
+  srkmecCut                   = 'Cut';
+  srkmecCopy                  = 'Copy';
+  srkmecPaste                 = 'Paste';
+  srkmecMultiPaste            = 'MultiPaste';
   srkmecScrollUp              = 'Scroll up one line';
   srkmecScrollDown            = 'Scroll down one line';
   srkmecScrollLeft            = 'Scroll left one char';
@@ -3378,9 +3378,9 @@ resourcestring
   lisKMConvertDelphiPackageToLazarusPackage = 'Convert Delphi package to Lazarus package';
   srkmCarHelpMenu       = 'Help menu commands';
   lisKeyCatDesigner     = 'Designer commands';
-  lisKMCopySelectedComponentsToClipboard = 'Copy selected Components to clipboard';
-  lisKMCutSelectedComponentsToClipboard = 'Cut selected Components to clipboard';
-  lisKMPasteComponentsFromClipboard = 'Paste Components from clipboard';
+  lisKMCopySelectedComponentsToClipboard = 'Copy selected components';
+  lisKMCutSelectedComponentsToClipboard = 'Cut selected components';
+  lisKMPasteComponentsFromClipboard = 'Paste Components';
   lisKeyCatObjInspector = 'Object Inspector commands';
   lisKeyCatCustom       = 'Custom commands';
 
