@@ -130,7 +130,7 @@ type
     procedure MoveDataRightMost(var ANode: TAVLTreeNode);
     procedure Clear;
     procedure FreeAndClear;
-    procedure FreeAndDelete(ANode: TAVLTreeNode);
+    procedure FreeAndDelete(ANode: TAVLTreeNode); virtual;
     function Equals(Obj: TObject): boolean; override; // same as IsEqual(aTree,false)
     function IsEqual(aTree: TAVLTree; CheckDataPointer: boolean): boolean; // checks only keys or Data (references), not the data itself, O(n)
     procedure Assign(aTree: TAVLTree); virtual; // clear and copy all Data (references), O(n)
@@ -640,7 +640,6 @@ end;
 
 constructor TAVLTree.Create(const OnCompareMethod: TListSortCompare);
 begin
-  inherited Create;
   fNodeMgr:=LazNodeMemManager;
   FOnCompare:=OnCompareMethod;
   Init;
@@ -663,6 +662,12 @@ procedure TAVLTree.Delete(ANode: TAVLTreeNode);
 var
   OldParent, Child: TAVLTreeNode;
 begin
+  {$IFDEF CheckAVLTreeNodeManager}
+  OldParent:=ANode;
+  while OldParent.Parent<>nil do OldParent:=OldParent.Parent;
+  if OldParent<>Root then
+    raise Exception,Create('TAVLTree.Delete'); // not my node
+  {$ENDIF}
   if (ANode.Left<>nil) and (ANode.Right<>nil) then begin
     // ANode has both: Left and Right
     // Switch ANode position with Successor
@@ -1188,7 +1193,7 @@ begin
     end else begin
       if Compare(MyNode.Data,OtherNode.Data)<>0 then exit;
     end;
-    MyNode:=MyNode.Successor;;
+    MyNode:=MyNode.Successor;
     OtherNode:=OtherNode.Successor;
   end;
   if OtherNode<>nil then exit;

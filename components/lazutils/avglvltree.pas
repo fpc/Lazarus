@@ -35,7 +35,7 @@ type
     FOwnsObjects: boolean;
   public
     procedure DisposeNode(aNode: TAVLTreeNode); override;
-    procedure FreeAndDelete(ANode: TAVLTreeNode); overload;
+    procedure FreeAndDelete(ANode: TAVLTreeNode); override;
     property OwnsObjects: boolean read FOwnsObjects write FOwnsObjects;
   end;
 
