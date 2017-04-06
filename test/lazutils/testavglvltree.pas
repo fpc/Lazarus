@@ -1,7 +1,7 @@
 {
  Test all with:
-     ./runtests --format=plain --suite=TTestAvgLvlTree
-     ./runtests --format=plain --suite=TTestAVLTree
+     ./runtests --format=plain --suite=TTest_AvgLvlTree
+     ./runtests --format=plain --suite=TTest_AVLTree
 
  Test specific with:
      ./runtests --format=plain --suite=TestAvgLvlTreeAddsDeletes
@@ -17,15 +17,19 @@ unit TestAvgLvlTree;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, fpcunit, testglobals, AvgLvlTree, LazLogger;
+  Classes, SysUtils, fpcunit, testglobals, LazLogger,
+  AVL_Tree, // the unit from FPC
+  // Laz_AVL_Tree, the unit copied from FPC when compiling Lazarus for older compilers
+  AvgLvlTree // unit from LazUtils, an extended version
+  ;
 
 type
-  { TTestAvgLvlTree }
+  { TTest_AvgLvlTree - the LazUtils extensions }
 
-  TTestAvgLvlTree = class(TTestCase)
+  TTest_AvgLvlTree = class(TTestCase)
   private
-    fTreeClass: TAvgLvlTreeClass;
-    function CreateTree(Args: array of const): TAvgLvlTree;
+    fTreeClass: AvgLvlTree.TAvgLvlTreeClass;
+    function CreateTree(Args: array of const): AvgLvlTree.TAvgLvlTree;
     procedure TestSequence(Args: array of const);
     procedure TestAscendingSequence(InitArgs: array of const; AscSeq: array of const);
     procedure TestAvgLvlTree;
@@ -34,14 +38,20 @@ type
     procedure TestIndexedAVLTreeAddsDeletes;
   end;
 
-  { TTestAVLTree }
+  {$IF FPC_FULLVERSION<30101}
+  TAVLTreeClass = class of TAVLTree;
+  {$ENDIF}
 
-  TTestAVLTree = class(TTestCase)
+  { TTest_AVLTree - the FPC unit}
+
+  TTest_AVLTree = class(TTestCase)
   private
     fTreeClass: TAVLTreeClass;
     function CreateTree(Args: array of const): TAVLTree;
     procedure TestSequence(Args: array of const);
+    {$IF FPC_FULLVERSION>=30101}
     procedure TestAscendingSequence(InitArgs: array of const; AscSeq: array of const);
+    {$ENDIF}
     procedure TestAVLTree;
   published
     procedure TestAVLTreeAddsDeletes;
@@ -49,9 +59,9 @@ type
 
 implementation
 
-{ TTestAVLTree }
+{ TTest_AVLTree }
 
-function TTestAVLTree.CreateTree(Args: array of const): TAVLTree;
+function TTest_AVLTree.CreateTree(Args: array of const): TAVLTree;
 var
   i: Integer;
   Value: LongInt;
@@ -82,9 +92,9 @@ begin
   end;
 end;
 
-procedure TTestAVLTree.TestSequence(Args: array of const);
+procedure TTest_AVLTree.TestSequence(Args: array of const);
 var
-  Tree: TAVLTree;
+  Tree: AVL_Tree.TAVLTree;
 begin
   Tree:=CreateTree(Args);
   Tree.Clear;
@@ -93,11 +103,12 @@ begin
   Tree.Free;
 end;
 
-procedure TTestAVLTree.TestAscendingSequence(InitArgs: array of const;
+{$IF FPC_FULLVERSION>=30101}
+procedure TTest_AVLTree.TestAscendingSequence(InitArgs: array of const;
   AscSeq: array of const);
 var
-  Tree: TAVLTree;
-  LastAdded, Succesor: TAVLTreeNode;
+  Tree: AVL_Tree.TAVLTree;
+  LastAdded, Succesor: AVL_Tree.TAVLTreeNode;
   i: Integer;
   Value: LongInt;
 begin
@@ -123,8 +134,9 @@ begin
   Tree.ConsistencyCheck;
   Tree.Free;
 end;
+{$ENDIF}
 
-procedure TTestAVLTree.TestAVLTree;
+procedure TTest_AVLTree.TestAVLTree;
 begin
   // rotate left
   TestSequence([]);
@@ -153,6 +165,7 @@ begin
   TestSequence([1,2,3,-3,-1,-2]);
   TestSequence([1,2,3,-3,-2,-1]);
 
+  {$IF FPC_FULLVERSION>=30101}
   // test AddAscendingSequence
   TestAscendingSequence([],[1]);
   TestAscendingSequence([],[1,2]);
@@ -163,17 +176,18 @@ begin
   TestAscendingSequence([2],[1,3,4,5]);
   TestAscendingSequence([3],[1,2,4,5,6]);
   TestAscendingSequence([3,4],[1,2,5,6,7]);
+  {$ENDIF}
 end;
 
-procedure TTestAVLTree.TestAVLTreeAddsDeletes;
+procedure TTest_AVLTree.TestAVLTreeAddsDeletes;
 begin
-  fTreeClass:=TAVLTree;
+  fTreeClass:=AVL_Tree.TAVLTree;
   TestAVLTree;
 end;
 
-{ TTestAvgLvlTree }
+{ TTest_AvgLvlTree }
 
-function TTestAvgLvlTree.CreateTree(Args: array of const): TAvgLvlTree;
+function TTest_AvgLvlTree.CreateTree(Args: array of const): AvgLvlTree.TAvgLvlTree;
 var
   i: Integer;
   Value: LongInt;
@@ -204,9 +218,9 @@ begin
   end;
 end;
 
-procedure TTestAvgLvlTree.TestSequence(Args: array of const);
+procedure TTest_AvgLvlTree.TestSequence(Args: array of const);
 var
-  Tree: TAvgLvlTree;
+  Tree: AvgLvlTree.TAvgLvlTree;
 begin
   Tree:=CreateTree(Args);
   Tree.Clear;
@@ -215,11 +229,11 @@ begin
   Tree.Free;
 end;
 
-procedure TTestAvgLvlTree.TestAscendingSequence(InitArgs: array of const;
+procedure TTest_AvgLvlTree.TestAscendingSequence(InitArgs: array of const;
   AscSeq: array of const);
 var
-  Tree: TAvgLvlTree;
-  LastAdded, Succesor: TAvgLvlTreeNode;
+  Tree: AvgLvlTree.TAvgLvlTree;
+  LastAdded, Succesor: AvgLvlTree.TAvgLvlTreeNode;
   i: Integer;
   Value: LongInt;
 begin
@@ -246,7 +260,7 @@ begin
   Tree.Free;
 end;
 
-procedure TTestAvgLvlTree.TestAvgLvlTree;
+procedure TTest_AvgLvlTree.TestAvgLvlTree;
 begin
   // rotate left
   TestSequence([]);
@@ -287,21 +301,21 @@ begin
   TestAscendingSequence([3,4],[1,2,5,6,7]);
 end;
 
-procedure TTestAvgLvlTree.TestAvgLvlTreeAddsDeletes;
+procedure TTest_AvgLvlTree.TestAvgLvlTreeAddsDeletes;
 begin
-  fTreeClass:=TAvgLvlTree;
+  fTreeClass:=AvgLvlTree.TAvgLvlTree;
   TestAvgLvlTree;
 end;
 
-procedure TTestAvgLvlTree.TestIndexedAVLTreeAddsDeletes;
+procedure TTest_AvgLvlTree.TestIndexedAVLTreeAddsDeletes;
 begin
-  fTreeClass:=TIndexedAVLTree;
+  fTreeClass:=AvgLvlTree.TIndexedAVLTree;
   TestAvgLvlTree;
 end;
 
 initialization
-  AddToLazUtilsTestSuite(TTestAvgLvlTree);
-  AddToLazUtilsTestSuite(TTestAVLTree);
+  AddToLazUtilsTestSuite(TTest_AvgLvlTree);
+  AddToLazUtilsTestSuite(TTest_AVLTree);
 
 end.
 
