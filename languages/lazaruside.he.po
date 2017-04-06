@@ -10451,6 +10451,10 @@ msgstr "אזהרה: שם יחידה לא חוקי %s, חבילה=%s"
 msgid "IDE Macros"
 msgstr ""
 
+#: lazarusidestrconsts.lisidemaintainsscaledinmainunit
+msgid "The IDE maintains Application.Scaled (Hi-DPI) in main unit."
+msgstr ""
+
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr ""
@@ -12211,11 +12215,13 @@ msgstr "הזן פרמטרים לריצה"
 msgid "Main unit has Application.CreateForm statements"
 msgstr "ליחידה הראשית יש יישום. משפטי CreateForm"
 
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-#, fuzzy
-#| msgid "Main Unit has Application.Title statements"
-msgid "Main unit has Application.Title statements"
-msgstr "ליחידה הראשית יש יישום. משפטי כותרת"
+#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
+msgid "Main unit has Application.Scaled statement"
+msgstr ""
+
+#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
+msgid "Main unit has Application.Title statement"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 #, fuzzy

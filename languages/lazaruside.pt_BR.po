@@ -10118,6 +10118,10 @@ msgstr "AVISO: nome unidade inválido %s, pacote=%s"
 msgid "IDE Macros"
 msgstr "Macros IDE"
 
+#: lazarusidestrconsts.lisidemaintainsscaledinmainunit
+msgid "The IDE maintains Application.Scaled (Hi-DPI) in main unit."
+msgstr ""
+
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr ""
@@ -11804,9 +11808,13 @@ msgstr "Inserir parâmetros de execução"
 msgid "Main unit has Application.CreateForm statements"
 msgstr "Unidade principal tem declarações \"Application.CreateForm\""
 
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-msgid "Main unit has Application.Title statements"
-msgstr "Unidade principal tem declarações \"Application.Title\""
+#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
+msgid "Main unit has Application.Scaled statement"
+msgstr ""
+
+#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
+msgid "Main unit has Application.Title statement"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"

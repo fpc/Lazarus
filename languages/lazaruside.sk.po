@@ -10289,6 +10289,10 @@ msgstr ""
 msgid "IDE Macros"
 msgstr ""
 
+#: lazarusidestrconsts.lisidemaintainsscaledinmainunit
+msgid "The IDE maintains Application.Scaled (Hi-DPI) in main unit."
+msgstr ""
+
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr ""
@@ -11993,11 +11997,13 @@ msgstr "Zadajte parametre spustenia"
 msgid "Main unit has Application.CreateForm statements"
 msgstr "Základná jednotka obsahuje Application.CreateForm"
 
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-#, fuzzy
-#| msgid "Main Unit has Application.Title statements"
-msgid "Main unit has Application.Title statements"
-msgstr "Základná jednotka obsahuje Application.Title"
+#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
+msgid "Main unit has Application.Scaled statement"
+msgstr ""
+
+#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
+msgid "Main unit has Application.Title statement"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 #, fuzzy

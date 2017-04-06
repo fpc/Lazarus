@@ -9876,6 +9876,10 @@ msgstr "FIGYELMEZTETÉS: érvénytelen unit-név: %s, csomag=%s"
 msgid "IDE Macros"
 msgstr "IDE makrók"
 
+#: lazarusidestrconsts.lisidemaintainsscaledinmainunit
+msgid "The IDE maintains Application.Scaled (Hi-DPI) in main unit."
+msgstr ""
+
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr "Az IDE karbantartja a címet a fő unit-ban."
@@ -11498,9 +11502,13 @@ msgstr "Írja be a futtatási paramétereket"
 msgid "Main unit has Application.CreateForm statements"
 msgstr "A fő unit tartalmazza az Application.CreateForm állományt"
 
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-msgid "Main unit has Application.Title statements"
-msgstr "A fő unit tartalmazza az Application.Title állományt"
+#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
+msgid "Main unit has Application.Scaled statement"
+msgstr ""
+
+#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
+msgid "Main unit has Application.Title statement"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"

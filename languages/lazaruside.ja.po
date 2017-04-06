@@ -10080,6 +10080,10 @@ msgstr "警告：ユニット名無効%s, パッケージ=%s"
 msgid "IDE Macros"
 msgstr "IDEマクロ"
 
+#: lazarusidestrconsts.lisidemaintainsscaledinmainunit
+msgid "The IDE maintains Application.Scaled (Hi-DPI) in main unit."
+msgstr ""
+
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr ""
@@ -11766,9 +11770,13 @@ msgstr "実行時引数を入力してください"
 msgid "Main unit has Application.CreateForm statements"
 msgstr "メインユニットはApplication.CreateForm文を保有"
 
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-msgid "Main unit has Application.Title statements"
-msgstr "メインユニットはApplication.Title文を保有"
+#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
+msgid "Main unit has Application.Scaled statement"
+msgstr ""
+
+#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
+msgid "Main unit has Application.Title statement"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"

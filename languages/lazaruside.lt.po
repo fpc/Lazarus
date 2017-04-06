@@ -10155,6 +10155,10 @@ msgstr "Įspėjimas: modulio pavadinimas „%s“ yra klaidingas, paketas - „%
 msgid "IDE Macros"
 msgstr "IKA makrokomandos"
 
+#: lazarusidestrconsts.lisidemaintainsscaledinmainunit
+msgid "The IDE maintains Application.Scaled (Hi-DPI) in main unit."
+msgstr ""
+
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr ""
@@ -11851,9 +11855,13 @@ msgstr "Įveskite starto parametrus"
 msgid "Main unit has Application.CreateForm statements"
 msgstr "Pagrindiniame modulyje yra sakinių „Application.CreateForm“"
 
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-msgid "Main unit has Application.Title statements"
-msgstr "Pagrindiniame modulyje yra sakinių „Application.Title“"
+#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
+msgid "Main unit has Application.Scaled statement"
+msgstr ""
+
+#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
+msgid "Main unit has Application.Title statement"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"

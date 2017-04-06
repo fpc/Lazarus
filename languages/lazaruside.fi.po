@@ -9809,6 +9809,10 @@ msgstr "Varoitus: käännösyksikön %s nimi ei kelpaa, paketti=%s"
 msgid "IDE Macros"
 msgstr "IDE-makrot"
 
+#: lazarusidestrconsts.lisidemaintainsscaledinmainunit
+msgid "The IDE maintains Application.Scaled (Hi-DPI) in main unit."
+msgstr ""
+
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
 msgstr "IDE pitää yllä otsikkoa päätiedostossa."
@@ -11390,9 +11394,13 @@ msgstr "Syötä suoritusparametrit"
 msgid "Main unit has Application.CreateForm statements"
 msgstr "Pääohjelmassa on Application.CreateForm -lause"
 
-#: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-msgid "Main unit has Application.Title statements"
-msgstr "Pääohjelmassa on Application.Title -lause"
+#: lazarusidestrconsts.lismainunithasapplicationscaledstatement
+msgid "Main unit has Application.Scaled statement"
+msgstr ""
+
+#: lazarusidestrconsts.lismainunithasapplicationtitlestatement
+msgid "Main unit has Application.Title statement"
+msgstr ""
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
