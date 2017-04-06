@@ -30,7 +30,7 @@ unit Laz_AVL_Tree;
 interface
 
 {off $DEFINE MEM_CHECK}
-{$DEFINE CheckAVLTreeNodeManager}
+{off $DEFINE CheckAVLTreeNodeManager}
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
