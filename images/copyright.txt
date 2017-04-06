@@ -39,6 +39,7 @@ menu_toggle_bookmark6.png
 menu_toggle_bookmark7.png
 menu_toggle_bookmark8.png
 menu_toggle_bookmark9.png
+menu_view_search_results.png
 
 sourceeditor directory:
 

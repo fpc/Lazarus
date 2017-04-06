@@ -6888,6 +6888,7 @@ images/menu/menu_view_code_explorer.png -text svneol=unset#image/png
 images/menu/menu_view_forms.png -text svneol=unset#image/png
 images/menu/menu_view_inspector.png -text svneol=unset#image/png
 images/menu/menu_view_rectriction_browser.png -text
+images/menu/menu_view_search_results.png -text
 images/menu/menu_view_source_editor.png -text svneol=unset#image/png
 images/menu/menu_view_todo.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit.png -text svneol=unset#image/png

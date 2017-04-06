@@ -125,6 +125,7 @@ menu/menu_view_code_explorer.png
 menu/menu_view_forms.png
 menu/menu_view_inspector.png
 menu/menu_view_rectriction_browser.png
+menu/menu_view_search_results.png
 menu/menu_view_source_editor.png
 menu/menu_view_todo.png
 menu/menu_view_toggle_form_unit.png
