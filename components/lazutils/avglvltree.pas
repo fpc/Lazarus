@@ -25,18 +25,27 @@ uses
 
 type
 
+  TAvgLvlTree = class;
+
+  TAvgLvlObjectSortCompare = function(Tree: TAvgLvlTree; Data1, Data2: Pointer): integer of object;
+
   { TAvgLvlTree and TAvgLvlTreeNode for backwards compatibility.
     They used to be fully implemented here but now inherit from TAVLTreeNode and TAvlTree.
   }
   TAvgLvlTreeNode = TAVLTreeNode;
+  TAvgLvlTreeNodeEnumerator = TAVLTreeNodeEnumerator;
 
   TAvgLvlTree = class(TAvlTree)
   private
     FOwnsObjects: boolean;
+    function GetObjectCompare: TAvgLvlObjectSortCompare;
+    procedure SetObjectCompare(AValue: TAvgLvlObjectSortCompare);
   public
+    constructor CreateObjectCompare(const OnCompareMethod: TAvgLvlObjectSortCompare);
     procedure DisposeNode(aNode: TAVLTreeNode); override;
     procedure FreeAndDelete(ANode: TAVLTreeNode); override;
     property OwnsObjects: boolean read FOwnsObjects write FOwnsObjects;
+    property OnObjectCompare: TAvgLvlObjectSortCompare read GetObjectCompare write SetObjectCompare;
   end;
   TAvgLvlTreeClass = class of TAvgLvlTree;
 
@@ -374,6 +383,21 @@ begin
 end;
 
 { TAvgLvlTree }
+
+constructor TAvgLvlTree.CreateObjectCompare(const OnCompareMethod: TAvgLvlObjectSortCompare);
+begin
+  inherited CreateObjectCompare(TObjectSortCompare(OnCompareMethod));
+end;
+
+procedure TAvgLvlTree.SetObjectCompare(AValue: TAvgLvlObjectSortCompare);
+begin
+  inherited SetOnObjectCompare(TObjectSortCompare(AValue));
+end;
+
+function TAvgLvlTree.GetObjectCompare: TAvgLvlObjectSortCompare;
+begin
+  Result := TAvgLvlObjectSortCompare(FOnObjectCompare);
+end;
 
 procedure TAvgLvlTree.DisposeNode(aNode: TAVLTreeNode);
 begin
