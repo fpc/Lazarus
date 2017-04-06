@@ -30,6 +30,7 @@ unit Laz_AVL_Tree;
 interface
 
 {off $DEFINE MEM_CHECK}
+{$DEFINE CheckAVLTreeNodeManager}
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
@@ -179,6 +180,9 @@ type
     FCount: SizeInt;
     FMinFree: SizeInt;
     FMaxFreeRatio: SizeInt;
+    {$IFDEF CheckAVLTreeNodeManager}
+    FThreadId: TThreadID;
+    {$ENDIF}
     procedure SetMaxFreeRatio(NewValue: SizeInt);
     procedure SetMinFree(NewValue: SizeInt);
     procedure DisposeFirstFreeNode;
@@ -1419,6 +1423,9 @@ end;
 
 constructor TAVLTreeNodeMemManager.Create;
 begin
+  {$IFDEF CheckAVLTreeNodeManager}
+  FThreadId:=GetCurrentThreadId;
+  {$ENDIF}
   inherited Create;
   FFirstFree:=nil;
   FFreeCount:=0;
@@ -1436,11 +1443,15 @@ end;
 procedure TAVLTreeNodeMemManager.DisposeNode(ANode: TAVLTreeNode);
 begin
   if ANode=nil then exit;
+  {$IFDEF CheckAVLTreeNodeManager}
+  if GetCurrentThreadId<>FThreadId then
+    raise Exception.Create('not thread safe!');
+  {$ENDIF}
   if FCount < 0 then
     raise Exception.CreateFmt(
-      'TAVLTreeNodeMemManag.DisposeNode: FCount (%d) is negative. Should not happen.'
+      '%s.DisposeNode: FCount (%d) is negative. Should not happen.'
      +' FFreeCount=%d, FMinFree=%d, FMaxFreeRatio=%d.',
-      [FCount, FFreeCount, FMinFree, FMaxFreeRatio]);
+      [ClassName, FCount, FFreeCount, FMinFree, FMaxFreeRatio]);
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add ANode to Free list
@@ -1461,11 +1472,16 @@ end;
 
 function TAVLTreeNodeMemManager.NewNode: TAVLTreeNode;
 begin
+  {$IFDEF CheckAVLTreeNodeManager}
+  if GetCurrentThreadId<>FThreadId then
+    raise Exception.Create('not thread safe!');
+  {$ENDIF}
   if FFirstFree<>nil then begin
     // take from free list
     Result:=FFirstFree;
     FFirstFree:=FFirstFree.Right;
     Result.Right:=nil;
+    dec(FFreeCount);
   end else begin
     // free list empty -> create new node
     Result:=TAVLTreeNode.Create;
@@ -1476,6 +1492,10 @@ end;
 procedure TAVLTreeNodeMemManager.Clear;
 var ANode: TAVLTreeNode;
 begin
+  {$IFDEF CheckAVLTreeNodeManager}
+  if GetCurrentThreadId<>FThreadId then
+    raise Exception.Create('not thread safe!');
+  {$ENDIF}
   while FFirstFree<>nil do begin
     ANode:=FFirstFree;
     FFirstFree:=FFirstFree.Right;
