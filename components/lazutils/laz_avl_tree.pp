@@ -666,7 +666,7 @@ begin
   OldParent:=ANode;
   while OldParent.Parent<>nil do OldParent:=OldParent.Parent;
   if OldParent<>Root then
-    raise Exception,Create('TAVLTree.Delete'); // not my node
+    raise Exception.Create('TAVLTree.Delete'); // not my node
   {$ENDIF}
   if (ANode.Left<>nil) and (ANode.Right<>nil) then begin
     // ANode has both: Left and Right
