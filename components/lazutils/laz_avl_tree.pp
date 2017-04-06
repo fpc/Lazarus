@@ -20,7 +20,7 @@
     balanced, so that inserting, deleting and finding a node is performed in
     O(log(#Nodes)).
 
-  Note! This is a copy of avl_tree unit from FPC 3.1.1 from 26.3.2017.
+  Note! This is a copy of avl_tree unit from FPC 3.1.1 from 6.4.2017.
         Can be removed when FPC 3.2 is the minimun requirement for Lazarus and LazUtils.
 }
 unit Laz_AVL_Tree;
