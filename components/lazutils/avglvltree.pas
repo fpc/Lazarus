@@ -38,6 +38,7 @@ type
     procedure FreeAndDelete(ANode: TAVLTreeNode); override;
     property OwnsObjects: boolean read FOwnsObjects write FOwnsObjects;
   end;
+  TAvgLvlTreeClass = class of TAvgLvlTree;
 
   { TIndexedAVLTreeNode }
 
@@ -48,7 +49,7 @@ type
 
   { TIndexedAVLTree }
 
-  TIndexedAVLTree = class(TAvlTree)
+  TIndexedAVLTree = class(TAvgLvlTree)
   private
     function GetItems(Index: SizeInt): Pointer; inline;
   protected

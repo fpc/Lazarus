@@ -244,7 +244,7 @@ end;
 
 function TAVLTree.Add(Data: Pointer): TAVLTreeNode;
 begin
-  Result:=fNodeMgr.NewNode;
+  Result:=NewNode;
   Result.Data:=Data;
   Add(Result);
 end;
@@ -292,16 +292,16 @@ end;
 
 function TAVLTree.NewNode: TAVLTreeNode;
 begin
-  if LazNodeMemManager<>nil then
-    Result:=LazNodeMemManager.NewNode
+  if fNodeMgr<>nil then
+    Result:=fNodeMgr.NewNode
   else
     Result:=NodeClass.Create;
 end;
 
 procedure TAVLTree.DisposeNode(ANode: TAVLTreeNode);
 begin
-  if LazNodeMemManager<>nil then
-    LazNodeMemManager.DisposeNode(ANode)
+  if fNodeMgr<>nil then
+    fNodeMgr.DisposeNode(ANode)
   else
     ANode.Free;
 end;
@@ -628,7 +628,7 @@ procedure TAVLTree.Clear;
       if ANode.Left<>nil then DeleteNode(ANode.Left);
       if ANode.Right<>nil then DeleteNode(ANode.Right);
     end;
-    fNodeMgr.DisposeNode(ANode);
+    DisposeNode(ANode);
   end;
 
 // Clear
@@ -1326,6 +1326,9 @@ procedure TAVLTree.SetNodeManager(NewMgr: TBaseAVLTreeNodeManager;
   AutoFree: boolean);
 // only allowed just after create.
 begin
+  if fNodeMgr=NewMgr then exit;
+  if Count>0 then
+    raise Exception.Create('TAVLTree.SetNodeManager');
   if fNodeMgrAutoFree then
     FreeAndNil(fNodeMgr);
   fNodeMgr:=NewMgr;
