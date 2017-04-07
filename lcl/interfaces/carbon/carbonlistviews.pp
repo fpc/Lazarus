@@ -1409,7 +1409,7 @@ end;
 procedure TCarbonDataBrowser.ShowItem(AIndex: Integer; Partial: Boolean);
 begin
   // TODO: partial show
-  OSError(RevealDataBrowserItem(Widget, AIndex, kDataBrowserNoItem,
+  OSError(RevealDataBrowserItem(Widget, AIndex + 1, kDataBrowserNoItem,
     kDataBrowserRevealWithoutSelecting), Self, 'ShowItem', 'RevealDataBrowserItem');
 end;
 

@@ -687,6 +687,7 @@ begin
   if not CheckHandle(ACustomListBox, Self, 'SetItemIndex') then Exit;
 
   TCarbonListBox(ACustomListBox.Handle).SetItemIndex(AIndex);
+  TCarbonListBox(ACustomListBox.Handle).ShowItem(AIndex, False);
 end;
 
 {------------------------------------------------------------------------------
