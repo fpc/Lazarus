@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="10"/>
     <General>
       <Flags>
         <LRSInOutputDirectory Value="False"/>
@@ -10,9 +10,6 @@
       <MainUnit Value="0"/>
       <UseAppBundle Value="False"/>
     </General>
-    <VersionInfo>
-      <StringTable ProductVersion=""/>
-    </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
     </BuildModes>

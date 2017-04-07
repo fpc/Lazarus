@@ -29,7 +29,11 @@ program getexpandedoperand;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, CodeCache, CodeToolManager,
+  SysUtils,
+  // LazUtils
+  LazFileUtils,
+  // CodeTools
+  CodeCache, CodeToolManager,
   SimpleUnit1, getterexample1;
 
 const

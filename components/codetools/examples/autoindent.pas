@@ -28,7 +28,11 @@ program AutoIndent;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, CodeToolManager, CodeCache, CodeBeautifier;
+  SysUtils,
+  // LazUtils
+  LazUTF8, LazFileUtils,
+  // CodeTools
+  CodeToolManager, CodeCache, CodeBeautifier;
 
 var
   Code: TCodeBuffer;

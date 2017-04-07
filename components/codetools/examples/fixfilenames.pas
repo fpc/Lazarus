@@ -29,7 +29,11 @@ program FixFilenames;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeToolsStructs, CodeToolManager, CodeCache;
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils, LazUTF8, AvgLvlTree,
+  // CodeTools
+  CodeToolManager, CodeCache;
 
 const
   ConfigFilename = 'codetools.config';

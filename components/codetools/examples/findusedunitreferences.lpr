@@ -35,7 +35,11 @@ program FindUsedUnitReferences;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager,
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils,
+  // CodeTools
+  CodeCache, CodeToolManager,
   usedunitrefs1;
 
 const

@@ -28,7 +28,11 @@ program addwith;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager;
+  Classes, SysUtils,
+  // LazUtils
+  LazUTF8,
+  // CodeTools
+  CodeCache, CodeToolManager;
 
 const
   ConfigFilename = 'codetools.config';

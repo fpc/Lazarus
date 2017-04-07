@@ -7,12 +7,9 @@ interface
 uses
   Classes, SysUtils, RegExpr,
   // LCL
-  LResources, Forms, Controls, Graphics, Dialogs,
-  Grids, Buttons, ExtCtrls, Menus, ButtonPanel,
-  // Codetools
-  CodeToolsStructs,
+  Forms, Controls, Dialogs, Grids, Menus, ButtonPanel,
   // LazUtils
-  FileUtil, AvgLvlTree,
+  AvgLvlTree,
   // IDE, converter
   LazarusIDEStrConsts, ConverterTypes;
 

@@ -37,7 +37,7 @@ uses
   Forms, Controls,
   // CodeTools
   CodeToolManager, CodeTree, CodeAtom, FileProcs, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, CodeCache, SourceChanger, CodeToolsStructs,
+  LinkScanner, CodeCache, SourceChanger,
   // LazUtils
   LazFileUtils, AvgLvlTree,
   // IdeIntf

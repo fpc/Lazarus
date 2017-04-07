@@ -45,7 +45,7 @@ uses
   Classes, SysUtils,
   // Codetools
   FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom, ExprEval,
-  MultiKeyWordListTool, KeywordFuncLists, CodeToolsStructs, LinkScanner, CodeCache;
+  MultiKeyWordListTool, KeywordFuncLists, LinkScanner, CodeCache;
 
 type
   TProcHeadAttribute = (

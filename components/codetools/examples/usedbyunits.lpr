@@ -28,8 +28,11 @@ program UsedByUnits;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, AVL_Tree, FileProcs, CTUnitGraph, CodeToolManager,
-  LazFileUtils, LazFileCache;
+  SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils, LazFileCache,
+  // CodeTools
+  FileProcs, CTUnitGraph, CodeToolManager;
 
 const
   ConfigFilename = 'codetools.config';

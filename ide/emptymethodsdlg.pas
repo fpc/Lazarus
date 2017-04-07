@@ -32,12 +32,17 @@ unit EmptyMethodsDlg;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, StdCtrls, ButtonPanel, SynEdit, SynHighlighterPas,
-  CodeToolsStructs, CodeCache, CodeToolManager, PascalParserTool,
-  CodeTree,
-  SrcEditorIntf, LazIDEIntf, PropEdits, IDEDialogs, CustomFormEditor, JitForms,
-  Project, LazarusIDEStrConsts, EditorOptions;
+  Classes, SysUtils, TypInfo,
+  // LCL
+  LCLProc, Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
+  // SynEdit
+  SynEdit, SynHighlighterPas,
+  // CodeTools
+  CodeToolsStructs, CodeCache, CodeToolManager, PascalParserTool, CodeTree,
+  // IdeIntf
+  SrcEditorIntf, LazIDEIntf, PropEdits, IDEDialogs,
+  // IDE
+  CustomFormEditor, JitForms, Project, LazarusIDEStrConsts, EditorOptions;
 
 type
 

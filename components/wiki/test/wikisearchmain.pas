@@ -25,11 +25,19 @@ unit WikiSearchMain;
 interface
 
 uses
-  Classes, SysUtils, math, FileUtil, LazLogger, LazUTF8, LazFileUtils, laz2_DOM,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, LCLIntf,
-  Menus, IpHtml, Ipfilebroker, IpMsg, CodeToolManager, CodeCache, SynEdit,
-  SynHighlighterHTML, SynEditHighlighter, WikiHelpManager, WikiSearchOptions,
-  WikiParser, WikiFormat;
+  Classes, SysUtils, math,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, LCLIntf, Menus,
+  // LazUtils
+  LazLogger, LazUTF8, LazFileUtils, laz2_DOM,
+  // CodeTools
+  CodeToolManager, CodeCache,
+  // SynEdit
+  SynEdit, SynHighlighterHTML, SynEditHighlighter,
+  // TurboPower_IPro
+  IpHtml, Ipfilebroker,
+  // Wiki
+  WikiHelpManager, WikiSearchOptions, WikiParser, WikiFormat;
 
 type
 

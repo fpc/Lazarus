@@ -28,7 +28,11 @@ program retypepublishedvars;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, CodeCache, CodeToolManager, CodeToolsStructs;
+  SysUtils,
+  // LazUtils
+  AvgLvlTree,
+  // CodeTools
+  CodeCache, CodeToolManager, CodeToolsStructs;
 
 const
   ConfigFilename = 'codetools.config';

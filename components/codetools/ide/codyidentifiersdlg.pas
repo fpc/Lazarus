@@ -45,8 +45,8 @@ uses
   PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, IDEDialogs, IDEMsgIntf, IDEExternToolIntf,
   // Codetools
-  CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary, CodeTree,
-  LinkScanner, DefineTemplates, CodeToolsStructs, FindDeclarationTool,
+  CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
+  CodeTree, LinkScanner, DefineTemplates, FindDeclarationTool,
   CodyStrConsts, CodyUtils, CodyOpts, FileProcs,
   // LazUtils
   LazFileUtils, LazFileCache, AvgLvlTree;

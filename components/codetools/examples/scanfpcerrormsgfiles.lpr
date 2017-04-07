@@ -10,7 +10,11 @@ program scanfpcerrormsgfiles;
 {$mode objfpc}{$H+}
 
 uses
-  sysutils, CodeToolsFPCMsgs, CodeToolsStructs, LazFileUtils;
+  sysutils,
+  // LazUtils
+  LazFileUtils, AvgLvlTree,
+  // CodeTools
+  CodeToolsFPCMsgs, CodeToolsStructs;
 
 procedure WriteUsage;
 begin

@@ -9,7 +9,7 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.7'
   object PagePanel: TPanel
     Left = 325
     Height = 501
@@ -38,6 +38,10 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       PrintSettings.MarginTop = 0.5
       PrintSettings.MarginRight = 0.5
       PrintSettings.MarginBottom = 0.5
+      PrintSettings.Preview.Left = 480
+      PrintSettings.Preview.Top = 270
+      PrintSettings.Preview.Width = 1440
+      PrintSettings.Preview.Height = 810
       TabOrder = 0
       WantTabs = False
       OnHotClick = IpHtmlPanelHotClick
@@ -63,8 +67,8 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       end
       object SearchSepToolButton: TToolButton
         Left = 24
+        Height = 22
         Top = 2
-        Width = 5
         Caption = 'SearchSepToolButton'
         Style = tbsDivider
       end
@@ -106,8 +110,8 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       AnchorSideTop.Control = OptionsButton
       AnchorSideTop.Side = asrBottom
       Left = 1
-      Height = 431
-      Top = 69
+      Height = 433
+      Top = 67
       Width = 318
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -119,6 +123,10 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       PrintSettings.MarginTop = 0.5
       PrintSettings.MarginRight = 0.5
       PrintSettings.MarginBottom = 0.5
+      PrintSettings.Preview.Left = 480
+      PrintSettings.Preview.Top = 270
+      PrintSettings.Preview.Width = 1440
+      PrintSettings.Preview.Height = 810
       TabOrder = 0
       WantTabs = False
       OnHotClick = IpHtmlPanelHotClick
@@ -128,10 +136,10 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = SearchPanel
       AnchorSideRight.Control = HideSearchButton
-      Left = 82
-      Height = 24
+      Left = 87
+      Height = 28
       Top = 7
-      Width = 114
+      Width = 97
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       OnChange = SearchEditChange
@@ -145,9 +153,9 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       AnchorSideTop.Control = SearchEdit
       AnchorSideTop.Side = asrCenter
       Left = 7
-      Height = 15
-      Top = 12
-      Width = 69
+      Height = 14
+      Top = 14
+      Width = 74
       BorderSpacing.Around = 6
       Caption = 'SearchLabel'
       ParentColor = False
@@ -158,9 +166,9 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
       Left = 7
-      Height = 15
-      Top = 43
-      Width = 79
+      Height = 14
+      Top = 42
+      Width = 85
       BorderSpacing.Around = 6
       Caption = 'ProgressLabel'
       ParentColor = False
@@ -170,10 +178,10 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = SearchPanel
       AnchorSideRight.Side = asrBottom
-      Left = 202
-      Height = 26
-      Top = 6
-      Width = 111
+      Left = 190
+      Height = 24
+      Top = 9
+      Width = 123
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -185,10 +193,10 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
       AnchorSideLeft.Control = SearchPanel
       AnchorSideRight.Control = SearchPanel
       AnchorSideRight.Side = asrBottom
-      Left = 222
-      Height = 26
+      Left = 213
+      Height = 24
       Top = 37
-      Width = 91
+      Width = 100
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -205,16 +213,6 @@ object WikiSearchDemoForm: TWikiSearchDemoForm
   object SynHTMLSyn1: TSynHTMLSyn
     DefaultFilter = 'HTML Document (*.htm,*.html)|*.htm;*.html'
     Enabled = False
-    AndAttri.FrameEdges = sfeAround
-    ASPAttri.FrameEdges = sfeAround
-    CommentAttri.FrameEdges = sfeAround
-    IdentifierAttri.FrameEdges = sfeAround
-    KeyAttri.FrameEdges = sfeAround
-    SpaceAttri.FrameEdges = sfeAround
-    SymbolAttri.FrameEdges = sfeAround
-    TextAttri.FrameEdges = sfeAround
-    UndefKeyAttri.FrameEdges = sfeAround
-    ValueAttri.FrameEdges = sfeAround
     left = 411
     top = 139
   end

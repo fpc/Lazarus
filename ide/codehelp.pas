@@ -46,7 +46,7 @@ uses
   // CodeTools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
-  FileProcs, DefineTemplates, CodeToolsStructs,
+  FileProcs, DefineTemplates,
   // LazUtils
   AvgLvlTree, FileUtil, LazFileUtils, LazUTF8, LazFileCache,
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,

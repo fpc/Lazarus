@@ -28,7 +28,11 @@ program AddMethod;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, CodeCache, CodeToolManager, CodeCompletionTool, SimpleUnit1;
+  SysUtils,
+  // LazUtils
+  LazFileUtils,
+  // CodeTools
+  CodeCache, CodeToolManager, CodeCompletionTool, SimpleUnit1;
   
 type
   TMyMethodType = function(Sender: TObject; AValue: integer): string of object;

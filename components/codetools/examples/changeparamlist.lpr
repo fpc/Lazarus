@@ -29,8 +29,10 @@ program changeparamlist;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, contnrs, CodeCache, CodeToolManager, FileProcs, AVL_Tree, CodeAtom,
-  SourceChanger, CodeTree, FindDeclarationTool, CTUnitGraph, ChangeDeclarationTool,
+  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  // CodeTools
+  CodeCache, CodeToolManager, FileProcs, CodeAtom, CodeTree, SourceChanger,
+  FindDeclarationTool, CTUnitGraph, ChangeDeclarationTool,
   ChangeParamList1;
 
 const

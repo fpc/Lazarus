@@ -40,7 +40,7 @@ uses
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses,
   // codetools
-  CodeCache, CodeToolManager, CodeToolsStructs, CodeCompletionTool, LFMTrees,
+  CodeCache, CodeToolManager, CodeCompletionTool, LFMTrees,
   // IdeIntf
   IDEExternToolIntf, ComponentReg,
   // IDE

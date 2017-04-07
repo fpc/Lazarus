@@ -70,7 +70,7 @@ begin
       raise Exception.Create('loading failed '+Filename);
 
     // complete code
-    if CodeToolBoss.CompleteCode(Code,X,Y,TopLine,NewCode,NewX,NewY,NewTopLine)
+    if CodeToolBoss.CompleteCode(Code,X,Y,TopLine,NewCode,NewX,NewY,NewTopLine,false)
     then begin
       writeln('Code completed: ',NewCode.Filename,' Line=',NewY,' Column=',NewX);
       writeln(Code.Source);

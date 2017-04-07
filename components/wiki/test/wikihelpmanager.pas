@@ -27,8 +27,14 @@ unit WikiHelpManager;
 interface
 
 uses
-  Classes, SysUtils, math, LazFileUtils, LazLogger, LazDbgLog, LazUTF8,
-  laz2_DOM, CodeToolsStructs, BasicCodeTools, KeywordFuncLists, MTProcs,
+  Classes, SysUtils, math,
+  // LazUtils
+  LazFileUtils, LazLogger, LazDbgLog, LazUTF8, laz2_DOM, AvgLvlTree,
+  // CodeTools
+  BasicCodeTools, KeywordFuncLists,
+  //
+  MTProcs,
+  // Wiki
   Wiki2HTMLConvert, Wiki2XHTMLConvert, WikiFormat, WikiParser;
 
 type

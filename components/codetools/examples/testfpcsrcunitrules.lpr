@@ -28,8 +28,11 @@ program TestFPCSrcUnitRules;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CustApp, AVL_Tree, CodeToolManager, DefineTemplates,
-  CodeToolsConfig, FileProcs, CodeToolsStructs, LazFileUtils;
+  Classes, SysUtils, CustApp, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils, AvgLvlTree,
+  // CodeTools
+  FileProcs, CodeToolManager, DefineTemplates, CodeToolsConfig;
 
 const
   ConfigFilename = 'codetools.config';
@@ -241,7 +244,7 @@ var
   IsPPU: Boolean;
   SourceFiles: TStringList;
   Units: TStringToStringTree;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   Node: TAVLTreeNode;
 begin
   SearchPaths:=ConfigCache.UnitPaths;
@@ -282,7 +285,7 @@ begin
   Node:=Units.Tree.FindLowest;
   i:=0;
   while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
+    Item:=PStringToStringItem(Node.Data);
     Filename:=Item^.Value;
     if System.Pos(';',Filename)>0 then begin
       // duplicate units
@@ -302,7 +305,7 @@ procedure TTestFPCSourceUnitRules.WriteMissingPPUSources(
 var
   UnitToSrc: TStringToStringTree;
   Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   ConfigCache: TFPCTargetConfigCache;
   aUnitName: String;
   Cnt: Integer;
@@ -319,7 +322,7 @@ begin
     Cnt:=0;
     Node:=ConfigCache.Units.Tree.FindLowest;
     while Node<>nil do begin
-      Item:=PStringToStringTreeItem(Node.Data);
+      Item:=PStringToStringItem(Node.Data);
       aUnitName:=Item^.Name;
       Filename:=Item^.Value;
       if CompareFileExt(Filename,'ppu',false)=0 then begin
@@ -353,7 +356,7 @@ var
   SrcDuplicates: TStringToStringTree;
   Node: TAVLTreeNode;
   Cnt: Integer;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   aUnitName: String;
   Files: String;
   Units: TStringToStringTree;
@@ -368,7 +371,7 @@ begin
     Cnt:=0;
     Node:=SrcDuplicates.Tree.FindLowest;
     while Node<>nil do begin
-      Item:=PStringToStringTreeItem(Node.Data);
+      Item:=PStringToStringItem(Node.Data);
       aUnitName:=Item^.Name;
       Files:=Item^.Value;
       PPUFile:=Units[aUnitName];
@@ -386,7 +389,7 @@ begin
   Cnt:=0;
   Node:=SrcDuplicates.Tree.FindLowest;
   while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
+    Item:=PStringToStringItem(Node.Data);
     aUnitName:=Item^.Name;
     Files:=Item^.Value;
     if (Units=nil) or (Units[aUnitName]='') then begin

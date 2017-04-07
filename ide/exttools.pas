@@ -42,7 +42,7 @@ uses
   LCLProc,
   {$ENDIF}
   // CodeTools
-  FileProcs, //CodeToolsStructs,
+  FileProcs,
   // LazUtils
   FileUtil, AvgLvlTree, LazFileUtils, UTF8Process, LazUTF8,
   // IDEIntf

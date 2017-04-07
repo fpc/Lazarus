@@ -28,8 +28,12 @@ program unitdicttest;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, AVL_Tree, CodeToolManager, FileProcs,
-  DefineTemplates, unitdictionary, CodeToolsStructs, LazFileUtils;
+  SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  LazFileUtils, AvgLvlTree,
+  // CodeTools
+  CodeToolManager, FileProcs,
+  DefineTemplates, unitdictionary, CodeToolsStructs;
   
 const
   ConfigFilename = 'codetools.config';
@@ -40,7 +44,7 @@ var
   UnitSet: TFPCUnitSetCache;
   CfgCache: TFPCTargetConfigCache;
   AVLNode: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
   Directory: String;
   D2: TUnitDictionary;
 begin
@@ -53,7 +57,7 @@ begin
     AVLNode:=CfgCache.Units.Tree.FindLowest;
     Directory:=AppendPathDelim(UnitSet.FPCSourceDirectory)+'packages';
     while AVLNode<>nil do begin
-      Item:=PStringToStringTreeItem(AVLNode.Data);
+      Item:=PStringToStringItem(AVLNode.Data);
       FileName:=UnitSet.GetUnitSrcFile(Item^.Name,false);
       //writeln('UnitName=',Item^.Name,' Source=',Filename);
       if FilenameIsPascalUnit(Filename)

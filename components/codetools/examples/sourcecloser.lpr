@@ -33,9 +33,12 @@ program sourcecloser;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, AvgLvlTree, LazLogger, LazFileUtils, Laz2_XMLCfg, LazUTF8,
+  Classes, SysUtils, CustApp,
+  // LazUtils
+  AvgLvlTree, LazLogger, LazFileUtils, Laz2_XMLCfg, LazUTF8,
+  // CodeTools
   FileProcs, BasicCodeTools, CodeToolManager, CodeCache, SourceChanger,
-  CodeTree, DefineTemplates, CustApp;
+  CodeTree, DefineTemplates;
 
 type
 

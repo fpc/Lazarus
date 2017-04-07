@@ -28,7 +28,11 @@ program IdentifierCompletion;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, CodeCache, CodeToolManager;
+  SysUtils,
+  // LazUtils
+  LazFileUtils,
+  // CodeTools
+  CodeCache, CodeToolManager;
 
 const
   ConfigFilename = 'codetools.config';
@@ -50,8 +54,7 @@ begin
 
   CodeToolBoss.SimpleInit(ConfigFilename);
 
-  // optional: ProjectDir and TestPascalFile exists only to easily test some
-  // things.
+  // optional: ProjectDir and TestPascalFile exists only to easily test some things.
   Filename:=TrimFilename(SetDirSeparators(GetCurrentDir+'/scanexamples/identcomplexample.pas'));
   X:=20;
   Y:=11;

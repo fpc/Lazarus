@@ -28,7 +28,11 @@ program CompleteBlock;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, DefineTemplates, CodeToolManager, CodeCache;
+  Classes, SysUtils,
+  // LazUtils
+  LazUTF8, LazFileUtils,
+  // CodeTool
+  DefineTemplates, CodeToolManager, CodeCache;
 
 var
   Code: TCodeBuffer;

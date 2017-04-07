@@ -35,7 +35,7 @@ uses
   // RTL
   Classes, SysUtils, strutils, math,
   // CodeTools
-  KeywordFuncLists, CodeToolsFPCMsgs, {CodeToolsStructs,} CodeCache, FileProcs,
+  KeywordFuncLists, CodeToolsFPCMsgs, CodeCache, FileProcs,
   CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog,
   // LazUtils
   LConvEncoding, LazUTF8, FileUtil, LazFileUtils, AvgLvlTree,

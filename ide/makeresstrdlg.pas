@@ -39,13 +39,17 @@ unit MakeResStrDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  Dialogs, ExtCtrls, ButtonPanel, IDEWindowIntf,
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Forms, Controls, StdCtrls, Dialogs, ExtCtrls, ButtonPanel,
+  // SynEdit
   SynHighlighterPas, SynEdit,
+  // CodeTools
   CodeToolManager, CodeToolsStructs, CodeCache,
-  IDEHelpIntf, IDEDialogs,
-  LazarusIDEStrConsts,
-  EditorOptions, InputHistory, MiscOptions, IDEProcs;
+  // IdeIntf
+  IDEWindowIntf, IDEHelpIntf, IDEDialogs,
+  // IDE
+  LazarusIDEStrConsts, EditorOptions, InputHistory, MiscOptions, IDEProcs;
 
 type
 
