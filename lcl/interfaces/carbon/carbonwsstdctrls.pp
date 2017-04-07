@@ -104,6 +104,7 @@ type
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     //class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
@@ -686,6 +687,21 @@ begin
   if not CheckHandle(ACustomListBox, Self, 'SetItemIndex') then Exit;
 
   TCarbonListBox(ACustomListBox.Handle).SetItemIndex(AIndex);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomListBox.SetScrollWidth
+  Params:  ACustomListBox - LCL custom list box
+           AScrollWidth   - Scroll width
+
+  Sets scroll width of list box in Carbon interface
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomListBox.SetScrollWidth(
+  const ACustomListBox: TCustomListBox; const AScrollWidth: Integer);
+begin
+  if not CheckHandle(ACustomListBox, Self, 'SetScrollWidth') then Exit;
+
+  TCarbonListBox(ACustomListBox.Handle).SetScrollWidth(AScrollWidth);
 end;
 
 {------------------------------------------------------------------------------
