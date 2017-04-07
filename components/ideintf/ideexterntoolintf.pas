@@ -1643,6 +1643,7 @@ begin
   FMessageLineClass:=aMsgLineClass;
   fItems:=TFPList.Create;
   FSortedForSrcPos:=TAvlTree.Create(@CompareMsgLinesSrcPos);
+  FSortedForSrcPos.SetNodeManager(nil);
   FUpdateSortedSrcPos:=true;
   fChangedHandler:=TMethodList.Create;
 end;
