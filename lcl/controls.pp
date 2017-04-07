@@ -978,7 +978,7 @@ type
   private
     function GetCurrent: TLazAccessibleObject;
   public
-    property CurrentObj: TLazAccessibleObject read GetCurrent;
+    property Current: TLazAccessibleObject read GetCurrent;
   end;
 
   { TLazAccessibleObject }
