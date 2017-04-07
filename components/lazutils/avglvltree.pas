@@ -1316,6 +1316,7 @@ begin
   FCaseSensitive:=TheCaseSensitive;
   FCompareKeyItemFunc:=ACompareNameWithItem;
   FTree:=TAvlTree.Create(ACompareItems);
+  FTree.SetNodeManager(nil);
 end;
 
 destructor TCustomStringMap.Destroy;
