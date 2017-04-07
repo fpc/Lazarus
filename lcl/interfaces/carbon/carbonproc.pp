@@ -57,6 +57,8 @@ var
 
 var
   CarbonDefaultFont     : AnsiString = '';
+  CarbonDefaultMonoFont : AnsiString = 'Menlo Regular'; { Default introduced in Snow Leopard }
+                                                        { TODO: Find from system }
   CarbonDefaultFontSize : Integer = 0;
 
 {$I mackeycodes.inc}
@@ -73,7 +75,7 @@ function GetCarbonShiftState: TShiftState;
 function ShiftStateToModifiers(const Shift: TShiftState): Byte;
 
 function FindCarbonFontID(const FontName: String): ATSUFontID; overload;
-function FindCarbonFontID(FontName: string; var Bold, Italic: Boolean): ATSUFontID; overload;
+function FindCarbonFontID(FontName: string; var Bold, Italic: Boolean; MonoSpace: Boolean): ATSUFontID; overload;
 function CarbonFontIDToFontName(ID: ATSUFontID): String;
 function FindQDFontFamilyID(const FontName: String; var Family: FontFamilyID): Boolean;
 
@@ -544,13 +546,15 @@ end;
   Name:    FindCarbonFontID
   Params:  FontName - The font name, UTF-8 encoded
            Bold, Italic - Font style, cleared if the style was found
+           MonoSpace: Indication that Fixed Pitch font is wanted.
+                      Currently only implemented for font name 'default'
   Returns: Carbon font ID of font with the specified name
 
   Finds the font ID for the given font name.  The ATSU bold/italic styles
   are manufactured, so if possible this will match the full font name including
   styles. If a match is found it will clear Bold/Italic.
  ------------------------------------------------------------------------------}
-function FindCarbonFontID(FontName: string; var Bold, Italic: Boolean): ATSUFontID;
+function FindCarbonFontID(FontName: string; var Bold, Italic: Boolean; MonoSpace: Boolean): ATSUFontID;
 
   function FindFont(const fn: string; code: FontNameCode; out ID: ATSUFontID): Boolean;
   begin
@@ -569,6 +573,9 @@ var
   FamilyName: string;
 begin
   if SameText(FontName, 'default') then
+    if MonoSpace then
+      FontName := CarbonDefaultMonoFont
+    else
     FontName := CarbonDefaultFont;
   FamilyName := FontName;
   if AnsiEndsStr(SRegular, FamilyName) then

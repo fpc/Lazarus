@@ -1399,7 +1399,7 @@ begin
 
   Bold := ALogFont.lfWeight > FW_NORMAL;
   Italic := ALogFont.lfItalic > 0;
-  ID := FindCarbonFontID(AFaceName, Bold, Italic);
+  ID := FindCarbonFontID(AFaceName, Bold, Italic, (ALogFont.lfPitchAndFamily and FIXED_PITCH) <> 0);
 
   if ID <> 0 then
   begin

@@ -2126,13 +2126,16 @@ var
   Attrs: Array [0..3] of TXNTypeAttributes;
   FontColor: RGBColor;
   SavedStyle: ATSUStyle;
+  Bold, Italic: Boolean;
 const
   SName = 'SetFont';
 begin
   // font name
   Attrs[0].tag := kATSUFontTag;
   Attrs[0].size := SizeOf(ATSUFontID);
-  Attrs[0].data.dataValue := FindCarbonFontID(AFont.Name);
+  Bold := fsBold in AFont.Style;
+  Italic := fsItalic in AFont.Style;
+  Attrs[0].data.dataValue := FindCarbonFontID(AFont.Name, Bold, Italic, AFont.Pitch = fpFixed);
 
   // font color
   FontColor := ColorToRGBColor(AFont.Color);

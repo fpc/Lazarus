@@ -1179,6 +1179,16 @@ begin
     EndTextRender(TextLayout);
   end;
 
+  TM.tmPitchAndFamily := TRUETYPE_FONTTYPE;
+  { Heuristic for determining fixed pitch; "i" is typically small }
+  if BeginTextRender('i', 1, TextLayout) then
+    try
+      if TM.tmAveCharWidth = RoundFixed(TextLayout.TextAfter - TextLayout.TextBefore) then
+        TM.tmPitchAndFamily := TM.tmPitchAndFamily or FIXED_PITCH;
+    finally
+      EndTextRender(TextLayout);
+    end;
+
   TM.tmMaxCharWidth := TM.tmAscent; // TODO: don't know how to determine this right
   TM.tmOverhang := 0;
   TM.tmDigitizedAspectX := 0;
@@ -1206,7 +1216,6 @@ begin
   TM.tmStruckOut := Byte(B);
 
   // TODO: get these from font
-  TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
   TM.tmCharSet := DEFAULT_CHARSET;
 
   Result := True;

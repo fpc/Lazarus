@@ -1527,7 +1527,7 @@ begin
   if AFont.Size = 0 then // use default size
     FontStyle.flags := FontStyle.flags and not kControlUseSizeMask;
 
-  FontStyle.font := ID;
+  FontStyle.font := SInt16(ID);
   FontStyle.size := AFont.Size;
   FontStyle.style := FontStyleToQDStyle(AFont.Style);
   FontStyle.foreColor := ColorToRGBColor(AFont.Color);
