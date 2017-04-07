@@ -122,8 +122,6 @@ msgid "New project group"
 msgstr "Новая группа проектов"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
-#, fuzzy
-#| msgid "New project group ..."
 msgid "New Project group ..."
 msgstr "Новая группа проектов ..."
 
@@ -156,14 +154,10 @@ msgid "Targets"
 msgstr "Цели"
 
 #: projectgroupstrconst.lisopenprojectgroup
-#, fuzzy
-#| msgid "Open project group ..."
 msgid "Open Project Group ..."
 msgstr "Открыть группу проектов ..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
-#, fuzzy
-#| msgid "Open recent project group"
 msgid "Open Recent Project Group"
 msgstr "Открыть недавнюю группу проектов"
 
@@ -276,15 +270,11 @@ msgid "Save project group"
 msgstr "Сохранить группу проектов"
 
 #: projectgroupstrconst.lissaveprojectgroup
-#, fuzzy
-#| msgid "Save project group"
 msgctxt "projectgroupstrconst.lissaveprojectgroup"
 msgid "Save Project Group"
 msgstr "Сохранить группу проектов"
 
 #: projectgroupstrconst.lissaveprojectgroupas
-#, fuzzy
-#| msgid "Save project group as ..."
 msgid "Save Project Group As ..."
 msgstr "Сохранить группу проектов как ..."
 

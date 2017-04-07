@@ -124,7 +124,9 @@ msgid "New project group"
 msgstr "Нова група проектів"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
-msgid "New project group ..."
+#, fuzzy
+#| msgid "New project group ..."
+msgid "New Project group ..."
 msgstr "Нова група проектів ..."
 
 #: projectgroupstrconst.lisnodebuildmodes
@@ -156,11 +158,15 @@ msgid "Targets"
 msgstr "Цілі"
 
 #: projectgroupstrconst.lisopenprojectgroup
-msgid "Open project group ..."
+#, fuzzy
+#| msgid "Open project group ..."
+msgid "Open Project Group ..."
 msgstr "Відкрити групу проектів ..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
-msgid "Open recent project group"
+#, fuzzy
+#| msgid "Open recent project group"
+msgid "Open Recent Project Group"
 msgstr "Відкрити нещодавню групу проектів"
 
 #: projectgroupstrconst.lisotherproject
@@ -272,12 +278,16 @@ msgid "Save project group"
 msgstr "Зберегти групу проектів"
 
 #: projectgroupstrconst.lissaveprojectgroup
+#, fuzzy
+#| msgid "Save project group"
 msgctxt "projectgroupstrconst.lissaveprojectgroup"
-msgid "Save project group"
+msgid "Save Project Group"
 msgstr "Зберегти групу проектів"
 
 #: projectgroupstrconst.lissaveprojectgroupas
-msgid "Save project group as ..."
+#, fuzzy
+#| msgid "Save project group as ..."
+msgid "Save Project Group As ..."
 msgstr "Зберегти групу проектів як ..."
 
 #: projectgroupstrconst.lisskipalltargets
