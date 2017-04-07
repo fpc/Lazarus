@@ -89,6 +89,7 @@ var
   msg: TLMNotify;
   NM: TNMListView;
   path: PGtkTreePath;
+  pstr: PChar;
   column: PGtkTreeViewColumn;
   cell: PGtkCellRenderer;
 begin
@@ -118,7 +119,9 @@ begin
   FillChar(NM{%H-}, SizeOf(NM), 0);
   NM.hdr.hwndfrom := {%H-}PtrUInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_ITEMCHANGED;
-  NM.iItem := StrToInt(gtk_tree_path_to_string(path));
+  pstr:=gtk_tree_path_to_string(path);
+  NM.iItem := StrToInt(pstr);
+  g_free(pstr);
 
   NM.iSubItem := 0;
   NM.uNewState := LVIS_FOCUSED;
@@ -131,6 +134,7 @@ procedure Gtk2_ItemDeleted({%H-}model: PGtkTreeModel; path: PGtkTreePath; Widget
 var
   msg: TLMNotify;
   NM: TNMListView;
+  pstr:PChar;
 begin
   //DebugLn('Gtk2_ItemDeleted');
   msg.Msg := CN_NOTIFY;
@@ -138,7 +142,9 @@ begin
   FillChar(NM{%H-}, SizeOf(NM), 0);
   NM.hdr.hwndfrom := {%H-}PtrUInt(WidgetInfo^.CoreWidget);
   NM.hdr.code := LVN_DELETEITEM;
-  NM.iItem := StrToInt(gtk_tree_path_to_string(path));
+  pstr := gtk_tree_path_to_string(path);
+  NM.iItem := StrToInt(pstr);
+  g_free(pstr);
   msg.NMHdr := @NM.hdr;
   DeliverMessage(WidgetInfo^.LCLObject, msg);
 end;
@@ -344,6 +350,7 @@ var
   i: Integer;
   List: PGList;
   Path: PGtkTreePath;
+  pstr: PChar;
 begin
   Widgets := PTVWidgets(WidgetInfo^.UserData);
 
@@ -355,7 +362,9 @@ begin
       if (List <> nil) then
       begin
         Path := PGtkTreePath(g_list_first(List)^.data);
-        Widgets^.ItemCache.Add(gtk_tree_path_to_string(Path));
+        pstr := gtk_tree_path_to_string(path);
+        Widgets^.ItemCache.Add(pstr);
+        g_free(pstr);
         g_list_free(List);
       end else
         exit;
@@ -1287,6 +1296,7 @@ class function TGtk2WSCustomListView.ItemGetState(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
+  pstr: PChar;
   Column: PGtkTreeViewColumn;
   Cell: PGtkCellRenderer;
 begin
@@ -1322,7 +1332,14 @@ begin
           gtk_icon_view_get_cursor(PGtkIconView(MainView), Path, Cell{%H-})
         else
           Path := nil;
-        AIsSet := (Path <> nil) and (StrToInt(gtk_tree_path_to_string(path)) = AIndex);
+        if (Path<>nil) then
+        begin
+          pstr := gtk_tree_path_to_string(path);
+          AIsSet:=(StrToInt(pstr) = AIndex);
+          g_free(pstr);
+        end else
+          AIsSet:=false;
+
         gtk_tree_path_free(Path);
         Result := True;
       end;
