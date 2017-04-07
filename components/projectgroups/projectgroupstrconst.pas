@@ -40,11 +40,11 @@ Resourcestring
   lisTargetLater        = 'Compile target later';
   lisTargetEarlier      = 'Compile target earlier';
   lisNewProjectGroup    = 'New project group';
-  lisNewProjectGroupMenuC    = 'New project group ...';
-  lisOpenProjectGroup   = 'Open project group ...';
-  lisOpenRecentProjectGroup = 'Open recent project group';
-  lisSaveProjectGroup   = 'Save project group';
-  lisSaveProjectGroupAs = 'Save project group as ...';
+  lisNewProjectGroupMenuC    = 'New Project group ...';
+  lisOpenProjectGroup   = 'Open Project Group ...';
+  lisOpenRecentProjectGroup = 'Open Recent Project Group';
+  lisSaveProjectGroup   = 'Save Project Group';
+  lisSaveProjectGroupAs = 'Save Project Group As ...';
   lisTargetCopyFilename = 'Copy file name';
 
   lisProjectGroup            = 'Project group %s';
