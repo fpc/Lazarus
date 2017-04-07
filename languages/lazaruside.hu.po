@@ -10630,11 +10630,15 @@ msgid "Convert DFM File to LFM"
 msgstr "DFM fájl átalakítása LFM fájllá"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
+#, fuzzy
+#| msgid "Copy selected Components to clipboard"
+msgid "Copy selected components"
 msgstr "Kijelölt komponensek másolása a vágólapra"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
+#, fuzzy
+#| msgid "Cut selected Components to clipboard"
+msgid "Cut selected components"
 msgstr "Kijelölt komponensek kivágása a vágólapra"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
@@ -10811,7 +10815,9 @@ msgid "Open package file"
 msgstr "Csomagfájl megnyitása"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
+#, fuzzy
+#| msgid "Paste Components from clipboard"
+msgid "Paste Components"
 msgstr "Komponensek beillesztése a vágólapról"
 
 #: lazarusidestrconsts.liskmpauseprogram
@@ -19743,7 +19749,10 @@ msgid "config build file"
 msgstr "építés fájl konfigurálása"
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
+#, fuzzy
+#| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
 msgstr "Kijelölés másolása a vágólapra"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -19759,7 +19768,10 @@ msgid "Copy editor to prior free window"
 msgstr "Szerkesztő másolása az előző üres ablakba"
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
+#, fuzzy
+#| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
 msgstr "Kijelölés kivágása a vágólapra"
 
 #: lazarusidestrconsts.srkmecdeletebol
@@ -20117,7 +20129,10 @@ msgid "Move editor rightmost"
 msgstr "Lapfül mozgatása a jobb szélre"
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
+#, fuzzy
+#| msgid "MultiPaste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
 msgstr "Vágólap tartalmának beillesztése forráskóddal az aktuális helyre"
 
 #: lazarusidestrconsts.srkmecnextbookmark
@@ -20177,7 +20192,10 @@ msgid "Move cursor up one page"
 msgstr "Kurzor mozgatása egy oldallal feljebb"
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
+#, fuzzy
+#| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
 msgstr "Vágólap tartalmának beillesztése az aktuális helyre"
 
 #: lazarusidestrconsts.srkmecpause

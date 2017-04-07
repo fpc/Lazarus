@@ -10830,11 +10830,15 @@ msgid "Convert DFM File to LFM"
 msgstr "DFMファイルをLFMに変換"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
+#, fuzzy
+#| msgid "Copy selected Components to clipboard"
+msgid "Copy selected components"
 msgstr "選択したコンポーネントをクリップボードにコピー"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
+#, fuzzy
+#| msgid "Cut selected Components to clipboard"
+msgid "Cut selected components"
 msgstr "選択されたコンポーネントをクリップボードに切り取る"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
@@ -11031,7 +11035,9 @@ msgid "Open package file"
 msgstr "パッケージファイルを開く"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
+#, fuzzy
+#| msgid "Paste Components from clipboard"
+msgid "Paste Components"
 msgstr "クリップボードからコンポーネントを貼り付け"
 
 #: lazarusidestrconsts.liskmpauseprogram
@@ -20322,7 +20328,10 @@ msgid "config build file"
 msgstr "構築ファイルの設定"
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
+#, fuzzy
+#| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
 msgstr "選択対象をクリップボードにコピー"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20338,7 +20347,10 @@ msgid "Copy editor to prior free window"
 msgstr "前の自由ウィンドウにエディタをコピー"
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
+#, fuzzy
+#| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
 msgstr "選択対象をクリップボードに切り取り"
 
 #: lazarusidestrconsts.srkmecdeletebol
@@ -20704,7 +20716,8 @@ msgid "Move editor rightmost"
 msgstr "エディタを右端に移動"
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecnextbookmark
@@ -20764,7 +20777,10 @@ msgid "Move cursor up one page"
 msgstr "カーソルを1ページ上に移動"
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
+#, fuzzy
+#| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
 msgstr "クリップボードから現在の位置に貼り付け"
 
 #: lazarusidestrconsts.srkmecpause

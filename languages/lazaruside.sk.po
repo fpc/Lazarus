@@ -11039,11 +11039,15 @@ msgid "Convert DFM File to LFM"
 msgstr "Konvertovať súbor DFM na LFM"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
+#, fuzzy
+#| msgid "Copy selected Components to clipboard"
+msgid "Copy selected components"
 msgstr "Kopírovať vybraté komponenty do schránky"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
+#, fuzzy
+#| msgid "Cut selected Components to clipboard"
+msgid "Cut selected components"
 msgstr "Vystrihnúť zvolené komponenty do schránky"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
@@ -11246,7 +11250,9 @@ msgid "Open package file"
 msgstr "Otvoriť súbor balíčka"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
+#, fuzzy
+#| msgid "Paste Components from clipboard"
+msgid "Paste Components"
 msgstr "Vložiť komponenty zo schránky"
 
 #: lazarusidestrconsts.liskmpauseprogram
@@ -20813,7 +20819,10 @@ msgid "config build file"
 msgstr "konfiguračný súbor budovania"
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
+#, fuzzy
+#| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
 msgstr "Kopírovať výber do schránky"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20829,7 +20838,10 @@ msgid "Copy editor to prior free window"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
+#, fuzzy
+#| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
 msgstr "Vystrihnúť výber do schránky"
 
 #: lazarusidestrconsts.srkmecdeletebol
@@ -21223,7 +21235,8 @@ msgid "Move editor rightmost"
 msgstr "Posunúť editor úplne vpraco"
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecnextbookmark
@@ -21285,7 +21298,10 @@ msgid "Move cursor up one page"
 msgstr "Posunúť kurzor o jednu stranu hore"
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
+#, fuzzy
+#| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
 msgstr "Vložiť zo schránky na aktuálnu pozíciu"
 
 #: lazarusidestrconsts.srkmecpause

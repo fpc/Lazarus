@@ -10879,11 +10879,11 @@ msgid "Convert DFM File to LFM"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
+msgid "Copy selected components"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
+msgid "Cut selected components"
 msgstr ""
 
 #: lazarusidestrconsts.liskmdefaulttoosx
@@ -11060,7 +11060,7 @@ msgid "Open package file"
 msgstr ""
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
+msgid "Paste Components"
 msgstr ""
 
 #: lazarusidestrconsts.liskmpauseprogram
@@ -20415,7 +20415,10 @@ msgid "config build file"
 msgstr "fitxer de configuració del muntatje"
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
+#, fuzzy
+#| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
 msgstr "Copia la selecció al porta-retalls"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20431,7 +20434,10 @@ msgid "Copy editor to prior free window"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
+#, fuzzy
+#| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
 msgstr "Retalla la selecció al porta-retalls"
 
 #: lazarusidestrconsts.srkmecdeletebol
@@ -20825,7 +20831,8 @@ msgid "Move editor rightmost"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecnextbookmark
@@ -20887,7 +20894,10 @@ msgid "Move cursor up one page"
 msgstr "Mou el cursor una pàgina amunt"
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
+#, fuzzy
+#| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
 msgstr "Enganxa el porta-retalls a la posició actual"
 
 #: lazarusidestrconsts.srkmecpause

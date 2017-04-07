@@ -10632,11 +10632,15 @@ msgid "Convert DFM File to LFM"
 msgstr "Перетворення файлу DFM в LFM"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
+#, fuzzy
+#| msgid "Copy selected Components to clipboard"
+msgid "Copy selected components"
 msgstr "Копіювати обрані Компоненти в буфер обміну"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
+#, fuzzy
+#| msgid "Cut selected Components to clipboard"
+msgid "Cut selected components"
 msgstr "Вирізати обрані Компоненти в буфер обміну"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
@@ -10813,7 +10817,9 @@ msgid "Open package file"
 msgstr "Відкриття файлу пакунка"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
+#, fuzzy
+#| msgid "Paste Components from clipboard"
+msgid "Paste Components"
 msgstr "Вставити компоненти з буферу обміну"
 
 #: lazarusidestrconsts.liskmpauseprogram
@@ -19744,7 +19750,10 @@ msgid "config build file"
 msgstr "файл налаштувань збірки"
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
+#, fuzzy
+#| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
 msgstr "Копіювати вибране у буфер обміну"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -19760,7 +19769,10 @@ msgid "Copy editor to prior free window"
 msgstr "Копіювати редактор в попереднє вільне вікно"
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
+#, fuzzy
+#| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
 msgstr "Вирізати вибране в буфер обміну"
 
 #: lazarusidestrconsts.srkmecdeletebol
@@ -20118,7 +20130,10 @@ msgid "Move editor rightmost"
 msgstr "Перемістити редактор вправо в кінець"
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
+#, fuzzy
+#| msgid "MultiPaste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
 msgstr "Мультиставляння з буфера в поточну позицію"
 
 #: lazarusidestrconsts.srkmecnextbookmark
@@ -20178,7 +20193,10 @@ msgid "Move cursor up one page"
 msgstr "Пересунути курсор на попередню сторінку"
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
+#, fuzzy
+#| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
 msgstr "Вставити з буфера в поточну позицію"
 
 #: lazarusidestrconsts.srkmecpause

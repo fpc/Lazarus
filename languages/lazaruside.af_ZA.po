@@ -10607,11 +10607,11 @@ msgid "Convert DFM File to LFM"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
+msgid "Copy selected components"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
+msgid "Cut selected components"
 msgstr ""
 
 #: lazarusidestrconsts.liskmdefaulttoosx
@@ -10788,7 +10788,7 @@ msgid "Open package file"
 msgstr ""
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
+msgid "Paste Components"
 msgstr ""
 
 #: lazarusidestrconsts.liskmpauseprogram
@@ -19765,8 +19765,10 @@ msgid "config build file"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
+msgstr "Kopieer"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -19781,8 +19783,10 @@ msgid "Copy editor to prior free window"
 msgstr ""
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
+msgstr "Sny"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -20149,7 +20153,8 @@ msgid "Move editor rightmost"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecnextbookmark
@@ -20209,8 +20214,10 @@ msgid "Move cursor up one page"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
+msgstr "Plak"
 
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"

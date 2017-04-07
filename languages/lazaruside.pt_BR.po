@@ -10868,11 +10868,15 @@ msgid "Convert DFM File to LFM"
 msgstr "Converter arquivo DFM para LFM"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
+#, fuzzy
+#| msgid "Copy selected Components to clipboard"
+msgid "Copy selected components"
 msgstr "Copiar componentes selecionados para a Área de Transferência"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
+#, fuzzy
+#| msgid "Cut selected Components to clipboard"
+msgid "Cut selected components"
 msgstr "Recortar componentes selecionados para a Área de Transferência"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
@@ -11069,7 +11073,9 @@ msgid "Open package file"
 msgstr "Abrir arquivo de pacote"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
+#, fuzzy
+#| msgid "Paste Components from clipboard"
+msgid "Paste Components"
 msgstr "Colar componentes da Área de Transferência"
 
 #: lazarusidestrconsts.liskmpauseprogram
@@ -20384,7 +20390,10 @@ msgid "config build file"
 msgstr "configurar arquivo de construção"
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
+#, fuzzy
+#| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
 msgstr "Copiar seleção para Área de Transferência"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -20400,7 +20409,10 @@ msgid "Copy editor to prior free window"
 msgstr "Copia editor para janela livre anterior"
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
+#, fuzzy
+#| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
 msgstr "Recortar seleção para Área de Transferência"
 
 #: lazarusidestrconsts.srkmecdeletebol
@@ -20766,7 +20778,10 @@ msgid "Move editor rightmost"
 msgstr "Mover editor extremo direito"
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
+#, fuzzy
+#| msgid "MultiPaste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
 msgstr "MultiPaste da área de transferência para a posição atual"
 
 #: lazarusidestrconsts.srkmecnextbookmark
@@ -20826,7 +20841,10 @@ msgid "Move cursor up one page"
 msgstr "Mover o cursor uma página acima"
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
+#, fuzzy
+#| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
 msgstr "Colar conteúdo Área de Transferência na posição atual"
 
 #: lazarusidestrconsts.srkmecpause

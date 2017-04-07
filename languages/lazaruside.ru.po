@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-04-07 01:58+0300\n"
+"PO-Revision-Date: 2017-04-08 00:56+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10628,12 +10628,12 @@ msgid "Convert DFM File to LFM"
 msgstr "Преобразовать файл DFM в LFM"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
-msgstr "Копировать выбранные компоненты в буфер обмена"
+msgid "Copy selected components"
+msgstr "Копировать выбранные компоненты"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
-msgstr "Вырезать выбранные компоненты в буфер обмена"
+msgid "Cut selected components"
+msgstr "Вырезать выбранные компоненты"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
 msgid "Default adapted to OS X"
@@ -10810,8 +10810,8 @@ msgid "Open package file"
 msgstr "Открыть файл пакета"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
-msgstr "Вставить компоненты из буфера обмена"
+msgid "Paste Components"
+msgstr "Вставить компоненты"
 
 #: lazarusidestrconsts.liskmpauseprogram
 msgid "Pause program"
@@ -19741,8 +19741,9 @@ msgid "config build file"
 msgstr "файл параметров сборки"
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
-msgstr "Копировать выделенное в буфер"
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
+msgstr "Копировать"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -19757,8 +19758,9 @@ msgid "Copy editor to prior free window"
 msgstr "Копировать редактор в предыдущее свободное окно"
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
-msgstr "Вырезать выделенное в буфер"
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
+msgstr "Вырезать"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -20115,8 +20117,9 @@ msgid "Move editor rightmost"
 msgstr "Поместить редактор справа"
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
-msgstr "Вставить с форматированием из буфера обмена в текущую позицию"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
+msgstr "Вставить с форматированием"
 
 #: lazarusidestrconsts.srkmecnextbookmark
 msgid "Next Bookmark"
@@ -20175,8 +20178,9 @@ msgid "Move cursor up one page"
 msgstr "Переместить курсор вверх на одну страницу"
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
-msgstr "Вставить из буфера обмена в текущую позицию"
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
+msgstr "Вставить"
 
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"

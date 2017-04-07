@@ -11219,11 +11219,15 @@ msgid "Convert DFM File to LFM"
 msgstr "החלף DFM ל  LFM"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
+#, fuzzy
+#| msgid "Copy selected Components to clipboard"
+msgid "Copy selected components"
 msgstr "העתק את הרכיבים הנבחרים ללוח הזמני"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
+#, fuzzy
+#| msgid "Cut selected Components to clipboard"
+msgid "Cut selected components"
 msgstr "גזור את הרכיבים שנבחרו אל הלוח הזמני"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
@@ -11426,7 +11430,9 @@ msgid "Open package file"
 msgstr "לפתוח קובץ חבילה"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
+#, fuzzy
+#| msgid "Paste Components from clipboard"
+msgid "Paste Components"
 msgstr "הדבק את הרכיבים מהלוח הזמני"
 
 #: lazarusidestrconsts.liskmpauseprogram
@@ -21195,7 +21201,10 @@ msgid "config build file"
 msgstr "הגדר קובץ בנייה"
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
+#, fuzzy
+#| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
 msgstr "העתק את הבחירה ללוח הזמני"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -21211,7 +21220,10 @@ msgid "Copy editor to prior free window"
 msgstr "העתק עורך לחלון החופשי הקודם"
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
+#, fuzzy
+#| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
 msgstr "גזור את הבחירה אל הלוח הזמני"
 
 #: lazarusidestrconsts.srkmecdeletebol
@@ -21612,7 +21624,8 @@ msgid "Move editor rightmost"
 msgstr "הצמד את העורך ימינה"
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecnextbookmark
@@ -21674,7 +21687,10 @@ msgid "Move cursor up one page"
 msgstr "הזז את הסמן דף אחד למעלה"
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
+#, fuzzy
+#| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
 msgstr "הדבק מלוח הגזירים למיקום הנוכחי"
 
 #: lazarusidestrconsts.srkmecpause

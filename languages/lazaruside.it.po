@@ -10695,11 +10695,15 @@ msgid "Convert DFM File to LFM"
 msgstr "Converti file DFM in LFM"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-msgid "Copy selected Components to clipboard"
+#, fuzzy
+#| msgid "Copy selected Components to clipboard"
+msgid "Copy selected components"
 msgstr "Copia il Componente selezionato negli Appunti"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-msgid "Cut selected Components to clipboard"
+#, fuzzy
+#| msgid "Cut selected Components to clipboard"
+msgid "Cut selected components"
 msgstr "Taglia i Componebti selezionati negli Appunti"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
@@ -10896,7 +10900,9 @@ msgid "Open package file"
 msgstr "Apri un pacchetto"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-msgid "Paste Components from clipboard"
+#, fuzzy
+#| msgid "Paste Components from clipboard"
+msgid "Paste Components"
 msgstr "Incolla Componente dagli appunti"
 
 #: lazarusidestrconsts.liskmpauseprogram
@@ -19914,7 +19920,10 @@ msgid "config build file"
 msgstr "file di configurazione costruzione"
 
 #: lazarusidestrconsts.srkmeccopy
-msgid "Copy selection to clipboard"
+#, fuzzy
+#| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
+msgid "Copy"
 msgstr "Copia la selezione negli appunti"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
@@ -19930,7 +19939,10 @@ msgid "Copy editor to prior free window"
 msgstr "Copia editor nella precedente finestra libera"
 
 #: lazarusidestrconsts.srkmeccut
-msgid "Cut selection to clipboard"
+#, fuzzy
+#| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
+msgid "Cut"
 msgstr "Taglia la selezione negli appunti"
 
 #: lazarusidestrconsts.srkmecdeletebol
@@ -20296,7 +20308,8 @@ msgid "Move editor rightmost"
 msgstr "Sposta l'editor tutto a destra"
 
 #: lazarusidestrconsts.srkmecmultipaste
-msgid "MultiPaste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecmultipaste"
+msgid "MultiPaste"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecnextbookmark
@@ -20356,7 +20369,10 @@ msgid "Move cursor up one page"
 msgstr "Sposta il cursore in alto di una pagina"
 
 #: lazarusidestrconsts.srkmecpaste
-msgid "Paste clipboard to current position"
+#, fuzzy
+#| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
+msgid "Paste"
 msgstr "Incolla la selezione nella posizione corrente"
 
 #: lazarusidestrconsts.srkmecpause
