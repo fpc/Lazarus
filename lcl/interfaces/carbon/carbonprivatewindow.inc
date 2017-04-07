@@ -85,6 +85,19 @@ const
     Result:=Widget.LCLObject.ScreenToClient(Mouse.CursorPos);
   end;
 
+  function GetMouseWheelAxisHorz: boolean;
+  var
+    Val: EventMouseWheelAxis;
+  begin
+    Result := False;
+    if OSError(
+      GetEventParameter(AEvent, kEventParamMouseWheelAxis, typeMouseWheelAxis, nil,
+        SizeOf(Val), nil, @Val),
+      SName, SGetEvent, 'kEventParamMouseWheelAxis') then Exit;
+
+    Result := Val=kEventMouseWheelAxisX;
+  end;
+
   function GetMouseWheelDelta: Integer;
   var
     WheelDelta: SInt32;
@@ -232,6 +245,8 @@ const
     Msg^.Y := MousePoint.Y;
     Msg^.State := GetCarbonShiftState;
     Msg^.WheelDelta := GetMouseWheelDelta;
+    if GetMouseWheelAxisHorz then
+      Include(Msg^.State, ssExtra1);
   end;
   
 var
