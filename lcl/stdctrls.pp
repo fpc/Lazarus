@@ -1533,8 +1533,8 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function CalcFittingFontHeight(const TheText: string;
-                                   MaxWidth, MaxHeight: Integer; var FontHeight,
-                                   NeededWidth, NeededHeight: integer): Boolean;
+      MaxWidth, MaxHeight: Integer;
+      out FontHeight, NeededWidth, NeededHeight: Integer): Boolean;
     function ColorIsStored: boolean; override;
     function AdjustFontForOptimalFill: Boolean;
     procedure Paint; override;

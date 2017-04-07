@@ -313,65 +313,73 @@ end;
 -------------------------------------------------------------------------------}
 function TCustomLabel.CalcFittingFontHeight(const TheText: string;
   MaxWidth, MaxHeight: Integer;
-  var FontHeight, NeededWidth, NeededHeight: integer): Boolean;
+  out FontHeight, NeededWidth, NeededHeight: Integer): Boolean;
 var
-  R : TRect;
-  DC : hDC;
-  Flags: Cardinal;
+  R: TRect;
+  DC: HDC;
+  DrawFlags: UINT;
   OldFont: HGDIOBJ;
   MinFontHeight: Integer;
   MaxFontHeight: Integer;
-  AFont: TFont;
-  CurFontHeight: LongInt;
+  TestFont: TFont;
+  CurFontHeight: Integer;
 begin
-  Result:=false;
-  if AutoSizeDelayed or (TheText='') or (MaxWidth<1) or (MaxHeight<1) then exit;
-  AFont:=TFont.Create;
-  AFont.Assign(Font);
-  CurFontHeight:=AFont.Height;
-  MinFontHeight:=5;
-  MaxFontHeight:=MaxHeight*2;
-  if (CurFontHeight<MinFontHeight) or (CurFontHeight>MaxFontHeight) then
-    CurFontHeight:=(MinFontHeight+MaxFontHeight) div 2;
-  Flags := DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS;
-  if WordWrap then inc(Flags, DT_WORDBREAK);
-  
-  // give a clipping rectangle with space, so that the bounds returned by
-  // DrawText can be bigger and we know, the tried font is too big.
-  R := Rect(0,0, MaxWidth, MaxHeight*2);
-  
-  DC := GetDC(Parent.Handle);
+  Result := False;
+  FontHeight := 0;
+  if AutoSizeDelayed or (TheText = '') or (MaxWidth < 1) or (MaxHeight < 1) then
+    Exit;
+  TestFont := TFont.Create;
   try
-    while (MinFontHeight<=MaxFontHeight) and (CurFontHeight>=MinFontHeight)
-    and (CurFontHeight<=MaxFontHeight) do begin
-      AFont.Height:=CurFontHeight; // NOTE: some TFont do not allow any integer
-      //debugln('TCustomLabel.CalcFittingFontHeight A ',dbgs(MinFontHeight),'<=',dbgs(AFont.Height),'<=',dbgs(MaxFontHeight));
-      OldFont := SelectObject(DC, HGDIOBJ(AFont.Reference.Handle));
-      DrawText(DC, PChar(TheText), Length(TheText), R, Flags);
-      SelectObject(DC, OldFont);
-      NeededWidth := R.Right - R.Left;
-      NeededHeight := R.Bottom - R.Top;
-      //debugln('TCustomLabel.CalcFittingFontHeight B NeededWidth=',dbgs(NeededWidth),' NeededHeight=',dbgs(NeededHeight),' MaxWidth=',dbgs(MaxWidth),' MaxHeight=',dbgs(MaxHeight));
-      if (NeededWidth>0) and (NeededHeight>0)
-      and (NeededWidth<=MaxWidth) and (NeededHeight<=MaxHeight) then begin
-        // TheText fits into the bounds
-        if (not Result) or (FontHeight<AFont.Height) then
-          FontHeight:=AFont.Height;
-        Result:=true;
-        MinFontHeight:=CurFontHeight;
-        // -> try bigger (binary search)
-        CurFontHeight:=(MaxFontHeight+CurFontHeight+1) div 2; // +1 to round up
-        if CurFontHeight=MinFontHeight then break;
-      end else begin
-        // TheText does not fit into the bounds
-        MaxFontHeight:=CurFontHeight-1;
-        // -> try smaller (binary search)
-        CurFontHeight:=(MinFontHeight+CurFontHeight) div 2;
+    TestFont.Assign(Font);
+    MinFontHeight := 4;
+    MaxFontHeight := MaxHeight * 2;
+    CurFontHeight := (MinFontHeight + MaxFontHeight) div 2;
+    DrawFlags := DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS;
+    if WordWrap then
+      DrawFlags := DrawFlags or DT_WORDBREAK;
+    R.Left := 0;
+    R.Top := 0;
+    DC := GetDC(Parent.Handle);
+    try
+      while (MinFontHeight <= MaxFontHeight) and
+        (CurFontHeight >= MinFontHeight) and
+        (CurFontHeight <= MaxFontHeight) do
+      begin
+        TestFont.Height := CurFontHeight; // NOTE: some TFont do not allow any integer
+        //debugln('TCustomLabel.CalcFittingFontHeight A ',dbgs(MinFontHeight),'<=',dbgs(AFont.Height),'<=',dbgs(MaxFontHeight));
+        OldFont := SelectObject(DC, HGDIOBJ(TestFont.Reference.Handle));
+        R.Right := MaxWidth;
+        R.Bottom := MaxHeight;
+        DrawText(DC, PChar(TheText), Length(TheText), R, DrawFlags);
+        SelectObject(DC, OldFont);
+        NeededWidth := R.Right - R.Left;
+        NeededHeight := R.Bottom - R.Top;
+        //debugln('TCustomLabel.CalcFittingFontHeight B NeededWidth=',dbgs(NeededWidth),' NeededHeight=',dbgs(NeededHeight),' MaxWidth=',dbgs(MaxWidth),' MaxHeight=',dbgs(MaxHeight));
+        if (NeededWidth in [1..MaxWidth]) and (NeededHeight in [1..MaxHeight]) then
+        begin
+          // TheText fits into the bounds
+          if (not Result) or (FontHeight < TestFont.Height) then
+            FontHeight := TestFont.Height;
+          Result := True;
+          MinFontHeight := CurFontHeight;
+          // -> try bigger (binary search)
+          CurFontHeight := (MaxFontHeight + CurFontHeight +1 ) div 2; // +1 to round up
+          if CurFontHeight = MinFontHeight then
+            Break;
+        end
+        else
+        begin
+          // TheText does not fit into the bounds
+          MaxFontHeight := CurFontHeight - 1;
+          // -> try smaller (binary search)
+          CurFontHeight := (MinFontHeight + CurFontHeight) div 2;
+        end;
       end;
-    end
+    finally
+      ReleaseDC(Parent.Handle, DC);
+    end;
   finally
-    ReleaseDC(Parent.Handle, DC);
-    AFont.Free;
+    TestFont.Free;
   end;
 end;
 
