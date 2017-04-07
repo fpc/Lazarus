@@ -1075,6 +1075,7 @@ begin
       if (AStart <> AEnd) then
         gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), p, -1);
       gtk_editable_select_region(PGtkEditable(AGtkWidget), 0, 0);
+      g_free(p);
     end;
   end;
 end;
