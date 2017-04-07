@@ -377,7 +377,11 @@ function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUP
 var
   Node: TUPPAVLTreeNode;
 begin
-  if UPPTree = nil then UPPTree := TAVLTree.Create;
+  if UPPTree = nil then
+  begin
+    UPPTree := TAVLTree.Create;
+    UPPTree.NodeClass:=TUPPAVLTreeNode;
+  end;
 
   Node := TUPPAVLTreeNode(UPPTree.Find(AHandler));
   if Node = nil then
