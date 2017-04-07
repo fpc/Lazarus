@@ -634,6 +634,32 @@ begin
     Application.MainForm.IntfDropFiles(lFiles);
 end;
 
+procedure TAppDelegate.applicationDidHide(notification: NSNotification);
+begin
+  Application.IntfAppMinimize;
+end;
+
+procedure TAppDelegate.applicationDidUnhide(notification: NSNotification);
+begin
+  Application.IntfAppRestore;
+end;
+
+procedure TAppDelegate.applicationDidBecomeActive(notification: NSNotification);
+begin
+  Application.IntfAppActivate;
+end;
+
+procedure TAppDelegate.applicationDidResignActive(notification: NSNotification);
+begin
+  Application.IntfAppDeactivate;
+end;
+
+procedure TAppDelegate.applicationDidChangeScreenParameters(notification: NSNotification);
+begin
+  Screen.UpdateMonitors;
+  Screen.UpdateScreen;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap
 

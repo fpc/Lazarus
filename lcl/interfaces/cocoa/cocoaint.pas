@@ -68,6 +68,11 @@ type
 
   TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
     procedure application_openFiles(sender: NSApplication; filenames: NSArray);
+    procedure applicationDidHide(notification: NSNotification);
+    procedure applicationDidUnhide(notification: NSNotification);
+    procedure applicationDidBecomeActive(notification: NSNotification);
+    procedure applicationDidResignActive(notification: NSNotification);
+    procedure applicationDidChangeScreenParameters(notification: NSNotification);
   end;
 
   { TCocoaWidgetSet }
