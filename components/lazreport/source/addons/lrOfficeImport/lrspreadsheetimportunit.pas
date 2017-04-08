@@ -44,6 +44,7 @@ type
 
   TlrSpreadSheetImportForm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    CheckBox1: TCheckBox;
     Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
@@ -127,8 +128,9 @@ var
   Cell:PCell;
   X, Y, DX, DY: Integer;
   Row: Integer;
-  Col: Integer;
+  Col, DY1, DX1: Integer;
   T:TfrMemoView;
+  AR1, AC1, AR2, AC2, i: Cardinal;
 begin
   // Create the spreadsheet
   FWorkbook := TsWorkbook.Create;
@@ -145,29 +147,58 @@ begin
     for Col:=0 to FWorksheet.GetLastColIndex do
     begin
       Cell := FWorksheet.FindCell(Row, Col);
+
       if Assigned(Cell) then
       begin
+        if FWorksheet.IsMerged(Cell) then
+        begin
+          if not FWorksheet.IsMergeBase(Cell) then
+          begin
+            Inc(X, CalcColWidth(FWorksheet.GetColWidth(Col)));
+            Continue;
+          end;
+
+          FWorksheet.FindMergedRange(Cell, AR1, AC1, AR2, AC2);
+          DX1:=0;
+          DY1:=0;
+
+          for i:=AC1 to AC2 do
+            DX1:=DX1 +CalcColWidth(FWorksheet.GetColWidth(I));
+          for i:=AR1 to AR2 do
+            DY1:=DY1 +CalcRowHeight(FWorksheet.GetRowHeight(I));
+        end
+        else
+        begin
+          DX1:=CalcColWidth(FWorksheet.GetColWidth(Col));
+          DY1:=DY;
+        end;
+
         T := frCreateObject(gtMemo, '', frDesigner.Page) as TfrMemoView;
-        T.CreateUniqueName;
+
+        if not CheckBox1.Checked then
+          T.CreateUniqueName
+        else
+          T.Name:=Format('Memo_Imp_%d_%d', [Col, Row]);
+
         T.x := x;
         T.y := y;
-        T.dx:=CalcColWidth(FWorksheet.GetColWidth(Col));
-        T.dy:=DY;
+        T.dx:=DX1;
+        T.dy:=DY1;
 
-        T.Alignment:=sHAToA(FWorksheet.ReadHorAlignment(Cell)); // Cell^.HorAlignment);
-        T.Layout:=sVAToL(FWorksheet.ReadVertAlignment(Cell)); // Cell^.VertAlignment);
+        T.Alignment:=sHAToA(FWorksheet.ReadHorAlignment(Cell));
+        T.Layout:=sVAToL(FWorksheet.ReadVertAlignment(Cell));
 
-        T.Frames:=sBorderToBorders(FWorksheet.ReadCellBorders(Cell)); //Cell^.Border);
-//        BorderStyles: TsCelLBorderStyles;
+        T.Frames:=sBorderToBorders(FWorksheet.ReadCellBorders(Cell));
+
 {
         if Cell^.BackgroundColor < FWorkbook.GetPaletteSize then
           T.FillColor:=FWorkbook.GetPaletteColor(Cell^.BackgroundColor);
 }
-        Convert_sFont_to_Font(FWorksheet.ReadCellFont(Cell), T.Font); //Cell^.FontIndex), T.Font);
+        T.FillColor:=FWorksheet.ReadBackgroundColor(Cell);
+        Convert_sFont_to_Font(FWorksheet.ReadCellFont(Cell), T.Font);
 
         T.MonitorFontChanges;
         T.Memo.Text:=FWorksheet.ReadAsUTF8Text(Cell);
-//        frDesigner.Page.Objects.Add(t);
 
       end
       else
@@ -212,7 +243,6 @@ begin
     if fssItalic in sFont.Style then AFont.Style := AFont.Style + [fsItalic];
     if fssUnderline in sFont.Style then AFont.Style := AFont.Style + [fsUnderline];
     if fssStrikeout in sFont.Style then AFont.Style := AFont.Style + [fsStrikeout];
-    //AFont.Color := FWorkbook.GetPaletteColor(sFont.Color);
     AFont.Color := sFont.Color;
   end;
 end;

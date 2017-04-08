@@ -775,6 +775,8 @@ begin
 
   FPage:=TlrCrossPage.Create(nil);
   FPage.ChangePaper(OwnerPage.pgSize, OwnerPage.Width, OwnerPage.Height, OwnerPage.Orientation);
+  FPage.UseMargins:=OwnerPage.UseMargins;
+  FPage.Margins.AsRect:=OwnerPage.Margins.AsRect;
 
   if FShowTotalRHCell then
   begin
@@ -912,12 +914,13 @@ begin
   FPage.PlayFrom := 0;
   while FPage.PlayFrom < FPage.List.Count do
   begin
-    FPage.PlayRecList;
-{    if FPage.List.Count > FPage.PlayFrom  then
-      FPage.NewPage;}
+    if FPage.PlayRecList then
+      Inc(FPage.PlayFrom);
   end;
 
   FPage.DoneReport;
+  if Assigned(FSavePage) then
+    FSavePage.CurY:=FPage.CurY;
   FPage.Free;
 
   CurPage:=FSavePage;

@@ -7406,7 +7406,8 @@ begin
   RTObjects.Free;
   List.Free;
   fMargins.Free;
-  
+  if Assigned(frDesigner) and (frDesigner.Page = Self) then
+    frDesigner.Page:=nil;
   inherited Destroy;
 end;
 

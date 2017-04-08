@@ -1490,21 +1490,26 @@ var
   FSaveView:TfrView;
   FSavePage:TfrPage;
   CmdList, ErrorList:TStringList;
+  FSaveBand: TfrBand;
 begin
   if (DocMode = dmPrinting) and (Script.Count>0) and (Trim(Script.Text)<>'') and (Assigned(CurReport))then
   begin
     FSaveView:=CurView;
     FSavePage:=CurPage;
+    FSaveBand:=CurBand;
+
     CmdList:=TStringList.Create;
     ErrorList:=TStringList.Create;
     try
       CurView := Self;
       CurPage:=OwnerPage;
+      CurBand:=nil;
       frInterpretator.PrepareScript(Script, CmdList, ErrorList);
       frInterpretator.DoScript(CmdList);
     finally
       CurPage:=FSavePage;
       CurView := FSaveView;
+      CurBand:=FSaveBand;
       FreeAndNil(CmdList);
       FreeAndNil(ErrorList);
     end;

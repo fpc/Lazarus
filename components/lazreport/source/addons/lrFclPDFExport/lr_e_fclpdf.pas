@@ -147,7 +147,7 @@ type
   end;
 
 implementation
-uses Forms, LR_Utils, LazUTF8, Printers, FPReadBMP, FPReadPNG, FPReadJPEG;
+uses LazFileUtils, Forms, LR_Utils, LazUTF8, Printers, FPReadBMP, FPReadPNG, FPReadJPEG;
 
 const
   cInchToMM = 25.4;

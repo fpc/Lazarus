@@ -1536,11 +1536,28 @@ begin
 end;
 
 procedure TfrPreviewForm.EditBtnClick(Sender: TObject);
+var
+  R: TfrReport;
 begin
   if (Doc = nil) or not TfrReport(Doc).ModifyPrepared then Exit;
-  ConnectBack;
+{  ConnectBack;
   TfrReport(Doc).EditPreparedReport(CurPage - 1);
-  Connect(Doc);
+  Connect(Doc);}
+
+  R:=TfrReport.Create(nil);
+  R.EMFPages.Free;
+  R.EMFPages := TfrEMFPages(EMFPages);
+  EMFPages := nil;
+  R.EditPreparedReport(CurPage - 1);
+
+  if EMFPages <> nil then
+    TfrEMFPages(EMFPages).Free;
+
+  EMFPages := R.EMFPages;
+  R.EMFPages:=nil;
+//  TfrReport(Doc).EMFPages := TfrEMFPages.Create(TfrReport(Doc));
+
+  R.Free;
   RedrawAll;
 end;
 
