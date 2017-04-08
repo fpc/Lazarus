@@ -271,11 +271,13 @@ type
     function GetReadOnly: Boolean; override;
     function MultiSelect: Boolean; override;
     function IsOwnerDrawn: Boolean; override;
+    function GetItemsRect: TRect; override;
   public
     procedure DrawItem(AIndex: Integer; AState: DataBrowserItemState); override;
     procedure SelectionChanged(AIndex: Integer; ASelect: Boolean); override;
     procedure FocusedChanged({%H-}AIndex: Integer); override;
     procedure SetFont(const AFont: TFont); override;
+    procedure SetScrollWidth(AScrollWidth: Integer);
   end;
   
   { TCarbonCheckListBox }
