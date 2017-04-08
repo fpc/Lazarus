@@ -2894,6 +2894,7 @@ begin
   Result := nil;
   l := 0;
   h := FCompilationUnits.Count - 1;
+  m := h;
   while h > l do begin
     p := TDwarfCompilationUnit(FCompilationUnits[m]).DebugFile^.Sections[dsInfo].RawData + AOffs;
     m := (h + l + 1) div 2;
