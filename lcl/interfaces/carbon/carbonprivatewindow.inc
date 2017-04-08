@@ -245,8 +245,12 @@ const
     Msg^.Y := MousePoint.Y;
     Msg^.State := GetCarbonShiftState;
     Msg^.WheelDelta := GetMouseWheelDelta;
+
+    // ssHyper id in TShiftStateEnum is not used in LCL (almost, only n lines in gtk/gtk2, they not needed).
+    // Key "Hyper" was on non usual weird keyboard (for sci-fi film?)
+    // Lets use this id
     if GetMouseWheelAxisHorz then
-      Include(Msg^.State, ssExtra1);
+      Include(Msg^.State, ssHyper);
   end;
   
 var
