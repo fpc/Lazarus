@@ -271,7 +271,7 @@ begin
           if CarbonMenu.Parent.Dismissed=kHIMenuDismissedBySelection then begin
             FillChar(Msg{%H-}, SizeOf(Msg), 0);
             Msg.msg := LM_ACTIVATE;
-            CarbonMenu.LCLMenuItem.Dispatch(Msg);
+            DeliverMessage(CarbonMenu.LCLMenuItem, Msg);
             if assigned(CarbonMenu.Parent) then  // if parent not closed
               CarbonMenu.Parent.Dismissed:=0;
             Result := noErr;
