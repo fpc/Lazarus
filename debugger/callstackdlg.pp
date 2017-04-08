@@ -248,7 +248,7 @@ function TCallStackDlg.GetImageIndex(Entry: TIdeCallStackEntry): Integer;
   begin
     Result := nil;
     if BreakPoints = nil then Exit;
-    if DebugBoss.GetFullFilename(Entry.UnitInfo, FileName, False)
+    if DebugBoss.GetFullFilename(Entry.UnitInfo, FileName, False, False)
     then Result := BreakPoints.Find(FileName, Entry.Line);
   end;
 
@@ -546,7 +546,7 @@ begin
       if idx >= GetSelectedCallstack.CountLimited(idx+1) then Exit;
       Entry := GetSelectedCallstack.Entries[idx];
       if Entry.Line <= 0 then exit;
-      if not DebugBoss.GetFullFilename(Entry.UnitInfo, FileName, False) then
+      if not DebugBoss.GetFullFilename(Entry.UnitInfo, FileName, False, False) then
         Exit;
       BreakPoint := BreakPoints.Find(FileName, Entry.Line);
       if BreakPoint <> nil then begin

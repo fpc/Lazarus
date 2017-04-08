@@ -364,7 +364,7 @@ begin
      ExpandFilename works with the current IDE path, and may be wrong
   *)
   // TODO: better detcion of unsaved project files
-    if DebugBoss.GetFullFilename(AnUnitInfo, Filename, False) then begin
+    if DebugBoss.GetFullFilename(AnUnitInfo, Filename, False, False) then begin
       debugln(DBG_LOCATION_INFO, ['JumpToUnitSource Filename=', Filename]);
       ok := false;
       if ALine <= 0 then ALine := AnUnitInfo.SrcLine;

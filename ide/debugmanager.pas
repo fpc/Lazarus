@@ -219,7 +219,7 @@ type
     procedure EvaluateModify(const AExpression: String); override;
     procedure Inspect(const AExpression: String); override;
 
-    function GetFullFilename(const AUnitinfo: TDebuggerUnitInfo; out Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
+    function GetFullFilename(const AUnitinfo: TDebuggerUnitInfo; out Filename: string; AskUserIfNotFound: Boolean; UseFullName: Boolean): Boolean; override;
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
@@ -578,11 +578,14 @@ end;
 //-----------------------------------------------------------------------------
 
 function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
-  out Filename: string; AskUserIfNotFound: Boolean): Boolean;
+  out Filename: string; AskUserIfNotFound: Boolean; UseFullName: Boolean): Boolean;
 
   procedure ResolveFromDbg;
   begin
-    Filename := AUnitinfo.DbgFullName;
+    if UseFullName then
+      Filename := AUnitinfo.DbgFullName
+    else
+      Filename := AUnitinfo.FileName;
     Result := Filename <> '';
     debugln(DBG_LOCATION_INFO, ['ResolveFromDbg Init Filename=', Filename]);
     if Result then
@@ -646,7 +649,7 @@ begin
   Result := False;
   if Destroying or (AUnitinfo = nil) then exit;
   Filename := AUnitinfo.LocationFullFile;
-  Result := Filename <> '';
+  Result := (Filename <> '') and not UseFullName;
   if Result then exit;
 
   //debugln(['TDebugManager.GetFullFilename Src=',AUnitinfo.SrcClassName,' Func=',AUnitinfo.FunctionName]);
@@ -1362,10 +1365,18 @@ begin
   then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
 
   if (SrcLine > 0) and (CurrentSourceUnitInfo <> nil) and
-     GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True)
+     GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True, False)
   then begin
     // Load the file
     NewSource := CodeToolBoss.LoadFile(SrcFullName, true, false);
+
+    // If it's a path like ../inc/some.inc in a directory far away, then looking up by relative name won't find it.
+    if NewSource = nil
+    then begin
+      GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True, True);
+      NewSource := CodeToolBoss.LoadFile(SrcFullName, true, false);
+    end;
+
     if NewSource = nil
     then begin
       if not (dlfLoadError in CurrentSourceUnitInfo.Flags) then begin
