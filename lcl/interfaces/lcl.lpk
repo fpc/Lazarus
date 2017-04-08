@@ -95,7 +95,7 @@ end;"/>
             <Item1 Value="gtk"/>
             <Item2 Value="gtk2"/>
             <Item3 Value="qt"/>
-            <Item4 Value="qt5"/>            
+            <Item4 Value="qt5"/>
             <Item5 Value="win32"/>
             <Item6 Value="wince"/>
             <Item7 Value="fpgui"/>
@@ -128,7 +128,7 @@ end;"/>
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="1" Minor="7"/>
+    <Version Major="1" Minor="8" Build="1"/>
     <Files Count="477">
       <Item1>
         <Filename Value="carbon/agl.pp"/>

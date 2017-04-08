@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for DateTimeCtrls 1.5.1
 #
-#   This file was generated on 1-10-15
+#   This file was generated on 8-4-17
 
 [package]
 name=datetimectrls
@@ -10,8 +10,8 @@ version=1.5.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
-options= -MObjFPC -Scghi -O2 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scghi -O2 -g -gl -l -vewnhibq $(DBG_OPTIONS)
 
 [target]
 units=datetimectrls.pas
@@ -24,6 +24,7 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
 [prerules]
 # LCL Platform
 ifndef LCL_PLATFORM
