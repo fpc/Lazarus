@@ -593,7 +593,7 @@ begin
   // make qt interface snappy.
   if Assigned(Application) and not Application.Terminated then
   begin
-    if AWinControl.HandleObjectShouldBeVisible or (fsModal in TCustomForm(AWinControl).FormState) then
+    if AWinControl.HandleObjectShouldBeVisible then
       QCoreApplication_processEvents(QEventLoopAllEvents);
   end;
 
