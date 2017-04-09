@@ -64,7 +64,7 @@
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
-        <Filename Value="testall.lpr"/>
+        <Filename Value="testall.pp"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
