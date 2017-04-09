@@ -146,6 +146,8 @@ const
 var
   CarbonWidgetSet: TCarbonWidgetSet;
 
+function Create32BitAlphaBitmap(ABitmap, AMask: TCarbonBitmap): TCarbonBitmap;
+
 implementation
 
 uses

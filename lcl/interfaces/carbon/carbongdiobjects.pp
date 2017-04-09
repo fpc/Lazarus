@@ -24,7 +24,7 @@ uses
  // carbon bindings
   MacOSAll,
  // LCL
-  LCLProc, LCLType, GraphType, Graphics, Controls, Forms,
+  LCLProc, LCLType, GraphType, Graphics, Controls, Forms, ExtCtrls,
  // LCL Carbon
  {$ifdef DebugBitmaps}
   CarbonDebug,
@@ -360,13 +360,23 @@ type
     FQDColorCursorHandle: CCrsrHandle;
     FQDHardwareCursorName: String;
     FPixmapHandle: PixmapHandle;
+    // animated color cursors
+    FAnimationFrames: array of record
+      QDColorCursorHandle: CCrsrHandle;
+      QDHardwareCursorName: String;
+      PixmapHandle: PixmapHandle;
+    end;
+    FAnimationTimer: TTimer;
     procedure CreateThread;
     procedure DestroyThread;
+    procedure StepQDAnimation(Sender: TObject);
   protected
     procedure CreateHardwareCursor(ABitmap: TCarbonBitmap; AHotSpot: Point);
     procedure CreateColorCursor(ABitmap: TCarbonBitmap; AHotSpot: Point);
+    procedure DestroyCursor;
   public
     constructor Create;
+    constructor CreateAnimatedFromInfo(AInfo: PIconInfo; ACount: Integer);
     constructor CreateFromInfo(AInfo: PIconInfo);
     constructor CreateThemed(AThemeCursor: ThemeCursor; ADefault: Boolean = False);
     destructor Destroy; override;
@@ -2436,7 +2446,7 @@ begin
   FPixmapHandle^^.pmTable := nil;
   FPixmapHandle^^.baseAddr := Ptr(ABitmap.Data);
 
-  FQDHardwareCursorName := Application.Title + LazarusCursorInfix + IntToStr(Integer(Self));
+  FQDHardwareCursorName := Application.Title + LazarusCursorInfix + IntToStr(Integer(FPixmapHandle));
   OSError(
     QDRegisterNamedPixMapCursor(FPixmapHandle, nil, AHotSpot, PChar(FQDHardwareCursorName)),
     Self, 'CreateHardwareCursor', 'QDRegisterNamedPixMapCursor');
@@ -2527,6 +2537,32 @@ begin
   end;
 end;
 
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.CreateFromInfo
+  Params:  AInfo - Array of cursor info
+           ACount - Number of items in array
+
+  Creates new cursor from the specified info
+ ------------------------------------------------------------------------------}
+constructor TCarbonCursor.CreateAnimatedFromInfo(AInfo: PIconInfo; ACount: Integer);
+var
+  i: Integer;
+begin
+  FAnimationTimer := TTimer.Create(nil);
+  FAnimationTimer.Enabled := False;
+  FAnimationTimer.Interval := 150;//kThemeCursorAnimationDelay;
+  FAnimationTimer.OnTimer := @StepQDAnimation;
+  SetLength(FAnimationFrames, ACount);
+  for i := 0 to ACount - 1 do begin
+    CreateFromInfo(AInfo);
+    FAnimationFrames[i].QDColorCursorHandle := FQDColorCursorHandle;
+    FAnimationFrames[i].QDHardwareCursorName := FQDHardwareCursorName;
+    FAnimationFrames[i].PixmapHandle := FPixmapHandle;
+    Inc(AInfo);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonCursor.CreateFromInfo
   Params:  AInfo - Cusrsor info
@@ -2607,29 +2643,54 @@ begin
     FCursorType := cctTheme;
 end;
 
+
 {------------------------------------------------------------------------------
   Method:  TCarbonCursor.Destroy
 
-  Frees Carbon cursor
+  Frees QuickDraw cursor
  ------------------------------------------------------------------------------}
-destructor TCarbonCursor.Destroy;
+procedure TCarbonCursor.DestroyCursor;
 begin
-  UnInstall;
-  
   case CursorType of
     cctQDHardware:
       if FQDHardwareCursorName <> '' then
       begin
         OSError(QDUnregisterNamedPixmapCursor(PChar(FQDHardwareCursorName)),
           Self, SDestroy, 'QDUnregisterNamedPixmapCursor');
-        
+
         FPixmapHandle^^.baseAddr := nil;
         DisposePixMap(FPixmapHandle);
       end;
     cctQDColor:
       DisposeCCursor(FQDColorCursorHandle);  // suppose pixmap will be disposed too
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.Destroy
+
+  Frees Carbon cursor
+ ------------------------------------------------------------------------------}
+destructor TCarbonCursor.Destroy;
+var
+  i: Integer;
+begin
+  UnInstall;
   
+  if FAnimationFrames <> nil then
+  begin
+    FAnimationTimer.Free;
+    for i := 0 to Length(FAnimationFrames) - 1 do
+    begin
+      FQDColorCursorHandle := FAnimationFrames[i].QDColorCursorHandle;
+      FQDHardwareCursorName := FAnimationFrames[i].QDHardwareCursorName;
+      FPixmapHandle := FAnimationFrames[i].PixmapHandle;
+      DestroyCursor;
+    end;
+  end
+  else
+    DestroyCursor;
+
   inherited Destroy;
 end;
 
@@ -2646,6 +2707,11 @@ begin
     DebugLn('TCarbonCursor.Install type: ', DbgS(Ord(CursorType)));
   {$ENDIF}
   
+  if FAnimationTimer <> nil then
+  begin
+    FAnimationStep := 0;
+    FAnimationTimer.Enabled := True;
+  end;
   case CursorType of
     cctQDHardware:
       if FQDHardwareCursorName <> '' then
@@ -2678,6 +2744,9 @@ begin
   case CursorType of
     cctWait: QDDisplayWaitCursor(False);
     cctAnimated: DestroyThread;
+    cctQDColor, cctQDHardware:
+      if FAnimationTimer <> nil then
+        FAnimationTimer.Enabled := False;
   end;
 end;
 
@@ -2698,6 +2767,25 @@ begin
     FCursorType := cctTheme;
     SetThemeCursor(FThemeCursor);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCursor.StepQDAnimation
+
+  Steps Carbon QuickDraw cursor animation
+ ------------------------------------------------------------------------------}
+procedure TCarbonCursor.StepQDAnimation(Sender: TObject);
+begin
+  case CursorType of
+    cctQDHardware:
+      with FAnimationFrames[FAnimationStep] do
+        if QDHardwareCursorName <> '' then
+          OSError(QDSetNamedPixmapCursor(PChar(QDHardwareCursorName)),
+            Self, 'StepAnimation', 'QDSetNamedPixmapCursor');
+    cctQDColor:
+      SetCCursor(FAnimationFrames[FAnimationStep].QDColorCursorHandle);
+  end;
+  FAnimationStep := (FAnimationStep + 1) mod Length(FAnimationFrames);
 end;
 
 {------------------------------------------------------------------------------
