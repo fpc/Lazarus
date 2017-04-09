@@ -239,7 +239,10 @@ begin
   {$IFDEF QtUseNativeEventLoop}
   FMainTimerID := -1;
   ATimer := QTimer_Create(QCoreApplication_instance());
-  QTimer_setInterval(ATimer, 0);
+  if StyleName = 'gtk' then
+    QTimer_setInterval(ATimer, 1) {issue #31191}
+  else
+    QTimer_setInterval(ATimer, 0);
   QTimer_start(ATimer);
   FMainTimerID := QTimer_timerId(ATimer);
   QApplication_exec();
