@@ -589,13 +589,8 @@ begin
   Widget.EndUpdate;
 
   {$IFDEF HASX11}
-
-  // make qt interface snappy.
-  if Assigned(Application) and not Application.Terminated then
-  begin
-    if AWinControl.HandleObjectShouldBeVisible then
-      QCoreApplication_processEvents(QEventLoopAllEvents);
-  end;
+  if AWinControl.HandleObjectShouldBeVisible then
+    QCoreApplication_processEvents(QEventLoopAllEvents);
 
   if (Application.TaskBarBehavior = tbSingleButton) or
     (TForm(AWinControl).ShowInTaskBar <> stDefault) then
