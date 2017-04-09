@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-23 16:05+0100\n"
+"PO-Revision-Date: 2017-04-09 19:25+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10617,16 +10617,12 @@ msgid "Convert DFM File to LFM"
 msgstr "DFM- in LFM-Datei umwandeln"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-#, fuzzy
-#| msgid "Copy selected Components to clipboard"
 msgid "Copy selected components"
-msgstr "Ausgewählte Komponenten in die Zwischenablage kopieren"
+msgstr "Ausgewählte Komponenten kopieren"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-#, fuzzy
-#| msgid "Cut selected Components to clipboard"
 msgid "Cut selected components"
-msgstr "Ausgewählte Komponenten in die Zwischenablage ausschneiden"
+msgstr "Ausgewählte Komponenten ausschneiden"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
 msgid "Default adapted to OS X"
@@ -10802,10 +10798,8 @@ msgid "Open package file"
 msgstr "Packagedatei öffnen"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-#, fuzzy
-#| msgid "Paste Components from clipboard"
 msgid "Paste Components"
-msgstr "Komponenten aus der Zwischenablage einfügen"
+msgstr "Komponenten einfügen"
 
 #: lazarusidestrconsts.liskmpauseprogram
 msgid "Pause program"
@@ -11502,19 +11496,19 @@ msgstr "Daten eingeben"
 
 #: lazarusidestrconsts.lismacropromptenterrunparameters
 msgid "Enter run parameters"
-msgstr "»Run«-Parameter angeben"
+msgstr "»Start«-Parameter angeben"
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main unit has Application.CreateForm statements"
-msgstr "Die Haupt-Unit enthält die Anweisung »Application.CreateForm«."
+msgstr "Die Hauptunit enthält Application.CreateForm Anweisungen."
 
 #: lazarusidestrconsts.lismainunithasapplicationscaledstatement
 msgid "Main unit has Application.Scaled statement"
-msgstr ""
+msgstr "Hauptunit besitzt Application.Scaled Anweisung"
 
 #: lazarusidestrconsts.lismainunithasapplicationtitlestatement
 msgid "Main unit has Application.Title statement"
-msgstr ""
+msgstr "Hauptunit besitzt Application.Title Anweisung"
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
@@ -12407,7 +12401,7 @@ msgstr "&Rückwärts suchen"
 
 #: lazarusidestrconsts.lismenufindreferencesofusedunit
 msgid "Find References Of Used Unit"
-msgstr ""
+msgstr "Finde Referenzen benutzter Units"
 
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
@@ -16985,7 +16979,7 @@ msgstr "Worte"
 
 #: lazarusidestrconsts.lissortunicoderangelistalphabetically
 msgid "Sort Unicode range list alphabetically"
-msgstr ""
+msgstr "Unicode-Liste alphabetisch sortieren"
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
@@ -18472,7 +18466,7 @@ msgstr "Kann nicht starten"
 
 #: lazarusidestrconsts.lisunabletorun2
 msgid "Unable to run \"%s\""
-msgstr ""
+msgstr "Kann \"%s\" nicht starten"
 
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
@@ -19742,11 +19736,9 @@ msgid "config build file"
 msgstr "Konfiguriere Kompilierungsdatei"
 
 #: lazarusidestrconsts.srkmeccopy
-#, fuzzy
-#| msgid "Copy selection to clipboard"
 msgctxt "lazarusidestrconsts.srkmeccopy"
 msgid "Copy"
-msgstr "Auswahl in die Zwischenablage kopieren"
+msgstr "Kopieren"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -19761,11 +19753,9 @@ msgid "Copy editor to prior free window"
 msgstr "Editor in vorheriges freies Fenster kopieren"
 
 #: lazarusidestrconsts.srkmeccut
-#, fuzzy
-#| msgid "Cut selection to clipboard"
 msgctxt "lazarusidestrconsts.srkmeccut"
 msgid "Cut"
-msgstr "Auswahl in die Zwischenablage ausschneiden"
+msgstr "Ausschneiden"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -20122,11 +20112,9 @@ msgid "Move editor rightmost"
 msgstr "Editor ganz nach rechts verschieben"
 
 #: lazarusidestrconsts.srkmecmultipaste
-#, fuzzy
-#| msgid "MultiPaste clipboard to current position"
 msgctxt "lazarusidestrconsts.srkmecmultipaste"
 msgid "MultiPaste"
-msgstr "Zwischenablage an aktueller Position mehrfach einfügen"
+msgstr "Mehrfach einfügen"
 
 #: lazarusidestrconsts.srkmecnextbookmark
 msgid "Next Bookmark"
@@ -20185,11 +20173,9 @@ msgid "Move cursor up one page"
 msgstr "Cursor eine Seite nach oben bewegen"
 
 #: lazarusidestrconsts.srkmecpaste
-#, fuzzy
-#| msgid "Paste clipboard to current position"
 msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
-msgstr "Einfügen der Zwischenablage an die aktuelle Stelle"
+msgstr "Einfügen"
 
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"
@@ -21113,4 +21099,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-

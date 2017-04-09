@@ -8,7 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.9\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: de\n"
 
@@ -123,8 +123,6 @@ msgid "New project group"
 msgstr "Neue Projektgruppe"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
-#, fuzzy
-#| msgid "New project group ..."
 msgid "New Project group ..."
 msgstr "Neue Projektgruppe ..."
 
@@ -157,14 +155,10 @@ msgid "Targets"
 msgstr "Ziele"
 
 #: projectgroupstrconst.lisopenprojectgroup
-#, fuzzy
-#| msgid "Open project group ..."
 msgid "Open Project Group ..."
 msgstr "Projektgruppe öffnen ..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
-#, fuzzy
-#| msgid "Open recent project group"
 msgid "Open Recent Project Group"
 msgstr "Aktuelle Projektgruppe öffnen"
 
@@ -243,7 +237,7 @@ msgstr "Neu laden"
 
 #: projectgroupstrconst.lisprojectgroups
 msgid "Project Groups"
-msgstr ""
+msgstr "Projektgruppen"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
 msgid "Save As ..."
@@ -277,15 +271,11 @@ msgid "Save project group"
 msgstr "Projektgruppe speichern"
 
 #: projectgroupstrconst.lissaveprojectgroup
-#, fuzzy
-#| msgid "Save project group"
 msgctxt "projectgroupstrconst.lissaveprojectgroup"
 msgid "Save Project Group"
 msgstr "Projektgruppe speichern"
 
 #: projectgroupstrconst.lissaveprojectgroupas
-#, fuzzy
-#| msgid "Save project group as ..."
 msgid "Save Project Group As ..."
 msgstr "Projektgruppe speichern unter ..."
 
@@ -351,25 +341,25 @@ msgstr "%d Ziele"
 
 #: projectgroupstrconst.listargetearlier
 msgid "Compile target earlier"
-msgstr ""
+msgstr "Ziel früher kompilieren"
 
 #: projectgroupstrconst.listargetearliercaption
 msgid "Earlier"
-msgstr ""
+msgstr "Früher"
 
 #: projectgroupstrconst.listargetearlierhint
 msgid "Build target earlier"
-msgstr ""
+msgstr "Ziel früher erstellen"
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
 msgid "Install"
-msgstr ""
+msgstr "Installieren"
 
 #: projectgroupstrconst.listargetinstallcaption
 msgctxt "projectgroupstrconst.listargetinstallcaption"
 msgid "Install"
-msgstr ""
+msgstr "Installieren"
 
 #: projectgroupstrconst.listargetinstallhint
 msgid "Install selected target"
@@ -377,15 +367,15 @@ msgstr "Gewähltes Ziel installieren"
 
 #: projectgroupstrconst.listargetlater
 msgid "Compile target later"
-msgstr ""
+msgstr "Ziel später kompilieren"
 
 #: projectgroupstrconst.listargetlatercaption
 msgid "Later"
-msgstr ""
+msgstr "Später"
 
 #: projectgroupstrconst.listargetlaterhint
 msgid "Build target later"
-msgstr ""
+msgstr "Ziel später erstellen"
 
 #: projectgroupstrconst.listargetopen
 msgid "Open Target"
@@ -431,12 +421,12 @@ msgstr "Gewähltes Ziel starten"
 #: projectgroupstrconst.listargetuninstall
 msgctxt "projectgroupstrconst.listargetuninstall"
 msgid "Uninstall"
-msgstr ""
+msgstr "Deinstallieren"
 
 #: projectgroupstrconst.listargetuninstallcaption
 msgctxt "projectgroupstrconst.listargetuninstallcaption"
 msgid "Uninstall"
-msgstr ""
+msgstr "Deinstallieren"
 
 #: projectgroupstrconst.listargetuninstallhint
 msgid "Uninstall selected target"
@@ -469,4 +459,3 @@ msgstr "Schreibfehler"
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
 msgid "XML syntax error in file \"%s\": %s"
 msgstr "XML-Syntaxfehler in Datei \"%s\": %s"
-

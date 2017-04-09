@@ -8,7 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.9\n"
 "Language: de\n"
 
 #: lazdatadeskstr.eoaddterminator
@@ -33,7 +33,7 @@ msgstr "Feldnamen in Anführungszeichen"
 
 #: lazdatadeskstr.eoskipforeignkeys
 msgid "Skip foreign keys"
-msgstr "Foreign Keys überspringen"
+msgstr "Fremdschlüssel überspringen"
 
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
@@ -664,7 +664,7 @@ msgstr "Benutzername"
 
 #: lazdatadeskstr.sld_view
 msgid "View"
-msgstr ""
+msgstr "Ansicht"
 
 #: lazdatadeskstr.sload
 msgid "Load SQL"
@@ -911,4 +911,3 @@ msgstr "Wert"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Es ist ein Datadictionary aktiv. Soll in dieses Datadictionary importiert werden?"
-
