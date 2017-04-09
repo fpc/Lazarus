@@ -35,8 +35,8 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   btn: TToolButton;
-  i, rows: integer;
-  w: integer;
+  //i, rows: integer;
+  //w: integer;
   r: TRect;
 begin
   btn := TToolButton.Create(ToolBar1);

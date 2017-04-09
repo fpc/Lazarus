@@ -22,9 +22,9 @@ type
     procedure Button2Click(Sender: TObject);
     procedure PopupNotifier1Close(Sender: TObject; var CloseAction: TCloseAction);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

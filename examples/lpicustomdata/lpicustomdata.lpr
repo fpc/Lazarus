@@ -31,7 +31,9 @@ program LPICustomData;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, AvgLvlTree, XMLCfg;
+  SysUtils,
+  // LazUtils
+  Laz2_XMLCfg, AvgLvlTree;
 
 procedure LoadStringToStringTree(XMLConfig: TXMLConfig;
   Tree: TStringToStringTree; const Path: string);

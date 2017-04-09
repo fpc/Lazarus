@@ -9,11 +9,12 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 300
   ClientWidth = 400
+  LCLVersion = '1.7'
   object Label1: TLabel
     Left = 8
-    Height = 66
+    Height = 42
     Top = 216
-    Width = 208
+    Width = 195
     Caption = 'If DragImageList is working then '#13#10'you should see Button image '#13#10'dragged nearly mouse cursor.'
     ParentColor = False
   end

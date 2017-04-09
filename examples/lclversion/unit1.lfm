@@ -10,6 +10,7 @@ object VersionForm: TVersionForm
   ClientHeight = 300
   ClientWidth = 400
   OnCreate = FormCreate
+  LCLVersion = '1.7'
   object Memo1: TMemo
     Left = 29
     Height = 130

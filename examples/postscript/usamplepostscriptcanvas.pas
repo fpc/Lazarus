@@ -36,7 +36,6 @@ type
     procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
     fPsCanvas: TPostscriptCanvas;
     function Sx(AX: Integer): Integer;
     function Sy(AY: Integer): Integer;
@@ -47,7 +46,7 @@ type
     procedure ShowFile(aFile:string);
     procedure SelectPaper(res:Integer=0);
   public
-    { public declarations }
+
   end;
 
 var

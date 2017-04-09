@@ -31,9 +31,9 @@ uses
 type
    TForm1 = class(TForm)
    private
-     { Private Declarations }
+
    protected
-     { Protected Declarations }
+
    public
       button1 : TBitBtn;
       Label1 : TLabel;

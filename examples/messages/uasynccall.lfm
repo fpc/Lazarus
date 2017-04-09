@@ -8,6 +8,7 @@ object Form1: TForm1
   Caption = 'QueueAsyncCall example'
   ClientHeight = 300
   ClientWidth = 400
+  LCLVersion = '1.7'
   object Button1: TButton
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -74,7 +75,7 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 54
+    ClientHeight = 46
     ClientWidth = 120
     ItemIndex = 0
     Items.Strings = (

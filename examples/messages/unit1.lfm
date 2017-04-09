@@ -8,6 +8,7 @@ object Form1: TForm1
   Caption = 'Messages example'
   ClientHeight = 300
   ClientWidth = 400
+  LCLVersion = '1.7'
   object Button1: TButton
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner

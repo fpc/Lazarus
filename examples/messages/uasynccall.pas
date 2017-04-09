@@ -24,7 +24,7 @@ type
     procedure SimpleMethod(Data: PtrInt);
     procedure ComplexMethod(Data: PtrInt);
   public
-    { public declarations }
+
   end; 
 
 var

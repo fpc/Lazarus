@@ -19,9 +19,9 @@ type
       const FileNames: array of String);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

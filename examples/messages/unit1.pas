@@ -24,7 +24,7 @@ type
   private
     procedure MyMessageHandler(var Message: TLMessage); message LM_MY_MESSAGE;
   public
-    { public declarations }
+
   end; 
 
 var

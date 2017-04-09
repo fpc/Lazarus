@@ -21,9 +21,9 @@ type
     procedure Panel1DragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
   
   { TMyDragObject }
