@@ -562,6 +562,7 @@ type
       const AXProportion, AYProportion: Double); override;
     procedure DoSelectionChange(User: Boolean); virtual;
     procedure SendItemIndex;
+    procedure WMGetDlgCode(var Message: TLMNoParams); message LM_GETDLGCODE;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

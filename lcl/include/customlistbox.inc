@@ -505,6 +505,12 @@ begin
   TWSCustomListBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
 end;
 
+procedure TCustomListBox.WMGetDlgCode(var Message: TLMNoParams);
+begin
+  inherited;
+  Message.Result := Message.Result or DLGC_WANTARROWS;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomListBox.GetCachedData
 ------------------------------------------------------------------------------}
