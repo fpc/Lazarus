@@ -443,12 +443,15 @@ end;
 procedure TTreeFilterEdit.SetFilteredTreeview(const AValue: TCustomTreeview);
 begin
   if fFilteredTreeview = AValue then Exit;
-  if fFilteredTreeview <> nil then begin
+  if fFilteredTreeview <> nil then
+  begin
     fFilteredTreeview.RemoveFreeNotification(Self);
     fFilteredTreeview.RemoveHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
   end;
   fFilteredTreeview := AValue;
-  if fFilteredTreeview <> nil then begin
+  if fFilteredTreeview <> nil then
+  begin
+    Filter := Text;
     fFilteredTreeview.FreeNotification(Self);
     fFilteredTreeview.AddHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
   end;
