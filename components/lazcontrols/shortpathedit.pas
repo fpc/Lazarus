@@ -5,7 +5,11 @@ unit ShortPathEdit;
 interface
 
 uses
-  Classes, SysUtils, EditBtn, LResources, Dialogs, LazFileUtils;
+  Classes, SysUtils,
+  // LCL
+  EditBtn, Dialogs,
+  // LazUtils
+  LazFileUtils;
 
 type
 

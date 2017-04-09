@@ -16,8 +16,9 @@ unit DividerBevel;
 interface
 
 uses
-  Classes, LResources, Forms, Controls, Graphics, Dialogs, Types,
-  LCLType, LCLIntf, LCLProc, Math, GraphType, ComCtrls, ExtCtrls, Themes;
+  Classes, Types, Math,
+  // LCL
+  LCLType, LCLIntf, Controls, Graphics, GraphType, ComCtrls, ExtCtrls, Themes;
 
 type
   { TDividerBevel }

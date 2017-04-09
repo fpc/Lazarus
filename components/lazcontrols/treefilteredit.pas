@@ -16,8 +16,11 @@ unit TreeFilterEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Graphics, Controls, ComCtrls, EditBtn,
-  LResources, LCLType, LCLProc, LazFileUtils, LazUTF8, AvgLvlTree, fgl;
+  Classes, SysUtils, fgl,
+  // LCL
+  LCLType, Graphics, ComCtrls, EditBtn,
+  // LazUtils
+  LazFileUtils, LazUTF8, AvgLvlTree;
 
 type
   TImageIndexEvent = function (Str: String; Data: TObject;

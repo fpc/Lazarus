@@ -66,8 +66,9 @@ unit SpinEx;
 interface
 
 uses
-  Classes, Controls, SysUtils, LCLType, LCLProc, ClipBrd, ComCtrls,
-  GroupedEdit;
+  Classes, SysUtils,
+  // LCL
+  LCLType, LCLProc, Controls, ClipBrd, ComCtrls, GroupedEdit;
 
 type
   { TCustomFloatSpinEdit }

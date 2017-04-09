@@ -23,8 +23,9 @@ unit ExtendedNotebook;
 interface
 
 uses
-  Classes, sysutils, math, LCLIntf, LCLType, LResources, Forms, Controls,
-  Graphics, Dialogs, ExtCtrls, ComCtrls, LMessages
+  Classes, sysutils, math,
+  // LCL
+  LCLIntf, LCLType, LMessages, Controls, ComCtrls
   {$IFDEF ExtNBookDebug} , LCLProc {$ENDIF};
 
 type

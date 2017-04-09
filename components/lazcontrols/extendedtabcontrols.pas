@@ -5,7 +5,10 @@ unit ExtendedTabControls;
 interface
 
 uses
-  Classes, SysUtils, math, ComCtrls, Controls, Toolwin, ImgList, Graphics, Menus, Forms,
+  Classes, SysUtils, math,
+  // LCL
+  ComCtrls, Controls, Toolwin, ImgList, Graphics, Menus, Forms,
+  // LazUtils
   LazLoggerBase;
 
 type

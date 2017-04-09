@@ -13,8 +13,10 @@ unit CheckBoxThemed;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Graphics, Math, ActnList, Forms, Menus,
-  LCLIntf, LMessages, LCLProc, LResources, LCLType, Themes, Types;
+  Classes, SysUtils, Types, Math,
+  // LCL
+  Controls, StdCtrls, Graphics, ActnList, Forms,
+  LCLIntf, LMessages, LCLProc, LCLType, Themes;
 
 type
   TCustomCheckBoxThemed = class;

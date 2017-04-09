@@ -17,8 +17,11 @@ unit ListViewFilterEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, LResources, Graphics, Controls, ComCtrls,
-  LCLProc, LCLType, EditBtn, FileUtil, LazUTF8, fgl, Math;
+  Classes, SysUtils, Math, fgl,
+  // LCL
+  LCLType, Graphics, ComCtrls, EditBtn,
+  // LazUtils
+  LazUTF8;
 
 type
 
