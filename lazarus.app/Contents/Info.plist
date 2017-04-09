@@ -148,9 +148,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>Lazarus IDE v1.8.0 RC1</string>
+	<string>1.8.0</string>
 	<key>CFBundleSignature</key>
-	<string>laza</string>
+	<string>1</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>CSResourcesFileMapped</key>
