@@ -505,12 +505,16 @@ const
       MK_F10      : VKKeyCode:=VK_F10;
       MK_F11      : VKKeyCode:=VK_F11;
       MK_F12      : VKKeyCode:=VK_F12;
-      MK_F13      : VKKeyCode:=VK_SNAPSHOT;
-      MK_F14      : VKKeyCode:=VK_SCROLL;
-      MK_F15      : VKKeyCode:=VK_PAUSE;
+      MK_F13      : VKKeyCode:=VK_F13;
+      MK_F14      : VKKeyCode:=VK_F14;
+      MK_F15      : VKKeyCode:=VK_F15;
+      MK_F16      : VKKeyCode:=VK_F16;
+      MK_F17      : VKKeyCode:=VK_F17;
+      MK_F18      : VKKeyCode:=VK_F18;
+      MK_F19      : VKKeyCode:=VK_F19;
       MK_POWER    : VKKeyCode:=VK_SLEEP; //?
       MK_TAB      : VKKeyCode:=VK_TAB; //strangely enough, tab is "non printable"
-      MK_INS      : VKKeyCode:=VK_INSERT;
+      MK_HELP     : VKKeyCode:=VK_HELP;
       MK_DEL      : VKKeyCode:=VK_DELETE;
       MK_HOME     : VKKeyCode:=VK_HOME;
       MK_END      : VKKeyCode:=VK_END;
@@ -520,7 +524,7 @@ const
       MK_DOWN     : VKKeyCode:=VK_DOWN;
       MK_LEFT     : VKKeyCode:= VK_LEFT;
       MK_RIGHT    : VKKeyCode:= VK_RIGHT;
-      MK_NUMLOCK  : VKKeyCode:= VK_NUMLOCK;
+      MK_CLEAR    : VKKeyCode:= VK_CLEAR;
     end;
     
     if VKKeyCode<>VK_UNKNOWN then
@@ -654,6 +658,7 @@ const
           MK_PADSUB  : VKKeyCode:=VK_SUBTRACT;
           MK_PADADD  : VKKeyCode:=VK_ADD;
           MK_PADDEC  : VKKeyCode:=VK_DECIMAL;
+          MK_PADEQUALS: VKKeyCode:=VK_OEM_PLUS;
           MK_PADENTER:
             begin
               VKKeyCode:=VK_RETURN;

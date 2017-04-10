@@ -38,6 +38,10 @@ const
   MK_F13       = $69; MK_PRNSCR  = MK_F13;  //Print screen = F13
   MK_F14       = $6B; MK_SCRLOCK = MK_F14;  //Scroll Lock = F14
   MK_F15       = $71; MK_PAUSE   = MK_F15;  //Pause = F15
+  MK_F16       = $6A;
+  MK_F17       = $40;
+  MK_F18       = $4F;
+  MK_F19       = $50;
   MK_POWER     = $7F7F;
   MK_TAB       = $30;
   MK_INS       = $72; MK_HELP    = MK_INS;  //old macs call this key "help"
@@ -50,7 +54,7 @@ const
   MK_DOWN      = $7D;
   MK_LEFT      = $7B;
   MK_RIGHT     = $7C;
-  MK_NUMLOCK   = $47;
+  MK_NUMLOCK   = $47; MK_CLEAR   = MK_NUMLOCK;
   MK_NUMPAD0   = $52;
   MK_NUMPAD1   = $53;
   MK_NUMPAD2   = $54;

@@ -712,7 +712,7 @@ begin
     // unset virtual key short cut
     OSError(ChangeMenuItemAttributes(FParentMenu.Menu, Index + 1, 0, kMenuItemAttrUseVirtualKey),
       Self, Sname, SChangeMenuItemAttrs);
-    OSError(SetMenuItemCommandKey(FParentMenu.Menu, Index + 1, False, Key),
+    OSError(SetMenuItemCommandKey(FParentMenu.Menu, Index + 1, False, VirtualKeyCodeToCharCode(Key)),
       Self, SName, SSetCmdKey);
   end
   else // use mac virtual key code

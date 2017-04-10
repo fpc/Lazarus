@@ -64,6 +64,7 @@ var
 {$I mackeycodes.inc}
 
 function VirtualKeyCodeToMac(AKey: Word): Word;
+function VirtualKeyCodeToCharCode(AKey: Word): Word;
 
 function GetBorderWindowAttrs(const ABorderStyle: TFormBorderStyle;
   const ABorderIcons: TBorderIcons): WindowAttributes;
@@ -298,8 +299,8 @@ begin
   VK_NUMPAD7   : Result := MK_NUMPAD7;
   VK_NUMPAD8   : Result := MK_NUMPAD8;
   VK_NUMPAD9   : Result := MK_NUMPAD9;
-  VK_MULTIPLY  : Result := MK_PADMULT;
-  VK_ADD       : Result := MK_PADADD;
+//VK_MULTIPLY  : Result := MK_PADMULT;
+//VK_ADD       : Result := MK_PADADD;
   VK_SEPARATOR : Result := MK_PADDEC;
   VK_SUBTRACT  : Result := MK_PADSUB;
   VK_DECIMAL   : Result := MK_PADDEC;
@@ -319,13 +320,18 @@ begin
   VK_F13       : Result := MK_F13;
   VK_F14       : Result := MK_F14;
   VK_F15       : Result := MK_F15;
+  VK_F16       : Result := MK_F16;
+  VK_F17       : Result := MK_F17;
+  VK_F18       : Result := MK_F18;
+  VK_F19       : Result := MK_F19;
   VK_NUMLOCK   : Result := MK_NUMLOCK;
+  VK_CLEAR     : Result := MK_CLEAR;
   VK_SCROLL    : Result := MK_SCRLOCK;
   VK_SHIFT     : Result := MK_SHIFTKEY;
   VK_CONTROL   : Result := MK_COMMAND;
   VK_MENU      : Result := MK_ALT;
   VK_OEM_3     : Result := MK_TILDE;
-  VK_OEM_MINUS : Result := MK_MINUS;
+//VK_OEM_MINUS : Result := MK_MINUS;
   VK_OEM_PLUS  : Result := MK_EQUAL;
   VK_OEM_5     : Result := MK_BACKSLASH;
   VK_OEM_4     : Result := MK_LEFTBRACKET;
@@ -333,10 +339,29 @@ begin
   VK_OEM_1     : Result := MK_SEMICOLON;
   VK_OEM_7     : Result := MK_QUOTE;
   VK_OEM_COMMA : Result := MK_COMMA;
-  VK_OEM_PERIOD: Result := MK_PERIOD;
-  VK_OEM_2     : Result := MK_SLASH;
+//VK_OEM_PERIOD: Result := MK_PERIOD;
+//VK_OEM_2     : Result := MK_SLASH;
   else
     Result := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    VirtualKeyCodeToCharCode
+  Returns: The char code for the specified virtual key or the original
+  virtual key.  Must be called after VirtualKeyCodeToMac since char codes
+  overlap VK_ codes.
+ ------------------------------------------------------------------------------}
+function VirtualKeyCodeToCharCode(AKey: Word): Word;
+begin
+  case AKey of
+  VK_MULTIPLY  : Result := Ord('*');
+  VK_ADD       : Result := Ord('+');
+  VK_OEM_MINUS : Result := Ord('-');
+  VK_OEM_PERIOD: Result := Ord('.');
+  VK_OEM_2     : Result := Ord('/');
+  else
+    Result := AKey;
   end;
 end;
 
