@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, CommCtrl,
   StdCtrls, Controls, Graphics, Forms, Themes,
 ////////////////////////////////////////////////////
-  WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType,
+  WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLIntf, LCLType,
   LazUTF8, LazUtf8Classes, InterfaceBase, LMessages, LCLMessageGlue, TextStrings,
   Win32Int, Win32Proc, Win32WSControls, Win32Extra, Win32Themes;
 
@@ -803,7 +803,7 @@ begin
   Handle := ACustomListBox.Handle;
   // The check for GetProp is required because of some division error which happens
   // if call LB_GETITEMRECT on window initialization
-  Result := (GetProp(Handle, 'WinControl') <> 0) and (Windows.SendMessage(Handle, LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR);
+  Result := Assigned(GetProp(Handle, 'WinControl')) and (Windows.SendMessage(Handle, LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR);
 end;
 
 class function TWin32WSCustomListBox.GetScrollWidth(const ACustomListBox: TCustomListBox): Integer;
