@@ -50,8 +50,8 @@ var
   AStruct : PPaintStruct;
   Win     : WindowRef;
   Content : HIViewRef;
-  Hnd     : RgnHandle;
-  mr      : MacOSAll.Rect;
+  ClpShape: HIShapeRef;
+  mr      : CGRect;
   invr    : TRect;
 begin
   if isRepaint then
@@ -74,18 +74,17 @@ begin
         SizeOf(CGContextRef), nil, @(AWidget.Context.CGContext)),
       'CarbonCommon_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
 
-
-    if GetEventParameter(AEvent, kEventParamRgnHandle, typeQDRgnHandle, nil,
-      SizeOf(Hnd), nil, @Hnd)=noErr then
+    if GetEventParameter(AEvent, kEventParamShape, typeHIShapeRef, nil,
+      SizeOf(ClpShape), nil, @ClpShape)=noErr then
     begin
-      GetRegionBounds(RgnHandle(Hnd), mr{%H-});
-      invr.Left:=mr.left;
-      invr.Top:=mr.top;
-      invr.Right:=mr.right;
-      invr.Bottom:=mr.bottom;
+      HIShapeGetBounds(ClpShape, mr);
+      invr := CGRectToRect(mr);
+      TCarbonControlContext(AWidget.Context).ClipShapeRef := ClpShape;
     end
-    else
+    else begin
       AWidget.GetBounds(invr);
+      TCarbonControlContext(AWidget.Context).ClipShapeRef := nil;
+    end;
 
     AWidget.Context.Reset;
 

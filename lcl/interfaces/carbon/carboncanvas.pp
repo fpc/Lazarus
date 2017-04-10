@@ -186,12 +186,14 @@ type
   TCarbonControlContext = class(TCarbonDeviceContext)
   private
     FOwner: TCarbonWidget;    // owner widget
+    FClipShapeRef: HIShapeRef;
   protected
     function GetSize: TPoint; override;
   public
     constructor Create(AOwner: TCarbonWidget);
-
+    function IsInClipRegion(ARect: TRect): Boolean;
     property Owner: TCarbonWidget read FOwner;
+    property ClipShapeRef: HIShapeRef read FClipShapeRef write FClipShapeRef;
   end;
 
   { TCarbonBitmapContext }
@@ -1303,12 +1305,12 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.PolyBezier
-  Params:  Points    - Points defining the cubic Bézier curve
+  Params:  Points    - Points defining the cubic BÃ©zier curve
            NumPts    - Number of points passed
            Filled    - Fill the drawed shape
-           Continous - Connect Bézier curves
+           Continous - Connect BÃ©zier curves
 
-  Draws a cubic Bézier curves. The first curve is drawn from the first point to
+  Draws a cubic BÃ©zier curves. The first curve is drawn from the first point to
   the fourth point with the second and third points being the control points.
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.PolyBezier(Points: PPoint; NumPts: Integer;
@@ -1742,6 +1744,13 @@ begin
 
   FOwner := AOwner;
   Reset;
+end;
+
+function TCarbonControlContext.IsInClipRegion(ARect: TRect): Boolean;
+begin
+  Result := True;
+  if ClipShapeRef <> nil then
+    Result := HIShapeIntersectsRect(ClipShapeRef, RectToCGRect(ARect));
 end;
 
 { TCarbonBitmapContext }
