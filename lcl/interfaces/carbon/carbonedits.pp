@@ -787,6 +787,9 @@ end;
 
   List item selected event handler
  ------------------------------------------------------------------------------}
+type
+  TWinControlAccess = class(TWinControl);
+
 procedure TCarbonComboBox.ListItemSelected(AIndex: Integer);
 begin
   if FItemIndex <> AIndex then
@@ -794,7 +797,9 @@ begin
     FItemIndex := AIndex;
     LCLSendSelectionChangedMsg(LCLObject);
     // Fire OnChange event
-    LCLSendChangedMsg(LCLObject);
+    // Don't do it during handle creation: OnChange fired for Combobox with Readonly, with ItemIndex
+    if not (wcfCreatingHandle in TWinControlAccess(LCLObject).FWinControlFlags) then
+      LCLSendChangedMsg(LCLObject);
   end;
 end;
 
