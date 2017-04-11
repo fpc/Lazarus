@@ -1392,7 +1392,8 @@ begin
   begin
     if Column = 0 then
     begin
-      if (Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages) then
+      if ((Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages)) and
+         ((not Options.ShowRegularIcons) or ((Options.ShowRegularIcons) and (Data^.InstallState = 0))) then
         CellText := '- ' + FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate)
       else
         CellText := '';
@@ -1572,7 +1573,8 @@ begin
   begin
     if Column = 0 then
     begin
-      if (Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages) then
+      if ((Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages)) and
+          ((not Options.ShowRegularIcons) or ((Options.ShowRegularIcons) and (Data^.InstallState = 0))) then
         TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
       if Node <> Sender.FocusedNode then
         TargetCanvas.Font.Color := clBlack
