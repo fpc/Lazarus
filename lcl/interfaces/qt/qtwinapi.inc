@@ -1383,7 +1383,9 @@ begin
   ClipRect := Rect(0, 0, 0, 0);
   B := QtDC.getClipping;
   if (Flags and DT_NOCLIP = DT_NOCLIP) and
-    (Flags and DT_WORDBREAK = DT_WORDBREAK) then
+    (Flags and DT_WORDBREAK = DT_WORDBREAK) and
+    {if DT_CALCRECT is inlcuded we should avoid wrong calculation}
+    (Flags and DT_CALCRECT = 0) then
   begin
     if B then
       ClipRect := QtDC.getClipRegion.getBoundingRect;

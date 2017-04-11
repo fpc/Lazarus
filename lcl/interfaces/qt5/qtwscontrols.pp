@@ -793,19 +793,22 @@ var
   ABitmap: TBitmap;
 begin
   ABitmap := TBitmap.Create;
-  ADragImageList.GetBitmap(AIndex, ABitmap);
+  try
+    ADragImageList.GetBitmap(AIndex, ABitmap);
 
-  if (ABitmap.Handle = 0) or (ABitmap.Width = 0) or (ABitmap.Height = 0) then
-  begin
-    Result := False;
-    Exit;
+    if (ABitmap.Handle = 0) or (ABitmap.Width = 0) or (ABitmap.Height = 0) then
+    begin
+      Result := False;
+      Exit;
+    end;
+
+    Result := TQtWidgetset(Widgetset).DragImageList_BeginDrag(
+      TQtImage(ABitmap.Handle).Handle, ADragImageList.DragHotSpot);
+    if Result then
+      TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y);
+  finally
+    ABitmap.Free;
   end;
-
-  Result := TQtWidgetset(Widgetset).DragImageList_BeginDrag(
-    TQtImage(ABitmap.Handle).Handle, ADragImageList.DragHotSpot);
-  if Result then
-    TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y);
-  ABitmap.Free;
 end;
 
 class function TQtWSDragImageList.DragMove(
