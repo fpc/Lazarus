@@ -1453,7 +1453,6 @@ components/fppkg/src/laz_pkgrepos.pas svneol=native#text/plain
 components/fppkg/src/lazfppkgmanagerintf.pas svneol=native#text/plain
 components/fppkg/standalone/lazarusfppkg.ico -text svneol=unset#image/x-icon
 components/fppkg/standalone/lazarusfppkg.lpi svneol=native#text/plain
-components/fppkg/standalone/lazarusfppkg.lps svneol=native#text/plain
 components/fppkg/standalone/lazarusfppkg.pas svneol=native#text/plain
 components/fppkg/standalone/lazarusfppkg.res -text
 components/fpvectorial/avisocncgcodereader.pas svneol=native#text/plain
