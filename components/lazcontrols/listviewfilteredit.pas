@@ -156,8 +156,11 @@ begin
   if fFilteredListview = AValue then Exit;
   fFilteredListview:=AValue;
   if Assigned(fFilteredListview) then
+  begin
+    Filter:=Text;
     for i := 0 to fFilteredListview.Items.Count-1 do
       fOriginalData.Add(ListItem2Data(fFilteredListview.Items[i]));
+  end;
 end;
 
 procedure TListViewFilterEdit.Notification(AComponent: TComponent; Operation: TOperation);

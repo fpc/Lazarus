@@ -140,7 +140,9 @@ procedure TListFilterEdit.SetFilteredListbox(const AValue: TCustomListBox);
 begin
   if fFilteredListbox = AValue then Exit;
   fFilteredListbox:=AValue;
-  if Assigned(fFilteredListbox) then begin
+  if Assigned(fFilteredListbox) then
+  begin
+    Filter:=Text;
     fOriginalData.Assign(fFilteredListbox.Items);
     if (fFilteredListbox is TCustomCheckListBox) and not Assigned(fCheckedItems) then
       fCheckedItems:=TStringMap.Create(False);
