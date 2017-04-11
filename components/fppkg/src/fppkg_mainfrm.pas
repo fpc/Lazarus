@@ -38,8 +38,10 @@ unit fppkg_mainfrm;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls, Buttons,
-  Menus, CheckLst, Dialogs, fppkg_const,
+  Classes, SysUtils,
+  lazCollections,
+  Forms, Controls, StdCtrls, ComCtrls, ExtCtrls, Buttons,
+  Menus, CheckLst, Dialogs, fppkg_const, LCLIntf, LMessages,
   fppkg_optionsfrm, fppkg_details,
   pkgFppkg,
   //IDE interface
@@ -52,12 +54,10 @@ uses
   // Package Handler components
   pkghandler, pkgcommands,
   //downloader
-  pkgfphttp;
+  pkgfphttp,
+  FppkgWorkerThread;
 
 type
-  TFppkgConfigOptions = record
-    ConfigFile: string;
-  end;
 
   { TFppkgForm }
 
@@ -108,6 +108,7 @@ type
     procedure CompileButtonClick(Sender: TObject);
     procedure DownloadButtonClick(Sender: TObject);
     procedure FixBrokenButtonClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure InstallButtonClick(Sender: TObject);
@@ -124,12 +125,21 @@ type
     procedure SearchEditKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure SupportCheckGroupItemClick(Sender: TObject; Index: integer);
     procedure UpdateButtonClick(Sender: TObject);
+    procedure HandleLog(var Msg: TLMessage); message WM_LogMessageWaiting;
+    procedure HandleWorkerThreadDone(var Msg: TLMessage); message WM_WorkerThreadDone;
   private
     SearchPhrases: TStrings;
 
-    FErrors: TStrings;
+    FBufferLogLines: TStrings;
+    FLogMonitor: TLazMonitor;
+    FMainThreadTriggered: Boolean;
+
     FFPpkg: TpkgFPpkg;
     FLazPackages: TLazPackages;
+    FErrors: TStringList;
+    FCurrentlyRunningTaskDescription: string;
+
+    FWorkerThread: TFppkgWorkerThread;
 
     function PkgColumnValue(AName: string; pkg: TLazPackage): string;
 
@@ -149,7 +159,8 @@ type
 
     procedure ShowError(const Description, Error: String);
   public
-    procedure OnError(const Msg: String);
+    procedure OnErrorThreadSafe(const Msg: String);
+    procedure OnLogThreadSafe(const Msg: String);
   end;
 
 var
@@ -166,6 +177,7 @@ uses
 resourcestring
   SErrActionFailed    = 'Failed to %s: ' + sLineBreak + sLineBreak + '%s';
   SMsgActionSucceeded = '%s succeeded.';
+  SMsgFppkgRunning    = 'A prior command is still in progress.';
   SActFixBroken       = 'fix broken packages';
   SActCleanPackages   = 'clean package(s)';
   SActCompilePackages = 'compile packages';
@@ -183,35 +195,31 @@ var
 begin
   if not(Level in LogLevels) then
     exit;
-  Prefix:='';
   case Level of
-    {$IF FPC_FULLVERSION > 20602}
     llWarning :
       Prefix:=SWarning;
     llError :
       Prefix:=SError;
-    {$ELSE}
-    vlWarning :
-      Prefix:=SWarning;
-    vlError :
-      Prefix:=SError;
-    {$ENDIF}
-{    vlInfo :
-      Prefix:='I: ';
-    vlCommands :
-      Prefix:='C: ';
-    vlDebug :
-      Prefix:='D: '; }
+    llInfo :
+      Prefix:=SInfo;
+    llCommands :
+      Prefix:=SCommand;
+    llDebug :
+      Prefix:=SDebug;
+    llProgres :
+      Prefix:=SProgres
+  else
+    Prefix := '';
   end;
 
   if Assigned(FppkgForm) then
-    FppkgForm.OutputMemo.Lines.Add(DateTimeToStr(Now) + ' ' + Prefix + ' ' + Msg);
+    FppkgForm.OnLogThreadSafe(DateTimeToStr(Now) + ' ' + Prefix + ' ' + Msg);
 end;
 
 procedure LazError(const Msg: String);
 begin
   if Assigned(FppkgForm) then
-    FppkgForm.OnError(Msg)
+    FppkgForm.OnErrorThreadSafe(Msg)
   else
     ShowMessage(Msg);
 end;
@@ -227,6 +235,15 @@ begin
   ListPackages;
   UpdatePackageListView;
   s.Free;
+end;
+
+procedure TFppkgForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  if Assigned(FWorkerThread) and not FWorkerThread.Finished then
+    begin
+      ShowMessage(SMsgFppkgRunning);
+      CanClose := False;
+    end;
 end;
 
 procedure TFppkgForm.CleanButtonClick(Sender: TObject);
@@ -317,10 +334,16 @@ end;
 procedure TFppkgForm.FormCreate(Sender: TObject);
 var
   i: Integer;
-  StoredGetVendorName: TGetVendorNameEvent;
-  StoredGetApplicationName: TGetAppNameEvent;
 begin
   //setup log callback function
+
+  // This is a strange hack. When a message is send to this form while it
+  // is being created, the checkboxes in the PackageListView are not visible
+  // afterwards.
+  FMainThreadTriggered := True;
+
+  FLogMonitor := TLazMonitor.Create;
+  FBufferLogLines := TStringList.Create;
   LogLevels := AllLogLevels;
   LogHandler := @LazLog;
 
@@ -362,12 +385,25 @@ begin
 
   RescanPackages;
 
+  FLogMonitor.Enter;
+  // Hack, see the earlier comment.
+  FMainThreadTriggered := false;
   FErrors := TStringList.Create;
+  FLogMonitor.Release;
 end;
 
 procedure TFppkgForm.FormDestroy(Sender: TObject);
 begin
+  if Assigned(FWorkerThread) then
+    begin
+      FWorkerThread.Terminate;
+      FWorkerThread.WaitFor;
+      FWorkerThread.Free;
+    end;
+
+  FLogMonitor.Free;
   FreeAndNil(FErrors);
+  FBufferLogLines.Free;
   SearchPhrases.Free;
 end;
 
@@ -553,6 +589,44 @@ begin
   s.Free;
 end;
 
+procedure TFppkgForm.HandleLog(var Msg: TLMessage);
+var
+  SB: TMemoScrollbar;
+begin
+  FLogMonitor.Enter;
+  try
+    OutputMemo.Lines.AddStrings(FBufferLogLines);
+    FBufferLogLines.Clear;
+    FMainThreadTriggered := false;
+    SB := OutputMemo.VertScrollBar;
+    SB.Position := SB.Range - SB.Page;
+  finally
+    FLogMonitor.Leave;
+  end;
+end;
+
+procedure TFppkgForm.HandleWorkerThreadDone(var Msg: TLMessage);
+var
+  s: String;
+  SB: TMemoScrollbar;
+begin
+  FLogMonitor.Enter;
+  try
+    if FErrors.Count>0 then
+      ShowError(FCurrentlyRunningTaskDescription, FErrors[0])
+    else
+      begin
+        s := Format(SMsgActionSucceeded, [FCurrentlyRunningTaskDescription]);
+        s[1] := upCase(s[1]);
+        ShowMessage(s);
+      end;
+  finally
+    FLogMonitor.Leave;
+  end;
+  FreeAndNil(FWorkerThread);
+  RescanPackages;
+end;
+
 procedure TFppkgForm.MaybeCreateLocalDirs;
 begin
   ForceDirectories(FFPpkg.Options.GlobalSection.BuildDir);
@@ -640,44 +714,20 @@ end;
 
 procedure TFppkgForm.DoRun(cfg: TFppkgConfigOptions; ParaAction: string; ParaPackages: TStrings;
   Description: string);
-var
-  OldCurrDir: string;
-  i: integer;
-  s: string;
 begin
-  pkghandler.ClearExecutedAction;
+  if Assigned(FWorkerThread) then
+    begin
+      if not FWorkerThread.Finished then
+        begin
+          ShowMessage(SMsgFppkgRunning);
+          Exit;
+        end;
+      FWorkerThread.WaitFor;
+      FWorkerThread.Free;
+    end;
   FErrors.Clear;
-
-  OldCurrDir := GetCurrentDir;
-  try
-    if ParaPackages.Count = 0 then
-    begin
-      pkghandler.ExecuteAction(CurrentDirPackageName, ParaAction, FFPpkg);
-    end
-    else
-    begin
-      // Process packages
-      for i := 0 to ParaPackages.Count - 1 do
-      begin
-        pkgglobals.Log({$IF FPC_FULLVERSION > 20602}llDebug{$ELSE}vlDebug{$ENDIF}, SLogCommandLineAction,['[' + ParaPackages[i] + ']', ParaAction]);
-        pkghandler.ExecuteAction(ParaPackages[i], ParaAction, FFPpkg);
-      end;
-    end;
-
-    s := Format(SMsgActionSucceeded, [Description]);
-    s[1] := upCase(s[1]);
-    if FErrors.Count=0 then
-      ShowMessage(s);
-  except
-    On E: Exception do
-    begin
-      Error(SErrException + LineEnding + E.Message);
-    end;
-  end;
-  SetCurrentDir(OldCurrDir);
-  if FErrors.Count>0 then
-    ShowError(Description, FErrors[0]);
-  RescanPackages;
+  FCurrentlyRunningTaskDescription := Description;
+  FWorkerThread := TFppkgWorkerThread.Create(ParaAction, ParaPackages, Description, Handle);
 end;
 
 function TFppkgForm.PkgColumnValue(AName: string; pkg: TLazPackage): string;
@@ -816,15 +866,41 @@ begin
   ShowMessage(Format(SErrActionFailed, [Description, Error]))
 end;
 
-procedure TFppkgForm.OnError(const Msg: String);
+procedure TFppkgForm.OnErrorThreadSafe(const Msg: String);
 begin
   // Cache all errors and show the them after a command has been finished
   // completely. This because most problems lead to multiple errors, which is
   // annoying in a GUI-environment
-  if Assigned(FErrors) then
-    FErrors.Add(Msg)
-  else
-    ShowError(SActInitializeFppkg, Msg);
+  FLogMonitor.Enter;
+  try
+    if Assigned(FErrors) then
+      begin
+        FErrors.Add(Msg);
+        Exit;
+      end;
+  finally
+    FLogMonitor.Leave;
+  end;
+  ShowError(SActInitializeFppkg, Msg);
+end;
+
+procedure TFppkgForm.OnLogThreadSafe(const Msg: String);
+begin
+  FLogMonitor.Enter;
+  try
+    FBufferLogLines.Add(Msg);
+    if not FMainThreadTriggered then
+    begin
+      FMainThreadTriggered := true;
+      PostMessage(Handle, WM_LogMessageWaiting, 0, 0);
+    end
+    else
+    begin
+      FMainThreadTriggered := True;
+    end;
+  finally
+    FLogMonitor.Leave;
+  end;
 end;
 
 end.

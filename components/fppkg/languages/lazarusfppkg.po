@@ -48,6 +48,10 @@ msgstr ""
 msgid "%s succeeded."
 msgstr ""
 
+#: fppkg_mainfrm.smsgfppkgrunning
+msgid "A prior command is still in progress."
+msgstr ""
+
 #: tfppkgform.archivebutton.caption
 msgid "Archive"
 msgstr ""

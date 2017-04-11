@@ -6,11 +6,19 @@ interface
 
 uses
   SysUtils, Classes,
+  LMessages,
   fgl,
   pkgFppkg,
   fprepos{$IF FPC_FULLVERSION > 20602}, fpmkunit{$ENDIF};
 
+const
+  WM_LogMessageWaiting = LM_USER + 1;
+  WM_WorkerThreadDone = LM_USER + 2;
+
 type
+  TFppkgConfigOptions = record
+    ConfigFile: string;
+  end;
 
   { TLazFPPackage }
 
