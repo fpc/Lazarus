@@ -77,8 +77,6 @@ begin
 end;
 
 procedure TPkgDetailsForm.FormShow(Sender: TObject);
-var
-  pkg: TLazPackageData;
 begin
   if PackageName = '' then
     exit;
@@ -86,17 +84,17 @@ begin
   //pkg := FLazPackages.FindPackage(PackageName);
 
   NameLabel.Caption := PackageName;
-  DescriptionMemo.Text:= pkg.Description;
+//  DescriptionMemo.Text:= pkg.Description;
 
-  AuthorLabel.Caption:= 'Author: ' + pkg.Author;
-  VersionLabel.Caption:= 'Version: ' + pkg.AvialableVersion;
-  LicenseLabel.Caption:= 'License: ' + pkg.License;
-  HomePageURLLabel.Caption:= 'Homepage: ' + pkg.HomepageURL;
-  DownloadURLLabel.Caption:= 'Download: ' + pkg.DownloadURL;
-  FileNameLabel.Caption:= 'Filename: ' + pkg.FileName;
-  EmailLabel.Caption:= 'Email: ' + pkg.Email;
-  OSLabel.Caption:= 'OS: ' + pkg.OS;
-  CPULabel.Caption:= 'CPU: ' + pkg.CPU;
+//  AuthorLabel.Caption:= 'Author: ' + pkg.Author;
+//  VersionLabel.Caption:= 'Version: ' + pkg.AvialableVersion;
+//  LicenseLabel.Caption:= 'License: ' + pkg.License;
+//  HomePageURLLabel.Caption:= 'Homepage: ' + pkg.HomepageURL;
+//  DownloadURLLabel.Caption:= 'Download: ' + pkg.DownloadURL;
+//  FileNameLabel.Caption:= 'Filename: ' + pkg.FileName;
+//  EmailLabel.Caption:= 'Email: ' + pkg.Email;
+//  OSLabel.Caption:= 'OS: ' + pkg.OS;
+//  CPULabel.Caption:= 'CPU: ' + pkg.CPU;
 end;
 
 end.

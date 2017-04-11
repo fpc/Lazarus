@@ -47,7 +47,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="4">
       <Unit0>
         <Filename Value="lazarusfppkg.pas"/>
         <IsPartOfProject Value="True"/>
@@ -60,25 +60,13 @@
         <ResourceBaseClass Value="Form"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\src\laz_pkgcommands.pas"/>
+        <Filename Value="..\src\laz_pkgrepos.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="..\src\laz_pkgrepos.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="..\src\laz_pkghandler.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit4>
-      <Unit5>
         <Filename Value="..\src\fppkg_lpk.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\..\..\..\fpc-trunk\packages\fppkg\src\pkgfclweb.pp"/>
-        <IsPartOfProject Value="True"/>
-      </Unit6>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -89,7 +77,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="..\src;..\..\..\..\fpc-trunk\packages\fppkg\src"/>
+      <OtherUnitFiles Value="..\src"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
@@ -118,6 +106,7 @@
       </Item2>
       <Item3>
         <Name Value="EFOpenError"/>
+        <Enabled Value="False"/>
       </Item3>
     </Exceptions>
   </Debugging>

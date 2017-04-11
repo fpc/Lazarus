@@ -143,9 +143,9 @@ type
 
     function PkgColumnValue(AName: string; pkg: TLazPackage): string;
 
-    function FindSearchPhrase(pkg: TLazPackageData): boolean;
-    function FindCategory(pkg: TLazPackageData): boolean;
-    function FindSupport(pkg: TLazPackageData): boolean;
+    function FindSearchPhrase(pkg: TLazPackage): boolean;
+    function FindCategory(pkg: TLazPackage): boolean;
+    function FindSupport(pkg: TLazPackage): boolean;
     procedure GetSelectedPackages(var s: TStrings);
 
     procedure MaybeCreateLocalDirs;
@@ -527,6 +527,7 @@ begin
   OptionsForm.ShowModal;
 
   //to be sure setup the view again
+  SetupColumns;
   UpdatePackageListView;
 end;
 
@@ -608,7 +609,6 @@ end;
 procedure TFppkgForm.HandleWorkerThreadDone(var Msg: TLMessage);
 var
   s: String;
-  SB: TMemoScrollbar;
 begin
   FLogMonitor.Enter;
   try
@@ -634,7 +634,7 @@ begin
   ForceDirectories(FFPpkg.Options.GlobalSection.CompilerConfigDir);
 end;
 
-function TFppkgForm.FindSearchPhrase(pkg: TLazPackageData): boolean;
+function TFppkgForm.FindSearchPhrase(pkg: TLazPackage): boolean;
 var
   i: integer;
   searchmask: string;
@@ -659,7 +659,7 @@ begin
   end;
 end;
 
-function TFppkgForm.FindCategory(pkg: TLazPackageData): boolean;
+function TFppkgForm.FindCategory(pkg: TLazPackage): boolean;
 var
   i: integer;
   searchmask: string;
@@ -688,19 +688,19 @@ begin
   end;
 end;
 
-function TFppkgForm.FindSupport(pkg: TLazPackageData): boolean;
+function TFppkgForm.FindSupport(pkg: TLazPackage): boolean;
 begin
   Result := False;
 
   //FPC
-  Result := Result or (SupportCheckGroup.Checked[0] and (pkg.Category = 'FPC'));
+  Result := Result or (SupportCheckGroup.Checked[0] and (pkg.Support = 'FPC'));
 
   //Lazarus
-  Result := Result or (SupportCheckGroup.Checked[1] and (pkg.Category = 'Lazarus'));
+  Result := Result or (SupportCheckGroup.Checked[1] and (pkg.Support = 'Lazarus'));
 
   //Rest
   Result := Result or (SupportCheckGroup.Checked[2] and
-    ((pkg.Category <> 'FPC') and (pkg.Category <> 'Lazarus')));
+    ((pkg.Support <> 'FPC') and (pkg.Support <> 'Lazarus')));
 end;
 
 procedure TFppkgForm.GetSelectedPackages(var s: TStrings);
@@ -738,6 +738,8 @@ begin
     'Version' : Result := pkg.Version;
     'Info'    : Result := pkg.GetInfo(FFPpkg);
     'Description' : Result := pkg.Description;
+    'Keywords': Result := pkg.Keywords;
+    'Category': Result := pkg.Category;
   end;
 end;
 
@@ -757,7 +759,7 @@ begin
   begin
     pkg := FLazPackages.PkgData[i];
 
-    //if FindSearchPhrase(pkg) and FindCategory(pkg) and FindSupport(pkg) then
+    if FindSearchPhrase(pkg) and FindCategory(pkg) and FindSupport(pkg) then
     begin
       li := PackageListView.Items.Add;
 
@@ -775,14 +777,14 @@ begin
       end;
 
       //add images to supported packages
-{      if LowerCase(pkg.Support) = 'fpc' then
+      if LowerCase(pkg.Support) = 'fpc' then
         li.ImageIndex := FPC_SUPPORTED
       else
       if LowerCase(pkg.Support) = 'lazarus' then
         li.ImageIndex := LAZARUS_SUPPORTED
       else
         li.ImageIndex := COMMUNITY_SUPPORTED;
-}    end;
+    end;
   end;
 
   PackageListView.EndUpdate;
@@ -809,11 +811,6 @@ begin
     end;
   end;
 
-{  s := TStringList.Create;
-  DoRun(FppkgCfg, 'laz_list', s);
-  s.Free;
-  end;   }
-
   //setup the categories listview
   CategoryCheckListBox.Clear;
   CategoryCheckListBox.Items.Add('All');
@@ -821,10 +818,10 @@ begin
   begin
     pkg := FLazPackages.PkgData[i];
 
-//    if pkg.Category = '' then
-      cat := 'Unknown';
-//    else
-//      cat := pkg.Category;
+    if pkg.Category = '' then
+      cat := 'Unknown'
+    else
+      cat := pkg.Category;
 
     if CategoryCheckListBox.Items.IndexOf(cat) = -1 then
       CategoryCheckListBox.Items.Add(cat);

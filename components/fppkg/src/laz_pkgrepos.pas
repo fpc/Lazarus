@@ -9,7 +9,7 @@ uses
   LMessages,
   fgl,
   pkgFppkg,
-  fprepos{$IF FPC_FULLVERSION > 20602}, fpmkunit{$ENDIF};
+  fprepos;
 
 const
   WM_LogMessageWaiting = LM_USER + 1;
@@ -32,9 +32,12 @@ type
     FName: string;
     FPackageManager: TpkgFPpkg;
     FPPackageList: TLazFPPackageList;
+    function GetCategory: string;
     function GetDefaultFPPackage: TFPPackage;
     function GetDescription: string;
+    function GetKeywords: string;
     function GetState: TLazPackageInstallState;
+    function GetSupport: string;
     function GetVersion: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -48,46 +51,21 @@ type
     property PackageManager: TpkgFPpkg read FPackageManager write FPackageManager;
     property Version: string read GetVersion;
     property Description: string read GetDescription;
+    property Category: string read GetCategory;
+    property Keywords: string read GetKeywords;
+    property Support: string read GetSupport;
   end;
 
   TLazPackageList = specialize TFPGObjectList<TLazPackage>;
-
-type
-  TLazPackageData = record
-    Name: string;
-    InstalledVersion: string;
-    AvialableVersion: string;
-    Description: string;
-    Keywords: string;
-    Category: string;
-    State: string;
-    Support: string;
-    Author: string;
-    License: string;
-    HomepageURL: string;
-    DownloadURL: string;
-    FileName: string;
-    Email: string;
-    OS: string;
-    CPU: string;
-  end;
-
-  TPackageSortType = (stNone);
 
   { TLazPackages }
 
   TLazPackages = class(TComponent)
   private
     FPackageManager: TpkgFPpkg;
-    FPkgData: array of TLazPackageData;
-    FSort: TPackageSortType;
-    FSortType: TPackageSortType;
     FLazPackageList: TLazPackageList;
     function GetCount: integer;
     function GetLazPackage(index: integer): TLazPackage;
-    function GetPkgData(index: integer): TLazPackageData;
-    procedure SetSort(const AValue: TPackageSortType);
-    procedure SetSortType(const AValue: TPackageSortType);
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -96,12 +74,8 @@ type
     property PkgData[index: integer]: TLazPackage read GetLazPackage;
     property Count: integer read GetCount;
     procedure AddFPPackage(AFPPackage: TFPPackage);
-    procedure Add(Pkg: TLazPackageData);
     procedure Clear;
 
-    property SortType: TPackageSortType read FSortType write SetSortType;
-    procedure Sort;
-    function FindPackage(const AName: string): TLazPackageData;
     property PackageManager: TpkgFPpkg read FPackageManager write FPackageManager;
   end;
 
@@ -137,9 +111,19 @@ begin
     end;
 end;
 
+function TLazPackage.GetCategory: string;
+begin
+  Result := GetDefaultFPPackage.Category;
+end;
+
 function TLazPackage.GetDescription: string;
 begin
   Result := GetDefaultFPPackage.Description;
+end;
+
+function TLazPackage.GetKeywords: string;
+begin
+  Result := GetDefaultFPPackage.Keywords;
 end;
 
 function TLazPackage.GetInfo(PackageManager: TpkgFPpkg): string;
@@ -176,6 +160,11 @@ begin
     end;
 end;
 
+function TLazPackage.GetSupport: string;
+begin
+  result := GetDefaultFPPackage.Support;
+end;
+
 function TLazPackage.GetVersion: string;
 begin
   result := GetDefaultFPPackage.Version.AsString;
@@ -205,11 +194,6 @@ end;
 
 { TLazPackages }
 
-function TLazPackages.GetPkgData(index: integer): TLazPackageData;
-begin
-  Result := FPkgData[index];
-end;
-
 function TLazPackages.GetCount: integer;
 begin
   Result := FLazPackageList.Count;
@@ -220,26 +204,10 @@ begin
   result := FLazPackageList.Items[index];
 end;
 
-procedure TLazPackages.SetSort(const AValue: TPackageSortType);
-begin
-  if FSort = AValue then
-    exit;
-  FSort := AValue;
-end;
-
-procedure TLazPackages.SetSortType(const AValue: TPackageSortType);
-begin
-  if FSortType = AValue then
-    exit;
-  FSortType := AValue;
-end;
-
 constructor TLazPackages.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLazPackageList := TLazPackageList.Create(False);
-
-  SortType := stNone;
 end;
 
 destructor TLazPackages.Destroy;
@@ -268,33 +236,9 @@ begin
   FLazPackageList.Add(LazPackage);
 end;
 
-procedure TLazPackages.Add(Pkg: TLazPackageData);
-begin
-end;
-
 procedure TLazPackages.Clear;
 begin
   FLazPackageList.Clear;
-end;
-
-procedure TLazPackages.Sort;
-begin
-  case SortType of
-    //no sorting
-    stNone:
-  end;
-end;
-
-function TLazPackages.FindPackage(const AName: string): TLazPackageData;
-var
-  i: integer;
-begin
-  for i := 0 to Count - 1 do
-    if FPkgData[i].Name = AName then
-    begin
-      Result := FPkgData[i];
-      exit;
-    end;
 end;
 
 end.
