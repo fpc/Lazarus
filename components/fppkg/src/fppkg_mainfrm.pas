@@ -514,6 +514,7 @@ begin
     PkgDetailsForm := TPkgDetailsForm.Create(Self);
 
   PkgDetailsForm.PackageName := PackageListView.Selected.Caption;
+  PkgDetailsForm.LazPackages := FLazPackages;
   PkgDetailsForm.ShowModal;
 
   FreeAndNil(PkgDetailsForm);

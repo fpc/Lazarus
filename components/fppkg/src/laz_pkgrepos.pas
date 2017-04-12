@@ -35,6 +35,8 @@ type
     function GetCategory: string;
     function GetDefaultFPPackage: TFPPackage;
     function GetDescription: string;
+    function GetFPPackage(index: Integer): TFPPackage;
+    function GetFPPackageCount: Integer;
     function GetKeywords: string;
     function GetState: TLazPackageInstallState;
     function GetSupport: string;
@@ -54,6 +56,8 @@ type
     property Category: string read GetCategory;
     property Keywords: string read GetKeywords;
     property Support: string read GetSupport;
+    property FPPackageCount: Integer read GetFPPackageCount;
+    property FPPackage[index: Integer]: TFPPackage read GetFPPackage;
   end;
 
   TLazPackageList = specialize TFPGObjectList<TLazPackage>;
@@ -75,6 +79,7 @@ type
     property Count: integer read GetCount;
     procedure AddFPPackage(AFPPackage: TFPPackage);
     procedure Clear;
+    function FindPackage(const PackageName: string): TLazPackage;
 
     property PackageManager: TpkgFPpkg read FPackageManager write FPackageManager;
   end;
@@ -119,6 +124,16 @@ end;
 function TLazPackage.GetDescription: string;
 begin
   Result := GetDefaultFPPackage.Description;
+end;
+
+function TLazPackage.GetFPPackage(index: Integer): TFPPackage;
+begin
+  Result := FPPackageList[index];
+end;
+
+function TLazPackage.GetFPPackageCount: Integer;
+begin
+  Result := FPPackageList.Count;
 end;
 
 function TLazPackage.GetKeywords: string;
@@ -239,6 +254,19 @@ end;
 procedure TLazPackages.Clear;
 begin
   FLazPackageList.Clear;
+end;
+
+function TLazPackages.FindPackage(const PackageName: string): TLazPackage;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := 0 to Count-1 do
+    if PkgData[i].Name = PackageName then
+      begin
+      Result := PkgData[i];
+      Exit;
+      end;
 end;
 
 end.

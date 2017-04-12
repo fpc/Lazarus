@@ -35,7 +35,11 @@ interface
 
 uses
   Forms,
-  StdCtrls, ButtonPanel, laz_pkgrepos;
+  StdCtrls, ButtonPanel, ComCtrls,
+  fpmkunit,
+  fprepos,
+  pkgoptions,
+  laz_pkgrepos;
 
 type
 
@@ -43,24 +47,34 @@ type
 
   TPkgDetailsForm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    SupportLabel: TLabel;
+    KeywordsLabel: TLabel;
+    CategoryLabel: TLabel;
     DescriptionMemo: TMemo;
     AuthorLabel: TLabel;
+    RepoLabel: TLabel;
     LicenseLabel: TLabel;
     HomepageURLLabel: TLabel;
     DownloadURLLabel: TLabel;
     FileNameLabel: TLabel;
     EmailLabel: TLabel;
+    PackageListView: TListView;
     OSLabel: TLabel;
     CPULabel: TLabel;
     VersionLabel: TLabel;
     NameLabel: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure PackageListViewChange(Sender: TObject; Item: TListItem; Change: TItemChange);
   private
     FPackageName: string;
+    FLazPackages: TLazPackages;
+    FAvailableFPPackage: TFPPackage;
+    procedure SetupColumns;
   public
     property PackageName: string read FPackageName write FPackageName;
-  end; 
+    property LazPackages: TLazPackages read FLazPackages write FLazPackages;
+  end;
 
 var
   PkgDetailsForm: TPkgDetailsForm;
@@ -69,32 +83,142 @@ implementation
 
 {$R *.lfm}
 
+resourcestring
+  SInstalled = 'Installed';
+  SAvailable = 'Available';
+  SUnknown   = 'Unknown';
+  SAuthor    = 'Author';
+  SLicense   = 'License';
+  SHomepage  = 'Homepage';
+  SDownload  = 'Download';
+  SFilename  = 'Filename';
+  SEmail     = 'Email';
+  SOS        = 'OS';
+  SCPU       = 'CPU';
+  SSupport   = 'Support';
+  SKeywords  = 'Keywords';
+  SCategory  = 'Category';
+
 { TPkgDetailsForm }
 
 procedure TPkgDetailsForm.FormCreate(Sender: TObject);
 begin
   Caption := 'Package details';
+  SetupColumns;
 end;
 
 procedure TPkgDetailsForm.FormShow(Sender: TObject);
+var
+  fppkg: TFPPackage;
+  pkg: TLazPackage;
+  i: Integer;
+  li: TListItem;
 begin
-  if PackageName = '' then
+  if (PackageName = '') or not Assigned(FLazPackages) then
     exit;
 
-  //pkg := FLazPackages.FindPackage(PackageName);
+  pkg := FLazPackages.FindPackage(PackageName);
 
   NameLabel.Caption := PackageName;
-//  DescriptionMemo.Text:= pkg.Description;
+  DescriptionMemo.Text:= pkg.Description;
 
-//  AuthorLabel.Caption:= 'Author: ' + pkg.Author;
-//  VersionLabel.Caption:= 'Version: ' + pkg.AvialableVersion;
-//  LicenseLabel.Caption:= 'License: ' + pkg.License;
-//  HomePageURLLabel.Caption:= 'Homepage: ' + pkg.HomepageURL;
-//  DownloadURLLabel.Caption:= 'Download: ' + pkg.DownloadURL;
-//  FileNameLabel.Caption:= 'Filename: ' + pkg.FileName;
-//  EmailLabel.Caption:= 'Email: ' + pkg.Email;
-//  OSLabel.Caption:= 'OS: ' + pkg.OS;
-//  CPULabel.Caption:= 'CPU: ' + pkg.CPU;
+  for i := 0 to pkg.FPPackageCount -1 do
+    begin
+    fppkg := pkg.FPPackage[i];
+    li := PackageListView.Items.Add;
+    li.Caption := fppkg.Repository.RepositoryName;
+    li.Data := fppkg;
+    li.SubItems.Add(fppkg.Repository.Description);
+    li.SubItems.Add(fppkg.Version.AsString);
+    case fppkg.Repository.RepositoryType of
+      fprtInstalled:
+        li.SubItems.Add(SInstalled);
+      fprtAvailable:
+        begin
+        FAvailableFPPackage := fppkg;
+        li.SubItems.Add(SAvailable);
+        end;
+    end;
+    end;
+
+  PackageListView.ItemIndex := 0;
+end;
+
+procedure TPkgDetailsForm.PackageListViewChange(Sender: TObject; Item: TListItem; Change: TItemChange);
+
+  procedure SetLabel(ALabelText, ADefaultCaption, ACaption : string; ALabel: TLabel);
+  var
+    s: String;
+  begin
+    s := ACaption;
+    if s='' then
+      s := ADefaultCaption;
+    if s='' then
+      s := SUnknown;
+    ALabel.Caption:= ALabelText + ': ' + s;
+  end;
+
+var
+  Fppkg: TFPPackage;
+begin
+  Fppkg := TFPPackage(PackageListView.Selected.Data);
+
+  if Assigned(FAvailableFPPackage) then
+    begin
+    SetLabel(SAuthor, FAvailableFPPackage.Author, Fppkg.Author, AuthorLabel);
+    SetLabel(SLicense, FAvailableFPPackage.License, Fppkg.License, LicenseLabel);
+    SetLabel(SHomepage, FAvailableFPPackage.HomepageURL, Fppkg.HomepageURL, HomepageURLLabel);
+    SetLabel(SDownload, FAvailableFPPackage.DownloadURL, Fppkg.DownloadURL, DownloadURLLabel);
+    SetLabel(SFilename, FAvailableFPPackage.FileName, Fppkg.FileName, FileNameLabel);
+    SetLabel(SEmail, FAvailableFPPackage.Email, Fppkg.Email, EmailLabel);
+    SetLabel(SOS, OSesToString(FAvailableFPPackage.OSes), OSesToString(Fppkg.OSes), OSLabel);
+    SetLabel(SCPU, CPUSToString(FAvailableFPPackage.CPUs), CPUSToString(Fppkg.CPUs), CPULabel);
+    SetLabel(SSupport, FAvailableFPPackage.Support, Fppkg.Support, SupportLabel);
+    SetLabel(SKeywords, FAvailableFPPackage.Keywords, Fppkg.Keywords, KeywordsLabel);
+    SetLabel(SCategory, FAvailableFPPackage.Category, Fppkg.Category, CategoryLabel);
+    end
+  else
+    begin
+    SetLabel(SAuthor, '', Fppkg.Author, AuthorLabel);
+    SetLabel(SLicense, '', Fppkg.License, LicenseLabel);
+    SetLabel(SHomepage, '', Fppkg.HomepageURL, HomepageURLLabel);
+    SetLabel(SDownload, '', Fppkg.DownloadURL, DownloadURLLabel);
+    SetLabel(SFilename, '', Fppkg.FileName, FileNameLabel);
+    SetLabel(SEmail, '', Fppkg.Email, EmailLabel);
+    SetLabel(SOS, '', OSesToString(Fppkg.OSes), OSLabel);
+    SetLabel(SCPU, '', CPUSToString(Fppkg.CPUs), CPULabel);
+    SetLabel(SSupport, '', Fppkg.Support, SupportLabel);
+    SetLabel(SKeywords, '', Fppkg.Keywords, KeywordsLabel);
+    SetLabel(SCategory, '', Fppkg.Category, CategoryLabel);
+    end;
+  VersionLabel.Caption:= 'Version: ' + fppkg.Version.AsString;
+end;
+
+procedure TPkgDetailsForm.SetupColumns;
+var
+  col: TListColumn;
+begin
+  PackageListView.BeginUpdate;
+  //setup columns
+  PackageListView.Columns.Clear;
+
+  col := PackageListView.Columns.Add;
+  col.Caption := 'Repository';
+  col.AutoSize := True;
+
+  col := PackageListView.Columns.Add;
+  col.Caption := 'Repository description';
+  col.AutoSize := True;
+
+  col := PackageListView.Columns.Add;
+  col.Caption := 'Version';
+  col.AutoSize := True;
+
+  col := PackageListView.Columns.Add;
+  col.Caption := 'Type';
+  col.AutoSize := True;
+
+  PackageListView.EndUpdate;
 end;
 
 end.
