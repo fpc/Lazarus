@@ -499,7 +499,7 @@ procedure TLazarusPackage.RefreshHasUpdate;
 begin
   FHasUpdate := (FUpdateVersion <> '') and (FInstalledFileVersion <> '') and
      (
-       ((not FForceNotify) and (FUpdateVersion > FInstalledFileVersion)) or
+       ((not FForceNotify) {and (FUpdateVersion > FInstalledFileVersion)}) or
        ((FForceNotify) and (FInternalVersion > FInternalVersionOld))
      );
 end;

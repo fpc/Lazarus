@@ -1499,7 +1499,12 @@ begin
                     end;
                   end
                   else
-                    CellText := rsMainFrm_VSTText_PackageState6;
+                  begin
+                    if (Data^.InstalledVersion >= Data^.UpdateVersion) then
+                      CellText := rsMainFrm_VSTText_PackageState4
+                    else
+                      CellText := rsMainFrm_VSTText_PackageState6
+                  end;
                   Data^.IsUpdated := CellText = rsMainFrm_VSTText_PackageState4;
                 end;
            end;
@@ -1601,7 +1606,7 @@ begin
       3: begin
            case Data^.DataType of
              1: TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
-             2: if Data^.HasUpdate then
+             2: if (Data^.HasUpdate) and (Data^.UpdateVersion > Data^.InstalledVersion) then
                   TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold]
                 else
                   TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];

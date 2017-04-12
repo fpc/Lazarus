@@ -305,7 +305,7 @@ begin
           LazarusPkg.InternalVersionOld := FXML.GetValue(SubPath + 'InternalVersionOld', 0);
           LazarusPkg.RefreshHasUpdate;
           if not HasUpdate then
-            HasUpdate := LazarusPkg.HasUpdate;
+            HasUpdate := (LazarusPkg.HasUpdate) and (LazarusPkg.InstalledFileVersion < LazarusPkg.UpdateVersion);
         end;
       end;
       MetaPkg.HasUpdate := HasUpdate;
@@ -370,7 +370,7 @@ begin
       LazarusPkg.InternalVersion := UpdLazPkgs.InternalVersion;
       LazarusPkg.RefreshHasUpdate;
       if not HasUpdate then
-        HasUpdate := LazarusPkg.HasUpdate;
+        HasUpdate := (LazarusPkg.HasUpdate) and (LazarusPkg.InstalledFileVersion < LazarusPkg.UpdateVersion);
     end;
   end;
   AMetaPackage.HasUpdate := HasUpdate;
