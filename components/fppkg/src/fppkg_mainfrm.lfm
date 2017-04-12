@@ -73,6 +73,7 @@ object FppkgForm: TFppkgForm
       Caption = 'Archive'
       ImageIndex = 3
       OnClick = ArchiveButtonClick
+      Visible = False
     end
     object DownloadButton: TToolButton
       Left = 301
@@ -179,19 +180,19 @@ object FppkgForm: TFppkgForm
   end
   object Panel: TPanel
     Left = 0
-    Height = 618
+    Height = 590
     Top = 56
     Width = 800
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 618
+    ClientHeight = 590
     ClientWidth = 800
     ParentFont = False
     TabOrder = 1
     OnClick = PanelClick
     object PackageListView: TListView
       Left = 175
-      Height = 501
+      Height = 473
       Top = 0
       Width = 625
       Align = alClient
@@ -233,12 +234,12 @@ object FppkgForm: TFppkgForm
     end
     object FilterPanel: TPanel
       Left = 0
-      Height = 501
+      Height = 473
       Top = 0
       Width = 170
       Align = alLeft
       BevelOuter = bvNone
-      ClientHeight = 501
+      ClientHeight = 473
       ClientWidth = 170
       ParentFont = False
       TabOrder = 1
@@ -292,7 +293,7 @@ object FppkgForm: TFppkgForm
       end
       object CategoryCheckListBox: TCheckListBox
         Left = 6
-        Height = 352
+        Height = 324
         Top = 143
         Width = 158
         Align = alClient
@@ -306,14 +307,14 @@ object FppkgForm: TFppkgForm
     end
     object VertSplitter: TSplitter
       Left = 170
-      Height = 501
+      Height = 473
       Top = 0
       Width = 5
     end
     object StatusBar1: TStatusBar
       Left = 0
       Height = 22
-      Top = 596
+      Top = 568
       Width = 800
       Panels = <>
       ParentFont = False
@@ -322,7 +323,7 @@ object FppkgForm: TFppkgForm
       Cursor = crVSplit
       Left = 0
       Height = 5
-      Top = 501
+      Top = 473
       Width = 800
       Align = alBottom
       ResizeAnchor = akBottom
@@ -330,7 +331,7 @@ object FppkgForm: TFppkgForm
     object OutputMemo: TMemo
       Left = 0
       Height = 90
-      Top = 506
+      Top = 478
       Width = 800
       Align = alBottom
       ParentFont = False
