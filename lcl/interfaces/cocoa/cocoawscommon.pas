@@ -818,10 +818,10 @@ begin
     if assigned(Target.Parent) and not PtInRect(rect, mp) then
        targetControl:=Target.Parent // outside myself then route to parent
     else
-    for i:=Target.ComponentCount-1 downto 0  do // otherwise check, if over child and route to child
-      if Target.Components[i] is TWinControl then
+    for i:=Target.ControlCount-1 downto 0  do // otherwise check, if over child and route to child
+      if Target.Controls[i] is TWinControl then
       begin
-        childControl:=TWinControl(Target.Components[i]);
+        childControl:=TWinControl(Target.Controls[i]);
         rect:=childControl.BoundsRect;
         if  PtInRect(rect, mp) then
         begin
