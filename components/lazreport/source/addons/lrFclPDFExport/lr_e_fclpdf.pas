@@ -871,6 +871,7 @@ begin
   FPDFDocument.Infos.CreationDate := Now;
 
 //  FPDFDocument.Options:=FPdfOptions.FOptions;
+  FPDFDocument.Options:=FPDFDocument.Options + [poPageOriginAtTop];
   FPDFDocument.DefaultOrientation := ppoPortrait; // FPdfOptions.PaperOrientation;
 
   FPDFDocument.StartDocument;
