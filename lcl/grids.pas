@@ -9408,6 +9408,9 @@ procedure TCustomGrid.Clear;
 var
   OldR,OldC: Integer;
 begin
+  if (FRows.Count=0) and (FCols.Count=0) then
+    exit; // already cleared
+
   // save some properties
   FGridPropBackup.ValidData := True;
   FGridPropBackup.FixedRowCount := FFixedRows;
@@ -11064,14 +11067,14 @@ var
   begin
     // return row offset of current CSV record (MaxRows) which is 1 based
     if UseTitles then
-      result := Max(0, FixedRows-1)  + Max(MaxRows-1, 0)
+      result := Max(0, FixedRows-1) + Max(MaxRows-1, 0)
     else
       result := FixedRows + Max(MaxRows-1, 0);
   end;
 
   procedure NewRecord(Fields:TStringlist);
   var
-    i, aRow: Integer;
+    i, aRow, aIndex: Integer;
   begin
     inc(LineCounter);
     if (LineCounter < FromLine) then
@@ -11087,8 +11090,8 @@ var
     if MaxCols<Fields.Count then
       MaxCols := Fields.Count;
     if Columns.Enabled then begin
-      while Columns.VisibleCount<MaxCols do
-        Columns.Add;
+      while Columns.VisibleCount+FirstGridColumn>MaxCols do Columns.Delete(Columns.Count-1);
+      while Columns.VisibleCount+FirstGridColumn<MaxCols do Columns.Add;
     end
     else begin
       if ColCount<MaxCols then
@@ -11096,16 +11099,18 @@ var
     end;
 
     // setup columns captions if enabled by UseTitles
-    if (MaxRows = 0) then
-      if UseTitles then
-      begin
-        if Columns.Enabled then
-          for i:=0 to Fields.Count-1 do Columns[i].Title.Caption:=Fields[i]
-        else
-          for i:=0 to Fields.Count-1 do Cells[i, 0] := Fields[i];
-        inc(MaxRows);
-        exit;
+    if (MaxRows = 0) and UseTitles then begin
+      for i:= 0 to Fields.Count-1 do begin
+        if Columns.Enabled and (i>=FirstGridColumn) then begin
+          aIndex := ColumnIndexFromGridColumn(i);
+          if aIndex>=0 then
+            Columns[aIndex].Title.Caption:=Fields[i];
+        end else
+          Cells[i, 0] := Fields[i]
       end;
+      inc(MaxRows);
+      exit;
+    end;
 
     // Make sure we have enough rows
     Inc(MaxRows);
