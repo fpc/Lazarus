@@ -541,7 +541,7 @@ begin
           and not TCustomGroupBox(Info^.WinControl).Enabled then
           begin
             GroupBox := TCustomGroupBox(Info^.WinControl);
-            DC := GetDC(Window);
+            DC := Windows.GetDC(Window);
             SetBkColor(DC, GetSysColor(COLOR_BTNFACE));
             SetTextColor(DC, GetSysColor(COLOR_GRAYTEXT));
             SelectObject(DC, GroupBox.Font.Reference.Handle);
