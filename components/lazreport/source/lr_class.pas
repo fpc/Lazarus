@@ -8109,6 +8109,7 @@ begin
   {$IFDEF DebugLR}
   DebugLn('---- Start of new page ----');
   {$ENDIF}
+  ColPos := 1;
   ShowBand(Bands[btOverlay]);
   CurY := TopMargin;
   ShowBand(Bands[btPageHeader]);
@@ -8133,6 +8134,7 @@ begin
     ShowBand(Bands[btColumnFooter]);
     Inc(CurColumn);
     Inc(XAdjust, ColWidth + ColGap);
+    Inc(ColPos);
     CurY := LastStaticColumnY;
     ShowBand(Bands[btColumnHeader]);
   end
