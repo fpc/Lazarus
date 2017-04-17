@@ -18,8 +18,8 @@ unit TestCompleteBlock;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, FileProcs, CodeToolManager,
-  CodeCache, CustomCodeTool;
+  Classes, SysUtils, fpcunit, testregistry, testglobals, FileProcs,
+  CodeToolManager, CodeCache, CustomCodeTool;
 
 type
 
@@ -418,7 +418,7 @@ begin
 end;
 
 initialization
-  AddToPascalTestSuite(TTestCodetoolsCompleteBlock);
+  RegisterTest(TTestCodetoolsCompleteBlock);
 
 end.
 

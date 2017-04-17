@@ -30,7 +30,7 @@ uses
   CodeToolManager, CodeToolsConfig,
   TestGlobals,
   TestBasicCodetools, TestCTRangeScan, TestMethodJumpTool, TestStdCodetools,
-  TestFindDeclaration, TestCompleteBlock, TestRefactoring,
+  TestFindDeclaration, TestCompleteBlock, TestRefactoring, TestPascalParser,
   // non Pascal
   TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
   // compile test files to make sure they are valid Pascal
@@ -42,7 +42,7 @@ uses
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
   {$ENDIF}
-  fdt_classof, fdt_with, rt_explodewith, fdt_generics, TestPascalParser;
+  fdt_classof, fdt_with, rt_explodewith, fdt_generics;
 
 const
   ConfigFilename = 'codetools.config';
@@ -85,7 +85,7 @@ begin
     // To not parse the FPC sources every time, the options are saved to a file.
     Options.LoadFromFile(ConfigFilename);
   end;
-  DebugLn(['EnvironmentVariables: PP, FPCDIR, LAZARUSDIR, FPCTARGET, FPCTARGETCPU']);
+  DebugLn(['Possible EnvVars: PP, FPCDIR, LAZARUSDIR, FPCTARGET, FPCTARGETCPU']);
   Options.InitWithEnvironmentVariables;
 
   if HasOption('submitter') then

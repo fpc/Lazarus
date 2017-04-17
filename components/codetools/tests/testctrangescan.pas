@@ -21,9 +21,9 @@ unit TestCTRangeScan;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, FileProcs, CodeToolManager,
-  CodeCache, CustomCodeTool, LinkScanner, CodeTree, EventCodeTool,
-  PascalParserTool;
+  Classes, SysUtils, fpcunit, testregistry, testglobals, FileProcs,
+  CodeToolManager, CodeCache, CustomCodeTool, LinkScanner, CodeTree,
+  EventCodeTool, PascalParserTool;
 
 const
   ctrsCommentOfProc1 = 'comment of Proc1';
@@ -392,7 +392,7 @@ begin
 end;
 
 initialization
-  AddToPascalTestSuite(TTestCodetoolsRangeScan);
+  RegisterTest(TTestCodetoolsRangeScan);
 
 end.
 

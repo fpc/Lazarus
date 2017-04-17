@@ -994,6 +994,7 @@ components/codetools/tests/moduletests/fdt_generics.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_nestedclasses.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_objccategory.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_objcclass.pas svneol=native#text/plain
+components/codetools/tests/moduletests/fdt_proc_basetypes.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_typehelper.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_with.pas svneol=native#text/plain
 components/codetools/tests/moduletests/rt_explodewith.pas svneol=native#text/plain

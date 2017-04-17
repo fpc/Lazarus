@@ -156,7 +156,7 @@ begin
 end;
 
 initialization
-  AddToPascalTestSuite(TTestPascalParser);
+  RegisterTest(TTestPascalParser);
 
 end.
 

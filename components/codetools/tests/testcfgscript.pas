@@ -13,7 +13,7 @@ unit TestCfgScript;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, FileProcs,
+  Classes, SysUtils, fpcunit, testregistry, testglobals, FileProcs,
   CodeToolsCfgScript;
 
 type
@@ -135,7 +135,7 @@ begin
 end;
 
 initialization
-  AddToNonPascalTestSuite(TTestCodetoolsCfgScript);
+  RegisterTest(TTestCodetoolsCfgScript);
 
 end.
 

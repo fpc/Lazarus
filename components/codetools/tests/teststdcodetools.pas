@@ -11,7 +11,7 @@ unit TestStdCodetools;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, testglobals, fpcunit,
+  Classes, SysUtils, LCLProc, testglobals, fpcunit, testregistry,
   CodeToolManager, StdCodeTools, CodeCache, LinkScanner;
 
 type
@@ -197,7 +197,7 @@ begin
 end;
 
 initialization
-  AddToPascalTestSuite(TTestCTStdCodetools);
+  RegisterTest(TTestCTStdCodetools);
 
 end.
 

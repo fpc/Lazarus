@@ -13,7 +13,8 @@ unit TestCTXMLFixFragments;
 interface
 
 uses
-  fpcunit, Classes, SysUtils, FileProcs, testglobals, CTXMLFixFragment;
+  fpcunit, testregistry, Classes, SysUtils, FileProcs,
+  CTXMLFixFragment;
 
 type
 
@@ -123,7 +124,7 @@ begin
 end;
 
 initialization
-  AddToNonPascalTestSuite(TTestCTXMLFixFragment);
+  RegisterTest(TTestCTXMLFixFragment);
 
 end.
 

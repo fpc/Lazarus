@@ -18,8 +18,8 @@ unit TestCTH2Pas;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, FileProcs, CodeToolManager,
-  BasicCodeTools, CodeCache, CCodeParserTool, H2PasTool;
+  Classes, SysUtils, fpcunit, testregistry, testglobals, FileProcs,
+  CodeToolManager, BasicCodeTools, CodeCache, CCodeParserTool, H2PasTool;
 
 type
 
@@ -277,7 +277,7 @@ begin
 end;
 
 initialization
-  AddToNonPascalTestSuite(TTestCodetoolsH2Pas);
+  RegisterTest(TTestCodetoolsH2Pas);
 
 end.
 

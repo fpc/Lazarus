@@ -5,36 +5,11 @@ unit TestGlobals;
 interface
 
 uses
-  fpcunit, testregistry,
-  classes, sysutils, process;
-
-var
-  PascalTestSuite: TTestSuite;
-  NonPascalTestSuite: TTestSuite;
-  BugsTestSuite: TTestSuite;
-
-procedure AddToPascalTestSuite(ATestClass: TClass);
-procedure AddToNonPascalTestSuite(ATestClass: TClass);
-procedure AddToBugsTestSuite(ATest: TTest);
+  SysUtils;
 
 function LinesToStr(Args: array of const): string;
 
 implementation
-
-procedure AddToPascalTestSuite(ATestClass: TClass);
-begin
-  PascalTestSuite.AddTestSuiteFromClass(ATestClass);
-end;
-
-procedure AddToNonPascalTestSuite(ATestClass: TClass);
-begin
-  NonPascalTestSuite.AddTestSuiteFromClass(ATestClass);
-end;
-
-procedure AddToBugsTestSuite(ATest: TTest);
-begin
-  BugsTestSuite.AddTest(ATest);
-end;
 
 function LinesToStr(Args: array of const): string;
 var
@@ -55,15 +30,6 @@ begin
     end;
   Result:=s;
 end;
-
-initialization
-  GetTestRegistry.TestName := 'All tests';
-  PascalTestSuite := TTestSuite.Create('Pascal tests');
-  GetTestRegistry.AddTest(PascalTestSuite);
-  NonPascalTestSuite := TTestSuite.Create('No Pascal tests');
-  GetTestRegistry.AddTest(NonPascalTestSuite);
-  BugsTestSuite := TTestSuite.Create('Bugs');
-  GetTestRegistry.AddTest(BugsTestSuite);
 
 end.
 

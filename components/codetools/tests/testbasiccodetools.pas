@@ -26,8 +26,8 @@ unit TestBasicCodetools;
 interface
 
 uses
-  fpcunit, contnrs, Classes, SysUtils, testglobals, FileProcs, BasicCodeTools,
-  SourceLog, DefineTemplates;
+  fpcunit, testregistry, contnrs, Classes, SysUtils, testglobals, FileProcs,
+  BasicCodeTools, SourceLog, DefineTemplates;
 
 type
   { TTestBasicCodeTools }
@@ -572,7 +572,7 @@ begin
 end;
 
 initialization
-  AddToPascalTestSuite(TTestBasicCodeTools);
+  RegisterTest(TTestBasicCodeTools);
 
 end.
 
