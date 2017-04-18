@@ -469,7 +469,7 @@ end;
 
 function TUseUnitDialog.InterfaceSelected: Boolean;
 begin
-  Result:=SectionRadioGroup.ItemIndex=0;
+  Result:=(not SectionRadioGroup.Enabled) or (SectionRadioGroup.ItemIndex=0);
 end;
 
 procedure TUseUnitDialog.DetermineUsesSection(ACode: TCodeBuffer);
