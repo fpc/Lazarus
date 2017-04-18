@@ -1681,7 +1681,6 @@ begin
     Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTEBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CARDINAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CURRENCY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1694,6 +1693,7 @@ begin
     Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('POINTER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1740,6 +1740,7 @@ begin
     Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INTEGER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1749,9 +1750,11 @@ begin
     Add('PRED'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('QWORD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHORTINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHORTSTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SINGLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SIZEOF'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SMALLINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STRING'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SUCC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TEXT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
