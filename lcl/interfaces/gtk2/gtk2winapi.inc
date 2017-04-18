@@ -2658,7 +2658,7 @@ var
       Points[0].cX := LeftPos + Points[0].cX;
       Points[0].cY := TopPos + tm.tmHeight - TM.tmDescent + 1;
 
-      GetTextExtentPoint(DC, @aStr[pIndex], 1, Points[1]);
+      GetTextExtentPoint(DC, @aStr[pIndex], UTF8CharacterLength(@aStr[pIndex]), Points[1]);
       Points[1].cX := Points[0].cX + Points[1].cX;
       Points[1].cY := Points[0].cY;
 
