@@ -1313,7 +1313,6 @@ begin
 
   if Style.Clipping then
   begin
-    IntersectRect(ARect, ARect, fRect);
     with ARect do
       InterSectClipRect(DC, Left, Top, Right, Bottom);
     Options := Options or DT_NOCLIP; // no clipping as we are handling it here
