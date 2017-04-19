@@ -4659,6 +4659,7 @@ begin
     if (not UpAtomIs('PROCEDURE')) and (not UpAtomIs('FUNCTION')) then
       SaveRaiseStringExpectedButAtomFound('"procedure"');
     Result:=KeyWordFuncTypeProc;
+    CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
   end else begin
     Result:=KeyWordFuncTypeDefault;
