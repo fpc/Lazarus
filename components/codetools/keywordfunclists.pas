@@ -1722,10 +1722,12 @@ begin
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create('WordIsPredefinedDelphiIdentifier');
   KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);
   with WordIsPredefinedDelphiIdentifier do begin
+    Add('ANSICHAR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BREAK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BYTEBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CARDINAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1740,15 +1742,18 @@ begin
     Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INTEGER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LONGBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NATIVEINT'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NATIVEUINT' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PCHAR'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('POINTER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PRED'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('QWORD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RAWBYTESTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHORTINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHORTSTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1760,6 +1765,8 @@ begin
     Add('TEXT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TYPEINFO'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UINT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNICODESTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WIDECHAR'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WIDESTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WORD'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
