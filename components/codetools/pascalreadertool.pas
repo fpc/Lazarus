@@ -1872,12 +1872,26 @@ begin
       while IsHintModifier do ReadNextAtom;
     end;
 
-  ctnProcedure,ctnProcedureType,ctnProcedureHead:
+  ctnProcedureHead:
     begin
-      if Node.Desc<>ctnProcedureHead then begin
-        Node:=Node.FirstChild;
-        if Node=nil then exit;
-      end;
+      MoveCursorToFirstProcSpecifier(Node);
+      // ToDo:
+    end;
+
+  ctnProcedure,ctnProcedureType:
+    begin
+      Node:=Node.FirstChild;
+      if Node=nil then exit;
+      MoveCursorToFirstProcSpecifier(Node);
+      // ToDo:
+    end;
+
+  ctnReferenceTo:
+    begin
+      Node:=Node.FirstChild;
+      if (Node=nil) or (Node.Desc<>ctnProcedureType) then exit;
+      Node:=Node.FirstChild;
+      if Node=nil then exit;
       MoveCursorToFirstProcSpecifier(Node);
       // ToDo:
     end;
@@ -3278,7 +3292,12 @@ begin
   // ToDo: ppu, dcu
 
   Result:=false;
-  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedureType) then exit;
+  if ProcNode=nil then exit;
+  if ProcNode.Desc=ctnReferenceTo then begin
+    ProcNode:=ProcNode.FirstChild;
+    if ProcNode=nil then exit;
+  end;
+  if ProcNode.Desc<>ctnProcedureType then exit;
   MoveCursorToFirstProcSpecifier(ProcNode);
   Result:=UpAtomIs('OF') and ReadNextUpAtomIs('OBJECT');
 end;

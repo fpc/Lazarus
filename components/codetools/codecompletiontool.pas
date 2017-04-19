@@ -2059,7 +2059,8 @@ function TCodeCompletionCodeTool.CompleteEventAssignment(CleanCursorPos,
     Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers];
     ProcContext:=PropVarContext.Tool.FindBaseTypeOfNode(
                                                     Params,PropVarContext.Node);
-    if (ProcContext.Node=nil) or (ProcContext.Node.Desc<>ctnProcedureType)
+    if (ProcContext.Node=nil)
+    or not (ProcContext.Node.Desc in AllProcTypes)
     then begin
       {$IFDEF CTDEBUG}
       DebugLn('FindEventTypeAtCursor not a procedure type');
@@ -2591,7 +2592,7 @@ begin
     TypeNode:=ExprType.Context.Node;
     if HasAtOperator
     or ((Scanner.CompilerMode=cmDelphi) and (ExprType.Desc=xtContext) // procedures in delphi mode without @
-        and (TypeNode<>nil) and (TypeNode.Desc=ctnProcedureType)) then
+        and (TypeNode<>nil) and (TypeNode.Desc in AllProcTypes)) then
     begin
       debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter HasAtOperator ExprType=',ExprTypeToString(ExprType)]);
       NewType:='';
@@ -2617,7 +2618,7 @@ begin
             @AliasType);
           //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter parameter is pointer to type: AliasType=',FindContextToString(AliasType)]);
         end;
-      end else if TypeNode.Desc=ctnProcedureType then begin
+      end else if TypeNode.Desc in AllProcTypes then begin
         // for example TNotifyEvent = procedure(...
         if TypeTool.ProcNodeHasOfObject(TypeNode) then begin
           AddMethod(Identifier,TypeTool,TypeNode);
@@ -6379,7 +6380,7 @@ begin
         AddAssignment('nil');
       ctnPointerType:
         AddAssignment('nil');
-      ctnProcedureType:
+      ctnProcedureType,ctnReferenceTo:
         // address of proc
         AddAssignment('nil');
       ctnProcedureHead:

@@ -10419,6 +10419,10 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=Node;
   if Result=nil then exit;
+  if Result.Desc=ctnReferenceTo then begin
+    Result:=Result.FirstChild;
+    if Result=nil then exit;
+  end;
   if (Result.Desc in [ctnProperty,ctnGlobalProperty]) then
     Result:=Result.FirstChild
   else if Result.Desc in [ctnProcedure,ctnProcedureHead,ctnProcedureType] then begin
@@ -11433,6 +11437,10 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=nil;
   if Node=nil then exit;
+  if Node.Desc=ctnReferenceTo then begin
+    Node:=Node.FirstChild;
+    if Node=nil then exit;
+  end;
   if Node.Desc in [ctnProcedure,ctnProcedureType] then begin
     ProcNode:=Node;
     //DebugLn('  FindNthParameterNode ProcNode="',copy(Params.NewCodeTool.Src,ProcNode.StartPos,ProcNode.EndPos-ProcNode.StartPos),'"');
