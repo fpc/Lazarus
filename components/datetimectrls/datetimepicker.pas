@@ -1923,8 +1923,11 @@ end;
 
 procedure TCustomDateTimePicker.UndoChanges;
 begin
-  FDateTime := FConfirmedDateTime;
-  UpdateDate;
+  if (FDateTime <> FConfirmedDateTime) then
+   begin
+     FDateTime := FConfirmedDateTime;
+     UpdateDate;
+   end;
 end;
 
 { GetDateTimePartFromTextPart function
