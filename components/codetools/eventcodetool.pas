@@ -583,7 +583,7 @@ begin
         TypeContext.Tool.MoveCursorToNodeStart(TypeContext.Node);
         TypeContext.Tool.RaiseException(ctsMethodTypeDefinitionNotFound);
       end;
-      if Result.Node.Desc<>ctnProcedureType then begin
+      if not (Result.Node.Desc in AllProcTypes) then begin
         TypeContext.Tool.MoveCursorToNodeStart(TypeContext.Node);
         TypeContext.Tool.RaiseException(Format(ctsExpectedAMethodTypeButFound, [
           Result.Node.DescAsString]));
@@ -845,13 +845,18 @@ function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
     Node: TCodeTreeNode;
     ParamNode: TCodeTreeNode;
   begin
+    Node:=AFindContext.Node;
     MethodUnitName:=AFindContext.Tool.GetSourceName(false);
     AddNeededUnitToMainUsesSection(PChar(MethodUnitName));
 
     // search every parameter type and collect units
     if not (AFindContext.Tool is TCodeCompletionCodeTool) then exit;
-    if not (AFindContext.Node.Desc in [ctnProcedureType,ctnProcedure]) then exit;
-    ProcHeadNode:=AFindContext.Node.FirstChild;
+    if Node.Desc=ctnReferenceTo then begin
+      Node:=Node.FirstChild;
+      if Node=nil then exit;
+    end;
+    if not (Node.Desc in [ctnProcedureType,ctnProcedure]) then exit;
+    ProcHeadNode:=Node.FirstChild;
     if (ProcHeadNode=nil) or (ProcHeadNode.Desc<>ctnProcedureHead) then exit;
     if ProcHeadNode.FirstChild=nil then
       AFindContext.Tool.BuildSubTreeForProcHead(ProcHeadNode);
@@ -1166,7 +1171,7 @@ begin
         exit;
     end else begin
       if not FindTypeOfInstanceProperty(Instance,PropName,TypeContext,true) then exit;
-      if TypeContext.Node.Desc<>ctnProcedureType then begin
+      if not (TypeContext.Node.Desc in AllProcTypes) then begin
         debugln(['TEventsCodeTool.CreateExprListFromPropertyInfo property '+DbgSName(Instance)+'.'+PropName+' is not method: ',TypeContext.Node.DescAsString]);
         exit;
       end;

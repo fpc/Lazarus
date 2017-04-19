@@ -147,7 +147,7 @@ const
   ctnGenericParams      = 94; // parent = ctnGenericType, children = ctnGenericParameter
   ctnGenericParameter   = 95; // can has a child ctnGenericConstraint
   ctnGenericConstraint  = 96; // parent = ctnGenericParameter
-  ctnReferenceTo        = 97; // 1st child = ctnProcedure
+  ctnReferenceTo        = 97; // 1st child = ctnProcedureType
   ctnConstant           = 98;
   ctnHintModifier       = 99; // deprecated, platform, unimplemented, library, experimental
 
@@ -192,9 +192,11 @@ const
      [ctnGenericType,ctnSpecialize,
       ctnIdentifier,ctnOpenArrayType,ctnRangedArrayType,
       ctnRecordCase,ctnRecordVariant,
-      ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
+      ctnProcedureType,ctnReferenceTo,
+      ctnSetType,ctnRangeType,ctnEnumerationType,
       ctnEnumIdentifier,ctnLabel,ctnTypeType,ctnFileType,ctnPointerType,
       ctnClassOfType,ctnVariantType,ctnConstant];
+  AllProcTypes = [ctnProcedureType,ctnReferenceTo];
   AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnWithVariable,
                          ctnOnBlock,ctnOnIdentifier,ctnOnStatement,
                          ctnInitialization,ctnFinalization];
@@ -266,7 +268,7 @@ type
     function HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
     function HasAsRoot(RootNode: TCodeTreeNode): boolean;
     function GetNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
-    function GetNodeOfTypes(Descriptors: array of TCodeTreeNodeDesc): TCodeTreeNode;
+    function GetNodeOfTypes(const Descriptors: array of TCodeTreeNodeDesc): TCodeTreeNode;
     function GetTopMostNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function GetFindContextParent: TCodeTreeNode;
     function GetLevel: integer;
@@ -833,7 +835,7 @@ begin
     Result:=Result.Parent;
 end;
 
-function TCodeTreeNode.GetNodeOfTypes(Descriptors: array of TCodeTreeNodeDesc
+function TCodeTreeNode.GetNodeOfTypes(const Descriptors: array of TCodeTreeNodeDesc
   ): TCodeTreeNode;
 var
   i: Integer;

@@ -4564,8 +4564,9 @@ function TPascalParserTool.KeyWordFuncTypeProc: boolean;
     function(ParmList):SimpleType of object;
     procedure; cdecl; popstack; register; pascal; stdcall;
 }
-var IsFunction, EqualFound: boolean;
+var IsFunction, EqualFound, IsReferenceTo: boolean;
 begin
+  IsReferenceTo:=CurNode.Desc=ctnReferenceTo;
   IsFunction:=UpAtomIs('FUNCTION');
   CreateChildNode;
   CurNode.Desc:=ctnProcedureType;
@@ -4591,7 +4592,7 @@ begin
       SaveRaiseCharExpectedButAtomFound(':');
     end;
   end;
-  if UpAtomIs('OF') then begin
+  if (not IsReferenceTo) and UpAtomIs('OF') then begin
     if not ReadNextUpAtomIs('OBJECT') then
       SaveRaiseStringExpectedButAtomFound('"object"');
     ReadNextAtom;
@@ -4616,14 +4617,16 @@ begin
           UndoReadNextAtom;
           break;
         end;
-        if UpAtomIs('IS') then begin
-          ReadNextAtom;
-          if not UpAtomIs('NESTED') then
-            SaveRaiseStringExpectedButAtomFound('nested');
-        end else if UpAtomIs('OF') then begin
-          ReadNextAtom;
-          if not UpAtomIs('OBJECT') then
-            SaveRaiseStringExpectedButAtomFound('object');
+        if not IsReferenceTo then begin
+          if UpAtomIs('IS') then begin
+            ReadNextAtom;
+            if not UpAtomIs('NESTED') then
+              SaveRaiseStringExpectedButAtomFound('nested');
+          end else if UpAtomIs('OF') then begin
+            ReadNextAtom;
+            if not UpAtomIs('OBJECT') then
+              SaveRaiseStringExpectedButAtomFound('object');
+          end;
         end;
         ReadNextAtom;
         if CurPos.Flag<>cafSemicolon then begin
@@ -5793,8 +5796,11 @@ var
   ProcHeadNode: TCodeTreeNode;
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
-  if ProcNode.Desc=ctnMethodMap then begin
+  if ProcNode.Desc=ctnMethodMap then
     exit;
+  if ProcNode.Desc=ctnReferenceTo then begin
+    ProcNode:=ProcNode.FirstChild;
+    if ProcNode=nil then exit;
   end;
   if (not (ProcNode.Desc in [ctnProcedure,ctnProcedureType])) then begin
     {$IFDEF CheckNodeTool}
@@ -5871,10 +5877,6 @@ end;
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
   out FunctionResult: TCodeTreeNode);
 begin
-  if ProcNode.Desc=ctnProcedureHead then
-    ProcNode:=ProcNode.Parent;
-  if not(ProcNode.Desc in [ctnProcedure,ctnProcedureType]) then
-    RaiseException('INTERNAL ERROR: TPascalParserTool.BuildSubTreeForProcHead with FunctionResult');
   BuildSubTreeForProcHead(ProcNode);
   FunctionResult:=ProcNode.FirstChild.FirstChild;
   if (FunctionResult<>nil) and (FunctionResult.Desc=ctnParameterList) then

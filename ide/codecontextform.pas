@@ -388,10 +388,13 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
     try
       try
         Expr:=Tool.ConvertNodeToExpressionType(Node,Params);
-        //debugln(['FindBaseType ',s,' ',ExprTypeToString(Expr)]);
         if (Expr.Desc=xtContext) and (Expr.Context.Node<>nil) then begin
           ExprTool:=Expr.Context.Tool;
           ExprNode:=Expr.Context.Node;
+          if ExprNode.Desc=ctnReferenceTo then begin
+            ExprNode:=ExprNode.FirstChild;
+            if ExprNode=nil then exit;
+          end;
           case ExprNode.Desc of
           ctnProcedureType:
             begin

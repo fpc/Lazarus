@@ -2190,7 +2190,7 @@ begin
   case FoundContext.Node.Desc of
   ctnProcedure:
     begin
-      //DebugLn('TIdentCompletionTool.CollectAllContexts CurrentContexts.ProcNameAtom.StartPos=',dbgs(CurrentIdentifierContexts.ProcNameAtom.StartPos));
+      //DebugLn('TIdentCompletionTool.CollectAllContexts Found Proc CurrentContexts.ProcNameAtom.StartPos=',dbgs(CurrentIdentifierContexts.ProcNameAtom.StartPos));
       if (CurrentIdentifierContexts.ProcName='') then exit;
       FoundContext.Tool.MoveCursorToProcName(FoundContext.Node,true);
       //DebugLn(['TIdentCompletionTool.CollectAllContexts ProcName=',GetIdentifier(@FoundContext.Tool.Src[FoundContext.Tool.CurPos.StartPos])]);
@@ -2201,7 +2201,7 @@ begin
         // method without 'overload' hides inherited one
         if not FoundContext.Tool.ProcNodeHasSpecifier(FoundContext.Node, psOVERLOAD) then
           Exclude(Params.Flags, fdfSearchInAncestors);
-      end else exit
+      end else exit;
     end;
   ctnProperty,ctnGlobalProperty:
     begin
@@ -3156,7 +3156,8 @@ begin
       if IdentEndPos=0 then ;
 
       // find class and ancestors if existing (needed for protected identifiers)
-      FindContextClassAndAncestorsAndExtendedClassOfHelper(CursorPos,FICTClassAndAncestorsAndExtClassOfHelper);
+      FindContextClassAndAncestorsAndExtendedClassOfHelper(CursorPos,
+        FICTClassAndAncestorsAndExtClassOfHelper);
 
       if CursorNode<>nil then begin
         if not CheckContextIsParameter(Result) then begin
