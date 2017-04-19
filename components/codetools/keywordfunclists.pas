@@ -85,7 +85,7 @@ type
     procedure WriteDebugListing;
     function AllwaysTrue: boolean;
     function AllwaysFalse: boolean;
-    function Count: integer;
+    property Count: integer read FCount;
     function GetItem(Index: integer): TBaseKeyWordFunctionListItem;
     function IndexOf(const AKeyWord: shortstring): integer;
     function CalcMemSize: PtrUInt;
@@ -504,11 +504,6 @@ begin
   Result:=false;
 end;
 
-function TBaseKeyWordFunctionList.Count: integer;
-begin
-  Result:=FCount;
-end;
-
 function TBaseKeyWordFunctionList.GetItem(Index: integer
   ): TBaseKeyWordFunctionListItem;
 begin
@@ -517,6 +512,8 @@ end;
 
 function TBaseKeyWordFunctionList.IndexOf(const AKeyWord: shortstring): integer;
 begin
+  if not Sorted then Sort;
+
   Result:=FCount-1;
   while (Result>=0) and (CompareText(FItems[Result].KeyWord,AKeyWord)<>0) do
     dec(Result);
