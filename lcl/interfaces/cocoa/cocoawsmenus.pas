@@ -387,7 +387,7 @@ begin
     Exit;
 
   item:=NSMenuItem(AMenuItem.Handle);
-  Parent.insertItem_atIndex(item, Parent.itemArray.count);
+  Parent.insertItem_atIndex(item, AMenuItem.MenuVisibleIndex);
 end;
 
 {------------------------------------------------------------------------------
