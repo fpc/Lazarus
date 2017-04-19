@@ -2250,6 +2250,21 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+var
+  lWin: NSWindow;
+begin
+  Result := False;
+  lWin := GetNSObjectWindow(NSObject(AWindowHandle));
+  if (lWin <> nil) and lWin.isKindOfClass(TCocoaWindow) and
+     (TCocoaWindow(lWin).LCLForm.Menu.Handle = AMenuHandle) then
+  begin
+    if lWin.isKeyWindow or lWin.isMainWindow then
+      SetMainMenu(AMenuHandle, TCocoaWindow(lWin).LCLForm.Menu);
+    Result := True;
+  end;
+end;
+
 {------------------------------- FONT AND TEXT --------------------------------}
 
 function TCocoaWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;

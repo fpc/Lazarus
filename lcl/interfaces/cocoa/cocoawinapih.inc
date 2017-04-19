@@ -169,6 +169,7 @@ function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(Handle: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;
+function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; override;
 function SetProp(Handle: hwnd; Str: PChar; Data: Pointer) : Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
