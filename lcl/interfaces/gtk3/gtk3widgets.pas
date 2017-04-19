@@ -5662,10 +5662,11 @@ function TGtk3ListView.ItemGetState(const AIndex: Integer;
   const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean
   ): Boolean;
 var
-  Path: PPGtkTreePath;
+  Path: PGtkTreePath;
   Column: PPGtkTreeViewColumn;
   Cell: PPGtkCellRenderer;
   APath: PGtkTreePath;
+  AStr: PChar;
 begin
   Result := False;
   AIsSet := False;
@@ -5682,14 +5683,19 @@ begin
       Path := nil;
       Column := nil;
       if IsTreeView then
-        PGtkTreeView(GetContainerWidget)^.get_cursor(Path, Column)
+        PGtkTreeView(GetContainerWidget)^.get_cursor(@Path, Column)
       else
-        PGtkIconView(GetContainerWidget)^.get_cursor(Path, Cell);
-
-      AIsSet := (Path <> nil) and (StrToInt(gtk_tree_path_to_string(path^)) = AIndex);
-      if Path <> nil then
-        gtk_tree_path_free(Path^);
-      Result := True;
+        PGtkIconView(GetContainerWidget)^.get_cursor(@Path, Cell);
+      if Assigned(Path) then
+      begin
+        AStr := gtk_tree_path_to_string(path);
+        AIsSet := (StrToInt(AStr) = AIndex);
+        if AStr <> nil then
+          g_free(AStr); 
+        if Path <> nil then
+          gtk_tree_path_free(Path);
+        Result := True;
+      end;
     end;
 
     lisSelected:
