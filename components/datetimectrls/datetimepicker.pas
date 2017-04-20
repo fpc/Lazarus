@@ -1922,13 +1922,19 @@ end;
 
 procedure TCustomDateTimePicker.UndoChanges;
 begin
-  FDateTime := FConfirmedDateTime;
-  Inc(FSkipChangeInUpdateDate);
-  try
+  if FDateTime = FConfirmedDateTime then begin
+    Inc(FSkipChangeInUpdateDate); // prevents calling Change in UpdateDate,
+    try  // but UpdateDate should be called anyway, because user might have
+         // changed text on screen and it should be updated to what it was.
+      UpdateDate;
+    finally
+      Dec(FSkipChangeInUpdateDate);
+    end;
+  end else begin
+    FDateTime := FConfirmedDateTime;
     UpdateDate;
-  finally
-    Dec(FSkipChangeInUpdateDate);
   end;
+
 end;
 
 { GetDateTimePartFromTextPart function
