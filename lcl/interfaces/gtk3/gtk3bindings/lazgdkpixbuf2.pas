@@ -332,7 +332,7 @@ function gdk_pixbuf_get_pixels_with_length(pixbuf: PGdkPixbuf; length: Pguint): 
 function gdk_pixbuf_get_rowstride(pixbuf: PGdkPixbuf): gint; cdecl; external;
 function gdk_pixbuf_get_type: TGType; cdecl; external;
 function gdk_pixbuf_get_width(pixbuf: PGdkPixbuf): gint; cdecl; external;
-function gdk_pixbuf_gettext(msgid: Pgchar): Pgchar; cdecl; external;
+//does not exist anymore. issue #31677 function gdk_pixbuf_gettext(msgid: Pgchar): Pgchar; cdecl; external;
 function gdk_pixbuf_loader_close(loader: PGdkPixbufLoader; error: PPGError): gboolean; cdecl; external;
 function gdk_pixbuf_loader_get_animation(loader: PGdkPixbufLoader): PGdkPixbufAnimation; cdecl; external;
 function gdk_pixbuf_loader_get_format(loader: PGdkPixbufLoader): PGdkPixbufFormat; cdecl; external;
@@ -466,7 +466,7 @@ end;
 
 function TGdkPixbuf.gettext(msgid: Pgchar): Pgchar; cdecl;
 begin
-  Result := LazGdkPixbuf2.gdk_pixbuf_gettext(msgid);
+  Result := nil; //issue #31677 LazGdkPixbuf2.gdk_pixbuf_gettext(msgid);
 end;
 
 procedure TGdkPixbuf.new_from_stream_async(stream: PGInputStream; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
