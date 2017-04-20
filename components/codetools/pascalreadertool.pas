@@ -178,6 +178,7 @@ type
     function ProcNodeHasOfObject(ProcNode: TCodeTreeNode): boolean;
     function GetProcParamList(ProcNode: TCodeTreeNode;
                               Parse: boolean = true): TCodeTreeNode;
+    function GetProcResultNode(ProcNode: TCodeTreeNode): TCodeTreeNode;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
     function GetMethodOfBody(Node: TCodeTreeNode): TCodeTreeNode;
@@ -3317,6 +3318,23 @@ begin
   Result:=Result.FirstChild;
   if Result=nil then exit;
   if Result.Desc<>ctnParameterList then exit(nil);
+end;
+
+function TPascalReaderTool.GetProcResultNode(ProcNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  Result:=nil;
+  if ProcNode=nil then exit;
+  if ProcNode.Desc in [ctnProcedure,ctnProcedureType] then begin
+    Result:=ProcNode.FirstChild;
+    if Result=nil then exit;
+  end;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedureHead) then exit;
+  Result:=ProcNode.FirstChild;
+  while Result<>nil do begin
+    if Result.Desc=ctnIdentifier then exit;
+    Result:=Result.NextBrother;
+  end;
 end;
 
 procedure TPascalReaderTool.MoveCursorToUsesStart(UsesNode: TCodeTreeNode);

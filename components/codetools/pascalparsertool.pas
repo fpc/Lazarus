@@ -5877,6 +5877,12 @@ end;
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
   out FunctionResult: TCodeTreeNode);
 begin
+  if ProcNode.Desc=ctnReferenceTo then
+    ProcNode:=ProcNode.FirstChild;
+  if ProcNode.Desc=ctnProcedureHead then
+    ProcNode:=ProcNode.Parent;
+  if not (ProcNode.Desc in [ctnProcedure,ctnProcedureType]) then
+    RaiseException('INTERNAL ERROR: TPascalParserTool.BuildSubTreeForProcHead with FunctionResult');
   BuildSubTreeForProcHead(ProcNode);
   FunctionResult:=ProcNode.FirstChild.FirstChild;
   if (FunctionResult<>nil) and (FunctionResult.Desc=ctnParameterList) then
