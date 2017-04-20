@@ -1367,14 +1367,12 @@ function FindContextToString(const FindContext: TFindContext;
   RelativeFilename: boolean): string;
 var
   IdentNode: TCodeTreeNode;
-  Caret: TCodeXYPosition;
-  aFilename: String;
 begin
   Result:='';
   if FindContext.Node<>nil then begin
     Result:=Result+'Node="'+FindContext.Node.DescAsString+'"';
     IdentNode:=FindContext.Node;
-    while (IdentNode<>nil) do begin
+    while IdentNode<>nil do begin
       if IdentNode.Desc in AllSimpleIdentifierDefinitions
         +[ctnIdentifier,ctnEnumIdentifier,ctnLabel]
       then begin
@@ -1391,23 +1389,16 @@ begin
         Result:=Result+' PropName="'+
           FindContext.Tool.ExtractPropName(IdentNode,false)+'"';
         break;
+      end else if IdentNode.Desc=ctnProcedure then begin
+        Result:=Result+' Proc="'+FindContext.Tool.ExtractProcName(IdentNode,[])+'"';
+        break;
       end;
       IdentNode:=IdentNode.Parent;
     end;
-    if FindContext.Tool<>nil then begin
-      if FindContext.Tool.CleanPosToCaret(FindContext.Node.StartPos,Caret) then
-      begin
-        aFilename:=Caret.Code.Filename;
-        if RelativeFilename then
-          aFilename:=ExtractRelativepath(ExtractFilePath(FindContext.Tool.MainFilename),aFilename);
-        Result:=Result+' File='+aFilename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')';
-      end else begin
-        aFilename:=FindContext.Tool.MainFilename;
-        if RelativeFilename then
-          aFilename:=ExtractFileName(aFilename);
-        Result:=Result+' File="'+aFilename+'"';
-      end;
-    end;
+    if RelativeFilename then
+      Result:=Result+' at "'+FindContext.Tool.CleanPosToStr(FindContext.Node.StartPos,true)+'"'
+    else
+      Result:=Result+' at "'+FindContext.Tool.CleanPosToRelativeStr(FindContext.Node.StartPos,'')+'"'
   end else
     Result:='nil';
 end;
@@ -5428,9 +5419,11 @@ begin
         end else
           break;
       end else
-      if (Result.Node.Desc in [ctnProcedure,ctnProcedureHead]) then begin
-        if Result.Node.Desc=ctnProcedure then
-          Result.Node:=Result.Node.FirstChild;
+      if Result.Node.Desc=ctnProcedure then begin
+        Result.Node:=Result.Node.FirstChild;
+        break;
+      end else
+      if Result.Node.Desc=ctnProcedureHead then begin
         break;
       end else
       if (Result.Node.Desc=ctnTypeType) then begin
@@ -10089,9 +10082,9 @@ begin
   Result.AliasType:=CleanFindContext;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.CalculateBinaryOperator] A',
-  ' LeftOperand=',ExpressionTypeDescNames[LeftOperand.Desc],
+  ' LeftOperand=',ExprTypeToString(LeftOperand.Expr),
   ' Operator=',GetAtom(BinaryOperator),
-  ' RightOperand=',ExpressionTypeDescNames[RightOperand.Desc]
+  ' RightOperand=',ExprTypeToString(RightOperand.Expr)
   );
   {$ENDIF}
   // convert Left and RightOperand contexts to expressiontype
@@ -12823,6 +12816,13 @@ begin
           begin
             Result:=GetIdentifier(
                               @FindContext.Tool.Src[FindContext.Node.StartPos]);
+          end;
+
+        ctnProcedureHead:
+          begin
+          ANode:=GetProcResultNode(FindContext.Node);
+          if ANode<>nil then
+            Result:=FindContext.Tool.ExtractNode(ANode,[]);
           end;
 
         end;
