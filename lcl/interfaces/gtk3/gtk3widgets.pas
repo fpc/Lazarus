@@ -5688,12 +5688,11 @@ begin
         PGtkIconView(GetContainerWidget)^.get_cursor(@Path, Cell);
       if Assigned(Path) then
       begin
-        AStr := gtk_tree_path_to_string(path);
-        AIsSet := (StrToInt(AStr) = AIndex);
+        AStr := gtk_tree_path_to_string(Path);
+        AIsSet := (StrToIntDef(AStr,-1) = AIndex);
         if AStr <> nil then
           g_free(AStr); 
-        if Path <> nil then
-          gtk_tree_path_free(Path);
+        gtk_tree_path_free(Path);
         Result := True;
       end;
     end;
