@@ -632,7 +632,7 @@ begin
   if AWinControl.HandleObjectShouldBeVisible and
     (LowerCase(AWinControl.Font.Name) = 'default') then
   begin
-    if AWinControl.IsParentFont then
+    if AWinControl.IsParentFont and Assigned(AWinControl.Parent) then
       SetFont(AWinControl, AWinControl.Parent.Font) {DO NOT TOUCH THIS PLEASE !}
     else
       SetFont(AWinControl, AWinControl.Font); {DO NOT TOUCH THIS PLEASE !}

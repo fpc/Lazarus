@@ -625,12 +625,17 @@ begin
     Exit;
 
   Widget := TQtWidget(AWinControl.Handle);
-
   Widget.BeginUpdate;
-  // issue #28437
-  if AWinControl.HandleObjectShouldBeVisible and not AWinControl.IsParentFont and
-    (AWinControl.Font.Name = 'default') then
-      SetFont(AWinControl, AWinControl.Font);
+  // issue #28437, #30966 - regression from r53365: when FontChanged() is called
+  // here handle is recreated inside LCL, so we are dead - SEGFAULT.
+  if AWinControl.HandleObjectShouldBeVisible and
+    (LowerCase(AWinControl.Font.Name) = 'default') then
+  begin
+    if AWinControl.IsParentFont and Assigned(AWinControl.Parent) then
+      SetFont(AWinControl, AWinControl.Parent.Font) {DO NOT TOUCH THIS PLEASE !}
+    else
+      SetFont(AWinControl, AWinControl.Font); {DO NOT TOUCH THIS PLEASE !}
+  end;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
   Widget.EndUpdate;
