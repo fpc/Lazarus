@@ -186,11 +186,11 @@ type
     FConfirmedDateTime: TDateTime;
     FNoEditingDone: Integer;
     FAllowDroppingCalendar: Boolean;
-    FChangeInRecursiveCall: Boolean;
     FCorrectedDTP: TDateTimePart;
     FCorrectedValue: Word;
     FEnableWhenUnchecked: Boolean;
     FAutoCheck: Boolean;
+    FSkipChangeInUpdateDate: Integer;
 
     function AreSeparatorsStored: Boolean;
     function GetChecked: Boolean;
@@ -1922,11 +1922,13 @@ end;
 
 procedure TCustomDateTimePicker.UndoChanges;
 begin
-  if (FDateTime <> FConfirmedDateTime) then
-   begin
-     FDateTime := FConfirmedDateTime;
-     UpdateDate;
-   end;
+  FDateTime := FConfirmedDateTime;
+  Inc(FSkipChangeInUpdateDate);
+  try
+    UpdateDate;
+  finally
+    Dec(FSkipChangeInUpdateDate);
+  end;
 end;
 
 { GetDateTimePartFromTextPart function
@@ -2764,9 +2766,10 @@ begin
         FDateTime := ComposeDateTime(FMinDate, FDateTime);
     end;
 
-    if not FChangeInRecursiveCall then begin // we'll skip the next part in
-           // recursive calls which could be made through Change or UndoChanges
-      FChangeInRecursiveCall := True;
+    if (FSkipChangeInUpdateDate = 0) then begin
+     // we'll skip the next part if called from UndoChanges
+     // and in recursive calls which could be made through calling Change
+      Inc(FSkipChangeInUpdateDate);
       try
         if FUserChanging > 0 then begin // this means that the change is caused by user interaction
           try
@@ -2778,7 +2781,7 @@ begin
         end else
           FConfirmedDateTime := FDateTime;
       finally
-        FChangeInRecursiveCall := False;
+        Dec(FSkipChangeInUpdateDate);
       end;
     end;
 
@@ -3807,7 +3810,7 @@ begin
   FCalAlignment := dtaDefault;
   FCorrectedDTP := dtpAMPM;
   FCorrectedValue := 0;
-  FChangeInRecursiveCall := False;
+  FSkipChangeInUpdateDate := 0;
   FNoEditingDone := 0;
   FArrowShape := asTheme;
   FAllowDroppingCalendar := True;
