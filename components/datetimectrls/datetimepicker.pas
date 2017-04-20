@@ -1063,7 +1063,6 @@ begin
       FDateTime := NullDate
     else
       FDateTime := AValue;
-    Change;
   end;
   UpdateDate;
 end;
