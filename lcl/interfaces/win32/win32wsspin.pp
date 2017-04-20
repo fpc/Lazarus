@@ -223,9 +223,9 @@ begin
                 PWideChar(UTF8ToUTF16(StrCaption)), Flags,
                 Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
     UpDown := CreateWindowExW(0, UPDOWN_CLASSW, nil, UpDownFlags,
-      0, 0, 8, Height, Window, HMENU(nil), HInstance, nil);
+      0, 0, 8, Height, Parent, HMENU(nil), HInstance, nil);
 
-//    Windows.SendMessage(UpDown, UDM_SETBUDDY, WPARAM(Window), 0);
+    Windows.SendMessage(UpDown, UDM_SETBUDDY, WPARAM(Window), 0);
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, True);
@@ -315,7 +315,7 @@ class procedure TWin32WSCustomFloatSpinEdit.AdaptBounds(const AWinControl: TWinC
 var
   WinHandle, UpDown: HWND;
   UpDownWidth, BorderWidth: Integer;
-  AClientRect: Windows.Rect;
+  DWP: HDWP;
 begin
   WinHandle := AWinControl.Handle;
   UpDown := GetWin32WindowInfo(WinHandle)^.UpDown;
@@ -328,17 +328,11 @@ begin
   else
     BorderWidth := GetSystemMetrics(SM_CXEDGE);
 
-  SetWindowPos(WinHandle, UpDown, Left, Top, Width, Height, SWP_NOACTIVATE or SWP_NOZORDER);
-  if not Windows.GetClientRect(WinHandle, @AClientRect) then
-  begin
-    AClientRect.Left := 0;
-    AClientRect.Top := 0;
-    AClientRect.Right := Width - BorderWidth * 2;
-    AClientRect.Bottom := Height - BorderWidth * 2;
-  end;
-  SetWindowPos(UpDown, HWND_TOP,
-    AClientRect.Right - UpDownWidth, AClientRect.Top, UpDownWidth, AClientRect.Bottom,
-    SWP_NOACTIVATE or SWP_NOZORDER);
+  DWP := BeginDeferWindowPos(2);
+  DeferWindowPos(DWP, UpDown, WinHandle, Left + Width - UpDownWidth - BorderWidth,
+                 Top+BorderWidth, UpDownWidth, Height - BorderWidth * 2, SWP_NOACTIVATE);
+  DeferWindowPos(DWP, WinHandle, UpDown, Left, Top, Width, Height, SWP_NOACTIVATE);
+  EndDeferWindowPos(DWP);
 
   SuppressMove := True;
 end;
