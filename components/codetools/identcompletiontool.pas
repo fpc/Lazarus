@@ -1591,7 +1591,8 @@ begin
   UnitPath:='';
   SrcPath:='';
   GatherUnitAndSrcPath(UnitPath,SrcPath);
-  //DebugLn('TIdentCompletionTool.GatherUnitnames UnitPath="',UnitPath,'" SrcPath="',SrcPath,'"');
+  CurSourceName:=GetSourceName;
+  //DebugLn('TIdentCompletionTool.GatherUnitnames CurSourceName="',CurSourceName,'" UnitPath="',UnitPath,'" SrcPath="',SrcPath,'"');
   BaseDir:=ExtractFilePath(MainFilename);
   FIDTTreeOfUnitFiles:=nil;
   FIDTTreeOfNamespaces:=nil;
@@ -1603,32 +1604,37 @@ begin
     if Scanner.CompilerMode=cmMacPas then
       UnitExt:=UnitExt+';p';
     GatherUnitFiles(BaseDir,UnitPath,UnitExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
+    //debugln(['TIdentCompletionTool.GatherUnitnames UnitPath ',FIDTTreeOfUnitFiles.Count]);
     // search in srcpath
     SrcExt:='pp;pas';
     if Scanner.CompilerMode=cmMacPas then
       SrcExt:=SrcExt+';p';
     GatherUnitFiles(BaseDir,SrcPath,SrcExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
+    //debugln(['TIdentCompletionTool.GatherUnitnames Plus SrcPath ',FIDTTreeOfUnitFiles.Count]);
     // add unitlinks
-    GatherUnitsFromSet;
+    if Scanner.PascalCompiler=pcFPC then
+      GatherUnitsFromSet;
+    //debugln(['TIdentCompletionTool.GatherUnitnames Plus FPC units ',FIDTTreeOfUnitFiles.Count]);
     // create list
-    CurSourceName:=GetSourceName;
-    if FIDTTreeOfUnitFiles<> nil then
+    if FIDTTreeOfUnitFiles<>nil then
     begin
       ANode:=FIDTTreeOfUnitFiles.FindLowest;
       while ANode<>nil do begin
         UnitFileInfo:=TUnitFileInfo(ANode.Data);
-        if CompareText(PChar(Pointer(UnitFileInfo.FileUnitName)), Length(UnitFileInfo.FileUnitName),
-                       PChar(Pointer(CurSourceName)), Length(CurSourceName), False)<>0
-        then begin
-          NewItem:=CUnitNameSpaceIdentifierListItem.Create(
-              icompCompatible,true,0,
-              CurrentIdentifierList.CreateIdentifier(UnitFileInfo.FileUnitNameWithoutNamespace),
-              0,nil,nil,ctnUnit, PChar(UnitFileInfo.FileUnitName), UnitFileInfo.IdentifierStartInUnitName);
-          if NewItem.IdentifierStartInUnitName < 1 then
-            NewItem.IdentifierStartInUnitName := 1;
-          CurrentIdentifierList.Add(NewItem);
-        end;
         ANode:=FIDTTreeOfUnitFiles.FindSuccessor(ANode);
+        //debugln(['TIdentCompletionTool.GatherUnitnames Unit=',UnitFileInfo.FileUnitName,' File=',UnitFileInfo.Filename]);
+        if CompareText(PChar(Pointer(UnitFileInfo.FileUnitName)), Length(UnitFileInfo.FileUnitName),
+                       PChar(Pointer(CurSourceName)), Length(CurSourceName), False)=0
+        then
+          continue;
+        NewItem:=CUnitNameSpaceIdentifierListItem.Create(
+            icompCompatible,true,0,
+            CurrentIdentifierList.CreateIdentifier(UnitFileInfo.FileUnitNameWithoutNamespace),
+            0,nil,nil,ctnUnit, PChar(UnitFileInfo.FileUnitName), UnitFileInfo.IdentifierStartInUnitName);
+        if NewItem.IdentifierStartInUnitName < 1 then
+          NewItem.IdentifierStartInUnitName := 1;
+        //debugln(['TIdentCompletionTool.GatherUnitnames Add ',UnitFileInfo.FileUnitName,' NewCount=',CurrentIdentifierList]);
+        CurrentIdentifierList.Add(NewItem);
       end;
     end;
     if FIDTTreeOfNamespaces<>nil then
@@ -2929,7 +2935,7 @@ begin
     CurrentIdentifierList:=nil;
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TIdentCompletionTool.GatherIdentifiers END');
+  DebugLn(['TIdentCompletionTool.GatherIdentifiers END ']);
   {$ENDIF}
 end;
 
