@@ -1012,7 +1012,6 @@ components/codetools/tests/testmethodjumptool.pas svneol=native#text/plain
 components/codetools/tests/testpascalparser.pas svneol=native#text/plain
 components/codetools/tests/testrefactoring.pas svneol=native#text/plain
 components/codetools/tests/teststdcodetools.pas svneol=native#text/plain
-components/codetools/tests/testvarcompletion.pas svneol=native#text/plain
 components/codetools/unitdictionary.pas svneol=native#text/plain
 components/compilers/c/examples/test.c svneol=native#text/plain
 components/compilers/c/languages/lazcstrconsts.de.po svneol=native#text/plain

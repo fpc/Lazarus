@@ -42,8 +42,7 @@ uses
   {$ENDIF}
   fdt_classof, fdt_with, rt_explodewith, fdt_generics,
   TestBasicCodetools, TestCTRangeScan, TestPascalParser, TestMethodJumpTool,
-  TestStdCodetools, TestFindDeclaration, TestCompleteBlock, TestRefactoring,
-  TestVarCompletion;
+  TestStdCodetools, TestFindDeclaration, TestCompleteBlock, TestRefactoring;
 
 const
   ConfigFilename = 'codetools.config';

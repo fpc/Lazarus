@@ -18,7 +18,7 @@ unit TestCTH2Pas;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, testglobals, FileProcs,
+  Classes, SysUtils, fpcunit, testregistry, FileProcs,
   CodeToolManager, BasicCodeTools, CodeCache, CCodeParserTool, H2PasTool;
 
 type

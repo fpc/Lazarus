@@ -10,7 +10,7 @@ unit TestMethodJumpTool;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, testglobals, fpcunit, testregistry,
+  Classes, SysUtils, LCLProc, fpcunit, testregistry,
   CodeToolManager, StdCodeTools, CodeCache, LinkScanner;
 
 type
