@@ -132,11 +132,15 @@ begin
   i:=0;
   while i<=Files.Count-2 do begin
     while (i<=Files.Count-2) and (CompareFilenames(Files[i],Files[i+1])=0) do
-    begin
       Files.Delete(i+1);
-    end;
     inc(i);
   end;
+  // remove non files
+  for i:=Files.Count-1 downto 0 do
+    if ExtractFilename(Files[i])='' then begin
+      debugln(['Note: (lazarus) [FindRenameIdentifier.CleanUpFileList] invalid file "',Files[i],'"']);
+      Files.Delete(i);
+    end;
 end;
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
