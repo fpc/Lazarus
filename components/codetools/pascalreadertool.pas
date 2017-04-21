@@ -84,7 +84,7 @@ type
   TPascalReaderTool = class(TPascalParserTool)
   protected
     CachedSourceName: string;
-    procedure RaiseStrConstExpected;
+    procedure RaiseStrConstExpected(id: int64);
   public
     // comments
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
@@ -364,9 +364,9 @@ end;
 
 { TPascalReaderTool }
 
-procedure TPascalReaderTool.RaiseStrConstExpected;
+procedure TPascalReaderTool.RaiseStrConstExpected(id: int64);
 begin
-  RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+  RaiseExceptionFmt(id,ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
 end;
 
 function TPascalReaderTool.CleanPosIsInComment(CleanPos,
@@ -381,7 +381,7 @@ begin
   CommentEnd:=0;
   if CleanPos>SrcLen then exit;
   if CleanCodePosInFront>CleanPos then
-    RaiseException(
+    RaiseException(20170421195949,
       'TPascalReaderTool.CleanPosIsInComment CleanCodePosInFront>CleanPos');
   MoveCursorToCleanPos(CleanCodePosInFront);
   repeat
@@ -525,7 +525,7 @@ begin
   end;
   if CurPos.Flag in [cafSemicolon,cafEND] then exit;
   if not (CurPos.Flag=cafColon) then
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[':',GetAtom]);
+    RaiseExceptionFmt(20170421195952,ctsStrExpectedButAtomFound,[':',GetAtom]);
   ReadNextAtom;
   AtomIsIdentifierE;
   if InUpperCase then
@@ -1191,7 +1191,7 @@ begin
   if (ProcNode<>nil) and (ProcNode.Desc in [ctnProcedureType,ctnProcedure]) then
     ProcNode:=ProcNode.FirstChild;
   if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedureHead) then begin
-    RaiseException('Internal Error in'
+    RaiseException(20170421195956,'Internal Error in'
       +' TPascalParserTool.MoveCursorFirstProcSpecifier: '
       +' (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)');
   end;
@@ -1473,7 +1473,7 @@ begin
   if ProcNode.Desc<>ctnProcedure then begin
     DebugLn(['TPascalReaderTool.ProcNodeHasSpecifier Desc=',ProcNode.DescAsString]);
     CTDumpStack;
-    RaiseException('[TPascalReaderTool.ProcNodeHasSpecifier] '
+    RaiseException(20170421195959,'[TPascalReaderTool.ProcNodeHasSpecifier] '
       +'internal error: invalid ProcNode');
   end;
   {$ENDIF}
@@ -2430,7 +2430,7 @@ function TPascalReaderTool.FindClassNodeInInterface(
   
   procedure RaiseClassNotFound;
   begin
-    RaiseExceptionFmt(ctsClassSNotFound, [AClassName]);
+    RaiseExceptionFmt(20170421200001,ctsClassSNotFound, [AClassName]);
   end;
   
 begin
@@ -2455,7 +2455,7 @@ function TPascalReaderTool.FindClassNodeInUnit(const AClassName: string;
 
   procedure RaiseClassNotFound;
   begin
-    RaiseExceptionFmt(ctsClassSNotFound, [AClassName]);
+    RaiseExceptionFmt(20170421200003,ctsClassSNotFound, [AClassName]);
   end;
 
 begin
@@ -3342,13 +3342,13 @@ begin
   if (UsesNode=nil)
   or ((UsesNode.Desc<>ctnUsesSection) and (UsesNode.Desc<>ctnContainsSection))
   then
-    RaiseException('[TPascalParserTool.MoveCursorToUsesStart] '
+    RaiseException(20170421200006,'[TPascalParserTool.MoveCursorToUsesStart] '
       +'internal error: invalid UsesNode');
   // search through the uses section
   MoveCursorToCleanPos(UsesNode.StartPos);
   ReadNextAtom;
   if (not UpAtomIs('USES')) and (not UpAtomIs('CONTAINS')) then
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['uses',GetAtom]);
+    RaiseExceptionFmt(20170421200009,ctsStrExpectedButAtomFound,['uses',GetAtom]);
   ReadNextAtom;
 end;
 
@@ -3357,13 +3357,13 @@ begin
   if (UsesNode=nil)
   or ((UsesNode.Desc<>ctnUsesSection) and (UsesNode.Desc<>ctnContainsSection))
   then
-    RaiseException('[TPascalParserTool.MoveCursorToUsesEnd] '
+    RaiseException(20170421200012,'[TPascalParserTool.MoveCursorToUsesEnd] '
       +'internal error: invalid UsesNode');
   // search backwards through the uses section
   MoveCursorToCleanPos(UsesNode.EndPos);
   ReadPriorAtom; // read ';'
   if not AtomIsChar(';') then
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+    RaiseExceptionFmt(20170421200014,ctsStrExpectedButAtomFound,[';',GetAtom]);
 end;
 
 function TPascalReaderTool.ReadNextUsedUnit(out UnitNameRange,
@@ -3384,7 +3384,7 @@ begin
     ReadNextAtom; // read filename
     if not AtomIsStringConstant then begin
       if not SyntaxExceptions then exit;
-      RaiseStrConstExpected;
+      RaiseStrConstExpected(20170421200017);
     end;
     InAtom:=CurPos;
     ReadNextAtom; // read comma or semicolon
@@ -3401,7 +3401,7 @@ begin
     InAtom:=CurPos;
     ReadPriorAtom; // read 'in'
     if not UpAtomIs('IN') then
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsKeywordIn,GetAtom]);
+      RaiseExceptionFmt(20170421200021,ctsStrExpectedButAtomFound,[ctsKeywordIn,GetAtom]);
     ReadPriorAtom; // read unitname
   end else begin
     InAtom:=CleanAtomPosition;

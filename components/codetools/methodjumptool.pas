@@ -44,8 +44,8 @@ uses
   // LazUtils
   LazFileUtils,
   // Codetools
-  FileProcs, CodeTree, PascalParserTool, StdCodeTools, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, CodeCache, PascalReaderTool;
+  FileProcs, CodeTree, CodeToolsStrConsts, PascalParserTool, StdCodeTools,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, PascalReaderTool;
 
 
 type
@@ -545,7 +545,7 @@ begin
         {$ENDIF}
         if ClassNode=nil then begin
           MoveCursorToProcName(ProcNode,false);
-          RaiseException('class not found "'+SearchedClassname+'"');
+          RaiseExceptionFmt(20170421201402,ctsClassNotFound2, [SearchedClassname]);
         end;
         // search first class grand child node
         StartNode:=ClassNode.FirstChild;
@@ -557,7 +557,7 @@ begin
         if StartNode=nil then begin
           ProcName:=ExtractProcName(ProcNode,[]);
           MoveCursorToNodeStart(ClassNode);
-          RaiseException('method "'+ProcName+'" has no declaration');
+          RaiseExceptionFmt(20170421201417,ctsMethodHasNoDeclaration, [ProcName]);
         end;
         // search method with same name and param list
         Result:=FindBestProcNode(ProcNode,[phpWithoutClassName,phpInUpperCase],
@@ -587,7 +587,7 @@ begin
           if SearchInNodes.Count=0 then begin
             ProcName:=ExtractProcName(ProcNode,[]);
             MoveCursorToNodeStart(ClassNode);
-            RaiseException('method "'+ProcName+'" has no declaration');
+            RaiseExceptionFmt(20170421201432,ctsMethodHasNoDeclaration, [ProcName]);
           end;
           // search for a method with same name but different param list
           ProcNode:=FindProcNodeInTreeWithName(SearchInNodes,

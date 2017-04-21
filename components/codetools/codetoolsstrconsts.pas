@@ -55,9 +55,13 @@ ResourceString
   ctsIdentExpectedButAtomFound = 'identifier expected, but %s found';
   ctsIdentExpectedButKeyWordFound = 'identifier expected, but keyword %s found';
   ctsStrExpectedButAtomFound = 'expected %s, but %s found';
+  ctsCanNotAddAUnitToTheImplementationBecauseOnlyAUnitH = 'can not add a unit '
+    +'to the implementation, because only a unit has one';
   ctsEndOfFile = 'end of file';
   ctsPositionNotInSource = 'Position not in source';
   ctsInvalidClassName = 'invalid class name="%s"';
+  ctsInvalidPositionForInsertionOfStatements = 'invalid position for insertion'
+    +' of statements';
   ctsclassNotFound = 'class "%s" not found';
   ctsinvalidClassName2 = 'invalid class name "%s"';
   ctsinvalidVariableName = 'invalid variable name "%s"';
@@ -282,6 +286,8 @@ ResourceString
   ctsMethodTypeDefinitionNotFound = 'method type definition not found';
   ctsExpectedAMethodTypeButFound = 'expected a method type, but found %s';
   ctsOldMethodNotFound = 'old method not found: %s';
+  ctsClassNotFound2 = 'class not found "%s"';
+  ctsMethodHasNoDeclaration = 'method "%s" has no declaration';
   
 implementation
 

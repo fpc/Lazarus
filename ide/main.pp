@@ -10629,7 +10629,7 @@ begin
       NewSource,NewX,NewY,NewTopLine, Interactive);
     if (CodeToolBoss.ErrorMessage='')
     and (CodeToolBoss.SourceChangeCache.BuffersToModifyCount=0) then
-      CodeToolBoss.SetError(nil,0,0,'there is no completion for this code');
+      CodeToolBoss.SetError(20170421203259,nil,0,0,'there is no completion for this code');
     ApplyCodeToolChanges;
     if (CodeToolBoss.ErrorMessage='') and (NewSource<>nil) then
       DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,

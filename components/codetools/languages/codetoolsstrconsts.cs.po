@@ -79,6 +79,10 @@ msgstr "závorka %s nenalezena"
 msgid "bracket open expected, but %s found"
 msgstr "očekávána otvírací závorka, ale nalezeno %s "
 
+#: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+msgid "can not add a unit to the implementation, because only a unit has one"
+msgstr ""
+
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
 msgstr "znaková konstanta mimo rozsah"
@@ -100,6 +104,10 @@ msgstr "uzel třídy bez rodičovského uzlu"
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "třída %s%s%s nenalezena"
+
+#: codetoolsstrconsts.ctsclassnotfound2
+msgid "class not found \"%s\""
+msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -523,6 +531,10 @@ msgstr "neplatný přepínač režimu \"%s\""
 msgid "invalid operator %s"
 msgstr "neplatný opetátor %s"
 
+#: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
+msgid "invalid position for insertion of statements"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "neplatný podrozsah"
@@ -562,6 +574,10 @@ msgstr "hlavní adresář lazarusu"
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
 msgstr "Zdroje Lazarusu"
+
+#: codetoolsstrconsts.ctsmethodhasnodeclaration
+msgid "method \"%s\" has no declaration"
+msgstr ""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"

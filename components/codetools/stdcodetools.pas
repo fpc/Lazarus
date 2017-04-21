@@ -611,7 +611,7 @@ var
       end else if CurPos.Flag=cafSemicolon then begin
         break;
       end else
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+        RaiseExceptionFmt(20170421201056,ctsStrExpectedButAtomFound,[';',GetAtom]);
     until false;
     Result:=true;
   end;
@@ -981,7 +981,8 @@ begin
     BuildTree(lsrImplementationUsesSectionEnd)
   else if UsesSection=usImplementation then begin
     MoveCursorToNodeStart(Tree.Root);
-    RaiseException('can not add a unit to the implementation, because only a unit has one');
+    RaiseException(20170421201102,
+      ctsCanNotAddAUnitToTheImplementationBecauseOnlyAUnitH);
   end;
   SourceChangeCache.MainScanner:=Scanner;
   Beauty:=SourceChangeCache.BeautifyCodeOptions;
@@ -1346,7 +1347,7 @@ function TStandardCodeTool.FindUsedUnitNames(var List: TStringToStringTree
       end else if CurPos.Flag=cafSemicolon then begin
         break;
       end else
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+        RaiseExceptionFmt(20170421201120,ctsStrExpectedButAtomFound,[';',GetAtom]);
     until false;
     Result:=true;
   end;
@@ -3316,7 +3317,7 @@ var
   CurEndPos: LongInt;
 begin
   if StartPos>=EndPos then
-    RaiseException('TStandardCodeTool CommentCode');
+    RaiseException(20170421201123,'TStandardCodeTool CommentCode');
 
   Result:=false;
   // comment with curly brackets {}
@@ -4506,13 +4507,13 @@ var ClassNode, SectionNode: TCodeTreeNode;
 begin
   Result:=nil;
   if (AClassName='') or (length(AClassName)>255) then
-    RaiseException(Format(ctsinvalidClassName, [AClassName]));
+    RaiseExceptionFmt(20170421201129,ctsinvalidClassName, [AClassName]);
   if AVarName='' then exit;
   BuildTree(lsrImplementationStart);
   ClassNode:=FindClassNodeInInterface(AClassName,true,false,false);
   if ClassNode=nil then begin
     if ExceptionOnClassNotFound then
-      RaiseException(Format(ctsclassNotFound, [AClassName]))
+      RaiseExceptionFmt(20170421201136,ctsclassNotFound, [AClassName])
     else
       exit;
   end;
@@ -4541,13 +4542,13 @@ var ClassNode, SectionNode: TCodeTreeNode;
 begin
   Result:=false;
   if (AClassName='') or (length(AClassName)>255) then
-    RaiseException(Format(ctsinvalidClassName2, [AClassName]));
+    RaiseExceptionFmt(20170421201143,ctsinvalidClassName2, [AClassName]);
   if (VarName='') or (length(VarName)>255) then
-    RaiseException(Format(ctsinvalidVariableName, [VarName]));
+    RaiseExceptionFmt(20170421201152,ctsinvalidVariableName, [VarName]);
   if (VarType='') or (length(VarType)>255) then
-    RaiseException(Format(ctsinvalidVariableType, [VarType]));
+    RaiseExceptionFmt(20170421201158,ctsinvalidVariableType, [VarType]);
   if (SourceChangeCache=nil) then
-    RaiseException('missing SourceChangeCache');
+    RaiseException(20170421201203,'missing SourceChangeCache');
   if FindPublishedVariable(AClassName,VarName,true)<>nil then
   begin
     Result:=true;
@@ -4555,7 +4556,7 @@ begin
   end;
   ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
   if ClassNode=nil then
-    RaiseException(Format(ctsclassNotFound, [AClassName]));
+    RaiseExceptionFmt(20170421201208,ctsclassNotFound, [AClassName]);
   SectionNode:=ClassNode.FirstChild;
   if (SectionNode.NextBrother<>nil)
   and (SectionNode.NextBrother.Desc=ctnClassPublished) then
@@ -4643,7 +4644,7 @@ begin
       if not SourceChangeCache.Replace(gtNone,gtNone,
         CurPos.StartPos,CurPos.EndPos,VarType)
       then begin
-        RaiseException('Unable to replace type');
+        RaiseException(20170421201215,'Unable to replace type');
       end;
     end;
     // rename variable in source
@@ -4731,7 +4732,7 @@ begin
   Result:=false;
   TreeOfCodeTreeNodeExtension:=nil;
   if (TheClassName='') or (length(TheClassName)>255) then
-    RaiseException(Format(ctsInvalidClassName, [TheClassName]));
+    RaiseExceptionFmt(20170421201221,ctsInvalidClassName, [TheClassName]);
   {$IFDEF VerboseDanglingComponentEvents}
   DebugLn(['TStandardCodeTool.GatherPublishedClassElements BEFORE buildtree']);
   {$ENDIF}
@@ -4994,14 +4995,16 @@ begin
       MoveCursorToCleanPos(Node.StartPos);
       ReadNextAtom;
       AtomIsIdentifierE;
-      if not ReadNextAtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
+      if not ReadNextAtomIsChar(',') then
+        RaiseCharExpectedButAtomFound(20170421201227,',');
       DeleteEndPos:=CurPos.EndPos;
     end else if PrevSibling<>nil then begin
       // var i, X: integer;     ->  var i[, X]: integer;
       MoveCursorToCleanPos(PrevSibling.StartPos);
       ReadNextAtom;
       AtomIsIdentifierE;
-      if not ReadNextAtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
+      if not ReadNextAtomIsChar(',') then
+        RaiseCharExpectedButAtomFound(20170421201233,',');
       DeleteStartPos:=CurPos.StartPos;
     end else begin
       // delete whole declaration
@@ -5089,7 +5092,7 @@ begin
   Node:=FindDeepestNodeAtPos(CleanPos,true);
   if not (Node.Desc in AllPascalStatements) then begin
     MoveCursorToCleanPos(CleanPos);
-    RaiseException('invalid position for insertion of statements');
+    RaiseException(20170421201247,ctsInvalidPositionForInsertionOfStatements);
   end;
   if Node.Desc=ctnBeginBlock then
     Node:=BuildSubTreeAndFindDeepestNodeAtPos(Node,CleanPos,true);
@@ -5098,7 +5101,7 @@ begin
   if (SameArea.StartPos>SrcLen) or (not IsSpaceChar[Src[SameArea.StartPos]])
   then begin
     MoveCursorToCleanPos(CleanPos);
-    RaiseException('invalid position for insertion of statements');
+    RaiseException(20170421201255,ctsInvalidPositionForInsertionOfStatements);
   end;
 
   SourceChangeCache.MainScanner:=Scanner;

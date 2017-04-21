@@ -80,6 +80,10 @@ msgstr "括号 %s 未找到"
 msgid "bracket open expected, but %s found"
 msgstr "左括号应该出现, 但是找到 %s"
 
+#: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+msgid "can not add a unit to the implementation, because only a unit has one"
+msgstr ""
+
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
 msgstr ""
@@ -101,6 +105,10 @@ msgstr "class node without parent node"
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "未找到类 %s%s%s"
+
+#: codetoolsstrconsts.ctsclassnotfound2
+msgid "class not found \"%s\""
+msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -527,6 +535,10 @@ msgstr ""
 msgid "invalid operator %s"
 msgstr ""
 
+#: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
+msgid "invalid position for insertion of statements"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "无效子界"
@@ -566,6 +578,10 @@ msgstr "Lazarus 主目录."
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
 msgstr "Lazarus 源代码"
+
+#: codetoolsstrconsts.ctsmethodhasnodeclaration
+msgid "method \"%s\" has no declaration"
+msgstr ""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"

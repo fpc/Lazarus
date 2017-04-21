@@ -10097,7 +10097,8 @@ begin
       JumpToPos(NewPos.Code.Filename, NewPos, NewTopLine)
     else
     begin
-      CodeToolBoss.SetError(nil, 0, 0, Format(lisCannotFind, [cJumpNames[JumpType]]));
+      CodeToolBoss.SetError(20170421203224, nil, 0, 0,
+        Format(lisCannotFind, [cJumpNames[JumpType]]));
       LazarusIDE.DoJumpToCodeToolBossError;
     end;
   end
@@ -10160,7 +10161,8 @@ begin
       JumpToPos(NewCodePos.Code.Filename, NewCodePos, NewTopLine)
     else
     begin
-      CodeToolBoss.SetError(nil, 0, 0, Format(lisCannotFind, [cJumpNames[JumpType]]));
+      CodeToolBoss.SetError(20170421203236, nil, 0, 0,
+        Format(lisCannotFind, [cJumpNames[JumpType]]));
       LazarusIDE.DoJumpToCodeToolBossError;
     end;
   end

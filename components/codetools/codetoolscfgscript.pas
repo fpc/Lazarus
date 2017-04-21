@@ -58,6 +58,8 @@ uses
   BasicCodeTools, KeywordFuncLists, FileProcs, CodeToolsStrConsts;
 
 type
+  ECodeToolCfgScript = class(Exception);
+
   TCTCSValueType = (
     ctcsvNone,
     ctcsvString,
@@ -1315,7 +1317,7 @@ begin
   Err:=TCTCfgScriptError.Create(aMsg,Position,Line,Column);
   FErrors.Add(Err);
   if ErrorCount>=MaxErrorCount then
-    raise Exception.Create(GetErrorStr(ErrorCount-1));
+    raise ECodeToolCfgScript.Create(GetErrorStr(ErrorCount-1));
 end;
 
 procedure TCTConfigScriptEngine.AddError(const aMsg: string);
@@ -2154,7 +2156,7 @@ var
 
   procedure ErrorInvalidOperator;
   begin
-    raise Exception.Create('TCTConfigScriptEngine.ExecuteStack invalid operator: '+GetAtom(OperatorItem^.StartPos));
+    raise ECodeToolCfgScript.Create('TCTConfigScriptEngine.ExecuteStack invalid operator: '+GetAtom(OperatorItem^.StartPos));
   end;
 
 begin
@@ -2522,7 +2524,7 @@ procedure TCTCfgScriptStack.Pop(Count: integer);
 
   procedure RaiseTooManyPop;
   begin
-    raise Exception.Create('TCTCfgScriptStack.Pop too many pop');
+    raise ECodeToolCfgScript.Create('TCTCfgScriptStack.Pop too many pop');
   end;
 
 var

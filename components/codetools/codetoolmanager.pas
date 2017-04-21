@@ -101,6 +101,7 @@ type
     FDirectivesTools: TAVLTree; // tree of TDirectivesTool sorted for Code (TCodeBuffer)
     FErrorCode: TCodeBuffer;
     FErrorColumn: integer;
+    FErrorId: int64;
     FErrorLine: integer;
     FErrorMsg: string;
     FErrorTopLine: integer;
@@ -270,7 +271,7 @@ type
     // exception handling
     procedure ClearError;
     function HandleException(AnException: Exception): boolean;
-    procedure SetError(Code: TCodeBuffer; Line, Column: integer;
+    procedure SetError(Id: int64; Code: TCodeBuffer; Line, Column: integer;
                        const TheMessage: string);
     property CatchExceptions: boolean
                                    read FCatchExceptions write FCatchExceptions;
@@ -280,6 +281,7 @@ type
     property ErrorColumn: integer read fErrorColumn;
     property ErrorLine: integer read fErrorLine;
     property ErrorMessage: string read fErrorMsg;
+    property ErrorId: int64 read FErrorId;
     property ErrorTopLine: integer read fErrorTopLine;
     property ErrorDbgMsg: string read FErrorDbgMsg;
     property Abortable: boolean read FAbortable write SetAbortable;
@@ -1405,6 +1407,8 @@ begin
   fErrorMsg:='';
   fErrorCode:=nil;
   fErrorLine:=-1;
+  fErrorTopLine:=0;
+  FErrorId:=0;
 end;
 
 procedure TCodeToolManager.ClearCurCodeTool;
@@ -1734,6 +1738,7 @@ begin
   ClearCurCodeTool;
   MainCode:=GetMainCode(Code);
   if MainCode=nil then begin
+    ClearError;
     FErrorLine:=1;
     FErrorColumn:=1;
     fErrorCode:=Code;
@@ -1764,9 +1769,7 @@ end;
 
 function TCodeToolManager.InitResourceTool: boolean;
 begin
-  fErrorMsg:='';
-  fErrorCode:=nil;
-  fErrorLine:=-1;
+  ClearError;
   Result:=true;
 end;
 
@@ -1785,20 +1788,19 @@ var
   ErrorDirTool: TCompilerDirectivesTree;
 begin
   fErrorMsg:=AnException.Message;
-  fErrorTopLine:=0;
-  fErrorCode:=nil;
-  fErrorColumn:=-1;
-  fErrorLine:=-1;
+  ClearError;
   if (AnException is ELinkScannerError) then begin
     // link scanner error
     if AnException is ELinkScannerConsistency then
       DumpExceptionBackTrace;
     DirtyPos:=0;
     if AnException is ELinkScannerEditError then begin
+      FErrorId:=20170421202931;
       fErrorCode:=TCodeBuffer(ELinkScannerEditError(AnException).Buffer);
       if fErrorCode<>nil then
         DirtyPos:=ELinkScannerEditError(AnException).BufferPos;
     end else begin
+      FErrorId:=20170421202945;
       fErrorCode:=TCodeBuffer(ELinkScannerError(AnException).Sender.Code);
       DirtyPos:=ELinkScannerError(AnException).Sender.SrcPos;
     end;
@@ -1808,6 +1810,7 @@ begin
   end else if (AnException is ECodeToolError) then begin
     // codetool error
     ErrorSrcTool:=ECodeToolError(AnException).Sender;
+    FErrorId:=ECodeToolError(AnException).Id;
     if ErrorSrcTool.ErrorNicePosition.Code<>nil then begin
       fErrorCode:=ErrorSrcTool.ErrorNicePosition.Code;
       fErrorColumn:=ErrorSrcTool.ErrorNicePosition.X;
@@ -1821,10 +1824,13 @@ begin
     // Compiler directive parser error
     ErrorDirTool:=ECDirectiveParserException(AnException).Sender;
     fErrorCode:=ErrorDirTool.Code;
+    FErrorId:=20170421202922;
   end else if (AnException is ESourceChangeCacheError) then begin
     // SourceChangeCache error
+    FErrorId:=20170421203005;
   end else if (AnException is ECodeToolManagerError) then begin
     // CodeToolManager error
+    FErrorId:=20170421203009;
   end else begin
     // unknown exception
     DumpExceptionBackTrace;
@@ -1833,6 +1839,7 @@ begin
       fErrorCode:=FCurCodeTool.ErrorPosition.Code;
       fErrorColumn:=FCurCodeTool.ErrorPosition.X;
       fErrorLine:=FCurCodeTool.ErrorPosition.Y;
+      FErrorId:=20170421202914;
     end;
   end;
 
@@ -1862,7 +1869,7 @@ end;
 procedure TCodeToolManager.WriteError;
 begin
   if FWriteExceptions then begin
-    FErrorDbgMsg:='### TCodeToolManager.HandleException: "'+ErrorMessage+'"';
+    FErrorDbgMsg:='### TCodeToolManager.HandleException: ['+IntToStr(FErrorId)+'] "'+ErrorMessage+'"';
     if ErrorLine>0 then FErrorDbgMsg+=' at Line='+DbgS(ErrorLine);
     if ErrorColumn>0 then FErrorDbgMsg+=' Col='+DbgS(ErrorColumn);
     if ErrorCode<>nil then FErrorDbgMsg+=' in "'+ErrorCode.Filename+'"';
@@ -2713,14 +2720,14 @@ begin
     DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X),' Identifier=',GetIdentifier(@Code.Source[IdentStartPos]));
     // search absolute position in source
     if IdentStartPos<1 then begin
-      SetError(Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);
+      SetError(20170421203205,Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);
       exit;
     end;
     // check if old identifier is there
     if CompareIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)))<>0
     then begin
       debugln(['TCodeToolManager.RenameIdentifier CONSISTENCY ERROR ',Dbgs(CurCodePos^),' ']);
-      SetError(CurCodePos^.Code,CurCodePos^.Y,CurCodePos^.X,
+      SetError(20170421203210,CurCodePos^.Code,CurCodePos^.Y,CurCodePos^.X,
         Format(ctsStrExpectedButAtomFound,[OldIdentifier,
                                    GetIdentifier(@Code.Source[IdentStartPos])])
         );
@@ -3413,6 +3420,7 @@ function TCodeToolManager.FixIncludeFilenames(Code: TCodeBuffer;
     fErrorCode:=CodePos^.Code;
     fErrorLine:=CodePos^.Y;
     fErrorColumn:=CodePos^.X;
+    FErrorId:=20170421202903;
     FErrorMsg:='missing include file';
   end;
   
@@ -3440,7 +3448,7 @@ begin
         ToFixIncludeFiles.Delete(ToFixIncludeFiles.Count-1);
         Code:=LoadFile(AFilename,false,false);
         if Code=nil then begin
-          raise ECodeToolError.Create(FCurCodeTool,
+          raise ECodeToolError.Create(FCurCodeTool,20170421202139,
                                       'unable to read file "'+AFilename+'"');
         end;
         // fix file
@@ -5979,9 +5987,10 @@ begin
   Result:=nil;
 end;
 
-procedure TCodeToolManager.SetError(Code: TCodeBuffer; Line, Column: integer;
-  const TheMessage: string);
+procedure TCodeToolManager.SetError(Id: int64; Code: TCodeBuffer; Line,
+  Column: integer; const TheMessage: string);
 begin
+  FErrorId:=Id;
   FErrorMsg:=TheMessage;
   FErrorCode:=Code;
   FErrorLine:=Line;
