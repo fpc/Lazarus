@@ -48,9 +48,9 @@ type
     NameStartPos, NameEndPos: integer;
   end;
 
-  { TTestFindDeclaration }
+  { TCustomTestFindDeclaration }
 
-  TTestFindDeclaration = class(TTestCase)
+  TCustomTestFindDeclaration = class(TTestCase)
   private
     FMainCode: TCodeBuffer;
     FMarkers: TObjectList;// list of TFDMarker
@@ -72,6 +72,9 @@ type
     procedure WriteSource(const CursorPos: TCodeXYPosition);
     property MainCode: TCodeBuffer read FMainCode;
     property MainTool: TCodeTool read FMainTool;
+  end;
+
+  TTestFindDeclaration = class(TCustomTestFindDeclaration)
   published
     procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_Proc_BaseTypes;
@@ -90,9 +93,9 @@ type
 
 implementation
 
-{ TTestFindDeclaration }
+{ TCustomTestFindDeclaration }
 
-procedure TTestFindDeclaration.CheckReferenceMarkers;
+procedure TCustomTestFindDeclaration.CheckReferenceMarkers;
 var
   i, FoundTopLine, FoundCleanPos: Integer;
   Marker, DeclMarker: TFDMarker;
@@ -133,7 +136,7 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.FindDeclarations(Filename: string);
+procedure TCustomTestFindDeclaration.FindDeclarations(Filename: string);
 
   procedure PrependPath(Prefix: string; var Path: string);
   begin
@@ -337,12 +340,12 @@ begin
   CheckReferenceMarkers;
 end;
 
-function TTestFindDeclaration.GetMarkers(Index: integer): TFDMarker;
+function TCustomTestFindDeclaration.GetMarkers(Index: integer): TFDMarker;
 begin
   Result:=TFDMarker(FMarkers[Index]);
 end;
 
-procedure TTestFindDeclaration.TestFiles(Directory: string);
+procedure TCustomTestFindDeclaration.TestFiles(Directory: string);
 const
   fmparam = '--filemask=';
 var
@@ -374,7 +377,7 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.WriteSource(CleanPos: integer; Tool: TCodeTool);
+procedure TCustomTestFindDeclaration.WriteSource(CleanPos: integer; Tool: TCodeTool);
 var
   Caret: TCodeXYPosition;
 begin
@@ -386,7 +389,7 @@ begin
   WriteSource(Caret);
 end;
 
-procedure TTestFindDeclaration.WriteSource(const CursorPos: TCodeXYPosition);
+procedure TCustomTestFindDeclaration.WriteSource(const CursorPos: TCodeXYPosition);
 var
   Code: TCodeBuffer;
   i: Integer;
@@ -405,13 +408,13 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.SetUp;
+procedure TCustomTestFindDeclaration.SetUp;
 begin
   inherited SetUp;
   FMarkers:=TObjectList.Create(true);
 end;
 
-procedure TTestFindDeclaration.TearDown;
+procedure TCustomTestFindDeclaration.TearDown;
 begin
   FMainCode:=nil;
   FMainTool:=nil;
@@ -419,7 +422,7 @@ begin
   inherited TearDown;
 end;
 
-function TTestFindDeclaration.MarkerCount: integer;
+function TCustomTestFindDeclaration.MarkerCount: integer;
 begin
   if FMarkers=nil then
     Result:=0
@@ -427,7 +430,7 @@ begin
     Result:=FMarkers.Count;
 end;
 
-function TTestFindDeclaration.AddMarker(const aName: string; Kind: char;
+function TCustomTestFindDeclaration.AddMarker(const aName: string; Kind: char;
   CleanPos: integer; NameStartPos, NameEndPos: integer): TFDMarker;
 begin
   if (Kind=MarkDecl) then begin
@@ -444,7 +447,7 @@ begin
   FMarkers.Add(Result);
 end;
 
-function TTestFindDeclaration.IndexOfMarker(const aName: string; Kind: char
+function TCustomTestFindDeclaration.IndexOfMarker(const aName: string; Kind: char
   ): integer;
 var
   i: Integer;
@@ -458,7 +461,7 @@ begin
   Result:=-1;
 end;
 
-function TTestFindDeclaration.FindMarker(const aName: string; Kind: char
+function TCustomTestFindDeclaration.FindMarker(const aName: string; Kind: char
   ): TFDMarker;
 var
   i: Integer;

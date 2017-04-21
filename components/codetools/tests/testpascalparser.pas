@@ -82,17 +82,18 @@ end;
 procedure TTestPascalParser.ParseModule;
 var
   Tool: TCodeTool;
-  Cnt, i: Integer;
+  i: Integer;
+  Line: String;
 begin
   Add('end.');
   if not CodeToolBoss.Explore(Code,Tool,true) then begin
     debugln(Code.Filename+'------------------------------------------');
-    if CodeToolBoss.ErrorLine>0 then
-      Cnt:=CodeToolBoss.ErrorLine
-    else
-      Cnt:=Code.LineCount;
-    for i:=1 to Cnt do
-      debugln(Format('%:4d: ',[i]),Code.GetLine(i-1,false));
+    for i:=1 to Code.LineCount do begin
+      Line:=Code.GetLine(i-1,false);
+      if i=CodeToolBoss.ErrorLine then
+        System.Insert('|',Line,CodeToolBoss.ErrorColumn);
+      debugln(Format('%:4d: ',[i]),Line);
+    end;
     debugln('Error: '+CodeToolBoss.ErrorDbgMsg);
     Fail('PascalParser failed: '+CodeToolBoss.ErrorMessage);
   end;

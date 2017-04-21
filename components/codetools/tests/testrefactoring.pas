@@ -26,9 +26,6 @@ type
     procedure TestExplodeWith;
   end;
 
-var
-  RefactoringTestSuite: TTestSuite;
-
 implementation
 
 { TTestRefactoring }
@@ -139,9 +136,6 @@ begin
 end;
 
 initialization
-  RefactoringTestSuite := TTestSuite.Create('Refactoring');
-  GetTestRegistry.AddTest(RefactoringTestSuite);
-
-  RefactoringTestSuite.AddTestSuiteFromClass(TTestRefactoring);
+  RegisterTests([TTestRefactoring]);
 end.
 

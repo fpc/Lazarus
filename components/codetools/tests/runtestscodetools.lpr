@@ -29,8 +29,6 @@ uses
   Classes, sysutils, consoletestrunner, dom, fpcunit, LazLogger,
   CodeToolManager, CodeToolsConfig,
   TestGlobals,
-  TestBasicCodetools, TestCTRangeScan, TestMethodJumpTool, TestStdCodetools,
-  TestFindDeclaration, TestCompleteBlock, TestRefactoring, TestPascalParser,
   // non Pascal
   TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
   // compile test files to make sure they are valid Pascal
@@ -42,7 +40,10 @@ uses
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
   {$ENDIF}
-  fdt_classof, fdt_with, rt_explodewith, fdt_generics;
+  fdt_classof, fdt_with, rt_explodewith, fdt_generics,
+  TestBasicCodetools, TestCTRangeScan, TestPascalParser, TestMethodJumpTool,
+  TestStdCodetools, TestFindDeclaration, TestCompleteBlock, TestRefactoring,
+  TestVarCompletion;
 
 const
   ConfigFilename = 'codetools.config';
