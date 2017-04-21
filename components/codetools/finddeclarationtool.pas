@@ -263,6 +263,8 @@ type
     xtSmallInt,    // smallint
     xtShortInt,    // shortint
     xtByte,        // byte
+    xtNativeInt,   // depends on compiler and platform
+    xtNativeUInt,  // depends on compiler and platform
     xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH, COPY (1.1)
     xtVariant,     // variant
     xtJSValue,     // jsvalue only in Pas2JS, similar to variant
@@ -312,6 +314,8 @@ var
     'SmallInt',
     'ShortInt',
     'Byte',
+    'NativeInt',
+    'NativeUInt',
     'CompilerFunc',
     'Variant',
     'JSValue',
@@ -327,7 +331,7 @@ const
   xtAllIdentPredefinedTypes = xtAllIdentTypes - [xtContext];
   xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongint,
                        xtLongWord, xtWord, xtCardinal, xtSmallInt, xtShortInt,
-                       xtByte];
+                       xtByte,xtNativeInt,xtNativeUInt];
   xtAllBooleanTypes = [xtBoolean, xtByteBool, xtWordBool, xtLongBool,xtQWordBool];
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble,
                     xtExtended, xtCExtended, xtCurrency, xtComp];
@@ -345,6 +349,7 @@ const
   xtAllWideStringConvertibles = xtAllWideStringCompatibleTypes+[xtPChar];
   xtAllBooleanConvertibles = xtAllBooleanTypes+[xtConstBoolean];
   xtAllPointerConvertibles = xtAllPointerTypes+[xtPChar];
+  xtAllPas2JSExtraTypes = [xtJSValue,xtNativeInt,xtNativeUInt];
 
 type
   { TExpressionType is used for compatibility check
@@ -1190,7 +1195,7 @@ function RealTypesOrderList: TTypeAliasOrderList;
 begin
   if FRealTypesOrderList=nil then
     FRealTypesOrderList:=TTypeAliasOrderList.Create([
-       'Extended', 'Double', 'Single']);
+       'Extended', 'Real', 'Double', 'Single']);
 
   Result := FRealTypesOrderList;
 end;
@@ -1302,12 +1307,6 @@ begin
     Result:=xtConstBoolean
   else if CompareIdentifiers(Identifier,'VARIANT')=0 then
     Result:=xtVariant
-  else if (Compiler=pcPas2js) and (CompareIdentifiers(Identifier,'JSVALUE')=0) then
-    Result:=xtJSValue
-  else if IsWordBuiltInFunc.DoItCaseInsensitive(Identifier) then
-    Result:=xtCompilerFunc
-
-  // the delphi compiler special types
   else if CompareIdentifiers(Identifier,'CURRENCY')=0 then
     Result:=xtCurrency
   else if CompareIdentifiers(Identifier,'LONGINT')=0 then
@@ -1326,7 +1325,25 @@ begin
     Result:=xtByte
   else if CompareIdentifiers(Identifier,'PCHAR')=0 then
     Result:=xtPChar
-  else
+  else if IsWordBuiltInFunc.DoItCaseInsensitive(Identifier) then
+    Result:=xtCompilerFunc
+  else begin
+    // compiler specific
+    if (Compiler=pcPas2js) then begin
+      if CompareIdentifiers(Identifier,'JSVALUE')=0 then
+        exit(xtJSValue);
+      if CompareIdentifiers(Identifier,'NATIVEINT')=0 then
+        exit(xtNativeInt);
+      if CompareIdentifiers(Identifier,'NATIVEUINT')=0 then
+       exit(xtNativeUInt);
+    end;
+    if (Compiler=pcDelphi) then begin
+      if CompareIdentifiers(Identifier,'NATIVEINT')=0 then
+        exit(xtNativeInt);
+      if CompareIdentifiers(Identifier,'NATIVEUINT')=0 then
+       exit(xtNativeUInt);
+    end;
+  end;
     Result:=xtNone;
 end;
 
@@ -12143,7 +12160,9 @@ begin
     xtByteBool,
     xtWordBool,
     xtLongBool,
-    xtQWordBool:
+    xtQWordBool,
+    xtNativeInt,
+    xtNativeUInt:
       Result:=ExpressionTypeDescNames[TermExprType.Desc];
     xtNone,
     xtWideChar,
@@ -12879,7 +12898,9 @@ begin
         xtWord,
         xtSmallInt,
         xtShortInt,
-        xtByte:
+        xtByte,
+        xtNativeInt,
+        xtNativeUInt:
           Result:='P'+ExpressionTypeDescNames[ExprType.SubDesc];
         else
           Result:=ExpressionTypeDescNames[xtPointer];
@@ -12891,9 +12912,11 @@ begin
     xtLongint,
     xtLongWord,
     xtSmallInt,
+    xtWord,
     xtShortInt,
     xtByte,
-    xtWord:
+    xtNativeInt,
+    xtNativeUInt:
       Result:=ExpressionTypeDescNames[ExprType.Desc];
 
     xtBoolean,
