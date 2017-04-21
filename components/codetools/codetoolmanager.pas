@@ -1787,8 +1787,8 @@ var
   DirtyPos: Integer;
   ErrorDirTool: TCompilerDirectivesTree;
 begin
-  fErrorMsg:=AnException.Message;
   ClearError;
+  fErrorMsg:=AnException.Message;
   if (AnException is ELinkScannerError) then begin
     // link scanner error
     if AnException is ELinkScannerConsistency then
