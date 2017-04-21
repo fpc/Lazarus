@@ -372,6 +372,7 @@ var
   AfterWnd: hWnd;
   n, StopPos: Integer;
   Child: TWinControl;
+  WindowInfo: PWin32WindowInfo;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition')
   then Exit;
@@ -405,9 +406,20 @@ begin
     if AfterWnd = 0 then Exit; // nothing to do
   end;
 
-  Windows.SetWindowPos(AChild.Handle, AfterWnd, 0, 0, 0, 0,
-    SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOOWNERZORDER or
-    SWP_NOSIZE or SWP_NOSENDCHANGING or SWP_DEFERERASE);
+  WindowInfo := GetWin32WindowInfo(AChild.Handle);
+  if WindowInfo^.UpDown <> 0 then
+  begin
+    Windows.SetWindowPos(WindowInfo^.UpDown, AfterWnd, 0, 0, 0, 0,
+      SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOOWNERZORDER or
+      SWP_NOSIZE or SWP_NOSENDCHANGING or SWP_DEFERERASE);
+    Windows.SetWindowPos(AChild.Handle, WindowInfo^.UpDown, 0, 0, 0, 0,
+      SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOOWNERZORDER or
+      SWP_NOSIZE or SWP_NOSENDCHANGING or SWP_DEFERERASE);
+  end
+  else
+    Windows.SetWindowPos(AChild.Handle, AfterWnd, 0, 0, 0, 0,
+      SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOOWNERZORDER or
+      SWP_NOSIZE or SWP_NOSENDCHANGING or SWP_DEFERERASE);
 end;
 
 {------------------------------------------------------------------------------
