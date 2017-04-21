@@ -794,6 +794,7 @@ type
       MaxEndPos: integer = -1; AliasType: PFindContext = nil): TExpressionType;
     function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
       Params: TFindDeclarationParams): TExpressionType;
+    function FindExpressionTypeOfConstSet(Node: TCodeTreeNode): TExpressionType;
     function GetDefaultStringType: TExpressionTypeDesc;
     function CalculateBinaryOperator(LeftOperand, RightOperand: TOperand;
       BinaryOperator: TAtomPosition;
@@ -9048,7 +9049,7 @@ var
 
         // search ...
         {$IFDEF ShowExprEval}
-        Dbgout(['  FindExpressionTypeOfTerm ResolveIdentifier "',GetAtom(CurAtom),'" backward ',BoolToStr(IsStart,'Main','Sub'),'Ident="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
+        Debugln(['  FindExpressionTypeOfTerm ResolveIdentifier "',GetAtom(CurAtom),'" backward ',BoolToStr(IsStart,'Main','Sub'),'Ident="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
         {$ENDIF}
         ExprType.Desc:=xtNone;
         // first search backwards
@@ -9983,7 +9984,12 @@ begin
     case Result.Desc of
     xtCompilerFunc:
       begin
-        if not (Params.ContextNode.Desc in AllPascalStatements) then exit;
+        if not (Params.ContextNode.Desc in (AllPascalStatements+[ctnConstant])) then begin
+          {$IFDEF ShowExprEval}
+          debugln(['TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier Skipping non expr parent ContextNode=',Params.ContextNode.DescAsString]);
+          {$ENDIF}
+          exit;
+        end;
         MoveCursorToCleanPos(StartPos);
         ReadNextAtom;
         ReadNextAtom;
@@ -10083,6 +10089,34 @@ begin
     end;
   finally
     ParamList.Free;
+  end;
+end;
+
+function TFindDeclarationTool.FindExpressionTypeOfConstSet(Node: TCodeTreeNode
+  ): TExpressionType;
+var
+  AliasType: TFindContext;
+  Params: TFindDeclarationParams;
+begin
+  Result:=Default(TExpressionType);
+  if Node=nil then
+    RaiseException(20170421212058,'TFindDeclarationTool.FindExpressionTypeOfConstSet Node=nil');
+  {$IFDEF CheckNodeTool}
+  CheckNodeTool(Node);
+  {$ENDIF}
+  MoveCursorToNodeStart(Node);
+  ReadNextAtom;
+  if CurPos.Flag<>cafEdgedBracketOpen then
+    RaiseStringExpectedButAtomFound(20170421212227,'[');
+  ReadNextAtom;
+  Params:=TFindDeclarationParams.Create(Self,Node);
+  try
+    Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult];
+    AliasType:=Default(TFindContext);
+    Result:=FindExpressionTypeOfTerm(CurPos.StartPos,-1,Params,false,@AliasType);
+    debugln(['TFindDeclarationTool.FindExpressionTypeOfConstSet ',ExprTypeToString(Result)]);
+  finally
+    Params.Free;
   end;
 end;
 
@@ -12083,22 +12117,142 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
   CursorNode: TCodeTreeNode; Params: TFindDeclarationParams; out
   ExprType: TExpressionType): string;
 
-  procedure RaiseTermHasNoIterator;
+  procedure RaiseTermHasNoIterator(id: int64; TermExprType: TExpressionType);
   begin
     if TermPos.StartPos<1 then
       TermPos.StartPos:=1;
     MoveCursorToCleanPos(TermPos.StartPos);
-    RaiseException(20170421200635,'Can not find an enumerator for '''+TrimCodeSpace(GetAtom(TermPos))+'''');
+    debugln(['TFindDeclarationTool.FindForInTypeAsString TermExprType=',ExprTypeToString(TermExprType)]);
+    RaiseException(id,'Can not find an enumerator for '''+TrimCodeSpace(GetAtom(TermPos))+'''');
+  end;
+
+  procedure ResolveExpr(SubExprType: TExpressionType);
+  var
+    AliasType: TFindContext;
+    Node: TCodeTreeNode;
+  begin
+    {$IFDEF ShowForInEval}
+    debugln(['  ResolveExpr ',ExprTypeToString(SubExprType)]);
+    {$ENDIF}
+    // use default enumerators
+    case SubExprType.Desc of
+      xtContext:
+        begin
+          case SubExprType.Context.Node.Desc of
+          ctnClass, ctnRecordType, ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
+            begin
+              AliasType:=Default(TFindContext);
+              if not SubExprType.Context.Tool.FindEnumeratorOfClass(
+                SubExprType.Context.Node,true,ExprType,@AliasType, Params)
+              then
+                RaiseTermHasNoIterator(20170421211210,SubExprType);
+              Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
+            end;
+          ctnEnumerationType:
+            begin
+              Node:=SubExprType.Context.Node.Parent;
+              if Node.Desc=ctnTypeDefinition then
+                Result:=SubExprType.Context.Tool.ExtractIdentifier(Node.StartPos);
+            end;
+          ctnSetType:
+            if SubExprType.Context.Tool.FindEnumerationTypeOfSetType(
+                                    SubExprType.Context.Node,ExprType.Context)
+            then begin
+              ExprType.Desc:=xtContext;
+              Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
+            end;
+          ctnRangedArrayType,ctnOpenArrayType:
+            begin
+              AliasType:=Default(TFindContext);
+              if SubExprType.Context.Tool.FindElementTypeOfArrayType(
+                                      SubExprType.Context.Node,ExprType,@AliasType)
+              then begin
+                Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
+              end;
+            end;
+          else
+            RaiseTermHasNoIterator(20170421211213,SubExprType);
+          end;
+        end;
+      xtChar,
+      xtSmallInt,
+      xtShortInt,
+      xtByte,
+      xtWord,
+      xtBoolean,
+      xtByteBool,
+      xtWordBool,
+      xtLongBool,
+      xtQWordBool,
+      xtNativeInt,
+      xtNativeUInt:
+        Result:=ExpressionTypeDescNames[SubExprType.Desc];
+      xtNone,
+      xtWideChar,
+      xtReal,
+      xtSingle,
+      xtDouble,
+      xtExtended,
+      xtCExtended,
+      xtCurrency,
+      xtComp,
+      xtInt64,
+      xtCardinal,
+      xtQWord,
+      xtPointer,
+      xtFile,
+      xtText,
+      xtConstOrdInteger,
+      xtConstReal,
+      xtConstBoolean,
+      xtLongint,
+      xtLongWord,
+      xtCompilerFunc,
+      xtVariant,
+      xtJSValue,
+      xtNil:
+        RaiseTermHasNoIterator(20170421211217,SubExprType);
+      xtString,
+      xtAnsiString,
+      xtShortString,
+      xtPChar,
+      xtConstString:
+        begin
+          ExprType.Desc:=xtChar;
+          Result:=ExpressionTypeDescNames[ExprType.Desc];
+        end;
+      xtWideString,
+      xtUnicodeString:
+        begin
+          ExprType.Desc:=xtWideChar;
+          Result:=ExpressionTypeDescNames[ExprType.Desc];
+        end;
+      xtConstSet:
+        begin
+          debugln(['ResolveExpr AAA1']);
+        if SubExprType.Context.Node=nil then
+          RaiseTermHasNoIterator(20170421211222,SubExprType);
+        debugln(['ResolveExpr AAA2']);
+        SubExprType:=SubExprType.Context.Tool.FindExpressionTypeOfConstSet(SubExprType.Context.Node);
+        {$IFDEF ShowForInEval}
+        debugln(['  ResolveExpr ConstSet Element: ',ExprTypeToString(SubExprType)]);
+        {$ENDIF}
+        if SubExprType.Desc=xtConstSet then
+          RaiseTermHasNoIterator(20170421211222,SubExprType);
+        ResolveExpr(SubExprType);
+        end;
+    else
+      DebugLn('TFindDeclarationTool.FindForInTypeAsString.ResolveExpr TermExprType=',
+        ExprTypeToString(SubExprType));
+      RaiseTermHasNoIterator(20170421211225,SubExprType);
+    end;
   end;
 
 var
   TermExprType: TExpressionType;
   OperatorExprType: TExpressionType;
-  AliasType: TFindContext;
-  Node: TCodeTreeNode;
 begin
   Result:='';
-  AliasType:=CleanFindContext;
   ExprType:=CleanExpressionType;
   TermExprType:=CleanExpressionType;
   Params.ContextNode:=CursorNode;
@@ -12121,103 +12275,9 @@ begin
     Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
     exit;
   end;
+  // convert to string
+  ResolveExpr(TermExprType);
 
-  // use default enumerators
-  case TermExprType.Desc of
-    xtContext:
-      begin
-        case TermExprType.Context.Node.Desc of
-        ctnClass, ctnRecordType, ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
-          begin
-            if not TermExprType.Context.Tool.FindEnumeratorOfClass(
-              TermExprType.Context.Node,true,ExprType,@AliasType, Params)
-            then
-              RaiseTermHasNoIterator;
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
-          end;
-        ctnEnumerationType:
-          begin
-            Node:=TermExprType.Context.Node.Parent;
-            if Node.Desc=ctnTypeDefinition then
-              Result:=TermExprType.Context.Tool.ExtractIdentifier(Node.StartPos);
-          end;
-        ctnSetType:
-          if TermExprType.Context.Tool.FindEnumerationTypeOfSetType(
-                                  TermExprType.Context.Node,ExprType.Context)
-          then begin
-            ExprType.Desc:=xtContext;
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
-          end;
-        ctnRangedArrayType,ctnOpenArrayType:
-          if TermExprType.Context.Tool.FindElementTypeOfArrayType(
-                                  TermExprType.Context.Node,ExprType,@AliasType)
-          then begin
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,@AliasType);
-          end;
-        else
-          RaiseTermHasNoIterator;
-        end;
-      end;
-    xtChar,
-    xtSmallInt,
-    xtShortInt,
-    xtByte,
-    xtWord,
-    xtBoolean,
-    xtByteBool,
-    xtWordBool,
-    xtLongBool,
-    xtQWordBool,
-    xtNativeInt,
-    xtNativeUInt:
-      Result:=ExpressionTypeDescNames[TermExprType.Desc];
-    xtNone,
-    xtWideChar,
-    xtReal,
-    xtSingle,
-    xtDouble,
-    xtExtended,
-    xtCExtended,
-    xtCurrency,
-    xtComp,
-    xtInt64,
-    xtCardinal,
-    xtQWord,
-    xtPointer,
-    xtFile,
-    xtText,
-    xtConstOrdInteger,
-    xtConstReal,
-    xtConstBoolean,
-    xtLongint,
-    xtLongWord,
-    xtCompilerFunc,
-    xtVariant,
-    xtJSValue,
-    xtNil:
-      RaiseTermHasNoIterator;
-    xtString,
-    xtAnsiString,
-    xtShortString,
-    xtPChar,
-    xtConstString:
-      begin
-        ExprType.Desc:=xtChar;
-        Result:=ExpressionTypeDescNames[ExprType.Desc];
-      end;
-    xtWideString,
-    xtUnicodeString:
-      begin
-        ExprType.Desc:=xtWideChar;
-        Result:=ExpressionTypeDescNames[ExprType.Desc];
-      end;
-    xtConstSet:
-      RaiseTermHasNoIterator; // ToDo
-  else
-    DebugLn('TFindDeclarationTool.FindForInTypeAsString TermExprType=',
-      ExprTypeToString(TermExprType));
-    RaiseTermHasNoIterator;
-  end;
   {$IFDEF ShowExprEval}
   DebugLn('TFindDeclarationTool.FindForInTypeAsString Result=',Result);
   {$ENDIF}
