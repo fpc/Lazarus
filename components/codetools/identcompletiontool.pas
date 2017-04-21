@@ -1493,18 +1493,15 @@ begin
   // system types
   if InSystemContext then
   begin
-    for I := Low(I) to High(I) do
-    begin
-      case I of
-        xtChar..xtPointer, xtLongint..xtByte, xtVariant:
-          AddBaseType(PChar(ExpressionTypeDescNames[I]));
-        xtFile, xtText:
-          if not (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
-            AddBaseType(PChar(ExpressionTypeDescNames[I]));
-      end;
+    for I in [xtChar..xtPointer, xtLongint..xtByte, xtVariant] do
+      AddBaseType(PChar(ExpressionTypeDescNames[I]));
+    if not (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
+      for I in [xtFile, xtText] do
+        AddBaseType(PChar(ExpressionTypeDescNames[I]));
+    if Scanner.PascalCompiler=pcPas2js then begin
+      for I in xtAllPas2JSExtraTypes do
+        AddBaseType(PChar(ExpressionTypeDescNames[I]));
     end;
-    if Scanner.PascalCompiler=pcPas2js then
-      AddBaseType(PChar(ExpressionTypeDescNames[xtJSValue]));
     AddBaseConstant('True');
     AddBaseConstant('False');
     //the nil constant doesn't belong to system context, therefore it is added in next step

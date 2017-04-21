@@ -6430,7 +6430,9 @@ begin
   xtWord,
   xtSmallInt,
   xtShortInt,
-  xtByte: AddAssignment('0');
+  xtByte,
+  xtNativeInt,
+  xtNativeUInt: AddAssignment('0');
   xtVariant: begin AddAssignment('0'); AddAssignment(''''''); end;
   xtJSValue: begin AddAssignment('0'); AddAssignment(''''''); AddAssignment('nil'); AddAssignment('false'); end;
   end;
