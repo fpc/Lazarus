@@ -320,13 +320,6 @@ begin
   WinHandle := AWinControl.Handle;
   UpDown := GetWin32WindowInfo(WinHandle)^.UpDown;
 
-{
-  // detach from buddy first
-  Windows.SendMessage(UpDown, UDM_SETBUDDY, 0, 0);
-  MoveWindow(WinHandle, Left, Top, Width, Height, True);
-  // reattach
-  Windows.SendMessage(UpDown, UDM_SETBUDDY, WParam(WinHandle), 0);
-}
   UpDownWidth := GetUpDownWidth(AWinControl);
   if (AWinControl as TCustomFloatSpinEdit).BorderStyle = bsNone then
     BorderWidth := 0
@@ -336,8 +329,9 @@ begin
     BorderWidth := GetSystemMetrics(SM_CXEDGE);
 
   DWP := BeginDeferWindowPos(2);
+  DeferWindowPos(DWP, UpDown, WinHandle, Left + Width - UpDownWidth - BorderWidth,
+                 Top+BorderWidth, UpDownWidth, Height - BorderWidth * 2, SWP_NOACTIVATE);
   DeferWindowPos(DWP, WinHandle, UpDown, Left, Top, Width, Height, SWP_NOACTIVATE);
-  DeferWindowPos(DWP, UpDown, 0, Left + Width - UpDownWidth-BorderWidth, Top+BorderWidth, UpDownWidth, Height-BorderWidth*2, SWP_NOZORDER or SWP_NOACTIVATE);
   EndDeferWindowPos(DWP);
 
   SuppressMove := True;
