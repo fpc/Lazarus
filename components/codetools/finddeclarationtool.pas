@@ -265,7 +265,7 @@ type
     xtByte,        // byte
     xtNativeInt,   // depends on compiler and platform
     xtNativeUInt,  // depends on compiler and platform
-    xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH, COPY (1.1)
+    xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH, COPY (1.1), ...
     xtVariant,     // variant
     xtJSValue,     // jsvalue only in Pas2JS, similar to variant
     xtNil          // nil  = pointer, class, procedure, method, ...
@@ -1343,8 +1343,8 @@ begin
       if CompareIdentifiers(Identifier,'NATIVEUINT')=0 then
        exit(xtNativeUInt);
     end;
-  end;
     Result:=xtNone;
+  end;
 end;
 
 function CompareTypeAliasItems(Item1, Item2: Pointer): Integer;
@@ -9971,8 +9971,12 @@ begin
   Result.Desc:=PredefinedIdentToExprTypeDesc(IdentPos,Scanner.PascalCompiler);
 
   {$IFDEF ShowExprEval}
-  debugln('TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier ',
+  debugln('TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier "',GetIdentifier(IdentPos),'" ',
     ExpressionTypeDescNames[Result.Desc]);
+  if Result.desc=xtNone then begin
+    //CTDumpStack;
+    //IsWordBuiltInFunc.WriteDebugListing;
+  end;
   {$ENDIF}
   ParamList:=nil;
   try
@@ -12752,12 +12756,12 @@ function TFindDeclarationTool.FindExprTypeAsString(
   const ExprType: TExpressionType; TermCleanPos: integer;
   AliasType: PFindContext): string;
 
-  procedure RaiseTermNotSimple;
+  procedure RaiseTermNotSimple(id: int64);
   begin
     if TermCleanPos<1 then
       TermCleanPos:=1;
     MoveCursorToCleanPos(TermCleanPos);
-    RaiseException(20170421200658,ctsTermNotSimple);
+    RaiseException(id,ctsTermNotSimple);
   end;
 
 var
@@ -12779,7 +12783,7 @@ begin
 
   case ExprType.Desc of
     xtNone:
-      RaiseTermNotSimple;
+      RaiseTermNotSimple(20170421204649);
 
     xtContext:
       begin
@@ -12799,7 +12803,7 @@ begin
           begin
             ANode:=FindContext.Tool.FindTypeNodeOfDefinition(FindContext.Node);
             if (ANode=nil) or (ANode.Desc<>ctnIdentifier) then
-              RaiseTermNotSimple;
+              RaiseTermNotSimple(20170421204653);
             Result:=GetIdentifier(@FindContext.Tool.Src[ANode.StartPos]);
           end;
 
@@ -12852,7 +12856,7 @@ begin
         if Result='' then begin
           DebugLn('TFindDeclarationTool.FindExprTypeAsString ContextNode=',
             FindContext.Node.DescAsString,' ',dbgsFC(FindContext));
-          RaiseTermNotSimple;
+          RaiseTermNotSimple(20170421204655);
         end;
       end;
 
@@ -12946,18 +12950,18 @@ begin
     xtConstSet:
       begin
         // eventually try to find the 'set of ' type
-        RaiseTermNotSimple;
+        RaiseTermNotSimple(20170421204658);
       end;
     xtConstBoolean:
       Result:=ExpressionTypeDescNames[xtBoolean];
     xtJSValue:
       Result:=ExpressionTypeDescNames[ExprType.Desc];
     xtNil:
-      RaiseTermNotSimple;
+      RaiseTermNotSimple(20170421204702);
   else
     DebugLn('TCodeCompletionCodeTool.FindExprTypeAsString ExprType=',
       ExprTypeToString(ExprType),' Alias=',FindContextToString(AliasType));
-    RaiseTermNotSimple;
+    RaiseTermNotSimple(20170421204705);
   end;
 end;
 
