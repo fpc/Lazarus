@@ -77,6 +77,10 @@ msgstr "no s'ha trobat %s"
 msgid "bracket open expected, but %s found"
 msgstr "S'esperava claudàtor d'obrir, però s'ha trobat %s"
 
+#: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+msgid "can not add a unit to the implementation, because only a unit has one"
+msgstr ""
+
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
 msgstr ""
@@ -98,6 +102,10 @@ msgstr "node classe sense node pare"
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "no s'ha trobat la classe %s%s%s"
+
+#: codetoolsstrconsts.ctsclassnotfound2
+msgid "class not found \"%s\""
+msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -523,6 +531,10 @@ msgstr ""
 msgid "invalid operator %s"
 msgstr ""
 
+#: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
+msgid "invalid position for insertion of statements"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "sotabast no és vàlid"
@@ -562,6 +574,10 @@ msgstr "Directori principal del Lazarus"
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
 msgstr "Fonts del Lazarus"
+
+#: codetoolsstrconsts.ctsmethodhasnodeclaration
+msgid "method \"%s\" has no declaration"
+msgstr ""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"

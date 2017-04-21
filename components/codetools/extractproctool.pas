@@ -857,7 +857,7 @@ var
                                    ShortProcFormat+[phpIgnoreForwards]);
     Result:=ConflictProcNode<>nil;
     if Result then begin
-      RaiseException('New procedure "'+ProcName+'" exists already');
+      RaiseException(20170421201925,'New procedure "'+ProcName+'" exists already');
     end;
     {$IFDEF CTDebug}
     DebugLn('NewProcAlreadExists END ProcHead="',ProcHead,'" Found=',dbgs(Result));
@@ -926,7 +926,7 @@ var
         AddClassInsertion(CleanMethodDefinition, MethodDefinition,
                           ProcName, NewClassPart, nil, ProcCode);
         if not InsertAllNewClassParts then
-          RaiseException(ctsErrorDuringInsertingNewClassParts);
+          RaiseException(20170421201927,ctsErrorDuringInsertingNewClassParts);
       end;
 
     end;
@@ -963,7 +963,7 @@ var
       eptPublicMethod] then
     begin
       if not CreateMissingClassProcBodies(false) then
-        RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+        RaiseException(20170421201930,ctsErrorDuringCreationOfNewProcBodies);
     end else begin
       TabWidth:=Beauty.TabWidth;
       IndentText(ProcCode,Indent,TabWidth,IndentedProcCode);
@@ -1161,7 +1161,7 @@ var
                    in (AllClasses+[ctnEnumerationType])))
           then begin
             MoveCursorToCleanPos(Cache^.WithVarNode.StartPos);
-            RaiseException(ctsExprTypeMustBeClassOrRecord);
+            RaiseException(20170421201932,ctsExprTypeMustBeClassOrRecord);
           end;
           {$IFDEF CTDEBUG}
           debugln(['IdentifierDefinedByWith WithVarExpr=',ExprTypeToString(Cache^.WithVarExpr)]);
@@ -1587,16 +1587,16 @@ var
         if (StartFlag=cafRoundBracketOpen) then
           break
         else if StartFlag=cafEdgedBracketOpen then
-          RaiseCharExpectedButAtomFound(']')
+          RaiseCharExpectedButAtomFound(20170421201936,']')
         else
-          RaiseStringExpectedButAtomFound('end');
+          RaiseStringExpectedButAtomFound(20170421201938,'end');
       cafEdgedBracketClose:
         if (StartFlag=cafEdgedBracketOpen) then
           break
         else if StartFlag=cafRoundBracketOpen then
-          RaiseCharExpectedButAtomFound(')')
+          RaiseCharExpectedButAtomFound(20170421201942,')')
         else
-          RaiseStringExpectedButAtomFound('end');
+          RaiseStringExpectedButAtomFound(20170421201946,'end');
       end;
       if AtomIsIdentifier then begin
         LastPos:=LastAtoms.GetValueAt(0);

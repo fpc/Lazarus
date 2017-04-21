@@ -80,6 +80,10 @@ msgstr "не знайдено дужку %s"
 msgid "bracket open expected, but %s found"
 msgstr "очікується відкрита дужка, але знайдено %s"
 
+#: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+msgid "can not add a unit to the implementation, because only a unit has one"
+msgstr ""
+
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
 msgstr "символьна константа поза допустимими межами"
@@ -99,6 +103,10 @@ msgstr "опис класу без предка"
 #: codetoolsstrconsts.ctsclassnotfound
 msgid "class \"%s\" not found"
 msgstr "не знайдено клас \"%s\""
+
+#: codetoolsstrconsts.ctsclassnotfound2
+msgid "class not found \"%s\""
+msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -518,6 +526,10 @@ msgstr "неправильний перемикач режиму \"%s\""
 msgid "invalid operator %s"
 msgstr "невірний оператор %s"
 
+#: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
+msgid "invalid position for insertion of statements"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "неправильний піддіапазон"
@@ -553,6 +565,10 @@ msgstr "головна тека Lazarus"
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
 msgstr "Сирці Lazarus"
+
+#: codetoolsstrconsts.ctsmethodhasnodeclaration
+msgid "method \"%s\" has no declaration"
+msgstr ""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"

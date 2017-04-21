@@ -84,6 +84,10 @@ msgstr "סוגר s% לא נמצא"
 msgid "bracket open expected, but %s found"
 msgstr "צפויה פתיחת סוגריים, אבל s% נמצא"
 
+#: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+msgid "can not add a unit to the implementation, because only a unit has one"
+msgstr ""
+
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
 msgstr "קבוע תו מחוץ לתחום"
@@ -105,6 +109,10 @@ msgstr "צומת של מחלקה ללא הורה"
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "המחלקה %s%s%s לא נמצאה"
+
+#: codetoolsstrconsts.ctsclassnotfound2
+msgid "class not found \"%s\""
+msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 #, fuzzy,badformat
@@ -547,6 +555,10 @@ msgstr "מתג מצב לא חוקי  \"%s\""
 msgid "invalid operator %s"
 msgstr "אופרטור לא חוקי %s"
 
+#: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
+msgid "invalid position for insertion of statements"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "תת תחום לא חוקי"
@@ -587,6 +599,10 @@ msgstr "התיקייה הראשית של לזארוס"
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
 msgstr "הקוד של לזארוס"
+
+#: codetoolsstrconsts.ctsmethodhasnodeclaration
+msgid "method \"%s\" has no declaration"
+msgstr ""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"

@@ -528,7 +528,7 @@ var
 
   procedure RaiseTypeNotFound;
   begin
-    RaiseException('type '+ATypeInfo^.Name+' not found, because tool is '+dbgsname(Tool));
+    RaiseException(20170421201954,'type '+ATypeInfo^.Name+' not found, because tool is '+dbgsname(Tool));
   end;
   
 var
@@ -558,7 +558,7 @@ begin
       ContextNode:=FindMainBeginEndNode;
     if ContextNode=nil then begin
       MoveCursorToNodeStart(Tree.Root);
-      RaiseException(Format(ctsIdentifierNotFound,[GetIdentifier(@TypeName[1])]));
+      RaiseExceptionFmt(20170421202000,ctsIdentifierNotFound,[GetIdentifier(@TypeName[1])]);
     end;
     Params:=TFindDeclarationParams.Create(Self,ContextNode);
     try
@@ -569,7 +569,7 @@ begin
       // find proc node
       if Params.NewNode.Desc<>ctnTypeDefinition then begin
         Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
-        Params.NewCodeTool.RaiseException(ctsMethodTypeDefinitionNotFound);
+        Params.NewCodeTool.RaiseException(20170421202006,ctsMethodTypeDefinitionNotFound);
       end;
       TypeContext:=CreateFindContext(Params);
     finally
@@ -581,12 +581,12 @@ begin
       Result:=TypeContext.Tool.FindBaseTypeOfNode(Params,TypeContext.Node);
       if Result.Node=nil then begin
         TypeContext.Tool.MoveCursorToNodeStart(TypeContext.Node);
-        TypeContext.Tool.RaiseException(ctsMethodTypeDefinitionNotFound);
+        TypeContext.Tool.RaiseException(20170421202013,ctsMethodTypeDefinitionNotFound);
       end;
       if not (Result.Node.Desc in AllProcTypes) then begin
         TypeContext.Tool.MoveCursorToNodeStart(TypeContext.Node);
-        TypeContext.Tool.RaiseException(Format(ctsExpectedAMethodTypeButFound, [
-          Result.Node.DescAsString]));
+        TypeContext.Tool.RaiseExceptionFmt(20170421202019,ctsExpectedAMethodTypeButFound, [
+          Result.Node.DescAsString]);
       end;
     finally
       Params.Free;
@@ -718,17 +718,18 @@ begin
     SrcTool:=TEventsCodeTool(AFindContext.Tool);
     ClassNode:=AFindContext.Node.Parent.Parent;
     if not (ClassNode.Desc in [ctnClass,ctnObjCClass]) then begin
-      if ErrorOnNotFound then
-        RaiseExceptionFmt('method "%s" not found in class "%s" (%s) in %s', [AClassName,AMethodName,ClassNode.DescAsString,SrcTool.MainFilename]);
       DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method found in non class: ',AClassName,'.',AMethodName,' in ',SrcTool.MainFilename,' Node=',ClassNode.DescAsString]);
+      if ErrorOnNotFound then
+        RaiseExceptionFmt(20170421202025,'method "%s" not found in class "%s" (%s) in %s',
+          [AClassName,AMethodName,ClassNode.DescAsString,SrcTool.MainFilename]);
       exit;
     end;
     SrcClassName:=SrcTool.ExtractClassName(ClassNode,true);
     ANode:=SrcTool.FindMethodNodeInImplementation(SrcClassName,AMethodName,false);
     if ANode=nil then begin
-      if ErrorOnNotFound then
-        RaiseExceptionFmt('implementation of method "%s.%s" in %s', [AClassName,AMethodName,SrcTool.MainFilename]);
       DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found ',SrcClassName,'.',AMethodName,' in ',SrcTool.MainFilename]);
+      if ErrorOnNotFound then
+        RaiseExceptionFmt(20170421202044,'implementation of method "%s.%s" in %s', [AClassName,AMethodName,SrcTool.MainFilename]);
       exit;
     end;
     Result:=SrcTool.FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
@@ -759,28 +760,28 @@ var ProcNode, ProcHeadNode: TCodeTreeNode;
 begin
   Result:=false;
   if (ClassNode=nil) or not (ClassNode.Desc in [ctnClass,ctnObjCClass]) then
-    RaiseException('Invalid class node');
+    RaiseException(20170421202048,'Invalid class node');
   if (AOldMethodName='') then
-    RaiseException('Invalid AOldMethodName="'+AOldMethodName+'"');
+    RaiseException(20170421202051,'Invalid AOldMethodName="'+AOldMethodName+'"');
   if (NewMethodName='') then
-    RaiseException('Invalid NewMethodName="'+NewMethodName+'"');
+    RaiseException(20170421202054,'Invalid NewMethodName="'+NewMethodName+'"');
   if (SourceChangeCache=nil) or (Scanner=nil) then
-    RaiseException('Invalid SourceChangeCache or Scanner');
+    RaiseException(20170421202056,'Invalid SourceChangeCache or Scanner');
   SourceChangeCache.MainScanner:=Scanner;
   // rename in class
   ProcNode:=FindIdentifierNodeInClass(ClassNode,@AOldMethodName[1]);
   if (ProcNode=nil) then begin
     MoveCursorToNodeStart(ClassNode);
-    RaiseExceptionFmt(ctsOldMethodNotFound,[AOldMethodName]);
+    RaiseExceptionFmt(20170421202101,ctsOldMethodNotFound,[AOldMethodName]);
   end;
   if (ProcNode.Desc<>ctnProcedure) then begin
     MoveCursorToNodeStart(ProcNode);
-    RaiseExceptionFmt(ctsOldMethodNotFound,[AOldMethodName]);
+    RaiseExceptionFmt(20170421202103,ctsOldMethodNotFound,[AOldMethodName]);
   end;
   ProcHeadNode:=ProcNode.FirstChild;
   if ProcHeadNode=nil then begin
     MoveCursorToNodeStart(ProcNode);
-    RaiseException('Invalid proc header');
+    RaiseException(20170421202106,'Invalid proc header');
   end;
   NameStart:=ProcHeadNode.StartPos;
   NameEnd:=NameStart;
@@ -790,7 +791,7 @@ begin
       NewMethodName)
   then begin
     MoveCursorToNodeStart(ProcHeadNode);
-    RaiseException('Unable to rename method declaration');
+    RaiseException(20170421202109,'Unable to rename method declaration');
   end;
   // main goal achieved
   Result:=true;
@@ -896,7 +897,7 @@ function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
         exit;
       end;
       if FindContext.Node.Desc<>ctnProperty then
-        FindContext.Tool.RaiseException(
+        FindContext.Tool.RaiseException(20170421202114,
           APropertyPath+' is not a property.'
           +' See '+FindContext.Tool.MainFilename
           +' '+FindContext.Tool.CleanPosToStr(FindContext.Node.StartPos));
@@ -1008,15 +1009,15 @@ begin
     DebugLn('[TEventsCodeTool.CreateMethod] invoke class completion');
     {$ENDIF}
     if not InsertAllNewClassParts then
-      RaiseException(ctsErrorDuringInsertingNewClassParts);
+      RaiseException(20170421202116,ctsErrorDuringInsertingNewClassParts);
     if not CreateMissingClassProcBodies(false) then
-      RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+      RaiseException(20170421202118,ctsErrorDuringCreationOfNewProcBodies);
     if not InsertAllNewUnitsToMainUsesSection then
-      RaiseException(ctsErrorDuringInsertingNewUsesSection);
+      RaiseException(20170421202120,ctsErrorDuringInsertingNewUsesSection);
 
     // apply the changes
     if not SourceChangeCache.Apply then
-      RaiseException(ctsUnableToApplyChanges);
+      RaiseException(20170421202122,ctsUnableToApplyChanges);
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CreateMethod] END');
     {$ENDIF}
@@ -1033,7 +1034,7 @@ var
 
   procedure RaiseClassNotFound;
   begin
-    RaiseExceptionFmt(ctsClassSNotFound, [AClassName]);
+    RaiseExceptionFmt(20170421202124,ctsClassSNotFound, [AClassName]);
   end;
 
 var
@@ -1137,14 +1138,14 @@ begin
     if ExceptionOnNotFound then Include(Params.Flags,fdfExceptionOnNotFound);
     Params.SetIdentifier(Self,PChar(PropName),nil);
     if not AClassContext.Tool.FindIdentifierInContext(Params) then begin
-      RaiseException('property not found '+DbgSName(Instance)+'.'+PropName);
+      RaiseException(20170421202129,'property not found '+DbgSName(Instance)+'.'+PropName);
       exit;
     end;
     if Params.NewNode=nil then exit;
     PropNode:=Params.NewNode;
     if PropNode.Desc<>ctnProperty then begin
       debugln(['TEventsCodeTool.FindTypeOfPropertyInfo identifier ',DbgSName(Instance)+'.'+PropName,' is not property, found ',PropNode.DescAsString]);
-      RaiseException('identifier is not a property: '+DbgSName(Instance)+'.'+PropName);
+      RaiseException(20170421202135,'identifier is not a property: '+DbgSName(Instance)+'.'+PropName);
     end;
     // search base type of property
     TypeContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,PropNode);

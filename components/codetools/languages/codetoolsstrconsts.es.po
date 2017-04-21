@@ -77,6 +77,10 @@ msgstr "paréntesis %s no encontrado"
 msgid "bracket open expected, but %s found"
 msgstr "se esperaba paréntesis abierto, pero se encontró %s"
 
+#: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+msgid "can not add a unit to the implementation, because only a unit has one"
+msgstr ""
+
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
 msgstr "constante de caracteres fuera del rango"
@@ -96,6 +100,10 @@ msgstr "nodo class sin nodo parent"
 #: codetoolsstrconsts.ctsclassnotfound
 msgid "class \"%s\" not found"
 msgstr "clase \"%s\" no encontrada"
+
+#: codetoolsstrconsts.ctsclassnotfound2
+msgid "class not found \"%s\""
+msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -515,6 +523,10 @@ msgstr "interruptor de modo no válido \"%s\""
 msgid "invalid operator %s"
 msgstr "operador no válido %s"
 
+#: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
+msgid "invalid position for insertion of statements"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "subrango no válido"
@@ -550,6 +562,10 @@ msgstr "Directorio principal de Lazarus"
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
 msgstr "Fuentes de Lazarus"
+
+#: codetoolsstrconsts.ctsmethodhasnodeclaration
+msgid "method \"%s\" has no declaration"
+msgstr ""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"

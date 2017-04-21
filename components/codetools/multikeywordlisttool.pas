@@ -111,7 +111,7 @@ begin
     end;
     inc(i);
   end;
-  RaiseException(
+  RaiseException(20170421194930,
     '[TMultiKeyWordListCodeTool.SetCurKeyWordFuncList] unknown list',true);
 end;
 

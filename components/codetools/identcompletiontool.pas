@@ -2082,7 +2082,7 @@ var
 begin
   CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,p);
   if p<1 then
-    RaiseException(ctsCursorPosOutsideOfCode);
+    RaiseException(20170421201041,ctsCursorPosOutsideOfCode);
   if CursorPos.X<=CursorPos.Code.GetLineLength(CursorPos.Y-1)+1 then begin
     GetIdentStartEndAtPosition(CursorPos.Code.Source,p,IdentStartPos,IdentEndPos);
   end else begin
@@ -3386,7 +3386,7 @@ begin
     or (not (CursorNode.Desc in AllClassObjects))
     or ((CursorNode.SubDesc and ctnsForwardDeclaration)>0) then begin
       MoveCursorToCleanPos(CleanCursorPos);
-      RaiseException('TIdentCompletionTool.FindAbstractMethods cursor is not in a class');
+      RaiseException(20170421201053,'TIdentCompletionTool.FindAbstractMethods cursor is not in a class');
     end;
     ClassNode:=CursorNode;
 

@@ -62,16 +62,22 @@ type
 
 
   // types for errors
+
+  { ECodeToolError }
+
   ECodeToolError = class(Exception)
     Sender: TCustomCodeTool;
-    constructor Create(ASender: TCustomCodeTool; const AMessage: string);
+    Id: int64;
+    constructor Create(ASender: TCustomCodeTool; TheId: int64; const AMessage: string);
   end;
   
   ECodeToolErrors = class of ECodeToolError;
   
+  { ECodeToolFileNotFound }
+
   ECodeToolFileNotFound = class(ECodeToolError)
     Filename: string;
-    constructor Create(ASender: TCustomCodeTool;
+    constructor Create(ASender: TCustomCodeTool; TheId: int64;
       const AMessage, AFilename: string);
   end;
   
@@ -119,10 +125,10 @@ type
     procedure SetScanner(NewScanner: TLinkScanner); virtual;
     procedure DoDeleteNodes(StartNode: TCodeTreeNode); virtual;
     procedure CloseUnfinishedNodes;
-    procedure SaveRaiseIdentExpectedButAtomFound;
-    procedure SaveRaiseBracketOpenExpectedButAtomFound;
-    procedure SaveRaiseBracketCloseExpectedButAtomFound;
-    procedure RaiseUndoImpossible;
+    procedure SaveRaiseIdentExpectedButAtomFound(id: int64);
+    procedure SaveRaiseBracketOpenExpectedButAtomFound(id: int64);
+    procedure SaveRaiseBracketCloseExpectedButAtomFound(id: int64);
+    procedure RaiseUndoImpossible(id: int64);
     procedure SetIgnoreErrorAfter(const AValue: TCodePosition); virtual;
     procedure IncreaseTreeChangeStep(NodesDeleting: boolean);
   protected
@@ -132,6 +138,7 @@ type
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
     LastErrorNicePosition: TCodeXYPosition;
+    LastErrorId: int64;
     procedure ClearLastError;
     procedure RaiseLastError;
     procedure DoProgress; inline;
@@ -284,18 +291,18 @@ type
     // error handling
     procedure RaiseExceptionInstance(TheException: ECodeToolError;
       ClearNicePos: boolean = true); virtual;
-    procedure RaiseExceptionClass(const AMessage: string;
+    procedure RaiseExceptionClass(id: int64; const AMessage: string;
       ExceptionClass: ECodeToolErrors; ClearNicePos: boolean); virtual;
-    procedure RaiseException(const AMessage: string;
+    procedure RaiseException(id: int64; const AMessage: string;
       ClearNicePos: boolean = true); virtual;
-    procedure RaiseExceptionFmt(const AMessage: string;
+    procedure RaiseExceptionFmt(id: int64; const AMessage: string;
       const args: array of const; ClearNicePos: boolean = true);
-    procedure RaiseExceptionAtErrorPos(const AMessage: string;
+    procedure RaiseExceptionAtErrorPos(id: int64; const AMessage: string;
       ClearNicePos: boolean = true); virtual;
     // permanent errors, that the parser will raise again
-    procedure SaveRaiseException(const AMessage: string;
+    procedure SaveRaiseException(id: int64; const AMessage: string;
       ClearNicePos: boolean = true); virtual;
-    procedure SaveRaiseExceptionFmt(const AMessage: string;
+    procedure SaveRaiseExceptionFmt(id: int64; const AMessage: string;
       const args: array of const; ClearNicePos: boolean = true);
     procedure SetNiceErrorPos(CleanPos: integer);
     property IgnoreErrorAfter: TCodePosition
@@ -386,31 +393,31 @@ begin
   ClearLastError;
 end;
 
-procedure TCustomCodeTool.RaiseException(const AMessage: string;
+procedure TCustomCodeTool.RaiseException(id: int64; const AMessage: string;
   ClearNicePos: boolean);
 begin
-  RaiseExceptionClass(AMessage,ECodeToolError,ClearNicePos);
+  RaiseExceptionClass(id,AMessage,ECodeToolError,ClearNicePos);
 end;
 
-procedure TCustomCodeTool.RaiseExceptionFmt(const AMessage: string;
+procedure TCustomCodeTool.RaiseExceptionFmt(id: int64; const AMessage: string;
   const args: array of const; ClearNicePos: boolean);
 begin
-  RaiseException(Format(AMessage,args),ClearNicePos);
+  RaiseException(id,Format(AMessage,args),ClearNicePos);
 end;
 
-procedure TCustomCodeTool.RaiseExceptionAtErrorPos(const AMessage: string;
-  ClearNicePos: boolean);
+procedure TCustomCodeTool.RaiseExceptionAtErrorPos(id: int64;
+  const AMessage: string; ClearNicePos: boolean);
 begin
   if ClearNicePos then
     ErrorNicePosition:=CleanCodeXYPosition;
   // raise the exception
   if not RaiseUnhandableExceptions then
-    raise ECodeToolError.Create(Self,AMessage)
+    raise ECodeToolError.Create(Self,id,AMessage)
   else
-    RaiseCatchableException(AMessage);
+    RaiseCatchableException('['+IntToStr(id)+'] '+AMessage);
 end;
 
-procedure TCustomCodeTool.SaveRaiseException(const AMessage: string;
+procedure TCustomCodeTool.SaveRaiseException(id: int64; const AMessage: string;
   ClearNicePos: boolean);
 var
   Node: TCodeTreeNode;
@@ -418,6 +425,7 @@ begin
   LastErrorMessage:=AMessage;
   LastErrorCurPos:=CurPos;
   LastErrorValid:=true;
+  LastErrorId:=id;
   if ClearNicePos then begin
     LastErrorNicePosition.Code:=nil;
     LastErrorNicePosition.Y:=-1;
@@ -435,13 +443,13 @@ begin
     Node:=Node.Parent;
   end;
 
-  RaiseException(AMessage,ClearNicePos);
+  RaiseException(id,AMessage,ClearNicePos);
 end;
 
-procedure TCustomCodeTool.SaveRaiseExceptionFmt(const AMessage: string;
-  const args: array of const; ClearNicePos: boolean);
+procedure TCustomCodeTool.SaveRaiseExceptionFmt(id: int64;
+  const AMessage: string; const args: array of const; ClearNicePos: boolean);
 begin
-  SaveRaiseException(Format(AMessage,args),ClearNicePos);
+  SaveRaiseException(id,Format(AMessage,args),ClearNicePos);
 end;
 
 procedure TCustomCodeTool.SetNiceErrorPos(CleanPos: integer);
@@ -475,7 +483,7 @@ begin
   MoveCursorToCleanPos(LastErrorCurPos.StartPos);
   CurPos:=LastErrorCurPos;
   ErrorNicePosition:=LastErrorNicePosition;
-  SaveRaiseException(LastErrorMessage,false);
+  SaveRaiseException(LastErrorId,LastErrorMessage,false);
 end;
 
 procedure TCustomCodeTool.DoProgress;
@@ -492,7 +500,7 @@ begin
   if Assigned(OnParserProgress) then begin
     if OnParserProgress(Self) then exit;
     // raise the abort exception to stop the parsing
-    RaiseExceptionClass('Abort',EParserAbort,true);
+    RaiseExceptionClass(20170421194502,'Abort',EParserAbort,true);
   end;
 end;
 
@@ -535,9 +543,9 @@ begin
   Result:=false;
 end;
 
-procedure TCustomCodeTool.RaiseUndoImpossible;
+procedure TCustomCodeTool.RaiseUndoImpossible(id: int64);
 begin
-  RaiseException('TCustomCodeTool.UndoReadNextAtom impossible',true);
+  RaiseException(id,'TCustomCodeTool.UndoReadNextAtom impossible',true);
 end;
 
 procedure TCustomCodeTool.SetScanner(NewScanner: TLinkScanner);
@@ -760,12 +768,12 @@ procedure TCustomCodeTool.AtomIsIdentifierE;
 
   procedure RaiseEOFFound;
   begin
-    RaiseExceptionFmt(ctsIdentExpectedButEOFFound,[GetAtom],true);
+    RaiseExceptionFmt(20170421194604,ctsIdentExpectedButEOFFound,[GetAtom],true);
   end;
 
   procedure RaiseAtomFound;
   begin
-    RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom],true);
+    RaiseExceptionFmt(20170421194607,ctsIdentExpectedButAtomFound,[GetAtom],true);
   end;
 
 begin
@@ -789,7 +797,7 @@ procedure TCustomCodeTool.AtomIsIdentifierSaveE;
 
   procedure SaveRaiseIdentExpectedButEOFFound;
   begin
-    SaveRaiseExceptionFmt(ctsIdentExpectedButEOFFound,[GetAtom]);
+    SaveRaiseExceptionFmt(20170421194611,ctsIdentExpectedButEOFFound,[GetAtom]);
   end;
 
 begin
@@ -797,7 +805,7 @@ begin
   if CurPos.StartPos>SrcLen then
     SaveRaiseIdentExpectedButEOFFound
   else
-    SaveRaiseIdentExpectedButAtomFound;
+    SaveRaiseIdentExpectedButAtomFound(20170421194618);
 end;
 
 function TCustomCodeTool.AtomIsCustomOperator(AllowIdentifier,
@@ -807,14 +815,14 @@ function TCustomCodeTool.AtomIsCustomOperator(AllowIdentifier,
   begin
     if CurPos.StartPos>SrcLen then begin
       if SaveE then
-        SaveRaiseException(ctsOperatorExpectedButEOFFound)
+        SaveRaiseException(20170421194635,ctsOperatorExpectedButEOFFound)
       else
-        RaiseException(ctsOperatorExpectedButEOFFound)
+        RaiseException(20170421194649,ctsOperatorExpectedButEOFFound)
     end else begin
       if SaveE then
-        SaveRaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom])
+        SaveRaiseExceptionFmt(20170421194701,ctsOperatorExpectedButAtomFound,[GetAtom])
       else
-        RaiseExceptionFmt(ctsOperatorExpectedButAtomFound,[GetAtom])
+        RaiseExceptionFmt(20170421194704,ctsOperatorExpectedButAtomFound,[GetAtom])
     end;
   end;
 
@@ -1883,7 +1891,7 @@ begin
     CurPos:=LastAtoms.GetValueAt(0);
     LastAtoms.UndoLastAdd;
   end else
-    RaiseUndoImpossible;
+    RaiseUndoImpossible(20170421194733);
 end;
 
 function TCustomCodeTool.ReadTilBracketClose(
@@ -1896,9 +1904,9 @@ var CloseBracket, AntiCloseBracket: TCommonAtomFlag;
   procedure RaiseBracketNotFound;
   begin
     if CloseBracket=cafRoundBracketClose then
-      SaveRaiseExceptionFmt(ctsBracketNotFound,[')'],false)
+      SaveRaiseExceptionFmt(20170421194736,ctsBracketNotFound,[')'],false)
     else
-      SaveRaiseExceptionFmt(ctsBracketNotFound,[']'],false);
+      SaveRaiseExceptionFmt(20170421194740,ctsBracketNotFound,[']'],false);
   end;
   
 begin
@@ -1911,7 +1919,7 @@ begin
     AntiCloseBracket:=cafRoundBracketClose;
   end else begin
     if ExceptionOnNotFound then
-      SaveRaiseBracketOpenExpectedButAtomFound;
+      SaveRaiseBracketOpenExpectedButAtomFound(20170421194744);
     exit;
   end;
   Start:=CurPos;
@@ -1943,9 +1951,9 @@ var OpenBracket, AntiOpenBracket: TCommonAtomFlag;
   procedure RaiseBracketNotFound;
   begin
     if OpenBracket=cafRoundBracketOpen then
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['('])
+      SaveRaiseExceptionFmt(20170421194747,ctsBracketNotFound,['('])
     else
-      SaveRaiseExceptionFmt(ctsBracketNotFound,['[']);
+      SaveRaiseExceptionFmt(20170421194749,ctsBracketNotFound,['[']);
   end;
   
 begin
@@ -1958,7 +1966,7 @@ begin
     AntiOpenBracket:=cafRoundBracketOpen;
   end else begin
     if ExceptionOnNotFound then
-      SaveRaiseBracketCloseExpectedButAtomFound;
+      SaveRaiseBracketCloseExpectedButAtomFound(20170421194752);
     exit;
   end;
   Start:=CurPos;
@@ -2012,7 +2020,7 @@ begin
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (Dummy<>0) and (Dummy<>-1) then begin
     MoveCursorToCleanPos(1);
-    RaiseException(ctsCursorPosOutsideOfCode,true);
+    RaiseException(20170421194754,ctsCursorPosOutsideOfCode,true);
   end;
 end;
 
@@ -2156,7 +2164,7 @@ begin
   //debugln(['TCustomCodeTool.RaiseNodeParserError ',Node.DescAsString,' Msg="',NodeError.Msg,'" ',CleanPosToStr(NodeError.CleanPos)]);
   MoveCursorToCleanPos(NodeError.CleanPos);
   ErrorNicePosition:=NodeError.NicePos;
-  RaiseException(NodeError.Msg,false);
+  RaiseException(20170421194759,NodeError.Msg,false);
 end;
 
 procedure TCustomCodeTool.RaiseCursorOutsideCode(CursorPos: TCodeXYPosition);
@@ -2238,7 +2246,7 @@ begin
       end;
     end;
   end;
-  RaiseExceptionAtErrorPos(Msg);
+  RaiseExceptionAtErrorPos(20170421194801,Msg);
 end;
 
 function TCustomCodeTool.StringIsKeyWord(const Word: string): boolean;
@@ -2268,12 +2276,12 @@ procedure TCustomCodeTool.MoveCursorToCleanPos(ACleanPos: PChar);
 
   procedure RaiseSrcEmpty;
   begin
-    RaiseException('[TCustomCodeTool.MoveCursorToCleanPos - PChar] Src empty',true);
+    RaiseException(20170421194805,'[TCustomCodeTool.MoveCursorToCleanPos - PChar] Src empty',true);
   end;
   
   procedure RaiseNotInSrc;
   begin
-    RaiseException('[TCustomCodeTool.MoveCursorToCleanPos - PChar] '
+    RaiseException(20170421194809,'[TCustomCodeTool.MoveCursorToCleanPos - PChar] '
       +'CleanPos not in Src',true);
   end;
 
@@ -2300,7 +2308,7 @@ var
 begin
   ANode:=FindDeepestNodeAtPos(ACleanPos,true);
   if ANode=nil then
-    RaiseException('TCustomCodeTool.MoveCursorToNearestAtom internal error',true);
+    RaiseException(20170421194812,'TCustomCodeTool.MoveCursorToNearestAtom internal error',true);
   MoveCursorToNodeStart(ANode);
   BestPos:=CurPos.StartPos;
   while (CurPos.StartPos<=ACleanPos) and (CurPos.StartPos<=SrcLen) do begin
@@ -2435,10 +2443,11 @@ begin
   end;
 end;
 
-procedure TCustomCodeTool.RaiseExceptionClass(const AMessage: string;
-  ExceptionClass: ECodeToolErrors; ClearNicePos: boolean);
+procedure TCustomCodeTool.RaiseExceptionClass(id: int64;
+  const AMessage: string; ExceptionClass: ECodeToolErrors; ClearNicePos: boolean
+  );
 begin
-  RaiseExceptionInstance(ExceptionClass.Create(Self,AMessage),ClearNicePos);
+  RaiseExceptionInstance(ExceptionClass.Create(Self,id,AMessage),ClearNicePos);
 end;
 
 function TCustomCodeTool.DefaultKeyWordFunc: boolean;
@@ -2552,7 +2561,7 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
     if (Tree=nil) or (Tree.Root=nil) then begin
       debugln(['TCustomCodeTool.FindDeepestNodeAtPos there are no nodes, maybe you forgot to parse?']);
       CTDumpStack;
-      RaiseException('no pascal code or not yet parsed');
+      RaiseException(20170421194833,'no pascal code or not yet parsed');
     end;
     if p<Tree.Root.StartPos then begin
       // in front of parsed code
@@ -2564,7 +2573,7 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
                 +CleanPosToStr(Tree.Root.StartPos)+')';
       end;
       MoveCursorToCleanPos(P);
-      RaiseException(Msg);
+      RaiseException(20170421194836,Msg);
     end;
     // behind parsed code
     Node:=Tree.Root;
@@ -2575,16 +2584,16 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
       LastPos:=Node.StartPos;
     if p>LastPos then begin
       Msg:='Behind code (last token at '+CleanPosToStr(LastPos)+')';
-      RaiseException(Msg);
+      RaiseException(20170421194838,Msg);
     end;
 
     // p is in parsed code, the StartNode is wrong
     CTDumpStack;
     if (StartNode<>nil) then
-      RaiseException('Invalid search. The search for pascal started at '
+      RaiseException(20170421194842,'Invalid search. The search for pascal started at '
                      +CleanPosToStr(StartNode.StartPos)+'. Invalid search')
     else
-      RaiseException('Inconsistency error in TCustomCodeTool.FindDeepestNodeAtPos');
+      RaiseException(20170421194846,'Inconsistency error in TCustomCodeTool.FindDeepestNodeAtPos');
   end;
   
 var
@@ -2808,7 +2817,7 @@ begin
         //debugln(['TCustomCodeTool.GetCleanPosInfo D "',dbgstr(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"']);
         if (SameArea.StartPos=SameArea.EndPos) then
           // inconsistency: some non space and non comment between two tokens
-          RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error A');
+          RaiseException(20170421194850,'TCustomCodeTool.GetCleanPosInfo Internal Error A');
         if CleanPos<SameArea.EndPos then begin
           // cursor is in comment
           if ResolveComments then begin
@@ -2823,7 +2832,8 @@ begin
               end;
             '(','/': inc(CodePosInFront,2);
             else
-              RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error B '+dbgstr(Src[CodePosInFront])+' at '+CleanPosToStr(CodePosInFront,true));
+              RaiseException(20170421194855,'TCustomCodeTool.GetCleanPosInfo Internal Error B '
+                +dbgstr(Src[CodePosInFront])+' at '+CleanPosToStr(CodePosInFront,true));
             end;
             if CodePosInFront>CleanPos then
               // CleanPos at start of comment => return comment
@@ -3092,22 +3102,22 @@ begin
   end;
 end;
 
-procedure TCustomCodeTool.SaveRaiseIdentExpectedButAtomFound;
+procedure TCustomCodeTool.SaveRaiseIdentExpectedButAtomFound(id: int64);
 begin
-  SaveRaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
+  SaveRaiseExceptionFmt(id,ctsIdentExpectedButAtomFound,[GetAtom]);
 end;
 
-procedure TCustomCodeTool.SaveRaiseBracketOpenExpectedButAtomFound;
+procedure TCustomCodeTool.SaveRaiseBracketOpenExpectedButAtomFound(id: int64);
 begin
-  SaveRaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom]);
+  SaveRaiseExceptionFmt(id,ctsBracketOpenExpectedButAtomFound,[GetAtom]);
 end;
 
-procedure TCustomCodeTool.SaveRaiseBracketCloseExpectedButAtomFound;
+procedure TCustomCodeTool.SaveRaiseBracketCloseExpectedButAtomFound(id: int64);
 begin
   if CurPos.StartPos<SrcLen then
-    SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom])
+    SaveRaiseExceptionFmt(id,ctsBracketCloseExpectedButAtomFound,[GetAtom])
   else
-    SaveRaiseExceptionFmt(ctsBracketNotFound,[])
+    SaveRaiseExceptionFmt(id,ctsBracketNotFound,[])
 end;
 
 procedure TCustomCodeTool.ActivateGlobalWriteLock;
@@ -3130,19 +3140,20 @@ end;
 
 { ECodeToolError }
 
-constructor ECodeToolError.Create(ASender: TCustomCodeTool;
+constructor ECodeToolError.Create(ASender: TCustomCodeTool; TheId: int64;
   const AMessage: string);
 begin
   inherited Create(AMessage);
   Sender:=ASender;
+  Id:=TheId;
 end;
 
 { ECodeToolFileNotFound }
 
 constructor ECodeToolFileNotFound.Create(ASender: TCustomCodeTool;
-  const AMessage, AFilename: string);
+  TheId: int64; const AMessage, AFilename: string);
 begin
-  inherited Create(ASender,AMessage);
+  inherited Create(ASender,TheId,AMessage);
   Filename:=AFilename;
 end;
 

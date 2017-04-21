@@ -7247,7 +7247,7 @@ begin
 
   // show codetool error
   if (CTErrorMsg<>'') and (not Quiet) then begin
-    CodeToolBoss.SetError(CTErrorCode,CTErrorLine,CTErrorCol,CTErrorMsg);
+    CodeToolBoss.SetError(20170421203251,CTErrorCode,CTErrorLine,CTErrorCol,CTErrorMsg);
     MainIDE.DoJumpToCodeToolBossError;
     Result:=mrAbort;
     exit;

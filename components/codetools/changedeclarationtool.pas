@@ -353,7 +353,7 @@ begin
       // parse end of parameter list
       if (CurPos.StartPos>SrcLen)
       or (Src[CurPos.StartPos]<>CloseBracket) then
-        RaiseCharExpectedButAtomFound(CloseBracket);
+        RaiseCharExpectedButAtomFound(20170421201949,CloseBracket);
       break;
     end else begin
       ReadPrefixModifier;
@@ -397,7 +397,7 @@ begin
         break;
       end;
       if CurPos.Flag<>cafSemicolon then
-        RaiseCharExpectedButAtomFound(CloseBracket);
+        RaiseCharExpectedButAtomFound(20170421201951,CloseBracket);
       CurParam.Separator:=CurPos.StartPos;
       inc(ParamIndex);
     end;

@@ -81,6 +81,10 @@ msgstr "nie znaleziono nawiasu %s"
 msgid "bracket open expected, but %s found"
 msgstr "zamiast otwarcia nawiasu znaleziono: %s"
 
+#: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+msgid "can not add a unit to the implementation, because only a unit has one"
+msgstr ""
+
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
 msgstr ""
@@ -102,6 +106,10 @@ msgstr "brakuje nazwy przodka"
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
 msgstr "Nie znaleziono klasy %s%s%s"
+
+#: codetoolsstrconsts.ctsclassnotfound2
+msgid "class not found \"%s\""
+msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -527,6 +535,10 @@ msgstr ""
 msgid "invalid operator %s"
 msgstr ""
 
+#: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
+msgid "invalid position for insertion of statements"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "błędny podzakres"
@@ -566,6 +578,10 @@ msgstr "główny katalog lazarusa"
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
 msgstr "źródła lazarusa"
+
+#: codetoolsstrconsts.ctsmethodhasnodeclaration
+msgid "method \"%s\" has no declaration"
+msgstr ""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"

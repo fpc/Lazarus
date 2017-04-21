@@ -79,6 +79,10 @@ msgstr "a %s zárójel nem található"
 msgid "bracket open expected, but %s found"
 msgstr "nyitó zárójel az elvárt, de %s található"
 
+#: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
+msgid "can not add a unit to the implementation, because only a unit has one"
+msgstr ""
+
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
 msgstr "a karakterkonstans a tartományon kívülre esik"
@@ -98,6 +102,10 @@ msgstr "osztálycsomópont szülő csomópont nélkül"
 #: codetoolsstrconsts.ctsclassnotfound
 msgid "class \"%s\" not found"
 msgstr "Az osztály nem található: \"%s\""
+
+#: codetoolsstrconsts.ctsclassnotfound2
+msgid "class not found \"%s\""
+msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -517,6 +525,10 @@ msgstr "érvénytelen mód kapcsoló: %s"
 msgid "invalid operator %s"
 msgstr "érvénytelen művelet: %s"
 
+#: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
+msgid "invalid position for insertion of statements"
+msgstr ""
+
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
 msgstr "érvénytelen tartomány"
@@ -552,6 +564,10 @@ msgstr "a Lazarus fő könyvtára"
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
 msgstr "Lazarus források"
+
+#: codetoolsstrconsts.ctsmethodhasnodeclaration
+msgid "method \"%s\" has no declaration"
+msgstr ""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"
