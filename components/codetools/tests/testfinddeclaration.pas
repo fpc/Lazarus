@@ -74,6 +74,8 @@ type
     property MainTool: TCodeTool read FMainTool;
   end;
 
+  { TTestFindDeclaration }
+
   TTestFindDeclaration = class(TCustomTestFindDeclaration)
   published
     procedure TestFindDeclaration_Basic;
@@ -86,6 +88,7 @@ type
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
     procedure TestFindDeclaration_Generics;
+    procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -521,6 +524,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_Generics;
 begin
   FindDeclarations('moduletests/fdt_generics.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ForIn;
+begin
+  FindDeclarations('moduletests/fdt_for_in.pas');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FileAtCursor;
