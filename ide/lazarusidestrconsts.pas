@@ -4281,6 +4281,8 @@ resourcestring
   lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA = 'other sources path '
     +'of package "%s" contains directory "%s", which is already in the unit '
     +'search path.';
+  lisOutputDirectoryOfContainsPascalUnitSource = 'output directory of %s '
+    +'contains Pascal unit source "%s"';
   lisInsertAssignment = 'Insert Assignment %s := ...';
   lisPkgManginvalidCompilerFilename = 'invalid Compiler filename';
   lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable = 'The compiler '

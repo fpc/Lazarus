@@ -3919,7 +3919,8 @@ var
         aFilename:=Files[i];
         if FilenameIsPascalUnit(aFilename) then begin
           // warning: packages output path contain unit source
-          s:='output directory of '+aCompilerOptions.GetOwnerName+' contains Pascal unit source "'+aFilename+'"';
+          s:=Format(lisOutputDirectoryOfContainsPascalUnitSource, [
+            aCompilerOptions.GetOwnerName, aFilename]);
           debugln(['Warning: (lazarus) [CheckOutPathContainsSources]: ',s]);
           { ToDo: if the OutPath is not the default: ask user and change it }
           IDEMessagesWindow.AddCustomMessage(mluWarning,s);
@@ -3968,6 +3969,8 @@ begin
     aPackage:=TLazPackage(aCompilerOptions.Owner)
   else if not (aCompilerOptions.Owner is TProject) then
     exit;
+
+  if (aPackage<>nil) and (aPackage.AutoUpdate=pupManually) then exit;
 
   CurUnitPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
   CurIncPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
