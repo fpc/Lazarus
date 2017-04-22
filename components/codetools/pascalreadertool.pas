@@ -613,6 +613,10 @@ begin
     ProcNode:=ProcNode.Parent;
     if ProcNode=nil then exit;
   end;
+  if ProcNode.Desc=ctnReferenceTo then begin
+    ProcNode:=ProcNode.FirstChild;
+    if ProcNode=nil then exit;
+  end;
   if ProcNode.Desc=ctnProcedure then
     IsProcType:=false
   else if ProcNode.Desc=ctnProcedureType then
