@@ -11,7 +11,7 @@ unit TestStdCodetools;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, fpcunit, testregistry,
+  Classes, SysUtils, LazLoggerBase, fpcunit, testregistry,
   CodeToolManager, StdCodeTools, CodeCache, LinkScanner;
 
 type

@@ -37,7 +37,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="10">
       <Unit0>
         <Filename Value="runtestscodetools.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -48,64 +48,43 @@
         <UnitName Value="TestFindDeclaration"/>
       </Unit1>
       <Unit2>
-        <Filename Value="fdt_typehelper.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="fdt_nestedclasses.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="fdt_classof.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="fdt_objccategory.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="fdt_classhelper.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="fdt_objcclass.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="fdt_with.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit8>
-      <Unit9>
         <Filename Value="testrefactoring.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestRefactoring"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="rt_explodewith.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="fdt_generics.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit11>
-      <Unit12>
+      </Unit2>
+      <Unit3>
         <Filename Value="testglobals.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestGlobals"/>
-      </Unit12>
-      <Unit13>
+      </Unit3>
+      <Unit4>
         <Filename Value="testpascalparser.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPascalParser"/>
-      </Unit13>
-      <Unit14>
+      </Unit4>
+      <Unit5>
         <Filename Value="moduletests/fdt_proc_basetypes.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit14>
-      <Unit15>
+      </Unit5>
+      <Unit6>
         <Filename Value="moduletests/fdt_for_in.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit15>
+      </Unit6>
+      <Unit7>
+        <Filename Value="testmethodjumptool.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestMethodJumpTool"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="teststdcodetools.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestStdCodetools"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="testcth2pas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestCTH2Pas"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

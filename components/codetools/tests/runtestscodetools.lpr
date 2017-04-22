@@ -31,16 +31,11 @@ uses
   TestGlobals,
   // non Pascal
   TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
-  // compile test files to make sure they are valid Pascal
-  fdt_classhelper,
   {$IF FPC_FULLVERSION >= 30101}
-  fdt_typehelper,
   {$ENDIF}
-  fdt_nestedclasses,
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
   {$ENDIF}
-  fdt_classof, fdt_with, rt_explodewith, fdt_generics,
   TestBasicCodetools,
   TestCTRangeScan, TestPascalParser, TestMethodJumpTool, TestStdCodetools,
   TestFindDeclaration, TestCompleteBlock, TestRefactoring;
