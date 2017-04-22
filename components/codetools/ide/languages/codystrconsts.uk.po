@@ -162,6 +162,10 @@ msgstr "?видимість?"
 msgid "%s, written by property %s"
 msgstr "%s, записаний властивістю %s"
 
+#: codystrconsts.crscaretoutsideofcode
+msgid "Caret outside of code"
+msgstr ""
+
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
 msgstr "Гепардовий редактор"

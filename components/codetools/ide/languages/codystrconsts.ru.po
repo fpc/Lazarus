@@ -160,6 +160,10 @@ msgstr "?видимость?"
 msgid "%s, written by property %s"
 msgstr "%s, записывается свойством %s"
 
+#: codystrconsts.crscaretoutsideofcode
+msgid "Caret outside of code"
+msgstr ""
+
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
 msgstr "Гепардовый редактор"

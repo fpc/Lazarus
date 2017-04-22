@@ -229,6 +229,7 @@ resourcestring
   crsIdentifierNotFoundInUnit = 'Identifier "%s" not found in unit "%s".'
     +' Maybe the identifier does not exist for this platform or maybe the'
     +' identifier was deleted/renamed.';
+  crsCaretOutsideOfCode = 'Caret outside of code';
   crsPackage2 = 'Package: %s';
 
   crsIDEIntegration = 'IDE Integration';
