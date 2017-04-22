@@ -73,7 +73,14 @@ type
   TOnFindFPCMangledSource = procedure(Sender: TObject; SrcType: TCodeTreeNodeDesc;
     const SrcName: string; out SrcFilename: string) of object;
 
-  ECodeToolManagerError = class(Exception);
+  { ECodeToolManagerError }
+
+  ECodeToolManagerError = class(Exception)
+  public
+    Id: int64;
+    constructor Create(TheID: int64; const Msg: string);
+    constructor CreateFmt(TheID: int64; const Msg: string; const Args: array of const);
+  end;
 
   TCodeToolManagerHandler = (
     ctmOnToolTreeChanging
@@ -955,6 +962,20 @@ begin
     NewMode,NewMode,'1',da_Define));
 end;
 
+{ ECodeToolManagerError }
+
+constructor ECodeToolManagerError.Create(TheID: int64; const Msg: string);
+begin
+  Id:=TheID;
+  inherited Create(Msg);
+end;
+
+constructor ECodeToolManagerError.CreateFmt(TheID: int64; const Msg: string;
+  const Args: array of const);
+begin
+  Id:=TheID;
+  inherited CreateFmt(Msg,Args);
+end;
 
 { TCodeToolManager }
 
@@ -1821,15 +1842,15 @@ begin
     end;
   end else if (AnException is ECDirectiveParserException) then begin
     // Compiler directive parser error
+    FErrorId:=ECDirectiveParserException(AnException).Id;
     ErrorDirTool:=ECDirectiveParserException(AnException).Sender;
     fErrorCode:=ErrorDirTool.Code;
-    FErrorId:=20170421202922;
   end else if (AnException is ESourceChangeCacheError) then begin
     // SourceChangeCache error
-    FErrorId:=20170421203005;
+    FErrorId:=ESourceChangeCacheError(AnException).Id;
   end else if (AnException is ECodeToolManagerError) then begin
     // CodeToolManager error
-    FErrorId:=20170421203009;
+    FErrorId:=ECodeToolManagerError(AnException).Id;
   end else begin
     // unknown exception
     DumpExceptionBackTrace;
@@ -6017,7 +6038,7 @@ begin
     CreateScanner(Code);
     if Code.Scanner=nil then begin
       if ExceptionOnError then
-        raise ECodeToolManagerError.CreateFmt(ctsNoScannerFound,[Code.Filename]);
+        raise ECodeToolManagerError.CreateFmt(20170422131430,ctsNoScannerFound,[Code.Filename]);
       exit;
     end;
     Result:=TCodeTool.Create;

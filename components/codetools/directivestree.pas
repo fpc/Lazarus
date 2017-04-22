@@ -97,7 +97,8 @@ type
   ECDirectiveParserException = class(Exception)
   public
     Sender: TCompilerDirectivesTree;
-    constructor Create(ASender: TCompilerDirectivesTree; const AMessage: string);
+    Id: int64;
+    constructor Create(ASender: TCompilerDirectivesTree; TheId: int64; const AMessage: string);
   end;
 
   TCompilerMacroStatus = (
@@ -148,6 +149,7 @@ type
     FLastErrorMsg: string;
     fLastErrorPos: integer;
     fLastErrorXY: TPoint;
+    fLastErrorId: int64;
     function IfdefDirective: boolean;
     function IfCDirective: boolean;
     function IfndefDirective: boolean;
@@ -181,7 +183,7 @@ type
     procedure EndIFNode(const ErrorMsg: string);
 
     procedure InternalRemoveNode(Node: TCodeTreeNode);
-    procedure RaiseException(const ErrorMsg: string);
+    procedure RaiseException(id: int64; const ErrorMsg: string);
     procedure RaiseLastError;
   public
     Code: TCodeBuffer;
@@ -216,6 +218,7 @@ type
     property ErrorPos: integer read fLastErrorPos;
     property ErrorLine: integer read fLastErrorXY.Y;
     property ErrorColumn: integer read fLastErrorXY.X;
+    property ErrorId: int64 read fLastErrorId;
     function SrcPosToStr(p: integer; WithFilename: boolean = false): string;
 
     // search
@@ -698,7 +701,7 @@ procedure TCompilerDirectivesTree.EndIFNode(const ErrorMsg: string);
 begin
   if (CurNode.Desc<>cdnIf) and (CurNode.Desc<>cdnElse)
   and (CurNode.Desc<>cdnElseIf) then
-    RaiseException(ErrorMsg);
+    RaiseException(20170422131836,ErrorMsg);
   EndChildNode;
 end;
 
@@ -1181,7 +1184,7 @@ var
     Change: PDefineChange;
   begin
     if StackPointer=0 then
-      RaiseException('TCompilerDirectivesTree.DisableUnreachableBlocks.Pop without Push');
+      RaiseException(20170422131842,'TCompilerDirectivesTree.DisableUnreachableBlocks.Pop without Push');
     // undo all changes
     while Stack[StackPointer]<>nil do begin
       Change:=Stack[StackPointer];
@@ -1380,7 +1383,7 @@ procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
   
   procedure RaiseImpossible;
   begin
-    RaiseException('TCompilerDirectivesTree.DisableIfNode impossible');
+    RaiseException(20170422131846,'TCompilerDirectivesTree.DisableIfNode impossible');
   end;
   
   function GetExpr(ExprNode: TCodeTreeNode; out Negated: boolean): string;
@@ -1618,10 +1621,12 @@ begin
   Tree.DeleteNode(Node);
 end;
 
-procedure TCompilerDirectivesTree.RaiseException(const ErrorMsg: string);
+procedure TCompilerDirectivesTree.RaiseException(id: int64;
+  const ErrorMsg: string);
 begin
   fLastErrorMsg:=ErrorMsg;
   fLastErrorPos:=AtomStart;
+  fLastErrorId:=id;
   if Code<>nil then
     Code.AbsoluteToLineCol(AtomStart,fLastErrorXY.Y,fLastErrorXY.X)
   else
@@ -1631,7 +1636,8 @@ end;
 
 procedure TCompilerDirectivesTree.RaiseLastError;
 begin
-  raise ECDirectiveParserException.Create(Self, SrcPosToStr(fLastErrorPos)+' Error: '+ErrorMsg);
+  raise ECDirectiveParserException.Create(Self, fLastErrorId,
+    SrcPosToStr(fLastErrorPos)+' Error: '+ErrorMsg);
 end;
 
 procedure TCompilerDirectivesTree.RemoveEmptyNodes(var Changed: boolean);
@@ -1743,7 +1749,7 @@ procedure TCompilerDirectivesTree.Parse(aCode: TCodeBuffer;
   
   procedure RaiseDanglingIFDEF;
   begin
-    RaiseException('missing EndIf');
+    RaiseException(20170422131848,'missing EndIf');
   end;
   
 var
@@ -2770,8 +2776,9 @@ end;
 { ECDirectiveParserException }
 
 constructor ECDirectiveParserException.Create(ASender: TCompilerDirectivesTree;
-  const AMessage: string);
+  TheId: int64; const AMessage: string);
 begin
+  Id:=TheId;
   inherited Create(AMessage);
   Sender:=ASender;
 end;
