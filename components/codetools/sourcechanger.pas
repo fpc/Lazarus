@@ -274,7 +274,7 @@ type
     function GetBuffersToModify(Index: integer): TCodeBuffer;
     procedure UpdateBuffersToModify;
   protected
-    procedure RaiseException(const AMessage: string);
+    procedure RaiseException(id: int64; const AMessage: string);
   public
     BeautifyCodeOptions: TBeautifyCodeOptions;
     constructor Create;
@@ -312,7 +312,8 @@ type
   ESourceChangeCacheError = class(Exception)
   public
     Sender: TSourceChangeCache;
-    constructor Create(ASender: TSourceChangeCache; const AMessage: string);
+    Id: int64;
+    constructor Create(ASender: TSourceChangeCache; TheId: int64; const AMessage: string);
   end;
 
 
@@ -682,29 +683,29 @@ function TSourceChangeCache.ReplaceEx(FrontGap, AfterGap: TGapTyp;
   procedure RaiseDataInvalid;
   begin
     if (MainScanner=nil) then
-      RaiseException('TSourceChangeCache.ReplaceEx MainScanner=nil');
+      RaiseException(20170422131535,'TSourceChangeCache.ReplaceEx MainScanner=nil');
     if FromPos>ToPos then
-      RaiseException('TSourceChangeCache.ReplaceEx FromPos>ToPos');
+      RaiseException(20170422131537,'TSourceChangeCache.ReplaceEx FromPos>ToPos');
     if FromPos<1 then
-      RaiseException('TSourceChangeCache.ReplaceEx FromPos<1');
+      RaiseException(20170422131540,'TSourceChangeCache.ReplaceEx FromPos<1');
     if (MainScanner<>nil) and (ToPos>MainScanner.CleanedLen+1) then
-      RaiseException('TSourceChangeCache.ReplaceEx ToPos>MainScanner.CleanedLen+1');
+      RaiseException(20170422131542,'TSourceChangeCache.ReplaceEx ToPos>MainScanner.CleanedLen+1');
   end;
   
   procedure RaiseIntersectionFound;
   begin
-    RaiseException('TSourceChangeCache.ReplaceEx '
+    RaiseException(20170422131545,'TSourceChangeCache.ReplaceEx '
       +'IGNORED, because intersection found');
   end;
   
   procedure RaiseCodeReadOnly(Buffer: TCodeBuffer);
   begin
-    RaiseException(ctsfileIsReadOnly+' '+Buffer.Filename);
+    RaiseException(20170422131547,ctsfileIsReadOnly+' '+Buffer.Filename);
   end;
   
   procedure RaiseNotInCleanCode;
   begin
-    RaiseException('TSourceChangeCache.ReplaceEx not in clean code');
+    RaiseException(20170422131550,'TSourceChangeCache.ReplaceEx not in clean code');
   end;
   
 var
@@ -1252,7 +1253,7 @@ begin
     AnEntry:=TSourceChangeCacheEntry(ANode.Data);
     if AnEntry.IsDirectChange then begin
       if AnEntry.DirectCode=nil then
-        RaiseException('TSourceChangeCache.UpdateBuffersToModify AnEntry.DirectCode=nil');
+        RaiseException(20170422131554,'TSourceChangeCache.UpdateBuffersToModify AnEntry.DirectCode=nil');
       if FBuffersToModify.IndexOf(AnEntry.DirectCode)<0 then
         FBuffersToModify.Add(AnEntry.DirectCode)
     end else
@@ -1263,9 +1264,9 @@ begin
   FBuffersToModifyNeedsUpdate:=false;
 end;
 
-procedure TSourceChangeCache.RaiseException(const AMessage: string);
+procedure TSourceChangeCache.RaiseException(id: int64; const AMessage: string);
 begin
-  raise ESourceChangeCacheError.Create(Self,AMessage);
+  raise ESourceChangeCacheError.Create(Self,id,AMessage);
 end;
 
 { TBeautifyCodeOptions }
@@ -2015,8 +2016,9 @@ end;
 { ESourceChangeCacheError }
 
 constructor ESourceChangeCacheError.Create(ASender: TSourceChangeCache;
-  const AMessage: string);
+  TheId: int64; const AMessage: string);
 begin
+  Id:=TheId;
   inherited Create(AMessage);
   Sender:=ASender;
 end;
