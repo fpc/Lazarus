@@ -1859,8 +1859,8 @@ begin
       fErrorCode:=FCurCodeTool.ErrorPosition.Code;
       fErrorColumn:=FCurCodeTool.ErrorPosition.X;
       fErrorLine:=FCurCodeTool.ErrorPosition.Y;
-      FErrorId:=20170421202914;
     end;
+    FErrorId:=20170421202914;
   end;
 
   SourceChangeCache.Clear;
