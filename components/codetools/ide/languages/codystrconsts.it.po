@@ -161,6 +161,10 @@ msgstr "?visibilità?"
 msgid "%s, written by property %s"
 msgstr "%s, scritto dalla proprietà %s"
 
+#: codystrconsts.crscaretoutsideofcode
+msgid "Caret outside of code"
+msgstr ""
+
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
 msgstr "Editor Ghepardo"

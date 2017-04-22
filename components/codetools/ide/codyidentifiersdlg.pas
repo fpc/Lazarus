@@ -198,8 +198,8 @@ type
     function FindSelectedItem(out Identifier, UnitFilename,
       GroupName, GroupFilename: string): boolean;
     procedure UpdateCurOwnerOfUnit;
-    procedure AddToUsesSection;
-    procedure UpdateTool;
+    procedure AddToUsesSection(JumpToSrcError: boolean);
+    function UpdateTool(JumpToSrcError: boolean): boolean;
     function AddButton: TBitBtn;
     function GetCurOwnerCompilerOptions: TLazCompilerOptions;
   public
@@ -1366,6 +1366,7 @@ var
   NewY: integer;
   NewTopLine: integer;
   CurUnit: TUDUnit;
+  MainPath: RawByteString;
 
   function OpenDependency: boolean;
   // returns false to abort
@@ -1470,14 +1471,18 @@ begin
     NewUnitInPath:=true;
   end
   else if (CurUnitPath<>'')
-  and FilenameIsAbsolute(CurMainFilename)
-  and (FindPathInSearchPath(PChar(CurUnitPath),length(CurUnitPath),
-                            PChar(CurMainFilename),length(CurMainFilename))<>nil)
-  then begin
-    // in unit search path
-    debugln(['TCodyIdentifiersDlg.UseIdentifier in unit search path of owner']);
-    NewUnitInPath:=true;
+  and FilenameIsAbsolute(CurMainFilename) then begin
+    MainPath:=ExtractFilePath(CurMainFilename);
+    if (FindPathInSearchPath(PChar(MainPath),length(MainPath),
+                             PChar(CurUnitPath),length(CurUnitPath))<>nil)
+    then begin
+      // in unit search path
+      debugln(['TCodyIdentifiersDlg.UseIdentifier in unit search path of owner']);
+      NewUnitInPath:=true;
+    end;
   end;
+  if not NewUnitInPath then
+    debugln(['TCodyIdentifiersDlg.UseIdentifier not in unit path: CurMainFilename="',CurMainFilename,'" NewUnitFilename="',NewUnitFilename,'" CurUnitPath="',CurUnitPath,'"']);
 
   UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
   if not NewUnitInPath then begin
@@ -1571,7 +1576,7 @@ begin
     end;
 
     if not SameUnitName then
-      AddToUsesSection;
+      AddToUsesSection(true);
   finally
     CurSrcEdit.EndUndoBlock{$IFDEF SynUndoDebugBeginEnd}('TCodyIdentifiersDlg.UseIdentifier'){$ENDIF};
   end;
@@ -1680,7 +1685,7 @@ begin
   end;
 end;
 
-procedure TCodyIdentifiersDlg.AddToUsesSection;
+procedure TCodyIdentifiersDlg.AddToUsesSection(JumpToSrcError: boolean);
 var
   NewUnitCode: TCodeBuffer;
   NewUnitName: String;
@@ -1691,7 +1696,7 @@ begin
     debugln(['TCodyIdentifiersDlg.AddToUsesSection failed: no tool']);
     exit;
   end;
-  UpdateTool;
+  UpdateTool(JumpToSrcError);
   if (CurNode=nil) then begin
     debugln(['TCodyIdentifiersDlg.AddToUsesSection failed: no node']);
     exit;
@@ -1744,10 +1749,15 @@ begin
     CodeToolBoss.AddUnitToImplementationUsesSection(CurMainCode,NewUnitName,'')
   else
     CodeToolBoss.AddUnitToMainUsesSection(CurMainCode,NewUnitName,'');
+  if CodeToolBoss.ErrorMessage<>'' then
+    LazarusIDE.DoJumpToCodeToolBossError;
 end;
 
-procedure TCodyIdentifiersDlg.UpdateTool;
+function TCodyIdentifiersDlg.UpdateTool(JumpToSrcError: boolean): boolean;
+var
+  Tool: TCodeTool;
 begin
+  Result:=false;
   if (CurTool=nil) or (NewUnitFilename='') then exit;
   if not LazarusIDE.BeginCodeTools then exit;
   try
@@ -1755,6 +1765,17 @@ begin
   except
   end;
   CurNode:=CurTool.FindDeepestNodeAtPos(CurCleanPos,false);
+  if CurNode<>nil then
+    Result:=true
+  else if JumpToSrcError then begin
+    CodeToolBoss.Explore(CurCodePos.Code,Tool,false);
+    if CodeToolBoss.ErrorCode=nil then
+      IDEMessageDialog(crsCaretOutsideOfCode, CurTool.CleanPosToStr(
+        CurCleanPos, true),
+        mtError,[mbOk])
+    else
+      LazarusIDE.DoJumpToCodeToolBossError;
+  end;
 end;
 
 function TCodyIdentifiersDlg.AddButton: TBitBtn;

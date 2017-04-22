@@ -150,6 +150,10 @@ msgstr ""
 msgid "%s, written by property %s"
 msgstr ""
 
+#: codystrconsts.crscaretoutsideofcode
+msgid "Caret outside of code"
+msgstr ""
+
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
 msgstr ""
