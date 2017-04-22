@@ -1791,16 +1791,15 @@ begin
   fErrorMsg:=AnException.Message;
   if (AnException is ELinkScannerError) then begin
     // link scanner error
+    FErrorId:=ELinkScannerError(AnException).Id;
     if AnException is ELinkScannerConsistency then
       DumpExceptionBackTrace;
     DirtyPos:=0;
     if AnException is ELinkScannerEditError then begin
-      FErrorId:=20170421202931;
       fErrorCode:=TCodeBuffer(ELinkScannerEditError(AnException).Buffer);
       if fErrorCode<>nil then
         DirtyPos:=ELinkScannerEditError(AnException).BufferPos;
     end else begin
-      FErrorId:=20170421202945;
       fErrorCode:=TCodeBuffer(ELinkScannerError(AnException).Sender.Code);
       DirtyPos:=ELinkScannerError(AnException).Sender.SrcPos;
     end;

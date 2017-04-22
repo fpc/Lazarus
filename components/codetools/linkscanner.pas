@@ -398,9 +398,13 @@ type
     );
 
   { Error handling }
+
+  { ELinkScannerError }
+
   ELinkScannerError = class(Exception)
     Sender: TLinkScanner;
-    constructor Create(ASender: TLinkScanner; const AMessage: string);
+    Id: int64;
+    constructor Create(ASender: TLinkScanner; TheId: int64; const AMessage: string);
   end;
   
   ELinkScannerErrors = class of ELinkScannerError;
@@ -410,10 +414,12 @@ type
   ELinkScannerAbort = class(ELinkScannerError);
   ELinkScannerConsistency = class(ELinkScannerError);
 
+  { ELinkScannerEditError }
+
   ELinkScannerEditError = class(ELinkScannerError)
     Buffer: Pointer;
     BufferPos: integer;
-    constructor Create(ASender: TLinkScanner; const AMessage: string;
+    constructor Create(ASender: TLinkScanner; TheId: int64; const AMessage: string;
       ABuffer: Pointer; ABufferPos: integer);
   end;
 
@@ -492,7 +498,7 @@ type
     procedure ReadCurlyComment;
     procedure ReadLineComment;
     procedure ReadRoundComment;
-    procedure CommentEndNotFound;
+    procedure CommentEndNotFound(id: int64);
     procedure EndComment; inline;
     procedure IncCommentLevel; inline;
     procedure DecCommentLevel; inline;
@@ -589,14 +595,15 @@ type
     LastErrorIsValid: boolean;
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
+    LastErrorId: int64;
     CleanedIgnoreErrorAfterPosition: integer;// ignore if valid and >=
-    procedure RaiseExceptionFmt(const AMessage: string; Args: array of const);
-    procedure RaiseException(const AMessage: string);
-    procedure RaiseExceptionClass(const AMessage: string;
+    procedure RaiseExceptionFmt(id: int64; const AMessage: string; const Args: array of const);
+    procedure RaiseException(id: int64; const AMessage: string);
+    procedure RaiseExceptionClass(id: int64; const AMessage: string;
       ExceptionClass: ELinkScannerErrors);
-    procedure RaiseEditException(const AMessage: string; ABuffer: Pointer;
+    procedure RaiseEditException(id: int64; const AMessage: string; ABuffer: Pointer;
       ABufferPos: integer);
-    procedure RaiseConsistencyException(const AMessage: string);
+    procedure RaiseConsistencyException(id: int64; const AMessage: string);
     procedure ClearLastError;
     procedure RaiseLastError;
     procedure DoCheckAbort;
@@ -1445,7 +1452,7 @@ function TLinkScanner.LinkSize(Index: integer): integer;
 
   procedure IndexOutOfBounds;
   begin
-    RaiseConsistencyException('TLinkScanner.LinkSize  index '
+    RaiseConsistencyException(20170422125948,'TLinkScanner.LinkSize  index '
        +IntToStr(Index)+' out of bounds: 0..'+IntToStr(LinkCount-1));
   end;
 
@@ -1698,7 +1705,7 @@ procedure TLinkScanner.SetSource(ACode: Pointer);
 
   procedure RaiseUnableToGetCode;
   begin
-    RaiseConsistencyException('unable to get source with Code='+DbgS(Code));
+    RaiseConsistencyException(20170422125957,'unable to get source with Code='+DbgS(Code));
   end;
 
 var SrcLog: TSourceLog;
@@ -2188,7 +2195,7 @@ begin
   SrcPos:=p-PChar(Src)+1;
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-1;
-  if (CommentLevel>0) then CommentEndNotFound;
+  if (CommentLevel>0) then CommentEndNotFound(20170422130048);
   // handle compiler switches
   if Src[CommentInnerStartPos]='$' then
     HandleDirective;
@@ -2259,17 +2266,17 @@ begin
   SrcPos:=p-PChar(Src)+1;
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-2;
-  if (CommentLevel>0) then CommentEndNotFound;
+  if (CommentLevel>0) then CommentEndNotFound(20170422130050);
   // handle compiler switches
   if Src[CommentInnerStartPos]='$' then
     HandleDirective;
   EndComment;
 end;
 
-procedure TLinkScanner.CommentEndNotFound;
+procedure TLinkScanner.CommentEndNotFound(id: int64);
 begin
   SrcPos:=CommentStartPos;
-  RaiseException(ctsCommentEndNotFound);
+  RaiseException(id,ctsCommentEndNotFound);
 end;
 
 procedure TLinkScanner.UpdateCleanedSource(NewCopiedSrcPos: integer);
@@ -2278,7 +2285,7 @@ procedure TLinkScanner.UpdateCleanedSource(NewCopiedSrcPos: integer);
   procedure RaiseInvalid;
   begin
     debugln(['TLinkScanner.UpdateCleanedSource inconsistency found: Srclen=',SrcLen,'=',length(Src),' FCleanedSrc=',CleanedLen,'/',length(FCleanedSrc),' CopiedSrcPos=',CopiedSrcPos,' NewCopiedSrcPos=',NewCopiedSrcPos,' AddLen=',NewCopiedSrcPos-CopiedSrcPos]);
-    RaiseConsistencyException('TLinkScanner.UpdateCleanedSource inconsistency found AddLen='+dbgs(NewCopiedSrcPos-CopiedSrcPos));
+    RaiseConsistencyException(20170422130054,'TLinkScanner.UpdateCleanedSource inconsistency found AddLen='+dbgs(NewCopiedSrcPos-CopiedSrcPos));
   end;
 
 var AddLen: integer;
@@ -2306,7 +2313,7 @@ procedure TLinkScanner.AddSourceChangeStep(ACode: pointer; AChangeStep: integer)
 
   procedure RaiseCodeNil;
   begin
-    RaiseConsistencyException('TLinkScanner.AddSourceChangeStep ACode=nil');
+    RaiseConsistencyException(20170422130109,'TLinkScanner.AddSourceChangeStep ACode=nil');
   end;
 
 var l,r,m: integer;
@@ -3363,7 +3370,7 @@ begin
   else if (FDirectiveName='ALIGN') then
     // set record align size
   else begin
-    RaiseExceptionFmt(ctsInvalidFlagValueForDirective,
+    RaiseExceptionFmt(20170422130112,ctsInvalidFlagValueForDirective,
         [copy(Src,ValStart,SrcPos-ValStart),FDirectiveName]);
   end;
   Result:=ReadNextSwitchDirective;
@@ -3384,7 +3391,7 @@ begin
   else if CompareUpToken('OFF',Src,ValStart,SrcPos) then
     SetDirectiveValueWithSequence(ADirective, '0')
   else begin
-    RaiseExceptionFmt(ctsInvalidFlagValueForDirective,
+    RaiseExceptionFmt(20170422130115,ctsInvalidFlagValueForDirective,
         [copy(Src,ValStart,SrcPos-ValStart),FDirectiveName]);
   end;
   Result:=ReadNextSwitchDirective;
@@ -3405,7 +3412,7 @@ begin
   else if CompareUpToken('OFF',Src,ValStart,SrcPos) then
     FMacrosOn:=false
   else
-    RaiseExceptionFmt(ctsInvalidFlagValueForDirective,
+    RaiseExceptionFmt(20170422130118,ctsInvalidFlagValueForDirective,
         [copy(Src,ValStart,SrcPos-ValStart),FDirectiveName]);
   Result:=true;
 end;
@@ -3443,7 +3450,7 @@ begin
         break;
       end;
     if not ModeValid then
-      RaiseExceptionFmt(ctsInvalidMode,[copy(Src,ValStart,SrcPos-ValStart)]);
+      RaiseExceptionFmt(20170422130122,ctsInvalidMode,[copy(Src,ValStart,SrcPos-ValStart)]);
   end;
   Result:=true;
 end;
@@ -3485,7 +3492,7 @@ begin
       exit;
     end;
   end;
-  RaiseExceptionFmt(ctsInvalidModeSwitch,[copy(Src,ValStart,SrcPos-ValStart)]);
+  RaiseExceptionFmt(20170422130125,ctsInvalidModeSwitch,[copy(Src,ValStart,SrcPos-ValStart)]);
 end;
 
 function TLinkScanner.ThreadingDirective: boolean;
@@ -3598,7 +3605,7 @@ function TLinkScanner.EndifDirective: boolean;
 
   procedure RaiseAWithoutB;
   begin
-    RaiseExceptionFmt(ctsAwithoutB,['$ENDIF','$IF'])
+    RaiseExceptionFmt(20170422130128,ctsAwithoutB,['$ENDIF','$IF'])
   end;
   
 begin
@@ -3624,7 +3631,7 @@ function TLinkScanner.EndCDirective: boolean;
 
   procedure RaiseAWithoutB;
   begin
-    RaiseExceptionFmt(ctsAwithoutB,['$ENDC','$IFC'])
+    RaiseExceptionFmt(20170422130131,ctsAwithoutB,['$ENDC','$IFC'])
   end;
 
 begin
@@ -3648,7 +3655,7 @@ function TLinkScanner.IfEndDirective: boolean;
 
   procedure RaiseAWithoutB;
   begin
-    RaiseExceptionFmt(ctsAwithoutB,['$IfEnd','$ElseIf'])
+    RaiseExceptionFmt(20170422130134,ctsAwithoutB,['$IfEnd','$ElseIf'])
   end;
 
 begin
@@ -3671,7 +3678,7 @@ function TLinkScanner.ElseDirective: boolean;
 
   procedure RaiseAWithoutB;
   begin
-    RaiseExceptionFmt(ctsAwithoutB,['$ELSE','$IF']);
+    RaiseExceptionFmt(20170422130138,ctsAwithoutB,['$ELSE','$IF']);
   end;
 
 begin
@@ -3699,7 +3706,7 @@ function TLinkScanner.ElseCDirective: boolean;
 
   procedure RaiseAWithoutB;
   begin
-    RaiseExceptionFmt(ctsAwithoutB,['$ELSEC','$IFC']);
+    RaiseExceptionFmt(20170422130140,ctsAwithoutB,['$ELSEC','$IFC']);
   end;
 
 begin
@@ -3728,7 +3735,7 @@ function TLinkScanner.ElseIfDirective: boolean;
 
   procedure RaiseAWithoutB;
   begin
-    RaiseExceptionFmt(ctsAwithoutB,['$ELSEIF','$IF']);
+    RaiseExceptionFmt(20170422130143,ctsAwithoutB,['$ELSEIF','$IF']);
   end;
 
 begin
@@ -3752,7 +3759,7 @@ function TLinkScanner.ElIfCDirective: boolean;
 
   procedure RaiseAWithoutB;
   begin
-    RaiseExceptionFmt(ctsAwithoutB,['$ELIFC','$IFC']);
+    RaiseExceptionFmt(20170422130146,ctsAwithoutB,['$ELIFC','$IFC']);
   end;
 
 begin
@@ -3879,7 +3886,7 @@ begin
         IncFilename:=copy(IncFilename,2,length(IncFilename)-2)
       else begin
         SrcPos:=CommentInnerEndPos;
-        RaiseException('missing ''');
+        RaiseException(20170422130149,'missing ''');
       end;
     end;
     ForcePathDelims(IncFilename);
@@ -4105,7 +4112,7 @@ begin
     end;
     if (not IgnoreMissingIncludeFiles) then begin
       // ToDo: add an event to let application improve the error message
-      RaiseExceptionFmt(ctsIncludeFileNotFound,[AFilename])
+      RaiseExceptionFmt(20170422130152,ctsIncludeFileNotFound,[AFilename])
     end else begin
       // add a dummy link
       AddLink(SrcPos,nil,slkMissingIncludeFile);
@@ -4164,7 +4171,7 @@ procedure TLinkScanner.PushIncludeLink(ACleanedPos, ASrcPos: integer;
   
   procedure RaiseIncludeCircleDetected;
   begin
-    RaiseException(ctsIncludeCircleDetected);
+    RaiseException(20170422130154,ctsIncludeCircleDetected);
   end;
   
 var NewLink: PSourceLink;
@@ -4561,7 +4568,7 @@ function TLinkScanner.InternalIfDirective: boolean;
 
   procedure RaiseMissingExpr;
   begin
-    RaiseException('missing expression');
+    RaiseException(20170422130156,'missing expression');
   end;
 
 var
@@ -4576,7 +4583,7 @@ begin
   //DebugLn(['TLinkScanner.InternalIfDirective ExprResult=',ExprResult]);
   if Values.ErrorPosition>=0 then begin
     inc(SrcPos,Values.ErrorPosition);
-    RaiseException(Values.ErrorMsg)
+    RaiseException(20170422130200,Values.ErrorMsg)
   end else if ExprResult then begin
     // expression evaluates to true => stop skipping and parse block
     if FDirectivesCount>0 then
@@ -4780,7 +4787,7 @@ function TLinkScanner.WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer;
   procedure EditError(const AMessage: string; ACode: Pointer);
   begin
     if ErrorOnFail then
-      RaiseEditException(AMessage,ACode,0);
+      RaiseEditException(20170422130202,AMessage,ACode,0);
   end;
   
 var
@@ -4901,37 +4908,39 @@ begin
   if Assigned(OnSetGlobalWriteLock) then OnSetGlobalWriteLock(false);
 end;
 
-procedure TLinkScanner.RaiseExceptionFmt(const AMessage: string;
-  Args: array of const);
+procedure TLinkScanner.RaiseExceptionFmt(id: int64; const AMessage: string;
+  const Args: array of const);
 begin
-  RaiseException(Format(AMessage,args));
+  RaiseException(id,Format(AMessage,args));
 end;
 
-procedure TLinkScanner.RaiseException(const AMessage: string);
+procedure TLinkScanner.RaiseException(id: int64; const AMessage: string);
 begin
-  RaiseExceptionClass(AMessage,ELinkScannerError);
+  RaiseExceptionClass(id,AMessage,ELinkScannerError);
 end;
 
-procedure TLinkScanner.RaiseExceptionClass(const AMessage: string;
+procedure TLinkScanner.RaiseExceptionClass(id: int64; const AMessage: string;
   ExceptionClass: ELinkScannerErrors);
 begin
   LastErrorMessage:=AMessage;
   LastErrorSrcPos:=SrcPos;
   LastErrorCode:=Code;
   LastErrorCheckedForIgnored:=false;
+  LastErrorId:=id;
   LastErrorIsValid:=true;
-  raise ExceptionClass.Create(Self,AMessage);
+  raise ExceptionClass.Create(Self,id,AMessage);
 end;
 
-procedure TLinkScanner.RaiseEditException(const AMessage: string;
+procedure TLinkScanner.RaiseEditException(id: int64; const AMessage: string;
   ABuffer: Pointer; ABufferPos: integer);
 begin
-  raise ELinkScannerEditError.Create(Self,AMessage,ABuffer,ABufferPos);
+  raise ELinkScannerEditError.Create(Self,id,AMessage,ABuffer,ABufferPos);
 end;
 
-procedure TLinkScanner.RaiseConsistencyException(const AMessage: string);
+procedure TLinkScanner.RaiseConsistencyException(id: int64;
+  const AMessage: string);
 begin
-  RaiseExceptionClass(AMessage,ELinkScannerConsistency);
+  RaiseExceptionClass(id,AMessage,ELinkScannerConsistency);
 end;
 
 procedure TLinkScanner.ClearLastError;
@@ -4944,7 +4953,7 @@ procedure TLinkScanner.RaiseLastError;
 begin
   SrcPos:=LastErrorSrcPos;
   Code:=LastErrorCode;
-  RaiseException(LastErrorMessage);
+  RaiseException(20170422130205,LastErrorMessage);
 end;
 
 procedure TLinkScanner.DoCheckAbort;
@@ -4952,7 +4961,7 @@ begin
   if not Assigned(OnProgress) then exit;
   if OnProgress(Self) then exit;
   // raise abort exception
-  RaiseExceptionClass('Abort',ELinkScannerAbort);
+  RaiseExceptionClass(20170422130207,'Abort',ELinkScannerAbort);
 end;
 
 function TLinkScanner.MainFilename: string;
@@ -4965,11 +4974,12 @@ end;
 
 { ELinkScannerError }
 
-constructor ELinkScannerError.Create(ASender: TLinkScanner;
+constructor ELinkScannerError.Create(ASender: TLinkScanner; TheId: int64;
   const AMessage: string);
 begin
   inherited Create(AMessage);
   Sender:=ASender;
+  id:=TheId;
 end;
 
 { TPSourceLinkMemManager }
@@ -5141,10 +5151,10 @@ end;
 
 { ELinkScannerEditError }
 
-constructor ELinkScannerEditError.Create(ASender: TLinkScanner;
+constructor ELinkScannerEditError.Create(ASender: TLinkScanner; TheId: int64;
   const AMessage: string; ABuffer: Pointer; ABufferPos: integer);
 begin
-  inherited Create(ASender,AMessage);
+  inherited Create(ASender,TheId,AMessage);
   Buffer:=ABuffer;
   BufferPos:=ABufferPos;
 end;
