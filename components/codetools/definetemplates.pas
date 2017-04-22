@@ -5422,10 +5422,11 @@ var
         begin
           // template for a sub directory
           ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
-          // CurPath can be ''
+          // Note: CurPath can be ''
           SubPath:=AppendPathDelim(CurPath)+TempValue;
           // test if ExpandedDirectory is part of SubPath
-          if FilenameIsMatching(SubPath,ExpandedDirectory,false) then begin
+          if (SubPath<>'') and FilenameIsMatching(SubPath,ExpandedDirectory,false)
+          then begin
             if Assigned(OnCalculate) then
               OnCalculate(Self,DefTempl,true,SubPath,false,'',true);
             CalculateTemplate(DefTempl.FirstChild,SubPath);
