@@ -1896,6 +1896,9 @@ var
   Level: Integer;
 begin
   Result:='';
+  {$IFDEF VerboseAddClassAndNameToProc}
+  debugln(['TBeautifyCodeOptions.AddClassAndNameToProc AProcCode="',AProcCode,'" AClassName="',AClassName,'" AMethodName="',AMethodName,'"']);
+  {$ENDIF}
   p:=1;
   ProcLen:=length(AProcCode);
   // read proc keyword 'procedure', 'function', ...

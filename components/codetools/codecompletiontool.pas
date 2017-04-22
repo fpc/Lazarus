@@ -1550,6 +1550,8 @@ begin
   MethodDefinition:=TrimCodeSpace(
                 ProcContext.Tool.ExtractProcHead(ProcContext.Node,
                               MethodAttr+[phpWithoutClassName,phpWithoutName]));
+  if MethodDefinition='' then
+    RaiseException(20170422200434,'unknown proctype '+ProcContext.Node.DescAsString);
   MethodDefinition:=Beauty.AddClassAndNameToProc(MethodDefinition, '', NewProcName);
   debugln(['TCodeCompletionCodeTool.AddProcedureCompatibleToProcType MethodDefinition="',MethodDefinition,'"']);
 
@@ -2210,7 +2212,8 @@ begin
                                   Params);
     if not Result then exit;
 
-    if ProcContext.Tool.ProcNodeHasOfObject(ProcContext.Node) then begin
+    if ((AClassNode<>nil) and (ProcContext.Node.Desc=ctnReferenceTo))
+    or ProcContext.Tool.ProcNodeHasOfObject(ProcContext.Node) then begin
       if AClassNode<>nil then begin
         {$IFDEF VerboseCompleteEventAssign}
         DebugLn('  CompleteEventAssignment: CreateEventFullName... UserEventAtom.StartPos=',dbgs(UserEventAtom.StartPos));
