@@ -81,7 +81,7 @@ msgid "bracket open expected, but %s found"
 msgstr "очікується відкрита дужка, але знайдено %s"
 
 #: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
-msgid "can not add a unit to the implementation, because only a unit has one"
+msgid "cannot add a unit to the implementation, because only a unit has one"
 msgstr ""
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange

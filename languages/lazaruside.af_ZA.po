@@ -14092,6 +14092,10 @@ msgstr ""
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
 msgstr ""
 
+#: lazarusidestrconsts.lisoutputdirectoryofcontainspascalunitsource
+msgid "output directory of %s contains Pascal unit source \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr ""

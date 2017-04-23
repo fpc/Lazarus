@@ -55,7 +55,7 @@ ResourceString
   ctsIdentExpectedButAtomFound = 'identifier expected, but %s found';
   ctsIdentExpectedButKeyWordFound = 'identifier expected, but keyword %s found';
   ctsStrExpectedButAtomFound = 'expected %s, but %s found';
-  ctsCanNotAddAUnitToTheImplementationBecauseOnlyAUnitH = 'can not add a unit '
+  ctsCanNotAddAUnitToTheImplementationBecauseOnlyAUnitH = 'cannot add a unit '
     +'to the implementation, because only a unit has one';
   ctsEndOfFile = 'end of file';
   ctsPositionNotInSource = 'Position not in source';

@@ -14173,6 +14173,10 @@ msgstr ", OS: %s"
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
 msgstr "jiná zdrojová cesta balíčku \"%s\" obsahuje adresář \"%s\", který je už v cestě pro hledání jednotek. "
 
+#: lazarusidestrconsts.lisoutputdirectoryofcontainspascalunitsource
+msgid "output directory of %s contains Pascal unit source \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Vybrat jazyk. Na příklad --language=cz. Pro možné varianty se podívejte na soubory ve složce jazyků."
