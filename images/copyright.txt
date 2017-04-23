@@ -39,7 +39,18 @@ menu_toggle_bookmark6.png
 menu_toggle_bookmark7.png
 menu_toggle_bookmark8.png
 menu_toggle_bookmark9.png
+menu_view_components.png
+menu_view_components_150.png
+menu_view_components_200.png
+menu_view_inspector.png
+menu_view_inspector_150.png
+menu_view_inspector_200.png
+menu_view_messages.png
+menu_view_messages_150.png
+menu_view_messages_200.png
 menu_view_search_results.png
+menu_view_search_results_150.png
+menu_view_search_results_200.png
 
 sourceeditor directory:
 
