@@ -13848,6 +13848,23 @@ function TQtCheckListBox.EventFilter(Sender: QObjectH; Event: QEventH
   ): Boolean; cdecl;
 begin
   Result := False;
+  if (QEvent_type(Event) = QEventKeyPress) and
+    (QtVersionMajor = 4) and (QtVersionMinor >= 8) and
+     ((QKeyEvent_key(QKeyEventH(Event)) = QtKey_Up) or
+     (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Down)) then
+  begin
+    {issue #31697}
+    Result:=inherited EventFilter(Sender, Event);
+    if ItemCount > 0 then
+    begin
+      if (getSelCount = 0) then
+      begin
+        Selected[0] := True;
+        Result := True;
+      end;
+      inherited signalSelectionChanged();
+    end;
+  end else
   if (QEvent_type(Event) = QEventMouseButtonDblClick) then
     // issue #25089
   else
@@ -13905,7 +13922,10 @@ begin
             if Assigned(Item) and (currentItem <> Item) then
             begin
               // DebugLn('TQtCheckListBox forced item change');
-              Self.setCurrentItem(Item, True);
+              // Self.setCurrentItem(Item, True);
+              {issue #31697}
+              QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelSelectCurrent);
+              inherited signalSelectionChanged();
             end;
           end;
         end;
@@ -13959,6 +13979,11 @@ begin
   Msg.Msg := LM_CHANGED;
   Msg.WParam := PtrInt(QListWidget_row(QListWidgetH(Widget), Item));
   DeliverMessage(Msg);
+  if (QtVersionMajor = 4) and (QtVersionMinor >= 8) then
+  begin
+    QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelSelectCurrent);
+    inherited signalSelectionChanged();
+  end;
 end;
 
 function TQtCheckListBox.GetItemCheckState(AIndex: Integer): QtCheckState;
