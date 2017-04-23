@@ -13015,7 +13015,7 @@ begin
               SlotMouse(Sender, Event);
               HandleCheckChangedEvent(MousePos, Item, Event);
               if not QListWidgetItem_isSelected(Item) then
-                QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelSelect);
+                QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelClearAndSelect);
               QEvent_ignore(Event);
               Result := True;
               exit;
