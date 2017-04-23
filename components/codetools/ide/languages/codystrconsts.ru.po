@@ -162,7 +162,7 @@ msgstr "%s, записывается свойством %s"
 
 #: codystrconsts.crscaretoutsideofcode
 msgid "Caret outside of code"
-msgstr ""
+msgstr "Курсор находится вне исходного кода"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
