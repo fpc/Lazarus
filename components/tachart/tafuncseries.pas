@@ -1388,7 +1388,10 @@ begin
       ycalc := ycalc * TArbFloatArray(x)[i] + FFitParams[j];
     SSres := SSres + sqr(TArbFloatArray(y)[i] - ycalc);
   end;
-  Result := 1.0 - SSres / SStot;
+  if SStot = 0 then
+    Result := 0.0
+  else
+    Result := 1.0 - SSres / SStot;
   {$POP}
 end;
 
@@ -1440,6 +1443,7 @@ begin
   FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
   FPointer := TSeriesPointer.Create(ParentChart);
+  FPointer.Visible := false;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FIT_STEP;
