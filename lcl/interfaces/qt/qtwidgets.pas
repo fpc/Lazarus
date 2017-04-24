@@ -1013,6 +1013,7 @@ type
 
   TQtComboBox = class(TQtWidget, IQtEdit)
   private
+    FKeyEnterFix: boolean; {issue #31574}
     FMouseFixPos: TQtPoint;
     // hooks
     FChangeHook: QComboBox_hookH;
@@ -11091,6 +11092,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.Create');
   {$endif}
+  FKeyEnterFix := False; {issue #31574}
   FMouseFixPos := QtPoint(-1, -1);
   FDropListVisibleInternal := False;
   if AParams.WndParent <> 0 then
@@ -11577,13 +11579,22 @@ begin
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
   begin
     if (Byte(QEvent_type(Event)) in [QEventKeyPress, QEventKeyRelease,QEventFontChange]) then
+    begin
       Result := inherited EventFilter(Sender, Event);
+      if Result and (QEvent_type(Event) = QEventKeyPress) then
+        FKeyEnterFix := True; {issue #31574}
+    end;
     QEvent_ignore(Event);
     exit;
   end;
 
   BeginEventProcessing;
   try
+
+    if FKeyEnterFix and (Byte(QEvent_type(Event)) in [QEventMouseButtonPress, QEventMouseButtonDblClick,
+      QEventMouseButtonRelease, QEventKeyPress, QEventHide, QEventShow]) then
+        FKeyEnterFix := False; {issue #31574}
+
     case QEvent_type(Event) of
       QEventFocusOut:
       begin
@@ -11684,6 +11695,13 @@ begin
             Result := inherited EventFilter(Sender, Event);
         end else
           Result := inherited EventFilter(Sender, Event);
+      end;
+      QEventKeyRelease:
+      begin
+        {issue #31574}
+        if not FKeyEnterFix then
+          Result := inherited EventFilter(Sender, Event);
+        FKeyEnterFix := False;
       end;
       else
         Result := inherited EventFilter(Sender, Event);
