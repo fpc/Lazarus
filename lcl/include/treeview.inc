@@ -2805,20 +2805,20 @@ end;
 
 procedure TTreeNodes.Assign(Source: TPersistent);
 var
-  TreeNodes: TTreeNodes;
-  MemStream: TMemoryStream;
+  SrcNodes: TTreeNodes;
+  SrcStream: TMemoryStream;
 begin
   ClearCache;
   if Source is TTreeNodes then begin
-    TreeNodes := TTreeNodes(Source);
+    SrcNodes := TTreeNodes(Source);
     Clear;
-    MemStream := TMemoryStream.Create;
+    SrcStream := TMemoryStream.Create;
     try
-      TreeNodes.WriteData(MemStream, true);
-      MemStream.Position := 0;
-      ReadData(MemStream);
+      SrcNodes.WriteData(SrcStream, true);
+      SrcStream.Position := 0;
+      ReadData(SrcStream);
     finally
-      MemStream.Free;
+      SrcStream.Free;
     end;
   end
   else
