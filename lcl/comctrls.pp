@@ -2943,7 +2943,7 @@ type
     procedure SetVisible(const AValue: Boolean);
     procedure Unbind;
     procedure UnbindFromMultiSelected;
-    procedure WriteData(Stream: TStream);
+    procedure WriteData(Stream: TStream; StreamVersion: integer);
     procedure WriteDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
   protected
     procedure Changed(ChangeReason: TTreeNodeChangeReason);
@@ -3093,7 +3093,8 @@ type
     procedure Repaint(ANode: TTreeNode);
     procedure ShrinkTopLvlItems;
     procedure SetTopLvlItems(Index: integer; AValue: TTreeNode);
-    procedure WriteData(Stream: TStream);
+    procedure WriteData(Stream: TStream); overload;
+    procedure WriteData(Stream: TStream; WriteDataPointer: boolean); overload;
     procedure WriteExpandedState(Stream: TStream);
   protected
     function InternalAddObject(Node: TTreeNode; const S: string;

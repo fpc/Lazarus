@@ -1879,24 +1879,41 @@ begin
   end;
 end;
 
-procedure TTreeNode.WriteData(Stream: TStream);
+procedure TTreeNode.WriteData(Stream: TStream; StreamVersion: integer);
 var
   i: integer;
+  OldInfo: TOldTreeNodeInfo;
   Info: TTreeNodeInfo;
 begin
-  Info.ImageIndex := ImageIndex;
-  Info.SelectedIndex := SelectedIndex;
-  Info.OverlayIndex := OverlayIndex;
-  Info.StateIndex := StateIndex;
-  Info.Height := FHeight;
-  Info.Count := Count;
-  Info.Expanded := Expanded;
-  Info.TextLen := Length(Text);
-  Stream.WriteBuffer(Info, SizeOf(TTreeNodeInfo));
+  if StreamVersion=TTreeNodeWithPointerStreamVersion then
+  begin
+    OldInfo.ImageIndex := ImageIndex;
+    OldInfo.SelectedIndex := SelectedIndex;
+    OldInfo.OverlayIndex := OverlayIndex;
+    OldInfo.StateIndex := StateIndex;
+    OldInfo.Height := FHeight;
+    OldInfo.Data := Data;
+    OldInfo.Count := Count;
+    OldInfo.Expanded := Expanded;
+    OldInfo.TextLen := Length(Text);
+    Stream.WriteBuffer(OldInfo, SizeOf(TOldTreeNodeInfo));
+  end
+  else
+  begin
+    Info.ImageIndex := ImageIndex;
+    Info.SelectedIndex := SelectedIndex;
+    Info.OverlayIndex := OverlayIndex;
+    Info.StateIndex := StateIndex;
+    Info.Height := FHeight;
+    Info.Count := Count;
+    Info.Expanded := Expanded;
+    Info.TextLen := Length(Text);
+    Stream.WriteBuffer(Info, SizeOf(TTreeNodeInfo));
+  end;
   if Text<>'' then
     Stream.Write(FText[1],length(Text));
   for i := 0 to Count - 1 do
-    Items[i].WriteData(Stream);
+    Items[i].WriteData(Stream, StreamVersion);
 end;
 
 procedure TTreeNode.WriteDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
@@ -2797,7 +2814,7 @@ begin
     Clear;
     MemStream := TMemoryStream.Create;
     try
-      TreeNodes.WriteData(MemStream);
+      TreeNodes.WriteData(MemStream, true);
       MemStream.Position := 0;
       ReadData(MemStream);
     finally
@@ -2861,21 +2878,31 @@ begin
 end;
 
 procedure TTreeNodes.WriteData(Stream: TStream);
+begin
+   WriteData(Stream, false);
+end;
+
+procedure TTreeNodes.WriteData(Stream: TStream; WriteDataPointer: boolean);
 var
   ANode: TTreeNode;
   MagicNumber: integer;
+  StreamVersion: word;
 begin
   // -7 for lcl stream
   MagicNumber:=LCLStreamID;
   Stream.WriteBuffer(MagicNumber,SizeOf(MagicNumber));
   // write stream version
-  Stream.WriteBuffer(TTreeNodeStreamVersion,SizeOf(Word));
+  if WriteDataPointer then
+    StreamVersion:=TTreeNodeWithPointerStreamVersion
+  else
+    StreamVersion:=TTreeNodeStreamVersion;
+  Stream.WriteBuffer(StreamVersion,SizeOf(Word));
   // write top level node count
   Stream.WriteBuffer(FTopLvlCount, SizeOf(Integer));
   // write all nodes recursively
   ANode := GetFirstNode;
   while ANode <> nil do begin
-    ANode.WriteData(Stream);
+    ANode.WriteData(Stream, StreamVersion);
     ANode := ANode.GetNextSibling;
   end;
 end;
