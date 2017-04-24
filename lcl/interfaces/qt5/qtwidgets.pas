@@ -13895,7 +13895,8 @@ begin
           if (QEvent_Type(Event) = QEventMouseButtonPress) then
           begin
             // change current row , this works fine with qt < 4.8
-            if Assigned(Item) and (currentItem <> Item) then
+            if Assigned(Item) and
+              ((currentItem <> Item) or not QListWidgetItem_isSelected(Item)) then
             begin
               // DebugLn('TQtCheckListBox forced item change');
               {issue #31697}

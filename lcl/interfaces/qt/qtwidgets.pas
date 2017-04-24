@@ -13890,6 +13890,7 @@ begin
           // issue #21318
           MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
           Item := itemAt(MousePos.x, MousePos.y);
+
           if QEvent_Type(Event) = QEventMouseButtonDblClick then
           begin
             SlotMouse(Widget, Event);
@@ -13919,7 +13920,8 @@ begin
             (QEvent_Type(Event) = QEventMouseButtonPress) then
           begin
             // change current row , this works fine with qt < 4.8
-            if Assigned(Item) and (currentItem <> Item) then
+            if Assigned(Item) and
+              ((currentItem <> Item) or not QListWidgetItem_isSelected(Item)) then
             begin
               // DebugLn('TQtCheckListBox forced item change');
               // Self.setCurrentItem(Item, True);
