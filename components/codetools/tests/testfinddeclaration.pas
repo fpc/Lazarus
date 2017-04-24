@@ -30,10 +30,12 @@ unit TestFindDeclaration;
 interface
 
 uses
-  Classes, SysUtils, CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
+  Classes, SysUtils, contnrs,
+  fpcunit, testregistry,
+  FileProcs, LazFileUtils, LazLogger,
+  CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
   CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
-  IdentCompletionTool, FileProcs, LazLogger, LazFileUtils, fpcunit,
-  testregistry, contnrs;
+  IdentCompletionTool, TestPascalParser;
 
 const
   MarkDecl = '#'; // a declaration, must be unique
@@ -50,7 +52,7 @@ type
 
   { TCustomTestFindDeclaration }
 
-  TCustomTestFindDeclaration = class(TTestCase)
+  TCustomTestFindDeclaration = class(TCustomTestPascalParser)
   private
     FMainCode: TCodeBuffer;
     FMarkers: TObjectList;// list of TFDMarker
@@ -90,6 +92,8 @@ type
     procedure TestFindDeclaration_Generics;
     procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
+    procedure TestFindDeclaration_CBlocks;
+    // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
   end;
@@ -394,15 +398,15 @@ end;
 
 procedure TCustomTestFindDeclaration.WriteSource(const CursorPos: TCodeXYPosition);
 var
-  Code: TCodeBuffer;
+  CurCode: TCodeBuffer;
   i: Integer;
   Line: String;
 begin
-  Code:=CursorPos.Code;
-  if Code=nil then
-    Fail('TTestFindDeclaration.WriteSource Code=nil');
-  for i:=1 to Code.LineCount do begin
-    Line:=Code.GetLine(i-1,false);
+  CurCode:=CursorPos.Code;
+  if CurCode=nil then
+    Fail('TTestFindDeclaration.WriteSource CurCode=nil');
+  for i:=1 to CurCode.LineCount do begin
+    Line:=CurCode.GetLine(i-1,false);
     if (i=CursorPos.Y) then begin
       write('*');
       Line:=LeftStr(Line,CursorPos.X-1)+'|'+copy(Line,CursorPos.X,length(Line));
@@ -650,6 +654,34 @@ begin
     SubUnit2Code.IsDeleted:=true;
     LFMCode.IsDeleted:=true;
   end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_CBlocks;
+begin
+  StartProgram;
+  Add([
+    '{$modeswitch cblocks}',
+    'type tblock = reference to procedure; cdecl;',
+    'procedure test(b: tblock);',
+    'begin',
+    '  b;',
+    'end;',
+    'procedure proc;',
+    'begin',
+    'end;',
+    'const bconst: tblock = @proc;',
+    'var',
+    '  b: tblock;',
+    'begin',
+    '  b:=@proc;',
+    '  b;',
+    '  test{declaration:test1.test}(@proc);',
+    '  test{declaration:test1.test}(b);',
+    '  bconst{declaration:test1.bconst};',
+    '  test{declaration:test1.test}(bconst{declaration:test1.bconst});',
+    'end.',
+  '']);
+  ParseModule;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;

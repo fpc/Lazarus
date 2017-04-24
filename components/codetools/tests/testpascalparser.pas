@@ -17,9 +17,9 @@ uses
 
 type
 
-  { TTestPascalParser }
+  { TCustomTestPascalParser }
 
-  TTestPascalParser = class(TTestCase)
+  TCustomTestPascalParser = class(TTestCase)
   private
     FCode: TCodeBuffer;
   protected
@@ -32,36 +32,41 @@ type
     procedure StartProgram;
     procedure ParseModule;
     property Code: TCodeBuffer read FCode;
+  end;
+
+  { TTestPascalParser }
+
+  TTestPascalParser = class(TCustomTestPascalParser)
   published
     procedure TestRecord_ClassOperators;
   end;
 
 implementation
 
-{ TTestPascalParser }
+{ TCustomTestPascalParser }
 
-procedure TTestPascalParser.SetUp;
+procedure TCustomTestPascalParser.SetUp;
 begin
   inherited SetUp;
   FCode:=CodeToolBoss.CreateFile('test1.pas');
 end;
 
-procedure TTestPascalParser.TearDown;
+procedure TCustomTestPascalParser.TearDown;
 begin
   inherited TearDown;
 end;
 
-procedure TTestPascalParser.Add(const s: string);
+procedure TCustomTestPascalParser.Add(const s: string);
 begin
   FCode.Source:=FCode.Source+s+LineEnding;
 end;
 
-procedure TTestPascalParser.Add(Args: array of const);
+procedure TCustomTestPascalParser.Add(Args: array of const);
 begin
   FCode.Source:=FCode.Source+LinesToStr(Args);
 end;
 
-procedure TTestPascalParser.StartUnit;
+procedure TCustomTestPascalParser.StartUnit;
 begin
   Add('unit test1;');
   Add('');
@@ -71,7 +76,7 @@ begin
   Add('');
 end;
 
-procedure TTestPascalParser.StartProgram;
+procedure TCustomTestPascalParser.StartProgram;
 begin
   Add('program test1;');
   Add('');
@@ -79,7 +84,7 @@ begin
   Add('');
 end;
 
-procedure TTestPascalParser.ParseModule;
+procedure TCustomTestPascalParser.ParseModule;
 var
   Tool: TCodeTool;
   i: Integer;
@@ -98,6 +103,8 @@ begin
     Fail('PascalParser failed: '+CodeToolBoss.ErrorMessage);
   end;
 end;
+
+{ TTestPascalParser }
 
 procedure TTestPascalParser.TestRecord_ClassOperators;
 begin
