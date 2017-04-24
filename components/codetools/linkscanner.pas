@@ -194,9 +194,13 @@ type
                              fields in Java) }
     cmsDefault_unicodestring, { makes the default string type in $h+ mode unicodestring rather than
                                 ansistring; similarly, char becomes unicodechar rather than ansichar }
-    cmsTypeHelpers,
-    cmsBlocks,
-    cmsExternalClass      { allow  class external [pkgname] name [symbol] }
+    cmsTypeHelpers,        { allows the declaration of "type helper" (non-Delphi) or "record helper"
+                                  (Delphi) for primitive types }
+    cmsBlocks,             { support for http://en.wikipedia.org/wiki/Blocks_(C_language_extension) }
+    cmsISOlike_IO,          { I/O as it required by an ISO compatible compiler }
+    cmsISOLike_Program_Para, { program parameters as it required by an ISO compatible compiler }
+    cmsISOLike_Mod,       { mod operation as it is required by an iso compatible compiler }
+    cmsExternalClass      { pas2js: allow  class external [pkgname] name [symbol] }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -806,14 +810,17 @@ const
     'FINALFIELDS',
     'UNICODESTRINGS',
     'TYPEHELPERS',
-    'BLOCKS',
+    'CBLOCKS',
+    'ISOIO',
+    'ISOPROGRAMPARAS',
+    'ISOMOD',
     'EXTERNALCLASS'
     );
 
   // upper case
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
-        'FPC', 'DELPHI', 'PAS2JS'
-     );
+    'FPC', 'DELPHI', 'PAS2JS'
+    );
 
 const
   DirectiveSequenceName: array [TSequenceDirective] of ShortString =
