@@ -157,10 +157,12 @@ type
     cmTP,
     cmOBJFPC,
     cmMacPas,
-    cmISO
+    cmISO,
+    cmExtPas
     );
   { TCompilerModeSwitch - see fpc/compiler/globtype.pas  tmodeswitch }
   TCompilerModeSwitch = (
+    //cms_FPC,cms_ObjFPC,cms_Delphi,cms_TP7,cms_Mac,cms_ISO,cms_ExtPas,
     cmsAdd_pointer,        { ? }
     cmsClass,              { delphi class model }
     cmsObjpas,             { load objpas unit }
@@ -234,7 +236,12 @@ const
      cmsISOLike_unary_minus,cmsDefault_inline],
     // cmISO
     [cmsTp_procvar,cmsDuplicate_names,cmsNestedProcVars,cmsNonLocalGoto,
-     cmsISOLike_unary_minus]
+     cmsISOLike_unary_minus],
+    // cmExtPas
+    [cmsTp_procvar,cmsDuplicate_names,cmsNestedProcVars,cmsNonLocalGoto,
+     cmsISOLike_unary_minus,cmsISOlike_IO,
+     cmsISOLike_Program_Para,
+     cmsISOLike_Mod]
     );
 
 type
@@ -774,7 +781,8 @@ const
     'TP',
     'OBJFPC',
     'MACPAS',
-    'ISO'
+    'ISO',
+    'EXTPAS'
     );
 
   // upper case (see fpc/compiler/globtype.pas  modeswitchstr )
@@ -3134,6 +3142,14 @@ begin
     end;
     if (cmsObjpas in CompilerModeSwitches) and (PascalCompiler=pcFPC) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',ObjPas';
+    if (CompilerMode=cmMacPas) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',MacPas';
+    if (CompilerMode=cmISO) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',ISO7185';
+    if (CompilerMode=cmExtPas) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',ISO7185,ExtPas';
+    if (cmsBlocks in CompilerModeSwitches) and (PascalCompiler=pcFPC) then
+      FHiddenUsedUnits:=FHiddenUsedUnits+',BlockRTL';
     if (cmsDefault_unicodestring in CompilerModeSwitches) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',UUChar';
     if CompilerMode=cmISO then
