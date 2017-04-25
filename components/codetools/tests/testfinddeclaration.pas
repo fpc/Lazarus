@@ -93,6 +93,7 @@ type
     procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_CBlocks;
+    procedure TestFindDeclaration_Arrays;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -682,6 +683,11 @@ begin
     'end.',
   '']);
   ParseModule;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Arrays;
+begin
+  FindDeclarations('moduletests/fdt_arrays.pas');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;

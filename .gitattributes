@@ -987,6 +987,7 @@ components/codetools/tests/laztests/unit_order_test.pas svneol=native#text/plain
 components/codetools/tests/laztests/unitdots.dot.pas svneol=native#text/plain
 components/codetools/tests/laztests/unitdots.main.pas svneol=native#text/plain
 components/codetools/tests/laztests/unitdots.pas svneol=native#text/plain
+components/codetools/tests/moduletests/fdt_arrays.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_basic.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_classhelper.pas svneol=native#text/plain
 components/codetools/tests/moduletests/fdt_classof.pas svneol=native#text/plain
