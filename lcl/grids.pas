@@ -3185,7 +3185,6 @@ begin
   DebugLn('  Reald: ClientWidth=%d ClientHeight=%d',[ClientWidth, ClientHeight]);
   DebugLn('  MaxTopLeft',dbgs(FGCache.MaxTopLeft));
   {$Endif}
-  CalcScrollBarsRange;
 end;
 
 procedure TCustomGrid.CreateParams(var Params: TCreateParams);
