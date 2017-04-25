@@ -4569,6 +4569,7 @@ begin
   CreateChildNode;
   // first set the type to open array (an array type without brackets)
   CurNode.Desc:=ctnOpenArrayType;
+  ReadNextAtom;
   if (CurPos.Flag=cafEdgedBracketOpen) then begin
     CurNode.Desc:=ctnRangedArrayType;
     Result:=ReadIndexType;
