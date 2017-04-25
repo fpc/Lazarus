@@ -9335,7 +9335,7 @@ var
     {$ENDIF}
     if fdfExtractOperand in Params.Flags then begin
       // simple copying, todo: expand argument
-      Params.AddOperandPart(Copy(Src, CurPos.StartPos, CurAtomBracketEndPos-CurPos.StartPos));
+      Params.AddOperandPart(ExtractBrackets(CurPos.StartPos,[]));
     end;
     if (not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
       vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen]))
@@ -9376,6 +9376,27 @@ var
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
       RaiseIllegalQualifierFound;
+    end;
+
+    if ExprType.Context.Node.Desc in [ctnRangedArrayType,ctnOpenArrayType] then
+    begin
+      MoveCursorToCleanPos(CurAtom.StartPos);
+      ReadNextAtom; // "["
+      ReadNextAtom;
+      repeat
+        case CurPos.Flag of
+        cafRoundBracketClose: SaveRaiseBracketCloseExpectedButAtomFound(20170425090717);
+        cafRoundBracketOpen,
+        cafEdgedBracketOpen: ReadTilBracketClose(true);
+        cafComma:
+          with ExprType, Context do begin
+            Context:=Tool.FindBaseTypeOfNode(Params,Node.LastChild);
+            if not (Node.Desc in [ctnRangedArrayType,ctnOpenArrayType]) then
+              RaiseIllegalQualifierFound;
+          end;
+        end;
+        ReadNextAtom;
+      until CurPos.Flag=cafEdgedBracketClose;
     end;
 
     {$IFDEF ShowExprEval}
@@ -11370,6 +11391,16 @@ function TFindDeclarationTool.CheckParameterSyntax(StartPos,
         then begin
           // parameter list ended in front of Variable => continue search
           {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList parameter list ended in front of cursor');{$ENDIF}
+          if CurPos.Flag=cafEdgedBracketClose then begin
+            ReadNextAtom;
+            if CurPos.Flag=cafEdgedBracketOpen then begin
+              // [][] is equal to [,]
+              ParameterStart:=CurPos.EndPos;
+              inc(CurParameterIndex);
+              continue;
+            end else
+              UndoReadNextAtom;
+          end;
           exit;
         end else begin
           // invalid closing bracket found
