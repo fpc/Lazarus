@@ -263,6 +263,8 @@ type
     // arrays
     function ExtractArrayRange(ArrayNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
+    function ExtractArrayRanges(ArrayNode: TCodeTreeNode;
+        Attr: TProcHeadAttributes): string;
 
     // module sections
     function ExtractSourceName: string;
@@ -3174,6 +3176,32 @@ begin
   if not ReadNextUpAtomIs('ARRAY') then exit;
   if not ReadNextAtomIsChar('[') then exit;
   Result:=ExtractBrackets(CurPos.StartPos,Attr);
+end;
+
+function TPascalReaderTool.ExtractArrayRanges(ArrayNode: TCodeTreeNode;
+  Attr: TProcHeadAttributes): string;
+const
+  AllArrays = [ctnRangedArrayType, ctnOpenArrayType];
+var
+  i: Integer;
+begin
+  Result:='';
+  if (ArrayNode=nil) or not (ArrayNode.Desc in AllArrays) then exit;
+  while Assigned(ArrayNode.Parent) and (ArrayNode.Parent.Desc in AllArrays) do
+    ArrayNode:=ArrayNode.Parent;
+  MoveCursorToNodeStart(ArrayNode);
+  if not ReadNextUpAtomIs('ARRAY') then exit;
+  repeat
+    if Result<>'' then Result:=Result+',';
+    if ArrayNode.Desc=ctnRangedArrayType then begin
+      MoveCursorToNodeStart(ArrayNode.FirstChild); // FirstChild=Index type
+      Result:=Result+ExtractNode(ArrayNode.FirstChild,Attr);
+    end else begin
+      Result:=Result+'PtrUInt';
+    end;
+    ArrayNode:=ArrayNode.LastChild;
+  until not (ArrayNode.Desc in AllArrays);
+  Result:='['+Result+']';
 end;
 
 function TPascalReaderTool.PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;

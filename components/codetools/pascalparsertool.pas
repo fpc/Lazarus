@@ -4521,42 +4521,60 @@ function TPascalParserTool.KeyWordFuncTypeArray: boolean;
     array[SubRange,SubRange,...] of ...
     array[Subrange];  // without "of" means array of byte
 }
-begin
-  CreateChildNode;
-  // first set the type to open array (an array type without brackets)
-  CurNode.Desc:=ctnOpenArrayType;
-  ReadNextAtom;
-  if (CurPos.Flag=cafEdgedBracketOpen) then begin
-    repeat
-      ReadNextAtom;
-      // this is a ranged array -> change type
-      CurNode.Desc:=ctnRangedArrayType;
-      CreateChildNode;
-      CurNode.Desc:=ctnRangeType;
-      ReadSubRange(true);
-      CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
-      EndChildNode; // close ctnRangeType
-      if (CurPos.Flag=cafEdgedBracketClose) then break;
-      if (CurPos.Flag<>cafComma) then
-        SaveRaiseCharExpectedButAtomFound(20170421195805,']');
-    until false;
-    ReadNextAtom;
+
+  function ReadElemType: boolean;
+  begin
     if CurPos.Flag in [cafSemicolon,cafRoundBracketClose,cafEdgedBracketClose]
     then begin
       // array[] without "of" means array[] of byte
       CurNode.EndPos:=CurPos.StartPos;
       EndChildNode; // close array
-      exit(true);
+      Result:=true;
+    end else begin
+      if not UpAtomIs('OF') then
+        SaveRaiseStringExpectedButAtomFound(20170425090708,'"of"');
+      ReadNextAtom;
+      Result:=ParseType(CurPos.StartPos);
+      CurNode.EndPos:=CurPos.StartPos;
+      EndChildNode; // close array
     end;
   end;
-  if not UpAtomIs('OF') then
-    SaveRaiseStringExpectedButAtomFound(20170421195808,'"of"');
-  ReadNextAtom;
-  Result:=ParseType(CurPos.StartPos);
-  CurNode.EndPos:=CurPos.StartPos;
-  EndChildNode; // close array
-  //debugln(['TPascalParserTool.KeyWordFuncTypeArray END Atom=',GetAtom,' CurNode=',CurNode.DescAsString]);
-  Result:=true;
+
+  function ReadIndexType: boolean;
+  begin
+    ReadNextAtom;
+    CreateChildNode;
+    CurNode.Desc:=ctnRangeType;
+    ReadSubRange(true);
+    CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+    EndChildNode; // close ctnRangeType
+    if CurPos.Flag=cafComma then begin
+      // "array [T1,T2]" is equal to "array [T1] of array [T2]"
+      // so they should be parsed to the same CodeTree
+      CreateChildNode;
+      CurNode.Desc:=ctnRangedArrayType;
+      Result:=ReadIndexType();
+      CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+      EndChildNode; // close ctnRangedArrayType
+    end else begin
+      if CurPos.Flag<>cafEdgedBracketClose then
+        SaveRaiseCharExpectedButAtomFound(20170425090712,']');
+      ReadNextAtom;
+      CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+      Result:=ReadElemType;
+    end;
+  end;
+
+begin
+  CreateChildNode;
+  // first set the type to open array (an array type without brackets)
+  CurNode.Desc:=ctnOpenArrayType;
+  if (CurPos.Flag=cafEdgedBracketOpen) then begin
+    CurNode.Desc:=ctnRangedArrayType;
+    Result:=ReadIndexType;
+    exit;
+  end;
+  Result:=ReadElemType;
 end;
 
 function TPascalParserTool.KeyWordFuncTypeProc: boolean;

@@ -338,8 +338,18 @@ begin
         end;
       ')',']':
         begin
+          if BracketLevel=1 then begin
+            if Code[TokenStart]=']' then begin
+              ReadRawNextPascalAtom(Code,TokenEnd,TokenStart);
+              if TokenEnd=TokenStart then exit;
+              if Code[TokenStart]='[' then begin
+                inc(NewParameterIndex);
+                continue; // [][] is full version of [,]
+              end
+            end else
+              exit;// cursor behind procedure call
+          end;
           dec(BracketLevel);
-          if BracketLevel=0 then exit;// cursor behind procedure call
         end;
       ',':
         if BracketLevel=1 then inc(NewParameterIndex);
@@ -403,14 +413,9 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
                  phpWithResultType]);
               Result:=true;
             end;
-          ctnOpenArrayType:
+          ctnOpenArrayType,ctnRangedArrayType:
             begin
-              s:=s+'[Index: PtrUInt]';
-              Result:=true;
-            end;
-          ctnRangedArrayType:
-            begin
-              s:=s+ExprTool.ExtractArrayRange(ExprNode,[]);
+              s:=s+ExprTool.ExtractArrayRanges(ExprNode,[]);
               Result:=true;
             end;
           end;
@@ -633,10 +638,10 @@ procedure TCodeContextFrm.MarkCurrentParameterInHints(ParameterIndex: integer);
         repeat
           inc(p);
         until (p>=length(Result)) or (Result[p]='''');
-      'a'..'z','A'..'Z','_':
+      'a'..'z','A'..'Z','_','0'..'9':
         if (BracketLevel=1) and (not ReadingType) then begin
           WordStart:=p;
-          while (p<=length(Result)) and (IsIdentChar[Result[p]]) do
+          while (p<=length(Result)) and IsDottedIdentChar[Result[p]] do
             inc(p);
           WordEnd:=p;
           //DebugLn('MarkCurrentParameterInHint Word=',copy(Result,WordStart,WordEnd-WordStart));
