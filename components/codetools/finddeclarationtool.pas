@@ -10119,7 +10119,7 @@ var
   AliasType: TFindContext;
   Params: TFindDeclarationParams;
 begin
-  Result:=Default(TExpressionType);
+  Result:=CleanExpressionType;
   if Node=nil then
     RaiseException(20170421212058,'TFindDeclarationTool.FindExpressionTypeOfConstSet Node=nil');
   {$IFDEF CheckNodeTool}
