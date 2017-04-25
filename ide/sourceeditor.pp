@@ -332,7 +332,7 @@ type
                                  ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
-    procedure StartIdentCompletionBox(JumpToError: boolean);
+    procedure StartIdentCompletionBox(JumpToError, CanAutoComplete: boolean);
     procedure StartWordCompletionBox;
 
     function IsFirstShared(Sender: TObject): boolean;
@@ -2165,7 +2165,7 @@ Begin
       clSelect          := FActiveEditSelectedBGColor;
       TextColor         := FActiveEditDefaultFGColor;
       TextSelectedColor := FActiveEditSelectedFGColor;
-      //debugln('TSourceNotebook.ccExecute A Color=',DbgS(Color),
+      //debugln('TSourceEditCompletion.ccExecute A Color=',DbgS(Color),
       // ' clSelect=',DbgS(clSelect),
       // ' TextColor=',DbgS(TextColor),
       // ' TextSelectedColor=',DbgS(TextSelectedColor),
@@ -3835,7 +3835,7 @@ Begin
   ecMultiPaste:                MultiPasteText;
   ecContextHelp:               FindHelpForSourceAtCursor;
   ecSmartHint:                 ShowSmartHintForSourceAtCursor;
-  ecIdentCompletion: StartIdentCompletionBox(CodeToolsOpts.IdentComplJumpToError);
+  ecIdentCompletion: StartIdentCompletionBox(CodeToolsOpts.IdentComplJumpToError,true);
   ecShowCodeContext: SourceNotebook.StartShowCodeContext(CodeToolsOpts.IdentComplJumpToError);
   ecWordCompletion:            StartWordCompletionBox;
   ecFind:                      StartFindAndReplace(false);
@@ -4942,7 +4942,8 @@ begin
   FSharedValues.CodeBuffer := NewCodeBuffer;
 end;
 
-procedure TSourceEditor.StartIdentCompletionBox(JumpToError: boolean);
+procedure TSourceEditor.StartIdentCompletionBox(JumpToError,
+  CanAutoComplete: boolean);
 var
   I: Integer;
   TextS, TextS2: String;
@@ -4980,7 +4981,7 @@ begin
   if UseWordCompletion then
     Completion.CurrentCompletionType:=ctWordCompletion;
 
-  Completion.AutoUseSingleIdent := CodeToolsOpts.IdentComplAutoUseSingleIdent;
+  Completion.AutoUseSingleIdent := CanAutoComplete and CodeToolsOpts.IdentComplAutoUseSingleIdent;
   Completion.Execute(TextS2, CompletionRect);
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditor.StartIdentCompletionBox END Completion.TheForm.Visible=',Completion.TheForm.Visible]);
@@ -9340,22 +9341,19 @@ begin
   CodeToolBoss.IdentifierList.Clear;
   FDefaultCompletionForm.CurrentCompletionType:=ctNone;
 
-  (* SetFocus and Deactivate will all trigger this proc to be reentered.
-     Setting "CurrentCompletionType:=ctNone" ensures an immediate exit
-  *)
+  // SetFocus and Deactivate will all trigger this proc to be reentered.
+  //   Setting "CurrentCompletionType:=ctNone" ensures an immediate exit
 
-  (* Due to a bug under XFCE we must move focus before we close the form
-     This is relevant if the form is closed by enter/escape key
-  *)
+  // Due to a bug under XFCE we must move focus before we close the form
+  // This is relevant if the form is closed by enter/escape key
   if PluginFocused and (ActiveEditor<>nil) then
     TSourceEditor(ActiveEditor).FocusEditor;
 
-  (* hide/close the form *)
+  // hide/close the form
   FDefaultCompletionForm.Deactivate;
 
-  (* Ensure focus *after* the form was closed.
-     This is the normal implementation (all but XFCE)
-  *)
+  // Ensure focus *after* the form was closed.
+  // This is the normal implementation (all but XFCE)
   if PluginFocused and (ActiveEditor<>nil) then
     TSourceEditor(ActiveEditor).FocusEditor;
   {$IFDEF VerboseIDECompletionBox}
@@ -10761,7 +10759,7 @@ procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
     end;
 
     // invoke identifier completion
-    SrcEdit.StartIdentCompletionBox(false);
+    SrcEdit.StartIdentCompletionBox(false,false);
     Result:=true;
   end;
 
