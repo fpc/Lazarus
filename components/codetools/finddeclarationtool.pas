@@ -10133,7 +10133,11 @@ begin
   Params:=TFindDeclarationParams.Create(Self,Node);
   try
     Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult];
+    {$IF FPC_FULLVERSION >= 30000}
     AliasType:=Default(TFindContext);
+    {$ELSE}
+    FillChar(AliasType, SizeOf(AliasType), #0);
+    {$ENDIF}
     Result:=FindExpressionTypeOfTerm(CurPos.StartPos,-1,Params,false,@AliasType);
     debugln(['TFindDeclarationTool.FindExpressionTypeOfConstSet ',ExprTypeToString(Result)]);
   finally
@@ -12172,7 +12176,11 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
           case SubExprType.Context.Node.Desc of
           ctnClass, ctnRecordType, ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
             begin
+              {$IF FPC_FULLVERSION >= 30000}
               AliasType:=Default(TFindContext);
+              {$ELSE}
+              FillChar(AliasType, SizeOf(AliasType), #0);
+              {$ENDIF}
               if not SubExprType.Context.Tool.FindEnumeratorOfClass(
                 SubExprType.Context.Node,true,ExprType,@AliasType, Params)
               then
@@ -12194,7 +12202,11 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
             end;
           ctnRangedArrayType,ctnOpenArrayType:
             begin
+              {$IF FPC_FULLVERSION >= 30000}
               AliasType:=Default(TFindContext);
+              {$ELSE}
+              FillChar(AliasType, SizeOf(AliasType), #0);
+              {$ENDIF}
               if SubExprType.Context.Tool.FindElementTypeOfArrayType(
                                       SubExprType.Context.Node,ExprType,@AliasType)
               then begin
