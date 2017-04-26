@@ -198,8 +198,12 @@ class procedure TCarbonWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
 begin
   if not CheckMenuItem(AMenuItem, 'SetShortCut') then Exit;
   if not CheckMenuItem(AMenuItem.Parent, 'SetShortCut', 'Parent') then Exit;
-  
-  TCarbonMenu(AMenuItem.Handle).SetShortCut(ShortCutK1);
+
+  // Cannot set 2 shortcuts for menuitem, clear all if two
+  if ShortCutK2 <> 0{scNone} then
+    TCarbonMenu(AMenuItem.Handle).SetShortCut(0)
+  else
+    TCarbonMenu(AMenuItem.Handle).SetShortCut(ShortCutK1);
 end;
 
 {------------------------------------------------------------------------------
