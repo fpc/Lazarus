@@ -11,8 +11,8 @@ uses
 implementation
 
 begin
-  unitdots.dot.test{declaration:unitdots.dot.test}:=3;
-  unitdots.dot.foo{declaration:unitdots.dot.foo}:=4;
+  unitdots{declaration:tunitdots.main.unitdots}.dot{declaration:tunitdots.main.unitdots.dot}.test{declaration:unitdots.dot.test}:=3;
+  unitdots{declaration:tunitdots.main.unitdots}.dot{declaration:tunitdots.main.unitdots.dot}.foo{declaration:unitdots.dot.foo}:=4;
   //unitdots.dot.bar:='5'; fail!
   unitdots.my{declaration:unitdots.my}:=false;
 end.

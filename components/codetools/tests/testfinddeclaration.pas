@@ -167,6 +167,14 @@ procedure TCustomTestFindDeclaration.FindDeclarations(Filename: string);
         PrependPath(Tool.ExtractProcName(Node,[]),Result);
       ctnProperty:
         PrependPath(Tool.ExtractPropName(Node,false),Result);
+      ctnUseUnitNamespace,ctnUseUnitClearName:
+        begin
+          PrependPath(GetIdentifier(@Tool.Src[Node.StartPos]),Result);
+          if Node.PriorBrother<>nil then begin
+            Node:=Node.PriorBrother;
+            continue;
+          end;
+        end;
       //else debugln(['NodeAsPath ',Node.DescAsString]);
       end;
       Node:=Node.Parent;
