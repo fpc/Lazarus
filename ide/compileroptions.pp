@@ -3170,37 +3170,8 @@ function TBaseCompilerOptions.GetSyntaxOptionsString: string;
 var
   tempsw: String;
 begin
-  { Syntax Options
-   -S<x>  Syntax options:
-      -Sc        Support operators like C (*=,+=,/= and -=)
-      -Sa        Turn on assertions
-      -Se<x>     Error options. <x> is a combination of the following:
-         <n> : Compiler halts after the <n> errors (default is 1)
-         w : Compiler also halts after warnings
-         n : Compiler also halts after notes
-         h : Compiler also halts after hints
-      -Sg        Enable LABEL and GOTO (default in -Mtp and -Mdelphi)
-      -Sh        Use ansistrings by default instead of shortstrings
-      -Si        Turn on inlining of procedures/functions declared as "inline"
-      -Sk        Load fpcylix unit
-      -SI<x>     Set interface style to <x>
-         -SIcom     COM compatible interface (default)
-         -SIcorba   CORBA compatible interface
-      -Sm        Support macros like C (global)
-      -Ss        Constructor name must be init (destructor must be done)
-      -St        Allow static keyword in objects
-      -Sx        Enable exception keywords (default in Delphi/ObjFPC modes)
-
-   -M<x>  Set language mode to <x>
-      -Mfpc      Free Pascal dialect (default)
-      -Mobjfpc   FPC mode with Object Pascal support
-      -Mdelphi   Delphi 7 compatibility mode
-      -Mtp       TP/BP 7.0 compatibility mode
-      -Mmacpas   Macintosh Pascal dialects compatibility mode
-
-  }
   if SyntaxMode<>'' then
-    Result:='-M'+SyntaxMode
+    Result:='-M'+SyntaxMode  // -M<x>  Set language mode to <x>
   else
     Result:='';
 
