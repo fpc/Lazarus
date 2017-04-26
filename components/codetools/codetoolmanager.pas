@@ -365,6 +365,8 @@ type
                                         UseCache: boolean = true): string;// value of macro #FPCUnitPath
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  out FPCVersion, FPCRelease, FPCPatch: integer);
+    function GetNamespacesForDirectory(const Directory: string;
+                          UseCache: boolean = true): string;// value of macro #Namespaces
 
     // miscellaneous
     property OnGetMethodName: TOnGetMethodname read FOnGetMethodName
@@ -1709,6 +1711,21 @@ begin
       if not ReadInt(FPCPatch) then continue;
       exit;
     end;
+  end;
+end;
+
+function TCodeToolManager.GetNamespacesForDirectory(const Directory: string;
+  UseCache: boolean): string;
+var
+  Evaluator: TExpressionEvaluator;
+begin
+  if UseCache then begin
+    Result:=DirectoryCachePool.GetString(Directory,ctdcsNamespaces,true)
+  end else begin
+    Result:='';
+    Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+    if Evaluator=nil then exit;
+    Result:=Evaluator[NamespacesMacroName];
   end;
 end;
 
@@ -6273,6 +6290,7 @@ begin
   ctdcsUnitLinks: Result:=GetUnitLinksForDirectory(ADirectory,false);
   ctdcsUnitSet: Result:=GetUnitSetIDForDirectory(ADirectory,false);
   ctdcsFPCUnitPath: Result:=GetFPCUnitPathForDirectory(ADirectory,false);
+  ctdcsNamespaces: Result:=GetNamespacesForDirectory(ADirectory,false);
   else RaiseCatchableException('');
   end;
 end;

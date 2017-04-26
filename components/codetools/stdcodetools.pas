@@ -1556,7 +1556,7 @@ const
       NewInFilename:=OldInFilename;
       //debugln(['CheckUsesSection NewUnitName="',NewUnitName,'" NewInFilename="',NewInFilename,'"']);
       AFilename:=DirectoryCache.FindUnitSourceInCompletePath(
-                        NewUnitName,NewInFilename,true,FPCSrcSearchRequiresPPU);
+         NewUnitName,NewInFilename,true,FPCSrcSearchRequiresPPU,AddedNameSpace);
       s:=NewUnitName;
       if NewInFilename<>'' then
         s:=s+' in '''+NewInFilename+'''';

@@ -944,6 +944,7 @@ type
     procedure GatherUnitAndSrcPath(var UnitPath, CompleteSrcPath: string);
     function SearchUnitInUnitLinks(const TheUnitName: string): string; deprecated;
     function SearchUnitInUnitSet(const TheUnitName: string): string;
+    function GetNameSpaces: string;
 
     function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
       out IncludeCode: TCodeBuffer): boolean;
@@ -3026,7 +3027,7 @@ begin
   NewInFilename:=AnUnitInFilename;
 
   AFilename:=DirectoryCache.FindUnitSourceInCompletePath(
-                                               NewUnitName,NewInFilename,false);
+                          NewUnitName,NewInFilename,false,false,AddedNameSpace);
   Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AFilename,true));
 
   if (Result=nil) and Assigned(OnFindUsedUnit) then begin
@@ -3074,7 +3075,7 @@ function TFindDeclarationTool.FindUnitCaseInsensitive(var AnUnitName,
   AnUnitInFilename: string): string;
 begin
   Result:=DirectoryCache.FindUnitSourceInCompletePath(
-                                              AnUnitName,AnUnitInFilename,true);
+                         AnUnitName,AnUnitInFilename,true,false,AddedNameSpace);
 end;
 
 procedure TFindDeclarationTool.GatherUnitAndSrcPath(var UnitPath,
@@ -3097,6 +3098,15 @@ function TFindDeclarationTool.SearchUnitInUnitSet(const TheUnitName: string
   ): string;
 begin
   Result:=DirectoryCache.FindUnitInUnitSet(TheUnitName);
+end;
+
+function TFindDeclarationTool.GetNameSpaces: string;
+begin
+  Result:=DirectoryCache.Strings[ctdcsNamespaces];
+  if AddedNameSpace<>'' then begin
+    if Result<>'' then Result:=';'+Result;
+    Result:=AddedNameSpace+Result;
+  end;
 end;
 
 function TFindDeclarationTool.FindSmartHint(const CursorPos: TCodeXYPosition;

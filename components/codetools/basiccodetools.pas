@@ -192,6 +192,7 @@ function DottedIdentifierLength(Identifier: PChar): integer;
 function GetDottedIdentifier(Identifier: PChar): string;
 function IsDottedIdentifier(const Identifier: string): boolean;
 function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
+function ChompDottedIdentifier(const Identifier: string): string;
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -237,6 +238,8 @@ type
     property IdentifierStartInUnitName: Integer read GetIdentifierStartInUnitName;
   end;
 
+  { TNameSpaceInfo }
+
   TNameSpaceInfo = class
   private
     FUnitName: string;
@@ -249,7 +252,7 @@ type
     property IdentifierStartInUnitName: Integer read FIdentifierStartInUnitName;
   end;
 
-
+function ExtractFileNamespace(const Filename: string): string;
 procedure AddToTreeOfUnitFilesOrNamespaces(
   var TreeOfUnitFiles, TreeOfNameSpaces: TAVLTree;
   const NameSpacePath, Filename: string;
@@ -5042,6 +5045,15 @@ begin
   end;
 end;
 
+function ChompDottedIdentifier(const Identifier: string): string;
+var
+  p: Integer;
+begin
+  p:=length(Identifier);
+  while (p>0) and (Identifier[p]<>'.') do dec(p);
+  Result:=LeftStr(Identifier,p-1);
+end;
+
 function TrimCodeSpace(const ACode: string): string;
 // turn all lineends and special chars to space
 // space is combined to one char
@@ -5723,20 +5735,27 @@ begin
   System.Move(p^,Result[1],l);
 end;
 
+function ExtractFileNamespace(const Filename: string): string;
+begin
+  Result:=ExtractFileNameOnly(Filename);
+  if Result='' then exit;
+  Result:=ChompDottedIdentifier(Result);
+end;
+
 procedure AddToTreeOfUnitFilesOrNamespaces(var TreeOfUnitFiles,
   TreeOfNameSpaces: TAVLTree; const NameSpacePath, Filename: string;
   CaseInsensitive, KeepDoubles: boolean);
 
-  procedure FileAndNameSpaceFits(const UnitName: string; out FileNameFits, NameSpaceFits: Boolean);
+  procedure FileAndNameSpaceFits(const UnitName: string;
+    out FileNameFits, NameSpaceFits: Boolean);
   var
     CompareCaseInsensitive: Boolean;
   begin
     FileNameFits := False;
     NameSpaceFits := False;
     if NameSpacePath = '' then begin
-      //we search for files without namespace path
-      FileNameFits := pos('.', UnitName) = 0;
-      NameSpaceFits := not FileNameFits;
+      FileNameFits := true;
+      NameSpaceFits := true;
       Exit;
     end;
     if Length(UnitName) < Length(NameSpacePath) then Exit;
@@ -5758,6 +5777,7 @@ var
   UnitName: string;
 begin
   UnitName := ExtractFileNameOnly(Filename);
+  if not IsDottedIdentifier(UnitName) then exit;
   FileAndNameSpaceFits(UnitName, FileNameFits, NameSpaceFits);
   if FileNameFits then
     AddToTreeOfUnitFiles(TreeOfUnitFiles,FileName,UnitName,
@@ -5770,14 +5790,14 @@ end;
 function GatherUnitFiles(const BaseDir, SearchPath, Extensions,
   NameSpacePath: string; KeepDoubles, CaseInsensitive: boolean;
   var TreeOfUnitFiles, TreeOfNamespaces: TAVLTree): boolean;
-// BaseDir: base directory, used when SearchPath is relative
-// SearchPath: semicolon separated list of directories
-// Extensions: semicolon separated list of extensions (e.g. 'pas;.pp;ppu')
-// NameSpacePath: gather files only from this namespace path
-// KeepDoubles: false to return only the first match of each unit
-// CaseInsensitive: true to ignore case on comparing extensions
-// TreeOfUnitFiles: tree of TUnitFileInfo
-// TreeOfNamespaces: tree of TNameSpaceInfo
+{ BaseDir: base directory, used when SearchPath is relative
+ SearchPath: semicolon separated list of directories
+ Extensions: semicolon separated list of extensions (e.g. 'pas;.pp;ppu')
+ NameSpacePath: gather files only from this namespace path, empty '' for all
+ KeepDoubles: false to return only the first match of each unit
+ CaseInsensitive: true to ignore case on comparing extensions
+ TreeOfUnitFiles: tree of TUnitFileInfo
+ TreeOfNamespaces: tree of TNameSpaceInfo }
 var
   SearchedDirectories: TAVLTree; // tree of AnsiString
 
