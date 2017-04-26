@@ -63,7 +63,8 @@ type
     ctdcsCompleteSrcPath, // including unit path, src path and compiled src paths
     ctdcsUnitLinks,
     ctdcsUnitSet,
-    ctdcsFPCUnitPath  // unit paths reported by FPC
+    ctdcsFPCUnitPath,  // unit paths reported by FPC
+    ctdcsNamespaces
     );
 
   TCTDirCacheStringRecord = record
@@ -186,7 +187,8 @@ type
     function FindUnitSourceInCleanSearchPath(const AUnitName,
                                   SearchPath: string; AnyCase: boolean): string;
     function FindUnitSourceInCompletePath(var AUnitName, InFilename: string;
-               AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean = false): string;
+               AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean = false;
+               const AddNameSpaces: string = ''): string;
     function FindCompiledUnitInCompletePath(const AnUnitname: string;
                                             AnyCase: boolean): string;
     procedure IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
@@ -664,6 +666,7 @@ function TCTDirectoryCache.GetUnitSourceCacheValue(
 var
   Files: TStringToStringTree;
 begin
+  //debugln(['TCTDirectoryCache.GetUnitSourceCacheValue START ',UnitSrc,' Search=',Search]);
   Files:=FUnitSources[UnitSrc].Files;
   if (FUnitSources[UnitSrc].FileTimeStamp<>Pool.FileTimeStamp)
   or (FUnitSources[UnitSrc].ConfigTimeStamp<>Pool.ConfigTimeStamp) then begin
@@ -681,6 +684,7 @@ begin
       Result:=false;
     end;
   end;
+  //debugln(['TCTDirectoryCache.GetUnitSourceCacheValue END ',UnitSrc,' Search=',Search,' Result=',Result,' Filename=',Filename]);
 end;
 
 procedure TCTDirectoryCache.AddToCache(const UnitSrc: TCTDirectoryUnitSources;
@@ -1145,8 +1149,8 @@ begin
 end;
 
 function TCTDirectoryCache.FindUnitSourceInCompletePath(var AUnitName,
-  InFilename: string; AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean
-  ): string;
+  InFilename: string; AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean;
+  const AddNameSpaces: string): string;
 
   function FindInFilenameLowUp(aFilename: string): string;
   begin
@@ -1190,11 +1194,12 @@ var
   UnitSrc: TCTDirectoryUnitSources;
   CurDir: String;
   SrcPath: string;
-  NewUnitName: String;
+  NewUnitName, aNameSpace, aName, NameSpaces: String;
+  p: SizeInt;
 begin
   Result:='';
   {$IFDEF ShowTriedUnits}
-  DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath AUnitName="',AUnitname,'" InFilename="',InFilename,'" Directory="',Directory,'"');
+  DebugLn('TCTDirectoryCache.FindUnitSourceInCompletePath AUnitName="',AUnitname,'" InFilename="',InFilename,'" Directory="',Directory,'"',BoolToStr(AddNameSpaces<>'',' ExtraNameSpaces="'+AddNameSpaces+'"',''));
   {$ENDIF}
   if InFilename<>'' then begin
     // uses IN parameter
@@ -1233,6 +1238,39 @@ begin
     end;
   end else begin
     // normal unit name
+
+    if Pos('.',AUnitName)<1 then begin
+      // generic unit -> search with namespaces first
+      NameSpaces:=Strings[ctdcsNamespaces];
+      if AddNameSpaces<>'' then begin
+        if NameSpaces<>'' then NameSpaces:=NameSpaces+';';
+        NameSpaces:=NameSpaces+AddNameSpaces;
+      end;
+
+      if NameSpaces<>'' then begin
+        // search with additional namespaces, separated by semicolon
+        //debugln(['TCTDirectoryCache.FindUnitSourceInCompletePath NameSpaces="',NameSpaces,'"']);
+        repeat
+          p:=Pos(';',NameSpaces);
+          if p>0 then begin
+            aNameSpace:=LeftStr(NameSpaces,p-1);
+            Delete(NameSpaces,1,p);
+          end else begin
+            aNameSpace:=NameSpaces;
+            NameSpaces:='';
+          end;
+          if IsValidIdent(aNameSpace,true,true) then begin
+            aName:=aNameSpace+'.'+AUnitName;
+            Result:=FindUnitSourceInCompletePath(aName,InFilename,AnyCase,
+              FPCSrcSearchRequiresPPU,'');
+            if Result<>'' then begin
+              AUnitName:=RightStr(aName,length(aName)-length(aNameSpace)-1);
+              exit;
+            end;
+          end;
+        until NameSpaces='';
+      end;
+    end;
 
     if AnyCase then
       UnitSrc:=ctdusUnitCaseInsensitive

@@ -1622,7 +1622,6 @@ begin
       while ANode<>nil do begin
         UnitFileInfo:=TUnitFileInfo(ANode.Data);
         ANode:=FIDTTreeOfUnitFiles.FindSuccessor(ANode);
-        //debugln(['TIdentCompletionTool.GatherUnitnames Unit=',UnitFileInfo.FileUnitName,' File=',UnitFileInfo.Filename]);
         if CompareText(PChar(Pointer(UnitFileInfo.FileUnitName)), Length(UnitFileInfo.FileUnitName),
                        PChar(Pointer(CurSourceName)), Length(CurSourceName), False)=0
         then
@@ -2711,13 +2710,14 @@ begin
       end;
 
       // find context
+      GatherContext:=CreateFindContext(Self,CursorNode);
       {$IFDEF CTDEBUG}
       DebugLn('TIdentCompletionTool.GatherIdentifiers B',
         ' CleanCursorPos=',CleanPosToStr(CleanCursorPos),
         ' IdentStartPos=',CleanPosToStr(IdentStartPos),' IdentEndPos=',CleanPosToStr(IdentEndPos),
-        ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos));
+        ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos),
+        ' GatherContext=',FindContextToString(GatherContext));
       {$ENDIF}
-      GatherContext:=CreateFindContext(Self,CursorNode);
       CurrentIdentifierList.NewMemberVisibility:=GetClassVisibility(CursorNode);
       if CursorNode.Desc in [ctnUsesSection,ctnUseUnit,ctnUseUnitNamespace,ctnUseUnitClearName] then begin
         GatherUnitNames(IdentifierPath);

@@ -3182,8 +3182,6 @@ function TPascalReaderTool.ExtractArrayRanges(ArrayNode: TCodeTreeNode;
   Attr: TProcHeadAttributes): string;
 const
   AllArrays = [ctnRangedArrayType, ctnOpenArrayType];
-var
-  i: Integer;
 begin
   Result:='';
   if (ArrayNode=nil) or not (ArrayNode.Desc in AllArrays) then exit;

@@ -240,6 +240,7 @@ type
 
     ScannedRange: TLinkScannerRange; // excluding the section with a syntax error
     ScanTill: TLinkScannerRange;
+    AddedNameSpace: string; // program, library and package namespace
 
     procedure ValidateToolDependencies; virtual;
     procedure BuildTree(Range: TLinkScannerRange);
@@ -555,6 +556,7 @@ var
   ok: Boolean;
   OldLastNode: TCodeTreeNode;
   OldLastPos: Integer;
+  aNameSpace, aName: String;
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TPascalParserTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
@@ -680,14 +682,23 @@ begin
         ScannedRange:=lsrSourceType;
         if ord(Range)<=ord(ScannedRange) then exit;
         if HasSourceType then begin
+          aNameSpace:='';
           repeat
             ReadNextAtom; // read source name
             // program and library can use keywords
             if (CurPos.Flag<>cafWord)
             or (CurSection in [ctnUnit,ctnPackage]) then
               AtomIsIdentifierSaveE;
+            aName:=GetAtom;
             ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
-          until CurPos.Flag<>cafPoint;
+            if CurPos.Flag=cafPoint then begin
+              if aNameSpace<>'' then aNameSpace:=aNameSpace+'.';
+              aNameSpace:=aNameSpace+aName;
+            end else
+              break;
+          until false;
+          if CurSection in [ctnProgram,ctnLibrary,ctnPackage] then
+            AddedNameSpace:=aNameSpace;
         end;
         ScannedRange:=lsrSourceName;
         if ord(Range)<=ord(ScannedRange) then exit;

@@ -86,6 +86,7 @@ const
   FPCUnitPathMacroName     = ExternalMacroStart+'FPCUnitPath';
   TargetOSMacroName        = ExternalMacroStart+'TargetOS';
   TargetCPUMacroName       = ExternalMacroStart+'TargetCPU';
+  NamespacesMacroName      = ExternalMacroStart+'Namespaces';
 
   DefinePathMacro          = '$('+DefinePathMacroName+')'; // the path of the define template
   UnitPathMacro            = '$('+UnitPathMacroName+')';

@@ -504,11 +504,11 @@ begin
 end;
 
 function CompareWordExceptions(p1, p2: Pointer): Integer;
-var w1, w2: string;
+var
+  w1: TWordPolicyException absolute p1;
+  w2: TWordPolicyException absolute p2;
 begin
-  w1 := TWordPolicyException(p1).Word;
-  w2 := TWordPolicyException(p2).Word;
-  Result := CompareIdentifiers(PChar(w1), PChar(w2));
+  Result := CompareIdentifiers(PChar(w1.Word), PChar(w2.Word));
 end;
 
 function CompareKeyWordExceptions(Item1, Item2: Pointer): Integer;
