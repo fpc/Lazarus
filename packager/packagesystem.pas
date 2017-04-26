@@ -535,8 +535,10 @@ function ExtractFPCParamsForBuildAll(const CompParams: string): string;
   -i  information
   -o  name of the executable
   -s  quick build option, do not call assembler and linker
+  -T  target OS
   -v  verbosity
   -X  Executable
+  -k  linker flags
   }
 var
   EndPos: Integer;
@@ -547,7 +549,7 @@ begin
   while ReadNextFPCParameter(Result,EndPos,StartPos) do begin
     if (Result[StartPos]='-') and (StartPos<length(Result)) then begin
       case Result[StartPos+1] of
-      'l','F','B','e','i','o','s','v','X':
+      'l','F','B','e','i','o','s','T','v','X','k':
         begin
           while (StartPos>1) and (Result[StartPos-1] in [' ',#9]) do
             dec(StartPos);
@@ -688,9 +690,11 @@ begin
       if fpfValueChanged in Param.Flags then begin
         Msg:='';
         if Param.Kind in [fpkBoolean,fpkValue] then
-          Msg:='passing compiler option -'+Param.Name+' twice with different values'
+          Msg:=Format(lisPassingCompilerOptionTwiceWithDifferentValues, [Param.
+            Name])
         else if Param.Kind=fpkDefine then
-          Msg:='passing compiler define "'+Param.Name+'" twice with different values';
+          Msg:=Format(lisPassingCompilerDefineTwiceWithDifferentValues, [Param.
+            Name]);
         if Msg='' then continue;
         if Target<>'' then Msg:=Target+' '+Msg;
         IDEMessagesWindow.AddCustomMessage(mluNote,Msg,'',0,0,ViewCaption);

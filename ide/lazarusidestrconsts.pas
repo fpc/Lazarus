@@ -4220,6 +4220,10 @@ resourcestring
   lisPkgMangUnableToReadStateFileOfPackageError = 'Unable to read state file '
     +'"%s"%sof package %s.%sError: %s';
   lisPkgMangUnableToCreateDirectory = 'Unable to create directory';
+  lisPassingCompilerOptionTwiceWithDifferentValues = 'passing compiler option '
+    +'-%s twice with different values';
+  lisPassingCompilerDefineTwiceWithDifferentValues = 'passing compiler define '
+    +'"%s" twice with different values';
   lisUnableToCreateDirectory = 'Unable to create directory "%s".';
   lisPkgMangUnableToCreateOutputDirectoryForPackage = 'Unable to create '
     +'output directory "%s"%sfor package %s.';
