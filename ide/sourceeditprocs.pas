@@ -858,26 +858,26 @@ var
   CodeBuf: TCodeBuffer;
   LastPointPos: Integer;
   NewIdentifier: string;
+  WordExc: TWordPolicyExceptions;
 begin
   if FBeautified then
     Exit;
 
   NewIdentifier:=Identifier;
-  if not CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.WordExceptions.CheckExceptions(NewIdentifier) then
+  WordExc:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.WordExceptions;
+  if not WordExc.CheckExceptions(NewIdentifier) then
   begin
     CodeBuf:=CodeToolBoss.FindUnitSource(IdentList.StartContextPos.Code,FileUnitName,'');
     if CodeBuf=nil then Exit;
 
-    NewIdentifier:=Copy(CodeToolBoss.GetSourceName(CodeBuf,true), IdentifierStartInUnitName, Length(Identifier));
+    NewIdentifier:=Copy(CodeToolBoss.GetSourceName(CodeBuf,true),
+                        IdentifierStartInUnitName, Length(Identifier));
 
+    LastPointPos := LastDelimiter('.', NewIdentifier);
+    if LastPointPos > 0 then
+      NewIdentifier := Copy(NewIdentifier, LastPointPos+1, length(NewIdentifier));
     if NewIdentifier='' then
-      NewIdentifier:=Identifier
-    else
-    begin
-      LastPointPos := LastDelimiter('.', NewIdentifier);
-      if LastPointPos > 0 then
-        NewIdentifier := Copy(NewIdentifier, LastPointPos+1, High(Integer));
-    end;
+      NewIdentifier:=Identifier;
   end;
   Identifier := NewIdentifier;
   FBeautified := True;
