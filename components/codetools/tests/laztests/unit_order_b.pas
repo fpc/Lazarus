@@ -5,7 +5,7 @@ unit unit_order_b;
 interface
 
 var
- unit_order_a: integer;
+  v: integer;
 
 
 implementation

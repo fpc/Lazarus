@@ -5,7 +5,7 @@ unit unit_order_a;
 interface
 
 var
- unit_order_b: char;
+  v: char;
 
 
 implementation
