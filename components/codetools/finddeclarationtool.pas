@@ -4475,7 +4475,7 @@ var
   var
     UnitNode, ThisNamespaceNode, TargetNamespaceNode, UsesNode: TCodeTreeNode;
     Level, CurLevel: Integer;
-    InFilename, AnUnitName: String;
+    InFilename, AnUnitName, FoundNames, FoundName: String;
     NewCodeTool: TFindDeclarationTool;
   begin
     Result := False;
@@ -4504,6 +4504,7 @@ var
       SourceNamespaceNode:=SourceNamespaceNode.PriorBrother;
     end;
 
+    FoundNames:='';
     UnitNode := UsesNode.LastChild;
     while UnitNode<>nil do
     begin
@@ -4525,12 +4526,15 @@ var
       if CurLevel=Level then
       begin
         // namespace paths match
-        debugln(['SearchInNamespaces Match ',ExtractNode(TargetNamespaceNode.Parent,[])]);
+        //debugln(['SearchInNamespaces Match ',ExtractNode(TargetNamespaceNode.Parent,[])]);
         if (TargetNamespaceNode.NextBrother<>nil) then begin
           // prefix matches
-          if (Params.Identifier=nil)
-          or CompareSrcIdentifiers(TargetNamespaceNode.NextBrother.StartPos,Params.Identifier)
+          FoundName:='('+GetIdentifier(@Src[TargetNamespaceNode.NextBrother.StartPos])+')';
+          if (Pos(FoundName,FoundNames)<1)
+          and ((Params.Identifier=nil)
+            or CompareSrcIdentifiers(TargetNamespaceNode.NextBrother.StartPos,Params.Identifier))
           then begin
+            FoundNames:=FoundNames+FoundName;
             Params.SetResult(Self,TargetNamespaceNode.NextBrother);
             Result:=CheckResult(true,true);
           end;
