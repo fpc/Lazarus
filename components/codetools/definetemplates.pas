@@ -100,6 +100,7 @@ const
   FPCUnitPathMacro         = '$('+FPCUnitPathMacroName+')';
   TargetOSMacro            = '$('+TargetOSMacroName+')';
   TargetCPUMacro           = '$('+TargetCPUMacroName+')';
+  NamespacesMacro          = '$('+NamespacesMacroName+')';
 
 
   // virtual directories
@@ -7874,7 +7875,7 @@ var
   IncPath: String;
   Params: TStrings;
   i: Integer;
-  Param: String;
+  Param, Namespaces: String;
   p: PChar;
 begin
   Result:=nil;
@@ -7883,6 +7884,7 @@ begin
   CompilerMode:='';
   UnitPath:='';
   IncPath:='';
+  Namespaces:='';
   Params:=TStringList.Create;
   try
     SplitCmdLineParams(CmdLine,Params);
@@ -7935,6 +7937,11 @@ begin
           CompilerMode:=copy(Param,3,255);
         end;
 
+      'N':
+        case p[2] of
+        'S': Namespaces:=Namespaces+copy(Param,4,length(Param))
+        end;
+
       'W':
         case p[2] of
         'p':
@@ -7960,10 +7967,12 @@ begin
   end;
   if AddPaths then begin
     if UnitPath<>'' then
-      AddDefine('UnitPath','UnitPath addition',UnitPathMacroName,UnitPathMacro+UnitPath);
+      AddDefine('UnitPath','UnitPath addition',UnitPathMacroName,UnitPathMacro+';'+UnitPath);
     if IncPath<>'' then
-      AddDefine('IncPath','IncPath addition',IncludePathMacroName,IncludePathMacro+IncPath);
+      AddDefine('IncPath','IncPath addition',IncludePathMacroName,IncludePathMacro+';'+IncPath);
   end;
+  if Namespaces<>'' then
+    AddDefine('Namespaces','Namespaces addition',NamespacesMacroName,NamespacesMacro+';'+Namespaces);
 
   Result.SetDefineOwner(Owner,true);
 end;
