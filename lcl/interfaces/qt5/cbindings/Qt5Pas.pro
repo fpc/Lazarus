@@ -125,6 +125,7 @@ HEADERS +=  \
            qiodevice_hook.h \
            qprocess_c.h \
            qprocess_hook.h \
+           qbuffer_c.h \           
            qfiledevice_c.h \
            qfile_c.h \
            qfileinfo_c.h \
@@ -469,6 +470,7 @@ SOURCES +=  \
            qlocale_c.cpp \
            qiodevice_c.cpp \
            qprocess_c.cpp \
+           qbuffer_c.cpp \           
            qfiledevice_c.cpp \
            qfile_c.cpp \
            qfileinfo_c.cpp \

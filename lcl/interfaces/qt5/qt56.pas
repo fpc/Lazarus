@@ -328,6 +328,7 @@ QObjectH = class(TObject) end;
       QTcpSocketH = class(QAbstractSocketH) end;
         QSslSocketH = class(QTcpSocketH) end;
       QUdpSocketH = class(QAbstractSocketH) end;
+    QBufferH = class(QIODeviceH) end;
     QFileDeviceH = class(QIODeviceH) end;
       QFileH = class(QFileDeviceH) end;
     QNetworkReplyH = class(QIODeviceH) end;
@@ -4550,6 +4551,22 @@ type
   QProcess_readyReadStandardOutput_Event = procedure () of object cdecl;
   QProcess_readyReadStandardError_Event = procedure () of object cdecl;
 
+
+
+function QBuffer_Create(AParent: QObjectH = nil): QBufferH; cdecl; external Qt5PasLib name 'QBuffer_Create';
+function QBuffer_Create2(ABuffer: QByteArrayH; AParent: QObjectH = nil): QBufferH; cdecl; external Qt5PasLib name 'QBuffer_Create2';
+procedure QBuffer_Destroy(handle: QBufferH); cdecl; external Qt5PasLib name 'QBuffer_Destroy';
+function QBuffer_buffer(handle: QBufferH): QByteArrayH; cdecl; external Qt5PasLib name 'QBuffer_buffer';
+function QBuffer_constBuffer(handle: QBufferH): QByteArrayH; cdecl; external Qt5PasLib name 'QBuffer_constBuffer';
+procedure QBuffer_setBuffer(handle: QBufferH); cdecl; external Qt5PasLib name 'QBuffer_setBuffer';
+procedure QBuffer_setData(handle: QBufferH; AData: PChar; ADataSize: integer); cdecl; external Qt5PasLib name 'QBuffer_setData';
+function QBuffer_open(handle: QBufferH; mode: QIODeviceOpenMode): Boolean; cdecl; external Qt5PasLib name 'QBuffer_open';
+procedure QBuffer_close(handle: QBufferH); cdecl; external Qt5PasLib name 'QBuffer_close';
+function QBuffer_pos(handle: QBufferH): int64; cdecl; external Qt5PasLib name 'QBuffer_pos';
+function QBuffer_size(handle: QBufferH): int64; cdecl; external Qt5PasLib name 'QBuffer_size';
+function QBuffer_seek(handle: QBufferH; pos: int64): Boolean; cdecl; external Qt5PasLib name 'QBuffer_seek';
+function QBuffer_atEnd(handle: QBufferH): Boolean; cdecl; external Qt5PasLib name 'QBuffer_atEnd';
+function QBuffer_canReadLine(handle: QBufferH): Boolean; cdecl; external Qt5PasLib name 'QBuffer_canReadLine';
 
 
 type
