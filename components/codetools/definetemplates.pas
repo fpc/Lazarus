@@ -3037,6 +3037,10 @@ begin
       'I': Add(p^,PChar(@p[1]),fpkMultiValue);
       'k': Add(p^,PChar(@p[1]),fpkMultiValue);
       'M': Add(p^,PChar(@p[1]),fpkValue);
+      'N':
+        case p[1] of
+        'S': Add('NS',PChar(@p[2]),fpkMultiValue); // -NS namespaces
+        end;
       'o': Add(p^,PChar(@p[1]),fpkValue);
       'O':
         case p[1] of
