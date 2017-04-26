@@ -408,7 +408,7 @@ begin
   ctnLibrary: Result:='Library';
   ctnUnit: Result:='Unit';
   ctnUseUnitNamespace: Result:='Namespace';
-  ctnUseUnitClearName: Result:='Unit name without namespace';
+  ctnUseUnitClearName: Result:='Use unit name';
   ctnInterface: Result:='Interface Section';
   ctnImplementation: Result:='Implementation';
   ctnInitialization: Result:='Initialization';

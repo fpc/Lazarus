@@ -4469,52 +4469,87 @@ var
     //debugln(['SearchInHelpers END']);
   end;
 
-  function SearchInNamespaces(UsesNode, SourceNamespaceNode: TCodeTreeNode): Boolean;
+  function SearchInNamespaces(SourceNamespaceNode: TCodeTreeNode): Boolean;
+  // SourceNamespaceNode.Desc = ctnUseUnitNamespace
+  // search all use-unit nodes with the same namespace prefix as SourceNamespaceNode
   var
-    UnitNode, ThisNamespaceNode, TargetNamespaceNode: TCodeTreeNode;
-    Match: Boolean;
+    UnitNode, ThisNamespaceNode, TargetNamespaceNode, UsesNode: TCodeTreeNode;
+    Level, CurLevel: Integer;
+    InFilename, AnUnitName: String;
+    NewCodeTool: TFindDeclarationTool;
   begin
     Result := False;
-    if UsesNode=nil then Exit;
+    if SourceNamespaceNode.Desc<>ctnUseUnitNamespace then
+      RaiseException(20170426102058,'');
+    //debugln(['SearchInNamespaces ',ExtractNode(SourceNamespaceNode.Parent,[]),' ',fdfCollect in Flags]);
+    if not (fdfCollect in Flags) then begin
+      // search a specific identifier within a use-unit name
+      if (SourceNamespaceNode.NextBrother<>nil)
+         and (
+           (Params.Identifier=nil) or
+            CompareSrcIdentifiers(SourceNamespaceNode.NextBrother.StartPos,Params.Identifier))
+      then begin
+        Params.SetResult(Self,SourceNamespaceNode.NextBrother);
+        Result:=CheckResult(true,true);
+      end;
+      exit;
+    end;
+    // collect all uses-units with same namespace
+
+    UsesNode:=SourceNamespaceNode.Parent.Parent;
+
+    Level:=1;
+    while SourceNamespaceNode.PriorBrother<>nil do begin
+      inc(Level);
+      SourceNamespaceNode:=SourceNamespaceNode.PriorBrother;
+    end;
 
     UnitNode := UsesNode.LastChild;
     while UnitNode<>nil do
     begin
-      ThisNamespaceNode := SourceNamespaceNode.Parent.FirstChild;
+      ThisNamespaceNode := SourceNamespaceNode;
       TargetNamespaceNode := UnitNode.FirstChild;
-      Match := False;
+      CurLevel:=0;
       while (ThisNamespaceNode<>nil) and (TargetNamespaceNode<>nil) do
       begin
-        if CompareIdentifiers(
+        if CompareIdentifierPtrs(
           @Src[ThisNamespaceNode.StartPos],
           @Src[TargetNamespaceNode.StartPos]) <> 0
         then Break;
-
-        if (ThisNamespaceNode=SourceNamespaceNode) then
-        begin
-          Match := True;
-          Break;
-        end;
+        inc(CurLevel);
+        if CurLevel=Level then break;
 
         ThisNamespaceNode := ThisNamespaceNode.NextBrother;
         TargetNamespaceNode := TargetNamespaceNode.NextBrother;
       end;
-      if Match then
+      if CurLevel=Level then
       begin
-        //namespace paths match
-        if (TargetNamespaceNode.NextBrother<>nil)
-           and (
-             (Params.Identifier=nil) or
-              CompareSrcIdentifiers(TargetNamespaceNode.NextBrother.StartPos,Params.Identifier))
-        then begin
-          Params.SetResult(Self,TargetNamespaceNode.NextBrother);
-          Result:=CheckResult(true,true);
-          if not (fdfCollect in Flags) then
-            exit;
+        // namespace paths match
+        debugln(['SearchInNamespaces Match ',ExtractNode(TargetNamespaceNode.Parent,[])]);
+        if (TargetNamespaceNode.NextBrother<>nil) then begin
+          // prefix matches
+          if (Params.Identifier=nil)
+          or CompareSrcIdentifiers(TargetNamespaceNode.NextBrother.StartPos,Params.Identifier)
+          then begin
+            Params.SetResult(Self,TargetNamespaceNode.NextBrother);
+            Result:=CheckResult(true,true);
+          end;
+        end else begin
+          // whole unit name matches -> list all interface identifiers
+          AnUnitName:=ExtractUsedUnitName(UnitNode,@InFilename);
+          NewCodeTool:=FindCodeToolForUsedUnit(AnUnitName,InFilename,true);
+          NewCodeTool.FindIdentifierInInterface(Params.IdentifierTool,Params);
         end;
       end;
 
-      UnitNode := UnitNode.PriorBrother;
+      if UnitNode.PriorBrother<>nil then
+        UnitNode := UnitNode.PriorBrother
+      else if UnitNode.Parent.Desc=ctnImplementation then begin
+        UnitNode:=FindMainUsesNode;
+        if UnitNode=nil then break;
+        UnitNode:=UnitNode.LastChild;
+      end else
+        break;
     end;
   end;
 
@@ -4761,8 +4796,8 @@ begin
   if (ContextNode.Desc=ctnUseUnitNamespace) then
   begin
     //search in namespaces
-    if SearchInNamespaces(FindMainUsesNode, Params.ContextNode) then exit;
-    if SearchInNamespaces(FindImplementationUsesNode, Params.ContextNode) then exit;
+    //debugln(['TFindDeclarationTool.FindIdentifierInContext NameSpace ',GetIdentifier(Params.Identifier),' ',ExtractNode(ContextNode,[])]);
+    if SearchInNamespaces(ContextNode) then exit;
     Exit;
   end;
 
@@ -8868,6 +8903,120 @@ var
       end;
     end;
   end;
+
+  function ResolveUseUnit(StartUseUnitNode: TCodeTreeNode): TCodeTreeNode;
+  // IsStart=true, NextAtomType=vatPoint,
+  // StartUseUnitNameNode.Desc=ctnUseUnit
+  // -> Find the longest namespaced used unit, that fits the start of the
+  //    current identifier a.b.c...
+
+    function GetPrevUseUnit(UseUnitNode: TCodeTreeNode): TCodeTreeNode;
+    begin
+      if UseUnitNode.PriorBrother<>nil then
+        Result:=UseUnitNode.PriorBrother
+      else begin
+        if UseUnitNode.Parent.Parent.Desc=ctnImplementation then begin
+          Result:=FindMainUsesNode;
+          if Result<>nil then
+            Result:=Result.FirstChild;
+        end else
+          Result:=nil;
+      end;
+    end;
+
+  var
+    UseUnitNode, Node, BestNode: TCodeTreeNode;
+    HasNamespace: Boolean;
+    Count, Level, BestLevel: Integer;
+    p: PChar;
+    DottedIdentifier: String;
+  begin
+    Result:=StartUseUnitNode.FirstChild;
+    //debugln(['ResolveUsenit START ',NextAtomType,' ',StartUseUnitNode.DescAsString]);
+    // find all candidates
+    Count:=0;
+    HasNamespace:=false;
+    UseUnitNode:=StartUseUnitNode;
+    repeat
+      if (UseUnitNode.FirstChild<>nil)
+      and CompareSrcIdentifiers(CurAtom.StartPos,UseUnitNode.StartPos) then begin
+        // found candidate
+        inc(Count);
+        //debugln(['ResolveUsenit candidate found']);
+        if UseUnitNode.FirstChild.Desc=ctnUseUnitNamespace then begin
+          HasNamespace:=true;
+        end;
+      end;
+      UseUnitNode:=GetPrevUseUnit(UseUnitNode);
+    until UseUnitNode=nil;
+    //debugln(['ResolveUsenit CandidateCount=',Count,' HasNamespace=',HasNamespace]);
+    if (Count<=1) or not HasNamespace then exit;
+
+    // multiple uses start with this identifier -> collect candidates
+    //debugln(['ResolveUsenit collect candidates ...']);
+
+    // read a.b.c...
+    DottedIdentifier:=GetIdentifier(@Src[CurAtom.StartPos]);
+    MoveCursorToCleanPos(NextAtom.EndPos);
+    Level:=1;
+    repeat
+      ReadNextAtom;
+      if not AtomIsIdentifier then break;
+      inc(Level);
+      DottedIdentifier:=DottedIdentifier+'.'+GetAtom;
+      ReadNextAtom;
+    until CurPos.Flag<>cafPoint;
+    //debugln(['ResolveUsenit DottedIdentifier="',DottedIdentifier,'"']);
+
+    // find longest dotted unit name in uses
+    UseUnitNode:=StartUseUnitNode;
+    BestNode:=nil;
+    BestLevel:=0;
+    repeat
+      Node:=UseUnitNode.FirstChild; // ctnUseUnitNamespace or ctnUseUnitClearName
+      UseUnitNode:=GetPrevUseUnit(UseUnitNode);
+      if (Node<>nil)
+      and CompareSrcIdentifiers(CurAtom.StartPos,Node.StartPos) then begin
+        // found candidate
+        //debugln(['ResolveUsenit Candidate=',ExtractNode(Node,[])]);
+        Level:=1;
+        p:=PChar(DottedIdentifier);
+        repeat
+          inc(p,GetIdentLen(p));
+          if p^='.' then inc(p);
+          //writeln('ResolveUsenit p=',p,' NextBrother=',Node.NextBrother<>nil);
+          if Node.NextBrother=nil then begin
+            // fits
+            if Level>BestLevel then begin
+              BestNode:=Node.Parent;
+              BestLevel:=Level;
+            end;
+            break;
+          end else if p^=#0 then begin
+            // unitname too long
+            break;
+          end else begin
+            Node:=Node.NextBrother;
+            //writeln('ResolveUsenit p=',p,' node=',GetIdentifier(@Src[Node.StartPos]));
+            if not CompareSrcIdentifiers(Node.StartPos,p) then
+              break;
+            inc(Level);
+          end;
+        until false;
+      end;
+    until UseUnitNode=nil;
+    //debugln(['ResolveUsenit collected candidates Best=',ExtractNode(BestNode,[])]);
+
+    Result:=BestNode.FirstChild;
+
+    // move cursor forward
+    while (Result.NextBrother<>nil) and (NextAtom.EndPos<EndPos) do begin
+      ReadNextExpressionAtom; // read point
+      ReadNextExpressionAtom; // read namespace/unitname
+      //debugln(['ResolveUseUnit Next ',GetAtom(CurAtom)]);
+      Result:=Result.NextBrother;
+    end;
+  end;
   
   procedure ResolveIdentifier;
   var
@@ -9086,6 +9235,15 @@ var
               end;
             end;
           end;
+          if IsStart and (NextAtomType=vatPoint)
+          and (Params.NewCodeTool=Self)
+          and (Params.NewNode.Desc in [ctnUseUnitClearName,ctnUseUnitNamespace])
+          then begin
+            // first identifier is a used unit -> find longest fitting unitname
+            //debugln(['ResolveIdentifier UseUnit FindLongest... ',Params.NewNode.DescAsString,' ',ExtractNode(Params.NewNode,[])]);
+            Params.NewNode:=ResolveUseUnit(Params.NewNode.Parent);
+            //debugln(['ResolveIdentifier UseUnit FoundLongest: ',Params.NewNode.DescAsString,' ',ExtractNode(Params.NewNode,[])]);
+          end;
           ExprType.Context:=CreateFindContext(Params);
           Params.Load(OldInput,true);
         end else begin
@@ -9108,9 +9266,6 @@ var
           {$ENDIF}
         end;
       end;
-
-      // ToDo: check if identifier in 'Protected' section
-
       {$IFDEF ShowExprEval}
       DebugLn(['  FindExpressionTypeOfTerm ResolveIdentifier END Ident="',dbgstr(Src,StartPos,CurAtom.EndPos-StartPos),'" Expr=',ExprTypeToString(ExprType)]);
       {$ENDIF}
@@ -10135,7 +10290,7 @@ begin
     Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult];
     AliasType:=CleanFindContext;
     Result:=FindExpressionTypeOfTerm(CurPos.StartPos,-1,Params,false,@AliasType);
-    debugln(['TFindDeclarationTool.FindExpressionTypeOfConstSet ',ExprTypeToString(Result)]);
+    //debugln(['TFindDeclarationTool.FindExpressionTypeOfConstSet ',ExprTypeToString(Result)]);
   finally
     Params.Free;
   end;
@@ -12260,10 +12415,8 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
         end;
       xtConstSet:
         begin
-          debugln(['ResolveExpr AAA1']);
         if SubExprType.Context.Node=nil then
           RaiseTermHasNoIterator(20170421211222,SubExprType);
-        debugln(['ResolveExpr AAA2']);
         SubExprType:=SubExprType.Context.Tool.FindExpressionTypeOfConstSet(SubExprType.Context.Node);
         {$IFDEF ShowForInEval}
         debugln(['  ResolveExpr ConstSet Element: ',ExprTypeToString(SubExprType)]);
