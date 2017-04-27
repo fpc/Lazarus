@@ -422,7 +422,7 @@ begin
              phpWithOfObject,phpWithoutSemicolon]);
         end;
 
-      ctnProperty:
+      ctnProperty,ctnGlobalProperty:
         begin
           s:=IdentItem.Tool.ExtractProperty(ItemNode,
             [phpWithoutName,phpWithVarModifiers,
