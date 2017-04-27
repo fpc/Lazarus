@@ -29,6 +29,7 @@ function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
                           ): boolean;
 function FindNextDelimitedItem(const List: string; Delimiter: char;
                                var Position: integer; FindItem: string): string;
+function MergeWithDelimiter(const a, b: string; Delimiter: char): string;
 
 implementation
 
@@ -143,6 +144,17 @@ begin
     if Result=FindItem then exit;
   end;
   Result:='';
+end;
+
+function MergeWithDelimiter(const a, b: string; Delimiter: char): string;
+begin
+  if a<>'' then begin
+    if b<>'' then
+      Result:=a+Delimiter+b
+    else
+      Result:=b;
+  end else
+    Result:=b;
 end;
 
 end.
