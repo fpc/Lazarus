@@ -772,7 +772,9 @@ initialization
   RegisterPropertyEditor(TypeInfo(TBrushStyle), nil, '', TBrushStylePropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFont, 'Name', TFontNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFontCharset), nil, 'CharSet', TFontCharsetPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TComponent, 'ImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TPersistent, 'ImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TComponent, 'ImageIndexSortAsc', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TComponent, 'ImageIndexSortDesc', TImageIndexPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TFont), nil,'',TFontPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TGraphic), nil,'',TGraphicPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TPicture), nil,'',TPicturePropertyEditor);

@@ -37,7 +37,7 @@ uses
   Classes, SysUtils, Types, TypInfo, Math, FPCanvas,
   // LCL
   LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls, GraphType, Graphics, Forms,
-  LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes,
+  LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes, imglist,
   // LazUtils
   LazFileUtils, DynamicArray, Maps, LazUTF8, LazUtf8Classes, Laz2_XMLCfg, LCSVUtils
 {$ifdef WINDOWS}
@@ -423,7 +423,7 @@ type
     FColor: ^TColor;
     FAlignment: ^TAlignment;
     FFont: TFont;
-    FImageIndex: Integer;
+    FImageIndex: TImageIndex;
     FOldImageIndex: Integer;
     FImageLayout: TButtonLayout;
     FIsDefaultTitleFont: boolean;
@@ -444,7 +444,7 @@ type
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetColor(const AValue: TColor);
     procedure SetFont(const AValue: TFont);
-    procedure SetImageIndex(const AValue: Integer);
+    procedure SetImageIndex(const AValue: TImageIndex);
     procedure SetImageLayout(const AValue: TButtonLayout);
     procedure SetLayout(const AValue: TTextLayout);
     procedure SetMultiLine(const AValue: Boolean);
@@ -473,7 +473,7 @@ type
     property Caption: TCaption read GetCaption write SetCaption stored IsCaptionStored;
     property Color: TColor read GetColor write SetColor stored IsColorStored;
     property Font: TFont read GetFont write SetFont stored IsFontStored;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property ImageLayout: TButtonLayout read FImageLayout write SetImageLayout default blGlyphRight;
     property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
     property MultiLine: Boolean read FMultiLine write SetMultiLine default false;
@@ -720,8 +720,8 @@ type
     FTabAdvance: TAutoAdvance;
     FTitleImageList: TImageList;
     FTitleStyle: TTitleStyle;
-    FAscImgInd: Integer;
-    FDescImgInd: Integer;
+    FAscImgInd: TImageIndex;
+    FDescImgInd: TImageIndex;
     FOnCompareCells: TOnCompareCells;
     FGridLineStyle: TPenStyle;
     FGridLineWidth: Integer;
@@ -1174,8 +1174,8 @@ type
     property GridWidth: Integer read FGCache.GridWidth;
     property HeaderHotZones: TGridZoneSet read FHeaderHotZones write FHeaderHotZones default [gzFixedCols];
     property HeaderPushZones: TGridZoneSet read FHeaderPushZones write FHeaderPushZones default [gzFixedCols];
-    property ImageIndexSortAsc: Integer read FAscImgInd write FAscImgInd default -1;
-    property ImageIndexSortDesc: Integer read FDescImgInd write FDescImgInd default -1;
+    property ImageIndexSortAsc: TImageIndex read FAscImgInd write FAscImgInd default -1;
+    property ImageIndexSortDesc: TImageIndex read FDescImgInd write FDescImgInd default -1;
     property TabAdvance: TAutoAdvance read FTabAdvance write FTabAdvance default aaRightDown;
     property TitleImageList: TImageList read FTitleImageList write SetTitleImageList;
     property InplaceEditor: TWinControl read FEditor;
@@ -11407,7 +11407,7 @@ begin
     FFont.Assign(AValue);
 end;
 
-procedure TGridColumnTitle.SetImageIndex(const AValue: Integer);
+procedure TGridColumnTitle.SetImageIndex(const AValue: TImageIndex);
 begin
   if FImageIndex = AValue then exit;
   FImageIndex := AValue;
