@@ -1240,13 +1240,8 @@ begin
     // normal unit name
 
     if Pos('.',AUnitName)<1 then begin
-      // generic unit -> search with namespaces first
-      NameSpaces:=Strings[ctdcsNamespaces];
-      if AddNameSpaces<>'' then begin
-        if NameSpaces<>'' then NameSpaces:=NameSpaces+';';
-        NameSpaces:=NameSpaces+AddNameSpaces;
-      end;
-
+      // generic unit -> search with namespaces
+      NameSpaces:=MergeWithDelimiter(Strings[ctdcsNamespaces],AddNameSpaces,';');
       if NameSpaces<>'' then begin
         // search with additional namespaces, separated by semicolon
         //debugln(['TCTDirectoryCache.FindUnitSourceInCompletePath NameSpaces="',NameSpaces,'"']);
