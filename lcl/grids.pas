@@ -1129,7 +1129,6 @@ type
 
     property AllowOutboundEvents: boolean read FAllowOutboundEvents write FAllowOutboundEvents default true;
     property AlternateColor: TColor read FAlternateColor write SetAlternateColor stored IsAltColorStored;
-    property AscImageIndex: Integer read FAscImgInd write FAscImgInd default -1;
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
     property AutoEdit: boolean read FAutoEdit write FAutoEdit default true;
     property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns default false;
@@ -1146,7 +1145,6 @@ type
     property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight stored IsDefRowHeightStored;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
-    property DescImageIndex: Integer read FDescImgInd write FDescImgInd default -1;
     property DragDx: Integer read FDragDx write FDragDx;
     property Editor: TWinControl read FEditor write SetEditor;
     property EditorBorderStyle: TBorderStyle read GetEditorBorderStyle write SetEditorBorderStyle;
@@ -1176,6 +1174,8 @@ type
     property GridWidth: Integer read FGCache.GridWidth;
     property HeaderHotZones: TGridZoneSet read FHeaderHotZones write FHeaderHotZones default [gzFixedCols];
     property HeaderPushZones: TGridZoneSet read FHeaderPushZones write FHeaderPushZones default [gzFixedCols];
+    property ImageIndexSortAsc: Integer read FAscImgInd write FAscImgInd default -1;
+    property ImageIndexSortDesc: Integer read FDescImgInd write FDescImgInd default -1;
     property TabAdvance: TAutoAdvance read FTabAdvance write FTabAdvance default aaRightDown;
     property TitleImageList: TImageList read FTitleImageList write SetTitleImageList;
     property InplaceEditor: TWinControl read FEditor;
@@ -1480,7 +1480,6 @@ type
     property Align;
     property AlternateColor;
     property Anchors;
-    property AscImageIndex;
     property AutoAdvance;
     property AutoEdit;
     property AutoFillColumns;
@@ -1495,7 +1494,6 @@ type
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
-    property DescImageIndex;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1509,6 +1507,8 @@ type
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
+    property ImageIndexSortAsc;
+    property ImageIndexSortDesc;
     property MouseWheelOption;
     property Options;
     //property ParentBiDiMode;
@@ -1705,7 +1705,6 @@ type
     property Align;
     property AlternateColor;
     property Anchors;
-    property AscImageIndex;
     property AutoAdvance;
     property AutoEdit;
     property AutoFillColumns;
@@ -1721,7 +1720,6 @@ type
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
-    property DescImageIndex;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1735,6 +1733,8 @@ type
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
+    property ImageIndexSortAsc;
+    property ImageIndexSortDesc;
     property MouseWheelOption;
     property Options;
     property ParentBiDiMode;
