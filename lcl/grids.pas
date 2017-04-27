@@ -1129,6 +1129,7 @@ type
 
     property AllowOutboundEvents: boolean read FAllowOutboundEvents write FAllowOutboundEvents default true;
     property AlternateColor: TColor read FAlternateColor write SetAlternateColor stored IsAltColorStored;
+    property AscImageIndex: Integer read FAscImgInd write FAscImgInd default -1;
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
     property AutoEdit: boolean read FAutoEdit write FAutoEdit default true;
     property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns default false;
@@ -1145,6 +1146,7 @@ type
     property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight stored IsDefRowHeightStored;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
+    property DescImageIndex: Integer read FDescImgInd write FDescImgInd default -1;
     property DragDx: Integer read FDragDx write FDragDx;
     property Editor: TWinControl read FEditor write SetEditor;
     property EditorBorderStyle: TBorderStyle read GetEditorBorderStyle write SetEditorBorderStyle;
@@ -1478,6 +1480,7 @@ type
     property Align;
     property AlternateColor;
     property Anchors;
+    property AscImageIndex;
     property AutoAdvance;
     property AutoEdit;
     property AutoFillColumns;
@@ -1492,6 +1495,7 @@ type
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
+    property DescImageIndex;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1701,6 +1705,7 @@ type
     property Align;
     property AlternateColor;
     property Anchors;
+    property AscImageIndex;
     property AutoAdvance;
     property AutoEdit;
     property AutoFillColumns;
@@ -1716,6 +1721,7 @@ type
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
+    property DescImageIndex;
     property DragCursor;
     property DragKind;
     property DragMode;
