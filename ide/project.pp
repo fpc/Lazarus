@@ -521,6 +521,7 @@ type
     procedure SetIncludePaths(const AValue: string); override;
     procedure SetLibraryPaths(const AValue: string); override;
     procedure SetLinkerOptions(const AValue: string); override;
+    procedure SetNamespaces(const AValue: string); override;
     procedure SetObjectPath(const AValue: string); override;
     procedure SetSrcPath(const AValue: string); override;
     procedure SetUnitPaths(const AValue: string); override;
@@ -4411,6 +4412,7 @@ procedure TProject.GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDef
   
 begin
   if (not IsVirtual) then exit;
+  ExtendPath(NamespacesMacroName,CompilerOptions.Namespaces);
   ExtendPath(UnitPathMacroName,CompilerOptions.OtherUnitFiles);
   ExtendPath(IncludePathMacroName,CompilerOptions.IncludePath);
   ExtendPath(SrcPathMacroName,CompilerOptions.SrcPath);
@@ -6108,6 +6110,13 @@ begin
   inherited SetLinkerOptions(AValue);
 end;
 
+procedure TProjectCompilerOptions.SetNamespaces(const AValue: string);
+begin
+  if Namespaces=AValue then exit;
+  InvalidateOptions;
+  inherited SetNamespaces(AValue);
+end;
+
 procedure TProjectCompilerOptions.SetObjectPath(const AValue: string);
 begin
   if ObjectPath=AValue then exit;
@@ -6327,6 +6336,7 @@ end;
 procedure TProjectDefineTemplates.UpdateSrcDirIfDef;
 var
   Changed: Boolean;
+  NamespacesDefTempl: TDefineTemplate;
   UnitPathDefTempl: TDefineTemplate;
   IncPathDefTempl: TDefineTemplate;
   SrcPathDefTempl: TDefineTemplate;
@@ -6355,21 +6365,27 @@ begin
       da_If);
     FMain.AddChild(FSrcDirIf);
     
+    // create namespaces template for this directory
+    NamespacesDefTempl:=TDefineTemplate.Create('Namespaces', lisPkgDefsNamespaces,
+      NamespacesMacroName,NamespacesMacro+';$ProjectNamespaces('+Owner.IDAsString+')',
+      da_Define);
+    FSrcDirIf.AddChild(NamespacesDefTempl);
+
     // create unit path template for this directory
     UnitPathDefTempl:=TDefineTemplate.Create('UnitPath', lisPkgDefsUnitPath,
-      '#UnitPath','$(#UnitPath);$ProjectUnitPath('+Owner.IDAsString+')',
+      UnitPathMacroName,UnitPathMacro+';$ProjectUnitPath('+Owner.IDAsString+')',
       da_Define);
     FSrcDirIf.AddChild(UnitPathDefTempl);
 
     // create include path template for this directory
     IncPathDefTempl:=TDefineTemplate.Create('IncPath','Include Path',
-      '#IncPath','$(#IncPath);$ProjectIncPath('+Owner.IDAsString+')',
+      IncludePathMacroName,IncludePathMacro+';$ProjectIncPath('+Owner.IDAsString+')',
       da_Define);
     FSrcDirIf.AddChild(IncPathDefTempl);
 
     // create src path template for this directory
     SrcPathDefTempl:=TDefineTemplate.Create('SrcPath','Src Path',
-      '#SrcPath','$(#SrcPath);$ProjectSrcPath('+Owner.IDAsString+')',
+      SrcPathMacroName,SrcPathMacro+';$ProjectSrcPath('+Owner.IDAsString+')',
       da_Define);
     FSrcDirIf.AddChild(SrcPathDefTempl);
 

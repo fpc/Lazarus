@@ -46,7 +46,7 @@ uses
   // LCL
   InterfaceBase, Forms, Controls, LCLProc,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM,
+  FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
   KeywordFuncLists, BasicCodeTools,
@@ -155,6 +155,7 @@ type
   TInheritedCompilerOption = (
     icoNone,
     icoUnitPath,
+    icoNamespaces,
     icoIncludePath,
     icoObjectPath,
     icoLibraryPath,
@@ -177,6 +178,7 @@ type
     pcosNone,
     pcosBaseDir,      // the base directory for the relative paths (only auto created packages can have macros in the BaseDir)
     pcosUnitPath,     // search path for pascal units
+    pcosNamespaces,   // namespaces
     pcosIncludePath,  // search path for pascal include files
     pcosObjectPath,   // search path for .o files
     pcosLibraryPath,  // search path for libraries
@@ -204,6 +206,7 @@ const
     '',
     '',
     'UnitPath',
+    'Namespaces',
     'IncPath',
     'ObjectPath',
     'LibraryPath',
@@ -219,6 +222,7 @@ const
     '',
     '',
     'UsageUnitPath',
+    'UsageNamespaces',
     'UsageIncPath',
     'UsageObjectPath',
     'UsageLibraryPath',
@@ -234,6 +238,7 @@ const
     TParsedCompilerOptString = (
       pcosNone,
       pcosUnitPath,      // icoUnitPath,
+      pcosNamespaces,    // icoNamespaces,
       pcosIncludePath,   // icoIncludePath,
       pcosObjectPath,    // icoObjectPath,
       pcosLibraryPath,   // icoLibraryPath,
@@ -443,6 +448,7 @@ type
     function GetDebugPath: string; override;
     function GetIncludePaths: String; override;
     function GetLibraryPaths: String; override;
+    function GetNamespaces: String; override;
     function GetObjectPath: string; override;
     function GetSrcPath: string; override;
     function GetUnitOutputDir: string; override;
@@ -454,6 +460,7 @@ type
     procedure SetIncludePaths(const AValue: String); override;
     procedure SetLibraryPaths(const AValue: String); override;
     procedure SetLinkerOptions(const AValue: String); override;
+    procedure SetNamespaces(const AValue: String); override;
     procedure SetUnitPaths(const AValue: String); override;
     procedure SetUnitOutputDir(const AValue: string); override;
     procedure SetObjectPath(const AValue: string); override;
@@ -514,6 +521,7 @@ type
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
                          WithBaseDir: boolean = true): string; override;
+    function GetNamespacesParsed(Parsed: TCompilerOptionsParseType = coptParsed): string; override;
     function GetIncludePath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
                             WithBaseDir: boolean = true): string; override;
@@ -557,6 +565,7 @@ type
               ChangeConditionals: boolean); virtual;
     procedure MergeToIncludePaths(const AddSearchPath: string);
     procedure MergeToLibraryPaths(const AddSearchPath: string);
+    procedure MergeToNamespaces(const AddNamespaces: string);
     procedure MergeToUnitPaths(const AddSearchPath: string);
     procedure MergeToObjectPath(const AddSearchPath: string);
     procedure MergeToSrcPath(const AddSearchPath: string);
@@ -600,6 +609,7 @@ type
     function GetIncludePath: string; virtual;
     function GetLibraryPath: string; virtual;
     function GetLinkerOptions: string; virtual;
+    function GetNamespaces: string; virtual;
     function GetObjectPath: string; virtual;
     function GetSrcPath: string; virtual;
     function GetUnitPath: string; virtual;
@@ -608,6 +618,7 @@ type
     procedure SetIncludePath(const AValue: string); virtual;
     procedure SetLibraryPath(const AValue: string); virtual;
     procedure SetLinkerOptions(const AValue: string); virtual;
+    procedure SetNamespaces(const AValue: string); virtual;
     procedure SetObjectPath(const AValue: string); virtual;
     procedure SetSrcPath(const AValue: string); virtual;
     procedure SetUnitPath(const AValue: string); virtual;
@@ -626,6 +637,7 @@ type
   public
     property Owner: TObject read fOwner;
     property UnitPath: string read GetUnitPath write SetUnitPath;
+    property Namespaces: string read GetNamespaces write SetNamespaces;
     property IncludePath: string read GetIncludePath write SetIncludePath;
     property SrcPath: string read GetSrcPath write SetSrcPath;
     property ObjectPath: string read GetObjectPath write SetObjectPath;
@@ -753,6 +765,10 @@ begin
           InheritedOptionStrings[icoUnitPath]:=
             MergeSearchPaths(InheritedOptionStrings[icoUnitPath],
                             AddOptions.ParsedOpts.GetParsedValue(pcosUnitPath));
+          // namespaces
+          InheritedOptionStrings[icoNamespaces]:=
+            MergeSearchPaths(InheritedOptionStrings[icoNamespaces],
+                            AddOptions.ParsedOpts.GetParsedValue(pcosNamespaces));
           // include search path
           InheritedOptionStrings[icoIncludePath]:=
             MergeSearchPaths(InheritedOptionStrings[icoIncludePath],
@@ -785,6 +801,10 @@ begin
           InheritedOptionStrings[icoUnitPath]:=
             MergeSearchPaths(InheritedOptionStrings[icoUnitPath],
                           AddOptions.ParsedOpts.GetParsedPIValue(pcosUnitPath));
+          // namespaces
+          InheritedOptionStrings[icoNamespaces]:=
+            MergeSearchPaths(InheritedOptionStrings[icoNamespaces],
+                          AddOptions.ParsedOpts.GetParsedPIValue(pcosNamespaces));
           // include search path
           InheritedOptionStrings[icoIncludePath]:=
             MergeSearchPaths(InheritedOptionStrings[icoIncludePath],
@@ -820,18 +840,11 @@ begin
             CurOptions:=InheritedOptionStrings[o];
             case o of
             icoNone: ;
-            icoUnitPath,icoIncludePath,icoSrcPath,icoObjectPath,icoLibraryPath:
-              begin
-                if CurOptions<>'' then
-                  UnparsedOption:=';'+UnparsedOption;
-                CurOptions:=CurOptions+UnparsedOption;
-              end;
+            icoUnitPath,icoNamespaces,icoIncludePath,icoSrcPath,icoObjectPath,
+            icoLibraryPath:
+              CurOptions:=MergeWithDelimiter(CurOptions,UnparsedOption,';');
             icoLinkerOptions,icoCustomOptions:
-              begin
-                if CurOptions<>'' then
-                  UnparsedOption:=' '+UnparsedOption;
-                CurOptions:=CurOptions+UnparsedOption;
-              end;
+              CurOptions:=MergeWithDelimiter(CurOptions,UnparsedOption,' ');
             else
               RaiseException('GatherInheritedOptions');
             end;
@@ -852,7 +865,7 @@ var
   CurLibraryPath: String;
   CurObjectPath: String;
   CurUnitPath: String;
-  CurCustomOptions: String;
+  CurCustomOptions, CurNamespaces: String;
 begin
   Result:='';
 
@@ -874,6 +887,11 @@ begin
     if (CurLibraryPath <> '') then
       Result := Result + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
   end;
+
+  // library path
+  CurNamespaces:=InheritedOptionStrings[icoNamespaces];
+  if CurNamespaces <> '' then
+    Result := Result + ' -NS'+CurNamespaces;
 
   // object path
   CurObjectPath:=InheritedOptionStrings[icoObjectPath];
@@ -1340,6 +1358,11 @@ begin
   Result:=ParsedOpts.Values[pcosLibraryPath].UnparsedValue;
 end;
 
+function TBaseCompilerOptions.GetNamespaces: String;
+begin
+  Result:=ParsedOpts.Values[pcosNamespaces].UnparsedValue;
+end;
+
 function TBaseCompilerOptions.GetObjectPath: string;
 begin
   Result:=ParsedOpts.Values[pcosObjectPath].UnparsedValue;
@@ -1404,6 +1427,16 @@ begin
   ParsedOpts.SetUnparsedValue(pcosLinkerOptions,AValue);
   {$IFDEF VerboseIDEModified}
   debugln(['TBaseCompilerOptions.SetLinkerOptions ',AValue]);
+  {$ENDIF}
+  IncreaseChangeStamp;
+end;
+
+procedure TBaseCompilerOptions.SetNamespaces(const AValue: String);
+begin
+  if Namespaces=AValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosNamespaces,AValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetNamespaces ',AValue]);
   {$ENDIF}
   IncreaseChangeStamp;
 end;
@@ -2190,6 +2223,30 @@ begin
   Result:=GetPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir,Parsed,WithBaseDir);
 end;
 
+function TBaseCompilerOptions.GetNamespacesParsed(Parsed: TCompilerOptionsParseType
+  ): string;
+var
+  CurNamespaces, InhNamespaces: String;
+begin
+  // this namespaces
+  case Parsed of
+  coptParsed: CurNamespaces:=ParsedOpts.GetParsedValue(pcosNamespaces);
+  coptUnparsed: CurNamespaces:=ParsedOpts.Values[pcosNamespaces].UnparsedValue;
+  coptParsedPlatformIndependent:
+               CurNamespaces:=ParsedOpts.GetParsedPIValue(pcosNamespaces);
+  else
+    RaiseGDBException('');
+  end;
+  // inherited namespaces
+  InhNamespaces:=GetInheritedOption(icoNamespaces,false,Parsed);
+
+  // concatenate
+  Result:=MergeWithDelimiter(CurNamespaces,InhNamespaces,';');
+
+  // eliminate line breaks
+  Result:=SpecialCharsToSpaces(Result,true);
+end;
+
 function TBaseCompilerOptions.GetIncludePath(RelativeToBaseDir: boolean;
   Parsed: TCompilerOptionsParseType; WithBaseDir: boolean): string;
 begin
@@ -2467,6 +2524,11 @@ begin
   SetLibraryPaths(MergeSearchPaths(GetLibraryPaths,AddSearchPath));
 end;
 
+procedure TBaseCompilerOptions.MergeToNamespaces(const AddNamespaces: string);
+begin
+  SetNamespaces(MergeWithDelimiter(GetNamespacesParsed,AddNamespaces,';'));
+end;
+
 procedure TBaseCompilerOptions.MergeToUnitPaths(const AddSearchPath: string);
 begin
   SetUnitPaths(MergeSearchPaths(GetUnitPaths,AddSearchPath));
@@ -2534,7 +2596,7 @@ var
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
   FPCompilerFilename: String;
-  s: string;
+  s, CurNamespaces: string;
   CurFPCMsgFile: TFPCMsgFilePoolItem;
   Quiet: Boolean;
 
@@ -3089,6 +3151,11 @@ begin
         switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
     end;
 
+    // namespaces
+    CurNamespaces:=GetNamespacesParsed(coptParsed);
+    if CurNamespaces<>'' then
+      switches := switches +' -NS'+CurNamespaces;
+
     // object path
     CurObjectPath:=GetObjectPath(not (ccloAbsolutePaths in Flags),
                                  coptParsed,false);
@@ -3487,6 +3554,7 @@ begin
   if Tool<>nil then Tool.Path:='Paths';
   if Done(Tool.AddPathsDiff('IncludePaths',IncludePath,CompOpts.IncludePath)) then exit;
   if Done(Tool.AddPathsDiff('LibraryPaths',Libraries,CompOpts.Libraries)) then exit;
+  if Done(Tool.AddPathsDiff('Namespaces',Namespaces,CompOpts.Namespaces)) then exit;
   if Done(Tool.AddPathsDiff('UnitPaths',OtherUnitFiles,CompOpts.OtherUnitFiles)) then exit;
   if Done(Tool.AddPathsDiff('UnitOutputDir',UnitOutputDirectory,CompOpts.UnitOutputDirectory)) then exit;
   if Done(Tool.AddPathsDiff('ObjectPath',ObjectPath,CompOpts.ObjectPath)) then exit;
@@ -3643,6 +3711,11 @@ begin
   Result:=FParsedOpts.Values[pcosLinkerOptions].UnparsedValue;
 end;
 
+function TAdditionalCompilerOptions.GetNamespaces: string;
+begin
+  Result:=FParsedOpts.Values[pcosNamespaces].UnparsedValue;
+end;
+
 function TAdditionalCompilerOptions.GetObjectPath: string;
 begin
   Result:=FParsedOpts.Values[pcosObjectPath].UnparsedValue;
@@ -3673,6 +3746,11 @@ begin
   ParsedOpts.SetUnparsedValue(pcosLinkerOptions,AValue);
 end;
 
+procedure TAdditionalCompilerOptions.SetNamespaces(const AValue: string);
+begin
+  ParsedOpts.SetUnparsedValue(pcosNamespaces,AValue);
+end;
+
 procedure TAdditionalCompilerOptions.SetObjectPath(const AValue: string);
 begin
   ParsedOpts.SetUnparsedValue(pcosObjectPath,AValue);
@@ -3699,6 +3777,7 @@ end;
 procedure TAdditionalCompilerOptions.Clear;
 begin
   UnitPath:='';
+  Namespaces:='';
   SrcPath:='';
   IncludePath:='';
   CustomOptions:='';
@@ -3715,6 +3794,7 @@ begin
     raise Exception.Create('TAdditionalCompilerOptions.AssignOptions: Can not copy from '+DbgSName(Source));
   Src:=TAdditionalCompilerOptions(Source);
   UnitPath:=Src.UnitPath;
+  Namespaces:=Src.Namespaces;
   IncludePath:=Src.IncludePath;
   SrcPath:=Src.SrcPath;
   ObjectPath:=Src.ObjectPath;
@@ -3738,6 +3818,7 @@ begin
   IncludePath:=f(XMLConfig.GetValue(Path+'IncludePath/Value',''));
   LibraryPath:=f(XMLConfig.GetValue(Path+'LibraryPath/Value',''));
   LinkerOptions:=f(XMLConfig.GetValue(Path+'LinkerOptions/Value',''));
+  Namespaces:=f(XMLConfig.GetValue(Path+'Namespaces/Value',''));
   ObjectPath:=f(XMLConfig.GetValue(Path+'ObjectPath/Value',''));
   UnitPath:=f(XMLConfig.GetValue(Path+'UnitPath/Value',''));
   SrcPath:=f(XMLConfig.GetValue(Path+'SrcPath/Value',''));
@@ -3756,6 +3837,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'IncludePath/Value',f(IncludePath),'');
   XMLConfig.SetDeleteValue(Path+'LibraryPath/Value',f(LibraryPath),'');
   XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',f(LinkerOptions),'');
+  XMLConfig.SetDeleteValue(Path+'Namespaces/Value',Namespaces,'');
   XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',f(ObjectPath),'');
   XMLConfig.SetDeleteValue(Path+'UnitPath/Value',f(UnitPath),'');
   XMLConfig.SetDeleteValue(Path+'SrcPath/Value',f(SrcPath),'');
@@ -3775,6 +3857,7 @@ begin
   case AnOption of
   icoNone: Result:='';
   icoUnitPath: Result:=UnitPath;
+  icoNamespaces: Result:=Namespaces;
   icoIncludePath: Result:=IncludePath;
   icoObjectPath: Result:=ObjectPath;
   icoLibraryPath: Result:=LibraryPath;
@@ -3864,6 +3947,8 @@ begin
     Result:=MergeSearchPaths(Result,GetForcedPathDelims(Vars[VarName]));
   pcosLinkerOptions:
     Result:=MergeLinkerOptions(Result,Vars[VarName]);
+  pcosNamespaces:
+    Result:=MergeWithDelimiter(Result,Vars[VarName],';');
   pcosCustomOptions:
     begin
       Result:=MergeCustomOptions(Result,Vars[VarName]);

@@ -234,6 +234,7 @@ resourcestring
   lisLaunchingCmdLine = 'Launching target command line';
   lisPublishProjDir = 'Publish project directory';
   lisProjectUnitPath = 'Project Unit Path';
+  lisProjectNamespaces = 'Project Namespaces';
   lisProjectIncPath = 'Project Include Path';
   lisProjectSrcPath = 'Project Src Path';
   lisProjectOutDir = 'Project Output directory (e.g. the ppu directory)';
@@ -4393,6 +4394,7 @@ resourcestring
   // package defs
   lisPkgDefsOutputDirectory = 'Output directory';
   lisPkgDefsCompiledSrcPathAddition = 'CompiledSrcPath addition';
+  lisPkgDefsNamespaces = 'Namespaces';
   lisPkgDefsUnitPath = 'Unit Path';
   lisProjProjectSourceDirectoryMark = 'Project Source Directory Mark';
   lisPkgDefsSrcDirMark = 'Package Source Directory Mark';

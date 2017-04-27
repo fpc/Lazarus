@@ -116,6 +116,8 @@ type
                                var {%H-}Abort: boolean): string;
     function MacroFuncProjIncPath(const {%H-}Param: string; const {%H-}Data: PtrInt;
                                   var {%H-}Abort: boolean): string;
+    function MacroFuncProjNamespaces(const {%H-}Param: string; const {%H-}Data: PtrInt;
+                                   var {%H-}Abort: boolean): string;
     function MacroFuncProjOutDir(const {%H-}Param: string; const {%H-}Data: PtrInt;
                                  var {%H-}Abort: boolean): string;
     function MacroFuncProjPath(const {%H-}Param: string; const {%H-}Data: PtrInt;
@@ -147,6 +149,7 @@ type
     function MacroFuncFallbackOutputRoot(const {%H-}Param: string; const {%H-}Data: PtrInt;
                                          var {%H-}Abort: boolean): string;
 
+    function CTMacroFuncProjectNamespaces(Data: Pointer): boolean;
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
@@ -406,6 +409,8 @@ begin
                       lisLaunchingCmdLine,@MacroFuncRunCmdLine,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjPublishDir','',
                       lisPublishProjDir,@MacroFuncProjPublishDir,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('ProjNamespaces','',
+                      lisProjectNamespaces,@MacroFuncProjNamespaces,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjUnitPath','',
                       lisProjectUnitPath,@MacroFuncProjUnitPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjIncPath','',
@@ -436,6 +441,8 @@ begin
                      lisLAZVer, @MacroFuncLazVer, []));
 
   // codetools macro functions
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PROJECTNAMESPACES',nil,@CTMacroFuncProjectNamespaces);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PROJECTUNITPATH',nil,@CTMacroFuncProjectUnitPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -474,6 +481,7 @@ begin
   tr('TargetCmdLine',lisTargetFilenamePlusParams);
   tr('RunCmdLine',lisLaunchingCmdLine);
   tr('ProjPublishDir',lisPublishProjDir);
+  tr('ProjNamespaces',lisProjectNamespaces);
   tr('ProjUnitPath',lisProjectUnitPath);
   tr('ProjIncPath',lisProjectIncPath);
   tr('ProjSrcPath',lisProjectSrcPath);
@@ -1972,6 +1980,8 @@ begin
       Result:=Project1.CompilerOptions.GetSrcPath(false)
     else if SysUtils.CompareText(Param,'IncPath')=0 then
       Result:=Project1.CompilerOptions.GetIncludePath(false)
+    else if SysUtils.CompareText(Param,'Namespaces')=0 then
+      Result:=Project1.CompilerOptions.GetNamespacesParsed
     else if SysUtils.CompareText(Param,'UnitPath')=0 then
       Result:=Project1.CompilerOptions.GetUnitPath(false)
     else if SysUtils.CompareText(Param,'InfoFile')=0 then
@@ -2209,6 +2219,15 @@ begin
     Result:='';
 end;
 
+function TBuildManager.MacroFuncProjNamespaces(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.CompilerOptions.GetNamespacesParsed()
+  else
+    Result:='';
+end;
+
 function TBuildManager.MacroFuncProjSrcPath(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
@@ -2257,6 +2276,18 @@ begin
   Result:=EnvironmentOptions.GetParsedMakeFilename;
   if Result='' then
     Result:=FindDefaultMakePath;
+end;
+
+function TBuildManager.CTMacroFuncProjectNamespaces(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+begin
+  FuncData:=PReadFunctionData(Data);
+  Result:=false;
+  if Project1<>nil then begin
+    FuncData^.Result:=Project1.CompilerOptions.GetNamespacesParsed();
+    Result:=true;
+  end;
 end;
 
 function TBuildManager.CTMacroFuncProjectUnitPath(Data: Pointer): boolean;

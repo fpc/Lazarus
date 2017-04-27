@@ -278,6 +278,7 @@ type
     function GetIncludePaths: String; virtual; abstract;
     function GetLibraryPaths: String; virtual; abstract;
     function GetModified: boolean; virtual;
+    function GetNamespaces: String; virtual; abstract;
     function GetObjectPath: string; virtual; abstract;
     function GetSrcPath: string; virtual; abstract;
     function GetUnitOutputDir: string; virtual; abstract;
@@ -290,6 +291,7 @@ type
     procedure SetLibraryPaths(const AValue: String); virtual; abstract;
     procedure SetLinkerOptions(const AValue: String); virtual; abstract;
     procedure SetModified(const AValue: boolean); virtual; abstract;
+    procedure SetNamespaces(const AValue: String); virtual; abstract;
     procedure SetObjectPath(const AValue: string); virtual; abstract;
     procedure SetSrcPath(const AValue: string); virtual; abstract;
     procedure SetTargetCPU(const AValue: string); virtual; abstract;
@@ -321,6 +323,7 @@ type
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
                          WithBaseDir: boolean = true): string; virtual; abstract;
+    function GetNamespacesParsed(Parsed: TCompilerOptionsParseType = coptParsed): string; virtual; abstract;
     function GetIncludePath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
                             WithBaseDir: boolean = true): string; virtual; abstract;
@@ -341,6 +344,7 @@ type
     property IncludePath: String read GetIncludePaths write SetIncludePaths; // alias IncPath
     property Libraries: String read GetLibraryPaths write SetLibraryPaths; // alias LibraryPath
     property OtherUnitFiles: String read GetUnitPaths write SetUnitPaths; // alias UnitPath
+    property Namespaces: String read GetNamespaces write SetNamespaces;
     property ObjectPath: string read GetObjectPath write SetObjectPath;
     property SrcPath: string read GetSrcPath write SetSrcPath;  // alias SrcPath
     property DebugPath: string read GetDebugPath write SetDebugPath;
