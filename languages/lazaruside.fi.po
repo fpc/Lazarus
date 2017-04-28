@@ -14068,6 +14068,14 @@ msgstr "jäsentäjä \"%s\": %s"
 msgid "Pass Count"
 msgstr "Suoritusmäärä"
 
+#: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
+msgid "passing compiler define \"%s\" twice with different values"
+msgstr ""
+
+#: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
+msgid "passing compiler option -%s twice with different values"
+msgstr ""
+
 #: lazarusidestrconsts.lispaste
 msgctxt "lazarusidestrconsts.lispaste"
 msgid "Paste"
@@ -14637,6 +14645,10 @@ msgstr "Tyhjennä valinta"
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "CompiledSrcPath lisäys"
+
+#: lazarusidestrconsts.lispkgdefsnamespaces
+msgid "Namespaces"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgdefsoutputdirectory
 msgid "Output directory"
@@ -15614,6 +15626,10 @@ msgstr "Projekti"
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
 msgstr "Projektin makron ominaisuudet"
+
+#: lazarusidestrconsts.lisprojectnamespaces
+msgid "Project Namespaces"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"

@@ -14201,6 +14201,14 @@ msgstr "Parser \"%s\": %s"
 msgid "Pass Count"
 msgstr "Laufzähler"
 
+#: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
+msgid "passing compiler define \"%s\" twice with different values"
+msgstr ""
+
+#: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
+msgid "passing compiler option -%s twice with different values"
+msgstr ""
+
 #: lazarusidestrconsts.lispaste
 msgctxt "lazarusidestrconsts.lispaste"
 msgid "Paste"
@@ -14772,6 +14780,10 @@ msgstr "Auswahl löschen"
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "CompiledSrcPath-Erweiterung"
+
+#: lazarusidestrconsts.lispkgdefsnamespaces
+msgid "Namespaces"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgdefsoutputdirectory
 msgid "Output directory"
@@ -15750,6 +15762,10 @@ msgstr "Projekt"
 #: lazarusidestrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
 msgstr "Projekt-Makroeigenschaften"
+
+#: lazarusidestrconsts.lisprojectnamespaces
+msgid "Project Namespaces"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
