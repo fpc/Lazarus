@@ -892,18 +892,11 @@ begin
 end;
 
 procedure TCustomForm.UpdateShowInTaskBar;
-var
-  Value: TShowInTaskBar;
 begin
   if (Assigned(Application) and (Application.MainForm = Self)) or
      (not HandleAllocated) or Assigned(Parent) or
      (FormStyle = fsMDIChild) or not Showing then Exit;
-  Value := GetEffectiveShowInTaskBar;
-  if FRealizedShowInTaskBar <> Value then
-  begin
-    FRealizedShowInTaskBar := Value;
-    TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
-  end;
+  TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, GetEffectiveShowInTaskBar);
 end;
 
 class procedure TCustomForm.WSRegisterClass;

@@ -3185,7 +3185,6 @@ begin
   DebugLn('  Reald: ClientWidth=%d ClientHeight=%d',[ClientWidth, ClientHeight]);
   DebugLn('  MaxTopLeft',dbgs(FGCache.MaxTopLeft));
   {$Endif}
-  CalcScrollBarsRange;
 end;
 
 procedure TCustomGrid.CreateParams(var Params: TCreateParams);
@@ -6947,10 +6946,22 @@ begin
 end;
 
 procedure TCustomGrid.DoOnChangeBounds;
+var
+  OldTopLeft: TPoint;
+  OldColOff, OldRowOff: Integer;
 begin
   inherited DoOnChangeBounds;
 
-  VisualChange;
+  if FUpdateCount=0 then
+  begin
+    OldTopLeft := fTopLeft;
+    OldColOff := FGCache.TLColOff;
+    OldRowOff := FGCache.TLRowOff;
+    UpdateSizes;
+    if (OldTopLeft.X<>FTopLeft.X) or (OldTopLeft.Y<>FTopLeft.Y)
+    or (OldColOff<>FGCache.TLColOff) or (OldRowOff<>FGCache.TLRowOff) then // reduce unnecessary repaints
+      Invalidate;
+  end;
 end;
 
 procedure TCustomGrid.KeyDown(var Key: Word; Shift: TShiftState);
