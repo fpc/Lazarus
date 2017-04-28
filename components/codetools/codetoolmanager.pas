@@ -1669,55 +1669,24 @@ procedure TCodeToolManager.GetFPCVersionForDirectory(const Directory: string;
   out FPCVersion, FPCRelease, FPCPatch: integer);
 var
   Evaluator: TExpressionEvaluator;
-  i: Integer;
-  VarName: String;
-  p: Integer;
-
-  function ReadInt(var AnInteger: integer): boolean;
-  var
-    StartPos: Integer;
-  begin
-    StartPos:=p;
-    AnInteger:=0;
-    while (p<=length(VarName)) and (VarName[p] in ['0'..'9']) do begin
-      AnInteger:=AnInteger*10+(ord(VarName[p])-ord('0'));
-      if AnInteger>=100 then begin
-        Result:=false;
-        exit;
-      end;
-      inc(p);
-    end;
-    Result:=StartPos<p;
-  end;
-  
+  FPCFullVersion: LongInt;
 begin
   FPCVersion:=0;
   FPCRelease:=0;
   FPCPatch:=0;
   Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
   if Evaluator=nil then exit;
-  for i:=0 to Evaluator.Count-1 do begin
-    VarName:=Evaluator.Names(i);
-    if (length(VarName)>3) and (VarName[1] in ['V','v'])
-    and (VarName[2] in ['E','e']) and (VarName[3] in ['R','r'])
-    and (VarName[4] in ['0'..'9']) then begin
-      p:=4;
-      if not ReadInt(FPCVersion) then continue;
-      if (p>=length(VarName)) or (VarName[p]<>'_') then continue;
-      inc(p);
-      if not ReadInt(FPCRelease) then continue;
-      if (p>=length(VarName)) or (VarName[p]<>'_') then continue;
-      inc(p);
-      if not ReadInt(FPCPatch) then continue;
-      exit;
-    end;
-  end;
+  FPCFullVersion:=StrToIntDef(Evaluator['FPC_FULLVERSION'],0);
+  FPCVersion:=FPCFullVersion div 10000;
+  FPCRelease:=(FPCFullVersion div 100) mod 100;
+  FPCPatch:=FPCFullVersion mod 100;
 end;
 
 function TCodeToolManager.GetNamespacesForDirectory(const Directory: string;
   UseCache: boolean): string;
 var
   Evaluator: TExpressionEvaluator;
+  FPCFullVersion: LongInt;
 begin
   if UseCache then begin
     Result:=DirectoryCachePool.GetString(Directory,ctdcsNamespaces,true)
@@ -1725,7 +1694,13 @@ begin
     Result:='';
     Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
     if Evaluator=nil then exit;
-    Result:=Evaluator[NamespacesMacroName];
+    if Evaluator.IsDefined('PAS2JS') then
+      Result:=Evaluator[NamespacesMacroName]
+    else begin
+      FPCFullVersion:=StrToIntDef(Evaluator['FPC_FULLVERSION'],0);
+      if FPCFullVersion>30101 then
+        Result:=Evaluator[NamespacesMacroName];
+    end;
   end;
 end;
 
