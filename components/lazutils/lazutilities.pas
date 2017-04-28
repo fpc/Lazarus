@@ -152,7 +152,7 @@ begin
     if b<>'' then
       Result:=a+Delimiter+b
     else
-      Result:=b;
+      Result:=a;
   end else
     Result:=b;
 end;

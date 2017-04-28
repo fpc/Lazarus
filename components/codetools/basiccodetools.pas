@@ -287,7 +287,13 @@ var
 
 // source type
 function FindSourceType(const Source: string;
-  var SrcNameStart, SrcNameEnd: integer): string;
+  var SrcNameStart, SrcNameEnd: integer; NestedComments: boolean = false): string;
+
+// identifier
+function ReadDottedIdentifier(const Source: string; var Position: integer;
+  NestedComments: boolean = false): string;
+function ReadDottedIdentifier(var Position: PChar; SrcEnd: PChar;
+  NestedComments: boolean = false): string;
 
 // program name
 function RenameProgramInSource(Source:TSourceLog;
@@ -298,7 +304,10 @@ function FindProgramNameInSource(const Source:string;
 // unit name
 function RenameUnitInSource(Source:TSourceLog;const NewUnitName:string):boolean;
 function FindUnitNameInSource(const Source:string;
-   var UnitNameStart,UnitNameEnd:integer):string;
+   out UnitNameStart,UnitNameEnd: integer; NestedComments: boolean = false):string;
+function FindModuleNameInSource(const Source:string;
+   out ModuleType: string; out NameStart,NameEnd: integer;
+   NestedComments: boolean = false):string;
 
 // uses sections
 function UnitIsUsedInSource(const Source,SrcUnitName:string):boolean;
@@ -495,15 +504,38 @@ begin
     Result:=false;
 end;
 
-function FindSourceType(const Source: string;
-  var SrcNameStart, SrcNameEnd: integer): string;
+function FindSourceType(const Source: string; var SrcNameStart,
+  SrcNameEnd: integer; NestedComments: boolean): string;
+var
+  u: String;
+  p, AtomStart: Integer;
 begin
   // read first atom for type
-  SrcNameEnd:=1;
-  Result:=ReadNextPascalAtom(Source,SrcNameEnd,SrcNameStart);
-  // read second atom for name
-  if Result<>'' then
-    ReadNextPascalAtom(Source,SrcNameEnd,SrcNameStart);
+  SrcNameStart:=0;
+  SrcNameEnd:=0;
+  p:=1;
+  Result:=ReadNextPascalAtom(Source,p,AtomStart,NestedComments);
+  u:=Uppercase(Result);
+  if (u='UNIT') or (u='PROGRAM') or (u='LIBRARY') or (u='PACKAGE') then begin
+    // read name
+    ReadNextPascalAtom(Source,p,AtomStart,NestedComments);
+    if p<=AtomStart then exit;
+    if not IsIdentStartChar[Source[AtomStart]] then exit;
+    SrcNameStart:=AtomStart;
+    SrcNameEnd:=p;
+    repeat
+      ReadRawNextPascalAtom(Source,p,AtomStart,NestedComments);
+      if (AtomStart=p+1) and (Source[AtomStart]='.') then begin
+        ReadRawNextPascalAtom(Source,p,AtomStart,NestedComments);
+        if p<=AtomStart then exit;
+        if not IsIdentStartChar[Source[AtomStart]] then exit;
+        SrcNameEnd:=p;
+      end else
+        break;
+    until false;
+  end else begin
+    Result:='';
+  end;
 end;
 
 function RenameUnitInSource(Source:TSourceLog;const NewUnitName:string):boolean;
@@ -516,13 +548,71 @@ begin
     Source.Replace(UnitNameStart,UnitNameEnd-UnitNameStart,NewUnitName);
 end;
 
-function FindUnitNameInSource(const Source:string;
-  var UnitNameStart,UnitNameEnd:integer):string;
+function FindUnitNameInSource(const Source: string; out UnitNameStart,
+  UnitNameEnd: integer; NestedComments: boolean): string;
+var
+  ModuleType: string;
 begin
-  if uppercasestr(FindSourceType(Source,UnitNameStart,UnitNameEnd))='UNIT' then
-    Result:=copy(Source,UnitNameStart,UnitNameEnd-UnitNameStart)
-  else
+  Result:=FindModuleNameInSource(Source,ModuleType,UnitNameStart,UnitNameEnd,NestedComments);
+  if CompareText(ModuleType,'UNIT')<>0 then
     Result:='';
+end;
+
+function FindModuleNameInSource(const Source: string; out ModuleType: string;
+  out NameStart, NameEnd: integer; NestedComments: boolean): string;
+var
+  u: String;
+  p, AtomStart: Integer;
+begin
+  // read first atom for type
+  Result:='';
+  NameStart:=0;
+  NameEnd:=0;
+  p:=1;
+  ModuleType:=ReadNextPascalAtom(Source,p,AtomStart,NestedComments);
+  u:=UpperCase(ModuleType);
+  if (u='UNIT') or (u='PROGRAM') or (u='LIBRARY') or (u='PACKAGE') then begin
+    // read name
+    ReadNextPascalAtom(Source,p,AtomStart,NestedComments);
+    if p<=AtomStart then exit;
+    if not IsIdentStartChar[Source[AtomStart]] then exit;
+    NameStart:=AtomStart;
+    NameEnd:=AtomStart;
+    Result:=ReadDottedIdentifier(Source,NameEnd,NestedComments);
+  end else
+    ModuleType:='';
+end;
+
+function ReadDottedIdentifier(const Source: string; var Position: integer;
+  NestedComments: boolean): string;
+var
+  p: PChar;
+begin
+  if (Position<1) or (Position>length(Source)) then exit('');
+  p:=@Source[Position];
+  Result:=ReadDottedIdentifier(p,PChar(Source)+length(Source),NestedComments);
+  Position:=p-PChar(Source)+1;
+end;
+
+function ReadDottedIdentifier(var Position: PChar; SrcEnd: PChar;
+  NestedComments: boolean): string;
+var
+  AtomStart, p: PChar;
+begin
+  Result:='';
+  p:=Position;
+  ReadRawNextPascalAtom(p,AtomStart,SrcEnd,NestedComments);
+  Position:=AtomStart;
+  if (AtomStart>=p) or not IsIdentStartChar[AtomStart^] then exit;
+  Result:=GetIdentifier(AtomStart);
+  repeat
+    ReadRawNextPascalAtom(p,AtomStart,SrcEnd,NestedComments);
+    if (AtomStart+1<>p) or (AtomStart^<>'.') then exit;
+    ReadRawNextPascalAtom(p,AtomStart,SrcEnd,NestedComments);
+    if (AtomStart>=p) or not IsIdentStartChar[AtomStart^] then exit;
+    Position:=AtomStart;
+    Result:=Result+'.'+GetIdentifier(AtomStart);
+  until false;
 end;
 
 function RenameProgramInSource(Source: TSourceLog;

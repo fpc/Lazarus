@@ -43,6 +43,7 @@ uses
   FileProcs, CodeToolsCfgScript,
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
+  LazUtilities,
   // IDEIntf
   IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
@@ -64,6 +65,9 @@ type
     fBuildLazExtraOptions: string; // last build lazarus extra options
     FUnitSetChangeStamp: integer;
     FFPCSrcScans: TFPCSrcScans;
+    FProjectNameSpace: string;
+    FProjectNameSpaceCode: TCodeBuffer;
+    FProjectNameSpaceCodeChgStep: integer;
     // Macro FPCVer
     FFPCVer: string;
     FFPC_FULLVERSION: integer;
@@ -155,6 +159,7 @@ type
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
     procedure OnProjectDestroy(Sender: TObject);
     procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
+    function GetProjectDefaultNamespace: string; // read .lpr file
   protected
     // command line overrides
     OverrideTargetOS: string;
@@ -2223,7 +2228,10 @@ function TBuildManager.MacroFuncProjNamespaces(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
   if Project1<>nil then
-    Result:=Project1.CompilerOptions.GetNamespacesParsed()
+    begin
+    Result:=MergeWithDelimiter(GetProjectDefaultNamespace,
+      Project1.CompilerOptions.GetNamespacesParsed,';');
+    end
   else
     Result:='';
 end;
@@ -2285,7 +2293,8 @@ begin
   FuncData:=PReadFunctionData(Data);
   Result:=false;
   if Project1<>nil then begin
-    FuncData^.Result:=Project1.CompilerOptions.GetNamespacesParsed();
+    FuncData^.Result:=MergeWithDelimiter(GetProjectDefaultNamespace,
+                            Project1.CompilerOptions.GetNamespacesParsed(),';');
     Result:=true;
   end;
 end;
@@ -2335,6 +2344,37 @@ begin
     FreeNotification(UnitSetCache);
     FUnitSetChangeStamp:=UnitSetCache.GetInvalidChangeStamp;
   end;
+end;
+
+function TBuildManager.GetProjectDefaultNamespace: string;
+// called by codetools *before* parsing
+// Important: use only basiccodetools
+var
+  AnUnitInfo: TUnitInfo;
+  NameStart, NameEnd: Integer;
+  Code: TCodeBuffer;
+  ModuleType, ModuleName: string;
+  NestedComments: boolean;
+begin
+  Result:='';
+  if Project1=nil then exit;
+  if not (pfMainUnitIsPascalSource in Project1.Flags) then exit;
+  AnUnitInfo:=Project1.MainUnitInfo;
+  if AnUnitInfo=nil then exit;
+  Code:=AnUnitInfo.Source;
+  if Code=nil then exit;
+  if (Code<>FProjectNameSpaceCode) or (Code.ChangeStep<>FProjectNameSpaceCodeChgStep) then
+  begin
+    // read namespace
+    FProjectNameSpace:='';
+    FProjectNameSpaceCode:=Code;
+    FProjectNameSpaceCodeChgStep:=Code.ChangeStep;
+    NestedComments:=CompareText(Project1.CompilerOptions.SyntaxMode,'delphi')<>0;
+    ModuleName:=FindModuleNameInSource(Code.Source,ModuleType,NameStart,
+      NameEnd,NestedComments);
+    FProjectNameSpace:=ChompDottedIdentifier(ModuleName);
+  end;
+  Result:=FProjectNameSpace;
 end;
 
 procedure TBuildManager.Notification(AComponent: TComponent;
