@@ -1254,12 +1254,16 @@ begin
     Level := 'CRITICAL';
     Ex := EInterfaceCritical;
   end
+{ Commented out for issue #31138. The whole system freezed because of GTK2 exception:
+"Invalid borders specified for theme pixmap: .../line-h.png. Borders don't fit within the image."
+ToDo: Fix the issue properly.
   else
   if ALogLevel and G_LOG_LEVEL_WARNING <> 0
   then begin
     Level := 'WARNING';
     Ex := EInterfaceWarning;
   end
+}
   else
   if ALogLevel and G_LOG_LEVEL_INFO <> 0
   then begin
