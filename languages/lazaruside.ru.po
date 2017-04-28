@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-04-24 00:58+0300\n"
+"PO-Revision-Date: 2017-04-29 01:47+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14198,6 +14198,14 @@ msgstr "анализатор \"%s\": %s"
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "Число проходов"
+
+#: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
+msgid "passing compiler define \"%s\" twice with different values"
+msgstr "неоднократная передача определения компилятора \"%s\" с разными значениями"
+
+#: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
+msgid "passing compiler option -%s twice with different values"
+msgstr "неоднократная передача параметра компилятора -%s с разными значениями"
 
 #: lazarusidestrconsts.lispaste
 msgctxt "lazarusidestrconsts.lispaste"
