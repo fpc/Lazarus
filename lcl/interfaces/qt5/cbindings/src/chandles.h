@@ -166,6 +166,7 @@ typedef struct QLineEdit__ { PTRINT dummy; } *QLineEditH;
 typedef struct QWhatsThis__ { PTRINT dummy; } *QWhatsThisH;
 typedef struct QStyleOptionDockWidget__ { PTRINT dummy; } *QStyleOptionDockWidgetH;
 typedef struct QDoubleSpinBox_hook__ { PTRINT dummy; } *QDoubleSpinBox_hookH;
+typedef struct QBuffer__ { PTRINT dummy; } *QBufferH;
 typedef struct QFileDevice__ { PTRINT dummy; } *QFileDeviceH;
 typedef struct QMdiArea__ { PTRINT dummy; } *QMdiAreaH;
 typedef struct QFile__ { PTRINT dummy; } *QFileH;
