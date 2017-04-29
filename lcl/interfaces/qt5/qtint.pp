@@ -345,7 +345,7 @@ uses
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
  {$IFDEF HASX11}
- XAtom, X, XLib, XKB, xkblib,
+ XAtom, X, XLib, XKB, xkblib, dateutils,
  {$ENDIF}
  QtCaret,
  QtThemes,
