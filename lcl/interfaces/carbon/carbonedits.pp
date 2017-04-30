@@ -1773,9 +1773,9 @@ begin
     if not Assigned(ctx) then Exit;
     HIViewGetBounds(TCarbonMemo(AWidget).FBorder, cg{%H-});
     cg.origin.x:=0.5;
-    cg.origin.y:=0.5;
+    cg.origin.y:=1;
     cg.size.width:=cg.size.width-2;
-    cg.size.height:=cg.size.height-1;
+    cg.size.height:=cg.size.height-2;
 
     if TCarbonMemo(AWidget).FDrawBorder then
     begin
@@ -1787,7 +1787,7 @@ begin
         clips[1].origin.x:=0;
         clips[1].origin.y:=cg.size.height-ScrollSz;
         clips[1].size.width:=cg.size.width-ScrollSz+2;
-        clips[1].size.height:=ScrollSz+1;
+        clips[1].size.height:=ScrollSz+2;
         CGContextClipToRects(ctx, @clips, 2);
       end;
       FillChar(frm{%H-}, sizeof(frm), 0);
