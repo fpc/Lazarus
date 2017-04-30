@@ -913,9 +913,11 @@ begin
     Count := DeviceCapabilitiesW(
       PWidechar(UTF8Decode(Pdev.Name)),
       PWidechar(UTF8Decode(PDev.Port)), DC_BINNAMES, nil, nil);
-    if Count<=0 then
+    if Count<0 then
       raise EPrinter.CreateFmt('DoEnumBins<DC_BINNAMES> error : %d, (%s)',
           [GetLastError,SysErrorMessage(GetLastError)]);
+    if Count=0 then
+      exit;
 
     try
       GetMem(BufferW,24*SizeOf(Widechar)*Count);
