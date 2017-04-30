@@ -4459,7 +4459,8 @@ procedure TCustomGrid.DrawButtonCell(const aCol, aRow: Integer; aRect: TRect;
 var
   details: TThemedElementDetails;
 begin
-  InflateRect(aRect, -2, 0);
+  Dec(aRect.Right);
+  Dec(aRect.Bottom);
   if gdPushed in aState then
     Details := ThemeServices.GetElementDetails(tbPushButtonPressed)
   else
@@ -4467,7 +4468,7 @@ begin
     Details := ThemeServices.GetElementDetails(tbPushButtonHot)
   else
     Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
-  ThemeSErvices.DrawElement(Canvas.Handle, Details, aRect, nil);
+  ThemeServices.DrawElement(Canvas.Handle, Details, aRect, nil);
 end;
 
 procedure TCustomGrid.OnTitleFontChanged(Sender: TObject);
