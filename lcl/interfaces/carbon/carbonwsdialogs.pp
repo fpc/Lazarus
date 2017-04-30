@@ -322,7 +322,7 @@ var
   I: Integer;
   ParsedFilter: TParseStringList;
   M: TMaskList;
-  filterext: String;
+  filterext, InitDir: String;
   supportPackages: Boolean; //todo: select packages by name
 begin
   {$IFDEF VerboseWSClass}
@@ -330,6 +330,11 @@ begin
   {$ENDIF}
 
   FileDialog := ACommonDialog as TFileDialog;
+
+  // two sources of init dir
+  InitDir := FileDialog.InitialDir;
+  if InitDir = '' then
+    InitDir := ExtractFileDir(FileDialog.FileName);
 
   // Initialize record to default values
   if OSError(NavGetDefaultDialogCreationOptions(CreationOptions{%H-}),
@@ -420,7 +425,7 @@ begin
       if NavDialogGetUserAction(DialogRef) <> kNavUserActionCancel then // User OK?
       begin
         if FileDialog.FCompStyle=csSaveFileDialog then
-          FileDialog.FileName := FileDialog.FileName + PathDelim +
+          FileDialog.FileName := InitDir + PathDelim +
             CFStringToStr(NavDialogGetSaveFileName(DialogRef));
             {Note: Not at all clear from Apple docs that NavReplyRecord.Selection
               returns only path to file's folder with Save dialog. Also, what they

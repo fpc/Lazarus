@@ -119,7 +119,7 @@ var
   nsfilter: NSMutableArray;
   Filters: TStringList;
   ParsedFilter: TParseStringList;
-  filterext: string;
+  InitName, InitDir, filterext: string;
   Masks: TParseStringList;
   Extensions: TParseStringList;
   extension: string;
@@ -136,6 +136,12 @@ begin
   FileDialog := ACommonDialog as TFileDialog;
 
   Filters := TStringList.Create;
+
+  // two sources for init dir
+  InitName := ExtractFileName(FileDialog.FileName);
+  InitDir := FileDialog.InitialDir;
+  if InitDir = '' then
+    InitDir := ExtractFileDir(FileDialog.FileName);
 
   // Cocoa doesn't supports a filter list selector like we know from windows. So we add all the masks into one filter list.
 
@@ -205,7 +211,7 @@ begin
       openDlg.setAllowedFileTypes(nsfilter);
     end;
     openDlg.setTitle(NSStringUtf8(FileDialog.Title));
-    openDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(FileDialog.InitialDir)));
+    openDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
 
     if openDlg.runModal = NSOKButton then
     begin
@@ -223,9 +229,8 @@ begin
     saveDlg.setCanCreateDirectories(True);
     saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
     saveDlg.setAllowedFileTypes(nsfilter);
-    saveDlg.setDirectoryURL(NSURL.fileURLWithPath(
-      NSStringUtf8(FileDialog.InitialDir)));
-    saveDlg.setNameFieldStringValue(NSStringUtf8(extractfilename(FileDialog.FileName)));
+    saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
+    saveDlg.setNameFieldStringValue(NSStringUtf8(InitName));
     if saveDlg.runModal = NSOKButton then
     begin
       FileDialog.FileName := NSStringToString(saveDlg.URL.path);
