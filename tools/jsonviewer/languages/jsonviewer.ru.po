@@ -257,6 +257,15 @@ msgstr "&Правка"
 msgid "&File"
 msgstr "&Файл"
 
+#: tmainform.miallowcomments.caption
+msgctxt "tmainform.miallowcomments.caption"
+msgid "Allow comments"
+msgstr ""
+
+#: tmainform.miallowtrailingcomma.caption
+msgid "Allow trailing comma"
+msgstr ""
+
 #: tmainform.micompact.caption
 msgid "Compact display"
 msgstr "Компактное отображение"

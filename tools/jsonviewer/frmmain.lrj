@@ -46,6 +46,8 @@
 {"hash":197671907,"name":"tmainform.miinsert.caption","sourcebytes":[38,86,97,108,117,101,115],"value":"&Values"},
 {"hash":108726499,"name":"tmainform.moptions.caption","sourcebytes":[38,79,112,116,105,111,110,115],"value":"&Options"},
 {"hash":148787406,"name":"tmainform.mistrict.caption","sourcebytes":[38,83,116,114,105,99,116,32,74,83,79,78],"value":"&Strict JSON"},
+{"hash":118830995,"name":"tmainform.miallowcomments.caption","sourcebytes":[65,108,108,111,119,32,99,111,109,109,101,110,116,115],"value":"Allow comments"},
+{"hash":35979073,"name":"tmainform.miallowtrailingcomma.caption","sourcebytes":[65,108,108,111,119,32,116,114,97,105,108,105,110,103,32,99,111,109,109,97],"value":"Allow trailing comma"},
 {"hash":265269188,"name":"tmainform.midocument.caption","sourcebytes":[38,78,101,119,32,100,111,99,117,109,101,110,116,32,119,105,116,104,32,111,98,106,101,99,116],"value":"&New document with object"},
 {"hash":14765539,"name":"tmainform.misortmembers.caption","sourcebytes":[83,111,114,116,32,111,98,106,101,99,116,32,109,101,109,98,101,114,115],"value":"Sort object members"},
 {"hash":258842249,"name":"tmainform.micompact.caption","sourcebytes":[67,111,109,112,97,99,116,32,100,105,115,112,108,97,121],"value":"Compact display"},
