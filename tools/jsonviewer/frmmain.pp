@@ -25,7 +25,7 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, fpJSON, JSONParser,
+  Classes, SysUtils, fpJSON, jsonscanner, JSONParser,
   Forms, Controls, Dialogs, ActnList, Menus, ComCtrls, IniPropStorage, PropertyStorage,
   DefaultTranslator;
 
@@ -60,6 +60,8 @@ type
     MEDit: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MIAllowTrailingComma: TMenuItem;
+    MIAllowComments: TMenuItem;
     MICompact: TMenuItem;
     MIFInd: TMenuItem;
     MIExpandCurrent: TMenuItem;
@@ -138,6 +140,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure HaveData(Sender: TObject);
+    procedure MIAllowTrailingCommaClick(Sender: TObject);
+    procedure MIAllowCommentsClick(Sender: TObject);
     procedure MICompactClick(Sender: TObject);
     procedure MIdocumentClick(Sender: TObject);
     procedure MISortMembersClick(Sender: TObject);
@@ -156,8 +160,12 @@ type
   private
     FRoot : TJSONData;
     FFileName : String;
-    FSortObjectMembers,
+{$IF FPC_FULLVERSION>=30002}
+    FOptions : TJSONOptions;
+{$ELSE}
     FStrict,
+{$ENDIF}
+    FSortObjectMembers,
     FNewObject,
     FCompact,
     FModified : Boolean;
@@ -186,6 +194,9 @@ type
     procedure SetCaption;
     procedure ShowJSONData(AParent: TTreeNode; Data: TJSONData);
     procedure ShowJSONDocument;
+    {$IF FPC_FULLVERSION>=30002}
+    procedure ToggleOption(O: TJSONOption; Enable: Boolean);
+    {$ENDIF}
   public
 
   end; 
@@ -195,7 +206,7 @@ var
 
 implementation
 
-uses msgjsonviewer, frmNewBoolean, frmNewINteger, frmNewString, clipbrd;
+uses typinfo,msgjsonviewer, frmNewBoolean, frmNewINteger, frmNewString, clipbrd;
 
 {$R *.lfm}
 Const
@@ -206,17 +217,55 @@ Const
      ('Unknown','Number','String','Boolean','Null','Array','Object');
 
 { TMainForm }
+{$IF FPC_FULLVERSION>=30002}
+procedure TMainForm.ToggleOption(O : TJSONOption; Enable : Boolean);
+Var
+  S : String;
+begin
+  if Enable then
+    Include(Foptions,O)
+  else
+    Exclude(Foptions,O);
+  S:=GetEnumName(TypeInfo(TJSONOption),Ord(O));
+  Delete(S,1,2);
+  PSMain.StoredValue[S]:=IntToStr(Ord(Enable));
+end;
+{$ENDIF}
 
 procedure TMainForm.MIStrictClick(Sender: TObject);
 begin
+{$IF FPC_FULLVERSION>=30002}
+  ToggleOption(joStrict,(Sender as TMenuItem).Checked);
+{$ELSE}
   FStrict:=(Sender as TMenuItem).Checked;
   PSMain.StoredValue['strict']:=IntToStr(Ord(Fstrict));
+{$ENDIF}
 end;
 
 procedure TMainForm.PSMainStoredValues0Restore(Sender: TStoredValue;
   var Value: TStoredType);
+
+{$IF FPC_FULLVERSION>=30002}
+Var
+  S : String;
+  o : integer;
+  JO : TJSONOption;
+{$ENDIF}
 begin
+  {$IF FPC_FULLVERSION>=30002}
+  S:=Sender.Name;
+  O:=GetEnumValue(TypeInfo(TJSONOption),'jo'+S);
+  if O<>-1 then
+    begin
+    JO:=TJSONOption(O);
+    if StrToIntDef(Value,0)=1 then
+        Include(Foptions,JO)
+      else
+        Exclude(Foptions,JO);
+    end;
+  {$ELSE}
   FStrict:=StrToIntDef(Value,0)=1
+  {$ENDIF}
 end;
 
 procedure TMainForm.PSMainStoredValues1Restore(Sender: TStoredValue;
@@ -525,7 +574,13 @@ Var
 begin
   D:=Nil;
   try
+{$IF FPC_FULLVERSION>=30002}
+    P:=TJSONParser.Create(Clipboard.AsText,[]);
+    P.Options:=FOptions;
+{$ELSE}
     P:=TJSONParser.Create(Clipboard.AsText);
+    P.Strict:=FStrict;
+{$ENDIF}
     try
       D:=P.Parse;
     finally
@@ -918,6 +973,10 @@ begin
   If not ForceDirectories(S) then
     ShowMessage(Format(SErrCreatingConfigDir,[S]));
   PSMain.Active:=True;
+{$IF FPC_FULLVERSION<30002}
+  MIAllowTrailingComma.Visible:=False;
+  MIAllowComments.Visible:=False;
+{$ENDIF}
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -933,10 +992,24 @@ begin
   (Sender as TAction).Enabled:=(FRoot<>Nil);
 end;
 
+procedure TMainForm.MIAllowTrailingCommaClick(Sender: TObject);
+begin
+  {$IF FPC_FULLVERSION>=30002}
+    ToggleOption(joIgnoreTrailingComma,(Sender as TMenuItem).Checked);
+  {$ENDIF}
+end;
+
+procedure TMainForm.MIAllowCommentsClick(Sender: TObject);
+begin
+  {$IF FPC_FULLVERSION>=30002}
+    ToggleOption(joComments,(Sender as TMenuItem).Checked);
+  {$ENDIF}
+end;
+
 procedure TMainForm.MICompactClick(Sender: TObject);
 begin
   FCompact:=MICompact.Checked;
-  PSMain.StoredValue['compact']:=IntToStr(Ord(Fstrict));
+  PSMain.StoredValue['compact']:=IntToStr(Ord(FCompact));
   ShowJSONDocument;
 end;
 
@@ -961,9 +1034,17 @@ Var
 begin
   S:=TFileStream.Create(AFileName,fmOpenRead or fmShareDenyWrite);
   try
+{$IF FPC_FULLVERSION>=30002}
+    P:=TJSONParser.Create(S,[]);
+{$ELSE}
     P:=TJSONParser.Create(S);
+{$ENDIF}
     try
-      P.Strict:=FStrict;
+{$IF FPC_FULLVERSION>=30002}
+      P.Options:=P.Options+[joStrict];
+{$ELSE}
+      P:=TJSONParser.Create(S);
+{$ENDIF}
       D:=P.Parse;
     finally
       P.Free;
