@@ -909,7 +909,8 @@ begin
   While (Result=Nil) and (ANode<>Nil) do
     begin
     ANode:=ANode.Parent;
-    Result:=ANode.GetNextSibling;
+    if assigned(ANode) then
+      Result:=ANode.GetNextSibling;
     end;
 end;
 
