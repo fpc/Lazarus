@@ -419,6 +419,11 @@ object MainForm: TMainForm
         Caption = 'Compact display'
         OnClick = MICompactClick
       end
+      object MIQuoteStrings: TMenuItem
+        AutoCheck = True
+        Caption = 'Quote string values'
+        OnClick = MIQuoteStringsClick
+      end
     end
   end
   object ILJSON: TImageList
@@ -986,6 +991,11 @@ object MainForm: TMainForm
         Name = 'IgnoreTrailingComma'
         Value = '1'
         OnRestore = PSMainStoredValues0Restore
+      end    
+      item
+        Name = 'QuoteStrings'
+        Value = '0'
+        OnRestore = PSMainStoredValues6Restore
       end>
     Active = False
     left = 384

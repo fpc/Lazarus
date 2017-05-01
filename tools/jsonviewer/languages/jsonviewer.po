@@ -266,6 +266,10 @@ msgstr ""
 msgid "&Values"
 msgstr ""
 
+#: tmainform.miquotestrings.caption
+msgid "Quote string values"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr ""

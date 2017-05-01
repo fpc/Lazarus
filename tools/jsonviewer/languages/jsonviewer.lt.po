@@ -281,6 +281,10 @@ msgstr "Naujas dok&umentas su objektu"
 msgid "&Values"
 msgstr "Vertė&s"
 
+#: tmainform.miquotestrings.caption
+msgid "Quote string values"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Rikiuoti objekto narius"

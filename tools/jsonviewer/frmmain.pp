@@ -60,6 +60,7 @@ type
     MEDit: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MIQuoteStrings: TMenuItem;
     MIAllowTrailingComma: TMenuItem;
     MIAllowComments: TMenuItem;
     MICompact: TMenuItem;
@@ -144,6 +145,7 @@ type
     procedure MIAllowCommentsClick(Sender: TObject);
     procedure MICompactClick(Sender: TObject);
     procedure MIdocumentClick(Sender: TObject);
+    procedure MIQuoteStringsClick(Sender: TObject);
     procedure MISortMembersClick(Sender: TObject);
     procedure MIStrictClick(Sender: TObject);
     procedure PSMainStoredValues0Restore(Sender: TStoredValue;
@@ -153,6 +155,8 @@ type
     procedure PSMainStoredValues2Restore(Sender: TStoredValue;
       var Value: TStoredType);
     procedure PSMainStoredValues3Restore(Sender: TStoredValue;
+      var Value: TStoredType);
+    procedure PSMainStoredValues6Restore(Sender: TStoredValue;
       var Value: TStoredType);
     procedure TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string);
     procedure TVJSONEditing(Sender: TObject; Node: TTreeNode;
@@ -165,6 +169,7 @@ type
 {$ELSE}
     FStrict,
 {$ENDIF}
+    FQuoteStrings,
     FSortObjectMembers,
     FNewObject,
     FCompact,
@@ -284,6 +289,12 @@ procedure TMainForm.PSMainStoredValues3Restore(Sender: TStoredValue;
   var Value: TStoredType);
 begin
   FCompact:=StrToIntDef(Value,0)=1;
+end;
+
+procedure TMainForm.PSMainStoredValues6Restore(Sender: TStoredValue;
+  var Value: TStoredType);
+begin
+  FQuoteStrings:=StrToIntDef(Value,0)=1;
 end;
 
 procedure TMainForm.TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string);
@@ -1020,6 +1031,13 @@ begin
   PSMain.StoredValue['object']:=IntToStr(Ord(FNewObject));
 end;
 
+procedure TMainForm.MIQuoteStringsClick(Sender: TObject);
+begin
+  FQuoteStrings:=MICompact.Checked;
+  PSMain.StoredValue['QuoteStrings']:=IntToStr(Ord(FQuoteStrings));
+  ShowJSONDocument;
+end;
+
 procedure TMainForm.MISortMembersClick(Sender: TObject);
 begin
   FSortObjectMembers:=(Sender as TMenuItem).Checked;
@@ -1131,7 +1149,7 @@ begin
       C:=SNull;
   else
     C:=Data.AsString;
-    if (Data.JSONType=jtString) then
+    if FQuoteStrings and  (Data.JSONType=jtString) then
       C:='"'+C+'"';
   end;
   If Assigned(N) then

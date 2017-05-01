@@ -280,6 +280,10 @@ msgstr "&Новий документ з об'єктом"
 msgid "&Values"
 msgstr "&Значення"
 
+#: tmainform.miquotestrings.caption
+msgid "Quote string values"
+msgstr ""
+
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
 msgstr "Сортувати елементи об'єкта"
