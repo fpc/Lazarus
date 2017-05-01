@@ -302,7 +302,7 @@ procedure TMainForm.TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string
 Var
   D : TJSONData;
   O : TJSONObject;
-  I : Integer;
+  L,I : Integer;
 
 begin
   D:=CurrentData;
@@ -330,7 +330,11 @@ begin
     begin
     // value change
     try
-      D.AsString:=S;
+      L:=Length(S);
+      if FQuoteStrings and (L>=2) and (S[1]='"') and (S[L]='"') then
+        D.AsString:=Copy(S,2,L-2)
+      else
+        D.AsString:=S;
     except
       ShowMessage(Format(SErrInvalidValue,[S]));
       S:=D.AsString;
