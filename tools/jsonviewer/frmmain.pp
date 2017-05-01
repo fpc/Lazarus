@@ -922,7 +922,10 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  NewDocument;
+  if (ParamCount>0)  and FileExists(ParamStr(1)) then
+    OpenFile(ParamStr(1))
+  else
+    NewDocument;
 end;
 
 procedure TMainForm.HaveData(Sender: TObject);
@@ -956,7 +959,7 @@ Var
   P : TJSONParser;
   D : TJSONData;
 begin
-  S:=TFileStream.Create(AFileName,fmOpenRead);
+  S:=TFileStream.Create(AFileName,fmOpenRead or fmShareDenyWrite);
   try
     P:=TJSONParser.Create(S);
     try
