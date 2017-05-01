@@ -206,8 +206,8 @@ begin
   Result := Shell_NotifyIconA(NIM_DELETE, @tnid);
 
   // Destroys the helper Windows
-  PostMessage(ATrayIcon.Handle, WM_CLOSE, 0, 0);
-  PostMessage(ATrayIcon.Handle, WM_DESTROY, 0, 0);
+  SendMessage(ATrayIcon.Handle, WM_CLOSE, 0, 0);
+  SendMessage(ATrayIcon.Handle, WM_DESTROY, 0, 0);
 end;
 
 {*******************************************************************

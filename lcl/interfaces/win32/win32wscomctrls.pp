@@ -50,6 +50,8 @@ type
   { TWin32WSCustomTabControl }
 
   TWin32WSCustomTabControl = class(TWSCustomTabControl)
+  public
+    class procedure DeletePage(const ATabControl: TCustomTabControl; const AIndex: integer);
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;

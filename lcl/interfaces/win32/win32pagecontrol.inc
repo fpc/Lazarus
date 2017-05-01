@@ -142,14 +142,14 @@ begin
     RealIndex := TCustomTabControl(AWinControl.Parent).PageToTabIndex(PageIndex);
     if RealIndex <> -1 then
     begin
-      Windows.SendMessage(PageControlHandle, TCM_DELETEITEM, Windows.WPARAM(RealIndex), 0);
+      TWin32WSCustomTabControl.DeletePage(TCustomTabControl(AWinControl.Parent), RealIndex);
       AWinControl.Parent.InvalidateClientRectCache(False);
     end;
   end;
   TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
 end;
 
-class procedure TWin32WSCustomPage.ThemeChange(Wnd: HWnd);
+class procedure TWin32WSCustomPage.ThemeChange(Wnd: HWND);
 var
   WindowInfo: PWin32WindowInfo;
 begin
@@ -279,6 +279,44 @@ begin
   Dec(ORect.Bottom, ARect.Bottom);
 end;
 
+class procedure TWin32WSCustomTabControl.DeletePage(
+  const ATabControl: TCustomTabControl; const AIndex: integer);
+
+var
+  Wnd: HWND;
+
+  function TabsScrollingNeeded: Boolean;
+  var
+    HitTestInfo: TC_HITTESTINFO;
+    ARect: TRect;
+    TabCount, FirstShowedIndex: Integer;
+  begin
+    if AIndex <= 0 then Exit(False);
+
+    TabCount := Windows.SendMessage(Wnd, TCM_GETITEMCOUNT, 0, 0);
+    if AIndex < TabCount - 1 then Exit(False);
+
+    // we have to look, if the first shown tab is the tab that is to be deleted
+    Windows.GetClientRect(Wnd, @ARect);
+    Windows.SendMessage(Wnd, TCM_AdjustRect, 0, LPARAM(@ARect));
+
+    HitTestInfo.pt.x := ARect.Left;
+    HitTestInfo.pt.y := ARect.Top div 2;
+    FirstShowedIndex := Windows.SendMessage(Wnd, TCM_HITTEST, 0, LPARAM(@HitTestInfo));
+
+    Result := (FirstShowedIndex > 0) and (FirstShowedIndex = AIndex);
+  end;
+
+begin
+// There is a bug in Windows. When only one tab is left in a scrolled Tab Control
+// and this is deleted, Windows doesn't scroll it automatically. So we have to
+// do it manually. See Mantis #19278
+  Wnd := ATabControl.Handle;
+  if TabsScrollingNeeded then
+    Windows.SendMessage(Wnd, TCM_SETCURSEL, Windows.WPARAM(AIndex - 1), 0);
+  Windows.SendMessage(Wnd, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
+end;
+
 class function TWin32WSCustomTabControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 const
@@ -391,7 +429,7 @@ begin
   if ATabControl is TTabControl then
     exit;
 
-  Windows.SendMessage(ATabControl.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
+  DeletePage(ATabControl, AIndex);
   if LCLControlSizeNeedsUpdate(ATabControl, True) then
     AdjustSizeTabControlPages(ATabControl);
 end;
