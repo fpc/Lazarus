@@ -9474,6 +9474,13 @@ begin
     else
       gtk_window_fullscreen(GtkWindow);
 
+  SW_RESTORE:
+    begin
+      gtk_window_deiconify(GtkWindow);
+      gtk_window_unmaximize(GtkWindow);
+      gtk_window_unfullscreen(GtkWindow);
+    end;
+
   end;
 
   Result := True;
