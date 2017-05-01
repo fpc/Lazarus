@@ -105,5 +105,5 @@ msgstr "Távoli tároló"
 
 #: fppkg_const.rsshowfppkgpackagemanager
 msgid "Show Fppkg Package Manager"
-msgstr ""
+msgstr "Fppkg Csomagkezelő megjelenítése"
 
