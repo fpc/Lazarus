@@ -9878,7 +9878,7 @@ msgstr "IDE makrók"
 
 #: lazarusidestrconsts.lisidemaintainsscaledinmainunit
 msgid "The IDE maintains Application.Scaled (Hi-DPI) in main unit."
-msgstr ""
+msgstr "Az IDE karbantartja az Application.Scaled (Hi-DPI) beállítást a fő unit-ban."
 
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
@@ -10630,16 +10630,12 @@ msgid "Convert DFM File to LFM"
 msgstr "DFM fájl átalakítása LFM fájllá"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
-#, fuzzy
-#| msgid "Copy selected Components to clipboard"
 msgid "Copy selected components"
-msgstr "Kijelölt komponensek másolása a vágólapra"
+msgstr "Kijelölt komponensek másolása"
 
 #: lazarusidestrconsts.liskmcutselectedcomponentstoclipboard
-#, fuzzy
-#| msgid "Cut selected Components to clipboard"
 msgid "Cut selected components"
-msgstr "Kijelölt komponensek kivágása a vágólapra"
+msgstr "Kijelölt komponensek kivágása"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
 msgid "Default adapted to OS X"
@@ -10815,10 +10811,8 @@ msgid "Open package file"
 msgstr "Csomagfájl megnyitása"
 
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
-#, fuzzy
-#| msgid "Paste Components from clipboard"
 msgid "Paste Components"
-msgstr "Komponensek beillesztése a vágólapról"
+msgstr "Komponensek beillesztése"
 
 #: lazarusidestrconsts.liskmpauseprogram
 msgid "Pause program"
@@ -11510,11 +11504,11 @@ msgstr "A fő unit tartalmazza az Application.CreateForm állományt"
 
 #: lazarusidestrconsts.lismainunithasapplicationscaledstatement
 msgid "Main unit has Application.Scaled statement"
-msgstr ""
+msgstr "A fő unit tartalmazza az Application.Scaled állományt"
 
 #: lazarusidestrconsts.lismainunithasapplicationtitlestatement
 msgid "Main unit has Application.Title statement"
-msgstr ""
+msgstr "A fő unit tartalmazza az Application.Title állományt"
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main unit has Uses section containing all units of project"
@@ -12053,13 +12047,11 @@ msgstr "Bekérés"
 
 #: lazarusidestrconsts.lismenueditorgroupindexd
 msgid "GroupIndex: %d"
-msgstr ""
+msgstr "Csoport (GroupIndex): %d"
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
-#, fuzzy
-#| msgid "GroupIndex value(s): %s"
 msgid "Values in use: %s"
-msgstr "Csoportok (GroupIndex): %s"
+msgstr "Használt értékek: %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
 msgid "Inadequate Description"
@@ -12177,7 +12169,7 @@ msgstr "Felugró menü hozzárendelések: %s"
 
 #: lazarusidestrconsts.lismenueditorradioitem
 msgid "RadioItem"
-msgstr ""
+msgstr "Kiválasztható (RadioItem)"
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
 msgid "Remaining conflicts: %s"
@@ -14088,7 +14080,7 @@ msgstr "a(z) \"%s\" csomag egyéb források útvonala tartalmazza a(z) \"%s\" k�
 
 #: lazarusidestrconsts.lisoutputdirectoryofcontainspascalunitsource
 msgid "output directory of %s contains Pascal unit source \"%s\""
-msgstr ""
+msgstr "a(z) %s kimeneti könyvtára Pascal unit forráskódját tartalmazza: \"%s\""
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -14209,11 +14201,11 @@ msgstr "Megszakítások száma"
 
 #: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 msgid "passing compiler define \"%s\" twice with different values"
-msgstr ""
+msgstr "a(z) \"%s\" fordítói definíció kétszer fordul elő, eltérő értékekkel"
 
 #: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
 msgid "passing compiler option -%s twice with different values"
-msgstr ""
+msgstr "a fordító -%s kapcsolója kétszer fordul elő, eltérő értékekkel"
 
 #: lazarusidestrconsts.lispaste
 msgctxt "lazarusidestrconsts.lispaste"
@@ -14789,7 +14781,7 @@ msgstr "CompiledSrcPath hozzáadása"
 
 #: lazarusidestrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
-msgstr ""
+msgstr "Névterek"
 
 #: lazarusidestrconsts.lispkgdefsoutputdirectory
 msgid "Output directory"
@@ -15432,7 +15424,7 @@ msgstr "Globális"
 
 #: lazarusidestrconsts.lispldonline
 msgid "Online"
-msgstr ""
+msgstr "Hálózaton"
 
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
@@ -15444,7 +15436,7 @@ msgstr "Globális hivatkozások itt: "
 
 #: lazarusidestrconsts.lispldshowonlinelinks
 msgid "Show online links"
-msgstr ""
+msgstr "Hálózati hivatkozások megjelenítése"
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
@@ -15771,7 +15763,7 @@ msgstr "Projekt-makró tulajdonságok"
 
 #: lazarusidestrconsts.lisprojectnamespaces
 msgid "Project Namespaces"
-msgstr ""
+msgstr "Projekt névterei"
 
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
@@ -17014,7 +17006,7 @@ msgstr "Kifejezések"
 
 #: lazarusidestrconsts.lissortunicoderangelistalphabetically
 msgid "Sort Unicode range list alphabetically"
-msgstr ""
+msgstr "Unicode tartománylista rendezése ábécé szerint"
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
@@ -18499,7 +18491,7 @@ msgstr "Futtatás nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletorun2
 msgid "Unable to run \"%s\""
-msgstr ""
+msgstr "Futtatás nem lehetséges: \"%s\""
 
 #: lazarusidestrconsts.lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
@@ -19769,11 +19761,9 @@ msgid "config build file"
 msgstr "építés fájl konfigurálása"
 
 #: lazarusidestrconsts.srkmeccopy
-#, fuzzy
-#| msgid "Copy selection to clipboard"
 msgctxt "lazarusidestrconsts.srkmeccopy"
 msgid "Copy"
-msgstr "Kijelölés másolása a vágólapra"
+msgstr "Másolás"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -19788,11 +19778,9 @@ msgid "Copy editor to prior free window"
 msgstr "Szerkesztő másolása az előző üres ablakba"
 
 #: lazarusidestrconsts.srkmeccut
-#, fuzzy
-#| msgid "Cut selection to clipboard"
 msgctxt "lazarusidestrconsts.srkmeccut"
 msgid "Cut"
-msgstr "Kijelölés kivágása a vágólapra"
+msgstr "Kivágás"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -20149,11 +20137,9 @@ msgid "Move editor rightmost"
 msgstr "Lapfül mozgatása a jobb szélre"
 
 #: lazarusidestrconsts.srkmecmultipaste
-#, fuzzy
-#| msgid "MultiPaste clipboard to current position"
 msgctxt "lazarusidestrconsts.srkmecmultipaste"
 msgid "MultiPaste"
-msgstr "Vágólap tartalmának beillesztése forráskóddal az aktuális helyre"
+msgstr "Beillesztés forráskóddal"
 
 #: lazarusidestrconsts.srkmecnextbookmark
 msgid "Next Bookmark"
@@ -20212,11 +20198,9 @@ msgid "Move cursor up one page"
 msgstr "Kurzor mozgatása egy oldallal feljebb"
 
 #: lazarusidestrconsts.srkmecpaste
-#, fuzzy
-#| msgid "Paste clipboard to current position"
 msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
-msgstr "Vágólap tartalmának beillesztése az aktuális helyre"
+msgstr "Beillesztés"
 
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"

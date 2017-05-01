@@ -81,7 +81,7 @@ msgstr "nyitó zárójel az elvárt, de %s található"
 
 #: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
 msgid "cannot add a unit to the implementation, because only a unit has one"
-msgstr ""
+msgstr "nem lehet unit-ot hozzáadni az \"implementation\" szakaszhoz, mert az csak a unit-oknak van"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
@@ -105,7 +105,7 @@ msgstr "Az osztály nem található: \"%s\""
 
 #: codetoolsstrconsts.ctsclassnotfound2
 msgid "class not found \"%s\""
-msgstr ""
+msgstr "az osztály nem található: \"%s\""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -527,7 +527,7 @@ msgstr "érvénytelen művelet: %s"
 
 #: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
 msgid "invalid position for insertion of statements"
-msgstr ""
+msgstr "az adott pozícióba nem lehet állományokat beszúrni"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -567,7 +567,7 @@ msgstr "Lazarus források"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
 msgid "method \"%s\" has no declaration"
-msgstr ""
+msgstr "a metódus nincs deklarálva: \"%s\""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"

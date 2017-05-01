@@ -162,7 +162,7 @@ msgstr "%s, a(z) %s tulajdonság által írva"
 
 #: codystrconsts.crscaretoutsideofcode
 msgid "Caret outside of code"
-msgstr ""
+msgstr "A beszúrási jel a kódon kívül van"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
