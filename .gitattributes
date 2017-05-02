@@ -6711,13 +6711,47 @@ images/designer/add_submenu_below.png -text svneol=unset#image/png
 images/designer/add_submenu_right.png -text svneol=unset#image/png
 images/designer/align.png -text
 images/designer/anchor_bottom.png -text svneol=unset#image/png
+images/designer/anchor_bottom_bottom.png -text
+images/designer/anchor_bottom_bottom_150.png -text
+images/designer/anchor_bottom_bottom_200.png -text
+images/designer/anchor_bottom_center.png -text
+images/designer/anchor_bottom_center_150.png -text
+images/designer/anchor_bottom_center_200.png -text
+images/designer/anchor_bottom_top.png -text
+images/designer/anchor_bottom_top_150.png -text
+images/designer/anchor_bottom_top_200.png -text
 images/designer/anchor_center_horizontal.png -text svneol=unset#image/png
 images/designer/anchor_center_vertical.png -text svneol=unset#image/png
 images/designer/anchor_left.png -text svneol=unset#image/png
+images/designer/anchor_left_center.png -text
+images/designer/anchor_left_center_150.png -text
+images/designer/anchor_left_center_200.png -text
+images/designer/anchor_left_left.png -text
+images/designer/anchor_left_left_150.png -text
+images/designer/anchor_left_left_200.png -text
 images/designer/anchor_left_right.png -text svneol=unset#image/png
+images/designer/anchor_left_right_150.png -text
+images/designer/anchor_left_right_200.png -text
 images/designer/anchor_right.png -text svneol=unset#image/png
+images/designer/anchor_right_center.png -text
+images/designer/anchor_right_center_150.png -text
+images/designer/anchor_right_center_200.png -text
+images/designer/anchor_right_left.png -text
+images/designer/anchor_right_left_150.png -text
+images/designer/anchor_right_left_200.png -text
+images/designer/anchor_right_right.png -text
+images/designer/anchor_right_right_150.png -text
+images/designer/anchor_right_right_200.png -text
 images/designer/anchor_top.png -text svneol=unset#image/png
 images/designer/anchor_top_bottom.png -text svneol=unset#image/png
+images/designer/anchor_top_bottom_150.png -text
+images/designer/anchor_top_bottom_200.png -text
+images/designer/anchor_top_center.png -text
+images/designer/anchor_top_center_150.png -text
+images/designer/anchor_top_center_200.png -text
+images/designer/anchor_top_top.png -text
+images/designer/anchor_top_top_150.png -text
+images/designer/anchor_top_top_200.png -text
 images/designer/mirror_horizontal.png -text
 images/designer/mirror_vertical.png -text
 images/designer/scale.png -text

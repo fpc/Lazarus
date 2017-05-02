@@ -465,19 +465,31 @@ begin
 end;
 
 procedure TAnchorDesigner.LoadGlyphs;
+
+  function GetSuffix: String;
+    begin
+      if Screen.PixelsPerInch < 144 then Exit('');
+      if Screen.PixelsPerInch < 192 then Exit('_150');
+      Exit('_200');
+    end;
+
+var
+  Suffix: String;
 begin
-  LeftRefLeftSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_left');
-  LeftRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_center_horizontal');
-  LeftRefRightSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_left_right');
-  RightRefLeftSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_left_right');
-  RightRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_center_horizontal');
-  RightRefRightSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_right');
-  TopRefTopSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top');
-  TopRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_center_vertical');
-  TopRefBottomSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top_bottom');
-  BottomRefTopSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top_bottom');
-  BottomRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_center_vertical');
-  BottomRefBottomSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_bottom');
+  Suffix:=GetSuffix;
+
+  LeftRefLeftSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_left_left'+Suffix);
+  LeftRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_left_center'+Suffix);
+  LeftRefRightSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_left_right'+Suffix);
+  RightRefLeftSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_right_left'+Suffix);
+  RightRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_right_center'+Suffix);
+  RightRefRightSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_right_right'+Suffix);
+  TopRefTopSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top_top'+Suffix);
+  TopRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top_center'+Suffix);
+  TopRefBottomSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_top_bottom'+Suffix);
+  BottomRefTopSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_bottom_top'+Suffix);
+  BottomRefCenterSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_bottom_center'+Suffix);
+  BottomRefBottomSpeedButton.LoadGlyphFromResourceName(HInstance, 'anchor_bottom_bottom'+Suffix);
 end;
 
 procedure TAnchorDesigner.CreateSideControls;

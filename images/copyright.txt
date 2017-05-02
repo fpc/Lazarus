@@ -11,6 +11,45 @@ Creative Commons. Author and source mentioned.
 
 Following images were created by FTurtle:
 
+designer directory:
+
+anchor_bottom_bottom.png
+anchor_bottom_bottom_150.png
+anchor_bottom_bottom_200.png
+anchor_bottom_center.png
+anchor_bottom_center_150.png
+anchor_bottom_center_200.png
+anchor_bottom_top.png
+anchor_bottom_top_150.png
+anchor_bottom_top_200.png
+anchor_left_center.png
+anchor_left_center_150.png
+anchor_left_center_200.png
+anchor_left_left.png
+anchor_left_left_150.png
+anchor_left_left_200.png
+anchor_left_right.png
+anchor_left_right_150.png
+anchor_left_right_200.png
+anchor_right_center.png
+anchor_right_center_150.png
+anchor_right_center_200.png
+anchor_right_left.png
+anchor_right_left_150.png
+anchor_right_left_200.png
+anchor_right_right.png
+anchor_right_right_150.png
+anchor_right_right_200.png
+anchor_top_bottom.png
+anchor_top_bottom_150.png
+anchor_top_bottom_200.png
+anchor_top_center.png
+anchor_top_center_150.png
+anchor_top_center_200.png
+anchor_top_top.png
+anchor_top_top_150.png
+anchor_top_top_200.png
+
 menu directory:
 
 menu_clear_all_bookmarks.png
