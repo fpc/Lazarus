@@ -319,10 +319,11 @@ var
   FilterUPP: NavObjectFilterUPP;
   NavDialogUPP: NavEventUPP;
   DialogRef: NavDialogRef;
+  ReplyRecord: NavReplyRecord;
   I: Integer;
   ParsedFilter: TParseStringList;
   M: TMaskList;
-  filterext, InitDir: String;
+  filterext: String;
   supportPackages: Boolean; //todo: select packages by name
 begin
   {$IFDEF VerboseWSClass}
@@ -331,15 +332,13 @@ begin
 
   FileDialog := ACommonDialog as TFileDialog;
 
-  // two sources of init dir
-  InitDir := FileDialog.InitialDir;
-  if InitDir = '' then
-    InitDir := ExtractFileDir(FileDialog.FileName);
-
   // Initialize record to default values
   if OSError(NavGetDefaultDialogCreationOptions(CreationOptions{%H-}),
     Self, SShowModal, 'NavGetDefaultDialogCreationOptions') then Exit;
 
+  CreationOptions.preferenceKey := 272829;  // The default of zero seems to cause setting the initial directory
+                                            // to fail half the time on Sierra at least, so set to an arbitrary
+                                            // non-zero value
   if FileDialog.Title <> '' then  // Override dialog's default title?
     CreateCFString(FileDialog.Title, CreationOptions.windowTitle);
 
@@ -356,6 +355,8 @@ begin
     begin
       try
         filterext:=ParsedFilter[I * 2 - 1];
+        { Spaces in filters cause problems }
+        filterext := StringReplace(filterext, ' ', '', [rfReplaceAll]);
         if (filterext = '*') or (filterext = '*.*') or (ExtractFileExt(filterext) = '.app') then
           supportPackages := true;
         M := TMaskList.Create(filterext);
@@ -424,14 +425,17 @@ begin
       
       if NavDialogGetUserAction(DialogRef) <> kNavUserActionCancel then // User OK?
       begin
+        if OSError(NavDialogGetReply(DialogRef, ReplyRecord), Self, SShowModal, 'NavDialogGetReply') then
+          Exit;
+        try
+          if not ReplyRecord.validRecord then
+            Exit;
+          DescListToFiles(@ReplyRecord.selection, FileDialog);
         if FileDialog.FCompStyle=csSaveFileDialog then
-          FileDialog.FileName := InitDir + PathDelim +
-            CFStringToStr(NavDialogGetSaveFileName(DialogRef));
-            {Note: Not at all clear from Apple docs that NavReplyRecord.Selection
-              returns only path to file's folder with Save dialog. Also, what they
-              mean by the "full file name" returned by NavDialogGetSaveFileName
-              must mean extension and not path to file's folder.}
-
+            FileDialog.FileName := FileDialog.FileName + PathDelim + CFStringToStr(ReplyRecord.saveFileName);
+        finally
+         NavDisposeReply(ReplyRecord);
+       end;
         FileDialog.UserChoice := mrOK;
       end;
     finally
