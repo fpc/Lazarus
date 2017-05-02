@@ -13999,11 +13999,6 @@ begin
   Msg.Msg := LM_CHANGED;
   Msg.WParam := PtrInt(QListWidget_row(QListWidgetH(Widget), Item));
   DeliverMessage(Msg);
-  if (QtVersionMajor = 4) and (QtVersionMinor >= 8) then
-  begin
-    QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelSelectCurrent);
-    inherited signalSelectionChanged();
-  end;
 end;
 
 function TQtCheckListBox.GetItemCheckState(AIndex: Integer): QtCheckState;

@@ -13971,8 +13971,6 @@ begin
   Msg.Msg := LM_CHANGED;
   Msg.WParam := PtrInt(QListWidget_row(QListWidgetH(Widget), Item));
   DeliverMessage(Msg);
-  QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelSelectCurrent);
-  inherited signalSelectionChanged();
 end;
 
 function TQtCheckListBox.GetItemCheckState(AIndex: Integer): QtCheckState;
