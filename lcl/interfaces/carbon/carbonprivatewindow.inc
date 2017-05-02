@@ -279,7 +279,7 @@ begin
       SizeOf(WindowPartCode), nil, @Part),
     SName, SGetEvent, 'kEventParamWindowPartCode', eventParameterNotFoundErr) then
   begin
-    if Part <> inContent then Exit;
+    if (Part <> inContent) and (Part <> inDesk) then Exit;
   end;
   
   //Find out which control the mouse event should occur for
