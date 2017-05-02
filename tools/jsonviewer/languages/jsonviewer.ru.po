@@ -260,11 +260,11 @@ msgstr "&Файл"
 #: tmainform.miallowcomments.caption
 msgctxt "tmainform.miallowcomments.caption"
 msgid "Allow comments"
-msgstr ""
+msgstr "Разрешить наличие комментариев"
 
 #: tmainform.miallowtrailingcomma.caption
 msgid "Allow trailing comma"
-msgstr ""
+msgstr "Разрешить наличие замыкающей запятой"
 
 #: tmainform.micompact.caption
 msgid "Compact display"
@@ -280,7 +280,7 @@ msgstr "&Значения"
 
 #: tmainform.miquotestrings.caption
 msgid "Quote string values"
-msgstr ""
+msgstr "Заключать строковые значения в кавычки"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
