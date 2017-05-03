@@ -21,7 +21,7 @@ unit LazUnicode;
 
 // For testing the UTF16 version.
 {$IF DEFINED(FPC) and DEFINED(UseUTF16)}
- {$ModeSwitch UnicodeStrings}   // Sets also FPC_UNICODESTRINGS ...
+ {$ModeSwitch UnicodeStrings}   // Sets also FPC_UNICODESTRINGS.
 {$ENDIF}
 
 {$IF DEFINED(FPC_UNICODESTRINGS) or not DEFINED(FPC)}
