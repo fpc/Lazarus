@@ -45,7 +45,7 @@ uses
   function CodePointLength(const s: string): NativeInt; inline;
   function CodePointPos(const SearchForText, SearchInText: string; StartPos: NativeInt = 1): NativeInt; inline;
   function CodePointSize(p: PChar): integer; inline;
-  function IsCombining(const AChar: PChar): Boolean; inline;
+  function IsCombining(const AChar: PChar): Boolean; {$IFDEF FPC}inline;{$ENDIF}
 
   function UnicodeToWinCP(const s: string): AnsiString;
   function WinCPToUnicode(const s: AnsiString): string;
