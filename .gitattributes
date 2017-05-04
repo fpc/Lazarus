@@ -7128,6 +7128,7 @@ lcl/forms.pp svneol=native#text/pascal
 lcl/forms/calcform.pas svneol=native#text/pascal
 lcl/forms/calendarpopup.lfm svneol=native#text/plain
 lcl/forms/calendarpopup.pas svneol=native#text/plain
+lcl/forms/dblogdlg.pas svneol=native#text/pascal
 lcl/forms/finddlgunit.lfm svneol=native#text/plain
 lcl/forms/finddlgunit.pas svneol=native#text/plain
 lcl/forms/replacedlgunit.lfm svneol=native#text/plain
