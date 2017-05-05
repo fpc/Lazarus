@@ -3008,7 +3008,7 @@ begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    DisableAutoSizing;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DoAutoAdjustLayout'){$ENDIF};
     try
       if not ParentFont or (Parent=nil) then
         ScaleFontsPPI(AYProportion);
@@ -3082,7 +3082,7 @@ begin
 
       SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
     finally
-      EnableAutoSizing;
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DoAutoAdjustLayout'){$ENDIF};
     end;
   end;
 end;
