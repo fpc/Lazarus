@@ -72,7 +72,6 @@ const
 
 const
   DEFCOLWIDTH         = 64;
-  DEFROWHEIGHT        = 20;
   DEFBUTTONWIDTH      = 25;
   DEFIMAGEPADDING     = 2;
   DEFAUTOADJPADDING   = 8;
@@ -154,7 +153,7 @@ type
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
 
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
-    gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged, gfColumnsLocked,
+    gfRevEditorTab, gfVisualChange, gfColumnsLocked,
     gfEditingDone, gfSizingStarted, gfPainting, gfUpdatingSize, gfClientRectChange,
     gfAutoEditPending);
   TGridFlags = set of TGridFlagsOption;
@@ -587,11 +586,11 @@ type
     property MaxSize: Integer read GetMaxSize write SetMaxSize stored isMaxSizeStored;
     property PickList: TStrings read GetPickList write SetPickList;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly stored IsReadOnlyStored;
-    property SizePriority: Integer read GetSizePriority write SetSizePriority stored IsSizePriorityStored default 1;
+    property SizePriority: Integer read GetSizePriority write SetSizePriority stored IsSizePriorityStored;
     property Tag: PtrInt read FTag write FTag default 0;
     property Title: TGridColumnTitle read FTitle write SetTitle;
-    property Width: Integer read GetWidth write SetWidth stored IsWidthStored default DEFCOLWIDTH;
-    property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored default true;
+    property Width: Integer read GetWidth write SetWidth stored IsWidthStored;
+    property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored;
     property ValueChecked: string read GetValueChecked write SetValueChecked
       stored IsValueCheckedStored;
     property ValueUnchecked: string read GetValueUnchecked write SetValueUnchecked
@@ -726,6 +725,7 @@ type
     FGridLineStyle: TPenStyle;
     FGridLineWidth: Integer;
     FDefColWidth, FDefRowHeight: Integer;
+    FRealizedDefColWidth, FRealizedDefRowHeight: Integer;
     FCol,FRow, FFixedCols, FFixedRows: Integer;
     FOnEditButtonClick: TNotifyEvent;
     FOnButtonClick: TOnSelectEvent;
@@ -795,7 +795,6 @@ type
     procedure SetQuickColRow(AValue: TPoint);
     function  IsCellButtonColumn(ACell: TPoint): boolean;
     function  GetSelectedColumn: TGridColumn;
-    function  IsDefRowHeightStored: boolean;
     function  IsTitleImageListStored: boolean;
     procedure SetAlternateColor(const AValue: TColor);
     procedure SetAutoFillColumns(const AValue: boolean);
@@ -1023,6 +1022,8 @@ type
     function  GetDefaultColumnTitle(Column: Integer): string; virtual;
     function  GetDefaultEditor(Column: Integer): TWinControl; virtual;
     function  GetDefaultRowHeight: integer; virtual;
+    function  GetRealDefaultColWidth: integer;
+    function  GetRealDefaultRowHeight: integer;
     function  GetGridDrawState(ACol, ARow: Integer): TGridDrawState;
     function  GetImageForCheckBox(const aCol,aRow: Integer;
                                   CheckBoxView: TCheckBoxState): TBitmap; virtual;
@@ -1141,8 +1142,8 @@ type
     property ColumnClickSorts: boolean read FColumnClickSorts write SetColumnClickSorts default false;
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
-    property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default DEFCOLWIDTH;
-    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight stored IsDefRowHeightStored;
+    property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default -1;
+    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight default -1;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
     property DragDx: Integer read FDragDx write FDragDx;
@@ -2078,7 +2079,7 @@ begin
     Result:=integer(PtrUInt(FRows[aRow]))
   else
     Result:=-1;
-  if Result<0 then Result:=fDefRowHeight;
+  if Result<0 then Result:=GetRealDefaultRowHeight;
 end;
 
 function TCustomGrid.GetTopRow: Longint;
@@ -2498,6 +2499,7 @@ begin
     else
       result := FDefColWidth;
   end;
+  if Result<0 then Result:=GetRealDefaultColWidth;
 end;
 
 procedure TCustomGrid.SetEditor(AValue: TWinControl);
@@ -2922,8 +2924,6 @@ begin
     Target.FixedCols := FixedCols;
     Target.FixedRows := FixedRows;
     Target.DefaultRowHeight := DefaultRowHeight;
-    if not IsDefRowHeightStored then
-      Target.GridFlags := Target.GridFlags - [gfDefRowHeightChanged];
     Target.DefaultColWidth := DefaultColWidth;
     if not Columns.Enabled then
       Target.FCols.Assign(FCols);
@@ -3017,7 +3017,6 @@ var
   OldTop,OldBottom,NewTop,NewBottom: Integer;
 begin
   if (AValue<>fDefRowHeight) or (csLoading in ComponentState) then begin
-    include(FGridFlags, gfDefRowHeightChanged);
     FDefRowheight:=AValue;
 
     if EditorMode then
@@ -3159,7 +3158,7 @@ end;
 
 procedure TCustomGrid.VisualChange;
 begin
-  if (FUpdateCount<>0) or (not HandleAllocated) or AutoSizeDelayed then
+  if (FUpdateCount<>0) or (not HandleAllocated) then
     exit;
 
   {$ifdef DbgVisualChange}
@@ -4965,10 +4964,10 @@ end;
 
 procedure TCustomGrid.UpdateSizes;
 begin
-  Include(FGridFlags, gfVisualChange);
-
-  if (FUpdateCount<>0) or (not HandleAllocated) or AutoSizeDelayed then
+  if (FUpdateCount<>0) or (not HandleAllocated) then
     exit;
+
+  Include(FGridFlags, gfVisualChange);
 
   UpdateCachedSizes;
   CacheVisibleGrid;
@@ -5150,14 +5149,31 @@ begin
       end;
 end;
 
+function TCustomGrid.GetRealDefaultColWidth: integer;
+begin
+  if FDefColWidth < 0 then
+  begin
+    if FRealizedDefColWidth = 0 then
+      FRealizedDefColWidth := MulDiv(DEFCOLWIDTH, Font.PixelsPerInch, 96);
+    Result := FRealizedDefColWidth;
+  end else
+    Result := FDefColWidth;
+end;
+
+function TCustomGrid.GetRealDefaultRowHeight: integer;
+begin
+  if FDefRowHeight < 0 then
+  begin
+    if FRealizedDefRowHeight = 0 then
+      FRealizedDefRowHeight := GetDefaultRowHeight;
+    Result := FRealizedDefRowHeight;
+  end else
+    Result := FDefRowHeight;
+end;
+
 function TCustomGrid.GetSelectedColumn: TGridColumn;
 begin
   Result := ColumnFromGridColumn(Col);
-end;
-
-function TCustomGrid.IsDefRowHeightStored: boolean;
-begin
-  result := (gfDefRowHeightChanged in GridFlags);
 end;
 
 function TCustomGrid.IsAltColorStored: boolean;
@@ -6795,15 +6811,22 @@ begin
         C := Columns.Items[i];
         C.MaxSize := Round(C.MaxSize * AXProportion);
         C.MinSize := Round(C.MinSize * AXProportion);
-        C.Width := Round(C.Width * AXProportion);
+        if C.IsWidthStored then
+          C.Width := Round(C.Width * AXProportion);
       end;
 
-      for i := RowCount - 1 downto 0 do
-        RowHeights[i] := Round(RowHeights[i] * AYProportion);
+      for i := FRows.Count - 1 downto 0 do
+        FRows[i] := Pointer(Round(PtrInt(FRows[i]) * AYProportion));
 
-      FDefColWidth := Round(FDefColWidth * AXProportion);
-      FDefRowHeight := Round(FDefRowHeight * AYProportion);
-      Include(FGridFlags, gfDefRowHeightChanged);
+      for i := FCols.Count - 1 downto 0 do
+        FCols[i] := Pointer(Round(PtrInt(FCols[i]) * AXProportion));
+
+      if FDefColWidth>0 then
+        FDefColWidth := Round(FDefColWidth * AXProportion);
+      if FDefRowHeight>0 then
+        FDefRowHeight := Round(FDefRowHeight * AYProportion);
+      FRealizedDefRowHeight := 0;
+      FRealizedDefColWidth := 0;
     finally
       EndUpdate;
     end;
@@ -7998,6 +8021,8 @@ end;
 
 procedure TCustomGrid.FontChanged(Sender: TObject);
 begin
+  FRealizedDefRowHeight := 0;
+  FRealizedDefColWidth := 0;
   if csCustomPaint in ControlState then
     Canvas.Font := Font
   else begin
@@ -8884,7 +8909,6 @@ begin
     Cfg.SetValue('grid/design/fixedcols', FixedCols);
     Cfg.SetValue('grid/design/fixedrows', Fixedrows);
     Cfg.SetValue('grid/design/defaultcolwidth', DefaultColWidth);
-    Cfg.SetValue('grid/design/isdefaultrowheight', ord(IsDefRowHeightStored));
     Cfg.SetValue('grid/design/defaultrowheight',DefaultRowHeight);
     Cfg.Setvalue('grid/design/color',ColorToString(Color));
 
@@ -9047,10 +9071,8 @@ begin
       RowCount:=Cfg.GetValue('grid/design/rowcount', 5);
       FixedCols:=Cfg.GetValue('grid/design/fixedcols', 1);
       FixedRows:=Cfg.GetValue('grid/design/fixedrows', 1);
-      k := Cfg.GetValue('grid/design/isdefaultrowheight', -1);
-      if k<>0 then
-        DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', DEFROWHEIGHT);
-      DefaultColWidth:=Cfg.getValue('grid/design/defaultcolwidth', DEFCOLWIDTH);
+      DefaultRowheight:=Cfg.GetValue('grid/design/defaultrowheight', -1);
+      DefaultColWidth:=Cfg.getValue('grid/design/defaultcolwidth', -1);
       try
         Color := StringToColor(cfg.GetValue('grid/design/color', 'clWindow'));
       except
@@ -9186,8 +9208,8 @@ begin
      goSmoothScroll ];
   FScrollbars:=ssAutoBoth;
   fGridState:=gsNormal;
-  FDefColWidth:=DEFCOLWIDTH;
-  FDefRowHeight:=GetDefaultRowHeight;
+  FDefColWidth:=-1;
+  FDefRowHeight:=-1;
   FGridLineColor:=clSilver;
   FFixedGridLineColor := cl3DDKShadow;
   FGridLineStyle:=psSolid;
@@ -11647,6 +11669,8 @@ begin
 end;
 
 function TGridColumn.GetWidth: Integer;
+var
+  tmpGrid: TCustomGrid;
 begin
   {$ifdef newcols}
   if not Visible then
@@ -11656,6 +11680,12 @@ begin
     result := GetDefaultWidth
   else
     result := FWidth^;
+  if (result<0) then
+  begin
+    tmpGrid := Grid;
+    if tmpGrid<>nil then
+      result := tmpGrid.GetRealDefaultColWidth;
+  end;
 end;
 
 function TGridColumn.IsAlignmentStored: boolean;
@@ -11928,7 +11958,7 @@ begin
   if tmpGrid<>nil then
     result := tmpGrid.DefaultColWidth
   else
-    result := DEFCOLWIDTH;
+    result := -1;
 end;
 
 function TGridColumn.GetDefaultMaxSize: Integer;
