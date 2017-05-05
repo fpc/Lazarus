@@ -3159,7 +3159,7 @@ end;
 
 procedure TCustomGrid.VisualChange;
 begin
-  if (FUpdateCount<>0) or (not HandleAllocated) then
+  if (FUpdateCount<>0) or (not HandleAllocated) or AutoSizeDelayed then
     exit;
 
   {$ifdef DbgVisualChange}
@@ -4966,6 +4966,10 @@ end;
 procedure TCustomGrid.UpdateSizes;
 begin
   Include(FGridFlags, gfVisualChange);
+
+  if (FUpdateCount<>0) or (not HandleAllocated) or AutoSizeDelayed then
+    exit;
+
   UpdateCachedSizes;
   CacheVisibleGrid;
   CalcScrollbarsRange;
