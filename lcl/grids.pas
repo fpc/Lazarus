@@ -155,7 +155,7 @@ type
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
     gfRevEditorTab, gfVisualChange, gfColumnsLocked,
     gfEditingDone, gfSizingStarted, gfPainting, gfUpdatingSize, gfClientRectChange,
-    gfAutoEditPending);
+    gfAutoEditPending, gfUpdatingScrollbar);
   TGridFlags = set of TGridFlagsOption;
 
   TSortOrder = (soAscending, soDescending);
@@ -1122,6 +1122,7 @@ type
     procedure UpdateBorderStyle;
     function  ValidateEntry(const ACol,ARow:Integer; const OldValue:string; var NewValue:string): boolean; virtual;
     procedure VisualChange; virtual;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMHScroll(var message : TLMHScroll); message LM_HSCROLL;
     procedure WMVScroll(var message : TLMVScroll); message LM_VSCROLL;
     procedure WMKillFocus(var message: TLMKillFocus); message LM_KILLFOCUS;
@@ -3305,7 +3306,12 @@ begin
     {$Ifdef DbgScroll}
     DebugLn('ScrollbarShow: Which=',SbToStr(Which), ' Avalue=',dbgs(AValue));
     {$endif}
-    ShowScrollBar(Handle,Which,aValue);
+    Include(FGridFlags, gfUpdatingScrollbar);
+    try
+      ShowScrollBar(Handle,Which,aValue);
+    finally
+      Exclude(FGridFlags, gfUpdatingScrollbar);
+    end;
     if Which in [SB_BOTH, SB_VERT] then FVSbVisible := Ord(AValue);
     if Which in [SB_BOTH, SB_HORZ] then FHSbVisible := Ord(AValue);
   end;
@@ -4608,6 +4614,13 @@ begin
   {$endif}
   inherited WMSetFocus(Message);
   InvalidateFocused;
+end;
+
+procedure TCustomGrid.WMSize(var Message: TLMSize);
+begin
+  if gfUpdatingScrollbar in FGridFlags then // ignore WMSize when updating scrollbars. issue #31715
+    Exit;
+  inherited WMSize(Message);
 end;
 
 class procedure TCustomGrid.WSRegisterClass;
