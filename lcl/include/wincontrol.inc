@@ -6968,10 +6968,6 @@ begin
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
 
-    NewLeft := FBoundsRealized.Left;
-    NewTop := FBoundsRealized.Top;
-    if HandleAllocated then
-      GetWindowRelativePosition(Handle, NewLeft, NewTop);
     //if CheckPosition(Self) then
       //DebugLn(['TWinControl.WMSize GetWindowRelativePosition: ',DbgSName(Self),' ',NewLeft,',',NewTop,' ClientRectNeedsInterfaceUpdate=',ClientRectNeedsInterfaceUpdate]);
     NewBoundsRealized := Bounds(NewLeft, NewTop, Message.Width, Message.Height);
