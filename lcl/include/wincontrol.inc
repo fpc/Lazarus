@@ -6968,10 +6968,13 @@ begin
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
 
-    NewLeft := FBoundsRealized.Left;
-    NewTop := FBoundsRealized.Top;
-    if HandleAllocated then
-      GetWindowRelativePosition(Handle, NewLeft, NewTop);
+    if not AutoSizeDelayed then // FBoundsRealized are wrong if AutoSize is disabled
+    begin
+      NewLeft := FBoundsRealized.Left;
+      NewTop := FBoundsRealized.Top;
+      if HandleAllocated then
+        GetWindowRelativePosition(Handle, NewLeft, NewTop);
+    end;
     //if CheckPosition(Self) then
       //DebugLn(['TWinControl.WMSize GetWindowRelativePosition: ',DbgSName(Self),' ',NewLeft,',',NewTop,' ClientRectNeedsInterfaceUpdate=',ClientRectNeedsInterfaceUpdate]);
     NewBoundsRealized := Bounds(NewLeft, NewTop, Message.Width, Message.Height);
