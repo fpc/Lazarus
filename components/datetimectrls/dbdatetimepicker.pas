@@ -105,8 +105,6 @@ type
     property TimeSeparator;
     property TimeFormat;
     property TimeDisplay;
-    { property Time; This property should NOT be published here, it was
-                           accidentally added in first release. }
     property DateMode;
     property UseDefaultSeparators;
     property Cascade;
