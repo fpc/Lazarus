@@ -94,6 +94,7 @@ type
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_CBlocks;
     procedure TestFindDeclaration_Arrays;
+    procedure TestFindDeclaration_GuessType;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -696,6 +697,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_Arrays;
 begin
   FindDeclarations('moduletests/fdt_arrays.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GuessType;
+begin
+  FindDeclarations('moduletests/fdt_guesstype1.pas');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;
