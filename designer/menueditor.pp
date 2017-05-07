@@ -1229,10 +1229,12 @@ begin
       popAddSeparatorBefore: begin
         NewPopSub(primaryItem, lisMenuEditorAddSeparatorBefore, @AddSeparatorAbove);
         AddSeparatorAboveButton.Action:=ac;
+        ac.Hint:=lisAddANewSeparatorAboveSelectedItem;
       end;
       popAddSeparatorAfter: begin
         NewPopSub(primaryItem, lisMenuEditorAddSeparatorAfter, @AddSeparatorBelow);
         AddSeparatorBelowButton.Action:=ac;
+        ac.Hint:=lisAddANewSeparatorBelowSelectedItem;
       end;
       popRemoveAllSeparators:
         NewPopSub(primaryItem, lisMenuEditorRemoveAllSeparators, @RemoveAllSeparators);

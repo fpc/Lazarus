@@ -4779,6 +4779,10 @@ resourcestring
 
   // menu editor
   lisMenuEditorMenuEditor = 'Menu Editor';
+  lisAddANewSeparatorAboveSelectedItem = 'Add a new separator above selected '
+    +'item';
+  lisAddANewSeparatorBelowSelectedItem = 'Add a new separator below selected '
+    +'item';
   lisMenuEditorAcceleratorKeySNeedsChanging = 'Accelerator(&&) key "%s" needs changing';
   lisMenuEditorAddANewItemAboveSelectedItem = 'Add a new item above selected item';
   lisMenuEditorAddANewItemAfterSelectedItem = 'Add a new item after selected item';
