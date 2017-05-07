@@ -442,10 +442,12 @@ begin
       FLabels[i].Caption:= APrompts[i];
     FLabels[i].BorderSpacing.Right:= cInputQuerySpacingSize;
     FLabels[i].Width:= FLabels[i].Canvas.TextWidth(FLabels[i].Caption);
+
+    FEdits[i].Left:= FForm.Width; // place edits to right
   end;
 
   FButtons.Align:= alTop;
-  FButtons.Top:= FPanels[Len-1].Top+10;
+  FButtons.Top:= FPanels[Len-1].Top+10; // place buttons to bottom
 
   FForm.AutoSize:= true;
   FForm.ActiveControl:= FEdits[0];
