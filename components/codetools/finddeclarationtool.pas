@@ -158,7 +158,7 @@ type
     fdfExceptionOnNotFound, // raise exception if identifier not found
                             //    predefined identifiers will not raise
     fdfExceptionOnPredefinedIdent,// raise an exception even if the identifier
-                            // is an predefined identifier
+                            // is a predefined identifier
                             
     fdfIgnoreClassVisibility,//find inaccessible private+protected fields
 
@@ -9130,10 +9130,11 @@ var
         end;
       end;
     end;
-    // find sub identifier
+    // find identifier
     if not IdentFound then begin
       if not (ExprType.Desc in [xtContext,xtNone]) then
       begin
+        // find special sub identifier
         if (ExprType.Desc in xtAllTypeHelperTypes) then
         begin
           // found predefined basic type (e.g. string) without a context!
@@ -9176,6 +9177,7 @@ var
         end;
       end else
       begin
+        // find identifier
         if ExprType.Desc=xtContext then
           Context:=ExprType.Context
         else
@@ -10253,7 +10255,8 @@ begin
         begin
           if (ParamList.Count<1) or (ParamList.Count>3) or (Scanner.Values.IsDefined('VER1_0')) then
             exit;
-          Result:=ParamList.Items[0]; // Copy sets the result based on the first parameter (can be any kind of string or array)
+          Result:=ParamList.Items[0]; // Copy sets the result based on the first
+            // parameter (can be any kind of string or array)
         end
         else if (CompareIdentifiers(IdentPos,'OBJCSELECTOR')=0) then
         begin

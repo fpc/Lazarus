@@ -1683,6 +1683,7 @@ begin
     Add('BYTEBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CURRENCY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DOUBLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1731,6 +1732,7 @@ begin
     Add('CARDINAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CURRENCY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DOUBLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1782,6 +1784,7 @@ begin
     Add('BYTEBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DOUBLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FALSE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
