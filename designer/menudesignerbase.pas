@@ -275,7 +275,7 @@ var
 begin
   for sb in FBoxList do
     for si in sb.ShadowList do
-      if (si.RealItem = aMI) then
+      if si.RealItem = aMI then
         Exit(si);
   Result:=nil;
 end;

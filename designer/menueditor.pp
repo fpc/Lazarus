@@ -259,17 +259,6 @@ type
     procedure ExecuteVerb(Index: Integer); override;
   end;
 
-  { TMenuItemsPropertyEditor - property editor for TMenuItem properties.
-    Invokes the parent menu's component editor.
-    Note: disabled because opening a menu editor window when selecting a menu item
-     in OI is not desired. Menu item properties can be changed in OI directly. }
-{
-  TMenuItemsPropertyEditor = class(TClassPropertyEditor)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-  end;
-}
 procedure ShowMenuEditor(aMenu: TMenu);
 function MenuDesigner: TMenuDesigner;
 
@@ -717,9 +706,7 @@ begin
     FEditedMenuItem.Caption:=s;
     GlobalDesignHook.RefreshPropertyValues;
     GlobalDesignHook.Modified(FEditedMenuItem);
-    //UpdateBoxLocationsAndSizes;
     EditedShadow.Invalidate;
-    //FDesigner.FGui.UpdateStatistics;
   end;
   EditedShadow.SetFocus;
   FInPlaceEditor.Text := '';
@@ -1618,7 +1605,6 @@ begin
     FSelectedMenuItem:=aMI;
     SetSelectedShadow(prevSelectedMenuItem, FSelectedMenuItem, viaDesigner);
   end;
-  FDesigner.FGui.ButtonsGroupBox.Enabled:=(aMI <> nil);
 end;
 
 procedure TShadowMenu.SetSelectedShadow(const prevSelectedItem,
@@ -2692,32 +2678,9 @@ begin
     Edit;
 end;
 
-{ TMenuItemsPropertyEditor }
-{
-procedure TMenuItemsPropertyEditor.Edit;
-var
-  mnu: TMenu;
-  mnuItem: TMenuItem;
-  designer: TComponentEditorDesigner;
-begin
-  mnuItem:=TMenuItem(GetObjectValue(TMenuItem));
-  if (mnuItem <> nil) then
-  begin
-    mnu:=mnuItem.GetParentMenu;
-    designer:=FindRootDesigner(mnu) as TComponentEditorDesigner;
-    if (mnu <> nil) and (designer <> nil) then
-      ShowMenuEditor(mnu);
-  end;
-end;
 
-function TMenuItemsPropertyEditor.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paDialog, paRevertable, paReadOnly];
-end;
-}
 initialization
   RegisterComponentEditor(TMenu, TMainMenuComponentEditor);
-  //RegisterPropertyEditor(TypeInfo(TMenu), TMenu, 'Items', TMenuItemsPropertyEditor);
 
 finalization
   FreeAndNil(MenuDesignerSingleton);
