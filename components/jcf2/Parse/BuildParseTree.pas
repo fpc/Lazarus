@@ -3596,6 +3596,8 @@ begin
           RecogniseFunctionDecl(false);
         ttConstructor:
           RecogniseConstructorDecl;
+        ttDestructor:
+          RecogniseDestructorDecl;
         ttOperator:
           RecogniseClassOperator(True);
         else
@@ -4099,6 +4101,9 @@ begin
   //DestructorHeading -> DESTRUCTOR Ident [FormalParameters]
   PushNode(nDestructorHeading);
 
+  if fcTokenList.FirstSolidTokenType = ttClass then
+    Recognise(ttClass);
+
   Recognise(ttDestructor);
   RecogniseMethodName( not pbDeclaration);
   if fcTokenList.FirstSolidTokenType = ttOpenBracket then
@@ -4387,6 +4392,8 @@ begin
           end;
           ttConstructor:
             RecogniseConstructorHeading(True);
+          ttDestructor:
+            RecogniseDestructorHeading(True);
           ttOperator:
             RecogniseClassOperator(False);
           else
