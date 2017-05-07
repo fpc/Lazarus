@@ -4940,7 +4940,7 @@ var
     );
   var
     HalfSize, ALeft, ATop, ARight, ABottom: integer;
-    Points: PPoint;
+    Points: array[0..2] of TPoint; // for triangle
     Details: TThemedElementDetails;
     R: TRect;
     PrevColor: TColor;
@@ -4948,12 +4948,12 @@ var
     cShiftHorzArrow = 2; //paint horz arrow N pixels upper than MidY
   begin
     HalfSize := RealExpandSignSize div 2;
-    if not Odd(RealExpandSignSize) then
-      Dec(HalfSize);
+    //if not Odd(RealExpandSignSize) then
+    //  Dec(HalfSize);
     ALeft := MidX - HalfSize;
+    ARight := MidX + HalfSize;
     ATop := MidY - HalfSize;
-    ARight := ALeft + RealExpandSignSize;
-    ABottom := ATop + RealExpandSignSize;
+    ABottom := MidY + HalfSize;
 
     if Assigned(FOnCustomDrawArrow) then
     begin
@@ -4976,7 +4976,7 @@ var
       tvestPlusMinus:
         begin
           // draw a plus or a minus sign
-          R := Rect(ALeft, ATop, ARight, ABottom);
+          R := Rect(ALeft, ATop, ARight+1, ABottom+1); //+1 for centering of line in square
           Rectangle(R);
           MoveTo(R.Left + 2, MidY);
           LineTo(R.Right - 2, MidY);
@@ -4990,8 +4990,7 @@ var
       tvestArrowFill:
         begin
           // draw an arrow. down for collapse and right for expand
-          R := Rect(ALeft, ATop, ARight, ABottom);
-          GetMem(Points, SizeOf(TPoint) * 3);
+          R := Rect(ALeft, ATop, ARight+1, ABottom+1); //+1 for simmetry of arrow
           if CollapseSign then
           begin
             // draw an arrow down
@@ -5016,8 +5015,6 @@ var
           begin
             Brush.Color := PrevColor;
           end;
-
-          FreeMem(Points);
         end;
       end;
     end;
