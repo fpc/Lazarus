@@ -3500,12 +3500,20 @@ begin
       if Enable then begin
         FCompilerModeSwitches:=FCompilerModeSwitches+Switches;
         case ModeSwitch of
-        cmsDefault_unicodestring:  Values.Variables['FPC_UNICODESTRINGS'] := '1';
+        cmsDefault_unicodestring:
+          begin
+            Values.Variables['FPC_UNICODESTRINGS'] := '1';
+            Values.Variables['UNICODE'] := '1';
+          end;
         end;
       end else begin
         FCompilerModeSwitches:=FCompilerModeSwitches-Switches;
         case ModeSwitch of
-        cmsDefault_unicodestring:  Values.Undefine('FPC_UNICODESTRINGS');
+        cmsDefault_unicodestring:
+          begin
+            Values.Undefine('FPC_UNICODESTRINGS');
+            Values.Undefine('UNICODE');
+          end;
         end;
       end;
       exit;
@@ -4551,13 +4559,27 @@ begin
 end;
 
 procedure TLinkScanner.SetCompilerMode(const AValue: TCompilerMode);
+var
+  OldModeSwitches, EnabledModeSwitches,
+    DisabledModeSwitches: TCompilerModeSwitches;
 begin
   if FCompilerMode=AValue then exit;
   Values.Undefine(CompilerModeVars[FCompilerMode]);
   FCompilerMode:=AValue;
+  OldModeSwitches:=FCompilerModeSwitches;
   FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
   FNestedComments:=cmsNested_comment in CompilerModeSwitches;
   Values.Variables[CompilerModeVars[FCompilerMode]]:='1';
+
+  EnabledModeSwitches:=FCompilerModeSwitches-OldModeSwitches;
+  DisabledModeSwitches:=OldModeSwitches-FCompilerModeSwitches;
+  if cmsDefault_unicodestring in EnabledModeSwitches then begin
+    Values.Variables['FPC_UNICODESTRINGS'] := '1';
+    Values.Variables['UNICODE'] := '1';
+  end else if cmsDefault_unicodestring in DisabledModeSwitches then begin
+    Values.Undefine('FPC_UNICODESTRINGS');
+    Values.Undefine('UNICODE');
+  end;
 end;
 
 procedure TLinkScanner.SetPascalCompiler(const AValue: TPascalCompiler);
