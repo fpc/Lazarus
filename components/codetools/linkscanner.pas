@@ -489,8 +489,8 @@ type
     procedure SetScanTill(const Value: TLinkScannerRange);
     function GetIgnoreMissingIncludeFiles: boolean;
     procedure SetIgnoreMissingIncludeFiles(const Value: boolean);
-    function TokenIs(const AToken: shortstring): boolean;
-    function UpTokenIs(const AToken: shortstring): boolean;
+    function TokenIs(const AToken: string): boolean;
+    function UpTokenIs(const AToken: string): boolean;
   private
     // parsing
     CommentStyle: TCommentStyle;
@@ -531,7 +531,7 @@ type
     FDirectivesCount: integer;
     FDirectivesCapacity: integer;
     FDirectivesSorted: PPLSDirective; // array of PLSDirective to items of FDirectives
-    FDirectiveName: shortstring;
+    FDirectiveName: string;
     FDirectiveCleanPos: integer;
     FDirectivesStored: boolean;
     FMacrosOn: boolean;
@@ -773,7 +773,7 @@ type
 
 const
   // upper case
-  CompilerModeNames: array[TCompilerMode] of shortstring=(
+  CompilerModeNames: array[TCompilerMode] of string=(
     'FPC',
     'DELPHI',
     'DELPHIUNICODE',
@@ -786,7 +786,7 @@ const
     );
 
   // upper case (see fpc/compiler/globtype.pas  modeswitchstr )
-  CompilerModeSwitchNames: array[TCompilerModeSwitch] of shortstring=(
+  CompilerModeSwitchNames: array[TCompilerModeSwitch] of string=(
     'POINTERARITHMETICS',
     'CLASS',
     'OBJPAS',
@@ -826,15 +826,15 @@ const
     );
 
   // upper case
-  PascalCompilerNames: array[TPascalCompiler] of shortstring=(
+  PascalCompilerNames: array[TPascalCompiler] of string=(
     'FPC', 'DELPHI', 'PAS2JS'
     );
 
 const
-  DirectiveSequenceName: array [TSequenceDirective] of ShortString =
+  DirectiveSequenceName: array [TSequenceDirective] of string =
     ('SCOPEDENUMS');
 var
-  CompilerModeVars: array[TCompilerMode] of shortstring;
+  CompilerModeVars: array[TCompilerMode] of string;
 
   PSourceLinkMemManager: TPSourceLinkMemManager;
   PSourceChangeStepMemManager: TPSourceChangeStepMemManager;
@@ -969,23 +969,7 @@ begin
   UniqueSortedCodeList.Insert(m,ACode);
 end;
 
-function CompareUpToken(const UpToken: shortstring; const Txt: string;
-  TxtStartPos, TxtEndPos: integer): boolean;
-var len, i: integer;
-begin
-  Result:=false;
-  len:=TxtEndPos-TxtStartPos;
-  if len<>length(UpToken) then exit;
-  i:=1;
-  while i<len do begin
-    if (UpToken[i]<>UpChars[Txt[TxtStartPos]]) then exit;
-    inc(i);
-    inc(TxtStartPos);
-  end;
-  Result:=true;
-end;
-
-function CompareUpToken(const UpToken: ansistring; const Txt: string;
+function CompareUpToken(const UpToken: string; const Txt: string;
   TxtStartPos, TxtEndPos: integer): boolean;
 var len, i: integer;
 begin
@@ -2357,7 +2341,7 @@ begin
   //DebugLn('   ADDING ',DbgS(ACode),',',FSourceChangeSteps.Count);
 end;
 
-function TLinkScanner.TokenIs(const AToken: shortstring): boolean;
+function TLinkScanner.TokenIs(const AToken: string): boolean;
 var ATokenLen: integer;
   i: integer;
 begin
@@ -2372,7 +2356,7 @@ begin
   end;
 end;
 
-function TLinkScanner.UpTokenIs(const AToken: shortstring): boolean;
+function TLinkScanner.UpTokenIs(const AToken: string): boolean;
 var ATokenLen: integer;
   i: integer;
 begin
@@ -3480,42 +3464,54 @@ end;
 
 function TLinkScanner.ModeSwitchDirective: boolean;
 // $MODESWITCH objectivec1
+// $MODESWITCH objectivec1 on|off
 // $MODESWITCH systemcodepage-
 var
-  ValStart: LongInt;
+  p, ValStart: PChar;
   ModeSwitch: TCompilerModeSwitch;
   Switches: TCompilerModeSwitches;
+  Enable: Boolean;
 begin
   if StoreDirectives then
     FDirectives[FDirectivesCount-1].Kind:=lsdkModeSwitch;
   ReadSpace;
-  ValStart:=SrcPos;
-  while (SrcPos<=SrcLen) and (IsIdentChar[Src[SrcPos]]) do
-    inc(SrcPos);
+  p:=@Src[SrcPos];
+  ValStart:=p;
+  while IsIdentChar[p^] do inc(p);
   Result:=false;
   for ModeSwitch := Succ(Low(ModeSwitch)) to High(ModeSwitch) do begin
-    if CompareUpToken(CompilerModeSwitchNames[ModeSwitch],Src,ValStart,SrcPos)
+    if CompareIdentifiers(@CompilerModeSwitchNames[ModeSwitch][1],ValStart)=0
     then begin
       Result:=true;
       Switches:=[ModeSwitch];
+      Enable:=true;
+      if p^='-' then
+        Enable:=false
+      else if IsSpaceChar[p^] then begin
+        repeat
+          inc(p);
+        until not IsSpaceChar[p^];
+        if CompareIdentifiers(p,'off')=0 then
+          Enable:=false;
+      end;
       case ModeSwitch of
       cmsObjectiveC2: Include(Switches,cmsObjectiveC1);
       end;
-      if (SrcPos<=SrcLen) and (Src[SrcPos]='-') then begin
-        FCompilerModeSwitches:=FCompilerModeSwitches-Switches;
-        case ModeSwitch of
-        cmsDefault_unicodestring:  Values.Undefine('FPC_UNICODESTRINGS');
-        end;
-      end else begin
+      if Enable then begin
         FCompilerModeSwitches:=FCompilerModeSwitches+Switches;
         case ModeSwitch of
         cmsDefault_unicodestring:  Values.Variables['FPC_UNICODESTRINGS'] := '1';
+        end;
+      end else begin
+        FCompilerModeSwitches:=FCompilerModeSwitches-Switches;
+        case ModeSwitch of
+        cmsDefault_unicodestring:  Values.Undefine('FPC_UNICODESTRINGS');
         end;
       end;
       exit;
     end;
   end;
-  RaiseExceptionFmt(20170422130125,ctsInvalidModeSwitch,[copy(Src,ValStart,SrcPos-ValStart)]);
+  RaiseExceptionFmt(20170422130125,ctsInvalidModeSwitch,[GetIdentifier(ValStart)]);
 end;
 
 function TLinkScanner.ThreadingDirective: boolean;
