@@ -198,7 +198,7 @@ type
                                 ansistring; similarly, char becomes unicodechar rather than ansichar }
     cmsTypeHelpers,        { allows the declaration of "type helper" (non-Delphi) or "record helper"
                                   (Delphi) for primitive types }
-    cmsBlocks,             { support for http://en.wikipedia.org/wiki/Blocks_(C_language_extension) }
+    cmsCBlocks,            { support for http://en.wikipedia.org/wiki/Blocks_(C_language_extension) }
     cmsISOlike_IO,          { I/O as it required by an ISO compatible compiler }
     cmsISOLike_Program_Para, { program parameters as it required by an ISO compatible compiler }
     cmsISOLike_Mod,       { mod operation as it is required by an iso compatible compiler }
@@ -3148,7 +3148,7 @@ begin
       FHiddenUsedUnits:=FHiddenUsedUnits+',ISO7185';
     if (CompilerMode=cmExtPas) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',ISO7185,ExtPas';
-    if (cmsBlocks in CompilerModeSwitches) and (PascalCompiler=pcFPC) then
+    if (cmsCBlocks in CompilerModeSwitches) and (PascalCompiler=pcFPC) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',BlockRTL';
     if (cmsDefault_unicodestring in CompilerModeSwitches) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',UUChar';

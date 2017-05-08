@@ -4687,7 +4687,7 @@ end;
 
 function TPascalParserTool.KeyWordFuncTypeReferenceTo: boolean;
 begin
-  if (cmsBlocks in Scanner.CompilerModeSwitches)
+  if (cmsCBlocks in Scanner.CompilerModeSwitches)
   or (Scanner.PascalCompiler=pcPas2js) then begin
     CreateChildNode;
     CurNode.Desc:=ctnReferenceTo;
