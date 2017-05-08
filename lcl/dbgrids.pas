@@ -1447,13 +1447,13 @@ end;
 function TCustomDBGrid.DefaultFieldColWidth(F: TField): Integer;
 begin
   if not HandleAllocated or (F=nil) then
-    result:=DefaultColWidth
+    result:=GetRealDefaultColWidth
   else begin
     if F.DisplayWidth = 0 then
       if Canvas.HandleAllocated then
         result := Canvas.TextWidth( F.DisplayName ) + 3
       else
-        Result := DefaultColWidth
+        Result := GetRealDefaultColWidth
     else
       result := F.DisplayWidth * CalcCanvasCharWidth(Canvas);
   end;
@@ -1610,7 +1610,7 @@ begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.GetBufferCount', [ClassName]);
   {$endif}
-  Result := ClientHeight div DefaultRowHeight;
+  Result := ClientHeight div GetRealDefaultRowHeight;
   if dgTitles in Options then
     Dec(Result, 1);
 end;
@@ -4249,7 +4249,7 @@ begin
       FreeWorkingCanvas(tmpCanvas);
 
   end else
-    result := DEFCOLWIDTH;
+    result := -1;
 end;
 
 function TColumn.CreateTitle: TGridColumnTitle;
