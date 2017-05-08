@@ -49,23 +49,23 @@ const
         ,'BOOLEVAL'       // B
         ,'ASSERTIONS'     // C
         ,'DEBUGINFO'      // D
-        ,''               // E
+        ,'EXTENSION'      // E
         ,''               // F
-        ,''               // G
+        ,'IMPORTEDDATA'   // G
         ,'LONGSTRINGS'    // H
         ,'IOCHECKS'       // I
-        ,''               // J
+        ,'WRITEABLECONST' // J
         ,''               // K
         ,'LOCALSYMBOLS'   // L
         ,'TYPEINFO'       // M
         ,''               // N
-        ,''               // O
+        ,'OPTIMIZATION'   // O
         ,'OPENSTRINGS'    // P
         ,'OVERFLOWCHECKS' // Q
         ,'RANGECHECKS'    // R
         ,''               // S
         ,'TYPEADDRESS'    // T
-        ,''               // U
+        ,'SAFEDIVIDE'     // U
         ,'VARSTRINGCHECKS'// V
         ,'STACKFRAMES'    // W
         ,'EXTENDEDSYNTAX' // X
