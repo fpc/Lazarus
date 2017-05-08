@@ -4548,8 +4548,8 @@ begin
     end;
     SB_PAGELEFT: TrySmoothScrollBy(-(ClientWidth-FGCache.FixedWidth)*RTLSign, 0);
     SB_PAGERIGHT: TrySmoothScrollBy((ClientWidth-FGCache.FixedWidth)*RTLSign, 0);
-    SB_LINELEFT: TrySmoothScrollBy(-DefaultColWidth*RTLSign, 0);
-    SB_LINERIGHT: TrySmoothScrollBy(DefaultColWidth*RTLSign, 0);
+    SB_LINELEFT: TrySmoothScrollBy(-GetRealDefaultColWidth*RTLSign, 0);
+    SB_LINERIGHT: TrySmoothScrollBy(GetRealDefaultColWidth*RTLSign, 0);
   end;
 
   if EditorMode then
@@ -4571,8 +4571,8 @@ begin
     end;
     SB_PAGEUP: TrySmoothScrollBy(0, -(ClientHeight-FGCache.FixedHeight));
     SB_PAGEDOWN: TrySmoothScrollBy(0, ClientHeight-FGCache.FixedHeight);
-    SB_LINEUP: TrySmoothScrollBy(0, -DefaultRowHeight);
-    SB_LINEDOWN: TrySmoothScrollBy(0, DefaultRowHeight);
+    SB_LINEUP: TrySmoothScrollBy(0, -GetRealDefaultRowHeight);
+    SB_LINEDOWN: TrySmoothScrollBy(0, GetRealDefaultRowHeight);
   end;
 
   if EditorMode then
@@ -10243,11 +10243,11 @@ begin
     ScrollCols := (ssCtrl in shift);
     if ScrollCols then
     begin
-      if not TrySmoothScrollBy(Delta*DefaultColWidth, 0) then
+      if not TrySmoothScrollBy(Delta*GetRealDefaultColWidth, 0) then
         TryScrollTo(FTopLeft.x+Delta, FTopLeft.y, True, False);
     end else
     begin
-      if not TrySmoothScrollBy(0, Delta*DefaultRowHeight*Mouse.WheelScrollLines) then
+      if not TrySmoothScrollBy(0, Delta*GetRealDefaultRowHeight*Mouse.WheelScrollLines) then
         TryScrollTo(FTopLeft.x, FTopLeft.y+Delta, False, True); // scroll only 1 line if above scrolling failed (probably due to too high line)
     end;
     if EditorMode then
@@ -10742,7 +10742,7 @@ begin
 
   W := W + imgWidth;
   if W=0 then
-    W := DefaultColWidth
+    W := GetRealDefaultColWidth
   else
     W := W + DEFAUTOADJPADDING;
 
