@@ -4688,6 +4688,7 @@ begin
   TryTL:=ScrollGrid(False,aCol, aRow);
   TLChange := not PointIgual(TryTL, FTopLeft);
   if TLChange
+  or (not PointIgual(TryTL, Point(aCol, aRow)) and (goSmoothScroll in Options))
   or (ClearColOff and (FGCache.TLColOff<>0))
   or (ClearRowOff and (FGCache.TLRowOff<>0)) then
   begin
@@ -4698,6 +4699,10 @@ begin
       FGCache.TLColOff := 0;
     if ClearRowOff then
       FGCache.TLRowOff := 0;
+    if (aCol>TryTL.X) and (goSmoothScroll in Options) then
+      FGCache.TLColOff := FGCache.MaxTLOffset.X;
+    if (aRow>TryTL.Y) and (goSmoothScroll in Options) then
+      FGCache.TLRowOff := FGCache.MaxTLOffset.Y;
     {$ifdef dbgscroll}
     DebugLn('TryScrollTo: TopLeft=%s NewCol=%d NewRow=%d',
       [dbgs(FTopLeft), NewCol, NewRow]);
