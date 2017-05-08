@@ -2253,6 +2253,8 @@ var
   ms: TCompilerModeSwitch;
   cm: TCompilerMode;
   OptimizerSwitch: TOptimizerSwitch;
+  SrcType: TCodeTreeNodeDesc;
+  Compiler: TPascalCompiler;
 begin
   Result:=false;
   Line:=CursorPos.Code.GetLine(CursorPos.Y-1,false);
@@ -2270,6 +2272,8 @@ begin
       else
         inc(InnerStart,3);
       //debugln(['TIdentCompletionTool.IsInCompilerDirective InnerStart=',InnerStart,' X=',CursorPos.X]);
+      SrcType:=GetSourceType;
+      Compiler:=Scanner.PascalCompiler;
       if (InnerStart=CursorPos.X)
       or ((CursorPos.X>=InnerStart) and (InnerStart<=length(Line))
           and (CursorPos.X<=InnerStart+GetIdentLen(@Line[InnerStart])))
@@ -2299,6 +2303,12 @@ begin
         AddKeyWord('D');
         AddKeyWord('DebugInfo');
         AddKeyWord('Define');
+        if Compiler=pcDelphi then
+          AddKeyWord('DefinitionInfo');
+        if Compiler=pcDelphi then
+          AddKeyWord('DenyPackageUnit');
+        if (Compiler=pcDelphi) and (SrcType=ctnPackage) then
+          AddKeyWord('DesignOnly');
         AddKeyWord('Description');
         AddKeyWord('ElIfC');
         AddKeyWord('Else');
@@ -2310,12 +2320,16 @@ begin
         AddKeyWord('Error');
         AddKeyWord('ErrorC');
         AddKeyWord('ExtendedSyntax');
+        if (Compiler=pcDelphi) and (SrcType in [ctnProgram,ctnLibrary,ctnPackage]) then
+          AddKeyWord('Extension');
         AddKeyWord('ExternalSym');
         AddKeyWord('F');
         AddKeyWord('Fatal');
         AddKeyWord('FPUType');
         AddKeyWord('FrameworkPath');
         AddKeyWord('Goto');
+        if Compiler=pcDelphi then
+          AddKeyWord('HighCharUnicode');
         AddKeyWord('Hint');
         AddKeyWord('Hints');
         AddKeyWord('HPPEmit');
@@ -2330,7 +2344,11 @@ begin
         AddKeyWord('IfNDef');
         AddKeyWord('IfOpt');
         AddKeyWord('ImageBase');
+        if Compiler=pcDelphi then
+          AddKeyWord('ImplicitBuild');
         AddKeyWord('ImplicitExceptions');
+        if Compiler=pcDelphi then
+          AddKeyWord('ImportedData');
         AddKeyWord('Include');
         AddKeyWord('IncludePath');
         AddKeyWord('Info');
@@ -2338,8 +2356,16 @@ begin
         AddKeyWord('Interfaces');
         AddKeyWord('IOChecks');
         AddKeyWord('L');
+        if Compiler=pcDelphi then
+          AddKeyWord('LegacyIfEnd');
         AddKeyWord('LibExport');
+        if Compiler=pcDelphi then
+          AddKeyWord('LibPrefix');
+        if Compiler=pcDelphi then
+          AddKeyWord('LibPostfix');
         AddKeyWord('LibraryPath');
+        if Compiler=pcDelphi then
+          AddKeyWord('LibVersion');
         AddKeyWord('Link');
         AddKeyWord('LinkFramework');
         AddKeyWord('LinkLib');
@@ -2351,16 +2377,26 @@ begin
         AddKeyWord('MaxStackSize');
         AddKeyWord('Memory');
         AddKeyWord('Message');
+        if Compiler=pcDelphi then
+          AddKeyWord('MethodInfo');
         AddKeyWord('MinEnumSize');
         AddKeyWord('MinFPConstPrec');
         AddKeyWord('MMX');
         AddKeyWord('Mode');
         AddKeyWord('ModeSwitch');
         AddKeyWord('NameSpace');
+        if Compiler=pcDelphi then
+          AddKeyWord('NoInclude');
         AddKeyWord('Note');
         AddKeyWord('Notes');
         AddKeyWord('ObjectChecks');
+        if Compiler=pcDelphi then
+          AddKeyWord('ObjExportAll');
         AddKeyWord('ObjectPath');
+        if Compiler=pcDelphi then
+          AddKeyWord('ObjTypeName');
+        if Compiler=pcDelphi then
+          AddKeyWord('OldTypeLayout');
         AddKeyWord('OpenStrings');
         AddKeyWord('Optimization');
         AddKeyWord('Output_Format');
@@ -2376,9 +2412,16 @@ begin
         AddKeyWord('Push');
         AddKeyWord('R');
         AddKeyWord('RangeChecks');
+        if Compiler=pcDelphi then
+          AddKeyWord('RealCompatibility');
         AddKeyWord('ReferenceInfo');
         AddKeyWord('Region');
         AddKeyWord('Resource');
+        AddKeyWord('RTTI');
+        if (Compiler=pcDelphi) and (SrcType=ctnPackage) then
+          AddKeyWord('RunOnly');
+        if Compiler=pcDelphi then
+          AddKeyWord('SafeDivide');
         AddKeyWord('SafeFPUExceptions');
         AddKeyWord('Saturation');
         AddKeyWord('ScopedEnums');
@@ -2386,10 +2429,15 @@ begin
         AddKeyWord('SetC');
         AddKeyWord('SetPEFlags');
         AddKeyWord('SetPEOptFlags');
+        AddKeyWord('SetPEOSVersion');
+        AddKeyWord('SetPESubSysVersion');
+        AddKeyWord('SetPEUserVersion');
         AddKeyWord('SmartLink');
         AddKeyWord('StackFrames');
         AddKeyWord('Stop');
         AddKeyWord('StringChecks');
+        if Compiler=pcDelphi then
+          AddKeyWord('StrongLinkTypes');
         AddKeyWord('Syscall');
         AddKeyWord('TargetSwitch');
         AddKeyWord('ThreadName');
@@ -2406,6 +2454,14 @@ begin
         AddKeyWord('Warnings');
         AddKeyWord('WeakPackageUnit');
         AddKeyWord('WriteableConst'); // unusual spelling in fpc
+        if Compiler=pcDelphi then
+          AddKeyWord('ExtendedCompatibility');
+        if Compiler=pcDelphi then
+          AddKeyWord('ExtendedSyntax');
+        if Compiler=pcDelphi then
+          AddKeyWord('ExternalSym');
+        if Compiler=pcDelphi then
+          AddKeyWord('ExcessPrecision');
         AddKeyWord('Z1');
         AddKeyWord('Z2');
         AddKeyWord('Z4');
