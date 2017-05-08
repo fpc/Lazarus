@@ -472,7 +472,7 @@ type
   TIdentifierFoundResult = (ifrProceedSearch, ifrAbortSearch, ifrSuccess);
 
 const
-  IdentifierFoundResultNames: array[TIdentifierFoundResult] of shortstring =
+  IdentifierFoundResultNames: array[TIdentifierFoundResult] of string =
     ('ProceedSearch', 'AbortSearch', 'Success');
 
 type
