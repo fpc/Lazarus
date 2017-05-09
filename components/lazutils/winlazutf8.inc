@@ -222,6 +222,7 @@ begin
   end;
 end;
 
+{$IFNDEF WINCE}
 function GetGetEnvironmentVariableCountWide: integer;
 var
   hp,p : PWideChar;
@@ -237,6 +238,7 @@ begin
   end;
   FreeEnvironmentStringsW(p);
 end;
+
 
 function GetEnvironmentStringWide(Index: Integer): UnicodeString;
 var
@@ -255,6 +257,7 @@ begin
     Result:=hp;
   FreeEnvironmentStringsW(p);
 end;
+{$ENDIF WINCE}
 
 function GetEnvironmentVariableWide(const EnvVar: string): UnicodeString;
 {$IF FPC_FULLVERSION>=30000}
@@ -286,6 +289,7 @@ begin
   FreeEnvironmentStringsW(p);
 end;
 {$ENDIF}
+
 
 //*************** END WideString impementations
 
