@@ -218,6 +218,7 @@ end;
 
 procedure LazError(const Msg: String);
 begin
+  LazLog(llError, Msg);
   if Assigned(FppkgForm) then
     FppkgForm.OnErrorThreadSafe(Msg)
   else
