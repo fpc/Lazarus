@@ -1022,8 +1022,6 @@ type
     function  GetDefaultColumnTitle(Column: Integer): string; virtual;
     function  GetDefaultEditor(Column: Integer): TWinControl; virtual;
     function  GetDefaultRowHeight: integer; virtual;
-    function  GetRealDefaultColWidth: integer;
-    function  GetRealDefaultRowHeight: integer;
     function  GetGridDrawState(ACol, ARow: Integer): TGridDrawState;
     function  GetImageForCheckBox(const aCol,aRow: Integer;
                                   CheckBoxView: TCheckBoxState): TBitmap; virtual;
@@ -1249,6 +1247,8 @@ type
     procedure EndUpdate(aRefresh: boolean = true);
     procedure EraseBackground(DC: HDC); override;
     function  Focused: Boolean; override;
+    function  GetRealDefaultColWidth: integer;
+    function  GetRealDefaultRowHeight: integer;
     function  HasMultiSelection: Boolean;
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCol(ACol: Integer);
