@@ -60,6 +60,9 @@ begin
   FFPpkg.ScanAvailablePackages;
   FFPpkg.ScanPackages;
 
+  if (FParaAction='install') or (FParaAction='uninstall') or (FParaAction='fixbroken') then
+    FFPpkg.ScanInstalledPackagesForAvailablePackages;
+
   OldCurrDir := GetCurrentDir;
   try
     if FParaPackages.Count = 0 then
