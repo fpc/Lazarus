@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-04-29 01:47+0300\n"
+"PO-Revision-Date: 2017-05-11 01:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4255,6 +4255,14 @@ msgstr "Текущий фильтр"
 msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Добавить"
+
+#: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
+msgid "Add a new separator above selected item"
+msgstr "Добавить новый разделитель над выделенным элементом"
+
+#: lazarusidestrconsts.lisaddanewseparatorbelowselecteditem
+msgid "Add a new separator below selected item"
+msgstr "Добавить новый разделитель под выделенным элементом"
 
 #: lazarusidestrconsts.lisadddelphidefine
 msgid "Add defines simulating Delphi7"
@@ -12115,20 +12123,20 @@ msgstr "Переместить элемент ввер&х"
 #: lazarusidestrconsts.lismenueditormoveselecteditemdown
 msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemdown"
 msgid "Move selected item down"
-msgstr "Переместить выбранный элемент вниз"
+msgstr "Переместить выделенный элемент вниз"
 
 #: lazarusidestrconsts.lismenueditormoveselecteditemtotheleft
 msgid "Move selected item to the left"
-msgstr "Переместить выбранный элемент налево"
+msgstr "Переместить выделенный элемент налево"
 
 #: lazarusidestrconsts.lismenueditormoveselecteditemtotheright
 msgid "Move selected item to the right"
-msgstr "Переместить выбранный элемент направо"
+msgstr "Переместить выделенный элемент направо"
 
 #: lazarusidestrconsts.lismenueditormoveselecteditemup
 msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemup"
 msgid "Move selected item up"
-msgstr "Переместить выбранный элемент вверх"
+msgstr "Переместить выделенный элемент вверх"
 
 #: lazarusidestrconsts.lismenueditormoveup
 msgid "Move Up (or left)"

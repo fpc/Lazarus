@@ -4354,6 +4354,14 @@ msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Adicionar"
 
+#: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
+msgid "Add a new separator above selected item"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddanewseparatorbelowselecteditem
+msgid "Add a new separator below selected item"
+msgstr ""
+
 #: lazarusidestrconsts.lisadddelphidefine
 msgid "Add defines simulating Delphi7"
 msgstr "Adicionar definições simulando Delphi7"
