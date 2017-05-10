@@ -82,6 +82,8 @@ uses
 {$R ../images/laz_images.res}
 
 begin
+  Max_Frame_Dump:=32; // the default 8 is not enough
+
   HasGUI:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('lazarus.pp: begin');{$ENDIF}
 
