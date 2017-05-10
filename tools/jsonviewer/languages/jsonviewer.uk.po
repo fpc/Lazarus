@@ -1,10 +1,10 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-11-12 00:34+0200\n"
+"PO-Revision-Date: 2017-05-05 01:28+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -262,11 +262,11 @@ msgstr "&Файл"
 #: tmainform.miallowcomments.caption
 msgctxt "tmainform.miallowcomments.caption"
 msgid "Allow comments"
-msgstr ""
+msgstr "Дозволити коментарі"
 
 #: tmainform.miallowtrailingcomma.caption
 msgid "Allow trailing comma"
-msgstr ""
+msgstr "Дозволити кому в кінці"
 
 #: tmainform.micompact.caption
 msgid "Compact display"
@@ -282,7 +282,7 @@ msgstr "&Значення"
 
 #: tmainform.miquotestrings.caption
 msgid "Quote string values"
-msgstr ""
+msgstr "Брати в лапки рядкові значення"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"

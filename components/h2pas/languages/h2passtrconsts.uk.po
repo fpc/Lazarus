@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-23 23:21+0200\n"
+"PO-Revision-Date: 2017-05-05 00:39+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -419,7 +419,7 @@ msgstr "Пост-H2Pas - набір засобів для запуску піс�
 
 #: h2passtrconsts.h2ppreh2pasasetofcommontoolstorunbeforeh2pasphremovec
 msgid "Pre H2Pas - a set of common tools to run before H2Pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for H2Pas%sphCommentComplexCFunctions - Comment functions too complex for H2Pas%s"
-msgstr "Перед-H2Pas - набір засобів для запуску перед H2Pas%sphRemoveCPlusPlusExternCTool - Вилучити рядки 'extern \"C\"' мови C++%sphRemoveEmptyCMacrosTool - Вилучити порожні макроси C%sphReplaceEdgedBracketPairWithStar - Замінити [] на *%sphReplace0PointerWithNULL - Замінити значення макросів з вказівниками на нуль, подібні до (char *)0%sphConvertFunctionTypesToPointers - Перетворювати типи функцій на вказівники%sphConvertEnumsToTypeDef - Давати назви анонімним перелікам%sphCommentComplexCMacros - Закоментувати складні для H2Pas макроси%sphCommentComplexCFunctions - Закоментувати складні для H2Pas функції%s"
+msgstr "Перед-H2Pas - набір засобів для запуску перед H2Pas%sphRemoveCPlusPlusExternCTool - Вилучити рядки 'extern \"C\"' мови C++%sphRemoveEmptyCMacrosTool - Вилучити порожні макроси C%sphReplaceEdgedBracketPairWithStar - Замінити [] на *%sphReplace0PointerWithNULL - Замінити значення макросів з вказівниками нануль, подібні до (char *)0%sphConvertFunctionTypesToPointers - Перетворювати типи функцій на вказівники%sphConvertEnumsToTypeDef - Давати назви анонімним перелікам%sphCommentComplexCMacros - Закоментувати складні для H2Pas макроси%sphCommentComplexCFunctions - Закоментувати складні для H2Pas функції%s"
 
 #: h2passtrconsts.h2pprpackallrecords1bytealignment
 msgid "-pr Pack all records (1 byte alignment)"
@@ -487,7 +487,7 @@ msgstr "Замінити неявні типи%sНаприклад:%s    procedu
 
 #: h2passtrconsts.h2preplacemacrovalues0pointerlikechar0withnull
 msgid "Replace macro values 0 pointer like (char *)0 with NULL"
-msgstr "Замінити значення макросів з вказівниками на нуль, подібні до (char *)0, значеннями NULL"
+msgstr "Замінити значення макросів з вказівниками на нуль, подібні до (char *)0, значеннями NULLЗамінити значення макросів з вказівниками на нуль, подібні до (char *)0, значеннями NULL"
 
 #: h2passtrconsts.h2preplacesimplefunctionswithconstants
 msgid "Replace simple functions with constants"
