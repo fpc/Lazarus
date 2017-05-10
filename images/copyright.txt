@@ -11,6 +11,12 @@ Creative Commons. Author and source mentioned.
 
 Following images were created by FTurtle:
 
+actions directory:
+
+laz_save.png
+laz_save_150.png
+laz_save_200.png
+
 designer directory:
 
 anchor_bottom_bottom.png
@@ -50,10 +56,25 @@ anchor_top_top.png
 anchor_top_top_150.png
 anchor_top_top_200.png
 
+items directory:
+
+item_form.png
+item_form_150.png
+item_form_200.png
+item_unit.png
+item_unit_150.png
+item_unit_200.png
+
 menu directory:
 
 menu_clear_all_bookmarks.png
 menu_clear_file_bookmarks.png
+menu_close.png
+menu_close_150.png
+menu_close_200.png
+menu_close_all.png
+menu_close_all_150.png
+menu_close_all_200.png
 menu_goto_bookmark0.png
 menu_goto_bookmark1.png
 menu_goto_bookmark2.png
@@ -64,6 +85,21 @@ menu_goto_bookmark6.png
 menu_goto_bookmark7.png
 menu_goto_bookmark8.png
 menu_goto_bookmark9.png
+menu_new.png
+menu_new_150.png
+menu_new_200.png
+menu_new_form.png
+menu_new_form_150.png
+menu_new_form_200.png
+menu_new_unit.png
+menu_new_unit_150.png
+menu_new_unit_200.png
+menu_saveas.png
+menu_saveas_150.png
+menu_saveas_200.png
+menu_save_all.png
+menu_save_all_150.png
+menu_save_all_200.png
 menu_search_next_bookmark.png
 menu_search_previous_bookmark.png
 menu_search_set_bookmark.png
@@ -81,6 +117,9 @@ menu_toggle_bookmark9.png
 menu_view_components.png
 menu_view_components_150.png
 menu_view_components_200.png
+menu_view_forms.png
+menu_view_forms_150.png
+menu_view_forms_200.png
 menu_view_inspector.png
 menu_view_inspector_150.png
 menu_view_inspector_200.png
@@ -90,6 +129,9 @@ menu_view_messages_200.png
 menu_view_search_results.png
 menu_view_search_results_150.png
 menu_view_search_results_200.png
+menu_view_units.png
+menu_view_units_150.png
+menu_view_units_200.png
 
 sourceeditor directory:
 

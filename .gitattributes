@@ -6470,6 +6470,7 @@ images/actions/laz_openunit.png -text
 images/actions/laz_refresh.png -text svneol=unset#image/png
 images/actions/laz_save.png -text svneol=unset#image/png
 images/actions/laz_save_150.png -text
+images/actions/laz_save_200.png -text
 images/actions/laz_set_color_default.png -text svneol=unset#image/png
 images/actions/laz_set_colors_default.png -text svneol=unset#image/png
 images/actions/laz_tick.png -text svneol=unset#image/png
@@ -6776,12 +6777,16 @@ images/items/item_character.png -text svneol=unset#image/png
 images/items/item_filter.png -text svneol=unset#image/png
 images/items/item_font.png -text svneol=unset#image/png
 images/items/item_form.png -text svneol=unset#image/png
+images/items/item_form_150.png -text
+images/items/item_form_200.png -text
 images/items/item_keyboard.png -text svneol=unset#image/png
 images/items/item_library.png -text svneol=unset#image/png
 images/items/item_package.png -text svneol=unset#image/png
 images/items/item_project.png -text svneol=unset#image/png
 images/items/item_todo.png -text svneol=unset#image/png
 images/items/item_unit.png -text svneol=unset#image/png
+images/items/item_unit_150.png -text
+images/items/item_unit_200.png -text
 images/keymapcategory.png -text
 images/keymaprelation.png -text
 images/laz_images.bat svneol=native#text/x-msdos-program
@@ -6802,6 +6807,7 @@ images/lprfile.ico -text svneol=unset#image/x-icon
 images/mainicon.ico -text svneol=unset#image/ico
 images/mainiconproject.ico -text svneol=unset#image/x-icon
 images/menu/SelCompPage.png -text svneol=unset#image/png
+images/menu/bug_small.png -text
 images/menu/menu_abort_build.png -text svneol=unset#image/png
 images/menu/menu_build.png -text svneol=unset#image/png
 images/menu/menu_build_all.png -text svneol=unset#image/png
@@ -6813,7 +6819,11 @@ images/menu/menu_clean.png -text svneol=unset#image/png
 images/menu/menu_clear_all_bookmarks.png -text
 images/menu/menu_clear_file_bookmarks.png -text
 images/menu/menu_close.png -text svneol=unset#image/png
+images/menu/menu_close_150.png -text
+images/menu/menu_close_200.png -text
 images/menu/menu_close_all.png -text svneol=unset#image/png
+images/menu/menu_close_all_150.png -text
+images/menu/menu_close_all_200.png -text
 images/menu/menu_codetoolsdefineseditor.png -text svneol=unset#image/png
 images/menu/menu_codetoolsoptions.png -text svneol=unset#image/png
 images/menu/menu_comment.png -text
@@ -6851,6 +6861,14 @@ images/menu/menu_jumpto_procedurebegin.png -text svneol=unset#image/png
 images/menu/menu_jumpto_procedureheader.png -text svneol=unset#image/png
 images/menu/menu_manage_desktops.png -text svneol=unset#image/png
 images/menu/menu_new.png -text svneol=unset#image/png
+images/menu/menu_new_150.png -text
+images/menu/menu_new_200.png -text
+images/menu/menu_new_form.png -text
+images/menu/menu_new_form_150.png -text
+images/menu/menu_new_form_200.png -text
+images/menu/menu_new_unit.png -text
+images/menu/menu_new_unit_150.png -text
+images/menu/menu_new_unit_200.png -text
 images/menu/menu_pause.png -text svneol=unset#image/png
 images/menu/menu_project_add.png -text svneol=unset#image/png
 images/menu/menu_project_close.png -text svneol=unset#image/png
@@ -6872,7 +6890,11 @@ images/menu/menu_run_file.png -text svneol=unset#image/png
 images/menu/menu_run_parameters.png -text svneol=unset#image/png
 images/menu/menu_run_withoutdebugging.png -text
 images/menu/menu_save_all.png -text svneol=unset#image/png
+images/menu/menu_save_all_150.png -text
+images/menu/menu_save_all_200.png -text
 images/menu/menu_saveas.png -text
+images/menu/menu_saveas_150.png -text
+images/menu/menu_saveas_200.png -text
 images/menu/menu_search_files.png -text svneol=unset#image/png
 images/menu/menu_search_find.png -text svneol=unset#image/png
 images/menu/menu_search_find_next.png -text svneol=unset#image/png
@@ -6918,6 +6940,8 @@ images/menu/menu_view_components.png -text
 images/menu/menu_view_components_150.png -text
 images/menu/menu_view_components_200.png -text
 images/menu/menu_view_forms.png -text svneol=unset#image/png
+images/menu/menu_view_forms_150.png -text
+images/menu/menu_view_forms_200.png -text
 images/menu/menu_view_inspector.png -text svneol=unset#image/png
 images/menu/menu_view_inspector_150.png -text
 images/menu/menu_view_inspector_200.png -text
@@ -6933,6 +6957,8 @@ images/menu/menu_view_todo.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit.png -text svneol=unset#image/png
 images/menu/menu_view_unit_info.png -text svneol=unset#image/png
 images/menu/menu_view_units.png -text svneol=unset#image/png
+images/menu/menu_view_units_150.png -text
+images/menu/menu_view_units_200.png -text
 images/mimetypes/readme.txt svneol=native#text/plain
 images/mimetypes/text-lazarus-form.png -text
 images/mimetypes/text-lazarus-package.png -text
