@@ -303,13 +303,16 @@ end;
 
 procedure TMenuDesignerBase.FreeShadowMenu;
 begin
-  FreeAndNil(FShadowMenu);
+  if FShadowMenu=nil then exit;
+  FShadowMenu.Parent:=nil;
+  Application.ReleaseComponent(FShadowMenu);
+  FShadowMenu:=nil;
 end;
 
 procedure TMenuDesignerBase.UpdateTemplatesCount;
 begin
   FTemplatesSaved:=SavedTemplatesExist;
-  DebugLn('SavedTemplatesExist is %s',[booltostr(FTemplatesSaved)]);
+  DebugLn('Hint: (lazarus) [TMenuDesignerBase.UpdateTemplatesCount] SavedTemplatesExist is %s',[booltostr(FTemplatesSaved)]);
   FSavedTemplatesCount:=GetSavedTemplatesCount;
 end;
 
