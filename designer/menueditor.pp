@@ -130,7 +130,6 @@ type
   public
     constructor CreateWithParentBox(aSMenu: TShadowMenu; aParentBox: TShadowBox;
       aParentItem: TMenuItem);
-    destructor Destroy; override;
     procedure SetUnCheckedAllExcept(aMI: TMenuItem);
   end;
 
@@ -859,7 +858,6 @@ procedure TShadowMenu.DeleteChildlessShadowAndItem(anExistingSI: TShadowItem);
 var
   nearestMI, mi: TMenuItem;
   box: TShadowBox;
-  ownsIt: TComponent;
 begin
   StopEditingCaption;
   FDesigner.FGui.BeginUpdate;
@@ -881,24 +879,18 @@ begin
       end;
       box:=anExistingSI.ParentBox;
       box.ParentMenuItem.Remove(mi);
-      ownsIt:=mi.Owner;
-      if (ownsIt <> nil) then
-        ownsIt.RemoveComponent(mi);
       anExistingSI.RealItem:=nil;
       box.ShadowList.Remove(anExistingSI);
       anExistingSI.Parent:=nil;
-      box.RemoveComponent(anExistingSI);
       Application.ReleaseComponent(anExistingSI);
-      FEditorDesigner.PropertyEditorHook.DeletePersistent(TPersistent(mi));
       FEditorDesigner.PropertyEditorHook.Modified(mi);
-      FreeAndNil(mi);
+      FEditorDesigner.PropertyEditorHook.DeletePersistent(TPersistent(mi));
       FEditorDesigner.Modified;
 
       if (box.ShadowList.Count = 0) then
       begin
         FBoxList.Remove(box);
         box.Parent:=nil;
-        RemoveComponent(box);
         if box=FRootBox then
           FRootBox:=nil;
         Application.ReleaseComponent(box);
@@ -918,9 +910,10 @@ var
   sb: TShadowBoxBase;
   si: TShadowItemBase;
 begin
+  sb:=GetParentBoxForMenuItem(aMI);
+  sb.DisableAutoSizing;
   for i:=aMI.Count-1 downto 0 do
     DeleteBox(aMI.Items[i]);
-  sb:=GetParentBoxForMenuItem(aMI);
   Assert(sb<>nil,'TShadowMenu.DeleteBox: internal error');
   sb.Hide;
   sb.ShadowList.Remove(GetShadowForMenuItem(aMI));
@@ -928,7 +921,6 @@ begin
   begin
     FBoxList.Remove(sb);
     sb.Parent:=nil;
-    RemoveComponent(sb);
     si:=GetShadowForMenuItem(sb.ParentMenuItem);
     if Assigned(si) then
       si.Invalidate;
@@ -1329,7 +1321,6 @@ begin
     miToSelect:=aSB.ParentMenuItem;
     FBoxList.Remove(aSB);
     aSB.Parent:=nil;
-    RemoveComponent(aSB);
     Application.ReleaseComponent(aSB);
     UpdateBoxLocationsAndSizes;
     SetSelectedMenuItem(miToSelect, False, True);
@@ -1979,7 +1970,6 @@ var
   mi, nearestMI: TMenuItem;
   i, sepCount: integer;
   si: TShadowItemBase;
-  ownsIt: TComponent;
 begin
   if (IsMainMenu and (Self = FShadowMenu.RootBox)) then
     Exit;
@@ -1998,17 +1988,11 @@ begin
       if mi.IsLine then
       begin
         si:=FShadowMenu.GetShadowForMenuItem(mi);
-        ownsIt:=mi.Owner;
         Assert(si<>nil,'TShadowBox.RemoveAllSeparators: shadow for separator is nil');
         FShadowList.Remove(si);
-        RemoveComponent(si);
-        FreeAndNil(si);
+        Application.ReleaseComponent(si);
         ParentMenuItem.Remove(mi);
-        FShadowMenu.FEditorDesigner.PropertyEditorHook.PersistentDeleting(TPersistent(mi));
-        if (ownsIt <> nil) then begin
-          ownsIt.RemoveComponent(mi);
-          FreeAndNil(mi);
-        end;
+        FShadowMenu.FEditorDesigner.PropertyEditorHook.DeletePersistent(TPersistent(mi));
       end;
     end;
     if (ShadowList.Count = 0) then
@@ -2063,11 +2047,6 @@ begin
   Canvas.Brush.Color := clBtnFace;
   FShadowMenu.BoxList.Add(Self);
   Parent := FShadowMenu;
-end;
-
-destructor TShadowBox.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TShadowBox.SetUnCheckedAllExcept(aMI: TMenuItem);
