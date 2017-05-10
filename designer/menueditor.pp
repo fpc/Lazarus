@@ -632,16 +632,17 @@ end;
 
 procedure TShadowMenu.AddOnClick(Sender: TObject);
 var
-  compEditor: TDefaultComponentEditor;
+  CompEditor: TDefaultComponentEditor;
 begin
   if (FSelectedMenuItem <> nil) then begin
     FDesigner.FGui.BeginUpdate;
+    CompEditor:=nil;
     try
-      compEditor:=TDefaultComponentEditor.Create(FSelectedMenuItem, FEditorDesigner);
-      compEditor.Edit;
+      CompEditor:=TDefaultComponentEditor.Create(FSelectedMenuItem, FEditorDesigner);
+      CompEditor.Edit;
       UpdateSelectedItemInfo;
     finally
-      compEditor.Free;
+      CompEditor.Free;
       FDesigner.FGui.EndUpdate;
     end;
   end;
@@ -887,7 +888,7 @@ begin
       box.ShadowList.Remove(anExistingSI);
       anExistingSI.Parent:=nil;
       box.RemoveComponent(anExistingSI);
-      FreeAndNil(anExistingSI);
+      Application.ReleaseComponent(anExistingSI);
       FEditorDesigner.PropertyEditorHook.DeletePersistent(TPersistent(mi));
       FEditorDesigner.PropertyEditorHook.Modified(mi);
       FreeAndNil(mi);
@@ -900,7 +901,7 @@ begin
         RemoveComponent(box);
         if box=FRootBox then
           FRootBox:=nil;
-        FreeAndNil(box);
+        Application.ReleaseComponent(box);
       end;
       UpdateBoxLocationsAndSizes;
       SetSelectedMenuItem(nearestMI, False, True);
@@ -931,7 +932,7 @@ begin
     si:=GetShadowForMenuItem(sb.ParentMenuItem);
     if Assigned(si) then
       si.Invalidate;
-    FreeAndNil(sb);
+    Application.ReleaseComponent(sb);
   end;
 end;
 
@@ -1329,7 +1330,7 @@ begin
     FBoxList.Remove(aSB);
     aSB.Parent:=nil;
     RemoveComponent(aSB);
-    FreeAndNil(aSB);
+    Application.ReleaseComponent(aSB);
     UpdateBoxLocationsAndSizes;
     SetSelectedMenuItem(miToSelect, False, True);
   end;
