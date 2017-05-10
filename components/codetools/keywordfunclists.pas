@@ -1690,6 +1690,7 @@ begin
     Add('EXTENDED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FALSE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FILE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('GET_FRAME'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
