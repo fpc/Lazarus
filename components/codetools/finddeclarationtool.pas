@@ -10258,6 +10258,11 @@ begin
           Result:=ParamList.Items[0]; // Copy sets the result based on the first
             // parameter (can be any kind of string or array)
         end
+        else if (CompareIdentifiers(IdentPos,'GET_FRAME')=0) then
+        begin
+          if ParamList.Count<>1 then exit;
+          Result.Desc:=xtPointer;
+        end
         else if (CompareIdentifiers(IdentPos,'OBJCSELECTOR')=0) then
         begin
           // return type is System.SEL
