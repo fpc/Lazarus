@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-30 21:57+0300\n"
+"PO-Revision-Date: 2017-03-31 01:48+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,19 +35,19 @@ msgstr "Будьте терплячі!"
 
 #: projectgroupstrconst.lisbuildmode
 msgid ", build mode \"%s\""
-msgstr ", режим побудови \"%s\""
+msgstr ", режим збирання \"%s\""
 
 #: projectgroupstrconst.lisbuildmode2
 msgid "Build Mode \"%s\""
-msgstr "Режим побудови \"%s\""
+msgstr "Режим збирання \"%s\""
 
 #: projectgroupstrconst.lisbuildmodenotfound
 msgid "Build mode not found"
-msgstr "Режим побудови не знайдено"
+msgstr "Режим збирання не знайдено"
 
 #: projectgroupstrconst.lisbuildmodenotfound2
 msgid "Build mode \"%s\" not found."
-msgstr "Режим побудови \"%s\" не знайдено."
+msgstr "Режим збирання \"%s\" не знайдено."
 
 #: projectgroupstrconst.liscompilepackage
 msgid "Compile Package %s"
@@ -124,14 +124,12 @@ msgid "New project group"
 msgstr "Нова група проектів"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
-#, fuzzy
-#| msgid "New project group ..."
 msgid "New Project group ..."
 msgstr "Нова група проектів ..."
 
 #: projectgroupstrconst.lisnodebuildmodes
 msgid "Build Modes"
-msgstr "Режими побудови"
+msgstr "Режими збирання"
 
 #: projectgroupstrconst.lisnodedependencies
 msgid "Dependencies"
@@ -158,14 +156,10 @@ msgid "Targets"
 msgstr "Цілі"
 
 #: projectgroupstrconst.lisopenprojectgroup
-#, fuzzy
-#| msgid "Open project group ..."
 msgid "Open Project Group ..."
 msgstr "Відкрити групу проектів ..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
-#, fuzzy
-#| msgid "Open recent project group"
 msgid "Open Recent Project Group"
 msgstr "Відкрити нещодавню групу проектів"
 
@@ -278,15 +272,11 @@ msgid "Save project group"
 msgstr "Зберегти групу проектів"
 
 #: projectgroupstrconst.lissaveprojectgroup
-#, fuzzy
-#| msgid "Save project group"
 msgctxt "projectgroupstrconst.lissaveprojectgroup"
 msgid "Save Project Group"
 msgstr "Зберегти групу проектів"
 
 #: projectgroupstrconst.lissaveprojectgroupas
-#, fuzzy
-#| msgid "Save project group as ..."
 msgid "Save Project Group As ..."
 msgstr "Зберегти групу проектів як ..."
 
@@ -360,7 +350,7 @@ msgstr "Раніше"
 
 #: projectgroupstrconst.listargetearlierhint
 msgid "Build target earlier"
-msgstr "Побудувати ціль раніше"
+msgstr "Зібрати ціль раніше"
 
 #: projectgroupstrconst.listargetinstall
 msgctxt "projectgroupstrconst.listargetinstall"
@@ -386,7 +376,7 @@ msgstr "Пізніше"
 
 #: projectgroupstrconst.listargetlaterhint
 msgid "Build target later"
-msgstr "Побудувати ціль пізніше"
+msgstr "Зібрати ціль пізніше"
 
 #: projectgroupstrconst.listargetopen
 msgid "Open Target"
@@ -449,7 +439,7 @@ msgstr "Програму lazbuild%s не знайдено."
 
 #: projectgroupstrconst.listhereisstillanotherbuildinprogress
 msgid "There is still another build in progress."
-msgstr "Все ще триває інший процес побудови."
+msgstr "Все ще триває інший процес збирання."
 
 #: projectgroupstrconst.lisunabletocreatefile
 msgid "Unable to create file \"%s\": %s"

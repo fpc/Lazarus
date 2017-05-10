@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-30 22:42+0300\n"
+"PO-Revision-Date: 2017-05-05 01:30+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -52,7 +52,7 @@ msgstr "Будь-який"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
-msgstr "Вікно для ІСР Lazarus. Його можна прикріпити, як Оглядач коду або Редактор FPDoc. Також буде створено елемент у меню Перегляд і сполучення клавіш.Вікно для ІСР Lazarus. Його можна прикріпити, як Оглядач коду або Редактор FPDoc. Також буде створено елемент у меню Перегляд і сполучення клавіш."
+msgstr "Вікно для ІСР Lazarus. Його можна прикріпити, як Оглядач коду або Редактор FPDoc. Також буде створено елемент у меню Перегляд і сполучення клавіш."
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -164,7 +164,7 @@ msgstr "%s, записаний властивістю %s"
 
 #: codystrconsts.crscaretoutsideofcode
 msgid "Caret outside of code"
-msgstr ""
+msgstr "Каретка за межами коду"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
@@ -310,7 +310,7 @@ msgstr "Помилка: курсор знаходиться не в модулі
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
-msgstr "Помилка: курсор в редакторі слід встановити на виклику або оголошенні процедуриПомилка: курсор в редакторі слід встановити на виклику або оголошенні процедури"
+msgstr "Помилка: курсор в редакторі слід встановити на виклику або оголошенні процедури"
 
 #: codystrconsts.crsexact
 msgid "exact"
@@ -411,11 +411,11 @@ msgstr "Вікно ІСР, прикріплюване"
 #: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
 msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
-msgstr "Якщо ідентифікатор додано до розділу implementation і потрібно додати необхідний модуль, додайте до розділу uses в implementationЯкщо ідентифікатор додано до розділу implementation і потрібно додати необхідний модуль, додайте до розділу uses в implementation"
+msgstr "Якщо ідентифікатор додано до розділу implementation і потрібно додати необхідний модуль, додайте до розділу uses в implementation"
 
 #: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
 msgid "If unchecked list also procedures with same name and incompatible parameter lists."
-msgstr "Якщо не позначено, показує також процедури з такими ж назвами і несумісними списками параметрів.Якщо не позначено, показує також процедури з такими ж назвами і несумісними списками параметрів."
+msgstr "Якщо не позначено, показує також процедури з такими ж назвами і несумісними списками параметрів."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
@@ -523,7 +523,7 @@ msgstr "Немає проекту"
 
 #: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
 msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
-msgstr "Примітка: назва форми має бути коректним ідентифікатором Паскаля і унікальною у всьому ІСР, включно з пакетами. Додавайте до початку назви скорочення назви пакета. Префікси \"IDE\", \"Laz\", \"Pkg\" вже використовуються в самому ІСР.Примітка: назва форми має бути коректним ідентифікатором Паскаля і унікальною у всьому ІСР, включно з пакетами. Додавайте до початку назви скорочення назви пакета. Префікси \"IDE\", \"Laz\", \"Pkg\" вже використовуються в самому ІСР."
+msgstr "Примітка: назва форми має бути коректним ідентифікатором Паскаля і унікальною у всьому ІСР, включно з пакетами. Додавайте до початку назви скорочення назви пакета. Префікси \"IDE\", \"Laz\", \"Pkg\" вже використовуються в самому ІСР."
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
@@ -615,7 +615,7 @@ msgstr "Виберіть якийсь код у Редакторі коду"
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
 msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
-msgstr "Виберіть у Редакторі коду якийсь код для нового блоку \"With\". Кандидатів для виразу with не знайдено.Виберіть у Редакторі коду якийсь код для нового блоку \"With\". Кандидатів для виразу with не знайдено."
+msgstr "Виберіть у Редакторі коду якийсь код для нового блоку \"With\". Кандидатів для виразу with не знайдено."
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"

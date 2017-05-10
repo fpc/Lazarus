@@ -899,7 +899,7 @@ msgstr "Використовувати проксі-сервер"
 
 #: opkman_const.rsoptions_cbregular_caption
 msgid "Show regular icon for newly added packages after install"
-msgstr ""
+msgstr "Після встановлення показувати звичайну піктограму для нових доданих пакетів"
 
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
