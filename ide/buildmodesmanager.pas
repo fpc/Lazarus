@@ -33,8 +33,9 @@ uses
   Classes, SysUtils,
   Forms, Controls, Dialogs, StdCtrls, Grids, Menus, ComCtrls, ButtonPanel, LCLProc,
   IDEOptionsIntf, IDEDialogs,
-  TransferMacros, Project, CompilerOptions, Compiler_ModeMatrix, BuildModeDiffDlg,
-  EnvironmentOpts, LazarusIDEStrConsts;
+  TransferMacros, Project, CompilerOptions,
+  EnvironmentOpts, LazarusIDEStrConsts,
+  BaseBuildManager, Compiler_ModeMatrix, BuildModeDiffDlg;
 
 type
 
@@ -145,6 +146,8 @@ procedure SwitchBuildMode(aBuildModeID: string);
 begin
   OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);    // Save changes
   Project1.ActiveBuildModeID := aBuildModeID;             // Switch
+  IncreaseBuildMacroChangeStamp;
+  BuildBoss.SetBuildTargetProject1;
   OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);    // Load options
 end;
 

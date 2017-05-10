@@ -198,6 +198,7 @@ begin
     if not IDEMacros.SubstituteMacros(AValue) then
       AValue := '';
   end;
+  //debugln(['TCompilerConfigTargetFrame.UpdateWidgetSet ',AValue]);
   CurrentWidgetTypeLabel.Caption := Format(lisCurrentLCLWidgetSet, [AValue]);
 end;
 
@@ -251,6 +252,7 @@ procedure TCompilerConfigTargetFrame.Setup(ADialog: TAbstractOptionsEditorDialog
 var
   s: ShortString;
 begin
+  //debugln(['TCompilerConfigTargetFrame.Setup ']);
   FDialog := ADialog;
   // Config
   grbConfigFile.Caption := dlgConfigFiles;
@@ -285,7 +287,6 @@ begin
   grbTargetOptions.Caption := dlgTargetSpecificOptions;
   chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
   // WidgetSet
-  UpdateWidgetSet;
   LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSet;
 end;
 
@@ -336,6 +337,8 @@ begin
     chkWin32GraphicApp.Checked := Win32GraphicApp;
     chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
   end;
+
+  UpdateWidgetSet;
 end;
 
 procedure TCompilerConfigTargetFrame.WriteSettings(AOptions: TAbstractIDEOptions);

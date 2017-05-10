@@ -4732,6 +4732,8 @@ begin
         Application.TaskBarBehavior := tbSingleButton
       else
         Application.TaskBarBehavior := tbDefault;
+    end else begin
+      MainBuildBoss.SetBuildTargetProject1;
     end;
   finally
     IDEOptionsDialog.Free;
