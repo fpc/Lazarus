@@ -988,8 +988,8 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuFile,itmFileNew,'itmFileNew');
     ParentMI:=itmFileNew;
-    CreateMenuItem(ParentMI,itmFileNewUnit,'itmFileNewUnit',lisMenuNewUnit,'item_unit');
-    CreateMenuItem(ParentMI,itmFileNewForm,'itmFileNewForm',lisMenuNewForm,'item_form');
+    CreateMenuItem(ParentMI,itmFileNewUnit,'itmFileNewUnit',lisMenuNewUnit,'menu_new_unit');
+    CreateMenuItem(ParentMI,itmFileNewForm,'itmFileNewForm',lisMenuNewForm,'menu_new_form');
     CreateMenuItem(ParentMI,itmFileNewOther,'itmFileNewOther',lisMenuNewOther,'menu_new');
 
     CreateMenuSeparatorSection(mnuFile,itmFileOpenSave,'itmFileOpenSave');
