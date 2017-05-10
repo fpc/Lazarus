@@ -1,19 +1,19 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="10"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
-      <TargetFileExt Value=""/>
       <Title Value="holyday"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -34,46 +34,46 @@
       <Unit0>
         <Filename Value="holyday.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="holyday"/>
-        <CursorPos X="4" Y="14"/>
-        <TopLine Value="1"/>
         <EditorIndex Value="2"/>
+        <CursorPos X="4" Y="14"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
-        <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="main.lrs"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
-        <CursorPos X="13" Y="20"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="0"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="114"/>
+        <CursorPos Y="121"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="about.pas"/>
-        <ComponentName Value="AboutBox"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="about.lrs"/>
-        <UnitName Value="about"/>
-        <CursorPos X="23" Y="26"/>
-        <TopLine Value="1"/>
+        <ComponentName Value="AboutBox"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="1"/>
+        <CursorPos X="48" Y="13"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
-    <SearchPaths>
-      
-    </SearchPaths>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
+    <Version Value="11"/>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
   </CompilerOptions>
 </CONFIG>
