@@ -1675,7 +1675,7 @@ procedure TShadowMenu.UpdateActionsEnabledness;
 var
   ac, ac1, ac2, ac3: TAction;
   pe: TPopEnum;
-  isInBar, isFirst, isLast, prevIsSeparator, nextIsSeparator,
+  isInBar, isFirst, isSeparator, isLast, prevIsSeparator, nextIsSeparator,
     levelZero, levelZeroOr1, primarySCEnabled: boolean;
 begin
   if (FSelectedMenuItem = nil) then
@@ -1683,6 +1683,7 @@ begin
   isInBar:=FSelectedMenuItem.IsInMenuBar;
   isFirst:=(FSelectedMenuItem.MenuIndex = 0);
   isLast:=(FSelectedMenuItem.MenuIndex = Pred(FSelectedMenuItem.Parent.Count));
+  isSeparator:=FSelectedMenuItem.IsLine;
   prevIsSeparator:=PreviousItemIsSeparator(FSelectedMenuItem);
   nextIsSeparator:=NextItemIsSeparator(FSelectedMenuItem);
   levelZero:=(FSelectedMenuItem.Parent <> nil) and (FSelectedMenuItem.Parent.Parent = nil);
@@ -1763,9 +1764,9 @@ begin
       //popItemSep
       popSeparators_: ac.Enabled:=primarySCEnabled;
       popAddSeparatorBefore:
-        ac.Enabled:=primarySCEnabled and not isFirst and not prevIsSeparator;
+        ac.Enabled:=primarySCEnabled and not isSeparator and not isFirst and not prevIsSeparator;
       popAddSeparatorAfter:
-        ac.Enabled:=primarySCEnabled and not isLast and not nextIsSeparator;
+        ac.Enabled:=not isInBar and not isSeparator and not nextIsSeparator;
       popRemoveAllSeparators:
         ac.Enabled:=primarySCEnabled and (GetChildSeparatorCount(FSelectedMenuItem.Parent) > 0);
       //popShortcuts_
