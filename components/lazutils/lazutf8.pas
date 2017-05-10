@@ -352,7 +352,7 @@ end;
 
 function GetEnvironmentVariableCountUTF8: Integer;
 begin
-  {$IF defined(FPC_RTL_UNICODE) or not defined(Windows)}
+  {$IF defined(FPC_RTL_UNICODE) or not defined(MSWindows)} //also WinCE, issue #0031788
   Result:=SysUtils.GetEnvironmentVariableCount;
   {$ELSE}
   Result:=GetGetEnvironmentVariableCountWide;
@@ -364,7 +364,7 @@ begin
   {$IFDEF FPC_RTL_UNICODE}
   Result:=UTF16ToUTF8(SysUtils.GetEnvironmentString(Index));
   {$ELSE}
-    {$IFDEF Windows}
+    {$IFDEF MSWindows} //not for WinCE, issue #0031788
     Result:=UTF16ToUTF8(GetEnvironmentStringWide(Index));
     {$ELSE}
     // by default the environment is in console encoding
