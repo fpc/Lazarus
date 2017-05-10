@@ -30,11 +30,10 @@ TYPE
     PROCEDURE Button1CLICK(Sender: TObject);
     PROCEDURE Button2CLICK(Sender: TObject);
     PROCEDURE Button3CLICK(Sender: TObject);
-    procedure Form1CREATE(Sender: TObject);
     PROCEDURE Form1SHOW(Sender: TObject);
     procedure LanguageButtonCLICK(Sender: TObject);
-    procedure Listbox1DrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+    procedure Listbox1DrawItem(AControl: TWinControl; Index: Integer;
+      ARect: TRect; AState: TOwnerDrawState);
   PUBLIC
     FUNCTION CalcEasterday(aYear: Word): TDateTime;
   END;
@@ -55,7 +54,10 @@ BEGIN
   TRY
     aYear := StrToInt(Edit1.Text);
   EXCEPT
-    ShowMessage('Fehlerhafte Eingabe des Jahrs!');
+    if LanguageButton.Caption = 'English' then
+      ShowMessage('Fehlerhafte Eingabe des Jahrs!')
+    else
+      ShowMessage('Incorrect input of the year!');
     Exit;
   END;
   Easter := CalcEasterday(aYear);
@@ -75,11 +77,6 @@ END;
 procedure TForm1.Button3CLICK(Sender: TObject);
 begin
   AboutBox.ShowModal;
-end;
-
-procedure TForm1.Form1CREATE(Sender: TObject);
-begin
-
 end;
 
 PROCEDURE TForm1.Form1SHOW(Sender: TObject);
@@ -116,10 +113,15 @@ begin
   end;
 end;
 
-procedure TForm1.Listbox1DrawItem(Control: TWinControl; Index: Integer;
-  ARect: TRect; State: TOwnerDrawState);
+procedure TForm1.Listbox1DrawItem(AControl: TWinControl; Index: Integer;
+  ARect: TRect; AState: TOwnerDrawState);
+var
+  ts: TTextStyle;
 begin
-  Listbox1.Canvas.TextRect(ARect, ARect.Left+2, ARect.Top, Listbox1.Items[Index]);
+  Listbox1.Canvas.FillRect(ARect);
+  ts := Listbox1.Canvas.TextStyle;
+  ts.Alignment := taCenter;
+  Listbox1.Canvas.TextRect(ARect, ARect.Left+2, ARect.Top, Listbox1.Items[Index], ts);
 end;
 
 FUNCTION TForm1.CalcEasterday(aYear: WORD): TDateTime;

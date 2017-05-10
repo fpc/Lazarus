@@ -1,152 +1,134 @@
 object Form1: TForm1
-  BorderStyle = bsDialog
-  Caption = 'Holy Days'
-  ClientHeight = 195
-  ClientWidth = 430
-  OnCreate = Form1CREATE
-  OnShow = Form1SHOW
-  PixelsPerInch = 96
-  Position = poDesktopCenter
-  HorzScrollBar.Page = 429
-  VertScrollBar.Page = 194
   Left = 392
   Height = 195
   Top = 213
   Width = 430
+  HorzScrollBar.Page = 429
+  VertScrollBar.Page = 194
+  BorderStyle = bsDialog
+  Caption = 'Holy Days'
+  ClientHeight = 195
+  ClientWidth = 430
+  OnShow = Form1SHOW
+  Position = poDesktopCenter
+  LCLVersion = '1.9.0.0'
   object Bevel1: TBevel
-    BorderSpacing.OnChange = nil
-    Height = 165
     Left = 13
-    Name = 'Bevel1'
+    Height = 173
+    Top = 14
+    Width = 282
     Shape = bsFrame
-    Top = 11
-    Width = 282
-    Left = 13
-    Height = 165
-    Top = 11
-    Width = 282
   end
   object AshWednesdayLabel: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = 'Aschermittwoch:'
-    Color = clNone
     Left = 24
-    Height = 13
+    Height = 15
     Top = 64
-    Width = 80
+    Width = 90
+    Caption = 'Aschermittwoch:'
+    ParentColor = False
   end
   object YearLabel: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = 'Jahr'
-    Color = clNone
     Left = 24
-    Height = 13
+    Height = 15
     Top = 24
     Width = 21
+    Caption = 'Jahr'
+    ParentColor = False
   end
   object GoodFridayLabel: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = 'Karfreitag:'
-    Color = clNone
     Left = 24
-    Height = 13
+    Height = 15
     Top = 81
-    Width = 52
+    Width = 54
+    Caption = 'Karfreitag:'
+    ParentColor = False
   end
   object EasterMondayLabel: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = 'Ostermontag'
-    Color = clNone
     Left = 24
-    Height = 13
+    Height = 15
     Top = 98
-    Width = 63
+    Width = 70
+    Caption = 'Ostermontag'
+    ParentColor = False
   end
   object AscensionDayLabel: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = 'Himmelfahrt'
-    Color = clNone
     Left = 24
-    Height = 13
+    Height = 15
     Top = 115
-    Width = 57
+    Width = 68
+    Caption = 'Himmelfahrt'
+    ParentColor = False
   end
   object PentecostLabel: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = 'Pfingsten'
-    Color = clNone
     Left = 24
-    Height = 13
+    Height = 15
     Top = 132
-    Width = 45
+    Width = 50
+    Caption = 'Pfingsten'
+    ParentColor = False
   end
   object CorpusCristiLabel: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = 'Fronleichnam'
-    Color = clNone
     Left = 24
-    Height = 13
+    Height = 15
     Top = 149
-    Width = 63
+    Width = 73
+    Caption = 'Fronleichnam'
+    ParentColor = False
   end
   object CalculateButton: TButton
-    BorderSpacing.OnChange = nil
-    Caption = 'Berechne'
-    OnClick = Button1CLICK
-    TabOrder = 0
     Left = 312
     Height = 35
     Top = 56
     Width = 104
+    Caption = 'Berechne'
+    OnClick = Button1CLICK
+    TabOrder = 0
   end
   object Listbox1: TListBox
-    BorderSpacing.OnChange = nil
-    ItemHeight = 17
-    OnDrawItem = Listbox1DrawItem
-    Style = lbOwnerDrawFixed
-    TabOrder = 1
     Left = 136
     Height = 108
     Top = 62
     Width = 141
+    ItemHeight = 17
+    OnDrawItem = Listbox1DrawItem
+    Options = [lboDrawFocusRect]
+    Style = lbOwnerDrawFixed
+    TabOrder = 1
   end
   object Edit1: TEdit
-    BorderSpacing.OnChange = nil
-    TabOrder = 2
-    Text = '2003'
     Left = 136
     Height = 23
     Top = 24
     Width = 141
+    Alignment = taRightJustify
+    TabOrder = 2
+    Text = '2017'
   end
   object EndButton: TButton
-    BorderSpacing.OnChange = nil
-    Caption = 'Ende'
-    OnClick = Button2CLICK
-    TabOrder = 3
     Left = 312
     Height = 35
     Top = 104
     Width = 104
+    Caption = 'Ende'
+    OnClick = Button2CLICK
+    TabOrder = 3
   end
   object AboutButton: TButton
-    BorderSpacing.OnChange = nil
-    Caption = 'Info'
-    OnClick = Button3CLICK
-    TabOrder = 4
     Left = 312
     Height = 35
     Top = 152
     Width = 104
+    Caption = 'Info'
+    OnClick = Button3CLICK
+    TabOrder = 4
   end
   object LanguageButton: TButton
-    BorderSpacing.OnChange = nil
-    Caption = 'English'
-    OnClick = LanguageButtonCLICK
-    TabOrder = 5
     Left = 312
     Height = 35
     Top = 8
     Width = 104
+    Caption = 'English'
+    OnClick = LanguageButtonCLICK
+    TabOrder = 5
   end
 end
