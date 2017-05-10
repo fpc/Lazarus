@@ -285,7 +285,10 @@ begin
   if FUpdateCount > 0 then
     Exit; // This event will be executed after all updates, look at EndUpdate
 
+  //debugln(['TMenuDesignerForm.OnDesignerSetSelection: ']);
+  //ASelection.WriteDebugReport;
   persist:=GetSelectedMenuComponent(ASelection, isTMenu, isTMenuItem);
+  //debugln(['TMenuDesignerForm.OnDesignerSetSelection isTMenu=',isTMenu,' isTMenuItem=',isTMenuItem,' persist=',DbgSName(persist)]);
   if (persist <> nil) then
   begin
     if isTMenu then

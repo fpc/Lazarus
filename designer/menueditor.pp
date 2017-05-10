@@ -1336,7 +1336,7 @@ end;
 
 procedure TShadowMenu.RefreshFakes;
 begin
-  Application.ProcessMessages;
+  // MG: Dont: Application.ProcessMessages; this might free components and trigger events
   FAddItemFake.Refresh;
   FAddSubmenuFake.Refresh;
   FAddFirstItemFake.Refresh;
@@ -1551,7 +1551,7 @@ begin
     CreateShadowBoxesAndItems;
     UpdateBoxLocationsAndSizes;
     HideBoxesAboveLevel(0);
-    Application.ProcessMessages;
+    // MG: Dont: Application.ProcessMessages; this might free components and trigger events
     FInitialising:=True;
     if (FInitialSelectedMenuItem <> nil) then begin
       SetSelectedMenuItem(FInitialSelectedMenuItem, True, False);
@@ -1635,12 +1635,15 @@ begin
     selectedShadow.ShowChildBox;
 
     UpdateSelectedItemInfo;
-    if not viaDesigner then
+    if not viaDesigner then begin
+      //debugln(['TShadowMenu.SetSelectedShadow ',DbgSName(curSelectedItem)]);
       FEditorDesigner.SelectOnlyThisComponent(curSelectedItem);
+    end;
 
     if not FDesigner.FGui.Visible then
       FDesigner.FGui.ShowOnTop;
-    selectedShadow.SetFocus;
+    if selectedShadow<>nil then
+      selectedShadow.SetFocus;
     UpdateActionsEnabledness;
     RefreshFakes;
   end;
