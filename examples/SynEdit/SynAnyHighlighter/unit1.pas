@@ -30,9 +30,9 @@ type
      procedure ButtonUncheckAllClick(Sender: TObject);
      procedure CheckListBoxHandler(Sender: TObject; Index: integer);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var

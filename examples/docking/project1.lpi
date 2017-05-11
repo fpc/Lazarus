@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
-    <PathDelim Value="\"/>
+    <Version Value="10"/>
     <General>
       <Flags>
         <LRSInOutputDirectory Value="False"/>
@@ -11,12 +10,10 @@
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
       <Language Value=""/>
       <CharSet Value=""/>
-      <StringTable ProductVersion=""/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -30,7 +27,6 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -42,12 +38,10 @@
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="project1"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="1"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="14"/>
+        <CursorPos X="35" Y="16"/>
         <UsageCount Value="78"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -59,7 +53,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <EditorIndex Value="0"/>
         <WindowIndex Value="1"/>
         <TopLine Value="53"/>
         <CursorPos X="16" Y="61"/>
@@ -71,7 +64,7 @@
         <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\..\lcl\ldocktree.pas"/>
+        <Filename Value="../../lcl/ldocktree.pas"/>
         <UnitName Value="LDockTree"/>
         <TopLine Value="1564"/>
         <CursorPos X="84" Y="1598"/>
@@ -81,77 +74,75 @@
         </Bookmarks>
       </Unit2>
       <Unit3>
-        <Filename Value="..\..\lcl\include\control.inc"/>
+        <Filename Value="../../lcl/include/control.inc"/>
         <TopLine Value="1360"/>
-        <CursorPos X="1" Y="1377"/>
+        <CursorPos Y="1377"/>
         <UsageCount Value="38"/>
       </Unit3>
       <Unit4>
-        <Filename Value="..\..\lcl\include\wincontrol.inc"/>
+        <Filename Value="../../lcl/include/wincontrol.inc"/>
         <TopLine Value="6978"/>
         <CursorPos X="13" Y="7000"/>
         <UsageCount Value="38"/>
       </Unit4>
       <Unit5>
-        <Filename Value="..\..\lcl\controls.pp"/>
+        <Filename Value="../../lcl/controls.pp"/>
         <UnitName Value="Controls"/>
         <TopLine Value="1873"/>
         <CursorPos X="5" Y="1890"/>
         <UsageCount Value="38"/>
       </Unit5>
       <Unit6>
-        <Filename Value="..\..\lcl\include\customform.inc"/>
+        <Filename Value="../../lcl/include/customform.inc"/>
         <TopLine Value="2158"/>
-        <CursorPos X="1" Y="2175"/>
+        <CursorPos Y="2175"/>
         <UsageCount Value="38"/>
       </Unit6>
       <Unit7>
-        <Filename Value="..\..\lcl\include\scrollingwincontrol.inc"/>
+        <Filename Value="../../lcl/include/scrollingwincontrol.inc"/>
         <TopLine Value="49"/>
         <CursorPos X="7" Y="58"/>
         <UsageCount Value="38"/>
       </Unit7>
       <Unit8>
-        <Filename Value="..\..\lcl\include\dockzone.inc"/>
+        <Filename Value="../../lcl/include/dockzone.inc"/>
         <TopLine Value="226"/>
         <CursorPos X="41" Y="249"/>
         <UsageCount Value="35"/>
       </Unit8>
       <Unit9>
-        <Filename Value="..\..\lcl\lclproc.pas"/>
+        <Filename Value="../../lcl/lclproc.pas"/>
         <UnitName Value="LCLProc"/>
         <TopLine Value="1480"/>
-        <CursorPos X="1" Y="1497"/>
+        <CursorPos Y="1497"/>
         <UsageCount Value="34"/>
       </Unit9>
       <Unit10>
-        <Filename Value="..\..\lcl\include\docktree.inc"/>
-        <TopLine Value="1"/>
-        <CursorPos X="3" Y="1"/>
+        <Filename Value="../../lcl/include/docktree.inc"/>
+        <CursorPos X="3"/>
         <UsageCount Value="37"/>
       </Unit10>
       <Unit11>
-        <Filename Value="..\..\lcl\extctrls.pp"/>
+        <Filename Value="../../lcl/extctrls.pp"/>
         <UnitName Value="ExtCtrls"/>
         <TopLine Value="441"/>
         <CursorPos X="5" Y="452"/>
         <UsageCount Value="9"/>
       </Unit11>
       <Unit12>
-        <Filename Value="..\..\lcl\include\customsplitter.inc"/>
-        <TopLine Value="1"/>
+        <Filename Value="../../lcl/include/customsplitter.inc"/>
         <CursorPos X="3" Y="35"/>
         <UsageCount Value="9"/>
       </Unit12>
       <Unit13>
-        <Filename Value="..\..\lcl\helpintfs.pas"/>
+        <Filename Value="../../lcl/helpintfs.pas"/>
         <UnitName Value="HelpIntfs"/>
         <TopLine Value="386"/>
         <CursorPos X="38" Y="402"/>
         <UsageCount Value="10"/>
       </Unit13>
       <Unit14>
-        <Filename Value="..\..\lcl\lazhelphtml.pas"/>
+        <Filename Value="../../lcl/lazhelphtml.pas"/>
         <UnitName Value="LazHelpHTML"/>
         <TopLine Value="35"/>
         <CursorPos X="3" Y="52"/>
@@ -169,7 +160,7 @@
       </Position2>
       <Position3>
         <Filename Value="unit1.pas"/>
-        <Caret Line="25" Column="34" TopLine="1"/>
+        <Caret Line="25" Column="34"/>
       </Position3>
       <Position4>
         <Filename Value="unit1.pas"/>
@@ -177,11 +168,11 @@
       </Position4>
       <Position5>
         <Filename Value="unit1.pas"/>
-        <Caret Line="8" Column="1" TopLine="1"/>
+        <Caret Line="8"/>
       </Position5>
       <Position6>
         <Filename Value="unit1.pas"/>
-        <Caret Line="69" Column="1" TopLine="47"/>
+        <Caret Line="69" TopLine="47"/>
       </Position6>
       <Position7>
         <Filename Value="unit1.pas"/>
@@ -189,7 +180,7 @@
       </Position7>
       <Position8>
         <Filename Value="unit1.pas"/>
-        <Caret Line="9" Column="47" TopLine="1"/>
+        <Caret Line="9" Column="47"/>
       </Position8>
       <Position9>
         <Filename Value="unit1.pas"/>
@@ -201,11 +192,11 @@
       </Position10>
       <Position11>
         <Filename Value="unit1.pas"/>
-        <Caret Line="9" Column="60" TopLine="1"/>
+        <Caret Line="9" Column="60"/>
       </Position11>
       <Position12>
         <Filename Value="unit1.pas"/>
-        <Caret Line="16" Column="33" TopLine="1"/>
+        <Caret Line="16" Column="33"/>
       </Position12>
       <Position13>
         <Filename Value="unit1.pas"/>
@@ -219,12 +210,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
-    <PathDelim Value="\"/>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <Linking>
       <Options>
         <Win32>
@@ -232,9 +217,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
@@ -249,5 +231,4 @@
       </Item3>
     </Exceptions>
   </Debugging>
-  <EditorMacros Count="0"/>
 </CONFIG>

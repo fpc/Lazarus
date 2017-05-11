@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
-    <PathDelim Value="\"/>
+    <Version Value="10"/>
     <General>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
@@ -14,9 +13,6 @@
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
-    <VersionInfo>
-      <StringTable ProductVersion=""/>
-    </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
@@ -28,7 +24,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <WorkingDirectory Value="D:\AllDocs"/>
+        <WorkingDirectory Value="D:/AllDocs"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
@@ -43,12 +39,12 @@
       <Unit0>
         <Filename Value="FPDocManager.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="FPDocManager"/>
       </Unit0>
       <Unit1>
         <Filename Value="fmain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Main"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMain"/>
       </Unit1>
@@ -62,7 +58,6 @@
       <Unit3>
         <Filename Value="umakeskel.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="umakeskel"/>
       </Unit3>
       <Unit4>
         <Filename Value="umanager.pas"/>
@@ -94,7 +89,7 @@
         <UnitName Value="ConfigFile"/>
       </Unit8>
       <Unit9>
-        <Filename Value="..\..\doceditor\frmmain.pp"/>
+        <Filename Value="../../doceditor/frmmain.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
@@ -112,7 +107,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
-    <PathDelim Value="\"/>
     <Target>
       <Filename Value="FPDocManager"/>
     </Target>
@@ -129,11 +123,7 @@
       </Options>
     </Linking>
     <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
       <CustomOptions Value="-uFCLadds"/>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
   <Debugging>

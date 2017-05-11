@@ -11,6 +11,7 @@ uses
   { add your units here }, MainUnit;
 
 begin
+  Application.Title:='componentstreaming';
   Application.Initialize;
   Application.CreateForm(TStreamDemoForm, StreamDemoForm);
   Application.Run;

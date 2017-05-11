@@ -21,11 +21,6 @@
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
           </SearchPaths>
-          <Parsing>
-            <SyntaxOptions>
-              <UseAnsiStrings Value="False"/>
-            </SyntaxOptions>
-          </Parsing>
           <Linking>
             <Options>
               <LinkerOptions Value="-framework Qt4Intf -lobjc -framework Foundation -framework QtGui -framework QtCore"/>
@@ -42,11 +37,6 @@
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
           </SearchPaths>
-          <Parsing>
-            <SyntaxOptions>
-              <UseAnsiStrings Value="False"/>
-            </SyntaxOptions>
-          </Parsing>
           <Linking>
             <Options>
               <LinkerOptions Value="-framework Qt4Intf -lobjc -framework Foundation -framework QtGui -framework QtCore"/>
@@ -64,7 +54,6 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -159,11 +148,6 @@
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <Linking>
       <Options>
         <LinkerOptions Value="-framework Qt4Intf -lobjc -framework Foundation -framework QtGui -framework QtCore"/>
