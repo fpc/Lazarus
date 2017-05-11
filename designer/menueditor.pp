@@ -1954,13 +1954,14 @@ begin
   newMI.Name:=FShadowMenu.FEditorDesigner.CreateUniqueComponentName(newMI.ClassName);
   if isSeparator then
     newMI.Caption:=cLineCaption
-  else newMI.Caption:=newMI.Name;
+  else
+    newMI.Caption:=newMI.Name;
   existingSI.RealItem.Parent.Insert(idx, newMI);
   TShadowItem.CreateWithBoxAndItem(FShadowMenu, existingSI.ParentBox, newMI);
   FShadowMenu.UpdateBoxLocationsAndSizes;
   FShadowMenu.FDesigner.FGui.AddingItem := True;
   GlobalDesignHook.PersistentAdded(newMI, not isSeparator);
-  //GlobalDesignHook.Modified(newMI);
+  GlobalDesignHook.Modified(newMI);
   FShadowMenu.FDesigner.FGui.AddingItem := False;
   FShadowMenu.SetSelectedMenuItem(newMI, False, False);
   if not isSeparator then
