@@ -35,6 +35,8 @@ type
     procedure BtnFontDlgClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure chkStrikeChange(Sender: TObject);
+    procedure chkUnderLineChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -155,6 +157,16 @@ begin
   LoadFontList;
 end;
 
+procedure TfrmMain.chkStrikeChange(Sender: TObject);
+begin
+  SelectFont;
+end;
+
+procedure TfrmMain.chkUnderLineChange(Sender: TObject);
+begin
+  SelectFont;
+end;
+
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 var
   Ini: TInifile;
@@ -228,11 +240,15 @@ end;
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
   LoadFontlist;
+  lbCharsetClick(nil);
+  SelectFont;
 end;
 
 procedure TfrmMain.lbFamilyClick(Sender: TObject);
 begin
   LoadFamilyFonts(-1);
+  lbCharsetClick(nil);
+  SelectFont;
 end;
 
 procedure TfrmMain.lbCharsetClick(Sender: TObject);
@@ -337,6 +353,12 @@ begin
             F.Style := [];
             if i and 1 <> 0 then F.Style := F.Style + [fsItalic];
             if i and 2 <> 0 then F.Style := F.Style + [fsBold];
+            if chkUnderLine.Checked
+              then F.Style := F.Style + [fsUnderline]
+              else F.Style := F.Style - [fsUnderline];
+            if chkStrike.Checked
+              then F.Style := F.Style + [fsStrikeOut]
+              else F.Style := F.Style - [fsStrikeOut];
             UpdateFont(F);
             SaveSelection;
           finally

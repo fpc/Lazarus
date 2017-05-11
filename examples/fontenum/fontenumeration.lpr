@@ -7,6 +7,8 @@ uses
   Forms
   { add your units here }, mainunit;
 
+{$R *.res}
+
 begin
   Application.Initialize;
   Application.CreateForm(TfrmMain, frmMain);
