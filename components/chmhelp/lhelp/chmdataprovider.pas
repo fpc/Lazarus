@@ -154,21 +154,22 @@ end;
 
 function TIpChmDataProvider.CanHandle(const URL: string): Boolean;
 var
-  HelpFile: String;
   Reader: TChmReader = nil;
 begin
   Result := True;
-  if Pos('Java', URL) =1  then Result := False;
-  if  (fChm.ObjectExists(StripInPageLink(url), Reader)= 0)
-  and (fChm.ObjectExists(StripInPageLink(BuildUrl(fCurrentPath,Url)), Reader) = 0) then Result := False;
+  if Pos('Java', URL) = 1 then
+    Result := False;
+
+  if (fChm.ObjectExists(StripInPageLink(url), Reader)= 0) and
+     (fChm.ObjectExists(StripInPageLink(BuildUrl(fCurrentPath,Url)), Reader) = 0)
+  then
+    Result := False;
+
   //DebugLn('CanHandle ',Url,' = ', Result);
   //if not Result then if fChm.ObjectExists(BuildURL('', URL)) > 0 Then result := true;
-  if Pos('javascript:helppopup(''', LowerCase(URL)) = 1 then begin
-    HelpFile := Copy(URL, 23, Length(URL) - (23-1));
-    HelpFile := Copy(HelpFile, 1, Pos('''', HelpFile)-1);
-    //DebugLn('HelpFile = ', HelpFile);
-  end;
-  if (not Result) and (Pos('#', URL) = 1) then Result := True;
+
+  if (not Result) and (Pos('#', URL) = 1) then
+    Result := True;
 end;
 
 function TIpChmDataProvider.BuildURL(const OldURL, NewURL: string): string;
