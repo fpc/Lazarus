@@ -37,7 +37,7 @@ uses
   LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, LCLType,
   // Synedit
-  SynEdit,
+  SynEdit, SynHighlighterXML,
   // codetools
   FileProcs, CodeCache, CodeToolManager,
   CTXMLFixFragment,
@@ -72,17 +72,18 @@ type
     OpenXMLButton: TButton;
     ShortPanel: TPanel;
     DescrShortEdit: TEdit;
+    SynXMLSyn1: TSynXMLSyn;
     TopicShort: TEdit;
-    TopicDescr: TMemo;
+    TopicDescr: TSynEdit;
     Panel3: TPanel;
     TopicListBox: TListBox;
     NewTopicNameEdit: TEdit;
     NewTopicButton: TButton;
     CopyFromInheritedButton: TButton;
     CreateButton: TButton;
-    DescrMemo: TMemo;
+    DescrMemo: TSynEdit;
     DescrTabSheet: TTabSheet;
-    ErrorsMemo: TMemo;
+    ErrorsMemo: TSynEdit;
     ErrorsTabSheet: TTabSheet;
     ExampleEdit: TEdit;
     ExampleTabSheet: TTabSheet;
@@ -101,7 +102,7 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     SaveButton: TSpeedButton;
-    SeeAlsoMemo: TMemo;
+    SeeAlsoMemo: TSynEdit;
     MoveToInheritedButton: TButton;
     OpenDialog: TOpenDialog;
     PageControl: TPageControl;
@@ -120,11 +121,8 @@ type
     procedure CopyShortToDescrMenuItemClick(Sender: TObject);
     procedure CreateButtonClick(Sender: TObject);
     procedure DescrMemoChange(Sender: TObject);
-    procedure DescrMemoEditingDone(Sender: TObject);
     procedure ErrorsMemoChange(Sender: TObject);
-    procedure ErrorsMemoEditingDone(Sender: TObject);
     procedure ExampleEditChange(Sender: TObject);
-    procedure ExampleEditEditingDone(Sender: TObject);
     procedure FormatButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -132,16 +130,13 @@ type
     procedure FormShow(Sender: TObject);
     procedure InsertLinkSpeedButtonClick(Sender: TObject);
     procedure LinkEditChange(Sender: TObject);
-    procedure LinkEditEditingDone(Sender: TObject);
     procedure MoveToInheritedButtonClick(Sender: TObject);
     procedure NewTopicButtonClick(Sender: TObject);
     procedure OpenXMLButtonClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
     procedure SeeAlsoMemoChange(Sender: TObject);
-    procedure SeeAlsoMemoEditingDone(Sender: TObject);
     procedure ShortEditChange(Sender: TObject);
-    procedure ShortEditEditingDone(Sender: TObject);
     procedure TopicControlEnter(Sender: TObject);
     procedure TopicDescrChange(Sender: TObject);
     procedure TopicListBoxClick(Sender: TObject);
@@ -434,7 +429,7 @@ procedure TFPDocEditor.LinkEditChange(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
   if LinkEdit.Text<>FOldVisualValues[fpdiElementLink] then
-    SaveButton.Enabled:=true;
+    Modified:=true;
 end;
 
 procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -573,13 +568,6 @@ procedure TFPDocEditor.SeeAlsoMemoChange(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
   if SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso] then
-    SaveButton.Enabled:=true;
-end;
-
-procedure TFPDocEditor.SeeAlsoMemoEditingDone(Sender: TObject);
-begin
-  if fpdefReading in FFlags then exit;
-  if SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso] then
     Modified:=true;
 end;
 
@@ -590,24 +578,6 @@ var
 begin
   if fpdefReading in FFlags then exit;
   //debugln(['TFPDocEditor.ShortEditChange ',DbgSName(Sender)]);
-  if Sender=DescrShortEdit then
-    NewShort:=DescrShortEdit.Text
-  else
-    NewShort:=ShortEdit.Text;
-  SaveButton.Enabled:=NewShort<>FOldVisualValues[fpdiShort];
-  // copy to the other edit
-  if Sender=DescrShortEdit then
-    ShortEdit.Text:=NewShort
-  else
-    DescrShortEdit.Text:=NewShort;
-end;
-
-procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
-var
-  NewShort: String;
-begin
-  if fpdefReading in FFlags then exit;
-  //debugln(['TFPDocEditor.ShortEditEditingDone ',DbgSName(Sender)]);
   if Sender=DescrShortEdit then
     NewShort:=DescrShortEdit.Text
   else
@@ -1033,7 +1003,7 @@ begin
   fpdiDescription:
     begin
       PageControl.ActivePage:=DescrTabSheet;
-      DescrMemo.CaretPos:=LineCol;
+      DescrMemo.CaretXY:=LineCol;
     end;
   fpdiErrors: PageControl.ActivePage:=ErrorsTabSheet;
   fpdiSeeAlso: PageControl.ActivePage:=SeeAlsoTabSheet;
@@ -1500,23 +1470,11 @@ end;
 procedure TFPDocEditor.ErrorsMemoChange(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
-  SaveButton.Enabled:=ErrorsMemo.Text<>FOldVisualValues[fpdiErrors];
-end;
-
-procedure TFPDocEditor.ErrorsMemoEditingDone(Sender: TObject);
-begin
-  if fpdefReading in FFlags then exit;
   if ErrorsMemo.Text<>FOldVisualValues[fpdiErrors] then
     Modified:=true;
 end;
 
 procedure TFPDocEditor.ExampleEditChange(Sender: TObject);
-begin
-  if fpdefReading in FFlags then exit;
-  SaveButton.Enabled:=ExampleEdit.Text<>FOldVisualValues[fpdiExample];
-end;
-
-procedure TFPDocEditor.ExampleEditEditingDone(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
   if ExampleEdit.Text<>FOldVisualValues[fpdiExample] then
@@ -1541,13 +1499,6 @@ begin
     end;
   end;
   Result:=-1;
-end;
-
-procedure TFPDocEditor.LinkEditEditingDone(Sender: TObject);
-begin
-  if fpdefReading in FFlags then exit;
-  if LinkEdit.Text<>FOldVisualValues[fpdiElementLink] then
-    Modified:=true;
 end;
 
 procedure TFPDocEditor.AddLinkToInheritedButtonClick(Sender: TObject);
@@ -1623,12 +1574,6 @@ begin
 end;
 
 procedure TFPDocEditor.DescrMemoChange(Sender: TObject);
-begin
-  if fpdefReading in FFlags then exit;
-  SaveButton.Enabled:=DescrMemo.Text<>FOldVisualValues[fpdiDescription];
-end;
-
-procedure TFPDocEditor.DescrMemoEditingDone(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
   if DescrMemo.Text<>FOldVisualValues[fpdiDescription] then
