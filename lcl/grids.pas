@@ -1141,8 +1141,8 @@ type
     property ColumnClickSorts: boolean read FColumnClickSorts write SetColumnClickSorts default false;
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
-    property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default -1;
-    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight default -1;
+    property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default 0;
+    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight default 0;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
     property DragDx: Integer read FDragDx write FDragDx;
@@ -2276,14 +2276,14 @@ begin
   NewSize := AValue;
   if NewSize<0 then begin
     AValue:=-1;
-    NewSize := FDefColWidth;
+    NewSize := GetRealDefaultColWidth;
   end;
 
   OldSize := integer(PtrUInt(FCols[ACol]));
   if NewSize<>OldSize then begin
 
     if OldSize<0 then
-      OldSize := fDefColWidth;
+      OldSize := GetRealDefaultColWidth;
 
     Bigger := NewSize>OldSize;
     SetRawColWidths(ACol, AValue);
@@ -2486,21 +2486,22 @@ function TCustomGrid.GetColWidths(Acol: Integer): Integer;
 var
   C: TGridColumn;
 begin
-  if not Columns.Enabled or (aCol<FixedCols) then begin
+  if not Columns.Enabled or (aCol<FixedCols) then
+  begin
     if (aCol<ColCount) and (aCol>=0) then
       Result:=integer(PtrUInt(FCols[aCol]))
     else
       Result:=-1;
-    if result<0 then
-      Result:=fDefColWidth;
-  end else begin
+  end else
+  begin
     C := ColumnFromGridColumn(Acol);
     if C<>nil then
-      Result := C.Width
+      Result:=C.Width
     else
-      result := FDefColWidth;
+      Result:=-1;
   end;
-  if Result<0 then Result:=GetRealDefaultColWidth;
+  if Result<0 then
+    Result:=GetRealDefaultColWidth;
 end;
 
 procedure TCustomGrid.SetEditor(AValue: TWinControl);
@@ -2757,14 +2758,14 @@ begin
   NewSize := AValue;
   if NewSize<0 then begin
     AValue:=-1;
-    NewSize := FDefRowHeight;
+    NewSize := GetRealDefaultRowHeight;
   end;
 
   OldSize := integer(PtrUInt(FRows[ARow]));
   if AValue<>OldSize then begin
 
     if OldSize<0 then
-      OldSize := FDefRowHeight;
+      OldSize := GetRealDefaultRowHeight;
 
     bigger := NewSize > OldSize;
 
@@ -3017,7 +3018,8 @@ var
   i: Integer;
   OldTop,OldBottom,NewTop,NewBottom: Integer;
 begin
-  if (AValue<>fDefRowHeight) or (csLoading in ComponentState) then begin
+  if (AValue<>fDefRowHeight) or (csLoading in ComponentState) then
+  begin
     FDefRowheight:=AValue;
 
     if EditorMode then
@@ -3027,12 +3029,12 @@ begin
       FRows[i] := Pointer(-1);
     VisualChange;
 
-    if EditorMode then begin
+    if EditorMode then
+    begin
       ColRowToOffSet(False,True, FRow, NewTop, NewBottom);
       if (NewTop<>OldTOp) or (NewBottom<>OldBottom) then
         EditorPos;
     end;
-
   end;
 end;
 
@@ -5169,7 +5171,7 @@ end;
 
 function TCustomGrid.GetRealDefaultColWidth: integer;
 begin
-  if FDefColWidth < 0 then
+  if FDefColWidth = 0 then
   begin
     if FRealizedDefColWidth = 0 then
       FRealizedDefColWidth := MulDiv(DEFCOLWIDTH, Font.PixelsPerInch, 96);
@@ -5180,7 +5182,7 @@ end;
 
 function TCustomGrid.GetRealDefaultRowHeight: integer;
 begin
-  if FDefRowHeight < 0 then
+  if FDefRowHeight = 0 then
   begin
     if FRealizedDefRowHeight = 0 then
       FRealizedDefRowHeight := GetDefaultRowHeight;
@@ -6839,10 +6841,8 @@ begin
       for i := FCols.Count - 1 downto 0 do
         FCols[i] := Pointer(Round(PtrInt(FCols[i]) * AXProportion));
 
-      if FDefColWidth>0 then
-        FDefColWidth := Round(FDefColWidth * AXProportion);
-      if FDefRowHeight>0 then
-        FDefRowHeight := Round(FDefRowHeight * AYProportion);
+      FDefColWidth := Round(FDefColWidth * AXProportion);
+      FDefRowHeight := Round(FDefRowHeight * AYProportion);
       FRealizedDefRowHeight := 0;
       FRealizedDefColWidth := 0;
     finally
@@ -8775,7 +8775,7 @@ end;
 
 function TCustomGrid.GetDefaultColumnWidth(Column: Integer): Integer;
 begin
-  result := FDefColWidth;
+  Result := FDefColWidth;
 end;
 
 function TCustomGrid.GetDefaultColumnLayout(Column: Integer): TTextLayout;
@@ -9226,8 +9226,8 @@ begin
      goSmoothScroll ];
   FScrollbars:=ssAutoBoth;
   fGridState:=gsNormal;
-  FDefColWidth:=-1;
-  FDefRowHeight:=-1;
+  FDefColWidth:=0;
+  FDefRowHeight:=0;
   FGridLineColor:=clSilver;
   FFixedGridLineColor := cl3DDKShadow;
   FGridLineStyle:=psSolid;
