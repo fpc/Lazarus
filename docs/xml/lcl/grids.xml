@@ -4042,9 +4042,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.DefaultColWidth">
         <short>Default value for the width of newly created grid columns.</short>
-        <descr>
-          <p>If new columns of the grid are created by changing the <link id="TCustomGrid.DefaultColWidth.ColCount">ColCount</link> property, the width of these new columns will be set to the value of the <i>DefaultColWidth</i> property. </p>
-          <p>After that the user may redefine this value. If the <link id="TCustomGrid.DefaultColWidth.Options">Options</link> property includes the appropriate value, the column width may also be changed by the user at runtime.</p>
+        <descr><p>If new columns of the grid are created by changing the <link id="TCustomGrid.ColCount">ColCount</link> property, the width of these new columns will be set to the value of the <i>DefaultColWidth</i> property. </p><p>Use 0 for autosized width. </p><p>Use <link id="TCustomGrid.GetRealDefaultColWidth">GetRealDefaultColWidth</link> for real value.</p>
         </descr>
         <seealso>
           <link id="TCustomGrid.DefaultRowHeight"/>
@@ -4053,9 +4051,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.DefaultRowHeight">
         <short>Default value for the height of newly created grid rows.</short>
-        <descr>
-          <p>If new rows of the grid are created by changing the <link id="TCustomGrid.DefaultRowHeight.RowCount">RowCount</link> property, the height of these new rows will be set to the value of the <i>DefaultRowHeight</i>  property. </p>
-          <p>After that the user may redefine this value. If the <link id="TCustomGrid.DefaultRowHeight.Options">Options</link> property includes the appropriate value, the row height may also be changed by the user at runtime.</p>
+        <descr><p>If new rows of the grid are created by changing the <link id="TCustomGrid.RowCount">RowCount</link> property, the height of these new rows will be set to the value of the <i>DefaultRowHeight</i>  property. </p><p>Use 0 for autosized height. </p><p>Use <link id="TCustomGrid.GetRealDefaultRowHeight">GetRealDefaultRowHeight</link> for real value.</p>
         </descr>
         <seealso>
           <link id="TCustomGrid.DefaultColWidth"/>
