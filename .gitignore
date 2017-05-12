@@ -426,8 +426,6 @@ examples/multithreading/*.bak
 examples/multithreading/units
 examples/objectinspector/*.bak
 examples/objectinspector/units
-examples/openbrowser/*.bak
-examples/openbrowser/units
 examples/openglcontrol/*.bak
 examples/openglcontrol/data/*.bak
 examples/openglcontrol/data/units
