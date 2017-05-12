@@ -10586,14 +10586,16 @@
       <element name="TToolBar.ButtonHeight">
         <short>
           <var>ButtonHeight</var> - the height of the buttons</short>
-        <descr/>
+        <descr><p>Use 0 for autosized value</p><p>Use <link id="TToolBar.GetRealButtonHeight">GetRealButtonHeight</link> for real value.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.ButtonWidth">
         <short>
           <var>ButtonWidth</var> - the width of the buttons</short>
-        <descr/>
+        <descr><p>Use 0 for autosized value</p><p>Use <link id="TToolBar.GetRealButtonWidth">GetRealButtonWidth</link> for real value.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -16618,7 +16620,8 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Indent">
         
-        <descr/>
+        <descr><p>Use 0 for autosized value. </p><p>Use <link id="TCustomTreeView.GetRealIndent">GetRealIndent</link> for real value.</p>
+        </descr>
         <seealso/>
       <short>Size in pixels by which each nested branching level is to be indented.</short>
       </element>
@@ -18713,7 +18716,8 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
         <short>Show/Hide caption</short>
         <descr>The ToolBar.ShowCaptions has precendence. Hiding will only work if ToolBar.List is true.</descr>
       </element>
-    <element name="TToolBar.DropDownWidth"><short>Width of the drop down arrow button.</short><descr>Use a negative value (-1) for theme default.</descr>
+    <element name="TToolBar.DropDownWidth"><short>Width of the drop down arrow button.</short><descr><p>Use 0 for autosized value</p><p>Use <link id="TToolBar.GetRealDropDownWidth">GetRealDropDownWidth</link> for real value.</p>
+        </descr>
       </element>
     <element name="TToolButton.OnArrowClick"><short>Executed when user clicked the arrow part for Style=tbsDropDown.</short><descr>It is not executed if DropDownMenu is assigned.</descr>
       </element><element name="TToolButton.ArrowClick"><short>Invokes the OnArrowClick event handler</short><descr>Executed automatically when user clicked the arrow part for Style=tbsDropDown and no DropDownMenu is assigned.</descr>
@@ -18732,6 +18736,8 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       </element><element name="TTreeView.SeparatorColor">
       </element>
     <element name="TCustomTreeView.ExpandSignSize"><short>Size of expand/collapse (fold/unfold) symbol.</short>
+      <descr><p>Use 0 for autosized value. </p><p>Use <link id="TCustomTreeView.GetRealExpandSignSize">GetRealExpandSignSize</link> for real value.</p>
+        </descr>
       </element><element name="TCustomTreeView.MultiSelect"><short>Allow to select several tree-items at a time, e.g. using Ctrl+click (select one item more) or Shift+click (select range of items).</short>
       </element><element name="TCustomTreeView.MultiSelectStyle"><short>Additional options for MultiSelect property.</short>
       </element><element name="TCustomTreeView.SelectionFontColor"><short>Color used to paint text of selected item.</short>
