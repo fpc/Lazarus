@@ -92,6 +92,9 @@ type
     procedure WriteBoolean(Value: Boolean); override;
     // procedure WriteChar(Value: Char);
     procedure WriteFloat(const Value: Extended); override;
+    {$IF FPC_FULLVERSION >= 30000}
+    procedure WriteSignature; override;
+    {$ENDIF}
     procedure WriteSingle(const Value: Single); override;
     procedure WriteCurrency(const Value: Currency); override;
     procedure WriteDate(const Value: TDateTime); override;
@@ -236,6 +239,7 @@ var
   i: Integer;
   InString: Boolean;
 begin
+  Result:='';
   InString:=false;
   for i:=1 to length(s) do begin
     case s[i] of
@@ -363,6 +367,13 @@ begin
   WritePropertyAssignment(FloatToStr(Value));
 end;
 
+{$IF FPC_FULLVERSION >= 30000}
+procedure TPASObjectWriter.WriteSignature;
+begin
+
+end;
+{$ENDIF}
+
 procedure TPASObjectWriter.WriteSingle(const Value: Single);
 begin
   WritePropertyAssignment(FloatToStr(Value));
@@ -430,7 +441,7 @@ end;
 procedure TPASObjectWriter.WriteUnicodeString(const Value: UnicodeString);
 // save unicodestrings as utf8
 begin
-  WritePropertyAssignment(StringToConstant(Value));
+  WritePropertyAssignment(StringToConstant(String(Value)));
 end;
 
 procedure TPASObjectWriter.WriteVariant(const VarValue: Variant);
