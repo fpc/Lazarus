@@ -99,7 +99,7 @@ type
 
     procedure WriteComponents;
     procedure ReadComponents;
-    procedure OnFindComponentClass(Reader: TReader; const AClassName: string;
+    procedure OnFindComponentClass({%H-}Reader: TReader; const AClassName: string;
                                    var ComponentClass: TComponentClass);
     property Filename: string read FFilename write SetFilename;
   end;
