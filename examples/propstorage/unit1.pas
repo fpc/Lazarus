@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Forms, StdCtrls, XMLPropStorage, IniPropStorage;
+  Forms, StdCtrls, XMLPropStorage, IniPropStorage, Classes;
 
 type
 
@@ -15,6 +15,7 @@ type
     IniPropStorage1: TIniPropStorage;
     Memo1: TMemo;
     XMLPropStorage1: TXMLPropStorage;
+    procedure FormCreate(Sender: TObject);
   private
 
   public
@@ -27,6 +28,15 @@ var
 implementation
 
 {$R *.lfm}
+
+{ TForm1 }
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Memo1.Lines.Add('Enter some text here.');
+  Memo1.Lines.Add('At exit, it will be stored by TIniPropStorage and TXmlPropStorage');
+  Memo1.Lines.Add('along with the form''s width and height.');
+end;
 
 initialization
 
