@@ -640,8 +640,32 @@ begin
 end;
 
 procedure TChmContentProvider.IpHtmlPanelHotClick(Sender: TObject);
+var
+  HelpFile: String;
+  aPos: integer;
+  lcURL: String;
 begin
-  OpenURL(fHtml.HotURL);
+  // chm-links look like: mk:@MSITStore:D:\LazPortable\docs\chm\iPro.chm::/html/lh3zs3.htm
+  lcURL := Lowercase(fHtml.HotURL);
+  if (Pos('javascript:helppopup(''', lcURL) = 1) or
+     (Pos('javascript:popuplink(''', lcURL) = 1)
+  then begin
+    HelpFile := Copy(fHtml.HotURL, 23, Length(fHtml.HotURL) - (23-1));
+    HelpFile := Copy(HelpFile, 1, Pos('''', HelpFile)-1);
+
+    if (Pos('/',HelpFile)=0) and (Pos('.chm:',HelpFile)=0) then begin //looks like?: 'xyz.htm'
+      aPos := LastDelimiter('/', fHtml.CurURL);
+      if aPos>0 then HelpFile := Copy(fHtml.CurURL,1,aPos) + HelpFile;
+   end
+   else if (Pos('.chm:',HelpFile)=0) then begin //looks like?: 'folder/xyz.htm' or '/folder/xyz.htm'
+     if HelpFile[1]<>'/' then HelpFile:='/'+HelpFile;
+     aPos := LastDelimiter(':', fHtml.CurURL);
+     if aPos>0 then HelpFile := Copy(fHtml.CurURL,1,aPos) + HelpFile;
+   end;
+   DoLoadUri(HelpFile); //open it in current iphtmlpanel.
+ end
+ else
+   OpenURL(fHtml.HotURL);
 end;
 
 procedure TChmContentProvider.PopupCopyClick(Sender: TObject);

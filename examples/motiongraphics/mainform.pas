@@ -33,6 +33,9 @@ implementation
 
 {$R *.lfm}
 
+uses
+  Math;
+
 { TForm1 }
 
 procedure TForm1.timerRedrawTimer(Sender: TObject);
@@ -68,23 +71,25 @@ end;
 function TForm1.RotatePoint(APoint, ACenter: TPoint; AAngle: Double): TPoint;
 var
   dx, dy: Double;
+  sinAngle, cosAngle: Double;
 begin
-  dx := (ACenter.Y * Sin(AAngle)) - (ACenter.X * Cos(AAngle)) + ACenter.X;
-  dy := -(ACenter.X * Sin(AAngle)) - (ACenter.Y * Cos(AAngle)) + ACenter.Y;
-  Result.X := Round((APoint.X * Cos(AAngle)) - (APoint.Y * Sin(AAngle)) + dx);
-  Result.Y := Round((APoint.X * Sin(AAngle)) + (APoint.Y * Cos(AAngle)) + dy);
+  SinCos(AAngle, sinAngle, cosAngle);
+  dx :=  ACenter.Y * sinAngle - ACenter.X * cosAngle + ACenter.X + 10;
+  dy := -ACenter.X * sinAngle - ACenter.Y * cosAngle + ACenter.Y + Height div 4;
+  Result.X := Round(APoint.X * cosAngle - APoint.Y * sinAngle + dx);
+  Result.Y := Round(APoint.X * sinAngle + APoint.Y * cosAngle + dy);
 end;
 
 procedure TForm1.FormPaint(Sender: TObject);
 var
   lPoints: array[0..2] of TPoint;
 begin
-  lPoints[0].X := 100;
-  lPoints[0].Y := 100;
-  lPoints[1].X := 200;
+  lPoints[0].X := Self.Width  div 4;
+  lPoints[0].Y := Self.Height div 4;
+  lPoints[1].X := Self.Width  div 2;
   lPoints[1].Y := 0;
-  lPoints[2].X := 200;
-  lPoints[2].Y := 200;
+  lPoints[2].X := Self.Width  div 2;
+  lPoints[2].Y := Self.Height div 2;
   RotatePolygon(lPoints, CurStep);
   Canvas.Polygon(lPoints);
 end;

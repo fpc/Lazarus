@@ -39,16 +39,6 @@ implementation
 
 { TForm1 }
 
-procedure TForm1.btnOpenURLHTTPClick(Sender: TObject);
-begin
-  editResult.Text := BoolToStr(OpenURL('www.google.com'));
-end;
-
-procedure TForm1.btnOpenDocumentClick(Sender: TObject);
-begin
-  editResult.Text := BoolToStr(OpenDocument(editFilename.Text));
-end;
-
 procedure TForm1.btnFindBrowserClick(Sender: TObject);
 var
   lStr, lParams: String;
@@ -57,9 +47,25 @@ begin
   editResult.Text := lStr + ' ' + lParams;
 end;
 
+procedure TForm1.btnOpenURLHTTPClick(Sender: TObject);
+begin
+  if editFileName.Text = '' then
+    editFileName.Text := 'www.google.com';
+  editResult.Text := BoolToStr(OpenURL(editFileName.Text), true);
+end;
+
+procedure TForm1.btnOpenDocumentClick(Sender: TObject);
+begin
+  if editFileName.Text = '' then
+    editFileName.Text := 'mainform.pas';
+  editResult.Text := BoolToStr(OpenDocument(editFilename.Text), true);
+end;
+
 procedure TForm1.btnOpenURLFILEClick(Sender: TObject);
 begin
-  editResult.Text := BoolToStr(OpenURL('file://'+editFilename.Text));
+  if editFileName.Text = '' then
+    editFileName.Text := ExpandFileName('./mainform.pas');
+  editResult.Text := BoolToStr(OpenURL('file://'+editFilename.Text), true);
 end;
 
 end.

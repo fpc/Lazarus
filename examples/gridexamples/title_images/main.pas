@@ -19,6 +19,7 @@ type
     procedure StringGrid1HeaderClick(
       Sender: TObject; IsColumn: Boolean;Index: Integer);
   private
+    procedure AdjustTitleHeight;
     procedure Refresh;
   public
 
@@ -36,6 +37,14 @@ uses
 
 { TForm1 }
 
+procedure TForm1.AdjustTitleHeight;
+begin
+  if RadioGroup1.ItemIndex < 2 then
+    StringGrid1.RowHeights[0] := StringGrid1.DefaultRowHeight
+  else
+    StringGrid1.RowHeights[0] := StringGrid1.RowHeights[1] + ImageList1.Height;
+end;
+
 procedure TForm1.RadioGroup1Click(Sender: TObject);
 var
   i: Integer;
@@ -48,6 +57,7 @@ begin
     StringGrid1.Columns[i].Title.ImageLayout :=
       TButtonLayout(RadioGroup1.ItemIndex);
   end;
+  AdjustTitleHeight;
 end;
 
 procedure TForm1.Refresh;
@@ -82,6 +92,7 @@ begin
     if ImageIndex > 0 then
       StringGrid1.Columns[2 - Index].Title.ImageIndex := 0;
   end;
+  AdjustTitleHeight;
   Refresh;
 end;
 

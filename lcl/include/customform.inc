@@ -1574,7 +1574,7 @@ begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    DisableAutoSizing;
+    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.DoAutoAdjustLayout'){$ENDIF};
     try
       if not ParentFont or (Parent=nil) then
         ScaleFontsPPI(AYProportion);
@@ -1587,7 +1587,7 @@ begin
 
       SetBounds(Left, Top, NewWidth, NewHeight);
     finally
-      EnableAutoSizing;
+      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.DoAutoAdjustLayout'){$ENDIF};
     end;
   end;
 end;

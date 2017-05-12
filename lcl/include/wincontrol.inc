@@ -3844,14 +3844,14 @@ procedure TWinControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
 var
   i: Integer;
 begin
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.AutoAdjustLayout'){$ENDIF};
   try
     for i:=0 to ControlCount-1 do
       Controls[i].AutoAdjustLayout(AMode, AFromPPI, AToPPI, AOldFormWidth, ANewFormWidth);
 
     inherited;
   finally
-    EnableAutoSizing;
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.AutoAdjustLayout'){$ENDIF};
   end;
 end;
 
@@ -6968,10 +6968,6 @@ begin
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
 
-    NewLeft := FBoundsRealized.Left;
-    NewTop := FBoundsRealized.Top;
-    if HandleAllocated then
-      GetWindowRelativePosition(Handle, NewLeft, NewTop);
     //if CheckPosition(Self) then
       //DebugLn(['TWinControl.WMSize GetWindowRelativePosition: ',DbgSName(Self),' ',NewLeft,',',NewTop,' ClientRectNeedsInterfaceUpdate=',ClientRectNeedsInterfaceUpdate]);
     NewBoundsRealized := Bounds(NewLeft, NewTop, Message.Width, Message.Height);
