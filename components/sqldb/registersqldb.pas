@@ -36,11 +36,8 @@ unit registersqldb;
  {$DEFINE HASMYSQL4CONNECTION}
 {$ENDIF}
 
-{$IF FPC_FULLVERSION >= 20701}
-  {$DEFINE HASMSSQLCONNECTION}	 
-  {$DEFINE HASSYBASECONNECTION}	 
-{$ELSE}
-  // MS SQL Server and Sybase ASE connectors were introduced in the FPC 2.7 development branch,	 
+{$IF FPC_FULLVERSION >= 20601}
+  // MS SQL Server and Sybase ASE connectors were introduced in the FPC 2.7 development branch,
   //  and backported to 2.6.1. Operating systems should match FPC packages\fcl-db\fpmake.pp	 
   {$IF DEFINED(BEOS) OR DEFINED(HAIKU) OR DEFINED(LINUX) OR DEFINED(FREEBSD) OR DEFINED (NETBSD) OR DEFINED(OPENBSD) OR DEFINED(WIN32) OR DEFINED(WIN64)}	 
     {$DEFINE HASMSSQLCONNECTION}	 
