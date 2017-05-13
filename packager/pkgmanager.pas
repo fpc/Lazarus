@@ -337,6 +337,7 @@ type
                           ): boolean; override;
     function InstallPackages(PkgIdList: TObjectList;
                              Flags: TPkgInstallInIDEFlags = []): TModalResult; override;
+    function UninstallPackage(APackage: TIDEPackage; ShowAbort: boolean): TModalResult; override;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags;
@@ -5463,6 +5464,12 @@ begin
     PackageGraph.EndUpdate;
   end;
   Result:=mrOk;
+end;
+
+function TPkgManager.UninstallPackage(APackage: TIDEPackage; ShowAbort: boolean): TModalResult;
+begin
+  Assert(APackage is TLazPackage, 'TPkgManager.DoUninstallPackage: APackage is not TLazPackage');
+  Result := DoUninstallPackage(TLazPackage(APackage), [puifDoNotConfirm, puifDoNotBuildIDE], ShowAbort);
 end;
 
 function TPkgManager.CheckInstallPackageList(PkgIDList: TObjectList;
