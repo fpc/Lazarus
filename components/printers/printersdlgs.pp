@@ -21,6 +21,10 @@ unit PrintersDlgs;
 
 interface
 
+{$IFDEF WinCE}
+{$FATAL This unit (and therefore the Printers4Lazarus package) cannot be built for WinCE}
+{$ENDIF}
+
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, LResources, Printers, OsPrinters;
 
