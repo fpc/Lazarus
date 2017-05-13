@@ -11974,7 +11974,7 @@ var
 begin
   tmpGrid := Grid;
   if tmpGrid<>nil then
-    result := tmpGrid.DefaultColWidth
+    result := tmpGrid.GetRealDefaultColWidth
   else
     result := -1;
 end;
