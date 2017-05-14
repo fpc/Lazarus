@@ -3003,7 +3003,8 @@ procedure TControl.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
   const AXProportion, AYProportion: Double);
 var
   AAWidth, AAHeight: Boolean;
-  NewLeft, NewTop, NewWidth, NewHeight, NewRight, NewBottom, OldWidth, OldHeight: Integer;
+  NewLeft, NewTop, NewWidth, NewHeight, NewRight, NewBottom, OldWidth, OldHeight,
+    BeforeConstraintsWidth, BeforeConstraintsHeight: Integer;
 begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
@@ -3066,19 +3067,24 @@ begin
       if AAHeight then
         NewHeight := Round(Height * AYProportion);
 
-      if AAWidth then
+      BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
+      Constraints.AutoAdjustLayout(AXProportion, AYProportion);
+
+      BeforeConstraintsWidth := NewWidth;
+      NewWidth := Constraints.MinMaxWidth(NewWidth);
+      BeforeConstraintsHeight := NewHeight;
+      NewHeight := Constraints.MinMaxHeight(NewHeight);
+
+      if AAWidth or (BeforeConstraintsWidth<>NewWidth) then
       begin
         if akRight in Anchors then
           NewLeft := NewLeft-NewWidth+OldWidth;
       end;
-      if AAHeight then
+      if AAHeight or (BeforeConstraintsHeight<>NewHeight) then
       begin
         if akBottom in Anchors then
           NewTop := NewTop-NewHeight+OldHeight;
       end;
-
-      BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
-      Constraints.AutoAdjustLayout(AXProportion, AYProportion);
 
       SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
     finally
