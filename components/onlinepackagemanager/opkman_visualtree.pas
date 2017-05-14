@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, contnrs, Math, dateutils,
   // LCL
-  Controls, Graphics, Menus, Dialogs, Forms, LCLIntf, Buttons,
+  Controls, Graphics, Menus, Dialogs, Forms, LCLType, LCLIntf, Buttons,
   // OpkMan
   opkman_VirtualTrees, opkman_common, opkman_serializablepackages, opkman_const,
   opkman_options, opkman_packagedetailsfrm;
@@ -179,24 +179,24 @@ begin
      Images := AImgList;
      PopupMenu := APopupMenu;
      Color := clBtnFace;
-     DefaultNodeHeight := 25;
+     DefaultNodeHeight := MulDiv(25, Screen.PixelsPerInch, 96);
      Indent := 22;
      TabOrder := 1;
      DefaultText := '';
      Header.AutoSizeIndex := 4;
-     Header.Height := 25;
+     Header.Height := MulDiv(25, Screen.PixelsPerInch, 96);
      Colors.DisabledColor := clBlack;
      with Header.Columns.Add do
      begin
        Position := 0;
-       Width := 270;
+       Width := MulDiv(270, Screen.PixelsPerInch, 96);
        Text := rsMainFrm_VSTHeaderColumn_PackageName;
      end;
      with Header.Columns.Add do
      begin
        Position := 1;
        Alignment := taCenter;
-       Width := 90;
+       Width := MulDiv(90, Screen.PixelsPerInch, 96);
        Options := Options - [coResizable];
        Text := rsMainFrm_VSTHeaderColumn_Installed;
      end;
@@ -204,7 +204,7 @@ begin
      begin
        Position := 2;
        Alignment := taCenter;
-       Width := 90;
+       Width := MulDiv(90, Screen.PixelsPerInch, 96);
        Options := Options - [coResizable];
        Text := rsMainFrm_VSTHeaderColumn_Repository;
      end;
@@ -212,14 +212,14 @@ begin
      begin
        Position := 3;
        Alignment := taCenter;
-       Width := 90;
+       Width := MulDiv(90, Screen.PixelsPerInch, 96);
        Options := Options - [coResizable];
        Text := rsMainFrm_VSTHeaderColumn_Update;
      end;
      with Header.Columns.Add do
      begin
         Position := 4;
-        Width := 280;
+        Width := MulDiv(280, Screen.PixelsPerInch, 96);//280;
         Options := Options - [coResizable];
         Text := rsMainFrm_VSTHeaderColumn_Data;
       end;
@@ -235,7 +235,7 @@ begin
      begin
         Position := 6;
         Alignment := taCenter;
-        Width := 20;
+        Width := MulDiv(20, Screen.PixelsPerInch, 96);
         Options := Options - [coResizable];
      end;
      Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoAutoSpring];
