@@ -148,7 +148,7 @@ type
     procedure DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
     procedure DoOnProcessJSON(Sender: TObject);
     procedure DoOnUpdate(Sender: TObject);
-    function IsSomethingChecked(const AIsUpdate: Boolean = False): Boolean;
+    function IsSomethingChecked(const AResolveDependencies: Boolean = True): Boolean;
     function Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     function Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean; const AIsUpdate: Boolean = False): TModalResult;
     function Install(var AInstallStatus: TInstallStatus; var ANeedToRebuild: Boolean): TModalResult;
@@ -253,12 +253,12 @@ begin
   PackageDownloader.DownloadJSON(10000);
 end;
 
-function TMainFrm.IsSomethingChecked(const AIsUpdate: Boolean = False): Boolean;
+function TMainFrm.IsSomethingChecked(const AResolveDependencies: Boolean = True): Boolean;
 begin
   Result := VisualTree.VST.CheckedCount > 0;
   if Result then
   begin
-    if not AIsUpdate then
+    if AResolveDependencies then
       if VisualTree.ResolveDependencies = mrCancel then
         Exit;
     VisualTree.GetPackageList;
@@ -627,7 +627,7 @@ var
   DoExtract: Boolean;
   DoOpen: Boolean;
 begin
-  if not IsSomethingChecked then
+  if not IsSomethingChecked(False) then
     Exit;
 
   SDD.InitialDir := Options.LastDownloadDir;
@@ -686,7 +686,7 @@ var
   InstallStatus: TInstallStatus;
   NeedToRebuild: Boolean;
 begin
-  if not IsSomethingChecked(True) then
+  if not IsSomethingChecked(False) then
     Exit;
   CanGo := True;
   NeedToRebuild := False;
@@ -803,7 +803,7 @@ var
   FileName: String;
   NeedToRebuild: Boolean;
 begin
-  if not IsSomethingChecked then
+  if not IsSomethingChecked(False) then
     Exit;
 
    if IsAtLeastOnePackageInstalled then
