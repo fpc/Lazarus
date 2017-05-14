@@ -53,7 +53,7 @@ uses
   ControlSelection, FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros,
   BuildManager, EditorMacroListViewer, FindRenameIdentifier, GenericCheckList,
   ViewUnit_Dlg, DiskDiffsDialog, InputHistory, CheckLFMDlg, PublishModule, etMessagesWnd,
-  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer;
+  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
 
 type
 
@@ -6251,6 +6251,7 @@ var
   ARestoreVisible: Boolean;
   AncestorClass: TComponentClass;
   DsgControl: TCustomDesignControl;
+  DsgDataModule: TDataModule;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TLazSourceFileManager.LoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
@@ -6433,10 +6434,30 @@ begin
         begin
           DsgControl := TCustomDesignControl(NewComponent);
           if Project1.Scaled and DsgControl.Scaled and (DsgControl.DesignTimePPI<>Screen.PixelsPerInch) then
+          begin
             DsgControl.AutoAdjustLayout(lapAutoAdjustForDPI, DsgControl.DesignTimePPI, Screen.PixelsPerInch, 0, 0);
+            DesignerProcs.ScaleNonVisual(DsgControl, DsgControl.DesignTimePPI, Screen.PixelsPerInch);
+          end;
           DsgControl.DesignTimePPI := Screen.PixelsPerInch;
           DsgControl.PixelsPerInch := Screen.PixelsPerInch;
         end;
+        {$IFDEF DataModulePPI} // To-Do: replace with an FPC version after DesignPPI has been applied to FPC
+        if NewComponent is TDataModule then
+        begin
+          DsgDataModule := TDataModule(NewComponent);
+          if (DsgDataModule.DesignPPI<>Screen.PixelsPerInch) then
+          begin
+            DesignerProcs.ScaleNonVisual(DsgDataModule, DsgDataModule.DesignPPI, Screen.PixelsPerInch);
+            DsgDataModule.DesignOffset := Point(
+              MulDiv(DsgDataModule.DesignOffset.x, Screen.PixelsPerInch, DsgDataModule.DesignPPI),
+              MulDiv(DsgDataModule.DesignOffset.y, Screen.PixelsPerInch, DsgDataModule.DesignPPI));
+            DsgDataModule.DesignSize := Point(
+              MulDiv(DsgDataModule.DesignSize.x, Screen.PixelsPerInch, DsgDataModule.DesignPPI),
+              MulDiv(DsgDataModule.DesignSize.y, Screen.PixelsPerInch, DsgDataModule.DesignPPI));
+            DsgDataModule.DesignPPI := Screen.PixelsPerInch;
+          end;
+        end;
+        {$ENDIF}
 
         if NewComponent is TFrame then
           AnUnitInfo.ResourceBaseClass:=pfcbcFrame
