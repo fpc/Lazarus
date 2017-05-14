@@ -3,7 +3,6 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Height = 500
   Top = 202
   Width = 800
-  ActiveControl = FilterEdit
   BorderIcons = [biSystemMenu]
   Caption = 'IDEOptionsDialog'
   ClientHeight = 500
@@ -12,8 +11,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Constraints.MinWidth = 500
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.7'
-  Scaled = True
+  LCLVersion = '1.9.0.0'
   object ButtonPanel: TButtonPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
@@ -89,7 +87,6 @@ object IDEOptionsDialog: TIDEOptionsDialog
       Top = 6
       Width = 249
       OnFilterItem = FilterEditFilterItem
-      UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
@@ -146,11 +143,13 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Control = BuildModeComboBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeComboBox
-      AnchorSideTop.Side = asrCenter
+      AnchorSideBottom.Control = BuildModeComboBox
+      AnchorSideBottom.Side = asrBottom
       Left = 281
-      Height = 25
-      Top = 4
+      Height = 23
+      Top = 5
       Width = 50
+      Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 1
       Caption = '...'
       OnClick = BuildModeManageButtonClick
