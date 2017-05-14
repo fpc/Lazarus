@@ -1132,7 +1132,7 @@ end;
 
 constructor TOICustomPropertyGrid.Create(TheOwner: TComponent);
 begin
-  CreateWithParams(TheOwner,nil,AllTypeKinds,22);
+  CreateWithParams(TheOwner,nil,AllTypeKinds,0);
 end;
 
 destructor TOICustomPropertyGrid.Destroy;
@@ -6021,7 +6021,7 @@ begin
   Hook:=TPropertyEditorHook.Create(Self);
   FAutoFreeHook:=true;
   FSaveOnChangeTIObject:=true;
-  CreateWithParams(TheOwner,Hook,AllTypeKinds,22);
+  CreateWithParams(TheOwner,Hook,AllTypeKinds,0);
 end;
 
 destructor TCustomPropertiesGrid.Destroy;
