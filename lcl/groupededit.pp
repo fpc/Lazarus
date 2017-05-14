@@ -205,8 +205,6 @@ type
 
     procedure BuddyClick; virtual;
 
-    procedure DoEnter; override;
-
     procedure EditChange; virtual;
     procedure EditClick; virtual;
     procedure EditDblClick; virtual;
@@ -620,7 +618,7 @@ end;
 
 function TCustomAbstractGroupedEdit.GetTabStop: Boolean;
 begin
-  Result := inherited TabStop;
+  Result := FEdit.TabStop;
 end;
 
 function TCustomAbstractGroupedEdit.RealGetText: TCaption;
@@ -932,12 +930,6 @@ begin
   end;
 end;
 
-procedure TCustomAbstractGroupedEdit.DoEnter;
-begin
-  inherited DoEnter;
-  FEdit.SetFocus;
-end;
-
 procedure TCustomAbstractGroupedEdit.EditChange;
 begin
   if Assigned(FOnEditChange) then FOnEditChange(Self);
@@ -1132,7 +1124,6 @@ end;
 
 procedure TCustomAbstractGroupedEdit.SetTabStop(AValue: Boolean);
 begin
-  inherited TabStop := AValue;
   FEdit.TabStop := AValue;
 end;
 
@@ -1193,6 +1184,7 @@ begin
   FDirectInput := True;
   FIsReadOnly := False;
   TabStop := True;
+  inherited TabStop := False;
   FocusOnBuddyClick := False;
   FSpacing := 0;
   SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);
