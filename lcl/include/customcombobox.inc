@@ -1015,7 +1015,10 @@ begin
   begin
     FCanvas.Handle := DC;
     if Font<>nil then
+    begin
       FCanvas.Font := Font;
+      FCanvas.Font.PixelsPerInch := Font.PixelsPerInch;
+    end;
     if Brush<>nil then
       FCanvas.Brush := Brush;
     if (ItemID <> UINT(-1)) and (odSelected in ItemState) then
