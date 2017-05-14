@@ -2832,7 +2832,7 @@ begin
       // edit dialog button
       with EditBtnRect do begin
         Top := EditCompRect.Top;
-        Left := EditCompRect.Right - 20;
+        Left := EditCompRect.Right - ScaleCoord96(20);
         Bottom := EditCompRect.Bottom - 1;
         Right := EditCompRect.Right;
         EditCompRect.Right := Left;
