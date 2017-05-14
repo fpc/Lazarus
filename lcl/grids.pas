@@ -4439,6 +4439,8 @@ begin
   if (TitleStyle=tsNative) and not assigned(OnUserCheckboxBitmap) then begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
     CSize := ThemeServices.GetDetailSize(Details);
+    CSize.cx := MulDiv(CSize.cx, Font.PixelsPerInch, Screen.PixelsPerInch);
+    CSize.cy := MulDiv(CSize.cy, Font.PixelsPerInch, Screen.PixelsPerInch);
     case bmpAlign of
       taCenter: PaintRect.Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
       taLeftJustify: PaintRect.Left := ARect.Left + constCellPadding;
