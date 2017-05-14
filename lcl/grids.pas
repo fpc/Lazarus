@@ -11925,8 +11925,6 @@ begin
     exit;
   if AValue>=0 then begin
     if FWidth = nil then begin
-      if AValue=GetDefaultWidth then
-        exit;
       New(FWidth)
     end else if FWidth^ = AVAlue then
       exit;
