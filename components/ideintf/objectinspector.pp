@@ -1068,7 +1068,7 @@ begin
     AutoSize:=false;
     SetBounds(0,-30,Width,Height); // hidden
     DropDownCount:=20;
-    ItemHeight:=17;
+    ItemHeight:=MulDiv(17, Screen.PixelsPerInch, 96);
     Parent:=Self;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
