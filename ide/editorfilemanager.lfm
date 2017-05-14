@@ -3,14 +3,13 @@ object EditorFileManagerForm: TEditorFileManagerForm
   Height = 380
   Top = 126
   Width = 722
-  ActiveControl = FilterEdit
   Caption = 'EditorFileManagerForm'
   ClientHeight = 380
   ClientWidth = 722
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object CheckListBox1: TCheckListBox
     AnchorSideTop.Control = FilterPanel
     AnchorSideTop.Side = asrBottom
@@ -191,7 +190,6 @@ object EditorFileManagerForm: TEditorFileManagerForm
       Top = 2
       Width = 25
       AllowAllUp = True
-      Anchors = [akTop, akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Left = 3
       Constraints.MinHeight = 25
