@@ -36,7 +36,7 @@ uses
   // LazUtils
   LazFileUtils,
   // IdeIntf
-  IDECommands, PackageLinkIntf,
+  IDECommands, PackageLinkIntf, PackageIntf,
   // OpkMan
   opkman_VirtualTrees, opkman_downloader, opkman_installer,
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
@@ -72,6 +72,8 @@ type
     OD: TOpenDialog;
     SD: TSaveDialog;
     tbCleanUp1: TToolButton;
+    tbInstall1: TToolButton;
+    tbUninstall: TToolButton;
     tbOptions: TToolButton;
     cbAll: TCheckBox;
     cbFilterBy: TComboBox;
@@ -132,6 +134,7 @@ type
     procedure pnTopResize(Sender: TObject);
     procedure spClearClick(Sender: TObject);
     procedure spExpandClick(Sender: TObject);
+    procedure tbUninstallClick(Sender: TObject);
     procedure tbUpdateClick(Sender: TObject);
   private
     FHintTimeOut: Integer;
@@ -445,6 +448,7 @@ begin
   tbRefresh.Enabled := (AEnable) and (Trim(Options.RemoteRepository[Options.ActiveRepositoryIndex]) <> '');
   tbDownload.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbInstall.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
+  tbUninstall.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbUpdate.Enabled :=  (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbCleanUp.Enabled := (AEnable) and (SerializablePackages.Count > 0);
   tbCreate.Visible := Options.UserProfile = 1;
@@ -752,6 +756,109 @@ begin
   begin
     SerializablePackages.RemoveErrorState;
     Updates.StartUpdate;
+  end;
+end;
+
+procedure TMainFrm.tbUninstallClick(Sender: TObject);
+
+  function IsAtLeastOnePackageInstalled: Boolean;
+  var
+    I, J: Integer;
+    LazarusPackage: TLazarusPackage;
+  begin
+    Result := False;
+    for I := 0 to SerializablePackages.Count - 1 do
+    begin
+      for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
+      begin
+        LazarusPackage := TLazarusPackage(SerializablePackages.Items[I].LazarusPackages.Items[J]);
+        if (LazarusPackage.Checked) and (LazarusPackage.PackageState = psInstalled) then
+        begin
+          Result := True;
+          Exit;
+        end;
+      end;
+    end;
+  end;
+
+  function GetIDEPackage(const AFileName: String): TIDEPackage;
+  var
+    I: Integer;
+  begin
+    Result := nil;
+    for I := 0 to PackageEditingInterface.GetPackageCount - 1 do
+    begin
+      if UpperCase(PackageEditingInterface.GetPackages(I).Filename) = UpperCase(AFileName) then
+      begin
+        Result := PackageEditingInterface.GetPackages(I);
+        Break;
+      end;
+    end;
+  end;
+
+var
+  I, J: Integer;
+  LazarusPackage: TLazarusPackage;
+  IDEPackage: TIDEPackage;
+  FileName: String;
+  NeedToRebuild: Boolean;
+begin
+  if not IsSomethingChecked then
+    Exit;
+
+   if IsAtLeastOnePackageInstalled then
+   begin
+     if MessageDlgEx(Format(rsMainFrm_rsUninstall, ['             ']), mtInformation, [mbYes, mbNo], Self) = mrNo then
+       Exit;
+   end
+   else
+   begin
+     MessageDlgEx(rsMainFrm_rsUninstall_Nothing, mtInformation, [mbOk], Self);
+     Exit;
+   end;
+
+  NeedToRebuild := False;
+  Updates.StopUpdate;
+  for I := 0 to SerializablePackages.Count - 1 do
+  begin
+    for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
+    begin
+      LazarusPackage := TLazarusPackage(SerializablePackages.Items[I].LazarusPackages.Items[J]);
+      if (LazarusPackage.Checked) and (LazarusPackage.PackageState = psInstalled) then
+      begin
+        case LazarusPackage.PackageType of
+          ptRunTime, ptRunTimeOnly:
+          begin
+            FileName := StringReplace(LazarusPackage.Name, '.lpk', '.opkman', [rfIgnoreCase]);
+            if FileExists(Options.LocalRepositoryPackages + SerializablePackages.Items[I].PackageBaseDir + LazarusPackage.PackageRelativePath + FileName) then
+              DeleteFile(Options.LocalRepositoryPackages + SerializablePackages.Items[I].PackageBaseDir + LazarusPackage.PackageRelativePath + FileName);
+            NeedToRebuild := True;
+          end;
+          ptDesignTime, ptRunAndDesignTime:
+          begin
+            IDEPackage := GetIDEPackage(LazarusPackage.PackageAbsolutePath);
+            if IDEPackage <> nil then
+            begin
+              if PackageEditingInterface.UninstallPackage(IDEPackage, False) <> mrOk then
+              begin
+                NeedToRebuild := False;
+                MessageDlgEx(Format(rsMainFrm_rsUninstall_Error, [LazarusPackage.Name]), mtError, [mbOk], Self);
+                Updates.StartUpdate;
+                Exit;
+              end
+              else
+                NeedToRebuild := True;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+  if NeedToRebuild then
+  begin
+    EnableDisableControls(False);
+    IDECommands.ExecuteIDECommand(Self, ecBuildLazarus);
+    EnableDisableControls(True);
   end;
 end;
 
@@ -1125,6 +1232,8 @@ begin
   tbInstall.Hint := rsMainFrm_TBInstall_Hint;
   tbUpdate.Caption := rsMainFrm_TBUpdate_Caption;
   tbUpdate.Hint := rsMainFrm_TBUpdate_Hint;
+  tbUninstall.Caption := rsMainFrm_TBUninstall_Caption;
+  tbUninstall.Hint := rsMainFrm_TBUninstall_Hint;
   tbCleanUp.Caption := rsMainFrm_TBCleanUp_Caption;
   tbCleanUp.Hint := rsMainFrm_TBCleanUp_Hint;
   tbCreate.Caption := rsMainFrm_TBRepository_Caption;

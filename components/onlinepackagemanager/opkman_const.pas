@@ -152,6 +152,8 @@ resourcestring
   rsMainFrm_TBInstall_Hint = 'Install packages';
   rsMainFrm_TBUpdate_Caption = 'Update';
   rsMainFrm_TBUpdate_Hint = 'Update packages from external URL';
+  rsMainFrm_TBUnInstall_Caption = 'Uninstall';
+  rsMainFrm_TBUnInstall_Hint = 'Uninstall packages';
   rsMainFrm_TBCleanUp_Caption = 'Cleanup';
   rsMainFrm_TBCleanUp_Hint = 'Cleanup local repository';
   rsMainFrm_TBRepository_Caption = 'Create';
@@ -198,6 +200,10 @@ resourcestring
     +'Resolve dependency?';
   rsMainFrm_rsPackageDependency1 = 'Not resolving dependencies might lead to install failure!';
   rsMainFrm_rsPackageRating = 'Your vote for package "%s" is: %s. Thank you for voting!';
+  rsMainFrm_rsUninstall = '%sAre you sure you wish to uninstall the checked packages?' + sLineBreak +
+                          'Please note: in order for the changes to take effect you must rebuid the IDE.';
+  rsMainFrm_rsUninstall_Nothing = 'None of the checked packages are installed. Nothing to uninstall.';
+  rsMainFrm_rsUninstall_Error = 'Cannot uninstall package "%s"!';
 
   //progress form
   rsProgressFrm_Caption0 = 'Downloading packages';

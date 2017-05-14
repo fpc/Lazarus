@@ -185,7 +185,7 @@ begin
      DefaultText := '';
      Header.AutoSizeIndex := 4;
      Header.Height := 25;
-
+     Colors.DisabledColor := clBlack;
      with Header.Columns.Add do
      begin
        Position := 0;
