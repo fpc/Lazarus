@@ -808,7 +808,7 @@ begin
 
    if IsAtLeastOnePackageInstalled then
    begin
-     if MessageDlgEx(Format(rsMainFrm_rsUninstall, ['             ']), mtInformation, [mbYes, mbNo], Self) = mrNo then
+     if MessageDlgEx(Format(rsMainFrm_rsUninstall, ['             ']), mtInformation, [mbYes, mbNo], Self) <> mrYes then
        Exit;
    end
    else
