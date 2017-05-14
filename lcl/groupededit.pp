@@ -205,6 +205,8 @@ type
 
     procedure BuddyClick; virtual;
 
+    procedure DoEnter; override;
+
     procedure EditChange; virtual;
     procedure EditClick; virtual;
     procedure EditDblClick; virtual;
@@ -928,6 +930,13 @@ begin
   begin
     if FocusOnBuddyClick then FocusAndMaybeSelectAll;
   end;
+end;
+
+procedure TCustomAbstractGroupedEdit.DoEnter;
+begin
+  inherited DoEnter;
+  if not (csDesigning in ComponentState) then
+    FEdit.SetFocus;
 end;
 
 procedure TCustomAbstractGroupedEdit.EditChange;
