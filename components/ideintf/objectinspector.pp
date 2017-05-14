@@ -1433,7 +1433,7 @@ function TOICustomPropertyGrid.RealDefaultItemHeight: integer;
 begin
   Result := FDefaultItemHeight;
   if (Result<=0) then
-    Result := MulDiv(22, Screen.PixelsPerInch, 96);
+    Result := ScaleCoord96(22);
 end;
 
 function TOICustomPropertyGrid.GetRowByPath(const PropPath: string): TOIPropertyGridRow;
@@ -5252,8 +5252,8 @@ begin
       IDEImages.Images_16.Draw(
         ABox.Canvas, X, Y,
         IDEImages.LoadImage(16, 'issue_' + LCLPlatformDirNames[lclPlatform]));
-      Inc(X, 16);
-      Inc(X, OutVertCentered(X, IntToStr(ARestrictions[lclPlatform])).CX);
+      Inc(X, ScaleCoord96(16));
+      Inc(X, ScaleCoord96(OutVertCentered(X, IntToStr(ARestrictions[lclPlatform])).CX));
     end;
 
     if None then
