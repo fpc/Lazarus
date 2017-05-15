@@ -782,9 +782,9 @@ end;
 procedure GtkDefInit;
 begin
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets:=TDebugLCLItems.Create;
-  DebugGdiObjects:=TDebugLCLItems.Create;
-  DebugDeviceContexts:=TDebugLCLItems.Create;
+  DebugGtkWidgets:=TDebugLCLItems.Create('GtkDefInit.DebugGtkWidgets');
+  DebugGdiObjects:=TDebugLCLItems.Create('GtkDefInit.DebugGdiObjects');
+  DebugDeviceContexts:=TDebugLCLItems.Create('GtkDefInit.DebugDeviceContexts');
   {$ENDIF}
 end;
 

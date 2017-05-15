@@ -631,7 +631,7 @@ begin
   Widget := gtk_menu_new;
   Result := HMENU({%H-}PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Widget, dbgsName(Sender));
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenu));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AMenu;

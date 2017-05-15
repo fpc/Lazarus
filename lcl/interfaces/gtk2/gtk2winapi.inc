@@ -1902,7 +1902,7 @@ begin
     Exit;
   end;
   {$IFDEF DebugLCLComponents}
-  if DebugGdiObjects.IsDestroyed(GDIObject) then
+  if DebugGdiObjects.IsDestroyed(Pointer(GDIObject)) then
   begin
     DebugLn(['TGtk2WidgetSet.DeleteObject object already deleted ',GDIObject]);
     debugln(DebugGdiObjects.GetInfo(PGdiObject(GDIObject),true));

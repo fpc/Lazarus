@@ -25,6 +25,9 @@ uses
   // LCL
 ////////////////////////////////////////////////////
   LCLType, Controls, Buttons, Graphics, GraphType,
+  {$IFDEF DebugLCLComponents}
+  LazLoggerBase,
+  {$ENDIF}
 ////////////////////////////////////////////////////
   WSButtons, WSLCLClasses, WSProc,
   Gtk2Def;
@@ -191,7 +194,7 @@ begin
   Result := TLCLIntfHandle({%H-}PtrUInt(gtk_button_new));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Pointer(Result),dbgsName(AWinControl));
+  DebugGtkWidgets.MarkCreated(Pointer(Result),DbgSName(AWinControl));
   {$ENDIF}
 
   WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), BitBtn, AParams);
