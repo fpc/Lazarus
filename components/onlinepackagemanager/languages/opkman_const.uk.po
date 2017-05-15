@@ -461,6 +461,20 @@ msgstr "Всі невстановлені пакунки з локального
 msgid "%s packages deleted!"
 msgstr "Видалено %s пакунків!"
 
+#: opkman_const.rsmainfrm_rsuninstall
+msgid ""
+"%sAre you sure you wish to uninstall the checked packages?\n"
+"Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+msgstr ""
+
+#: opkman_const.rsmainfrm_rsuninstall_error
+msgid "Cannot uninstall package \"%s\"!"
+msgstr ""
+
+#: opkman_const.rsmainfrm_rsuninstall_nothing
+msgid "None of the checked packages are installed. Nothing to uninstall."
+msgstr ""
+
 #: opkman_const.rsmainfrm_spclear_hint
 msgid "Clear filter text"
 msgstr "Очистити фільтр"
@@ -531,6 +545,14 @@ msgstr "Створити"
 #: opkman_const.rsmainfrm_tbrepository_hint
 msgid "Create package or repository"
 msgstr "Створити пакунок або сховище"
+
+#: opkman_const.rsmainfrm_tbuninstall_caption
+msgid "Uninstall"
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbuninstall_hint
+msgid "Uninstall packages"
+msgstr ""
 
 #: opkman_const.rsmainfrm_tbupdate_caption
 msgctxt "opkman_const.rsmainfrm_tbupdate_caption"
