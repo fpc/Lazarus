@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-05 01:30+0300\n"
+"PO-Revision-Date: 2017-05-14 14:42+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -615,7 +615,7 @@ msgstr "Виберіть якийсь код у Редакторі коду"
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
 msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
-msgstr "Виберіть у Редакторі коду якийсь код для нового блоку \"With\". Кандидатів для виразу with не знайдено."
+msgstr "Виберіть у Редакторі коду якийсь код для нового блока \"With\". Кандидатів для виразу with не знайдено."
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"

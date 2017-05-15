@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-23 23:12+0200\n"
+"PO-Revision-Date: 2017-05-14 14:33+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -151,7 +151,7 @@ msgstr "Виберіть відомий словник даних"
 
 #: ldd_consts.serrselectdir
 msgid "Please select an existing directory"
-msgstr "Виберіть наявну директорію"
+msgstr "Виберіть наявну теку"
 
 #: ldd_consts.serrselectexe
 msgid "Please select an existing database desktop application"
