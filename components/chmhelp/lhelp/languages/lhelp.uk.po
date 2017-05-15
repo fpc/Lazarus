@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-30 01:52+0300\n"
+"PO-Revision-Date: 2017-05-14 13:17+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -108,7 +108,7 @@ msgstr "  Параметри LHelp:"
 
 #: lhelpstrconsts.slhelp_loadedinms
 msgid "Loaded: %s in %sms"
-msgstr "Заваетажено: %s за %s мс"
+msgstr "Завантажено: %s за %s мс"
 
 #: lhelpstrconsts.slhelp_loading
 msgid "Loading: %s"
@@ -184,13 +184,13 @@ msgstr "Завантаження змісту. Зачекайте ..."
 
 #: lhelpstrconsts.slhelp_untitled
 msgid "untitled"
-msgstr "неозаглавленный"
+msgstr "неназваний"
 
 #: lhelpstrconsts.slhelp_usagelhelpfilenamecontextidhideipcnamelhelpmyapp
 msgid "    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]"
-msgstr "    Использование: lhelp [[имя файла] [--context id] [--hide] [--ipcname lhelp-myapp]]"
+msgstr "    Використання: lhelp [[назва файлу] [--context id] [--hide] [--ipcname lhelp-myapp]]"
 
 #: lhelpstrconsts.slhelp_view
 msgid "&View"
-msgstr "&Вид"
+msgstr "&Вигляд"
 

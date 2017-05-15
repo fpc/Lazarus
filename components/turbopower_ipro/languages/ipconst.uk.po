@@ -1,9 +1,9 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-11-14 01:16+0200\n"
+"PO-Revision-Date: 2017-05-14 14:42+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -2017,7 +2017,7 @@ msgstr "SHA1-хеш не збігаються."
 
 #: ipconst.ssslblocksizeerror
 msgid "Block size error"
-msgstr "Помилка розміру блоку"
+msgstr "Помилка розміру блока"
 
 #: ipconst.ssslbufferoverflow
 msgid "Buffer overflow error."
