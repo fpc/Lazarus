@@ -6251,7 +6251,9 @@ var
   ARestoreVisible: Boolean;
   AncestorClass: TComponentClass;
   DsgControl: TCustomDesignControl;
+  {$IFDEF DataModulePPI}
   DsgDataModule: TDataModule;
+  {$ENDIF}
 begin
   {$IFDEF IDE_DEBUG}
   debugln('TLazSourceFileManager.LoadLFM A ',AnUnitInfo.Filename,' IsPartOfProject=',dbgs(AnUnitInfo.IsPartOfProject),' ');
