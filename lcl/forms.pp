@@ -267,6 +267,8 @@ type
 
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromPPI,
       AToPPI, AOldFormWidth, ANewFormWidth: Integer); override;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -547,8 +549,6 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Deactivate; virtual;
-    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double); override;
     procedure DoClose(var CloseAction: TCloseAction); virtual;
     procedure DoCreate; virtual;
     procedure DoDestroy; virtual;

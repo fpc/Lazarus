@@ -2464,6 +2464,7 @@ begin
   inherited Paint;
 
   Canvas.Font.Assign(Font);
+  Canvas.Font.PixelsPerInch := Font.PixelsPerInch;
 
   Include(FFlags,lgcFocusedPainting);
 

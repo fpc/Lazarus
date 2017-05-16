@@ -53,6 +53,7 @@ type
     FSelected: TColor;
     function GetColor(Index : Integer): TColor;
     function GetColorName(Index: Integer): string;
+    function GetColorRectWidth: Integer;
     function GetSelected: TColor;
     procedure SetColorRectWidth(AValue: Integer);
     procedure SetColorRectOffset(AValue: Integer);
@@ -63,16 +64,19 @@ type
     procedure ColorProc(const s: AnsiString);
     procedure UpdateCombo;
   protected
+    function ColorRectWidthStored: Boolean;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure SetColorList;
     procedure Loaded; override;
     procedure InitializeWnd; override;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
     procedure DoGetColors; virtual;
     procedure CloseUp; override;
     function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    property ColorRectWidth: Integer read FColorRectWidth write SetColorRectWidth default cDefaultColorRectWidth;
+    property ColorRectWidth: Integer read GetColorRectWidth write SetColorRectWidth stored ColorRectWidthStored;
     property ColorRectOffset: Integer read FColorRectOffset write SetColorRectOffset default cDefaultColorRectOffset;
     property Style: TColorBoxStyle read FStyle write SetStyle
       default [cbStandardColors, cbExtendedColors, cbSystemColors];
@@ -167,6 +171,7 @@ type
     FOnGetColors: TLBGetColorsEvent;
     FSelected: TColor;
     FStyle: TColorBoxStyle;
+    function GetColorRectWidth: Integer;
     function GetColors(Index : Integer): TColor;
     function GetColorName(Index: Integer): string;
     function GetSelected: TColor;
@@ -179,16 +184,19 @@ type
     procedure SetStyle(const AValue: TColorBoxStyle); reintroduce;
     procedure ColorProc(const s: AnsiString);
   protected
+    function ColorRectWidthStored: Boolean;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure SetColorList;
     procedure Loaded; override;
     procedure InitializeWnd; override;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
     procedure DoGetColors; virtual;
     procedure DoSelectionChange(User: Boolean); override;
     function PickCustomColor: Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    property ColorRectWidth: Integer read FColorRectWidth write SetColorRectWidth default cDefaultColorRectWidth;
+    property ColorRectWidth: Integer read GetColorRectWidth write SetColorRectWidth stored ColorRectWidthStored;
     property ColorRectOffset: Integer read FColorRectOffset write SetColorRectOffset default cDefaultColorRectOffset;
     property Style: TColorBoxStyle read FStyle write SetStyle
       default [cbStandardColors, cbExtendedColors, cbSystemColors];
@@ -372,7 +380,7 @@ begin
   inherited Style := csOwnerDrawFixed;
   inherited ReadOnly := True;
 
-  FColorRectWidth := cDefaultColorRectWidth;
+  FColorRectWidth := -1;
   FColorRectOffset := cDefaultColorRectOffset;
   FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
   FNoneColorColor := clBlack;
@@ -459,6 +467,14 @@ begin
   Result := Items[Index];
 end;
 
+function TCustomColorBox.GetColorRectWidth: Integer;
+begin
+  if ColorRectWidthStored then
+    Result := FColorRectWidth
+  else
+    Result := MulDiv(cDefaultColorRectWidth, Font.PixelsPerInch, 96);
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCustomColorBox.SetSelected
   Params:   Value
@@ -527,6 +543,25 @@ begin
   end;
 end;
 
+function TCustomColorBox.ColorRectWidthStored: Boolean;
+begin
+  Result := FColorRectWidth >= 0;
+end;
+
+procedure TCustomColorBox.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double
+  );
+begin
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion);
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    if ColorRectWidthStored then
+      FColorRectWidth := Round(FColorRectWidth * AXProportion);
+    Invalidate;
+  end;
+end;
+
 procedure TCustomColorBox.UpdateCombo;
 var
   c: integer;
@@ -572,10 +607,10 @@ begin
   if Index = -1 then
     Exit;
 
-  r.top := Rect.top + FColorRectOffset;
-  r.bottom := Rect.bottom - FColorRectOffset;
-  r.left := Rect.left + FColorRectOffset;
-  r.right := r.left + FColorRectWidth;
+  r.top := Rect.top + ColorRectOffset;
+  r.bottom := Rect.bottom - ColorRectOffset;
+  r.left := Rect.left + ColorRectOffset;
+  r.right := r.left + ColorRectWidth;
   Exclude(State, odPainted);
 
   noFill := false;
@@ -614,7 +649,7 @@ begin
     Pen.Color := PenColor;
   end;
   r := Rect;
-  r.left := r.left + FColorRectWidth + FColorRectOffset + 1;
+  r.left := r.left + ColorRectWidth + ColorRectOffset + 1;
 
   inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;
@@ -710,7 +745,7 @@ constructor TCustomColorListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   inherited Style := lbOwnerDrawFixed;
-  FColorRectWidth := cDefaultColorRectWidth;
+  FColorRectWidth := -1;
   FColorRectOffset := cDefaultColorRectOffset;
   FStyle := [cbStandardColors, cbExtendedColors, cbSystemColors];
   FNoneColorColor := clBlack;
@@ -797,6 +832,14 @@ begin
   Result := Items[Index];
 end;
 
+function TCustomColorListBox.GetColorRectWidth: Integer;
+begin
+  if ColorRectWidthStored then
+    Result := FColorRectWidth
+  else
+    Result := MulDiv(cDefaultColorRectWidth, Font.PixelsPerInch, 96);
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCustomColorListBox.SetSelected
   Params:   Value
@@ -881,6 +924,25 @@ begin
   end;
 end;
 
+function TCustomColorListBox.ColorRectWidthStored: Boolean;
+begin
+  Result := FColorRectWidth >= 0;
+end;
+
+procedure TCustomColorListBox.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double
+  );
+begin
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion);
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    if ColorRectWidthStored then
+      FColorRectWidth := Round(FColorRectWidth * AXProportion);
+    Invalidate;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCustomColorListBox.DrawItem
   Params:   Index, Rect, State
@@ -900,10 +962,10 @@ begin
   if Index < 0 then
     Exit;
 
-  r.top := Rect.top + FColorRectOffset;
-  r.bottom := Rect.bottom - FColorRectOffset;
-  r.left := Rect.left + FColorRectOffset;
-  r.right := r.left + FColorRectWidth;
+  r.top := Rect.top + ColorRectOffset;
+  r.bottom := Rect.bottom - ColorRectOffset;
+  r.left := Rect.left + ColorRectOffset;
+  r.right := r.left + ColorRectWidth;
   Exclude(State,odPainted);
   with Canvas do
   begin
@@ -929,7 +991,7 @@ begin
     Pen.Color := PenColor;
   end;
   r := Rect;
-  r.left := r.left + FColorRectWidth + FColorRectOffset + 1;
+  r.left := r.left + ColorRectWidth + ColorRectOffset + 1;
 
   inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;

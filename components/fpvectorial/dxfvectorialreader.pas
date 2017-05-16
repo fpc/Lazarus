@@ -41,7 +41,11 @@ uses
 type
   TDXFToken = class;
 
-  TDXFTokens = TFPList;// TDXFToken;
+  TDXFTokens = class(TFPList)
+  public
+    destructor Destroy; override;
+    procedure Clear;
+  end;
 
   TDXFToken = class
     GroupCode: Integer;
@@ -462,19 +466,37 @@ const
     (Red: $0000; Green: $0000; Blue: $0000; Alpha: alphaOpaque)  // 255
   );
 
+{ TDXFTokens }
+
+destructor TDXFTokens.Destroy;
+begin
+  Clear;
+  inherited;
+end;
+
+procedure TDXFTokens.Clear;
+var
+  j: Integer;
+begin
+  for j := Count-1 downto 0 do begin
+    TObject(Items[j]).Free;
+    Delete(j);
+  end;
+  inherited;
+end;
+
+
 { TDXFToken }
 
 constructor TDXFToken.Create;
 begin
   inherited Create;
-
   Childs := TDXFTokens.Create;
 end;
 
 destructor TDXFToken.Destroy;
 begin
   Childs.Free;
-
   inherited Destroy;
 end;
 
@@ -483,14 +505,12 @@ end;
 constructor TDXFTokenizer.Create;
 begin
   inherited Create;
-
   Tokens := TDXFTokens.Create;
 end;
 
 destructor TDXFTokenizer.Destroy;
 begin
   Tokens.Free;
-
   inherited Destroy;
 end;
 
@@ -534,6 +554,7 @@ begin
       end
       else if (StrSectionName = 'EOF') then
       begin
+        NewToken.Free;
         Exit;
       end
       // Comments can be in the beginning of the file and start with 999
@@ -2121,19 +2142,19 @@ function TvDXFVectorialReader.InternalReadENTITIES(ATokenStr: string;
 begin
   Result := nil;
   case ATokenStr of
-    '3DFACE':   Result := ReadENTITIES_3DFACE(ATokens, AData, ADoc, AOnlyCreate);
-    'ARC':      Result := ReadENTITIES_ARC(ATokens, AData, ADoc, AOnlyCreate);
-    'CIRCLE':   Result := ReadENTITIES_CIRCLE(ATokens, AData, ADoc, AOnlyCreate);
-    'DIMENSION':Result := ReadENTITIES_DIMENSION(ATokens, AData, ADoc, AOnlyCreate);
-    'ELLIPSE':  Result := ReadENTITIES_ELLIPSE(ATokens, AData, ADoc, AOnlyCreate);
-    'INSERT':   Result := ReadENTITIES_INSERT(ATokens, AData, ADoc, AOnlyCreate);
-    'LINE':     Result := ReadENTITIES_LINE(ATokens, AData, ADoc, AOnlyCreate);
-    'TEXT':     Result := ReadENTITIES_TEXT(ATokens, AData, ADoc, AOnlyCreate);
+    '3DFACE':    Result := ReadENTITIES_3DFACE(ATokens, AData, ADoc, AOnlyCreate);
+    'ARC':       Result := ReadENTITIES_ARC(ATokens, AData, ADoc, AOnlyCreate);
+    'CIRCLE':    Result := ReadENTITIES_CIRCLE(ATokens, AData, ADoc, AOnlyCreate);
+    'DIMENSION': Result := ReadENTITIES_DIMENSION(ATokens, AData, ADoc, AOnlyCreate);
+    'ELLIPSE':   Result := ReadENTITIES_ELLIPSE(ATokens, AData, ADoc, AOnlyCreate);
+    'INSERT':    Result := ReadENTITIES_INSERT(ATokens, AData, ADoc, AOnlyCreate);
+    'LINE':      Result := ReadENTITIES_LINE(ATokens, AData, ADoc, AOnlyCreate);
+    'TEXT':      Result := ReadENTITIES_TEXT(ATokens, AData, ADoc, AOnlyCreate);
     'LWPOLYLINE':Result := ReadENTITIES_LWPOLYLINE(ATokens, AData, ADoc, AOnlyCreate);
-    'SPLINE':   Result := ReadENTITIES_SPLINE(ATokens, AData, ADoc, AOnlyCreate);
-    'POINT':    Result := ReadENTITIES_POINT(ATokens, AData, ADoc, AOnlyCreate);
-    'MTEXT':    Result := ReadENTITIES_MTEXT(ATokens, AData, ADoc, AOnlyCreate);
-    'LEADER':   Result := ReadENTITIES_LEADER(ATokens, AData, ADoc, AOnlyCreate);
+    'SPLINE':    Result := ReadENTITIES_SPLINE(ATokens, AData, ADoc, AOnlyCreate);
+    'POINT':     Result := ReadENTITIES_POINT(ATokens, AData, ADoc, AOnlyCreate);
+    'MTEXT':     Result := ReadENTITIES_MTEXT(ATokens, AData, ADoc, AOnlyCreate);
+    'LEADER':    Result := ReadENTITIES_LEADER(ATokens, AData, ADoc, AOnlyCreate);
     // A Attribute can have multiple child objects
     'ATTRIB':
     begin

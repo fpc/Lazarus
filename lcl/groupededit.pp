@@ -620,7 +620,7 @@ end;
 
 function TCustomAbstractGroupedEdit.GetTabStop: Boolean;
 begin
-  Result := inherited TabStop;
+  Result := FEdit.TabStop;
 end;
 
 function TCustomAbstractGroupedEdit.RealGetText: TCaption;
@@ -935,7 +935,8 @@ end;
 procedure TCustomAbstractGroupedEdit.DoEnter;
 begin
   inherited DoEnter;
-  FEdit.SetFocus;
+  if not (csDesigning in ComponentState) then
+    FEdit.SetFocus;
 end;
 
 procedure TCustomAbstractGroupedEdit.EditChange;
@@ -1132,7 +1133,6 @@ end;
 
 procedure TCustomAbstractGroupedEdit.SetTabStop(AValue: Boolean);
 begin
-  inherited TabStop := AValue;
   FEdit.TabStop := AValue;
 end;
 
@@ -1193,6 +1193,7 @@ begin
   FDirectInput := True;
   FIsReadOnly := False;
   TabStop := True;
+  inherited TabStop := False;
   FocusOnBuddyClick := False;
   FSpacing := 0;
   SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);

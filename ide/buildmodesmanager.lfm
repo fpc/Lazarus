@@ -12,7 +12,7 @@ object BuildModesForm: TBuildModesForm
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 32
@@ -147,6 +147,7 @@ object BuildModesForm: TBuildModesForm
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goRowSelect, goThumbTracking, goSmoothScroll]
     TabOrder = 1
+    TitleStyle = tsNative
     OnCheckboxToggled = BuildModesCheckboxToggled
     OnDrawCell = BuildModesStringGridDrawCell
     OnSelection = BuildModesStringGridSelection

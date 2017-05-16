@@ -28,6 +28,10 @@ unit OSPrinters;
 
 interface
 
+{$IFDEF WinCE}
+{$FATAL This unit (and therefore the Printers4Lazarus package) cannot be built for WinCE}
+{$ENDIF}
+
 {$IFDEF UNIX}
   {$IFDEF DARWIN}
     {$IFDEF LCLCarbon}

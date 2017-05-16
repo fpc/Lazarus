@@ -6,8 +6,8 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
   ClientHeight = 407
   ClientWidth = 521
   TabOrder = 0
-  DesignLeft = 444
-  DesignTop = 275
+  DesignLeft = 418
+  DesignTop = 270
   object grpConditionals: TGroupBox
     Left = 0
     Height = 194
@@ -15,15 +15,15 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Width = 521
     Align = alBottom
     Caption = 'grpConditionals'
-    ClientHeight = 176
-    ClientWidth = 513
+    ClientHeight = 174
+    ClientWidth = 517
     TabOrder = 0
     inline CondSynEdit: TSynEdit
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 154
+      Height = 151
       Top = 0
-      Width = 513
+      Width = 517
       Align = alClient
       Font.Height = 9
       Font.Name = '-misc-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-iso10646-1'
@@ -651,9 +651,9 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     end
     object CondStatusbar: TStatusBar
       Left = 0
-      Height = 22
-      Top = 154
-      Width = 513
+      Height = 23
+      Top = 151
+      Width = 517
       Panels = <      
         item
           Width = 80
@@ -683,17 +683,18 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
     Width = 521
     Align = alClient
     Caption = 'grpCustomOptions'
-    ClientHeight = 190
-    ClientWidth = 513
+    ClientHeight = 188
+    ClientWidth = 517
     TabOrder = 2
     object memoCustomOptions: TMemo
       AnchorSideLeft.Control = grpCustomOptions
+      AnchorSideRight.Control = btnDefines
       AnchorSideBottom.Control = grpCustomOptions
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 186
+      Height = 184
       Top = 4
-      Width = 357
+      Width = 362
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Right = 6
       OnChange = memoCustomOptionsChange
@@ -704,16 +705,14 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       WordWrap = False
     end
     object btnAllOptions: TBitBtn
-      AnchorSideLeft.Control = memoCustomOptions
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = btnDefines
       AnchorSideRight.Control = btnDefines
       AnchorSideRight.Side = asrBottom
-      Left = 363
-      Height = 29
+      Left = 368
+      Height = 22
       Top = 4
-      Width = 150
+      Width = 149
       Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
       Caption = 'All options ...'
       OnClick = btnAllOptionsClick
       ParentShowHint = False
@@ -725,12 +724,11 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       AnchorSideTop.Control = btnAllOptions
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 363
-      Height = 29
-      Top = 39
-      Width = 150
-      Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
+      Left = 368
+      Height = 22
+      Top = 32
+      Width = 149
+      Anchors = [akTop, akRight]
       BorderSpacing.Top = 6
       Caption = 'Defines ...'
       OnClick = btnDefinesClick
@@ -744,12 +742,11 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = btnDefines
       AnchorSideRight.Side = asrBottom
-      Left = 363
-      Height = 29
-      Top = 81
-      Width = 150
+      Left = 368
+      Height = 22
+      Top = 67
+      Width = 149
       Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
       BorderSpacing.Top = 13
       Caption = 'Add -FcUTF8'
       OnClick = btnFcUTF8Click

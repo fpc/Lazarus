@@ -1068,7 +1068,7 @@ begin
     AutoSize:=false;
     SetBounds(0,-30,Width,Height); // hidden
     DropDownCount:=20;
-    ItemHeight:=17;
+    ItemHeight:=MulDiv(17, Screen.PixelsPerInch, 96);
     Parent:=Self;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
@@ -1132,7 +1132,7 @@ end;
 
 constructor TOICustomPropertyGrid.Create(TheOwner: TComponent);
 begin
-  CreateWithParams(TheOwner,nil,AllTypeKinds,22);
+  CreateWithParams(TheOwner,nil,AllTypeKinds,0);
 end;
 
 destructor TOICustomPropertyGrid.Destroy;
@@ -1433,7 +1433,7 @@ function TOICustomPropertyGrid.RealDefaultItemHeight: integer;
 begin
   Result := FDefaultItemHeight;
   if (Result<=0) then
-    Result := MulDiv(22, Screen.PixelsPerInch, 96);
+    Result := ScaleCoord96(22);
 end;
 
 function TOICustomPropertyGrid.GetRowByPath(const PropPath: string): TOIPropertyGridRow;
@@ -2832,7 +2832,7 @@ begin
       // edit dialog button
       with EditBtnRect do begin
         Top := EditCompRect.Top;
-        Left := EditCompRect.Right - 20;
+        Left := EditCompRect.Right - ScaleCoord96(20);
         Bottom := EditCompRect.Bottom - 1;
         Right := EditCompRect.Right;
         EditCompRect.Right := Left;
@@ -5252,8 +5252,8 @@ begin
       IDEImages.Images_16.Draw(
         ABox.Canvas, X, Y,
         IDEImages.LoadImage(16, 'issue_' + LCLPlatformDirNames[lclPlatform]));
-      Inc(X, 16);
-      Inc(X, OutVertCentered(X, IntToStr(ARestrictions[lclPlatform])).CX);
+      Inc(X, ScaleCoord96(16));
+      Inc(X, ScaleCoord96(OutVertCentered(X, IntToStr(ARestrictions[lclPlatform])).CX));
     end;
 
     if None then
@@ -6021,7 +6021,7 @@ begin
   Hook:=TPropertyEditorHook.Create(Self);
   FAutoFreeHook:=true;
   FSaveOnChangeTIObject:=true;
-  CreateWithParams(TheOwner,Hook,AllTypeKinds,22);
+  CreateWithParams(TheOwner,Hook,AllTypeKinds,0);
 end;
 
 destructor TCustomPropertiesGrid.Destroy;

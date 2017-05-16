@@ -1,11 +1,11 @@
 object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
-  Left = 382
+  Left = 330
   Height = 500
-  Top = 228
+  Top = 375
   Width = 544
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'CodeToolsDefinesEditor'
-  ClientHeight = 479
+  ClientHeight = 480
   ClientWidth = 544
   KeyPreview = True
   Menu = MainMenu
@@ -14,7 +14,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   OnKeyDown = CodeToolsDefinesEditorKeyDown
   OnKeyUp = CodeToolsDefinesEditorKeyUp
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object DefineTreeView: TTreeView
     Left = 6
     Height = 123
@@ -30,7 +30,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   end
   object SelectedItemGroupBox: TGroupBox
     Left = 6
-    Height = 293
+    Height = 296
     Top = 146
     Width = 532
     Align = alClient
@@ -40,20 +40,24 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     ClientWidth = 528
     TabOrder = 2
     object NameLabel: TLabel
-      Left = 10
+      AnchorSideLeft.Control = TypeLabel
+      AnchorSideTop.Control = NameEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
       Height = 15
-      Top = 26
-      Width = 61
-      BorderSpacing.Right = 6
+      Top = 31
+      Width = 60
       Caption = 'NameLabel'
       ParentColor = False
     end
     object DescriptionLabel: TLabel
-      Left = 10
+      AnchorSideLeft.Control = TypeLabel
+      AnchorSideTop.Control = DescriptionEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
       Height = 15
-      Top = 53
-      Width = 93
-      BorderSpacing.Right = 6
+      Top = 56
+      Width = 88
       Caption = 'DescriptionLabel'
       ParentColor = False
     end
@@ -68,33 +72,38 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       ParentColor = False
     end
     object VariableLabel: TLabel
-      Left = 10
+      AnchorSideLeft.Control = TypeLabel
+      AnchorSideTop.Control = VariableEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 6
       Height = 15
-      Top = 78
-      Width = 74
-      BorderSpacing.Right = 6
+      Top = 81
+      Width = 69
       Caption = 'VariableLabel'
       ParentColor = False
     end
     object ValueNoteBook: TPageControl
+      AnchorSideTop.Control = VariableEdit
+      AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 164
-      Top = 106
+      Height = 162
+      Top = 108
       Width = 516
-      ActivePage = ValueAsTextPage
+      ActivePage = ValueAsPathsPage
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Top = 2
       BorderSpacing.Around = 6
-      TabIndex = 0
+      TabIndex = 1
       TabOrder = 3
       OnChange = ValueNoteBookPageChanged
       object ValueAsTextPage: TTabSheet
         Caption = 'ValueAsTextPage'
-        ClientHeight = 135
+        ClientHeight = 137
         ClientWidth = 512
         inline ValueAsTextSynEdit: TSynEdit
           Left = 0
-          Height = 135
+          Height = 152
           Top = 0
           Width = 512
           Align = alClient
@@ -107,7 +116,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 61
+          Gutter.Width = 59
           Gutter.MouseActions = <          
             item
               ClickCount = ccAny
@@ -544,7 +553,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
               MouseActions = <>
             end
             object TSynGutterLineNumber
-              Width = 21
+              Width = 19
               MouseActions = <>
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
@@ -621,14 +630,14 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       end
       object ValueAsPathsPage: TTabSheet
         Caption = 'ValueAsPathsPage'
-        ClientHeight = 135
-        ClientWidth = 512
+        ClientHeight = 134
+        ClientWidth = 508
         inline ValueAsFilePathsSynEdit: TSynEdit
-          AnchorSideRight.Control = DeleteFilePathBitBtn
+          AnchorSideRight.Control = MoveFilePathUpBitBtn
           Left = 0
-          Height = 168
+          Height = 134
           Top = 0
-          Width = 420
+          Width = 351
           Align = alLeft
           BorderSpacing.Right = 6
           Anchors = [akTop, akLeft, akRight, akBottom]
@@ -641,7 +650,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 61
+          Gutter.Width = 59
           Gutter.MouseActions = <          
             item
               ClickCount = ccAny
@@ -1078,7 +1087,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
               MouseActions = <>
             end
             object TSynGutterLineNumber
-              Width = 21
+              Width = 19
               MouseActions = <>
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
@@ -1153,41 +1162,70 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           end
         end
         object MoveFilePathUpBitBtn: TBitBtn
-          Left = 426
-          Height = 30
+          AnchorSideLeft.Control = ValueAsFilePathsSynEdit
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideRight.Control = ValueAsPathsPage
+          AnchorSideRight.Side = asrBottom
+          Left = 357
+          Height = 25
           Top = 2
-          Width = 75
+          Width = 145
           Anchors = [akTop, akRight]
+          AutoSize = True
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
           Caption = 'MoveFilePathUpBitBtn'
+          Constraints.MinWidth = 80
           OnClick = MoveFilePathUpBitBtnClick
           TabOrder = 1
         end
         object MoveFilePathDownBitBtn: TBitBtn
-          Left = 426
-          Height = 30
-          Top = 34
-          Width = 75
-          Anchors = [akTop, akRight]
+          AnchorSideLeft.Control = MoveFilePathUpBitBtn
+          AnchorSideTop.Control = MoveFilePathUpBitBtn
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = MoveFilePathUpBitBtn
+          AnchorSideRight.Side = asrBottom
+          Left = 357
+          Height = 25
+          Top = 31
+          Width = 145
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = True
+          BorderSpacing.Top = 4
           Caption = 'MoveFilePathDownBitBtn'
           OnClick = MoveNodeDownMenuItemClick
           TabOrder = 2
         end
         object DeleteFilePathBitBtn: TBitBtn
-          Left = 426
-          Height = 30
-          Top = 66
-          Width = 75
-          Anchors = [akTop, akRight]
+          AnchorSideLeft.Control = MoveFilePathDownBitBtn
+          AnchorSideTop.Control = MoveFilePathDownBitBtn
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = MoveFilePathUpBitBtn
+          AnchorSideRight.Side = asrBottom
+          Left = 357
+          Height = 25
+          Top = 60
+          Width = 145
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = True
+          BorderSpacing.Top = 4
           Caption = 'DeleteFilePathBitBtn'
           OnClick = DeleteFilePathBitBtnClick
           TabOrder = 3
         end
         object InsertFilePathBitBtn: TBitBtn
-          Left = 426
-          Height = 30
-          Top = 98
-          Width = 75
-          Anchors = [akTop, akRight]
+          AnchorSideLeft.Control = MoveFilePathUpBitBtn
+          AnchorSideTop.Control = DeleteFilePathBitBtn
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = MoveFilePathUpBitBtn
+          AnchorSideRight.Side = asrBottom
+          Left = 357
+          Height = 25
+          Top = 89
+          Width = 145
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = True
+          BorderSpacing.Top = 4
           Caption = 'InsertFilePathBitBtn'
           OnClick = InsertFilePathBitBtnClick
           TabOrder = 4
@@ -1195,31 +1233,48 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       end
     end
     object NameEdit: TEdit
-      Left = 128
-      Height = 25
-      Top = 23
-      Width = 394
+      AnchorSideLeft.Control = DescriptionLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = TypeLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = TypeLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 100
+      Height = 23
+      Top = 27
+      Width = 422
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Left = 6
       TabOrder = 0
       Text = 'NameEdit'
     end
     object DescriptionEdit: TEdit
-      Left = 128
-      Height = 25
-      Top = 50
-      Width = 394
+      AnchorSideLeft.Control = NameEdit
+      AnchorSideTop.Control = NameEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = NameEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 100
+      Height = 23
+      Top = 52
+      Width = 422
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 2
       TabOrder = 1
       Text = 'DescriptionEdit'
     end
     object VariableEdit: TEdit
-      Left = 128
-      Height = 25
-      Top = 76
-      Width = 394
+      AnchorSideLeft.Control = NameEdit
+      AnchorSideTop.Control = DescriptionEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = NameEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 100
+      Height = 23
+      Top = 77
+      Width = 422
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 2
       TabOrder = 2
       Text = 'VariableEdit'
     end
@@ -1235,8 +1290,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 28
-    Top = 445
+    Height = 26
+    Top = 448
     Width = 532
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -1252,8 +1307,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
     ShowBevel = False
   end
   object MainMenu: TMainMenu
-    left = 46
-    top = 72
+    Left = 46
+    Top = 72
     object EditMenuItem: TMenuItem
       Caption = 'EditMenuItem'
       object MoveNodeUpMenuItem: TMenuItem

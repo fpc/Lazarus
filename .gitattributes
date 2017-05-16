@@ -6886,23 +6886,41 @@ images/menu/menu_saveas.png -text
 images/menu/menu_saveas_150.png -text
 images/menu/menu_saveas_200.png -text
 images/menu/menu_search_files.png -text svneol=unset#image/png
+images/menu/menu_search_files_150.png -text
+images/menu/menu_search_files_200.png -text
 images/menu/menu_search_find.png -text svneol=unset#image/png
+images/menu/menu_search_find_150.png -text
+images/menu/menu_search_find_200.png -text
 images/menu/menu_search_find_next.png -text svneol=unset#image/png
+images/menu/menu_search_find_next_150.png -text
+images/menu/menu_search_find_next_200.png -text
 images/menu/menu_search_find_previous.png -text svneol=unset#image/png
+images/menu/menu_search_find_previous_150.png -text
+images/menu/menu_search_find_previous_200.png -text
 images/menu/menu_search_incremental.png -text
+images/menu/menu_search_incremental_150.png -text
+images/menu/menu_search_incremental_200.png -text
 images/menu/menu_search_jumpback.png -text svneol=unset#image/png
 images/menu/menu_search_jumpforward.png -text svneol=unset#image/png
 images/menu/menu_search_next_bookmark.png -text
 images/menu/menu_search_openfile_atcursor.png -text svneol=unset#image/png
 images/menu/menu_search_previous_bookmark.png -text
 images/menu/menu_search_replace.png -text svneol=unset#image/png
+images/menu/menu_search_replace_150.png -text
+images/menu/menu_search_replace_200.png -text
 images/menu/menu_search_set_bookmark.png -text svneol=unset#image/png
 images/menu/menu_select_all.png -text svneol=unset#image/png
 images/menu/menu_set_free_bookmark.png -text
 images/menu/menu_stepinto.png -text svneol=unset#image/png
+images/menu/menu_stepinto_150.png -text
+images/menu/menu_stepinto_200.png -text
 images/menu/menu_stepinto_instr.png -text svneol=unset#image/png
 images/menu/menu_stepout.png -text svneol=unset#image/png
+images/menu/menu_stepout_150.png -text
+images/menu/menu_stepout_200.png -text
 images/menu/menu_stepover.png -text svneol=unset#image/png
+images/menu/menu_stepover_150.png -text
+images/menu/menu_stepover_200.png -text
 images/menu/menu_stepover_instr.png -text svneol=unset#image/png
 images/menu/menu_stop.png -text svneol=unset#image/png
 images/menu/menu_toggle_bookmark0.png -text
@@ -8029,6 +8047,8 @@ lcl/interfaces/qt5/cbindings/src/qapplication_hook_c.cpp svneol=native#text/plai
 lcl/interfaces/qt5/cbindings/src/qapplication_hook_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qauthenticator_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qauthenticator_c.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qbackingstore_c.cpp svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qbackingstore_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qbitmap_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qbitmap_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qboxlayout_c.cpp svneol=native#text/plain
@@ -8264,6 +8284,8 @@ lcl/interfaces/qt5/cbindings/src/qmainwindow_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qmainwindow_hook.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qmainwindow_hook_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qmainwindow_hook_c.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qmargins_c.cpp svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qmargins_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qmatrix_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qmatrix_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qmdiarea_c.cpp svneol=native#text/plain
@@ -8389,6 +8411,11 @@ lcl/interfaces/qt5/cbindings/src/qregion_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qregion_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qrubberband_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qrubberband_c.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qscreen_c.cpp svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qscreen_c.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qscreen_hook.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qscreen_hook_c.cpp svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qscreen_hook_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qscrollarea_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qscrollarea_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qscrollbar_c.cpp svneol=native#text/plain
@@ -8471,6 +8498,10 @@ lcl/interfaces/qt5/cbindings/src/qstylefactory_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qstylefactory_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qstyleoption_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qstyleoption_c.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qsurface_c.cpp svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qsurface_c.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qsurfaceformat_c.cpp svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qsurfaceformat_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qsystemtrayicon_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qsystemtrayicon_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qsystemtrayicon_hook.h svneol=native#text/plain
@@ -8639,6 +8670,11 @@ lcl/interfaces/qt5/cbindings/src/qwidget_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qwidget_hook.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qwidget_hook_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qwidget_hook_c.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qwindow_c.cpp svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qwindow_c.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qwindow_hook.h svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qwindow_hook_c.cpp svneol=native#text/plain
+lcl/interfaces/qt5/cbindings/src/qwindow_hook_c.h svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qx11info_x11_c.cpp svneol=native#text/plain
 lcl/interfaces/qt5/cbindings/src/qx11info_x11_c.h svneol=native#text/plain
 lcl/interfaces/qt5/interfaces.pp svneol=native#text/plain
