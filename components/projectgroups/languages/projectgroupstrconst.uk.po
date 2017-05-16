@@ -2,16 +2,15 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-31 01:48+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"PO-Revision-Date: 2017-05-16 11:08+0300\n"
+"Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
-"MIME-Version: 1.0\n"
+"Language: uk\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"X-Generator: Lokalize 1.5\n"
+"MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -455,9 +454,9 @@ msgstr "Неможливо записати файл групи проектів
 
 #: projectgroupstrconst.liswriteerror
 msgid "Write error"
-msgstr "Ошибка записи"
+msgstr "Помилка запису"
 
 #: projectgroupstrconst.lisxmlsyntaxerrorinfile
 msgid "XML syntax error in file \"%s\": %s"
-msgstr "Синтаксическая ошибка XML в файле \"%s\": %s"
+msgstr "Синтаксична помилка XML у файлі \"%s\": %s"
 
