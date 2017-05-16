@@ -498,6 +498,7 @@ QStyleOptionH = class(TObject) end;
   QStyleOptionToolBoxH = class(QStyleOptionH) end;
   QStyleOptionViewItemH = class(QStyleOptionH) end;
 QSurfaceH = class(TObject) end;
+QSurfaceFormatH = class(TObject) end;
 QTableWidgetItemH = class(TObject) end;
 QTableWidgetSelectionRangeH = class(TObject) end;
 QTextBlockH = class(TObject) end;
@@ -556,6 +557,8 @@ QClipboard_hookH = class(QObject_hookH) end;
 QDrag_hookH = class(QObject_hookH) end;
 QGuiApplication_hookH = class(QCoreApplication_hookH) end;
 QApplication_hookH = class(QGuiApplication_hookH) end;
+QScreen_hookH = class(QObject_hookH) end;
+QWindow_hookH = class(QObject_hookH) end;
 QWidget_hookH = class(QObject_hookH) end;
 QLayout_hookH = class(QObject_hookH) end;
 QStackedLayout_hookH = class(QLayout_hookH) end;
@@ -3204,6 +3207,21 @@ procedure QStringList_takeLast(handle: QStringListH; retval: PWideString); cdecl
 procedure QStringList_move(handle: QStringListH; from: Integer; _to: Integer); cdecl; external Qt5PasLib name 'QStringList_move';
 procedure QStringList_swap(handle: QStringListH; i: Integer; j: Integer); cdecl; external Qt5PasLib name 'QStringList_swap';
 
+
+function QMargins_Create(): QMarginsH; cdecl; external Qt5PasLib name 'QMargins_Create';
+function QMargins_Create(left: integer; top: integer; right: integer; bottom: integer): QMarginsH; cdecl; external Qt5PasLib name 'QMargins_Create2';
+procedure QMargins_Destroy(handle: QMarginsH); cdecl; external Qt5PasLib name 'QMargins_Destroy';
+function QMargins_isNull(handle: QMarginsH): boolean; cdecl; external Qt5PasLib name 'QMargins_isNull';
+function QMargins_left(handle: QMarginsH): integer; cdecl; external Qt5PasLib name 'QMargins_left';
+function QMargins_top(handle: QMarginsH): integer; cdecl; external Qt5PasLib name 'QMargins_top';
+function QMargins_right(handle: QMarginsH): integer; cdecl; external Qt5PasLib name 'QMargins_right';
+function QMargins_bottom(handle: QMarginsH): integer; cdecl; external Qt5PasLib name 'QMargins_bottom';
+procedure QMargins_setLeft(handle: QMarginsH; left: integer); cdecl; external Qt5PasLib name 'QMargins_setLeft';
+procedure QMargins_setTop(handle: QMarginsH; top: integer); cdecl; external Qt5PasLib name 'QMargins_setTop';
+procedure QMargins_setRight(handle: QMarginsH; right: integer); cdecl; external Qt5PasLib name 'QMargins_setRight';
+procedure QMargins_setBottom(handle: QMarginsH; bottom: integer); cdecl; external Qt5PasLib name 'QMargins_setBottom';
+
+
 function QRect_Create(): QRectH; cdecl; external Qt5PasLib name 'QRect_Create';
 procedure QRect_Destroy(handle: QRectH); cdecl; external Qt5PasLib name 'QRect_Destroy'; 
 function QRect_Create(topleft: PQtPoint; bottomright: PQtPoint): QRectH; cdecl; external Qt5PasLib name 'QRect_Create2';
@@ -5662,6 +5680,231 @@ procedure QSizePolicy_setHorizontalStretch(handle: QSizePolicyH; stretchFactor: 
 procedure QSizePolicy_setVerticalStretch(handle: QSizePolicyH; stretchFactor: Integer); cdecl; external Qt5PasLib name 'QSizePolicy_setVerticalStretch';
 procedure QSizePolicy_transpose(handle: QSizePolicyH); cdecl; external Qt5PasLib name 'QSizePolicy_transpose';
 
+
+function QBackingStore_Create(window: QWindowH): QBackingStoreH; cdecl; external Qt5PasLib name 'QBackingStore_Create';
+procedure QBackingStore_Destroy(handle: QBackingStoreH); cdecl; external Qt5PasLib name 'QBackingStore_Destroy';
+function QBackingStore_window(handle: QBackingStoreH): QWindowH; cdecl; external Qt5PasLib name 'QBackingStore_window';
+function QBackingStore_paintDevice(handle: QBackingStoreH): QPaintDeviceH; cdecl; external Qt5PasLib name 'QBackingStore_paintDevice';
+procedure QBackingStore_flush(handle: QBackingStoreH; region: QRegionH; window: QWindowH; offset: PQtPoint); cdecl; external Qt5PasLib name 'QBackingStore_flush';
+procedure QBackingStore_resize(handle: QBackingStoreH; AnonParam1: PSize); cdecl; external Qt5PasLib name 'QBackingStore_resize';
+procedure QBackingStore_size(handle: QBackingStoreH; retval: PSize); cdecl; external Qt5PasLib name 'QBackingStore_size';
+function QBackingStore_scroll(handle: QBackingStoreH; area: QRegionH; dx: integer; dy: integer): boolean; cdecl; external Qt5PasLib name 'QBackingStore_scroll';
+procedure QBackingStore_beginPaint(handle: QBackingStoreH; AnonParam1: QRegionH); cdecl; external Qt5PasLib name 'QBackingStore_beginPaint';
+procedure QBackingStore_endPaint(handle: QBackingStoreH); cdecl; external Qt5PasLib name 'QBackingStore_endPaint';
+procedure QBackingStore_setStaticContents(handle: QBackingStoreH; AnonParam1: QRegionH); cdecl; external Qt5PasLib name 'QBackingStore_setStaticContents';
+procedure QBackingStore_staticContents(handle: QBackingStoreH; retval: QRegionH); cdecl; external Qt5PasLib name 'QBackingStore_staticContents';
+function QBackingStore_hasStaticContents(handle: QBackingStoreH): boolean; cdecl; external Qt5PasLib name 'QBackingStore_hasStaticContents';
+
+
+type
+  QSurfaceSurfaceClass = (QSurfaceSurfaceClassWindow, QSurfaceSurfaceClassOffscreen);
+  QSurfaceSurfaceType = (QSurfaceSurfaceTypeRasterSurface, QSurfaceSurfaceTypeOpenGLSurface, QSurfaceSurfaceTypeRasterGLSurface);
+
+
+procedure QSurface_Destroy(handle: QSurfaceH); cdecl; external Qt5PasLib name 'QSurface_Destroy';
+procedure QSurface_size(handle: QSurfaceH; retval: PSize); cdecl; external Qt5PasLib name 'QSurface_size';
+function QSurface_supportsOpenGL(handle: QSurfaceH): boolean; cdecl; external Qt5PasLib name 'QSurface_supportsOpenGL';
+function QSurface_surfaceClass(handle: QSurfaceH): QSurfaceSurfaceClass; cdecl; external Qt5PasLib name 'QSurface_surfaceClass';
+function QSurface_surfaceType(handle: QSurfaceH): QSurfaceSurfaceType; cdecl; external Qt5PasLib name 'QSurface_surfaceType';
+procedure QSurface_format(handle: QSurfaceH; retval: QSurfaceFormatH); cdecl; external Qt5PasLib name 'QSurface_format';
+
+
+type
+  QSurfaceFormatFormatOptions = cardinal;
+  QSurfaceFormatFormatOption = cardinal;
+
+const
+  QSurfaceFormatOptionStereoBuffers = $0001;
+  QSurfaceFormatOptionDebugContext = $0002;
+  QSurfaceFormatOptionDeprecatedFunctions = $0004;
+  QSurfaceFormatOptionResetNotification = $0008;
+
+type
+  QSurfaceSwapBehavior = (QSurfaceSwapBehaviorDefaultSwapBehavior,
+        QSurfaceSwapBehaviorSingleBuffer, QSurfaceSwapBehaviorDoubleBuffer,
+        QSurfaceSwapBehaviorTripleBuffer);
+
+ QSurfaceFormatOpenGLContextProfile = (QSurfaceFormatOpenGLContextProfileNoProfile,
+   QSurfaceFormatOpenGLContextProfileCoreProfile,
+   QSurfaceFormatOpenGLContextProfileCompatibilityProfile);
+
+ QSurfaceFormatRenderableType = (QSurfaceFormatRenderableTypeDefaultRenderableType = $0,
+ QSurfaceFormatRenderableTypeOpenGL = $1, QSurfaceFormatRenderableTypeOpenGLES = $2,
+ QSurfaceFormatRenderableTypeOpenVG = $4);
+
+function QSurfaceFormat_Create(): QSurfaceFormatH; cdecl; external Qt5PasLib name 'QSurfaceFormat_Create';
+function QSurfaceFormat_Create(options: QSurfaceFormatFormatOptions):QSurfaceFormatH; cdecl; external Qt5PasLib name 'QSurfaceFormat_Create2';
+procedure QSurfaceFormat_Destroy(handle: QSurfaceFormatH); cdecl; external Qt5PasLib name 'QSurfaceFormat_Destroy';
+procedure QSurfaceFormat_setDepthBufferSize(handle: QSurfaceFormatH; asize: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setDepthBufferSize';
+function QSurfaceFormat_depthBufferSize(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_depthBufferSize';
+procedure QSurfaceFormat_setStencilBufferSize(handle: QSurfaceFormatH; asize: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setStencilBufferSize';
+function QSurfaceFormat_stencilBufferSize(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_stencilBufferSize';
+procedure QSurfaceFormat_setRedBufferSize(handle: QSurfaceFormatH; asize: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setRedBufferSize';
+function QSurfaceFormat_redBufferSize(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_redBufferSize';
+procedure QSurfaceFormat_setGreenBufferSize(handle: QSurfaceFormatH; asize: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setGreenBufferSize';
+function QSurfaceFormat_greenBufferSize(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_greenBufferSize';
+procedure QSurfaceFormat_setBlueBufferSize(handle: QSurfaceFormatH; asize: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setBlueBufferSize';
+function QSurfaceFormat_blueBufferSize(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_blueBufferSize';
+procedure QSurfaceFormat_setAlphaBufferSize(handle: QSurfaceFormatH; asize: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setAlphaBufferSize';
+function QSurfaceFormat_alphaBufferSize(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_alphaBufferSize';
+procedure QSurfaceFormat_setSamples(handle: QSurfaceFormatH; numSamples: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setSamples';
+function QSurfaceFormat_samples(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_samples';
+procedure QSurfaceFormat_setSwapBehavior(handle: QSurfaceFormatH; behavior: QSurfaceSwapBehavior); cdecl; external Qt5PasLib name 'QSurfaceFormat_setSwapBehavior';
+function QSurfaceFormat_swapBehavior(handle: QSurfaceFormatH): QSurfaceSwapBehavior; cdecl; external Qt5PasLib name 'QSurfaceFormat_swapBehavior';
+function QSurfaceFormat_hasAlpha(handle: QSurfaceFormatH): boolean; cdecl; external Qt5PasLib name 'QSurfaceFormat_hasAlpha';
+procedure QSurfaceFormat_setProfile(handle: QSurfaceFormatH; profile: QSurfaceFormatOpenGLContextProfile); cdecl; external Qt5PasLib name 'QSurfaceFormat_setProfile';
+function QSurfaceFormat_profile(handle: QSurfaceFormatH): QSurfaceFormatOpenGLContextProfile; cdecl; external Qt5PasLib name 'QSurfaceFormat_profile';
+procedure QSurfaceFormat_setRenderableType(handle: QSurfaceFormatH; atype: QSurfaceFormatRenderableType); cdecl; external Qt5PasLib name 'QSurfaceFormat_setRenderableType';
+function QSurfaceFormat_renderableType(handle: QSurfaceFormatH): QSurfaceFormatRenderableType; cdecl; external Qt5PasLib name 'QSurfaceFormat_renderableType';
+procedure QSurfaceFormat_setMajorVersion(handle: QSurfaceFormatH; majorVersion: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setMajorVersion';
+function QSurfaceFormat_majorVersion(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_majorVersion';
+procedure QSurfaceFormat_setMinorVersion(handle: QSurfaceFormatH; minorVersion: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setMinorVersion';
+function QSurfaceFormat_minorVersion(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_minorVersion';
+function QSurfaceFormat_stereo(handle: QSurfaceFormatH): boolean; cdecl; external Qt5PasLib name 'QSurfaceFormat_stereo';
+procedure QSurfaceFormat_setStereo(handle: QSurfaceFormatH; enable: boolean); cdecl; external Qt5PasLib name 'QSurfaceFormat_setStereo';
+procedure QSurfaceFormat_setOptions(handle: QSurfaceFormatH; options: QSurfaceFormatFormatOptions); cdecl; external Qt5PasLib name 'QSurfaceFormat_setOptions';
+procedure QSurfaceFormat_setOption(handle: QSurfaceFormatH; option: QSurfaceFormatFormatOption; AOn: boolean = True); cdecl; external Qt5PasLib name 'QSurfaceFormat_setOption';
+function QSurfaceFormat_testOption(handle: QSurfaceFormatH; option: QSurfaceFormatFormatOption): boolean; cdecl; external Qt5PasLib name 'QSurfaceFormat_testOption';
+function QSurfaceFormat_options(handle: QSurfaceFormatH): QSurfaceFormatFormatOptions; cdecl; external Qt5PasLib name 'QSurfaceFormat_options';
+function QSurfaceFormat_swapInterval(handle: QSurfaceFormatH): integer; cdecl; external Qt5PasLib name 'QSurfaceFormat_swapInterval';
+procedure QSurfaceFormat_setSwapInterval(handle: QSurfaceFormatH; interval: integer); cdecl; external Qt5PasLib name 'QSurfaceFormat_setSwapInterval';
+procedure QSurfaceFormat_setDefaultFormat(format: QSurfaceFormatH); cdecl; external Qt5PasLib name 'QSurfaceFormat_setDefaultFormat';
+procedure QSurfaceFormat_defaultFormat(retval: QSurfaceFormatH); cdecl; external Qt5PasLib name 'QSurfaceFormat_defaultFormat';
+
+type
+  QWindowVisibility = (QWindowVisibilityHidden,
+    QWindowVisibilityAutomaticVisibility, QWindowVisibilityWindowed, QWindowVisibilityMinimized,
+    QWindowVisibilityMaximized, QWindowVisibilityFullScreen);
+
+  QWindowAncestorMode = (QWindowAncestorModeExcludeTransients,
+    QWindowAncestorModeIncludeTransients);
+
+function QWindow_Create(parent: QWindowH = nil): QWindowH; cdecl; external Qt5PasLib name 'QWindow_Create';
+function QWindow_Create(screen: QScreenH = nil): QWindowH; cdecl; external Qt5PasLib name 'QWindow_Create2';
+procedure QWindow_Destroy(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_Destroy';
+procedure QWindow_setSurfaceType(handle: QWindowH; surfaceType: QSurfaceSurfaceType); cdecl; external Qt5PasLib name 'QWindow_setSurfaceType';
+function QWindow_surfaceType(handle: QWindowH): QSurfaceSurfaceType; cdecl; external Qt5PasLib name 'QWindow_surfaceType';
+function QWindow_isVisible(handle: QWindowH): boolean; cdecl; external Qt5PasLib name 'QWindow_isVisible';
+function QWindow_visibility(handle: QWindowH): QWindowVisibility; cdecl; external Qt5PasLib name 'QWindow_visibility';
+procedure QWindow_setVisibility(handle: QWindowH; v: QWindowVisibility); cdecl; external Qt5PasLib name 'QWindow_setVisibility';
+procedure QWindow_createPlatformResources(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_createPlatformResources';
+procedure QWindow_destroyPlatformResources(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_destroyPlatformResources';
+function QWindow_winId(handle: QWindowH): LongWord; cdecl; external Qt5PasLib name 'QWindow_winId';
+function QWindow_parent(handle: QWindowH): QWindowH; cdecl; external Qt5PasLib name 'QWindow_parent';
+procedure QWindow_setParent(handle: QWindowH; parent: QWindowH); cdecl; external Qt5PasLib name 'QWindow_setParent';
+function QWindow_isTopLevel(handle: QWindowH): boolean; cdecl; external Qt5PasLib name 'QWindow_isTopLevel';
+function QWindow_isModal(handle: QWindowH): boolean; cdecl; external Qt5PasLib name 'QWindow_isModal';
+function QWindow_modality(handle: QWindowH): QtWindowModality; cdecl; external Qt5PasLib name 'QWindow_modality';
+procedure QWindow_setModality(handle: QWindowH; windowModality: QtWindowModality); cdecl; external Qt5PasLib name 'QWindow_setModality';
+procedure QWindow_setFormat(handle: QWindowH; format: QSurfaceFormatH); cdecl; external Qt5PasLib name 'QWindow_setFormat';
+procedure QWindow_format(handle: QWindowH; retval: QSurfaceFormatH); cdecl; external Qt5PasLib name 'QWindow_format';
+procedure QWindow_requestedFormat(handle: QWindowH; retval: QSurfaceFormatH); cdecl; external Qt5PasLib name 'QWindow_requestedFormat';
+procedure QWindow_setFlags(handle: QWindowH; flags: QtWindowFlags); cdecl; external Qt5PasLib name 'QWindow_setFlags';
+function QWindow_flags(handle: QWindowH): LongWord; cdecl; external Qt5PasLib name 'QWindow_flags';
+function QWindow_type(handle: QWindowH): QtWindowType; cdecl; external Qt5PasLib name 'QWindow_type';
+procedure QWindow_title(handle: QWindowH; retval: PWideString); cdecl; external Qt5PasLib name 'QWindow_title';
+procedure QWindow_setOpacity(handle: QWindowH; level: qreal); cdecl; external Qt5PasLib name 'QWindow_setOpacity';
+function QWindow_opacity(handle: QWindowH): qreal; cdecl; external Qt5PasLib name 'QWindow_opacity';
+procedure QWindow_setMask(handle: QWindowH; AnonParam1: QRegionH); cdecl; external Qt5PasLib name 'QWindow_setMask';
+procedure QWindow_mask(handle: QWindowH; retval: QRegionH); cdecl; external Qt5PasLib name 'QWindow_mask';
+function QWindow_isActive(handle: QWindowH): boolean; cdecl; external Qt5PasLib name 'QWindow_isActive';
+procedure QWindow_reportContentOrientationChange(handle: QWindowH; orientation: QtScreenOrientation); cdecl; external Qt5PasLib name 'QWindow_reportContentOrientationChange';
+function QWindow_contentOrientation(handle: QWindowH): QtScreenOrientation; cdecl; external Qt5PasLib name 'QWindow_contentOrientation';
+function QWindow_devicePixelRatio(handle: QWindowH): qreal; cdecl; external Qt5PasLib name 'QWindow_devicePixelRatio';
+function QWindow_windowState(handle: QWindowH): QtWindowState; cdecl; external Qt5PasLib name 'QWindow_windowState';
+procedure QWindow_setWindowState(handle: QWindowH; state: QtWindowState); cdecl; external Qt5PasLib name 'QWindow_setWindowState';
+procedure QWindow_setTransientParent(handle: QWindowH; parent: QWindowH); cdecl; external Qt5PasLib name 'QWindow_setTransientParent';
+function QWindow_transientParent(handle: QWindowH): QWindowH; cdecl; external Qt5PasLib name 'QWindow_transientParent';
+function QWindow_isAncestorOf(handle: QWindowH; child: QWindowH; mode: QWindowAncestorMode = QWindowAncestorModeIncludeTransients): boolean; cdecl; external Qt5PasLib name 'QWindow_isAncestorOf';
+function QWindow_isExposed(handle: QWindowH): boolean; cdecl; external Qt5PasLib name 'QWindow_isExposed';
+function QWindow_minimumWidth(handle: QWindowH): integer; cdecl; external Qt5PasLib name 'QWindow_minimumWidth';
+function QWindow_minimumHeight(handle: QWindowH): integer; cdecl; external Qt5PasLib name 'QWindow_minimumHeight';
+function QWindow_maximumWidth(handle: QWindowH): integer; cdecl; external Qt5PasLib name 'QWindow_maximumWidth';
+function QWindow_maximumHeight(handle: QWindowH): integer; cdecl; external Qt5PasLib name 'QWindow_maximumHeight';
+procedure QWindow_minimumSize(handle: QWindowH; retval: PSize); cdecl; external Qt5PasLib name 'QWindow_minimumSize';
+procedure QWindow_maximumSize(handle: QWindowH; retval: PSize); cdecl; external Qt5PasLib name 'QWindow_maximumSize';
+procedure QWindow_baseSize(handle: QWindowH; retval: PSize); cdecl; external Qt5PasLib name 'QWindow_baseSize';
+procedure QWindow_sizeIncrement(handle: QWindowH; retval: PSize); cdecl; external Qt5PasLib name 'QWindow_sizeIncrement';
+procedure QWindow_setMinimumSize(handle: QWindowH; AnonParam1: QSizeH); cdecl; external Qt5PasLib name 'QWindow_setMinimumSize';
+procedure QWindow_setMaximumSize(handle: QWindowH; AnonParam1: QSizeH); cdecl; external Qt5PasLib name 'QWindow_setMaximumSize';
+procedure QWindow_setBaseSize(handle: QWindowH; AnonParam1: QSizeH); cdecl; external Qt5PasLib name 'QWindow_setBaseSize';
+procedure QWindow_setSizeIncrement(handle: QWindowH; AnonParam1: QSizeH); cdecl; external Qt5PasLib name 'QWindow_setSizeIncrement';
+procedure QWindow_setGeometry(handle: QWindowH; x: integer; y: integer; w: integer; h: integer); cdecl; external Qt5PasLib name 'QWindow_setGeometry';
+procedure QWindow_setGeometry(handle: QWindowH; AnonParam1: PRect); cdecl; external Qt5PasLib name 'QWindow_setGeometry2';
+procedure QWindow_geometry(handle: QWindowH; retval: PRect); cdecl; external Qt5PasLib name 'QWindow_geometry';
+procedure QWindow_frameMargins(handle: QWindowH; retval: QMarginsH); cdecl; external Qt5PasLib name 'QWindow_frameMargins';
+procedure QWindow_frameGeometry(handle: QWindowH; retval: PRect); cdecl; external Qt5PasLib name 'QWindow_frameGeometry';
+procedure QWindow_framePosition(handle: QWindowH; retval: PQtPoint); cdecl; external Qt5PasLib name 'QWindow_framePosition';
+procedure QWindow_setFramePosition(handle: QWindowH; AnonParam1: PQtPoint); cdecl; external Qt5PasLib name 'QWindow_setFramePosition';
+function QWindow_width(handle: QWindowH): integer; cdecl; external Qt5PasLib name 'QWindow_width';
+function QWindow_height(handle: QWindowH): integer; cdecl; external Qt5PasLib name 'QWindow_height';
+function QWindow_x(handle: QWindowH): integer; cdecl; external Qt5PasLib name 'QWindow_x';
+function QWindow_y(handle: QWindowH): integer; cdecl; external Qt5PasLib name 'QWindow_y';
+procedure QWindow_size(handle: QWindowH; retval: PSize); cdecl; external Qt5PasLib name 'QWindow_size';
+procedure QWindow_position(handle: QWindowH; retval: PQtPoint); cdecl; external Qt5PasLib name 'QWindow_position';
+procedure QWindow_setPosition(handle: QWindowH; AnonParam1: PQtPoint); cdecl; external Qt5PasLib name 'QWindow_setPosition';
+procedure QWindow_setPosition(handle: QWindowH; posx: integer; posy: integer); cdecl; external Qt5PasLib name 'QWindow_setPosition2';
+procedure QWindow_resize(handle: QWindowH; AnonParam1: QSizeH); cdecl; external Qt5PasLib name 'QWindow_resize';
+procedure QWindow_resize(handle: QWindowH; w: integer; h: integer); cdecl; external Qt5PasLib name 'QWindow_resize2';
+procedure QWindow_setFilePath(handle: QWindowH; AnonParam1: PWideString); cdecl; external Qt5PasLib name 'QWindow_setFilePath';
+procedure QWindow_filePath(handle: QWindowH; retval: PWideString); cdecl; external Qt5PasLib name 'QWindow_filePath';
+procedure QWindow_setIcon(handle: QWindowH; icon: QIconH); cdecl; external Qt5PasLib name 'QWindow_setIcon';
+procedure QWindow_icon(handle: QWindowH; retval: QIconH); cdecl; external Qt5PasLib name 'QWindow_icon';
+function QWindow_screen(handle: QWindowH): QScreenH; cdecl; external Qt5PasLib name 'QWindow_screen';
+procedure QWindow_setScreen(handle: QWindowH; screen: QScreenH); cdecl; external Qt5PasLib name 'QWindow_setScreen';
+function QWindow_setKeyboardGrabEnabled(handle: QWindowH; grab: boolean): boolean; cdecl; external Qt5PasLib name 'QWindow_setKeyboardGrabEnabled';
+function QWindow_setMouseGrabEnabled(handle: QWindowH; grab: boolean): boolean; cdecl; external Qt5PasLib name 'QWindow_setMouseGrabEnabled';
+procedure QWindow_mapToGlobal(handle: QWindowH; retval: PQtPoint; AnonParam1: PQtPoint); cdecl; external Qt5PasLib name 'QWindow_mapToGlobal';
+procedure QWindow_mapFromGlobal(handle: QWindowH; retval: PQtPoint; AnonParam1: PQtPoint); cdecl; external Qt5PasLib name 'QWindow_mapFromGlobal';
+procedure QWindow_cursor(handle: QWindowH; retval: QCursorH); cdecl; external Qt5PasLib name 'QWindow_cursor';
+procedure QWindow_setCursor(handle: QWindowH; AnonParam1: QCursorH); cdecl; external Qt5PasLib name 'QWindow_setCursor';
+procedure QWindow_unsetCursor(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_unsetCursor';
+function QWindow_focusObject(handle: QWindowH): QObjectH; cdecl; external Qt5PasLib name 'QWindow_focusObject';
+function QWindow_fromWinID(id: LongWord): QWindowH; cdecl; external Qt5PasLib name 'QWindow_fromWinId';
+procedure QWindow_requestActivate(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_requestActivate';
+procedure QWindow_setVisible(handle: QWindowH; visible: boolean); cdecl; external Qt5PasLib name 'QWindow_setVisible';
+procedure QWindow_show(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_show';
+procedure QWindow_hide(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_hide';
+procedure QWindow_showMinimized(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_showMinimized';
+procedure QWindow_showMaximized(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_showMaximized';
+procedure QWindow_showFullScreen(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_showFullScreen';
+procedure QWindow_showNormal(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_showNormal';
+function QWindow_close(handle: QWindowH): boolean; cdecl; external Qt5PasLib name 'QWindow_close';
+procedure QWindow_raise(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_raise';
+procedure QWindow_lower(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_lower';
+procedure QWindow_setTitle(handle: QWindowH; AnonParam1: PWideString); cdecl; external Qt5PasLib name 'QWindow_setTitle';
+procedure QWindow_setX(handle: QWindowH; x: integer); cdecl; external Qt5PasLib name 'QWindow_setX';
+procedure QWindow_setY(handle: QWindowH; y: integer); cdecl; external Qt5PasLib name 'QWindow_setY';
+procedure QWindow_setWidth(handle: QWindowH; w: integer); cdecl; external Qt5PasLib name 'QWindow_setWidth';
+procedure QWindow_setHeight(handle: QWindowH; h: integer); cdecl; external Qt5PasLib name 'QWindow_setHeight';
+procedure QWindow_setMinimumWidth(handle: QWindowH; w: integer); cdecl; external Qt5PasLib name 'QWindow_setMinimumWidth';
+procedure QWindow_setMinimumHeight(handle: QWindowH; h: integer); cdecl; external Qt5PasLib name 'QWindow_setMinimumHeight';
+procedure QWindow_setMaximumWidth(handle: QWindowH; w: integer); cdecl; external Qt5PasLib name 'QWindow_setMaximumWidth';
+procedure QWindow_setMaximumHeight(handle: QWindowH; h: integer); cdecl; external Qt5PasLib name 'QWindow_setMaximumHeight';
+procedure QWindow_alert(handle: QWindowH; msec: integer); cdecl; external Qt5PasLib name 'QWindow_alert';
+procedure QWindow_requestUpdate(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_requestUpdate';
+
+type
+  QWindow_screenChanged_Event = procedure (screen: QScreenH) of object cdecl;
+  QWindow_modalityChanged_Event = procedure (modality: QtWindowModality) of object cdecl;
+  QWindow_windowStateChanged_Event = procedure (windowstate: QtWindowState) of object cdecl;
+  QWindow_windowTitleChanged_Event = procedure (AnonParam1: PWideString) of object cdecl;
+  QWindow_xChanged_Event = procedure (x: integer) of object cdecl;
+  QWindow_yChanged_Event = procedure (y: integer) of object cdecl;
+  QWindow_widthChanged_Event = procedure (w: integer) of object cdecl;
+  QWindow_heightChanged_Event = procedure (h: integer) of object cdecl;
+  QWindow_minimumWidthChanged_Event = procedure (mw: integer) of object cdecl;
+  QWindow_minimumHeightChanged_Event = procedure (mh: integer) of object cdecl;
+  QWindow_maximumWidthChanged_Event = procedure (mw: integer) of object cdecl;
+  QWindow_maximumHeightChanged_Event = procedure (mh: integer) of object cdecl;
+  QWindow_visibleChanged_Event = procedure (vis: boolean) of object cdecl;
+  QWindow_visibilityChanged_Event = procedure (vis: QWindowVisibility) of object cdecl;
+  QWindow_activeChanged_event = procedure() of object cdecl;
+  QWindow_contentOrientationChanged_event = procedure(orientation: QtOrientation) of object cdecl;
+  QWindow_focusObjectChanged_event = procedure(AObj: QObjectH) of object cdecl;
+  QWindow_opacityChanged_event = procedure(opacity: qreal) of object cdecl;
+
+
 type
   QWidgetRenderFlag = cardinal; // QWidget::RenderFlag
   QWidgetRenderFlags = QWidgetRenderFlag; //QFlags<> (3)
@@ -6251,6 +6494,49 @@ procedure QGridLayout_setGeometry(handle: QGridLayoutH; AnonParam1: PRect); cdec
 procedure QGridLayout_addItem(handle: QGridLayoutH; item: QLayoutItemH; row: Integer; column: Integer; rowSpan: Integer = 1; columnSpan: Integer = 1; AnonParam6: QtAlignment = 0); cdecl; external Qt5PasLib name 'QGridLayout_addItem';
 procedure QGridLayout_setDefaultPositioning(handle: QGridLayoutH; n: Integer; orient: QtOrientation); cdecl; external Qt5PasLib name 'QGridLayout_setDefaultPositioning';
 procedure QGridLayout_getItemPosition(handle: QGridLayoutH; idx: Integer; row: PInteger; column: PInteger; rowSpan: PInteger; columnSpan: PInteger); cdecl; external Qt5PasLib name 'QGridLayout_getItemPosition';
+
+procedure QScreen_Destroy(handle: QScreenH); cdecl; external Qt5PasLib name 'QScreen_Destroy';
+procedure QScreen_name(handle: QScreenH; retval: PWideString); cdecl; external Qt5PasLib name 'QScreen_name';
+function QScreen_depth(handle: QScreenH): integer; cdecl; external Qt5PasLib name 'QScreen_depth';
+procedure QScreen_size(handle: QScreenH; retval: PSize); cdecl; external Qt5PasLib name 'QScreen_size';
+procedure QScreen_geometry(handle: QScreenH; retval: PRect); cdecl; external Qt5PasLib name 'QScreen_geometry';
+{screen's physical size in millimeters}
+procedure QScreen_physicalSize(handle: QScreenH; retval: QSizeFH); cdecl; external Qt5PasLib name 'QScreen_physicalSize';
+function QScreen_physicalDotsPerInchX(handle: QScreenH): qreal; cdecl; external Qt5PasLib name 'QScreen_physicalDotsPerInchX';
+function QScreen_physicalDotsPerInchY(handle: QScreenH): qreal; cdecl; external Qt5PasLib name 'QScreen_physicalDotsPerInchY';
+function QScreen_physicalDotsPerInch(handle: QScreenH): qreal; cdecl; external Qt5PasLib name 'QScreen_physicalDotsPerInch';
+function QScreen_logicalDotsPerInchX(handle: QScreenH): qreal; cdecl; external Qt5PasLib name 'QScreen_logicalDotsPerInchX';
+function QScreen_logicalDotsPerInchY(handle: QScreenH): qreal; cdecl; external Qt5PasLib name 'QScreen_logicalDotsPerInchY';
+function QScreen_logicalDotsPerInch(handle: QScreenH): qreal; cdecl; external Qt5PasLib name 'QScreen_logicalDotsPerInch';
+function QScreen_devicePixelRatio(handle: QScreenH): qreal; cdecl; external Qt5PasLib name 'QScreen_devicePixelRatio';
+procedure QScreen_availableSize(handle: QScreenH; retval: PSize); cdecl; external Qt5PasLib name 'QScreen_availableSize';
+procedure QScreen_availableGeometry(handle: QScreenH; retval: PRect); cdecl; external Qt5PasLib name 'QScreen_availableGeometry';
+procedure QScreen_virtualSize(handle: QScreenH; retval: PSize); cdecl; external Qt5PasLib name 'QScreen_virtualSize';
+procedure QScreen_virtualGeometry(handle: QScreenH; retval: PRect); cdecl; external Qt5PasLib name 'QScreen_virtualGeometry';
+function QScreen_primaryOrientation(handle: QScreenH): QtScreenOrientation; cdecl; external Qt5PasLib name 'QScreen_primaryOrientation';
+function QScreen_orientation(handle: QScreenH): QtScreenOrientation; cdecl; external Qt5PasLib name 'QScreen_orientation';
+function QScreen_nativeOrientation(handle: QScreenH): QtScreenOrientation; cdecl; external Qt5PasLib name 'QScreen_nativeOrientation';
+function QScreen_orientationUpdateMask(handle: QScreenH): QtScreenOrientations; cdecl; external Qt5PasLib name 'QScreen_orientationUpdateMask';
+procedure QScreen_setOrientationUpdateMask(handle: QScreenH; mask: QtScreenOrientations); cdecl; external Qt5PasLib name 'QScreen_setOrientationUpdateMask';
+function QScreen_angleBetween(handle: QScreenH; a: QtScreenOrientation; b: QtScreenOrientation): integer; cdecl; external Qt5PasLib name 'QScreen_angleBetween';
+procedure QScreen_virtualSiblings(handle: QScreenH; retval: PPtrIntArray); cdecl; external Qt5PasLib name 'QScreen_virtualSiblings';
+procedure QScreen_transformBetween(handle: QScreenH; retval: QTransformH; a: QtScreenOrientation; b: QtScreenOrientation; AnonParam1: PRect); cdecl; external Qt5PasLib name 'QScreen_transformBetween';
+procedure QScreen_mapBetween(handle: QScreenH; retval: PRect; a: QtScreenOrientation; b: QtScreenOrientation; AnonParam1: PRect); cdecl; external Qt5PasLib name 'QScreen_mapBetween';
+function QScreen_isPortrait(handle: QScreenH; orientation: QtScreenOrientation): boolean; cdecl; external Qt5PasLib name 'QScreen_isPortrait';
+function QScreen_isLandscape(handle: QScreenH; orientation: QtScreenOrientation): boolean; cdecl; external Qt5PasLib name 'QScreen_isLandscape';
+procedure QScreen_grabWindow(handle: QScreenH; retval: QPixmapH; window: LongWord; x: integer = 0; y: integer = 0; w: integer = -1; h: integer = -1); cdecl; external Qt5PasLib name 'QScreen_grabWindow';
+function QScreen_refreshRate(handle: QScreenH): qreal; cdecl; external Qt5PasLib name 'QScreen_refreshRate';
+
+type
+  QScreen_geometryChanged_event = procedure (geom: PRect) of object cdecl;
+  QScreen_availableGeometryChanged_event = procedure (geom: PRect) of object cdecl;
+  QScreen_physicalSizeChanged_event = procedure (asize: QSizeFH) of object cdecl;
+  QScreen_physicalDotsPerInchChanged_event = procedure (adpi: qreal) of object cdecl;
+  QScreen_logicalDotsPerInchChanged_event = procedure (adpi: qreal) of object cdecl;
+  QScreen_virtualGeometryChanged_event = procedure (geom: PRect) of object cdecl;
+  QScreen_primaryOrientationChanged_event = procedure (orientation: QtOrientation) of object cdecl;
+  QScreen_orientationChanged_event = procedure (orientation: QtOrientation) of object cdecl;
+  QScreen_refreshRateChanged_event = procedure (refreshRate: qreal) of object cdecl;
 
 function QDesktopWidget_Create(): QDesktopWidgetH; cdecl; external Qt5PasLib name 'QDesktopWidget_Create';
 procedure QDesktopWidget_Destroy(handle: QDesktopWidgetH); cdecl; external Qt5PasLib name 'QDesktopWidget_Destroy'; 
@@ -14497,6 +14783,40 @@ procedure QGuiApplication_hook_hook_saveStateRequest(handle: QGuiApplication_hoo
 function QApplication_hook_Create(handle: QObjectH): QApplication_hookH; cdecl; external Qt5PasLib name 'QApplication_hook_Create';
 procedure QApplication_hook_Destroy(handle: QApplication_hookH); cdecl; external Qt5PasLib name 'QApplication_hook_Destroy'; 
 procedure QApplication_hook_hook_focusChanged(handle: QApplication_hookH; hook: QApplication_focusChanged_Event); cdecl; external Qt5PasLib name 'QApplication_hook_hook_focusChanged';
+
+function QScreen_hook_Create(handle: QObjectH): QScreen_hookH; cdecl; external Qt5PasLib name 'QScreen_hook_Create';
+procedure QScreen_hook_Destroy(handle: QScreen_hookH); cdecl; external Qt5PasLib name 'QScreen_hook_Destroy';
+procedure QScreen_hook_hook_geometryChanged(handle: QScreen_hookH; hook: QScreen_geometryChanged_event); cdecl; external Qt5PasLib name 'QScreen_hook_hook_geometryChanged';
+procedure QScreen_hook_hook_availableGeometryChanged(handle: QScreen_hookH; hook: QScreen_availableGeometryChanged_event); cdecl; external Qt5PasLib name 'QScreen_hook_hook_availableGeometryChanged';
+procedure QScreen_hook_hook_physicalSizeChanged(handle: QScreen_hookH; hook: QScreen_physicalSizeChanged_event); cdecl; external Qt5PasLib name 'QScreen_hook_hook_physicalSizeChanged';
+procedure QScreen_hook_hook_physicalDotsPerInchChanged(handle: QScreen_hookH; hook: QScreen_physicalDotsPerInchChanged_event); cdecl; external Qt5PasLib name 'QScreen_hook_hook_physicalDotsPerInchChanged';
+procedure QScreen_hook_hook_logicalDotsPerInchChanged(handle: QScreen_hookH; hook: QScreen_logicalDotsPerInchChanged_event); cdecl; external Qt5PasLib name 'QScreen_hook_hook_logicalDotsPerInchChanged';
+procedure QScreen_hook_hook_virtualGeometryChanged(handle: QScreen_hookH; hook: QScreen_virtualGeometryChanged_event); cdecl; external Qt5PasLib name 'QScreen_hook_hook_virtualGeometryChanged';
+procedure QScreen_hook_hook_primaryOrientationChanged(handle: QScreen_hookH; hook: QScreen_primaryOrientationChanged_event); cdecl; external Qt5PasLib name 'QScreen_hook_hook_primaryOrientationChanged';
+procedure QScreen_hook_hook_orientationChanged(handle: QScreen_hookH; hook: QScreen_orientationChanged_event); cdecl; external Qt5PasLib name 'QScreen_hook_hook_orientationChanged';
+procedure QScreen_hook_hook_refreshRateChanged(handle: QScreen_hookH; hook: QScreen_refreshRateChanged_event); cdecl; external Qt5PasLib name 'QScreen_hook_hook_refreshRateChanged';
+
+function QWindow_hook_Create(handle: QObjectH): QWindow_hookH; cdecl; external Qt5PasLib name 'QWindow_hook_Create';
+procedure QWindow_hook_Destroy(handle: QWindow_hookH); cdecl; external Qt5PasLib name 'QWindow_hook_Destroy';
+procedure QWindow_hook_hook_screenChanged(handle: QWindow_hookH; hook: QWindow_screenChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_screenChanged';
+procedure QWindow_hook_hook_modalityChanged(handle: QWindow_hookH; hook: QWindow_modalityChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_modalityChanged';
+procedure QWindow_hook_hook_windowStateChanged(handle: QWindow_hookH; hook: QWindow_windowStateChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_windowStateChanged';
+procedure QWindow_hook_hook_windowTitleChanged(handle: QWindow_hookH; hook: QWindow_windowTitleChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_windowTitleChanged';
+procedure QWindow_hook_hook_xChanged(handle: QWindow_hookH; hook: QWindow_xChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_xChanged';
+procedure QWindow_hook_hook_yChanged(handle: QWindow_hookH; hook: QWindow_yChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_yChanged';
+procedure QWindow_hook_hook_widthChanged(handle: QWindow_hookH; hook: QWindow_widthChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_widthChanged';
+procedure QWindow_hook_hook_heightChanged(handle: QWindow_hookH; hook: QWindow_heightChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_heightChanged';
+procedure QWindow_hook_hook_minimumWidthChanged(handle: QWindow_hookH; hook: QWindow_minimumWidthChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_minimumWidthChanged';
+procedure QWindow_hook_hook_minimumHeightChanged(handle: QWindow_hookH; hook: QWindow_minimumHeightChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_minimumHeightChanged';
+procedure QWindow_hook_hook_maximumWidthChanged(handle: QWindow_hookH; hook: QWindow_maximumWidthChanged_Event); cdecl; external Qt5PasLib name 'QWindow_hook_hook_maximumWidthChanged';
+procedure QWindow_hook_hook_maximumHeightChanged(handle: QWindow_hookH; hook: QWindow_maximumHeightChanged_Event);  cdecl; external Qt5PasLib name 'QWindow_hook_hook_maximumHeightChanged';
+procedure QWindow_hook_hook_visibleChanged(handle: QWindow_hookH; hook: QWindow_visibleChanged_Event);  cdecl; external Qt5PasLib name 'QWindow_hook_hook_visibleChanged';
+procedure QWindow_hook_hook_visibilityChanged(handle: QWindow_hookH; hook: QWindow_visibilityChanged_Event);  cdecl; external Qt5PasLib name 'QWindow_hook_hook_visibilityChanged';
+procedure QWindow_hook_hook_activeChanged(handle: QWindow_hookH; hook: QWindow_activeChanged_event);  cdecl; external Qt5PasLib name 'QWindow_hook_hook_activeChanged';
+procedure QWindow_hook_hook_contentOrientationChanged(handle: QWindow_hookH; hook: QWindow_contentOrientationChanged_event);  cdecl; external Qt5PasLib name 'QWindow_hook_hook_contentOrientationChanged';
+procedure QWindow_hook_hook_focusObjectChanged(handle: QWindow_hookH; hook: QWindow_focusObjectChanged_event);  cdecl; external Qt5PasLib name 'QWindow_hook_hook_focusObjectChanged';
+procedure QWindow_hook_hook_opacityChanged(handle: QWindow_hookH; hook: QWindow_opacityChanged_event);  cdecl; external Qt5PasLib name 'QWindow_hook_hook_opacityChanged';
+
 
 function QWidget_hook_Create(handle: QObjectH): QWidget_hookH; cdecl; external Qt5PasLib name 'QWidget_hook_Create';
 procedure QWidget_hook_Destroy(handle: QWidget_hookH); cdecl; external Qt5PasLib name 'QWidget_hook_Destroy'; 
