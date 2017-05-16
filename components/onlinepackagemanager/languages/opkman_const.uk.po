@@ -2,16 +2,15 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-31 00:21+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"PO-Revision-Date: 2017-05-16 11:03+0300\n"
+"Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
-"MIME-Version: 1.0\n"
+"Language: uk\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"X-Generator: Lokalize 1.5\n"
+"MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: opkman_const.rscategoriesfrm_bcancel_caption
 msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
@@ -466,14 +465,16 @@ msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
 "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
 msgstr ""
+"%sСправді деінсталювати позначені пакунки?\n"
+"Зауважте: щоб зміни набули чинності потрібно перебудувати ІСР.\n"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 msgid "Cannot uninstall package \"%s\"!"
-msgstr ""
+msgstr "Неможливо деінсталювати пакунок \"%s\"!"
 
 #: opkman_const.rsmainfrm_rsuninstall_nothing
 msgid "None of the checked packages are installed. Nothing to uninstall."
-msgstr ""
+msgstr "Жоден з позначених пакунків не встановлений. Немає чого деінсталювати."
 
 #: opkman_const.rsmainfrm_spclear_hint
 msgid "Clear filter text"
@@ -548,11 +549,11 @@ msgstr "Створити пакунок або сховище"
 
 #: opkman_const.rsmainfrm_tbuninstall_caption
 msgid "Uninstall"
-msgstr ""
+msgstr "Деінсталювати"
 
 #: opkman_const.rsmainfrm_tbuninstall_hint
 msgid "Uninstall packages"
-msgstr ""
+msgstr "Деінсталювати пакунки"
 
 #: opkman_const.rsmainfrm_tbupdate_caption
 msgctxt "opkman_const.rsmainfrm_tbupdate_caption"
