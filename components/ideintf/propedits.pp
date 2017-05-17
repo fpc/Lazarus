@@ -2984,175 +2984,111 @@ end;
 procedure TPropertyEditor.SetFloatValue(const NewValue: Extended);
 var
   I: Integer;
-  Changed: boolean;
 begin
-  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do
-      Changed:=Changed or (GetFloatProp(Instance,PropInfo)<>NewValue);
-  if Changed then
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do begin
-        SetFloatProp(Instance,PropInfo,NewValue);
-        Modified(PropInfo^.Name);
-      end;
+    with FPropList^[I] do begin
+      SetFloatProp(Instance,PropInfo,NewValue);
+      Modified(PropInfo^.Name);
+    end;
 end;
 
 procedure TPropertyEditor.SetMethodValue(const NewValue: TMethod);
 var
   I: Integer;
-  Changed: boolean;
-  AMethod: TMethod;
 begin
-  Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
-      AMethod:=LazGetMethodProp(Instance,PropInfo);
-      Changed:=Changed or not CompareMem(@AMethod,@NewValue,SizeOf(TMethod));
+      LazSetMethodProp(Instance,PropInfo,NewValue);
+      Modified(PropInfo^.Name);
     end;
-  if Changed then
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do begin
-        LazSetMethodProp(Instance,PropInfo,NewValue);
-        Modified(PropInfo^.Name);
-      end;
 end;
 
 procedure TPropertyEditor.SetInt64Value(const NewValue: Int64);
 var
   I: Integer;
-  Changed: boolean;
 begin
-  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do
-      Changed:=Changed or (GetInt64Prop(Instance,PropInfo)<>NewValue);
-  if Changed then
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do begin
-        SetInt64Prop(Instance,PropInfo,NewValue);
-        Modified(PropInfo^.Name);
-      end;
+    with FPropList^[I] do begin
+      SetInt64Prop(Instance,PropInfo,NewValue);
+      Modified(PropInfo^.Name);
+    end;
 end;
 
 procedure TPropertyEditor.SetIntfValue(const NewValue: IInterface);
 var
   I: Integer;
-  Changed: boolean;
 begin
-  Changed := False;
   for I := 0 to FPropCount - 1 do
-    with FPropList^[I] do
-      Changed := Changed or (GetInterfaceProp(Instance, PropInfo) <> NewValue);
-  if Changed then
-    for I := 0 to FPropCount - 1 do
-      with FPropList^[I] do begin
-        SetInterfaceProp(Instance, PropInfo, NewValue);
-        Modified(PropInfo^.Name);
-      end;
+    with FPropList^[I] do begin
+      SetInterfaceProp(Instance, PropInfo, NewValue);
+      Modified(PropInfo^.Name);
+    end;
 end;
 
 procedure TPropertyEditor.SetOrdValue(const NewValue: Longint);
 var
   I: Integer;
-  Changed: boolean;
 begin
-  Changed := False;
   for I := 0 to FPropCount - 1 do
-    with FPropList^[I] do
-      Changed := Changed or (GetOrdProp(Instance, PropInfo) <> NewValue);
-  if Changed then
-    for I := 0 to FPropCount - 1 do
-      with FPropList^[I] do begin
-        SetOrdProp(Instance, PropInfo, NewValue);
-        Modified(PropInfo^.Name);
-      end;
+    with FPropList^[I] do begin
+      SetOrdProp(Instance, PropInfo, NewValue);
+      Modified(PropInfo^.Name);
+    end;
 end;
 
 procedure TPropertyEditor.SetPtrValue(const NewValue: Pointer);
 var
   I: Integer;
-  Changed: boolean;
 begin
-  Changed := False;
   for I := 0 to FPropCount - 1 do
-    with FPropList^[I] do
-      Changed := Changed or (GetOrdProp(Instance, PropInfo) <> PtrInt({%H-}PtrUInt(NewValue)));
-  if Changed then
-    for I := 0 to FPropCount - 1 do
-      with FPropList^[I] do begin
-        SetOrdProp(Instance, PropInfo, PtrInt({%H-}PtrUInt(NewValue)));
-        Modified(PropInfo^.Name);
-      end;
+    with FPropList^[I] do begin
+      SetOrdProp(Instance, PropInfo, PtrInt({%H-}PtrUInt(NewValue)));
+      Modified(PropInfo^.Name);
+    end;
 end;
 
 procedure TPropertyEditor.SetStrValue(const NewValue: AnsiString);
 var
   I: Integer;
-  Changed: boolean;
 begin
-  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do
-      Changed:=Changed or (GetStrProp(Instance,PropInfo)<>NewValue);
-  if Changed then
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do begin
-        SetStrProp(Instance,PropInfo,NewValue);
-        Modified(PropInfo^.Name);
-      end;
+    with FPropList^[I] do begin
+      SetStrProp(Instance,PropInfo,NewValue);
+      Modified(PropInfo^.Name);
+    end;
 end;
 
 procedure TPropertyEditor.SetWideStrValue(const NewValue: WideString);
 var
   I: Integer;
-  Changed: boolean;
 begin
-  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do
-      Changed:=Changed or (GetWideStrProp(Instance,PropInfo)<>NewValue);
-  if Changed then
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do begin
-        SetWideStrProp(Instance,PropInfo,NewValue);
-        Modified(PropInfo^.Name);
-      end;
+    with FPropList^[I] do begin
+      SetWideStrProp(Instance,PropInfo,NewValue);
+      Modified(PropInfo^.Name);
+    end;
 end;
 
 procedure TPropertyEditor.SetUnicodeStrValue(const NewValue: UnicodeString);
 var
   I: Integer;
-  Changed: boolean;
 begin
-  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do
-      Changed:=Changed or (GetUnicodeStrProp(Instance,PropInfo)<>NewValue);
-  if Changed then
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do begin
-        SetUnicodeStrProp(Instance,PropInfo,NewValue);
-        Modified(PropInfo^.Name);
-      end;
+    with FPropList^[I] do begin
+      SetUnicodeStrProp(Instance,PropInfo,NewValue);
+      Modified(PropInfo^.Name);
+    end;
 end;
 
 procedure TPropertyEditor.SetVarValue(const NewValue: Variant);
 var
   I: Integer;
-  Changed: boolean;
 begin
-  Changed:=false;
   for I:=0 to FPropCount-1 do
-    with FPropList^[I] do
-      Changed:=Changed or (GetVariantProp(Instance,PropInfo)<>NewValue)
-        or (VarType(GetVariantProp(Instance,PropInfo))<>VarType(NewValue));
-  if Changed then
-    for I:=0 to FPropCount-1 do
-      with FPropList^[I] do begin
-        SetVariantProp(Instance,PropInfo,NewValue);
-        Modified(PropInfo^.Name);
-      end;
+    with FPropList^[I] do begin
+      SetVariantProp(Instance,PropInfo,NewValue);
+      Modified(PropInfo^.Name);
+    end;
 end;
 
 procedure TPropertyEditor.Revert;
