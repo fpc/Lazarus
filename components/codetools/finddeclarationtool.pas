@@ -10310,7 +10310,7 @@ begin
   Params:=TFindDeclarationParams.Create(Self,Node);
   try
     Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult];
-    AliasType:=Default(TFindContext);
+    AliasType:=CleanFindContext;
     Result:=FindExpressionTypeOfTerm(CurPos.StartPos,-1,Params,false,@AliasType);
     //debugln(['TFindDeclarationTool.FindExpressionTypeOfConstSet ',ExprTypeToString(Result)]);
   finally
@@ -12349,7 +12349,7 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
           case SubExprType.Context.Node.Desc of
           ctnClass, ctnRecordType, ctnClassHelper, ctnRecordHelper, ctnTypeHelper:
             begin
-              AliasType:=Default(TFindContext);
+              AliasType:=CleanFindContext;
               if not SubExprType.Context.Tool.FindEnumeratorOfClass(
                 SubExprType.Context.Node,true,ExprType,@AliasType, Params)
               then
@@ -12371,7 +12371,7 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
             end;
           ctnRangedArrayType,ctnOpenArrayType:
             begin
-              AliasType:=Default(TFindContext);
+              AliasType:=CleanFindContext;
               if SubExprType.Context.Tool.FindElementTypeOfArrayType(
                                       SubExprType.Context.Node,ExprType,@AliasType)
               then begin
