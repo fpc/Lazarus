@@ -12,7 +12,7 @@ uses
   // IdeIntf
   FormEditingIntf, IDEWindowIntf, ComponentEditors, IDEDialogs, PropEdits,
   // IDE
-  LazarusIDEStrConsts, MenuDesignerBase, MenuEditorForm, MenuShortcutDisplay,
+  LazarusIDEStrConsts, LazIDEIntf, MenuDesignerBase, MenuEditorForm, MenuShortcutDisplay,
   MenuTemplates, MenuResolveConflicts;
 
 type
@@ -1833,9 +1833,12 @@ end;
 destructor TShadowMenu.Destroy;
 begin
   Parent := nil;
-  GlobalDesignHook.RemoveHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
-  GlobalDesignHook.RemoveHandlerModified(@OnDesignerModified);
-  GlobalDesignHook.RemoveHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
+  if not LazarusIDE.IDEIsClosing then
+  begin
+    GlobalDesignHook.RemoveHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
+    GlobalDesignHook.RemoveHandlerModified(@OnDesignerModified);
+    GlobalDesignHook.RemoveHandlerObjectPropertyChanged(@OnObjectPropertyChanged);
+  end;
   inherited Destroy;
 end;
 
