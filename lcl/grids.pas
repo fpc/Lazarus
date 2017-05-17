@@ -944,8 +944,8 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Click; override;
     procedure DblClick; override;
-    function  DefaultColWidthIsStored: Boolean; virtual;
-    function  DefaultRowHeightIsStored: Boolean; virtual;
+    function  DefaultColWidthIsStored: Boolean;
+    function  DefaultRowHeightIsStored: Boolean;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
     function  DialogChar(var Message: TLMKey): boolean; override;
@@ -1384,9 +1384,6 @@ type
     //property TabStops;
     property TopRow;
     property UseXORFeatures;
-  public
-    function DefaultColWidthIsStored: Boolean; override;
-    function DefaultRowHeightIsStored: Boolean; override;
   public
     property Align;
     property Anchors;
@@ -10399,11 +10396,6 @@ begin
   Result:=TVirtualGrid.Create;
 end;
 
-function TCustomDrawGrid.DefaultColWidthIsStored: Boolean;
-begin
-  Result := inherited DefaultColWidthIsStored;
-end;
-
 constructor TCustomDrawGrid.Create(AOwner: TComponent);
 begin
   fGrid:=CreateVirtualGrid;
@@ -10496,11 +10488,6 @@ begin
     else
       DrawTextInCell(aCol,aRow, aRect,aState);
   end;
-end;
-
-function TCustomDrawGrid.DefaultRowHeightIsStored: Boolean;
-begin
-  Result := inherited DefaultRowHeightIsStored;
 end;
 
 { TCustomStringGrid }
