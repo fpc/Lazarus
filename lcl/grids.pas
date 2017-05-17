@@ -944,6 +944,8 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Click; override;
     procedure DblClick; override;
+    function  DefaultColWidthIsStored: Boolean; virtual;
+    function  DefaultRowHeightIsStored: Boolean; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
     function  DialogChar(var Message: TLMKey): boolean; override;
@@ -1143,8 +1145,8 @@ type
     property ColumnClickSorts: boolean read FColumnClickSorts write SetColumnClickSorts default false;
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
-    property DefaultColWidth: Integer read GetDefColWidth write SetDefColWidth default 0;
-    property DefaultRowHeight: Integer read GetDefRowHeight write SetDefRowHeight default 0;
+    property DefaultColWidth: Integer read GetDefColWidth write SetDefColWidth stored DefaultColWidthIsStored;
+    property DefaultRowHeight: Integer read GetDefRowHeight write SetDefRowHeight stored DefaultRowHeightIsStored;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
     property DefaultTextStyle: TTextStyle read FDefaultTextStyle write FDefaultTextStyle;
     property DragDx: Integer read FDragDx write FDragDx;
@@ -1249,8 +1251,6 @@ type
     procedure EndUpdate(aRefresh: boolean = true);
     procedure EraseBackground(DC: HDC); override;
     function  Focused: Boolean; override;
-    function  DefaultColWidthIsStored: Boolean;
-    function  DefaultRowHeightIsStored: Boolean;
     function  HasMultiSelection: Boolean;
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCol(ACol: Integer);
@@ -1384,6 +1384,9 @@ type
     //property TabStops;
     property TopRow;
     property UseXORFeatures;
+  public
+    function DefaultColWidthIsStored: Boolean; override;
+    function DefaultRowHeightIsStored: Boolean; override;
   public
     property Align;
     property Anchors;
@@ -10396,6 +10399,11 @@ begin
   Result:=TVirtualGrid.Create;
 end;
 
+function TCustomDrawGrid.DefaultColWidthIsStored: Boolean;
+begin
+  Result := inherited DefaultColWidthIsStored;
+end;
+
 constructor TCustomDrawGrid.Create(AOwner: TComponent);
 begin
   fGrid:=CreateVirtualGrid;
@@ -10488,6 +10496,11 @@ begin
     else
       DrawTextInCell(aCol,aRow, aRect,aState);
   end;
+end;
+
+function TCustomDrawGrid.DefaultRowHeightIsStored: Boolean;
+begin
+  Result := inherited DefaultRowHeightIsStored;
 end;
 
 { TCustomStringGrid }
