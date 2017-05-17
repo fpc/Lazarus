@@ -3541,8 +3541,6 @@ begin
   IconRect := Rect(0, 0, NonVisualCompWidth, NonVisualCompWidth);
   FSurface.Canvas.Frame3D(IconRect, 1, bvRaised);
   FSurface.Canvas.FillRect(IconRect);
-  if NonVisualCompBorder > 1 then
-    InflateRect(IconRect, -NonVisualCompBorder + 1, -NonVisualCompBorder + 1);
 
   // draw component Name
   if ShowComponentCaptions
@@ -3577,7 +3575,9 @@ begin
     FOnGetNonVisualCompIcon(Self, AComponent, Icon);
     if Icon <> nil then
     begin
-      InflateRect(IconRect, -2 * NonVisualCompBorder, -2 * NonVisualCompBorder);
+      InflateRect(IconRect,
+        - (IconRect.Right-IconRect.Left-Icon.Width) div 2,
+        - (IconRect.Bottom-IconRect.Top-Icon.Height) div 2);
       FSurface.Canvas.StretchDraw(IconRect, Icon);
     end;
   end;

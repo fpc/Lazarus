@@ -47,7 +47,7 @@ uses
   LazFileUtils, LazFileCache, LazUTF8, AvgLvlTree,
   // IDEIntf
   PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, IDEOptionsIntf,
-  PackageDependencyIntf, PackageIntf, IDEDialogs, ComponentReg,
+  PackageDependencyIntf, PackageIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
   // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
   LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList, PublishModule;
@@ -4016,16 +4016,10 @@ end;
 
 function TPkgComponent.GetIconCopy: TCustomBitMap;
 var
-  ResHandle: TLResource;
   ResName: String;
 begin
   ResName := ComponentClass.ClassName;
-  // prevent raising exception and speedup a bit search/load
-  ResHandle := LazarusResources.Find(ResName);
-  if ResHandle <> nil then
-    Result := CreateBitmapFromLazarusResource(ResHandle)
-  else
-    Result := CreateBitmapFromResourceName(HInstance, ResName);
+  Result := TIDEImages.CreateImage(24, ResName);
 
   if Result = nil then
     Result := CreateBitmapFromResourceName(HInstance, 'default')
