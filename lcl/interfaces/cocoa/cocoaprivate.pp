@@ -514,16 +514,20 @@ type
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
+    // NSComboBoxDataSourceProtocol
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id; message 'comboBox:objectValueForItemAtIndex:';
     function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger; message 'numberOfItemsInComboBox:';
+    //
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
+    // NSComboBoxDelegateProtocol
     procedure comboBoxWillPopUp(notification: NSNotification); message 'comboBoxWillPopUp:';
     procedure comboBoxWillDismiss(notification: NSNotification); message 'comboBoxWillDismiss:';
     procedure comboBoxSelectionDidChange(notification: NSNotification); message 'comboBoxSelectionDidChange:';
     procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
+    //
     function lclIsHandle: Boolean; override;
   end;
 
@@ -3438,7 +3442,7 @@ procedure TCocoaComboBoxList.Changed;
 var
   i: Integer;
   nsstr: NSString;
-  lCurItem: NSMenuItem;
+  lItems: array of NSMenuItem;
 begin
   if FOwner <> nil then
     fOwner.reloadData;
@@ -3448,12 +3452,24 @@ begin
     FReadOnlyOwner.lastSelectedItemIndex := FReadOnlyOwner.indexOfSelectedItem;
 
     FReadOnlyOwner.removeAllItems();
+    // Adding an item with its final name will cause it to be deleted,
+    // so we need to first add all items with unique names, and then
+    // rename all of them, see bug 30847
+    SetLength(lItems, Count);
+    for i := 0 to Count-1 do
+    begin
+      nsstr := NSStringUtf8(Format('unique_item_%d', [i]));
+      FReadOnlyOwner.addItemWithTitle(nsstr);
+      lItems[i] := FReadOnlyOwner.lastItem;
+      nsstr.release;
+    end;
     for i := 0 to Count-1 do
     begin
       nsstr := NSStringUtf8(Strings[i]);
-      FReadOnlyOwner.addItemWithTitle(nsstr);
+      lItems[i].setTitle(nsstr);
       nsstr.release;
     end;
+    SetLength(lItems, 0);
 
     // reset the selected item
     FReadOnlyOwner.selectItemAtIndex(FReadOnlyOwner.lastSelectedItemIndex);
