@@ -281,7 +281,7 @@ begin
   Bookmark := ListLinkDataSet.GetBookmark;
   //in fpc 2.6.4, TMemDataset does not supports BlockRead. Issues 26356, 27959
   {$IF FPC_FULLVERSION < 30000}
-  DatasetSupportsBlockRead := not IsClass(ListLinkDataSet, 'TMemDataset');
+  DatasetSupportsBlockRead := not IsClass(ListLinkDataSet, 'TMemDataset') and not IsClass(ListLinkDataSet, 'TFixedFormatDataSet');
   if DatasetSupportsBlockRead then
     ListLinkDataSet.BlockReadSize := 1
   else
