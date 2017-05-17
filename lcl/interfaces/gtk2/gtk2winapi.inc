@@ -9400,6 +9400,7 @@ var
   GtkWindow: PGtkWindow;
   B: Boolean;
   Widget: PGtkWidget;
+  Control: TWinControl;
 begin
   Result := False;
 
@@ -9446,7 +9447,18 @@ begin
         if not GTK_WIDGET_VISIBLE(PGtkWidget(GtkWindow)) then
           gtk_widget_show(PGtkWidget(GtkWindow));
         gtk_window_deiconify(GtkWindow);
-        gtk_window_unmaximize(GtkWindow);
+        // Workaround for gtk2 bug with some window managers:
+        // calling gtk_window_unmaximize when the window is not maximized
+        // will cause window to shrink.  Here we check if the window we are
+        // resizing is a form and use its WindowState property to make sure
+        // it is maximized before trying to unmaximize it which avoids the
+        // issue (custom code that uses the Win32 API will still have the
+        // problem though, but gtk2 does not offer a is_maximized method)
+        // see https://bugs.freepascal.org/view.php?id=31832
+        Control:=TWinControl(GetLCLObject({%H-}Pointer(hWnd)));
+        if (not (Control is TCustomForm)) or
+            (TCustomForm(Control).WindowState=wsMaximized) then
+          gtk_window_unmaximize(GtkWindow);
         gtk_window_unfullscreen(GtkWindow);
       end;
     end;
