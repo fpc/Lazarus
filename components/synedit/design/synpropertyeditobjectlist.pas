@@ -199,8 +199,6 @@ end;
 function TSynKeyCommandPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paRevertable];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TSynKeyCommandPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
@@ -233,8 +231,6 @@ end;
 function TSynMouseCommandPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paRevertable];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TSynMouseCommandPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;

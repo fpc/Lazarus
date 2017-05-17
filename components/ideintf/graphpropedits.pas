@@ -303,8 +303,6 @@ end;
 function TColorPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect,paDialog,paValueList,paCustomDrawn,paRevertable];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TColorPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
@@ -453,7 +451,7 @@ end;
 
 function TFontCharsetPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=[paMultiSelect,paSortList,paValueList,paRevertable,paHasDefaultValue];
+  Result:=[paMultiSelect,paSortList,paValueList,paRevertable];
 end;
 
 function TFontCharsetPropertyEditor.OrdValueToVisualValue(OrdValue: longint
@@ -562,7 +560,7 @@ end;
 
 function TBrushStylePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=(inherited GetAttributes)-[paHasDefaultValue]+[paCustomDrawn];
+  Result:=(inherited GetAttributes)+[paCustomDrawn];
 end;
 
 procedure TBrushStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;
@@ -632,7 +630,7 @@ end;
 
 function TPenStylePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=(inherited GetAttributes)-[paHasDefaultValue]+[paCustomDrawn];
+  Result:=(inherited GetAttributes)+[paCustomDrawn];
 end;
 
 procedure TPenStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;
@@ -708,8 +706,6 @@ end;
 function TImageIndexPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paCustomDrawn, paRevertable];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 procedure TImageIndexPropertyEditor.GetValues(Proc: TGetStrProc);

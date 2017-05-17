@@ -23,7 +23,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, TypInfo, SysUtils, types, RtlConsts, variants,
+  Classes, TypInfo, SysUtils, types, RtlConsts, variants, Contnrs,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
@@ -258,7 +258,6 @@ type
     paDisableSubProperties,
     paReference,
     paNotNestable,
-    paHasDefaultValue,
     paCustomDrawn
     );
   TPropertyAttributes = set of TPropertyAttribute;
@@ -360,7 +359,10 @@ type
     function GetUnicodeStrValueAt(Index: Integer): UnicodeString;
     function GetValue: ansistring; virtual;
     function GetHint({%H-}HintType: TPropEditHint; {%H-}x, {%H-}y: integer): string; virtual;
+    function HasDefaultValue: Boolean;
+    function HasStoredFunction: Boolean;
     function GetDefaultValue: ansistring; virtual;
+    function CallStoredFunction: Boolean; virtual;
     function GetVisualValue: ansistring; virtual;
     procedure GetValues({%H-}Proc: TGetStrProc); virtual;
     procedure Initialize; virtual;
@@ -397,7 +399,7 @@ type
     procedure UpdateSubProperties; virtual;
     function SubPropertiesNeedsUpdate: boolean; virtual;
     function IsDefaultValue: boolean; virtual;
-    function IsNotDefaultValue: boolean; virtual;
+    function IsNotDefaultValue: boolean;
     function IsRevertableToInherited: boolean; virtual;
     // These are used for the popup menu in OI
     function GetVerbCount: Integer; virtual;
@@ -431,7 +433,6 @@ type
   public
     function AllEqual: Boolean; override;
     function GetEditLimit: Integer; override;
-    function GetAttributes: TPropertyAttributes; override;
     function GetValue: ansistring; override;
     function GetDefaultValue: ansistring; override;
     function OrdValueToVisualValue(OrdValue: longint): string; virtual;
@@ -600,7 +601,7 @@ type
     function GetVisualValue: ansistring; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
-    function IsNotDefaultValue: boolean; override;
+    function IsDefaultValue: boolean; override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
                             AState: TPropEditDrawState); override;
    end;
@@ -629,13 +630,17 @@ type
     FSubPropsTypeFilter: TTypeKinds;
     FSubPropsNameFilter: String;
     FHideClassName: Boolean;
+    FSubProps: TObjectList;
+    procedure ListSubProps(Prop: TPropertyEditor);
     procedure SetSubPropsTypeFilter(const AValue: TTypeKinds);
     function EditorFilter(const AEditor: TPropertyEditor): Boolean;
   protected
     function GetSelections: TPersistentSelectionList; virtual;
   public
     constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
+    destructor Destroy; override;
 
+    function IsDefaultValue: boolean; override;
     function AllEqual: Boolean; override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
@@ -2543,6 +2548,35 @@ begin
   Result:=True;
 end;
 
+type
+  TBoolFunc = function: Boolean of object;
+function TPropertyEditor.CallStoredFunction: Boolean;
+var
+  Func: TMethod;
+  FFunc: TBoolFunc;
+  APropInfo: PPropInfo;
+  StoredProcType: Byte;
+begin
+  APropInfo:=FPropList^[0].PropInfo;
+  StoredProcType := ((APropInfo^.PropProcs shr 4) and 3);
+  if StoredProcType in [ptStatic, ptVirtual] then
+  begin
+    case StoredProcType of
+      ptStatic: Func.Code := APropInfo^.StoredProc;
+      ptVirtual: Func.Code := PPointer(Pointer(FPropList^[0].Instance.ClassType))[{%H-}PtrInt(APropInfo^.StoredProc) div SizeOf(Pointer)];
+    end;
+    if Func.Code = nil then
+      raise EPropertyError.Create('No property stored method available');
+    Func.Data := FPropList^[0].Instance;
+    FFunc := TBoolFunc(Func);
+    Result := FFunc();
+  end else
+  if StoredProcType = ptConst then
+    Result := APropInfo^.StoredProc<>nil
+  else
+    raise EPropertyError.Create('No property stored method/const available');
+end;
+
 function TPropertyEditor.DrawCheckbox(ACanvas: TCanvas; const ARect: TRect;
   IsTrue: Boolean): TRect;
 // Draws a Checkbox using theme services for editing booleans.
@@ -2886,6 +2920,24 @@ begin
   with FPropList^[Index] do Result:=GetWideStrProp(Instance,PropInfo);
 end;
 
+function TPropertyEditor.HasDefaultValue: Boolean;
+var
+  APropInfo: PPropInfo;
+begin
+  APropInfo:=FPropList^[0].PropInfo;
+  Result := APropInfo^.Default<>NoDefaultValue;
+end;
+
+function TPropertyEditor.HasStoredFunction: Boolean;
+var
+  APropInfo: PPropInfo;
+  StoredProcType: Byte;
+begin
+  APropInfo:=FPropList^[0].PropInfo;
+  StoredProcType := ((APropInfo^.PropProcs shr 4) and 3);
+  Result := StoredProcType in [ptConst, ptStatic, ptVirtual];
+end;
+
 function TPropertyEditor.GetUnicodeStrValue: UnicodeString;
 begin
   Result:=GetUnicodeStrValueAt(0);
@@ -2933,7 +2985,7 @@ end;
 
 function TPropertyEditor.GetDefaultValue: ansistring;
 begin
-  if not (paHasDefaultValue in GetAttributes) then
+  if not HasDefaultValue then
     raise EPropertyError.Create('No property default available');
   Result:='';
 end;
@@ -3348,14 +3400,18 @@ end;
 
 function TPropertyEditor.IsDefaultValue: boolean;
 begin
-  Result:=(paHasDefaultValue in GetAttributes)
-      and (GetDefaultValue=GetVisualValue);
+  if HasDefaultValue then
+    Result := (GetDefaultValue=GetVisualValue)
+  else
+  if HasStoredFunction then
+    Result := not CallStoredFunction
+  else
+    Result := False;
 end;
 
 function TPropertyEditor.IsNotDefaultValue: boolean;
 begin
-  Result:=(paHasDefaultValue in GetAttributes)
-      and (GetDefaultValue<>GetVisualValue);
+  Result := not IsDefaultValue;
 end;
 
 function TPropertyEditor.IsRevertableToInherited: boolean;
@@ -3378,7 +3434,7 @@ end;
 function TPropertyEditor.GetVerbCount: Integer;
 begin
   Result:=0;
-  if paHasDefaultValue in GetAttributes then
+  if HasDefaultValue then
     inc(Result); // show a menu item for default value only if there is default value
   if IsRevertableToInherited then
     inc(Result); // show a menu item for 'Revert to inherited'
@@ -3389,7 +3445,7 @@ var
   i: Integer;
 begin
   i:=-1;
-  if paHasDefaultValue in GetAttributes then begin
+  if HasDefaultValue then begin
     inc(i);
     if i=Index then begin
       Result := Format(oisSetToDefault, [GetDefaultValue]);
@@ -3415,7 +3471,7 @@ var
   i: Integer;
 begin
   i:=-1;
-  if paHasDefaultValue in GetAttributes then begin
+  if HasDefaultValue then begin
     inc(i);
     if i=Index then begin
       SetValue(GetDefaultValue);
@@ -3451,13 +3507,6 @@ end;
 function TOrdinalPropertyEditor.GetEditLimit: Integer;
 begin
   Result := 63;
-end;
-
-function TOrdinalPropertyEditor.GetAttributes: TPropertyAttributes;
-begin
-  Result:=(inherited GetAttributes);
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TOrdinalPropertyEditor.GetValue: ansistring;
@@ -3568,8 +3617,6 @@ end;
 function TEnumPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paSortList, paRevertable];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TEnumPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
@@ -3919,8 +3966,6 @@ end;
 function TSetElementPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paSortList];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TSetElementPropertyEditor.GetName: shortstring;
@@ -3968,17 +4013,20 @@ begin
   SetOrdValue(Integer(S));
 end;
 
-function TSetElementPropertyEditor.IsNotDefaultValue: boolean; 
+function TSetElementPropertyEditor.IsDefaultValue: boolean;
 var
   S1, S2: TIntegerSet;
 begin
-  Result := (paHasDefaultValue in GetAttributes);
-  if Result then
+  if HasDefaultValue then
   begin
     Integer(S1) := GetOrdValue;
     Integer(S2) := GetDefaultOrdValue;
-    Result := (FElement in S1) <> (FElement in S2);
-  end;
+    Result := (FElement in S1) = (FElement in S2);
+  end else
+  if HasStoredFunction then
+    Result := not CallStoredFunction
+  else
+    Result := False;
 end;
 
 procedure TSetElementPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
@@ -3998,8 +4046,6 @@ end;
 function TSetPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paSubProperties, paReadOnly, paRevertable];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TSetPropertyEditor.GetEditLimit: Integer;
@@ -4419,6 +4465,12 @@ begin
   Result:=True; // ToDo: Maybe all sub-properties should be compared for equality.
 end;
 
+destructor TClassPropertyEditor.Destroy;
+begin
+  FSubProps.Free;
+  inherited Destroy;
+end;
+
 function TClassPropertyEditor.EditorFilter(const AEditor: TPropertyEditor): Boolean;
 begin
   Result := IsInteresting(AEditor, SubPropsTypeFilter, SubPropsNameFilter);
@@ -4461,6 +4513,31 @@ end;
 function TClassPropertyEditor.GetValue: ansistring;
 begin
   if not FHideClassName then Result:='(' + GetPropType^.Name + ')';
+end;
+
+function TClassPropertyEditor.IsDefaultValue: boolean;
+var
+  I: Integer;
+begin
+  Result := inherited IsDefaultValue;
+  if Result then
+    Exit;
+
+  if FSubProps=nil then
+  begin
+    FSubProps := TObjectList.Create(True);
+    GetProperties(@ListSubProps);
+  end;
+
+  for I := 0 to FSubProps.Count-1 do
+    if not TPropertyEditor(FSubProps[I]).IsDefaultValue then
+      Exit(False);
+  Result := True;
+end;
+
+procedure TClassPropertyEditor.ListSubProps(Prop: TPropertyEditor);
+begin
+  FSubProps.Add(Prop);
 end;
 
 procedure TClassPropertyEditor.SetSubPropsTypeFilter(const AValue: TTypeKinds);
@@ -5309,8 +5386,6 @@ end;
 function TModalResultPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paRevertable];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TModalResultPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
@@ -5538,8 +5613,6 @@ end;
 function TShortCutPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paRevertable, paDialog];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TShortCutPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
@@ -5686,8 +5759,6 @@ end;
 function TCursorPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paSortList, paValueList, paRevertable];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 function TCursorPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;

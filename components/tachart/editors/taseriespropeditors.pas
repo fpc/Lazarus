@@ -31,8 +31,6 @@ end;
 function TAxisIndexPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paValueList, paRevertable];
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Result := Result + [paHasDefaultValue];
 end;
 
 procedure TAxisIndexPropertyEditor.GetValues(AProc: TGetStrProc);

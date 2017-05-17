@@ -4633,7 +4633,7 @@ begin
   Result:=False;
   DefaultStr:='';
   CurRow:=GetActivePropertyRow;
-  if Assigned(CurRow) and (paHasDefaultValue in CurRow.Editor.GetAttributes) then
+  if Assigned(CurRow) and (CurRow.Editor.HasDefaultValue) then
   begin
     try
       DefaultStr:=CurRow.Editor.GetDefaultValue;
