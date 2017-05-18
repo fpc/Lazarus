@@ -187,7 +187,7 @@ var
   i : integer;
   HandlerType: TMenuItemHandlerType;
 begin
-  //debugln('TMenuItem.Destroy A ',dbgsName(Self));
+  //debugln('TMenuItem.Destroy A ',dbgsName(Self),' ',Caption);
   FMenuItemHandlers[mihtDestroy].CallNotifyEvents(Self);
   if FBitmap <> nil then
     FreeAndNil(FBitmap);

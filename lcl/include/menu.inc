@@ -148,6 +148,7 @@ end;
 
 procedure TMenu.DestroyHandle;
 begin
+  //debugln(['TMenu.DestroyHandle ',DbgSName(Self),' ',Items<>nil]);
   Items.DestroyHandle;
 end;
 
@@ -165,8 +166,8 @@ end;
  ------------------------------------------------------------------------------}
 destructor TMenu.Destroy;
 begin
-  FreeThenNil(FItems);
-  FreeThenNil(FImageChangeLink);
+  FreeAndNil(FItems);
+  FreeAndNil(FImageChangeLink);
   inherited Destroy;
 end;
 
@@ -309,8 +310,15 @@ end;
 procedure TMenu.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FImages) then
-    Images := nil;
+  if (Operation = opRemove) then
+  begin
+    if (AComponent = FImages) then
+      Images := nil
+    else if AComponent=FItems then
+    begin
+      raise Exception.Create(''); // someone is stealing my
+    end;
+  end;
 end;
 
 procedure TMenu.SetChildOrder(Child: TComponent; Order: Integer);
