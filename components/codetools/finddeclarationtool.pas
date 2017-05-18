@@ -13267,7 +13267,7 @@ begin
     xtShortString:
       Result:=ExpressionTypeDescNames[xtString];
 
-    xtWideString:
+    xtWideString, xtUnicodeString:
       Result:=ExpressionTypeDescNames[ExprType.Desc];
 
     xtConstOrdInteger:
