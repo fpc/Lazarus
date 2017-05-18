@@ -191,6 +191,7 @@ type
     ttGeneric,
     ttCVar,
     ttNostackframe,
+    ttNested,
     // used in asm
     ttOffset,
     ttPtr,
@@ -687,6 +688,7 @@ begin
 
   AddKeyword('cvar', wtReservedWordDirective, ttCVar);
   AddKeyword('nostackframe', wtReservedWordDirective, ttNostackframe);
+  AddKeyword('nested', wtReservedWordDirective, ttNested);
 
   // asm
   AddKeyword('offset', wtReservedWordDirective, ttOffset);

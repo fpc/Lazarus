@@ -1193,6 +1193,12 @@ begin
     RecogniseGenericType;
   end;
 
+  if fcTokenList.FirstSolidTokenType = ttIs then
+  begin
+    Recognise(ttIs);
+    Recognise(ttNested);
+  end;
+
   // the type can be deprecated
   if fcTokenList.FirstSolidTokenType = ttDeprecated then
     Recognise(ttDeprecated);
