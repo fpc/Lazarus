@@ -6338,13 +6338,13 @@ begin
     end else if NewEncoding=lisUtf8WithBOM then begin
       NewEncoding:=EncodingUTF8BOM;
     end;
-    DebugLn(['TSourceNotebook.EncodingClicked NewEncoding=',NewEncoding]);
+    DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked NewEncoding=',NewEncoding]);
     if SrcEdit.CodeBuffer<>nil then begin
       OldEncoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
       if OldEncoding='' then
         OldEncoding:=GetDefaultTextEncoding;
       if NewEncoding<>SrcEdit.CodeBuffer.DiskEncoding then begin
-        DebugLn(['TSourceNotebook.EncodingClicked Old=',OldEncoding,' New=',NewEncoding]);
+        DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked Old=',OldEncoding,' New=',NewEncoding]);
         if SrcEdit.ReadOnly then begin
           if SrcEdit.CodeBuffer.IsVirtual then
             CurResult:=mrCancel
@@ -6371,11 +6371,11 @@ begin
           SrcEdit.CodeBuffer.Modified:=true;
           // set override
           InputHistoriesSO.FileEncodings[SrcEdit.CodeBuffer.Filename]:=NewEncoding;
-          DebugLn(['TSourceNotebook.EncodingClicked Change file to ',SrcEdit.CodeBuffer.DiskEncoding]);
+          DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked Change file to ',SrcEdit.CodeBuffer.DiskEncoding]);
           if (not SrcEdit.CodeBuffer.IsVirtual)
           and (LazarusIDE.DoSaveEditorFile(SrcEdit, []) <> mrOk)
           then begin
-            DebugLn(['TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
+            DebugLn(['Hint: (lazarus) TSourceNotebook.EncodingClicked LazarusIDE.DoSaveEditorFile failed']);
           end;
         end else if CurResult=mrOK then begin
           // reopen with another encoding
