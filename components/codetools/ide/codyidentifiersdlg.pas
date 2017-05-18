@@ -1366,7 +1366,7 @@ var
   NewY: integer;
   NewTopLine: integer;
   CurUnit: TUDUnit;
-  MainPath: RawByteString;
+  MainPath: String;
 
   function OpenDependency: boolean;
   // returns false to abort
