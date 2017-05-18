@@ -74,6 +74,7 @@ type
     function GetContent: ControlRef; virtual; abstract;
     procedure UpdateLCLClientRect; virtual;
   public
+    FPopupWin: WindowRef;
     FNeedFree: Boolean;
     procedure BeginEventProc;
     procedure EndEventProc;

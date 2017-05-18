@@ -1189,6 +1189,10 @@ begin
     GetClientRect(before{%H-});
     OSError(SendEventToEventTarget(Event, GetControlEventTarget(FScrollView)),
       Self, SName, 'SendEventToEventTarget');
+
+    if Assigned(FPopupWin) then
+      InvalidPaint:=True; // Needed to get scrollbars updated
+
     GetClientRect(after{%H-});
     if not CompareRect(@before, @after) then
       UpdateLCLClientRect;
@@ -1372,6 +1376,9 @@ begin
     Exit;
   end;
   
+  if Assigned(FPopupWin) then
+    GetWindowBounds(FPopupWin, kWindowContentRgn, BoundsRect);
+
   ARect := SortRect(CarbonRectToRect(BoundsRect));
   Result := True;
 end;
@@ -1432,12 +1439,24 @@ end;
 function TCarbonControl.SetBounds(const ARect: TRect): Boolean;
 var
   B :CGRect;
+  T: TRect;
 begin
   Result := False;
 
-  if (IsDrawEvent > 0) then HIViewGetBounds(Frames[0], B{%H-});
+  if (IsDrawEvent > 0) then
+    if Assigned(FPopupWin) then
+      HIWindowGetBounds(FPopupWin, kWindowContentRgn, kHICoordSpaceWindow, B)
+    else
+      HIViewGetBounds(Frames[0], B{%H-});
 
-  if OSError(HIViewSetFrame(Frames[0], RectToCGRect(ARect)),
+  T := ARect;
+  if Assigned(FPopupWin) then
+  begin
+    SetWindowBounds(FPopupWin, kWindowContentRgn, GetCarbonRect(ARect));
+    T := Classes.Rect(0, 0, ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
+  end;
+
+  if OSError(HIViewSetFrame(Frames[0], RectToCGRect(T)),
     Self, SSetBounds, SViewFrame) then Exit;
   // ensure bounds are send back to LCL once after creation
   BoundsChanged;
@@ -1588,6 +1607,9 @@ begin
     OSError(HIViewSetVisible(Frames[I], AVisible or (csDesigning in LCLobject.ComponentState)),
       Self, 'ShowHide', SViewVisible);
 
+  if Assigned(FPopupWin) then
+    MacOSAll.ShowHide(FPopupWin, AVisible);
+
   if (IsDrawEvent > 0) and (AVisible <> v) and (AVisible or (csDesigning in LCLobject.ComponentState)) and (GetFrameCount>0) then
     InvalidPaint := true;
 end;
@@ -1678,6 +1700,9 @@ var
 begin
   Window := LCLObject.GetTopParent;
 
+  if Assigned(FPopupWin) then
+    Result := FPopupWin
+  else
   if (Window is TWinControl) and (Window.Parent = nil) and (TWinControl(Window).ParentWindow <> 0) then
     Result := TCarbonControl(TWinControl(Window).ParentWindow).GetTopParentWindow
   else

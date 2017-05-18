@@ -121,6 +121,7 @@ type
 
   TCarbonCustomControl = class(TCarbonControl)
   private
+    FForceEmbedded: Boolean;
     FScrollView: HIViewRef;
     FScrollOrigin: HIPoint;
     FScrollSize: TPoint;
@@ -763,9 +764,109 @@ end;
   Creates Carbon custom control
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
+  procedure RegisterWindowEvents(AWindowRef: WindowRef);
+  var
+    MouseSpec: array [0..6] of EventTypeSpec;
+    TmpSpec: EventTypeSpec;
+    KeySpecs: array[0..3] of EventTypeSpec;
+    ActivateSpecs: array[0..1] of EventTypeSpec;
+    ShowWindowSpecs: array[0..2] of EventTypeSpec;
+    WinContent: HIViewRef;
+  begin
+    // Window Events
+
+    TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClose);
+    InstallWindowEventHandler(AWindowRef,
+      RegisterEventHandler(@CarbonWindow_Close),
+      1, @TmpSpec, Pointer(Self), nil);
+
+    TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowClosed);
+    InstallWindowEventHandler(AWindowRef,
+      RegisterEventHandler(@CarbonCommon_Dispose),
+      1, @TmpSpec, Pointer(Self), nil);
+
+    MouseSpec[0].eventClass := kEventClassMouse;
+    MouseSpec[0].eventKind := kEventMouseDown;
+    MouseSpec[1].eventClass := kEventClassMouse;
+    MouseSpec[1].eventKind := kEventMouseUp;
+    MouseSpec[2].eventClass := kEventClassMouse;
+    MouseSpec[2].eventKind := kEventMouseMoved;
+    MouseSpec[3].eventClass := kEventClassMouse;
+    MouseSpec[3].eventKind := kEventMouseDragged;
+    MouseSpec[4].eventClass := kEventClassMouse;
+    MouseSpec[4].eventKind := kEventMouseEntered;
+    MouseSpec[5].eventClass := kEventClassMouse;
+    MouseSpec[5].eventKind := kEventMouseExited;
+    MouseSpec[6].eventClass := kEventClassMouse;
+    MouseSpec[6].eventKind := kEventMouseWheelMoved;
+
+    InstallWindowEventHandler(AWindowRef,
+      RegisterEventHandler(@CarbonWindow_MouseProc),
+      7, @MouseSpec[0], Pointer(Self), nil);
+
+    KeySpecs[0].eventClass := kEventClassKeyboard;
+    KeySpecs[0].eventKind := kEventRawKeyDown;
+    KeySpecs[1].eventClass := kEventClassKeyboard;
+    KeySpecs[1].eventKind := kEventRawKeyRepeat;
+    KeySpecs[2].eventClass := kEventClassKeyboard;
+    KeySpecs[2].eventKind := kEventRawKeyUp;
+    KeySpecs[3].eventClass := kEventClassKeyboard;
+    KeySpecs[3].eventKind := kEventRawKeyModifiersChanged;
+
+    InstallWindowEventHandler(AWindowRef,
+      RegisterEventHandler(@CarbonWindow_KeyboardProc),
+      4, @KeySpecs[0], Pointer(Self), nil);
+
+    ActivateSpecs[0].eventClass := kEventClassWindow;
+    ActivateSpecs[0].eventKind := kEventWindowActivated;
+    ActivateSpecs[1].eventClass := kEventClassWindow;
+    ActivateSpecs[1].eventKind := kEventWindowDeactivated;
+
+    InstallWindowEventHandler(AWindowRef,
+      RegisterEventHandler(@CarbonWindow_ActivateProc),
+      2, @ActivateSpecs[0], Pointer(Self), nil);
+
+    ShowWindowSpecs[0].eventClass := kEventClassWindow;
+    ShowWindowSpecs[0].eventKind := kEventWindowCollapsed;
+    ShowWindowSpecs[1].eventClass := kEventClassWindow;
+    ShowWindowSpecs[1].eventKind := kEventWindowExpanded;
+    ShowWindowSpecs[2].eventClass := kEventClassWindow;
+    ShowWindowSpecs[2].eventKind := kEventWindowZoomed;
+
+    InstallWindowEventHandler(AWindowRef,
+      RegisterEventHandler(@CarbonWindow_ShowWindow),
+      3, @ShowWindowSpecs[0], Pointer(Self), nil);
+
+    TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowBoundsChanged);
+    InstallWindowEventHandler(AWindowRef,
+      RegisterEventHandler(@CarbonCommon_BoundsChanged),
+      1, @TmpSpec, Pointer(Self), nil);
+
+    // cursor change
+    TmpSpec := MakeEventSpec(kEventClassWindow, kEventWindowCursorChange);
+    InstallWindowEventHandler(AWindowRef,
+      RegisterEventHandler(@CarbonCommon_CursorChange),
+      1, @TmpSpec, Pointer(Self), nil);
+
+    // user messages
+    TmpSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindUser);
+    InstallWindowEventHandler(AWindowRef,
+      RegisterEventHandler(@CarbonCommon_User),
+      1, @TmpSpec, Pointer(Self), nil);
+
+    // paint content message
+    if (HIViewFindByID( HIViewGetRoot(AWindowRef), kHIViewWindowContentID, WinContent) = noErr) then
+    begin
+      TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+      InstallControlEventHandler(WinContent,
+        RegisterEventHandler(@CarbonWindow_ContentDraw),
+        1, @TmpSpec, Pointer(Self), nil);
+    end;
+  end;
 var
   TmpSpec: EventTypeSpec;
   AStyle: TControlStyle;
+  ContentViewRef: HIViewRef;
 begin
   AStyle := LCLObject.ControlStyle;
 
@@ -781,6 +882,11 @@ begin
     RegisterEventHandler(@CarbonScrollable_GetInfo),
     1, @TmpSpec, Pointer(Self), nil);
 
+  FForceEmbedded := True;
+  if (AParams.Style and WS_POPUP <> 0) and
+     (AParams.Style and (WS_VSCROLL or WS_HSCROLL) = 0) then
+    FForceEmbedded := False;
+
   FScrollView := EmbedInScrollView(AParams);
   FScrollSize := Classes.Point(0, 0);
   FScrollMin := Classes.Point(0, 0);
@@ -788,7 +894,18 @@ begin
   FScrollOrigin := GetHIPoint(0, 0);
   FMulX := 1;
   FMulY := 1;
-
+  
+  if AParams.Style and WS_POPUP <> 0 then begin
+    CreateNewWindow(kFloatingWindowClass,
+      kWindowOpaqueForEventsAttribute or kWindowNoTitleBarAttribute or kWindowCompositingAttribute or kWindowStandardHandlerAttribute,
+      GetCarbonRect(0, 0, 0, 0),
+      FPopupWin);
+    RegisterWindowEvents(FPopupWin);
+    HIViewFindByID(HIViewGetRoot(FPopupWin), kHIViewWindowContentID, ContentViewRef);
+    OSError(HIViewAddSubview(ContentViewRef, FScrollView), Self, 'AddToWidget',
+      SViewAddView);
+    end
+  else 
   if LCLObject.ClassNameIs('TSynEdit') then
     FTextFractional := False
   else
@@ -828,7 +945,7 @@ end;
 
 function TCarbonCustomControl.GetForceEmbedInScrollView:Boolean;
 begin
-  Result:=True;
+  Result := FForceEmbedded;
 end;
 
 {------------------------------------------------------------------------------

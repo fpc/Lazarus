@@ -7499,7 +7499,7 @@ begin
       TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
 
       //WriteClientRect('A');
-      if Assigned(Parent) then
+      if Assigned(Parent) and (Params.Style and WS_POPUP = 0) then
         AddControl
       else
       if ParentWindow <> 0 then

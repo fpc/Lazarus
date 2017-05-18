@@ -915,21 +915,29 @@ begin
   Result := EventNotHandledErr;
 
   Control := nil;
-  if OSError(GetKeyboardFocus( TCarbonWindow(AWidget).fWindowRef, Control), SName,
-    SGetKeyboardFocus) then Exit;
-  if Control = nil then Control := AWidget.Content;
-
-  // if a control other than root is found, send the message
-  // to the control instead of the window
-  // if a lower control without widget is found, use its parent
-  Widget := nil;
-  while Control <> AWidget.Content do
+  if Assigned(AWidget.FPopupWin) then
   begin
-    Widget := GetCarbonControl(Pointer(Control));
-    if Widget <> nil then Break;
-    Control := HIViewGetSuperview(Control);
-  end;
-  if (Widget = nil) or (Control = AWidget.Content) then Widget := AWidget;
+    if OSError(GetKeyboardFocus(AWidget.FPopupWin, Control), SName, SGetKeyboardFocus) then Exit;
+    Widget := AWidget;
+  end
+  else
+  begin
+    if OSError(GetKeyboardFocus( TCarbonWindow(AWidget).fWindowRef, Control), SName,
+      SGetKeyboardFocus) then Exit;
+    if Control = nil then Control := AWidget.Content;
+
+    // if a control other than root is found, send the message
+    // to the control instead of the window
+    // if a lower control without widget is found, use its parent
+    Widget := nil;
+    while Control <> AWidget.Content do
+    begin
+      Widget := GetCarbonControl(Pointer(Control));
+      if Widget <> nil then Break;
+      Control := HIViewGetSuperview(Control);
+    end;
+    if (Widget = nil) or (Control = AWidget.Content) then Widget := AWidget;
+  end;  
 
   Widget.BeginEventProc;
   try
