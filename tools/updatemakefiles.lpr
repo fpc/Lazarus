@@ -33,7 +33,8 @@ program updatemakefiles;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, sysutils, FileProcs, DefineTemplates, LazFileUtils, Laz2_XMLCfg;
+  Classes, sysutils, FileProcs, DefineTemplates, LazFileUtils, Laz2_XMLCfg,
+  FileUtil;
 
 var
   LazarusDir: String;
@@ -138,6 +139,24 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
+procedure CheckFPCMake;
+const
+  LastTarget = 'aarch64-darwin';
+var
+  FPCMake: String;
+  Lines: TStringList;
+begin
+  FPCMake:=FindDefaultExecutablePath('fpcmake');
+  if FPCMake='' then
+    raise Exception.Create('missing fpcmake');
+  Lines:=RunTool(FPCMake,'-TAll -v');
+  if Pos(' '+LastTarget,Lines.Text)<1 then begin
+    writeln(Lines.Text);
+    raise Exception.Create('fpcmake does not support target '+LastTarget+'. Did you set PATH to the devel version of fpcmake?');
+  end;
+  Lines.Free;
+end;
+
 var
   LPKFiles: TStringList;
   LazbuildOut: TStringList;
@@ -148,6 +167,7 @@ begin
     writeln('Usage: ./tools/updatemakefiles');
     exit;
   end;
+  CheckFPCMake;
   LazarusDir:=CleanAndExpandDirectory(GetCurrentDirUTF8);
   if ExtractFileName(ChompPathDelim(LazarusDir))='tools' then
     LazarusDir:=ExtractFilePath(ChompPathDelim(LazarusDir));
