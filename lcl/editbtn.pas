@@ -1213,7 +1213,9 @@ procedure TCustomControlFilterEdit.ButtonClick;
 begin
   Text:='';
   Filter:='';
-  if FocusOnButtonClick then Edit.SetFocus; //don't SelectAll here
+  if FocusOnButtonClick then
+    Edit.SetFocus; //don't SelectAll here
+  inherited;
 end;
 
 procedure TCustomControlFilterEdit.ApplyFilter(Immediately: Boolean);
