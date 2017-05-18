@@ -514,10 +514,14 @@ end;
 
 procedure TProjectGroupEditorForm.FormDestroy(Sender: TObject);
 begin
-  debugln(['TProjectGroupEditorForm.FormDestroy ',ProjectGroup<>nil]);
+  debugln(['TProjectGroupEditorForm.FormDestroy START ',ProjectGroup<>nil]);
   ProjectGroup:=nil;
   if ProjectGroupEditorForm=Self then
     ProjectGroupEditorForm:=nil;
+  if (PGEditMenuSectionMisc<>nil)
+  and (PGEditMenuSectionMisc.MenuItem=PopupMenuMore.Items) then
+    PGEditMenuSectionMisc.MenuItem:=nil;
+  debugln(['TProjectGroupEditorForm.FormDestroy END ',ProjectGroup<>nil]);
 end;
 
 procedure TProjectGroupEditorForm.PopupMenuMorePopup(Sender: TObject);
