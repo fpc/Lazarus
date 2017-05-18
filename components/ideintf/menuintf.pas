@@ -730,7 +730,7 @@ begin
   if FMenuItem <> nil then begin
     FMenuItem.OnClick := nil;
     FMenuItem.RemoveHandlerOnDestroy(@MenuItemDestroy);
-    if (Section<>nil) or (FMenuItem.Parent<>nil) then
+    if (FMenuItem.Menu=nil) and ((Section<>nil) or (FMenuItem.Parent<>nil)) then
       FMenuItem.Free;
     FMenuItem:=nil;
   end;
