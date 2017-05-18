@@ -47,5 +47,6 @@ C_EXPORT uint QObject_registerUserData();
 C_EXPORT QObjectH QObject_parent(QObjectH handle);
 C_EXPORT bool QObject_inherits(QObjectH handle, const char* classname);
 C_EXPORT void QObject_deleteLater(QObjectH handle);
+C_EXPORT const QMetaObjectH QObject_metaObject(QObjectH handle);
 
 #endif

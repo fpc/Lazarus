@@ -177,3 +177,10 @@ void QObject_deleteLater(QObjectH handle)
 	((QObject *)handle)->deleteLater();
 }
 
+const QMetaObjectH QObject_metaObject(QObjectH handle)
+{
+  const QMetaObject *meta = ((QObject *)handle)->metaObject();
+  if (!meta)
+    return NULL;
+  return (const QMetaObjectH) meta;
+}
