@@ -1833,7 +1833,7 @@ end;
 destructor TShadowMenu.Destroy;
 begin
   Parent := nil;
-  if not LazarusIDE.IDEIsClosing then
+  if Assigned(LazarusIDE) and not LazarusIDE.IDEIsClosing then
   begin
     GlobalDesignHook.RemoveHandlerRefreshPropertyValues(@OnDesignerRefreshPropertyValues);
     GlobalDesignHook.RemoveHandlerModified(@OnDesignerModified);
