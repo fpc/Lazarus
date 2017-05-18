@@ -9400,7 +9400,8 @@ var
   GtkWindow: PGtkWindow;
   B: Boolean;
   Widget: PGtkWidget;
-  Control: TWinControl;
+  AFlags: TGdkWindowState;
+  AWindow: PGdkWindow;
 begin
   Result := False;
 
@@ -9446,20 +9447,17 @@ begin
       begin
         if not GTK_WIDGET_VISIBLE(PGtkWidget(GtkWindow)) then
           gtk_widget_show(PGtkWidget(GtkWindow));
-        gtk_window_deiconify(GtkWindow);
-        // Workaround for gtk2 bug with some window managers:
-        // calling gtk_window_unmaximize when the window is not maximized
-        // will cause window to shrink.  Here we check if the window we are
-        // resizing is a form and use its WindowState property to make sure
-        // it is maximized before trying to unmaximize it which avoids the
-        // issue (custom code that uses the Win32 API will still have the
-        // problem though, but gtk2 does not offer a is_maximized method)
-        // see https://bugs.freepascal.org/view.php?id=31832
-        Control:=TWinControl(GetLCLObject({%H-}Pointer(hWnd)));
-        if (not (Control is TCustomForm)) or
-            (TCustomForm(Control).WindowState=wsMaximized) then
-          gtk_window_unmaximize(GtkWindow);
-        gtk_window_unfullscreen(GtkWindow);
+        AWindow := PGtkWidget(GtkWindow)^.window;
+        if GDK_IS_WINDOW(AWindow) then
+        begin
+          AFlags := gdk_window_get_state(AWindow);
+          if AFlags and GDK_WINDOW_STATE_ICONIFIED <> 0 then
+            gtk_window_deiconify(GtkWindow);
+          if AFlags and GDK_WINDOW_STATE_MAXIMIZED <> 0 then
+            gtk_window_unmaximize(GtkWindow);
+          if AFlags and GDK_WINDOW_STATE_FULLSCREEN <> 0 then
+            gtk_window_unfullscreen(GtkWindow);
+        end;
       end;
     end;
 
@@ -9475,9 +9473,16 @@ begin
       gtk_widget_show(PGtkWidget(GtkWindow))
     else
     begin
-      gtk_window_deiconify(GtkWindow);
-      gtk_window_unfullscreen(GtkWindow);
-      gtk_window_maximize(GtkWindow);
+      AWindow := PGtkWidget(GtkWindow)^.window;
+      if GDK_IS_WINDOW(AWindow) then
+      begin
+        AFlags := gdk_window_get_state(AWindow);
+        if AFlags and GDK_WINDOW_STATE_ICONIFIED <> 0 then
+          gtk_window_deiconify(GtkWindow);
+        if AFlags and GDK_WINDOW_STATE_FULLSCREEN <> 0 then
+          gtk_window_unfullscreen(GtkWindow);
+        gtk_window_maximize(GtkWindow);
+      end;
     end;
 
   SW_SHOWFULLSCREEN:
@@ -9488,11 +9493,18 @@ begin
 
   SW_RESTORE:
     begin
-      gtk_window_deiconify(GtkWindow);
-      gtk_window_unmaximize(GtkWindow);
-      gtk_window_unfullscreen(GtkWindow);
+      AWindow := PGtkWidget(GtkWindow)^.window;
+      if GDK_IS_WINDOW(AWindow) then
+      begin
+        AFlags := gdk_window_get_state(AWindow);
+        if AFlags and GDK_WINDOW_STATE_ICONIFIED <> 0 then
+          gtk_window_deiconify(GtkWindow);
+        if AFlags and GDK_WINDOW_STATE_MAXIMIZED <> 0 then
+          gtk_window_unmaximize(GtkWindow);
+        if AFlags and GDK_WINDOW_STATE_FULLSCREEN <> 0 then
+          gtk_window_unfullscreen(GtkWindow);
+      end;
     end;
-
   end;
 
   Result := True;
