@@ -25,7 +25,8 @@ unit IDEImagesIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, ImgList, Controls, Graphics, LResources;
+  Classes, SysUtils, LCLProc, LCLType, ImgList, Controls, Graphics, LResources,
+  Math;
 
 type
 
@@ -51,7 +52,7 @@ type
 
     class function GetScalePercent: Integer;
     class function ScaleImage(const AImage: TCustomBitmap; out ANewInstance: Boolean;
-      TargetWidth, TargetHeight: Integer): TCustomBitmap;
+      TargetWidth, TargetHeight: Integer; const AFactor: Double): TCustomBitmap;
     class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap;
 
     function GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
@@ -141,7 +142,7 @@ begin
     if Grp<>nil then
     begin
       Result := ScaleImage(Grp, GrpScaledNewInstance,
-        ImageSize*ScalePercent div 100, ImageSize * ScalePercent div 100);
+        ImageSize*ScalePercent div 100, ImageSize * ScalePercent div 100, ScalePercent / 100);
       if not GrpScaledNewInstance then
         Grp := nil;
       Exit; // found
@@ -259,11 +260,13 @@ begin
 end;
 
 class function TIDEImages.ScaleImage(const AImage: TCustomBitmap; out
-  ANewInstance: Boolean; TargetWidth, TargetHeight: Integer): TCustomBitmap;
+  ANewInstance: Boolean; TargetWidth, TargetHeight: Integer;
+  const AFactor: Double): TCustomBitmap;
 var
   Bmp: TBitmap;
+  TargetRect: TRect;
 begin
-  if (AImage.Width=TargetWidth) and (AImage.Height=TargetHeight) then
+  if SameValue(AFactor, 1) then
   begin
     ANewInstance := False;
     Exit(AImage);
@@ -282,9 +285,9 @@ begin
     {$ENDIF}
     Bmp.SetSize(TargetWidth, TargetHeight);
     Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
-    Bmp.Canvas.StretchDraw(
-      Rect(0, 0, TargetWidth, TargetHeight),
-      AImage);
+    TargetRect := Rect(0, 0, Round(AImage.Width*AFactor), Round(AImage.Height*AFactor));
+    OffsetRect(TargetRect, (TargetWidth-TargetRect.Right) div 2, (TargetHeight-TargetRect.Bottom) div 2);
+    Bmp.Canvas.StretchDraw(TargetRect, AImage);
   except
     FreeAndNil(Result);
     ANewInstance := False;
