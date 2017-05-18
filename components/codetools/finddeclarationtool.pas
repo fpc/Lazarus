@@ -8687,6 +8687,7 @@ var
   FlagCanBeForwardDefined, FlagCanBeForwardDefinedValid: boolean;
   ExprType: TExpressionType;
   FirstParamStartPos: Integer;
+  FirstParamProcContext: TFindContext;
 
   procedure RaiseIdentExpected;
   begin
@@ -8901,11 +8902,12 @@ var
       the decision is based on the fdfFunctionResult flag.
   }
   var
-    ProcNode, FuncResultNode: TCodeTreeNode;
+    ProcNode, FuncResultNode, FirstParamNode: TCodeTreeNode;
     AtEnd: Boolean;
     CurAliasType: PFindContext;
     Context: TFindContext;
-    FuncParamList: TExprTypeList;
+    FirstParamProcExpr: TExpressionType;
+    NewParams: TFindDeclarationParams;
   begin
     //DebugLn(['ResolveBaseTypeOfIdentifier ',ExprType.Context.Node<>nil]);
     if ExprType.Desc=xtContext then
@@ -8964,15 +8966,22 @@ var
                                             ProcNode,Params,CurAliasType);
 
         if  (ExprType.Desc in [xtAnsiString, xtString, xtShortString])
-        and (FirstParamStartPos>0) then
+        and (FirstParamStartPos>0)
+        and (FirstParamProcContext.Node<>nil) then
         begin
-          FuncParamList := CreateParamExprListFromStatement(FirstParamStartPos, Params);
-          try
-            if  (FuncParamList<>nil) and (FuncParamList.Count>0)
-            and (FuncParamList.Items[0].Desc in [xtAnsiString, xtString, xtShortString]) then
+          FirstParamNode := FirstParamProcContext.Node;
+          while (FirstParamNode<>nil) and (FirstParamNode.Desc in [ctnProcedure, ctnProcedureHead, ctnParameterList, ctnVarDefinition]) do
+            FirstParamNode := FirstParamNode.FirstChild;
+          if (FirstParamNode<>nil) and (FirstParamNode.Desc=ctnIdentifier) then
+          begin
+            NewParams := TFindDeclarationParams.Create(FirstParamProcContext.Tool, FirstParamProcContext.Node);
+            try
+              FirstParamProcExpr := FirstParamProcContext.Tool.FindExpressionResultType(NewParams, FirstParamNode.StartPos, FirstParamNode.EndPos);
+            finally
+              NewParams.Free;
+            end;
+            if FirstParamProcExpr.Desc in [xtAnsiString, xtString, xtShortString] then
               ResolveStringFunctionParam;
-          finally
-            FuncParamList.Free;
           end;
         end;
       end;
@@ -9748,6 +9757,7 @@ var
         and (ExprType.Context.Node.Desc in [ctnProcedure, ctnProcedureHead])
         and (FirstParamStartPos<0) then begin
           FirstParamStartPos := CurAtom.StartPos;
+          FirstParamProcContext := ExprType.Context;
         end;
       end;
     end else begin
@@ -9872,6 +9882,7 @@ var
 begin
   Result:=CleanExpressionType;
   FirstParamStartPos := -1;
+  FirstParamProcContext := CleanFindContext;
   StartFlags:=Params.Flags;
   StartNode:=Params.ContextNode;
   {$IFDEF ShowExprEval}
