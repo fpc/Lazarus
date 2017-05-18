@@ -4152,6 +4152,12 @@ begin
 
       Recognise(ttEnd);
     end;
+    ttFinalization:
+    begin
+      Recognise(ttFinalization, True);
+      RecogniseStatementList([ttEnd]);
+      Recognise(ttEnd);
+    end;
     ttBegin:
     begin
       Recognise(ttBegin);
