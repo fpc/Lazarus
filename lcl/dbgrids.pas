@@ -572,6 +572,7 @@ type
     //property ImeMode;
     //property ImeName;
     property Options;
+    property Options2;
     property OptionsExtra;
     property ParentBiDiMode;
     property ParentColor default false;
