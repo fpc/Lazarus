@@ -47,7 +47,7 @@ type
   protected
     procedure DoRun; override;
     procedure ParamError(Msg: string);
-    procedure ExtractSVN(Lines: TStrings);
+    procedure ExtractSVN(Lines: TStrings; UserFilter: String);
     procedure ExtractWikiRevs(Lines: TStrings);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -59,13 +59,13 @@ type
 
 procedure TMissingWikiSVNRevisions.DoRun;
 var
-  ErrorMsg, SVNFile, WikiFile, Line, Rev: String;
+  ErrorMsg, SVNFile, WikiFile, Line, Rev, UserFilter: String;
   SVNLines, WIKILines: TStringList;
   i: Integer;
   p: SizeInt;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hs:w:', 'help');
+  ErrorMsg:=CheckOptions('hs:w:u:', 'help svnlog wikilist user');
   if ErrorMsg<>'' then
     ParamError(ErrorMsg);
 
@@ -79,21 +79,27 @@ begin
     WriteHelp;
     Halt;
   end;
+  if not HasOption('w','wikilist') then begin
+    WriteHelp;
+    Halt;
+  end;
 
   SVNFile:=ExpandFileNameUTF8(GetOptionValue('s','svnlog'));
-  WikiFile:=ExpandFileNameUTF8(GetOptionValue('w','wikilist'));
-
   if not FileExists(SVNFile) then
     ParamError('svn file not found "'+SVNFile+'"');
+
+  WikiFile:=ExpandFileNameUTF8(GetOptionValue('w','wikilist'));
   if not FileExists(WikiFile) then
     ParamError('wiki list file not found "'+WikiFile+'"');
+
+  UserFilter:=GetOptionValue('u','user');
 
   SVNLines:=TStringList.Create;
   SVNLines.LoadFromFile(SVNFile);
   WIKILines:=TStringList.Create;
   WIKILines.LoadFromFile(WikiFile);
 
-  ExtractSVN(SVNLines);
+  ExtractSVN(SVNLines,UserFilter);
   ExtractWikiRevs(WIKILines);
   //writeln('SVN: ',SVNLines.Text);
   //writeln('WIKI: ',WIKILines.Text);
@@ -120,7 +126,8 @@ begin
   Halt;
 end;
 
-procedure TMissingWikiSVNRevisions.ExtractSVN(Lines: TStrings);
+procedure TMissingWikiSVNRevisions.ExtractSVN(Lines: TStrings;
+  UserFilter: String);
 { Remove empty and separator lines.
   Combine each log entry into a single line "*r12345 message"
 
@@ -136,10 +143,11 @@ Fixed compile ifdef
 const MaxCol=80;
 var
   i: Integer;
-  Line: String;
-  p: PChar;
+  Line, Revision, UserName: String;
+  p, StartP: PChar;
 begin
   i:=0;
+  UserName:='';
   while i<Lines.Count do begin
     Line:=Lines[i];
     p:=PChar(Line);
@@ -149,16 +157,27 @@ begin
       // revision
       inc(p,1);
       while p^ in ['0'..'9'] do inc(p);
-      Lines[i]:=LeftStr(Line,p-PChar(Line)); // 'r12345'
-      inc(i);
+      Revision:=LeftStr(Line,p-PChar(Line)); // 'r12345'
+      while p^ in [' ','|'] do inc(p);
+      StartP:=p;
+      while not (p^ in [' ','|',#0]) do inc(p);
+      UserName:=copy(Line,StartP-PChar(Line)+1,p-StartP);
+      if (UserFilter<>'') and (UserName<>UserFilter) then
+        Lines.Delete(i)
+      else begin
+        Lines[i]:=Revision;
+        inc(i);
+      end;
     end else begin
       // comment
       Line:=Trim(Line);
-      if (i>0) and (length(Lines[i-1])<MaxCol) then begin
-        Line:=Lines[i-1]+' '+Line;
-        if length(Line)>MaxCol then
-          Line:=LeftStr(Line,MaxCol)+'...';
-        Lines[i-1]:=Line;
+      if (UserFilter='') or (UserName=UserFilter) then begin
+        if (i>0) and (length(Lines[i-1])<MaxCol) then begin
+          Line:=Lines[i-1]+' '+Line;
+          if length(Line)>MaxCol then
+            Line:=LeftStr(Line,MaxCol)+'...';
+          Lines[i-1]:=Line;
+        end;
       end;
       Lines.Delete(i);
     end;
@@ -204,12 +223,18 @@ end;
 
 procedure TMissingWikiSVNRevisions.WriteHelp;
 begin
-  writeln('Usage: ', ExeName, ' -h');
+  writeln('Usage: ', ExeName, ' -s svn.log -w wikilist.txt [-u username]');
   writeln;
+  writeln('Shows svn log entries not listed in the wikilist.');
+  writeln;
+  writeln('-h, --help');
+  writeln('        show this help');
   writeln('-s <file>, --svnlog=<file>');
   writeln('        SVN log, e.g. "svn log --limit=1000 > log.txt"');
   writeln('-w <file>, --wikilist=<file>');
-  writeln('        List in wiki format "*r12345 text"');
+  writeln('        List in wiki format: Every line "*r12345 text"');
+  writeln('-u <user>, --user=<user>');
+  writeln('        only user ');
 end;
 
 var
