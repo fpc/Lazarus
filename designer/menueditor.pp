@@ -2628,8 +2628,6 @@ end;
 destructor TMenuDesigner.Destroy;
 begin
   FreeAndNil(FGui);
-  if (GlobalDesignHook <> nil) then
-    GlobalDesignHook.RemoveAllHandlersForObject(Self);
   inherited Destroy;
 end;
 
