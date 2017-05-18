@@ -8867,12 +8867,12 @@ var
       begin
         // read first expressions
         // read til comma or bracket close
-        while GetCurrentAtomType in [vatIdentifier, vatPoint] do
-          ReadNextAtom;
-
         repeat
+          while not(AtomIsChar(',') or AtomIsChar('[') or AtomIsChar('(') or AtomIsChar(')')) do
+            ReadNextAtom;
           if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
             ReadTilBracketClose(true);
+            ReadNextAtom;
           end;
           if (CurPos.StartPos>SrcLen)
           or (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose,cafComma])
