@@ -172,6 +172,7 @@ type
     UpdateMultiProcSignatures: boolean;
     UpdateOtherProcSignaturesCase: boolean; // when updating proc signatures not under cursor, fix case
     GroupLocalVariables: boolean;
+    OverrideStringTypesWithFirstParamType: Boolean;
     // classes, methods, properties
     ClassHeaderComments: boolean;
     ClassImplementationComments: boolean;
@@ -1295,6 +1296,7 @@ begin
   UpdateAllMethodSignatures:=true;
   UpdateMultiProcSignatures:=true;
   UpdateOtherProcSignaturesCase:=true;
+  OverrideStringTypesWithFirstParamType:=true;
   GroupLocalVariables:=true;
   MethodInsertPolicy:=mipClassOrder;
   MethodDefaultSection:=DefaultMethodDefaultSection;

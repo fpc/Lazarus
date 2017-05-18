@@ -183,14 +183,16 @@ type
     fdfSearchInHelpers,     // search in class/record/type helpers too
     fdfSearchInHelpersInTheEnd, // search in helpers after current class (used with inherited call in helper)
     fdfTypeType,            // do not resolve TMyString = type string;
-    fdfIgnoreOperatorError  // return expression type even if an operator error was found
+    fdfIgnoreOperatorError, // return expression type even if an operator error was found
+    fdfOverrideStringTypesWithFirstParamType  // if you search for an expression result type of a "function A(B: string): string", override the result type with type of B expression
     );
   TFindDeclarationFlags = set of TFindDeclarationFlag;
   
 const
   // masks to pass flags to sub searches
   fdfGlobals = [fdfExceptionOnNotFound, fdfTopLvlResolving,
-                fdfExtractOperand, fdfPropertyResolving];
+                fdfExtractOperand, fdfPropertyResolving,
+                fdfOverrideStringTypesWithFirstParamType];
   fdfGlobalsSameIdent = fdfGlobals+[fdfExceptionOnPredefinedIdent,
                 fdfIgnoreMissingParams, fdfIgnoreUsedUnits, fdfDoNotCache,
                 fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect, fdfSearchInHelpers];
@@ -8684,6 +8686,8 @@ var
   IsIdentEndOfVar: TIsIdentEndOfVar;
   FlagCanBeForwardDefined, FlagCanBeForwardDefinedValid: boolean;
   ExprType: TExpressionType;
+  FirstParamStartPos: Integer;
+  FuncParamList: TExprTypeList;
 
   procedure RaiseIdentExpected;
   begin
@@ -8857,7 +8861,8 @@ var
     ProcNode, FuncResultNode: TCodeTreeNode;
     AtEnd: Boolean;
     CurAliasType: PFindContext;
-    Context: TFindContext;
+    Context, FirstParamAlias: TFindContext;
+    FirstParamExprType: TExpressionType;
   begin
     //DebugLn(['ResolveBaseTypeOfIdentifier ',ExprType.Context.Node<>nil]);
     if ExprType.Desc=xtContext then
@@ -8914,6 +8919,49 @@ var
         Include(Params.Flags,fdfFunctionResult);
         ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
                                             ProcNode,Params,CurAliasType);
+
+        if  (ExprType.Desc in [xtAnsiString, xtString, xtShortString])
+        and (FirstParamStartPos>0)
+        and (FuncParamList<>nil) and(FuncParamList.Count>0)
+        and (FuncParamList.Items[0].Desc in [xtAnsiString, xtString, xtShortString]) then
+        begin
+          MoveCursorToCleanPos(FirstParamStartPos);
+          ReadNextAtom;
+          if (CurPos.Flag=cafRoundBracketOpen) then
+          begin
+            ReadNextAtom;
+            FirstParamStartPos := CurPos.StartPos;
+
+            if CurPos.Flag<>cafRoundBracketClose then begin
+              // read first expressions
+              // read til comma or bracket close
+              while GetCurrentAtomType in [vatIdentifier, vatPoint] do
+                ReadNextAtom;
+
+              repeat
+                if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+                  ReadTilBracketClose(true);
+                end;
+                if (CurPos.StartPos>SrcLen)
+                or (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose,cafComma])
+                then
+                  break;
+              until false;
+
+              // find expression type
+              Params.Flags:=Params.Flags-[fdfExceptionOnNotFound];
+              FillChar(FirstParamAlias{%H-}, SizeOf(FirstParamAlias), 0);
+              //DebugLn('TFindDeclarationTool.CreateParamExprListFromStatement CurIgnoreErrorAfterPos=',dbgs(CurIgnoreErrorAfterPos),' ExprStartPos=',dbgs(ExprStartPos));
+              FirstParamExprType:=FindExpressionResultType(Params,FirstParamStartPos,CurPos.StartPos,@FirstParamAlias);
+              if (FirstParamExprType.Desc in [xtAnsiString, xtString, xtShortString]) then
+              begin
+                ExprType := FirstParamExprType;
+                if AliasType<>nil then
+                  AliasType^ := FirstParamAlias;
+              end;
+            end;
+          end;
+        end;
       end;
     end;
   end;
@@ -9682,6 +9730,14 @@ var
           Params.AddOperandPart(')');
         end;
       end;
+      if fdfOverrideStringTypesWithFirstParamType in Params.Flags then begin
+        if (ExprType.Context.Node<>nil)
+        and (ExprType.Context.Node.Desc in [ctnProcedure, ctnProcedureHead])
+        and (FirstParamStartPos<0) then begin
+          FirstParamStartPos := CurAtom.StartPos;
+          FuncParamList := CreateParamExprListFromStatement(FirstParamStartPos, Params);
+        end;
+      end;
     end else begin
       // expression
       {$IFDEF ShowExprEval}
@@ -9802,51 +9858,57 @@ var
   end;
   
 begin
-  Result:=CleanExpressionType;
-  StartFlags:=Params.Flags;
-  StartNode:=Params.ContextNode;
-  {$IFDEF ShowExprEval}
-  DebugLn(['[TFindDeclarationTool.FindExpressionTypeOfTerm] START',
-    ' Flags=[',dbgs(Params.Flags),']',
-    ' StartContext=',StartNode.DescAsString,'=',dbgstr(Src,StartNode.StartPos,15),
-    ' Alias=',AliasType<>nil]
-  );
-  {$ENDIF}
-  {$IFDEF CheckNodeTool}
-  CheckNodeTool(StartNode);
-  {$ENDIF}
-
-  if not InitAtomQueue then exit;
-  ExprType:=CleanExpressionType;
-  repeat
+  FirstParamStartPos := -1;
+  FuncParamList := nil;
+  try
+    Result:=CleanExpressionType;
+    StartFlags:=Params.Flags;
+    StartNode:=Params.ContextNode;
     {$IFDEF ShowExprEval}
-    DebugLn(['  FindExpressionTypeOfTerm ATOM CurAtomType=',
-      VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"',
-      ' ExprType=',ExprTypeToString(ExprType)]);
+    DebugLn(['[TFindDeclarationTool.FindExpressionTypeOfTerm] START',
+      ' Flags=[',dbgs(Params.Flags),']',
+      ' StartContext=',StartNode.DescAsString,'=',dbgstr(Src,StartNode.StartPos,15),
+      ' Alias=',AliasType<>nil]
+    );
     {$ENDIF}
-    case CurAtomType of
-    vatIdentifier, vatPreDefIdentifier: ResolveIdentifier;
-    vatStringConstant,vatNumber: ResolveConstant;
-    vatPoint:             ResolvePoint;
-    vatAS:                ResolveAs;
-    vatUP:                ResolveUp;
-    vatEdgedBracketOpen:  ResolveEdgedBracketOpen;
-    vatRoundBracketOpen:  ResolveRoundBracketOpen;
-    vatINHERITED:         ResolveINHERITED;
-    end;
-    ReadNextExpressionAtom;
-  until CurAtom.EndPos>EndPos;
+    {$IFDEF CheckNodeTool}
+    CheckNodeTool(StartNode);
+    {$ENDIF}
 
-  if fdfFunctionResult in StartFlags then
-    ResolveChildren;
+    if not InitAtomQueue then exit;
+    ExprType:=CleanExpressionType;
+    repeat
+      {$IFDEF ShowExprEval}
+      DebugLn(['  FindExpressionTypeOfTerm ATOM CurAtomType=',
+        VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"',
+        ' ExprType=',ExprTypeToString(ExprType)]);
+      {$ENDIF}
+      case CurAtomType of
+      vatIdentifier, vatPreDefIdentifier: ResolveIdentifier;
+      vatStringConstant,vatNumber: ResolveConstant;
+      vatPoint:             ResolvePoint;
+      vatAS:                ResolveAs;
+      vatUP:                ResolveUp;
+      vatEdgedBracketOpen:  ResolveEdgedBracketOpen;
+      vatRoundBracketOpen:  ResolveRoundBracketOpen;
+      vatINHERITED:         ResolveINHERITED;
+      end;
+      ReadNextExpressionAtom;
+    until CurAtom.EndPos>EndPos;
 
-  Result:=ExprType;
-  if (Result.Desc=xtContext) and (not (fdfFindVariable in StartFlags)) then
-    Result:=Result.Context.Tool.ConvertNodeToExpressionType(
-                 Result.Context.Node,Params);
-  {$IFDEF ShowExprEval}
-  DebugLn('  FindExpressionTypeOfTerm Result=',ExprTypeToString(Result));
-  {$ENDIF}
+    if fdfFunctionResult in StartFlags then
+      ResolveChildren;
+
+    Result:=ExprType;
+    if (Result.Desc=xtContext) and (not (fdfFindVariable in StartFlags)) then
+      Result:=Result.Context.Tool.ConvertNodeToExpressionType(
+                   Result.Context.Node,Params);
+    {$IFDEF ShowExprEval}
+    DebugLn('  FindExpressionTypeOfTerm Result=',ExprTypeToString(Result));
+    {$ENDIF}
+  finally
+    FuncParamList.Free;
+  end;
 end;
 
 function TFindDeclarationTool.FindEndOfExpression(StartPos: integer): integer;
@@ -12308,7 +12370,8 @@ begin
   end else begin
     ExprType:=CleanExpressionType;
     Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,
-                   fdfTopLvlResolving,fdfFunctionResult,fdfIgnoreOperatorError];
+                   fdfTopLvlResolving,fdfFunctionResult,fdfIgnoreOperatorError]
+                  +Params.Flags*[fdfOverrideStringTypesWithFirstParamType];
     ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos,
                                        @AliasType);
   end;

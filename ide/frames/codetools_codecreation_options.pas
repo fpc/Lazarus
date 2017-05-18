@@ -34,6 +34,7 @@ type
 
   TCodetoolsCodeCreationOptionsFrame = class(TAbstractIDEOptionsEditor)
     ForwardProcsInsertPolicyComboBox: TComboBox;
+    OverrideStringTypesWithFirstParamTypeCheckBox: TCheckBox;
     TemplateFileEdit: TFileNameEdit;
     UsesInsertPolicyComboBox: TComboBox;
     ForwardProcsKeepOrderCheckBox: TCheckBox;
@@ -98,6 +99,8 @@ begin
     lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa;
   GroupLocalVariablesCheckBox.Caption:=
     lisGroupLocalVariables;
+  OverrideStringTypesWithFirstParamTypeCheckBox.Caption:=
+    lisOverrideStringTypesWithFirstParamType;
 
   TemplateFileLabel.Caption:=lisTemplateFile;
   {$IFNDEF EnableCodeCompleteTemplates}
@@ -138,6 +141,7 @@ begin
     UpdateMultiProcSignaturesCheckBox.Checked:=UpdateMultiProcSignatures;
     UpdateOtherProcSignaturesCaseCheckBox.Checked:=UpdateOtherProcSignaturesCase;
     GroupLocalVariablesCheckBox.Checked:=GroupLocalVariables;
+    OverrideStringTypesWithFirstParamTypeCheckBox.Checked:=OverrideStringTypesWithFirstParamType;
 
     TemplateFileEdit.Text:=CodeCompletionTemplateFileName;
   end;
@@ -167,6 +171,7 @@ begin
     UpdateMultiProcSignatures:=UpdateMultiProcSignaturesCheckBox.Checked;
     UpdateOtherProcSignaturesCase:=UpdateOtherProcSignaturesCaseCheckBox.Checked;
     GroupLocalVariables:=GroupLocalVariablesCheckBox.Checked;
+    OverrideStringTypesWithFirstParamType:=OverrideStringTypesWithFirstParamTypeCheckBox.Checked;
 
     CodeCompletionTemplateFileName:=TemplateFileEdit.Text;
   end;

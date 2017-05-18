@@ -1892,6 +1892,8 @@ begin
     {$ENDIF}
     // find type of term
     Params.ContextNode:=CursorNode;
+    if Beautifier.OverrideStringTypesWithFirstParamType then
+      Params.Flags:=Params.Flags+[fdfOverrideStringTypesWithFirstParamType];
     NewType:=FindTermTypeAsString(TermAtom,Params,ExprType);
     if NewType='' then
       RaiseException(20170421201534,'CompleteLocalVariableAssignment Internal error: NewType=""');

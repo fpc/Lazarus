@@ -53,7 +53,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 15
-    Top = 166
+    Top = 185
     Width = 95
     Caption = 'TemplateFileLabel'
     ParentColor = False
@@ -124,13 +124,13 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
   object TemplateFileEdit: TFileNameEdit
     AnchorSideLeft.Control = TemplateFileLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = GroupLocalVariablesCheckBox
+    AnchorSideTop.Control = OverrideStringTypesWithFirstParamTypeCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 107
     Height = 23
-    Top = 162
+    Top = 181
     Width = 453
     FilterIndex = 0
     HideDirectories = False
@@ -141,7 +141,19 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     MaxLength = 0
-    TabOrder = 6
+    TabOrder = 7
     Text = 'TemplateFileEdit'
+  end
+  object OverrideStringTypesWithFirstParamTypeCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = GroupLocalVariablesCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 156
+    Width = 286
+    BorderSpacing.Left = 6
+    Caption = 'OverrideStringTypesWithFirstParamTypeCheckBox'
+    TabOrder = 6
   end
 end
