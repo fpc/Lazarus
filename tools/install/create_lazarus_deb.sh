@@ -224,6 +224,7 @@ chmod 644 $LazBuildDir/etc/lazarus/*.xml
 # fixing permissions
 echo "fixing permissions ..."
 find $LazBuildDir -type d | xargs -d '\n' chmod 755
+find $LazBuildDir -perm 775 | xargs -d '\n' chmod 755
 chmod a-x $LazBuildDir/debian/rules
 
 # postinst + postrm:
