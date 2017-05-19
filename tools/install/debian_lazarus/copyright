@@ -45,3 +45,5 @@ directory. They are under the GPL 2, with the following exceptions:
 transfermacros.pp, wordcompletion.pp, patheditordlg.pas, outputfilter.pas,
 inputfiledialog.pas, findreplacedialog.pp, findinfilesdlg.pas
 These files are under the modified LGPL as described in COPYING.modifiedLGPL.
+
+/usr/share/common-licenses/LGPL-2

@@ -69,7 +69,7 @@ cp -arf $SrcDir/* $BuildRoot/usr/lib/lazarus/
     ln -sf /usr/lib/lazarus/lazarus usr/bin/lazarus-ide
     ln -sf /usr/lib/lazarus/startlazarus usr/bin/startlazarus
     ln -sf /usr/lib/lazarus/lazbuild usr/bin/lazbuild
-    cat $SrcDir/install/man/man1/lazbuild.1 | gzip --best > $BuildRoot/usr/man/man1/lazbuild.1.gz
+    cat $SrcDir/install/man/man1/lazbuild.1 | gzip -n --best > $BuildRoot/usr/man/man1/lazbuild.1.gz
 
 /sbin/makepkg -l y -c y $SlackTGZ
 cd
