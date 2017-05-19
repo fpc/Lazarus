@@ -188,13 +188,15 @@ cat $DebianSrcDir/control$LCLWidgetset | \
       -e "s/LAZSIZE/$LazSize/g" \
       -e "s/PKGNAME/$PkgName/g" \
   > $LazBuildDir/DEBIAN/control
+cp $DebianSrcDir/conffiles $LazBuildDir/DEBIAN/
 
 # copyright and changelog files
 echo "copying copyright and changelog files"
-mkdir -p $LazBuildDir/usr/share/doc/lazarus
-cp $DebianSrcDir/{copyright,changelog,changelog.Debian} $LazBuildDir/usr/share/doc/lazarus/
-gzip --best $LazBuildDir/usr/share/doc/lazarus/changelog
-gzip --best $LazBuildDir/usr/share/doc/lazarus/changelog.Debian
+LazBuildDocDir=$LazBuildDir/usr/share/doc/$PkgName
+mkdir -p $LazBuildDocDir
+cp $DebianSrcDir/{copyright,changelog,changelog.Debian} $LazBuildDocDir/
+gzip --best $LazBuildDocDir/changelog
+gzip --best $LazBuildDocDir/changelog.Debian
 
 # icons, links
 mkdir -p $LazBuildDir/usr/share/pixmaps
@@ -211,7 +213,7 @@ ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
 # docs
 mkdir -p $LazBuildDir/usr/share/man/man1
 for exe in lazbuild lazarus-ide startlazarus lazres svn2revisioninc updatepofiles; do
-cat $LazDestDir/install/man/man1/$exe.1 | gzip --best > $LazBuildDir/usr/share/man/man1/$exe.1.gz
+  cat $LazDestDir/install/man/man1/$exe.1 | gzip --best > $LazBuildDir/usr/share/man/man1/$exe.1.gz
 done
 
 # default configs
@@ -227,7 +229,7 @@ chmod 644 $LazBuildDir/etc/lazarus/*.xml
 echo "fixing permissions ..."
 find $LazBuildDir -type d | xargs -d '\n' chmod 755
 find $LazBuildDir -perm 775 | xargs -d '\n' chmod 755
-find $LazBuildDir -perm 664 | xargs -d '\n' chmod 544
+find $LazBuildDir -perm 664 | xargs -d '\n' chmod 644
 
 # postinst + postrm:
 #  don't know
