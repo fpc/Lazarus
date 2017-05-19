@@ -185,6 +185,7 @@ ResourceDir=$CurDir/debian_$PackageName
 DebianInstallDir=$FPCBuildDir/usr
 DebianRulezDir=$FPCBuildDir/DEBIAN/
 DebianDocDir=$FPCBuildDir/usr/share/doc/$PackageName${TARGET_SUFFIX}
+DebianLintianDir=$FPCBuildDir/usr/share/lintian
 DebianSourceDir=$FPCBuildDir/usr/share/fpcsrc/$FPCVersion
 Date=`date --rfc-822`
 
@@ -205,6 +206,8 @@ mkdir -p $DebianDocDir
 chmod 755 $DebianDocDir
 mkdir -p $DebianRulezDir
 chmod 755 $DebianRulezDir
+mkdir -p $DebianLintianDir
+chmod 755 $DebianLintianDir
 
 if [ "$PackageName" = "fpc-src" ]; then
     # copy fpc sources
@@ -259,7 +262,8 @@ cat $ResourceDir/control \
         -e "s/Depends: binutils/Depends: $DEPENDS/" \
         -e "s/DEBSIZE/$DebSize/" \
   > $DebianRulezDir/control
-
+mkdir -p $DebianLintianDir/overrides
+cp $ResourceDir/lintian.overrides $DebianLintianDir/overrides/$PackageName$TARGET_SUFFIX
 
 # identify conf files
 if test -n "$TARGET_SUFFIX"

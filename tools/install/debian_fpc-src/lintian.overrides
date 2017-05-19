@@ -1,0 +1,4 @@
+# ignore special files in /usr/share
+fpc-src: arch-dependent-file-in-usr-share
+fpc-src: binary-from-other-architecture
+fpc-src: wrong-path-for-interpreter
