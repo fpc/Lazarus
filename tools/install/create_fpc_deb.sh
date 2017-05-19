@@ -344,6 +344,8 @@ cp $ResourceDir/copyright $DebianDocDir/
 echo "fixing permissions ..."
 find $FPCBuildDir -type d -print0 | xargs -0 chmod 755  # this is needed, don't ask me why
 find $FPCBuildDir -type f -print0 | xargs -0 chmod a+r  # this is needed, don't ask me why
+find $FPCBuildDir -perm 775 | xargs -d '\n' chmod 755
+find $FPCBuildDir -perm 664 | xargs -d '\n' chmod 644
 
 #------------------------------------------------------------------------------
 # creating deb
