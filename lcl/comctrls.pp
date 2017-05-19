@@ -1888,8 +1888,6 @@ type
     procedure OnAssociateChangeEnabled(Sender: TObject);
     procedure OnAssociateChangeVisible(Sender: TObject);
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure SetEnabled(Value: Boolean); override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure CalculatePreferredSize(var PreferredWidth,

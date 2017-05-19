@@ -413,22 +413,6 @@ begin
   UpdateOrientation;
 end;
 
-function TCustomUpDown.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
-  ): Boolean;
-begin
-  Result := inherited DoMouseWheelDown(Shift, MousePos);
-  if not Result then
-    TCustomSpeedButton(FMinBtn).Click;
-end;
-
-function TCustomUpDown.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint
-  ): Boolean;
-begin
-  Result := inherited DoMouseWheelUp(Shift, MousePos);
-  if not Result then
-    TCustomSpeedButton(FMaxBtn).Click;
-end;
-
 procedure TCustomUpDown.SetEnabled(Value: Boolean);
 begin
   FMinBtn.Enabled := Value;
