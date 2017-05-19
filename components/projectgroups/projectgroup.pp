@@ -692,6 +692,7 @@ destructor TIDEProjectGroup.Destroy;
 begin
   FreeAndNil(FTargets);
   FreeAndNil(FRemovedTargets);
+  FreeAndNil(FCompileTarget);
   inherited Destroy;
 end;
 
