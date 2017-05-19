@@ -161,6 +161,7 @@ mkdir -p units/${targetos}-linux/qt
 
 export LCL_PLATFORM=
 
+find . -name '*.or' -delete
 strip lazarus
 strip startlazarus
 strip lazbuild
@@ -226,6 +227,7 @@ chmod 644 $LazBuildDir/etc/lazarus/*.xml
 echo "fixing permissions ..."
 find $LazBuildDir -type d | xargs -d '\n' chmod 755
 find $LazBuildDir -perm 775 | xargs -d '\n' chmod 755
+find $LazBuildDir -perm 664 | xargs -d '\n' chmod 544
 
 # postinst + postrm:
 #  don't know
@@ -235,7 +237,7 @@ echo "creating deb ..."
 cd $TmpDir
 fakeroot dpkg-deb --build $LazBuildDir
 mv $LazBuildDir.deb $LazDeb
-echo "the new deb can be found at $LazDeb"
+echo "you can now test it with lintian $LazDeb"
 cd -
 
 # removing temporary files
