@@ -276,7 +276,7 @@ echo " -- Mattias Gaertner <mattias@freepascal.org>  $Date" >> $File
 echo "" >> $File
 cat $ResourceDir/changelog >> $File
 rm -f $File.gz
-gzip --best $File
+gzip -n --best $File
 
 # create postinst if needed
 if [ -f "$ResourceDir/postinst" ]
@@ -328,7 +328,7 @@ echo "creating changelog.Debian file ..."
 File=$DebianDocDir/changelog.Debian
 cp $ResourceDir/changelog.Debian $File
 rm -f $File.gz
-gzip --best $File
+gzip -n --best $File
 
 # create debian copyright file
 echo "creating copyright file ..."

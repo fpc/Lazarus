@@ -194,9 +194,13 @@ cp $DebianSrcDir/conffiles $LazBuildDir/DEBIAN/
 echo "copying copyright and changelog files"
 LazBuildDocDir=$LazBuildDir/usr/share/doc/$PkgName
 mkdir -p $LazBuildDocDir
-cp $DebianSrcDir/{copyright,changelog,changelog.Debian} $LazBuildDocDir/
-gzip --best $LazBuildDocDir/changelog
-gzip --best $LazBuildDocDir/changelog.Debian
+cp $DebianSrcDir/copyright $LazBuildDocDir/
+cat $LazSrcDir/debian/changelog | sed -e "s/^lazarus (/$PkgName (/" > $LazBuildDocDir/changelog
+cp $LazBuildDocDir/changelog $LazBuildDocDir/changelog.Debian
+gzip -n --best $LazBuildDocDir/changelog
+gzip -n --best $LazBuildDocDir/changelog.Debian
+mkdir -p $LazBuildDir/usr/share/lintian/overrides
+cat $DebianSrcDir/lintian.overrides | sed -e "s/^lazarus:/$PkgName:/" > $LazBuildDir/usr/share/lintian/overrides/$PkgName
 
 # icons, links
 mkdir -p $LazBuildDir/usr/share/pixmaps
@@ -213,7 +217,7 @@ ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
 # docs
 mkdir -p $LazBuildDir/usr/share/man/man1
 for exe in lazbuild lazarus-ide startlazarus lazres svn2revisioninc updatepofiles; do
-  cat $LazDestDir/install/man/man1/$exe.1 | gzip --best > $LazBuildDir/usr/share/man/man1/$exe.1.gz
+  cat $LazDestDir/install/man/man1/$exe.1 | gzip -n --best > $LazBuildDir/usr/share/man/man1/$exe.1.gz
 done
 
 # default configs
