@@ -2090,7 +2090,7 @@ begin
   GlobalDesignHook.AddHandlerRenameMethod(@PropHookRenameMethod);
   GlobalDesignHook.AddHandlerBeforeAddPersistent(@PropHookBeforeAddPersistent);
   GlobalDesignHook.AddHandlerComponentRenamed(@PropHookComponentRenamed);
-  GlobalDesignHook.AddHandlerModified(@PropHookModified);
+  GlobalDesignHook.AddHandlerModifiedWithName(@PropHookModified);
   GlobalDesignHook.AddHandlerPersistentAdded(@PropHookPersistentAdded);
   GlobalDesignHook.AddHandlerPersistentDeleting(@PropHookPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@PropHookDeletePersistent);

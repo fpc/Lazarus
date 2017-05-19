@@ -1299,7 +1299,8 @@ type
   TPropHookObjectPropertyChanged = procedure(Sender: TObject;
                                              NewObject: TPersistent) of object;
   // modifing
-  TPropHookModified = procedure(Sender: TObject; PropName: ShortString) of object;
+  TPropHookModified = procedure(Sender: TObject) of object;
+  TPropHookModifiedWithName = procedure(Sender: TObject; PropName: ShortString) of object;
   TPropHookRevert = procedure(Instance:TPersistent; PropInfo:PPropInfo) of object;
   TPropHookRefreshPropertyValues = procedure of object;
   // other
@@ -1342,6 +1343,7 @@ type
     htObjectPropertyChanged,
     // modifing
     htModified,
+    htModifiedWithName,
     htRevert,
     htRefreshPropertyValues,
     // dependencies
@@ -1539,6 +1541,8 @@ type
     // modifing events
     procedure AddHandlerModified(const OnModified: TPropHookModified);
     procedure RemoveHandlerModified(const OnModified: TPropHookModified);
+    procedure AddHandlerModifiedWithName(const OnModified: TPropHookModifiedWithName);
+    procedure RemoveHandlerModifiedWithName(const OnModified: TPropHookModifiedWithName);
     procedure AddHandlerRevert(const OnRevert: TPropHookRevert);
     procedure RemoveHandlerRevert(const OnRevert: TPropHookRevert);
     procedure AddHandlerRefreshPropertyValues(
@@ -6519,9 +6523,13 @@ var
 begin
   i := GetHandlerCount(htModified);
   while GetNextHandlerIndex(htModified,i) do
-    TPropHookModified(FHandlers[htModified][i])(Sender, PropName);
+    TPropHookModified(FHandlers[htModified][i])(Sender);
 
-  if Sender is TPropertyEditor then 
+  i := GetHandlerCount(htModifiedWithName);
+  while GetNextHandlerIndex(htModifiedWithName,i) do
+    TPropHookModifiedWithName(FHandlers[htModifiedWithName][i])(Sender, PropName);
+
+  if Sender is TPropertyEditor then
   begin
     // mark the designer form of every selected persistent
     // ToDo: Use PropName here somehow.
@@ -6970,10 +6978,26 @@ begin
   RemoveHandler(htObjectPropertyChanged,TMethod(OnObjectPropertyChanged));
 end;
 
-procedure TPropertyEditorHook.AddHandlerModified(
-  const OnModified: TPropHookModified);
+procedure TPropertyEditorHook.AddHandlerModified(const OnModified: TPropHookModified);
 begin
   AddHandler(htModified,TMethod(OnModified));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerModified(const OnModified: TPropHookModified);
+begin
+  AddHandler(htModified,TMethod(OnModified));
+end;
+
+procedure TPropertyEditorHook.AddHandlerModifiedWithName(
+  const OnModified: TPropHookModifiedWithName);
+begin
+  AddHandler(htModifiedWithName,TMethod(OnModified));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerModifiedWithName(
+  const OnModified: TPropHookModifiedWithName);
+begin
+  RemoveHandler(htModifiedWithName,TMethod(OnModified));
 end;
 
 procedure TPropertyEditorHook.AddHandlerDesignerMouseDown(
@@ -6986,12 +7010,6 @@ procedure TPropertyEditorHook.AddHandlerDesignerMouseUp(
   const OnMouseUp: TMouseEvent);
 begin
   AddHandler(htDesignerMouseUp,TMethod(OnMouseUp));
-end;
-
-procedure TPropertyEditorHook.RemoveHandlerModified(
-  const OnModified: TPropHookModified);
-begin
-  RemoveHandler(htModified,TMethod(OnModified));
 end;
 
 procedure TPropertyEditorHook.RemoveHandlerDesignerMouseDown(
