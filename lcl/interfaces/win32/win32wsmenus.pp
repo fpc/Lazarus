@@ -474,7 +474,7 @@ begin
   end
   else
   begin
-    Result.cy := Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight;
+    Result.cy := Max(Metrics.TextSize.cy, Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight);
     if AMenuItem.HasIcon then
     begin
       IconSize := AMenuItem.GetIconSize;
@@ -730,8 +730,9 @@ begin
   IconWidth := MenuIconWidth(AMenuItem);
   CheckRect.Right := Max(CheckRect.Right, CheckRect.Left+IconWidth);
   CheckRect.Bottom := Max(CheckRect.Bottom, CheckRect.Top+IconWidth);
+  CheckRect.Offset(0, (ARect.Bottom-ARect.Top-CheckRect.Bottom+CheckRect.Top) div 2);
   // draw gutter
-  GutterRect := CheckRect;
+  GutterRect := Rect(0, ARect.Top, CheckRect.Right, ARect.Bottom);
   GutterRect.Left := GutterRect.Right + Metrics.CheckBgMargins.cxRightWidth - Metrics.CheckMargins.cxRightWidth;
   GutterRect.Right := GutterRect.Left + Metrics.GutterSize.cx;
   Tmp := ThemeServices.GetElementDetails(tmPopupGutter);
