@@ -5007,7 +5007,6 @@ docs/html/fpdoc.css svneol=native#text/css
 docs/html/localfclfooter.xml svneol=native#text/plain
 docs/html/locallclfooter.xml svneol=native#text/plain
 docs/html/localrtlfooter.xml svneol=native#text/plain
-docs/html/sourceforgefooter.xml svneol=native#text/xml
 docs/images/laztitle.png -text
 docs/images/laztitle.svg -text svneol=native#image/svg%2Bxml
 docs/index.html svneol=native#text/html
