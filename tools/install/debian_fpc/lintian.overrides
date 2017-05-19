@@ -1,0 +1,3 @@
+# ignore special files in /usr/share
+#fpc: arch-dependent-file-in-usr-share
+
