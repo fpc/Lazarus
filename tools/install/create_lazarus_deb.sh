@@ -142,6 +142,7 @@ if [ "$UseCHMHelp" = "1" ]; then
   cp -v *.kwd *.chm $LazDestDir/docs/chm/
   cd -
 fi
+chmod a-x $LazDestDir/debian/rules
 
 # compile
 echo
@@ -225,7 +226,6 @@ chmod 644 $LazBuildDir/etc/lazarus/*.xml
 echo "fixing permissions ..."
 find $LazBuildDir -type d | xargs -d '\n' chmod 755
 find $LazBuildDir -perm 775 | xargs -d '\n' chmod 755
-chmod a-x $LazBuildDir/debian/rules
 
 # postinst + postrm:
 #  don't know
