@@ -209,7 +209,7 @@ ln -s $LazDestDirInstalled/lazbuild $LazBuildDir/usr/bin/lazbuild
 # docs
 mkdir -p $LazBuildDir/usr/share/man/man1
 for exe in lazbuild lazarus-ide startlazarus lazres svn2revisioninc updatepofiles; do
-cat $LazDestDir/install/man/man1/$exe.1 | gzip > $LazBuildDir/usr/share/man/man1/$exe.1.gz
+cat $LazDestDir/install/man/man1/$exe.1 | gzip --best > $LazBuildDir/usr/share/man/man1/$exe.1.gz
 done
 
 # default configs
