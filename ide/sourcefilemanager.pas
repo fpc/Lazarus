@@ -6251,7 +6251,7 @@ var
   ARestoreVisible: Boolean;
   AncestorClass: TComponentClass;
   DsgControl: TCustomDesignControl;
-  {$IFDEF DataModulePPI}
+  {$IF (FPC_FULLVERSION >= 30003)}
   DsgDataModule: TDataModule;
   {$ENDIF}
 begin
@@ -6443,7 +6443,7 @@ begin
           DsgControl.DesignTimePPI := Screen.PixelsPerInch;
           DsgControl.PixelsPerInch := Screen.PixelsPerInch;
         end;
-        {$IFDEF DataModulePPI} // To-Do: replace with an FPC version after DesignPPI has been applied to FPC
+        {$IF (FPC_FULLVERSION >= 30003)} // TDataModule.DesignPPI was added in FPC 3.0.3
         if NewComponent is TDataModule then
         begin
           DsgDataModule := TDataModule(NewComponent);
