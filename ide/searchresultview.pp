@@ -47,7 +47,7 @@ uses
   LazUTF8, LazFileUtils,
   // IDE
   IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEProcs,
-  Project, MainIntf, IDECommands;
+  Project, MainIntf, IDECommands, IDEImagesIntf;
 
 
 type
@@ -145,7 +145,6 @@ type
     mniCopyAll: TMenuItem;
     mniCopyItem: TMenuItem;
     popList: TPopupMenu;
-    ImageList: TImageList;
     ResultsNoteBook: TPageControl;
     ToolBar: TToolBar;
     SearchAgainButton: TToolButton;
@@ -284,6 +283,8 @@ end;
 procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
   CloseCommand: TIDECommand;
+  ScaledIcon: TGraphic;
+  NewScaledIcon: Boolean;
 begin
   FMaxItems:=50000;
   ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
@@ -313,6 +314,23 @@ begin
   mniCopyAll.Caption := lisCopyAllItemsToClipboard;
   mniExpandAll.Caption := lisExpandAll;
   mniCollapseAll.Caption := lisCollapseAll;
+
+  ToolBar.Images := IDEImages.Images_16;
+  SearchAgainButton.ImageIndex := IDEImages.LoadImage(16, 'menu_search_find');
+  ClosePageButton.ImageIndex := IDEImages.LoadImage(16, 'menu_close');
+  ActionList.Images := IDEImages.Images_16;
+  actClosePage.ImageIndex := IDEImages.LoadImage(16, 'menu_close');
+
+  ScaledIcon := TIDEImages.ScaleImage(SearchInListEdit.Glyph, NewScaledIcon,
+    MulDiv(SearchInListEdit.Glyph.Width, TIDEImages.GetScalePercent, 100),
+    MulDiv(SearchInListEdit.Glyph.Height, TIDEImages.GetScalePercent, 100),
+    TIDEImages.GetScalePercent / 100);
+  try
+    SearchInListEdit.Glyph.Assign(ScaledIcon);
+  finally
+    if NewScaledIcon then
+      ScaledIcon.Free;
+  end;
 end;
 
 procedure TSearchResultsView.FormClose(Sender: TObject; var CloseAction: TCloseAction);
