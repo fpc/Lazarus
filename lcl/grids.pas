@@ -5242,7 +5242,7 @@ begin
   if FDefColWidth<0 then
   begin
     if FRealizedDefColWidth <= 0 then
-      FRealizedDefColWidth := MulDiv(DEFCOLWIDTH, Font.PixelsPerInch, 96);
+      FRealizedDefColWidth := Scale96ToFont(DEFCOLWIDTH);
     Result := FRealizedDefColWidth;
   end else
     Result := FDefColWidth;

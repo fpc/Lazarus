@@ -461,7 +461,7 @@ end;
 function TToolBar.GetRealButtonHeight: Integer;
 begin
   if FButtonHeight = 0 then
-    Result := MulDiv(cDefButtonHeight, Font.PixelsPerInch, 96)
+    Result := Scale96ToFont(cDefButtonHeight)
   else
     Result := FButtonHeight;
 end;
@@ -469,7 +469,7 @@ end;
 function TToolBar.GetRealButtonWidth: Integer;
 begin
   if FButtonWidth = 0 then
-    Result := MulDiv(cDefButtonWidth, Font.PixelsPerInch, 96)
+    Result := Scale96ToFont(cDefButtonWidth)
   else
     Result := FButtonWidth;
 end;

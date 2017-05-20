@@ -4540,15 +4540,15 @@ begin
     Result := FExpandSignSize
   else
   if ExpandSignType = tvestTheme then
-    Result := MulDiv(FThemeExpandSignSize, Font.PixelsPerInch, Screen.PixelsPerInch)
+    Result := ScaleScreenToFont(FThemeExpandSignSize)
   else
-    Result := MulDiv(DefaultTreeNodeExpandSignSize, Font.PixelsPerInch, 96);
+    Result := Scale96ToFont(DefaultTreeNodeExpandSignSize);
 end;
 
 function TCustomTreeView.GetRealIndent: Integer;
 begin
   if FIndent=0 then
-    Result := MulDiv(15, Font.PixelsPerInch, 96)
+    Result := Scale96ToFont(15)
   else
     Result := FIndent;
 end;
@@ -4978,13 +4978,13 @@ var
           // draw a plus or a minus sign
           R := Rect(ALeft, ATop, ARight+1, ABottom+1); //+1 for centering of line in square
           Rectangle(R);
-          MoveTo(R.Left + MulDiv(2, Font.PixelsPerInch, 96), MidY);
-          LineTo(R.Right - MulDiv(2, Font.PixelsPerInch, 96), MidY);
+          MoveTo(R.Left + Scale96ToFont(2), MidY);
+          LineTo(R.Right - Scale96ToFont(2), MidY);
           if not CollapseSign then
           begin
-            MoveTo(MidX, R.Top + MulDiv(2, Font.PixelsPerInch, 96));
-            LineTo(MidX, R.Bottom - MulDiv(2, Font.PixelsPerInch, 96));
-      	  end;
+            MoveTo(MidX, R.Top + Scale96ToFont(2));
+            LineTo(MidX, R.Bottom - Scale96ToFont(2));
+          end;
         end;
       tvestArrow,
       tvestArrowFill:

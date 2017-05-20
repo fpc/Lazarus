@@ -472,7 +472,7 @@ begin
   if ColorRectWidthStored then
     Result := FColorRectWidth
   else
-    Result := MulDiv(cDefaultColorRectWidth, Font.PixelsPerInch, 96);
+    Result := Scale96ToFont(cDefaultColorRectWidth);
 end;
 
 {------------------------------------------------------------------------------
@@ -837,7 +837,7 @@ begin
   if ColorRectWidthStored then
     Result := FColorRectWidth
   else
-    Result := MulDiv(cDefaultColorRectWidth, Font.PixelsPerInch, 96);
+    Result := Scale96ToFont(cDefaultColorRectWidth);
 end;
 
 {------------------------------------------------------------------------------

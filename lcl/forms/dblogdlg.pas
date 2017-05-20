@@ -46,8 +46,8 @@ begin
   Position := poScreenCenter;
   AutoSize := True;
   BorderStyle := bsDialog;
-  ChildSizing.LeftRightSpacing := ScaleCoord96(16);
-  ChildSizing.TopBottomSpacing := ScaleCoord96(10);
+  ChildSizing.LeftRightSpacing := Scale96ToForm(16);
+  ChildSizing.TopBottomSpacing := Scale96ToForm(10);
 
   lDatabase := TLabel.Create(Self);
   lDatabase.Parent := Self;
@@ -59,18 +59,18 @@ begin
   lDatabaseName.AnchorSide[akTop].Side := asrCenter;
   lDatabaseName.AnchorSide[akLeft].Control := lDatabase;
   lDatabaseName.AnchorSide[akLeft].Side := asrLeft;
-  lDatabaseName.BorderSpacing.Left := ScaleCoord96(80);
+  lDatabaseName.BorderSpacing.Left := Scale96ToForm(80);
 
   lUserName := TLabel.Create(Self);
   lUserName.Parent := Self;
   lUserName.Caption := rsDBLogDlgUserName;
   lUserName.AnchorSide[akTop].Control := lDatabase;
   lUserName.AnchorSide[akTop].Side := asrBottom;
-  lUserName.BorderSpacing.Top := ScaleCoord96(14);
+  lUserName.BorderSpacing.Top := Scale96ToForm(14);
 
   eUserName := TEdit.Create(Self);
   eUserName.Parent := Self;
-  eUserName.Width := ScaleCoord96(164);
+  eUserName.Width := Scale96ToForm(164);
   eUserName.AnchorSide[akTop].Control := lUserName;
   eUserName.AnchorSide[akTop].Side := asrCenter;
   eUserName.AnchorSide[akLeft].Control := lUserName;
@@ -84,7 +84,7 @@ begin
   lPassword.Caption := rsDBLogDlgPassword;
   lPassword.AnchorSide[akTop].Control := lUserName;
   lPassword.AnchorSide[akTop].Side := asrBottom;
-  lPassword.BorderSpacing.Top := ScaleCoord96(12);
+  lPassword.BorderSpacing.Top := Scale96ToForm(12);
 
   ePassword := TEdit.Create(Self);
   ePassword.Parent := Self;
@@ -108,7 +108,7 @@ begin
   BtnPanel.AnchorSide[akRight].Control := ePassword;
   BtnPanel.AnchorSide[akRight].Side := asrRight;
   BtnPanel.Anchors := [akTop, akRight];
-  BtnPanel.BorderSpacing.Top := ScaleCoord96(10);
+  BtnPanel.BorderSpacing.Top := Scale96ToForm(10);
 end;
 
 

@@ -1433,7 +1433,7 @@ function TOICustomPropertyGrid.RealDefaultItemHeight: integer;
 begin
   Result := FDefaultItemHeight;
   if (Result<=0) then
-    Result := ScaleCoord96(22);
+    Result := Scale96ToForm(22);
 end;
 
 function TOICustomPropertyGrid.GetRowByPath(const PropPath: string): TOIPropertyGridRow;
@@ -2832,7 +2832,7 @@ begin
       // edit dialog button
       with EditBtnRect do begin
         Top := EditCompRect.Top;
-        Left := EditCompRect.Right - ScaleCoord96(20);
+        Left := EditCompRect.Right - Scale96ToForm(20);
         Bottom := EditCompRect.Bottom - 1;
         Right := EditCompRect.Right;
         EditCompRect.Right := Left;
@@ -4350,9 +4350,9 @@ begin
   with PropFilterLabel do
   begin
     Parent := PropertyPanel;
-    Left := ScaleCoord96(5);
-    Top := ScaleCoord96(7);
-    Width := ScaleCoord96(53);
+    Left := Scale96ToForm(5);
+    Top := Scale96ToForm(7);
+    Width := Scale96ToForm(53);
     Caption := oisBtnProperties;
     FocusControl := PropFilterEdit;
   end;
@@ -4366,7 +4366,7 @@ begin
     AnchorSideTop.Side := asrCenter;
     Width := PropertyPanel.Width - ( Left + 3);
     AutoSelect := False;
-    ButtonWidth := ScaleCoord96(23);
+    ButtonWidth := Scale96ToForm(23);
     Anchors := [akTop, akLeft, akRight];
     BorderSpacing.Left := 5;
     TabOrder := 0;
@@ -5252,8 +5252,8 @@ begin
       IDEImages.Images_16.Draw(
         ABox.Canvas, X, Y,
         IDEImages.LoadImage(16, 'issue_' + LCLPlatformDirNames[lclPlatform]));
-      Inc(X, ScaleCoord96(16));
-      Inc(X, ScaleCoord96(OutVertCentered(X, IntToStr(ARestrictions[lclPlatform])).CX));
+      Inc(X, Scale96ToForm(16));
+      Inc(X, Scale96ToForm(OutVertCentered(X, IntToStr(ARestrictions[lclPlatform])).CX));
     end;
 
     if None then
