@@ -730,7 +730,7 @@ begin
   IconWidth := MenuIconWidth(AMenuItem);
   CheckRect.Right := Max(CheckRect.Right, CheckRect.Left+IconWidth);
   CheckRect.Bottom := Max(CheckRect.Bottom, CheckRect.Top+IconWidth);
-  CheckRect.Offset(0, (ARect.Bottom-ARect.Top-CheckRect.Bottom+CheckRect.Top) div 2);
+  OffsetRect(CheckRect, 0, (ARect.Bottom-ARect.Top-CheckRect.Bottom+CheckRect.Top) div 2);
   // draw gutter
   GutterRect := Rect(0, ARect.Top, CheckRect.Right, ARect.Bottom);
   GutterRect.Left := GutterRect.Right + Metrics.CheckBgMargins.cxRightWidth - Metrics.CheckMargins.cxRightWidth;
