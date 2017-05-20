@@ -3214,6 +3214,8 @@ components/mrumenu/regmru.res -text
 components/mrumenu/tmrumenumanager.png -text svneol=unset#image/png
 components/multithreadprocs/examples/parallelloop1.lpi svneol=native#text/plain
 components/multithreadprocs/examples/parallelloop1.lpr svneol=native#text/plain
+components/multithreadprocs/examples/parallelloop_nested1.lpi svneol=native#text/plain
+components/multithreadprocs/examples/parallelloop_nested1.lpr svneol=native#text/plain
 components/multithreadprocs/examples/recursivemtp1.lpi svneol=native#text/plain
 components/multithreadprocs/examples/recursivemtp1.lpr svneol=native#text/plain
 components/multithreadprocs/examples/simplemtp1.lpi svneol=native#text/plain
