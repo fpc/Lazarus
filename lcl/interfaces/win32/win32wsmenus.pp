@@ -474,7 +474,7 @@ begin
   end
   else
   begin
-    Result.cy := Max(Metrics.TextSize.cy, Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight);
+    Result.cy := Max(Metrics.TextSize.cy + 1, Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight);
     if AMenuItem.HasIcon then
     begin
       IconSize := AMenuItem.GetIconSize;
