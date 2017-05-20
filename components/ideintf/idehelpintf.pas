@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, types, LCLProc, Forms, Controls, HelpIntfs, LazHelpIntf,
-  LMessages, LCLType, TextTools;
+  LMessages, LCLType, TextTools, Graphics;
 
 type
   { THelpDBIRegExprMessage
@@ -189,7 +189,8 @@ type
     constructor Create; overload;
     destructor Destroy; override;
     function HintIsVisible: boolean;
-    function ShowHint(ScreenPos: TPoint; TheHint: string; const MouseOffset: Boolean = True): boolean;
+    function ShowHint(ScreenPos: TPoint; TheHint: string; const MouseOffset: Boolean = True;
+      HintFont: TFont = nil): boolean;
     procedure HideHint;
     procedure HideIfVisible;
   public
@@ -361,7 +362,7 @@ begin
 end;
 
 function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
-  const MouseOffset: Boolean): boolean;
+  const MouseOffset: Boolean; HintFont: TFont): boolean;
 var
   ms: TMemoryStream;
   NewWidth, NewHeight: integer;
@@ -370,6 +371,8 @@ var
   var
     HintWinRect: TRect;
   begin
+    if HintFont<>nil then
+      HintTextWindow.Font := HintFont;
     HintWinRect := HintTextWindow.CalcHintRect(Screen.Width, TheHint, Nil);
     HintTextWindow.HintRect := HintWinRect;      // Adds borders.
     if MouseOffset then
@@ -381,6 +384,8 @@ var
 
   procedure DoHtml;
   begin
+    if HintFont<>nil then
+      HintRenderWindow.Font := HintFont;
     HtmlHelpProvider.BaseURL:=FBaseURL;
     ms:=TMemoryStream.Create;
     try

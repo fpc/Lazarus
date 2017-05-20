@@ -1863,7 +1863,7 @@ begin
       else if paPickList in EditorAttributes then
         ValueComboBox.Style:=csDropDownList      // text field should be readonly
       else
-        ValueComboBox.Style:=csDropDown;
+        ValueComboBox.Style:=csOwnerDrawFixed;
       ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
       ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
       ValueComboBox.Enabled:=not NewRow.IsReadOnly;
@@ -1893,6 +1893,10 @@ begin
         else
           FCurrentEdit.Color:=FValueDifferBackgrndColor;
       end;
+      if NewRow.Editor.IsNotDefaultValue then
+        FCurrentEdit.Font:=FValueFont
+      else
+        FCurrentEdit.Font:=FDefaultValueFont;
       FCurrentEdit.Visible:=true;
       if (FDragging=false) and FCurrentEdit.Showing and FCurrentEdit.Enabled
       and (not NewRow.IsReadOnly) and CanFocus and (Column=oipgcValue)
@@ -2376,13 +2380,23 @@ end;
 procedure TOICustomPropertyGrid.MouseMove(Shift:TShiftState;  X,Y:integer);
 var
   TheHint: String;
+  HintType: TPropEditHint;
   fPropRow: TOIPropertyGridRow;
 
   procedure DoShow(pt: TPoint); inline;
+  var
+    HintFont: TFont;
   begin
     if WidgetSet.GetLCLCapability(lcTransparentWindow)=LCL_CAPABILITY_NO then
       Inc(pt.Y, fPropRow.Height);
-    FHintManager.ShowHint(ClientToScreen(pt), TheHint, False);
+    if HintType<>pehValue then
+      HintFont := Screen.HintFont
+    else
+    if fPropRow.Editor.IsNotDefaultValue then
+      HintFont:=FValueFont
+    else
+      HintFont:=FDefaultValueFont;
+    FHintManager.ShowHint(ClientToScreen(pt), TheHint, False, HintFont);
     if FHintManager.CurHintWindow<>nil then
       FHintManager.CurHintWindow.OnMouseLeave := @HintMouseLeave;
   end;
@@ -2390,7 +2404,6 @@ var
 var
   SplitDistance:integer;
   Index, TextLeft: Integer;
-  HintType: TPropEditHint;
 begin
   inherited MouseMove(Shift,X,Y);
   SplitDistance:=X-SplitterX;
@@ -3298,6 +3311,14 @@ begin
   end
   else if FCurrentEdit=ValueCheckBox then
     SetCheckboxState(NewValue);
+
+  if (FItemIndex>=0) and (FItemIndex<RowCount) and Assigned(FCurrentEdit) then
+  begin
+    if Rows[FItemIndex].Editor.IsNotDefaultValue then
+      FCurrentEdit.Font:=FValueFont
+    else
+      FCurrentEdit.Font:=FDefaultValueFont;
+  end;
 end;
 
 procedure TOICustomPropertyGrid.SetDrawHorzGridLines(const AValue: Boolean);
@@ -3441,6 +3462,9 @@ begin
       Font.Color:=Pen.Color;
       FillRect(ARect);
     end;
+    ValueComboBox.Canvas.Font.Assign(FDefaultValueFont);
+    if CurRow.Editor.HasDefaultValue and (ItemValue = CurRow.Editor.GetDefaultValue) then
+      ValueComboBox.Canvas.Font.Style := ValueComboBox.Canvas.Font.Style + [fsItalic];
     CurRow.Editor.ListDrawValue(ItemValue,Index,ValueComboBox.Canvas,ARect,AState);
   end;
 end;
@@ -3505,7 +3529,7 @@ begin
   else
     AHint := PointedRow.Editor.GetHint(HintType, Position.X, Position.Y);
   // Show hint if all is well.
-  if OkToShow and FHintManager.ShowHint(Position, AHint) then begin
+  if OkToShow and FHintManager.ShowHint(Position, AHint, True, Screen.HintFont) then begin
     FHintIndex := Index;
     FHintType := HintType;
     FShowingLongHint := True;
