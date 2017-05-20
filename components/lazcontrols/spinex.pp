@@ -124,6 +124,8 @@ type
     procedure EditChange; override;
     procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
     procedure EditKeyPress(var Key: char); override;
+    procedure EditMouseWheelUp(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
+    procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     procedure SetDecimals(ADecimals: Integer); virtual;
     procedure SetValue(const AValue: Double); virtual;
     procedure SetNullValue(AValue: Double); virtual;

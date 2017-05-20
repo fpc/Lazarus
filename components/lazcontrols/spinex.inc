@@ -212,6 +212,22 @@ begin
   if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
 end;
 
+procedure TCustomFloatSpinEditEx.EditMouseWheelUp(Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  inherited EditMouseWheelUp(Shift, MousePos, Handled);
+  if not Handled then
+    SpinUpDown(True);
+end;
+
+procedure TCustomFloatSpinEditEx.EditMouseWheelDown(Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  inherited EditMouseWheelDown(Shift, MousePos, Handled);
+  if not Handled then
+    SpinUpDown(False);
+end;
+
 
 procedure TCustomFloatSpinEditEx.SetValue(const AValue: Double);
 var

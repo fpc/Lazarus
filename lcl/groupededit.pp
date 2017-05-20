@@ -228,8 +228,8 @@ type
     procedure EditMouseMove(Shift: TShiftState; X, Y: Integer); virtual;
     procedure EditMouseWheel(Shift: TShiftState;
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-    procedure EditMouseWheelUp(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-    procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure EditMouseWheelUp(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); virtual;
+    procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); virtual;
     procedure EditUtf8KeyPress(var UTF8Key: TUTF8Char); virtual;
     procedure EditStartDrag(var DragObject: TDragObject); virtual;
 
