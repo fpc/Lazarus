@@ -1334,20 +1334,31 @@ end;
 function TSerializablePackages.Cleanup: Integer;
 var
   I: Integer;
+  AlreadyCounted: Boolean;
 begin
   Result := 0;
   for I := 0 to Count - 1 do
   begin
     if not AtLeastOneLazPkgInstalled(Items[I]) then
     begin
+      AlreadyCounted := False;
       if IsPackageDownloaded(Items[I]) then
       begin
         if DeleteFile(Options.LocalRepositoryArchive + Items[I].RepositoryFileName) then
+        begin
           Inc(Result);
+          AlreadyCounted := True;
+        end;
       end;
       if IsPackageExtracted(Items[I]) then
+      begin
         if DirectoryExists(Options.LocalRepositoryPackages + Items[I].PackageBaseDir) then
+        begin
           DeleteDirectory(Options.LocalRepositoryPackages + Items[I].PackageBaseDir, False);
+          if not AlreadyCounted then
+            Inc(Result);
+        end;
+      end;
     end;
   end;
 end;
