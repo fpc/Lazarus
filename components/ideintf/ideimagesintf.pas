@@ -160,7 +160,7 @@ class procedure TIDEImages.AssignImage(const ABitmap: TCustomBitmap;
 var
   xBmp: TCustomBitmap;
 begin
-  xBmp := TIDEImages.CreateImage(16, ImageName);
+  xBmp := TIDEImages.CreateImage(ImageSize, ImageName);
   try
     ABitmap.Assign(xBmp);
   finally
