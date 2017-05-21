@@ -906,10 +906,18 @@ type
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       SearchSmartFlags: TFindSmartFlags;
+      out NewTool: TFindDeclarationTool; out NewNode: TCodeTreeNode;
+      out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
+    function FindDeclaration(const CursorPos: TCodeXYPosition;
+      SearchSmartFlags: TFindSmartFlags;
       out NewExprType: TExpressionType;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+    function FindDeclaration(const CursorPos: TCodeXYPosition;
+      SearchSmartFlags: TFindSmartFlags;
+      out NewExprType: TExpressionType;
+      out NewPos: TCodeXYPosition; out NewTopLine,BlockTopLine,BlockBottomLine: integer): boolean;
     function FindDeclarationInInterface(const Identifier: string;
-      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function FindDeclarationWithMainUsesSection(const Identifier: string;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
@@ -1032,9 +1040,16 @@ type
     function JumpToNode(ANode: TCodeTreeNode;
         out NewPos: TCodeXYPosition; out NewTopLine: integer;
         IsCodeBlock: boolean): boolean;
+    function JumpToNode(ANode: TCodeTreeNode;
+        out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer;
+        IsCodeBlock: boolean): boolean;
     function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
         NewBottomLineCleanPos: integer;
         out NewPos: TCodeXYPosition; out NewTopLine: integer;
+        IsCodeBlock: boolean): boolean;
+    function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
+        NewBottomLineCleanPos: integer;
+        out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer;
         IsCodeBlock: boolean): boolean;
     function NodeIsForwardDeclaration(Node: TCodeTreeNode): boolean;
 
@@ -1956,8 +1971,8 @@ begin
 end;
 
 function TFindDeclarationTool.FindMainDeclaration(
-  const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition;
-  out NewTopLine: integer): boolean;
+  const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition; out
+  NewTopLine: integer): boolean;
 var
   NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode;
@@ -2011,7 +2026,8 @@ end;
 
 function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
   SearchSmartFlags: TFindSmartFlags; out NewExprType: TExpressionType; out
-  NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+  NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine,
+  BlockBottomLine: integer): boolean;
 var
   CleanCursorPos: integer;
   CursorNode, ClassNode: TCodeTreeNode;
@@ -2127,7 +2143,7 @@ var
     if not NewExprType.Context.Tool.GetSourceNamePos(NamePos) then exit;
     NewExprType.Context.Node:=NewExprType.Context.Tool.Tree.Root;
     if not NewExprType.Context.Tool.JumpToCleanPos(NamePos.StartPos,NamePos.StartPos,
-                                  NamePos.StartPos,NewPos,NewTopLine,false)
+                                  NamePos.StartPos,NewPos,NewTopLine,BlockTopLine,BlockBottomLine,false)
     then exit;
     Result:=true;
     NewExprType.Desc:=xtContext;
@@ -2195,7 +2211,8 @@ var
   var
     ForwardXY, NewSkipPos: TCodeXYPosition;
     NewSkipExprType: TExpressionType;
-    NewSkipTopLine, NewSkipCleanPos: integer;
+    NewSkipTopLine, NewSkipCleanPos, NewSkipBlockTopLine,
+      NewSkipBlockBottomLine: integer;
   begin
     // if we skip forward class definitions and we found one -> proceed search!
     Result :=
@@ -2203,7 +2220,7 @@ var
       and CheckIfNodeIsForwardDefinedClass(Params.NewNode, Params.NewCodeTool)
       and Params.NewCodeTool.CleanPosToCaret(Params.NewNode.StartPos, ForwardXY)
       and Params.NewCodeTool.FindDeclaration(ForwardXY, SearchSmartFlags-[fsfSkipClassForward],
-        NewSkipExprType, NewSkipPos, NewSkipTopLine);
+        NewSkipExprType, NewSkipPos, NewSkipTopLine, NewSkipBlockTopLine, NewSkipBlockBottomLine);
 
     if Result
       and (NewSkipExprType.Desc=xtContext)
@@ -2221,6 +2238,8 @@ var
       NewExprType := NewSkipExprType;
       NewPos := NewSkipPos;
       NewTopLine := NewSkipTopLine;
+      BlockTopLine := NewSkipBlockTopLine;
+      BlockBottomLine := NewSkipBlockBottomLine;
     end;
   end;
 
@@ -2300,7 +2319,7 @@ begin
         end;
 
         Result:=JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
-                               NewPos,NewTopLine,false);
+                               NewPos,NewTopLine,BlockTopLine,BlockBottomLine,false);
         {$IFDEF VerboseFindDeclarationFail}
         if not Result then begin
           debugln(['TFindDeclarationTool.FindDeclaration cursor at declaration, but JumpToCleanPos failed']);
@@ -2320,6 +2339,8 @@ begin
       NewPos.X:=1;
       NewPos.Y:=1;
       NewTopLine:=1;
+      BlockTopLine:=NewPos.Y;
+      BlockBottomLine:=NewPos.Y;
       NewExprType.Desc:=xtContext;
       NewExprType.Context.Node:=nil;
       NewExprType.Context.Tool:=Self;
@@ -2344,6 +2365,9 @@ begin
       NewExprType.Context.Tool:=Self;
       CleanPosToCaret(CursorNode.StartPos, NewPos);
       NewTopLine := NewPos.Y;
+      BlockTopLine := NewTopLine;
+      CleanPosToCaret(CursorNode.EndPos, NewPos);
+      BlockBottomLine := NewPos.Y;
       Result := True;
       Exit;
     end else
@@ -2352,6 +2376,8 @@ begin
       //DebugLn(['TFindDeclarationTool.FindDeclaration IsUsesSection']);
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
                                            NewPos,NewTopLine);
+      BlockTopLine:=NewPos.Y;
+      BlockBottomLine:=NewPos.Y;
       NewExprType:=CleanExpressionType;
       {$IFDEF VerboseFindDeclarationFail}
       if not Result then begin
@@ -2429,6 +2455,8 @@ begin
           Params.ConvertResultCleanPosToCaretPos;
           NewPos:=Params.NewPos;
           NewTopLine:=Params.NewTopLine;
+          BlockTopLine:=NewPos.Y;
+          BlockBottomLine:=NewPos.Y;
           if (NewExprType.Desc=xtContext) and
              ((NewPos.Code=nil) or (NewExprType.Context.Node=nil))
           then begin
@@ -2461,13 +2489,23 @@ begin
 end;
 
 function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
+  SearchSmartFlags: TFindSmartFlags; out NewExprType: TExpressionType; out
+  NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+var
+  BlockTopLine, BlockBottomLine: integer;
+begin
+  Result := FindDeclaration(CursorPos, SearchSmartFlags, NewExprType, NewPos,
+    NewTopLine, BlockTopLine, BlockBottomLine);
+end;
+
+function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
   SearchSmartFlags: TFindSmartFlags; out NewTool: TFindDeclarationTool; out
-  NewNode: TCodeTreeNode; out NewPos: TCodeXYPosition; out NewTopLine: integer
-  ): boolean;
+  NewNode: TCodeTreeNode; out NewPos: TCodeXYPosition; out NewTopLine,
+  BlockTopLine, BlockBottomLine: integer): boolean;
 var
   ExprType: TExpressionType;
 begin
-  Result := FindDeclaration(CursorPos, SearchSmartFlags, ExprType, NewPos, NewTopLine) and
+  Result := FindDeclaration(CursorPos, SearchSmartFlags, ExprType, NewPos, NewTopLine, BlockTopLine, BlockBottomLine) and
     (NewPos.X >= 0) and (NewPos.Y >= 0);
   if Result then begin
     NewTool := ExprType.Context.Tool;
@@ -2478,9 +2516,20 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.FindDeclarationInInterface(
-  const Identifier: string; out NewPos: TCodeXYPosition; out NewTopLine: integer
+function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
+  SearchSmartFlags: TFindSmartFlags; out NewTool: TFindDeclarationTool; out
+  NewNode: TCodeTreeNode; out NewPos: TCodeXYPosition; out NewTopLine: integer
   ): boolean;
+var
+  BlockTopLine, BlockBottomLine: integer;
+begin
+  Result := FindDeclaration(CursorPos, SearchSmartFlags, NewTool, NewNode, NewPos,
+    NewTopLine, BlockTopLine, BlockBottomLine);
+end;
+
+function TFindDeclarationTool.FindDeclarationInInterface(
+  const Identifier: string; out NewPos: TCodeXYPosition; out NewTopLine,
+  BlockTopLine, BlockBottomLine: integer): boolean;
 var
   Node: TCodeTreeNode;
 begin
@@ -2488,7 +2537,7 @@ begin
   if Identifier='' then exit;
   Node:=FindDeclarationNodeInInterface(Identifier,true);
   if Node<>nil then
-    Result:=JumpToNode(Node,NewPos,NewTopLine,false);
+    Result:=JumpToNode(Node,NewPos,NewTopLine,BlockTopLine,BlockBottomLine,false);
 end;
 
 function TFindDeclarationTool.FindDeclarationWithMainUsesSection(
@@ -6869,11 +6918,12 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;
-  out NewPos: TCodeXYPosition; out NewTopLine: integer;
-  IsCodeBlock: boolean): boolean;
+function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode; out
+  NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine,
+  BlockBottomLine: integer; IsCodeBlock: boolean): boolean;
 var
   JumpPos: LongInt;
+  Caret: TCodeXYPosition;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ANode);{$ENDIF}
   Result:=false;
@@ -6884,12 +6934,29 @@ begin
     JumpPos:=CurPos.StartPos;
   end;
   Result:=JumpToCleanPos(JumpPos,JumpPos,ANode.EndPos,
-                         NewPos,NewTopLine,IsCodeBlock);
+                         NewPos,NewTopLine,BlockTopLine,BlockBottomLine,IsCodeBlock);
+  if CleanPosToCaret(ANode.StartPos, Caret) then
+    BlockTopLine := Caret.Y
+  else
+    BlockTopLine := -1;
+  if CleanPosToCaret(ANode.EndPos, Caret) then
+    BlockBottomLine := Caret.Y
+  else
+    BlockBottomLine := -1;
+end;
+
+function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode; out
+  NewPos: TCodeXYPosition; out NewTopLine: integer; IsCodeBlock: boolean
+  ): boolean;
+var
+  BlockTopLine, BlockBottomLine: integer;
+begin
+  Result := JumpToNode(ANode, NewPos, NewTopLine, BlockTopLine, BlockBottomLine, IsCodeBlock);
 end;
 
 function TFindDeclarationTool.JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
-  NewBottomLineCleanPos: integer; out NewPos: TCodeXYPosition;
-  out NewTopLine: integer; IsCodeBlock: boolean): boolean;
+  NewBottomLineCleanPos: integer; out NewPos: TCodeXYPosition; out NewTopLine,
+  BlockTopLine, BlockBottomLine: integer; IsCodeBlock: boolean): boolean;
 var
   NewTopLinePos: TCodeXYPosition;
   NewBottomLinePos: TCodeXYPosition;
@@ -6915,10 +6982,12 @@ begin
   end;
   // convert clean top line position to line, column and code
   if not CleanPosToCaret(NewTopLineCleanPos,NewTopLinePos) then exit;
+  BlockTopLine := NewTopLinePos.Y;
   // convert clean bottom line position to line, column and code
   NewBottomLinePos:=NewPos;
   if (NewBottomLineCleanPos>NewCleanPos)
   and (not CleanPosToCaret(NewBottomLineCleanPos,NewBottomLinePos)) then exit;
+  BlockBottomLine := NewBottomLinePos.Y;
 
   if NewTopLinePos.Code=NewPos.Code then begin
     // center the destination position in the source editor
@@ -6956,6 +7025,16 @@ begin
   end else
     NewTopLine:=1;
   Result:=true;
+end;
+
+function TFindDeclarationTool.JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
+  NewBottomLineCleanPos: integer; out NewPos: TCodeXYPosition; out
+  NewTopLine: integer; IsCodeBlock: boolean): boolean;
+var
+  BlockTopLine, BlockBottomLine: integer;
+begin
+  Result := JumpToCleanPos(NewCleanPos, NewTopLineCleanPos, NewBottomLineCleanPos,
+    NewPos, NewTopLine, BlockTopLine, BlockBottomLine, IsCodeBlock);
 end;
 
 function TFindDeclarationTool.NodeIsForwardDeclaration(Node: TCodeTreeNode

@@ -114,7 +114,7 @@ type
     function ExtractProc(const StartPos, EndPos: TCodeXYPosition;
       ProcType: TExtractProcType; const ProcName: string;
       IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
-      out NewPos: TCodeXYPosition; out NewTopLine: integer;
+      out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer;
       SourceChangeCache: TSourceChangeCache;
       FunctionResultVariableStartPos: integer = 0): boolean;
 
@@ -265,10 +265,10 @@ end;
 
 function TExtractProcTool.ExtractProc(const StartPos, EndPos: TCodeXYPosition;
   ProcType: TExtractProcType; const ProcName: string;
-  IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
-  out NewPos: TCodeXYPosition; out NewTopLine: integer;
-  SourceChangeCache: TSourceChangeCache;
-  FunctionResultVariableStartPos: integer): boolean;
+  IgnoreIdentifiers: TAVLTree; out NewPos: TCodeXYPosition; out NewTopLine,
+  BlockTopLine, BlockBottomLine: integer;
+  SourceChangeCache: TSourceChangeCache; FunctionResultVariableStartPos: integer
+  ): boolean;
 const
   ShortProcFormat = [phpWithoutClassKeyword];
 var
@@ -1016,7 +1016,7 @@ var
     DebugLn('FindJumpPointToNewProc A found=',dbgs(NewProcNode<>nil));
     {$ENDIF}
     if NewProcNode=nil then exit;
-    Result:=FindJumpPointInProcNode(NewProcNode,NewPos,NewTopLine);
+    Result:=FindJumpPointInProcNode(NewProcNode,NewPos,NewTopLine,BlockTopLine,BlockBottomLine);
     {$IFDEF CTDebug}
     DebugLn('FindJumpPointToNewProc END ',NewProcNode.DescAsString,' ',dbgs(Result),' ',dbgs(NewPos.X),',',dbgs(NewPos.Y),' ',dbgs(NewTopLine));
     {$ENDIF}

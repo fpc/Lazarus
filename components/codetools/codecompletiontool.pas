@@ -205,7 +205,7 @@ type
     function CreateMissingClassProcBodies(UpdateSignatures: boolean): boolean;
     function ApplyChangesAndJumpToFirstNewProc(CleanPos: integer;
            OldTopLine: integer; AddMissingProcBodies: boolean;
-           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+           out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
     function NodeExtHasVisibilty(ANodeExt: TCodeTreeNodeExtension;
       Visibility: TPascalClassSection): boolean;
@@ -238,10 +238,10 @@ type
     function CompleteClass(AClassNode: TCodeTreeNode;
                            CleanCursorPos, OldTopLine: integer;
                            CursorNode: TCodeTreeNode;
-                var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+                var NewPos: TCodeXYPosition; var NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function CompleteForwardProcs(CursorPos: TCodeXYPosition;
                      ProcNode, CursorNode: TCodeTreeNode;
-                     var NewPos: TCodeXYPosition; var NewTopLine: integer;
+                     var NewPos: TCodeXYPosition; var NewTopLine, BlockTopLine, BlockBottomLine: integer;
                      SourceChangeCache: TSourceChangeCache): boolean;
     function CompleteVariableAssignment(CleanCursorPos,
                        OldTopLine: integer; CursorNode: TCodeTreeNode;
@@ -269,14 +269,14 @@ type
                                           out CleanList: string): string;
     function CompleteProcByCall(CleanCursorPos, OldTopLine: integer;
                            CursorNode: TCodeTreeNode;
-                           var NewPos: TCodeXYPosition; var NewTopLine: integer;
+                           var NewPos: TCodeXYPosition; var NewTopLine, BlockTopLine, BlockBottomLine: integer;
                            SourceChangeCache: TSourceChangeCache): boolean;
   protected
     procedure DoDeleteNodes(StartNode: TCodeTreeNode); override;
   public
     constructor Create;
     function CompleteCode(CursorPos: TCodeXYPosition; OldTopLine: integer;
-                          out NewPos: TCodeXYPosition; out NewTopLine: integer;
+                          out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer;
                           SourceChangeCache: TSourceChangeCache;
                           Interactive: Boolean): boolean;
     function CreateVariableForIdentifier(CursorPos: TCodeXYPosition; OldTopLine: integer;
@@ -287,7 +287,7 @@ type
                         OldTopLine: integer;
                         ListOfPCodeXYPosition: TFPList;
                         const VirtualToOverride: boolean;
-                        out NewPos: TCodeXYPosition; out NewTopLine: integer;
+                        out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer;
                         SourceChangeCache: TSourceChangeCache): boolean;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
                       SourceChangeCache: TSourceChangeCache): boolean; override;
@@ -359,7 +359,7 @@ type
         const ProcName, ParamName, ParamType: string;
         OverrideMod, CallInherited, CallInheritedOnlyInElse: boolean;
         SourceChanger: TSourceChangeCache;
-        out NewPos: TCodeXYPosition; out NewTopLine: integer;
+        out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer;
         LocalVarName: string = '' // default is 'aSource'
         ): boolean;
 
@@ -1631,7 +1631,8 @@ end;
 
 function TCodeCompletionCodeTool.CompleteClass(AClassNode: TCodeTreeNode;
   CleanCursorPos, OldTopLine: integer; CursorNode: TCodeTreeNode;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  var NewPos: TCodeXYPosition; var NewTopLine, BlockTopLine,
+  BlockBottomLine: integer): boolean;
 var
   SectionNode: TCodeTreeNode;
   ANode: TCodeTreeNode;
@@ -1678,17 +1679,16 @@ begin
     {$ENDIF}
     // apply the changes and jump to first new proc body
     Result:=ApplyChangesAndJumpToFirstNewProc(CleanCursorPos,OldTopLine,true,
-                                              NewPos,NewTopLine);
+                                              NewPos,NewTopLine, BlockTopLine, BlockBottomLine);
   finally
     FreeClassInsertionList;
   end;
 end;
 
 function TCodeCompletionCodeTool.CompleteForwardProcs(
-  CursorPos: TCodeXYPosition;
-  ProcNode, CursorNode: TCodeTreeNode;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  CursorPos: TCodeXYPosition; ProcNode, CursorNode: TCodeTreeNode;
+  var NewPos: TCodeXYPosition; var NewTopLine, BlockTopLine,
+  BlockBottomLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
 // add proc bodies for forward procs
 // or update signatures
 const
@@ -1822,7 +1822,7 @@ begin
       RaiseException(20170421201528,'CompleteForwardProcs: unable to apply changes');
 
     // reparse code and find jump point into new proc
-    Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine,RevertableJump);
+    Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine,BlockTopLine, BlockBottomLine, RevertableJump);
   finally
     DisposeAVLTree(ProcDefNodes);
     DisposeAVLTree(ProcBodyNodes);
@@ -3006,7 +3006,8 @@ end;
 
 function TCodeCompletionCodeTool.CompleteProcByCall(CleanCursorPos,
   OldTopLine: integer; CursorNode: TCodeTreeNode; var NewPos: TCodeXYPosition;
-  var NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
+  var NewTopLine, BlockTopLine, BlockBottomLine: integer;
+  SourceChangeCache: TSourceChangeCache): boolean;
 // check if 'procname(expr list);'
 const
   ShortProcFormat = [phpWithoutClassKeyword];
@@ -3179,7 +3180,7 @@ const
       debugln(['FindJumpPointToNewProc FindSubProcPath failed, SubProcPath="',SubProcPath.Text,'"']);
       exit;
     end;
-    Result:=FindJumpPointInProcNode(NewProcNode,NewPos,NewTopLine);
+    Result:=FindJumpPointInProcNode(NewProcNode,NewPos,NewTopLine,BlockTopLine,BlockBottomLine);
     { $IFDEF CTDebug}
     if Result then
       DebugLn('TCodeCompletionCodeTool.CompleteProcByCall END ',NewProcNode.DescAsString,' ',dbgs(Result),' ',dbgs(NewPos.X),',',dbgs(NewPos.Y),' ',dbgs(NewTopLine));
@@ -6108,8 +6109,9 @@ end;
 function TCodeCompletionCodeTool.AddAssignMethod(ClassNode: TCodeTreeNode;
   MemberNodeExts: TFPList; const ProcName, ParamName, ParamType: string;
   OverrideMod, CallInherited, CallInheritedOnlyInElse: boolean;
-  SourceChanger: TSourceChangeCache; out NewPos: TCodeXYPosition;
-  out NewTopLine: integer; LocalVarName: string): boolean;
+  SourceChanger: TSourceChangeCache; out NewPos: TCodeXYPosition; out
+  NewTopLine, BlockTopLine, BlockBottomLine: integer; LocalVarName: string
+  ): boolean;
 var
   NodeExt: TCodeTreeNodeExtension;
   CleanDef: String;
@@ -6248,7 +6250,7 @@ begin
   ProcBody:=SourceChanger.BeautifyCodeOptions.BeautifyStatement(ProcBody,0);
   AddClassInsertion(CleanDef,Def,ProcName,ncpPublicProcs,nil,ProcBody);
   Result:=ApplyChangesAndJumpToFirstNewProc(ClassNode.StartPos,1,true,
-                   NewPos,NewTopLine);
+                   NewPos,NewTopLine, BlockTopLine, BlockBottomLine);
 end;
 
 function TCodeCompletionCodeTool.GetPossibleInitsForVariable(
@@ -9189,8 +9191,9 @@ begin
 end;
 
 function TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc(
-  CleanPos: integer; OldTopLine: integer; AddMissingProcBodies: boolean;
-  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+  CleanPos: integer; OldTopLine: integer; AddMissingProcBodies: boolean; out
+  NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine,
+  BlockBottomLine: integer): boolean;
 var
   OldCodeXYPos: TCodeXYPosition;
   OldCodePos: TCodePosition;
@@ -9246,7 +9249,7 @@ begin
       debugln(['TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Proc="',FJumpToProcHead.Name,'"']);
       RaiseException(20170421201835,ctsNewProcBodyNotFound);
     end;
-    Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
+    Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine, BlockTopLine, BlockBottomLine);
   end else begin
     {$IFDEF CTDEBUG}
     DebugLn('TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Adjust Cursor ... ');
@@ -9259,7 +9262,8 @@ begin
 end;
 
 function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
-  OldTopLine: integer; out NewPos: TCodeXYPosition; out NewTopLine: integer;
+  OldTopLine: integer; out NewPos: TCodeXYPosition; out NewTopLine,
+  BlockTopLine, BlockBottomLine: integer;
   SourceChangeCache: TSourceChangeCache; Interactive: Boolean): boolean;
 
   function TryCompleteLocalVar(CleanCursorPos: integer;
@@ -9298,7 +9302,7 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
       AClassNode:=FindClassOrInterfaceNode(CursorNode);
       if AClassNode<>nil then begin
         Result:=CompleteClass(AClassNode,CleanCursorPos,OldTopLine,CursorNode,
-                              NewPos,NewTopLine);
+                              NewPos,NewTopLine, BlockTopLine, BlockBottomLine);
         exit;
       end;
       {$IFDEF CTDEBUG}
@@ -9324,7 +9328,7 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
       and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then begin
         // Node is forward Proc
         Result:=CompleteForwardProcs(CursorPos,ProcNode,CursorNode,NewPos,NewTopLine,
-                             SourceChangeCache);
+                             BlockTopLine, BlockBottomLine, SourceChangeCache);
         exit;
       end;
 
@@ -9338,7 +9342,7 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
 
       // test if procedure call
       Result:=CompleteProcByCall(CleanCursorPos,OldTopLine,
-                                 CursorNode,NewPos,NewTopLine,SourceChangeCache);
+                                 CursorNode,NewPos,NewTopLine,BlockTopLine,BlockBottomLine,SourceChangeCache);
       if Result then exit;
     finally
       FCompletingCursorNode:=nil;
@@ -9483,6 +9487,8 @@ var
   LastCodeToolsErrorCleanPos: Integer;
   LastCodeToolsError: ECodeToolError;
 begin
+  BlockTopLine := -1;
+  BlockBottomLine := -1;
   //DebugLn(['TCodeCompletionCodeTool.CompleteCode CursorPos=',Dbgs(CursorPos),' OldTopLine=',OldTopLine]);
 
   Result:=false;
@@ -9589,10 +9595,9 @@ begin
 end;
 
 function TCodeCompletionCodeTool.AddMethods(CursorPos: TCodeXYPosition;
-  OldTopLine: integer;
-  ListOfPCodeXYPosition: TFPList;
-  const VirtualToOverride: boolean;
-  out NewPos: TCodeXYPosition; out NewTopLine: integer;
+  OldTopLine: integer; ListOfPCodeXYPosition: TFPList;
+  const VirtualToOverride: boolean; out NewPos: TCodeXYPosition; out
+  NewTopLine, BlockTopLine, BlockBottomLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
   CleanCursorPos: integer;
@@ -9745,7 +9750,7 @@ begin
     
     // apply changes
     if not ApplyChangesAndJumpToFirstNewProc(CleanCursorPos,OldTopLine,true,
-      NewPos,NewTopLine) then exit;
+      NewPos,NewTopLine, BlockTopLine, BlockBottomLine) then exit;
 
     Result:=true;
   finally

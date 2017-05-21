@@ -2159,6 +2159,7 @@ resourcestring
   dlgAdjustTopLine = 'Adjust top line due to comment in front';
   dlgJumpSingleLinePos = 'Vertical position for a single line jump in %. (0=top, 100=bottom)';
   dlgJumpCodeBlockPos = 'Vertical position for a code block jump in %. (0=top, 100=bottom)';
+  dlgAvoidUnnecessaryJumps = 'Avoid unnecessary jumps';
   dlgCursorBeyondEOL = 'Cursor beyond EOL';
   dlgSkipForwardClassDeclarations = 'Skip forward class declarations';
   dlgJumpToMethodBody = 'Jump directly to method body';

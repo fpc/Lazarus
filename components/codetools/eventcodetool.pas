@@ -89,7 +89,7 @@ type
         ): boolean;
     function JumpToPublishedMethodBody(const AClassName,
         AMethodName: string;
-        out NewPos: TCodeXYPosition; out NewTopLine: integer;
+        out NewPos: TCodeXYPosition; out NewTopLine,BlockTopLine,BlockBottomLine: integer;
         ErrorOnNotFound: boolean = false): boolean;
     function RenamePublishedMethod(const AClassName, AOldMethodName,
         NewMethodName: string; SourceChangeCache: TSourceChangeCache): boolean;
@@ -692,14 +692,15 @@ begin
 end;
 
 function TEventsCodeTool.JumpToPublishedMethodBody(const AClassName,
-  AMethodName: string; out NewPos: TCodeXYPosition; out NewTopLine: integer;
-  ErrorOnNotFound: boolean): boolean;
+  AMethodName: string; out NewPos: TCodeXYPosition; out NewTopLine,
+  BlockTopLine, BlockBottomLine: integer; ErrorOnNotFound: boolean): boolean;
 var
   ANode: TCodeTreeNode;
   ClassNode: TCodeTreeNode;
   AFindContext: TFindContext;
   SrcTool: TEventsCodeTool;
   SrcClassName: String;
+  Caret: TCodeXYPosition;
 begin
   Result:=false;
   ActivateGlobalWriteLock;
@@ -732,7 +733,18 @@ begin
         RaiseExceptionFmt(20170421202044,'implementation of method "%s.%s" in %s', [AClassName,AMethodName,SrcTool.MainFilename]);
       exit;
     end;
-    Result:=SrcTool.FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
+    Result:=SrcTool.FindJumpPointInProcNode(ANode,NewPos,NewTopLine, BlockTopLine, BlockBottomLine);
+    if Result then
+    begin
+      if CleanPosToCaret(ANode.StartPos, Caret) then
+        BlockTopLine := Caret.Y
+      else
+        BlockTopLine := NewPos.Y;
+      if CleanPosToCaret(ANode.EndPos, Caret) then
+        BlockBottomLine := Caret.Y
+      else
+        BlockBottomLine := NewPos.Y;
+    end;
   finally
     DeactivateGlobalWriteLock;
   end;

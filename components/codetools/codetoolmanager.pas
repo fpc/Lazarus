@@ -456,7 +456,7 @@ type
     // method jumping
     function JumpToMethod(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer;
+          out NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
           out RevertableJump: boolean): boolean;
     function FindProcDeclaration(Code: TCodeBuffer; CleanDef: string;
           out Tool: TCodeTool; out Node: TCodeTreeNode;
@@ -465,7 +465,7 @@ type
     // find declaration
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer;
+          out NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
           Flags: TFindSmartFlags = DefaultFindSmartFlags): boolean;
     function FindDeclarationOfIdentifier(Code: TCodeBuffer; X,Y: integer;
           Identifier: PChar;
@@ -475,7 +475,7 @@ type
           Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
     function FindDeclarationInInterface(Code: TCodeBuffer;
           const Identifier: string; out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer): boolean;
+          out NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function FindDeclarationWithMainUsesSection(Code: TCodeBuffer;
           const Identifier: string;
           out NewCode: TCodeBuffer;
@@ -583,7 +583,7 @@ type
     //             (local) var assignment completion, event assignment completion
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer;Interactive: Boolean): boolean;
+          out NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;Interactive: Boolean): boolean;
     function CreateVariableForIdentifier(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer; Interactive: Boolean): boolean;
@@ -591,7 +591,7 @@ type
           ListOfPCodeXYPosition: TFPList;
           const VirtualToOverride: boolean;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer): boolean;
+          out NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function GuessTypeOfIdentifier(Code: TCodeBuffer; X,Y: integer;
           out ItsAKeyword, IsSubIdentifier: boolean;
           out ExistingDefinition: TFindContext; // next existing definition
@@ -661,7 +661,7 @@ type
     function ExtractProc(Code: TCodeBuffer; const StartPoint, EndPoint: TPoint;
           ProcType: TExtractProcType; const ProcName: string;
           IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
-          var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
+          var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
           FunctionResultVariableStartPos: integer = 0
           ): boolean;
 
@@ -844,7 +844,7 @@ type
     function JumpToPublishedMethodBody(Code: TCodeBuffer;
           const AClassName, AMethodName: string;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer): boolean;
+          out NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function RenamePublishedMethod(Code: TCodeBuffer;
           const AClassName, OldMethodName,
           NewMethodName: string): boolean;
@@ -1950,9 +1950,9 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.JumpToMethod(Code: TCodeBuffer; X,Y: integer;
-  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
-  out RevertableJump: boolean): boolean;
+function TCodeToolManager.JumpToMethod(Code: TCodeBuffer; X, Y: integer; out
+  NewCode: TCodeBuffer; out NewX, NewY, NewTopLine, BlockTopLine,
+  BlockBottomLine: integer; out RevertableJump: boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -1970,7 +1970,7 @@ begin
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindJumpPoint(CursorPos,NewPos,NewTopLine,
-                                       RevertableJump);
+                                       BlockTopLine,BlockBottomLine,RevertableJump);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -2016,10 +2016,9 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.FindDeclaration(Code: TCodeBuffer; X,Y: integer;
-  out NewCode: TCodeBuffer;
-  out NewX, NewY, NewTopLine: integer;
-  Flags: TFindSmartFlags): boolean;
+function TCodeToolManager.FindDeclaration(Code: TCodeBuffer; X, Y: integer; out
+  NewCode: TCodeBuffer; out NewX, NewY, NewTopLine, BlockTopLine,
+  BlockBottomLine: integer; Flags: TFindSmartFlags): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -2048,7 +2047,7 @@ begin
     RaiseUnhandableExceptions:=true;
     {$ENDIF}
     Result:=FCurCodeTool.FindDeclaration(CursorPos,Flags,NewTool,NewNode,
-                                         NewPos,NewTopLine);
+                                         NewPos,NewTopLine,BlockTopLine,BlockBottomLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -2154,7 +2153,7 @@ end;
 
 function TCodeToolManager.FindDeclarationInInterface(Code: TCodeBuffer;
   const Identifier: string; out NewCode: TCodeBuffer; out NewX, NewY,
-  NewTopLine: integer): boolean;
+  NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
 var
   NewPos: TCodeXYPosition;
 begin
@@ -2168,7 +2167,7 @@ begin
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindDeclarationInInterface(Identifier,NewPos,
-                                                    NewTopLine);
+                                                    NewTopLine,BlockTopLine,BlockBottomLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -3804,7 +3803,7 @@ end;
 
 function TCodeToolManager.JumpToPublishedMethodBody(Code: TCodeBuffer;
   const AClassName, AMethodName: string; out NewCode: TCodeBuffer; out NewX,
-  NewY, NewTopLine: integer): boolean;
+  NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
 var NewPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
@@ -3814,7 +3813,7 @@ begin
   if not Result then exit;
   try
     Result:=FCurCodeTool.JumpToPublishedMethodBody(AClassName,
-              AMethodName,NewPos,NewTopLine,true);
+              AMethodName,NewPos,NewTopLine,BlockTopLine,BlockBottomLine,true);
     if Result then begin
       NewCode:=NewPos.Code;
       NewX:=NewPos.X;
@@ -4186,8 +4185,8 @@ begin
 end;
 
 function TCodeToolManager.CompleteCode(Code: TCodeBuffer; X, Y,
-  TopLine: integer; out NewCode: TCodeBuffer; out NewX, NewY,
-  NewTopLine: integer; Interactive: Boolean): boolean;
+  TopLine: integer; out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine,
+  BlockTopLine, BlockBottomLine: integer; Interactive: Boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -4206,7 +4205,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.CompleteCode(CursorPos,TopLine,
-      NewPos,NewTopLine,SourceChangeCache,Interactive);
+      NewPos,NewTopLine, BlockTopLine, BlockBottomLine,SourceChangeCache,Interactive);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -4246,8 +4245,9 @@ begin
 end;
 
 function TCodeToolManager.AddMethods(Code: TCodeBuffer; X, Y, TopLine: integer;
-  ListOfPCodeXYPosition: TFPList; const VirtualToOverride: boolean;
-  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer): boolean;
+  ListOfPCodeXYPosition: TFPList; const VirtualToOverride: boolean; out
+  NewCode: TCodeBuffer; out NewX, NewY, NewTopLine, BlockTopLine,
+  BlockBottomLine: integer): boolean;
 var
   CursorPos, NewPos: TCodeXYPosition;
 begin
@@ -4262,7 +4262,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.AddMethods(CursorPos,TopLine,ListOfPCodeXYPosition,
-              VirtualToOverride,NewPos,NewTopLine,SourceChangeCache);
+              VirtualToOverride,NewPos,NewTopLine,BlockTopLine,BlockBottomLine,SourceChangeCache);
     NewCode:=NewPos.Code;
     NewX:=NewPos.X;
     NewY:=NewPos.Y;
@@ -4737,8 +4737,8 @@ end;
 
 function TCodeToolManager.ExtractProc(Code: TCodeBuffer; const StartPoint,
   EndPoint: TPoint; ProcType: TExtractProcType; const ProcName: string;
-  IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
+  IgnoreIdentifiers: TAVLTree; var NewCode: TCodeBuffer; var NewX, NewY,
+  NewTopLine, BlockTopLine, BlockBottomLine: integer;
   FunctionResultVariableStartPos: integer): boolean;
 var
   StartPos, EndPos: TCodeXYPosition;
@@ -4757,7 +4757,7 @@ begin
   EndPos.Code:=Code;
   try
     Result:=FCurCodeTool.ExtractProc(StartPos,EndPos,ProcType,ProcName,
-                         IgnoreIdentifiers,NewPos,NewTopLine,SourceChangeCache,
+                         IgnoreIdentifiers,NewPos,NewTopLine,BlockTopLine,BlockBottomLine,SourceChangeCache,
                          FunctionResultVariableStartPos);
     if Result then begin
       NewX:=NewPos.X;

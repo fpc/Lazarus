@@ -467,6 +467,7 @@ type
     function GetBlockEnd: TPoint; override;
     procedure SetBlockBegin(const AValue: TPoint); override;
     procedure SetBlockEnd(const AValue: TPoint); override;
+    function GetLinesInWindow: Integer; override;
     function GetTopLine: Integer; override;
     procedure SetTopLine(const AValue: Integer); override;
     function CursorInPixel: TPoint; override;
@@ -1107,6 +1108,7 @@ type
     procedure BookMarkNextClicked(Sender: TObject);
     procedure BookMarkPrevClicked(Sender: TObject);
     procedure JumpToPos(FileName: string; Pos: TCodeXYPosition; TopLine: Integer);
+    procedure JumpToPos(FileName: string; Pos: TCodeXYPosition; TopLine, BlockTopLine, BlockBottomLine: Integer);
     procedure JumpToSection(JumpType: TJumpToSectionType);
     procedure JumpToInterfaceClicked(Sender: TObject);
     procedure JumpToInterfaceUsesClicked(Sender: TObject);
@@ -5600,6 +5602,11 @@ begin
   Result:=FEditor.Lines;
 end;
 
+function TSourceEditor.GetLinesInWindow: Integer;
+begin
+  Result := FEditor.LinesInWindow;
+end;
+
 procedure TSourceEditor.SetLines(const AValue: TStrings);
 begin
   FEditor.Lines:=AValue;
@@ -10044,13 +10051,19 @@ begin
 end;
 
 procedure TSourceEditorManager.JumpToPos(FileName: string;
-  Pos: TCodeXYPosition; TopLine: Integer);
+  Pos: TCodeXYPosition; TopLine, BlockTopLine, BlockBottomLine: Integer);
 begin
   if (LazarusIDE.DoOpenFileAndJumpToPos(Filename
-       ,Point(Pos.X,Pos.Y), TopLine, -1,-1
+       ,Point(Pos.X,Pos.Y), TopLine, BlockTopLine, BlockBottomLine, -1,-1
        ,[ofRegularFile,ofUseCache]) = mrOk)
   then
     ActiveEditor.EditorControl.SetFocus;
+end;
+
+procedure TSourceEditorManager.JumpToPos(FileName: string;
+  Pos: TCodeXYPosition; TopLine: Integer);
+begin
+  JumpToPos(FileName, Pos, TopLine, TopLine, TopLine);
 end;
 
 procedure TSourceEditorManager.JumpToProcedure(const JumpType: TJumpToProcedureType);
@@ -10063,7 +10076,7 @@ var
   Tool: TCodeTool;
   CleanPos: integer;
   NewPos: TCodeXYPosition;
-  NewTopLine: integer;
+  NewTopLine, BlockTopLine, BlockBottomLine: integer;
   JumpFound: Boolean;
 begin
   if not LazarusIDE.BeginCodeTools then Exit; //==>
@@ -10085,14 +10098,14 @@ begin
     if (ProcNode <> nil) and (ProcNode.Desc = ctnProcedure) then
     begin
       if JumpType = jmpBegin then
-        JumpFound := Tool.FindJumpPointInProcNode(ProcNode, NewPos, NewTopLine)
+        JumpFound := Tool.FindJumpPointInProcNode(ProcNode, NewPos, NewTopLine, BlockTopLine, BlockBottomLine)
       else
-        JumpFound := Tool.JumpToCleanPos(ProcNode.StartPos, ProcNode.StartPos, ProcNode.EndPos, NewPos, NewTopLine, True);
+        JumpFound := Tool.JumpToCleanPos(ProcNode.StartPos, ProcNode.StartPos, ProcNode.EndPos, NewPos, NewTopLine, BlockTopLine, BlockBottomLine, True);
     end else
       JumpFound := False;
 
     if JumpFound then
-      JumpToPos(NewPos.Code.Filename, NewPos, NewTopLine)
+      JumpToPos(NewPos.Code.Filename, NewPos, NewTopLine, BlockTopLine, BlockBottomLine)
     else
     begin
       CodeToolBoss.SetError(20170421203224, nil, 0, 0,

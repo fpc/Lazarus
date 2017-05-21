@@ -84,6 +84,7 @@ type
     function GetFileName: string; virtual; abstract;
     function GetLines: TStrings; virtual; abstract;
     function GetLineText: string; virtual; abstract;
+    function GetLinesInWindow: Integer; virtual; abstract;
     function GetModified: Boolean; virtual; abstract;
     function GetPageCaption: string; virtual; abstract;
     function GetPageName: string; virtual; abstract;
@@ -181,6 +182,7 @@ type
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SourceText: string read GetSourceText write SetSourceText;// the whole file
     property TopLine: Integer read GetTopLine write SetTopLine;// first visible line
+    property LinesInWindow: Integer read GetLinesInWindow;
     property Modified: Boolean read GetModified write SetModified;
   end;
 

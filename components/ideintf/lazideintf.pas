@@ -342,7 +342,10 @@ type
                        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToPos(const AFilename: string;
                        const CursorPosition: TPoint; TopLine: integer;
-                       PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
+                       PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; overload;
+    function DoOpenFileAndJumpToPos(const AFilename: string;
+                       const CursorPosition: TPoint; TopLine, BlockTopLine, BlockBottomLine: integer;
+                       PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract; overload;
     function DoRevertEditorFile(const Filename: string): TModalResult; virtual; abstract;
     function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags;
@@ -731,6 +734,13 @@ function TLazIDEInterface.DoNewEditorFile(
   const NewSource: string; NewFlags: TNewFlags): TModalResult;
 begin
   Result:=DoNewFile(NewFileDescriptor,NewFilename,NewSource,NewFlags,nil);
+end;
+
+function TLazIDEInterface.DoOpenFileAndJumpToPos(const AFilename: string;
+  const CursorPosition: TPoint; TopLine: integer; PageIndex,
+  WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+begin
+  Result := DoOpenFileAndJumpToPos(AFilename, CursorPosition, TopLine, TopLine, TopLine, PageIndex, WindowIndex, Flags);
 end;
 
 function TLazIDEInterface.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;

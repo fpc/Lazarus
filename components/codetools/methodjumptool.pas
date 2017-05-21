@@ -63,16 +63,18 @@ type
         Node: TCodeTreeNode): TAVLTreeNode;
   public
     function FindJumpPoint(CursorPos: TCodeXYPosition;
-        out NewPos: TCodeXYPosition; out NewTopLine: integer;
+        out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer;
         out RevertableJump: boolean): boolean;
     function FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
-        out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+        out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function GatherProcNodes(StartNode: TCodeTreeNode;
         Attr: TProcHeadAttributes; const FilterClassName: string): TAVLTree;
     function FindFirstDifferenceNode(SearchForNodes, SearchInNodes: TAVLTree;
         var DiffTxtPos: integer): TAVLTreeNode;
     function JumpToMethod(const ProcHead: string; Attr: TProcHeadAttributes;
         var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function JumpToMethod(const ProcHead: string; Attr: TProcHeadAttributes;
+        var NewPos: TCodeXYPosition; var NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function FindNodeExtInTree(ATree: TAVLTree;
         const UpperCode: string): TCodeTreeNodeExtension;
     function CreateSubProcPath(StartNode: TCodeTreeNode;
@@ -194,9 +196,9 @@ begin
     Result:=AVLTree.FindSuccessor(Result);
 end;
 
-function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition;
-  out NewPos: TCodeXYPosition; out NewTopLine: integer;
-  out RevertableJump: boolean): boolean;
+function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition; out
+  NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine,
+  BlockBottomLine: integer; out RevertableJump: boolean): boolean;
 
 const
   JumpToProcAttr = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers,
@@ -245,7 +247,7 @@ const
       DebugLn('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc D CleanDiffPos=',dbgs(DiffPos));
       {$ENDIF}
       Result:=JumpToCleanPos(DiffPos,ToProcNode.StartPos,ToProcNode.EndPos,
-                             NewPos,NewTopLine,true);
+                             NewPos,NewTopLine,BlockTopLine,BlockBottomLine,true);
     end else begin
       // procs are equal
       if (ToProcNode.LastChild.Desc=ctnBeginBlock) then begin
@@ -253,7 +255,7 @@ const
         DebugLn('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc E proc has body');
         {$ENDIF}
         // proc has a body -> jump to start of body
-        Result:=FindJumpPointInProcNode(ToProcNode,NewPos,NewTopLine);
+        Result:=FindJumpPointInProcNode(ToProcNode,NewPos,NewTopLine,BlockTopLine,BlockBottomLine);
       end else begin
         // proc has no body -> jump to proc name
         {$IFDEF CTDEBUG}
@@ -261,7 +263,7 @@ const
         {$ENDIF}
         Result:=JumpToCleanPos(ToProcNode.FirstChild.StartPos,
                                ToProcNode.StartPos,ToProcNode.EndPos,NewPos,
-                               NewTopLine,false);
+                               NewTopLine,BlockTopLine,BlockBottomLine,false);
       end;
       RevertableJump:=true;
     end;
@@ -690,8 +692,9 @@ begin
   end; //while (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure) do begin
 end;
 
-function TMethodJumpingCodeTool.FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
-  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+function TMethodJumpingCodeTool.FindJumpPointInProcNode(
+  ProcNode: TCodeTreeNode; out NewPos: TCodeXYPosition; out NewTopLine,
+  BlockTopLine, BlockBottomLine: integer): boolean;
 var DestNode: TCodeTreeNode;
   i, NewCleanPos: integer;
   LineStartPos: LongInt;
@@ -772,7 +775,7 @@ begin
   end;
   
   if not JumpToCleanPos(NewCleanPos,ProcNode.StartPos,ProcNode.EndPos,
-                        NewPos,NewTopLine,true)
+                        NewPos,NewTopLine,BlockTopLine, BlockBottomLine,true)
   then exit;
   if CursorBeyondEOL then
     inc(NewPos.x,i);
@@ -1213,8 +1216,8 @@ begin
 end;
 
 function TMethodJumpingCodeTool.JumpToMethod(const ProcHead: string;
-  Attr: TProcHeadAttributes;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  Attr: TProcHeadAttributes; var NewPos: TCodeXYPosition; var NewTopLine,
+  BlockTopLine, BlockBottomLine: integer): boolean;
 var SectionNode, CurProcNode: TCodeTreeNode;
   CurProcHead: string;
 begin
@@ -1229,7 +1232,7 @@ begin
           CurProcHead:=ExtractProcHead(CurProcNode,Attr);
           if CompareTextIgnoringSpace(ProcHead,CurProcHead,false)=0 then begin
             Result:=FindJumpPointInProcNode(CurProcNode,
-                       NewPos,NewTopLine);
+                       NewPos,NewTopLine,BlockTopLine,BlockBottomLine);
             exit;
           end;
         end;
@@ -1238,6 +1241,15 @@ begin
     end;
     SectionNode:=SectionNode.NextBrother;
   end;
+end;
+
+function TMethodJumpingCodeTool.JumpToMethod(const ProcHead: string;
+  Attr: TProcHeadAttributes; var NewPos: TCodeXYPosition;
+  var NewTopLine: integer): boolean;
+var
+  BlockTopLine, BlockBottomLine: integer;
+begin
+  Result := JumpToMethod(ProcHead, Attr, NewPos, NewTopLine, BlockTopLine, BlockBottomLine);
 end;
 
 

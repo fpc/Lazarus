@@ -61,6 +61,7 @@ type
 
     // General
     FAdjustTopLineDueToComment: boolean;
+    FAvoidUnnecessaryJumps: boolean;
     FIdentComplSortForHistory: boolean;
     FIdentComplSortForScope: boolean;
     FJumpSingleLinePos: integer;
@@ -150,6 +151,7 @@ type
     // General
     property AdjustTopLineDueToComment: boolean
       read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
+    property AvoidUnnecessaryJumps: boolean read FAvoidUnnecessaryJumps write FAvoidUnnecessaryJumps;
     property JumpSingleLinePos: integer read FJumpSingleLinePos write FJumpSingleLinePos;
     property JumpCodeBlockPos: integer read FJumpCodeBlockPos write FJumpCodeBlockPos;
     property CursorBeyondEOL: boolean
@@ -437,6 +439,7 @@ begin
       FJumpSingleLinePos:=XMLConfig.GetValue('CodeToolsOptions/JumpSingleLinePos/Value', 50);
       FJumpCodeBlockPos:=XMLConfig.GetValue('CodeToolsOptions/JumpCodeBlockPos/Value', 0);
     end;
+    FAvoidUnnecessaryJumps:=XMLConfig.GetValue('CodeToolsOptions/AvoidUnnecessaryJumps/Value', True);
     FCursorBeyondEOL:=XMLConfig.GetValue(
       'CodeToolsOptions/CursorBeyondEOL/Value',true);
     FSkipForwardDeclarations:=XMLConfig.GetValue(
@@ -597,6 +600,8 @@ begin
                              FJumpSingleLinePos,50);
     XMLConfig.SetDeleteValue('CodeToolsOptions/JumpCodeBlockPos/Value',
                              FJumpCodeBlockPos,0);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/AvoidUnnecessaryJumps/Value',
+                             FAvoidUnnecessaryJumps,True);
     XMLConfig.SetDeleteValue('CodeToolsOptions/CursorBeyondEOL/Value',
                              FCursorBeyondEOL,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/SkipForwardDeclarations/Value',
@@ -797,6 +802,7 @@ begin
     FAdjustTopLineDueToComment:=CodeToolsOpts.FAdjustTopLineDueToComment;
     FJumpSingleLinePos:=CodeToolsOpts.FJumpSingleLinePos;
     FJumpCodeBlockPos:=CodeToolsOpts.FJumpCodeBlockPos;
+    FAvoidUnnecessaryJumps:=CodeToolsOpts.FAvoidUnnecessaryJumps;
     FCursorBeyondEOL:=CodeToolsOpts.FCursorBeyondEOL;
     FAddInheritedCodeToOverrideMethod:=CodeToolsOpts.AddInheritedCodeToOverrideMethod;
     FCompleteProperties:=CodeToolsOpts.CompleteProperties;
@@ -867,6 +873,7 @@ begin
   FAdjustTopLineDueToComment:=true;
   FJumpSingleLinePos:=50;
   FJumpCodeBlockPos:=0;
+  FAvoidUnnecessaryJumps:=true;
   FCursorBeyondEOL:=true;
   
   // define templates
@@ -947,6 +954,7 @@ begin
         (FAdjustTopLineDueToComment=CodeToolsOpts.FAdjustTopLineDueToComment)
     and (FJumpSingleLinePos=CodeToolsOpts.FJumpSingleLinePos)
     and (FJumpCodeBlockPos=CodeToolsOpts.FJumpCodeBlockPos)
+    and (FAvoidUnnecessaryJumps=CodeToolsOpts.FAvoidUnnecessaryJumps)
     and (FCursorBeyondEOL=CodeToolsOpts.FCursorBeyondEOL)
     and (AddInheritedCodeToOverrideMethod=CodeToolsOpts.AddInheritedCodeToOverrideMethod)
     and (CompleteProperties=CodeToolsOpts.CompleteProperties)

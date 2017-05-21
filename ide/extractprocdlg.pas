@@ -89,15 +89,15 @@ type
 function ShowExtractProcDialog(Code: TCodeBuffer;
   const BlockBegin, BlockEnd: TPoint;
   out NewSource: TCodeBuffer;
-  out NewX, NewY, NewTopLine: integer): TModalResult;
+  out NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
 function ShowExtractProcDialog(Code: TCodeBuffer; const BlockBegin,
-  BlockEnd: TPoint; out NewSource: TCodeBuffer; out NewX, NewY,
-  NewTopLine: integer): TModalResult;
+  BlockEnd: TPoint; out NewSource: TCodeBuffer; out NewX, NewY, NewTopLine,
+  BlockTopLine, BlockBottomLine: integer): TModalResult;
 var
   ExtractProcDialog: TExtractProcDialog;
   MethodPossible: Boolean;
@@ -161,7 +161,7 @@ begin
 
     // extract procedure/method
     if not CodeToolBoss.ExtractProc(Code,BlockBegin,BlockEnd,ProcType,ProcName,
-      MissingIdentifiers,NewSource,NewX,NewY,NewTopLine,
+      MissingIdentifiers,NewSource,NewX,NewY,NewTopLine, BlockTopLine, BlockBottomLine,
       FunctionResultVariableStartPos)
     then begin
       Result:=mrCancel;

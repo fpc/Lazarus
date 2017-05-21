@@ -752,8 +752,9 @@ type
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAndJumpToPos(const AFilename: string;
-        const CursorPosition: TPoint; TopLine: integer;
-        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; override;
+      const CursorPosition: TPoint; TopLine, BlockTopLine,
+      BlockBottomLine: integer; PageIndex, WindowIndex: integer;
+      Flags: TOpenFlags): TModalResult; override;
     function DoRevertEditorFile(const Filename: string): TModalResult; override;
     function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
         CloseFlags: TCloseFlags; out Component: TComponent): TModalResult; override;
@@ -883,7 +884,8 @@ type
     function DoJumpToCodePosition(
                         ActiveSrcEdit: TSourceEditorInterface;
                         ActiveUnitInfo: TUnitInfo;
-                        NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
+                        NewSource: TCodeBuffer; NewX, NewY, NewTopLine,
+                        BlockTopLine, BlockBottomLine: integer;
                         Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; override;
     function DoShowCodeToolBossError: TMessageLine; override;
     procedure DoJumpToCodeToolBossError; override;
@@ -6120,7 +6122,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
 begin
   Result:=DoOpenEditorFile(AFilename, PageIndex, WindowIndex, Flags);
   if Result<>mrOk then exit;
@@ -6128,18 +6130,20 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   if CodeToolBoss.FindDeclarationInInterface(ActiveUnitInfo.Source,
-    AnIdentifier,NewSource, NewX, NewY, NewTopLine)
+    AnIdentifier,NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine)
   then begin
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-                    NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
+      NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine,
+      [jfAddJumpPoint, jfFocusEditor]);
     Result:=mrOk;
   end else
     DoJumpToCodeToolBossError;
 end;
 
 function TMainIDE.DoOpenFileAndJumpToPos(const AFilename: string;
-  const CursorPosition: TPoint; TopLine: integer; PageIndex,
-  WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+  const CursorPosition: TPoint; TopLine, BlockTopLine,
+  BlockBottomLine: integer; PageIndex, WindowIndex: integer; Flags: TOpenFlags
+  ): TModalResult;
 var
   ActiveUnitInfo, OldActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit, OldActiveSrcEdit: TSourceEditor;
@@ -6151,7 +6155,8 @@ begin
   if ActiveUnitInfo<>nil then begin
     DoJumpToCodePosition(OldActiveSrcEdit, OldActiveUnitInfo,
                     ActiveUnitInfo.Source,
-                    CursorPosition.X, CursorPosition.Y, TopLine, [jfAddJumpPoint, jfFocusEditor]);
+                    CursorPosition.X, CursorPosition.Y, TopLine, BlockTopLine, BlockBottomLine,
+                    [jfAddJumpPoint, jfFocusEditor]);
     Result:=mrOk;
   end else begin
     Result:=mrCancel;
@@ -8449,7 +8454,7 @@ var
   //ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
   AClassName: string;
   AInheritedMethodName: string;
   AnInheritedClassName: string;
@@ -8486,10 +8491,10 @@ begin
 
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
     AClassName,CurMethodName,
-    NewSource,NewX,NewY,NewTopLine) then
+    NewSource,NewX,NewY,NewTopLine, BlockTopLine, BlockBottomLine) then
   begin
     DoJumpToCodePosition(AEditor, ActiveUnitInfo,
-      NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
+      NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine, [jfAddJumpPoint, jfFocusEditor]);
   end else begin
     DebugLn(['Error: (lazarus) TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
@@ -9562,8 +9567,9 @@ begin
 end;
 
 function TMainIDE.DoJumpToCodePosition(ActiveSrcEdit: TSourceEditorInterface;
-  ActiveUnitInfo: TUnitInfo; NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-  Flags: TJumpToCodePosFlags): TModalResult;
+  ActiveUnitInfo: TUnitInfo; NewSource: TCodeBuffer; NewX, NewY, NewTopLine,
+  BlockTopLine, BlockBottomLine: integer; Flags: TJumpToCodePosFlags
+  ): TModalResult;
 var
   SrcEdit, NewSrcEdit: TSourceEditor;
   AnEditorInfo: TUnitEditorInfo;
@@ -9624,7 +9630,7 @@ begin
       NewSrcEdit := SourceEditorManager.ActiveEditor;
     end
     else begin
-      AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
+      AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), -1);
       if AnEditorInfo <> nil then begin
         NewSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent);
         SourceEditorManager.ActiveEditor := NewSrcEdit;
@@ -9645,7 +9651,13 @@ begin
         if NewTopLine < 1 then
           NewSrcEdit.CenterCursor(True)
         else
-          NewSrcEdit.TopLine:=NewTopLine;
+        begin
+          if not(
+            CodeToolsOpts.AvoidUnnecessaryJumps
+            and ((BlockTopLine>=NewSrcEdit.TopLine) and (BlockBottomLine<=NewSrcEdit.TopLine+NewSrcEdit.LinesInWindow)))
+          then
+            NewSrcEdit.TopLine:=NewTopLine;
+        end;
       end;
       //DebugLn('TMainIDE.DoJumpToCodePosition NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
       NewSrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
@@ -9753,7 +9765,7 @@ procedure TMainIDE.DoJumpToOtherProcedureSection;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
   RevertableJump: boolean;
   LogCaret: TPoint;
   Flags: TJumpToCodePosFlags;
@@ -9766,11 +9778,11 @@ begin
   {$ENDIF}
   LogCaret:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
   if CodeToolBoss.JumpToMethod(ActiveUnitInfo.Source,
-    LogCaret.X,LogCaret.Y,NewSource,NewX,NewY,NewTopLine,RevertableJump) then
+    LogCaret.X,LogCaret.Y,NewSource,NewX,NewY,NewTopLine,BlockTopLine,BlockBottomLine,RevertableJump) then
   begin
     Flags := [jfFocusEditor, jfAddJumpPoint];
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-      NewSource, NewX, NewY, NewTopLine, Flags);
+      NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine, Flags);
   end else begin
     DoJumpToCodeToolBossError;
   end;
@@ -9851,7 +9863,8 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource, BodySource: TCodeBuffer;
-  NewX, NewY, NewTopLine, BodyX, BodyY, BodyTopLine, NewCleanPos: integer;
+  NewX, NewY, NewTopLine, BodyX, BodyY, BodyTopLine, NewCleanPos,
+    BlockTopLine, BlockBottomLine: integer;
   FindFlags: TFindSmartFlags;
   RevertableJump, JumpToBody, JumpToBodySuccess: boolean;
   NewTool: TCodeTool;
@@ -9884,7 +9897,7 @@ begin
   if CodeToolsOpts.SkipForwardDeclarations then
     Include(FindFlags, fsfSkipClassForward);
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
-    LogCaretXY.X, LogCaretXY.Y, NewSource, NewX, NewY, NewTopLine, FindFlags )
+    LogCaretXY.X, LogCaretXY.Y, NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine, FindFlags )
   then begin
     //debugln(['TMainIDE.DoFindDeclarationAtCaret ',NewSource.Filename,' NewX=',Newx,',y=',NewY,' ',NewTopLine]);
     JumpToBodySuccess := False;
@@ -9899,15 +9912,15 @@ begin
         if (ProcNode<>nil) and (ProcNode.Desc = ctnProcedureHead)
         and (ImplementationNode<>nil) and (ProcNode.StartPos<ImplementationNode.StartPos)
         and(CodeToolBoss.JumpToMethod(NewSource,
-          NewX,NewY,BodySource,BodyX,BodyY,BodyTopLine,RevertableJump))
+          NewX,NewY,BodySource,BodyX,BodyY,BodyTopLine,BlockTopLine,BlockBottomLine,RevertableJump))
         then
           JumpToBodySuccess := DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-            BodySource, BodyX, BodyY, BodyTopLine, [jfAddJumpPoint, jfFocusEditor]) = mrOK;
+            BodySource, BodyX, BodyY, BodyTopLine, BlockTopLine, BlockBottomLine, [jfAddJumpPoint, jfFocusEditor]) = mrOK;
       end;
     end;
     if not JumpToBodySuccess then
       DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-        NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
+        NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine, [jfAddJumpPoint, jfFocusEditor]);
   end else begin
     DoJumpToCodeToolBossError;
   end;
@@ -10004,7 +10017,7 @@ begin
     exit;
   end;
   DoJumpToCodePosition(TargetSrcEdit, TargetUnitInfo,
-    NewSource, NewX, NewY, NewTopLine, [jfFocusEditor]);
+    NewSource, NewX, NewY, NewTopLine, NewTopLine, NewTopLine, [jfFocusEditor]);
   CodeToolBoss.GetIdentifierAt(NewSource,NewX,NewY,Identifier);
   CurUnitname:=ExtractFileNameOnly(NewSource.Filename);
 
@@ -10136,7 +10149,7 @@ begin
 
     // jump back in source editor
     DoJumpToCodePosition(TargetSrcEdit, TargetUnitInfo,
-      TargetUnitInfo.Source, LogCaretXY.X, LogCaretXY.Y, -1, [jfFocusEditor]);
+      TargetUnitInfo.Source, LogCaretXY.X, LogCaretXY.Y, -1, -1, -1, [jfFocusEditor]);
   end;
 end;
 
@@ -10319,7 +10332,7 @@ begin
     NewSource,NewX,NewY,NewTopLine) then
   begin
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-      NewSource, NewX, NewY, NewTopLine, [jfFocusEditor]);
+      NewSource, NewX, NewY, NewTopLine, NewY, NewY, [jfFocusEditor]);
   end else
     DoJumpToCodeToolBossError;
 end;
@@ -10348,7 +10361,7 @@ begin
     then
       Include(Flags,jfAddJumpPoint);
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-      NewSource, NewX, NewY, NewTopLine, Flags);
+      NewSource, NewX, NewY, NewTopLine, NewY, NewY, Flags);
   end else
     DoJumpToCodeToolBossError;
 end;
@@ -10612,7 +10625,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
   OldChange, CCRes: Boolean;
 begin
   OldChange:=OpenEditorsOnCodeToolChange;
@@ -10628,14 +10641,14 @@ begin
       ActiveSrcEdit.EditorComponent.CaretX,
       ActiveSrcEdit.EditorComponent.CaretY,
       ActiveSrcEdit.EditorComponent.TopLine,
-      NewSource,NewX,NewY,NewTopLine, Interactive);
+      NewSource,NewX,NewY,NewTopLine,BlockTopLine,BlockBottomLine,Interactive);
     if (CodeToolBoss.ErrorMessage='')
     and (CodeToolBoss.SourceChangeCache.BuffersToModifyCount=0) then
       CodeToolBoss.SetError(20170421203259,nil,0,0,'there is no completion for this code');
     ApplyCodeToolChanges;
     if (CodeToolBoss.ErrorMessage='') and (NewSource<>nil) then
       DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-        NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor])
+        NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine, [jfAddJumpPoint, jfFocusEditor])
     else
     if not CCRes then
       DoJumpToCodeToolBossError;
@@ -10651,7 +10664,7 @@ var
   BlockBegin: TPoint;
   BlockEnd: TPoint;
   NewSource: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
   CTResult: boolean;
   OldChange: Boolean;
 begin
@@ -10668,13 +10681,13 @@ begin
   OpenEditorsOnCodeToolChange:=true;
   try
     CTResult:=ShowExtractProcDialog(ActiveUnitInfo.Source,BlockBegin,BlockEnd,
-      NewSource,NewX,NewY,NewTopLine)=mrOk;
+      NewSource,NewX,NewY,NewTopLine,BlockTopLine,BlockBottomLine)=mrOk;
     ApplyCodeToolChanges;
     if CodeToolBoss.ErrorMessage<>'' then begin
       DoJumpToCodeToolBossError;
     end else if CTResult then begin
       DoJumpToCodePosition(ActiveSrcEdit,ActiveUnitInfo,
-        NewSource,NewX,NewY,NewTopLine,[jfAddJumpPoint, jfFocusEditor]);
+        NewSource,NewX,NewY,NewTopLine,BlockTopLine,BlockBottomLine,[jfAddJumpPoint, jfFocusEditor]);
     end;
   finally
     OpenEditorsOnCodeToolChange:=OldChange;
@@ -11775,7 +11788,7 @@ procedure TMainIDE.SrcNoteBookMouseLink(Sender: TObject; X, Y: Integer;
 var
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
   SrcEdit: TSourceEditor;
 begin
   SrcEdit:=SourceEditorManager.SenderToEditor(Sender);
@@ -11792,7 +11805,7 @@ begin
     exit;
   end;
   AllowMouseLink := CodeToolBoss.FindDeclaration(
-    ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine);
+    ActiveUnitInfo.Source,X,Y,NewSource,NewX,NewY,NewTopLine,BlockTopLine,BlockBottomLine);
 end;
 
 procedure TMainIDE.SrcNotebookReadOnlyChanged(Sender: TObject);
@@ -12656,7 +12669,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
   AClassName, AnInheritedClassName: string;
   CurMethodName, AInheritedMethodName: string;
 begin
@@ -12683,10 +12696,10 @@ begin
   //DebugLn('[TMainIDE.OnPropHookShowMethod] MethodName=',AMethodName,', ClassName=',AClassName,
   //        ', CurMethodName=',CurMethodName,', ActiveUnit=',ActiveUnitInfo.Filename);
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
-    AClassName, CurMethodName, NewSource, NewX, NewY, NewTopLine) then
+    AClassName, CurMethodName, NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine) then
   begin
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-      NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
+      NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine, [jfAddJumpPoint, jfFocusEditor]);
   end else begin
     DebugLn(['Error: (lazarus) TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;

@@ -1419,7 +1419,7 @@ begin
   i := SrcLine;
   if (Editor <> nil) then
     i := Editor.DebugToSourceLine(i);
-  if MainIDE.DoJumpToCodePosition(nil,nil,NewSource,1,i,-1, Flags)<>mrOk
+  if MainIDE.DoJumpToCodePosition(nil,nil,NewSource,1,i,-1,-1,-1,Flags)<>mrOk
   then exit;
 
   // mark execution line

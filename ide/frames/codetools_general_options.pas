@@ -35,6 +35,7 @@ type
 
   TCodetoolsGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     AdjustTopLineDueToCommentCheckBox: TCheckBox;
+    AvoidUnnecessaryJumpsCheckBox: TCheckBox;
     GeneralAutoIndent: TLabel;
     IndentOnPasteCheckBox: TCheckBox;
     IndentOnLineBreakCheckBox: TCheckBox;
@@ -123,6 +124,7 @@ begin
   AdjustTopLineDueToCommentCheckBox.Caption:=dlgAdjustTopLine;
   JumpSingleLinePosLabel.Caption:=dlgJumpSingleLinePos;
   JumpCodeBlockPosLabel.Caption:=dlgJumpCodeBlockPos;
+  AvoidUnnecessaryJumpsCheckBox.Caption:=dlgAvoidUnnecessaryJumps;
   CursorBeyondEOLCheckBox.Caption:=dlgcursorbeyondeol;
   SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardClassDeclarations;
   JumpToMethodBodyCheckBox.Caption := dlgJumpToMethodBody;
@@ -147,6 +149,7 @@ begin
     AdjustTopLineDueToCommentCheckBox.Checked := AdjustTopLineDueToComment;
     JumpCodeBlockPosEdit.Value := JumpCodeBlockPos;
     JumpSingleLinePosEdit.Value := JumpSingleLinePos;
+    AvoidUnnecessaryJumpsCheckBox.Checked := AvoidUnnecessaryJumps;
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
     SkipForwardDeclarationsCheckBox.Checked := SkipForwardDeclarations;
     JumpToMethodBodyCheckBox.Checked := JumpToMethodBody;
@@ -165,6 +168,7 @@ begin
     AdjustTopLineDueToComment := AdjustTopLineDueToCommentCheckBox.Checked;
     JumpCodeBlockPos := JumpCodeBlockPosEdit.Value;
     JumpSingleLinePos := JumpSingleLinePosEdit.Value;
+    AvoidUnnecessaryJumps := AvoidUnnecessaryJumpsCheckBox.Checked;
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
     SkipForwardDeclarations := SkipForwardDeclarationsCheckBox.Checked;
     JumpToMethodBody:=JumpToMethodBodyCheckBox.Checked;
