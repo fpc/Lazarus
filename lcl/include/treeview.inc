@@ -4939,7 +4939,7 @@ var
       (ttHotGlyphClosed, ttHotGlyphOpened)
     );
   var
-    HalfSize, ALeft, ATop, ARight, ABottom: integer;
+    HalfSize, ALeft, ATop, ARight, ABottom, SmallIndent: integer;
     Points: array[0..2] of TPoint; // for triangle
     Details: TThemedElementDetails;
     R: TRect;
@@ -4978,12 +4978,13 @@ var
           // draw a plus or a minus sign
           R := Rect(ALeft, ATop, ARight+1, ABottom+1); //+1 for centering of line in square
           Rectangle(R);
-          MoveTo(R.Left + Scale96ToFont(2), MidY);
-          LineTo(R.Right - Scale96ToFont(2), MidY);
+          SmallIndent := Scale96ToFont(2);
+          MoveTo(R.Left + SmallIndent, MidY);
+          LineTo(R.Right - SmallIndent, MidY);
           if not CollapseSign then
           begin
-            MoveTo(MidX, R.Top + Scale96ToFont(2));
-            LineTo(MidX, R.Bottom - Scale96ToFont(2));
+            MoveTo(MidX, R.Top + SmallIndent);
+            LineTo(MidX, R.Bottom - SmallIndent);
           end;
         end;
       tvestArrow,
