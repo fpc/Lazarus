@@ -30,6 +30,7 @@ unit BuildTokenList;
  This is the lexical analysis phase of the parsing
 
  2014.11.02 ~bk Added lexing of binary constants (ex. -> const a=%101001;)
+ 2017.05.17 ~pktv Added lexing of octal constants (ex. -> const a=&777;)
 }
 
 {$I JcfGlobal.inc}
@@ -41,6 +42,8 @@ uses
   Tokens, SourceToken, SourceTokenList;
 
 type
+
+  { TBuildTokenList }
 
   TBuildTokenList = class(TObject)
   private
@@ -75,6 +78,7 @@ type
     function TryNumber(const pcToken: TSourceToken): boolean;
     function TryHexNumber(const pcToken: TSourceToken): boolean;
     function TryBinNumber(const pcToken: TSourceToken): boolean; // ~bk 14.11.01
+    function TryOctNumber(const pcToken: TSourceToken): boolean; // ~pktv 17.05.19
 
     function TryDots(const pcToken: TSourceToken): boolean;
 
@@ -170,6 +174,8 @@ var
     if TryHexNumber(lcNewToken) then
       exit;
     if TryBinNumber(lcNewToken) then // ~bk 2014.11.01
+      exit;
+    if TryOctNumber(lcNewToken) then // ~pktv 2017.05.19
       exit;
 
     if TryDots(lcNewToken) then
@@ -651,6 +657,36 @@ begin
 
   { concat any subsequent binary chars }
   while CharIsBinDigit(Current) do
+  begin
+    pcToken.SourceCode := pcToken.SourceCode + Current;
+    Consume;
+  end;
+
+  Result := True;
+end;
+
+{ ~pktb 2017.05.19 - Oct numbers are prefixed with & }
+function TBuildTokenList.TryOctNumber(const pcToken: TSourceToken): boolean;
+function CharIsOctDigit(const c: Char): Boolean;
+const
+  OctDigits: set of AnsiChar = [
+    '0', '1', '2', '3', '4', '5', '6', '7'];
+begin
+  Result := (c in OctDigits);
+end;
+begin
+  Result := False;
+
+  { starts with a & }
+  if Current <> '&' then
+    exit;
+
+  pcToken.TokenType  := ttNumber;
+  pcToken.SourceCode := Current;
+  Consume;
+
+  { concat any subsequent binary chars }
+  while CharIsOctDigit(Current) do
   begin
     pcToken.SourceCode := pcToken.SourceCode + Current;
     Consume;
