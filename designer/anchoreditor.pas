@@ -465,32 +465,19 @@ begin
 end;
 
 procedure TAnchorDesigner.LoadGlyphs;
-
-  procedure LoadGlyph(const aBtn: TSpeedButton; const aName: String);
-  var
-    xBmp: TCustomBitmap;
-  begin
-    xBmp := TIDEImages.CreateImage(16, aName);
-    try
-      aBtn.Glyph.Assign(xBmp);
-    finally
-      xBmp.Free;
-    end;
-  end;
-
 begin
-  LoadGlyph(LeftRefLeftSpeedButton, 'anchor_left_left');
-  LoadGlyph(LeftRefCenterSpeedButton, 'anchor_left_center');
-  LoadGlyph(LeftRefRightSpeedButton, 'anchor_left_right');
-  LoadGlyph(RightRefLeftSpeedButton, 'anchor_right_left');
-  LoadGlyph(RightRefCenterSpeedButton, 'anchor_right_center');
-  LoadGlyph(RightRefRightSpeedButton, 'anchor_right_right');
-  LoadGlyph(TopRefTopSpeedButton, 'anchor_top_top');
-  LoadGlyph(TopRefCenterSpeedButton, 'anchor_top_center');
-  LoadGlyph(TopRefBottomSpeedButton, 'anchor_top_bottom');
-  LoadGlyph(BottomRefTopSpeedButton, 'anchor_bottom_top');
-  LoadGlyph(BottomRefCenterSpeedButton, 'anchor_bottom_center');
-  LoadGlyph(BottomRefBottomSpeedButton, 'anchor_bottom_bottom');
+  TIDEImages.AssignImage(LeftRefLeftSpeedButton.Glyph, 'anchor_left_left');
+  TIDEImages.AssignImage(LeftRefCenterSpeedButton.Glyph, 'anchor_left_center');
+  TIDEImages.AssignImage(LeftRefRightSpeedButton.Glyph, 'anchor_left_right');
+  TIDEImages.AssignImage(RightRefLeftSpeedButton.Glyph, 'anchor_right_left');
+  TIDEImages.AssignImage(RightRefCenterSpeedButton.Glyph, 'anchor_right_center');
+  TIDEImages.AssignImage(RightRefRightSpeedButton.Glyph, 'anchor_right_right');
+  TIDEImages.AssignImage(TopRefTopSpeedButton.Glyph, 'anchor_top_top');
+  TIDEImages.AssignImage(TopRefCenterSpeedButton.Glyph, 'anchor_top_center');
+  TIDEImages.AssignImage(TopRefBottomSpeedButton.Glyph, 'anchor_top_bottom');
+  TIDEImages.AssignImage(BottomRefTopSpeedButton.Glyph, 'anchor_bottom_top');
+  TIDEImages.AssignImage(BottomRefCenterSpeedButton.Glyph, 'anchor_bottom_center');
+  TIDEImages.AssignImage(BottomRefBottomSpeedButton.Glyph, 'anchor_bottom_bottom');
 end;
 
 procedure TAnchorDesigner.CreateSideControls;

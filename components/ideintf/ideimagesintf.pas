@@ -54,6 +54,8 @@ type
     class function ScaleImage(const AImage: TCustomBitmap; out ANewInstance: Boolean;
       TargetWidth, TargetHeight: Integer; const AFactor: Double): TCustomBitmap;
     class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap;
+    class procedure AssignImage(const ABitmap: TCustomBitmap; ImageName: String;
+      ImageSize: Integer = 16);
 
     function GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
     function LoadImage(ImageSize: Integer; ImageName: String): Integer;
@@ -151,6 +153,19 @@ begin
     Grp.Free;
   end;
   Result := nil; // not found
+end;
+
+class procedure TIDEImages.AssignImage(const ABitmap: TCustomBitmap;
+  ImageName: String; ImageSize: Integer);
+var
+  xBmp: TCustomBitmap;
+begin
+  xBmp := TIDEImages.CreateImage(16, ImageName);
+  try
+    ABitmap.Assign(xBmp);
+  finally
+    xBmp.Free;
+  end;
 end;
 
 constructor TIDEImages.Create;
