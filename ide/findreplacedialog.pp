@@ -139,7 +139,7 @@ begin
   TextToFindLabel.Caption:=dlgTextToFind;
   ReplaceTextComboBox.Text:='';
   ReplaceWithCheckbox.Caption:=dlgReplaceWith;
-  EnableAutoCompleteSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_stepinto');
+  TIDEImages.AssignImage(EnableAutoCompleteSpeedButton.Glyph, 'menu_stepinto');
   OptionsGroupBox.Caption:=lisOptions;
 
   with CaseSensitiveCheckBox do begin
@@ -181,7 +181,7 @@ begin
 
   // CloseButton works now as ReplaceAllButton
   BtnPanel.CloseButton.Caption := dlgReplaceAll;
-  BtnPanel.CloseButton.LoadGlyphFromResourceName(hInstance, 'btn_all');
+  TIDEImages.AssignImage(BtnPanel.CloseButton.Glyph, 'btn_all');
 
   fReplaceAllClickedLast:=false;
   UpdateHints;

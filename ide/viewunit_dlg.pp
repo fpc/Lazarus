@@ -322,7 +322,7 @@ begin
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
-  SortAlphabeticallySpeedButton.LoadGlyphFromResourceName(HInstance, 'pkg_sortalphabetically');
+  TIDEImages.AssignImage(SortAlphabeticallySpeedButton.Glyph, 'pkg_sortalphabetically');
 end;
 
 procedure TViewUnitDialog.FormDestroy(Sender: TObject);

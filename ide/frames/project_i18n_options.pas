@@ -6,7 +6,7 @@ interface
 
 uses
   StdCtrls, EditBtn, ExtCtrls, LazFileUtils, Project, IDEOptionsIntf,
-  LazarusIDEStrConsts, IDEDialogs, Classes, Graphics;
+  LazarusIDEStrConsts, IDEDialogs, IDEImagesIntf, Classes, Graphics;
 
 type
 
@@ -126,7 +126,7 @@ begin
   ExcludedIdentifiersLabel.ParentFont := True;
   ExcludedOriginalsLabel.ParentFont := True;
   ForceUpdatePoFilesCheckBox.ParentFont := True;
-  POOutDirEdit.Button.LoadGlyphFromResourceName(HInstance, ResBtnSelDir); //DirectoryEdit
+  TIDEImages.AssignImage(POOutDirEdit.Button.Glyph, ResBtnSelDir); //DirectoryEdit
 end;
 
 procedure TProjectI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, IDEOptionsIntf, PackageDefs, ProjectIntf, Project,
-  LazarusIDEStrConsts, CodeToolManager;
+  LazarusIDEStrConsts, IDEImagesIntf, CodeToolManager;
 
 type
 
@@ -186,10 +186,10 @@ begin
   FormsAvailFormsLabel.Caption := dlgAvailableForms;
   FormsAvailFormsListBox.Hint := dlgAvailableFormsHint;
   FormsAutoCreateNewFormsCheckBox.Caption := dlgAutoCreateNewForms;
-  FormsMoveAutoCreatedFormUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  FormsMoveAutoCreatedFormsDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
-  FormsAddToAutoCreatedFormsBtn.LoadGlyphFromResourceName(HInstance, 'arrow_left');
-  FormsRemoveFromAutoCreatedFormsBtn.LoadGlyphFromResourceName(HInstance, 'arrow_right');
+  TIDEImages.AssignImage(FormsMoveAutoCreatedFormUpBtn.Glyph, 'arrow_up');
+  TIDEImages.AssignImage(FormsMoveAutoCreatedFormsDownBtn.Glyph, 'arrow_down');
+  TIDEImages.AssignImage(FormsAddToAutoCreatedFormsBtn.Glyph, 'arrow_left');
+  TIDEImages.AssignImage(FormsRemoveFromAutoCreatedFormsBtn.Glyph, 'arrow_right');
 end;
 
 procedure TProjectFormsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

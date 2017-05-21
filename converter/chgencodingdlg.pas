@@ -39,7 +39,7 @@ uses
   // LazUtils
   LConvEncoding, LazFileUtils, LazFileCache, AvgLvlTree,
   // IDEIntf
-  IDEWindowIntf, SrcEditorIntf, IDEHelpIntf,
+  IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE
   IDEProcs, PackageDefs, PackageSystem, Project, LazarusIDEStrConsts;
 
@@ -116,9 +116,9 @@ begin
   CloseButton.Caption:=lisClose;
   ApplyButton.Caption:=lisConvert;
   HelpButton.Caption:=lisHelp;
-  CloseButton.LoadGlyphFromResourceName(hInstance, 'btn_close');
-  ApplyButton.LoadGlyphFromResourceName(hInstance, 'btn_ok');
-  HelpButton.LoadGlyphFromResourceName(hInstance, 'btn_help');
+  TIDEImages.AssignImage(CloseButton.Glyph, 'btn_close');
+  TIDEImages.AssignImage(ApplyButton.Glyph, 'btn_ok');
+  TIDEImages.AssignImage(HelpButton.Glyph, 'btn_help');
 
   PreviewGroupBox.Caption:=dlgWRDPreview;
   PreviewListView.Column[0].Caption:=dlgEnvFiles;

@@ -152,12 +152,12 @@ begin
   // Component pages
   PagesGroupBox.Caption := lisCmpPages;
   AddPageButton.Caption := lisBtnDlgAdd;
-  AddPageButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  TIDEImages.AssignImage(AddPageButton.Glyph, 'laz_add');
   RestoreButton.Caption := lisCmpRestoreDefaults;
   ImportDividerBevel.Caption := lisExportImport;
-  ImportButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
+  TIDEImages.AssignImage(ImportButton.Glyph, 'laz_open');
   ImportButton.Caption := lisDlgImport;
-  ExportButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+  TIDEImages.AssignImage(ExportButton.Glyph, 'laz_save');
   ExportButton.Caption := lisDlgExport;
   // File dialogs
   ImportDialog.Title := lisImport;
@@ -171,13 +171,13 @@ begin
   ComponentsListView.Column[3].Caption := lisUnit;
   ComponentsListView.SmallImages := IDEImages.Images_24;
   // Arrow buttons for pages
-  PageMoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  PageMoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  TIDEImages.AssignImage(PageMoveUpBtn.Glyph, 'arrow_up');
+  TIDEImages.AssignImage(PageMoveDownBtn.Glyph, 'arrow_down');
   PageMoveUpBtn.Hint := lisMoveSelectedUp;
   PageMoveDownBtn.Hint := lisMoveSelectedDown;
   // Arrow buttons for components
-  CompMoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  CompMoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  TIDEImages.AssignImage(CompMoveUpBtn.Glyph, 'arrow_up');
+  TIDEImages.AssignImage(CompMoveDownBtn.Glyph, 'arrow_down');
   CompMoveUpBtn.Hint := lisMoveSelectedUp;
   CompMoveDownBtn.Hint := lisMoveSelectedDown;
 

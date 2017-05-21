@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  Grids, Buttons, ObjInspStrConsts;
+  IDEImagesIntf, Grids, Buttons, ObjInspStrConsts;
 
 type
 
@@ -45,8 +45,8 @@ begin
   Caption:=peFilterEditor;
   StringGrid1.Cells[0, 0] := peFilterName;
   StringGrid1.Cells[1, 0] := peFilter;
-  MoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  MoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  TIDEImages.AssignImage(MoveUpBtn.Glyph, 'arrow_up');
+  TIDEImages.AssignImage(MoveDownBtn.Glyph, 'arrow_down');
   MoveUpBtn.Hint := rscdMoveUp;
   MoveDownBtn.Hint := rscdMoveDown;
 end;

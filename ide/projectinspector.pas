@@ -1037,13 +1037,13 @@ begin
   mnuAddEditorFiles.Caption:=lisProjAddEditorFile;
   mnuAddReq.Caption:=lisProjAddNewRequirement;
 
-  OpenButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
+  TIDEImages.AssignImage(OpenButton.Glyph, 'laz_open');
   OpenButton.Caption:='';
   OpenButton.Hint:=lisOpenFile2;
   SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
-  SortAlphabeticallyButton.LoadGlyphFromResourceName(HInstance, 'pkg_sortalphabetically');
+  TIDEImages.AssignImage(SortAlphabeticallyButton.Glyph, 'pkg_sortalphabetically');
   DirectoryHierarchyButton.Hint:=lisPEShowDirectoryHierarchy;
-  DirectoryHierarchyButton.LoadGlyphFromResourceName(HInstance, 'pkg_hierarchical');
+  TIDEImages.AssignImage(DirectoryHierarchyButton.Glyph, 'pkg_hierarchical');
 
   with ItemsTreeView do begin
     FFilesNode:=Items.Add(nil, dlgEnvFiles);

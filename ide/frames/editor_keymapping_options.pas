@@ -386,15 +386,15 @@ begin
   ConflictsTreeView.Images := IDEImages.Images_16;
   imgKeyCategory := IDEImages.LoadImage(16, 'item_keyboard');
   imgKeyItem := IDEImages.LoadImage(16, 'item_character');
-  ChooseSchemeButton.LoadGlyphFromResourceName(HInstance, 'item_keyboard'); // keymapcategory
-  FindKeyButton.LoadGlyphFromResourceName(HInstance, 'menu_search_find');
-  EditButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
-  ClearButton.LoadGlyphFromResourceName(HInstance, 'menu_clean');
+  TIDEImages.AssignImage(ChooseSchemeButton.Glyph, 'item_keyboard'); // keymapcategory
+  TIDEImages.AssignImage(FindKeyButton.Glyph, 'menu_search_find');
+  TIDEImages.AssignImage(EditButton.Glyph, 'laz_edit');
+  TIDEImages.AssignImage(ClearButton.Glyph, 'menu_clean');
   PopupMenu1.Images := IDEImages.Images_16;
   EditMenuItem.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
   ClearMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
 
-  ResetKeyFilterBtn.LoadGlyphFromResourceName(HInstance, ResBtnListFilter);
+  TIDEImages.AssignImage(ResetKeyFilterBtn.Glyph, ResBtnListFilter);
   ResetKeyFilterBtn.Enabled := not IDEShortCutEmpty(KeyMapKeyFilter);
 
 //  FillKeyMappingTreeView;    ... Done in ReadSettings.

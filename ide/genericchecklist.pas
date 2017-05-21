@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  CheckLst, Buttons, StdCtrls;
+  CheckLst, Buttons, IDEImagesIntf, StdCtrls;
 
 type
 
@@ -54,7 +54,7 @@ begin
   fActionBtn.BorderSpacing.Left := 6;
   fActionBtn.BorderSpacing.Right := 6;
   if aResourceGlyphName <> '' then
-    fActionBtn.LoadGlyphFromResourceName(HInstance, aResourceGlyphName);
+    TIDEImages.AssignImage(fActionBtn.Glyph, aResourceGlyphName);
   fActionBtn.AutoSize := True;
   fActionBtn.Parent := ButtonPanel1;
 end;

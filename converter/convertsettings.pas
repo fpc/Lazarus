@@ -38,7 +38,7 @@ uses
   // CodeTools
   CodeToolManager, CodeCache,
   // IdeIntf
-  BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf,
+  BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, IDEImagesIntf,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts,
   // Converter
@@ -883,11 +883,11 @@ begin
   // File system scanning
   ScanLabel.Caption := lisScanParentDir;
   StopScanButton.Caption:=lisStop;
-  StopScanButton.LoadGlyphFromResourceName(HInstance, 'menu_stop');
+  TIDEImages.AssignImage(StopScanButton.Glyph, 'menu_stop');
   // Unit Replacements
   UnitReplaceDivider.Caption:=lisConvUnitReplacements;
   UnitReplaceButton.Caption:=lisEdit;    // Recycled string.
-  UnitReplaceButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
+  TIDEImages.AssignImage(UnitReplaceButton.Glyph, 'laz_edit');
   UnitReplaceDivider.Hint:=lisConvUnitReplHint;
   UnitReplaceButton.Hint:=lisConvUnitReplHint;
   UnitReplaceComboBox.Items.Add(lisDisabled);    // 'Disabled'
@@ -901,7 +901,7 @@ begin
   // Type Replacements
   TypeReplaceDivider.Caption:=lisConvTypeReplacements;
   TypeReplaceButton.Caption:=lisEdit;
-  TypeReplaceButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
+  TIDEImages.AssignImage(TypeReplaceButton.Glyph, 'laz_edit');
   TypeReplaceDivider.Hint:=lisConvTypeReplHint;
   TypeReplaceButton.Hint:=lisConvTypeReplHint;
   TypeReplaceComboBox.Items.Add(lisInteractive);
@@ -909,7 +909,7 @@ begin
   // Func Replacements
   FuncReplaceDivider.Caption:=lisConvFuncReplacements;
   FuncReplaceButton.Caption:=lisEdit;
-  FuncReplaceButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
+  TIDEImages.AssignImage(FuncReplaceButton.Glyph, 'laz_edit');
   FuncReplaceDivider.Hint:=lisConvFuncReplHint;
   FuncReplaceButton.Hint:=lisConvFuncReplHint;
   FuncReplaceComboBox.Items.Add(lisDisabled);
@@ -918,7 +918,7 @@ begin
   // Coordinate Offsets
   CoordOffsDivider.Caption:=lisConvCoordOffs;
   CoordOffsButton.Caption:=lisEdit;
-  CoordOffsButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
+  TIDEImages.AssignImage(CoordOffsButton.Glyph, 'laz_edit');
   CoordOffsDivider.Hint:=lisConvCoordHint;
   CoordOffsButton.Hint:=lisConvCoordHint;
   CoordOffsComboBox.Items.Add(lisDisabled);

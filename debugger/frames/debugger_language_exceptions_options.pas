@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, CheckLst,
   Buttons, Dialogs,
-  LazarusIDEStrConsts, IDEOptionsIntf, Debugger, BaseDebugManager;
+  LazarusIDEStrConsts, IDEImagesIntf, IDEOptionsIntf, Debugger, BaseDebugManager;
 
 type
 
@@ -149,8 +149,8 @@ begin
   DbgLangExceptHint.Caption := lisTheseSettingsAreStoredWithTheProject;
   cmdExceptionRemove.Caption := lisRemove;
   cmdExceptionAdd.Caption := lisAdd;
-  cmdExceptionRemove.LoadGlyphFromResourceName(HInstance, 'laz_delete');
-  cmdExceptionAdd.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  TIDEImages.AssignImage(cmdExceptionRemove.Glyph, 'laz_delete');
+  TIDEImages.AssignImage(cmdExceptionAdd.Glyph, 'laz_add');
   chkNotifyOnException.Caption := lisDebugOptionsFrmNotifyOnLazarusExceptions;
 end;
 

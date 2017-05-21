@@ -43,7 +43,7 @@ uses
   CTXMLFixFragment,
   // IDEIntf
   IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, Menus,
-  SrcEditorIntf, IDEDialogs, LazFileUtils,
+  SrcEditorIntf, IDEDialogs, LazFileUtils, IDEImagesIntf,
   // IDE
   IDEOptionDefs, EnvironmentOpts, PackageSystem, IDEProcs, LazarusIDEStrConsts,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;
@@ -292,14 +292,14 @@ begin
 
   Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
 
-  BoldFormatButton.LoadGlyphFromResourceName(HInstance, 'formatbold');
-  UnderlineFormatButton.LoadGlyphFromResourceName(HInstance, 'formatunderline');
-  ItalicFormatButton.LoadGlyphFromResourceName(HInstance, 'formatitalic');
-  InsertVarTagButton.LoadGlyphFromResourceName(HInstance, 'insertvartag');
-  InsertCodeTagButton.LoadGlyphFromResourceName(HInstance, 'insertcodetag');
-  InsertRemarkButton.LoadGlyphFromResourceName(HInstance, 'insertremark');
-  InsertURLTagSpeedButton.LoadGlyphFromResourceName(HInstance, 'formatunderline');
-  SaveButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+  TIDEImages.AssignImage(BoldFormatButton.Glyph, 'formatbold');
+  TIDEImages.AssignImage(UnderlineFormatButton.Glyph, 'formatunderline');
+  TIDEImages.AssignImage(ItalicFormatButton.Glyph, 'formatitalic');
+  TIDEImages.AssignImage(InsertVarTagButton.Glyph, 'insertvartag');
+  TIDEImages.AssignImage(InsertCodeTagButton.Glyph, 'insertcodetag');
+  TIDEImages.AssignImage(InsertRemarkButton.Glyph, 'insertremark');
+  TIDEImages.AssignImage(InsertURLTagSpeedButton.Glyph, 'formatunderline');
+  TIDEImages.AssignImage(SaveButton.Glyph, 'laz_save');
 
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorStatus, @DoEditorUpdate);

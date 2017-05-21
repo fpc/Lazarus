@@ -7,8 +7,9 @@ interface
 uses
   Classes, SysUtils, LCLProc, LazFileUtils, LazFileCache, Controls, Dialogs,
   Buttons, StdCtrls, LCLType, IDEOptionsIntf, MacroIntf, IDEDialogs,
-  CompOptsIntf, Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg,
-  IDEProcs, CheckCompilerOpts, ShowCompilerOpts, ImExportCompilerOpts;
+  CompOptsIntf, Project, CompilerOptions, LazarusIDEStrConsts, IDEImagesIntf,
+  PathEditorDlg, IDEProcs, CheckCompilerOpts, ShowCompilerOpts,
+  ImExportCompilerOpts;
 
 type
 
@@ -638,7 +639,7 @@ begin
 
   // register special buttons in the dialog itself
   btnShowOptions := CreateButton(dlgCOShowOptions);
-  btnShowOptions.LoadGlyphFromResourceName(HInstance, 'menu_compiler_options');
+  TIDEImages.AssignImage(btnShowOptions.Glyph, 'menu_compiler_options');
   btnShowOptions.OnClick := @DoShowOptions;
   // Check
   btnCheck := CreateButton(lisCompTest);
@@ -659,7 +660,7 @@ begin
   btnLoadSave.Hint := dlgCOLoadSaveHint;
   btnLoadSave.LoadGlyphFromStock(idButtonOpen);
   if btnLoadSave.Glyph.Empty then
-    btnLoadSave.LoadGlyphFromResourceName(HInstance, 'laz_save');
+    TIDEImages.AssignImage(btnLoadSave.Glyph, 'laz_save');
 
   ADialog.AddButtonSeparator;
 

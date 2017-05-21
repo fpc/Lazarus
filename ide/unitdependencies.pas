@@ -1777,23 +1777,23 @@ begin
   AllUnitsGroupBox.Caption:=lisUDAllUnits;
 
   AllUnitsShowDirsSpeedButton.Hint:=lisUDShowNodesForDirectories;
-  AllUnitsShowDirsSpeedButton.LoadGlyphFromResourceName(HInstance, 'pkg_hierarchical');
+  TIDEImages.AssignImage(AllUnitsShowDirsSpeedButton.Glyph, 'pkg_hierarchical');
   AllUnitsShowDirsSpeedButton.Down:=true;
   AllUnitsShowGroupNodesSpeedButton.Hint:=lisUDShowNodesForProjectAndPackages;
-  AllUnitsShowGroupNodesSpeedButton.LoadGlyphFromResourceName(HInstance, 'pkg_hierarchical');
+  TIDEImages.AssignImage(AllUnitsShowGroupNodesSpeedButton.Glyph, 'pkg_hierarchical');
   AllUnitsShowGroupNodesSpeedButton.Down:=true;
 
   AllUnitsSearchNextSpeedButton.Hint:=lisUDSearchNextOccurrenceOfThisPhrase;
-  AllUnitsSearchNextSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  TIDEImages.AssignImage(AllUnitsSearchNextSpeedButton.Glyph, 'arrow_down');
   AllUnitsSearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase;
-  AllUnitsSearchPrevSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  TIDEImages.AssignImage(AllUnitsSearchPrevSpeedButton.Glyph, 'arrow_up');
 
   // selected units
   SelectedUnitsGroupBox.Caption:=lisUDSelectedUnits;
   SelUnitsSearchNextSpeedButton.Hint:=lisUDSearchNextUnitOfThisPhrase;
-  SelUnitsSearchNextSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  TIDEImages.AssignImage(SelUnitsSearchNextSpeedButton.Glyph, 'arrow_down');
   SelUnitsSearchPrevSpeedButton.Hint:=lisUDSearchPreviousUnitOfThisPhrase;
-  SelUnitsSearchPrevSpeedButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
+  TIDEImages.AssignImage(SelUnitsSearchPrevSpeedButton.Glyph, 'arrow_up');
 
   // popup menu
   UnitsTVCopyFilenameMenuItem.Caption:=uemCopyFilename;

@@ -452,13 +452,13 @@ begin
   OpenDialog1.Filter:=Filt;
   SaveDialog1.Filter:=Filt;
 
-  MoveUpButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  MoveDownButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
-  ReplaceButton.LoadGlyphFromResourceName(HInstance, 'menu_reportingbug');
-  AddButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
-  DeleteButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
-  DeleteInvalidPathsButton.LoadGlyphFromResourceName(HInstance, 'menu_clean');
-  AddTemplateButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  TIDEImages.AssignImage(MoveUpButton.Glyph, 'arrow_up');
+  TIDEImages.AssignImage(MoveDownButton.Glyph, 'arrow_down');
+  TIDEImages.AssignImage(ReplaceButton.Glyph, 'menu_reportingbug');
+  TIDEImages.AssignImage(AddButton.Glyph, 'laz_add');
+  TIDEImages.AssignImage(DeleteButton.Glyph, 'laz_delete');
+  TIDEImages.AssignImage(DeleteInvalidPathsButton.Glyph, 'menu_clean');
+  TIDEImages.AssignImage(AddTemplateButton.Glyph, 'laz_add');
 end;
 
 procedure TPathEditorDialog.FormResize(Sender: TObject);

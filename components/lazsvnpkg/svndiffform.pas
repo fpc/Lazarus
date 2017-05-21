@@ -24,7 +24,8 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, Forms, Dialogs,
-  ButtonPanel, StdCtrls, Buttons, LazIDEIntf, SynEdit, SynHighlighterDiff;
+  ButtonPanel, StdCtrls, Buttons, LazIDEIntf, IDEImagesIntf, SynEdit,
+  SynHighlighterDiff;
 
 type
 
@@ -109,7 +110,7 @@ procedure TSVNDiffFrm.FormCreate(Sender: TObject);
 begin
   ButtonPanel.HelpButton.Enabled := False;
   ButtonPanel.HelpButton.Caption := rsSave;
-  ButtonPanel.HelpButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+  TIDEImages.AssignImage(ButtonPanel.HelpButton.Glyph, 'laz_save');
 end;
 
 procedure TSVNDiffFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);

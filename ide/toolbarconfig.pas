@@ -187,11 +187,11 @@ begin
   pnlButtons.Color := clBtnFace;
   lblSelect.Caption := '';
   // load button images
-  btnAdd.LoadGlyphFromResourceName(HInstance, 'arrow_right');
-  btnRemove.LoadGlyphFromResourceName(HInstance, 'arrow_left');
-  btnMoveUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  btnMoveDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
-  btnAddDivider.LoadGlyphFromResourceName(HINSTANCE, 'menu_divider16');
+  TIDEImages.AssignImage(btnAdd.Glyph, 'arrow_right');
+  TIDEImages.AssignImage(btnRemove.Glyph, 'arrow_left');
+  TIDEImages.AssignImage(btnMoveUp.Glyph, 'arrow_up');
+  TIDEImages.AssignImage(btnMoveDown.Glyph, 'arrow_down');
+  TIDEImages.AssignImage(btnAddDivider.Glyph, 'menu_divider16');
 
   btnAddDivider.Caption:='---';
 

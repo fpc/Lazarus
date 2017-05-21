@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LazFileUtils, Forms, Controls, Graphics, Buttons,
   StdCtrls, Dialogs, LCLType,
-  IDEWindowIntf, IDEHelpIntf, IDEDialogs,
+  IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts, IDEProcs, ExtCtrls, ButtonPanel;
 
@@ -181,7 +181,7 @@ begin
   ButtonPanel1.CloseButton.Kind := bkCustom;
   ButtonPanel1.CloseButton.LoadGlyphFromStock(idButtonSave);
   if ButtonPanel1.CloseButton.Glyph.Empty then
-    ButtonPanel1.CloseButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+    TIDEImages.AssignImage(ButtonPanel1.CloseButton.Glyph, 'laz_save');
   ButtonPanel1.CloseButton.OnClick := @SaveSettingsButtonCLICK;
 
   ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;

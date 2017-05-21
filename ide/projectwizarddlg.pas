@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  LazarusIDEStrConsts, EnvironmentOpts, StdCtrls;
+  LazarusIDEStrConsts, IDEImagesIntf, EnvironmentOpts, StdCtrls;
 
 type
   TProjectWizardSelectionType = (
@@ -85,11 +85,11 @@ begin
     btnConvertProject.caption:=lisPWConvertProject;
     gbRecent.Caption:=lisPWOpenRecentProject;
     btnCloseIDE.caption:=lisQuitLazarus;
-    btnNewProject.LoadGlyphFromResourceName(HInstance, 'item_project');
-    btnOpenProject.LoadGlyphFromResourceName(HInstance, 'menu_project_open');
-    btnExamples.LoadGlyphFromResourceName(HInstance, 'camera');
-    btnConvertProject.LoadGlyphFromResourceName(HInstance, 'laz_wand');
-    btnCloseIDE.LoadGlyphFromResourceName(HInstance, 'menu_exit');
+    TIDEImages.AssignImage(btnNewProject.Glyph, 'item_project');
+    TIDEImages.AssignImage(btnOpenProject.Glyph, 'menu_project_open');
+    TIDEImages.AssignImage(btnExamples.Glyph, 'camera');
+    TIDEImages.AssignImage(btnConvertProject.Glyph, 'laz_wand');
+    TIDEImages.AssignImage(btnCloseIDE.Glyph, 'menu_exit');
     cbRecentProjects.Items.AddStrings(EnvironmentOptions.RecentProjectFiles);
   end;
 

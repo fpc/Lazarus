@@ -41,7 +41,8 @@ uses
   Graphics, Dialogs, LCLType, LCLIntf, Themes, Buttons, SynEdit, SynEditKeyCmds,
   BasicCodeTools, KeywordFuncLists, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
-  SrcEditorIntf, LazIDEIntf, IDEProcs, LazarusIDEStrConsts, LMessages;
+  SrcEditorIntf, LazIDEIntf, IDEProcs, LazarusIDEStrConsts, IDEImagesIntf,
+  LMessages;
 
 type
 
@@ -517,7 +518,7 @@ begin
       Btn.Name:='CopyAllSpeedButton'+IntToStr(i+1);
       Btn.OnClick:=@CopyAllBtnClick;
       Btn.Visible:=false;
-      Btn.LoadGlyphFromResourceName(HInstance, 'laz_copy');
+      TIDEImages.AssignImage(Btn.Glyph, 'laz_copy');
       Btn.Flat:=true;
       Btn.Parent:=Self;
       FHints.Add(Item);

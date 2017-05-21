@@ -47,7 +47,7 @@ uses
   CodeCache, CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,
   PascalParserTool,
   // IDEIntf
-  LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf, IDEDialogs,
+  LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf, IDEDialogs, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, CodeExplOpts;
 
@@ -484,10 +484,10 @@ begin
   CodeFilterEdit.TextHint:=lisCEFilter;
   DirectivesFilterEdit.TextHint:=lisCEFilter;
 
-  CodeRefreshSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_refresh');
-  CodeOptionsSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_environment_options');
-  DirRefreshSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_refresh');
-  DirOptionsSpeedButton.LoadGlyphFromResourceName(HInstance, 'menu_environment_options');
+  TIDEImages.AssignImage(CodeRefreshSpeedButton.Glyph, 'laz_refresh');
+  TIDEImages.AssignImage(CodeOptionsSpeedButton.Glyph, 'menu_environment_options');
+  TIDEImages.AssignImage(DirRefreshSpeedButton.Glyph, 'laz_refresh');
+  TIDEImages.AssignImage(DirOptionsSpeedButton.Glyph, 'menu_environment_options');
 
   ImgIDDefault := Imagelist1.AddResourceName(HInstance, 'ce_default');
   ImgIDProgram := Imagelist1.AddResourceName(HInstance, 'ce_program');
@@ -1929,11 +1929,11 @@ procedure TCodeExplorerView.UpdateMode;
 begin
   if FMode=cemCategory
   then begin
-    CodeModeSpeedButton.LoadGlyphFromResourceName(HInstance, 'show_category');
+    TIDEImages.AssignImage(CodeModeSpeedButton.Glyph, 'show_category');
     CodeModeSpeedButton.Hint:=lisCEModeShowSourceNodes;
   end
   else begin
-    CodeModeSpeedButton.LoadGlyphFromResourceName(HInstance, 'show_source');
+    TIDEImages.AssignImage(CodeModeSpeedButton.Glyph, 'show_source');
     CodeModeSpeedButton.Hint:=lisCEModeShowCategories;
   end;
   Refresh(true);

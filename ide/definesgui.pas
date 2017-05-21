@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, Forms, StdCtrls, Buttons, ButtonPanel, CheckLst, LCLType, Controls,
-  IDEHelpIntf, LazarusIDEStrConsts, Compiler;
+  IDEHelpIntf, IDEImagesIntf, LazarusIDEStrConsts, Compiler;
 
 type
 
@@ -82,9 +82,9 @@ begin
   Caption := lisLazBuildDefines;
   gbNewDefine.Caption := lisCodeToolsDefsDefine;
   AddBtn.Caption := lisBtnAdd;
-  AddBtn.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  TIDEImages.AssignImage(AddBtn.Glyph, 'laz_add');
   RemoveBtn.Caption := lisBtnRemove;
-  RemoveBtn.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  TIDEImages.AssignImage(RemoveBtn.Glyph, 'laz_delete');
 end;
 
 procedure TDefinesGuiForm.FormShow(Sender: TObject);

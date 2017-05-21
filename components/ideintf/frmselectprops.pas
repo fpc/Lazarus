@@ -15,7 +15,7 @@ interface
 uses
   Classes, SysUtils, RTTIUtils, TypInfo,
   Forms, StdCtrls, Buttons, ExtCtrls, ButtonPanel,
-  IDEWindowIntf, ObjInspStrConsts;
+  IDEWindowIntf, IDEImagesIntf, ObjInspStrConsts;
 
 type
 
@@ -98,11 +98,11 @@ end;
 procedure TSelectPropertiesForm.SelectPropertiesFormCreate(Sender: TObject);
 begin
   BAdd.Caption:=ilesAdd;
-  BAdd.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  TIDEImages.AssignImage(BAdd.Glyph, 'laz_add');
   BDelete.Caption:=oisDelete;
-  BDelete.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  TIDEImages.AssignImage(BDelete.Glyph, 'laz_delete');
   BClear.Caption:=oisClear;
-  BClear.LoadGlyphFromResourceName(HInstance, 'menu_clean');
+  TIDEImages.AssignImage(BClear.Glyph, 'menu_clean');
   LComponents.Caption:=oisBtnComponents;
   LProperties.Caption:=oisBtnProperties;
   LLBSelected.Caption:=oisSelectedProperties;
