@@ -6321,8 +6321,8 @@ begin
     if Result then begin
       NewPos.Code:=TCodeBuffer(EndCode);
       NewPos.Code.AbsoluteToLineCol(EndCursorPos,NewPos.Y,NewPos.X);
-      if JumpCentered then begin
-        NewTopLine:=NewPos.Y-(VisibleEditorLines shr 1);
+      if JumpSingleLinePos>0 then begin
+        NewTopLine:=NewPos.Y-(VisibleEditorLines*JumpSingleLinePos div 100);
         if NewTopLine<1 then NewTopLine:=1;
       end else
         NewTopLine:=NewPos.Y;

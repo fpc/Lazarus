@@ -63,7 +63,8 @@ type
     FAdjustTopLineDueToComment: boolean;
     FIdentComplSortForHistory: boolean;
     FIdentComplSortForScope: boolean;
-    FJumpCentered: boolean;
+    FJumpSingleLinePos: integer;
+    FJumpCodeBlockPos: integer;
     FCursorBeyondEOL: boolean;
     FSkipForwardDeclarations: boolean;
     FJumpToMethodBody: boolean;
@@ -149,7 +150,8 @@ type
     // General
     property AdjustTopLineDueToComment: boolean
       read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
-    property JumpCentered: boolean read FJumpCentered write FJumpCentered;
+    property JumpSingleLinePos: integer read FJumpSingleLinePos write FJumpSingleLinePos;
+    property JumpCodeBlockPos: integer read FJumpCodeBlockPos write FJumpCodeBlockPos;
     property CursorBeyondEOL: boolean
       read FCursorBeyondEOL write FCursorBeyondEOL;
     property SkipForwardDeclarations: boolean read FSkipForwardDeclarations write FSkipForwardDeclarations;
@@ -275,7 +277,7 @@ implementation
 {$R lazarus_indentation.res}
 
 const
-  CodeToolsOptionsVersion = 1;
+  CodeToolsOptionsVersion = 2;
   DefaultCodeToolsOptsFile = 'codetoolsoptions.xml';
   
 function GetTranslatedAtomTypes(a: TAtomType): string;
@@ -390,6 +392,7 @@ procedure TCodeToolsOptions.Load;
 var
   XMLConfig: TXMLConfig;
   FileVersion: integer;
+  AJumpCentered: Boolean;
   
   procedure LoadGlobalDefineTemplates;
   begin
@@ -420,8 +423,20 @@ begin
     // General
     FAdjustTopLineDueToComment:=XMLConfig.GetValue(
       'CodeToolsOptions/AdjustTopLineDueToComment/Value',true);
-    FJumpCentered:=XMLConfig.GetValue('CodeToolsOptions/JumpCentered/Value',
-      true);
+    if FileVersion<2 then
+    begin
+      AJumpCentered:=XMLConfig.GetValue('CodeToolsOptions/JumpCentered/Value',
+        true);
+      if AJumpCentered then
+        FJumpSingleLinePos := 50
+      else
+        FJumpSingleLinePos := 0;
+      FJumpCodeBlockPos := 0;
+    end else
+    begin
+      FJumpSingleLinePos:=XMLConfig.GetValue('CodeToolsOptions/JumpSingleLinePos/Value', 50);
+      FJumpCodeBlockPos:=XMLConfig.GetValue('CodeToolsOptions/JumpCodeBlockPos/Value', 0);
+    end;
     FCursorBeyondEOL:=XMLConfig.GetValue(
       'CodeToolsOptions/CursorBeyondEOL/Value',true);
     FSkipForwardDeclarations:=XMLConfig.GetValue(
@@ -578,8 +593,10 @@ begin
     // General
     XMLConfig.SetDeleteValue('CodeToolsOptions/AdjustTopLineDueToComment/Value',
                              FAdjustTopLineDueToComment,true);
-    XMLConfig.SetDeleteValue('CodeToolsOptions/JumpCentered/Value',
-                             FJumpCentered,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/JumpSingleLinePos/Value',
+                             FJumpSingleLinePos,50);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/JumpCodeBlockPos/Value',
+                             FJumpCodeBlockPos,0);
     XMLConfig.SetDeleteValue('CodeToolsOptions/CursorBeyondEOL/Value',
                              FCursorBeyondEOL,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/SkipForwardDeclarations/Value',
@@ -778,7 +795,8 @@ begin
   begin
     // General
     FAdjustTopLineDueToComment:=CodeToolsOpts.FAdjustTopLineDueToComment;
-    FJumpCentered:=CodeToolsOpts.FJumpCentered;
+    FJumpSingleLinePos:=CodeToolsOpts.FJumpSingleLinePos;
+    FJumpCodeBlockPos:=CodeToolsOpts.FJumpCodeBlockPos;
     FCursorBeyondEOL:=CodeToolsOpts.FCursorBeyondEOL;
     FAddInheritedCodeToOverrideMethod:=CodeToolsOpts.AddInheritedCodeToOverrideMethod;
     FCompleteProperties:=CodeToolsOpts.CompleteProperties;
@@ -847,7 +865,8 @@ procedure TCodeToolsOptions.Clear;
 begin
   // General
   FAdjustTopLineDueToComment:=true;
-  FJumpCentered:=true;
+  FJumpSingleLinePos:=50;
+  FJumpCodeBlockPos:=0;
   FCursorBeyondEOL:=true;
   
   // define templates
@@ -926,7 +945,8 @@ begin
   Result:=
     // General
         (FAdjustTopLineDueToComment=CodeToolsOpts.FAdjustTopLineDueToComment)
-    and (FJumpCentered=CodeToolsOpts.FJumpCentered)
+    and (FJumpSingleLinePos=CodeToolsOpts.FJumpSingleLinePos)
+    and (FJumpCodeBlockPos=CodeToolsOpts.FJumpCodeBlockPos)
     and (FCursorBeyondEOL=CodeToolsOpts.FCursorBeyondEOL)
     and (AddInheritedCodeToOverrideMethod=CodeToolsOpts.AddInheritedCodeToOverrideMethod)
     and (CompleteProperties=CodeToolsOpts.CompleteProperties)
@@ -1038,7 +1058,8 @@ begin
   begin
     // General - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     Boss.AdjustTopLineDueToComment:=AdjustTopLineDueToComment;
-    Boss.JumpCentered:=JumpCentered;
+    Boss.JumpSingleLinePos:=JumpSingleLinePos;
+    Boss.JumpCodeBlockPos:=JumpCodeBlockPos;
     Boss.CursorBeyondEOL:=CursorBeyondEOL;
     Boss.AddInheritedCodeToOverrideMethod:=AddInheritedCodeToOverrideMethod;
     Boss.CompleteProperties:=CompleteProperties;

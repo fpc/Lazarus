@@ -114,7 +114,8 @@ type
     FErrorTopLine: integer;
     FCodeTreeNodesDeletedStep: integer;
     FIndentSize: integer;
-    FJumpCentered: boolean;
+    FJumpSingleLinePos: integer;
+    FJumpCodeBlockPos: integer;
     FIdentifierListUpdating: boolean;
     FOnAfterApplyChanges: TOnAfterApplyCTChanges;
     FOnBeforeApplyChanges: TOnBeforeApplyCTChanges;
@@ -169,7 +170,8 @@ type
     procedure SetTabWidth(const AValue: integer);
     procedure SetUseTabs(AValue: boolean);
     procedure SetVisibleEditorLines(NewValue: integer);
-    procedure SetJumpCentered(NewValue: boolean);
+    procedure SetJumpSingleLinePos(NewValue: integer);
+    procedure SetJumpCodeBlockPos(NewValue: integer);
     procedure SetCursorBeyondEOL(NewValue: boolean);
     procedure BeforeApplyingChanges(var Abort: boolean);
     procedure AfterApplyingChanges;
@@ -303,7 +305,8 @@ type
     property CursorBeyondEOL: boolean read FCursorBeyondEOL
                                       write SetCursorBeyondEOL;
     property IndentSize: integer read FIndentSize write SetIndentSize;
-    property JumpCentered: boolean read FJumpCentered write SetJumpCentered;
+    property JumpSingleLinePos: integer read FJumpSingleLinePos write SetJumpSingleLinePos;
+    property JumpCodeBlockPos: integer read FJumpCodeBlockPos write SetJumpCodeBlockPos;
     property SetPropertyVariablename: string
                    read FSetPropertyVariablename write SetSetPropertyVariablename;
     property SetPropertyVariableIsPrefix: Boolean
@@ -1024,7 +1027,8 @@ begin
   FCompleteProperties:=true;
   FCursorBeyondEOL:=true;
   FIndentSize:=2;
-  FJumpCentered:=true;
+  FJumpSingleLinePos:=50;
+  FJumpSingleLinePos:=0;
   FSourceExtensions:='.pp;.pas;.p;.lpr;.lpk;.dpr;.dpk';
   FVisibleEditorLines:=20;
   FWriteExceptions:=true;
@@ -1871,8 +1875,8 @@ begin
   // adjust error topline
   if (fErrorCode<>nil) and (fErrorTopLine<1) then begin
     fErrorTopLine:=fErrorLine;
-    if (fErrorTopLine>0) and JumpCentered then begin
-      dec(fErrorTopLine,VisibleEditorLines div 2);
+    if (fErrorTopLine>0) and (JumpSingleLinePos>0) then begin
+      dec(fErrorTopLine,VisibleEditorLines*JumpSingleLinePos div 100);
       if fErrorTopLine<1 then fErrorTopLine:=1;
     end;
   end;
@@ -5925,12 +5929,20 @@ begin
     FCurCodeTool.VisibleEditorLines:=NewValue;
 end;
 
-procedure TCodeToolManager.SetJumpCentered(NewValue: boolean);
+procedure TCodeToolManager.SetJumpSingleLinePos(NewValue: integer);
 begin
-  if NewValue=FJumpCentered then exit;
-  FJumpCentered:=NewValue;
+  if NewValue=FJumpSingleLinePos then exit;
+  FJumpSingleLinePos:=NewValue;
   if FCurCodeTool<>nil then
-    FCurCodeTool.JumpCentered:=NewValue;
+    FCurCodeTool.JumpSingleLinePos:=NewValue;
+end;
+
+procedure TCodeToolManager.SetJumpCodeBlockPos(NewValue: integer);
+begin
+  if NewValue=FJumpCodeBlockPos then exit;
+  FJumpCodeBlockPos:=NewValue;
+  if FCurCodeTool<>nil then
+    FCurCodeTool.JumpCodeBlockPos:=NewValue;
 end;
 
 procedure TCodeToolManager.SetSetPropertyVariableIsPrefix(aValue: Boolean);
@@ -6061,7 +6073,8 @@ begin
   Result.CheckFilesOnDisk:=FCheckFilesOnDisk;
   Result.IndentSize:=FIndentSize;
   Result.VisibleEditorLines:=FVisibleEditorLines;
-  Result.JumpCentered:=FJumpCentered;
+  Result.JumpSingleLinePos:=FJumpSingleLinePos;
+  Result.JumpCodeBlockPos:=FJumpCodeBlockPos;
   Result.CursorBeyondEOL:=FCursorBeyondEOL;
 end;
 

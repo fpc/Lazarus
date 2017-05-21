@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, Buttons,
-  Dialogs, ExtCtrls, Graphics, EditBtn,
+  Dialogs, ExtCtrls, Graphics, EditBtn, Spin,
   CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
 type
@@ -42,11 +42,14 @@ type
     CursorBeyondEOLCheckBox: TCheckBox;
     IndentFileEdit: TFileNameEdit;
     IndentationGroupBox: TGroupBox;
-    JumpCenteredCheckBox: TCheckBox;
     JumpingGroupBox: TGroupBox;
     IndentFileLabel: TLabel;
     JumpToMethodBodyCheckBox: TCheckBox;
     SkipForwardDeclarationsCheckBox: TCheckBox;
+    JumpSingleLinePosLabel: TLabel;
+    JumpSingleLinePosEdit: TSpinEdit;
+    JumpCodeBlockPosEdit: TSpinEdit;
+    JumpCodeBlockPosLabel: TLabel;
     procedure GeneralAutoIndentClick(Sender: TObject);
     procedure GeneralAutoIndentMouseEnter(Sender: TObject);
     procedure GeneralAutoIndentMouseLeave(Sender: TObject);
@@ -118,7 +121,8 @@ begin
 
   JumpingGroupBox.Caption:=dlgJumpingETC;
   AdjustTopLineDueToCommentCheckBox.Caption:=dlgAdjustTopLine;
-  JumpCenteredCheckBox.Caption:=dlgcentercursorline;
+  JumpSingleLinePosLabel.Caption:=dlgJumpSingleLinePos;
+  JumpCodeBlockPosLabel.Caption:=dlgJumpCodeBlockPos;
   CursorBeyondEOLCheckBox.Caption:=dlgcursorbeyondeol;
   SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardClassDeclarations;
   JumpToMethodBodyCheckBox.Caption := dlgJumpToMethodBody;
@@ -141,7 +145,8 @@ begin
   with AOptions as TCodeToolsOptions do
   begin
     AdjustTopLineDueToCommentCheckBox.Checked := AdjustTopLineDueToComment;
-    JumpCenteredCheckBox.Checked := JumpCentered;
+    JumpCodeBlockPosEdit.Value := JumpCodeBlockPos;
+    JumpSingleLinePosEdit.Value := JumpSingleLinePos;
     CursorBeyondEOLCheckBox.Checked := CursorBeyondEOL;
     SkipForwardDeclarationsCheckBox.Checked := SkipForwardDeclarations;
     JumpToMethodBodyCheckBox.Checked := JumpToMethodBody;
@@ -158,7 +163,8 @@ begin
   with AOptions as TCodeToolsOptions do
   begin
     AdjustTopLineDueToComment := AdjustTopLineDueToCommentCheckBox.Checked;
-    JumpCentered := JumpCenteredCheckBox.Checked;
+    JumpCodeBlockPos := JumpCodeBlockPosEdit.Value;
+    JumpSingleLinePos := JumpSingleLinePosEdit.Value;
     CursorBeyondEOL := CursorBeyondEOLCheckBox.Checked;
     SkipForwardDeclarations := SkipForwardDeclarationsCheckBox.Checked;
     JumpToMethodBody:=JumpToMethodBodyCheckBox.Checked;

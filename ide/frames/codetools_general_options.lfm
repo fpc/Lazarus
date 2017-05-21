@@ -13,7 +13,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 149
+    Height = 157
     Top = 6
     Width = 552
     Align = alTop
@@ -22,68 +22,104 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     Caption = 'JumpingGroupBox'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 132
+    ClientHeight = 137
     ClientWidth = 548
     TabOrder = 0
     object AdjustTopLineDueToCommentCheckBox: TCheckBox
       AnchorSideLeft.Control = JumpingGroupBox
       AnchorSideTop.Control = JumpingGroupBox
       Left = 6
-      Height = 24
+      Height = 19
       Top = 6
-      Width = 247
+      Width = 238
       Caption = 'AdjustTopLineDueToCommentCheckBox'
       TabOrder = 0
     end
-    object JumpCenteredCheckBox: TCheckBox
-      AnchorSideLeft.Control = JumpingGroupBox
-      AnchorSideTop.Control = AdjustTopLineDueToCommentCheckBox
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 24
-      Top = 30
-      Width = 162
-      Caption = 'JumpCenteredCheckBox'
-      TabOrder = 1
-    end
     object CursorBeyondEOLCheckBox: TCheckBox
       AnchorSideLeft.Control = JumpingGroupBox
-      AnchorSideTop.Control = JumpCenteredCheckBox
+      AnchorSideTop.Control = JumpCodeBlockPosEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
-      Top = 54
-      Width = 179
+      Height = 19
+      Top = 74
+      Width = 168
       Caption = 'CursorBeyondEOLCheckBox'
-      TabOrder = 2
+      TabOrder = 1
     end
     object SkipForwardDeclarationsCheckBox: TCheckBox
       AnchorSideLeft.Control = JumpingGroupBox
       AnchorSideTop.Control = CursorBeyondEOLCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
-      Top = 78
-      Width = 216
+      Height = 19
+      Top = 93
+      Width = 202
       Caption = 'SkipForwardDeclarationsCheckBox'
-      TabOrder = 3
+      TabOrder = 2
     end
     object JumpToMethodBodyCheckBox: TCheckBox
       AnchorSideLeft.Control = JumpingGroupBox
       AnchorSideTop.Control = SkipForwardDeclarationsCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
-      Top = 102
-      Width = 194
+      Height = 19
+      Top = 112
+      Width = 184
       Caption = 'JumpToMethodBodyCheckBox'
+      TabOrder = 3
+    end
+    object JumpSingleLinePosLabel: TLabel
+      AnchorSideLeft.Control = JumpSingleLinePosEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = JumpSingleLinePosEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 61
+      Height = 15
+      Top = 29
+      Width = 130
+      BorderSpacing.Left = 5
+      Caption = 'JumpSingleLinePosLabel'
+      ParentColor = False
+    end
+    object JumpSingleLinePosEdit: TSpinEdit
+      AnchorSideLeft.Control = JumpingGroupBox
+      AnchorSideTop.Control = AdjustTopLineDueToCommentCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 25
+      Width = 50
       TabOrder = 4
+    end
+    object JumpCodeBlockPosEdit: TSpinEdit
+      AnchorSideLeft.Control = JumpingGroupBox
+      AnchorSideTop.Control = JumpSingleLinePosEdit
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 51
+      Width = 50
+      BorderSpacing.Top = 3
+      TabOrder = 5
+    end
+    object JumpCodeBlockPosLabel: TLabel
+      AnchorSideLeft.Control = JumpCodeBlockPosEdit
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = JumpCodeBlockPosEdit
+      AnchorSideTop.Side = asrCenter
+      Left = 61
+      Height = 15
+      Top = 55
+      Width = 133
+      BorderSpacing.Left = 5
+      Caption = 'JumpCodeBlockPosLabel'
+      ParentColor = False
     end
   end
   object IndentationGroupBox: TGroupBox
     Left = 0
-    Height = 150
-    Top = 161
+    Height = 151
+    Top = 169
     Width = 552
     Align = alTop
     AutoSize = True
@@ -91,7 +127,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     Caption = 'IndentationGroupBox'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 133
+    ClientHeight = 131
     ClientWidth = 548
     TabOrder = 1
     object IndentFileLabel: TLabel
@@ -100,7 +136,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Left = 6
       Height = 15
       Top = 107
-      Width = 84
+      Width = 80
       BorderSpacing.Left = 6
       Caption = 'IndentFileLabel'
       ParentColor = False
@@ -110,9 +146,9 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       AnchorSideTop.Control = IndentOnPasteCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
-      Top = 69
-      Width = 209
+      Height = 19
+      Top = 59
+      Width = 193
       Caption = 'IndentContextSensitiveCheckBox'
       TabOrder = 2
     end
@@ -121,9 +157,9 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       AnchorSideTop.Control = GeneralAutoIndent
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
+      Height = 19
       Top = 21
-      Width = 187
+      Width = 173
       Caption = 'IndentOnLineBreakCheckBox'
       OnChange = IndentOnLineBreakCheckBoxChange
       TabOrder = 0
@@ -133,9 +169,9 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       AnchorSideTop.Control = IndentOnLineBreakCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 24
-      Top = 45
-      Width = 162
+      Height = 19
+      Top = 40
+      Width = 150
       Caption = 'IndentOnPasteCheckBox'
       OnChange = IndentOnPasteCheckBoxChange
       TabOrder = 1
@@ -145,7 +181,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Left = 6
       Height = 15
       Top = 6
-      Width = 106
+      Width = 100
       Caption = 'GeneralAutoIndent'
       Font.Color = clBlue
       ParentColor = False
@@ -160,10 +196,10 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = IndentationGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 96
-      Height = 25
+      Left = 92
+      Height = 23
       Top = 102
-      Width = 446
+      Width = 450
       FilterIndex = 0
       HideDirectories = False
       ButtonWidth = 50

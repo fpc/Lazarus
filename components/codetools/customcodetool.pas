@@ -159,7 +159,8 @@ type
     CheckFilesOnDisk: boolean;
     IndentSize: integer;
     VisibleEditorLines: integer;
-    JumpCentered: boolean;
+    JumpSingleLinePos: integer; // in percent 0..100
+    JumpCodeBlockPos: integer; // in percent 0..100
     CursorBeyondEOL: boolean;
     
     ErrorPosition: TCodeXYPosition;
@@ -2709,8 +2710,8 @@ begin
   NewTopLine:=0;
   Result:=CleanPosToCaret(CleanPos,Caret);
   if Result then begin
-    if JumpCentered then begin
-      NewTopLine:=Caret.Y-(VisibleEditorLines shr 1);
+    if JumpSingleLinePos>0 then begin
+      NewTopLine:=Caret.Y-(VisibleEditorLines*JumpSingleLinePos div 100);
       if NewTopLine<1 then NewTopLine:=1;
     end else
       NewTopLine:=Caret.Y;

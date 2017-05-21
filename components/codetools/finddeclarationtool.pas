@@ -1031,11 +1031,11 @@ type
 
     function JumpToNode(ANode: TCodeTreeNode;
         out NewPos: TCodeXYPosition; out NewTopLine: integer;
-        IgnoreJumpCentered: boolean): boolean;
+        IsCodeBlock: boolean): boolean;
     function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
         NewBottomLineCleanPos: integer;
         out NewPos: TCodeXYPosition; out NewTopLine: integer;
-        IgnoreJumpCentered: boolean): boolean;
+        IsCodeBlock: boolean): boolean;
     function NodeIsForwardDeclaration(Node: TCodeTreeNode): boolean;
 
     function GetExpandedOperand(const CursorPos: TCodeXYPosition;
@@ -6871,7 +6871,7 @@ end;
 
 function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;
   out NewPos: TCodeXYPosition; out NewTopLine: integer;
-  IgnoreJumpCentered: boolean): boolean;
+  IsCodeBlock: boolean): boolean;
 var
   JumpPos: LongInt;
 begin
@@ -6884,16 +6884,16 @@ begin
     JumpPos:=CurPos.StartPos;
   end;
   Result:=JumpToCleanPos(JumpPos,JumpPos,ANode.EndPos,
-                         NewPos,NewTopLine,IgnoreJumpCentered);
+                         NewPos,NewTopLine,IsCodeBlock);
 end;
 
 function TFindDeclarationTool.JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
   NewBottomLineCleanPos: integer; out NewPos: TCodeXYPosition;
-  out NewTopLine: integer; IgnoreJumpCentered: boolean): boolean;
+  out NewTopLine: integer; IsCodeBlock: boolean): boolean;
 var
-  CenteredTopLine: integer;
   NewTopLinePos: TCodeXYPosition;
   NewBottomLinePos: TCodeXYPosition;
+  JumpPos: Integer;
 begin
   Result:=false;
   // convert clean position to line, column and code
@@ -6921,14 +6921,21 @@ begin
   and (not CleanPosToCaret(NewBottomLineCleanPos,NewBottomLinePos)) then exit;
 
   if NewTopLinePos.Code=NewPos.Code then begin
-    // top line position is in the same code as the destination position
-    NewTopLine:=NewTopLinePos.Y;
-    CenteredTopLine:=NewPos.Y-VisibleEditorLines div 2;
-    if JumpCentered and (not IgnoreJumpCentered) then begin
-      // center the destination position in the source editor
-      if CenteredTopLine<NewTopLine then
-        NewTopLine:=CenteredTopLine;
-    end;
+    // center the destination position in the source editor
+    if IsCodeBlock and (JumpCodeBlockPos>0) then
+      JumpPos := JumpCodeBlockPos
+    else
+    if not IsCodeBlock and (JumpSingleLinePos>0) then
+      JumpPos := JumpSingleLinePos
+    else
+      JumpPos := 0;
+    if JumpPos>0 then
+      NewTopLine:=NewTopLinePos.Y-((VisibleEditorLines-(NewBottomLinePos.Y-NewTopLinePos.Y))*JumpPos div 100)
+    else
+      NewTopLine:=High(NewTopLine);
+    if NewTopLine>NewTopLinePos.Y then
+      NewTopLine:=NewTopLinePos.Y;
+
     // NewTopLine not above first line of code
     if NewTopLine<1 then NewTopLine:=1;
     // make NewTopLine visible
@@ -6942,7 +6949,7 @@ begin
         NewTopLine:=NewBottomLinePos.Y-VisibleEditorLines+1;
       end else begin
         // center
-        NewTopLine:=CenteredTopLine;
+        NewTopLine:=NewPos.Y-(VisibleEditorLines*JumpSingleLinePos div 100);
       end;
       if NewTopLine<1 then NewTopLine:=1;
     end;

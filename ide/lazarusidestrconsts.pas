@@ -2157,7 +2157,8 @@ resourcestring
   dlgIdentifierCompletion = 'Identifier Completion';
   dlgJumpingETC = 'Jumping (e.g. Method Jumping)';
   dlgAdjustTopLine = 'Adjust top line due to comment in front';
-  dlgCenterCursorLine = 'Center cursor line';
+  dlgJumpSingleLinePos = 'Vertical position for a single line jump in %. (0=top, 100=bottom)';
+  dlgJumpCodeBlockPos = 'Vertical position for a code block jump in %. (0=top, 100=bottom)';
   dlgCursorBeyondEOL = 'Cursor beyond EOL';
   dlgSkipForwardClassDeclarations = 'Skip forward class declarations';
   dlgJumpToMethodBody = 'Jump directly to method body';
