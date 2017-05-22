@@ -151,6 +151,7 @@ type
 
 const
   cIDEToolbarDivider = '---------------';
+  cTailItemCaption = '                                             ';
 
 function ShowToolBarConfig(aNames: TStringList): TModalResult;
 
@@ -402,7 +403,7 @@ end;
 procedure TToolBarConfig.lvToolbarDrawItem(Sender: TCustomListView;
   AItem: TListItem; ARect: TRect; AState: TOwnerDrawState);
 var
-  ImageIndex: integer;
+  ImgInd: integer;
 begin
   with Sender.Canvas do
   begin
@@ -417,16 +418,19 @@ begin
     end;
     FillRect(ARect);
 
+    ImgInd := -1;
     if AItem.Caption = cIDEToolbarDivider then
-      ImageIndex := divImageIndex
+      ImgInd := divImageIndex
     else if Assigned(AItem.Data) and (TIDEButtonCommand(AItem.Data).ImageIndex > -1) then
-      ImageIndex := TIDEButtonCommand(AItem.Data).ImageIndex
-    else
-      ImageIndex := defImageIndex;
-    Image.Clear;
-    lvToolBar.SmallImages.GetBitmap(ImageIndex, Image);
-    Draw(ARect.Left + 2, ARect.Top + 2, Image);
-
+      ImgInd := TIDEButtonCommand(AItem.Data).ImageIndex
+    else if AItem.Caption <> cTailItemCaption then
+      ImgInd := defImageIndex;
+    if ImgInd > -1 then
+    begin
+      Image.Clear;
+      lvToolBar.SmallImages.GetBitmap(ImgInd, Image);
+      Draw(ARect.Left + 2, ARect.Top + 2, Image);
+    end;
     TextOut(ARect.Left + 21, ARect.Top + 2, AItem.Caption);
   end;
 end;
@@ -629,7 +633,7 @@ begin
     with it are prohibited. }
 
   lvItem := lvToolbar.Items.Add;
-  lvItem.Caption:= '                              ';
+  lvItem.Caption := cTailItemCaption;
 end;
 
 procedure TToolBarConfig.FillToolBar;
