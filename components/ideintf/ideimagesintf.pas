@@ -43,13 +43,16 @@ type
     function GetImages_12: TCustomImageList;
     function GetImages_16: TCustomImageList;
     function GetImages_24: TCustomImageList;
+
+    class function CreateBitmapFromRes(const ImageName: string): TCustomBitmap;
   public
     constructor Create;
     destructor Destroy; override;
 
     class function GetScalePercent: Integer;
-    class function ScaleImage(const AImage: TGraphic; out ANewInstance: Boolean;
-      TargetWidth, TargetHeight: Integer): TGraphic;
+    class function ScaleImage(const AImage: TCustomBitmap; out ANewInstance: Boolean;
+      TargetWidth, TargetHeight: Integer): TCustomBitmap;
+    class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap;
 
     function GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
     function LoadImage(ImageSize: Integer; ImageName: String): Integer;
@@ -112,6 +115,43 @@ begin
     Result := 200; // 200%: 200% scaling
 end;
 
+class function TIDEImages.CreateImage(ImageSize: Integer; ImageName: String
+  ): TCustomBitmap;
+var
+  Grp: TCustomBitmap;
+  GrpScaledNewInstance: Boolean;
+  ScalePercent: Integer;
+begin
+  ScalePercent := GetScalePercent;
+
+  Grp := nil;
+  try
+    if ScalePercent<>100 then
+    begin
+      Grp := CreateBitmapFromRes(ImageName+'_'+IntToStr(ScalePercent));
+      if Grp<>nil then
+      begin
+        Result := Grp;
+        Grp := nil;
+        Exit; // found
+      end;
+    end;
+
+    Grp := CreateBitmapFromRes(ImageName);
+    if Grp<>nil then
+    begin
+      Result := ScaleImage(Grp, GrpScaledNewInstance,
+        ImageSize*ScalePercent div 100, ImageSize * ScalePercent div 100);
+      if not GrpScaledNewInstance then
+        Grp := nil;
+      Exit; // found
+    end;
+  finally
+    Grp.Free;
+  end;
+  Result := nil; // not found
+end;
+
 constructor TIDEImages.Create;
 begin
   FImageNames_12 := TStringList.Create;
@@ -123,6 +163,18 @@ begin
   FImageNames_24 := TStringList.Create;
   FImageNames_24.Sorted := True;
   FImageNames_24.Duplicates := dupIgnore;
+end;
+
+class function TIDEImages.CreateBitmapFromRes(const ImageName: string
+  ): TCustomBitmap;
+var
+  ResHandle: TLResource;
+begin
+  ResHandle := LazarusResources.Find(ImageName);
+  if ResHandle <> nil then
+    Result := CreateBitmapFromLazarusResource(ResHandle)
+  else
+    Result := CreateBitmapFromResourceName(HInstance, ImageName);
 end;
 
 destructor TIDEImages.Destroy;
@@ -158,45 +210,10 @@ begin
 end;
 
 function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
-  function _AddBitmap(AList: TCustomImageList; AGrp: TGraphic): Integer;
-  begin
-    if AGrp is TCustomBitmap then
-      Result := AList.Add(TCustomBitmap(AGrp), nil)
-    else
-      Result := AList.AddIcon(AGrp as TCustomIcon);
-  end;
-  function _LoadImage(AList: TCustomImageList): Integer;
-  var
-    Grp, GrpScaled: TGraphic;
-    GrpScaledNewInstance: Boolean;
-    ScalePercent: Integer;
-  begin
-    ScalePercent := GetScalePercent;
-
-    Grp := nil;
-    try
-      if ScalePercent<>100 then
-      begin
-        Grp := CreateGraphicFromResourceName(HInstance, ImageName+'_'+IntToStr(ScalePercent));
-        if Grp<>nil then
-          Exit(_AddBitmap(AList, Grp));
-      end;
-
-      Grp := CreateGraphicFromResourceName(HInstance, ImageName);
-      GrpScaled := ScaleImage(Grp, GrpScaledNewInstance, AList.Width, AList.Height);
-      try
-        Result := _AddBitmap(AList, GrpScaled);
-      finally
-        if GrpScaledNewInstance then
-          GrpScaled.Free;
-      end;
-    finally
-      Grp.Free;
-    end;
-  end;
 var
   List: TCustomImageList;
   Names: TStringList;
+  Grp: TGraphic;
 begin
   Result := GetImageIndex(ImageSize, ImageName);
   if Result <> -1 then Exit;
@@ -221,7 +238,17 @@ begin
     Exit;
   end;
   try
-    Result := _LoadImage(List);
+    Grp := CreateImage(ImageSize, ImageName);
+    try
+      if Grp=nil then
+        raise Exception.CreateFmt('TIDEImages.LoadImage: %s not found.', [ImageName]);
+      if Grp is TCustomBitmap then
+        Result := List.Add(TCustomBitmap(Grp), nil)
+      else
+        Result := List.AddIcon(Grp as TCustomIcon);
+    finally
+      Grp.Free;
+    end;
   except
     on E: Exception do begin
       DebugLn('While loading IDEImages: ' + e.Message);
@@ -231,16 +258,16 @@ begin
   Names.AddObject(ImageName, TObject(PtrInt(Result)));
 end;
 
-class function TIDEImages.ScaleImage(const AImage: TGraphic; out
-  ANewInstance: Boolean; TargetWidth, TargetHeight: Integer): TGraphic;
+class function TIDEImages.ScaleImage(const AImage: TCustomBitmap; out
+  ANewInstance: Boolean; TargetWidth, TargetHeight: Integer): TCustomBitmap;
 var
-  ScalePercent: Integer;
   Bmp: TBitmap;
 begin
-  ANewInstance := False;
-  ScalePercent := GetScalePercent;
-  if ScalePercent=100 then
+  if (AImage.Width=TargetWidth) and (AImage.Height=TargetHeight) then
+  begin
+    ANewInstance := False;
     Exit(AImage);
+  end;
 
   Bmp := TBitmap.Create;
   try
@@ -256,7 +283,7 @@ begin
     Bmp.SetSize(TargetWidth, TargetHeight);
     Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
     Bmp.Canvas.StretchDraw(
-      Rect(0, 0, MulDiv(AImage.Width, ScalePercent, 100), MulDiv(AImage.Height, ScalePercent, 100)),
+      Rect(0, 0, TargetWidth, TargetHeight),
       AImage);
   except
     FreeAndNil(Result);

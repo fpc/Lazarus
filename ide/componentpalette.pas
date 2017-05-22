@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, fgl, Laz_AVL_Tree,
   // LCL
-  LCLType, LCLProc, Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
+  LCLProc, Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
   // LazUtils
   LazFileUtils, LazFileCache,
   // IdeIntf
@@ -426,8 +426,6 @@ var
   Btn: TSpeedButton;
   CompCN: String;      // Component ClassName
   i: Integer;
-  ScaledIcon: TGraphic;
-  NewScaledIcon: Boolean;
 begin
   Pal := TComponentPalette(Palette);
   CompCN := aComp.ComponentClass.ClassName;
@@ -445,15 +443,7 @@ begin
       Btn.Name := CompPaletteCompBtnPrefix + aButtonUniqueName + CompCN;
       // Left and Top will be set in ReAlignButtons.
       Btn.SetBounds(Btn.Left,Btn.Top,aScrollBox.ScaleCoord(ComponentPaletteBtnWidth),aScrollBox.ScaleCoord(ComponentPaletteBtnHeight));
-      ScaledIcon := TIDEImages.ScaleImage(aComp.Icon, NewScaledIcon,
-        MulDiv(ComponentPaletteImageWidth, TIDEImages.GetScalePercent, 100),
-        MulDiv(ComponentPaletteImageWidth, TIDEImages.GetScalePercent, 100));
-      try
-        Btn.Glyph.Assign(ScaledIcon);
-      finally
-        if NewScaledIcon then
-          ScaledIcon.Free;
-      end;
+      Btn.Glyph.Assign(aComp.Icon);
       Btn.GroupIndex := 1;
       Btn.Flat := true;
       Btn.OnMouseDown := @Pal.ComponentBtnMouseDown;

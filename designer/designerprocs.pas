@@ -82,7 +82,6 @@ type
   end;
 
 const
-  NonVisualCompIconWidth = ComponentPaletteImageWidth;
   NonVisualCompBorder = 2;
 
 
@@ -350,9 +349,9 @@ end;
 function NonVisualCompWidth: integer;
 begin
   if Application.Scaled then
-    Result := MulDiv(NonVisualCompIconWidth, Screen.PixelsPerInch, 96) + 2 * NonVisualCompBorder
+    Result := MulDiv(ComponentPaletteImageWidth, Screen.PixelsPerInch, 96) + 2 * NonVisualCompBorder
   else
-    Result := NonVisualCompIconWidth + 2 * NonVisualCompBorder
+    Result := ComponentPaletteImageWidth + 2 * NonVisualCompBorder
 end;
 
 function GetParentLevel(AControl: TControl): integer;
