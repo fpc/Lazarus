@@ -38,8 +38,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, LazConfigStorage, LazFileUtils, ComCtrls, Buttons, StdCtrls,
   ExtCtrls, ButtonPanel, LazHelpIntf, PackageIntf, MacroIntf, IDEOptionsIntf,
-  LazIDEIntf, IDEImagesIntf, BaseIDEIntf, IDEDialogs, HelpIntfs, IDEImagesIntf,
-  SrcEditorIntf;
+  LazIDEIntf, BaseIDEIntf, IDEDialogs, HelpIntfs, IDEImagesIntf, SrcEditorIntf;
 
 const
   ExternHelpConfigVersion = 1;
