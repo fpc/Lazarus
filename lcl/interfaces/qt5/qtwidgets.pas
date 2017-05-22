@@ -11248,6 +11248,7 @@ end;
 
 function TQtComboBox.getText: WideString;
 begin
+  Result := '';
   QComboBox_currentText(QComboBoxH(Widget), @Result);
   if FOwnerDrawn and (FLineEdit = nil) and
     (Result = '') and (Result <> FText) then
