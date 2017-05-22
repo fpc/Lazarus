@@ -324,7 +324,7 @@ begin
         s:='property';
         IsReadOnly:=IdentItem.IsPropertyReadOnly;
         if IsReadOnly then
-          ImageIndex:=IDEImages.LoadImage(16,'ce_property_readonly');
+          ImageIndex:=IDEImages.LoadImage('ce_property_readonly');
       end;
 
     ctnEnumIdentifier:
@@ -392,7 +392,7 @@ begin
       HintModifiers := IdentItem.GetHintModifiers;
       for HintModifier in HintModifiers do
       begin
-        ImageIndex := IDEImages.LoadImage(16, HintModifierImage[HintModifier]);
+        ImageIndex := IDEImages.LoadImage(HintModifierImage[HintModifier]);
         break;
       end;
     end;

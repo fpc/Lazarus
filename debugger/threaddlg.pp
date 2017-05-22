@@ -250,7 +250,7 @@ begin
   SnapshotNotification.OnCurrent := @ThreadsChanged;
   ThreadsNotification.OnChange   := @ThreadsChanged;
 
-  imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
+  imgCurrentLine := IDEImages.LoadImage('debugger_current_line');
   lvThreads.SmallImages := IDEImages.Images_16;
 
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do

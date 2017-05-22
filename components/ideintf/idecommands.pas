@@ -1829,7 +1829,7 @@ end;
 procedure TIDESpecialCommand.SetResourceName(const aResourceName: string);
 begin
   if aResourceName <> '' then
-    ImageIndex := IDEImages.LoadImage(16, aResourceName)
+    ImageIndex := IDEImages.LoadImage(aResourceName)
   else
     ImageIndex := -1;
 end;

@@ -349,20 +349,20 @@ begin
   
   // assign resource images to toolbuttons
   TB.Images := IDEImages.Images_16;
-  tbCopy.ImageIndex        := IDEImages.LoadImage(16, 'laz_copy');
-  tbChangeFont.ImageIndex  := IDEImages.LoadImage(16, 'item_font');
-  tbAbout.ImageIndex       := IDEImages.LoadImage(16, 'menu_information');
-  tbJumpTo.ImageIndex      := IDEImages.LoadImage(16, 'menu_goto_line');
-  tbFilterAny.ImageIndex   := IDEImages.LoadImage(16, 'item_filter');
-  tbFilterStart.ImageIndex := IDEImages.LoadImage(16, 'item_filter');
+  tbCopy.ImageIndex        := IDEImages.LoadImage('laz_copy');
+  tbChangeFont.ImageIndex  := IDEImages.LoadImage('item_font');
+  tbAbout.ImageIndex       := IDEImages.LoadImage('menu_information');
+  tbJumpTo.ImageIndex      := IDEImages.LoadImage('menu_goto_line');
+  tbFilterAny.ImageIndex   := IDEImages.LoadImage('item_filter');
+  tbFilterStart.ImageIndex := IDEImages.LoadImage('item_filter');
 
   SG.Columns[SG_COLIDX_IMAGE].Width  := 20;
   SG.Columns[SG_COLIDX_PROCEDURE].Width  := 300;
   SG.Columns[SG_COLIDX_TYPE].Width  := 110;
   SG.Columns[SG_COLIDX_LINE].Width  := 60;
 
-  FImageIdxProcedure  := IDEImages.LoadImage(16, 'ce_procedure');
-  FImageIdxFunction   := IDEImages.LoadImage(16, 'ce_function');;
+  FImageIdxProcedure  := IDEImages.LoadImage('ce_procedure');
+  FImageIdxFunction   := IDEImages.LoadImage('ce_function');;
 
   cbObjects.Style     := csDropDownList;
   cbObjects.Sorted    := True;

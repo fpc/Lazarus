@@ -991,7 +991,7 @@ procedure TProjectInspectorForm.SetupComponents;
     Result.Caption := ACaption;
     Result.Hint := AHint;
     if AImageName <> '' then
-      Result.ImageIndex := IDEImages.LoadImage(16, AImageName);
+      Result.ImageIndex := IDEImages.LoadImage(AImageName);
     Result.ShowHint := True;
     Result.OnClick := AOnClick;
     Result.AutoSize := True;
@@ -1007,16 +1007,16 @@ procedure TProjectInspectorForm.SetupComponents;
   end;
 
 begin
-  ImageIndexFiles           := IDEImages.LoadImage(16, 'pkg_files');
-  ImageIndexRequired        := IDEImages.LoadImage(16, 'pkg_required');
-  ImageIndexConflict        := IDEImages.LoadImage(16, 'pkg_conflict');
-  ImageIndexRemovedRequired := IDEImages.LoadImage(16, 'pkg_removedrequired');
-  ImageIndexProject         := IDEImages.LoadImage(16, 'item_project');
-  ImageIndexUnit            := IDEImages.LoadImage(16, 'item_unit');
-  ImageIndexRegisterUnit    := IDEImages.LoadImage(16, 'pkg_registerunit');
-  ImageIndexText            := IDEImages.LoadImage(16, 'pkg_text');
-  ImageIndexBinary          := IDEImages.LoadImage(16, 'pkg_binary');
-  ImageIndexDirectory       := IDEImages.LoadImage(16, 'pkg_files');
+  ImageIndexFiles           := IDEImages.LoadImage('pkg_files');
+  ImageIndexRequired        := IDEImages.LoadImage('pkg_required');
+  ImageIndexConflict        := IDEImages.LoadImage('pkg_conflict');
+  ImageIndexRemovedRequired := IDEImages.LoadImage('pkg_removedrequired');
+  ImageIndexProject         := IDEImages.LoadImage('item_project');
+  ImageIndexUnit            := IDEImages.LoadImage('item_unit');
+  ImageIndexRegisterUnit    := IDEImages.LoadImage('pkg_registerunit');
+  ImageIndexText            := IDEImages.LoadImage('pkg_text');
+  ImageIndexBinary          := IDEImages.LoadImage('pkg_binary');
+  ImageIndexDirectory       := IDEImages.LoadImage('pkg_files');
 
   ItemsTreeView.Images      := IDEImages.Images_16;
   ToolBar.Images            := IDEImages.Images_16;

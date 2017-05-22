@@ -188,9 +188,9 @@ begin
   MenusTreeView.Items.Clear;
   if MenusTreeView.StateImages=nil then
     MenusTreeView.StateImages:=IDEImages.Images_16;
-  ShowImgID:=IDEImages.LoadImage(16,'menu_run');
-  HalfHideImgID:=IDEImages.LoadImage(16,'menu_run_file');
-  HideImgID:=IDEImages.LoadImage(16,'menu_stop');
+  ShowImgID:=IDEImages.LoadImage('menu_run');
+  HalfHideImgID:=IDEImages.LoadImage('menu_run_file');
+  HideImgID:=IDEImages.LoadImage('menu_stop');
   Hidden:=false;
   for i:=0 to IDEMenuRoots.Count-1 do
     Add(nil,IDEMenuRoots[i],Hidden);

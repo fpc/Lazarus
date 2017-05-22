@@ -1883,7 +1883,7 @@ procedure TPackageEditorForm.SetupComponents;
     Result.Caption := ACaption;
     Result.Hint := AHint;
     if AImageName <> '' then
-      Result.ImageIndex := IDEImages.LoadImage(16, AImageName);
+      Result.ImageIndex := IDEImages.LoadImage(AImageName);
     Result.ShowHint := True;
     Result.OnClick := AOnClick;
     Result.AutoSize := True;
@@ -1899,20 +1899,20 @@ procedure TPackageEditorForm.SetupComponents;
   end;
 
 begin
-  ImageIndexFiles           := IDEImages.LoadImage(16, 'pkg_files');
-  ImageIndexRemovedFiles    := IDEImages.LoadImage(16, 'pkg_removedfiles');
-  ImageIndexRequired        := IDEImages.LoadImage(16, 'pkg_required');
-  ImageIndexRemovedRequired := IDEImages.LoadImage(16, 'pkg_removedrequired');
-  ImageIndexUnit            := IDEImages.LoadImage(16, 'pkg_unit');
-  ImageIndexRegisterUnit    := IDEImages.LoadImage(16, 'pkg_registerunit');
-  ImageIndexLFM             := IDEImages.LoadImage(16, 'pkg_lfm');
-  ImageIndexLRS             := IDEImages.LoadImage(16, 'pkg_lrs');
-  ImageIndexInclude         := IDEImages.LoadImage(16, 'pkg_include');
-  ImageIndexIssues          := IDEImages.LoadImage(16, 'pkg_issues');
-  ImageIndexText            := IDEImages.LoadImage(16, 'pkg_text');
-  ImageIndexBinary          := IDEImages.LoadImage(16, 'pkg_binary');
-  ImageIndexConflict        := IDEImages.LoadImage(16, 'pkg_conflict');
-  ImageIndexDirectory       := IDEImages.LoadImage(16, 'pkg_files');
+  ImageIndexFiles           := IDEImages.LoadImage('pkg_files');
+  ImageIndexRemovedFiles    := IDEImages.LoadImage('pkg_removedfiles');
+  ImageIndexRequired        := IDEImages.LoadImage('pkg_required');
+  ImageIndexRemovedRequired := IDEImages.LoadImage('pkg_removedrequired');
+  ImageIndexUnit            := IDEImages.LoadImage('pkg_unit');
+  ImageIndexRegisterUnit    := IDEImages.LoadImage('pkg_registerunit');
+  ImageIndexLFM             := IDEImages.LoadImage('pkg_lfm');
+  ImageIndexLRS             := IDEImages.LoadImage('pkg_lrs');
+  ImageIndexInclude         := IDEImages.LoadImage('pkg_include');
+  ImageIndexIssues          := IDEImages.LoadImage('pkg_issues');
+  ImageIndexText            := IDEImages.LoadImage('pkg_text');
+  ImageIndexBinary          := IDEImages.LoadImage('pkg_binary');
+  ImageIndexConflict        := IDEImages.LoadImage('pkg_conflict');
+  ImageIndexDirectory       := IDEImages.LoadImage('pkg_files');
 
   ItemsTreeView.Images := IDEImages.Images_16;
   ToolBar.Images := IDEImages.Images_16;

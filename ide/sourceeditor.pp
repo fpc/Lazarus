@@ -6191,7 +6191,7 @@ begin
   Application.AddOnDeactivateHandler(@OnApplicationDeactivate);
   Application.AddOnMinimizeHandler(@OnApplicationDeactivate);
 
-  FStopBtnIdx := IDEImages.LoadImage(16, 'menu_stop');
+  FStopBtnIdx := IDEImages.LoadImage('menu_stop');
 
   {$IFNDEF LCLGtk2}
   try

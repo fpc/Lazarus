@@ -375,8 +375,8 @@ begin
   end else
 
     SpeedButtonsTreeView.Images.Clear;
-    ShowImgID:=IDEImages.LoadImage(16,'menu_run');
-    HideImgID:=IDEImages.LoadImage(16,'menu_stop');
+    ShowImgID:=IDEImages.LoadImage('menu_run');
+    HideImgID:=IDEImages.LoadImage('menu_stop');
 
     CategoryNode:=SpeedButtonsTreeView.Items.Add(nil,'Standard Buttons');
     for i:=0 to StandardBar.ButtonCount-1 do begin

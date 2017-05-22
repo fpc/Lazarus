@@ -1429,10 +1429,10 @@ begin
   mnExport.Caption := lisDlgExport;
 
   lbRecordedView.SmallImages := IDEImages.Images_16;
-  FImageRec := IDEImages.LoadImage(16, 'Record');  // red dot
-  FImagePlay := IDEImages.LoadImage(16, 'menu_run');  // green triangle
-  FImageSel := IDEImages.LoadImage(16, 'arrow_right');
-  FImageErr := IDEImages.LoadImage(16, 'state_error');
+  FImageRec := IDEImages.LoadImage('Record');  // red dot
+  FImagePlay := IDEImages.LoadImage('menu_run');  // green triangle
+  FImageSel := IDEImages.LoadImage('arrow_right');
+  FImageErr := IDEImages.LoadImage('state_error');
   FIsPlaying := False;
 
   UpdateDisplay;

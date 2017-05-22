@@ -1204,19 +1204,19 @@ begin
   BMMatrixToolBar.Images:=IDEImages.Images_16;
 
   BMMMoveUpButton.ShowCaption:=false;
-  BMMMoveUpButton.ImageIndex:=IDEImages.LoadImage(16,'arrow_up');
+  BMMMoveUpButton.ImageIndex:=IDEImages.LoadImage('arrow_up');
   BMMMoveUpButton.Hint:=lisMMMoveSelectedItemUp;
 
   BMMMoveDownButton.ShowCaption:=false;
-  BMMMoveDownButton.ImageIndex:=IDEImages.LoadImage(16,'arrow_down');
+  BMMMoveDownButton.ImageIndex:=IDEImages.LoadImage('arrow_down');
   BMMMoveDownButton.Hint:=lisMMMoveSelectedItemDown;
 
   BMMUndoButton.ShowCaption:=false;
-  BMMUndoButton.ImageIndex:=IDEImages.LoadImage(16,'menu_undo');
+  BMMUndoButton.ImageIndex:=IDEImages.LoadImage('menu_undo');
   BMMUndoButton.Hint:=lisMMUndoLastChangeToThisGrid;
 
   BMMRedoToolButton.ShowCaption:=false;
-  BMMRedoToolButton.ImageIndex:=IDEImages.LoadImage(16,'menu_redo');
+  BMMRedoToolButton.ImageIndex:=IDEImages.LoadImage('menu_redo');
   BMMRedoToolButton.Hint:=lisMMRedoLastUndoToThisGrid;
 
   BMMDeleteButton.Caption:=lisDelete;

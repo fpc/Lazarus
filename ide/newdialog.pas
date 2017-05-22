@@ -367,8 +367,8 @@ end;
 procedure TNewOtherDialog.SetupComponents;
 begin
   ItemsTreeView.Images := IDEImages.Images_16;
-  ImageIndexTemplate := IDEImages.LoadImage(16, 'template');
-  ImageIndexFolder := IDEImages.LoadImage(16, 'folder');
+  ImageIndexTemplate := IDEImages.LoadImage('template');
+  ImageIndexFolder := IDEImages.LoadImage('folder');
 
   DescriptionGroupBox.Caption := lisCodeHelpDescrTag;
   DescriptionLabel.Caption := '';

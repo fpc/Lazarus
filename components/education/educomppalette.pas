@@ -207,8 +207,8 @@ begin
     ComponentsTreeView.StateImages:=IDEImages.Images_16;
   end else
     ComponentsTreeView.Images.Clear;
-  ShowImgID:=IDEImages.LoadImage(16,'menu_run');
-  HideImgID:=IDEImages.LoadImage(16,'menu_stop');
+  ShowImgID:=IDEImages.LoadImage('menu_run');
+  HideImgID:=IDEImages.LoadImage('menu_stop');
   for i:=0 to IDEComponentPalette.Comps.Count-1 do begin
     Comp:=IDEComponentPalette.Comps[i];
     Page:=Comp.RealPage;

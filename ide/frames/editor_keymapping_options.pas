@@ -162,7 +162,7 @@ begin
   CopyMenuItem := TMenuItem.Create(Self);
   CopyMenuItem.Caption := lisCopyAllItemsToClipboard;
   CopyMenuItem.OnClick := @CopyMenuItemClick;
-  CopyMenuItem.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
+  CopyMenuItem.ImageIndex := IDEImages.LoadImage('laz_copy');
   ErrorsPopupMenu.Items.Add(CopyMenuItem);
 
   ListBox.AnchorToNeighbour(akBottom,6,BackButton);
@@ -384,15 +384,15 @@ begin
 
   TreeView.Images := IDEImages.Images_16;
   ConflictsTreeView.Images := IDEImages.Images_16;
-  imgKeyCategory := IDEImages.LoadImage(16, 'item_keyboard');
-  imgKeyItem := IDEImages.LoadImage(16, 'item_character');
+  imgKeyCategory := IDEImages.LoadImage('item_keyboard');
+  imgKeyItem := IDEImages.LoadImage('item_character');
   TIDEImages.AssignImage(ChooseSchemeButton.Glyph, 'item_keyboard'); // keymapcategory
   TIDEImages.AssignImage(FindKeyButton.Glyph, 'menu_search_find');
   TIDEImages.AssignImage(EditButton.Glyph, 'laz_edit');
   TIDEImages.AssignImage(ClearButton.Glyph, 'menu_clean');
   PopupMenu1.Images := IDEImages.Images_16;
-  EditMenuItem.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
-  ClearMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
+  EditMenuItem.ImageIndex := IDEImages.LoadImage('laz_edit');
+  ClearMenuItem.ImageIndex := IDEImages.LoadImage('menu_clean');
 
   TIDEImages.AssignImage(ResetKeyFilterBtn.Glyph, ResBtnListFilter);
   ResetKeyFilterBtn.Enabled := not IDEShortCutEmpty(KeyMapKeyFilter);

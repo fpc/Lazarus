@@ -115,8 +115,8 @@ var
   i: integer;
 begin
   Tree.Images:=IDEImages.Images_16;
-  NIndexFolder:=IDEImages.LoadImage(16, 'folder');
-  NIndexTemplate:=IDEImages.LoadImage(16, 'template');
+  NIndexFolder:=IDEImages.LoadImage('folder');
+  NIndexTemplate:=IDEImages.LoadImage('template');
 
   Tree.Items.BeginUpdate;
   RootNode:=Tree.Items.Add(nil, dlgProject);

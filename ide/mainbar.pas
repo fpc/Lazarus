@@ -597,7 +597,7 @@ begin
   OptionsMenuItem.Caption := lisOptions;
   OptionsMenuItem.Enabled := True;
   OptionsMenuItem.Visible := True;
-  OptionsMenuItem.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+  OptionsMenuItem.ImageIndex := IDEImages.LoadImage('menu_environment_options');
   OptionsPopupMenu.Items.Add(OptionsMenuItem);
 end;
 

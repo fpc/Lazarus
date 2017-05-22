@@ -764,19 +764,19 @@ begin
   lvCallStack.Columns[4].Caption:= lisFunction;
 
   ToolBar1.Images := IDEImages.Images_16;
-  ToolButtonShow.ImageIndex := IDEImages.LoadImage(16, 'callstack_show');
-  ToolButtonMore.ImageIndex := IDEImages.LoadImage(16, 'callstack_more');
-  ToolButtonTop.ImageIndex := IDEImages.LoadImage(16, 'callstack_top');
-  ToolButtonBottom.ImageIndex := IDEImages.LoadImage(16, 'callstack_bottom');
-  ToolButtonGoto.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
-  ToolButtonCopyAll.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
-  FPowerImgIdx := IDEImages.LoadImage(16, 'debugger_power');
-  FPowerImgIdxGrey := IDEImages.LoadImage(16, 'debugger_power_grey');
+  ToolButtonShow.ImageIndex := IDEImages.LoadImage('callstack_show');
+  ToolButtonMore.ImageIndex := IDEImages.LoadImage('callstack_more');
+  ToolButtonTop.ImageIndex := IDEImages.LoadImage('callstack_top');
+  ToolButtonBottom.ImageIndex := IDEImages.LoadImage('callstack_bottom');
+  ToolButtonGoto.ImageIndex := IDEImages.LoadImage('callstack_goto');
+  ToolButtonCopyAll.ImageIndex := IDEImages.LoadImage('laz_copy');
+  FPowerImgIdx := IDEImages.LoadImage('debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage('debugger_power_grey');
   ToolButtonPower.ImageIndex := FPowerImgIdx;
 
   lvCallStack.SmallImages := IDEImages.Images_16;
-  imgSourceLine := IDEImages.LoadImage(16, 'debugger_source_line');
-  imgNoSourceLine := IDEImages.LoadImage(16, 'debugger_nosource_line');
+  imgSourceLine := IDEImages.LoadImage('debugger_source_line');
+  imgNoSourceLine := IDEImages.LoadImage('debugger_nosource_line');
 
 end;
 

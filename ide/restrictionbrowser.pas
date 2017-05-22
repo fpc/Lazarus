@@ -100,7 +100,7 @@ begin
       AllowAllUp := True;
       try
         IDEImages.Images_16.GetBitmap(
-               IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[P]), Glyph);
+               IDEImages.LoadImage('issue_'+LCLPlatformDirNames[P]), Glyph);
       except
         DebugLn('Restriction Browser: Unable to load image for ' + LCLPlatformDirNames[P] + '!');
       end;
@@ -179,7 +179,7 @@ begin
         with IssueTreeView.Items.AddChild(nil, Issues[I]) do
         begin
           ID := PtrInt(Issues.Objects[I]);
-          ImageIndex := IDEImages.LoadImage(16,
+          ImageIndex := IDEImages.LoadImage(
               'issue_'+LCLPlatformDirNames[FIssueList[ID].WidgetSet]);
           StateIndex := ImageIndex;
           SelectedIndex := ImageIndex;

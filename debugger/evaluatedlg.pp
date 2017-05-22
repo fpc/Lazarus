@@ -131,11 +131,11 @@ begin
   fHistDirection:=EHDNone;
 
   ToolBar1.Images := IDEImages.Images_16;
-  tbInspect.ImageIndex := IDEImages.LoadImage(16, 'debugger_inspect');
-  tbWatch.ImageIndex := IDEImages.LoadImage(16, 'debugger_watches');
-  tbModify.ImageIndex := IDEImages.LoadImage(16, 'debugger_modify');
-  tbEvaluate.ImageIndex := IDEImages.LoadImage(16, 'debugger_evaluate');
-  tbHistory.ImageIndex := IDEImages.LoadImage(16, 'evaluate_no_hist');
+  tbInspect.ImageIndex := IDEImages.LoadImage('debugger_inspect');
+  tbWatch.ImageIndex := IDEImages.LoadImage('debugger_watches');
+  tbModify.ImageIndex := IDEImages.LoadImage('debugger_modify');
+  tbEvaluate.ImageIndex := IDEImages.LoadImage('debugger_evaluate');
+  tbHistory.ImageIndex := IDEImages.LoadImage('evaluate_no_hist');
 
   mnuHistory.Items[0].Caption:=drsEvalHistoryNone;
   mnuHistory.Items[1].Caption:=dsrEvalHistoryUp;
@@ -211,21 +211,21 @@ end;
 procedure TEvaluateDlg.MenuItem1Click(Sender: TObject);
 begin
   fHistDirection:=EHDNone;
-  tbHistory.ImageIndex := IDEImages.LoadImage(16, 'evaluate_no_hist');
+  tbHistory.ImageIndex := IDEImages.LoadImage('evaluate_no_hist');
   txtResult.Lines.Clear;
 end;
 
 procedure TEvaluateDlg.MenuItem2Click(Sender: TObject);
 begin
   fHistDirection:=EHDUp;
-  tbHistory.ImageIndex := IDEImages.LoadImage(16, 'evaluate_up');
+  tbHistory.ImageIndex := IDEImages.LoadImage('evaluate_up');
   txtResult.Lines.Clear;
 end;
 
 procedure TEvaluateDlg.MenuItem3Click(Sender: TObject);
 begin
   fHistDirection:=EHDDown;
-  tbHistory.ImageIndex := IDEImages.LoadImage(16, 'callstack_goto');
+  tbHistory.ImageIndex := IDEImages.LoadImage('callstack_goto');
   txtResult.Lines.Clear;
 end;
 

@@ -547,9 +547,9 @@ begin
   if FItemType=AValue then Exit;
   FItemType:=AValue;
   case ItemType of
-    piComponent: FImageIndex := IDEImages.LoadImage(16, 'item_form');
-    piFrame:     FImageIndex := IDEImages.LoadImage(16, 'tpanel');
-    else         FImageIndex := IDEImages.LoadImage(16, 'item_unit');
+    piComponent: FImageIndex := IDEImages.LoadImage('item_form');
+    piFrame:     FImageIndex := IDEImages.LoadImage('tpanel');
+    else         FImageIndex := IDEImages.LoadImage('item_unit');
   end;
   if FImageIndex<0 then FImageIndex:=0;
 end;

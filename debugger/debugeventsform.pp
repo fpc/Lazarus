@@ -278,7 +278,7 @@ begin
   actOptions.Caption := lisEventLogOptions;
   FEvents := TStringList.Create;
   PopupMenu1.Images := IDEImages.Images_16;
-  actOptions.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+  actOptions.ImageIndex := IDEImages.LoadImage('menu_environment_options');
 end;
 
 destructor TDbgEventsForm.Destroy;

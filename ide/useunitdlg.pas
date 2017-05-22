@@ -193,7 +193,7 @@ begin
   SectionRadioGroup.Items.Add(dlgInsertImplementation);
   ButtonPanel1.OKButton.Caption:=lisMenuOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
-  UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
+  UnitImgInd := IDEImages.LoadImage('item_unit');
   FProjUnits:=TStringList.Create;
 end;
 

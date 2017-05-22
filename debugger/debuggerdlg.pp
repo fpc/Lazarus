@@ -404,17 +404,17 @@ begin
   Result := -1;
 
   if not BrkImgIdxInitialized then begin
-    ImgBreakPoints[0] := IDEImages.LoadImage(16, 'ActiveBreakPoint');  // red dot
-    ImgBreakPoints[1] := IDEImages.LoadImage(16, 'InvalidBreakPoint'); // red dot "X"
-    ImgBreakPoints[2] := IDEImages.LoadImage(16, 'UnknownBreakPoint'); // red dot "?"
+    ImgBreakPoints[0] := IDEImages.LoadImage('ActiveBreakPoint');  // red dot
+    ImgBreakPoints[1] := IDEImages.LoadImage('InvalidBreakPoint'); // red dot "X"
+    ImgBreakPoints[2] := IDEImages.LoadImage('UnknownBreakPoint'); // red dot "?"
 
-    ImgBreakPoints[3] := IDEImages.LoadImage(16, 'InactiveBreakPoint');// green dot
-    ImgBreakPoints[4] := IDEImages.LoadImage(16, 'InvalidDisabledBreakPoint');// green dot "X"
-    ImgBreakPoints[5] := IDEImages.LoadImage(16, 'UnknownDisabledBreakPoint');// green dot "?"
+    ImgBreakPoints[3] := IDEImages.LoadImage('InactiveBreakPoint');// green dot
+    ImgBreakPoints[4] := IDEImages.LoadImage('InvalidDisabledBreakPoint');// green dot "X"
+    ImgBreakPoints[5] := IDEImages.LoadImage('UnknownDisabledBreakPoint');// green dot "?"
 
-    ImgBreakPoints[6] := IDEImages.LoadImage(16, 'debugger_current_line');
-    ImgBreakPoints[7] := IDEImages.LoadImage(16, 'debugger_current_line_breakpoint');
-    ImgBreakPoints[8] := IDEImages.LoadImage(16, 'debugger_current_line_disabled_breakpoint');
+    ImgBreakPoints[6] := IDEImages.LoadImage('debugger_current_line');
+    ImgBreakPoints[7] := IDEImages.LoadImage('debugger_current_line_breakpoint');
+    ImgBreakPoints[8] := IDEImages.LoadImage('debugger_current_line_disabled_breakpoint');
 
     BrkImgIdxInitialized := True;
   end;

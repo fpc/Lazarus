@@ -350,10 +350,10 @@ begin
   DeleteButton.Caption := oiColEditDelete;
   MoveUpButton.Caption := oiColEditUp;
   MoveDownButton.Caption := oiColEditDown;
-  AddButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  DeleteButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
-  MoveUpButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
-  MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  AddButton.ImageIndex := IDEImages.LoadImage('laz_add');
+  DeleteButton.ImageIndex := IDEImages.LoadImage('laz_delete');
+  MoveUpButton.ImageIndex := IDEImages.LoadImage('arrow_up');
+  MoveDownButton.ImageIndex := IDEImages.LoadImage('arrow_down');
 end;
 
 procedure TSynObjectPartListPropertyEditorForm.FormDestroy(Sender: TObject);

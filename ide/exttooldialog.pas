@@ -150,11 +150,11 @@ begin
 
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
-  AddButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  RemoveButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
-  EditButton.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
-  MoveUpButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
-  MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  AddButton.ImageIndex := IDEImages.LoadImage('laz_add');
+  RemoveButton.ImageIndex := IDEImages.LoadImage('laz_delete');
+  EditButton.ImageIndex := IDEImages.LoadImage('laz_edit');
+  MoveUpButton.ImageIndex := IDEImages.LoadImage('arrow_up');
+  MoveDownButton.ImageIndex := IDEImages.LoadImage('arrow_down');
 
   fExtToolList:=TExternalUserTools.Create;
 

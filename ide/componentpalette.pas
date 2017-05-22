@@ -634,7 +634,7 @@ begin
         Name:='OptionsMenuItem';
         Caption:=lisOptions;
         OnClick:=@OptionsClicked;
-        ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+        ImageIndex := IDEImages.LoadImage('menu_environment_options');
       end;
       PalettePopupMenu.Items.Add(miOptions);
     end;
@@ -791,7 +791,7 @@ begin
     Name:='OptionsMenuItem';
     Caption:=lisOptions;
     OnClick:=@OptionsClicked;
-    ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+    ImageIndex := IDEImages.LoadImage('menu_environment_options');
   end;
   PopupMenu.Items.Add(MenuItem);
 end;

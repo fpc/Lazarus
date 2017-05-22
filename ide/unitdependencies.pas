@@ -546,13 +546,13 @@ begin
   FPendingUnitDependencyRoute:=TStringList.Create;
   CreateUsesGraph(FUsesGraph,FGroups);
 
-  fImgIndexProject   := IDEImages.LoadImage(16, 'item_project');
-  fImgIndexUnit      := IDEImages.LoadImage(16, 'item_unit');
-  fImgIndexPackage   := IDEImages.LoadImage(16, 'pkg_required');
-  fImgIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
-  fImgIndexOverlayImplUses := IDEImages.LoadImage(16, 'pkg_core_overlay');
-  fImgIndexOverlayIntfCycle := IDEImages.LoadImage(16, 'ce_cycleinterface');
-  fImgIndexOverlayImplCycle := IDEImages.LoadImage(16, 'ce_cycleimplementation');
+  fImgIndexProject   := IDEImages.LoadImage('item_project');
+  fImgIndexUnit      := IDEImages.LoadImage('item_unit');
+  fImgIndexPackage   := IDEImages.LoadImage('pkg_required');
+  fImgIndexDirectory := IDEImages.LoadImage('pkg_files');
+  fImgIndexOverlayImplUses := IDEImages.LoadImage('pkg_core_overlay');
+  fImgIndexOverlayIntfCycle := IDEImages.LoadImage('ce_cycleinterface');
+  fImgIndexOverlayImplCycle := IDEImages.LoadImage('ce_cycleimplementation');
   AllUnitsTreeView.Images:=IDEImages.Images_16;
   SelUnitsTreeView.Images:=IDEImages.Images_16;
 

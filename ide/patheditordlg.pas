@@ -441,13 +441,13 @@ begin
 
   PopupMenu1.Images:=IDEImages.Images_16;
   CopyMenuItem.Caption:=lisCopyAllItemsToClipboard;
-  CopyMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_copy');
+  CopyMenuItem.ImageIndex:=IDEImages.LoadImage('laz_copy');
   PasteMenuItem.Caption:=lisMenuPasteFromClipboard;
-  PasteMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_paste');
+  PasteMenuItem.ImageIndex:=IDEImages.LoadImage('laz_paste');
   ExportMenuItem.Caption:=lisExportAllItemsToFile;
-  ExportMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_save');
+  ExportMenuItem.ImageIndex:=IDEImages.LoadImage('laz_save');
   ImportMenuItem.Caption:=lisImportFromFile;
-  ImportMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_open');
+  ImportMenuItem.ImageIndex:=IDEImages.LoadImage('laz_open');
 
   OpenDialog1.Filter:=Filt;
   SaveDialog1.Filter:=Filt;

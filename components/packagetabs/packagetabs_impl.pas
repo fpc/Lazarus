@@ -610,7 +610,7 @@ begin
   FTabLabelMenuCloseAllGroup := TMenuItem.Create(Self);
   FTabLabelMenuCloseAllGroup.Caption := IDECommandList.FindIDECommand(ecCloseAll).LocalizedName;
   FTabLabelMenuCloseAllGroup.OnClick := @TabLabelCloseAllGroupClick;
-  FTabLabelMenuCloseAllGroup.ImageIndex := IDEImages.LoadImage(16, 'menu_close_all');
+  FTabLabelMenuCloseAllGroup.ImageIndex := IDEImages.LoadImage('menu_close_all');
   FTabLabelMenu.Items.Add(FTabLabelMenuCloseAllGroup);
   FTabLabelMenuPkgSep := TMenuItem.Create(Self);
   FTabLabelMenuPkgSep.Caption := '-';
@@ -618,12 +618,12 @@ begin
   FTabLabelMenuOpenPackage := TMenuItem.Create(Self);
   FTabLabelMenuOpenPackage.Caption := sOpenPackage;
   FTabLabelMenuOpenPackage.OnClick := @TabLabelMenuOpenPackageClick;
-  FTabLabelMenuOpenPackage.ImageIndex := IDEImages.LoadImage(16, 'pkg_open');
+  FTabLabelMenuOpenPackage.ImageIndex := IDEImages.LoadImage('pkg_open');
   FTabLabelMenu.Items.Add(FTabLabelMenuOpenPackage);
   FTabLabelMenuViewProjectSource := TMenuItem.Create(Self);
   FTabLabelMenuViewProjectSource.Caption := IDECommandList.FindIDECommand(ecViewProjectSource).LocalizedName;
   FTabLabelMenuViewProjectSource.OnClick := @TabLabelMenuViewProjectSourceClick;
-  FTabLabelMenuViewProjectSource.ImageIndex := IDEImages.LoadImage(16, 'menu_project_viewsource');
+  FTabLabelMenuViewProjectSource.ImageIndex := IDEImages.LoadImage('menu_project_viewsource');
   FTabLabelMenu.Items.Add(FTabLabelMenuViewProjectSource);
   FTabLabelCopyToClipboard := TMenuItem.Create(Self);
   FTabLabelCopyToClipboard.Caption := sCopyFilePathToClipboard;
@@ -636,7 +636,7 @@ begin
   FTabButtonMenuClose := TMenuItem.Create(Self);
   FTabButtonMenuClose.Caption := IDECommandList.FindIDECommand(ecClose).LocalizedName;
   FTabButtonMenuClose.OnClick := @TabButtonMenuCloseClick;
-  FTabButtonMenuClose.ImageIndex := IDEImages.LoadImage(16, 'menu_close');
+  FTabButtonMenuClose.ImageIndex := IDEImages.LoadImage('menu_close');
   FTabButtonMenu.Items.Add(FTabButtonMenuClose);
   FTabButtonMenuLock := TMenuItemCommand.Create(Self);
   FTabButtonMenuLock.Caption := IDECommandList.FindIDECommand(ecLockEditor).LocalizedName;
@@ -654,7 +654,7 @@ begin
   FTabButtonMenuAddToProject := TMenuItem.Create(Self);
   FTabButtonMenuAddToProject.Caption := sAddToProject;
   FTabButtonMenuAddToProject.OnClick := @TabButtonMenuAddToProjectClick;
-  FTabButtonMenuAddToProject.ImageIndex := IDEImages.LoadImage(16, 'menu_project_add');
+  FTabButtonMenuAddToProject.ImageIndex := IDEImages.LoadImage('menu_project_add');
   FTabButtonMenu.Items.Add(FTabButtonMenuAddToProject);
 
   FTabButtonMenuMoveCloneSep := TMenuItem.Create(Self);

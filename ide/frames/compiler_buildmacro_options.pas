@@ -481,9 +481,9 @@ begin
 
   MacrosGroupBox.Caption:=lisIDEMacros;
   BuildMacrosTreeView.Images := IDEImages.Images_24;
-  fVarImgID:=IDEImages.LoadImage(24,'da_define');
-  fValueImgID:=IDEImages.LoadImage(24,'da_define');
-  fDefValueImgID:=IDEImages.LoadImage(24,'da_define');
+  fVarImgID:=IDEImages.LoadImage('da_define', 24);
+  fValueImgID:=IDEImages.LoadImage('da_define', 24);
+  fDefValueImgID:=IDEImages.LoadImage('da_define', 24);
 
   BuildMacroDefaultLabel.Caption:=
     lisHintADefaultValueCanBeDefinedInTheConditionals;

@@ -1101,8 +1101,8 @@ begin
   BtnPanel.OKButton.Caption:=lisMenuOk;
 
   NodesTreeView.Images:=IDEImages.Images_16;
-  FImgIndexDB:=IDEImages.LoadImage(16, 'item_package');
-  FImgIndexNode:=IDEImages.LoadImage(16, 'menu_help');
+  FImgIndexDB:=IDEImages.LoadImage('item_package');
+  FImgIndexNode:=IDEImages.LoadImage('menu_help');
 end;
 
 function THelpSelectorDialog.GetSelectedNodeQuery: THelpNodeQuery;

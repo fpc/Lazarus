@@ -211,7 +211,7 @@ begin
     Parent := ToolBar;
     Enabled := True;
     OnClick :=@FButtonClick;
-    ImageIndex := IDEImages.LoadImage(16, 'item_unit');
+    ImageIndex := IDEImages.LoadImage('item_unit');
     Hint := ersNewSingleFileProgram;
   end;
 end;
@@ -305,10 +305,10 @@ begin
   SrcToolBar.Images:=IDEImages.Images_16;
   SrcLoadDefaultSrcToolButton.ShowHint:=true;
   SrcLoadDefaultSrcToolButton.Hint:=ersReplaceCurrentSourceWithDefaultSourceCode;
-  SrcLoadDefaultSrcToolButton.ImageIndex:=IDEImages.LoadImage(16, 'item_unit');
+  SrcLoadDefaultSrcToolButton.ImageIndex:=IDEImages.LoadImage('item_unit');
   SrcLoadFileToolButton.ShowHint:=true;
   SrcLoadFileToolButton.Hint:=ersLoadSourceFromFile;
-  SrcLoadFileToolButton.ImageIndex:=IDEImages.LoadImage(16, 'laz_open');
+  SrcLoadFileToolButton.ImageIndex:=IDEImages.LoadImage('laz_open');
 end;
 
 class function TEduNewPrgFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

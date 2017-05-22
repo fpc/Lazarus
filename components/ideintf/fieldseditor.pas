@@ -145,13 +145,13 @@ begin
   inherited Create(AOwner);
 
   tbCommands.Images := IDEImages.Images_16;
-  tbAddFld.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  tbDeleteFld.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
-  tbNewFld.ImageIndex := IDEImages.LoadImage(16,'menu_new');
-  tbMoveDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
-  tbMoveUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
-  tbSelect.ImageIndex := IDEImages.LoadImage(16, 'menu_select_all');
-  tbUnselect.ImageIndex := IDEImages.LoadImage(16, 'menu_close_all');
+  tbAddFld.ImageIndex := IDEImages.LoadImage('laz_add');
+  tbDeleteFld.ImageIndex := IDEImages.LoadImage('laz_delete');
+  tbNewFld.ImageIndex := IDEImages.LoadImage('menu_new');
+  tbMoveDown.ImageIndex := IDEImages.LoadImage('arrow_down');
+  tbMoveUp.ImageIndex := IDEImages.LoadImage('arrow_up');
+  tbSelect.ImageIndex := IDEImages.LoadImage('menu_select_all');
+  tbUnselect.ImageIndex := IDEImages.LoadImage('menu_close_all');
 
   LinkDataset := ADataset;
   FDesigner := ADesigner;

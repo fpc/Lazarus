@@ -131,9 +131,9 @@ begin
 
   xImg := TBitmap.Create;
   try
-    IDEImages.Images_16.GetBitmap(IDEImages.LoadImage(16, 'laz_add'), xImg);
+    IDEImages.Images_16.GetBitmap(IDEImages.LoadImage('laz_add'), xImg);
     FAddImageIndex := DropdownMenu.Images.Add(xImg, nil);
-    IDEImages.Images_16.GetBitmap(IDEImages.LoadImage(16, 'laz_delete'), xImg);
+    IDEImages.Images_16.GetBitmap(IDEImages.LoadImage('laz_delete'), xImg);
     FRemoveImageIndex := DropdownMenu.Images.Add(xImg, nil);
   finally
     xImg.Free;

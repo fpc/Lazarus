@@ -169,10 +169,10 @@ begin
   CancelBitBtn.Caption:=lisCancel;
 
   UnitsTreeView.StateImages := IDEImages.Images_16;
-  ImgIDInterface := IDEImages.LoadImage(16, 'ce_interface');
-  ImgIDImplementation := IDEImages.LoadImage(16, 'ce_implementation');
-  ImgIDInitialization := IDEImages.LoadImage(16, 'ce_initialization');
-  ImgIDNone := IDEImages.LoadImage(16, 'ce_default');
+  ImgIDInterface := IDEImages.LoadImage('ce_interface');
+  ImgIDImplementation := IDEImages.LoadImage('ce_implementation');
+  ImgIDInitialization := IDEImages.LoadImage('ce_initialization');
+  ImgIDNone := IDEImages.LoadImage('ce_default');
 end;
 
 procedure TUnusedUnitsDialog.RemoveAllBitBtnClick(Sender: TObject);

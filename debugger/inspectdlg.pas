@@ -765,9 +765,9 @@ begin
   FGridData.OnMouseDown := @DataGridMouseDown;
 
   ToolBar1.Images := IDEImages.Images_16;
-  btnBackward.ImageIndex := IDEImages.LoadImage(16, 'arrow_left');
+  btnBackward.ImageIndex := IDEImages.LoadImage('arrow_left');
   btnBackward.Caption := '';
-  btnForward.ImageIndex := IDEImages.LoadImage(16, 'arrow_right');
+  btnForward.ImageIndex := IDEImages.LoadImage('arrow_right');
   btnForward.Caption := '';
 
   btnUseInstance.Enabled := False;

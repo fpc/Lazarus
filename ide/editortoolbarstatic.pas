@@ -215,7 +215,7 @@ begin
   CfgItem := TMenuItem.Create(xPM);
   xPM.Items.Add(CfgItem);
   CfgItem.Caption     := lisConfigureEditorToolbar;
-  CfgItem.ImageIndex  := IDEImages.LoadImage(16, 'preferences');
+  CfgItem.ImageIndex  := IDEImages.LoadImage('preferences');
   CfgItem.OnClick     := @FCollection.DoConfigureEditorToolbar;
 
   FToolBar.PopupMenu  := xPM;

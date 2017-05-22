@@ -713,11 +713,11 @@ begin
   OtherActToggleBox.Caption := dlgMouseOptOtherActToggle;
 
   ToolBar1.Images := IDEImages.Images_16;
-  BtnImport.ImageIndex := IDEImages.LoadImage(16, 'laz_open');
-  BtnExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
-  UpdateButton.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
-  AddNewButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  DelButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  BtnImport.ImageIndex := IDEImages.LoadImage('laz_open');
+  BtnExport.ImageIndex := IDEImages.LoadImage('laz_save');
+  UpdateButton.ImageIndex := IDEImages.LoadImage('laz_edit');
+  AddNewButton.ImageIndex := IDEImages.LoadImage('laz_add');
+  DelButton.ImageIndex := IDEImages.LoadImage('laz_delete');
 
   OpenDialog1.Title := lisImport;
   SaveDialog1.Title := lisExport;

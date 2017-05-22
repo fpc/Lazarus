@@ -2972,7 +2972,7 @@ var
       begin
         Dec(X, IDEImages.Images_16.Width);
         IDEImages.Images_16.Draw(Canvas, X, Y,
-          IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[lclPlatform]));
+          IDEImages.LoadImage('issue_'+LCLPlatformDirNames[lclPlatform]));
       end;
     end;
     Canvas.Font:=OldFont;
@@ -4185,7 +4185,7 @@ constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
       Enabled:=EnabledFlag;
       Visible:=VisibleFlag;
       if AResourceName <> '' then
-        ImageIndex := IDEImages.LoadImage(16, AResourceName);
+        ImageIndex := IDEImages.LoadImage(AResourceName);
     end;
     if ParentMenuItem<>nil then
       ParentMenuItem.Add(NewMenuItem)
@@ -5275,7 +5275,7 @@ begin
       None := False;
       IDEImages.Images_16.Draw(
         ABox.Canvas, X, Y,
-        IDEImages.LoadImage(16, 'issue_' + LCLPlatformDirNames[lclPlatform]));
+        IDEImages.LoadImage('issue_' + LCLPlatformDirNames[lclPlatform]));
       Inc(X, Scale96ToForm(16));
       Inc(X, Scale96ToForm(OutVertCentered(X, IntToStr(ARestrictions[lclPlatform])).CX));
     end;
@@ -5683,19 +5683,19 @@ var
   begin
     ZItem := NewSubMenu(oisZOrder, 0, ComponentEditorMIPrefix+'ZOrder', [], True);
     Item := NewItem(oisOrderMoveToFront, 0, False, True, @ZOrderItemClick, 0, '');
-    Item.ImageIndex := IDEImages.LoadImage(16, 'Order_move_front');
+    Item.ImageIndex := IDEImages.LoadImage('Order_move_front');
     Item.Tag := 0;
     ZItem.Add(Item);
     Item := NewItem(oisOrderMoveToBack, 0, False, True, @ZOrderItemClick, 0, '');
-    Item.ImageIndex := IDEImages.LoadImage(16, 'Order_move_back');
+    Item.ImageIndex := IDEImages.LoadImage('Order_move_back');
     Item.Tag := 1;
     ZItem.Add(Item);
     Item := NewItem(oisOrderForwardOne, 0, False, True, @ZOrderItemClick, 0, '');
-    Item.ImageIndex := IDEImages.LoadImage(16, 'Order_forward_one');
+    Item.ImageIndex := IDEImages.LoadImage('Order_forward_one');
     Item.Tag := 2;
     ZItem.Add(Item);
     Item := NewItem(oisOrderBackOne, 0, False, True, @ZOrderItemClick, 0, '');
-    Item.ImageIndex := IDEImages.LoadImage(16, 'Order_back_one');
+    Item.ImageIndex := IDEImages.LoadImage('Order_back_one');
     Item.Tag := 3;
     ZItem.Add(Item);
     if ComponentEditorVerbSeparator <> nil then

@@ -197,18 +197,18 @@ begin
 
   InstallTreeView.Images := IDEImages.Images_16;
   AvailableTreeView.Images := IDEImages.Images_16;
-  ImgIndexPackage := IDEImages.LoadImage(16, 'item_package');
-  ImgIndexInstalledPackage := IDEImages.LoadImage(16, 'pkg_installed');
-  ImgIndexInstallPackage := IDEImages.LoadImage(16, 'pkg_package_autoinstall');
-  ImgIndexUninstallPackage := IDEImages.LoadImage(16, 'pkg_package_uninstall');
-  ImgIndexCirclePackage := IDEImages.LoadImage(16, 'pkg_package_circle');
-  ImgIndexMissingPackage := IDEImages.LoadImage(16, 'pkg_conflict');
-  ImgIndexOverlayUnknown := IDEImages.LoadImage(16, 'state_unknown');
-  ImgIndexOverlayBasePackage := IDEImages.LoadImage(16, 'pkg_core_overlay');
-  ImgIndexOverlayFPCPackage := IDEImages.LoadImage(16, 'pkg_fpc_overlay');
-  ImgIndexOverlayLazarusPackage := IDEImages.LoadImage(16, 'pkg_lazarus_overlay');
-  ImgIndexOverlayDesignTimePackage := IDEImages.LoadImage(16, 'pkg_design_overlay');
-  ImgIndexOverlayRunTimePackage := IDEImages.LoadImage(16, 'pkg_runtime_overlay');
+  ImgIndexPackage := IDEImages.LoadImage('item_package');
+  ImgIndexInstalledPackage := IDEImages.LoadImage('pkg_installed');
+  ImgIndexInstallPackage := IDEImages.LoadImage('pkg_package_autoinstall');
+  ImgIndexUninstallPackage := IDEImages.LoadImage('pkg_package_uninstall');
+  ImgIndexCirclePackage := IDEImages.LoadImage('pkg_package_circle');
+  ImgIndexMissingPackage := IDEImages.LoadImage('pkg_conflict');
+  ImgIndexOverlayUnknown := IDEImages.LoadImage('state_unknown');
+  ImgIndexOverlayBasePackage := IDEImages.LoadImage('pkg_core_overlay');
+  ImgIndexOverlayFPCPackage := IDEImages.LoadImage('pkg_fpc_overlay');
+  ImgIndexOverlayLazarusPackage := IDEImages.LoadImage('pkg_lazarus_overlay');
+  ImgIndexOverlayDesignTimePackage := IDEImages.LoadImage('pkg_design_overlay');
+  ImgIndexOverlayRunTimePackage := IDEImages.LoadImage('pkg_runtime_overlay');
 
   Caption:=lisInstallUninstallPackages;
   NoteLabel.Caption:=lisIDECompileAndRestart;
