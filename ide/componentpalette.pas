@@ -220,8 +220,8 @@ begin
   Pal := TComponentPalette(Palette);
   if Pal.PageControl<>nil then
     Pal.PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPage.ReAlignButtons'){$ENDIF};
-  ComponentPaletteBtnWidthScaled := Pal.PageControl.ScaleCoord(ComponentPaletteBtnWidth);
-  ComponentPaletteBtnHeightScaled := Pal.PageControl.ScaleCoord(ComponentPaletteBtnHeight);
+  ComponentPaletteBtnWidthScaled := Pal.PageControl.Scale96ToForm(ComponentPaletteBtnWidth);
+  ComponentPaletteBtnHeightScaled := Pal.PageControl.Scale96ToForm(ComponentPaletteBtnHeight);
   ButtonTree:=nil;
   try
     ScrollBox:=TScrollBox(PageComponent.Components[0]);
@@ -337,7 +337,7 @@ begin
       VertScrollBar.Visible := false;
       AutoScroll:=false;
       {$ENDIF}
-      VertScrollBar.Increment := PageComponent.ScaleCoord(ComponentPaletteBtnHeight);
+      VertScrollBar.Increment := PageComponent.Scale96ToForm(ComponentPaletteBtnHeight);
       VertScrollBar.Tracking := True;
       Parent := PageComponent;
     end;
@@ -414,7 +414,7 @@ begin
     Down := True;
     Hint := lisSelectionTool;
     ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
-    SetBounds(0,0,aScrollBox.ScaleCoord(ComponentPaletteBtnWidth),aScrollBox.ScaleCoord(ComponentPaletteBtnHeight));
+    SetBounds(0,0,aScrollBox.Scale96ToForm(ComponentPaletteBtnWidth),aScrollBox.Scale96ToForm(ComponentPaletteBtnHeight));
     Parent := aScrollBox;
   end;
 end;
@@ -442,7 +442,7 @@ begin
       Pal.fComponentButtons[CompCN] := Btn;
       Btn.Name := CompPaletteCompBtnPrefix + aButtonUniqueName + CompCN;
       // Left and Top will be set in ReAlignButtons.
-      Btn.SetBounds(Btn.Left,Btn.Top,aScrollBox.ScaleCoord(ComponentPaletteBtnWidth),aScrollBox.ScaleCoord(ComponentPaletteBtnHeight));
+      Btn.SetBounds(Btn.Left,Btn.Top,aScrollBox.Scale96ToForm(ComponentPaletteBtnWidth),aScrollBox.Scale96ToForm(ComponentPaletteBtnHeight));
       Btn.Glyph.Assign(aComp.Icon);
       Btn.GroupIndex := 1;
       Btn.Flat := true;

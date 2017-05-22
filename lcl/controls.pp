@@ -1481,10 +1481,14 @@ type
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
     //scale support
-    function ScaleCoord(const ASize: Integer): Integer;
-    function ScaleCoordBack(const ASize: Integer): Integer;
-    function ScaleCoord96(const ASize: Integer): Integer;
-    function ScaleCoord96Back(const ASize: Integer): Integer;
+    function ScaleDesignToForm(const ASize: Integer): Integer;
+    function ScaleFormToDesign(const ASize: Integer): Integer;
+    function Scale96ToForm(const ASize: Integer): Integer;
+    function ScaleFormTo96(const ASize: Integer): Integer;
+    function Scale96ToFont(const ASize: Integer): Integer;
+    function ScaleFontTo96(const ASize: Integer): Integer;
+    function ScaleScreenToFont(const ASize: Integer): Integer;
+    function ScaleFontToScreen(const ASize: Integer): Integer;
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize
