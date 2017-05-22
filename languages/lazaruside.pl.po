@@ -679,6 +679,10 @@ msgstr "Dostępne formularze:"
 msgid "These forms must be created and freed in the program code."
 msgstr ""
 
+#: lazarusidestrconsts.dlgavoidunnecessaryjumps
+msgid "Avoid unnecessary jumps"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
 msgstr "Tło"
@@ -849,12 +853,6 @@ msgstr "Przedrostek zmiennej"
 #: lazarusidestrconsts.dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Przedrostek zapisu"
-
-#: lazarusidestrconsts.dlgcentercursorline
-#, fuzzy
-#| msgid "Center Cursor Line"
-msgid "Center cursor line"
-msgstr "Wyśrodkuj aktualny wiersz"
 
 #: lazarusidestrconsts.dlgcharcasefileact
 #, fuzzy
@@ -2282,9 +2280,17 @@ msgstr "Wstaw odstęp przed"
 msgid "Interval in secs"
 msgstr "Odstęp w sekundach"
 
+#: lazarusidestrconsts.dlgjumpcodeblockpos
+msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Skoki (np. skoki do metod)"
+
+#: lazarusidestrconsts.dlgjumpsinglelinepos
+msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
@@ -10085,6 +10091,10 @@ msgstr ""
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr ""
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr ""
@@ -14658,6 +14668,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
+msgstr ""
+
+#: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
+msgid "Override function result string types with the first parameter expression type"
 msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd

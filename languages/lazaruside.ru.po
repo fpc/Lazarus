@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-11 01:18+0300\n"
+"PO-Revision-Date: 2017-05-23 01:23+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -666,6 +666,10 @@ msgstr "Доступные формы:"
 msgid "These forms must be created and freed in the program code."
 msgstr "Эти формы должны создаваться и освобождаться в коде программы."
 
+#: lazarusidestrconsts.dlgavoidunnecessaryjumps
+msgid "Avoid unnecessary jumps"
+msgstr "Избегать излишних переходов"
+
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
 msgstr "Фон"
@@ -828,10 +832,6 @@ msgstr "Префикс переменной"
 #: lazarusidestrconsts.dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Префикс WRITE"
-
-#: lazarusidestrconsts.dlgcentercursorline
-msgid "Center cursor line"
-msgstr "Устанавливать курсор по центру"
 
 #: lazarusidestrconsts.dlgcharcasefileact
 msgid "Save As - auto rename Pascal files lower case"
@@ -2186,9 +2186,17 @@ msgstr "Вставлять пробелы перед"
 msgid "Interval in secs"
 msgstr "Интервал в сек"
 
+#: lazarusidestrconsts.dlgjumpcodeblockpos
+msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
+msgstr "Вертикальное положение при переходе к блоку кода в процентах (0=вверху, 100=внизу)"
+
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Переход (например, по методу)"
+
+#: lazarusidestrconsts.dlgjumpsinglelinepos
+msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
+msgstr "Вертикальное положение при переходе к строке в процентах (0=вверху, 100=внизу)"
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
@@ -9727,6 +9735,10 @@ msgstr "Скрыть сообщение в позиции %s вставкой д
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Скрыть сообщение вставкой директивы IDE {%H-}"
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr "Скрыть сообщение вставкой {$warn %s off} в модуле \"%s\""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Скрыть средство поиска"
@@ -14093,6 +14105,10 @@ msgstr "каталог вывода %s содержит исходный код 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Перекрыть язык. Например, --language=de. Возможные значения смотрите в каталоге languages."
+
+#: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
+msgid "Override function result string types with the first parameter expression type"
+msgstr "Заменять строковый тип результата функции типом выражения первого параметра"
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"

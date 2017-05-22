@@ -667,6 +667,10 @@ msgstr "可用窗体:"
 msgid "These forms must be created and freed in the program code."
 msgstr ""
 
+#: lazarusidestrconsts.dlgavoidunnecessaryjumps
+msgid "Avoid unnecessary jumps"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
 msgstr "背景"
@@ -831,12 +835,6 @@ msgstr "变量前缀"
 #: lazarusidestrconsts.dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "写入前缀"
-
-#: lazarusidestrconsts.dlgcentercursorline
-#, fuzzy
-#| msgid "Center Cursor Line"
-msgid "Center cursor line"
-msgstr "光标所在行中部"
 
 #: lazarusidestrconsts.dlgcharcasefileact
 #, fuzzy
@@ -2234,9 +2232,17 @@ msgstr "在之前插入空格"
 msgid "Interval in secs"
 msgstr "时间间隔(秒为单位)"
 
+#: lazarusidestrconsts.dlgjumpcodeblockpos
+msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "跳转(也就是方法跳转)"
+
+#: lazarusidestrconsts.dlgjumpsinglelinepos
+msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
@@ -10052,6 +10058,10 @@ msgstr ""
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr ""
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr ""
@@ -14613,6 +14623,10 @@ msgstr ""
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "替换语言. 例如 --language=de. 所有可用的值请看 languages 目录."
+
+#: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
+msgid "Override function result string types with the first parameter expression type"
+msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"

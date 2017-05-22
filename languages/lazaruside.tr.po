@@ -663,6 +663,10 @@ msgstr "Kullanılabilir formlar:"
 msgid "These forms must be created and freed in the program code."
 msgstr ""
 
+#: lazarusidestrconsts.dlgavoidunnecessaryjumps
+msgid "Avoid unnecessary jumps"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
 msgstr "Arkaplan"
@@ -828,10 +832,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcdtwriteprefix
 msgid "Write prefix"
-msgstr ""
-
-#: lazarusidestrconsts.dlgcentercursorline
-msgid "Center cursor line"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcharcasefileact
@@ -2196,8 +2196,16 @@ msgstr ""
 msgid "Interval in secs"
 msgstr ""
 
+#: lazarusidestrconsts.dlgjumpcodeblockpos
+msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgjumpsinglelinepos
+msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgjumptomethodbody
@@ -9830,6 +9838,10 @@ msgstr ""
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr ""
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr ""
@@ -14383,6 +14395,10 @@ msgstr ""
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Dil seçeneğini yok sayarak yeni değer atar. Örneğin --language=tr. Olası değerler için languages dizinindeki dosyalara bakın."
+
+#: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
+msgid "Override function result string types with the first parameter expression type"
+msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"

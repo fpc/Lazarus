@@ -667,6 +667,10 @@ msgstr "Доступні форми:"
 msgid "These forms must be created and freed in the program code."
 msgstr "Ці форми мають створюватись і вивільняти пам'ять програмним шляхом."
 
+#: lazarusidestrconsts.dlgavoidunnecessaryjumps
+msgid "Avoid unnecessary jumps"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
 msgstr "Тло"
@@ -829,10 +833,6 @@ msgstr "Префікс змінної"
 #: lazarusidestrconsts.dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Префікс WRITE"
-
-#: lazarusidestrconsts.dlgcentercursorline
-msgid "Center cursor line"
-msgstr "Рядок з курсором у центр"
 
 #: lazarusidestrconsts.dlgcharcasefileact
 msgid "Save As - auto rename Pascal files lower case"
@@ -2187,9 +2187,17 @@ msgstr "Вставляти пробіл перед"
 msgid "Interval in secs"
 msgstr "Інтервал у сек"
 
+#: lazarusidestrconsts.dlgjumpcodeblockpos
+msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Перехід (напр. Метод Переходу)"
+
+#: lazarusidestrconsts.dlgjumpsinglelinepos
+msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
@@ -9731,6 +9739,10 @@ msgstr "Приховати повідомлення у позиції %s вст�
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Приховати повідомлення, вставивши директиву ІСР {%H-}"
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Приховати засіб пошуку"
@@ -14096,6 +14108,10 @@ msgstr "кінцева тека %s містить джерело модуля Pa
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Підмінити мову. Наприклад --language=de.  Для можливих величин див. теку languages"
+
+#: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
+msgid "Override function result string types with the first parameter expression type"
+msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"

@@ -667,6 +667,10 @@ msgstr "Form tersedia:"
 msgid "These forms must be created and freed in the program code."
 msgstr ""
 
+#: lazarusidestrconsts.dlgavoidunnecessaryjumps
+msgid "Avoid unnecessary jumps"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
 msgstr "Latar belakang"
@@ -833,12 +837,6 @@ msgstr "Prefiks Variable"
 #: lazarusidestrconsts.dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Prefiks Write"
-
-#: lazarusidestrconsts.dlgcentercursorline
-#, fuzzy
-#| msgid "Center Cursor Line"
-msgid "Center cursor line"
-msgstr "Tengahkan Baris Kursor"
 
 #: lazarusidestrconsts.dlgcharcasefileact
 #, fuzzy
@@ -2253,9 +2251,17 @@ msgstr "Sisipkan spasi di depan"
 msgid "Interval in secs"
 msgstr "Interval dalam detik"
 
+#: lazarusidestrconsts.dlgjumpcodeblockpos
+msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Lompatan (contoh Lompatan Metode)"
+
+#: lazarusidestrconsts.dlgjumpsinglelinepos
+msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
@@ -10072,6 +10078,10 @@ msgstr ""
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr ""
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr ""
@@ -14708,6 +14718,10 @@ msgstr ""
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Timpa bahasa. Sebagai contoh  --language=de. untuk nilai yang mungkin lihat file dalam direktori languages."
+
+#: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
+msgid "Override function result string types with the first parameter expression type"
+msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"

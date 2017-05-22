@@ -667,6 +667,10 @@ msgstr "Fiches disponibles :"
 msgid "These forms must be created and freed in the program code."
 msgstr "Ces fiches doivent être créées et libérées par le code du programme."
 
+#: lazarusidestrconsts.dlgavoidunnecessaryjumps
+msgid "Avoid unnecessary jumps"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
 msgstr "Arrière-plan"
@@ -829,10 +833,6 @@ msgstr "Préfixe de variable"
 #: lazarusidestrconsts.dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Préfixe \"Write\""
-
-#: lazarusidestrconsts.dlgcentercursorline
-msgid "Center cursor line"
-msgstr "Centrer la ligne du curseur"
 
 #: lazarusidestrconsts.dlgcharcasefileact
 msgid "Save As - auto rename Pascal files lower case"
@@ -2187,9 +2187,17 @@ msgstr "Insérer un espace devant"
 msgid "Interval in secs"
 msgstr "Intervalle en secondes"
 
+#: lazarusidestrconsts.dlgjumpcodeblockpos
+msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Sauts"
+
+#: lazarusidestrconsts.dlgjumpsinglelinepos
+msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
@@ -9732,6 +9740,10 @@ msgstr "Cacher le message à %s en insérant la directive de l'EDI \"{%H-}\""
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Cacher le message en insérant la directive de l'EDI \"{%H-}\""
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Cacher la recherche"
@@ -14109,6 +14121,10 @@ msgstr ""
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Redéfinir la langue. Par exemple \"--language=de\". Pour les valeurs possibles, consultez le répertoire \"languages\"."
+
+#: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
+msgid "Override function result string types with the first parameter expression type"
+msgstr ""
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
