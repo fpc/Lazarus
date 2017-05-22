@@ -314,7 +314,8 @@ begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,MsgID,Tool) then continue;
-    aCaption:='Hide message by inserting {$warn '+IntToStr(MsgID)+' off} to unit "'+ExtractFilename(Tool.MainFilename)+'"';
+    aCaption:=Format(lisHideMessageByInsertingWarnOffToUnit, [IntToStr(MsgID),
+      ExtractFilename(Tool.MainFilename)]);
     Fixes.AddMenuItem(Self,Msg,aCaption);
   end;
 end;

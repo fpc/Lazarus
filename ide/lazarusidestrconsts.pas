@@ -2157,8 +2157,8 @@ resourcestring
   dlgIdentifierCompletion = 'Identifier Completion';
   dlgJumpingETC = 'Jumping (e.g. Method Jumping)';
   dlgAdjustTopLine = 'Adjust top line due to comment in front';
-  dlgJumpSingleLinePos = 'Vertical position for a single line jump in %. (0=top, 100=bottom)';
-  dlgJumpCodeBlockPos = 'Vertical position for a code block jump in %. (0=top, 100=bottom)';
+  dlgJumpSingleLinePos = 'Vertical position for a single line jump in % (0=top, 100=bottom)';
+  dlgJumpCodeBlockPos = 'Vertical position for a code block jump in % (0=top, 100=bottom)';
   dlgAvoidUnnecessaryJumps = 'Avoid unnecessary jumps';
   dlgCursorBeyondEOL = 'Cursor beyond EOL';
   dlgSkipForwardClassDeclarations = 'Skip forward class declarations';
@@ -6350,6 +6350,8 @@ resourcestring
   lisMultiplePack = ', multiple packages: ';
   lisQuickFixError = 'QuickFix error';
   lisPositionOutsideOfSource = '%s (position outside of source)';
+  lisHideMessageByInsertingWarnOffToUnit = 'Hide message by inserting {$warn %'
+    +'s off} to unit "%s"';
   lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';
   lisHideWithPackageOptionVm = 'Hide with package option (-vm%s)';
   lisRemoveLocalVariable3 = 'Remove local variable "%s"';
