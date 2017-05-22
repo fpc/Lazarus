@@ -1628,7 +1628,7 @@ begin
     FListItems := TOwnerDataListItems.Create(Self);
   end
   else
-    CreateListItems;
+    FListItems := CreateListItems;
 
   if HandleAllocated then 
     TWSCustomListViewClass(WidgetSetClass).SetOwnerData(Self, AValue);
