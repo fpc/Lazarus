@@ -79,7 +79,7 @@ begin
     Cells[0, 0] := lisConfirmPackageNewPackageSet;
     Cells[1, 0] := lisConfirmPackageAction;
     Cells[2, 0] := lisConfirmPackageOldPackageSet;
-    d := RowCount * (GetRealDefaultRowHeight + GridLineWidth) - Height;
+    d := RowCount * (DefaultRowHeight + GridLineWidth) - Height;
   end;
   // Auto-grow dialog up to 3/4 of the screen height.
   d := Min(d, Screen.Height * 3 div 4 - Height);

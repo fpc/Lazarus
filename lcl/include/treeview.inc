@@ -4515,7 +4515,7 @@ begin
   if ExpandSignType = tvestTheme then
     Result := MulDiv(FThemeExpandSignSize, Font.PixelsPerInch, Screen.PixelsPerInch)
   else
-    Result := DefaultTreeNodeExpandSignSize;
+    Result := MulDiv(DefaultTreeNodeExpandSignSize, Font.PixelsPerInch, 96);
 end;
 
 function TCustomTreeView.GetRealIndent: Integer;
@@ -4951,13 +4951,13 @@ var
           // draw a plus or a minus sign
           R := Rect(ALeft, ATop, ARight, ABottom);
           Rectangle(R);
-          MoveTo(R.Left + 2, MidY);
-          LineTo(R.Right - 2, MidY);
+          MoveTo(R.Left + MulDiv(2, Font.PixelsPerInch, 96), MidY);
+          LineTo(R.Right - MulDiv(2, Font.PixelsPerInch, 96), MidY);
           if not CollapseSign then
           begin
-            MoveTo(MidX, R.Top + 2);
-            LineTo(MidX, R.Bottom - 2);
-	  end;
+            MoveTo(MidX, R.Top + MulDiv(2, Font.PixelsPerInch, 96));
+            LineTo(MidX, R.Bottom - MulDiv(2, Font.PixelsPerInch, 96));
+      	  end;
         end;
       tvestArrow,
       tvestArrowFill:

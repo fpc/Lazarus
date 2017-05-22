@@ -355,7 +355,7 @@ begin
         NeededWidth := R.Right - R.Left;
         NeededHeight := R.Bottom - R.Top;
         //debugln('TCustomLabel.CalcFittingFontHeight B NeededWidth=',dbgs(NeededWidth),' NeededHeight=',dbgs(NeededHeight),' MaxWidth=',dbgs(MaxWidth),' MaxHeight=',dbgs(MaxHeight));
-        if (NeededWidth in [1..MaxWidth]) and (NeededHeight in [1..MaxHeight]) then
+        if (NeededWidth > 0) and (NeededWidth <= MaxWidth) and (NeededHeight > 0) and (NeededHeight <= MaxHeight) then
         begin
           // TheText fits into the bounds
           if (not Result) or (FontHeight < TestFont.Height) then
