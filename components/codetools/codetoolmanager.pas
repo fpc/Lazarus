@@ -475,6 +475,9 @@ type
           Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
     function FindDeclarationInInterface(Code: TCodeBuffer;
           const Identifier: string; out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
+    function FindDeclarationInInterface(Code: TCodeBuffer;
+          const Identifier: string; out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function FindDeclarationWithMainUsesSection(Code: TCodeBuffer;
           const Identifier: string;
@@ -2179,6 +2182,16 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindDeclarationInInterface END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.FindDeclarationInInterface(Code: TCodeBuffer;
+  const Identifier: string; out NewCode: TCodeBuffer; out NewX, NewY,
+  NewTopLine: integer): boolean;
+var
+  BlockTopLine, BlockBottomLine: integer;
+begin
+  Result := FindDeclarationInInterface(Code, Identifier, NewCode, NewX, NewY, NewTopLine,
+    BlockTopLine, BlockBottomLine);
 end;
 
 function TCodeToolManager.FindDeclarationWithMainUsesSection(Code: TCodeBuffer;

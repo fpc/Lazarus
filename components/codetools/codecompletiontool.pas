@@ -359,6 +359,13 @@ type
         const ProcName, ParamName, ParamType: string;
         OverrideMod, CallInherited, CallInheritedOnlyInElse: boolean;
         SourceChanger: TSourceChangeCache;
+        out NewPos: TCodeXYPosition; out NewTopLine: integer;
+        LocalVarName: string = '' // default is 'aSource'
+        ): boolean;
+    function AddAssignMethod(ClassNode: TCodeTreeNode; MemberNodeExts: TFPList;
+        const ProcName, ParamName, ParamType: string;
+        OverrideMod, CallInherited, CallInheritedOnlyInElse: boolean;
+        SourceChanger: TSourceChangeCache;
         out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer;
         LocalVarName: string = '' // default is 'aSource'
         ): boolean;
@@ -6251,6 +6258,19 @@ begin
   AddClassInsertion(CleanDef,Def,ProcName,ncpPublicProcs,nil,ProcBody);
   Result:=ApplyChangesAndJumpToFirstNewProc(ClassNode.StartPos,1,true,
                    NewPos,NewTopLine, BlockTopLine, BlockBottomLine);
+end;
+
+function TCodeCompletionCodeTool.AddAssignMethod(ClassNode: TCodeTreeNode;
+  MemberNodeExts: TFPList; const ProcName, ParamName, ParamType: string;
+  OverrideMod, CallInherited, CallInheritedOnlyInElse: boolean;
+  SourceChanger: TSourceChangeCache; out NewPos: TCodeXYPosition; out
+  NewTopLine: integer; LocalVarName: string): boolean;
+var
+  BlockTopLine, BlockBottomLine: integer;
+begin
+  Result := AddAssignMethod(ClassNode, MemberNodeExts, ProcName, ParamName, ParamType,
+    OverrideMod, CallInherited, CallInheritedOnlyInElse, SourceChanger, NewPos, NewTopLine,
+    BlockTopLine, BlockBottomLine, LocalVarName);
 end;
 
 function TCodeCompletionCodeTool.GetPossibleInitsForVariable(
