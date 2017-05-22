@@ -115,6 +115,8 @@ begin
   NewX:=0;
   NewY:=0;
   NewTopLine:=0;
+  BlockTopLine:=0;
+  BlockBottomLine:=0;
   if CompareCaret(BlockBegin,BlockEnd)<=0 then begin
     IDEMessageDialog(lisNoCodeSelected,
       lisPleaseSelectSomeCodeToExtractANewProcedureMethod,
