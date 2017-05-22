@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-04-29 01:47+0300\n"
+"PO-Revision-Date: 2017-05-23 02:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9718,6 +9718,10 @@ msgstr "Скрыть сообщение в позиции %s вставкой д
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Скрыть сообщение вставкой директивы IDE {%H-}"
+
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr "Скрыть сообщение вставкой {$warn %s off} в модуле \"%s\""
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"

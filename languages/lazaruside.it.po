@@ -9801,6 +9801,10 @@ msgstr "Nascondi i messaggi a %s inserendo la direttiva IDE {%H-}"
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Nascondi i messaggi inserendo la direttiva IDE {%H-}"
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Nascondi la ricerca"

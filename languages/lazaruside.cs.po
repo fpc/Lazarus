@@ -9751,6 +9751,10 @@ msgstr "Skrýt zprávu na %s vložením IDE direktivy {%H-}"
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Skrýt zprávu vložením IDE direktivy {%H-}"
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Skrýt hledání"

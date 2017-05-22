@@ -9724,6 +9724,10 @@ msgstr "Cacher le message à %s en insérant la directive de l'EDI \"{%H-}\""
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Cacher le message en insérant la directive de l'EDI \"{%H-}\""
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Cacher la recherche"

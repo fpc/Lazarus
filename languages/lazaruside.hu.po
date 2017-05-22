@@ -9721,6 +9721,10 @@ msgstr "Üzenet elrejtése (itt: %s) IDE direktíva beszúrásával {%H-}"
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Üzenet elrejtése IDE direktíva beszúrásával {%H-}"
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Keresés elrejtése"

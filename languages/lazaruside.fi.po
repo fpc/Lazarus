@@ -9655,6 +9655,10 @@ msgstr "Piilota viesti %s:ssa lisäämällä IDE:n ohje {%H-}"
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Piilota viesti lisäämällä IDE:n ohje {%H-}"
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Piilota haku"

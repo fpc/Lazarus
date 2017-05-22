@@ -9723,6 +9723,10 @@ msgstr "Приховати повідомлення у позиції %s вст�
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Приховати повідомлення, вставивши директиву ІСР {%H-}"
 
+#: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
+msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
 msgstr "Приховати засіб пошуку"
