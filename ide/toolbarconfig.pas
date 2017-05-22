@@ -204,7 +204,7 @@ begin
   TV.Images := IDEImages.Images_16;
   lvToolbar.SmallImages := IDEImages.Images_16;
   // default image to be used when none is available
-  defImageIndex := IDEImages.LoadImage(16, 'execute');
+  defImageIndex := IDEImages.LoadImage('execute');
   // Image for divider
   divImageIndex := IDEImages.Images_16.Add(btnAddDivider.Glyph,nil);
 
@@ -778,7 +778,7 @@ begin
   if ACommand.ImageIndex <> -1 then
     B.ImageIndex := ACommand.ImageIndex
   else
-    B.ImageIndex := IDEImages.LoadImage(16, 'execute');
+    B.ImageIndex := IDEImages.LoadImage('execute');
   B.Style := tbsButton;
   B.Item := ACommand;
   PositionAtEnd(FToolBar, B);

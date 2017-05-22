@@ -2158,7 +2158,7 @@ end;
 
 function TPropertyNamePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=[paMultiSelect,paValueList,paSortList,paRevertable,paHasDefaultValue];
+  Result:=[paMultiSelect,paValueList,paSortList,paRevertable];
 end;
 
 function TPropertyNamePropertyEditor.GetEditLimit: Integer;
@@ -3861,7 +3861,7 @@ end;
 
 function TTIElementNamePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=[paMultiSelect,paValueList,paSortList,paRevertable,paHasDefaultValue];
+  Result:=[paMultiSelect,paValueList,paSortList,paRevertable];
 end;
 
 function TTIElementNamePropertyEditor.GetEditLimit: Integer;

@@ -250,10 +250,10 @@ procedure TShowDesktopsToolButton.RefreshMenu;
     xItem.DesktopName := _Desktop.Name;
     xItem.Checked := _Desktop.Name = EnvironmentOptions.ActiveDesktopName;
     if not _Desktop.Compatible then
-      xItem.ImageIndex := IDEImages.LoadImage(16, 'state_warning')
+      xItem.ImageIndex := IDEImages.LoadImage('state_warning')
     else
     if _Desktop.Name = EnvironmentOptions.DebugDesktopName then
-      xItem.ImageIndex := IDEImages.LoadImage(16, 'debugger');
+      xItem.ImageIndex := IDEImages.LoadImage('debugger');
   end;
 
 var
@@ -267,10 +267,10 @@ begin
 
   xMISaveAs := TMenuItem.Create(xPM);
   xMISaveAs.Caption := dlgSaveCurrentDesktopAs;
-  xMISaveAs.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
+  xMISaveAs.ImageIndex := IDEImages.LoadImage('laz_save');
   xMIToggleDebug := TMenuItem.Create(xPM);
   xMIToggleDebug.Caption := dlgToggleDebugDesktop;
-  xMIToggleDebug.ImageIndex := IDEImages.LoadImage(16, 'debugger');
+  xMIToggleDebug.ImageIndex := IDEImages.LoadImage('debugger');
   // Saved desktops
   for i:=0 to EnvironmentOptions.Desktops.Count-1 do
   begin
@@ -291,7 +291,7 @@ begin
   xMISaveAs.Add(xMISaveAsNew);
   xMISaveAsNew.Caption := dlgNewDesktop;
   xMISaveAsNew.OnClick := @SaveAsDesktop;
-  xMISaveAsNew.ImageIndex := IDEImages.LoadImage(16, 'menu_saveas');
+  xMISaveAsNew.ImageIndex := IDEImages.LoadImage('menu_saveas');
 end;
 
 procedure TShowDesktopsToolButton.SaveAsDesktop(Sender: TObject);
@@ -328,19 +328,19 @@ begin
   ToolBar1.Images := IDEImages.Images_16;
   Caption := dlgManageDesktops;
   SaveAction.Hint := dlgSaveCurrentDesktopAs;
-  SaveAction.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
+  SaveAction.ImageIndex := IDEImages.LoadImage('laz_save');
   DeleteAction.Hint := lisDelete;
-  DeleteAction.ImageIndex := IDEImages.LoadImage(16, 'laz_cancel');
+  DeleteAction.ImageIndex := IDEImages.LoadImage('laz_cancel');
   RenameAction.Hint := lisRename;
-  RenameAction.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
+  RenameAction.ImageIndex := IDEImages.LoadImage('laz_edit');
   MoveUpAction.Hint := lisMenuEditorMoveUp;
-  MoveUpAction.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
+  MoveUpAction.ImageIndex := IDEImages.LoadImage('arrow_up');
   MoveDownAction.Hint := lisMenuEditorMoveDown;
-  MoveDownAction.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  MoveDownAction.ImageIndex := IDEImages.LoadImage('arrow_down');
   SetActiveDesktopAction.Hint := dlgSetActiveDesktop;
-  SetActiveDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'laz_tick');
+  SetActiveDesktopAction.ImageIndex := IDEImages.LoadImage('laz_tick');
   SetDebugDesktopAction.Hint := dlgToggleDebugDesktop;
-  SetDebugDesktopAction.ImageIndex := IDEImages.LoadImage(16, 'debugger');
+  SetDebugDesktopAction.ImageIndex := IDEImages.LoadImage('debugger');
   AutoSaveActiveDesktopCheckBox.Caption := dlgAutoSaveActiveDesktop;
   AutoSaveActiveDesktopCheckBox.Hint := dlgAutoSaveActiveDesktopHint;
   LblGrayedInfo.Caption := dlgGrayedDesktopsUndocked;

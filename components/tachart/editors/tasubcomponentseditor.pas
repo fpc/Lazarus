@@ -226,10 +226,10 @@ end;
 procedure TComponentListEditorForm.FormCreate(Sender: TObject);
 begin
   tbCommands.Images := IDEImages.Images_16;
-  tbAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  tbDelete.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
-  tbMoveDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
-  tbMoveUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
+  tbAdd.ImageIndex := IDEImages.LoadImage('laz_add');
+  tbDelete.ImageIndex := IDEImages.LoadImage('laz_delete');
+  tbMoveDown.ImageIndex := IDEImages.LoadImage('arrow_down');
+  tbMoveUp.ImageIndex := IDEImages.LoadImage('arrow_up');
   tbAdd.Caption := rsAdd;
   tbDelete.Caption := rsDelete;
   tbMoveUp.Caption := rsMoveUp;

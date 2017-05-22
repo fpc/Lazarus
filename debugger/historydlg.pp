@@ -322,38 +322,38 @@ begin
   SnapshotNotification.OnChange  := @SnapshotChanged;
   SnapshotNotification.OnCurrent := @SnapshotChanged;
 
-  imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
+  imgCurrentLine := IDEImages.LoadImage('debugger_current_line');
   lvHistory.SmallImages := IDEImages.Images_16;
 
   ToolBar1.Images := IDEImages.Images_16;
 
-  FPowerImgIdx     := IDEImages.LoadImage(16, 'debugger_power');
-  FPowerImgIdxGrey := IDEImages.LoadImage(16, 'debugger_power_grey');
-  FEnabledImgIdx   := IDEImages.LoadImage(16, 'debugger_enable');
-  FDisabledIdx     := IDEImages.LoadImage(16, 'debugger_disable');
+  FPowerImgIdx     := IDEImages.LoadImage('debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage('debugger_power_grey');
+  FEnabledImgIdx   := IDEImages.LoadImage('debugger_enable');
+  FDisabledIdx     := IDEImages.LoadImage('debugger_disable');
 
   tbPower.Hint := histdlgBtnPowerHint;
   tbHistorySelected.Hint := histdlgBtnEnableHint;
 
-  tbClear.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
+  tbClear.ImageIndex := IDEImages.LoadImage('menu_clean');
   tbClear.Hint  := histdlgBtnClearHint;
 
-  tbHist.ImageIndex := IDEImages.LoadImage(16, 'clock');
+  tbHist.ImageIndex := IDEImages.LoadImage('clock');
   tbHist.Hint  := histdlgBtnShowHistHint;
 
-  tbSnap.ImageIndex := IDEImages.LoadImage(16, 'camera');
+  tbSnap.ImageIndex := IDEImages.LoadImage('camera');
   tbSnap.Hint  := histdlgBtnShowSnapHint;
 
-  tbMakeSnap.ImageIndex := IDEImages.LoadImage(16, 'camera_add');
+  tbMakeSnap.ImageIndex := IDEImages.LoadImage('camera_add');
   tbMakeSnap.Hint  := histdlgBtnMakeSnapHint;
 
-  tbRemove.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  tbRemove.ImageIndex := IDEImages.LoadImage('laz_delete');
   tbRemove.Hint  := histdlgBtnRemoveHint;
 
-  tbImport.ImageIndex := IDEImages.LoadImage(16, 'laz_open');
+  tbImport.ImageIndex := IDEImages.LoadImage('laz_open');
   tbImport.Hint  := lisImport;
 
-  tbExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
+  tbExport.ImageIndex := IDEImages.LoadImage('laz_save');
   tbExport.Hint  := lisExport;
 
   tbPowerClick(nil);

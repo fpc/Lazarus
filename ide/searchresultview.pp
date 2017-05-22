@@ -316,10 +316,10 @@ begin
   mniCollapseAll.Caption := lisCollapseAll;
 
   ToolBar.Images := IDEImages.Images_16;
-  SearchAgainButton.ImageIndex := IDEImages.LoadImage(16, 'menu_search_find');
-  ClosePageButton.ImageIndex := IDEImages.LoadImage(16, 'menu_close');
+  SearchAgainButton.ImageIndex := IDEImages.LoadImage('menu_search_find');
+  ClosePageButton.ImageIndex := IDEImages.LoadImage('menu_close');
   ActionList.Images := IDEImages.Images_16;
-  actClosePage.ImageIndex := IDEImages.LoadImage(16, 'menu_close');
+  actClosePage.ImageIndex := IDEImages.LoadImage('menu_close');
 
   ScaledIcon := TIDEImages.ScaleImage(SearchInListEdit.Glyph, NewScaledIcon,
     MulDiv(SearchInListEdit.Glyph.Width, TIDEImages.GetScalePercent, 100),

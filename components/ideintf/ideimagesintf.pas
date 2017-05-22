@@ -25,7 +25,8 @@ unit IDEImagesIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, ImgList, Controls, Graphics, LResources;
+  Classes, SysUtils, LCLProc, LCLType, ImgList, Controls, Graphics, LResources,
+  Math;
 
 type
 
@@ -51,13 +52,16 @@ type
 
     class function GetScalePercent: Integer;
     class function ScaleImage(const AImage: TCustomBitmap; out ANewInstance: Boolean;
-      TargetWidth, TargetHeight: Integer): TCustomBitmap;
-    class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap;
+      TargetWidth, TargetHeight: Integer; const AFactor: Double): TCustomBitmap;
+    class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap; deprecated 'Use the other overload instead.';
+    class function CreateImage(ImageName: String; ImageSize: Integer = 16): TCustomBitmap;
     class procedure AssignImage(const ABitmap: TCustomBitmap; ImageName: String;
       ImageSize: Integer = 16);
 
-    function GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
-    function LoadImage(ImageSize: Integer; ImageName: String): Integer;
+    function LoadImage(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
+    function LoadImage(ImageName: String; ImageSize: Integer = 16): Integer;
+    function GetImageIndex(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
+    function GetImageIndex(ImageName: String; ImageSize: Integer = 16): Integer;
 
     property Images_12: TCustomImageList read GetImages_12;
     property Images_16: TCustomImageList read GetImages_16;
@@ -117,7 +121,12 @@ begin
     Result := 200; // 200%: 200% scaling
 end;
 
-class function TIDEImages.CreateImage(ImageSize: Integer; ImageName: String
+function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
+begin
+  Result := LoadImage(ImageName, ImageSize);
+end;
+
+class function TIDEImages.CreateImage(ImageName: String; ImageSize: Integer
   ): TCustomBitmap;
 var
   Grp: TCustomBitmap;
@@ -143,7 +152,7 @@ begin
     if Grp<>nil then
     begin
       Result := ScaleImage(Grp, GrpScaledNewInstance,
-        ImageSize*ScalePercent div 100, ImageSize * ScalePercent div 100);
+        ImageSize*ScalePercent div 100, ImageSize * ScalePercent div 100, ScalePercent / 100);
       if not GrpScaledNewInstance then
         Grp := nil;
       Exit; // found
@@ -159,7 +168,7 @@ class procedure TIDEImages.AssignImage(const ABitmap: TCustomBitmap;
 var
   xBmp: TCustomBitmap;
 begin
-  xBmp := TIDEImages.CreateImage(ImageSize, ImageName);
+  xBmp := TIDEImages.CreateImage(ImageName, ImageSize);
   try
     ABitmap.Assign(xBmp);
   finally
@@ -192,6 +201,12 @@ begin
     Result := CreateBitmapFromResourceName(HInstance, ImageName);
 end;
 
+class function TIDEImages.CreateImage(ImageSize: Integer; ImageName: String
+  ): TCustomBitmap;
+begin
+  Result := CreateImage(ImageName, ImageSize);
+end;
+
 destructor TIDEImages.Destroy;
 begin
   FreeAndNil(FImages_12);
@@ -203,7 +218,14 @@ begin
   inherited Destroy;
 end;
 
-function TIDEImages.GetImageIndex(ImageSize: Integer; ImageName: String): Integer;
+function TIDEImages.GetImageIndex(ImageSize: Integer; ImageName: String
+  ): Integer;
+begin
+  Result := GetImageIndex(ImageName, ImageSize);
+end;
+
+function TIDEImages.GetImageIndex(ImageName: String; ImageSize: Integer
+  ): Integer;
 var
   List: TStringList;
 begin
@@ -224,13 +246,13 @@ begin
     Result := -1;
 end;
 
-function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
+function TIDEImages.LoadImage(ImageName: String; ImageSize: Integer): Integer;
 var
   List: TCustomImageList;
   Names: TStringList;
   Grp: TGraphic;
 begin
-  Result := GetImageIndex(ImageSize, ImageName);
+  Result := GetImageIndex(ImageName, ImageSize);
   if Result <> -1 then Exit;
 
   case ImageSize of
@@ -253,7 +275,7 @@ begin
     Exit;
   end;
   try
-    Grp := CreateImage(ImageSize, ImageName);
+    Grp := CreateImage(ImageName, ImageSize);
     try
       if Grp=nil then
         raise Exception.CreateFmt('TIDEImages.LoadImage: %s not found.', [ImageName]);
@@ -274,11 +296,13 @@ begin
 end;
 
 class function TIDEImages.ScaleImage(const AImage: TCustomBitmap; out
-  ANewInstance: Boolean; TargetWidth, TargetHeight: Integer): TCustomBitmap;
+  ANewInstance: Boolean; TargetWidth, TargetHeight: Integer;
+  const AFactor: Double): TCustomBitmap;
 var
   Bmp: TBitmap;
+  TargetRect: TRect;
 begin
-  if (AImage.Width=TargetWidth) and (AImage.Height=TargetHeight) then
+  if SameValue(AFactor, 1) then
   begin
     ANewInstance := False;
     Exit(AImage);
@@ -297,9 +321,9 @@ begin
     {$ENDIF}
     Bmp.SetSize(TargetWidth, TargetHeight);
     Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
-    Bmp.Canvas.StretchDraw(
-      Rect(0, 0, TargetWidth, TargetHeight),
-      AImage);
+    TargetRect := Rect(0, 0, Round(AImage.Width*AFactor), Round(AImage.Height*AFactor));
+    OffsetRect(TargetRect, (TargetWidth-TargetRect.Right) div 2, (TargetHeight-TargetRect.Bottom) div 2);
+    Bmp.Canvas.StretchDraw(TargetRect, AImage);
   except
     FreeAndNil(Result);
     ANewInstance := False;

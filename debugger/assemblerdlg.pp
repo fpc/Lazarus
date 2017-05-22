@@ -268,34 +268,34 @@ begin
 
   actStepOverInstr.Caption := lisMenuStepOverInstr;
   actStepOverInstr.Hint := lisMenuStepOverInstrHint;
-  actStepOverInstr.ImageIndex := IDEImages.LoadImage(16, 'menu_stepover_instr');
+  actStepOverInstr.ImageIndex := IDEImages.LoadImage('menu_stepover_instr');
 
   actStepIntoInstr.Caption := lisMenuStepIntoInstr;
   actStepIntoInstr.Hint := lisMenuStepIntoInstrHint;
-  actStepIntoInstr.ImageIndex := IDEImages.LoadImage(16, 'menu_stepinto_instr');
+  actStepIntoInstr.ImageIndex := IDEImages.LoadImage('menu_stepinto_instr');
 
   actCurrentInstr.Caption := lisDisAssGotoCurrentAddress;
   actCurrentInstr.Hint := lisDisAssGotoCurrentAddressHint;
-  actCurrentInstr.ImageIndex := IDEImages.LoadImage(16, 'debugger_current_line');
+  actCurrentInstr.ImageIndex := IDEImages.LoadImage('debugger_current_line');
 
   actGotoAddr.Caption := lisDisAssGotoAddress;
   actGotoAddr.Hint := lisDisAssGotoAddressHint;
-  actGotoAddr.ImageIndex := IDEImages.LoadImage(16, 'callstack_show');
+  actGotoAddr.ImageIndex := IDEImages.LoadImage('callstack_show');
 
   actCopy.Caption := lisCopy;
   actCopy.Hint := lisCopy;
-  actCopy.ImageIndex := IDEImages.LoadImage(16, 'laz_copy');
+  actCopy.ImageIndex := IDEImages.LoadImage('laz_copy');
 
 
-  FPowerImgIdx := IDEImages.LoadImage(16, 'debugger_power');
-  FPowerImgIdxGrey := IDEImages.LoadImage(16, 'debugger_power_grey');
+  FPowerImgIdx := IDEImages.LoadImage('debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage('debugger_power_grey');
   ToolButtonPower.ImageIndex := FPowerImgIdx;
 
-  FCurLineImgIdx := IDEImages.LoadImage(16, 'debugger_current_line');
+  FCurLineImgIdx := IDEImages.LoadImage('debugger_current_line');
   //
 
-  FImgSourceLine := IDEImages.LoadImage(16, 'debugger_source_line');
-  FImgNoSourceLine := IDEImages.LoadImage(16, 'debugger_nosource_line');
+  FImgSourceLine := IDEImages.LoadImage('debugger_source_line');
+  FImgNoSourceLine := IDEImages.LoadImage('debugger_nosource_line');
 end;
 
 destructor TAssemblerDlg.Destroy;

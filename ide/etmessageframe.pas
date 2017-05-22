@@ -3443,12 +3443,12 @@ begin
   inherited Create(TheOwner);
 
   MessagesCtrl:=TMessagesCtrl.Create(Self);
-  ImgIDInfo:=IDEImages.LoadImage(12, 'state12x12_information');
-  ImgIDHint:=IDEImages.LoadImage(12, 'state12x12_hint');
-  ImgIDNote:=IDEImages.LoadImage(12, 'state12x12_note');
-  ImgIDWarning:=IDEImages.LoadImage(12, 'state12x12_warning');
-  ImgIDError:=IDEImages.LoadImage(12, 'state12x12_error');
-  ImgIDFatal:=IDEImages.LoadImage(12, 'state12x12_fatal');
+  ImgIDInfo:=IDEImages.LoadImage('state12x12_information', 12);
+  ImgIDHint:=IDEImages.LoadImage('state12x12_hint', 12);
+  ImgIDNote:=IDEImages.LoadImage('state12x12_note', 12);
+  ImgIDWarning:=IDEImages.LoadImage('state12x12_warning', 12);
+  ImgIDError:=IDEImages.LoadImage('state12x12_error', 12);
+  ImgIDFatal:=IDEImages.LoadImage('state12x12_fatal', 12);
   with MessagesCtrl do begin
     Name:='MessagesCtrl';
     Align:=alClient;

@@ -313,10 +313,10 @@ begin
   lbResources.Column[2].Caption := rsResource;
   btnAdd.Caption := lisBtnAdd;
   btnDelete.Caption := lisBtnDelete;
-  btnAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  btnDelete.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  btnAdd.ImageIndex := IDEImages.LoadImage('laz_add');
+  btnDelete.ImageIndex := IDEImages.LoadImage('laz_delete');
   btnClear.Caption := lisDeleteAll;
-  btnClear.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
+  btnClear.ImageIndex := IDEImages.LoadImage('menu_clean');
   lblResourceName.Caption := rsResource + ':';
   lblResourceType.Caption := rsResourceType + ':';
   for rt := Low(TUserResourceType) to High(TUserResourceType) do

@@ -4019,7 +4019,7 @@ var
   ResName: String;
 begin
   ResName := ComponentClass.ClassName;
-  Result := TIDEImages.CreateImage(24, ResName);
+  Result := TIDEImages.CreateImage(ResName, 24);
 
   if Result = nil then
     Result := CreateBitmapFromResourceName(HInstance, 'default')

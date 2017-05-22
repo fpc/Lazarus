@@ -139,8 +139,8 @@ begin
   DeleteButton.Caption:=lisDelete;
 
   FilesTreeView.Images:=IDEImages.Images_16;
-  ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
-  ImageIndexFile := IDEImages.LoadImage(16, 'laz_delete');
+  ImageIndexDirectory := IDEImages.LoadImage('pkg_files');
+  ImageIndexFile := IDEImages.LoadImage('laz_delete');
 
   ButtonPanel1.OKButton.ModalResult:=mrNone;
 end;

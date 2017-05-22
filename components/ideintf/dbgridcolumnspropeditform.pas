@@ -85,18 +85,18 @@ begin
   ToolBar1.Images := IDEImages.Images_16;
   actAdd.Caption := oiColEditAdd;
   actAddFields.Caption := dceAddFields;
-  actAddFields.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  actAddFields.ImageIndex := IDEImages.LoadImage('laz_add');
   actFetchLabels.Caption := dceFetchLabels;
-  actFetchLabels.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  actFetchLabels.ImageIndex := IDEImages.LoadImage('laz_add');
   actDel.Caption := oiColEditDelete;
   actMoveUp.Caption := oiColEditUp;
   actMoveDown.Caption := oiColEditDown;
-  actAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  actDel.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  actAdd.ImageIndex := IDEImages.LoadImage('laz_add');
+  actDel.ImageIndex := IDEImages.LoadImage('laz_delete');
   actDeleteAll.Caption := dceDeleteAll;
-  actDeleteAll.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
-  actMoveUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
-  actMoveDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  actDeleteAll.ImageIndex := IDEImages.LoadImage('laz_delete');
+  actMoveUp.ImageIndex := IDEImages.LoadImage('arrow_up');
+  actMoveDown.ImageIndex := IDEImages.LoadImage('arrow_down');
   actMoveUp.ShortCut := scCtrl or VK_UP;
   actMoveDown.ShortCut := scCtrl or VK_DOWN;
 

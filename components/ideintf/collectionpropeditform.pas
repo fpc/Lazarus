@@ -75,10 +75,10 @@ begin
   actDel.Caption := oiColEditDelete;
   actMoveUp.Caption := oiColEditUp;
   actMoveDown.Caption := oiColEditDown;
-  actAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  actDel.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
-  actMoveUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
-  actMoveDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  actAdd.ImageIndex := IDEImages.LoadImage('laz_add');
+  actDel.ImageIndex := IDEImages.LoadImage('laz_delete');
+  actMoveUp.ImageIndex := IDEImages.LoadImage('arrow_up');
+  actMoveDown.ImageIndex := IDEImages.LoadImage('arrow_down');
   actMoveUp.ShortCut := scCtrl or VK_UP;
   actMoveDown.ShortCut := scCtrl or VK_DOWN;
 

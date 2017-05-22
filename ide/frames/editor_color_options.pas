@@ -1395,16 +1395,16 @@ begin
   end;
 
 
-  UseSyntaxHighlightCheckBox.ImageIndex := IDEImages.LoadImage(16, 'laz_highlighter');
+  UseSyntaxHighlightCheckBox.ImageIndex := IDEImages.LoadImage('laz_highlighter');
   UseSyntaxHighlightCheckBox.Hint := dlgUseSyntaxHighlight;
   LanguageButton.Hint := dlgLang;
   ColorSchemeButton.Hint := dlgClrScheme;
   FileExtensionsComboBox.hint := dlgFileExts;
-  SetAttributeToDefaultButton.ImageIndex := IDEImages.LoadImage(16, 'laz_set_color_default');
+  SetAttributeToDefaultButton.ImageIndex := IDEImages.LoadImage('laz_set_color_default');
   SetAttributeToDefaultButton.Hint := dlgSetElementDefault;
-  SetAllAttributesToDefaultButton.ImageIndex := IDEImages.LoadImage(16, 'laz_set_colors_default');
+  SetAllAttributesToDefaultButton.ImageIndex := IDEImages.LoadImage('laz_set_colors_default');
   SetAllAttributesToDefaultButton.Hint := dlgSetAllElementDefault;
-  btnExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
+  btnExport.ImageIndex := IDEImages.LoadImage('laz_save');
   btnExport.Hint := lisExport;
 
   tbtnGlobal.Caption := dlgUseSchemeDefaults;

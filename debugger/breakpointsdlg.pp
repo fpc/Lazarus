@@ -332,35 +332,35 @@ begin
   mnuPopup.Images := IDEImages.Images_16;
   lvBreakPoints.SmallImages := IDEImages.Images_16;
 
-  ToolButtonAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  ToolButtonAdd.ImageIndex := IDEImages.LoadImage('laz_add');
 
   actEnableSelected.Caption := lisDbgItemEnable;
   actEnableSelected.Hint    := lisDbgItemEnableHint;
-  actEnableSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_enable');
+  actEnableSelected.ImageIndex := IDEImages.LoadImage('debugger_enable');
 
   actDisableSelected.Caption := lisDbgItemDisable;
   actDisableSelected.Hint    := lisDbgItemDisableHint;
-  actDisableSelected.ImageIndex := IDEImages.LoadImage(16, 'debugger_disable');
+  actDisableSelected.ImageIndex := IDEImages.LoadImage('debugger_disable');
 
   actDeleteSelected.Caption := lisBtnDelete;
   actDeleteSelected.Hint    := lisDbgItemDeleteHint;
-  actDeleteSelected.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  actDeleteSelected.ImageIndex := IDEImages.LoadImage('laz_delete');
 
   actEnableAll.Caption := lisEnableAll;
   actEnableAll.Hint    := lisDbgAllItemEnableHint;
-  actEnableAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_enable_all');
+  actEnableAll.ImageIndex := IDEImages.LoadImage('debugger_enable_all');
 
   actDisableAll.Caption := liswlDIsableAll;
   actDisableAll.Hint    := lisDbgAllItemDisableHint;
-  actDisableAll.ImageIndex := IDEImages.LoadImage(16, 'debugger_disable_all');
+  actDisableAll.ImageIndex := IDEImages.LoadImage('debugger_disable_all');
 
   actDeleteAll.Caption := lisDeleteAll;
   actDeleteAll.Hint    := lisDbgAllItemDeleteHint;
-  actDeleteAll.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
+  actDeleteAll.ImageIndex := IDEImages.LoadImage('menu_clean');
 
   actProperties.Caption:= liswlProperties;
   actProperties.Hint := lisDbgBreakpointPropertiesHint;
-  actProperties.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+  actProperties.ImageIndex := IDEImages.LoadImage('menu_environment_options');
 
   actToggleCurrentEnable.Caption:= lisBtnEnabled;
 

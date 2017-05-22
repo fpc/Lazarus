@@ -145,10 +145,10 @@ end;
 
 procedure TCleanPkgDepsDlg.FormCreate(Sender: TObject);
 begin
-  ImgIndexProject          := IDEImages.LoadImage(16, 'item_project');
-  ImgIndexPackage          := IDEImages.LoadImage(16, 'item_package');
-  ImgIndexDelete           := IDEImages.LoadImage(16, 'laz_delete');
-  ImgIndexKeep             := IDEImages.LoadImage(16, 'menu_run');
+  ImgIndexProject          := IDEImages.LoadImage('item_project');
+  ImgIndexPackage          := IDEImages.LoadImage('item_package');
+  ImgIndexDelete           := IDEImages.LoadImage('laz_delete');
+  ImgIndexKeep             := IDEImages.LoadImage('menu_run');
 
   Caption:=lisPkgCleanUpPackageDependencies;
   TransitivityLabel.Caption:=

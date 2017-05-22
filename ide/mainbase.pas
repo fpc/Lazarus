@@ -927,7 +927,7 @@ begin
   MenuCommand.Checked:=mnuChecked;
   MenuCommand.Visible:=mnuVisible;
   if bmpName<>'' then
-    MenuCommand.ImageIndex := IDEImages.LoadImage(16, bmpName);
+    MenuCommand.ImageIndex := IDEImages.LoadImage(bmpName);
 end;
 
 procedure TMainIDEBase.CreateMenuSeparatorSection(
@@ -943,7 +943,7 @@ procedure TMainIDEBase.CreateMenuSubSection(ParentSection: TIDEMenuSection;
 begin
   Section:=RegisterIDESubMenu(ParentSection,AName,ACaption);
   if bmpName<>'' then
-    Section.ImageIndex := IDEImages.LoadImage(16, bmpName);
+    Section.ImageIndex := IDEImages.LoadImage(bmpName);
 end;
 
 procedure TMainIDEBase.CreateMainMenuItem(var Section: TIDEMenuSection;
@@ -1573,10 +1573,10 @@ begin
     GetCmdAndBtn(ecJumpToProcedureHeader, xBtnItem);
     xBtnItem.Caption := lisMenuJumpToProcedureHeader;
     xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureHeaderClicked;
-    xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_jumpto_procedureheader');
+    xBtnItem.ImageIndex := IDEImages.LoadImage('menu_jumpto_procedureheader');
     GetCmdAndBtn(ecJumpToProcedureBegin, xBtnItem);
     xBtnItem.Caption := lisMenuJumpToProcedureBegin;
-    xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_jumpto_procedurebegin');
+    xBtnItem.ImageIndex := IDEImages.LoadImage('menu_jumpto_procedurebegin');
     xBtnItem.OnClick := @SourceEditorManager.JumpToProcedureBeginClicked;
     itmFindBlockOtherEnd.Command:=GetCommand(ecFindBlockOtherEnd);
     itmFindBlockStart.Command:=GetCommand(ecFindBlockStart);
@@ -1673,7 +1673,7 @@ begin
     GetCmdAndBtn(ecProjectChangeBuildMode, xBtnItem);
     xBtnItem.Caption := lisChangeBuildMode;
     xBtnItem.ToolButtonClass:=TSetBuildModeToolButton;
-    xBtnItem.ImageIndex := IDEImages.LoadImage(16, 'menu_compiler_options');
+    xBtnItem.ImageIndex := IDEImages.LoadImage('menu_compiler_options');
     xBtnItem.OnClick := @mnuBuildModeClicked;
 
     // run menu

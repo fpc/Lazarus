@@ -107,8 +107,8 @@ begin
   MoveDownBtn.Hint:=lisMoveSelectedDown;
   // Icons
   PopupMenu1.Images:=IDEImages.Images_16;
-  ActivateMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_open');
-  CloseMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'menu_close');
+  ActivateMenuItem.ImageIndex:=IDEImages.LoadImage('laz_open');
+  CloseMenuItem.ImageIndex:=IDEImages.LoadImage('menu_close');
   TIDEImages.AssignImage(CloseCheckedButton.Glyph, 'menu_close_all');
   TIDEImages.AssignImage(SaveCheckedButton.Glyph, 'menu_save_all');
   TIDEImages.AssignImage(MoveUpBtn.Glyph, 'arrow_up');

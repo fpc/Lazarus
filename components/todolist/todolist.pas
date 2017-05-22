@@ -240,9 +240,9 @@ begin
   inherited Create(AOwner);
   if Name<>ToDoWindowName then RaiseGDBException('');
   ToolBar.Images := IDEImages.Images_16;
-  acGoto.ImageIndex := IDEImages.LoadImage(16, 'menu_goto_line');
-  acRefresh.ImageIndex := IDEImages.LoadImage(16, 'laz_refresh');
-  acExport.ImageIndex := IDEImages.LoadImage(16, 'menu_saveas');
+  acGoto.ImageIndex := IDEImages.LoadImage('menu_goto_line');
+  acRefresh.ImageIndex := IDEImages.LoadImage('laz_refresh');
+  acExport.ImageIndex := IDEImages.LoadImage('menu_saveas');
 
   SaveDialog.Filter:= dlgFilterCsv+'|*.csv';
 end;

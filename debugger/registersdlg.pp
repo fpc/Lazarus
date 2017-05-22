@@ -145,8 +145,8 @@ begin
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
 
-  FPowerImgIdx := IDEImages.LoadImage(16, 'debugger_power');
-  FPowerImgIdxGrey := IDEImages.LoadImage(16, 'debugger_power_grey');
+  FPowerImgIdx := IDEImages.LoadImage('debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage('debugger_power_grey');
   actPower.ImageIndex := FPowerImgIdx;
   //actPower.Caption := lisDbgWinPower;
   actPower.Hint := lisDbgWinPowerHint;

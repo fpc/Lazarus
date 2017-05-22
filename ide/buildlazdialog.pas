@@ -1229,9 +1229,9 @@ procedure TConfigureBuildLazarusDlg.SetupInfoPage;
 begin
   InfoTabSheet.Caption:=lisInformation;
 
-  fImageIndexPackage := IDEImages.LoadImage(16, 'item_package');
-  fImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
-  fImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
+  fImageIndexPackage := IDEImages.LoadImage('item_package');
+  fImageIndexRequired := IDEImages.LoadImage('pkg_required');
+  fImageIndexInherited := IDEImages.LoadImage('pkg_inherited');
   InhTreeView.Images := IDEImages.Images_16;
 
   UpdateInheritedTree;
