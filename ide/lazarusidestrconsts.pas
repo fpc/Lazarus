@@ -6341,6 +6341,8 @@ resourcestring
   lisMultiplePack = ', multiple packages: ';
   lisQuickFixError = 'QuickFix error';
   lisPositionOutsideOfSource = '%s (position outside of source)';
+  lisHideMessageByInsertingWarnOffToUnit = 'Hide message by inserting {$warn %'
+    +'s off} to unit "%s"';
   lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';
   lisHideWithPackageOptionVm = 'Hide with package option (-vm%s)';
   lisRemoveLocalVariable3 = 'Remove local variable "%s"';
