@@ -117,6 +117,7 @@ const
 {QDialogRejected} mrCancel,
 {QDialogAccepted} mrOk
   );
+{$endif}
 
 { TQtWSSaveDialog }
 
@@ -125,8 +126,6 @@ class function TQtWSSaveDialog.QueryWSEventCapabilities(
 begin
   Result := [cdecWSNoCanCloseSupport];
 end;
-
-{$endif}
   
 { TQtWSCommonDialog }
 
