@@ -54,7 +54,7 @@ interface
 uses
   Classes, SysUtils, Controls, Forms, StdCtrls, Buttons, ButtonPanel,
   LCLProc, LCLType, LazConf, LazFileUtils, Laz2_XMLCfg, LazFileCache,
-  IDEHelpIntf, LazarusIDEStrConsts;
+  IDEHelpIntf, IDEImagesIntf, LazarusIDEStrConsts;
 
 type
 
@@ -232,11 +232,11 @@ begin
   FirstLabel.Caption := lisFirstTest;
   SecondLabel.Caption := lisSecondTest;
   AddBtn.Caption := lisBtnAdd;
-  AddBtn.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  TIDEImages.AssignImage(AddBtn.Glyph, 'laz_add');
   AddInverse.Caption := rsAddInverse;
-  AddInverse.LoadGlyphFromResourceName(HInstance, 'pkg_issues');
+  TIDEImages.AssignImage(AddInverse.Glyph, 'pkg_issues');
   RemoveBtn.Caption := lisBtnRemove;
-  RemoveBtn.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  TIDEImages.AssignImage(RemoveBtn.Glyph, 'laz_delete');
   ButtonPanel1.CloseButton.Caption := lisSave;
   ButtonPanel1.OKButton.Caption := lisOk;
   //ButtonPanel1.CloseButton.LoadGlyphFromStock(idButtonSave);

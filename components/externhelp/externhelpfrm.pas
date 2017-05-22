@@ -38,7 +38,8 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, LazConfigStorage, LazFileUtils, ComCtrls, Buttons, StdCtrls,
   ExtCtrls, ButtonPanel, LazHelpIntf, PackageIntf, MacroIntf, IDEOptionsIntf,
-  LazIDEIntf, BaseIDEIntf, IDEDialogs, HelpIntfs, IDEImagesIntf, SrcEditorIntf;
+  LazIDEIntf, IDEImagesIntf, BaseIDEIntf, IDEDialogs, HelpIntfs, IDEImagesIntf,
+  SrcEditorIntf;
 
 const
   ExternHelpConfigVersion = 1;
@@ -1132,8 +1133,8 @@ constructor TExternHelpGeneralOptsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FOptions:=TExternHelpOptions.Create;
-  AddSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
-  DeleteSpeedButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  TIDEImages.AssignImage(AddSpeedButton.Glyph, 'laz_add');
+  TIDEImages.AssignImage(DeleteSpeedButton.Glyph, 'laz_delete');
 end;
 
 destructor TExternHelpGeneralOptsFrame.Destroy;

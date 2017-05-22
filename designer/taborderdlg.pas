@@ -36,7 +36,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, Buttons, ExtCtrls, StdCtrls, ComCtrls, LCLType, LCLProc,
   // IdeIntf
-  PropEdits, IDEDialogs,
+  PropEdits, IDEDialogs, IDEImagesIntf,
   //IDE
   IDEOptionDefs, LazarusIDEStrConsts;
 
@@ -139,9 +139,9 @@ begin
   GlobalDesignHook.AddHandlerDeletePersistent(@OnDeletePersistent);
   GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
 
-  ArrowDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
-  ArrowUp.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  SortByPositionButton.LoadGlyphFromResourceName(HInstance, 'menu_edit_sort');
+  TIDEImages.AssignImage(ArrowDown.Glyph, 'arrow_down');
+  TIDEImages.AssignImage(ArrowUp.Glyph, 'arrow_up');
+  TIDEImages.AssignImage(SortByPositionButton.Glyph, 'menu_edit_sort');
 
   ArrowDown.Hint:=lisTabOrderDownHint;
   ArrowUp.Hint:=lisTabOrderUpHint;

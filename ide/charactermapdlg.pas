@@ -41,7 +41,7 @@ uses
   StdCtrls, LCLType, LCLUnicodeData, GraphType, Grids, ButtonPanel, ComCtrls,
   IDEHelpIntf, LazUTF8,
   {$ifdef WINDOWS}Windows,{$endif} lconvencoding,
-  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts;
+  LazarusIDEStrConsts, IDEImagesIntf, EditorOptions, EnvironmentOpts;
 
 type
   TOnInsertCharacterEvent = procedure (const C: TUTF8Char) of object;
@@ -125,7 +125,7 @@ begin
   RangeLabel.Caption := lisRange;
   SortUniRangeListButton.Flat:=True;
   SortUniRangeListButton.Hint:=lisSortUnicodeRangeListAlphabetically;
-  SortUniRangeListButton.LoadGlyphFromResourceName(HInstance, 'pkg_sortalphabetically');
+  TIDEImages.AssignImage(SortUniRangeListButton.Glyph, 'pkg_sortalphabetically');
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CloseButton.Caption:=lisBtnClose;
 

@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, StdCtrls, Menus,
   ComCtrls, Buttons,
-  LazarusIDEStrConsts, IDEOptionsIntf, Debugger, BaseDebugManager;
+  LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf, Debugger, BaseDebugManager;
 type
 
   { TDebuggerSignalsOptions }
@@ -89,8 +89,8 @@ begin
   lvSignals.Column[3].Caption := lisDebugOptionsFrmResume;
   cmdSignalAdd.Caption := lisAdd;
   cmdSignalRemove.Caption := lisRemove;
-  cmdSignalAdd.LoadGlyphFromResourceName(HInstance, 'laz_add');
-  cmdSignalRemove.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  TIDEImages.AssignImage(cmdSignalAdd.Glyph, 'laz_add');
+  TIDEImages.AssignImage(cmdSignalRemove.Glyph, 'laz_delete');
 
   mnuHandledByProgram.Caption := lisDebugOptionsFrmHandledByProgram;
   mnuiHandledByDebugger.Caption := lisDebugOptionsFrmHandledByDebugger;

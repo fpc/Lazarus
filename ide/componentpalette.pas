@@ -355,7 +355,7 @@ begin
     BtnRight:=TSpeedButton.Create(PageComponent);
     with BtnRight do
     begin
-      LoadGlyphFromResourceName(HInstance, 'SelCompPage');
+      TIDEImages.AssignImage(Glyph, 'SelCompPage');
       Flat := True;
       SetBounds(2,1,16,16);
       Hint := lisClickToSelectPalettePage;
@@ -408,7 +408,7 @@ begin
     Name := CompPalSelectionToolBtnPrefix + aButtonUniqueName;
     OnClick := @Pal.SelectionToolClick;
     OnMouseWheel := @Pal.OnPageMouseWheel;
-    LoadGlyphFromResourceName(hInstance, 'tmouse');
+    TIDEImages.AssignImage(Glyph, 'tmouse');
     Flat := True;
     GroupIndex:= 1;
     Down := True;

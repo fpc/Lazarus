@@ -28,7 +28,7 @@ unit ExceptionDlg;
 interface
 
 uses
-  Classes, Forms, Dialogs, StdCtrls, Buttons, LazarusIDEStrConsts;
+  Classes, Forms, Dialogs, StdCtrls, Buttons, IDEImagesIntf, LazarusIDEStrConsts;
 
 type
   
@@ -77,8 +77,8 @@ begin
   btnContinue.Caption := lisMenuContinue;
   cbIgnoreExceptionType.Caption := lisIgnoreExceptionType;
 
-  btnBreak.LoadGlyphFromResourceName(HInstance, 'menu_pause');
-  btnContinue.LoadGlyphFromResourceName(HInstance, 'menu_run');
+  TIDEImages.AssignImage(btnBreak.Glyph, 'menu_pause');
+  TIDEImages.AssignImage(btnContinue.Glyph, 'menu_run');
 
   DefaultControl := btnBreak;
   CancelControl := btnContinue;

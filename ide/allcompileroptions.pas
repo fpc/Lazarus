@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math, contnrs,
   Forms, Controls, StdCtrls, Buttons, ButtonPanel, EditBtn, ExtCtrls,
-  LCLProc, LazUTF8, Compiler, LazarusIDEStrConsts;
+  LCLProc, LazUTF8, Compiler, IDEImagesIntf, LazarusIDEStrConsts;
 
 type
 
@@ -85,7 +85,7 @@ procedure TfrmAllCompilerOptions.FormCreate(Sender: TObject);
 begin
   Caption:=lisAllOptions;
   edOptionsFilter.Hint := lisFilterTheAvailableOptionsList;
-  btnResetOptionsFilter.LoadGlyphFromResourceName(HInstance, ResBtnListFilter);
+  TIDEImages.AssignImage(btnResetOptionsFilter.Glyph, ResBtnListFilter);
   btnResetOptionsFilter.Enabled := False;
   btnResetOptionsFilter.Hint := lisClearTheFilterForOptions;
   cbShowModified.Caption:=lisShowOnlyModified;

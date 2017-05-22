@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, EditBtn,
-  IDEOptionsIntf, LazarusIDEStrConsts, PackageDefs, IDEDialogs;
+  IDEOptionsIntf, LazarusIDEStrConsts, PackageDefs, IDEDialogs,
+  IDEImagesIntf;
 
 type
 
@@ -75,7 +76,7 @@ begin
   POOutDirEdit.Text := FLazPackage.POOutputDirectory;
   PoForFormsCheckBox.Checked:=FLazPackage.EnableI18NForLFM;
 
-  POOutDirEdit.Button.LoadGlyphFromResourceName(HInstance, ResBtnSelDir); //DirectoryEdit
+  TIDEImages.AssignImage(POOutDirEdit.Button.Glyph, ResBtnSelDir); //DirectoryEdit
 end;
 
 procedure TPackageI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

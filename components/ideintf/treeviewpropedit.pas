@@ -19,7 +19,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  PropEdits, Componenteditors, StdCtrls, ComCtrls, ObjInspStrConsts, ExtCtrls;
+  PropEdits, Componenteditors, StdCtrls, ComCtrls, IDEImagesIntf,
+  ObjInspStrConsts, ExtCtrls;
 
 type
 
@@ -141,8 +142,8 @@ begin
   BtnLoad.Caption := sccsTrEdtLoad;
   BtnSave.Caption := sccsTrEdtSave;
   BtnApply.Caption := sccsTrEdtApply;
-  MoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
-  MoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
+  TIDEImages.AssignImage(MoveUpBtn.Glyph, 'arrow_up');
+  TIDEImages.AssignImage(MoveDownBtn.Glyph, 'arrow_down');
   MoveUpBtn.Hint:=rscdMoveUp;
   MoveDownBtn.Hint:=rscdMoveDown;
 

@@ -49,7 +49,7 @@ uses
   FileUtil, LazUTF8, LazUTF8Classes, LazFileUtils, LazFileCache, LazLogger,
   // Other
   MacroDefIntf, GDBMIDebugger, DbgIntfDebuggerBase,
-  TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts,
+  TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEImagesIntf,
   AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc;
   
 type
@@ -489,7 +489,7 @@ begin
   ImgIDError := Imagelist1.AddResourceName(HInstance, 'state_error');
   ImgIDWarning := Imagelist1.AddResourceName(HInstance, 'state_warning');
 
-  StopScanButton.LoadGlyphFromResourceName(HInstance, 'menu_stop');
+  TIDEImages.AssignImage(StopScanButton.Glyph, 'menu_stop');
 
   UpdateCaptions;
 

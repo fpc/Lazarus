@@ -24,7 +24,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, UTF8Process, LResources, Forms, Controls,
-  Graphics, Dialogs, ComCtrls, ButtonPanel, Process, Buttons, Menus, LCLProc;
+  Graphics, Dialogs, ComCtrls, ButtonPanel, Process, Buttons, Menus, LCLProc,
+  IDEImagesIntf;
 
 type
 
@@ -84,7 +85,7 @@ begin
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.HelpButton.Caption := rsShowLog;
-  ButtonPanel.HelpButton.LoadGlyphFromResourceName(HInstance, 'tsynsyncroedit');
+  TIDEImages.AssignImage(ButtonPanel.HelpButton.Glyph, 'tsynsyncroedit');
   mnuShowDiff.Caption:=rsShowDiff;
 end;
 

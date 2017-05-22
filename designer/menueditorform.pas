@@ -31,7 +31,7 @@ uses
   Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, ButtonPanel,
   ImgList, Themes, LCLintf, LCLProc,
   // IdeIntf
-  FormEditingIntf, PropEdits, ObjectInspector,
+  FormEditingIntf, PropEdits, ObjectInspector, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, MenuDesignerBase, MenuShortcuts;
 
@@ -474,18 +474,18 @@ procedure TMenuDesignerForm.LoadVariableButtonGlyphs(isInMenubar: boolean);
 begin
   if isInMenubar then
   begin
-    MoveItemUpButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_left');
-    MoveItemDownButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_right');
-    AddItemAboveButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_left');
-    AddItemBelowButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_right');
-    AddSubMenuButton.LoadGlyphFromResourceName(HINSTANCE,'add_submenu_below');
+    TIDEImages.AssignImage(MoveItemUpButton.Glyph, 'arrow_left');
+    TIDEImages.AssignImage(MoveItemDownButton.Glyph, 'arrow_right');
+    TIDEImages.AssignImage(AddItemAboveButton.Glyph, 'add_item_left', 24);
+    TIDEImages.AssignImage(AddItemBelowButton.Glyph, 'add_item_right', 24);
+    TIDEImages.AssignImage(AddSubMenuButton.Glyph, 'add_submenu_below', 24);
   end else
   begin
-    MoveItemUpButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_up');
-    MoveItemDownButton.LoadGlyphFromResourceName(HINSTANCE,'arrow_down');
-    AddItemAboveButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_above');
-    AddItemBelowButton.LoadGlyphFromResourceName(HINSTANCE,'add_item_below');
-    AddSubMenuButton.LoadGlyphFromResourceName(HINSTANCE,'add_submenu_right');
+    TIDEImages.AssignImage(MoveItemUpButton.Glyph, 'arrow_up');
+    TIDEImages.AssignImage(MoveItemDownButton.Glyph, 'arrow_down');
+    TIDEImages.AssignImage(AddItemAboveButton.Glyph, 'add_item_above', 24);
+    TIDEImages.AssignImage(AddItemBelowButton.Glyph, 'add_item_below', 24);
+    TIDEImages.AssignImage(AddSubMenuButton.Glyph, 'add_submenu_right', 24);
   end;
   UpdateSubmenuGroupBox(nil, nil);
   FDesigner.VariableGlyphsInMenuBar:=isInMenubar;
@@ -493,9 +493,9 @@ end;
 
 procedure TMenuDesignerForm.LoadFixedButtonGlyphs;
 begin
-  DeleteItemButton.LoadGlyphFromResourceName(HINSTANCE,'laz_delete');
-  AddSeparatorAboveButton.LoadGlyphFromResourceName(HINSTANCE,'add_sep_above');
-  AddSeparatorBelowButton.LoadGlyphFromResourceName(HINSTANCE,'add_sep_below');
+  TIDEImages.AssignImage(DeleteItemButton.Glyph, 'laz_delete');
+  TIDEImages.AssignImage(AddSeparatorAboveButton.Glyph, 'add_sep_above', 24);
+  TIDEImages.AssignImage(AddSeparatorBelowButton.Glyph, 'add_sep_below', 24);
   HelpButton.Hint:=lisMenuEditorGetHelpToUseThisEditor;
 end;
 

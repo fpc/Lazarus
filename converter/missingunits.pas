@@ -39,7 +39,7 @@ uses
   // IDEIntf
   LazIDEIntf,
   // IDE
-  CompilerOptions,
+  CompilerOptions, IDEImagesIntf,
   PackageDefs, Project, IDEProcs, LazarusIDEStrConsts;
 
 type
@@ -132,10 +132,10 @@ begin
     MissingUnitsGroupBox.Caption:=lisTheseUnitsWereNotFound;
     ChoicesLabel.Caption:=lisMissingUnitsChoices;
     SearchButton.Caption:=lisMissingUnitsSearch;
-    SearchButton.LoadGlyphFromResourceName(HInstance, 'menu_search_find');
+    TIDEImages.AssignImage(SearchButton.Glyph, 'menu_search_find');
     SkipButton.Caption:=lisMissingUnitsSkip;
-    SkipButton.LoadGlyphFromResourceName(HInstance, 'debugger_current_line_breakpoint');
-    CommentButton.LoadGlyphFromResourceName(HInstance, 'menu_comment'); // or insertremark
+    TIDEImages.AssignImage(SkipButton.Glyph, 'debugger_current_line_breakpoint');
+    TIDEImages.AssignImage(CommentButton.Glyph, 'menu_comment'); // or insertremark
     if ATargetDelphi then begin
       CommentButton.Caption:=lisMissingUnitsForDelphi;
       Info1Label.Caption:=lisMissingUnitsInfo1b;

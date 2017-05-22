@@ -34,7 +34,7 @@ interface
 uses
   SysUtils, Forms, Controls, Dialogs, StdCtrls, Buttons, ExtCtrls, ButtonPanel,
   IDEProcs, FileUtil, LazFileUtils, Laz2_XMLCfg, LCLType, LazarusIDEStrConsts,
-  IDEOptionsIntf, InputHistory, Project, CompilerOptions;
+  IDEOptionsIntf, IDEImagesIntf, InputHistory, Project, CompilerOptions;
 
 type
   { TImExportCompOptsDlg }
@@ -287,7 +287,7 @@ begin
     OKButton.Caption:=lisIECOLoadFromFile;
     OKButton.LoadGlyphFromStock(idButtonOpen);
     if OKButton.Glyph.Empty then
-      OKButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
+      TIDEImages.AssignImage(OKButton.Glyph, 'laz_open');
     OKButton.Enabled:=False;
     OKButton.OnClick:=@OpenButtonCLICK;
   end;
@@ -308,7 +308,7 @@ begin
     OKButton.Caption:=lisIECOSaveToFile;
     OKButton.LoadGlyphFromStock(idButtonSave);
     if OKButton.Glyph.Empty then
-      OKButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+      TIDEImages.AssignImage(OKButton.Glyph, 'laz_save');
     OKButton.Enabled:=False;
     OKButton.OnClick:=@SaveButtonCLICK;
   end;

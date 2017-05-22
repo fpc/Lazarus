@@ -51,7 +51,7 @@ uses
   // LCL
   Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel,
   // IdeIntf
-  BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs,
+  BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, IDEImagesIntf,
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IDE
@@ -389,9 +389,9 @@ begin
 
   SetupLocalPage;
   SetupEnvironmentPage;
-  UserOverridesAddButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
-  UserOverridesEditButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
-  UserOverridesDeleteButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  TIDEImages.AssignImage(UserOverridesAddButton.Glyph, 'laz_add');
+  TIDEImages.AssignImage(UserOverridesEditButton.Glyph, 'laz_edit');
+  TIDEImages.AssignImage(UserOverridesDeleteButton.Glyph, 'laz_delete');
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;

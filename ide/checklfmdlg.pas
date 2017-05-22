@@ -42,7 +42,7 @@ uses
   IDEExternToolIntf, PackageIntf, IDEWindowIntf, PropEdits, PropEditUtils,
   IDEMsgIntf, IDEDialogs, ComponentReg,
   // IDE
-  CustomFormEditor, LazarusIDEStrConsts,
+  CustomFormEditor, LazarusIDEStrConsts, IDEImagesIntf,
   IDEProcs, EditorOptions, SourceMarks, JITForms;
 
 type
@@ -748,7 +748,7 @@ begin
   ErrorsGroupBox.Caption:=lisErrors;
   LFMGroupBox.Caption:=lisLFMFile;
   RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
-  RemoveAllButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
+  TIDEImages.AssignImage(RemoveAllButton.Glyph, 'laz_delete');
   CancelButton.Caption:=lisCancel;
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);
   EditorOpts.GetSynEditSettings(LFMSynEdit);

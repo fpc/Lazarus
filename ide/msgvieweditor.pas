@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ComCtrls, LazarusIDEStrConsts;
+  Buttons, ComCtrls, IDEImagesIntf, LazarusIDEStrConsts;
 
 type
   { TMessageFilterRule }
@@ -95,9 +95,9 @@ begin
   DeleteSetButton.Caption:=lisDelete;
   FilterSetGroupBox.Caption:=lisFilterSets;
 
-  AddNewSetButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
-  DeleteSetButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
-  RenameSetButton.LoadGlyphFromResourceName(HInstance, 'laz_edit');
+  TIDEImages.AssignImage(AddNewSetButton.Glyph, 'laz_add');
+  TIDEImages.AssignImage(DeleteSetButton.Glyph, 'laz_delete');
+  TIDEImages.AssignImage(RenameSetButton.Glyph, 'laz_edit');
 end;
 
 procedure TMsgViewEditorDlg.DeleteSetButtonClick(Sender: TObject);

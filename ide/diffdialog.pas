@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, FileUtil,
   lazutf8classes, LazarusIDEStrConsts, EditorOptions, LCLType, IDEWindowIntf,
   IDEHelpIntf, InputHistory, DiffPatch, ExtCtrls, Dialogs, ComCtrls, SynEdit,
-  SynHighlighterDiff, SourceEditor;
+  IDEImagesIntf, SynHighlighterDiff, SourceEditor;
 
 type
 
@@ -345,14 +345,14 @@ begin
   end;
 
   // buttons
-  CancelScanningButton.LoadGlyphFromResourceName(hInstance, 'btn_cancel');
+  TIDEImages.AssignImage(CancelScanningButton.Glyph, 'btn_cancel');
   CloseButton.Caption:=lisClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   HelpButton.Caption:=lisMenuHelp;
 
   OpenInEditorButton.LoadGlyphFromStock(idButtonOpen);
   if OpenInEditorButton.Glyph.Empty then
-    OpenInEditorButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
+    TIDEImages.AssignImage(OpenInEditorButton.Glyph, 'laz_open');
   
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;

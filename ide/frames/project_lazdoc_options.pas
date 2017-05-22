@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, EditBtn, Project, IDEOptionsIntf, LazarusIDEStrConsts, IDEProcs,
-  CodeHelp;
+  IDEImagesIntf, CodeHelp;
 
 type
 
@@ -53,8 +53,8 @@ begin
   SearchPathsGroupBox.Caption:=lisSearchPaths2;
   AddPathButton.Caption := lisCodeHelpAddPathButton;
   DeletePathButton.Caption := lisCodeHelpDeletePathButton;
-  DeletePathButton.LoadGlyphFromResourceName(HInstance, 'laz_delete');
-  AddPathButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
+  TIDEImages.AssignImage(DeletePathButton.Glyph, 'laz_delete');
+  TIDEImages.AssignImage(AddPathButton.Glyph, 'laz_add');
 
   PathEdit.Clear;
 end;
