@@ -219,6 +219,7 @@ type
     Parent: PGtkWidget;
     Window: PGdkWindow;
     ParentPixmap: PGdkPixbuf;
+    fncOrigin:TPoint; // non-client area offsets surface origin
     constructor Create(AWidget: PGtkWidget; const APaintEvent: Boolean = False); virtual;
     constructor Create(AWindow: PGdkWindow; const APaintEvent: Boolean); virtual;
     constructor CreateFromCairo(AWidget: PGtkWidget; ACairo: PCairo_t); virtual;
@@ -802,6 +803,7 @@ begin
   FStyle := psSolid;
   FEndCap := pecFlat;
   FJoinStyle := pjsRound;
+  FPenMode := pmCopy; // default pen mode
 end;
 
 procedure TGtk3Pen.setCosmetic(b: Boolean);
@@ -990,7 +992,6 @@ var
   w: Double;
 begin
   SetSourceColor(FCurrentPen.Color);
-
   case FCurrentPen.Mode of
     pmBlack: begin
       SetSourceColor(clBlack);
@@ -1208,6 +1209,8 @@ begin
 end;
 
 procedure TGtk3DeviceContext.CreateObjects;
+var
+  Matrix:cairo_matrix_t;
 begin
   FBkMode := TRANSPARENT;
   FCurrentImage := nil;
@@ -1225,6 +1228,10 @@ begin
   FCurrentFont := FFont;
   FvImage := TGtk3Image.Create(nil, 1, 1, 8, CAIRO_FORMAT_ARGB32);
   FCurrentImage := FvImage;
+
+  cairo_get_matrix(Widget, @Matrix);
+  // widget with menu or other non-client exclusions have offset in trasform matrix
+  fncOrigin:=Point(round(Matrix.x0),round(Matrix.y0));
 end;
 
 procedure TGtk3DeviceContext.DeleteObjects;

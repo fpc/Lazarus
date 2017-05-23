@@ -2731,7 +2731,7 @@ end;
 
 function TGtk3WidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
 var
-  Matrix: Pcairo_matrix_t;
+  Matrix: cairo_matrix_t;
   dx: Double;
   dy: Double;
 begin
@@ -2746,22 +2746,17 @@ begin
     {$endif}
     exit;
   end;
-  New(Matrix);
-  cairo_get_matrix(TGtk3DeviceContext(DC).Widget, Matrix);
-  if Matrix <> nil then
+  cairo_get_matrix(TGtk3DeviceContext(DC).Widget, @Matrix);
+  dx := 0;
+  dy := 0;
+  cairo_matrix_transform_point(@Matrix, @dx, @dy);
+  // DebugLn('GetWindowOrgEx POINT ',Format('dx %d dy %d',[-Trunc(Dx), -Trunc(Dy)]));
+  if P <> nil then
   begin
-    dx := 0;
-    dy := 0;
-    cairo_matrix_transform_point(Matrix, @dx, @dy);
-    // DebugLn('GetWindowOrgEx POINT ',Format('dx %d dy %d',[-Trunc(Dx), -Trunc(Dy)]));
-    if P <> nil then
-    begin
-      P^.X := -Trunc(DX);
-      P^.Y := -Trunc(DY);
-    end;
-    Result := 1;
-    Dispose(Matrix);
+    P^.X := -Trunc(DX)+TGtk3DeviceContext(DC).fncOrigin.X;
+    P^.Y := -Trunc(DY)+TGtk3DeviceContext(DC).fncOrigin.Y;
   end;
+  Result := 1;
 end;
 
 function TGtk3WidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
@@ -2907,7 +2902,7 @@ end;
 
 function TGtk3WidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
 var
-  Matrix: Pcairo_matrix_t;
+  Matrix: cairo_matrix_t;
   cr: PCairo_t;
   P: PPoint;
   dx, dy: Double;
@@ -2921,26 +2916,23 @@ begin
   if not IsValidDC(DC) then
     exit;
   cr := TGtk3DeviceContext(DC).Widget;
-  New(Matrix);
-  try
-    cairo_get_matrix(cr, Matrix);
-    P := @Points;
-    while Count > 0 do
-    begin
-      Dec(Count);
-      DX := P^.X;
-      DY := P^.Y;
-      // DebugLn('LPTODP INPUT ',Format('dx %2.2n dy %2.2n',[dx, dy]));
-      cairo_matrix_translate(Matrix, Dx, Dy);
-      cairo_matrix_transform_point(Matrix, @Dx, @Dy);
-      // DebugLn('LPTODP Output ',Format('dx %2.2n dy %2.2n',[dx, dy]));
-      P^.X := Round(DX);
-      P^.Y := Round(DY);
-      Inc(P);
-    end;
-  finally
-    Dispose(Matrix);
+
+  P := @Points;
+  while Count > 0 do
+  begin
+    Dec(Count);
+    DX := P^.X;
+    DY := P^.Y;
+    // DebugLn('LPTODP INPUT ',Format('dx %2.2n dy %2.2n',[dx, dy]));
+    //cairo_matrix_translate(@Matrix, Dx, Dy);
+    //cairo_matrix_transform_point(@Matrix, @Dx, @Dy);
+    cairo_user_to_device(cr,@dx,@dy);
+    // DebugLn('LPTODP Output ',Format('dx %2.2n dy %2.2n',[dx, dy]));
+    P^.X := Round(DX)-TGtk3DeviceContext(DC).fncOrigin.x;
+    P^.Y := Round(DY)-TGtk3DeviceContext(DC).fncOrigin.y;
+    Inc(P);
   end;
+  Result:=true;
 end;
 
 function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -3221,7 +3213,7 @@ begin
   R := NormalizeRect(Rect(X1, Y1, X2, Y2));
   if IsRectEmpty(R) then Exit(True);
   with R do
-    TGtk3DeviceContext(DC).drawRect(Left, Top, Right - Left, Bottom - Top, True);
+    TGtk3DeviceContext(DC).drawRect(Left, Top, Right - Left, Bottom - Top, false);
   Result := True;
 end;
 
@@ -3892,7 +3884,7 @@ end;
 function TGtk3WidgetSet.SetWindowOrgEx(dc: hdc; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 var
-  Matrix: Pcairo_matrix_t;
+  Matrix: cairo_matrix_t;
   dx: Double;
   dy: Double;
 begin
@@ -3900,20 +3892,18 @@ begin
   if IsValidDC(DC) then
   begin
     GetWindowOrgEx(dc, OldPoint);
-    New(Matrix);
-    cairo_get_matrix(TGtk3DeviceContext(DC).Widget, Matrix);
-    if Matrix <> nil then
-    begin
-      dx := 0;
-      dy := 0;
-      // cairo_matrix_init_translate(Matrix, -NewX, -NewY);
-      cairo_matrix_translate(Matrix, -NewX, -NewY);
-      cairo_transform(TGtk3DeviceContext(DC).Widget, Matrix);
-      // cairo_set_matrix(TGtk3DeviceContext(DC).Widget, Matrix);
-      // DebugLn('TGtk3WidgetSet.SetWindowOrgEx NewX=',dbgs(NewX),' NewY=',dbgs(NewY));
-      Result := True;
-      Dispose(Matrix);
-    end;
+    cairo_get_matrix(TGtk3DeviceContext(DC).Widget, @Matrix);
+    dx := 0;
+    dy := 0;
+    // cairo_matrix_init_translate(Matrix, -NewX, -NewY);
+    cairo_matrix_translate(@Matrix,
+    	-NewX - TGtk3DeviceContext(DC).fncOrigin.x,
+      -NewY - TGtk3DeviceContext(DC).fncOrigin.Y);
+    cairo_transform(TGtk3DeviceContext(DC).Widget, @Matrix);
+    // cairo_set_matrix(TGtk3DeviceContext(DC).Widget, Matrix);
+    // DebugLn('TGtk3WidgetSet.SetWindowOrgEx NewX=',dbgs(NewX),' NewY=',dbgs(NewY));
+    Result := True;
+
   end;
 end;
 
