@@ -221,6 +221,7 @@ type
       ItemData: Pointer): Boolean;
     function DoDefaultFilterItem(const ACaption, FilterLC: string;
       const ItemData: Pointer): Boolean; virtual;
+    procedure DestroyWnd; override;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
     procedure ButtonClick; override;
@@ -1115,6 +1116,12 @@ function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption,
   FilterLC: string; const ItemData: Pointer): Boolean;
 begin
   Result := (FilterLC='') or (Pos(FilterLC,UTF8LowerCase(ACaption))>0);
+end;
+
+procedure TCustomControlFilterEdit.DestroyWnd;
+begin
+  IdleConnected:=false;
+  inherited DestroyWnd;
 end;
 
 function TCustomControlFilterEdit.DoFilterItem(const ACaption,
