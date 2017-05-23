@@ -11,7 +11,7 @@ uses
   // LazUtils
   LazFileUtils, Laz2_XMLCfg,
   // IdeIntf
-  IDEDialogs,
+  IDEDialogs, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, MenuShortcuts;
 
@@ -145,20 +145,22 @@ function GetSavedTemplatesCount: integer;
 function InsertMenuTemplateDlg: TMenuItem;
 function DeleteMenuTemplateDlg: boolean;
 function GetCfgPath: string;
+procedure InitMenuBaseSizes;
 
 const
-  MenuBar_Height = 20;
-  Separator_Height = 7;
-  Separator_Centre = 3;
-  DropDown_Height = 24;
-  MenuBar_Text_Offset = 7;
-  Double_MenuBar_Text_Offset = MenuBar_Text_Offset shl 1;
-  DropDown_Text_Offset = 35;
-  Double_DropDown_Text_Offset = DropDown_Text_Offset shl 1;
-  Gutter_Offset = 6;
-  Gutter_X = DropDown_Text_Offset - Gutter_Offset;
   MenuTemplatesFilename = 'menutemplates.xml';
 
+var
+  MenuBar_Height: Integer = 20;
+  Separator_Height: Integer = 7;
+  Separator_Centre: Integer = 3;
+  DropDown_Height: Integer = 24;
+  MenuBar_Text_Offset: Integer = 7;
+  Double_MenuBar_Text_Offset: Integer = 14;
+  DropDown_Text_Offset: Integer = 35;
+  Double_DropDown_Text_Offset: Integer = 70;
+  Gutter_Offset: Integer = 6;
+  Gutter_X: Integer = 29;
 
 implementation
 
@@ -270,6 +272,19 @@ begin
   Result:=ExtractFilePath(ChompPathDelim(GetAppConfigDirUTF8(False)))+'lazarus';
 end;
 
+procedure InitMenuBaseSizes;
+begin
+  MenuBar_Height := MulDiv(20, TIDEImages.GetScalePercent, 100);
+  Separator_Height := MulDiv(7, TIDEImages.GetScalePercent, 100);
+  Separator_Centre := MulDiv(3, TIDEImages.GetScalePercent, 100);
+  DropDown_Height := MulDiv(24, TIDEImages.GetScalePercent, 100);
+  MenuBar_Text_Offset := MulDiv(7, TIDEImages.GetScalePercent, 100);
+  Double_MenuBar_Text_Offset := MenuBar_Text_Offset shl 1;
+  DropDown_Text_Offset := MulDiv(35, TIDEImages.GetScalePercent, 100);
+  Double_DropDown_Text_Offset := DropDown_Text_Offset shl 1;
+  Gutter_Offset := MulDiv(6, TIDEImages.GetScalePercent, 100);
+  Gutter_X := DropDown_Text_Offset - Gutter_Offset;
+end;
 
 { TMenuTemplate }
 

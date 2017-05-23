@@ -1786,6 +1786,7 @@ constructor TShadowMenu.Create(aDesigner: TMenuDesigner; aForm: TForm;
 begin
   Assert(aMenu<>nil,'TShadowMenu.Create: TMenu parameter is nil');
   inherited Create(nil, aMenu);
+  InitMenuBaseSizes;
   FDesigner := aDesigner;
   FMainCanvas := aForm.Canvas;
   FInitialSelectedMenuItem := aSelect;
