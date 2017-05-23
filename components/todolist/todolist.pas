@@ -205,7 +205,7 @@ type
     procedure UpdateTodos(Immediately: boolean = false);
 
     property IDEItem: string read FIDEItem write SetIDEItem; // package name or empty for active project
-    property StartFilename : String read fStartFilename write SetStartFilename; // lpi, lpk or a source file
+    property StartFilename: String read fStartFilename write SetStartFilename; // lpi, lpk or a source file
     property BaseDirectory: string read FBaseDirectory;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -274,11 +274,7 @@ begin
     exit;
   end;
   fUpdateNeeded:=false;
-
   if fUpdating then Exit;
-
-  DebugLn(['TfrmTodo.UpdateTodos StartFilename=',StartFilename,' IDEItem=',IDEItem]);
-
   LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
 
   Screen.Cursor:=crHourGlass;
@@ -302,9 +298,9 @@ begin
     end;
 
     ResolveIDEItem(CurOwner,CurProject,CurPkg);
+    Assert(Assigned(CurOwner), 'TIDETodoWindow.UpdateTodos: CurOwner=Nil');
 
     Flags:=[];
-
     if chkListed.Checked then
       Include(Flags, fuooListed);
     if chkUsed.Checked then
@@ -343,8 +339,7 @@ end;
 
 procedure TIDETodoWindow.FormShow(Sender: TObject);
 begin
-  IdleConnected:=true;
-  UpdateTodos(true);
+  UpdateTodos;
 end;
 
 procedure TIDETodoWindow.HelpButtonClick(Sender: TObject);
