@@ -2131,14 +2131,6 @@ begin
     end;
   end;
 
-  {Issues #24308,#21900. Gtk should always send LM_SETFOCUS before LM_XXXX - mouse click}
-  if ((Msg.Msg = LM_LBUTTONDOWN) or (Msg.Msg = LM_RBUTTONDOWN) or
-    (Msg.Msg = LM_MBUTTONDOWN) or (Msg.Msg = LM_LBUTTONDBLCLK) or
-    (Msg.Msg = LM_XBUTTONDOWN)) and Assigned(LCLObject) and
-    not LCLObject.Focused and LCLObject.CanFocus and
-    not (csDesigning in LCLObject.ComponentState) then
-      LCLIntf.SetFocus(LCLObject.Handle);
-
   {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGMOUSE)}
   DebugLn('TGtk3Widget.GtkEventMouse ',dbgsName(LCLObject),
     ' msg=',dbgs(msg.Msg), ' point=',dbgs(Msg.XPos),',',dbgs(Msg.YPos));
