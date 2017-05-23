@@ -1570,6 +1570,16 @@ end;
 procedure TVisualTree.VSTPaintText(Sender: TBaseVirtualTree;
   const TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType);
+
+ function GetTextColor(const ADefColor: TColor; AIsFocusedNode: Boolean): TColor;
+ begin
+   Result := ADefColor;
+   if AIsFocusedNode then
+   {$IFDEF WINDOWS}
+     Result := clWhite;
+   {$ENDIF}
+ end;
+
 var
   Data: PData;
 begin
@@ -1581,10 +1591,7 @@ begin
       if ((Options.DaysToShowNewPackages > 0) and (DaysBetween(Now, Data^.RepositoryDate) <= Options.DaysToShowNewPackages)) and
           ((not Options.ShowRegularIcons) or ((Options.ShowRegularIcons) and (Data^.InstallState = 0))) then
         TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
-      if Node <> Sender.FocusedNode then
-        TargetCanvas.Font.Color := clBlack
-      else
-        TargetCanvas.Font.Color := clWhite;
+      TargetCanvas.Font.Color := GetTextColor(FVST.Font.Color, Node = Sender.FocusedNode);
     end
   end
   else if TextType = ttNormal then
@@ -1598,10 +1605,7 @@ begin
              else
                TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
            end;
-           if Node <> Sender.FocusedNode then
-             TargetCanvas.Font.Color := clBlack
-           else
-             TargetCanvas.Font.Color := clWhite;
+           TargetCanvas.Font.Color := GetTextColor(FVST.Font.Color, Node = Sender.FocusedNode);
          end;
       3: begin
            case Data^.DataType of
@@ -1611,43 +1615,24 @@ begin
                 else
                   TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold];
            end;
-           if Node <> Sender.FocusedNode then
-             TargetCanvas.Font.Color := clBlack
-           else
-             TargetCanvas.Font.Color := clWhite;
+           TargetCanvas.Font.Color := GetTextColor(FVST.Font.Color, Node = Sender.FocusedNode);
          end;
       4: begin
            if (FHoverNode = Node) and (FHoverColumn = Column) and ((Data^.DataType = 17) or (Data^.DataType = 18)) then
            begin
              TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsUnderline];
-             if  Node <> Sender.FocusedNode then
-               TargetCanvas.Font.Color := clBlue
-             else
-               TargetCanvas.Font.Color := clWhite;
+             TargetCanvas.Font.Color := GetTextColor(clBlue, Node = Sender.FocusedNode);
            end
            else if (Data^.DataType = 2) and (Data^.IsUpdated) then
            begin
              TargetCanvas.Font.Style := TargetCanvas.Font.Style + [fsBold];
-             if  Node <> Sender.FocusedNode then
-               TargetCanvas.Font.Color := clGreen
-             else
-               TargetCanvas.Font.Color := clWhite;
+             TargetCanvas.Font.Color := GetTextColor(clGreen, Node = Sender.FocusedNode);
            end
            else
-           begin
-             if  Node <> Sender.FocusedNode then
-               TargetCanvas.Font.Color := clBlack
-             else
-               TargetCanvas.Font.Color := clWhite;
-           end;
+             TargetCanvas.Font.Color := GetTextColor(FVST.Font.Color, Node = Sender.FocusedNode);
          end
       else
-        begin
-          if  Node <> Sender.FocusedNode then
-            TargetCanvas.Font.Color := FVST.Font.Color
-          else
-            TargetCanvas.Font.Color := clWhite;
-        end;
+        TargetCanvas.Font.Color := GetTextColor(FVST.Font.Color, Node = Sender.FocusedNode);
     end;
   end
 end;
