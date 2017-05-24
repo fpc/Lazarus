@@ -199,6 +199,7 @@ var
   AHints: TGdkWindowHints;
   AFixedWidthHeight: Boolean;
   AForm: TCustomForm;
+  AMinSize, ANaturalSize: gint;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds') then
     Exit;
@@ -213,6 +214,10 @@ begin
   ARect.width := AWidth;
   ARect.Height := AHeight;
   try
+    {fixes gtk3 assertion}
+    PGtkWindow(AWidget)^.get_preferred_width(@AMinSize, @ANaturalSize);
+    PGtkWindow(AWidget)^.get_preferred_height(@AMinSize, @ANaturalSize);
+
     AWidget^.size_allocate(@ARect);
     if not (csDesigning in AForm.ComponentState) and (AForm.Parent = nil) and (AForm.ParentWindow = 0) then
     begin
