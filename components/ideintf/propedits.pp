@@ -6985,7 +6985,7 @@ end;
 
 procedure TPropertyEditorHook.RemoveHandlerModified(const OnModified: TPropHookModified);
 begin
-  AddHandler(htModified,TMethod(OnModified));
+  RemoveHandler(htModified,TMethod(OnModified));
 end;
 
 procedure TPropertyEditorHook.AddHandlerModifiedWithName(
