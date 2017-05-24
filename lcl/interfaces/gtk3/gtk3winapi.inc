@@ -2469,6 +2469,28 @@ begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   writeln('TGtk3WidgetSet.GetSysColor WARNING: SOME SYSCOLORS ARE STILL HARDCODED nIndex=',nIndex);
   {$ENDIF}
+  if (nIndex = COLOR_WINDOW) or (nIndex = COLOR_WINDOWTEXT) or
+    (nIndex = COLOR_HIGHLIGHT) or (nIndex = COLOR_HIGHLIGHTTEXT) then
+      GetStyleWidget(lgsMemo)
+  else
+  if (nIndex = COLOR_MENU) or (nIndex = COLOR_MENUHILIGHT) or
+    (nIndex = COLOR_MENUTEXT) then
+  begin
+    GetStyleWidget(lgsMenu);
+    GetStyleWidget(lgsMenuitem);
+  end else
+  if (nIndex = COLOR_MENUBAR) then
+    GetStyleWidget(lgsMenuBar)
+  else
+  if (nIndex = COLOR_SCROLLBAR) then
+    GetStyleWidget(lgsVerticalScrollbar)
+  else
+  if (nIndex = COLOR_BTNFACE) or (nIndex = COLOR_BTNTEXT) or
+    (nIndex = COLOR_BTNSHADOW) or (nIndex = COLOR_BTNHIGHLIGHT) then
+    GetStyleWidget(lgsButton)
+  else
+  if (nIndex = COLOR_BACKGROUND) or (nIndex = COLOR_FORM) then
+    GetStyleWidget(lgsWindow);
   Result := SysColorMap[nIndex];
 end;
 
@@ -2483,9 +2505,10 @@ begin
     Result := FSysColorBrushes[nIndex];
     if Result = HBRUSH(-1) then
     begin
-      DebugLn('WARNING: GetSysColorBrush SysColorBrushes arent''t initialized properly....');
       InitSysColorBrushes;
       Result := FSysColorBrushes[nIndex];
+      if Result = HBRUSH(-1) then
+        DebugLn('WARNING: GetSysColorBrush SysColorBrushes arent''t initialized properly....');
     end;
   end;
 end;

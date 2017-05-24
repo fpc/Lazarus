@@ -1013,6 +1013,31 @@ begin
       StyleObject^.Widget := TGtkFixed.new;
       lgs := lgsFrame;
     end else
+    if CompareText(WName, LazGtkStyleNames[lgsVerticalScrollbar]) = 0 then
+    begin
+      StyleObject^.Widget := TGtkScrollbar.new(GTK_ORIENTATION_VERTICAL, nil);
+      lgs := lgsVerticalScrollbar;
+    end else
+    if CompareText(WName, LazGtkStyleNames[lgsHorizontalScrollbar]) = 0 then
+    begin
+      StyleObject^.Widget := TGtkScrollbar.new(GTK_ORIENTATION_HORIZONTAL, nil);
+      lgs := lgsHorizontalScrollbar;
+    end else
+    if CompareText(WName, LazGtkStyleNames[lgsMenuBar]) = 0 then
+    begin
+      StyleObject^.Widget := TGtkMenuBar.new;
+      lgs := lgsMenuBar;
+    end else
+    if CompareText(WName, LazGtkStyleNames[lgsMenu]) = 0 then
+    begin
+      StyleObject^.Widget := TGtkMenu.new;
+      lgs := lgsMenu;
+    end else
+    if CompareText(WName, LazGtkStyleNames[lgsMenuitem]) = 0 then
+    begin
+      StyleObject^.Widget := TGtkMenuItem.new;
+      lgs := lgsMenuItem;
+    end else
     begin
     end;
     if Gtk3IsWidget(StyleObject^.Widget) then
@@ -1028,6 +1053,9 @@ begin
       //TODO: copy stuff from gtk2proc
       UpdateSysColorMap(StyleObject^.Widget, lgs);
       Result := StyleObject^.Widget;
+    end else
+    begin
+      // DebugLn('BUG: GetStyleWithName() created style is not GtkWidget ',WName);
     end;
   end;
 end;
