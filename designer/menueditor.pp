@@ -2616,6 +2616,7 @@ begin
   TabOrder:= -1;
   PopupMenu:=FShadowMenu.ItemsPopupMenu;
   Parent:=FParentBox;
+  FParentBox.LocateShadows;
 end;
 
 { TMenuDesigner }
