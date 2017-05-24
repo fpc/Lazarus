@@ -2451,9 +2451,9 @@ var
     r.Right:=ClientWidth;
     r.Left:=r.Right - MenuBar_Height;
     SetLength(pts, 4);
-    pts[0]:=Point(r.Left, 9);
-    pts[1]:=Point(r.Left + 4, 12);
-    pts[2]:=Point(r.Left, 15);
+    pts[0]:=Point(r.Left, ScaleY(9, 96));
+    pts[1]:=Point(r.Left + ScaleX(4, 96), ScaleY(12, 96));
+    pts[2]:=Point(r.Left, ScaleY(15, 96));
     pts[3]:=pts[0];
     oldBrushColor:=Canvas.Brush.Color;
     oldPenColor:=Canvas.Pen.Color;
