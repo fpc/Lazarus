@@ -104,8 +104,6 @@ begin
 end;
 
 procedure TGtk3WidgetSet.Gtk3Destroy;
-var
-  AList: PGList;
 begin
   Gtk3MPF := nil;
   GTK3WidgetSet := nil;
@@ -114,23 +112,6 @@ begin
   if Assigned(FAppIcon) then
     FAppIcon^.unref;
   FAppIcon := nil;
-
-  if Assigned(FGtk3Application) then
-  begin
-    AList := FGtk3Application^.get_windows;
-    if Assigned(AList) then
-    begin
-      DebugLn('TGtk3WidgetSet.Gtk3Destroy app Windows list ',dbgs(g_list_length(AList)));
-      g_list_free(AList);
-    end else
-    begin
-      DebugLn('TGtk3WidgetSet.Gtk3Destroy app Windows list is null ');
-    end;
-
-    FGtk3Application^.release;
-    FGtk3Application^.unref;
-    FGtk3Application := nil;
-  end;
 end;
 
 procedure TGtk3WidgetSet.SetDefaultAppFontName;
@@ -442,13 +423,33 @@ begin
 end;
 
 procedure TGtk3WidgetSet.AppTerminate;
+var
+  AList: PGList;
 begin
-  {.$IFDEF GTK3DEBUGCORE}
+  {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WidgetSet.AppTerminate ',dbgs(gtk_main_level));
-  {.$ENDIF}
+  {$ENDIF}
   // g_main_context_release(g_main_context_default);
   if Assigned(FGtk3Application) then
+  begin
     FGtk3Application^.quit;
+    AList := FGtk3Application^.get_windows;
+    if Assigned(AList) then
+    begin
+      {$IFDEF GTK3DEBUGCORE}
+      DebugLn('TGtk3WidgetSet.Gtk3Destroy app Windows list ',dbgs(g_list_length(AList)));
+      {$ENDIF}
+      g_list_free(AList);
+    end else
+    begin
+      {$IFDEF GTK3DEBUGCORE}
+      DebugLn('TGtk3WidgetSet.Gtk3Destroy app Windows list is null ');
+      {$ENDIF}
+    end;
+    FGtk3Application^.release;
+    FGtk3Application^.unref;
+    FGtk3Application := nil;
+  end;
   if gtk_main_level > 0 then
     gtk_main_quit;
 end;
