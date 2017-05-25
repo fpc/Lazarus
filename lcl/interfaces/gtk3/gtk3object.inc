@@ -286,7 +286,6 @@ begin
   thrash:='l';
   fpwrite(threadsync_pipeout, thrash, 1);
 end;
-
 {$ENDIF}
 
 constructor TGtk3WidgetSet.Create;
@@ -296,6 +295,8 @@ var
 begin
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
   inherited Create;
+  FCSSTheme := TStringList.Create;
+  FThemeName := '';
   FTimerData := TFPList.Create;
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('** TGtk3WidgetSet.Create **');
@@ -369,6 +370,7 @@ begin
     FreeAndNil(CharSetEncodingList);
   end;
   FreeSysColorBrushes;
+  FCSSTheme.Free;
   inherited Destroy;
 end;
 
@@ -394,6 +396,45 @@ begin
   finally
     ReleaseDC(0, ScreenDC);
   end;
+end;
+
+procedure TGtk3WidgetSet.LoadCSSTheme;
+var
+  ACSSProvider: PGtkCssProvider;
+  ASettings: PGtkSettings;
+  AValue: TGValue;
+begin
+  ASettings := gtk_settings_get_default;
+  FillByte(AValue, SizeOf(AValue), 0);
+  AValue.init(G_TYPE_STRING);
+  ASettings^.get_property('gtk-theme-name', @AValue);
+  FThemeName := AValue.get_string;
+  AValue.unset;
+  ACSSProvider := gtk_css_provider_get_named(PGChar(FThemeName), '');
+  if not Assigned(ACSSProvider) then
+    exit;
+  {$note from here we must parse css and get eg tooltip background-color and color etc.}
+  FCSSTheme.Text := gtk_css_provider_to_string(ACSSProvider);
+end;
+
+procedure TGtk3WidgetSet.ClearCSSTheme;
+begin
+  FCSSTheme.Clear;
+end;
+
+function TGtk3WidgetSet.GetCSSTheme(AList: TStrings): boolean;
+begin
+  Result := FCSSTheme.Count > 0;
+  if not Result then
+    LoadCSSTheme;
+  AList.Assign(FCSSTheme);
+end;
+
+function TGtk3WidgetSet.GetThemeName: string;
+begin
+  if FThemeName = '' then
+    LoadCSSTheme;
+  Result := FThemeName;
 end;
 
 procedure TGtk3WidgetSet.AppRun(const ALoop: TApplicationMainLoop);
