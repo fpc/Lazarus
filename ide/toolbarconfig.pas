@@ -24,13 +24,15 @@ interface
 
 uses
   Classes, SysUtils,
-  // LCL and LazControls
-  LCLProc, Forms, Graphics, ExtCtrls, Buttons, StdCtrls,
-  Controls, ComCtrls, Menus, ButtonPanel, TreeFilterEdit, LclIntf,
+  // LCL
+  LCLProc, LclIntf, Controls, Forms, Graphics, ExtCtrls, Buttons, StdCtrls,
+  ComCtrls, Menus, ButtonPanel,
+  // LazControls
+  TreeFilterEdit,
   // LazUtils
   Laz2_XMLCfg,
   // IdeIntf
-  IDECommands, ToolBarIntf, IDEImagesIntf,
+  ToolBarIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts;
 
@@ -95,10 +97,10 @@ type
     procedure AddCommand;
     procedure AddTailItem;
     function GetMainListIndex(Item: TListItem): Integer;
-    procedure InsertMainListItem (Item,NextItem: TListItem);
+    procedure InsertMainListItem(Item, NextItem: TListItem);
     procedure RemoveCommand;
-    procedure RemoveMainListItem (Item:TListItem);
-    procedure ExchangeMainListItem (Item1,Item2: TListItem);
+    procedure RemoveMainListItem(Item: TListItem);
+    procedure ExchangeMainListItem(Item1, Item2: TListItem);
     procedure SetupCaptions;
     procedure LoadCategories;
     procedure AddMenuItem(ParentNode: TTreeNode; Item: TIDEButtonCommand);
@@ -194,7 +196,7 @@ begin
   TIDEImages.AssignImage(btnMoveDown.Glyph, 'arrow_down');
   TIDEImages.AssignImage(btnAddDivider.Glyph, 'menu_divider16');
 
-  btnAddDivider.Caption:='---';
+  btnAddDivider.Caption := '---';
 
   btnAdd.Hint      := lisCoolBarAddSelected;
   btnRemove.Hint   := lisCoolBarRemoveSelected;
@@ -247,12 +249,11 @@ var
   i: Integer;
 begin
   i:=lvToolbar.ItemIndex;
-
-  btnAdd.Enabled:={(ActiveControl=TV) and} (Assigned(TV.Selected) and Assigned((TV.Selected).Data));
+  btnAdd.Enabled:=(Assigned(TV.Selected) and Assigned((TV.Selected).Data));
   btnRemove.Enabled:=(ActiveControl=lvToolbar) and (i>-1) and (i<lvToolbar.Items.Count-1);
   btnMoveUp.Enabled:=(ActiveControl=lvToolbar) and (i>0) and (i<lvToolbar.Items.Count-1);
   btnMoveDown.Enabled:=(ActiveControl=lvToolbar) and (i>-1) and (i<lvToolbar.Items.Count-2);
-  btnAddDivider.Enabled:=(ActiveControl=lvToolbar);
+  btnAddDivider.Enabled:=(lvToolbar.Selected = nil) or (lvToolbar.Selected.Caption <> cIDEToolbarDivider);
 end;
 
 procedure TToolBarConfig.TVSelectionChanged(Sender: TObject);
@@ -270,23 +271,21 @@ begin
   Result := -1;
 end;
 
-procedure TToolBarConfig.InsertMainListItem(Item,NextItem: TListItem);
+procedure TToolBarConfig.InsertMainListItem(Item, NextItem: TListItem);
 var
-  I,J: Integer;
+  NextInd, I: Integer;
   aMainListItem: TLvItem;
 begin
   aMainListItem := TLvItem.Create;
   aMainListItem.Item := TIDEButtonCommand(Item.Data);
   aMainListItem.LvIndex := Item.Index;
-  if NextItem = Nil then
-    MainList.AddObject(Item.Caption,aMainListItem)
-  else begin
-    I := GetMainListIndex(NextItem);
-    MainList.InsertObject(I,Item.Caption,aMainListItem);
-    for J := I+1 to MainList.Count -1 do begin
-      aMainListItem := TLvItem(MainList.Objects[J]);
-      aMainListItem.LvIndex:= aMainListItem.LvIndex +1;
-    end;
+  Assert(Assigned(NextItem), 'TToolBarConfig.InsertMainListItem: NextItem = Nil.');
+  NextInd := GetMainListIndex(NextItem);
+  MainList.InsertObject(NextInd, Item.Caption, aMainListItem);
+  for I := NextInd+1 to MainList.Count -1 do
+  begin
+    aMainListItem := TLvItem(MainList.Objects[I]);
+    aMainListItem.LvIndex := aMainListItem.LvIndex +1;
   end;
 end;
 
@@ -300,7 +299,7 @@ begin
     MainList.Delete(I);
     for J := I to MainList.Count -1 do begin
       aMainListItem := TLvItem(MainList.Objects[J]);
-      aMainListItem.LvIndex:= aMainListItem.LvIndex -1;
+      aMainListItem.LvIndex := aMainListItem.LvIndex -1;
     end;
   end;
 end;
@@ -324,7 +323,6 @@ begin
   AddCommand;
 end;
 
-
 procedure TToolBarConfig.AddCommand;
 var
   n, nNext: TTreeNode;
@@ -333,41 +331,59 @@ var
   anIndex: Integer;
 begin
   n := TV.Selected;
-  if (Assigned(n) and Assigned(n.Data)) then
+  if (n = Nil) or (n.Data = Nil) then
+    Exit;
+  ACaption := TIDEButtonCommand(n.Data).Caption;
+  DeleteAmpersands(ACaption);
+  anIndex := lvToolbar.ItemIndex;
+  if anIndex = -1 then
   begin
-    anIndex:= lvToolbar.ItemIndex;
-    ACaption:= TIDEButtonCommand(n.Data).Caption;
-    DeleteAmpersands(ACaption);
-    if anIndex > -1 then
-      lvItem            := lvToolbar.Items.Insert(lvToolbar.ItemIndex)
-    else
-      lvItem            := lvToolbar.Items.Add;
-    lvItem.Caption      := ACaption;
-    lvItem.Data         := n.Data;
-    {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
-    if n.ImageIndex > -1 then
-      lvItem.ImageIndex   := n.ImageIndex
-    else
-      lvItem.ImageIndex   := defImageIndex;
-    {$ENDIF}
-    //lvItem.SubItems.Add(IntToStr(CurrProfile));
-    if anIndex > -1 then begin
-      // clear previous selection to avoid double sel in Qt
-      lvToolbar.Selected := nil;
-      lvToolbar.ItemIndex := lvItem.Index;
-      InsertMainListItem(lvItem,lvToolbar.Items[anIndex]);
-    end
-    else begin
-     // lvToolbar.ItemIndex := lvToolbar.Items.Count-1;
-      InsertMainListItem(lvItem,Nil);
-    end;
-    lvToolbar.ItemIndex := lvToolbar.ItemIndex+1;
-    nNext := TV.Selected.GetNext;
-    TV.Selected.Visible:= False;
-    if nNext <> nil then
-      TV.Selected := nNext;
-    UpdateButtonsState;
+    anIndex := lvToolbar.Items.Count-1;    // Add before the last empty item.
+    Assert(anIndex >= 0, 'TToolBarConfig.AddCommand: Index < 0.');
   end;
+  lvItem := lvToolbar.Items.Insert(anIndex);
+  lvItem.Caption := ACaption;
+  lvItem.Data := n.Data;
+  {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
+  if n.ImageIndex > -1 then
+    lvItem.ImageIndex := n.ImageIndex
+  else
+    lvItem.ImageIndex := defImageIndex;
+  {$ENDIF}
+  //lvItem.SubItems.Add(IntToStr(CurrProfile));
+  // clear previous selection to avoid double sel in Qt
+  lvToolbar.Selected := nil;
+  lvToolbar.ItemIndex := lvItem.Index;
+  InsertMainListItem(lvItem, lvToolbar.Items[anIndex]);
+  // Update selection in TreeView.
+  nNext := TV.Selected.GetNext;
+  TV.Selected.Visible:= False;
+  if nNext <> nil then
+    TV.Selected := nNext;
+  UpdateButtonsState;
+end;
+
+procedure TToolBarConfig.btnAddDividerClick(Sender: TObject);
+var
+  lvItem: TListItem;
+  anIndex: Integer;
+begin
+  anIndex := lvToolbar.ItemIndex;
+  if anIndex = -1 then
+  begin
+    anIndex := lvToolbar.Items.Count-1;    // Add before the last empty item.
+    Assert(anIndex >= 0, 'TToolBarConfig.btnAddDividerClick: Index < 0.');
+  end;
+  lvItem := lvToolbar.Items.Insert(anIndex);
+  //lvItem.Selected := False;
+  lvItem.Caption:= cIDEToolbarDivider;
+  {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
+  lvItem.ImageIndex := divImageIndex;
+  {$ENDIF}
+  lvToolbar.Selected := nil;
+  lvToolbar.ItemIndex := lvItem.Index;
+  InsertMainListItem(lvItem, lvToolbar.Items[anIndex]);
+  UpdateButtonsState;
 end;
 
 procedure TToolBarConfig.btnRemoveClick(Sender: TObject);
@@ -444,30 +460,6 @@ begin
     lblSelect.Caption:=Format('%d / %d', [lvToolbar.ItemIndex+1, lvToolbar.Items.Count-1])
   else
     lblSelect.Caption:=Format('%d+ / %d', [lvToolbar.ItemIndex, lvToolbar.Items.Count-1])
-end;
-
-
-procedure TToolBarConfig.btnAddDividerClick(Sender: TObject);
-var
-  lvItem: TListItem;
-  anIndex: Integer;
-begin
-  if not (ActiveControl=lvToolbar) then Exit;
-  anIndex := lvToolbar.ItemIndex;
-  if anIndex > -1 then
-    lvItem := lvToolbar.Items.Insert(anIndex)
-  else
-    lvItem := lvToolbar.Items.Add;
-  lvItem.Selected := False;
-  lvItem.Caption:= cIDEToolbarDivider;
-  {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
-  lvItem.ImageIndex:= divImageIndex;
-  {$ENDIF}
-  //lvItem.SubItems.Add(IntToStr(CurrProfile));
-  if lvToolbar.ItemIndex > -1 then
-    InsertMainListItem(lvItem,lvToolbar.Items[anIndex])
-  else
-    InsertMainListItem(lvItem,Nil);
 end;
 
 procedure TToolBarConfig.btnMoveDownClick(Sender: TObject);
