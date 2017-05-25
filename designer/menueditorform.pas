@@ -27,7 +27,7 @@ interface
 
 uses
   // FCL + LCL
-  Classes, SysUtils, Types, typinfo,
+  Classes, SysUtils, Types, typinfo, math,
   Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, ButtonPanel,
   ImgList, Themes, LCLintf, LCLProc,
   // IdeIntf
@@ -142,7 +142,6 @@ type
     FOnSelectItem: TNotifyEvent;
     FRIArray: array of TRadioIcon;
     procedure CreateRadioItems;
-    procedure ApplyLayout;
     procedure RIOnChange(Sender: TObject);
     procedure DoSelectItem;
   protected
@@ -156,6 +155,7 @@ type
     procedure SetParent(NewParent: TWinControl); override;
   public
     constructor CreateWithImageList(AOwner: TComponent; anImgList: TCustomImageList);
+    procedure RefreshLayout;
     property ItemIndex: integer read FItemIndex;
     property OnSelectItem: TNotifyEvent read FOnSelectItem write FOnSelectItem;
   end;
@@ -166,6 +166,7 @@ type
   private
     FButtonPanel: TButtonPanel;
     FRadioIconGroup: TRadioIconGroup;
+    procedure dlgChooseIconResize(Sender: TObject);
     function GetImageIndex: integer;
     procedure RIGClick(Sender: TObject);
   public
@@ -822,16 +823,32 @@ begin
   FedUncheckedHot:=ThemeServices.GetElementDetails(tbRadioButtonUncheckedHot);
   FedCheckedHot:=ThemeServices.GetElementDetails(tbRadioButtonCheckedHot);
   FedSize:=ThemeServices.GetDetailSize(FedUnChecked);
-  FRadioHeight:=FedSize.cy;
-  if (anImgList.Height > FRadioHeight) then
-    FRadioHeight:=anImgList.Height;
+  FRadioHeight:=Max(FedSize.cy, anImgList.Height);
   topOffset:=(FRadioHeight - FedSize.cy) div 2;
   FRadioRect:=Rect(0, topOffset, FedSize.cx, topOffset+FedSize.cy);
   FSpacing:=5;
   FRadioWidth:=FedSize.cx + FSpacing + anImgList.Width;
   FGlyphPt:=Point(FedSize.cx+FSpacing, 0);
   FItemIndex:= -1;
+  HorzScrollBar.Visible := False;
   CreateRadioItems;
+end;
+
+procedure TRadioIconGroup.RefreshLayout;
+var
+  i: Integer;
+  ColCount: Integer;
+  RadioIconWidth: Integer;
+  RadioIconHeight: Integer;
+begin
+  RadioIconWidth := FRIArray[0].Width + ScaleX(20, 96);
+  RadioIconHeight := FRIArray[0].Height + ScaleX(20, 96);
+  ColCount := Max(ClientWidth div RadioIconWidth, 1);
+  for i := 0 to High(FRIArray) do
+  begin
+    FRIArray[i].Left := ScaleX(10, 96) + (i mod ColCount) * RadioIconWidth;
+    FRIArray[i].Top := ScaleY(10, 96) + (i div ColCount) * RadioIconHeight;
+  end;
 end;
 
 procedure TRadioIconGroup.CreateRadioItems;
@@ -844,93 +861,6 @@ begin
       FRIArray[i]:=TRadioIcon.CreateWithGlyph(Self, i);
       FRIArray[i].OnChange:=@RIOnChange;
     end;
-end;
-
-procedure TRadioIconGroup.ApplyLayout;
-var
-  unitArea, hSpace, sepn, count, cols, rows, lastRowCount, space, h, num, denom: integer;
-
-  procedure CalcSepn;
-  begin
-    rows:=count div cols;
-    if (cols*rows < count) or (rows < 2) then
-      Inc(rows);
-    lastRowCount:=count mod cols;
-    if (lastRowCount = 0) then
-      lastRowCount:=cols;
-    num:=space + hSpace*FRIArray[0].Height - lastRowCount*unitArea;
-    denom:=Pred(rows)*hSpace + FRIArray[0].Height*Pred(cols)*Pred(rows);
-    Assert(denom > 0,'TRadioIconGroup.ApplyLayout: divisor is zero');
-    sepn:=trunc(num/denom);
-    repeat
-      Dec(sepn);
-      h:=cols*FRIArray[0].Width + Pred(cols)*sepn;
-    until (h < hSpace) or (sepn <= Margin);
-  end;
-
-const
-  BPanelVertDim = 46;
-var
-  areaToFill, hBorderAndMargins, vSpace, vSepn, oldCols,
-    i, v, gap, hInc, vInc, maxIdx, vBorderAndMargins: integer;
-  lft: integer = Margin;
-  tp: integer = Margin;
-  r: integer = 1;
-  c: integer = 1;
-begin
-  hBorderAndMargins:=integer(BorderSpacing.Left)+integer(BorderSpacing.Right)+integer(BorderSpacing.Around*2) + Double_Margin;
-  hSpace:=Parent.ClientWidth - hBorderAndMargins;
-  vBorderAndMargins:=integer(BorderSpacing.Top)+integer(BorderSpacing.Bottom)+integer(BorderSpacing.Around*2) + Double_Margin;
-  vSpace:=Parent.ClientHeight - vBorderAndMargins - BPanelVertDim;
-  areaToFill:=hSpace*vSpace;
-  unitArea:=FRIArray[0].Width*FRIArray[0].Height;
-  count:=Length(FRIArray);
-  space:=areaToFill - count*unitArea;
-
-  cols:=trunc(sqrt(count)); // assume area is roughly square
-  if (cols = 0) then
-    Inc(cols);
-  oldCols:=cols;
-  CalcSepn;
-
-  gap:=hSpace - h;
-  if (gap > 0) and (gap > FRIArray[0].Width) then
-  begin
-    Inc(cols);
-    CalcSepn;
-  end;
-  if (sepn <= Margin) then
-  begin
-    cols:=oldcols;
-    CalcSepn;
-  end;
-
-  vSepn:=sepn;
-  v:=rows*FRIArray[0].Height + Pred(rows)*vSepn;
-  if (v > vSpace) then
-  repeat
-    Dec(vSepn);
-    v:=rows*FRIArray[0].Height + Pred(rows)*vSepn;
-  until (v < vSpace) or (vSepn <= Margin);
-
-  hInc:=FRIArray[0].Width + sepn;
-  vInc:=FRIArray[0].Height + vSepn;
-  maxIdx:=High(FRIArray);
-  for i:=Low(FRIArray) to maxIdx do
-  begin
-    FRIArray[i].Left:=lft;
-    FRIArray[i].Top:=tp;
-    Inc(c);
-    Inc(lft, hInc);
-    if (c > cols) and (i < maxIdx) then
-    begin
-      c:=1;
-      lft:=Margin;
-      Inc(r);
-      Inc(tp, vInc);
-    end;
-  end;
-  Assert(r <= rows,'TRadioIconGroup.ApplyLayout: error in calculation of space needed');
 end;
 
 procedure TRadioIconGroup.RIOnChange(Sender: TObject);
@@ -964,7 +894,7 @@ begin
   inherited SetParent(NewParent);
   if (NewParent <> nil) then
   begin
-    ApplyLayout;
+    RefreshLayout;
     for i:=Low(FRIArray) to High(FRIArray) do
       FRIArray[i].SetParent(Self);
   end;
@@ -976,7 +906,7 @@ constructor TdlgChooseIcon.Create(TheOwner: TComponent);
 begin
   inherited CreateNew(TheOwner);
   Position:=poScreenCenter;
-  BorderStyle:=bsDialog;
+  BorderStyle:=bsSizeable;
   Width:=250;
   Height:=250;
   FButtonPanel:=TButtonPanel.Create(Self);
@@ -987,11 +917,18 @@ begin
   FButtonPanel.CancelButton.Name:='CancelButton';
   FButtonPanel.CancelButton.DefaultCaption:=True;
   FButtonPanel.Parent:=Self;
+  OnResize := @dlgChooseIconResize;
 end;
 
 function TdlgChooseIcon.GetImageIndex: integer;
 begin
   Result:=FRadioIconGroup.ItemIndex;
+end;
+
+procedure TdlgChooseIcon.dlgChooseIconResize(Sender: TObject);
+begin
+  if Assigned(FRadioIconGroup) then
+    FRadioIconGroup.RefreshLayout;
 end;
 
 procedure TdlgChooseIcon.RIGClick(Sender: TObject);

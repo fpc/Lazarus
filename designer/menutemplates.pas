@@ -11,7 +11,7 @@ uses
   // LazUtils
   LazFileUtils, Laz2_XMLCfg,
   // IdeIntf
-  IDEDialogs, IDEImagesIntf,
+  IDEDialogs,
   // IDE
   LazarusIDEStrConsts, MenuShortcuts;
 
@@ -274,15 +274,15 @@ end;
 
 procedure InitMenuBaseSizes;
 begin
-  MenuBar_Height := MulDiv(20, TIDEImages.GetScalePercent, 100);
-  Separator_Height := MulDiv(7, TIDEImages.GetScalePercent, 100);
-  Separator_Centre := MulDiv(3, TIDEImages.GetScalePercent, 100);
-  DropDown_Height := MulDiv(24, TIDEImages.GetScalePercent, 100);
-  MenuBar_Text_Offset := MulDiv(7, TIDEImages.GetScalePercent, 100);
+  MenuBar_Height := ScaleY(20, 96);
+  Separator_Height := ScaleY(7, 96);
+  Separator_Centre := ScaleY(3, 96);
+  DropDown_Height := ScaleY(24, 96);
+  MenuBar_Text_Offset := ScaleX(7, 96);
   Double_MenuBar_Text_Offset := MenuBar_Text_Offset shl 1;
-  DropDown_Text_Offset := MulDiv(35, TIDEImages.GetScalePercent, 100);
+  DropDown_Text_Offset := ScaleX(35, 96);
   Double_DropDown_Text_Offset := DropDown_Text_Offset shl 1;
-  Gutter_Offset := MulDiv(6, TIDEImages.GetScalePercent, 100);
+  Gutter_Offset := ScaleX(6, 96);
   Gutter_X := DropDown_Text_Offset - Gutter_Offset;
 end;
 
