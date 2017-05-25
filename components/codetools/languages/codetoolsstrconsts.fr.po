@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-12-18 09:27+0100\n"
+"PO-Revision-Date: 2017-05-24 09:25+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 2.0.1\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
@@ -82,7 +82,7 @@ msgstr "parenthèse ouvrante attendue, mais %s trouvé"
 
 #: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
 msgid "cannot add a unit to the implementation, because only a unit has one"
-msgstr ""
+msgstr "impossible d'ajouter une unité à la partie \"implementation\", car seule une unité en possède une"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
@@ -106,7 +106,7 @@ msgstr "classe \"%s\" non trouvée"
 
 #: codetoolsstrconsts.ctsclassnotfound2
 msgid "class not found \"%s\""
-msgstr ""
+msgstr "classe \"%s\" introuvable"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -528,7 +528,7 @@ msgstr "opérateur incorrect : %s"
 
 #: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
 msgid "invalid position for insertion of statements"
-msgstr ""
+msgstr "position incorrecte pour l'insertion de commandes"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -568,7 +568,7 @@ msgstr "Sources de Lazarus"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
 msgid "method \"%s\" has no declaration"
-msgstr ""
+msgstr "la méthode \"%s\" n'est pas déclarée"
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"

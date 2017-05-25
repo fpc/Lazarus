@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-02-06 08:10+0100\n"
+"PO-Revision-Date: 2017-05-24 10:11+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.1\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -21,7 +21,7 @@ msgstr "Arrêter le chargement du groupe de projets"
 
 #: projectgroupstrconst.lisactivetarget
 msgid "Target: %s"
-msgstr "Cible : %s "
+msgstr "Cible : %s"
 
 #: projectgroupstrconst.lisallfiles
 msgid "All files"
@@ -71,7 +71,7 @@ msgstr ""
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
 msgid "Only target type \"projectgroup\" is allowed for root project group."
-msgstr "Seule le type de cible \"projectgroup\" est autorisé comme groupe de projets racine."
+msgstr "Seul le type de cible \"projectgroup\" est autorisé comme groupe de projets racine."
 
 #: projectgroupstrconst.liserrorreadingprojectgroupfile
 msgid "Error reading project group file \"%s\"%s%s"
@@ -122,8 +122,6 @@ msgid "New project group"
 msgstr "Nouveau groupe de projets"
 
 #: projectgroupstrconst.lisnewprojectgroupmenuc
-#, fuzzy
-#| msgid "New project group ..."
 msgid "New Project group ..."
 msgstr "Nouveau groupe de projets..."
 
@@ -156,14 +154,10 @@ msgid "Targets"
 msgstr "Cibles"
 
 #: projectgroupstrconst.lisopenprojectgroup
-#, fuzzy
-#| msgid "Open project group ..."
 msgid "Open Project Group ..."
-msgstr "Ouvrir le groupe de projets"
+msgstr "Ouvrir le groupe de projets..."
 
 #: projectgroupstrconst.lisopenrecentprojectgroup
-#, fuzzy
-#| msgid "Open recent project group"
 msgid "Open Recent Project Group"
 msgstr "Ouvrir un groupe de projets récent"
 
@@ -242,7 +236,7 @@ msgstr "Recharger"
 
 #: projectgroupstrconst.lisprojectgroups
 msgid "Project Groups"
-msgstr ""
+msgstr "Groupes de projets"
 
 #: projectgroupstrconst.lisprojectgroupsaveascaption
 msgid "Save As ..."
@@ -276,15 +270,11 @@ msgid "Save project group"
 msgstr "Enregistrer le groupe de projets"
 
 #: projectgroupstrconst.lissaveprojectgroup
-#, fuzzy
-#| msgid "Save project group"
 msgctxt "projectgroupstrconst.lissaveprojectgroup"
 msgid "Save Project Group"
 msgstr "Enregistrer le groupe de projets"
 
 #: projectgroupstrconst.lissaveprojectgroupas
-#, fuzzy
-#| msgid "Save project group as ..."
 msgid "Save Project Group As ..."
 msgstr "Enregistrer le groupe de projets sous..."
 
@@ -404,7 +394,7 @@ msgstr "Propriétés de la cible"
 
 #: projectgroupstrconst.listargetpropertiescaption
 msgid "Properties"
-msgstr "Propriétés "
+msgstr "Propriétés"
 
 #: projectgroupstrconst.listargetpropertieshint
 msgid "Show property dialog for selected target"
