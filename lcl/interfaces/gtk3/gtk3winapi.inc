@@ -588,6 +588,7 @@ begin
       AValue.set_pointer(nil);
       g_object_get_property(gtk_widget_get_default_style,'context',@AValue);
       Context := AValue.get_pointer;
+      AValue.unset;
     end else
       Context := nil;
     if Context = nil then
