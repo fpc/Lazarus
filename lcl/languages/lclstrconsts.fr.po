@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Last-Translator: <h.mira@free.fr>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"PO-Revision-Date: 2017-02-06 09:55+0100\n"
+"PO-Revision-Date: 2017-05-24 08:52+0200\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "POT-Creation-Date: \n"
 "Project-Id-Version: \n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.1\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -555,7 +555,7 @@ msgstr "Fiche"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
-msgstr "Ressource de fiche %s introuvable. Pour les fiches sans ressources, le contructeur \"CreateNew\" doit être utilisé. Voir la variable globale \"RequireDerivedFormResource\"."
+msgstr "Ressource de fiche %s introuvable. Pour les fiches sans ressources, le constructeur \"CreateNew\" doit être utilisé. Voir la variable globale \"RequireDerivedFormResource\"."
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
@@ -1091,11 +1091,11 @@ msgstr "-session session rétablit l'application à partir d'une session plus an
 
 #: lclstrconsts.rsqtoptionstyle
 msgid "-style style or -style=style, sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style  command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
-msgstr "-style style ou -style=style détremine le style GUI. Les valeurs possibles sont 'motif', 'windows' et 'platinum'. Si vous avez compilé Qt avec d'autres styles ou si vous disposez d'autres style en tant que plugins, ces styles seront disponibles grâce à l'option de commande en ligne -style. N.B. : Tous les styles ne sont pas disponibles sur toutes les plates-formes. Si le style en paramètre fourni n'existe pas, Qt démarrera l'application avec le style par défaut ('windows')."
+msgstr "-style style ou -style=style détermine le style GUI. Les valeurs possibles sont 'motif', 'windows' et 'platinum'. Si vous avez compilé Qt avec d'autres styles ou si vous disposez d'autres style en tant que plugins, ces styles seront disponibles grâce à l'option de commande en ligne -style. N.B. : Tous les styles ne sont pas disponibles sur toutes les plates-formes. Si le style en paramètre fourni n'existe pas, Qt démarrera l'application avec le style par défaut ('windows')."
 
 #: lclstrconsts.rsqtoptionstylesheet
 msgid "-stylesheet stylesheet or -stylesheet=stylesheet, sets the application Style Sheet. The value must be a path to a file that contains the Style Sheet. Note: Relative URLs in the Style Sheet file are relative to the Style Sheet file's path."
-msgstr "-stylesheet stylesheet ou -stylesheet=stylesheet détremine la feuille de style de l'application. La valeur associée doit être le chemin vers un fichier qui contient la feuille de style. N.B. : Les URLs relatives dans la feuille de style sont relatives au chemin du fichier de la feuille de style."
+msgstr "-stylesheet stylesheet ou -stylesheet=stylesheet détermine la feuille de style de l'application. La valeur associée doit être le chemin vers un fichier qui contient la feuille de style. N.B. : Les URLs relatives dans la feuille de style sont relatives au chemin du fichier de la feuille de style."
 
 #: lclstrconsts.rsqtoptionsync
 msgid "-sync (only under X11), switches to synchronous mode for debugging."
@@ -1119,7 +1119,7 @@ msgstr "-cmap fait que l'application installera une table de correspondance des 
 
 #: lclstrconsts.rsqtoptionx11display
 msgid "-display display, sets the X display (default is $DISPLAY)."
-msgstr "-display display détremine l'affichage pour X (par défaut $DISPLAY)."
+msgstr "-display display détermine l'affichage pour X (par défaut $DISPLAY)."
 
 #: lclstrconsts.rsqtoptionx11fgcolor
 msgid "-fg or -foreground color, sets the default foreground color."

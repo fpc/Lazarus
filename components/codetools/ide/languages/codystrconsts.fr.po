@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2017-02-06 09:58+0100\n"
+"PO-Revision-Date: 2017-05-24 09:26+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.1\n"
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
@@ -162,7 +162,7 @@ msgstr "%s, écrit par la propriété %s"
 
 #: codystrconsts.crscaretoutsideofcode
 msgid "Caret outside of code"
-msgstr ""
+msgstr "Le curseur est en dehors du code"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
@@ -268,7 +268,7 @@ msgstr "Erreur"
 
 #: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
 msgid "Please place the cursor of the source editor on a With variable."
-msgstr "Veuillez placer le curseur de l'éditeur de source sur une variable \"Width\" "
+msgstr "Veuillez placer le curseur de l'éditeur de source sur une variable \"Width\"."
 
 #: codystrconsts.crsdeclarevariable
 msgid "Declare Variable"

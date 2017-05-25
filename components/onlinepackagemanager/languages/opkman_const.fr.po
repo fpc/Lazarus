@@ -3,14 +3,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2017-02-06 11:11+0100\n"
-"PO-Revision-Date: 2017-02-10 11:58+0100\n"
+"PO-Revision-Date: 2017-05-24 09:16+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.1\n"
 
 #: opkman_const.rscategoriesfrm_bcancel_caption
 msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
@@ -346,7 +346,7 @@ msgstr "Trier"
 
 #: opkman_const.rsmainfrm_miloadchecks
 msgid "Load checked packages"
-msgstr ""
+msgstr "Charger les paquets cochés"
 
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
@@ -354,7 +354,7 @@ msgstr "Réinitialiser l'évaluation"
 
 #: opkman_const.rsmainfrm_misavechecks
 msgid "Save checked packages"
-msgstr ""
+msgstr "Enregistrer les paquets cochés"
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -390,11 +390,11 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 msgid "%s packages successfully loaded from file!"
-msgstr ""
+msgstr "%s paquets ont été chargés avec succès depuis le fichier !"
 
 #: opkman_const.rsmainfrm_resmessagecheckssaved
 msgid "%s packages successfully saved to file!"
-msgstr ""
+msgstr "%s paquets ont été enregistrés avec succès dans le fichier !"
 
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
@@ -430,7 +430,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
-msgstr ""
+msgstr "Veuillez cocher au moins un paquet !"
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
@@ -465,14 +465,16 @@ msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
 "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
 msgstr ""
+"%sÊtes-vous sûr de vouloir désinstaller les paquets cochés ?\n"
+"Veuillez noter que vous devrez alors reconstruire l'EDI pour que les changements deviennent effectifs.\n"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 msgid "Cannot uninstall package \"%s\"!"
-msgstr ""
+msgstr "Impossible de désinstaller le paquet \"%s\" !"
 
 #: opkman_const.rsmainfrm_rsuninstall_nothing
 msgid "None of the checked packages are installed. Nothing to uninstall."
-msgstr ""
+msgstr "Aucun des paquets cochés n'est installé. Il n'y a rien à désinstaller."
 
 #: opkman_const.rsmainfrm_spclear_hint
 msgid "Clear filter text"
@@ -547,11 +549,11 @@ msgstr "Créer un paquet ou un dépôt"
 
 #: opkman_const.rsmainfrm_tbuninstall_caption
 msgid "Uninstall"
-msgstr ""
+msgstr "Désinstaller"
 
 #: opkman_const.rsmainfrm_tbuninstall_hint
 msgid "Uninstall packages"
-msgstr ""
+msgstr "Désinstaller des paquets"
 
 #: opkman_const.rsmainfrm_tbupdate_caption
 msgctxt "opkman_const.rsmainfrm_tbupdate_caption"
@@ -573,7 +575,7 @@ msgstr "Installé"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package (.lpk)"
-msgstr ""
+msgstr "Paquet Lazarus (.lpk)"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagename
 msgid "Packages"
@@ -738,7 +740,7 @@ msgstr "Autres"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory27
 msgid "Games and Game Engines"
-msgstr ""
+msgstr "Jeux et moteurs de jeux"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory3
 msgid "Date and Time"
@@ -920,7 +922,7 @@ msgstr "Utiliser proxy"
 
 #: opkman_const.rsoptions_cbregular_caption
 msgid "Show regular icon for newly added packages after install"
-msgstr ""
+msgstr "Montrer une icône pour les nouveaux paquets installés"
 
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
