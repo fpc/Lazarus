@@ -281,6 +281,7 @@ echo "" >> $File
 cat $ResourceDir/changelog >> $File
 rm -f $File.gz
 gzip -n --best $File
+cp $File.gz $File.Debian.gz
 
 # create postinst if needed
 if [ -f "$ResourceDir/postinst" ]
@@ -344,8 +345,8 @@ cp $ResourceDir/copyright $DebianDocDir/
 echo "fixing permissions ..."
 find $FPCBuildDir -type d -print0 | xargs -0 chmod 755  # this is needed, don't ask me why
 find $FPCBuildDir -type f -print0 | xargs -0 chmod a+r  # this is needed, don't ask me why
-find $FPCBuildDir -perm 775 | xargs -d '\n' chmod 755
-find $FPCBuildDir -perm 664 | xargs -d '\n' chmod 644
+find $FPCBuildDir -perm 775 | xargs -d '\n' chmod 755 || true
+find $FPCBuildDir -perm 664 | xargs -d '\n' chmod 644 || true
 
 #------------------------------------------------------------------------------
 # creating deb
