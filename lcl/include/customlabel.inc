@@ -500,6 +500,8 @@ begin
   FOptimalFill := AValue;
   if OptimalFill and AutoSize then
     AutoSize := False;
+  if OptimalFill then
+    AdjustFontForOptimalFill;
   Invalidate;
 end;
 
