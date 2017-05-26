@@ -364,6 +364,7 @@ type
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   public
     function getClientRect: TRect; override;
+    function getPagesCount: integer;
     procedure InsertPage(ACustomPage: TCustomPage; AIndex: Integer);
     procedure MovePage(ACustomPage: TCustomPage; ANewIndex: Integer);
     procedure RemovePage(AIndex: Integer);
@@ -3965,7 +3966,13 @@ var
 begin
   if TGtk3Widget(Data).InUpdate then
     exit;
+  {page is deleted}
   DebugLn('GtkNotebookAfterSwitchPage ');
+  if TGtk3NoteBook(Data).getPagesCount < TCustomTabControl(TGtk3NoteBook(Data).LCLObject).PageCount then
+  begin
+    DebugLn('GtkNotebookAfterSwitchPage PageIsDeleted');
+    exit;
+  end;
   FillChar(Mess{%H-}, SizeOf(Mess), 0);
   Mess.Msg := LM_NOTIFY;
   FillChar(NMHdr{%H-}, SizeOf(NMHdr), 0);
@@ -4013,7 +4020,16 @@ var
 begin
   if TGtk3Widget(Data).InUpdate then
     exit;
+
   DebugLn('GtkNotebookSwitchPage Data ',dbgHex(PtrUInt(Data)),' Realized ',dbgs(Widget^.get_realized),' pageNum=',dbgs(pageNum));
+
+  {page is deleted}
+  if TGtk3NoteBook(Data).getPagesCount < TCustomTabControl(TGtk3NoteBook(Data).LCLObject).PageCount then
+  begin
+    DebugLn('GtkNotebookSwitchPage PageIsDeleted ');
+    exit;
+  end;
+
   FillChar(Mess{%H-}, SizeOf(Mess), 0);
   Mess.Msg := LM_NOTIFY;
   FillChar(NMHdr{%H-}, SizeOf(NMHdr), 0);
@@ -4089,6 +4105,13 @@ begin
     end;
   end;
   // DebugLn('TGtk3NoteBook.getClientRect Result ',dbgs(Result));
+end;
+
+function TGtk3NoteBook.getPagesCount: integer;
+begin
+  Result := 0;
+  if IsWidgetOk then
+    Result := PGtkNoteBook(GetContainerWidget)^.get_n_pages;
 end;
 
 procedure EnumerateChildren(ANotebook: PGtkNoteBook);
