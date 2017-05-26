@@ -291,6 +291,7 @@ function GtkAllocationFromRect(R: TRect): TGtkAllocation;
 
 function GdkKeyToLCLKey(AValue: Word): Word;
 function GdkModifierStateToLCL(AState: TGdkModifierType; const AIsKeyEvent: Boolean): PtrInt;
+function GdkModifierStateToShiftState(AState: TGdkModifierType): TShiftState;
 
 procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor;
   ARecursive: Boolean; ASetDefault: Boolean);
@@ -680,6 +681,34 @@ begin
 
   if AState and GDK_CONTROL_MASK <> 0 then
     Result := Result or MK_CONTROL;
+end;
+
+function GdkModifierStateToShiftState(AState: TGdkModifierType): TShiftState;
+begin
+  Result := [];
+  if AState and GDK_BUTTON1_MASK <> 0 then
+    Include(Result, ssLeft);
+
+  if AState and GDK_BUTTON2_MASK <> 0 then
+    Include(Result, ssRight);
+
+  if AState and GDK_BUTTON3_MASK <> 0 then
+    Include(Result, ssMiddle);
+
+  if AState and GDK_BUTTON4_MASK <> 0 then
+    Include(Result, ssExtra1);
+
+  if AState and GDK_BUTTON5_MASK <> 0 then
+    Include(Result, ssExtra2);
+
+  if AState and GDK_SHIFT_MASK <> 0 then
+    Include(Result, ssShift);
+
+  if AState and GDK_CONTROL_MASK <> 0 then
+    Include(Result, ssCtrl);
+
+  if AState and GDK_META_MASK <> 0 then
+    Include(Result, ssAlt);
 end;
 
 procedure AddCharsetEncoding(CharSet: Byte; CharSetReg, CharSetCod: CharSetStr;

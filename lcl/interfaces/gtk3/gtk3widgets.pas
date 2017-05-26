@@ -1240,6 +1240,11 @@ begin
       // Result := TGtk3Widget(Data).GtkEventShowHide(Widget, Event);
       // DebugLn('****** GDK_VISIBILITY_NOTIFY FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
+    31: // GDK_SCROLL
+    begin
+      // DebugLn('****** GDK_SCROLL ' + dbgsName(TGtk3Widget(Data).LCLObject));
+      Result := TGtk3Widget(Data).GtkEventMouseWheel(Widget, Event);
+    end;
     32: // GDK_WINDOW_STATE
     begin
       // DebugLn('****** GDK_WINDOW_STATE FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
@@ -1790,10 +1795,37 @@ end;
 
 function TGtk3Widget.GtkEventMouseWheel(Sender: PGtkWidget; Event: PGdkEvent
   ): Boolean; cdecl;
+var
+  Msg: TLMMouseEvent;
+  EventXY: TPoint;
 begin
   // gtk3 have ugly bug with scroll-event
   // https://bugzilla.gnome.org/show_bug.cgi?id=675959
   Result := False;
+  EventXY := Point(TruncToInt(Event^.scroll.x), TruncToInt(Event^.scroll.y));
+  FillChar(Msg{%H-},SizeOf(Msg),0);
+  Msg.Msg := LM_MOUSEWHEEL;
+  //DebugLn('Scroll ',Format('deltaX %2.2n deltaY %2.2n x %2.2n y %2.2n rootx %2.2n rooty %2.2n',
+  //  [Event^.scroll.delta_x, Event^.scroll.delta_y, Event^.scroll.x, Event^.scroll.y,
+  //  Event^.scroll.x_root, Event^.scroll.y_root]));
+  if Event^.scroll.direction = GDK_SCROLL_UP then
+    Msg.WheelDelta := 120
+  else
+  if Event^.scroll.direction = GDK_SCROLL_DOWN then
+    Msg.WheelDelta := -120
+  else
+    exit;
+  Msg.X := EventXY.X;
+  Msg.Y := EventXY.Y;
+  Msg.State := GdkModifierStateToShiftState(Event^.scroll.state);
+  Msg.UserData := LCLObject;
+  Msg.Button := 0;
+
+  NotifyApplicationUserInput(LCLObject, Msg.Msg);
+  if Widget^.get_parent <> nil then
+    Event^.motion.send_event := NO_PROPAGATION_TO_PARENT;
+  if DeliverMessage(Msg, True) <> 0 then
+    Result := True;
 end;
 
 function TGtk3Widget.IsValidHandle: Boolean;
