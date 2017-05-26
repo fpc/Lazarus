@@ -1327,7 +1327,12 @@ begin
   case Column of
     0: begin
          if (Data1^.DataType = 1) and (Data1^.DataType = 1) then
-           Result := CompareText(Data1^.PackageName, Data2^.PackageName);
+         begin
+           if (Trim(Data1^.PackageDisplayName) <> '') and (Trim(Data2^.PackageDisplayName) <> '') then
+             Result := CompareText(Data1^.PackageDisplayName, Data2^.PackageDisplayName)
+           else
+             Result := CompareText(Data1^.PackageName, Data2^.PackageName);
+         end;
          if (Data1^.DataType < Data2^.DataType) then
            Result := 0
          else if (Data1^.DataType > Data2^.DataType) then
