@@ -1,4 +1,3 @@
-{  $Id: helpintf.pas 9271 2006-05-13 12:00:43Z mattias $  }
 {
  *****************************************************************************
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
@@ -383,6 +382,9 @@ var
   end;
 
   procedure DoHtml;
+  var
+    ActFrm: TForm;
+    MaxWidth, MaxHeight: Integer;
   begin
     if HintFont<>nil then
       HintRenderWindow.Font := HintFont;
@@ -397,10 +399,17 @@ var
       ms.Free;
     end;
     HtmlHelpProvider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
+    ActFrm:=Screen.ActiveForm;
+    MaxWidth := ActFrm.Left + ActFrm.Width - ScreenPos.x;
+    MaxHeight := ActFrm.Top + ActFrm.Height - ScreenPos.y;
     if NewWidth <= 0 then
-      NewWidth := 500;
+      NewWidth := 500
+    else if NewWidth > MaxWidth then
+      NewWidth := MaxWidth;
     if NewHeight <= 0 then
-      NewHeight := 200;
+      NewHeight := 200
+    else if NewHeight > MaxHeight then
+      NewHeight := MaxHeight;
     HintRenderWindow.HintRectAdjust := Rect(0, 0, NewWidth, NewHeight);
     if MouseOffset then
       HintRenderWindow.OffsetHintRect(ScreenPos)
