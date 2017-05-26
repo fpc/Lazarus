@@ -334,6 +334,7 @@ var
   AWidget: PGtkWidget;
   ARect: TGdkRectangle;
   Alloc: TGtkAllocation;
+  AMinSize, ANaturalSize: gint;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds') then
     Exit;
@@ -354,6 +355,10 @@ begin
   end;
   TGtk3Widget(AWinControl.Handle).BeginUpdate;
   try
+    {fixes gtk3 assertion}
+    AWidget^.get_preferred_width(@AMinSize, @ANaturalSize);
+    AWidget^.get_preferred_height(@AMinSize, @ANaturalSize);
+
     AWidget^.size_allocate(@ARect);
     AWidget^.set_size_request(AWidth, AHeight);
     if AWinControl.Parent <> nil then

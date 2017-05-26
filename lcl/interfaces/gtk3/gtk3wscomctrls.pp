@@ -1035,7 +1035,10 @@ end;
 class function TGtk3WSCustomTabControl.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 begin
-  Result := TLCLIntfHandle(TGtk3NoteBook.Create(AWinControl, AParams));
+  if AWinControl is TTabControl then
+    Result := TLCLIntfHandle(TGtk3CustomControl.Create(AWinControl, AParams))
+  else
+    Result := TLCLIntfHandle(TGtk3NoteBook.Create(AWinControl, AParams));
 end;
 
 (*
@@ -1056,8 +1059,16 @@ var
 begin
   if not WSCheckHandleAllocated(ATabControl, 'AddPage') then
     Exit;
+  // set LCL size
+  AChild.SetBounds(AChild.Left, AChild.Top, ATabControl.ClientWidth, ATabControl.ClientHeight);
+  if ATabControl is TTabControl then
+  begin
+    if AChild.HandleObjectShouldBeVisible then
+      TGtk3Widget(AChild.Handle).Show;
+    exit;
+  end;
   if AChild.TabVisible then
-    TGtk3Widget(AChild.Handle).Widget^.show;
+    TGtk3Widget(AChild.Handle).Show;
   TGtk3Notebook(ATabControl.Handle).InsertPage(AChild, AIndex);
 end;
 
@@ -1067,6 +1078,8 @@ class procedure TGtk3WSCustomTabControl.MovePage(
 begin
   if not WSCheckHandleAllocated(ATabControl, 'MovePage') then
     Exit;
+  if (ATabControl is TTabControl) then
+    exit;
   TGtk3Notebook(ATabControl.Handle).MovePage(AChild, NewIndex);
 end;
 
@@ -1075,6 +1088,8 @@ class procedure TGtk3WSCustomTabControl.RemovePage(
 begin
   if not WSCheckHandleAllocated(ATabControl, 'RemovePage') then
     Exit;
+  if (ATabControl is TTabControl) then
+    exit;
   TGtk3Notebook(ATabControl.Handle).RemovePage(AIndex);
 end;
 
@@ -1086,20 +1101,22 @@ end;
 class function TGtk3WSCustomTabControl.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;
 begin
-  Result := 0;
+  Result := inherited GetNotebookMinTabHeight(AWinControl);
   // inherited GetNotebookMinTabHeight(AWinControl);
 end;
 
 class function TGtk3WSCustomTabControl.GetNotebookMinTabWidth(
   const AWinControl: TWinControl): integer;
 begin
-  Result := 0;
-  // inherited GetNotebookMinTabWidth(AWinControl);
+  Result := TWSCustomTabControl.GetNotebookMinTabWidth(AWinControl);
 end;
 
 class function TGtk3WSCustomTabControl.GetTabIndexAtPos(
   const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer;
 begin
+  Result:=-1;
+  if (ATabControl is TTabControl) then
+    exit;
   Result := 0;
   // inherited GetTabIndexAtPos(ATabControl, AClientPos);
 end;
@@ -1107,6 +1124,10 @@ end;
 class function TGtk3WSCustomTabControl.GetTabRect(
   const ATabControl: TCustomTabControl; const AIndex: Integer): TRect;
 begin
+  Result := inherited;
+  if (ATabControl is TTabControl) then
+    exit;
+
   Result := Rect(0, 0, 0, 0);
   // inherited GetTabRect(ATabControl, AIndex);
 end;
@@ -1114,6 +1135,8 @@ end;
 class procedure TGtk3WSCustomTabControl.SetPageIndex(
   const ATabControl: TCustomTabControl; const AIndex: integer);
 begin
+  if (ATabControl is TTabControl) then
+    exit;
   if not WSCheckHandleAllocated(ATabControl, 'SetPageIndex') then
     Exit;
   TGtk3Notebook(ATabControl.Handle).BeginUpdate;
@@ -1125,6 +1148,8 @@ class procedure TGtk3WSCustomTabControl.SetTabCaption(
   const ATabControl: TCustomTabControl; const AChild: TCustomPage;
   const AText: string);
 begin
+  if (ATabControl is TTabControl) then
+    exit;
   if not WSCheckHandleAllocated(ATabControl, 'SetTabCaption') then
     Exit;
   TGtk3NoteBook(ATabControl.Handle).SetTabLabelText(AChild, AText);
@@ -1133,6 +1158,8 @@ end;
 class procedure TGtk3WSCustomTabControl.SetTabPosition(
   const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
 begin
+  if (ATabControl is TTabControl) then
+    exit;
   if not WSCheckHandleAllocated(ATabControl, 'SetTabPosition') then
     Exit;
   TGtk3NoteBook(ATabControl.Handle).SetTabPosition(ATabPosition);
@@ -1141,6 +1168,8 @@ end;
 class procedure TGtk3WSCustomTabControl.ShowTabs(
   const ATabControl: TCustomTabControl; AShowTabs: boolean);
 begin
+  if ATabControl is TTabControl then
+    exit;
   if not WSCheckHandleAllocated(ATabControl, 'ShowTabs') then
     Exit;
   TGtk3NoteBook(ATabControl.Handle).SetShowTabs(AShowTabs);
@@ -1149,6 +1178,8 @@ end;
 class procedure TGtk3WSCustomTabControl.UpdateProperties(
   const ATabControl: TCustomTabControl);
 begin
+  if ATabControl is TTabControl then
+    exit;
   // inherited UpdateProperties(ATabControl);
   if not WSCheckHandleAllocated(ATabControl, 'ATabControl') then
     Exit;
