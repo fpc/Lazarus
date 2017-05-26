@@ -47,7 +47,7 @@ type
 
   TGtk3WidgetType = (wtWidget, wtStaticText, wtProgressBar, wtLayout,
     wtContainer, wtMenuBar, wtMenu, wtMenuItem, wtEntry, wtSpinEdit,
-    wtNotebook, wtComboBox,
+    wtNotebook, wtTabControl, wtComboBox,
     wtGroupBox, wtCalendar, wtTrackBar, wtScrollBar,
     wtScrollingWin, wtListBox, wtListView, wtCheckListBox, wtMemo, wtTreeModel,
     wtCustomControl, wtScrollingWinControl,
@@ -4091,14 +4091,41 @@ begin
   // DebugLn('TGtk3NoteBook.getClientRect Result ',dbgs(Result));
 end;
 
+procedure EnumerateChildren(ANotebook: PGtkNoteBook);
+var
+  AList: PGList;
+  i: Integer;
+  AWidget: PGtkWidget;
+  AMinimumH, ANaturalH, ANaturalW, AMinimumW: gint;
+  AChild: PGtkWidget;
+begin
+  AList := ANoteBook^.get_children;
+  for i := 0 to g_list_length(AList) - 1 do
+  begin
+    AWidget := PGtkWidget(g_list_nth_data(AList, I));
+    AWidget^.get_preferred_height(@AMinimumH, @ANaturalH);
+    AWidget^.get_preferred_width(@AMinimumW, @ANaturalW);
+    AChild := nil;
+    DebugLn(Format('Child[%d] MinH %d NatH %d MinW %d NatW %d ALLOCW %d ALLOCH %d child_type %s',
+      [I, AMinimumH, ANaturalH, AMinimumW, ANaturalW,
+      AWidget^.get_allocated_width, AWidget^.get_allocated_height, g_type_name(ANotebook^.child_type)]));
+  end;
+  g_list_free(AList);
+end;
+
 procedure TGtk3NoteBook.InsertPage(ACustomPage: TCustomPage; AIndex: Integer);
 var
   Gtk3Page: TGtk3Page;
+  AMinSize, ANaturalSize: gint;
 begin
   if IsWidgetOK then
   begin
     Gtk3Page := TGtk3Page(ACustomPage.Handle);
     PGtkNoteBook(GetContainerWidget)^.insert_page(Gtk3Page.Widget, Gtk3Page.FPageLabel, AIndex);
+    PGtkNoteBook(GetContainerWidget)^.get_preferred_width(@AMinSize, @ANaturalSize);
+    PGtkNoteBook(GetContainerWidget)^.get_preferred_height(@AMinSize, @ANaturalSize);
+    if gtk_notebook_get_n_pages(PGtkNoteBook(GetContainerWidget)) > 1 then
+      PGtkNoteBook(GetContainerWidget)^.resize_children;
   end;
 end;
 
@@ -4109,10 +4136,15 @@ begin
 end;
 
 procedure TGtk3NoteBook.RemovePage(AIndex: Integer);
+var
+  AMinSizeW, AMinSizeH, ANaturalSizeW, ANaturalSizeH: gint;
 begin
   if IsWidgetOK then
   begin
     PGtkNotebook(GetContainerWidget)^.remove_page(AIndex);
+    PGtkNoteBook(GetContainerWidget)^.get_preferred_width(@AMinSizeW, @ANaturalSizeW);
+    PGtkNoteBook(GetContainerWidget)^.get_preferred_height(@AMinSizeH, @ANaturalSizeH);
+    PGtkNoteBook(GetContainerWidget)^.resize_children;
   end;
 end;
 
@@ -6221,7 +6253,7 @@ begin
   if FUseLayout then
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   else
-    FWidgetType := [wtWidget, wtContainer, wtScrollingWin, wtCustomControl];
+    FWidgetType := [wtWidget, wtContainer, wtTabControl, wtScrollingWin, wtCustomControl];
   Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
 
   if FUseLayout then

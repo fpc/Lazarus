@@ -24,8 +24,8 @@ uses
   // libs
   LazGtk3, LazGdk3, LazGlib2,
   // RTL, FCL, LCL
-  ComCtrls, Classes, LCLType, LMessages, Controls, Graphics,
-  StdCtrls, Forms, LCLProc, LCLIntf, ImgList, Math, Sysutils, InterfaceBase,
+  ComCtrls, Classes, LCLType, LMessages, Controls, Graphics, StdCtrls, Forms,
+  LCLProc, LCLIntf, ImgList, Math, Sysutils, ctypes, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   Gtk3WSControls, Gtk3Int, gtk3widgets;
@@ -52,9 +52,11 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): TLCLIntfHandle; override;
-    // class function GetDefaultClientRect(const AWinControl: TWinControl;
-    //         const {%H-}aLeft, {%H-}aTop, aWidth, aHeight: integer; var aClientRect: TRect
-    //         ): boolean; override;
+    (*
+    class function GetDefaultClientRect(const AWinControl: TWinControl;
+            const {%H-}aLeft, {%H-}aTop, aWidth, aHeight: integer; var aClientRect: TRect
+            ): boolean; override;
+    *)
     class procedure AddPage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ATabControl: TCustomTabControl;
@@ -1054,21 +1056,18 @@ end;
 class procedure TGtk3WSCustomTabControl.AddPage(
   const ATabControl: TCustomTabControl; const AChild: TCustomPage;
   const AIndex: integer);
-var
-  ALabel: PGtkLabel;
 begin
   if not WSCheckHandleAllocated(ATabControl, 'AddPage') then
     Exit;
   // set LCL size
   AChild.SetBounds(AChild.Left, AChild.Top, ATabControl.ClientWidth, ATabControl.ClientHeight);
-  if ATabControl is TTabControl then
-  begin
-    if AChild.HandleObjectShouldBeVisible then
-      TGtk3Widget(AChild.Handle).Show;
-    exit;
-  end;
+
   if AChild.TabVisible then
     TGtk3Widget(AChild.Handle).Show;
+
+  if ATabControl is TTabControl then
+    exit;
+
   TGtk3Notebook(ATabControl.Handle).InsertPage(AChild, AIndex);
 end;
 
@@ -1113,23 +1112,92 @@ end;
 
 class function TGtk3WSCustomTabControl.GetTabIndexAtPos(
   const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer;
+var
+  NoteBookWidget: PGtkNotebook;
+  TabWidget, PageWidget: PGtkWidget;
+  i: integer;
+  AList: PGList;
+  Allocation: TGtkAllocation;
+  ARect: TRect;
 begin
   Result:=-1;
   if (ATabControl is TTabControl) then
     exit;
-  Result := 0;
-  // inherited GetTabIndexAtPos(ATabControl, AClientPos);
+  NoteBookWidget := PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget);
+  if (NotebookWidget=nil) then exit;
+
+  AList := NoteBookWidget^.get_children;
+  try
+    for i := 0 to g_list_length(AList) - 1 do
+    begin
+      PageWidget := NoteBookWidget^.get_nth_page(i);
+      if (PageWidget<>nil) then
+      begin
+        TabWidget := NoteBookWidget^.get_tab_label(PageWidget);
+        if TabWidget <> nil then
+        begin
+          gtk_widget_get_allocation(TabWidget, @Allocation);
+          ARect := RectFromGdkRect(Allocation);
+          if PtInRect(ARect, AClientPos) then
+          begin
+            Result := I;
+            break;
+          end;
+        end;
+      end;
+    end;
+  finally
+    if AList <> nil then
+      g_list_free(Alist);
+  end;
 end;
 
 class function TGtk3WSCustomTabControl.GetTabRect(
   const ATabControl: TCustomTabControl; const AIndex: Integer): TRect;
+var
+  NoteBookWidget: PGtkNotebook;
+  TabWidget, PageWidget: PGtkWidget;
+  Count: guint;
+  AList: PGList;
+  Allocation: TGtkAllocation;
+  X, Y: gint;
 begin
   Result := inherited;
   if (ATabControl is TTabControl) then
     exit;
-
   Result := Rect(0, 0, 0, 0);
-  // inherited GetTabRect(ATabControl, AIndex);
+
+  NoteBookWidget := PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget);
+  if (NotebookWidget=nil) then exit;
+
+  AList := NoteBookWidget^.get_children;
+  try
+    Count := g_list_length(AList);
+    PageWidget := NoteBookWidget^.get_nth_page(AIndex);
+    if (PageWidget<>nil) and (AIndex < Count) then
+    begin
+      TabWidget := NoteBookWidget^.get_tab_label(PageWidget);
+      if TabWidget <> nil then
+      begin
+        gtk_widget_get_allocation(TabWidget, @Allocation);
+        Result := RectFromGdkRect(Allocation);
+        gtk_widget_get_allocation(NoteBookWidget, @Allocation);
+        Y := Allocation.y;
+        X := Allocation.x;
+        if Y <= 0 then
+          exit;
+        case ATabControl.TabPosition of
+          tpTop, tpBottom:
+              OffsetRect(Result, 0, -Y);
+          tpLeft, tpRight:
+            OffsetRect(Result, -X, -Y);
+        end;
+      end;
+    end;
+  finally
+    if AList <> nil then
+      g_list_free(Alist);
+  end;
 end;
 
 class procedure TGtk3WSCustomTabControl.SetPageIndex(
@@ -1183,6 +1251,11 @@ begin
   // inherited UpdateProperties(ATabControl);
   if not WSCheckHandleAllocated(ATabControl, 'ATabControl') then
     Exit;
+
+  if (nboHidePageListPopup in ATabControl.Options) then
+    PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget)^.popup_disable
+  else
+    PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget)^.popup_enable;
 end;
 
 
