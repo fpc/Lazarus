@@ -732,7 +732,7 @@ begin
   SetGraphic(nil);
 end;
 
-function TPicture.FindGraphicClassWithFileExt(const Ext: string;
+class function TPicture.FindGraphicClassWithFileExt(const Ext: string;
   ExceptionOnNotFound: boolean): TGraphicClass;
 var
   FileExt: String;

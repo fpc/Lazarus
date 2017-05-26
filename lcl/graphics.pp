@@ -997,7 +997,7 @@ type
     class procedure RegisterClipboardFormat(FormatID: TClipboardFormat;
       AGraphicClass: TGraphicClass);
     class procedure UnregisterGraphicClass(AClass: TGraphicClass);
-    function FindGraphicClassWithFileExt(const Ext: string;
+    class function FindGraphicClassWithFileExt(const Ext: string;
       ExceptionOnNotFound: boolean = true): TGraphicClass;
   public
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
