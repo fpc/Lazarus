@@ -3439,10 +3439,10 @@ var
   end;
 
 begin
-  //DebugLn('TLazSourceFileManager.PublishModule A');
+  //DebugLn('Hint: (lazarus) [TLazSourceFileManager.PublishModule] START');
   Result:=mrCancel;
 
-  // do not delete project files
+  // do not delete project/package files
   DestDir:=TrimAndExpandDirectory(DestDirectory);
   SrcDir:=TrimAndExpandDirectory(SrcDirectory);
   if (DestDir='') then begin
@@ -3452,7 +3452,7 @@ begin
     Result:=mrCancel;
     exit;
   end;
-  //DebugLn('TLazSourceFileManager.PublishModule A SrcDir="',SrcDir,'" DestDir="',DestDir,'"');
+  //DebugLn('Hint: (lazarus) [TLazSourceFileManager.PublishModule] SrcDir="',SrcDir,'" DestDir="',DestDir,'"');
   if CompareFilenames(SrcDir,DestDir)=0
   then begin
     IDEMessageDialog(lisInvalidPublishingDirectory,
@@ -3471,7 +3471,7 @@ begin
   end;
   SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
   if (CmdAfterExe<>'') then begin
-    //DebugLn('TLazSourceFileManager.PublishModule A CmdAfterExe="',CmdAfterExe,'"');
+    //DebugLn('Hint: (lazarus) [TLazSourceFileManager.PublishModule] CmdAfterExe="',CmdAfterExe,'"');
     // first look in the project directory
     TempCmd:=CmdAfterExe;
     if not FilenameIsAbsolute(TempCmd) then
@@ -3494,7 +3494,7 @@ begin
 
   // clear destination directory
   if DirPathExists(DestDir) then begin
-    // ask user, if destination can be delete
+    // ask user, if destination can be deleted
     if IDEMessageDialog(lisClearDirectory,
       Format(lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil,
              [LineEnding+LineEnding, DestDir]),
@@ -3514,7 +3514,7 @@ begin
   // copy the directory
   if not CopyDirectoryWithMethods(SrcDir,DestDir,@OnCopyFile,@OnCopyError,Options) then
   begin
-    debugln('TLazSourceFileManager.PublishModule CopyDirectoryWithMethods failed');
+    debugln('Hint: (lazarus) [TLazSourceFileManager.PublishModule] CopyDirectoryWithMethods failed');
     Result:=mrCancel;
     exit;
   end;
@@ -3528,7 +3528,7 @@ begin
            +pwfSkipSessionInfo+[pwfIgnoreModified],
            NewProjectFilename,nil);
     if Result<>mrOk then begin
-      debugln('TLazSourceFileManager.PublishModule CurProject.WriteProject failed');
+      debugln('Hint: (lazarus) [TLazSourceFileManager.PublishModule] CurProject.WriteProject failed');
       exit;
     end;
   end;

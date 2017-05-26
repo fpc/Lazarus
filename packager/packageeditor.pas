@@ -364,7 +364,7 @@ type
     procedure DoShowMissingFiles;
     procedure DoMoveCurrentFile(Offset: integer);
     procedure DoMoveDependency(Offset: integer);
-    procedure DoPublishProject;
+    procedure DoPublishPackage;
     procedure DoEditVirtualUnit;
     procedure DoExpandCollapseDirectory(ExpandIt: Boolean);
     procedure DoUseUnitsInDirectory(Use: boolean);
@@ -645,7 +645,7 @@ end;
 
 procedure TPackageEditorForm.PublishClick(Sender: TObject);
 begin
-  DoPublishProject;
+  DoPublishPackage;
 end;
 
 procedure TPackageEditorForm.ReAddMenuItemClick(Sender: TObject);
@@ -924,8 +924,6 @@ begin
 end;
 
 procedure TPackageEditorForm.MorePopupMenuPopup(Sender: TObject);
-var
-  Writable: Boolean;
 
   procedure SetItem(Item: TIDEMenuCommand; AnOnClick: TNotifyEvent;
                     aShow: boolean = true; AEnable: boolean = true);
@@ -936,6 +934,10 @@ var
     Item.Enabled:=AEnable;
   end;
 
+var
+  Writable, CanPublish: Boolean;
+  pcos: TParsedCompilerOptString;
+  CurrentPath: String;
 begin
   PackageEditorMenuRoot.MenuItem:=MorePopupMenu.Items;
   //PackageEditorMenuRoot.BeginUpdate;
@@ -953,8 +955,16 @@ begin
     SetItem(PkgEditMenuSaveAs,@SaveAsClick,true,true);
     SetItem(PkgEditMenuRevert,@RevertClick,true,
             (not LazPackage.IsVirtual) and FileExistsUTF8(LazPackage.Filename));
-    SetItem(PkgEditMenuPublish,@PublishClick,true,
-            (not LazPackage.Missing) and LazPackage.HasDirectory);
+    CanPublish:=(not LazPackage.Missing) and LazPackage.HasDirectory;
+    for pcos in [pcosUnitPath,pcosIncludePath] do
+    begin
+      CurrentPath:=LazPackage.CompilerOptions.ParsedOpts.GetParsedValue(pcos);
+      CurrentPath:=CreateRelativeSearchPath(CurrentPath,LazPackage.DirectoryExpanded);
+      //debugln(['TPackageEditorForm.MorePopupMenuPopup Unit=',CurrentPath]);
+      if Pos('..',CurrentPath)>0 then
+        CanPublish:=false;
+    end;
+    SetItem(PkgEditMenuPublish,@PublishClick,true,CanPublish);
 
     // under section PkgEditMenuSectionCompile
     SetItem(PkgEditMenuCompile,@CompileBitBtnClick,true,CompileBitBtn.Enabled);
@@ -3146,7 +3156,7 @@ begin
   UpdateAll(false);
 end;
 
-procedure TPackageEditorForm.DoPublishProject;
+procedure TPackageEditorForm.DoPublishPackage;
 begin
   PackageEditors.PublishPackage(LazPackage);
 end;
