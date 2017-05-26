@@ -293,6 +293,8 @@ then
       | sed -e "s/FPCVERSION/$FPCVersion/g" -e "s/PPCBIN/$PPPRE$ppcbin/g" \
       > $DebianRulezDir/postinst
     cat >> $DebianRulezDir/postinst <<CFG
+#! /bin/sh
+set -e
 touch /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
 sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
 cat >> /usr/lib/fpc/$FPCVersion/fpc-cross.cfg << FPCCFG
@@ -305,6 +307,7 @@ CFG
     # un-install
     cat > $DebianRulezDir/prerm <<CROSS
 #! /bin/sh
+set -e
 rm -f /usr/lib/fpc/$FPCVersion/ppc$ppcbin
 # remove fpc-cross include lines
 sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
@@ -314,6 +317,7 @@ CROSS
     # cross-compilerpostinst
     cat > $DebianRulezDir/postinst <<CROSS
 #! /bin/sh
+set -e
 ln -sf /usr/lib/fpc/$FPCVersion/$PPPRE$ppcbin /usr/bin/ppc$ppcbin
 grep 2>/dev/null '#include /usr/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg' /usr/lib/fpc/$FPCVersion/fpc-cross.cfg || echo '#include /usr/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg' >> /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
 CROSS
@@ -321,6 +325,7 @@ CROSS
     # un-install
     cat > $DebianRulezDir/prerm <<CROSS
 #! /bin/sh
+set -e
 rm -f /usr/lib/fpc/$FPCVersion/$PPPRE$ppcbin
 sed -i -e "/#include \/usr\/lib\/fpc\/$FPCVersion\/fpc${TARGET_SUFFIX}.cfg/d" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
 CROSS
