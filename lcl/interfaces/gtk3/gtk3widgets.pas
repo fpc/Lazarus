@@ -998,9 +998,6 @@ begin
 end;
 
 function Gtk3WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
-var
-  APrivate: PGtkComboBoxPrivate;
-  AComboWidget: PGtkComboBox;
 begin
   {$IFDEF GTK3DEBUGCOMBOBOX}
   if (Data <> nil) and (wtComboBox in TGtk3Widget(Data).WidgetType) and
@@ -1619,9 +1616,6 @@ function TGtk3Widget.GtkEventMouseMove(Sender: PGtkWidget; Event: PGdkEvent
 var
   Msg: TLMMouseMove;
   MousePos: TPoint;
-  GlobPos: TPoint;
-  R: TRect;
-  P: TPoint;
 begin
   Result := False;
 
@@ -1665,15 +1659,10 @@ end;
 function TGtk3Widget.GtkEventPaint(Sender: PGtkWidget; AContext: Pcairo_t
   ): Boolean; cdecl;
 var
-  PS: TPaintStruct;
   Msg: TLMPaint;
   AStruct: PPaintStruct;
   P: TPoint;
-  B: Boolean;
   AClipRect: TGdkRectangle;
-  dx: Double;
-  dy: Double;
-  AMatrix: Pcairo_matrix_t;
 begin
   Result := False;
 
@@ -2586,7 +2575,6 @@ function TGtk3Widget.getClientOffset: TPoint;
 var
   Allocation: TGtkAllocation;
   R: TRect;
-  B: Boolean;
 begin
   {offset between inner and outer rect of widget.
    It tricky since some widgets have regular offset eg
@@ -2629,13 +2617,10 @@ end;
 
 function TGtk3Widget.DeliverMessage(var Msg; const AIsInputEvent: Boolean
   ): LRESULT;
-var
-  AEvent: Cardinal;
 begin
   Result := LRESULT(AIsInputEvent);
   if LCLObject = nil then
     Exit;
-  AEvent := TLMessage(Msg).Msg;
   try
     if LCLObject.HandleAllocated then
     begin
@@ -2747,7 +2732,6 @@ end;
 procedure TGtk3Widget.Move(ALeft, ATop: Integer);
 var
   AParent: TGtk3Widget;
-  Allocation: TGtkAllocation;
 begin
   AParent := getParent;
   if (AParent <> nil) then
@@ -2780,7 +2764,6 @@ end;
 procedure TGtk3Widget.preferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 var
-  ABorder: TGtkBorder;
   AMinH: gint;
   AMinW: gint;
 begin
@@ -2830,11 +2813,6 @@ end;
 
 procedure TGtk3Widget.SetParent(AParent: TGtk3Widget; const ALeft, ATop: Integer
   );
-var
-  Allocation: TGtkAllocation;
-  R: TRect;
-  W,H: Integer;
-  AParentParent: PGtkWidget;
 begin
   if wtLayout in AParent.WidgetType then
     PGtkLayout(AParent.GetContainerWidget)^.put(FWidget, ALeft, ATop)
@@ -2883,10 +2861,7 @@ end;
 { TGtk3StatusBar }
 
 function TGtk3StatusBar.CreateWidget(const Params: TCreateParams): PGtkWidget;
-var
-  AStatusBar: TStatusBar;
 begin
-  AStatusBar := TStatusBar(LCLObject);
   Result := TGtkEventBox.new;
   FCentralWidget := TGtkHBox.new(GTK_ORIENTATION_HORIZONTAL, 1);
   PGtkBox(FCentralWidget)^.set_homogeneous(True);
@@ -2934,7 +2909,6 @@ end;
 function TGtk3Panel.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AGdkRGBA: TGdkRGBA;
-  AColor: TGdkColor;
 begin
   FHasPaint := True;
   FBorderStyle := bsNone;
@@ -3108,9 +3082,6 @@ begin
 end;
 
 procedure TGtk3Editable.setSelStart(AValue: Integer);
-var
-  AStart: gint;
-  AStop: gint;
 begin
   if not IsWidgetOk then
     exit;
@@ -3364,8 +3335,6 @@ end;
 function TGtk3SpinEdit.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   ASpin: TCustomSpinEdit;
-  ARect: TGdkRectangle;
-  // Adjustment: PGtkAdjustment;
 begin
   PrivateCursorPos := -1;
   PrivateSelection := -1;
@@ -3711,8 +3680,6 @@ begin
 end;
 
 function TGtk3ProgressBar.GetStyle: TProgressBarStyle;
-var
-  ABar: TCustomProgressBar;
 begin
   Result := pbstNormal;
   if Assigned(LCLObject) and IsWidgetOk then
@@ -3957,12 +3924,7 @@ procedure GtkNotebookAfterSwitchPage(widget: PGtkWidget; {%H-}page: PGtkWidget; 
 var
   Mess: TLMNotify;
   NMHdr: tagNMHDR;
-  ACtl: TWinControl;
-  AParentForm: TCustomForm;
-  i: Integer;
   LCLPageIndex: Integer;
-  Pg: TCustomPage;
-  ChildWidget: PGtkWidget;
 begin
   if TGtk3Widget(Data).InUpdate then
     exit;
@@ -4247,8 +4209,6 @@ begin
 end;
 
 procedure TGtk3MenuShell.InitializeWidget;
-var
-  ARect: TGdkRectangle;
 begin
   FCentralWidget := nil;
   FCairoContext := nil;
@@ -4728,7 +4688,6 @@ var
   ItemList: TGtkListStoreStringList;
   AColumn: PGtkTreeViewColumn;
   Renderer : PGtkCellRenderer;
-  VAdjust, HAdjust: PGtkAdjustment;
 begin
   FScrollX := 0;
   FScrollY := 0;
@@ -4790,8 +4749,6 @@ begin
 end;
 
 procedure TGtk3ListBox.InitializeWidget;
-var
-  ASelection: PGtkTreeSelection;
 begin
   inherited InitializeWidget;
   g_signal_connect_data(GetSelection, 'changed', TGCallback(@Gtk3ListBoxSelectionChanged), Self, nil, 0);
@@ -5033,7 +4990,7 @@ procedure Gtk3WS_CheckListBoxToggle({%H-}cellrenderertoggle : PGtkCellRendererTo
 var
   Mess: TLMessage;
   Param: PtrInt;
-  Iter, IterParent : TGtkTreeIter;
+  Iter : TGtkTreeIter;
   TreeView: PGtkTreeView;
   ListStore: PGtkTreeModel;
   Path: PGtkTreePath;
@@ -5077,9 +5034,6 @@ var
   AColumn: PGtkTreeViewColumn;
   Toggle: PGtkCellRendererToggle;
   Renderer : PGtkCellRenderer;
-  VAdjust, HAdjust: PGtkAdjustment;
-  AScrollStyle: TPoint;
-  TreeModel: PGtkTreeModel;
 begin
   FScrollX := 0;
   FScrollY := 0;
@@ -5604,8 +5558,6 @@ var
   AModel: PGtkTreeModel;
   Iter: TGtkTreeIter;
   NewIndex: Integer;
-  AGValue: TGValue;
-  AColumns: gint;
 begin
   if not IsWidgetOK then
     exit;
@@ -5857,7 +5809,6 @@ var
   ListStore: PGtkListStore;
   ItemList: TGtkListStoreStringList;
   Renderer : PGtkCellRenderer;
-  AList: PGList;
 begin
   FWidgetType := FWidgetType + [wtTreeModel, wtComboBox];
   ACombo := TCustomComboBox(LCLObject);
@@ -6024,7 +5975,6 @@ end;
 procedure GtkNotifyCombo(AObject: PGObject; pspec: PGParamSpec; AData: GPointer); cdecl;
 var
   AValue: TGValue;
-  AMenu: PGtkWidget;
   ComboBox: TCustomComboBox;
 begin
   if pspec^.name = 'popup-shown' then
@@ -6318,8 +6268,8 @@ end;
 
 function TGtk3CustomControl.getClientRect: TRect;
 var
-  Allocation, VAllocation: TGtkAllocation;
-  R,RV: TRect;
+  Allocation: TGtkAllocation;
+  R: TRect;
   w: gint;
   h: gint;
   x: gint;
@@ -6378,8 +6328,6 @@ end;
 
 function TGtk3ScrollingWinControl.CreateWidget(const Params: TCreateParams
   ): PGtkWidget;
-var
-  ABox: PGtkBox;
 begin
   FHasPaint := True;
   FScrollX := 0;
@@ -6513,9 +6461,6 @@ end;
 
 function TGtk3Window.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
-  Geometry: TGdkGeometry;
-  WinMask: TGdkWindowHints;
-  AResize: TGtkResizeMode;
   AForm: TCustomForm;
 begin
   FIcon := nil;
@@ -6589,8 +6534,8 @@ end;
 
 function TGtk3Window.getClientRect: TRect;
 var
-  Allocation, VAllocation: TGtkAllocation;
-  R,RV: TRect;
+  Allocation: TGtkAllocation;
+  R: TRect;
   w: gint;
   h: gint;
   x: gint;
@@ -6830,9 +6775,7 @@ var
   FileDialog: TFileDialog absolute ACommonDialog;
   Action: TGtkFileChooserAction;
   Button1: String;
-  ADialog: TGtk3FileDialog;
   AFileDialog: PGtkFileChooserDialog;
-  AParams: TCreateParams;
 begin
   inherited Create;
   FContext := 0;
