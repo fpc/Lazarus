@@ -1242,9 +1242,11 @@ begin
   end;
 
 {$IFDEF EnableCodeCompleteTemplates}
-  if ( Expander <> nil ) and Expander.TemplateExists('PrettyColon') then
+  if ( CTTemplateExpander <> nil )
+  and CTTemplateExpander.TemplateExists('PrettyColon') then
   begin
-    InsertTxt:=VariableName+Expander.Expand('PrettyColon','','',[],[])+VariableType+';';
+    InsertTxt:=VariableName+CTTemplateExpander.Expand('PrettyColon','','',[],[])
+                       +VariableType+';';
   end
   else
 {$ENDIF}
@@ -2986,9 +2988,10 @@ begin
         CleanList:=CleanList+';';
       end;
       {$IFDEF EnableCodeCompleteTemplates}
-      if assigned( Expander ) and Expander.TemplateExists('PrettyColon') then
+      if assigned(CTTemplateExpander)
+      and CTTemplateExpander.TemplateExists('PrettyColon') then
       begin
-        Colon := Expander.Expand('PrettyColon', '','', // Doesn't use linebreak or indentation
+        Colon := CTTemplateExpander.Expand('PrettyColon', '','', // Doesn't use linebreak or indentation
                                  [], [] );
         Result:=Result+ParamName+Colon+ParamType;
         CleanList:=CleanList+Colon+ParamType;
@@ -3122,10 +3125,11 @@ const
     if IsFunction then
     begin
       {$IFDEF EnableCodeCompleteTemplates}
-      if ( Expander <> nil ) and Expander.TemplateExists('PrettyColon') then
+      if (CTTemplateExpander<>nil)
+      and CTTemplateExpander.TemplateExists('PrettyColon') then
       begin
         ProcCode:= 'function '+ProcCode+
-                   Expander.Expand('PrettyColon','','',[],[])
+                   CTTemplateExpander.Expand('PrettyColon','','',[],[])
                    +FuncType+';';
       end
       else
@@ -3327,10 +3331,12 @@ begin
   // check if variable already exists
   if not VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
   {$IFDEF EnableCodeCompleteTemplates}
-    if ( Expander <> nil ) and Expander.TemplateExists('PrettyColon') then
+    if (CTTemplateExpander<>nil)
+    and CTTemplateExpander.TemplateExists('PrettyColon') then
     begin
       AddClassInsertion(UpperCaseStr(VarName),
-                        VarName+Expander.Expand('PrettyColon','','',[],[])+VarType+';',VarName,ncpPublishedVars);
+        VarName+CTTemplateExpander.Expand('PrettyColon','','',[],[])
+               +VarType+';',VarName,ncpPublishedVars);
 
     end
   else
@@ -6145,11 +6151,12 @@ begin
   aClassName:=ExtractClassName(ClassNode,false);
   CleanDef:=ProcName+'('+ParamType+');';
   {$IFDEF EnableCodeCompleteTemplates}
-  if assigned( Expander ) and Expander.TemplateExists('AssignMethodDef') then
+  if assigned(CTTemplateExpander)
+  and CTTemplateExpander.TemplateExists('AssignMethodDef') then
   begin
-    Def := Expander.Expand('AssignMethodDef', '','', // Doesn't use linebreak or indentation
-                           ['ProcName',  'ParamName',  'ParamType', 'Override' ],
-                           [ ProcName,    ParamName,    ParamType,   OverrideMod ] );
+    Def := CTTemplateExpander.Expand('AssignMethodDef', '','', // Doesn't use linebreak or indentation
+                     ['ProcName',  'ParamName',  'ParamType', 'Override' ],
+                     [ ProcName,    ParamName,    ParamType,   OverrideMod ] );
   end else
   {$ENDIF EnableCodeCompleteTemplates}
   begin
@@ -6163,7 +6170,8 @@ begin
   Indent:=0;
   IndentStep:=SourceChanger.BeautifyCodeOptions.Indent;
   {$IFDEF EnableCodeCompleteTemplates}
-  if assigned(Expander) and Expander.TemplateExists('AssignMethod') then begin
+  if assigned(CTTemplateExpander)
+  and CTTemplateExpander.TemplateExists('AssignMethod') then begin
     if not SameType then begin
       // add local variable
       SrcVar:=LocalVarName;
@@ -6185,15 +6193,15 @@ begin
          NodeExtsStr := NodeExtsStr + NodeExt.Txt + '?';
        end;
      end;
-     ProcBody := Expander.Expand( 'AssignMethod',e,GetIndentStr(Indent),
-                                 ['ClassName', 'ProcName', 'ParamName',  'ParamType',
-                                   'SameType',  'SrcVar',   'Inherited0', 'Inherited1',
-                                   'NodeExt' ],
-                                  [ aClassName,  ProcName,   ParamName,    ParamType,
-                                    SameType,    SrcVar,
-                                    CallInherited and (not CallInheritedOnlyInElse),
-                                    CallInherited and CallInheritedOnlyInElse,
-                                    NodeExtsStr ] );
+     ProcBody := CTTemplateExpander.Expand( 'AssignMethod',e,GetIndentStr(Indent),
+                   ['ClassName', 'ProcName', 'ParamName',  'ParamType',
+                     'SameType',  'SrcVar',   'Inherited0', 'Inherited1',
+                     'NodeExt' ],
+                    [ aClassName,  ProcName,   ParamName,    ParamType,
+                      SameType,    SrcVar,
+                      CallInherited and (not CallInheritedOnlyInElse),
+                      CallInherited and CallInheritedOnlyInElse,
+                      NodeExtsStr ] );
     end
   else
   {$ENDIF EnableCodeCompleteTemplates}
@@ -7472,14 +7480,15 @@ var
             
             }
             {$IFDEF EnableCodeCompleteTemplates}
-            if assigned(Expander) and Expander.TemplateExists('SetterMethod') then
+            if assigned(CTTemplateExpander)
+            and CTTemplateExpander.TemplateExists('SetterMethod') then
             begin
               debugln(['CompleteWriteSpecifier ', 'USING template for SetterMethod']);
-              ProcBody := Expander.Expand( 'SetterMethod',
-                                           BeautifyCodeOpts.LineEnd,
-                                           GetIndentStr(BeautifyCodeOpts.Indent),
-                                           ['ClassName',                                   'AccessParam','PropVarName',           'PropType','VarName'],
-                                           [ExtractClassName(PropNode.Parent.Parent,false), AccessParam,  SetPropertyVariablename, PropType,  VariableName] );
+              ProcBody := CTTemplateExpander.Expand( 'SetterMethod',
+                 BeautifyCodeOpts.LineEnd,
+                 GetIndentStr(BeautifyCodeOpts.Indent),
+                 ['ClassName',                                   'AccessParam','PropVarName',           'PropType','VarName'],
+                 [ExtractClassName(PropNode.Parent.Parent,false), AccessParam,  SetPropertyVariablename, PropType,  VariableName] );
             end
             else
             {$ENDIF}
