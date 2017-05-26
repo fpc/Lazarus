@@ -709,17 +709,17 @@ end;
 
 function TParametricCurveSeries.ParamMaxIsStored: Boolean;
 begin
-  Result := ParamMax <> DEF_PARAM_MAX;
+  Result := not SameValue(ParamMax, DEF_PARAM_MAX);
 end;
 
 function TParametricCurveSeries.ParamMaxStepIsStored: Boolean;
 begin
-  Result := ParamMaxStep > 0;
+  Result := not SameValue(ParamMaxStep, 0.0) and (ParamMaxStep > 0);
 end;
 
 function TParametricCurveSeries.ParamMinIsStored: Boolean;
 begin
-  Result := ParamMin <> DEF_PARAM_MIN;
+  Result := not SameValue(ParamMin, DEF_PARAM_MIN);
 end;
 
 procedure TParametricCurveSeries.SetOnCalculate(
@@ -732,21 +732,21 @@ end;
 
 procedure TParametricCurveSeries.SetParamMax(AValue: Double);
 begin
-  if FParamMax = AValue then exit;
+  if SameValue(FParamMax, AValue) then exit;
   FParamMax := AValue;
   UpdateParentChart;
 end;
 
 procedure TParametricCurveSeries.SetParamMaxStep(AValue: Double);
 begin
-  if FParamMaxStep = AValue then exit;
+  if SameValue(FParamMaxStep, AValue) then exit;
   FParamMaxStep := AValue;
   UpdateParentChart;
 end;
 
 procedure TParametricCurveSeries.SetParamMin(AValue: Double);
 begin
-  if FParamMin = AValue then exit;
+  if SameValue(FParamMin, AValue) then exit;
   FParamMin := AValue;
   UpdateParentChart;
 end;
