@@ -3319,9 +3319,13 @@ begin
   Result := 0;
   if Handle = 0 then
     exit;
-  g_object_set_data(TGtk3Widget(Handle).Widget, Str, nil);
+  if Gtk3IsObject(TGtk3Widget(Handle).Widget) then
+    g_object_set_data(TGtk3Widget(Handle).Widget, Str, nil);
   if TGtk3Widget(Handle).GetContainerWidget <> TGtk3Widget(Handle).Widget then
-    g_object_set_data(TGtk3Widget(Handle).GetContainerWidget, Str, nil);
+  begin
+    if Gtk3IsObject(TGtk3Widget(Handle).GetContainerWidget) then
+      g_object_set_data(TGtk3Widget(Handle).GetContainerWidget, Str, nil);
+  end;
   Result := 1;
 end;
 
@@ -3667,9 +3671,13 @@ function TGtk3WidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
 begin
   if Handle = 0 then
     exit(False);
-  g_object_set_data(TGtk3Widget(Handle).Widget, Str, Data);
+  if Gtk3IsObject(TGtk3Widget(Handle).Widget) then
+    g_object_set_data(TGtk3Widget(Handle).Widget, Str, Data);
   if TGtk3Widget(Handle).GetContainerWidget <> TGtk3Widget(Handle).Widget then
-    g_object_set_data(TGtk3Widget(Handle).GetContainerWidget, Str, Data);
+  begin
+    if Gtk3IsObject(TGtk3Widget(Handle).GetContainerWidget) then
+      g_object_set_data(TGtk3Widget(Handle).GetContainerWidget, Str, Data);
+  end;
   Result := True;
 end;
 
