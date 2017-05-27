@@ -631,7 +631,7 @@ end;
 
 function TChartAxis.IsDefaultPosition: Boolean;
 begin
-  Result := (PositionUnits = cuPercent) and (Position = 0);
+  Result := (PositionUnits = cuPercent) and SameValue(Position, 0.0);
 end;
 
 function TChartAxis.IsFlipped: Boolean;
@@ -781,7 +781,7 @@ end;
 
 function TChartAxis.PositionIsStored: Boolean;
 begin
-  Result := Position <> 0;
+  Result := not SameValue(Position, 0.0);
 end;
 
 function TChartAxis.PositionToCoord(const ARect: TRect): Integer;
@@ -914,7 +914,7 @@ end;
 
 procedure TChartAxis.SetPosition(AValue: Double);
 begin
-  if FPosition = AValue then exit;
+  if SameValue(FPosition, AValue) then exit;
   FPosition := AValue;
   StyleChanged(Self);
 end;

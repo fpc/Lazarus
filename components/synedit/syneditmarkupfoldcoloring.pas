@@ -72,8 +72,7 @@ type
   TSynEditMarkupFoldColors = class(TSynEditMarkup)
   private
     function GetFirstCharacterColumn(index: Integer): Byte;
-    procedure TextBufferChanged(Sender: TSynEditStrings; aIndex, aCount: Integer
-      );
+    procedure TextBufferChanged(Sender: TObject);
   private
     FHighlighter: TSynCustomFoldHighlighter;
     FNestList: TLazSynEditNestedFoldsList;
@@ -190,7 +189,7 @@ begin
   if Assigned(Lines) then begin
     Lines.RemoveChangeHandler(senrLineCount, @LinesChanged);
     Lines.RemoveChangeHandler(senrHighlightChanged, @HighlightChanged);
-    Lines.RemoveChangeHandler(senrTextBufferChanged, @TextBufferChanged);
+    Lines.RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
   end;
   FreeAndNil(FNestList);
   inherited Destroy;
@@ -290,8 +289,7 @@ begin
   Result := TCustomSynEdit(SynEdit).LogicalToPhysicalPos(Point(p, toPos(index))).x;
 end;
 
-procedure TSynEditMarkupFoldColors.TextBufferChanged(Sender: TSynEditStrings;
-  aIndex, aCount: Integer);
+procedure TSynEditMarkupFoldColors.TextBufferChanged(Sender: TObject);
 begin
   if not Enabled then
     exit;
@@ -822,7 +820,7 @@ begin
       // remove Changehandler
       old.RemoveChangeHandler(senrLineCount, @LinesChanged);
       old.RemoveChangeHandler(senrHighlightChanged, @HighlightChanged);
-      old.RemoveChangeHandler(senrTextBufferChanged, @TextBufferChanged);
+      old.RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
       ClearCache;
     end;
   end;
@@ -834,7 +832,7 @@ begin
         // add Changehandler
         AValue.AddChangeHandler(senrLineCount, @LinesChanged);
         AValue.AddChangeHandler(senrHighlightChanged, @HighlightChanged);
-        AValue.AddChangeHandler(senrTextBufferChanged, @TextBufferChanged);
+        AValue.AddNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
         InitCache;
       end else begin
         // clear cache
@@ -935,7 +933,7 @@ begin
       // add Changehandler
       Lines.AddChangeHandler(senrLineCount, @LinesChanged);
       Lines.AddChangeHandler(senrHighlightChanged, @HighlightChanged);
-      Lines.AddChangeHandler(senrTextBufferChanged, @TextBufferChanged);
+      Lines.AddNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
       InitCache;
     end;
   end else begin
@@ -946,7 +944,7 @@ begin
       // remove Changehandler
       Lines.RemoveChangeHandler(senrLineCount, @LinesChanged);
       Lines.RemoveChangeHandler(senrHighlightChanged, @HighlightChanged);
-      Lines.RemoveChangeHandler(senrTextBufferChanged, @TextBufferChanged);
+      Lines.RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
       ClearCache;
     end;
   end;

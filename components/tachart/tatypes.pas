@@ -579,7 +579,7 @@ end;
 
 function TChartRange.IsBoundsStored(AIndex: Integer): Boolean;
 begin
-  Result := FBounds[AIndex] <> 0;
+  Result := not SameValue(FBounds[AIndex], 0);
 end;
 
 procedure TChartRange.SetBounds(AIndex: Integer; const AValue: Double);
@@ -639,7 +639,7 @@ end;
 
 function TChartExtent.IsBoundsStored(AIndex: Integer): Boolean;
 begin
-  Result := FExtent.coords[AIndex] <> 0;
+  Result := not SameValue(FExtent.coords[AIndex], 0.0);
 end;
 
 procedure TChartExtent.SetBounds(AIndex: Integer; const AValue: Double);

@@ -600,26 +600,26 @@ end;
 
 function TLinearAxisTransform. OffsetIsStored: Boolean;
 begin
-  Result := Offset <> 0;
+  Result := not SameValue(Offset, 0.0);
 end;
 
 function TLinearAxisTransform.ScaleIsStored: Boolean;
 begin
-  Result := Scale <> 1.0;
+  Result := not SameValue(Scale, 1.0);
 end;
 
 procedure TLinearAxisTransform.SetOffset(AValue: Double);
 begin
-  if FOffset = AValue then exit;
+  if SameValue(FOffset, AValue) then exit;
   FOffset := AValue;
   Changed;
 end;
 
 procedure TLinearAxisTransform.SetScale(AValue: Double);
 begin
-  if FScale = AValue then exit;
+  if SameValue(FScale, AValue) then exit;
   FScale := AValue;
-  if FScale = 0 then FScale := 1.0;
+  if SameValue(FScale, 0.0) then FScale := 1.0;
   Changed;
 end;
 

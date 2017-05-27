@@ -772,12 +772,12 @@ end;
 
 function TPolarSeries.IsOriginXStored: Boolean;
 begin
-  Result := OriginX <> 0;
+  Result := not SameValue(OriginX, 0.0);
 end;
 
 function TPolarSeries.IsOriginYStored: Boolean;
 begin
-  Result := OriginY <> 0;
+  Result := not SameValue(OriginY, 0.0);
 end;
 
 { ANewPos is in cartesioan coordinates. Convert to polar coordinates and store
@@ -859,14 +859,14 @@ end;
 
 procedure TPolarSeries.SetOriginX(AValue: Double);
 begin
-  if FOriginX = AValue then exit;
+  if SameValue(FOriginX, AValue) then exit;
   FOriginX := AValue;
   UpdateParentChart;
 end;
 
 procedure TPolarSeries.SetOriginY(AValue: Double);
 begin
-  if FOriginY = AValue then exit;
+  if SameValue(FOriginY, AValue) then exit;
   FOriginY := AValue;
   UpdateParentChart;
 end;
