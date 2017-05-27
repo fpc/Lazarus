@@ -305,6 +305,10 @@ begin
 
     LCLSendActivateMsg(Target, WA_ACTIVE, false);
     LCLSendSetFocusMsg(Target);
+    // The only way to update Forms.ActiveCustomForm for the main form
+    // is calling TCustomForm.SetFocusedControl, see bug 31056
+    ACustForm.SetFocusedControl(ACustForm.ActiveControl);
+
     IsActivating:=False;
   end;
 end;
