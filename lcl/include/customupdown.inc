@@ -426,6 +426,20 @@ begin
     SetVisible(FAssociate.Visible);
 end;
 
+function TCustomUpDown.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := inherited DoMouseWheelDown(Shift, MousePos);
+  if not Result then
+    TCustomSpeedButton(FMinBtn).Click;
+end;
+
+function TCustomUpDown.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := inherited DoMouseWheelUp(Shift, MousePos);
+  if not Result then
+    TCustomSpeedButton(FMaxBtn).Click;
+end;
+
 procedure TCustomUpDown.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited;
