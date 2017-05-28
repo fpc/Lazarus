@@ -43,7 +43,9 @@ components/tdbradiogroup.png
 components/tdbtext.png
 components/tdirectoryedit.png
 components/tdrawgrid.png
+components/tdrawgrid_200.png
 components/tedit.png
+components/tedit_200.png
 components/teditbutton.png
 components/teventlog.png
 components/tfilelistbox.png
@@ -65,6 +67,7 @@ components/timagelist.png
 components/tinipropstorage.png
 components/tjsonpropstorage.png
 components/tlabel.png
+components/tlabel_200.png
 components/tlabelededit.png
 components/tlazcomponentqueue.png
 components/tlistbox.png
@@ -106,6 +109,7 @@ components/tsplitter.png
 components/tstatictext.png
 components/tstatusbar.png
 components/tstringgrid.png
+components/tstringgrid_200.png
 components/ttabcontrol.png
 components/ttaskdialog.png
 components/ttimeedit.png
@@ -117,6 +121,7 @@ components/ttrayicon.png
 components/ttreeview.png
 components/tupdown.png
 components/tvaluelisteditor.png
+components/tvaluelisteditor_200.png
 components/txmlconfig.png
 components/txmlpropstorage.png
 components/unregisteredcomponent.png

@@ -6573,7 +6573,9 @@ images/components/tdbradiogroup.png -text svneol=unset#image/png
 images/components/tdbtext.png -text svneol=unset#image/png
 images/components/tdirectoryedit.png -text svneol=unset#image/png
 images/components/tdrawgrid.png -text svneol=unset#image/png
+images/components/tdrawgrid_200.png -text
 images/components/tedit.png -text svneol=unset#image/png
+images/components/tedit_200.png -text
 images/components/teditbutton.png -text svneol=unset#image/png
 images/components/teventlog.png -text svneol=unset#image/png
 images/components/tfilelistbox.png -text svneol=unset#image/png
@@ -6595,6 +6597,7 @@ images/components/timagelist.png -text svneol=unset#image/png
 images/components/tinipropstorage.png -text svneol=unset#image/png
 images/components/tjsonpropstorage.png -text svneol=unset#image/png
 images/components/tlabel.png -text svneol=unset#image/png
+images/components/tlabel_200.png -text
 images/components/tlabelededit.png -text svneol=unset#image/png
 images/components/tlazcomponentqueue.png -text svneol=unset#image/png
 images/components/tlistbox.png -text svneol=unset#image/png
@@ -6636,6 +6639,7 @@ images/components/tsplitter.png -text svneol=unset#image/png
 images/components/tstatictext.png -text svneol=unset#image/png
 images/components/tstatusbar.png -text svneol=unset#image/png
 images/components/tstringgrid.png -text svneol=unset#image/png
+images/components/tstringgrid_200.png -text
 images/components/ttabcontrol.png -text svneol=unset#image/png
 images/components/ttaskdialog.png -text
 images/components/ttimeedit.png -text svneol=unset#image/png
@@ -6647,6 +6651,7 @@ images/components/ttrayicon.png -text svneol=unset#image/png
 images/components/ttreeview.png -text svneol=unset#image/png
 images/components/tupdown.png -text svneol=unset#image/png
 images/components/tvaluelisteditor.png -text
+images/components/tvaluelisteditor_200.png -text
 images/components/txmlconfig.png -text svneol=unset#image/png
 images/components/txmlpropstorage.png -text svneol=unset#image/png
 images/components/unregisteredcomponent.png -text svneol=unset#image/png
