@@ -3319,8 +3319,10 @@ type
     function GetBackgroundColor: TColor;
     function GetBottomItem: TTreeNode;
     function GetDropTarget: TTreeNode;
+    function GetExpandSignSize: integer;
     function GetHideSelection: boolean;
     function GetHotTrack: boolean;
+    function GetIndent: Integer;
     function GetKeepCollapsedNodes: boolean;
     function GetMultiSelect: Boolean;
     function GetReadOnly: boolean;
@@ -3409,6 +3411,7 @@ type
       Stage: TCustomDrawStage; var PaintImages: Boolean): Boolean; virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
+    function ExpandSignSizeIsStored: Boolean;
     function GetDragImages: TDragImageList; override;
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
@@ -3416,6 +3419,7 @@ type
     function GetNodeAtY(Y: Integer): TTreeNode;
     function GetNodeDrawAreaHeight: integer;
     function GetNodeDrawAreaWidth: integer;
+    function IndentIsStored: Boolean;
     function IsCustomDrawn(Target: TCustomDrawTarget;
       Stage: TCustomDrawStage): Boolean; virtual;
     function IsNodeVisible(ANode: TTreeNode): Boolean;
@@ -3439,8 +3443,6 @@ type
     procedure EndEditing(Cancel: boolean = false); virtual;
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
     procedure Expand(Node: TTreeNode); virtual;
-    function GetRealExpandSignSize: integer;
-    function GetRealIndent: Integer;
     procedure GetImageIndex(Node: TTreeNode); virtual;
     procedure GetSelectedIndex(Node: TTreeNode); virtual;
     procedure InitializeWnd; override;
@@ -3481,7 +3483,7 @@ type
     property HideSelection: Boolean
       read GetHideSelection write SetHideSelection default True;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
-    property Indent: Integer read FIndent write SetIndent default 0;
+    property Indent: Integer read GetIndent write SetIndent stored IndentIsStored;
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnAddition: TTVExpandedEvent read FOnAddition write FOnAddition;
     property OnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent
@@ -3576,7 +3578,7 @@ type
     property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight default DefaultTreeNodeHeight;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
-    property ExpandSignSize: integer read FExpandSignSize write SetExpandSignSize default 0; // use 0 for default
+    property ExpandSignSize: integer read GetExpandSignSize write SetExpandSignSize stored ExpandSignSizeIsStored;
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType default tvestTheme;
     property Images: TCustomImageList read FImages write SetImages;
