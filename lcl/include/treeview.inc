@@ -3329,7 +3329,7 @@ begin
   begin
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomTreeView.DoAutoAdjustLayout'){$ENDIF};
     try
-      if not (tvoAutoItemHeight in Options) then
+      if DefaultItemHeightIsStored then
         DefaultItemHeight := Round(DefaultItemHeight*AYProportion);
       if IndentIsStored then
         FIndent := Round(FIndent*AXProportion);
@@ -3426,6 +3426,11 @@ begin
                        tvsBottomItemNeedsUpdate,tvsScrollbarChanged];
     EndUpdate;
   end;
+end;
+
+function TCustomTreeView.DefaultItemHeightIsStored: Boolean;
+begin
+  Result := not(tvoAutoItemHeight in Options);
 end;
 
 function TCustomTreeView.DefaultTreeViewSort(Node1, Node2: TTreeNode): Integer;
