@@ -4544,7 +4544,7 @@ end;
 
 function TCustomTreeView.GetExpandSignSize: integer;
 begin
-  if FExpandSignSize>0 then
+  if FExpandSignSize>=0 then
     Result := FExpandSignSize
   else
   if ExpandSignType = tvestTheme then
@@ -4555,7 +4555,7 @@ end;
 
 function TCustomTreeView.GetIndent: Integer;
 begin
-  if FIndent=0 then
+  if FIndent<0 then
     Result := Scale96ToFont(15)
   else
     Result := FIndent;
