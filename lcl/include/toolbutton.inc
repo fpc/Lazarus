@@ -324,11 +324,11 @@ begin
     begin
       DropDownButtonRect := ButtonRect;
       if Style = tbsDropDown then
-        DropDownButtonRect.Left := DropDownButtonRect.Right-FToolBar.GetRealDropDownWidth
+        DropDownButtonRect.Left := DropDownButtonRect.Right-FToolBar.DropDownWidth
       else
       begin
-        DropDownButtonRect.Left := DropDownButtonRect.Right-FToolBar.GetRealButtonDropWidth;
-        DropDownButtonRect.Right := DropDownButtonRect.Left + FToolBar.GetRealDropDownWidth;
+        DropDownButtonRect.Left := DropDownButtonRect.Right-FToolBar.ButtonDropWidth;
+        DropDownButtonRect.Right := DropDownButtonRect.Left + FToolBar.DropDownWidth;
       end;
       MainBtnRect.Right := DropDownButtonRect.Left;
       if Style = tbsDropDown then
@@ -470,7 +470,7 @@ function TToolButton.PointInArrow(const X, Y: Integer): Boolean;
 begin
   Result := (Style = tbsDropDown) and (FToolBar <> nil)
     and (Y >= 0) and (Y <= ClientHeight)
-    and (X > ClientWidth - FToolBar.GetRealDropDownWidth) and (X <= ClientWidth);
+    and (X > ClientWidth - FToolBar.DropDownWidth) and (X <= ClientWidth);
 end;
 
 procedure TToolButton.Loaded;
@@ -867,8 +867,8 @@ begin
   inherited GetPreferredSize(PreferredWidth, PreferredHeight, Raw, WithThemeSpace);
 
   if FToolbar = nil then Exit;
-  RealButtonWidth := FToolbar.GetRealButtonWidth;
-  RealButtonHeight := FToolbar.GetRealButtonHeight;
+  RealButtonWidth := FToolbar.ButtonWidth;
+  RealButtonHeight := FToolbar.ButtonHeight;
   if RealButtonHeight <= 0 then Exit;
   // buttonheight overrules in hor toolbar
   if FToolBar.IsVertical then
@@ -1039,16 +1039,16 @@ begin
   begin
     if not TToolBar(AParent).IsVertical then begin
       if Style in [tbsButton,tbsDropDown,tbsButtonDrop,tbsCheck] then
-        NewWidth := TToolBar(AParent).GetRealButtonWidth
+        NewWidth := TToolBar(AParent).ButtonWidth
       else
         NewWidth := Width;
-      NewHeight := TToolBar(AParent).GetRealButtonHeight;
+      NewHeight := TToolBar(AParent).ButtonHeight;
     end else begin
       if Style in [tbsButton,tbsDropDown,tbsButtonDrop,tbsCheck] then
-        NewHeight := TToolBar(AParent).GetRealButtonHeight
+        NewHeight := TToolBar(AParent).ButtonHeight
       else
         NewHeight := Height;
-      NewWidth := TToolBar(AParent).GetRealButtonWidth;
+      NewWidth := TToolBar(AParent).ButtonWidth;
     end;
     SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
   end;
@@ -1195,11 +1195,11 @@ begin
     begin
       inc(PreferredWidth, 4);
       inc(PreferredHeight, 4);
-      PreferredWidth := Max(PreferredWidth, FToolBar.GetRealButtonWidth);
-      PreferredHeight := Max(PreferredHeight, FToolBar.GetRealButtonHeight);
+      PreferredWidth := Max(PreferredWidth, FToolBar.ButtonWidth);
+      PreferredHeight := Max(PreferredHeight, FToolBar.ButtonHeight);
       case Style of
-        tbsDropDown: inc(PreferredWidth, FToolBar.GetRealDropDownWidth);
-        tbsButtonDrop:  inc(PreferredWidth, FToolBar.GetRealButtonDropWidth-cDefButtonDropDecArrowWidth);
+        tbsDropDown: inc(PreferredWidth, FToolBar.DropDownWidth);
+        tbsButtonDrop:  inc(PreferredWidth, FToolBar.ButtonDropWidth-cDefButtonDropDecArrowWidth);
       end;
     end
     else

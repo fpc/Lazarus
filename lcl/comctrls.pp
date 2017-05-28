@@ -2168,7 +2168,9 @@ type
     FOnPaintButton: TToolBarOnPaintButton;
     FButtonHeight: Integer;
     FRealizedButtonHeight,
-    FRealizedButtonWidth: integer;
+    FRealizedButtonWidth,
+    FRealizedDropDownWidth,
+    FRealizedButtonDropWidth: integer;
     FButtons: TList;
     FButtonWidth: Integer;
     FDisabledImageChangeLink: TChangeLink;
@@ -2197,6 +2199,10 @@ type
     procedure CloseCurrentMenu;
     function GetButton(Index: Integer): TToolButton;
     function GetButtonCount: Integer;
+    function GetButtonDropWidth: Integer;
+    function GetButtonWidth: Integer;
+    function GetButtonHeight: Integer;
+    function GetDropDownWidth: Integer;
     function GetTransparent: Boolean;
     procedure SetButtonHeight(const AValue: Integer);
     procedure SetButtonWidth(const AValue: Integer);
@@ -2226,6 +2232,9 @@ type
     function IsVertical: Boolean; virtual;
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); override;
+    function ButtonHeightIsStored: Boolean;
+    function ButtonWidthIsStored: Boolean;
+    function DropDownWidthIsStored: Boolean;
     class function GetControlClassDefaultSize: TSize; override;
     procedure DoAutoSize; override;
     procedure CalculatePreferredSize(var PreferredWidth,
@@ -2255,23 +2264,20 @@ type
     function GetEnumerator: TToolBarEnumerator;
     procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
     function CanFocus: Boolean; override;
-    function GetRealDropDownWidth: Integer;
-    function GetRealButtonDropWidth: Integer;
-    function GetRealButtonWidth: Integer;
-    function GetRealButtonHeight: Integer;
   public
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;
     property ButtonList: TList read FButtons;
     property RowCount: Integer read FRowCount;
+    property ButtonDropWidth: Integer read GetButtonDropWidth;
   published
     property Align default alTop;
     property Anchors;
     property AutoSize;
     property BorderSpacing;
     property BorderWidth;
-    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 0;
-    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 0;
+    property ButtonHeight: Integer read GetButtonHeight write SetButtonHeight stored ButtonHeightIsStored;
+    property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth stored ButtonWidthIsStored;
     property Caption;
     property ChildSizing;
     property Constraints;
@@ -2280,7 +2286,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
-    property DropDownWidth: Integer read FDropDownWidth write SetDropDownWidth default 0;
+    property DropDownWidth: Integer read GetDropDownWidth write SetDropDownWidth stored DropDownWidthIsStored;
     property EdgeBorders default [ebTop];
     property EdgeInner;
     property EdgeOuter;
