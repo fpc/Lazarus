@@ -922,7 +922,8 @@ type
     chtOnEnabledChanging,
     chtOnEnabledChanged,
     chtOnKeyDown,
-    chtOnBeforeDestruction
+    chtOnBeforeDestruction,
+    chtOnMouseWheel
     );
 
   TLayoutAdjustmentPolicy = (
@@ -1412,6 +1413,9 @@ type
     procedure DoCallNotifyHandler(HandlerType: TControlHandlerType);
     procedure DoCallKeyEventHandler(HandlerType: TControlHandlerType;
                                     var Key: Word; Shift: TShiftState);
+    procedure DoCallMouseWheelEventHandler(HandlerType: TControlHandlerType;
+                                           Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
+                                           var Handled: Boolean);
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); virtual;
     procedure SetZOrder(TopMost: Boolean); virtual;
     class function GetControlClassDefaultSize: TSize; virtual;
@@ -1621,6 +1625,9 @@ type
     procedure AddHandlerOnBeforeDestruction(const OnBeforeDestructionEvent: TNotifyEvent;
                                   AsFirst: boolean = false);
     procedure RemoveHandlerOnBeforeDestruction(const OnBeforeDestructionEvent: TNotifyEvent);
+    procedure AddHandlerOnMouseWheel(const OnMouseWheelEvent: TMouseWheelEvent;
+                                  AsFirst: boolean = false);
+    procedure RemoveHandlerOnMouseWheel(const OnMouseWheelEvent: TMouseWheelEvent);
   public
     // standard properties, which should be supported by all descendants
     property AccessibleDescription: TCaption read GetAccessibleDescription write SetAccessibleDescription;
