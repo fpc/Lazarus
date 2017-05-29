@@ -2788,12 +2788,12 @@ begin
     //select again
     bGoNext := (FirstNode.Index <= Node.Index);
     I := FirstNode;
-    I.Selected:=True;
+    I.MultiSelected:=True;
     while (I<>Node) do
     begin
       _TakeNext(I);
       if I=nil then Break;
-      I.Selected:=True;
+      I.MultiSelected:=True;
     end;
 
     FStartMultiSelected := FirstNode;
