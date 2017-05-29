@@ -5,8 +5,10 @@ components/tarrow.png
 components/tasyncprocess.png
 components/tbevel.png
 components/tbitbtn.png
+components/tbitbtn_200.png
 components/tbufdataset.png
 components/tbutton.png
+components/tbutton_200.png
 components/tbuttonpanel.png
 components/tcalcedit.png
 components/tcalculatordialog.png
@@ -17,10 +19,13 @@ components/tcheckcombobox.png
 components/tcheckgroup.png
 components/tchecklistbox.png
 components/tcolorbox.png
+components/tcolorbox_200.png
 components/tcolorbutton.png
+components/tcolorbutton_200.png
 components/tcolordialog.png
 components/tcolorlistbox.png
 components/tcombobox.png
+components/tcombobox_200.png
 components/tcomboboxex.png
 components/tcontrolbar.png
 components/tcoolbar.png
@@ -69,6 +74,7 @@ components/tjsonpropstorage.png
 components/tlabel.png
 components/tlabel_200.png
 components/tlabelededit.png
+components/tlabelededit_200.png
 components/tlazcomponentqueue.png
 components/tlistbox.png
 components/tlistview.png
@@ -80,6 +86,7 @@ components/tnotebook.png
 components/topendialog.png
 components/topenpicturedialog.png
 components/tpagecontrol.png
+components/tpagecontrol_200.png
 components/tpaintbox.png
 components/tpairsplitter.png
 components/tpanel.png
@@ -95,6 +102,7 @@ components/treplacedialog.png
 components/tsavedialog.png
 components/tsavepicturedialog.png
 components/tscrollbar.png
+components/tscrollbar_200.png
 components/tscrollbox.png
 components/tselectdirectorydialog.png
 components/tservicemanager.png
@@ -107,10 +115,12 @@ components/tspeedbutton.png
 components/tspinedit.png
 components/tsplitter.png
 components/tstatictext.png
+components/tstatictext_200.png
 components/tstatusbar.png
 components/tstringgrid.png
 components/tstringgrid_200.png
 components/ttabcontrol.png
+components/ttabcontrol_200.png
 components/ttaskdialog.png
 components/ttimeedit.png
 components/ttimer.png

@@ -6535,8 +6535,10 @@ images/components/tarrow.png -text svneol=unset#image/png
 images/components/tasyncprocess.png -text
 images/components/tbevel.png -text svneol=unset#image/png
 images/components/tbitbtn.png -text svneol=unset#image/png
+images/components/tbitbtn_200.png -text
 images/components/tbufdataset.png -text svneol=unset#image/png
 images/components/tbutton.png -text svneol=unset#image/png
+images/components/tbutton_200.png -text
 images/components/tbuttonpanel.png -text svneol=unset#image/png
 images/components/tcalcedit.png -text svneol=unset#image/png
 images/components/tcalculatordialog.png -text svneol=unset#image/png
@@ -6547,10 +6549,13 @@ images/components/tcheckcombobox.png -text svneol=unset#image/png
 images/components/tcheckgroup.png -text svneol=unset#image/png
 images/components/tchecklistbox.png -text svneol=unset#image/png
 images/components/tcolorbox.png -text svneol=unset#image/png
+images/components/tcolorbox_200.png -text
 images/components/tcolorbutton.png -text svneol=unset#image/png
+images/components/tcolorbutton_200.png -text
 images/components/tcolordialog.png -text svneol=unset#image/png
 images/components/tcolorlistbox.png -text svneol=unset#image/png
 images/components/tcombobox.png -text svneol=unset#image/png
+images/components/tcombobox_200.png -text
 images/components/tcomboboxex.png -text svneol=unset#image/png
 images/components/tcontrolbar.png -text svneol=unset#image/png
 images/components/tcoolbar.png -text svneol=unset#image/png
@@ -6599,6 +6604,7 @@ images/components/tjsonpropstorage.png -text svneol=unset#image/png
 images/components/tlabel.png -text svneol=unset#image/png
 images/components/tlabel_200.png -text
 images/components/tlabelededit.png -text svneol=unset#image/png
+images/components/tlabelededit_200.png -text
 images/components/tlazcomponentqueue.png -text svneol=unset#image/png
 images/components/tlistbox.png -text svneol=unset#image/png
 images/components/tlistview.png -text svneol=unset#image/png
@@ -6610,6 +6616,7 @@ images/components/tnotebook.png -text svneol=unset#image/png
 images/components/topendialog.png -text svneol=unset#image/png
 images/components/topenpicturedialog.png -text svneol=unset#image/png
 images/components/tpagecontrol.png -text svneol=unset#image/png
+images/components/tpagecontrol_200.png -text
 images/components/tpaintbox.png -text svneol=unset#image/png
 images/components/tpairsplitter.png -text svneol=unset#image/png
 images/components/tpanel.png -text svneol=unset#image/png
@@ -6625,6 +6632,7 @@ images/components/treplacedialog.png -text svneol=unset#image/png
 images/components/tsavedialog.png -text svneol=unset#image/png
 images/components/tsavepicturedialog.png -text svneol=unset#image/png
 images/components/tscrollbar.png -text svneol=unset#image/png
+images/components/tscrollbar_200.png -text
 images/components/tscrollbox.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
 images/components/tservicemanager.png -text svneol=unset#image/png
@@ -6637,10 +6645,12 @@ images/components/tspeedbutton.png -text svneol=unset#image/png
 images/components/tspinedit.png -text svneol=unset#image/png
 images/components/tsplitter.png -text svneol=unset#image/png
 images/components/tstatictext.png -text svneol=unset#image/png
+images/components/tstatictext_200.png -text
 images/components/tstatusbar.png -text svneol=unset#image/png
 images/components/tstringgrid.png -text svneol=unset#image/png
 images/components/tstringgrid_200.png -text
 images/components/ttabcontrol.png -text svneol=unset#image/png
+images/components/ttabcontrol_200.png -text
 images/components/ttaskdialog.png -text
 images/components/ttimeedit.png -text svneol=unset#image/png
 images/components/ttimer.png -text svneol=unset#image/png
