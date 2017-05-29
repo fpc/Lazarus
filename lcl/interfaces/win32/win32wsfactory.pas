@@ -264,7 +264,7 @@ end;
 
 function RegisterFontDialog: Boolean; alias : 'WSRegisterFontDialog';
 begin
-  RegisterWSComponent(TFontDialog, TWin32WSFontDialog);
+  RegisterWSComponent(TFontDialog, TWin32WSFontDialog, nil, True);
   Result := True;
 end;
 

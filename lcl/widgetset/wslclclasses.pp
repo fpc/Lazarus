@@ -83,7 +83,8 @@ type
 function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
 procedure RegisterWSComponent(const AComponent: TComponentClass;
                               const AWSComponent: TWSLCLComponentClass;
-                              const AWSPrivate: TWSPrivateClass = nil);
+                              const AWSPrivate: TWSPrivateClass = nil;
+                              const ANewRegistration: Boolean = False);
 // Only for non-TComponent based objects
 function GetWSLazAccessibleObject: TWSObjectClass;
 procedure RegisterWSLazAccessibleObject(const AWSObject: TWSObjectClass);
@@ -107,6 +108,7 @@ type
     WSClass: TWSLCLComponentClass;
     VClass: Pointer;
     VClassName: ShortString;
+    VClassNew: Boolean; // Indicates that VClass=WSClass, VClass is not created during runtime
     Parent: PClassNode;
     Child: PClassNode;
     Sibling: PClassNode;
@@ -145,8 +147,8 @@ begin
   while cls <> nil do
   begin
     idx := MWSRegisterIndex.IndexOf(cls.ClassName);
-    if idx <> -1
-    then begin
+    if idx <> -1 then
+    begin
       Node := PClassNode(MWSRegisterIndex.Objects[idx]);
       Result := TWSLCLComponentClass(Node^.VClass);
       Exit;
@@ -170,9 +172,12 @@ type
   TPointerArray = packed array[0..9999999] of Pointer;
   PPointerArray = ^TPointerArray;
 
+// ANewRegistration - If true, VClass is not created during runtime,
+// but instead normal, Object Pascal class creation is used
 procedure RegisterWSComponent(const AComponent: TComponentClass;
   const AWSComponent: TWSLCLComponentClass;
-  const AWSPrivate: TWSPrivateClass = nil);
+  const AWSPrivate: TWSPrivateClass = nil;
+  const ANewRegistration: Boolean = False);
 
   function GetNode(const AClass: TClass): PClassNode;
   var
@@ -195,6 +200,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       Result^.WSClass := nil;
       Result^.VClass := nil;
       Result^.VClassName := '';
+      Result^.VClassNew := False;
       Result^.Child := nil;
       Result^.Parent := GetNode(AClass.ClassParent);
       if Result^.Parent = nil
@@ -397,8 +403,8 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     Node := ANode^.Child;
     while Node <> nil do
     begin
-      if Node^.WSClass <> nil
-      then begin
+      if (Node^.WSClass <> nil) and (not Node^.VClassNew) then
+      begin
         {$IFDEF VerboseWSRegistration}
         DebugLn('Update VClass for: ', Node^.WSClass.ClassName);
         {$ENDIF}
@@ -421,7 +427,14 @@ begin
   if Node^.WSClass = nil
   then MWSRegisterIndex.AddObject(AComponent.ClassName, TObject(Node));
   Node^.WSClass := AWSComponent;
-  
+
+  if ANewRegistration then
+  begin
+    Node^.VClass := AWSComponent;
+    Node^.VClassNew := True;
+    Exit;
+  end;
+
   // childclasses "inherit" the private from their parent
   // the child privates should only be updated when their private is still
   // the same as their parents
@@ -549,8 +562,8 @@ begin
   for n := 0 to MComponentIndex.Count - 1 do
   begin
     Node := PClassNode(MComponentIndex.Objects[n]);
-    if Node^.VClass <> nil
-    then Freemem(Node^.VClass);
+    if (Node^.VClass <> nil) and (not Node^.VClassNew) then
+      Freemem(Node^.VClass);
     Dispose(Node);
   end;
   FreeAndNil(MComponentIndex);
