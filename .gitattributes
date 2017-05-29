@@ -6544,6 +6544,8 @@ images/components/tbutton.png -text svneol=unset#image/png
 images/components/tbutton_150.png -text
 images/components/tbutton_200.png -text
 images/components/tbuttonpanel.png -text svneol=unset#image/png
+images/components/tbuttonpanel_150.png -text
+images/components/tbuttonpanel_200.png -text
 images/components/tcalcedit.png -text svneol=unset#image/png
 images/components/tcalculatordialog.png -text svneol=unset#image/png
 images/components/tcalendar.png -text svneol=unset#image/png
@@ -6660,11 +6662,15 @@ images/components/tscrollbox.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
 images/components/tservicemanager.png -text svneol=unset#image/png
 images/components/tshape.png -text svneol=unset#image/png
+images/components/tshape_150.png -text
+images/components/tshape_200.png -text
 images/components/tshelllistview.png -text
 images/components/tshelltreeview.png -text
 images/components/tsimpleipcclient.png -text svneol=unset#image/png
 images/components/tsimpleipcserver.png -text svneol=unset#image/png
 images/components/tspeedbutton.png -text svneol=unset#image/png
+images/components/tspeedbutton_150.png -text
+images/components/tspeedbutton_200.png -text
 images/components/tspinedit.png -text svneol=unset#image/png
 images/components/tsplitter.png -text svneol=unset#image/png
 images/components/tstatictext.png -text svneol=unset#image/png
