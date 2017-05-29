@@ -3315,6 +3315,7 @@ type
     FTopItem: TTreeNode;
     FTreeLineColor: TColor;
     FTreeLinePenStyle: TPenStyle;
+    FTreeLinePenPattern: TPenPattern;
     FExpandSignColor : TColor;
     FTreeNodes: TTreeNodes;
     FHintWnd: THintWindow;

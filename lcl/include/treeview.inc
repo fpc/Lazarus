@@ -3264,6 +3264,9 @@ begin
   FStates:=[tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate,tvsScrollbarChanged];
   FTreeLineColor := clWindowFrame;
   FTreeLinePenStyle := psPattern;
+  SetLength(FTreeLinePenPattern, 2);
+  FTreeLinePenPattern[0] := 1;
+  FTreeLinePenPattern[1] := 1;
   FExpandSignColor := clWindowFrame;
   // Accessibility
   AccessibleDescription := rsTTreeViewAccessibilityDescription;
@@ -5220,6 +5223,8 @@ begin
     // draw tree lines
     Pen.Color := TreeLineColor;
     Pen.Style := TreeLinePenStyle;
+    if Pen.Style = psPattern then
+      Pen.SetPattern(FTreeLinePenPattern);
     x := DrawTreeLines(Node);
     Pen.Style := psSolid;
 
