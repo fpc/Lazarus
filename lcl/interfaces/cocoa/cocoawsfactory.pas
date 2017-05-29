@@ -254,6 +254,7 @@ end;
 
 function RegisterFontDialog: Boolean; alias : 'WSRegisterFontDialog';
 begin
+  RegisterWSComponent(TFontDialog, TCocoaWSFontDialog);
   Result := False;
 end;
 

@@ -30,7 +30,7 @@ uses
   // Widgetset
   WSForms, WSLCLClasses, WSProc, WSDialogs, LCLMessageGlue,
   // LCL Cocoa
-  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls;
+  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects;
 
 type
 
@@ -95,6 +95,19 @@ type
     //
     procedure doPickColor; message 'doPickColor';
     procedure pickColor; message 'pickColor'; // button action
+    procedure exit; message 'exit'; // button action
+  end;
+
+  TFontPanelDelegate = objcclass(NSObject, NSWindowDelegateProtocol)
+  public
+    FontPanel: NSFontPanel;
+    FontDialog: TFontDialog;
+    DontSelectFontOnClose: Boolean;
+    // NSWindowDelegateProtocol
+    procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
+    //
+    procedure doSelectFont; message 'doSelectFont';
+    procedure selectFont; message 'selectFont'; // button action
     procedure exit; message 'exit'; // button action
   end;
 
@@ -260,10 +273,6 @@ var
   colorDelegate: TColorPanelDelegate;
   ColorDialog: TColorDialog absolute ACommonDialog;
   colorPanel: NSColorPanel;
-  session: NSModalSession;
-  inColor: RGBColor = (red: 128; green: 128; blue: 128);
-  outColor: RGBColor = (red: 0; green: 0; blue: 0);
-  //point: Point;  = {0, 0};
   // accessory view
   accessoryView: NSView;
   lRect: NSRect;
@@ -334,14 +343,68 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSFontDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  AFontDialog: TFontDialog;
+  FontDialog: TFontDialog absolute ACommonDialog;
+  FontDelegate: TFontPanelDelegate;
+  FontPanel: NSFontPanel;
+  inFont: TCocoaFont;
+  // accessory view
+  accessoryView: NSView;
+  lRect: NSRect;
+  okButton, cancelButton: NSButton;
 begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSFontDialog.ShowModal for ' + ACommonDialog.Name);
   {$ENDIF}
 
-  AFontDialog := ACommonDialog as TFontDialog;
-  AFontDialog.UserChoice := mrCancel;
+  ACommonDialog.UserChoice := mrCancel;
+
+  fontPanel := NSFontPanel.sharedFontPanel();
+  inFont := TCocoaFont(FontDialog.Font.Handle);
+  fontPanel.setPanelFont_isMultiple(inFont.Font, False);
+
+  FontDelegate := TFontPanelDelegate.alloc.init();
+  FontDelegate.FontPanel := FontPanel;
+  FontDelegate.FontDialog := FontDialog;
+
+  // setup panel and its accessory view
+  lRect := GetNSRect(0, 0, 220, 30);
+  accessoryView := NSView.alloc.initWithFrame(lRect);
+
+  lRect := GetNSRect(110, 4, 110-8, 24);
+  okButton := NSButton.alloc.initWithFrame(lRect);
+  okButton.setButtonType(NSMomentaryPushInButton);
+  okButton.setBezelStyle(NSRoundedBezelStyle);
+  okButton.setTitle(NSStringUtf8('Select'));
+  okButton.setAction(objcselector('selectFont'));
+  okButton.setTarget(FontDelegate);
+
+  lRect := GetNSRect(8, 4, 110-8, 24);
+  cancelButton := NSButton.alloc.initWithFrame(lRect);
+  cancelButton.setButtonType(NSMomentaryPushInButton);
+  cancelButton.setBezelStyle(NSRoundedBezelStyle);
+  cancelButton.setTitle(NSStringUtf8('Cancel'));
+  cancelButton.SetAction(objcselector('exit'));
+  cancelButton.setTarget(FontDelegate);
+
+  accessoryView.addSubview(okButton.autorelease);
+  accessoryView.addSubview(cancelButton.autorelease);
+
+  fontPanel.setDelegate(FontDelegate);
+  fontPanel.setAccessoryView(accessoryView.autorelease);
+  fontPanel.setDefaultButtonCell(okButton.cell);
+
+  // load user settings
+  (*NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString *color = [defaults stringForKey:@"startColor"];
+  if (color != nil) {
+    [panel setColor:[NSColor colorFromHex:color]];
+  }
+  [panel setMode:[defaults integerForKey:@"mode"]]; // will be 0 if not set, wich is NSGrayModeColorPanel
+*)
+
+  // show panel
+  FontPanel.makeKeyAndOrderFront(FontDelegate);
+  NSApp.runModalForWindow(FontPanel);
 end;
 
 { TColorPanelDelegate }
@@ -374,6 +437,44 @@ begin
   ColorDialog.UserChoice := mrOk;
   DontPickColorOnClose := True;
   colorPanel.close();
+end;
+
+{ TFontPanelDelegate }
+
+procedure TFontPanelDelegate.windowWillClose(notification: NSNotification);
+begin
+  if not DontSelectFontOnClose then
+  begin
+    FontDialog.UserChoice := mrOk;
+    doSelectFont();
+  end;
+  NSApp.stopModal();
+end;
+
+procedure TFontPanelDelegate.doSelectFont();
+var
+  oldHandle, newHandle: TCocoaFont;
+  newFont: NSFont;
+begin
+  oldHandle := TCocoaFont(FontDialog.Font.Handle);
+  newFont := FontPanel.panelConvertFont(oldHandle.Font);
+  newHandle := TCocoaFont.Create(newFont);
+  FontDialog.Font.Handle := HFONT(newHandle);
+end;
+
+procedure TFontPanelDelegate.selectFont();
+begin
+  FontDialog.UserChoice := mrCancel;
+  DontSelectFontOnClose := True;
+  doSelectFont();
+  exit();
+end;
+
+procedure TFontPanelDelegate.exit();
+begin
+  FontDialog.UserChoice := mrOk;
+  DontSelectFontOnClose := True;
+  FontPanel.close();
 end;
 
 end.

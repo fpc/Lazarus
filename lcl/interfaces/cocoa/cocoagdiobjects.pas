@@ -205,6 +205,7 @@ type
     constructor Create(const AFont: NSFont; AGlobal: Boolean = False); overload;
     destructor Destroy; override;
     class function CocoaFontWeightToWin32FontWeight(const CocoaFontWeight: Integer): Integer; static;
+    procedure SetHandle(ANewHandle: NSFont);
     property Antialiased: Boolean read FAntialiased;
     property Font: NSFont read FFont;
     property Name: String read FName;
@@ -658,17 +659,9 @@ begin
 end;
 
 constructor TCocoaFont.Create(const AFont: NSFont; AGlobal: Boolean = False);
-var  Pool: NSAutoreleasePool;
 begin
   inherited Create(AGlobal);
-  Pool := NSAutoreleasePool.alloc.init;
-  FFont := AFont;
-  FFont.retain;
-  FName := NSStringToString(FFont.familyName);
-  FSize := Round(FFont.pointSize);
-  FStyle := [];
-  FAntialiased := True;
-  Pool.release;
+  SetHandle(AFont);
 end;
 
 destructor TCocoaFont.Destroy;
@@ -693,6 +686,24 @@ begin
   else
     Result := FW_HEAVY;
   end;
+end;
+
+procedure TCocoaFont.SetHandle(ANewHandle: NSFont);
+var
+  pool: NSAutoreleasePool;
+begin
+  if FFont <> nil then
+  begin
+    FFont.release;
+  end;
+  Pool := NSAutoreleasePool.alloc.init;
+  FFont := ANewHandle;
+  FFont.retain;
+  FName := NSStringToString(FFont.familyName);
+  FSize := Round(FFont.pointSize);
+  FStyle := [];
+  FAntialiased := True;
+  Pool.release;
 end;
 
 { TCocoaColorObject }
