@@ -47,21 +47,13 @@ type
 
   TWSCommonDialogClass = class of TWSCommonDialog;
   TWSCommonDialog = class(TWSLCLComponent)
+  public class var
+    WSCommonDialog_WSClass: TWSCommonDialogClass;
   published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; virtual;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); virtual;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); virtual;
     class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; virtual;
-  end;
-
-  { TWSCommonDialog_CallWS }
-
-  TWSCommonDialog_CallWS = class(TWSCommonDialog)
-  published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
-    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
-    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
-    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { TWSFileDialog }
@@ -102,8 +94,12 @@ type
 
   { TWSFontDialog }
 
-  TWSFontDialog = class(TWSCommonDialog_CallWS)
+  TWSFontDialog = class(TWSCommonDialog)
   published
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { WidgetSetRegistration }
@@ -141,56 +137,52 @@ class procedure TWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
 end;
 
-{ TWSCommonDialog_CallWS }
+{ TWSFontDialog }
 
-class function TWSCommonDialog_CallWS.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
-var
-  lWSClass: TWSCommonDialogClass;
+class function TWSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
-  lWSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
-  if lWSClass <> nil then
+  if WSCommonDialog_WSClass = nil then
+    WSCommonDialog_WSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
+  if WSCommonDialog_WSClass <> nil then
   begin
-    Result := lWSClass.CreateHandle(ACommonDialog);
+    Result := WSCommonDialog_WSClass.CreateHandle(ACommonDialog);
     Exit;
   end;
   Result:=inherited CreateHandle(ACommonDialog)
 end;
 
-class procedure TWSCommonDialog_CallWS.ShowModal(const ACommonDialog: TCommonDialog);
-var
-  lWSClass: TWSCommonDialogClass;
+class procedure TWSFontDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
-  lWSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
-  if lWSClass <> nil then
+  if WSCommonDialog_WSClass = nil then
+    WSCommonDialog_WSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
+  if WSCommonDialog_WSClass <> nil then
   begin
-    lWSClass.ShowModal(ACommonDialog);
+    WSCommonDialog_WSClass.ShowModal(ACommonDialog);
     Exit;
   end;
   inherited ShowModal(ACommonDialog);
 end;
 
-class procedure TWSCommonDialog_CallWS.DestroyHandle(const ACommonDialog: TCommonDialog);
-var
-  lWSClass: TWSCommonDialogClass;
+class procedure TWSFontDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
-  lWSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
-  if lWSClass <> nil then
+  if WSCommonDialog_WSClass = nil then
+    WSCommonDialog_WSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
+  if WSCommonDialog_WSClass <> nil then
   begin
-    lWSClass.DestroyHandle(ACommonDialog);
+    WSCommonDialog_WSClass.DestroyHandle(ACommonDialog);
     Exit;
   end;
   inherited DestroyHandle(ACommonDialog);
 end;
 
-class function TWSCommonDialog_CallWS.QueryWSEventCapabilities(
+class function TWSFontDialog.QueryWSEventCapabilities(
   const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
-var
-  lWSClass: TWSCommonDialogClass;
 begin
-  lWSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
-  if lWSClass <> nil then
+  if WSCommonDialog_WSClass = nil then
+    WSCommonDialog_WSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
+  if WSCommonDialog_WSClass <> nil then
   begin
-    Result := lWSClass.QueryWSEventCapabilities(ACommonDialog);
+    Result := WSCommonDialog_WSClass.QueryWSEventCapabilities(ACommonDialog);
     Exit;
   end;
   Result:=inherited QueryWSEventCapabilities(ACommonDialog);
