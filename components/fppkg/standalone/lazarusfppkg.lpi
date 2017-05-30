@@ -47,7 +47,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="lazarusfppkg.pas"/>
         <IsPartOfProject Value="True"/>
@@ -67,6 +67,13 @@
         <Filename Value="..\src\fppkg_lpk.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="..\src\fppkg_initializeoptionsfrm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="InitializeOptionsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

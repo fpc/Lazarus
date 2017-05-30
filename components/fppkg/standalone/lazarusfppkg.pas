@@ -11,7 +11,8 @@ uses
   pkgDownload,
   fppkg_lpk,
   pkgfpmake,
-  pkgfphttp;
+  pkgfphttp,
+  fppkg_initializeoptionsfrm;
 
 {$R *.res}
 

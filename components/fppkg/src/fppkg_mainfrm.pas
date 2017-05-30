@@ -154,6 +154,7 @@ type
     procedure UpdatePackageListView;
     procedure ListPackages;
 
+    procedure LoadFppkgConfiguration;
     procedure RescanPackages;
     procedure SetupColumns;
 
@@ -172,7 +173,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Masks, fppkg_aboutfrm;
+  Masks, fppkg_aboutfrm, fppkg_initializeoptionsfrm;
 
 resourcestring
   SErrActionFailed    = 'Failed to %s: ' + sLineBreak + sLineBreak + '%s';
@@ -333,8 +334,6 @@ begin
 end;
 
 procedure TFppkgForm.FormCreate(Sender: TObject);
-var
-  i: Integer;
 begin
   //setup log callback function
 
@@ -351,24 +350,15 @@ begin
   //setup error callback function
   ErrorHandler := @LazError;
 
+  if not TInitializeOptionsForm.CheckInitialConfiguration then
+    begin
+    Application.Terminate;
+    Exit;
+    end;
+
   FFPpkg := TpkgFPpkg.Create(Self);
 
-  FFPpkg.InitializeGlobalOptions('');
-
-  FFPpkg.Options.GlobalSection.Downloader := 'FPC';
-
-  SetLength(FPMKUnitDeps,FPMKUnitDepDefaultCount);
-  for i := 0 to FPMKUnitDepDefaultCount-1 do
-    FPMKUnitDeps[i]:=FPMKUnitDepsDefaults[i];
-
-  FFPpkg.InitializeCompilerOptions;
-
-  FFPpkg.CompilerOptions.InitCompilerDefaults;
-  FFPpkg.FpmakeCompilerOptions.InitCompilerDefaults;
-  FFPpkg.CompilerOptions.CheckCompilerValues;
-  FFPpkg.FpmakeCompilerOptions.CheckCompilerValues;
-
-  FFPpkg.LoadLocalAvailableMirrors;
+  LoadFppkgConfiguration;
 
   Caption := rsFreePascalPackageManagerForLazarus;
 
@@ -832,6 +822,37 @@ begin
   //check all the items
   for i := 0 to CategoryCheckListBox.Count - 1 do
     CategoryCheckListBox.Checked[i] := True;
+end;
+
+procedure TFppkgForm.LoadFppkgConfiguration;
+var
+  i: Integer;
+begin
+  FFPpkg.InitializeGlobalOptions('');
+
+  FFPpkg.Options.GlobalSection.Downloader := 'FPC';
+
+  SetLength(FPMKUnitDeps,FPMKUnitDepDefaultCount);
+  for i := 0 to FPMKUnitDepDefaultCount-1 do
+    FPMKUnitDeps[i]:=FPMKUnitDepsDefaults[i];
+
+  FFPpkg.InitializeCompilerOptions;
+
+  FFPpkg.CompilerOptions.CheckCompilerValues;
+  FFPpkg.FpmakeCompilerOptions.CheckCompilerValues;
+
+  FFPpkg.ScanPackages;
+
+  if not Assigned(FFPpkg.FindPackage('rtl', pkgpkInstalled)) then
+    begin
+      ShowMessage('Fppkg seems to be configured, but the RTL could not be found. Please fix the Fppkg-configuration with the wizard or manualy.');
+      if TInitializeOptionsForm.RecreateFppkgConfiguration then
+        begin
+          LoadFppkgConfiguration;
+        end;
+    end
+  else
+    FFPpkg.LoadLocalAvailableMirrors;
 end;
 
 procedure TFppkgForm.RescanPackages;

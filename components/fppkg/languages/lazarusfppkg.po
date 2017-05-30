@@ -200,3 +200,49 @@ msgstr ""
 msgid "Update packages list"
 msgstr ""
 
+#: tinitializeoptionsform.advancedcheckbox.caption
+msgid "Advanced"
+msgstr ""
+
+#: tinitializeoptionsform.buttonpanel.closebutton.caption
+msgctxt "tinitializeoptionsform.buttonpanel.closebutton.caption"
+msgid "&Close"
+msgstr ""
+
+#: tinitializeoptionsform.buttonpanel.okbutton.caption
+msgctxt "tinitializeoptionsform.buttonpanel.okbutton.caption"
+msgid "&Write Fppkg configuration files"
+msgstr ""
+
+#: tinitializeoptionsform.caption
+msgid "Create configuration files"
+msgstr ""
+
+#: tinitializeoptionsform.compilerlabel.caption
+msgid "Compiler:"
+msgstr ""
+
+#: tinitializeoptionsform.edit1.text
+msgid "Edit1"
+msgstr ""
+
+#: tinitializeoptionsform.fpcdirectoryedit.texthint
+msgid "This location normally contains the compiler-executable along with a 'units' and 'fpmkinst' directory."
+msgstr ""
+
+#: tinitializeoptionsform.initializefppkglabel.caption
+msgid "Create new configuration files for fppkg."
+msgstr ""
+
+#: tinitializeoptionsform.label1.caption
+msgid "Please give the location where FPC is installed."
+msgstr ""
+
+#: tinitializeoptionsform.pathlabel.caption
+msgid "Path:"
+msgstr ""
+
+#: tinitializeoptionsform.prefixlabel.caption
+msgid "Prefix:"
+msgstr ""
+
