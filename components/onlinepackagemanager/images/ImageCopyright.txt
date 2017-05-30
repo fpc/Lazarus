@@ -8,7 +8,8 @@
    WebPage: http://led24.de/iconset/
    License: CC Attribution 4.0
 4. Name: FamFamFam
+   Author: Mark James
    WebPage: http://www.famfamfam.com/lab/icons/mini/
-   License: CC Attribution 4.0   
+   License: CC Attribution 3.0   
 
 
