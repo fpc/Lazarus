@@ -495,6 +495,8 @@ type
   { TCustomListBox }
 
   TCustomListBox = class(TWinControl)
+  private const
+    DefOptions = [lboDrawFocusRect];
   private
     FCacheValid: Boolean;
     FCanvas: TCanvas;
@@ -519,7 +521,6 @@ type
     function GetCount: Integer;
     function GetScrollWidth: Integer;
     function GetTopIndex: Integer;
-    function IsOptionsStored: Boolean;
     procedure RaiseIndexOutOfBounds(AIndex: integer);
     procedure SetColumns(const AValue: Integer);
     procedure SetScrollWidth(const AValue: Integer);
@@ -622,7 +623,7 @@ type
     property OnSelectionChange: TSelectionChangeEvent read FOnSelectionChange
                                                       write FOnSelectionChange;
     property OnUTF8KeyPress;
-    property Options: TListBoxOptions read FOptions write FOptions stored IsOptionsStored;
+    property Options: TListBoxOptions read FOptions write FOptions default DefOptions;
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;

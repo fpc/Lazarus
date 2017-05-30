@@ -128,11 +128,6 @@ begin
   UnlockSelectionChange;
 end;
 
-function TCustomListBox.IsOptionsStored: Boolean;
-begin
-  Result := (FOptions = [lboDrawFocusRect]);
-end;
-
 {------------------------------------------------------------------------------
  procedure TCustomListBox.FinalizeWnd
 ------------------------------------------------------------------------------}
@@ -562,7 +557,7 @@ begin
   FItemIndex:=-1;
   FExtendedSelect := true;
   //FScrollWidth := 0;
-  FOptions := [lboDrawFocusRect];
+  FOptions := DefOptions;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ParentColor := false;
