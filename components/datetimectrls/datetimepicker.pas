@@ -119,9 +119,15 @@ type
     dtaDefault means it is determined by BiDiMode }
   TDTCalAlignment = (dtaLeft, dtaRight, dtaDefault);
 
+  TDateTimePickerOption = (
+    dtpoDoChangeOnSetDateTime);
+  TDateTimePickerOptions = set of TDateTimePickerOption;
+
   { TCustomDateTimePicker }
 
   TCustomDateTimePicker = class(TCustomControl)
+  private const
+    cDefOptions = [];
   private
     FAutoAdvance: Boolean;
     FAutoButtonSize: Boolean;
@@ -191,6 +197,7 @@ type
     FEnableWhenUnchecked: Boolean;
     FAutoCheck: Boolean;
     FSkipChangeInUpdateDate: Integer;
+    FOptions: TDateTimePickerOptions;
 
     function AreSeparatorsStored: Boolean;
     function GetChecked: Boolean;
@@ -407,6 +414,7 @@ type
     property CalAlignment: TDTCalAlignment read FCalAlignment write SetCalAlignment default dtaDefault;
     property FlatButton: Boolean read GetFlatButton write SetFlatButton default False;
     property EnableWhenUnchecked: Boolean read FEnableWhenUnchecked write SetEnableWhenUnchecked default False;
+    property Options: TDateTimePickerOptions read FOptions write FOptions default cDefOptions;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -486,6 +494,7 @@ type
     property CalAlignment;
     property FlatButton;
     property EnableWhenUnchecked;
+    property Options;
 // events:
     property OnChange;
     property OnCheckBoxChange;
@@ -1057,14 +1066,29 @@ begin
 end;
 
 procedure TCustomDateTimePicker.SetDateTime(const AValue: TDateTime);
+var
+  CallChange: Boolean;
 begin
   if not EqualDateTime(AValue, FDateTime) then begin
     if IsNullDate(AValue) then
       FDateTime := NullDate
     else
       FDateTime := AValue;
+    CallChange := dtpoDoChangeOnSetDateTime in FOptions;
+  end else
+    CallChange := False;
+
+  if CallChange then
+  begin
+    Change;
+    Inc(FSkipChangeInUpdateDate);
   end;
-  UpdateDate;
+  try
+    UpdateDate;
+  finally
+    if CallChange then
+      Dec(FSkipChangeInUpdateDate);
+  end;
 end;
 
 procedure TCustomDateTimePicker.SetDateSeparator(const AValue: String);
@@ -3831,6 +3855,7 @@ begin
 
   FKind := dtkDate;
   FNullInputAllowed := True;
+  FOptions := cDefOptions;
 
   { Thanks to Luiz Américo for this:
     Lazarus ignores empty string when saving to lrs. Therefore, the problem
