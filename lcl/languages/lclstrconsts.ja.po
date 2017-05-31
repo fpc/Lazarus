@@ -6,28 +6,22 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Yuichiro Takahashi <yuichiro@pop07.odn.ne.jp>\n"
+"Last-Translator: Haruyuki Fujimaki<fujimaki_haruyuki@yahoo.co.jp>, from 1.8RC1\n"
 "Language-Team: Japanese Lazarus ML\n"
 "X-Generator: Poedit 1.5.7\n"
 "Language: ja\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy,badformat
-#| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "ブラウザ %s%s%s が起動できません。"
+msgstr "ブラウザ \"%s\"が起動できません。"
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy,badformat
-#| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "ブラウザ %s%s%s が見つかりません。"
+msgstr "ブラウザ \"%s\"が見つかりません。"
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy,badformat
-#| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "%s%s%s を実行中のエラー：%s%s"
+msgstr "\"%s\"を実行中のエラー：%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -38,10 +32,8 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "HTML ブラウザが見つかりません。%sツール → オプション → ヘルプ → ヘルプオプション でブラウザを設定してください。"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy,badformat
-#| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
-msgstr "ヘルプデータベース %s%s%s においてファイル %s%s%s を見つけることができませんでした。"
+msgstr "ヘルプデータベース \"%s\"は\"%s\"を見つけることができませんでした。"
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -299,7 +291,7 @@ msgstr "水色"
 
 #: lclstrconsts.rsascannothaveasparent
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "クラス%sは%sを親にできません"
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -372,7 +364,7 @@ msgstr "コントロールクラス '%s' はコントロールクラス '%s' を
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "コントロール'%s'は親フォームもしくは親フレームを持ちません"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -429,11 +421,11 @@ msgstr "ドッキング"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
-msgstr ""
+msgstr "コピー"
 
 #: lclstrconsts.rsdopaste
 msgid "Paste"
-msgstr ""
+msgstr "貼り付け"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
@@ -550,14 +542,10 @@ msgid "First"
 msgstr "最初へ"
 
 #: lclstrconsts.rsfixedcolstoobig
-#, fuzzy
-#| msgid "FixedCols can't be >= ColCount"
 msgid "FixedCols can't be > ColCount"
 msgstr "FixedCols は ColCount 以上にはできません"
 
 #: lclstrconsts.rsfixedrowstoobig
-#, fuzzy
-#| msgid "FixedRows can't be >= RowCount"
 msgid "FixedRows can't be > RowCount"
 msgstr "FixedRows は RowCount 以上にはできません"
 
@@ -623,15 +611,15 @@ msgstr "緑色"
 
 #: lclstrconsts.rsgridfiledoesnotexist
 msgid "Grid file doesn't exist"
-msgstr ""
+msgstr "グリッドファイルが存在しません"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr ""
+msgstr "列を持たない場合、行をグリッドに挿入できません"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr ""
+msgstr "行を持たない場合、列をグリッドに挿入できません"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
@@ -706,57 +694,41 @@ msgid "Help context %s not found."
 msgstr "ヘルプコンテキスト %s が見つかりません"
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy,badformat
-#| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
-msgstr "ヘルプコンテキスト %s をデータベース %s%s%s から見つけることができませんでした。"
+msgstr "ヘルプコンテキスト %s をデータベース\"%s\"から見つけることができませんでした。"
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy,badformat
-#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
-msgstr "ヘルプデータベース %s%s%s のヘルプページタイプ %s に対するビューアが見つかりません"
+msgstr "ヘルプデータベース\"%s\"のヘルプページタイプ %s に対するビューアが見つかりません"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy,badformat
-#| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
-msgstr "ヘルプデータベース %s%s%s が見つかりません"
+msgstr "ヘルプデータベース\"%s\"が見つかりません"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#, fuzzy,badformat
-#| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
-msgstr "ヘルプの %s%s%s 指令が見つかりません。"
+msgstr "ヘルプの\"%s\"指令が見つかりません。"
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#, fuzzy,badformat
-#| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "ヘルプの %s%s%s 指令をデータベース %s%s%s から見つけることができませんでした。"
+msgstr "ヘルプの\"%s\"指令をデータベース\"%s\"から見つけることができませんでした。"
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy,badformat
-#| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
-msgstr "ヘルプキーワード %s%s%s が見つかりません。"
+msgstr "ヘルプキーワード\"%s\"が見つかりません。"
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy,badformat
-#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
-msgstr "ヘルプキーワード %s%s%s をデータベース %s%s%s から見つけることができませんでした。"
+msgstr "ヘルプキーワード\"%s\"をデータベース\"%s\"から見つけることができませんでした。"
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy,badformat
-#| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
-msgstr "ヘルプノード %s%s%s にヘルプデータベースはありません"
+msgstr "ヘルプノード\"%s\"にヘルプデータベースはありません"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 #, fuzzy,badformat
 msgid "No help found for line %d, column %d of %s."
-msgstr "%2:s の行 %0:d、列 %1:d のヘルプが見つかりませんでした。."
+msgstr "%sの行 %d、列 %d のヘルプが見つかりませんでした。"
 
 #: lclstrconsts.rshelpnohelpnodesavailable
 msgid "No help entries available for this topic"
@@ -775,10 +747,8 @@ msgid "Help Selector Error"
 msgstr "ヘルプセレクタエラー"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy,badformat
-#| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
-msgstr "ヘルプタイプ %s%s%s に対するビューアがありません"
+msgstr "ヘルプタイプ\"%s\"に対するビューアがありません"
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
@@ -1081,7 +1051,7 @@ msgstr "レコードの登録"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%s無視してデータの破損のリスクを受け入れるのでしたらOKを押して下さい。%sプログラムを強制停止する場合は中止をクリックしてください。"
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1362,7 +1332,7 @@ msgstr "無効または不可視ウィンドウにフォーカスはできませ
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "設計時PPIをセットできません"
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
@@ -1505,7 +1475,7 @@ msgstr "利用できるタイマーがありません"
 
 #: lclstrconsts.sparentrequired
 msgid "Control \"%s\" has no parent window."
-msgstr ""
+msgstr "コントロール\"%s\"は親ウィンドウを持ちません。"
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
@@ -1541,7 +1511,7 @@ msgstr "正しくないトークンタイプ：\"%s\"があるべきところに
 
 #: lclstrconsts.sshellctrlsbytes
 msgid "%s bytes"
-msgstr ""
+msgstr "%s バイト"
 
 #: lclstrconsts.sshellctrlsinvalidpath
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
@@ -1549,6 +1519,8 @@ msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"無効なパス名:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
 msgid ""
@@ -1557,6 +1529,10 @@ msgid ""
 "in relation to rootpath:\n"
 "\"%s\"\n"
 msgstr ""
+"無効な相対パス名:\n"
+"\"%s\"\n"
+"以下のルートパスとの相互関係:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
@@ -1567,27 +1543,29 @@ msgstr ""
 
 #: lclstrconsts.sshellctrlskb
 msgid "%s kB"
-msgstr ""
+msgstr "%s kB"
 
 #: lclstrconsts.sshellctrlsmb
 msgid "%s MB"
-msgstr ""
+msgstr "%s MB"
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"
-msgstr ""
+msgstr "名前"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
 msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\"\n"
 msgstr ""
+"選択された項目は以下のディスク上に存在しません:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlssize
 msgid "Size"
-msgstr ""
+msgstr "サイズ"
 
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
-msgstr ""
+msgstr "型"
 

@@ -1,0 +1,145 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "アクション列"
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "条件列"
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "ファイル/アドレス列"
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "グループ列"
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "行列"
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "通過回数列"
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "ブレーク表示列"
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr "式列"
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr "関数名列"
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr "索引列"
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "行列"
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr "名前列"
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr "ソース列"
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr "状態列"
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr "値列"
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "履歴が保持されていません"
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "現在の列"
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "位置列"
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr "時間列"
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "データクラス列"
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "データ名列"
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "データ型列"
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "データ値列"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "データ可視列"
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "メソッドアドレス列"
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "メソッド名列"
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "メソッド返り値列"
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "メソッド型列"
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr "Len=%d"
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr "インスタンスクラス型を使って下さい"
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "検査ペイン"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "履歴の底に添える"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "履歴の冒頭に挿入する"
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "\"新しい値\"は空です"
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "デバッガは値を修正できませんでした。"
+
