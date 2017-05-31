@@ -215,47 +215,47 @@ msgstr "Обновить список пакетов"
 
 #: tinitializeoptionsform.advancedcheckbox.caption
 msgid "Advanced"
-msgstr ""
+msgstr "Расширенные"
 
 #: tinitializeoptionsform.buttonpanel.closebutton.caption
 msgctxt "tinitializeoptionsform.buttonpanel.closebutton.caption"
 msgid "&Close"
-msgstr ""
+msgstr "&Закрыть"
 
 #: tinitializeoptionsform.buttonpanel.okbutton.caption
 msgctxt "tinitializeoptionsform.buttonpanel.okbutton.caption"
 msgid "&Write Fppkg configuration files"
-msgstr ""
+msgstr "З&аписать файлы настройки Fppkg"
 
 #: tinitializeoptionsform.caption
 msgid "Create configuration files"
-msgstr ""
+msgstr "Создание файлов настройки"
 
 #: tinitializeoptionsform.compilerlabel.caption
 msgid "Compiler:"
-msgstr ""
+msgstr "Компилятор:"
 
 #: tinitializeoptionsform.edit1.text
 msgid "Edit1"
-msgstr ""
+msgstr "Edit1"
 
 #: tinitializeoptionsform.fpcdirectoryedit.texthint
 msgid "This location normally contains the compiler-executable along with a 'units' and 'fpmkinst' directory."
-msgstr ""
+msgstr "Этот каталог обычно содержит исполнимый файл компилятора наряду с подкаталогами 'units' и 'fpmkinst'."
 
 #: tinitializeoptionsform.initializefppkglabel.caption
 msgid "Create new configuration files for fppkg."
-msgstr ""
+msgstr "Создание новых файлов настройки для Fppkg."
 
 #: tinitializeoptionsform.label1.caption
 msgid "Please give the location where FPC is installed."
-msgstr ""
+msgstr "Задайте путь к FPC."
 
 #: tinitializeoptionsform.pathlabel.caption
 msgid "Path:"
-msgstr ""
+msgstr "Путь:"
 
 #: tinitializeoptionsform.prefixlabel.caption
 msgid "Prefix:"
-msgstr ""
+msgstr "Префикс:"
 
