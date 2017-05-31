@@ -6579,22 +6579,54 @@ images/components/tcomboboxex.png -text svneol=unset#image/png
 images/components/tcontrolbar.png -text svneol=unset#image/png
 images/components/tcoolbar.png -text svneol=unset#image/png
 images/components/tdatasource.png -text svneol=unset#image/png
+images/components/tdatasource_150.png -text
+images/components/tdatasource_200.png -text
 images/components/tdateedit.png -text svneol=unset#image/png
 images/components/tdbcalendar.png -text svneol=unset#image/png
+images/components/tdbcalendar_150.png -text
+images/components/tdbcalendar_200.png -text
 images/components/tdbcheckbox.png -text svneol=unset#image/png
+images/components/tdbcheckbox_150.png -text
+images/components/tdbcheckbox_200.png -text
 images/components/tdbcombobox.png -text svneol=unset#image/png
+images/components/tdbcombobox_150.png -text
+images/components/tdbcombobox_200.png -text
 images/components/tdbdateedit.png -text svneol=unset#image/png
+images/components/tdbdateedit_150.png -text
+images/components/tdbdateedit_200.png -text
 images/components/tdbedit.png -text svneol=unset#image/png
+images/components/tdbedit_150.png -text
+images/components/tdbedit_200.png -text
 images/components/tdbgrid.png -text svneol=unset#image/png
+images/components/tdbgrid_150.png -text
+images/components/tdbgrid_200.png -text
 images/components/tdbgroupbox.png -text svneol=unset#image/png
+images/components/tdbgroupbox_150.png -text
+images/components/tdbgroupbox_200.png -text
 images/components/tdbimage.png -text svneol=unset#image/png
+images/components/tdbimage_150.png -text
+images/components/tdbimage_200.png -text
 images/components/tdblistbox.png -text svneol=unset#image/png
+images/components/tdblistbox_150.png -text
+images/components/tdblistbox_200.png -text
 images/components/tdblookupcombobox.png -text svneol=unset#image/png
+images/components/tdblookupcombobox_150.png -text
+images/components/tdblookupcombobox_200.png -text
 images/components/tdblookuplistbox.png -text svneol=unset#image/png
+images/components/tdblookuplistbox_150.png -text
+images/components/tdblookuplistbox_200.png -text
 images/components/tdbmemo.png -text svneol=unset#image/png
+images/components/tdbmemo_150.png -text
+images/components/tdbmemo_200.png -text
 images/components/tdbnavigator.png -text svneol=unset#image/png
+images/components/tdbnavigator_150.png -text
+images/components/tdbnavigator_200.png -text
 images/components/tdbradiogroup.png -text svneol=unset#image/png
+images/components/tdbradiogroup_150.png -text
+images/components/tdbradiogroup_200.png -text
 images/components/tdbtext.png -text svneol=unset#image/png
+images/components/tdbtext_150.png -text
+images/components/tdbtext_200.png -text
 images/components/tdirectoryedit.png -text svneol=unset#image/png
 images/components/tdrawgrid.png -text svneol=unset#image/png
 images/components/tdrawgrid_150.png -text
