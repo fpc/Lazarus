@@ -6562,6 +6562,8 @@ images/components/tcheckgroup.png -text svneol=unset#image/png
 images/components/tcheckgroup_150.png -text
 images/components/tcheckgroup_200.png -text
 images/components/tchecklistbox.png -text svneol=unset#image/png
+images/components/tchecklistbox_150.png -text
+images/components/tchecklistbox_200.png -text
 images/components/tcolorbox.png -text svneol=unset#image/png
 images/components/tcolorbox_150.png -text
 images/components/tcolorbox_200.png -text
@@ -6679,10 +6681,14 @@ images/components/tlistbox.png -text svneol=unset#image/png
 images/components/tlistbox_150.png -text
 images/components/tlistbox_200.png -text
 images/components/tlistview.png -text svneol=unset#image/png
+images/components/tlistview_150.png -text
+images/components/tlistview_200.png -text
 images/components/tmainmenu.png -text svneol=unset#image/png
 images/components/tmainmenu_150.png -text
 images/components/tmainmenu_200.png -text
 images/components/tmaskedit.png -text svneol=unset#image/png
+images/components/tmaskedit_150.png -text
+images/components/tmaskedit_200.png -text
 images/components/tmemo.png -text svneol=unset#image/png
 images/components/tmemo_150.png -text
 images/components/tmemo_200.png -text
@@ -6751,6 +6757,8 @@ images/components/ttoolbar.png -text svneol=unset#image/png
 images/components/ttrackbar.png -text svneol=unset#image/png
 images/components/ttrayicon.png -text svneol=unset#image/png
 images/components/ttreeview.png -text svneol=unset#image/png
+images/components/ttreeview_150.png -text
+images/components/ttreeview_200.png -text
 images/components/tupdown.png -text svneol=unset#image/png
 images/components/tupdown_150.png -text
 images/components/tupdown_200.png -text

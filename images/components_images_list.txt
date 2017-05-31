@@ -30,6 +30,8 @@ components/tcheckgroup.png
 components/tcheckgroup_150.png
 components/tcheckgroup_200.png
 components/tchecklistbox.png
+components/tchecklistbox_150.png
+components/tchecklistbox_200.png
 components/tcolorbox.png
 components/tcolorbox_150.png
 components/tcolorbox_200.png
@@ -147,10 +149,14 @@ components/tlistbox.png
 components/tlistbox_150.png
 components/tlistbox_200.png
 components/tlistview.png
+components/tlistview_150.png
+components/tlistview_200.png
 components/tmainmenu.png
 components/tmainmenu_150.png
 components/tmainmenu_200.png
 components/tmaskedit.png
+components/tmaskedit_150.png
+components/tmaskedit_200.png
 components/tmemo.png
 components/tmemo_150.png
 components/tmemo_200.png
@@ -221,6 +227,8 @@ components/ttoolbar.png
 components/ttrackbar.png
 components/ttrayicon.png
 components/ttreeview.png
+components/ttreeview_150.png
+components/ttreeview_200.png
 components/tupdown.png
 components/tupdown_150.png
 components/tupdown_200.png
