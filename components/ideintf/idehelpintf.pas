@@ -400,8 +400,17 @@ var
     end;
     HtmlHelpProvider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
     ActFrm:=Screen.ActiveForm;
-    MaxWidth := ActFrm.Left + ActFrm.Width - ScreenPos.x;
-    MaxHeight := ActFrm.Top + ActFrm.Height - ScreenPos.y;
+    if Assigned(ActFrm) then
+    begin
+      MaxWidth := ActFrm.Left + ActFrm.Width - ScreenPos.x;
+      MaxHeight := ActFrm.Top + ActFrm.Height - ScreenPos.y;
+    end
+    else
+    begin
+      MaxWidth := Screen.Width;
+      MaxHeight := Screen.Height;
+    end;
+
     if NewWidth <= 0 then
       NewWidth := 500
     else if NewWidth > MaxWidth then
