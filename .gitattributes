@@ -6656,12 +6656,18 @@ images/components/theadercontrol_150.png -text
 images/components/theadercontrol_200.png -text
 images/components/thtmlbrowserhelpviewer.png -text svneol=unset#image/png
 images/components/thtmlhelpdatabase.png -text svneol=unset#image/png
+images/components/thtmlhelpdatabase_150.png -text
+images/components/thtmlhelpdatabase_200.png -text
 images/components/tidedialoglayoutstorage.png -text svneol=unset#image/png
 images/components/tidletimer.png -text svneol=unset#image/png
 images/components/timage.png -text svneol=unset#image/png
 images/components/timagelist.png -text svneol=unset#image/png
 images/components/tinipropstorage.png -text svneol=unset#image/png
+images/components/tinipropstorage_150.png -text
+images/components/tinipropstorage_200.png -text
 images/components/tjsonpropstorage.png -text svneol=unset#image/png
+images/components/tjsonpropstorage_150.png -text
+images/components/tjsonpropstorage_200.png -text
 images/components/tlabel.png -text svneol=unset#image/png
 images/components/tlabel_150.png -text
 images/components/tlabel_200.png -text
@@ -6753,6 +6759,8 @@ images/components/tvaluelisteditor_150.png -text
 images/components/tvaluelisteditor_200.png -text
 images/components/txmlconfig.png -text svneol=unset#image/png
 images/components/txmlpropstorage.png -text svneol=unset#image/png
+images/components/txmlpropstorage_150.png -text
+images/components/txmlpropstorage_200.png -text
 images/components/unregisteredcomponent.png -text svneol=unset#image/png
 images/components_images.bat svneol=native#text/x-msdos-program
 images/components_images.res -text

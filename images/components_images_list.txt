@@ -124,12 +124,18 @@ components/theadercontrol_150.png
 components/theadercontrol_200.png
 components/thtmlbrowserhelpviewer.png
 components/thtmlhelpdatabase.png
+components/thtmlhelpdatabase_150.png
+components/thtmlhelpdatabase_200.png
 components/tidedialoglayoutstorage.png
 components/tidletimer.png
 components/timage.png
 components/timagelist.png
 components/tinipropstorage.png
+components/tinipropstorage_150.png
+components/tinipropstorage_200.png
 components/tjsonpropstorage.png
+components/tjsonpropstorage_150.png
+components/tjsonpropstorage_200.png
 components/tlabel.png
 components/tlabel_150.png
 components/tlabel_200.png
@@ -223,5 +229,7 @@ components/tvaluelisteditor_150.png
 components/tvaluelisteditor_200.png
 components/txmlconfig.png
 components/txmlpropstorage.png
+components/txmlpropstorage_150.png
+components/txmlpropstorage_200.png
 components/unregisteredcomponent.png
 
