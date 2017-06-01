@@ -3,8 +3,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2017-05-24 08:45+0200\n"
-"Last-Translator: <h.mira@free.fr>\n"
+"PO-Revision-Date: 2017-05-27 19:07+0200\n"
+"Last-Translator: h.mira@free.fr\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -557,7 +557,7 @@ msgstr "&OK"
 #: lazdatadeskstr.sld_opendatadictionaryfilter
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Fichiers dictionnaires de données (fdd)|* .fdd |fichiers INI|* .ini |Tous les fichiers |. * *"
+msgstr "Fichiers dictionnaires de données (fdd)|*.fdd |fichiers INI|*.ini |Tous les fichiers |*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
@@ -588,7 +588,7 @@ msgstr "Dernier utilisé"
 #: lazdatadeskstr.sld_savefileasfilter
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Fichiers dictionnaires de données (fdd)|* .fdd |fichiers INI|* .ini |Tous les fichiers |. * *"
+msgstr "Fichiers dictionnaires de données (fdd)|*.fdd |fichiers INI|*.ini |Tous les fichiers |*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"

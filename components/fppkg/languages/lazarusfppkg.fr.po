@@ -175,7 +175,7 @@ msgstr "Installé"
 
 #: tfppkgform.packagelistview.columns[3].caption
 msgid "Available"
-msgstr "Disponilbe"
+msgstr "Disponible"
 
 #: tfppkgform.packagelistview.columns[4].caption
 msgid "Description"

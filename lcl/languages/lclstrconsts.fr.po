@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Last-Translator: <h.mira@free.fr>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"PO-Revision-Date: 2017-05-24 08:52+0200\n"
+"PO-Revision-Date: 2017-05-24 10:06+0200\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
@@ -1050,7 +1050,7 @@ msgstr "Poster"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr "%s%sAppuyez sur \"OK\" pour ignorer et risquer une corruption des données.%sAppuyez sur \"Abandonner\" pour achever le programme."
+msgstr "%s%sAppuyez sur \"OK\" pour ignorer et risquer une corruption des données.%sAppuyez sur \"Abandonner\" pour fermer le programme."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1470,7 +1470,7 @@ msgstr "Aucune fiche MDI présente."
 
 #: lclstrconsts.snotimers
 msgid "No timers available"
-msgstr "Aucun temporisateur disponible \"timer\")"
+msgstr "Aucun temporisateur disponible (\"timer\")"
 
 #: lclstrconsts.sparentrequired
 msgid "Control \"%s\" has no parent window."
