@@ -8505,6 +8505,7 @@ begin
   {$IFDEF VerboseIDEDisplayState}
   debugln(['TMainIDE.DoShowDesignerFormOfCurrentSrc ']);
   {$ENDIF}
+  AForm := nil;
   GetUnit(TSourceEditor(AEditor), ActiveUnitInfo);
   if (ActiveUnitInfo = nil) then exit;
 

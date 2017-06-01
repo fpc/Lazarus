@@ -1103,7 +1103,9 @@ var
   s: TBasicChartSeries;
   a: TChartAxis;
 begin
-  Extent.CheckBoundsOrder;
+  //Extent.CheckBoundsOrder;
+  // wp: avoid exception in IDE if min > max, but silently bring min/max
+  // into correct order
 
   for a in AxisList do
     if a.Transformations <> nil then

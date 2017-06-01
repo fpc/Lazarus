@@ -1,2 +1,6 @@
 tchmhelpdatabase.png
+tchmhelpdatabase_150.png
+tchmhelpdatabase_200.png
 tlhelpconnector.png
+tlhelpconnector_150.png
+tlhelpconnector_200.png
