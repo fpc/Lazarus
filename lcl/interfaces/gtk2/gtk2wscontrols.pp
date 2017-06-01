@@ -770,19 +770,16 @@ begin
     // simple
     Child := TWinControlHack(AChild);
     if ANewPos <= 0 then // bottom
-      TGtkPrivateWidgetClass(
-          Child.WidgetSetClass.WSPrivate).SetZPosition(Child, wszpBack)
+      GetGtkPrivate(Child).SetZPosition(Child, wszpBack)
     else
-      TGtkPrivateWidgetClass(
-          Child.WidgetSetClass.WSPrivate).SetZPosition(Child, wszpFront);
+      GetGtkPrivate(Child).SetZPosition(Child, wszpFront);
   end else
   begin
     for n := 1 to AChildren.Count - 1 do
     begin
       Child := TWinControlHack(AChildren[n]);
       if Child.HandleAllocated then
-        TGtkPrivateWidgetClass(
-          Child.WidgetSetClass.WSPrivate).SetZPosition(Child, wszpBack);
+        GetGtkPrivate(Child).SetZPosition(Child, wszpBack);
     end;
   end;
 end;
@@ -798,7 +795,7 @@ begin
   if WidgetInfo^.ControlCursor <> ACursor then
   begin
     WidgetInfo^.ControlCursor := ACursor;
-    TGtkPrivateWidgetClass(AWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WidgetInfo);
+    GetGtkPrivate(AWinControl).UpdateCursor(WidgetInfo);
   end;
 end;
 
