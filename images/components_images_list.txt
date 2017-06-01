@@ -236,6 +236,8 @@ components/tvaluelisteditor.png
 components/tvaluelisteditor_150.png
 components/tvaluelisteditor_200.png
 components/txmlconfig.png
+components/txmlconfig_150.png
+components/txmlconfig_200.png
 components/txmlpropstorage.png
 components/txmlpropstorage_150.png
 components/txmlpropstorage_200.png

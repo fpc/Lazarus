@@ -661,7 +661,11 @@ components/chmhelp/packages/help/design/lazhelpchm.bat svneol=native#text/plain
 components/chmhelp/packages/help/design/lazhelpchm.sh svneol=native#text/plain
 components/chmhelp/packages/help/design/lazhelpchm.txt svneol=native#text/plain
 components/chmhelp/packages/help/design/tchmhelpdatabase.png -text svneol=unset#image/png
+components/chmhelp/packages/help/design/tchmhelpdatabase_150.png -text
+components/chmhelp/packages/help/design/tchmhelpdatabase_200.png -text
 components/chmhelp/packages/help/design/tlhelpconnector.png -text svneol=unset#image/png
+components/chmhelp/packages/help/design/tlhelpconnector_150.png -text
+components/chmhelp/packages/help/design/tlhelpconnector_200.png -text
 components/chmhelp/packages/help/fpmake.pp svneol=native#text/plain
 components/chmhelp/packages/help/lazhelpchm.pas svneol=native#text/plain
 components/chmhelp/packages/help/lazhelpchm.res -text
@@ -6766,6 +6770,8 @@ images/components/tvaluelisteditor.png -text
 images/components/tvaluelisteditor_150.png -text
 images/components/tvaluelisteditor_200.png -text
 images/components/txmlconfig.png -text svneol=unset#image/png
+images/components/txmlconfig_150.png -text
+images/components/txmlconfig_200.png -text
 images/components/txmlpropstorage.png -text svneol=unset#image/png
 images/components/txmlpropstorage_150.png -text
 images/components/txmlpropstorage_200.png -text
