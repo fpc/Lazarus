@@ -179,7 +179,7 @@ msgstr "Installé"
 
 #: tfppkgform.packagelistview.columns[3].caption
 msgid "Available"
-msgstr "Disponilbe"
+msgstr "Disponible"
 
 #: tfppkgform.packagelistview.columns[4].caption
 msgid "Description"
@@ -215,45 +215,45 @@ msgstr "Mettre à jour la liste des paquets"
 
 #: tinitializeoptionsform.advancedcheckbox.caption
 msgid "Advanced"
-msgstr ""
+msgstr "Avancé"
 
 #: tinitializeoptionsform.buttonpanel.closebutton.caption
 msgid "&Close"
-msgstr ""
+msgstr "&Fermer"
 
 #: tinitializeoptionsform.buttonpanel.okbutton.caption
 msgid "&Write Fppkg configuration files"
-msgstr ""
+msgstr "&Écrire les fichiers de configuration de Fppkg"
 
 #: tinitializeoptionsform.caption
 msgid "Create configuration files"
-msgstr ""
+msgstr "Créer les fichiers de configuration"
 
 #: tinitializeoptionsform.compilerlabel.caption
 msgid "Compiler:"
-msgstr ""
+msgstr "Compilateur :"
 
 #: tinitializeoptionsform.edit1.text
 msgid "Edit1"
-msgstr ""
+msgstr "Edit1"
 
 #: tinitializeoptionsform.fpcdirectoryedit.texthint
 msgid "This location normally contains the compiler-executable along with a 'units' and 'fpmkinst' directory."
-msgstr ""
+msgstr "Cet emplacement contient normalement l’exécutable du compilateur ainsi que les répertoires 'units' et 'fpmkinst'."
 
 #: tinitializeoptionsform.initializefppkglabel.caption
 msgid "Create new configuration files for fppkg."
-msgstr ""
+msgstr "Créer les fichiers de configuration pour Fppkg."
 
 #: tinitializeoptionsform.label1.caption
 msgid "Please give the location where FPC is installed."
-msgstr ""
+msgstr "Veuillez indiquer l’emplacement d’installation de FPC."
 
 #: tinitializeoptionsform.pathlabel.caption
 msgid "Path:"
-msgstr ""
+msgstr "Chemin :"
 
 #: tinitializeoptionsform.prefixlabel.caption
 msgid "Prefix:"
-msgstr ""
+msgstr "Préfixe :"
 
