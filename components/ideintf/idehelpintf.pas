@@ -1,3 +1,4 @@
+{  $Id: helpintf.pas 9271 2006-05-13 12:00:43Z mattias $  }
 {
  *****************************************************************************
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
@@ -362,9 +363,6 @@ end;
 
 function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
   const MouseOffset: Boolean; HintFont: TFont): boolean;
-var
-  ms: TMemoryStream;
-  NewWidth, NewHeight: integer;
 
   procedure DoText;
   var
@@ -377,14 +375,14 @@ var
     if MouseOffset then
       HintTextWindow.OffsetHintRect(ScreenPos)
     else
-      HintTextWindow.OffsetHintRect(ScreenPos, 0);
+      HintTextWindow.OffsetHintRect(ScreenPos, 0, True, False); // shrink height only for fixed (no MouseOffset) hints
     HintTextWindow.ActivateHint(TheHint);
   end;
 
   procedure DoHtml;
   var
-    ActFrm: TForm;
-    MaxWidth, MaxHeight: Integer;
+    ms: TMemoryStream;
+    NewWidth, NewHeight: integer;
   begin
     if HintFont<>nil then
       HintRenderWindow.Font := HintFont;
@@ -399,31 +397,17 @@ var
       ms.Free;
     end;
     HtmlHelpProvider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
-    ActFrm:=Screen.ActiveForm;
-    if Assigned(ActFrm) then
-    begin
-      MaxWidth := ActFrm.Left + ActFrm.Width - ScreenPos.x;
-      MaxHeight := ActFrm.Top + ActFrm.Height - ScreenPos.y;
-    end
-    else
-    begin
-      MaxWidth := Screen.Width;
-      MaxHeight := Screen.Height;
-    end;
 
     if NewWidth <= 0 then
-      NewWidth := 500
-    else if NewWidth > MaxWidth then
-      NewWidth := MaxWidth;
+      NewWidth := 500;
     if NewHeight <= 0 then
-      NewHeight := 200
-    else if NewHeight > MaxHeight then
-      NewHeight := MaxHeight;
+      NewHeight := 200;
+
     HintRenderWindow.HintRectAdjust := Rect(0, 0, NewWidth, NewHeight);
     if MouseOffset then
       HintRenderWindow.OffsetHintRect(ScreenPos)
     else
-      HintRenderWindow.OffsetHintRect(ScreenPos, 0);
+      HintRenderWindow.OffsetHintRect(ScreenPos, 0, True, False); // shrink height only for fixed (no MouseOffset) hints
     HintRenderWindow.ActivateRendered;
   end;
 
