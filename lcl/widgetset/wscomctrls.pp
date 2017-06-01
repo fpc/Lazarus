@@ -56,6 +56,13 @@ type
     class procedure UpdateProperties(const ACustomPage: TCustomPage); virtual;
   end;
 
+  { TWSCustomPage_CallWS }
+
+  TWSCustomPage_CallWS = class(TWSCustomPage)
+  public
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+  end;
+
   { TWSCustomTabControl }
 
   TWSCustomTabControlClass = class of TWSCustomTabControl;
@@ -101,7 +108,7 @@ type
 
   { TWSTabSheet }
 
-  TWSTabSheet = class(TWSCustomPage)
+  TWSTabSheet = class(TWSCustomPage_CallWS)
   public
     class function GetDefaultColor(const AControl: TControl;
       const ADefaultColorType: TDefaultColorType): TColor; override;
@@ -312,6 +319,14 @@ end;
 
 class procedure TWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 begin
+end;
+
+{ TWSCustomPage_CallWS }
+
+class procedure TWSCustomPage_CallWS.UpdateProperties(
+  const ACustomPage: TCustomPage);
+begin
+  FWSCustomPage_Impl.UpdateProperties(ACustomPage);
 end;
 
 { TWSCustomTabControl }

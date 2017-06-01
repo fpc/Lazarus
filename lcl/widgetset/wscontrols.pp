@@ -54,7 +54,7 @@ type
   { TWSDragImageList }
 
   TWSDragImageListClass = class of TWSDragImageList;
-  TWSDragImageList = class(TWSCustomImageList)
+  TWSDragImageList = class(TWSCustomImageList_CallWS)
   private class var
     FWSDragImageList_Impl: TWSDragImageListClass;
   public

@@ -46,7 +46,7 @@ type
   { TWSCustomCheckListBox }
 
   TWSCustomCheckListBoxClass = class of TWSCustomCheckListBox;
-  TWSCustomCheckListBox = class(TWSCustomListBox)
+  TWSCustomCheckListBox = class(TWSCustomListBox_CallWS)
   private class var
     FWSCustomCheckListBox_Impl: TWSCustomCheckListBoxClass;
   public

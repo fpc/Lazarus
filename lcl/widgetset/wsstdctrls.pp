@@ -150,9 +150,37 @@ type
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); virtual;
   end;
 
+  { TWSCustomListBox_CallWS }
+
+  TWSCustomListBox_CallWS = class(TWSCustomListBox)
+  public
+    class procedure DragStart(const ACustomListBox: TCustomListBox); override;
+
+    class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
+    class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
+    class function GetScrollWidth(const ACustomListBox: TCustomListBox): Integer; override;
+    class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
+    class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
+    class procedure FreeStrings(var AStrings: TStrings); override;
+    class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+
+    class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
+
+    class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
+    class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
+    class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); override;
+    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
+    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
+    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
+    class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
+  end;
+
   { TWSListBox }
 
-  TWSListBox = class(TWSCustomListBox)
+  TWSListBox = class(TWSCustomListBox_CallWS)
   published
   end;
 
@@ -219,6 +247,10 @@ type
     class procedure Copy(const ACustomEdit: TCustomEdit); override;
     class procedure Paste(const ACustomEdit: TCustomEdit); override;
     class procedure Undo(const ACustomEdit: TCustomEdit); override;
+    //
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
   end;
 
   { TWSCustomMemo }
@@ -285,10 +317,19 @@ type
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
+  { TWSButtonControl_CallWS }
+
+  TWSButtonControl_CallWS = class(TWSButtonControl)
+  public
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
+  end;
+
   { TWSButton }
 
   TWSButtonClass = class of TWSButton;
-  TWSButton = class(TWSButtonControl)
+  TWSButton = class(TWSButtonControl_CallWS)
   private class var
     FWSButton_Impl: TWSButtonClass;
   public
@@ -298,10 +339,18 @@ type
     class procedure SetShortCut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortCut); virtual;
   end;
 
+  { TWSButton_CallWS }
+
+  TWSButton_CallWS = class(TWSButton)
+  public
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+    class procedure SetShortCut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortCut); override;
+  end;
+
   { TWSCustomCheckBox }
 
   TWSCustomCheckBoxClass = class of TWSCustomCheckBox;
-  TWSCustomCheckBox = class(TWSButtonControl)
+  TWSCustomCheckBox = class(TWSButtonControl_CallWS)
   private class var
     FWSCustomCheckBox_Impl: TWSCustomCheckBoxClass;
   public
@@ -499,6 +548,123 @@ end;
 class procedure TWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
   const NewTopIndex: integer);
 begin
+end;
+
+{ TWSCustomListBox_CallWS }
+
+class procedure TWSCustomListBox_CallWS.DragStart(
+  const ACustomListBox: TCustomListBox);
+begin
+  FWSCustomListBox_Impl.DragStart(ACustomListBox);
+end;
+
+class function TWSCustomListBox_CallWS.GetIndexAtXY(
+  const ACustomListBox: TCustomListBox; X, Y: integer): integer;
+begin
+  Result:= FWSCustomListBox_Impl.GetIndexAtXY(ACustomListBox, X, Y);
+end;
+
+class function TWSCustomListBox_CallWS.GetItemIndex(
+  const ACustomListBox: TCustomListBox): integer;
+begin
+  Result:= FWSCustomListBox_Impl.GetItemIndex(ACustomListBox);
+end;
+
+class function TWSCustomListBox_CallWS.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
+  ): boolean;
+begin
+  Result:= FWSCustomListBox_Impl.GetItemRect(ACustomListBox, Index, ARect);
+end;
+
+class function TWSCustomListBox_CallWS.GetScrollWidth(
+  const ACustomListBox: TCustomListBox): Integer;
+begin
+  Result:= FWSCustomListBox_Impl.GetScrollWidth(ACustomListBox);
+end;
+
+class function TWSCustomListBox_CallWS.GetSelCount(
+  const ACustomListBox: TCustomListBox): integer;
+begin
+  Result:= FWSCustomListBox_Impl.GetSelCount(ACustomListBox);
+end;
+
+class function TWSCustomListBox_CallWS.GetSelected(
+  const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+begin
+  Result:= FWSCustomListBox_Impl.GetSelected(ACustomListBox, AIndex);
+end;
+
+class function TWSCustomListBox_CallWS.GetStrings(
+  const ACustomListBox: TCustomListBox): TStrings;
+begin
+  Result:= FWSCustomListBox_Impl.GetStrings(ACustomListBox);
+end;
+
+class procedure TWSCustomListBox_CallWS.FreeStrings(var AStrings: TStrings);
+begin
+  FWSCustomListBox_Impl.FreeStrings(AStrings);
+end;
+
+class function TWSCustomListBox_CallWS.GetTopIndex(
+  const ACustomListBox: TCustomListBox): integer;
+begin
+  Result:= FWSCustomListBox_Impl.GetTopIndex(ACustomListBox);
+end;
+
+class procedure TWSCustomListBox_CallWS.SelectItem(
+  const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
+begin
+  FWSCustomListBox_Impl.SelectItem(ACustomListBox, AIndex, ASelected);
+end;
+
+class procedure TWSCustomListBox_CallWS.SetBorder(
+  const ACustomListBox: TCustomListBox);
+begin
+  FWSCustomListBox_Impl.SetBorder(ACustomListBox);
+end;
+
+class procedure TWSCustomListBox_CallWS.SetColumnCount(
+  const ACustomListBox: TCustomListBox; ACount: Integer);
+begin
+  FWSCustomListBox_Impl.SetColumnCount(ACustomListBox, ACount);
+end;
+
+class procedure TWSCustomListBox_CallWS.SetItemIndex(
+  const ACustomListBox: TCustomListBox; const AIndex: integer);
+begin
+  FWSCustomListBox_Impl.SetItemIndex(ACustomListBox, AIndex);
+end;
+
+class procedure TWSCustomListBox_CallWS.SetScrollWidth(
+  const ACustomListBox: TCustomListBox; const AScrollWidth: Integer);
+begin
+  FWSCustomListBox_Impl.SetScrollWidth(ACustomListBox, AScrollWidth);
+end;
+
+class procedure TWSCustomListBox_CallWS.SetSelectionMode(
+  const ACustomListBox: TCustomListBox; const AExtendedSelect,
+  AMultiSelect: boolean);
+begin
+  FWSCustomListBox_Impl.SetSelectionMode(ACustomListBox, AExtendedSelect, AMultiSelect);
+end;
+
+class procedure TWSCustomListBox_CallWS.SetStyle(
+  const ACustomListBox: TCustomListBox);
+begin
+  FWSCustomListBox_Impl.SetStyle(ACustomListBox);
+end;
+
+class procedure TWSCustomListBox_CallWS.SetSorted(
+  const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+begin
+  FWSCustomListBox_Impl.SetSorted(ACustomListBox, AList, ASorted);
+end;
+
+class procedure TWSCustomListBox_CallWS.SetTopIndex(
+  const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
+begin
+  FWSCustomListBox_Impl.SetTopIndex(ACustomListBox, NewTopIndex);
 end;
 
 { TWSCustomComboBox }
@@ -876,6 +1042,14 @@ begin
   FWSCustomEdit_Impl.Undo(ACustomEdit);
 end;
 
+class procedure TWSCustomEdit_CallWS.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  FWSCustomEdit_Impl.GetPreferredSize(AWinControl, PreferredWidth, PreferredHeight,
+    WithThemeSpace);
+end;
+
 { TWSCustomMemo }
 
 class function TWSCustomMemo.GetImplementation: TWSObjectClass;
@@ -978,6 +1152,20 @@ end;
 class procedure TWSButton.SetShortCut(const AButton: TCustomButton;
   const ShortCutK1, ShortCutK2: TShortCut);
 begin;
+end;
+
+{ TWSButton_CallWS }
+
+class procedure TWSButton_CallWS.SetDefault(const AButton: TCustomButton;
+  ADefault: Boolean);
+begin
+  FWSButton_Impl.SetDefault(AButton, ADefault);
+end;
+
+class procedure TWSButton_CallWS.SetShortCut(const AButton: TCustomButton;
+  const ShortCutK1, ShortCutK2: TShortCut);
+begin
+  FWSButton_Impl.SetShortCut(AButton, ShortCutK1, ShortCutK2);
 end;
 
 { TWSCustomCheckBox }
@@ -1183,6 +1371,16 @@ end;
 class function TWSButtonControl.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
 begin
   Result := DefBtnColors[ADefaultColorType];
+end;
+
+{ TWSButtonControl_CallWS }
+
+class procedure TWSButtonControl_CallWS.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  FWSButtonControl_Impl.GetPreferredSize(AWinControl, PreferredWidth, PreferredHeight,
+    WithThemeSpace);
 end;
 
 end.

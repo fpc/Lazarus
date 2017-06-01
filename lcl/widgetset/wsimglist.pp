@@ -64,7 +64,22 @@ type
     class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); virtual;
   end;
 
-  procedure RegisterCustomImageList;
+  { TWSCustomImageList_CallWS }
+
+  TWSCustomImageList_CallWS = class(TWSCustomImageList)
+  public
+    class procedure Clear(AList: TCustomImageList); override;
+    class function  CreateReference(AList: TCustomImageList; ACount, AGrow, AWidth,
+      AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference; override;
+    class procedure Delete(AList: TCustomImageList; AIndex: Integer); override;
+    class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
+      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); override;
+    class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
+    class procedure Move(AList: TCustomImageList; ACurIndex, ANewIndex: Integer); override;
+    class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
+  end;
+
+procedure RegisterCustomImageList;
 
 implementation
 
@@ -264,6 +279,53 @@ begin
 
   ABitmap := InternalCreateBitmap(AList, AList.Width, AList.Height, AData);
   TDefaultImageListImplementor(AList.Reference.Ptr)[AIndex] := ABitmap;
+end;
+
+{ TWSCustomImageList_CallWS }
+
+class procedure TWSCustomImageList_CallWS.Clear(AList: TCustomImageList);
+begin
+  FWSCustomImageList_Impl.Clear(AList);
+end;
+
+class function TWSCustomImageList_CallWS.CreateReference(
+  AList: TCustomImageList; ACount, AGrow, AWidth, AHeight: Integer;
+  AData: PRGBAQuad): TWSCustomImageListReference;
+begin
+  Result:= FWSCustomImageList_Impl.CreateReference(AList, ACount, AGrow, AWidth, AHeight, AData);
+end;
+
+class procedure TWSCustomImageList_CallWS.Delete(AList: TCustomImageList;
+  AIndex: Integer);
+begin
+  FWSCustomImageList_Impl.Delete(AList, AIndex);
+end;
+
+class procedure TWSCustomImageList_CallWS.Draw(AList: TCustomImageList;
+  AIndex: Integer; ACanvas: TCanvas; ABounds: TRect; ABkColor,
+  ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle;
+  AImageType: TImageType);
+begin
+  FWSCustomImageList_Impl.Draw(AList, AIndex, ACanvas, ABounds, ABkColor, ABlendColor,
+    ADrawEffect, AStyle, AImageType);
+end;
+
+class procedure TWSCustomImageList_CallWS.Insert(AList: TCustomImageList;
+  AIndex: Integer; AData: PRGBAQuad);
+begin
+  FWSCustomImageList_Impl.Insert(AList, AIndex, AData);
+end;
+
+class procedure TWSCustomImageList_CallWS.Move(AList: TCustomImageList;
+  ACurIndex, ANewIndex: Integer);
+begin
+  FWSCustomImageList_Impl.Move(AList, ACurIndex, ANewIndex);
+end;
+
+class procedure TWSCustomImageList_CallWS.Replace(AList: TCustomImageList;
+  AIndex: Integer; AData: PRGBAQuad);
+begin
+  FWSCustomImageList_Impl.Replace(AList, AIndex, AData);
 end;
 
 { WidgetSetRegistration }

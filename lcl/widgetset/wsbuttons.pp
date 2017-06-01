@@ -47,7 +47,7 @@ type
   { TWSBitBtn }
   
   TWSBitBtnClass = class of TWSBitBtn;
-  TWSBitBtn = class(TWSButton)
+  TWSBitBtn = class(TWSButton_CallWS)
   private class var
     FWSBitBtn_Impl: TWSBitBtnClass;
   public
