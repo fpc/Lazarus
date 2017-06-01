@@ -880,7 +880,8 @@ type
     FAutoHide: Boolean;
     FAutoHideTimer: TCustomTimer;
     FHideInterval: Integer;
-    procedure AdjustBoundsForMonitor;
+    procedure AdjustBoundsForMonitor(KeepWidth: Boolean = True;
+      KeepHeight: Boolean = True);
     function GetDrawTextFlags: Cardinal;
     procedure SetAutoHide(Value : Boolean);
     procedure AutoHideHint(Sender : TObject);
@@ -911,7 +912,8 @@ type
                                AData: pointer); virtual;
     function CalcHintRect(MaxWidth: Integer; const AHint: String;
                           AData: pointer): TRect; virtual;
-    function OffsetHintRect(NewPos: TPoint; dy: Integer = 15): Boolean;
+    function OffsetHintRect(NewPos: TPoint; dy: Integer = 15;
+      KeepWidth: Boolean = True; KeepHeight: Boolean = True): Boolean;
     procedure InitializeWnd; override;
     function IsHintMsg(Msg: TMsg): Boolean; virtual;
     procedure ReleaseHandle;

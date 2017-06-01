@@ -311,42 +311,48 @@ begin
   //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));
 end;
 
-procedure THintWindow.AdjustBoundsForMonitor;
+procedure THintWindow.AdjustBoundsForMonitor(KeepWidth: Boolean;
+  KeepHeight: Boolean);
 var
   AMonitor: TMonitor;
   ABounds: TRect;
 begin
   AMonitor := Screen.MonitorFromPoint(FHintRect.TopLeft);
-  ABounds := AMonitor.BoundsRect;
+  ABounds := AMonitor.WorkareaRect;
 
   // offset hint to fit into monitor
   if FHintRect.Bottom > ABounds.Bottom then
   begin
-    FHintRect.Top := ABounds.Bottom - (FHintRect.Bottom - FHintRect.Top);
+    if KeepHeight then
+      FHintRect.Top := ABounds.Bottom - (FHintRect.Bottom - FHintRect.Top);
     FHintRect.Bottom := ABounds.Bottom;
   end;
   if FHintRect.Top < ABounds.Top then
   begin
-    FHintRect.Bottom := Min(ABounds.Top + (FHintRect.Bottom - FHintRect.Top), ABounds.Bottom);
+    if KeepHeight then
+      FHintRect.Bottom := Min(ABounds.Top + (FHintRect.Bottom - FHintRect.Top), ABounds.Bottom);
     FHintRect.Top := ABounds.Top;
   end;
 
   if FHintRect.Right > ABounds.Right then
   begin
-    FHintRect.Left := ABounds.Right - (FHintRect.Right - FHintRect.Left);
+    if KeepWidth then
+      FHintRect.Left := ABounds.Right - (FHintRect.Right - FHintRect.Left);
     FHintRect.Right := ABounds.Right;
   end;
   if FHintRect.Left < ABounds.Left then
   begin
-    FHintRect.Right:= Min(ABounds.Left + (FHintRect.Right - FHintRect.Left), ABounds.Right);
+    if KeepWidth then
+      FHintRect.Right:= Min(ABounds.Left + (FHintRect.Right - FHintRect.Left), ABounds.Right);
     FHintRect.Left := ABounds.Left;
   end;
 end;
 
-function THintWindow.OffsetHintRect(NewPos: TPoint; dy: Integer): Boolean;
+function THintWindow.OffsetHintRect(NewPos: TPoint; dy: Integer;
+  KeepWidth: Boolean; KeepHeight: Boolean): Boolean;
 begin
   Result:=OffsetRect(FHintRect, NewPos.X, NewPos.Y + dy);
-  AdjustBoundsForMonitor;
+  AdjustBoundsForMonitor(KeepWidth, KeepHeight);
 end;
 
 procedure THintWindow.InitializeWnd;
