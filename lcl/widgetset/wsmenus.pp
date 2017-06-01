@@ -47,13 +47,8 @@ uses
 type
   { TWSMenuItem }
 
-  TWSMenuItemClass = class of TWSMenuItem;
   TWSMenuItem = class(TWSLCLComponent)
-  private class var
-    FWSMenuItem_Impl: TWSMenuItemClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  published
     class function  OpenCommand: LongInt; virtual;
     class procedure CloseCommand(ACommand: LongInt); virtual;
     class procedure AttachMenu(const AMenuItem: TMenuItem); virtual;
@@ -68,16 +63,13 @@ type
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; virtual;
     class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); virtual;
   end;
+  TWSMenuItemClass = class of TWSMenuItem;
 
   { TWSMenu }
 
   TWSMenuClass = class of TWSMenu;
   TWSMenu = class(TWSLCLComponent)
-  private class var
-    FWSMenu_Impl: TWSMenuClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  published
     class function CreateHandle(const AMenu: TMenu): HMENU; virtual;
     
     class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); virtual;
@@ -91,15 +83,11 @@ type
 
   { TWSPopupMenu }
 
-  TWSPopupMenuClass = class of TWSPopupMenu;
   TWSPopupMenu = class(TWSMenu)
-  private class var
-    FWSPopupMenu_Impl: TWSPopupMenuClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  published
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); virtual;
   end;
+  TWSPopupMenuClass = class of TWSPopupMenu;
 
 function WSCheckMenuItem(const AMenuItem: TMenuItem;
   const AProcName: String): Boolean;
@@ -127,16 +115,6 @@ begin
 end;
 
 { TWSMenuItem }
-
-class function TWSMenuItem.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSMenuItem_Impl;
-end;
-
-class procedure TWSMenuItem.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSMenuItem_Impl := TWSMenuItemClass(AImpl);
-end;
 
 class function TWSMenuItem.OpenCommand: LongInt;
 begin
@@ -203,16 +181,6 @@ end;
           
 { TWSMenu }
 
-class function TWSMenu.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSMenu_Impl;
-end;
-
-class procedure TWSMenu.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSMenu_Impl := TWSMenuClass(AImpl);
-end;
-
 class function  TWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
   Result := 0;
@@ -225,16 +193,6 @@ end;
 
 
 { TWSPopupMenu }
-
-class function TWSPopupMenu.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSPopupMenu_Impl;
-end;
-
-class procedure TWSPopupMenu.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSPopupMenu_Impl := TWSPopupMenuClass(AImpl);
-end;
 
 class procedure TWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
 begin

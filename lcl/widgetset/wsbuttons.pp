@@ -47,12 +47,8 @@ type
   { TWSBitBtn }
   
   TWSBitBtnClass = class of TWSBitBtn;
-  TWSBitBtn = class(TWSButton_CallWS)
-  private class var
-    FWSBitBtn_Impl: TWSBitBtnClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSBitBtn = class(TWSButton)
+  published
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); virtual;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); virtual;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); virtual;
@@ -80,16 +76,6 @@ uses
 // TODO: Can't be virtual abstract ?
 
 { TWSCustomBitBtn }
-
-class function TWSBitBtn.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSBitBtn_Impl;
-end;
-
-class procedure TWSBitBtn.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSBitBtn_Impl := TWSBitBtnClass(AImpl);
-end;
 
 class procedure TWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonGlyph);

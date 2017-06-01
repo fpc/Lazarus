@@ -52,7 +52,7 @@ type
   { TWSNotebook }
 
   TWSNotebook = class(TWSCustomControl)
-  public
+  published
     class function GetDefaultColor(const AControl: TControl;
       const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
@@ -125,13 +125,8 @@ type
 
   { TWSCustomLabeledEdit }
 
-  TWSCustomLabeledEditClass = class of TWSCustomLabeledEdit;
-  TWSCustomLabeledEdit = class(TWSCustomEdit_CallWS)
-  private class var
-    FWSCustomLabeledEdit_Impl: TWSCustomLabeledEditClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSCustomLabeledEdit = class(TWSCustomEdit)
+  published
   end;
 
   { TWSLabeledEdit }
@@ -143,7 +138,7 @@ type
   { TWSCustomPanel }
 
   TWSCustomPanel = class(TWSCustomControl)
-  public
+  published
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
@@ -154,13 +149,8 @@ type
 
   { TWSCustomTrayIcon }
 
-  TWSCustomTrayIconClass = class of TWSCustomTrayIcon;
   TWSCustomTrayIcon = class(TWSLCLComponent)
-  public class var
-    FWSCustomTrayIcon_WSClass: TWSCustomTrayIconClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  published
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); virtual;
@@ -168,6 +158,7 @@ type
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; virtual;
     class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; virtual;
   end;
+  TWSCustomTrayIconClass = class of TWSCustomTrayIcon;
 
   { WidgetSetRegistration }
 
@@ -192,36 +183,7 @@ begin
   Result:=DefBtnColors[ADefaultColorType];
 end;
 
-{ TWSCustomLabeledEdit }
-
-class function TWSCustomLabeledEdit.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSCustomLabeledEdit_Impl;
-end;
-
-class procedure TWSCustomLabeledEdit.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomLabeledEdit_Impl := TWSCustomLabeledEditClass(AImpl);
-end;
-
-{ TWSCustomPanel }
-
-class function TWSCustomPanel.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
-begin
-  Result := DefBtnColors[ADefaultColorType];
-end;
-
 { TWSCustomTrayIcon }
-
-class function TWSCustomTrayIcon.GetImplementation: TWSObjectClass;
-begin
-  Result := FWSCustomTrayIcon_WSClass;
-end;
-
-class procedure TWSCustomTrayIcon.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomTrayIcon_WSClass := TWSCustomTrayIconClass(AImpl);
-end;
 
 class function TWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
 begin
@@ -375,6 +337,13 @@ begin
   if not WSRegisterCustomTrayIcon then
     RegisterWSComponent(TCustomTrayIcon, TWSCustomTrayIcon);
   Done := True;
+end;
+
+{ TWSCustomPanel }
+
+class function TWSCustomPanel.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
+begin
+  Result := DefBtnColors[ADefaultColorType];
 end;
 
 end.

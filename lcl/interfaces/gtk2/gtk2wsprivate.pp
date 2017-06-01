@@ -40,13 +40,10 @@ type
   { TGtkPrivate } // GTK1WS Legacy!
   { Generic base class, don't know if it is needed }
 
-  TGtkPrivateClass = class of TGtkPrivate;
   TGtkPrivate = class(TWSPrivate)
   private
   protected
   public
-    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual; abstract;
-    class procedure UpdateCursor(AInfo: PWidgetInfo); virtual; abstract;
   end;
 
   { TGtkPrivateWidget }
@@ -56,8 +53,8 @@ type
   private
   protected
   public
-    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); override;
-    class procedure UpdateCursor(AInfo: PWidgetInfo); override;
+    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
+    class procedure UpdateCursor(AInfo: PWidgetInfo); virtual;
   end;
   TGtkPrivateWidgetClass = class of TGtkPrivateWidget;
 
@@ -167,6 +164,7 @@ type
 
   { TGtk2PrivateWidget }
   { Private class for gtkwidgets }
+
   TGtk2PrivateWidget = class(TGtkPrivateWidget)
   private
   protected
@@ -206,6 +204,7 @@ type
 
   { TGtk2PrivateDialog }
   { Private class for gtkdialogs }
+
   TGtk2PrivateDialog = class(TGtkPrivateDialog)
   private
   protected
@@ -215,6 +214,7 @@ type
 
   { TGtk2PrivateButton }
   { Private class for gtkbuttons }
+
   TGtk2PrivateButton = class(TGtkPrivateButton)
   private
   protected
@@ -257,28 +257,14 @@ procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor;
 procedure SetCursorForWindowsWithInfo(AWindow: PGdkWindow; AInfo: PWidgetInfo;
   ASetDefault: Boolean);
 procedure SetGlobalCursor(Cursor: HCURSOR);
-function GetGtkPrivate(AWinControl: TWinControl): TGtkPrivateClass;
 
 implementation
 
 uses
-  Gtk2Extra, buttons, stdctrls, comctrls;
+  Gtk2Extra;
 
 {$I Gtk2PrivateWidget.inc}
 {$I Gtk2PrivateList.inc}
-
-function GetGtkPrivate(AWinControl: TWinControl): TGtkPrivateClass;
-begin
-  if AWinControl is TScrollingWinControl then Exit(TGtkPrivateScrollingWinControl);
-  if AWinControl is TCustomBitBtn then Exit(TGtk2PrivateButton);
-  if AWinControl is TCustomTabControl then Exit(TGtk2PrivateNotebook);
-  if AWinControl is TCustomButton then Exit(TGtk2PrivateButton);
-  if AWinControl is TCustomMemo then Exit(TGtkPrivateScrolling);
-  if AWinControl is TCustomEdit then Exit(TGtkPrivateEntry);
-  if AWinControl is TCustomListBox then Exit(TGtk2PrivateList);
-  if AWinControl is TWinControl then Exit(TGtkPrivateWidget);
-  Result := nil;
-end;
 
 { TGtkPrivateScrolling }
 { temp class to keep things working }

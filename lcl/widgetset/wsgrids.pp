@@ -46,18 +46,14 @@ uses
 type
   { TWSCustomGrid }
 
-  TWSCustomGridClass = class of TWSCustomgrid;
   TWSCustomGrid = class(TWSCustomControl)
-  private class var
-    FWSCustomGrid_Impl: TWSCustomGridClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  published
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); virtual;
     class function InvalidateStartY(const FixedHeight, RowOffset: Integer): integer; virtual;
     class function GetEditorBoundsFromCellRect(ACanvas: TCanvas;
       const ACellRect: TRect; const AColumnLayout: TTextLayout): TRect; virtual;
   end;
+  TWSCustomGridClass = class of TWSCustomgrid;
 
   { WidgetSetRegistration }
 
@@ -72,16 +68,6 @@ type
   end;
 
 { TWSCustomGrid }
-
-class function TWSCustomGrid.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSCustomGrid_Impl;
-end;
-
-class procedure TWSCustomGrid.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomGrid_Impl := TWSCustomGridClass(AImpl);
-end;
 
 class procedure TWSCustomGrid.SendCharToEditor(AEditor:TWinControl;
   Ch: TUTF8Char);

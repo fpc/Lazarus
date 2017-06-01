@@ -47,31 +47,15 @@ type
   { TWSCustomPage }
 
   TWSCustomPageClass = class of TWSCustomPage;
-  TWSCustomPage = class(TWSWinControl_CallWS)
-  private class var
-    FWSCustomPage_Impl: TWSCustomPageClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSCustomPage = class(TWSWinControl)
+  published
     class procedure UpdateProperties(const ACustomPage: TCustomPage); virtual;
-  end;
-
-  { TWSCustomPage_CallWS }
-
-  TWSCustomPage_CallWS = class(TWSCustomPage)
-  public
-    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 
   { TWSCustomTabControl }
 
-  TWSCustomTabControlClass = class of TWSCustomTabControl;
-  TWSCustomTabControl = class(TWSWinControl_CallWS)
-  private class var
-    FWSCustomTabControl_Impl: TWSCustomTabControlClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSCustomTabControl = class(TWSWinControl)
+  published
     class procedure AddPage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AIndex: integer); virtual;
     class procedure MovePage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const NewIndex: integer); virtual;
     class procedure RemovePage(const ATabControl: TCustomTabControl; const AIndex: integer); virtual;
@@ -89,16 +73,13 @@ type
     class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); virtual;
     class procedure UpdateProperties(const ATabControl: TCustomTabControl); virtual;
   end;
+  TWSCustomTabControlClass = class of TWSCustomTabControl;
 
   { TWSStatusBar }
 
   TWSStatusBarClass = class of TWSStatusBar;
-  TWSStatusBar = class(TWSWinControl_CallWS)
-  private class var
-    FWSStatusBar_Impl: TWSStatusBarClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSStatusBar = class(TWSWinControl)
+  published
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); virtual;
@@ -108,8 +89,8 @@ type
 
   { TWSTabSheet }
 
-  TWSTabSheet = class(TWSCustomPage_CallWS)
-  public
+  TWSTabSheet = class(TWSCustomPage)
+  published
     class function GetDefaultColor(const AControl: TControl;
       const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
@@ -124,13 +105,8 @@ type
   TWSListViewItemChange = (lvicText, lvicImage);
   TWSListViewItemChanges = set of TWSListViewItemChange;
 
-  TWSCustomListViewClass = class of TWSCustomListView;
-  TWSCustomListView = class(TWSWinControl_CallWS)
-  private class var
-    FWSCustomListView_Impl: TWSCustomListViewClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSCustomListView = class(TWSWinControl)
+  published
     // Column
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); virtual;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; virtual;
@@ -197,6 +173,8 @@ type
     class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); virtual;
   end;
 
+  TWSCustomListViewClass = class of TWSCustomListView;
+
   { TWSListView }                             
 
   TWSListView = class(TWSCustomListView)
@@ -206,12 +184,8 @@ type
   { TWSProgressBar }
 
   TWSProgressBarClass = class of TWSProgressBar;
-  TWSProgressBar = class(TWSWinControl_CallWS)
-  private class var
-    FWSProgressBar_Impl: TWSProgressBarClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSProgressBar = class(TWSWinControl)
+  published
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); virtual;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); virtual;
     class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); virtual;
@@ -239,12 +213,8 @@ type
 
   TWSToolbarClass = class of TWSToolbar;
   TWSToolBar = class(TWSToolWindow)
-  private class var
-    FWSToolBar_Impl: TWSToolbarClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
-{$ifdef OldToolbar}
+  published
+{$ifdef OldToolbar}  
     class function  GetButtonCount(const AToolBar: TToolBar): integer; virtual;
     class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); virtual;
     class procedure DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl); virtual;
@@ -253,19 +223,15 @@ type
 
   { TWSTrackBar }
 
-  TWSTrackBarClass = class of TWSTrackBar;
-  TWSTrackBar = class(TWSWinControl_CallWS)
-  private class var
-    FWSTrackBar_Impl: TWSTrackBarClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSTrackBar = class(TWSWinControl)
+  published
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); virtual;
     class function GetPosition(const ATrackBar: TCustomTrackBar): integer; virtual;
     class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); virtual;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); virtual;
     class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); virtual;
   end;
+  TWSTrackBarClass = class of TWSTrackBar;
 
   { TWSCustomTreeView }
 
@@ -307,39 +273,11 @@ end;
 
 { TWSCustomPage }
 
-class function TWSCustomPage.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSCustomPage_Impl;
-end;
-
-class procedure TWSCustomPage.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomPage_Impl := TWSCustomPageClass(AImpl);
-end;
-
 class procedure TWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 begin
 end;
 
-{ TWSCustomPage_CallWS }
-
-class procedure TWSCustomPage_CallWS.UpdateProperties(
-  const ACustomPage: TCustomPage);
-begin
-  FWSCustomPage_Impl.UpdateProperties(ACustomPage);
-end;
-
 { TWSCustomTabControl }
-
-class function TWSCustomTabControl.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSCustomTabControl_Impl;
-end;
-
-class procedure TWSCustomTabControl.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomTabControl_Impl := TWSCustomTabControlClass(AImpl);
-end;
 
 { -----------------------------------------------------------------------------
   Method: TWSCustomTabControl.AddPage
@@ -461,16 +399,6 @@ end;
 
 { TWSStatusBar }
 
-class function TWSStatusBar.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSStatusBar_Impl;
-end;
-
-class procedure TWSStatusBar.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSStatusBar_Impl := TWSStatusBarClass(AImpl);
-end;
-
 class procedure TWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
 end;
@@ -494,16 +422,6 @@ begin
 end;
     
 { TWSCustomListView }
-
-class function TWSCustomListView.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSCustomListView_Impl;
-end;
-
-class procedure TWSCustomListView.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomListView_Impl := TWSCustomListViewClass(AImpl);
-end;
 
 class procedure TWSCustomListView.ColumnDelete(const ALV: TCustomListView;
   const AIndex: Integer);
@@ -804,16 +722,6 @@ end;
 
 { TWSProgressBar }
 
-class function TWSProgressBar.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSProgressBar_Impl;
-end;
-
-class procedure TWSProgressBar.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSProgressBar_Impl := TWSProgressBarClass(AImpl);
-end;
-
 class procedure TWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
 begin
 end;
@@ -829,16 +737,6 @@ begin
 end;
 
 { TWSToolbar }
-
-class function TWSToolBar.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSToolBar_Impl;
-end;
-
-class procedure TWSToolBar.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSToolBar_Impl := TWSToolBarClass(AImpl);
-end;
 
 {$ifdef OldToolbar}
 
@@ -858,16 +756,6 @@ end;
 {$endif}
 
 { TWSTrackBar }
-
-class function TWSTrackBar.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSTrackBar_Impl;
-end;
-
-class procedure TWSTrackBar.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSTrackBar_Impl := TWSTrackBarClass(AImpl);
-end;
 
 class procedure TWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 begin

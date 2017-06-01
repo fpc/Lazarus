@@ -47,12 +47,8 @@ type
   { TWSScrollingWinControl }
 
   TWSScrollingWinControlClass = class of TWSScrollingWinControl;
-  TWSScrollingWinControl = class(TWSWinControl_CallWS)
-  private class var
-    FWSScrollingWinControl_Impl: TWSScrollingWinControlClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSScrollingWinControl = class(TWSWinControl)
+  published
     // procedure ScrollBy is moved to TWSWinControl.
   end;
 
@@ -76,13 +72,8 @@ type
 
   { TWSCustomForm }
 
-  TWSCustomFormClass = class of TWSCustomForm;
   TWSCustomForm = class(TWSScrollingWinControl)
-  private class var
-    FWSCustomForm_Impl: TWSCustomFormClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  published
     class procedure CloseModal(const ACustomForm: TCustomForm); virtual;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); virtual;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
@@ -111,60 +102,18 @@ type
     class function Tile(const AForm: TCustomForm): Boolean; virtual;
     class function MDIChildCount(const AForm: TCustomForm): Integer; virtual;
   end;
-
-  { TWSCustomForm_CallWS }
-
-  TWSCustomForm_CallWS = class(TWSCustomForm)
-  public
-    class procedure CloseModal(const ACustomForm: TCustomForm); override;
-    class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
-    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
-      const Alpha: Byte); override;
-    class procedure SetBorderIcons(const AForm: TCustomForm;
-        const ABorderIcons: TBorderIcons); override;
-    class procedure SetFormBorderStyle(const AForm: TCustomForm;
-                             const AFormBorderStyle: TFormBorderStyle); override;
-    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
-    class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
-    class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    class procedure SetModalResult(const ACustomForm: TCustomForm; ANewValue: TModalResult); override;
-    class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
-      const APopupParent: TCustomForm); override;
-    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
-    class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); override;
-    //class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
-
-    {mdi support}
-    {class function ActiveMDIChild(const AForm: TCustomForm): TCustomForm; virtual;
-    class function Cascade(const AForm: TCustomForm): Boolean; virtual;
-    class function GetClientHandle(const AForm: TCustomForm): HWND; virtual;
-    class function GetMDIChildren(const AForm: TCustomForm; AIndex: Integer): TCustomForm; virtual;
-    class function Next(const AForm: TCustomForm): Boolean; virtual;
-    class function Previous(const AForm: TCustomForm): Boolean; virtual;
-    class function Tile(const AForm: TCustomForm): Boolean; virtual;
-    class function MDIChildCount(const AForm: TCustomForm): Integer; virtual;}
-  end;
+  TWSCustomFormClass = class of TWSCustomForm;
 
   { TWSForm }
 
-  TWSFormClass = class of TWSForm;
-  TWSForm = class(TWSCustomForm_CallWS)
-  private class var
-    FWSForm_Impl: TWSFormClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSForm = class(TWSCustomForm)
+  published
   end;
 
   { TWSHintWindow }
 
-  TWSHintWindowClass = class of TWSHintWindow;
-  TWSHintWindow = class(TWSCustomForm_CallWS)
-  private class var
-    FWSHintWindow_Impl: TWSHintWindowClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSHintWindow = class(TWSCustomForm)
+  published
   end;
 
   { TWSScreen }
@@ -189,29 +138,7 @@ type
 
 implementation
 
-{ TWSScrollingWinControl }
-
-class function TWSScrollingWinControl.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSScrollingWinControl_Impl;
-end;
-
-class procedure TWSScrollingWinControl.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSScrollingWinControl_Impl := TWSScrollingWinControlClass(AImpl);
-end;
-
 { TWSCustomForm }
-
-class function TWSCustomForm.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSCustomForm_Impl;
-end;
-
-class procedure TWSCustomForm.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomForm_Impl := TWSCustomFormClass(AImpl);
-end;
 
 class procedure TWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
@@ -326,101 +253,6 @@ begin
   Result := False;
 end;
 
-{ TWSCustomForm_CallWS }
-
-class procedure TWSCustomForm_CallWS.CloseModal(const ACustomForm: TCustomForm);
-begin
-  FWSCustomForm_Impl.CloseModal(ACustomForm);
-end;
-
-class procedure TWSCustomForm_CallWS.SetAllowDropFiles(
-  const AForm: TCustomForm; AValue: Boolean);
-begin
-  FWSCustomForm_Impl.SetAllowDropFiles(AForm, AValue);
-end;
-
-class procedure TWSCustomForm_CallWS.SetAlphaBlend(
-  const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte);
-begin
-  FWSCustomForm_Impl.SetAlphaBlend(ACustomForm, AlphaBlend, Alpha);
-end;
-
-class procedure TWSCustomForm_CallWS.SetBorderIcons(const AForm: TCustomForm;
-  const ABorderIcons: TBorderIcons);
-begin
-  FWSCustomForm_Impl.SetBorderIcons(AForm, ABorderIcons);
-end;
-
-class procedure TWSCustomForm_CallWS.SetFormBorderStyle(
-  const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle);
-begin
-  FWSCustomForm_Impl.SetFormBorderStyle(AForm, AFormBorderStyle);
-end;
-
-class procedure TWSCustomForm_CallWS.SetFormStyle(const AForm: TCustomform;
-  const AFormStyle, AOldFormStyle: TFormStyle);
-begin
-  FWSCustomForm_Impl.SetFormStyle(AForm, AFormStyle, AOldFormStyle);
-end;
-
-class procedure TWSCustomForm_CallWS.SetIcon(const AForm: TCustomForm;
-  const Small, Big: HICON);
-begin
-  FWSCustomForm_Impl.SetIcon(AForm, Small, Big);
-end;
-
-class procedure TWSCustomForm_CallWS.ShowModal(const ACustomForm: TCustomForm);
-begin
-  FWSCustomForm_Impl.ShowModal(ACustomForm);
-end;
-
-class procedure TWSCustomForm_CallWS.SetModalResult(
-  const ACustomForm: TCustomForm; ANewValue: TModalResult);
-begin
-  FWSCustomForm_Impl.SetModalResult(ACustomForm, ANewValue);
-end;
-
-class procedure TWSCustomForm_CallWS.SetRealPopupParent(
-  const ACustomForm: TCustomForm; const APopupParent: TCustomForm);
-begin
-  FWSCustomForm_Impl.SetRealPopupParent(ACustomForm, APopupParent);
-end;
-
-class procedure TWSCustomForm_CallWS.SetShowInTaskbar(const AForm: TCustomForm;
-  const AValue: TShowInTaskbar);
-begin
-  FWSCustomForm_Impl.SetShowInTaskbar(AForm, AValue);
-end;
-
-class procedure TWSCustomForm_CallWS.SetZPosition(
-  const AWinControl: TWinControl; const APosition: TWSZPosition);
-begin
-  FWSCustomForm_Impl.SetZPosition(AWinControl, APosition);
-end;
-
-{ TWSForm }
-
-class function TWSForm.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSForm_Impl;
-end;
-
-class procedure TWSForm.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSForm_Impl := TWSFormClass(AImpl);
-end;
-
-{ TWSHintWindow }
-
-class function TWSHintWindow.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSHintWindow_Impl;
-end;
-
-class procedure TWSHintWindow.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSHintWindow_Impl := TWSHintWindowClass(AImpl);
-end;
 
 { WidgetSetRegistration }
 

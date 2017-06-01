@@ -45,13 +45,8 @@ uses
 type
   { TWSPreviewFileControl }
 
-  TWSPreviewFileControlClass = class of TWSPreviewFileControl;
-  TWSPreviewFileControl = class(TWSWinControl_CallWS)
-  private class var
-    FWSPreviewFileControl_Impl: TWSPreviewFileControlClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSPreviewFileControl = class(TWSWinControl)
+  published
   end;
 
   { TWSPreviewFileDialog }
@@ -109,18 +104,6 @@ type
   procedure RegisterCalendarDialog;
 
 implementation
-
-{ TWSPreviewFileControl }
-
-class function TWSPreviewFileControl.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSPreviewFileControl_Impl;
-end;
-
-class procedure TWSPreviewFileControl.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSPreviewFileControl_Impl := TWSPreviewFileControlClass(AImpl);
-end;
 
 { WidgetSetRegistration }
 

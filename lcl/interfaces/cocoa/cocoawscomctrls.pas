@@ -178,9 +178,9 @@ type
   published
   end;
 
-  { TCocoaWSToolBar }
+  { TCarbonWSToolBar }
 
-  TCocoaWSToolBar = class(TWSToolBar)
+  TCarbonWSToolBar = class(TWSToolBar)
   published
     //class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;

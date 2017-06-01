@@ -35,20 +35,16 @@ interface
 ////////////////////////////////////////////////////
 uses
   Classes, RubberBand,
-  WsControls, WSFactory, WSLCLClasses;
+  WsControls, WSFactory;
 
 type
   { TWsCustomRubberBand }
 
-  TWsCustomRubberBandClass = class of TWsCustomRubberBand;
-  TWsCustomRubberBand = class(TWSWinControl_CallWS)
-  private class var
-    FWSCustomRubberBand_Impl: TWsCustomRubberBandClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWsCustomRubberBand = class(TWsWinControl)
+  published
     class procedure SetShape(ARubberBand: TCustomRubberBand; AShape: TRubberBandShape); virtual; overload;
   end;
+  TWsCustomRubberBandClass = class of TWsCustomRubberBand;
 
   { WidgetSetRegistration }
 
@@ -57,16 +53,6 @@ type
 implementation
 
 { TWsCustomRubberBand }
-
-class function TWsCustomRubberBand.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSCustomRubberBand_Impl;
-end;
-
-class procedure TWsCustomRubberBand.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomRubberBand_Impl := TWsCustomRubberBandClass(AImpl);
-end;
 
 class procedure TWsCustomRubberBand.SetShape(ARubberBand: TCustomRubberBand;
   AShape: TRubberBandShape);

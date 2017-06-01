@@ -48,77 +48,42 @@ type
   TWSCommonDialogClass = class of TWSCommonDialog;
   TWSCommonDialog = class(TWSLCLComponent)
   public class var
-    FWSCommonDialog_WSClass: TWSCommonDialogClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+    WSCommonDialog_WSClass: TWSCommonDialogClass;
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; virtual;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); virtual;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); virtual;
     class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; virtual;
   end;
 
-  TWSCommonDialog_CallWS = class(TWSCommonDialog)
-  published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
-    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
-    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
-    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
-  end;
-
   { TWSFileDialog }
 
-  TWSFileDialogClass = class of TWSFileDialog;
-  TWSFileDialog = class(TWSCommonDialog_CallWS)
-  public class var
-    FWSFileDialog_WSClass: TWSFileDialogClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSFileDialog = class(TWSCommonDialog)
+  published
   end;
 
   { TWSOpenDialog }
 
-  TWSOpenDialogClass = class of TWSOpenDialog;
   TWSOpenDialog = class(TWSFileDialog)
-  public class var
-    FWSOpenDialog_WSClass: TWSOpenDialogClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  published
   end;
 
   { TWSSaveDialog }
 
-  TWSSaveDialogClass = class of TWSSaveDialog;
   TWSSaveDialog = class(TWSOpenDialog)
-  public class var
-    FWSSaveDialog_WSClass: TWSSaveDialogClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  published
   end;
 
   { TWSSelectDirectoryDialog }
 
-  TWSSelectDirectoryDialogClass = class of TWSSelectDirectoryDialog;
   TWSSelectDirectoryDialog = class(TWSOpenDialog)
-  public class var
-    FWSSelectDirectoryDialog_WSClass: TWSSelectDirectoryDialogClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  published
   end;
 
   { TWSColorDialog }
 
-  TWSColorDialogClass = class of TWSColorDialog;
-  TWSColorDialog = class(TWSCommonDialog_CallWS)
-  public class var
-    FWSColorDialog_WSClass: TWSColorDialogClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSColorDialog = class(TWSCommonDialog)
+  published
   end;
 
   { TWSColorButton }
@@ -129,13 +94,12 @@ type
 
   { TWSFontDialog }
 
-  TWSFontDialogClass = class of TWSFontDialog;
-  TWSFontDialog = class(TWSCommonDialog_CallWS)
-  public class var
-    FWSFontDialog_WSClass: TWSFontDialogClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSFontDialog = class(TWSCommonDialog)
+  published
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
+    class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
   { WidgetSetRegistration }
@@ -153,16 +117,6 @@ implementation
 
 uses
   LResources;
-
-class function TWSCommonDialog.GetImplementation: TWSObjectClass;
-begin
-  Result := FWSCommonDialog_WSClass;
-end;
-
-class procedure TWSCommonDialog.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCommonDialog_WSClass := TWSCommonDialogClass(AImpl);
-end;
 
 class function  TWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
@@ -183,99 +137,55 @@ class procedure TWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
 end;
 
-{ TWSCommonDialog_CallWS }
-
-class function TWSCommonDialog_CallWS.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
-begin
-  Result := FWSCommonDialog_WSClass.CreateHandle(ACommonDialog);
-end;
-
-class procedure TWSCommonDialog_CallWS.ShowModal(const ACommonDialog: TCommonDialog);
-begin
-  FWSCommonDialog_WSClass.ShowModal(ACommonDialog);
-end;
-
-class procedure TWSCommonDialog_CallWS.DestroyHandle(const ACommonDialog: TCommonDialog);
-begin
-  FWSCommonDialog_WSClass.DestroyHandle(ACommonDialog);
-end;
-
-class function TWSCommonDialog_CallWS.QueryWSEventCapabilities(
-  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
-begin
-  Result := FWSCommonDialog_WSClass.QueryWSEventCapabilities(ACommonDialog);
-end;
-
-{ TWSFileDialog }
-
-class function TWSFileDialog.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSFileDialog_WSClass;
-end;
-
-class procedure TWSFileDialog.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSFileDialog_WSClass := TWSFileDialogClass(AImpl);
-end;
-
-{ TWSOpenDialog }
-
-class function TWSOpenDialog.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSOpenDialog_WSClass;
-end;
-
-class procedure TWSOpenDialog.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSOpenDialog_WSClass := TWSOpenDialogClass(AImpl);
-end;
-
-{ TWSSaveDialog }
-
-class function TWSSaveDialog.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSSaveDialog_WSClass;
-end;
-
-class procedure TWSSaveDialog.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSSaveDialog_WSClass := TWSSaveDialogClass(AImpl);
-end;
-
-{ TWSSelectDirectoryDialog }
-
-class function TWSSelectDirectoryDialog.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSSelectDirectoryDialog_WSClass;
-end;
-
-class procedure TWSSelectDirectoryDialog.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSSelectDirectoryDialog_WSClass := TWSSelectDirectoryDialogClass(AImpl);
-end;
-
-{ TWSColorDialog }
-
-class function TWSColorDialog.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSColorDialog_WSClass;
-end;
-
-class procedure TWSColorDialog.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSColorDialog_WSClass := TWSColorDialogClass(AImpl);
-end;
-
 { TWSFontDialog }
 
-class function TWSFontDialog.GetImplementation: TWSObjectClass;
+class function TWSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
-  Result:= FWSFontDialog_WSClass;
+  if WSCommonDialog_WSClass = nil then
+    WSCommonDialog_WSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
+  if WSCommonDialog_WSClass <> nil then
+  begin
+    Result := WSCommonDialog_WSClass.CreateHandle(ACommonDialog);
+    Exit;
+  end;
+  Result:=inherited CreateHandle(ACommonDialog)
 end;
 
-class procedure TWSFontDialog.SetImplementation(AImpl: TWSObjectClass);
+class procedure TWSFontDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
-  FWSFontDialog_WSClass := TWSFontDialogClass(AImpl);
+  if WSCommonDialog_WSClass = nil then
+    WSCommonDialog_WSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
+  if WSCommonDialog_WSClass <> nil then
+  begin
+    WSCommonDialog_WSClass.ShowModal(ACommonDialog);
+    Exit;
+  end;
+  inherited ShowModal(ACommonDialog);
+end;
+
+class procedure TWSFontDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+begin
+  if WSCommonDialog_WSClass = nil then
+    WSCommonDialog_WSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
+  if WSCommonDialog_WSClass <> nil then
+  begin
+    WSCommonDialog_WSClass.DestroyHandle(ACommonDialog);
+    Exit;
+  end;
+  inherited DestroyHandle(ACommonDialog);
+end;
+
+class function TWSFontDialog.QueryWSEventCapabilities(
+  const ACommonDialog: TCommonDialog): TCDWSEventCapabilities;
+begin
+  if WSCommonDialog_WSClass = nil then
+    WSCommonDialog_WSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));
+  if WSCommonDialog_WSClass <> nil then
+  begin
+    Result := WSCommonDialog_WSClass.QueryWSEventCapabilities(ACommonDialog);
+    Exit;
+  end;
+  Result:=inherited QueryWSEventCapabilities(ACommonDialog);
 end;
 
 { WidgetSetRegistration }

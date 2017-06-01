@@ -45,13 +45,8 @@ uses
 type
   { TWSCustomCheckListBox }
 
-  TWSCustomCheckListBoxClass = class of TWSCustomCheckListBox;
-  TWSCustomCheckListBox = class(TWSCustomListBox_CallWS)
-  private class var
-    FWSCustomCheckListBox_Impl: TWSCustomCheckListBoxClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSCustomCheckListBox = class(TWSCustomListBox)
+  published
     class function GetCheckWidth(const ACheckListBox: TCustomCheckListBox):
       integer; virtual;
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
@@ -67,6 +62,7 @@ type
     class procedure SetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer; const AState: TCheckBoxState); virtual;
   end;
+  TWSCustomCheckListBoxClass = class of TWSCustomCheckListBox;
 
   { WidgetSetRegistration }
 
@@ -74,18 +70,8 @@ type
 
 implementation
 
-class function TWSCustomCheckListBox.GetImplementation: TWSObjectClass;
-begin
-  Result:= FWSCustomCheckListBox_Impl;
-end;
-
-class procedure TWSCustomCheckListBox.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomCheckListBox_Impl := TWSCustomCheckListBoxClass(AImpl);
-end;
-
 class function TWSCustomCheckListBox.GetCheckWidth(
-  const ACheckListBox: TCustomCheckListBox): integer;
+  const ACheckListBox: TCustomCheckListBox): Integer;
 begin
   Result := 0;
 end;

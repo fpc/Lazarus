@@ -45,13 +45,8 @@ uses
 type
   { TWSCustomCalendar }
 
-  TWSCustomCalendarClass = class of TWSCustomCalendar;
-  TWSCustomCalendar = class(TWSWinControl_CallWS)
-  private class var
-    FWSCustomCalendar_Impl: TWSCustomCalendarClass;
-  public
-    class function GetImplementation: TWSObjectClass; override;
-    class procedure SetImplementation(AImpl: TWSObjectClass); override;
+  TWSCustomCalendar = class(TWSWinControl)
+  published
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; virtual;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; virtual;
     class function GetCurrentView(const ACalendar: TCustomCalendar): TCalendarView; virtual;
@@ -59,6 +54,7 @@ type
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; 
       const ADisplaySettings: TDisplaySettings); virtual;
   end;
+  TWSCustomCalendarClass = class of TWSCustomCalendar;
 
   { WidgetSetRegistration }
 
@@ -68,16 +64,6 @@ implementation
 
 uses
   LResources;
-
-class function TWSCustomCalendar.GetImplementation: TWSObjectClass;
-begin
-  Result:=FWSCustomCalendar_Impl;
-end;
-
-class procedure TWSCustomCalendar.SetImplementation(AImpl: TWSObjectClass);
-begin
-  FWSCustomCalendar_Impl := TWSCustomCalendarClass(AImpl);
-end;
 
 class function  TWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 begin
