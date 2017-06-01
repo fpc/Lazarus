@@ -1884,6 +1884,8 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
+    procedure AssociateMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer;
+      MousePos: TPoint; var Handled: Boolean);
     procedure OnAssociateChangeBounds(Sender: TObject);
     procedure OnAssociateChangeEnabled(Sender: TObject);
     procedure OnAssociateChangeVisible(Sender: TObject);
@@ -2168,7 +2170,9 @@ type
     FOnPaintButton: TToolBarOnPaintButton;
     FButtonHeight: Integer;
     FRealizedButtonHeight,
-    FRealizedButtonWidth: integer;
+    FRealizedButtonWidth,
+    FRealizedDropDownWidth,
+    FRealizedButtonDropWidth: integer;
     FButtons: TList;
     FButtonWidth: Integer;
     FDisabledImageChangeLink: TChangeLink;
@@ -2197,6 +2201,10 @@ type
     procedure CloseCurrentMenu;
     function GetButton(Index: Integer): TToolButton;
     function GetButtonCount: Integer;
+    function GetButtonDropWidth: Integer;
+    function GetButtonWidth: Integer;
+    function GetButtonHeight: Integer;
+    function GetDropDownWidth: Integer;
     function GetTransparent: Boolean;
     procedure SetButtonHeight(const AValue: Integer);
     procedure SetButtonWidth(const AValue: Integer);
@@ -2226,6 +2234,9 @@ type
     function IsVertical: Boolean; virtual;
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); override;
+    function ButtonHeightIsStored: Boolean;
+    function ButtonWidthIsStored: Boolean;
+    function DropDownWidthIsStored: Boolean;
     class function GetControlClassDefaultSize: TSize; override;
     procedure DoAutoSize; override;
     procedure CalculatePreferredSize(var PreferredWidth,
@@ -2255,23 +2266,20 @@ type
     function GetEnumerator: TToolBarEnumerator;
     procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
     function CanFocus: Boolean; override;
-    function GetRealDropDownWidth: Integer;
-    function GetRealButtonDropWidth: Integer;
-    function GetRealButtonWidth: Integer;
-    function GetRealButtonHeight: Integer;
   public
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;
     property ButtonList: TList read FButtons;
     property RowCount: Integer read FRowCount;
+    property ButtonDropWidth: Integer read GetButtonDropWidth;
   published
     property Align default alTop;
     property Anchors;
     property AutoSize;
     property BorderSpacing;
     property BorderWidth;
-    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 0;
-    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 0;
+    property ButtonHeight: Integer read GetButtonHeight write SetButtonHeight stored ButtonHeightIsStored;
+    property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth stored ButtonWidthIsStored;
     property Caption;
     property ChildSizing;
     property Constraints;
@@ -2280,7 +2288,7 @@ type
     property DragCursor;
     property DragKind;
     property DragMode;
-    property DropDownWidth: Integer read FDropDownWidth write SetDropDownWidth default 0;
+    property DropDownWidth: Integer read GetDropDownWidth write SetDropDownWidth stored DropDownWidthIsStored;
     property EdgeBorders default [ebTop];
     property EdgeInner;
     property EdgeOuter;
@@ -3304,6 +3312,7 @@ type
     FTopItem: TTreeNode;
     FTreeLineColor: TColor;
     FTreeLinePenStyle: TPenStyle;
+    FTreeLinePenPattern: TPenPattern;
     FExpandSignColor : TColor;
     FTreeNodes: TTreeNodes;
     FHintWnd: THintWindow;
@@ -3312,8 +3321,10 @@ type
     function GetBackgroundColor: TColor;
     function GetBottomItem: TTreeNode;
     function GetDropTarget: TTreeNode;
+    function GetExpandSignSize: integer;
     function GetHideSelection: boolean;
     function GetHotTrack: boolean;
+    function GetIndent: Integer;
     function GetKeepCollapsedNodes: boolean;
     function GetMultiSelect: Boolean;
     function GetReadOnly: boolean;
@@ -3400,8 +3411,10 @@ type
       Stage: TCustomDrawStage): Boolean; virtual;
     function CustomDrawItem(Node: TTreeNode; State: TCustomDrawState;
       Stage: TCustomDrawStage; var PaintImages: Boolean): Boolean; virtual;
+    function DefaultItemHeightIsStored: Boolean;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
+    function ExpandSignSizeIsStored: Boolean;
     function GetDragImages: TDragImageList; override;
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
@@ -3409,6 +3422,7 @@ type
     function GetNodeAtY(Y: Integer): TTreeNode;
     function GetNodeDrawAreaHeight: integer;
     function GetNodeDrawAreaWidth: integer;
+    function IndentIsStored: Boolean;
     function IsCustomDrawn(Target: TCustomDrawTarget;
       Stage: TCustomDrawStage): Boolean; virtual;
     function IsNodeVisible(ANode: TTreeNode): Boolean;
@@ -3432,8 +3446,6 @@ type
     procedure EndEditing(Cancel: boolean = false); virtual;
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
     procedure Expand(Node: TTreeNode); virtual;
-    function GetRealExpandSignSize: integer;
-    function GetRealIndent: Integer;
     procedure GetImageIndex(Node: TTreeNode); virtual;
     procedure GetSelectedIndex(Node: TTreeNode); virtual;
     procedure InitializeWnd; override;
@@ -3474,7 +3486,7 @@ type
     property HideSelection: Boolean
       read GetHideSelection write SetHideSelection default True;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
-    property Indent: Integer read FIndent write SetIndent default 0;
+    property Indent: Integer read GetIndent write SetIndent stored IndentIsStored;
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnAddition: TTVExpandedEvent read FOnAddition write FOnAddition;
     property OnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent
@@ -3566,10 +3578,10 @@ type
     property BorderWidth default 0;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
     property Color default clWindow;
-    property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight default DefaultTreeNodeHeight;
+    property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight stored DefaultItemHeightIsStored;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
-    property ExpandSignSize: integer read FExpandSignSize write SetExpandSignSize default 0; // use 0 for default
+    property ExpandSignSize: integer read GetExpandSignSize write SetExpandSignSize stored ExpandSignSizeIsStored;
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType default tvestTheme;
     property Images: TCustomImageList read FImages write SetImages;

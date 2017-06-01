@@ -358,6 +358,7 @@ begin
     FAssociate.AddHandlerOnChangeBounds(@OnAssociateChangeBounds,true);
     FAssociate.AddHandlerOnEnabledChanged(@OnAssociateChangeEnabled,true);
     FAssociate.AddHandlerOnVisibleChanged(@OnAssociateChangeVisible,true);
+    FAssociate.AddHandlerOnMouseWheel(@AssociateMouseWheel,true);
   end;
 end;
 
@@ -388,6 +389,24 @@ begin
   end;
   if ConsumeKey then
     Key := 0;
+end;
+
+procedure TCustomUpDown.AssociateMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  //debugln('TCustomUpDown.AssociateMouseWheel A: Handled = ',DbgS(Handled));
+  if (WheelDelta > 0) then
+  begin
+    TCustomSpeedButton(FMaxBtn).Click;
+    Handled := True;
+  end
+  else if (WheelDelta < 0) then
+  begin
+    TCustomSpeedButton(FMinBtn).Click;
+    Handled := True;
+  end;
+  //debugln('TCustomUpDown.AssociateMouseWheel End: Handled = ',DbgS(Handled));
 end;
 
 procedure TCustomUpDown.OnAssociateChangeBounds(Sender: TObject);

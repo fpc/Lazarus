@@ -1983,6 +1983,22 @@ begin
     TKeyEvent(FControlHandlers[HandlerType][i])(Self, Key, Shift);
 end;
 
+procedure TControl.DoCallMouseWheelEventHandler(HandlerType: TControlHandlerType;
+  Shift: TShiftState; WheelDelta: Integer;
+  MousePos: TPoint; var Handled: Boolean);
+var
+  i: Integer;
+begin
+  i := FControlHandlers[HandlerType].Count;
+  //debugln('TControl.DoCallMouseWheelEventHandler A: Handled = ',DbgS(Handled),', Count = ',DbgS(i));
+  while (not Handled) and FControlHandlers[HandlerType].NextDownIndex(i) do
+  begin
+    TMouseWheelEvent(FControlHandlers[HandlerType][i])(Self, Shift, WheelDelta, MousePos, Handled);
+    //debugln('TControl.DoCallMouseWheelEventHandler B: i = ',Dbgs(i),', Handled = ',DbgS(Handled));
+  end;
+  //debugln('TControl.DoCallMouseWheelEventHandler End: Handled = ',DbgS(Handled));
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.DoContextPopup(const MousePos: TPoint;
     var Handled: Boolean);
@@ -2292,7 +2308,12 @@ begin
   Result := False;
 
   if Assigned(FOnMouseWheel)
-  then FOnMouseWheel(Self, Shift, WheelDelta, MousePos, Result);
+    then FOnMouseWheel(Self, Shift, WheelDelta, MousePos, Result);
+  if not Result then
+  begin
+    //debugln('TControl.DoMouseWheel calling DoCallMouseWheelEventHandler');
+    DoCallMouseWheelEventHandler(chtOnMouseWheel, Shift, WheelDelta, MousePos, Result);
+  end;
 
   if not Result
   then begin
@@ -4860,6 +4881,18 @@ procedure TControl.RemoveHandlerOnBeforeDestruction(
   const OnBeforeDestructionEvent: TNotifyEvent);
 begin
   RemoveHandler(chtOnBeforeDestruction,TMethod(OnBeforeDestructionEvent));
+end;
+
+procedure TControl.AddHandlerOnMouseWheel(
+  const OnMouseWheelEvent: TMouseWheelEvent; AsFirst: boolean);
+begin
+  AddHandler(chtOnMouseWheel,TMethod(OnMouseWheelEvent),AsFirst);
+end;
+
+procedure TControl.RemoveHandlerOnMouseWheel(
+  const OnMouseWheelEvent: TMouseWheelEvent);
+begin
+  RemoveHandler(chtOnMouseWheel,TMethod(OnMouseWheelEvent));
 end;
 
 procedure TControl.RemoveAllHandlersOfObject(AnObject: TObject);

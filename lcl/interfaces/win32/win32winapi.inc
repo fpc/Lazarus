@@ -1352,6 +1352,11 @@ begin
   LB.lbColor := ColorToRGB(TColor(lplb.lbColor));
   LB.lbHatch := lplb.lbHatch;
   Result := Windows.ExtCreatePen(dwPenStyle, dwWidth, LB, dwStyleCount, lpStyle);
+
+  // Note Michl: When style PS_USERSTYLE is used, lpStyle can't be nil, there
+  //             must be dwSytleCount >= 1, see issue #30661
+  if Result = 0 then
+    DebugLn('TWin32WidgetSet.ExtCreatePen returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
 end;
 
 {------------------------------------------------------------------------------

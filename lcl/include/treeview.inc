@@ -1676,7 +1676,7 @@ var
 begin
   Result := 0;
   TV := TreeView;
-  RealIndent := TV.GetRealIndent;
+  RealIndent := TV.Indent;
   if TV = nil then Exit;
   l := Level;
   if not (tvoShowRoot in TV.Options) then
@@ -1692,7 +1692,7 @@ begin
   begin
     Result.Left := DisplayExpandSignLeft;
     Result.Top := Top;
-    Result.Right := Result.Left + TreeView.GetRealIndent;
+    Result.Right := Result.Left + TreeView.Indent;
     Result.Bottom := Top + Height;
   end;
 end;
@@ -1701,7 +1701,7 @@ function TTreeNode.DisplayExpandSignRight: integer;
 begin
   Result := DisplayExpandSignLeft;
   if TreeView <> nil then
-    inc(Result, TreeView.GetRealIndent);
+    inc(Result, TreeView.Indent);
 end;
 
 function TTreeNode.DisplayIconLeft: integer;
@@ -1743,7 +1743,7 @@ begin
   Result := DisplayTextLeft;
   TV := TreeView;
   if TV <> nil then
-    Inc(Result, TV.Canvas.TextWidth(Text) + TV.GetRealIndent div 2);
+    Inc(Result, TV.Canvas.TextWidth(Text) + TV.Indent div 2);
 end;
 
 function TTreeNode.AlphaSort: Boolean;
@@ -2771,12 +2771,12 @@ begin
     //select again
     bGoNext := (FirstNode.Index <= Node.Index);
     I := FirstNode;
-    I.Selected:=True;
+    I.MultiSelected:=True;
     while (I<>Node) do
     begin
       _TakeNext(I);
       if I=nil then Break;
-      I.Selected:=True;
+      I.MultiSelected:=True;
     end;
 
     FStartMultiSelected := FirstNode;
@@ -3210,7 +3210,7 @@ begin
 //  FBackgroundColor := clWindow;
   FDefItemHeight := DefaultTreeNodeHeight;
   FExpandSignType := tvestTheme;
-  FExpandSignSize := 0;
+  FExpandSignSize := -1;
   Details := ThemeServices.GetElementDetails(ttGlyphOpened);
   FThemeExpandSignSize := ThemeServices.GetDetailSize(Details).cx;
   FTreeNodes := CreateNodes;
@@ -3221,7 +3221,7 @@ begin
   Items.KeepCollapsedNodes:=KeepCollapsedNodes;
   FScrollBars:=ssBoth;
   FDragImage := TDragImageList.CreateSize(32, 32);
-  FIndent:=0;
+  FIndent:=-1;
   FChangeTimer := TTimer.Create(Self);
   FChangeTimer.Enabled := False;
   FChangeTimer.Interval := 1;
@@ -3237,6 +3237,9 @@ begin
   FStates:=[tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate,tvsScrollbarChanged];
   FTreeLineColor := clWindowFrame;
   FTreeLinePenStyle := psPattern;
+  SetLength(FTreeLinePenPattern, 2);
+  FTreeLinePenPattern[0] := 1;
+  FTreeLinePenPattern[1] := 1;
   FExpandSignColor := clWindowFrame;
   // Accessibility
   AccessibleDescription := rsTTreeViewAccessibilityDescription;
@@ -3302,10 +3305,12 @@ begin
   begin
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomTreeView.DoAutoAdjustLayout'){$ENDIF};
     try
-      if not (tvoAutoItemHeight in Options) then
+      if DefaultItemHeightIsStored then
         DefaultItemHeight := Round(DefaultItemHeight*AYProportion);
-      FIndent := Round(FIndent*AXProportion);
-      FExpandSignSize := Round(FExpandSignSize*AXProportion);
+      if IndentIsStored then
+        FIndent := Round(FIndent*AXProportion);
+      if ExpandSignSizeIsStored then
+        FExpandSignSize := Round(FExpandSignSize*AXProportion);
     finally
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomTreeView.DoAutoAdjustLayout'){$ENDIF};
     end;
@@ -3397,6 +3402,11 @@ begin
                        tvsBottomItemNeedsUpdate,tvsScrollbarChanged];
     EndUpdate;
   end;
+end;
+
+function TCustomTreeView.DefaultItemHeightIsStored: Boolean;
+begin
+  Result := not(tvoAutoItemHeight in Options);
 end;
 
 function TCustomTreeView.DefaultTreeViewSort(Node1, Node2: TTreeNode): Integer;
@@ -3628,7 +3638,7 @@ const
 var
   Node: TTreeNode;
   i: integer;
-  FMaxTextLen: Integer;
+  FMaxTextLen, AIndent: Integer;
   Cnt: Integer;
 begin
   if not (tvsMaxRightNeedsUpdate in FStates) then exit;
@@ -3636,6 +3646,7 @@ begin
   FMaxTextLen := 0;
   Node := Items.GetFirstNode;
   Cnt := 0;
+  AIndent := Indent;
   while Node <> nil do
   begin
     if not Node.AreParentsExpandedAndVisible then
@@ -3646,7 +3657,7 @@ begin
     inc(Cnt);
     if (Cnt < LargeItemCount) then
     begin
-      i := Node.DisplayTextRight + ScrolledLeft + GetRealIndent div 2;
+      i := Node.DisplayTextRight + ScrolledLeft + AIndent div 2;
     end else
     begin
       // computing DisplayTextRight is too expensive when the tree
@@ -4507,9 +4518,9 @@ begin
   Result:=(tvoReadOnly in FOptions);
 end;
 
-function TCustomTreeView.GetRealExpandSignSize: integer;
+function TCustomTreeView.GetExpandSignSize: integer;
 begin
-  if FExpandSignSize>0 then
+  if FExpandSignSize>=0 then
     Result := FExpandSignSize
   else
   if ExpandSignType = tvestTheme then
@@ -4518,9 +4529,9 @@ begin
     Result := Scale96ToFont(DefaultTreeNodeExpandSignSize);
 end;
 
-function TCustomTreeView.GetRealIndent: Integer;
+function TCustomTreeView.GetIndent: Integer;
 begin
-  if FIndent=0 then
+  if FIndent<0 then
     Result := Scale96ToFont(15)
   else
     Result := FIndent;
@@ -5154,8 +5165,8 @@ var
   PaintImages: boolean;
   OverlayIndex: Integer;
 begin
-  RealExpandSignSize := GetRealExpandSignSize;
-  RealIndent := GetRealIndent;
+  RealExpandSignSize := ExpandSignSize;
+  RealIndent := Indent;
   NodeRect := Node.DisplayRect(False);
   if (NodeRect.Bottom < 0) or (NodeRect.Top >= ClientHeight) then
     Exit;
@@ -5187,6 +5198,8 @@ begin
     // draw tree lines
     Pen.Color := TreeLineColor;
     Pen.Style := TreeLinePenStyle;
+    if Pen.Style = psPattern then
+      Pen.SetPattern(FTreeLinePenPattern);
     x := DrawTreeLines(Node);
     Pen.Style := psSolid;
 
@@ -5317,6 +5330,11 @@ begin
   if Assigned(FOnExpanded) then FOnExpanded(Self, Node);
 end;
 
+function TCustomTreeView.ExpandSignSizeIsStored: Boolean;
+begin
+  Result := FExpandSignSize >= 0;
+end;
+
 function TCustomTreeView.CanExpand(Node: TTreeNode): Boolean;
 begin
   Result := True;
@@ -5406,6 +5424,11 @@ end;
 procedure TCustomTreeView.ImageListChange(Sender: TObject);
 begin
   Invalidate;
+end;
+
+function TCustomTreeView.IndentIsStored: Boolean;
+begin
+  Result := FIndent >= 0;
 end;
 
 procedure TCustomTreeView.MouseDown(Button: TMouseButton; Shift: TShiftState;
