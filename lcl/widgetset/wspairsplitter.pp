@@ -43,14 +43,24 @@ uses
 type
   { TWSPairSplitterSide }
 
-  TWSPairSplitterSide = class(TWSWinControl)
-  published
+  TWSPairSplitterSideClass = class of TWSPairSplitterSide;
+  TWSPairSplitterSide = class(TWSWinControl_CallWS)
+  private class var
+    FWSPairSplitterSide_Impl: TWSPairSplitterSideClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
   end;
 
   { TWSCustomPairSplitter }
 
-  TWSCustomPairSplitter = class(TWSWinControl)
-  published
+  TWSCustomPairSplitterClass = class of TWSCustomPairSplitter;
+  TWSCustomPairSplitter = class(TWSWinControl_CallWS)
+  private class var
+    FWSCustomPairSplitter_Impl: TWSCustomPairSplitterClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; virtual;
     class function RemoveSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; virtual;
     class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; virtual;
@@ -59,7 +69,6 @@ type
     class function GetSplitterCursor(ASplitter: TCustomPairSplitter; var ACursor: TCursor): Boolean; virtual;
     class function SetSplitterCursor(ASplitter: TCustomPairSplitter; ACursor: TCursor): Boolean; virtual;
   end;
-  TWSCustomPairSplitterClass = class of TWSCustomPairSplitter;
 
   { WidgetSetRegistration }
 
@@ -83,7 +92,29 @@ begin
     end;
 end;
 
+{ TWSPairSplitterSide }
+
+class function TWSPairSplitterSide.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSPairSplitterSide_Impl;
+end;
+
+class procedure TWSPairSplitterSide.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSPairSplitterSide_Impl := TWSPairSplitterSideClass(AImpl);
+end;
+
 { TWSCustomPairSplitter }
+
+class function TWSCustomPairSplitter.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSCustomPairSplitter_Impl;
+end;
+
+class procedure TWSCustomPairSplitter.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSCustomPairSplitter_Impl := TWSCustomPairSplitterClass(FWSCustomPairSplitter_Impl);
+end;
 
 class function TWSCustomPairSplitter.AddSide(ASplitter: TCustomPairSplitter;
   ASide: TPairSplitterSide; Side: integer): Boolean;

@@ -47,7 +47,11 @@ type
   
   TWSLazDeviceAPIsClass = class of TWSLazDeviceAPIs;
   TWSLazDeviceAPIs = class(TWSObject)
+  private class var
+    FWSLazDeviceAPIs_Impl: TWSLazDeviceAPIsClass;
   public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class procedure RequestPositionInfo(AMethod: TLazPositionMethod); virtual;
     //
     class procedure SendMessage(AMsg: TLazDeviceMessage); virtual;
@@ -79,6 +83,16 @@ begin
 end;
 
 { TWSLazDeviceAPIs }
+
+class function TWSLazDeviceAPIs.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSLazDeviceAPIs_Impl;
+end;
+
+class procedure TWSLazDeviceAPIs.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSLazDeviceAPIs_Impl := TWSLazDeviceAPIsClass(AImpl);
+end;
 
 class procedure TWSLazDeviceAPIs.RequestPositionInfo(AMethod: TLazPositionMethod);
 begin

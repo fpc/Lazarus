@@ -47,12 +47,16 @@ uses
 type
   { TWSScrollBar }
 
-  TWSScrollBar = class(TWSWinControl)
-  published
+  TWSScrollBarClass = class of TWSScrollBar;
+  TWSScrollBar = class(TWSWinControl_CallWS)
+  private class var
+    FWSScrollBar_Impl: TWSScrollBarClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); virtual;
     class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); virtual;
   end;
-  TWSScrollBarClass = class of TWSScrollBar;
 
   { TWSCustomGroupBox }
 
@@ -62,15 +66,25 @@ type
 
   { TWSGroupBox }
 
+  TWSGroupBoxClass = class of TWSGroupBox;
   TWSGroupBox = class(TWSCustomGroupBox)
-  published
+  private class var
+    FWSGroupBox_Impl: TWSGroupBoxClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSCustomComboBox }
 
-  TWSCustomComboBox = class(TWSWinControl)
-  published
+  TWSCustomComboBoxClass = class of TWSCustomComboBox;
+  TWSCustomComboBox = class(TWSWinControl_CallWS)
+  private class var
+    FWSCustomComboBox_Impl: TWSCustomComboBoxClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; virtual;
     class function GetSelStart(const ACustomComboBox: TCustomComboBox): integer; virtual;
     class function GetSelLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
@@ -95,7 +109,6 @@ type
     class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; virtual;
     class procedure SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer); virtual;
   end;
-  TWSCustomComboBoxClass = class of TWSCustomComboBox;
 
   { TWSComboBox }
 
@@ -105,8 +118,13 @@ type
 
   { TWSCustomListBox }
 
-  TWSCustomListBox = class(TWSWinControl)
-  published
+  TWSCustomListBoxClass = class of TWSCustomListBox;
+  TWSCustomListBox = class(TWSWinControl_CallWS)
+  private class var
+    FWSCustomListBox_Impl: TWSCustomListBoxClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class procedure DragStart(const ACustomListBox: TCustomListBox); virtual;
 
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; virtual;
@@ -131,8 +149,7 @@ type
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); virtual;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); virtual;
   end;
-  TWSCustomListBoxClass = class of TWSCustomListBox;
-  
+
   { TWSListBox }
 
   TWSListBox = class(TWSCustomListBox)
@@ -141,8 +158,13 @@ type
 
   { TWSCustomEdit }
 
-  TWSCustomEdit = class(TWSWinControl)
-  published
+  TWSCustomEditClass = class of TWSCustomEdit;
+  TWSCustomEdit = class(TWSWinControl_CallWS)
+  private class var
+    FWSCustomEdit_Impl: TWSCustomEditClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; virtual;
     class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; virtual;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; virtual;
@@ -168,12 +190,46 @@ type
     class procedure Paste(const ACustomEdit: TCustomEdit); virtual;
     class procedure Undo(const ACustomEdit: TCustomEdit); virtual;
   end;
-  TWSCustomEditClass = class of TWSCustomEdit;
+
+  { TWSCustomEdit_CallWS }
+
+  TWSCustomEdit_CallWS = class(TWSCustomEdit)
+  public
+    class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
+    class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
+    class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
+    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetHideSelection(const ACustomEdit: TCustomEdit; NewHideSelection: Boolean); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetNumbersOnly(const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean); override;
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); override;
+    class procedure SetTextHint(const ACustomEdit: TCustomEdit; const ATextHint: string); override;
+    class function CreateEmulatedTextHintFont(const ACustomEdit: TCustomEdit): TFont; override;
+
+    class procedure Cut(const ACustomEdit: TCustomEdit); override;
+    class procedure Copy(const ACustomEdit: TCustomEdit); override;
+    class procedure Paste(const ACustomEdit: TCustomEdit); override;
+    class procedure Undo(const ACustomEdit: TCustomEdit); override;
+  end;
 
   { TWSCustomMemo }
 
-  TWSCustomMemo = class(TWSCustomEdit)
-  published
+  TWSCustomMemoClass = class of TWSCustomMemo;
+  TWSCustomMemo = class(TWSCustomEdit_CallWS)
+  private class var
+    FWSCustomMemo_Impl: TWSCustomMemoClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); virtual;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; virtual;
     class procedure FreeStrings(var AStrings: TStrings); virtual;
@@ -183,11 +239,10 @@ type
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); virtual;
     class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); override;
   end;
-  TWSCustomMemoClass = class of TWSCustomMemo;
 
   { TWSEdit }
 
-  TWSEdit = class(TWSCustomEdit)
+  TWSEdit = class(TWSCustomEdit_CallWS)
   published
   end;
 
@@ -200,8 +255,12 @@ type
   { TWSCustomStaticText }
 
   TWSCustomStaticTextClass = class of TWSCustomStaticText;
-  TWSCustomStaticText = class(TWSWinControl)
-  published
+  TWSCustomStaticText = class(TWSWinControl_CallWS)
+  private class var
+    FWSCustomStaticText: TWSCustomStaticTextClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); virtual;
     class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); virtual;
     class function GetDefaultColor(const AControl: TControl;
@@ -216,30 +275,43 @@ type
 
   { TWSButtonControl }
 
-  TWSButtonControl = class(TWSWinControl)
-  published
+  TWSButtonControlClass = class of TWSButtonControl;
+  TWSButtonControl = class(TWSWinControl_CallWS)
+  private class var
+    FWSButtonControl_Impl: TWSButtonControlClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSButton }
 
+  TWSButtonClass = class of TWSButton;
   TWSButton = class(TWSButtonControl)
-  published
+  private class var
+    FWSButton_Impl: TWSButtonClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); virtual;
     class procedure SetShortCut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortCut); virtual;
   end;
-  TWSButtonClass = class of TWSButton;
 
   { TWSCustomCheckBox }
 
+  TWSCustomCheckBoxClass = class of TWSCustomCheckBox;
   TWSCustomCheckBox = class(TWSButtonControl)
-  published
+  private class var
+    FWSCustomCheckBox_Impl: TWSCustomCheckBoxClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; virtual;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); virtual;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); virtual;
     class procedure SetAlignment(const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight); virtual;
   end;
-  TWSCustomCheckBoxClass = class of TWSCustomCheckBox;
 
   { TWSCheckBox }
 
@@ -282,6 +354,16 @@ uses
 
 { TWSGroupBox }
 
+class function TWSGroupBox.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSGroupBox_Impl;
+end;
+
+class procedure TWSGroupBox.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSGroupBox_Impl := TWSGroupBoxClass(AImpl);
+end;
+
 class function TWSGroupBox.GetDefaultColor(const AControl: TControl;
   const ADefaultColorType: TDefaultColorType): TColor;
 begin
@@ -289,6 +371,16 @@ begin
 end;
 
 { TWSScrollBar }
+
+class function TWSScrollBar.GetImplementation: TWSObjectClass;
+begin
+  Result := FWSScrollBar_Impl;
+end;
+
+class procedure TWSScrollBar.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSScrollBar_Impl := TWSScrollBarClass(AImpl);
+end;
 
 class procedure TWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 begin
@@ -301,6 +393,16 @@ begin
 end;
 
 { TWSCustomListBox }
+
+class function TWSCustomListBox.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSCustomListBox_Impl;
+end;
+
+class procedure TWSCustomListBox.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSCustomListBox_Impl := TWSCustomListBoxClass(AImpl);
+end;
 
 class procedure TWSCustomListBox.DragStart(const ACustomListBox: TCustomListBox);
 begin
@@ -400,6 +502,16 @@ begin
 end;
 
 { TWSCustomComboBox }
+
+class function TWSCustomComboBox.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSCustomComboBox_Impl;
+end;
+
+class procedure TWSCustomComboBox.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSCustomComboBox_Impl := TWSCustomComboBoxClass(AImpl);
+end;
 
 class function TWSCustomComboBox.GetDroppedDown(
   const ACustomComboBox: TCustomComboBox): Boolean;
@@ -504,8 +616,17 @@ end;
 
 { TWSCustomEdit }
 
-class function TWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit
-  ): Boolean;
+class function TWSCustomEdit.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSCustomEdit_Impl;
+end;
+
+class procedure TWSCustomEdit.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSCustomEdit_Impl := TWSCustomEditClass(AImpl);
+end;
+
+class function TWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;
 begin
   Result := False;
 end;
@@ -629,7 +750,143 @@ begin
   // nothing
 end;
 
+{ TWSCustomEdit_CallWS }
+
+class function TWSCustomEdit_CallWS.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;
+begin
+  Result := FWSCustomEdit_Impl.GetCanUndo(ACustomEdit);
+end;
+
+class function TWSCustomEdit_CallWS.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
+begin
+  Result:= FWSCustomEdit_Impl.GetCaretPos(ACustomEdit);
+end;
+
+class function TWSCustomEdit_CallWS.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+begin
+  Result:= FWSCustomEdit_Impl.GetSelStart(ACustomEdit);
+end;
+
+class function TWSCustomEdit_CallWS.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+begin
+  Result:= FWSCustomEdit_Impl.GetSelLength(ACustomEdit);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetAlignment(
+  const ACustomEdit: TCustomEdit; const AAlignment: TAlignment);
+begin
+  FWSCustomEdit_Impl.SetAlignment(ACustomEdit, AAlignment);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetCaretPos(
+  const ACustomEdit: TCustomEdit; const NewPos: TPoint);
+begin
+  FWSCustomEdit_Impl.SetCaretPos(ACustomEdit, NewPos);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetCharCase(
+  const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
+begin
+  FWSCustomEdit_Impl.SetCharCase(ACustomEdit, NewCase);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetEchoMode(
+  const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+begin
+  FWSCustomEdit_Impl.SetEchoMode(ACustomEdit, NewMode);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetHideSelection(
+  const ACustomEdit: TCustomEdit; NewHideSelection: Boolean);
+begin
+  FWSCustomEdit_Impl.SetHideSelection(ACustomEdit, NewHideSelection);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetMaxLength(
+  const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+  FWSCustomEdit_Impl.SetMaxLength(ACustomEdit, NewLength);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetNumbersOnly(
+  const ACustomEdit: TCustomEdit; NewNumbersOnly: Boolean);
+begin
+  FWSCustomEdit_Impl.SetNumbersOnly(ACustomEdit, NewNumbersOnly);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetPasswordChar(
+  const ACustomEdit: TCustomEdit; NewChar: char);
+begin
+  FWSCustomEdit_Impl.SetPasswordChar(ACustomEdit, NewChar);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetReadOnly(
+  const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+begin
+  FWSCustomEdit_Impl.SetReadOnly(ACustomEdit, NewReadOnly);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetSelStart(
+  const ACustomEdit: TCustomEdit; NewStart: integer);
+begin
+  FWSCustomEdit_Impl.SetSelStart(ACustomEdit, NewStart);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetSelLength(
+  const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+  FWSCustomEdit_Impl.SetSelLength(ACustomEdit, NewLength);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetSelText(const ACustomEdit: TCustomEdit;
+  const NewSelText: string);
+begin
+  FWSCustomEdit_Impl.SetSelText(ACustomEdit, NewSelText);
+end;
+
+class procedure TWSCustomEdit_CallWS.SetTextHint(
+  const ACustomEdit: TCustomEdit; const ATextHint: string);
+begin
+  FWSCustomEdit_Impl.SetTextHint(ACustomEdit, ATextHint);
+end;
+
+class function TWSCustomEdit_CallWS.CreateEmulatedTextHintFont(
+  const ACustomEdit: TCustomEdit): TFont;
+begin
+  Result:= FWSCustomEdit_Impl.CreateEmulatedTextHintFont(ACustomEdit);
+end;
+
+class procedure TWSCustomEdit_CallWS.Cut(const ACustomEdit: TCustomEdit);
+begin
+  FWSCustomEdit_Impl.Cut(ACustomEdit);
+end;
+
+class procedure TWSCustomEdit_CallWS.Copy(const ACustomEdit: TCustomEdit);
+begin
+  FWSCustomEdit_Impl.Copy(ACustomEdit);
+end;
+
+class procedure TWSCustomEdit_CallWS.Paste(const ACustomEdit: TCustomEdit);
+begin
+  FWSCustomEdit_Impl.Paste(ACustomEdit);
+end;
+
+class procedure TWSCustomEdit_CallWS.Undo(const ACustomEdit: TCustomEdit);
+begin
+  FWSCustomEdit_Impl.Undo(ACustomEdit);
+end;
+
 { TWSCustomMemo }
+
+class function TWSCustomMemo.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSCustomMemo_Impl;
+end;
+
+class procedure TWSCustomMemo.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSCustomMemo_Impl := TWSCustomMemoClass(AImpl);
+end;
 
 class procedure TWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 begin
@@ -675,6 +932,16 @@ end;
 
 { TWSCustomStaticText }
 
+class function TWSCustomStaticText.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSCustomStaticText;
+end;
+
+class procedure TWSCustomStaticText.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSCustomStaticText := TWSCustomStaticTextClass(AImpl);
+end;
+
 class procedure TWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
 begin
 end;
@@ -694,6 +961,16 @@ end;
 
 { TWSButton }
 
+class function TWSButton.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSButton_Impl;
+end;
+
+class procedure TWSButton.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSButton_Impl := TWSButtonClass(AImpl);
+end;
+
 class procedure TWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
 begin
 end;
@@ -704,6 +981,16 @@ begin;
 end;
 
 { TWSCustomCheckBox }
+
+class function TWSCustomCheckBox.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSCustomCheckBox_Impl;
+end;
+
+class procedure TWSCustomCheckBox.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSCustomCheckBox_Impl := TWSCustomCheckBoxClass(AImpl);
+end;
 
 class function  TWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
@@ -882,6 +1169,16 @@ begin
 end;
 
 { TWSButtonControl }
+
+class function TWSButtonControl.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSButtonControl_Impl;
+end;
+
+class procedure TWSButtonControl.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSButtonControl_Impl := TWSButtonControlClass(AImpl);
+end;
 
 class function TWSButtonControl.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
 begin

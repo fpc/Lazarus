@@ -46,8 +46,13 @@ uses
 type
   { TWSCustomFloatSpinEdit }
 
-  TWSCustomFloatSpinEdit = class(TWSCustomEdit)
-  published
+  TWSCustomFloatSpinEditClass = class of TWSCustomFloatSpinEdit;
+  TWSCustomFloatSpinEdit = class(TWSCustomEdit_CallWS)
+  private class var
+    FWSCustomFloatSpinEdit_Impl: TWSCustomFloatSpinEditClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): double; virtual;
 
 (*  TODO: seperation into properties instead of bulk update
@@ -59,7 +64,6 @@ type
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); virtual;
   end;
-  TWSCustomFloatSpinEditClass = class of TWSCustomFloatSpinEdit;
 
   { WidgetSetRegistration }
 
@@ -68,6 +72,16 @@ type
 implementation
 
 { TWSCustomFloatSpinEdit }
+
+class function TWSCustomFloatSpinEdit.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSCustomFloatSpinEdit_Impl;
+end;
+
+class procedure TWSCustomFloatSpinEdit.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSCustomFloatSpinEdit_Impl := TWSCustomFloatSpinEditClass(AImpl);
+end;
 
 class function TWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): double;
 begin

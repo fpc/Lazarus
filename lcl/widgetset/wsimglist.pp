@@ -41,8 +41,13 @@ uses
 type
   { TWSCustomImageList }
 
+  TWSCustomImageListClass = class of TWSCustomImageList;
   TWSCustomImageList = class(TWSLCLReferenceComponent)
-  published
+  private class var
+    FWSCustomImageList_Impl: TWSCustomImageListClass;
+  public
+    class function GetImplementation: TWSObjectClass; override;
+    class procedure SetImplementation(AImpl: TWSObjectClass); override;
     class procedure Clear(AList: TCustomImageList); virtual;
     class function  CreateReference(AList: TCustomImageList; ACount, AGrow, AWidth,
       AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference; virtual;
@@ -58,7 +63,6 @@ type
 
     class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); virtual;
   end;
-  TWSCustomImageListClass = class of TWSCustomImageList;
 
   procedure RegisterCustomImageList;
 
@@ -152,6 +156,16 @@ end;
 
 
 { TWSCustomImageList }
+
+class function TWSCustomImageList.GetImplementation: TWSObjectClass;
+begin
+  Result:= FWSCustomImageList_Impl;
+end;
+
+class procedure TWSCustomImageList.SetImplementation(AImpl: TWSObjectClass);
+begin
+  FWSCustomImageList_Impl := TWSCustomImageListClass(AImpl);
+end;
 
 class procedure TWSCustomImageList.Clear(AList: TCustomImageList);
 begin
