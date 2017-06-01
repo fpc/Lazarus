@@ -1535,11 +1535,14 @@ msgstr ""
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
+#, fuzzy
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
 msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"無効なパス名:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlskb
 msgid "%s kB"
