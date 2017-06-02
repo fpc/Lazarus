@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, types, LCLProc, Forms, Controls, HelpIntfs, LazHelpIntf,
-  LMessages, LCLType, TextTools, Graphics;
+  LMessages, LCLType, TextTools, Graphics, LCLIntf;
 
 type
   { THelpDBIRegExprMessage
@@ -383,6 +383,7 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
   var
     ms: TMemoryStream;
     NewWidth, NewHeight: integer;
+    R1, R2: TRect;
   begin
     if HintFont<>nil then
       HintRenderWindow.Font := HintFont;
@@ -407,7 +408,17 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
     if MouseOffset then
       HintRenderWindow.OffsetHintRect(ScreenPos)
     else
+    begin
+      R1 := HintRenderWindow.HintRect;
       HintRenderWindow.OffsetHintRect(ScreenPos, 0, True, False); // shrink height only for fixed (no MouseOffset) hints
+      R2 := HintRenderWindow.HintRect;
+      if R1.Bottom-R1.Top>R2.Bottom-R2.Top then // the height was decreased -> scrollbar will be shown, increase width
+      begin
+        Inc(R2.Right, GetSystemMetrics(SM_CXVSCROLL));
+        HintRenderWindow.HintRect := R2;
+        HintRenderWindow.OffsetHintRect(Point(0, 0), 0);
+      end;
+    end;
     HintRenderWindow.ActivateRendered;
   end;
 
