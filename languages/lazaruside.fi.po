@@ -917,7 +917,7 @@ msgstr "Piilota"
 
 #: lazarusidestrconsts.dlgcodefoldpopuporder
 msgid "Reverse fold-order in Popup"
-msgstr "Käänteinen laskostusjärjestys popup-luettelossa"
+msgstr "Käänteinen laskostusjärjestys popup-valikossa"
 
 #: lazarusidestrconsts.dlgcogdb
 msgid "Generate debugging info for GDB (slower / increases exe-size)"
@@ -1058,7 +1058,7 @@ msgstr "Täydennyksen ominaisuudet"
 
 #: lazarusidestrconsts.dlgcomponentundermousecursorisfirstselected
 msgid "Component under mouse cursor is first selected, then the popup menu commands work on it."
-msgstr "Hiirikursorin alla oleva komponentti valitaan ensin, sitten popup valikon komennot vaikuttavat siihen."
+msgstr "Hiirikursorin alla oleva komponentti valitaan ensin, sitten popup-valikon komennot vaikuttavat siihen."
 
 #: lazarusidestrconsts.dlgconfigandtarget
 msgid "Config and Target"
@@ -11838,7 +11838,7 @@ msgstr "Otsikko ei saa olla tyhjä"
 
 #: lazarusidestrconsts.lismenueditorchangeconflictingaccelerators
 msgid "Change conflicting accelerator \"%s\""
-msgstr ""
+msgstr "Muuta ristiriitainen pikanäppäin \"%s\""
 
 #: lazarusidestrconsts.lismenueditorchangeimagelisticon
 msgid "Change imagelist &icon"
@@ -11850,73 +11850,71 @@ msgstr "Muuta %s %s:ksi"
 
 #: lazarusidestrconsts.lismenueditorchangeshortcutconflicts
 msgid "Change shortcut conflict \"%s\""
-msgstr ""
+msgstr "Muuta pikanäppäimen ristiriita \"%s\""
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutfors
 msgid "Change the shortCut for %s"
-msgstr ""
+msgstr "%s:n pikanäppäimen muuttaminen"
 
 #: lazarusidestrconsts.lismenueditorchangetheshortcutkey2fors
 msgid "Change the shortCutKey2 for %s"
-msgstr ""
+msgstr "Muuta %s:n pikanäppäin2"
 
 #: lazarusidestrconsts.lismenueditorchoosetemplatetodelete
 msgid "Choose template to delete"
-msgstr ""
+msgstr "Valitse poistettava malline"
 
 #: lazarusidestrconsts.lismenueditorchoosetemplatetoinsert
 msgid "Choose template to insert"
-msgstr ""
+msgstr "Valitse lisättävä malline"
 
 #: lazarusidestrconsts.lismenueditorclickanongreyeditemtoedititsshortcut
 msgid "Click a non-greyed item to edit its shortcut or click header to sort by that column"
-msgstr ""
+msgstr "Klikkaa ei-tummennettua kohtaa muokataksesi pikanäppäintä tai klikkaa otsikkoa järjestääksesi rivit"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunexpectedkind
 msgid "Component is unexpected kind"
-msgstr ""
+msgstr "Komponentin tyyppi on odottamaton"
 
 #: lazarusidestrconsts.lismenueditorcomponentisunnamed
 msgid "Component is unnamed"
-msgstr ""
+msgstr "Komponenttia ei ole nimetty"
 
 #: lazarusidestrconsts.lismenueditorconflictresolutioncomplete
 msgid "<conflict resolution complete>"
-msgstr ""
+msgstr "<Ristiriidan käsittely valmis>"
 
 #: lazarusidestrconsts.lismenueditorconflictsfoundinitiallyd
 msgid "Conflicts found initially: %d"
-msgstr ""
+msgstr "Ristiriitoja löytyi aluksi: %d"
 
 #: lazarusidestrconsts.lismenueditordeepestnestedmenulevels
 msgid "Deepest nested menu level: %s"
-msgstr ""
+msgstr "Sisäkkäisten kohtien syvin taso: %s"
 
 #: lazarusidestrconsts.lismenueditordeleteitem
-#, fuzzy
-#| msgid "Delete Item"
 msgid "&Delete item"
-msgstr "Poista valikon kohta"
+msgstr "&Poista kohta"
 
 #: lazarusidestrconsts.lismenueditordeletemenutemplate
 msgid "&Delete menu template ..."
-msgstr ""
+msgstr "&Poista valikon malline ..."
 
 #: lazarusidestrconsts.lismenueditordeletesavedmenutemplate
 msgid "Delete saved menu template"
-msgstr ""
+msgstr "Poista talletettu valikon malline"
 
 #: lazarusidestrconsts.lismenueditordeleteselectedmenutemplate
 msgid "Delete selected menu template"
-msgstr ""
+msgstr "Poista valittu valikon malline"
 
 #: lazarusidestrconsts.lismenueditordeletethisitemanditssubitems
 msgid "Delete this item and its subitems?"
-msgstr ""
+msgstr "Poista tämä kohta ja sen alikohdat?"
 
 #: lazarusidestrconsts.lismenueditordisplaypreviewaspopupmenu
 msgid "Display preview as &Popup menu"
-msgstr ""
+msgstr "Esikatselu &Popup-valikkona"
 
 #: lazarusidestrconsts.lismenueditoreditcaption
 msgid "Edit &Caption"
@@ -11928,43 +11926,43 @@ msgstr "Muokataan otsikkoa %s"
 
 #: lazarusidestrconsts.lismenueditoreditingsdots
 msgid "To resolve conflict edit %s.%s"
-msgstr ""
+msgstr "Selvittääksesi ristiriidat muokkaa %s.%s"
 
 #: lazarusidestrconsts.lismenueditoreditingsfors
 msgid "Editing %s for %s"
-msgstr ""
+msgstr "Muokataan %s %s:lle"
 
 #: lazarusidestrconsts.lismenueditoreditingssnomenuitemselected
 msgid "Editing %s.%s - no menuitem selected"
-msgstr ""
+msgstr "Muokataan %s.%s - ei yhtään kohtaa valittuna"
 
 #: lazarusidestrconsts.lismenueditorenteramenudescription
 msgid "Enter a menu &Description:"
-msgstr ""
+msgstr "Syötä valikon &Kuvaus:"
 
 #: lazarusidestrconsts.lismenueditorenteranewshortcutfors
 msgid "Enter a new ShortCut for %s"
-msgstr ""
+msgstr "Syötä uusi pikanäppäin %s:lle"
 
 #: lazarusidestrconsts.lismenueditorenteranewshortcutkey2fors
 msgid "Enter a new ShortCutKey2 for %s"
-msgstr ""
+msgstr "Syötä uusi pikanäppäin2 %s:lle"
 
 #: lazarusidestrconsts.lismenueditorexistingsavedtemplates
 msgid "Existing saved templates"
-msgstr ""
+msgstr "Tallennetut mallineet"
 
 #: lazarusidestrconsts.lismenueditorfurthershortcutconflict
 msgid "Further shortcut conflict"
-msgstr ""
+msgstr "Muita pikanäppäimen ristiriitoja"
 
 #: lazarusidestrconsts.lismenueditorgethelptousethiseditor
 msgid "Get help to use this editor"
-msgstr ""
+msgstr "Hae apua tämän editorin käyttöön"
 
 #: lazarusidestrconsts.lismenueditorgrabkey
 msgid "&Grab key"
-msgstr ""
+msgstr "Sieppaa näppäin"
 
 #: lazarusidestrconsts.lismenueditorgroupindexd
 msgid "GroupIndex: %d"
@@ -11972,27 +11970,27 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorgroupindexvaluess
 msgid "Values in use: %s"
-msgstr ""
+msgstr "Käytetyt arvot: %s"
 
 #: lazarusidestrconsts.lismenueditorinadequatedescription
 msgid "Inadequate Description"
-msgstr ""
+msgstr "Puutteellinen kuvaus"
 
 #: lazarusidestrconsts.lismenueditorinsertmenutemplateintorootofs
 msgid "Insert menu template into root of %s"
-msgstr ""
+msgstr "Lisää valikkomalline %s:n juureen"
 
 #: lazarusidestrconsts.lismenueditorinsertselectedmenutemplate
 msgid "Insert selected menu template"
-msgstr ""
+msgstr "Lisää valittu valikkomalline"
 
 #: lazarusidestrconsts.lismenueditorisnotassigned
 msgid "is not assigned"
-msgstr ""
+msgstr "ei kytketty"
 
 #: lazarusidestrconsts.lismenueditoritemswithicons
 msgid "Items with icon: %s"
-msgstr ""
+msgstr "Kuvakkeella varustettuja: %s"
 
 #: lazarusidestrconsts.lismenueditorlistshortcutsandaccelerators
 msgid "List shortcuts and &accelerators for %s ..."
@@ -12000,7 +11998,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorlistshortcutsfors
 msgid "List shortcuts for %s ..."
-msgstr ""
+msgstr "%s:n pikanäppäinten luettelo ..."
 
 #: lazarusidestrconsts.lismenueditormenueditor
 msgid "Menu Editor"
@@ -12008,11 +12006,11 @@ msgstr "Valikkomuokkain"
 
 #: lazarusidestrconsts.lismenueditormenuitemactions
 msgid "Menu Item actions"
-msgstr ""
+msgstr "Valikon kohdan toiminnot"
 
 #: lazarusidestrconsts.lismenueditormenuitemshortcutconflictsins
 msgid "Menuitem shortcut conflicts in %s"
-msgstr ""
+msgstr "Valikon pikanäppäimen ristiriita %s:ssa"
 
 #: lazarusidestrconsts.lismenueditormovedown
 msgid "Move Down (or right)"
@@ -12020,36 +12018,34 @@ msgstr "Siirrä alaspäin (tai oikeallepäin)"
 
 #: lazarusidestrconsts.lismenueditormoveitemdown
 msgid "Mo&ve item down"
-msgstr ""
+msgstr "Siirrä kohtaa alasäin"
 
 #: lazarusidestrconsts.lismenueditormoveitemleft
 msgid "&Move item left"
-msgstr ""
+msgstr "Siirrä kohtaa vasemmalle"
 
 #: lazarusidestrconsts.lismenueditormoveitemright
 msgid "Mo&ve item right"
-msgstr ""
+msgstr "Siirrä kohtaa oikealle"
 
 #: lazarusidestrconsts.lismenueditormoveitemup
 msgid "&Move item up"
-msgstr ""
+msgstr "Siirrä kohtaa ylöspäin"
 
 #: lazarusidestrconsts.lismenueditormoveselecteditemdown
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemdown"
 msgid "Move selected item down"
 msgstr "Siirrä valittua kohtaa alas"
 
 #: lazarusidestrconsts.lismenueditormoveselecteditemtotheleft
 msgid "Move selected item to the left"
-msgstr ""
+msgstr "Siirrä valittua kohtaa vasemmalle"
 
 #: lazarusidestrconsts.lismenueditormoveselecteditemtotheright
 msgid "Move selected item to the right"
-msgstr ""
+msgstr "Siirrä valittua kohtaa oikealle"
 
 #: lazarusidestrconsts.lismenueditormoveselecteditemup
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismenueditormoveselecteditemup"
 msgid "Move selected item up"
 msgstr "Siirrä valittua kohtaa ylös"
@@ -12064,7 +12060,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditornomenuselected
 msgid "(no menu selected)"
-msgstr ""
+msgstr "(ei valittua valikkoa)"
 
 #: lazarusidestrconsts.lismenueditornone
 msgid "<none>"
@@ -12076,19 +12072,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditornoshortcutconflicts
 msgid "<no shortcut conflicts>"
-msgstr ""
+msgstr "<ei ristiriitaisia pikanäppäimiä>"
 
 #: lazarusidestrconsts.lismenueditornousersavedtemplates
 msgid "No user-saved templates"
-msgstr ""
+msgstr "Ei käyttäjän tallettamia mallineita"
 
 #: lazarusidestrconsts.lismenueditorpickaniconfroms
 msgid "Pick an icon from %s"
-msgstr ""
+msgstr "Valitse kuvake %s:sta"
 
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
-msgstr ""
+msgstr "Popup määrittelyt: %s"
 
 #: lazarusidestrconsts.lismenueditorradioitem
 msgid "RadioItem"
@@ -12096,67 +12092,67 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorremainingconflictss
 msgid "Remaining conflicts: %s"
-msgstr ""
+msgstr "Ristiriitoja jäljellä: %s"
 
 #: lazarusidestrconsts.lismenueditorremoveallseparators
 msgid "&Remove all separators"
-msgstr ""
+msgstr "Poista kaikki erottimet"
 
 #: lazarusidestrconsts.lismenueditorresolvedconflictss
 msgid "Resolved conflicts: %s"
-msgstr ""
+msgstr "Ratkaistut ristiriidat: %s"
 
 #: lazarusidestrconsts.lismenueditorresolveselectedconflict
 msgid "Resolve selected conflict"
-msgstr ""
+msgstr "Ratkaise valitut ristiriidat"
 
 #: lazarusidestrconsts.lismenueditorresolveshortcutconflicts
 msgid "&Resolve shortcut conflicts ..."
-msgstr ""
+msgstr "&Ratkaise pikanäppäinten ristiriidat ..."
 
 #: lazarusidestrconsts.lismenueditorsavedtemplates
 msgid "Saved templates"
-msgstr ""
+msgstr "Tallennetut mallineet"
 
 #: lazarusidestrconsts.lismenueditorsavemenuasatemplate
 msgid "&Save menu as a template ..."
-msgstr ""
+msgstr "&Tallenna valikko malliksi ..."
 
 #: lazarusidestrconsts.lismenueditorsavemenuastemplate
 msgid "Save menu as template"
-msgstr ""
+msgstr "Tallenna valikko malliksi"
 
 #: lazarusidestrconsts.lismenueditorsavemenuastemplateforfutureuse
 msgid "Save menu as template for future use"
-msgstr ""
+msgstr "Tallenna valikko mallina uusintakäyttöä varten"
 
 #: lazarusidestrconsts.lismenueditorsavemenushownasanewtemplate
 msgid "Save menu shown as a new template"
-msgstr ""
+msgstr "Tallenna valikko uutena mallineena"
 
 #: lazarusidestrconsts.lismenueditorsconflictswiths
 msgid "%s conflicts with %s"
-msgstr ""
+msgstr "%s on ristiriidassa %s:n kanssa"
 
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
-msgstr ""
+msgstr "&Erottimet"
 
 #: lazarusidestrconsts.lismenueditorshortcutitemss
 msgid "Shortcut items: %s"
-msgstr ""
+msgstr "Valikon pikanäpäimiä: %s"
 
 #: lazarusidestrconsts.lismenueditorshortcutnotyetchanged
 msgid "Shortcut not yet changed"
-msgstr ""
+msgstr "Pikanäppäintä ei ole vielä vaihdettu"
 
 #: lazarusidestrconsts.lismenueditorshortcuts
 msgid "Shortcuts"
-msgstr ""
+msgstr "Pikanäppäimet"
 
 #: lazarusidestrconsts.lismenueditorshortcuts2
 msgid "Shortc&uts"
-msgstr ""
+msgstr "&Pikanäppäimet"
 
 #: lazarusidestrconsts.lismenueditorshortcutsandacceleratorkeys
 msgid "Shortcuts and Accelerator keys"
@@ -12164,7 +12160,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsd
 msgid "Shortcuts (%d)"
-msgstr ""
+msgstr "Pikanappäimet (%d)"
 
 #: lazarusidestrconsts.lismenueditorshortcutsdandacceleratorkeysd
 msgid "Shortcuts (%d) and Accelerator keys (%d)"
@@ -12176,19 +12172,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedins
 msgid "Shortcuts used in %s"
-msgstr ""
+msgstr "%s:n pikanappäinten käyttö"
 
 #: lazarusidestrconsts.lismenueditorshortcutsusedinsd
 msgid "Shortcuts used in %s (%d)"
-msgstr ""
+msgstr "%:ssa käytetään %d kpl pikanäppäintä"
 
 #: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
 msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr ""
+msgstr "ShowMenuEditor: TMenu parametri on nil"
 
 #: lazarusidestrconsts.lismenueditorsins
 msgid "\"%s\" in %s"
-msgstr ""
+msgstr "\"%s\" %s:ssa"
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
 msgid ""
@@ -12198,15 +12194,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
-msgstr ""
+msgstr "Pidennä: \"%s\" ei riitä kuvaukseksi"
 
 #: lazarusidestrconsts.lismenueditorsomewidgetsetsdonotallowseparatorsinthemainmenubar
 msgid "Some widgetsets do not allow separators in the main menubar"
-msgstr ""
+msgstr "Jotkut widgetsetit eivät salli erottimia päävalikossa"
 
 #: lazarusidestrconsts.lismenueditorsshortcuts
 msgid "%s: Shortcuts"
-msgstr ""
+msgstr "%s: Pikanäppäimet"
 
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 msgid "%s: Shortcuts and accelerator keys"
@@ -12222,19 +12218,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditorstandardtemplates
 msgid "Standard templates"
-msgstr ""
+msgstr "Vakiomallineet"
 
 #: lazarusidestrconsts.lismenueditortemplatedescription
 msgid "Template description:"
-msgstr ""
+msgstr "Mallineen kuvaus:"
 
 #: lazarusidestrconsts.lismenueditortemplates
 msgid "&Templates"
-msgstr ""
+msgstr "Mallineet"
 
 #: lazarusidestrconsts.lismenueditortemplatesaved
 msgid "Template saved"
-msgstr ""
+msgstr "Malline on tallennettu"
 
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
 msgid ""
@@ -13932,7 +13928,7 @@ msgstr "Avaa työkaluasetukset"
 
 #: lazarusidestrconsts.lisopenunit
 msgid "Open Unit"
-msgstr ""
+msgstr "Avaa käännösyksikkö"
 
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
