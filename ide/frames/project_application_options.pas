@@ -244,6 +244,7 @@ begin
   DpiLevelNames[xmdaTrue] := dlgPODpiAwarenessOn;
   DpiLevelNames[xmdaPerMonitor] := dlgPODpiAwarenessOldOffNewPerMonitor;
   DpiLevelNames[xmdaTruePM] := dlgPODpiAwarenessOldOnNewPerMonitor;
+  DpiLevelNames[xmdaPerMonitorV2] := dlgPODpiAwarenessOldOnNewPerMonitorV2;
 
   ExecutionLevelLabel.Caption := dlgPOExecutionLevel;
   for ExecutionLevel in TXPManifestExecutionLevel do

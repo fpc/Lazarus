@@ -55,7 +55,8 @@ type
     xmdaFalse,
     xmdaTrue,
     xmdaPerMonitor,
-    xmdaTruePM
+    xmdaTruePM,
+    xmdaPerMonitorV2
   );
 
 type
@@ -100,7 +101,16 @@ const
     'False',
     'True',
     'Per-monitor',
+    'True/PM',
     'True/PM'
+  );
+
+  ManifestDpiAwarenessValues: array[TXPManifestDpiAware] of string = (
+    '',
+    '',
+    '',
+    '',
+    '<dpiAwareness>PerMonitorV2, PerMonitor</dpiAwareness>'
   );
 
 implementation
@@ -140,6 +150,7 @@ const
     ' <asmv3:application xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">'#$D#$A+
     '  <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">'#$D#$A+
     '   <dpiAware>%s</dpiAware>'#$D#$A+
+    '   %s'#$D#$A+
     '  </asmv3:windowsSettings>'#$D#$A+
     ' </asmv3:application>'#$D#$A+
     '</assembly>';
@@ -232,7 +243,8 @@ begin
       TextDesc,
       ExecutionLevelToStr[ExecutionLevel],
       BoolToStr(UIAccess, 'true', 'false'),
-      ManifestDpiAwareValues[DpiAware]]);
+      ManifestDpiAwareValues[DpiAware],
+      ManifestDpiAwarenessValues[DpiAware]]);
     Res.RawData.Write(ManifestFileData[1], Length(ManifestFileData));
     AResources.AddSystemResource(Res);
   end;
