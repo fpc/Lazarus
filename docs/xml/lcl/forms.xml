@@ -9247,15 +9247,33 @@ ShowModal creates its own event loop calling ProcessMessages.
       <!-- variable Visibility: default -->
       <element name="RequireDerivedFormResource">
         <short>When True every form must have a resource (e.g. a .res file). An exception is raised if the resource is missing when creating a form.</short>
-        <descr>The form resource is the lfm file compiled into the executable of your application. For this flag it does not matter if it was compiled via an lrs file or via fpcres. The resource is automatically loaded by TForm and therfore any descendant when it is created via Create(Owner). If the resource is missing there is something wrong with either a resource or the unit which contains the faulty form. If the flag is false you will see a blank form and probably search a long time what is wrong. If you set this flag to true you get an exception. 
-
-For creating forms without resources you have 3 options:
-<ul><li>Create a TForm class (not a descendant)</li><li>Construct your form using the CreateNew() constructor.</li><li>It is also possible to disable the exception by setting the global variable RequireDerivedFormResource to False. </li>
+        <descr>
+          <p>The form resource is the lfm file compiled into the executable of
+          your application. For this flag it does not matter if it was compiled
+          via an lrs file or via fpcres. The resource is automatically loaded by
+          TForm and therfore any descendant when it is created via Create(Owner).
+          If the resource is missing there is something wrong with either a
+          resource or the unit which contains the faulty form.
+          If the flag is false you will see a blank form and probably search
+          a long time what is wrong. If you set this flag to true you get an exception.
+          </p>
+          <p>
+          For creating forms without resources you have 3 options:
+          </p>
+          <ul>
+            <li>Create a TForm class (not a descendant)</li>
+            <li>Construct your form using the CreateNew() constructor.</li>
+            <li>It is also possible to disable the exception by setting the global
+               variable RequireDerivedFormResource to False. </li>
           </ul>
-History:
-
-Before 0.9.31 there was no exception. Therefore some resourceless forms might use the standard constructor Create(Owner) and will now get exceptions. This change is Delphi compatible and compatible with TFrame and TDataModule components.
-</descr>
+          <p>
+          History:
+          Before 0.9.31 there was no exception. Therefore some resourceless forms
+          might use the standard constructor Create(Owner) and will now get
+          exceptions. This change is Delphi compatible and compatible with
+          TFrame and TDataModule components.
+          </p>
+        </descr>
         <seealso>
         </seealso>
       <notes><note>?</note>
