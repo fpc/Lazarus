@@ -4705,8 +4705,8 @@ procedure TCustomGrid.CreateWnd;
 begin
   //DebugLn('TCustomGrid.CreateWnd ',DbgSName(Self));
   inherited CreateWnd;
-  FVSbVisible := -1;
-  FHSbVisible := -1;
+  FVSbVisible := Ord(GetScrollbarvisible(Handle, SB_Vert));
+  FHSbVisible := Ord(GetScrollbarvisible(Handle, SB_Horz));
   CheckPosition;
   VisualChange;
 end;
