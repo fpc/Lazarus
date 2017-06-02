@@ -22,7 +22,7 @@ var
   DefaultXCTDir: String;
   DefaultFPDocParams: string = '';
   DefaultOutFormat: string = 'html';
-  DefaultFooterFilename: string; // ToDo
+  DefaultFooterFilename: string = 'locallclfooter.xml'; // ToDo
 
 type
   TFPDocRunStep = (
@@ -84,7 +84,7 @@ type
     procedure Execute;
     property Options: TFPDocRunOptions read FOptions write FOptions default DefaultFPDocRunOptions;
     property CSSFile: String read FCSSFile write SetCSSFile;
-    property FooterFilename: String read FFooterFilename write SetFooterFilename; // ToDo
+    property FooterFilename: String read FFooterFilename write SetFooterFilename;
     property FPDocExe: String read FFPDocExe write FFPDocExe;
     property IncludePath: string read FIncludePath write SetIncludePath;// semicolon separated search path
     property InputFile: string read FInputFile write SetInputFile; // relative to OutDir, automatically created
@@ -124,6 +124,7 @@ begin
   WriteLn('    --fpcdocs <value>  The directory that contains the required .xct files.');
   WriteLn('                       Use this to make help that contains links to rtl and fcl');
   WriteLn('    --footer <value>   Filename of a file to use a footer used in the generated pages.');
+  WriteLn('                       Default is "'+DefaultFooterFilename+'"');
   WriteLn('    --help             Show this message');
   WriteLn('    --arg <value>      Passes value to fpdoc as an arg. Use this option as');
   WriteLn('                       many times as needed.');
@@ -197,7 +198,7 @@ begin
   GetEnvDef(DefaultOutFormat, DefaultOutFormat, 'FPDOCFORMAT');
   GetEnvDef(EnvParams, '', 'FPDOCPARAMS');
   GetEnvDef(DefaultFPDocExe, DefaultFPDocExe, 'FPDOC');
-  GetEnvDef(DefaultFooterFilename, '', 'FPDOCFOOTER');
+  GetEnvDef(DefaultFooterFilename, DefaultFooterFilename, 'FPDOCFOOTER');
   GetEnvDef(DefaultXCTDir, DefaultXCTDir, 'FPCDOCS');
 
   if DefaultOutFormat = '' then
@@ -345,6 +346,9 @@ begin
     if CSSFile<>'' then
       Params.Add('--css-file='+ExtractFileName(CSSFile)); // the css file is copied to the OutDir
   end;
+
+  if (FooterFilename<>'') and FileExistsUTF8(FooterFilename) then
+    Params.Add('--footer='+FooterFilename);
 
   if EnvParams<>'' then
     SplitCmdLineParams(EnvParams,Params);
