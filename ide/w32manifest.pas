@@ -150,6 +150,8 @@ const
     ' <asmv3:application xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">'#$D#$A+
     '  <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">'#$D#$A+
     '   <dpiAware>%s</dpiAware>'#$D#$A+
+    '  </asmv3:windowsSettings>'#$D#$A+
+    '  <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">'#$D#$A+
     '   %s'#$D#$A+
     '  </asmv3:windowsSettings>'#$D#$A+
     ' </asmv3:application>'#$D#$A+
