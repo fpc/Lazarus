@@ -3568,8 +3568,11 @@ components/printers/design/sourceprinter.pas svneol=native#text/plain
 components/printers/images/printersdlgs.bat svneol=native#text/x-msdos-program
 components/printers/images/printersdlgs.txt svneol=native#text/plain
 components/printers/images/tpagesetupdialog.png -text svneol=unset#image/png
+components/printers/images/tpagesetupdialog_150.png -text
 components/printers/images/tprintdialog.png -text svneol=unset#image/png
+components/printers/images/tprintdialog_150.png -text
 components/printers/images/tprintersetupdialog.png -text svneol=unset#image/png
+components/printers/images/tprintersetupdialog_150.png -text
 components/printers/languages/printer4lazstrconst.cs.po svneol=native#text/plain
 components/printers/languages/printer4lazstrconst.de.po svneol=native#text/plain
 components/printers/languages/printer4lazstrconst.fr.po svneol=native#text/plain
@@ -6652,6 +6655,7 @@ images/components/tfilelistbox.png -text svneol=unset#image/png
 images/components/tfilenameedit.png -text svneol=unset#image/png
 images/components/tfiltercombobox.png -text
 images/components/tfinddialog.png -text svneol=unset#image/png
+images/components/tfinddialog_150.png -text
 images/components/tfloatspinedit.png -text svneol=unset#image/png
 images/components/tfloatspinedit_150.png -text
 images/components/tfloatspinedit_200.png -text

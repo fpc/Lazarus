@@ -115,6 +115,7 @@ components/tfilelistbox.png
 components/tfilenameedit.png
 components/tfiltercombobox.png
 components/tfinddialog.png
+components/tfinddialog_150.png
 components/tfloatspinedit.png
 components/tfloatspinedit_150.png
 components/tfloatspinedit_200.png
