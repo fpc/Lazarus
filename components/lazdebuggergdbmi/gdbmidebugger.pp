@@ -11826,7 +11826,7 @@ var
 
       if StopChar <> '='
       then begin
-        debugln(DBGMI_STRUCT_PARSER, 'Expected assignement, but other found.');
+        debugln(DBGMI_STRUCT_PARSER, 'Expected assignment, but other found.');
         Break;
       end;
 
