@@ -354,6 +354,7 @@ procedure TDebuggerDlg.JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: In
 var
   Filename: String;
   ok: Boolean;
+  JumpFlags: TJumpToCodePosFlags;
 begin
   if AnUnitInfo = nil then exit;
   debugln(DBG_LOCATION_INFO, ['JumpToUnitSource AnUnitInfo=', AnUnitInfo.DebugText ]);
@@ -367,14 +368,16 @@ begin
     if DebugBoss.GetFullFilename(AnUnitInfo, Filename, False, False) then begin
       debugln(DBG_LOCATION_INFO, ['JumpToUnitSource Filename=', Filename]);
       ok := false;
-      if ALine <= 0 then ALine := AnUnitInfo.SrcLine;
+      JumpFlags := [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug, jfSearchVirtualFullPath];
+      if ALine <= 0 then
+        ALine := AnUnitInfo.SrcLine;
       if FilenameIsAbsolute(Filename) then
-        ok := MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0,
-                                             [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug, jfSearchVirtualFullPath]
-                                            ) = mrOK;
+        ok := MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JumpFlags) = mrOK;
       if not ok then
-        MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0,
-                                       [jfDoNotExpandFilename, jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug, jfSearchVirtualFullPath]);
+      begin
+        DebugBoss.GetFullFilename(AnUnitInfo, Filename, True, True);
+        MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JumpFlags+[jfDoNotExpandFilename]);
+      end;
     end;
   finally
     DebugBoss.UnLockCommandProcessing;
