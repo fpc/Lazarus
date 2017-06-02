@@ -912,7 +912,7 @@ type
                                AData: pointer); virtual;
     function CalcHintRect(MaxWidth: Integer; const AHint: String;
                           AData: pointer): TRect; virtual;
-    function OffsetHintRect(NewPos: TPoint; dy: Integer = 15;
+    function OffsetHintRect(AOffset: TPoint; dy: Integer = 15;
       KeepWidth: Boolean = True; KeepHeight: Boolean = True): Boolean;
     procedure InitializeWnd; override;
     function IsHintMsg(Msg: TMsg): Boolean; virtual;
