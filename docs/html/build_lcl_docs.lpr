@@ -71,7 +71,7 @@ type
     procedure SetXCTDir(AValue: string);
     procedure SetXMLSrcDir(AValue: string);
   public
-    Params: String;
+    Params: TStringList;
     ParseParams: string;
     constructor Create(aPackageName: string);
     destructor Destroy; override;
@@ -273,7 +273,8 @@ begin
   OutDir:=PackageName;
   FPDocExe:=TrimFilename(DefaultFPDocExe);
   CSSFile:=DefaultCSSFile;
-  Params:=DefaultFPDocParams;
+  Params:=TStringList.Create;
+  SplitCmdLineParams(DefaultFPDocParams,Params);
   OutFormat:=DefaultOutFormat;
   FooterFilename:=DefaultFooterFilename;
   XCTDir:=DefaultXCTDir;
@@ -289,7 +290,7 @@ end;
 
 procedure TFPDocRun.InitVars;
 var
-  Pkg, Prefix, IncludeDir: String;
+  Pkg, Prefix, IncludeDir, Param: String;
   p: Integer;
 begin
   if ord(Step)>=ord(frsVarsInitialized) then
@@ -306,14 +307,14 @@ begin
 
   FXCTFile:=AppendPathDelim(OutDir)+PackageName+'.xct';
 
-  Params += ' --content='+CreateRelativePath(XCTFile,OutDir)
-          + ' --package='+PackageName
-          + ' --descr='+CreateRelativePath(AppendPathDelim(XMLSrcDir)+PackageName+'.xml',OutDir)
-          + ' --format='+OutFormat;
+  Params.Add('--content='+CreateRelativePath(XCTFile,OutDir));
+  Params.Add('--package='+PackageName);
+  Params.Add('--descr='+CreateRelativePath(AppendPathDelim(XMLSrcDir)+PackageName+'.xml',OutDir));
+  Params.Add('--format='+OutFormat);
   if FilenameIsAbsolute(InputFile) then
-    Params += ' --input=@'+CreateRelativePath(InputFile,OutDir)
+    Params.Add('--input=@'+CreateRelativePath(InputFile,OutDir))
   else
-    Params += ' --input=@'+InputFile;
+    Params.Add('--input=@'+InputFile);
 
   if XCTDir <> '' then
   begin
@@ -328,22 +329,25 @@ begin
         Prefix:='';
       GetEnvDef(Prefix, Prefix, UpperCase(Pkg)+'LINKPREFIX');
 
-      Params+=' --import='+CreateRelativePath(AppendPathDelim(XCTDir)+LowerCase(Pkg)+'.xct',OutDir);
+      Param:='--import='+CreateRelativePath(AppendPathDelim(XCTDir)+LowerCase(Pkg)+'.xct',OutDir);
       if Prefix<>'' then
-        Params+=','+Prefix;
+        Param+=','+Prefix;
+      Params.Add(Param);
     end;
   end;
   
   if OutFormat='chm' then
   begin
-    Params+=' --output='+ ChangeFileExt(PackageName, '.chm')
-              +' --auto-toc --auto-index --make-searchable';
+    Params.Add('--output='+ ChangeFileExt(PackageName, '.chm'));
+    Params.Add('--auto-toc');
+    Params.Add('--auto-index');
+    Params.Add('--make-searchable');
     if CSSFile<>'' then
-      Params+=' --css-file='+ExtractFileName(CSSFile); // the css file is copied to the OutDir
+      Params.Add('--css-file='+ExtractFileName(CSSFile)); // the css file is copied to the OutDir
   end;
 
   if EnvParams<>'' then
-    Params += ' '+EnvParams;
+    SplitCmdLineParams(EnvParams,Params);
 
   if Verbosity>0 then
   begin
@@ -354,8 +358,10 @@ begin
     writeln('FooterFilename=',FooterFilename);
     writeln('InputFile=',InputFile);
     writeln('OutDir=',OutDir);
-    writeln('ParseParams=',ParseParams);
-    writeln('FPDocParams=',Params);
+    writeln('ParseParams=');
+    writeln(ParseParams);
+    writeln('FPDocParams=');
+    writeln(Params.Text);
     writeln('----------------------------------');
   end;
 
@@ -410,7 +416,7 @@ begin
     if FileExistsUTF8(XMLFile) then
     begin
       InputList.Add(CreateRelativePath(FileList[I],OutDir) + ParseParams);
-      Params:=Params+' --descr='+CreateRelativePath(XMLFile,OutDir);
+      Params.Add('--descr='+CreateRelativePath(XMLFile,OutDir));
     end
     else
     begin
@@ -471,13 +477,12 @@ begin
   if ord(Step)<ord(frsOutDirCreated) then
     CreateOuputDir;
 
-  CmdLine := FPDocExe + Params;
   if ShowCmd then
   begin
     Writeln('WorkDirectory:',OutDir);
-    WriteLn(CmdLine);
-    writeln('Not executing, simulation ended. Stop');
-    Halt(0);
+    WriteLn('Exe:',FPDocExe);
+    WriteLn(Params.Text);
+    exit;
   end;
   {$IFDEF MSWINDOWS}FPDocExe := ChangeFileExt(FPDocExe,'.exe');{$ENDIF}
   if not FileInEnvPATH(FPDocExe) then
@@ -490,16 +495,20 @@ begin
   try
     Process.Options := Process.Options + [poWaitOnExit];
     Process.CurrentDirectory := OutDir;
-    Process.CommandLine := CmdLine;
+    Process.Executable:=FPDocExe;
+    Process.Parameters.Assign(Params);
+    CmdLine:=Process.Executable+' '+MergeCmdLineParams(Params);
     if Verbosity>0 then
-      writeln('Command="',Process.CommandLine,'"');
+      writeln('CmdLine: ',CmdLine);
     try
       Process.Execute;
       if Process.ExitCode<>0 then
         raise Exception.Create('fpdoc failed with code '+IntToStr(Process.ExitCode));
     except
       if WarningsCount >= 0 then
+      begin
         WriteLn('Error running fpdoc, command line: '+CmdLine)
+      end
       else
         Dec(WarningsCount);
     end;
@@ -545,6 +554,7 @@ end;
 
 procedure TFPDocRun.Execute;
 begin
+  writeln('===================================================================');
   if ord(Step)>=ord(frsComplete) then
     raise Exception.Create('TFPDocRun.Execute not again');
   if ord(Step)<ord(frsCopiedToXCTDir) then
@@ -575,5 +585,8 @@ begin
   Run.IncludePath := Run.PasSrcDir+PathDelim+'include';
   Run.Execute;
   Run.Free;
+
+  if ShowCmd then
+    writeln('Not executing, simulation ended. Stop');
 end.
 
