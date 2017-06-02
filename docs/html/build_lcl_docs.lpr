@@ -536,14 +536,18 @@ begin
   and (CompareFilenames(ChompPathDelim(OutDir),ChompPathDelim(XCTDir))<>0) then
   begin
     TargetXCTFile:=AppendPathDelim(XCTDir)+ExtractFileName(XCTFile);
-    if not CopyFile(XCTFile,TargetXCTFile) then
+    if ShowCmd then
+      writeln('cp ',XCTFile,' ',TargetXCTFile)
+    else if not CopyFile(XCTFile,TargetXCTFile) then
       raise Exception.Create('unable to copy xct file: "'+XCTFile+'" to "'+TargetXCTFile+'"');
     writeln('Created ',TargetXCTFile);
     if OutFormat='chm' then
     begin
       SrcCHMFile:=AppendPathDelim(OutDir)+PackageName+'.chm';
       TargetCHMFile:=AppendPathDelim(XCTDir)+PackageName+'.chm';
-      if not CopyFile(SrcCHMFile,TargetCHMFile) then
+      if ShowCmd then
+        writeln('cp ',SrcCHMFile,' ',TargetCHMFile)
+      else if not CopyFile(SrcCHMFile,TargetCHMFile) then
         raise Exception.Create('unable to copy chm file: "'+SrcCHMFile+'" to "'+TargetCHMFile+'"');
       writeln('Created ',TargetCHMFile);
     end;
