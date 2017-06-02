@@ -6056,52 +6056,34 @@ Calling the <var>MoveTo</var>
       <element name="TCanvas.TextOut.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.TextOut.Text">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCanvas.TextRect">
-        <short>
-          <var>TextRect</var> - writes the specified text string in the rectangle at specified position, with optionally specified style</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.TextRect.ARect">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.TextRect.X">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.TextRect.Y">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCanvas.TextRect.Text">
-        <short/>
-      </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.TextRect">
         <short>Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var>
         </short>
         <descr>
-&#x9;  Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var><br/>
-          The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y</var> define the starting point for writing the <var>Text</var> within the rectangle.<br/>
-&#x9;  <var>TextStyle</var> determines whether the text is justified, centered, word-wrapped, clipped at the rectangle boundaries, etc. If the <var>Style</var> argument is omitted, defaults are assumed.<br/>
-&#x9;  <br/>
-&#x9;  <b>Note:</b>
+        <p>
+          Writes <var>Text</var> string within a specified rectangle, according
+          to predefined <var>Style</var>
+        </p>
+        <p>The boundaries of the rectangle are specified in <var>ARect</var>
+        </p>
+        <p><var>X, Y</var> define the starting point for writing the
+          <var>Text</var> within the rectangle.
+        </p>
+        <p>
+          <var>TextStyle</var> determines whether the text is justified,
+          centered, word-wrapped, clipped at the rectangle boundaries, etc.
+          If the <var>Style</var> argument is omitted, defaults are assumed.
+        </p>
+        <p>
+          <b>Note:</b>
           The exact text position depends on the specified rectangle, the <var>TextStyle</var> of the canvas, and the <var>X, Y</var> coordinates:
+        </p>
           <ul>
-            <li><var>TextStyle.Alignment = taLeftJustify</var>: Text begins at <var>X</var>
-            </li>
+            <li><var>TextStyle.Alignment = taLeftJustify</var>: Text begins at <var>X</var></li>
             <li><var>TextStyle.Alignment = taCenter</var>: Text center is in the center of the rectangle (horizontally)</li>
             <li><var>TextStyle.Alignment = taRightJustify</var>: Text ends at right edge of the rectangle</li>
-            <li><var>TextStyle.Layout = tlTop</var>: Top of the text is at <var>Y</var>
-            </li>
+            <li><var>TextStyle.Layout = tlTop</var>: Top of the text is at <var>Y</var></li>
             <li><var>TextStyle.Layout = tlCenter</var>: Text center is in the center of the rectangle (vertically)</li>
             <li><var>TextStyle.Layout = tlBottom</var>: Text sits above the the bottom edge of the rectangle</li>
           </ul>
