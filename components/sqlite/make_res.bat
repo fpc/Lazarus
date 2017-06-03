@@ -1,1 +1,2 @@
-..\..\tools\lazres sqlite3icon.res @imagelist.txt
+..\..\tools\lazres sqliteicon.res @imagelist.txt
+..\..\tools\lazres sqlite3icon.res @imagelist3.txt
