@@ -1,2 +1,6 @@
 tfixedformatdataset.png
+tfixedformatdataset_150.png
+tfixedformatdataset_200.png
 tsdfdataset.png
+tsdfdataset_150.png
+tsdfdataset_200.png
