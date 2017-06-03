@@ -670,7 +670,6 @@ var
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds')
   then Exit;
-
   ResizeHandle(AWinControl);
   InvalidateLastWFPResult(AWinControl, Rect(ALeft, ATop, AWidth, AHeight));
   if not AWinControl.Visible then // Gtk2WSForms.ShowHide will correct visibility
@@ -686,24 +685,34 @@ begin
     // as expected for some reason.issue #20741.
     // Constraints fix issue #29563
     AFixedWidthHeight := AForm.BorderStyle in [bsDialog, bsSingle, bsToolWindow];
+    FillChar(Geometry, SizeOf(TGdkGeometry), 0);
     with Geometry do
     begin
       if not AFixedWidthHeight and (AForm.Constraints.MinWidth > 0) then
         min_width := AForm.Constraints.MinWidth
       else
+      if AFixedWidthHeight then
         min_width := AForm.Width;
       if not AFixedWidthHeight and (AForm.Constraints.MaxWidth > 0) then
         max_width := AForm.Constraints.MaxWidth
       else
-      max_width := AForm.Width;
+      if AFixedWidthHeight then
+        max_width := AForm.Width;
       if not AFixedWidthHeight and (AForm.Constraints.MinHeight > 0) then
         min_height := AForm.Constraints.MinHeight
       else
-        min_height := AForm.Height;
+        if AFixedWidthHeight then
+          min_height := AForm.Height;
       if not AFixedWidthHeight and (AForm.Constraints.MaxHeight > 0) then
         max_height := AForm.Constraints.MaxHeight
       else
-        max_height := AForm.Height;
+        if AFixedWidthHeight then
+          max_height := AForm.Height;
+
+      if AForm.Constraints.MaxHeight = 0 then
+        max_height := 32767;
+      if AForm.Constraints.MaxWidth = 0 then
+        max_width := 32767;
 
       base_width := AForm.Width;
       base_height := AForm.Height;
@@ -713,7 +722,8 @@ begin
       max_aspect := 1;
       win_gravity := gtk_window_get_gravity({%H-}PGtkWindow(AForm.Handle));
     end;
-    //debugln('TGtk2WSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
+    //debugln('TGtk2WSWinControl.SetBounds A maxw=',dbgs(Geometry.max_width),' maxh=',dbgs(Geometry.max_height),
+    //' base w=',dbgs(Geometry.base_width),' h=',dbgs(Geometry.base_height));
     if AFixedWidthHeight then
       gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
         GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE)
