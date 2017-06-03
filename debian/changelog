@@ -1,8 +1,8 @@
-lazarus (1.9.0) unstable; urgency=low
+lazarus (1.8.0RC2) unstable; urgency=low
 
-  * Snapshot building.
+  * Release Candidate 2
 
- -- Mattias Gaertner <mattias@freepascal.org>  Sat, 8 Apr 2017 00:01:22 +0200
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 3 Jun 2017 19:38:22 +0200
 
 lazarus (1.8.0RC1) unstable; urgency=low
 
