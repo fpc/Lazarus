@@ -470,7 +470,7 @@ begin
   ' pxPerInch ',dbgs(AFont.PixelsPerInch));
   {$ENDIF}
   AWidget := TGtk3Widget(AWinControl.Handle);
-  if LowerCase(AFont.Name) = 'default' then
+  if IsFontNameDefault(AFont.Name) then
   begin
     AGtkFont := TGtk3Widget(AWinControl.Handle).Font;
     if AFont.Size <> 0 then

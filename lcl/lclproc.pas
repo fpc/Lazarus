@@ -394,6 +394,8 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String); inline; deprecated 
 // identifier
 function CreateFirstIdentifier(const Identifier: string): string;
 function CreateNextIdentifier(const Identifier: string): string;
+// Font
+function IsFontNameDefault(const AName: string): boolean; inline;
 
 {$IFDEF WithOldDebugln}
 type
@@ -3009,6 +3011,11 @@ begin
   while (p>=1) and (Identifier[p] in ['0'..'9']) do dec(p);
   Result:=copy(Identifier,1,p)
           +IntToStr(1+StrToIntDef(copy(Identifier,p+1,length(Identifier)-p),0));
+end;
+
+function IsFontNameDefault(const AName: string): boolean; inline;
+begin
+  Result := LowerCase(AName) = 'default';
 end;
 
 procedure FreeLineInfoCache;

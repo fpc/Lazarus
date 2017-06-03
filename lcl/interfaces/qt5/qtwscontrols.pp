@@ -124,9 +124,8 @@ const
  { True  } QtRightToLeft
   );
 implementation
-{$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQt)}
+
 uses LCLProc;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomControl.CreateHandle
@@ -629,7 +628,7 @@ begin
   // issue #28437, #30966 - regression from r53365: when FontChanged() is called
   // here handle is recreated inside LCL, so we are dead - SEGFAULT.
   if AWinControl.HandleObjectShouldBeVisible and
-    (LowerCase(AWinControl.Font.Name) = 'default') then
+    IsFontNameDefault(AWinControl.Font.Name) then
   begin
     if AWinControl.IsParentFont and Assigned(AWinControl.Parent) then
       SetFont(AWinControl, AWinControl.Parent.Font) {DO NOT TOUCH THIS PLEASE !}

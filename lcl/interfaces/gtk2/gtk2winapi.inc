@@ -1402,7 +1402,7 @@ begin
          (lfItalic = 0) and
          (lfUnderline = 0) and
          (lfOrientation = 0) and
-         (CompareText(lfFacename, 'default') = 0) then
+         IsFontNameDefault(lfFacename) then
       begin
         // use default font
         {$IFDEF VerboseFonts}
@@ -1430,7 +1430,7 @@ begin
       
       // using method 2
 
-      if aFamily = 'default' then
+      if IsFontNameDefault(aFamily) then
       begin
         CurFont := GetDefaultGtkFont(False);
         if PANGO_IS_LAYOUT(CurFont) then
@@ -5173,11 +5173,11 @@ begin
         begin
           PLogfont(Buf)^ := GDIObject^.LogFont;
           Result:= SizeOf(TLogFont);
-          if GDIObject^.LogFont.lfFaceName = 'default' then
+          if IsFontNameDefault(GDIObject^.LogFont.lfFaceName) then
           begin
             AFontName := GetDefaultFontName;
 
-            if (AFontName = '') or (AFontName = 'default') then
+            if (AFontName = '') or IsFontNameDefault(AFontName) then
             begin
               AFont := GetDefaultGtkFont(False);
               if PANGO_IS_LAYOUT(AFont) then

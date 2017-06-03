@@ -236,9 +236,9 @@ begin
   // First look if font name matches a stored name
   // but replace generic with reasonable default
   AFontName:= '';
-  if LowerCase(LongFontName) = 'default' then AFontName:= 'Arial'
-  else if LowerCase(LongFontName) = 'sans' then AFontName:= 'Arial'
-  else if LowerCase(LongFontName) = 'serif' then AFontName:= 'Times New Roman'
+  if IsFontNameDefault(LongFontName) then AFontName:= 'Arial'
+  else if SameText(LongFontName, 'sans') then AFontName:= 'Arial'
+  else if SameText(LongFontName, 'serif') then AFontName:= 'Times New Roman'
   else AFontName:= LongFontName;
 
   str := FFontList.Values[AFontName];

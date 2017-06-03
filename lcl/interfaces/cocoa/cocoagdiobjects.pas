@@ -567,7 +567,7 @@ begin
   // because otherwise the result is wrong in Mac OS X 10.11, see bug 30300
   // Code used for 10.10 or inferior:
   // FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
-  if AnsiCompareText(FName, 'default') = 0 then
+  if IsFontNameDefault(FName) then
   begin
     FTmpFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
     FName := NSStringToString(FTmpFont.familyName);

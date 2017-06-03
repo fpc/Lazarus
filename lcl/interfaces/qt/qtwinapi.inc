@@ -588,7 +588,7 @@ begin
 
     FamilyName := StrPas(LogFont.lfFaceName);
 
-    if (CompareText(FamilyName, 'default') <> 0) then
+    if not IsFontNameDefault(FamilyName) then
       QtFont.setFamily(FamilyName)
     else
       QtFont.setFamily(UTF16ToUTF8(GetDefaultAppFontName));

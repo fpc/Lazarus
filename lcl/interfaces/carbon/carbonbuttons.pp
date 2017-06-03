@@ -27,7 +27,7 @@ uses
   CarbonPrivate, CarbonProc,
   CarbonDbgConsts,
  // LCL
-  LCLMessageGlue, LCLType, Graphics;
+  LCLMessageGlue, LCLType, LCLProc, Graphics;
 
 type
   TUpdateValueEvent = procedure (Sender: TObject; CurrentValue: Integer; var AValue: Integer) of object;
@@ -497,7 +497,7 @@ end;
 procedure TCarbonBitBtn.SetFont(const AFont: TFont);
 begin
   inherited;
-  CustomFont:=(AFont.Name<>'default') and (AFont.Name<>'');
+  CustomFont:= not IsFontNameDefault(AFont.Name) and (AFont.Name<>'');
   UpdateButtonStyle;
 end;
 

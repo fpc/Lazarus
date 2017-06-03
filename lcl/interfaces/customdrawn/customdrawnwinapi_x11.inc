@@ -681,15 +681,15 @@ begin
   // but replace generic with reasonable default
   AFontName:= '';
   if LiberationFont then begin
-    if LowerCase(LongFontName) = 'default' then AFontName:= 'Liberation Sans'
-    else if LowerCase(LongFontName) = 'sans' then AFontName:= 'Liberation Sans'
-    else if LowerCase(LongFontName) = 'serif' then AFontName:= 'Liberation Serif'
+    if IsFontNameDefault(LongFontName) then AFontName:= 'Liberation Sans'
+    else if SameText(LongFontName, 'sans') then AFontName:= 'Liberation Sans'
+    else if SameText(LongFontName, 'serif') then AFontName:= 'Liberation Serif'
     else AFontName:= LongFontName;
   end
   else if LuxiFont then begin
-    if LowerCase(LongFontName) = 'default' then AFontName:= 'Luxi Sans Regular'
-    else if LowerCase(LongFontName) = 'sans' then AFontName:= 'Luxi Sans Regular'
-    else if LowerCase(LongFontName) = 'serif' then AFontName:= 'Luxi Serif Regular'
+    if IsFontNameDefault(LongFontName) then AFontName:= 'Luxi Sans Regular'
+    else if SameText(LongFontName, 'sans') then AFontName:= 'Luxi Sans Regular'
+    else if SameText(LongFontName, 'serif') then AFontName:= 'Luxi Serif Regular'
     else AFontName:= LongFontName;
   end;
 

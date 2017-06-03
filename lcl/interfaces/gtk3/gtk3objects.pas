@@ -469,7 +469,7 @@ begin
   FLogFont := ALogFont;
   FFontName := ALogFont.lfFaceName;
   AContext := gdk_pango_context_get;
-  if (LowerCase(FFontName) = 'default') or (FFontName = '') then
+  if IsFontNameDefault(FFontName) or (FFontName = '') then
   begin
     if Gtk3WidgetSet.DefaultAppFontName <> '' then
       FHandle := pango_font_description_from_string(PgChar(Gtk3WidgetSet.DefaultAppFontName))

@@ -472,7 +472,7 @@ var
   fn  : String;
 begin
   Result := 0;
-  if SysUtils.CompareText(FontName, 'default')=0 then fn:=DefaultFont else fn:=FontName;
+  if IsFontNameDefault(FontName) then fn:=DefaultFont else fn:=FontName;
   if (fn <> '') then
     ATSUFindFontFromName(@fn[1], Length(fn),
         kFontFullName, kFontMacintoshPlatform, kFontRomanScript,
