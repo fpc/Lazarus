@@ -12,6 +12,8 @@ components/tbitbtn.png
 components/tbitbtn_150.png
 components/tbitbtn_200.png
 components/tbufdataset.png
+components/tbufdataset_150.png
+components/tbufdataset_200.png
 components/tbutton.png
 components/tbutton_150.png
 components/tbutton_200.png

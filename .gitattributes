@@ -6576,6 +6576,8 @@ images/components/tbitbtn.png -text svneol=unset#image/png
 images/components/tbitbtn_150.png -text
 images/components/tbitbtn_200.png -text
 images/components/tbufdataset.png -text svneol=unset#image/png
+images/components/tbufdataset_150.png -text
+images/components/tbufdataset_200.png -text
 images/components/tbutton.png -text svneol=unset#image/png
 images/components/tbutton_150.png -text
 images/components/tbutton_200.png -text
