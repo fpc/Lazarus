@@ -156,6 +156,8 @@ if [ ! -f $SrcTGZ ]; then
   ./create_fpc_export_tgz.sh $FPCSrcDir $SrcTGZ
 fi
 
+# optional: svn/fpcbuild/trunk/install under ../install
+FPCManDir=$FPCSrcDir/../install/man
 
 #------------------------------------------------------------------------------
 # create a temporary copy of the fpc sources to patch it
@@ -188,7 +190,6 @@ DebianDocDir=$FPCBuildDir/usr/share/doc/$PackageName${TARGET_SUFFIX}
 DebianLintianDir=$FPCBuildDir/usr/share/lintian
 DebianSourceDir=$FPCBuildDir/usr/share/fpcsrc/$FPCVersion
 Date=`date --rfc-822`
-
 
 #------------------------------------------------------------------------------
 # patch sources
@@ -238,6 +239,26 @@ if [ "$PackageName" = "fpc" ]; then
 CROSS
   fi
   cd -
+
+  # remove non binaries in /usr/bin
+  for f in $DebianInstallDir/bin/*; do
+    if [ ! -x "$f" ]; then
+      rm $f
+    fi
+  done
+
+  # docs
+  if [ -d "$FPCManDir" ]; then
+    #
+    mkdir -p $FPCBuildDir/usr/share/man/man1
+    for man in $FPCManDir/man1/*.1; do
+      echo "copying man page $man"
+      shortman=$(basename $man)
+      cat $man | gzip -n --best > $FPCBuildDir/usr/share/man/man1/$shortman.gz
+    done
+  else
+    echo "WARNING: man directory not found: $FPCManDir"
+  fi
 fi
 
 #------------------------------------------------------------------------------
