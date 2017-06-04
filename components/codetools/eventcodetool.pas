@@ -1039,8 +1039,7 @@ var
 var
   Node: TCodeTreeNode;
   AUnitName: String;
-  UsesNode: TCodeTreeNode;
-  Params: TFindDeclarationParams;
+  Tool: TFindDeclarationTool;
 begin
   Result:=false;
   //debugln(['TEventsCodeTool.FindClassOfInstance START']);
@@ -1048,7 +1047,9 @@ begin
   AClassName:=Instance.ClassName;
   if AClassName='' then exit;
   AUnitName:=Instance.UnitName;
-  //debugln(['TEventsCodeTool.FindClassOfInstance Unit=',ExtractFileNameOnly(MainFilename),' Class=',AClassName,' Instance.Unit=',AUnitName]);
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TEventsCodeTool.FindClassOfInstance Unit=',ExtractFileNameOnly(MainFilename),' Class=',AClassName,' Instance.Unit=',AUnitName]);
+  {$ENDIF}
   if (AUnitName='')
   or (CompareIdentifiers(PChar(ExtractFileNameOnly(MainFilename)),
     PChar(AUnitName))=0)
@@ -1065,40 +1066,27 @@ begin
     FindContext.Tool:=Self;
     exit(true);
   end;
-  // search in used units
-  UsesNode:=FindMainUsesNode;
-  if UsesNode=nil then begin
-    debugln(['TEventsCodeTool.FindClassOfInstance no main uses section found']);
+
+  // find unit
+  // Note: when a component was loaded by an ancestor, its class may not
+  //       be in the uses section of the current unit
+  Tool:=FindCodeToolForUsedUnit(AUnitName,'',ExceptionOnNotFound);
+  if Tool=nil then exit(false);
+
+  // find class
+  Node:=Tool.FindDeclarationNodeInInterface(AClassName,true);
+  // check if it is a class
+  if (Node=nil)
+  or (not (Node.Desc in [ctnTypeDefinition,ctnGenericType]))
+  or (Node.LastChild=nil)
+  or (not (Node.LastChild.Desc in AllClassObjects)) then begin
+    debugln(['TEventsCodeTool.FindClassOfInstance found node is not a class: ',Node.DescAsString]);
     if ExceptionOnNotFound then RaiseClassNotFound;
     exit;
   end;
-  Params:=TFindDeclarationParams.Create;
-  try
-    Params.ContextNode:=UsesNode;
-    Params.Flags:=[fdfSearchInParentNodes, fdfSearchInAncestors];
-    if ExceptionOnNotFound then Include(Params.Flags,fdfExceptionOnNotFound);
-    Params.SetIdentifier(Self,PChar(AClassName),nil);
-    if not FindIdentifierInContext(Params) then begin
-      debugln(['TEventsCodeTool.FindClassOfInstance FindIdentifierInContext failed']);
-      if ExceptionOnNotFound then RaiseClassNotFound;
-      exit;
-    end;
-    // check if it is a class
-    Node:=Params.NewNode;
-    if (Node=nil)
-    or (not (Node.Desc in [ctnTypeDefinition,ctnGenericType]))
-    or (Node.LastChild=nil)
-    or (not (Node.LastChild.Desc in AllClassObjects)) then begin
-      debugln(['TEventsCodeTool.FindClassOfInstance found node is not a class: ',Node.DescAsString]);
-      if ExceptionOnNotFound then RaiseClassNotFound;
-      exit;
-    end;
-    FindContext.Node:=Node.LastChild;
-    FindContext.Tool:=Params.NewCodeTool;
-    Result:=true;
-  finally
-    Params.Free;
-  end;
+  FindContext.Node:=Node.LastChild;
+  FindContext.Tool:=Tool;
+  Result:=true;
 end;
 
 function TEventsCodeTool.FindTypeOfInstanceProperty(Instance: TPersistent;
@@ -1401,7 +1389,9 @@ begin
   BuildTree(lsrImplementationStart);
   //debugln(['TEventsCodeTool.GetCompatiblePublishedMethods START']);
   ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
-  //debugln(['TEventsCodeTool.GetCompatiblePublishedMethods classnode=',ClassNode.DescAsString]);
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TEventsCodeTool.GetCompatiblePublishedMethods ClassName="',AClassName,'" PropInstance=',DbgSName(PropInstance),' PropName="',PropName,'" classnode=',ClassNode.DescAsString]);
+  {$ENDIF}
   // create type list of property
   SearchedExprList:=nil;
   SearchedCompatibilityList:=nil;
@@ -1409,7 +1399,9 @@ begin
   Params:=TFindDeclarationParams.Create;
   try
     SearchedExprList:=CreateExprListFromInstanceProperty(PropInstance,PropName);
-    //debugln(['TEventsCodeTool.GetCompatiblePublishedMethods ExprList=',SearchedExprList.AsString]);
+    {$IFDEF VerboseMethodPropEdit}
+    debugln(['TEventsCodeTool.GetCompatiblePublishedMethods ExprList=',SearchedExprList.AsString]);
+    {$ENDIF}
     fGatheredCompatibleMethods:=TAVLTree.Create(@CompareIdentifierPtrs);
     // create compatibility list
     CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
@@ -1419,7 +1411,7 @@ begin
     Params.ContextNode:=ClassNode;
     Params.Flags:=[fdfCollect,fdfSearchInAncestors];
     Params.SetIdentifier(Self,nil,@CollectPublishedMethods);
-    {$IFDEF CTDEBUG}
+    {$IFDEF VerboseMethodPropEdit}
     DebugLn('[TEventsCodeTool.GetCompatiblePublishedMethods] Searching ...');
     {$ENDIF}
     FindIdentifierInContext(Params);
