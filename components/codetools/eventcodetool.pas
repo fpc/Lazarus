@@ -197,8 +197,7 @@ begin
     ParamString:='';
     for i:=0 to ParamCount-1 do begin
       // read ParamFlags
-      // ToDo: check this: SizeOf(TParamFlags) is 4, but the data is only 1 byte
-      Len:=1; // typinfo.pp comment is wrong: SizeOf(TParamFlags)
+      Len:={$IF FPC_FULLVERSION>=30000}SizeOf(TParamFlags){$ELSE}1{$ENDIF};
       ParamType.Flags:=[];
       Move(TypeData^.ParamList[Offset],ParamType.Flags,Len);
       inc(Offset,Len);
