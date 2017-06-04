@@ -3910,6 +3910,14 @@ var
   txt1, txt2, txt, AppHint: String;
   w: Integer;
   gds: TGridDrawState;
+
+  procedure AddToHint(var AHint: String; const ANew: String);
+  begin
+    if ANew = '' then
+      exit;
+    if AHint = '' then AHint := ANew else AHint := AHint + LineEnding + ANew;
+  end;
+
 begin
   if ([goCellHints, goTruncCellHints]*Options = []) then
     exit;
@@ -3917,13 +3925,15 @@ begin
   cell := MouseToCell(APoint);
   if (cell.x = -1) or (cell.y = -1) then
   begin
-    Application.Hint := '';
+    Hint := FSavedHint;
+    Application.Hint := GetLongHint(FSavedHint);
     exit;
   end;
 
-  txt := '';
-  txt1 := '';
-  txt2 := '';
+  txt1 := '';          // Hint returned by OnGetCellHint
+  txt2 := '';          // Hint returned by GetTruncCellHintText
+  AppHint := '';       // Hint to be displayed in Statusbar
+  txt := '';           // Hint to be displayed as popup
   PrepareCellHints(cell.x, cell.y); // in DBGrid, set the active record to cell.y
   try
     if (goCellHints in Options) then
@@ -3940,28 +3950,39 @@ begin
     UnprepareCellHints;
   end;
 
-  if FCellHintPriority = chpTruncOnly then begin
-    if (txt2 <> '') then
-      txt := txt2
-    else
-      txt := txt1;
-    AppHint := txt;
-  end else begin
-    if (txt1 <> '') and (txt2 <> '') then
-      txt := txt1 + #13 + txt2
-    else if txt1 <> '' then
-      txt := txt1
-    else if txt2 <> '' then
-      txt := txt2;
-    AppHint := txt;
-    if (FCellHintPriority = chpAll) and (txt <> '') then
-      txt := GetShortHint(FSavedHint) + #13 + txt;
+  case FCellHintPriority of
+    chpAll:
+      begin
+        AddToHint(txt, txt1);
+        AddToHint(txt, txt2);
+        if txt <> '' then begin
+          txt := GetShortHint(FSavedHint) + LineEnding + txt;
+          AppHint := GetLongHint(FSavedHint) + LineEnding + txt;
+        end else
+        begin
+          txt := GetShortHint(FSavedHint);
+          AppHint := GetLongHint(FSavedHint);
+        end;
+      end;
+    chpAllNoDefault:
+      begin
+        AddToHint(txt, txt1);
+        AddToHint(txt, txt2);
+        AppHint := txt;
+      end;
+    chpTruncOnly:
+      begin
+        AddToHint(txt, txt2);
+        AppHint := txt;
+      end;
   end;
 
-
+  (*
   if (txt = '') and (FSavedHint <> '') then
     txt := FSavedHint;
   if (AppHint = '') then AppHint := FSavedhint;
+    *)
+
   if (txt <> '') and not EditorMode and not (csDesigning in ComponentState) then begin
     Hint := txt;
     //set Application.Hint as well (issue #0026957)
@@ -6522,8 +6543,15 @@ begin
         finally
           AllowOutboundEvents := obe;
         end;
+
         //if we are not over a cell, and we use cellhint, we need to empty Application.Hint
-        if (p.X < 0) and ([goCellHints, goTruncCellHints]*Options <> []) then Application.Hint := '';
+        if (p.X < 0) and ([goCellHints, goTruncCellHints]*Options <> []) and
+          (FCellHintPriority <> chpAll)
+        then begin
+          Application.Hint := '';
+          Hint := '';
+        end;
+
         with FGCache do
           if (MouseCell.X <> p.X) or (MouseCell.Y <> p.Y) then begin
             Application.CancelHint;
