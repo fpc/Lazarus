@@ -1563,7 +1563,7 @@ begin
         Col:=i div LineMax;
         Row:=i mod LineMax;
         if (BiDiMode=bdRightToLeft) then
-          Col:=LineMax-Col-1;
+          Col:=ChildCount[asboHorizontal]-Col-1;
         ChildBox:=Children[asboVertical][Row].Children[asboHorizontal][Col];
         ChildBox.SetControl(ChildControl);
         ChildBox.ApplyChildsizingBorders(ChildSizing);
