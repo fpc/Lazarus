@@ -2276,6 +2276,7 @@ var
       InflateRect(r, 1, 0); // hack needed only on Windows?
       case FState of
         dsNormal:   dets:=ThemeServices.GetElementDetails(tmBarBackgroundActive);
+        dsSelected: dets:=ThemeServices.GetElementDetails(tmBarItemPushed);
         dsDisabled: dets:=ThemeServices.GetElementDetails(tmBarItemDisabled);
       end;
       ThemeServices.DrawElement(Canvas.Handle, dets, r);
