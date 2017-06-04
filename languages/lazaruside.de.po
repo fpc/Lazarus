@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-04-09 19:25+0200\n"
+"PO-Revision-Date: 2017-06-04 19:21+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.0.1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -666,7 +666,7 @@ msgstr "Diese Formulare müssen im Programmcode erzeugt und freigegeben werden."
 
 #: lazarusidestrconsts.dlgavoidunnecessaryjumps
 msgid "Avoid unnecessary jumps"
-msgstr ""
+msgstr "Unnötige Sprünge vermeiden"
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -2186,7 +2186,7 @@ msgstr "Intervall in Sekunden"
 
 #: lazarusidestrconsts.dlgjumpcodeblockpos
 msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
-msgstr ""
+msgstr "Vertikale Position für einen Codeblock-Sprung in % (0=oben, 100=unten)"
 
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
@@ -2194,7 +2194,7 @@ msgstr "Springen (bspw. Methodenspringen)"
 
 #: lazarusidestrconsts.dlgjumpsinglelinepos
 msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
-msgstr ""
+msgstr "Vertikale Position für einen einfachen Zeilen-Sprung in % (0=oben, 100=unten)"
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
@@ -4264,11 +4264,11 @@ msgstr "Hinzufügen"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
-msgstr ""
+msgstr "Neuen Trenner oberhalb des gewählten Elements hinzufügen"
 
 #: lazarusidestrconsts.lisaddanewseparatorbelowselecteditem
 msgid "Add a new separator below selected item"
-msgstr ""
+msgstr "Neuen Trenner unterhalb des gewählten Elements hinzufügen"
 
 #: lazarusidestrconsts.lisadddelphidefine
 msgid "Add defines simulating Delphi7"
@@ -14807,7 +14807,7 @@ msgstr "CompiledSrcPath-Erweiterung"
 
 #: lazarusidestrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
-msgstr ""
+msgstr "Namensräume"
 
 #: lazarusidestrconsts.lispkgdefsoutputdirectory
 msgid "Output directory"
@@ -15789,7 +15789,7 @@ msgstr "Projekt-Makroeigenschaften"
 
 #: lazarusidestrconsts.lisprojectnamespaces
 msgid "Project Namespaces"
-msgstr ""
+msgstr "Projekt-Namensräume"
 
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
@@ -18313,7 +18313,7 @@ msgstr "Kann die Textformulardaten der Datei %s\"%s\"%snicht in einen Binärstre
 
 #: lazarusidestrconsts.lisunabletoconverttoencoding
 msgid "Unable to convert to encoding \"%s\""
-msgstr ""
+msgstr "Kann nicht zur Kodierung \"%s\" konvertieren"
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
@@ -21143,4 +21143,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-

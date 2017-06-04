@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.0.1\n"
 
 #: opkman_const.rscategoriesfrm_bcancel_caption
 msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
@@ -302,15 +302,15 @@ msgstr "Gefiltert nach:"
 
 #: opkman_const.rsmainfrm_miascendent
 msgid "Ascendent"
-msgstr ""
+msgstr "Aufsteigend"
 
 #: opkman_const.rsmainfrm_mibydate
 msgid "By date"
-msgstr ""
+msgstr "Nach Datum"
 
 #: opkman_const.rsmainfrm_mibyname
 msgid "By name"
-msgstr ""
+msgstr "Nach Name"
 
 #: opkman_const.rsmainfrm_micopytoclpbrd
 msgid "Copy to clipboard"
@@ -327,7 +327,7 @@ msgstr "Erzeuge Repository-Package"
 
 #: opkman_const.rsmainfrm_midescendent
 msgid "Descendent"
-msgstr ""
+msgstr "Absteigend"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
@@ -339,11 +339,11 @@ msgstr "JSON zeigen"
 
 #: opkman_const.rsmainfrm_mijsonsort
 msgid "Sort"
-msgstr ""
+msgstr "Sortieren"
 
 #: opkman_const.rsmainfrm_miloadchecks
 msgid "Load checked packages"
-msgstr ""
+msgstr "Gewählte Packages laden"
 
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
@@ -351,11 +351,11 @@ msgstr "Bewertung zurücksetzen"
 
 #: opkman_const.rsmainfrm_misavechecks
 msgid "Save checked packages"
-msgstr ""
+msgstr "Gewählte Packages speichern"
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
-msgstr ""
+msgstr "In Datei speichern"
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
 msgid "The following repository packages already exist in the target folder. Continue?"
@@ -387,11 +387,11 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 msgid "%s packages successfully loaded from file!"
-msgstr ""
+msgstr "%s Packages erfolgreich aus Datei geladen!"
 
 #: opkman_const.rsmainfrm_resmessagecheckssaved
 msgid "%s packages successfully saved to file!"
-msgstr ""
+msgstr "%s Packages erfolgreich in Datei gespeichert!"
 
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
@@ -425,7 +425,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
-msgstr ""
+msgstr "Bitte wählen Sie mindestens ein Package!"
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
@@ -463,11 +463,11 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 msgid "Cannot uninstall package \"%s\"!"
-msgstr ""
+msgstr "Kann Package \"%s\" nicht deinstallieren!"
 
 #: opkman_const.rsmainfrm_rsuninstall_nothing
 msgid "None of the checked packages are installed. Nothing to uninstall."
-msgstr ""
+msgstr "Keines der gewählten Packages ist installiert. Es gibt nichts zum Deinstallieren."
 
 #: opkman_const.rsmainfrm_spclear_hint
 msgid "Clear filter text"
@@ -542,11 +542,11 @@ msgstr "Package oder Repository erzeugen"
 
 #: opkman_const.rsmainfrm_tbuninstall_caption
 msgid "Uninstall"
-msgstr ""
+msgstr "Deinstallieren"
 
 #: opkman_const.rsmainfrm_tbuninstall_hint
 msgid "Uninstall packages"
-msgstr ""
+msgstr "Packages deinstallieren"
 
 #: opkman_const.rsmainfrm_tbupdate_caption
 msgctxt "opkman_const.rsmainfrm_tbupdate_caption"
@@ -568,7 +568,7 @@ msgstr "Installiert"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package (.lpk)"
-msgstr ""
+msgstr "Lazarus-Package (.lpk)"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_packagename
 msgid "Packages"
@@ -1311,4 +1311,3 @@ msgstr "Geben Sie die Repository-Adresse ein"
 #: opkman_const.rsrepositories_vst_headercolumn
 msgid "Repository Address"
 msgstr "Repository-Adresse"
-
