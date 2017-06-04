@@ -3954,6 +3954,7 @@ components/sqldb/sqldblaz.lpk svneol=native#text/pascal
 components/sqldb/sqldblaz.pas svneol=native#text/pascal
 components/sqldb/sqlstringspropertyeditordlg.lfm svneol=native#text/plain
 components/sqldb/sqlstringspropertyeditordlg.pas svneol=native#text/plain
+components/sqlite/imagelist.txt svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.de.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.fr.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.hu.po svneol=native#text/plain
@@ -3961,6 +3962,7 @@ components/sqlite/languages/sqlitecompstrings.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.ru.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.uk.po svneol=native#text/plain
 components/sqlite/lib/README.txt svneol=native#text/plain
+components/sqlite/make_res.bat svneol=native#text/plain
 components/sqlite/registersqlite.pas svneol=native#text/plain
 components/sqlite/registersqlite3.pas svneol=native#text/plain
 components/sqlite/sqlite3icon.res -text
@@ -3973,7 +3975,11 @@ components/sqlite/sqliteicon.res -text
 components/sqlite/sqlitelaz.lpk svneol=native#text/plain
 components/sqlite/sqlitelaz.pas svneol=native#text/plain
 components/sqlite/tsqlite3dataset.png -text
+components/sqlite/tsqlite3dataset_150.png -text
+components/sqlite/tsqlite3dataset_200.png -text
 components/sqlite/tsqlitedataset.png -text
+components/sqlite/tsqlitedataset_150.png -text
+components/sqlite/tsqlitedataset_200.png -text
 components/synedit/Contributors.txt svneol=native#text/plain
 components/synedit/Makefile.compiled svneol=native#text/plain
 components/synedit/allsynedit.pas svneol=native#text/plain
