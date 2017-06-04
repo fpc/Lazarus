@@ -442,7 +442,7 @@ end;
 function UTF8CharacterLengthFast(p: PChar): integer;
 begin
   case p^ of
-    //#0..#191   : Result := 1;
+    #0..#191   : Result := 1;
     #192..#223 : Result := 2;
     #224..#239 : Result := 3;
     #240..#247 : Result := 4;
