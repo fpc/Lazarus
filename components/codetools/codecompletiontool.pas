@@ -393,7 +393,7 @@ type
                                  SourceChangeCache: TSourceChangeCache): boolean;
     function ApplyClassCompletion(AddMissingProcBodies: boolean): boolean;
     function ProcExistsInCodeCompleteClass(
-                                    const NameAndParamsUpCase: string): boolean;
+        const NameAndParamsUpCase: string; SearchInAncestors: boolean = true): boolean;
     function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
     procedure AddClassInsertion(
         const CleanDef, Def, IdentifierName: string;
@@ -467,7 +467,7 @@ end;
 { TCodeCompletionCodeTool }
 
 function TCodeCompletionCodeTool.ProcExistsInCodeCompleteClass(
-  const NameAndParamsUpCase: string): boolean;
+  const NameAndParamsUpCase: string; SearchInAncestors: boolean): boolean;
 // NameAndParams should be uppercase and contains the proc name and the
 // parameter list without names and default values
 // and should not contain any comments and no result type
@@ -488,7 +488,7 @@ begin
   end;
   // search in current class
   Result:=(FindProcNode(FCompletingFirstEntryNode,NameAndParamsUpCase,mgMethod,[phpInUpperCase])<>nil);
-  if not Result then
+  if (not Result) and SearchInAncestors then
   begin
     //search in ancestor classes
     Params:=TFindDeclarationParams.Create;
