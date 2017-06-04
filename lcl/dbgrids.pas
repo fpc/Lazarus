@@ -1526,6 +1526,7 @@ end;
 function TCustomDBGrid.GetTruncCellHintText(aCol, aRow: Integer): string;
 var
   F: TField;
+  C: TColumn;
 begin
   Result := '';
   if ARow < FixedRows then
@@ -1536,6 +1537,10 @@ begin
       Result := F.DisplayText
     else
       Result := '(blob)';
+  if Assigned(OnGetCellHint) then begin
+    C := ColumnFromGridColumn(ACol) as TColumn;
+    FOnGetCellHint(self, C, Result);
+  end;
 end;
 
 // obtain the field either from a Db column or directly from dataset fields
