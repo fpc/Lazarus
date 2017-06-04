@@ -885,14 +885,11 @@ function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
 // simple function to return the values as string
 var
   S: String;
+  i: TFPDocItem;
 begin
   //DebugLn(['TLazFPDocFile.GetValuesFromNode ',Node.NodeName,' ',dbgsName(Node),' ',Node is TDomElement]);
-  Result[fpdiShort] := '';
-  Result[fpdiElementLink] := '';
-  Result[fpdiDescription] := '';
-  Result[fpdiErrors] := '';
-  Result[fpdiSeeAlso] := '';
-  Result[fpdiExample] := '';
+  for i in TFPDocItem do
+    Result[i] := '';
   if Node is TDomElement then
     Result[fpdiElementLink] := TDomElement(Node).GetAttribute('link');
   Node := Node.FirstChild;

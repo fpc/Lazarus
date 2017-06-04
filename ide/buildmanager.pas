@@ -1880,6 +1880,7 @@ var
   AnUnitInfo: TUnitInfo;
   Code: TCodeBuffer;
 begin
+  Result:=mrOk;
   // update project resource
   Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
   AnUnitInfo := Project1.FirstPartOfProject;
