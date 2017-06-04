@@ -3185,7 +3185,7 @@ end;
 
 procedure TCustomGrid.VisualChange;
 begin
-  if (FUpdateCount<>0) or (not HandleAllocated) then
+  if (FUpdateCount<>0) then
     exit;
 
   {$ifdef DbgVisualChange}
@@ -5045,7 +5045,7 @@ end;
 
 procedure TCustomGrid.UpdateSizes;
 begin
-  if (FUpdateCount<>0) or (not HandleAllocated) then
+  if (FUpdateCount<>0) then
     exit;
 
   Include(FGridFlags, gfVisualChange);
