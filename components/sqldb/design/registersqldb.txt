@@ -15,9 +15,17 @@ toracleconnection.png
 tpqconnection.png
 tpqteventmonitor.png
 tsqlconnector.png
+tsqlconnector_150.png
+tsqlconnector_200.png
 tsqldblibraryloader.png
 tsqlite3connection.png
 tsqlquery.png
+tsqlquery_150.png
+tsqlquery_200.png
 tsqlscript.png
+tsqlscript_150.png
+tsqlscript_200.png
 tsqltransaction.png
+tsqltransaction_150.png
+tsqltransaction_200.png
 tsybaseconnection.png
