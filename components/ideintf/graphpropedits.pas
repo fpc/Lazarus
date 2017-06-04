@@ -443,6 +443,7 @@ procedure TFontNamePropertyEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
+  Proc('default');
   for I := 0 to Screen.Fonts.Count -1 do
     Proc(Screen.Fonts[I]);
 end;
