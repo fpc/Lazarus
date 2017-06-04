@@ -4591,14 +4591,19 @@ var
   NewMethodName: String;
 begin
   NewMethodName := GetValue;
-  //DebugLn('### TMethodPropertyEditor.Edit A OldValue=',NewMethodName);
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TMethodPropertyEditor.Edit OldValue="',NewMethodName,'"']);
+  DumpStack;
+  {$ENDIF}
   if not LazIsValidIdent(NewMethodName, True, True)
   or PropertyHook.MethodFromAncestor(GetMethodValue) then
   begin
     // the current method is from the ancestor
     // -> add an override with the default name
     NewMethodName := GetFormMethodName;
-    //DebugLn('### TMethodPropertyEditor.Edit B FormMethodName=',NewMethodName);
+    {$IFDEF VerboseMethodPropEdit}
+    debugln(['TMethodPropertyEditor.Edit NewValue="',NewMethodName,'"']);
+    {$ENDIF}
     if not IsValidIdent(NewMethodName) then
       raise EPropertyError.Create('Method name "'+NewMethodName+'" must be an identifier');
     SetValue(NewMethodName); // this will jump to the method
@@ -4734,7 +4739,7 @@ end;
 
 procedure TMethodPropertyEditor.SetValue(const NewValue: ansistring);
 var
-  CreateNewMethod: Boolean;
+  CreateNewMethodSrc: Boolean;
   CurValue: string;
   NewMethodExists, NewMethodIsCompatible, NewMethodIsPublished,
   NewIdentIsMethod: boolean;
@@ -4743,7 +4748,9 @@ var
 begin
   CurValue := GetValue;
   if CurValue = NewValue then exit;
-  //DebugLn('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TMethodPropertyEditor.SetValue CurValue="',CurValue,'" NewValue="',NewValue,'"']);
+  {$ENDIF}
   IsNil := (NewValue='') or (NewValue=oisNone);
   
   if (not IsNil) and (not IsValidIdent(NewValue)) then
@@ -4757,7 +4764,9 @@ begin
   NewMethodExists := (not IsNil) and
     PropertyHook.CompatibleMethodExists(NewValue, GetInstProp,
                    NewMethodIsCompatible, NewMethodIsPublished, NewIdentIsMethod);
-  //DebugLn('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TMethodPropertyEditor.SetValue NewValue="',NewValue,'" IsCompatible=',NewMethodIsCompatible,' IsPublished=',NewMethodIsPublished,' IsMethpd=',NewIdentIsMethod]);
+  {$ENDIF}
   if NewMethodExists then
   begin
     if not NewIdentIsMethod then
@@ -4788,11 +4797,14 @@ begin
         exit;
     end;
   end;
-  //DebugLn('### TMethodPropertyEditor.SetValue C');
   if IsNil then
   begin
+    // clear
     NewMethod.Data := nil;
     NewMethod.Code := nil;
+    {$IFDEF VerboseMethodPropEdit}
+    debugln(['TMethodPropertyEditor.SetValue SET to NIL']);
+    {$ENDIF}
     SetMethodValue(NewMethod);
   end
   else
@@ -4805,22 +4817,34 @@ begin
     //   All other not selected properties that use this method, contain just
     //   the TMethod record. So, changing the name in the jitform will change
     //   all other event names in all other components automatically.
+    {$IFDEF VerboseMethodPropEdit}
+    debugln(['TMethodPropertyEditor.SetValue RENAME']);
+    {$ENDIF}
     PropertyHook.RenameMethod(CurValue, NewValue)
   end else
   begin
-    //DebugLn('### TMethodPropertyEditor.SetValue E');
-    CreateNewMethod := not NewMethodExists;
+    // change value and create method src if needed
+    CreateNewMethodSrc := not NewMethodExists;
+    {$IFDEF VerboseMethodPropEdit}
+    debugln(['TMethodPropertyEditor.SetValue CHANGE new method=',CreateNewMethodSrc]);
+    {$ENDIF}
     SetMethodValue(
        PropertyHook.CreateMethod(NewValue, GetPropType,
                                  GetComponent(0), GetPropertyPath(0)));
-    //DebugLn('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
-    if CreateNewMethod then
+    {$IFDEF VerboseMethodPropEdit}
+    debugln(['TMethodPropertyEditor.SetValue CHANGED new method=',CreateNewMethodSrc]);
+    {$ENDIF}
+    if CreateNewMethodSrc then
     begin
-      //DebugLn('### TMethodPropertyEditor.SetValue G');
+      {$IFDEF VerboseMethodPropEdit}
+      debugln(['TMethodPropertyEditor.SetValue SHOW "',NewValue,'"']);
+      {$ENDIF}
       PropertyHook.ShowMethod(NewValue);
     end;
   end;
-  //DebugLn('### TMethodPropertyEditor.SetValue END  NewValue=',GetValue);
+  {$IFDEF VerboseMethodPropEdit}
+  DebugLn('### TMethodPropertyEditor.SetValue END  NewValue=',GetValue);
+  {$ENDIF}
 end;
 
 { TPersistentPropertyEditor }
