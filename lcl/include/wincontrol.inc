@@ -119,7 +119,10 @@ type
     procedure SumTable;
     procedure ResizeTable(ChildSizing: TControlChildSizing;
                           TargetWidth, TargetHeight: integer);
-    procedure AlignToRight(TargetWidth: integer);
+//    Michl: Commented procedure AlignToRight because of issue #28483, afaics
+//           it isn't needed, I'll remove code, if there are no regressions.
+//           Commented in revision 55209
+//    procedure AlignToRight(TargetWidth: integer);
     procedure ComputeTableControlBounds(ChildSizing: TControlChildSizing;
                                         BiDiMode: TBiDiMode);
     function SetTableControlBounds(ChildSizing: TControlChildSizing
@@ -2137,7 +2140,7 @@ begin
   ComputeLeftTops(asboVertical);
 end;
 
-procedure TAutoSizeBox.AlignToRight(TargetWidth: integer);
+{procedure TAutoSizeBox.AlignToRight(TargetWidth: integer);
 
   function GetChildTotalSize(Orientation: TAutoSizeBoxOrientation): integer;
   // computes the total preferred size of all children of this Orientation
@@ -2171,7 +2174,7 @@ begin
     inc(Child.LeftTop[Orientation],dx);
   end;
 end;
-
+}
 procedure TAutoSizeBox.ComputeTableControlBounds(
   ChildSizing: TControlChildSizing; BiDiMode: TBiDiMode);
 var
@@ -2297,8 +2300,13 @@ begin
   //WriteDebugReport('after SumTable');
   ResizeTable(ChildSizing,TargetWidth,TargetHeight);
   //WriteDebugReport('after ResizeTable');
-  if BiDiMode=bdRightToLeft then
-    AlignToRight(TargetWidth);
+
+//  Michl: Commented procedure AlignToRight because of issue #28483, afaics
+//         it isn't needed, I'll remove code, if there are no regressions.
+//         Commented in revision 55209
+//  if BiDiMode=bdRightToLeft then
+//    AlignToRight(TargetWidth);
+
   //WriteDebugReport('after AlignToRight');
   ComputeTableControlBounds(ChildSizing,BiDiMode);
   //WriteDebugReport('after ComputeTableControlBounds');
