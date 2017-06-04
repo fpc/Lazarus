@@ -850,7 +850,7 @@ begin
   FontName := LogFont.lfFaceName;
 
   TempLogFont := LogFont;
-  if FontName = DefFontData.Name then
+  if SameText(FontName, DefFontData.Name) then
   begin
     TempLogFontW.lfFaceName := UTF8ToUTF16(FMetrics.lfMessageFont.lfFaceName); // FMetrics must be UTF16
     if TempLogFont.lfHeight = 0 then
