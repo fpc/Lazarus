@@ -1440,6 +1440,7 @@ class function TQtWSCustomComboBox.GetMaxLength(
 var
   LineEdit: TQtLineEdit;
 begin
+  Result := 0;
   if not WSCheckHandleAllocated(ACustomComboBox, 'GetMaxLength') then
     Exit;
   LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
@@ -1448,9 +1449,7 @@ begin
     Result := LineEdit.getMaxLength;
     if Result = QtMaxEditLength then
       Result := 0;
-  end
-  else
-    Result := 0;
+  end;
 end;
 
 {------------------------------------------------------------------------------

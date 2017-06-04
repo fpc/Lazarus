@@ -174,6 +174,7 @@ const
 
 function IdeBuildModeToStr(BuildMode: TIdeBuildMode): string;
 begin
+  Result:='';
   case BuildMode of
     bmBuild:         Result:='Build';
     bmCleanBuild:    Result:='Clean + Build';

@@ -2060,6 +2060,7 @@ end;
 
 function TBaseCompilerOptions.GetTargetFileExt: string;
 begin
+  Result:='';
   case ExecutableType of
   cetProgram:
     Result:=GetExecutableExt(fTargetOS);
@@ -3854,16 +3855,17 @@ end;
 function TAdditionalCompilerOptions.GetOption(AnOption: TInheritedCompilerOption
   ): string;
 begin
+  Result:='';
   case AnOption of
-  icoNone: Result:='';
-  icoUnitPath: Result:=UnitPath;
-  icoNamespaces: Result:=Namespaces;
-  icoIncludePath: Result:=IncludePath;
-  icoObjectPath: Result:=ObjectPath;
-  icoLibraryPath: Result:=LibraryPath;
-  icoSrcPath: Result:=SrcPath;
-  icoLinkerOptions: Result:=LinkerOptions;
-  icoCustomOptions: Result:=CustomOptions;
+    icoNone: Result:='';
+    icoUnitPath: Result:=UnitPath;
+    icoNamespaces: Result:=Namespaces;
+    icoIncludePath: Result:=IncludePath;
+    icoObjectPath: Result:=ObjectPath;
+    icoLibraryPath: Result:=LibraryPath;
+    icoSrcPath: Result:=SrcPath;
+    icoLinkerOptions: Result:=LinkerOptions;
+    icoCustomOptions: Result:=CustomOptions;
   else
     RaiseGDBException(''); // inconsistency detected
   end;

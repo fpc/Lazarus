@@ -683,11 +683,12 @@ var
 
   function NeighbourPosition(c: TControl): Integer;
   begin
+    result:=0;
     case CurNeighbour of
-    akTop: result:=c.top;
-    akLeft: result:=c.Left;
-    akRight: result:=c.left+c.Width;
-    akBottom: result:=c.Top+c.Height;
+      akTop: result:=c.top;
+      akLeft: result:=c.Left;
+      akRight: result:=c.left+c.Width;
+      akBottom: result:=c.Top+c.Height;
     end;
   end;
 
@@ -994,6 +995,7 @@ end;
 
 function TAnchorDesigner.AnchorDesignerNeighbourText(direction: TAnchorKind): string;
 begin
+  result:='';
   case direction of
     akLeft: result:=lisSelectedLeftNeighbour;
     akRight: result:=lisSelectedRightNeighbour;

@@ -588,7 +588,7 @@ begin
     else
       QtFont.setFamily(UTF16ToUTF8(GetDefaultAppFontName));
 
-    if (LogFont.lfQuality >= Low(QStyleStategy)) and (LogFont.lfQuality <= High(QStyleStategy)) then
+    if LogFont.lfQuality <= High(QStyleStategy) then
       QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
     Result := HFONT(QtFont);
   except
@@ -6014,6 +6014,7 @@ begin
   begin
     if fnMapMode <> TQtDeviceContext(DC).vMapMode then
     begin
+      AWindowExt := Point(0, 0);
       case fnMapMode of
         MM_ANISOTROPIC:; // user's choice
         MM_ISOTROPIC:; // adjusted after each SetViewPortExtEx call (see MSDN for details)

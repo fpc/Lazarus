@@ -463,7 +463,8 @@ end;
 
 function KindToPropertyName(aKind: TSCKind): string;
 begin
-   case aKind of
+  Result:='';
+  case aKind of
     scUnknown:   Result:='<unknown property>';
     scActionAccel, scMenuItemAccel, scOtherCompAccel:
                   Result:='Caption';
