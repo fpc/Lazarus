@@ -21,9 +21,11 @@ components/tbuttonpanel_200.png
 components/tcalcedit.png
 components/tcalculatordialog.png
 components/tcalculatordialog_150.png
+components/tcalculatordialog_200.png
 components/tcalendar.png
 components/tcalendardialog.png
 components/tcalendardialog_150.png
+components/tcalendardialog_200.png
 components/tcheckbox.png
 components/tcheckbox_150.png
 components/tcheckbox_200.png
@@ -42,6 +44,7 @@ components/tcolorbutton_150.png
 components/tcolorbutton_200.png
 components/tcolordialog.png
 components/tcolordialog_150.png
+components/tcolordialog_200.png
 components/tcolorlistbox.png
 components/tcolorlistbox_150.png
 components/tcolorlistbox_200.png
@@ -116,12 +119,14 @@ components/tfilenameedit.png
 components/tfiltercombobox.png
 components/tfinddialog.png
 components/tfinddialog_150.png
+components/tfinddialog_200.png
 components/tfloatspinedit.png
 components/tfloatspinedit_150.png
 components/tfloatspinedit_200.png
 components/tflowpanel.png
 components/tfontdialog.png
 components/tfontdialog_150.png
+components/tfontdialog_200.png
 components/tframe.png
 components/tgroupbox.png
 components/tgroupbox_150.png
@@ -169,8 +174,10 @@ components/tmouse.png
 components/tnotebook.png
 components/topendialog.png
 components/topendialog_150.png
+components/topendialog_200.png
 components/topenpicturedialog.png
 components/topenpicturedialog_150.png
+components/topenpicturedialog_200.png
 components/tpagecontrol.png
 components/tpagecontrol_150.png
 components/tpagecontrol_200.png
@@ -193,10 +200,13 @@ components/tradiogroup_150.png
 components/tradiogroup_200.png
 components/treplacedialog.png
 components/treplacedialog_150.png
+components/treplacedialog_200.png
 components/tsavedialog.png
 components/tsavedialog_150.png
+components/tsavedialog_200.png
 components/tsavepicturedialog.png
 components/tsavepicturedialog_150.png
+components/tsavepicturedialog_200.png
 components/tscrollbar.png
 components/tscrollbar_150.png
 components/tscrollbar_200.png
@@ -230,6 +240,7 @@ components/ttabcontrol_150.png
 components/ttabcontrol_200.png
 components/ttaskdialog.png
 components/ttaskdialog_150.png
+components/ttaskdialog_200.png
 components/ttimeedit.png
 components/ttimer.png
 components/ttogglebox.png

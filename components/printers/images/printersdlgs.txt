@@ -1,6 +1,9 @@
 tpagesetupdialog.png
 tpagesetupdialog_150.png
+tpagesetupdialog_200.png
 tprintdialog.png
 tprintdialog_150.png
+tprintdialog_200.png
 tprintersetupdialog.png
 tprintersetupdialog_150.png
+tprintersetupdialog_200.png
