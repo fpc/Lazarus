@@ -1261,6 +1261,7 @@ type
   TPropHookRenameMethod = procedure(const CurName, NewName: String) of object;
   TPropHookShowMethod = procedure(const Name: String) of object;
   TPropHookMethodFromAncestor = function(const Method:TMethod):boolean of object;
+  TPropHookMethodFromLookupRoot = function(const Method:TMethod):boolean of object;
   TPropHookChainCall = procedure(const AMethodName, InstanceName,
                       InstanceMethod:ShortString; TypeData:PTypeData) of object;
   // components
@@ -1319,6 +1320,7 @@ type
     htRenameMethod,
     htShowMethod,
     htMethodFromAncestor,
+    htMethodFromLookupRoot,
     htChainCall,
     // components
     htGetComponent,
@@ -1392,6 +1394,7 @@ type
     procedure RenameMethod(const CurName, NewName: String);
     procedure ShowMethod(const aName: String);
     function MethodFromAncestor(const Method: TMethod): boolean;
+    function MethodFromLookupRoot(const Method: TMethod): boolean;
     procedure ChainCall(const AMethodName, InstanceName,
                         InstanceMethod: ShortString;  TypeData: PTypeData);
     // components
@@ -1470,6 +1473,10 @@ type
                        const OnMethodFromAncestor: TPropHookMethodFromAncestor);
     procedure RemoveHandlerMethodFromAncestor(
                        const OnMethodFromAncestor: TPropHookMethodFromAncestor);
+    procedure AddHandlerMethodFromLookupRoot(
+                       const OnMethodFromLookupRoot: TPropHookMethodFromLookupRoot);
+    procedure RemoveHandlerMethodFromLookupRoot(
+                       const OnMethodFromLookupRoot: TPropHookMethodFromLookupRoot);
     procedure AddHandlerChainCall(const OnChainCall: TPropHookChainCall);
     procedure RemoveHandlerChainCall(const OnChainCall: TPropHookChainCall);
     // component event
@@ -4592,25 +4599,54 @@ var
 begin
   NewMethodName := GetValue;
   {$IFDEF VerboseMethodPropEdit}
-  debugln(['TMethodPropertyEditor.Edit OldValue="',NewMethodName,'"']);
+  debugln(['TMethodPropertyEditor.Edit OldValue="',NewMethodName,'" FromLookupRoot=',(LazIsValidIdent(NewMethodName, True, True) and PropertyHook.MethodFromLookupRoot(GetMethodValue))]);
   DumpStack;
   {$ENDIF}
-  if not LazIsValidIdent(NewMethodName, True, True)
-  or PropertyHook.MethodFromAncestor(GetMethodValue) then
+  if IsValidIdent(NewMethodName)
+  and PropertyHook.MethodFromLookupRoot(GetMethodValue) then
   begin
-    // the current method is from the ancestor
-    // -> add an override with the default name
-    NewMethodName := GetFormMethodName;
     {$IFDEF VerboseMethodPropEdit}
-    debugln(['TMethodPropertyEditor.Edit NewValue="',NewMethodName,'"']);
+    debugln(['TMethodPropertyEditor.Edit Show']);
     {$ENDIF}
-    if not IsValidIdent(NewMethodName) then
-      raise EPropertyError.Create('Method name "'+NewMethodName+'" must be an identifier');
-    SetValue(NewMethodName); // this will jump to the method
-    PropertyHook.RefreshPropertyValues;
-  end
-  else
     PropertyHook.ShowMethod(NewMethodName);
+  end else begin
+    // the current method is from the another class (e.g. ancestor or frame)
+    case QuestionDlg('Override or jump',
+      'The event "'+GetName+'" currently points to an inherited method.',
+      mtConfirmation,[mrYes,'Create Override',mrOk,'Jump to inherited method',mrCancel],
+      0) of
+    mrYes:
+      begin
+        // -> add an override with the default name
+        NewMethodName := GetFormMethodName;
+        {$IFDEF VerboseMethodPropEdit}
+        debugln(['TMethodPropertyEditor.Edit NewValue="',NewMethodName,'"']);
+        {$ENDIF}
+        if not IsValidIdent(NewMethodName) then
+          raise EPropertyError.Create('Method name "'+NewMethodName+'" must be an identifier');
+        NewMethodName:=PropertyHook.LookupRoot.ClassName+'.'+NewMethodName;
+        {$IFDEF VerboseMethodPropEdit}
+        debugln(['TMethodPropertyEditor.Edit CreateMethod "',NewMethodName,'"...']);
+        {$ENDIF}
+        SetMethodValue(
+           PropertyHook.CreateMethod(NewMethodName, GetPropType,
+                                     GetComponent(0), GetPropertyPath(0)));
+        {$IFDEF VerboseMethodPropEdit}
+        debugln(['TMethodPropertyEditor.Edit CHANGED new method=',GetValue]);
+        {$ENDIF}
+        PropertyHook.RefreshPropertyValues;
+        ShowValue;
+      end;
+    mrOk:
+      begin
+        // -> jump to ancestor method
+        {$IFDEF VerboseMethodPropEdit}
+        debugln(['TMethodPropertyEditor.Edit Jump to ancestor method ',NewMethodName]);
+        {$ENDIF}
+        PropertyHook.ShowMethod(NewMethodName);
+      end;
+    end;
+  end;
 end;
 
 procedure TMethodPropertyEditor.ShowValue;
@@ -6029,7 +6065,7 @@ var
 begin
   Result.Code := nil;
   Result.Data := nil;
-  if IsValidIdent(aName) and Assigned(ATypeInfo) then
+  if LazIsValidIdent(aName,true,true) and Assigned(ATypeInfo) then
   begin
     i := GetHandlerCount(htCreateMethod);
     while GetNextHandlerIndex(htCreateMethod, i) do
@@ -6178,6 +6214,29 @@ begin
       AncestorClass := TObject(Method.Data).ClassParent;
       Result := Assigned(AncestorClass) and (AncestorClass.MethodName(Method.Code)<>'');
     end;
+  end;
+end;
+
+function TPropertyEditorHook.MethodFromLookupRoot(const Method: TMethod
+  ): boolean;
+var
+  Root: TPersistent;
+  i: Integer;
+  Handler: TPropHookMethodFromLookupRoot;
+begin
+  // check if given Method is in LookupRoot source,
+  Root:=LookupRoot;
+  if Root=nil then exit(false);
+  i := GetHandlerCount(htMethodFromLookupRoot);
+  if GetNextHandlerIndex(htMethodFromLookupRoot, i) then
+  begin
+    Handler := TPropHookMethodFromLookupRoot(FHandlers[htMethodFromLookupRoot][i]);
+    Result := Handler(Method);
+  end
+  else
+  begin
+    Result := (TObject(Method.Data)=Root) and Assigned(Method.Code)
+      and (Root.MethodName(Method.Code)<>'');
   end;
 end;
 
@@ -6782,6 +6841,18 @@ procedure TPropertyEditorHook.RemoveHandlerMethodFromAncestor(
   const OnMethodFromAncestor: TPropHookMethodFromAncestor);
 begin
   RemoveHandler(htMethodFromAncestor,TMethod(OnMethodFromAncestor));
+end;
+
+procedure TPropertyEditorHook.AddHandlerMethodFromLookupRoot(
+  const OnMethodFromLookupRoot: TPropHookMethodFromLookupRoot);
+begin
+  AddHandler(htMethodFromLookupRoot,TMethod(OnMethodFromLookupRoot));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerMethodFromLookupRoot(
+  const OnMethodFromLookupRoot: TPropHookMethodFromLookupRoot);
+begin
+  RemoveHandler(htMethodFromLookupRoot,TMethod(OnMethodFromLookupRoot));
 end;
 
 procedure TPropertyEditorHook.AddHandlerChainCall(

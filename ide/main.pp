@@ -525,6 +525,8 @@ type
                                   APersistent: TPersistent;
                                   const APropertyPath: string): TMethod;
     procedure PropHookShowMethod(const AMethodName: String);
+    function PropHookMethodFromAncestor(const Method: TMethod): boolean;
+    function PropHookMethodFromLookupRoot(const Method: TMethod): boolean;
     procedure PropHookRenameMethod(const CurName, NewName: String);
     function PropHookBeforeAddPersistent(Sender: TObject;
                                          APersistentClass: TPersistentClass;
@@ -2086,6 +2088,8 @@ begin
   GlobalDesignHook.AddHandlerMethodExists(@PropHookMethodExists);
   GlobalDesignHook.AddHandlerCreateMethod(@PropHookCreateMethod);
   GlobalDesignHook.AddHandlerShowMethod(@PropHookShowMethod);
+  GlobalDesignHook.AddHandlerMethodFromAncestor(@PropHookMethodFromAncestor);
+  GlobalDesignHook.AddHandlerMethodFromLookupRoot(@PropHookMethodFromLookupRoot);
   GlobalDesignHook.AddHandlerRenameMethod(@PropHookRenameMethod);
   GlobalDesignHook.AddHandlerBeforeAddPersistent(@PropHookBeforeAddPersistent);
   GlobalDesignHook.AddHandlerComponentRenamed(@PropHookComponentRenamed);
@@ -12503,7 +12507,11 @@ end;
 function TMainIDE.PropHookCreateMethod(const AMethodName: ShortString;
   ATypeInfo: PTypeInfo;
   APersistent: TPersistent; const APropertyPath: string): TMethod;
-{ APersistent is the instance that gets the new method, not the lookuproot.
+{ AMethodName is the name of the published method in the LookupRoot (class or ancestors)
+  It can take the explicit form LookupRootClassName.MethodName to create an
+  override for an ancestor method.
+
+  APersistent is the instance that gets the new method, not the lookuproot.
   For example assign 'Button1Click' to Form1.Button1.OnClick:
     APersistent = APersistent
     AMethodName = 'Button1Click'
@@ -12616,8 +12624,8 @@ var
 var
   r: boolean;
   OldChange: Boolean;
-  InheritedMethodPath: String;
-  UseRTTIForMethods: Boolean;
+  InheritedMethodPath, MethodClassName, ShortMethodName: String;
+  UseRTTIForMethods, AddOverride: Boolean;
 begin
   Result.Code:=nil;
   Result.Data:=nil;
@@ -12635,28 +12643,45 @@ begin
     {$ENDIF}
   end;
 
+  if IsValidIdentPair(AMethodName,MethodClassName,ShortMethodName) then
+  begin
+    if CompareText(MethodClassName,ActiveUnitInfo.Component.ClassName)<>0 then
+    begin
+      debugln(['TMainIDE.PropHookCreateMethod wrong class AMethodName="',AMethodName,'" lookuproot=',DbgSName(ActiveUnitInfo.Component)]);
+      raise Exception.Create('Invalid classname "'+AMethodName+'"');
+    end;
+    AddOverride:=true;
+  end else begin
+    MethodClassName:='';
+    ShortMethodName:=AMethodName;
+    AddOverride:=false;
+  end;
+
   InheritedMethodPath:=GetInheritedMethodPath;
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
   UseRTTIForMethods:=FormEditor1.ComponentUsesRTTIForMethods(ActiveUnitInfo.Component);
   try
-    // create published method
+    // create published method in active unit
     {$IFDEF VerboseOnPropHookCreateMethod}
-    debugln(['TMainIDE.OnPropHookCreateMethod CreatePublishedMethod ',ActiveUnitInfo.Source.Filename,' LookupRoot=',ActiveUnitInfo.Component.ClassName,' AMethodName="',AMethodName,'" PropertyUnit=',GetClassUnitName(APersistent.ClassType),' APropertyPath="',APropertyPath,'" CallInherited=',InheritedMethodPath]);
+    debugln(['TMainIDE.OnPropHookCreateMethod CreatePublishedMethod ',ActiveUnitInfo.Source.Filename,' LookupRoot=',ActiveUnitInfo.Component.ClassName,' ShortMethodName="',ShortMethodName,'" PropertyUnit=',GetClassUnitName(APersistent.ClassType),' APropertyPath="',APropertyPath,'" CallInherited=',InheritedMethodPath]);
     {$ENDIF}
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
-        ActiveUnitInfo.Component.ClassName,AMethodName,
-        ATypeInfo,UseRTTIForMethods,GetClassUnitName(APersistent.ClassType),APropertyPath,
-        InheritedMethodPath);
+        ActiveUnitInfo.Component.ClassName,ShortMethodName,
+        ATypeInfo,UseRTTIForMethods,GetClassUnitName(APersistent.ClassType),
+        APropertyPath,InheritedMethodPath,AddOverride);
     {$IFDEF VerboseOnPropHookCreateMethod}
-    debugln(['[TMainIDE.OnPropHookCreateMethod] ************ ',dbgs(r),' AMethodName="',AMethodName,'"']);
+    debugln(['[TMainIDE.OnPropHookCreateMethod] ************ ',dbgs(r),' ShortMethodName="',ShortMethodName,'"']);
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
       Result:=FormEditor1.CreateNewJITMethod(ActiveUnitInfo.Component,
-                                             AMethodName);
+                                             ShortMethodName);
+      {$IFDEF VerboseOnPropHookCreateMethod}
+      debugln(['TMainIDE.PropHookCreateMethod JITClass=',TJITMethod(Result.Data).TheClass.ClassName]);
+      {$ENDIF}
     end else begin
-      DebugLn(['Error: (lazarus) TMainIDE.OnPropHookCreateMethod failed adding method "'+AMethodName+'" to source']);
+      DebugLn(['Error: (lazarus) TMainIDE.OnPropHookCreateMethod failed adding method "'+ShortMethodName+'" to source']);
       DoJumpToCodeToolBossError;
       raise Exception.Create(lisUnableToCreateNewMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
     end;
@@ -12710,6 +12735,40 @@ begin
     DebugLn(['Error: (lazarus) TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
     raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
+  end;
+end;
+
+function TMainIDE.PropHookMethodFromAncestor(const Method: TMethod): boolean;
+var
+  AncestorClass: TClass;
+  JITMethod: TJITMethod;
+begin
+  Result:=false;
+  if Method.Code<>nil then begin
+    if Method.Data<>nil then begin
+      AncestorClass := TObject(Method.Data).ClassParent;
+      Result := Assigned(AncestorClass) and (AncestorClass.MethodName(Method.Code)<>'');
+    end;
+  end
+  else if IsJITMethod(Method) then begin
+    JITMethod:=TJITMethod(Method.Data);
+    Result:=(GlobalDesignHook.LookupRoot<>nil) and
+      GlobalDesignHook.LookupRoot.InheritsFrom(JITMethod.TheClass);
+  end;
+end;
+
+function TMainIDE.PropHookMethodFromLookupRoot(const Method: TMethod): boolean;
+var
+  Root: TPersistent;
+  JITMethod: TJITMethod;
+begin
+  Root:=GlobalDesignHook.LookupRoot;
+  if Root=nil then exit(false);
+  if TObject(Method.Data)=Root then begin
+    Result:=(Method.Code<>nil) and (Root.MethodName(Method.Code)<>'');
+  end else if IsJITMethod(Method) then begin
+    JITMethod:=TJITMethod(Method.Data);
+    Result:=Root.ClassType=JITMethod.TheClass;
   end;
 end;
 

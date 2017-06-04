@@ -103,14 +103,16 @@ type
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
         Section: TPascalClassSection = pcsPublished;
-        const CallAncestorMethod: string = ''): boolean;
+        const CallAncestorMethod: string = '';
+        AddOverride: boolean = false): boolean;
     function CreateMethod(ClassNode: TCodeTreeNode;
         const AMethodName: string;
         ATypeInfo: PTypeInfo; const APropertyUnitName, APropertyPath: string;
         SourceChangeCache: TSourceChangeCache;
         UseTypeInfoForParameters: boolean = false;
         Section: TPascalClassSection = pcsPublished;
-        const CallAncestorMethod: string = ''): boolean;
+        const CallAncestorMethod: string = '';
+        AddOverride: boolean = false): boolean;
 
     function FindClassOfInstance(Instance: TObject;
         out FindContext: TFindContext; ExceptionOnNotFound: boolean): boolean;
@@ -725,9 +727,9 @@ begin
       exit;
     end;
     SrcClassName:=SrcTool.ExtractClassName(ClassNode,true);
-    ANode:=SrcTool.FindMethodNodeInImplementation(SrcClassName,AMethodName,false);
+    ANode:=SrcTool.FindMethodNodeInImplementation(SrcClassName,AMethodName,true);
     if ANode=nil then begin
-      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method not found ',SrcClassName,'.',AMethodName,' in ',SrcTool.MainFilename]);
+      DebugLn(['TEventsCodeTool.JumpToPublishedMethodBody method body not found ',SrcClassName,'.',AMethodName,' in ',SrcTool.MainFilename]);
       if ErrorOnNotFound then
         RaiseExceptionFmt(20170421202044,'implementation of method "%s.%s" in %s', [AClassName,AMethodName,SrcTool.MainFilename]);
       exit;
@@ -824,13 +826,11 @@ begin
   Result:=SourceChangeCache.Apply;
 end;
 
-function TEventsCodeTool.CreateMethod(const AClassName,
-  AMethodName: string; ATypeInfo: PTypeInfo;
-  const APropertyUnitName, APropertyPath: string;
-  SourceChangeCache: TSourceChangeCache;
-  UseTypeInfoForParameters: boolean;
-  Section: TPascalClassSection;
-  const CallAncestorMethod: string): boolean;
+function TEventsCodeTool.CreateMethod(const AClassName, AMethodName: string;
+  ATypeInfo: PTypeInfo; const APropertyUnitName, APropertyPath: string;
+  SourceChangeCache: TSourceChangeCache; UseTypeInfoForParameters: boolean;
+  Section: TPascalClassSection; const CallAncestorMethod: string;
+  AddOverride: boolean): boolean;
 var AClassNode: TCodeTreeNode;
 begin
   Result:=false;
@@ -839,15 +839,14 @@ begin
   Result:=CreateMethod(AClassNode,AMethodName,ATypeInfo,
                        APropertyUnitName,APropertyPath,
                        SourceChangeCache,UseTypeInfoForParameters,Section,
-                       CallAncestorMethod);
+                       CallAncestorMethod,AddOverride);
 end;
 
 function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
-  const AMethodName: string; ATypeInfo: PTypeInfo;
-  const APropertyUnitName, APropertyPath: string;
-  SourceChangeCache: TSourceChangeCache; UseTypeInfoForParameters: boolean;
-  Section: TPascalClassSection;
-  const CallAncestorMethod: string): boolean;
+  const AMethodName: string; ATypeInfo: PTypeInfo; const APropertyUnitName,
+  APropertyPath: string; SourceChangeCache: TSourceChangeCache;
+  UseTypeInfoForParameters: boolean; Section: TPascalClassSection;
+  const CallAncestorMethod: string; AddOverride: boolean): boolean;
 
   procedure AddNeededUnits(const AFindContext: TFindContext);
   var
@@ -933,8 +932,15 @@ begin
   try
     if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnObjCClass])) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
-    {$IFDEF CTDEBUG}
-    DebugLn(['[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'" UseTypeInfoForParameters=',UseTypeInfoForParameters]);
+    if CallAncestorMethod<>'' then
+      AddOverride:=true;
+    {$IFDEF VerboseMethodPropEdit}
+    DebugLn(['[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'"',
+      ' APropertyUnitName="',APropertyUnitName,'"',
+      ' APropertyPath="',APropertyPath,'"',
+      ' UseTypeInfoForParameters=',UseTypeInfoForParameters,
+      ' CallAncestorMethod="',CallAncestorMethod,'"',
+      ' AddOverride=',AddOverride]);
     {$ENDIF}
     // initialize class for code completion
     CodeCompleteClassNode:=ClassNode;
@@ -955,8 +961,8 @@ begin
              +FindContext.Tool.ExtractProcHead(FindContext.Node,
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
     end;
-    if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
-      {$IFDEF CTDEBUG}
+    if not ProcExistsInCodeCompleteClass(CleanMethodDefinition,not AddOverride) then begin
+      {$IFDEF VerboseMethodPropEdit}
       DebugLn('[TEventsCodeTool.CreateMethod] insert method definition to class');
       {$ENDIF}
       // insert method definition into class
@@ -989,7 +995,7 @@ begin
                      phpWithoutParamTypes]));
         end;
       end;
-      {$IFDEF CTDEBUG}
+      {$IFDEF VerboseMethodPropEdit}
       DebugLn('[TEventsCodeTool.CreateMethod] MethodDefinition="',MethodDefinition,'"');
       {$ENDIF}
       if Section in [pcsPublished,pcsPublic] then
@@ -1016,7 +1022,7 @@ begin
       AddClassInsertion(CleanMethodDefinition, MethodDefinition, AMethodName,
                         NewSection,nil,ProcBody);
     end;
-    {$IFDEF CTDEBUG}
+    {$IFDEF VerboseMethodPropEdit}
     DebugLn('[TEventsCodeTool.CreateMethod] invoke class completion');
     {$ENDIF}
     if not InsertAllNewClassParts then
@@ -1029,7 +1035,7 @@ begin
     // apply the changes
     if not SourceChangeCache.Apply then
       RaiseException(20170421202122,ctsUnableToApplyChanges);
-    {$IFDEF CTDEBUG}
+    {$IFDEF VerboseMethodPropEdit}
     DebugLn('[TEventsCodeTool.CreateMethod] END');
     {$ENDIF}
     Result:=true;
