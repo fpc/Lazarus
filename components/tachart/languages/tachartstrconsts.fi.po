@@ -273,23 +273,23 @@ msgstr "Napakuvaaja"
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"
 msgid "no line"
-msgstr ""
+msgstr "ei viivaa"
 
 #: tachartstrconsts.rspsdash
 msgid "dashed line"
-msgstr ""
+msgstr "katkoviiva"
 
 #: tachartstrconsts.rspsdashdot
 msgid "dash-dot"
-msgstr ""
+msgstr "pistekatkoviiva"
 
 #: tachartstrconsts.rspsdashdotdot
 msgid "dash-dot-dot"
-msgstr ""
+msgstr "pistepistekatkoviiva"
 
 #: tachartstrconsts.rspsdot
 msgid "dotted line"
-msgstr ""
+msgstr "pisteviiva"
 
 #: tachartstrconsts.rspsinsideframe
 msgid "solid (inside frame)"
@@ -301,7 +301,7 @@ msgstr ""
 
 #: tachartstrconsts.rspssolid
 msgid "solid line"
-msgstr ""
+msgstr "ehytviiva"
 
 #: tachartstrconsts.rsrectanglesymbol
 msgid "Rectangle"
