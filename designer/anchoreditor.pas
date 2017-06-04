@@ -681,7 +681,7 @@ var
   UseNeighbours: boolean;
   OldPositions,OldPositions2: array of Integer;
 
-  function NeighbourPosition(c: TControl):Integer;
+  function NeighbourPosition(c: TControl): Integer;
   begin
     case CurNeighbour of
     akTop: result:=c.top;

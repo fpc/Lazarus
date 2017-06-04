@@ -200,12 +200,14 @@ var
       Result := AValue;
     end;
   end;
+
 begin
   // try to guess and format value back to raw data, e.g.
   //   "'value'" => "value"
   //   "true (85)" => "85"
+  Result := '';
   if AValue='' then
-    Exit('');
+    Exit;
 
   if AValue[1] = '''' then
     //string "'val''ue'" => "val'ue"

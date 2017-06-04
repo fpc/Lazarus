@@ -215,8 +215,10 @@ end;
 procedure ProfileList_SortByX(var L: TProfile);
 
   function Merge(P1,P2: TProfile): TProfile;
-  var cur: TProfile;
+  var
+    cur: TProfile;
   begin
+    result := nil;
     if P1 = nil then result := P2
     else if P2 = nil then result := P1
     else
@@ -280,8 +282,10 @@ end;
 procedure ProfileList_SortByStart(var L: TProfile);
 
   function Merge(P1,P2: TProfile): TProfile;
-  var cur: TProfile;
+  var
+    cur: TProfile;
   begin
+    result := nil;
     if P1 = nil then result := P2
     else if P2 = nil then result := P1
     else

@@ -4505,6 +4505,7 @@ function CompareStringConstants(p1, p2: PChar): integer;
 // 1: 'aa' 'ab' because bigger
 // 1: 'aa' 'a'  because longer
 begin
+  Result := 0;
   if (p1^='''') and (p2^='''') then begin
     inc(p1);
     inc(p2);

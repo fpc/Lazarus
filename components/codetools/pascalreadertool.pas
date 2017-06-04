@@ -3094,7 +3094,7 @@ end;
 function TPascalReaderTool.FindClassExternalNode(ClassNode: TCodeTreeNode
   ): TCodeTreeNode;
 begin
-  if ClassNode=nil then exit;
+  if ClassNode=nil then exit(nil);
   Result:=ClassNode.FirstChild;
   while (Result<>nil) do
     begin

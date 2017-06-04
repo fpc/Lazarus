@@ -1881,7 +1881,6 @@ var
   Code: TCodeBuffer;
 begin
   // update project resource
-  // ToDo: Fix uninitialized Result.
   Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 
@@ -1895,18 +1894,22 @@ begin
           if Result <> mrOk then exit;
         end;
       rtRes:
-        if (AnUnitInfo.Source=nil) and (not AnUnitInfo.IsVirtual) then begin
-          AnUnitInfo.Source:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,true,false);
-          Code:=AnUnitInfo.Source;
-          if (Code<>nil) and (Code.DiskEncoding<>EncodingUTF8) then begin
-            if ConsoleVerbosity>=0 then
-              DebugLn(['Note: (lazarus) fixing encoding of ',Code.Filename,' from ',Code.DiskEncoding,' to ',EncodingUTF8]);
-            Code.DiskEncoding:=EncodingUTF8;
-            if not Code.Save then begin
+        begin
+          Result:=mrCancel;
+          if (AnUnitInfo.Source=nil) and (not AnUnitInfo.IsVirtual) then begin
+            AnUnitInfo.Source:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,true,false);
+            Code:=AnUnitInfo.Source;
+            if (Code<>nil) and (Code.DiskEncoding<>EncodingUTF8) then begin
               if ConsoleVerbosity>=0 then
+                DebugLn(['Note: (lazarus) fixing encoding of ',Code.Filename,' from ',Code.DiskEncoding,' to ',EncodingUTF8]);
+              Code.DiskEncoding:=EncodingUTF8;
+              if Code.Save then
+                Result:=mrOk
+              else if ConsoleVerbosity>=0 then
                 DebugLn(['Note: (lazarus) [TBuildManager.UpdateProjectAutomaticFiles] failed to save file ',Code.Filename]);
             end;
           end;
+
         end;
       end;
     end;

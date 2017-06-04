@@ -828,11 +828,11 @@ var
   QtTreeWidget: TQtTreeWidget;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnGetWidth') then
-    Exit;
+    Exit(-1);
 
   // TODO: columns in vsIcon mode
   if IsIconView(ALV) then
-    exit;
+    exit(0);
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   Result := QtTreeWidget.ColWidth[AIndex];
@@ -1185,7 +1185,7 @@ var
   R: TRect;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemGetPosition') then
-    Exit;
+    Exit(Point(-1,-1));
 
   R := Rect(0, 0, 0, 0);
   if IsIconView(ALV) then
@@ -1219,7 +1219,7 @@ var
   Arr: TPtrIntArray;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemGetState') then
-    Exit;
+    Exit(False);
 
   AIsSet := False;
   if IsIconView(ALV) then
@@ -1423,10 +1423,10 @@ var
   Str: WideString;
   i: Integer;
   AAlignment: QtAlignment;
-  AImages: TCustomImageList;
-  AMetric: Integer;
-  ASizeHint: TSize;
-  AIconWidth: Integer;
+  //AImages: TCustomImageList;
+  //AMetric: Integer;
+  //ASizeHint: TSize;
+  //AIconWidth: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
     Exit;
@@ -1462,10 +1462,10 @@ begin
 
     QtTreeWidget.setItemData(TWI, 0, AItem);
 
-    if Assigned(TCustomListViewHack(ALV).SmallImages) then
-      AIconWidth := TCustomListViewHack(ALV).SmallImages.Width
-    else
-      AIconWidth := 0;
+    //if Assigned(TCustomListViewHack(ALV).SmallImages) then
+    //  AIconWidth := TCustomListViewHack(ALV).SmallImages.Width
+    //else
+    //  AIconWidth := 0;
 
     for i := 0 to AItem.SubItems.Count - 1 do
     begin
@@ -1752,7 +1752,7 @@ var
   i: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetFocused') then
-    Exit;
+    Exit(-1);
 
   if IsIconView(ALV) then
   begin
@@ -1787,7 +1787,7 @@ var
   TWI: QTreeWidgetItemH;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetItemAt') then
-    Exit;
+    Exit(-1);
   if IsIconView(ALV) then
   begin
     QtListWidget := TQtListWidget(ALV.Handle);
@@ -1809,7 +1809,7 @@ end;
 class function TQtWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetSelCount') then
-    Exit;
+    Exit(-1);
   if IsIconView(ALV) then
     Result := TQtListWidget(ALV.Handle).getSelCount
   else
@@ -1828,7 +1828,7 @@ var
   FPInts: TPtrIntArray;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetSelection') then
-    Exit;
+    Exit(-1);
   if IsIconView(ALV) then
   begin
     QtListWidget := TQtListWidget(ALV.Handle);
@@ -1845,8 +1845,7 @@ begin
     Result := -1;
 end;
 
-class function TQtWSCustomListView.GetTopItem(const ALV: TCustomListView
-  ): Integer;
+class function TQtWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
 var
   QtItemView: TQtAbstractItemView;
 begin
@@ -2001,12 +2000,11 @@ end;
 class function TQtWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect') then
-    Exit;
+    Exit(Rect(0,0,0,0));
   Result := TQtWidget(ALV.Handle).getFrameGeometry;
 end;
 
-class function TQtWSCustomListView.GetViewOrigin(const ALV: TCustomListView
-  ): TPoint;
+class function TQtWSCustomListView.GetViewOrigin(const ALV: TCustomListView): TPoint;
 var
   QtItemView: TQtAbstractItemView;
 begin
@@ -2233,11 +2231,13 @@ begin
 
   if IsIconView(ALV) then
   begin
+    QtTreeWidget := Nil; // Suppress compiler warning.
     QtListWidget := TQtListWidget(ALV.Handle);
     ItemViewWidget := QListWidgetH(QtListWidget.Widget);
     QtListWidget.OwnerDrawn := False;
   end else
   begin
+    QtListWidget := Nil; // Suppress compiler warning.
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     ItemViewWidget := QTreeWidgetH(QtTreeWidget.Widget);
     with QtTreeWidget do

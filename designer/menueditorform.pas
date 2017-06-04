@@ -400,6 +400,7 @@ var
 var
   i: integer;
 begin
+  Result:=0;
   if (FEditedMenu = nil) then
     Exit;
   aCaptionedItemCount:=0;
@@ -410,7 +411,6 @@ begin
     imgCount:=FEditedMenu.Images.Count
   else
     imgCount:=0;
-  Result:=0;
   for i:=0 to FEditedMenu.Items.Count-1 do
     ProcessItems(FEditedMenu.Items[i]);
 end;
@@ -565,20 +565,17 @@ begin
     if (aMenu = FEditedMenu) and (FDesigner.ShadowMenu <> nil) then
       FDesigner.ShadowMenu.SetSelectedMenuItem(aMenuItem, True, False)
     else begin
-      if (aMenu = FEditedMenu) and (FDesigner.ShadowMenu = nil) then
+      selection := nil;
+      if aMenu = FEditedMenu then
       begin
-        if (FEditedMenu.Items.Count > 0) then
-          selection := FEditedMenu.Items[0]
-        else
-          selection := nil;
+        if (FDesigner.ShadowMenu = nil) and (FEditedMenu.Items.Count > 0) then
+          selection := FEditedMenu.Items[0];
       end
-      else if (aMenu <> FEditedMenu) then
-      begin
+      else begin
         FDesigner.FreeShadowMenu;
         FEditedMenu := aMenu;
         selection := aMenuItem;
       end;
-
       FGUIEnabled := False;
       EnableGUI(selection = nil);
       UpdateStatistics;

@@ -367,7 +367,7 @@ end;
 class function TQtWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean;
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetRightJustify') then
-    Exit;
+    Exit(False);
 
   // what should be done here? maybe this?
   TQtMenu(AMenuItem.Handle).setAttribute(QtWA_RightToLeft, Justified);
@@ -401,6 +401,7 @@ var
   Menu: TQtMenu;
   AParent: TComponent;
 begin
+  Result := 0;
   { If the menu is a main menu, there is no need to create a handle for it.
     It's already created on the window }
   if (AMenu is TMainMenu) then
@@ -427,15 +428,12 @@ begin
   begin
     Menu := TQtMenu.Create(AMenu.Items);
     Menu.AttachEvents;
-  
     Result := HMENU(Menu);
   end;
 
   {$ifdef VerboseQt}
     Write('[TQtWSMenu.CreateHandle] ');
-
     if (AMenu is TMainMenu) then Write('IsMainMenu ');
-
     WriteLn(' Handle: ', dbghex(Result), ' Name: ', AMenu.Name);
   {$endif}
 end;

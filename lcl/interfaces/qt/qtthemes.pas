@@ -859,13 +859,17 @@ begin
       end;
     teRebar :
       if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
-        Result := Size(-1, -1);
+        Result := Size(-1, -1)
+      else
+        Result := inherited;
     teTreeView:
-      if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
       begin
         Result := inherited;
-        inc(Result.cx);
-        inc(Result.cy);
+        if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
+        begin
+          inc(Result.cx);
+          inc(Result.cy);
+        end;
       end;
     teToolBar:
       if (Details.Part = TP_DROPDOWNBUTTON) or (Details.Part = TP_SPLITBUTTONDROPDOWN) then

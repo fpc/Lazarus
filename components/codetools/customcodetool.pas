@@ -828,6 +828,7 @@ function TCustomCodeTool.AtomIsCustomOperator(AllowIdentifier,
   end;
 
 begin
+  Result:=false;
   if (CurPos.StartPos<=SrcLen) then begin
     if WordIsCustomOperator.DoItCaseInsensitive(
       Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)

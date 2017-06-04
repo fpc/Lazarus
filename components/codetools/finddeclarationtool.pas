@@ -1779,7 +1779,7 @@ procedure TFDHelpersList.AddFromList(const ExtList: TFDHelpersList);
     FromNode := TFDHelpersListItem(ANode.Data);
     if Kind=fdhlkDelphiHelper then
       if FTree.FindKey(FromNode, @CompareHelpersList) <> nil then
-        Exit;//FPC & Delphi don't support duplicate class helpers!
+        Exit(nil); //FPC & Delphi don't support duplicate class helpers!
     Result := TFDHelpersListItem.Create;
     Result.HelperContext := FromNode.HelperContext;
     Result.ForExprType := FromNode.ForExprType;

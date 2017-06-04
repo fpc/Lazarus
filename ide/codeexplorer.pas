@@ -2626,11 +2626,10 @@ var
   c: Char;
   i: Integer;
 begin
-  if TheFilter='' then begin
-    Result:=true;
-  end else if NodeText='' then begin
-    Result:=false;
-  end else begin
+  Result:=false;
+  if TheFilter='' then
+    Result:=true
+  else if NodeText<>'' then begin
     Src:=PChar(NodeText);
     PFilter:=PChar(TheFilter);
     repeat

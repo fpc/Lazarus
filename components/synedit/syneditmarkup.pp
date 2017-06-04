@@ -169,7 +169,7 @@ type
 
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     Procedure FinishMarkupForRow(aRow : Integer); override;
-    Procedure BeginMarkup; virtual;
+    Procedure BeginMarkup; override;
     Procedure EndMarkup; override;
     Function  GetMarkupAttributeAtRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;

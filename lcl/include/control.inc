@@ -481,6 +481,7 @@ var
   end;
 
 begin
+  Result:=alNone;
   BestDistance:=High(Integer);
   FindMinDistance(alLeft,MousePos.X);
   FindMinDistance(alRight,Width-MousePos.X);

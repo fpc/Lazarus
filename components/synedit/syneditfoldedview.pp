@@ -1568,6 +1568,7 @@ function TSynEditFoldExportCoder.ReadNode(aX, aY: Integer; aLen: Integer): TSynE
     if (FExportStream.PeakString(1) = ' ') and (FExportStream.Len > FExportStream.Pos+1) then
       Result := FExportStream.ReadString(2)[2];
   end;
+
   function Invalidate: TSynEditFoldType;
   begin
     {$IFDEF SynFoldSaveDebug}
@@ -1576,6 +1577,7 @@ function TSynEditFoldExportCoder.ReadNode(aX, aY: Integer; aLen: Integer): TSynE
     FReadState := sfecInvalid;
     Result := scftInvalid;
   end;
+
 var
   i: Integer;
 begin
@@ -1587,6 +1589,7 @@ begin
                  ]);
   try
   {$ENDIF}
+  Result := scftInvalid;
   case FReadState of
     sfecAtBegin, sfecAtPoint:
       begin
@@ -2761,9 +2764,9 @@ var
   end;
 
 begin
+  Result := 0;
   if fRoot = nil then begin
     SetRoot(ANode, -fRootOffset);
-    Result := 0;
     exit;
   end;
   ALine := ANode.LineOffset;

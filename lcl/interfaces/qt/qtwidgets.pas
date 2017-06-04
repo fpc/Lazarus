@@ -11853,7 +11853,9 @@ end;
 function TQtAbstractSpinBox.getMaxLength: Integer;
 begin
   if LineEdit <> nil then
-    Result := QLineEdit_maxLength(LineEdit);
+    Result := QLineEdit_maxLength(LineEdit)
+  else
+    Result := 0;
 end;
 
 function TQtAbstractSpinBox.getSelectionStart: Integer;

@@ -3464,6 +3464,7 @@ function TPropertyEditor.GetVerb(Index: Integer): string;
 var
   i: Integer;
 begin
+  Result := '';
   i:=-1;
   if HasDefaultValue then begin
     inc(i);
@@ -4532,7 +4533,10 @@ end;
 
 function TClassPropertyEditor.GetValue: ansistring;
 begin
-  if not FHideClassName then Result:='(' + GetPropType^.Name + ')';
+  if FHideClassName then
+    Result:=''
+  else
+    Result:='(' + GetPropType^.Name + ')';
 end;
 
 function TClassPropertyEditor.IsDefaultValue: boolean;
@@ -4762,8 +4766,10 @@ function TMethodPropertyEditor.GetValue: ansistring;
 begin
   if Assigned(PropertyHook) then
     Result:=PropertyHook.GetMethodName(GetMethodValue,GetComponent(0))
-  else
+  else begin
+    Result:='';
     debugln(['TMethodPropertyEditor.GetValue : PropertyHook=Nil Name=',GetName,' Data=',dbgs(GetMethodValue.Data)]);
+  end;
 end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStrProc);

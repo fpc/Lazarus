@@ -2165,10 +2165,7 @@ begin
   
   MouseDownPos := GetFormRelativeMousePosition(Form);
   LastMouseMovePos := MouseDownPos;
-
-  MouseDownComponent := nil;
   MouseDownSender := nil;
-
   MouseDownComponent := ComponentAtPos(MouseDownPos.X, MouseDownPos.Y, True, True);
   if (MouseDownComponent = nil) then exit;
 
@@ -2219,7 +2216,9 @@ begin
       TControlAccess(MouseDownComponent).MouseDown(Button, Shift, p.X, p.Y);
       Exit;
     end;
-  end;
+  end
+  else
+    p:=Point(0,0);
 
   if Mediator<>nil then begin
     Handled:=false;
@@ -2481,7 +2480,9 @@ begin
       TControlAccess(MouseDownComponent).MouseUp(Button, Shift, p.X, p.Y);
       Exit;
     end;
-  end;
+  end
+  else
+    p:=Point(0,0);
 
   if Mediator<>nil then
   begin
@@ -4183,15 +4184,14 @@ procedure TDesigner.HintTimer(Sender: TObject);
     Result := Format('%d x %d', [Selection.Width, Selection.Height]);
   end;
 
+  function ParentComponent(AComponent: TComponent): TComponent;
+  begin
+    Result := AComponent.GetParentComponent;
+    if (Result = nil) and ComponentIsIcon(AComponent) then
+      Result := AComponent.Owner;
+  end;
+
   function GetSelectionPosHintText: String;
-
-    function ParentComponent(AComponent: TComponent): TComponent;
-    begin
-      Result := AComponent.GetParentComponent;
-      if (Result = nil) and ComponentIsIcon(AComponent) then
-        Result := AComponent.Owner;
-    end;
-
   var
     BaseParent, TestParent: TComponent;
     BaseFound: Boolean;

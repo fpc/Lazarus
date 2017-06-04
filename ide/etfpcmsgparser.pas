@@ -1504,8 +1504,9 @@ const
 var
   MsgLine: TMessageLine;
 begin
-  if CompareMem(PChar(pat),p,length(pat)) then begin
-    Result:=true;
+  Result:=CompareMem(PChar(pat),p,length(pat));
+  if Result then
+  begin
     MsgLine:=CreateMsgLine;
     MsgLine.MsgID:=0;
     MsgLine.SubTool:=SubToolFPCLinker;
@@ -2699,6 +2700,7 @@ var
   i: Integer;
   LastMsgLine, MsgLine: TMessageLine;
 begin
+  Result:=false;
   if (p^=' ') then begin
     i:=Tool.WorkerMessages.Count-1;
     if i<0 then exit;

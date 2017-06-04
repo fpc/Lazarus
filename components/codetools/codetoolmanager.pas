@@ -6520,7 +6520,9 @@ begin
     CfgCache:=UnitSet.GetConfigCache(false);
     Result:=Assigned(CfgCache) and Assigned(CfgCache.Includes)
       and CfgCache.Includes.GetString(Name,ExpFilename);
-  end;
+  end
+  else
+    Result:=False;
 end;
 
 initialization

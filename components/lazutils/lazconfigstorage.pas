@@ -209,6 +209,7 @@ begin
       // p2 shorter
       Result:=1;
     end else begin
+      Result:=0;
       repeat
         if p1^ in ['/',#0] then begin
           if p2^ in ['/',#0] then begin

@@ -2069,9 +2069,8 @@ end;
 function TJITMethods.Delete(aMethod: TJITMethod): boolean;
 begin
   //DebugLn(['TJITMethods.Delete  Class=',dbgsname(AMethod.TheClass),' aMethodName=',aMethod.TheMethodName]);
-  if (aMethod=nil) then
-    Result:=false
-  else if aMethod.Owner<>Self then
+  Result:=false;
+  if (aMethod<>nil) and (aMethod.Owner<>Self) then
     RaiseGDBException('TJITMethods.DeleteJITMethod')
   else begin
     Result:=true;

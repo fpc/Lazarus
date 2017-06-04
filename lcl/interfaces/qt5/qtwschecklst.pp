@@ -107,19 +107,18 @@ var
   QtListWidget: TQtCheckListBox;
 begin
   if not WSCheckHandleAllocated(ACheckListBox, 'GetItemEnabled') then
-    Exit;
+    Exit(False);
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
   Result := QtListWidget.Enabled[AIndex];
 end;
 
 class function TQtWSCustomCheckListBox.GetState(
-  const ACheckListBox: TCustomCheckListBox; const AIndex: integer
-  ): TCheckBoxState;
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer): TCheckBoxState;
 var
   QtListWidget: TQtCheckListBox;
 begin
   if not WSCheckHandleAllocated(ACheckListBox, 'GetState') then
-    Exit;
+    Exit(cbUnchecked);
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
   QtListWidget.AllowGrayed := ACheckListBox.AllowGrayed;
   Result := QtCheckStateToLCLCheckStateMap[QtListWidget.ItemCheckState[AIndex]];

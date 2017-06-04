@@ -76,8 +76,7 @@ implementation
 
 {$R *.lfm}
 
-function EncloseSelectionTypeDescription(TheType: TEncloseSelectionType
-  ): string;
+function EncloseSelectionTypeDescription(TheType: TEncloseSelectionType): string;
 begin
   case TheType of
     estTryFinally: Result:='Try..Finally';
