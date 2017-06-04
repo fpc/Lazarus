@@ -6519,6 +6519,7 @@ images/components/default.png -text svneol=unset#image/png
 images/components/tactionlist.png -text svneol=unset#image/png
 images/components/tactionlist_150.png -text
 images/components/tactionlist_200.png -text
+images/components/talculatordialog_150.png -text
 images/components/tapplicationproperties.png -text svneol=unset#image/png
 images/components/tarrow.png -text svneol=unset#image/png
 images/components/tarrow_150.png -text
@@ -6537,8 +6538,10 @@ images/components/tbuttonpanel_150.png -text
 images/components/tbuttonpanel_200.png -text
 images/components/tcalcedit.png -text svneol=unset#image/png
 images/components/tcalculatordialog.png -text svneol=unset#image/png
+images/components/tcalculatordialog_150.png -text
 images/components/tcalendar.png -text svneol=unset#image/png
 images/components/tcalendardialog.png -text svneol=unset#image/png
+images/components/tcalendardialog_150.png -text
 images/components/tcheckbox.png -text svneol=unset#image/png
 images/components/tcheckbox_150.png -text
 images/components/tcheckbox_200.png -text
@@ -6556,6 +6559,7 @@ images/components/tcolorbutton.png -text svneol=unset#image/png
 images/components/tcolorbutton_150.png -text
 images/components/tcolorbutton_200.png -text
 images/components/tcolordialog.png -text svneol=unset#image/png
+images/components/tcolordialog_150.png -text
 images/components/tcolorlistbox.png -text svneol=unset#image/png
 images/components/tcolorlistbox_150.png -text
 images/components/tcolorlistbox_200.png -text
@@ -6634,6 +6638,7 @@ images/components/tfloatspinedit_150.png -text
 images/components/tfloatspinedit_200.png -text
 images/components/tflowpanel.png -text svneol=unset#image/png
 images/components/tfontdialog.png -text svneol=unset#image/png
+images/components/tfontdialog_150.png -text
 images/components/tframe.png -text svneol=unset#image/png
 images/components/tgroupbox.png -text svneol=unset#image/png
 images/components/tgroupbox_150.png -text
@@ -6680,16 +6685,21 @@ images/components/tmemo_200.png -text
 images/components/tmouse.png -text svneol=unset#image/png
 images/components/tnotebook.png -text svneol=unset#image/png
 images/components/topendialog.png -text svneol=unset#image/png
+images/components/topendialog_150.png -text
 images/components/topenpicturedialog.png -text svneol=unset#image/png
+images/components/topenpicturedialog_150.png -text
 images/components/tpagecontrol.png -text svneol=unset#image/png
 images/components/tpagecontrol_150.png -text
 images/components/tpagecontrol_200.png -text
+images/components/tpagesetupdialog_150.png -text
 images/components/tpaintbox.png -text svneol=unset#image/png
 images/components/tpairsplitter.png -text svneol=unset#image/png
 images/components/tpanel.png -text svneol=unset#image/png
 images/components/tpicture.png -text svneol=unset#image/png
 images/components/tpopupmenu.png -text svneol=unset#image/png
 images/components/tpopupnotifier.png -text svneol=unset#image/png
+images/components/tprintdialog_150.png -text
+images/components/tprintersetupdialog_150.png -text
 images/components/tprocess.png -text svneol=unset#image/png
 images/components/tprocessutf8.png -text
 images/components/tprogressbar.png -text svneol=unset#image/png
@@ -6700,13 +6710,17 @@ images/components/tradiogroup.png -text svneol=unset#image/png
 images/components/tradiogroup_150.png -text
 images/components/tradiogroup_200.png -text
 images/components/treplacedialog.png -text svneol=unset#image/png
+images/components/treplacedialog_150.png -text
 images/components/tsavedialog.png -text svneol=unset#image/png
+images/components/tsavedialog_150.png -text
 images/components/tsavepicturedialog.png -text svneol=unset#image/png
+images/components/tsavepicturedialog_150.png -text
 images/components/tscrollbar.png -text svneol=unset#image/png
 images/components/tscrollbar_150.png -text
 images/components/tscrollbar_200.png -text
 images/components/tscrollbox.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
+images/components/tselectdirectorydialog_150.png -text
 images/components/tservicemanager.png -text svneol=unset#image/png
 images/components/tshape.png -text svneol=unset#image/png
 images/components/tshape_150.png -text
@@ -6733,6 +6747,7 @@ images/components/ttabcontrol.png -text svneol=unset#image/png
 images/components/ttabcontrol_150.png -text
 images/components/ttabcontrol_200.png -text
 images/components/ttaskdialog.png -text
+images/components/ttaskdialog_150.png -text
 images/components/ttimeedit.png -text svneol=unset#image/png
 images/components/ttimer.png -text svneol=unset#image/png
 images/components/ttogglebox.png -text svneol=unset#image/png
