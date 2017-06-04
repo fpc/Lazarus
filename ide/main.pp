@@ -1862,8 +1862,8 @@ begin
       LookupRoot:=GetLookupRootForComponent(TComponent(PropOwner));
       if LookupRoot is TComponent then begin
         //DebugLn(['TMainIDE.OnPropHookGetMethodName ',Result,' GlobalDesignHook.LookupRoot=',dbgsName(GlobalDesignHook.LookupRoot),' JITMethod.TheClass=',dbgsName(JITMethod.TheClass),' PropOwner=',DbgSName(PropOwner),' PropOwner-LookupRoot=',DbgSName(LookupRoot)]);
-        if (LookupRoot.ClassType<>JITMethod.TheClass)
-        or (LookupRoot<>OrigLookupRoot) then
+        if (LookupRoot<>OrigLookupRoot)
+        or (not LookupRoot.InheritsFrom(JITMethod.TheClass)) then
           Result:=JITMethod.TheClass.ClassName+'.'+Result;
       end;
     end;
@@ -1883,9 +1883,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
-  {$IFDEF IDE_DEBUG}
-  DebugLn('');
-  DebugLn('[TMainIDE.OnPropHookGetMethods] ************');
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TMainIDE.PropHookGetMethods ',ExtractFilename(ActiveUnitInfo.Filename),' Component=',ActiveUnitInfo.Component.ClassName]);
   {$ENDIF}
   if not CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
     ActiveUnitInfo.Component.ClassName,TypeData,Proc) then
@@ -1904,9 +1903,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
-  {$IFDEF IDE_DEBUG}
-  DebugLn('');
-  DebugLn('[TMainIDE.OnPropHookGetCompatibleMethods] ************');
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TMainIDE.PropHookGetCompatibleMethods ',ExtractFilename(ActiveUnitInfo.Filename),' Component=',ActiveUnitInfo.Component.ClassName,' InstProp=',DbgSName(InstProp^.Instance),'.',InstProp^.PropInfo^.Name]);
   {$ENDIF}
   if FormEditor1.ComponentUsesRTTIForMethods(ActiveUnitInfo.Component) then begin
     CTResult:=CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
@@ -1931,9 +1929,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
     Exit(False);
-  {$IFDEF IDE_DEBUG}
-  debugln('');
-  debugln('[TMainIDE.OnPropHookCompatibleMethodExists] ************ ',AMethodName);
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TMainIDE.PropHookGetCompatibleMethods ',ExtractFilename(ActiveUnitInfo.Filename),' Component=',ActiveUnitInfo.Component.ClassName,' MethodName="',AMethodName,'" InstProp=',DbgSName(InstProp^.Instance),'.',InstProp^.PropInfo^.Name]);
   {$ENDIF}
   if FormEditor1.ComponentUsesRTTIForMethods(ActiveUnitInfo.Component) then begin
     Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
@@ -12490,9 +12487,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
     Exit(False);
-  {$IFDEF IDE_DEBUG}
-  debugln('');
-  debugln('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TMainIDE.PropHookGetCompatibleMethods ',ExtractFilename(ActiveUnitInfo.Filename),' Component=',ActiveUnitInfo.Component.ClassName,' MethodName="',AMethodName,'"']);
   {$ENDIF}
   Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
                         ActiveUnitInfo.Component.ClassName, AMethodName, TypeData,
@@ -12514,7 +12510,11 @@ function TMainIDE.PropHookCreateMethod(const AMethodName: ShortString;
     APropertyPath = Form1.Button1.OnClick
     ATypeInfo = the typeinfo of the event property
 }
-{ $DEFINE VerboseOnPropHookCreateMethod}
+{$IFDEF VerboseMethodPropEdit}
+  {$DEFINE VerboseOnPropHookCreateMethod}
+{$ELSE}
+  { $DEFINE VerboseOnPropHookCreateMethod}
+{$ENDIF}
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -12674,6 +12674,9 @@ var
   AClassName, AnInheritedClassName: string;
   CurMethodName, AInheritedMethodName: string;
 begin
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TMainIDE.PropHookShowMethod AMethodName="',AMethodName,'"']);
+  {$ENDIF}
   if IsValidIdentPair(AMethodName, AnInheritedClassName, AInheritedMethodName) then
   begin
     ActiveSrcEdit:=nil;
@@ -12694,8 +12697,10 @@ begin
     AClassName:=ActiveUnitInfo.Component.ClassName;
     CurMethodName:=AMethodName;
   end;
-  //DebugLn('[TMainIDE.OnPropHookShowMethod] MethodName=',AMethodName,', ClassName=',AClassName,
-  //        ', CurMethodName=',CurMethodName,', ActiveUnit=',ActiveUnitInfo.Filename);
+  {$IFDEF VerboseMethodPropEdit}
+  DebugLn('[TMainIDE.OnPropHookShowMethod] MethodName=',AMethodName,', ClassName=',AClassName,
+          ', CurMethodName=',CurMethodName,', ActiveUnit=',ExtractFilename(ActiveUnitInfo.Filename));
+  {$ENDIF}
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
     AClassName, CurMethodName, NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine) then
   begin
@@ -12720,9 +12725,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
-  {$IFDEF IDE_DEBUG}
-  debugln('');
-  debugln('[TMainIDE.OnPropHookRenameMethod] ************');
+  {$IFDEF VerboseMethodPropEdit}
+  debugln(['TMainIDE.PropHookShowMethod CurName="',CurName,'" NewName="',NewName,'"']);
   {$ENDIF}
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
@@ -12730,9 +12734,8 @@ begin
     // rename/create published method
     BossResult:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
                             ActiveUnitInfo.Component.ClassName,CurName,NewName);
-    {$IFDEF IDE_DEBUG}
-    debugln('');
-    debugln('[TMainIDE.OnPropHookRenameMethod] ************2 ');
+    {$IFDEF VerboseMethodPropEdit}
+    debugln(['TMainIDE.PropHookShowMethod CurName="',CurName,'" NewName="',NewName,'" Result=',BossResult]);
     {$ENDIF}
     ApplyCodeToolChanges;
     if BossResult then begin
