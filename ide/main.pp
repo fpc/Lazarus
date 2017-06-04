@@ -12611,6 +12611,7 @@ var
   OldChange: Boolean;
   InheritedMethodPath, MethodClassName, ShortMethodName: String;
   UseRTTIForMethods, AddOverride: Boolean;
+  MethodComponent: TComponent;
 begin
   Result.Code:=nil;
   Result.Data:=nil;
@@ -12618,7 +12619,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF VerboseOnPropHookCreateMethod}
-  debugln('');
+  debugln(' ');
   debugln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
   DebugLn(['  Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
   {$ENDIF}
@@ -12628,9 +12629,10 @@ begin
     {$ENDIF}
   end;
 
+  MethodComponent:=ActiveUnitInfo.Component;
   if IsValidIdentPair(AMethodName,MethodClassName,ShortMethodName) then
   begin
-    if CompareText(MethodClassName,ActiveUnitInfo.Component.ClassName)<>0 then
+    if CompareText(MethodClassName,MethodComponent.ClassName)<>0 then
     begin
       debugln(['TMainIDE.PropHookCreateMethod wrong class AMethodName="',AMethodName,'" lookuproot=',DbgSName(ActiveUnitInfo.Component)]);
       raise Exception.Create('Invalid classname "'+AMethodName+'"');
@@ -12651,6 +12653,10 @@ begin
     {$IFDEF VerboseOnPropHookCreateMethod}
     debugln(['TMainIDE.OnPropHookCreateMethod CreatePublishedMethod ',ActiveUnitInfo.Source.Filename,' LookupRoot=',ActiveUnitInfo.Component.ClassName,' ShortMethodName="',ShortMethodName,'" PropertyUnit=',GetClassUnitName(APersistent.ClassType),' APropertyPath="',APropertyPath,'" CallInherited=',InheritedMethodPath]);
     {$ENDIF}
+    if not AddOverride then begin
+      // ToDo: check if there is already an ancestor method
+      // The JITMethod must be created for that class
+    end;
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
         ActiveUnitInfo.Component.ClassName,ShortMethodName,
         ATypeInfo,UseRTTIForMethods,GetClassUnitName(APersistent.ClassType),
@@ -12660,8 +12666,7 @@ begin
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
-      Result:=FormEditor1.CreateNewJITMethod(ActiveUnitInfo.Component,
-                                             ShortMethodName);
+      Result:=FormEditor1.CreateNewJITMethod(MethodComponent,ShortMethodName);
       {$IFDEF VerboseOnPropHookCreateMethod}
       debugln(['TMainIDE.PropHookCreateMethod JITClass=',TJITMethod(Result.Data).TheClass.ClassName]);
       {$ENDIF}
