@@ -3955,6 +3955,7 @@ components/sqldb/sqldblaz.pas svneol=native#text/pascal
 components/sqldb/sqlstringspropertyeditordlg.lfm svneol=native#text/plain
 components/sqldb/sqlstringspropertyeditordlg.pas svneol=native#text/plain
 components/sqlite/imagelist.txt svneol=native#text/plain
+components/sqlite/imagelist3.txt svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.de.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.fr.po svneol=native#text/plain
 components/sqlite/languages/sqlitecompstrings.hu.po svneol=native#text/plain
