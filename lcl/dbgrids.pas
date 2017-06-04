@@ -1517,8 +1517,9 @@ begin
   Result := '';
   if (ARow < FixedRows) then
     exit;
+  C := ColumnFromGridColumn(ACol) as TColumn;
+  Result := C.Field.AsString;
   if Assigned(FOnGetCellHint) then begin
-    C := ColumnFromGridColumn(ACol) as TColumn;
     FOnGetCellHint(self, C, Result);
   end;
 
@@ -1527,16 +1528,24 @@ end;
 function TCustomDBGrid.GetTruncCellHintText(aCol, aRow: Integer): string;
 var
   F: TField;
+  C: TColumn;
 begin
   Result := '';
   if ARow < FixedRows then
     exit;
   F := GetFieldFromGridColumn(ACol);
   if (F <> nil) then
+    if (F.DataType = ftMemo) then
+      Result := F.AsString
+    else
     if (F.DataType <> ftBlob) then
       Result := F.DisplayText
     else
       Result := '(blob)';
+  if Assigned(FOnGetCellHint) then begin
+    C := ColumnFromGridColumn(ACol) as TColumn;
+    FOnGetCellHint(self, C, Result);
+  end;
 end;
 
 // obtain the field either from a Db column or directly from dataset fields

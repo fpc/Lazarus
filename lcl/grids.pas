@@ -7813,7 +7813,8 @@ end;
 procedure TCustomGrid.CMMouseEnter(var Message: TLMessage);
 begin
   inherited;
-  FSavedHint := Hint;
+  if FCellHintPriority = chpAll then
+    FSavedHint := Hint;
 end;
 
 procedure TCustomGrid.CMMouseLeave(var Message: TLMessage);
