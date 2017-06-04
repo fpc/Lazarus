@@ -12772,10 +12772,14 @@ begin
   Root:=GlobalDesignHook.LookupRoot;
   if Root=nil then exit;
   if TObject(Method.Data)=Root then begin
-    Result:=(Method.Code<>nil) and (Root.MethodName(Method.Code)<>'');
+    Result:=(Method.Code<>nil) and (Root.MethodName(Method.Code)<>'')
+      and (Root.ClassParent.MethodName(Method.Code)='');
   end else if IsJITMethod(Method) then begin
     JITMethod:=TJITMethod(Method.Data);
     Result:=Root.ClassType=JITMethod.TheClass;
+    {$IFDEF VerboseMethodPropEdit}
+    debugln(['TMainIDE.PropHookMethodFromLookupRoot Root=',DbgSName(Root),' JITMethod.TheClass=',JITMethod.TheClass.ClassName,' Result=',Result]);
+    {$ENDIF}
   end;
 end;
 

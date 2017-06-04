@@ -4600,6 +4600,7 @@ procedure TMethodPropertyEditor.Edit;
 }
 var
   NewMethodName: String;
+  r: TModalResult;
 begin
   NewMethodName := GetValue;
   {$IFDEF VerboseMethodPropEdit}
@@ -4615,10 +4616,14 @@ begin
     PropertyHook.ShowMethod(NewMethodName);
   end else begin
     // the current method is from the another class (e.g. ancestor or frame)
-    case QuestionDlg('Override or jump',
-      'The event "'+GetName+'" currently points to an inherited method.',
-      mtConfirmation,[mrYes,'Create Override',mrOk,'Jump to inherited method',mrCancel],
-      0) of
+    if IsValidIdent(NewMethodName) then
+      r:=QuestionDlg('Override or jump',
+        'The event "'+GetName+'" currently points to an inherited method.',
+        mtConfirmation,[mrYes,'Create Override',mrOk,'Jump to inherited method',mrCancel],
+        0)
+    else
+      r:=mrYes;
+    case r of
     mrYes:
       begin
         // -> add an override with the default name
