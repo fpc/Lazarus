@@ -3006,6 +3006,10 @@ msgstr "Vista-8: pois, 8.1+: per monitori"
 msgid "Vista-8: on, 8.1+: per monitor"
 msgstr "Vista-8: päällä, 8.1+: per monitori"
 
+#: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
+msgid "Vista-8: on, 8.1/10+: per monitor/V2"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
 msgstr "päällä"

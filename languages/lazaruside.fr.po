@@ -3036,6 +3036,10 @@ msgstr "Vista-8 : désactivé, 8.1+ : par moniteur"
 msgid "Vista-8: on, 8.1+: per monitor"
 msgstr "Vista-8 : activé, 8.1+ : par moniteur"
 
+#: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
+msgid "Vista-8: on, 8.1/10+: per monitor/V2"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
 msgstr "Activé"

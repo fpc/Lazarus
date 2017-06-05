@@ -3033,6 +3033,10 @@ msgstr "Vista-8: aus, 8.1+: pro Monitor"
 msgid "Vista-8: on, 8.1+: per monitor"
 msgstr "Vista-8: an, 8.1+: pro Monitor"
 
+#: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
+msgid "Vista-8: on, 8.1/10+: per monitor/V2"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
 msgstr "an"
@@ -21143,3 +21147,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

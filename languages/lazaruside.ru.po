@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-23 01:23+0300\n"
+"PO-Revision-Date: 2017-06-06 01:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3034,6 +3034,10 @@ msgstr "Vista-8: выключена, 8.1+: отдельно для каждог�
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitor
 msgid "Vista-8: on, 8.1+: per monitor"
 msgstr "Vista-8: включена, 8.1+: отдельно для каждого монитора"
+
+#: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
+msgid "Vista-8: on, 8.1/10+: per monitor/V2"
+msgstr "Vista-8: включена, 8.1/10+: отдельно для каждого монитора/V2"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
