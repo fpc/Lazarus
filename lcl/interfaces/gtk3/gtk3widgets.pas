@@ -5880,7 +5880,7 @@ begin
 
     gtk_cell_layout_clear(PGtkCellLayout(FCentralWidget));
     gtk_cell_layout_pack_start(PGtkCellLayout(FCentralWidget), renderer, True);
-    if not (ACombo.Style in [csOwnerDrawFixed, csOwnerDrawVariable]) then
+    if not (ACombo.Style in [csOwnerDrawFixed, csOwnerDrawVariable, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable]) then
       gtk_cell_layout_set_attributes(PGtkCellLayout(FCentralWidget), renderer, ['text', 0, nil]);
     gtk_cell_layout_set_cell_data_func(PGtkCellLayout(FCentralWidget), renderer,
       @LCLIntfCellRenderer_CellDataFunc, Self, nil);

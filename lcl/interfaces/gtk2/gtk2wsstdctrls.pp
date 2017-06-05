@@ -1540,7 +1540,7 @@ begin
   g_object_set_data(G_OBJECT(renderer), 'widgetinfo', AWidgetInfo);
   gtk_cell_layout_clear(PGtkCellLayout(AWidget));
   gtk_cell_layout_pack_start(PGtkCellLayout(AWidget), renderer, True);
-  if not (ACustomComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable]) then
+  if not (ACustomComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable]) then
     gtk_cell_layout_set_attributes(PGtkCellLayout(AWidget), renderer, ['text', 0, nil]);
   gtk_cell_layout_set_cell_data_func(PGtkCellLayout(AWidget), renderer,
     @LCLIntfCellRenderer_CellDataFunc, AWidgetInfo, nil);
@@ -1976,7 +1976,9 @@ begin
   p := WidgetInfo^.CoreWidget;
   case NewStyle of
     csDropDown,
-    csSimple:
+    csSimple,
+    csOwnerDrawEditableFixed,
+    csOwnerDrawEditableVariable:
       NeedEntry := True;
     csDropDownList,
     csOwnerDrawFixed,
@@ -2119,7 +2121,9 @@ begin
 
   case ACustomComboBox.Style of
     csDropDown,
-    csSimple:
+    csSimple,
+    csOwnerDrawEditableFixed,
+    csOwnerDrawEditableVariable:
       NeedEntry := True;
     csDropDownList,
     csOwnerDrawFixed,

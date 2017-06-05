@@ -92,7 +92,7 @@ begin
 
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    if (Style in [csOwnerDrawFixed, csOwnerDrawVariable])
+    if (Style in [csOwnerDrawFixed, csOwnerDrawVariable, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable])
     and (FItemHeight > 0) then
       ItemHeight := Round(ItemHeight * AYProportion);
   end;
@@ -251,7 +251,7 @@ end;
 procedure TCustomComboBox.CloseUp;
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
-  if Style in [csSimple, csDropDown] then // To-Do: csOwnerDrawEditableFixed, csOwnerDrawEditableVariable
+  if Style in [csSimple, csDropDown, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
     EditingDone;
   if Assigned(FOnCloseUp) then FOnCloseUp(Self);
   if FAutoSelect then
@@ -473,13 +473,13 @@ procedure TCustomComboBox.CreateParams(var Params: TCreateParams);
 const
   ComboBoxStyles: array[TComboBoxStyle] of dword = (
     CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
-    CBS_OWNERDRAWFIXED, CBS_OWNERDRAWVARIABLE);
+    CBS_OWNERDRAWFIXED or CBS_DROPDOWNLIST, CBS_OWNERDRAWVARIABLE or CBS_DROPDOWNLIST,
+    CBS_OWNERDRAWFIXED or CBS_DROPDOWN, CBS_OWNERDRAWVARIABLE or CBS_DROPDOWN);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS) or
     ComboBoxStyles[Style];
-  if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
-    Params.Style := Params.Style or CBS_DROPDOWNLIST;
+
   if Sorted then
     Params.Style := Params.Style or CBS_SORT;
 end;

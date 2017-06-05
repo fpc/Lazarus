@@ -248,7 +248,9 @@ type
     csSimple,           // like an TEdit plus a TListBox
     csDropDownList,     // like TLabel plus a button to drop down the list
     csOwnerDrawFixed,   // like csDropDownList, but custom drawn
-    csOwnerDrawVariable // like csDropDownList, but custom drawn and with each item can have another height
+    csOwnerDrawVariable,// like csDropDownList, but custom drawn and with each item can have another height
+    csOwnerDrawEditableFixed,// like csOwnerDrawFixed, but with TEdit
+    csOwnerDrawEditableVariable// like csOwnerDrawVariable, but with TEdit
   );
 
   TOwnerDrawState = LCLType.TOwnerDrawState;

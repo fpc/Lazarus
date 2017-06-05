@@ -1574,7 +1574,9 @@ begin
   TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle in [csDropDown, csSimple]);
   TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle in
                                                    [csOwnerDrawFixed,
-                                                    csOwnerDrawVariable];
+                                                    csOwnerDrawVariable,
+                                                    csOwnerDrawEditableFixed,
+                                                    csOwnerDrawEditableVariable];
   // TODO: implement styles: csSimple
   inherited SetStyle(ACustomComboBox, NewStyle);
 end;
@@ -1649,12 +1651,12 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomComboBox, 'SetItemHeight') then
     Exit;
-  {only for csOwnerDrawFixed, csOwnerDrawVariable}
+  {only for csOwnerDrawFixed, csOwnerDrawVariable, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable}
   ComboBox := TQtComboBox(ACustomComboBox.Handle);
   if ComboBox.getDroppedDown then
   begin
     ComboBox.DropList.setUniformItemSizes(False);
-    ComboBox.DropList.setUniformItemSizes(ACustomComboBox.Style = csOwnerDrawFixed);
+    ComboBox.DropList.setUniformItemSizes(ACustomComboBox.Style in [csOwnerDrawFixed, csOwnerDrawEditableFixed]);
   end else
     RecreateWnd(ACustomComboBox);
 end;

@@ -1437,8 +1437,7 @@ begin
        (((lWinControl is TCustomListbox) and
           (TCustomListBox(lWinControl).Style <> lbStandard)) or
        ((lWinControl is TCustomCombobox) and
-          ((TCustomCombobox(lWinControl).Style = csOwnerDrawFixed) or
-          (TCustomCombobox(lWinControl).Style = csOwnerDrawVariable))))
+          (TCustomCombobox(lWinControl).Style in [csOwnerDrawFixed, csOwnerDrawVariable, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable])))
     then
       UpdateDrawListItem(LM_DRAWLISTITEM)
     else if Assigned(WindowInfo^.DrawItemHandler) then begin

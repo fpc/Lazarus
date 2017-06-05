@@ -940,11 +940,10 @@ function CalcComboBoxWinFlags(AComboBox: TCustomComboBox): dword;
 const
   ComboBoxStyles: array[TComboBoxStyle] of dword = (
     CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
-    CBS_OWNERDRAWFIXED, CBS_OWNERDRAWVARIABLE);
+    CBS_OWNERDRAWFIXED or CBS_DROPDOWNLIST, CBS_OWNERDRAWVARIABLE or CBS_DROPDOWNLIST,
+    CBS_OWNERDRAWFIXED or CBS_DROPDOWN, CBS_OWNERDRAWVARIABLE or CBS_DROPDOWN);
 begin
   Result := ComboBoxStyles[AComboBox.Style];
-  if AComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
-    Result := Result or CBS_DROPDOWNLIST;
 end;
 
 class function TWin32WSCustomComboBox.GetStringList(

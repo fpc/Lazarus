@@ -639,13 +639,13 @@ const
     CBS_DROPDOWN,
     0 {CBS_SIMPLE},
     CBS_DROPDOWNLIST,
-    0 {CBS_OWNERDRAWFIXED},
-    0 {CBS_OWNERDRAWVARIABLE}
+    0 or CBS_DROPDOWNLIST {CBS_OWNERDRAWFIXED},
+    0 or CBS_DROPDOWNLIST {CBS_OWNERDRAWVARIABLE},
+    0 or CBS_DROPDOWN {CBS_OWNERDRAWFIXED},
+    0 or CBS_DROPDOWN {CBS_OWNERDRAWVARIABLE}
     );
 begin
   Result := ComboBoxStyles[AComboBox.Style];
-  if AComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
-    Result := Result or CBS_DROPDOWNLIST;
 end;
 
 class function TWinCEWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
