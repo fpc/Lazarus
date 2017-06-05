@@ -168,7 +168,11 @@ begin
   mib[0] := CTL_HW;
   mib[1] := HW_NCPU;
   len := sizeof(t);
+  {$if FPC_FULLVERSION >= 30101}
+  fpsysctl(@mib, 2, @t, @len, Nil, 0);
+  {$else}
   fpsysctl(pchar(@mib), 2, @t, @len, Nil, 0);
+  {$endif}
   Result:=t;
 end;
 {$ELSEIF defined(linux)}
