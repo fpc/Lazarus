@@ -251,7 +251,7 @@ end;
 procedure TCustomComboBox.CloseUp;
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
-  if Style in [csSingle, csDropDown] then // To-Do: csOwnerDrawEditableFixed, csOwnerDrawEditableVariable
+  if Style in [csSimple, csDropDown] then // To-Do: csOwnerDrawEditableFixed, csOwnerDrawEditableVariable
     EditingDone;
   if Assigned(FOnCloseUp) then FOnCloseUp(Self);
   if FAutoSelect then
