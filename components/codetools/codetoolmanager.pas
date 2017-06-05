@@ -545,7 +545,6 @@ type
        TreeOfPCodeXYPosition: TAVLTree // positions in this unit are processed and removed from the tree
        ): boolean;
 
-
     // resourcestring sections
     function GatherResourceStringSections(
           Code: TCodeBuffer; X,Y: integer;

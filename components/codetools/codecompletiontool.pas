@@ -401,6 +401,8 @@ type
     function ApplyClassCompletion(AddMissingProcBodies: boolean): boolean;
     function ProcExistsInCodeCompleteClass(
         const NameAndParamsUpCase: string; SearchInAncestors: boolean = true): boolean;
+    function FindProcInCodeCompleteClass(const NameAndParamsUpCase: string;
+        SearchInAncestors: boolean = true): TFindContext;
     function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
     procedure AddClassInsertion(
         const CleanDef, Def, IdentifierName: string;
@@ -475,46 +477,65 @@ end;
 
 function TCodeCompletionCodeTool.ProcExistsInCodeCompleteClass(
   const NameAndParamsUpCase: string; SearchInAncestors: boolean): boolean;
+begin
+  Result:=FindProcInCodeCompleteClass(NameAndParamsUpCase,SearchInAncestors).Node<>nil;
+end;
+
+function TCodeCompletionCodeTool.FindProcInCodeCompleteClass(
+  const NameAndParamsUpCase: string; SearchInAncestors: boolean): TFindContext;
 // NameAndParams should be uppercase and contains the proc name and the
 // parameter list without names and default values
 // and should not contain any comments and no result type
 var
   ANodeExt: TCodeTreeNodeExtension;
   Params: TFindDeclarationParams;
-  ClassNode, CompletingChildNode: TCodeTreeNode;
+  ClassNode, StartNode: TCodeTreeNode;
   Tool: TFindDeclarationTool;
   Vis: TClassSectionVisibility;
 begin
-  Result:=false;
+  Result:=CleanFindContext;
   // search in new nodes, which will be inserted
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
     if CompareTextIgnoringSpace(ANodeExt.Txt,NameAndParamsUpCase,true)=0 then
-      exit(true);
+    begin
+      Result.Tool:=Self;
+      Result.Node:=CodeCompleteClassNode;
+      exit;
+    end;
     ANodeExt:=ANodeExt.Next;
   end;
   // search in current class
-  Result:=(FindProcNode(FCompletingFirstEntryNode,NameAndParamsUpCase,mgMethod,[phpInUpperCase])<>nil);
-  if (not Result) and SearchInAncestors then
-  begin
-    //search in ancestor classes
-    Params:=TFindDeclarationParams.Create;
-    try
-      ClassNode:=CodeCompleteClassNode;
-      Tool:=Self;
-      while not Result and Tool.FindAncestorOfClass(ClassNode,Params,True) do begin
-        Tool:=Params.NewCodeTool;
-        ClassNode:=Params.NewNode;
-        CompletingChildNode:=GetFirstClassIdentifier(ClassNode);
-        if Tool=Self then
-          Vis := csvPrivateAndHigher
-        else
-          Vis := csvProtectedAndHigher;
-        Result := (Tool.FindProcNode(CompletingChildNode,NameAndParamsUpCase,mgMethod,[phpInUpperCase], Vis)<>nil);
+  Result.Node:=FindProcNode(FCompletingFirstEntryNode,NameAndParamsUpCase,mgMethod,
+                        [phpInUpperCase]);
+  if Result.Node<>nil then begin
+    Result.Tool:=Self;
+    exit;
+  end;
+  if not SearchInAncestors then exit;
+  //search in ancestor classes
+  Params:=TFindDeclarationParams.Create;
+  try
+    ClassNode:=CodeCompleteClassNode;
+    Tool:=Self;
+    while Tool.FindAncestorOfClass(ClassNode,Params,True) do
+    begin
+      Tool:=Params.NewCodeTool;
+      ClassNode:=Params.NewNode;
+      StartNode:=GetFirstClassIdentifier(ClassNode);
+      if Tool=Self then
+        Vis := csvPrivateAndHigher
+      else
+        Vis := csvProtectedAndHigher;
+      Result.Node := Tool.FindProcNode(StartNode,NameAndParamsUpCase,
+                                   mgMethod,[phpInUpperCase], Vis);
+      if Result.Node<>nil then begin
+        Result.Tool:=Tool;
+        exit;
       end;
-    finally
-      Params.Free;
     end;
+  finally
+    Params.Free;
   end;
 end;
 
