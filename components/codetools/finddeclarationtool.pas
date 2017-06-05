@@ -920,8 +920,6 @@ type
       out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function FindDeclarationWithMainUsesSection(const Identifier: string;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
-    function FindClassMember(aClassNode: TCodeTreeNode;
-      const Identifier: String; SearchInAncestors: boolean): TFindContext;
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
       out NewContext: TFindContext; IgnoreTypeLess: boolean = false): boolean;
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
@@ -7444,32 +7442,6 @@ begin
       until Node.PriorBrother<>nil;
       Node:=Node.PriorBrother;
     end;
-  end;
-end;
-
-function TFindDeclarationTool.FindClassMember(aClassNode: TCodeTreeNode;
-  const Identifier: String; SearchInAncestors: boolean): TFindContext;
-var
-  Params: TFindDeclarationParams;
-begin
-  Result.Tool:=Self;
-  Result.Node:=FindClassMember(aClassNode,PChar(Identifier));
-  if Result.Node<>nil then exit;
-  if not SearchInAncestors then begin
-    Result:=CleanFindContext;
-    exit;
-  end;
-  Params:=TFindDeclarationParams.Create;
-  try
-    while Result.Tool.FindAncestorOfClass(aClassNode,Params,True) do begin
-      Result.Tool:=Params.NewCodeTool;
-      aClassNode:=Params.NewNode;
-      Result.Node:=Result.Tool.FindClassMember(aClassNode,PChar(Identifier));
-      if Result.Node<>nil then exit;
-    end;
-    Result:=CleanFindContext;
-  finally
-    Params.Free;
   end;
 end;
 

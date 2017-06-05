@@ -961,12 +961,11 @@ begin
              +FindContext.Tool.ExtractProcHead(FindContext.Node,
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
     end;
-    if not ProcExistsInCodeCompleteClass(CleanMethodDefinition,not AddOverride)
-    then begin
-      // insert method definition into class
+    if not ProcExistsInCodeCompleteClass(CleanMethodDefinition,not AddOverride) then begin
       {$IFDEF VerboseMethodPropEdit}
       DebugLn('[TEventsCodeTool.CreateMethod] insert method definition to class');
       {$ENDIF}
+      // insert method definition into class
       InsertCall:='';
       if CompareTextIgnoringSpace(CallAncestorMethod,'inherited',false)=0 then
         InsertCall:=CallAncestorMethod+';';
