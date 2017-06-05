@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-15 10:37+0300\n"
+"PO-Revision-Date: 2017-06-02 23:29+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -669,7 +669,7 @@ msgstr "Ці форми мають створюватись і вивільня�
 
 #: lazarusidestrconsts.dlgavoidunnecessaryjumps
 msgid "Avoid unnecessary jumps"
-msgstr ""
+msgstr "Уникати зайвих переходів"
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -924,7 +924,7 @@ msgstr "Сховати"
 
 #: lazarusidestrconsts.dlgcodefoldpopuporder
 msgid "Reverse fold-order in Popup"
-msgstr "Зворотній порядок згортання в спливному меню"
+msgstr "Зворотний порядок згортання в спливному меню"
 
 #: lazarusidestrconsts.dlgcogdb
 msgid "Generate debugging info for GDB (slower / increases exe-size)"
@@ -1367,7 +1367,7 @@ msgstr "Показати"
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor Files"
-msgstr "Файли Редактора"
+msgstr "Файли редактора"
 
 #: lazarusidestrconsts.dlgedidcomlet
 msgctxt "lazarusidestrconsts.dlgedidcomlet"
@@ -1705,7 +1705,7 @@ msgstr "Файли XML"
 
 #: lazarusidestrconsts.dlgfindtextatcursor
 msgid "Find text at cursor"
-msgstr "Знайти текст над курсором"
+msgstr "Знайти текст під курсором"
 
 #: lazarusidestrconsts.dlgfolddiffchunk
 msgid "Chunk"
@@ -1924,7 +1924,7 @@ msgstr "З по&чатку"
 
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From cursor"
-msgstr "&Від курсора"
+msgstr "&Від курсору"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
@@ -2024,7 +2024,7 @@ msgstr "Колір краю смужки"
 
 #: lazarusidestrconsts.dlggutterseparatorindex
 msgid "Gutter separator index"
-msgstr "Показник роздільної смужки"
+msgstr "Номер роздільника на смужці"
 
 #: lazarusidestrconsts.dlghalfpagescroll
 msgid "Half page scroll"
@@ -2068,11 +2068,11 @@ msgstr "Підсвічувати Колір Шрифту"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
-msgstr "Зліва від курсора"
+msgstr "Зліва від курсору"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
-msgstr "Справа від курсора"
+msgstr "Справа від курсору"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
 msgid "Show hints for parameter \"Sender\" not used"
@@ -2189,19 +2189,19 @@ msgstr "Інтервал у сек"
 
 #: lazarusidestrconsts.dlgjumpcodeblockpos
 msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
-msgstr ""
+msgstr "Вертикальна позиція для переходу на блок коду в % (0=вгорі, 100=внизу)"
 
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
-msgstr "Перехід (напр. Метод Переходу)"
+msgstr "Перехід (наприклад, перехід на метод)"
 
 #: lazarusidestrconsts.dlgjumpsinglelinepos
 msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
-msgstr ""
+msgstr "Вертикальна позиція для переходу на один рядок у % (0=вгорі, 100=внизу)"
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
-msgstr "Перейти прямо до тіла методу"
+msgstr "Переходити прямо до тіла методу"
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
@@ -2426,7 +2426,7 @@ msgstr "Головні параметри"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
 msgid "Word Brackets on caret (global)"
-msgstr "Операторні дужки біля курсора (глобально)"
+msgstr "Операторні дужки біля курсору (глобально)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
@@ -2802,7 +2802,7 @@ msgstr "Попередження"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
 msgid "Multi-caret (column-select) move with cursor"
-msgstr "Переміщувати всі курсори за основним при виборі стовпця"
+msgstr "При виборі стовпця рухати всі курсори за основним"
 
 #: lazarusidestrconsts.dlgmulticaretmode
 msgid "Multi-caret move with cursor"
@@ -2810,7 +2810,7 @@ msgstr "Переміщувати всі курсори за основним"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi caret for column selection"
-msgstr "Увімкнути декілька курсорів при виборі стовпців"
+msgstr "При виборі стовпців увімкнути декілька курсорів"
 
 #: lazarusidestrconsts.dlgmultipleinstances
 msgid "Multiple Lazarus instances"
@@ -2960,7 +2960,7 @@ msgstr "Розширені Параметри Ключових слів Паск
 
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
 msgid "Markup (on caret)"
-msgstr "Підсвічувати (біля курсора)"
+msgstr "Підсвічувати (біля курсору)"
 
 #: lazarusidestrconsts.dlgpaskeywordsmatches
 msgid "Matching Keywords"
@@ -3308,7 +3308,7 @@ msgstr "Прокрутка"
 #: lazarusidestrconsts.dlgscrollhint
 msgctxt "lazarusidestrconsts.dlgscrollhint"
 msgid "Show scroll hint"
-msgstr "Показувати пораду з прокрут."
+msgstr "Показ підказки при прокрутці"
 
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
@@ -3727,7 +3727,7 @@ msgstr "Врахов. історію вкладок при їх закритті
 
 #: lazarusidestrconsts.dlguseunitcaption
 msgid "Add unit to Uses section"
-msgstr "Додати модуль в секцію Uses"
+msgstr "Додати модуль у секцію Uses"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3744,7 +3744,7 @@ msgstr "Видима смужка"
 
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
-msgstr "Права видима границя"
+msgstr "Видима права межа"
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole words only"
@@ -3840,7 +3840,7 @@ msgstr "Масштаб"
 #: lazarusidestrconsts.fdmselectall
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
-msgstr "Виділити всі"
+msgstr "Вибрати все"
 
 #: lazarusidestrconsts.fdmsizemenu
 msgid "Size ..."
@@ -6570,7 +6570,7 @@ msgstr "Компілювати"
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
-msgstr "Скомпілювати проект"
+msgstr "Компіляція проекту"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -6816,7 +6816,7 @@ msgstr " { *Перетворено з %s* }"
 
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
-msgstr "Зсув додається до координати Верху елементів всередині візуальних контейнерів"
+msgstr "Зсув додається до координати верху елементів всередині візуальних контейнерів"
 
 #: lazarusidestrconsts.lisconvcoordoffs
 msgid "Coordinate offsets"
@@ -6857,11 +6857,11 @@ msgstr "Кодування змінено з %s на UTF-8"
 
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
-msgstr "Перетворення Перервано."
+msgstr "Перетворення перервано."
 
 #: lazarusidestrconsts.lisconvdelphiconversionready
 msgid "Conversion Ready."
-msgstr "Перетворення Готове."
+msgstr "Перетворення готове."
 
 #: lazarusidestrconsts.lisconvdelphiconversiontook
 msgid "Conversion took: %s"
@@ -6978,7 +6978,7 @@ msgstr "Конвертувати"
 
 #: lazarusidestrconsts.lisconvertencoding
 msgid "Convert Encoding"
-msgstr "Конвертувати Кодування"
+msgstr "Конвертувати кодування"
 
 #: lazarusidestrconsts.lisconvertencodingofprojectspackages
 msgid "Convert encoding of projects/packages"
@@ -7030,7 +7030,7 @@ msgstr "Назву модуля виправлено з %s на %s."
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
-msgstr "Заміни Функцій"
+msgstr "Заміни функцій"
 
 #: lazarusidestrconsts.lisconvfuncreplhint
 msgctxt "lazarusidestrconsts.lisconvfuncreplhint"
@@ -7051,7 +7051,7 @@ msgstr "Нова назва"
 
 #: lazarusidestrconsts.lisconvparentcontainer
 msgid "Parent Container"
-msgstr "Батьківський Контейнер"
+msgstr "Батьківський контейнер"
 
 #: lazarusidestrconsts.lisconvproblemsfindingallunits
 msgid "Problems when trying to find all units from project file %s"
@@ -7095,7 +7095,7 @@ msgstr "Зсув зверху"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
-msgstr "Заміни Типів"
+msgstr "Заміни типів"
 
 #: lazarusidestrconsts.lisconvtypereplhint
 msgid "Unknown types in form file (DFM/LFM)"
@@ -7107,7 +7107,7 @@ msgstr "Замінювані типи"
 
 #: lazarusidestrconsts.lisconvunitreplacements
 msgid "Unit Replacements"
-msgstr "Заміни Модулів"
+msgstr "Заміни модулів"
 
 #: lazarusidestrconsts.lisconvunitreplhint
 msgid "Unit names in uses section of a source unit"
@@ -7288,7 +7288,7 @@ msgstr "Копіювати"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
-msgstr "Копіювати Все"
+msgstr "Копіювати все"
 
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
@@ -7400,7 +7400,7 @@ msgstr "Відкрити пакунок %s"
 
 #: lazarusidestrconsts.liscpopenunit
 msgid "Open Unit %s"
-msgstr "Відкрити Модуль %s"
+msgstr "Відкрити модуль %s"
 
 #: lazarusidestrconsts.liscpu
 msgid ", CPU: %s"
@@ -7478,7 +7478,7 @@ msgstr "Виберіть теку"
 
 #: lazarusidestrconsts.lisctdefcodetoolsdirectoryvalues
 msgid "CodeTools Directory Values"
-msgstr "Параметри тек Інструментів Коду"
+msgstr "Параметри тек Інструментів коду"
 
 #: lazarusidestrconsts.lisctdefdefinetemplates
 msgid "Define templates"
@@ -7522,7 +7522,7 @@ msgstr "виберіть будь-ласка макрос"
 
 #: lazarusidestrconsts.lisctselectcodemacro
 msgid "Select Code Macro"
-msgstr "Вибрати Код Макросу"
+msgstr "Вибрати макрос коду"
 
 #: lazarusidestrconsts.liscurrent
 msgctxt "lazarusidestrconsts.liscurrent"
@@ -7539,11 +7539,11 @@ msgstr "Поточний стан: "
 
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
-msgstr "Колонка курсора в цьому редакторі"
+msgstr "Колонка курсору в цьому редакторі"
 
 #: lazarusidestrconsts.liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
-msgstr "Рядок курсора в цьому редакторі"
+msgstr "Рядок курсору в цьому редакторі"
 
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
@@ -7592,7 +7592,7 @@ msgstr "Запущені процеси"
 
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
-msgstr "Модуль Даних"
+msgstr "Модуль даних"
 
 #: lazarusidestrconsts.lisdate
 msgid "Date"
@@ -8409,7 +8409,7 @@ msgstr "Вставити вибрані компоненти з буфера"
 
 #: lazarusidestrconsts.lisdsgselectparentcomponent
 msgid "Select parent component"
-msgstr "Виділити компонент-предок"
+msgstr "Вибрати компонент-предок"
 
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
@@ -8675,7 +8675,7 @@ msgstr ". Встановіть прапорець \"Використовуват
 
 #: lazarusidestrconsts.lisenablegroups
 msgid "Enable Groups"
-msgstr "Ввімкнути Групи"
+msgstr "Ввімкнути групи"
 
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
@@ -9614,7 +9614,7 @@ msgstr "взяти слово в поточній позиції"
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition2
 msgid "Get word at current cursor position."
-msgstr "Взяти слово у поточній позиції курсора."
+msgstr "Взяти слово у поточній позиції курсору."
 
 #: lazarusidestrconsts.lisglobalsettings
 msgid "Global settings"
@@ -9745,7 +9745,7 @@ msgstr "Приховати повідомлення, вставивши дире
 
 #: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
 msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
-msgstr ""
+msgstr "Приховати повідомлення, вставивши {$warn %s off} у модуль \"%s\""
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
@@ -10136,7 +10136,7 @@ msgstr "Перед пов'язаними"
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
-msgstr "Успадкований Елемент"
+msgstr "Успадкований елемент"
 
 #: lazarusidestrconsts.lisinheritedparameters
 msgid "Inherited parameters"
@@ -10354,7 +10354,7 @@ msgstr "Встановити вибране"
 #: lazarusidestrconsts.lisinstalluninstallpackages
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall Packages"
-msgstr "Встановлення/Видалення Пакунків"
+msgstr "Встановлення/Видалення пакунків"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
 msgid "Instead of compile package create a simple Makefile."
@@ -10394,7 +10394,7 @@ msgstr "Неприпустимий вираз:%s%s%s%s"
 
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
-msgstr "Неправильний вираз.%sДовідка: функція \"Створити Рядок Ресурсів\" вимагає рядкової константи в одному файлі. Виділіть вираз і спробуйте ще."
+msgstr "Неправильний вираз.%sДовідка: функція \"Створити рядок ресурсів\" вимагає рядкової константи в одному файлі. Виберіть вираз і спробуйте ще."
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -10499,7 +10499,7 @@ msgstr "Цікаво, як ви це зробили. Помилка у базо�
 #: lazarusidestrconsts.lisjhjumphistory
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
-msgstr "Історія Переходів"
+msgstr "Історія переходів"
 
 #: lazarusidestrconsts.lisjumptoerror
 msgid "Jump to error"
@@ -10580,11 +10580,11 @@ msgstr "Перервати збирання"
 
 #: lazarusidestrconsts.liskmaddbpaddress
 msgid "Add Address Breakpoint"
-msgstr "Додати Адресну Точку зупинки"
+msgstr "Додати адресну точку зупинки"
 
 #: lazarusidestrconsts.liskmaddbpsource
 msgid "Add Source Breakpoint"
-msgstr "Додати Точку зупинки Коду"
+msgstr "Додати точку зупинки коду"
 
 #: lazarusidestrconsts.liskmaddbpwatchpoint
 msgid "Add Data/WatchPoint"
@@ -10629,7 +10629,7 @@ msgstr "Компілювати проект/програму"
 
 #: lazarusidestrconsts.liskmconfigbuildfile
 msgid "Config \"Build File\""
-msgstr "Налаштувати \"Зібрати файл\""
+msgstr "Налаштувати \"файл збирання\""
 
 #: lazarusidestrconsts.liskmconfigurecustomcomponents
 msgid "Configure Custom Components"
@@ -10677,7 +10677,7 @@ msgstr "Порівняти файли кодів"
 
 #: lazarusidestrconsts.liskmeditcodetemplates
 msgid "Edit Code Templates"
-msgstr "Редагувати Коди Шаблонів"
+msgstr "Редагувати шаблони коду"
 
 #: lazarusidestrconsts.liskmeditcontextsensitivehelp
 msgid "Edit context sensitive help"
@@ -10697,7 +10697,7 @@ msgstr "Приклади проектів"
 
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
-msgstr "Налаштування Зовнішніх інструментів"
+msgstr "Налаштування зовнішніх інструментів"
 
 #: lazarusidestrconsts.liskmfindincremental
 msgid "Find Incremental"
@@ -10826,7 +10826,7 @@ msgstr "Новий проект з файлу"
 #: lazarusidestrconsts.liskmnewunit
 msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
-msgstr "Новий Модуль"
+msgstr "Новий модуль"
 
 #: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechosenscheme
 msgid "Note: All keys will be set to the values of the chosen scheme."
@@ -10854,7 +10854,7 @@ msgstr "Швидке компілювання, без компонування"
 
 #: lazarusidestrconsts.liskmremoveactivefilefromproject
 msgid "Remove Active File from Project"
-msgstr "Видалити Активний Файл з Проекту"
+msgstr "Видалити активний файл з проекту"
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -10879,36 +10879,36 @@ msgstr "Зберегти проект як"
 #: lazarusidestrconsts.liskmselectlineend
 msgctxt "lazarusidestrconsts.liskmselectlineend"
 msgid "Select Line End"
-msgstr "Виділити кінець рядка"
+msgstr "Вибрати кінець рядка"
 
 #: lazarusidestrconsts.liskmselectlinestart
 msgctxt "lazarusidestrconsts.liskmselectlinestart"
 msgid "Select Line Start"
-msgstr "Виділити початок рядка"
+msgstr "Вибрати початок рядка"
 
 #: lazarusidestrconsts.liskmselectpagebottom
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
 msgid "Select Page Bottom"
-msgstr "Виділити низ сторінки"
+msgstr "Вибрати низ сторінки"
 
 #: lazarusidestrconsts.liskmselectpagetop
 msgctxt "lazarusidestrconsts.liskmselectpagetop"
 msgid "Select Page Top"
-msgstr "Виділити верх сторінки"
+msgstr "Вибрати верх сторінки"
 
 #: lazarusidestrconsts.liskmselectwordleft
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"
-msgstr "Виділити слово зліва"
+msgstr "Вибрати слово зліва"
 
 #: lazarusidestrconsts.liskmselectwordright
 msgctxt "lazarusidestrconsts.liskmselectwordright"
 msgid "Select Word Right"
-msgstr "Виділити слово справа"
+msgstr "Вибрати слово справа"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
-msgstr "Встановити Закладку на дереві"
+msgstr "Встановити вільну закладку"
 
 #: lazarusidestrconsts.liskmsetmarker0
 msgid "Set bookmark 0"
@@ -11005,7 +11005,7 @@ msgstr "Переглянути Асемблер"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
 msgid "View Breakpoints"
-msgstr "Переглянути Точки Зупинки"
+msgstr "Переглянути точки зупинки"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
 msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
@@ -11026,7 +11026,7 @@ msgstr "Перемкнути до перегляду палітри компон
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
 msgid "View Debuger Event Log"
-msgstr "Переглянути Журнал подій зневаджувача"
+msgstr "Переглянути журнал подій зневаджувача"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "View Debugger Output"
@@ -11034,12 +11034,12 @@ msgstr "Переглянути повідомлення зневаджувача
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
-msgstr "Перемкнути до перегляду Документації Редактора"
+msgstr "Перемкнути до перегляду Редактора документації"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
 msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
 msgid "View History"
-msgstr "Переглянути Історію"
+msgstr "Переглянути історію"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
@@ -11055,7 +11055,7 @@ msgstr "Перемкнути до перегляду Повідомлень"
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
-msgstr "Перемкнути до перегляду Інспектора Об'єктів"
+msgstr "Перемкнути до перегляду Інспектора об'єктів"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
@@ -11064,11 +11064,11 @@ msgstr "Показати вивід терміналу"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "View Registers"
-msgstr "Переглянути Регістри"
+msgstr "Переглянути регістри"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
 msgid "Toggle view Search Results"
-msgstr "Перемкнути до перегляду Результатів Пошуку"
+msgstr "Перемкнути до перегляду Результатів пошуку"
 
 #: lazarusidestrconsts.liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
@@ -11097,7 +11097,7 @@ msgstr "Переглядання тексту проекту"
 
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
-msgstr "Переглянути Інформацію про Модулі"
+msgstr "Переглянути інформацію про модулі"
 
 #: lazarusidestrconsts.lislastopened
 msgid "Last opened"
@@ -11163,11 +11163,11 @@ msgstr "Ви точно хочете видалити цей профіль зб
 
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
-msgstr "Зібрати Багато"
+msgstr "Зібрати багато"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
-msgstr "Загальні Налаштування"
+msgstr "Загальні налаштування"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before build"
@@ -11192,7 +11192,7 @@ msgstr "Визначення без -d"
 #: lazarusidestrconsts.lislazbuildeditdefines
 msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
 msgid "Edit Defines"
-msgstr "Редагувати Визначення"
+msgstr "Редагувати визначення"
 
 #: lazarusidestrconsts.lislazbuildeditlistofdefineswhichcanbeusedbyanyprofile
 msgid "Edit list of defines which can be used by any profile"
@@ -11542,7 +11542,7 @@ msgstr "Головний модуль має секцію Uses, що місти�
 
 #: lazarusidestrconsts.lismainunitispascalsource
 msgid "Main unit is Pascal source"
-msgstr "Головний модуль в кодах Паскаля"
+msgstr "Головний модуль у сирцях Паскаля"
 
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
@@ -11761,7 +11761,7 @@ msgstr "Завершувати код (у діалозі)"
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
-msgstr "Налаштувати збирання+виконання файлу ..."
+msgstr "Налаштувати файл збирання+виконання ..."
 
 #: lazarusidestrconsts.lismenuconfigcustomcomps
 msgid "Configure Custom Components ..."
@@ -12568,7 +12568,7 @@ msgstr "Перейти до uses в інтерфейсі"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to Next Bookmark"
-msgstr "Перейти до наст. Закладки"
+msgstr "Перейти до наступної закладки"
 
 #: lazarusidestrconsts.lismenujumptonexterror
 msgid "Jump to Next Error"
@@ -12777,7 +12777,7 @@ msgstr "Скидання зневаджувача"
 
 #: lazarusidestrconsts.lismenurevert
 msgid "Revert"
-msgstr "Зворотній експорт"
+msgstr "Зворотний експорт"
 
 #: lazarusidestrconsts.lismenurun
 msgctxt "lazarusidestrconsts.lismenurun"
@@ -12794,7 +12794,7 @@ msgstr "Пара&метри виконання ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
 msgid "Step over to &Cursor"
-msgstr "Виконати до &курсора"
+msgstr "Виконати до &курсору"
 
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
@@ -12823,32 +12823,32 @@ msgstr "П&ошук"
 
 #: lazarusidestrconsts.lismenuselect
 msgid "Select"
-msgstr "Виділити"
+msgstr "Вибрати"
 
 #: lazarusidestrconsts.lismenuselectall
 msgctxt "lazarusidestrconsts.lismenuselectall"
 msgid "Select All"
-msgstr "Виділити все"
+msgstr "Вибрати все"
 
 #: lazarusidestrconsts.lismenuselectcodeblock
 msgid "Select Code Block"
-msgstr "Виділити блок коду"
+msgstr "Вибрати блок коду"
 
 #: lazarusidestrconsts.lismenuselectline
 msgid "Select Line"
-msgstr "Виділити рядок"
+msgstr "Вибрати рядок"
 
 #: lazarusidestrconsts.lismenuselectparagraph
 msgid "Select Paragraph"
-msgstr "Виділити абзац"
+msgstr "Вибрати абзац"
 
 #: lazarusidestrconsts.lismenuselecttobrace
 msgid "Select to Brace"
-msgstr "Виділити до дужки"
+msgstr "Вибрати до дужки"
 
 #: lazarusidestrconsts.lismenuselectword
 msgid "Select Word"
-msgstr "Виділити слово"
+msgstr "Вибрати слово"
 
 #: lazarusidestrconsts.lismenusetfreebookmark
 msgctxt "lazarusidestrconsts.lismenusetfreebookmark"
@@ -12982,7 +12982,7 @@ msgstr "Верхній регістр для вибраного"
 #: lazarusidestrconsts.lismenuuseunit
 msgctxt "lazarusidestrconsts.lismenuuseunit"
 msgid "Add Unit to Uses Section ..."
-msgstr "Додати модуль в секцію Uses ..."
+msgstr "Додати модуль у секцію Uses ..."
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
@@ -13199,7 +13199,7 @@ msgstr "Шлях пошуку модуля"
 
 #: lazarusidestrconsts.lismissingunitsskip
 msgid "Skip this Unit"
-msgstr "Пропустити цей Модуль"
+msgstr "Пропустити цей модуль"
 
 #: lazarusidestrconsts.lismitnotice
 msgid ""
@@ -14005,7 +14005,7 @@ msgstr "Відкрити наявний файл"
 #: lazarusidestrconsts.lisopenfile
 msgctxt "lazarusidestrconsts.lisopenfile"
 msgid "Open File"
-msgstr "Відкрити Файл"
+msgstr "Відкрити файл"
 
 #: lazarusidestrconsts.lisopenfile2
 msgctxt "lazarusidestrconsts.lisopenfile2"
@@ -14115,7 +14115,7 @@ msgstr "Підмінити мову. Наприклад --language=de.  Для �
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
 msgid "Override function result string types with the first parameter expression type"
-msgstr ""
+msgstr "Перекрити типи рядка результатів функції типом виразу першого параметра"
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
@@ -14365,7 +14365,7 @@ msgstr "Скомпілювати всі?"
 
 #: lazarusidestrconsts.lispckeditcompilepackage
 msgid "Compile package"
-msgstr "Скомпілювати пакунок"
+msgstr "Компіляція пакунка"
 
 #: lazarusidestrconsts.lispckeditcompileroptionsforpackage
 msgid "Compiler Options for Package %s"
@@ -14557,7 +14557,7 @@ msgstr "Встановлено"
 
 #: lazarusidestrconsts.lispckexplinstallonnextstart
 msgid "Install on next start"
-msgstr "Встановити при наст. запуску"
+msgstr "Встановити при наступному запуску"
 
 #: lazarusidestrconsts.lispckexplstate
 msgid "%sState: "
@@ -15487,7 +15487,7 @@ msgstr "Відкрийте модуль перед запуском."
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
-msgstr "Виділіть трохи коду, щоб витягти нову процедуру/метод."
+msgstr "Виберіть трохи коду, щоб витягти нову процедуру/метод."
 
 #: lazarusidestrconsts.lisplistall
 msgctxt "lazarusidestrconsts.lisplistall"
@@ -17512,7 +17512,7 @@ msgstr "Клавішу %s вже призначено для %s%s.%s%sВидал
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
-msgstr "Необхідний для виконання Пакет програм %s%sне існує або не є виконуваним файлом.%sВи хочете створити такий?%s%Для налаштування дивіться Проект -> Параметри проекту -> Застосунок."
+msgstr "Необхідний для виконання пакет програм %s%sне існує або не є виконуваним файлом.%sВи хочете створити такий?%s%Для налаштування дивіться Проект -> Параметри проекту -> Застосунок."
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application \"%s\"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local"
@@ -18717,7 +18717,7 @@ msgstr "Рядок у верхньому регістрі, поданий як �
 
 #: lazarusidestrconsts.lisurlonwikithebaseurlis
 msgid "URL on wiki (the base url is %s)"
-msgstr "Адреса сторінки Wiki (базова - %s)"
+msgstr "Адреса сторінки Вікі (базова - %s)"
 
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
@@ -18880,7 +18880,7 @@ msgstr "Дуже детально"
 #: lazarusidestrconsts.lisviewbreakpointproperties
 msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
 msgid "Breakpoint Properties ..."
-msgstr "Властивості Точки Зупинки ..."
+msgstr "Властивості точки зупинки ..."
 
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
@@ -19034,7 +19034,7 @@ msgstr "З необхідними пакунками"
 
 #: lazarusidestrconsts.liswldeleteall
 msgid "De&lete All"
-msgstr "Ви&далити Всі"
+msgstr "Ви&далити всі"
 
 #: lazarusidestrconsts.liswldisableall
 msgid "D&isable All"
@@ -19042,7 +19042,7 @@ msgstr "Н&едоступні Всі"
 
 #: lazarusidestrconsts.liswlenableall
 msgid "E&nable All"
-msgstr "В&вімкнути Все"
+msgstr "В&вімкнути все"
 
 #: lazarusidestrconsts.liswlexpression
 msgid "Expression"
@@ -19058,7 +19058,7 @@ msgstr "&Властивості"
 
 #: lazarusidestrconsts.liswlwatchlist
 msgid "Watch List"
-msgstr "Список Спостережень"
+msgstr "Список спостережень"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -19511,7 +19511,7 @@ msgstr "Команди вибирання стовпців тексту"
 
 #: lazarusidestrconsts.srkmcatcursormoving
 msgid "Cursor moving commands"
-msgstr "Команди переміщення курсора"
+msgstr "Команди переміщення курсору"
 
 #: lazarusidestrconsts.srkmcatediting
 msgid "Text editing commands"
@@ -19572,7 +19572,7 @@ msgstr "Синхронне редагування (не в комірці)"
 
 #: lazarusidestrconsts.srkmcatsyncroeditsel
 msgid "Syncron Editing (while selecting)"
-msgstr "Синхронне редагування (при виділенні)"
+msgstr "Синхронне редагування (при виборі)"
 
 #: lazarusidestrconsts.srkmcattemplateedit
 msgid "Template Editing"
@@ -19819,7 +19819,7 @@ msgstr "Видалити до початку рядка"
 
 #: lazarusidestrconsts.srkmecdeletechar
 msgid "Delete char at cursor"
-msgstr "Видалити символ біля курсора"
+msgstr "Видалити символ біля курсору"
 
 #: lazarusidestrconsts.srkmecdeleteeol
 msgid "Delete to end of line"
@@ -19950,7 +19950,7 @@ msgstr "Згорнути під курсором"
 
 #: lazarusidestrconsts.srkmecfoldlevel
 msgid "Fold to Level %d"
-msgstr "Згорнути до Рівня %d"
+msgstr "Згорнути до рівня %d"
 
 #: lazarusidestrconsts.srkmecgotoeditor
 msgid "Go to editor %d"
@@ -20243,11 +20243,11 @@ msgstr "Очистити всі додаткові курсори"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretmodecancelonmove
 msgid "Cursor keys clear all extra carets"
-msgstr "Клавіші курсора вилучають всі додаткові курсори"
+msgstr "Клавіші курсору вилучають всі додаткові курсори"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretmodemoveall
 msgid "Cursor keys move all extra carets"
-msgstr "Клавіші курсора керують всіма додатковими курсорами"
+msgstr "Клавіші курсору керують всіма додатковими курсорами"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretsetcaret
 msgid "Add extra caret"
@@ -20352,12 +20352,12 @@ msgstr "Прокрутити вверх на один рядок"
 
 #: lazarusidestrconsts.srkmecseldown
 msgid "Select Down"
-msgstr "Виділити вниз"
+msgstr "Вибрати вниз"
 
 #: lazarusidestrconsts.srkmecselectall
 msgctxt "lazarusidestrconsts.srkmecselectall"
 msgid "Select All"
-msgstr "Виділити всі"
+msgstr "Вибрати все"
 
 #: lazarusidestrconsts.srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
@@ -20365,15 +20365,15 @@ msgstr "Перетворити табуляцію в пробіли у вибр�
 
 #: lazarusidestrconsts.srkmecseleditorbottom
 msgid "Select to absolute end"
-msgstr "Виділити до самого кінця"
+msgstr "Вибрати до самого кінця"
 
 #: lazarusidestrconsts.srkmecseleditortop
 msgid "Select to absolute beginning"
-msgstr "Виділити до самого початку"
+msgstr "Вибрати до самого початку"
 
 #: lazarusidestrconsts.srkmecselgotoxy
 msgid "Select Goto XY"
-msgstr "Виділити перехід за коорд."
+msgstr "Вибрати до координати XY"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
 msgid "Select part-word left (e.g. CamelCase)"
@@ -20390,42 +20390,42 @@ msgstr "Вибрати зліва"
 #: lazarusidestrconsts.srkmecsellineend
 msgctxt "lazarusidestrconsts.srkmecsellineend"
 msgid "Select Line End"
-msgstr "Виділити кінць рядка"
+msgstr "Вибрати кінець рядка"
 
 #: lazarusidestrconsts.srkmecsellinestart
 msgctxt "lazarusidestrconsts.srkmecsellinestart"
 msgid "Select Line Start"
-msgstr "Виділити початок рядка"
+msgstr "Вибрати початок рядка"
 
 #: lazarusidestrconsts.srkmecsellinetextstart
 msgid "Select to text start in line"
-msgstr "Виділити до початку тексту в рядку"
+msgstr "Вибрати до початку тексту в рядку"
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgctxt "lazarusidestrconsts.srkmecselpagebottom"
 msgid "Select Page Bottom"
-msgstr "Виділити низ сторінки"
+msgstr "Вибрати низ сторінки"
 
 #: lazarusidestrconsts.srkmecselpagedown
 msgid "Select Page Down"
-msgstr "Виділити сторінку знизу"
+msgstr "Вибрати сторінку внизу"
 
 #: lazarusidestrconsts.srkmecselpageleft
 msgid "Select Page Left"
-msgstr "Виділити сторінку зліва"
+msgstr "Вибрати сторінку зліва"
 
 #: lazarusidestrconsts.srkmecselpageright
 msgid "Select Page Right"
-msgstr "Виділити сторінку справа"
+msgstr "Вибрати сторінку справа"
 
 #: lazarusidestrconsts.srkmecselpagetop
 msgctxt "lazarusidestrconsts.srkmecselpagetop"
 msgid "Select Page Top"
-msgstr "Виділити верх сторінки"
+msgstr "Вибрати верх сторінки"
 
 #: lazarusidestrconsts.srkmecselpageup
 msgid "Select Page Up"
-msgstr "Виділити сторінку зверху"
+msgstr "Вибрати сторінку вгорі"
 
 #: lazarusidestrconsts.srkmecselright
 msgid "Select Right"
@@ -20449,7 +20449,7 @@ msgstr "Закінчити вибір з прив'язкою"
 
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
-msgstr "Виділити вверх"
+msgstr "Вибрати вгору"
 
 #: lazarusidestrconsts.srkmecselwordendleft
 msgid "Select word-end left"
@@ -20462,12 +20462,12 @@ msgstr "Вибрати кінець слова справа"
 #: lazarusidestrconsts.srkmecselwordleft
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
 msgid "Select Word Left"
-msgstr "Виділити слово зліва"
+msgstr "Вибрати слово зліва"
 
 #: lazarusidestrconsts.srkmecselwordright
 msgctxt "lazarusidestrconsts.srkmecselwordright"
 msgid "Select Word Right"
-msgstr "Виділити слово справа"
+msgstr "Вибрати слово справа"
 
 #: lazarusidestrconsts.srkmecsetfreebookmark
 msgctxt "lazarusidestrconsts.srkmecsetfreebookmark"
@@ -20964,11 +20964,11 @@ msgstr "Зап-пауза"
 
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
-msgstr "Додати спостереження біля курсора"
+msgstr "Додати спостереження біля курсору"
 
 #: lazarusidestrconsts.uemaddwatchpointatcursor
 msgid "Add Watch&Point At Cursor"
-msgstr "Додати точку&огляду біля курсора"
+msgstr "Додати точку&огляду біля курсору"
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"
@@ -21085,7 +21085,7 @@ msgstr "Змінено"
 
 #: lazarusidestrconsts.uemopenfileatcursor
 msgid "&Open File at Cursor"
-msgstr "&Відкрити файл біля курсора"
+msgstr "&Відкрити файл біля курсору"
 
 #: lazarusidestrconsts.uemprevbookmark
 msgid "Goto Previous Bookmark"
@@ -21106,7 +21106,7 @@ msgstr "Переробка коду"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"
-msgstr "&Виконувати до курсора"
+msgstr "&Виконувати до курсору"
 
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
