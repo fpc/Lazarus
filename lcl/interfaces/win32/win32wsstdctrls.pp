@@ -91,6 +91,7 @@ type
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
     class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox;
        ADroppedDown: Boolean); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
@@ -1113,6 +1114,13 @@ begin
     SetSelStart(ACustomComboBox, aSelStart);
     SetSelLength(ACustomComboBox, aSelLength);
   end;
+end;
+
+class procedure TWin32WSCustomComboBox.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+begin
+  TWin32WSWinControl.SetFont(AWinControl, AFont);
+  GetControlConstraints(AWinControl.Constraints);
 end;
 
 class procedure TWin32WSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
