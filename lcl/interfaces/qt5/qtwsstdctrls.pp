@@ -1571,7 +1571,7 @@ end;
 class procedure TQtWSCustomComboBox.SetStyle(
   const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
 begin
-  TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle in [csDropDown, csSimple]);
+  TQtComboBox(ACustomComboBox.Handle).setEditable(NewStyle in [csDropDown, csSimple, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable]);
   TQtComboBox(ACustomComboBox.Handle).OwnerDrawn := NewStyle in
                                                    [csOwnerDrawFixed,
                                                     csOwnerDrawVariable,
