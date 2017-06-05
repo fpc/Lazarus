@@ -67,7 +67,7 @@ uses
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
-  StdCodeTools, CodeCreationDlg,
+  StdCodeTools, EventCodeTool, CodeCreationDlg,
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
@@ -12627,7 +12627,9 @@ var
   OldChange: Boolean;
   InheritedMethodPath, MethodClassName, ShortMethodName: String;
   UseRTTIForMethods, AddOverride: Boolean;
-  MethodComponent: TComponent;
+  MethodComponent, AncestorComponent: TComponent;
+  Tool: TEventsCodeTool;
+  Ctx: TFindContext;
 begin
   Result.Code:=nil;
   Result.Data:=nil;
@@ -12635,7 +12637,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF VerboseOnPropHookCreateMethod}
-  debugln(' ');
+  debugln('');
   debugln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
   DebugLn(['  Persistent=',dbgsName(APersistent),' Unit=',GetClassUnitName(APersistent.ClassType),' Path=',APropertyPath]);
   {$ENDIF}
@@ -12654,25 +12656,22 @@ begin
       raise Exception.Create('Invalid classname "'+AMethodName+'"');
     end;
     AddOverride:=true;
+    InheritedMethodPath:=GetInheritedMethodPath;
   end else begin
     MethodClassName:='';
     ShortMethodName:=AMethodName;
     AddOverride:=false;
+    InheritedMethodPath:='';
   end;
 
-  InheritedMethodPath:=GetInheritedMethodPath;
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
   UseRTTIForMethods:=FormEditor1.ComponentUsesRTTIForMethods(ActiveUnitInfo.Component);
   try
     // create published method in active unit
     {$IFDEF VerboseOnPropHookCreateMethod}
-    debugln(['TMainIDE.OnPropHookCreateMethod CreatePublishedMethod ',ActiveUnitInfo.Source.Filename,' LookupRoot=',ActiveUnitInfo.Component.ClassName,' ShortMethodName="',ShortMethodName,'" PropertyUnit=',GetClassUnitName(APersistent.ClassType),' APropertyPath="',APropertyPath,'" CallInherited=',InheritedMethodPath]);
+    debugln(['TMainIDE.OnPropHookCreateMethod CreatePublishedMethod ',ActiveUnitInfo.Source.Filename,' LookupRoot=',ActiveUnitInfo.Component.ClassName,' ShortMethodName="',ShortMethodName,'" PropertyUnit=',GetClassUnitName(APersistent.ClassType),' APropertyPath="',APropertyPath,'" CallInherited=',InheritedMethodPath,' AddOverride=',AddOverride]);
     {$ENDIF}
-    if not AddOverride then begin
-      // ToDo: check if there is already an ancestor method
-      // The JITMethod must be created for that class
-    end;
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
         ActiveUnitInfo.Component.ClassName,ShortMethodName,
         ATypeInfo,UseRTTIForMethods,GetClassUnitName(APersistent.ClassType),
@@ -12682,6 +12681,49 @@ begin
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
+      if not AddOverride then begin
+        // Check which source class (active component or ancestor) has this method
+        // The JITMethod must be created for that class
+        // search method declaration
+        Ctx:=CleanFindContext;
+        try
+          Tool:=CodeToolBoss.FindCodeToolForSource(ActiveUnitInfo.Source) as TEventsCodeTool;
+          Tool.FindClassOfInstance(ActiveUnitInfo.Component,Ctx,true);
+          Ctx:=Ctx.Tool.FindClassMember(Ctx.Node,ShortMethodName,true);
+        except
+          on E: Exception do begin
+            {$IFDEF VerboseOnPropHookCreateMethod}
+            debugln(['[TMainIDE.OnPropHookCreateMethod] syntax error: searched for ',ActiveUnitInfo.Component.ClassName+'.'+ShortMethodName,' Error="',E.Message,'"']);
+            {$ENDIF}
+            CodeToolBoss.HandleException(E);
+          end;
+        end;
+        if (Ctx.Node=nil) or (Ctx.Node.Desc<>ctnProcedure) then begin
+          {$IFDEF VerboseOnPropHookCreateMethod}
+          debugln(['[TMainIDE.OnPropHookCreateMethod] damn, I lost the method: ',ActiveUnitInfo.Component.ClassName+'.'+ShortMethodName,' Ctx=',FindContextToString(Ctx)]);
+          {$ENDIF}
+          DoJumpToCodeToolBossError;
+          raise Exception.Create('source method not found: '+ActiveUnitInfo.Component.ClassName+'.'+ShortMethodName);
+        end;
+        // get method class
+        while not (Ctx.Node.Desc in AllClassObjects) do
+          Ctx.Node:=Ctx.Node.Parent;
+        MethodClassName:=Ctx.Tool.ExtractClassName(Ctx.Node,false,false);
+        {$IFDEF VerboseOnPropHookCreateMethod}
+        debugln(['[TMainIDE.OnPropHookCreateMethod] found method source in class MethodClassName, searching JITcomponent ...']);
+        {$ENDIF}
+        // find nearest JIT component
+        while CompareText(MethodComponent.ClassName,MethodClassName)<>0 do begin
+          if not MethodComponent.ClassParent.InheritsFrom(TComponent) then break;
+          AncestorComponent:=FormEditor1.FindJITComponentByClass(TComponentClass(MethodComponent.ClassParent));
+          {$IFDEF VerboseOnPropHookCreateMethod}
+          debugln(['[TMainIDE.OnPropHookCreateMethod] MethodComponent.ClassParent=',MethodComponent.ClassParent.ClassName,' JITcomponent=',DbgSName(AncestorComponent)]);
+          {$ENDIF}
+          if AncestorComponent=nil then break;
+          MethodComponent:=AncestorComponent;
+        end;
+      end;
+
       Result:=FormEditor1.CreateNewJITMethod(MethodComponent,ShortMethodName);
       {$IFDEF VerboseOnPropHookCreateMethod}
       debugln(['TMainIDE.PropHookCreateMethod JITClass=',TJITMethod(Result.Data).TheClass.ClassName]);

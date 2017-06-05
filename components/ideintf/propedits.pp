@@ -4812,7 +4812,7 @@ begin
     PropertyHook.CompatibleMethodExists(NewValue, GetInstProp,
                    NewMethodIsCompatible, NewMethodIsPublished, NewIdentIsMethod);
   {$IFDEF VerboseMethodPropEdit}
-  debugln(['TMethodPropertyEditor.SetValue NewValue="',NewValue,'" IsCompatible=',NewMethodIsCompatible,' IsPublished=',NewMethodIsPublished,' IsMethpd=',NewIdentIsMethod]);
+  debugln(['TMethodPropertyEditor.SetValue NewValue="',NewValue,'" IsCompatible=',NewMethodIsCompatible,' IsPublished=',NewMethodIsPublished,' IsMethod=',NewIdentIsMethod]);
   {$ENDIF}
   if NewMethodExists then
   begin
