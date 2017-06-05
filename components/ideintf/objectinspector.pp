@@ -1858,12 +1858,15 @@ begin
     else if paValueList in EditorAttributes then
     begin
       FCurrentEdit:=ValueComboBox;
-      if paCustomDrawn in EditorAttributes then
+      if (paCustomDrawn in EditorAttributes) and (paPickList in EditorAttributes) then
         ValueComboBox.Style:=csOwnerDrawVariable
-      else if paPickList in EditorAttributes then
-        ValueComboBox.Style:=csDropDownList      // text field should be readonly
       else
-        ValueComboBox.Style:=csDropDown;
+      if paCustomDrawn in EditorAttributes then
+        ValueComboBox.Style:=csOwnerDrawEditableVariable
+      else if paPickList in EditorAttributes then
+        ValueComboBox.Style:=csOwnerDrawFixed
+      else
+        ValueComboBox.Style:=csOwnerDrawEditableFixed;
       ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
       ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
       ValueComboBox.Enabled:=not NewRow.IsReadOnly;
