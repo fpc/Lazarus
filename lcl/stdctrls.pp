@@ -283,7 +283,6 @@ type
     FOnGetItems: TNotifyEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelect: TNotifyEvent;
-    FReadOnly: Boolean;
     FSelLength: integer;
     FSelStart: integer;
     FSorted: boolean;
@@ -293,6 +292,7 @@ type
     function GetAutoComplete: boolean;
     function GetDroppedDown: Boolean;
     function GetItemWidth: Integer;
+    function GetReadOnly: Boolean;
     procedure SetAutoComplete(const AValue: boolean);
     procedure SetItemWidth(const AValue: Integer);
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
@@ -335,7 +335,6 @@ type
     function GetSelText: string; virtual;
     function GetItemIndex: integer; virtual;
     function GetMaxLength: integer; virtual;
-    function IsReadOnlyStored: boolean;
     procedure SetDropDownCount(const AValue: Integer); virtual;
     procedure SetDroppedDown(const AValue: Boolean); virtual;
     procedure SetItemHeight(const AValue: Integer); virtual;
@@ -398,7 +397,7 @@ type
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
-    property ReadOnly: Boolean read FReadOnly write SetReadOnly stored IsReadOnlyStored;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly stored False;
     property SelLength: integer read GetSelLength write SetSelLength;// UTF-8 length
     property SelStart: integer read GetSelStart write SetSelStart;// UTF-8 position
     property SelText: String read GetSelText write SetSelText;
@@ -472,7 +471,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property ReadOnly;
+    property ReadOnly; deprecated 'Will be removed in 1.10 - use extended Style values instead.';
     property ShowHint;
     property Sorted;
     property Style;

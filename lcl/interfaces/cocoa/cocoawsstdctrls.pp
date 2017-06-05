@@ -76,7 +76,6 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     {class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;}
-    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
@@ -1104,33 +1103,18 @@ class function TCocoaWSCustomComboBox.CreateHandle(const AWinControl:TWinControl
   const AParams:TCreateParams):TLCLIntfHandle;
 var
   cmb: TCocoaComboBox;
-  rocmb: TCocoaReadOnlyComboBox;
 begin
   Result:=0;
 
-  if TCustomComboBox(AWinControl).ReadOnly then
-  begin
-    rocmb := NSView(TCocoaReadOnlyComboBox.alloc).lclInitWithCreateParams(AParams);
-    if not Assigned(rocmb) then Exit;
-    rocmb.Owner := TCustomComboBox(AWinControl);
-    rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
-    rocmb.list:=TCocoaComboBoxList.Create(nil, rocmb);
-    rocmb.setTarget(rocmb);
-    rocmb.setAction(objcselector('comboboxAction:'));
-    rocmb.selectItemAtIndex(rocmb.lastSelectedItemIndex);
-    Result:=TLCLIntfHandle(rocmb);
-  end
-  else
-  begin
-    cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
-    if not Assigned(cmb) then Exit;
-    cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
-    cmb.list:=TCocoaComboBoxList.Create(cmb, nil);
-    cmb.setUsesDataSource(true);
-    cmb.setDataSource(cmb);
-    cmb.setDelegate(cmb);
-    Result:=TLCLIntfHandle(cmb);
-  end;
+  cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
+  if not Assigned(cmb) then Exit;
+  cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
+  cmb.list:=TCocoaComboBoxList.Create(cmb, nil);
+  cmb.setUsesDataSource(true);
+  cmb.setDataSource(cmb);
+  cmb.setDelegate(cmb);
+  Result:=TLCLIntfHandle(cmb);
+
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints
   AWinControl.Constraints.SetInterfaceConstraints(0,26,0,26);
@@ -1142,35 +1126,16 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ACustomComboBox.ReadOnly then
-    Result := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
-  else
-    Result := TCocoaComboBox(ACustomComboBox.Handle).indexOfSelectedItem;
+  Result := TCocoaComboBox(ACustomComboBox.Handle).indexOfSelectedItem;
 end;
 
 class procedure TCocoaWSCustomComboBox.SetItemIndex(const ACustomComboBox:
   TCustomComboBox;NewIndex:integer);
-var
-  rocmb: TCocoaReadOnlyComboBox;
 begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ACustomComboBox.ReadOnly then
-  begin
-    rocmb := TCocoaReadOnlyComboBox(ACustomComboBox.Handle);
-    rocmb.lastSelectedItemIndex := NewIndex;
-    rocmb.selectItemAtIndex(NewIndex);
-  end
-  else
-    TCocoaComboBox(ACustomComboBox.Handle).selectItemAtIndex(NewIndex);
-end;
-
-class procedure TCocoaWSCustomComboBox.SetReadOnly(const ACustomComboBox:
-  TCustomComboBox; NewReadOnly: boolean);
-begin
-  if Assigned(ACustomComboBox) then
-    RecreateWnd(ACustomComboBox);
+  TCocoaComboBox(ACustomComboBox.Handle).selectItemAtIndex(NewIndex);
 end;
 
 class procedure TCocoaWSCustomComboBox.SetDropDownCount(const ACustomComboBox:
@@ -1179,8 +1144,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if not ACustomComboBox.ReadOnly then
-    TCocoaComboBox(ACustomComboBox.Handle).setNumberOfVisibleItems(NewCount);
+  TCocoaComboBox(ACustomComboBox.Handle).setNumberOfVisibleItems(NewCount);
 end;
 
 class function TCocoaWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
@@ -1188,10 +1152,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ACustomComboBox.ReadOnly then
-    Result:=TCocoaReadOnlyComboBox(ACustomComboBox.Handle).list
-  else
-    Result:=TCocoaComboBox(ACustomComboBox.Handle).list;
+  Result:=TCocoaComboBox(ACustomComboBox.Handle).list;
 end;
 
 class function TCocoaWSCustomComboBox.GetItemHeight(const ACustomComboBox:
@@ -1200,10 +1161,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ACustomComboBox.ReadOnly then
-    Result := 26 // ToDo
-  else
-    Result:=Round(TCocoaComboBox(ACustomComboBox.Handle).itemHeight);
+  Result:=Round(TCocoaComboBox(ACustomComboBox.Handle).itemHeight);
 end;
 
 class procedure TCocoaWSCustomComboBox.SetItemHeight(const ACustomComboBox:
@@ -1212,10 +1170,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ACustomComboBox.ReadOnly then
-    Exit // ToDo
-  else
-    TCocoaComboBox(ACustomComboBox.Handle).setItemHeight(AItemHeight);
+  TCocoaComboBox(ACustomComboBox.Handle).setItemHeight(AItemHeight);
 end;
 
 class procedure TCocoaWSCustomComboBox.GetPreferredSize(

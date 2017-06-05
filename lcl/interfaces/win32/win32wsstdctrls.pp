@@ -95,7 +95,6 @@ type
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
@@ -942,12 +941,10 @@ const
   ComboBoxStyles: array[TComboBoxStyle] of dword = (
     CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
     CBS_OWNERDRAWFIXED, CBS_OWNERDRAWVARIABLE);
-  ComboBoxReadOnlyStyles: array[boolean] of dword = (
-    CBS_DROPDOWN, CBS_DROPDOWNLIST);
 begin
   Result := ComboBoxStyles[AComboBox.Style];
   if AComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
-    Result := Result or ComboBoxReadOnlyStyles[AComboBox.ReadOnly];
+    Result := Result or CBS_DROPDOWNLIST;
 end;
 
 class function TWin32WSCustomComboBox.GetStringList(
@@ -1147,12 +1144,6 @@ begin
   winhandle := ACustomComboBox.Handle;
   SendMessage(winhandle, CB_LIMITTEXT, NewLength, 0);
   GetWin32WindowInfo(winhandle)^.MaxLength := NewLength;
-end;
-
-class procedure TWin32WSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
-  NewReadOnly: boolean);
-begin
-  RecreateWnd(ACustomComboBox);
 end;
 
 class function TWin32WSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;

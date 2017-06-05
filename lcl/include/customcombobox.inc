@@ -42,7 +42,6 @@ begin
     TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
   TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, FStyle);
   TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, FArrowKeysTraverseList);
-  TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
   TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
   TWSCustomComboBoxClass(WidgetSetClass).SetDropDownCount(Self, FDropDownCount);
 
@@ -189,6 +188,11 @@ begin
   Result := FMaxLength;
 end;
 
+function TCustomComboBox.GetReadOnly: Boolean;
+begin
+  Result := Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable];
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomComboBox.LMChanged
   Params: msg -
@@ -247,7 +251,7 @@ end;
 procedure TCustomComboBox.CloseUp;
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
-  if not ReadOnly then
+  if Style in [csSingle, csDropDown] then // To-Do: csOwnerDrawEditableFixed, csOwnerDrawEditableVariable
     EditingDone;
   if Assigned(FOnCloseUp) then FOnCloseUp(Self);
   if FAutoSelect then
@@ -417,10 +421,6 @@ begin
   if Val <> FStyle then
   begin
     FStyle:= Val;
-    case FStyle of
-      csDropDown, csSimple: FReadOnly := false;
-      csDropDownList: FReadOnly := true;
-    end;
     if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
       TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, Val);
   end;
@@ -474,14 +474,12 @@ const
   ComboBoxStyles: array[TComboBoxStyle] of dword = (
     CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
     CBS_OWNERDRAWFIXED, CBS_OWNERDRAWVARIABLE);
-  ComboBoxReadOnlyStyles: array[boolean] of dword = (
-    CBS_DROPDOWN, CBS_DROPDOWNLIST);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS) or
     ComboBoxStyles[Style];
   if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
-    Params.Style := Params.Style or ComboBoxReadOnlyStyles[ReadOnly];
+    Params.Style := Params.Style or CBS_DROPDOWNLIST;
   if Sorted then
     Params.Style := Params.Style or CBS_SORT;
 end;
@@ -1087,29 +1085,9 @@ begin
   end;
 end;
 
-function TCustomComboBox.IsReadOnlyStored: boolean;
-begin
-  // these styles imply readonly value
-  Result := not (FStyle in [csSimple, csDropDown, csDropDownList]);
-  if Result then
-    Result := FReadOnly <> false;
-end;
-
 procedure TCustomComboBox.SetReadOnly(const AValue: Boolean);
 begin
-  if FReadOnly=AValue then exit;
-  if FStyle=csSimple then exit;
-  FReadOnly:=AValue;
-  case FStyle of
-    csDropDown, csDropDownList: begin
-      if FReadOnly
-        then Style := csDropDownList
-        else Style := csDropDown;
-    end;
-    csOwnerDrawFixed, csOwnerDrawVariable:
-      if HandleAllocated then
-        TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, AValue);
-  end;
+  // will be removed in 1.10
 end;
 
 {------------------------------------------------------------------------------

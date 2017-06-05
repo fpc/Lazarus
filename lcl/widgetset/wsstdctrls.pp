@@ -86,7 +86,6 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); virtual;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); virtual;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); virtual;
-    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); virtual;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; virtual;
     class procedure FreeItems(var AItems: TStrings); virtual;
@@ -468,11 +467,6 @@ end;
 
 class procedure TWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox;
   NewStyle: TComboBoxStyle);
-begin
-end;
-
-class procedure TWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
-  NewReadOnly: boolean);
 begin
 end;
 

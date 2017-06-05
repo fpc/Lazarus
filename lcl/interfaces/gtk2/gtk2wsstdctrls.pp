@@ -126,7 +126,6 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
-    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; {%H-}AList: TStrings; IsSorted: boolean); override;
@@ -1516,7 +1515,6 @@ begin
   
   if AWithEntry then begin
     SetMaxLength(ACustomComboBox, TComboBox(ACustomComboBox).MaxLength);
-    SetReadOnly(ACustomComboBox, ACustomComboBox.ReadOnly);
   end;
 
   SetRenderer(ACustomComboBox, ComboWidget, AWidgetInfo);
@@ -1989,33 +1987,6 @@ begin
   ReCreateCombo(ACustomComboBox, NeedEntry, WidgetInfo);
 end;
 
-class procedure TGtk2WSCustomComboBox.SetReadOnly(
-  const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean);
-var
-  WidgetInfo: PWidgetInfo;
-  Entry: PGtkWidget;
-begin
-  WidgetInfo := GetWidgetInfo({%H-}Pointer(ACustomComboBox.Handle));
-  if gtk_is_combo_box_entry(WidgetInfo^.CoreWidget) then
-  begin
-    Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
-    if ACustomComboBox.Style in [csDropDown, csSimple] then
-      gtk_entry_set_editable(PGtkEntry(Entry), not NewReadOnly)
-    else
-    if ACustomComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
-      ReCreateCombo(ACustomCombobox, False, WidgetInfo)
-    else
-    if (PGtkEntry(Entry)^.flag0 and $1) = Ord(NewReadOnly) then
-      ReCreateCombo(ACustomCombobox, not NewReadOnly, WidgetInfo);
-  end else
-  begin
-    if ACustomComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
-      ReCreateCombo(ACustomCombobox, False, WidgetInfo)
-    else
-      ReCreateCombo(ACustomCombobox, not NewReadOnly, WidgetInfo);
-  end;
-end;
-
 class function TGtk2WSCustomComboBox.GetItems(
   const ACustomComboBox: TCustomComboBox): TStrings;
 var
@@ -2102,11 +2073,6 @@ end;
 
 class procedure TGtk2WSCustomComboBox.ShowHide(const AWinControl: TWinControl);
 begin
-  // gtk2 doesn't set font on readonly combobox properly
-  // so we are doing it one more time before showing.
-  if AWinControl.HandleObjectShouldBeVisible and
-    TCustomComboBox(AWinControl).ReadOnly then
-      SetFont(AWinControl, AWinControl.Font);
   Gtk2WidgetSet.SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
   InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
 end;

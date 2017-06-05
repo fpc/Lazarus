@@ -83,7 +83,6 @@ type
     class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     
@@ -643,12 +642,10 @@ const
     0 {CBS_OWNERDRAWFIXED},
     0 {CBS_OWNERDRAWVARIABLE}
     );
-  ComboBoxReadOnlyStyles: array[boolean] of dword = (
-    CBS_DROPDOWN, CBS_DROPDOWNLIST);
 begin
   Result := ComboBoxStyles[AComboBox.Style];
   if AComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
-    Result := Result or ComboBoxReadOnlyStyles[AComboBox.ReadOnly];
+    Result := Result or CBS_DROPDOWNLIST;
 end;
 
 class function TWinCEWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
@@ -802,12 +799,6 @@ begin
   GetWindowInfo(winhandle)^.MaxLength := NewLength;
 end;
 
-class procedure TWinCEWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
-  NewReadOnly: boolean);
-begin
-  RecreateWnd(ACustomComboBox);
-end;
-
 class procedure TWinCEWSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
 var
   Handle: HWND;
@@ -817,10 +808,7 @@ begin
   Handle := AWinControl.Handle;
   pwAText := UTF8Decode(AText);
 
-  if TCustomComboBox(AWinControl).ReadOnly then
-    Windows.SendMessageW(Handle, CB_SELECTSTRING, WPARAM(-1), LPARAM(PWideChar(pwAText)))
-  else
-    Windows.SendMessageW(Handle, WM_SETTEXT, 0, LPARAM(PWideChar(pwAText)));
+  Windows.SendMessageW(Handle, WM_SETTEXT, 0, LPARAM(PWideChar(pwAText)));
 end;
 
 class function  TWinCEWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;

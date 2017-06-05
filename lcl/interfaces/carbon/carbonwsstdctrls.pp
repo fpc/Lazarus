@@ -72,7 +72,6 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; {%H-}NewStyle: TComboBoxStyle); override;
-    class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
@@ -446,21 +445,6 @@ begin
   TCarbonComboBox(ACustomComboBox.Handle).SetReadOnly(ACustomComboBox.ReadOnly);
   sz:=TCarbonComboBox(ACustomComboBox.Handle).GetPreferredSize;
   ACustomComboBox.Constraints.SetInterfaceConstraints(0,0,0,sz.Y);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomComboBox.SetReadOnly
-  Params:  ACustomComboBox - LCL custom combo box
-           NewReadOnly     - Read only behavior
-
-  Sets the read only behavior of combo box in Carbon interface
- ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomComboBox.SetReadOnly(const ACustomComboBox: TCustomComboBox;
-  NewReadOnly: boolean);
-begin
-  if not CheckHandle(ACustomComboBox, Self, 'SetReadOnly') then Exit;
-
-  TCarbonComboBox(ACustomComboBox.Handle).SetReadOnly(NewReadOnly);
 end;
 
 {------------------------------------------------------------------------------
