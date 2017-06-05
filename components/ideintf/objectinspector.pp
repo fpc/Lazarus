@@ -1863,7 +1863,7 @@ begin
       else if paPickList in EditorAttributes then
         ValueComboBox.Style:=csDropDownList      // text field should be readonly
       else
-        ValueComboBox.Style:=csOwnerDrawFixed;
+        ValueComboBox.Style:=csDropDown;
       ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
       ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
       ValueComboBox.Enabled:=not NewRow.IsReadOnly;
