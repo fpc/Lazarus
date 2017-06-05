@@ -9630,6 +9630,7 @@ end;
 
 function TQtLineEdit.getSelectedText: WideString;
 begin
+  Result := '';
   QLineEdit_selectedText(QLineEditH(Widget), @Result);
 end;
 
@@ -9665,6 +9666,7 @@ end;
 
 function TQtLineEdit.getText: WideString;
 begin
+  Result := '';
   QLineEdit_text(QLineEditH(Widget), @Result);
 end;
 
@@ -9672,8 +9674,7 @@ function TQtLineEdit.getTextMargins: TRect;
 var
   L, T, R, B: Integer;
 begin
-  QLineEdit_getTextMargins(QLineEditH(Widget),
-    @L, @T, @R, @B);
+  QLineEdit_getTextMargins(QLineEditH(Widget), @L, @T, @R, @B);
   Result := Rect(L, T, R, B);
 end;
 
