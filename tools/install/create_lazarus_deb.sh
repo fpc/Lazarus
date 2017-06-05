@@ -231,9 +231,9 @@ chmod 644 $LazBuildDir/etc/lazarus/*.xml
 
 # fixing permissions
 echo "fixing permissions ..."
-find $LazBuildDir -type d | xargs -d '\n' chmod 755
-find $LazBuildDir -perm 775 | xargs -d '\n' chmod 755 || true
-find $LazBuildDir -perm 664 | xargs -d '\n' chmod 644 || true
+find $LazBuildDir -type d -exec chmod 755 {} \;
+find $LazBuildDir -perm 775 -exec chmod 755 {} \;
+find $LazBuildDir -perm 664 -exec chmod 644 {} \;
 
 # postinst + postrm:
 #  don't know
