@@ -87,7 +87,7 @@ type
     parts -- d-m-y, m-d-y or y-m-d.
     When ddoTryDefault is set, the actual order is determined from
     ShortDateFormat global variable -- see coments above
-    AdjustEffectiveHideDateTimeParts procedure }
+    AdjustEffectiveDateDisplayOrder procedure }
   TDateDisplayOrder = (ddoDMY, ddoMDY, ddoYMD, ddoTryDefault);
 
   TTimeDisplay = (tdHM,   // hour and minute
