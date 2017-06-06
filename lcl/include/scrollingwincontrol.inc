@@ -213,7 +213,7 @@ end;
 
 procedure TScrollingWinControl.UpdateScrollbars;
 begin
-  if ([csLoading, csDestroying, csDesigning] * ComponentState <> []) then Exit;
+  if ([csLoading, csDestroying] * ComponentState <> []) then Exit;
   if not HandleAllocated then Exit;
   if (HorzScrollBar = nil) or (VertScrollBar = nil) then Exit;
 
