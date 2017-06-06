@@ -4829,6 +4829,7 @@ begin
         exit;
     end;
   end;
+
   if IsNil then
   begin
     // clear
@@ -4842,7 +4843,7 @@ begin
   else
   if IsValidIdent(CurValue) and
      not NewMethodExists and
-     not PropertyHook.MethodFromAncestor(GetMethodValue) then
+     PropertyHook.MethodFromLookupRoot(GetMethodValue) then
   begin
     // rename the method
     // Note:

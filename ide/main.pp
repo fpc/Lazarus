@@ -12785,7 +12785,7 @@ begin
   else if IsJITMethod(Method) then begin
     JITMethod:=TJITMethod(Method.Data);
     Result:=(GlobalDesignHook.LookupRoot<>nil) and
-      GlobalDesignHook.LookupRoot.InheritsFrom(JITMethod.TheClass);
+      GlobalDesignHook.LookupRoot.ClassParent.InheritsFrom(JITMethod.TheClass);
   end;
 end;
 
