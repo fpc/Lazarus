@@ -553,16 +553,10 @@ begin
 end;
 
 function TIDEMenuItem.RealVisible: boolean;
-var
-  aSection: TIDEMenuSection;
 begin
-  Result := Visible;
-  aSection := Section;
-  while (aSection<>nil) and Result do
-  begin
-    Result := aSection.Visible;
-    aSection := aSection.Section;
-  end;
+  Result := VisibleActive;
+  if Result and (Section<>nil) then
+    Result:=Section.RealVisible;
 end;
 
 procedure TIDEMenuItem.BitmapChange(Sender: TObject);
@@ -573,7 +567,7 @@ end;
 procedure TIDEMenuItem.RealizeVisible;
 begin
   if MenuItem=nil then exit;
-  MenuItem.Visible:=VisibleActive
+  MenuItem.Visible:=RealVisible
     or (Section=nil); // keep the root menuitem always visible
 end;
 
@@ -943,8 +937,8 @@ begin
     //         ', ImageIndex=', ImageIndex, ', ImageList=', GetImageList]);
     if MenuItem.Enabled<>Enabled then
       RaiseError('MenuItem.Enabled='+dbgs(MenuItem.Enabled)+' Enabled='+dbgs(Enabled));
-    if MenuItem.Visible<>(VisibleActive or (Section=nil)) then
-      RaiseError('MenuItem.Visible='+dbgs(MenuItem.Visible)+' VisibleActive='+dbgs(VisibleActive)+' Visible='+dbgs(Visible));
+    if MenuItem.Visible<>(RealVisible or (Section=nil)) then
+      RaiseError('MenuItem.Visible='+dbgs(MenuItem.Visible)+' VisibleActive='+dbgs(VisibleActive)+' Visible='+dbgs(Visible)+' RealVisible='+dbgs(RealVisible));
     if MenuItem.Caption<>Caption then
       RaiseError;
     if MenuItem.ImageIndex<>ImageIndex then
@@ -1090,7 +1084,8 @@ var
         then begin
           // already in place -> ok
           inc(aMenuIndex);
-          Item.Visible:=aVisible;
+          // update MenuItem.Visible here for less overhead
+          Item.MenuItem.Visible:=Item.RealVisible;
         end else begin
           // structure has changed
           if Item.MenuItem<>nil then
