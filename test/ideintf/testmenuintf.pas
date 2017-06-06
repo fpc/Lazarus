@@ -225,87 +225,87 @@ begin
   PopupMenuRoot.ConsistencyCheck;
   Item1:=RegisterIDEMenuCommand(LogSection1,'Item1','Item1');
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('LogSection1.VisibleActive',true,LogSection1.VisibleActive);
-  AssertEquals('LogSection1.VisibleCommandCount',1,LogSection1.VisibleCommandCount);
+  AssertEquals('A LogSection1.VisibleActive',true,LogSection1.VisibleActive);
+  AssertEquals('A LogSection1.VisibleCommandCount',1,LogSection1.VisibleCommandCount);
 
   SubMenu2:=RegisterIDESubMenu(PopupMenuRoot,'SubMenu2','SubMenu2');
   PopupMenuRoot.ConsistencyCheck;
   Item2:=RegisterIDEMenuCommand(SubMenu2,'Item2','Item2');
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('SubMenu2.VisibleActive',true,SubMenu2.VisibleActive);
-  AssertEquals('SubMenu2.VisibleCommandCount',1,SubMenu2.VisibleCommandCount);
+  AssertEquals('B SubMenu2.VisibleActive',true,SubMenu2.VisibleActive);
+  AssertEquals('B SubMenu2.VisibleCommandCount',1,SubMenu2.VisibleCommandCount);
 
   LogSection2:=RegisterIDEMenuSection(PopupMenuRoot,'LogSection2');
   PopupMenuRoot.ConsistencyCheck;
   Item3:=RegisterIDEMenuCommand(LogSection2,'Item3','Item3');
   Item4:=RegisterIDEMenuCommand(LogSection2,'Item4','Item4');
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('LogSection2.VisibleActive',true,LogSection2.VisibleActive);
-  AssertEquals('LogSection2.VisibleCommandCount',2,LogSection2.VisibleCommandCount);
+  AssertEquals('C LogSection2.VisibleActive',true,LogSection2.VisibleActive);
+  AssertEquals('C LogSection2.VisibleCommandCount',2,LogSection2.VisibleCommandCount);
 
-  AssertEquals('LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
-  AssertEquals('LogSection1.BottomSeparator',true,LogSection1.BottomSeparator<>nil);
-  AssertEquals('LogSection2.TopSeparator',true,LogSection2.TopSeparator<>nil);
-  AssertEquals('LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
+  AssertEquals('D LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
+  AssertEquals('D LogSection1.BottomSeparator',true,LogSection1.BottomSeparator<>nil);
+  AssertEquals('D LogSection2.TopSeparator',true,LogSection2.TopSeparator<>nil);
+  AssertEquals('D LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
 
   // hide Item1 -> auto hides LogSection1
   Item1.Visible:=false;
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('LogSection1.VisibleActive',false,LogSection1.VisibleActive);
-  AssertEquals('LogSection1.VisibleCommandCount',0,LogSection1.VisibleCommandCount);
-  AssertEquals('LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
-  AssertEquals('LogSection1.BottomSeparator',false,LogSection1.BottomSeparator<>nil);
+  AssertEquals('E LogSection1.VisibleActive',false,LogSection1.VisibleActive);
+  AssertEquals('E LogSection1.VisibleCommandCount',0,LogSection1.VisibleCommandCount);
+  AssertEquals('E LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
+  AssertEquals('E LogSection1.BottomSeparator',false,LogSection1.BottomSeparator<>nil);
 
   // show Item1 -> auto shows LogSection1
   Item1.Visible:=true;
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('LogSection1.VisibleActive',true,LogSection1.VisibleActive);
-  AssertEquals('LogSection1.VisibleCommandCount',1,LogSection1.VisibleCommandCount);
-  AssertEquals('LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
-  AssertEquals('LogSection1.BottomSeparator',true,LogSection1.BottomSeparator<>nil);
+  AssertEquals('F LogSection1.VisibleActive',true,LogSection1.VisibleActive);
+  AssertEquals('F LogSection1.VisibleCommandCount',1,LogSection1.VisibleCommandCount);
+  AssertEquals('F LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
+  AssertEquals('F LogSection1.BottomSeparator',true,LogSection1.BottomSeparator<>nil);
 
   // hide Item2 -> auto hides SubMenu2
   Item2.Visible:=false;
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('SubMenu2.VisibleActive',false,SubMenu2.VisibleActive);
-  AssertEquals('SubMenu2.VisibleCommandCount',0,SubMenu2.VisibleCommandCount);
-  AssertEquals('LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
-  AssertEquals('LogSection1.BottomSeparator',false,LogSection1.BottomSeparator<>nil);
-  AssertEquals('LogSection2.TopSeparator',true,LogSection2.TopSeparator<>nil);
-  AssertEquals('LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
+  AssertEquals('G SubMenu2.VisibleActive',false,SubMenu2.VisibleActive);
+  AssertEquals('G SubMenu2.VisibleCommandCount',0,SubMenu2.VisibleCommandCount);
+  AssertEquals('G LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
+  AssertEquals('G LogSection1.BottomSeparator',false,LogSection1.BottomSeparator<>nil);
+  AssertEquals('G LogSection2.TopSeparator',true,LogSection2.TopSeparator<>nil);
+  AssertEquals('G LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
 
   // show Item2 -> auto shows SubMenu2
   Item2.Visible:=true;
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('SubMenu2.VisibleActive',true,SubMenu2.VisibleActive);
-  AssertEquals('SubMenu2.VisibleCommandCount',1,SubMenu2.VisibleCommandCount);
-  AssertEquals('LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
-  AssertEquals('LogSection1.BottomSeparator',true,LogSection1.BottomSeparator<>nil);
-  AssertEquals('LogSection2.TopSeparator',true,LogSection2.TopSeparator<>nil);
-  AssertEquals('LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
+  AssertEquals('H SubMenu2.VisibleActive',true,SubMenu2.VisibleActive);
+  AssertEquals('H SubMenu2.VisibleCommandCount',1,SubMenu2.VisibleCommandCount);
+  AssertEquals('H LogSection1.TopSeparator',false,LogSection1.TopSeparator<>nil);
+  AssertEquals('H LogSection1.BottomSeparator',true,LogSection1.BottomSeparator<>nil);
+  AssertEquals('H LogSection2.TopSeparator',true,LogSection2.TopSeparator<>nil);
+  AssertEquals('H LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
 
   // hide Item3, Item4 still visible
   Item3.Visible:=false;
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('LogSection2.VisibleActive',true,LogSection2.VisibleActive);
-  AssertEquals('LogSection2.VisibleCommandCount',1,LogSection2.VisibleCommandCount);
+  AssertEquals('I LogSection2.VisibleActive',true,LogSection2.VisibleActive);
+  AssertEquals('I LogSection2.VisibleCommandCount',1,LogSection2.VisibleCommandCount);
 
   // hide Item4 -> auto hide LogSection2
   Item4.Visible:=false;
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('LogSection2.VisibleActive',false,LogSection2.VisibleActive);
-  AssertEquals('LogSection2.VisibleCommandCount',0,LogSection2.VisibleCommandCount);
-  AssertEquals('LogSection1.BottomSeparator',true,LogSection1.BottomSeparator<>nil);
-  AssertEquals('LogSection2.TopSeparator',false,LogSection2.TopSeparator<>nil);
-  AssertEquals('LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
+  AssertEquals('J LogSection2.VisibleActive',false,LogSection2.VisibleActive);
+  AssertEquals('J LogSection2.VisibleCommandCount',0,LogSection2.VisibleCommandCount);
+  AssertEquals('J LogSection1.BottomSeparator',true,LogSection1.BottomSeparator<>nil);
+  AssertEquals('J LogSection2.TopSeparator',false,LogSection2.TopSeparator<>nil);
+  AssertEquals('J LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
 
   // show Item3 -> auto shows LogSection2
   Item3.Visible:=true;
   PopupMenuRoot.ConsistencyCheck;
-  AssertEquals('LogSection2.VisibleActive',true,LogSection2.VisibleActive);
-  AssertEquals('LogSection2.VisibleCommandCount',1,LogSection2.VisibleCommandCount);
-  AssertEquals('LogSection2.TopSeparator',true,LogSection2.TopSeparator<>nil);
-  AssertEquals('LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
+  AssertEquals('K LogSection2.VisibleActive',true,LogSection2.VisibleActive);
+  AssertEquals('K LogSection2.VisibleCommandCount',1,LogSection2.VisibleCommandCount);
+  AssertEquals('K LogSection2.TopSeparator',true,LogSection2.TopSeparator<>nil);
+  AssertEquals('K LogSection2.BottomSeparator',false,LogSection2.BottomSeparator<>nil);
 end;
 
 procedure TTestMenuIntf.TestPopupMenuClearHiddenSection;
