@@ -4666,12 +4666,18 @@ end;
 
 function TCustomTreeView.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
   MousePos: TPoint): Boolean;
+var
+  NDelta: integer;
 begin
   Result:=inherited DoMouseWheel(Shift, WheelDelta, MousePos);
   if not Result then
   begin
-    ScrolledTop := ScrolledTop -
-              (WheelDelta * Mouse.WheelScrollLines * DefaultItemHeight) div 120;
+    NDelta := (WheelDelta * Mouse.WheelScrollLines * DefaultItemHeight) div 120;
+    // Mac widgetset sets ssHyper on horz scrolling
+    if ssHyper in Shift then
+      ScrolledLeft := ScrolledLeft - NDelta
+    else
+      ScrolledTop := ScrolledTop - NDelta;
     Result := true;
   end;
   UpdateTooltip(MousePos.X, MousePos.Y);
