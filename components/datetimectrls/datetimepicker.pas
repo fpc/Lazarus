@@ -298,7 +298,7 @@ type
     procedure SelectTextPartUnderMouse(XMouse: Integer);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
-    procedure UpdateDate; virtual;
+    procedure UpdateDate(const CallChangeFromSetDateTime: Boolean = False); virtual;
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure Click; override;
@@ -1066,29 +1066,17 @@ begin
 end;
 
 procedure TCustomDateTimePicker.SetDateTime(const AValue: TDateTime);
-var
-  CallChange: Boolean;
 begin
   if not EqualDateTime(AValue, FDateTime) then begin
     if IsNullDate(AValue) then
       FDateTime := NullDate
     else
       FDateTime := AValue;
-    CallChange := dtpoDoChangeOnSetDateTime in FOptions;
-  end else
-    CallChange := False;
 
-  if CallChange then
-  begin
-    Change;
-    Inc(FSkipChangeInUpdateDate);
-  end;
-  try
+    UpdateDate(dtpoDoChangeOnSetDateTime in FOptions);
+  end else
     UpdateDate;
-  finally
-    if CallChange then
-      Dec(FSkipChangeInUpdateDate);
-  end;
+
 end;
 
 procedure TCustomDateTimePicker.SetDateSeparator(const AValue: String);
@@ -2777,7 +2765,7 @@ begin
   SetHMSMs(HMSMs);
 end;
 
-procedure TCustomDateTimePicker.UpdateDate;
+procedure TCustomDateTimePicker.UpdateDate(const CallChangeFromSetDateTime: Boolean);
 var
   W: Array[1..3] of Word;
   WT: Array[dtpHour..dtpAMPM] of Word;
@@ -2801,15 +2789,19 @@ begin
      // and in recursive calls which could be made through calling Change
       Inc(FSkipChangeInUpdateDate);
       try
-        if FUserChanging > 0 then begin // this means that the change is caused by user interaction
+        if (FUserChanging > 0) // the change is caused by user interaction
+            or CallChangeFromSetDateTime // call from SetDateTime with option dtpoDoChangeOnSetDateTime
+        then
           try
             Change;
           except
             UndoChanges;
             raise;
-          end
-        end else
+          end;
+
+        if FUserChanging = 0 then
           FConfirmedDateTime := FDateTime;
+
       finally
         Dec(FSkipChangeInUpdateDate);
       end;
