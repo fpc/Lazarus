@@ -8568,7 +8568,9 @@ end;
 
 procedure TCustomGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
 begin
-  if ssCtrl in Shift then
+  // Mac widgetset sets ssHyper on horz scrolling
+  // Ctrl-key is for other OSes
+  if (ssCtrl in Shift) or (ssHyper in Shift) then
     MoveNextSelectable(true, Delta, 0)
   else
     MoveNextSelectable(true, 0, Delta);
