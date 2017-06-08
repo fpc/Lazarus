@@ -3487,7 +3487,7 @@ begin
     if RNew.Right <= FGCache.FixedWidth+GetBorderWidth then
       Xinc := -1              // hidden at the left of fixedwidth line
     else
-    if (RNew.Left >= CWidth) and not GetSmoothScroll(SB_Horz) then
+    if (RNew.Left > FGCache.FixedWidth+GetBorderWidth) and (RNew.Left >= CWidth) and not GetSmoothScroll(SB_Horz) then
       Xinc := 1               // hidden at the right of clientwidth line
     else
     if (RNew.Left > FGCache.FixedWidth+GetBorderWidth) and
@@ -3507,7 +3507,7 @@ begin
     if RNew.Bottom <= FGCache.FixedHeight+GetBorderWidth then
       Yinc := -1              // hidden at the top of fixedheight line
     else
-    if (RNew.Top >= CHeight) and not GetSmoothScroll(SB_Vert) then
+    if (RNew.Top > FGCache.FixedHeight+GetBorderWidth) and (RNew.Top >= CHeight) and not GetSmoothScroll(SB_Vert) then
       YInc := 1               // hidden at the bottom of clientheight line
     else
     if (RNew.Top > FGCache.FixedHeight+GetBorderWidth) and
