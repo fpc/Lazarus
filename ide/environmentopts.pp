@@ -333,7 +333,8 @@ type
     constructor Create(const aName: String);
     constructor Create(const aName: String; const aIsDocked: Boolean);
     destructor Destroy; override;
-    procedure Assign(Source: TDesktopOpt; const AssignName: Boolean = False);
+    procedure Assign(Source: TDesktopOpt; const AssignName: Boolean = False;
+      const IsCompatible: Boolean = True);
   public
     procedure SetConfig(aXMLCfg: TRttiXMLConfig; aConfigStore: TXMLOptionsStorage);
     procedure Load(Path: String);
@@ -1153,17 +1154,21 @@ begin
   Result := (IsDocked = Assigned(IDEDockMaster));
 end;
 
-procedure TDesktopOpt.Assign(Source: TDesktopOpt; const AssignName: Boolean);
+procedure TDesktopOpt.Assign(Source: TDesktopOpt; const AssignName: Boolean;
+  const IsCompatible: Boolean);
 begin
   if AssignName then
     FName := Source.FName;
 
-  if Assigned(FDockedOpt) <> Assigned(Source.FDockedOpt) then
+  if IsCompatible and (Assigned(FDockedOpt) <> Assigned(Source.FDockedOpt)) then
     raise Exception.Create('Internal error: TDesktopOpt.Assign mixed docked/undocked desktops.');
 
   // window layout
-  FIDEWindowCreatorsLayoutList.CopyItemsFrom(Source.FIDEWindowCreatorsLayoutList);
-  FIDEDialogLayoutList.Assign(Source.FIDEDialogLayoutList);
+  if IsCompatible then
+  begin
+    FIDEWindowCreatorsLayoutList.CopyItemsFrom(Source.FIDEWindowCreatorsLayoutList);
+    FIDEDialogLayoutList.Assign(Source.FIDEDialogLayoutList);
+  end;
   FSingleTaskBarButton := Source.FSingleTaskBarButton;
   FHideIDEOnRun := Source.FHideIDEOnRun;
   FAutoAdjustIDEHeight := Source.FAutoAdjustIDEHeight;
@@ -1184,7 +1189,7 @@ begin
   // component palette
   FComponentPaletteOptions.Assign(Source.FComponentPaletteOptions);
 
-  if Assigned(FDockedOpt) then
+  if IsCompatible and Assigned(FDockedOpt) then
     FDockedOpt.Assign(Source.FDockedOpt);
 end;
 
@@ -2677,6 +2682,9 @@ function TEnvironmentOptions.GetActiveDesktop: TDesktopOpt;
       FActiveDesktopName := 'default';
   end;
 
+var
+  DefaultDesktop: TDesktopOpt;
+
 begin
   if FActiveDesktopName <> '' then
   begin
@@ -2695,12 +2703,15 @@ begin
   //recreate desktop with ActiveDesktopName
   if Assigned(Result) then
     FDesktops.Remove(Result);
+  DefaultDesktop := FDesktops.Find('default');
 
   Result := TDesktopOpt.Create(FActiveDesktopName);
   FDesktops.Add(Result);
   Result.Assign(Desktop);
   if Assigned(IDEDockMaster) then
     Result.FDockedOpt.LoadDefaults;
+  if Assigned(DefaultDesktop) then
+    Result.Assign(DefaultDesktop, False, False);
 end;
 
 procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
