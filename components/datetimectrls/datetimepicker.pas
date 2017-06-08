@@ -279,6 +279,8 @@ type
     procedure CheckBoxChange(Sender: TObject);
     procedure SetFocusIfPossible;
     procedure AutoResizeButton;
+    procedure CheckAndApplyKey(const Key: Char);
+    procedure CheckAndApplyKeyCode(var Key: Word);
 
   protected
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
@@ -422,6 +424,7 @@ type
     procedure SelectDate;
     procedure SelectTime;
     procedure SendExternalKey(const aKey: Char);
+    procedure SendExternalKeyCode(const Key: Word);
 
     procedure Paint; override;
     procedure EditingDone; override;
@@ -2040,64 +2043,13 @@ begin
 end;
 
 procedure TCustomDateTimePicker.KeyDown(var Key: Word; Shift: TShiftState);
-var
-  K: Word;
 begin
   Inc(FUserChanging);
   try
     if FTextEnabled then
       inherited KeyDown(Key, Shift); // calls OnKeyDown event
 
-    if (Key = VK_SPACE) then begin
-      if GetShowCheckBox then
-        FCheckBox.Checked := not FCheckBox.Checked;
-
-    end else if FTextEnabled then begin
-
-      case Key of
-        VK_LEFT, VK_RIGHT, VK_OEM_COMMA, VK_OEM_PERIOD, VK_DIVIDE,
-            VK_OEM_MINUS, VK_SEPARATOR, VK_DECIMAL, VK_SUBTRACT:
-          begin
-            K := Key;
-            Key := 0;
-            MoveSelectionLR(K = VK_LEFT);
-            Invalidate;
-          end;
-        VK_UP:
-          begin
-            Key := 0;
-            UpdateIfUserChangedText;
-            if not FReadOnly then
-            begin
-              IncreaseCurrentTextPart;
-              DoAutoCheck;
-            end;
-          end;
-        VK_DOWN:
-          begin
-            Key := 0;
-            UpdateIfUserChangedText;
-            if not FReadOnly then
-            begin
-              DecreaseCurrentTextPart;
-              DoAutoCheck;
-            end;
-          end;
-        VK_RETURN:
-          if not FReadOnly then
-            EditingDone;
-
-        VK_ESCAPE:
-          if not FReadOnly then begin
-            UndoChanges;
-            EditingDone;
-          end;
-        VK_N:
-          if (not FReadOnly) and FNullInputAllowed then
-            SetDateTime(NullDate);
-      end;
-
-    end;
+    CheckAndApplyKeyCode(Key);
   finally
     Dec(FUserChanging);
   end;
@@ -2105,179 +2057,13 @@ begin
 end;
 
 procedure TCustomDateTimePicker.KeyPress(var Key: char);
-var
-  S: String;
-  DTP: TDateTimePart;
-  N, L: Integer;
-  YMD: TYMD;
-  HMSMs: THMSMs;
-  D, T: TDateTime;
-  Finished, ForceChange: Boolean;
-
 begin
   if FTextEnabled then begin
     Inc(FUserChanging);
     try
       inherited KeyPress(Key);
 
-      if (not FReadOnly) then begin
-        Finished := False;
-        ForceChange := False;
-
-        if FSelectedTextPart = 8 then begin
-          case upCase(Key) of
-            'A': S := 'AM';
-            'P': S := 'PM';
-          else
-            Finished := True;
-          end;
-          ForceChange := True;
-
-        end else if Key in ['0'..'9'] then begin
-
-          DTP := GetSelectedDateTimePart;
-
-          if DTP = dtpYear then
-            N := 4
-          else if DTP = dtpMiliSec then
-            N := 3
-          else
-            N := 2;
-
-          S := Trim(GetSelectedText);
-          if FUserChangedText and (Length(S) < N) then
-            S := S + Key
-          else
-            S := Key;
-
-          if (Length(S) >= N) then begin
-
-            FCorrectedDTP := dtpAMPM;
-
-            L := StrToInt(S);
-            if DTP < dtpHour then begin
-              YMD := GetYYYYMMDD(True);
-              case DTP of
-                dtpDay: YMD.Day := L;
-                dtpMonth: YMD.Month := L;
-                dtpYear: YMD.Year := L;
-              end;
-
-              if AutoAdvance and (YMD.Day <= 31) and
-                  (YMD.Day > NumberOfDaysInMonth(YMD.Month, YMD.Year)) then begin
-                case DTP of
-                  dtpDay:
-                    case FEffectiveDateDisplayOrder of
-                      ddoDMY: begin
-                        FCorrectedValue := YMD.Month + 1;
-                        FCorrectedDTP := dtpMonth;
-                      end;
-                      ddoMDY:
-                        FCorrectedDTP := dtpYear;
-                    end;
-                  dtpMonth:
-                    case FEffectiveDateDisplayOrder of
-                      ddoMDY, ddoYMD: begin
-                          FCorrectedValue := NumberOfDaysInMonth(YMD.Month, YMD.Year);
-                          FCorrectedDTP := dtpDay;
-                        end;
-                      ddoDMY:
-                        FCorrectedDTP := dtpYear;
-                    end;
-                  dtpYear:
-                    if (FEffectiveDateDisplayOrder = ddoYMD) and (YMD.Month = 2)
-                          and (YMD.Day = 29) and not IsLeapYear(YMD.Year) then begin
-                      FCorrectedValue := YMD.Month + 1;
-                      FCorrectedDTP := dtpMonth;
-                    end;
-                end;
-
-                case FCorrectedDTP of
-                  dtpDay:
-                    YMD.Day := FCorrectedValue;
-                  dtpMonth:
-                    YMD.Month := FCorrectedValue;
-                  dtpYear:
-                    if (YMD.Day = 29) and (YMD.Month = 2) then begin
-                      while not IsLeapYear(YMD.Year) do
-                        Inc(YMD.Year);
-                      FCorrectedValue := YMD.Year;
-                    end;
-
-                end;
-              end;
-
-              if TryEncodeDate(YMD.Year, YMD.Month, YMD.Day, D)
-                        and (D >= MinDate) and (D <= MaxDate) then
-                ForceChange := True
-              else if N = 4 then begin
-                UpdateDate;
-                Finished := True;
-              end else
-                S := Key;
-
-            end else begin
-              if (DTP = dtpHour) and (FTimeFormat = tf12) then begin
-                if not (L in [1..12]) then
-                  S := Key
-                else
-                  ForceChange := True;
-
-              end else begin
-
-                HMSMs := GetHMSMs(True);
-                case DTP of
-                  dtpHour: HMSMs.Hour := L;
-                  dtpMinute: HMSMs.Minute := L;
-                  dtpSecond: HMSMs.Second := L;
-                  dtpMiliSec: HMSMs.MiliSec := L;
-                end;
-                if not TryEncodeTime(HMSMs.Hour, HMSMs.Minute, HMSMs.Second,
-                                             HMSMs.MiliSec, T) then
-                  S := Key
-                else
-                  ForceChange := True;
-
-              end;
-            end;
-
-          end;
-        end else
-          Finished := True;
-
-        if (not Finished) and (GetSelectedText <> S) then begin
-          if (not FUserChangedText) and DateIsNull then
-            if FSelectedTextPart <= 3 then
-              DateTime := SysUtils.Date
-            else
-              DateTime := SysUtils.Now;
-
-          if (not FLeadingZeros) and (FSelectedTextPart <= 4) then
-            while (Length(S) > 1) and (S[1] = '0') do
-              Delete(S, 1, 1);
-
-          if FSelectedTextPart <= 3 then
-            FTextPart[FSelectedTextPart] := S
-          else
-            FTimeText[TDateTimePart(FSelectedTextPart - 1)] := S;
-
-          FUserChangedText := True;
-
-          if ForceChange then begin
-            if FAutoAdvance then begin
-              MoveSelectionLR(False);
-              Invalidate;
-            end else
-              UpdateIfUserChangedText;
-          end else
-            Invalidate;
-
-          DoAutoCheck;
-        end;
-
-        FCorrectedDTP := dtpAMPM;
-      end;
-
+      CheckAndApplyKey(Key);
     finally
       Dec(FUserChanging);
     end;
@@ -2953,22 +2739,33 @@ begin
 end;
 
 procedure TCustomDateTimePicker.SendExternalKey(const aKey: Char);
+var
+  K: Word;
 begin
-  if not(aKey in ['0'..'9']) then
-    Exit;
-
-  if FSelectedTextPart in [1..3] then
-  begin
-    FTextPart[FSelectedTextPart] := aKey;
-    FUserChangedText := True;
-    DoAutoCheck;
-  end else
-  if FSelectedTextPart in [4..8] then
-  begin
-    FTimeText[TDateTimePart(FSelectedTextPart-1)] := aKey;
-    FUserChangedText := True;
-    DoAutoCheck;
+  if FTextEnabled then begin
+    if aKey in ['n', 'N'] then begin
+      K := VK_N;
+      CheckAndApplyKeyCode(K);
+    end else
+      CheckAndApplyKey(aKey);
   end;
+end;
+
+procedure TCustomDateTimePicker.SendExternalKeyCode(const Key: Word);
+var
+  Ch: Char;
+  K: Word;
+begin
+  if Key in [Ord('0')..Ord('9'), Ord('a'), Ord('A'), Ord('p'), Ord('P')] then begin
+    if FTextEnabled then begin
+      Ch := Char(Key);
+      CheckAndApplyKey(Ch);
+    end;
+  end else begin
+    K := Key;
+    CheckAndApplyKeyCode(K);
+  end;
+
 end;
 
 procedure TCustomDateTimePicker.SelectHour;
@@ -3536,6 +3333,234 @@ begin
     FArrowButton.Width := MulDiv(ClientHeight, 9, 10)
   else if Assigned(FUpDown) then
     FUpDown.Width := MulDiv(ClientHeight, 79, 100);
+
+end;
+
+procedure TCustomDateTimePicker.CheckAndApplyKey(const Key: Char);
+var
+  S: String;
+  DTP: TDateTimePart;
+  N, L: Integer;
+  YMD: TYMD;
+  HMSMs: THMSMs;
+  D, T: TDateTime;
+  Finished, ForceChange: Boolean;
+
+begin
+  if (not FReadOnly) then begin
+    Finished := False;
+    ForceChange := False;
+
+    if FSelectedTextPart = 8 then begin
+      case upCase(Key) of
+        'A': S := 'AM';
+        'P': S := 'PM';
+      else
+        Finished := True;
+      end;
+      ForceChange := True;
+
+    end else if Key in ['0'..'9'] then begin
+
+      DTP := GetSelectedDateTimePart;
+
+      if DTP = dtpYear then
+        N := 4
+      else if DTP = dtpMiliSec then
+        N := 3
+      else
+        N := 2;
+
+      S := Trim(GetSelectedText);
+      if FUserChangedText and (Length(S) < N) then
+        S := S + Key
+      else
+        S := Key;
+
+      if (Length(S) >= N) then begin
+
+        FCorrectedDTP := dtpAMPM;
+
+        L := StrToInt(S);
+        if DTP < dtpHour then begin
+          YMD := GetYYYYMMDD(True);
+          case DTP of
+            dtpDay: YMD.Day := L;
+            dtpMonth: YMD.Month := L;
+            dtpYear: YMD.Year := L;
+          end;
+
+          if AutoAdvance and (YMD.Day <= 31) and
+              (YMD.Day > NumberOfDaysInMonth(YMD.Month, YMD.Year)) then begin
+            case DTP of
+              dtpDay:
+                case FEffectiveDateDisplayOrder of
+                  ddoDMY: begin
+                    FCorrectedValue := YMD.Month + 1;
+                    FCorrectedDTP := dtpMonth;
+                  end;
+                  ddoMDY:
+                    FCorrectedDTP := dtpYear;
+                end;
+              dtpMonth:
+                case FEffectiveDateDisplayOrder of
+                  ddoMDY, ddoYMD: begin
+                      FCorrectedValue := NumberOfDaysInMonth(YMD.Month, YMD.Year);
+                      FCorrectedDTP := dtpDay;
+                    end;
+                  ddoDMY:
+                    FCorrectedDTP := dtpYear;
+                end;
+              dtpYear:
+                if (FEffectiveDateDisplayOrder = ddoYMD) and (YMD.Month = 2)
+                      and (YMD.Day = 29) and not IsLeapYear(YMD.Year) then begin
+                  FCorrectedValue := YMD.Month + 1;
+                  FCorrectedDTP := dtpMonth;
+                end;
+            end;
+
+            case FCorrectedDTP of
+              dtpDay:
+                YMD.Day := FCorrectedValue;
+              dtpMonth:
+                YMD.Month := FCorrectedValue;
+              dtpYear:
+                if (YMD.Day = 29) and (YMD.Month = 2) then begin
+                  while not IsLeapYear(YMD.Year) do
+                    Inc(YMD.Year);
+                  FCorrectedValue := YMD.Year;
+                end;
+
+            end;
+          end;
+
+          if TryEncodeDate(YMD.Year, YMD.Month, YMD.Day, D)
+                    and (D >= MinDate) and (D <= MaxDate) then
+            ForceChange := True
+          else if N = 4 then begin
+            UpdateDate;
+            Finished := True;
+          end else
+            S := Key;
+
+        end else begin
+          if (DTP = dtpHour) and (FTimeFormat = tf12) then begin
+            if not (L in [1..12]) then
+              S := Key
+            else
+              ForceChange := True;
+
+          end else begin
+
+            HMSMs := GetHMSMs(True);
+            case DTP of
+              dtpHour: HMSMs.Hour := L;
+              dtpMinute: HMSMs.Minute := L;
+              dtpSecond: HMSMs.Second := L;
+              dtpMiliSec: HMSMs.MiliSec := L;
+            end;
+            if not TryEncodeTime(HMSMs.Hour, HMSMs.Minute, HMSMs.Second,
+                                         HMSMs.MiliSec, T) then
+              S := Key
+            else
+              ForceChange := True;
+
+          end;
+        end;
+
+      end;
+    end else
+      Finished := True;
+
+    if (not Finished) and (GetSelectedText <> S) then begin
+      if (not FUserChangedText) and DateIsNull then
+        if FSelectedTextPart <= 3 then
+          DateTime := SysUtils.Date
+        else
+          DateTime := SysUtils.Now;
+
+      if (not FLeadingZeros) and (FSelectedTextPart <= 4) then
+        while (Length(S) > 1) and (S[1] = '0') do
+          Delete(S, 1, 1);
+
+      if FSelectedTextPart <= 3 then
+        FTextPart[FSelectedTextPart] := S
+      else
+        FTimeText[TDateTimePart(FSelectedTextPart - 1)] := S;
+
+      FUserChangedText := True;
+
+      if ForceChange then begin
+        if FAutoAdvance then begin
+          MoveSelectionLR(False);
+          Invalidate;
+        end else
+          UpdateIfUserChangedText;
+      end else
+        Invalidate;
+
+      DoAutoCheck;
+    end;
+
+    FCorrectedDTP := dtpAMPM;
+  end;
+
+end;
+
+procedure TCustomDateTimePicker.CheckAndApplyKeyCode(var Key: Word);
+var
+  K: Word;
+begin
+  if (Key = VK_SPACE) then begin
+    if GetShowCheckBox then
+      FCheckBox.Checked := not FCheckBox.Checked;
+
+  end else if FTextEnabled then begin
+
+    case Key of
+      VK_LEFT, VK_RIGHT, VK_OEM_COMMA, VK_OEM_PERIOD, VK_DIVIDE,
+          VK_OEM_MINUS, VK_SEPARATOR, VK_DECIMAL, VK_SUBTRACT:
+        begin
+          K := Key;
+          Key := 0;
+          MoveSelectionLR(K = VK_LEFT);
+          Invalidate;
+        end;
+      VK_UP:
+        begin
+          Key := 0;
+          UpdateIfUserChangedText;
+          if not FReadOnly then
+          begin
+            IncreaseCurrentTextPart;
+            DoAutoCheck;
+          end;
+        end;
+      VK_DOWN:
+        begin
+          Key := 0;
+          UpdateIfUserChangedText;
+          if not FReadOnly then
+          begin
+            DecreaseCurrentTextPart;
+            DoAutoCheck;
+          end;
+        end;
+      VK_RETURN:
+        if not FReadOnly then
+          EditingDone;
+
+      VK_ESCAPE:
+        if not FReadOnly then begin
+          UndoChanges;
+          EditingDone;
+        end;
+      VK_N:
+        if (not FReadOnly) and FNullInputAllowed then
+          SetDateTime(NullDate);
+    end;
+
+  end;
 
 end;
 
