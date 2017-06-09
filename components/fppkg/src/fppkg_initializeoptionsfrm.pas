@@ -7,21 +7,27 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, EditBtn,
   ButtonPanel,
+  fpTemplate,
   // fppkg
-  pkgglobals, pkgFppkg, pkgoptions;
+  pkgglobals, pkgFppkg, pkgoptions, pkgUninstalledSrcsRepo;
 
 type
 
   { TInitializeOptionsForm }
 
   TInitializeOptionsForm = class(TForm)
-    ButtonPanel: TButtonPanel;
     AdvancedCheckbox: TCheckBox;
+    LazarusDirValidationLabel: TLabel;
+    LazarusButtonPanel: TButtonPanel;
+    FPCButtonPanel: TButtonPanel;
     CompilerEdit: TEdit;
+    LazarusDirectoryEdit: TDirectoryEdit;
+    InitializeLazarusLabel: TLabel;
+    Label2: TLabel;
+    LazarusConfigPanel: TPanel;
     PrefixLabel: TLabel;
     PathEdit: TEdit;
     FPCDirectoryEdit: TDirectoryEdit;
-    Edit1: TEdit;
     FppkgConfigPanel: TPanel;
     InitializeFppkgLabel: TLabel;
     Label1: TLabel;
@@ -32,12 +38,16 @@ type
     procedure AdvancedCheckboxChange(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure FPCDirectoryEditChange(Sender: TObject);
+    procedure LazarusDirectoryEditChange(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
+    procedure OnLazarusButtonClick(Sender: TObject);
   private
     function IsVersionStr(AString: string): Boolean;
   public
     class function CheckInitialConfiguration: Boolean;
     class function RecreateFppkgConfiguration: Boolean;
+    class function CheckLazarusConfiguration: Boolean;
+    class function RecreateLazarusConfiguration: Boolean;
   end;
 
 var
@@ -66,7 +76,6 @@ begin
       if FileExists(Dir+'units') and FileExists(Dir+'fpmkinst') then
         begin
         FPCDirValidationLabel.Caption := '';
-        ButtonPanel.OKButton.Enabled := True;
 
         s := ExtractFileName(ExcludeTrailingPathDelimiter(Dir));
         Prefix := ExtractFilePath(ExcludeTrailingPathDelimiter(Dir));
@@ -93,7 +102,24 @@ begin
       begin
       FPCDirValidationLabel.Caption := 'Compiler not found at given location'
       end;
+    end;
+  FPCButtonPanel.OKButton.Enabled := FPCDirValidationLabel.Caption = '';
+end;
+
+procedure TInitializeOptionsForm.LazarusDirectoryEditChange(Sender: TObject);
+var
+  Dir: string;
+begin
+  Dir := IncludeTrailingPathDelimiter(LazarusDirectoryEdit.Text);
+  if not DirectoryExists(Dir) then
+    LazarusDirValidationLabel.Caption := 'Directory does not exist'
+  else if DirectoryExists(Dir+'components') and DirectoryExists(Dir+'lcl') and DirectoryExists(Dir+'packager') then
+    begin
+    LazarusDirValidationLabel.Caption := '';
     end
+  else
+    LazarusDirValidationLabel.Caption := 'This location does not seems to contain a valid lazarus-installation';
+  LazarusButtonPanel.OKButton.Enabled := LazarusDirValidationLabel.Caption = '';
 end;
 
 procedure TInitializeOptionsForm.CloseButtonClick(Sender: TObject);
@@ -114,9 +140,7 @@ var
   FPpkg: TpkgFPpkg;
   FileName: string;
   CurrentSection: TFppkgRepositoryOptionSection;
-  Dir: string;
 begin
-  Dir := IncludeTrailingPathDelimiter(FPCDirectoryEdit.Text);
   FPpkg := TpkgFPpkg.Create(Self);
   try
     CurrentSection := FPpkg.Options.AddRepositoryOptionSection(TFppkgRepositoryOptionSection);
@@ -143,11 +167,72 @@ begin
     // Remove the default configuration-file, so a new one will be generated
     FileName:=FPpkg.Options.GlobalSection.CompilerConfigDir+FPpkg.Options.CommandLineSection.CompilerConfig;
     if FileExists(FileName) then
-      DeleteFile(FileName);
+      RenameFile(FileName, ChangeFileExt(FileName, '.bak'));
     // This will create the compiler-configuration file
     FPpkg.InitializeCompilerOptions;
   finally
     FPpkg.Free;
+  end;
+end;
+
+procedure TInitializeOptionsForm.OnLazarusButtonClick(Sender: TObject);
+var
+  Dir: string;
+  LazarusConfFilename: RawByteString;
+  OptionParser: TTemplateParser;
+  LazarusConfFile: TStrings;
+  GlobalOpt: TFppkgGlobalOptionSection;
+
+  procedure AddLazarusPackageLocation(ARepoName, ARepoDescription, ALocation: string);
+  var
+    SourceOptSection: TFppkgUninstalledSourceRepositoryOptionSection;
+    OptSection: TFppkgUninstalledRepositoryOptionSection;
+  begin
+    OptSection := TFppkgUninstalledRepositoryOptionSection.Create(OptionParser);
+    SourceOptSection := TFppkgUninstalledSourceRepositoryOptionSection.Create(OptionParser);
+    try
+      SourceOptSection.RepositoryName := ARepoName + '-src';
+      SourceOptSection.Description := ARepoDescription + ' sources';
+      SourceOptSection.Path := Dir + ALocation;
+      SourceOptSection.InstallRepositoryName := ARepoName;
+      SourceOptSection.SaveToStrings(LazarusConfFile);
+      LazarusConfFile.Add('');
+
+      OptSection.RepositoryName := ARepoName;
+      OptSection.Description := ARepoDescription;
+      OptSection.Path := Dir + ALocation;
+      OptSection.SourceRepositoryName := ARepoName + '-src';
+      OptSection.SaveToStrings(LazarusConfFile);
+      LazarusConfFile.Add('');
+    finally
+      SourceOptSection.Free;
+      OptSection.Free;
+    end;
+  end;
+
+begin
+  Dir := IncludeTrailingPathDelimiter(LazarusDirectoryEdit.Text);
+  LazarusConfFilename := ConcatPaths([GetUserDir, '.fppkg', 'config', 'conf.d', 'lazarus.conf']);
+  LazarusConfFile := TStringList.Create;
+  try
+
+    OptionParser := TTemplateParser.Create;
+    try
+      AddLazarusPackageLocation('laz-comp', 'Lazarus components', 'components');
+      AddLazarusPackageLocation('laz-packages', 'Lazarus packager', 'packager');
+      AddLazarusPackageLocation('laz-lclbase', 'Lazarus LCL-base', '');
+      AddLazarusPackageLocation('laz-lcl', 'Lazarus LCL', 'lcl');
+
+      LazarusConfFile.Add('[Global]');
+      LazarusConfFile.Add('FPMakeOptions=--lazarusdir=' + Dir);
+    finally
+      OptionParser.Free;
+    end;
+
+    ForceDirectories(ExtractFileDir(LazarusConfFilename));
+    LazarusConfFile.SaveToFile(LazarusConfFilename);
+  finally
+    LazarusConfFile.Free;
   end;
 end;
 
@@ -193,6 +278,31 @@ begin
   Frm := TInitializeOptionsForm.Create(nil);
   try
     Frm.FppkgConfigPanel.Visible := True;
+    if Frm.ShowModal in [mrClose, mrCancel] then
+      Result := False
+    else
+      Result := True;
+  finally
+    Frm.Free;
+  end;
+end;
+
+class function TInitializeOptionsForm.CheckLazarusConfiguration: Boolean;
+begin
+  Result := true;
+  if not FileExists(ConcatPaths([GetUserDir, '.fppkg', 'config', 'conf.d', 'lazarus.conf'])) then
+    begin
+      Result := RecreateLazarusConfiguration;
+    end;
+end;
+
+class function TInitializeOptionsForm.RecreateLazarusConfiguration: Boolean;
+var
+  Frm: TInitializeOptionsForm;
+begin
+  Frm := TInitializeOptionsForm.Create(nil);
+  try
+    Frm.LazarusConfigPanel.Visible := True;
     if Frm.ShowModal in [mrClose, mrCancel] then
       Result := False
     else

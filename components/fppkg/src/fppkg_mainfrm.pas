@@ -355,6 +355,7 @@ begin
     Application.Terminate;
     Exit;
     end;
+  TInitializeOptionsForm.CheckLazarusConfiguration;
 
   FFPpkg := TpkgFPpkg.Create(Self);
 
@@ -847,6 +848,14 @@ begin
     begin
       ShowMessage('Fppkg seems to be configured, but the RTL could not be found. Please fix the Fppkg-configuration with the wizard or manualy.');
       if TInitializeOptionsForm.RecreateFppkgConfiguration then
+        begin
+          LoadFppkgConfiguration;
+        end;
+    end
+  else if not Assigned(FFPpkg.FindPackage('lcl', pkgpkInstalled)) then
+    begin
+      ShowMessage('Fppkg seems to be configured for using Lazarus-packages, but the LCL could not be found. Please fix the Fppkg-configuration for Lazarus with the wizard or manualy.');
+      if TInitializeOptionsForm.RecreateLazarusConfiguration then
         begin
           LoadFppkgConfiguration;
         end;

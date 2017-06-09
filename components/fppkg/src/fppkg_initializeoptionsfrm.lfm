@@ -1,20 +1,20 @@
 object InitializeOptionsForm: TInitializeOptionsForm
-  Left = 2095
-  Height = 451
-  Top = 274
+  Left = 2512
+  Height = 450
+  Top = 301
   Width = 473
   Caption = 'Create configuration files'
-  ClientHeight = 451
+  ClientHeight = 450
   ClientWidth = 473
   LCLVersion = '1.9.0.0'
   object FppkgConfigPanel: TPanel
     Left = 0
-    Height = 451
+    Height = 450
     Top = 0
     Width = 473
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 451
+    ClientHeight = 450
     ClientWidth = 473
     TabOrder = 0
     Visible = False
@@ -40,14 +40,6 @@ object InitializeOptionsForm: TInitializeOptionsForm
       Caption = 'Please give the location where FPC is installed.'
       ParentColor = False
     end
-    object Edit1: TEdit
-      Left = -2368
-      Height = 37
-      Top = 119
-      Width = 80
-      TabOrder = 0
-      Text = 'Edit1'
-    end
     object FPCDirectoryEdit: TDirectoryEdit
       Left = 30
       Height = 37
@@ -62,7 +54,7 @@ object InitializeOptionsForm: TInitializeOptionsForm
       BorderSpacing.Around = 5
       BorderSpacing.CellAlignHorizontal = ccaCenter
       MaxLength = 0
-      TabOrder = 1
+      TabOrder = 0
       OnChange = FPCDirectoryEditChange
       TextHint = 'This location normally contains the compiler-executable along with a ''units'' and ''fpmkinst'' directory.'
     end
@@ -79,10 +71,10 @@ object InitializeOptionsForm: TInitializeOptionsForm
       ParentColor = False
       ParentFont = False
     end
-    object ButtonPanel: TButtonPanel
+    object FPCButtonPanel: TButtonPanel
       Left = 6
       Height = 46
-      Top = 399
+      Top = 398
       Width = 461
       OKButton.Name = 'OKButton'
       OKButton.Caption = '&Write Fppkg configuration files'
@@ -97,7 +89,7 @@ object InitializeOptionsForm: TInitializeOptionsForm
       CloseButton.OnClick = CloseButtonClick
       CancelButton.Name = 'CancelButton'
       CancelButton.DefaultCaption = True
-      TabOrder = 2
+      TabOrder = 5
       ShowButtons = [pbOK, pbClose]
     end
     object AdvancedCheckbox: TCheckBox
@@ -109,7 +101,7 @@ object InitializeOptionsForm: TInitializeOptionsForm
       BorderSpacing.Around = 5
       Caption = 'Advanced'
       OnChange = AdvancedCheckboxChange
-      TabOrder = 3
+      TabOrder = 1
     end
     object PathLabel: TLabel
       Left = 30
@@ -134,7 +126,7 @@ object InitializeOptionsForm: TInitializeOptionsForm
       BorderSpacing.Right = 25
       BorderSpacing.Around = 5
       Enabled = False
-      TabOrder = 4
+      TabOrder = 2
     end
     object PrefixLabel: TLabel
       Left = 30
@@ -159,7 +151,7 @@ object InitializeOptionsForm: TInitializeOptionsForm
       BorderSpacing.Right = 25
       BorderSpacing.Around = 5
       Enabled = False
-      TabOrder = 5
+      TabOrder = 3
     end
     object CompilerLabel: TLabel
       Left = 30
@@ -184,7 +176,93 @@ object InitializeOptionsForm: TInitializeOptionsForm
       BorderSpacing.Right = 25
       BorderSpacing.Around = 5
       Enabled = False
-      TabOrder = 6
+      TabOrder = 4
+    end
+  end
+  object LazarusConfigPanel: TPanel
+    Left = 0
+    Height = 450
+    Top = 0
+    Width = 473
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 450
+    ClientWidth = 473
+    TabOrder = 1
+    Visible = False
+    object LazarusButtonPanel: TButtonPanel
+      Left = 6
+      Height = 46
+      Top = 398
+      Width = 461
+      OKButton.Name = 'OKButton'
+      OKButton.Caption = '&Write Lazarus configuration file'
+      OKButton.DefaultCaption = False
+      OKButton.Enabled = False
+      OKButton.OnClick = OnLazarusButtonClick
+      HelpButton.Name = 'HelpButton'
+      HelpButton.DefaultCaption = True
+      CloseButton.Name = 'CloseButton'
+      CloseButton.Caption = '&Close'
+      CloseButton.DefaultCaption = False
+      CloseButton.OnClick = CloseButtonClick
+      CancelButton.Name = 'CancelButton'
+      CancelButton.DefaultCaption = True
+      TabOrder = 1
+      ShowButtons = [pbOK, pbClose]
+    end
+    object InitializeLazarusLabel: TLabel
+      Left = 5
+      Height = 20
+      Top = 5
+      Width = 463
+      Align = alTop
+      BorderSpacing.Around = 5
+      Caption = 'Create new Lazarus configuration file for fppkg.'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      Left = 30
+      Height = 20
+      Top = 40
+      Width = 438
+      Align = alTop
+      BorderSpacing.Left = 25
+      BorderSpacing.Top = 10
+      BorderSpacing.Around = 5
+      Caption = 'Please give the location where Lazarus is installed.'
+      ParentColor = False
+    end
+    object LazarusDirectoryEdit: TDirectoryEdit
+      Left = 30
+      Height = 37
+      Top = 65
+      Width = 413
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Align = alTop
+      BorderSpacing.Left = 25
+      BorderSpacing.Right = 25
+      BorderSpacing.Around = 5
+      BorderSpacing.CellAlignHorizontal = ccaCenter
+      MaxLength = 0
+      TabOrder = 0
+      OnChange = LazarusDirectoryEditChange
+      TextHint = 'This location normally contains the compiler-executable along with a ''units'' and ''fpmkinst'' directory.'
+    end
+    object LazarusDirValidationLabel: TLabel
+      Left = 30
+      Height = 20
+      Top = 107
+      Width = 438
+      Align = alTop
+      AutoSize = False
+      BorderSpacing.Left = 25
+      BorderSpacing.Around = 5
+      Font.Color = clMaroon
+      ParentColor = False
+      ParentFont = False
     end
   end
 end
