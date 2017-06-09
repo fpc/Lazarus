@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-06 01:21+0300\n"
+"PO-Revision-Date: 2017-06-10 01:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -599,6 +599,14 @@ msgstr "Параметры приложения"
 #: lazarusidestrconsts.dlgassertcode
 msgid "Include assertion code"
 msgstr "Включить код Assert"
+
+#: lazarusidestrconsts.dlgassociateddebugdesktop
+msgid "Associated debug desktop"
+msgstr "Связанный отладочный рабочий стол"
+
+#: lazarusidestrconsts.dlgassociateddebugdesktophint
+msgid "If you select the desktop, the associated debug desktop will be selected as well."
+msgstr "При выборе рабочего стола также будет выбран связанный с ним отладочный рабочий стол."
 
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"

@@ -605,6 +605,14 @@ msgstr "Impostazioni dell'applicazione"
 msgid "Include assertion code"
 msgstr "Includere codice di asserzione"
 
+#: lazarusidestrconsts.dlgassociateddebugdesktop
+msgid "Associated debug desktop"
+msgstr ""
+
+#: lazarusidestrconsts.dlgassociateddebugdesktophint
+msgid "If you select the desktop, the associated debug desktop will be selected as well."
+msgstr ""
+
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Creazione automatica form:"
