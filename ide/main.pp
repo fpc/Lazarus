@@ -87,7 +87,7 @@ uses
   ApplicationBundle,
   ExtTools,
   // projects
-  ProjectResources, Project, ProjectDefs, NewProjectDlg, 
+  ProjectResources, Project, ProjectDefs, NewProjectDlg,
   PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
@@ -1135,7 +1135,7 @@ begin
     AddHelp(['']);
     AddHelp([GetCmdLineParamDescForInterface]);
     AddHelp(['']);
-   
+
     WriteHelp(AHelp.Text);
     AHelp.Free;
     exit;
@@ -1878,7 +1878,7 @@ begin
 end;
 
 procedure TMainIDE.PropHookGetMethods(TypeData: PTypeData; Proc: TGetStrProc);
-var 
+var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
@@ -3858,7 +3858,10 @@ begin
 
   ACmd.Hint := ABuildHint;
   if ProjInspector<>nil then
+  begin
     ProjInspector.OptionsBitBtn.Hint := ABuildHint;
+    ProjInspector.UpdateTitle;
+  end;
 end;
 
 procedure TMainIDE.UpdatePackageCommands(Sender: TObject);

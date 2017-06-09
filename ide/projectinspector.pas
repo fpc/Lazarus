@@ -1397,7 +1397,10 @@ begin
     NewCaption:=LazProject.GetTitle;
     if NewCaption='' then
       NewCaption:=ExtractFilenameOnly(LazProject.ProjectInfoFile);
-    Caption:=Format(lisProjInspProjectInspector, [NewCaption]);
+    NewCaption:=Format(lisProjInspProjectInspector, [NewCaption]);
+    if (LazProject.ActiveBuildMode.GetCaption<>'') then
+      NewCaption := NewCaption + ' ['+LazProject.ActiveBuildMode.GetCaption+']';
+    Caption := NewCaption;
 
     if not LazProject.ProjResources.ProjectIcon.IsEmpty then
     begin
