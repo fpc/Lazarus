@@ -3,13 +3,13 @@
    License: Creative Commons Attribution-Share Alike 3.0
 2. Name: Tango-icon-theme
    WebPage: http://http.debian.net/debian/pool/main/t/tango-icon-theme/tango-icon-theme_0.8.90.orig.tar.gz
-   License: GPL
+   License: See Copyright.txt
 3. Name: Led icon-set
-   WebPage: http://led24.de/iconset/
-   License: CC Attribution 4.0
+   WebPage: http://led24.de/iconset/ 
+   License: See 1license.txt, readme.txt   
 4. Name: FamFamFam
    Author: Mark James
    WebPage: http://www.famfamfam.com/lab/icons/mini/
-   License: CC Attribution 3.0   
+   License: Free use for any purpose
 
 
