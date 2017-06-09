@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-14 14:42+0300\n"
+"PO-Revision-Date: 2017-06-08 18:10+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -120,7 +120,7 @@ msgstr "Тип параметру:"
 
 #: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
 msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
-msgstr "Перед викликом \"Додати метод Assign\" встановіть курсор редактора початкового коду на оголошенні класу Паскаля."
+msgstr "Перед викликом \"Додати метод Assign\" встановіть курсор редактора сирцевого коду на оголошенні класу Паскаля."
 
 #: codystrconsts.crscamprivate
 msgid "private"
@@ -184,7 +184,7 @@ msgstr "Буфери коду"
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
-msgstr "Інформація про Вузол Коду"
+msgstr "Інформація про вузол коду"
 
 #: codystrconsts.crscodyfindoverloads
 msgid "Cody - Find Overloads"
@@ -242,7 +242,7 @@ msgstr "Pascal (*.pas;*.pp)|*.pas;*.pp"
 
 #: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
 msgid "Please place the cursor of the source editor in an implementation of an overridden method."
-msgstr "Встановіть курсор редактора початкового коду на реалізації перевизначеного методу."
+msgstr "Встановіть курсор редактора сирцевого коду на реалізації перевизначеного методу."
 
 #: codystrconsts.crscuselectfiletoinsertatcursor
 msgid "Select file to insert at cursor"
@@ -270,7 +270,7 @@ msgstr "Помилка"
 
 #: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
 msgid "Please place the cursor of the source editor on a With variable."
-msgstr "Встановіть курсор редактора початкового коду на на змінній With."
+msgstr "Встановіть курсор редактора сирцевого коду на на змінній With."
 
 #: codystrconsts.crsdeclarevariable
 msgid "Declare Variable"
@@ -603,11 +603,11 @@ msgstr "Спочатку відкрийте проект."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
-msgstr "Встановіть курсор редактора початкового коду на ідентифікатор в операторі.%sНаприклад:%sMyVar:=3;"
+msgstr "Встановіть курсор редактора сирцевого коду на ідентифікатор в операторі.%sНаприклад:%sMyVar:=3;"
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
 msgid "Please place the cursor of the source editor on an identifier of a declaration."
-msgstr "Встановіть курсор редактора початкового коду на ідентифікатор в оголошенні."
+msgstr "Встановіть курсор редактора сирцевого коду на ідентифікатор в оголошенні."
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditor
 msgid "Please select some code in the Source Editor."

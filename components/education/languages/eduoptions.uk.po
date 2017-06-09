@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-01 19:36+0200\n"
+"PO-Revision-Date: 2017-06-08 18:10+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,11 +23,11 @@ msgstr "Додати пункт створення нової програми �
 
 #: eduoptions.ersaddanidemenuitemtocreateanewprogram
 msgid "Add an IDE menu item to create a new program"
-msgstr "Додати пункт створення нової програми в меню IDE"
+msgstr "Додати пункт створення нової програми в меню ІСР"
 
 #: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
 msgid "Add a speed button to the IDE toolbar to create a new program"
-msgstr "Додати до панелі інструментів IDE кнопку швидкого доступу для створення нової програми"
+msgstr "Додати до панелі інструментів ІСР кнопку швидкого доступу для створення нової програми"
 
 #: eduoptions.ersaddicon
 msgid "Add icon"
@@ -108,7 +108,7 @@ msgstr "Сховати все"
 
 #: eduoptions.ersidemenuitems
 msgid "IDE menu items"
-msgstr "Елементи меню IDE"
+msgstr "Елементи меню ІСР"
 
 #: eduoptions.ersloaddefaultcode
 msgid "Load default code?"
@@ -116,7 +116,7 @@ msgstr "Завантажити код за замовчуванням?"
 
 #: eduoptions.ersloadsourcefromfile
 msgid "Load source from file"
-msgstr "Завантажити початковий код з файлу"
+msgstr "Завантажити сирцевий код з файлу"
 
 #: eduoptions.ersnewprogram
 msgctxt "eduoptions.ersnewprogram"
@@ -133,7 +133,7 @@ msgstr "Нова програма з одного файлу"
 
 #: eduoptions.ersrdbtnfull
 msgid "Show All"
-msgstr "Показати Все"
+msgstr "Показати все"
 
 #: eduoptions.ersrdgrpeventscaption
 msgid "Events"
@@ -181,7 +181,7 @@ msgstr "Програма з одного файлу"
 
 #: eduoptions.erssource
 msgid "Source"
-msgstr "Початковий код"
+msgstr "Сирцевий код"
 
 #: eduoptions.erssttexteventsext
 msgid "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
