@@ -2561,10 +2561,12 @@ end;
 
 type
   TBoolFunc = function: Boolean of object;
+  TBoolIndexFunc = function(const Index: Integer): Boolean of object;
 function TPropertyEditor.CallStoredFunction: Boolean;
 var
-  Func: TMethod;
-  FFunc: TBoolFunc;
+  Met: TMethod;
+  Func: TBoolFunc;
+  IndexFunc: TBoolIndexFunc;
   APropInfo: PPropInfo;
   StoredProcType: Byte;
 begin
@@ -2573,14 +2575,21 @@ begin
   if StoredProcType in [ptStatic, ptVirtual] then
   begin
     case StoredProcType of
-      ptStatic: Func.Code := APropInfo^.StoredProc;
-      ptVirtual: Func.Code := PPointer(Pointer(FPropList^[0].Instance.ClassType))[{%H-}PtrInt(APropInfo^.StoredProc) div SizeOf(Pointer)];
+      ptStatic: Met.Code := APropInfo^.StoredProc;
+      ptVirtual: Met.Code := PPointer(Pointer(FPropList^[0].Instance.ClassType))[{%H-}PtrInt(APropInfo^.StoredProc) div SizeOf(Pointer)];
     end;
-    if Func.Code = nil then
+    if Met.Code = nil then
       raise EPropertyError.Create('No property stored method available');
-    Func.Data := FPropList^[0].Instance;
-    FFunc := TBoolFunc(Func);
-    Result := FFunc();
+    Met.Data := FPropList^[0].Instance;
+    if ((APropInfo^.PropProcs shr 6) and 1) <> 0 then // has index property
+    begin
+      IndexFunc := TBoolIndexFunc(Met);
+      Result := IndexFunc(APropInfo^.Index);
+    end else
+    begin
+      Func := TBoolFunc(Met);
+      Result := Func();
+    end;
   end else
   if StoredProcType = ptConst then
     Result := APropInfo^.StoredProc<>nil
