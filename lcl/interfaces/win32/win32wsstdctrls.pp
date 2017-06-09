@@ -933,20 +933,6 @@ end;
 
 { TWin32WSCustomComboBox }
 
-const
-  ComboBoxStylesMask = CBS_DROPDOWN or CBS_DROPDOWN or CBS_DROPDOWNLIST or
-    CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE;
-
-function CalcComboBoxWinFlags(AComboBox: TCustomComboBox): dword;
-const
-  ComboBoxStyles: array[TComboBoxStyle] of dword = (
-    CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
-    CBS_OWNERDRAWFIXED or CBS_DROPDOWNLIST, CBS_OWNERDRAWVARIABLE or CBS_DROPDOWNLIST,
-    CBS_OWNERDRAWFIXED or CBS_DROPDOWN, CBS_OWNERDRAWVARIABLE or CBS_DROPDOWN);
-begin
-  Result := ComboBoxStyles[AComboBox.Style];
-end;
-
 class function TWin32WSCustomComboBox.GetStringList(
   const ACustomComboBox: TCustomComboBox): TWin32ComboBoxStringList;
 begin
@@ -1043,13 +1029,7 @@ begin
 end;
 
 class procedure TWin32WSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle);
-var
-  CurrentStyle: DWord;
 begin
-  CurrentStyle := GetWindowLong(ACustomComboBox.Handle, GWL_STYLE);
-  if (CurrentStyle and ComboBoxStylesMask) = CalcComboBoxWinFlags(ACustomComboBox) then
-    Exit;
-
   RecreateWnd(ACustomComboBox);
 end;
 
