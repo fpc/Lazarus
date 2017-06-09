@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-02 23:29+0300\n"
+"PO-Revision-Date: 2017-06-08 18:22+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -1916,7 +1916,7 @@ msgstr "Виконуваний файл компілятора (наприкла
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
-msgstr "Тека кодів FPC"
+msgstr "Тека сирців FPC"
 
 #: lazarusidestrconsts.dlgframecolor
 msgid "Text-mark"
@@ -2088,7 +2088,7 @@ msgstr "Показ порад до параметру \"Відправник\" �
 
 #: lazarusidestrconsts.dlghintsunused
 msgid "Show hints for unused units in main"
-msgstr "Довідки для непотрібних модулів в головному коді"
+msgstr "Підказки для непотрібних модулів в головному коді"
 
 #: lazarusidestrconsts.dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
@@ -2952,7 +2952,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
-msgstr "Довідки до палітри компонентів"
+msgstr "Підказки до палітри компонентів"
 
 #: lazarusidestrconsts.dlgpasext
 msgid "Default Pascal extension"
@@ -3046,7 +3046,7 @@ msgstr "Vista-8: увімкн., 8.1+: на монітор"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
 msgid "Vista-8: on, 8.1/10+: per monitor/V2"
-msgstr ""
+msgstr "Vista-8: увімкн., 8.1/10+: на монітор/V2"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
@@ -3528,7 +3528,7 @@ msgstr "Пробіл"
 
 #: lazarusidestrconsts.dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
-msgstr "Довідки до командних кнопок (відкрити, зберегти тощо)"
+msgstr "Підказки до командних кнопок (відкрити, зберегти тощо)"
 
 #: lazarusidestrconsts.dlgsrcedit
 msgctxt "lazarusidestrconsts.dlgsrcedit"
@@ -3633,7 +3633,7 @@ msgstr "Підказка поточного класу/процесу"
 
 #: lazarusidestrconsts.dlgtoppos
 msgid "Top:"
-msgstr "Верх:"
+msgstr "Вгорі:"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
@@ -4226,7 +4226,7 @@ msgstr "Про проект Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Ліцензія: GPL/LGPL. Див. початкові коди Lazarus та Free Pascal для деталей ліцензії.%sLazarus це ІСР для створення графічних та консольних застосунків, написаних на Free Pascal. Free Pascal це компілятор Pascal та Object Pascal, що працює на Windows, Linux, Mac OS X, FreeBSD та інших.%sLazarus є втраченим шматком пазлу, що дозволить розробляти програми для всіх перелічених платформ в Delphi-подібному оточенні. ІСР - це RAD-інструмент що включає в себе дизайнер форм.%sОскільки Lazarus росте, нам потрібно більше розробників."
+msgstr "Ліцензія: GPL/LGPL. Див. сирцеві коди Lazarus та Free Pascal для деталей ліцензії.%sLazarus це ІСР для створення графічних та консольних застосунків, написаних на Free Pascal. Free Pascal це компілятор Pascal та Object Pascal, що працює на Windows, Linux, Mac OS X, FreeBSD та інших.%sLazarus є шматком пазлу, якого бракувало, щоб розробляти програми для всіх перелічених платформ у Delphi-подібному оточенні. ІСР - це RAD-інструмент що включає в себе дизайнер форм.%sОскільки Lazarus росте, нам потрібно більше розробників."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -7992,7 +7992,7 @@ msgstr "Видалити всі точки зупинки з файлу \"%s\"?"
 
 #: lazarusidestrconsts.lisdeleteallinsamesource
 msgid "Delete All in same source"
-msgstr "Видалити Всі в тому ж файлі початкового коду"
+msgstr "Видалити всі в тому ж файлі сирцевого коду"
 
 #: lazarusidestrconsts.lisdeleteallselectedbreakpoints
 msgid "Delete all selected breakpoints?"
@@ -8804,7 +8804,7 @@ msgstr "Помилка в шляху пошуку для \"Об'єктні фа�
 
 #: lazarusidestrconsts.liserrorinthesearchpathforothersources
 msgid "Error in the search path for \"Other sources\":"
-msgstr "Помилка в шляху пошуку для \"Інші початкові коди\":"
+msgstr "Помилка в шляху пошуку для \"Інші сирці\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforotherunitfiles
 msgid "Error in the search path for \"Other unit files\":"
@@ -9487,7 +9487,7 @@ msgstr "Ресурси FPC (.res)"
 
 #: lazarusidestrconsts.lisfpcsources
 msgid "FPC sources"
-msgstr "Початкові коди FPC"
+msgstr "Сирцеві коди FPC"
 
 #: lazarusidestrconsts.lisfpctooold
 msgid "FPC too old"
@@ -9544,7 +9544,7 @@ msgstr "Повідомлення компілятора Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
-msgstr "Тека кодів Free Pascal"
+msgstr "Тека сирців Free Pascal"
 
 #: lazarusidestrconsts.lisfrforwardsearch
 msgid "Forwar&d search"
@@ -10084,7 +10084,7 @@ msgstr "В джерельній теці пакунка \"%s\"."
 
 #: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
 msgid "In a source directory of the project. Check for duplicates."
-msgstr "В теці початкових кодів проекту. Перевірте на дублікати."
+msgstr "В теці сирцевих кодів проекту. Перевірте на дублікати."
 
 #: lazarusidestrconsts.lisincludeallsubdirectories
 msgid "Include all subdirectories"
@@ -10402,7 +10402,7 @@ msgstr "Неприпустимий вираз:%s%s%s%s"
 
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
-msgstr "Неправильний вираз.%sДовідка: функція \"Створити рядок ресурсів\" вимагає рядкової константи в одному файлі. Виберіть вираз і спробуйте ще."
+msgstr "Неправильний вираз.%sДовідка: функція \"Створити рядок ресурсів\" вимагає рядкової константи в одному файлі. Виберіть вираз і спробуйте ще раз."
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -10681,7 +10681,7 @@ msgstr "Видалення останнього символу"
 
 #: lazarusidestrconsts.liskmdiffeditorfiles
 msgid "Diff Editor Files"
-msgstr "Порівняти файли кодів"
+msgstr "Порівняти файли редактора"
 
 #: lazarusidestrconsts.liskmeditcodetemplates
 msgid "Edit Code Templates"
@@ -12777,7 +12777,7 @@ msgstr "Перезаписати форми з увімкненою інтерн
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC Source Directory"
-msgstr "Переглянути теку кодів FPC"
+msgstr "Переглянути теку сирців FPC"
 
 #: lazarusidestrconsts.lismenuresetdebugger
 msgid "Reset Debugger"
@@ -13479,11 +13479,11 @@ msgstr "Перемістити сторінку"
 
 #: lazarusidestrconsts.lismoveselecteddown
 msgid "Move selected item down (Ctrl+Down)"
-msgstr "Змістити вибраний ел-т вниз (Ctrl+Down)"
+msgstr "Змістити вибраний елемент вниз (Ctrl+Down)"
 
 #: lazarusidestrconsts.lismoveselectedup
 msgid "Move selected item up (Ctrl+Up)"
-msgstr "Змістити вибраний ел-т вверх (Ctrl+Up)"
+msgstr "Змістити вибраний елемент вгору (Ctrl+Up)"
 
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
@@ -14788,7 +14788,7 @@ msgstr "Сортувати файли остаточно"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
 msgid "Sort files alphabetically"
-msgstr "Сортувати файли за алфавітом"
+msgstr "Упорядкувати файли за алфавітом"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
@@ -15830,7 +15830,7 @@ msgstr "Сеанс проекту змінився"
 
 #: lazarusidestrconsts.lisprojectsourcedirectories
 msgid "Project source directories"
-msgstr "Теки кодів проекту"
+msgstr "Теки сирців проекту"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionataddress
 msgid "%0:s%0:s At address %1:x"
@@ -15858,7 +15858,7 @@ msgstr "%0:s%0:s У файлі '%1:s' рядок %2:d:%0:s%3:s"
 
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"
-msgstr "Шлях до кодів проекту"
+msgstr "Шлях до сирців проекту"
 
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
@@ -16744,7 +16744,7 @@ msgstr "Вибрати файл"
 
 #: lazarusidestrconsts.lisselectfpcsourcedirectory
 msgid "Select FPC source directory"
-msgstr "Вибрати теку початкових кодів FPC"
+msgstr "Вибрати теку сирцевих кодів FPC"
 
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
@@ -16756,7 +16756,7 @@ msgstr "Інструмент вибору"
 
 #: lazarusidestrconsts.lisselectlazarussourcedirectory
 msgid "Select Lazarus source directory"
-msgstr "Вибрати теку початкових кодів Lazarus"
+msgstr "Вибрати теку сирцевих кодів Lazarus"
 
 #: lazarusidestrconsts.lisselectpathto
 msgid "Select path to %s"
@@ -16841,7 +16841,7 @@ msgstr "Показати довідку"
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
-msgstr "Показувати довідки в Інспекторі об'єкту"
+msgstr "Показувати підказки"
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
@@ -17057,7 +17057,7 @@ msgstr "Точка зупинки &джерела ..."
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
 msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
-msgstr "Початкова тека \"%s\"%sі тека призачення \"%s\"%sзбігаються. Може ви не зрозуміли особливості.%sЦе очистить/перестворить цільову теку і скопіює до неї пакунок/проект."
+msgstr "Початкова тека \"%s\"%sі тека призначення \"%s\"%sзбігаються. Може ви не зрозуміли особливості.%sЦе очистить/перестворить цільову теку і скопіює до неї пакунок/проект."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory \"%s\" does not exist."
@@ -17251,7 +17251,7 @@ msgstr "Сортувати вкладки всіх контролів-нащад
 
 #: lazarusidestrconsts.listaborderdownhint
 msgid "Move the selected control down in tab order"
-msgstr "Змістити вибраний ел-т вниз у Таб-порядку"
+msgstr "Змістити вибраний елемент вниз у Таб-порядку"
 
 #: lazarusidestrconsts.listaborderof
 msgid "Tab Order of %s"
@@ -17271,7 +17271,7 @@ msgstr "Обчислити Таб-порядок елементів за їх X-
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
-msgstr "Змістити вибраний ел-т вгору  у Таб-порядку"
+msgstr "Змістити вибраний елемент вгору в Таб-порядку"
 
 #: lazarusidestrconsts.listabsfor
 msgid "Tabs for %s"
@@ -17456,7 +17456,7 @@ msgstr "Файл %s не схожий на lpi файл."
 
 #: lazarusidestrconsts.listhefileindexisneededforfunctionslikefinddeclaratio
 msgid "The file index is needed for functions like find declaration. While scanning you can edit sources and compile, but functions like find declaration will show unit-not-found errors. This can take a minute."
-msgstr "Індекс файлів потрібен для забезпечення роботи функції пошуку і їй подібних. Під час сканування можна редагувати початковий код і компілювати, але функція пошуку і їй подібні будуть повідомляти, що необхідні модулі не знайдені. Це може зайняти кілька хвилин."
+msgstr "Індекс файлів потрібен для забезпечення роботи функції пошуку і їй подібних. Під час сканування можна редагувати сирцевий код і компілювати, але функція пошуку і їй подібні будуть повідомляти, що необхідні модулі не знайдені. Це може зайняти кілька хвилин."
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
@@ -17484,7 +17484,7 @@ msgstr "Схоже, що файл %s є програмним в існуючом
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
-msgstr "Файл \"%s\"%sзнайдений в одному з каталогів початкового коду пакунка %s, і він виглядає як скомпільований модуль. Такі модулі повинні бути у вихідній теці пакунка, інакше інші пакунки можуть мати проблеми з використанням цього пакунка.%sВидалити невизначений файл?"
+msgstr "Файл \"%s\"%sзнайдений в одному з каталогів сирцевого коду пакунка %s, і він виглядає як скомпільований модуль. Такі модулі повинні бути у вихідній теці пакунка, інакше інші пакунки можуть мати проблеми з використанням цього пакунка.%sВидалити невизначений файл?"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
@@ -17528,7 +17528,7 @@ msgstr "Виконуваний застосунок \"%s\"%sне існує аб
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
-msgstr "Тека Lazarus містить початкові коди ІСР і файли пакетів LCL і багато стандартних пакунків. Наприклад, вона містить файл \"ide%slazarus.lpi\". Файли перекладу також знаходяться там."
+msgstr "Тека Lazarus містить сирцеві коди ІСР, файли пакетів LCL і багато стандартних пакунків. Наприклад, вона містить файл \"ide%slazarus.lpi\". Файли перекладу також знаходяться там."
 
 #: lazarusidestrconsts.listhelazarusdirectorydoesnotlookcorrect
 msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
@@ -17584,7 +17584,7 @@ msgstr "Вихідна тека %s є в списку пошуку шляху м
 
 #: lazarusidestrconsts.listheoutputdirectoryshouldbeaseparatedirectoryandnot
 msgid " The output directory should be a separate directory and not contain any source files."
-msgstr " Вихідна тека повинна бути окремою текою і не містити файлів початкових кодів."
+msgstr " Вихідна тека повинна бути окремою текою і не містити файлів сирцевих кодів."
 
 #: lazarusidestrconsts.listheownerclasshasthisname
 msgid "The owner class has this name"
@@ -17644,7 +17644,7 @@ msgstr "Проект не використовує інтерфейси моду
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
-msgstr "Проект не має основного файлу з початковим кодом."
+msgstr "Проект не має основного файлу з сирцевим кодом."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file \"%s\"%sis equal to the project main source file!"
@@ -17820,7 +17820,7 @@ msgstr "Модуль вже називається \"%s\". Ідентифіка�
 
 #: lazarusidestrconsts.listheunitsearchpathofcontainsthesourcedirectoryofpac
 msgid "The unit search path of \"%s\" contains the source directory \"%s\" of package %s"
-msgstr "Шлях пошуку модулів \"%s\" містить теку початкових кодів \"%s\" пакунка %s"
+msgstr "Шлях пошуку модулів \"%s\" містить теку сирцевих кодів \"%s\" пакунка %s"
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
@@ -19034,7 +19034,7 @@ msgstr "Збирання ІСР неможливе без вказання ко�
 
 #: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
 msgid "Without the proper FPC sources code browsing and completion will be very limited."
-msgstr "Без належного початковогокоду FPC перегляд і завершення буде дуже обмеженим."
+msgstr "Без належних сирців FPC перегляд і завершення буде дуже обмеженим."
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
@@ -19354,7 +19354,7 @@ msgstr "Арабська"
 
 #: lazarusidestrconsts.rslanguageautomatic
 msgid "Automatic (or English)"
-msgstr "Автоматично (або англійською)"
+msgstr "Автоматично (або англійська)"
 
 #: lazarusidestrconsts.rslanguagecatalan
 msgid "Catalan"
@@ -19621,7 +19621,7 @@ msgstr "додати точку зупинки за адресою"
 
 #: lazarusidestrconsts.srkmecaddbpsource
 msgid "add source breakpoint"
-msgstr "додати точку зупинки в початковому коді"
+msgstr "додати точку зупинки в сирцевому коді"
 
 #: lazarusidestrconsts.srkmecaddbpwatchpoint
 msgid "add data/watchpoint"

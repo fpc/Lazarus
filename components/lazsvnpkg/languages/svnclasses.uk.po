@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-23 23:13+0200\n"
+"PO-Revision-Date: 2017-06-08 18:11+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -219,7 +219,7 @@ msgstr "Показати журнал"
 
 #: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
 msgid "Source file does not belong to the project. Please add first."
-msgstr "Файл початкового коду не включений в проект. Спершу додайте його."
+msgstr "Сирцевий файл не включено в проект. Спершу додайте його."
 
 #: svnclasses.rssvnsettings
 msgid "SVN settings"
