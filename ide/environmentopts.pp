@@ -2683,7 +2683,8 @@ function TEnvironmentOptions.GetActiveDesktop: TDesktopOpt;
   end;
 
 var
-  DefaultDesktop: TDesktopOpt;
+  OldActiveDesktop: TDesktopOpt;
+  OldActiveDesktopName: string;
 
 begin
   if FActiveDesktopName <> '' then
@@ -2695,6 +2696,7 @@ begin
 
   //the selected desktop is unsupported (docked/undocked)
   // -> use default
+  OldActiveDesktopName := FActiveDesktopName;
   ChooseDefault;
   Result := FDesktops.Find(FActiveDesktopName);
   if Assigned(Result) and Result.Compatible then
@@ -2703,15 +2705,17 @@ begin
   //recreate desktop with ActiveDesktopName
   if Assigned(Result) then
     FDesktops.Remove(Result);
-  DefaultDesktop := FDesktops.Find('default');
 
   Result := TDesktopOpt.Create(FActiveDesktopName);
   FDesktops.Add(Result);
   Result.Assign(Desktop);
   if Assigned(IDEDockMaster) then
     Result.FDockedOpt.LoadDefaults;
-  if Assigned(DefaultDesktop) then
-    Result.Assign(DefaultDesktop, False, False);
+  OldActiveDesktop := FDesktops.Find(OldActiveDesktopName);
+  if not Assigned(OldActiveDesktop) then
+    OldActiveDesktop := FDesktops.Find('default');
+  if Assigned(OldActiveDesktop) then
+    Result.Assign(OldActiveDesktop, False, False);
 end;
 
 procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
