@@ -217,14 +217,6 @@ msgstr "Mettre à jour la liste des paquets"
 msgid "Advanced"
 msgstr "Avancé"
 
-#: tinitializeoptionsform.buttonpanel.closebutton.caption
-msgid "&Close"
-msgstr "&Fermer"
-
-#: tinitializeoptionsform.buttonpanel.okbutton.caption
-msgid "&Write Fppkg configuration files"
-msgstr "&Écrire les fichiers de configuration de Fppkg"
-
 #: tinitializeoptionsform.caption
 msgid "Create configuration files"
 msgstr "Créer les fichiers de configuration"
@@ -233,11 +225,20 @@ msgstr "Créer les fichiers de configuration"
 msgid "Compiler:"
 msgstr "Compilateur :"
 
-#: tinitializeoptionsform.edit1.text
-msgid "Edit1"
-msgstr "Edit1"
+#: tinitializeoptionsform.fpcbuttonpanel.closebutton.caption
+#, fuzzy
+msgctxt "tinitializeoptionsform.fpcbuttonpanel.closebutton.caption"
+msgid "&Close"
+msgstr "&Fermer"
+
+#: tinitializeoptionsform.fpcbuttonpanel.okbutton.caption
+#, fuzzy
+msgctxt "tinitializeoptionsform.fpcbuttonpanel.okbutton.caption"
+msgid "&Write Fppkg configuration files"
+msgstr "&Écrire les fichiers de configuration de Fppkg"
 
 #: tinitializeoptionsform.fpcdirectoryedit.texthint
+msgctxt "tinitializeoptionsform.fpcdirectoryedit.texthint"
 msgid "This location normally contains the compiler-executable along with a 'units' and 'fpmkinst' directory."
 msgstr "Cet emplacement contient normalement l’exécutable du compilateur ainsi que les répertoires 'units' et 'fpmkinst'."
 
@@ -245,9 +246,33 @@ msgstr "Cet emplacement contient normalement l’exécutable du compilateur ains
 msgid "Create new configuration files for fppkg."
 msgstr "Créer les fichiers de configuration pour Fppkg."
 
+#: tinitializeoptionsform.initializelazaruslabel.caption
+msgid "Create new Lazarus configuration file for fppkg."
+msgstr ""
+
 #: tinitializeoptionsform.label1.caption
 msgid "Please give the location where FPC is installed."
 msgstr "Veuillez indiquer l’emplacement d’installation de FPC."
+
+#: tinitializeoptionsform.label2.caption
+msgid "Please give the location where Lazarus is installed."
+msgstr ""
+
+#: tinitializeoptionsform.lazarusbuttonpanel.closebutton.caption
+#, fuzzy
+msgctxt "tinitializeoptionsform.lazarusbuttonpanel.closebutton.caption"
+msgid "&Close"
+msgstr "&Fermer"
+
+#: tinitializeoptionsform.lazarusbuttonpanel.okbutton.caption
+msgid "&Write Lazarus configuration file"
+msgstr ""
+
+#: tinitializeoptionsform.lazarusdirectoryedit.texthint
+#, fuzzy
+msgctxt "tinitializeoptionsform.lazarusdirectoryedit.texthint"
+msgid "This location normally contains the compiler-executable along with a 'units' and 'fpmkinst' directory."
+msgstr "Cet emplacement contient normalement l’exécutable du compilateur ainsi que les répertoires 'units' et 'fpmkinst'."
 
 #: tinitializeoptionsform.pathlabel.caption
 msgid "Path:"
