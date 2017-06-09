@@ -1100,19 +1100,27 @@ class procedure TWin32WSCustomComboBox.SetDroppedDown(
 var
   aSelStart, aSelLength: Integer;
   aText: string;
+  Editable: Boolean;
 begin
   if WSCheckHandleAllocated(ACustomComboBox, 'TWin32WSCustomComboBox.SetDroppedDown') then
   begin
-    if not GetText(ACustomComboBox, aText) then
-      aText := ACustomComboBox.Text;
-    aSelStart := GetSelStart(ACustomComboBox);
-    aSelLength := GetSelLength(ACustomComboBox);
+    Editable := (ACustomComboBox.Style in [csDropDown, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable]);
+    if Editable then
+    begin
+      if not GetText(ACustomComboBox, aText) then
+        aText := ACustomComboBox.Text;
+      aSelStart := GetSelStart(ACustomComboBox);
+      aSelLength := GetSelLength(ACustomComboBox);
+    end;
 
     SendMessage(ACustomComboBox.Handle, CB_SHOWDROPDOWN, WPARAM(ADroppedDown), 0);
 
-    SetText(ACustomComboBox, aText);
-    SetSelStart(ACustomComboBox, aSelStart);
-    SetSelLength(ACustomComboBox, aSelLength);
+    if Editable then
+    begin
+      SetText(ACustomComboBox, aText);
+      SetSelStart(ACustomComboBox, aSelStart);
+      SetSelLength(ACustomComboBox, aSelLength);
+    end;
   end;
 end;
 
