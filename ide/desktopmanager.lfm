@@ -10,7 +10,7 @@ object DesktopForm: TDesktopForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
@@ -27,7 +27,7 @@ object DesktopForm: TDesktopForm
     CancelButton.Name = 'CancelButton'
     CancelButton.Caption = 'Close'
     CancelButton.DefaultCaption = False
-    TabOrder = 3
+    TabOrder = 4
     ShowButtons = [pbClose, pbHelp]
     object ExportBitBtn: TBitBtn
       Left = 93
@@ -58,9 +58,9 @@ object DesktopForm: TDesktopForm
     AnchorSideLeft.Control = LblGrayedInfo
     AnchorSideRight.Control = LblGrayedInfo
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = AutoSaveActiveDesktopCheckBox
+    AnchorSideBottom.Control = AssociatedDebugDesktopComboBox
     Left = 11
-    Height = 190
+    Height = 161
     Top = 8
     Width = 320
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -87,7 +87,7 @@ object DesktopForm: TDesktopForm
     Caption = 'Auto save active desktop'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 1
+    TabOrder = 2
   end
   object ToolBar1: TToolBar
     Left = 340
@@ -98,7 +98,7 @@ object DesktopForm: TDesktopForm
     Anchors = [akTop, akRight, akBottom]
     Caption = 'ToolBar1'
     EdgeBorders = []
-    TabOrder = 2
+    TabOrder = 3
     object SaveTB: TToolButton
       Left = 1
       Top = 0
@@ -109,7 +109,6 @@ object DesktopForm: TDesktopForm
     end
     object ToolButton1: TToolButton
       Left = 1
-      Height = 5
       Top = 22
       Width = 23
       Caption = 'ToolButton1'
@@ -167,7 +166,6 @@ object DesktopForm: TDesktopForm
     end
     object ToolButton2: TToolButton
       Left = 1
-      Height = 5
       Top = 120
       Width = 23
       Caption = 'ToolButton2'
@@ -175,7 +173,6 @@ object DesktopForm: TDesktopForm
     end
     object ToolButton3: TToolButton
       Left = 1
-      Height = 5
       Top = 49
       Width = 23
       Caption = 'ToolButton3'
@@ -195,9 +192,39 @@ object DesktopForm: TDesktopForm
     ParentColor = False
     WordWrap = True
   end
+  object AssociatedDebugDesktopComboBox: TComboBox
+    AnchorSideLeft.Control = AssociatedDebugDesktopLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = DesktopListBox
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = AutoSaveActiveDesktopCheckBox
+    Left = 184
+    Height = 23
+    Top = 175
+    Width = 147
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Left = 10
+    ItemHeight = 15
+    OnChange = AssociatedDebugDesktopComboBoxChange
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object AssociatedDebugDesktopLabel: TLabel
+    AnchorSideLeft.Control = AutoSaveActiveDesktopCheckBox
+    AnchorSideTop.Control = AssociatedDebugDesktopComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 11
+    Height = 15
+    Top = 179
+    Width = 163
+    Caption = 'AssociatedDebugDesktopLabel'
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+  end
   object ExportMenu: TPopupMenu
-    left = 48
-    top = 24
+    Left = 48
+    Top = 24
     object ExportItem: TMenuItem
       Action = ExportAction
       OnClick = ExportActionClick
@@ -208,8 +235,8 @@ object DesktopForm: TDesktopForm
     end
   end
   object ActionList1: TActionList
-    left = 128
-    top = 32
+    Left = 128
+    Top = 32
     object SaveAction: TAction
       Caption = 'SaveAction'
       OnExecute = SaveActionClick

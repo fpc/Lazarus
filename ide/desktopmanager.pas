@@ -20,11 +20,13 @@ type
   { TDesktopForm }
 
   TDesktopForm = class(TForm)
+    AssociatedDebugDesktopComboBox: TComboBox;
     ExportBitBtn: TBitBtn;
     ImportBitBtn: TBitBtn;
     ImportAction: TAction;
     ExportAction: TAction;
     ExportAllAction: TAction;
+    AssociatedDebugDesktopLabel: TLabel;
     MoveUpAction: TAction;
     MoveDownAction: TAction;
     DeleteAction: TAction;
@@ -51,6 +53,7 @@ type
     MoveDownTB: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
+    procedure AssociatedDebugDesktopComboBoxChange(Sender: TObject);
     procedure DeleteActionClick(Sender: TObject);
     procedure DesktopListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
@@ -344,6 +347,8 @@ begin
   AutoSaveActiveDesktopCheckBox.Caption := dlgAutoSaveActiveDesktop;
   AutoSaveActiveDesktopCheckBox.Hint := dlgAutoSaveActiveDesktopHint;
   LblGrayedInfo.Caption := dlgGrayedDesktopsUndocked;
+  AssociatedDebugDesktopLabel.Caption := dlgAssociatedDebugDesktop;
+  AssociatedDebugDesktopLabel.Hint := dlgAssociatedDebugDesktopHint;
   LblGrayedInfo.Font.Color := clGrayText;
 
   ExportAction.Hint := lisExport;
@@ -387,11 +392,14 @@ begin
 
   HasNonCompatible := False;
   DesktopListBox.Clear;
+  AssociatedDebugDesktopComboBox.Clear;
+  AssociatedDebugDesktopComboBox.Items.AddObject(dlgPOIconDescNone, nil);
   // Saved desktops
   for i:=0 to EnvironmentOptions.Desktops.Count-1 do
   begin
     DskTop := EnvironmentOptions.Desktops[i];
-    DesktopListBox.Items.Add(DskTop.Name);
+    DesktopListBox.Items.AddObject(DskTop.Name, DskTop);
+    AssociatedDebugDesktopComboBox.Items.AddObject(DskTop.Name, DskTop);
     if not DskTop.Compatible then
       HasNonCompatible := True;
   end;
@@ -444,6 +452,19 @@ begin
     Desktops[dskIndex].Name := xDesktopName;
     RefreshList(xDesktopName);
   end;
+end;
+
+procedure TDesktopForm.AssociatedDebugDesktopComboBoxChange(Sender: TObject);
+var
+  SelDesktop: TDesktopOpt;
+begin
+  if DesktopListBox.ItemIndex = -1 then
+    Exit;
+
+  SelDesktop := DesktopListBox.Items.Objects[DesktopListBox.ItemIndex] as TDesktopOpt;
+  SelDesktop.AssociatedDebugDesktopName := AssociatedDebugDesktopComboBox.Text;
+  if SelDesktop.Name = EnvironmentOptions.ActiveDesktopName then
+    EnvironmentOptions.Desktop.AssociatedDebugDesktopName := SelDesktop.AssociatedDebugDesktopName;
 end;
 
 procedure TDesktopForm.DeleteActionClick(Sender: TObject);
@@ -758,10 +779,20 @@ procedure TDesktopForm.DesktopListBoxSelectionChange(Sender: TObject; User: bool
 var
   HasSel, IsActive, IsDebug: Boolean;
   CurName: String;
+  SelDesktop: TDesktopOpt;
 begin
   HasSel := DesktopListBox.ItemIndex>=0;
   if HasSel then
   begin
+    SelDesktop := DesktopListBox.Items.Objects[DesktopListBox.ItemIndex] as TDesktopOpt;
+    if (SelDesktop.AssociatedDebugDesktopName<>'') then
+    begin
+      AssociatedDebugDesktopComboBox.ItemIndex :=
+        AssociatedDebugDesktopComboBox.Items.IndexOfObject(EnvironmentOptions.Desktops.Find(SelDesktop.AssociatedDebugDesktopName));
+      if AssociatedDebugDesktopComboBox.ItemIndex<0 then
+        AssociatedDebugDesktopComboBox.ItemIndex := 0;
+    end else
+      AssociatedDebugDesktopComboBox.ItemIndex := 0;
     CurName := DesktopListBox.Items[DesktopListBox.ItemIndex];
     IsActive := CurName = EnvironmentOptions.ActiveDesktopName;
     IsDebug := CurName = EnvironmentOptions.DebugDesktopName;

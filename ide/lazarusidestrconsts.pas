@@ -1355,6 +1355,8 @@ resourcestring
   dlgGrayedDesktopsUndocked = 'Grayed desktops are for undocked environment.';
   dlgAutoSaveActiveDesktop = 'Auto save active desktop';
   dlgAutoSaveActiveDesktopHint = 'Save active desktop on IDE close'+sLineBreak+'Save debug desktop on IDE close and debug end';
+  dlgAssociatedDebugDesktop = 'Associated debug desktop';
+  dlgAssociatedDebugDesktopHint = 'If you select the desktop, the associated debug desktop will be selected as well.';
 
   // Window options
   dlgShowingWindows = 'Showing Windows';

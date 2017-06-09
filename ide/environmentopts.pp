@@ -298,6 +298,7 @@ type
   TDesktopOpt = class
   private
     FName: String;
+    FAssociatedDebugDesktopName: String;
     FIsDocked: Boolean;
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
@@ -344,6 +345,7 @@ type
     procedure RestoreDesktop;
 
     property Name: String read FName write FName;
+    property AssociatedDebugDesktopName: String read FAssociatedDebugDesktopName write FAssociatedDebugDesktopName;
     property IDEWindowCreatorsLayoutList: TSimpleWindowLayoutList read FIDEWindowCreatorsLayoutList write FIDEWindowCreatorsLayoutList;
     property IDEDialogLayoutList: TIDEDialogLayoutList read FIDEDialogLayoutList;
     property SingleTaskBarButton: boolean read FSingleTaskBarButton write FSingleTaskBarButton;
@@ -1168,6 +1170,7 @@ begin
   begin
     FIDEWindowCreatorsLayoutList.CopyItemsFrom(Source.FIDEWindowCreatorsLayoutList);
     FIDEDialogLayoutList.Assign(Source.FIDEDialogLayoutList);
+    FAssociatedDebugDesktopName := Source.FAssociatedDebugDesktopName;
   end;
   FSingleTaskBarButton := Source.FSingleTaskBarButton;
   FHideIDEOnRun := Source.FHideIDEOnRun;
@@ -1199,6 +1202,7 @@ begin
   FIDEWindowCreatorsLayoutList.LoadFromConfig(FConfigStore, Path);
   FIDEDialogLayoutList.LoadFromConfig(FConfigStore, Path+'Dialogs/');
 
+  FAssociatedDebugDesktopName:=FXMLCfg.GetValue(Path+'AssociatedDebugDesktopName/Value', '');
   FSingleTaskBarButton:=FXMLCfg.GetValue(Path+'SingleTaskBarButton/Value', False);
   FHideIDEOnRun:=FXMLCfg.GetValue(Path+'HideIDEOnRun/Value',false);
   FAutoAdjustIDEHeight:=FXMLCfg.GetValue(Path+'AutoAdjustIDEHeight/Value',true);
@@ -1255,6 +1259,7 @@ begin
   FIDEWindowCreatorsLayoutList.SaveToConfig(FConfigStore, Path);
   FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Dialogs/');
 
+  FXMLCfg.SetDeleteValue(Path+'AssociatedDebugDesktopName/Value', FAssociatedDebugDesktopName, '');
   FXMLCfg.SetDeleteValue(Path+'SingleTaskBarButton/Value',FSingleTaskBarButton, False);
   FXMLCfg.SetDeleteValue(Path+'HideIDEOnRun/Value',FHideIDEOnRun,false);
   FXMLCfg.SetDeleteValue(Path+'AutoAdjustIDEHeight/Value',FAutoAdjustIDEHeight,true);
@@ -2750,6 +2755,8 @@ begin
   DoBeforeWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
   Desktop.Assign(ADesktop);
   ActiveDesktopName := ADesktop.Name;
+  if ADesktop.AssociatedDebugDesktopName<>'' then
+    DebugDesktopName := ADesktop.AssociatedDebugDesktopName;
   DoAfterWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
   Desktop.ExportSettingsToIDE;
   Desktop.RestoreDesktop;
