@@ -2114,22 +2114,26 @@ begin
 
     MessI.Result:=0;
 
-    {always send LM_SETFOCUS first}
+    {Gtk2 should always send LM_SETFOCUS first, as qt and win32 does. issues #24308, #31900}
     if ((MessI.Msg = LM_LBUTTONDOWN) or (MessI.Msg = LM_RBUTTONDOWN) or
       (MessI.Msg = LM_MBUTTONDOWN) or (MessI.Msg = LM_LBUTTONDBLCLK) or
       (MessI.Msg = LM_XBUTTONDOWN)) and
       not AWinControl.Focused and AWinControl.CanFocus and
-      not (csDesigning in AWinControl.ComponentState) and (AWinControl is TCustomEdit) then
+      not (csDesigning in AWinControl.ComponentState) then
     begin
-      AClipText := '';
-      AClip := gtk_clipboard_get(GDK_SELECTION_PRIMARY);
-      if gtk_clipboard_get_owner(AClip) = AClip then
-        AClip := nil;
-      if (AClip <> nil) and gtk_clipboard_wait_is_text_available(AClip) then
-        AClipText := gtk_clipboard_wait_for_text(AClip);
-      LCLIntf.SetFocus(AWinControl.Handle);
-      if Assigned(AClip) then
-        gtk_clipboard_set_text(AClip, PgChar(AClipText), length(AClipText));
+      if (AWinControl is TCustomEdit) then
+      begin
+        AClipText := '';
+        AClip := gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+        if gtk_clipboard_get_owner(AClip) = AClip then
+          AClip := nil;
+        if (AClip <> nil) and gtk_clipboard_wait_is_text_available(AClip) then
+          AClipText := gtk_clipboard_wait_for_text(AClip);
+        LCLIntf.SetFocus(AWinControl.Handle);
+        if Assigned(AClip) then
+          gtk_clipboard_set_text(AClip, PgChar(AClipText), length(AClipText));
+      end else
+        LCLIntf.SetFocus(AWinControl.Handle);
     end;
 
     // send the message directly to the LCL
