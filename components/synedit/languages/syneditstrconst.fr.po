@@ -9,7 +9,7 @@ msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 2.0.2\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
@@ -197,7 +197,7 @@ msgstr "Clé"
 
 #: syneditstrconst.syns_attrlabel
 msgid "Label"
-msgstr "Etiquette"
+msgstr "Étiquette"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
@@ -481,7 +481,7 @@ msgstr "Souligné, oui, non"
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
-msgstr "Pas daction"
+msgstr "Pas d'action"
 
 #: syneditstrconst.syns_emcoverviewguttergotomark
 msgid "Jump to Mark (Overview Gutter)"

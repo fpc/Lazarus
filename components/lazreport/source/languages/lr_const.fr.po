@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"PO-Revision-Date: 2016-07-08 14:14+0200\n"
+"PO-Revision-Date: 2017-06-08 08:45+0200\n"
 "Project-Id-Version: lazreport\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 2.0.2\n"
 "MIME-Version: 1.0\n"
 "Project-Id-Version: lazreport\n"
 "POT-Creation-Date: \n"
@@ -1833,11 +1833,11 @@ msgstr "Enveloppe B4,  250 x 353 mm"
 
 #: lr_const.spaper34
 msgid "B5 Envelope,  176 x 250 mm"
-msgstr "Envelope B5,  176 x 250 mm"
+msgstr "Enveloppe B5,  176 x 250 mm"
 
 #: lr_const.spaper35
 msgid "B6 Envelope,  176 x 125 mm"
-msgstr "Envelope B6,  176 x 125 mm"
+msgstr "Enveloppe B6,  176 x 125 mm"
 
 #: lr_const.spaper36
 msgid "Italy Envelope, 110 x 230 mm"

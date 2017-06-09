@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-24 10:20+0200\n"
+"PO-Revision-Date: 2017-06-08 08:30+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.2\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -3046,7 +3046,7 @@ msgstr "Vista-8 : activé, 8.1+ : par moniteur"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
 msgid "Vista-8: on, 8.1/10+: per monitor/V2"
-msgstr ""
+msgstr "Vista-8 : on, 8.1/10+ : par moniteur/V2"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
@@ -16479,7 +16479,7 @@ msgstr "Écraser la sélection complète"
 
 #: lazarusidestrconsts.lissamoverridefirstselected
 msgid "Override first selected"
-msgstr "Écraser la première selection"
+msgstr "Écraser la première sélection"
 
 #: lazarusidestrconsts.lissamselectnone
 msgid "Select none"

@@ -1,20 +1,20 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Yann Merignac <yann.merignac@laposte.net>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"PO-Revision-Date: 2016-01-25 10:17+0100\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
+"PO-Revision-Date: 2017-06-08 08:39+0200\n"
 "Language: fr\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 2.0.2\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 
 #: lazdemsg.saboutformcaption
 msgid "About this application"
-msgstr "À propos de ce programme"
+msgstr "À propos de cette application"
 
 #: lazdemsg.sadd
 msgid "&Add"
@@ -22,7 +22,7 @@ msgstr "&Ajouter"
 
 #: lazdemsg.saddall
 msgid "Add All"
-msgstr "Ajouter tout"
+msgstr "Tout ajouter"
 
 #: lazdemsg.sadddescriptionfile
 msgid "Select a new description file"
@@ -47,7 +47,7 @@ msgstr "Production de la documentation réussie."
 
 #: lazdemsg.sbuildoutput
 msgid "Build output"
-msgstr "Sortie de la production"
+msgstr "Sortie de la construction"
 
 #: lazdemsg.sclose
 msgctxt "lazdemsg.sclose"
@@ -128,7 +128,7 @@ msgstr "Pas de nœud parent trouvé pour insérer le sujet \"%s\""
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
-msgstr "Pas paquet trouvé pour insérer le module \"%s\""
+msgstr "Pas de paquet trouvé pour insérer le module \"%s\""
 
 #: lazdemsg.serrors
 msgid "Errors"
@@ -225,7 +225,7 @@ msgstr "Remarque"
 
 #: lazdemsg.shintformatunderline
 msgid "Underline"
-msgstr "Souligné"
+msgstr "Souligner"
 
 #: lazdemsg.shintformatvariable
 msgid "Variable"
@@ -334,7 +334,7 @@ msgstr "Insérer un tableau"
 
 #: lazdemsg.sitemscount
 msgid "Items count"
-msgstr "Nombre d'élément(s)"
+msgstr "Nombre d'éléments"
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
@@ -388,7 +388,7 @@ msgstr "Produire la documentation..."
 
 #: lazdemsg.smenuextraoptions
 msgid "&Options"
-msgstr "Paramètres..."
+msgstr "&Paramètres"
 
 #: lazdemsg.smenufile
 msgctxt "lazdemsg.smenufile"
@@ -398,7 +398,7 @@ msgstr "&Fichier"
 #: lazdemsg.smenufileclose
 msgctxt "lazdemsg.smenufileclose"
 msgid "&Close"
-msgstr "Fermer"
+msgstr "&Fermer"
 
 #: lazdemsg.smenufilenew
 msgid "&New"
@@ -406,11 +406,11 @@ msgstr "Nouveau"
 
 #: lazdemsg.smenufilenewfromfile
 msgid "New from fi&le"
-msgstr "Nouveau à partir d'un fichier..."
+msgstr "Nouveau à partir d'un &fichier..."
 
 #: lazdemsg.smenufileopen
 msgid "&Open"
-msgstr "&Ouvrir..."
+msgstr "&Ouvrir"
 
 #: lazdemsg.smenufilequit
 msgid "&Quit"
@@ -423,11 +423,11 @@ msgstr "&Récemment ouverts"
 #: lazdemsg.smenufilesave
 msgctxt "lazdemsg.smenufilesave"
 msgid "&Save"
-msgstr "Enregistrer..."
+msgstr "&Enregistrer..."
 
 #: lazdemsg.smenufilesaveas
 msgid "Save &as"
-msgstr "Enregistrer sous..."
+msgstr "Enregistrer &sous..."
 
 #: lazdemsg.smenuformat
 msgid "Format"
@@ -460,7 +460,7 @@ msgstr "&Remarque"
 
 #: lazdemsg.smenuformatunderline
 msgid "&Underline"
-msgstr "&Souligné"
+msgstr "&Souligner"
 
 #: lazdemsg.smenuformatvariable
 msgid "&Variable"
@@ -484,7 +484,7 @@ msgstr "Liste à puces..."
 
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
-msgstr "Élément..."
+msgstr "&Élément..."
 
 #: lazdemsg.smenuinsertlink
 msgid "&Link"
@@ -505,7 +505,7 @@ msgstr "Liste numérotée..."
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
 msgid "&Package"
-msgstr "&Paquet..."
+msgstr "&Paquet"
 
 #: lazdemsg.smenuinsertprintshort
 msgid "Insert short desc link"
@@ -521,11 +521,11 @@ msgstr "&Description courte..."
 
 #: lazdemsg.smenuinserttable
 msgid "&Table"
-msgstr "&Tableau..."
+msgstr "&Tableau"
 
 #: lazdemsg.smenuinserttopic
 msgid "T&opic"
-msgstr "&Sujet..."
+msgstr "&Sujet"
 
 #: lazdemsg.smenurename
 msgid "Rename"
@@ -668,7 +668,7 @@ msgstr "Renommer le sujet"
 #: lazdemsg.ssave
 msgctxt "lazdemsg.ssave"
 msgid "&Save"
-msgstr "Enregistrer"
+msgstr "&Enregistrer"
 
 #: lazdemsg.ssavebeforebuildquestion
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
@@ -736,5 +736,5 @@ msgstr "Production de la documentation avec la commande :"
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
-msgstr "Avertir si aucun noeud de documentation n'est trouvé"
+msgstr "Avertir si aucun nœud de documentation n'est trouvé"
 
