@@ -142,7 +142,7 @@ type
     FReadOnly: Boolean;
     FMaxDate, FMinDate: TDate;
     FShowMonthNames: Boolean;
-    FTextForNullDate: String;
+    FTextForNullDate: TCaption;
     FTimeSeparator: String;
     FTimeDisplay: TTimeDisplay;
     FTimeFormat: TTimeFormat;
@@ -223,7 +223,7 @@ type
     procedure SetReadOnly(const AValue: Boolean);
     procedure SetShowCheckBox(const AValue: Boolean);
     procedure SetShowMonthNames(AValue: Boolean);
-    procedure SetTextForNullDate(const AValue: String);
+    procedure SetTextForNullDate(const AValue: TCaption);
     procedure SetTime(const AValue: TTime);
     procedure SetTimeSeparator(const AValue: String);
     procedure SetTimeDisplay(const AValue: TTimeDisplay);
@@ -363,7 +363,7 @@ type
              read FTrailingSeparator write SetTrailingSeparator;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
     property LeadingZeros: Boolean read FLeadingZeros write SetLeadingZeros;
-    property TextForNullDate: String
+    property TextForNullDate: TCaption
              read FTextForNullDate write SetTextForNullDate;
     property NullInputAllowed: Boolean
              read FNullInputAllowed write SetNullInputAllowed default True;
@@ -1198,7 +1198,7 @@ begin
   end;
 end;
 
-procedure TCustomDateTimePicker.SetTextForNullDate(const AValue: String);
+procedure TCustomDateTimePicker.SetTextForNullDate(const AValue: TCaption);
 begin
   if FTextForNullDate = AValue then
     Exit;
@@ -3164,7 +3164,7 @@ begin
   TextStyle.Opaque := False;
   TextStyle.RightToLeft := IsRightToLeft;
 
-  if DateIsNull and (FTextForNullDate > '')
+  if DateIsNull and (FTextForNullDate <> '')
                        and (not (FTextEnabled and Focused)) then begin
 
     if IsRightToLeft then begin
