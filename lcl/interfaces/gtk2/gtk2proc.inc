@@ -9387,7 +9387,7 @@ begin
   // X warns if marking a fixed size window resizeable:
   if ((AForm.Constraints.MinWidth>0)
   and (AForm.Constraints.MinWidth=AForm.Constraints.MaxWidth))
-  or ((AForm.Constraints.MinHeight>0)
+  and ((AForm.Constraints.MinHeight>0)
   and (AForm.Constraints.MinHeight=AForm.Constraints.MaxHeight)) then
     Result:=Result-GDK_FUNC_RESIZE;
 
