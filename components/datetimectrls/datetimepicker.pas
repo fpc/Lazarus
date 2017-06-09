@@ -120,7 +120,7 @@ type
   TDTCalAlignment = (dtaLeft, dtaRight, dtaDefault);
 
   TDateTimePickerOption = (
-    dtpoDoChangeOnSetDateTime);
+    dtpoDoChangeOnSetDateTime, dtpoEnabledIfUnchecked, dtpoAutoCheck, dtpoFlatButton);
   TDateTimePickerOptions = set of TDateTimePickerOption;
 
   { TCustomDateTimePicker }
@@ -194,8 +194,6 @@ type
     FAllowDroppingCalendar: Boolean;
     FCorrectedDTP: TDateTimePart;
     FCorrectedValue: Word;
-    FEnableWhenUnchecked: Boolean;
-    FAutoCheck: Boolean;
     FSkipChangeInUpdateDate: Integer;
     FOptions: TDateTimePickerOptions;
 
@@ -204,7 +202,6 @@ type
     function GetDate: TDate;
     function GetDateTime: TDateTime;
     function GetDroppedDown: Boolean;
-    function GetFlatButton: Boolean;
     function GetShowCheckBox: Boolean;
     function GetTime: TTime;
     procedure SetArrowShape(const AValue: TArrowShape);
@@ -216,7 +213,6 @@ type
     procedure CheckTextEnabled;
     procedure SetDateDisplayOrder(const AValue: TDateDisplayOrder);
     procedure SetDateMode(const AValue: TDTDateMode);
-    procedure SetFlatButton(const AValue: Boolean);
     procedure SetHideDateTimeParts(AValue: TDateTimeParts);
     procedure SetKind(const AValue: TDateTimeKind);
     procedure SetLeadingZeros(const AValue: Boolean);
@@ -259,7 +255,6 @@ type
     procedure SetYear(const AValue: Word);
     procedure SetYYYYMMDD(const AValue: TYMD);
     procedure SetHMSMs(const AValue: THMSMs);
-    procedure SetEnableWhenUnchecked(const AEnableWhenUnchecked: Boolean);
     procedure UpdateIfUserChangedText;
     function GetSelectedText: String;
     procedure AdjustSelection;
@@ -281,6 +276,7 @@ type
     procedure AutoResizeButton;
     procedure CheckAndApplyKey(const Key: Char);
     procedure CheckAndApplyKeyCode(var Key: Word);
+    procedure SetOptions(const aOptions: TDateTimePickerOptions);
 
   protected
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
@@ -381,7 +377,6 @@ type
              read FOnCheckBoxChange write FOnCheckBoxChange;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
-    property AutoCheck: Boolean read FAutoCheck write FAutoCheck default True;
     property ShowCheckBox: Boolean
              read GetShowCheckBox write SetShowCheckBox default False;
     property Checked: Boolean read GetChecked write SetChecked default True;
@@ -414,9 +409,7 @@ type
              read FShowMonthNames write SetShowMonthNames default False;
     property DroppedDown: Boolean read GetDroppedDown;
     property CalAlignment: TDTCalAlignment read FCalAlignment write SetCalAlignment default dtaDefault;
-    property FlatButton: Boolean read GetFlatButton write SetFlatButton default False;
-    property EnableWhenUnchecked: Boolean read FEnableWhenUnchecked write SetEnableWhenUnchecked default False;
-    property Options: TDateTimePickerOptions read FOptions write FOptions default cDefOptions;
+    property Options: TDateTimePickerOptions read FOptions write SetOptions default cDefOptions;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -447,7 +440,6 @@ type
     property DroppedDown;
   published
     property ArrowShape;
-    property AutoCheck;
     property ShowCheckBox;
     property Checked;
     property CenturyFrom;
@@ -495,8 +487,6 @@ type
     property MonthNames;
     property ShowMonthNames;
     property CalAlignment;
-    property FlatButton;
-    property EnableWhenUnchecked;
     property Options;
 // events:
     property OnChange;
@@ -941,7 +931,7 @@ end;
 
 procedure TCustomDateTimePicker.CheckTextEnabled;
 begin
-  FTextEnabled := Self.Enabled and (FEnableWhenUnchecked or GetChecked);
+  FTextEnabled := Self.Enabled and ((dtpoEnabledIfUnchecked in Options) or GetChecked);
 
   if Assigned(FArrowButton) then
     FArrowButton.Enabled := FTextEnabled;
@@ -1056,6 +1046,18 @@ end;
 procedure TCustomDateTimePicker.SetNullInputAllowed(const AValue: Boolean);
 begin
   FNullInputAllowed := AValue;
+end;
+
+procedure TCustomDateTimePicker.SetOptions(
+  const aOptions: TDateTimePickerOptions);
+begin
+  if FOptions = aOptions then Exit;
+  FOptions := aOptions;
+
+  if FArrowButton<>nil then
+    FArrowButton.Flat := dtpoFlatButton in Options;
+  CheckTextEnabled;
+  Invalidate;
 end;
 
 procedure TCustomDateTimePicker.SetDate(const AValue: TDate);
@@ -2802,24 +2804,6 @@ begin
   end;
 end;
 
-procedure TCustomDateTimePicker.SetEnableWhenUnchecked(
-  const AEnableWhenUnchecked: Boolean);
-begin
-  if FEnableWhenUnchecked = AEnableWhenUnchecked then Exit;
-  FEnableWhenUnchecked := AEnableWhenUnchecked;
-
-  CheckTextEnabled;
-  Invalidate;
-end;
-
-procedure TCustomDateTimePicker.SetFlatButton(const AValue: Boolean);
-begin
-  if FlatButton=AValue then
-    Exit;
-  if FArrowButton<>nil then
-    FArrowButton.Flat := AValue;
-end;
-
 procedure TCustomDateTimePicker.SetAutoSize(Value: Boolean);
 begin
   if AutoSize <> Value then begin
@@ -3217,14 +3201,6 @@ end;
 function TCustomDateTimePicker.GetDroppedDown: Boolean;
 begin
   Result := Assigned(FCalendarForm);
-end;
-
-function TCustomDateTimePicker.GetFlatButton: Boolean;
-begin
-  if FArrowButton<>nil then
-    Result := FArrowButton.Flat
-  else
-    Result := False;
 end;
 
 function TCustomDateTimePicker.GetShowCheckBox: Boolean;
@@ -3758,6 +3734,7 @@ procedure TCustomDateTimePicker.UpdateShowArrowButton;
       FArrowButton := TDTSpeedButton.Create(Self);
       FArrowButton.ControlStyle := FArrowButton.ControlStyle +
                                             [csNoFocus, csNoDesignSelectable];
+      FArrowButton.Flat := dtpoFlatButton in Options;
       TDTSpeedButton(FArrowButton).DTPicker := Self;
       FArrowButton.SetBounds(0, 0, DefaultArrowButtonWidth, 1);
 
@@ -3830,7 +3807,7 @@ end;
 
 procedure TCustomDateTimePicker.DoAutoCheck;
 begin
-  if ShowCheckBox and not Checked and AutoCheck then
+  if ShowCheckBox and not Checked and (dtpoAutoCheck in Options) then
     Checked := True;
 end;
 
@@ -3853,7 +3830,6 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, cx, cy);
 
-  FAutoCheck := True;
   FCalAlignment := dtaDefault;
   FCorrectedDTP := dtpAMPM;
   FCorrectedValue := 0;
