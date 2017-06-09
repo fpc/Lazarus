@@ -2748,7 +2748,7 @@ begin
     if aKey in ['n', 'N'] then begin
       K := VK_N;
       CheckAndApplyKeyCode(K);
-  end else
+    end else
       CheckAndApplyKey(aKey);
   end;
 end;
