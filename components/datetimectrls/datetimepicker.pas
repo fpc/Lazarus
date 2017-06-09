@@ -1056,6 +1056,10 @@ begin
 
   if FArrowButton<>nil then
     FArrowButton.Flat := dtpoFlatButton in Options;
+
+  if FUpDown <> nil then
+    TDTUpDown(FUpDown).Flat := dtpoFlatButton in Options;
+
   CheckTextEnabled;
   Invalidate;
 end;
@@ -3756,6 +3760,7 @@ procedure TCustomDateTimePicker.UpdateShowArrowButton;
                                      [csNoFocus, csNoDesignSelectable];
 
       TDTUpDown(FUpDown).DTPicker := Self;
+      TDTUpDown(FUpDown).Flat := dtpoFlatButton in Options;
 
       FUpDown.SetBounds(0, 0, DefaultUpDownWidth, 1);
 
