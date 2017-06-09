@@ -222,7 +222,6 @@ done
 
 # default configs
 mkdir -p $LazBuildDir/etc/lazarus
-cp $EtcSrcDir/editoroptions.xml $LazBuildDir/etc/lazarus/
 cat $EtcSrcDir/environmentoptions.xml | \
   sed -e "s#__LAZARUSDIR__#$LazDestDirInstalled/#" \
       -e "s#__FPCSRCDIR__#/usr/share/fpcsrc/\$(FPCVER)/#" \
