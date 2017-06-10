@@ -464,9 +464,10 @@ procedure TCustomListBox.DrawItem(Index: Integer; ARect: TRect;
 begin
   if Assigned(FOnDrawItem) then
     FOnDrawItem(Self, Index, ARect, State)
-  else if not (odPainted in State) then
+  else
   begin
-    FCanvas.FillRect(ARect);
+    if not(odBackgroundPainted in State) then
+      FCanvas.FillRect(ARect);
     if (Index>=0) and (Index < Items.Count) then
       InternalDrawItem(Self, FCanvas, ARect, Items[Index]);
   end;

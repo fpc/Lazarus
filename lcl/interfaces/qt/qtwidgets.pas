@@ -13443,8 +13443,7 @@ begin
 
       odGrayed, odChecked,
       odDefault, odInactive, odNoAccel,
-      odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
-      odPainted
+      odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit
     }
     Msg.Msg := LM_DRAWLISTITEM;
     Msg.DrawListItemStruct := @DrawStruct;
@@ -14897,8 +14896,7 @@ begin
 
       odGrayed, odChecked,
       odDefault, odInactive, odNoAccel,
-      odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
-      odPainted
+      odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit
     }
     Msg.Msg := CN_DRAWITEM;
     Msg.DrawListItemStruct := @DrawStruct;

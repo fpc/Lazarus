@@ -79,7 +79,7 @@ begin
   end;
 
   // collect state flags
-  State:=[odPainted];
+  State:=[odBackgroundPainted];
   if g_list_index(GtkList^.selection,Widget)>=0 then
     Include(State,odSelected);
   if not GTK_WIDGET_SENSITIVE(Widget) then

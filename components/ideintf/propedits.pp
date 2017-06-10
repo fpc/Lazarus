@@ -277,7 +277,7 @@ type
   TGetPropEditProc = procedure(Prop: TPropertyEditor) of object;
 
   TPropEditDrawStateType = (pedsSelected, pedsFocused, pedsInEdit,
-       pedsInComboList, pedsPainted);
+       pedsInComboList);
   TPropEditDrawState = set of TPropEditDrawStateType;
   
   TPropEditHint = (
@@ -3342,26 +3342,12 @@ procedure TPropertyEditor.ListDrawValue(const AValue:ansistring; Index:integer;
   ACanvas:TCanvas; const ARect:TRect; AState: TPropEditDrawState);
 var
   Style : TTextStyle;
-  OldColor : TColor;
 begin
-  OldColor := ACanvas.Brush.Color;
-  If (pedsInComboList in AState) and not (pedsInEdit in AState)
-  then begin
-    If pedsSelected in AState then begin
-      ACanvas.Brush.Color := clHighlight;
-      ACanvas.Font.Color := clHighlightText;
-    end
-    else begin
-      ACanvas.Brush.Color := clwhite{clWindow};
-      ACanvas.Font.Color := clWindowText;
-    end;
-    ACanvas.FillRect(ARect);
-  end;
   FillChar(Style{%H-},SizeOf(Style),0);
   With Style do begin
     Alignment := taLeftJustify;
     Layout := tlCenter;
-    Opaque := (pedsInEdit in AState) and (ACanvas.Brush.Color <> clNone);
+    Opaque := False;
     Clipping := True;
     ShowPrefix := True;
     WordBreak := False;
@@ -3369,7 +3355,6 @@ begin
     SystemFont := False;
   end;
   ACanvas.TextRect(ARect, ARect.Left+2,ARect.Top,AValue, Style);
-  ACanvas.Brush.Color := OldColor;
 end;
 
 { these three procedures implement the default render behavior of the

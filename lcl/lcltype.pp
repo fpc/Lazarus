@@ -1143,7 +1143,7 @@ type
     odSelected, odGrayed, odDisabled, odChecked,
     odFocused, odDefault, odHotLight, odInactive, odNoAccel,
     odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
-    odPainted  // item already painted
+    odBackgroundPainted  // item background already painted
     );
   TOwnerDrawState = set of TOwnerDrawStateType;
 

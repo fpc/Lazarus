@@ -254,12 +254,12 @@ var
   TheCanvas: TCanvas;
 begin
   //Objective: draw only the FileName, not the fully qualified path.
-  //if (odPainted in State) then Exit;
   TheCanvas := (Control as TCustomListBox).Canvas;
 
   ItemText := ExtractFileName(FileListBox.Items[Index]);
 
-  TheCanvas.FillRect(ARect);
+  if not(odBackgroundPainted in State) then
+    TheCanvas.FillRect(ARect);
 
   OldBrushStyle := TheCanvas.Brush.Style;
   TheCanvas.Brush.Style := bsClear;

@@ -611,46 +611,45 @@ begin
   r.bottom := Rect.bottom - ColorRectOffset;
   r.left := Rect.left + ColorRectOffset;
   r.right := r.left + ColorRectWidth;
-  Exclude(State, odPainted);
 
   noFill := false;
 
-  with Canvas do
+  if not(odBackgroundPainted in State) then
+    Canvas.FillRect(Rect);
+
+  BrushColor := Canvas.Brush.Color;
+  PenColor := Canvas.Pen.Color;
+
+  NewColor := Colors[Index];
+
+  if NewColor = clNone then
   begin
-    FillRect(Rect);
+    NewColor := NoneColorColor;
+    noFill := true;
+  end
+  else
+  if NewColor = clDefault then
+    NewColor := DefaultColorColor;
 
-    BrushColor := Brush.Color;
-    PenColor := Pen.Color;
+  Canvas.Brush.Color := NewColor;
+  Canvas.Pen.Color := clBlack;
 
-    NewColor := Self.Colors[Index];
+  r := BiDiFlipRect(r, Rect, UseRightToLeftAlignment);
+  Canvas.Rectangle(r);
 
-    if NewColor = clNone then
-    begin
-      NewColor := NoneColorColor;
-      noFill := true;
-    end
-    else
-    if NewColor = clDefault then
-      NewColor := DefaultColorColor;
-
-    Brush.Color := NewColor;
-    Pen.Color := clBlack;
-
-    r := BiDiFlipRect(r, Rect, UseRightToLeftAlignment);
-    Rectangle(r);
-
-    if noFill then
-    begin
-      Line(r.Left, r.Top, r.Right-1, r.Bottom-1);
-      Line(r.Left, r.Bottom-1, r.Right-1, r.Top);
-    end;
-
-    Brush.Color := BrushColor;
-    Pen.Color := PenColor;
+  if noFill then
+  begin
+    Canvas.Line(r.Left, r.Top, r.Right-1, r.Bottom-1);
+    Canvas.Line(r.Left, r.Bottom-1, r.Right-1, r.Top);
   end;
+
+  Canvas.Brush.Color := BrushColor;
+  Canvas.Pen.Color := PenColor;
+
   r := Rect;
   r.left := r.left + ColorRectWidth + ColorRectOffset + 1;
 
+  Include(State, odBackgroundPainted);
   inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;
 {------------------------------------------------------------------------------
@@ -966,33 +965,33 @@ begin
   r.bottom := Rect.bottom - ColorRectOffset;
   r.left := Rect.left + ColorRectOffset;
   r.right := r.left + ColorRectWidth;
-  Exclude(State,odPainted);
-  with Canvas do
-  begin
-    FillRect(Rect);
 
-    BrushColor := Brush.Color;
-    PenColor := Pen.Color;
+  if not(odBackgroundPainted in State) then
+    Canvas.FillRect(Rect);
 
-    NewColor := Self.Colors[Index];
+  BrushColor := Canvas.Brush.Color;
+  PenColor := Canvas.Pen.Color;
 
-    if NewColor = clNone then
-      NewColor := NoneColorColor
-    else
-    if NewColor = clDefault then
-      NewColor := DefaultColorColor;
+  NewColor := Colors[Index];
 
-    Brush.Color := NewColor;
-    Pen.Color := clBlack;
+  if NewColor = clNone then
+    NewColor := NoneColorColor
+  else
+  if NewColor = clDefault then
+    NewColor := DefaultColorColor;
 
-    Rectangle(BidiFlipRect(r, Rect, UseRightToLeftAlignment));
+  Canvas.Brush.Color := NewColor;
+  Canvas.Pen.Color := clBlack;
 
-    Brush.Color := BrushColor;
-    Pen.Color := PenColor;
-  end;
+  Canvas.Rectangle(BidiFlipRect(r, Rect, UseRightToLeftAlignment));
+
+  Canvas.Brush.Color := BrushColor;
+  Canvas.Pen.Color := PenColor;
+
   r := Rect;
   r.left := r.left + ColorRectWidth + ColorRectOffset + 1;
 
+  Include(State,odBackgroundPainted);
   inherited DrawItem(Index, BidiFlipRect(r, Rect, UseRightToLeftAlignment), State);
 end;
 {------------------------------------------------------------------------------

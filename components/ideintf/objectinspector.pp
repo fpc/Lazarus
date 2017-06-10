@@ -3450,7 +3450,6 @@ begin
     else
       ItemValue:='';
     AState:=[];
-    if odPainted in State then Include(AState,pedsPainted);
     if odSelected in State then Include(AState,pedsSelected);
     if odFocused in State then Include(AState,pedsFocused);
     if odComboBoxEdit in State then
@@ -3458,13 +3457,9 @@ begin
     else
       Include(AState,pedsInComboList);
 
-    // clear background
-    with ValueComboBox.Canvas do begin
-      Brush.Color:=clWhite;
-      Pen.Color:=clBlack;
-      Font.Color:=Pen.Color;
-      FillRect(ARect);
-    end;
+    if not(odBackgroundPainted in State) then
+      ValueComboBox.Canvas.FillRect(ARect);
+
     ValueComboBox.Canvas.Font.Assign(FDefaultValueFont);
     if CurRow.Editor.HasDefaultValue and (ItemValue = CurRow.Editor.GetDefaultValue) then
       ValueComboBox.Canvas.Font.Style := ValueComboBox.Canvas.Font.Style + [fsItalic];
