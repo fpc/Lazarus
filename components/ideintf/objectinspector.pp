@@ -3442,6 +3442,7 @@ var
   CurRow: TOIPropertyGridRow;
   ItemValue: string;
   AState: TPropEditDrawState;
+  FontColor: TColor;
 begin
   if (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
     CurRow:=Rows[FItemIndex];
@@ -3460,9 +3461,12 @@ begin
     if not(odBackgroundPainted in State) then
       ValueComboBox.Canvas.FillRect(ARect);
 
+    FontColor := ValueComboBox.Canvas.Font.Color;
     ValueComboBox.Canvas.Font.Assign(FDefaultValueFont);
     if odSelected in State then
-      ValueComboBox.Canvas.Font.Color := clHighlightText;
+      ValueComboBox.Canvas.Font.Color := FontColor
+    else
+      ValueComboBox.Canvas.Font.Color := clWindowText;
     if CurRow.Editor.HasDefaultValue and (ItemValue = CurRow.Editor.GetDefaultValue) then
       ValueComboBox.Canvas.Font.Style := ValueComboBox.Canvas.Font.Style + [fsItalic];
     CurRow.Editor.ListDrawValue(ItemValue,Index,ValueComboBox.Canvas,ARect,AState);
