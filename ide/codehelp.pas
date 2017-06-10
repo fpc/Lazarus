@@ -223,10 +223,10 @@ type
     );
 
   TCodeHelpHintOption = (
-    chhoSmallStep,    // do the next step. Use this to run on idle.
+    chhoSmallStep,         // do the next step. Use this to run on idle.
     chhoDeclarationHeader, // add a header with source position and type of identifier
-    chhoNoComments,    // do not add the pasdoc comments
-    chhoShowFocusHint  // show the shortcut ecFocusHint
+    chhoComments,          // add the pasdoc comments
+    chhoShowFocusHint      // show the shortcut ecFocusHint
   );
   TCodeHelpHintOptions = set of TCodeHelpHintOption;
     
@@ -2581,7 +2581,7 @@ begin
             end;
           end;
 
-          if not (chhoNoComments in Options) then
+          if chhoComments in Options then
           begin
             // add pasdoc
             HTMLHint:=HTMLHint+GetPasDocCommentsAsHTML(CTTool,CTNode);

@@ -12209,7 +12209,7 @@ begin
   if (Row <> nil)
   and FindDeclarationOfOIProperty(OI, Row, Code, Caret, i) then
   begin
-    if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [],
+    if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [chhoComments],
       BaseURL, HtmlHint, PropDetails, CacheWasUsed) <> chprSuccess then
     begin
       HtmlHint := '';

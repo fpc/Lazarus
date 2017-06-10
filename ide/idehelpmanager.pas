@@ -1768,7 +1768,7 @@ begin
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if (Code=nil) or Code.LineColIsSpace(CodePos.Y,CodePos.X) then
     exit(shrHelpNotFound);
-  HintFlags:=[chhoDeclarationHeader];
+  HintFlags:=[chhoDeclarationHeader,chhoComments];
   if ihmchAddFocusHint in Flags then
     Include(HintFlags,chhoShowFocusHint);
   if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,
