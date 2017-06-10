@@ -3461,6 +3461,8 @@ begin
       ValueComboBox.Canvas.FillRect(ARect);
 
     ValueComboBox.Canvas.Font.Assign(FDefaultValueFont);
+    if odSelected in State then
+      ValueComboBox.Canvas.Font.Color := clHighlightText;
     if CurRow.Editor.HasDefaultValue and (ItemValue = CurRow.Editor.GetDefaultValue) then
       ValueComboBox.Canvas.Font.Style := ValueComboBox.Canvas.Font.Style + [fsItalic];
     CurRow.Editor.ListDrawValue(ItemValue,Index,ValueComboBox.Canvas,ARect,AState);
