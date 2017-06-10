@@ -2489,11 +2489,11 @@ function TCodeHelpManager.GetHTMLHintForExpr(CTExprType: TExpressionType;
 var
   aTopLine: integer;
   ListOfPCodeXYPosition: TFPList;
-  ElementName: String;
   AnOwner: TObject;
   FPDocFilename: String;
   FPDocFile: TLazFPDocFile;
   Complete: boolean;
+  ElementName: String;
   ElementNode: TDOMNode;
   ElementNames: TStringList;
   i: Integer;
@@ -2501,7 +2501,7 @@ var
   OldCTTool: TFindDeclarationTool;
   OldCTNode: TCodeTreeNode;
   n: Integer;
-  s: String;
+  s, Descr, Short: String;
   Cmd: TKeyCommandRelation;
   CTTool: TFindDeclarationTool;
   CTNode: TCodeTreeNode;
@@ -2528,7 +2528,8 @@ begin
       if chhoDeclarationHeader in Options then
         HTMLHint:=HTMLHint+GetHTMLDeclarationHeader(CTTool,CTNode,CTExprType.Desc,XYPos);
 
-      for n:=1 to 30 do begin
+      for n:=1 to 30 do
+      begin
         if (CTExprType.Desc=xtContext) and (CTNode<>nil) then
           ElementName:=CodeNodeToElementName(CTTool,CTNode)
         else if (CTExprType.Desc in xtAllIdentPredefinedTypes) then
@@ -2539,7 +2540,7 @@ begin
         i:=ElementNames.Count-1;
         while (i>=0) do begin
           if (ElementNames.Objects[i]=CTTool)
-          and (SysUtils.CompareText(ElementNames[i],ElementName)=0) then
+          and (CompareText(ElementNames[i],ElementName)=0) then
             break;
           dec(i);
         end;
@@ -2567,14 +2568,21 @@ begin
             ElementNode:=FPDocFile.GetElementWithName(ElementName);
             if ElementNode<>nil then begin
               //DebugLn(['TCodeHelpManager.GetHTMLHintForNode: fpdoc element found "',ElementName,'"']);
-              s:=AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort])));
-              s:=s+AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiDescription])));
-              if s<>'' then begin
-                // Leave also Description header out to save space when header is not requested
-                if chhoDeclarationHeader in Options then
+              Short:=AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort])));
+              Descr:=AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiDescription])));
+              s:=Short+Descr;
+              if chhoDeclarationHeader in Options then
+              begin
+                // Add Description header only when requested. Save space otherwise.
+                if s<>'' then
                   s:='<br>'+LineEnding+'<div class="title">Description</div>'+LineEnding+s;
-                HTMLHint:=HTMLHint+s;
+              end
+              else begin
+                // Make Short text distinctive if both are given and no header is requested.
+                if (Short<>'') and (Descr<>'') then
+                  s:=Short+'<hr>'+Descr;
               end;
+              HTMLHint:=HTMLHint+s;
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiErrors]));
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiSeeAlso]));
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiExample]));
