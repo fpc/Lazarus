@@ -370,7 +370,7 @@ var
 begin
   s:=CheckListBox1.Items[ListIndex];
   if (s<>'') and (s[1]='*') then        // Modified indicator
-    s:=copy(s, 3, Length(s));
+    delete(s, 1, 2);
   Result:=SourceEditorManager.SourceEditorIntfWithFilename(s);
 end;
 

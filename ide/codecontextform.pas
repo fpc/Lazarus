@@ -1027,7 +1027,7 @@ procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
       dec(Indent,CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.Indent);
     NewCode:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
       NewCode,Indent,[],X);
-    NewCode:=copy(NewCode,Indent+1,length(NewCode));
+    delete(NewCode,1,Indent);
     if NewCode='' then begin
       ShowMessage(lisAllParametersOfThisFunctionAreAlreadySetAtThisCall);
       exit;

@@ -283,10 +283,10 @@ begin
   p:=0;
   while Filename<>'' do begin
     // get the next file name part
-    DelimPos:=System.Pos(PathDelim,Filename);
+    DelimPos:=Pos(PathDelim,Filename);
     if DelimPos>0 then begin
       FilePart:=copy(Filename,1,DelimPos-1);
-      Filename:=copy(Filename,DelimPos+1,length(Filename));
+      delete(Filename,1,DelimPos);
     end else begin
       FilePart:=Filename;
       Filename:='';

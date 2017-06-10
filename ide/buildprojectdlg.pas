@@ -435,7 +435,7 @@ begin
     p:=System.Pos('/',aTVPath);
     if p>0 then begin
       NodeText:=copy(aTVPath,1,p-1);
-      aTVPath:=Copy(aTVPath,p+1,length(aTVPath));
+      Delete(aTVPath,1,p);
     end else begin
       NodeText:=aTVPath;
     end;

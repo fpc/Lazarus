@@ -4051,7 +4051,7 @@ begin
   else begin
     CurPath:=copy(ExtractFilePath(Result),1,length(BaseDir));
     if CompareFilenames(BaseDir,CurPath)=0 then
-      Result:=copy(Result,length(CurPath)+1,length(Result));
+      delete(Result,1,length(CurPath));
   end;
 end;
 

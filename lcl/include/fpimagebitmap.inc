@@ -89,8 +89,8 @@ begin
   Extensions:=GetFileExtensions;
   if Extensions='' then exit;
   Ext:=FileExtension;
-  if Ext[1]='.'  then begin
-    Ext:=copy(Ext,2,length(Ext));
+  if Ext[1]='.' then begin
+    delete(Ext,1,1);
     if Ext='' then exit;
   end;
   StartPos:=1;

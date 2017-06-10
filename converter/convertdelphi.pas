@@ -1622,9 +1622,9 @@ begin
       DebugLn('TConvertDelphiProject.FindAllUnits: '+lisConvDelphiFoundAllUnitFiles);
       for i:=0 to FoundUnits.Count-1 do begin
         CurFilename:=FoundUnits[i];
-        p:=System.Pos(' in ',CurFilename);
+        p:=Pos(' in ',CurFilename);
         if p>0 then
-          CurFilename:=copy(CurFilename,p+4,length(CurFilename));
+          delete(CurFilename,1,p+3);
         if CurFilename='' then continue;
         Result:=AddUnit(SwitchPathDelims(CurFilename, True), ui);
         if Result=mrAbort then
@@ -1930,7 +1930,7 @@ begin
         CurFilename:=FoundUnits[i];
         p:=System.Pos(' in ',CurFilename);
         if p>0 then
-          CurFilename:=copy(CurFilename,p+4,length(CurFilename));
+          delete(CurFilename,1,p+3);
         if CurFilename='' then continue;
         Result:=AddUnit(SwitchPathDelims(CurFilename, True));
         if Result=mrAbort then

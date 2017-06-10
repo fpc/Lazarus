@@ -12237,7 +12237,7 @@ begin
   if i>0 then begin
     i:=PosEx(' ', PropDetails, i+1);
     if i>0 then
-      PropDetails:=Copy(PropDetails, i+1, Length(PropDetails));
+      Delete(PropDetails, 1, i);
   end;
   OI.StatusBar.SimpleText:=PropDetails;  // Show in OI StatusBar
 end;

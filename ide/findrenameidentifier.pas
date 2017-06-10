@@ -447,7 +447,7 @@ var
       if p<1 then exit;
       PackageName:=copy(Link,2,p-2);
       if SysUtils.CompareText(PackageName,OldPackageName)<>0 then exit;
-      Link:=copy(Link,p+1,length(Link));
+      delete(Link,1,p);
     end;
     if (SysUtils.CompareText(Link,OldElementName)=0)
     or (SysUtils.CompareText(Link,OldModuleName+'.'+OldElementName)=0) then

@@ -416,7 +416,7 @@ procedure TCustomSynAutoComplete.ParseCompletionList;
     if (i<length(Pattern)) and (Pattern[i+1] in [#10,#13])
     and (Pattern[i+1]<>Pattern[i]) then
       inc(i);
-    Pattern:=copy(Pattern,i+1,length(Pattern));
+    delete(Pattern,1,i);
   end;
 
 var

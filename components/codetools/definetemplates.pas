@@ -1322,7 +1322,7 @@ begin
   if (BaseDir<>'') then
     for i:=0 to Result.Count-1 do begin
       Filename:=Result[i];
-      Filename:=copy(Filename,BaseDirLen+1,length(Filename));
+      delete(Filename,1,BaseDirLen);
       if (Filename<>'') and (Filename[1]=PathDelim) then
         System.Delete(Filename,1,1);
       Result[i]:=Filename;
