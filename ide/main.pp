@@ -11063,8 +11063,10 @@ procedure TMainIDE.SrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
 
     Result := False;
     InStr := False;
-    for i := 1 to Length(Expr) do begin
-      if Expr[i] = '''' then InStr := not InStr;
+    for i := 1 to Length(Expr) do
+    begin
+      if Expr[i] = '''' then
+        InStr := not InStr;
       if (not InStr) and (Expr[i] in [';', ':']) then exit; // can not be an expression
       // Todo: Maybe check for keywords: If Then Begin End ...
     end;
@@ -11094,7 +11096,8 @@ begin
   debugln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
   {$ENDIF}
   HasHint:=false;
-  if EditorOpts.AutoToolTipSymbTools then begin
+  if EditorOpts.AutoToolTipSymbTools then
+  begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
     if TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
                              CaretPos,BaseURL,SmartHintStr,
@@ -11103,66 +11106,63 @@ begin
       HasHint:=true;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
   end;
-  case ToolStatus of
-    itDebugger: begin
-      if EditorOpts.AutoToolTipExprEval then begin
-        if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then begin
-          Expression := SrcEdit.GetText(True);
-          if not CheckExpressionIsValid(Expression) then
-            Expression := '';
-        end
-        else
-          Expression := SrcEdit.GetOperandFromCaret(CaretPos);
-        if Expression='' then exit;
-        //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
-        DBGType:=nil;
-        DBGTypeDerefer:=nil;
-        Opts := [];
-        if EditorOpts.DbgHintAutoTypeCastClass
-        then Opts := [defClassAutoCast];
-        DebugEval:='';
-        if DebugBoss.Evaluate(Expression, DebugEval, DBGType, Opts) and not (DebugEval = '') then
+  if (ToolStatus = itDebugger) and EditorOpts.AutoToolTipExprEval then
+  begin
+    if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then
+    begin
+      Expression := SrcEdit.GetText(True);
+      if not CheckExpressionIsValid(Expression) then
+        Expression := '';
+    end
+    else
+      Expression := SrcEdit.GetOperandFromCaret(CaretPos);
+    if Expression='' then exit;
+    //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
+    DBGType:=nil;
+    DBGTypeDerefer:=nil;
+    Opts := [];
+    if EditorOpts.DbgHintAutoTypeCastClass
+    then Opts := [defClassAutoCast];
+    DebugEval:='';
+    if DebugBoss.Evaluate(Expression, DebugEval, DBGType, Opts) and not (DebugEval = '') then
+    begin
+      // deference a pointer - maybe it is a class
+      if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
+         not( StringCase(Lowercase(DBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
+      then
+      begin
+        if DBGType.Value.AsPointer <> nil then
         begin
-          // deference a pointer - maybe it is a class
-          if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
-             not( StringCase(Lowercase(DBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
-          then
+          DebugEvalDerefer:='';
+          if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer, Opts) then
           begin
-            if DBGType.Value.AsPointer <> nil then
-            begin
-              DebugEvalDerefer:='';
-              if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer, Opts) then
-              begin
-                if Assigned(DBGTypeDerefer) and
-                  ( (DBGTypeDerefer.Kind <> skPointer) or
-                    (StringCase(Lowercase(DBGTypeDerefer.TypeName), ['char', 'character', 'ansistring']) in [0..2])
-                  )
-                then
-                  DebugEval := DebugEval + ' = ' + DebugEvalDerefer;
-              end;
-            end;
-          end else
-            DebugEval := DebugBoss.FormatValue(DBGType, DebugEval);
-        end else
-          DebugEval := '???';
-
-        FreeAndNil(DBGType);
-        FreeAndNil(DBGTypeDerefer);
-        HasHint:=true;
-        Expression := Expression + ' = ' + DebugEval;
-        if SmartHintStr<>'' then begin
-          p:=System.Pos('<body>',lowercase(SmartHintStr));
-          if p>0 then begin
-            Insert('<div class="debuggerhint">'
-                   +CodeHelpBoss.TextToHTML(Expression)+'</div><br>',
-                   SmartHintStr,p+length('<body>'));
-          end else begin
-            SmartHintStr:=Expression+LineEnding+LineEnding+SmartHintStr;
+            if Assigned(DBGTypeDerefer) and
+              ( (DBGTypeDerefer.Kind <> skPointer) or
+                (StringCase(Lowercase(DBGTypeDerefer.TypeName), ['char', 'character', 'ansistring']) in [0..2])
+              )
+            then
+              DebugEval := DebugEval + ' = ' + DebugEvalDerefer;
           end;
-        end else
-          SmartHintStr:=Expression;
-      end;
-    end;
+        end;
+      end else
+        DebugEval := DebugBoss.FormatValue(DBGType, DebugEval);
+    end else
+      DebugEval := '???';
+
+    FreeAndNil(DBGType);
+    FreeAndNil(DBGTypeDerefer);
+    HasHint:=true;
+    Expression := Expression + ' = ' + DebugEval;
+    if SmartHintStr<>'' then
+    begin
+      p:=System.Pos('<body>',lowercase(SmartHintStr));
+      if p>0 then
+        Insert('<div class="debuggerhint">'+CodeHelpBoss.TextToHTML(Expression)+'</div><br>',
+               SmartHintStr, p+length('<body>'))
+      else
+        SmartHintStr:=Expression+LineEnding+LineEnding+SmartHintStr;
+    end else
+      SmartHintStr:=Expression;
   end;
 
   if HasHint then

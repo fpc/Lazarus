@@ -17,8 +17,12 @@ unit IDEHelpIntf;
 interface
 
 uses
-  Classes, SysUtils, types, LCLProc, Forms, Controls, HelpIntfs, LazHelpIntf,
-  LMessages, LCLType, TextTools, Graphics, LCLIntf;
+  Classes, Types, SysUtils, strutils,
+  // LCL
+  LMessages, LCLType, LCLProc, Forms, Controls, Graphics,
+  HelpIntfs, LazHelpIntf, LCLIntf,
+  // IdeIntf
+  TextTools;
 
 type
   { THelpDBIRegExprMessage
@@ -374,8 +378,8 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
     HintTextWindow.HintRect := HintWinRect;      // Adds borders.
     if MouseOffset then
       HintTextWindow.OffsetHintRect(ScreenPos)
-    else
-      HintTextWindow.OffsetHintRect(ScreenPos, 0, True, False); // shrink height only for fixed (no MouseOffset) hints
+    else                   // shrink height only for fixed (no MouseOffset) hints
+      HintTextWindow.OffsetHintRect(ScreenPos, 0, True, False);
     HintTextWindow.ActivateHint(TheHint);
   end;
 
@@ -389,9 +393,9 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string;
       HintRenderWindow.Font := HintFont;
     HtmlHelpProvider.BaseURL:=FBaseURL;
     ms:=TMemoryStream.Create;
-    try
-      if TheHint<>'' then
-        ms.Write(TheHint[1],length(TheHint));
+    try                               // TheHint<>'' is checked earlier.
+      Assert(TheHint<>'', 'THintWindowManager.ShowHint: TheHint is empty');
+      ms.Write(TheHint[1],length(TheHint));
       ms.Position:=0;
       HtmlHelpProvider.ControlIntf.SetHTMLContent(ms,'');
     finally
