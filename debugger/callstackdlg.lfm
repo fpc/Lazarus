@@ -1,4 +1,4 @@
-inherited CallStackDlg: TCallStackDlg
+object CallStackDlg: TCallStackDlg
   Left = 306
   Height = 246
   Top = 130
@@ -8,8 +8,9 @@ inherited CallStackDlg: TCallStackDlg
   ClientHeight = 246
   ClientWidth = 562
   OnCreate = FormCreate
+  LCLVersion = '1.9.0.0'
   Visible = True
-  object lvCallStack: TListView[0]
+  object lvCallStack: TListView
     Left = 0
     Height = 166
     Top = 80
@@ -22,7 +23,7 @@ inherited CallStackDlg: TCallStackDlg
       item
         AutoSize = True
         Caption = 'Index'
-        Width = 538
+        Width = 100
       end    
       item
         Caption = 'Source'
@@ -44,7 +45,7 @@ inherited CallStackDlg: TCallStackDlg
     OnClick = lvCallStackClick
     OnDblClick = lvCallStackDBLCLICK
   end
-  object ToolBar1: TToolBar[1]
+  object ToolBar1: TToolBar
     Left = 0
     Height = 80
     Top = 0
@@ -59,31 +60,31 @@ inherited CallStackDlg: TCallStackDlg
     ShowHint = True
     TabOrder = 1
     object ToolButtonShow: TToolButton
-      Left = 112
+      Left = 117
       Top = 0
       Action = actShow
       ImageIndex = 0
     end
     object ToolButtonCurrent: TToolButton
-      Left = 162
+      Left = 167
       Top = 0
       Action = actSetCurrent
     end
     object ToolButton4: TToolButton
-      Left = 212
+      Left = 220
+      Height = 40
       Top = 0
-      Width = 10
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object ToolButtonMore: TToolButton
-      Left = 284
+      Left = 300
       Top = 0
       Action = actViewMore
       ImageIndex = 1
     end
     object ToolButtonMax: TToolButton
-      Left = 222
+      Left = 228
       Top = 0
       Action = actViewLimit
       Caption = 'Max 10'
@@ -91,45 +92,45 @@ inherited CallStackDlg: TCallStackDlg
       Style = tbsDropDown
     end
     object ToolButtonGoto: TToolButton
-      Left = 494
+      Left = 510
       Top = 0
       Action = actViewGoto
       ImageIndex = 4
     end
     object ToolButtonCopyAll: TToolButton
-      Left = 1
+      Left = 9
       Top = 40
       Action = actCopyAll
       ImageIndex = 5
     end
     object ToolButton8: TToolButton
-      Left = 102
+      Left = 109
+      Height = 40
       Top = 0
-      Width = 10
       Caption = 'ToolButton8'
       Style = tbsSeparator
     end
     object ToolButton9: TToolButton
-      Left = 334
+      Left = 350
+      Height = 40
       Top = 0
-      Width = 10
       Caption = 'ToolButton9'
       Style = tbsSeparator
     end
     object ToolButtonTop: TToolButton
-      Left = 344
+      Left = 358
       Top = 0
       Action = actViewTop
       ImageIndex = 2
     end
     object ToolButtonBottom: TToolButton
-      Left = 394
+      Left = 408
       Top = 0
       Action = actViewBottom
       ImageIndex = 3
     end
     object Panel1: TPanel
-      Left = 444
+      Left = 460
       Height = 40
       Top = 0
       Width = 50
@@ -139,7 +140,7 @@ inherited CallStackDlg: TCallStackDlg
       TabOrder = 0
       object txtGoto: TEdit
         Left = 2
-        Height = 23
+        Height = 29
         Top = 8
         Width = 46
         OnKeyPress = txtGotoKeyPress
@@ -158,16 +159,16 @@ inherited CallStackDlg: TCallStackDlg
       Style = tbsCheck
     end
     object ToolButton2: TToolButton
-      Left = 544
-      Top = 0
-      Width = 10
+      Left = 1
+      Height = 40
+      Top = 40
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
   end
-  object mnuPopup: TPopupMenu[2]
-    left = 224
-    top = 80
+  object mnuPopup: TPopupMenu
+    Left = 224
+    Top = 80
     object popShow: TMenuItem
       Action = actShow
       Default = True
@@ -192,9 +193,9 @@ inherited CallStackDlg: TCallStackDlg
       OnClick = actCopyAllClick
     end
   end
-  object aclActions: TActionList[3]
-    left = 48
-    top = 80
+  object aclActions: TActionList
+    Left = 48
+    Top = 80
     object actShow: TAction
       Caption = 'Show'
       OnExecute = actShowClick
@@ -246,9 +247,9 @@ inherited CallStackDlg: TCallStackDlg
       OnExecute = actShowDisassExecute
     end
   end
-  object mnuLimit: TPopupMenu[4]
-    left = 136
-    top = 80
+  object mnuLimit: TPopupMenu
+    Left = 136
+    Top = 80
     object popLimit10: TMenuItem
       Tag = 10
       Caption = 'Max 10'
