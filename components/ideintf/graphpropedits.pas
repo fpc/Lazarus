@@ -374,26 +374,6 @@ begin
     vOldPenColor := Pen.Color;
     vOldBrushColor := Brush.Color;
 
-    // frame things
-    if pedsInEdit in AState then
-    begin
-      if pedsSelected in AState then
-        Brush.Color := clWindow
-      else
-        Brush.Color := ACanvas.Brush.Color;
-    end
-    else
-    begin
-      if pedsSelected in AState then
-        Brush.Color := clHighlightText
-      else
-       Brush.Color := clWindow;
-    end;
-    Pen.Color := Brush.Color;
-    Pen.Style := psSolid;
-    FillRect(ARect);
-    Rectangle(ARect.Left, ARect.Top, vRight, vBottom);
-
     // set things up and do the work
     noFill := CurValue = 'clNone';
     if noFill then
