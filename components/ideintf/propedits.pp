@@ -3344,6 +3344,19 @@ var
   Style : TTextStyle;
   OldColor : TColor;
 begin
+  OldColor := ACanvas.Brush.Color;
+  If (pedsInComboList in AState) and not (pedsInEdit in AState)
+  then begin
+    If pedsSelected in AState then begin
+      ACanvas.Brush.Color := clHighlight;
+      ACanvas.Font.Color := clHighlightText;
+    end
+    else begin
+      ACanvas.Brush.Color := clwhite{clWindow};
+      ACanvas.Font.Color := clWindowText;
+    end;
+    ACanvas.FillRect(ARect);
+  end;
   FillChar(Style{%H-},SizeOf(Style),0);
   With Style do begin
     Alignment := taLeftJustify;
@@ -3355,21 +3368,8 @@ begin
     SingleLine := True;
     SystemFont := False;
   end;
-  If (pedsInComboList in AState) and not (pedsInEdit in AState)
-  then begin
-    OldColor := ACanvas.Brush.Color;
-    If pedsSelected in AState then begin
-      ACanvas.Brush.Color := clHighlight;
-      ACanvas.Font.Color := clHighlightText;
-    end
-    else begin
-      ACanvas.Brush.Color := clwhite{clWindow};
-      ACanvas.Font.Color := clWindowText;
-    end;
-    ACanvas.FillRect(ARect);
-    ACanvas.Brush.Color := OldColor;
-  end;
   ACanvas.TextRect(ARect, ARect.Left+2,ARect.Top,AValue, Style);
+  ACanvas.Brush.Color := OldColor;
 end;
 
 { these three procedures implement the default render behavior of the
