@@ -1151,13 +1151,8 @@ components/datetimectrls/design/datetimectrlsdsgn.lpk svneol=native#text/xml
 components/datetimectrls/design/datetimectrlsdsgn.pas svneol=native#text/pascal
 components/datetimectrls/design/datetimepickerpropedit.pas svneol=native#text/pascal
 components/datetimectrls/lclcalwrapper.pas svneol=native#text/pascal
-components/datetimectrls/manual.htm svneol=native#text/plain
-components/datetimectrls/pictures/DateControls01.PNG -text svneol=unset#image/png
-components/datetimectrls/pictures/DateControls02.PNG -text svneol=unset#image/png
-components/datetimectrls/pictures/DateControls03.PNG -text svneol=unset#image/png
 components/datetimectrls/pictures/TDBDateTimePicker.png -text svneol=unset#image/png
 components/datetimectrls/pictures/TDateTimePicker.png -text svneol=unset#image/png
-components/datetimectrls/pictures/datetimepickereditor.png -text
 components/datetimectrls/readme.txt svneol=native#text/plain
 components/dbexport/README.txt svneol=native#text/plain
 components/dbexport/dbexportimg.res -text
