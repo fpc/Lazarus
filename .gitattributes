@@ -1133,7 +1133,7 @@ components/datadict/reglazdatadict.res -text
 components/datadict/testdatadict.lpi svneol=native#text/plain
 components/datadict/testdatadict.lpr svneol=native#text/plain
 components/datadict/tfpcodegenerator.xpm svneol=native#text/plain
-components/datetimectrls/ChangeLog.txt svneol=native#text/plain
+components/datetimectrls/ChangeLog.old svneol=native#text/plain
 components/datetimectrls/Makefile svneol=native#text/plain
 components/datetimectrls/Makefile.compiled svneol=native#text/plain
 components/datetimectrls/Makefile.fpc svneol=native#text/plain
