@@ -180,8 +180,8 @@ type
     FUpDown: TCustomUpDown;
     FOnChange: TNotifyEvent;
     FOnCheckBoxChange: TNotifyEvent;
-    FOnChangeHandler: TMethodList;
-    FOnCheckBoxChangeHandler: TMethodList;
+    FOnChangeHandlers: TMethodList;
+    FOnCheckBoxChangeHandlers: TMethodList;
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     FEffectiveDateDisplayOrder: TDateDisplayOrder;
@@ -347,9 +347,11 @@ type
     procedure DoAutoCheck; virtual;
 
     procedure AddHandlerOnChange(const AOnChange: TNotifyEvent;
-      AsFirst: Boolean = False);
+      AsFirst: Boolean = False); virtual;
     procedure AddHandlerOnCheckBoxChange(const AOnCheckBoxChange: TNotifyEvent;
-      AsFirst: Boolean = False);
+      AsFirst: Boolean = False); virtual;
+    procedure RemoveHandlerOnChange(AOnChange: TNotifyEvent); virtual;
+    procedure RemoveHandlerOnCheckBoxChange(AOnCheckBoxChange: TNotifyEvent); virtual;
 
     property BorderStyle default bsSingle;
     property AutoSize default True;
@@ -418,6 +420,7 @@ type
     procedure SelectTime;
     procedure SendExternalKey(const aKey: Char);
     procedure SendExternalKeyCode(const Key: Word);
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
 
     procedure Paint; override;
     procedure EditingDone; override;
@@ -430,10 +433,12 @@ type
 
   TDateTimePicker = class(TCustomDateTimePicker)
   public
-    procedure AddHandlerOnChange(const AOnChange: TNotifyEvent;
-      AsFirst: Boolean = False);
+    procedure AddHandlerOnChange(const AOnChange: TNotifyEvent; AsFirst: Boolean = False
+      ); override;
     procedure AddHandlerOnCheckBoxChange(const AOnCheckBoxChange: TNotifyEvent;
-      AsFirst: Boolean = False);
+      AsFirst: Boolean = False); override;
+    procedure RemoveHandlerOnChange(AOnChange: TNotifyEvent); override;
+    procedure RemoveHandlerOnCheckBoxChange(AOnCheckBoxChange: TNotifyEvent); override;
   public
     property DateTime;
     property CalendarWrapperClass;
@@ -625,6 +630,17 @@ procedure TDateTimePicker.AddHandlerOnCheckBoxChange(
   const AOnCheckBoxChange: TNotifyEvent; AsFirst: Boolean);
 begin
   inherited AddHandlerOnCheckBoxChange(AOnCheckBoxChange, AsFirst);
+end;
+
+procedure TDateTimePicker.RemoveHandlerOnChange(AOnChange: TNotifyEvent);
+begin
+  inherited RemoveHandlerOnChange(AOnChange);
+end;
+
+procedure TDateTimePicker.RemoveHandlerOnCheckBoxChange(
+  AOnCheckBoxChange: TNotifyEvent);
+begin
+  inherited RemoveHandlerOnCheckBoxChange(AOnCheckBoxChange);
 end;
 
 procedure TDTCalendarForm.SetClosingCalendarForm;
@@ -2774,6 +2790,17 @@ begin
 
 end;
 
+procedure TCustomDateTimePicker.RemoveAllHandlersOfObject(AnObject: TObject);
+begin
+  inherited RemoveAllHandlersOfObject(AnObject);
+
+  if Assigned(FOnChangeHandlers) then
+    FOnChangeHandlers.RemoveAllMethodsOfObject(AnObject);
+
+  if Assigned(FOnCheckBoxChangeHandlers) then
+    FOnCheckBoxChangeHandlers.RemoveAllMethodsOfObject(AnObject);
+end;
+
 procedure TCustomDateTimePicker.SelectHour;
 begin
   SelectDateTimePart(dtpHour);
@@ -2902,8 +2929,8 @@ procedure TCustomDateTimePicker.Change;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
-  if FOnChangeHandler<>nil then
-    FOnChangeHandler.CallNotifyEvents(Self);
+  if FOnChangeHandlers<>nil then
+    FOnChangeHandlers.CallNotifyEvents(Self);
 end;
 
 procedure TCustomDateTimePicker.SelectDate;
@@ -3286,8 +3313,8 @@ begin
   if Assigned(FOnCheckBoxChange) then
     FOnCheckBoxChange(Self);
 
-  if FOnCheckBoxChangeHandler<>nil then
-    FOnCheckBoxChangeHandler.CallNotifyEvents(Self);
+  if FOnCheckBoxChangeHandlers<>nil then
+    FOnCheckBoxChangeHandlers.CallNotifyEvents(Self);
 end;
 
 procedure TCustomDateTimePicker.SetFocusIfPossible;
@@ -3933,17 +3960,30 @@ end;
 procedure TCustomDateTimePicker.AddHandlerOnChange(
   const AOnChange: TNotifyEvent; AsFirst: Boolean);
 begin
-  if FOnChangeHandler=nil then
-    FOnChangeHandler := TMethodList.Create;
-  FOnChangeHandler.Add(TMethod(AOnChange), not AsFirst);
+  if FOnChangeHandlers=nil then
+    FOnChangeHandlers := TMethodList.Create;
+  FOnChangeHandlers.Add(TMethod(AOnChange), not AsFirst);
 end;
 
 procedure TCustomDateTimePicker.AddHandlerOnCheckBoxChange(
   const AOnCheckBoxChange: TNotifyEvent; AsFirst: Boolean);
 begin
-  if FOnCheckBoxChangeHandler=nil then
-    FOnCheckBoxChangeHandler := TMethodList.Create;
-  FOnCheckBoxChangeHandler.Add(TMethod(AOnCheckBoxChange), not AsFirst);
+  if FOnCheckBoxChangeHandlers=nil then
+    FOnCheckBoxChangeHandlers := TMethodList.Create;
+  FOnCheckBoxChangeHandlers.Add(TMethod(AOnCheckBoxChange), not AsFirst);
+end;
+
+procedure TCustomDateTimePicker.RemoveHandlerOnChange(AOnChange: TNotifyEvent);
+begin
+  if Assigned(FOnChangeHandlers) then
+    FOnChangeHandlers.Remove(TMethod(AOnChange));
+end;
+
+procedure TCustomDateTimePicker.RemoveHandlerOnCheckBoxChange(
+  AOnCheckBoxChange: TNotifyEvent);
+begin
+  if Assigned(FOnCheckBoxChangeHandlers) then
+    FOnCheckBoxChangeHandlers.Remove(TMethod(AOnCheckBoxChange));
 end;
 
 destructor TCustomDateTimePicker.Destroy;
@@ -3952,8 +3992,8 @@ begin
   DestroyArrowBtn;
   DestroyUpDown;
   SetShowCheckBox(False);
-  FOnChangeHandler.Free;
-  FOnCheckBoxChangeHandler.Free;
+  FOnChangeHandlers.Free;
+  FOnCheckBoxChangeHandlers.Free;
 
   inherited Destroy;
 end;
