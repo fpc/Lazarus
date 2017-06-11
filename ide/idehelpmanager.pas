@@ -38,7 +38,7 @@ uses
   LCLProc, LCLIntf, LCLType, FileProcs, Forms, Controls, ComCtrls, StdCtrls,
   Dialogs, Graphics, Buttons, ButtonPanel,
   // LazUtils
-  LConvEncoding, LazUTF8Classes, LazFileUtils,
+  LConvEncoding, LazUTF8Classes, LazFileUtils, HTML2TextRender,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -117,8 +117,7 @@ type
     procedure ReleaseStream(const URL: string);
   end;
 
-  { TSimpleHTMLControl
-    At the moment it is a TLabel that simply strips all tags }
+  { TSimpleHTMLControl }
 
   TSimpleHTMLControl = class(TLabel,TIDEHTMLControlIntf)
   private
@@ -136,8 +135,7 @@ type
     property MaxLineCount: integer read FMaxLineCount write FMaxLineCount;
   end;
 
-  { TScrollableHTMLControl
-    At the moment it is a TMemo that simply strips all tags }
+  { TScrollableHTMLControl }
 
   TScrollableHTMLControl = class(TMemo,TIDEHTMLControlIntf)
   private
@@ -371,156 +369,6 @@ begin
   ErrMsg:='';
 end;
 
-function HTMLToCaption(const s: string; MaxLines: integer): string;
-var
-  p: Integer;
-  EndPos: Integer;
-  NewTag: String;
-  Line: Integer;
-  sp: LongInt;
-  InHeader: Boolean;
-  CurTagName: String;
-begin
-  Result:=s;
-  //debugln(['HTMLToCaption HTML="',Result,'"']);
-  Line:=1;
-  p:=1;
-  // remove UTF8 BOM
-  if copy(Result,1,3)=UTF8BOM then
-    Result:=copy(s,4,length(Result));
-  InHeader:=false; // it could be a snippet
-  while p<=length(Result) do begin
-    if Result[p]='<' then begin
-      // removes html tags
-      EndPos:=p+1;
-      if (EndPos<=length(Result)) and (Result[EndPos]='/') then inc(EndPos);
-      while (EndPos<=length(Result))
-      and (not (Result[EndPos] in [' ','>','"','/',#9,#10,#13])) do
-        inc(EndPos);
-      CurTagName:=UpperCase(copy(Result,p+1,EndPos-p-1));
-      while (EndPos<=length(Result)) do begin
-        if Result[EndPos]='"' then begin
-          // skip " tag
-          inc(EndPos);
-          while (EndPos<=length(Result)) and (Result[EndPos]<>'"') do
-            inc(EndPos);
-          if EndPos>length(Result) then break;
-        end;
-        if (Result[EndPos]='>') then begin
-          inc(EndPos);
-          break;
-        end;
-        inc(EndPos);
-      end;
-      //debugln(['HTMLToCaption CurTagName=',CurTagName,' Tag="',copy(Result,p,EndPos-p),'"']);
-
-      if CurTagName='HTML' then
-      begin
-        // it's a whole page
-        InHeader:=true;
-      end;
-      if CurTagName='BODY' then
-      begin
-        // start of body => ignore header
-        InHeader:=false;
-        Result:=copy(Result,EndPos,length(Result));
-        p:=1;
-        EndPos:=1;
-        Line:=1;
-      end;
-      if CurTagName='/BODY' then
-      begin
-        // end of body
-        Result:=copy(Result,1,p-1);
-        break;
-      end;
-
-      if (CurTagName='P') or (CurTagName='/P') then begin
-        // add a line break if there is not already one
-        sp:=p;
-        while (sp>1) and (Result[sp-1] in [' ',#9]) do dec(sp);
-        if (sp>1) and (not (Result[sp-1] in [#10,#13])) then
-          CurTagName:='BR';
-      end;
-      if (CurTagName='DIV') or (CurTagName='/DIV')
-      then begin
-        // add a line break if not in first line
-        if Line>1 then
-          CurTagName:='BR';
-      end;
-
-      if CurTagName='BR' then
-      begin
-        NewTag:=LineEnding;
-        if not InHeader then
-          inc(Line);
-        if Line>MaxLines then begin
-          Result:=copy(Result,1,p)+LineEnding+'...';
-          break;
-        end;
-      end
-      else
-        NewTag:='';
-      if NewTag='' then begin
-        //debugln(['HTMLToCaption deleting tag ',copy(Result,p,EndPos-p)]);
-        System.Delete(Result,p,EndPos-p);
-      end
-      else begin
-        Result:=copy(Result,1,p-1)+NewTag+copy(Result,EndPos,length(Result));
-        inc(p,length(NewTag));
-      end;
-    end else if Result[p] in [#9,#10,#13] then begin
-      // replace spaces and newline characters with a single space
-      EndPos:=p+1;
-      while (EndPos<=length(Result)) and (Result[EndPos] in [#9,#10,#13]) do
-        inc(EndPos);
-      if (p > 1) and not (Result[p-1] in [#9,#10,#13]) then
-      begin
-        Result:=copy(Result,1,p-1)+' '+copy(Result,EndPos,length(Result));
-        inc(p);
-      end
-      else
-        Result:=copy(Result,1,p-1)+copy(Result,EndPos,length(Result));
-    end else if Result[p]='&' then begin
-      // special chars: &lt; &gt; &amp; &nbsp;
-        if (p+2<Length(Result)) and (Result[p+1]='l') and (Result[p+2]='t') and (Result[p+3]=';') then begin
-          EndPos:=p+4;
-          Result:=copy(Result,1,p-1)+'<'+copy(Result,EndPos,length(Result));
-        end else
-        if (p+2<Length(Result)) and (Result[p+1]='g') and (Result[p+2]='t') and (Result[p+3]=';') then begin
-          EndPos:=p+4;
-          Result:=copy(Result,1,p-1)+'>'+copy(Result,EndPos,length(Result));
-        end else
-        if (p+4<Length(Result)) and (Result[p+1]='n') and (Result[p+2]='b') and (Result[p+3]='s') and (Result[p+4]='p') and (Result[p+5]=';') then begin
-          EndPos:=p+6;
-          Result:=copy(Result,1,p-1)+' '+copy(Result,EndPos,length(Result));
-        end else
-        if (p+3<Length(Result)) and (Result[p+1]='a') and (Result[p+2]='m') and (Result[p+3]='p') and (Result[p+4]=';') then begin
-          EndPos:=p+5;
-        Result:=copy(Result,1,p-1)+'&'+copy(Result,EndPos,length(Result));
-      end;
-      inc(p);
-    end else
-      inc(p);
-  end;
-  // trim space at end
-  p:=length(Result);
-  while (p>0) and (Result[p] in [' ',#9,#10,#13]) do dec(p);
-  SetLength(Result,p);
-
-  //DebugLn(['HTMLToCaption Caption="',dbgstr(Result),'"']);
-end;
-
-function HTMLToCaption(Stream: TStream; MaxLines: integer): string;
-var
-  s: string;
-begin
-  SetLength(s,Stream.Size);
-  if s<>'' then
-    Stream.Read(s[1],length(s));
-  Result:=HTMLToCaption(s,MaxLines);
-end;
-
 { TSimpleHTMLControl }
 
 procedure TSimpleHTMLControl.SetProvider(const AValue: TAbstractIDEHTMLProvider);
@@ -549,6 +397,7 @@ end;
 procedure TSimpleHTMLControl.SetURL(const AValue: string);
 var
   Stream: TStream;
+  Renderer: THTML2TextRenderer;
   NewURL: String;
 begin
   if Provider=nil then raise Exception.Create('TSimpleHTMLControl.SetURL missing Provider');
@@ -558,9 +407,11 @@ begin
   FURL:=NewURL;
   try
     Stream:=Provider.GetStream(FURL,true);
+    Renderer:=THTML2TextRenderer.Create(Stream);
     try
-      Caption:=HTMLToCaption(Stream, MaxLineCount);
+      Caption:=Renderer.Render(MaxLineCount);
     finally
+      Renderer.Free;
       Provider.ReleaseStream(FURL);
     end;
   except
@@ -571,10 +422,17 @@ begin
 end;
 
 procedure TSimpleHTMLControl.SetHTMLContent(Stream: TStream; const NewURL: string);
+var
+  Renderer: THTML2TextRenderer;
 begin
   FURL:=NewURL;
-  Caption:=HTMLToCaption(Stream,MaxLineCount);
-  //debugln(['TSimpleHTMLControl.SetHTMLContent ',Caption]);
+  Renderer:=THTML2TextRenderer.Create(Stream);
+  try
+    Caption:=Renderer.Render(MaxLineCount);
+  finally
+    Renderer.Free;
+  end;
+  //debugln(['TSimpleHTMLControl.SetHTMLContent: ',Caption]);
 end;
 
 procedure TSimpleHTMLControl.GetPreferredControlSize(out AWidth, AHeight: integer);
@@ -629,6 +487,7 @@ end;
 procedure TScrollableHTMLControl.SetURL(const AValue: string);
 var
   Stream: TStream;
+  Renderer: THTML2TextRenderer;
   NewURL: String;
 begin
   if Provider=nil then raise Exception.Create('TScrollableHTMLControl.SetURL missing Provider');
@@ -638,9 +497,11 @@ begin
   FURL:=NewURL;
   try
     Stream:=Provider.GetStream(FURL,true);
+    Renderer:=THTML2TextRenderer.Create(Stream);
     try
-      Caption:=HTMLToCaption(Stream, MaxInt);
+      Caption:=Renderer.Render;
     finally
+      Renderer.Free;
       Provider.ReleaseStream(FURL);
     end;
   except
@@ -651,10 +512,17 @@ begin
 end;
 
 procedure TScrollableHTMLControl.SetHTMLContent(Stream: TStream; const NewURL: string);
+var
+  Renderer: THTML2TextRenderer;
 begin
   FURL:=NewURL;
-  Caption:=HTMLToCaption(Stream,MaxInt);
-  //debugln(['TScrollableHTMLControl.SetHTMLContent ',Caption]);
+  Renderer:=THTML2TextRenderer.Create(Stream);
+  try
+    Caption:=Renderer.Render;
+  finally
+    Renderer.Free;
+  end;
+  //debugln(['TScrollableHTMLControl.SetHTMLContent: ',Caption]);
 end;
 
 procedure TScrollableHTMLControl.GetPreferredControlSize(out AWidth, AHeight: integer);
