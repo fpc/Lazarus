@@ -1,4 +1,6 @@
-﻿===================================================
+﻿NOTE: This is old, outdated, change log, from times before DateTimePicker became part of Lazarus. For newer changes, see the svn log.
+
+===================================================
 Version 1.0 -- 27. Feb. 2010.
 
 Initial release
