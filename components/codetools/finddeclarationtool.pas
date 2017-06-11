@@ -9084,8 +9084,14 @@ var
         and (FirstParamProcContext.Node<>nil) then
         begin
           FirstParamNode := FirstParamProcContext.Node;
-          while (FirstParamNode<>nil) and (FirstParamNode.Desc in [ctnProcedure, ctnProcedureHead, ctnParameterList, ctnVarDefinition]) do
+          while (FirstParamNode<>nil) and (FirstParamNode.Desc in [ctnProcedure, ctnProcedureHead, ctnParameterList]) do
             FirstParamNode := FirstParamNode.FirstChild;
+          if (FirstParamNode<>nil) and (FirstParamNode.Desc=ctnVarDefinition) then
+          begin
+            while FirstParamNode.NextBrother<>nil do
+              FirstParamNode := FirstParamNode.NextBrother;
+            FirstParamNode := FirstParamNode.FirstChild;
+          end;
           if (FirstParamNode<>nil) and (FirstParamNode.Desc=ctnIdentifier) then
           begin
             NewParams := TFindDeclarationParams.Create(FirstParamProcContext.Tool, FirstParamProcContext.Node);
