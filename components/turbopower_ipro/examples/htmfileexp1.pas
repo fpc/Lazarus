@@ -223,11 +223,9 @@ end {GoBackFor};
 procedure TFHtmFileExp1.OpenHTMLFile(const Filename: string;
   ToAdd, RelativePath: Boolean);
 
+procedure UpdateSB(const FN: string);
 var
-  FN, Anchor: string;
   Pst: TPst;
-procedure UpdateSB;
-var
   I: Integer;
 begin
   if ToAdd then  begin
@@ -247,6 +245,7 @@ var
   fs: TFileStream;
   NewHTML: TSimpleIpHtml;
   P: Integer;
+  FN, Anchor: string;
 begin
   if  Filename = ''  then  begin
     if  CurrPos > -1
@@ -264,7 +263,7 @@ begin
       FN := Concat (Path, CurrFile);
       Anchor := Copy (Filename, 2, MaxInt);
       IpHtmlPanel1.MakeAnchorVisible (Anchor);
-      UpdateSB;
+      UpdateSB(FN);
       Exit;
     end
     else  begin
@@ -290,7 +289,7 @@ begin
       IpHtmlPanel1.SetHtml (NewHTML);
       if  Anchor <> ''
       then  IpHtmlPanel1.MakeAnchorVisible (Anchor);
-      UpdateSB;
+      UpdateSB(FN);
     finally
       fs.Free;
     end;
