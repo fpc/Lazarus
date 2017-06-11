@@ -1,6 +1,6 @@
-DateTimeControls Package for Lazarus
+DateTimeCtrls Package for Lazarus
 --------------------------------------
-http://wiki.lazarus.freepascal.org/DateTimeControls_Package
+http://wiki.lazarus.freepascal.org/DateTimeCtrls_Package
 
 About:
 	The package contains two controls — TDateTimePicker and TDBDateTimePicker.
