@@ -173,6 +173,8 @@ components/tmemo.png
 components/tmemo_150.png
 components/tmemo_200.png
 components/tmouse.png
+components/tmouse_150.png
+components/tmouse_200.png
 components/tnotebook.png
 components/topendialog.png
 components/topendialog_150.png

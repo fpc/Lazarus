@@ -6755,6 +6755,8 @@ images/components/tmemo.png -text svneol=unset#image/png
 images/components/tmemo_150.png -text
 images/components/tmemo_200.png -text
 images/components/tmouse.png -text svneol=unset#image/png
+images/components/tmouse_150.png -text
+images/components/tmouse_200.png -text
 images/components/tnotebook.png -text svneol=unset#image/png
 images/components/topendialog.png -text svneol=unset#image/png
 images/components/topendialog_150.png -text
@@ -6771,6 +6773,8 @@ images/components/tpairsplitter.png -text svneol=unset#image/png
 images/components/tpanel.png -text svneol=unset#image/png
 images/components/tpicture.png -text svneol=unset#image/png
 images/components/tpopupmenu.png -text svneol=unset#image/png
+images/components/tpopupmenu_150.png -text
+images/components/tpopupmenu_200.png -text
 images/components/tpopupnotifier.png -text svneol=unset#image/png
 images/components/tprintdialog_150.png -text
 images/components/tprintersetupdialog_150.png -text
