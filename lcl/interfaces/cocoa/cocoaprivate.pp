@@ -3038,6 +3038,11 @@ procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
 var
   Msg: TLMNotify;
   Hdr: TNmHdr;
+  i: Integer;
+  lTabView, lCurSubview: NSView;
+  lLCLControl: TWinControl;
+  lBounds: TRect;
+  lCurCallback: ICommonCallback;
 begin
   if LCLPageControl = nil then Exit;
 
@@ -3051,6 +3056,21 @@ begin
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   LCLMessageGlue.DeliverMessage(LCLPageControl, Msg);
+
+  // Update the coordinates of all children of this tab
+  // Fixes bug 31914: TPageControl problems with Cocoa
+  lTabView := tabViewItem.view.subViews.objectAtIndex(0);
+  for i := 0 to lTabView.subViews.count-1 do
+  begin
+    lCurSubview := lTabView.subViews.objectAtIndex(i);
+    lCurCallback := lCurSubview.lclGetCallback();
+    if Assigned(lCurCallback) then
+    begin
+      lLCLControl := TWinControl(lCurCallback.GetTarget());
+      lBounds := Classes.Bounds(lLCLControl.Left, lLCLControl.Top, lLCLControl.Width, lLCLControl.Height);
+      lCurSubview.lclSetFrame(lBounds);
+    end;
+  end;
 end;
 
 procedure TCocoaTabControl.tabViewDidChangeNumberOfTabViewItems(
