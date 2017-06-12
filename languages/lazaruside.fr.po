@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-08 08:30+0200\n"
+"PO-Revision-Date: 2017-06-12 15:42+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -603,11 +603,11 @@ msgstr "Inclure le code d'assertion"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
 msgid "Associated debug desktop"
-msgstr ""
+msgstr "Bureau de débogage associé"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
-msgstr ""
+msgstr "Si vous choisissez th bureau, le bureau de débogage associé sera lui aussi sélectionné."
 
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
