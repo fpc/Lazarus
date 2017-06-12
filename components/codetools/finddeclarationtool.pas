@@ -400,8 +400,10 @@ type
     procedure Grow;
   public
     Count: integer;
-    Items: ^TExpressionType;
+    Items: PExpressionType;
+    AliasTypes: PFindContext;
     procedure Add(const ExprType: TExpressionType);
+    procedure Add(const ExprType: TExpressionType; const AliasType: TFindContext);
     procedure AddFirst(const ExprType: TExpressionType);
     property Capacity: integer read FCapacity write SetCapacity;
     destructor Destroy; override;
@@ -795,7 +797,7 @@ type
     function ReadOperandTypeAtCursor(Params: TFindDeclarationParams;
       MaxEndPos: integer = -1; AliasType: PFindContext = nil): TExpressionType;
     function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
-      Params: TFindDeclarationParams): TExpressionType;
+      Params: TFindDeclarationParams; AliasType: PFindContext = nil): TExpressionType;
     function FindExpressionTypeOfConstSet(Node: TCodeTreeNode): TExpressionType;
     function GetDefaultStringType: TExpressionTypeDesc;
     function CalculateBinaryOperator(LeftOperand, RightOperand: TOperand;
@@ -867,7 +869,7 @@ type
       Params: TFindDeclarationParams;
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
     function CreateParamExprListFromStatement(StartPos: integer;
-      Params: TFindDeclarationParams): TExprTypeList;
+      Params: TFindDeclarationParams; GetAlias: boolean = false): TExprTypeList;
     function ContextIsDescendOf(
       const DescendContext, AncestorContext: TFindContext;
       Params: TFindDeclarationParams): boolean;
@@ -9464,8 +9466,12 @@ var
           end;
 
           Params.Load(OldInput,true);
-          ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
-                                                             Params);
+          if IsEnd then
+            ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
+                                                               Params,AliasType)
+          else
+            ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
+                                                               Params);
           {$IFDEF CheckNodeTool}
           if ExprType.Desc=xtContext then
             ExprType.Context.Tool.CheckNodeTool(ExprType.Context.Node);
@@ -10351,7 +10357,8 @@ begin
 end;
 
 function TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier(
-  StartPos: integer; Params: TFindDeclarationParams): TExpressionType;
+  StartPos: integer; Params: TFindDeclarationParams; AliasType: PFindContext
+  ): TExpressionType;
 var
   IdentPos: PChar;
   ParamList: TExprTypeList;
@@ -10387,7 +10394,7 @@ begin
         ReadNextAtom;
         if not AtomIsChar('(') then
           exit;
-        ParamList:=CreateParamExprListFromStatement(CurPos.StartPos,Params);
+        ParamList:=CreateParamExprListFromStatement(CurPos.StartPos,Params,true);
         if (CompareIdentifiers(IdentPos,'PRED')=0)
         or (CompareIdentifiers(IdentPos,'SUCC')=0)
         or (CompareIdentifiers(IdentPos,'DEFAULT')=0)
@@ -10395,6 +10402,9 @@ begin
           // the DEFAULT, PRED and SUCC of a expression has the same type as the expression
           if ParamList.Count<>1 then exit;
           Result:=ParamList.Items[0];
+          if AliasType<>nil then
+            AliasType^:=ParamList.AliasTypes[0];
+          //debugln(['TFindDeclarationTool.FindExpressionTypeOfPredefinedIdentifier ',ExprTypeToString(Result)]);
         end
         else if (CompareIdentifiers(IdentPos,'LOW')=0)
              or (CompareIdentifiers(IdentPos,'HIGH')=0) then
@@ -11355,13 +11365,15 @@ begin
 end;
 
 function TFindDeclarationTool.CreateParamExprListFromStatement(
-  StartPos: integer; Params: TFindDeclarationParams): TExprTypeList;
+  StartPos: integer; Params: TFindDeclarationParams; GetAlias: boolean
+  ): TExprTypeList;
 var ExprType: TExpressionType;
   BracketClose: char;
   ExprStartPos, ExprEndPos: integer;
   CurIgnoreErrorAfterPos: Integer;
   OldFlags: TFindDeclarationFlags;
   ok: Boolean;
+  AliasType: TFindContext;
 
   procedure RaiseBracketNotFound;
   begin
@@ -11412,9 +11424,14 @@ begin
           if (CurIgnoreErrorAfterPos>=ExprStartPos) then
             Params.Flags:=Params.Flags-[fdfExceptionOnNotFound];
           //DebugLn('TFindDeclarationTool.CreateParamExprListFromStatement CurIgnoreErrorAfterPos=',dbgs(CurIgnoreErrorAfterPos),' ExprStartPos=',dbgs(ExprStartPos));
-          ExprType:=FindExpressionResultType(Params,ExprStartPos,ExprEndPos);
-          // add expression type to list
-          Result.Add(ExprType);
+          if GetAlias then begin
+            AliasType:=CleanFindContext;
+            ExprType:=FindExpressionResultType(Params,ExprStartPos,ExprEndPos,@AliasType);
+            Result.Add(ExprType,AliasType);
+          end else begin
+            ExprType:=FindExpressionResultType(Params,ExprStartPos,ExprEndPos);
+            Result.Add(ExprType);
+          end;
           MoveCursorToCleanPos(ExprEndPos);
           ReadNextAtom;
           if AtomIsChar(BracketClose) then break;
@@ -13893,7 +13910,10 @@ end;
 
 destructor TExprTypeList.Destroy;
 begin
-  if Items<>nil then FreeMem(Items);
+  if Items<>nil then begin
+    FreeMem(Items);
+    Freemem(AliasTypes);
+  end;
 end;
 
 function TExprTypeList.AsString: string;
@@ -13912,15 +13932,20 @@ begin
 end;
 
 procedure TExprTypeList.SetCapacity(const AValue: integer);
-var NewSize: integer;
+var NewSize, NewAliasSize: integer;
 begin
   if FCapacity=AValue then exit;
   FCapacity:=AValue;
   NewSize:=FCapacity*SizeOf(TExpressionType);
-  if Items=nil then
-    GetMem(Items,NewSize)
-  else
+  NewAliasSize:=FCapacity*SizeOf(TFindContext);
+  if Items=nil then begin
+    GetMem(Items,NewSize);
+    GetMem(AliasTypes,NewAliasSize);
+  end
+  else begin
     ReAllocMem(Items,NewSize);
+    ReAllocMem(AliasTypes,NewAliasSize);
+  end;
   if Count>Capacity then Count:=Capacity;
 end;
 
@@ -13934,6 +13959,16 @@ begin
   inc(Count);
   if Count>Capacity then Grow;
   Items[Count-1]:=ExprType;
+  AliasTypes[Count-1]:=CleanFindContext;
+end;
+
+procedure TExprTypeList.Add(const ExprType: TExpressionType;
+  const AliasType: TFindContext);
+begin
+  inc(Count);
+  if Count>Capacity then Grow;
+  Items[Count-1]:=ExprType;
+  AliasTypes[Count-1]:=AliasType;
 end;
 
 procedure TExprTypeList.AddFirst(const ExprType: TExpressionType);
