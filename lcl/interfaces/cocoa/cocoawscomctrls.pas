@@ -332,10 +332,12 @@ end;
 class procedure TCocoaWSCustomPage.SetProperties(
   const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
 var
-  lHintStr: string;
+  lHintStr, lTitle: string;
 begin
   // title
-  ACocoaControl.setLabel(NSStringUTF8(ACustomPage.Caption));
+  lTitle := ACustomPage.Caption;
+  DeleteAmpersands(lTitle);
+  ACocoaControl.setLabel(NSStringUTF8(lTitle));
 
   // hint
   if ACustomPage.ShowHint then lHintStr := ACustomPage.Hint
