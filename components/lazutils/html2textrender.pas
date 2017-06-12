@@ -9,7 +9,8 @@
   Author: Juha Manninen
 
   Abstract:
-    Render HTML into plain text by using indentation, newlines and stripping tags.
+    Render HTML into plain text by stripping tags and
+     using indentation, newlines and extra characters including Unicode Emojis.
 }
 unit HTML2TextRender;
 
@@ -31,11 +32,17 @@ type
   private
     fHTML, fOutput: string;
     fMaxLines: integer;
-    fLineEndMark: String; // End of line, by default std. "LineEnding".
-    fTitleMark: String; // Text at start and end of title text, by default Unicode graph.
+    fLineEndMark: String; // End of line, by default standard LineEnding
+    fTitleMark: String; // Text at start/end of title text: <div class="title">...</div>
+    fHorzLine: String; // Text for <hr> tag
+    fLinkBegin: String; // Text before link, <a href="...">
+    fLinkEnd: String; // Text after link
+    fListItemMark: String; // Text for <li> items
+    fMoreMark: String; // Text to add if too many lines
     fInHeader, fInDivTitle: Boolean;
     fPendingSpace: Boolean;
     fPendingNewLineCnt: Integer;
+    fIndentStep: integer; // Increment (in spaces) for each nested HTML level
     fIndent: integer;
     fLineCnt, fHtmlLen: Integer;
     p: Integer;
@@ -53,6 +60,12 @@ type
   public
     property LineEndMark: String read fLineEndMark write fLineEndMark;
     property TitleMark: String read fTitleMark write fTitleMark;
+    property HorzLineMark: String read fHorzLine write fHorzLine;
+    property LinkBeginMark: String read fLinkBegin write fLinkBegin;
+    property LinkEndMark: String read fLinkEnd write fLinkEnd;
+    property ListItemMark: String read fListItemMark write fListItemMark;
+    property MoreMark: String read fMoreMark write fMoreMark;
+    property IndentStep: integer read fIndentStep write fIndentStep;
   end;
 
 implementation
@@ -68,6 +81,12 @@ begin
   // These can be changed by user later.
   fLineEndMark:=LineEnding;
   fTitleMark:='🔹';
+  fHorzLine:= '——————————————————';
+  fLinkBegin:='_';
+  fLinkEnd:='_';
+  fListItemMark:='* ';
+  fMoreMark:='...';
+  fIndentStep:=2;
 end;
 
 constructor THTML2TextRenderer.Create(const Stream: TStream);
@@ -77,7 +96,7 @@ begin
   SetLength(s,Stream.Size);
   if s<>'' then
     Stream.Read(s[1],length(s));
-  Create(s);
+  Create(s);  // Call the constructor above.
 end;
 
 destructor THTML2TextRenderer.Destroy;
@@ -103,7 +122,7 @@ end;
 
 procedure THTML2TextRenderer.AddOneNewLine;
 begin
-  if (fOutput<>'') and not fInHeader then
+  if (fPendingNewLineCnt=0) and (fOutput<>'') and not fInHeader then
     fPendingNewLineCnt:=1;
 end;
 
@@ -122,13 +141,13 @@ begin
     // Return False if max # of lines exceeded.
     if fLineCnt>fMaxLines then
     begin
-      fOutput:=fOutput+fLineEndMark+'...';
+      fOutput:=fOutput+fLineEndMark+fMoreMark;
       Exit(False);
     end;
   end;
   if fPendingNewLineCnt>0 then
   begin
-    fOutput:=fOutput+StringOfChar(' ',fIndent*2);
+    fOutput:=fOutput+StringOfChar(' ',fIndent*fIndentStep);
     fPendingNewLineCnt:=0;
   end;
   fOutput:=fOutput+aText;
@@ -211,30 +230,30 @@ begin
         Inc(fIndent);
         // Don't leave empty lines before list item (not sure if this is good)
         AddOneNewLine;
-        Result:=AddOutput('* ');
+        Result:=AddOutput(fListItemMark);
       end;
     '/LI':
         Dec(fIndent);
     'A':                             // Link
-        Result:=AddOutput(' _');
+        Result:=AddOutput(' '+fLinkBegin);
     '/A':
-        Result:=AddOutput('_ ');
+        Result:=AddOutput(fLinkEnd+' ');
     'HR':
       begin
         AddOneNewLine;
-        Result:=AddOutput('——————————————————');
+        Result:=AddOutput(fHorzLine);
         //AddOneNewLine;
       end;
   end;
 end;
 
 function THTML2TextRenderer.HtmlEntity: Boolean;
-// entities: &lt; &gt; &amp; &nbsp;   '&' is found already here
+// entities: &nbsp; &lt; &gt; &amp;   '&' is found already here
 const
   EntityMap: array[0..3] of array[0..1] of String = (
+    ('nbsp;', ' '),   // &nbsp; happens most often. Let it be first.
     ('lt;',   '<'),
     ('gt;',   '>'),
-    ('nbsp;', ' '),
     ('amp;',  '&')
   );
 var
@@ -249,13 +268,13 @@ begin
     j:=0;
     while j<Length(Ent) do
     begin
-      if Ent[j+1] <> fHTML[p+j] then Break;   // No match -> move to next entity.
+      if Ent[j+1] <> fHTML[p+j] then Break; // No match -> continue with next entity.
       Inc(j);
     end;
     if j=Length(Ent) then
     begin
       Inc(p,Length(Ent));
-      Exit(AddOutput(EntityMap[i][1]));       // Match!
+      Exit(AddOutput(EntityMap[i][1]));     // Match!
     end;
   end;
   Result:=AddOutput('&');     // Entity not found, add just '&'.
