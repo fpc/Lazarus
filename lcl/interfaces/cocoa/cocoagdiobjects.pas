@@ -560,102 +560,103 @@ begin
   inherited Create(AGlobal);
 
   Pool := NSAutoreleasePool.alloc.init;
+  try
+    FName := AFontName;
 
-  FName := AFontName;
+    // If we are using a "systemFont" font we need this complex shuffling,
+    // because otherwise the result is wrong in Mac OS X 10.11, see bug 30300
+    // Code used for 10.10 or inferior:
+    // FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
+    if IsFontNameDefault(FName) then
+    begin
+      FTmpFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
+      FName := NSStringToString(FTmpFont.familyName);
+    end;
 
-  // If we are using a "systemFont" font we need this complex shuffling,
-  // because otherwise the result is wrong in Mac OS X 10.11, see bug 30300
-  // Code used for 10.10 or inferior:
-  // FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
-  if IsFontNameDefault(FName) then
-  begin
-    FTmpFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
-    FName := NSStringToString(FTmpFont.familyName);
-  end;
+    if ALogFont.lfHeight = 0 then
+      FSize := Round(NSFont.systemFontSize)
+    else
+      FSize := Abs(ALogFont.lfHeight);
 
-  if ALogFont.lfHeight = 0 then
-    FSize := Round(NSFont.systemFontSize)
-  else
-    FSize := Abs(ALogFont.lfHeight);
+    // create font attributes
+    Win32Weight := ALogFont.lfWeight;
+    FStyle := [];
+    if ALogFont.lfItalic > 0 then
+      include(FStyle, cfs_Italic);
+    if Win32Weight > FW_NORMAL then
+      include(FStyle, cfs_Bold);
+    if ALogFont.lfUnderline > 0 then
+      include(FStyle, cfs_Underline);
+    if ALogFont.lfStrikeOut > 0 then
+      include(FStyle, cfs_StrikeOut);
 
-  // create font attributes
-  Win32Weight := ALogFont.lfWeight;
-  FStyle := [];
-  if ALogFont.lfItalic > 0 then
-    include(FStyle, cfs_Italic);
-  if Win32Weight > FW_NORMAL then
-    include(FStyle, cfs_Bold);
-  if ALogFont.lfUnderline > 0 then
-    include(FStyle, cfs_Underline);
-  if ALogFont.lfStrikeOut > 0 then
-    include(FStyle, cfs_StrikeOut);
-
-  // If this is not a "systemFont" Create the font ourselves
-  FontName := NSStringUTF8(FName);
-  Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
-        FontName, NSFontFamilyAttribute,
-        NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
-        nil);
-  FontName.release;
-  Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
-  FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
-
-  if FFont = nil then
-  begin
-    // fallback to system font if not found (at least we can try to apply some of the other traits)
-    FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
+    // If this is not a "systemFont" Create the font ourselves
     FontName := NSStringUTF8(FName);
     Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
-               FontName, NSFontFamilyAttribute,
-               NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
-               nil);
+          FontName, NSFontFamilyAttribute,
+          NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
+          nil);
     FontName.release;
     Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
     FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
+
     if FFont = nil then
     begin
-      Pool.release;
-      exit;
+      // fallback to system font if not found (at least we can try to apply some of the other traits)
+      FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
+      FontName := NSStringUTF8(FName);
+      Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
+                 FontName, NSFontFamilyAttribute,
+                 NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
+                 nil);
+      FontName.release;
+      Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
+      FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
+      if FFont = nil then
+      begin
+        exit;
+      end;
     end;
-  end;
 
-  // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
-  // but in this case we may get NIL as result. This way is safer.
-  if cfs_Italic in Style then
-    FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask)
-  else
-    FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSItalicFontMask);
-  if cfs_Bold in Style then
-    FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask)
-  else
-    FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSBoldFontMask);
-  case ALogFont.lfPitchAndFamily and $F of
-    FIXED_PITCH, MONO_FONT:
-      FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSFixedPitchFontMask);
-    VARIABLE_PITCH:
-      FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSFixedPitchFontMask);
+    // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
+    // but in this case we may get NIL as result. This way is safer.
+    if cfs_Italic in Style then
+      FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask)
+    else
+      FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSItalicFontMask);
+    if cfs_Bold in Style then
+      FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask)
+    else
+      FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSBoldFontMask);
+    case ALogFont.lfPitchAndFamily and $F of
+      FIXED_PITCH, MONO_FONT:
+        FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSFixedPitchFontMask);
+      VARIABLE_PITCH:
+        FFont := NSFontManager.sharedFontManager.convertFont_toNotHaveTrait(FFont, NSFixedPitchFontMask);
+    end;
+    if Win32Weight <> FW_DONTCARE then
+    begin
+      // currently if we request the desired weight by Attributes we may get a nil font
+      // so we need to get font weight and to convert it to lighter/heavier
+      LoopCount := 0;
+      repeat
+        // protection from endless loop
+        if LoopCount > 12 then
+          Break;
+        CocoaWeight := CocoaFontWeightToWin32FontWeight(NSFontManager.sharedFontManager.weightOfFont(FFont));
+        if CocoaWeight < Win32Weight then
+          FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(True, FFont)
+        else
+        if CocoaWeight > Win32Weight then
+          FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(False, FFont);
+        inc(LoopCount);
+      until CocoaWeight = Win32Weight;
+    end;
+    FFont.retain;
+    FAntialiased := ALogFont.lfQuality <> NONANTIALIASED_QUALITY;
+  finally
+    Pool.release;
   end;
-  if Win32Weight <> FW_DONTCARE then
-  begin
-    // currently if we request the desired weight by Attributes we may get a nil font
-    // so we need to get font weight and to convert it to lighter/heavier
-    LoopCount := 0;
-    repeat
-      // protection from endless loop
-      if LoopCount > 12 then
-        Exit;
-      CocoaWeight := CocoaFontWeightToWin32FontWeight(NSFontManager.sharedFontManager.weightOfFont(FFont));
-      if CocoaWeight < Win32Weight then
-        FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(True, FFont)
-      else
-      if CocoaWeight > Win32Weight then
-        FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(False, FFont);
-      inc(LoopCount);
-    until CocoaWeight = Win32Weight;
-  end;
-  FFont.retain;
-  FAntialiased := ALogFont.lfQuality <> NONANTIALIASED_QUALITY;
-  Pool.release;
 end;
 
 constructor TCocoaFont.Create(const AFont: NSFont; AGlobal: Boolean = False);
