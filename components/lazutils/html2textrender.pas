@@ -31,7 +31,8 @@ type
   private
     fHTML, fOutput: string;
     fMaxLines: integer;
-    fLineEndMark: String;
+    fLineEndMark: String; // End of line, by default std. "LineEnding".
+    fTitleMark: String; // Text at start and end of title text, by default Unicode graph.
     fInHeader, fInDivTitle: Boolean;
     fPendingSpace: Boolean;
     fPendingNewLineCnt: Integer;
@@ -51,6 +52,7 @@ type
     function Render(aMaxLines: integer = MaxInt): string;
   public
     property LineEndMark: String read fLineEndMark write fLineEndMark;
+    property TitleMark: String read fTitleMark write fTitleMark;
   end;
 
 implementation
@@ -63,7 +65,9 @@ begin
   // remove UTF8 BOM
   if copy(fHTML,1,3)=UTF8BOM then
     delete(fHTML,1,3);
-  fLineEndMark:=LineEnding;          // Can be changed by user later.
+  // These can be changed by user later.
+  fLineEndMark:=LineEnding;
+  fTitleMark:='🔹';
 end;
 
 constructor THTML2TextRenderer.Create(const Stream: TStream);
@@ -186,7 +190,7 @@ begin
         if fInDivTitle then
         begin
           AddNewLine;
-          Result:=AddOutput('🔹');
+          Result:=AddOutput(fTitleMark);
         end
         else
           AddOneNewLine;
@@ -196,7 +200,7 @@ begin
       begin
         if fInDivTitle then
         begin
-          Result:=AddOutput('🔹');
+          Result:=AddOutput(fTitleMark);
           fInDivTitle:=False;
         end;
         AddOneNewLine;
@@ -212,13 +216,13 @@ begin
     '/LI':
         Dec(fIndent);
     'A':                             // Link
-        Result:=AddOutput(' 👀');
+        Result:=AddOutput(' _');
     '/A':
-        Result:=AddOutput('👀 ');
+        Result:=AddOutput('_ ');
     'HR':
       begin
         AddOneNewLine;
-        Result:=AddOutput('----------');
+        Result:=AddOutput('——————————————————');
         //AddOneNewLine;
       end;
   end;
