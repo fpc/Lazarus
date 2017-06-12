@@ -34,9 +34,6 @@ type
       var ScrollPos: Integer);
     procedure sbHorizontalScroll(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer);
-  public const
-    SIZER_RECT_SIZE = 8;
-    SIZER_LINE_WIDTH = 8;
   private
     FVerticalScrollPos: Integer;
     FHorizontalScrollPos: Integer;
@@ -61,6 +58,8 @@ type
     FLastClientWidth, FLastClientHeight: Integer;
     FOldHasMainMenu: Boolean;
     FDesignerModified: Boolean;
+    FSizerLineWidth: Integer;
+    FSizerRectSize: Integer;
 
     function HasMainMenu: Boolean;
     procedure AppOnIdle(Sender: TObject; var Done: Boolean);
@@ -141,6 +140,8 @@ type
     property BgTopMargin: Integer index 1 read GetBackgroundMargin;
     property BgRightMargin: Integer index 2 read GetBackgroundMargin;
     property BgBottomMargin: Integer index 3 read GetBackgroundMargin;
+    property SizerRectSize: Integer read FSizerRectSize;
+    property SizerLineWidth: Integer read FSizerLineWidth;
 
     procedure HideSizeControls;
     procedure ShowSizeControls;
@@ -270,12 +271,12 @@ begin
     Exit;
   if (Sender = pR) or (Sender = pL) then
   begin
-    LWidth := SIZER_LINE_WIDTH;
+    LWidth := SizerLineWidth;
     LHeight := Height;
   end else
   begin
     LWidth := Width;
-    LHeight := SIZER_LINE_WIDTH;
+    LHeight := SizerLineWidth;
   end;
   LCanvas := (Sender as TPanel).Canvas;
   if FFakeFocusControl.Focused then
@@ -373,8 +374,8 @@ begin
 
       Name := 'Node' + IntToStr(Node);
       Caption:='';
-      Width := SIZER_RECT_SIZE;
-      Height := SIZER_RECT_SIZE;
+      Width := SizerRectSize;
+      Height := SizerRectSize;
       Parent := Self;
       Visible := True;
       FNodes.Add(Panel);
@@ -442,12 +443,12 @@ begin
     begin
       Align := alClient;
       if pBG.Left + BgLeftMargin <= 0 then
-        BorderSpacing.Left := Max(-pBG.Left - (FHorizontalScrollPos - SIZER_RECT_SIZE), 0)
+        BorderSpacing.Left := Max(-pBG.Left - (FHorizontalScrollPos - SizerRectSize), 0)
       else
         BorderSpacing.Left := Max(pBG.Left + BgLeftMargin, 0);
 
       if pBG.Top + BgTopMargin <= 0 then
-        BorderSpacing.Top := Max(-pBG.Top - (FVerticalScrollPos - SIZER_RECT_SIZE), 0)
+        BorderSpacing.Top := Max(-pBG.Top - (FVerticalScrollPos - SizerRectSize), 0)
       else
         BorderSpacing.Top := Max(pBG.Top + BgTopMargin, 0);
 
@@ -670,12 +671,12 @@ end;
 
 function TBasicResizeFrame.BottomSizerRectHeight: Integer;
 begin
-  Result := SIZER_RECT_SIZE;
+  Result := SizerRectSize;
 end;
 
 function TBasicResizeFrame.BottomSizerLineWidth: Integer;
 begin
-  Result := SIZER_LINE_WIDTH;
+  Result := SizerLineWidth;
 end;
 
 function TBasicResizeFrame.TopSizerRectTop: Integer;
@@ -685,7 +686,7 @@ end;
 
 function TBasicResizeFrame.TopSizerLineWidth: Integer;
 begin
-  Result := SIZER_LINE_WIDTH;
+  Result := SizerLineWidth;
 end;
 
 function TBasicResizeFrame.VerticalSizerLineLength: Integer;
@@ -699,12 +700,12 @@ end;
 
 function TBasicResizeFrame.RightSizerRectWidth: Integer;
 begin
-  Result := SIZER_RECT_SIZE;
+  Result := SizerRectSize;
 end;
 
 function TBasicResizeFrame.RightSizerLineWidth: Integer;
 begin
-  Result := SIZER_LINE_WIDTH;
+  Result := SizerLineWidth;
 end;
 
 function TBasicResizeFrame.LeftSizerRectLeft: Integer;
@@ -714,7 +715,7 @@ end;
 
 function TBasicResizeFrame.LeftSizerLineWidth: Integer;
 begin
-  Result := SIZER_LINE_WIDTH;
+  Result := SizerLineWidth;
 end;
 
 function TBasicResizeFrame.HorizontalSizerLineLength: Integer;
@@ -842,12 +843,12 @@ end;
 
 function TBasicResizeFrame.GetSizerRectSize: Integer;
 begin
-  Result := SIZER_RECT_SIZE;
+  Result := SizerRectSize;
 end;
 
 function TBasicResizeFrame.GetSizerLineWidth: Integer;
 begin
-  Result := SIZER_LINE_WIDTH;
+  Result := SizerLineWidth;
 end;
 
 function TBasicResizeFrame.GetBackgroundPanel: TPanel;
@@ -889,6 +890,9 @@ end;
 constructor TBasicResizeFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+
+  FSizerRectSize := ScaleX(8, 96);
+  FSizerLineWidth := ScaleX(8, 96);
 
   FFakeFocusControl := TEdit.Create(Self);
   FFakeFocusControl.Parent := Self;
@@ -1001,21 +1005,21 @@ begin
 
     // width and height
     pL.Top:=0;
-    pL.Height := FDesignedForm.Height + 2*SIZER_RECT_SIZE + BgTopMargin + BgBottomMargin;
+    pL.Height := FDesignedForm.Height + 2*SizerRectSize + BgTopMargin + BgBottomMargin;
     pR.Top:=0;
-    pR.Height := FDesignedForm.Height + 2*SIZER_RECT_SIZE + BgTopMargin + BgBottomMargin;
+    pR.Height := FDesignedForm.Height + 2*SizerRectSize + BgTopMargin + BgBottomMargin;
     pT.Left:=0;
-    pT.Width := FDesignedForm.Width + 2*SIZER_RECT_SIZE + BgLeftMargin + BgRightMargin;
+    pT.Width := FDesignedForm.Width + 2*SizerRectSize + BgLeftMargin + BgRightMargin;
     pB.Left:=0;
-    pB.Width := FDesignedForm.Width + 2*SIZER_RECT_SIZE + BgLeftMargin + BgRightMargin;
+    pB.Width := FDesignedForm.Width + 2*SizerRectSize + BgLeftMargin + BgRightMargin;
 
     // client
     if pBG.Left + BgLeftMargin <= 0 then
-      pClient.Left := -(pBG.Left) - (FHorizontalScrollPos - SIZER_RECT_SIZE)
+      pClient.Left := -(pBG.Left) - (FHorizontalScrollPos - SizerRectSize)
     else
       pClient.Left := pBG.Left + BgLeftMargin;
     if pBG.Top + BgTopMargin <= 0 then
-      pClient.Top := -(pBG.Top) - (FVerticalScrollPos - SIZER_RECT_SIZE)
+      pClient.Top := -(pBG.Top) - (FVerticalScrollPos - SizerRectSize)
     else
       pClient.Top := pBG.Top + BgTopMargin;
 
