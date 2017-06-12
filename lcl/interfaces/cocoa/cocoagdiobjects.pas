@@ -691,6 +691,7 @@ end;
 procedure TCocoaFont.SetHandle(ANewHandle: NSFont);
 var
   pool: NSAutoreleasePool;
+  lsymTraits: NSFontSymbolicTraits;
 begin
   if FFont <> nil then
   begin
@@ -701,7 +702,14 @@ begin
   FFont.retain;
   FName := NSStringToString(FFont.familyName);
   FSize := Round(FFont.pointSize);
+
   FStyle := [];
+  lsymTraits := FFont.fontDescriptor.symbolicTraits;
+  if (lsymTraits and NSFontBoldTrait) <> 0 then
+    Include(FStyle, cfs_Bold);
+  if (lsymTraits and NSFontItalicTrait) <> 0 then
+    Include(FStyle, cfs_Italic);
+
   FAntialiased := True;
   Pool.release;
 end;
@@ -2184,6 +2192,9 @@ begin
   TM.tmBreakChar := '?';
 
   TM.tmWeight := Font.CocoaFontWeightToWin32FontWeight(NSFontManager.sharedFontManager.weightOfFont(Font.Font));
+
+  if cfs_Bold in Font.Style then
+    TM.tmWeight := Min(FW_BOLD, TM.tmWeight);
 
   if cfs_Italic in Font.Style then
     TM.tmItalic := 1;

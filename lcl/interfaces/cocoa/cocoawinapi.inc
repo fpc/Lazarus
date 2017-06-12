@@ -1256,7 +1256,7 @@ begin
       Traits := NSFontManager.sharedFontManager.traitsOfFont(AFont.Font);
       if (Traits and NSFontBoldTrait) <> 0 then
         ALogFont^.lfWeight := FW_BOLD
-      else;
+      else
         ALogFont^.lfWeight := FW_NORMAL;
       if (Traits and NSFontItalicTrait) <> 0 then
         ALogFont^.lfItalic := 1

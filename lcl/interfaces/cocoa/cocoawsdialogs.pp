@@ -454,10 +454,12 @@ end;
 procedure TFontPanelDelegate.doSelectFont();
 var
   oldHandle, newHandle: TCocoaFont;
-  newFont: NSFont;
+  oldFont, newFont: NSFont;
 begin
   oldHandle := TCocoaFont(FontDialog.Font.Handle);
-  newFont := FontPanel.panelConvertFont(oldHandle.Font);
+  oldFont := oldHandle.Font;
+  //oldFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
+  newFont := FontPanel.panelConvertFont(oldFont);
   newHandle := TCocoaFont.Create(newFont);
   FontDialog.Font.Handle := HFONT(newHandle);
 end;
