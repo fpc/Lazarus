@@ -211,7 +211,8 @@ var
 
 implementation
 
-uses typinfo,msgjsonviewer, frmNewBoolean, frmNewINteger, frmNewString, clipbrd;
+uses
+  typinfo,msgjsonviewer, lcltype, frmNewBoolean, frmNewINteger, frmNewString, clipbrd;
 
 {$R *.lfm}
 Const
@@ -628,12 +629,13 @@ begin
       D.Free;
       Exit;
       end;
-  AddDataToCOntainer(N,D);
+  AddDataToContainer(N,D);
 end;
 
 procedure TMainForm.APasteUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=ClipBoard.HasFormat(Clipboard.FindFormatID('text/plain'));
+//  (Sender as TAction).Enabled:=ClipBoard.HasFormat(Clipboard.FindFormatID('text/plain'));
+  (Sender as TAction).Enabled:=ClipBoard.HasFormat(CF_TEXT);
 end;
 
 procedure TMainForm.AddNewValue(AType : TJSONType);
