@@ -71,14 +71,14 @@ procedure TTestCTMethodJumpTool.TestCTFindJumpPointIncFilewithIntfAndImpl;
     NewCode: TCodeBuffer;
     NewX: integer;
     NewY: integer;
-    NewTopline: integer;
+    NewTopline, BlockTopLine, BlockBottomLine: integer;
     RevertableJump: boolean;
   begin
     if not GetCTMarker(Code,StartMarker,BlockStart,LeftOfStart) then exit;
     if not GetCTMarker(Code,EndMarker,BlockEnd,LeftOfEnd) then exit;
     //debugln(['TTestCTStdCodetools.TestCTStdFindBlockStart BlockStart=',GetInfo(BlockStart),' BlockEnd=',GetInfo(BlockEnd)]);
     if not CodeToolBoss.JumpToMethod(Code,BlockStart.X,BlockStart.Y,
-      NewCode,NewX,NewY,NewTopline,RevertableJump)
+      NewCode,NewX,NewY,NewTopline,BlockTopLine,BlockBottomLine,RevertableJump)
     then
       AssertEquals(aTitle+': '+CodeToolBoss.ErrorMessage,true,false)
     else

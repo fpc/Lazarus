@@ -106,7 +106,7 @@ implementation
 
 procedure TCustomTestFindDeclaration.CheckReferenceMarkers;
 var
-  i, FoundTopLine, FoundCleanPos: Integer;
+  i, FoundTopLine, FoundCleanPos, BlockTopLine, BlockBottomLine: Integer;
   Marker, DeclMarker: TFDMarker;
   CursorPos, FoundCursorPos: TCodeXYPosition;
   FoundTool: TFindDeclarationTool;
@@ -121,7 +121,8 @@ begin
 
       // test FindDeclaration
       if not CodeToolBoss.FindDeclaration(CursorPos.Code,CursorPos.X,CursorPos.Y,
-        FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine)
+        FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine,
+        BlockTopLine,BlockBottomLine)
       then begin
         WriteSource(CursorPos);
         Fail('find declaration failed at '+MainTool.CleanPosToStr(Marker.NameStartPos,true)+': '+CodeToolBoss.ErrorMessage);
@@ -195,7 +196,8 @@ var
   FoundNode: TCodeTreeNode;
   FoundPath: String;
   Src: String;
-  NameStartPos, i, l, IdentifierStartPos, IdentifierEndPos: Integer;
+  NameStartPos, i, l, IdentifierStartPos, IdentifierEndPos,
+    BlockTopLine, BlockBottomLine: Integer;
   Marker, ExpectedType, NewType: String;
   IdentItem: TIdentifierListItem;
   ItsAKeyword, IsSubIdentifier: boolean;
@@ -268,7 +270,8 @@ begin
 
       // test FindDeclaration
       if not CodeToolBoss.FindDeclaration(CursorPos.Code,CursorPos.X,CursorPos.Y,
-        FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine)
+        FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine,
+        BlockTopLine,BlockBottomLine)
       then begin
         if ExpectedPath<>'' then begin
           WriteSource(IdentifierStartPos);
