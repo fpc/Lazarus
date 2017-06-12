@@ -24,7 +24,7 @@ uses
 {$ELSE}
   ghashmap, sparta_HashUtils,
 {$ENDIF}
-  FormEditingIntf;
+  FormEditingIntf, IDEImagesIntf;
 
 type
 
@@ -528,7 +528,7 @@ procedure TComponentsPalette.UpdateComponentsList;
     LButton := TSpeedButton.Create(LPage);
     with LButton do
     begin
-      LoadGlyphFromResourceName(HINSTANCE, 'TMOUSE');
+      TIDEImages.AssignImage(Glyph, 'tmouse');
       Hint := 'Selection tool';
 
       ShowHint := True;
