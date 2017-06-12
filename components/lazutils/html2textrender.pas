@@ -31,39 +31,42 @@ type
   private
     fHTML, fOutput: string;
     fMaxLines: integer;
-    fInHeader: Boolean;
+    fLineEndMark: String;
+    fInHeader, fInDivTitle: Boolean;
     fPendingSpace: Boolean;
     fPendingNewLineCnt: Integer;
-    fCurTag: String;
     fIndent: integer;
     fLineCnt, fHtmlLen: Integer;
     p: Integer;
     procedure AddNewLine;
     procedure AddOneNewLine;
-    function AddOutput(aText: String): Boolean;
+    function AddOutput(const aText: String): Boolean; overload;
     function HtmlTag: Boolean;
-    procedure HtmlEntity;
+    function HtmlEntity: Boolean;
     procedure Reset;
   public
-    constructor Create(aHTML: string);
-    constructor Create(Stream: TStream);
+    constructor Create(const aHTML: string);
+    constructor Create(const Stream: TStream);
     destructor Destroy; override;
     function Render(aMaxLines: integer = MaxInt): string;
+  public
+    property LineEndMark: String read fLineEndMark write fLineEndMark;
   end;
 
 implementation
 
 { THTML2TextRenderer }
 
-constructor THTML2TextRenderer.Create(aHTML: string);
+constructor THTML2TextRenderer.Create(const aHTML: string);
 begin
   fHTML:=aHTML;
   // remove UTF8 BOM
   if copy(fHTML,1,3)=UTF8BOM then
     delete(fHTML,1,3);
+  fLineEndMark:=LineEnding;          // Can be changed by user later.
 end;
 
-constructor THTML2TextRenderer.Create(Stream: TStream);
+constructor THTML2TextRenderer.Create(const Stream: TStream);
 var
   s: string;
 begin
@@ -100,7 +103,7 @@ begin
     fPendingNewLineCnt:=1;
 end;
 
-function THTML2TextRenderer.AddOutput(aText: String): Boolean;
+function THTML2TextRenderer.AddOutput(const aText: String): Boolean;
 var
   i: Integer;
 begin
@@ -110,12 +113,12 @@ begin
   fPendingSpace:=False;
   for i:=0 to fPendingNewLineCnt-1 do
   begin
-    fOutput:=fOutput+LineEnding;
+    fOutput:=fOutput+fLineEndMark;
     Inc(fLineCnt);
     // Return False if max # of lines exceeded.
     if fLineCnt>fMaxLines then
     begin
-      fOutput:=fOutput+LineEnding+'...';
+      fOutput:=fOutput+fLineEndMark+'...';
       Exit(False);
     end;
   end;
@@ -129,44 +132,73 @@ end;
 
 function THTML2TextRenderer.HtmlTag: Boolean;
 // separate a html tag and use it for layout. '<' is already found here.
-//  ToDo: parse <div class="title"> and use it.
 var
   Start: Integer;
+  Tag, AttrName, AttrValue: String;
 begin
-  // first separate a html tag.
   inc(p);
+  // separate HTML tag itself.
   Start:=p;
   if (p<=fHtmlLen) and (fHTML[p]='/') then
     inc(p);
   while (p<=fHtmlLen) and not (fHTML[p] in [' ','>','"','/',#9,#10,#13]) do
     inc(p);
-  fCurTag:=UpperCase(copy(fHTML,Start,p-Start));
+  Tag:=UpperCase(copy(fHTML,Start,p-Start));
   while p<=fHtmlLen do
   begin
-    if fHTML[p]='"' then begin       // skip attribute "value" inside tag
+    // Attribute name
+    if fHTML[p]=' ' then
+    begin
       inc(p);
+      Start:=p;
+      while (p<=fHtmlLen) and not (fHTML[p] in [' ','>','=',#9,#10,#13]) do
+        inc(p);
+      if p>fHtmlLen then break;
+      if fHTML[p]='=' then
+        AttrName:=UpperCase(copy(fHTML,Start,p-Start));
+    end;
+    // Attribute "value"
+    if fHTML[p]='"' then
+    begin
+      inc(p);
+      Start:=p;
       while (p<=fHtmlLen) and (fHTML[p]<>'"') do
         inc(p);
       if p>fHtmlLen then break;
+      AttrValue:=UpperCase(copy(fHTML,Start,p-Start));
     end;
     inc(p);
     if (fHTML[p-1]='>') then break;  // end of tag
   end;
 
-  // adjust layout based on html tag, then remove it
+  // adjust layout based on HTML tag, then remove it
   Result:=True;
-  case fCurTag of
+  case Tag of
     'HTML':
         fInHeader:=True;             // it's a whole page
     'BODY':
         Reset;                 // start of body => ignore header and all its data
     'P', '/P', 'BR', '/UL':
         AddNewLine;
-    'DIV': begin
-        AddOneNewLine;
+    'DIV':
+      begin
+        fInDivTitle:=(AttrName='CLASS') and (AttrValue='TITLE');
+        if fInDivTitle then
+        begin
+          AddNewLine;
+          Result:=AddOutput('🔹');
+        end
+        else
+          AddOneNewLine;
         Inc(fIndent);
       end;
-    '/DIV': begin
+    '/DIV':
+      begin
+        if fInDivTitle then
+        begin
+          Result:=AddOutput('🔹');
+          fInDivTitle:=False;
+        end;
         AddOneNewLine;
         Dec(fIndent);
       end;
@@ -175,12 +207,14 @@ begin
         Inc(fIndent);
         // Don't leave empty lines before list item (not sure if this is good)
         AddOneNewLine;
-        Result:=AddOutput('* ');     // Can return False if MaxLines was exceeded
+        Result:=AddOutput('* ');
       end;
     '/LI':
         Dec(fIndent);
-    'A', '/A':                       // Link
-        Result:=AddOutput(' _ ');
+    'A':                             // Link
+        Result:=AddOutput(' 👀');
+    '/A':
+        Result:=AddOutput('👀 ');
     'HR':
       begin
         AddOneNewLine;
@@ -190,34 +224,43 @@ begin
   end;
 end;
 
-procedure THTML2TextRenderer.HtmlEntity;
-// entities: &lt; &gt; &amp; &nbsp;
+function THTML2TextRenderer.HtmlEntity: Boolean;
+// entities: &lt; &gt; &amp; &nbsp;   '&' is found already here
+const
+  EntityMap: array[0..3] of array[0..1] of String = (
+    ('lt;',   '<'),
+    ('gt;',   '>'),
+    ('nbsp;', ' '),
+    ('amp;',  '&')
+  );
+var
+  Ent: String;
+  i, j: Integer;
 begin
-  if (p+2<fHtmlLen) and (fHTML[p+1]='l') and (fHTML[p+2]='t') and (fHTML[p+3]=';') then
+  Inc(p);
+  for i:=Low(EntityMap) to High(EntityMap) do
   begin
-    Inc(p,4);
-    AddOutput('<');
-  end else
-  if (p+2<fHtmlLen) and (fHTML[p+1]='g') and (fHTML[p+2]='t') and (fHTML[p+3]=';') then
-  begin
-    Inc(p,4);
-    AddOutput('>');
-  end else
-  if (p+4<fHtmlLen) and (fHTML[p+1]='n') and (fHTML[p+2]='b') and (fHTML[p+3]='s') and (fHTML[p+4]='p') and (fHTML[p+5]=';') then
-  begin
-    Inc(p,6);
-    AddOutput(' ');
-  end else
-  if (p+3<fHtmlLen) and (fHTML[p+1]='a') and (fHTML[p+2]='m') and (fHTML[p+3]='p') and (fHTML[p+4]=';') then
-  begin
-    Inc(p,5);
-    AddOutput('&');
+    Ent:=EntityMap[i][0];
+    if (p+Length(Ent) >= fHtmlLen) then Break;
+    j:=0;
+    while j<Length(Ent) do
+    begin
+      if Ent[j+1] <> fHTML[p+j] then Break;   // No match -> move to next entity.
+      Inc(j);
+    end;
+    if j=Length(Ent) then
+    begin
+      Inc(p,Length(Ent));
+      Exit(AddOutput(EntityMap[i][1]));       // Match!
+    end;
   end;
+  Result:=AddOutput('&');     // Entity not found, add just '&'.
 end;
 
 function THTML2TextRenderer.Render(aMaxLines: integer): string;
 // Parse the HTML and render to plain text.
 // Output is limited to aMaxLines lines.
+// Note: AddOutput, HtmlTag and HtmlEntity return False if MaxLines was exceeded.
 var
   OkToGo: Boolean;
 begin
@@ -230,7 +273,7 @@ begin
   begin
     case fHTML[p] of
       '<': OkToGo:=HtmlTag;     // Can return False if MaxLines was exceeded.
-      '&': HtmlEntity;
+      '&': OkToGo:=HtmlEntity;
       ' ',#9,#10,#13:           // WhiteSpace
         begin
           fPendingSpace:=True;
@@ -238,7 +281,7 @@ begin
         end;
       else
         begin
-          AddOutput(fHTML[p]);  // Add text verbatim.
+          OkToGo:=AddOutput(fHTML[p]);  // Add text verbatim.
           inc(p);
         end;
     end;
