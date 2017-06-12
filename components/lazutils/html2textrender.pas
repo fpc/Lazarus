@@ -110,6 +110,7 @@ begin
   fInHeader:=False;
   fPendingSpace:=False;
   fPendingNewLineCnt:=0;
+  fIndent:=0;
   fLineCnt:=1;
 end;
 
