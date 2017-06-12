@@ -1685,6 +1685,7 @@ begin
     Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CURRENCY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEFAULT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DOUBLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTENDED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1736,6 +1737,7 @@ begin
     Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CURRENCY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEFAULT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DOUBLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTENDED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
