@@ -144,11 +144,16 @@ end;
 function TLazPackage.GetInfo(PackageManager: TpkgFPpkg): string;
 var
   Package: TFPPackage;
+  Reason: string;
 begin
   Result := '';
   Package := GetDefaultFPPackage;
-  if PackageManager.PackageIsBroken(Package, nil) then
-    Result := 'Broken';
+  if PackageManager.PackageIsBroken(Package, Reason, nil) then
+    begin
+      Result := 'Broken';
+      if Reason <> '' then
+        Result := Result + ', ' + Reason + '.';
+    end;
 end;
 
 function TLazPackage.GetState: TLazPackageInstallState;
