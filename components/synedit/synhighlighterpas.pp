@@ -1289,7 +1289,7 @@ function TSynPasSyn.Func54: TtkTokenKind;
 begin
   if KeyComp('Class') then begin
     Result := tkKey;
-    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification];
       StartPascalCodeFoldBlock(cfbtClass);
