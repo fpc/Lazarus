@@ -1,12 +1,11 @@
 unit sparta_FormBackgroundForMDI;
 
 {$mode objfpc}{$H+}
-
 interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
-  sparta_InterfacesMDI, sparta_BasicResizeFrame;
+  sparta_InterfacesMDI;
 
 type
 
@@ -14,12 +13,12 @@ type
 
   TfrFormBackgroundForMDI = class(TFrame, IDesignedFormBackground)
     Panel1: TPanel;
-    procedure Panel1MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure Panel1MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer
+    procedure Panel1MouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure Panel1MouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer
       );
-    procedure Panel1MouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure Panel1MouseUp(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
   private
     FDesignedForm: IDesignedForm;
     FResizeFrame: IResizeFrame;

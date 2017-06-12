@@ -18,7 +18,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, FormEditingIntf, Controls, TypInfo, LCLIntf,
-  LCLType, sparta_DesignedForm, Math, sparta_InterfacesMDI, sparta_BasicFakeCustom,
+  LCLType, sparta_DesignedForm, sparta_InterfacesMDI, sparta_BasicFakeCustom,
 {$IFDEF USE_GENERICS_COLLECTIONS}
   Generics.Defaults,
 {$ENDIF}

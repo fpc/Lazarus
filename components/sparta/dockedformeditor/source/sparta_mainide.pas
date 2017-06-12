@@ -133,7 +133,7 @@ type
     procedure JumpToCompilerMessage(ASourceEditor: TSourceEditorInterface); override;
 
     procedure ShowCode(ASourceEditor: TSourceEditorInterface); override;
-    procedure ShowDesigner(ASourceEditor: TSourceEditorInterface; AIndex: Integer = 0); override;
+    procedure ShowDesigner(ASourceEditor: TSourceEditorInterface; {%H-}AIndex: Integer = 0); override;
     procedure ShowForm(AForm: TCustomForm); override;
   end;
 
@@ -168,18 +168,18 @@ type
 
     class procedure GlobalOnChangeBounds(Sender: TObject);
     class procedure GlobalSNOnChangeBounds(Sender: TObject);
-    class procedure OnShowDesignerForm(Sender: TObject; AEditor: TSourceEditorInterface;
+    class procedure OnShowDesignerForm(Sender: TObject; {%H-}AEditor: TSourceEditorInterface;
                                  AComponentPaletteClassSelected: Boolean);
     class procedure OnShowSrcEditor(Sender: TObject);
 
     class procedure OnShowMethod(const Name: String);
     class procedure OnDesignRefreshPropertyValues;
-    class procedure OnModifiedPersistentAdded(APersistent: TPersistent; Select: Boolean);
+    class procedure OnModifiedPersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: Boolean);
     class procedure OnModifiedSender(Sender: TObject);
     class procedure OnModified;
     class procedure DesignerSetFocus;
-    class procedure OnDesignMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    class procedure OnDesignMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
   end;
 
 var
