@@ -7689,10 +7689,6 @@ begin
 end;
 
 procedure TCustomGrid.CalcFocusRect(var ARect: TRect; adjust: boolean = true);
-{
-var
-  dx,dy: integer;
-}
 begin
   if goRowSelect in Options then begin
 
@@ -7700,7 +7696,7 @@ begin
       aRect.Left := GCache.ClientWidth - GCache.MaxClientXY.x;
       aRect.Right := GCache.ClientWidth - GCache.FixedWidth;
     end else begin
-      aRect.Left := GCache.FixedWidth + 1;
+      aRect.Left := GCache.FixedWidth;
       aRect.Right := GCache.MaxClientXY.x;
     end;
 
@@ -7710,22 +7706,14 @@ begin
   if not adjust then
     exit;
 
-  if goHorzLine in Options then dec(aRect.Bottom, 1);
+  if goHorzLine in Options then
+    dec(aRect.Bottom, 1 + FGridLineWidth div 2);
+
   if goVertLine in Options then
     if UseRightToLeftAlignment then
-      inc(aRect.Left, 1)
+      inc(aRect.Left, 1 + FGridLineWidth div 2)
     else
-      dec(aRect.Right, 1);
-  {
-  if not (goHorzLine in Options) then begin
-    aRect.Bottom := aRect.Bottom + 1;
-    Dec(aRect.Botton, 1);
-  end;
-  if not (goVertLine in Options) then begin
-    aRect.Right := aRect.Right + 1;
-    Dec(aRect.Botton, 1);
-  end;
-  }
+      dec(aRect.Right, 1 + FGridLineWidth div 2);
 end;
 
 procedure TCustomGrid.CalcScrollbarsRange;
