@@ -34,6 +34,9 @@ type
       var ScrollPos: Integer);
     procedure sbHorizontalScroll(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer);
+  public const
+    SIZER_RECT_SIZE = 8;
+    SIZER_LINE_WIDTH = 8;
   private
     FVerticalScrollPos: Integer;
     FHorizontalScrollPos: Integer;
@@ -374,8 +377,8 @@ begin
 
       Name := 'Node' + IntToStr(Node);
       Caption:='';
-      Width := SizerRectSize;
-      Height := SizerRectSize;
+      Width := SIZER_RECT_SIZE;  // scaled dynamically by LCL
+      Height := SIZER_RECT_SIZE; // scaled dynamically by LCL
       Parent := Self;
       Visible := True;
       FNodes.Add(Panel);
@@ -890,8 +893,10 @@ constructor TBasicResizeFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
-  FSizerRectSize := ScaleX(8, 96);
-  FSizerLineWidth := ScaleX(8, 96);
+// Michl: Don't change DesignTimePPI of BasicResizeFrame (sparta_basicresizeframe.lfm).
+//        There always has to be the default (none entry = 96 PPI) value!
+  FSizerRectSize := ScaleX(SIZER_RECT_SIZE, 96);
+  FSizerLineWidth := ScaleX(SIZER_LINE_WIDTH, 96);
 
   FFakeFocusControl := TEdit.Create(Self);
   FFakeFocusControl.Parent := Self;
