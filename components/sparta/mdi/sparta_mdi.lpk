@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="sparta_MDI"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="source"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files Count="8">
+      <Item1>
+        <Filename Value="source\sparta_basicresizeframe.pas"/>
+        <UnitName Value="sparta_BasicResizeFrame"/>
+      </Item1>
+      <Item2>
+        <Filename Value="source\sparta_interfacesmdi.pas"/>
+        <UnitName Value="sparta_InterfacesMDI"/>
+      </Item2>
+      <Item3>
+        <Filename Value="source\sparta_basicresizer.pas"/>
+        <UnitName Value="sparta_BasicResizer"/>
+      </Item3>
+      <Item4>
+        <Filename Value="sparta_mdi_strconsts.pas"/>
+        <UnitName Value="sparta_MDI_StrConsts"/>
+      </Item4>
+      <Item5>
+        <Filename Value="source\sparta_basicfakecustom.pas"/>
+        <UnitName Value="sparta_BasicFakeCustom"/>
+      </Item5>
+      <Item6>
+        <Filename Value="source\sparta_formbackgroundformdi.pas"/>
+        <UnitName Value="sparta_FormBackgroundForMDI"/>
+      </Item6>
+      <Item7>
+        <Filename Value="source\sparta_multiplyresizer.pas"/>
+        <UnitName Value="sparta_MultiplyResizer"/>
+      </Item7>
+      <Item8>
+        <Filename Value="source\sparta_abstractresizer.pas"/>
+        <UnitName Value="sparta_abstractresizer"/>
+      </Item8>
+    </Files>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="sparta_Generics"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

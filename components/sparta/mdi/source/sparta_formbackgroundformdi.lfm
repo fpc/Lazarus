@@ -1,0 +1,27 @@
+object frFormBackgroundForMDI: TfrFormBackgroundForMDI
+  Left = 0
+  Height = 582
+  Top = 0
+  Width = 570
+  Align = alClient
+  ClientHeight = 582
+  ClientWidth = 570
+  Color = clGreen
+  ParentColor = False
+  TabOrder = 0
+  object Panel1: TPanel
+    Left = 0
+    Height = 582
+    Top = 0
+    Width = 570
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = 'Panel1'
+    Color = clOlive
+    ParentColor = False
+    TabOrder = 0
+    OnMouseDown = Panel1MouseDown
+    OnMouseMove = Panel1MouseMove
+    OnMouseUp = Panel1MouseUp
+  end
+end

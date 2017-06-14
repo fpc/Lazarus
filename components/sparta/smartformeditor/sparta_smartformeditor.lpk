@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="sparta_SmartFormEditor"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="source"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="5">
+      <Item1>
+        <Filename Value="source\sparta_reg_smartformeditor.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="sparta_reg_SmartFormEditor"/>
+      </Item1>
+      <Item2>
+        <Filename Value="source\sparta_fakeformbackground.pas"/>
+        <UnitName Value="sparta_FakeFormBackground"/>
+      </Item2>
+      <Item3>
+        <Filename Value="source\sparta_fakeformbg.pas"/>
+        <UnitName Value="sparta_fakeformbg"/>
+      </Item3>
+      <Item4>
+        <Filename Value="source\sparta_edtu_main.pas"/>
+        <UnitName Value="sparta_EDTU_Main"/>
+      </Item4>
+      <Item5>
+        <Filename Value="source\sparta_componentpalette.pas"/>
+        <UnitName Value="sparta_ComponentPalette"/>
+      </Item5>
+    </Files>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="sparta_DockedFormEditor"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

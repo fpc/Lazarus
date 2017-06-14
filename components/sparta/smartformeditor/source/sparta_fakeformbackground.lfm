@@ -1,0 +1,226 @@
+object frFakeFormBackground: TfrFakeFormBackground
+  Left = 0
+  Height = 457
+  Top = 0
+  Width = 591
+  Align = alClient
+  ClientHeight = 457
+  ClientWidth = 591
+  Color = clYellow
+  ParentColor = False
+  TabOrder = 0
+  object bBackground: TButton
+    Left = 0
+    Height = 457
+    Top = 0
+    Width = 591
+    Align = alClient
+    TabOrder = 2
+    Visible = False
+  end
+  object bTop: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 30
+    Top = 0
+    Width = 591
+    Align = alCustom
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+  end
+  object bIcon: TImage
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 5
+    Height = 20
+    Top = 5
+    Width = 20
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    OnClick = bIconClick
+  end
+  object bSystem: TImage
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = lRight
+    Left = 564
+    Height = 18
+    Top = 6
+    Width = 18
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    OnClick = bOtherClick
+  end
+  object bMaximalize: TImage
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = bSystem
+    Left = 543
+    Height = 18
+    Top = 6
+    Width = 18
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    OnClick = bOtherClick
+  end
+  object bMinimalize: TImage
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = bMaximalize
+    Left = 522
+    Height = 18
+    Top = 6
+    Width = 18
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    OnClick = bOtherClick
+  end
+  object bHelp: TImage
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = bMinimalize
+    Left = 501
+    Height = 18
+    Top = 6
+    Width = 18
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    OnClick = bOtherClick
+  end
+  object bResize: TImage
+    AnchorSideLeft.Control = bIcon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = bIcon
+    Left = 27
+    Height = 20
+    Top = 5
+    Width = 20
+    BorderSpacing.Left = 2
+    OnClick = bResizeClick
+  end
+  object bOther: TImage
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = bHelp
+    Left = 480
+    Height = 18
+    Top = 6
+    Width = 18
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 3
+    OnClick = bOtherClick
+  end
+  object bFormCaption: TButton
+    AnchorSideLeft.Control = bResize
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = bIcon
+    AnchorSideRight.Control = bOther
+    AnchorSideBottom.Control = bIcon
+    AnchorSideBottom.Side = asrBottom
+    Left = 49
+    Height = 20
+    Top = 5
+    Width = 429
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 2
+    BorderSpacing.Right = 2
+    OnClick = bFormCaptionClick
+    TabOrder = 3
+  end
+  object eFormCaption: TEdit
+    AnchorSideLeft.Control = bResize
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = bIcon
+    AnchorSideRight.Control = bOther
+    AnchorSideBottom.Control = bIcon
+    AnchorSideBottom.Side = asrBottom
+    Left = 50
+    Height = 20
+    Top = 5
+    Width = 427
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 3
+    BorderSpacing.Right = 3
+    BorderStyle = bsNone
+    Color = clSilver
+    OnEditingDone = eFormCaptionExit
+    OnExit = eFormCaptionExit
+    OnKeyDown = eFormCaptionKeyDown
+    TabOrder = 0
+    Text = 'eFormCaption'
+    Visible = False
+  end
+  object lRight: TLabel
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 585
+    Height = 1
+    Top = 6
+    Width = 1
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 5
+    ParentColor = False
+  end
+  object pmFormStyle: TPopupMenu
+    left = 64
+    top = 96
+    object miNone: TMenuItem
+      Caption = 'bsNone'
+      OnClick = miNoneClick
+    end
+    object miSingle: TMenuItem
+      Caption = 'bsSingle'
+      OnClick = miNoneClick
+    end
+    object miSizeable: TMenuItem
+      Caption = 'bsSizeable'
+      OnClick = miNoneClick
+    end
+    object miDialog: TMenuItem
+      Caption = 'bsDialog'
+      OnClick = miNoneClick
+    end
+    object miToolWindow: TMenuItem
+      Caption = 'bsToolWindow'
+      OnClick = miNoneClick
+    end
+    object miSizeToolWin: TMenuItem
+      Caption = 'bsSizeToolWin'
+      OnClick = miNoneClick
+    end
+  end
+  object pmBorderIcons: TPopupMenu
+    OnPopup = pmBorderIconsPopup
+    left = 168
+    top = 96
+    object miRemove: TMenuItem
+      Caption = 'Remove'
+      OnClick = miRemoveClick
+    end
+    object miLine: TMenuItem
+      Caption = '-'
+    end
+    object miAddHelp: TMenuItem
+      Caption = 'Add Help'
+      OnClick = miAddHelpClick
+    end
+    object miAddMinimize: TMenuItem
+      Caption = 'Add Minimize'
+      OnClick = miAddHelpClick
+    end
+    object miAddMaximize: TMenuItem
+      Caption = 'Add Maximize'
+      OnClick = miAddHelpClick
+    end
+    object miAddSystemMenu: TMenuItem
+      Caption = 'Add System Menu'
+      OnClick = miAddHelpClick
+    end
+  end
+end

@@ -1,0 +1,106 @@
+object edtuMain: TedtuMain
+  Left = 0
+  Height = 22
+  Top = 0
+  Width = 641
+  ClientHeight = 22
+  ClientWidth = 641
+  TabOrder = 0
+  object pEDTU: TPanel
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 534
+    Height = 23
+    Top = -1
+    Width = 107
+    Anchors = [akRight, akBottom]
+    BevelOuter = bvNone
+    ClientHeight = 23
+    ClientWidth = 107
+    TabOrder = 0
+    object sbShowPalette: TSpeedButton
+      AnchorSideLeft.Control = pEDTU
+      AnchorSideRight.Control = pEDTU
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = pEDTU
+      AnchorSideBottom.Side = asrBottom
+      Left = 84
+      Height = 22
+      Top = 1
+      Width = 23
+      Anchors = [akRight, akBottom]
+      OnClick = sbShowPaletteClick
+    end
+  end
+  object pSearch: TPanel
+    AnchorSideLeft.Control = pComponents
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = pEDTU
+    Left = 534
+    Height = 0
+    Top = 0
+    Width = 107
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BevelOuter = bvNone
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 0
+    ClientWidth = 107
+    TabOrder = 1
+    object eFilter: TEditButton
+      AnchorSideLeft.Control = pSearch
+      AnchorSideTop.Control = pSearch
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = pSearch
+      AnchorSideRight.Side = asrBottom
+      Left = 3
+      Height = 23
+      Top = -11
+      Width = 104
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 3
+      ButtonWidth = 23
+      MaxLength = 0
+      NumGlyphs = 1
+      OnButtonClick = eFilterButtonClick
+      OnChange = eFilterChange
+      PasswordChar = #0
+      TabOrder = 0
+    end
+  end
+  object pComponents: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = pEDTU
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 22
+    Top = 0
+    Width = 534
+    Align = alCustom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BevelOuter = bvNone
+    TabOrder = 2
+    Visible = False
+  end
+  object pInfo: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = pEDTU
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 22
+    Top = 0
+    Width = 534
+    Alignment = taLeftJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BevelOuter = bvNone
+    TabOrder = 3
+  end
+end
