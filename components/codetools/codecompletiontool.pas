@@ -2188,12 +2188,12 @@ function TCodeCompletionCodeTool.CompleteEventAssignment(CleanCursorPos,
       RaiseException(20170421201540,ctsUnableToApplyChanges);
 
     {$IFDEF CTDEBUG}
-    DebugLn('  CompleteLocalIdentifierByParameter.AddProcedure: jumping to new method body...');
+    DebugLn('  CompleteEventAssignment.AddProcedure: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
     if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
     then
-      RaiseException(20170421201543,'CompleteLocalIdentifierByParameter.AddProcedure JumpToMethod failed');
+      RaiseException(20170421201543,'CompleteEventAssignment.AddProcedure JumpToMethod failed');
   end;
 
 // function CompleteEventAssignment: boolean
@@ -2416,12 +2416,12 @@ function TCodeCompletionCodeTool.CompleteIdentifierByParameter(CleanCursorPos,
       RaiseException(20170421201609,ctsUnableToApplyChanges);
 
     {$IFDEF CTDEBUG}
-    DebugLn('  CompleteLocalIdentifierByParameter.AddMethod: jumping to new method body...');
+    DebugLn('  CompleteIdentifierByParameter.AddMethod: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
     if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
     then
-      RaiseException(20170421201612,'CompleteLocalIdentifierByParameter.AddMethod JumpToMethod failed');
+      RaiseException(20170421201612,'CompleteIdentifierByParameter.AddMethod JumpToMethod failed');
   end;
 
   procedure AddProcedure(Identifier: string;
@@ -2442,12 +2442,12 @@ function TCodeCompletionCodeTool.CompleteIdentifierByParameter(CleanCursorPos,
       RaiseException(20170421201614,ctsUnableToApplyChanges);
 
     {$IFDEF CTDEBUG}
-    DebugLn('  CompleteLocalIdentifierByParameter.AddProcedure: jumping to new method body...');
+    DebugLn('  CompleteIdentifierByParameter.AddProcedure: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
     if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine)
     then
-      RaiseException(20170421201617,'CompleteLocalIdentifierByParameter.AddProcedure JumpToMethod failed');
+      RaiseException(20170421201617,'CompleteIdentifierByParameter.AddProcedure JumpToMethod failed');
   end;
 
 var
@@ -2470,7 +2470,7 @@ begin
   Result:=false;
 
   {$IFDEF CTDEBUG}
-  DebugLn('  CompleteLocalIdentifierByParameter: A');
+  DebugLn('  CompleteIdentifierByParameter: A');
   {$ENDIF}
   if not ((CursorNode.Desc=ctnBeginBlock)
           or CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
@@ -2479,7 +2479,7 @@ begin
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
   {$IFDEF CTDEBUG}
-  DebugLn('  CompleteLocalIdentifierByParameter: B check if it is a parameter ...');
+  DebugLn('  CompleteIdentifierByParameter: B check if it is a parameter ...');
   {$ENDIF}
   // check parameter syntax
   if not CheckParameterSyntax(CursorNode.StartPos,CleanCursorPos,
@@ -2493,20 +2493,20 @@ begin
     MoveCursorToCleanPos(VarNameRange.StartPos+1);
     ReadNextAtom;
     VarNameRange.StartPos:=CurPos.StartPos;
-    //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter HasAtOperator ',GetAtom(VarNameRange)]);
+    //debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter HasAtOperator ',GetAtom(VarNameRange)]);
   end;
   Identifier:=ExtractCode(VarNameRange.StartPos,VarNameRange.EndPos,[]);
   if not IsValidIdent(Identifier) then exit;
 
   {$IFDEF CTDEBUG}
-  DebugLn('  CompleteLocalIdentifierByParameter VarNameAtom=',GetAtom(VarNameAtom),' ProcNameAtom=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));
+  DebugLn('  CompleteIdentifierByParameter VarNameAtom=',GetAtom(VarNameAtom),' ProcNameAtom=',GetAtom(ProcNameAtom),' ParameterIndex=',dbgs(ParameterIndex));
   {$ENDIF}
 
   // search variable
   Params:=TFindDeclarationParams.Create(Self, CursorNode);
   try
     {$IFDEF CTDEBUG}
-    DebugLn('  CompleteLocalIdentifierByParameter: check if variable is already defined ...');
+    DebugLn('  CompleteIdentifierByParameter: check if variable is already defined ...');
     {$ENDIF}
     // check if identifier exists
     Result:=IdentifierIsDefined(VarNameRange,CursorNode,Params);
@@ -2517,7 +2517,7 @@ begin
     end;
 
     {$IFDEF CTDEBUG}
-    DebugLn('  CompleteLocalIdentifierByParameter: Find declaration of parameter list ...  procname="',GetAtom(ProcNameAtom),'"');
+    DebugLn('  CompleteIdentifierByParameter: Find declaration of parameter list ...  procname="',GetAtom(ProcNameAtom),'"');
     {$ENDIF}
 
     Context:=CreateFindContext(Self,CursorNode);
@@ -2526,25 +2526,25 @@ begin
       // for example: Canvas.Line
       // find class
       {$IFDEF CTDEBUG}
-      debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.EndPos,[]),'"']);
+      debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.EndPos,[]),'"']);
       {$ENDIF}
       Params.ContextNode:=Context.Node;
       Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult,fdfFindChildren];
       ExprType:=FindExpressionResultType(Params,ProcStartPos,ProcNameAtom.StartPos);
       if not(ExprType.Desc in xtAllIdentTypes) then begin
-        debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.StartPos,[]),'" gives ',ExprTypeToString(ExprType)]);
+        debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter Call="',ExtractCode(ProcStartPos,ProcNameAtom.StartPos,[]),'" gives ',ExprTypeToString(ExprType)]);
         exit;
       end;
       Context:=ExprType.Context;
       if Assigned(Context.Tool) and Assigned(Context.Node) then
       begin
         // resolve point '.'
-        //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter base class: ',FindContextToString(Context)]);
+        //debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter base class: ',FindContextToString(Context)]);
         Params.Clear;
         Params.Flags:=fdfDefaultForExpressions;
         Context:=Context.Tool.FindBaseTypeOfNode(Params,Context.Node);
         {$IFDEF CTDEBUG}
-        debugln(['TCodeCompletionCodeTool.CompleteLocalVariableByParameter search proc in sub context: ',FindContextToString(Context)]);
+        debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter search proc in sub context: ',FindContextToString(Context)]);
         {$ENDIF}
       end;
     end;
@@ -2563,7 +2563,7 @@ begin
       IgnoreErrorAfter:=IgnorePos;
       try
         {$IFDEF CTDEBUG}
-        debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter searching ',GetIdentifier(Params.Identifier),' [',dbgs(Params.Flags),'] in ',FindContextToString(Context)]);
+        debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter searching ',GetIdentifier(Params.Identifier),' [',dbgs(Params.Flags),'] in ',FindContextToString(Context)]);
         {$ENDIF}
         if not Context.Tool.FindIdentifierInContext(Params) then exit;
       finally
@@ -2599,15 +2599,15 @@ begin
                                                            ParameterIndex);
     if (ParameterNode=nil)
     and (Params.NewNode.Desc in [ctnProperty,ctnProcedure]) then begin
-      DebugLn(['  CompleteLocalIdentifierByParameter Procedure has less than ',ParameterIndex+1,' parameters']);
+      DebugLn(['  CompleteIdentifierByParameter Procedure has less than ',ParameterIndex+1,' parameters']);
       exit;
     end;
     if ParameterNode=nil then exit;
-    //DebugLn('TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter ParameterNode=',ParameterNode.DescAsString,' ',copy(Params.NewCodeTool.Src,ParameterNode.StartPos,50));
+    //DebugLn('TCodeCompletionCodeTool.CompleteIdentifierByParameter ParameterNode=',ParameterNode.DescAsString,' ',copy(Params.NewCodeTool.Src,ParameterNode.StartPos,50));
     TypeTool:=Params.NewCodeTool;
     TypeNode:=FindTypeNodeOfDefinition(ParameterNode);
     if TypeNode=nil then begin
-      DebugLn('  CompleteLocalIdentifierByParameter Parameter has no type');
+      DebugLn('  CompleteIdentifierByParameter Parameter has no type');
       exit;
     end;
     // default: copy the type
@@ -2621,7 +2621,7 @@ begin
     AliasType:=CleanFindContext;
     ExprType:=TypeTool.FindExpressionResultType(Params,
                               TypeNode.StartPos,TypeNode.EndPos,@AliasType);
-    //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter parameter type: AliasType=',FindContextToString(AliasType)]);
+    //debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter parameter type: AliasType=',FindContextToString(AliasType)]);
 
     TypeTool:=ExprType.Context.Tool;
     TypeNode:=ExprType.Context.Node;
@@ -2629,11 +2629,11 @@ begin
     or ((Scanner.CompilerMode=cmDelphi) and (ExprType.Desc=xtContext) // procedures in delphi mode without @
         and (TypeNode<>nil) and (TypeNode.Desc in AllProcTypes)) then
     begin
-      debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter HasAtOperator ExprType=',ExprTypeToString(ExprType)]);
+      debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter HasAtOperator ExprType=',ExprTypeToString(ExprType)]);
       NewType:='';
       if (ExprType.Desc<>xtContext)
       or (TypeNode=nil) then begin
-        debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter parameter has @ operator, but this is not implemented for ',ExprTypeToString(ExprType)]);
+        debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter parameter has @ operator, but this is not implemented for ',ExprTypeToString(ExprType)]);
         exit;
       end;
       if (TypeNode.Desc=ctnPointerType) then begin
@@ -2643,7 +2643,7 @@ begin
           // for example PMapID = ^TMapID
           NewType:=TypeTool.ExtractCode(TypeNode.FirstChild.StartPos,
                                         TypeNode.FirstChild.EndPos,[]);
-          //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter pointer to ',NewType]);
+          //debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter pointer to ',NewType]);
           Params.Clear;
           Params.ContextNode:=TypeNode;
           Params.Flags:=fdfDefaultForExpressions;
@@ -2651,7 +2651,7 @@ begin
           ExprType:=TypeTool.FindExpressionResultType(Params,
             TypeNode.FirstChild.StartPos,TypeNode.FirstChild.EndPos,
             @AliasType);
-          //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter parameter is pointer to type: AliasType=',FindContextToString(AliasType)]);
+          //debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter parameter is pointer to type: AliasType=',FindContextToString(AliasType)]);
         end;
       end else if TypeNode.Desc in AllProcTypes then begin
         // for example TNotifyEvent = procedure(...
@@ -2664,20 +2664,20 @@ begin
         exit(true);
       end;
       if NewType='' then begin
-        debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter parameter has @ operator, but this is not implemented for ',ExprTypeToString(ExprType)]);
+        debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter parameter has @ operator, but this is not implemented for ',ExprTypeToString(ExprType)]);
         exit;
       end;
     end;
     if AliasType.Node<>nil then begin
       // an identifier
       MissingUnitName:=GetUnitNameForUsesSection(AliasType.Tool);
-      //debugln(['TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter MissingUnitName=',MissingUnitName]);
+      //debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter MissingUnitName=',MissingUnitName]);
     end;
 
-    //DebugLn('TCodeCompletionCodeTool.CompleteLocalIdentifierByParameter NewType=',NewType);
+    //DebugLn('TCodeCompletionCodeTool.CompleteIdentifierByParameter NewType=',NewType);
     if NewType='' then
-      RaiseException(20170421201622,'CompleteLocalIdentifierByParameter Internal error: NewType=""');
-    //DebugLn('  CompleteLocalIdentifierByParameter Dont know: ',Params.NewNode.DescAsString);
+      RaiseException(20170421201622,'CompleteIdentifierByParameter Internal error: NewType=""');
+    //DebugLn('  CompleteIdentifierByParameter Dont know: ',Params.NewNode.DescAsString);
 
   finally
     Params.Free;
