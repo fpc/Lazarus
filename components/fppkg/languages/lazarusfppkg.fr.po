@@ -43,6 +43,10 @@ msgstr "l'initialisation de \"fppkg\""
 msgid "install package(s)"
 msgstr "l'installation de paquets"
 
+#: fppkg_mainfrm.sactuninstpackages
+msgid "uninstall package(s)"
+msgstr ""
+
 #: fppkg_mainfrm.sactupdate
 msgid "update repository"
 msgstr "la mise à jour du dépôt"
@@ -204,6 +208,10 @@ msgstr "Filtrer les paquets au niveau supérieur"
 #: tfppkgform.toolbar.caption
 msgid "ToolBar"
 msgstr "Barre d'outils"
+
+#: tfppkgform.uninstallbutton.caption
+msgid "Uninstall"
+msgstr ""
 
 #: tfppkgform.updatebutton.caption
 msgid "Update"

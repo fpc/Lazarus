@@ -43,6 +43,10 @@ msgstr "инициализация fppkg"
 msgid "install package(s)"
 msgstr "установка пакетов"
 
+#: fppkg_mainfrm.sactuninstpackages
+msgid "uninstall package(s)"
+msgstr ""
+
 #: fppkg_mainfrm.sactupdate
 msgid "update repository"
 msgstr "обновление репозитория"
@@ -204,6 +208,10 @@ msgstr "Фильтровать пакеты по уровню поддержки
 #: tfppkgform.toolbar.caption
 msgid "ToolBar"
 msgstr "Инструментальная панель"
+
+#: tfppkgform.uninstallbutton.caption
+msgid "Uninstall"
+msgstr ""
 
 #: tfppkgform.updatebutton.caption
 msgid "Update"

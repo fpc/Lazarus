@@ -18,6 +18,7 @@
 {"hash":110989598,"name":"tfppkgform.fixbrokenbutton.caption","sourcebytes":[70,105,120,32,98,114,111,107,101,110],"value":"Fix broken"},
 {"hash":94079128,"name":"tfppkgform.searchlabel.caption","sourcebytes":[83,101,97,114,99,104],"value":"Search"},
 {"hash":75806803,"name":"tfppkgform.searchbutton.hint","sourcebytes":[83,101,97,114,99,104,32,102,111,114,32,107,101,121,119,111,114,100,115],"value":"Search for keywords"},
+{"hash":5962876,"name":"tfppkgform.uninstallbutton.caption","sourcebytes":[85,110,105,110,115,116,97,108,108],"value":"Uninstall"},
 {"hash":346165,"name":"tfppkgform.packagelistview.columns[0].caption","sourcebytes":[78,97,109,101],"value":"Name"},
 {"hash":5941413,"name":"tfppkgform.packagelistview.columns[1].caption","sourcebytes":[83,116,97,116,101],"value":"State"},
 {"hash":178815716,"name":"tfppkgform.packagelistview.columns[2].caption","sourcebytes":[73,110,115,116,97,108,108,101,100],"value":"Installed"},

@@ -33,6 +33,10 @@ msgstr ""
 msgid "install package(s)"
 msgstr ""
 
+#: fppkg_mainfrm.sactuninstpackages
+msgid "uninstall package(s)"
+msgstr ""
+
 #: fppkg_mainfrm.sactupdate
 msgid "update repository"
 msgstr ""
@@ -190,6 +194,10 @@ msgstr ""
 
 #: tfppkgform.toolbar.caption
 msgid "ToolBar"
+msgstr ""
+
+#: tfppkgform.uninstallbutton.caption
+msgid "Uninstall"
 msgstr ""
 
 #: tfppkgform.updatebutton.caption

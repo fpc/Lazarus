@@ -100,6 +100,7 @@ type
     CleanButton: TToolButton;
     ArchiveButton: TToolButton;
     DownloadButton: TToolButton;
+    UninstallButton: TToolButton;
     VertSplitter: TSplitter;
     procedure ArchiveButtonClick(Sender: TObject);
     procedure BuildButtonClick(Sender: TObject);
@@ -124,6 +125,7 @@ type
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchEditKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure SupportCheckGroupItemClick(Sender: TObject; Index: integer);
+    procedure UninstallButtonClick(Sender: TObject);
     procedure UpdateButtonClick(Sender: TObject);
     procedure HandleLog(var Msg: TLMessage); message WM_LogMessageWaiting;
     procedure HandleWorkerThreadDone(var Msg: TLMessage); message WM_WorkerThreadDone;
@@ -186,6 +188,7 @@ resourcestring
   SActArchivePackages = 'create archive(s) for package(s)';
   SActBuildPackages   = 'build package(s)';
   SActInstallPackages = 'install package(s)';
+  SActUnInstPackages  = 'uninstall package(s)';
   SActUpdate          = 'update repository';
   SActInitializeFppkg = 'initialize fppkg';
 
@@ -571,6 +574,25 @@ end;
 procedure TFppkgForm.SupportCheckGroupItemClick(Sender: TObject; Index: integer);
 begin
   UpdatePackageListView;
+end;
+
+procedure TFppkgForm.UninstallButtonClick(Sender: TObject);
+var
+  s: TStrings;
+begin
+  s := TStringList.Create;
+
+  GetSelectedPackages(s);
+
+  if s.Count = 0 then
+    ShowError(SActUnInstPackages, SErrNoPackageSpecified)
+  else
+  begin
+    DoRun(FppkgCfg, 'uninstall', s, SActUnInstPackages);
+    ListPackages;
+    UpdatePackageListView;
+  end;
+  s.Free;
 end;
 
 procedure TFppkgForm.UpdateButtonClick(Sender: TObject);
