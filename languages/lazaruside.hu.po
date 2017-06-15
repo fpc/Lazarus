@@ -9723,7 +9723,7 @@ msgstr "Üzenet elrejtése IDE direktíva beszúrásával {%H-}"
 
 #: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
 msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
-msgstr ""
+msgstr "Üzenet elrejtése {$warn %s off} beszúrásával a(z) \"%s\" unitban "
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
