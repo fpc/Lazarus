@@ -1,0 +1,211 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
+"Language-Team: Magyar (Hungarian)\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: fppkg_mainfrm.sactarchivepackages
+msgid "create archive(s) for package(s)"
+msgstr "csomag(ok) archiválása"
+
+#: fppkg_mainfrm.sactbuildpackages
+msgid "build package(s)"
+msgstr "csomag(ok) építése"
+
+#: fppkg_mainfrm.sactcleanpackages
+msgid "clean package(s)"
+msgstr "csomag(ok) tisztítása"
+
+#: fppkg_mainfrm.sactcompilepackages
+msgid "compile packages"
+msgstr "csomag(ok) fordítása"
+
+#: fppkg_mainfrm.sactdownloadpackages
+msgid "download packages"
+msgstr "Csomagok letöltése"
+
+#: fppkg_mainfrm.sactfixbroken
+msgid "fix broken packages"
+msgstr "Törött csomagok javítása"
+
+#: fppkg_mainfrm.sactinitializefppkg
+msgid "initialize fppkg"
+msgstr "fppkg inicializálása"
+
+#: fppkg_mainfrm.sactinstallpackages
+msgid "install package(s)"
+msgstr "Csomag(ok) telepítése"
+
+#: fppkg_mainfrm.sactupdate
+msgid "update repository"
+msgstr "tároló frissítése"
+
+#: fppkg_mainfrm.serractionfailed
+msgid ""
+"Failed to %s: \n"
+"\n"
+"%s\n"
+msgstr ""
+"Sikertelen művelet: %s: \n"
+"\n"
+"%s\n"
+
+#: fppkg_mainfrm.smsgactionsucceeded
+msgid "%s succeeded."
+msgstr "%s sikerült."
+
+#: tfppkgform.archivebutton.caption
+msgid "Archive"
+msgstr "Archívum"
+
+#: tfppkgform.archivebutton.hint
+msgid "Create archive of package"
+msgstr "Csomag archiválása"
+
+#: tfppkgform.buildbutton.caption
+msgid "Build"
+msgstr "Építés"
+
+#: tfppkgform.buildbutton.hint
+msgid "Build package"
+msgstr "Csomag építése"
+
+#: tfppkgform.caption
+msgid "FppkgForm"
+msgstr "FppkgForm"
+
+#: tfppkgform.categorieslabel.caption
+msgid "Categories:"
+msgstr "Kategóriák:"
+
+#: tfppkgform.cleanbutton.caption
+msgid "Clean"
+msgstr "Tisztítás"
+
+#: tfppkgform.cleanbutton.hint
+msgid "Clean package"
+msgstr "Csomag tisztítása"
+
+#: tfppkgform.compilebutton.caption
+msgid "Compile"
+msgstr "Fordítás"
+
+#: tfppkgform.compilebutton.hint
+msgid "Compile package"
+msgstr "Csomag lefordítása"
+
+#: tfppkgform.downloadbutton.caption
+msgid "Download"
+msgstr "Letöltés"
+
+#: tfppkgform.downloadbutton.hint
+msgid "Download package"
+msgstr "Csomag letöltése"
+
+#: tfppkgform.fixbrokenbutton.caption
+msgid "Fix broken"
+msgstr "Törött javítása"
+
+#: tfppkgform.installbutton.caption
+msgid "Install"
+msgstr "Telepítés"
+
+#: tfppkgform.installbutton.hint
+msgid "Install package"
+msgstr "Csomag telepítése"
+
+#: tfppkgform.menuitem1.caption
+msgid "&Tools"
+msgstr "&Eszközök"
+
+#: tfppkgform.menuitem2.caption
+msgid "&Options..."
+msgstr "&Beállítások..."
+
+#: tfppkgform.menuitem3.caption
+msgid "&Help"
+msgstr "&Súgó"
+
+#: tfppkgform.menuitem4.caption
+msgid "&About"
+msgstr "&Névjegy"
+
+#: tfppkgform.micleanmessages.caption
+msgid "Clean messages"
+msgstr "Üzenetek törlése"
+
+#: tfppkgform.miexit.caption
+msgid "&Exit"
+msgstr "&Kilépés"
+
+#: tfppkgform.mifile.caption
+msgid "&File"
+msgstr "&Fájl"
+
+#: tfppkgform.miselect.caption
+msgid "Select"
+msgstr "Kijelölés"
+
+#: tfppkgform.mishowdetails.caption
+msgid "Show details"
+msgstr "Részletek mutatása"
+
+#: tfppkgform.miunselect.caption
+msgid "Unselect"
+msgstr "Kijelölés megszüntetése"
+
+#: tfppkgform.packagelistview.columns[0].caption
+msgid "Name"
+msgstr "Név"
+
+#: tfppkgform.packagelistview.columns[1].caption
+msgid "State"
+msgstr "Állapot"
+
+#: tfppkgform.packagelistview.columns[2].caption
+msgid "Installed"
+msgstr "Telepítve"
+
+#: tfppkgform.packagelistview.columns[3].caption
+msgid "Available"
+msgstr "Elérhető"
+
+#: tfppkgform.packagelistview.columns[4].caption
+msgid "Description"
+msgstr "Leírás"
+
+#: tfppkgform.searchbutton.hint
+msgid "Search for keywords"
+msgstr "Kulcsszavak keresése"
+
+#: tfppkgform.searchlabel.caption
+msgid "Search"
+msgstr "Keresés"
+
+#: tfppkgform.supportcheckgroup.caption
+msgid "Support"
+msgstr "Támogatás"
+
+#: tfppkgform.supportcheckgroup.hint
+msgid "Filter packages on support level"
+msgstr "Csomagok szűrése támogatás szintje szerint"
+
+#: tfppkgform.toolbar.caption
+msgid "ToolBar"
+msgstr "Eszköztár"
+
+#: tfppkgform.updatebutton.caption
+msgid "Update"
+msgstr "Frissítés"
+
+#: tfppkgform.updatebutton.hint
+msgid "Update packages list"
+msgstr "Csomaglista frissítése"
+
