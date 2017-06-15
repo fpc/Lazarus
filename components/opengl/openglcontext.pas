@@ -52,6 +52,7 @@ unit OpenGLContext;
   {$DEFINE UseCocoaNS}
   {$DEFINE UsesModernGL}
   {$DEFINE OpenGLTargetDefined}
+  {$DEFINE HasMacRetinaMode}
 {$ENDIF}
 {$IFDEF LCLWin32}
   {$DEFINE UseWin32WGL}
@@ -102,6 +103,9 @@ type
   TOpenGlCtrlMakeCurrentEvent = procedure(Sender: TObject;
                                           var Allow: boolean) of object;
 
+  TOpenGLControlOption = (ocoMacRetinaMode);
+  TOpenGLControlOptions = set of TOpenGLControlOption;
+
   { TCustomOpenGLControl }
   { Sharing:
     You can share opengl contexts. For example:
@@ -136,12 +140,14 @@ type
     FMultiSampling, FAlphaBits, FDepthBits, FStencilBits, FAUXBuffers: Cardinal;
     FSharedOpenGLControl: TCustomOpenGLControl;
     FSharingOpenGlControls: TList;
+    FOptions: TOpenGLControlOptions;
     function GetSharingControls(Index: integer): TCustomOpenGLControl;
     procedure SetAutoResizeViewport(const AValue: boolean);
     procedure SetDebugContext(AValue: boolean);
     procedure SetDoubleBuffered(const AValue: boolean);
     procedure SetOpenGLMajorVersion(AValue: Cardinal);
     procedure SetOpenGLMinorVersion(AValue: Cardinal);
+    procedure SetOptions(AValue: TOpenGLControlOptions);
     procedure SetRGBA(const AValue: boolean);
     {$IFDEF HasRGBBits}
     procedure SetRedBits(const AValue: Cardinal);
@@ -209,6 +215,7 @@ type
     property DepthBits: Cardinal read FDepthBits write SetDepthBits default DefaultDepthBits;
     property StencilBits: Cardinal read FStencilBits write SetStencilBits default 0;
     property AUXBuffers: Cardinal read FAUXBuffers write SetAUXBuffers default 0;
+    property Options: TOpenGLControlOptions read FOptions write SetOptions;
   end;
 
   { TOpenGLControl }
@@ -302,7 +309,7 @@ begin
   and ([csLoading,csDestroying]*ComponentState=[])
   and IsVisible and HandleAllocated
   and MakeCurrent then
-    LOpenGLViewport(0,0,Width,Height);
+    LOpenGLViewport(Handle,0,0,Width,Height);
 end;
 
 procedure TCustomOpenGLControl.SetDebugContext(AValue: boolean);
@@ -329,6 +336,13 @@ procedure TCustomOpenGLControl.SetOpenGLMinorVersion(AValue: Cardinal);
 begin
   if fOpenGLMinorVersion=AValue then Exit;
   fOpenGLMinorVersion:=AValue;
+end;
+
+procedure TCustomOpenGLControl.SetOptions(AValue: TOpenGLControlOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
+  OpenGLAttributesChanged();
 end;
 
 procedure TCustomOpenGLControl.SetRGBA(const AValue: boolean);
@@ -520,14 +534,14 @@ begin
   inherited Destroy;
 end;
 
-Procedure TCustomOpenGLControl.Paint;
+procedure TCustomOpenGLControl.Paint;
 begin
   if IsVisible and HandleAllocated then begin
     UpdateFrameTimeDiff;
     if ([csDesigning,csDestroying]*ComponentState=[]) then begin
       if not MakeCurrent then exit;
       if AutoResizeViewport then
-        LOpenGLViewport(0,0,Width,Height);
+        LOpenGLViewport(Handle,0,0,Width,Height);
     end;
     //LOpenGLClip(Handle);
     DoOnPaint;
@@ -540,7 +554,7 @@ begin
   and ([csDesigning,csDestroying]*ComponentState=[])
   and AutoResizeViewport then begin
     if MakeCurrent then
-      LOpenGLViewport(0,0,Width,Height);
+      LOpenGLViewport(Handle,0,0,Width,Height);
   end;
   inherited RealizeBounds;
 end;
@@ -643,6 +657,9 @@ begin
     Result:=LOpenGLCreateContext(OpenGlControl,WSPrivate,
                                  OpenGlControl.SharedControl,
                                  AttrControl.DoubleBuffered,
+                                 {$IFDEF HasMacRetinaMode}
+                                 ocoMacRetinaMode in OpenGlControl.Options,
+                                 {$ENDIF}
                                  {$IFDEF HasRGBA}
                                  AttrControl.RGBA,
                                  {$ENDIF}

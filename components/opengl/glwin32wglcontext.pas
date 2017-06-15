@@ -17,7 +17,7 @@ uses
   Classes, SysUtils, LMessages, Windows, LCLProc, LCLType, gl, Forms, Controls, 
   Win32Int, WSLCLClasses, WSControls, Win32WSControls, Win32Proc, LCLMessageGlue;
 
-procedure LOpenGLViewport(Left, Top, Width, Height: integer);
+procedure LOpenGLViewport(Handle: HWND; Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLReleaseContext(Handle: HWND): boolean;
@@ -230,7 +230,7 @@ begin
   Result := wglGetProcAddress(ProcName);
 end;
 
-procedure LOpenGLViewport(Left, Top, Width, Height: integer);
+procedure LOpenGLViewport(Handle: HWND; Left, Top, Width, Height: integer);
 begin
   glViewport(Left,Top,Width,Height);
 end;

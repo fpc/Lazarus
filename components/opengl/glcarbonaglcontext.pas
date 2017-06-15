@@ -21,7 +21,7 @@ uses
   WSLCLClasses, CarbonUtils,
   Controls;
 
-procedure LOpenGLViewport(Left, Top, Width, Height: integer);
+procedure LOpenGLViewport(Handle: HWND; Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLReleaseContext(Handle: HWND): boolean;
@@ -57,7 +57,7 @@ function GetAGLContext(Control: ControlRef): TAGLContext;
 
 implementation
 
-procedure LOpenGLViewport(Left, Top, Width, Height: integer);
+procedure LOpenGLViewport(Handle: HWND; Left, Top, Width, Height: integer);
 begin
   glViewport(Left,Top,Width,Height);
 end;
