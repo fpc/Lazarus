@@ -45,7 +45,7 @@ msgstr "установка пакетов"
 
 #: fppkg_mainfrm.sactuninstpackages
 msgid "uninstall package(s)"
-msgstr ""
+msgstr "удаление пакетов"
 
 #: fppkg_mainfrm.sactupdate
 msgid "update repository"
@@ -211,7 +211,7 @@ msgstr "Инструментальная панель"
 
 #: tfppkgform.uninstallbutton.caption
 msgid "Uninstall"
-msgstr ""
+msgstr "Удалить"
 
 #: tfppkgform.updatebutton.caption
 msgid "Update"
