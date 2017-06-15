@@ -260,11 +260,11 @@ msgstr "&Fájl"
 #: tmainform.miallowcomments.caption
 msgctxt "tmainform.miallowcomments.caption"
 msgid "Allow comments"
-msgstr ""
+msgstr "Megjegyzések engedélyezése"
 
 #: tmainform.miallowtrailingcomma.caption
 msgid "Allow trailing comma"
-msgstr ""
+msgstr "Üres elemek engedélyezése (csak vessző)"
 
 #: tmainform.micompact.caption
 msgid "Compact display"
@@ -280,7 +280,7 @@ msgstr "Érté&kek"
 
 #: tmainform.miquotestrings.caption
 msgid "Quote string values"
-msgstr ""
+msgstr "Szövegértékek idézőjelben"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"

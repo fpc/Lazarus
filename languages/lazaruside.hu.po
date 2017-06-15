@@ -601,11 +601,11 @@ msgstr "Infókimenet-kód beépítése (assertion code)"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
 msgid "Associated debug desktop"
-msgstr ""
+msgstr "Társított hibakereső felület"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
-msgstr ""
+msgstr "Egy felület kiválasztásakor a társított hibakereső felület is ki lesz választva."
 
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
@@ -675,7 +675,7 @@ msgstr "E form-okat a program kódjában kell létrehozni és megszüntetni."
 
 #: lazarusidestrconsts.dlgavoidunnecessaryjumps
 msgid "Avoid unnecessary jumps"
-msgstr ""
+msgstr "Szükségtelen ugrások mellőzése"
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -2195,7 +2195,7 @@ msgstr "Intervallum másodpercben"
 
 #: lazarusidestrconsts.dlgjumpcodeblockpos
 msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
-msgstr ""
+msgstr "Függőleges helyzet kódblokkhoz ugrás esetén %-ban megadva. (0=fent, 100=lent)"
 
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
@@ -2203,7 +2203,7 @@ msgstr "Ugrás (pl. metódus ugrás)"
 
 #: lazarusidestrconsts.dlgjumpsinglelinepos
 msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
-msgstr ""
+msgstr "Függőleges helyzet sorhoz ugrás esetén %-ban megadva. (0=fent, 100=lent)"
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
@@ -3044,7 +3044,7 @@ msgstr "Vista-8: bekapcsolva, 8.1+: monitorfüggő"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
 msgid "Vista-8: on, 8.1/10+: per monitor/V2"
-msgstr ""
+msgstr "Vista-8: bekapcsolva, 8.1/10+: monitorfüggő/V2"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
@@ -4277,11 +4277,11 @@ msgstr "Hozzáadás"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
-msgstr ""
+msgstr "Új elválasztó hozzáadása a kijelölt elem fölött"
 
 #: lazarusidestrconsts.lisaddanewseparatorbelowselecteditem
 msgid "Add a new separator below selected item"
-msgstr ""
+msgstr "Új elválasztó hozzáadása a kijelölt elem alatt"
 
 #: lazarusidestrconsts.lisadddelphidefine
 msgid "Add defines simulating Delphi7"
@@ -9751,7 +9751,7 @@ msgstr "Üzenet elrejtése IDE direktíva beszúrásával {%H-}"
 
 #: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
 msgid "Hide message by inserting {$warn %s off} to unit \"%s\""
-msgstr ""
+msgstr "Üzenet elrejtése {$warn %s off} beszúrásával a(z) \"%s\" unitban "
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
@@ -14120,7 +14120,7 @@ msgstr "Nyelv felülbírálása. Például --language=de. A lehetséges értéke
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
 msgid "Override function result string types with the first parameter expression type"
-msgstr ""
+msgstr "A függvények által visszaadott karakterlánctípusok behelyettesítése az első paraméterben megadott kifejezés típusával."
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"

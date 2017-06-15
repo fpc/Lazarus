@@ -464,14 +464,16 @@ msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
 "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
 msgstr ""
+"%sBiztosan eltávolíthatók a kijelölt csomagok?\n"
+"Fontos: a változtatások érvénybelépéséhez az IDE újraépítése szükséges.\n"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 msgid "Cannot uninstall package \"%s\"!"
-msgstr ""
+msgstr "A(z) \"%s\" csomagot nem lehet eltávolítani!"
 
 #: opkman_const.rsmainfrm_rsuninstall_nothing
 msgid "None of the checked packages are installed. Nothing to uninstall."
-msgstr ""
+msgstr "A kijelölt csomagok egyike sincs telepítve, Nincs mit eltávolítani."
 
 #: opkman_const.rsmainfrm_spclear_hint
 msgid "Clear filter text"
@@ -546,11 +548,11 @@ msgstr "Csomag vagy tároló létrehozása"
 
 #: opkman_const.rsmainfrm_tbuninstall_caption
 msgid "Uninstall"
-msgstr ""
+msgstr "Eltávolítás"
 
 #: opkman_const.rsmainfrm_tbuninstall_hint
 msgid "Uninstall packages"
-msgstr ""
+msgstr "Csomagok eltávolítása"
 
 #: opkman_const.rsmainfrm_tbupdate_caption
 msgctxt "opkman_const.rsmainfrm_tbupdate_caption"
