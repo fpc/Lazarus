@@ -472,6 +472,10 @@ begin
     begin
       BaseURL.BaseURL := 'lcl.chm://';
       DB.OnFindViewer:=@DBFindViewer;
+    end else if (DB.ID = 'LazUtilsUnits') and (BaseURL.BaseURL = '') then
+    begin
+      BaseURL.BaseURL := 'lazutils.chm://';
+      DB.OnFindViewer:=@DBFindViewer;
     end;
   end;
 end;

@@ -187,6 +187,8 @@ type
     FMainHelpDBPath: THelpBasePathObject;
     FRTLHelpDB: THelpDatabase;
     FRTLHelpDBPath: THelpBaseURLObject;
+    FLazUtilsHelpDB: THelpDatabase;
+    FLazUtilsHelpDBPath: THelpBaseURLObject;
     // Used by CreateHint
     FHtmlHelpProvider: TAbstractIDEHTMLProvider;
     FHintWindow: THintWindow;
@@ -233,6 +235,8 @@ type
     property LCLHelpDBPath: THelpBaseURLObject read FLCLHelpDBPath;
     property RTLHelpDB: THelpDatabase read FRTLHelpDB;
     property RTLHelpDBPath: THelpBaseURLObject read FRTLHelpDBPath;
+    property LazUtilsHelpDB: THelpDatabase read FLazUtilsHelpDB;
+    property LazUtilsHelpDBPath: THelpBaseURLObject read FLazUtilsHelpDBPath;
   end;
 
   { TIDEHintWindowManager }
@@ -271,12 +275,17 @@ const
   lihcRTLUnits = 'RTLUnits';
   lihcFCLUnits = 'FCLUnits';
   lihcLCLUnits = 'LCLUnits';
+  lihcLazUtilsUnits = 'LazUtilsUnits';
+
   
   lihBaseUrl = 'http://lazarus-ccr.sourceforge.net/docs/';
 
   lihRTLURL = lihBaseUrl+'rtl/';
   lihFCLURL = lihBaseUrl+'fcl/';
   lihLCLURL = lihBaseUrl+'lcl/';
+
+  lihLazUtilsURL = 'lazutils.chm://';
+  // not important see: ../components/chmhelp/packages/idehelp/lazchmhelp.pas
 
 var
   HelpBoss: TBaseHelpManager = nil;
@@ -1184,6 +1193,30 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
     HTMLHelp.RegisterItem(DirItem);
   end;
 
+  procedure CreateLazUtilsHelpDB;
+  var
+    HTMLHelp: TFPDocHTMLHelpDatabase;
+    FPDocNode: THelpNode;
+    DirItem: THelpDBISourceDirectory;
+  begin
+    FLazUtilsHelpDB:=HelpDatabases.CreateHelpDatabase(lihcLazUtilsUnits,
+                                                 TFPDocHTMLHelpDatabase,true);
+    HTMLHelp:=FLazUtilsHelpDB as TFPDocHTMLHelpDatabase;
+    HTMLHelp.DefaultBaseURL:=lihLazUtilsURL;
+    FLazUtilsHelpDBPath:=THelpBaseURLObject.Create;
+    HTMLHelp.BasePathObject:=FLazUtilsHelpDBPath;
+
+    // FPDoc nodes for units in the LazUtils
+    FPDocNode:=THelpNode.CreateURL(HTMLHelp,
+                   'LazUtils - Lazarus Utilities Library Units',
+                   'file://index.html');
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);// once as TOC
+    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,
+                    '$(LazarusDir)/components/lazutils',
+                    '*.pp;*.pas',true);// and once as normal page
+    HTMLHelp.RegisterItem(DirItem);
+  end;
+
   procedure CreateFPCKeywordsHelpDB;
   begin
     {$IFDEF EnableSimpleFPCKeyWordHelpDB}
@@ -1199,6 +1232,7 @@ begin
   CreateLCLHelpDB;
   CreateFPCMessagesHelpDB;
   CreateFPCKeywordsHelpDB;
+  CreateLazUtilsHelpDB;
 end;
 
 procedure TIDEHelpManager.RegisterDefaultIDEHelpViewers;
