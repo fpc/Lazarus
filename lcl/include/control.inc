@@ -1124,10 +1124,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CMMouseEnter(var Message: TLMessage);
 begin
-  if FMouseEntered then
+  if FMouseInClient then
     Exit;
 
-  FMouseEntered := True;
+  FMouseInClient := True;
 
   // broadcast to parents first
   if Assigned(Parent) then
@@ -1143,10 +1143,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CMMouseLeave(var Message: TLMessage);
 begin
-  if not FMouseEntered then
+  if not FMouseInClient then
     Exit;
 
-  FMouseEntered := False;
+  FMouseInClient := False;
 
   // broadcast to parents first
   if Assigned(Parent) then

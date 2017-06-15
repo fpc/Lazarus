@@ -1155,7 +1155,7 @@ type
     FAutoSizingAll: boolean;
     FAutoSizingSelf: Boolean;
     FEnabled: Boolean;
-    FMouseEntered: boolean;
+    FMouseInClient: boolean;
     FVisible: Boolean;
     function CaptureMouseButtonsIsStored: boolean;
     procedure DoActionChange(Sender: TObject);
@@ -1656,7 +1656,8 @@ type
     property Enabled: Boolean read GetEnabled write SetEnabled stored IsEnabledStored default True;
     property Font: TFont read FFont write SetFont stored IsFontStored;
     property IsControl: Boolean read FIsControl write FIsControl;
-    property MouseEntered: Boolean read FMouseEntered;
+    property MouseEntered: Boolean read FMouseInClient; deprecated 'use MouseInClient instead';// changed in 1.9
+    property MouseInClient: Boolean read FMouseInClient;
     property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
