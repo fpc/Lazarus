@@ -73,18 +73,22 @@ procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   end;
 var
   NewFlags: TToolButtonFlags;
+  APointInArrow: Boolean;
 begin
   //debugln(['TToolButton.MouseDown ',DbgSName(Self)]);
   SetMouseInControl(True);
   NewFlags := FToolButtonFlags - [tbfPressed, tbfArrowPressed];
   if (Button = mbLeft) then
   begin
+    APointInArrow := PointInArrow(X, Y);
     //use some threshold to decide if the DropdownMenu should be opened again.
     //  When no DropdownMenu is assigned, FLastDropDownTick is always 0
     //  therefore the condition is always met.
-    if Enabled and not(GetTickCount64 < FLastDropDownTick + 100) then
+    if Enabled and not(
+          (GetTickCount64 < FLastDropDownTick + 100)
+      and (APointInArrow or (Style<>tbsDropDown))) then
     begin
-      if PointInArrow(X, Y) then
+      if APointInArrow then
         Include(NewFlags, tbfArrowPressed)
       else
         Include(NewFlags, tbfPressed);
