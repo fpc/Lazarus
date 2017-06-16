@@ -1289,6 +1289,7 @@ begin
   FreeThenNil(FRTLHelpDBPath);
   FreeThenNil(FFCLHelpDBPath);
   FreeThenNil(FLCLHelpDBPath);
+  FreeThenNil(FLazUtilsHelpDBPath);
   HelpBoss:=nil;
   LazarusHelp:=nil;
   inherited Destroy;
