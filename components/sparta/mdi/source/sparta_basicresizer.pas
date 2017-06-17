@@ -95,8 +95,8 @@ begin
   FResizerFrame.Constraints.MaxWidth := pMain.Width;
   FResizerFrame.Constraints.MaxHeight := pMain.Height;
 
-  LWidth  := DesignedForm.Width + FResizerFrame.BgLeftMargin + FResizerFrame.BgRightMargin + 2*FResizerFrame.SIZER_RECT_SIZE;
-  LHeight := DesignedForm.Height + FResizerFrame.BgTopMargin + FResizerFrame.BgBottomMargin + 2*FResizerFrame.SIZER_RECT_SIZE;
+  LWidth  := DesignedForm.Width + FResizerFrame.BgLeftMargin + FResizerFrame.BgRightMargin + 2*FResizerFrame.SizerRectSize;
+  LHeight := DesignedForm.Height + FResizerFrame.BgTopMargin + FResizerFrame.BgBottomMargin + 2*FResizerFrame.SizerRectSize;
   if not FResizerFrame.NodePositioning then
   begin
     FResizerFrame.Width := LWidth;
