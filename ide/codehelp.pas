@@ -887,6 +887,12 @@ var
   S: String;
 begin
   //DebugLn(['TLazFPDocFile.GetValuesFromNode ',Node.NodeName,' ',dbgsName(Node),' ',Node is TDomElement]);
+  Result[fpdiShort] := '';
+  Result[fpdiElementLink] := '';
+  Result[fpdiDescription] := '';
+  Result[fpdiErrors] := '';
+  Result[fpdiSeeAlso] := '';
+  Result[fpdiExample] := '';
   if Node is TDomElement then
     Result[fpdiElementLink] := TDomElement(Node).GetAttribute('link');
   Node := Node.FirstChild;
@@ -914,8 +920,7 @@ begin
   end;
 end;
 
-function TLazFPDocFile.GetValueFromNode(Node: TDOMNode; Item: TFPDocItem
-  ): string;
+function TLazFPDocFile.GetValueFromNode(Node: TDOMNode; Item: TFPDocItem): string;
 var
   Child: TDOMNode;
 begin
@@ -2734,7 +2739,9 @@ begin
   if Desc=xtContext then
     CTHint:=Tool.GetSmartHint(Node,XYPos,false)
   else if Desc in xtAllIdentPredefinedTypes then
-    CTHint:='type '+ExpressionTypeDescNames[Desc];
+    CTHint:='type '+ExpressionTypeDescNames[Desc]
+  else
+    CTHint:='';
   Result:=Result+'  <nobr>'+SourceToFPDocHint(CTHint)+'</nobr>';
 
   // add link to declaration

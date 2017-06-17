@@ -414,9 +414,9 @@ var
   {$ifdef QT_NATIVE_DIALOGS}
   selectedFilter, saveFileName, saveFilter, saveTitle, sDir: WideString;
   Flags: Cardinal;
+  s: string;
   {$endif}
   ActiveWin: HWND;
-  s: string;
 begin
   {------------------------------------------------------------------------------
     Initialization of variables

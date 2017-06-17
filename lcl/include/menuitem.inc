@@ -643,6 +643,11 @@ begin
   if not HandleAllocated then CreateHandle;
 end;
 
+function SystemShowMenuGlyphs: Boolean; inline;
+begin
+  Result := ThemeServices.GetOption(toShowMenuImages) = 1;
+end;
+
 {------------------------------------------------------------------------------
   function TMenuItem.HasIcon: boolean;
 
@@ -651,15 +656,10 @@ end;
 function TMenuItem.HasIcon: boolean;
 
   function CanShowIcon: Boolean;
-
-    function SystemShowGlyphs: Boolean; inline;
-    begin
-      Result := ThemeServices.GetOption(toShowMenuImages) = 1;
-    end;
-
   begin
+    Result := True;
     if csDesigning in ComponentState then
-      Exit(True);
+      Exit;
     case GlyphShowMode of
       gsmAlways:
         Result := True;
@@ -670,11 +670,11 @@ function TMenuItem.HasIcon: boolean;
           case Application.ShowMenuGlyphs of
             sbgAlways: Result := True;
             sbgNever: Result := False;
-            sbgSystem: Result := SystemShowGlyphs;
+            sbgSystem: Result := SystemShowMenuGlyphs;
           end;
         end;
       gsmSystem:
-        Result := SystemShowGlyphs;
+        Result := SystemShowMenuGlyphs;
     end;
   end;
 

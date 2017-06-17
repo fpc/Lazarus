@@ -3097,6 +3097,7 @@ var
     //debugln(['  Add ',aFilename]);
     Files[aFilename]:='';
     FindUnitsOfOwner.Add(aFilename);
+    Result := True;
   end;
 
   procedure AddListedPackageUnits(aPackage: TLazPackage);

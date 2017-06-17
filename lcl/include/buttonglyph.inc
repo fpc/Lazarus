@@ -168,22 +168,22 @@ begin
     Result := 0;
 end;
 
+function SystemShowButtonGlyphs: Boolean; inline;
+begin
+  Result := ThemeServices.GetOption(toShowButtonImages) = 1;
+  {$ifdef Windows}
+  // force False on windows since gtk and qt can return True
+    Result := False;
+  {$endif}
+end;
+
 procedure TButtonGlyph.GlyphChanged(Sender: TObject);
 
   function CanShow: Boolean;
-
-    function SystemShowGlyphs: Boolean; inline;
-    begin
-      Result := ThemeServices.GetOption(toShowButtonImages) = 1;
-      {$ifdef Windows}
-      // force False on windows since gtk and qt can return True
-        Result := False;
-      {$endif}
-    end;
-
   begin
+    Result := True;
     if IsDesigning then
-      Exit(True);
+      Exit;
     case ShowMode of
       gsmAlways:
         Result := True;
@@ -194,11 +194,11 @@ procedure TButtonGlyph.GlyphChanged(Sender: TObject);
           case Application.ShowButtonGlyphs of
             sbgAlways: Result := True;
             sbgNever: Result := False;
-            sbgSystem: Result := SystemShowGlyphs;
+            sbgSystem: Result := SystemShowButtonGlyphs;
           end;
         end;
       gsmSystem:
-        Result := SystemShowGlyphs;
+        Result := SystemShowButtonGlyphs;
     end;
   end;
 

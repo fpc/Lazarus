@@ -881,6 +881,7 @@ begin
     0: Result := KeyStroke1;
     1: Result := KeyStroke2;
     2: Result := KeyStroke3;
+    else Result := Nil;
   end;
 end;
 

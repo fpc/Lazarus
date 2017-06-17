@@ -467,6 +467,7 @@ end;
 
 function TNonFormProxyDesignerForm.GetPublishedBounds(AIndex: Integer): Integer;
 begin
+  Result := 0;
   case AIndex of
     0: Result := inherited Left;
     1: Result := inherited Top;
@@ -475,8 +476,7 @@ begin
   end;
 end;
 
-procedure TNonFormProxyDesignerForm.SetPublishedBounds(AIndex: Integer;
-  AValue: Integer);
+procedure TNonFormProxyDesignerForm.SetPublishedBounds(AIndex: Integer; AValue: Integer);
 begin
   case AIndex of
     0: inherited Left := AValue;

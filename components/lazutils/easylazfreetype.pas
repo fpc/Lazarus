@@ -526,11 +526,9 @@ var
   end;
 
 begin
+  ARemains := '';
   if AText = '' then
-  begin
-    ARemains := '';
     exit;
-  end;
   totalWidth := 0;
   pstr := @AText[1];
   left := length(AText);
@@ -799,7 +797,7 @@ begin
     glyphBounds.Left := IncludeFullGrainMin( glyphBounds.Left, 3);
     glyphBounds.Right := IncludeFullGrainMax( glyphBounds.Right-1, 3) + 1;
   end;
-  if not IntersectRect(Rect,Rect,glyphBounds) then exit;
+  if not IntersectRect(Rect,Rect,glyphBounds) then exit(False);
 
   case quality of
     grqMonochrome: begin
@@ -1637,7 +1635,11 @@ var
   resultIndex,i: integer;
   w: single;
 begin
-  if AText = '' then exit;
+  if AText = '' then
+  begin
+    setlength(result, 0);
+    exit;
+  end;
   pstr := @AText[1];
   left := length(AText);
   setlength(result, UTF8Length(AText));

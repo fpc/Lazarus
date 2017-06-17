@@ -298,6 +298,7 @@ var
   label
     Fail;
   begin
+    Result := False;
     (* LOCK *)
     current := cache.idle;
     if current <> nil then

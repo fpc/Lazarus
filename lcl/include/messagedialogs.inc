@@ -33,6 +33,7 @@ function ModalDefaultButton(Buttons : TMsgDlgButtons) : TMsgDlgbtn;
 var
   b: TMsgDlgBtn;
 begin
+  Result := mbYes;               // Some default return value.
   If mbYes in Buttons then
     Result := mbYes
   else

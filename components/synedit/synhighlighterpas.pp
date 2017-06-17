@@ -3846,7 +3846,7 @@ begin
   if (not BlockEnabled) and (not ForceDisabled) and
      (not FFoldConfig[ord(ABlockType)].IsEssential)
   then
-    exit;
+    exit(nil);
 
   FoldBlock := BlockEnabled and (FFoldConfig[ord(ABlockType)].Modes * [fmFold, fmHide] <> []);
   p := 0;

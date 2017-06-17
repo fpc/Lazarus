@@ -2037,7 +2037,7 @@ begin
      (not FoldConfig[PtrUInt(ABlockType)].Enabled) and
      (not FoldConfig[PtrUInt(ABlockType)].IsEssential)
   then
-    exit;
+    exit(nil);
 
   if FIsCollectingNodeInfo then
     CollectNodeInfo(False, ABlockType, IncreaseLevel);

@@ -3659,17 +3659,17 @@ end;
 
 function TCurrentCallStack.GetCurrent: Integer;
 begin
+  Result := 0;
   case FCurrentValidity of
     ddsUnknown:   begin
-        Result := 0;
         FCurrentValidity := ddsRequested;
         FMonitor.RequestCurrent(self);
         if FCurrentValidity = ddsValid then
           Result := inherited GetCurrent();
       end;
-    ddsRequested, ddsEvaluating: Result := 0;
     ddsValid:                    Result := inherited GetCurrent;
-    ddsInvalid, ddsError:        Result := 0;
+    //ddsRequested, ddsEvaluating: Result := 0;
+    //ddsInvalid, ddsError:        Result := 0;
   end;
 end;
 
@@ -3743,17 +3743,17 @@ end;
 
 function TCurrentCallStack.GetCount: Integer;
 begin
+  Result := 0;
   case FCountValidity of
     ddsUnknown:   begin
-        Result := 0;
         FCountValidity := ddsRequested;
         FMonitor.RequestCount(self);
         if FCountValidity = ddsValid then
           Result := FCount;
       end;
-    ddsRequested, ddsEvaluating: Result := 0;
     ddsValid:                    Result := FCount;
-    ddsInvalid, ddsError:        Result := 0;
+    //ddsRequested, ddsEvaluating: Result := 0;
+    //ddsInvalid, ddsError:        Result := 0;
   end;
 end;
 
@@ -3886,27 +3886,20 @@ end;
 
 function TCurrentCallStack.HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool;
 begin
-  if FCountValidity = ddsValid then begin
-    Result := inherited HasAtLeastCount(ARequiredMinCount);
-    exit;
-  end;
-
-  if FAtLeastCountOld >= ARequiredMinCount then begin
-    Result := nbTrue;
-    exit;
-  end;
-
+  if FCountValidity = ddsValid then
+    exit(inherited HasAtLeastCount(ARequiredMinCount));
+  if FAtLeastCountOld >= ARequiredMinCount then
+    exit(nbTrue);
   if (FAtLeastCountValidity = ddsValid) and (FAtLeastCount < ARequiredMinCount) then begin
     FAtLeastCountOld := FAtLeastCount;
     FAtLeastCountValidity := ddsUnknown;
   end;
 
+  Result := nbUnknown;
   case FAtLeastCountValidity of
     ddsUnknown:   begin
-        Result := nbUnknown;
         if FCountValidity in [ddsRequested, ddsEvaluating] then
           exit;
-
         FAtLeastCountValidity := ddsRequested;
         FMonitor.RequestAtLeastCount(self, ARequiredMinCount);
         if FCountValidity = ddsValid then

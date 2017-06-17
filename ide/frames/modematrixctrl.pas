@@ -1046,6 +1046,7 @@ begin
     fTypePopupMenu.Items[fTypePopupMenu.Items.Count-1].Free;
 
   XY:=Point(0,0);
+  i:=TypeColumn.PickList.Count-1;
   ColRowToOffset(true,true,TypeCol,XY.X,i);
   ColRowToOffset(false,true,aRow,i,XY.Y);
   XY:=ClientToScreen(XY);

@@ -764,7 +764,7 @@ end;
 class function TQtWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
 begin
   if not WSCheckHandleAllocated(ACustomMemo, 'GetStrings') then
-    Exit;
+    Exit(Nil);
   if not Assigned(TQtTextEdit(ACustomMemo.Handle).FList) then
     TQtTextEdit(ACustomMemo.Handle).FList := TQtMemoStrings.Create(ACustomMemo);
   
@@ -1611,7 +1611,7 @@ var
   ComboBox: TQtComboBox;
 begin
   if not WSCheckHandleAllocated(ACustomComboBox, 'GetItems') then
-    Exit;
+    Exit(Nil);
   ComboBox := TQtComboBox(ACustomComboBox.Handle);
   if not Assigned(ComboBox.FList) then
   begin
@@ -1691,12 +1691,11 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSToggleBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 begin
+  Result := cbUnChecked;
   if not WSCheckHandleAllocated(ACustomCheckBox, 'RetrieveState') then
     Exit;
   if TQtToggleBox(ACustomCheckBox.Handle).isChecked then
-    Result := cbChecked
-  else
-    Result := cbUnChecked;
+    Result := cbChecked;
 end;
 
 {------------------------------------------------------------------------------

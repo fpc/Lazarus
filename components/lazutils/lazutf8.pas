@@ -442,17 +442,19 @@ end;
 function UTF8CharacterLengthFast(p: PChar): integer;
 begin
   case p^ of
-    #0..#191   : Result := 1;
+    //#0..#191   : Result := 1;
     #192..#223 : Result := 2;
     #224..#239 : Result := 3;
     #240..#247 : Result := 4;
-    #248..#255 : Result := 1;
+    //#248..#255 : Result := 1;
     // Theoretically UTF-8 supports length 1-7, but since 2003, RFC 3629 limits
     // it to 1-4 bytes.
     // This is an inline function, so keep the function short.
     //#248..#251   : Result := 5;
     //#252, #253   : Result := 6;
     //#254         : Result := 7;
+
+    else Result := 1; // An optimization + prevents compiler warning about uninitialized Result.
   end;
 end;
 

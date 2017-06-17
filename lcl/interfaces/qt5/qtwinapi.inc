@@ -2443,6 +2443,7 @@ var
   SubW: TQtWidget;
   Area: QMdiAreaH;
 begin
+  Result := 0;
   Widget := QApplication_activeWindow;
   if Widget <> nil then
   begin
@@ -2460,8 +2461,7 @@ begin
       end else
         Result := HWND(W);
     end;
-  end else
-    Result := 0;
+  end;
 end;
 
 
@@ -3054,7 +3054,8 @@ begin
   if not Result then Exit;
   Desktop := QApplication_desktop();
   Dec(Monitor);
-  Result := (Monitor >= 0) and (Monitor < PtrUInt(QDesktopWidget_numScreens(Desktop)));
+  // Note: Monitor is PtrUInt and is always >= 0.
+  Result := Monitor < PtrUInt(QDesktopWidget_numScreens(Desktop));
   if not Result then Exit;
   QDesktopWidget_screenGeometry(Desktop, @lpmi^.rcMonitor, Monitor);
   QDesktopWidget_availableGeometry(Desktop, @lpmi^.rcWork, Monitor);
@@ -4610,9 +4611,9 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     with Mesh do
     begin
       Result :=
-        (Vertex1 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
-        (Vertex2 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
-        (Vertex3 < Cardinal(NumVertices)) and (Vertex3 >= 0);
+        (Vertex1 < Cardinal(NumVertices)) and
+        (Vertex2 < Cardinal(NumVertices)) and
+        (Vertex3 < Cardinal(NumVertices));
 
       if (Vertex1 = Vertex2) or
         (Vertex1 = Vertex3) or
@@ -4683,8 +4684,8 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     with Mesh do
     begin
       Result :=
-        (UpperLeft < Cardinal(NumVertices)) and (UpperLeft >= 0) and
-        (LowerRight < Cardinal(NumVertices)) and (LowerRight >= 0);
+        (UpperLeft < Cardinal(NumVertices)) and
+        (LowerRight < Cardinal(NumVertices));
       if (LowerRight = UpperLeft) or not Result then
         Exit;
 
@@ -4905,8 +4906,7 @@ end;
   Returns: True if invalidate is successfull.
   Invalidates region of widget.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean
-  ): Boolean;
+function TQtWidgetSet.InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI InvalidateRgn]');
@@ -4917,6 +4917,7 @@ begin
     TQtWidget(aHandle).UpdateRegion(TQtRegion(Rgn).FHandle)
   else
     TQtWidget(aHandle).Update;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
