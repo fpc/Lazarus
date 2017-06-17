@@ -5,7 +5,7 @@ unit sparta_BasicFakeCustom;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, sparta_InterfacesMDI, LCLIntf, Math,
+  Classes, SysUtils, Controls, Forms, sparta_InterfacesMDI, LCLIntf,
   LCLType, sparta_FormBackgroundForMDI;
 
 type
@@ -18,8 +18,6 @@ type
     FHackHeight: Integer;
 
   private
-    FHorzScrollPosition: Integer;
-    FVertScrollPosition: Integer;
     FOnChangeHackedBounds: TNotifyEvent;
 
     procedure SetOnChangeHackedBounds(const AValue: TNotifyEvent);
@@ -72,7 +70,7 @@ type
     destructor Destroy; override;
 
     procedure BeginUpdate; virtual;
-    procedure EndUpdate(AModified: Boolean = False); virtual;
+    procedure EndUpdate({%H-}AModified: Boolean = False); virtual;
 
     procedure ShowWindow; virtual;
     procedure HideWindow; virtual;
@@ -189,6 +187,7 @@ procedure TFormImpl.SetRealBounds(AIndex: Integer; AValue: Integer);
     LFormRect: TRect;
     LRealValue, LValue: Integer;
   begin
+    LFormRect := Rect(0, 0, 0, 0);;
     LCLIntf.GetClientRect(GetForm.Handle, LFormRect);
     LRealValue := GetRealBounds(AIndex);
     {$IF FPC_FULLVERSION < 301010}

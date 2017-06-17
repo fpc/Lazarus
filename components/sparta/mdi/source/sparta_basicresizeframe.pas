@@ -42,8 +42,8 @@ type
     FFakeFocusControl: TWinControl;
 
     procedure FakeExitEnter(Sender: TObject);
-    procedure FakeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FakeKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FakeKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure FakeKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
     { private declarations }
@@ -62,15 +62,15 @@ type
     FSizerRectSize: Integer;
 
     function HasMainMenu: Boolean;
-    procedure AppOnIdle(Sender: TObject; var Done: Boolean);
+    procedure AppOnIdle(Sender: TObject; var {%H-}Done: Boolean);
 
     procedure PanelPaint(Sender: TObject);
     procedure BGChangeBounds(Sender: TObject);
 
     procedure CreateNodes;
-    procedure NodeMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure NodeMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure NodeMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure NodeMouseDown(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure NodeMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure NodeMouseUp(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
 
     function GetRightMargin: Integer;
     function GetBottomMargin: Integer;
@@ -513,9 +513,9 @@ begin
 
   if FNodePositioning then
   begin
+    with TWinControl(Sender) do
     begin
-      with TWinControl(Sender) do
-      begin
+      newPos := Point(0, 0);
       GetCursorPos(newPos);
 
       if (newPos.x = FOldPos.x) and (newPos.y = FOldPos.y) then
@@ -582,7 +582,6 @@ begin
       Left := Left - FOldPos.X + newPos.X;
       Top := Top - FOldPos.Y + newPos.Y;
       FOldPos := newPos;
-      end;
     end;
     PositionNodes(Self);
     if Assigned(OnNodePositioning) then

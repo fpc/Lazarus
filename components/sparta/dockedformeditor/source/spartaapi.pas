@@ -80,9 +80,9 @@ type
     function GetEDTUCount: Integer; virtual;
     function GetEDTU(Index: Integer): TEDTUClass; virtual; abstract;
   public
-    function CreateMainDTU(AParent, AAddons: TWinControl): ISTAMainDesignTimeUtil; virtual;
-    procedure RegisterEDTU(AEDTUClass: TEDTUClass); virtual;
-    procedure UnregisterEDTU(AEDTUClass: TEDTUClass); virtual;
+    function CreateMainDTU({%H-}AParent, {%H-}AAddons: TWinControl): ISTAMainDesignTimeUtil; virtual;
+    procedure RegisterEDTU({%H-}AEDTUClass: TEDTUClass); virtual;
+    procedure UnregisterEDTU({%H-}AEDTUClass: TEDTUClass); virtual;
     property EDTUCount: Integer read GetEDTUCount;
     property EDTU[Index: Integer]: TEDTUClass read GetEDTU;
   end;

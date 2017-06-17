@@ -18,8 +18,8 @@ interface
 
 uses
   Classes, contnrs, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls,
-  Graphics, LCLType, lclintf, Menus, LMessages, sparta_DesignedForm, Math,
-  Types, FormEditingIntf, PropEdits, ObjectInspector, sparta_BasicResizeFrame;
+  Graphics, LCLType, lclintf, Menus,
+  FormEditingIntf, PropEdits, ObjectInspector, sparta_BasicResizeFrame;
 
 type
 

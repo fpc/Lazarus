@@ -36,7 +36,7 @@ type
     FResizerFrameClass: TResizerFrameClass;
 
     function CreateResizeFrame: TBasicResizeFrame; virtual;
-    procedure NodePositioning(Sender: TObject; PositioningKind: TPositioningKind; PositioningCode: TPositioningCode);
+    procedure NodePositioning(Sender: TObject; {%H-}PositioningKind: TPositioningKind; PositioningCode: TPositioningCode);
 
     function GetActiveFormAndFrame(out AForm: IDesignedForm; out AFrame: IResizeFrame): Boolean;
 
