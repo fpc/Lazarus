@@ -917,6 +917,7 @@ end;
 function TSynPasSyn.Func15: TtkTokenKind;
 begin
   if KeyComp('If') then begin
+//TODO: case a of 1: while x do if e then ...
     StartPascalCodeFoldBlock(cfbtIfThen, TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen]);
     Result := tkKey
   end
