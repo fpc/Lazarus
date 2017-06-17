@@ -1292,7 +1292,7 @@ begin
     Result := tkKey;
     if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
-      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification];
+      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -1306,7 +1306,7 @@ begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
-      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification];
+      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -1385,7 +1385,7 @@ begin
     StartPascalCodeFoldBlock(cfbtRecord);
     fRange := fRange - [rsVarTypeInSpecification];
     if CompilerMode = pcmDelphi then
-      fRange := fRange + [rsAtClass]; // highlight helper
+      fRange := fRange + [rsAtClass] - [rsAfterEqual]; // highlight helper
     Result := tkKey;
   end
   else if KeyComp('Array') then Result := tkKey

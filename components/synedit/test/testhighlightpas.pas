@@ -57,6 +57,7 @@ type
     procedure TestContextForDeprecated;
     procedure TestContextForClassModifier; // Sealed abstract
     procedure TestContextForClassHelper;
+    procedure TestContextForClassFunction; // in class,object,record
     procedure TestContextForRecordHelper;
     procedure TestContextForStatic;
     procedure TestCaretAsString;
@@ -269,16 +270,20 @@ end;
 
 function TTestHighlighterPas.TestTextFoldInfo5: TStringArray;
 begin
-  SetLength(Result, 9);
+  SetLength(Result, 13);
   Result[0] := 'Unit Foo;';
   Result[1] := 'Interface';
   Result[2] := 'type';
   Result[3] := 'TFoo<T: class> = class(TBar<T>)';
-  Result[4] := 'end;';
-  Result[5] := 'Implementation';
-  Result[6] := '//';
-  Result[7] := 'end.';
-  Result[8] := '';
+  Result[4] := 'class procedure Proc;';
+  Result[5] := 'end;';
+  Result[6] := 'TFoo = record';
+  Result[7] := 'class procedure Proc;';
+  Result[8] := 'end;';
+  Result[9] := 'Implementation';
+  Result[10] := '//';
+  Result[11] := 'end.';
+  Result[12] := '';
 end;
 
 procedure TTestHighlighterPas.CheckTokensForLine(Name: String; LineIdx: Integer;
@@ -446,21 +451,22 @@ begin
   EnableFolds([cfbtBeginEnd..cfbtNone], [cfbtSlashComment]);
   PushBaseName('Text 5 (class in generic type)');
 
-  AssertEquals('Len Unit',      7, PasHighLighter.FoldLineLength(0,0));
-  AssertEquals('Len Intf',      3, PasHighLighter.FoldLineLength(1,0));
-  AssertEquals('Len type',      2, PasHighLighter.FoldLineLength(2,0));
-  AssertEquals('Len class',     1, PasHighLighter.FoldLineLength(3,0));
-  AssertEquals('Len Impl',      1, PasHighLighter.FoldLineLength(5,0));
-  AssertEquals('Len //',        0, PasHighLighter.FoldLineLength(6,0));
+  AssertEquals('Len Unit',     11, PasHighLighter.FoldLineLength( 0,0));
+  AssertEquals('Len Intf',      7, PasHighLighter.FoldLineLength( 1,0));
+  AssertEquals('Len type',      6, PasHighLighter.FoldLineLength( 2,0));
+  AssertEquals('Len class',     2, PasHighLighter.FoldLineLength( 3,0));
+  AssertEquals('Len record',    2, PasHighLighter.FoldLineLength( 6,0));
+  AssertEquals('Len Impl',      1, PasHighLighter.FoldLineLength( 9,0));
+  AssertEquals('Len //',        0, PasHighLighter.FoldLineLength(10,0));
 
-  //                       un in ty cl en im // en
-  CheckFoldOpenCounts('', [1, 1, 1, 1, 0, 1, 0, 0]);
+  //                       un in ty cl pr en re pr en im // en
+  CheckFoldOpenCounts('', [1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0]);
   CheckFoldInfoCounts('', [sfaOpenFold, sfaFold],
-                          [1, 1, 1, 1, 0, 1, 1, 0]);
+                          [1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0]);
   CheckFoldInfoCounts('', [sfaCloseFold, sfaFold, sfaLastLineClose],
-                          [0, 0, 0, 0, 0, 0, 0, 0]);
+                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   CheckFoldInfoCounts('', [sfaLastLineClose],
-                          [0, 0, 0, 0, 0, 0, 0, 0]);
+                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   {%endregion}
 end;
 
@@ -1012,6 +1018,35 @@ begin
 
 end;
 
+procedure TTestHighlighterPas.TestContextForClassFunction;
+var
+  i: Integer;
+const
+  t: array[0..2] of string = ('class', 'object', 'record');
+begin
+  for i:= 0 to 2 do begin
+  ReCreateEdit;
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+
+  SetLines
+    ([ 'Unit A; interface',
+       'type',
+       'TFoo = '+t[i],
+         'class function f1: boolean;',
+         'class procedure p1(v: boolean);',
+        'end;',
+       ''
+    ]);
+  //   unit/iface,  type,  record, -,-
+  CheckFoldOpenCounts('', [2, 1, 1, 0, 0]);
+  CheckTokensForLine('class function',  3,
+    [ tkKey, tkSpace, tkKey, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol  ]);
+  CheckTokensForLine('class procedure',  4,
+    [ tkKey, tkSpace, tkKey, tkSpace,  tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSymbol  ]);
+
+  end;
+end;
+
 procedure TTestHighlighterPas.TestContextForRecordHelper;
 begin
   ReCreateEdit;
@@ -1122,25 +1157,26 @@ begin
     ([ 'Unit A; interface',  // 0
        'var',
          'a:char=^o;',
+         'a:somestring=^o^c;',
          'b:^char=nil;',
        'type',
-         'c=^char;',         // 5
+         'c=^char;',         // 6
          'c=type ^char;',         // 6
        'implementation',
-       'function x(f:^char=^k):^v;', // actually the compiler does not allow ^ as pointer for result
+       'function x(f:^char=^k^c):^v;', // actually the compiler does not allow ^ as pointer for result
        'var',
-         'a:char=^o;',       // 10
-         'b:^char=nil;',     // 11
+         'a:char=^o;',       // 11
+         'b:^char=nil;',     // 12
        'type',
          'c=^char;',
        'begin',
          'i:=^f;',
-         'x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});', // 15
+         'x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});', // 17
          'c:=p^;',
          'c:=p ^;',
          'c:=p(**)^;',
-         'c:=p{} ^;',     // 20
-         'i:=f(1)^;',     // 21
+         'c:=p{} ^;',     // 21
+         'i:=f(1)^;',     // 22
          'i:=f[1]^;',
          'i:=f^^;',
          'c:=p^+^i''e''^a#13^x;',
@@ -1151,52 +1187,54 @@ begin
 
   CheckTokensForLine('a:char=^o;',   2,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSymbol]);
-  CheckTokensForLine('b:^char=nil;',   3,
+  CheckTokensForLine('a:char=^o^c;',   3,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkString, tkSymbol]);
+  CheckTokensForLine('b:^char=nil;',   4,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkKey, tkSymbol]);
-  CheckTokensForLine('c=^char;',   5,
+  CheckTokensForLine('c=^char;',   6,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);
-  CheckTokensForLine('c=type ^char;',   6,
+  CheckTokensForLine('c=type ^char;',   7,
                      [tkIdentifier, tkSymbol, tkKey, tkSpace, tkSymbol, tkIdentifier, tkSymbol]);
 
-  CheckTokensForLine('function x(f:^char=^k):^v;',   8,
+  CheckTokensForLine('function x(f:^char=^k):^v;',   9,
                      [tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier,  // function x(f
-                      tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkString,  // :^char=^k
+                      tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkString,  tkString,  // :^char=^k
                       tkSymbol, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);          // ):^v;
-  CheckTokensForLine('LOCAL a:char=^o;',   10,
+  CheckTokensForLine('LOCAL a:char=^o;',   11,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSymbol]);
-  CheckTokensForLine('LOCAL b:^char=nil;',   11,
+  CheckTokensForLine('LOCAL b:^char=nil;',   12,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkKey, tkSymbol]);
-  CheckTokensForLine('LOCAL c=^char;',   13,
+  CheckTokensForLine('LOCAL c=^char;',   14,
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);
-  CheckTokensForLine('i:=^f',   15,
+  CheckTokensForLine('i:=^f',   16,
                      [tkIdentifier, tkSymbol, tkString, tkSymbol]);
 
-  CheckTokensForLine('x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});',   16,
+  CheckTokensForLine('x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});',   17,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,    // x:=GetTypeData(
                       tkIdentifier, tkSymbol, tkSymbol, tkIdentifier,    // PropInfo^.PropType
                       tkDirective, tkSymbol, tkDirective, tkSymbol, tkSymbol]);  // {$IFNDEF FPC}^{$ENDIF});
 
-  CheckTokensForLine('c:=p^;',   17,
+  CheckTokensForLine('c:=p^;',   18,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p ^;',   18,
+  CheckTokensForLine('c:=p ^;',   19,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSpace, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p(**)^;',   19,
+  CheckTokensForLine('c:=p(**)^;',   20,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkComment, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p{} ^;',   20,
+  CheckTokensForLine('c:=p{} ^;',   21,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkComment, tkSpace, tkSymbol, tkSymbol]);
 
-  CheckTokensForLine('c:=p(1)^;',   21,
+  CheckTokensForLine('c:=p(1)^;',   22,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkNumber, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p[1]^;',   22,
+  CheckTokensForLine('c:=p[1]^;',   23,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkNumber, tkSymbol, tkSymbol]);
-  CheckTokensForLine('c:=p^^;',   23,
+  CheckTokensForLine('c:=p^^;',   24,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol, tkSymbol]);
 
-  CheckTokensForLine('c:=p^+^i''e''^a#13^x;',   24,
+  CheckTokensForLine('c:=p^+^i''e''^a#13^x;',   25,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol, // c:=p^+
                       tkString, tkString, tkString, tkString, tkString, tkSymbol  // ^i'e'^a#13^x;
                      ]);
-  CheckTokensForLine('c:=x=^a and ^a=k and(^a^a=z);',   25,
+  CheckTokensForLine('c:=x=^a and ^a=k and(^a^a=z);',   26,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSpace, // c:=x=^a
                       tkKey, tkSpace, tkString, tkSymbol, tkIdentifier, tkSpace, // and ^a=k
                       tkKey, tkSymbol, tkString, tkString, tkSymbol, tkIdentifier,  // and(^a^a=z
@@ -1924,7 +1962,7 @@ begin
       EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtForDo,cfbtWhileDo,cfbtWithDo], []);
       //DebugFoldInfo([]);
 
-      CheckFoldInfoCounts('', [], 0, [1, 1, 1, 1, 3, 1, 3, 1]);
+      CheckFoldInfoCounts('', [], 0, [1, 1, 1, 1, 0, 1, 1, 0, 3, 1, 3, 1]);
 
       // Line 0:   unit foo;
       CheckNode( 0, [], 0,   0,   0, 4,   0, 1,   0, 1,
@@ -1942,32 +1980,47 @@ begin
       CheckNode( 3, [], 0,   0,   17, 22,   3, 4,   3, 4,
                                   cfbtClass, cfbtClass,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaFold, sfaFoldFold, sfaMultiLine, sfaMarkup, sfaOpenFold]);
-      // Line 4:   end.
-      CheckNode( 4, [], 0,   0,    0, 3,   4, 3,   4, 3,
+      // Line 4:   class procedure Proc;
+      CheckNode( 4, [], 0,   -1,    0, 0,   4, 4,   4, 4,
+                                  cfbtNone, cfbtNone,  FOLDGROUP_PASCAL,
+                                  [sfaInvalid]);
+      // Line 5:   end.
+      CheckNode( 5, [], 0,   0,    0, 3,   4, 3,   4, 3,
                                   cfbtClass, cfbtClass,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaFold, sfaMultiLine, sfaMarkup, sfaCloseFold]);
-      CheckNode( 4, [], 0,   1,    4, 4,   3, 2,   3, 2,
+      CheckNode( 6, [], 0,   0,     7, 13,   3, 4,   3, 4,
+                                  cfbtRecord, cfbtRecord,  FOLDGROUP_PASCAL,
+                                  [sfaOpen, sfaFold, sfaFoldFold, sfaMultiLine, sfaMarkup, sfaOpenFold]);
+      // Line 7:   class procedure Proc;
+      CheckNode( 7, [], 0,   -1,    0, 0,   4, 4,   4, 4,
+                                  cfbtNone, cfbtNone,  FOLDGROUP_PASCAL,
+                                  [sfaInvalid]);
+      // Line 8:   end.
+      CheckNode( 8, [], 0,   0,    0, 3,   4, 3,   4, 3,
+                                  cfbtRecord, cfbtRecord,  FOLDGROUP_PASCAL,
+                                  [sfaClose, sfaFold, sfaMultiLine, sfaMarkup, sfaCloseFold]);
+      CheckNode( 8, [], 0,   1,    4, 4,   3, 2,   3, 2,
                                   cfbtVarType, cfbtVarType,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaFold, sfaMultiLine, sfaCloseForNextLine, sfaCloseFold]);
-      CheckNode( 4, [], 0,   2,    4, 4,   2, 1,   2, 1,
+      CheckNode( 8, [], 0,   2,    4, 4,   2, 1,   2, 1,
                                   cfbtUnitSection, cfbtUnitSection,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaFold, sfaMultiLine, sfaCloseForNextLine, sfaCloseFold]);
-      // Line 5:   implementation
-      CheckNode( 5, [], 0,   0,   0, 14,   1, 2,   1, 2,
+      // Line 9:   implementation
+      CheckNode( 9, [], 0,   0,   0, 14,   1, 2,   1, 2,
                                   cfbtUnitSection, cfbtUnitSection,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaOpenFold,sfaFold, sfaFoldFold, sfaMultiLine]);
-      // Line 6:   //, unit-section
-      CheckNode( 6, [], 0,   0,   0, 2,   2, 3,   2, 3,
+      // Line 10:   //, unit-section
+      CheckNode(10, [], 0,   0,   0, 2,   2, 3,   2, 3,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
                                   [sfaOpen, sfaOneLineOpen, sfaSingleLine]);
-      CheckNode( 6, [], 0,   1,   2, 2,   3, 2,   3, 2,
+      CheckNode(10, [], 0,   1,   2, 2,   3, 2,   3, 2,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaOneLineClose, sfaCloseForNextLine, sfaSingleLine]);
-      CheckNode( 6, [], 0,   2,   2, 2,   2, 1,   2, 1,
+      CheckNode(10, [], 0,   2,   2, 2,   2, 1,   2, 1,
                                   cfbtUnitSection, cfbtUnitSection,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaCloseFold,sfaFold, sfaCloseForNextLine, sfaMultiLine]);
-      // Line 7:   end.
-      CheckNode( 7, [], 0,   0,   0, 3,   1, 0,   1, 0,
+      // Line 11:   end.
+      CheckNode(11, [], 0,   0,   0, 3,   1, 0,   1, 0,
                                   cfbtUnit, cfbtUnit,  FOLDGROUP_PASCAL,
                                   [sfaClose, sfaCloseFold,sfaFold, sfaMultiLine]);
     {%endregion TEXT 5 -- [cfbtBeginEnd..cfbtNone], []}
