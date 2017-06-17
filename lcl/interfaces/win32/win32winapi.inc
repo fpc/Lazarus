@@ -344,7 +344,7 @@ begin
     SetLength(Result,1000);
     FormatLength:= Windows.GetClipboardFormatName(FormatID, PChar(Result), 1000);
     if FormatLength = 0 then
-      raise Exception.CreateFmt('Unknown clipboard format: %d', [FormatID]);
+      exit(''); // do not raise an exception!
     SetLength(Result,FormatLength);
     {$IFDEF VerboseWin32Clipbrd}
     debugln('TWin32WidgetSet.ClipboardFormatToMimeType FormatID=',dbgs(FormatID),' ',Result);
