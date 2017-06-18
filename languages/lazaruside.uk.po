@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-08 18:22+0300\n"
+"PO-Revision-Date: 2017-06-18 09:33+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -603,11 +603,11 @@ msgstr "Включити assert-код"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
 msgid "Associated debug desktop"
-msgstr ""
+msgstr "Пов'язана стільниця зневадження"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
-msgstr ""
+msgstr "Якщо вибрати стільницю, пов'язана стільниця зневадження також буде вибрана."
 
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
