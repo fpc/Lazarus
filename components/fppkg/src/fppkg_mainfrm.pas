@@ -211,7 +211,7 @@ begin
     llDebug :
       Prefix:=SDebug;
     llProgres :
-      Prefix:=SProgres
+      Prefix:=SProgress
   else
     Prefix := '';
   end;
