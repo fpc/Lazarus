@@ -37,6 +37,7 @@ function FindDefaultBrowserWide(out ABrowser, AParams: WideString): Boolean;
 begin
   ABrowser := '';
   AParams := '"%s"';
+  Result := False;
 end;
 
 function FindDefaultBrowserUtf8(out ABrowser, AParams: String): Boolean;

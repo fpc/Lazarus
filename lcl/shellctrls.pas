@@ -773,6 +773,9 @@ begin
   {$ifdef unix}
   Result := '/';
   {$endif}
+  {$ifdef HASAMIGA}
+  Result := '';
+  {$endif}
 end;
 
 function TCustomShellTreeView.GetRootPath: string;
