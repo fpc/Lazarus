@@ -1631,10 +1631,7 @@ begin
     if dgIndicator in Options then
       ColWidths[0]:=12;
     if NeedAutoSizeColumns then
-      UpdateAutoSizeColumns
-    else
-    for i:=FirstGridColumn to ColCount-1 do
-      ColWidths[i] := GetColumnWidth(i);
+      UpdateAutoSizeColumns;
   end;
 end;
 
