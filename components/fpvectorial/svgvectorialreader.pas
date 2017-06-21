@@ -976,8 +976,21 @@ var
   Len: Integer;
   lDefName: String;
   lCurBrush: TvEntityWithPenAndBrush;
+  lDestBrush: PvBrush;
 begin
   Result := [];
+
+  if ADestEntity <> nil then
+  begin
+    lDestBrush := @ADestEntity.Brush;
+  end
+  else if ADestStyle <> nil then
+  begin
+    lDestBrush := @ADestStyle;
+  end;
+  if not ((ADestEntity <> nil) xor (ADestStyle <> nil)) then
+    raise Exception.Create('[TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue] Invalid arguments');
+
   if AKey = 'fill' then
   begin
     // Support for fill="url(#grad2)"
@@ -991,60 +1004,48 @@ begin
       lCurBrush := FindBrushDef_WithName(lDefName);
       if lCurBrush <> nil then
       begin
-        ADestEntity.Brush := lCurBrush.Brush;
+        lDestBrush^ := lCurBrush.Brush;
         Exit;
       end;
       Exit;
     end;
 
     // We store and restore the old alpha to support the "-opacity" element
-    if ADestEntity <> nil then
-    begin
-      OldAlpha := ADestEntity.Brush.Color.Alpha;
-      if ADestEntity.Brush.Style = bsClear then ADestEntity.Brush.Style := bsSolid;
-    end;
-    if ADestStyle <> nil then
-    begin
-      OldAlpha := ADestStyle.Brush.Color.Alpha;
-      if ADestStyle.Brush.Style = bsClear then ADestStyle.Brush.Style := bsSolid;
-    end;
+    OldAlpha := lDestBrush^.Color.Alpha;
+    if lDestBrush^.Style = bsClear then lDestBrush^.Style := bsSolid;
 
     if AValue = 'none'  then
     begin
-      if ADestEntity <> nil then ADestEntity.Brush.Style := fpcanvas.bsClear;
-      if ADestStyle <> nil then ADestStyle.Brush.Style := fpcanvas.bsClear;
+      lDestBrush^.Style := fpcanvas.bsClear;
     end
     else
     begin
-      if ADestEntity <> nil then
-      begin
-        ADestEntity.Brush.Color := ReadSVGColor(AValue);
-        ADestEntity.Brush.Color.Alpha := OldAlpha;
-      end;
-      if ADestStyle <> nil then
-      begin
-        ADestStyle.Brush.Color := ReadSVGColor(AValue);
-        ADestStyle.Brush.Color.Alpha := OldAlpha;
-      end;
+      lDestBrush^.Color := ReadSVGColor(AValue);
+      lDestBrush^.Color.Alpha := OldAlpha;
     end;
 
     Result := Result + [spbfBrushColor, spbfBrushStyle];
   end
   else if AKey = 'fill-rule' then
   begin
-    if AValue = 'evenodd' then
-      ADestEntity.WindingRule := vcmEvenOddRule else
-    if AValue = 'nonzero' then
-      ADestEntity.WindingRule  := vcmNonzeroWindingRule;  // to do: "inherit" missing here
+    if ADestEntity <> nil then
+    begin
+      if AValue = 'evenodd' then
+        ADestEntity.WindingRule := vcmEvenOddRule
+      else if AValue = 'nonzero' then
+        ADestEntity.WindingRule  := vcmNonzeroWindingRule;  // to do: "inherit" missing here
+    end;
   end
   else if AKey = 'fill-opacity' then
-    ADestEntity.Brush.Color.Alpha := StringFloatZeroToOneToWord(AValue)
+  begin
+    lDestBrush^.Color.Alpha := StringFloatZeroToOneToWord(AValue)
+  end
   // For linear gradient => stop-color:rgb(255,255,0);stop-opacity:1
   else if AKey = 'stop-color' then
   begin
-    Len := Length(ADestEntity.Brush.Gradient_colors);
-    SetLength(ADestEntity.Brush.Gradient_colors, Len+1);
-    ADestEntity.Brush.Gradient_colors[Len].Color := ReadSVGColor(AValue);
+    Len := Length(lDestBrush^.Gradient_colors);
+    SetLength(lDestBrush^.Gradient_colors, Len+1);
+    lDestBrush^.Gradient_colors[Len].Color := ReadSVGColor(AValue);
   end;
 end;
 
@@ -3511,7 +3512,7 @@ begin
   if lStr[Length(lStr)] = '%' then
   begin
     lStr := Copy(lStr, 1, Length(lStr)-1);
-    Result := StrToInt(lStr) * $FFFF div 100;
+    Result := Round(StrToFloat(lStr) * $FFFF / 100);
   end
   else Result := StrToInt(lStr) * $101;
 end;
