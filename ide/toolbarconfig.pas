@@ -190,10 +190,10 @@ begin
   pnlButtons.Color := clBtnFace;
   lblSelect.Caption := '';
   // load button images
-  TIDEImages.AssignImage(btnAdd.Glyph, 'arrow_right');
-  TIDEImages.AssignImage(btnRemove.Glyph, 'arrow_left');
-  TIDEImages.AssignImage(btnMoveUp.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(btnMoveDown.Glyph, 'arrow_down');
+  TIDEImages.AssignImage(btnAdd.Glyph, 'arrow__darkgreen_right');
+  TIDEImages.AssignImage(btnRemove.Glyph, 'arrow__darkred_left');
+  TIDEImages.AssignImage(btnMoveUp.Glyph, 'arrow__darkgreen_up');
+  TIDEImages.AssignImage(btnMoveDown.Glyph, 'arrow__darkgreen_down');
   TIDEImages.AssignImage(btnAddDivider.Glyph, 'menu_divider16');
 
   btnAddDivider.Caption := '---';
