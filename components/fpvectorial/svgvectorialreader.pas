@@ -1058,7 +1058,9 @@ begin
   end
   else if AKey = 'fill-opacity' then
   begin
-    lDestBrush^.Color.Alpha := StringFloatZeroToOneToWord(AValue)
+    lDestBrush^.Color.Alpha := StringFloatZeroToOneToWord(AValue);
+    if lDestBrush^.Color.Alpha = 0 then
+      lDestBrush^.Style := bsClear;
   end
   // For linear gradient => stop-color:rgb(255,255,0);stop-opacity:1
   else if AKey = 'stop-color' then
