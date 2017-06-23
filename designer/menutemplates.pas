@@ -161,6 +161,7 @@ var
   Double_DropDown_Text_Offset: Integer = 70;
   Gutter_Offset: Integer = 6;
   Gutter_X: Integer = 29;
+  Add_Icon_Width: Integer = 16;
 
 implementation
 
@@ -284,6 +285,7 @@ begin
   Double_DropDown_Text_Offset := DropDown_Text_Offset shl 1;
   Gutter_Offset := ScaleX(6, 96);
   Gutter_X := DropDown_Text_Offset - Gutter_Offset;
+  Add_Icon_Width := ScaleX(16, 96);
 end;
 
 { TMenuTemplate }
