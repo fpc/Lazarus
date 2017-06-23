@@ -3636,6 +3636,7 @@ begin
     piUnit:      DlgCaption := dlgMainViewUnits;
     piComponent: DlgCaption := dlgMainViewForms;
     piFrame:     DlgCaption := dlgMainViewFrames;
+    else         DlgCaption := '';
   end;
   Result := ShowViewUnitsDlg(ItemList, MultiSelect, MultiSelectCheckedState, DlgCaption, ItemType);
 end;
@@ -6830,7 +6831,9 @@ begin
   // try loading the ancestor first (unit, lfm and component instance)
 
   if AnUnitInfo.UnitResourceFileformat<>nil then
-    DefAncestorClass:=AnUnitInfo.UnitResourceFileformat.DefaultComponentClass;
+    DefAncestorClass:=AnUnitInfo.UnitResourceFileformat.DefaultComponentClass
+  else
+    DefAncestorClass:=nil;
   // use TForm as default ancestor
   if DefAncestorClass=nil then
     DefAncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
@@ -6838,8 +6841,7 @@ begin
   if (AncestorClass=nil) then begin
     IgnoreBtnText:='';
     if DefAncestorClass<>nil then
-      IgnoreBtnText:=Format(lisIgnoreUseAsAncestor, [DefAncestorClass.ClassName]
-        );
+      IgnoreBtnText:=Format(lisIgnoreUseAsAncestor, [DefAncestorClass.ClassName]);
 
     Result:=LoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
              OpenFlags,false,AncestorClass,AncestorUnitInfo,GrandAncestorClass,

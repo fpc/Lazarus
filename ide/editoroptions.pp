@@ -5082,6 +5082,7 @@ end;
 
 function TEditorOptions.GetTrimSpaceName(IndentType: TSynEditStringTrimmingType): string;
 begin
+  Result := '';
   case IndentType of
     settLeaveLine:
       Result := 'LeaveLine';

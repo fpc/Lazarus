@@ -2027,6 +2027,7 @@ end;
 
 function TBaseCompilerOptions.GetTargetFileExt: string;
 begin
+  Result:='';
   case ExecutableType of
   cetProgram:
     Result:=GetExecutableExt(fTargetOS);
