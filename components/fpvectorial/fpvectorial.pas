@@ -7,7 +7,6 @@ License: The same modified LGPL as the Free Pascal RTL
          See the file COPYING.modifiedLGPL for more details
 
 AUTHORS: Felipe Monteiro de Carvalho
-         Pedro Sol Pegorini L de Lima
 }
 unit fpvectorial;
 
@@ -5092,7 +5091,7 @@ begin
           begin
             if (Brush.Style = bsSolid) and (Length(FPolyStarts) > 1) then
               // Non-contiguous polygon (polygon with "holes") --> use special procedure
-              // Disadvantage: it can oly do solid fills!
+              // Disadvantage: it can only do solid fills!
               DrawPolygon(ADest, ARenderInfo, FPolyPoints, FPolyStarts, lRect)
             else
               {$IFDEF USE_LCL_CANVAS}

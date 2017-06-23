@@ -145,6 +145,8 @@ type
     CurX, CurY: Double;
     Data: TvVectorialPage;
     Doc: TvVectorialDocument;
+    // Path support for multiple polygons
+    LastPathStart: T2DPoint;
     function GetPath(AIndex: Integer): TPath;
   end;
 
@@ -152,7 +154,7 @@ type
 
   TvSVGVectorialReader = class(TvCustomVectorialReader)
   private
-    FPointSeparator, FCommaSeparator: TFormatSettings;
+    FPointSeparator: TFormatSettings;
     FSVGPathTokenizer: TSVGPathTokenizer;
     FLayerStylesKeys, FLayerStylesValues: TFPList; // of TStringList;
     // View box adjustment
@@ -163,8 +165,6 @@ type
     FCSSDefs: TFPList; // of TSVG_CSS_Style;
     // debug symbols
     FPathNumber: Integer;
-    // Path support for multiple polygons
-    FPathStart: T2DPoint;
     // BrushDefs functions
     function FindBrushDef_WithName(AName: string): TvEntityWithPenAndBrush;
     //
@@ -2309,12 +2309,18 @@ begin
     lCurPath.Brush.Style := bsClear;
     // Apply the layer style
     ApplyLayerStyles(AData, lCurPath);
+    // name
+    if lPaths.Count > 1 then
+      lCurPath.Name := Format('[%d]', [i]);
     // Add the pen/brush/name
     for i := 0 to ANode.Attributes.Length - 1 do
     begin
       lNodeName := ANode.Attributes.Item[i].NodeName;
       if lNodeName = 'id' then
-        lCurPath.Name := ANode.Attributes.Item[i].NodeValue
+      begin
+        if lPaths.Count = 1 then
+          lCurPath.Name := ANode.Attributes.Item[i].NodeValue;
+      end
       else if lNodeName = 'style' then
         ReadSVGStyle(AData, ANode.Attributes.Item[i].NodeValue, lCurPath)
       else if IsAttributeFromStyle(lNodeName) then
@@ -2333,13 +2339,22 @@ begin
   begin
     Result := lPaths.GetPath(0);
   end
-  else
+  else if lPaths.Count > 1 then
   begin
     Result := TvEntityWithSubEntities.Create(nil);
+
     for j := 0 to lPaths.Count-1 do
     begin
       lCurPath := lPaths.GetPath(j);
       TvEntityWithSubEntities(Result).AddEntity(lCurPath);
+    end;
+
+    // Add thename
+    for i := 0 to ANode.Attributes.Length - 1 do
+    begin
+      lNodeName := ANode.Attributes.Item[i].NodeName;
+      if lNodeName = 'id' then
+        TvEntityWithSubEntities(Result).Name := ANode.Attributes.Item[i].NodeValue;
     end;
   end;
 end;
@@ -2348,11 +2363,8 @@ end;
 function TvSVGVectorialReader.ReadPathFromString(AStr: string;
   AData: TvVectorialPage; ADoc: TvVectorialDocument): TvSVGPathList;
 var
-  X, Y, X2, Y2, X3, Y3: Double;
   lCurTokenType, lLastCommandToken: TSVGTokenType;
-  lDebugStr: String;
   lTmpTokenType: TSVGTokenType;
-  lIsFirstPathMove, lLastPathClosed: Boolean;
 begin
   Result := TvSVGPathList.Create;
   FSVGPathTokenizer.ClearTokens;
@@ -2394,9 +2406,9 @@ procedure TvSVGVectorialReader.ReadNextPathCommand(ACurTokenType: TSVGTokenType;
   APaths: TvSVGPathList; var CurX, CurY: Double);
 var
   X, Y, X2, Y2, X3, Y3, XQ, YQ, Xnew, Ynew, cx, cy, phi, tmp: Double;
+  PathEndX, PathEndY: Double;
   LargeArcFlag, SweepFlag, LeftmostEllipse, ClockwiseArc: Boolean;
   lCurTokenType: TSVGTokenType;
-  lDebugStr: String;
   lToken5Before, lToken7Before: TSVGTokenType;
   lCorrectPreviousToken: Boolean;
   lPrevRelative, lCurRelative: Boolean;
@@ -2435,9 +2447,10 @@ begin
     // to close the subpolygon correctly later.
     if APaths.IsFirstPathMove then
     begin
-      FPathStart.X := APaths.CurX;
-      FPathStart.Y := APaths.CurY;
-      APaths.IsFirstPathMove := false;
+      APaths.LastPathStart.X := APaths.CurX;
+      APaths.LastPathStart.Y := APaths.CurY;
+      APaths.IsFirstPathMove := False;
+      APaths.LastPathClosed := False;
     end;
 
     Inc(APaths.CurTokenIndex, 3);
@@ -2448,10 +2461,15 @@ begin
   else if lCurTokenType = sttClosePath then
   begin
     // Repeat the first point of the subpolygon
-    CurX := FPathStart.X;
-    CurY := FPathStart.Y;
-    APaths.Data.AddLineToPath(CurX, CurY);
+    PathEndX := APaths.LastPathStart.X;
+    PathEndY := APaths.LastPathStart.Y;
+    CurX := PathEndX;
+    CurY := PathEndY;
+    APaths.LastPathStart.X := 0;
+    APaths.LastPathStart.Y := 0;
+    APaths.Data.AddLineToPath(PathEndX, PathEndY);
     APaths.LastPathClosed := True;
+    APaths.IsFirstPathMove := True;
     APaths.Add(AData.EndPath(True));
     AData.StartPath();
 

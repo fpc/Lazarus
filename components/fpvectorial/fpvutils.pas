@@ -637,39 +637,39 @@ begin
 
     case curSegment.SegmentType of
       stMoveTo:
-        begin
-          // Store current length of points array as polygon start index
-          if numPolygons >= Length(PolygonStartIndexes) then
-            SetLength(PolygonstartIndexes, Length(PolygonStartIndexes) + POINT_BUFFER);
-          PolygonStartIndexes[numPolygons] := numPoints;
-          inc(numPolygons);
+      begin
+        // Store current length of points array as polygon start index
+        if numPolygons >= Length(PolygonStartIndexes) then
+          SetLength(PolygonstartIndexes, Length(PolygonStartIndexes) + POINT_BUFFER);
+        PolygonStartIndexes[numPolygons] := numPoints;
+        inc(numPolygons);
 
-          // Store current point as first point of a new polygon
-          coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
-          coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
-          if numPoints >= Length(PolygonPoints) then
-            SetLength(PolygonPoints, Length(PolygonPoints) + POINT_BUFFER);
-          PolygonPoints[numPoints] := Point(coordX, coordY);
-          inc(numPoints);
-        end;
+        // Store current point as first point of a new polygon
+        coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
+        coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
+        if numPoints >= Length(PolygonPoints) then
+          SetLength(PolygonPoints, Length(PolygonPoints) + POINT_BUFFER);
+        PolygonPoints[numPoints] := Point(coordX, coordY);
+        inc(numPoints);
+      end;
 
       st2DLine, st3DLine, st2DLineWithPen:
-        begin
-          // Add current point to current polygon
-          coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
-          coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
-          if numPoints >= Length(PolygonPoints) then
-            SetLength(PolygonPoints, Length(PolygonPoints) + POINT_BUFFER);
-          PolygonPoints[numPoints] := Point(coordX, coordY);
-          inc(numPoints);
-        end;
+      begin
+        // Add current point to current polygon
+        coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
+        coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
+        if numPoints >= Length(PolygonPoints) then
+          SetLength(PolygonPoints, Length(PolygonPoints) + POINT_BUFFER);
+        PolygonPoints[numPoints] := Point(coordX, coordY);
+        inc(numPoints);
+      end;
 
       st2DBezier, st3DBezier, st2DEllipticalArc:
-        begin
-          SetLength(PolygonPoints, numPoints);
-          curSegment.AddToPoints(ADestX, ADestY, AMulX, AMulY, PolygonPoints);
-          numPoints := Length(PolygonPoints);
-        end;
+      begin
+        SetLength(PolygonPoints, numPoints);
+        curSegment.AddToPoints(ADestX, ADestY, AMulX, AMulY, PolygonPoints);
+        numPoints := Length(PolygonPoints);
+      end;
     end;
   end;
   SetLength(PolygonPoints, numPoints);
@@ -763,7 +763,8 @@ begin
   list := TFPList.Create;
   if ACoordIsX then
   begin
-    for p := 0 to High(APolyStarts) do begin
+    for p := 0 to High(APolyStarts) do
+    begin
       firstj := APolyStarts[p];
       lastj := IfThen(p = High(APolyStarts), High(APoints), APolyStarts[p+1]-1);
       // Skip non-closed polygons
