@@ -910,7 +910,10 @@ begin
         if box=FRootBox then
           FRootBox:=nil;
         Application.ReleaseComponent(box);
+        box:=nil;
       end;
+      if Assigned(box) then
+        box.LocateShadows;
       UpdateBoxLocationsAndSizes;
       SetSelectedMenuItem(nearestMI, False, True);
       FDesigner.FGui.UpdateStatistics;
