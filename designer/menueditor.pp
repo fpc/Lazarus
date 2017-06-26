@@ -10,7 +10,8 @@ uses
   ActnList, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
   Forms, Graphics, ImgList, Themes, LCLType, LCLIntf, LCLProc,
   // IdeIntf
-  FormEditingIntf, IDEWindowIntf, ComponentEditors, IDEDialogs, PropEdits,
+  FormEditingIntf, IDEWindowIntf, IDEImagesIntf, ComponentEditors, IDEDialogs,
+  PropEdits,
   // IDE
   LazarusIDEStrConsts, LazIDEIntf, MenuDesignerBase, MenuEditorForm, MenuShortcutDisplay,
   MenuTemplates, MenuResolveConflicts;
@@ -501,7 +502,7 @@ begin
     if selMI.IsInMenuBar then begin
       if (selShadow.Width > w) then
         w:=selShadow.Width;
-      SetBounds(selShadow.Left, MenuBar_Height + 1, w, MenuBar_Height);
+      SetBounds(selShadow.Left, MenuBar_Height + 1, w, DropDown_Height);
       selShadow.ShowingBottomFake:=True;
       selShadow.BottomFake:=Self;
       selShadow.ShowingRightFake:=False;
@@ -556,7 +557,7 @@ begin
       selShadow.ShowingBottomFake:=False;
     end
     else begin
-      w:=selShadow.ParentBox.Width - Gutter_X;
+      w:=selShadow.ParentBox.Width - Gutter_X - 1;
       if (FMinWidth > w) then
         w:=FMinWidth;
       SetBounds(selShadow.ParentBox.Left + selShadow.Left + Gutter_X,
@@ -566,6 +567,7 @@ begin
       selShadow.BottomFake:=Self;
       selShadow.ShowingRightFake:=False;
     end;
+    Invalidate;
     Show;
   end;
 end;
@@ -580,9 +582,9 @@ begin
     SetInitialBounds(0, 0, cx, cy);
   BorderStyle:=bsNone;
   Visible:=False;
-  Canvas.Pen.Color:=clBtnShadow;
+  Canvas.Pen.Color:=clBtnText;
   Canvas.Pen.Style:=psDot;
-  Canvas.Font.Color:=clBtnShadow;
+  Canvas.Font.Color:=clBtnText;
   Canvas.Brush.Color:=clBtnFace;
   Parent:=anOwner;
 end;
@@ -596,17 +598,28 @@ end;
 procedure TFake.Paint;
 var
   r: TRect;
-  sz: TSize;
-  y: integer;
+  TextSize: TSize;
+  TextPoint, AddBmpPoint: TPoint;
+  AddBmp: TCustomBitmap;
 begin
   r:=ClientRect;
   Canvas.FillRect(r);
   Canvas.RoundRect(r, 3, 3);
-  sz:=Canvas.TextExtent(Caption);
-  y:=(r.Bottom - r.Top - sz.cy) div 2;
-  if (y < 2) then
-    y:=2;
-  Canvas.TextOut((r.Right - r.Left - sz.cx) div 2, y, Caption);
+  try
+    AddBmp:=TIDEImages.CreateImage('laz_add');
+    TextSize:=Canvas.TextExtent(Caption);
+    TextPoint.y:=(r.Bottom - r.Top - TextSize.cy) div 2;
+    if (TextPoint.y < 1) then
+      TextPoint.y:=1;
+    TextPoint.x:=(r.Right - r.Left - TextSize.cx + AddBmp.Width) div 2;
+    Canvas.TextRect(r, TextPoint.x, TextPoint.y, Caption);
+
+    AddBmpPoint.x:=(TextPoint.x - AddBmp.Width) div 2;
+    AddBmpPoint.y:=(r.Bottom - r.Top - AddBmp.Height) div 2;
+    Canvas.Draw(AddBmpPoint.x, AddBmpPoint.y, AddBmp);
+  finally
+    AddBmp.Free;
+  end;
 end;
 
 procedure TFake.Refresh;
@@ -617,7 +630,9 @@ end;
 procedure TFake.TextChanged;
 begin
   inherited TextChanged;
-  FMinWidth:=FShadowMenu.GetStringWidth(Caption, False) + Double_MenuBar_Text_Offset;
+  FMinWidth:=FShadowMenu.GetStringWidth(Caption, False) +
+             Double_MenuBar_Text_Offset +
+             Add_Icon_Width;
 end;
 
 { TShadowMenu }
@@ -907,7 +922,10 @@ begin
         if box=FRootBox then
           FRootBox:=nil;
         Application.ReleaseComponent(box);
+        box:=nil;
       end;
+      if Assigned(box) then
+        box.LocateShadows;
       UpdateBoxLocationsAndSizes;
       SetSelectedMenuItem(nearestMI, False, True);
       FDesigner.FGui.UpdateStatistics;
@@ -1934,7 +1952,6 @@ begin
       Canvas.FillRect(r);
       Canvas.Frame(r);
     end;
-    LocateShadows;
   EndUpdate;
 end;
 
@@ -2100,7 +2117,7 @@ begin
   if FRealItem.IsInMenuBar then
     Result:=w + Double_MenuBar_Text_Offset + FShadowMenu.GetMenuBarIconWidth(FRealItem)
   else
-    Result:=w + Double_DropDown_Text_Offset + GetShortcutWidth;
+    Result:=w + Double_DropDown_Text_Offset + GetShortcutWidth + Add_Icon_Width;
 end;
 
 function TShadowItem.HasChildBox(out aChildBox: TShadowBoxBase): boolean;
