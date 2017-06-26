@@ -491,7 +491,7 @@ begin
     if selMI.IsInMenuBar then begin
       if (selShadow.Width > w) then
         w:=selShadow.Width;
-      SetBounds(selShadow.Left, MenuBar_Height + 1, w, MenuBar_Height);
+      SetBounds(selShadow.Left, MenuBar_Height + 1, w, DropDown_Height);
       selShadow.ShowingBottomFake:=True;
       selShadow.BottomFake:=Self;
       selShadow.ShowingRightFake:=False;
@@ -585,7 +585,7 @@ end;
 
 procedure TFake.Paint;
 var
-  r, TextRect: TRect;
+  r: TRect;
   TextSize: TSize;
   TextPoint, AddBmpPoint: TPoint;
   AddBmp: TCustomBitmap;
@@ -600,9 +600,7 @@ begin
     if (TextPoint.y < 1) then
       TextPoint.y:=1;
     TextPoint.x:=(r.Right - r.Left - TextSize.cx + AddBmp.Width) div 2;
-    TextRect := ClientRect;
-    InflateRect(TextRect, 1, 1);
-    Canvas.TextRect(TextRect, TextPoint.x, TextPoint.y, Caption);
+    Canvas.TextRect(r, TextPoint.x, TextPoint.y, Caption);
 
     AddBmpPoint.x:=(TextPoint.x - AddBmp.Width) div 2;
     AddBmpPoint.y:=(r.Bottom - r.Top - AddBmp.Height) div 2;
