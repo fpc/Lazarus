@@ -139,7 +139,7 @@ begin
   TextToFindLabel.Caption:=dlgTextToFind;
   ReplaceTextComboBox.Text:='';
   ReplaceWithCheckbox.Caption:=dlgReplaceWith;
-  TIDEImages.AssignImage(EnableAutoCompleteSpeedButton.Glyph, 'menu_stepinto');
+  TIDEImages.AssignImage(EnableAutoCompleteSpeedButton.Glyph, 'autocomplete');
   OptionsGroupBox.Caption:=lisOptions;
 
   with CaseSensitiveCheckBox do begin
