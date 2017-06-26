@@ -103,7 +103,7 @@ type
   TOpenGlCtrlMakeCurrentEvent = procedure(Sender: TObject;
                                           var Allow: boolean) of object;
 
-  TOpenGLControlOption = (ocoMacRetinaMode);
+  TOpenGLControlOption = (ocoMacRetinaMode, ocoRenderAtDesignTime);
   TOpenGLControlOptions = set of TOpenGLControlOption;
 
   { TCustomOpenGLControl }
@@ -111,7 +111,7 @@ type
     You can share opengl contexts. For example:
     Assume OpenGLControl2 and OpenGLControl3 should share the same as
     OpenGLControl1. Then set
-    
+
         OpenGLControl2.SharedControl:=OpenGLControl1;
         OpenGLControl3.SharedControl:=OpenGLControl1;
 
@@ -160,6 +160,7 @@ type
     procedure SetStencilBits(const AValue: Cardinal);
     procedure SetAUXBuffers(const AValue: Cardinal);
     procedure SetSharedControl(const AValue: TCustomOpenGLControl);
+    function IsOpenGLRenderAllowed: boolean;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
@@ -203,11 +204,11 @@ type
       Value <= 1 means that we use 1 sample per pixel, which means no anti-aliasing.
       Higher values mean anti-aliasing. Exactly which values are supported
       depends on GPU, common modern GPUs support values like 2 and 4.
-      
+
       If this is > 1, and we will not be able to create OpenGL
       with multi-sampling, we will fallback to normal non-multi-sampled context.
-      You can query OpenGL values GL_SAMPLE_BUFFERS_ARB and GL_SAMPLES_ARB 
-      (see ARB_multisample extension) to see how many samples have been 
+      You can query OpenGL values GL_SAMPLE_BUFFERS_ARB and GL_SAMPLES_ARB
+      (see ARB_multisample extension) to see how many samples have been
       actually allocated for your context. }
     property MultiSampling: Cardinal read FMultiSampling write SetMultiSampling default 1;
 
@@ -339,9 +340,27 @@ begin
 end;
 
 procedure TCustomOpenGLControl.SetOptions(AValue: TOpenGLControlOptions);
+var
+  RemovedRenderAtDesignTime: boolean;
 begin
   if FOptions=AValue then Exit;
+
+  RemovedRenderAtDesignTime:=
+         (ocoRenderAtDesignTime in FOptions) and
+    (not (ocoRenderAtDesignTime in AValue));
+
   FOptions:=AValue;
+
+  { if you remove the flag ocoRenderAtDesignTime at design-time,
+    we need to destroy the handle. The call to OpenGLAttributesChanged
+    would not do this, so do it explicitly by calling ReCreateWnd
+    (ReCreateWnd will destroy handle, and not create new one,
+    since IsOpenGLRenderAllowed = false). }
+  if (csDesigning in ComponentState) and
+     RemovedRenderAtDesignTime and
+     HandleAllocated then
+    ReCreateWnd(Self);
+
   OpenGLAttributesChanged();
 end;
 
@@ -433,8 +452,16 @@ begin
     end;
   end;
   // recreate handle if needed
-  if HandleAllocated and (not (csDesigning in ComponentState)) then
+  if HandleAllocated and IsOpenGLRenderAllowed then
     ReCreateWnd(Self);
+end;
+
+{ OpenGL rendering allowed, because not in design-mode or because we
+  should render even in design-mode. }
+function TCustomOpenGLControl.IsOpenGLRenderAllowed: boolean;
+begin
+  Result := (not (csDesigning in ComponentState)) or
+    (ocoRenderAtDesignTime in Options);
 end;
 
 procedure TCustomOpenGLControl.WMPaint(var Message: TLMPaint);
@@ -442,7 +469,7 @@ begin
   Include(FControlState, csCustomPaint);
   inherited WMPaint(Message);
   //debugln('TCustomGTKGLAreaControl.WMPaint A ',dbgsName(Self),' ',dbgsName(FCanvas));
-  if (csDesigning in ComponentState) and (FCanvas<>nil) then begin
+  if (not IsOpenGLRenderAllowed) and (FCanvas<>nil) then begin
     with FCanvas do begin
       if Message.DC <> 0 then
         Handle := Message.DC;
@@ -482,8 +509,8 @@ end;
 
 procedure TCustomOpenGLControl.OpenGLAttributesChanged;
 begin
-  if HandleAllocated
-  and ([csLoading,csDesigning,csDestroying]*ComponentState=[]) then
+  if HandleAllocated and
+    ( ([csLoading,csDestroying]*ComponentState=[]) and IsOpenGLRenderAllowed ) then
     RecreateWnd(Self);
 end;
 
@@ -508,7 +535,7 @@ begin
   FMultiSampling:=1;
   FDepthBits:=DefaultDepthBits;
   ControlStyle:=ControlStyle-[csSetCaption];
-  if (csDesigning in ComponentState) then begin
+  if not IsOpenGLRenderAllowed then begin
     FCanvas := TControlCanvas.Create;
     TControlCanvas(FCanvas).Control := Self;
   end else
@@ -538,7 +565,7 @@ procedure TCustomOpenGLControl.Paint;
 begin
   if IsVisible and HandleAllocated then begin
     UpdateFrameTimeDiff;
-    if ([csDesigning,csDestroying]*ComponentState=[]) then begin
+    if IsOpenGLRenderAllowed and ([csDestroying]*ComponentState=[]) then begin
       if not MakeCurrent then exit;
       if AutoResizeViewport then
         LOpenGLViewport(Handle,0,0,Width,Height);
@@ -551,7 +578,8 @@ end;
 procedure TCustomOpenGLControl.RealizeBounds;
 begin
   if IsVisible and HandleAllocated
-  and ([csDesigning,csDestroying]*ComponentState=[])
+  and IsOpenGLRenderAllowed
+  and ([csDestroying]*ComponentState=[])
   and AutoResizeViewport then begin
     if MakeCurrent then
       LOpenGLViewport(Handle,0,0,Width,Height);
@@ -573,7 +601,7 @@ function TCustomOpenGLControl.MakeCurrent(SaveOldToStack: boolean): boolean;
 var
   Allowed: Boolean;
 begin
-  if csDesigning in ComponentState then exit(false);
+  if not IsOpenGLRenderAllowed then exit(false);
   if Assigned(FOnMakeCurrent) then begin
     Allowed:=true;
     OnMakeCurrent(Self,Allowed);
@@ -642,14 +670,14 @@ var
   OpenGlControl: TCustomOpenGLControl;
   AttrControl: TCustomOpenGLControl;
 begin
-  if csDesigning in AWinControl.ComponentState then
+  OpenGlControl:=AWinControl as TCustomOpenGLControl;
+  if not OpenGlControl.IsOpenGLRenderAllowed then
   begin
     // do not use "inherited CreateHandle", because the LCL changes the hierarchy at run time
     Result:=TWSWinControlClass(ClassParent).CreateHandle(AWinControl,AParams);
   end
   else
   begin
-    OpenGlControl:=AWinControl as TCustomOpenGLControl;
     if OpenGlControl.SharedControl<>nil then
       AttrControl:=OpenGlControl.SharedControl
     else
@@ -695,4 +723,3 @@ initialization
   RegisterWSComponent(TCustomOpenGLControl,TWSOpenGLControl);
 
 end.
-
