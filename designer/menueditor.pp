@@ -1941,7 +1941,6 @@ begin
       Canvas.FillRect(r);
       Canvas.Frame(r);
     end;
-    LocateShadows;
   EndUpdate;
 end;
 
