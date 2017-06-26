@@ -1700,28 +1700,31 @@ var
 begin
   if Key = VK_UNKNOWN then exit;
 
-  if Sender is TWinControl then
-  begin
-    AControl := TWinControl(Sender);
-    //debugln('TApplication.ControlKeyUp A ',DbgSName(AControl),' Key=',dbgs(Key),' Shift=',dbgs(Shift));
-    if FLastKeyDownKey = VK_UNKNOWN then
+  try
+    if Sender is TWinControl then
     begin
-      // key was already handled in key down
-      //debugln('TApplication.ControlKeyUp key was handled in key down');
-      Exit;
-    end;
-    if (Key <> FLastKeyDownKey) or (Shift <> FLastKeyDownShift) or (AControl <> FLastKeyDownSender) then
-    begin
-      // a key up, without key down
-      //debugln('TApplication.ControlKeyUp key was handled in key down or in key up');
-      Exit;
-    end;
+      AControl := TWinControl(Sender);
+      //debugln('TApplication.ControlKeyUp A ',DbgSName(AControl),' Key=',dbgs(Key),' Shift=',dbgs(Shift));
+      if FLastKeyDownKey = VK_UNKNOWN then
+      begin
+        // key was already handled in key down
+        //debugln('TApplication.ControlKeyUp key was handled in key down');
+        Exit;
+      end;
+      if (Key <> FLastKeyDownKey) or (Shift <> FLastKeyDownShift) or (AControl <> FLastKeyDownSender) then
+      begin
+        // a key up, without key down
+        //debugln('TApplication.ControlKeyUp key was handled in key down or in key up');
+        Exit;
+      end;
 
-    // handle special navigation keys
-    DoReturnKey(AControl, Key, Shift);
-    DoEscapeKey(AControl, Key, Shift);
+      // handle special navigation keys
+      DoReturnKey(AControl, Key, Shift);
+      DoEscapeKey(AControl, Key, Shift);
+    end;
+  finally
+    FLastKeyDownKey := VK_UNKNOWN;
   end;
-  FLastKeyDownKey := VK_UNKNOWN;
 end;
 
 procedure TApplication.AddOnIdleHandler(Handler: TIdleEvent;
@@ -2148,9 +2151,12 @@ begin
         //debugln('TApplication.DoReturnKey VK_RETURN ', Acontrol.Name);
         //Setting Key to VK_UKNOWN prevents the calling of KeyUpAfterInterface,
         //which tiggers EditingDone when Key = VK_RETURN, so we call it here
-        AControl.EditingDone;
-        lDefaultControl.ExecuteDefaultAction;
-        Key := VK_UNKNOWN;
+        try
+          AControl.EditingDone;
+          lDefaultControl.ExecuteDefaultAction;
+        finally
+          Key := VK_UNKNOWN;
+        end;
       end;
     end;
   end;
