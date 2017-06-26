@@ -556,6 +556,7 @@ begin
       selShadow.BottomFake:=Self;
       selShadow.ShowingRightFake:=False;
     end;
+    Invalidate;
     Show;
   end;
 end;
