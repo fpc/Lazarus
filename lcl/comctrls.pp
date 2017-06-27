@@ -2447,6 +2447,8 @@ type
     constructor Create(ACoolBar: TCustomCoolBar);
     function Add: TCoolBand;
     function FindBand(AControl: TControl): TCoolBand;
+    function FindBandIndex(AControl: TControl): Integer;
+  public
     property Items[Index: Integer]: TCoolBand read GetItem write SetItem; default;
   end;
 

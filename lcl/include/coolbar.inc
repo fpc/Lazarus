@@ -296,7 +296,17 @@ var i: Integer;
 begin
   Result := Nil;
   for i := 0 to Count-1 do
-    if GetItem(i).FControl = AControl then Exit(GetItem(i));
+    if GetItem(i).FControl = AControl then
+      Exit(GetItem(i));
+end;
+
+function TCoolBands.FindBandindex(AControl: TControl): Integer;
+var i: Integer;
+begin
+  Result := -1;
+  for i := 0 to Count-1 do
+    if GetItem(i).FControl = AControl then
+      Exit(i);
 end;
 
 procedure TCoolBands.Notify(aItem: TCollectionItem; aAction: TCollectionNotification);
@@ -363,6 +373,7 @@ begin
   FShowText := True;
   FThemed := True;
   FVerticalSpacing := cDefVertSpacing;
+  UseDockManager := True;
 end;
 
 destructor TCustomCoolBar.Destroy;
@@ -867,7 +878,7 @@ begin
   end;
   MouseToBandPos(X, Y, aBand, aGrabber);
   FDraggedBandIndex := aBand;
-  if (aBand >= 0) and (length(FVisiBands) > 1) then begin  //hit any Band
+  if (aBand >= 0) and (length(FVisiBands) >= 1) then begin  //hit any Band
     if not aGrabber or IsFirstAtRow(aBand)
       or FFixedSize or FVisiBands[aBand-1].FFixedSize then begin
       if not FFixedOrder then FDragBand := dbMove;  //move Band
@@ -889,9 +900,12 @@ end;
 procedure TCustomCoolBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 var aBand: Integer;
     aGrabber: Boolean;
+    aRect: TRect;
+const
+    cUserDragArea = 64;
 begin
   inherited MouseMove(Shift, X, Y);
-  if length(FVisiBands) > 1 then begin
+  if length(FVisiBands) > 0 then begin
     case FDragBand of
       dbNone: begin
         MouseToBandPos(X, Y, aBand, aGrabber);
@@ -917,7 +931,13 @@ begin
             Y-FDragInitPos-FVisiBands[FDraggedBandIndex-1].FLeft
       end;
       dbMove: begin
-        Cursor := crDrag;
+        if FDraggedBandIndex>-1 then begin
+          Cursor := crDrag;
+          aRect := ClientRect;
+          InflateRect(aRect, cUserDragArea, cUserDragArea);
+          if not PtInRect(aRect, Point(X, Y)) then
+            DragManager.DragStart(FVisiBands[FDraggedBandIndex].Control, True, -1);
+        end;
       end;
     end;
   end;
@@ -1311,13 +1331,17 @@ begin
 end;
 
 procedure TCustomCoolBar.RemoveControl(AControl: TControl);
-var aBand: TCoolBand;
+var aBandIndex:Integer;
 begin
   inherited RemoveControl(AControl);
-  aBand := Bands.FindBand(AControl);
-  if Assigned(aBand) then begin
+  aBandIndex := Bands.FindBandIndex(AControl);
+  if aBandIndex > -1 then
+  begin
     //DebugLn('TCoolBar.RemoveControl: Comp=' + AControl.Name + ', class=' + AControl.ClassName);
-    aBand.FControl := Nil;
+    Bands.Items[aBandIndex].Control := Nil;
+    FDragBand:=dbNone;
+    FDraggedBandIndex:=-1;
+    Bands.Delete(aBandIndex);
     CalculateAndAlign;
     Invalidate;
   end;
