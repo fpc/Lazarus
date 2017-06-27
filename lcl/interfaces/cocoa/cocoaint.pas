@@ -36,7 +36,7 @@ uses
   LCLPlatformDef, InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
-  CocoaProc, cocoa_extra, CocoaWSMenus, CocoaWSForms,
+  cocoa_extra, CocoaWSMenus, CocoaWSForms,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,

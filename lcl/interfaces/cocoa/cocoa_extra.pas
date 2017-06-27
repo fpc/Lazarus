@@ -63,6 +63,12 @@ type
     procedure setAppleMenu(AMenu: NSMenu); message 'setAppleMenu:';
   end;}
 
+  NSOperatingSystemVersion = record
+    majorVersion: NSInteger;
+    minorVersion: NSInteger;
+    patchVersion: NSInteger;
+  end;
+
 implementation
 
 end.

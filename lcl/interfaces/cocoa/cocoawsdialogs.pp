@@ -202,7 +202,8 @@ var
     lFilter.setTarget(lFilter);
     lFilter.setAction(objcselector('comboboxAction:'));
     lFilter.updateFilterList();
-    lFilter.setDialogFilter(0);
+    lFilter.lastSelectedItemIndex := FileDialog.FilterIndex-1;
+    lFilter.setDialogFilter(lFilter.lastSelectedItemIndex);
 
     accessoryView.addSubview(lText.autorelease);
     accessoryView.addSubview(lFilter.autorelease);
@@ -261,6 +262,8 @@ begin
         FileDialog.Files.Add(NSStringToString(
           NSURL(openDlg.URLs.objectAtIndex(i)).path));
       FileDialog.UserChoice := mrOk;
+      if lFilter <> nil then
+        FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
     end;
   end
   else if FileDialog.FCompStyle = csSaveFileDialog then
@@ -278,8 +281,11 @@ begin
       FileDialog.FileName := NSStringToString(saveDlg.URL.path);
       FileDialog.Files.Clear;
       FileDialog.UserChoice := mrOk;
+      if lFilter <> nil then
+        FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
     end;
   end;
+
 
   // release everything
   LocalPool.Release;
@@ -646,7 +652,7 @@ procedure TCocoaFilterComboBox.setDialogFilter(ASelectedFilterIndex: Integer);
 var
   lCurFilter: TStringList;
   ns: NSString;
-  i: Integer;
+  i, lOSVer: Integer;
   lStr: String;
 begin
   if Filters = nil then Exit;
@@ -676,7 +682,11 @@ begin
   DialogHandle.validateVisibleColumns();
   // work around for bug in validateVisibleColumns() in Mavericks till 10.10.2
   // see https://bugs.freepascal.org/view.php?id=28687
-  reloadNSPanelBrowser(DialogHandle, IsOpenDialog);
+  lOSVer := GetMacOSXVersion();
+  if (lOSVer >= $090000) and (lOSVer <= $0A0A02) then
+  begin
+    reloadNSPanelBrowser(DialogHandle, IsOpenDialog);
+  end;
 
   // Felipe: setAllowedFileTypes generates misterious crashes on dialog close after combobox change if uncommented :(
   // DialogHandle.setAllowedFileTypes(NSFilters);

@@ -8,7 +8,6 @@ uses
   cocoagdiobjects{%H-},
   cocoaint{%H-},
   cocoaprivate{%H-},
-  cocoaproc{%H-},
   cocoathemes{%H-},
   cocoautils{%H-},
   cocoawsbuttons{%H-},

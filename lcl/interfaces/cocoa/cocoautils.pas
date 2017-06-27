@@ -8,7 +8,8 @@ interface
 uses
   classes,
   MacOSAll, CocoaAll,
-  Types, LCLType, LCLProc, menus, forms, controls;
+  SysUtils, Types, LCLType, LCLClasses, LCLProc, menus,//LMessages,
+  Controls, Forms, Graphics, Math, GraphType;
 
 const
   LCLEventSubTypeMessage = MaxShort - 1;
@@ -74,6 +75,25 @@ const
 
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
 function CFStringToString(AString: CFStringRef): String;
+
+// Missing things from NSTableColumns.inc
+const
+  NSTableColumnAutoresizingMask = 1 shl 0;
+  NSTableColumnUserResizingMask = 1 shl 1;
+
+{$I mackeycodes.inc}
+
+function VirtualKeyCodeToMac(AKey: Word): Word;
+
+procedure FillStandardDescription(out Desc: TRawImageDescription);
+
+procedure CreateCFString(const S: String; out AString: CFStringRef);
+procedure CreateCFString(const Data: CFDataRef; Encoding: CFStringEncoding; out AString: CFStringRef);
+procedure FreeCFString(var AString: CFStringRef);
+function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): CFDataRef;
+
+function GetCurrentEventTime: double;
+function GetMacOSXVersion: Integer;
 
 implementation
 
@@ -184,40 +204,6 @@ begin
     ShiftKeyMask := ShiftKeyMask + NSControlKeyMask;
   if ssMeta in s then
     ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
-end;
-
-
-
-function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
-var
-  Str: Pointer;
-  StrSize: CFIndex;
-  StrRange: CFRange;
-begin
-  if AString = nil then
-  begin
-    Result := '';
-    Exit;
-  end;
-
-  // Try the quick way first
-  Str := CFStringGetCStringPtr(AString, Encoding);
-  if Str <> nil then
-    Result := PChar(Str)
-  else
-  begin
-    // if that doesn't work this will
-    StrRange.location := 0;
-    StrRange.length := CFStringGetLength(AString);
-
-    CFStringGetBytes(AString, StrRange, Encoding,
-      Ord('?'), False, nil, 0, StrSize);
-    SetLength(Result, StrSize);
-
-    if StrSize > 0 then
-      CFStringGetBytes(AString, StrRange, Encoding,
-        Ord('?'), False, @Result[1], StrSize, StrSize);
-  end;
 end;
 
 function CFStringToString(AString: CFStringRef): String;
@@ -450,7 +436,268 @@ begin
   Result := NSStringToString(self.className);
 end;
 
-initialization
+{------------------------------------------------------------------------------
+  Name:    VirtualKeyCodeToMac
+  Returns: The Mac virtual key (MK_) code for the specified virtual
+  key code (VK_) or 0
+ ------------------------------------------------------------------------------}
+function VirtualKeyCodeToMac(AKey: Word): Word;
+begin
+  case AKey of
+  VK_BACK      : Result := MK_BACKSPACE;
+  VK_TAB       : Result := MK_TAB;
+  VK_RETURN    : Result := MK_ENTER;
+  VK_PAUSE     : Result := MK_PAUSE;
+  VK_CAPITAL   : Result := MK_CAPSLOCK;
+  VK_ESCAPE    : Result := MK_ESC;
+  VK_SPACE     : Result := MK_SPACE;
+  VK_PRIOR     : Result := MK_PAGUP;
+  VK_NEXT      : Result := MK_PAGDN;
+  VK_END       : Result := MK_END;
+  VK_HOME      : Result := MK_HOME;
+  VK_LEFT      : Result := MK_LEFT;
+  VK_UP        : Result := MK_UP;
+  VK_RIGHT     : Result := MK_RIGHT;
+  VK_DOWN      : Result := MK_DOWN;
+  VK_SNAPSHOT  : Result := MK_PRNSCR;
+  VK_INSERT    : Result := MK_INS;
+  VK_DELETE    : Result := MK_DEL;
+  VK_HELP      : Result := MK_HELP;
+  VK_SLEEP     : Result := MK_POWER;
+  VK_NUMPAD0   : Result := MK_NUMPAD0;
+  VK_NUMPAD1   : Result := MK_NUMPAD1;
+  VK_NUMPAD2   : Result := MK_NUMPAD2;
+  VK_NUMPAD3   : Result := MK_NUMPAD3;
+  VK_NUMPAD4   : Result := MK_NUMPAD4;
+  VK_NUMPAD5   : Result := MK_NUMPAD5;
+  VK_NUMPAD6   : Result := MK_NUMPAD6;
+  VK_NUMPAD7   : Result := MK_NUMPAD7;
+  VK_NUMPAD8   : Result := MK_NUMPAD8;
+  VK_NUMPAD9   : Result := MK_NUMPAD9;
+  VK_MULTIPLY  : Result := MK_PADMULT;
+  VK_ADD       : Result := MK_PADADD;
+  VK_SEPARATOR : Result := MK_PADDEC;
+  VK_SUBTRACT  : Result := MK_PADSUB;
+  VK_DECIMAL   : Result := MK_PADDEC;
+  VK_DIVIDE    : Result := MK_PADDIV;
+  VK_F1        : Result := MK_F1;
+  VK_F2        : Result := MK_F2;
+  VK_F3        : Result := MK_F3;
+  VK_F4        : Result := MK_F4;
+  VK_F5        : Result := MK_F5;
+  VK_F6        : Result := MK_F6;
+  VK_F7        : Result := MK_F7;
+  VK_F8        : Result := MK_F8;
+  VK_F9        : Result := MK_F9;
+  VK_F10       : Result := MK_F10;
+  VK_F11       : Result := MK_F11;
+  VK_F12       : Result := MK_F12;
+  VK_F13       : Result := MK_F13;
+  VK_F14       : Result := MK_F14;
+  VK_F15       : Result := MK_F15;
+  VK_NUMLOCK   : Result := MK_NUMLOCK;
+  VK_SCROLL    : Result := MK_SCRLOCK;
+  VK_SHIFT     : Result := MK_SHIFTKEY;
+  VK_CONTROL   : Result := MK_COMMAND;
+  VK_MENU      : Result := MK_ALT;
+  VK_OEM_3     : Result := MK_TILDE;
+  VK_OEM_MINUS : Result := MK_MINUS;
+  VK_OEM_PLUS  : Result := MK_EQUAL;
+  VK_OEM_5     : Result := MK_BACKSLASH;
+  VK_OEM_4     : Result := MK_LEFTBRACKET;
+  VK_OEM_6     : Result := MK_RIGHTBRACKET;
+  VK_OEM_1     : Result := MK_SEMICOLON;
+  VK_OEM_7     : Result := MK_QUOTE;
+  VK_OEM_COMMA : Result := MK_COMMA;
+  VK_OEM_PERIOD: Result := MK_PERIOD;
+  VK_OEM_2     : Result := MK_SLASH;
+  else
+    Result := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    FillStandardDescription
+  Params:  Desc - Raw image description
+
+  Fills the raw image description with standard Cocoa internal image storing
+  description
+ ------------------------------------------------------------------------------}
+procedure FillStandardDescription(out Desc: TRawImageDescription);
+begin
+  Desc.Init;
+
+  Desc.Format := ricfRGBA;
+// Width and Height skipped
+  Desc.PaletteColorCount := 0;
+
+  Desc.BitOrder := riboReversedBits;
+  Desc.ByteOrder := riboMSBFirst;
+  Desc.LineEnd := rileDQWordBoundary; // 128bit aligned
+
+  Desc.LineOrder := riloTopToBottom;
+  Desc.BitsPerPixel := 32;
+  Desc.Depth := 32;
+
+  // 8-8-8-8 mode, $AARRGGBB
+  Desc.RedPrec := 8;
+  Desc.GreenPrec := 8;
+  Desc.BluePrec := 8;
+  Desc.AlphaPrec := 8;
+
+  Desc.AlphaShift := 24;
+  Desc.RedShift   := 16;
+  Desc.GreenShift := 08;
+  Desc.BlueShift  := 00;
+
+  Desc.MaskBitOrder := riboReversedBits;
+  Desc.MaskBitsPerPixel := 1;
+  Desc.MaskLineEnd := rileByteBoundary;
+  Desc.MaskShift := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CreateCFString
+  Params:  S       - UTF-8 string
+           AString - Core Foundation string ref
+
+  Creates new Core Foundation string from the specified string
+ ------------------------------------------------------------------------------}
+procedure CreateCFString(const S: String; out AString: CFStringRef);
+begin
+  AString := CFStringCreateWithCString(nil, Pointer(PChar(S)), DEFAULT_CFSTRING_ENCODING);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CreateCFString
+  Params:  Data     - CFDataRef
+           Encoding - Data encoding format
+           AString  - Core Foundation string ref
+
+  Creates new Core Foundation string from the specified data and format
+ ------------------------------------------------------------------------------}
+procedure CreateCFString(const Data: CFDataRef; Encoding: CFStringEncoding; out
+  AString: CFStringRef);
+begin
+  AString := nil;
+  if Data = nil then Exit;
+  AString := CFStringCreateWithBytes(nil, CFDataGetBytePtr(Data),
+    CFDataGetLength(Data), Encoding, False);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    FreeCFString
+  Params:  AString - Core Foundation string ref to free
+
+  Frees specified Core Foundation string
+ ------------------------------------------------------------------------------}
+procedure FreeCFString(var AString: CFStringRef);
+begin
+  if AString <> nil then
+    CFRelease(Pointer(AString));
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CFStringToStr
+  Params:  AString  - Core Foundation string ref
+           Encoding - Result data encoding format
+  Returns: UTF-8 string
+
+  Converts Core Foundation string to string
+ ------------------------------------------------------------------------------}
+function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding): String;
+var
+  Str: Pointer;
+  StrSize: CFIndex;
+  StrRange: CFRange;
+begin
+  if AString = nil then
+  begin
+    Result := '';
+    Exit;
+  end;
+
+  // Try the quick way first
+  Str := CFStringGetCStringPtr(AString, Encoding);
+  if Str <> nil then
+    Result := PChar(Str)
+  else
+  begin
+    // if that doesn't work this will
+    StrRange.location := 0;
+    StrRange.length := CFStringGetLength(AString);
+
+    CFStringGetBytes(AString, StrRange, Encoding,
+      Ord('?'), False, nil, 0, StrSize);
+    SetLength(Result, StrSize);
+
+    if StrSize > 0 then
+      CFStringGetBytes(AString, StrRange, Encoding,
+        Ord('?'), False, @Result[1], StrSize, StrSize);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    CFStringToData
+  Params:  AString  - Core Foundation string ref
+           Encoding - Result data encoding format
+  Returns: CFDataRef
+
+  Converts Core Foundation string to data
+ ------------------------------------------------------------------------------}
+function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding): CFDataRef;
+var
+  S: String;
+begin
+  Result := nil;
+  if AString = nil then Exit;
+  S := CFStringToStr(AString, Encoding);
+
+  if Length(S) > 0 then
+    Result := CFDataCreate(nil, @S[1], Length(S))
+  else
+    Result := CFDataCreate(nil, nil, 0);
+end;
+
+function GetCurrentEventTime: double;
+// returns seconds since system startup
+begin
+  Result := AbsoluteToDuration(UpTime) / 1000.0;
+end;
+
+function GetMacOSXVersion: Integer;
+var
+  lVersionNSStr: NSString;
+  lVersionStr: string;
+  lParser: TStringList;
+  lMajor: integer = 0;
+  lMinor: integer = 0;
+  lFix: integer = 0;
+begin
+  Result := 0;
+  lVersionNSStr := NSProcessInfo.processInfo.operatingSystemVersionString;
+  lVersionStr := NSStringToString(lVersionNSStr);
+  lParser := TStringList.Create;
+  try
+    lParser.Delimiter := ' ';
+    lParser.DelimitedText := lVersionStr;
+    if lParser.Count >= 2 then
+    begin
+      lVersionStr := lParser.Strings[1];
+      lParser.Delimiter := '.';
+      lParser.DelimitedText := lVersionStr;
+      if lParser.Count = 3 then
+      begin
+        TryStrToInt(lParser.Strings[0], lMajor);
+        TryStrToInt(lParser.Strings[1], lMinor);
+        TryStrToInt(lParser.Strings[2], lFix);
+      end;
+    end;
+  finally
+    lParser.Free;
+  end;
+  Result := lMajor*$10000 + lMinor*$100 + lFix;
+end;
 
 end.
 
