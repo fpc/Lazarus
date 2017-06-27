@@ -111,6 +111,27 @@ type
     procedure exit; message 'exit'; // button action
   end;
 
+  { TCocoaFilterComboBox }
+
+  TCocoaFilterComboBox = objcclass(NSPopUpButton, NSOpenSavePanelDelegateProtocol)
+  private
+    class procedure DoParseFilters(AFileDialog: TFileDialog; AOutput: TStringList); message 'DoParseFilters:AOutput:';
+    class function locateNSPanelBrowser(AView: NSView; AClass: Pobjc_class): NSView; message 'locateNSPanelBrowser:AClass:';
+    class procedure reloadNSPanelBrowser(APanel: NSSavePanel; AIsOpenDialog: Boolean); message 'reloadNSPanelBrowser:AIsOpenDialog:';
+  public
+    Owner: TFileDialog;
+    DialogHandle: NSSavePanel;
+    IsOpenDialog: Boolean;
+    Filters: TStringList; // filled by updateFilterList()
+    NSFilters: NSMutableArray;
+    lastSelectedItemIndex: Integer; // -1 means invalid or none selected
+    procedure updateFilterList(); message 'updateFilterList';
+    procedure setDialogFilter(ASelectedFilterIndex: Integer); message 'setDialogFilter:';
+    procedure comboboxAction(sender: id); message 'comboboxAction:';
+    // NSOpenSavePanelDelegateProtocol
+    function panel_shouldEnableURL(sender: id; url: NSURL): Boolean; message 'panel:shouldEnableURL:';
+  end;
+
 implementation
 
 { TCocoaWSFileDialog }
@@ -125,30 +146,77 @@ class procedure TCocoaWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog)
   Called by Execute method of TOpenDialog, TSaveDialog and TSelectDirectoryDialog.
  }
 var
-  FileDialog: TFileDialog;
-  i, m: integer;
+  FileDialog: TFileDialog absolute ACommonDialog;
+  i: integer;
   openDlg: NSOpenPanel;
   saveDlg: NSSavePanel;
-  nsfilter: NSMutableArray;
-  Filters: TStringList;
-  ParsedFilter: TParseStringList;
-  InitName, InitDir, filterext: string;
-  Masks: TParseStringList;
-  Extensions: TParseStringList;
-  extension: string;
+  InitName, InitDir: string;
   LocalPool: NSAutoReleasePool;
-  ns: NSString;
-begin
+  // filter accessory view
+  accessoryView: NSView;
+  lFilter: TCocoaFilterComboBox;
 
+  // setup panel and its accessory view
+  procedure CreateAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
+  const
+    INT_MIN_ACCESSORYVIEW_WIDTH = 300;
+  var
+    lRect: NSRect;
+    lText: NSTextField;
+    lTextStr: NSString;
+    lDialogView: NSView;
+    lAccessoryWidth: Integer = INT_MIN_ACCESSORYVIEW_WIDTH;
+  begin
+    // check if the accessory is necessary
+    if FileDialog.Filter = '' then Exit;
+
+    // try to obtain the dialog size
+    lDialogView := NSView(ASaveOwner.contentView);
+    if lDialogView <> nil then
+    begin
+      if lDialogView.frame.size.width > INT_MIN_ACCESSORYVIEW_WIDTH then
+        lAccessoryWidth := Round(lDialogView.frame.size.width);
+    end;
+    lRect := GetNSRect(0, 0, lAccessoryWidth, 30);
+    accessoryView := NSView.alloc.initWithFrame(lRect);
+
+    // "Format:" label
+    lRect := GetNSRect(Round(lAccessoryWidth*0.2), 4, Round(lAccessoryWidth*0.1), 24);
+    lText := NSTextField.alloc.initWithFrame(lRect);
+    lText.setBezeled(False);
+    lText.setDrawsBackground(False);
+    lText.setEditable(False);
+    lText.setSelectable(False);
+    lTextStr := NSStringUTF8('Format: ');
+    lText.setStringValue(lTextStr);
+
+    // Combobox
+    lRect := GetNSRect(Round(lAccessoryWidth*0.3), 4, Round(lAccessoryWidth*0.3), 24);
+    lFilter := TCocoaFilterComboBox.alloc.initWithFrame(lRect);
+    lFilter.IsOpenDialog := AOpenOwner <> nil;
+    if lFilter.IsOpenDialog then
+      lFilter.DialogHandle := AOpenOwner
+    else
+      lFilter.DialogHandle := ASaveOwner;
+    lFilter.Owner := FileDialog;
+    lFilter.setTarget(lFilter);
+    lFilter.setAction(objcselector('comboboxAction:'));
+    lFilter.updateFilterList();
+    lFilter.setDialogFilter(0);
+
+    accessoryView.addSubview(lText.autorelease);
+    accessoryView.addSubview(lFilter.autorelease);
+
+    lFilter.DialogHandle.setAccessoryView(accessoryView.autorelease);
+    lFilter.DialogHandle.setDelegate(lFilter);
+  end;
+
+begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSFileDialog.ShowModal for ' + ACommonDialog.Name);
   {$ENDIF}
 
   LocalPool := NSAutoReleasePool.alloc.init;
-
-  FileDialog := ACommonDialog as TFileDialog;
-
-  Filters := TStringList.Create;
 
   // two sources for init dir
   InitName := ExtractFileName(FileDialog.FileName);
@@ -156,51 +224,8 @@ begin
   if InitDir = '' then
     InitDir := ExtractFileDir(FileDialog.FileName);
 
-  // Cocoa doesn't supports a filter list selector like we know from windows. So we add all the masks into one filter list.
-
-  ParsedFilter := TParseStringList.Create(FileDialog.Filter, '|');
-
-  for i := 1 to ParsedFilter.Count div 2 do
-  begin
-    filterext := ParsedFilter[i * 2 - 1];
-    Masks := TParseStringList.Create(filterext, ';');
-    for m := 0 to Masks.Count - 1 do
-    begin
-      if Masks[m] = '*.*' then
-        continue;
-
-      Extensions := TParseStringList.Create(Masks[m], '.');
-
-      if Extensions.Count > 0 then
-        extension := Extensions[Extensions.Count - 1]
-      else
-        extension := Masks[m];
-
-      Filters.Add(lowercase(extension));
-      Filters.Add(uppercase(extension));
-      //debugln('Filters: ' + extension);
-      Extensions.Free;
-    end;
-
-    Masks.Free;
-  end;
-
-  ParsedFilter.Free;
-
-
-  nsfilter := nil;
-  if Filters.Count > 0 then
-  begin
-    nsfilter := NSMutableArray.alloc.init;
-    for i := 0 to Filters.Count - 1 do
-    begin
-      ns := NSStringUtf8(Filters.Strings[i]);
-      nsfilter.addObject(ns);
-      ns.release;
-    end;
-  end;
-
-  Filters.Free;
+  // Cocoa doesn't supports a filter list selector like we know from windows natively
+  // So we need to create our own accessory view
 
   FileDialog.UserChoice := mrCancel;
 
@@ -216,12 +241,14 @@ begin
     begin
       openDlg.setCanChooseDirectories(True);
       openDlg.setCanChooseFiles(False);
+      openDlg.setAccessoryView(nil);
     end
     else
     begin
       openDlg.setCanChooseFiles(True);
       openDlg.setCanChooseDirectories(False);
-      openDlg.setAllowedFileTypes(nsfilter);
+      // accessory view
+      CreateAccessoryView(openDlg, openDlg);
     end;
     openDlg.setTitle(NSStringUtf8(FileDialog.Title));
     openDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
@@ -241,9 +268,11 @@ begin
     saveDlg := NSSavePanel.savePanel;
     saveDlg.setCanCreateDirectories(True);
     saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
-    saveDlg.setAllowedFileTypes(nsfilter);
     saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
     saveDlg.setNameFieldStringValue(NSStringUtf8(InitName));
+    // accessory view
+    CreateAccessoryView(nil, saveDlg);
+
     if saveDlg.runModal = NSOKButton then
     begin
       FileDialog.FileName := NSStringToString(saveDlg.URL.path);
@@ -251,9 +280,6 @@ begin
       FileDialog.UserChoice := mrOk;
     end;
   end;
-
-  if nsfilter <> nil then
-    nsfilter.release;
 
   // release everything
   LocalPool.Release;
@@ -477,6 +503,221 @@ begin
   FontDialog.UserChoice := mrOk;
   DontSelectFontOnClose := True;
   FontPanel.close();
+end;
+
+{ TCocoaFilterComboBox }
+
+class procedure TCocoaFilterComboBox.DoParseFilters(AFileDialog: TFileDialog; AOutput: TStringList);
+var
+  lFilterParser, lExtParser: TParseStringList;
+  Masks: TParseStringList;
+  lFilterCounter, m: Integer;
+  lFilterName, filterext, lCurExtension: String;
+  lExtensions: TStringList;
+begin
+  lFilterParser := TParseStringList.Create(AFileDialog.Filter, '|');
+  try
+    lFilterCounter := 0;
+    while lFilterCounter < lFilterParser.Count do
+    begin
+      lFilterName := lFilterParser[lFilterCounter];
+      filterext := lFilterParser[lFilterCounter+1];
+      Masks := TParseStringList.Create(filterext, ';');
+      try
+        lExtensions := TStringList.Create;
+        for m := 0 to Masks.Count - 1 do
+        begin
+          if Masks[m] = '*.*' then
+            continue;
+
+          lExtParser := TParseStringList.Create(Masks[m], '.');
+          try
+            if lExtParser.Count > 0 then
+              lCurExtension := lExtParser[lExtParser.Count - 1]
+            else
+              lCurExtension := Masks[m];
+
+            lExtensions.Add(lowercase(lCurExtension));
+            //lExtensions.Add(uppercase(lCurExtension));
+          finally
+            lExtParser.Free;
+          end;
+        end;
+        AOutput.AddObject(lFilterName, lExtensions);
+      finally
+        Masks.Free;
+      end;
+
+      Inc(lFilterCounter, 2);
+    end;
+  finally
+    lFilterParser.Free;
+  end;
+end;
+
+class function TCocoaFilterComboBox.locateNSPanelBrowser(AView: NSView; AClass: Pobjc_class): NSView;
+var
+  lSubview: NSView;
+  i: Integer;
+begin
+  Result := nil;
+  for i := 0 to AView.subviews.count-1 do
+  begin
+    lSubview := AView.subviews.objectAtIndex(i);
+    //lCurClass := lCurClass + '/' + NSStringToString(lSubview.className);
+    if lSubview.isKindOfClass_(AClass) then
+    begin
+      Exit(lSubview);
+    end;
+    if lSubview.subviews.count > 0 then
+    begin
+      Result := locateNSPanelBrowser(lSubview, AClass);
+    end;
+    if Result <> nil then Exit;
+  end;
+  Result := nil;
+end;
+
+class procedure TCocoaFilterComboBox.reloadNSPanelBrowser(APanel: NSSavePanel; AIsOpenDialog: Boolean);
+var
+  lBrowser: NSBrowser;
+  panelSelectionPath: NSArray;
+begin
+  //obtain browser
+  if AIsOpenDialog then
+  begin
+    lBrowser := NSBrowser(locateNSPanelBrowser(APanel.contentView, NSBrowser));
+    if lBrowser = nil then Exit;
+
+    //reload browser
+    panelSelectionPath := lBrowser.selectionIndexPaths; //otherwise the panel return the wrong urls
+    if lBrowser.lastColumn > 0 then
+    begin
+      lBrowser.reloadColumn(lBrowser.lastColumn-1);
+    end;
+    lBrowser.reloadColumn(lBrowser.lastColumn);
+    lBrowser.setSelectionIndexPaths(panelSelectionPath);
+  end;
+end;
+
+// This will recreate the contents of the filter combobox and fill the cache
+// which is utilized when a particular filter is selected (Filters: TStringList)
+procedure TCocoaFilterComboBox.updateFilterList();
+var
+  nsstr: NSString;
+  i: Integer;
+  lItems: array of NSMenuItem;
+begin
+  if Filters = nil then
+  begin
+    Filters := TStringList.Create;
+    Filters.OwnsObjects := True;
+  end;
+  Filters.Clear;
+  DoParseFilters(Owner, Filters);
+
+  // Now update the combobox
+  removeAllItems();
+  // Adding an item with its final name will cause it to be deleted,
+  // so we need to first add all items with unique names, and then
+  // rename all of them, see bug 30847
+  SetLength(lItems, Filters.Count);
+  for i := 0 to Filters.Count-1 do
+  begin
+    nsstr := NSStringUtf8(Format('unique_item_%d', [i]));
+    addItemWithTitle(nsstr);
+    lItems[i] := lastItem;
+    nsstr.release;
+  end;
+  for i := 0 to Filters.Count-1 do
+  begin
+    nsstr := NSStringUtf8(Filters.Strings[i]);
+    lItems[i].setTitle(nsstr);
+    nsstr.release;
+  end;
+  SetLength(lItems, 0);
+
+  // reset the selected item
+  selectItemAtIndex(lastSelectedItemIndex);
+end;
+
+// Generates NSFilters from Filters, for the currently selected combobox index
+procedure TCocoaFilterComboBox.setDialogFilter(ASelectedFilterIndex: Integer);
+var
+  lCurFilter: TStringList;
+  ns: NSString;
+  i: Integer;
+  lStr: String;
+begin
+  if Filters = nil then Exit;
+
+  if NSFilters = nil then
+  begin
+    NSFilters := NSMutableArray.alloc.init;
+  end
+  else
+  begin
+    NSFilters.removeAllObjects();
+  end;
+
+  if (Filters.Count > 0) and (ASelectedFilterIndex >= 0) and
+   (ASelectedFilterIndex < Filters.Count) then
+  begin
+    lCurFilter := TStringList(Filters.Objects[ASelectedFilterIndex]);
+    for i := 0 to lCurFilter.Count - 1 do
+    begin
+      lStr := lCurFilter.Strings[i];
+      ns := NSStringUtf8(lStr);
+      NSFilters.addObject(ns);
+      ns.release;
+    end;
+  end;
+
+  DialogHandle.validateVisibleColumns();
+  // work around for bug in validateVisibleColumns() in Mavericks till 10.10.2
+  // see https://bugs.freepascal.org/view.php?id=28687
+  reloadNSPanelBrowser(DialogHandle, IsOpenDialog);
+
+  // Felipe: setAllowedFileTypes generates misterious crashes on dialog close after combobox change if uncommented :(
+  // DialogHandle.setAllowedFileTypes(NSFilters);
+end;
+
+procedure TCocoaFilterComboBox.comboboxAction(sender: id);
+begin
+  if (indexOfSelectedItem <> lastSelectedItemIndex) then
+    setDialogFilter(indexOfSelectedItem);
+  lastSelectedItemIndex := indexOfSelectedItem;
+end;
+
+function TCocoaFilterComboBox.panel_shouldEnableURL(sender: id; url: NSURL): Boolean;
+var
+  lPath, lExt, lCurExt: NSString;
+  lExtStr, lCurExtStr: String;
+  i: Integer;
+  lIsDirectory: Boolean = True;
+begin
+  Result := False;
+  lPath := url.path;
+  lExt := lPath.pathExtension;
+  lExtStr := NSStringToString(lExt);
+
+  // if there are no filters, accept everything
+  if NSFilters.count = 0 then Exit(True);
+
+  // always allow selecting dirs, otherwise you can't change the directory
+  NSFileManager.defaultManager.fileExistsAtPath_isDirectory(lPath, @lIsDirectory);
+  if lIsDirectory then Exit(True);
+
+  for i := 0 to NSFilters.count - 1 do
+  begin
+    lCurExt := NSString(NSFilters.objectAtIndex(i));
+    lCurExtStr := NSStringToString(lExt);
+
+    // Match *.* to everything
+    if lCurExtStr = '*' then Exit(True);
+
+    if lExt.caseInsensitiveCompare(lCurExt) = NSOrderedSame then Exit(True);
+  end;
 end;
 
 end.
