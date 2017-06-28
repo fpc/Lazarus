@@ -42,7 +42,9 @@ uses
   Laz2_XMLCfg, LazUTF8, SourceChanger, CodeCompletionTool,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
-  ComponentReg, IDEExternToolIntf, MacroDefIntf, DbgIntfDebuggerBase,
+  ComponentReg, IDEExternToolIntf, MacroDefIntf,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger,
@@ -384,7 +386,7 @@ type
   public
     constructor Create(aEnvOpts: TEnvironmentOptions);
     destructor Destroy; override;
-    procedure AddFromCfg(Path: String);
+    function AddFromCfg(Path: String):boolean;
     function IndexOf(aName: string): integer;
     function Find(aName: string): TDesktopOpt;
     property Items[Index: Integer]: TDesktopOpt read GetItem; default;
@@ -560,6 +562,8 @@ type
 
     // Desktop
     FDesktops: TDesktopOptList;
+    FDesktopsIdx: Array of integer;
+    FAllDesktopsCount:integer;
     FDesktop: TDesktopOpt;
     FLastDesktopBeforeDebug: TDesktopOpt;
     FActiveDesktopName: string;
@@ -1051,21 +1055,23 @@ begin
   FConfigStore := aConfigStore;
 end;
 
-procedure TDesktopOptList.AddFromCfg(Path: String);
+function TDesktopOptList.AddFromCfg(Path: String): boolean;
 var
   dsk: TDesktopOpt;
   dskName, dskDockMaster: String;
 begin
+  Result := False;
   dskName := FXMLCfg.GetValue(Path+'Name', 'default');
   dskDockMaster := FXMLCfg.GetValue(Path+'DockMaster', '');
 
-  if not EnvironmentOptions.DesktopCanBeLoaded(dskDockMaster) or (IndexOf(dskName) >= 0) then
+  if not TEnvironmentOptions.DesktopCanBeLoaded(dskDockMaster) or (IndexOf(dskName) >= 0) then
     Exit;
 
   dsk := TDesktopOpt.Create(dskName, dskDockMaster<>'');
   dsk.SetConfig(FXMLCfg, FConfigStore);
   dsk.Load(Path);
   Add(dsk);
+  Result := True;
 end;
 
 function TDesktopOptList.IndexOf(aName: string): integer;
@@ -1473,6 +1479,8 @@ begin
 
   // Desktop collection
   FDesktops := TDesktopOptList.Create(Self);
+  SetLength(FDesktopsIdx,0);
+  FAllDesktopsCount:=0;
   // FDesktop points to the IDE properties
   FDesktop := TDesktopOpt.Create('');
   FAutoSaveActiveDesktop := True;
@@ -1483,6 +1491,7 @@ var
   i: Integer;
 begin
   FreeAndNil(FDesktops);
+  SetLength(FDesktopsIdx,0);
   FreeAndNil(FDesktop);
   FreeAndNil(FLastDesktopBeforeDebug);
   FreeAndNil(FBuildMatrixOptions);
@@ -1963,9 +1972,12 @@ begin
       CurPath := 'Desktops/';
       FDebugDesktopName := FXMLCfg.GetValue(CurPath+'DebugDesktop', '');
       FActiveDesktopName := FXMLCfg.GetValue(CurPath+'ActiveDesktop', '');
-      j := FXMLCfg.GetValue(CurPath+'Count', 1);
-      for i := 1 to j do
-        FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i)+'/');
+      FAllDesktopsCount := FXMLCfg.GetValue(CurPath+'Count', 1);
+      SetLength(FDesktopsIdx,FAllDesktopsCount+1);
+      for i := 1 to FAllDesktopsCount do
+        if FDesktops.AddFromCfg(CurPath+'Desktop'+IntToStr(i)+'/') then
+          FDesktopsIdx[FDesktops.Count-1]:=i;
+      SetLength(FDesktopsIdx,FDesktops.Count);
     end;
     if FFileVersion<=109 then begin
       FXMLCfg.DeletePath('Desktop');
@@ -2001,7 +2013,7 @@ var
 begin
   // files
   CurLazDir:=ChompPathDelim(LazarusDirectory);
-  if not GlobalMacroList.StrHasMacros(CurLazDir) then begin
+  if not TTransferMacroList.StrHasMacros(CurLazDir) then begin
     BaseDir:=ExtractFilePath(ChompPathDelim(GetPrimaryConfigPath));
     if (CompareFilenames(BaseDir,CurLazDir)=0)
     or FileIsInPath(CurLazDir,BaseDir) then begin
@@ -2293,16 +2305,24 @@ begin
       xActiveDesktopName := FActiveDesktopName;
 
     // The user can define many desktops. They are saved under path Desktops/.
-    FXMLCfg.DeletePath('Desktops/');
     CurPath:='Desktops/';
-    FXMLCfg.SetDeleteValue(CurPath+'Count', FDesktops.Count, 0);
+    FXMLCfg.SetDeleteValue(CurPath+'Count', FDesktops.Count + FAllDesktopsCount -length(FDesktopsIdx) , 0);
     FXMLCfg.SetDeleteValue(CurPath+'DebugDesktop', FDebugDesktopName, '');
     FXMLCfg.SetDeleteValue(CurPath+'ActiveDesktop', xActiveDesktopName, '');
     for i := 0 to FDesktops.Count-1 do
-    begin
-      FDesktops[i].SetConfig(FXMLCfg, FConfigStore);
-      FDesktops[i].Save(CurPath+'Desktop'+IntToStr(i+1)+'/');
-    end;
+      if i <= high(FDesktopsIdx) then
+      begin
+        FXMLCfg.DeletePath(CurPath+'Desktop'+IntToStr(FDesktopsIdx[i])+'/');
+        FDesktops[i].SetConfig(FXMLCfg, FConfigStore);
+        FDesktops[i].Save(CurPath+'Desktop'+IntToStr(FDesktopsIdx[i])+'/');
+      end
+      else
+      begin
+        FDesktops[i].SetConfig(FXMLCfg, FConfigStore);
+        FDesktops[i].Save(CurPath+'Desktop'+IntToStr(i+ FAllDesktopsCount -length(FDesktopsIdx)+1)+'/');
+      end;
+    for i := FDesktops.Count to high(FDesktopsIdx) do
+      FXMLCfg.DeletePath(CurPath+'Desktop'+IntToStr(FDesktopsIdx[i])+'/');
 
     FXMLCfg.Flush;
     FileUpdated;
@@ -2343,8 +2363,7 @@ begin
   RemoveFromRecentList(AFilename,FRecentOpenFiles,rltFile);
 end;
 
-procedure TEnvironmentOptions.RemoveFromRecentPackageFiles(
-  const AFilename: string);
+procedure TEnvironmentOptions.RemoveFromRecentPackageFiles(const AFilename: string);
 begin
   RemoveFromRecentList(AFilename,FRecentPackageFiles,rltFile);
 end;
@@ -2664,6 +2683,9 @@ begin
     ObjectInspectorOptions.ConfigStore:=FConfigStore;
     FDbgConfigStore:=TXMLOptionsStorage.Create(FXMLCfg, 'EnvironmentOptions/Debugger/');
     FDebuggerConfig.ConfigStore := FDbgConfigStore;
+    // Reset Values to Trigger a new List.
+    SetLength(FDesktopsIdx,0);
+    FAllDesktopsCount:=0;
   end;
 end;
 
