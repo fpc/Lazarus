@@ -543,11 +543,11 @@ msgstr "最初へ"
 
 #: lclstrconsts.rsfixedcolstoobig
 msgid "FixedCols can't be > ColCount"
-msgstr "FixedCols は ColCount 以上にはできません"
+msgstr "FixedCols は ColCountより大きくはできません"
 
 #: lclstrconsts.rsfixedrowstoobig
 msgid "FixedRows can't be > RowCount"
-msgstr "FixedRows は RowCount 以上にはできません"
+msgstr "FixedRows は RowCountより大きくはできません"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
@@ -1535,14 +1535,11 @@ msgstr ""
 "\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
-#, fuzzy
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
 msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
-"無効なパス名:\n"
-"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlskb
 msgid "%s kB"
