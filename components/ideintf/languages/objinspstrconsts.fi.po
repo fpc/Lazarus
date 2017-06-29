@@ -481,11 +481,11 @@ msgstr "Luo uusi kenttä ja lisää se nykyiseen kohtaan"
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
-msgstr ""
+msgstr "Nykyinen emokontrolli"
 
 #: objinspstrconsts.oiscurrentparents
 msgid "Current parents"
-msgstr ""
+msgstr "Nykyiset emokontrollit"
 
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
@@ -790,11 +790,11 @@ msgstr "Valitse kaikki kentät"
 
 #: objinspstrconsts.oisselectedcontrol
 msgid "Selected control"
-msgstr ""
+msgstr "Valittu komponentti"
 
 #: objinspstrconsts.oisselectedcontrols
 msgid "Selected controls"
-msgstr ""
+msgstr "Valitut komponentit"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
@@ -834,7 +834,7 @@ msgstr "Aseta ominaisuuden arvoksi oletus"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
-msgstr ""
+msgstr "Näytä luokat"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -1355,7 +1355,7 @@ msgstr "Lisää Kuvat"
 
 #: objinspstrconsts.sccsiledtopendialogn
 msgid "New Image"
-msgstr ""
+msgstr "Uusi kuva"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1363,7 +1363,7 @@ msgstr "Läpinäkyvä väri:"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
-msgstr ""
+msgstr "&Korvaa ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1587,7 +1587,7 @@ msgstr "Lisää yksittäisenä"
 
 #: objinspstrconsts.s_confirm_clear
 msgid "Are you sure to clear image list?"
-msgstr ""
+msgstr "Tyhjennetäänkö kuvaluettelo?"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

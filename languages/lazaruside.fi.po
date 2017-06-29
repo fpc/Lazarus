@@ -2374,7 +2374,7 @@ msgstr "nykyinen sana"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
 msgid "Settings for terms added by key"
-msgstr "Avaimen asettaman termin asetukset"
+msgstr "Näppäimen asettaman termin asetukset"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
 msgid "Smart match selection bounds"
@@ -2394,7 +2394,7 @@ msgstr "Valitse ..."
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagekeys
 msgid "Key Settings"
-msgstr "Avainasetukset"
+msgstr "Näppäinasetukset"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinedpagemain
 msgid "Main settings"
@@ -8514,7 +8514,7 @@ msgstr "Muokkaa työkalua"
 #: lazarusidestrconsts.lisedtexttoolkey
 msgctxt "lazarusidestrconsts.lisedtexttoolkey"
 msgid "Key"
-msgstr "Avain"
+msgstr "Näppäin"
 
 #: lazarusidestrconsts.lisedtexttoolmacros
 msgctxt "lazarusidestrconsts.lisedtexttoolmacros"
@@ -16882,7 +16882,7 @@ msgstr "Sanat"
 
 #: lazarusidestrconsts.lissortunicoderangelistalphabetically
 msgid "Sort Unicode range list alphabetically"
-msgstr ""
+msgstr "Järjestä unicode lohkot aakkosjärjestykseen"
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
@@ -17351,8 +17351,6 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Tunniste on käännösyksikkö. Käytä Tiedosto - Tallenna nimetäksesi sen."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-#, fuzzy
-#| msgid "The key %sis already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and assign the key to the new function %s?"
 msgstr "Näppäin %s%son jo kiinnitetty %s:lle.%sPoista vanha kiinnitys ja kiinnitä näppäin uuteen funktioon%s%s?"
 
