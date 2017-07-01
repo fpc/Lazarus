@@ -90,6 +90,9 @@ type
   TDataSetScrolledEvent =
     procedure(DataSet: TDataSet; Distance: Integer) of object;
 
+  TFocusControlEvent =
+    procedure(aField: TFieldRef) of object;
+
   TDBGridClickEvent =
     procedure(Column: TColumn) of object;
 
@@ -167,6 +170,7 @@ type
     fOnDataSetOpen: TDataSetNotifyEvent;
     FOnDataSetScrolled: TDataSetScrolledEvent;
     FOnEditingChanged: TDataSetNotifyEvent;
+    fOnFocusControl: TFocusControlEvent;
     fOnInvalidDataSet: TDataSetNotifyEvent;
     fOnInvalidDataSource: TDataSetNotifyEvent;
     FOnLayoutChanged: TDataSetNotifyEvent;
@@ -197,6 +201,7 @@ type
     property OnDataSetOpen: TDataSetNotifyEvent read fOnDataSetOpen write fOnDataSetOpen;
     property OnInvalidDataSet: TDataSetNotifyEvent read fOnInvalidDataSet write fOnInvalidDataSet;
     property OnInvalidDataSource: TDataSetNotifyEvent read fOnInvalidDataSource write fOnInvalidDataSource;
+    property OnFocusControl: TFocusControlEvent read fOnFocusControl write fOnFocusControl;
     property OnLayoutChanged: TDataSetNotifyEvent read FOnLayoutChanged write FOnLayoutChanged;
     property OnDataSetClose: TDataSetNotifyEvent read fOnDataSetClose write fOnDataSetClose;
     property OnDataSetScrolled: TDataSetScrolledEvent read FOnDataSetScrolled write FOnDataSetScrolled;
@@ -332,6 +337,7 @@ type
     procedure OnEditingChanged(aDataSet: TDataSet);
     procedure OnInvalidDataSet(aDataSet: TDataSet);
     procedure OnInvalidDataSource(aDataSet: TDataset);
+    procedure OnFocusControl(aField: TFieldRef);
     procedure OnLayoutChanged(aDataSet: TDataSet);
     procedure OnNewDataSet(aDataSet: TDataset);
     procedure OnDataSetScrolled(aDataSet:TDataSet; Distance: Integer);
@@ -942,6 +948,20 @@ begin
   DebugLn('%s.OnInvalidDataSource', [ClassName]);
   {$endif}
   LinkActive(False);
+end;
+
+procedure TCustomDBGrid.OnFocusControl(aField: TFieldRef);
+var
+  aIndex: Integer;
+begin
+  if CanFocus and (aField<>nil) and (aField^<>nil) then begin
+    aIndex := GetGridColumnFromField(aField^);
+    if aIndex>=FirstGridColumn then begin
+      SelectedField := aField^;
+      aField^ := nil;
+      SetFocus;
+    end;
+  end;
 end;
 
 procedure TCustomDBGrid.OnLayoutChanged(aDataSet: TDataSet);
@@ -3504,6 +3524,7 @@ begin
   FDataLink.OnLayoutChanged:=@OnLayoutChanged;
   FDataLink.OnEditingChanged:=@OnEditingChanged;
   FDataLink.OnUpdateData:=@OnUpdateData;
+  FDatalink.OnFocusControl := @OnFocusControl;
   FDataLink.VisualControl:= True;
 
   FSelectedRows := TBookmarkList.Create(Self);
@@ -3908,6 +3929,8 @@ begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.FocusControl', [ClassName]);
   {$endif}
+  if Assigned(OnFocusControl) then
+    OnFocusControl(Field);
 end;
 
 procedure TComponentDataLink.CheckBrowseMode;
