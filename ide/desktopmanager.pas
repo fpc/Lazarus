@@ -54,8 +54,6 @@ type
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     procedure AssociatedDebugDesktopComboBoxChange(Sender: TObject);
-    procedure AssociatedDebugDesktopComboBoxDrawItem(Control: TWinControl;
-      Index: Integer; ARect: TRect; State: TOwnerDrawState);
     procedure DeleteActionClick(Sender: TObject);
     procedure DesktopListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
@@ -77,6 +75,7 @@ type
     FActiveDesktopChanged: Boolean;
 
     procedure RefreshList(SelectName: string = '');
+    procedure RefreshAssociatedDebugList(SelectedDesktop: TCustomDesktopOpt);
     procedure ExportDesktops(const aDesktops: array of TCustomDesktopOpt);
   end;
 
@@ -394,16 +393,18 @@ begin
 
   HasNonCompatible := False;
   DesktopListBox.Clear;
-  AssociatedDebugDesktopComboBox.Clear;
-  AssociatedDebugDesktopComboBox.Items.AddObject(dlgPOIconDescNone, nil);
   // Saved desktops
-  for i:=0 to EnvironmentOptions.Desktops.Count-1 do
-  begin
-    DskTop := EnvironmentOptions.Desktops[i];
-    DesktopListBox.Items.AddObject(DskTop.Name, DskTop);
-    AssociatedDebugDesktopComboBox.Items.AddObject(DskTop.Name, DskTop);
-    if not DskTop.Compatible then
-      HasNonCompatible := True;
+  DesktopListBox.Items.BeginUpdate;
+  try
+    for i:=0 to EnvironmentOptions.Desktops.Count-1 do
+    begin
+      DskTop := EnvironmentOptions.Desktops[i];
+      DesktopListBox.Items.AddObject(DskTop.Name, DskTop);
+      if not DskTop.Compatible then
+        HasNonCompatible := True;
+    end;
+  finally
+    DesktopListBox.Items.EndUpdate;
   end;
   if HasNonCompatible then
   begin
@@ -471,42 +472,6 @@ begin
   SelDesktop.AssociatedDebugDesktopName := AssociatedDebugDesktopComboBox.Text;
   if SelDesktop.Name = EnvironmentOptions.ActiveDesktopName then
     EnvironmentOptions.Desktop.AssociatedDebugDesktopName := SelDesktop.AssociatedDebugDesktopName;
-end;
-
-procedure TDesktopForm.AssociatedDebugDesktopComboBoxDrawItem(
-  Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
-var
-  ACB: TComboBox;
-  ACanvas: TCanvas;
-  ADesktop: TCustomDesktopOpt;
-  ATextSyle: TTextStyle;
-begin
-  ACB := Control as TComboBox;
-  ACanvas := ACB.Canvas;
-  if not (odBackgroundPainted in State) then
-    ACanvas.FillRect(ARect);
-  ACanvas.Brush.Style := bsClear;
-
-  ATextSyle := ACanvas.TextStyle;
-  ATextSyle.Layout := tlCenter;
-  ATextSyle.RightToLeft := ACB.UseRightToLeftReading;
-  if ACB.UseRightToLeftAlignment then
-  begin
-    ATextSyle.Alignment := taRightJustify;
-    ARect.Right := ARect.Right - 2;
-  end
-  else
-  begin
-    ATextSyle.Alignment := taLeftJustify;
-    ARect.Left := ARect.Left + 2;
-  end;
-
-  ADesktop := TCustomDesktopOpt(ACB.Items.Objects[Index]);
-  if Assigned(ADesktop) and not ADesktop.Compatible then
-    ACanvas.Font.Color := LblGrayedInfo.Font.Color;
-
-  ACanvas.TextStyle := ATextSyle;
-  ACanvas.TextRect(ARect, ARect.Left, ARect.Top, ACB.Items[Index]);
 end;
 
 procedure TDesktopForm.DeleteActionClick(Sender: TObject);
@@ -727,6 +692,30 @@ begin
   RefreshList(xOldName);
 end;
 
+procedure TDesktopForm.RefreshAssociatedDebugList(SelectedDesktop: TCustomDesktopOpt);
+var
+  DskTop: TCustomDesktopOpt;
+  i: Integer;
+begin
+  AssociatedDebugDesktopComboBox.Items.BeginUpdate;
+  try
+    AssociatedDebugDesktopComboBox.Clear;
+    AssociatedDebugDesktopComboBox.Enabled := SelectedDesktop<>nil;
+    if not AssociatedDebugDesktopComboBox.Enabled then
+      Exit;
+    AssociatedDebugDesktopComboBox.Items.AddObject(dlgPOIconDescNone, nil);
+    // Saved desktops
+    for i:=0 to EnvironmentOptions.Desktops.Count-1 do
+    begin
+      DskTop := EnvironmentOptions.Desktops[i];
+      if DskTop.Compatible = SelectedDesktop.Compatible then
+        AssociatedDebugDesktopComboBox.Items.AddObject(DskTop.Name, DskTop);
+    end;
+  finally
+    AssociatedDebugDesktopComboBox.Items.EndUpdate;
+  end;
+end;
+
 procedure TDesktopForm.DesktopListBoxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
 var
@@ -828,6 +817,7 @@ begin
   if HasSel then
   begin
     SelDesktop := DesktopListBox.Items.Objects[DesktopListBox.ItemIndex] as TCustomDesktopOpt;
+    RefreshAssociatedDebugList(SelDesktop);
     if (SelDesktop.AssociatedDebugDesktopName<>'') then
     begin
       AssociatedDebugDesktopComboBox.ItemIndex :=
@@ -843,8 +833,8 @@ begin
   else begin
     IsActive := False;
     IsDebug := False;
+    RefreshAssociatedDebugList(nil);
   end;
-  AssociatedDebugDesktopComboBox.Enabled:=HasSel;
   SetActiveDesktopAction.Enabled := HasSel and not IsActive;
   SetDebugDesktopAction.Enabled := HasSel and not IsDebug;
   RenameAction.Enabled := HasSel;

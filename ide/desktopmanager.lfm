@@ -206,8 +206,7 @@ object DesktopForm: TDesktopForm
     BorderSpacing.Left = 10
     ItemHeight = 15
     OnChange = AssociatedDebugDesktopComboBoxChange
-    OnDrawItem = AssociatedDebugDesktopComboBoxDrawItem
-    Style = csOwnerDrawFixed
+    Style = csDropDownList
     TabOrder = 1
   end
   object AssociatedDebugDesktopLabel: TLabel
