@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="fpcLazTestEnvironmentOpts"><module name="EnvironmentOpts"><short>This unit defines a class to store the options in a xml file. </short><element name="TBaseExternalUserTools"><short>External Tools - the user menu items in the Tools menu</short>
+      </element><element name="TDesktopOpt.Create"><short>Create Desktop options and set some default values.</short>
+      </element><element name="TEnvironmentOptions"><short>TEnvironmentOptions - class for storing environment options</short>
+      </element><element name="TEnvironmentOptions.FFilename"><short>config file </short>
+      </element><element name="TEnvironmentOptions.FCleanBuildProjOut"><short>Clean build project dialog</short>
+      </element><element name="TEnvironmentOptions.FCleanBuildProjSrc"><short>Clean build project dialog</short>
+      </element><element name="TEnvironmentOptions.FCleanBuildPkgOut"><short>Clean build project dialog</short>
+      </element><element name="TEnvironmentOptions.FCleanBuildPkgSrc"><short>Clean build project dialog</short>
+      </element><element name="TEnvironmentOptions.fLanguageID"><short>language ID (see LazarusTranslations in translations.pas)</short>
+      </element><element name="TEnvironmentOptions.AskSaveSessionOnly"><short>ask even if only project session needs saving</short>
+      </element><element name="TEnvironmentOptions.AutoSaveEditorFiles"><short>auto save</short>
+      </element><element name="TEnvironmentOptions.AutoSaveProject"><short>auto save</short>
+      </element><element name="TEnvironmentOptions.AutoSaveIntervalInSecs"><short>auto save Intervall in Seconds</short>
+      </element><element name="TEnvironmentOptions.ShowCompileDialog"><short>ShowCompileDialog and AutoCloseCompileDialog are currently not used.</short>
+      </element><element name="TEnvironmentOptions.AutoCloseCompileDialog"><short>ShowCompileDialog and AutoCloseCompileDialog are currently not used.</short>
+      </element><element name="EnvOptParseTypeNames" link="#TEnvOptParseType"><short>Environment Option Type Names</short>
+      </element><element name="TEnvOptParseType"><short>Environment Options Parse Type</short>
+      </element><element name="dbgs"><short>Returns the String of a Enumeration or Set</short>
+      </element><element name="TPascalExtType"><short>Enumeration with valid Pascal-source-file-extensions</short>
+      </element><element name="PascalExtension" link="#TPascalExtType"><short>Actual Extension of pascal-source-files</short>
+      </element><element name="TAmbiguousFileAction"><short>Define the action to take on ambiguous files</short>
+      </element><element name="TAmbiguousFileAction.afaAsk"><short>Ask the User</short>
+      </element><element name="TAmbiguousFileAction.afaAutoDelete"><short>Automatic delete</short>
+      </element><element name="TAmbiguousFileAction.afaAutoRename"><short>automatic rename</short>
+      </element><element name="TAmbiguousFileAction.afaWarnOnCompile"><short>give a warning on compilation</short>
+      </element><element name="TAmbiguousFileAction.afaIgnore"><short>ignore ambiguous files</short>
+      </element><element name="TMsgWndFileNameStyle"><short>Messages window: stype of the filename</short>
+      </element><element name="TMsgWndColor"><short> Messages window: Color types</short>
+      </element><element name="MsgWndDefaultColors" link="#TMsgWndColor"><short> Messages window: definition of default colors</short>
+      </element><element name="MsgWndColorNames" link="#TMsgWndColor"><short> Messages window: Color-type-names</short>
+      </element><element name="TCustomDesktopOpt"><short>Base class of the Desktop-option </short>
+      </element><element name="TCustomDesktopOpt.FName"><short>Name of the Desktop (-option)</short>
+      </element><element name="TCustomDesktopOpt.FConfigStore"/><element name="TCustomDesktopOpt.FIsDocked"><short>is this a "docked" Desktop-option-entry</short>
+      </element><element name="TCustomDesktopOpt.FXMLCfg"><short>Corresponding (Base-)-XML-Config</short>
+      </element><element name="TCustomDesktopOpt.SetConfig"><short>Sets the XML-Config and the XML-Option-storage</short>
+      </element><element name="TCustomDesktopOpt.Load"><short>Load-Procedure</short><descr>the descendend method has to parse the XML-Config at the given "Path" and/or store the read data</descr>
+      </element><element name="TCustomDesktopOpt.Save"><short>abstract Save method (must be overridden)</short><descr>the descendand method has to collect the information and write it to the XML-Config at the given "Path"</descr>
+      </element><element name="TCustomDesktopOpt.Name"><short>Property for the Name of the Desktop(-option-item)</short>
+      </element><element name="TDesktopOptClass"/><element name="TDesktopOpt" link="#TCustomDesktopOpt"/><element name="TDesktopOpt.Load" link="#EnvironmentOpts.TCustomDesktopOpt.Load"><short>Load-Procedure parse the XML-Config at the given "Path" and store the read data</short><descr>the descendend method has to parse the XML-Config at the given "Path" and/or store the read data</descr>
+      </element><element name="TDesktopOpt.Save" link="#EnvironmentOpts.TCustomDesktopOpt.Save"><short>Save method collect the information and write it to the XML-Config at the given "Path"</short><descr>collect the information and write it to the XML-Config at the given "Path"</descr>
+      </element><element name="TUnsupportedDesktopOpt" link="#EnvironmentOpts.TCustomDesktopOpt"><short>This is a "dummy"-class it just stores the information when the desktop isn't supportes by the IDE</short>
+      </element><element name="TUnsupportedDesktopOpt.FRetainXMLData"><short>Storage to retain the unsupported desktop-information</short>
+      </element><element name="TUnsupportedDesktopOpt.Destroy" link="#EnvironmentOpts.TCustomDesktopOpt.Destroy"><short>Destructor of the class</short>
+      </element><element name="TCustomDesktopOpt.Destroy"><short>destructor of the class</short>
+      </element><element name="TUnsupportedDesktopOpt.Load" link="#EnvironmentOpts.TCustomDesktopOpt.Load"><short>Load-procedure stores the read data from the XML-Config at the given "Path"</short><descr>the method stores the read data from the XML-Config at the given "Path"</descr>
+      </element><element name="TUnsupportedDesktopOpt.Save" link="#EnvironmentOpts.TCustomDesktopOpt.Save"><short>Save method collects the retained-information and write it to the XML-Config at the given "Path"</short><descr>Collects the retained-information and write it to the XML-Config at the given "Path"</descr>
+      </element><element name="TDesktopOptList"><short>List of desktop - option - items</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

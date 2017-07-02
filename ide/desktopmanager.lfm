@@ -60,7 +60,7 @@ object DesktopForm: TDesktopForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = AssociatedDebugDesktopComboBox
     Left = 11
-    Height = 161
+    Height = 163
     Top = 8
     Width = 320
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -199,14 +199,15 @@ object DesktopForm: TDesktopForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = AutoSaveActiveDesktopCheckBox
     Left = 184
-    Height = 23
-    Top = 175
+    Height = 21
+    Top = 177
     Width = 147
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Left = 10
     ItemHeight = 15
     OnChange = AssociatedDebugDesktopComboBoxChange
-    Style = csDropDownList
+    OnDrawItem = AssociatedDebugDesktopComboBoxDrawItem
+    Style = csOwnerDrawFixed
     TabOrder = 1
   end
   object AssociatedDebugDesktopLabel: TLabel
@@ -215,7 +216,7 @@ object DesktopForm: TDesktopForm
     AnchorSideTop.Side = asrCenter
     Left = 11
     Height = 15
-    Top = 179
+    Top = 180
     Width = 163
     Caption = 'AssociatedDebugDesktopLabel'
     ParentColor = False

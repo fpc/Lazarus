@@ -5058,6 +5058,7 @@ docs/lazdoc.css svneol=native#text/plain
 docs/xml/README.txt svneol=native#text/plain
 docs/xml/StyleGuide.txt svneol=native#text/plain
 docs/xml/ide/aboutfrm.xml svneol=native#text/plain
+docs/xml/ide/environmentopts.xml svneol=native#text/xml
 docs/xml/lazutils/avglvltree.xml svneol=native#text/plain
 docs/xml/lazutils/dynamicarray.xml svneol=native#text/plain
 docs/xml/lazutils/dynhasharray.xml svneol=native#text/plain
