@@ -95,7 +95,7 @@ type
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean);override;
 
     //The Drag and Drop routines
-    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer); override;
+    procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False); override;
     procedure DragMove(APosition: TPoint); override;
     procedure DragStop(ADropped: Boolean); override;
 
@@ -595,6 +595,8 @@ begin
       end
       else
         DragMsg := dmDragDrop;
+      ADockObjectCopy.Control.Top:=0;
+      ADockObjectCopy.Control.Left:=0;
       SendDragMessage(ADockObjectCopy.DragTarget, DragMsg, ADockObjectCopy,
                       ADockObjectCopy.DragTarget, ADockObjectCopy.DragPos);
     end;
@@ -639,7 +641,7 @@ begin
     Result := FPerformer.Dragging(AControl)
 end;
 
-procedure TDragManagerDefault.DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer);
+procedure TDragManagerDefault.DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False);
 //Start a drag operation
 begin
   if FPerformer = nil then
@@ -649,7 +651,10 @@ begin
     else
       FThresholdValue := DragThreshold;
     FWaitForTreshold := not AImmediate;
-    GetCursorPos(FStartPosition);
+    if StartFromCurrentMouse then
+      FStartPosition:=AControl.ClientToScreen(point(0,0))
+    else
+      GetCursorPos(FStartPosition);
 
     AControl.BeforeDragStart;
 

@@ -278,7 +278,7 @@ begin
   if assigned(AControl) and assigned(FOnBandDrag) then
     FOnBandDrag(self, AControl, Result);
   if Result then
-    DragManager.DragStart(AControl, True, -1);
+    DragManager.DragStart(AControl, True, -1, True);
 end;
 
 procedure TCustomControlBar.DragOver(Source: TObject; X, Y: Integer; State: TDragState;

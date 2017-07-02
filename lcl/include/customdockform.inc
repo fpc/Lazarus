@@ -15,9 +15,18 @@
 { TCustomDockForm }
 
 procedure TCustomDockForm.DoAddDockClient(Client: TControl; const ARect: TRect);
+  procedure FixClientPlacing(Client: TControl);
+  begin
+    Client.BorderSpacing.Left:=0;
+    Client.BorderSpacing.Right:=0;
+    Client.BorderSpacing.Top:=0;
+    Client.BorderSpacing.Bottom:=0;
+    Client.BorderSpacing.Around:=0;
+  end;
 begin
   inherited DoAddDockClient(Client, ARect);
   Client.Align := alClient;
+  FixClientPlacing(Client);
   if ([csLoading,csDestroying]*ComponentState=[]) then
     Visible := True;
 end;

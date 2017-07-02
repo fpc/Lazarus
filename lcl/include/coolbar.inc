@@ -936,7 +936,7 @@ begin
           aRect := ClientRect;
           InflateRect(aRect, cUserDragArea, cUserDragArea);
           if not PtInRect(aRect, Point(X, Y)) then
-            DragManager.DragStart(FVisiBands[FDraggedBandIndex].Control, True, -1);
+            DragManager.DragStart(FVisiBands[FDraggedBandIndex].Control, True, -1, True);
         end;
       end;
     end;
