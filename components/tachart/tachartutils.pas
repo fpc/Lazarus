@@ -43,6 +43,12 @@ type
   // Like TColor, but avoiding dependency on Graphics.
   TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
 
+  // dto with TFontStyle
+  TChartFontStyle = (cfsBold, cfsItalic, cfsUnderline, cfsStrikeout);
+  TChartFontStyles = set of TChartFontStyle;
+
+  TChartTextFormat = (tfNormal, tfHTML);
+
   TDoublePoint = record
     X, Y: Double;
   end;

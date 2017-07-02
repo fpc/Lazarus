@@ -43,7 +43,7 @@ type
     FPenWidth: Integer;
     FFontName: String;
     FFontSize: Integer;
-    FFontStyle: Integer;
+    FFontStyle: TChartFontStyles;
     FFontAngle: Double;
     FPos: TPoint;
     procedure ChartGLColor(AColor: TFPColor);
@@ -66,6 +66,10 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontColor: TFPColor; override;
+    function GetFontName: String; override;
+    function GetFontSize: Integer; override;
+    function GetFontStyle: TChartFontStyles; override;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -99,6 +103,7 @@ implementation
 
 uses
   GL, GLu, FileUtil,
+  Math,
  {$IFDEF CHARTGL_USE_LAZFREETYPE}
   LazFileUtils,
   EasyLazFreeType, LazFreeTypeFPImageDrawer, LazFreeTypeFontCollection,
@@ -564,6 +569,26 @@ begin
   Result := 0.0;
 end;
 
+function TOpenGLDrawer.GetFontColor: TFPColor;
+begin
+  Result := FFontColor;
+end;
+
+function TOpenGLDrawer.GetFontName: String;
+begin
+  Result := FFontName;
+end;
+
+function TOpenGLDrawer.GetFontSize: Integer;
+begin
+  Result := IFThen(FFontSize = 0, DEFAULT_FONT_SIZE, FFontSize);
+end;
+
+function TOpenGLDrawer.GetFontStyle: TChartFontStyles;
+begin
+  Result := FFontStyle;
+end;
+
 procedure TOpenGLDrawer.InternalPolyline(
   const APoints: array of TPoint; AStartIndex, ANumPts, AMode: Integer);
 var
@@ -705,14 +730,13 @@ end;
 procedure TOpenGLDrawer.SetFont(AFont: TFPCustomFont);
 begin
   FFontName := AFont.Name;
-  if Sametext(FFontName, 'default') then FFontName := 'Arial';
-  FFontSize := AFont.Size;
-  if FFontSize = 0 then FFontSize := 10;
-  FFontStyle := 0;
-  if AFont.Bold then inc(FFontStyle, 1);
-  if AFont.Italic then inc(FFontStyle, 2);
-  if AFont.Underline then inc(FFontStyle, 4);
-  if AFont.Strikethrough then inc(FFontStyle, 8);
+  if SameText(FFontName, 'default') then FFontName := 'Arial';
+  FFontSize := IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
+  FFontStyle := [];
+  if AFont.Bold then Include(FFontStyle, cfsBold);
+  if AFont.Italic then Include(FFontStyle, cfsItalic);
+  if AFont.Underline then Include(FFontStyle, cfsUnderline);
+  if AFont.Strikethrough then Include(FFontStyle, cfsStrikeout);
   FFontColor := AFont.FPColor;
 
  {$IFDEF CHARTGL_USE_LAZFREETYPE}

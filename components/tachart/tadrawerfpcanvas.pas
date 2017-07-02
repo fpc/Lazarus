@@ -19,7 +19,7 @@ interface
 {$ENDIF}
 
 uses
-  Classes, FPCanvas, {$IFDEF USE_FTFONT}FTFont,{$ENDIF}
+  Classes, FPCanvas, FPImage, {$IFDEF USE_FTFONT}FTFont,{$ENDIF}
   TAChartUtils, TADrawUtils;
 
 type
@@ -36,7 +36,6 @@ type
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
   strict protected
-    function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
@@ -50,6 +49,11 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontAngle: Double; override;
+    function GetFontColor: TFPColor; override;
+    function GetFontName: String; override;
+    function GetFontSize: Integer; override;
+    function GetFontStyle: TChartFontStyles; override;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -158,6 +162,33 @@ end;
 function TFPCanvasDrawer.GetFontAngle: Double;
 begin
   Result := 0.0;
+end;
+
+function TFPCanvasDrawer.GetFontColor: TFPColor;
+begin
+  Result := FCanvas.Font.FPColor;
+end;
+
+function TFPCanvasDrawer.GetFontName: String;
+begin
+  Result := FCanvas.Font.Name;
+end;
+
+function TFPCanvasDrawer.GetFontSize: Integer;
+begin
+  if FCanvas.Font.Size = 0 then
+    Result := DEFAULT_FONT_SIZE
+  else
+    Result := FCanvas.Font.Size;
+end;
+
+function TFPCanvasDrawer.GetFontStyle: TChartFontStyles;
+begin
+  Result := [];
+  if FCanvas.Font.Bold then Include(Result, cfsBold);
+  if FCanvas.Font.Italic then Include(Result, cfsItalic);
+  if FCanvas.Font.Underline then Include(Result, cfsUnderline);
+  if FCanvas.Font.Strikethrough then Include(Result, cfsStrikeout);
 end;
 
 procedure TFPCanvasDrawer.Line(AX1, AY1, AX2, AY2: Integer);

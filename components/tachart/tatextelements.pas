@@ -56,6 +56,7 @@ type
     FOnGetShape: TChartGetShapeEvent;
     FOverlapPolicy: TChartMarksOverlapPolicy;
     FShape: TChartLabelShape;
+    FTextFormat: TChartTextFormat;
     procedure SetAlignment(AValue: TAlignment);
     procedure SetCalloutAngle(AValue: Cardinal);
     procedure SetClipped(AValue: Boolean);
@@ -64,6 +65,7 @@ type
     procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
     procedure SetRotationCenter(AValue: TChartTextRotationCenter);
     procedure SetShape(AValue: TChartLabelShape);
+    procedure SetTextFormat(AValue: TChartTextFormat);
   strict protected
     FAlignment: TAlignment;
     FInsideDir: TDoublePoint;
@@ -107,6 +109,8 @@ type
       read FOnGetShape write SetOnGetShape;
     property Shape: TChartLabelShape
       read FShape write SetShape default clsRectangle;
+    property TextFormat: TChartTextFormat
+      read FTextFormat write SetTextFormat default tfNormal;
   published
     property Alignment: TAlignment
       read FAlignment write SetAlignment;
@@ -157,6 +161,7 @@ type
     property OnGetShape;
     property Shape;
     property Text: TStrings read FText write SetText;
+    property TextFormat;
     property Visible default false;
   end;
 
@@ -278,6 +283,7 @@ type
     property OverlapPolicy;
     property RotationCenter;
     property Style default smsNone;
+    property TextFormat;
     property YIndex;
   end;
 
@@ -300,6 +306,7 @@ begin
       Self.FMargins.Assign(FMargins);
       Self.FOverlapPolicy := FOverlapPolicy;
       Self.FShape := FShape;
+      Self.FTextFormat := FTextFormat;
       Self.FInsideDir := FInsideDir;
     end;
   inherited Assign(ASource);
@@ -328,7 +335,7 @@ var
   i, w: Integer;
 begin
   ApplyLabelFont(ADrawer);
-  ptText := ADrawer.TextExtent(AText);
+  ptText := ADrawer.TextExtent(AText, FTextFormat);
   w := ptText.X;
   labelPoly := GetLabelPolygon(ADrawer, ptText);
   for i := 0 to High(labelPoly) do
@@ -368,7 +375,7 @@ begin
   end;
   ptText := RotatePoint(P, GetLabelAngle) + ALabelCenter;
 
-  ADrawer.TextOut.Pos(ptText).Alignment(Alignment).Width(w).Text(AText).Done;
+  ADrawer.TextOut.TextFormat(FTextFormat).Pos(ptText).Alignment(Alignment).Width(w).Text(AText).Done;
   if not Clipped then
     ADrawer.ClippingStart;
 end;
@@ -468,7 +475,7 @@ function TChartTextElement.MeasureLabel(
   ADrawer: IChartDrawer; const AText: String): TSize;
 begin
   ApplyLabelFont(ADrawer);
-  with GetBoundingBox(ADrawer, ADrawer.TextExtent(AText)) do
+  with GetBoundingBox(ADrawer, ADrawer.TextExtent(AText, FTextFormat)) do
     Result := MeasureRotatedRect(Point(Right - Left, Bottom - Top), GetLabelAngle);
 end;
 
@@ -478,7 +485,7 @@ var
   R: TRect;
 begin
   ApplyLabelFont(ADrawer);
-  R := Rect(0, 0, 0, ADrawer.TextExtent(AText).y);
+  R := Rect(0, 0, 0, ADrawer.TextExtent(AText, FTextFormat).y);
   OffsetRect(R, 0, -(R.Bottom - R.Top) div 2);
   if IsMarginRequired then
     Margins.ExpandRectScaled(ADrawer, R);
@@ -545,6 +552,14 @@ begin
   FShape := AValue;
   StyleChanged(Self);
 end;
+
+procedure TChartTextElement.SetTextFormat(AValue: TChartTextFormat);
+begin
+  if FTextFormat = AValue then exit;
+  FTextFormat := AValue;
+  StyleChanged(Self);
+end;
+
 
 { TChartTitle }
 

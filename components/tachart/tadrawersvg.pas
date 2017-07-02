@@ -73,6 +73,10 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontColor: TFPColor; override;
+    function GetFontName: String; override;
+    function GetFontSize: Integer; override;
+    function GetFontStyle: TChartFontStyles; override;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -253,6 +257,30 @@ begin
   Result := FFont.Orientation;
 end;
 
+function TSVGDrawer.GetFontColor: TFPColor;
+begin
+  Result := FFont.Color;
+end;
+
+function TSVGDrawer.GetFontName: String;
+begin
+  Result := FFont.Name;
+end;
+
+function TSVGDrawer.GetFontSize: Integer;
+begin
+  Result := IfThen(FFont.Size = 0, DEFAULT_FONT_SIZE, FFont.Size);
+end;
+
+function TSVGDrawer.GetFontStyle: TChartFontStyles;
+begin
+  Result := [];
+  if FFont.Bold then Include(Result, cfsBold);
+  if FFont.Italic then Include(Result, cfsItalic);
+  if FFont.Underline then Include(Result, cfsUnderline);
+  if FFont.StrikeThrough then Include(Result, cfsStrikeout);
+end;
+
 procedure TSVGDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
   WriteFmt(
@@ -422,7 +450,7 @@ procedure TSVGDrawer.SetFont(AFont: TFPCustomFont);
 begin
   with FFont do begin
     Name := AFont.Name;
-    Size := IfThen(AFont.Size=0, 8, AFont.Size);
+    Size := IfThen(AFont.Size=0, DEFAULT_FONT_SIZE, AFont.Size);
 
     // ???
     if FMonochromeColor <> clTAColor then

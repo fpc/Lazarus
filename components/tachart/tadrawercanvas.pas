@@ -35,7 +35,7 @@ type
   strict protected
     FCanvas: TCanvas;
     FBuffer: TBitmap;
-    function GetFontAngle: Double; override;
+//    function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
@@ -49,6 +49,11 @@ type
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
     function GetCanvas: TCanvas; virtual;
+    function GetFontAngle: Double; override;
+    function GetFontColor: TFPColor; override;
+    function GetFontName: String; override;
+    function GetFontSize: Integer; override;
+    function GetFontStyle: TChartFontStyles; override;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -83,6 +88,7 @@ type
 
   function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
   function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;
+
 
 implementation
 
@@ -171,6 +177,32 @@ end;
 function TCanvasDrawer.GetFontAngle: Double;
 begin
   Result := OrientToRad(GetCanvas.Font.Orientation);
+end;
+
+function TCanvasDrawer.GetFontColor: TFPColor;
+begin
+  Result := TColorToFPColor(GetCanvas.Font.Color);
+end;
+
+function TCanvasDrawer.GetFontName: String;
+begin
+  Result := GetCanvas.Font.Name;
+end;
+
+function TCanvasDrawer.GetFontSize: Integer;
+var
+  h: Integer;
+begin
+  Result := GetCanvas.Font.Size;
+  if Result = 0 then begin
+    h := GetFontData(GetCanvas.Font.Reference.Handle).Height;
+    Result := round(abs(h) * 72 / ScreenInfo.PixelsPerInchY);
+  end;
+end;
+
+function TCanvasDrawer.GetFontStyle: TChartFontStyles;
+begin
+  Result := TChartFontStyles(GetCanvas.Font.Style);
 end;
 
 procedure TCanvasDrawer.Line(AX1, AY1, AX2, AY2: Integer);

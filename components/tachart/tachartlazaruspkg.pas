@@ -17,7 +17,7 @@ uses
   TAToolEditors, TAMath, TAChartImageList, TAChartTeeChart, TADataTools, 
   TAAnimatedSource, TATextElements, TAAxisSource, TASeriesPropEditors, 
   TACustomFuncSeries, TAFitUtils, TAGUIConnector, TADiagram, TADiagramDrawing, 
-  TADiagramLayout, TAChartStrConsts, TAChartCombos, LazarusPackageIntf;
+  TADiagramLayout, TAChartStrConsts, TAChartCombos, TAHtml, LazarusPackageIntf;
 
 implementation
 

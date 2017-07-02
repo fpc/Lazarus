@@ -22,8 +22,9 @@ type
   TChartAntialiasingMode = (amDontCare, amOn, amOff);
 
 type
-
   ISimpleTextOut = interface
+    function HtmlTextExtent(const AText: String): TPoint;
+    procedure HtmlTextOut(AX, AY: Integer; const AText: String);
     procedure SimpleTextOut(AX, AY: Integer; const AText: String);
     function SimpleTextExtent(const AText: String): TPoint;
     function GetFontAngle: Double;
@@ -38,6 +39,7 @@ type
     FSimpleTextOut: ISimpleTextOut;
     FText1: String;
     FText2: TStrings;
+    FTextFormat: TChartTextFormat;
     FWidth: Integer;
 
     procedure DoTextOutList;
@@ -51,6 +53,7 @@ type
     function Pos(const APos: TPoint): TChartTextOut;
     function Text(const AText: String): TChartTextOut;
     function Text(AText: TStrings): TChartTextOut;
+    function TextFormat(AFormat: TChartTextFormat): TChartTextOut;
     function Width(AWidth: Integer): TChartTextOut;
   end;
 
@@ -63,6 +66,7 @@ type
   TScaleItems = set of TScaleItem;
 
   IChartDrawer = interface
+   ['{6D8E5591-6788-4D2D-9FE6-596D5157C3C3}']
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStart;
@@ -74,6 +78,11 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontAngle: Double;
+    function GetFontColor: TFPColor;
+    function GetFontName: String;
+    function GetFontSize: Integer;
+    function GetFontStyle: TChartFontStyles;
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
@@ -108,8 +117,10 @@ type
     procedure SetRightToLeft(AValue: Boolean);
     procedure SetTransparency(ATransparency: TChartTransparency);
     procedure SetXor(AXor: Boolean);
-    function TextExtent(const AText: String): TPoint;
-    function TextExtent(AText: TStrings): TPoint;
+    function TextExtent(const AText: String;
+      ATextFormat: TChartTextFormat = tfNormal): TPoint;
+    function TextExtent(AText: TStrings;
+      ATextFormat: TChartTextFormat = tfNormal): TPoint;
     function TextOut: TChartTextOut;
 
     property Brush: TFPCustomBrush write SetBrush;
@@ -135,15 +146,22 @@ type
     FScaleItems: TScaleItems;
     function ColorOrMono(AColor: TChartColor): TChartColor; inline;
     function FPColorOrMono(const AColor: TFPColor): TFPColor; inline;
-    function GetFontAngle: Double; virtual; abstract;
+//    function GetFontAngle: Double; virtual; abstract;
     function SimpleTextExtent(const AText: String): TPoint; virtual; abstract;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
+    function HtmlTextExtent(const AText: String): TPoint;
+    procedure HtmlTextOut(AX, AY: Integer; const AText: String);
   public
     constructor Create;
     procedure DrawingBegin(const ABoundingBox: TRect); virtual;
     procedure DrawingEnd; virtual;
     procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
     procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
+    function GetFontAngle: Double; virtual; abstract;
+    function GetFontColor: TFPColor; virtual; abstract;
+    function GetFontName: String; virtual; abstract;
+    function GetFontSize: Integer; virtual; abstract;
+    function GetFontStyle: TChartFontStyles; virtual; abstract;
     function GetRightToLeft: Boolean;
     procedure LineTo(AX, AY: Integer); virtual; abstract;
     procedure LineTo(const AP: TPoint);
@@ -161,8 +179,8 @@ type
     procedure SetRightToLeft(AValue: Boolean);
     procedure SetTransparency(ATransparency: TChartTransparency);
     procedure SetXor(AXor: Boolean);
-    function TextExtent(const AText: String): TPoint;
-    function TextExtent(AText: TStrings): TPoint;
+    function TextExtent(const AText: String; ATextFormat: TChartTextFormat = tfNormal): TPoint;
+    function TextExtent(AText: TStrings; ATextFormat: TChartTextFormat = tfNormal): TPoint;
     function TextOut: TChartTextOut;
   end;
 
@@ -173,7 +191,7 @@ type
 implementation
 
 uses
-  Math, TAGeometry;
+  Math, TAGeometry, TAHtml;
 
 const
   LINE_INTERVAL = 2;
@@ -241,13 +259,19 @@ var
 begin
   a := -FSimpleTextOut.GetFontAngle;
   for i := 0 to FText2.Count - 1 do begin
-    lineExtent := FSimpleTextOut.SimpleTextExtent(FText2[i]);
+    case FTextFormat of
+      tfNormal: lineExtent := FSimpleTextOut.SimpleTextExtent(FText2[i]);
+      tfHtml  : lineExtent := FSimpleTextOut.HtmlTextExtent(FText2[i]);
+    end;
     p := FPos;
     case FAlignment of
       taCenter: p += RotatePointX((FWidth - lineExtent.X) div 2, a);
       taRightJustify: p += RotatePointX(FWidth - lineExtent.X, a);
     end;
-    FSimpleTextOut.SimpleTextOut(p.X, p.Y, FText2[i]);
+    case FTextFormat of
+      tfNormal: FSimpleTextOut.SimpleTextOut(p.X, p.Y, FText2[i]);
+      tfHtml  : FSimpleTextOut.HtmlTextOut(p.X, p.Y, FText2[i]);
+    end;
     FPos += RotatePoint(Point(0, lineExtent.Y + LINE_INTERVAL), a);
   end;
 end;
@@ -255,7 +279,10 @@ end;
 procedure TChartTextOut.DoTextOutString;
 begin
   if System.Pos(LineEnding, FText1) = 0 then begin
-    FSimpleTextOut.SimpleTextOut(FPos.X, FPos.Y, FText1);
+    case FTextFormat of
+      tfNormal: FSimpleTextOut.SimpleTextOut(FPos.X, FPos.Y, FText1);
+      tfHtml  : FSimpleTextOut.HtmlTextOut(FPos.X, FPos.Y, FText1);
+    end;
     exit;
   end;
   FText2 := TStringList.Create;
@@ -288,6 +315,12 @@ end;
 function TChartTextOut.Text(AText: TStrings): TChartTextOut;
 begin
   FText2 := AText;
+  Result := Self;
+end;
+
+function TChartTextOut.TextFormat(AFormat: TChartTextFormat): TChartTextOut;
+begin
+  FTextFormat := AFormat;
   Result := Self;
 end;
 
@@ -345,6 +378,34 @@ end;
 function TBasicDrawer.GetRightToLeft: Boolean;
 begin
   Result := FRightToLeft;
+end;
+
+function TBasicDrawer.HtmlTextExtent(const AText: String): TPoint;
+var
+  IDrawer: IChartDrawer;
+begin
+  IDrawer := Self as IChartDrawer;
+//  GetInterface('IChartDrawer', IDrawer);
+  with THtmlAnalyzer.Create(IDrawer) do
+    try
+      Result := TextExtent(AText);
+    finally
+      Free;
+    end;
+end;
+
+procedure TBasicDrawer.HtmlTextOut(AX, AY: Integer; const AText: String);
+var
+  IDrawer: IChartDrawer;
+begin
+  IDrawer := Self as IChartDrawer;
+//  GetInterface('IChartDrawer', IDrawer);
+  with THtmlAnalyzer.Create(IDrawer) do
+    try
+      TextOut(AX, AY, AText);
+    finally
+      Free;
+    end;
 end;
 
 procedure TBasicDrawer.LineTo(const AP: TPoint);
@@ -411,31 +472,46 @@ begin
   FXor := AXor;
 end;
 
-function TBasicDrawer.TextExtent(const AText: String): TPoint;
+function TBasicDrawer.TextExtent(const AText: String;
+  ATextFormat: TChartTextFormat = tfNormal): TPoint;
 var
   sl: TStrings;
 begin
   if Pos(LineEnding, AText) = 0 then
-    exit(SimpleTextExtent(AText));
+    case ATextFormat of
+      tfNormal: exit(SimpleTextExtent(AText));
+      tfHTML  : exit(HtmlTextExtent(AText));
+    end;
+
   sl := TStringList.Create;
   try
     sl.Text := AText;
-    Result := TextExtent(sl);
+    Result := TextExtent(sl, ATextFormat);
   finally
     sl.Free;
   end;
 end;
 
-function TBasicDrawer.TextExtent(AText: TStrings): TPoint;
+function TBasicDrawer.TextExtent(AText: TStrings;
+  ATextFormat: TChartTextFormat = tfNormal): TPoint;
 var
   i: Integer;
 begin
   Result := Size(0, -LINE_INTERVAL);
-  for i := 0 to AText.Count - 1 do
-    with SimpleTextExtent(AText[i]) do begin
-      Result.X := Max(Result.X, X);
-      Result.Y += Y + LINE_INTERVAL;
-    end;
+  case ATextFormat of
+    tfNormal:
+      for i := 0 to AText.Count - 1 do
+        with SimpleTextExtent(AText[i]) do begin
+          Result.X := Max(Result.X, X);
+          Result.Y += Y + LINE_INTERVAL;
+        end;
+    tfHtml:
+      for i := 0 to AText.Count - 1 do
+        with HtmlTextExtent(AText[i]) do begin
+          Result.X := Max(Result.X, X);
+          Result.Y += Y + LINE_INTERVAL;
+        end;
+  end;
 end;
 
 function TBasicDrawer.TextOut: TChartTextOut;

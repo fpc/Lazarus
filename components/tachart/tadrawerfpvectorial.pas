@@ -53,6 +53,10 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontColor: TFPColor; override;
+    function GetFontName: String; override;
+    function GetFontSize: Integer; override;
+    function GetFontStyle: TChartFontStyles; override;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint); overload;
     procedure LineTo(AX, AY: Integer); override;
@@ -175,6 +179,30 @@ end;
 function TFPVectorialDrawer.GetFontAngle: Double;
 begin
   Result := FFont.Orientation;
+end;
+
+function TFPVectorialDrawer.GetFontcolor: TFPColor;
+begin
+  Result := FFont.Color;
+end;
+
+function TFPVectorialDrawer.GetFontName: String;
+begin
+  Result := FFont.Name;
+end;
+
+function TFPVectorialDrawer.GetFontSize: Integer;
+begin
+  Result := IfThen(FFont.Size = 0, DEFAULT_FONT_SIZE, FFont.Size);
+end;
+
+function TFPVectorialDrawer.GetFontStyle: TChartFontStyles;
+begin
+  Result := [];
+  if FFont.Bold then Include(Result, cfsBold);
+  if FFont.Italic then Include(Result, cfsItalic);
+  if FFont.Underline then Include(Result, cfsUnderline);
+  if FFont.StrikeThrough then Include(Result, cfsStrikeout);
 end;
 
 function TFPVectorialDrawer.InvertY(AY: Integer): Integer;
@@ -333,7 +361,7 @@ end;
 procedure TFPVectorialDrawer.SetFont(AFont: TFPCustomFont);
 begin
   FFont.Name := AFont.Name;
-  FFont.Size := IfThen(AFont.Size = 0, 10, AFont.Size);
+  FFont.Size := IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
   FFont.Color := AFont.FPColor;
   FFont.Orientation := FGetFontOrientationFunc(AFont);
   FFont.Bold := AFont.Bold;

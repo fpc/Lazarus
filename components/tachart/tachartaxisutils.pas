@@ -59,6 +59,7 @@ type
     property LabelBrush;
     property PositionOnMarks: Boolean
       read FPositionOnMarks write SetPositionOnMarks default false;
+    property TextFormat;
     property Visible default false;
   end;
 
@@ -138,6 +139,7 @@ type
     property Source: TCustomChartSource read FSource write SetSource;
     property Stripes;
     property Style default smsValue;
+    property TextFormat;
     property YIndex;
   end;
 

@@ -44,6 +44,10 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontColor: TFPColor; override;
+    function GetFontName: String; override;
+    function GetFontSize: Integer; override;
+    function GetFontStyle: TChartFontStyles; override;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -70,7 +74,7 @@ type
 implementation
 
 uses
-  BGRAText, Graphics, TAGeometry;
+  BGRAText, Graphics, Math, TAGeometry;
 
 { TBGRABitmapDrawer }
 
@@ -133,6 +137,29 @@ end;
 function TBGRABitmapDrawer.GetFontAngle: Double;
 begin
   Result := 0.0;
+end;
+
+function TBGRABitmapDrawer.GetFontColor: TFPColor;
+begin
+  Result := TColorToFPColor(Canvas.Font.Color);
+end;
+
+function TBGRABitmapDrawer.GetFontName: String;
+begin
+  Result := Canvas.Font.Name;
+end;
+
+function TBGRABitmapDrawer.GetFontSize: Integer;
+begin
+  Result := IfThen(Canvas.Font.Height = 0,
+    DEFAULT_FONT_SIZE,
+    round(abs(Canvas.Font.Height) / ScreenInfo.PixelsPerInchY * 72)
+  );
+end;
+
+function TBGRABitmapDrawer.GetFontStyle: TChartFontStyles;
+begin
+  Result := TChartFontStyles(Canvas.Font.Style);
 end;
 
 procedure TBGRABitmapDrawer.Line(AX1, AY1, AX2, AY2: Integer);
