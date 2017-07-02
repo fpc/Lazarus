@@ -900,9 +900,6 @@ end;
 procedure TCustomCoolBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 var aBand: Integer;
     aGrabber: Boolean;
-    aRect: TRect;
-const
-    cUserDragArea = 64;
 begin
   inherited MouseMove(Shift, X, Y);
   if length(FVisiBands) > 0 then begin
@@ -933,9 +930,7 @@ begin
       dbMove: begin
         if FDraggedBandIndex>-1 then begin
           Cursor := crDrag;
-          aRect := ClientRect;
-          InflateRect(aRect, cUserDragArea, cUserDragArea);
-          if not PtInRect(aRect, Point(X, Y)) then
+          if DragManager.IsCanBeStartDragging(self,-1,X,Y) then
             DragManager.DragStart(FVisiBands[FDraggedBandIndex].Control, True, -1, True);
         end;
       end;

@@ -508,9 +508,6 @@ procedure TCustomControlBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 var aBand: TCtrlBand;
     aCursor: TCursorDesign;
     bDragging, bGrabber: Boolean;
-    aRect: TRect;
-const
-    cUserDragArea = 64;
 begin
   inherited MouseMove(Shift, X, Y);
   if FBandMove <> bmMoving then begin
@@ -528,9 +525,7 @@ begin
       FHoveredBand := nil;
     end;
   end else begin
-    aRect := ClientRect;
-    InflateRect(aRect, cUserDragArea, cUserDragArea);
-    if PtInRect(aRect, Point(X, Y)) then begin
+    if not DragManager.IsCanBeStartDragging(self,-1,X,Y) then begin
       MoveBand(FHoveredBand, X, Y, True);
     end else begin
       bDragging := False;

@@ -244,6 +244,10 @@ end;
 
 function TToolBar.IsVertical: Boolean;
 begin
+  if Assigned(Parent) then begin
+    if (Parent is TCoolBar) then
+      exit((Parent as TCoolBar).Vertical);
+  end;
   if Align in [alNone, alClient, alCustom] then
     Result := Height > Width
   else
