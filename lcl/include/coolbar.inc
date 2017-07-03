@@ -541,7 +541,7 @@ end;
 
 procedure TCustomCoolBar.CalculateAndAlign;
 var i, x, y, aBandHeight, aBorderLeft, aCountM1, aLeft,
-    aPrefSize, aStartIndex, aTop, aWidth: Integer;
+    aPrefSize, aStartIndex, aTop, aWidth, NewWidth,NewHeight: Integer;
     aRowEnd: Boolean;
 begin
   //DebugLn('CalculateAndAlign');
@@ -577,6 +577,16 @@ begin
   for i := 0 to aCountM1 do begin
     if aRowEnd or FVisiBands[i].Break then
       aLeft := aBorderLeft;
+    if Assigned(FVisiBands[i].Control)then
+      if FVisiBands[i].Control is TToolBar then
+    begin
+      if TToolBar(FVisiBands[i].Control).IsVertical then
+        TToolBar(FVisiBands[i].Control).WrapButtons(Height,NewWidth,NewHeight,true)
+      else
+        TToolBar(FVisiBands[i].Control).WrapButtons(Width,NewWidth,NewHeight,true);
+      FVisiBands[i].Control.Width:=NewWidth;
+      FVisiBands[i].Control.Height:=NewHeight;
+    end;
     aBandHeight := Max(aBandHeight, FVisiBands[i].CalcPreferredHeight);
     aRowEnd := (i = aCountM1);
     inc(aLeft, FVisiBands[i].Width);
@@ -687,7 +697,7 @@ begin
     if aCountM1 >= 0 then
       PreferredHeight := FVisiBands[aCountM1].FTop+FVisiBands[aCountM1].FHeight+FBorderBottom
     else
-      PreferredHeight := FBorderTop+TCoolBand.cDefMinHeight+FBorderBottom;
+      PreferredHeight := FBorderTop+FBorderBottom;
     PreferredWidth := 0
   end else begin
     PreferredHeight := 0;
@@ -701,7 +711,7 @@ begin
           FVisiBands[i].FTop := FVisiBands[i].FTop-x;
       end;
     end else
-      PreferredWidth := FBorderLeft+TCoolBand.cDefMinHeight+FBorderRight;
+      PreferredWidth := FBorderLeft+FBorderRight;
   end;
 end;
 
