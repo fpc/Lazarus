@@ -923,11 +923,15 @@ begin
 end;
 
 procedure TBasicResizeFrame.AppOnIdle(Sender: TObject; var Done: Boolean);
+var
+  aHasMainMenu: Boolean;
 begin
   if FDesignerModified then
   begin
-    if FOldHasMainMenu <> HasMainMenu then
+    aHasMainMenu := HasMainMenu;
+    if aHasMainMenu <> FOldHasMainMenu then
     begin
+      FOldHasMainMenu := aHasMainMenu;
       TryBoundDesignedForm;
       if Assigned(OnNodePositioning) then
         OnNodePositioning(Self, [pkBottom], pcPositioningEnd);
@@ -1030,8 +1034,6 @@ begin
     pClient.Height := Height - pClient.Top - Max(Height - (pB.Top - BgBottomMargin), 0);
     pClient.Width := Width - pClient.Left - Max(Width - (pR.Left - BgRightMargin), 0);
   end;
-
-  FOldHasMainMenu := HasMainMenu;
 
   for Node := 0 to 7 do
   begin
