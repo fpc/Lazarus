@@ -14,7 +14,7 @@ unit TADrawerSVG;
 interface
 
 uses
-  Graphics, Classes, FPImage, FPCanvas, TAChartUtils, TADrawUtils;
+  Graphics, Classes, FPImage, FPCanvas, TAChartUtils, TADrawUtils, TAGraph;
 
 type
   TSVGFont = record
@@ -22,10 +22,7 @@ type
     Color: TFPColor;
     Size: integer;
     Orientation: Integer;  // angle * 10 (90° --> 900), >0 if ccw.
-    Bold: boolean;
-    Italic: boolean;
-    Underline: boolean;
-    StrikeThrough: boolean;
+    Style: TChartFontStyles;
   end;
 
 
@@ -56,7 +53,6 @@ type
     procedure WriteFmt(const AFormat: String; AParams: array of const);
     procedure WriteStr(const AString: String);
   strict protected
-    function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
 
@@ -73,6 +69,7 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontAngle: Double; override;
     function GetFontColor: TFPColor; override;
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
@@ -99,6 +96,14 @@ type
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
+
+
+  { TSVGChartHelper }
+
+  TSVGChartHelper = class helper for TChart
+    procedure SaveToSVGFile(const AFileName: String);
+  end;
+
 
 implementation
 
@@ -254,7 +259,7 @@ end;
 
 function TSVGDrawer.GetFontAngle: Double;
 begin
-  Result := FFont.Orientation;
+  Result := OrientToRad(FFont.Orientation);
 end;
 
 function TSVGDrawer.GetFontColor: TFPColor;
@@ -274,11 +279,7 @@ end;
 
 function TSVGDrawer.GetFontStyle: TChartFontStyles;
 begin
-  Result := [];
-  if FFont.Bold then Include(Result, cfsBold);
-  if FFont.Italic then Include(Result, cfsItalic);
-  if FFont.Underline then Include(Result, cfsUnderline);
-  if FFont.StrikeThrough then Include(Result, cfsStrikeout);
+  Result := FFont.Style;
 end;
 
 procedure TSVGDrawer.Line(AX1, AY1, AX2, AY2: Integer);
@@ -459,10 +460,11 @@ begin
       Color := AFont.FPColor;
 
     Orientation := FGetFontOrientationFunc(AFont);
-    FFont.Bold := AFont.Bold;
-    FFont.Italic := AFont.Italic;
-    FFont.Underline := AFont.Underline;
-    FFont.Strikethrough := AFont.Strikethrough;
+    FFont.Style := [];
+    if AFont.Bold then Include(FFont.Style, cfsBold);
+    if AFont.Italic then Include(FFont.Style, cfsItalic);
+    if AFont.Underline then Include(FFont.Style, cfsUnderline);
+    if AFont.StrikeThrough then Include(FFont.Style, cfsStrikeout);
   end;
 end;
 
@@ -508,15 +510,15 @@ begin
 
   sstyle := Format('fill:%s; font-family:''%s''; font-size:%dpt;',
     [ColorToHex(FFont.Color), FFont.Name, FontSize]);
-  if FFont.Bold then
+  if (cfsBold in FFont.Style) then
     sstyle := sstyle + ' font-weight:bold;';
-  if FFont.Italic then
+  if (cfsItalic in FFont.Style) then
     sstyle := sstyle + ' font-style:oblique;';
-  if FFont.Underline and FFont.Strikethrough then
+  if FFont.Style * [cfsUnderline, cfsStrikeout] = [cfsUnderline, cfsStrikeout] then
     sstyle := sstyle + ' text-decoration:underline,line-through;'
-  else if FFont.Underline then
+  else if FFont.Style * [cfsUnderline, cfsStrikeout] = [cfsUnderline] then
     sstyle := sstyle + ' text-deocration:underline;'
-  else if FFont.Strikethrough then
+  else if FFont.Style * [cfsUnderline, cfsStrikeout] = [cfsStrikeout] then
     sstyle := sstyle + ' text-decoration:line-through;';
   if OpacityStr <> '' then
     sstyle := sstyle + OpacityStr + ';';
@@ -526,7 +528,7 @@ end;
 
 function TSVGDrawer.StyleFill: String;
 
-function AddPattern(APattern: String): String;
+  function AddPattern(APattern: String): String;
   var
     i: Integer;
   begin
@@ -589,6 +591,22 @@ begin
   FStream.WriteBuffer(AString[1], Length(AString));
   FStream.WriteBuffer(le[1], Length(le));
 end;
+
+
+{ TSVGChartHelper }
+
+procedure TSVGChartHelper.SaveToSVGFile(const AFileName: String);
+var
+  fs: TFileStream;
+begin
+  fs := TFileStream.Create(AFileName, fmCreate);
+  try
+    Draw(TSVGDrawer.Create(fs, true), Rect(0, 0, Width, Height));
+  finally
+    fs.Free;
+  end;
+end;
+
 
 initialization
 

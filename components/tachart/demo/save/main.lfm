@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 299
   ClientWidth = 538
   OnCreate = FormCreate
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object Chart1: TChart
     Left = 0
     Height = 275
@@ -48,7 +48,6 @@ object Form1: TForm1
       'TAChart'
     )
     Align = alClient
-    ParentColor = False
     object Chart1BarSeries1: TBarSeries
       Marks.Format = '%0:.9g'
       Marks.Style = smsValue
@@ -66,6 +65,7 @@ object Form1: TForm1
     Height = 24
     Top = 0
     Width = 538
+    ButtonHeight = 22
     ButtonWidth = 100
     Caption = 'ToolBar1'
     Flat = False

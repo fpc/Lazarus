@@ -91,6 +91,10 @@ begin
 end;
 
 procedure TForm1.tbSaveAsSVGClick(Sender: TObject);
+begin
+  Chart1.SaveToSVGFile(GetFilename('svg'));
+end;
+{ or ...
 var
   fs: TFileStream;
   id: IChartDrawer;
@@ -103,7 +107,7 @@ begin
   finally
     fs.Free;
   end;
-end;
+end;   }
 
 end.
 
