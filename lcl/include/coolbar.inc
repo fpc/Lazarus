@@ -577,8 +577,7 @@ begin
   for i := 0 to aCountM1 do begin
     if aRowEnd or FVisiBands[i].Break then
       aLeft := aBorderLeft;
-    if Assigned(FVisiBands[i].Control)then
-      if FVisiBands[i].Control is TToolBar then
+    if FVisiBands[i].Control is TToolBar then
     begin
       if TToolBar(FVisiBands[i].Control).IsVertical then
         TToolBar(FVisiBands[i].Control).WrapButtons(Height,NewWidth,NewHeight,true)
