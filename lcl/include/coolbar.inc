@@ -940,7 +940,7 @@ begin
       dbMove: begin
         if FDraggedBandIndex>-1 then begin
           Cursor := crDrag;
-          if DragManager.IsCanBeStartDragging(self,-1,X,Y) then
+          if DragManager.CanStartDragging(self,-1,X,Y) then
             DragManager.DragStart(FVisiBands[FDraggedBandIndex].Control, True, -1, True);
         end;
       end;

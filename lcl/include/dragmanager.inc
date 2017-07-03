@@ -99,7 +99,7 @@ type
     procedure DragMove(APosition: TPoint); override;
     procedure DragStop(ADropped: Boolean); override;
 
-    function IsCanBeStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): boolean; override;
+    function CanStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): boolean; override;
 
     property StartPosition: TPoint read FStartPosition;
   end;
@@ -831,7 +831,7 @@ begin
     DragStop(AIsDragging);
 end;
 
-function TDragManagerDefault.IsCanBeStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): boolean;
+function TDragManagerDefault.CanStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): boolean;
 var
   Threshold:integer;
   aRect:TRect;
@@ -842,10 +842,7 @@ begin
     Threshold:=AThreshold;
   aRect := Site.ClientRect;
   InflateRect(aRect, Threshold, Threshold);
-  if not PtInRect(aRect, Point(X, Y)) then
-    Result:=true
-  else
-    Result:=false;
+  Result := not PtInRect(aRect, Point(X, Y));
 end;
 
 //included by controls.pp

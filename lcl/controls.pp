@@ -543,7 +543,7 @@ type
     procedure DragMove(APosition: TPoint); virtual;abstract;
     procedure DragStop(ADrop: Boolean); virtual;abstract;
 
-    function IsCanBeStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): boolean; virtual;abstract;
+    function CanStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): boolean; virtual;abstract;
 
     property DragImmediate: Boolean read FDragImmediate write FDragImmediate default True;
     property DragThreshold: Integer read FDragThreshold write FDragThreshold default 5;

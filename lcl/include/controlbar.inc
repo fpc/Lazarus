@@ -525,7 +525,7 @@ begin
       FHoveredBand := nil;
     end;
   end else begin
-    if not DragManager.IsCanBeStartDragging(self,-1,X,Y) then begin
+    if not DragManager.CanStartDragging(self,-1,X,Y) then begin
       MoveBand(FHoveredBand, X, Y, True);
     end else begin
       bDragging := False;
