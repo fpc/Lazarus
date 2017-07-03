@@ -18,6 +18,8 @@
   - If LazFreeType does not find the fonts needed call InitFonts at the beginning
     of the program and specify the path to the font folder as a parameter.
     Several folders can be used if separated by LineEnding codes.
+
+  - The drawer does not support rotated text at the moment.
 }
 unit TADrawerOpenGL;
 
@@ -44,7 +46,7 @@ type
     FFontName: String;
     FFontSize: Integer;
     FFontStyle: TChartFontStyles;
-    FFontAngle: Double;
+    FFontAngle: Double;  // in degrees
     FPos: TPoint;
     procedure ChartGLColor(AColor: TFPColor);
     procedure ChartGLPenStyle(APenStyle: TFPPenStyle);
@@ -54,7 +56,6 @@ type
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
   strict protected
-    function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
@@ -66,6 +67,7 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontAngle: Double; override;
     function GetFontColor: TFPColor; override;
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
@@ -566,7 +568,11 @@ end;
 
 function TOpenGLDrawer.GetFontAngle: Double;
 begin
+  {$IFDEF CHARTGL_USE_LAZFREETYPE}
+  Result := DegToRad(FFontAngle);
+  {$ELSE}
   Result := 0.0;
+  {$ENDIF}
 end;
 
 function TOpenGLDrawer.GetFontColor: TFPColor;

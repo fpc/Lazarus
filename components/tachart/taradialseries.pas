@@ -657,7 +657,6 @@ var
   firstPointSet: Boolean = false;
   originPt: TPoint;
   fill: Boolean;
-  isClosed: Boolean;
 
   procedure DoDraw;
   begin
@@ -821,7 +820,6 @@ end;
 
 procedure TPolarSeries.PrepareGraphPoints;
 var
-  s, c: Extended;
   i: Integer;
 begin
   SetLength(FGraphPoints, Count);

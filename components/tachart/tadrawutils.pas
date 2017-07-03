@@ -78,7 +78,7 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
-    function GetFontAngle: Double;
+    function GetFontAngle: Double;       // in radians
     function GetFontColor: TFPColor;
     function GetFontName: String;
     function GetFontSize: Integer;

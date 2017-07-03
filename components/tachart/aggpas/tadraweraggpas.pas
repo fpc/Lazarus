@@ -28,7 +28,6 @@ type
     procedure SetPen(APen: TFPCustomPen);
   strict protected
     FCanvas: TAggLCLCanvas;
-    function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
@@ -41,6 +40,7 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontAngle: Double; override;
     function GetFontColor: TFPColor; override;
     function GetFontName: String; override;
     function GetFontSize: Integer; override;

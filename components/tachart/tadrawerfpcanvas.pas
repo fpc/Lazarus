@@ -161,7 +161,11 @@ end;
 
 function TFPCanvasDrawer.GetFontAngle: Double;
 begin
-  Result := 0.0;
+  {$IFDEF USE_FTFONT}
+  Result := FFont.Angle;  // Freetype font angle is in rad.
+  {$ELSE}
+  Result := 0;
+  {$ENDIF}
 end;
 
 function TFPCanvasDrawer.GetFontColor: TFPColor;
@@ -310,20 +314,45 @@ begin
 end;
 
 function TFPCanvasDrawer.SimpleTextExtent(const AText: String): TPoint;
+{$IFDEF USE_FTFONT}
+var
+  angle: Double;
+{$ENDIF}
 begin
   EnsureFont;
   FCanvas.GetTextSize(AText, Result.X, Result.Y);
+(*
+  {$IFDEF USE_FTFONT}
+  angle := FFont.Angle;
+  try
+    //FFont.Angle := 0;
+    FCanvas.GetTextSize(AText, Result.X, Result.Y);
+  finally
+    FFont.Angle := angle;
+  end;
+  {$ELSE}
+  FCanvas.GetTextSize(AText, Result.X, Result.Y);
+  {$ENDIF}
+  *)
 end;
 
 procedure TFPCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 {$IFDEF USE_FTFONT}
 var
   p: TPoint;
+  angle: Double;
 {$ENDIF}
 begin
   EnsureFont;
   {$IFDEF USE_FTFONT}
   // FreeType uses lower-left instead of upper-left corner as starting position.
+  {
+  angle := FFont.Angle;
+  FFont.Angle := 0;
+  p := RotatePoint(Point(0, FCanvas.GetTextHeight(AText)), -angle);
+  FFont.Angle := angle;
+  }
+
   p := RotatePoint(Point(0, FCanvas.GetTextHeight(AText)), -FFont.Angle);
   FCanvas.TextOut(p.X + AX, p.Y + AY , AText);
   {$ELSE}

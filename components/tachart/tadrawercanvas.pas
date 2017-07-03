@@ -101,7 +101,7 @@ begin
   if AFont is TFont then
     Result := (AFont as TFont).Orientation
   else
-    Result := 0;
+    Result := AFont.Orientation; //0;
 end;
 
 function ChartColorSysToFPColor(AChartColor: TChartColor): TFPColor;

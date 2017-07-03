@@ -36,7 +36,6 @@ type
     procedure ApplyPen;
     function InvertY(AY: Integer): Integer; inline;
   strict protected
-    function GetFontAngle: Double; override;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -53,6 +52,7 @@ type
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
+    function GetFontAngle: Double; override;
     function GetFontColor: TFPColor; override;
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
