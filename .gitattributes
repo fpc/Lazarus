@@ -4541,6 +4541,7 @@ components/tachart/tagraph.pas svneol=native#text/plain
 components/tachart/tagraph.res -text
 components/tachart/taguiconnector.pas svneol=native#text/pascal
 components/tachart/taguiconnectorbgra.pas svneol=native#text/pascal
+components/tachart/tahtml.pas svneol=native#text/plain
 components/tachart/taintervalsources.pas svneol=native#text/pascal
 components/tachart/talegend.pas svneol=native#text/plain
 components/tachart/talegendpanel.pas svneol=native#text/pascal
