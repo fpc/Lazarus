@@ -365,6 +365,29 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
     ARect: TRect;
     I: Integer;
     j: Integer;
+
+    function HaveMultiplePotentialDockClient(AControl: TWinControl):boolean;
+    var
+      I,Count:Integer;
+    begin
+      Count := 0;
+      for I := 0 to AControl.ControlCount - 1 do
+      begin
+        if (AControl.Controls[I].DragKind  = dkDock) and (AControl.Controls[I].DragMode = dmAutomatic) then
+          inc(Count);
+        if Count > 1 then exit(True);
+      end;
+      Result:=False;
+    end;
+
+    function ItCanBeHostSite:boolean;
+    begin
+      if FDockObject.Control.HostDockSite <> nil then
+        result := (FDockObject.Control.HostDockSite <> AControl) or (AControl.VisibleDockClientCount > 1)
+      else
+        result := (AControl <> FDockObject.Control.Parent) or HaveMultiplePotentialDockClient(AControl);
+    end;
+
   begin
     Result := nil;
     
@@ -383,7 +406,7 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
         if AControl=FDockObject.Control then continue;
         if IsControlChildOfClient(AControl) then continue;
 
-        if (FDockObject.Control.HostDockSite <> AControl) or (AControl.VisibleDockClientCount > 1) then
+        if ItCanBeHostSite then
         begin
           CanDock := True;
           AControl.GetSiteInfo(FDockObject.Control, ARect, APosition, CanDock);
