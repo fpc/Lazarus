@@ -39,8 +39,8 @@ type
   public
     constructor Create(ADrawer: IChartDrawer);
     destructor Destroy; override;
-    function TextExtent(AText: String): TPoint;
-    procedure TextOut(AX, AY: Integer; AText: String);
+    function TextExtent(const AText: String): TPoint;
+    procedure TextOut(AX, AY: Integer; const AText: String);
   end;
 
 
@@ -489,7 +489,11 @@ begin
 end;
 
 function HTMLToFPColor(AText: String): TFPColor;
+var
+  i: Integer;
+  len: Integer;
 begin
+  Result := colBlack;
   case AText of
     'AQUA'   : Result := colAqua;
     'BLACK'  : Result := colBlack;
@@ -510,13 +514,26 @@ begin
     'TEAL'   : Result := colTeal;
     'WHITE'  : Result := colWhite;
     'YELLOW' : Result := colYellow;
-    else       if (pos('#', AText) = 1) and (Length(AText) = 7) then begin
+    else       if (pos('#', AText) = 1) then begin
+                 len := Length(AText);
+                 if not (len in [7, 4]) then
+                   exit;
                  Delete(AText, 1, 1);
-                 Result.Red := StrToInt('$' + copy(AText, 1, 2)) shl 8;
-                 Result.Green := StrToInt('$' + copy(AText, 3, 2)) shl 8;
-                 Result.Blue := StrToInt('$' + copy(AText, 5, 2)) shl 8;
-               end else
-                 Result := colBlack;
+                 dec(len);
+                 for i:=1 to len do
+                   if not (AText[i] in ['0'..'9', 'A'..'F', 'a'..'f']) then
+                     exit;
+                 if len = 6 then begin
+                   Result.Red := StrToInt('$' + copy(AText, 1, 2)) shl 8;
+                   Result.Green := StrToInt('$' + copy(AText, 3, 2)) shl 8;
+                   Result.Blue := StrToInt('$' + copy(AText, 5, 2)) shl 8;
+                 end else
+                 if len = 3 then begin
+                   Result.Red := StrToInt('$' + AText[1]);
+                   Result.Green := StrToInt('$' + AText[2]);
+                   Result.Blue := StrToInt('$' + AText[3]);
+                 end;
+               end;
   end;
 end;
 
@@ -750,7 +767,7 @@ begin
   FFontStack.Add(fnt);
 end;
 
-function THTMLAnalyzer.TextExtent(AText: String): TPoint;
+function THTMLAnalyzer.TextExtent(const AText: String): TPoint;
 var
   parser: THTMLParser;
 begin
@@ -768,7 +785,7 @@ begin
   end;
 end;
 
-procedure THTMLAnalyzer.TextOut(AX, AY: Integer; AText: String);
+procedure THTMLAnalyzer.TextOut(AX, AY: Integer; const AText: String);
 var
   parser: THTMLParser;
 begin
