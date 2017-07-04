@@ -379,6 +379,7 @@ type
     procedure RestoreSite(SplitterPos: integer);
     procedure StoreConstraints;
     function GetSitePreferredClientSize: TPoint;
+    function IsEnabledControl(Control: TControl):Boolean; override;
 
     property Site: TWinControl read FSite; // the associated TControl (a TAnchorDockHostSite or a custom dock site)
     property DockSite: TAnchorDockHostSite read FDockSite; // if Site is a TAnchorDockHostSite, this is it
@@ -6035,6 +6036,11 @@ function TAnchorDockManager.StoredConstraintsValid: boolean;
 begin
   with FStoredConstraints do
     Result:=(Left<>0) or (Top<>0) or (Right<>0) or (Bottom<>0);
+end;
+
+function TAnchorDockManager.IsEnabledControl(Control: TControl):Boolean;
+begin
+  Result := (DockMaster <> nil) and DockMaster.IsSite(Control);
 end;
 
 { TAnchorDockSplitter }

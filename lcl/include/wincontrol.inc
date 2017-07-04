@@ -5517,6 +5517,9 @@ begin
   InfluenceRect.Right := InfluenceRect.Right+ADockMargin;
   InfluenceRect.Bottom := InfluenceRect.Bottom+ADockMargin;
 
+  if UseDockManager then
+    CanDock:=DockManager.IsEnabledControl(Client);
+
   if Assigned(FOnGetSiteInfo) then
     FOnGetSiteInfo(Self, Client, InfluenceRect, MousePos, CanDock);
 end;

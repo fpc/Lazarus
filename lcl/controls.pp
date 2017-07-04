@@ -578,6 +578,7 @@ type
     procedure SaveToStream(Stream: TStream); virtual; abstract;
     procedure SetReplacingControl(Control: TControl); virtual;
     function AutoFreeByControl: Boolean; virtual;
+    function IsEnabledControl(Control: TControl):Boolean; virtual;
   end;
 
   TDockManagerClass = class of TDockManager;
@@ -4505,6 +4506,15 @@ procedure TDockManager.MessageHandler(Sender: TControl; var Message: TLMessage);
 begin
 
 end;
+
+function TDockManager.IsEnabledControl(Control: TControl):Boolean;
+begin
+  Result := true;
+  if Control is TWinControl then
+    if (Control as TWinControl).DockManager <> nil then
+      Result := (Control as TWinControl).DockManager = self;
+end;
+
 
 initialization
   //DebugLn('controls.pp - initialization');
