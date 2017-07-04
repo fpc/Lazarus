@@ -488,12 +488,13 @@ begin
   end;
 end;
 
-function HTMLToFPColor(AText: String): TFPColor;
+function HTMLToFPColor(const AText: String): TFPColor;
 var
   i: Integer;
   len: Integer;
 begin
   Result := colBlack;
+  // AText is already upper-cased by the calling routine.
   case AText of
     'AQUA'   : Result := colAqua;
     'BLACK'  : Result := colBlack;
@@ -518,20 +519,18 @@ begin
                  len := Length(AText);
                  if not (len in [7, 4]) then
                    exit;
-                 Delete(AText, 1, 1);
-                 dec(len);
-                 for i:=1 to len do
-                   if not (AText[i] in ['0'..'9', 'A'..'F', 'a'..'f']) then
+                 for i:=2 to len do
+                   if not (AText[i] in ['0'..'9', 'A'..'F']) then
                      exit;
-                 if len = 6 then begin
-                   Result.Red := StrToInt('$' + copy(AText, 1, 2)) shl 8;
-                   Result.Green := StrToInt('$' + copy(AText, 3, 2)) shl 8;
-                   Result.Blue := StrToInt('$' + copy(AText, 5, 2)) shl 8;
+                 if len = 7 then begin
+                   Result.Red := StrToInt('$' + copy(AText, 2, 2)) shl 8;
+                   Result.Green := StrToInt('$' + copy(AText, 4, 2)) shl 8;
+                   Result.Blue := StrToInt('$' + copy(AText, 6, 2)) shl 8;
                  end else
-                 if len = 3 then begin
-                   Result.Red := StrToInt('$' + AText[1]);
-                   Result.Green := StrToInt('$' + AText[2]);
-                   Result.Blue := StrToInt('$' + AText[3]);
+                 if len = 4 then begin
+                   Result.Red := StrToInt('$' + AText[2] + AText[2]) shl 8;
+                   Result.Green := StrToInt('$' + AText[3] + AText[3]) shl 8;
+                   Result.Blue := StrToInt('$' + AText[4] + AText[4]) shl 8;
                  end;
                end;
   end;
