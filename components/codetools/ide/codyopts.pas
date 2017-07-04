@@ -204,6 +204,8 @@ begin
 end;
 
 finalization
+  if CodyOptions<>nil then
+    CodyOptions.SaveSafe;
   FreeAndNil(CodyOptions);
 
 end.
