@@ -2579,127 +2579,126 @@ var
   WT: Array[dtpHour..dtpAMPM] of Word;
   DTP: TDateTimePart;
 begin
-  if HandleAllocated then begin
-    FCorrectedDTP := dtpAMPM;
+  FCorrectedDTP := dtpAMPM;
 
-    FUserChangedText := False;
+  FUserChangedText := False;
 
-    if not (DateIsNull or FJumpMinMax) then begin
-      if Int(FDateTime) > FMaxDate then
-        FDateTime := ComposeDateTime(FMaxDate, FDateTime);
+  if not (DateIsNull or FJumpMinMax) then begin
+    if Int(FDateTime) > FMaxDate then
+      FDateTime := ComposeDateTime(FMaxDate, FDateTime);
 
-      if FDateTime < FMinDate then
-        FDateTime := ComposeDateTime(FMinDate, FDateTime);
-    end;
-
-    if (FSkipChangeInUpdateDate = 0) then begin
-     // we'll skip the next part if called from UndoChanges
-     // and in recursive calls which could be made through calling Change
-      Inc(FSkipChangeInUpdateDate);
-      try
-        if (FUserChanging > 0) // the change is caused by user interaction
-            or CallChangeFromSetDateTime // call from SetDateTime with option dtpoDoChangeOnSetDateTime
-        then
-          try
-            Change;
-          except
-            UndoChanges;
-            raise;
-          end;
-
-        if FUserChanging = 0 then
-          FConfirmedDateTime := FDateTime;
-
-      finally
-        Dec(FSkipChangeInUpdateDate);
-      end;
-    end;
-
-    if DateIsNull then begin
-      if dtpYear in FEffectiveHideDateTimeParts then
-        FTextPart[FYearPos] := ''
-      else
-        FTextPart[FYearPos] := '0000';
-
-      if dtpMonth in FEffectiveHideDateTimeParts then
-        FTextPart[FMonthPos] := ''
-      else
-        FTextPart[FMonthPos] := '00';
-
-      if dtpDay in FEffectiveHideDateTimeParts then
-        FTextPart[FDayPos] := ''
-      else
-        FTextPart[FDayPos] := '00';
-
-      for DTP := dtpHour to dtpAMPM do begin
-        if DTP in FEffectiveHideDateTimeParts then
-          FTimeText[DTP] := ''
-        else if DTP = dtpAMPM then
-          FTimeText[DTP] := 'XX'
-        else if DTP = dtpMiliSec then
-          FTimeText[DTP] := '999'
-        else
-          FTimeText[DTP] := '99';
-      end;
-
-    end else begin
-      DecodeDate(FDateTime, W[3], W[2], W[1]);
-
-      if dtpYear in FEffectiveHideDateTimeParts then
-        FTextPart[FYearPos] := ''
-      else if FLeadingZeros then
-        FTextPart[FYearPos] := RightStr('000' + IntToStr(W[3]), 4)
-      else
-        FTextPart[FYearPos] := IntToStr(W[3]);
-
-      if dtpMonth in FEffectiveHideDateTimeParts then
-        FTextPart[FMonthPos] := ''
-      else if FShowMonthNames then
-        FTextPart[FMonthPos] := FMonthNamesArray[W[2]]
-      else if FLeadingZeros then
-        FTextPart[FMonthPos] := RightStr('0' + IntToStr(W[2]), 2)
-      else
-        FTextPart[FMonthPos] := IntToStr(W[2]);
-
-      if dtpDay in FEffectiveHideDateTimeParts then
-        FTextPart[FDayPos] := ''
-      else if FLeadingZeros then
-        FTextPart[FDayPos] := RightStr('0' + IntToStr(W[1]), 2)
-      else
-        FTextPart[FDayPos] := IntToStr(W[1]);
-
-      DecodeTime(FDateTime, WT[dtpHour], WT[dtpMinute], WT[dtpSecond], WT[dtpMiliSec]);
-
-      if dtpAMPM in FEffectiveHideDateTimeParts then
-        FTimeText[dtpAMPM] := ''
-      else begin
-        if WT[dtpHour] < 12 then begin
-          FTimeText[dtpAMPM] := 'AM';
-          if WT[dtpHour] = 0 then
-            WT[dtpHour] := 12;
-        end else begin
-          FTimeText[dtpAMPM] := 'PM';
-          if WT[dtpHour] > 12 then
-            Dec(WT[dtpHour], 12);
-        end;
-      end;
-
-      for DTP := dtpHour to dtpMiliSec do begin
-        if DTP in FEffectiveHideDateTimeParts then
-          FTimeText[DTP] := ''
-        else if (DTP = dtpHour) and (not FLeadingZeros) then
-          FTimeText[DTP] := IntToStr(WT[dtpHour])
-        else if DTP = dtpMiliSec then
-          FTimeText[DTP] := RightStr('00' + IntToStr(WT[DTP]), 3)
-        else
-          FTimeText[DTP] := RightStr('0' + IntToStr(WT[DTP]), 2);
-
-      end;
-
-    end;
-
-    Invalidate;
+    if FDateTime < FMinDate then
+      FDateTime := ComposeDateTime(FMinDate, FDateTime);
   end;
+
+  if (FSkipChangeInUpdateDate = 0) then begin
+   // we'll skip the next part if called from UndoChanges
+   // and in recursive calls which could be made through calling Change
+    Inc(FSkipChangeInUpdateDate);
+    try
+      if (FUserChanging > 0) // the change is caused by user interaction
+          or CallChangeFromSetDateTime // call from SetDateTime with option dtpoDoChangeOnSetDateTime
+      then
+        try
+          Change;
+        except
+          UndoChanges;
+          raise;
+        end;
+
+      if FUserChanging = 0 then
+        FConfirmedDateTime := FDateTime;
+
+    finally
+      Dec(FSkipChangeInUpdateDate);
+    end;
+  end;
+
+  if DateIsNull then begin
+    if dtpYear in FEffectiveHideDateTimeParts then
+      FTextPart[FYearPos] := ''
+    else
+      FTextPart[FYearPos] := '0000';
+
+    if dtpMonth in FEffectiveHideDateTimeParts then
+      FTextPart[FMonthPos] := ''
+    else
+      FTextPart[FMonthPos] := '00';
+
+    if dtpDay in FEffectiveHideDateTimeParts then
+      FTextPart[FDayPos] := ''
+    else
+      FTextPart[FDayPos] := '00';
+
+    for DTP := dtpHour to dtpAMPM do begin
+      if DTP in FEffectiveHideDateTimeParts then
+        FTimeText[DTP] := ''
+      else if DTP = dtpAMPM then
+        FTimeText[DTP] := 'XX'
+      else if DTP = dtpMiliSec then
+        FTimeText[DTP] := '999'
+      else
+        FTimeText[DTP] := '99';
+    end;
+
+  end else begin
+    DecodeDate(FDateTime, W[3], W[2], W[1]);
+
+    if dtpYear in FEffectiveHideDateTimeParts then
+      FTextPart[FYearPos] := ''
+    else if FLeadingZeros then
+      FTextPart[FYearPos] := RightStr('000' + IntToStr(W[3]), 4)
+    else
+      FTextPart[FYearPos] := IntToStr(W[3]);
+
+    if dtpMonth in FEffectiveHideDateTimeParts then
+      FTextPart[FMonthPos] := ''
+    else if FShowMonthNames then
+      FTextPart[FMonthPos] := FMonthNamesArray[W[2]]
+    else if FLeadingZeros then
+      FTextPart[FMonthPos] := RightStr('0' + IntToStr(W[2]), 2)
+    else
+      FTextPart[FMonthPos] := IntToStr(W[2]);
+
+    if dtpDay in FEffectiveHideDateTimeParts then
+      FTextPart[FDayPos] := ''
+    else if FLeadingZeros then
+      FTextPart[FDayPos] := RightStr('0' + IntToStr(W[1]), 2)
+    else
+      FTextPart[FDayPos] := IntToStr(W[1]);
+
+    DecodeTime(FDateTime, WT[dtpHour], WT[dtpMinute], WT[dtpSecond], WT[dtpMiliSec]);
+
+    if dtpAMPM in FEffectiveHideDateTimeParts then
+      FTimeText[dtpAMPM] := ''
+    else begin
+      if WT[dtpHour] < 12 then begin
+        FTimeText[dtpAMPM] := 'AM';
+        if WT[dtpHour] = 0 then
+          WT[dtpHour] := 12;
+      end else begin
+        FTimeText[dtpAMPM] := 'PM';
+        if WT[dtpHour] > 12 then
+          Dec(WT[dtpHour], 12);
+      end;
+    end;
+
+    for DTP := dtpHour to dtpMiliSec do begin
+      if DTP in FEffectiveHideDateTimeParts then
+        FTimeText[DTP] := ''
+      else if (DTP = dtpHour) and (not FLeadingZeros) then
+        FTimeText[DTP] := IntToStr(WT[dtpHour])
+      else if DTP = dtpMiliSec then
+        FTimeText[DTP] := RightStr('00' + IntToStr(WT[DTP]), 3)
+      else
+        FTimeText[DTP] := RightStr('0' + IntToStr(WT[DTP]), 2);
+
+    end;
+
+  end;
+
+  if HandleAllocated then
+    Invalidate;
 end;
 
 procedure TCustomDateTimePicker.DoEnter;
@@ -2858,7 +2857,6 @@ procedure TCustomDateTimePicker.CreateWnd;
 begin
   inherited CreateWnd;
 
-  UpdateDate;
   if FDoNotArrangeControls then begin { This field is set to True in constructor.
     Its purpose is to prevent control anchoring until this point. That's because
     on Linux Lazarus crashes when control is dropped on form in designer if
