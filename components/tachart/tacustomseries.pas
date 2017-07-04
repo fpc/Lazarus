@@ -1284,11 +1284,15 @@ var
 begin
   case Legend.Multiplicity of
     lmSingle:
-      AItems.Add(TLegendItemBrushRect.Create(ABrush, LegendTextSingle));
+      begin
+        li := TLegendItemBrushRect.Create(ABrush, LegendTextSingle);
+        li.TextFormat := Legend.TextFormat;
+      end;
     lmPoint:
       for i := 0 to Count - 1 do begin
         li := TLegendItemBrushRect.Create(ABrush, LegendTextPoint(i));
         li.Color := GetColor(i);
+        li.TextFormat := Legend.TextFormat;
         AItems.Add(li);
       end;
     lmStyle:

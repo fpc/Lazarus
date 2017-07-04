@@ -269,6 +269,7 @@ type
     FOnCreate: TLegendItemCreateEvent;
     FOnDraw: TLegendItemDrawEvent;
     FOrder: Integer;
+    FTextFormat: TChartTextFormat;
     FUserItemsCount: Integer;
     procedure SetFormat(AValue: String);
     procedure SetGroupIndex(AValue: Integer);
@@ -276,6 +277,7 @@ type
     procedure SetOnCreate(AValue: TLegendItemCreateEvent);
     procedure SetOnDraw(AValue: TLegendItemDrawEvent);
     procedure SetOrder(AValue: Integer);
+    procedure SetTextFormat(AValue: TChartTextFormat);
     procedure SetUserItemsCount(AValue: Integer);
   public
     constructor Create(AOwner: TCustomChart);
@@ -291,6 +293,8 @@ type
       read FMultiplicity write SetMultiplicity default lmSingle;
     property Order: Integer
       read FOrder write SetOrder default LEGEND_ITEM_ORDER_AS_ADDED;
+    property TextFormat: TChartTextFormat
+      read FTextFormat write SetTextFormat default tfNormal;
     property UserItemsCount: Integer
       read FUserItemsCount write SetUserItemsCount default 1;
     property Visible default true;
@@ -941,6 +945,7 @@ begin
     with TChartSeriesLegend(Source) do begin
       Self.FMultiplicity := FMultiplicity;
       Self.FOnDraw := FOnDraw;
+      Self.FTextFormat := FTextFormat;
       Self.FUserItemsCount := FUserItemsCount;
     end;
 
@@ -967,6 +972,7 @@ begin
     AItem.GroupIndex := GroupIndex;
   if AItem.Order = LEGEND_ITEM_ORDER_AS_ADDED then
     AItem.Order := Order;
+  AItem.TextFormat := ALegend.TextFormat;
 end;
 
 procedure TChartSeriesLegend.SetFormat(AValue: String);
@@ -1008,6 +1014,13 @@ procedure TChartSeriesLegend.SetOrder(AValue: Integer);
 begin
   if FOrder = AValue then exit;
   FOrder := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartSeriesLegend.SetTextFormat(AValue: TChartTextFormat);
+begin
+  if FTextFormat = AValue then exit;
+  FTextFormat := AValue;
   StyleChanged(Self);
 end;
 

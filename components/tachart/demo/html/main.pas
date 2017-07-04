@@ -85,6 +85,10 @@ begin
   CgHTML.Checked[2] := Chart.Legend.TextFormat = tfHTML;
   CgHTML.Checked[3] := Chart.BottomAxis.Title.TextFormat = tfHTML;
   CgHTML.Checked[4] := Chart.LeftAxis.Title.TextFormat = tfHTML;
+
+  {$IFDEF WINDOWS}
+  Chart.Foot.Text[1] := '<font name="Times New Roman">' + Chart.Foot.Text[1] + '</font>';
+  {$ENDIF}
 end;
 
 end.
