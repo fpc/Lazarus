@@ -578,6 +578,8 @@ procedure THTMLAnalyzer.HTMLTagFound(NoCaseTag, ActualTag: String);
 var
   val: String;
 begin
+  Unused(ActualTag);
+
   if NoCaseTag[2] = '/' then
     case NoCaseTag of
       '</B>',
@@ -646,10 +648,10 @@ end;
 procedure THTMLAnalyzer.HTMLTextFound_Out(AText: String);
 var
   oldFontSize: Integer;
-  ext: TPoint;
   offs: Integer;
   s: string;
   P: TPoint;
+  w, h: Integer;
 begin
   s := ReplaceHTMLEntities(AText);
 
@@ -658,11 +660,12 @@ begin
     oldFontSize := FCurrentFont.Size;
     FCurrentFont.Size := (FCurrentFont.Size * SUBSUP_SIZE_MULTIPLIER) div SUBSUP_DIVISOR;
     FDrawer.SetFont(FCurrentFont);
-    ext := FDrawer.TextExtent(s, tfNormal);     // tfNormal is correct
+    h := FDrawer.TextExtent('Tg', tfNormal).Y;  // tfNormal is correct
+    w := FDrawer.TextExtent(s, tfNormal).X;
     if FSubScript > 0 then
-      offs := (ext.Y * SUB_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR
+      offs := (h * SUB_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR
     else
-      offs := (ext.Y * SUP_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR;   // this is negative
+      offs := (h * SUP_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR;   // this is negative
     P := Point(FPos.X, FPos.Y+offs) - FStartPos;
     p := RotatePoint(P, -FFontAngle) + FStartPos;
     FDrawer.TextOut.TextFormat(tfNormal).Pos(P).Text(s).Done;
@@ -670,11 +673,11 @@ begin
   end else
   begin
     FDrawer.SetFont(FCurrentFont);
-    ext := FDrawer.TextExtent(s, tfNormal);       // tfNormal is correct
+    w := FDrawer.TextExtent(s, tfNormal).X;       // tfNormal is correct
     p := RotatePoint(FPos - FStartPos, -FFontAngle) + FStartPos;
     FDrawer.TextOut.TextFormat(tfNormal).Pos(P).Text(s).Done;
   end;
-  inc(FPos.X, ext.X);
+  inc(FPos.X, w);
 end;
 
 procedure THTMLAnalyzer.HTMLTextFound_Size(AText: String);
@@ -682,6 +685,7 @@ var
   ext: TPoint;
   oldFontSize: Integer;
   s: String;
+  offs: Integer;
 begin
   s := ReplaceHTMLEntities(AText);
   if (FSubScript > 0) or (FSuperscript > 0) then
@@ -691,7 +695,17 @@ begin
     FDrawer.SetFont(FCurrentFont);
     ext := FDrawer.TextExtent(s, tfNormal);  // tfNormal is correct
     FCurrentFont.Size := oldFontSize;
-  end else begin
+    if FSubScript > 0 then
+    begin
+      offs := (ext.y * SUB_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR;
+      if ext.y + offs > FSize.Y then ext.Y := ext.y + offs;
+    end else
+    begin
+      offs := (ext.y * SUP_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR;   // this is negative
+      if ext.y - offs > FSize.Y then ext.Y := ext.y - offs;   // offs is negative
+    end;
+  end else
+  begin
     FDrawer.SetFont(FCurrentFont);
     ext := FDrawer.TextExtent(s, tfNormal);  // tfNormal is correct
   end;
