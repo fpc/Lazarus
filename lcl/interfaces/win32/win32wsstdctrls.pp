@@ -542,7 +542,7 @@ begin
           begin
             GroupBox := TCustomGroupBox(Info^.WinControl);
             DC := Windows.GetDC(Window);
-            SetBkColor(DC, GetSysColor(COLOR_BTNFACE));
+            SetBkMode(DC, TRANSPARENT);
             SetTextColor(DC, GetSysColor(COLOR_GRAYTEXT));
             SelectObject(DC, GroupBox.Font.Reference.Handle);
             Flags := 0;
