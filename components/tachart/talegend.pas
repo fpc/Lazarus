@@ -35,6 +35,7 @@ type
     FOrder: Integer;
     FOwner: TIndexedComponent;
     FText: String;
+    FTextFormat: TChartTextFormat;
   public
     constructor Create(const AText: String; AColor: TColor = clTAColor);
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); virtual;
@@ -47,6 +48,7 @@ type
     property Order: Integer read FOrder write FOrder;
     property Owner: TIndexedComponent read FOwner write FOwner;
     property Text: String read FText write FText;
+    property TextFormat: TChartTextFormat read FTextFormat write FTextFormat;
   end;
 
   { TLegendItemGroupTitle }
@@ -175,6 +177,7 @@ type
     FSpacing: TChartDistance;
     FSymbolFrame: TChartPen;
     FSymbolWidth: TChartDistance;
+    FTextFormat: TChartTextFormat;
     FTransparency: TChartTransparency;
     FUseSidebar: Boolean;
 
@@ -199,6 +202,7 @@ type
     procedure SetSpacing(AValue: TChartDistance);
     procedure SetSymbolFrame(AValue: TChartPen);
     procedure SetSymbolWidth(AValue: TChartDistance);
+    procedure SetTextFormat(AValue: TChartTextFormat);
     procedure SetTransparency(AValue: TChartTransparency);
     procedure SetUseSidebar(AValue: Boolean);
   public
@@ -242,6 +246,8 @@ type
     property SymbolFrame: TChartPen read FSymbolFrame write SetSymbolFrame;
     property SymbolWidth: TChartDistance
       read FSymbolWidth write SetSymbolWidth default DEF_LEGEND_SYMBOL_WIDTH;
+    property TextFormat: TChartTextFormat
+      read FTextFormat write SetTextFormat default tfNormal;
     property Transparency: TChartTransparency
       read FTransparency write SetTransparency default 0;
     property UseSidebar: Boolean read FUseSidebar write SetUseSidebar default true;
@@ -363,11 +369,14 @@ begin
   symTextSpc := ADrawer.Scale(SYMBOL_TEXT_SPACING);
   if ADrawer.GetRightToLeft then
     ADrawer.TextOut.
-      Pos(ARect.Left - symTextSpc - ADrawer.TextExtent(FText).X, ARect.Top).
+      TextFormat(FTextFormat).
+      Pos(ARect.Left - symTextSpc - ADrawer.TextExtent(FText, FTextFormat).X, ARect.Top).
       Text(FText).Done
   else
     ADrawer.TextOut.
-      Pos(ARect.Right + symTextSpc, ARect.Top).Text(FText).Done;
+      TextFormat(FTextFormat).
+      Pos(ARect.Right + symTextSpc, ARect.Top).
+      Text(FText).Done;
 end;
 
 function TLegendItem.HasSymbol: Boolean;
@@ -388,10 +397,14 @@ procedure TLegendItemGroupTitle.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
   if ADrawer.GetRightToLeft then
     ADrawer.TextOut.
-      Pos(ARect.Right - ADrawer.TextExtent(Text).X, ARect.Top).Text(Text).Done
+      TextFormat(TextFormat).
+      Pos(ARect.Right - ADrawer.TextExtent(Text, TextFormat).X, ARect.Top).
+      Text(Text).Done
   else
     ADrawer.TextOut.
-      Pos(ARect.Left, ARect.Top).Text(Text).Done;
+      TextFormat(TextFormat).
+      Pos(ARect.Left, ARect.Top).
+      Text(Text).Done;
 end;
 
 function TLegendItemGroupTitle.HasSymbol: Boolean;
@@ -508,6 +521,7 @@ begin
       g := TLegendItemGroupTitle.Create(GroupTitles[gi]);
       g.GroupIndex := gi;
       g.Font := GroupFont;
+      g.TextFormat := FTextFormat;
       AItems.Insert(i, g);
     end;
   end;
@@ -532,6 +546,7 @@ begin
       Self.FSpacing := Spacing;
       Self.FSymbolFrame.Assign(SymbolFrame);
       Self.FSymbolWidth := SymbolWidth;
+      Self.FTextFormat := TextFormat;
       Self.FUseSidebar := UseSidebar;
     end;
 
@@ -593,6 +608,7 @@ var
       space := FDrawer.Scale(Spacing);
       symwid := FDrawer.Scale(SymbolWidth);
       for i := 0 to FItems.Count - 1 do begin
+        FItems[i].TextFormat := FTextFormat;
         FItems[i].UpdateFont(drawer, prevFont);
         drawer.Brush := BackgroundBrush;
         if SymbolFrame.Visible then
@@ -677,9 +693,9 @@ begin
   for li in AItems do begin
     li.UpdateFont(ADrawer, prevFont);
     if li.Text = '' then
-      p := Point(0, ADrawer.TextExtent('I').Y)
+      p := Point(0, ADrawer.TextExtent('I', FTextFormat).Y)
     else
-      p := ADrawer.TextExtent(li.Text);
+      p := ADrawer.TextExtent(li.Text, FTextFormat);
     if li.HasSymbol then
       p.X += ADrawer.Scale(SYMBOL_TEXT_SPACING + SymbolWidth);
     Result := MaxPoint(p, Result);
@@ -867,6 +883,13 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartLegend.SetTextFormat(AValue: TChartTextFormat);
+begin
+  if FTextFormat = AValue then exit;
+  FTextFormat := AValue;
+  StyleChanged(self);
+end;
+
 procedure TChartLegend.SetTransparency(AValue: TChartTransparency);
 begin
   if FTransparency = AValue then exit;
@@ -908,6 +931,7 @@ begin
     laBottomRight : Alignment := laBottomLeft;
   end;
 end;
+
 
 { TChartSeriesLegend }
 
