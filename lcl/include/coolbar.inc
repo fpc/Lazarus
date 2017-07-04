@@ -940,7 +940,11 @@ begin
         if FDraggedBandIndex>-1 then begin
           Cursor := crDrag;
           if DragManager.CanStartDragging(self,-1,X,Y) then
+          begin
             DragManager.DragStart(FVisiBands[FDraggedBandIndex].Control, True, -1, True);
+            Cursor := crDefault;
+            FDraggedBandIndex := -1;
+          end;
         end;
       end;
     end;
@@ -994,7 +998,7 @@ var aBand: Integer;
     newRowBelow, needRecalc: Boolean;
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if FDragBand = dbMove then begin
+  if (FDragBand = dbMove) and (FDraggedBandIndex <> -1) then begin
     needRecalc := False;
     MouseToBandPos(X, Y, aBand, newRowBelow);  //newRowBelow is NOT used here
     if aBand >= cNewRowAbove then begin
