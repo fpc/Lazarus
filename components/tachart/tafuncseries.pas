@@ -1489,7 +1489,7 @@ begin
     Result := TFitEquationText.Create
   else
     Result := TFitEmptyEquationText.Create;
-  Result.Equation(FitEquation).Params(FFitParams);
+  Result.TextFormat(Marks.TextFormat).Equation(FitEquation).Params(FFitParams);
 end;
 
 procedure TFitSeries.ExecFit;

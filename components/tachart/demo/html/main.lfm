@@ -1,17 +1,17 @@
 object MainForm: TMainForm
   Left = 280
-  Height = 432
+  Height = 452
   Top = 130
   Width = 655
   Caption = 'HTML demo'
-  ClientHeight = 432
+  ClientHeight = 452
   ClientWidth = 655
   OnCreate = FormCreate
   LCLVersion = '1.9.0.0'
   object BottomPanel: TPanel
     Left = 8
     Height = 91
-    Top = 333
+    Top = 353
     Width = 647
     Align = alBottom
     AutoSize = True
@@ -26,11 +26,11 @@ object MainForm: TMainForm
       Left = 0
       Height = 78
       Top = 8
-      Width = 221
+      Width = 327
       AutoFill = True
       AutoSize = True
       BorderSpacing.InnerBorder = 4
-      Caption = 'HTML'
+      Caption = 'Show HTML codes'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
       ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
@@ -38,21 +38,23 @@ object MainForm: TMainForm
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 3
+      ChildSizing.ControlsPerLine = 4
       ClientHeight = 58
-      ClientWidth = 217
-      Columns = 3
+      ClientWidth = 323
+      Columns = 4
       Items.Strings = (
         'title'
         'footer'
         'legend'
+        'series labels'
+        'x axis labels'
         'x axis title'
         'y axis title'
       )
       OnItemClick = CgHTMLItemClick
       TabOrder = 0
       Data = {
-        050000000202020202
+        0700000002020202020202
       }
     end
     object BtnCopyToClipboard: TButton
@@ -108,7 +110,7 @@ object MainForm: TMainForm
   end
   object Chart: TChart
     Left = 8
-    Height = 317
+    Height = 337
     Top = 8
     Width = 639
     AxisList = <    
@@ -119,7 +121,7 @@ object MainForm: TMainForm
         Title.LabelFont.Height = -16
         Title.LabelFont.Orientation = 900
         Title.Visible = True
-        Title.Caption = 'Area, cm<sup>2</cm>'
+        Title.Caption = 'Area A, cm<sup>2</cm>'
         Title.TextFormat = tfHTML
       end    
       item
@@ -127,20 +129,22 @@ object MainForm: TMainForm
         Grid.Style = psSolid
         Grid.Visible = False
         Alignment = calBottom
+        Marks.TextFormat = tfHTML
         Minors = <>
         Title.LabelFont.Height = -16
         Title.Visible = True
-        Title.Caption = 'Angle &alpha;'
+        Title.Caption = 'Angle &alpha;, &deg;'
         Title.TextFormat = tfHTML
+        OnMarkToText = ChartAxisList1MarkToText
       end>
     BackColor = clWhite
     Foot.Alignment = taLeftJustify
     Foot.Brush.Color = clBtnFace
     Foot.Brush.Style = bsClear
-    Foot.Font.Color = clBlue
+    Foot.Font.Color = clGray
     Foot.Text.Strings = (
       '<u>Reference</u>:'
-      'W. Shakespeare, <i>"J. Irreproducible Results"</i>, <b>38</b>, 512 (2017)'
+      'W. Shakespeare, <i>"J. Irreprod. Res."</i>, <b>38</b>, 512 (2017)'
     )
     Foot.TextFormat = tfHTML
     Foot.Visible = True
@@ -148,7 +152,7 @@ object MainForm: TMainForm
     Legend.Visible = True
     Title.Brush.Color = clBtnFace
     Title.Brush.Style = bsClear
-    Title.Font.Color = clBlue
+    Title.Font.Color = clNavy
     Title.Font.Height = -19
     Title.Font.Style = [fsBold]
     Title.Text.Strings = (
@@ -159,35 +163,35 @@ object MainForm: TMainForm
     Align = alClient
     BorderSpacing.Around = 8
     Color = clWhite
-    object RedSeries: TLineSeries
-      Title = '<font color="red">Red</font> series'
+    object DataSeries: TLineSeries
+      Marks.Format = '%2:s'
+      Marks.Frame.Color = clGray
+      Marks.LinkPen.Color = clGray
+      Marks.Style = smsLabel
+      Marks.TextFormat = tfHTML
+      Title = '<font color="red">Measured</font>'
       LinePen.Color = clRed
-      Source = RedSource
+      LineType = ltNone
+      Pointer.Brush.Color = clRed
+      Pointer.Style = psCircle
+      ShowPoints = True
     end
-    object BlueSeries: TLineSeries
-      Title = '<font color="blue">Blue</font> series'
-      LinePen.Color = clBlue
-      Source = BlueSource
+    object FitSeries: TFitSeries
+      Marks.Alignment = taCenter
+      Marks.TextFormat = tfHTML
+      Title = 'Fit curve (<font color="blue">blue</font>)'
+      Pen.Color = clBlue
+      Pointer.Visible = False
+      Source = ListChartSource
+      OnFitComplete = FitSeriesFitComplete
     end
   end
-  object RedSource: TRandomChartSource
-    PointsNumber = 20
-    RandSeed = 1926906778
-    XMax = 90
-    XMin = 0
-    YMax = 10
-    YMin = 4
-    left = 121
-    top = 52
+  object ListChartSource: TListChartSource
+    left = 224
+    top = 88
   end
-  object BlueSource: TRandomChartSource
-    PointsNumber = 30
-    RandSeed = 1926958054
-    XMax = 90
-    XMin = 0
-    YMax = 8
-    YMin = 0
-    left = 120
-    top = 111
+  object ListChartSource_Fit: TListChartSource
+    left = 224
+    top = 153
   end
 end

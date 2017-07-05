@@ -14,6 +14,9 @@ unit TAFitUtils;
 
 interface
 
+uses
+  TAChartUtils;
+
 type
   TFitEquation = (
     fePolynomial, // y = b0 + b1*x + b2*x^2 + ... bn*x^n
@@ -23,43 +26,51 @@ type
   );
 
   IFitEquationText = interface
+    function DecimalSeparator(AValue: Char): IFitEquationText;
     function Equation(AEquation: TFitEquation): IFitEquationText;
     function X(AText: String): IFitEquationText;
     function Y(AText: String): IFitEquationText;
     function NumFormat(AFormat: String): IFitEquationText;
     function NumFormats(const AFormats: array of String): IFitEquationText;
     function Params(const AParams: array of Double): IFitEquationText;
+    function TextFormat(AFormat: TChartTextFormat): IFitEquationText;
     function Get: String;
   end;
 
   TFitEmptyEquationText = class(TInterfacedObject, IFitEquationText)
   public
+    function DecimalSeparator(AValue: Char): IFitEquationText;
     function Equation(AEquation: TFitEquation): IFitEquationText;
     function X(AText: String): IFitEquationText;
     function Y(AText: String): IFitEquationText;
     function NumFormat(AFormat: String): IFitEquationText;
     function NumFormats(const AFormats: array of String): IFitEquationText;
     function Params(const AParams: array of Double): IFitEquationText;
+    function TextFormat(AFormat: TChartTextFormat): IFitEquationText;
     function Get: String;
   end;
 
   TFitEquationText = class(TInterfacedObject, IFitEquationText)
   strict private
+    FDecSep: Char;
     FEquation: TFitEquation;
     FX: String;
     FY: String;
     FNumFormat: String;
     FNumFormats: array of String;
     FParams: array of Double;
+    FTextFormat: TChartTextFormat;
     function GetNumFormat(AIndex: Integer): String;
   public
     constructor Create;
+    function DecimalSeparator(AValue: Char): IFitEquationText;
     function Equation(AEquation: TFitEquation): IFitEquationText;
     function X(AText: String): IFitEquationText;
     function Y(AText: String): IFitEquationText;
     function NumFormat(AFormat: String): IFitEquationText;
     function NumFormats(const AFormats: array of String): IFitEquationText;
     function Params(const AParams: array of Double): IFitEquationText;
+    function TextFormat(AFormat: TChartTextFormat): IFitEquationText;
     function Get: String;
   end;
 
@@ -68,14 +79,21 @@ type
 implementation
 
 uses
-  TAChartUtils, StrUtils, SysUtils;
+  StrUtils, SysUtils;
 
 operator := (AEq: IFitEquationText): String;
 begin
   Result := AEq.Get;
 end;
 
+
 { TFitEmptyEquationText }
+
+function TFitEmptyEquationText.DecimalSeparator(AValue: Char): IFitEquationText;
+begin
+  Unused(AValue);
+  Result := Self;
+end;
 
 function TFitEmptyEquationText.Equation(
   AEquation: TFitEquation): IFitEquationText;
@@ -109,6 +127,12 @@ begin
   Result := Self;
 end;
 
+function TFitEmptyEquationText.TextFormat(AFormat: TChartTextFormat): IFitEquationText;
+begin
+  Unused(AFormat);
+  Result := Self;
+end;
+
 function TFitEmptyEquationText.X(AText: String): IFitEquationText;
 begin
   Unused(AText);
@@ -128,6 +152,13 @@ begin
   FX := 'x';
   FY := 'y';
   FNumFormat := '%.9g';
+  FDecSep := DefaultFormatSettings.DecimalSeparator;
+end;
+
+function TFitEquationText.DecimalSeparator(AValue: Char): IFitEquationText;
+begin
+  FDecSep := AValue;
+  Result := self;
 end;
 
 function TFitEquationText.Equation(AEquation: TFitEquation): IFitEquationText;
@@ -139,24 +170,54 @@ end;
 function TFitEquationText.Get: String;
 var
   ps: String = '';
+  s: String;
   i: Integer;
+  fs: TFormatSettings;
 begin
-  if Length(FParams) = 0 then exit('');
-  Result := Format('%s = ' + GetNumFormat(0), [FY, FParams[0]]);
+  if Length(FParams) = 0 then
+    exit('');
+
+  fs := DefaultFormatSettings;
+  fs.DecimalSeparator := FDecSep;
+
+  Result := Format('%s = ' + GetNumFormat(0), [FY, FParams[0]], fs);
   if FEquation in [fePolynomial, feLinear] then
     for i := 1 to High(FParams) do begin
-      if FParams[i] = 0 then continue;
-      if i > 1 then ps := Format('^%d', [i]);
-      Result += Format(
-        ' %s ' + GetNumFormat(i) + '*%s%s',
-        [IfThen(FParams[i] > 0, '+', '-'), Abs(FParams[i]), FX, ps]);
+      if FParams[i] = 0 then
+        continue;
+      if FTextFormat = tfNormal then
+      begin
+        if i > 1 then ps := Format('^%d', [i]);
+        s := '*%s%s';
+      end else
+      begin
+        if i > 1 then ps := Format('<sup>%d</sup>', [i]);
+        s := '&middot;%s%s';
+      end;
+      Result += Format(' %s ' + GetNumFormat(i) + s,
+        [IfThen(FParams[i] > 0, '+', '-'), Abs(FParams[i]), FX, ps], fs
+      );
     end
   else if (Length(FParams) >= 2) and (FParams[0] <> 0) and (FParams[1] <> 0) then
     case FEquation of
       feExp:
-        Result += Format(' * exp(' + GetNumFormat(1) +' * %s)', [FParams[1], FX]);
+        if FTextFormat = tfNormal then
+          Result += Format(' * exp(' + GetNumFormat(1) +' * %s)',
+            [FParams[1], FX], fs
+          )
+        else
+          Result += Format(' &middot; e<sup>' + GetNumFormat(1) + '&middot; %s</sup>',
+            [FParams[1], FX], fs
+          );
       fePower:
-        Result += Format(' * %s^' + GetNumFormat(1), [FX, FParams[1]]);
+        if FTextFormat = tfNormal then
+          Result += Format(' * %s^' + GetNumFormat(1),
+            [FX, FParams[1]], fs
+          )
+        else
+          Result += Format(' &middot; %s<sup>' + GetNumFormat(1) + '</sup>',
+            [FX, FParams[1]], fs
+          );
     end;
 end;
 
@@ -193,6 +254,12 @@ begin
   SetLength(FParams, Length(AParams));
   for i := 0 to High(AParams) do
     FParams[i] := AParams[i];
+  Result := Self;
+end;
+
+function TFitEquationText.TextFormat(AFormat: TChartTextFormat): IFitEquationText;
+begin
+  FTextFormat := AFormat;
   Result := Self;
 end;
 
