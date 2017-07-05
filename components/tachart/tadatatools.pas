@@ -41,6 +41,7 @@ type
     property Frame;
     property LabelBrush;
     property LinkPen;
+    property TextFormat;
   end;
 
   TDataPointDistanceTool = class(TDataPointDrawTool)

@@ -66,7 +66,7 @@ type
   TScaleItems = set of TScaleItem;
 
   IChartDrawer = interface
-   ['{6D8E5591-6788-4D2D-9FE6-596D5157C3C3}']
+    ['{6D8E5591-6788-4D2D-9FE6-596D5157C3C3}']
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStart;

@@ -24,7 +24,7 @@ type
     FDrawer: IChartDrawer;
     FSize: TPoint;
     FPos: TPoint;
-    FStartPos: TPoint;
+    FRotPos: TPoint;
     FCurrentFont: TFPCustomFont;
     FSavedFont: TFPCustomFont;
     FFontAngle: Double;
@@ -682,15 +682,15 @@ begin
       offs := (h * SUB_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR
     else
       offs := (h * SUP_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR;   // this is negative
-    P := Point(FPos.X, FPos.Y+offs) - FStartPos;
-    p := RotatePoint(P, -FFontAngle) + FStartPos;
+    P := Point(FPos.X, FPos.Y+offs) - FRotPos;
+    p := RotatePoint(P, -FFontAngle) + FRotPos;
     FDrawer.TextOut.TextFormat(tfNormal).Pos(P).Text(s).Done;
     FCurrentFont.Size := oldFontSize;
   end else
   begin
     FDrawer.SetFont(FCurrentFont);
     w := FDrawer.TextExtent(s, tfNormal).X;       // tfNormal is correct
-    p := RotatePoint(FPos - FStartPos, -FFontAngle) + FStartPos;
+    p := RotatePoint(FPos - FRotPos, -FFontAngle) + FRotPos;
     FDrawer.TextOut.TextFormat(tfNormal).Pos(P).Text(s).Done;
   end;
   inc(FPos.X, w);
@@ -789,8 +789,8 @@ var
   parser: THTMLParser;
 begin
   Init;
+  FRotPos := Point(AX, AY);
   FPos := Point(AX, AY);
-  FStartPos := FPos;
   parser := THTMLParser.Create('<p>' + AText + '</p>');
   try
     parser.OnFoundTag := @HTMLTagFound;

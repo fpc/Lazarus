@@ -10,23 +10,23 @@ object MainForm: TMainForm
   LCLVersion = '1.9.0.0'
   object BottomPanel: TPanel
     Left = 8
-    Height = 91
-    Top = 353
-    Width = 647
+    Height = 105
+    Top = 339
+    Width = 639
     Align = alBottom
     AutoSize = True
     BorderSpacing.Left = 8
-    BorderSpacing.Top = 8
+    BorderSpacing.Right = 8
     BorderSpacing.Bottom = 8
     BevelOuter = bvNone
-    ClientHeight = 91
-    ClientWidth = 647
+    ClientHeight = 105
+    ClientWidth = 639
     TabOrder = 0
     object CgHTML: TCheckGroup
       Left = 0
       Height = 78
       Top = 8
-      Width = 327
+      Width = 333
       AutoFill = True
       AutoSize = True
       BorderSpacing.InnerBorder = 4
@@ -40,7 +40,7 @@ object MainForm: TMainForm
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 4
       ClientHeight = 58
-      ClientWidth = 323
+      ClientWidth = 329
       Columns = 4
       Items.Strings = (
         'title'
@@ -50,18 +50,19 @@ object MainForm: TMainForm
         'x axis labels'
         'x axis title'
         'y axis title'
+        'distance tool'
       )
       OnItemClick = CgHTMLItemClick
       TabOrder = 0
       Data = {
-        0700000002020202020202
+        080000000202020202020202
       }
     end
     object BtnCopyToClipboard: TButton
       AnchorSideTop.Control = BottomPanel
       AnchorSideRight.Control = BottomPanel
       AnchorSideRight.Side = asrBottom
-      Left = 518
+      Left = 510
       Height = 25
       Top = 8
       Width = 121
@@ -79,7 +80,7 @@ object MainForm: TMainForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnCopyToClipboard
       AnchorSideRight.Side = asrBottom
-      Left = 518
+      Left = 510
       Height = 25
       Top = 37
       Width = 121
@@ -96,7 +97,7 @@ object MainForm: TMainForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnCopyToClipboard
       AnchorSideRight.Side = asrBottom
-      Left = 518
+      Left = 510
       Height = 25
       Top = 66
       Width = 121
@@ -110,22 +111,46 @@ object MainForm: TMainForm
     object CbRTL: TCheckBox
       AnchorSideLeft.Control = CgHTML
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BtnCopyToClipboard
-      AnchorSideTop.Side = asrCenter
-      Left = 343
+      AnchorSideTop.Control = CbRotateXLabels
+      AnchorSideTop.Side = asrBottom
+      Left = 349
       Height = 19
-      Top = 11
+      Top = 38
       Width = 86
       BorderSpacing.Left = 16
+      BorderSpacing.Top = 8
       Caption = 'Right-to-left'
       OnChange = CbRTLChange
       TabOrder = 4
       Visible = False
     end
+    object CbRotateXLabels: TCheckBox
+      AnchorSideTop.Control = BtnCopyToClipboard
+      AnchorSideTop.Side = asrCenter
+      Left = 349
+      Height = 19
+      Top = 11
+      Width = 131
+      Caption = 'Rotate x labels by 45°'
+      OnChange = CbRotateXLabelsChange
+      TabOrder = 5
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = BottomPanel
+      AnchorSideTop.Control = CgHTML
+      AnchorSideTop.Side = asrBottom
+      Left = 0
+      Height = 15
+      Top = 90
+      Width = 305
+      BorderSpacing.Top = 4
+      Caption = 'Measure distance: drag with left mouse button held down'
+      ParentColor = False
+    end
   end
   object Chart: TChart
     Left = 8
-    Height = 337
+    Height = 323
     Top = 8
     Width = 639
     AxisList = <    
@@ -163,6 +188,8 @@ object MainForm: TMainForm
     )
     Foot.TextFormat = tfHTML
     Foot.Visible = True
+    Legend.Alignment = laTopCenter
+    Legend.ColumnCount = 2
     Legend.TextFormat = tfHTML
     Legend.Visible = True
     Title.Brush.Color = clBtnFace
@@ -175,6 +202,7 @@ object MainForm: TMainForm
     )
     Title.TextFormat = tfHTML
     Title.Visible = True
+    Toolset = ChartTools
     Align = alClient
     BorderSpacing.Around = 8
     Color = clWhite
@@ -184,7 +212,7 @@ object MainForm: TMainForm
       Marks.LinkPen.Color = clGray
       Marks.Style = smsLabel
       Marks.TextFormat = tfHTML
-      Title = '<font color="red">Measured</font>'
+      Title = '<font color="red">Measured data points</font>'
       LinePen.Color = clRed
       LineType = ltNone
       Pointer.Brush.Color = clRed
@@ -208,5 +236,24 @@ object MainForm: TMainForm
   object ListChartSource_Fit: TListChartSource
     left = 224
     top = 153
+  end
+  object ChartTools: TChartToolset
+    left = 368
+    top = 88
+    object DistanceTool: TDataPointDistanceTool
+      Shift = [ssLeft]
+      DistanceMode = cdmOnlyX
+      DrawingMode = tdmNormal
+      Marks.Distance = 15
+      Marks.Format = '%0:.9g'
+      Marks.Frame.Color = clTeal
+      Marks.LabelBrush.Color = clMoneyGreen
+      Marks.LinkPen.Color = clSilver
+      Marks.LinkPen.Visible = False
+      Marks.TextFormat = tfHTML
+      MeasureMode = cdmOnlyX
+      Options = [dpdoLabelAbove]
+      OnGetDistanceText = DistanceToolGetDistanceText
+    end
   end
 end

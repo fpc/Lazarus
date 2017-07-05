@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, TAGraph, TASeries, TASources, Forms, Controls,
-  Graphics, Dialogs, ExtCtrls, StdCtrls, TAChartAxisUtils, TAFuncSeries;
+  Graphics, Dialogs, ExtCtrls, StdCtrls, TAChartAxisUtils, TAFuncSeries,
+  TATools, TADataTools;
 
 type
 
@@ -19,7 +20,11 @@ type
     Chart: TChart;
     CgHTML: TCheckGroup;
     CbRTL: TCheckBox;
+    ChartTools: TChartToolset;
+    CbRotateXLabels: TCheckBox;
+    DistanceTool: TDataPointDistanceTool;
     FitSeries: TFitSeries;
+    Label1: TLabel;
     ListChartSource: TListChartSource;
     DataSeries: TLineSeries;
     BottomPanel: TPanel;
@@ -27,9 +32,12 @@ type
     procedure BtnCopyToClipboardClick(Sender: TObject);
     procedure BtnSaveWMFClick(Sender: TObject);
     procedure BtnSaveSVGClick(Sender: TObject);
+    procedure CbRotateXLabelsChange(Sender: TObject);
     procedure CgHTMLItemClick(Sender: TObject; Index: integer);
     procedure ChartAxisList1MarkToText(var AText: String; AMark: Double);
     procedure CbRTLChange(Sender: TObject);
+    procedure DistanceToolGetDistanceText(ASender: TDataPointDistanceTool;
+      var AText: String);
     procedure FitSeriesFitComplete(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
@@ -66,6 +74,14 @@ begin
   {$ENDIF}
 end;
 
+procedure TMainForm.CbRotateXLabelsChange(Sender: TObject);
+begin
+  if CbRotateXLabels.Checked then
+    Chart.BottomAxis.Marks.LabelFont.Orientation := 450
+  else
+    Chart.BottomAxis.Marks.LabelFont.Orientation := 0;
+end;
+
 procedure TMainForm.BtnSaveSVGClick(Sender: TObject);
 begin
   Chart.SaveToSVGFile('test.svg');
@@ -85,6 +101,7 @@ begin
     4: Chart.BottomAxis.Marks.TextFormat := tf;
     5: Chart.BottomAxis.Title.TextFormat := tf;
     6: Chart.LeftAxis.Title.TextFormat := tf;
+    7: DistanceTool.Marks.TextFormat := tf;
   end;
 end;
 
@@ -129,6 +146,12 @@ begin
   FitSeries.Source := ListChartSource_Fit;
 end;
 
+procedure TMainForm.DistanceToolGetDistanceText(
+  ASender: TDataPointDistanceTool; var AText: String);
+begin
+  AText := '&Delta;&alpha; = ' + FormatFloat('0.00', ASender.Distance) + '&deg;';
+end;
+
 procedure TMainForm.FitSeriesFitComplete(Sender: TObject);
 var
   p: Array of Double;
@@ -160,6 +183,7 @@ begin
   CgHTML.Checked[4] := Chart.BottomAxis.Marks.TextFormat = tfNormal;
   CgHTML.Checked[5] := Chart.BottomAxis.Title.TextFormat = tfNormal;
   CgHTML.Checked[6] := Chart.LeftAxis.Title.TextFormat = tfNormal;
+  CgHTML.Checked[7] := DistanceTool.Marks.TextFormat = tfNormal;
 
   {$IFDEF WINDOWS}
   Chart.Foot.Text[1] := '<font name="Times New Roman" color="gray">' + Chart.Foot.Text[1] + '</font>';
