@@ -18,6 +18,7 @@ type
     BtnSaveSVG: TButton;
     Chart: TChart;
     CgHTML: TCheckGroup;
+    CbRTL: TCheckBox;
     FitSeries: TFitSeries;
     ListChartSource: TListChartSource;
     DataSeries: TLineSeries;
@@ -28,6 +29,7 @@ type
     procedure BtnSaveSVGClick(Sender: TObject);
     procedure CgHTMLItemClick(Sender: TObject; Index: integer);
     procedure ChartAxisList1MarkToText(var AText: String; AMark: Double);
+    procedure CbRTLChange(Sender: TObject);
     procedure FitSeriesFitComplete(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
@@ -89,6 +91,13 @@ end;
 procedure TMainForm.ChartAxisList1MarkToText(var AText: String; AMark: Double);
 begin
   AText := AText + '&deg;';
+end;
+
+procedure TMainForm.CbRTLChange(Sender: TObject);
+begin
+  if CbRTL.Checked then
+    Chart.BiDiMode := bdRightToLeft else
+    Chart.BiDiMode := bdLeftToRight;
 end;
 
 procedure TMainForm.CreateData;

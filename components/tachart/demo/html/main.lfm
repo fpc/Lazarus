@@ -107,6 +107,21 @@ object MainForm: TMainForm
       OnClick = BtnSaveSVGClick
       TabOrder = 3
     end
+    object CbRTL: TCheckBox
+      AnchorSideLeft.Control = CgHTML
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = BtnCopyToClipboard
+      AnchorSideTop.Side = asrCenter
+      Left = 343
+      Height = 19
+      Top = 11
+      Width = 86
+      BorderSpacing.Left = 16
+      Caption = 'Right-to-left'
+      OnChange = CbRTLChange
+      TabOrder = 4
+      Visible = False
+    end
   end
   object Chart: TChart
     Left = 8
@@ -121,7 +136,7 @@ object MainForm: TMainForm
         Title.LabelFont.Height = -16
         Title.LabelFont.Orientation = 900
         Title.Visible = True
-        Title.Caption = 'Area A, cm<sup>2</cm>'
+        Title.Caption = 'Area A, cm<sup>2</sup>'
         Title.TextFormat = tfHTML
       end    
       item
