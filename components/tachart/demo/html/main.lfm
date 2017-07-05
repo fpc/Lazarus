@@ -55,7 +55,7 @@ object MainForm: TMainForm
         050000000202020202
       }
     end
-    object Button1: TButton
+    object BtnCopyToClipboard: TButton
       AnchorSideTop.Control = BottomPanel
       AnchorSideRight.Control = BottomPanel
       AnchorSideRight.Side = asrBottom
@@ -68,14 +68,14 @@ object MainForm: TMainForm
       BorderSpacing.Top = 8
       BorderSpacing.Right = 8
       Caption = 'Copy to clipboard'
-      OnClick = Button1Click
+      OnClick = BtnCopyToClipboardClick
       TabOrder = 1
     end
-    object Button2: TButton
-      AnchorSideLeft.Control = Button1
-      AnchorSideTop.Control = Button1
+    object BtnSaveWMF: TButton
+      AnchorSideLeft.Control = BtnCopyToClipboard
+      AnchorSideTop.Control = BtnCopyToClipboard
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = Button1
+      AnchorSideRight.Control = BtnCopyToClipboard
       AnchorSideRight.Side = asrBottom
       Left = 518
       Height = 25
@@ -85,14 +85,14 @@ object MainForm: TMainForm
       AutoSize = True
       BorderSpacing.Top = 4
       Caption = 'Save to WMF'
-      OnClick = Button2Click
+      OnClick = BtnSaveWMFClick
       TabOrder = 2
     end
-    object Button3: TButton
-      AnchorSideLeft.Control = Button1
-      AnchorSideTop.Control = Button2
+    object BtnSaveSVG: TButton
+      AnchorSideLeft.Control = BtnCopyToClipboard
+      AnchorSideTop.Control = BtnSaveWMF
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = Button1
+      AnchorSideRight.Control = BtnCopyToClipboard
       AnchorSideRight.Side = asrBottom
       Left = 518
       Height = 25
@@ -102,7 +102,7 @@ object MainForm: TMainForm
       AutoSize = True
       BorderSpacing.Top = 4
       Caption = 'Save to SVG'
-      OnClick = Button3Click
+      OnClick = BtnSaveSVGClick
       TabOrder = 3
     end
   end
@@ -140,7 +140,7 @@ object MainForm: TMainForm
     Foot.Font.Color = clBlue
     Foot.Text.Strings = (
       '<u>Reference</u>:'
-      'W. Shakespeare, <i>"J. Non-reproducible Results"</i>, <b>38</b>, 512 (2017)'
+      'W. Shakespeare, <i>"J. Irreproducible Results"</i>, <b>38</b>, 512 (2017)'
     )
     Foot.TextFormat = tfHTML
     Foot.Visible = True

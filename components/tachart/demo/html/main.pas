@@ -13,9 +13,9 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
+    BtnCopyToClipboard: TButton;
+    BtnSaveWMF: TButton;
+    BtnSaveSVG: TButton;
     Chart: TChart;
     CgHTML: TCheckGroup;
     RedSource: TRandomChartSource;
@@ -23,9 +23,9 @@ type
     RedSeries: TLineSeries;
     BlueSeries: TLineSeries;
     BottomPanel: TPanel;
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    procedure BtnCopyToClipboardClick(Sender: TObject);
+    procedure BtnSaveWMFClick(Sender: TObject);
+    procedure BtnSaveSVGClick(Sender: TObject);
     procedure CgHTMLItemClick(Sender: TObject; Index: integer);
     procedure FormCreate(Sender: TObject);
   private
@@ -42,23 +42,25 @@ implementation
 {$R *.lfm}
 
 uses
-  TAChartUtils, TADrawerWMF, TADrawerSVG;
+  TAChartUtils, {$IFDEF WINDOWS}TADrawerWMF,{$ENDIF} TADrawerSVG;
 
 { TMainForm }
 
-procedure TMainForm.Button1Click(Sender: TObject);
+procedure TMainForm.BtnCopyToClipboardClick(Sender: TObject);
 begin
   Chart.CopyToClipboardBitmap;
 end;
 
-procedure TMainForm.Button2Click(Sender: TObject);
+procedure TMainForm.BtnSaveWMFClick(Sender: TObject);
 begin
+  {$IFDEF WINDOWS}
   with Chart do
     Draw(TWindowsMetafileDrawer.Create('test.wmf'), Rect(0, 0, Width, Height));
   ShowMessage('Chart saved to file "test.wmf"');
+  {$ENDIF}
 end;
 
-procedure TMainForm.Button3Click(Sender: TObject);
+procedure TMainForm.BtnSaveSVGClick(Sender: TObject);
 begin
   Chart.SaveToSVGFile('test.svg');
   ShowMessage('Chart saved to file "test.svg"');
@@ -87,7 +89,9 @@ begin
   CgHTML.Checked[4] := Chart.LeftAxis.Title.TextFormat = tfHTML;
 
   {$IFDEF WINDOWS}
-  Chart.Foot.Text[1] := '<font name="Times New Roman">' + Chart.Foot.Text[1] + '</font>';
+  Chart.Foot.Text[1] := '<font name="Times New Roman" color="blue">' + Chart.Foot.Text[1] + '</font>';
+  {$ELSE}
+  BtnSaveWMF.Hide;
   {$ENDIF}
 end;
 
