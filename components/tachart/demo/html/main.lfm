@@ -207,6 +207,7 @@ object MainForm: TMainForm
     BorderSpacing.Around = 8
     Color = clWhite
     object DataSeries: TLineSeries
+      Marks.Alignment = taCenter
       Marks.Format = '%2:s'
       Marks.Frame.Color = clGray
       Marks.LinkPen.Color = clGray
@@ -220,7 +221,6 @@ object MainForm: TMainForm
       ShowPoints = True
     end
     object FitSeries: TFitSeries
-      Marks.Alignment = taCenter
       Marks.TextFormat = tfHTML
       Title = 'Fit curve (<font color="blue">blue</font>)'
       Pen.Color = clBlue
@@ -244,6 +244,7 @@ object MainForm: TMainForm
       Shift = [ssLeft]
       DistanceMode = cdmOnlyX
       DrawingMode = tdmNormal
+      Marks.Alignment = taCenter
       Marks.Distance = 15
       Marks.Format = '%0:.9g'
       Marks.Frame.Color = clTeal
