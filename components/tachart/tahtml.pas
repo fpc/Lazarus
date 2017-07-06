@@ -2,59 +2,21 @@ unit TAHtml;
 
 {$H+}
 
-{ If the following DEFINE is enabled then the HTML text can contain font size
-  tags.
-  NOTE: Since TAChart does not have a general way to know about font metrics
-  texts are aligned at the top, i.e. the base line of labels containing
-  font size tags will change. ACTIVATING THIS DIRECTIVE IS NOT RECOMMENDED. }
-
-{.$DEFINE HTML_FONT_SIZE}
-
 interface
 
 uses
-  Classes, fpcanvas, TADrawUtils;
+  fpimage, Classes;
 
-type
-  THTMLAnalyzer = class
-  private
-    FSubscript: Integer;
-    FSuperscript: Integer;
-    FFontStack: TFPList;
-    FDrawer: IChartDrawer;
-    FSize: TPoint;
-    FPos: TPoint;
-    FRotPos: TPoint;
-    FCurrentFont: TFPCustomFont;
-    FSavedFont: TFPCustomFont;
-    FFontAngle: Double;
-  protected
-    procedure ClearFontStack;
-    procedure HTMLTagFound(NoCaseTag, ActualTag: String);
-    procedure HTMLTextFound_Size(AText: String);
-    procedure HTMLTextFound_Out(AText: String);
-    procedure Init;
-    procedure PopFont;
-    procedure PushFont;
-  public
-    constructor Create(ADrawer: IChartDrawer);
-    destructor Destroy; override;
-    function TextExtent(const AText: String): TPoint;
-    procedure TextOut(AX, AY: Integer; const AText: String);
-  end;
+function ReplaceHTMLEntities(const AText: String): String;
+function HTMLToFontSize(AText: String): Integer;
+function HTMLToFPColor(const AText: String): TFPColor;
 
 
 implementation
 
 uses
-  SysUtils, math, contnrs, fpimage, fasthtmlparser, htmlutil,
+  SysUtils, math, contnrs,
   TAChartUtils, TAGeometry;
-
-const
-  SUBSUP_DIVISOR = 100;
-  SUBSUP_SIZE_MULTIPLIER = 70; //75;
-  SUB_OFFSET_MULTIPLIER = 80;
-  SUP_OFFSET_MULTIPLIER = -5;
 
 type
   THtmlEntities = class(TFPStringHashTable)
@@ -451,6 +413,9 @@ begin
   if s = '' then
     exit('');
 
+  if HtmlEntities = nil then
+    PopulateHtmlEntities;
+
   if (Length(s) > 1) and (s[1] = '#') then begin
     Delete(s, 1, 1);
     if (s[1] = 'x') then begin
@@ -536,7 +501,6 @@ begin
   end;
 end;
 
-{$IFDEF HTML_FONT_SIZE}
 function HTMLToFontSize(AText: String): Integer;
 begin
   case AText of
@@ -556,249 +520,6 @@ begin
       Result := Result * 72 div 96;  // Assuming a 96 ppi screen here!
     end else
       Result := 9;
-  end;
-end;
-{$ENDIF}
-
-
-{ THTMLAnalyzer }
-
-constructor THTMLAnalyzer.Create(ADrawer: IChartDrawer);
-begin
-  FDrawer := ADrawer;
-  PopulateHTMLEntities;
-  FSavedFont := TFPCustomFont.Create;
-  FFontStack := TFPList.Create;
-end;
-
-destructor THTMLAnalyzer.Destroy;
-var
-  j: Integer;
-begin
-  for j:=0 to FFontStack.Count-1 do TFPCustomFont(FFontStack[j]).Free;
-  FFontStack.Free;
-  FCurrentFont.Free;
-  FSavedFont.Free;
-  inherited;
-end;
-
-procedure THTMLAnalyzer.ClearFontStack;
-var
-  j: Integer;
-begin
-  for j:=0 to FFontStack.Count-1 do TFPCustomFont(FFontStack[j]).Free;
-  FFontStack.Clear;
-end;
-
-procedure THTMLAnalyzer.HTMLTagFound(NoCaseTag, ActualTag: String);
-var
-  val: String;
-begin
-  Unused(ActualTag);
-
-  if NoCaseTag[2] = '/' then
-    case NoCaseTag of
-      '</B>',
-      '</STRONG>',
-      '</I>',
-      '</EM>',
-      '</U>',
-      '</S>',
-      '</FONT>':
-        PopFont;
-      '</SUB>':
-        dec(FSubscript);
-      '</SUP>':
-        dec(FSuperscript);
-    end
-  else begin
-    case NoCaseTag of
-      '<B>', '<STRONG>':
-        begin
-          PushFont;
-          FCurrentFont.Bold := true;
-        end;
-      '<I>', '<EM>':
-        begin
-          PushFont;
-          FCurrentFont.Italic := true;
-        end;
-      '<U>':
-        begin
-          PushFont;
-          FCurrentFont.Underline := true;
-        end;
-      '<S>':
-        begin
-          PushFont;
-          FCurrentFont.StrikeThrough := true;
-        end;
-      '<SUB>':
-        begin    // Don't push the font to the stack
-          inc(FSubscript);
-        end;
-      '<SUP>':
-        begin // Don't push the font to the stack
-          inc(FSuperscript);
-        end;
-      else
-        if (pos('<FONT ', NoCaseTag) = 1) or (NoCaseTag = '<FONT>') then begin
-          PushFont;
-          val := GetVal(NoCaseTag, 'NAME');
-          if val <> '' then
-            FCurrentFont.Name := val;
-          {$IFDEF HTML_FONT_SIZE}
-          val := GetVal(NoCaseTag, 'SIZE');
-          if val <> '' then
-            FCurrentFont.Size := HTMLToFontSize(val);
-          {$ENDIF}
-          val := GetVal(NoCaseTag, 'COLOR');
-          if val <> '' then
-            FCurrentFont.FPColor := HTMLToFPColor(val);
-        end else
-          exit;
-    end;
-  end;
-end;
-
-procedure THTMLAnalyzer.HTMLTextFound_Out(AText: String);
-var
-  oldFontSize: Integer;
-  offs: Integer;
-  s: string;
-  P: TPoint;
-  w, h: Integer;
-begin
-  s := ReplaceHTMLEntities(AText);
-
-  if (FSubScript > 0) or (FSuperScript > 0) then
-  begin
-    oldFontSize := FCurrentFont.Size;
-    FCurrentFont.Size := (FCurrentFont.Size * SUBSUP_SIZE_MULTIPLIER) div SUBSUP_DIVISOR;
-    FDrawer.SetFont(FCurrentFont);
-    h := FDrawer.TextExtent('Tg', tfNormal).Y;  // tfNormal is correct
-    w := FDrawer.TextExtent(s, tfNormal).X;
-    if FSubScript > 0 then
-      offs := (h * SUB_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR
-    else
-      offs := (h * SUP_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR;   // this is negative
-    P := Point(FPos.X, FPos.Y+offs) - FRotPos;
-    p := RotatePoint(P, -FFontAngle) + FRotPos;
-    FDrawer.TextOut.TextFormat(tfNormal).Pos(P).Text(s).Done;
-    FCurrentFont.Size := oldFontSize;
-  end else
-  begin
-    FDrawer.SetFont(FCurrentFont);
-    w := FDrawer.TextExtent(s, tfNormal).X;       // tfNormal is correct
-    p := RotatePoint(FPos - FRotPos, -FFontAngle) + FRotPos;
-    FDrawer.TextOut.TextFormat(tfNormal).Pos(P).Text(s).Done;
-  end;
-  inc(FPos.X, w);
-end;
-
-procedure THTMLAnalyzer.HTMLTextFound_Size(AText: String);
-var
-  ext: TPoint;
-  oldFontSize: Integer;
-  s: String;
-  offs: Integer;
-begin
-  s := ReplaceHTMLEntities(AText);
-  if (FSubScript > 0) or (FSuperscript > 0) then
-  begin
-    oldFontSize := FCurrentFont.Size;
-    FCurrentFont.Size := FCurrentFont.Size * SUBSUP_SIZE_MULTIPLIER div SUBSUP_DIVISOR;
-    FDrawer.SetFont(FCurrentFont);
-    ext := FDrawer.TextExtent(s, tfNormal);  // tfNormal is correct
-    FCurrentFont.Size := oldFontSize;
-    if FSubScript > 0 then
-    begin
-      offs := (ext.y * SUB_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR;
-      if ext.y + offs > FSize.Y then ext.Y := ext.y + offs;
-    end else
-    begin
-      offs := (ext.y * SUP_OFFSET_MULTIPLIER) div SUBSUP_DIVISOR;   // this is negative
-      if ext.y - offs > FSize.Y then ext.Y := ext.y - offs;   // offs is negative
-    end;
-  end else
-  begin
-    FDrawer.SetFont(FCurrentFont);
-    ext := FDrawer.TextExtent(s, tfNormal);  // tfNormal is correct
-  end;
-  FSize.X := FSize.X + ext.X;
-  FSize.Y := Max(FSize.Y, ext.Y);
-end;
-
-procedure THTMLAnalyzer.Init;
-begin
-  FFontAngle := FDrawer.GetFontAngle;
-
-  FSavedFont.Name := FDrawer.GetFontName;
-  FSavedFont.Size := FDrawer.GetFontSize;
-  FSavedFont.FPColor := FDrawer.GetFontColor;
-  FSavedFont.Bold := cfsBold in FDrawer.GetFontStyle;
-  FSavedFont.Italic := cfsItalic in FDrawer.GetFontStyle;
-  FSavedFont.Underline := cfsUnderline in FDrawer.GetFontStyle;
-  FSavedFont.StrikeThrough := cfsStrikeOut in FDrawer.GetFontStyle;
-  FSavedFont.Orientation := RadToOrient(FFontAngle);
-
-  FCurrentFont := FSavedFont.CopyFont;
-  FCurrentFont.Orientation := FSavedFont.Orientation;
-  ClearFontStack;
-
-  FSubscript := 0;
-  FSuperscript := 0;
-end;
-
-procedure THTMLAnalyzer.PopFont;
-begin
-  FCurrentFont.Free;
-  FCurrentFont := TFPCustomFont(FFontStack[FFontStack.Count-1]);
-  FFontStack.Delete(FFontStack.Count-1);
-end;
-
-procedure THTMLAnalyzer.PushFont;
-var
-  fnt: TFPCustomFont;
-begin
-  fnt := FCurrentFont.CopyFont;
-  fnt.Orientation := FCurrentFont.Orientation;
-  FFontStack.Add(fnt);
-end;
-
-function THTMLAnalyzer.TextExtent(const AText: String): TPoint;
-var
-  parser: THTMLParser;
-begin
-  Init;
-  FSize := Point(0, 0);
-  parser := THTMLParser.Create('<p>' + AText + '</p>');
-  try
-    parser.OnFoundTag := @HTMLTagFound;
-    parser.OnFoundText := @HTMLTextFound_Size;
-    parser.Exec;
-    Result := FSize;
-  finally
-    parser.Free;
-    FDrawer.SetFont(FSavedFont);
-  end;
-end;
-
-procedure THTMLAnalyzer.TextOut(AX, AY: Integer; const AText: String);
-var
-  parser: THTMLParser;
-begin
-  Init;
-  FRotPos := Point(AX, AY);
-  FPos := Point(AX, AY);
-  parser := THTMLParser.Create('<p>' + AText + '</p>');
-  try
-    parser.OnFoundTag := @HTMLTagFound;
-    parser.OnFoundText := @HTMLTextFound_Out;
-    parser.Exec;
-  finally
-    parser.Free;
-    FDrawer.SetFont(FSavedFont);
   end;
 end;
 
