@@ -501,13 +501,20 @@ begin
   Result.Y := FFontHeight;
 end;
 
+type
+  TFreeTypeFontOpener = class(TFreeTypeFont);
+
 procedure TSVGDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 var
   p: TPoint;
   stext: String;
   sstyle: String;
+  dy: Integer;
+  phi: Double;
 begin
-  p := RotatePoint(Point(0, FFontHeight), OrientToRad(-FFontOrientation)) + Point(AX, AY);
+  dy := round(TFreeTypeFontOpener(FFont).GetAscent);
+  phi := OrientToRad(FFontOrientation);
+  p := RotatePoint(Point(0, dy), -phi) + Point(AX, AY);
   stext := Format('x="%d" y="%d"', [p.X, p.Y]);
   if FFontOrientation <> 0 then
     stext := stext + Format(' transform="rotate(%g,%d,%d)"',
@@ -586,7 +593,7 @@ end;
 
 procedure TSVGDrawer.WriteFmt(const AFormat: String; AParams: array of const);
 begin
-  WriteStr(Format(AFormat, AParams));
+  WriteStr(Format(AFormat, AParams, fmtSettings));
 end;
 
 procedure TSVGDrawer.WriteStr(const AString: String);
