@@ -1,3 +1,17 @@
+{
+ *****************************************************************************
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+
+  Author: Werner Pamler
+
+- If LazFreeType does not find the fonts needed call InitFonts at the beginning
+  of the program and specify the path to the font folder as a parameter.
+  Several folders can be used if separated by LineEnding codes.
+}
+
+
 unit TAFonts;
 
 interface
@@ -24,7 +38,7 @@ var
   s: String;
 begin
   if AList = nil then
-    raise Exception.Create('PopulateFontDirList: list is nil');
+    raise Exception.Create('PopulateFontDirList: list not allocated.');
 
  {$IFDEF WINDOWS}
   s := SHGetFolderPathUTF8(CSIDL_FONTS);
@@ -106,11 +120,6 @@ begin
   finally
     fontDirList.Free;
   end;
-end;
-
-procedure DoneFonts;
-begin
-//
 end;
 
 end.

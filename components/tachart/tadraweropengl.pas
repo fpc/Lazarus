@@ -14,13 +14,8 @@
   - If define CHARTGL_USE_LAZFREETYPE is activated in the package options then
     the LazFreeType library is used for rendering text. If not, the GLUT library
     is used instead. Note that GLUT is not available on every system.
-
-  - If LazFreeType does not find the fonts needed call InitFonts at the beginning
-    of the program and specify the path to the font folder as a parameter.
-    Several folders can be used if separated by LineEnding codes.
-
-  - The drawer does not support rotated text at the moment.
 }
+
 unit TADrawerOpenGL;
 
 {$H+}
@@ -94,11 +89,6 @@ type
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
-
-{$IFDEF CHARTGL_USE_LAZFREETYPE}
- procedure InitFonts(AFontDir: string = '');
- procedure DoneFonts;
-{$ENDIF}
 
 
 implementation
@@ -371,6 +361,7 @@ constructor TOpenGLDrawer.Create;
 {$IFDEF CHARTGL_USE_LAZFREETYPE}
 begin
   inherited;
+  InitFonts;
 end;
 {$ELSE}
 var
