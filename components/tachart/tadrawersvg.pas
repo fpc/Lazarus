@@ -110,6 +110,22 @@ const
 var
   fmtSettings: TFormatSettings;
 
+function EscapeXML(const AText: String): String;
+var
+  ch: Char;
+begin
+  Result := '';
+  for ch in AText do
+    case ch of
+      '<': Result := Result + '&lt;';
+      '>': Result := Result + '&gt;';
+      '"': Result := Result + '&quot;';
+      '''':Result := Result + '&apos;';
+      '&': Result := Result + '&amp;';
+      else Result := Result + ch;
+    end;
+end;
+
 function ColorToHex(AColor: TFPColor): String;
 begin
   if AColor = colBlack then
@@ -535,7 +551,7 @@ begin
   if OpacityStr <> '' then
     sstyle := sstyle + OpacityStr + ';';
 
-  WriteFmt('<text %s style="%s">%s</text>', [stext, sstyle, AText]);
+  WriteFmt('<text %s style="%s">%s</text>', [stext, sstyle, EscapeXML(AText)]);
 end;
 
 function TSVGDrawer.StyleFill: String;
