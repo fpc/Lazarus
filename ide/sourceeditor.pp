@@ -2568,7 +2568,7 @@ begin
   if Editor=nil then exit;
   Editor.CaretX:=Editor.CaretX-1;
   NewLen:=UTF8FindNearestCharStart(PChar(NewPrefix),length(NewPrefix),
-                                   length(NewPrefix))-1;
+                                   length(NewPrefix)-1);
   NewPrefix:=copy(NewPrefix,1,NewLen);
   CurrentString:=NewPrefix;
 end;
