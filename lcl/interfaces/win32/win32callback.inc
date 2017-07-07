@@ -384,7 +384,7 @@ type
     function IsComboEditSelection: boolean;
     procedure HandleBitBtnCustomDraw(ABitBtn: TCustomBitBtn);
     procedure HandleDropFiles;
-    function HandleUnicodeChar(var AChar: Word): boolean;
+    function HandleUnicodeChar(var AChar: WideChar): boolean;
     procedure UpdateDrawItems;
     procedure UpdateDrawListItem(aMsg: UInt);
     procedure UpdateLMMovePos(X, Y: Smallint);
@@ -1114,13 +1114,13 @@ begin
 end;
 
 // returns false if the UnicodeChar is not handled
-function TWindowProcHelper.HandleUnicodeChar(var AChar: Word): boolean;
+function TWindowProcHelper.HandleUnicodeChar(var AChar: WideChar): boolean;
 var
   OldUTF8Char, UTF8Char: TUTF8Char;
   WS: WideString;
 begin
   Result := False;
-  UTF8Char := UTF16ToUTF8(WideString(WideChar(AChar)));
+  UTF8Char := UTF16ToUTF8(WideString(AChar));
   OldUTF8Char := UTF8Char;
   if Assigned(lWinControl) then
   begin
@@ -1132,9 +1132,9 @@ begin
     begin
       WS := UTF8ToUTF16(UTF8Char);
       if Length(WS) > 0 then
-        AChar := Word(WS[1])
+        AChar := WS[1]
       else
-        AChar := 0;
+        AChar := #0;
     end;
   end;
 end;
@@ -1232,10 +1232,13 @@ end;
 
 procedure TWindowProcHelper.DoMsgChar(var WinResult: LResult);
 begin
+  OrgCharCode := Word(WParam);
+  // Process surrogate pairs later
+  if TCharacter.IsSurrogate(WideChar(OrgCharCode)) then
+    WinProcess := True
   // first send a IntfUTF8KeyPress to the LCL
   // if the key was not handled send a CN_CHAR for AnsiChar<=#127
-  OrgCharCode := Word(WParam);
-  if not HandleUnicodeChar(OrgCharCode) then
+  else if not HandleUnicodeChar(WideChar(OrgCharCode)) then
   begin
     PLMsg := @LMChar;
     with LMChar do
