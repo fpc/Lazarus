@@ -1,11 +1,12 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-08-07 00:34+0300\n"
+"PO-Revision-Date: 2017-07-07 22:36+0200\n"
 "Project-Id-Version: lclstrconsts\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -13,22 +14,16 @@ msgstr ""
 "Language: lt\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy,badformat
-#| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "Naršyklė %s%s%s nėra vykdomasis failas."
+msgstr "Naršyklė „%s“ nėra vykdomasis failas."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy,badformat
-#| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "Naršyklė %s%s%s nerasta."
+msgstr "Naršyklė „%s“ nerasta."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy,badformat
-#| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "Įvyko klaida vykdant %s%s%s:%s%s"
+msgstr "Įvyko klaida vykdant „%s“:%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -39,10 +34,8 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Nerasta HTML Naršyklė.%sJą galima nustatyti „Aplinka -> Aplinkos parinktys -> Žinynas -> Žinyno parinktys“"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy,badformat
-#| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
-msgstr "Žinyno duomenų bazė %s%s%s nerado failo %s%s%s."
+msgstr "Žinyno duomenų bazė „%s“ nerado failo „%s“."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -300,7 +293,7 @@ msgstr "Žydra"
 
 #: lclstrconsts.rsascannothaveasparent
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "Klasė „%s“ negali turėti „%s“ kaip tėvo."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -373,7 +366,7 @@ msgstr "„%s“ klasės valdiklis negali būti „%s“ klasės valdiklio tėva
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "Valdiklis „%s“ neturi tėvinės formos ar kadro"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -430,11 +423,11 @@ msgstr "Pritvirtinimas"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
-msgstr ""
+msgstr "Kopijuoti"
 
 #: lclstrconsts.rsdopaste
 msgid "Paste"
-msgstr ""
+msgstr "Įdėti"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
@@ -551,16 +544,12 @@ msgid "First"
 msgstr "Pirmasis"
 
 #: lclstrconsts.rsfixedcolstoobig
-#, fuzzy
-#| msgid "FixedCols can't be >= ColCount"
 msgid "FixedCols can't be > ColCount"
-msgstr "„FixedCols“ reikšmė negali būti lygi ar didesnė nei „ColCount“"
+msgstr "Fiksuotų stulpelių negali būti daugiau nei stulpelių skaičius"
 
 #: lclstrconsts.rsfixedrowstoobig
-#, fuzzy
-#| msgid "FixedRows can't be >= RowCount"
 msgid "FixedRows can't be > RowCount"
-msgstr "„FixedRows“ reikšmė negali būti lygi ar didesnė nei „RowCount“"
+msgstr "Fiksuotų eilučių negali būti daugiau nei eilučių skaičius"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
@@ -624,15 +613,15 @@ msgstr "Žalia"
 
 #: lclstrconsts.rsgridfiledoesnotexist
 msgid "Grid file doesn't exist"
-msgstr ""
+msgstr "Lentelės failas neegzistuoja"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr ""
+msgstr "Neimanoma lentelėn įterpti eilučių kai ji neturi stulpelių"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr ""
+msgstr "Neimanoma lentelėn įterpti stulpelių kai ji neturi eilučių"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
@@ -707,52 +696,36 @@ msgid "Help context %s not found."
 msgstr "Žinyno turinys %s nerastas."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy,badformat
-#| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
-msgstr "Žinyno turinys %s duomenų bazėje %s%s%s nerastas."
+msgstr "Žinyno turinys „%s“ duomenų bazėje „%s“ nerastas."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy,badformat
-#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
-msgstr "Žinyno duomenų bazė %s%s%s nerado žiūryklės %s tipo žinyno lapui."
+msgstr "Žinyno duomenų bazė „%s“ nerado žiūryklės „%s“ tipo žinyno lapui."
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy,badformat
-#| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
-msgstr "Žinyno duomenų bazė %s%s%s nerasta."
+msgstr "Žinyno duomenų bazė „%s“ nerasta."
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#, fuzzy,badformat
-#| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
-msgstr "Žinyne nėra informacijos apie direktyvą %s%s%s."
+msgstr "Žinyne nėra informacijos apie direktyvą „%s“."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#, fuzzy,badformat
-#| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "Informacijos apie direktyvą %s%s%s duomenų bazėje %s%s%s nerasta."
+msgstr "Informacijos apie direktyvą „%s“ duomenų bazėje „%s“ nerasta."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy,badformat
-#| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
-msgstr "Žinyno raktažodis %s%s%s nerastas."
+msgstr "Žinyno raktažodis „%s“ nerastas."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy,badformat
-#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
-msgstr "Žinyno raktažodis %s%s%s duomenų bazėje %s%s%s nerastas."
+msgstr "Žinyno raktažodis „%s“ duomenų bazėje „%s“ nerastas."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy,badformat
-#| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
-msgstr "Žinyno mazgas %s%s%s neturi žinyno duomenų bazės."
+msgstr "Žinyno mazgas „%s“ neturi žinyno duomenų bazės."
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -775,10 +748,8 @@ msgid "Help Selector Error"
 msgstr "Žinyno parinkiklio klaida"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy,badformat
-#| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
-msgstr "Nerasta žiūryklė %s%s%s žinyno tipui."
+msgstr "Nerasta žiūryklė „%s“ žinyno tipui."
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
@@ -1081,7 +1052,7 @@ msgstr "Išsiųsti"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%sSpustelėjus „Tinka“ bus tęsiama, tačiau iškils sugadintų duomenų rizika.%sSpustelėjus „Nutraukti“ programas darbas bus nutrauktas."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1362,7 +1333,7 @@ msgstr "Negalima sufokusuoti neveiksnaus ar nematomo lango"
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "Nepavyko nustatyti konstravimo rėžimo „PPI“."
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
@@ -1505,7 +1476,7 @@ msgstr "Nėra laikmačių"
 
 #: lclstrconsts.sparentrequired
 msgid "Control \"%s\" has no parent window."
-msgstr ""
+msgstr "Valdiklis „\"%s“ neturi tėvinės formos."
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
@@ -1541,7 +1512,7 @@ msgstr "Klaidingas leksemos tipas: tikėtasi %s, tačiau rasta %s"
 
 #: lclstrconsts.sshellctrlsbytes
 msgid "%s bytes"
-msgstr ""
+msgstr "%s baitų"
 
 #: lclstrconsts.sshellctrlsinvalidpath
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
@@ -1549,6 +1520,8 @@ msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"Klaidingas kelio pavadinimas:\n"
+"„%s“\n"
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
 msgid ""
@@ -1557,6 +1530,10 @@ msgid ""
 "in relation to rootpath:\n"
 "\"%s\"\n"
 msgstr ""
+"Klaidingas snatykinio kelio pavadinimas:\n"
+"„%s“\n"
+"šakninio kelio atžvilgiu:\n"
+"„%s“\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
@@ -1564,30 +1541,34 @@ msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"Klaidingas kelio pavadinimas:\n"
+"„%s“\n"
 
 #: lclstrconsts.sshellctrlskb
 msgid "%s kB"
-msgstr ""
+msgstr "%s kB"
 
 #: lclstrconsts.sshellctrlsmb
 msgid "%s MB"
-msgstr ""
+msgstr "%s MB"
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"
-msgstr ""
+msgstr "Pavadinimas"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
 msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\"\n"
 msgstr ""
+"Parinktojo elemento diske nėra;\n"
+"„%s“\n"
 
 #: lclstrconsts.sshellctrlssize
 msgid "Size"
-msgstr ""
+msgstr "Dydis"
 
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
-msgstr ""
+msgstr "Tipas"
 

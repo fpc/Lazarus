@@ -1,129 +1,128 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-06 21:46+0300\n"
+"PO-Revision-Date: 2017-07-05 20:27+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: pocheckerconsts.rspochecker
-#, fuzzy
-#| msgid "PO File Checker"
 msgid "Check PO Files ..."
-msgstr "PO failų tikrintuvė"
+msgstr "PO failų tikrintuvė…"
 
 #: pocheckerconsts.rs_lang_af_za
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikiečių"
 
 #: pocheckerconsts.rs_lang_all
 msgid "All languages"
-msgstr ""
+msgstr "Visos kalbos"
 
 #: pocheckerconsts.rs_lang_ar
 msgid "Arabic"
-msgstr ""
+msgstr "Arabų"
 
 #: pocheckerconsts.rs_lang_ca
 msgid "Catalan"
-msgstr ""
+msgstr "Katalonų"
 
 #: pocheckerconsts.rs_lang_cs
 msgid "Czech"
-msgstr ""
+msgstr "Čekų"
 
 #: pocheckerconsts.rs_lang_de
 msgid "German"
-msgstr ""
+msgstr "Vokiečių"
 
 #: pocheckerconsts.rs_lang_en
 msgid "English"
-msgstr ""
+msgstr "Anglų"
 
 #: pocheckerconsts.rs_lang_es
 msgid "Spanish"
-msgstr ""
+msgstr "Ispanų"
 
 #: pocheckerconsts.rs_lang_fi
 msgid "Finnish"
-msgstr ""
+msgstr "Suomių"
 
 #: pocheckerconsts.rs_lang_fr
 msgid "French"
-msgstr ""
+msgstr "Prancūzų"
 
 #: pocheckerconsts.rs_lang_he
 msgid "Hebrew"
-msgstr ""
+msgstr "Žydų"
 
 #: pocheckerconsts.rs_lang_hu
 msgid "Hungarian"
-msgstr ""
+msgstr "Vengrų"
 
 #: pocheckerconsts.rs_lang_id
 msgid "Indonesian"
-msgstr ""
+msgstr "Indoneziečių"
 
 #: pocheckerconsts.rs_lang_it
 msgid "Italian"
-msgstr ""
+msgstr "Italų"
 
 #: pocheckerconsts.rs_lang_ja
 msgid "Japanese"
-msgstr ""
+msgstr "Japonų"
 
 #: pocheckerconsts.rs_lang_lt
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lietuvių"
 
 #: pocheckerconsts.rs_lang_nl
 msgid "Dutch"
-msgstr ""
+msgstr "Olandų"
 
 #: pocheckerconsts.rs_lang_pl
 msgid "Polish"
-msgstr ""
+msgstr "Lenkų"
 
 #: pocheckerconsts.rs_lang_pt
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugalų"
 
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
-msgstr ""
+msgstr "Brazilijos portugalų"
 
 #: pocheckerconsts.rs_lang_ru
 msgid "Russian"
-msgstr ""
+msgstr "Rusų"
 
 #: pocheckerconsts.rs_lang_sk
 msgid "Slovak"
-msgstr ""
+msgstr "Slovakų"
 
 #: pocheckerconsts.rs_lang_tr
 msgid "Turkish"
-msgstr ""
+msgstr "Turkų"
 
 #: pocheckerconsts.rs_lang_uk
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainiečių"
 
 #: pocheckerconsts.rs_lang_zh_cn
 msgid "Chinese, simplified"
-msgstr ""
+msgstr "Kinų, supaprastinta"
 
 #: pocheckerconsts.salllanguages
 msgid "All Languages"
-msgstr ""
+msgstr "Visos kalbos"
 
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
-msgstr ""
+msgstr "Nepavyksta rašyti į failą%s%s%s%sPaspaudus „Kartoti“ bus naujintas ši vertimų šeima ir tęsiama toliau."
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
@@ -147,23 +146,24 @@ msgstr "Tikrinti ar tinkamas elementų kiekis"
 
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr ""
+msgstr "Tikrinti kiek procentų yra (ne-)verstų ir neaiškių vertimų"
 
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
-msgstr ""
+msgstr "Valyti"
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
 msgstr "Kopijuoti į iškarpinę"
 
 #: pocheckerconsts.screatingiconxofy
+#, fuzzy,badformat
 msgid "Creating icon nr. %d of %d"
-msgstr ""
+msgstr "Kuriama ikona nr. % iš %d"
 
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
-msgstr ""
+msgstr "Testas: %s testuoja %s"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
@@ -200,14 +200,16 @@ msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s\n"
 msgstr ""
+"Iš sąrašo pašalintį šie neegzistuojantys failai:\n"
+"%s\n"
 
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
-msgstr ""
+msgstr "Neaiškūs vertimai (viso: %s)"
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
-msgstr ""
+msgstr "Grafinis apibendrinimas"
 
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
@@ -219,13 +221,11 @@ msgstr "Ieškota identifikatoriaus [%s], tačiau %s jo neturi"
 
 #: pocheckerconsts.signorefuzzytranslations
 msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr ""
+msgstr "Įgnoruoti vertimus, kurie pažymėti „fuzzy“ žyme"
 
 #: pocheckerconsts.sincompatibleformatargs
-#, fuzzy
-#| msgid "[Line: %d] Incompatible format() arguments for:"
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
-msgstr "[Eilutė: %d] Nesuderinamų „format()“ argumentų turi:"
+msgstr "[Eilutė: %d] Nesuderinamų ir/arba klaidingų „format()“ argumentų turi:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -245,7 +245,7 @@ msgstr "Klaidų nerasta"
 
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
-msgstr ""
+msgstr "Nebeliko failų, kuriuos būtų galima tikrinti."
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -253,7 +253,7 @@ msgstr "Būtina parinkti bent vieną testavimą."
 
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
-msgstr ""
+msgstr "Pastaba: vertimas neaiškus"
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -276,6 +276,8 @@ msgid ""
 "Unable to open file:\n"
 "\"%s\"\n"
 msgstr ""
+"Nepavyko atverti failo:\n"
+"„%s“\n"
 
 #: pocheckerconsts.sopenfailexternal
 msgid ""
@@ -284,18 +286,22 @@ msgid ""
 "in external editor\n"
 "\"%s\"\n"
 msgstr ""
+"Nepavyko atverti failo\n"
+"„%s“\n"
+"naudojant išorinę rengyklę\n"
+"„%s“\n"
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
-msgstr ""
+msgstr "Failą atverti naudojant išorinę rengyklę"
 
 #: pocheckerconsts.sopenfileinideeditor
 msgid "Open file in IDE editor"
-msgstr ""
+msgstr "Failą atverti IKA rengyklėje"
 
 #: pocheckerconsts.sopenfileinsystempoeditor
 msgid "Open file in system PO editor"
-msgstr ""
+msgstr "Failą atverti sisteminėje „PO“ rengyklėje"
 
 #: pocheckerconsts.soriginal
 msgid "Original"
@@ -303,31 +309,31 @@ msgstr "Originalas"
 
 #: pocheckerconsts.spercfuzzy
 msgid "%s: %5.1f%% fuzzy strings."
-msgstr ""
+msgstr "%s: %5.1f%% neaiškių vertimų."
 
 #: pocheckerconsts.sperctranslated
 msgid "%s: %5.1f%% translated strings."
-msgstr ""
+msgstr "%s: %5.1f%% pilnų vertimų."
 
 #: pocheckerconsts.spercuntranslated
 msgid "%s: %5.1f%% untranslated strings."
-msgstr ""
+msgstr "%s: %5.1f%% neversta."
 
 #: pocheckerconsts.sprocessingtranslationfamily
 msgid "Processing translation family..."
-msgstr ""
+msgstr "Dorojama vertimų šeima…"
 
 #: pocheckerconsts.sprocessingtranslationfamilyof
 msgid "Processing translation family %s of %s"
-msgstr ""
+msgstr "Dorojama vertimų šeima %s iš %s"
 
 #: pocheckerconsts.srefreshalltranslationfamilies
 msgid "Refresh all translation families"
-msgstr ""
+msgstr "Naujinti visas vertimų šeimas"
 
 #: pocheckerconsts.srefreshcurrenttranslationfamily
 msgid "Refresh current translation family"
-msgstr ""
+msgstr "Naujinti dabartinę vertimų šeimą"
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -351,23 +357,23 @@ msgstr ""
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
-msgstr ""
+msgstr "Peržvelgti aplanke"
 
 #: pocheckerconsts.sscanninginprogress
 msgid "Scanning in progress, please wait ..."
-msgstr ""
+msgstr "Vyksta žvalgymas, luktelkite…"
 
 #: pocheckerconsts.sselectalllistbox
 msgid "Select all files"
-msgstr ""
+msgstr "Pažymėti visus failus"
 
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
-msgstr ""
+msgstr "Pažymėti &viską"
 
 #: pocheckerconsts.sselectbasictests
 msgid "Select &Basic"
-msgstr ""
+msgstr "Pažymėti &bazinius"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -375,7 +381,7 @@ msgstr "Pažymėti testavimo tipus"
 
 #: pocheckerconsts.sshowstatgraph
 msgid "Show statistics graph"
-msgstr ""
+msgstr "Rodyti statistikos grafiką"
 
 #: pocheckerconsts.sstathint
 msgid ""
@@ -384,32 +390,34 @@ msgid ""
 "Fuzzy: %d (%.1f%%)\n"
 "Errors in selected tests: %d\n"
 msgstr ""
+"Išversta: %d (%.1f%%)\n"
+"Neišversta: %d (%.1f%%)\n"
+"Neaiškių: %d (%.1f%%)\n"
+"Klaidų pažymėtuose testuose: %d\n"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 msgid "The following %s missing master .po file(s) were removed from the list:"
-msgstr ""
+msgstr "Šie trūkstami %s pagrindiniai „.po“ failai bus pašalinti iš sąrašo:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"
-msgstr ""
+msgstr "Rasti šie %s „.po“ failai-našlaičiai:"
 
 #: pocheckerconsts.stotalerrors
-#, fuzzy
-#| msgid "Total errors / warnings found: %d"
 msgid "Total errors found: %d"
-msgstr "Viso rasta klaidų/perspėjimų: %d"
+msgstr "Viso rasta klaidų: %d"
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
-msgstr ""
+msgstr "Viso neaiškių vertimų: %s"
 
 #: pocheckerconsts.stotaltranslatedstrings
 msgid "Total translated strings: %s (%.1f%%)"
-msgstr ""
+msgstr "Viso pilnų vertimų: %s (%.1f%%)"
 
 #: pocheckerconsts.stotaluntranslatedstrings
 msgid "Total untranslated strings: %s"
-msgstr ""
+msgstr "Viso neišversta: %s"
 
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
@@ -417,7 +425,7 @@ msgstr "Viso rasta perspėjimų: %d"
 
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
-msgstr ""
+msgstr "Išversta (viso: %s [%.1f%%])"
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
@@ -425,21 +433,21 @@ msgstr "Vertimas"
 
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics per language:"
-msgstr ""
+msgstr "Vertimo statistika kiekvienai kalbai:"
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"
-msgstr ""
+msgstr "Probleminiai failai"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
-msgstr ""
+msgstr "&Nužymėti viską"
 
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
-msgstr ""
+msgstr "Nužymėti visus failus"
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"
-msgstr ""
+msgstr "Neišversta (viso: %s)"
 

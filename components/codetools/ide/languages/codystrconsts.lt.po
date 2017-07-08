@@ -1,15 +1,16 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-03 23:32+0300\n"
+"PO-Revision-Date: 2017-07-05 11:47+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
@@ -46,7 +47,7 @@ msgstr "… dar liko identifikatorių: %s"
 
 #: codystrconsts.crsany
 msgid "Any"
-msgstr ""
+msgstr "Bet koks"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
@@ -162,7 +163,7 @@ msgstr "%s, įrašė savybė „%s“"
 
 #: codystrconsts.crscaretoutsideofcode
 msgid "Caret outside of code"
-msgstr ""
+msgstr "Žymeklis už kodo ribų"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
@@ -186,7 +187,7 @@ msgstr "Informacija apie kodo mazgą"
 
 #: codystrconsts.crscodyfindoverloads
 msgid "Cody - Find Overloads"
-msgstr ""
+msgstr "Cody - rasti daugiareikšmiškumus"
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
@@ -199,11 +200,11 @@ msgstr "Pagrindinis"
 
 #: codystrconsts.crscompatibility
 msgid "Compatibility"
-msgstr ""
+msgstr "Suderinamumas"
 
 #: codystrconsts.crscompatible
 msgid "compatible"
-msgstr ""
+msgstr "suderinamas"
 
 #: codystrconsts.crsconfigurenewidewindow
 msgid "Configure new IDE window"
@@ -284,15 +285,15 @@ msgstr "Aprašyti kintamąjį „%s“"
 
 #: codystrconsts.crsdeletepackage
 msgid "Delete package?"
-msgstr ""
+msgstr "Pašalinti paketą?"
 
 #: codystrconsts.crsdeleteunit
 msgid "Delete unit?"
-msgstr ""
+msgstr "Pašalinti modulį?"
 
 #: codystrconsts.crsdistance
 msgid "Distance"
-msgstr ""
+msgstr "Atstumas"
 
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
@@ -304,15 +305,15 @@ msgstr "Klaida: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr ""
+msgstr "Klaida: žymeklis ne projekto modulyje"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
-msgstr ""
+msgstr "Klaida: pirminio kodo rengyklės žymeklis turi būti ties procedūros kreipiniu arba aprašu"
 
 #: codystrconsts.crsexact
 msgid "exact"
-msgstr ""
+msgstr "atitinka"
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
@@ -348,19 +349,19 @@ msgstr "(Filtras)"
 
 #: codystrconsts.crsfilter2
 msgid "Filter"
-msgstr ""
+msgstr "Filtras"
 
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
-msgstr ""
+msgstr "Rasti „GDB“ dėklo pėdsako eilutę"
 
 #: codystrconsts.crsfindproceduremethodoverloads
 msgid "Find Procedure/Method Overloads"
-msgstr ""
+msgstr "Rasti procedūros ar metodo daugiareikšmiškumus"
 
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
-msgstr ""
+msgstr "Rasti „GDB“ dėklo pėdsako šaltinį"
 
 #: codystrconsts.crsflags
 msgid "Flags"
@@ -384,7 +385,7 @@ msgstr "Žin&ynas"
 
 #: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
 msgid "Hide abstract methods and methods of class interfaces"
-msgstr ""
+msgstr "Slėpti absatrakčius metodus ir klasių metodų sąsajas"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -413,7 +414,7 @@ msgstr "Pridėti prie skiltyje „Implementation“ naudojamų modulių, kai ide
 
 #: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
 msgid "If unchecked list also procedures with same name and incompatible parameter lists."
-msgstr ""
+msgstr "Jei nepažymėta, tai taip pat rodyti proceduras tokiu pat pavadinimu ir nesuderinamais parametrų sąrašais."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
@@ -421,11 +422,11 @@ msgstr "Neįmanoma priklausomybė"
 
 #: codystrconsts.crsin
 msgid "in \"%s\""
-msgstr ""
+msgstr "čia „%s“"
 
 #: codystrconsts.crsincompatible
 msgid "incompatible"
-msgstr ""
+msgstr "nesuderinamas"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -445,11 +446,11 @@ msgstr "Žymekliu įterpti failo turinį…"
 
 #: codystrconsts.crsinsertint64idyyyyddmmhhnnss
 msgid "Insert int64 ID YYYYDDMMhhnnss"
-msgstr ""
+msgstr "Įterpti „int64“ identifikatorių „YYYYDDMMhhnnss“"
 
 #: codystrconsts.crsjump
 msgid "Jump"
-msgstr ""
+msgstr "Šokti"
 
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
@@ -457,7 +458,7 @@ msgstr "&Šokti į"
 
 #: codystrconsts.crsjumpto2
 msgid "Jump to"
-msgstr ""
+msgstr "Šokti ties"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -469,7 +470,7 @@ msgstr "Saistyti failai"
 
 #: codystrconsts.crslinks
 msgid "Links"
-msgstr ""
+msgstr "Nuorodos"
 
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
@@ -505,7 +506,7 @@ msgstr "trūksta…"
 
 #: codystrconsts.crsname
 msgid "Name"
-msgstr ""
+msgstr "Pavadinimas"
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"
@@ -513,7 +514,7 @@ msgstr "nepažymėta"
 
 #: codystrconsts.crsnooverloadsfoundinprojectunits
 msgid "no overloads found in project units"
-msgstr ""
+msgstr "projekto moduliuose nerasta daugiareikšmiškumų"
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -533,19 +534,19 @@ msgstr "Iškarpinėje"
 
 #: codystrconsts.crsonlydescendantsof
 msgid "Only descendants of %s"
-msgstr ""
+msgstr "Tiktais „%s“ palikuonys"
 
 #: codystrconsts.crsonlymethods
 msgid "Only methods"
-msgstr ""
+msgstr "Tik metodai"
 
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
-msgstr ""
+msgstr "Tik ne metodai"
 
 #: codystrconsts.crsonlyprocedureswithcompatibleparameters
 msgid "Only procedures with compatible parameters"
-msgstr ""
+msgstr "Tik procedūros su suderinamais parametrais"
 
 #: codystrconsts.crsoptions
 msgid "Options"
@@ -589,11 +590,11 @@ msgstr "Paketas tuo pačiu pavadinimu"
 
 #: codystrconsts.crsparseerror
 msgid "Parse error"
-msgstr ""
+msgstr "Klaida analizuojant"
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
-msgstr ""
+msgstr "Įterpti eilutes iš „GDB“ dėklo pėdsako:"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
@@ -657,11 +658,12 @@ msgstr "Published"
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
 msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
-msgstr ""
+msgstr "Ar tikrai pašalinti paketą iš duomenų bazės?%sPastaba: tai nepakeis pirminį kodą ar kokią sąranką.%s%s„%s“"
 
 #: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+#, fuzzy,badformat
 msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
-msgstr ""
+msgstr "Ar tikrai pašalinti modulį iš duomenų bazės?sPastaba: tai nepakeis pirminį kodą ar kokią sąranką.%s%smodulis: „%s“"
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"
@@ -669,7 +671,7 @@ msgstr "Atnaujinti"
 
 #: codystrconsts.crsrelations
 msgid "Relations:"
-msgstr ""
+msgstr "Sąsajos:"
 
 #: codystrconsts.crsreport
 msgid "Report"
@@ -689,11 +691,11 @@ msgstr "Įrašyti į failą „%s“"
 
 #: codystrconsts.crsscanning
 msgid "Scanning ..."
-msgstr ""
+msgstr "Žvalgoma…"
 
 #: codystrconsts.crsscanningsunits
 msgid "Scanning: %s units ..."
-msgstr ""
+msgstr "Žvalgoma: %s moduliai…"
 
 #: codystrconsts.crssearching
 msgid "searching ..."
@@ -713,7 +715,7 @@ msgstr "Rodyti informaciją apie CodeTools mazgą…"
 
 #: codystrconsts.crsshowcodydict
 msgid "Show Cody Dictionary for \"%s\""
-msgstr ""
+msgstr "Rodyti „%s“ skirtą „Cody“ žodyną"
 
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
@@ -825,7 +827,7 @@ msgstr "Modulio bendrosios bibliotekos"
 
 #: codystrconsts.crsunitss
 msgid "Units: %s"
-msgstr ""
+msgstr "Moduliai: %s"
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"

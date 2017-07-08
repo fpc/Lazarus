@@ -1,0 +1,24 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 20:56+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: sparta_strconsts.scode
+msgctxt "sparta_strconsts.scode"
+msgid "Code"
+msgstr "Kodas"
+
+#: sparta_strconsts.sdesigner
+msgctxt "sparta_strconsts.sdesigner"
+msgid "Designer"
+msgstr "Komponuotojas"
+

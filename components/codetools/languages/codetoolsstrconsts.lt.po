@@ -1,11 +1,12 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-08-04 00:02+0300\n"
+"PO-Revision-Date: 2017-07-05 11:54+0200\n"
 "Project-Id-Version: codetoolsstrconsts\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 2.0\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -81,7 +82,7 @@ msgstr "tikėtasi atidarančiojo skliausto, tačiau aptikta %s"
 
 #: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
 msgid "cannot add a unit to the implementation, because only a unit has one"
-msgstr ""
+msgstr "realizacijon įterpti modulio neina, nes tik modulis turi tokią"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
@@ -100,14 +101,12 @@ msgid "class node without parent node"
 msgstr "klasės mazgas neturi tėvinio mazgo"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy,badformat
-#| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
-msgstr "klasė %s%s%s nerasta"
+msgstr "klasė „%s“ nerasta"
 
 #: codetoolsstrconsts.ctsclassnotfound2
 msgid "class not found \"%s\""
-msgstr ""
+msgstr "klasė nerasta „%s“"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -311,7 +310,7 @@ msgstr "tikėtasi „%s“"
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
 msgid "expected a method type, but found %s"
-msgstr ""
+msgstr "tikėtasi motodo tipo, tačiau aptikta „%s“"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
@@ -393,7 +392,7 @@ msgstr "TuriKlaida"
 
 #: codetoolsstrconsts.ctshelperisnotallowed
 msgid "Helper after %s is not allowed"
-msgstr ""
+msgstr "Po „%s“ einanti pagelbiklis yra neleistinas"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
@@ -452,9 +451,8 @@ msgid "If TargetOS<>win32 then"
 msgstr "Jei paskirties OS <> win32, tada"
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
-#, fuzzy,badformat
 msgid "illegal circle using unit: %s"
-msgstr "neleistinas naudojamų modulių žiedas"
+msgstr "neleistinas naudojamų modulių žiedas: %s"
 
 #: codetoolsstrconsts.ctsillegalqualifier
 msgid "illegal qualifier %s found"
@@ -505,16 +503,12 @@ msgid "interface section not found"
 msgstr "nerasta interfeiso sekcija"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy,badformat
-#| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
-msgstr "klaidingas klasės pavadinimas=%s%s%s"
+msgstr "klaidingas klasės pavadinimas = „%s“"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy,badformat
-#| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
-msgstr "klaidingas klasės pavadinimas %s%s%s"
+msgstr "klaidingas klasės pavadinimas „%s“"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
@@ -534,7 +528,7 @@ msgstr "Klaidingas operatorius „%s“<"
 
 #: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
 msgid "invalid position for insertion of statements"
-msgstr ""
+msgstr "nepriimtina pozicija, skirta sakiniams įterpti"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -545,16 +539,12 @@ msgid "invalid type"
 msgstr "klaidingas tipas"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy,badformat
-#| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
-msgstr "kintamojo pavadinimas %s%s%s yra klaidingas"
+msgstr "kintamojo pavadinimas „%s“ yra klaidingas"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy,badformat
-#| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
-msgstr "kintamojo tipas %s%s%s yra klaidingas"
+msgstr "kintamojo tipas „%s“ yra klaidingas"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -578,7 +568,7 @@ msgstr "Lazarus pirminis kodas"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
 msgid "method \"%s\" has no declaration"
-msgstr ""
+msgstr "metodas „%s“ neturi aprašo"
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"
@@ -618,7 +608,7 @@ msgstr "%s projektas"
 
 #: codetoolsstrconsts.ctsneededbymode
 msgid " (needed by mode \"%s\")"
-msgstr ""
+msgstr "(reikalingas režimui „%s“)"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
@@ -779,20 +769,16 @@ msgid "source is not unit"
 msgstr "šaltinis nėra modulis"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy
-#| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr "pirminis kodas nerastas: modulis %s"
+msgstr "pirminis kodas nerastas: modulis „%s“. Patikrinkite „FPC“ pirminio kodo aplanką."
 
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Pirminio kodo kelio inicializacija"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy
-#| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
-msgstr "%s tikėtasi, tačiau rasta %s"
+msgstr "„%s“ tikėtasi, tačiau rasta “%s“"
 
 #: codetoolsstrconsts.ctsstringconstant
 msgid "string constant"

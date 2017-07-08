@@ -1,0 +1,86 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 16:31+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: lremailexportfilter.saccount
+msgid "Account"
+msgstr "Paskyra"
+
+#: lremailexportfilter.sadress
+msgid "Adress"
+msgstr "Adresas"
+
+#: lremailexportfilter.sapplicationname
+msgid "Application name"
+msgstr "Programos pavadinimas"
+
+#: lremailexportfilter.sattachment
+msgid "Attachment"
+msgstr "Priedėlis"
+
+#: lremailexportfilter.sdirectsend
+msgid "Direct send"
+msgstr "Siųsti tiesiogiai"
+
+#: lremailexportfilter.semail
+msgid "Email"
+msgstr "E. paštas"
+
+#: lremailexportfilter.sformat
+msgid "Format"
+msgstr "Formatas"
+
+#: lremailexportfilter.sfromadress
+msgid "From adress"
+msgstr "Siųsta nuo"
+
+#: lremailexportfilter.sfromname
+msgid "From name"
+msgstr "Siuntėjo vardas"
+
+#: lremailexportfilter.shost
+msgid "Host"
+msgstr "Pagrindinis kompiuteris"
+
+#: lremailexportfilter.slogin
+msgid "Login"
+msgstr "Registracijos vardas"
+
+#: lremailexportfilter.smessage
+msgid "Message"
+msgstr "Pranešimas"
+
+#: lremailexportfilter.spassword
+msgid "Password"
+msgstr "Slaptažodis"
+
+#: lremailexportfilter.sport
+msgid "Port"
+msgstr "Prievadas"
+
+#: lremailexportfilter.ssendtoemail
+msgid "Send to email..."
+msgstr "Siųsti e. paštu…"
+
+#: lremailexportfilter.ssubject
+msgid "Subject"
+msgstr "Tema"
+
+#: lremailexportfilter.stext
+msgid "Text"
+msgstr "Tekstas"
+
+#: lremailexportfilter.susemailprogram
+msgid "Use mail program"
+msgstr "Naudoti pašto programą"
+

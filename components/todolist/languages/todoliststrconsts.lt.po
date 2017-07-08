@@ -1,19 +1,20 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-06 22:19+0300\n"
+"PO-Revision-Date: 2017-07-05 21:45+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
-msgstr ""
+msgstr "„CSV“ failai"
 
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
@@ -25,15 +26,15 @@ msgstr "Įterpti makrokomandą"
 
 #: todoliststrconsts.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Nuostatos"
 
 #: todoliststrconsts.lispackages
 msgid "Packages"
-msgstr ""
+msgstr "Paketai"
 
 #: todoliststrconsts.lispackageshint
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
-msgstr ""
+msgstr "Praplečia „%s“ ir „%s“ nuostatas naudojamų paketų moduliais"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -41,12 +42,12 @@ msgstr "Tekstas"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
-msgstr ""
+msgstr "Rengyklė"
 
 #: todoliststrconsts.lissourceeditorhint
 msgctxt "todoliststrconsts.lissourceeditorhint"
 msgid "Add units in source editor"
-msgstr ""
+msgstr "Pirminio kodo rengyklėje pridėti modulių"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
@@ -78,11 +79,11 @@ msgstr "ToDo sąrašas"
 
 #: todoliststrconsts.listodolisted
 msgid "Listed"
-msgstr ""
+msgstr "Išvardytus"
 
 #: todoliststrconsts.listodolistedhint
 msgid "Add units listed in project inspector/package editor"
-msgstr ""
+msgstr "Pridėti projekto inspektoriuje/paketų rengyklėje išvardytus modulius"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -106,11 +107,11 @@ msgstr "Prioritetas"
 
 #: todoliststrconsts.listodoused
 msgid "Used"
-msgstr ""
+msgstr "Naudojamus"
 
 #: todoliststrconsts.listodousedhint
 msgid "Add units used by main source file"
-msgstr ""
+msgstr "Pridėti pagrindiniame pirminio kodo faile naudojamus modulius"
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"

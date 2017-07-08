@@ -1,0 +1,143 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-07 22:52+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: glazresmain.cbtncancel
+msgid "Cancel"
+msgstr "Atšaukti"
+
+#: glazresmain.defilter
+msgctxt "glazresmain.defilter"
+msgid "Lazarus Resource Files|*.lrs|All Files|*"
+msgstr "„Lazarus“ ištekliaus failai|*.lrs|Visi failai|*"
+
+#: glazresmain.desaveresourcefileas
+msgctxt "glazresmain.desaveresourcefileas"
+msgid "Save resourcefile as"
+msgstr "Ištekliaus failą įrašyti kaip"
+
+#: glazresmain.errconverttotext
+msgid "ERROR: unable to convert Delphi form to text: \"%s\""
+msgstr "KLAIDA: napvyko „Delphi“ formą konvertuoti į tekstą: „%s“"
+
+#: glazresmain.errcreate
+msgid "ERROR: Cannot create \"%s\""
+msgstr "KLAIDA: nepavyko sukurti „%s“"
+
+#: glazresmain.errfileisresource
+msgid "ERROR: Cannot add resource file to itself (\"%s\")"
+msgstr "KLAIDA: neina ištekliaus failo įdėti į patį save („%s“)"
+
+#: glazresmain.errfilenotfound
+msgid "ERROR: File not found: \"%s\""
+msgstr "KLAIDA: failas nerastas: „%s“"
+
+#: glazresmain.errnoresourcename
+msgid "ERROR: No resourcename found for \"%s\""
+msgstr "KLAIDA: nerastas „%s“ skirtas ištekliaus pavadinimas"
+
+#: glazresmain.errread
+msgid "ERROR: Cannot read from \"%s\""
+msgstr "KLAIDA: nepavyko skaityti iš „%s“"
+
+#: glazresmain.msgcreatinglrs
+msgid "Creating \"%s\""
+msgstr "Kuriamas „%s“"
+
+#: glazresmain.msgprocessing
+msgid "Processing \"%s\""
+msgstr "Dorojamas „%s“"
+
+#: glazresmain.msgresourcenametype
+msgid " Resource name = \"%s\", Type = \"%s\""
+msgstr "Ištekliaus pavadinimas = „%s“, tipas = „%s“"
+
+#: glazresmain.msgsuccess
+msgid ""
+"Done.\n"
+"Number of resources added: %d.\n"
+msgstr ""
+"Baigta.\n"
+"Įdėta išteklių: %d\n"
+
+#: glazresmain.msgwrongext
+msgid "Filename does not have the required extension: fix it?"
+msgstr "Failo pavadinime nėra reikiamo plėtinio: tai sutvarkyti?"
+
+#: glazresmain.odopenexistingfile
+msgctxt "glazresmain.odopenexistingfile"
+msgid "Open existing file"
+msgstr "Atverti egzistuojanti failą"
+
+#: glazresmain.opdfilter
+msgctxt "glazresmain.opdfilter"
+msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
+msgstr "Paveikslai (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|„Portable Network Graphic“ (*.png)|*.png|„Pixmap“ (*.xpm)|*.xpm|„Bitmap“ (*.bmp)|*.bmp|Žymeklis (*.cur)|*.cur|Ikona (*.ico)|*.ico|„Mac OS X“ ikona (*.icns)|*.icns|„Joint Picture Expert Group“ (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|„Tagged Image File Format“ (*.tif;*.tiff)|*.tif;*.tiff|„Graphics Interchange Format“ (*.gif)|*.gif|„Portable PixMap“ (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animuotas „GIF“ (*.gif)|*.gif|„TGA“ paveikslas (*.tga)|*.tga|"
+
+#: glazresmain.opdfilterall
+msgid "All files"
+msgstr "Visi failai"
+
+#: glazresmain.opdopenexistingpicture
+msgctxt "glazresmain.opdopenexistingpicture"
+msgid "Open existing picture"
+msgstr "Atverti egzistuojantį paveikslą"
+
+#: tglazresform.addanybtn.hint
+msgid "Add (any kind of) files to the list"
+msgstr "Į sąrašą įdėti bet kokio tipo failą"
+
+#: tglazresform.addimgbtn.hint
+msgid "Add images to the list"
+msgstr "Į sąrašą įdėti paveikslų"
+
+#: tglazresform.caption
+msgid "LRS Builder"
+msgstr "„LRS“ daryklė"
+
+#: tglazresform.clearbtn.caption
+msgid "Clear"
+msgstr "Išvalyti"
+
+#: tglazresform.clearbtn.hint
+msgid "Cleare the entire list"
+msgstr "Išvalyti visą sąrašą"
+
+#: tglazresform.closebtn.hint
+msgid "Exit the program"
+msgstr "Baigti programos darbą"
+
+#: tglazresform.deletebtn.hint
+msgid "Delete selected files from the list"
+msgstr "Iš sąrašo pašalinti pažymėtus failus"
+
+#: tglazresform.fileslabel.caption
+msgid "Files to include"
+msgstr "Įtrauktini failai"
+
+#: tglazresform.lrslabel.caption
+msgid "Lazarus Resource Filename"
+msgstr "„Lazarus“ ištekliaus failo pavadinimas"
+
+#: tglazresform.messageslabel.caption
+msgid "Messages"
+msgstr "Pranešimai"
+
+#: tglazresform.startbtn.caption
+msgid "Create LRS"
+msgstr "Kurti „LRS“"
+
+#: tglazresform.startbtn.hint
+msgid "Create the output LRS file"
+msgstr "Kurti išvesties „LRS“ failą"
+

@@ -1,11 +1,12 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-08-06 22:39+0300\n"
+"PO-Revision-Date: 2017-07-05 14:30+0200\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -133,31 +134,31 @@ msgstr "Viršun"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Įdėti laukų"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "„DBGrid“ stulpelių rengyklė"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Šalinti visus"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
-msgstr ""
+msgstr "Gauti antraščių"
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Bus pašalinti visi stulpeliai. Ar tęsti?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
-msgstr ""
+msgstr "Duomenų rinkinyje bus pakeistos visos antraštės. Tęsti?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
 msgid "Unable to retrieve fields definition from dataset."
-msgstr ""
+msgstr "Iš duomeų rinkinio nepavyko gauti laukų apibrėžčių."
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -261,7 +262,7 @@ msgstr "Pridėti"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
-msgstr ""
+msgstr "Rasti ir keisti"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
@@ -293,7 +294,7 @@ msgstr "Keisti vertę"
 
 #: objinspstrconsts.lisunabletofindparserfortool
 msgid "Unable to find parser for tool \"%s\""
-msgstr ""
+msgstr "Įrankiui „%s“ neina rasti nalizatoriaus"
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -365,7 +366,6 @@ msgid "ActionList Editor"
 msgstr "ActionList rengyklė"
 
 #: objinspstrconsts.oisadd
-#, fuzzy
 msgctxt "objinspstrconsts.oisadd"
 msgid "Add"
 msgstr "Pridėti"
@@ -383,7 +383,6 @@ msgid "Add fields from FieldDefs"
 msgstr "Laukų pridėti iš FieldDefs"
 
 #: objinspstrconsts.oisaddpage
-#, fuzzy
 msgctxt "objinspstrconsts.oisaddpage"
 msgid "Add Page"
 msgstr "Pridėti lapą"
@@ -406,11 +405,11 @@ msgstr "Loginis tipas"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "Ko&mponentai"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Savybės"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"
@@ -431,11 +430,11 @@ msgstr "Pašalinti?"
 
 #: objinspstrconsts.oischangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Keisti klasę…"
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "Keisti tėvą"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -458,10 +457,8 @@ msgid "Clear picture"
 msgstr "Išvalyti paveikslą"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy,badformat
-#| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Komponentės vardas %s%s%s nėra teisingas identifikatorius"
+msgstr "Komponentės vardas „%s“ nėra teisingas identifikatorius"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
@@ -490,11 +487,11 @@ msgstr "Sukurti naują laukelį ir jį įdėti į dabartinę poziciją"
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
-msgstr ""
+msgstr "Dabartinis tėvas"
 
 #: objinspstrconsts.oiscurrentparents
 msgid "Current parents"
-msgstr ""
+msgstr "Dabartiniai tėvai"
 
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
@@ -512,14 +509,12 @@ msgid "&Delete"
 msgstr "Paša&linti"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy,badformat
-#| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
-msgstr "Pašalinti elementą %s%s%s?"
+msgstr "Pašalinti elementą „%s“?"
 
 #: objinspstrconsts.oisdeletepagequestion
 msgid "Do you want to delete the page?"
-msgstr ""
+msgstr "Tikrai šalinti lapą?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -546,10 +541,8 @@ msgid "Error loading image"
 msgstr "Klaida įkeliant paveikslą"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy,badformat
-#| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
-msgstr "Įkeliant paveikslą įvyko klaida %s%s%s:%s%s"
+msgstr "Įkeliant paveikslą įvyko klaida „%s“:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
@@ -593,7 +586,7 @@ msgstr "Įvedimo kaukė:"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
-msgstr ""
+msgstr "Įterpti lapo pavadinimą"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -612,10 +605,8 @@ msgid "Invalid property value"
 msgstr "Klaidinga savybės reikšmė"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy,badformat
-#| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
-msgstr "%s%s%s nėra tinkamas pavadinimas metodui."
+msgstr "„%s“ nėra tinkamas pavadinimas metodui."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -647,7 +638,7 @@ msgstr "Metodas"
 
 #: objinspstrconsts.oismixed
 msgid "(Mixed)"
-msgstr ""
+msgstr "(mišrus)"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
@@ -716,11 +707,11 @@ msgstr "Perkelti į priešakį"
 
 #: objinspstrconsts.oispages
 msgid "Pages"
-msgstr ""
+msgstr "Lapai"
 
 #: objinspstrconsts.oispageseditordialog
 msgid "Pages Editor"
-msgstr ""
+msgstr "Lapų rengyklė"
 
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
@@ -741,7 +732,7 @@ msgstr "Įrašyti paveikslą taip"
 
 #: objinspstrconsts.oispressakey
 msgid "Press a key ..."
-msgstr ""
+msgstr "Spustelkite klavišą…"
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -761,11 +752,11 @@ msgstr "Išmesti iš mėgstamiausiųjų sąrašo"
 
 #: objinspstrconsts.oisrename
 msgid "Rename"
-msgstr ""
+msgstr "Pervardyti"
 
 #: objinspstrconsts.oisrenamepage
 msgid "Rename Page"
-msgstr ""
+msgstr "Pervardyti lapą"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
@@ -773,7 +764,7 @@ msgstr "Apribota"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
-msgstr ""
+msgstr "Grąžinti į paveldėtą"
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
@@ -805,15 +796,15 @@ msgstr "Pažymėti visus laukelius"
 
 #: objinspstrconsts.oisselectedcontrol
 msgid "Selected control"
-msgstr ""
+msgstr "Pažymėtas valdiklis"
 
 #: objinspstrconsts.oisselectedcontrols
 msgid "Selected controls"
-msgstr ""
+msgstr "Pažymėti valdikliai"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr ""
+msgstr "&Pažymėtos savybės"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -825,19 +816,19 @@ msgstr "Aibė"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "Nustatyti „MaxHeight=%d“, „MaxWidth=%d“"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "Dabartinį dydi nustatyti kaip maksimalias ribas"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "Nustatyti „MinHeight=%d“, „MinWidth=%d“"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "Dabartinį dydi nustatyti kaip minimalias ribas"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
@@ -845,11 +836,11 @@ msgstr "Keisti į numatytą: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "Savybės vertę atstatyti į numatytą"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
-msgstr ""
+msgstr "Rodyti klases"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -861,11 +852,11 @@ msgstr "Rodyti suflerius"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Rodyti informacinį lauką"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "Rodyti būsenos juostą"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
@@ -1179,28 +1170,20 @@ msgid "Test Input"
 msgstr "Testas"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy,badformat
-#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "%s%s%s identifikatorius nėra metodas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
+msgstr "„%s“ identifikatorius nėra metodas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy,badformat
-#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "%s%s%s metodas nėra suderinamas su šiuo įvykiu (%s).%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
+msgstr "„%s“ metodas nėra suderinamas su šiuo įvykiu (%s).%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy,badformat
-#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "%s%s%s metodas nėra paskelbtas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
+msgstr "„%s“ metodas nėra paskelbtas.%sPaspaudus „Atsisakyti“bus grąžinta,%so paspaudus „Ignoruoti“ — bus tęsiama."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy,badformat
-#| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr "Neina pakeisti valdiklio tėvą %s%s%s nauju tėvu %s%s%s.%s%s"
+msgstr "Neina pakeisti valdiklio tėvą „%s“ nauju tėvu „%s“.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1378,7 +1361,7 @@ msgstr "Pridėti paveikslų"
 
 #: objinspstrconsts.sccsiledtopendialogn
 msgid "New Image"
-msgstr ""
+msgstr "Naujas paveikslas"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1386,7 +1369,7 @@ msgstr "Permatoma spalva:"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
-msgstr ""
+msgstr "Pa&keisti…"
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1610,7 +1593,7 @@ msgstr "Pridėti vientisą"
 
 #: objinspstrconsts.s_confirm_clear
 msgid "Are you sure to clear image list?"
-msgstr ""
+msgstr "Ar tikrai išvalyti paveikslų sąrašą?"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

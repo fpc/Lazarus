@@ -1,0 +1,54 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 18:02+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: emsstrings.emsactive
+msgid "Scripting active."
+msgstr "Vyksta scenarijaus kūrimas."
+
+#: emsstrings.emsbtntestagain
+msgid "Test again"
+msgstr "Testuoti dar kartą"
+
+#: emsstrings.emseditormacrotitle
+msgid "Editor Macro Script"
+msgstr "Makrokomandos scenarijaus rengyklė"
+
+#: emsstrings.emsnotactive
+msgid "Scripting not active. Selftest failed."
+msgstr "Scenarijaus rengimas nevyksta. Savasis testas nepavyko."
+
+#: emsstrings.emsnotsupported
+msgid "Scripting not active. Not supported on this platform or CPU."
+msgstr "Scenarijaus rengimas nevyksta. Ši platforma ar procesorius nėra palaikomi."
+
+#: emsstrings.emspending
+msgid "Scripting not active. Selftest will run next time the IDE is started."
+msgstr "Scenarijaus rengimas nevyksta. Savasis testas bus paleistas kai IKA bus startuotas kitą kart."
+
+#: emsstrings.emsselftesterrcaption
+msgid "Error in EditorMacroScript"
+msgstr "„EditorMacroScript“ padarė klaidą"
+
+#: emsstrings.emsselftestfailed
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
+msgstr "Paketas „EditorMacroScript“ („pascalscript“ makrokomandos) aptiko problemą todėl buvo išjungtas.%0:sPaketui nepavyko savasis testas ir apie tai jis pranešė:%0:s„%1:s“"
+
+#: emsstrings.emsselftestfailedlasttime
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
+msgstr "Paketas „EditorMacroScript“ („pascalscript“ makrokomandos) aptiko problemą todėl buvo išjungtas.%0:sAnkstesnio IKA starto metu paketo savasis testas nebuvo baigtas."
+
+#: emsstrings.emsstatustitle
+msgid "Status"
+msgstr "Būsena"
+

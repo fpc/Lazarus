@@ -1,15 +1,16 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-06 18:53+0300\n"
+"PO-Revision-Date: 2017-07-05 17:51+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
@@ -33,23 +34,23 @@ msgstr "%s esantis aplanko komponentas nėra aplankas"
 
 #: lazutilsstrconsts.lrsboolean
 msgid "boolean"
-msgstr ""
+msgstr "loginis"
 
 #: lazutilsstrconsts.lrscannotexecute
 msgid "can not execute %s"
-msgstr ""
+msgstr "nepavyksta paleisti „%s“"
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
-msgstr ""
+msgstr "Netinkamas funkcijos argumentų kiekis"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
 msgid "Unknown function: \"%s\""
-msgstr ""
+msgstr "Nežinoma funkcija: „%s“"
 
 #: lazutilsstrconsts.lrsevalunknownvariable
 msgid "Unknown variable: \"%s\""
-msgstr ""
+msgstr "Nežinomas kintamasis: „%s“"
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
@@ -81,14 +82,15 @@ msgid "%s is not executable"
 msgstr "%s nėra vykdomasis failas"
 
 #: lazutilsstrconsts.lrslistindexexceedsbounds
+#, fuzzy,badformat
 msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
-msgstr ""
+msgstr "Sąrašo indeksas peržengia ribas (%s)"
 
 #: lazutilsstrconsts.lrslistmustbeempty
 msgctxt "lazutilsstrconsts.lrslistmustbeempty"
 msgid "List must be empty"
-msgstr ""
+msgstr "Sąrašas turi būti tuščias"
 
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
@@ -97,47 +99,47 @@ msgstr "  pakeista "
 
 #: lazutilsstrconsts.lrsnodeset
 msgid "node set"
-msgstr ""
+msgstr "mazgas nustatytas"
 
 #: lazutilsstrconsts.lrsnumber
 msgid "number"
-msgstr ""
+msgstr "skaičius"
 
 #: lazutilsstrconsts.lrsparserbadaxisname
 msgid "Invalid axis name"
-msgstr ""
+msgstr "Netinkamas ašies pavadinimas"
 
 #: lazutilsstrconsts.lrsparserbadnodetype
 msgid "Invalid node type"
-msgstr ""
+msgstr "Netinkamas mazgo tipas"
 
 #: lazutilsstrconsts.lrsparserexpectedleftbracket
 msgid "Expected \"(\""
-msgstr ""
+msgstr "Tikėtasi „(“"
 
 #: lazutilsstrconsts.lrsparserexpectedrightbracket
 msgid "Expected \")\""
-msgstr ""
+msgstr "Tikėtasi „)“"
 
 #: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
 msgid "Expected \"]\" after predicate"
-msgstr ""
+msgstr "Tikėtasi „]“ po predikato"
 
 #: lazutilsstrconsts.lrsparsergarbageafterexpression
 msgid "Unrecognized input after expression"
-msgstr ""
+msgstr "Po išraiškos esanti įvestis nėra pažįstama"
 
 #: lazutilsstrconsts.lrsparserinvalidnodetest
 msgid "Invalid node test (syntax error)"
-msgstr ""
+msgstr "Klaidingas mazgo testas (sintaksės klaida)"
 
 #: lazutilsstrconsts.lrsparserinvalidprimexpr
 msgid "Invalid primary expression"
-msgstr ""
+msgstr "Klaidinga pirminė išraiška"
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
 msgid "program file not found %s"
-msgstr ""
+msgstr "nerastas programos failas %s"
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 msgid "read access denied for %s"
@@ -145,19 +147,19 @@ msgstr "iš %s skaityti draudžiama"
 
 #: lazutilsstrconsts.lrsscannerexpectedvarname
 msgid "Expected variable name after \"$\""
-msgstr ""
+msgstr "Po „$“ tikimasi kintamojo pavadinimo"
 
 #: lazutilsstrconsts.lrsscannerinvalidchar
 msgid "Invalid character"
-msgstr ""
+msgstr "Klaidingas simbolis"
 
 #: lazutilsstrconsts.lrsscannermalformedqname
 msgid "Expected \"*\" or local part after colon"
-msgstr ""
+msgstr "Tikėtasi „*“ arba vietinės dalies po dvitaškio"
 
 #: lazutilsstrconsts.lrsscannerunclosedstring
 msgid "String literal was not closed"
-msgstr ""
+msgstr "Teksto literalė nėra uždara"
 
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
@@ -166,7 +168,7 @@ msgstr "  dydis "
 
 #: lazutilsstrconsts.lrsstring
 msgid "string"
-msgstr ""
+msgstr "tekstas"
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
@@ -174,5 +176,5 @@ msgstr "Nepavyko sukurti aplanko „%s“ konfigūracijai"
 
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
-msgstr ""
+msgstr "„%s“ konvertuoti į „%s“ neįmanoma"
 

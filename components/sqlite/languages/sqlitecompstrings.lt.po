@@ -1,0 +1,82 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 21:06+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: sqlitecompstrings.sadd
+msgid "Add"
+msgstr "Pridėti"
+
+#: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
+msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
+msgstr "Lenetelė pavadinimu „%s“ jau egzistuoja. Ar tikrai norite pakeisti šią lentelę?%sVisi duomenys bus prarasti."
+
+#: sqlitecompstrings.sclose
+msgid "Close"
+msgstr "Užverti"
+
+#: sqlitecompstrings.screateedittable
+msgid "Create/Edit Table"
+msgstr "Kurti/keisti lentelę"
+
+#: sqlitecompstrings.screatetable
+msgid "Create Table"
+msgstr "Kurti lentelę"
+
+#: sqlitecompstrings.sdelete
+msgid "Delete"
+msgstr "Naikinti"
+
+#: sqlitecompstrings.sfieldname
+msgid "Field Name"
+msgstr "Lauko pavadinimas"
+
+#: sqlitecompstrings.sfieldtype
+msgid "Field Type"
+msgstr "Lauko tipas"
+
+#: sqlitecompstrings.sfilenamenotsetitsnotpossibletocreateeditatable
+msgid "File name not set: it's not possible to create/edit a table."
+msgstr "Nenurodytas lauko pavadinimas, tad neįmanoma sukurti ar keisti lentelės."
+
+#: sqlitecompstrings.sfilepath
+msgid "File Path: %s"
+msgstr "Failo kelias: %s"
+
+#: sqlitecompstrings.sitsnotallowedfieldswiththesamename
+msgid "Fields with identical names are not allowed."
+msgstr "Laukai tais pačiais pavadinimais neleistini."
+
+#: sqlitecompstrings.sitwasnotpossibletocreatethetable
+msgid "It was not possible to create the table."
+msgstr "Neįmanoma sukurti lentelės."
+
+#: sqlitecompstrings.snofieldsaddedtablewillnotbecreated
+msgid "No fields added. Table will not be created."
+msgstr "Nėra sukurta laukų, tad lenetė nebus sukurta."
+
+#: sqlitecompstrings.stablecreatedsuccessfully
+msgid "Table created successfully."
+msgstr "Lentelė sukurta sėkmingai."
+
+#: sqlitecompstrings.stableeditorfieldtypenotrecognized
+msgid "Field type not recognized."
+msgstr "Nepažystamas lauko tipas."
+
+#: sqlitecompstrings.stablename
+msgid "Table Name: %s"
+msgstr "Lentelės pavadinimas: %s"
+
+#: sqlitecompstrings.stablenamenotsetitsnotpossibletocreateeditatable
+msgid "Table name not set: it's not possible to create/edit a table."
+msgstr "Lentelei nepriskirtas pavadinimas, tad lentelės sukurti ar keisti neįmanoma."
+

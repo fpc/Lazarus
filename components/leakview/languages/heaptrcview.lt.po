@@ -1,15 +1,16 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-06 20:46+0300\n"
+"PO-Revision-Date: 2017-07-05 17:53+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: heaptrcview.rsdtimes
 msgid " (%d times)"
@@ -20,10 +21,8 @@ msgid "Error while parsing trace file"
 msgstr "Analizuojant pėdsako failą įvyko klaida"
 
 #: heaptrcview.rsleakview
-#, fuzzy
-#| msgid "Find source lines for leak/stack-traces"
 msgid "Leaks and Traces"
-msgstr "Nuotėkio rodymas"
+msgstr "Nuotėkiai ir pėdsakai"
 
 #: heaptrcview.sbtnclipbrd
 msgid "Paste Clipboard"
@@ -46,20 +45,16 @@ msgid "Stay on top"
 msgstr "Laikyti viršuje"
 
 #: heaptrcview.sfrmcap
-#, fuzzy
-#| msgid "LeakView - HeapTrc output viewer"
 msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
-msgstr "LeakView - HeapTrc išvesties žiūryklė"
+msgstr "Nuotėkiai ir pėdsakai - „HeapTrc“ ir „GDB“ dėklo pėdsako išvesties žiūryklė"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
-#, fuzzy
-#| msgid "Select File with debug info"
 msgid "Select file with debug info"
-msgstr "Parinkite failą su derinimo informacija"
+msgstr "Parinkite failą, kuriame yra derinimo informacija"
 
 #: heaptrcview.sfrmselecttrcfile
 msgid "Select file with trace log"
-msgstr ""
+msgstr "Parinkite failą, kuriame yra pėdsako žurnalas"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"
@@ -90,8 +85,6 @@ msgid "Leaking Mem Size: %d"
 msgstr "Nutekėjusios atminties dydis: %d"
 
 #: heaptrcview.strtotalmemalloc
-#, fuzzy
-#| msgid "Total Mem alloced: %d"
 msgid "Total Mem allocated: %d"
 msgstr "Viso paskirta atminties: %d"
 

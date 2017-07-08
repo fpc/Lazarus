@@ -1,11 +1,12 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-08-06 22:12+0300\n"
+"PO-Revision-Date: 2017-07-05 21:13+0200\n"
 "Project-Id-Version: synedit\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -13,7 +14,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
-msgstr ""
+msgstr "Komentaras"
 
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
@@ -101,7 +102,7 @@ msgstr "Direktyva"
 
 #: syneditstrconst.syns_attrdoctype
 msgid "DOCTYPE"
-msgstr ""
+msgstr "DOCTYPE"
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
@@ -229,7 +230,7 @@ msgstr "Matematikos veiksena"
 
 #: syneditstrconst.syns_attrmeasurementunitvalue
 msgid "Measurement unit"
-msgstr ""
+msgstr "Matavimo vienetas"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
@@ -345,7 +346,7 @@ msgstr "Sekcija"
 
 #: syneditstrconst.syns_attrselectorvalue
 msgid "Selector"
-msgstr ""
+msgstr "Žymeklis"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
@@ -485,11 +486,11 @@ msgstr "Jokio veiksmo"
 
 #: syneditstrconst.syns_emcoverviewguttergotomark
 msgid "Jump to Mark (Overview Gutter)"
-msgstr ""
+msgstr "Šokti prie žymės (apžvalgos paraštė)"
 
 #: syneditstrconst.syns_emcoverviewgutterscrollto
 msgid "Scroll (Overview Gutter)"
-msgstr ""
+msgstr "Slinkti (apžvalgos paraštė)"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
@@ -497,11 +498,11 @@ msgstr "Spartusis atrankos įdėjimas"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
-msgstr ""
+msgstr "Pažymėtose eilutėse žymeklius padėti ties „EOL“"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr ""
+msgstr "Įgalinti papildomą žymeklį"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
@@ -533,7 +534,7 @@ msgstr "Vilkti atranką"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
 msgid "\"Caret on up if not dragged\",yes,no"
-msgstr ""
+msgstr "„Žymeklis viršun jei nevelkamas“,taip,ne"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
@@ -541,7 +542,7 @@ msgstr "Eilutės žymėjimas"
 
 #: syneditstrconst.syns_emcstartlineselectionsnoneempty
 msgid "Line Selection (select immediate)"
-msgstr ""
+msgstr "Eilutės žymėjimas (tiesiginis žymėjimas)"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
@@ -549,15 +550,15 @@ msgstr "Žymėjimas"
 
 #: syneditstrconst.syns_emcstartselectlines
 msgid "Selection (lines)"
-msgstr ""
+msgstr "Žymėjimas (eilutės)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
-msgstr ""
+msgstr "Žymėjimas (leksemos)"
 
 #: syneditstrconst.syns_emcstartselectwords
 msgid "Selection (words)"
-msgstr ""
+msgstr "Žymėjimas (žodžiai)"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"

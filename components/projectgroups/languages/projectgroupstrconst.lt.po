@@ -1,0 +1,462 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 20:55+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: projectgroupstrconst.lisabort
+msgid "Abort"
+msgstr "Nutraukti"
+
+#: projectgroupstrconst.lisabortloadingprojectgroup
+msgid "Abort loading project group"
+msgstr "Nutraukti projekto grupės įkrovą"
+
+#: projectgroupstrconst.lisactivetarget
+msgid "Target: %s"
+msgstr "Tikslas: %s"
+
+#: projectgroupstrconst.lisallfiles
+msgid "All files"
+msgstr "Visi failai"
+
+#: projectgroupstrconst.lisbepatient
+msgid "Be patient!"
+msgstr "Kantrybės!"
+
+#: projectgroupstrconst.lisbuildmode
+msgid ", build mode \"%s\""
+msgstr ", darymo rėžimas „%s“"
+
+#: projectgroupstrconst.lisbuildmode2
+msgid "Build Mode \"%s\""
+msgstr "Darymo rėžimas „%s“"
+
+#: projectgroupstrconst.lisbuildmodenotfound
+msgid "Build mode not found"
+msgstr "Nerastas darymo rėžimas"
+
+#: projectgroupstrconst.lisbuildmodenotfound2
+msgid "Build mode \"%s\" not found."
+msgstr "Nerastas darymo rėžimas „%s“."
+
+#: projectgroupstrconst.liscompilepackage
+msgid "Compile Package %s"
+msgstr "Kompiliuoti paketą „%s“"
+
+#: projectgroupstrconst.liscompileproject
+msgid "Compile Project %s"
+msgstr "Kompiliuoti paketą „%s“"
+
+#: projectgroupstrconst.lisdiscard
+msgid "Discard changes"
+msgstr "Atsisakyti pakeitimų"
+
+#: projectgroupstrconst.liserrnosuchfile
+msgid ""
+"Could not find target file\n"
+"\"%s\"\n"
+"What do you want to do?\n"
+msgstr ""
+"Tikslo failas nerastas\n"
+"„%s“\n"
+"Ką daryti?\n"
+
+#: projectgroupstrconst.liserronlyprojectgroupallowed
+msgid "Only target type \"projectgroup\" is allowed for root project group."
+msgstr "Šakninėje projekto gruėje galimas „projectgroup“ šaltnio tipas."
+
+#: projectgroupstrconst.liserrorreadingprojectgroupfile
+msgid "Error reading project group file \"%s\"%s%s"
+msgstr "Skaitant projekto grupės failą „%s“ įvyko klaida%s%s"
+
+#: projectgroupstrconst.liserrtargetdoesnotexist
+msgid "Target does not exist. Remove?"
+msgstr "Tikslas neegzistuoja. Pašalinti?"
+
+#: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
+msgid "Invalid cycle. A project group cannot have itself as target."
+msgstr "Klaidingas ciklas. Projekto grupės tikslas negali būti ji pati."
+
+#: projectgroupstrconst.lisinvalidfile
+msgid "Invalid File"
+msgstr "Klaidingas failas"
+
+#: projectgroupstrconst.lisinvalidxmlfilename
+msgid "Invalid XML file name \"%s\"."
+msgstr "Klaidingas „XML“ failo pavadinimas „%s“."
+
+#: projectgroupstrconst.lislazaruspackageslpk
+msgid "Lazarus packages (*.lpk)"
+msgstr "„Lazarus“ paketas (lpk)"
+
+#: projectgroupstrconst.lislazarusprojectgroupslpg
+msgid "Lazarus project groups (*.lpg)"
+msgstr "„Lazarus“ projekto grupė (*.lpg)"
+
+#: projectgroupstrconst.lislazarusprojectslpi
+msgid "Lazarus projects (*.lpi)"
+msgstr "„Lazarus“ projektas (.lpk)"
+
+#: projectgroupstrconst.lislazbuildnotfound
+msgid "lazbuild not found"
+msgstr "„lazbuild“ nerastas"
+
+#: projectgroupstrconst.lismore
+msgid "More"
+msgstr "Daugiau"
+
+#: projectgroupstrconst.lisneedsave
+msgid "Need save"
+msgstr "Būtina įrašyti"
+
+#: projectgroupstrconst.lisnewprojectgroup
+msgid "New project group"
+msgstr "Nauja projekto grupė"
+
+#: projectgroupstrconst.lisnewprojectgroupmenuc
+msgid "New Project group ..."
+msgstr "Nauja projekto grupė…"
+
+#: projectgroupstrconst.lisnodebuildmodes
+msgid "Build Modes"
+msgstr "Darymo režimai"
+
+#: projectgroupstrconst.lisnodedependencies
+msgid "Dependencies"
+msgstr "Priklausomybės"
+
+#: projectgroupstrconst.lisnodefiles
+msgid "Files"
+msgstr "Failai"
+
+#: projectgroupstrconst.lisnoderemoveddependencies
+msgid "Removed dependencies"
+msgstr "Pašalintos priklausomybės"
+
+#: projectgroupstrconst.lisnoderemovedfiles
+msgid "Removed files"
+msgstr "Pašalinti failai"
+
+#: projectgroupstrconst.lisnoderemovedtargets
+msgid "Removed targets"
+msgstr "Pašalinti tikslai"
+
+#: projectgroupstrconst.lisnodetargets
+msgid "Targets"
+msgstr "Tikslai"
+
+#: projectgroupstrconst.lisopenprojectgroup
+msgid "Open Project Group ..."
+msgstr "Atverti projekto grupę…"
+
+#: projectgroupstrconst.lisopenrecentprojectgroup
+msgid "Open Recent Project Group"
+msgstr "Atverti paskiausiai naudotą projekto grupę"
+
+#: projectgroupstrconst.lisotherproject
+msgid "Other Project"
+msgstr "Kitas projektas"
+
+#: projectgroupstrconst.lispackage
+msgid "Package"
+msgstr "Paketas"
+
+#: projectgroupstrconst.lispackagenotfound
+msgid "Package not found"
+msgstr "Paketas nerastas"
+
+#: projectgroupstrconst.lispackagenotfound2
+msgid "Package \"%s\" not found."
+msgstr "Paketas „%s“ nerastas."
+
+#: projectgroupstrconst.lispascalfilepasppp
+msgid "Pascal files (*.pas;*.pp;*.p)"
+msgstr "Paskalio failai (*.pas;*.pp;*.p)"
+
+#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
+msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
+msgid "Please save your changes before reloading the project group."
+msgstr "Prieš iš naujo įkeliant projekto grupę reikia įrašyti pakeitimus."
+
+#: projectgroupstrconst.lisprojectgroup
+msgid "Project group %s"
+msgstr "Projekto grupė „%s“"
+
+#: projectgroupstrconst.lisprojectgroup2
+msgid "Project Group: %s"
+msgstr "Projekto grupė: %s"
+
+#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+msgid "Add"
+msgstr "Pridėti"
+
+#: projectgroupstrconst.lisprojectgroupaddexistinghint
+msgid "Add existing target to project group"
+msgstr "Prie projekto grupės pridėti egzistuojantį tikslą"
+
+#: projectgroupstrconst.lisprojectgroupaddnewcaption
+msgid "New"
+msgstr "Naujas"
+
+#: projectgroupstrconst.lisprojectgroupaddnewhint
+msgid "Add new target to project group"
+msgstr "Prie projekto grupės pridėti naują tikslą"
+
+#: projectgroupstrconst.lisprojectgroupdeletecaption
+msgid "Remove"
+msgstr "Šalinti"
+
+#: projectgroupstrconst.lisprojectgroupdeletehint
+msgid "Remove target from project group"
+msgstr "Iš projekto grupės pašalinti tikslą"
+
+#: projectgroupstrconst.lisprojectgroupmodified
+msgid "Project group modified"
+msgstr "Projekto grupė pakeista"
+
+#: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+msgid ""
+"Project group \"%s\" is modified.\n"
+"What do you want to do?\n"
+msgstr ""
+"Projekto grupė „%s“ yra pakeista.\n"
+"Ką daryti?\n"
+
+#: projectgroupstrconst.lisprojectgroupreload
+msgid "Reload"
+msgstr "Įkelti iš naujo"
+
+#: projectgroupstrconst.lisprojectgroups
+msgid "Project Groups"
+msgstr "Projekto grupės"
+
+#: projectgroupstrconst.lisprojectgroupsaveascaption
+msgid "Save As ..."
+msgstr "Įrašyti kitu pavadinimu…"
+
+#: projectgroupstrconst.lisprojectgroupsaveashint
+msgid "Save project group with a new name"
+msgstr "Projekto grupę įrašyti į failą kitu pavadinimu"
+
+#: projectgroupstrconst.lisprojectgroupsavecaption
+msgid "Save"
+msgstr "Įrašyti"
+
+#: projectgroupstrconst.lisprojectgroupsavehint
+msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
+msgid "Save project group"
+msgstr "Įrašyti projekto grupę"
+
+#: projectgroupstrconst.lisreaderror
+msgid "Read error"
+msgstr "Klaida skaitant"
+
+#: projectgroupstrconst.lisremovetarget
+msgctxt "projectgroupstrconst.lisremovetarget"
+msgid "Remove target"
+msgstr "Šalinti tikslą"
+
+#: projectgroupstrconst.lissavepg
+msgctxt "projectgroupstrconst.lissavepg"
+msgid "Save project group"
+msgstr "Įrašyti projekto grupę"
+
+#: projectgroupstrconst.lissaveprojectgroup
+msgctxt "projectgroupstrconst.lissaveprojectgroup"
+msgid "Save Project Group"
+msgstr "Įrašyti projekto grupę"
+
+#: projectgroupstrconst.lissaveprojectgroupas
+msgid "Save Project Group As ..."
+msgstr "Įrašyti projekto grupę kitu pavadinimu…"
+
+#: projectgroupstrconst.lisskipalltargets
+msgid "Remove all invalid targets"
+msgstr "Šalinti visus klaidingus tikslus"
+
+#: projectgroupstrconst.listargetactivate
+msgid "Activate target"
+msgstr "Aktyvuoti tikslą"
+
+#: projectgroupstrconst.listargetactivatecaption
+msgid "Activate"
+msgstr "Aktyvuoti"
+
+#: projectgroupstrconst.listargetactivatehint
+msgid "Activate selected target"
+msgstr "Aktyvuoti pažymėtą tikslą"
+
+#: projectgroupstrconst.listargetadd
+msgid "Add target"
+msgstr "Pridėti tikslą"
+
+#: projectgroupstrconst.listargetcompile
+msgctxt "projectgroupstrconst.listargetcompile"
+msgid "Compile"
+msgstr "Kompiliuoti"
+
+#: projectgroupstrconst.listargetcompilecaption
+msgctxt "projectgroupstrconst.listargetcompilecaption"
+msgid "Compile"
+msgstr "Kompiliuoti"
+
+#: projectgroupstrconst.listargetcompileclean
+msgctxt "projectgroupstrconst.listargetcompileclean"
+msgid "Compile clean"
+msgstr "Valyti ir kompiliuoti"
+
+#: projectgroupstrconst.listargetcompilecleancaption
+msgctxt "projectgroupstrconst.listargetcompilecleancaption"
+msgid "Compile clean"
+msgstr "Valyti ir kompiliuoti"
+
+#: projectgroupstrconst.listargetcompilecleanhint
+msgid "Compile selected target clean"
+msgstr "Valyti pažymėta tikslą ir kompiliuoti"
+
+#: projectgroupstrconst.listargetcompilefromhere
+msgid "Compile from here"
+msgstr "Kompiliuoti nuo čia"
+
+#: projectgroupstrconst.listargetcompilehint
+msgid "Compile selected target"
+msgstr "Kompiliuoti pažymėtą tikslą"
+
+#: projectgroupstrconst.listargetcopyfilename
+msgid "Copy file name"
+msgstr "Kopijuoti failo pavadinimą"
+
+#: projectgroupstrconst.listargetcount
+msgid "%d targets"
+msgstr "Tikslų: %d"
+
+#: projectgroupstrconst.listargetearlier
+msgid "Compile target earlier"
+msgstr "Tikslą kompiliuoti anksčiau"
+
+#: projectgroupstrconst.listargetearliercaption
+msgid "Earlier"
+msgstr "Anksčiau"
+
+#: projectgroupstrconst.listargetearlierhint
+msgid "Build target earlier"
+msgstr "Tikslą daryti anksčiau"
+
+#: projectgroupstrconst.listargetinstall
+msgctxt "projectgroupstrconst.listargetinstall"
+msgid "Install"
+msgstr "Diegti"
+
+#: projectgroupstrconst.listargetinstallcaption
+msgctxt "projectgroupstrconst.listargetinstallcaption"
+msgid "Install"
+msgstr "Diegti"
+
+#: projectgroupstrconst.listargetinstallhint
+msgid "Install selected target"
+msgstr "Diegti pažymėtą tikslą"
+
+#: projectgroupstrconst.listargetlater
+msgid "Compile target later"
+msgstr "Tikslą kompiliuoti vėliau"
+
+#: projectgroupstrconst.listargetlatercaption
+msgid "Later"
+msgstr "Vėliau"
+
+#: projectgroupstrconst.listargetlaterhint
+msgid "Build target later"
+msgstr "Tikslą daryti vėliau"
+
+#: projectgroupstrconst.listargetopen
+msgid "Open Target"
+msgstr "Atverti tikslą"
+
+#: projectgroupstrconst.listargetopencaption
+msgid "Open"
+msgstr "Atverti"
+
+#: projectgroupstrconst.listargetopenhint
+msgid "Open selected target"
+msgstr "Atverti pažymėtą tikslą"
+
+#: projectgroupstrconst.listargetproperties
+msgid "Target properties"
+msgstr "Tikslo savybės"
+
+#: projectgroupstrconst.listargetpropertiescaption
+msgid "Properties"
+msgstr "Savybės"
+
+#: projectgroupstrconst.listargetpropertieshint
+msgid "Show property dialog for selected target"
+msgstr "Rodyti pažymėto tikslo savybių dialogą"
+
+#: projectgroupstrconst.listargetremove
+msgctxt "projectgroupstrconst.listargetremove"
+msgid "Remove target"
+msgstr "Šalinti tiklsą"
+
+#: projectgroupstrconst.listargetrun
+msgid "Run Target"
+msgstr "Vikdyti tikslą"
+
+#: projectgroupstrconst.listargetruncaption
+msgid "Run"
+msgstr "Vikdyti"
+
+#: projectgroupstrconst.listargetrunhint
+msgid "Run selected target"
+msgstr "Vikdyti pažymėtą tikslą"
+
+#: projectgroupstrconst.listargetuninstall
+msgctxt "projectgroupstrconst.listargetuninstall"
+msgid "Uninstall"
+msgstr "Išdiegti"
+
+#: projectgroupstrconst.listargetuninstallcaption
+msgctxt "projectgroupstrconst.listargetuninstallcaption"
+msgid "Uninstall"
+msgstr "Išdiegti"
+
+#: projectgroupstrconst.listargetuninstallhint
+msgid "Uninstall selected target"
+msgstr "Išdiegti pažymėta tikslą"
+
+#: projectgroupstrconst.listhelazbuildwasnotfound
+msgid "The lazbuild%s was not found."
+msgstr "Programa „lazbuild“%s nerasta."
+
+#: projectgroupstrconst.listhereisstillanotherbuildinprogress
+msgid "There is still another build in progress."
+msgstr "Šiuo metu vis dar vykdomas kitas darymas."
+
+#: projectgroupstrconst.lisunabletocreatefile
+msgid "Unable to create file \"%s\": %s"
+msgstr "Nepavyko sukurti failo „%s“: %s"
+
+#: projectgroupstrconst.lisunabletoloadfile
+msgid "Unable to load file \"%s\""
+msgstr "Nepavyko įkelti failo „%s“"
+
+#: projectgroupstrconst.lisunabletowriteprojectgroupfile
+msgid "Unable to write project group file \"%s\"%s%s"
+msgstr "Nepavyko rašyti į projekto grupės failą „%s“%s%s"
+
+#: projectgroupstrconst.liswriteerror
+msgid "Write error"
+msgstr "Klaida rašant"
+
+#: projectgroupstrconst.lisxmlsyntaxerrorinfile
+msgid "XML syntax error in file \"%s\": %s"
+msgstr "„XML“ sintaksės klaida faile „%s“: %s"
+
