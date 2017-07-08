@@ -20146,6 +20146,7 @@ msgstr "Yapılandırma dosyası oluştur"
 #: lazarusidestrconsts.srkmeccopy
 #, fuzzy
 #| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
 msgid "Copy"
 msgstr "Seçimi panoya kopyala"
 
@@ -20164,6 +20165,7 @@ msgstr "Düzenleyiciyi önceden boş pencereye kopyala"
 #: lazarusidestrconsts.srkmeccut
 #, fuzzy
 #| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
 msgid "Cut"
 msgstr "Seçimi panoya bırak"
 
@@ -20590,6 +20592,7 @@ msgstr "İmleci bir sayfa yukarı taşı"
 #: lazarusidestrconsts.srkmecpaste
 #, fuzzy
 #| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
 msgstr "Panoyu geçerli konuma yapıştır"
 
