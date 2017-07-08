@@ -84,7 +84,7 @@ msgstr "B-käyrä kuvaaja"
 
 #: tachartstrconsts.rsbssolid
 msgid "solid fill"
-msgstr ""
+msgstr "alueen täyttö"
 
 #: tachartstrconsts.rsbsvertical
 msgid "vertically hatched"

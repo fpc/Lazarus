@@ -995,7 +995,7 @@ msgstr "Varoitus"
 
 #: lclstrconsts.rsnavycolorcaption
 msgid "Navy"
-msgstr "Laivasto"
+msgstr "Laivaston sininen"
 
 #: lclstrconsts.rsnextrecordhint
 msgctxt "lclstrconsts.rsnextrecordhint"
