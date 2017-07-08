@@ -1,0 +1,390 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 21:42+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: tachartstrconsts.descolor
+msgid "Color"
+msgstr "Spalva"
+
+#: tachartstrconsts.desdatapointeditor
+msgid "DataPoints editor"
+msgstr "„DataPoints“ rengyklė"
+
+#: tachartstrconsts.desdeleterow
+msgid "Delete row"
+msgstr "Šalinti eilutę"
+
+#: tachartstrconsts.desinsertrow
+msgid "Insert row"
+msgstr "Įterpti eilutę"
+
+#: tachartstrconsts.destext
+msgid "Text"
+msgstr "Tekstas"
+
+#: tachartstrconsts.rsadd
+msgid "Add"
+msgstr "Pridėti"
+
+#: tachartstrconsts.rsareaseries
+msgid "Area series"
+msgstr "Ploto sekos"
+
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr "Automatinis mastelis"
+
+#: tachartstrconsts.rsbarseries
+msgid "Bar series"
+msgstr "Stulpelių sekos"
+
+#: tachartstrconsts.rsbottom
+msgid "Bottom"
+msgstr "Apačia"
+
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr "Stačiakampai-ir-ūsai sekos"
+
+#: tachartstrconsts.rsbsbdiagonal
+msgid "backward-diagonal hatch"
+msgstr "atgalinis-kampinis štrichavimas"
+
+#: tachartstrconsts.rsbsclear
+msgctxt "tachartstrconsts.rsbsclear"
+msgid "no fill"
+msgstr "be užpildo"
+
+#: tachartstrconsts.rsbscross
+msgid "crossed"
+msgstr "kryžiukai"
+
+#: tachartstrconsts.rsbsdiagcross
+msgid "diagonally crossed"
+msgstr "pasvirę kryžiukai"
+
+#: tachartstrconsts.rsbsfdiagonal
+msgid "forward-diagonal hatch"
+msgstr "tiesiginis-kampinis štrichavimas"
+
+#: tachartstrconsts.rsbshorizontal
+msgid "horizontally hatched"
+msgstr "horizontalus štrichavimas"
+
+#: tachartstrconsts.rsbsimage
+msgid "image fill"
+msgstr "užpildas paveikslu"
+
+#: tachartstrconsts.rsbspattern
+msgid "pattern fill"
+msgstr "užpildas raštu"
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr "B-splaino sekos"
+
+#: tachartstrconsts.rsbssolid
+msgid "solid fill"
+msgstr "vientisas užpildas"
+
+#: tachartstrconsts.rsbsvertical
+msgid "vertically hatched"
+msgstr "vertikalus štrichavimas"
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubble series"
+msgstr "Apskritimų sekos"
+
+#: tachartstrconsts.rscirclesymbol
+msgid "Circle"
+msgstr "Apskritimas"
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr "Spalvinio atvaizdžio sekos"
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr "Nenutrūkstama linija"
+
+#: tachartstrconsts.rscrosssymbol
+msgid "Plus"
+msgstr "Pliusas"
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr "Kubinio splaino sekos"
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr "Kumuliacinis normalusis skirstinys"
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr "Duomenų taško paspaudimas"
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr "Duomenų taško žymeklis"
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr "Duomenų taško vilkimas"
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
+msgstr "Duomenų taško sufleris"
+
+#: tachartstrconsts.rsdelete
+msgid "Delete"
+msgstr "Naikinti"
+
+#: tachartstrconsts.rsdiagcrosssymbol
+msgid "Cross"
+msgstr "Kryžius"
+
+#: tachartstrconsts.rsdiamondsymbol
+msgid "Diamond"
+msgstr "Rombas"
+
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr "Atstumo matavimas"
+
+#: tachartstrconsts.rsdowntrianglesymbol
+msgid "Down triangle"
+msgstr "Trikampis į apačią"
+
+#: tachartstrconsts.rsfieldseries
+msgid "Vector field series"
+msgstr "Vektorinio lauko sekos"
+
+#: tachartstrconsts.rsfullstarsymbol
+msgid "Star (full)"
+msgstr "Žvaigždė (pilna)"
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr "Funkcijos sekos"
+
+#: tachartstrconsts.rshexagonsymbol
+msgid "Hexagon"
+msgstr "Šešiakampis"
+
+#: tachartstrconsts.rshidden
+msgid "hidden"
+msgstr "paslėptas"
+
+#: tachartstrconsts.rshighbracketsymbol
+msgid "High bracket"
+msgstr "Aukštas skliaustas"
+
+#: tachartstrconsts.rshorbarsymbol
+msgid "Horizontal bar"
+msgstr "Horizontalus brukšnys"
+
+#: tachartstrconsts.rsinvalidlogbase
+msgid "Logarithm base must be > 0 and <> 1."
+msgstr "Logaritmo pagrindas turi būti didesnis nei 0 ir nelygus 1-am."
+
+#: tachartstrconsts.rsinverted
+msgid "inverted"
+msgstr "invertuota"
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr "Mažiausių kvdratų aproksimavimo serijos"
+
+#: tachartstrconsts.rsleft
+msgid "Left"
+msgstr "Kairė"
+
+#: tachartstrconsts.rsleftbracketsymbol
+msgid "Left bracket"
+msgstr "Kairys skliaustas"
+
+#: tachartstrconsts.rslefttrianglesymbol
+msgid "Left triangle"
+msgstr "Trikampis kairėn"
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr "Tiesinė"
+
+#: tachartstrconsts.rslineseries
+msgid "Line series"
+msgstr "Linijų sekos"
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr "Logaritminė"
+
+#: tachartstrconsts.rslowbracketsymbol
+msgid "Low bracket"
+msgstr "Apatinis skliaustas"
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
+msgstr "Manheteno grafiko sekos"
+
+#: tachartstrconsts.rsmovedown
+msgid "Down"
+msgstr "Žemyn"
+
+#: tachartstrconsts.rsmoveup
+msgid "Up"
+msgstr "Viršun"
+
+#: tachartstrconsts.rsnosymbol
+msgid "(none)"
+msgstr "(joks)"
+
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr "Atviras-aukščiausia-žemiausia-artima sekos"
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr "Slinkimas spustelėjus"
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr "Slinkimas velkant"
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr "Slinkmas pelės ratuku"
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr "Parametrinių kreivių sekos"
+
+#: tachartstrconsts.rspieseries
+msgid "Pie series"
+msgstr "Iškarpinių diagramų sekos"
+
+#: tachartstrconsts.rspointsymbol
+msgid "Point"
+msgstr "Taškas"
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr "Polinės sekos"
+
+#: tachartstrconsts.rspsclear
+msgctxt "tachartstrconsts.rspsclear"
+msgid "no line"
+msgstr "be linijos"
+
+#: tachartstrconsts.rspsdash
+msgid "dashed line"
+msgstr "brūkšninė linija"
+
+#: tachartstrconsts.rspsdashdot
+msgid "dash-dot"
+msgstr "brūkšnis-taškas"
+
+#: tachartstrconsts.rspsdashdotdot
+msgid "dash-dot-dot"
+msgstr "brūkšnis-taškas-taškas"
+
+#: tachartstrconsts.rspsdot
+msgid "dotted line"
+msgstr "taškinė linija"
+
+#: tachartstrconsts.rspsinsideframe
+msgid "solid (inside frame)"
+msgstr "vientisas (rėmo viduje)"
+
+#: tachartstrconsts.rspspattern
+msgid "patterned line"
+msgstr "raštuota linija"
+
+#: tachartstrconsts.rspssolid
+msgid "solid line"
+msgstr "vientisa linija"
+
+#: tachartstrconsts.rsrectanglesymbol
+msgid "Rectangle"
+msgstr "Stačiakampis"
+
+#: tachartstrconsts.rsright
+msgid "Right"
+msgstr "Dešinė"
+
+#: tachartstrconsts.rsrightbracketsymbol
+msgid "Right bracket"
+msgstr "Dešinys skliaustas"
+
+#: tachartstrconsts.rsrighttrianglesymbol
+msgid "Right triangle"
+msgstr "Trikampis dešinėn"
+
+#: tachartstrconsts.rsstarsymbol
+msgid "Star (lines)"
+msgstr "Žvaigždės (linijos)"
+
+#: tachartstrconsts.rstop
+msgid "Top"
+msgstr "Viršus"
+
+#: tachartstrconsts.rstrianglesymbol
+msgid "Triangle"
+msgstr "Trikampis"
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr "Apibrėžta naudotojo"
+
+#: tachartstrconsts.rsuserdefinedtool
+msgctxt "tachartstrconsts.rsuserdefinedtool"
+msgid "User-defined"
+msgstr "Apibrėžta naudotojo"
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr "Naudotojo brėžiamos sekos"
+
+#: tachartstrconsts.rsvertbarsymbol
+msgid "Vertical bar"
+msgstr "Vertikalus brukšnys"
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr "Priartinti spustelėjus"
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr "Priartinti velkant"
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
+msgstr "Priartinti pelės ratuku"
+
+#: tachartstrconsts.sesserieseditortitle
+msgid "Edit series"
+msgstr "Keisti sekas"
+
+#: tachartstrconsts.tasaxistransformseditortitle
+msgid "Edit axis transformations"
+msgstr "Keisti ašių transformacijas"
+
+#: tachartstrconsts.tasfailedsubcomponentrename
+msgid "Failed to rename components: %s"
+msgstr "Nepavyko pervadinti komponentų: %s"
+
+#: tachartstrconsts.tastoolseditortitle
+msgid "Edit tools"
+msgstr "Keitimo įrankiai"
+

@@ -1,0 +1,47 @@
+# senbuvis <zmogas@hotmail.com>, 2017.
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 10:52+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt_LT\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: activexstrconsts.axconvertdependanttypelibs
+msgid "Convert dependant typelibs"
+msgstr "Konvertuoti susijusius „typelibs“"
+
+#: activexstrconsts.axcreatepackage
+msgid "Create package"
+msgstr "Kurti paketą"
+
+#: activexstrconsts.axcreatevisualcomponenttactivexcontainerdescendant
+msgid "Create visual component (TActiveXContainer descendant)"
+msgstr "Kurti vaizdinį komponentą  („TActiveXContainer“ palikuonį)"
+
+#: activexstrconsts.axfilecontainingtypelibrary
+msgid "File containing type library:"
+msgstr "Failas su tipo biblioteka"
+
+#: activexstrconsts.aximporttypelibrary
+msgid "Import Type Library"
+msgstr "Importuoti tipo biblioteką"
+
+#: activexstrconsts.aximporttypelibrarymenu
+msgid "Import Type Library ..."
+msgstr "Importuoti tipo biblioteką…"
+
+#: activexstrconsts.axselectdirectorytostorepackageplpk
+msgid "Select directory to store package %sP.lpk"
+msgstr "Parinkite aplanką į kurį talpinti paketą %sP.lpk"
+
+#: activexstrconsts.axtypelibraryfilestlbdllexeocxolbtlbdllexeocxolballf
+msgid "Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"
+msgstr "Tipo bibliotekos failai (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|Visi failai (*.*)|*.*"
+

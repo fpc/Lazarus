@@ -1,15 +1,16 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-07 00:59+0300\n"
+"PO-Revision-Date: 2017-07-07 22:58+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
@@ -57,8 +58,6 @@ msgid "Empty document"
 msgstr "Tuščias dokumentas"
 
 #: msgjsonviewer.serrcreatingconfigdir
-#, fuzzy
-#| msgid "Could not create the configuration files directory \"s\""
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Nepavyko sukurti aplanko „%s“ sąrankos failams"
 
@@ -247,10 +246,9 @@ msgid "Save JSON document with a new name"
 msgstr "JSON dokumentą įrašyti nauju pavadinimu"
 
 #: tmainform.caption
-#, fuzzy
 msgctxt "tmainform.caption"
 msgid "JSON Viewer"
-msgstr "JSON žiūryklė"
+msgstr "„JSON“ žiūryklė"
 
 #: tmainform.medit.caption
 msgid "&Edit"
@@ -263,15 +261,15 @@ msgstr "&Failas"
 #: tmainform.miallowcomments.caption
 msgctxt "tmainform.miallowcomments.caption"
 msgid "Allow comments"
-msgstr ""
+msgstr "Leisti komentarus"
 
 #: tmainform.miallowtrailingcomma.caption
 msgid "Allow trailing comma"
-msgstr ""
+msgstr "Leisti galinį kablelį"
 
 #: tmainform.micompact.caption
 msgid "Compact display"
-msgstr ""
+msgstr "Kompaktiškas rodinys"
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
@@ -283,7 +281,7 @@ msgstr "Vertė&s"
 
 #: tmainform.miquotestrings.caption
 msgid "Quote string values"
-msgstr ""
+msgstr "Teksto vertes apgaubti kabutėmis"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
@@ -299,11 +297,11 @@ msgstr "&Parinktys"
 
 #: tmainform.odjson.title
 msgid "Select a JSON file"
-msgstr ""
+msgstr "Parinkite „JSON“ failą"
 
 #: tmainform.sdjson.title
 msgid "Save JSON document to file"
-msgstr ""
+msgstr "„JSON“ dokumentą įrašyti failan"
 
 #: tmainform.tbjson.caption
 msgid "TBJSON"
@@ -319,43 +317,43 @@ msgstr "IrankioMygtukas4"
 
 #: tnewbooleanform.caption
 msgid "New boolean value"
-msgstr ""
+msgstr "Nauja „boolean“ vertė"
 
 #: tnewbooleanform.cbvalue.caption
 msgid "Set to true"
-msgstr ""
+msgstr "Nustatyti į „TRUE“"
 
 #: tnewbooleanform.label1.caption
 msgid "&Member name"
-msgstr ""
+msgstr "&Nario pavadinimas"
 
 #: tnewnumberform.caption
 msgid "New number value"
-msgstr ""
+msgstr "Nauja skaitinė vertė"
 
 #: tnewnumberform.label1.caption
 msgctxt "tnewnumberform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "&Pavadinimas"
 
 #: tnewnumberform.label2.caption
 msgid "Value"
-msgstr ""
+msgstr "Vertė"
 
 #: tnewnumberform.rgtype.caption
 msgid "Number Type"
-msgstr ""
+msgstr "Skaičiaus tipas"
 
 #: tnewstringform.caption
 msgid "New String value"
-msgstr ""
+msgstr "Nauja tekstinė vertė"
 
 #: tnewstringform.label1.caption
 msgctxt "tnewstringform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "&Pavadinimas"
 
 #: tnewstringform.label2.caption
 msgid "&Value"
-msgstr ""
+msgstr "&Vertė"
 

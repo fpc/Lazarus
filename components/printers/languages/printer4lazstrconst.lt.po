@@ -1,0 +1,90 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 20:31+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: printer4lazstrconst.p4lrsadvanced
+msgid "Advanced"
+msgstr "Išsamiau"
+
+#: printer4lazstrconst.p4lrsbanners
+msgid "Banners"
+msgstr "Reklamjuostės"
+
+#: printer4lazstrconst.p4lrscancel
+msgid "Cancel"
+msgstr "Atšaukti"
+
+#: printer4lazstrconst.p4lrsend
+msgid "End"
+msgstr "Pabaiga"
+
+#: printer4lazstrconst.p4lrsgeneral
+msgid "General"
+msgstr "Pagrindinis"
+
+#: printer4lazstrconst.p4lrslandscape
+msgid "Landscape"
+msgstr "Gulsčias"
+
+#: printer4lazstrconst.p4lrsmargins
+msgid "Margins"
+msgstr "Ribos"
+
+#: printer4lazstrconst.p4lrsok
+msgid "Ok"
+msgstr "Tvarka"
+
+#: printer4lazstrconst.p4lrsorientation
+msgid "Orientation"
+msgstr "Orientacija"
+
+#: printer4lazstrconst.p4lrspagespersheet
+msgid "Pages per sheet"
+msgstr "Lapų lape"
+
+#: printer4lazstrconst.p4lrspapersize
+msgid "Paper size"
+msgstr "Lapo dydis"
+
+#: printer4lazstrconst.p4lrspapersource
+msgid "Paper source"
+msgstr "Lapų šaltinis"
+
+#: printer4lazstrconst.p4lrspapertype
+msgid "Paper type"
+msgstr "Lapo tipas"
+
+#: printer4lazstrconst.p4lrsportrait
+msgid "Portrait"
+msgstr "Statmenas"
+
+#: printer4lazstrconst.p4lrsprinterproperties
+msgid "Printer properties"
+msgstr "Spausdintuvo savybės"
+
+#: printer4lazstrconst.p4lrsresolution
+msgid "Resolution"
+msgstr "Raiška"
+
+#: printer4lazstrconst.p4lrsreverselandscape
+msgid "Reverse landscape"
+msgstr "Apsuktas gulščias"
+
+#: printer4lazstrconst.p4lrsreverseportrait
+msgid "Reverse portrait"
+msgstr "Apsuktas stačias"
+
+#: printer4lazstrconst.p4lrsstart
+msgid "Start"
+msgstr "Pradėti"
+

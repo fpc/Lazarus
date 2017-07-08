@@ -1,12 +1,13 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-06 18:28+0300\n"
+"PO-Revision-Date: 2017-07-05 17:02+0200\n"
 "Project-Id-Version: lr_const\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
@@ -25,19 +26,19 @@ msgstr "Visi failai"
 
 #: lr_const.sargument1
 msgid "Argument 1"
-msgstr ""
+msgstr "Argumentas 1"
 
 #: lr_const.sargument2
 msgid "Argument 2"
-msgstr ""
+msgstr "Argumentas 2"
 
 #: lr_const.sargument3
 msgid "Argument 3"
-msgstr ""
+msgstr "Argumentas 3"
 
 #: lr_const.sarguments
 msgid "Arguments"
-msgstr ""
+msgstr "Argumentai"
 
 #: lr_const.sautosize
 msgid "Auto size"
@@ -104,15 +105,11 @@ msgid "Cross footer"
 msgstr "Kryžmės poraštės"
 
 #: lr_const.sband22
-#, fuzzy
-#| msgid "None"
 msgctxt "lr_const.sband22"
 msgid "Child"
-msgstr "Joks"
+msgstr "Pomazgis"
 
 #: lr_const.sband23
-#, fuzzy
-#| msgid "None"
 msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Joks"
@@ -270,19 +267,19 @@ msgstr "Pastabos:"
 
 #: lr_const.sdateformat1
 msgid "mm.dd.yy"
-msgstr ""
+msgstr "yy.mm.dd"
 
 #: lr_const.sdateformat2
 msgid "mm.dd.yyyy"
-msgstr ""
+msgstr "yyyy.mm.dd"
 
 #: lr_const.sdateformat3
 msgid "d mmm yyyy"
-msgstr ""
+msgstr "yyyy mmm d"
 
 #: lr_const.sdateformat4
 msgid "d mmmm yyyy"
-msgstr ""
+msgstr "yyyy mmm d"
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
@@ -290,7 +287,7 @@ msgstr "Data ir laikas"
 
 #: lr_const.sdbfield
 msgid "DB field"
-msgstr ""
+msgstr "„DB“ laukelis"
 
 #: lr_const.sdefaultprinter
 msgid "Default printer"
@@ -305,10 +302,8 @@ msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <St
 msgstr "COPY(<Tekstas>, <Vieta>, <Ilgis>)/Grąžina <Ilgis> simbolių iš <Tekstas>, pradedant nuo <Vieta>."
 
 #: lr_const.sdescriptioncount
-#, fuzzy
-#| msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
 msgid "COUNT(<BandName>)/Returns count of data rows given in the <BandName>. "
-msgstr "COUNT(<JuostosPavadinimas>)/Grąžina duotame <JuostosPavadinimas> esančių duomenų eilučių kiekį."
+msgstr "COUNT(<JuostosPavadinimas>)/Grąžina duotame <JuostosPavadinimas> esančių eilučių kiekį."
 
 #: lr_const.sdescriptiondayof
 msgid "DAYOF(<Date>)/Returns day number (1..31) of given <Date>."
@@ -316,7 +311,7 @@ msgstr "DAYOF(<Data>)/Grąžina duotos <Data> dienos numerį (1..31)."
 
 #: lr_const.sdescriptiondec
 msgid "DEC(<Value>)/Decrement <Value>."
-msgstr ""
+msgstr "DEC(<Value>)/<Value> sumažina vienetu."
 
 #: lr_const.sdescriptionformatdatetime
 msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
@@ -336,13 +331,11 @@ msgstr "FRAC(<Verė>)/Grąžiną slankaus kablelio skaičiaus <Vertė> trupmenin
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
-msgstr ""
+msgstr "INC(<Value>)/<Value> padidina vienetu."
 
 #: lr_const.sdescriptioninput
-#, fuzzy
-#| msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
-msgstr "INPUT(<Antraštė> [,Numatyta])/Rodo dialogo langą, kuriame būna <Antraštė> tekstas bei įvesties langelis. Jei nurodytas [,Numatyta] parametras, tai šio parametro tekstas įrašomas į įvesties langelį. Naudotojui paspaudus „Tinka“, grąžina įvesties langelyje esantį tekstą."
+msgstr "INPUT(<Antraštė> [,Numatyta])/Rodo dialogo langą, kuriame būna <Antraštė> tekstas bei įvesties langelis. Jei nurodytas [Numatyta] parametras, tai šio parametro tekstas įrašomas į įvesties langelį. Naudotojui paspaudus „Tinka“, grąžina įvesties langelyje esantį tekstą."
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
@@ -386,11 +379,11 @@ msgstr "NAMECASE(<Tekstas>)/Pirmąją <Tekstas> raidę padaro didžiąją, o lik
 
 #: lr_const.sdescriptionnewcolumn
 msgid "NEWCOLUMN/Create new column on page for current report."
-msgstr ""
+msgstr "NEWCOLUMN/Aktyviojoje ataskaitoje kuria naują stulpelį."
 
 #: lr_const.sdescriptionnewpage
 msgid "NEWPAGE/Create new page for current report."
-msgstr ""
+msgstr "NEWPAGE/Aktyviojoje ataskaitoje kuria naują lapą."
 
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
@@ -402,11 +395,11 @@ msgstr "ROUND(<Vertė>)/Slankiojo kablelio skaičių <Vertė> apvalina link did�
 
 #: lr_const.sdescriptionshowband
 msgid "SHOWBAND(<BandName>)/Show <BandName> in report."
-msgstr ""
+msgstr "SHOWBAND(<BandName>)/Ataskaitoje rodyti <BandName>."
 
 #: lr_const.sdescriptionstopreport
 msgid "STOPREPORT/Terminate report creation."
-msgstr ""
+msgstr "STOPREPORT/Stabdyti ataskaitos kūrimą."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
@@ -529,8 +522,6 @@ msgid "Report:"
 msgstr "Pranešimas:"
 
 #: lr_const.sdocautor
-#, fuzzy
-#| msgid "Autor"
 msgid "Author"
 msgstr "Autorius"
 
@@ -555,8 +546,6 @@ msgid "Comments"
 msgstr "Komentarai"
 
 #: lr_const.sdocoptformkeywords
-#, fuzzy
-#| msgid "Keys words"
 msgid "Keywords"
 msgstr "Raktažodžiai"
 
@@ -600,7 +589,7 @@ msgstr "Jau yra objektas tokiu pavadinimu „%s“"
 
 #: lr_const.seditor
 msgid "Editor"
-msgstr ""
+msgstr "Rengyklė"
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -647,59 +636,57 @@ msgstr "&Laužyti tekstą"
 
 #: lr_const.serrexpectedassign
 msgid "Expected \":=\""
-msgstr ""
+msgstr "Tikėtasi „:=“"
 
 #: lr_const.serrexpectedclosingbracket1
 msgid "Expected \")\""
-msgstr ""
+msgstr "Tikėtasi „)“"
 
 #: lr_const.serrexpectedclosingbracket2
 msgid "Expected \"]\""
-msgstr ""
+msgstr "Tikėtasi „]“"
 
 #: lr_const.serrexpectedcomma
 msgid "Expected \",\" or \")\""
-msgstr ""
+msgstr "Tikėtasi „,“ arba „)“"
 
 #: lr_const.serrexpecteddo
 msgid "Expected \"do\""
-msgstr ""
+msgstr "Tikėtasi „do“"
 
 #: lr_const.serrexpectedend
 msgid "Expected \";\" or \"end\""
-msgstr ""
+msgstr "Tikėtasi „;“ arba „end“"
 
 #: lr_const.serrexpectedthen
 msgid "Expected \"then\""
-msgstr ""
+msgstr "Tikėtasi „then“"
 
 #: lr_const.serrexpecteduntil
 msgid "Expected \";\" or \"until\""
-msgstr ""
+msgstr "Tikėtasi „;“ arba „until“"
 
 #: lr_const.serrlabelgoto
 msgid "Label in goto must be a number"
-msgstr ""
+msgstr "Žyma „goto“ komandoje turi būti skaičius"
 
 #: lr_const.serrline
 msgid "Line"
-msgstr ""
+msgstr "Eilutė"
 
 #: lr_const.serrneeddo
 msgid "Need \"do\" here"
-msgstr ""
+msgstr "Šioje vietoje būtinas „do“"
 
 #: lr_const.serrneedto
 msgid "Need \"to\" here"
-msgstr ""
+msgstr "Šioje vietoje būtinas „to“"
 
 #: lr_const.serror
 msgid "Error"
 msgstr "Klaida"
 
 #: lr_const.serroroccured
-#, fuzzy
-#| msgid "An error occured during calculating"
 msgid "An error occurred during calculation"
 msgstr "Skaičiuojant įvyko klaida"
 
@@ -747,7 +734,7 @@ msgstr "Įterpti DB lauką"
 
 #: lr_const.sfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Nepavyko rasti failo"
 
 #: lr_const.sfilter
 msgid "Filter properties"
@@ -920,11 +907,11 @@ msgstr "Naujas lapas"
 
 #: lr_const.sfrdesignerdatainsp
 msgid "Data inspector"
-msgstr ""
+msgstr "Duomenų inspektorius"
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
-msgstr ""
+msgstr "„TfrDesigner“ komponentas jau yra"
 
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
@@ -1194,7 +1181,7 @@ msgstr "Viršutinė rėmelio linija"
 
 #: lr_const.sfrdesignerformunabletocreatetemplatedir
 msgid "Unable to create template directory"
-msgstr ""
+msgstr "Nepavyko sukurti aplanko šablonui"
 
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
@@ -1230,7 +1217,7 @@ msgstr "Perkelti į &galą"
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr ""
+msgstr "&Prieš spausdinant scenarijų…"
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
@@ -1246,7 +1233,7 @@ msgstr "Iš&kirpti"
 
 #: lr_const.sfrdesignerform_datainsp
 msgid "&Data inspector"
-msgstr ""
+msgstr "&Duomenų inspektorius"
 
 #: lr_const.sfrdesignerform_delete
 msgid "&Delete"
@@ -1394,11 +1381,11 @@ msgstr "FR kintamieji"
 
 #: lr_const.sfunctioneditor
 msgid "Function editor"
-msgstr ""
+msgstr "Funkcijos rengyklė"
 
 #: lr_const.sfunctions
 msgid "Functions"
-msgstr ""
+msgstr "Funkcijos"
 
 #: lr_const.sgeditorformcapt
 msgid "Picture"
@@ -1507,11 +1494,11 @@ msgstr "Įterpti žymimojo langelio objektą"
 
 #: lr_const.sinsert
 msgid "Insert"
-msgstr ""
+msgstr "Įterpti"
 
 #: lr_const.sinsertexpression
 msgid "Insert Expression"
-msgstr ""
+msgstr "Įterpti išraišką"
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
@@ -1546,8 +1533,6 @@ msgid "&Vertical"
 msgstr "&Vertikalus"
 
 #: lr_const.sinsroundrect
-#, fuzzy
-#| msgid "Insert an RoundRect with shadow area"
 msgid "Insert a RoundRect with shadow area"
 msgstr "Įterpti apvalių kampų stačiakampį su šešėlio sritimi"
 
@@ -1557,23 +1542,23 @@ msgstr "Įterpti figūros objektą"
 
 #: lr_const.sinterpretator
 msgid "Interpretator"
-msgstr ""
+msgstr "Iterpretatorius"
 
 #: lr_const.sinvalidfrfreport
 msgid "Invalid binary report"
-msgstr ""
+msgstr "Klaidinga dvejetainė ataskaita"
 
 #: lr_const.sinvalidfrfversion
 msgid "Invalid report version"
-msgstr ""
+msgstr "Klaidinga ataskaitos laida"
 
 #: lr_const.sinvalidlrfreport
 msgid "Invalid report format"
-msgstr ""
+msgstr "Klaidingas ataskaitos formatas"
 
 #: lr_const.sinvalidvariablename
 msgid "\"%s\" is not a valid variable name."
-msgstr ""
+msgstr "Tekstas „%s“ nėra tinkamas kintamojo pavadinimui."
 
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
@@ -1593,7 +1578,7 @@ msgstr "Matematika"
 
 #: lr_const.smemoeditor
 msgid "Memo editor"
-msgstr ""
+msgstr "Pastabų rengyklė"
 
 #: lr_const.smm
 msgid "MM"
@@ -1614,11 +1599,11 @@ msgstr "[Joks]"
 
 #: lr_const.snovalidexportfilenamewassupplied
 msgid "No valid export filename was supplied"
-msgstr ""
+msgstr "Nėra pateiktas tinkamas pavadinimas ataskaitos failui"
 
 #: lr_const.snovalidfilterclasswassupplied
 msgid "No valid filterclass was supplied"
-msgstr ""
+msgstr "Nėra pateikta tinkama filtro klasė"
 
 #: lr_const.sobjectinspector
 msgid "Object inspector"
@@ -2302,11 +2287,9 @@ msgstr "&Visas lapas"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr ""
+msgstr "Spausdinti pomazgį jei nėra matoma"
 
 #: lr_const.sprintererror
-#, fuzzy
-#| msgid "Printer selected is not valid"
 msgid "Selected printer is not valid"
 msgstr "Nurodytas netinkamas spausdintuvas"
 
@@ -2316,7 +2299,7 @@ msgstr "&Visus"
 
 #: lr_const.sprintformcollate
 msgid "Collate"
-msgstr ""
+msgstr "Maišyti"
 
 #: lr_const.sprintformcopy
 msgid "&Copies:"
@@ -2370,33 +2353,27 @@ msgstr "Pranešimo failas"
 
 #: lr_const.sreportcorruptoldknowversion
 msgid "This report is corrupt, it probably needs \"LRE_OLDV%d_FRF_READ\"=true"
-msgstr ""
+msgstr "Ši ataskaita sugadinta, jai ko gero reikia \"LRE_OLDV%d_FRF_READ\"=true"
 
 #: lr_const.sreportcorruptunknownversion
 msgid "This report is corrupt, frVersion=%d"
-msgstr ""
+msgstr "Ši ataskaita sugadinta, frVersion=%d"
 
 #: lr_const.sreportcreatedate
-#, fuzzy
-#| msgid "Report create date"
 msgid "Report creation date"
-msgstr "Pranešimo sukūrimo data"
+msgstr "Ataskaitos sukūrimo data"
 
 #: lr_const.sreportlastmodifydate
-#, fuzzy
-#| msgid "Report last modify date"
 msgid "Report last modification date"
-msgstr "Pranešimo paskutiniojo keitimo data"
+msgstr "Ataskaitos paskutiniojo keitimo data"
 
 #: lr_const.sreportloadingerror
 msgid "Error while loading report"
-msgstr ""
+msgstr "Įkeliant ataskaitą įvyko klaida"
 
 #: lr_const.sreportpreparing
-#, fuzzy
-#| msgid "Report preparing"
 msgid "Preparing report"
-msgstr "Pranešimas ruošiamas"
+msgstr "Ataskaita ruošiama"
 
 #: lr_const.sroundrectformbegincolor
 msgid "Begin color"
@@ -2428,11 +2405,9 @@ msgstr "Įrėminta zona"
 
 #: lr_const.sroundrectformgradient
 msgid "Gradient"
-msgstr ""
+msgstr "Gradientas"
 
 #: lr_const.sroundrectformhint
-#, fuzzy
-#| msgid "Click here to define the shadow color or gradian colors"
 msgid "Click here to define the shadow color or gradient colors"
 msgstr "Spustelėkite čia, galėsite nurodyti šešėlio spalvą arba gradiento spalvas"
 
@@ -2470,7 +2445,7 @@ msgstr "Įrašyti pakeitimus"
 
 #: lr_const.sscripteditor
 msgid "Script editor"
-msgstr ""
+msgstr "Scenarijaus rengyklė"
 
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
@@ -2549,19 +2524,19 @@ msgstr "ASCII teksto failas"
 
 #: lr_const.stimeformat1
 msgid "hh:nn:ss"
-msgstr ""
+msgstr "hh:nn:ss"
 
 #: lr_const.stimeformat2
 msgid "h:nn:ss"
-msgstr ""
+msgstr "h:nn:ss"
 
 #: lr_const.stimeformat3
 msgid "hh:nn"
-msgstr ""
+msgstr "hh:nn"
 
 #: lr_const.stimeformat4
 msgid "h:nn"
-msgstr ""
+msgstr "h:nn"
 
 #: lr_const.sto
 msgid "to"
@@ -2573,7 +2548,7 @@ msgstr "Permatomas"
 
 #: lr_const.sunabletoreadversion
 msgid "Unable to read report version"
-msgstr ""
+msgstr "Nepavyko nuskaityri ataskaitos laidos"
 
 #: lr_const.suntitled
 msgid "Untitled"
@@ -2581,15 +2556,15 @@ msgstr "Be pavadinimo"
 
 #: lr_const.susefixedfontsettings
 msgid "Use fixed font settings"
-msgstr ""
+msgstr "Naudoti lygiapločio šrifto nuostatas"
 
 #: lr_const.susememofontsettings
 msgid "Use Memo font settings"
-msgstr ""
+msgstr "Naudoti pastabų šrifto nuostatas"
 
 #: lr_const.susesyntaxhighlight
 msgid "Use syntax highlight"
-msgstr ""
+msgstr "Naudoti sintaksės paryškinimą"
 
 #: lr_const.svar1
 msgid "Page#"
@@ -2651,7 +2626,7 @@ msgstr "&Kategorija:"
 
 #: lr_const.svariable
 msgid "Variable"
-msgstr ""
+msgstr "Kintamasis"
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"

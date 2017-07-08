@@ -1,15 +1,16 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-06 18:06+0300\n"
+"PO-Revision-Date: 2017-07-05 12:33+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: weblazideintf.rsapachemodule
 msgid "Apache Module"
@@ -61,35 +62,35 @@ msgstr "HTML saityno modulis%sSaityno duomenų modulis griežto HTML kūrimui,"
 
 #: weblazideintf.rshttpappli
 msgid "HTTP server Application"
-msgstr ""
+msgstr "HTTP serverio programa"
 
 #: weblazideintf.rshttpappli2
 msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
-msgstr ""
+msgstr "HTTP serverio programa. „Free Pascal“ aplinkoje naudojant saityno modulius sukurti HTTP serverio programą. Programos pirminį kodą automatiškai prižiūrės „Lazarus“."
 
 #: weblazideintf.rswebdataprovi
 msgid "Web DataProvider Module"
-msgstr ""
+msgstr "Saityno „DataProvider“ modulis"
 
 #: weblazideintf.rswebdataprovi2
 msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
-msgstr ""
+msgstr "Saityno „DataProvider“ modulis%sDuomenų modulis, kuris naudodamas „WebDataProvider“ modulius doroja WEB (HTTP) programoms skirtas duomenų užklausas."
 
 #: weblazideintf.rswebextdirect
 msgid "Web Ext.Direct Module"
-msgstr ""
+msgstr "Saityno „Ext.Direct“ modulis"
 
 #: weblazideintf.rswebextdirect2
 msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr ""
+msgstr "Saityno „Ext.Direct“ modulis%sDuomenų modulis, kuris naudodamas „TJSONRPCHandler“ komponentus skirsto „Ext.Direct“ užklausas WEB (HTTP) programose."
 
 #: weblazideintf.rswebjsonrpcmo
 msgid "Web JSON-RPC Module"
-msgstr ""
+msgstr "Saityno „JSON-RPC“ modulis"
 
 #: weblazideintf.rswebjsonrpcmo2
 msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr ""
+msgstr "Saityno „JSON-RPC“ modulis%sDuomenų modulis, kuris naudodamas „TJSONRPCHandler“ komponentus skirsto „JSON-RPC“ užklausas WEB (HTTP) programose."
 
 #: weblazideintf.rswebmodule
 msgid "Web Module"

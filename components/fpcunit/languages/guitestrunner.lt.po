@@ -1,15 +1,16 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-06 13:40+0300\n"
+"PO-Revision-Date: 2017-07-05 12:01+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: guitestrunner.rsalltests
 msgid "All Tests"
@@ -68,77 +69,61 @@ msgid "Unit name: %s"
 msgstr "Modulio pavadinimas: %s"
 
 #: guitestrunner.sactcheckall
-#, fuzzy
-#| msgid "Check all Tests"
 msgid "Select all tests"
-msgstr "Tikrinti visus testavimus"
+msgstr "Žymėti visus testavimus"
 
 #: guitestrunner.sactcheckcurrentsuite
-#, fuzzy
-#| msgid "Check the Current Suite"
 msgid "Select current suite"
-msgstr "Tikrinti veikiamąjį komplektą"
+msgstr "Žymėti veikiamąjį komplektą"
 
 #: guitestrunner.sactcloseform
 msgid "Quit"
 msgstr "Baigti darbą"
 
 #: guitestrunner.sactcloseformh
-#, fuzzy
-#| msgid "Quit Testting"
 msgid "Quit testing"
 msgstr "Baigti testavimą"
 
 #: guitestrunner.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "Tekstą kopijuoti iškarpinėn"
 
 #: guitestrunner.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "Visą tekstą kopijuoti iškarpinėn"
 
 #: guitestrunner.sactrunaction
-#, fuzzy
-#| msgid "&Run"
 msgid "&Run all"
-msgstr "&Vykdyti"
+msgstr "&Vykdyti viską"
 
 #: guitestrunner.sactrunactionh
-#, fuzzy
-#| msgid "Run all checked test(s)"
 msgid "Run all checked tests"
-msgstr "Vykdyti parinktus testavimus"
+msgstr "Vykdyti visus parinktus testavimus"
 
 #: guitestrunner.sactrunhighlightedtest
-#, fuzzy
-#| msgid "Run highlighted test"
 msgctxt "guitestrunner.sactrunhighlightedtest"
 msgid "Run selected"
-msgstr "Vykdyti pažymėtus testavimus"
+msgstr "Vykdyti pažymėtus"
 
 #: guitestrunner.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "Vykdyti pažymėtus testus"
 
 #: guitestrunner.sactsaveresults
 msgid "Save results"
-msgstr ""
+msgstr "Įrašyti rezultatus"
 
 #: guitestrunner.sactsaveresultsh
 msgid "Save XML results to file"
-msgstr ""
+msgstr "„XML“ rezultatus įrašyti failan"
 
 #: guitestrunner.sactuncheckall
-#, fuzzy
-#| msgid "Uncheck all tests"
 msgid "Deselect all tests"
-msgstr "Naikinti testavimų žymėjimą"
+msgstr "Naikinti visų testavimų žymėjimą"
 
 #: guitestrunner.sactuncheckcurrentsuite
-#, fuzzy
-#| msgid "Uncheck the Current Suite"
 msgid "Deselect current suite"
-msgstr "Naikinti žymėjimą veikiamajame komplekte"
+msgstr "Naikinti veikiamojo komplekto žymėjimą"
 
 #: guitestrunner.sbtnclose
 msgid "Close"
@@ -159,15 +144,15 @@ msgstr "FPCUnit – modulio testavimas"
 
 #: guitestrunner.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "Veiksmai"
 
 #: guitestrunner.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "Keisti"
 
 #: guitestrunner.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "Testavimų medis"
 
 #: guitestrunner.stshresults
 msgid "Results XML"

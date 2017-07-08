@@ -1,0 +1,218 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 16:26+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: lr_add_function_const.sdatecategory
+msgid "Date"
+msgstr "Data"
+
+#: lr_add_function_const.sdescriptionabs
+msgid "ABS(<Number>)/Returns absolute value <Number>"
+msgstr "ABS(<Number>)/Grąžina absoliučią vertę <Number>"
+
+#: lr_add_function_const.sdescriptionchr
+msgid "CHR(<Code>)/Returns symbol of ASCII code <Code>."
+msgstr "CHR(<Code>)/Grąžina ASCII kodo simbolį<Code>."
+
+#: lr_add_function_const.sdescriptioncomparestr
+msgid "COMPARESTR(<String1>,<String2>)/Compares two strings. Returns the position where begins the difference between the strings or 0 if strings are equivalent."
+msgstr "COMPARESTR(<String1>,<String2>)/Lygina du tekstus. Grąžina pirmą poziciją,  kurioje tekstai skiriasi, arba 0 jei tekstai vienodi."
+
+#: lr_add_function_const.sdescriptioncreatedate
+msgid "CREATEDATE(<String>)/Converts <String> string to string that contains date to use it in SQL clause. To use this function put the string with desired date format to TfrAddFunctionLibrary.FormatDate property."
+msgstr "CREATEDATE(<String>)/Tekstą <String> keičia į tekstą su data, tinkamą naudoti  „SQL“ sakinyje. Norimas datos formatas nurodomas  savybėje „TfrAddFunctionLibrary.FormatDate“."
+
+#: lr_add_function_const.sdescriptioncreatenum
+msgid "CREATENUM(<String>)/Converts <String> string to string that contains numeric value to use it in SQL clause."
+msgstr "CREATENUM(<String>)/Tekstą <String> konvertuoja į skaitinę vertę, kuri tinkama  naudoti „SQL“ sakinyje."
+
+#: lr_add_function_const.sdescriptioncreatestr
+msgid "CREATESTR(<String>)/Adds quotes to the <String> string to use it in SQL clause."
+msgstr "CREATESTR(<String>)/Tekstą <String> apgaubia kabutėmis, jis tinkamas  naudoti „SQL“ sakinyje."
+
+#: lr_add_function_const.sdescriptiondatediff
+msgid "DATEDIFF(<Date1>,<Date2>,<var String>)/Returns the difference between two dates <Date1> and <Date2>. Result is in the string <String> in format \"days;months;years\"."
+msgstr "DATEDIFF(<Date1>,<Date2>,<var String>)/Grąžina skirtumą tarp datų <Date1> ir  <Date2>. Rezultatas bus tekstas <String> formatuotas „dienos;mėnesiai;metai“."
+
+#: lr_add_function_const.sdescriptiondatetostr
+msgid "DATETOSTR(<Date>)/Converts date <Date> to string and returns the result."
+msgstr "DATETOSTR(<Date>)/Datą <Date> konvertuoja į tekstą ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptiondayspermonth
+msgid "DAYSPERMONTH(<Year>,<Month>)/Returns days in the given month <Month> of the year <Year>."
+msgstr "DAYSPERMONTH(<Year>,<Month>)/Grąžina dienų skaičių metų <Year> mėnesyje <Month>."
+
+#: lr_add_function_const.sdescriptiondelete
+msgid "DELETE(<String>,<DelFrom>,<DelCount>)/Deletes <DelCount> symbols starting at position <DelFrom> in the given string <String> and returns the result."
+msgstr "DELETE(<String>,<DelFrom>,<DelCount>)/Nurodytame tekste <String> pradedant  pozicija <DelFrom> pašalina <DelCount> simbolių kiekį ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptionendpos
+msgid "ENDPOS(<String>,<SubStr>)/Returns position of substring <SubStr> in the string <String> starting at the end of the string."
+msgstr "ENDPOS(<String>,<SubStr>)/Pradedant nuo teksto <String> galo ieško  teksto <SubStr> ir grąžina jo poziciją."
+
+#: lr_add_function_const.sdescriptionextractword
+msgid "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Returns word number <WordNo> from the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "EXTRACTWORD(<WordNo>,<String>,<Delimiters>)/Grąžina tekste <String> esantį žodį,  kurio numeris yra <WordNo>. Žodžiai tekste atskiriami skirtuku <Delimiters>."
+
+#: lr_add_function_const.sdescriptionfirstdayofnextmonth
+msgid "FIRSTDAYOFNEXTMONTH(<Date>)/Returns the date of first day of the next month of date <Date>."
+msgstr "FIRSTDAYOFNEXTMONTH(<Date>)/Grąžina datos <Date> kiro mėnesio pirmosios dienos datą."
+
+#: lr_add_function_const.sdescriptionfirstdayofprevmonth
+msgid "FIRSTDAYOFPREVMONTH(<Date>)/Returns the date of first day of the previous month of date <Date>."
+msgstr "FIRSTDAYOFPREVMONTH(<Date>)/Grąžina datos <Date> ankstesniojo mėnesio  pirmosios dienos datą."
+
+#: lr_add_function_const.sdescriptionincdate
+msgid "INCDATE(<Date>,<String>)/Increments the date <Date> by given number of days, months and years passed in the <String> parameter in format \"days;months;years\". Returns the result date."
+msgstr "INCDATE(<Date>,<String>)/Datą <Date> padidina tekste <String> nurodytu dienų skaičiumi  ir grąžina rezultatą. Teksto <String> formatas turi būti „dienos;mėnesiai;metai“."
+
+#: lr_add_function_const.sdescriptionincday
+msgid "INCDAY(<Date>,<Number>)/Increments the date <Date> by given number of days <Number> and returns the result date."
+msgstr "INCDAY(<Date>,<Number>)/Datą <Date> padidina <Number> nurodytu dienų skaičiumi  ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptionincmonth
+msgid "INCMONTH(<Date>,<Number>)/Increments the date <Date> by given number of months <Number> and returns the result date."
+msgstr "INCMONTH(<Date>,<Number>)/Datą <Date> padidina <Number> nurodytu mėnesių skaičiumi  ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptioninctime
+msgid "INCTIME(<Time>,<String>)/Increments the time <Time> by given number of hours, minutes, seconds and milliseconds passed in the <String> parameter in format \"h;min;sec;msec\". Returns the result time."
+msgstr "INCTIME(<Time>,<String>)/Laiką <Time> padidina tekste <String> nurodytu laiku ir grąžina rezultatą. Teksto <String> formatas turi būti „valandos;minutės;sekundės;milisekundės“."
+
+#: lr_add_function_const.sdescriptionincyear
+msgid "INCYEAR(<Date>,<Number>)/Increments the date <Date> by given number of years <Number> and returns the result date."
+msgstr "INCYEAR(<Date>,<Number>)/Datą <Date> padidina <Number> nurodytu metų skaičiumi  ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptioninsert
+msgid "INSERT(<SubStr>,<String>,<InsertFrom>)/Inserts <SubStr> substring into <String> string starting at position <InsertFrom> and returns the result."
+msgstr "INSERT(<SubStr>,<String>,<InsertFrom>)/Tekste <String> pradedant pozicija  <InsertFrom> įterpia tekstą <SubStr> ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptionisleapyear
+msgid "ISLEAPYEAR(<Year>)/Returns True if <Year> year is leap year."
+msgstr "ISLEAPYEAR(<Year>)/Grąžina TRUE jei metai <Year> yra keliamieji."
+
+#: lr_add_function_const.sdescriptionisrangedate
+msgid "ISRANGEDATE(<Date1>,<Date2>,<Date3>)/Returns True if date <Date3> is between <Date1> and <Date2>."
+msgstr "ISRANGEDATE(<Date1>,<Date2>,<Date3>)/Grąžina TRUE jei data <Date3> yra tarp datų <Date1> ir <Date2>."
+
+#: lr_add_function_const.sdescriptionisrangenum
+msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is between <Number1> and <Number2>."
+msgstr "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Grąžina TRUE jei skaičius <Number3> yra tarp skaičių <Number1> ir <Number2>."
+
+#: lr_add_function_const.sdescriptioniswordpresent
+msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Grąžina ar žodis <Word> yra  tekste <String>. Žodžiai tekste atskiriami skirtuku <Delimiters>."
+
+#: lr_add_function_const.sdescriptionlastdayofprevmonth
+msgid "LASTDAYOFPREVMONTH(<Date>)/Returns the date of last day of the previous month of date <Date>."
+msgstr "LASTDAYOFPREVMONTH(<Date>)/Grąžina datos <Date> ankstesnio mėnesio  paskutinės dienos datą."
+
+#: lr_add_function_const.sdescriptionleftcopy
+msgid "LEFTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the begin of the string."
+msgstr "LEFTCOPY(<String>,<Count>)/ Grąžina <Count> simbolių esančių tekste <String> pradedant nuo pirmojo simbolio."
+
+#: lr_add_function_const.sdescriptionnpos
+msgid "NPOS(<SubStr>,<String>,<SubStrNo>)/Returns position of <SubStrNo>-th substring <SubStr> inclusion in the string <String>."
+msgstr "NPOS(<SubStr>,<String>,<SubStrNo>)/Tekste <String> ieško teksto <SubStr> ir  grąžina <SubStrNo>-ojo atitikmens pradios poziciją."
+
+#: lr_add_function_const.sdescriptionpadcenter
+msgid "PADCENTER(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin and end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADCENTER(<String>,<Length>,<Symbol>)/Teksto <String> pradžioje ir gale prideda  simbolių <Symbol> taip, kad teksto ilgis taptų <Length>, o pats tekstas būtų  centruotas. Grąžinamas rezultatas."
+
+#: lr_add_function_const.sdescriptionpadleft
+msgid "PADLEFT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to begin of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADLEFT(<String>,<Length>,<Symbol>)/Teksto <String> pradžioje prideda  simbolių <Symbol> taip, kad teksto ilgis taptų <Length>. Grąžinamas rezultatas."
+
+#: lr_add_function_const.sdescriptionpadright
+msgid "PADRIGHT(<String>,<Length>,<Symbol>)/Adds symbols <Symbol> to end of the string <String> to make it as long as stated in the <Length> parameter and returns result string."
+msgstr "PADRIGHT(<String>,<Length>,<Symbol>)/Teksto <String> gale prideda  simbolių <Symbol> taip, kad teksto ilgis taptų <Length>. Grąžinamas rezultatas."
+
+#: lr_add_function_const.sdescriptionreplacestr
+msgid "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Replaces all inclusions of <SubStr1> string to the <SubStr2> string in the string <String> and returns the result."
+msgstr "REPLACESTR(<String>,<SubStr1>,<SubStr2>)/Tekste <String> visus tekstus  <SubStr1> pakeičia į <SubStr2> ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptionreplicate
+msgid "REPLICATE(<Symbol>,<Length>)/Returns the string with length <Length> that consists of symbols <Symbol>."
+msgstr "REPLICATE(<Symbol>,<Length>)/Grąžina tekstą, kuris sudarytas iš <Length>  skaičiaus simbolių <Symbol>."
+
+#: lr_add_function_const.sdescriptionrightcopy
+msgid "RIGHTCOPY(<String>,<Count>)/Copies number of symbols <Count> from the string <String> starting at the end of the string."
+msgstr "RIGHTCOPY(<String>,<Count>)/Gražina tekste <String> simbolių kiekį <Count> pradedant nuo teksto galo."
+
+#: lr_add_function_const.sdescriptionstrtodatedef
+msgid "STRTODATEDEF(<String>,<DefDate>)/Converts <String> string to date. If conversion fails, returns default value <DefDate>."
+msgstr "STRTODATEDEF(<String>,<DefDate>)/Tekstą <String> konvertuoja į datą. Nepavykus grąžinama numatytoji vertė <DefDate>."
+
+#: lr_add_function_const.sdescriptionstrtofloat
+msgid "STRTOFLOAT(<String>)/Converts <String> string to the float value."
+msgstr "STRTOFLOAT(<String>)/Tekstą <String> keičia į slankaus kablelio skaičių."
+
+#: lr_add_function_const.sdescriptionstrtofloatdef
+msgid "STRTOFLOATDEF(<String>,<DefValue>)/Converts <String> string to float value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOFLOATDEF(<String>,<DefValue>)/Tekstą <String> keičia į slankaus kablelio skaičių. Nepavykus grąžinama numatyroji vertė <DefValue>."
+
+#: lr_add_function_const.sdescriptionstrtoint
+msgid "STRTOINT(<String>)/Converts <String> string to the integer value."
+msgstr "STRTOINT(<String>)/Tekstą <String> keičia į sveikąjį skaičių."
+
+#: lr_add_function_const.sdescriptionstrtointdef
+msgid "STRTOINTDEF(<String>,<DefValue>)/Converts <String> string to integer value. If conversion fails, returns default value <DefValue>."
+msgstr "STRTOINTDEF(<String>,<DefValue>)/Tekstą <String> keičia į sveikąjį skaičių.  Nepavykus grąžinama numatytoji vertė <DefValue>."
+
+#: lr_add_function_const.sdescriptionswap
+msgid "SWAP(<var var1>,<var var2>)/Swaps the variables var1 and var2."
+msgstr "SWAP(<var var1>,<var var2>)/Vertes <var1> ir <var2> apkeičia tarpusavyje."
+
+#: lr_add_function_const.sdescriptiontimetostr
+msgid "TIMETOSTR(<Time>)/Converts time <Time> to string and returns the result."
+msgstr "TIMETOSTR(<Time>)/Laiką <Time> keičia tekstu ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptiontrimleft
+msgid "TRIMLEFT(<String>)/Trims all left spaces from the string <String> and returns the result."
+msgstr "TRIMLEFT(<String>)/Teksto <String> kairėje šalina tarpo simbolius ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptiontrimright
+msgid "TRIMRIGHT(<String>)/Trims all right spaces from the string <String> and returns the result."
+msgstr "TRIMRIGHT(<String>)/Teksto <String> gale šalina tarmpo simbolius ir grąžina rezultatą."
+
+#: lr_add_function_const.sdescriptionvaliddate
+msgid "VALIDDATE(<String>)/Returns True if <String> string is valid date."
+msgstr "VALIDDATE(<String>)/Jei tekstas <String> priimtinas kaip data, tai grąžina TRUE."
+
+#: lr_add_function_const.sdescriptionvalidfloat
+msgid "VALIDFLOAT(<String>)/Returns True if <String> is valid float value."
+msgstr "VALIDFLOAT(<String>)/Jei tekstas <String> priimtinas kaip slankiojo  kablelio skaičius, tai grąžinamas TRUE."
+
+#: lr_add_function_const.sdescriptionvalidint
+msgid "VALIDINT(<String>)/Returns True if <String> is valid integer value."
+msgstr "VALIDINT(<String>)/Jei tekstas <String> priimtinas kaip sveikasis skaičius, tai grąžinamas TRUE."
+
+#: lr_add_function_const.sdescriptionwordcount
+msgid "WORDCOUNT(<String>,<Delimiters>)/Returns number of words in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDCOUNT(<String>,<Delimiters>)/Grąžina žodžių kiekį tekste <String>. Žodžiai  tekste atskiriami <Delimiters> skirtuku."
+
+#: lr_add_function_const.sdescriptionwordposition
+msgid "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Returns position of word number <WordNo> in the string <String>.<Delimiters> is the list of word delimiters."
+msgstr "WORDPOSITION(<WordNo>,<String>,<Delimiters>)/Grąžina tekste <String> esančio <WordNo>-ojo  žodio poziciją. Žodžiai tekste atskiriami skirtuku <Delimiters>."
+
+#: lr_add_function_const.smathcategory
+msgid "Math"
+msgstr "Matematika"
+
+#: lr_add_function_const.sothercategory
+msgid "Other"
+msgstr "Kita"
+
+#: lr_add_function_const.sstringcategory
+msgid "String"
+msgstr "Tekstas"
+

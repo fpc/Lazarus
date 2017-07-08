@@ -1,0 +1,132 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-07 23:32+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: stringsunit.rsbeer
+msgctxt "stringsunit.rsbeer"
+msgid "Beer"
+msgstr "Alus"
+
+#: stringsunit.rseight
+msgid "Eight"
+msgstr "Aštuoni"
+
+#: stringsunit.rsfive
+msgid "Five"
+msgstr "Penki"
+
+#: stringsunit.rsfour
+msgid "Four"
+msgstr "Keturi"
+
+#: stringsunit.rsnine
+msgid "Nine"
+msgstr "Devyni"
+
+#: stringsunit.rsone
+msgid "One"
+msgstr "Vienas"
+
+#: stringsunit.rsseven
+msgid "Seven"
+msgstr "Septyni"
+
+#: stringsunit.rssix
+msgid "Six"
+msgstr "Šeši"
+
+#: stringsunit.rssumofselectednumbers
+msgid "Sum of selected numbers: %s"
+msgstr "Pažymėtų skaičių suma: %s"
+
+#: stringsunit.rsthree
+msgid "Three"
+msgstr "Trys"
+
+#: stringsunit.rstodayis
+msgctxt "stringsunit.rstodayis"
+msgid "Today is %s"
+msgstr "Dabar yra %s"
+
+#: stringsunit.rstwo
+msgid "Two"
+msgstr "Du"
+
+#: stringsunit.rswater
+msgctxt "stringsunit.rswater"
+msgid "Water"
+msgstr "Vanduo"
+
+#: stringsunit.rswine
+msgctxt "stringsunit.rswine"
+msgid "Wine"
+msgstr "Vynas"
+
+#: stringsunit.rsyouselected
+msgctxt "stringsunit.rsyouselected"
+msgid "You selected %s."
+msgstr "Pažymėjote %s"
+
+#: stringsunit.rsyouselectedat
+msgctxt "stringsunit.rsyouselectedat"
+msgid "You selected %0:s at %1:s."
+msgstr "Pažymėjote %0:s ties %1:s."
+
+#: tform2.caption
+msgid "Second Form"
+msgstr "Antroji forma"
+
+#: tform2.checkgroup.caption
+msgctxt "TFORM2.CHECKGROUP.CAPTION"
+msgid "Several items"
+msgstr "Keletas elementų"
+
+#: tform2.groupbox1.caption
+msgid "Please select"
+msgstr "Parinkite"
+
+#: tform2.radiogroup.caption
+msgctxt "TFORM2.RADIOGROUP.CAPTION"
+msgid "Single item"
+msgstr "Vienas elementas"
+
+#: tmainform.button1.caption
+msgctxt "TMAINFORM.BUTTON1.CAPTION"
+msgid "Open second form"
+msgstr "Atverti antrąją formą"
+
+#: tmainform.button2.caption
+msgctxt "TMAINFORM.BUTTON2.CAPTION"
+msgid "What did you select?"
+msgstr "Ką jūs pažymėsite?"
+
+#: tmainform.caption
+msgctxt "TMAINFORM.CAPTION"
+msgid "Translation demo"
+msgstr "Vertimo demonstracija"
+
+#: tmainform.label1.caption
+msgctxt "TMAINFORM.LABEL1.CAPTION"
+msgid "Select language"
+msgstr "Parinkite kalbą"
+
+#: tmainform.lblcurrentselection.caption
+msgctxt "TMAINFORM.LBLCURRENTSELECTION.CAPTION"
+msgid "No drink selected."
+msgstr "Nepasirinktas gėrimas."
+
+#: tmainform.rgdrinks.caption
+msgctxt "TMAINFORM.RGDRINKS.CAPTION"
+msgid "Please select a drink"
+msgstr "Pasirinkite gėrimą"
+

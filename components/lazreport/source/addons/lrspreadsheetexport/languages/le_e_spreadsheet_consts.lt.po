@@ -1,0 +1,126 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 16:40+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: le_e_spreadsheet_consts.sallinonepage
+msgid "All in one page"
+msgstr "Viską viename lape"
+
+#: le_e_spreadsheet_consts.sallpages
+msgid "All pages"
+msgstr "Visus lapus"
+
+#: le_e_spreadsheet_consts.sautocreatefile
+msgid "Auto create file"
+msgstr "Failą kurti automatiškai"
+
+#: le_e_spreadsheet_consts.schunkseach
+msgid "Chunks. Each chunk has (rows):"
+msgstr "Dalys. Kiekvienoje dalyje yra (eilučių):"
+
+#: le_e_spreadsheet_consts.scurrentpage
+msgid "Current page"
+msgstr "Aktyvus lapas"
+
+#: le_e_spreadsheet_consts.sdatagrouping
+msgid "Data grouping"
+msgstr "Duomenų grupavimas"
+
+#: le_e_spreadsheet_consts.sdeleteemptyrows
+msgid "Delete empty rows"
+msgstr "Šalinti tuščias eilutes"
+
+#: le_e_spreadsheet_consts.senterpagenumbers
+msgid ""
+"Enter page numbers and/or page ranges,\n"
+"separated by commas. For example, 1,3,5-12\n"
+msgstr ""
+"Įveskite lapų numerius ir/arba lapų rėžius,\n"
+"atskirtus kableliais. Pavyzdžiui, 1,3,5-12\n"
+
+#: le_e_spreadsheet_consts.sexportpagefooter
+msgid "Export page footer"
+msgstr "Eksportuoti lapo poraštę"
+
+#: le_e_spreadsheet_consts.sexportpageheader
+msgid "Export page header"
+msgstr "Eksportuoti lapo antraštę"
+
+#: le_e_spreadsheet_consts.sexportpictures
+msgid "Export pictures"
+msgstr "Eksportuoti paveikslus"
+
+#: le_e_spreadsheet_consts.sexportprintrange
+msgid "Export print range"
+msgstr "Eksportuoti spausdinimo rėžį"
+
+#: le_e_spreadsheet_consts.sexportreportsummary
+msgid "Export report summary"
+msgstr "Eksportuoti ataskaitos suvestinę"
+
+#: le_e_spreadsheet_consts.sexportreporttitle
+msgid "Export report title"
+msgstr "Eksportuoti ataskaitos pavadinimą"
+
+#: le_e_spreadsheet_consts.sexportsettings
+msgid "Export settings"
+msgstr "Eksportuoti nuostatas"
+
+#: le_e_spreadsheet_consts.sexporttospreadsheet
+msgid "Export to spreadsheet"
+msgstr "Eksportuoti lentelę"
+
+#: le_e_spreadsheet_consts.sexporturl
+msgid "Export URL"
+msgstr "Eksportuoti adresą"
+
+#: le_e_spreadsheet_consts.sgeneral
+msgid "General"
+msgstr "Pagrindinis"
+
+#: le_e_spreadsheet_consts.slikethereport
+msgid "Like the report"
+msgstr "Kaip ir ataskaita"
+
+#: le_e_spreadsheet_consts.smergecells
+msgid "Merge cells"
+msgstr "Sulieti langelius"
+
+#: le_e_spreadsheet_consts.sonlyonecomponent
+msgid "Only one TlrSpreadSheetExport component allowed."
+msgstr "Leidžiamas tik „TlrSpreadSheetExport“ komponentas."
+
+#: le_e_spreadsheet_consts.sopenafterexport
+msgid "Open after export"
+msgstr "Eksportavus atverti"
+
+#: le_e_spreadsheet_consts.spagebreaks
+msgid "Page breaks"
+msgstr "Lapų lūžiai"
+
+#: le_e_spreadsheet_consts.spagename
+msgid "Page %d"
+msgstr "Lapas %d"
+
+#: le_e_spreadsheet_consts.spagerange
+msgid "Page range"
+msgstr "Lapų rėžis"
+
+#: le_e_spreadsheet_consts.spages
+msgid "Pages:"
+msgstr "Lapai:"
+
+#: le_e_spreadsheet_consts.sreportpagename
+msgid "Report"
+msgstr "Ataskaita"
+

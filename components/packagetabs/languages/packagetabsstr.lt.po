@@ -1,0 +1,46 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 20:03+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: packagetabsstr.saddtoproject
+msgid "Add To Project"
+msgstr "Pridėti į projektą"
+
+#: packagetabsstr.scloneto
+msgid "Clone To"
+msgstr "Klonuoti į"
+
+#: packagetabsstr.scopyfilepathtoclipboard
+msgid "Copy File Path To Clipboard"
+msgstr "Failo kelią kopijuoti iškarpinėn"
+
+#: packagetabsstr.sfindinotherwindow
+msgid "Find In Other Window"
+msgstr "Išekoti kitame lange"
+
+#: packagetabsstr.smoveto
+msgid "Move To"
+msgstr "Perkelti į"
+
+#: packagetabsstr.snewwindow
+msgid "New Window"
+msgstr "Naują langą"
+
+#: packagetabsstr.sopenpackage
+msgid "Open package"
+msgstr "Atverti paketą"
+
+#: packagetabsstr.sother
+msgid "Other"
+msgstr "Kita"
+

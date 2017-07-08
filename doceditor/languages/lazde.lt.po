@@ -1,12 +1,13 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2012-08-06 22:22+0300\n"
+"PO-Revision-Date: 2017-07-07 23:30+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
@@ -29,7 +30,7 @@ msgstr "Parinkite naują aprašo failą"
 
 #: lazdemsg.sadditionalparams
 msgid "Additional parameters for fpdoc"
-msgstr ""
+msgstr "Papildomi „fpdoc“ skirti parametrai"
 
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
@@ -166,10 +167,8 @@ msgid " in package "
 msgstr " pakete "
 
 #: lazdemsg.sfortopic
-#, fuzzy
-#| msgid " in topic"
 msgid " in topic "
-msgstr " temoje "
+msgstr "temoje"
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
@@ -235,7 +234,7 @@ msgstr "Kintamasis"
 #: lazdemsg.shintinsertbulletedlist
 msgctxt "lazdemsg.shintinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Įterpti suženklintąjį sąrašą"
 
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
@@ -255,7 +254,7 @@ msgstr "Naujas modulis"
 #: lazdemsg.shintinsertnumberedlist
 msgctxt "lazdemsg.shintinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Įterpti sunumeruotą sąrašą"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -277,10 +276,8 @@ msgid "New topic"
 msgstr "Nauja tema"
 
 #: lazdemsg.shintmenunewfromfile
-#, fuzzy
-#| msgid "New from file..."
 msgid "New from file ..."
-msgstr "Naujas, pagal failą..."
+msgstr "Naujas, pagal failą…"
 
 #: lazdemsg.shinttoolbaradd
 msgid "Add"
@@ -310,11 +307,11 @@ msgstr "Importuoti turinio failą"
 #: lazdemsg.sinsertbulletedlist
 msgctxt "lazdemsg.sinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Įterpti suženklintąjį sąrašą"
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
-msgstr ""
+msgstr "Įterpti pavyzdžio kodą"
 
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
@@ -324,7 +321,7 @@ msgstr "Įterpti saitą"
 #: lazdemsg.sinsertnumberedlist
 msgctxt "lazdemsg.sinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Įterpti sunumeruotą sąrašą"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -337,7 +334,7 @@ msgstr "Įterpti lentelę"
 
 #: lazdemsg.sitemscount
 msgid "Items count"
-msgstr ""
+msgstr "Elementų kiekis"
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
@@ -349,11 +346,11 @@ msgstr " saitas į "
 
 #: lazdemsg.slinktarget
 msgid "Link target"
-msgstr ""
+msgstr "Susieti tikslą"
 
 #: lazdemsg.slinktext
 msgid "Link text"
-msgstr ""
+msgstr "Susieti tekstą"
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -474,10 +471,8 @@ msgid "&Help"
 msgstr "Žin&ynas"
 
 #: lazdemsg.smenuhelpabout
-#, fuzzy
-#| msgid "&About..."
 msgid "&About ..."
-msgstr "&Apie..."
+msgstr "&Apie…"
 
 #: lazdemsg.smenuinsert
 msgid "&Insert"
@@ -485,7 +480,7 @@ msgstr "Į&terpti"
 
 #: lazdemsg.smenuinsertbulletedlist
 msgid "Bulleted list"
-msgstr ""
+msgstr "Suženklintasis sąrašas"
 
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
@@ -497,7 +492,7 @@ msgstr "&Saitą"
 
 #: lazdemsg.smenuinsertlist
 msgid "List"
-msgstr ""
+msgstr "Sąrašas"
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
@@ -505,7 +500,7 @@ msgstr "&Modulį"
 
 #: lazdemsg.smenuinsertnumberedlist
 msgid "Numbered list"
-msgstr ""
+msgstr "Numeruotas sąrašas"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -575,7 +570,7 @@ msgstr "Nauja tema"
 
 #: lazdemsg.snodename
 msgid "Node name"
-msgstr ""
+msgstr "Mazgo pavadinimas"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -677,7 +672,7 @@ msgstr "Į&rašyti"
 
 #: lazdemsg.ssavebeforebuildquestion
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr ""
+msgstr "„%s“ yra neįrašytų pakitimų.%sTam, kad pakitimai būtų matomi darytoje dokumentacijoje, juos būtina įrašyti. Ar įrašyti?"
 
 #: lazdemsg.sseealso
 msgid "See Also"
@@ -692,10 +687,8 @@ msgid "Select output file name"
 msgstr "Parinkite išvesties failo pavadinimą"
 
 #: lazdemsg.sselectsometext
-#, fuzzy
-#| msgid "Select some text"
 msgid "Select some text."
-msgstr "Pažymėkite kažkiek teksto"
+msgstr "Pažymėti kažkiek teksto."
 
 #: lazdemsg.sshortdescription
 msgid "Short"
@@ -710,9 +703,8 @@ msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
 msgstr "Programa „makeskel“ pranešė apie klaidą (%d). Vis tiek bandyti įkelti sukurtąjį failą?"
 
 #: lazdemsg.sskelerrorwithoutfile
-#, fuzzy,badformat
 msgid "makeskel reported an error (%d) and produced no file."
-msgstr "Programa „makeskel“ pranešė apie klaidą bei nesukūrė failo."
+msgstr "Programa „makeskel“ pranešė apie klaidą (%d) bei nesukūrė failo."
 
 #: lazdemsg.ssourcescapt
 msgid "Sources"
@@ -724,15 +716,15 @@ msgstr "Pradžios elementas „%s“ nerastas"
 
 #: lazdemsg.stablecols
 msgid "Columns"
-msgstr ""
+msgstr "Stulpeliai"
 
 #: lazdemsg.stableheader
 msgid "Use header row"
-msgstr ""
+msgstr "Naudoti antraštės eilutę"
 
 #: lazdemsg.stablerows
 msgid "Rows"
-msgstr ""
+msgstr "Eilutės"
 
 #: lazdemsg.stargetos
 msgid "Target OS"

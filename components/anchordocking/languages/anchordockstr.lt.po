@@ -1,22 +1,21 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
-"PO-Revision-Date: 2013-02-11 00:50+0400\n"
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 11:03+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 2.0\n"
 "POT-Creation-Date: \n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-#, fuzzy,badformat
-#| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
-msgstr "Laisvoji skyriklio kraštinė neturi būti pririšta: mazgas = %s%s%s, tipas = %s, prieraišos[%s] = %s%s%s"
+msgstr "Laisvoji skyriklio kraštinė neturi būti pririšta: mazgas = „%0:s“, tipas = %1:s, prieraišos[%2:s] = „%3:s“"
 
 #: anchordockstr.adrsallfiles
 msgid "All files"
@@ -31,28 +30,20 @@ msgid "Anchor Docking Layout"
 msgstr "Prieraišų pritvirtinimų maketas"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-#, fuzzy,badformat
-#| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Prieraiša nėra skyriklis: mazgas = %s%s%s, prieraišos[%s] = %s%s%s"
+msgstr "Prieraiša nėra skyriklis: mazgas = „%0:s“, prieraišos[%1:s] = „%2:s“"
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-#, fuzzy,badformat
-#| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Prieraiša nerasta: mazgas = %s%s%s, prieraišos[%s] = %s%s%s"
+msgstr "Prieraiša nerasta: mazgas = „%s“, prieraišos[%s] = „%s“"
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-#, fuzzy,badformat
-#| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Prieraiša netinka skyriklio kraštinei: mazgas = %s%s%s, prieraišos[%s]=%s%s%s"
+msgstr "Prieraiša netinka skyriklio kraštinei: mazgas = „%s“, prieraišos[%s] = „%s“"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-#, fuzzy,badformat
-#| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
-msgstr "Lapas turi būti be prieraišų: mazgas = %s%s%s, tėvas = %s, tėvo tipas = %s, prieraišos[%s] = %s%s%s"
+msgstr "Lapas turi būti be prieraišų: mazgas = „%s“, tėvas = %s, tėvo tipas = %s, prieraišos[%s] = „%s“"
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -71,10 +62,8 @@ msgid "control is already a docksite"
 msgstr "Valdiklis jau yra vieta pritvirtinimui"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-#, fuzzy,badformat
-#| msgid "Custom dock site %s%s%s can have only one site."
 msgid "Custom dock site \"%s\" can have only one site."
-msgstr "Savoje pritvirtinimo vietoje %s%s%s gali būti tik viena vieta pritvirtinimui."
+msgstr "Savoje pritvirtinimo vietoje „%s“ gali būti tik viena vieta pritvirtinimui."
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
@@ -126,19 +115,19 @@ msgstr "Lango maketo nepavyko įrašyti failan „%s“, nes:%s%s"
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
-msgstr ""
+msgstr "Užpildytos antraštes"
 
 #: anchordockstr.adrsfilledheadershint
 msgid "Fill headers of docked controls"
-msgstr ""
+msgstr "Užpildyti įstatytų valdiklių antraštes"
 
 #: anchordockstr.adrsflattenheaders
 msgid "Flatten headers"
-msgstr ""
+msgstr "Plokščios antraštės"
 
 #: anchordockstr.adrsflattenheadershint
 msgid "Flatten headers of docked controls"
-msgstr ""
+msgstr "Įstatytų valdiklių antraštes padaryti plokščiomis"
 
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
@@ -158,7 +147,7 @@ msgstr "Antraštės padėtis"
 
 #: anchordockstr.adrsheaderstyle
 msgid "Header Style:"
-msgstr ""
+msgstr "Antraštės stilius"
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
@@ -221,10 +210,8 @@ msgid "No captions for floating sites"
 msgstr "Nerodyti antraščių plaukiojančioms vietoms pritvirtinimui"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-#, fuzzy,badformat
-#| msgid "No children allowed for Node=%s%s%s Type=%s"
 msgid "No children allowed for Node=\"%s\" Type=%s"
-msgstr "Vaikai negalimi mazge = %s%s%s, tipas=%s"
+msgstr "Vaikai negalimi mazge = „%s“, tipas = „%s“"
 
 #: anchordockstr.adrsnotsupportedhasparent
 msgid "Not supported: %s has parent %s"

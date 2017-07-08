@@ -1,0 +1,194 @@
+# Valdas Jankunas <zmuogs@gmail.com>, 2017.
+msgid ""
+msgstr ""
+"Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2017-07-05 11:22+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language: lt\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: lhelpstrconsts.slhelp_about
+msgid "About"
+msgstr "Apie"
+
+#: lhelpstrconsts.slhelp_about2
+msgid "&About ..."
+msgstr "&Apie…"
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
+msgstr "Neįmanoma apdoroti šio tipo turinio. „%s“ adresui: %s%s"
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
+msgstr "Neįmanoma apdoroti šio tipo poturinio „%s“ adresui: %s%s"
+
+#: lhelpstrconsts.slhelp_close
+msgid "&Close"
+msgstr "Už&verti"
+
+#: lhelpstrconsts.slhelp_contents
+msgid "Contents"
+msgstr "Turiniai"
+
+#: lhelpstrconsts.slhelp_contextshowthehelpinformationrelatedtothiscontext
+msgid "    --context  :  Show the help information related to this context"
+msgstr "    --context  :  Rodyti su šiuo turiniu sisijusią žinyno informaciją"
+
+#: lhelpstrconsts.slhelp_copy
+msgid "Copy"
+msgstr "Kopijuoti"
+
+#: lhelpstrconsts.slhelp_exit
+msgid "E&xit"
+msgstr "&Baigti darbą"
+
+#: lhelpstrconsts.slhelp_file
+msgid "&File"
+msgstr "&Failas"
+
+#: lhelpstrconsts.slhelp_find
+msgid "Find"
+msgstr "Rasti"
+
+#: lhelpstrconsts.slhelp_help
+msgid "&Help"
+msgstr "Žin&ynas"
+
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
+msgstr "Žinyno failai (*.chm)|*.chm|Visi failai (*.*)|*"
+
+#: lhelpstrconsts.slhelp_helpshowthisinformation
+msgid "    --help     :  Show this information"
+msgstr "    --help     :  Rodyti šia informaciją"
+
+#: lhelpstrconsts.slhelp_hidestarthiddenbutacceptcommunicationsviaipc
+msgid "    --hide     :  Start hidden but accept communications via IPC"
+msgstr "    --hide     :  Darba pradėti pasislėpus, tačiau komunikuoti naudojant „IPC“"
+
+#: lhelpstrconsts.slhelp_index
+msgid "Index"
+msgstr "Indeksas"
+
+#: lhelpstrconsts.slhelp_indexloading
+msgid "Index Loading ..."
+msgstr "Indeksas įkeliamas…"
+
+#: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
+msgstr "    --ipcname  :  Pasiklausomo „IPC“ serverio pavadinimas, kuris%s             skirtas programoms, norinčioms kontroliuoti žiūryklę"
+
+#: lhelpstrconsts.slhelp_keyword
+msgid "Keyword:"
+msgstr "Raktažodis:"
+
+#: lhelpstrconsts.slhelp_lhelp
+msgid "LHelp"
+msgstr "LHelp"
+
+#: lhelpstrconsts.slhelp_lhelp2
+msgid "LHelp - %s"
+msgstr "LHelp - %s"
+
+#: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+msgstr "LHelp („CHM“ failų žiūryklė)%sLaida %s%sAutoriaus teisės (C) Andrew Haines, %sLazarus talkininkai"
+
+#: lhelpstrconsts.slhelp_lhelpoptions
+msgid "  LHelp options:"
+msgstr "  LHelp parinktys:"
+
+#: lhelpstrconsts.slhelp_loadedinms
+msgid "Loaded: %s in %sms"
+msgstr "Įkelta: %s per %s ms"
+
+#: lhelpstrconsts.slhelp_loading
+msgid "Loading: %s"
+msgstr "Įkeliama: %s"
+
+#: lhelpstrconsts.slhelp_noresults
+msgid "No Results"
+msgstr "Rezultatų nėra"
+
+#: lhelpstrconsts.slhelp_notfound
+msgid "%s not found!"
+msgstr "„%s“ nerasta!"
+
+#: lhelpstrconsts.slhelp_ok
+msgid "Ok"
+msgstr "Tvarka"
+
+#: lhelpstrconsts.slhelp_open
+msgid "&Open ..."
+msgstr "&Atverti…"
+
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
+msgstr "Atverti esamą failą"
+
+#: lhelpstrconsts.slhelp_opennewfileinseparatetab
+msgid "Open new file in separate tab"
+msgstr "Failą atverti kitoje kortelėje"
+
+#: lhelpstrconsts.slhelp_opennewtabwithstatusbar
+msgid "Open new tab with status bar"
+msgstr "Atverti kortelę su būsenos juosta"
+
+#: lhelpstrconsts.slhelp_openrecent
+msgid "Open Recent"
+msgstr "Atverti paskiauasiai naudotą"
+
+#: lhelpstrconsts.slhelp_openurl
+msgid "Open &URL ..."
+msgstr "Atverti a&dresą…"
+
+#: lhelpstrconsts.slhelp_pagecannotbefound
+msgid "Page cannot be found!"
+msgstr "Neįmanoma rasti puslapio!"
+
+#: lhelpstrconsts.slhelp_pleaseenteraurl
+msgid "Please enter a URL"
+msgstr "Įveskite adresą"
+
+#: lhelpstrconsts.slhelp_search
+msgid "Search"
+msgstr "Rasti"
+
+#: lhelpstrconsts.slhelp_searchresults
+msgid "Search Results:"
+msgstr "Ieškos rezultatai:"
+
+#: lhelpstrconsts.slhelp_showcontents
+msgid "Show contents"
+msgstr "Rodyti turinį"
+
+#: lhelpstrconsts.slhelp_supportedurltypes
+msgid "Supported URL type(s): (%s)"
+msgstr "Palaikomas adreso tipas(-ai): (%s)"
+
+#: lhelpstrconsts.slhelp_tableofcontentsloading
+msgid "Table of Contents Loading ..."
+msgstr "Įkeliama turinio lentelė…"
+
+#: lhelpstrconsts.slhelp_tableofcontentsloadingpleasewait
+msgid "Table of Contents Loading. Please Wait ..."
+msgstr "Įkeliama turinio lentelė. Lukterėkite…"
+
+#: lhelpstrconsts.slhelp_untitled
+msgid "untitled"
+msgstr "be pavadinimo"
+
+#: lhelpstrconsts.slhelp_usagelhelpfilenamecontextidhideipcnamelhelpmyapp
+msgid "    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]"
+msgstr "    Naudojimas: lhelp [[failo_pavadinimas] [--context id] [--hide] [--ipcname lhelp-myapp]]"
+
+#: lhelpstrconsts.slhelp_view
+msgid "&View"
+msgstr "&Rodymas"
+
