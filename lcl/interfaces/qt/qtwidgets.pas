@@ -9966,6 +9966,7 @@ end;
 
 function TQtTextEdit.getText: WideString;
 begin
+  Result := '';
   QTextEdit_toPlainText(QTextEditH(Widget), @Result);
 end;
 
