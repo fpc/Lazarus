@@ -612,7 +612,7 @@ var
   SizeRect: TRect;
   Height, Width: Integer;
   FixedHeight, FixedWidth: boolean;
-  MinWidth, MinHeight, MaxWidth, MaxHeight: Integer;
+  //MinWidth, MinHeight, MaxWidth, MaxHeight: Integer;
 begin
   Result := True;
 
@@ -622,11 +622,10 @@ begin
 
     FixedHeight := false;
     FixedWidth := false;
-
-    MinWidth := 0;
-    MinHeight := 0;
-    MaxWidth := 0;
-    MaxHeight := 0;
+    //MinWidth := 0;
+    //MinHeight := 0;
+    //MaxWidth := 0;
+    //MaxHeight := 0;
 
     if SizeConstraints.Control is TCustomComboBox then
     begin

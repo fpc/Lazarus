@@ -1116,17 +1116,16 @@ end;
 // returns false if the UnicodeChar is not handled
 function TWindowProcHelper.HandleUnicodeChar(var AChar: TUTF8Char): boolean;
 var
-  OldUTF8Char: TUTF8Char;
-  CharLen: integer;
+  OldChar: TUTF8Char;
 begin
   Result := False;
-  OldUTF8Char := AChar;
+  OldChar := AChar;
   if Assigned(lWinControl) then
   begin
     // if somewhere key is changed to '' then don't process this message
     WinProcess := not lWinControl.IntfUTF8KeyPress(AChar, 1, False);
     // if somewhere key is changed then don't perform a regular keypress
-    Result := not WinProcess or (AChar <> OldUTF8Char);
+    Result := not WinProcess or (AChar <> OldChar);
   end;
 end;
 
