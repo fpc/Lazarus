@@ -2004,6 +2004,10 @@ msgstr "Genera codi pel gprof"
 msgid "Grabber color"
 msgstr "Color capturador"
 
+#: lazarusidestrconsts.dlggrayeddesktopsdocked
+msgid "Grayed desktops are for docked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
 msgstr ""

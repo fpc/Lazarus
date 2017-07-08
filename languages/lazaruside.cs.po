@@ -1950,6 +1950,10 @@ msgstr "Vytvářet kód pro gprof"
 msgid "Grabber color"
 msgstr "Barva zachytávače"
 
+#: lazarusidestrconsts.dlggrayeddesktopsdocked
+msgid "Grayed desktops are for docked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
 msgstr "Zašedlé plochy jsou pro prostředí bez ukotvení"

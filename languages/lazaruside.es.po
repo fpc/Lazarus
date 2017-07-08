@@ -1970,6 +1970,10 @@ msgstr "Generar código para gprof"
 msgid "Grabber color"
 msgstr "Coger color"
 
+#: lazarusidestrconsts.dlggrayeddesktopsdocked
+msgid "Grayed desktops are for docked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
 msgstr "Escritorios en gris son para entornos sin acoplamiento."

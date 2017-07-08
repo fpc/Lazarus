@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-10 01:29+0300\n"
+"PO-Revision-Date: 2017-07-08 14:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1948,6 +1948,10 @@ msgstr "Генерировать код для gprof"
 #: lazarusidestrconsts.dlggrabbercolor
 msgid "Grabber color"
 msgstr "Узел захвата"
+
+#: lazarusidestrconsts.dlggrayeddesktopsdocked
+msgid "Grayed desktops are for docked environment."
+msgstr "Серым отмечены рабочие столы для стыкуемого окружения."
 
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."

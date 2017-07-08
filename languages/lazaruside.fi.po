@@ -1920,6 +1920,10 @@ msgstr "Generoi koodi gprof:ia varten"
 msgid "Grabber color"
 msgstr "Tarttujan väri"
 
+#: lazarusidestrconsts.dlggrayeddesktopsdocked
+msgid "Grayed desktops are for docked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
 msgstr "Harmaat työpöydät eivät käytä telakoitua ympäristöä."

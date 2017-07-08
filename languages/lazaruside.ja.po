@@ -1949,6 +1949,10 @@ msgstr "gprofのためのコードを生成"
 msgid "Grabber color"
 msgstr "グラバーの色"
 
+#: lazarusidestrconsts.dlggrayeddesktopsdocked
+msgid "Grayed desktops are for docked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
 msgstr "グレーのデスクトップは非ドック環境のためのものです。"

@@ -1948,6 +1948,10 @@ msgstr "Kód generálása gprof-hoz"
 msgid "Grabber color"
 msgstr "Méretező színe"
 
+#: lazarusidestrconsts.dlggrayeddesktopsdocked
+msgid "Grayed desktops are for docked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
 msgstr "Az elhalványított felületek nem dokkolt környezethez tartoznak."

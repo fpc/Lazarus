@@ -1982,6 +1982,10 @@ msgstr "Gerar código para gprof"
 msgid "Grabber color"
 msgstr "Cor dos esticadores"
 
+#: lazarusidestrconsts.dlggrayeddesktopsdocked
+msgid "Grayed desktops are for docked environment."
+msgstr ""
+
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
 msgstr ""
