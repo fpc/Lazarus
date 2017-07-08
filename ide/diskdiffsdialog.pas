@@ -110,23 +110,33 @@ function ShowDiskDiffsDialog(AnUnitList: TFPList; APackageList: TStringList;
   var
     i: Integer;
     CurUnit: TUnitInfo;
+    Changed: Boolean;
+    MemCode: TCodeBuffer;
+    s, DiskEncoding, MemEncoding: String;
     fs: TFileStreamUTF8;
-    UnitDidNotChange: Boolean;
-    s: string;
   begin
     if AnUnitList=nil then exit;
     for i:=AnUnitList.Count-1 downto 0 do begin
       CurUnit:=TUnitInfo(AnUnitList[i]);
-      UnitDidNotChange:=false;
+      MemCode:=CurUnit.Source;
+      Changed:=true;
       try
-        fs:=TFileStreamUTF8.Create(CurUnit.Filename,fmOpenRead);
+        fs := TFileStreamUTF8.Create(MemCode.Filename, fmOpenRead or fmShareDenyNone);
         try
-          if fs.Size=CurUnit.Source.SourceLength then begin
-            // size has not changed => load to see difference
-            SetLength(s,fs.Size);
-            fs.Read(s[1],length(s));
-            if s=CurUnit.Source.Source then
-              UnitDidNotChange:=true;
+          SetLength(s, fs.Size);
+          if s <> '' then
+            fs.Read(s[1], length(s));
+          DiskEncoding := '';
+          MemEncoding := '';
+          MemCode.CodeCache.OnDecodeLoaded(MemCode,MemCode.Filename,
+            s,DiskEncoding,MemEncoding);
+          //debugln(['CheckUnitsWithLoading ',MemCode.Filename,
+          //  ' ',length(s),'=',MemCode.SourceLength]);
+          if (MemEncoding=MemCode.MemEncoding)
+          and (DiskEncoding=MemCode.DiskEncoding)
+          and (length(s)=MemCode.SourceLength)
+          and (s=MemCode.Source) then begin
+            Changed:=false;
           end;
         finally
           fs.Free;
@@ -134,7 +144,7 @@ function ShowDiskDiffsDialog(AnUnitList: TFPList; APackageList: TStringList;
       except
         // unable to load
       end;
-      if UnitDidNotChange then begin
+      if not Changed then begin
         if (CurUnit.Source<>nil) then CurUnit.Source.MakeFileDateValid;
         AnUnitList.Delete(i);
       end;
