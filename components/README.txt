@@ -89,9 +89,6 @@ IdeLazLogger
 images
   More image formats for LCL applications.
 
-IndustrialStuff
-  Additional controls with industrial/process management theme
-  
 instantfpc
   ?
   
