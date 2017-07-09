@@ -28,7 +28,7 @@ interface
   successful compilation.
 }
 uses
-  Windows, imm, // keep as first
+  Windows, // keep as first
   Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl, character,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLIntf, LclProc, LCLType, LMessages,
