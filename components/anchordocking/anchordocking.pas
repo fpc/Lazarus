@@ -272,6 +272,7 @@ type
                                Inside: boolean): boolean; virtual;
     function DockAnotherControl(Sibling, NewControl: TControl; DockAlign: TAlign;
                                 Inside: boolean): boolean; virtual;
+    procedure ChildVisibleChanged(Sender: TObject); virtual;
     procedure CreatePages; virtual;
     procedure FreePages; virtual;
     function DockSecondPage(NewControl: TControl): boolean; virtual;
@@ -3379,6 +3380,31 @@ begin
   FHeaderSide:=AValue;
 end;
 
+procedure TAnchorDockHostSite.ChildVisibleChanged(Sender: TObject);
+var
+  AControl: TControl;
+begin
+  if Sender is TControl then begin
+    AControl:=TControl(Sender);
+    if not (csDestroying in ComponentState) then begin
+      if (not AControl.Visible)
+      and (not ((AControl is TAnchorDockHeader)
+               or (AControl is TAnchorDockSplitter)
+               or (AControl is TAnchorDockHostSite)))
+      then begin
+        //debugln(['TAnchorDockHostSite.ChildVisibleChanged START ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl),' UpdatingLayout=',UpdatingLayout]);
+        if (SiteType=adhstOneControl) then
+          Hide
+        else if (SiteType=adhstLayout) then begin
+          RemoveControlFromLayout(AControl);
+          UpdateDockCaption;
+        end;
+        //debugln(['TAnchorDockHostSite.ChildVisibleChanged END ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl)]);
+      end;
+    end;
+  end;
+end;
+
 procedure TAnchorDockHostSite.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
@@ -4897,6 +4923,7 @@ begin
   //debugln(['TAnchorDockHostSite.RemoveControl ',DbgSName(Self),'=',Caption,' ',DbgSName(AControl)]);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.RemoveControl'){$ENDIF};
   try
+    AControl.RemoveHandlerOnVisibleChanged(@ChildVisibleChanged);
     inherited RemoveControl(AControl);
     if not (csDestroying in ComponentState) then begin
       if (not ((AControl is TAnchorDockHeader)
@@ -4925,6 +4952,7 @@ begin
             or (AControl is TAnchorDockHeader))
     then
       UpdateDockCaption;
+    AControl.AddHandlerOnVisibleChanged(@ChildVisibleChanged);
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.InsertControl'){$ENDIF};
   end;
