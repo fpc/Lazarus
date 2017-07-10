@@ -552,7 +552,7 @@ var
 
 type
   { TDockManager is an abstract class for managing a dock site's docked
-    controls. See TDockTree below for the more info.
+    controls. See TDockTree below for more info.
     }
   TDockManager = class(TPersistent)
   public
