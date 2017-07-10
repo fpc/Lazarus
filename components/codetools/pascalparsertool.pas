@@ -385,6 +385,7 @@ begin
     Add('LABEL',@KeyWordFuncLabel);
     Add('PROPERTY',@KeyWordFuncProperty);
 
+    Add('GENERIC',@KeyWordFuncProc);
     Add('PROCEDURE',@KeyWordFuncProc);
     Add('FUNCTION',@KeyWordFuncProc);
     Add('CONSTRUCTOR',@KeyWordFuncProc);
@@ -1665,6 +1666,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    procedure MacProcName(c: char; ...); external;
    operator + (dp1: TPoint; dp2: TPoint) dps: TPoint;
    Add('Inc(Rec: TRec1): TRec1;
+   generic function RandomFrom<T>(const AValues:array of T):T;
 
    Delphi mode:
    Function TPOSControler.Logout; // missing function type
@@ -2669,11 +2671,20 @@ end;
 
 function TPascalParserTool.KeyWordFuncProc: boolean;
 // procedure, function, constructor, destructor, operator
-var ChildCreated: boolean;
-  IsFunction, HasForwardModifier, IsClassProc, IsOperator, IsMethod: boolean;
+// class function/procedure
+// generic function/procedure
+var
+  ChildCreated: boolean;
+  IsFunction, HasForwardModifier, IsClassProc, IsOperator, IsMethod,
+    IsGeneric: boolean;
   ProcNode: TCodeTreeNode;
   ParseAttr: TParseProcHeadAttributes;
 begin
+  if UpAtomIs('GENERIC') then begin
+    IsGeneric:=true;
+    ReadNextAtom;
+  end else
+    IsGeneric:=false;
   if UpAtomIs('CLASS') then begin
     if not (CurSection in [ctnImplementation]+AllSourceTypes) then
       SaveRaiseStringExpectedButAtomFound(20170421195603,ctsIdentifier);
@@ -2710,19 +2721,6 @@ begin
   end;
   ReadNextAtom;
   if (CurSection<>ctnInterface) then begin
-    if (Scanner.CompilerMode = cmDELPHI) and AtomIsChar('<') then
-    begin
-      repeat
-        ReadNextAtom;
-        if CurPos.Flag <> cafWord then
-          RaiseExceptionFmt(20170421195034,ctsIdentExpectedButAtomFound, [GetAtom]);
-        ReadNextAtom;
-        if AtomIsChar('>') then Break;
-        if CurPos.Flag <> cafComma then
-          SaveRaiseCharExpectedButAtomFound(20170421195608,',');
-      until False;
-      ReadNextAtom;
-    end;
     while (CurPos.Flag=cafPoint) do begin
       // read procedure name of a class method (the name after the . )
       IsMethod:=True;
@@ -2730,6 +2728,13 @@ begin
       CheckOperatorProc(IsOperator,IsFunction);
       ReadNextAtom;
     end;
+  end;
+  if (Scanner.CompilerMode = cmDELPHI) and AtomIsChar('<') then
+    ReadGenericParamList
+  else if IsGeneric then begin
+    if not AtomIsChar('<') then
+      SaveRaiseCharExpectedButAtomFound(20170710202211,'<');
+    ReadGenericParamList;
   end;
   // read rest of procedure head
   HasForwardModifier:=false;
