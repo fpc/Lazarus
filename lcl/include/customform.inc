@@ -2154,7 +2154,7 @@ begin
   begin
     if CloseQuery then
     begin
-      // IsMainForm flag set if we are closeing MainForm or its parent
+      // IsMainForm flag set if we are closing MainForm or its parent
       IsMainForm := (Application.MainForm = Self) or (Self.IsParentOf(Application.MainForm));
       // Prepare default close action
       if FormStyle = fsMDIChild then
