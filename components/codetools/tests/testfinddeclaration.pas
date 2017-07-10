@@ -90,6 +90,7 @@ type
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
     procedure TestFindDeclaration_Generics;
+    procedure TestFindDeclaration_GenericFunction;
     procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_CBlocks;
@@ -541,6 +542,21 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_Generics;
 begin
   FindDeclarations('moduletests/fdt_generics.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GenericFunction;
+begin
+  StartProgram;
+  Add([
+    'generic function RandomFrom<T>(const AValues:array of T):T;',
+    'begin',
+    '  Result:=Avalue[1];',
+    'end;',
+    'begin',
+    '  i:=RandomFrom<longint>([1,2,3]);',
+    'end.',
+  '']);
+  ParseModule;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_ForIn;
