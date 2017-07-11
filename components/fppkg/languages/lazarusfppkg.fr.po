@@ -45,7 +45,7 @@ msgstr "l'installation de paquets"
 
 #: fppkg_mainfrm.sactuninstpackages
 msgid "uninstall package(s)"
-msgstr ""
+msgstr "désinstaller le(s) paquet(s)"
 
 #: fppkg_mainfrm.sactupdate
 msgid "update repository"
@@ -211,7 +211,7 @@ msgstr "Barre d'outils"
 
 #: tfppkgform.uninstallbutton.caption
 msgid "Uninstall"
-msgstr ""
+msgstr "Désinstaller"
 
 #: tfppkgform.updatebutton.caption
 msgid "Update"
