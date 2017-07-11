@@ -268,7 +268,7 @@ begin
   f.LoadFromFile(
     AFont.Name, f.SizeToAggHeight(fontSize), AFont.Bold, AFont.Italic);
   f.FPColor := ApplyTransparency(FPColorOrMono(AFont.FPColor));
-  f.AggAngle := OrientToRad(-FGetFontOrientationFunc(AFont));
+  f.AggAngle := -OrientToRad(FGetFontOrientationFunc(AFont));
 end;
 
 type
@@ -293,8 +293,15 @@ begin
 end;
 
 procedure TAggPasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
+var
+  h: Integer;
+  p: TPoint;
 begin
-  FCanvas.TextOut(AX, AY, AText);
+  h := SimpleTextExtent('Tg').y;
+  p := RotatePoint(Point(0, h * 9 div 10), FCanvas.Font.AggAngle);
+    // * 9/10 fits to fit the text into bounding box
+  FCanvas.TextOut(AX + p.X, AY + p.Y - h, AText);
+    // -h to avoid rotated text drifting away
 end;
 
 initialization
