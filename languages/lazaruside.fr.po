@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-08 08:30+0200\n"
+"PO-Revision-Date: 2017-07-10 10:46+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -13505,7 +13505,7 @@ msgstr "Texte a&vant chaque ligne"
 
 #: lazarusidestrconsts.lismptrimclipboardcontents
 msgid "&Trim clipboard contents"
-msgstr "&Réduire le contenu du presse-papiers"
+msgstr "&Réduire le contenu du presse-papier"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -18386,7 +18386,7 @@ msgstr "Impossible de trouver l'unité Pascal  (\".pas\",\".pp\") du fichier \".
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
 msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
-msgstr "Impossible de trouver la classe de composant \"%s\".%sElle n'est pas enregistrée via \"RegisterClass\" et  \"lfm\" est introuvable.%sElle est requise par l'unité :%s%s"
+msgstr "Impossible de trouver la classe de composant \"%s\".%sElle n'est pas enregistrée via \"RegisterClass\" et est introuvable dans le fichier \"lfm\".%sElle est requise par l'unité :%s%s"
 
 #: lazarusidestrconsts.lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
