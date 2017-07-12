@@ -1123,7 +1123,7 @@ begin
   end;
 
   FHintManager := THintWindowManager.Create;
-  FActiveRowBmp := CreateBitmapFromResourceName(HInstance, 'pg_active_row');
+  FActiveRowBmp := TIDEImages.CreateImage('pg_active_row', 9);
 
   FDefaultItemHeight:=DefItemHeight;
 

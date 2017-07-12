@@ -1893,6 +1893,8 @@ components/ideintf/images/propertygrid/issue_qt.png -text svneol=unset#image/png
 components/ideintf/images/propertygrid/issue_win32.png -text svneol=unset#image/png
 components/ideintf/images/propertygrid/issue_wince.png -text svneol=unset#image/png
 components/ideintf/images/propertygrid/pg_active_row.png -text svneol=unset#image/png
+components/ideintf/images/propertygrid/pg_active_row_150.png -text
+components/ideintf/images/propertygrid/pg_active_row_200.png -text
 components/ideintf/keyvalpropeditdlg.lfm svneol=native#text/plain
 components/ideintf/keyvalpropeditdlg.pas svneol=native#text/pascal
 components/ideintf/languages/objinspstrconsts.ca.po svneol=native#text/plain
