@@ -14,6 +14,7 @@ resourcestring
   lisNoSettingsFound = 'No settings found';
 
   //Format File settings tab
+  lisFrFileConfirmFormat = 'Show confirmation dialog before format';
   lisFrFilesFileIsWritable = 'File is writable';
   lisFrFilesFormatFileIs = 'Format file is %s';
   lisFrFilesFileNotFound = 'File not found';
@@ -313,6 +314,7 @@ resourcestring
   lisJEDICodeFormatOfStartFormatting = 'JEDI Code Format of %sStart formatting?';
   lisJEDICodeFormatOfAreYouSureThatYouWantToFormatAllFi = 'JEDI Code Format of'
     +' %sAre you sure that you want to format all %s files in the project?';
+  lisJEDICodeFormatAllOpenWindow = 'JEDI Code Format of all open windows?';
 
 implementation
 

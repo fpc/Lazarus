@@ -43,6 +43,9 @@ uses
   EditorConverter, FileConverter, ConvertTypes, jcfuiconsts;
 
 type
+
+  { TJcfIdeMain }
+
   TJcfIdeMain = class(TObject)
   private
     fcEditorConverter: TEditorConverter;
@@ -57,7 +60,7 @@ type
 
     procedure ClearToolMessages;
     procedure ConvertEditor(const pciEditor: TSourceEditorInterface);
-
+    function CanFormat(const AMsg: String): Boolean;
 
   protected
   public
@@ -81,7 +84,7 @@ uses
   { jcf }
   JcfStringUtils,
   { local }
-  fAbout, frFiles {, JcfRegistrySettings, fRegistrySettings};
+  fAbout, frFiles, JcfRegistrySettings{, fRegistrySettings};
 
 
 function FileIsAllowedType(const psFileName: string): boolean;
@@ -112,6 +115,17 @@ begin
   inherited;
 end;
 
+function TJcfIdeMain.CanFormat(const AMsg: String): Boolean;
+var
+  JCFRegistrySettings: TJCFRegistrySettings;
+begin
+  Result := True;
+  JCFRegistrySettings := GetRegSettings;
+  if JCFRegistrySettings.ConfirmFormat then
+    if MessageDlg(AMsg, mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+      Result := False
+end;
+
 procedure TJcfIdeMain.DoFormatCurrentIDEWindow(Sender: TObject);
 var
   lsMsg: string;
@@ -122,8 +136,8 @@ begin
     lsMsg := Format(lisJEDICodeFormatOfStartFormatting, [SourceEditorManagerIntf
       .ActiveEditor.FileName
             + NativeLineBreak]);
-    if MessageDlg(lsMsg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-      ConvertEditor(SourceEditorManagerIntf.ActiveEditor);
+    if CanFormat(lsMsg) then
+      ConvertEditor(SourceEditorManagerIntf.ActiveEditor)
   end;
 end;
 
@@ -151,7 +165,8 @@ begin
   lsMsg := Format(lisJEDICodeFormatOfAreYouSureThatYouWantToFormatAllFi, [
     lazProject.MainFile.FileName + NativeLineBreak, IntToStr(lazProject.
     FileCount)]);
-  if MessageDlg(lsMsg, mtConfirmation, [mbYes, mbNo], 0) = mrYes then begin
+  if CanFormat(lsMsg) then
+  begin
     ClearToolMessages;
     { loop through all modules in the project }
     for liLoop := 0 to lazProject.FileCount - 1 do
@@ -170,6 +185,9 @@ begin
   MakeEditorConverter;
 
   if (SourceEditorManagerIntf = nil) then
+    Exit;
+
+  if not CanFormat(lisJEDICodeFormatAllOpenWindow) then
     Exit;
 
   ClearToolMessages;

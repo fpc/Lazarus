@@ -33,13 +33,14 @@ uses
   { delphi }
   SysUtils, Classes, Controls, Forms, StdCtrls, Graphics,
   { lazarus }
-  IDEOptionsIntf;
+  IDEOptionsIntf, dialogs;
 
 type
 
   { TfFiles }
 
   TfFiles = class(TAbstractIDEOptionsEditor)
+    cbConfirmFormat: TCheckBox;
     lblStatus: TLabel;
     lblDate: TLabel;
     lblVersion: TLabel;
@@ -69,6 +70,10 @@ var
 begin
   { from the registry, about the file }
   lcSet := GetRegSettings;
+
+  cbConfirmFormat.Caption := lisFrFileConfirmFormat;
+  cbConfirmFormat.Checked := lcSet.ConfirmFormat;
+
   lblFormatFileName.Caption := Format(lisFrFilesFormatFileIs, [lcSet.FormatConfigFileName]);
   //lblFormatFileName.Caption := PathCompactPath(lblFormatFileName.Canvas.Handle, 'Format file is ' + lcSet.FormatConfigFileName, 450, cpCenter);
 
@@ -105,8 +110,14 @@ begin
 end;
 
 procedure TfFiles.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  lcSet: TJCFRegistrySettings;
 begin
   FormatSettings.Description := mDescription.Text;
+
+  lcSet := GetRegSettings;
+  lcSet.ConfirmFormat := cbConfirmFormat.Checked;
+  lcSet.WriteAll;
 end;
 
 procedure TfFiles.FrameResize(Sender: TObject);
@@ -114,9 +125,12 @@ const
   SPACING = 8;
 begin
   inherited;
+  cbConfirmFormat.Left := SPACING;
+  cbConfirmFormat.Top := 2;
 
   lblFormatFileName.Left  := SPACING;
   lblFormatFileName.Width := ClientWidth - (lblFormatFileName.Left + SPACING);
+  lblFormatFileName.Top := cbConfirmFormat.Top + cbConfirmFormat.Height + SPACING;
 
   // file name is varaible height due to wrap. Rest go below
   lblStatus.Left := SPACING;
