@@ -182,6 +182,7 @@ const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
   constRubberSpace: byte = 2;
   constCellPadding: byte = 3;
+  constColRowBorderTolerance: byte = 3;
 
   DefaultGridOptions = [goFixedVertLine, goFixedHorzLine,
        goVertLine, goHorzLine, goRangeSelect, goSmoothScroll ];
@@ -5703,7 +5704,7 @@ begin
     end;
 
     // check if cursor is near boundary and it's a valid column
-    if (Abs(Offset-x)<=2) then begin
+    if (Abs(Offset-x)<=constColRowBorderTolerance) then begin
       if goFixedColSizing in Options then
         Offset := 0
       else
@@ -5775,7 +5776,7 @@ begin
 
     // check if it's not fixed row and if cursor is close enough to
     // selected boundary
-    if (Index>=FFixedRows)and(Abs(Offset-Y)<=2) then begin
+    if (Index>=FFixedRows)and(Abs(Offset-Y)<=constColRowBorderTolerance) then begin
       // start resizing
       if Cursor<>crVSplit then begin
         ChangeCursor(crVSplit);
