@@ -34,8 +34,9 @@ unit CompPagesPopup;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, Buttons, MainBar, LazarusIDEStrConsts, LCLIntf, LMessages;
+  Classes, SysUtils, FileUtil, IDEImagesIntf, Forms, Controls, Graphics,
+  Dialogs, ComCtrls, ExtCtrls, Buttons, MainBar, LazarusIDEStrConsts, LCLIntf,
+  LMessages;
 
 type
 
@@ -48,6 +49,7 @@ type
     Panel2: TPanel;
     TreeView1: TTreeView;
     procedure cBtnCloseClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure TreeView1Click(Sender: TObject);
@@ -103,6 +105,11 @@ end;
 procedure TDlgCompPagesPopup.cBtnCloseClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TDlgCompPagesPopup.FormCreate(Sender: TObject);
+begin
+  TIDEImages.AssignImage(cBtnClose.Glyph, 'menu_close');
 end;
 
 procedure TDlgCompPagesPopup.DoClose(var CloseAction: TCloseAction);
