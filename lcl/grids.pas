@@ -180,14 +180,20 @@ type
 
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
-  constRubberSpace: byte = 2;
-  constCellPadding: byte = 3;
-  constColRowBorderTolerance: byte = 3;
 
   DefaultGridOptions = [goFixedVertLine, goFixedHorzLine,
        goVertLine, goHorzLine, goRangeSelect, goSmoothScroll ];
   DefaultGridOptions2 = [];
 
+  constRubberSpace: byte = 2;
+  constCellPadding: byte = 3;
+  constColRowBorderTolerance: byte = 3;
+
+var
+  // Values to be used after HighDPI scaling
+  varRubberSpace: byte;
+  varCellpadding: byte;
+  varColRowBorderTolerance: byte;
 
 type
 
@@ -2028,12 +2034,12 @@ procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor;
     if Y2<Y1 then
       while Y2<Y1 do begin
         Canvas.Pixels[X1, Y1] := Color;
-        dec(Y1, constRubberSpace);
+        dec(Y1, varRubberSpace);
       end
     else
       while Y1<Y2 do begin
         Canvas.Pixels[X1, Y1] := Color;
-        inc(Y1, constRubberSpace);
+        inc(Y1, varRubberSpace);
       end;
   end;
   procedure DrawHorzLine(X1,Y1,X2: integer);
@@ -2041,12 +2047,12 @@ procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor;
     if X2<X1 then
       while X2<X1 do begin
         Canvas.Pixels[X1, Y1] := Color;
-        dec(X1, constRubberSpace);
+        dec(X1, varRubberSpace);
       end
     else
       while X1<X2 do begin
         Canvas.Pixels[X1, Y1] := Color;
-        inc(X1, constRubberSpace);
+        inc(X1, varRubberSpace);
       end;
   end;
 begin
@@ -3943,7 +3949,7 @@ begin
       txt2 := GetTruncCellHintText(cell.x, cell.y);
       gds := GetGridDrawState(cell.x, cell.y);
       PrepareCanvas(cell.x, cell.y, gds);
-      w := Canvas.TextWidth(txt2) + constCellPadding*2;
+      w := Canvas.TextWidth(txt2) + varCellPadding*2;
       if w < ColWidths[cell.x] then
         txt2 := '';
     end;
@@ -4446,14 +4452,14 @@ end;
 procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState; aText: String);
 begin
-  dec(ARect.Right, constCellPadding);
+  dec(ARect.Right, varCellPadding);
   case Canvas.TextStyle.Alignment of
-    Classes.taLeftJustify: Inc(ARect.Left, constCellPadding);
+    Classes.taLeftJustify: Inc(ARect.Left, varCellPadding);
     Classes.taRightJustify: Dec(ARect.Right, 1);
   end;
   case Canvas.TextStyle.Layout of
-    tlTop: Inc(ARect.Top, constCellPadding);
-    tlBottom: Dec(ARect.Bottom, constCellPadding);
+    tlTop: Inc(ARect.Top, varCellPadding);
+    tlBottom: Dec(ARect.Bottom, varCellPadding);
   end;
 
   if ARect.Right<ARect.Left then
@@ -4495,8 +4501,8 @@ begin
     CSize.cy := MulDiv(CSize.cy, Font.PixelsPerInch, Screen.PixelsPerInch);
     case bmpAlign of
       taCenter: PaintRect.Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
-      taLeftJustify: PaintRect.Left := ARect.Left + constCellPadding;
-      taRightJustify: PaintRect.Left := ARect.Right - CSize.Cx - constCellPadding - 1;
+      taLeftJustify: PaintRect.Left := ARect.Left + varCellPadding;
+      taRightJustify: PaintRect.Left := ARect.Right - CSize.Cx - varCellPadding - 1;
     end;
     PaintRect.Top  := Trunc((aRect.Top + aRect.Bottom - CSize.cy)/2);
     PaintRect := Bounds(PaintRect.Left, PaintRect.Top, CSize.cx, CSize.cy);
@@ -4506,8 +4512,8 @@ begin
     if ChkBitmap<>nil then begin
       case bmpAlign of
         taCenter: XPos := Trunc((aRect.Left+aRect.Right-ChkBitmap.Width)/2);
-        taLeftJustify: XPos := ARect.Left + constCellPadding;
-        taRightJustify: XPos := ARect.Right - ChkBitmap.Width - constCellPadding - 1;
+        taLeftJustify: XPos := ARect.Left + varCellPadding;
+        taRightJustify: XPos := ARect.Right - ChkBitmap.Width - varCellPadding - 1;
       end;
       YPos := Trunc((aRect.Top+aRect.Bottom-ChkBitmap.Height)/2);
       Canvas.Draw(XPos, YPos, ChkBitmap);
@@ -5704,7 +5710,7 @@ begin
     end;
 
     // check if cursor is near boundary and it's a valid column
-    if (Abs(Offset-x)<=constColRowBorderTolerance) then begin
+    if (Abs(Offset-x)<=varColRowBorderTolerance) then begin
       if goFixedColSizing in Options then
         Offset := 0
       else
@@ -5776,7 +5782,7 @@ begin
 
     // check if it's not fixed row and if cursor is close enough to
     // selected boundary
-    if (Index>=FFixedRows)and(Abs(Offset-Y)<=constColRowBorderTolerance) then begin
+    if (Index>=FFixedRows)and(Abs(Offset-Y)<=varColRowBorderTolerance) then begin
       // start resizing
       if Cursor<>crVSplit then begin
         ChangeCursor(crVSplit);
@@ -9435,6 +9441,10 @@ begin
   FUnCheckedBitmap := LoadResBitmapImage('dbgriduncheckedcb');
   FCheckedBitmap := LoadResBitmapImage('dbgridcheckedcb');
   FGrayedBitmap := LoadResBitmapImage('dbgridgrayedcb');
+
+  varRubberSpace := MulDiv(constRubberSpace, Screen.PixelsPerInch, 96);
+  varCellPadding := MulDiv(constCellPadding, Screen.PixelsPerInch, 96);
+  varColRowBorderTolerance := MulDiv(constColRowBorderTolerance, Screen.PixelsPerInch, 96);
 end;
 
 destructor TCustomGrid.Destroy;
