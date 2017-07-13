@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-05 12:21+0200\n"
+"PO-Revision-Date: 2017-07-13 12:10+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
@@ -46,7 +46,7 @@ msgstr "įdiegti paketą(-us)"
 
 #: fppkg_mainfrm.sactuninstpackages
 msgid "uninstall package(s)"
-msgstr ""
+msgstr "išdiegti paketą(-us)"
 
 #: fppkg_mainfrm.sactupdate
 msgid "update repository"
@@ -212,7 +212,7 @@ msgstr "Įrankių_juosta"
 
 #: tfppkgform.uninstallbutton.caption
 msgid "Uninstall"
-msgstr ""
+msgstr "Išdiegti"
 
 #: tfppkgform.updatebutton.caption
 msgid "Update"

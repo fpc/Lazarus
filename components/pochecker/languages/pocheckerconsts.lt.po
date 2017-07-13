@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-05 20:27+0200\n"
+"PO-Revision-Date: 2017-07-13 12:15+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
@@ -157,9 +157,8 @@ msgid "Copy to clipboard"
 msgstr "Kopijuoti į iškarpinę"
 
 #: pocheckerconsts.screatingiconxofy
-#, fuzzy,badformat
 msgid "Creating icon nr. %d of %d"
-msgstr "Kuriama ikona nr. % iš %d"
+msgstr "Kuriama ikona nr. %d iš %d"
 
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
