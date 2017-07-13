@@ -60,10 +60,10 @@ type
     fShowParseTreeOption: TShowParseTreeOption;
 
     { ui settings }
-    fsFormatConfigFileName:      string;
+    fsFormatConfigFileName: string;
     fbFormatConfigNameSpecified: boolean;
 
-    fsLastSettingsPage:      string;
+    fsLastSettingsPage: string;
     feFormatFileWriteOption: TFormatFileWriteOption;
 
     {notepad settings }
@@ -96,7 +96,6 @@ type
     fbEditorIntegration: boolean;
     fbFormatBeforeSave:  boolean;
     fbFormatAfterLoad:   boolean;
-    fbConfirmFormat: boolean;
 
     procedure ReadMRUFiles;
     procedure WriteMRUFiles;
@@ -181,7 +180,6 @@ type
       Write fbEditorIntegration;
     property FormatBeforeSave: boolean Read fbFormatBeforeSave Write fbFormatBeforeSave;
     property FormatAfterLoad: boolean Read fbFormatAfterLoad Write fbFormatAfterLoad;
-    property ConfirmFormat: boolean Read fbConfirmFormat Write fbConfirmFormat;
   end;
 
 function GetRegSettings: TJCFRegistrySettings;
@@ -230,7 +228,6 @@ const
   REG_EDITOR_INTEGRATION = 'EditorIntegration';
   REG_FORMAT_BEFORE_SAVE = 'FormatBeforeSave';
   REG_FORMAT_AFTER_LOAD  = 'FormatAfterLoad';
-  REG_CONFIRM_FORMAT  = 'ConfirmFormat';
 
 {
   file-based settings,  ie
@@ -438,7 +435,6 @@ begin
   fbEditorIntegration := fcReg.ReadBool(REG_IDE_SECTION, REG_EDITOR_INTEGRATION, False);
   fbFormatBeforeSave := fcReg.ReadBool(REG_IDE_SECTION, REG_FORMAT_BEFORE_SAVE, False);
   fbFormatAfterLoad := fcReg.ReadBool(REG_IDE_SECTION, REG_FORMAT_AFTER_LOAD, False);
-  fbConfirmFormat := fcReg.ReadBool(REG_IDE_SECTION, REG_CONFIRM_FORMAT, True);
 
   fbHasRead := True;
 end;
@@ -488,7 +484,6 @@ begin
   fcReg.WriteBool(REG_IDE_SECTION, REG_EDITOR_INTEGRATION, fbEditorIntegration);
   fcReg.WriteBool(REG_IDE_SECTION, REG_FORMAT_BEFORE_SAVE, fbFormatBeforeSave);
   fcReg.WriteBool(REG_IDE_SECTION, REG_FORMAT_AFTER_LOAD, fbFormatAfterLoad);
-  fcReg.WriteBool(REG_IDE_SECTION, REG_CONFIRM_FORMAT, fbConfirmFormat);
 end;
 
 function TJCFRegistrySettings.CanClearMRU: boolean;

@@ -78,6 +78,7 @@ type
     fsDescription: string;
     fdtWriteDateTime: TDateTime;
     fsWriteVersion: string;
+    fsConfirmFormat: Boolean;
 
     procedure FromStream(const pcStream: TSettingsInput);
   public
@@ -125,6 +126,7 @@ type
     property WriteOnExit: boolean Read fbWriteOnExit Write fbWriteOnExit;
     property Dirty: boolean Read fbDirty Write fbDirty;
     property HasRead: boolean read fbHasRead write fbHasRead;
+    property ConfirmFormat: boolean read fsConfirmFormat write fsConfirmFormat;
   end;
 
 function FormattingSettings: TFormattingSettings;
@@ -267,6 +269,7 @@ const
   REG_VERSION     = 'WriteVersion';
   REG_WRITE_DATETIME = 'WriteDateTime';
   REG_DESCRIPTION = 'Description';
+  REG_CONFIRM_FORMAT = 'ConfirmFormat';
 
 procedure TFormattingSettings.Read;
 var
@@ -397,6 +400,7 @@ begin
   pcStream.Write(REG_VERSION, PROGRAM_VERSION);
   pcStream.Write(REG_WRITE_DATETIME, Now);
   pcStream.Write(REG_DESCRIPTION, Description);
+  pcStream.Write(REG_CONFIRM_FORMAT, fsConfirmFormat);
 
   WriteToStream(fcObfuscate);
   WriteToStream(fcClarify);
@@ -464,6 +468,7 @@ begin
   try
     fsWriteVersion   := pcStream.Read(REG_VERSION, '');
     fsDescription    := pcStream.Read(REG_DESCRIPTION, '');
+    fsConfirmFormat  := pcStream.Read(REG_CONFIRM_FORMAT, True);
     fdtWriteDateTime := pcStream.Read(REG_WRITE_DATETIME, 0.0);
 
     ReadFromStream(fcObfuscate);

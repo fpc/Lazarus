@@ -58,7 +58,7 @@ type
   TShowParseTreeOption = (eShowAlways, eShowOnError, eShowNever);
 
 const
-  OLD_REG_ROOT_KEY = 'Software\Jedi\JediCodeFormat';
+  OLD_REG_ROOT_KEY = '\Software\Jedi\JediCodeFormat';
  {$IFDEF FPC} REG_ROOT_KEY = OLD_REG_ROOT_KEY; {$ENDIF}
  {$IFDEF DELPHI1} REG_ROOT_KEY = '\Software\Borland\Delphi\1.0\Jedi\JCF'; {$ENDIF}
  {$IFDEF DELPHI2} REG_ROOT_KEY = '\Software\Borland\Delphi\2.0\Jedi\JCF'; {$ENDIF}

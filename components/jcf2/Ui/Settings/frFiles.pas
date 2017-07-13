@@ -72,7 +72,7 @@ begin
   lcSet := GetRegSettings;
 
   cbConfirmFormat.Caption := lisFrFileConfirmFormat;
-  cbConfirmFormat.Checked := lcSet.ConfirmFormat;
+  cbConfirmFormat.Checked := FormattingSettings.ConfirmFormat;
 
   lblFormatFileName.Caption := Format(lisFrFilesFormatFileIs, [lcSet.FormatConfigFileName]);
   //lblFormatFileName.Caption := PathCompactPath(lblFormatFileName.Canvas.Handle, 'Format file is ' + lcSet.FormatConfigFileName, 450, cpCenter);
@@ -110,14 +110,9 @@ begin
 end;
 
 procedure TfFiles.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  lcSet: TJCFRegistrySettings;
 begin
   FormattingSettings.Description := mDescription.Text;
-
-  lcSet := GetRegSettings;
-  lcSet.ConfirmFormat := cbConfirmFormat.Checked;
-  lcSet.WriteAll;
+  FormattingSettings.ConfirmFormat := cbConfirmFormat.Checked;
 end;
 
 procedure TfFiles.FrameResize(Sender: TObject);

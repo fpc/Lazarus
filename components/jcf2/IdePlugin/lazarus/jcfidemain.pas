@@ -84,7 +84,7 @@ uses
   { jcf }
   JcfStringUtils,
   { local }
-  fAbout, frFiles, JcfRegistrySettings{, fRegistrySettings};
+  fAbout, frFiles, JcfSettings;
 
 
 function FileIsAllowedType(const psFileName: string): boolean;
@@ -116,12 +116,9 @@ begin
 end;
 
 function TJcfIdeMain.CanFormat(const AMsg: String): Boolean;
-var
-  JCFRegistrySettings: TJCFRegistrySettings;
 begin
   Result := True;
-  JCFRegistrySettings := GetRegSettings;
-  if JCFRegistrySettings.ConfirmFormat then
+  if FormattingSettings.ConfirmFormat then
     if MessageDlg(AMsg, mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
       Result := False
 end;
