@@ -283,8 +283,6 @@ end;
 procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
   CloseCommand: TIDECommand;
-  ScaledIcon: TGraphic;
-  NewScaledIcon: Boolean;
 begin
   FMaxItems:=50000;
   ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
@@ -320,17 +318,7 @@ begin
   ClosePageButton.ImageIndex := IDEImages.LoadImage('menu_close');
   ActionList.Images := IDEImages.Images_16;
   actClosePage.ImageIndex := IDEImages.LoadImage('menu_close');
-
-  ScaledIcon := TIDEImages.ScaleImage(SearchInListEdit.Glyph, NewScaledIcon,
-    MulDiv(SearchInListEdit.Glyph.Width, TIDEImages.GetScalePercent, 100),
-    MulDiv(SearchInListEdit.Glyph.Height, TIDEImages.GetScalePercent, 100),
-    TIDEImages.GetScalePercent / 100);
-  try
-    SearchInListEdit.Glyph.Assign(ScaledIcon);
-  finally
-    if NewScaledIcon then
-      ScaledIcon.Free;
-  end;
+  TIDEImages.AssignImage(SearchInListEdit.Glyph, 'btnfiltercancel');
 end;
 
 procedure TSearchResultsView.FormClose(Sender: TObject; var CloseAction: TCloseAction);

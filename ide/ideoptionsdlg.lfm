@@ -9,6 +9,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   ClientWidth = 800
   Constraints.MinHeight = 350
   Constraints.MinWidth = 500
+  OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'

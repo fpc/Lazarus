@@ -9,6 +9,7 @@ object ComponentListForm: TComponentListForm
   KeyPreview = True
   OnActivate = FormActivate
   OnClose = FormClose
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   LCLVersion = '1.7'

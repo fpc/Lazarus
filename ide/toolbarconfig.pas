@@ -195,6 +195,7 @@ begin
   TIDEImages.AssignImage(btnMoveUp.Glyph, 'arrow__darkgreen_up');
   TIDEImages.AssignImage(btnMoveDown.Glyph, 'arrow__darkgreen_down');
   TIDEImages.AssignImage(btnAddDivider.Glyph, 'menu_divider16');
+  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 
   btnAddDivider.Caption := '---';
 

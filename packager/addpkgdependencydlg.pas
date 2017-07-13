@@ -11,7 +11,7 @@ uses
   // LazControls
   ListFilterEdit,
   // IDEIntf
-  IDEWindowIntf, PackageDependencyIntf, PackageIntf, IDEDialogs,
+  IDEWindowIntf, PackageDependencyIntf, PackageIntf, IDEDialogs, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, PackageDefs, PackageSystem, ProjPackCommon, ProjPackChecks;
 
@@ -80,6 +80,7 @@ begin
   Caption:=lisProjAddNewRequirement;
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   IDEDialogLayoutList.ApplyLayout(Self,400,360);
+  TIDEImages.AssignImage(DependPkgNameFilter.Glyph, 'btnfiltercancel');
 
   DependPkgNameLabel.Caption:=lisProjAddPackageName;
   DependMinVersionLabel.Caption:=lisProjAddMinimumVersionOptional;

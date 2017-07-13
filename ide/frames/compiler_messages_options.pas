@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LazFileCache, LazLoggerBase, ListFilterEdit,
   StdCtrls, CheckLst, Dialogs, IDEOptionsIntf, IDEExternToolIntf,
-  IDEDialogs, CompOptsIntf, CodeToolsFPCMsgs, CompilerOptions,
+  IDEDialogs, CompOptsIntf, IDEImagesIntf, CodeToolsFPCMsgs, CompilerOptions,
   LazarusIDEStrConsts, etFPCMsgParser;
 
 type
@@ -102,6 +102,7 @@ begin
   UseMsgFileCheckBox.Visible:=false;
   MsgFileEdit.Visible:=false;
   MsgFileBrowseButton.Visible:=false;
+  TIDEImages.AssignImage(editMsgFilter.Glyph, 'btnfiltercancel');
 end;
 
 destructor TCompilerMessagesOptionsFrame.Destroy;
