@@ -44,9 +44,9 @@ uses
 
 type
 
-  { TFormatSettings }
+  { TFormattingSettings }
 
-  TFormatSettings = class(TAbstractIDEEnvironmentOptions)
+  TFormattingSettings = class(TAbstractIDEEnvironmentOptions)
   private
     fcObfuscate: TSetObfuscate;
     fcClarify: TSetClarify;
@@ -116,7 +116,6 @@ type
 
     property PreProcessor: TSetPreProcessor Read fcPreProcessor;
 
-
     property Align: TSetAlign Read fcAlign;
     property Replace: TSetReplace Read fcReplace;
     property UsesClause: TSetUses Read fcUses;
@@ -128,10 +127,10 @@ type
     property HasRead: boolean read fbHasRead write fbHasRead;
   end;
 
-function FormatSettings: TFormatSettings;
+function FormattingSettings: TFormattingSettings;
 
 // create from a settings file
-function FormatSettingsFromFile(const psFileName: string): TFormatSettings;
+function FormatSettingsFromFile(const psFileName: string): TFormattingSettings;
 
 var
   JCFOptionsGroup: Integer;
@@ -177,7 +176,7 @@ uses
   jcfuiconsts;
 
 
-constructor TFormatSettings.Create(const pbReadRegFile: boolean);
+constructor TFormattingSettings.Create(const pbReadRegFile: boolean);
 begin
   inherited Create();
 
@@ -213,7 +212,7 @@ begin
   fbDirty := False;
 end;
 
-destructor TFormatSettings.Destroy;
+destructor TFormattingSettings.Destroy;
 begin
   if WriteOnExit then
     Write;
@@ -242,17 +241,17 @@ begin
   inherited;
 end;
 
-class function TFormatSettings.GetGroupCaption: String;
+class function TFormattingSettings.GetGroupCaption: String;
 begin
   Result := lisJCFFormatSettings;
 end;
 
-class function TFormatSettings.GetInstance: TAbstractIDEOptions;
+class function TFormattingSettings.GetInstance: TAbstractIDEOptions;
 begin
-  Result := FormatSettings;
+  Result := FormattingSettings;
 end;
 
-procedure TFormatSettings.DoAfterWrite(Restore: boolean);
+procedure TFormattingSettings.DoAfterWrite(Restore: boolean);
 begin
   { settings are now in need of saving }
   Dirty := True;
@@ -269,7 +268,7 @@ const
   REG_WRITE_DATETIME = 'WriteDateTime';
   REG_DESCRIPTION = 'Description';
 
-procedure TFormatSettings.Read;
+procedure TFormattingSettings.Read;
 var
   lcReg: TJCFRegistrySettings;
 begin
@@ -278,7 +277,7 @@ begin
   ReadFromFile(lcReg.FormatConfigFileName, lcReg.FormatConfigNameSpecified);
 end;
 
-procedure TFormatSettings.ReadFromFile(const psFileName: string; const pbMustExist: boolean);
+procedure TFormattingSettings.ReadFromFile(const psFileName: string; const pbMustExist: boolean);
 var
   lsText: string;
   lcFile: TSettingsInputString;
@@ -311,7 +310,7 @@ begin
 end;
 
 
-procedure TFormatSettings.ReadDefaults;
+procedure TFormattingSettings.ReadDefaults;
 var
   lcSetDummy: TSettingsInputDummy;
 begin
@@ -323,7 +322,7 @@ begin
   end;
 end;
 
-procedure TFormatSettings.Write;
+procedure TFormattingSettings.Write;
 var
   lcReg: TJCFRegistrySettings;
   lcFile: TSettingsStreamOutput;
@@ -379,7 +378,7 @@ begin
 end;
 
 
-procedure TFormatSettings.ToStream(const pcStream: TSettingsOutput);
+procedure TFormattingSettings.ToStream(const pcStream: TSettingsOutput);
 
   procedure WriteToStream(const pcSet: TSetBase);
   begin
@@ -422,7 +421,7 @@ begin
   pcStream.CloseSection(CODEFORMAT_SETTINGS_SECTION);
 end;
 
-procedure TFormatSettings.FromStream(const pcStream: TSettingsInput);
+procedure TFormattingSettings.FromStream(const pcStream: TSettingsInput);
 var
   lcAllSettings: TSettingsInput;
 
@@ -496,27 +495,27 @@ end;
 
 var
   // a module var
-  mcFormatSettings: TFormatSettings = nil;
+  mcFormattingSettings: TFormattingSettings = nil;
 
-function FormatSettings: TFormatSettings;
+function FormattingSettings: TFormattingSettings;
 begin
-  if mcFormatSettings = nil then
-    mcFormatSettings := TFormatSettings.Create(true);
+  if mcFormattingSettings = nil then
+    mcFormattingSettings := TFormattingSettings.Create(true);
 
-  Result := mcFormatSettings;
+  Result := mcFormattingSettings;
 end;
 
-function FormatSettingsFromFile(const psFileName: string): TFormatSettings;
+function FormatSettingsFromFile(const psFileName: string): TFormattingSettings;
 begin
-  if mcFormatSettings = nil then
-    mcFormatSettings := TFormatSettings.Create(false);
+  if mcFormattingSettings = nil then
+    mcFormattingSettings := TFormattingSettings.Create(false);
 
-  mcFormatSettings.ReadFromFile(psFileName, true);
-  Result := mcFormatSettings;
+  mcFormattingSettings.ReadFromFile(psFileName, true);
+  Result := mcFormattingSettings;
 end;
 
 
-procedure TFormatSettings.MakeConsistent;
+procedure TFormattingSettings.MakeConsistent;
 begin
   { one consistency check so far
     - if linebreaking is off, then "remove returns in expressions" must also be off }
@@ -527,7 +526,7 @@ end;
 
 initialization
   JCFOptionsGroup := GetFreeIDEOptionsGroupIndex(GroupEditor);
-  RegisterIDEOptionsGroup(JCFOptionsGroup, TFormatSettings);
+  RegisterIDEOptionsGroup(JCFOptionsGroup, TFormattingSettings);
 finalization
-  FreeAndNil(mcFormatSettings);
+  FreeAndNil(mcFormattingSettings);
 end.

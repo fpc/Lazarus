@@ -108,7 +108,7 @@ end;
 
 procedure TfClarifyReturns.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     cbRemoveReturns.Checked     := RemoveBadReturns;
     cbRemovePropertyReturns.Checked := RemovePropertyReturns;
@@ -126,7 +126,7 @@ end;
 
 procedure TfClarifyReturns.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     RemoveBadReturns      := cbRemoveReturns.Checked;
     RemovePropertyReturns := cbRemovePropertyReturns.Checked;
@@ -144,7 +144,7 @@ end;
 
 class function TfClarifyReturns.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 initialization

@@ -169,7 +169,7 @@ begin
         lcTokenList.SetXYPositions;
 
         // remove conditional compilation stuph
-        if FormatSettings.PreProcessor.Enabled then
+        if FormattingSettings.PreProcessor.Enabled then
           RemoveConditionalCompilation(lcTokenList);
 
         // make a parse tree from it

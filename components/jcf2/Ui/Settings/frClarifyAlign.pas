@@ -131,7 +131,7 @@ end;
 
 procedure TfClarifyAlign.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Align do
+  with FormattingSettings.Align do
   begin
     cbAlignAsign.Checked   := AlignAssign;
     cbAlignConst.Checked   := AlignConst;
@@ -152,7 +152,7 @@ end;
 
 procedure TfClarifyAlign.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Align do
+  with FormattingSettings.Align do
   begin
     AlignAssign  := cbAlignAsign.Checked;
     AlignConst   := cbAlignConst.Checked;
@@ -173,7 +173,7 @@ end;
 
 class function TfClarifyAlign.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

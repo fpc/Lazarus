@@ -61,7 +61,7 @@ end;
 function TWarning.IsIncludedInSettings: boolean;
 begin
   // included if warnings are turned on 
-  Result := FormatSettings.Clarify.Warnings;
+  Result := FormattingSettings.Clarify.Warnings;
 end;
 
 procedure TWarning.SendWarning(const pcNode: TObject; const psMessage: string);

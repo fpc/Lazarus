@@ -113,7 +113,7 @@ end;
 
 function TPropertyOnOneLine.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Returns.RemovePropertyReturns;
+  Result := FormattingSettings.Returns.RemovePropertyReturns;
 end;
 
 end.

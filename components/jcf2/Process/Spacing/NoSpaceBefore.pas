@@ -121,7 +121,7 @@ begin
     exit;
   end;
 
-  if (FormatSettings.Spaces.SpaceForOperator = eNever) then
+  if (FormattingSettings.Spaces.SpaceForOperator = eNever) then
   begin
     if IsSymbolOperator(pt) then
     begin
@@ -180,7 +180,7 @@ end;
 
 function TNoSpaceBefore.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Spaces.FixSpacing;
+  Result := FormattingSettings.Spaces.FixSpacing;
 end;
 
 end.

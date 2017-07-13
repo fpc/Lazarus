@@ -95,7 +95,7 @@ end;
 
 function TRemoveReturnsAfterBegin.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Returns.RemoveBlockBlankLines;
+  Result := FormattingSettings.Returns.RemoveBlockBlankLines;
 end;
 
 end.

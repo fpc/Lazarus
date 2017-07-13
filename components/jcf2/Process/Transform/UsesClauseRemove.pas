@@ -83,8 +83,8 @@ end;
 
 function TUsesClauseRemove.IsIncludedInSettings: boolean;
 begin
-  Result := (FormatSettings.UsesClause.InsertInterfaceEnabled or
-    FormatSettings.UsesClause.InsertImplementationEnabled);
+  with FormattingSettings.UsesClause do
+    Result := InsertInterfaceEnabled or InsertImplementationEnabled;
 end;
 
 function TUsesClauseRemove.EnabledVisitSourceToken(const pcNode: TObject): Boolean;
@@ -161,7 +161,7 @@ end;
 
 function TUsesClauseRemove.MatchesSearch(const ps: string): boolean;
 begin
-  Result := FormatSettings.UsesClause.Remove.IndexOf(ps) >= 0;
+  Result := FormattingSettings.UsesClause.Remove.IndexOf(ps) >= 0;
 end;
 
 end.

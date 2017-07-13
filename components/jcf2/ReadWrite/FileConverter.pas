@@ -414,7 +414,7 @@ begin
       continue;
 
     lsExt := ExtractFileExt(lsName);
-    if FormatSettings.Clarify.ExtensionIsFormatted(lsExt) then
+    if FormattingSettings.Clarify.ExtensionIsFormatted(lsExt) then
       psFiles.Add(lsName);
 
     bDone := (FindNext(rSearch) <> 0);

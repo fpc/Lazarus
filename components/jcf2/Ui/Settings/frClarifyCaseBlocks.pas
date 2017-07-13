@@ -119,7 +119,7 @@ end;
 
 procedure TfClarifyCaseBlocks.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     { block styles }
     rgLabelBegin.ItemIndex := Ord(LabelBeginStyle);
@@ -134,7 +134,7 @@ end;
 
 procedure TfClarifyCaseBlocks.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     { block styles }
     LabelBeginStyle := TTriOptionStyle(rgLabelBegin.ItemIndex);
@@ -149,7 +149,7 @@ end;
 
 class function TfClarifyCaseBlocks.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

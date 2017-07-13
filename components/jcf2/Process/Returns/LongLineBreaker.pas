@@ -115,7 +115,7 @@ begin
   end;
 
   { middle of the actual line (ie from first token pos to max length) }
-  liEffectiveWidth := FormatSettings.Returns.MaxLineLength - piIndexOfFirstSolidToken;
+  liEffectiveWidth := FormattingSettings.Returns.MaxLineLength - piIndexOfFirstSolidToken;
   liMidPoint      := (liEffectiveWidth div 2) + piIndexOfFirstSolidToken;
   liOneThirdPoint := (liEffectiveWidth div 3) + piIndexOfFirstSolidToken;
 
@@ -131,7 +131,7 @@ begin
     Result := NOGO_PLACE + ((PLATEAU - NOGO_PLACE) * liEffectivePos * 3) div
       liEffectiveWidth;
   end
-  else if piPos < FormatSettings.Returns.MaxLineLength then
+  else if piPos < FormattingSettings.Returns.MaxLineLength then
   begin
     { relatively flat plateau, slight bump in the middle }
     liThreeQuarterPoint := (liEffectiveWidth * 3 div 4) + piIndexOfFirstSolidToken;
@@ -144,7 +144,7 @@ begin
   else
   begin
     { past the end}
-    liOverFlow := piPos - FormatSettings.Returns.MaxLineLength;
+    liOverFlow := piPos - FormattingSettings.Returns.MaxLineLength;
     Result     := PLATEAU - (liOverFlow * TO_FAR_SCORE_FACTOR);
     if Result < PAST_END then
     begin
@@ -611,8 +611,7 @@ begin
     lcNext := lcNext.NextToken;
   end;
 
-
-  // EOF or blank line means no linebreaking to do 
+  // EOF or blank line means no linebreaking to do
   if (lcNext = nil) or (lcNext = lcSourceToken) then
     exit;
 
@@ -621,7 +620,7 @@ begin
     exit;
 
   { if the line does not run on, exit now }
-  if liTotalWidth < FormatSettings.Returns.MaxLineLength then
+  if liTotalWidth < FormattingSettings.Returns.MaxLineLength then
     exit;
 
   { right, the line is too long.
@@ -714,15 +713,15 @@ begin
     exit;
 
   { best breakpoint is not good enough? }
-  if FormatSettings.Returns.RebreakLines = rbOnlyIfGood then
+  if FormattingSettings.Returns.RebreakLines = rbOnlyIfGood then
   begin
     if fcScores.Items[liPlaceToBreak] < GOOD_BREAK_THRESHHOLD then
       exit;
   end
   else
   begin
-    Assert(FormatSettings.Returns.RebreakLines = rbUsually,
-      'bad rebreak setting of ' + IntToStr(Ord(FormatSettings.Returns.RebreakLines)));
+    Assert(FormattingSettings.Returns.RebreakLines = rbUsually,
+      'bad rebreak setting of ' + IntToStr(Ord(FormattingSettings.Returns.RebreakLines)));
     if fcScores.Items[liPlaceToBreak] < ANY_BREAK_THRESHHOLD then
       exit;
   end;
@@ -744,7 +743,7 @@ end;
 
 function TLongLineBreaker.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Returns.RebreakLines <> rbOff;
+  Result := FormattingSettings.Returns.RebreakLines <> rbOff;
 end;
 
 (*

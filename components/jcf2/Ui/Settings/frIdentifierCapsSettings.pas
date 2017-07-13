@@ -80,7 +80,7 @@ end;
 
 procedure TfIdentifierCapsSettings.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.IdentifierCaps do
+  with FormattingSettings.IdentifierCaps do
   begin
     cbEnableAnyWords.Checked := Enabled;
     mWords.Lines.Assign(Words);
@@ -89,7 +89,7 @@ end;
 
 procedure TfIdentifierCapsSettings.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.IdentifierCaps do
+  with FormattingSettings.IdentifierCaps do
   begin
     Enabled := cbEnableAnyWords.Checked;
     Words.Assign(mWords.Lines);
@@ -98,7 +98,7 @@ end;
 
 class function TfIdentifierCapsSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 procedure TfIdentifierCapsSettings.cbEnableAnyWordsClick(Sender: TObject);

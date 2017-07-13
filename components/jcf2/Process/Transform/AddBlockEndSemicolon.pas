@@ -98,7 +98,7 @@ end;
 
 function TBlockEndSemicolon.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Transform.AddBlockEndSemiColon;
+  Result := FormattingSettings.Transform.AddBlockEndSemiColon;
 end;
 
 end.

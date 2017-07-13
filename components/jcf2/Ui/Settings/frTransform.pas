@@ -103,7 +103,7 @@ end;
 
 procedure TfTransform.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Transform do
+  with FormattingSettings.Transform do
   begin
     rbBeginEnd.ItemIndex := Ord(BeginEndStyle);
     cbBlockEndSemicolons.Checked := AddBlockEndSemicolon;
@@ -123,7 +123,7 @@ end;
 
 procedure TfTransform.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Transform do
+  with FormattingSettings.Transform do
   begin
     BeginEndStyle := TTriOptionStyle(rbBeginEnd.ItemIndex);
     AddBlockEndSemicolon := cbBlockEndSemicolons.Checked;
@@ -144,7 +144,7 @@ end;
 
 class function TfTransform.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 initialization

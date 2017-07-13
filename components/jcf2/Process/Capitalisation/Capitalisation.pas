@@ -68,7 +68,8 @@ begin
     even though specific word caps specifically said it was doing that change
     Capitalisation was changing it back!
   }
-  if (FormatSettings.SpecificWordCaps.Enabled) and FormatSettings.SpecificWordCaps.HasWord(pct.SourceCode) then
+  if (FormattingSettings.SpecificWordCaps.Enabled)
+  and FormattingSettings.SpecificWordCaps.HasWord(pct.SourceCode) then
     exit;
 
   case caps of
@@ -84,7 +85,7 @@ end;
 
 function TCapitalisation.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Caps.Enabled;
+  Result := FormattingSettings.Caps.Enabled;
 end;
 
 constructor TCapitalisation.Create;
@@ -106,7 +107,7 @@ begin
     // underneath an "asm" node - use asm caps on opcode and params
     if HasAsmCaps(lcSourceToken) then
     begin
-      FixCaps(lcSourceToken, FormatSettings.SetAsm.Capitalisation);
+      FixCaps(lcSourceToken, FormattingSettings.SetAsm.Capitalisation);
     end;
   end
   else
@@ -114,22 +115,22 @@ begin
 
     case lcSourceToken.WordType of
       wtReservedWord:
-        FixCaps(lcSourceToken, FormatSettings.Caps.ReservedWords);
+        FixCaps(lcSourceToken, FormattingSettings.Caps.ReservedWords);
 
       wtReservedWordDirective:
       begin
         if IsDirectiveInContext(lcSourceToken) then
         begin
-          FixCaps(lcSourceToken, FormatSettings.Caps.Directives);
+          FixCaps(lcSourceToken, FormattingSettings.Caps.Directives);
         end
       end;
 
       wtBuiltInConstant:
-        FixCaps(lcSourceToken, FormatSettings.Caps.Constants);
+        FixCaps(lcSourceToken, FormattingSettings.Caps.Constants);
       wtOperator:
-        FixCaps(lcSourceToken, FormatSettings.Caps.Operators);
+        FixCaps(lcSourceToken, FormattingSettings.Caps.Operators);
       wtBuiltInType:
-        FixCaps(lcSourceToken, FormatSettings.Caps.Types);
+        FixCaps(lcSourceToken, FormattingSettings.Caps.Types);
     end;
   end;
 

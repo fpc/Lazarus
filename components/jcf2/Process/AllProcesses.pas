@@ -183,12 +183,12 @@ begin
   Assert(pcRoot <> nil);
   fcRoot := pcRoot;
 
-  if FormatSettings.Clarify.OnceOffs = eRunOnly then
+  if FormattingSettings.Clarify.OnceOffs = eRunOnly then
   begin
     // run only the once-offs
     OnceOffs;
   end
-  else if FormatSettings.Obfuscate.Enabled then
+  else if FormattingSettings.Obfuscate.Enabled then
   begin
     Obfuscate;
   end
@@ -206,7 +206,7 @@ begin
     Align;
 
     // run the once-offs too?
-    if FormatSettings.Clarify.OnceOffs = eDoRun then
+    if FormattingSettings.Clarify.OnceOffs = eDoRun then
       OnceOffs;
 
     // Do this last - spaces may have been introduced above.

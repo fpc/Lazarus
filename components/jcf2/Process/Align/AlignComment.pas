@@ -67,13 +67,13 @@ end;
 
 function TAlignComment.IsIncludedInSettings: boolean;
 begin
-  Result := ( not FormatSettings.Obfuscate.Enabled) and
-    FormatSettings.Align.AlignComment;
+  Result := (not FormattingSettings.Obfuscate.Enabled) and
+    FormattingSettings.Align.AlignComment;
 end;
 
 function TAlignComment.IsTokenInContext(const pt: TSourceToken): boolean;
 begin
-  Result := ( not FormatSettings.Align.InterfaceOnly) or
+  Result := (not FormattingSettings.Align.InterfaceOnly) or
     (pt.HasParentNode(nInterfaceSection));
 end;
 
@@ -101,8 +101,7 @@ end;
 function ShortEnoughToMove(const pt: TSourceToken): boolean;
 begin
   // don't further indent long lines
-  Result := (pt.XPosition + Length(pt.SourceCode)) <=
-    FormatSettings.Returns.MaxLineLength;
+  Result := (pt.XPosition + Length(pt.SourceCode)) <= FormattingSettings.Returns.MaxLineLength;
 end;
 
 function TAlignComment.TokenIsAligned(const pt: TSourceToken): boolean;

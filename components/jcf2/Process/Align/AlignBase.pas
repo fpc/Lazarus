@@ -156,10 +156,10 @@ begin
   if (lcCurrent = nil) then
     exit;
 
-  with FormatSettings do
+  with FormattingSettings do
   begin
-    liSettingsMin  := Align.MinColumn;
-    liSettingsMax  := Align.MaxColumn;
+    liSettingsMin := Align.MinColumn;
+    liSettingsMax := Align.MaxColumn;
 
     if pcToken.HasParentNode(nInterfaceSection) then
       liSettingsMaxVariance := Align.MaxVarianceInterface

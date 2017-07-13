@@ -74,7 +74,7 @@ begin
   case lcSourceToken.CommentStyle of
     eDoubleSlash:
     begin
-      if FormatSettings.Comments.RemoveEmptyDoubleSlashComments then
+      if FormattingSettings.Comments.RemoveEmptyDoubleSlashComments then
       begin
         lsCommentText := StrAfter('//', lcSourceToken.SourceCode);
         lsCommentText := Trim(lsCommentText);
@@ -84,7 +84,7 @@ begin
     end;
     eCurlyBrace:
     begin
-      if FormatSettings.Comments.RemoveEmptyCurlyBraceComments then
+      if FormattingSettings.Comments.RemoveEmptyCurlyBraceComments then
       begin
         lsCommentText := StrAfter('{', lcSourceToken.SourceCode);
         lsCommentText := StrBefore('}', lsCommentText);
@@ -103,8 +103,8 @@ end;
 
 function TRemoveEmptyComment.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Comments.RemoveEmptyDoubleSlashComments or
-    FormatSettings.Comments.RemoveEmptyCurlyBraceComments;
+  with FormattingSettings.Comments do
+    Result := RemoveEmptyDoubleSlashComments or RemoveEmptyCurlyBraceComments;
 end;
 
 end.

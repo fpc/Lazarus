@@ -120,7 +120,7 @@ end;
 
 procedure TfCompilerDirectReturns.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     rgBeforeUses.ItemIndex := Ord(BeforeCompilerDirectUses);
     rgBeforeStatements.ItemIndex := Ord(BeforeCompilerDirectStatements);
@@ -134,7 +134,7 @@ end;
 
 procedure TfCompilerDirectReturns.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     BeforeCompilerDirectUses := TTriOptionStyle(rgBeforeUses.ItemIndex);
     BeforeCompilerDirectStatements := TTriOptionStyle(rgBeforeStatements.ItemIndex);
@@ -149,7 +149,7 @@ end;
 
 class function TfCompilerDirectReturns.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 initialization

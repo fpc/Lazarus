@@ -91,7 +91,7 @@ end;
 
 procedure TfUses.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.UsesClause do
+  with FormattingSettings.UsesClause do
   begin
     cbRemoveEnabled.Checked   := RemoveEnabled;
     cbInsertInterface.Checked := InsertInterfaceEnabled;
@@ -113,7 +113,7 @@ end;
 
 procedure TfUses.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.UsesClause do
+  with FormattingSettings.UsesClause do
   begin
     RemoveEnabled      := cbRemoveEnabled.Checked;
     InsertInterfaceEnabled := cbInsertInterface.Checked;
@@ -131,7 +131,7 @@ end;
 
 class function TfUses.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 procedure TfUses.cbInsertInterfaceClick(Sender: TObject);

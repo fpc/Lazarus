@@ -88,8 +88,8 @@ end;
 
 function TUsesClauseInsert.IsIncludedInSettings: boolean;
 begin
-  Result := (FormatSettings.UsesClause.InsertInterfaceEnabled or
-    FormatSettings.UsesClause.InsertImplementationEnabled);
+  with FormattingSettings.UsesClause do
+    Result := InsertInterfaceEnabled or InsertImplementationEnabled;
 end;
 
 function TUsesClauseInsert.EnabledVisitSourceToken(const pcNode: TObject): Boolean;
@@ -108,15 +108,16 @@ begin
     (lcSourceToken.HasParentNode(TopOfFileSection, 1)) then
   begin
     // any uses clauses omitted that need to be here?
-    if ( not fbDoneInterface) and (FormatSettings.UsesClause.InsertInterfaceEnabled) and
-      (FormatSettings.UsesClause.InsertInterface.Count > 0) then
+    if ( not fbDoneInterface) and
+      (FormattingSettings.UsesClause.InsertInterfaceEnabled) and
+      (FormattingSettings.UsesClause.InsertInterface.Count > 0) then
     begin
       CreateUses(lcSourceToken, True);
     end;
 
     if ( not fbDoneImplementation) and
-      (FormatSettings.UsesClause.InsertImplementationEnabled) and
-      (FormatSettings.UsesClause.InsertImplementation.Count > 0) then
+      (FormattingSettings.UsesClause.InsertImplementationEnabled) and
+      (FormattingSettings.UsesClause.InsertImplementation.Count > 0) then
     begin
       CreateUses(lcSourceToken, False);
     end;
@@ -139,9 +140,9 @@ begin
   begin
     { Reached the end - insert the rest }
     if lbInterface then
-      AddUses(lcSourceToken, FormatSettings.UsesClause.InsertInterface)
+      AddUses(lcSourceToken, FormattingSettings.UsesClause.InsertInterface)
     else
-      AddUses(lcSourceToken, FormatSettings.UsesClause.InsertImplementation);
+      AddUses(lcSourceToken, FormattingSettings.UsesClause.InsertImplementation);
 
     SetDoneSection(lbInterface);
   end;
@@ -207,12 +208,12 @@ begin
   if pbInterface then
   begin
     lcSection := lcRoot.GetImmediateChild(nInterfaceSection);
-    lcInserts := FormatSettings.UsesClause.InsertInterface;
+    lcInserts := FormattingSettings.UsesClause.InsertInterface;
   end
   else
   begin
     lcSection := lcRoot.GetImmediateChild(nImplementationSection);
-    lcInserts := FormatSettings.UsesClause.InsertImplementation;
+    lcInserts := FormattingSettings.UsesClause.InsertImplementation;
   end;
 
   { could be a 'program', 'library' or 'package' file with no interface/impl sections }

@@ -68,7 +68,7 @@ begin
     begin
       if pcToken.HasParentNode(nAsmLabel, 1) then
       begin
-        Result := FormatSettings.SetAsm.BreaksAfterLabel;
+        Result := FormattingSettings.SetAsm.BreaksAfterLabel;
       end;
 
     end;
@@ -115,7 +115,7 @@ end;
 
 function TRemoveReturnsAfter.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.SetAsm.BreaksAfterLabelEnabled;
+  Result := FormattingSettings.SetAsm.BreaksAfterLabelEnabled;
 end;
 
 end.

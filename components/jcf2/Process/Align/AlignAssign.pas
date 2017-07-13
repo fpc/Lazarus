@@ -87,7 +87,7 @@ end;
 { a token that ends an assign block }
 function TAlignAssign.IsIncludedInSettings: boolean;
 begin
-  Result := ( not FormatSettings.Obfuscate.Enabled) and FormatSettings.Align.AlignAssign;
+  Result := (not FormattingSettings.Obfuscate.Enabled) and FormattingSettings.Align.AlignAssign;
 end;
 
 function TAlignAssign.IsTokenInContext(const pt: TSourceToken): boolean;

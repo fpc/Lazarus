@@ -83,7 +83,7 @@ begin
 
   if pt.TokenType = ttCloseBracket then
   begin
-    if FormatSettings.Spaces.SpaceBeforeCloseBrackets then
+    if FormattingSettings.Spaces.SpaceBeforeCloseBrackets then
     begin
       Result := true;
       exit;
@@ -92,7 +92,7 @@ begin
 
   if (pt.TokenType = ttOpenBracket) then
   begin
-    if FormatSettings.Spaces.SpaceBeforeOpenBracketsInFunctionDeclaration then
+    if FormattingSettings.Spaces.SpaceBeforeOpenBracketsInFunctionDeclaration then
     begin
       if pt.HasParentNode(nFormalParams, 1) then
       begin
@@ -101,7 +101,7 @@ begin
       end;
     end;
 
-    if FormatSettings.Spaces.SpaceBeforeOpenBracketsInFunctionCall then
+    if FormattingSettings.Spaces.SpaceBeforeOpenBracketsInFunctionCall then
     begin
       if pt.HasParentNode(nActualParams, 1) then
       begin
@@ -113,7 +113,7 @@ begin
   end
   else if (pt.TokenType = ttOpenSquareBracket) then
   begin
-    if FormatSettings.Spaces.SpaceBeforeOpenSquareBracketsInExpression then
+    if FormattingSettings.Spaces.SpaceBeforeOpenSquareBracketsInExpression then
     begin
       if pt.HasParentNode(nExpression) then
       begin
@@ -165,7 +165,7 @@ begin
     exit;
   end;
 
-  if FormatSettings.Spaces.SpaceForOperator = eAlways then
+  if FormattingSettings.Spaces.SpaceForOperator = eAlways then
   begin
     if (pt.TokenType in SingleSpaceOperators) then
     begin
@@ -304,7 +304,7 @@ end;
 
 function TSingleSpaceBefore.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Spaces.FixSpacing;
+  Result := FormattingSettings.Spaces.FixSpacing;
 end;
 
 end.

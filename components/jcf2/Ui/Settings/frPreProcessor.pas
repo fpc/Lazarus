@@ -83,7 +83,7 @@ end;
 
 procedure TfPreProcessor.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.PreProcessor do
+  with FormattingSettings.PreProcessor do
   begin
     cbEnable.Checked := Enabled;
     mSymbols.Lines.Assign(DefinedSymbols);
@@ -93,7 +93,7 @@ end;
 
 procedure TfPreProcessor.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.PreProcessor do
+  with FormattingSettings.PreProcessor do
   begin
     Enabled := cbEnable.Checked;
     DefinedSymbols.Assign(mSymbols.Lines);
@@ -103,7 +103,7 @@ end;
 
 class function TfPreProcessor.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 procedure TfPreProcessor.FrameResize(Sender: TObject);

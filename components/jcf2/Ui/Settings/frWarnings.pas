@@ -83,7 +83,7 @@ end;
 
 procedure TfWarnings.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Clarify do
+  with FormattingSettings.Clarify do
   begin
     cbWarningsOn.Checked := Warnings;
     cbWarnUnusedParams.Checked  := WarnUnusedParams;
@@ -93,7 +93,7 @@ end;
 
 procedure TfWarnings.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Clarify do
+  with FormattingSettings.Clarify do
   begin
     Warnings := cbWarningsOn.Checked;
     WarnUnusedParams  := cbWarnUnusedParams.Checked;
@@ -104,7 +104,7 @@ end;
 
 class function TfWarnings.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 procedure TfWarnings.FrameResize(Sender: TObject);

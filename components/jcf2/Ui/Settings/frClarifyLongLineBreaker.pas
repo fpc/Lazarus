@@ -86,7 +86,7 @@ end;
 
 procedure TfClarifyLongLineBreaker.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     { line breaking }
     edtMaxLineLength.Value := MaxLineLength;
@@ -96,7 +96,7 @@ end;
 
 procedure TfClarifyLongLineBreaker.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     { line breaking }
     MaxLineLength := edtMaxLineLength.Value;
@@ -106,7 +106,7 @@ end;
 
 class function TfClarifyLongLineBreaker.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

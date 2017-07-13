@@ -141,10 +141,10 @@ begin
   if lcSourceToken.HasParentNode(nAsm) then
     exit;
 
-  if FormatSettings.SpecificWordCaps.HasWord(lcSourceToken.SourceCode) then
+  if FormattingSettings.SpecificWordCaps.HasWord(lcSourceToken.SourceCode) then
   begin
     // get the fixed version
-    lsChange := FormatSettings.SpecificWordCaps.CapitaliseWord(lcSourceToken.SourceCode);
+    lsChange := FormattingSettings.SpecificWordCaps.CapitaliseWord(lcSourceToken.SourceCode);
 
     // case-sensitive test - see if anything to do.
     if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
@@ -158,7 +158,7 @@ end;
 
 function TSpecificWordCaps.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.SpecificWordCaps.Enabled;
+  Result := FormattingSettings.SpecificWordCaps.Enabled;
 end;
 
 end.

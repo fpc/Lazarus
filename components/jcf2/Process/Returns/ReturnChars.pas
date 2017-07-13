@@ -68,7 +68,7 @@ begin
   if (lcSourceToken.TokenType <> ttReturn) then
     exit;
 
-  case FormatSettings.Returns.ReturnChars of
+  case FormattingSettings.Returns.ReturnChars of
     rcLeaveAsIs:
     begin
      // leave as is
@@ -93,7 +93,7 @@ end;
 
 function TReturnChars.IsIncludedInSettings: boolean;
 begin
-  Result := (FormatSettings.Returns.ReturnChars <> rcLeaveAsIs);
+  Result := (FormattingSettings.Returns.ReturnChars <> rcLeaveAsIs);
 end;
 
 end.

@@ -68,7 +68,7 @@ end;
 
 function TFindReplace.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Replace.Enabled;
+  Result := FormattingSettings.Replace.Enabled;
 end;
 
 function TFindReplace.FinalSummary(out psMessage: string): boolean;
@@ -98,10 +98,10 @@ begin
   if lcSourceToken.SourceCode = '' then
     exit;
 
-  if not FormatSettings.Replace.HasWord(lcSourceToken.SourceCode) then
+  if not FormattingSettings.Replace.HasWord(lcSourceToken.SourceCode) then
     exit;
 
-  lcSourceToken.SourceCode := FormatSettings.Replace.Replace(lcSourceToken.SourceCode);
+  lcSourceToken.SourceCode := FormattingSettings.Replace.Replace(lcSourceToken.SourceCode);
   Inc(fiCount);
 end;
 

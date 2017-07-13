@@ -104,13 +104,13 @@ end;
 
 function TAlignField.IsIncludedInSettings: boolean;
 begin
-  Result := ( not FormatSettings.Obfuscate.Enabled) and FormatSettings.Align.AlignField;
+  Result := (not FormattingSettings.Obfuscate.Enabled) and FormattingSettings.Align.AlignField;
 end;
 
 function TAlignField.IsTokenInContext(const pt: TSourceToken): boolean;
 begin
   Result := pt.HasParentNode(FORMATTED_SECTIONS) and
-    ((not FormatSettings.Align.InterfaceOnly) or (pt.HasParentNode(nInterfaceSection)));
+    ((not FormattingSettings.Align.InterfaceOnly) or (pt.HasParentNode(nInterfaceSection)));
 end;
 
 function TAlignField.TokenEndsStatement(const pt: TSourceToken): boolean;

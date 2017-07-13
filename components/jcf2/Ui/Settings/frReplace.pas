@@ -81,7 +81,7 @@ end;
 
 procedure TfReplace.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Replace do
+  with FormattingSettings.Replace do
   begin
     cbEnable.Checked := Enabled;
     mWords.Lines.Assign(Words);
@@ -91,7 +91,7 @@ end;
 
 procedure TfReplace.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Replace do
+  with FormattingSettings.Replace do
   begin
     Enabled := cbEnable.Checked;
     Words.Assign(mWords.Lines);
@@ -101,7 +101,7 @@ end;
 
 class function TfReplace.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

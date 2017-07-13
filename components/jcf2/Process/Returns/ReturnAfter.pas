@@ -344,7 +344,7 @@ begin
     { not end .. else if the style forbits it }
     if (lcNext <> nil) and (lcNext.TokenType = ttElse) then
     begin
-      Result := (FormatSettings.Returns.EndElseStyle = eAlways);
+      Result := (FormattingSettings.Returns.EndElseStyle = eAlways);
     end
     else
     begin
@@ -479,13 +479,13 @@ begin
 
   { option to Break After Uses }
   if pt.HasParentNode(nUses) and (pt.TokenType = ttUses) and
-    FormatSettings.Returns.BreakAfterUses then
+    FormattingSettings.Returns.BreakAfterUses then
   begin
     Result := True;
     exit;
   end;
 
-  if pt.HasParentNode(nUses) and FormatSettings.Returns.UsesClauseOnePerLine then
+  if pt.HasParentNode(nUses) and FormattingSettings.Returns.UsesClauseOnePerLine then
   begin
     if (pt.TokenType = ttUses) then
     begin
@@ -508,7 +508,7 @@ begin
   if (pt.TokenType = ttReturn) then
     exit;
 
-  if FormatSettings.Returns.AddGoodReturns then
+  if FormattingSettings.Returns.AddGoodReturns then
   begin
     Result := NeedsGoodReturn(pt, ptNext);
   end;
@@ -534,10 +534,10 @@ begin
   Result := 0;
 
   // is this a label
-  if FormatSettings.SetAsm.BreaksAfterLabelEnabled then
+  if FormattingSettings.SetAsm.BreaksAfterLabelEnabled then
   begin
     if IsAsmLabelEnd(pcSourceToken) then
-      Result := FormatSettings.SetAsm.BreaksAfterLabel;
+      Result := FormattingSettings.SetAsm.BreaksAfterLabel;
   end;
 
   if pcSourceToken.TokenType in [ttAsm, ttSemiColon] then
@@ -642,9 +642,8 @@ end;
 
 function TReturnAfter.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Returns.AddGoodReturns or
-    FormatSettings.Returns.UsesClauseOnePerLine or
-    FormatSettings.Returns.BreakAfterUses;
+  with FormattingSettings.Returns do
+    Result := AddGoodReturns or UsesClauseOnePerLine or BreakAfterUses;
 end;
 
 end.

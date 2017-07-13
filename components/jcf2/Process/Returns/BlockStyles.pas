@@ -104,24 +104,24 @@ begin
   if pt.TokenType = ttEnd then
   begin
     if lcNextToken.TokenType = ttElse then
-      Result := FormatSettings.Returns.EndElseStyle;
+      Result := FormattingSettings.Returns.EndElseStyle;
   end
   else if pt.TokenType = ttColon then
   begin
     if IsCaseColon(pt) then
     begin
       if lcNextToken.TokenType = ttBegin then
-        Result := FormatSettings.Returns.CaseBeginStyle
+        Result := FormattingSettings.Returns.CaseBeginStyle
       else
-        Result := FormatSettings.Returns.CaseLabelStyle;
+        Result := FormattingSettings.Returns.CaseLabelStyle;
     end
     else if IsLabelColon(pt) then
     begin
       { otherwise, is there a begin next? }
       if lcNextToken.TokenType = ttBegin then
-        Result := FormatSettings.Returns.LabelBeginStyle
+        Result := FormattingSettings.Returns.LabelBeginStyle
       else
-        Result := FormatSettings.Returns.LabelStyle;
+        Result := FormattingSettings.Returns.LabelStyle;
     end;
   end
   else if (pt.TokenType = ttElse) then
@@ -130,9 +130,9 @@ begin
     if pt.HasParentNode(nElseCase, 1) then
     begin
       if lcNextToken.TokenType = ttBegin then
-        Result := FormatSettings.Returns.CaseElseBeginStyle
+        Result := FormattingSettings.Returns.CaseElseBeginStyle
       else
-        Result := FormatSettings.Returns.CaseElseStyle;
+        Result := FormattingSettings.Returns.CaseElseStyle;
     end
     else if (lcNextToken.TokenType = ttIf) then
     begin
@@ -159,20 +159,20 @@ begin
          end;
 
        }
-      Result := FormatSettings.Returns.ElseIfStyle;
+      Result := FormattingSettings.Returns.ElseIfStyle;
     end
     else if (lcNextToken.TokenType = ttBegin) then
     begin
-      Result := FormatSettings.Returns.ElseBeginStyle;
+      Result := FormattingSettings.Returns.ElseBeginStyle;
     end;
   end
   else
   begin
     { otherwise, is there a begin next? }
     if lcNextToken.TokenType = ttBegin then
-      Result := FormatSettings.Returns.BlockBeginStyle
+      Result := FormattingSettings.Returns.BlockBeginStyle
     else
-      Result := FormatSettings.Returns.BlockStyle;
+      Result := FormattingSettings.Returns.BlockStyle;
   end;
 end;
 

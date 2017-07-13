@@ -105,7 +105,7 @@ end;
 
 procedure TfObfuscateSettings.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Obfuscate do
+  with FormattingSettings.Obfuscate do
   begin
     cbEnabled.Checked      := Enabled;
     rgObfuscateCaps.ItemIndex := Ord(Caps);
@@ -118,7 +118,7 @@ end;
 
 procedure TfObfuscateSettings.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Obfuscate do
+  with FormattingSettings.Obfuscate do
   begin
     Enabled := cbEnabled.Checked;
     Caps    := TCapitalisationType(rgObfuscateCaps.ItemIndex);
@@ -131,7 +131,7 @@ end;
 
 class function TfObfuscateSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 initialization

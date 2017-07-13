@@ -70,15 +70,13 @@ end;
 
 procedure TfComments.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  cbRemoveEmptyDoubleSlashComments.Caption :=
-    lisCommentsRemoveEmptySlashComments;
-  cbRemoveEmptyCurlyBraceComments.Caption :=
-    lisCommentsRemoveEmptyCurlyBracesComments;
+  cbRemoveEmptyDoubleSlashComments.Caption := lisCommentsRemoveEmptySlashComments;
+  cbRemoveEmptyCurlyBraceComments.Caption := lisCommentsRemoveEmptyCurlyBracesComments;
 end;
 
 procedure TfComments.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Comments do
+  with FormattingSettings.Comments do
   begin
     cbRemoveEmptyDoubleSlashComments.Checked := RemoveEmptyDoubleSlashComments;
     cbRemoveEmptyCurlyBraceComments.Checked  := RemoveEmptyCurlyBraceComments;
@@ -87,7 +85,7 @@ end;
 
 procedure TfComments.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Comments do
+  with FormattingSettings.Comments do
   begin
     RemoveEmptyDoubleSlashComments := cbRemoveEmptyDoubleSlashComments.Checked;
     RemoveEmptyCurlyBraceComments  := cbRemoveEmptyCurlyBraceComments.Checked;
@@ -96,7 +94,7 @@ end;
 
 class function TfComments.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 initialization

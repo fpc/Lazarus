@@ -81,8 +81,8 @@ end;
 
 function TUsesClauseFindReplace.IsIncludedInSettings: boolean;
 begin
-  Result := (FormatSettings.UsesClause.InsertInterfaceEnabled or
-    FormatSettings.UsesClause.InsertImplementationEnabled);
+  with FormattingSettings.UsesClause do
+    Result := InsertInterfaceEnabled or InsertImplementationEnabled;
 end;
 
 function TUsesClauseFindReplace.EnabledVisitSourceToken(const pcNode: TObject): Boolean;
@@ -120,7 +120,7 @@ begin
   begin
     { first instance, convert the name }
     fbHasFind := True;
-    lcSourceToken.SourceCode := FormatSettings.UsesClause.GetReplace;
+    lcSourceToken.SourceCode := FormattingSettings.UsesClause.GetReplace;
     Inc(fiCount);
   end
   else
@@ -170,7 +170,7 @@ end;
 
 function TUsesClauseFindReplace.MatchesSearch(const ps: string): boolean;
 begin
-  Result := FormatSettings.UsesClause.Find.IndexOf(ps) >= 0;
+  Result := FormattingSettings.UsesClause.Find.IndexOf(ps) >= 0;
 end;
 
 end.

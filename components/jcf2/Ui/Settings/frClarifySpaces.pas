@@ -156,7 +156,7 @@ end;
 
 procedure TfClarifySpaces.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Spaces do
+  with FormattingSettings.Spaces do
   begin
     cbTabsToSpaces.Checked := TabsToSpaces;
     cbSpacesToTabs.Checked := SpacesToTabs;
@@ -200,7 +200,7 @@ end;
 
 procedure TfClarifySpaces.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Spaces do
+  with FormattingSettings.Spaces do
   begin
     TabsToSpaces := cbTabsToSpaces.Checked;
     SpacesToTabs := cbSpacesToTabs.Checked;
@@ -243,7 +243,7 @@ end;
 
 class function TfClarifySpaces.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

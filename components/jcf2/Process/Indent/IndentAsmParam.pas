@@ -103,8 +103,8 @@ begin
     inc(liIndentLevel);
   end;
 
-  Result := FormatSettings.Indent.SpacesForIndentLevel(liIndentLevel); 
-  Result := Result + FormatSettings.SetAsm.ParamsIndent;
+  Result := FormattingSettings.Indent.SpacesForIndentLevel(liIndentLevel);
+  Result := Result + FormattingSettings.SetAsm.ParamsIndent;
 end;
 
 function TIndentAsmParam.EnabledVisitSourceToken(const pcNode: TObject): Boolean;
@@ -139,7 +139,7 @@ end;
 
 function TIndentAsmParam.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.SetAsm.ParamsIndentEnabled;
+  Result := FormattingSettings.SetAsm.ParamsIndentEnabled;
 end;
 
 end.

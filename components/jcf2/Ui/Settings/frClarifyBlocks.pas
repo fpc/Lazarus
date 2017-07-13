@@ -112,7 +112,7 @@ end;
 
 procedure TfClarifyBlocks.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     { block styles }
     rgBlockBegin.ItemIndex := Ord(BlockBeginStyle);
@@ -126,7 +126,7 @@ end;
 
 procedure TfClarifyBlocks.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Returns do
+  with FormattingSettings.Returns do
   begin
     { block styles }
     BlockBeginStyle := TTriOptionStyle(rgBlockBegin.ItemIndex);
@@ -140,7 +140,7 @@ end;
 
 class function TfClarifyBlocks.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

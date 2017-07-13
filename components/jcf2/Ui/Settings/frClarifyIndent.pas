@@ -111,7 +111,7 @@ end;
 
 procedure TfClarifyIndent.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.Indent do
+  with FormattingSettings.Indent do
   begin
     edtIndentSpaces.Value    := IndentSpaces;
     cbIndentBeginEnd.Checked := IndentBeginEnd;
@@ -141,7 +141,7 @@ end;
 procedure TfClarifyIndent.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
 
-  with FormatSettings.Indent do
+  with FormattingSettings.Indent do
   begin
     IndentSpaces   := edtIndentSpaces.Value;
     IndentBeginEnd := cbIndentBeginEnd.Checked;
@@ -167,7 +167,7 @@ end;
 
 class function TfClarifyIndent.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

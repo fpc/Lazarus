@@ -90,10 +90,10 @@ begin
   if pt.HasParentNode(nAsm) then
     exit;
 
-  lcSetReturns := FormatSettings.Returns;
+  lcSetReturns := FormattingSettings.Returns;
   Assert(lcSetReturns <> nil);
 
-  if FormatSettings.Returns.RemoveBadReturns then
+  if FormattingSettings.Returns.RemoveBadReturns then
   begin
 
     if pt.TokenType in NoReturnWords then
@@ -326,7 +326,7 @@ end;
 
 function TNoReturnAfter.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Returns.RemoveBadReturns;
+  Result := FormattingSettings.Returns.RemoveBadReturns;
 end;
 
 end.

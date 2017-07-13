@@ -77,7 +77,7 @@ begin
     exit;
   end;
 
-  if (FormatSettings.Spaces.SpaceForOperator = eNever) then
+  if (FormattingSettings.Spaces.SpaceForOperator = eNever) then
   begin
     if IsSymbolOperator(pt) then
     begin
@@ -131,7 +131,7 @@ begin
 
     also applies to type TFoo = interface(IDispatch) }
   if (pt.HasParentNode(nRestrictedType)) and (pt.TokenType in ObjectTypeWords) and
-    ( not (FormatSettings.Spaces.SpaceBeforeClassHeritage)) then
+    ( not (FormattingSettings.Spaces.SpaceBeforeClassHeritage)) then
   begin
     if (ptNext.TokenType in [ttOpenBracket, ttSemiColon]) then
     begin
@@ -176,7 +176,7 @@ end;
 
 function TNoSpaceAfter.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Spaces.FixSpacing;
+  Result := FormattingSettings.Spaces.FixSpacing;
 end;
 
 end.

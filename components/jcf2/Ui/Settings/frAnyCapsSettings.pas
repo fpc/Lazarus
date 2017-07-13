@@ -80,7 +80,7 @@ end;
 
 procedure TfrAnyCapsSettings.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.SpecificWordCaps do
+  with FormattingSettings.SpecificWordCaps do
   begin
     cbEnableAnyWords.Checked := Enabled;
     mWords.Lines.Assign(Words);
@@ -89,7 +89,7 @@ end;
 
 procedure TfrAnyCapsSettings.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.SpecificWordCaps do
+  with FormattingSettings.SpecificWordCaps do
   begin
     Enabled := cbEnableAnyWords.Checked;
     Words.Assign(mWords.Lines);
@@ -98,7 +98,7 @@ end;
 
 class function TfrAnyCapsSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 procedure TfrAnyCapsSettings.cbEnableAnyWordsClick(Sender: TObject);

@@ -102,9 +102,9 @@ begin
     { from the file, about itself}
     lblDate.Caption := Format(lisFrFilesDateFileWritten,
       [FormatDateTime(DefaultFormatSettings.ShortDateFormat + ' ' + DefaultFormatSettings.ShortTimeFormat,
-      FormatSettings.WriteDateTime)]);
-    lblVersion.Caption := Format(lisFrFilesVersionThatWroteThisFile, [FormatSettings.WriteVersion]);
-    mDescription.Text  := FormatSettings.Description;
+      FormattingSettings.WriteDateTime)]);
+    lblVersion.Caption := Format(lisFrFilesVersionThatWroteThisFile, [FormattingSettings.WriteVersion]);
+    mDescription.Text  := FormattingSettings.Description;
 
   end;
 end;
@@ -113,7 +113,7 @@ procedure TfFiles.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   lcSet: TJCFRegistrySettings;
 begin
-  FormatSettings.Description := mDescription.Text;
+  FormattingSettings.Description := mDescription.Text;
 
   lcSet := GetRegSettings;
   lcSet.ConfirmFormat := cbConfirmFormat.Checked;
@@ -165,7 +165,7 @@ end;
 
 class function TfFiles.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 initialization

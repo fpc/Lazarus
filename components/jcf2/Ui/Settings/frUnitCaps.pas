@@ -77,7 +77,7 @@ end;
 
 procedure TfrUnitNameCaps.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.UnitNameCaps do
+  with FormattingSettings.UnitNameCaps do
   begin
     cbEnableAnyWords.Checked := Enabled;
     mWords.Lines.Assign(Words);
@@ -87,7 +87,7 @@ end;
 
 procedure TfrUnitNameCaps.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with FormatSettings.UnitNameCaps do
+  with FormattingSettings.UnitNameCaps do
   begin
     Enabled := cbEnableAnyWords.Checked;
     Words.Assign(mWords.Lines);
@@ -97,7 +97,7 @@ end;
 
 class function TfrUnitNameCaps.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 procedure TfrUnitNameCaps.FrameResize(Sender: TObject);

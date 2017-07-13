@@ -144,7 +144,7 @@ begin
 
   if pt.TokenType = ttOpenBracket then
   begin
-    if FormatSettings.Spaces.SpaceAfterOpenBrackets then 
+    if FormattingSettings.Spaces.SpaceAfterOpenBrackets then
     begin
       Result := true;
       exit;
@@ -173,7 +173,7 @@ begin
     exit;
   end;
 
-  if FormatSettings.Spaces.SpaceForOperator = eAlways then
+  if FormattingSettings.Spaces.SpaceForOperator = eAlways then
   begin
 
     if (pt.TokenType in SingleSpaceOperators) then
@@ -246,7 +246,7 @@ begin
   { single space before class heritage ?
     see NoSpaceAfter }
   if (pt.HasParentNode(nRestrictedType)) and (pt.TokenType in ObjectTypeWords) and
-    (FormatSettings.Spaces.SpaceBeforeClassHeritage) then
+    (FormattingSettings.Spaces.SpaceBeforeClassHeritage) then
   begin
     if (ptNext.TokenType in [ttOpenBracket, ttSemiColon]) then
     begin
@@ -340,7 +340,7 @@ end;
 
 function TSingleSpaceAfter.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Spaces.FixSpacing;
+  Result := FormattingSettings.Spaces.FixSpacing;
 end;
 
 end.

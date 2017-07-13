@@ -60,7 +60,7 @@ uses
 constructor TTabToSpace.Create;
 begin
   inherited;
-  fsSpaces    := StrRepeat(NativeSpace, FormatSettings.Spaces.SpacesPerTab);
+  fsSpaces    := StrRepeat(NativeSpace, FormattingSettings.Spaces.SpacesPerTab);
   FormatFlags := FormatFlags + [eAddSpace, eRemoveSpace];
 end;
 
@@ -97,7 +97,7 @@ end;
 
 function TTabToSpace.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Spaces.TabsToSpaces;
+  Result := FormattingSettings.Spaces.TabsToSpaces;
 end;
 
 end.

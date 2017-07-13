@@ -205,7 +205,7 @@ end;
 
 function TNoReturnBefore.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Returns.RemoveBadReturns;
+  Result := FormattingSettings.Returns.RemoveBadReturns;
 end;
 
 end.

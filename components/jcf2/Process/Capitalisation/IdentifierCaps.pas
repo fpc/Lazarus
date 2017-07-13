@@ -172,10 +172,11 @@ begin
   begin
     // it's an identifier
 
-    if FormatSettings.IdentifierCaps.Enabled and FormatSettings.IdentifierCaps.HasWord(lcSourceToken.SourceCode) then
+    if FormattingSettings.IdentifierCaps.Enabled
+    and FormattingSettings.IdentifierCaps.HasWord(lcSourceToken.SourceCode) then
     begin
       // get the fixed version
-      lsChange := FormatSettings.IdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode);
+      lsChange := FormattingSettings.IdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode);
 
       // case-sensitive test - see if anything to do.
       if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
@@ -190,10 +191,11 @@ begin
   begin
     // it's not an identifier 
 
-    if FormatSettings.NotIdentifierCaps.Enabled and FormatSettings.NotIdentifierCaps.HasWord(lcSourceToken.SourceCode) then
+    if FormattingSettings.NotIdentifierCaps.Enabled
+    and FormattingSettings.NotIdentifierCaps.HasWord(lcSourceToken.SourceCode) then
     begin
       // get the fixed version
-      lsChange := FormatSettings.NotIdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode);
+      lsChange := FormattingSettings.NotIdentifierCaps.CapitaliseWord(lcSourceToken.SourceCode);
 
       // case-sensitive test - see if anything to do.
       if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
@@ -208,8 +210,8 @@ end;
 
 function TIdentifierCaps.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.IdentifierCaps.Enabled or
-    FormatSettings.NotIdentifierCaps.Enabled;
+  Result := FormattingSettings.IdentifierCaps.Enabled or
+            FormattingSettings.NotIdentifierCaps.Enabled;
 end;
 
 end.

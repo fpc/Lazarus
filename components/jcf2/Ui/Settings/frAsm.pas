@@ -103,10 +103,8 @@ end;
 
 procedure TfAsm.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-
-  with FormatSettings.SetAsm do
+  with FormattingSettings.SetAsm do
   begin
-
     cbStatementIndent.Checked := StatementIndentEnabled;
     edtStatementIndent.Value := StatementIndent;
 
@@ -118,13 +116,11 @@ begin
 
     rgCaps.ItemIndex := Ord(Capitalisation);
   end;
-
 end;
 
 procedure TfAsm.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-
-  with FormatSettings.SetAsm do
+  with FormattingSettings.SetAsm do
   begin
     StatementIndentEnabled := cbStatementIndent.Checked;
     StatementIndent := edtStatementIndent.Value;
@@ -141,7 +137,7 @@ end;
 
 class function TfAsm.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormatSettings;
+  Result := TFormattingSettings;
 end;
 
 initialization

@@ -102,7 +102,7 @@ end;
 
 function TMoveSpaceToBeforeColon.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Spaces.MoveSpaceToBeforeColon;
+  Result := FormattingSettings.Spaces.MoveSpaceToBeforeColon;
 end;
 
 end.

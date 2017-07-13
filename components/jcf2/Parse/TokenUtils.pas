@@ -842,23 +842,23 @@ begin
   if InStatements(pt) then
   begin
     if pbBefore then
-      Result := FormatSettings.Returns.BeforeCompilerDirectStatements
+      Result := FormattingSettings.Returns.BeforeCompilerDirectStatements
     else
-      Result := FormatSettings.Returns.AfterCompilerDirectStatements;
+      Result := FormattingSettings.Returns.AfterCompilerDirectStatements;
   end
   else if pt.HasParentNode(nUses)  then
   begin
     if pbBefore then
-      Result := FormatSettings.Returns.BeforeCompilerDirectUses
+      Result := FormattingSettings.Returns.BeforeCompilerDirectUses
     else
-      Result := FormatSettings.Returns.AfterCompilerDirectUses;
+      Result := FormattingSettings.Returns.AfterCompilerDirectUses;
   end
   else
   begin
     if pbBefore then
-      Result := FormatSettings.Returns.BeforeCompilerDirectGeneral
+      Result := FormattingSettings.Returns.BeforeCompilerDirectGeneral
     else
-      Result := FormatSettings.Returns.AfterCompilerDirectGeneral;
+      Result := FormattingSettings.Returns.AfterCompilerDirectGeneral;
   end;
 end;
 

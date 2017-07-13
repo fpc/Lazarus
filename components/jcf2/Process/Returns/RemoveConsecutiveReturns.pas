@@ -74,7 +74,7 @@ begin
   begin
     Inc(liCount);
 
-    if (liCount - 1) > FormatSettings.Returns.MaxConsecutiveBlankLines then
+    if (liCount - 1) > FormattingSettings.Returns.MaxConsecutiveBlankLines then
     begin
       BlankToken(lcSourceToken);
     end;
@@ -86,7 +86,7 @@ end;
 
 function TRemoveConsecutiveReturns.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Returns.RemoveConsecutiveBlankLines;
+  Result := FormattingSettings.Returns.RemoveConsecutiveBlankLines;
 end;
 
 end.

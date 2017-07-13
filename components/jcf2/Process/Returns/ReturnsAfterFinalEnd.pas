@@ -74,7 +74,7 @@ begin
   begin
     // count the returns
     lcCurrent      := lcSourceToken;
-    liReturnsWanted := FormatSettings.Returns.NumReturnsAfterFinalEnd;
+    liReturnsWanted := FormattingSettings.Returns.NumReturnsAfterFinalEnd;
     liReturnsFound := 0;
 
     while lcCurrent <> nil do

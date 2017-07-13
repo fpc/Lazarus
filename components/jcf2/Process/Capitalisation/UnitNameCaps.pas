@@ -129,10 +129,10 @@ begin
   if not IsUnitName(lcSourceToken) then
     exit;
 
-  if FormatSettings.UnitNameCaps.HasWord(lcSourceToken.SourceCode) then
+  if FormattingSettings.UnitNameCaps.HasWord(lcSourceToken.SourceCode) then
   begin
     // get the fixed version
-    lsChange := FormatSettings.UnitNameCaps.CapitaliseWord(lcSourceToken.SourceCode);
+    lsChange := FormattingSettings.UnitNameCaps.CapitaliseWord(lcSourceToken.SourceCode);
 
     // case-sensitive test - see if anything to do.
     if AnsiCompareStr(lcSourceToken.SourceCode, lsChange) <> 0 then
@@ -146,7 +146,7 @@ end;
 
 function TUnitNameCaps.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.UnitNameCaps.Enabled;
+  Result := FormattingSettings.UnitNameCaps.Enabled;
 end;
 
 end.

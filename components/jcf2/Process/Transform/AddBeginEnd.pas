@@ -336,7 +336,7 @@ begin
   if not IsBlockParent(lcNode) then
     exit;
 
-  case FormatSettings.Transform.BeginEndStyle of
+  case FormattingSettings.Transform.BeginEndStyle of
     eNever:
     begin
       if HasBlockChild(lcNode) and SafeToRemoveBeginEnd(lcNode) then
@@ -363,7 +363,7 @@ end;
 
 function TAddBeginEnd.IsIncludedInSettings: boolean;
 begin
-  Result := (FormatSettings.Transform.BeginEndStyle <> eLeave);
+  Result := (FormattingSettings.Transform.BeginEndStyle <> eLeave);
 end;
 
 end.

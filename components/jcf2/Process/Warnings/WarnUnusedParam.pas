@@ -144,7 +144,7 @@ var
   lbFound: boolean;
 begin
   // is this param name on the ignore list?
-  if FormatSettings.Clarify.IgnoreUnusedParams.IndexOf(psIdentName) >= 0  then
+  if FormattingSettings.Clarify.IgnoreUnusedParams.IndexOf(psIdentName) >= 0  then
     exit;
 
   lbFound := IsIdentifierUsedInParseTree(psIdentName, pcBlock);
@@ -188,7 +188,7 @@ end;
 
 function TWarnUnusedParam.IsIncludedInSettings: boolean;
 begin
-  Result := FormatSettings.Clarify.WarnUnusedParams;
+  Result := FormattingSettings.Clarify.WarnUnusedParams;
 end;
 
 end.
