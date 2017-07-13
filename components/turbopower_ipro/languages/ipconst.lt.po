@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-05 21:48+0200\n"
+"PO-Revision-Date: 2017-07-13 12:16+0200\n"
 "Project-Id-Version: ipconst\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: Lokalize 2.0\n"
@@ -440,9 +440,8 @@ msgid "Thread %d terminating (Hop number = %d)"
 msgstr "Gija %d baigia darbą (Hop numeris = %d)"
 
 #: ipconst.sicmptracecomplete
-#, fuzzy,badformat
 msgid "Trace complete (%s), %d hops"
-msgstr "Sekimas baigtas (%s), %s peršokimų"
+msgstr "Sekimas baigtas (%s), %d peršokimų"
 
 #: ipconst.sicmptracestart
 msgid "Trace to %s started"

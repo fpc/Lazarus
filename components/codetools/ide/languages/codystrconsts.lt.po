@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-05 11:47+0200\n"
+"PO-Revision-Date: 2017-07-13 12:09+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
@@ -661,9 +661,8 @@ msgid "Really delete the package from the database?%sNote: This does not change 
 msgstr "Ar tikrai pašalinti paketą iš duomenų bazės?%sPastaba: tai nepakeis pirminį kodą ar kokią sąranką.%s%s„%s“"
 
 #: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
-#, fuzzy,badformat
 msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
-msgstr "Ar tikrai pašalinti modulį iš duomenų bazės?sPastaba: tai nepakeis pirminį kodą ar kokią sąranką.%s%smodulis: „%s“"
+msgstr "Ar tikrai pašalinti modulį iš duomenų bazės?%sPastaba: tai nepakeis pirminį kodą ar kokią sąranką.%s%smodulis: „%s“"
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"

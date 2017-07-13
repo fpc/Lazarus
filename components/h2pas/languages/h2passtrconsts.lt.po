@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-05 14:15+0200\n"
+"PO-Revision-Date: 2017-07-13 12:14+0200\n"
 "Project-Id-Version: h2passtrconsts\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -271,7 +271,7 @@ msgstr "„FindExplicitTypes“ įrankiui nepavyko iš naujo skaityti apibrėžt
 #: h2passtrconsts.h2pfixessectiontypeofaliasdefinitionsinpascalunitchec
 #, fuzzy,badformat
 msgid "Fixes section type of alias definitions in pascal unit%sChecks all alias definitions of the form%sconst LeftSide = RightSide;%slooks up RightSide in the unit and if RightSide is a type or var, changes the section accordingly"
-msgstr "Paskalio modulyje taiso pseudonimų apibrėžčių sekcijos  tipą%sTikrina visas pseudonimų apibrėžtis, kurios turi formą%sconst LeftSide = RightSide;%jei modulyje„RightSide“ tipas yra „var“, tai atitinkamai modifikuoja sekciją"
+msgstr "Paskalio modulyje taiso pseudonimų apibrėžčių sekcijos tipą%sTikrina visas pseudonimų apibrėžtis, kurios turi formą%sconst Kairė_pusė = Dešinė_pusė;%Jei modulyje „Dešinė_pusė“ tipas yra „var“, tai atitinkamai modifikuoja sekciją"
 
 #: h2passtrconsts.h2pfixforwarddefinitionsbyreordering
 msgid "Fix forward definitions by reordering"

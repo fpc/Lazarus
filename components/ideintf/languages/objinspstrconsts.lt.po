@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-07-05 14:30+0200\n"
+"PO-Revision-Date: 2017-07-13 12:48+0200\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "X-Generator: Lokalize 2.0\n"
@@ -1353,7 +1353,7 @@ msgstr "Perkelti au&kštyn"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
-msgstr "Jiokios"
+msgstr "Jokios"
 
 #: objinspstrconsts.sccsiledtopendialog
 msgid "Add Images"

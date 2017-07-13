@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-05 17:51+0200\n"
+"PO-Revision-Date: 2017-07-13 12:14+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Language: lt\n"
@@ -82,10 +82,9 @@ msgid "%s is not executable"
 msgstr "%s nėra vykdomasis failas"
 
 #: lazutilsstrconsts.lrslistindexexceedsbounds
-#, fuzzy,badformat
 msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
-msgstr "Sąrašo indeksas peržengia ribas (%s)"
+msgstr "Sąrašo indeksas peržengia ribas (%d)"
 
 #: lazutilsstrconsts.lrslistmustbeempty
 msgctxt "lazutilsstrconsts.lrslistmustbeempty"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Valdas Jankunas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2017-07-07 23:15+0200\n"
+"PO-Revision-Date: 2017-07-13 12:45+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -838,9 +838,8 @@ msgid "Save changes"
 msgstr "Įrašyti pakeitimus"
 
 #: lazdatadeskstr.sscriptaborted
-#, fuzzy,badformat
 msgid "Script was aborted after %d statements"
-msgstr "Po %s sakinių scenarijaus veikimas nutrūko"
+msgstr "Po %d sakinių scenarijaus veikimas nutrūko"
 
 #: lazdatadeskstr.sscriptcompleted
 msgid "Executed %d statements from script"
