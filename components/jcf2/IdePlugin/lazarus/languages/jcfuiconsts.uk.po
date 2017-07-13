@@ -412,6 +412,10 @@ msgstr "Знайти та замінити"
 msgid "Word list:"
 msgstr "Список слів:"
 
+#: jcfuiconsts.lisfrfileconfirmformat
+msgid "Show confirmation dialog before format"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr "Дата запису файлу: %s"
@@ -507,6 +511,10 @@ msgstr "Параметри"
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
 msgstr "Параметри форматування JCF"
+
+#: jcfuiconsts.lisjedicodeformatallopenwindow
+msgid "JEDI Code Format of all open windows?"
+msgstr ""
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"

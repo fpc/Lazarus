@@ -409,6 +409,10 @@ msgstr "Suchen und Ersetzen"
 msgid "Word list:"
 msgstr "Wortliste:"
 
+#: jcfuiconsts.lisfrfileconfirmformat
+msgid "Show confirmation dialog before format"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 #, fuzzy,badformat
 msgid "Date file written: %s"
@@ -507,6 +511,10 @@ msgstr "Einstellungen"
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
 msgstr "JCF-Formateinstellungen"
+
+#: jcfuiconsts.lisjedicodeformatallopenwindow
+msgid "JEDI Code Format of all open windows?"
+msgstr ""
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"

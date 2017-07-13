@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
@@ -408,6 +410,10 @@ msgstr "Поиск и замена"
 msgid "Word list:"
 msgstr "Список слов:"
 
+#: jcfuiconsts.lisfrfileconfirmformat
+msgid "Show confirmation dialog before format"
+msgstr "Выводить диалог подтверждения перед форматированием"
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr "Дата записи файла: %s"
@@ -503,6 +509,10 @@ msgstr "Параметры"
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
 msgstr "Форматирование кода JEDI"
+
+#: jcfuiconsts.lisjedicodeformatallopenwindow
+msgid "JEDI Code Format of all open windows?"
+msgstr "Вы действительно хотите выполнить форматирование кода JEDI во всех открытых окнах?"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"

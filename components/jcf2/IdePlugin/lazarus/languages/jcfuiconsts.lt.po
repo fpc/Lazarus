@@ -410,6 +410,10 @@ msgstr "Rasti ir pakeisti"
 msgid "Word list:"
 msgstr "Žodžių sąrašas:"
 
+#: jcfuiconsts.lisfrfileconfirmformat
+msgid "Show confirmation dialog before format"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr "Failo įrašymo data: %s"
@@ -505,6 +509,10 @@ msgstr "Parinktys"
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
 msgstr "JCF formato nuostatos"
+
+#: jcfuiconsts.lisjedicodeformatallopenwindow
+msgid "JEDI Code Format of all open windows?"
+msgstr ""
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"

@@ -410,6 +410,10 @@ msgstr "Keresés és csere"
 msgid "Word list:"
 msgstr "Szólista:"
 
+#: jcfuiconsts.lisfrfileconfirmformat
+msgid "Show confirmation dialog before format"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr "A fájl írásának időpontja: %s"
@@ -505,6 +509,10 @@ msgstr "Beállítások"
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
 msgstr "JCF formázás beállításai"
+
+#: jcfuiconsts.lisjedicodeformatallopenwindow
+msgid "JEDI Code Format of all open windows?"
+msgstr ""
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"

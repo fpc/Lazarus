@@ -400,6 +400,10 @@ msgstr ""
 msgid "Word list:"
 msgstr ""
 
+#: jcfuiconsts.lisfrfileconfirmformat
+msgid "Show confirmation dialog before format"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
 msgstr ""
@@ -494,6 +498,10 @@ msgstr ""
 
 #: jcfuiconsts.lisjcfformatsettings
 msgid "JCF Format Settings"
+msgstr ""
+
+#: jcfuiconsts.lisjedicodeformatallopenwindow
+msgid "JEDI Code Format of all open windows?"
 msgstr ""
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
