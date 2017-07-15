@@ -597,6 +597,9 @@ type
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
+    GoToLineMenuItem: TMenuItem;
+    OpenFolderMenuItem: TMenuItem;
+    StatusPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
     procedure CompleteCodeMenuItemClick(Sender: TObject);
     procedure DbgPopUpMenuPopup(Sender: TObject);
@@ -606,6 +609,7 @@ type
     procedure FindOverloadsMenuItemClick(Sender: TObject);
     procedure FormMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
       {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure GoToLineMenuItemClick(Sender: TObject);
     procedure HighlighterClicked(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
     procedure InvertAssignmentMenuItemClick(Sender: TObject);
@@ -617,6 +621,7 @@ type
     procedure OnPopupOpenPackageFile(Sender: TObject);
     procedure OnPopupOpenProjectInsp(Sender: TObject);
     procedure OpenAtCursorClicked(Sender: TObject);
+    procedure OpenFolderMenuItemClick(Sender: TObject);
     procedure RenameIdentifierMenuItemClick(Sender: TObject);
     procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
     procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
@@ -629,6 +634,8 @@ type
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure StatusBarClick(Sender: TObject);
     procedure StatusBarDblClick(Sender: TObject);
+    procedure StatusBarContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
     procedure StatusBarDrawPanel({%H-}AStatusBar: TStatusBar; APanel: TStatusPanel;
       const ARect: TRect);
     procedure TabPopUpMenuPopup(Sender: TObject);
@@ -6754,6 +6761,8 @@ begin
     Images := IDEImages.Images_16;
   end;
 
+  GoToLineMenuItem.Caption := lisMenuGotoLine;
+  OpenFolderMenuItem.Caption := lisMenuOpenFolder;
   {$IFDEF VerboseMenuIntf}
   SrcPopupMenu.Items.WriteDebugReport('TSourceNotebook.BuildPopupMenu ');
   SourceTabMenuRoot.ConsistencyCheck;
@@ -7786,27 +7795,43 @@ begin
     ActSE.DoEditorExecuteCommand(ecPaste);
 end;
 
+procedure TSourceNotebook.StatusBarClick(Sender: TObject);
+var
+  P: TPoint;
+begin
+  P := StatusBar.ScreenToClient(Mouse.CursorPos);
+  if StatusBar.GetPanelIndexAt(P.X, P.Y) = 1  then
+    EditorMacroForRecording.Stop;
+end;
+
 procedure TSourceNotebook.StatusBarDblClick(Sender: TObject);
 var
   P: TPoint;
-  i: Integer;
 begin
   P := StatusBar.ScreenToClient(Mouse.CursorPos);
-  i := StatusBar.GetPanelIndexAt(P.X, P.Y);
-  // if we clicked on first panel which shows position in code
-  if assigned(Manager) and (i = 0) then
-  begin
-    // then show goto line dialog
-    Manager.GotoLineClicked(nil);
+  case StatusBar.GetPanelIndexAt(P.X, P.Y) of  // Based on panel:
+    0: GoToLineMenuItemClick(Nil);    // Show "Goto Line" dialog.
+    4: OpenFolderMenuItemClick(Nil);  // Show system file manager on file's folder.
   end;
+end;
+
+procedure TSourceNotebook.StatusBarContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+var
+  Pnl: Integer;
+begin
+  Pnl := StatusBar.GetPanelIndexAt(MousePos.X, MousePos.Y);
+  GoToLineMenuItem.Visible := Pnl=0;
+  OpenFolderMenuItem.Visible := Pnl=4;
+  if Pnl in [0, 4] then
+    StatusPopUpMenu.PopUp;
 end;
 
 procedure TSourceNotebook.StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TStatusPanel;
   const ARect: TRect);
 begin
-  if APanel = StatusBar.Panels[1] then begin
+  if APanel = StatusBar.Panels[1] then
     IDEImages.Images_16.Draw(StatusBar.Canvas, ARect.Left,  ARect.Top, FStopBtnIdx);
-  end;
 end;
 
 procedure TSourceNotebook.ToggleBreakpointClicked(Sender: TObject);
@@ -7993,16 +8018,16 @@ begin
   Cursor:=crDefault;
 end;
 
-procedure TSourceNotebook.StatusBarClick(Sender: TObject);
-var
-  P: TPoint;
-  i: Integer;
+// Two Popup menu handlers:
+procedure TSourceNotebook.GoToLineMenuItemClick(Sender: TObject);
 begin
-  P := StatusBar.ScreenToClient(Mouse.CursorPos);
-  i := StatusBar.GetPanelIndexAt(P.X, P.Y);
+  if Assigned(Manager) then
+    Manager.GotoLineClicked(nil);
+end;
 
-  if (i = 1)  then
-    EditorMacroForRecording.Stop;
+procedure TSourceNotebook.OpenFolderMenuItemClick(Sender: TObject);
+begin
+  OpenDocument(ExtractFilePath(Statusbar.Panels[4].Text));
 end;
 
 procedure TSourceNotebook.ExecuteEditorItemClick(Sender: TObject);
@@ -8265,8 +8290,7 @@ begin
     StatusBar.Panels[2].Text := PanelFileMode;
     Statusbar.Panels[3].Text := PanelCharMode;
     Statusbar.Panels[4].Text := PanelFilename;
-    if(EditorMacroForRecording.IsRecording(CurEditor))
-    then
+    if(EditorMacroForRecording.IsRecording(CurEditor)) then
       Statusbar.Panels[1].Width := 20
     else
       Statusbar.Panels[1].Width := 0;

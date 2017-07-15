@@ -400,6 +400,7 @@ resourcestring
   lisMenuJumpToNextBookmark = 'Jump to Next Bookmark';
   lisMenuJumpToPrevBookmark = 'Jump to Previous Bookmark';
   lisMenuProcedureList = 'Procedure List ...';
+  lisMenuOpenFolder = 'Open Folder ...';
 
   lisMenuViewObjectInspector = 'Object Inspector';
   lisMenuViewSourceEditor = 'Source Editor';

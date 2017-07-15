@@ -8,8 +8,7 @@ object SourceNotebook: TSourceNotebook
   ClientHeight = 300
   ClientWidth = 400
   OnMouseUp = FormMouseUp
-  LCLVersion = '1.7'
-  Scaled = True
+  LCLVersion = '1.9.0.0'
   object StatusBar: TStatusBar
     Left = 0
     Height = 20
@@ -36,7 +35,20 @@ object SourceNotebook: TSourceNotebook
     SimpleText = 'This is a test'
     SimplePanel = False
     OnClick = StatusBarClick
+    OnContextPopup = StatusBarContextPopup
     OnDblClick = StatusBarDblClick
     OnDrawPanel = StatusBarDrawPanel
+  end
+  object StatusPopUpMenu: TPopupMenu
+    Left = 48
+    Top = 36
+    object GoToLineMenuItem: TMenuItem
+      Caption = 'Goto line ...'
+      OnClick = GoToLineMenuItemClick
+    end
+    object OpenFolderMenuItem: TMenuItem
+      Caption = 'Open folder ...'
+      OnClick = OpenFolderMenuItemClick
+    end
   end
 end
