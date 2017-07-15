@@ -44,7 +44,7 @@ uses
   // SynEdit
   SynEdit, SynEditMarks, SynEditMarkupGutterMark,
   // IdeIntf
-  MenuIntf, SrcEditorIntf, IDEExternToolIntf,
+  MenuIntf, SrcEditorIntf, IDEExternToolIntf, IDEImagesIntf,
   // IDE
   etSrcEditMarks;
   
@@ -543,11 +543,13 @@ var
   ImgIDWarning: Integer;
   ImgIDNote: Integer;
   ImgIDHint: Integer;
+  ImgListSize: Integer;
 begin
   // create default mark icons
   ImgList:=TImageList.Create(Self);
-  ImgList.Width:=11;
-  ImgList.Height:=11;
+  ImgListSize := TIDEImages.ScaledSize(11);
+  ImgList.Width := ImgListSize;
+  ImgList.Height := ImgListSize;
 
   // synedit expects the first 10 icons for the bookmarks
   for i := 0 to 9 do
@@ -808,7 +810,7 @@ end;
 
 function TSourceMarks.AddImage(const ResName: string): integer;
 begin
-  Result := ImgList.AddResourceName(HInstance, Resname);
+  Result := TIDEImages.AddImageToImageList(ImgList, Resname, 11);
 end;
 
 initialization
