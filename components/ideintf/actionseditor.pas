@@ -27,9 +27,10 @@ uses
   Classes, SysUtils, contnrs,
   // LCL
   LCLIntf, LCLType, LCLProc, Forms, Controls, Dialogs, ExtCtrls, StdCtrls,
-  Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList,
+  Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList, Themes,
   // IDEIntf
-  ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils, IDEWindowIntf;
+  ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils, IDEWindowIntf,
+  IDEImagesIntf;
 
 type
   TActStdPropItem = class;
@@ -410,14 +411,35 @@ begin
 end;
 
 procedure TActionListEditor.FormCreate(Sender: TObject);
+var
+  ImageSize: Integer;
+  Bitmap: TBitmap;
+  Details: TThemedElementDetails;
 begin
-  //imageindex 0 exists
-  ImageList1.AddResourceName(HInstance, 'laz_add'); //imageindex 1
-  ImageList1.AddResourceName(HInstance, 'laz_delete'); //imageindex 2
-  ImageList1.AddResourceName(HInstance, 'arrow_up'); //imadeindex 3
-  ImageList1.AddResourceName(HInstance, 'arrow_down'); //imageindex 4
+  ImageSize := TIDEImages.ScaledSize;
+  ImageList1.Width := ImageSize;
+  ImageList1.Height := ImageSize;
+  Bitmap := TBitmap.Create;
+  try
+    Bitmap.SetSize(ImageSize, ImageSize);
+    Bitmap.Canvas.Brush.Color := clBtnFace;
+    Bitmap.Canvas.FillRect(0, 0, ImageSize, ImageSize);
+    Details := ThemeServices.GetElementDetails(ttbSplitButtonDropDownNormal);
+    ThemeServices.DrawElement(Bitmap.Canvas.Handle, Details, Rect(0, 0, ImageSize, ImageSize));
+//    TIDEImages.AssignImage(Bitmap, 'btn_downarrow'); //imageindex 0
+    ImageList1.Add(Bitmap, nil);
+    TIDEImages.AssignImage(Bitmap, 'laz_add'); //imageindex 1
+    ImageList1.Add(Bitmap, nil);
+    TIDEImages.AssignImage(Bitmap, 'laz_delete'); //imageindex 2
+    ImageList1.Add(Bitmap, nil);
+    TIDEImages.AssignImage(Bitmap, 'arrow_up'); //imadeindex 3
+    ImageList1.Add(Bitmap, nil);
+    TIDEImages.AssignImage(Bitmap, 'arrow_down'); //imageindex 4
+    ImageList1.Add(Bitmap, nil);
+  finally
+    Bitmap.Free;
+  end;
   btnAddMore.ImageIndex := 0;
-  // These must be set in code because OI does not work with non-existent values.
   btnAdd.ImageIndex := 1;
   btnDelete.ImageIndex := 2;
   btnUp.ImageIndex := 3;
