@@ -413,32 +413,16 @@ end;
 procedure TActionListEditor.FormCreate(Sender: TObject);
 var
   ImageSize: Integer;
-  Bitmap: TBitmap;
   Details: TThemedElementDetails;
 begin
   ImageSize := TIDEImages.ScaledSize;
   ImageList1.Width := ImageSize;
   ImageList1.Height := ImageSize;
-  Bitmap := TBitmap.Create;
-  try
-    Bitmap.SetSize(ImageSize, ImageSize);
-    Bitmap.Canvas.Brush.Color := clBtnFace;
-    Bitmap.Canvas.FillRect(0, 0, ImageSize, ImageSize);
-    Details := ThemeServices.GetElementDetails(ttbSplitButtonDropDownNormal);
-    ThemeServices.DrawElement(Bitmap.Canvas.Handle, Details, Rect(0, 0, ImageSize, ImageSize));
-//    TIDEImages.AssignImage(Bitmap, 'btn_downarrow'); //imageindex 0
-    ImageList1.Add(Bitmap, nil);
-    TIDEImages.AssignImage(Bitmap, 'laz_add'); //imageindex 1
-    ImageList1.Add(Bitmap, nil);
-    TIDEImages.AssignImage(Bitmap, 'laz_delete'); //imageindex 2
-    ImageList1.Add(Bitmap, nil);
-    TIDEImages.AssignImage(Bitmap, 'arrow_up'); //imadeindex 3
-    ImageList1.Add(Bitmap, nil);
-    TIDEImages.AssignImage(Bitmap, 'arrow_down'); //imageindex 4
-    ImageList1.Add(Bitmap, nil);
-  finally
-    Bitmap.Free;
-  end;
+  TIDEImages.AddImageToImageList(ImageList1, 'btn_downarrow'); //imageindex 0
+  TIDEImages.AddImageToImageList(ImageList1, 'laz_add'); //imageindex 1
+  TIDEImages.AddImageToImageList(ImageList1, 'laz_delete'); //imageindex 2
+  TIDEImages.AddImageToImageList(ImageList1, 'arrow_up'); //imadeindex 3
+  TIDEImages.AddImageToImageList(ImageList1, 'arrow_down'); //imageindex 4
   btnAddMore.ImageIndex := 0;
   btnAdd.ImageIndex := 1;
   btnDelete.ImageIndex := 2;

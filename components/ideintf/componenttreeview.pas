@@ -582,8 +582,6 @@ begin
 end;
 
 constructor TComponentTreeView.Create(TheOwner: TComponent);
-var
-  Bitmap: TBitmap;
 begin
   inherited Create(TheOwner);
   DragMode := dmAutomatic;
@@ -592,23 +590,12 @@ begin
   FImageList := TImageList.Create(nil);
   FImageList.Width := TIDEImages.ScaledSize;
   FImageList.Height := TIDEImages.ScaledSize;
-  Bitmap := TBitmap.Create;
-  try
-    TIDEImages.AssignImage(Bitmap, 'oi_form');
-    ImgIndexForm:=FImageList.Add(Bitmap, nil);
-    TIDEImages.AssignImage(Bitmap, 'oi_comp');
-    ImgIndexComponent:=FImageList.Add(Bitmap, nil);
-    TIDEImages.AssignImage(Bitmap, 'oi_control');
-    ImgIndexControl:=FImageList.Add(Bitmap, nil);
-    TIDEImages.AssignImage(Bitmap, 'oi_box');
-    ImgIndexBox:=FImageList.Add(Bitmap, nil);
-    TIDEImages.AssignImage(Bitmap, 'oi_collection');
-    ImgIndexCollection:=FImageList.Add(Bitmap, nil);
-    TIDEImages.AssignImage(Bitmap, 'oi_item');
-    ImgIndexItem:=FImageList.Add(Bitmap, nil);
-  finally
-    Bitmap.Free;
-  end;
+  ImgIndexForm := TIDEImages.AddImageToImageList(FImageList, 'oi_form');
+  ImgIndexComponent := TIDEImages.AddImageToImageList(FImageList, 'oi_comp');
+  ImgIndexControl := TIDEImages.AddImageToImageList(FImageList, 'oi_control');
+  ImgIndexBox := TIDEImages.AddImageToImageList(FImageList, 'oi_box');
+  ImgIndexCollection := TIDEImages.AddImageToImageList(FImageList, 'oi_collection');
+  ImgIndexItem := TIDEImages.AddImageToImageList(FImageList, 'oi_item');
   Images := FImageList;
 end;
 
