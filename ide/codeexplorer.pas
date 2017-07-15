@@ -199,6 +199,7 @@ type
     ImgIDUnit: Integer;
     ImgIDVariable: Integer;
     ImgIDHint: Integer;
+    procedure AssignAllImages;
     procedure ClearCodeTreeView;
     procedure ClearDirectivesTreeView;
     function GetCodeFilter: string;
@@ -484,33 +485,7 @@ begin
   CodeFilterEdit.TextHint:=lisCEFilter;
   DirectivesFilterEdit.TextHint:=lisCEFilter;
 
-  TIDEImages.AssignImage(CodeRefreshSpeedButton.Glyph, 'laz_refresh');
-  TIDEImages.AssignImage(CodeOptionsSpeedButton.Glyph, 'menu_environment_options');
-  TIDEImages.AssignImage(DirRefreshSpeedButton.Glyph, 'laz_refresh');
-  TIDEImages.AssignImage(DirOptionsSpeedButton.Glyph, 'menu_environment_options');
-
-  ImgIDDefault := Imagelist1.AddResourceName(HInstance, 'ce_default');
-  ImgIDProgram := Imagelist1.AddResourceName(HInstance, 'ce_program');
-  ImgIDUnit := Imagelist1.AddResourceName(HInstance, 'ce_unit');
-  ImgIDInterface := Imagelist1.AddResourceName(HInstance, 'ce_interface');
-  ImgIDImplementation := Imagelist1.AddResourceName(HInstance, 'ce_implementation');
-  ImgIDInitialization := Imagelist1.AddResourceName(HInstance, 'ce_initialization');
-  ImgIDFinalization := Imagelist1.AddResourceName(HInstance, 'ce_finalization');
-  ImgIDType := Imagelist1.AddResourceName(HInstance, 'ce_type');
-  ImgIDVariable := Imagelist1.AddResourceName(HInstance, 'ce_variable');
-  ImgIDConst := Imagelist1.AddResourceName(HInstance, 'ce_const');
-  ImgIDClass := Imagelist1.AddResourceName(HInstance, 'ce_class');
-  ImgIDClassInterface := Imagelist1.AddResourceName(HInstance, 'ce_classinterface');
-  ImgIDHelper := Imagelist1.AddResourceName(HInstance, 'ce_helper');
-  ImgIDRecord := Imagelist1.AddResourceName(HInstance, 'ce_record');
-  ImgIDProcedure := Imagelist1.AddResourceName(HInstance, 'ce_procedure');
-  ImgIDFunction := Imagelist1.AddResourceName(HInstance, 'ce_function');
-  ImgIDProperty := Imagelist1.AddResourceName(HInstance, 'ce_property');
-  ImgIDPropertyReadOnly := Imagelist1.AddResourceName(HInstance, 'ce_property_readonly');
-  // sections
-  ImgIDSection := Imagelist1.AddResourceName(HInstance, 'ce_section');
-  ImgIDHint := Imagelist1.AddResourceName(HInstance, 'state_hint');
-
+  AssignAllImages;
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
   CodeExplorerMenuRoot.MenuItem:=TreePopupMenu.Items;
@@ -736,6 +711,41 @@ procedure TCodeExplorerView.OnUserInput(Sender: TObject; Msg: Cardinal);
 begin
   if CodeExplorerOptions.Refresh=cerOnIdle then
     CheckOnIdle;
+end;
+
+procedure TCodeExplorerView.AssignAllImages;
+var
+  ImageSize: Integer;
+begin
+  TIDEImages.AssignImage(CodeRefreshSpeedButton.Glyph, 'laz_refresh');
+  TIDEImages.AssignImage(CodeOptionsSpeedButton.Glyph, 'menu_environment_options');
+  TIDEImages.AssignImage(DirRefreshSpeedButton.Glyph, 'laz_refresh');
+  TIDEImages.AssignImage(DirOptionsSpeedButton.Glyph, 'menu_environment_options');
+
+  ImageSize := TIDEImages.ScaledSize;
+  Imagelist1.Width := ImageSize;
+  Imagelist1.Height := ImageSize;
+  ImgIDDefault := TIDEImages.AddImageToImageList(Imagelist1, 'ce_default');
+  ImgIDProgram := TIDEImages.AddImageToImageList(Imagelist1, 'ce_program');
+  ImgIDUnit := TIDEImages.AddImageToImageList(Imagelist1, 'ce_unit');
+  ImgIDInterface := TIDEImages.AddImageToImageList(Imagelist1, 'ce_interface');
+  ImgIDImplementation := TIDEImages.AddImageToImageList(Imagelist1, 'ce_implementation');
+  ImgIDInitialization := TIDEImages.AddImageToImageList(Imagelist1, 'ce_initialization');
+  ImgIDFinalization := TIDEImages.AddImageToImageList(Imagelist1, 'ce_finalization');
+  ImgIDType := TIDEImages.AddImageToImageList(Imagelist1, 'ce_type');
+  ImgIDVariable := TIDEImages.AddImageToImageList(Imagelist1, 'ce_variable');
+  ImgIDConst := TIDEImages.AddImageToImageList(Imagelist1, 'ce_const');
+  ImgIDClass := TIDEImages.AddImageToImageList(Imagelist1, 'ce_class');
+  ImgIDClassInterface := TIDEImages.AddImageToImageList(Imagelist1, 'ce_classinterface');
+  ImgIDHelper := TIDEImages.AddImageToImageList(Imagelist1, 'ce_helper');
+  ImgIDRecord := TIDEImages.AddImageToImageList(Imagelist1, 'ce_record');
+  ImgIDProcedure := TIDEImages.AddImageToImageList(Imagelist1, 'ce_procedure');
+  ImgIDFunction := TIDEImages.AddImageToImageList(Imagelist1, 'ce_function');
+  ImgIDProperty := TIDEImages.AddImageToImageList(Imagelist1, 'ce_property');
+  ImgIDPropertyReadOnly := TIDEImages.AddImageToImageList(Imagelist1, 'ce_property_readonly');
+  // sections
+  ImgIDSection := TIDEImages.AddImageToImageList(Imagelist1, 'ce_section');
+  ImgIDHint := TIDEImages.AddImageToImageList(Imagelist1, 'state_hint');
 end;
 
 function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;
