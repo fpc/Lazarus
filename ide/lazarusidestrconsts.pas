@@ -1281,10 +1281,10 @@ resourcestring
   lisAutoCompletionOff = 'Auto completion: off';
   lisSAMSelectNone = 'Select none';
   lisKMClassic = 'Classic';
-  lisKMLazarusDefault = 'Lazarus (default)';
-  lisKMMacOSXApple = 'Mac OS X (Apple style)';
-  lisKMMacOSXLaz = 'Mac OS X (Lazarus style)';
-  lisKMDefaultToOSX = 'Default adapted to OS X';
+  lisKMLazarusDefault = 'Lazarus default';
+  lisKMMacOSXApple = 'macOS, Apple style';
+  lisKMMacOSXLaz = 'macOS, Lazarus style';
+  lisKMDefaultToOSX = 'Default adapted to macOS';
   lisPEFilename = 'Filename:';
   lisPEUnitname = 'Unitname:';
   lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '
