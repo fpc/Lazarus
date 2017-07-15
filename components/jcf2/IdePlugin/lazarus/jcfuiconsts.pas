@@ -16,13 +16,14 @@ resourcestring
   //Format File settings tab
   lisFrFileConfirmFormat = 'Show confirmation dialog before format';
   lisFrFilesFileIsWritable = 'File is writable';
-  lisFrFilesFormatFileIs = 'Format file is %s';
+  lisFrFilesOpenFolder = 'Open folder';
+  lisFrFilesSettingsFileIs = 'Settings file is:';
   lisFrFilesFileNotFound = 'File not found';
   lisFrFilesFileISReadOnly = 'File is read only';
   lisFrFilesDateFileWritten = 'Date file written: %s';
   lisFrFilesVersionThatWroteThisFile = 'Version that wrote this file: %s';
   lisFrFilesDescription = 'Description:';
-  lisFrFilesFormatFile = 'Format File';
+  lisFrFilesSettingsFile = 'Settings File';
 
   //Obfuscate settings tab
   lisObfsObfuscate = 'Obfuscate';

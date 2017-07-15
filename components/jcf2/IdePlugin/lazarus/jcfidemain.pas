@@ -276,12 +276,13 @@ begin
     exit;
 
   case peMessageType of
-  mtException,mtInputError,mtParseError: Urgency:=mluError;
-  mtCodeWarning: Urgency:=mluWarning;
-  mtFinalSummary: Urgency:=mluImportant;
-  mtProgress: Urgency:=mluProgress;
+    mtException,mtInputError,mtParseError: Urgency:=mluError;
+    mtCodeWarning: Urgency:=mluWarning;
+    mtFinalSummary: Urgency:=mluImportant;
+    mtProgress: Urgency:=mluProgress;
+    else Urgency:=mluNone; // Suppress compiler warning.
   end;
-  lazMessages.AddCustomMessage(Urgency,psMessage, psFile, piY, piX, 'JCF')
+  lazMessages.AddCustomMessage(Urgency, psMessage, psFile, piY, piX, 'JCF')
 end;
 
 procedure TJcfIdeMain.MakeEditorConverter;

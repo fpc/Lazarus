@@ -2,18 +2,18 @@ object fFiles: TfFiles
   Left = 0
   Height = 281
   Top = 0
-  Width = 338
+  Width = 395
   ClientHeight = 281
-  ClientWidth = 338
+  ClientWidth = 395
   OnResize = FrameResize
   TabOrder = 0
-  DesignLeft = 597
-  DesignTop = 402
+  DesignLeft = 495
+  DesignTop = 342
   object lblStatus: TLabel
     Left = 8
     Height = 15
     Top = 56
-    Width = 45
+    Width = 53
     Caption = 'lblStatus'
     ParentColor = False
   end
@@ -21,7 +21,7 @@ object fFiles: TfFiles
     Left = 8
     Height = 15
     Top = 78
-    Width = 37
+    Width = 43
     Caption = 'lblDate'
     ParentColor = False
   end
@@ -29,7 +29,7 @@ object fFiles: TfFiles
     Left = 8
     Height = 15
     Top = 102
-    Width = 51
+    Width = 59
     Caption = 'lblVersion'
     ParentColor = False
   end
@@ -37,16 +37,16 @@ object fFiles: TfFiles
     Left = 8
     Height = 15
     Top = 128
-    Width = 63
+    Width = 73
     Caption = 'Description:'
     ParentColor = False
   end
-  object lblFormatFileName: TLabel
+  object lblSettingsFileName: TLabel
     Left = 8
     Height = 15
-    Top = 22
-    Width = 101
-    Caption = 'lblFormatFileName'
+    Top = 35
+    Width = 119
+    Caption = 'lblSettingsFileName'
     ParentColor = False
   end
   object mDescription: TMemo
@@ -54,14 +54,32 @@ object fFiles: TfFiles
     Height = 89
     Top = 148
     Width = 301
-    TabOrder = 0
+    TabOrder = 2
   end
   object cbConfirmFormat: TCheckBox
     Left = 8
-    Height = 19
+    Height = 20
     Top = 2
-    Width = 233
+    Width = 268
     Caption = 'Show confirmation dialog before format'
+    TabOrder = 0
+  end
+  object edFormatFile: TEdit
+    Left = 128
+    Height = 29
+    Top = 32
+    Width = 152
+    Color = clBtnFace
+    ReadOnly = True
     TabOrder = 1
+  end
+  object bOpenFolder: TButton
+    Left = 296
+    Height = 25
+    Top = 31
+    Width = 91
+    Caption = 'Open folder'
+    OnClick = bOpenFolderClick
+    TabOrder = 3
   end
 end
