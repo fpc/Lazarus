@@ -108,8 +108,22 @@ begin
 end;
 
 procedure TDlgCompPagesPopup.FormCreate(Sender: TObject);
+var
+  Bitmap: TBitmap;
 begin
   TIDEImages.AssignImage(cBtnClose.Glyph, 'menu_close');
+
+  ImageList1.Width := TIDEImages.ScaledSize;
+  ImageList1.Height := TIDEImages.ScaledSize;
+  Bitmap := TBitmap.Create;
+  try
+    TIDEImages.AssignImage(Bitmap, 'item_package');
+    ImageList1.Add(Bitmap, nil);
+    TIDEImages.AssignImage(Bitmap, 'pkg_open');
+    ImageList1.Add(Bitmap, nil);
+  finally
+    Bitmap.Free;
+  end;
 end;
 
 procedure TDlgCompPagesPopup.DoClose(var CloseAction: TCloseAction);
