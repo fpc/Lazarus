@@ -57,6 +57,7 @@ type
     class function CreateImage(ImageName: String; ImageSize: Integer = 16): TCustomBitmap;
     class procedure AssignImage(const ABitmap: TCustomBitmap; ImageName: String;
       ImageSize: Integer = 16);
+    class function ScaledSize(ImageSize: Integer = 16): Integer;
 
     function LoadImage(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
     function LoadImage(ImageName: String; ImageSize: Integer = 16): Integer;
@@ -174,6 +175,11 @@ begin
   finally
     xBmp.Free;
   end;
+end;
+
+class function TIDEImages.ScaledSize(ImageSize: Integer): Integer;
+begin
+  Result := ImageSize * GetScalePercent div 100;
 end;
 
 constructor TIDEImages.Create;
