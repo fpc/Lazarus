@@ -1712,7 +1712,7 @@ begin
   TV := TreeView;
   if (TV = nil) or (TV.StateImages = nil) then Exit;
   if (StateIndex < 0) or (StateIndex >= TV.StateImages.Count) then Exit;
-  Inc(Result, TV.StateImages.Width + 2);
+  Inc(Result, TV.StateImages.Width + TV.FDefItemSpace);
 end;
 
 function TTreeNode.DisplayStateIconLeft: integer;
@@ -1733,7 +1733,7 @@ begin
   else
     ImgIndex:=ImageIndex;
   if (ImgIndex<0) or (ImgIndex>=TV.Images.Count) then Exit;
-  Inc(Result, TV.Images.Width + 2);
+  Inc(Result, TV.Images.Width + TV.FDefItemSpace);
 end;
 
 function TTreeNode.DisplayTextRight: integer;
@@ -3236,6 +3236,7 @@ begin
   ParentColor := False;
 //  FBackgroundColor := clWindow;
   FDefItemHeight := DefaultTreeNodeHeight;
+  FDefItemSpace := ScaleY(2, 96);
   FExpandSignType := tvestTheme;
   FExpandSignSize := -1;
   Details := ThemeServices.GetElementDetails(ttGlyphOpened);
@@ -3601,12 +3602,12 @@ var
 begin
   if (tvoAutoItemHeight in FOptions)
   and HandleAllocated and Canvas.HandleAllocated then begin
-    NewDefItemHeight:=Canvas.TextHeight(TVAutoHeightString)+2; // +2 for spacing
-    if NewDefItemHeight<2 then NewDefItemHeight:=2;
-    if (Images<>nil) and (Images.Height>NewDefItemHeight) then
-      NewDefItemHeight:=Images.Height;
-    if (StateImages<>nil) and (StateImages.Height>NewDefItemHeight) then
-      NewDefItemHeight:=StateImages.Height;
+    NewDefItemHeight:=Canvas.TextHeight(TVAutoHeightString)+FDefItemSpace;
+    if NewDefItemHeight<FDefItemSpace then NewDefItemHeight:=FDefItemSpace;
+    if (Images<>nil) and (Images.Height+FDefItemSpace>NewDefItemHeight) then
+      NewDefItemHeight:=Images.Height+FDefItemSpace;
+    if (StateImages<>nil) and (StateImages.Height+FDefItemSpace>NewDefItemHeight) then
+      NewDefItemHeight:=StateImages.Height+FDefItemSpace;
     if Odd(NewDefItemHeight) then Inc(NewDefItemHeight);
     if NewDefItemHeight<>FDefItemHeight then begin
       FDefItemHeight:=NewDefItemHeight;
@@ -5246,7 +5247,7 @@ begin
         if PaintImages then
           StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height) div 2,
             Node.StateIndex, True);
-        Inc(x, StateImages.Width + 2);
+        Inc(x, StateImages.Width + FDefItemSpace);
       end;
     end;
 
@@ -5288,7 +5289,7 @@ begin
                ImgIndex, Node.FNodeEffect);
           end;
        end;
-       Inc(x, Images.Width + 2);
+       Inc(x, Images.Width + FDefItemSpace);
       end;
     end;
 
@@ -5730,8 +5731,8 @@ begin
   if Images <> nil then begin
     Images.RegisterChanges(FImageChangeLink);
     Images.FreeNotification(Self);
-    if DefaultItemHeight<Images.Height+2 then
-      DefaultItemHeight:=Images.Height+2;
+    if DefaultItemHeight<Images.Height+FDefItemSpace then
+      DefaultItemHeight:=Images.Height+FDefItemSpace;
   end;
   Invalidate;
 end;
@@ -5768,8 +5769,8 @@ begin
   if StateImages <> nil then begin
     StateImages.RegisterChanges(FStateChangeLink);
     StateImages.FreeNotification(Self);
-    if DefaultItemHeight<StateImages.Height+2 then
-      DefaultItemHeight:=StateImages.Height+2;
+    if DefaultItemHeight<StateImages.Height+FDefItemSpace then
+      DefaultItemHeight:=StateImages.Height+FDefItemSpace;
   end;
   Invalidate;
 end;
