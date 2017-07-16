@@ -340,7 +340,6 @@ object EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       Height = 36
       Top = 72
       Width = 195
-      Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'DisableAntialiasingCheckBox'
       OnChange = GeneralCheckBoxOnChange
