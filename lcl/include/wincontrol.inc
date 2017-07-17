@@ -7031,7 +7031,7 @@ begin
       InvalidatePreferredSize;
   end;
 
-  if Assigned(Parent) and not (csDesignInstance in ComponentState) then
+  if Assigned(Parent) and not (Self is TCustomForm) then
     SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height)
   else
     SetBounds(NewLeft, NewTop, Message.Width, Message.Height);
