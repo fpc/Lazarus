@@ -7,11 +7,11 @@ object Form1: TForm1
   ClientHeight = 342
   ClientWidth = 422
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 300
-    Top = 42
+    Height = 306
+    Top = 36
     Width = 422
     AxisList = <    
       item
@@ -81,7 +81,6 @@ object Form1: TForm1
     )
     Title.Visible = True
     Align = alClient
-    ParentColor = False
     object Chart1LineSeries1: TLineSeries
       LinePen.Color = clFuchsia
       Source = RandomChartSource1
@@ -93,30 +92,59 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 42
+    Height = 36
     Top = 0
     Width = 422
     Align = alTop
-    ClientHeight = 42
+    AutoSize = True
+    ClientHeight = 36
     ClientWidth = 422
     TabOrder = 1
     object btnSVG: TButton
-      Left = 8
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 5
       Height = 25
-      Top = 8
-      Width = 96
+      Top = 6
+      Width = 88
+      AutoSize = True
+      BorderSpacing.Left = 4
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 4
+      BorderSpacing.Bottom = 4
       Caption = 'Save as SVG'
       OnClick = btnSVGClick
       TabOrder = 0
     end
     object btnGCode: TButton
-      Left = 112
+      AnchorSideLeft.Control = btnSVG
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 97
       Height = 25
-      Top = 8
-      Width = 119
+      Top = 6
+      Width = 106
+      AutoSize = True
+      BorderSpacing.Right = 4
       Caption = 'Save as G-code'
       OnClick = btnGCodeClick
       TabOrder = 1
+    end
+    object btnWMF: TButton
+      AnchorSideLeft.Control = btnGCode
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 207
+      Height = 25
+      Top = 6
+      Width = 95
+      AutoSize = True
+      BorderSpacing.Right = 4
+      Caption = 'Save as WMF'
+      OnClick = btnWMFClick
+      TabOrder = 2
     end
   end
   object RandomChartSource1: TRandomChartSource

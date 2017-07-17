@@ -17,6 +17,7 @@ type
   TForm1 = class(TForm)
     btnSVG: TButton;
     btnGCode: TButton;
+    btnWMF: TButton;
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
@@ -24,6 +25,7 @@ type
     RandomChartSource1: TRandomChartSource;
     procedure btnGCodeClick(Sender: TObject);
     procedure btnSVGClick(Sender: TObject);
+    procedure btnWMFClick(Sender: TObject);
   end;
 
 var
@@ -80,6 +82,11 @@ end;
 procedure TForm1.btnSVGClick(Sender: TObject);
 begin
   SaveAs(Chart1, vfSVG);
+end;
+
+procedure TForm1.btnWMFClick(Sender: TObject);
+begin
+  SaveAs(Chart1, vfWindowsMetafileWMF);
 end;
 
 end.
