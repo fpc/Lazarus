@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-10-08 14:09+0200\n"
+"PO-Revision-Date: 2017-07-16 00:52+0100\n"
 "Last-Translator: BigChimp <nowhere@example.com>\n"
 "Language-Team: LazPaint\n"
 "Language: nl\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.7.0\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 #, fuzzy
@@ -83,7 +83,7 @@ msgstr "Wissen"
 
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
-msgstr ""
+msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_control
 msgid "Control"
@@ -170,7 +170,7 @@ msgstr "Menu"
 
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
-msgstr ""
+msgstr "Meta"
 
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
@@ -245,7 +245,7 @@ msgstr "Spatiebalk"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
-msgstr ""
+msgstr "Super"
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"
@@ -300,7 +300,7 @@ msgstr "Aqua"
 
 #: lclstrconsts.rsascannothaveasparent
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "Klasse %s kan niet %s als ouder hebben."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -373,7 +373,7 @@ msgstr "Control van klasse '%s' kan control van klasse '%s' niet als kind hebben
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "Control '%s' heeft geen ouder-form of frame"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -430,11 +430,11 @@ msgstr "Docking"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
-msgstr ""
+msgstr "Kopiëren"
 
 #: lclstrconsts.rsdopaste
 msgid "Paste"
-msgstr ""
+msgstr "Plakken"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
@@ -1061,7 +1061,7 @@ msgstr "Versturen"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%sKlik OK to om te negeren en riskeer data corruptie.%sKlik Afbreken om het programma te beëindigen."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1232,7 +1232,7 @@ msgstr "Hemelsblauw"
 
 #: lclstrconsts.rstcustomtabcontrolaccessibilitydescription
 msgid "A control with tabs"
-msgstr ""
+msgstr "Een controlmet Tabs"
 
 #: lclstrconsts.rstealcolorcaption
 msgid "Teal"
@@ -1249,12 +1249,12 @@ msgstr "Tagged Image File Format"
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
 msgid "Panel"
-msgstr ""
+msgstr "Paneel"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
 msgid "A grip to control how much size to give two parts of an area"
-msgstr ""
+msgstr "Een grijper om te bepalen hoeveel ruimte te geven aan twee delen van een oppervlakte"
 
 #: lclstrconsts.rsttreeviewaccessibilitydescription
 msgctxt "lclstrconsts.rsttreeviewaccessibilitydescription"
@@ -1339,11 +1339,11 @@ msgstr "Geel"
 
 #: lclstrconsts.scannotfocus
 msgid "Cannot focus a disabled or invisible window"
-msgstr "Kan geen focus geven aan een onzichtbaar of disabled scherm"
+msgstr "Kan geen focus geven aan een onzichtbaar of disabled venster"
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "Kan design time PPI niet zetten"
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
