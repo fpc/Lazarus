@@ -14,7 +14,8 @@ unit TADrawerFPVectorial;
 interface
 
 uses
-  Graphics, Classes, FPCanvas, FPImage, FPVectorial, TAChartUtils, TADrawUtils;
+  SysUtils, Graphics, Classes, FPCanvas, FPImage, EasyLazFreeType, FPVectorial,
+  TAFonts, TAChartUtils, TADrawUtils;
 
 type
 
@@ -27,6 +28,8 @@ type
     FBrushStyle: TFPBrushStyle;
     FCanvas: TvVectorialPage;
     FFont: TvFont;
+    FFTFont: TFreeTypefont;
+    FFontHeight: Integer;
     FPenColor: TFPColor;
     FPenStyle: TFPPenStyle;
     FPenWidth: Integer;
@@ -141,6 +144,7 @@ end;
 constructor TFPVectorialDrawer.Create(ACanvas: TvVectorialPage);
 begin
   inherited Create;
+  InitFonts;
   FCanvas := ACanvas;
   FGetFontOrientationFunc := @SVGGetFontOrientationFunc;
   FChartColorToFPColorFunc := @SVGChartColorToFPColor;
@@ -178,7 +182,7 @@ end;
 
 function TFPVectorialDrawer.GetFontAngle: Double;
 begin
-  Result := FFont.Orientation;
+  Result := DegToRad(FFont.Orientation);
 end;
 
 function TFPVectorialDrawer.GetFontcolor: TFPColor;
@@ -359,8 +363,14 @@ begin
 end;
 
 procedure TFPVectorialDrawer.SetFont(AFont: TFPCustomFont);
+var
+  style: TFreeTypeStyles;
 begin
-  FFont.Name := AFont.Name;
+  // *** FPVectorial font ***
+  if SameText(AFont.Name, 'default') then
+    FFont.Name := 'Arial'  // FIXME: Find font in FreeType FontCollection
+  else
+    FFont.Name := AFont.Name;
   FFont.Size := IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
   FFont.Color := AFont.FPColor;
   FFont.Orientation := FGetFontOrientationFunc(AFont);
@@ -368,6 +378,30 @@ begin
   FFont.Italic := AFont.Italic;
   FFont.Underline := AFont.Underline;
   FFont.Strikethrough := AFont.Strikethrough;
+
+  // *** FreeType Font (for metrics only) ***
+  style := [];
+  if AFont.Bold then Include(style, ftsBold);
+  if AFont.Italic then Include(style, ftsItalic);
+
+  // create a new freetype font if not yet loaded.
+  if (FFTFont = nil) or (FFTFont.Family <> AFont.Name) or (FFTFont.Style <> style) then
+  begin
+    FreeAndNil(FFTFont);
+    FFTFont := LoadFont(FFont.Name, style);
+  end;
+
+  if FFTFont <> nil then begin
+    // Set the requested font attributes
+    FFTFont.SizeInPixels := IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
+      // This should be "SizeInPoints" - but then the font is too small... Strange...
+    FFTFont.UnderlineDecoration := AFont.Underline;
+    FFTFont.StrikeoutDecoration := AFont.StrikeThrough;
+    FFTFont.Hinted := true;
+    FFTFont.Quality := grqHighQuality;
+    FFontHeight := round(FFTFont.TextHeight('Tg'));
+  end else
+    FFontHeight := FFont.Size;
 end;
 
 procedure TFPVectorialDrawer.SetPen(APen: TFPCustomPen);
@@ -389,18 +423,33 @@ end;
 
 function TFPVectorialDrawer.SimpleTextExtent(const AText: String): TPoint;
 begin
-  Result.X := FFont.Size * Length(AText) * 2 div 3;
-  Result.Y := FFont.Size;
+  if FFTFont <> nil then
+  begin
+    Result.X := Round(FFTFont.TextWidth(AText));
+    Result.Y := FFontHeight;
+  end else
+  begin
+    Result.X := FFont.Size * Length(AText) * 2 div 3;
+    Result.Y := FFont.Size;
+  end;
 end;
+
+type
+  TFreeTypeFontOpener = class(TFreeTypeFont);
 
 procedure TFPVectorialDrawer.SimpleTextOut(
   AX, AY: Integer; const AText: String);
 var
   txt: TvText;
   p: TPoint;
+  dy: Integer;
 begin
   // FPVectorial uses lower-left instead of upper-left corner as text start.
-  p := RotatePoint(Point(0, -FFont.Size), DegToRad(FFont.Orientation)) + Point(AX, InvertY(AY));
+  if FFTFont <> nil then
+    dy := round(TFreeTypeFontOpener(FFTFont).GetAscent)
+  else
+    dy := FFont.Size;
+  p := RotatePoint(Point(0, -dy), DegToRad(FFont.Orientation)) + Point(AX, InvertY(AY));
   txt := FCanvas.AddText(p.X, p.Y, 0, AText);
   txt.Font := FFont;
 end;

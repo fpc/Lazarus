@@ -513,7 +513,7 @@ end;
 
 function TSVGDrawer.SimpleTextExtent(const AText: String): TPoint;
 begin
-  Result.X :=Round(FFont.TextWidth(AText));
+  Result.X := Round(FFont.TextWidth(AText));
   Result.Y := FFontHeight;
 end;
 
