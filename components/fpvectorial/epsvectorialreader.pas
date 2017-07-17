@@ -1775,6 +1775,7 @@ begin
   TDictionaryToken(Param1).TransformToListOfNamedValues();
 
   // Read the source of the data
+  TDictionaryToken(Param1).Names.Sorted := True;
   if TDictionaryToken(Param1).Names.Find('DataSource', lFindIndex) then
   begin
     lDataSource := TPSToken(TDictionaryToken(Param1).Values[lFindIndex]).StrValue;
