@@ -434,13 +434,17 @@ msgstr "書き込み可能ファイルです"
 msgid "File not found"
 msgstr "ファイルがありません"
 
-#: jcfuiconsts.lisfrfilesformatfile
-msgid "Format File"
-msgstr "整形設定ファイル"
+#: jcfuiconsts.lisfrfilesopenfolder
+msgid "Open folder"
+msgstr ""
 
-#: jcfuiconsts.lisfrfilesformatfileis
-msgid "Format file is %s"
-msgstr "整形設定ファイル：%s"
+#: jcfuiconsts.lisfrfilessettingsfile
+msgid "Settings File"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilessettingsfileis
+msgid "Settings file is:"
+msgstr ""
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 msgid "Version that wrote this file: %s"

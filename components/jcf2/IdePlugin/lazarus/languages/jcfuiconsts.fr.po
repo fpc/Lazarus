@@ -434,13 +434,17 @@ msgstr "Le fichier est accessible en écriture"
 msgid "File not found"
 msgstr "Fichier non trouvé"
 
-#: jcfuiconsts.lisfrfilesformatfile
-msgid "Format File"
-msgstr "Fichier de formatage"
+#: jcfuiconsts.lisfrfilesopenfolder
+msgid "Open folder"
+msgstr ""
 
-#: jcfuiconsts.lisfrfilesformatfileis
-msgid "Format file is %s"
-msgstr "Le fichier de formatage est %s"
+#: jcfuiconsts.lisfrfilessettingsfile
+msgid "Settings File"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilessettingsfileis
+msgid "Settings file is:"
+msgstr ""
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 msgid "Version that wrote this file: %s"

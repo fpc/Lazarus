@@ -10677,7 +10677,9 @@ msgid "Cut selected components"
 msgstr "Couper les composants choisis"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
-msgid "Default adapted to OS X"
+#, fuzzy
+#| msgid "Default adapted to OS X"
+msgid "Default adapted to macOS"
 msgstr "Par défaut adapté à OS X"
 
 #: lazarusidestrconsts.liskmdeletelastchar
@@ -10813,15 +10815,21 @@ msgid "Keymapping Scheme"
 msgstr "Arrangement du clavier"
 
 #: lazarusidestrconsts.liskmlazarusdefault
-msgid "Lazarus (default)"
+#, fuzzy
+#| msgid "Lazarus (default)"
+msgid "Lazarus default"
 msgstr "Lazarus (par défaut)"
 
 #: lazarusidestrconsts.liskmmacosxapple
-msgid "Mac OS X (Apple style)"
+#, fuzzy
+#| msgid "Mac OS X (Apple style)"
+msgid "macOS, Apple style"
 msgstr "Mac OS X (style Apple)"
 
 #: lazarusidestrconsts.liskmmacosxlaz
-msgid "Mac OS X (Lazarus style)"
+#, fuzzy
+#| msgid "Mac OS X (Lazarus style)"
+msgid "macOS, Lazarus style"
 msgstr "Mac OS X (style Lazarus)"
 
 #: lazarusidestrconsts.liskmnewpackage
@@ -12671,6 +12679,10 @@ msgstr "&Ouvrir..."
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
 msgid "Open Filename at Cursor"
 msgstr "Ouvrir le fichier sous le curseur"
+
+#: lazarusidestrconsts.lismenuopenfolder
+msgid "Open Folder ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open Loaded Package ..."

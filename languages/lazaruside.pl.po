@@ -11021,7 +11021,7 @@ msgid "Cut selected components"
 msgstr "Wytnij wybrane komponenty do schowka"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
-msgid "Default adapted to OS X"
+msgid "Default adapted to macOS"
 msgstr ""
 
 #: lazarusidestrconsts.liskmdeletelastchar
@@ -11179,15 +11179,15 @@ msgid "Keymapping Scheme"
 msgstr ""
 
 #: lazarusidestrconsts.liskmlazarusdefault
-msgid "Lazarus (default)"
+msgid "Lazarus default"
 msgstr ""
 
 #: lazarusidestrconsts.liskmmacosxapple
-msgid "Mac OS X (Apple style)"
+msgid "macOS, Apple style"
 msgstr ""
 
 #: lazarusidestrconsts.liskmmacosxlaz
-msgid "Mac OS X (Lazarus style)"
+msgid "macOS, Lazarus style"
 msgstr ""
 
 #: lazarusidestrconsts.liskmnewpackage
@@ -13150,6 +13150,10 @@ msgstr "Otwórz..."
 #| msgid "Open filename at cursor"
 msgid "Open Filename at Cursor"
 msgstr "Otwórz plik przy kursorze"
+
+#: lazarusidestrconsts.lismenuopenfolder
+msgid "Open Folder ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuopenpackage
 #, fuzzy

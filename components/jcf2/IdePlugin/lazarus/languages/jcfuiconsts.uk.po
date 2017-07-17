@@ -436,13 +436,17 @@ msgstr "Файл доступний для запису"
 msgid "File not found"
 msgstr "Файл не знайдений"
 
-#: jcfuiconsts.lisfrfilesformatfile
-msgid "Format File"
-msgstr "Файл форматування"
+#: jcfuiconsts.lisfrfilesopenfolder
+msgid "Open folder"
+msgstr ""
 
-#: jcfuiconsts.lisfrfilesformatfileis
-msgid "Format file is %s"
-msgstr "Файл форматування: %s"
+#: jcfuiconsts.lisfrfilessettingsfile
+msgid "Settings File"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilessettingsfileis
+msgid "Settings file is:"
+msgstr ""
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 msgid "Version that wrote this file: %s"

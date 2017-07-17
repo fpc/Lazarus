@@ -10655,7 +10655,9 @@ msgid "Cut selected components"
 msgstr "選択されたコンポーネントをクリップボードに切り取る"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
-msgid "Default adapted to OS X"
+#, fuzzy
+#| msgid "Default adapted to OS X"
+msgid "Default adapted to macOS"
 msgstr "デフォルトでOS Xに適合"
 
 #: lazarusidestrconsts.liskmdeletelastchar
@@ -10791,15 +10793,21 @@ msgid "Keymapping Scheme"
 msgstr "キーマッピングスキーム"
 
 #: lazarusidestrconsts.liskmlazarusdefault
-msgid "Lazarus (default)"
+#, fuzzy
+#| msgid "Lazarus (default)"
+msgid "Lazarus default"
 msgstr "Lazarus (既定)"
 
 #: lazarusidestrconsts.liskmmacosxapple
-msgid "Mac OS X (Apple style)"
+#, fuzzy
+#| msgid "Mac OS X (Apple style)"
+msgid "macOS, Apple style"
 msgstr "Mac OS X (Appleスタイル)"
 
 #: lazarusidestrconsts.liskmmacosxlaz
-msgid "Mac OS X (Lazarus style)"
+#, fuzzy
+#| msgid "Mac OS X (Lazarus style)"
+msgid "macOS, Lazarus style"
 msgstr "Mac OS X (Lazarusスタイル)"
 
 #: lazarusidestrconsts.liskmnewpackage
@@ -12648,6 +12656,10 @@ msgstr "開く(&O) ..."
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
 msgid "Open Filename at Cursor"
 msgstr "カーソル位置のファイル名を開く"
+
+#: lazarusidestrconsts.lismenuopenfolder
+msgid "Open Folder ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open Loaded Package ..."

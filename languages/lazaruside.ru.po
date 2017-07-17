@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-07-08 14:19+0300\n"
+"PO-Revision-Date: 2017-07-18 01:51+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10672,8 +10672,8 @@ msgid "Cut selected components"
 msgstr "Вырезать выбранные компоненты"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
-msgid "Default adapted to OS X"
-msgstr "Схема по умолчанию в адаптации для OS X"
+msgid "Default adapted to macOS"
+msgstr "Схема по умолчанию в адаптации для macOS"
 
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
@@ -10808,16 +10808,16 @@ msgid "Keymapping Scheme"
 msgstr "Схема комбинаций клавиш"
 
 #: lazarusidestrconsts.liskmlazarusdefault
-msgid "Lazarus (default)"
-msgstr "Lazarus (по умолчанию)"
+msgid "Lazarus default"
+msgstr "Схема Lazarus по умолчанию"
 
 #: lazarusidestrconsts.liskmmacosxapple
-msgid "Mac OS X (Apple style)"
-msgstr "Mac OS X (стиль Apple)"
+msgid "macOS, Apple style"
+msgstr "macOS, стиль Apple"
 
 #: lazarusidestrconsts.liskmmacosxlaz
-msgid "Mac OS X (Lazarus style)"
-msgstr "Mac OS X (стиль Lazarus)"
+msgid "macOS, Lazarus style"
+msgstr "macOS, стиль Lazarus"
 
 #: lazarusidestrconsts.liskmnewpackage
 msgctxt "lazarusidestrconsts.liskmnewpackage"
@@ -12666,6 +12666,10 @@ msgstr "&Открыть ..."
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
 msgid "Open Filename at Cursor"
 msgstr "Открыть файл с именем под курсором"
+
+#: lazarusidestrconsts.lismenuopenfolder
+msgid "Open Folder ..."
+msgstr "Открыть каталог ..."
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open Loaded Package ..."

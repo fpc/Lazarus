@@ -434,13 +434,17 @@ msgstr "Die Datei ist beschreibbar"
 msgid "File not found"
 msgstr "Datei nicht gefunden"
 
-#: jcfuiconsts.lisfrfilesformatfile
-msgid "Format File"
-msgstr "Datei formatieren"
+#: jcfuiconsts.lisfrfilesopenfolder
+msgid "Open folder"
+msgstr ""
 
-#: jcfuiconsts.lisfrfilesformatfileis
-msgid "Format file is %s"
-msgstr "Format-Datei ist %s"
+#: jcfuiconsts.lisfrfilessettingsfile
+msgid "Settings File"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilessettingsfileis
+msgid "Settings file is:"
+msgstr ""
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 #, fuzzy,badformat

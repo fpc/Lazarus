@@ -424,12 +424,16 @@ msgstr ""
 msgid "File not found"
 msgstr ""
 
-#: jcfuiconsts.lisfrfilesformatfile
-msgid "Format File"
+#: jcfuiconsts.lisfrfilesopenfolder
+msgid "Open folder"
 msgstr ""
 
-#: jcfuiconsts.lisfrfilesformatfileis
-msgid "Format file is %s"
+#: jcfuiconsts.lisfrfilessettingsfile
+msgid "Settings File"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilessettingsfileis
+msgid "Settings file is:"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
