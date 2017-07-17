@@ -52,6 +52,7 @@ type
 
     procedure ShowWindow;
     procedure HideWindow;
+    function PositionDelta: TPoint;
 
     // hacked values
     function GetPublishedBounds(AIndex: Integer): Integer;
@@ -102,7 +103,8 @@ type
     procedure SetHorizontalScrollPos(AValue: Integer);
     function GetBackgroundPanel: TPanel;
     function GetBackgroundMargin(const AIndex: Integer): Integer;
-    function GetClientPanel: TPanel;
+    function GetNewSize: TPoint;
+    function GetFormHandler: TPanel;
     function GetNodePositioning: Boolean;
     function GetDesignedForm: IDesignedForm;
     procedure SetDesignedForm(const AValue: IDesignedForm);
@@ -120,7 +122,8 @@ type
     property BgRightMargin: Integer index 2 read GetBackgroundMargin;
     property BgBottomMargin: Integer index 3 read GetBackgroundMargin;
 
-    property ClientPanel: TPanel read GetClientPanel;
+    property NewSize: TPoint read GetNewSize;
+    property FormHandler: TPanel read GetFormHandler;
     property NodePositioning: Boolean read GetNodePositioning;
     property DesignedForm: IDesignedForm read GetDesignedForm write SetDesignedForm;
 

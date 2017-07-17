@@ -28,11 +28,11 @@ implementation
 
 procedure Register;
 begin
-  FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm] := TFakeForm;
-  FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TFrame] := THookFrame;
+  //FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm] := TFakeForm;
+  //FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TFrame] := THookFrame;
 
-  FormEditingHook.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] := TFakeNonControl;
-  FormEditingHook.NonFormProxyDesignerForm[FrameProxyDesignerFormId] := TFakeFrame;
+  //FormEditingHook.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] := TFakeNonControl;
+  //FormEditingHook.NonFormProxyDesignerForm[FrameProxyDesignerFormId] := TFakeFrame;
 
   Screen.AddHandlerFormAdded(TSpartaMainIDE.Screen_FormAdded);
   Screen.AddHandlerRemoveForm(TSpartaMainIDE.Screen_FormDel);

@@ -210,7 +210,7 @@ var
   LForm: IDesignedForm;
   LFrame: IResizeFrame;
 
-  procedure Positioning;
+  (*procedure Positioning;
   var
     LHiddenHeight, LNewHeight: Integer;
     LHiddenWidth, LNewWidth: Integer;
@@ -225,7 +225,7 @@ var
 
       // TODO - better handling of min width - same in TDesignedFormImpl.SetPublishedBounds (sparta_FakeCustom.pas)
 
-      LNewWidth := LFrame.ClientPanel.Width + LHiddenWidth;
+      LNewWidth := LFrame.NewSize.X + LHiddenWidth;
       LForm.Width := LNewWidth;
       LForm.RealWidth := LNewWidth;
 
@@ -244,7 +244,7 @@ var
       if LHiddenHeight > LFrame.DesignedHeightToScroll then
         LHiddenHeight := LFrame.DesignedHeightToScroll;
 
-      LNewHeight := LFrame.ClientPanel.Height + LHiddenHeight;
+      LNewHeight := LFrame.NewSize.Y+ LHiddenHeight;
       LForm.Height := LNewHeight;
       LForm.RealHeight := LNewHeight;
 
@@ -258,11 +258,27 @@ var
     end;
 
     LForm.EndUpdate;
-  end;
+  end;*)
 
   procedure PositioningEnd;
+  var
+    LHiddenHeight, LNewHeight: Integer;
+    LHiddenWidth, LNewWidth: Integer;
   begin
-    TryBoundSizerToDesignedForm(nil);
+    LHiddenWidth := sbH.Position;
+    if LHiddenWidth > LFrame.DesignedWidthToScroll then
+      LHiddenWidth := LFrame.DesignedWidthToScroll;
+
+    LNewWidth := LFrame.NewSize.X + LHiddenWidth;
+
+    LHiddenHeight := sbV.Position;
+    if LHiddenHeight > LFrame.DesignedHeightToScroll then
+      LHiddenHeight := LFrame.DesignedHeightToScroll;
+
+    LNewHeight := LFrame.NewSize.Y + LHiddenHeight;
+
+    LForm.Form.Width := LNewWidth;
+    LForm.Form.Height := LNewHeight;
   end;
 
 begin
@@ -271,7 +287,7 @@ begin
 
   case PositioningCode of
     pcPositioningEnd: PositioningEnd;
-    pcPositioning: Positioning;
+    //pcPositioning: Positioning;
   end;
 end;
 

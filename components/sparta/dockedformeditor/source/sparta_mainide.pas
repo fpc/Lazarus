@@ -25,7 +25,8 @@ uses
 {$ELSE}
   ghashmap, sparta_HashUtils, gvector,
 {$ENDIF}
-  TypInfo, LCLIntf, LCLType, LMessages, sparta_FakeForm, sparta_FakeFrame, SpartaAPI, sparta_strconsts;
+  TypInfo, LCLIntf, LCLType, LMessages, sparta_FakeForm, sparta_FakeFrame,
+  SpartaAPI, sparta_strconsts, sparta_FakeCustom;
 
 const
   WM_SETNOFRAME = WM_USER;
@@ -52,6 +53,7 @@ type
 
     procedure SetPopupParent(AVal: TSourceEditorWindowInterface);
     procedure DoAddForm;
+    procedure FormChangeBounds(Sender: TObject);
   public
 {$IFDEF USE_GENERICS_COLLECTIONS}
     class var AddFormEvents: TList<TNotifyEvent>;
@@ -120,6 +122,7 @@ type
     constructor Create(AForm: TSourceEditorWindowInterface);
     destructor Destroy; override;
     property ActiveDesignFormData: TDesignFormData read FActiveDesignFormData write SetActiveDesignFormData;
+    procedure BoundToDesignTabSheet;
   end;
 
   { TDTXTabMaster }
@@ -472,7 +475,7 @@ begin
   // during docking, form position was in wrong place... we need to delay changing position :)
   if TheMessage.msg = WM_BoundToDesignTabSheet then
     if Form.LastActiveSourceWindow <> nil then
-      SourceEditorWindows[Form.LastActiveSourceWindow].OnChangeBounds(nil);
+      SourceEditorWindows[Form.LastActiveSourceWindow].BoundToDesignTabSheet;
 
   // we need to correct ActiveEditor to right form
   // this code works correctly on Windows platform 
@@ -554,9 +557,17 @@ begin
 
 end;
 
+procedure TDesignFormData.FormChangeBounds(Sender: TObject);
+begin
+  if not FForm.Update then
+    PostMessage(FForm.Form.Handle, WM_BoundToDesignTabSheet, 0, 0);
+end;
+
 constructor TDesignFormData.Create(AForm: TCustomForm);
 begin
-  FForm := AForm as IDesignedFormIDE;
+  FForm := TDesignedFormImpl.Create(Self, AForm);
+
+  AForm.AddHandlerOnChangeBounds(FormChangeBounds);
 
   FLastScreenshot := TBitmap.Create;
   FWndMethod := FForm.Form.WindowProc;
@@ -670,14 +681,14 @@ begin
   if (AValue <> nil) then
   begin
     with AValue as IDesignedForm do
-    if not AValue.FHiding and (RealBorderStyle <> bsNone) then
+    {if not AValue.FHiding and (RealBorderStyle <> bsNone) then
     begin
-      BeginUpdate;
+      //BeginUpdate;
       //RealBorderIcons := [];
       //RealBorderStyle := bsNone;
-      Form.Show;
-      EndUpdate;
-    end;
+      //Form.Show;
+      //EndUpdate;
+    end;}
     // important when we want back to tab where was oppened form :<
     LazarusIDE.DoShowDesignerFormOfSrc(FForm.ActiveEditor);
   end;
@@ -715,13 +726,22 @@ begin
   inherited Destroy;
 end;
 
-procedure TSourceEditorWindowData.OnChangeBounds(Sender: TObject);
+procedure TSourceEditorWindowData.BoundToDesignTabSheet;
 var
   LPageCtrl: TModulePageControl;
 begin
   LPageCtrl := FindModulePageControl(FForm);
   if LPageCtrl <> nil then
-    //LPageCtrl.BoundToDesignTabSheet;
+    LPageCtrl.BoundToDesignTabSheet;
+end;
+
+procedure TSourceEditorWindowData.OnChangeBounds(Sender: TObject);
+//var
+//  LPageCtrl: TModulePageControl;
+begin
+//  LPageCtrl := FindModulePageControl(FForm);
+//  if LPageCtrl <> nil then
+//    LPageCtrl.BoundToDesignTabSheet;
 end;
 
 procedure TSourceEditorWindowData.AddPageCtrl(ASrcEditor: TSourceEditorInterface; APage: TModulePageControl);
@@ -1205,13 +1225,13 @@ begin
 
           // for lfm edition...
           with LDesignFormData as IDesignedForm do
-          if not LDesignFormData.FHiding and (RealBorderStyle <> bsNone) then
+          if not LDesignFormData.FHiding {and (RealBorderStyle <> bsNone)} then
           begin
-              BeginUpdate;
+              //BeginUpdate;
               //RealBorderIcons := [];
               //RealBorderStyle := bsNone;
-              Form.Show;
-              EndUpdate;
+              //Form.Show;
+              //EndUpdate;
               LPageCtrl.BoundToDesignTabSheet;
 
               PostMessage(Form.Handle, WM_BoundToDesignTabSheet, 0, 0);
@@ -1484,7 +1504,7 @@ begin
     //PostMessage(LWindow.Handle, WM_BoundToDesignTabSheet, 0, 0);
     if LDesignForm <> nil then
     begin
-      LDesignForm.Form.Form.Parent := FindModulePageControl(LWindow).Resizer.ActiveResizeFrame.ClientPanel;
+      LDesignForm.Form.Form.Parent := FindModulePageControl(LWindow).Resizer.ActiveResizeFrame.FormHandler;
       PostMessage(LDesignForm.Form.Form.Handle, WM_BoundToDesignTabSheet, 0, 0);
     end;
   end;

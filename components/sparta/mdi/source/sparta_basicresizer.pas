@@ -55,7 +55,7 @@ begin
   begin
     FDesignedForm.BeginUpdate;
 
-    FDesignedForm.Form.Parent := FResizerFrame.pClient;
+    FDesignedForm.Form.Parent := FResizerFrame.pFormHandler;
     {$IFNDEF WINDOWS}
     FDesignedForm.Form.BorderStyle := bsNone;
     {$ENDIF}

@@ -18,6 +18,7 @@ type
   TResizerFrameClass = class of TBasicResizeFrame;
   TBasicResizeFrame = class(TFrame, IResizeFrame)
     iResizerLineImg: TImage;
+    pFormHandler: TPanel;
     pFakeMenu: TPanel;
     pBG: TPanel;
     pB: TPanel;
@@ -59,6 +60,7 @@ type
     FPositioningKind: TPositioningKind;
     FMaxWidth, FMaxHeight: Integer;
     FLastClientWidth, FLastClientHeight: Integer;
+    FLastDesignedWidthToScroll, FLastDesignedHeightToScroll: Integer;
     FOldHasMainMenu: Boolean;
     FDesignerModified: Boolean;
     FSizerLineWidth: Integer;
@@ -92,6 +94,8 @@ type
     function LeftSizerLineWidth: Integer;
     function HorizontalSizerLineLength: Integer;
 
+    procedure AdjustFormHandler;
+
     function GetMenuHeight: Integer;
   protected
     FNodes: TObjectList;
@@ -116,7 +120,8 @@ type
     function GetBackgroundPanel: TPanel;
     function GetBackgroundMargin(const AIndex: Integer): Integer;
 
-    function GetClientPanel: TPanel;
+    function GetNewSize: TPoint;
+    function GetFormHandler: TPanel;
     function GetNodePositioning: Boolean;
     function GetDesignedForm: IDesignedForm;
     procedure SetDesignedForm(const AValue: IDesignedForm);
@@ -436,6 +441,7 @@ begin
   if (Enabled) and (Sender is TWinControl) then
   begin
     FNodePositioning:=True;
+    BeginFormSizeUpdate(Sender);
 
     // when we start resizing the rules do not apply to us :)
     FMaxWidth := Constraints.MaxWidth;
@@ -459,7 +465,6 @@ begin
       BorderSpacing.Bottom := Max(Self.Height - (pB.Top - BgBottomMargin), 0);
     end;
 
-    BeginFormSizeUpdate(Sender);
 
     {$IF Defined(LCLWin32) or Defined(LCLWin64)}
     SetCapture(TWinControl(Sender).Handle);
@@ -619,6 +624,7 @@ begin
     if Assigned(OnNodePositioning) then
       OnNodePositioning(Sender, FPositioningKind, pcPositioningEnd);
     FPositioningKind := [];
+    FNodePositioning := False;
 
     pClient.Align := alNone;
     BorderSpacing.Left := 0;
@@ -632,6 +638,10 @@ begin
     // after resizing, TFrame is frozen in Windows OS
     // this is trick to workaraund IDE bug. Also for proper size for normal form
     TryBoundDesignedForm;
+    // for small resizes, designed form is moved on the top and on the bottom
+    // is showed white block - to stop this we need to move pClient to right position
+    PositionNodes;
+    ShowSizeControls;
   end;
 end;
 
@@ -725,6 +735,14 @@ begin
   Result := Width - RightMargin;
 end;
 
+procedure TBasicResizeFrame.AdjustFormHandler;
+begin
+  pFormHandler.Left:=(-FDesignedForm.Form.Left)-(FDesignedForm.PositionDelta.x+ifthen(FHorizontalScrollPos-SizerLineWidth>0,FHorizontalScrollPos-SizerLineWidth,0));
+  pFormHandler.Top:=(-FDesignedForm.Form.Top)-(FDesignedForm.PositionDelta.y+ifthen(FVerticalScrollPos-SizerLineWidth>0,FVerticalScrollPos-SizerLineWidth,0));
+  pFormHandler.Width:=(FDesignedForm.Form.Width+abs(FDesignedForm.Form.Left)+FDesignedForm.PositionDelta.x);;
+  pFormHandler.Height:=(FDesignedForm.Form.Height+abs(FDesignedForm.Form.Top)+FDesignedForm.PositionDelta.y);
+end;
+
 function TBasicResizeFrame.GetBackgroundMargin(const AIndex: Integer): Integer;
 begin
   if FBackground = nil then
@@ -736,9 +754,14 @@ begin
     Result := Result + GetMenuHeight;
 end;
 
-function TBasicResizeFrame.GetClientPanel: TPanel;
+function TBasicResizeFrame.GetNewSize: TPoint;
 begin
-  Result := pClient;
+  Result := TPoint.Create(FLastClientWidth,FLastClientHeight);
+end;
+
+function TBasicResizeFrame.GetFormHandler: TPanel;
+begin
+  Result := pFormHandler;
 end;
 
 function TBasicResizeFrame.GetNodePositioning: Boolean;
@@ -795,9 +818,9 @@ begin
 
   // for GTK2 resizing form (pClient is hidden under pBG)
   {$IF DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5)}
-  pClient.SendToBack; // <--- this is a must.
+  pFormHandler.SendToBack; // <--- this is a must.
   {$ENDIF}
-  pClient.BringToFront;
+  pFormHandler.BringToFront;
 
   pFakeMenu.Visible := HasMainMenu;
   if pFakeMenu.Visible then
@@ -812,6 +835,8 @@ end;
 
 procedure TBasicResizeFrame.BeginFormSizeUpdate(Sender: TObject);
 begin
+  FLastDesignedWidthToScroll:=DesignedWidthToScroll;
+  FLastDesignedHeightToScroll:=DesignedHeightToScroll;
 end;
 
 procedure TBasicResizeFrame.EndFormSizeUpdate(Sender: TObject);
@@ -862,8 +887,10 @@ function TBasicResizeFrame.DesignedWidthToScroll: Integer;
 begin
   if DesignedForm = nil then
     Exit(0);
-
-  Result := DesignedForm.Width - FLastClientWidth;
+  if FNodePositioning then
+    Result := FLastDesignedWidthToScroll
+  else
+    Result := abs(DesignedForm.Width - FLastClientWidth);
   //Result := DesignedForm.Width - DesignedForm.RealWidth;
 end;
 
@@ -878,7 +905,10 @@ begin
   if DesignedForm = nil then
     Exit(0);
 
-  Result := DesignedForm.Height - FLastClientHeight;
+  if FNodePositioning then
+    Result := FLastDesignedHeightToScroll
+  else
+    Result := abs(DesignedForm.Height - FLastClientHeight);
   //Result := DesignedForm.Height - DesignedForm.RealHeight;
 end;
 
@@ -1034,6 +1064,8 @@ begin
     pClient.Height := Height - pClient.Top - Max(Height - (pB.Top - BgBottomMargin), 0);
     pClient.Width := Width - pClient.Left - Max(Width - (pR.Left - BgRightMargin), 0);
   end;
+
+  AdjustFormHandler;
 
   for Node := 0 to 7 do
   begin

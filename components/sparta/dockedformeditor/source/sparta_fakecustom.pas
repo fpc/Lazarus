@@ -27,7 +27,7 @@ uses
 type
   { TDesignedFormImpl }
 
-  TDesignedFormImpl = class(TFormImpl, IDesignedRealFormHelper, IDesignedForm, IDesignedFormIDE)
+  TDesignedFormImpl = class(TFormImpl, IDesignedRealForm, IDesignedRealFormHelper, IDesignedForm, IDesignedFormIDE)
   private
     FLastActiveSourceWindow: TSourceEditorWindowInterface;
   protected
@@ -181,7 +181,7 @@ var
   LMediator: TDesignerMediator;
   LLookupRoot: TComponent;
 begin
-  LLookupRoot := (FOwner as TNonFormProxyDesignerForm).LookupRoot;
+  LLookupRoot := (FForm as TNonFormProxyDesignerForm).LookupRoot;
   if LLookupRoot is TDataModule then
     with TDataModule(LLookupRoot) do
     case AIndex of
@@ -192,7 +192,7 @@ begin
     end
   else
   begin
-    LMediator := (FOwner as TNonControlProxyDesignerForm).Mediator;
+    LMediator := (FForm as TNonControlProxyDesignerForm).Mediator;
     if (LLookupRoot <> nil) and (LMediator <> nil) then
     begin
       LMediator.GetFormBounds(LLookupRoot, LBounds, LClientRect);
@@ -217,7 +217,7 @@ var
   LMediator: TDesignerMediator;
   LLookupRoot: TComponent;
 begin
-  LLookupRoot := (FOwner as TNonFormProxyDesignerForm).LookupRoot;
+  LLookupRoot := (FForm as TNonFormProxyDesignerForm).LookupRoot;
   if LLookupRoot is TDataModule then
     with TDataModule(LLookupRoot) do
     case AIndex of
@@ -228,7 +228,7 @@ begin
     end
   else
   begin
-    LMediator := (FOwner as TNonControlProxyDesignerForm).Mediator;
+    LMediator := (FForm as TNonControlProxyDesignerForm).Mediator;
     if (LLookupRoot <> nil) and (LMediator <> nil) then
     begin
       LMediator.GetFormBounds(LLookupRoot, LBounds, LClientRect);
@@ -254,8 +254,8 @@ end;
 
 function TDesignedFrameFormImpl.GetPublishedBounds(AIndex: Integer): Integer;
 begin
-  if (FOwner as TNonFormProxyDesignerForm).LookupRoot <> nil then
-    with (TNonFormProxyDesignerForm(FOwner).LookupRoot as TFrame) do
+  if (FForm as TNonFormProxyDesignerForm).LookupRoot <> nil then
+    with (TNonFormProxyDesignerForm(FForm).LookupRoot as TFrame) do
     case AIndex of
       0: Result := Left;
       1: Result := Top;
@@ -269,8 +269,8 @@ end;
 procedure TDesignedFrameFormImpl.SetPublishedBounds(AIndex: Integer;
   AValue: Integer);
 begin
-  if (FOwner as TNonFormProxyDesignerForm).LookupRoot <> nil then
-    with (TNonFormProxyDesignerForm(FOwner).LookupRoot as TControl) do
+  if (FForm as TNonFormProxyDesignerForm).LookupRoot <> nil then
+    with (TNonFormProxyDesignerForm(FForm).LookupRoot as TControl) do
     case AIndex of
       0: Left := AValue;
       1: Top := AValue;
@@ -287,7 +287,7 @@ end;
 function TFakeCustomFrame.GetDesignedForm: TDesignedFormImpl;
 begin
   if not Assigned(FDesignedForm) then
-    FDesignedForm := TDesignedFrameFormImpl.Create(Self);
+    FDesignedForm := TDesignedFrameFormImpl.Create(Self,Self);
 
   Result := FDesignedForm;
 end;
@@ -314,7 +314,16 @@ end;
 
 procedure TFakeCustomFrame.SetPublishedBounds(AIndex: Integer; AValue: Integer);
 begin
-  DesignedForm.SetPublishedBounds(AIndex, AValue);
+  //DesignedForm.SetPublishedBounds(AIndex, AValue);
+
+  if LookupRoot <> nil then
+    with LookupRoot as TControl do
+    case AIndex of
+      0: Left := AValue;
+      1: Top := AValue;
+      2: Width := AValue;
+      3: Height := AValue;
+    end;
 end;
 
 constructor TFakeCustomFrame.Create(AOwner: TComponent;
@@ -417,7 +426,7 @@ end;
 function TFakeCustomNonControl.GetDesignedForm: TDesignedFormImpl;
 begin
   if not Assigned(FDesignedForm) then
-    FDesignedForm := TDesignedNonControlFormImpl.Create(Self);
+    FDesignedForm := TDesignedNonControlFormImpl.Create(Self,Self);
 
   Result := FDesignedForm;
 end;
@@ -582,7 +591,7 @@ end;
 function TFakeCustomForm.GetDesignedForm: TDesignedFormImpl;
 begin
   if not Assigned(FDesignedForm) then
-    FDesignedForm := TDesignedFormImpl.Create(Self);
+    FDesignedForm := TDesignedFormImpl.Create(Self,Self);
 
   Result := FDesignedForm;
 end;
@@ -713,7 +722,7 @@ end;
 
 procedure TDesignedFormImpl.BeginUpdate;
 begin
-  TFormAccess(FOwner).SetDesigning(False, False);
+  TFormAccess(FForm).SetDesigning(False, False);
   inherited BeginUpdate;
 end;
 
@@ -721,10 +730,10 @@ procedure TDesignedFormImpl.EndUpdate(AModified: Boolean);
 var
   OI: TObjectInspectorDlg;
 begin
-  TFormAccess(FOwner).SetDesigning(True, False);
+  TFormAccess(FForm).SetDesigning(True, False);
   inherited EndUpdate(AModified);
   if AModified and (FormEditingHook <> nil)
-  and (FormEditingHook.GetCurrentDesigner = FOwner.Designer) then
+  and (FormEditingHook.GetCurrentDesigner = FForm.Designer) then
   begin
     OI := FormEditingHook.GetCurrentObjectInspector;
     if Assigned(OI) then

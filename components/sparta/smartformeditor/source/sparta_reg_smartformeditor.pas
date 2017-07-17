@@ -37,7 +37,7 @@ var
 
 procedure Register;
 begin
-  FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm] := TFakeFormBG;
+  //FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm] := TFakeFormBG;
   Manager := TStarterDesignTimeUtilsManager.Create;
   DTUManager := Manager;
 end;
