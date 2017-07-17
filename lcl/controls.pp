@@ -4527,6 +4527,9 @@ initialization
   RegisterPropertyToSkip(TControl, 'ExplicitHeight',   'VCL compatibility property', '');
   RegisterPropertyToSkip(TControl, 'ExplicitTop',      'VCL compatibility property', '');
   RegisterPropertyToSkip(TControl, 'ExplicitWidth',    'VCL compatibility property', '');
+  {$IF FPC_FULLVERSION<30003}
+  RegisterPropertyToSkip(TDataModule, 'PPI',    'PPI was introduced in FPC 3.0.3', '');
+  {$ENDIF}
   Mouse := TMouse.Create;
   DefaultDockManagerClass := TDockTree;
   DragManager := TDragManagerDefault.Create(nil);
