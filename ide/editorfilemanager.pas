@@ -118,6 +118,7 @@ begin
   OpenButton.Hint:=lisActivateSelected;
   SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
   TIDEImages.AssignImage(SortAlphabeticallyButton.Glyph, 'pkg_sortalphabetically');
+  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 end;
 
 procedure TEditorFileManagerForm.CheckListBox1Click(Sender: TObject);

@@ -3254,6 +3254,7 @@ type
     FExpandSignSize: integer;
     FThemeExpandSignSize: integer;
     FDefItemHeight: integer;
+    FDefItemSpace: Integer;
     FDragImage: TDragImageList;
     FDragNode: TTreeNode;
     FIndent: integer;

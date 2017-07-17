@@ -58,6 +58,7 @@ uses
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
   IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf, IDEExternToolIntf,
+  IDEImagesIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
   IDEOptionDefs, etFPCMsgParser, BasePkgManager, EnvironmentOpts;
@@ -813,25 +814,30 @@ begin
 end;
 
 procedure TCodeBrowserView.InitImageList;
+var
+  ImageSize: Integer;
 begin
-  ImgIDDefault := Imagelist1.AddResourceName(HInstance, 'ce_default');
-  ImgIDProgramCode := Imagelist1.AddResourceName(HInstance, 'ce_program');
-  ImgIDUnitCode := Imagelist1.AddResourceName(HInstance, 'ce_unit');
-  ImgIDInterfaceSection := Imagelist1.AddResourceName(HInstance, 'ce_interface');
-  ImgIDImplementation := Imagelist1.AddResourceName(HInstance, 'ce_implementation');
-  ImgIDInitialization := Imagelist1.AddResourceName(HInstance, 'ce_initialization');
-  ImgIDFinalization := Imagelist1.AddResourceName(HInstance, 'ce_finalization');
-  ImgIDTypeSection := Imagelist1.AddResourceName(HInstance, 'ce_type');
-  ImgIDType := Imagelist1.AddResourceName(HInstance, 'ce_type');
-  ImgIDVarSection := Imagelist1.AddResourceName(HInstance, 'ce_variable');
-  ImgIDVariable := Imagelist1.AddResourceName(HInstance, 'ce_variable');
-  ImgIDConstSection := Imagelist1.AddResourceName(HInstance, 'ce_const');
-  ImgIDConst := Imagelist1.AddResourceName(HInstance, 'ce_const');
-  ImgIDClass := Imagelist1.AddResourceName(HInstance, 'ce_class');
-  ImgIDProc := Imagelist1.AddResourceName(HInstance, 'ce_procedure');
-  ImgIDProperty := Imagelist1.AddResourceName(HInstance, 'ce_property');
-  ImgIDPackage := Imagelist1.AddResourceName(HInstance, 'item_package');
-  ImgIDProject := Imagelist1.AddResourceName(HInstance, 'item_project');
+  ImageSize := TIDEImages.ScaledSize;
+  ImageList1.Width := ImageSize;
+  ImageList1.Height := ImageSize;
+  ImgIDDefault := TIDEImages.AddImageToImageList(Imagelist1, 'ce_default');
+  ImgIDProgramCode := TIDEImages.AddImageToImageList(Imagelist1, 'ce_program');
+  ImgIDUnitCode := TIDEImages.AddImageToImageList(Imagelist1, 'ce_unit');
+  ImgIDInterfaceSection := TIDEImages.AddImageToImageList(Imagelist1, 'ce_interface');
+  ImgIDImplementation := TIDEImages.AddImageToImageList(Imagelist1, 'ce_implementation');
+  ImgIDInitialization := TIDEImages.AddImageToImageList(Imagelist1, 'ce_initialization');
+  ImgIDFinalization := TIDEImages.AddImageToImageList(Imagelist1, 'ce_finalization');
+  ImgIDTypeSection := TIDEImages.AddImageToImageList(Imagelist1, 'ce_type');
+  ImgIDType := TIDEImages.AddImageToImageList(Imagelist1, 'ce_type');
+  ImgIDVarSection := TIDEImages.AddImageToImageList(Imagelist1, 'ce_variable');
+  ImgIDVariable := TIDEImages.AddImageToImageList(Imagelist1, 'ce_variable');
+  ImgIDConstSection := TIDEImages.AddImageToImageList(Imagelist1, 'ce_const');
+  ImgIDConst := TIDEImages.AddImageToImageList(Imagelist1, 'ce_const');
+  ImgIDClass := TIDEImages.AddImageToImageList(Imagelist1, 'ce_class');
+  ImgIDProc := TIDEImages.AddImageToImageList(Imagelist1, 'ce_procedure');
+  ImgIDProperty := TIDEImages.AddImageToImageList(Imagelist1, 'ce_property');
+  ImgIDPackage := TIDEImages.AddImageToImageList(Imagelist1, 'item_package');
+  ImgIDProject := TIDEImages.AddImageToImageList(Imagelist1, 'item_project');
 end;
 
 procedure TCodeBrowserView.SetScannedBytes(const AValue: PtrInt);

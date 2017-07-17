@@ -62,6 +62,8 @@ object SearchResultsView: TSearchResultsView
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ToolBar
     AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 63
     Height = 23
     Top = 1
@@ -70,6 +72,7 @@ object SearchResultsView: TSearchResultsView
     ButtonWidth = 23
     NumGlyphs = 1
     BorderSpacing.Left = 6
+    Anchors = [akTop, akLeft, akRight]
     MaxLength = 0
     TabOrder = 0
     OnChange = SearchInListChange

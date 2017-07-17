@@ -12,3 +12,5 @@ propertygrid/issue_qt.png
 propertygrid/issue_win32.png
 propertygrid/issue_wince.png
 propertygrid/pg_active_row.png
+propertygrid/pg_active_row_150.png
+propertygrid/pg_active_row_200.png

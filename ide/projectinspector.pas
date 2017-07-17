@@ -111,6 +111,7 @@ type
     procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure FormCreate(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
@@ -540,6 +541,11 @@ begin
     OpenButtonClick(Nil);
     Key := VK_UNKNOWN;
   end;
+end;
+
+procedure TProjectInspectorForm.FormCreate(Sender: TObject);
+begin
+  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 end;
 
 procedure TProjectInspectorForm.FormDropFiles(Sender: TObject;

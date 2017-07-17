@@ -27,9 +27,10 @@ uses
   Classes, SysUtils, contnrs,
   // LCL
   LCLIntf, LCLType, LCLProc, Forms, Controls, Dialogs, ExtCtrls, StdCtrls,
-  Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList,
+  Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList, Themes,
   // IDEIntf
-  ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils, IDEWindowIntf;
+  ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils, IDEWindowIntf,
+  IDEImagesIntf;
 
 type
   TActStdPropItem = class;
@@ -410,14 +411,19 @@ begin
 end;
 
 procedure TActionListEditor.FormCreate(Sender: TObject);
+var
+  ImageSize: Integer;
+  Details: TThemedElementDetails;
 begin
-  //imageindex 0 exists
-  ImageList1.AddResourceName(HInstance, 'laz_add'); //imageindex 1
-  ImageList1.AddResourceName(HInstance, 'laz_delete'); //imageindex 2
-  ImageList1.AddResourceName(HInstance, 'arrow_up'); //imadeindex 3
-  ImageList1.AddResourceName(HInstance, 'arrow_down'); //imageindex 4
+  ImageSize := TIDEImages.ScaledSize;
+  ImageList1.Width := ImageSize;
+  ImageList1.Height := ImageSize;
+  TIDEImages.AddImageToImageList(ImageList1, 'btn_downarrow'); //imageindex 0
+  TIDEImages.AddImageToImageList(ImageList1, 'laz_add'); //imageindex 1
+  TIDEImages.AddImageToImageList(ImageList1, 'laz_delete'); //imageindex 2
+  TIDEImages.AddImageToImageList(ImageList1, 'arrow_up'); //imadeindex 3
+  TIDEImages.AddImageToImageList(ImageList1, 'arrow_down'); //imageindex 4
   btnAddMore.ImageIndex := 0;
-  // These must be set in code because OI does not work with non-existent values.
   btnAdd.ImageIndex := 1;
   btnDelete.ImageIndex := 2;
   btnUp.ImageIndex := 3;

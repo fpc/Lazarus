@@ -17,8 +17,8 @@ unit ChangeParentDlg;
 interface
 
 uses
-  Classes, SysUtils, strutils, FileUtil, ListFilterEdit, PropEditUtils, Forms,
-  Controls, Graphics, Dialogs, StdCtrls, ButtonPanel;
+  Classes, SysUtils, strutils, FileUtil, ListFilterEdit, PropEditUtils,
+  IDEImagesIntf, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel;
 
 type
 
@@ -103,6 +103,8 @@ begin
 
   Caption := oisChangeParent;
   chShowClasses.Caption := oisShowClasses;
+
+  TIDEImages.AssignImage(ListFilterEdit.Glyph, 'btnfiltercancel');
 end;
 
 {$HINTS OFF}

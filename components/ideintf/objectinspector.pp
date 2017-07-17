@@ -1123,7 +1123,7 @@ begin
   end;
 
   FHintManager := THintWindowManager.Create;
-  FActiveRowBmp := CreateBitmapFromResourceName(HInstance, 'pg_active_row');
+  FActiveRowBmp := TIDEImages.CreateImage('pg_active_row', 9);
 
   FDefaultItemHeight:=DefItemHeight;
 
@@ -4311,6 +4311,7 @@ begin
   ComponentPanel.Constraints.MinHeight := 8;
   ComponentPanel.Visible := FShowComponentTree;
   CompFilterEdit.FilteredTreeview := ComponentTree;
+  TIDEImages.AssignImage(CompFilterEdit.Glyph, 'btnfiltercancel');
 
   InfoPanel := TPanel.Create(Self);
   with InfoPanel do
@@ -4373,6 +4374,7 @@ begin
     OnAfterFilter := @PropFilterEditAfterFilter;
     OnResize := @PropFilterEditResize;
   end;
+  TIDEImages.AssignImage(PropFilterEdit.Glyph, 'btnfiltercancel');
 
   CreateNoteBook;
 end;

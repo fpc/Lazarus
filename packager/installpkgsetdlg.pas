@@ -227,6 +227,8 @@ begin
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;
   HelpButton.Caption:=lisMenuHelp;
   CancelButton.Caption:=lisCancel;
+  TIDEImages.AssignImage(AvailableFilterEdit.Glyph, 'btnfiltercancel');
+  TIDEImages.AssignImage(InstalledFilterEdit.Glyph, 'btnfiltercancel');
 
   FNewInstalledPackages:=TObjectList.Create(true);
   PkgInfoMemo.Clear;

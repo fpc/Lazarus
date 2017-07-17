@@ -28,7 +28,7 @@ uses
   // LCL
   LCLProc, Dialogs, Controls, ComCtrls, Graphics,
   // IdeIntf
-  ObjInspStrConsts, PropEdits, PropEditUtils;
+  ObjInspStrConsts, PropEdits, PropEditUtils, IDEImagesIntf;
   
 type
   TCTVGetImageIndexEvent = procedure(APersistent: TPersistent;
@@ -582,31 +582,20 @@ begin
 end;
 
 constructor TComponentTreeView.Create(TheOwner: TComponent);
-var
-  Bitmap: TPortableNetworkGraphic;
 begin
   inherited Create(TheOwner);
   DragMode := dmAutomatic;
   FComponentList:=TBackupComponentList.Create;
   Options := Options + [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly];
   FImageList := TImageList.Create(nil);
-  Bitmap := TPortableNetworkGraphic.Create;
-  try
-    Bitmap.LoadFromResourceName(HInstance, 'oi_form');
-    ImgIndexForm:=FImageList.Add(Bitmap, nil);
-    Bitmap.LoadFromResourceName(HInstance, 'oi_comp');
-    ImgIndexComponent:=FImageList.Add(Bitmap, nil);
-    Bitmap.LoadFromResourceName(HInstance, 'oi_control');
-    ImgIndexControl:=FImageList.Add(Bitmap, nil);
-    Bitmap.LoadFromResourceName(HInstance, 'oi_box');
-    ImgIndexBox:=FImageList.Add(Bitmap, nil);
-    Bitmap.LoadFromResourceName(HInstance, 'oi_collection');
-    ImgIndexCollection:=FImageList.Add(Bitmap, nil);
-    Bitmap.LoadFromResourceName(HInstance, 'oi_item');
-    ImgIndexItem:=FImageList.Add(Bitmap, nil);
-  finally
-   Bitmap.Free;
-  end;
+  FImageList.Width := TIDEImages.ScaledSize;
+  FImageList.Height := TIDEImages.ScaledSize;
+  ImgIndexForm := TIDEImages.AddImageToImageList(FImageList, 'oi_form');
+  ImgIndexComponent := TIDEImages.AddImageToImageList(FImageList, 'oi_comp');
+  ImgIndexControl := TIDEImages.AddImageToImageList(FImageList, 'oi_control');
+  ImgIndexBox := TIDEImages.AddImageToImageList(FImageList, 'oi_box');
+  ImgIndexCollection := TIDEImages.AddImageToImageList(FImageList, 'oi_collection');
+  ImgIndexItem := TIDEImages.AddImageToImageList(FImageList, 'oi_item');
   Images := FImageList;
 end;
 

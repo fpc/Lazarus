@@ -347,9 +347,9 @@ begin
       Align := alRight;
       Caption := '';
       BevelOuter := bvNone;
-      Width := OVERVIEW_PANEL_WIDTH;
       Visible := True; // EnvironmentOptions.IDESpeedButtonsVisible;
       Parent := PageComponent;
+      Width := Scale96ToForm(OVERVIEW_PANEL_WIDTH);
       OnMouseWheel := @Pal.OnPageMouseWheel;
     end;
     BtnRight:=TSpeedButton.Create(PageComponent);
@@ -357,13 +357,13 @@ begin
     begin
       TIDEImages.AssignImage(Glyph, 'SelCompPage');
       Flat := True;
-      SetBounds(2,1,16,16);
       Hint := lisClickToSelectPalettePage;
       ShowHint := True;
       OnMouseDown := @MainIDE.SelComponentPageButtonMouseDown;
       OnClick := @MainIDE.SelComponentPageButtonClick;
       OnMouseWheel := @Pal.OnPageMouseWheel;
       Parent := PanelRight;
+      SetBounds(Scale96ToForm(2), Scale96ToForm(1), Scale96ToForm(16), Scale96ToForm(16));
     end;
   end
   else begin
