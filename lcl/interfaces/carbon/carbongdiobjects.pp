@@ -1728,7 +1728,7 @@ begin
       AB := 1;
       AA := 0;
     end;
-    R2_NOT:
+    R2_NOT, R2_NOTXORPEN:
     begin
       AR := 1;
       AG := 1;
@@ -1892,17 +1892,18 @@ begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
 
-  if UseROP2 then 
+  if UseROP2 then
     AROP2 := (ADC as TCarbonDeviceContext).ROP2
   else 
     AROP2 := R2_COPYPEN;
 
   GetRGBA(AROP2, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
 
-  if AROP2 <> R2_NOT then
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
-  else
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
+  // Blend Mode is set via TCarbonPen.Apply()
+  //if AROP2 <> R2_NOT then
+  //  CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
+  //else
+  //  CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
 
   if FCGPattern <> nil then
   begin
@@ -2034,6 +2035,7 @@ var
   AR, AG, AB, AA: Single;
   AROP2: Integer;
   ADashes: TCarbonDashes;
+  blendmode: CGBlendMode;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
@@ -2043,10 +2045,13 @@ begin
 
   GetRGBA(AROP2, AR, AG, AB, AA);
 
-  if AROP2 <> R2_NOT then
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
+  case AROP2 of
+    R2_NOT:       blendmode := kCGBlendModeDifference;
+    R2_NOTXORPEN: blendmode := kCGBlendModeDifference;
   else
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
+    blendmode := kCGBlendModeNormal;
+  end;
+  CGContextSetBlendMode(ADC.CGContext, blendmode);
 
   CGContextSetRGBStrokeColor(ADC.CGContext, AR, AG, AB, AA);
   CGContextSetLineWidth(ADC.CGContext, FWidth);
