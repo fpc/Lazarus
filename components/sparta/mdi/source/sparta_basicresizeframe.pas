@@ -382,8 +382,8 @@ begin
 
       Name := 'Node' + IntToStr(Node);
       Caption:='';
-      Width := SizerRectSize;  // scaled dynamically by LCL
-      Height := SizerRectSize; // scaled dynamically by LCL
+      Width := SIZER_RECT_SIZE;  // scaled dynamically by LCL
+      Height := SIZER_RECT_SIZE; // scaled dynamically by LCL
       Parent := Self;
       Visible := True;
       FNodes.Add(Panel);
