@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-07-10 10:46+0200\n"
+"PO-Revision-Date: 2017-07-18 09:44+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -10677,10 +10677,8 @@ msgid "Cut selected components"
 msgstr "Couper les composants choisis"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
-#, fuzzy
-#| msgid "Default adapted to OS X"
 msgid "Default adapted to macOS"
-msgstr "Par défaut adapté à OS X"
+msgstr "Par défaut adapté à macOS"
 
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
@@ -10815,22 +10813,16 @@ msgid "Keymapping Scheme"
 msgstr "Arrangement du clavier"
 
 #: lazarusidestrconsts.liskmlazarusdefault
-#, fuzzy
-#| msgid "Lazarus (default)"
 msgid "Lazarus default"
-msgstr "Lazarus (par défaut)"
+msgstr "Lazarus par défaut"
 
 #: lazarusidestrconsts.liskmmacosxapple
-#, fuzzy
-#| msgid "Mac OS X (Apple style)"
 msgid "macOS, Apple style"
-msgstr "Mac OS X (style Apple)"
+msgstr "macOS, style Apple"
 
 #: lazarusidestrconsts.liskmmacosxlaz
-#, fuzzy
-#| msgid "Mac OS X (Lazarus style)"
 msgid "macOS, Lazarus style"
-msgstr "Mac OS X (style Lazarus)"
+msgstr "macOS, style Lazarus"
 
 #: lazarusidestrconsts.liskmnewpackage
 msgid "New package"
@@ -12682,7 +12674,7 @@ msgstr "Ouvrir le fichier sous le curseur"
 
 #: lazarusidestrconsts.lismenuopenfolder
 msgid "Open Folder ..."
-msgstr ""
+msgstr "Ouvrir le dossier..."
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open Loaded Package ..."

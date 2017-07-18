@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: <h.mira@free.fr>\n"
+"Last-Translator: h.mira@free.fr\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -412,7 +412,7 @@ msgstr "Liste de mots :"
 
 #: jcfuiconsts.lisfrfileconfirmformat
 msgid "Show confirmation dialog before format"
-msgstr ""
+msgstr "Afficher la boîte de dialogue de confirmation avant le formatage"
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
@@ -436,15 +436,15 @@ msgstr "Fichier non trouvé"
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"
-msgstr ""
+msgstr "Ouvrir le dossier"
 
 #: jcfuiconsts.lisfrfilessettingsfile
 msgid "Settings File"
-msgstr ""
+msgstr "Fichier de paramètres"
 
 #: jcfuiconsts.lisfrfilessettingsfileis
 msgid "Settings file is:"
-msgstr ""
+msgstr "Le fichier de paramètres est :"
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 msgid "Version that wrote this file: %s"
@@ -516,7 +516,7 @@ msgstr "Paramètres de formatage de JCF"
 
 #: jcfuiconsts.lisjedicodeformatallopenwindow
 msgid "JEDI Code Format of all open windows?"
-msgstr ""
+msgstr "Formatage JEDI de toutes les fenêtres ouvertes?"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
