@@ -27,7 +27,7 @@ unit onlinepackagemanagerintf;
 interface
 
 uses
-  MenuIntf, IDECommands, ToolBarIntf, LCLType;
+  Classes, MenuIntf, IDECommands, ToolBarIntf, LCLType;
 
 procedure Register;
 
@@ -51,7 +51,7 @@ var
   IDECommandCategory: TIDECommandCategory;
   IDECommand: TIDECommand;
 begin
-  IDEShortCutX := IDEShortCut(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  IDEShortCutX := IDEShortCut(VK_O, [ssCtrl, ssAlt], VK_UNKNOWN, []);
   IDECommandCategory := IDECommandList.FindCategoryByName('Components');
   if IDECommandCategory <> nil then
   begin
