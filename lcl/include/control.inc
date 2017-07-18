@@ -3046,7 +3046,7 @@ procedure TControl.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
 var
   AAWidth, AAHeight: Boolean;
   NewLeft, NewTop, NewWidth, NewHeight, NewRight, NewBottom, OldWidth, OldHeight,
-    BeforeConstraintsWidth, BeforeConstraintsHeight: Integer;
+    NewBaseLeft, NewBaseTop, NewBaseWidth, NewBaseHeight: Integer;
 begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
@@ -3112,23 +3112,36 @@ begin
       BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
       Constraints.AutoAdjustLayout(AXProportion, AYProportion);
 
-      BeforeConstraintsWidth := NewWidth;
+      NewBaseLeft := NewLeft;
+      NewBaseTop := NewTop;
+      NewBaseWidth := NewWidth;
+      NewBaseHeight := NewHeight;
       NewWidth := Constraints.MinMaxWidth(NewWidth);
-      BeforeConstraintsHeight := NewHeight;
       NewHeight := Constraints.MinMaxHeight(NewHeight);
 
-      if AAWidth or (BeforeConstraintsWidth<>NewWidth) then
+      if AAWidth or (NewBaseWidth<>NewWidth) then
       begin
         if akRight in Anchors then
           NewLeft := NewLeft-NewWidth+OldWidth;
       end;
-      if AAHeight or (BeforeConstraintsHeight<>NewHeight) then
+      if AAHeight or (NewBaseHeight<>NewHeight) then
       begin
         if akBottom in Anchors then
           NewTop := NewTop-NewHeight+OldHeight;
       end;
+      if AAWidth and (akRight in Anchors) then
+        NewBaseLeft := NewBaseLeft-NewBaseWidth+OldWidth;
+      if AAHeight and (akBottom in Anchors) then
+        NewBaseTop := NewBaseTop-NewBaseHeight+OldHeight;
 
-      SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
+      FBaseBounds.Left:=NewBaseLeft;
+      FBaseBounds.Top:=NewBaseTop;
+      FBaseBounds.Right:=NewBaseLeft+NewBaseWidth;
+      FBaseBounds.Bottom:=NewBaseTop+NewBaseHeight;
+      FBaseParentClientSize.cx:=Parent.ClientWidth;
+      FBaseParentClientSize.cy:=Parent.ClientHeight;
+
+      SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight);
     finally
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DoAutoAdjustLayout'){$ENDIF};
     end;
