@@ -1668,30 +1668,28 @@ begin
 
   GetScrollBarParams(aRange, aPage, aPos);
 
-  FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
-  ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  if (ScrollBars in [ssBoth, ssVertical])
+  or ((Scrollbars in [ssAutoVertical, ssAutoBoth]) and (aRange>aPage)) then
+  begin
+    FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
 
-  {TODO: try to move this out}
-  {$ifdef WINDOWS}
-  ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
-  ScrollInfo.ntrackPos := 0;
-  {$else}
-  ScrollInfo.fMask := SIF_ALL or SIF_UPDATEPOLICY;
-  //ScrollInfo.ntrackPos := SB_POLICY_CONTINUOUS;
-  ScrollInfo.ntrackPos := SB_POLICY_DISCONTINUOUS;
-  {$endif}
-  ScrollInfo.nMin := 0;
-  ScrollInfo.nMax := aRange;
-  ScrollInfo.nPos := Min(aPos,aRange-aPage);
-  ScrollInfo.nPage := aPage;
-  // the redraw argument of SetScrollInfo means under gtk
-  // if the scrollbar is visible or not, in windows it
-  // seems to mean if the scrollbar is redrawn or not
-  // to reflect the scrollbar changes made
-  SetScrollInfo(Handle, SB_VERT, ScrollInfo,
-    (ScrollBars in [ssBoth, ssVertical]) or
-    ((Scrollbars in [ssAutoVertical, ssAutoBoth]) and (aRange>aPAge))
-  );
+    {TODO: try to move this out}
+    {$ifdef WINDOWS}
+    ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+    ScrollInfo.ntrackPos := 0;
+    {$else}
+    ScrollInfo.fMask := SIF_ALL or SIF_UPDATEPOLICY;
+    //ScrollInfo.ntrackPos := SB_POLICY_CONTINUOUS;
+    ScrollInfo.ntrackPos := SB_POLICY_DISCONTINUOUS;
+    {$endif}
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nMax := aRange;
+    ScrollInfo.nPos := Min(aPos,aRange-aPage);
+    ScrollInfo.nPage := aPage;
+    SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
+  end;
+
   FOldPosition := aPos;
   {$ifdef dbgDBGrid}
   DebugLnExit('%s.UpdateScrollBarRange DONE Handle=%d aRange=%d aPage=%d aPos=%d',
