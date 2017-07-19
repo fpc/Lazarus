@@ -313,7 +313,7 @@ end;
 
 procedure TLazBuildApplication.PackageGraphAddPackage(Pkg: TLazPackage);
 begin
-  if FileExists(Pkg.FileName) then LazPackageLinks.AddUserLink(Pkg);
+  if FileExistsUTF8(Pkg.FileName) then LazPackageLinks.AddUserLink(Pkg);
 end;
 
 function TLazBuildApplication.PackageGraphCheckInterPkgFiles(
@@ -381,12 +381,15 @@ begin
 
       // Initialize package graph with base packages etc:
       if not Init then exit;
-      // Apparently not found, could be a known but not installed package
+      // Could be a known but not installed package
       // so try and get package filename from all other known packages
       Package:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(OriginalFileName));
       if Package=nil then begin
         // Not found after everything we tried
-        Error(ErrorFileNotFound,'package not found: '+OriginalFilename);
+        if CompareFileExt(Filename,'.lpi')=0 then
+          Error(ErrorFileNotFound,'file not found: '+OriginalFilename)
+        else
+          Error(ErrorFileNotFound,'package not found: '+OriginalFilename);
       end
       else begin
         // We found a package link
