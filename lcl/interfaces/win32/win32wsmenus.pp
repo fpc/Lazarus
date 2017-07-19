@@ -85,6 +85,27 @@ implementation
 
 uses strutils;
 
+type
+  TMenuItemHelper = class helper for TMenuItem
+  public
+    function MeasureItem(ACanvas: TCanvas; var AWidth, AHeight: Integer): Boolean;
+    function DrawItem(ACanvas: TCanvas; ARect: TRect; AState: LCLType.TOwnerDrawState): Boolean;
+  end;
+
+{ TMenuItemHelper }
+
+function TMenuItemHelper.DrawItem(ACanvas: TCanvas; ARect: TRect;
+  AState: LCLType.TOwnerDrawState): Boolean;
+begin
+  Result := DoDrawItem(ACanvas, ARect, AState);
+end;
+
+function TMenuItemHelper.MeasureItem(ACanvas: TCanvas; var AWidth,
+  AHeight: Integer): Boolean;
+begin
+  Result := DoMeasureItem(ACanvas, AWidth, AHeight);
+end;
+
 { helper routines }
 
 const
@@ -860,33 +881,27 @@ var
   CC: TControlCanvas;
   ParentMenu: TMenu;
 begin
-  ParentMenu := AMenuItem.GetParentMenu;
-  if (ParentMenu<>nil) and ParentMenu.OwnerDraw
-  and (Assigned(ParentMenu.OnMeasureItem) or Assigned(AMenuItem.OnMeasureItem)) then
-  begin
-    CC := TControlCanvas.Create;
-    try
-      CC.Handle := AHDC;
-      Result.cx := 0;
-      Result.cy := 0;
-      if Assigned(AMenuItem.OnMeasureItem) then
-        AMenuItem.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy)
-      else if Assigned(ParentMenu.OnMeasureItem) then
-        ParentMenu.OnMeasureItem(AMenuItem, CC, Result.cx, Result.cy);
-    finally
-      CC.Free;
+  CC := TControlCanvas.Create;
+  try
+    CC.Handle := AHDC;
+    Result.cx := 0;
+    Result.cy := 0;
+
+    if not AMenuItem.MeasureItem(CC, Result.cx, Result.cy) then
+    begin
+      if IsVistaMenu then
+      begin
+        if AMenuItem.IsInMenuBar then
+          Result := VistaBarMenuItemSize(AMenuItem, AHDC)
+        else
+          Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
+      end
+      else
+        Result := ClassicMenuItemSize(AMenuItem, AHDC);
     end;
-  end
-  else
-  if IsVistaMenu then
-  begin
-    if AMenuItem.IsInMenuBar then
-      Result := VistaBarMenuItemSize(AMenuItem, AHDC)
-    else
-      Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
-  end
-  else
-    Result := ClassicMenuItemSize(AMenuItem, AHDC);
+  finally
+    CC.Free;
+  end;
 end;
 
 function IsFlatMenus: Boolean; inline;
@@ -1233,7 +1248,6 @@ procedure DrawMenuItem(const AMenuItem: TMenuItem; const AHDC: HDC; const ARect:
 var
   ASelected, ANoAccel: Boolean;
   B: Bool;
-  ParentMenu: TMenu;
   CC: TControlCanvas;
   ItemDrawState: LCLType.TOwnerDrawState;
 begin
@@ -1246,32 +1260,25 @@ begin
   else
     ANoAccel := False;
 
-  ParentMenu := AMenuItem.GetParentMenu;
-  if (ParentMenu<>nil) and ParentMenu.OwnerDraw
-  and (Assigned(ParentMenu.OnDrawItem) or Assigned(AMenuItem.OnDrawItem)) then
-  begin
-    CC := TControlCanvas.Create;
-    try
-      CC.Handle := AHDC;
-      ItemDrawState := ItemStateToDrawState(ItemState);
-      if Assigned(AMenuItem.OnDrawItem) then
-        AMenuItem.OnDrawItem(AMenuItem, CC, ARect, ItemDrawState)
-      else if Assigned(ParentMenu.OnDrawItem) then
-        ParentMenu.OnDrawItem(AMenuItem, CC, ARect, ItemDrawState);
-    finally
-      CC.Free;
+  CC := TControlCanvas.Create;
+  try
+    CC.Handle := AHDC;
+    ItemDrawState := ItemStateToDrawState(ItemState);
+    if not AMenuItem.DrawItem(CC, ARect, ItemDrawState) then
+    begin
+      if IsVistaMenu then
+      begin
+        if AMenuItem.IsInMenuBar then
+          DrawVistaMenuBar(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemAction, ItemState)
+        else
+          DrawVistaPopupMenu(AMenuItem, AHDC, ARect, ASelected, ANoAccel);
+      end
+      else
+        DrawClassicMenuItem(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemState);
     end;
-  end
-  else
-  if IsVistaMenu then
-  begin
-    if AMenuItem.IsInMenuBar then
-      DrawVistaMenuBar(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemAction, ItemState)
-    else
-      DrawVistaPopupMenu(AMenuItem, AHDC, ARect, ASelected, ANoAccel);
-  end
-  else
-    DrawClassicMenuItem(AMenuItem, AHDC, ARect, ASelected, ANoAccel, ItemState);
+  finally
+    CC.Free;
+  end;
 end;
 
 procedure TriggerFormUpdate(const AMenuItem: TMenuItem);

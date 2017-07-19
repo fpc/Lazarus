@@ -183,6 +183,8 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); virtual;
     procedure AssignTo(Dest: TPersistent); override;
     procedure BitmapChange(Sender: TObject);
+    function DoDrawItem(ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState): Boolean; virtual;
+    function DoMeasureItem(ACanvas: TCanvas; var AWidth, AHeight: Integer): Boolean; virtual;
     function GetAction: TBasicAction;
     function GetActionLinkClass: TMenuActionLinkClass; virtual;
     function GetHandle: HMenu;

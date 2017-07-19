@@ -284,6 +284,48 @@ begin
     DesignerMenuItemClick(Self);
 end;
 
+function TMenuItem.DoDrawItem(ACanvas: TCanvas; ARect: TRect;
+  AState: TOwnerDrawState): Boolean;
+var
+  AParentMenu: TMenu;
+begin
+  Result := False;
+  if Assigned(FOnDrawItem) then
+  begin
+    FOnDrawItem(Self, ACanvas, ARect, AState);
+    Result := True;
+  end else
+  begin
+    AParentMenu := GetParentMenu;
+    if Assigned(AParentMenu.OnDrawItem) then
+    begin
+      AParentMenu.OnDrawItem(Self, ACanvas, ARect, AState);
+      Result := True;
+    end;
+  end;
+end;
+
+function TMenuItem.DoMeasureItem(ACanvas: TCanvas; var AWidth,
+  AHeight: Integer): Boolean;
+var
+  AParentMenu: TMenu;
+begin
+  Result := False;
+  if Assigned(FOnMeasureItem) then
+  begin
+    FOnMeasureItem(Self, ACanvas, AWidth, AHeight);
+    Result := True;
+  end else
+  begin
+    AParentMenu := GetParentMenu;
+    if Assigned(AParentMenu.OnMeasureItem) then
+    begin
+      AParentMenu.OnMeasureItem(Self, ACanvas, AWidth, AHeight);
+      Result := True;
+    end;
+  end;
+end;
+
 procedure TMenuItem.CheckChildrenHandles;
 
   function GetMenu(Item: TMenuItem): TMenu;
