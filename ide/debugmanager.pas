@@ -576,7 +576,7 @@ end;
 
 // Helper function for TDebugManager.GetFullFilename.
 function FindFullFilenameSrc(const AUnitinfo: TDebuggerUnitInfo): boolean;
-var
+{var
   SrcUnitName: String;
   SrcInFilename: String;
   SrcFilename: String;
@@ -584,9 +584,11 @@ var
   ProcDef: String;
   CurCodeTool: TCodeTool;
   CurCodeNode: TCodeTreeNode;
-  CodePos: TCodeXYPosition;
+  CodePos: TCodeXYPosition;  }
 begin
-  Result:=false;
+  DebugLn('FindFullFilenameSrc was called after all in TDebugManager.GetFullFilename.');
+  raise Exception.Create('FindFullFilenameSrc was called after all in TDebugManager.GetFullFilename.');
+{  Result:=false;
   // search unit in project unit path
   SrcUnitName := AUnitinfo.UnitName;
   SrcInFilename := '';
@@ -618,7 +620,7 @@ begin
   AUnitinfo.LocationFullFile := CodePos.Code.Filename;
   AUnitinfo.SrcLine := CodePos.Y;
   //DumpStack;
-  Result:=true;
+  Result:=true;  }
 end;
 
 function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
