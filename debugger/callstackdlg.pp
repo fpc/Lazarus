@@ -289,7 +289,6 @@ begin
   try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataWindow: >>ENTER: TCallStackDlg.UpdateView']);
   Exclude(FUpdateFlags, ufNeedUpdating);
 
-
   BeginUpdate;
   lvCallStack.BeginUpdate;
   try
@@ -305,7 +304,6 @@ begin
     FInUpdateView := False;
     // TODO: must make CStack ref-counted
     if CStack <> GetSelectedCallstack then exit; // Something changed, maybe debugger stopped
-
 
     if (CStack = nil) or ((Snap <> nil) and (CStack.CountLimited(MaxCnt) = 0)) then begin
       lvCallStack.Items.Clear;
@@ -323,7 +321,6 @@ begin
       lvCallStack.Items.Clear;
       exit;
     end;
-
 
     if Snap <> nil then begin
       First := 0;

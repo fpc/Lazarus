@@ -1,4 +1,4 @@
-inherited AssemblerDlg: TAssemblerDlg
+object AssemblerDlg: TAssemblerDlg
   Left = 268
   Height = 232
   Top = 122
@@ -10,7 +10,8 @@ inherited AssemblerDlg: TAssemblerDlg
   KeyPreview = True
   OnKeyDown = FormKeyDown
   OnResize = FormResize
-  object pbAsm: TPaintBox[0]
+  LCLVersion = '1.9.0.0'
+  object pbAsm: TPaintBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ToolBar1
     AnchorSideTop.Side = asrBottom
@@ -29,7 +30,7 @@ inherited AssemblerDlg: TAssemblerDlg
     OnMouseWheel = pbAsmMouseWheel
     OnPaint = pbAsmPaint
   end
-  object sbHorizontal: TScrollBar[1]
+  object sbHorizontal: TScrollBar
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = sbVertical
     AnchorSideBottom.Control = Owner
@@ -44,7 +45,7 @@ inherited AssemblerDlg: TAssemblerDlg
     TabOrder = 0
     OnChange = sbHorizontalChange
   end
-  object sbVertical: TScrollBar[2]
+  object sbVertical: TScrollBar
     AnchorSideTop.Control = ToolBar1
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
@@ -64,7 +65,7 @@ inherited AssemblerDlg: TAssemblerDlg
     OnChange = sbVerticalChange
     OnScroll = sbVerticalScroll
   end
-  object ToolBar1: TToolBar[3]
+  object ToolBar1: TToolBar
     Left = 0
     Height = 26
     Top = 0
@@ -84,36 +85,36 @@ inherited AssemblerDlg: TAssemblerDlg
     end
     object ToolButton2: TToolButton
       Left = 24
+      Height = 22
       Top = 2
-      Width = 10
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
     object ToolButtonStepOverInstr: TToolButton
-      Left = 57
+      Left = 55
       Top = 2
       Action = actStepOverInstr
     end
     object ToolButtonStepIntoInstr: TToolButton
-      Left = 34
+      Left = 32
       Top = 2
       Action = actStepIntoInstr
     end
     object ToolButton4: TToolButton
-      Left = 80
+      Left = 78
+      Height = 22
       Top = 2
-      Width = 10
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object ToolButtonGotoCurrent: TToolButton
-      Left = 90
+      Left = 86
       Top = 2
       Action = actCurrentInstr
     end
     object pnlToolAddr: TPanel
-      Left = 113
-      Height = 23
+      Left = 109
+      Height = 29
       Top = 2
       Width = 80
       AutoSize = True
@@ -123,12 +124,12 @@ inherited AssemblerDlg: TAssemblerDlg
       ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 23
+      ClientHeight = 29
       ClientWidth = 80
       TabOrder = 0
       object EditGotoAddr: TEdit
         Left = 0
-        Height = 23
+        Height = 29
         Top = 0
         Width = 80
         OnChange = EditGotoAddrChange
@@ -137,34 +138,34 @@ inherited AssemblerDlg: TAssemblerDlg
       end
     end
     object ToolButtonGoto: TToolButton
-      Left = 193
+      Left = 189
       Top = 2
       Action = actGotoAddr
     end
     object ToolButton1: TToolButton
-      Left = 216
+      Left = 212
+      Height = 22
       Top = 2
-      Width = 5
       Caption = 'ToolButton1'
       Style = tbsDivider
     end
     object ToolButtonCopy: TToolButton
-      Left = 221
+      Left = 217
       Top = 2
       Action = actCopy
     end
   end
-  object PopupMenu1: TPopupMenu[4]
-    left = 493
-    top = 43
+  object PopupMenu1: TPopupMenu
+    Left = 493
+    Top = 43
     object CopyToClipboard: TMenuItem
       Action = actCopy
       OnClick = CopyToClipboardClick
     end
   end
-  object ActionList1: TActionList[5]
-    left = 104
-    top = 32
+  object ActionList1: TActionList
+    Left = 104
+    Top = 32
     object actStepOverInstr: TAction
       Caption = 'actStepOverInstr'
       OnExecute = actStepOverInstrExecute
@@ -186,14 +187,14 @@ inherited AssemblerDlg: TAssemblerDlg
       OnExecute = CopyToClipboardClick
     end
   end
-  object ImageList1: TImageList[6]
-    left = 24
-    top = 32
+  object ImageList1: TImageList
+    Left = 24
+    Top = 32
   end
-  object Timer1: TTimer[7]
+  object Timer1: TTimer
     Interval = 50
     OnTimer = Timer1Timer
-    left = 96
-    top = 113
+    Left = 96
+    Top = 113
   end
 end
