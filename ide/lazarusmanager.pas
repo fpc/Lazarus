@@ -362,7 +362,7 @@ begin
       {$IFDEF darwin}
       if FileExistsUTF8(FLazarusPath+'.app') then begin
         // start the bundle instead
-        FLazarusPath:=FLazarusPath+'.app/Contents/MacOS/'+ExtractFileName(FLazarusPath);
+        FLazarusPath:= FLazarusPath+'.app';// /Contents/MacOS/'+ExtractFileName(FLazarusPath);
       end;
       {$ENDIF}
 
@@ -372,10 +372,17 @@ begin
         {$IFDEF Linux}
         EnvOverrides.Values['LIBOVERLAY_SCROLLBAR']:='0';
         {$ENDIF}
+        {$IFDEF darwin}
+        FLazarusProcess :=
+          TLazarusProcess.Create('open',
+               ' -a ' + FLazarusPath + ' --args ' + GetCommandLineParameters(FCmdLineParams, True)+' '+FCmdLineFiles,
+               EnvOverrides);
+        {$ELSE}
         FLazarusProcess :=
           TLazarusProcess.Create(FLazarusPath,
                GetCommandLineParameters(FCmdLineParams, True)+' '+FCmdLineFiles,
                EnvOverrides);
+        {$ENDIF}
       finally
         EnvOverrides.Free;
       end;
