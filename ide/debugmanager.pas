@@ -627,11 +627,14 @@ function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
   function ResolveFromDbg: Boolean;
   begin
     Filename := AUnitinfo.FileName;
-    DebugLn('TDebugManager.GetFullFilename->ResolveFromDbg: Trying with Filename=', Filename);
+    if Filename<>'' then
+      DebugLn('TDebugManager.GetFullFilename->ResolveFromDbg: Trying with Filename=', Filename);
     Result := (Filename<>'') and GetFullFilename(Filename, False) and FileExistsUTF8(Filename);
     if not Result then
     begin
       Filename := AUnitinfo.DbgFullName;
+      if Filename='' then
+        Exit(False);
       DebugLn('TDebugManager.GetFullFilename->ResolveFromDbg: Trying with DbgFullName=', Filename);
       Result := FileExistsUTF8(Filename);
       if not Result then
