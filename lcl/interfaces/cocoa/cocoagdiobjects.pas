@@ -765,7 +765,7 @@ begin
       AB := 1;
       AA := 0;
     end;
-    R2_NOT:
+    R2_NOT, R2_NOTXORPEN:
     begin
       AR := 1;
       AG := 1;
@@ -2650,10 +2650,12 @@ begin
 
   GetRGBA(AROP2, AR, AG, AB, AA);
 
-  if AROP2 <> R2_NOT then
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
+  case AROP2 of
+    R2_NOT, R2_NOTXORPEN:
+      CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
   else
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
+    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
+  end;
 
   CGContextSetRGBStrokeColor(ADC.CGContext, AR, AG, AB, AA);
   CGContextSetLineWidth(ADC.CGContext, FWidth);
@@ -3071,10 +3073,10 @@ begin
 
   GetRGBA(AROP2, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
 
-  if AROP2 <> R2_NOT then
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
-  else
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
+  //if AROP2 <> R2_NOT then
+    //CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
+  //else
+    //CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
 
   if Assigned(FCGPattern) then
   begin
