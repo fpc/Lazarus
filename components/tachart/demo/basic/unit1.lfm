@@ -2,36 +2,34 @@ object Form1: TForm1
   Left = 341
   Height = 494
   Top = 225
-  Width = 585
+  Width = 610
   Caption = 'Form1'
   ClientHeight = 494
-  ClientWidth = 585
+  ClientWidth = 610
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.9.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 392
+    Height = 374
     Top = 0
-    Width = 585
+    Width = 610
     AntialiasingMode = amOn
     AxisList = <    
       item
         Grid.Color = clGray
         Minors = <>
-        Title.LabelFont.Height = -11
-        Title.LabelFont.Name = 'MS Sans Serif'
+        Title.LabelFont.Orientation = 900
+        Title.Visible = True
       end    
       item
         Grid.Color = clGray
         Alignment = calBottom
         Minors = <>
-        Title.LabelFont.Height = -11
-        Title.LabelFont.Name = 'MS Sans Serif'
+        Title.Visible = True
       end>
+    Foot.Alignment = taLeftJustify
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clRed
-    Foot.Font.Height = -13
-    Foot.Font.Name = 'MS Sans Serif'
     Foot.Font.Style = [fsBold]
     Foot.Text.Strings = (
       'This a LeftAligned Footer'
@@ -40,15 +38,12 @@ object Form1: TForm1
     Legend.Font.Name = 'MS Sans Serif'
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
-    Title.Font.Height = -11
-    Title.Font.Name = 'MS Sans Serif'
     Title.Margin = 8
     Title.Text.Strings = (
       'Centered Chart Title'
     )
     Title.Visible = True
     Align = alClient
-    ParentColor = False
     object Chart1LineHor: TConstantLine
       Legend.Visible = False
       Pen.Style = psDash
@@ -63,107 +58,146 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 102
-    Top = 392
-    Width = 585
+    Height = 120
+    Top = 374
+    Width = 610
     Align = alBottom
-    ClientHeight = 102
-    ClientWidth = 585
+    AutoSize = True
+    ClientHeight = 120
+    ClientWidth = 610
     TabOrder = 0
     object lblAdd: TLabel
-      Left = 13
-      Height = 13
-      Top = 10
-      Width = 23
+      AnchorSideTop.Control = btnAddPie
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = lblClear
+      AnchorSideRight.Side = asrBottom
+      Left = 14
+      Height = 15
+      Top = 14
+      Width = 25
+      Anchors = [akTop, akRight]
       Caption = 'Add:'
       ParentColor = False
     end
     object lblClear: TLabel
-      Left = 13
-      Height = 13
-      Top = 40
-      Width = 29
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = btnClearPie
+      AnchorSideTop.Side = asrCenter
+      Left = 9
+      Height = 15
+      Top = 43
+      Width = 30
+      BorderSpacing.Left = 8
       Caption = 'Clear:'
       ParentColor = False
     end
     object lblAddCount: TLabel
-      Left = 288
-      Height = 13
-      Top = 8
-      Width = 57
+      AnchorSideLeft.Control = btnClearAll
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnAddPie
+      Left = 318
+      Height = 15
+      Top = 9
+      Width = 67
+      BorderSpacing.Left = 16
       Caption = 'Multiple add'
       ParentColor = False
     end
     object lblMarkStyle: TLabel
-      Left = 48
-      Height = 13
-      Top = 80
-      Width = 77
+      AnchorSideLeft.Control = btnAddPie
+      AnchorSideTop.Control = cbMarkStyle
+      AnchorSideTop.Side = asrCenter
+      Left = 47
+      Height = 15
+      Top = 92
+      Width = 86
       Caption = 'Add with marks:'
       ParentColor = False
     end
     object lblReticule: TLabel
-      Left = 360
-      Height = 13
-      Top = 80
-      Width = 42
+      AnchorSideTop.Control = cbReticule
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = cbReticule
+      Left = 371
+      Height = 15
+      Top = 92
+      Width = 45
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 8
       Caption = 'Reticule:'
       ParentColor = False
     end
     object btnAddPie: TButton
-      Left = 48
-      Height = 24
-      Top = 8
-      Width = 40
-      BorderSpacing.InnerBorder = 4
+      AnchorSideLeft.Control = btnClearPie
+      AnchorSideTop.Control = Panel1
+      Left = 47
+      Height = 25
+      Top = 9
+      Width = 42
+      AutoSize = True
+      BorderSpacing.Top = 8
       Caption = 'Pie'
       OnClick = btnAddPieClick
       TabOrder = 0
     end
     object btnAddLine: TButton
-      Left = 192
-      Height = 24
-      Top = 8
-      Width = 40
-      BorderSpacing.InnerBorder = 4
+      AnchorSideLeft.Control = btnClearLine
+      AnchorSideTop.Control = btnAddPie
+      Left = 206
+      Height = 25
+      Top = 9
+      Width = 48
+      AutoSize = True
       Caption = 'Line'
       OnClick = btnAddLineClick
       TabOrder = 1
     end
     object btnAddArea: TButton
-      Left = 96
-      Height = 24
-      Top = 8
-      Width = 40
-      BorderSpacing.InnerBorder = 4
+      AnchorSideLeft.Control = btnClearArea
+      AnchorSideTop.Control = btnAddPie
+      Left = 97
+      Height = 25
+      Top = 9
+      Width = 50
+      AutoSize = True
       Caption = 'Area'
       OnClick = btnAddAreaClick
       TabOrder = 2
     end
     object btnAddBar: TButton
-      Left = 144
-      Height = 24
-      Top = 8
-      Width = 40
-      BorderSpacing.InnerBorder = 4
+      AnchorSideLeft.Control = btnClearBar
+      AnchorSideTop.Control = btnAddPie
+      Left = 155
+      Height = 25
+      Top = 9
+      Width = 43
+      AutoSize = True
       Caption = 'Bar'
       OnClick = btnAddBarClick
       TabOrder = 3
     end
     object cbLegend: TCheckBox
-      Left = 384
-      Height = 17
+      AnchorSideLeft.Control = edAddCount
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      Left = 424
+      Height = 19
       Top = 8
-      Width = 55
+      Width = 59
+      BorderSpacing.Left = 16
+      BorderSpacing.Top = 7
       Caption = 'Legend'
       OnChange = cbLegendChange
       TabOrder = 4
     end
     object cbBottomAxis: TCheckBox
-      Left = 384
-      Height = 17
-      Top = 24
-      Width = 77
+      AnchorSideLeft.Control = cbLegend
+      AnchorSideTop.Control = cbLegend
+      AnchorSideTop.Side = asrBottom
+      Left = 424
+      Height = 19
+      Top = 27
+      Width = 84
       Caption = 'Bottom Axis'
       Checked = True
       OnChange = cbBottomAxisChange
@@ -171,10 +205,13 @@ object Form1: TForm1
       TabOrder = 5
     end
     object cbLeftAxis: TCheckBox
-      Left = 384
-      Height = 17
-      Top = 40
-      Width = 62
+      AnchorSideLeft.Control = cbLegend
+      AnchorSideTop.Control = cbBottomAxis
+      AnchorSideTop.Side = asrBottom
+      Left = 424
+      Height = 19
+      Top = 46
+      Width = 64
       Caption = 'Left Axis'
       Checked = True
       OnChange = cbLeftAxisChange
@@ -182,10 +219,13 @@ object Form1: TForm1
       TabOrder = 6
     end
     object cbTitle: TCheckBox
-      Left = 496
-      Height = 17
+      AnchorSideLeft.Control = cbFooter
+      AnchorSideTop.Control = cbLegend
+      Left = 516
+      Height = 19
       Top = 8
-      Width = 40
+      Width = 43
+      BorderSpacing.Right = 8
       Caption = 'Title'
       Checked = True
       OnChange = cbTitleChange
@@ -193,78 +233,113 @@ object Form1: TForm1
       TabOrder = 7
     end
     object cbFooter: TCheckBox
-      Left = 496
-      Height = 17
-      Top = 24
-      Width = 52
+      AnchorSideLeft.Control = cbBottomAxis
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbLegend
+      AnchorSideTop.Side = asrBottom
+      Left = 516
+      Height = 19
+      Top = 27
+      Width = 54
+      BorderSpacing.Left = 8
+      BorderSpacing.Right = 8
       Caption = 'Footer'
       OnChange = cbFooterChange
       TabOrder = 8
     end
     object cbInverted: TCheckBox
-      Left = 496
-      Height = 17
-      Top = 40
-      Width = 62
+      AnchorSideLeft.Control = cbFooter
+      AnchorSideTop.Control = cbFooter
+      AnchorSideTop.Side = asrBottom
+      Left = 516
+      Height = 19
+      Top = 46
+      Width = 63
+      BorderSpacing.Right = 8
       Caption = 'Inverted'
       OnChange = cbInvertedChange
       TabOrder = 9
     end
     object btnClearBar: TButton
-      Left = 144
-      Height = 24
+      AnchorSideLeft.Control = btnClearArea
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnClearPie
+      Left = 155
+      Height = 25
       Top = 38
-      Width = 40
-      BorderSpacing.InnerBorder = 4
+      Width = 43
+      AutoSize = True
+      BorderSpacing.Left = 8
       Caption = 'Bar'
       OnClick = btnClearBarClick
       TabOrder = 10
     end
     object btnClearArea: TButton
-      Left = 96
-      Height = 24
+      AnchorSideLeft.Control = btnClearPie
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnClearPie
+      Left = 97
+      Height = 25
       Top = 38
-      Width = 40
-      BorderSpacing.InnerBorder = 4
+      Width = 50
+      AutoSize = True
+      BorderSpacing.Left = 8
       Caption = 'Area'
       OnClick = btnClearAreaClick
       TabOrder = 11
     end
     object btnClearLine: TButton
-      Left = 192
-      Height = 24
+      AnchorSideLeft.Control = btnClearBar
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnClearPie
+      Left = 206
+      Height = 25
       Top = 38
-      Width = 40
-      BorderSpacing.InnerBorder = 4
+      Width = 48
+      AutoSize = True
+      BorderSpacing.Left = 8
       Caption = 'Line'
       OnClick = btnClearLineClick
       TabOrder = 12
     end
     object btnClearPie: TButton
-      Left = 48
-      Height = 24
+      AnchorSideLeft.Control = lblClear
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnAddPie
+      AnchorSideTop.Side = asrBottom
+      Left = 47
+      Height = 25
       Top = 38
-      Width = 40
-      BorderSpacing.InnerBorder = 4
+      Width = 42
+      AutoSize = True
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
       Caption = 'Pie'
       OnClick = btnClearPieClick
       TabOrder = 13
     end
     object edAddCount: TSpinEdit
-      Left = 288
-      Height = 21
-      Top = 24
+      AnchorSideLeft.Control = lblAddCount
+      AnchorSideTop.Control = lblAddCount
+      AnchorSideTop.Side = asrBottom
+      Left = 318
+      Height = 23
+      Top = 26
       Width = 90
+      BorderSpacing.Top = 2
       MaxValue = 1000000
       MinValue = 1
       TabOrder = 14
       Value = 1
     end
     object cbShowGridCheckBox: TCheckBox
-      Left = 384
-      Height = 17
-      Top = 56
-      Width = 70
+      AnchorSideLeft.Control = cbLegend
+      AnchorSideTop.Control = cbLeftAxis
+      AnchorSideTop.Side = asrBottom
+      Left = 424
+      Height = 19
+      Top = 65
+      Width = 76
       Caption = 'Show grid '
       Checked = True
       OnChange = cbShowGridCheckBoxChange
@@ -272,20 +347,29 @@ object Form1: TForm1
       TabOrder = 15
     end
     object cbShowAxisTitles: TCheckBox
-      Left = 496
-      Height = 17
-      Top = 56
-      Width = 66
+      AnchorSideLeft.Control = cbFooter
+      AnchorSideTop.Control = cbInverted
+      AnchorSideTop.Side = asrBottom
+      Left = 516
+      Height = 19
+      Top = 65
+      Width = 69
+      BorderSpacing.Right = 8
       Caption = 'Axis titles'
       OnChange = cbShowAxisTitlesChange
       TabOrder = 16
     end
     object cbMarkStyle: TComboBox
-      Left = 132
-      Height = 21
-      Top = 76
+      AnchorSideLeft.Control = lblMarkStyle
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbReticule
+      Left = 141
+      Height = 23
+      Top = 88
       Width = 136
-      ItemHeight = 13
+      BorderSpacing.Left = 8
+      BorderSpacing.Bottom = 8
+      ItemHeight = 15
       ItemIndex = 5
       Items.Strings = (
         'smsCustom'
@@ -305,11 +389,17 @@ object Form1: TForm1
       Text = 'smsLabelPercent'
     end
     object cbReticule: TComboBox
-      Left = 416
-      Height = 21
-      Top = 76
-      Width = 136
-      ItemHeight = 13
+      AnchorSideLeft.Control = cbLegend
+      AnchorSideTop.Control = cbShowGridCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 424
+      Height = 23
+      Top = 88
+      Width = 156
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 8
+      BorderSpacing.Bottom = 8
+      ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
         'rmNone'
@@ -323,11 +413,15 @@ object Form1: TForm1
       Text = 'rmNone'
     end
     object btnClearAll: TButton
-      Left = 240
-      Height = 24
+      AnchorSideLeft.Control = btnClearLine
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnClearPie
+      Left = 262
+      Height = 25
       Top = 38
       Width = 40
-      BorderSpacing.InnerBorder = 4
+      AutoSize = True
+      BorderSpacing.Left = 8
       Caption = 'All'
       OnClick = btnClearAllClick
       TabOrder = 19

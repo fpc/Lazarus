@@ -10,6 +10,8 @@ uses
   Forms
   { add your units here }, unit1, TAChartLazarusPkg;
 
+{$R *.res}
+
 begin
   Application.Title := 'TChart basic demo';
   Application.Initialize;
