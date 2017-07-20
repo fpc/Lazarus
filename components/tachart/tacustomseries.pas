@@ -1287,6 +1287,7 @@ begin
       begin
         li := TLegendItemBrushRect.Create(ABrush, LegendTextSingle);
         li.TextFormat := Legend.TextFormat;
+        AItems.Add(li);
       end;
     lmPoint:
       for i := 0 to Count - 1 do begin
