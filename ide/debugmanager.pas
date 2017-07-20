@@ -219,7 +219,8 @@ type
     procedure EvaluateModify(const AExpression: String); override;
     procedure Inspect(const AExpression: String); override;
 
-    function GetFullFilename(const AUnitinfo: TDebuggerUnitInfo; out Filename: string; AskUserIfNotFound: Boolean; UseFullName: Boolean): Boolean; override;
+    function GetFullFilename(const AUnitinfo: TDebuggerUnitInfo; out Filename: string;
+                             AskUserIfNotFound: Boolean): Boolean; override;
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
@@ -573,128 +574,113 @@ begin
 end;
 
 
-//-----------------------------------------------------------------------------
-// Menu events
-//-----------------------------------------------------------------------------
+// Helper function for TDebugManager.GetFullFilename.
+function FindFullFilenameSrc(const AUnitinfo: TDebuggerUnitInfo): boolean;
+var
+  SrcUnitName: String;
+  SrcInFilename: String;
+  SrcFilename: String;
+  Code: TCodeBuffer;
+  ProcDef: String;
+  CurCodeTool: TCodeTool;
+  CurCodeNode: TCodeTreeNode;
+  CodePos: TCodeXYPosition;
+begin
+  Result:=false;
+  // search unit in project unit path
+  SrcUnitName := AUnitinfo.UnitName;
+  SrcInFilename := '';
+  with CodeToolBoss.DirectoryCachePool do
+    SrcFilename := FindUnitSourceInCompletePath('', SrcUnitName, SrcInFilename);
+  if SrcFilename='' then exit;
+  // load unit
+  Code := CodeToolBoss.LoadFile(SrcFilename,true,false);
+  if Code=nil then exit; // read error
+  // procedure declaration: classname.functionname
+  ProcDef := '';
+  if AUnitinfo.SrcClassName<>'' then
+    ProcDef := AUnitinfo.SrcClassName+'.';
+  ProcDef := ProcDef+AUnitinfo.FunctionName;
+  debugln(['TDebugManager.FindFullFilenameSrc Code="',Code.Filename,'" ProcDef="',ProcDef,'"']);
+  // search proc in unit
+  if not CodeToolBoss.FindProcDeclaration(Code,ProcDef,CurCodeTool,CurCodeNode,
+    [phpWithoutParamList,phpWithoutBrackets,phpWithoutClassKeyword,phpWithoutSemicolon])
+  then begin
+    debugln(['TDebugManager.FindFullFilenameSrc not found: Code="',Code.Filename,'" ProcDef="',ProcDef,'"']);
+    exit;
+  end;
+  // get file, line, column
+  if CurCodeNode.Desc=ctnProcedure then
+    CurCodeNode := CurCodeNode.FirstChild; // jump to Name instead of keyword 'procedure'
+  if not CurCodeTool.CleanPosToCaret(CurCodeNode.StartPos,CodePos) then
+    exit;
+  debugln(['TDebugManager.FindFullFilenameSrc found ',CodePos.Code.Filename,' Line=',CodePos.Y,' Col=',CodePos.X]);
+  AUnitinfo.LocationFullFile := CodePos.Code.Filename;
+  AUnitinfo.SrcLine := CodePos.Y;
+  //DumpStack;
+  Result:=true;
+end;
 
 function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
-  out Filename: string; AskUserIfNotFound: Boolean; UseFullName: Boolean): Boolean;
+  out Filename: string; AskUserIfNotFound: Boolean): Boolean;
 
-  procedure ResolveFromDbg;
+  function ResolveFromDbg: Boolean;
   begin
-    if UseFullName then
-      Filename := AUnitinfo.DbgFullName
-    else
-      Filename := AUnitinfo.FileName;
-    Result := Filename <> '';
-    debugln(DBG_LOCATION_INFO, ['ResolveFromDbg Init Filename=', Filename]);
-    if Result then
-      Result := GetFullFilename(Filename, False);
-    if not Result then begin
-      Filename := AUnitinfo.FileName;
-      debugln(DBG_LOCATION_INFO, ['ResolveFromDbg 2nd Filename=', Filename]);
-      Result := GetFullFilename(Filename, AskUserIfNotFound);
+    Filename := AUnitinfo.FileName;
+    DebugLn('TDebugManager.GetFullFilename->ResolveFromDbg: Trying with Filename=', Filename);
+    Result := (Filename<>'') and GetFullFilename(Filename, False) and FileExistsUTF8(Filename);
+    if not Result then
+    begin
+      Filename := AUnitinfo.DbgFullName;
+      DebugLn('TDebugManager.GetFullFilename->ResolveFromDbg: Trying with DbgFullName=', Filename);
+      Result := FileExistsUTF8(Filename);
+      if not Result then
+      begin
+        DebugLn('TDebugManager.GetFullFilename->ResolveFromDbg: DbgFullName=', Filename, ' does not exist.');
+        Result := GetFullFilename(Filename, AskUserIfNotFound);
+      end;
     end;
-    debugln(DBG_LOCATION_INFO, ['ResolveFromDbg Final Filename=', Filename]);
-  end;
-
-  function FindSrc: boolean;
-  var
-    SrcUnitName: String;
-    SrcInFilename: String;
-    SrcFilename: String;
-    Code: TCodeBuffer;
-    ProcDef: String;
-    CurCodeTool: TCodeTool;
-    CurCodeNode: TCodeTreeNode;
-    CodePos: TCodeXYPosition;
-  begin
-    Result:=false;
-    debugln(['TDebugManager.GetFullFilename searching Unit=', AUnitinfo.UnitName, ', Class=', AUnitinfo.SrcClassName, ', Func=', AUnitinfo.FunctionName]);
-    // search unit in project unit path
-    SrcUnitName := AUnitinfo.UnitName;
-    SrcInFilename := '';
-    SrcFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath('',
-      SrcUnitName,SrcInFilename);
-    if SrcFilename='' then exit;
-    // load unit
-    Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
-    if Code=nil then exit; // read error
-    // procedure declaration: classname.functionname
-    ProcDef:='';
-    if AUnitinfo.SrcClassName<>'' then
-      ProcDef:=AUnitinfo.SrcClassName+'.';
-    ProcDef:=ProcDef+AUnitinfo.FunctionName;
-    //debugln(['TDebugManager.GetFullFilename Code="',Code.Filename,'" ProcDef="',ProcDef,'"']);
-    // search proc in unit
-    if not CodeToolBoss.FindProcDeclaration(Code,ProcDef,CurCodeTool,CurCodeNode,
-      [phpWithoutParamList,phpWithoutBrackets,phpWithoutClassKeyword,phpWithoutSemicolon])
-    then begin
-      debugln(['TDebugManager.GetFullFilename not found: Code="',Code.Filename,'" ProcDef="',ProcDef,'"']);
-      exit;
-    end;
-    // get file, line, column
-    if CurCodeNode.Desc=ctnProcedure then
-      CurCodeNode:=CurCodeNode.FirstChild; // jump to Name instead of keyword 'procedure'
-    if not CurCodeTool.CleanPosToCaret(CurCodeNode.StartPos,CodePos) then
-      exit;
-    debugln(['TDebugManager.GetFullFilename found ',CodePos.Code.Filename,' Line=',CodePos.Y,' Col=',CodePos.X]);
-    AUnitinfo.LocationFullFile := CodePos.Code.Filename;
-    AUnitinfo.SrcLine := CodePos.Y;
-    //DumpStack;
-    Result:=true;
   end;
 
 begin
   Result := False;
   if Destroying or (AUnitinfo = nil) then exit;
   Filename := AUnitinfo.LocationFullFile;
-  Result := (Filename <> '') and not UseFullName;
-  if Result then exit;
+  Result := Filename <> '';
 
-  //debugln(['TDebugManager.GetFullFilename Src=',AUnitinfo.SrcClassName,' Func=',AUnitinfo.FunctionName]);
-  if (dlfSearchByFunctionName in AUnitinfo.Flags)
-  and (AUnitinfo.FunctionName<>'') then begin
-    if FindSrc then exit;
-  end;
+  if (dlfSearchByFunctionName in AUnitinfo.Flags) and (AUnitinfo.FunctionName<>'')
+  and FindFullFilenameSrc(AUnitinfo) then
+    exit;
 
   case AUnitinfo.LocationType of
-    dltUnknown:
-      begin
-        ResolveFromDbg;
-      end;
+    dltUnknown:      Result := ResolveFromDbg;
     dltUnresolvable: Result := False;
     dltProject:
       begin
         Filename := TrimFilename(AUnitinfo.LocationName);
-        Filename:= MainIDE.FindSourceFile(Filename, Project1.Directory,
+        Filename := MainIDE.FindSourceFile(Filename, Project1.Directory,
                       [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
                        fsfMapTempToVirtualFiles, fsfSkipPackages]);
-        debugln(DBG_LOCATION_INFO, ['GetFullFilename From-MainIDE Filename=', Filename]);
         Result := Filename <> '';
         if not Result then
-          ResolveFromDbg;
+          Result := ResolveFromDbg;
       end;
-    dltPackage:
-      begin
-        ResolveFromDbg;
-      end;
+    dltPackage: Result := ResolveFromDbg;
   end;
 
   if Result then
     AUnitinfo.LocationFullFile := Filename
   else begin
     Filename := AUnitinfo.FileName;
-    if AskUserIfNotFound
-    then AUnitinfo.LocationType := dltUnresolvable;
+    if AskUserIfNotFound then
+      AUnitinfo.LocationType := dltUnresolvable;
   end;
 end;
 
 function TDebugManager.GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean;
 var
-  SrcFile: String;
+  SrcFile, SrcFN, UserFilename: String;
   n: Integer;
-  UserFilename: string;
   OpenDialog: TOpenDialog;
   AnUnitInfo: TLazProjectFile;
 begin
@@ -708,32 +694,28 @@ begin
   // Project1.IsVirtual
   // Left(Filename,1, xxx) = LazarusIDE.GetTestBuildDirectory
 
-
   // some debuggers (e.g. gdb) sometimes returns linux path delims under windows
   // => fix that
-  Filename := TrimFilename(Filename);
-  SrcFile := Filename;
-  SrcFile := MainIDE.FindSourceFile(SrcFile, Project1.Directory,
+  Assert(Filename = TrimFilename(Filename), 'TDebugManager.GetFullFilename: Filename needs trimming.');
+  SrcFile := MainIDE.FindSourceFile(Filename, Project1.Directory,
                       [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
                        fsfMapTempToVirtualFiles]);
-  if SrcFile = '' then SrcFile := Filename;
-
-  if not FilenameIsAbsolute(SrcFile)
-  then begin
+  if SrcFile = '' then
+    SrcFile := Filename;
+  SrcFN := ExtractFilenameOnly(SrcFile);
+  if not FilenameIsAbsolute(SrcFile) then
+  begin
     // first attempt to get a longer name
     // short file, look in the user list
     for n := 0 to FUserSourceFiles.Count - 1 do
     begin
       UserFilename := FUserSourceFiles[n];
-      if CompareFileNames(ExtractFilenameOnly(SrcFile),
-        ExtractFilenameOnly(UserFilename)) = 0
-      then begin
-        if FileExistsUTF8(UserFilename)
-        then begin
-          FUserSourceFiles.Move(n, 0); // move most recent first
-          SrcFile := UserFilename;
-          Break;
-        end;
+      if (CompareFileNames(SrcFN, ExtractFilenameOnly(UserFilename)) = 0)
+      and FileExistsUTF8(UserFilename) then
+      begin
+        FUserSourceFiles.Move(n, 0); // move most recent first
+        SrcFile := UserFilename;
+        Break;
       end;
     end;
   end;
@@ -751,8 +733,8 @@ begin
   end;
 
   if ((not FilenameIsAbsolute(SrcFile)) or (not FileExistsUTF8(SrcFile)))
-  and AskUserIfNotFound
-  then begin
+  and AskUserIfNotFound then
+  begin
 
     if IDEMessageDialog(lisFileNotFound,
       Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself, [SrcFile, LineEnding]),
@@ -778,8 +760,8 @@ begin
     FUserSourceFiles.Insert(0, SrcFile);
   end;
 
-  if (SrcFile<>'') and
-     ( (not FilenameIsAbsolute(SrcFile)) or FileExistsUTF8(SrcFile) )
+  if (SrcFile<>'')
+  and ( (not FilenameIsAbsolute(SrcFile)) or FileExistsUTF8(SrcFile) )
   then begin
     Filename:=SrcFile;
     Result:=True;
@@ -1365,18 +1347,10 @@ begin
   then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
 
   if (SrcLine > 0) and (CurrentSourceUnitInfo <> nil) and
-     GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True, False)
+     GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True)
   then begin
     // Load the file
     NewSource := CodeToolBoss.LoadFile(SrcFullName, true, false);
-
-    // If it's a path like ../inc/some.inc in a directory far away, then looking up by relative name won't find it.
-    if NewSource = nil
-    then begin
-      GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True, True);
-      NewSource := CodeToolBoss.LoadFile(SrcFullName, true, false);
-    end;
-
     if NewSource = nil
     then begin
       if not (dlfLoadError in CurrentSourceUnitInfo.Flags) then begin
