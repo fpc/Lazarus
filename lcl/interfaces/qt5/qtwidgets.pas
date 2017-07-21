@@ -1523,6 +1523,7 @@ type
     procedure setHeaderVisible(AVisible: Boolean);
     procedure setItemSelected(AItem: QTreeWidgetItemH; ASelect: Boolean);
     procedure setStretchLastSection(AValue: Boolean);
+    procedure scrollToItem(Item: QTreeWidgetItemH; hint: QAbstractItemViewScrollHint);
     {$IFDEF TEST_QT_SORTING}
     // direct Qt sorting via QtUserData ptr = our TListItem, crashes sometimes - qt bug.
     procedure sortItems(Acolumn: Integer; AOrder: QtSortOrder);
@@ -15371,6 +15372,12 @@ begin
       AValue)
   else
     Header.setStretchLastSection(AValue);
+end;
+
+procedure TQtTreeWidget.scrollToItem(Item: QTreeWidgetItemH;
+  hint: QAbstractItemViewScrollHint);
+begin
+  QTreeWidget_scrollToItem(QTreeWidgetH(Widget), Item, hint);
 end;
 
 {$IFDEF TEST_QT_SORTING}

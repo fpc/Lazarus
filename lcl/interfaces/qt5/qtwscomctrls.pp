@@ -1547,11 +1547,15 @@ begin
     QtListWidget := TQtListWidget(ALV.Handle);
     LWI := QtListWidget.getItem(AIndex);
     QtListWidget.setItemVisible(LWI, True);
+    if not PartialOK then
+      QtListWidget.scrollToItem(AIndex, QAbstractItemViewEnsureVisible);
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     TWI := QtTreeWidget.topLevelItem(AIndex);
     QtTreeWidget.setItemVisible(TWI, True);
+    if not PartialOK then
+      QtTreeWidget.scrollToItem(TWI, QAbstractItemViewEnsureVisible);
   end;
 end;
 
