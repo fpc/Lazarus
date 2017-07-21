@@ -1728,14 +1728,14 @@ begin
       AB := 1;
       AA := 0;
     end;
-    R2_NOT, R2_NOTXORPEN:
+    R2_NOT:
     begin
       AR := 1;
       AG := 1;
       AB := 1;
       AA := Byte(FA);
     end;
-    R2_NOTCOPYPEN:
+    R2_NOTXORPEN, R2_NOTCOPYPEN:
     begin
       AR := (255 - FR) / 255;
       AG := (255 - FG) / 255;
@@ -2047,7 +2047,8 @@ begin
 
   case AROP2 of
     R2_NOT:       blendmode := kCGBlendModeDifference;
-    R2_NOTXORPEN: blendmode := kCGBlendModeDifference;
+    R2_NOTXORPEN: blendmode := kCGBlendModeExclusion;
+    R2_XORPEN:    blendmode := kCGBlendModeDifference;
   else
     blendmode := kCGBlendModeNormal;
   end;
