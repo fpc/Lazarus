@@ -326,6 +326,8 @@ type
                       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
                                    IgnoreDeleted: boolean): TPkgFile;
+    function FindUnitInInstalledPackages(const TheUnitName: string;
+                                   IgnoreDeleted: boolean): TPkgFile;
     function GetMapSourceDirectoryToPackage(IgnorePackage: TLazPackage = nil): TFilenameToPointerTree;
     function EstimateCompileLoad(APackage: TLazPackage): int64;
     function PackageCanBeReplaced(OldPackage, NewPackage: TLazPackage): boolean;
@@ -1629,6 +1631,23 @@ begin
   Cnt:=Count;
   for i:=0 to Cnt-1 do begin
     Result:=FindUnit(Packages[i],TheUnitName,false,IgnoreDeleted);
+    if Result<>nil then exit;
+  end;
+  Result:=nil;
+end;
+
+function TLazPackageGraph.FindUnitInInstalledPackages(
+  const TheUnitName: string; IgnoreDeleted: boolean): TPkgFile;
+var
+  Cnt: Integer;
+  i: Integer;
+  Pkg: TLazPackage;
+begin
+  Cnt:=Count;
+  for i:=0 to Cnt-1 do begin
+    Pkg:=Packages[i];
+    if Pkg.Installed=pitNope then continue;
+    Result:=FindUnit(Pkg,TheUnitName,false,IgnoreDeleted);
     if Result<>nil then exit;
   end;
   Result:=nil;

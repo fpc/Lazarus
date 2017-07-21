@@ -261,6 +261,7 @@ type
     function GetPackageCount: integer; virtual; abstract;
     function GetPackages(Index: integer): TIDEPackage; virtual; abstract;
     function FindPackageWithName(const PkgName: string; IgnorePackage: TIDEPackage = nil): TIDEPackage; virtual; abstract;
+    function FindInstalledPackageWithUnit(const AnUnitName: string): TIDEPackage; virtual; abstract;
 
     // dependencies
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
