@@ -103,6 +103,10 @@
    contained TCSSProps objects are created and owned by TCSSGlobalProps }
  TCSSGlobalProps = class
    FElements: TFPObjectHashTable;
+ protected
+   {$IFDEF IP_LAZARUS_DBG}
+   procedure DoDumpProps(Item: TObject; const Key: String; var Continue: Boolean);
+   {$ENDIF}
  public
    constructor Create;
    destructor Destroy; override;
@@ -551,7 +555,6 @@ begin
   Result := TStringList.Create;
   Start := Pos(':', ACommand)+1;
 
-
   WantArg := True;
   Quote := #0;
   for i := Start to Length(ACommand) do
@@ -908,8 +911,8 @@ begin
   if AProps.MarginTop.Size <> 0 then
     FMarginTop.Size := AProps.MarginTop.Size;
 
-
 end;
+
 
 { TCSSGlobalProps }
 
@@ -923,6 +926,25 @@ begin
   FElements.Free;
   inherited Destroy;
 end;
+
+{$IFDEF IP_LAZARUS_DBG}
+procedure TCSSGlobalProps.DoDumpProps(Item: TObject; const Key: String; var Continue: Boolean);
+var
+  lProp: TCSSProps;
+begin
+  lProp := TCSSProps(Item);
+  WriteLn('CSS for  >>>: ', Key);
+  WriteLn('  Color : ', lProp.Color);
+  WriteLn('  BgColor : ', lProp.BGColor);
+  WriteLn('  Font : ', lProp.Font.Name, ':', lProp.Font.FFamily, ':', lProp.Font.Size);
+  WriteLn('  Align : ' + GetEnumName(TypeInfo(TIpHtmlAlign), ord(lProp.Alignment)));
+end;
+
+procedure TCSSGlobalProps.DumpProps;
+begin
+  FElements.Iterate(DoDumpProps);
+end;
+{$endif}
 
 function TCSSGlobalProps.GetPropsObject(ATagName: String;
   AClassID: String; CreateIfNotExist: Boolean): TCSSProps;
@@ -963,6 +985,7 @@ begin
   end;
 end;
 
+
 { TCSSBorder }
 
 constructor TCSSBorder.Create;
@@ -973,35 +996,4 @@ begin
   FStyle := cbsNone;
 end;
 
-{$IFDEF IP_LAZARUS_DBG}
-procedure DumpTCSSProps(aProp: TCSSProps);
-var
-  str: string;
-begin
-    WriteLn('Color : ', aProp.Color);
-    WriteLn('BgColor : ', aProp.BGColor);
-    WriteLn('Font : ', aProp.Font.Name, ':', aProp.Font.FFamily, ':', aProp.Font.Size);
-    case aProp.Alignment of
-       haDefault: str:= 'haDefault';
-       haLeft: str:= 'haLeft';
-       haCenter: str:= 'haCenter';
-       haRight: str:= 'haRight';
-       haJustify: str:= 'haJustify';
-       haChar: str:= 'haChar';
-       else str:= 'haUnknow';
-    end;
-    WriteLn('Align : ', str);
-end;
-
-procedure TCSSGlobalProps.DumpProps;
-var
-   n: integer;
-begin
-   for n:=0 to FElements.Count-1 do
-   begin
-        WriteLn('CSS for >>>: ', FElements[n]);
-        DumpTCSSProps(TCSSProps(FElements.Objects[n]));
-   end;
-end;
-{$endif}
 {$ENDIF}
