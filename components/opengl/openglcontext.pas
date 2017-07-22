@@ -566,9 +566,10 @@ begin
   if IsVisible and HandleAllocated then begin
     UpdateFrameTimeDiff;
     if IsOpenGLRenderAllowed and ([csDestroying]*ComponentState=[]) then begin
-      if not MakeCurrent then exit;
-      if AutoResizeViewport then
+      if AutoResizeViewport then begin
+        if not MakeCurrent then exit;
         LOpenGLViewport(Handle,0,0,Width,Height);
+      end;
     end;
     //LOpenGLClip(Handle);
     DoOnPaint;
@@ -589,7 +590,10 @@ end;
 
 procedure TCustomOpenGLControl.DoOnPaint;
 begin
-  if Assigned(OnPaint) then OnPaint(Self);
+  if Assigned(OnPaint) then begin
+    if not MakeCurrent then exit;
+    OnPaint(Self);
+  end;
 end;
 
 procedure TCustomOpenGLControl.SwapBuffers;
