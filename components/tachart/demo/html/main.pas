@@ -56,7 +56,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, TAChartUtils, {$IFDEF WINDOWS}TADrawerWMF,{$ENDIF} TADrawerSVG;
+  TAChartUtils, {$IFDEF WINDOWS}TADrawerWMF,{$ENDIF} TADrawerSVG;
 
 { TMainForm }
 
