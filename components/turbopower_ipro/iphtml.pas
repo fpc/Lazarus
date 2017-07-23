@@ -413,14 +413,12 @@ type
     {$IFDEF IP_LAZARUS}
     destructor Destroy; override;
     procedure LoadAndApplyCSSProps; virtual;
+    property InlineCSS: TCSSProps read FInlineCSSProps write FInlineCSSProps;
     {$ENDIF}
     property ClassId : string read FClassId write FClassId;
     property Id : string read FId write FId;
     property Style : string read FStyle write FStyle;
     property Title : string read FTitle write FTitle;
-    {$IFDEF IP_LAZARUS}
-    property InlineCSS: TCSSProps read FInlineCSSProps write FInlineCSSProps;
-    {$ENDIF}
   end;
 
   TIpHtmlNodeInline = class(TIpHtmlNodeCore)
@@ -446,7 +444,9 @@ type
     procedure Enqueue; override;
     procedure CalcMinMaxWidth(var Min, Max: Integer); virtual; abstract;
     function GetDim(ParentWidth: Integer): TSize; virtual; abstract;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlImageAlign read FAlignment write SetAlignment;
   end;
 
@@ -522,10 +522,10 @@ type
     {$ENDIF}
   public
     property Layouter : TIpHtmlBaseLayouter read FLayouter;
+    property PageRect : TRect read GetPageRect;
     property Background : string read FBackground write SetBackground;
     property BgColor : TColor read FBgColor write SetBgColor;
     property TextColor : TColor read FTextColor write SetTextColor;
-    property PageRect : TRect read GetPageRect;
   end;
 
   TIpHtmlDirection = (hdLTR, hdRTL);
@@ -535,6 +535,9 @@ type
     FLang: string;
     FDir: TIpHtmlDirection;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Dir : TIpHtmlDirection read FDir write FDir;
     property Lang : string read FLang write FLang;
     property Profile : string read FProfile write FProfile;
@@ -564,7 +567,9 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property ANSIText : string read GetAnsiText write SetAnsiText;
     property EscapedText : string read FEscapedText write SetEscapedText;
   end;
@@ -594,6 +599,9 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Color : TColor read FColor write SetColor;
     property Face : string read FFace write SetFace;
     property Size : TIpHtmlRelSize read FSize write FSize;
@@ -610,6 +618,9 @@ type
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
     function ElementQueueIsEmpty: Boolean; override;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Media : string read FMedia write FMedia;
     property Title : string read FTitle write FTitle;
     {$IFDEF IP_LAZARUS}
@@ -631,7 +642,9 @@ type
     destructor Destroy; override;
     procedure Enqueue; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property Size : TIpHtmlHeaderSize read FSize write FSize;
   end;
@@ -645,7 +658,9 @@ type
     destructor Destroy; override;
     procedure Enqueue; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write SetAlign;
   end;
 
@@ -659,6 +674,9 @@ type
     procedure SetListType(const Value: TIpHtmlULType);
   public
     procedure Enqueue; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Compact : Boolean read FCompact write FCompact;
     property ListType : TIpHtmlULType read FListType write SetListType;
   end;
@@ -680,6 +698,9 @@ type
     function GetNumString : string;
   public
     procedure Enqueue; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Compact : Boolean read FCompact write FCompact;
     property Start : Integer read FStart write SetStart;
     property Style : TIpHtmlOLStyle read FOLStyle write SetOLStyle;
@@ -702,7 +723,9 @@ type
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
     procedure CalcMinMaxWidth(var Min, Max: Integer); override;
     function GetDim(ParentWidth: Integer): TSize; override;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Compact : Boolean read FCompact write FCompact;
     property ListType : TIpHtmlULType read FListType write SetListType;
     property Value : Integer read FValue write SetValue;
@@ -729,6 +752,9 @@ type
     destructor Destroy; override;
     procedure ResetForm;
     procedure SubmitForm;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Accept : string read FAccept write FAccept;
     property AcceptCharset : string read FAcceptCharset write FAcceptCharset;
     property Action : string read FAction write FAction;
@@ -749,6 +775,9 @@ type
   public
     procedure Layout(const RenderProps: TIpHtmlProps; const TargetRect : TRect);
     procedure Render(RenderProps: TIpHtmlProps);
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Dir : TIpHtmlDirection read FDir write FDir;
     property Lang : string read FLang write FLang;
     property Version : string read FVersion write FVersion;
@@ -758,6 +787,9 @@ type
   private
     FTitle: string;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Title : string read FTitle write FTitle;
   end;
 
@@ -781,7 +813,12 @@ type
     procedure LoadAndApplyCSSProps; override;
     procedure Render(RenderProps: TIpHtmlProps); override;
     {$ENDIF}
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property ALink : TColor read Falink write SetAlink;
+    property Background;
+    property BgColor;
     property Link : TColor read FLink write SetLink;
     property VLink : TColor read FVLink write SetVlink;
   end;
@@ -794,8 +831,14 @@ type
     FRows: TIpHtmlMultiLengthList;
   public
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Cols : TIpHtmlMultiLengthList read FCols write FCols;
     property Rows : TIpHtmlMultiLengthList read FRows write FRows;
+    property ClassID;
+    property ID;
+    property Title;
   end;
 
   TIpHtmlFrameScrolling = (hfsAuto, hfsYes, hfsNo);
@@ -814,6 +857,9 @@ type
     procedure SetMarginWidth(const Value: Integer);
     procedure SetScrolling(const Value: TIpHtmlFrameScrolling);
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property FrameBorder : Integer read FFrameBorder write SetFrameBorder;
     property LongDesc : string read FLongDesc write FLongDesc;
     property MarginHeight : Integer read FMarginHeight write SetMarginHeight;
@@ -852,6 +898,9 @@ type
     procedure WidthChanged(Sender: TObject);
   public
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write SetAlign;
     property Frame: TIpHtmlFrame read FFrame;
     property FrameBorder : Integer read FFrameBorder write SetFrameBorder;
@@ -871,6 +920,9 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     procedure Enqueue; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Compact : Boolean read FCompact write FCompact;
   end;
 
@@ -902,6 +954,9 @@ type
     destructor Destroy; override;
     procedure Enqueue; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
   end;
 
@@ -914,6 +969,9 @@ type
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
   public
     constructor Create(ParentNode: TIpHtmlNode);
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
   end;
 
@@ -933,6 +991,9 @@ type
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Cite : string read FCite write FCite;
     property DateTime : string read FDateTime write FDateTime;
   end;
@@ -944,6 +1005,9 @@ type
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Cite : string read FCite write FCite;
     property DateTime : string read FDateTime write FDateTime;
   end;
@@ -957,6 +1021,9 @@ type
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Style : TIpHtmlFontStyles read FHFStyle write FHFStyle;
   end;
 
@@ -968,6 +1035,9 @@ type
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Style : TIpHtmlPhraseStyle read FPhrStyle write FPhrStyle;
   end;
 
@@ -989,7 +1059,9 @@ type
     procedure CalcMinMaxWidth(var Min, Max: Integer); override;
     procedure Enqueue; override;
     function GetDim(ParentWidth: Integer): TSize; override;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Color : TColor read FColor write FColor;
     property NoShade  : Boolean read FNoShade write FNoShade;
     property Size : TIpHtmlInteger read FSize write FSize;
@@ -1009,9 +1081,13 @@ type
   public
     constructor Create(ParentNode: TIpHtmlNode);
     procedure Enqueue; override;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
+    property ClassID;
     property Clear : TIpHtmlBreakClear read FClear write SetClear;
     property Id : string read FId write FId;
+    property Title;
   end;
 
   TIpHtmlNodeNOBR = class(TIpHtmlNodeGenInline)
@@ -1054,6 +1130,9 @@ type
     destructor Destroy; override;
     procedure MakeVisible; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property HRef : string read FHRef write SetHRef;
     property Name : string read FName write SetName;
     property Rel : string read FRel write FRel;
@@ -1104,7 +1183,9 @@ type
     procedure CalcMinMaxWidth(var Min, Max: Integer); override;
     function GetDim(ParentWidth: Integer): TSize; override;
     procedure ImageChange(NewPicture : TPicture); override;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Alt : string read FAlt write FAlt;
     {$IFDEF IP_LAZARUS}
     property Border : Integer read GetBorder write SetBorder;
@@ -1141,15 +1222,22 @@ type
     procedure WidthChanged(Sender: TObject);
   public
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlImageAlign read FAlignment write FAlignment;
     property Archive : string read FArchive write FArchive;
     property Alt : string read FAlt write FAlt;
+    property ClassID;
     property Code : string read FCode write FCode;
     property Codebase : string read FCodebase write FCodebase;
     property Height : Integer read FHeight write FHeight;
     property HSpace : Integer read FHSpace write FHSpace;
+    property Id;
     property Name : string read FName write FName;
     property ObjectCode : string read FObjectCode write FObjectCode;
+    property Style;
+    property Title;
     property VSpace : Integer read FVSpace write FVSpace;
     property Width : TIpHtmlLength read FWidth write FWidth;
   end;
@@ -1174,9 +1262,13 @@ type
     procedure WidthChanged(Sender: TObject);
   public
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlImageAlign read FAlignment write FAlignment;
     property Archive : string read FArchive write FArchive;
     property Border : Integer read FBorder write FBorder;
+    property ClassID;
     property Codebase : string read FCodebase write FCodebase;
     property CodeType : string read FCodeType write FCodeType;
     property Data : string read FData write FData;
@@ -1198,6 +1290,9 @@ type
     FValue: string;
     FName: string;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Id : string read FId write FId;
     property Name : string read FName write FName;
     property Value : string read FValue write FValue;
@@ -1210,6 +1305,9 @@ type
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Size : Integer read FSize write FSize;
   end;
 
@@ -1219,6 +1317,9 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Name : string read FName write FName;
   end;
 
@@ -1242,6 +1343,10 @@ type
     {$IF DEFINED(CBuilder) OR DEFINED(IP_LAZARUS)}
     property Rect : TRect read FRect;
     {$ENDIF}
+
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Alt : string read FAlt write FAlt;
     property Coords : string read FCoords write FCoords;
     property HRef : string read FHRef write FHRef;
@@ -1261,6 +1366,9 @@ type
     FHttpEquiv: string;
     FName: string;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Content : string read FContent write FContent;
     property HttpEquiv: string read FHttpEquiv write FHttpEquiv;
     property Name : string read FName write FName;
@@ -1276,6 +1384,9 @@ type
     FType: string;
     {$ENDIF}
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property HRef : string read FHRef write FHRef;
     property Rel : string read FRel write FRel;
     property Rev : string read FRev write FRev;
@@ -1293,6 +1404,9 @@ type
     FAlign: TIpHtmlVAlignment2;
   public
     constructor Create(ParentNode: TIpHtmlNode);
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlVAlignment2 read FAlign write FAlign;
   end;
 
@@ -1387,7 +1501,9 @@ type
     {$IFDEF IP_LAZARUS}
     procedure LoadAndApplyCSSProps; override;
     {$ENDIF}
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property BgColor : TColor read FBgColor write FBgColor;
     property Border : Integer read FBorder write SetBorder;
     property BorderStyle: TCSSBorderStyle read FBorderStyle write FBorderStyle;
@@ -1414,6 +1530,9 @@ type
     FVAlign: TIpHtmlVAlign3;
   public
     constructor Create(ParentNode : TIpHtmlNode);
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
@@ -1423,6 +1542,9 @@ type
     FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
@@ -1433,6 +1555,9 @@ type
     FVAlign: TIpHtmlVAlign3;
   public
     constructor Create(ParentNode : TIpHtmlNode);
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
@@ -1445,6 +1570,9 @@ type
     FWidth: TIpHtmlMultiLength;
   public
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property Span : Integer read FSpan write FSpan;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
@@ -1459,6 +1587,9 @@ type
     FWidth: TIpHtmlMultiLength;
   public
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property Span : Integer read FSpan write FSpan;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
@@ -1480,7 +1611,9 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign read FVAlign write FVAlign;
     property BgColor: TColor read FBgColor write SetBgColor;
@@ -1513,13 +1646,17 @@ type
     procedure Render(RenderProps: TIpHtmlProps); override;
     procedure CalcMinMaxPropWidth(RenderProps: TIpHtmlProps; var Min, Max: Integer); override;
   public
+    property PadRect : TRect read FPadRect write FPadRect;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
+    property BgColor;
     property CalcWidthMin: Integer read FCalcWidthMin write FCalcWidthMin;
     property CalcWidthMax: Integer read FCalcWidthMax write FCalcWidthMax;
     property Colspan : Integer read FColspan write FColspan;
     property Height : TIpHtmlPixels{Integer} read FHeight write FHeight;
     property Nowrap : Boolean read FNowrap write FNowrap;
-    property PadRect : TRect read FPadRect write FPadRect;
     property Rowspan : Integer read FRowspan write FRowspan;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
     property Width : TIpHtmlLength read FWidth write FWidth;
@@ -1576,7 +1713,10 @@ type
     procedure Draw(Block: TIpHtmlNodeBlock); override;
     procedure Reset; override;
     procedure ImageChange(NewPicture : TPicture); override;
-  public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
+    property Alt;
     property Checked : Boolean read FChecked write FChecked;
     property Disabled : Boolean read FDisabled write FDisabled;
     property InputType : TIpHtmlInputType read FInputType write FInputType;
@@ -1609,6 +1749,9 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property ButtonType : TIpHtmlButtonType read FInputType write FInputType;
     property Disabled : Boolean read FDisabled write FDisabled;
     property Name : string read FName write FName;
@@ -1638,6 +1781,9 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure AddValues(NameList, ValueList : TStringList); override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Disabled : Boolean read FDisabled write FDisabled;
     property Multiple : Boolean read FMultiple write FMultiple;
     property ComboBox : Boolean read FComboBox write FComboBox;
@@ -1655,6 +1801,9 @@ type
     FSelected: Boolean;
     FValue: string;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Disabled : Boolean read FDisabled write FDisabled;
     property OptionLabel : string read FOptionLabel write FOptionLabel;
     property Selected : Boolean read FSelected write FSelected;
@@ -1666,6 +1815,9 @@ type
     FDisabled: Boolean;
     FGroupLabel: string;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Disabled : Boolean read FDisabled write FDisabled;
     property GroupLabel : string read FGroupLabel write FGroupLabel;
   end;
@@ -1687,6 +1839,9 @@ type
   public
     constructor Create(ParentNode: TIpHtmlNode);
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Cols : Integer read FCols write FCols;
     property Disabled : Boolean read FDisabled write FDisabled;
     property Name : string read FName write FName;
@@ -1703,6 +1858,9 @@ type
   public
     constructor Create(ParentNode: TIpHtmlNode);
     destructor Destroy; override;
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property LabelFor : string read FLabelFor write FLabelFor;
   end;
 
@@ -1712,6 +1870,9 @@ type
   private
     FAlign: TIpHtmlVAlignment2;
   public
+  {$IFDEF HTML_RTTI}
+  published
+  {$ENDIF}
     property Align : TIpHtmlVAlignment2 read FAlign write FAlign;
   end;
 
@@ -4112,6 +4273,7 @@ begin
     tkLString      : Result := GetLStringProperty;
     tkWChar        : Result := GetWCharProperty;
     tkVariant      : Result := GetVariantProperty;
+    tkAString,
     tkString       : Result := GetStringProperty;
     tkSet          : Result := GetSetProperty;
     else
@@ -4165,15 +4327,16 @@ procedure SetPropertyValueLow(PI: PPropInfo;
   end;
 
 begin
-  if not assigned(PI.SetProc) then
+  if not Assigned(PI.SetProc) then
     raise Exception.Create('Property is read-only');
   case PI.PropType^.Kind of
     tkInteger      : SetIntegerProperty;
     tkChar         : SetCharProperty;
     tkEnumeration  : SetEnumProperty;
     tkFloat        : SetFloatProperty;
+    tkString,
+    tkAString,
     tkLString      : SetStringProperty;
-    tkString       : SetStringProperty;
     tkSet          : SetSetProperty;
     else
       raise Exception.Create('Unsupported attribute type');
@@ -4192,7 +4355,7 @@ var
 begin
   Result := TStringList.Create;
   try
-    if C.ClassInfo <> nil then begin
+    if (C <> nil) and (C.ClassInfo <> nil) then begin
       LCount := GetPropList(C.ClassInfo, tkProperties, nil);
       LSize := LCount * SizeOf(Pointer);
       if LSize > 0 then begin

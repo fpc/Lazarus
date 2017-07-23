@@ -40,13 +40,24 @@
 
 {$IFDEF IP_LAZARUS}
 
-{$MODE DELPHI}{$H+}
+  {$MODE DELPHI}{$H+}
 
-{$DEFINE VERSION7}          { Delphi 7.0 or higher }
-{$DEFINE VERSION4}
-{$DEFINE VERSION5}
-{$DEFINE Version6OrHigher}
-{$DEFINE Version7OrHigher}
+  {$DEFINE VERSION7}          { Delphi 7.0 or higher }
+  {$DEFINE VERSION4}
+  {$DEFINE VERSION5}
+  {$DEFINE Version6OrHigher}
+  {$DEFINE Version7OrHigher}
+
+  // Activate several features of the package by enabling the following DEFINEs.
+  // Best flexibility is achieved by doing this in the "Additions and Overrides"
+  // of the Project options.
+
+  // Uncomment if you want to enable printing functionality
+  // (requires extra build/runtime dependencies for Linux like cairo,etc)
+  //{$DEFINE Html_print}
+
+  // Uncomment if you want to disable RTTI access to properties of the HTML nodes
+  //{$DEFINE Html_RTTI}
 
 {$ELSE}
 
@@ -95,7 +106,7 @@
 
 // Uncomment if you want to enable printing functionality
 // (requires extra build/runtime dependencies for Linux like cairo,etc)
-{$DEFINE HtmlPrint}
+{$DEFINE Html_print}
 
 // we do not want to include PNG support when building the design-time package
 // (that would cause problems if another package also included ZLib).  We also
