@@ -20,7 +20,8 @@ uses
   LConvEncoding, lcsvutils, LookupStringList, Maps, Masks, PasWString, 
   StringHashList, TextStrings, Translations, TTCache, TTCalc, TTCMap, TTDebug, 
   TTError, TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs, TTProfile, 
-  TTRASTER, TTTables, TTTypes, UTF8Process, HTML2TextRender, LazarusPackageIntf;
+  TTRASTER, TTTables, TTTypes, UTF8Process, HTML2TextRender, Laz_AVL_Tree, 
+  LazarusPackageIntf;
 
 implementation
 
