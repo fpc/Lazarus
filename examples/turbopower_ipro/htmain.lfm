@@ -1,0 +1,124 @@
+object MainForm: TMainForm
+  Left = 252
+  Height = 660
+  Top = 130
+  Width = 966
+  Caption = 'Example for turbopower internet pro HTML control: Tree of HTML nodes'
+  ClientHeight = 660
+  ClientWidth = 966
+  OnCreate = FormCreate
+  LCLVersion = '1.9.0.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 626
+    Top = 34
+    Width = 274
+    Align = alLeft
+    BevelOuter = bvNone
+    ClientHeight = 626
+    ClientWidth = 274
+    TabOrder = 0
+    object TreeView1: TTreeView
+      Left = 4
+      Height = 426
+      Top = 0
+      Width = 270
+      Align = alClient
+      BorderSpacing.Left = 4
+      TabOrder = 0
+      OnChange = TreeView1Change
+    end
+    object ListBox1: TListBox
+      Left = 4
+      Height = 180
+      Top = 431
+      Width = 270
+      Align = alBottom
+      BorderSpacing.Left = 4
+      ItemHeight = 0
+      OnDblClick = ListBox1DblClick
+      TabOrder = 1
+    end
+    object Splitter2: TSplitter
+      Cursor = crVSplit
+      Left = 0
+      Height = 5
+      Top = 426
+      Width = 274
+      Align = alBottom
+      ResizeAnchor = akBottom
+    end
+    object Label1: TLabel
+      Left = 4
+      Height = 15
+      Top = 611
+      Width = 270
+      Align = alBottom
+      BorderSpacing.Left = 4
+      Caption = 'Double-click to edit value'
+      ParentColor = False
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 274
+    Height = 626
+    Top = 34
+    Width = 5
+  end
+  object IpHtmlPanel1: TIpHtmlPanel
+    Left = 279
+    Height = 626
+    Top = 34
+    Width = 687
+    Align = alClient
+    FixedTypeface = 'Courier New'
+    DefaultTypeFace = 'default'
+    DefaultFontSize = 12
+    FlagErrors = False
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 480
+    PrintSettings.Preview.Top = 270
+    PrintSettings.Preview.Width = 1440
+    PrintSettings.Preview.Height = 810
+    TabOrder = 2
+    OnCurElementChange = IpHtmlPanel1CurElementChange
+    OnHotChange = IpHtmlPanel1HotChange
+    OnHotClick = IpHtmlPanel1HotClick
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 34
+    Top = 0
+    Width = 966
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 34
+    ClientWidth = 966
+    TabOrder = 3
+    object BtnOpenHTMLFile: TButton
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      Left = 4
+      Height = 25
+      Top = 5
+      Width = 112
+      AutoSize = True
+      BorderSpacing.Left = 4
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 4
+      BorderSpacing.Bottom = 4
+      Caption = 'Open HTML File'
+      OnClick = BtnOpenHTMLFileClick
+      TabOrder = 0
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    left = 591
+    top = 133
+  end
+end
