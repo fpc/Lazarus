@@ -401,7 +401,7 @@ end;
 
 procedure TAvgLvlTree.DisposeNode(aNode: TAVLTreeNode);
 begin
-  if FOwnsObjects then
+  if FOwnsObjects and Assigned(aNode) then
   begin
     TObject(aNode.Data).Free;
     aNode.Data := nil;
