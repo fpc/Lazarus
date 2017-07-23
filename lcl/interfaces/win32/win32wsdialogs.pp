@@ -746,6 +746,7 @@ var
   I: Integer;
   FileName, InitialDir: String;
   DefaultFolderItem: IShellItem;
+  IShellItemGUID: TIID;
   ParsedFilter: TParseStringList;
   FileTypesArray: PCOMDLG_FILTERSPEC;
 begin
@@ -764,7 +765,9 @@ begin
 
   if InitialDir <> '' then
   begin
-    if Succeeded(SHCreateItemFromParsingName(PWideChar(UTF8ToUTF16(InitialDir)), nil, IShellItem, DefaultFolderItem)) then
+    IShellItemGUID := IShellItem;
+    if Succeeded(SHCreateItemFromParsingName(PWideChar(UTF8ToUTF16(InitialDir)), nil,
+        {$IF FPC_FULLVERSION >= 30101}@{$ENDIF}IShellItemGUID, DefaultFolderItem)) then
       ADialog.SetFolder(DefaultFolderItem);
   end;
 
