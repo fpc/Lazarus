@@ -48,6 +48,7 @@ unit svgvectorialreader;
 
 {$mode objfpc}{$H+}
 {$define SVG_MERGE_LAYER_STYLES}
+{$define FPVECTORIAL_SVG_SPLIT_PATHS}
 
 interface
 
@@ -2468,10 +2469,12 @@ begin
     APaths.LastPathStart.X := 0;
     APaths.LastPathStart.Y := 0;
     APaths.Data.AddLineToPath(PathEndX, PathEndY);
+    {$IFDEF FPVECTORIAL_SVG_SPLIT_PATHS}
     APaths.LastPathClosed := True;
     APaths.IsFirstPathMove := True;
     APaths.Add(AData.EndPath(True));
     AData.StartPath();
+    {$ENDIF}
 
     Inc(APaths.CurTokenIndex, 1);
   end
@@ -3583,7 +3586,7 @@ begin
   if lStr[Length(lStr)] = '%' then
   begin
     lStr := Copy(lStr, 1, Length(lStr)-1);
-    Result := Round(StrToFloat(lStr) * $FFFF / 100);
+    Result := Round(StrToFloat(lStr, FPointSeparator) * $FFFF / 100);
   end
   else Result := StrToInt(lStr) * $101;
 end;

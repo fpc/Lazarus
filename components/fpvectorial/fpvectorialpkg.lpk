@@ -9,7 +9,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="25">
+    <Files Count="26">
       <Item1>
         <Filename Value="fpvectorial.pas"/>
         <UnitName Value="fpvectorial"/>
@@ -110,6 +110,10 @@
         <Filename Value="wmfvectorialwriter.pas"/>
         <UnitName Value="wmfvectorialwriter"/>
       </Item25>
+      <Item26>
+        <Filename Value="fpvectorial2canvas.pas"/>
+        <UnitName Value="fpvectorial2canvas"/>
+      </Item26>
     </Files>
     <RequiredPkgs Count="2">
       <Item1>

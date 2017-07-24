@@ -567,7 +567,7 @@ type
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
 
   TvEntityWithPenAndBrush = class(TvEntityWithPen)
-  protected
+  public
     procedure CalcGradientVector(out AGradientStart, AGradientEnd: T2dPoint;
       const ARect: TRect; ADestX: Integer = 0; ADestY: Integer = 0;
       AMulX: Double = 1.0; AMulY: Double = 1.0);
@@ -629,7 +629,7 @@ type
     FCurMoveSubPartIndex: Integer;
     FCurMoveSubPartSegment: TPathSegment;
     //
-  protected
+  public
     FPolyPoints: TPointsArray;
     FPolyStarts: TIntegerDynArray;
   public
@@ -1453,6 +1453,7 @@ type
     { Drawer selection methods }
     function GetRenderer: TvRenderer;
     procedure SetRenderer(ARenderer: TvRenderer);
+    procedure ClearRenderer();
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer = nil);
     { Events }
@@ -1689,7 +1690,13 @@ type
   end;
 
   TvRenderer = class
+  public
+    procedure BeginRender(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean); virtual; abstract;
+    procedure EndRender(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean); virtual; abstract;
+    // TPath
+    procedure TPath_Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean; APath: TPath); virtual; abstract;
   end;
+  TvRendererClass = class of TvRenderer;
 
 var
   GvVectorialFormats: array of TvVectorialFormatData;
@@ -1707,6 +1714,7 @@ procedure RegisterVectorialWriter(
 function Make2DPoint(AX, AY: Double): T3DPoint;
 function Dimension(AValue : Double; AUnits : TvUnits) : TvDimension;
 function ConvertDimensionToMM(ADimension: TvDimension; ATotalSize: Double): Double;
+procedure RegisterDefaultRenderer(ARenderer: TvRendererClass);
 
 implementation
 
@@ -1721,6 +1729,9 @@ const
 var
   AutoFitDebug: TStrings = nil;
 {$endif}
+
+var
+  gDefaultRenderer: TvRendererClass = nil;
 
 {@@
   Registers a new reader for a format
@@ -1826,6 +1837,11 @@ begin
   dimPercent:    Result := ATotalSize * ADimension.Value;
   dimPoint:      Result := ADimension.Value; // ToDo
   end;
+end;
+
+procedure RegisterDefaultRenderer(ARenderer: TvRendererClass);
+begin
+  gDefaultRenderer := ARenderer;
 end;
 
 { TvStyle }
@@ -3664,6 +3680,7 @@ begin
   ATo.MulY := AFrom.MulY;
   ATo.Page := AFrom.Page;
   ATo.Canvas := AFrom.Canvas;
+  ATo.Renderer := AFrom.Renderer;
   ATo.AdjustPenColorToBackground := AFrom.AdjustPenColorToBackground;
   ATo.BackgroundColor := AFrom.BackgroundColor;
   ATo.Selected := AFrom.Selected;
@@ -5053,134 +5070,9 @@ begin
 end;
 
 procedure TPath.Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean);
-var
-  ADest: TFPCustomCanvas absolute ARenderInfo.Canvas;
-  ADestX: Integer absolute ARenderInfo.DestX;
-  ADestY: Integer absolute ARenderInfo.DestY;
-  AMulX: Double absolute ARenderInfo.MulX;
-  AMulY: Double absolute ARenderInfo.MulY;
-  //
-  i: Integer;
-  j, n: Integer;
-  x1, y1, x2, y2: Integer;
-  pts: TPointsArray;
-  ACanvas: TCanvas absolute ARenderInfo.Canvas;
-  coordX, coordY: Integer;
-  curSegment: TPathSegment;
-  cur2DSegment: T2DSegment absolute curSegment;
-  lRect: TRect;
-  gv1, gv2: T2DPoint;
 begin
   inherited Render(ARenderInfo, ADoDraw);
-
-  ConvertPathToPolygons(self, ADestX, ADestY, AMulX, AMulY, FPolyPoints, FPolyStarts);
-  x1 := MaxInt;
-  y1 := maxInt;
-  x2 := -MaxInt;
-  y2 := -MaxInt;
-  for i := 0 to High(FPolyPoints) do
-  begin
-    {$ifdef FPVECTORIAL_AUTOFIT_DEBUG}
-    if AutoFitDebug <> nil then AutoFitDebug.Add(Format('==[%d=%d]', [FPolyPoints[i].X, FPolyPoints[i].Y]));
-    {$endif}
-    x1 := min(x1, FPolyPoints[i].X);
-    y1 := min(y1, FPolyPoints[i].Y);
-    x2 := max(x2, FPolyPoints[i].X);
-    y2 := max(y2, FPolyPoints[i].Y);
-  end;
-  CalcEntityCanvasMinMaxXY_With2Points(ARenderInfo, x1, y1, x2, y2);
-  // Boundary rect of shape filled with a gradient
-  lRect := Rect(x1, y1, x2, y2);
-
-  if ADoDraw then
-  begin
-    // (1) draw background only
-    ADest.Pen.Style := psClear;
-    if (Length(FPolyPoints) > 2) then
-      case Brush.Kind of
-        bkSimpleBrush:
-          if Brush.Style <> bsClear then
-          begin
-            if (Brush.Style = bsSolid) and (Length(FPolyStarts) > 1) then
-              // Non-contiguous polygon (polygon with "holes") --> use special procedure
-              // Disadvantage: it can only do solid fills!
-              DrawPolygon(ARenderInfo, FPolyPoints, FPolyStarts, lRect)
-            else
-              {$IFDEF USE_LCL_CANVAS}
-              for i := 0 to High(FPolyStarts) do
-              begin
-                j := FPolyStarts[i];
-                if i = High(FPolyStarts) then
-                  n := Length(FPolyPoints) - j
-                else
-                  n := FPolyStarts[i+1] - FPolyStarts[i]; // + 1;
-                ACanvas.Polygon(@FPolyPoints[j], n, WindingRule = vcmNonZeroWindingRule);
-              end;
-              {$ELSE}
-              ADest.Polygon(FPolyPoints);
-              {$ENDIF}
-          end;
-
-        bkHorizontalGradient,
-        bkVerticalGradient,
-        bkOtherLinearGradient:
-          begin
-            // calculate gradient vector
-            CalcGradientVector(gv1, gv2, lRect, ADestX, ADestY, AMulX, AMulY);
-            // Draw the gradient
-            DrawPolygonBrushLinearGradient(ARenderInfo, FPolyPoints, FPolyStarts, lRect, gv1, gv2);
-          end;
-
-        bkRadialGradient:
-          DrawPolygonBrushRadialGradient(ARenderInfo, FPolyPoints, lRect);
-      end;  // case Brush.Kind of...
-
-    // (2) draw border, take care of the segments with modified pen
-    ADest.Brush.Style := bsClear;               // We will paint no background
-    ApplyPenToCanvas(ARenderInfo, Pen);  // Restore pen
-
-    PrepareForSequentialReading;
-    for j := 0 to Len - 1 do
-    begin
-      curSegment := TPathSegment(Next);
-      case curSegment.SegmentType of
-        stMoveTo:
-          begin
-            inc(i);
-            coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
-            coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
-            ADest.MoveTo(coordX, coordY);
-          end;
-        st2DLineWithPen, st2DLine, st3DLine:
-          begin
-            coordX := CoordToCanvasX(cur2DSegment.X, ADestX, AMulX);
-            coordY := CoordToCanvasY(cur2DSegment.Y, ADestY, AMulY);
-            if curSegment.SegmentType = st2DLineWithPen then
-            begin
-              ADest.Pen.FPColor := AdjustColorToBackground(T2DSegmentWithPen(Cur2DSegment).Pen.Color, ARenderInfo);
-              ADest.Pen.Width := T2DSegmentWithPen(cur2DSegment).Pen.Width;
-              ADest.Pen.Style := T2DSegmentWithPen(cur2DSegment).Pen.Style;
-              ADest.LineTo(coordX, coordY);
-              ApplyPenToCanvas(ARenderInfo, Pen);
-            end else
-              ADest.LineTo(coordX, coordY);
-          end;
-        st2DBezier, st3DBezier, st2DEllipticalArc:
-          begin
-            coordX := CoordToCanvasX(T2DSegment(curSegment.Previous).X, ADestX, AMulX);
-            coordY := CoordToCanvasY(T2DSegment(curSegment.Previous).Y, ADestY, AMulY);
-            SetLength(pts, 1);
-            pts[0] := Point(coordX, coordY);
-            curSegment.AddToPoints(ADestX, ADestY, AMulX, AMulY, pts);
-            if Length(pts) > 0 then
-            begin
-              ADest.PolyLine(pts);
-              ADest.MoveTo(pts[High(pts)].X, pts[High(pts)].Y);
-            end;
-          end;
-      end;
-    end;
-  end;
+  ARenderInfo.Renderer.TPath_Render(ARenderInfo, ADoDraw, Self);
 end;
 
 
@@ -8962,6 +8854,7 @@ begin
   TvEntity.InitializeRenderInfo(ARenderInfo, AEntity, True);
   ARenderInfo.Canvas := ACanvas;
   ARenderInfo.Page := Self;
+  ARenderInfo.Renderer := FOwner.FRenderer;
 end;
 
 constructor TvPage.Create(AOwner: TvVectorialDocument);
@@ -9866,6 +9759,7 @@ begin
   InitializeRenderInfo(RenderInfo, ADest, nil);
   InitializeRenderInfo(rInfo, ADest, nil);
   TvEntity.CopyAndInitDocumentRenderInfo(rInfo, RenderInfo, False, False);
+  if Assigned(FOwner.FRenderer) then FOwner.FRenderer.BeginRender(RenderInfo, ADoDraw);
 
   for i := 0 to GetEntitiesCount - 1 do
   begin
@@ -9895,6 +9789,7 @@ begin
     end;
   end;
 
+  if Assigned(FOwner.FRenderer) then FOwner.FRenderer.EndRender(RenderInfo, ADoDraw);
   TvEntity.CopyAndInitDocumentRenderInfo(RenderInfo, rInfo, True, False);
 
   {$ifdef FPVECTORIAL_RENDERINFO_VISUALDEBUG}
@@ -10147,6 +10042,8 @@ begin
   FCurrentPageIndex := -1;
   FStyles := TFPList.Create;
   FListStyles := TFPList.Create;
+  if gDefaultRenderer <> nil then
+    FRenderer := gDefaultRenderer.Create;
 end;
 
 {@@
@@ -10154,7 +10051,7 @@ end;
 }
 destructor TvVectorialDocument.Destroy;
 begin
-  Clear;
+  Clear();
 
   FPages.Free;
   FPages := nil;
@@ -10163,8 +10060,7 @@ begin
   FListStyles.Free;
   FListStyles := nil;
 
-  if FRenderer <> nil then
-    FreeAndNil(FRenderer);
+  ClearRenderer();
 
   inherited Destroy;
 end;
@@ -10816,7 +10712,13 @@ end;
 
 procedure TvVectorialDocument.SetRenderer(ARenderer: TvRenderer);
 begin
+  ClearRenderer();
   FRenderer := ARenderer;
+end;
+
+procedure TvVectorialDocument.ClearRenderer;
+begin
+  if FRenderer <> nil then FreeAndNil(FRenderer);
 end;
 
 procedure TvVectorialDocument.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer);
