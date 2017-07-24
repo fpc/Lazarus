@@ -168,6 +168,7 @@ object BasicResizeFrame: TBasicResizeFrame
     ClientHeight = 427
     ClientWidth = 287
     TabOrder = 4
+    OnPaint = pBGPaint
     object pFakeMenu: TPanel
       AnchorSideLeft.Control = pBG
       AnchorSideTop.Control = pBG

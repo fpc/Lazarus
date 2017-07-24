@@ -30,6 +30,7 @@ type
     pMarginT: TPanel;
     pR: TPanel;
     pT: TPanel;
+    procedure pBGPaint(Sender: TObject);
     procedure pFakeMenuPaint(Sender: TObject);
     procedure sbVerticalScroll(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer);
@@ -206,6 +207,11 @@ begin
       LCanvas.TextOut(X, Y, Menu.Items[I].Caption);
       Inc(X, LCanvas.TextWidth(Menu.Items[I].Caption) + 10);
     end;
+end;
+
+procedure TBasicResizeFrame.pBGPaint(Sender: TObject);
+begin
+  pBG.Visible := False;
 end;
 
 procedure TBasicResizeFrame.sbVerticalScroll(Sender: TObject;
@@ -837,10 +843,13 @@ procedure TBasicResizeFrame.BeginFormSizeUpdate(Sender: TObject);
 begin
   FLastDesignedWidthToScroll:=DesignedWidthToScroll;
   FLastDesignedHeightToScroll:=DesignedHeightToScroll;
+  pBG.OnPaint := nil;
+  pBG.Visible := True;
 end;
 
 procedure TBasicResizeFrame.EndFormSizeUpdate(Sender: TObject);
 begin
+  pBG.OnPaint := pBGPaint;
 end;
 
 function TBasicResizeFrame.GetFrame: TCustomFrame;
