@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-08 18:10+0300\n"
+"PO-Revision-Date: 2017-07-21 20:05+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -414,7 +414,7 @@ msgstr "Список слів:"
 
 #: jcfuiconsts.lisfrfileconfirmformat
 msgid "Show confirmation dialog before format"
-msgstr ""
+msgstr "Перед форматуванням показати діалог підтвердження"
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
@@ -438,15 +438,15 @@ msgstr "Файл не знайдений"
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"
-msgstr ""
+msgstr "Відкрити теку"
 
 #: jcfuiconsts.lisfrfilessettingsfile
 msgid "Settings File"
-msgstr ""
+msgstr "Файл налаштувань"
 
 #: jcfuiconsts.lisfrfilessettingsfileis
 msgid "Settings file is:"
-msgstr ""
+msgstr "Файл налаштувань є:"
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 msgid "Version that wrote this file: %s"
@@ -518,7 +518,7 @@ msgstr "Параметри форматування JCF"
 
 #: jcfuiconsts.lisjedicodeformatallopenwindow
 msgid "JEDI Code Format of all open windows?"
-msgstr ""
+msgstr "Застосувати формат коду JEDI у всіх відкритих вікнах?"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"

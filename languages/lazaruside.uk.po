@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-18 09:33+0300\n"
+"PO-Revision-Date: 2017-07-21 20:01+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -1952,7 +1952,7 @@ msgstr "Маркери вибірки"
 
 #: lazarusidestrconsts.dlggrayeddesktopsdocked
 msgid "Grayed desktops are for docked environment."
-msgstr ""
+msgstr "Сірим позначено стільниці для оточення зі стикуванням."
 
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
@@ -10676,10 +10676,8 @@ msgid "Cut selected components"
 msgstr "Вирізати вибрані компоненти"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
-#, fuzzy
-#| msgid "Default adapted to OS X"
 msgid "Default adapted to macOS"
-msgstr "Типова для адаптації до OS X"
+msgstr "Типова адаптована до macOS"
 
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
@@ -10814,22 +10812,16 @@ msgid "Keymapping Scheme"
 msgstr "Схема розкладки клавіатури"
 
 #: lazarusidestrconsts.liskmlazarusdefault
-#, fuzzy
-#| msgid "Lazarus (default)"
 msgid "Lazarus default"
-msgstr "Lazarus (типовий)"
+msgstr "Типова для Lazarus"
 
 #: lazarusidestrconsts.liskmmacosxapple
-#, fuzzy
-#| msgid "Mac OS X (Apple style)"
 msgid "macOS, Apple style"
-msgstr "Mac OS X (стиль Apple)"
+msgstr "macOS, стиль Apple"
 
 #: lazarusidestrconsts.liskmmacosxlaz
-#, fuzzy
-#| msgid "Mac OS X (Lazarus style)"
 msgid "macOS, Lazarus style"
-msgstr "Mac OS X (стиль Lazarus)"
+msgstr "macOS, стиль Lazarus"
 
 #: lazarusidestrconsts.liskmnewpackage
 msgid "New package"
@@ -11249,7 +11241,7 @@ msgstr "Поточні параметри збирання будуть пов'�
 
 #: lazarusidestrconsts.lislazbuildnormalide
 msgid "Normal IDE"
-msgstr "Звичайний ІСР"
+msgstr "Звичайне ІСР"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
@@ -12680,7 +12672,7 @@ msgstr "Відкрити назву файлу над курсором"
 
 #: lazarusidestrconsts.lismenuopenfolder
 msgid "Open Folder ..."
-msgstr ""
+msgstr "Відкрити теку ..."
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open Loaded Package ..."
