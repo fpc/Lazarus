@@ -20,6 +20,8 @@ type
   protected
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
+    procedure ChangeScale(Multiplier, Divider: Integer); override;
+    procedure FontChanged(Sender: TObject); override;
   public
     IsSmallDevice: Boolean;
   
@@ -206,6 +208,16 @@ begin
     LayoutDialog;
 end;
 
+procedure TPromptDialog.ChangeScale(Multiplier, Divider: Integer);
+begin
+  inherited ChangeScale(Multiplier, Divider);
+
+  TextBox.Left := MulDiv(TextBox.Left, Multiplier, Divider);
+  TextBox.Top := MulDiv(TextBox.Top, Multiplier, Divider);
+  TextBox.Right := MulDiv(TextBox.Right, Multiplier, Divider);
+  TextBox.Bottom := MulDiv(TextBox.Bottom, Multiplier, Divider);
+end;
+
 destructor TPromptDialog.Destroy;
 begin
   FBitmap.Free;
@@ -225,6 +237,13 @@ begin
     TextBox.Right := Round(TextBox.Right*AXProportion);
     TextBox.Bottom := Round(TextBox.Bottom*AYProportion);
   end;
+end;
+
+procedure TPromptDialog.FontChanged(Sender: TObject);
+begin
+  inherited FontChanged(Sender);
+
+  TextStyle.SystemFont := False;
 end;
 
 function TPromptDialog.GetMessageText: string;
