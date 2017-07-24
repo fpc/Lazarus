@@ -624,16 +624,15 @@ procedure TAVLTree.Clear;
 
   procedure DeleteNode(ANode: TAVLTreeNode);
   begin
-    if ANode<>nil then begin
-      if ANode.Left<>nil then DeleteNode(ANode.Left);
-      if ANode.Right<>nil then DeleteNode(ANode.Right);
-    end;
+    if ANode.Left<>nil then DeleteNode(ANode.Left);
+    if ANode.Right<>nil then DeleteNode(ANode.Right);
     DisposeNode(ANode);
   end;
 
 // Clear
 begin
-  DeleteNode(Root);
+  if Root<>nil then
+    DeleteNode(Root);
   fRoot:=nil;
   FCount:=0;
 end;
