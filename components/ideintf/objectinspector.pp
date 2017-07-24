@@ -434,10 +434,12 @@ type
     procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     procedure MouseLeave; override;
+
 
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure HandleStandardKeys(var Key: Word; Shift: TShiftState); virtual;
@@ -1294,6 +1296,14 @@ begin
       // Ends scrolling
     SB_ENDSCROLL:  SetCaptureControl(nil); // release scrollbar capture
   end;
+end;
+
+function TOICustomPropertyGrid.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
+var
+  H: Boolean;
+begin
+  H := False;
+  OnGridMouseWheel(Self, Shift, WheelDelta, MousePos, H)
 end;
 
 procedure TOICustomPropertyGrid.OnGridMouseWheel(Sender: TObject; Shift: TShiftState;
