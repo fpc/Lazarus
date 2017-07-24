@@ -200,7 +200,7 @@ object BasicResizeFrame: TBasicResizeFrame
     BevelOuter = bvNone
     ClientHeight = 152
     ClientWidth = 152
-    Color = clGreen
+    Color = clBtnFace
     ParentColor = False
     TabOrder = 5
     object pFormHandler: TPanel

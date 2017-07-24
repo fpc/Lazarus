@@ -6,7 +6,7 @@ object frFormBackgroundForMDI: TfrFormBackgroundForMDI
   Align = alClient
   ClientHeight = 582
   ClientWidth = 570
-  Color = clGreen
+  Color = clBtnFace
   ParentColor = False
   TabOrder = 0
   object Panel1: TPanel
