@@ -2257,14 +2257,33 @@ end;
 
 procedure TCustomForm.WMDPIChanged(var Msg: TLMessage);
 var
-  NewDpi: integer;
+  NewDpi, I, L: integer;
 begin
   if Parent=nil then
   begin
     NewDpi := hi(Msg.wParam);
     if Application.Scaled and Scaled and (NewDpi<>PixelsPerInch) then
-      AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, NewDpi,
-        Width, MulDiv(Width, NewDpi, PixelsPerInch));
+    begin
+      { Problem (Windows): if the form is shown the first time on a secondary monitor
+        with a different DPI settings, the WM_DPICHANGED message is sent within
+        UpdateBounds when BoundsLockCount>0 which means the bounds are not scaled.
+        We force to update the bounds. See issue 32162.
+        (A better solution is welcome.)
+      }
+      I := -1;
+      while BoundsLockCount>0 do
+      begin
+        EndUpdateBounds;
+        Inc(I);
+      end;
+      try
+        AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, NewDpi,
+          Width, MulDiv(Width, NewDpi, PixelsPerInch));
+      finally
+        for L := 0 to I do
+          BeginUpdateBounds;
+      end;
+    end;
   end;
 end;
 
