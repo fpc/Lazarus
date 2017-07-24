@@ -3408,6 +3408,9 @@ components/onlinepackagemanager/vst/include/intf/opkman_dummyolemethods.inc svne
 components/onlinepackagemanager/vst/include/intf/qt/opkman_olemethods.inc svneol=native#text/plain
 components/onlinepackagemanager/vst/include/intf/qt/opkman_vtgraphicsi.inc svneol=native#text/plain
 components/onlinepackagemanager/vst/include/intf/qt/opkman_vtvdragmanager.inc svneol=native#text/plain
+components/onlinepackagemanager/vst/include/intf/qt5/opkman_olemethods.inc -text svneol=native#plain/text
+components/onlinepackagemanager/vst/include/intf/qt5/opkman_vtgraphicsi.inc -text svneol=native#plain/text
+components/onlinepackagemanager/vst/include/intf/qt5/opkman_vtvdragmanager.inc -text svneol=native#plain/text
 components/onlinepackagemanager/vst/include/intf/win32/opkman_olemethods.inc svneol=native#text/plain
 components/onlinepackagemanager/vst/include/intf/win32/opkman_vtgraphicsi.inc svneol=native#text/plain
 components/onlinepackagemanager/vst/include/intf/win32/opkman_vtvdragmanager.inc svneol=native#text/plain
