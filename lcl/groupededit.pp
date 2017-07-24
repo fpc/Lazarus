@@ -178,8 +178,6 @@ type
     procedure SetTabStop(AValue: Boolean);
     procedure SetTextHint(AValue: TTranslateString);
   protected
-    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double); override;
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                 WithThemeSpace: Boolean); override;
     function CreateBuddy: TControl; virtual;
@@ -1244,18 +1242,6 @@ end;
 destructor TCustomAbstractGroupedEdit.Destroy;
 begin
   inherited Destroy;
-end;
-
-procedure TCustomAbstractGroupedEdit.DoAutoAdjustLayout(
-  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double
-  );
-begin
-  inherited;
-
-  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
-  begin
-    BuddyWidth := Round(BuddyWidth*AXProportion);
-  end;
 end;
 
 function TCustomAbstractGroupedEdit.Focused: Boolean;
