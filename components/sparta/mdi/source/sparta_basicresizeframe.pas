@@ -670,6 +670,7 @@ var
 begin
   Result := False;
   if  (FDesignedForm<>nil) and (FDesignedForm.Form.Menu<>nil)
+  and not (csDestroying in FDesignedForm.Form.Menu.ComponentState)
   and (FDesignedForm.Form.Menu.Items.Count>0)
   then
     for I := 0 to FDesignedForm.Form.Menu.Items.Count-1 do
