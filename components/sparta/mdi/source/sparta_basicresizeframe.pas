@@ -395,9 +395,10 @@ begin
       FNodes.Add(Panel);
 
       case Node of
-        {0,}4: Cursor := crSizeNWSE;
+        // on mac there is no cursor for crNWSE ( https://bugs.freepascal.org/view.php?id=32194#c101876 )
+        {0,}4: Cursor := {$IFDEF MACOS}crSizeAll{$ELSE}crSizeNWSE{$ENDIF};
         {1,}5: Cursor := crSizeNS;
-        //{2,}6: Cursor := crSizeNESW;
+        //{2,}6: Cursor := $IFDEF MACOS}crSizeAll{$ELSE}crSizeNESW{$ENDIF};
         3{,7}: Cursor := crSizeWE;
       end;
       if Node in [3,4,5] then
