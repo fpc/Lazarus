@@ -1883,6 +1883,7 @@ type
     procedure ParseQ(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseINS(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseDEL(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+    procedure ParseTABLE(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseTableBody(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseTableRows(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseColGroup(Parent: TIpHtmlNode);
@@ -1925,8 +1926,6 @@ type
     procedure ParseBR(Parent : TIpHtmlNode);
     procedure ParseNOBR(Parent: TIpHtmlNode);
     procedure ParseMAP(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseTABLE(Parent: TIpHtmlNode;
-        const EndTokens: TIpHtmlTokenSet);
     function FindAttribute(const AttrNameSet: TIpHtmlAttributesSet): string;
     function ColorFromString(S: string): TColor;
     function ParseAlignment: TIpHtmlAlign;
@@ -2744,6 +2743,7 @@ function FindNodeByElemId(ANode: TIpHtmlNode; const AElemId: string): TIpHtmlNod
 function FindNodeByElemClass(ANode: TIpHtmlNode; const AElemClass: string): TIpHtmlNodeCore;
 
 procedure Register;
+
 
 implementation
 
@@ -6450,9 +6450,10 @@ begin
           CurRow.VAlign := ParseVAlignment;
           CurRow.LoadAndApplyCSSProps;
           NextRealToken;
-          ParseTableRow(CurRow,
-                        EndTokens + [IpHtmlTagTRend, IpHtmlTagTR] -
-                                    [IpHtmlTagTH, IpHtmlTagTD]);
+          ParseTableRow(
+            CurRow,
+            EndTokens + [IpHtmlTagTRend, IpHtmlTagTR] - [IpHtmlTagTH, IpHtmlTagTD]
+          );
           while CurToken = IpHtmlTagTRend do
             NextToken;
         end;
@@ -6462,8 +6463,10 @@ begin
           if CurRow <> nil then
             FixupPercentages(CurRow);
           CurRow := TIpHtmlNodeTR.Create(Parent);
-          ParseTableRow(CurRow,
-                        EndTokens + [IpHtmlTagTR] - [IpHtmlTagTH, IpHtmlTagTD]);
+          ParseTableRow(
+            CurRow,
+            EndTokens + [IpHtmlTagTR] - [IpHtmlTagTH, IpHtmlTagTD]
+          );
         end;
       else
         NextToken;
@@ -10239,13 +10242,13 @@ var
 begin
   aCanvas := Owner.Target;
 
-  Props.BGColor := BGColor;
+  if (FOwner.Body.BgPicture <> nil) or (Props.BGColor = 1) then
+    aCanvas.Brush.Style := bsClear
+  else
   if (Props.BGColor <> -1) and PageRectToScreen(BorderRect, R) then begin
     aCanvas.Brush.Color :=Props.BGColor;
     aCanvas.FillRect(R);
-  end
-  else if (Props.BGColor = -1) then
-    aCanvas.Brush.Style := bsClear;
+  end;
   aCanvas.Pen.Color := clBlack;
 
   Al := Props.VAlignment;
@@ -10388,12 +10391,13 @@ begin
   Props.Assign(RenderProps);
   Props.NoBreak := False;
   inherited SetProps(RenderProps);
+  //BgColor := Props.BgColor;
 end;
 
 function TIpHtmlNodeTABLE.GetDim(ParentWidth: Integer): TSize;
 begin
-  if (SizeWidth.PixelsType <> hpAbsolute)
-  or (SizeWidth.Value <> ParentWidth) then begin
+  if (SizeWidth.PixelsType <> hpAbsolute) or (SizeWidth.Value <> ParentWidth) then
+  begin
     SizeWidth.PixelsType := hpUndefined;
     FLayouter.CalcSize(ParentWidth, Props);
     SizeWidth.Value := ParentWidth;

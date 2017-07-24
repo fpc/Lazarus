@@ -325,6 +325,7 @@ constructor TIpHtmlPropB.Create(AOwner: TIpHtmlPropsBList);
 begin
   inherited Create;
   FOwner := AOwner;
+  FPropRec.BgColor := -1;
   FPropRec.HoverColor := -1;
   FPropRec.HoverBgColor := -1;
 end;
