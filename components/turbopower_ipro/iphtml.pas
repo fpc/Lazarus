@@ -10246,7 +10246,7 @@ begin
     Props.FontStyle := Props.FontStyle + [fsUnderline];
   end else
     if HasRef then begin
-      Props.FontStyle := Props.FontStyle + [fsUnderline];
+      Props.FontStyle := Props.FontStyle - [fsUnderline];
       if Owner.LinkVisited(HRef) then
         Props.FontColor := Props.VLinkColor
       else
