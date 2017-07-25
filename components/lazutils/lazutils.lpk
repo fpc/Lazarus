@@ -16,7 +16,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="90">
+    <Files Count="91">
       <Item1>
         <Filename Value="LazLoggerImpl.inc"/>
         <Type Value="Include"/>
@@ -377,6 +377,10 @@
         <Filename Value="winlazutf8.inc"/>
         <Type Value="Include"/>
       </Item90>
+      <Item91>
+        <Filename Value="laz_avl_tree.pp"/>
+        <UnitName Value="Laz_AVL_Tree"/>
+      </Item91>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>

@@ -20,7 +20,7 @@ uses
   LookupStringList, Maps, Masks, PasWString, StringHashList, TextStrings, 
   Translations, TTCache, TTCalc, TTCMap, TTDebug, TTError, TTFile, TTGLoad, 
   TTInterp, TTLoad, TTMemory, TTObjs, TTProfile, TTRASTER, TTTables, TTTypes, 
-  UTF8Process, LazarusPackageIntf;
+  UTF8Process, Laz_AVL_Tree, LazarusPackageIntf;
 
 implementation
 
