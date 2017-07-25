@@ -305,7 +305,7 @@ const
     '%2:s %0:.9g', // smsLabelValue
     '%2:s', // smsLegend: not sure what it means, left for Delphi compatibility
     '%1:.2f%% of %3:g', // smsPercentTotal
-    '%1:.2f%% of %3:g', // smsLabelPercentTotal
+    '%2:s %1:.2f%% of %3:g', // smsLabelPercentTotal
     '%4:.9g' // smsXValue
   );
   ZeroDoublePoint: TDoublePoint = (X: 0; Y: 0);
