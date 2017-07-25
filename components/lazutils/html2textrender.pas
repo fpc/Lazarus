@@ -80,7 +80,11 @@ begin
     delete(fHTML,1,3);
   // These can be changed by user later.
   fLineEndMark:=LineEnding;
-  fTitleMark:='🔹';
+  //fTitleMark:='🔹';
+  //fTitleMark:='◆';
+  //fTitleMark:='◇';
+  fTitleMark:='◈';
+  //fTitleMark:='◊';
   fHorzLine:= '——————————————————';
   fLinkBegin:='_';
   fLinkEnd:='_';
@@ -210,7 +214,7 @@ begin
         if fInDivTitle then
         begin
           AddNewLine;
-          Result:=AddOutput(fTitleMark);
+          Result:=AddOutput(fTitleMark+' ');
         end
         else
           AddOneNewLine;
@@ -220,7 +224,7 @@ begin
       begin
         if fInDivTitle then
         begin
-          Result:=AddOutput(fTitleMark);
+          Result:=AddOutput(' '+fTitleMark);
           fInDivTitle:=False;
         end;
         AddOneNewLine;
