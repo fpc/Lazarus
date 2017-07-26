@@ -391,7 +391,6 @@ type
     UpdatePackageCommandsStamp: TPackageCommandsStamp;
     UpdateBookmarkCommandsStamp: TBookmarkCommandsStamp;
     BookmarksStamp: Int64;
-    IsDockedFormEditor: Boolean;
   public
     procedure UpdateMainIDECommands(Sender: TObject);
     procedure UpdateFileCommands(Sender: TObject);
@@ -1566,7 +1565,7 @@ begin
   CompPalette.OnChangeActivePage:=@MainIDEBar.SetMainIDEHeightEvent;
   // load installed packages
   PkgBoss.LoadInstalledPackages;
-  IsDockedFormEditor := IDETabMaster <> nil;
+
   EditorMacroListViewer.LoadGlobalInfo; // Must be after packages are loaded/registered.
 
   FormEditor1.RegisterFrame;
@@ -3542,17 +3541,8 @@ begin
     exit;
   end;
   // do not call 'AForm.Show', because it will set Visible to true
-  if IsDockedFormEditor then
-  begin
-    ARestoreVisible := AForm.Visible;
-    AForm.Visible := False;
-    AForm.Visible := ARestoreVisible;
-  end
-  else
-  begin
-    AForm.BringToFront;
-    LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
-  end;
+  AForm.BringToFront;
+  LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
 end;
 
 procedure TMainIDE.DoViewAnchorEditor(State: TIWGetFormState);
@@ -8452,11 +8442,7 @@ var
 begin
   DoShowDesignerFormOfSrc(SourceEditorManager.ActiveEditor, LForm);
   if LForm <> nil then
-  begin
-    if IsDockedFormEditor then
-      LCLIntf.ShowWindow(LForm.Handle, SW_MINIMIZE);
     DoCallShowDesignerFormOfSourceHandler(lihtShowDesignerFormOfSource, LForm, SourceEditorManager.ActiveEditor, AComponentPaletteClassSelected);
-  end;
 end;
 
 procedure TMainIDE.DoShowDesignerFormOfSrc(AEditor: TSourceEditorInterface);
