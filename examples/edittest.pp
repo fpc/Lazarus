@@ -77,8 +77,8 @@ begin
   with FEdit
   do begin
     Parent := Self;
-		Width := 300;
-		Height := 200;
+    Width := 300;
+    Height := 200;
     Gutter.Color := clBtnface;
     Gutter.LineNumberPart.Visible := True;
     Color := clWindow;
@@ -93,8 +93,8 @@ begin
   begin
     Parent := Self;
     Top := 208;
-		Width := 300;
-		Height := 25;
+    Width := 300;
+    Height := 25;
     Visible := True;
     Font.Name := 'courier';
     Font.Size := 12;

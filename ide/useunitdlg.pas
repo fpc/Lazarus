@@ -206,6 +206,11 @@ begin
   FMainUsedUnits.Free;
 end;
 
+procedure TUseUnitDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
 procedure TUseUnitDialog.SectionRadioGroupClick(Sender: TObject);
 var
   i: Integer;
@@ -239,12 +244,6 @@ begin
   if Visible then
     FilterEdit.SetFocus;
   FilterEdit.InvalidateFilter;
-end;
-
-procedure TUseUnitDialog.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TUseUnitDialog.UnitsListBoxDblClick(Sender: TObject);

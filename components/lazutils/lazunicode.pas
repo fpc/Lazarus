@@ -183,7 +183,7 @@ end;
 
 function IsCombining(const AChar: PChar): Boolean;
 // Note: there are many more rules for combining codepoints.
-//  The diacritical marks hare are only a subset.
+//  The diacritical marks here are only a subset.
 begin
   {$IFDEF ReallyUseUTF16}
   Result := UTF16IsCombining(AChar);
@@ -257,8 +257,8 @@ begin
     fCurrentCodePointCount := 0;
     NextCP := fCurrentPos;
     repeat
-      NextCUCount := CodePointSize(NextCP); // Prepare for combining diacritical marks.
-      Inc(NextCP, NextCUCount); // Prepare for combining diacritical marks.
+      NextCUCount := CodePointSize(NextCP);
+      Inc(NextCP, NextCUCount);       // Prepare for combining diacritical marks.
       Inc(fCurrentCodePointCount);
     until not IsCombining(NextCP);
     fCurrentCodeUnitCount := NextCP - fCurrentPos;  // Pointer arithmetics.
