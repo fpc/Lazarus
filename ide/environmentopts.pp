@@ -2816,6 +2816,7 @@ var
   lDskTpOpt: TCustomDesktopOpt;
 
 begin
+  Result := nil;
   if FActiveDesktopName <> '' then
   begin
     lDskTpOpt := FDesktops.Find(FActiveDesktopName);
@@ -2828,8 +2829,11 @@ begin
   OldActiveDesktopName := FActiveDesktopName;
   ChooseDefault;
   lDskTpOpt := FDesktops.Find(FActiveDesktopName);
-  if Assigned(lDskTpOpt) and lDskTpOpt.InheritsFrom(TDesktopOpt) and lDskTpOpt.Compatible then
-    Exit(TDesktopOpt(lDskTpOpt));
+  if Assigned(lDskTpOpt) and lDskTpOpt.InheritsFrom(TDesktopOpt) then
+    if lDskTpOpt.Compatible then
+      Exit(TDesktopOpt(lDskTpOpt))
+    else
+      Result := TDesktopOpt(lDskTpOpt);
 
   //recreate desktop with ActiveDesktopName
   if Assigned(Result) then
