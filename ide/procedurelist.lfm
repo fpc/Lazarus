@@ -214,7 +214,7 @@ object ProcedureListForm: TProcedureListForm
     Height = 607
     Top = 58
     Width = 952
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Align = alClient
     ColCount = 4
     Columns = <    
       item
