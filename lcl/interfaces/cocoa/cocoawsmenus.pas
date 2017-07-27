@@ -284,7 +284,8 @@ end;
 
 procedure TCocoaMenuItem_Quit.lclItemSelected(sender: id);
 begin
-  Application.Terminate;
+  // Should be used instead of Application.Terminate to allow events to be sent, see bug 32148
+  Application.MainForm.Close;
 end;
 
 { TCocoaWSMenu }
