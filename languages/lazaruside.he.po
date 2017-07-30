@@ -2559,7 +2559,9 @@ msgid "Word Brackets on caret (global)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Match word boundaries for words up to this length:"
+#, fuzzy
+#| msgid "Match word boundaries for words up to this length:"
+msgid "Match whole words, if length is less or equal to:"
 msgstr "התאם את תוחמי המילה עד לאורך זה:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword

@@ -2440,7 +2440,9 @@ msgid "Word Brackets on caret (global)"
 msgstr "キャレットで単語にカッコをつける(グローバル)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Match word boundaries for words up to this length:"
+#, fuzzy
+#| msgid "Match word boundaries for words up to this length:"
+msgid "Match whole words, if length is less or equal to:"
 msgstr "単語の境界をこの長さの単語まで合わマッチさせる："
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword

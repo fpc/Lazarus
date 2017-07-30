@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-07-18 01:51+0300\n"
+"PO-Revision-Date: 2017-07-31 02:00+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2440,8 +2440,8 @@ msgid "Word Brackets on caret (global)"
 msgstr "Подсвечивать операторные скобки при установке курсора (глобально)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-msgid "Match word boundaries for words up to this length:"
-msgstr "Искать границы для слов не длиннее "
+msgid "Match whole words, if length is less or equal to:"
+msgstr "Подсвечивать слова полностью при длине не более:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
