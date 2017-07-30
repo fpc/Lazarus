@@ -2660,7 +2660,13 @@ var
 var
   S: String;
   idx: Integer;
+  {$IFDEF DBG_ASYNC_WAIT}
+  GotPrompt: integer;
+  {$ENDIF}
 begin
+  {$IFDEF DBG_ASYNC_WAIT}
+  GotPrompt := 0;
+  {$ENDIF}
   Result := True;
   AResult.State := dsNone;
   InLogWarning := False;
@@ -2672,17 +2678,40 @@ begin
     if ATimeOut > 0 then begin
       S := FTheDebugger.ReadLine(ATimeOut);
       if FTheDebugger.ReadLineTimedOut then begin
+        {$IFDEF DBG_ASYNC_WAIT}
+        if GotPrompt = 0 then begin
+        {$ENDIF}
         FProcessResultTimedOut := True;
         break;
+        {$IFDEF DBG_ASYNC_WAIT}
+        end;
+        {$ENDIF}
       end;
     end
     else
       S := FTheDebugger.ReadLine(50);
 
+    {$IFDEF DBG_ASYNC_WAIT}
+    if GotPrompt > 0 then begin
+      inc(GotPrompt);
+      if (GotPrompt > 15) or FGotStopped or FDidKillNow then break;
+      if (GotPrompt > 5) and (S = '') then break;
+    end;
+    {$ENDIF}
+
     if (S = '(gdb) ') or
        ( (S = '') and FDidKillNow )
     then
+      {$IFDEF DBG_ASYNC_WAIT}
+      begin
+        if (not FGotStopped) and (not FDidKillNow) and (GotPrompt = 0) then
+          GotPrompt := 1
+        else
+          break;
+      end;
+      {$ELSE}
       Break;
+      {$ENDIF}
 
     while S <> '' do
     begin
