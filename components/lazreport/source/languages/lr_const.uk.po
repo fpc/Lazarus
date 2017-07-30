@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-03 02:01+0200\n"
+"PO-Revision-Date: 2017-07-28 01:22+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -252,7 +252,7 @@ msgstr "0"
 
 #: lr_const.sclassobjectnotfound
 msgid "Class Object \"%s\" not found"
-msgstr "Об'єкт \"%s\" класу не знайдений"
+msgstr "Об'єкт \"%s\" класу не знайдено"
 
 #: lr_const.sconfirm
 msgid "Confirm"
@@ -726,7 +726,7 @@ msgstr "Індекс фільтру експорту має неприпусти
 
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
-msgstr "&Доступні Бази Даних"
+msgstr "&Доступні бази даних"
 
 #: lr_const.sfieldsforminsert
 msgctxt "lr_const.sfieldsforminsert"
@@ -1264,7 +1264,7 @@ msgstr "&Файл"
 
 #: lr_const.sfrdesignerform_help1
 msgid "&Help contents"
-msgstr "&Вміст Довідки"
+msgstr "&Вміст довідки"
 
 #: lr_const.sfrdesignerform_help2
 msgid "Help &tool"
@@ -1272,7 +1272,7 @@ msgstr "Інструмент &допомоги"
 
 #: lr_const.sfrdesignerform_insp
 msgid "Object &Inspector"
-msgstr "&Інспектор Об'єктів"
+msgstr "&Інспектор об'єктів"
 
 #: lr_const.sfrdesignerform_line
 msgid "Line style"
@@ -1308,7 +1308,7 @@ msgstr "Параметри с&торінки ..."
 
 #: lr_const.sfrdesignerform_preview
 msgid "Pre&view"
-msgstr "П&опередній Перегляд"
+msgstr "П&опередній перегляд"
 
 #: lr_const.sfrdesignerform_rect
 msgid "&Rectangle"
@@ -1608,7 +1608,7 @@ msgstr "Не заданий коректний клас фільтра"
 
 #: lr_const.sobjectinspector
 msgid "Object inspector"
-msgstr "Інспектор Об'єктів"
+msgstr "Інспектор об'єктів"
 
 #: lr_const.sobjectnotfound
 msgid "Object \"%s\" not found"
@@ -1745,7 +1745,7 @@ msgstr "Folio, 8 1/2 x 13\""
 
 #: lr_const.spaper15
 msgid "Quarto Sheet, 215 x 275 mm"
-msgstr "Чверть Аркуша, 215 x 275 мм"
+msgstr "Чверть аркуша, 215 x 275 мм"
 
 #: lr_const.spaper16
 msgid "10 x 14\""
@@ -1769,27 +1769,27 @@ msgstr "Letter малий, 8 1/2 x 11\""
 
 #: lr_const.spaper20
 msgid "#10 Envelope, 4 1/8  x 9 1/2\""
-msgstr "#10 Конверт, 4 1/8  x 9 1/2\""
+msgstr "Конверт #10, 4 1/8  x 9 1/2\""
 
 #: lr_const.spaper21
 msgid "#11 Envelope, 4 1/2 x 10 3/8\""
-msgstr "#11 Конверт, 4 1/2 x 10 3/8\""
+msgstr "Конверт #11, 4 1/2 x 10 3/8\""
 
 #: lr_const.spaper22
 msgid "#12 Envelope, 4 3/4 x 11\""
-msgstr "#12 Конверт, 4 3/4 x 11\""
+msgstr "Конверт #12, 4 3/4 x 11\""
 
 #: lr_const.spaper23
 msgid "#14 Envelope, 5 x 11 1/2\""
-msgstr "#14 Конверт, 5 x 11 1/2\""
+msgstr "Конверт #14, 5 x 11 1/2\""
 
 #: lr_const.spaper24
 msgid "C Sheet, 17 x 22\""
-msgstr "C Аркуш, 17 x 22\""
+msgstr "Аркуш C, 17 x 22\""
 
 #: lr_const.spaper25
 msgid "D Sheet, 22 x 34\""
-msgstr "D Аркуш, 22 x 34\""
+msgstr "Аркуш D, 22 x 34\""
 
 #: lr_const.spaper256
 msgctxt "lr_const.spaper256"
@@ -1798,19 +1798,19 @@ msgstr "Користувацький"
 
 #: lr_const.spaper26
 msgid "E Sheet, 34 x 44\""
-msgstr "E Аркуш, 34 x 44\""
+msgstr "Аркуш E, 34 x 44\""
 
 #: lr_const.spaper27
 msgid "DL Envelope, 110 x 220 mm"
-msgstr "DL Конверт, 110 x 220 мм"
+msgstr "Конверт DL, 110 x 220 мм"
 
 #: lr_const.spaper28
 msgid "C5 Envelope, 162 x 229 mm"
-msgstr "C5 Конверт, 162 x 229 мм"
+msgstr "Конверт C5, 162 x 229 мм"
 
 #: lr_const.spaper29
 msgid "C3 Envelope,  324 x 458 mm"
-msgstr "C3 Конверт,  324 x 458 мм"
+msgstr "Конверт C3,  324 x 458 мм"
 
 #: lr_const.spaper3
 msgid "Tabloid, 11 x 17\""
@@ -1818,39 +1818,39 @@ msgstr "Tabloid, 11 x 17\""
 
 #: lr_const.spaper30
 msgid "C4 Envelope,  229 x 324 mm"
-msgstr "C4 Конверт,  229 x 324 мм"
+msgstr "Конверт C4,  229 x 324 мм"
 
 #: lr_const.spaper31
 msgid "C6 Envelope,  114 x 162 mm"
-msgstr "C6 Конверт,  114 x 162 мм"
+msgstr "Конверт C6,  114 x 162 мм"
 
 #: lr_const.spaper32
 msgid "C65 Envelope, 114 x 229 mm"
-msgstr "C65 Конверт, 114 x 229 мм"
+msgstr "Конверт C65, 114 x 229 мм"
 
 #: lr_const.spaper33
 msgid "B4 Envelope,  250 x 353 mm"
-msgstr "B4 Конверт,  250 x 353 мм"
+msgstr "Конверт B4,  250 x 353 мм"
 
 #: lr_const.spaper34
 msgid "B5 Envelope,  176 x 250 mm"
-msgstr "B5 Конверт,  176 x 250 мм"
+msgstr "Конверт B5,  176 x 250 мм"
 
 #: lr_const.spaper35
 msgid "B6 Envelope,  176 x 125 mm"
-msgstr "B6 Конверт,  176 x 125 мм"
+msgstr "Конверт B6,  176 x 125 мм"
 
 #: lr_const.spaper36
 msgid "Italy Envelope, 110 x 230 mm"
-msgstr "Італійський Конверт, 110 x 230 мм"
+msgstr "Італійський конверт, 110 x 230 мм"
 
 #: lr_const.spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
-msgstr "Monarch Конверт, 3 7/8 x 7 1/2\""
+msgstr "Конверт Monarch, 3 7/8 x 7 1/2\""
 
 #: lr_const.spaper38
 msgid "6 3/4 Envelope, 3 5/8 x 6 1/2\""
-msgstr "6 3/4 Конверт, 3 5/8 x 6 1/2\""
+msgstr "Конверт 6 3/4, 3 5/8 x 6 1/2\""
 
 #: lr_const.spaper39
 msgid "US Std Fanfold, 14 7/8 x 11\""
@@ -1874,7 +1874,7 @@ msgstr "B4 (ISO) 250 x 353 мм"
 
 #: lr_const.spaper43
 msgid "Japanese Postcard 100 x 148 mm"
-msgstr "Японська Листівка 100 x 148 мм"
+msgstr "Японська листівка 100 x 148 мм"
 
 #: lr_const.spaper44
 msgid "9 x 11\""
@@ -1890,7 +1890,7 @@ msgstr "15 x 11\""
 
 #: lr_const.spaper47
 msgid "Envelope Invite 220 x 220 mm"
-msgstr "Конверт Запрошення 220 x 220 мм"
+msgstr "Конверт запрошення 220 x 220 мм"
 
 #: lr_const.spaper5
 msgid "Legal, 8 1/2 x 14\""
@@ -1914,15 +1914,15 @@ msgstr "A4 Екстра 9.27 x 12.69\""
 
 #: lr_const.spaper54
 msgid "Letter Transverse 8/275 x 11\""
-msgstr "Letter Поперечний 8/275 x 11\""
+msgstr "Letter поперечний 8/275 x 11\""
 
 #: lr_const.spaper55
 msgid "A4 Transverse 210 x 297 mm"
-msgstr "A4 Поперечний 210 x 297 мм"
+msgstr "A4 поперечний 210 x 297 мм"
 
 #: lr_const.spaper56
 msgid "Letter Extra Transverse 9/275 x 12\""
-msgstr "Letter Екстра Поперечний 9/275 x 12\""
+msgstr "Letter Екстра поперечний 9/275 x 12\""
 
 #: lr_const.spaper57
 msgid "SuperASuperAA4 227 x 356 mm"
@@ -1946,11 +1946,11 @@ msgstr "A4 Плюс 210 x 330 мм"
 
 #: lr_const.spaper61
 msgid "A5 Transverse 148 x 210 mm"
-msgstr "A5 Поперечний 148 x 210 мм"
+msgstr "A5 поперечний 148 x 210 мм"
 
 #: lr_const.spaper62
 msgid "B5 (JIS) Transverse 182 x 257 mm"
-msgstr "B5 (JIS) Поперечний 182 x 257 мм"
+msgstr "B5 (JIS) поперечний 182 x 257 мм"
 
 #: lr_const.spaper63
 msgid "A3 Extra 322 x 445 mm"
@@ -1970,15 +1970,15 @@ msgstr "A2 420 x 594 мм"
 
 #: lr_const.spaper67
 msgid "A3 Transverse 297 x 420 mm"
-msgstr "A3 Поперечний 297 x 420 мм"
+msgstr "A3 поперечний 297 x 420 мм"
 
 #: lr_const.spaper68
 msgid "A3 Extra Transverse 322 x 445 mm"
-msgstr "A3 Екстра Поперечний 322 x 445 мм"
+msgstr "A3 Екстра поперечний 322 x 445 мм"
 
 #: lr_const.spaper69
 msgid "Double Japanese Postcard 200 x 148 mm"
-msgstr "Подвійна Японська Листівка 200 x 148 мм"
+msgstr "Подвійна японська листівка 200 x 148 мм"
 
 #: lr_const.spaper7
 msgid "Executive, 7 1/4 x 10 1/2\""
@@ -2122,11 +2122,11 @@ msgstr "&Нижнє, мм"
 
 #: lr_const.spgoptformbycolumns
 msgid "By Colum&ns"
-msgstr "По С&товпцях"
+msgstr "За с&товпцями"
 
 #: lr_const.spgoptformbyrows
 msgid "By Row&s"
-msgstr "По &Рядках"
+msgstr "За &рядками"
 
 #: lr_const.spgoptformcapt
 msgctxt "lr_const.spgoptformcapt"

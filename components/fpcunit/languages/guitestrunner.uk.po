@@ -1,10 +1,10 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-11-14 01:13+0200\n"
+"PO-Revision-Date: 2017-07-28 01:22+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -83,7 +83,7 @@ msgstr "Вийти"
 
 #: guitestrunner.sactcloseformh
 msgid "Quit testing"
-msgstr "Завершити тестування"
+msgstr "Закінчити тестування"
 
 #: guitestrunner.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
@@ -104,7 +104,7 @@ msgstr "Запустити всі позначені тести"
 #: guitestrunner.sactrunhighlightedtest
 msgctxt "guitestrunner.sactrunhighlightedtest"
 msgid "Run selected"
-msgstr "Запустити вибраний тест"
+msgstr "Запустити вибраний"
 
 #: guitestrunner.sactrunhighlightedtesth
 msgid "Run selected test"
@@ -120,11 +120,11 @@ msgstr "Зберегти XML-результати до файлу"
 
 #: guitestrunner.sactuncheckall
 msgid "Deselect all tests"
-msgstr "Зняти позначки з усіх тестів"
+msgstr "Зняти вибір з усіх тестів"
 
 #: guitestrunner.sactuncheckcurrentsuite
 msgid "Deselect current suite"
-msgstr "Зняти позначки з поточного набору"
+msgstr "Зняти вибір з поточного набору"
 
 #: guitestrunner.sbtnclose
 msgid "Close"

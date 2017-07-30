@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-29 02:11+0300\n"
+"PO-Revision-Date: 2017-07-28 01:26+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -520,7 +520,7 @@ msgstr "Виберіть каталог"
 
 #: lclstrconsts.rsfileinfofilenotfound
 msgid "(file not found: \"%s\")"
-msgstr "(файл не знайдений: \"%s\")"
+msgstr "(файл не знайдено: \"%s\")"
 
 #: lclstrconsts.rsfileinformation
 msgid "File information"
@@ -573,11 +573,11 @@ msgstr "Фуксія"
 
 #: lclstrconsts.rsgdkoptiondebug
 msgid "--gdk-debug flags     Turn on specific GDK trace/debug messages."
-msgstr "--gdk-debug flags     Ввімкнути вказані налагоджувальні повідомлення GDK."
+msgstr "--gdk-debug flags     Ввімкнути вказані зневаджувальні повідомлення GDK."
 
 #: lclstrconsts.rsgdkoptionnodebug
 msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
-msgstr "--gdk-no-debug flags Вимкнути вказані налагоджувальні повідомлення GDK."
+msgstr "--gdk-no-debug flags Вимкнути вказані зневаджувальні повідомлення GDK."
 
 #: lclstrconsts.rsgif
 msgid "Graphics Interchange Format"
@@ -645,7 +645,7 @@ msgstr "--class classname     Відповідно до домовленосте
 
 #: lclstrconsts.rsgtkoptiondebug
 msgid "--gtk-debug flags     Turn on specific Gtk+ trace/debug messages."
-msgstr "--gtk-debug flags     Ввімкнути вказані налагоджувальні повідомлення Gtk+."
+msgstr "--gtk-debug flags     Ввімкнути вказані зневаджувальні повідомлення Gtk+."
 
 #: lclstrconsts.rsgtkoptiondisplay
 msgid "--display h:s:d       Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
@@ -661,7 +661,7 @@ msgstr "--name ім'япрог       Встановити ім'я програм
 
 #: lclstrconsts.rsgtkoptionnodebug
 msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
-msgstr "--gtk-no-debug flags  Вимкнути вказані налагоджувальні повідомлення Gtk+."
+msgstr "--gtk-no-debug flags  Вимкнути вказані зневаджувальні повідомлення Gtk+."
 
 #: lclstrconsts.rsgtkoptionnotransient
 msgid "--lcl-no-transient    Do not set transient order for modal forms"
@@ -673,7 +673,7 @@ msgstr "--no-xshm             Заборонити використання сп
 
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
-msgstr "--sync                Виклик XSynchronize (display, True) після встановлення з'єднання з X-сервером. Це полегшує налагодження помилок протоколу X через те, що запити буферування X будуть вимкнені і помилки X будуть одержані одразу після запиту протоколу, який викликав цю помилку, яка була оброблена X-сервером."
+msgstr "--sync                Виклик XSynchronize (display, True) після встановлення з'єднання з X-сервером. Це полегшує зневадження помилок протоколу X через те, що запити буферування X будуть вимкнені і помилки X будуть одержані одразу після запиту протоколу, який викликав цю помилку, яка була оброблена X-сервером."
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
@@ -713,7 +713,7 @@ msgstr "Довідку щодо директиви \"%s\" не знайдено.
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "Довідку щодо директиви \"%s\" не знайдено в Базі \"%s\"."
+msgstr "Довідку щодо директиви \"%s\" не знайдено в базі \"%s\"."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword \"%s\" not found."
@@ -840,15 +840,15 @@ msgstr "Вставка"
 
 #: lclstrconsts.rsinvaliddate
 msgid "Invalid Date : %s"
-msgstr "Неправильна Дата : %s"
+msgstr "Неправильна дата : %s"
 
 #: lclstrconsts.rsinvaliddaterangehint
 msgid "Invalid Date: %s. Must be between %s and %s"
-msgstr "Неправильна Дата: %s. Має бути між %s та %s"
+msgstr "Неправильна дата: %s. Має бути між %s та %s"
 
 #: lclstrconsts.rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr "неправильний потік об'єкту Форми"
+msgstr "неправильний потік об'єкта Форми"
 
 #: lclstrconsts.rsinvalidpropertyvalue
 msgid "Invalid property value"
@@ -1097,15 +1097,15 @@ msgstr "-style style або -style=style, задає стиль ГІК прог�
 
 #: lclstrconsts.rsqtoptionstylesheet
 msgid "-stylesheet stylesheet or -stylesheet=stylesheet, sets the application Style Sheet. The value must be a path to a file that contains the Style Sheet. Note: Relative URLs in the Style Sheet file are relative to the Style Sheet file's path."
-msgstr "-stylesheet stylesheet або -stylesheet=stylesheet, задає програмі Список Стилів. Значення повинне бути шляхом до файлу що містить Список Стилів. Note: Відносні URLs в файлі Списку Стилів сприймаються відносно шляху до файлу Списку Стилів."
+msgstr "-stylesheet stylesheet або -stylesheet=stylesheet, задає програмі список стилів. Значення повинне бути шляхом до файлу що містить список стилів. Note: Відносні URL у файлі списку стилів сприймаються відносно шляху до файлу списку стилів."
 
 #: lclstrconsts.rsqtoptionsync
 msgid "-sync (only under X11), switches to synchronous mode for debugging."
-msgstr "-sync (лише під X11), перемикає в снхронний режим налагодження."
+msgstr "-sync (лише під X11), перемикає в синхронний режим зневадження."
 
 #: lclstrconsts.rsqtoptionwidgetcount
 msgid "-widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
-msgstr "-widgetcount, друкує налагоджувальне повідомлення в кінці про кількість незнищених віджетів та максимальну кількість віджетів, що існували в той же час."
+msgstr "-widgetcount, друкує зневаджувальне повідомлення в кінці про кількість не знищених віджетів та максимальну кількість віджетів, що існували в той же час."
 
 #: lclstrconsts.rsqtoptionx11bgcolor
 msgid "-bg or -background color, sets the default background color and an application palette (light and dark shades are calculated)."

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-05 01:38+0300\n"
+"PO-Revision-Date: 2017-07-28 01:22+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -147,7 +147,7 @@ msgstr "константа"
 
 #: codetoolsstrconsts.ctsconverterdirectory
 msgid "Converter Directory"
-msgstr "Тека Конвертера"
+msgstr "Тека конвертера"
 
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
@@ -581,7 +581,7 @@ msgstr "Підпис методу %s не знайдено у класі"
 
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
-msgstr "не знайдений опис типу методу"
+msgstr "не знайдено опис типу методу"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
@@ -621,7 +621,7 @@ msgstr "не знайдене тіло нової процедури"
 
 #: codetoolsstrconsts.ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
-msgstr "не знайдений контекстний елемент біля курсору"
+msgstr "не знайдено контекстний елемент біля курсору"
 
 #: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
@@ -629,7 +629,7 @@ msgstr "модифікатор nodefault визначено двічі"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
-msgstr "не знайдений код паскаля (перший елемент - %s)"
+msgstr "не знайдено код Паскалю (перший елемент - %s)"
 
 #: codetoolsstrconsts.ctsnoscanneravailable
 msgid "No scanner available"
