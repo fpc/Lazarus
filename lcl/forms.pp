@@ -896,6 +896,7 @@ type
     procedure SetColor(Value: TColor); override;
     function UseBGThemes: Boolean;
     function UseFGThemes: Boolean;
+    procedure Paint; override;
   private class var
     FSysHintFont: TFont;
   protected
@@ -917,7 +918,6 @@ type
     procedure InitializeWnd; override;
     function IsHintMsg(Msg: TMsg): Boolean; virtual;
     procedure ReleaseHandle;
-    procedure Paint; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     class function GetControlClassDefaultSize: TSize; override;
   public
