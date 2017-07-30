@@ -1112,7 +1112,7 @@ procedure TSynGutterLOvProviderModifiedLines.BufferChanged(Sender: TObject);
 begin
   TSynEditStringList(Sender).RemoveHanlders(self);
   TSynEditStringList(TextBuffer).AddModifiedHandler(senrLinesModified, @LineModified);
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
 end;
 
 procedure TSynGutterLOvProviderModifiedLines.LineModified(Sender: TSynEditStrings; aIndex,
@@ -1145,7 +1145,7 @@ constructor TSynGutterLOvProviderModifiedLines.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   TSynEditStringList(TextBuffer).AddModifiedHandler(senrLinesModified, @LineModified);
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
   TCustomSynEdit(SynEdit).RegisterStatusChangedHandler(@SynStatusChanged, [scModified]);
   FFirstTextLineChanged := -1;
   FLastTextLineChanged := -1;
@@ -1257,8 +1257,8 @@ var
   i: Integer;
 begin
   TSynEditStringList(Sender).RemoveHanlders(self);
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanging, TMethod(@BufferChanging));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanging, @BufferChanging);
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
   TCustomSynEdit(SynEdit).Marks.RegisterChangeHandler(@DoMarkChange,
     [smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged]);
 
@@ -1278,8 +1278,8 @@ var
 begin
   inherited Create(AOwner);
   Color := clBlue;
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanging, TMethod(@BufferChanging));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanging, @BufferChanging);
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
 
   TCustomSynEdit(SynEdit).Marks.RegisterChangeHandler(@DoMarkChange,
     [smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged]);
@@ -1316,8 +1316,8 @@ end;
 procedure TSynGutterLineOverview.Init;
 begin
   inherited Init;
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod(@LineCountChanged));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
+  TSynEditStringList(TextBuffer).AddChangeHandler(senrLineCount, @LineCountChanged);
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
   FWinControl := TSynChildWinControl.Create(Self);
   FWinControl.Parent := SynEdit;
   FWinControl.DoubleBuffered := SynEdit.DoubleBuffered;
@@ -1353,8 +1353,8 @@ end;
 procedure TSynGutterLineOverview.BufferChanged(Sender: TObject);
 begin
   TSynEditStringList(Sender).RemoveHanlders(self);
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod(@LineCountChanged));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod(@BufferChanged));
+  TSynEditStringList(TextBuffer).AddChangeHandler(senrLineCount, @LineCountChanged);
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
   LineCountChanged(nil, 0, 0);
 end;
 
