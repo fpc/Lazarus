@@ -48,7 +48,7 @@ type
 {$ELSE}
     FFormImages: TList;
 {$ENDIF}
-  protected
+  //protected
     procedure WndMethod(var TheMessage: TLMessage);
 
     procedure SetPopupParent(AVal: TSourceEditorWindowInterface);
@@ -103,7 +103,7 @@ type
   private
     FActiveDesignFormData: TDesignFormData;
   private
-    FWndMethod: TWndMethod;
+    //FWndMethod: TWndMethod;
     FForm: TSourceEditorWindowInterface;
 {$IFDEF USE_GENERICS_COLLECTIONS}
     FPageCtrlList: TDictionary<TSourceEditorInterface, TModulePageControl>;
@@ -113,8 +113,8 @@ type
     FLastTopParent: TControl;
 
     procedure SetActiveDesignFormData(const AValue: TDesignFormData);
-  protected
-    procedure WndMethod(var TheMessage: TLMessage);
+  //protected
+    //procedure WndMethod(var TheMessage: TLMessage);
     procedure OnChangeBounds(Sender: TObject);
     procedure AddPageCtrl(ASrcEditor: TSourceEditorInterface; APage: TModulePageControl);
     procedure RemovePageCtrl(ASrcEditor: TSourceEditorInterface);
@@ -701,16 +701,16 @@ begin
   // for USE_POPUP_PARENT_DESIGNER to eliminate form over code  << maybe not needed any more since USE_POPUP_PARENT_DESIGNER isn't supported any more
   LPageCtrl.OnChange(LPageCtrl);
 end;
-
+{
 procedure TSourceEditorWindowData.WndMethod(var TheMessage: TLMessage);
 begin
   FWndMethod(TheMessage);
 end;
-
+}
 constructor TSourceEditorWindowData.Create(AForm: TSourceEditorWindowInterface);
 begin
-  FWndMethod := AForm.WindowProc;
-  AForm.WindowProc := WndMethod;
+  //FWndMethod := AForm.WindowProc;
+  //AForm.WindowProc := WndMethod;
   FForm := AForm;
 {$IFDEF USE_GENERICS_COLLECTIONS}
   FPageCtrlList := TDictionary<TSourceEditorInterface, TModulePageControl>.Create;
@@ -721,7 +721,7 @@ end;
 
 destructor TSourceEditorWindowData.Destroy;
 begin
-  FForm.WindowProc := FWndMethod;
+  //FForm.WindowProc := FWndMethod;
   FPageCtrlList.Free;
   inherited Destroy;
 end;
