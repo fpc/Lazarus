@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-07-21 20:05+0300\n"
+"PO-Revision-Date: 2017-07-28 01:22+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -434,7 +434,7 @@ msgstr "Файл доступний для запису"
 
 #: jcfuiconsts.lisfrfilesfilenotfound
 msgid "File not found"
-msgstr "Файл не знайдений"
+msgstr "Файл не знайдено"
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"

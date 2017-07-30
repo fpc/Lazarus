@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-07-21 20:01+0300\n"
+"PO-Revision-Date: 2017-07-28 01:22+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -763,7 +763,7 @@ msgstr "Перевіряю параметри компілятора"
 
 #: lazarusidestrconsts.dlgccoorphanedfilefound
 msgid "orphaned file found: %s"
-msgstr "втрачений файл знайдений: %s"
+msgstr "знайдено втрачений файл: %s"
 
 #: lazarusidestrconsts.dlgccoresults
 msgid "Results"
@@ -3555,7 +3555,7 @@ msgstr "Ключове слово Static в об'єктах"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"
-msgstr "Завершити після купи помилок"
+msgstr "Завершити після стількох помилок:"
 
 #: lazarusidestrconsts.dlgstringautoappend
 msgid "Append text to close string"
@@ -5159,7 +5159,7 @@ msgstr "ppu наявний двічі: %s, %s"
 
 #: lazarusidestrconsts.lisccoppunotfounddetailed
 msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
-msgstr "Зібраний модуль FPC %s.ppu не знайдений.%sЦе зазвичай означає, що ваш fpc.cfg має помилку. Або встановлення вашого FPC зламане."
+msgstr "Зібраний модуль FPC %s.ppu не знайдено.%sЦе зазвичай означає, що ваш fpc.cfg має помилку. Або встановлення вашого FPC зламане."
 
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
@@ -9240,7 +9240,7 @@ msgstr "Стиль назви файлу"
 
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
-msgstr "Файл не знайдений"
+msgstr "Файл не знайдено"
 
 #: lazarusidestrconsts.lisfilenotfound2
 msgctxt "lazarusidestrconsts.lisfilenotfound2"
@@ -9894,7 +9894,7 @@ msgstr "Під час встановлення/видалення пакункі
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
-msgstr "Ласкаво просимо до Lazarus.%0:sЗнайдені налаштування ІСР використовувались іншим примірником Lazarus.%0:sДва або більше примірників Lazarus не повинні мати спільну конфігурацію. Це може спричинити конфлікти і неможливість використання Lazarus.%0:s%0:sЯкщо ви маєте лише один примірник і скопіювали або перемістили виконуваний файл Lazarus, налаштування можна оновити.%0:s%1:s%0:s%0:sВиберіть:%0:s%0:s* Оновити дані: Використовувати цю конфігурацію і оновити її для подальшого використання. Старий примірник Lazarus більше не буде її використовувати.%0:s* Знехтувати: Використовувати цю конфігурацію, але попереджувати надалі. Це може спричинити конфлікти з іншими примірниками Lazarus.%0:s* Перервати: Завершити роботу. Проблему можна буде виправити, запустивши Lazarus з правильною конфігурацією.%0:s%0:sДодаткова інформація:%0:sЦя конфігурація знаходиться у: %2:s%0:sВона належить примірнику Lazarus у: %3:s%0:sПоточний примірник ІСР запущено з: %4:s%0:s"
+msgstr "Ласкаво просимо до Lazarus.%0:sЗнайдені налаштування ІСР використовувались іншим примірником Lazarus.%0:sДва або більше примірників Lazarus не повинні мати спільну конфігурацію. Це може спричинити конфлікти і неможливість використання Lazarus.%0:s%0:sЯкщо ви маєте лише один примірник і скопіювали або перемістили виконуваний файл Lazarus, налаштування можна оновити.%0:s%1:s%0:s%0:sВиберіть:%0:s%0:s* Оновити дані: Використовувати цю конфігурацію і оновити її для подальшого використання. Старий примірник Lazarus більше не буде її використовувати.%0:s* Знехтувати: Використовувати цю конфігурацію, але попереджувати надалі. Це може спричинити конфлікти з іншими примірниками Lazarus.%0:s* Перервати: Закінчити роботу. Проблему можна буде виправити, запустивши Lazarus з правильною конфігурацією.%0:s%0:sДодаткова інформація:%0:sЦя конфігурація знаходиться у: %2:s%0:sВона належить примірнику Lazarus у: %3:s%0:sПоточний примірник ІСР запущено з: %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
@@ -10966,7 +10966,7 @@ msgstr "Встановити закладку 9"
 
 #: lazarusidestrconsts.liskmstopprogram
 msgid "Stop Program"
-msgstr "Завершити програму"
+msgstr "Зупинити програму"
 
 #: lazarusidestrconsts.liskmtogglebetweenunitandform
 msgid "Toggle between Unit and Form"
@@ -11568,7 +11568,7 @@ msgstr "Створити виконуваний"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
-msgstr "Make не знайдений"
+msgstr "Make не знайдено"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -15187,7 +15187,7 @@ msgstr "Назва файлу \"%s\"використовується%sпакун
 
 #: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
 msgid "The file \"%s\" of package %s was not found."
-msgstr "Файл \"%s\" пакунка %s не знайдений."
+msgstr "Файл \"%s\" пакунка %s не знайдено."
 
 #: lazarusidestrconsts.lispkgmangthefollowingpackagefailedtoload
 msgid "The following package failed to load:"
@@ -15399,7 +15399,7 @@ msgstr "%s%slpk файл: \"%s\""
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
-msgstr "Файл пакунка не знайдений"
+msgstr "Файл пакунка не знайдено"
 
 #: lazarusidestrconsts.lispkgsyspackageregistrationerror
 msgid "Package registration error"
@@ -15435,7 +15435,7 @@ msgstr "%s%sНазва модуля: \"%s\""
 
 #: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
 msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
-msgstr "Модуль \"%s\" не знайдений у lpk файлі.%sНапевне цей lpk файл не був використаний для збирання цього ІСР. Або пакунок зловживає процедурою RegisterUnit."
+msgstr "Модуль \"%s\" не знайдено в lpk файлі.%sНапевне цей lpk файл не був використаний для збирання цього ІСР. Або пакунок зловживає процедурою RegisterUnit."
 
 #: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
 msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
@@ -15698,7 +15698,7 @@ msgstr "Назва пакунка:"
 
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
-msgstr "Пакунок не знайдений"
+msgstr "Пакунок не знайдено"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
@@ -17128,19 +17128,19 @@ msgstr "Рядок стану показує назву властивості �
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
 msgid "Stop"
-msgstr "Завершити"
+msgstr "Закінчити"
 
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
-msgstr "Завершити зневаджування і перебудувати проект?"
+msgstr "Закінчити зневаджування і перебудувати проект?"
 
 #: lazarusidestrconsts.lisstopdebugging
 msgid "Stop Debugging?"
-msgstr "Завершити зневадження?"
+msgstr "Закінчити зневаджування?"
 
 #: lazarusidestrconsts.lisstopdebugging2
 msgid "Stop debugging?"
-msgstr "Завершити зневаджування?"
+msgstr "Закінчити зневаджування?"
 
 #: lazarusidestrconsts.lisstoponexception
 msgid "Stop on exception"
@@ -17148,7 +17148,7 @@ msgstr "Зупинитись на винятку"
 
 #: lazarusidestrconsts.lisstopthedebugging
 msgid "Stop the debugging?"
-msgstr "Завершити зневаджування?"
+msgstr "Закінчити зневаджування?"
 
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
@@ -17494,7 +17494,7 @@ msgstr "Схоже, що файл %s є програмним в існуючом
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
-msgstr "Файл \"%s\"%sзнайдений в одному з каталогів сирцевого коду пакунка %s, і він виглядає як скомпільований модуль. Такі модулі повинні бути у вихідній теці пакунка, інакше інші пакунки можуть мати проблеми з використанням цього пакунка.%sВидалити невизначений файл?"
+msgstr "Файл \"%s\"%sзнайдено в одному з каталогів сирцевого коду пакунка %s, і він виглядає як скомпільований модуль. Такі модулі повинні бути у вихідній теці пакунка, інакше інші пакунки можуть мати проблеми з використанням цього пакунка.%sВидалити невизначений файл?"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
@@ -17670,7 +17670,7 @@ msgstr "Проект треба зберегти перед компіляціє
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
-msgstr "Проект використовує цільову ОС=%s та ЦП=%s.%ssystem.ppu для цієї цілі не був знайдений у теках бінарників. %sПереконайтесь, що fpc для цієї цілі встановлений правильно і в fpc.cfg вказано правильні теки."
+msgstr "Проект використовує цільову ОС=%s та ЦП=%s.%ssystem.ppu для цієї цілі не було знайдено у теках бінарників. %sПереконайтесь, що fpc для цієї цілі встановлено правильно і в fpc.cfg вказано правильні теки."
 
 #: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
@@ -17818,7 +17818,7 @@ msgstr "Назва файлу модуля \"%s\" - не в нижньому р�
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
 msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr "Модуль %s є частиною джерел FPC, але відповідний fpdoc xml файл не був знайдений.%sАбо ви ще не додали теку fpcdocs до пошукового шляху або модуль ще не документований.%sФайли fpdoc файли для джерел FPC можуть бути завантажені з: %s%sДодайте теку в опціях редактора fpdoc.%sЩоб створити новий файл, каталог має бути перезаписуваним."
+msgstr "Модуль %s є частиною джерел FPC, але відповідний fpdoc xml файл не було знайдено.%sАбо ви ще не додали теку fpcdocs до пошукового шляху або модуль ще не документований.%sФайли fpdoc файли для джерел FPC можуть бути завантажені з: %s%sДодайте теку в опціях редактора fpdoc.%sЩоб створити новий файл, каталог має бути перезаписуваним."
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"

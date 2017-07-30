@@ -1,7 +1,7 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-03-29 01:41+0300\n"
+"PO-Revision-Date: 2017-07-28 01:26+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,32 +19,32 @@ msgstr "Зневаджувач"
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
 msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "Налагоджувач зазнав помилки при спробі запуску/проходу програми:%0:s%0:s%1:s%0:s%0:sНатисніть \"Гаразд\", щоб видалити точки зупинки і продовжити налагодження (пауза), і виправити проблему, або виберіть альтернативну команду запуску.%0:sНатисніть \"Стоп\" для завершення сеансу налагодження."
+msgstr "Зневаджувач зазнав помилки при спробі запуску/проходу програми:%0:s%0:s%1:s%0:s%0:sНатисніть \"Гаразд\", щоб видалити точки зупинки і продовжити зневаджування (пауза), і виправити проблему, або виберіть альтернативну команду запуску.%0:sНатисніть \"Закінчити\" для закінчення сеансу зневаджування."
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
-msgstr "Налагоджувач не може встановити точку зупинки в точку входу додатку.%0:sЦе може бути викликано відсутністю налагоджувальної інформації."
+msgstr "Зневаджувач не може встановити точку зупинки в точку входу додатку.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunerror"
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
-msgstr "Налагоджувач не може запустити додаток.%0:sЦе може бути викликано відсутністю налагоджувальної інформації."
+msgstr "Зневаджувач не може запустити додаток.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunnopiderror"
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
-msgstr "Налагоджувач не зміг отримати PID додатку.%0:sЦе може бути викликано відсутністю налагоджувальної інформації."
+msgstr "Зневаджувач не зміг отримати PID додатку.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
 msgctxt "gdbmistringconstants.gdbmicommandstartmainruntostoperror"
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
-msgstr "Налагоджувач не зміг себе ініціалізувати.%0:sЗастосунок запустився (і завершився) перш ніж налагоджувач міг встановити точки зупинки. %0:sЦе може бути викликано відсутністю налагоджувальної інформації."
+msgstr "Зневаджувач не зміг себе ініціалізувати.%0:sЗастосунок запустився (і завершився) перш ніж зневаджувач міг встановити точки зупинки. %0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmierroronruncommand
 msgctxt "gdbmistringconstants.gdbmierroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "Налагоджувач зазнав помилки при спробі запуску/проходу програми:%0:s%0:s%1:s%0:s%0:sНатисніть \"Гаразд\" щоб продовжити налагодження (пауза), і виправити проблему, або виберіть альтернативну команду запуску.%0:sНатисніть \"Стоп\" для завершення сеансу налагодження."
+msgstr "Зневаджувач зазнав помилки при спробі запуску/проходу програми:%0:s%0:s%1:s%0:s%0:sНатисніть \"Гаразд\" щоб продовжити зневаджування (пауза), і виправити проблему, або виберіть альтернативну команду запуску.%0:sНатисніть \"Закінчити\" для закінчення сеансу зневаджування."
 
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
 msgctxt "gdbmistringconstants.gdbmierroronruncommandwithwarning"
@@ -94,7 +94,7 @@ msgstr "GDB зазнав внутрішньої помилки: %s"
 #: gdbmistringconstants.gdbmieventlognosymbols
 msgctxt "gdbmistringconstants.gdbmieventlognosymbols"
 msgid "File '%s' has no debug symbols"
-msgstr "Файл '%s' не має налагоджувальних символів"
+msgstr "Файл '%s' не має зневаджувальних символів"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitcode
 msgctxt "gdbmistringconstants.gdbmieventlogprocessexitcode"
@@ -133,7 +133,7 @@ msgstr "Критична помилка: \"%s\""
 #: gdbmistringconstants.gdbmigdbinternalerror
 msgctxt "gdbmistringconstants.gdbmigdbinternalerror"
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
-msgstr "В GDB трапилась внутрішня помилка: %0:sНатисніть \"Гаразд\", щоб продовжити зневадження. Це може бути НЕБЕЗПЕЧНО.%0:sНатисніть \"Зупинити\" для припинення сеансу зневадження."
+msgstr "В GDB трапилась внутрішня помилка: %0:sНатисніть \"Гаразд\", щоб продовжити зневаджування. Це може бути НЕБЕЗПЕЧНО.%0:sНатисніть \"Закінчити\" для припинення сеансу зневаджування."
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
 msgctxt "gdbmistringconstants.gdbmigdbinternalerrorinfo"
@@ -143,7 +143,7 @@ msgstr "Під час виконання команди: %0:s\"%2:s\"%0:sgdb п�
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
 msgctxt "gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres"
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
-msgstr "Натисніть кнопку \"Пропустити\" щоб продовжити налагодження. Це може бути небезпечно. Натисніть кнопку \"Скасувати\", щоб зупинити відладчик.%0:sВиняток: %1:s з повідомленням \"%2:s\"%0:sКонтекст: %4:s. Стан: %5:s %0:s%0:s%3:s"
+msgstr "Натисніть кнопку \"Пропустити\" щоб продовжити зневаджування. Це може бути небезпечно. Натисніть кнопку \"Скасувати\", щоб зупинити відладчик.%0:sВиняток: %1:s з повідомленням \"%2:s\"%0:sКонтекст: %4:s. Стан: %5:s %0:s%0:s%3:s"
 
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgctxt "gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition"
@@ -158,7 +158,7 @@ msgstr "Таймаут для команди: \"%s\""
 #: gdbmistringconstants.gdbmiwarningunknowbreakpoint
 msgctxt "gdbmistringconstants.gdbmiwarningunknowbreakpoint"
 msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
-msgstr "Налагоджувач досяг несподіваного %1:s%0:s%0:sНатисніть \"Гаразд\", щоб продовжити налагодження (пауза).%0:sНатисніть \"Стоп\" для завершення сеансу налагодження."
+msgstr "Зневаджувач досяг несподіваного %1:s%0:s%0:sНатисніть \"Гаразд\", щоб продовжити зневаджування (пауза).%0:sНатисніть \"Закінчити\" для закінчення сеансу зневаджування."
 
 #: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
