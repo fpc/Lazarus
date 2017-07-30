@@ -1947,7 +1947,7 @@ resourcestring
   dlgPasStringKeywordsOptDefault = 'Default';
   dlgPasStringKeywordsOptString = 'Only "String"';
   dlgPasStringKeywordsOptNone = 'None';
-  dlgMarkupWordFullLen = 'Match word boundaries for words up to this length:';
+  dlgMarkupWordFullLen = 'Match whole words, if length is less or equal to:';
   dlgMarkupWordNoKeyword = 'Ignore keywords';
   dlgMarkupWordTrim = 'Trim spaces (when highlighting current selection)';
   dlgMarkupWordNoTimer = 'Disable timer for markup current word';

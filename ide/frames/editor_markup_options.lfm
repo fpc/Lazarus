@@ -142,6 +142,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     Width = 48
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
+    MaxValue = 300
     TabOrder = 2
   end
   object MarkupWordNoTimerCheckBox: TCheckBox
