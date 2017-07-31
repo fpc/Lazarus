@@ -50,7 +50,6 @@ type
 {$ELSE}
     FFormImages: TList;
 {$ENDIF}
-  //protected
     procedure WndMethod(var Msg: TLMessage);
     procedure SetPopupParent(AVal: TSourceEditorWindowInterface);
     procedure DoAddForm;
@@ -87,15 +86,12 @@ type
     procedure SetDesignFormData(const AValue: TDesignFormData); virtual;
   public
     destructor Destroy; override;
-
     procedure ShowDesignPage;
     procedure HideDesignPage;
+    procedure BoundToDesignTabSheet;
 
     property Resizer: TResizer read FResizer;
-
     property DesignFormData: TDesignFormData read FDesignFormData write SetDesignFormData;
-
-    procedure BoundToDesignTabSheet;
   end;
 
   { TSourceEditorWindowData }
@@ -103,8 +99,6 @@ type
   TSourceEditorWindowData = class
   private
     FActiveDesignFormData: TDesignFormData;
-  private
-    //FWndMethod: TWndMethod;
     FForm: TSourceEditorWindowInterface;
 {$IFDEF USE_GENERICS_COLLECTIONS}
     FPageCtrlList: TDictionary<TSourceEditorInterface, TModulePageControl>;
@@ -114,8 +108,6 @@ type
     FLastTopParent: TControl;
 
     procedure SetActiveDesignFormData(const AValue: TDesignFormData);
-  //protected
-    //procedure WndMethod(var TheMessage: TLMessage);
     procedure OnChangeBounds(Sender: TObject);
     procedure AddPageCtrl(ASrcEditor: TSourceEditorInterface; APage: TModulePageControl);
     procedure RemovePageCtrl(ASrcEditor: TSourceEditorInterface);
@@ -491,7 +483,7 @@ begin
   // (is necessery for selecting controls after form resizing).
   // in Linux platforms below code brings problems with QT (inactive form)
   {$IFDEF WINDOWS}
-  case TheMessage.msg of
+  case Msg.msg of
     LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN, LM_XBUTTONDOWN:
       if Form.LastActiveSourceWindow <> nil then
       begin
@@ -710,16 +702,9 @@ begin
   // for USE_POPUP_PARENT_DESIGNER to eliminate form over code  << maybe not needed any more since USE_POPUP_PARENT_DESIGNER isn't supported any more
   LPageCtrl.OnChange(LPageCtrl);
 end;
-{
-procedure TSourceEditorWindowData.WndMethod(var TheMessage: TLMessage);
-begin
-  FWndMethod(TheMessage);
-end;
-}
+
 constructor TSourceEditorWindowData.Create(AForm: TSourceEditorWindowInterface);
 begin
-  //FWndMethod := AForm.WindowProc;
-  //AForm.WindowProc := WndMethod;
   FForm := AForm;
 {$IFDEF USE_GENERICS_COLLECTIONS}
   FPageCtrlList := TDictionary<TSourceEditorInterface, TModulePageControl>.Create;
@@ -730,7 +715,6 @@ end;
 
 destructor TSourceEditorWindowData.Destroy;
 begin
-  //FForm.WindowProc := FWndMethod;
   FPageCtrlList.Free;
   inherited Destroy;
 end;
