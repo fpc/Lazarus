@@ -30,7 +30,7 @@ uses
 
 const
   WM_SETNOFRAME = WM_USER;
-  WM_BoundToDesignTabSheet = WM_USER + 1;
+  WM_BOUNDTODESIGNTABSHEET = WM_USER + 1;
 
 type
   { TDesignFormData }
@@ -38,7 +38,6 @@ type
   TDesignFormData = class(TComponent, IDesignedForm, IDesignedFormIDE)
   private
     FWndMethod: TWndMethod;
-
     FForm: IDesignedFormIDE;
     FLastScreenshot: TBitmap;
     FPopupParent: TSourceEditorWindowInterface;
@@ -49,8 +48,7 @@ type
     FFormImages: TList;
 {$ENDIF}
   //protected
-    procedure WndMethod(var TheMessage: TLMessage);
-
+    procedure WndMethod(var Msg: TLMessage);
     procedure SetPopupParent(AVal: TSourceEditorWindowInterface);
     procedure DoAddForm;
     procedure FormChangeBounds(Sender: TObject);
@@ -445,7 +443,7 @@ end;
 
 { TDesignFormData }
 
-procedure TDesignFormData.WndMethod(var TheMessage: TLMessage);
+procedure TDesignFormData.WndMethod(var Msg: TLMessage);
 
   // Without this button F12 don't work. (after creating new for editor is inactive) :<
   procedure FixF12_ActiveEditor;
@@ -460,22 +458,30 @@ procedure TDesignFormData.WndMethod(var TheMessage: TLMessage);
         Break;
       end;
   end;
+
+var
+  Timer: TLMTimer;
 begin
-  if TheMessage.msg = WM_SETNOFRAME then
+  if Msg.msg = LM_TIMER then
   begin
-    ShowWindow(Form.Form.Handle, SW_HIDE);
-    FHiding := False;
-
-    FixF12_ActiveEditor;
-
-    if Form.Form is TFakeForm then
-      RepaintFormImages;
-  end;
-
-  // during docking, form position was in wrong place... we need to delay changing position :)
-  if TheMessage.msg = WM_BoundToDesignTabSheet then
-    if Form.LastActiveSourceWindow <> nil then
+    Timer := TLMTimer(Msg);
+    if Timer.TimerID = WM_SETNOFRAME then
+    begin
+      KillTimer(FForm.Form.Handle, WM_SETNOFRAME);
+      ShowWindow(Form.Form.Handle, SW_HIDE);
+      FHiding := False;
+      FixF12_ActiveEditor;
+      if Form.Form is TFakeForm then
+        RepaintFormImages;
+      Exit;
+    end;
+    if Timer.TimerID = WM_BOUNDTODESIGNTABSHEET then
+    begin
+      KillTimer(FForm.Form.Handle, WM_BOUNDTODESIGNTABSHEET);
       SourceEditorWindows[Form.LastActiveSourceWindow].BoundToDesignTabSheet;
+      Exit;
+    end;
+  end;
 
   // we need to correct ActiveEditor to right form
   // this code works correctly on Windows platform 
@@ -492,7 +498,7 @@ begin
   end;
   {$ENDIF}
 
-  FWndMethod(TheMessage);
+  FWndMethod(Msg);
 end;
 
 procedure TDesignFormData.SetPopupParent(AVal: TSourceEditorWindowInterface);
@@ -560,7 +566,7 @@ end;
 procedure TDesignFormData.FormChangeBounds(Sender: TObject);
 begin
   if not FForm.Update then
-    PostMessage(FForm.Form.Handle, WM_BoundToDesignTabSheet, 0, 0);
+    SetTimer(FForm.Form.Handle, WM_BOUNDTODESIGNTABSHEET, 10, nil);
 end;
 
 constructor TDesignFormData.Create(AForm: TCustomForm);
@@ -894,7 +900,7 @@ begin
         end;
       end;
 
-      PostMessage(Form.Handle, WM_SETNOFRAME, 0, 0);
+      SetTimer(Form.Handle, WM_SETNOFRAME, 10, nil);
     end;
   end
   else
@@ -1234,7 +1240,7 @@ begin
               //EndUpdate;
               LPageCtrl.BoundToDesignTabSheet;
 
-              PostMessage(Form.Handle, WM_BoundToDesignTabSheet, 0, 0);
+              SetTimer(Form.Handle, WM_BOUNDTODESIGNTABSHEET, 10, nil);
           end;
         end;
     end;
@@ -1500,12 +1506,10 @@ begin
     LDesignForm := LWindowData.ActiveDesignFormData;
     LWindowData.ActiveDesignFormData := nil;
     LWindowData.ActiveDesignFormData := LDesignForm;
-    // ...
-    //PostMessage(LWindow.Handle, WM_BoundToDesignTabSheet, 0, 0);
     if LDesignForm <> nil then
     begin
       LDesignForm.Form.Form.Parent := FindModulePageControl(LWindow).Resizer.ActiveResizeFrame.FormHandler;
-      PostMessage(LDesignForm.Form.Form.Handle, WM_BoundToDesignTabSheet, 0, 0);
+      SetTimer(LDesignForm.Form.Form.Handle, WM_BOUNDTODESIGNTABSHEET, 10, nil);
     end;
   end;
 
