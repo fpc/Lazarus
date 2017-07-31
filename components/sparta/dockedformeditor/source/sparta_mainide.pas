@@ -1306,6 +1306,8 @@ var
   LPageCtrl: TModulePageControl;
 begin
   Result := nil;
+  if (FormEditingHook = nil) or (GlobalDesignHook = nil) then
+    Exit;
   LForm := FormEditingHook.GetDesignerForm(GlobalDesignHook.LookupRoot);
   LFormData := FindDesignFormData(LForm);
   if LFormData=nil then Exit;
@@ -1617,6 +1619,8 @@ var
   i: Integer;
   LSourceWindow: TSourceEditorWindowInterface;
 begin
+  if FormEditingHook = nil then
+    Exit;
   LForm := FindDesignFormData(FormEditingHook.GetCurrentDesigner);
   if LForm = nil then
     Exit;
