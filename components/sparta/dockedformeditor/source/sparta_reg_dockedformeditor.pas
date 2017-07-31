@@ -17,10 +17,13 @@ unit sparta_reg_DockedFormEditor;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, LazIDEIntf, ComCtrls, Controls, Forms, IDEImagesIntf,
-  Buttons, ExtCtrls, Graphics, IDEWindowIntf, sparta_MainIDE,
-  PropEdits, PropEditUtils, FormEditingIntf, ComponentEditors, EditBtn, TypInfo,
-  LCLIntf, LCLType, sparta_FakeForm, sparta_FakeNonControl, sparta_FakeFrame;
+  SysUtils,
+  // LCL
+  LazIDEIntf, ComCtrls, Controls, Forms, Buttons, ExtCtrls, Graphics, EditBtn,
+  // IdeIntf
+  SrcEditorIntf, IDEWindowIntf, PropEdits, ComponentEditors,
+  // Sparta
+  sparta_MainIDE;
 
 procedure Register;
 

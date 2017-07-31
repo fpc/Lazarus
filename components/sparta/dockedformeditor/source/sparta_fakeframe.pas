@@ -17,7 +17,11 @@ unit sparta_FakeFrame;
 interface
 
 uses
-  Classes, SysUtils, sparta_FakeCustom, Controls, Forms;
+  Classes, SysUtils,
+  // LCL
+  Controls, Forms,
+  // Sparta
+  sparta_FakeCustom;
 
 type
   TFakeFrame = class(TFakeCustomFrame)

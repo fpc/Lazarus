@@ -17,12 +17,16 @@ unit sparta_FakeCustom;
 interface
 
 uses
-  Classes, SysUtils, Forms, FormEditingIntf, Controls, TypInfo, LCLIntf,
-  LCLType, sparta_DesignedForm, sparta_InterfacesMDI, sparta_BasicFakeCustom,
-{$IFDEF USE_GENERICS_COLLECTIONS}
-  Generics.Defaults,
-{$ENDIF}
-  SrcEditorIntf, ObjectInspector;
+  Classes, SysUtils,
+  {$IFDEF USE_GENERICS_COLLECTIONS}
+    Generics.Defaults,
+  {$ENDIF}
+  // LCL
+  Forms, Controls,
+  // IdeIntf
+  FormEditingIntf, SrcEditorIntf, ObjectInspector,
+  // Sparta
+  sparta_InterfacesMDI, sparta_DesignedForm, sparta_BasicFakeCustom;
 
 type
   { TDesignedFormImpl }

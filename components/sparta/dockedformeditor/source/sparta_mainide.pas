@@ -17,16 +17,19 @@ unit sparta_MainIDE;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, LazIDEIntf, ComCtrls, Controls, Forms, IDEImagesIntf,
-  Buttons, ExtCtrls, Graphics, IDEWindowIntf, sparta_InterfacesMDI,
-  sparta_DesignedForm, sparta_resizer, PropEdits, PropEditUtils, FormEditingIntf, ComponentEditors, EditBtn,
-{$IFDEF USE_GENERICS_COLLECTIONS}
-  Generics.Collections, Generics.Defaults,
-{$ELSE}
-  ghashmap, sparta_HashUtils, gvector,
-{$ENDIF}
-  TypInfo, LCLIntf, LCLType, LMessages, sparta_FakeForm, sparta_FakeFrame,
-  SpartaAPI, sparta_strconsts, sparta_FakeCustom;
+  Classes, SysUtils,
+  {$IFDEF USE_GENERICS_COLLECTIONS}
+    Generics.Collections, Generics.Defaults,
+  {$ELSE}
+    ghashmap, sparta_HashUtils, gvector,
+  {$ENDIF}
+  // LCL
+  LCLIntf, LCLType, LMessages, ComCtrls, Controls, Forms, ExtCtrls, Graphics,
+  // IdeIntf
+  SrcEditorIntf, LazIDEIntf, FormEditingIntf, PropEdits, PropEditUtils, ComponentEditors,
+  // Sparta
+  sparta_InterfacesMDI, sparta_strconsts, sparta_DesignedForm, sparta_resizer,
+  sparta_FakeForm, sparta_FakeFrame, sparta_FakeCustom;
 
 const
   WM_SETNOFRAME = WM_USER;

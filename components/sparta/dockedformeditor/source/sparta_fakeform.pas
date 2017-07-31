@@ -17,8 +17,11 @@ unit sparta_FakeForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, TypInfo, LCLIntf,
-  LCLType, sparta_DesignedForm, sparta_FakeCustom;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls,
+  // Sparta
+  sparta_DesignedForm, sparta_FakeCustom;
 
 
 const

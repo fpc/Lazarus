@@ -17,7 +17,7 @@ unit sparta_FakeNonControl;
 interface
 
 uses
-  Classes, SysUtils, sparta_FakeCustom;
+  sparta_FakeCustom;
 
 type
   TFakeNonControl = class(TFakeCustomNonControl)

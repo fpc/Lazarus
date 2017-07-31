@@ -17,7 +17,7 @@ unit SpartaAPI;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls;
+  Classes, Controls;
 
 type
   ISTADesignTimeUtil = interface

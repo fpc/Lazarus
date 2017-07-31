@@ -17,9 +17,11 @@ unit sparta_ResizerFrame;
 interface
 
 uses
-  Classes, contnrs, SysUtils, FileUtil, Forms, Controls, ExtCtrls, StdCtrls,
-  Graphics, LCLType, lclintf, Menus,
-  FormEditingIntf, PropEdits, ObjectInspector, sparta_BasicResizeFrame;
+  SysUtils,
+  // IdeIntf
+  FormEditingIntf, PropEdits, ObjectInspector,
+  // Sparta
+  sparta_BasicResizeFrame;
 
 type
 

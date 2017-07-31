@@ -17,7 +17,7 @@ unit sparta_DesignedForm;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, SrcEditorIntf, sparta_InterfacesMDI;
+  Controls, Forms, SrcEditorIntf, sparta_InterfacesMDI;
 
 type
   IDesignedFormIDE = interface(IDesignedForm)
