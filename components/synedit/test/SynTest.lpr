@@ -8,8 +8,8 @@ uses
   TestSynBeautifier, TestTrimSpace, TestSyncroEdit, TestSynTextArea,
   TestHighlightPas, TestHighlightXml, TestHighlightMulti, TestMarkupwordGroup,
   TestMarkupHighAll, TestFoldedView, TestSynSharedEdits, TestHighlighterLfm,
-  TestHighlightFoldBase, TestMarkupIfDef, testPaintColorMerging,
-TestMarkupFoldColoring;
+  TestNestedFoldsList, TestMarkupIfDef, testPaintColorMerging,
+  TestMarkupFoldColoring;
 
 {$IFDEF WINDOWS}{  $R SynTest.rc}{$ENDIF}
 
