@@ -448,8 +448,8 @@ begin
           Data^.FFullPath := TPackageData(PackageList.Objects[I]).FFullPath;
           if not LoadPackageData(Data^.FFullPath, Data) then
             MessageDlgEx(rsCreateRepositoryPackageFrm_Error0, mtError, [mbOk], TForm(Self.Parent));
-          Data^.FLazCompatibility := '1.6, Trunk';
-          Data^.FFPCCompatibility := '2.6.4, 3.0.0';
+          Data^.FLazCompatibility := '1.6, 1.8, Trunk';
+          Data^.FFPCCompatibility := '2.6.4, 3.0.0, 3.0.2, 3.0.4';
           Data^.FSupportedWidgetSet := 'win32/64, gtk2, carbon';
           Data^.FDataType := 1;
         end;
