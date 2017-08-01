@@ -20199,6 +20199,7 @@ msgstr "konfiguruj \"buduj plik\""
 #: lazarusidestrconsts.srkmeccopy
 #, fuzzy
 #| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
 msgid "Copy"
 msgstr "Skopiuj zaznaczenie do schowka"
 
@@ -20217,6 +20218,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccut
 #, fuzzy
 #| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
 msgid "Cut"
 msgstr "Wytnij zaznaczenie i umieść w schowku"
 
@@ -20664,6 +20666,7 @@ msgstr "Przesuń kursor o stronę wyżej"
 #: lazarusidestrconsts.srkmecpaste
 #, fuzzy
 #| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
 msgstr "Wklej tutaj"
 
