@@ -19,22 +19,22 @@ msgstr "Зневаджувач"
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
 msgctxt "gdbmistringconstants.gdbmibreakpointerroronruncommand"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "Зневаджувач зазнав помилки при спробі запуску/проходу програми:%0:s%0:s%1:s%0:s%0:sНатисніть \"Гаразд\", щоб видалити точки зупинки і продовжити зневаджування (пауза), і виправити проблему, або виберіть альтернативну команду запуску.%0:sНатисніть \"Закінчити\" для закінчення сеансу зневаджування."
+msgstr "Зневаджувач зазнав помилки під час спроби запуску/проходу програми:%0:s%0:s%1:s%0:s%0:sНатисніть \"Гаразд\", щоб видалити точки зупинки і продовжити зневаджування (пауза), і виправити проблему, або виберіть альтернативну команду запуску.%0:sНатисніть \"Закінчити\" для закінчення сеансу зневаджування."
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 msgctxt "gdbmistringconstants.gdbmicommandstartmainbreakerror"
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
-msgstr "Зневаджувач не може встановити точку зупинки в точку входу додатку.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
+msgstr "Зневаджувач не може встановити точку зупинки в точку входу застосунку.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunerror"
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
-msgstr "Зневаджувач не може запустити додаток.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
+msgstr "Зневаджувач не може запустити застосунок.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
 msgctxt "gdbmistringconstants.gdbmicommandstartmainrunnopiderror"
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
-msgstr "Зневаджувач не зміг отримати PID додатку.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
+msgstr "Зневаджувач не зміг отримати PID застосунку.%0:sЦе може бути викликано відсутністю зневаджувальної інформації."
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
 msgctxt "gdbmistringconstants.gdbmicommandstartmainruntostoperror"
