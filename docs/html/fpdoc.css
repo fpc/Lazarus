@@ -17,7 +17,7 @@ body, p, th, td, caption, h1, h2, h3, ul, ol, dl {
 }
 
 tt, span.kw, pre {
-  font-family: Courier, monospace
+  font-family: "Courier New", Courier, monospace
 }
 
 body, p, th, td, caption, ul, ol, dl, tt, span.kw, pre {
