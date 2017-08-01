@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-14 14:33+0300\n"
+"PO-Revision-Date: 2017-08-01 09:43+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -35,7 +35,7 @@ msgstr "Налаштувати згенерований код"
 
 #: ldd_consts.ldd_databasedesktopapplication
 msgid "Database desktop application"
-msgstr "Настільний додаток баз даних"
+msgstr "Настільний застосунок баз даних"
 
 #: ldd_consts.ldd_datadictionary
 msgid "Data dictionary &file:"
@@ -134,8 +134,8 @@ msgid ""
 "Could not locate the database desktop application.\n"
 "Would you like to select it ?\n"
 msgstr ""
-"Не можу знайти настільний додаток баз даних.\n"
-"Хочете вибрати його ?\n"
+"Не можу знайти настільний застосунок баз даних.\n"
+"Бажаєте вибрати його ?\n"
 
 #: ldd_consts.serrnodatadictactive
 msgid ""

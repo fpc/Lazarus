@@ -673,7 +673,7 @@ msgstr "--no-xshm             Заборонити використання сп
 
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
-msgstr "--sync                Виклик XSynchronize (display, True) після встановлення з'єднання з X-сервером. Це полегшує зневадження помилок протоколу X через те, що запити буферування X будуть вимкнені і помилки X будуть одержані одразу після запиту протоколу, який викликав цю помилку, яка була оброблена X-сервером."
+msgstr "--sync                Виклик XSynchronize (display, True) після встановлення з'єднання з X-сервером. Це полегшує зневадження помилок протоколу X через те, що буферування запитів X буде вимкнено і помилки X будуть одержані одразу після обробки X-сервером запиту протоколу, який викликав цю помилку."
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
@@ -1105,7 +1105,7 @@ msgstr "-sync (лише під X11), перемикає в синхронний 
 
 #: lclstrconsts.rsqtoptionwidgetcount
 msgid "-widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
-msgstr "-widgetcount, друкує зневаджувальне повідомлення в кінці про кількість не знищених віджетів та максимальну кількість віджетів, що існували в той же час."
+msgstr "-widgetcount, друкує в кінці зневаджувальне повідомлення про кількість не знищених віджетів та максимальну кількість віджетів, що існували в той же час."
 
 #: lclstrconsts.rsqtoptionx11bgcolor
 msgid "-bg or -background color, sets the default background color and an application palette (light and dark shades are calculated)."
@@ -1269,11 +1269,11 @@ msgstr "Невідомий формат зображення"
 
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
-msgstr "Непідтримуваний тип растрового малюнку."
+msgstr "Непідтримуваний тип растрового малюнка."
 
 #: lclstrconsts.rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
-msgstr "Непідтримуваний формат буферу обміну: %s"
+msgstr "Непідтримуваний формат буфера обміну: %s"
 
 #: lclstrconsts.rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
@@ -1289,7 +1289,7 @@ msgstr " УВАГА: В черзі залишилось %d повідомлен�
 
 #: lclstrconsts.rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr " УВАГА: Залишилось %d структур TimerInfo, я їх звільняю"
+msgstr " УВАГА: Залишилось %d структур TimerInfo, я їх видаляю"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
