@@ -1858,10 +1858,10 @@ end;
 procedure TIDESynGutterLOvProviderPascal.BufferChanged(Sender: TObject);
 begin
   TSynEditStringList(Sender).RemoveHanlders(self);
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrHighlightChanged,
-    TMethod(@HighlightChanged));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged,
-    TMethod(@BufferChanged));
+  TSynEditStringList(TextBuffer).AddChangeHandler(senrHighlightChanged,
+    @HighlightChanged);
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged,
+    @BufferChanged);
   //LineCountChanged(nil, 0, 0);
   HighlightChanged(nil,-1,-1);
 end;
@@ -2038,10 +2038,10 @@ begin
   SingleLine := False;
   Color  := $D4D4D4;
   Color2 := $E8E8E8;
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrHighlightChanged,
-    TMethod(@HighlightChanged));
-  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged,
-    TMethod(@BufferChanged));
+  TSynEditStringList(TextBuffer).AddChangeHandler(senrHighlightChanged,
+    @HighlightChanged);
+  TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged,
+    @BufferChanged);
 end;
 
 destructor TIDESynGutterLOvProviderPascal.Destroy;

@@ -1692,14 +1692,14 @@ begin
     ViewedTextBuffer.RemoveNotifyHandler(senrAfterDecPaintLock, @DoAfterDecPaintLock);
     ViewedTextBuffer.RemoveNotifyHandler(senrBeforeIncPaintLock, @DoBeforeIncPaintLock);
     ViewedTextBuffer.RemoveEditHandler(@DoLinesEdited);
-    ViewedTextBuffer.RemoveGenericHandler(senrTextBufferChanged, TMethod(@DoBufferChanged));
+    ViewedTextBuffer.RemoveNotifyHandler(senrTextBufferChanged, @DoBufferChanged);
   end;
 end;
 
 procedure TSynPluginMultiCaretBase.DoEditorAdded(AValue: TCustomSynEdit);
 begin
   if Editor <> nil then begin
-    ViewedTextBuffer.AddGenericHandler(senrTextBufferChanged, TMethod(@DoBufferChanged));
+    ViewedTextBuffer.AddNotifyHandler(senrTextBufferChanged, @DoBufferChanged);
     ViewedTextBuffer.AddEditHandler(@DoLinesEdited);
     ViewedTextBuffer.AddNotifyHandler(senrBeforeIncPaintLock, @DoBeforeIncPaintLock);
     ViewedTextBuffer.AddNotifyHandler(senrAfterDecPaintLock, @DoAfterDecPaintLock);

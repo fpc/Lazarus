@@ -632,10 +632,10 @@ function dbgs(ANode: TSynFoldNodeInfo): string;
 begin
   with ANode do
     if sfaInvalid in FoldAction then
-      Result := Format('L=%3d I=%d  X=%2d-%2d  Fld=%d-%d Nst=%d-%d  FT=%d FTC=%d  Grp=%d  A=%s',
+      Result := Format('L=%3d I=%d  X=%2d-%2d  Fld=%d-%d Nst=%d-%d  FT=%2d FTC=%2d  Grp=%d  A=%s',
                        [LineIndex, NodeIndex, 0, 0, 0, 0, 0, 0, 0, 0, 0, dbgs(FoldAction)])
     else
-      Result := Format('L=%3d I=%d  X=%2d-%2d  Fld=%d-%d Nst=%d-%d  FT=%d FTC=%d  Grp=%d  A=%s',
+      Result := Format('L=%3d I=%d  X=%2d-%2d  Fld=%d-%d Nst=%d-%d  FT=%2d FTC=%2d  Grp=%d  A=%s',
                        [LineIndex, NodeIndex, LogXStart, LogXEnd,
                         FoldLvlStart, FoldLvlEnd, NestLvlStart, NestLvlEnd,
                         PtrUInt(FoldType), PtrUInt(FoldTypeCompatible), FoldGroup,
@@ -682,8 +682,16 @@ begin
 end;
 
 function dbgs(ANestInfo: TLazSynEditNestedFoldsListEntry): String;
+var
+  i: Integer;
 begin
-  Result := 'LineIdx='+dbgs(ANestInfo.LineIdx)+' '+dbgs(ANestInfo.HNode);
+  Result := Format('LineIdx:%4d', [ANestInfo.LineIdx ])
+   +' HNode: '+dbgs(ANestInfo.HNode)
+   +' | PrevCnt: '+dbgs(length(ANestInfo.PrevNodeAtSameLevel))
+   +' MinLvl: [';
+  for i := 0  to high(ANestInfo.FGroupMinLevels) do
+    Result := Result+inttostr(ANestInfo.FGroupMinLevels[i])+',';
+  Result := Result+']';
 end;
 
 { TLazSynFoldNodeInfoList }
@@ -1243,6 +1251,9 @@ var
             c1 := FGroupEndLevelsAtEval[i] - l;
             FGroupEndLevelsAtEval[i] := l;
             c := c + c1;
+          end
+          else begin
+            FPreviousNestInfo[pcnt].FGroupMinLevels[i] := FGroupEndLevelsAtEval[i];
           end;
           dec(i);
         end;
@@ -1252,6 +1263,9 @@ var
         if (l < FGroupEndLevelsAtEval[0]) then begin
           c := FGroupEndLevelsAtEval[0] - l;
           FGroupEndLevelsAtEval[0] := l;
+        end
+        else begin
+          FPreviousNestInfo[pcnt].FGroupMinLevels[0] := FGroupEndLevelsAtEval[0];
         end;
       end;
 

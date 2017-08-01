@@ -3925,8 +3925,8 @@ end;
 procedure TSynEditMarkupIfDef.SetLines(const AValue: TSynEditStrings);
 begin
   if Lines <> nil then begin
-    Lines.RemoveGenericHandler(senrTextBufferChanged, TMethod(@DoBufferChanged));
-    Lines.RemoveGenericHandler(senrTextBufferChanging, TMethod(@DoBufferChanging));
+    Lines.RemoveNotifyHandler(senrTextBufferChanged, @DoBufferChanged);
+    Lines.RemoveNotifyHandler(senrTextBufferChanging, @DoBufferChanging);
     //FLines.RemoveEditHandler(@DoLinesEdited);
 //    FLines.RemoveChangeHandler(senrHighlightChanged, @DoHighlightChanged);
   end;
@@ -3936,8 +3936,8 @@ begin
   FOuterLines.Lines := AValue;
 
   if Lines <> nil then begin
-    Lines.AddGenericHandler(senrTextBufferChanged, TMethod(@DoBufferChanged));
-    Lines.AddGenericHandler(senrTextBufferChanging, TMethod(@DoBufferChanging));
+    Lines.AddNotifyHandler(senrTextBufferChanged, @DoBufferChanged);
+    Lines.AddNotifyHandler(senrTextBufferChanging, @DoBufferChanging);
     //FLines.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
 //    FLines.AddEditHandler(@DoLinesEdited);
   end;

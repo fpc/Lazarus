@@ -594,7 +594,12 @@ begin
   if Result <> 0 then
     exit;
 
-  Result := PtrInt(m2) - PtrInt(m1);
+  if Mark2 > Mark1 then
+    Result := 1
+  else if Mark1 > Mark2 then
+    Result := -1
+  else
+    Result := 0;
 end;
 
 procedure TSynEditMarkLine.Sort(PrimaryOrder: TSynEditMarkSortOrder;

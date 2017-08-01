@@ -205,6 +205,11 @@ type
     function  LogicPosIsCombining(const AChar: PChar): Boolean; inline;
 
     function GetDisplayView: TLazSynDisplayView; override;
+
+    procedure AddGenericHandler(AReason: TSynEditNotifyReason;
+                AHandler: TMethod); override;
+    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
+                AHandler: TMethod); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -219,10 +224,6 @@ type
     function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; override; // experimental
     procedure MarkModified(AFirst, ALast: Integer);
     procedure MarkSaved;
-    procedure AddGenericHandler(AReason: TSynEditNotifyReason;
-                AHandler: TMethod); override;
-    procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
-                AHandler: TMethod); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TSynEditStrings; aIndex, aCount: Integer); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
