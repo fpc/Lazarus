@@ -365,8 +365,7 @@ begin
         SetupMessage;
         mJSON.Text := AJSON;
         cbAll.Checked := False;
-        Caption := rsLazarusPackageManager + ' ' + Format(rsPackagesFound, [
-          IntToStr(SerializablePackages.Count)]);
+        Caption := rsLazarusPackageManager + ' ' + SerializablePackages.QuickStatistics;
         if Assigned(Updates) then
           Updates.StartUpdate;
       end;

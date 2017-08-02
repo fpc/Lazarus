@@ -289,6 +289,7 @@ type
     function GetPackageInstallState(const AMetaPackage: TMetaPackage): Integer; overload;
     procedure DeleteDownloadedZipFiles;
     procedure Sort(const ASortType: TSortType; const ASortOrder: TSortOrder);
+    function QuickStatistics: String;
   public
     property Count: Integer read GetCount;
     property DownloadCount: Integer read GetDownloadCount;
@@ -1435,6 +1436,23 @@ begin
       else if ASortOrder = soDescendent then
         FMetaPackages.Sort(@SortByDateDsc)
   end;
+end;
+
+function TSerializablePackages.QuickStatistics: String;
+var
+  I, J: Integer;
+  LazPackCnt: Integer;
+  TotSize: Int64;
+begin
+  LazPackCnt := 0;
+  TotSize := 0;
+  for I := 0 to Count - 1 do
+  begin
+    TotSize := TotSize + Items[I].RepositoryFileSize;
+    for J := 0 to Items[I].FLazarusPackages.Count - 1 do
+      Inc(LazPackCnt);
+  end;
+  Result := Format(rsPackagesFound, [IntToStr(SerializablePackages.Count), IntToStr(LazPackCnt), FormatSize(TotSize)]);
 end;
 
 function TSerializablePackages.IsDependencyOk(PackageDependency: TPackageDependency;
