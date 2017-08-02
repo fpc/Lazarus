@@ -416,6 +416,7 @@ var
   EntryText: PgChar;
   NeedCursorCheck: Boolean;
 begin
+  //debugln('gtkchanged_editbox');
   Result := CallBackDefaultReturn;
 
   if LockOnChange(PgtkObject(Widget),0)>0 then exit;
@@ -473,9 +474,21 @@ begin
 
   if NeedCursorCheck then
     LockOnChange(PgtkObject(Widget), +1);
-  FillByte(Mess{%H-},SizeOf(Mess),0);
-  Mess.Msg := CM_TEXTCHANGED;
-  DeliverMessage(Data, Mess);
+  // 'lcl-suppress-cm_textchanged' is set by gtkchanged_spinbox when it changes
+  // the text in the widget or when it sends a CM_TEXTCHANGED message (via DeliverMessage)
+  // Issue #0031618
+  if g_object_get_data(PGObject(Widget),'lcl-suppress-cm_textchanged') = nil then
+  begin
+    FillByte(Mess{%H-},SizeOf(Mess),0);
+    Mess.Msg := CM_TEXTCHANGED;
+    //debugln('gtkchanged_editbox B: DeliverMessage(CM_TextChanged)');
+    DeliverMessage(Data, Mess);
+  end
+  else
+  begin
+    //debugln('gtkchanged_editbox C: Found: "lcl-suppress-cm_textchanged"');
+    g_object_set_data(PGObject(Widget),'lcl-suppress-cm_textchanged', nil);
+  end;
   if NeedCursorCheck then
     LockOnChange(PgtkObject(Widget), -1);
 end;
@@ -485,10 +498,11 @@ var
   SValue: String;
   SNewValue: String;
   AValue, AMin, AMax: Double;
-  NumDigits: Integer;
+  NumDigits, TextDigits: Integer;
   Mess : TLMessage;
   ADecimalSeparator: Char;
 begin
+  //debugln('gtkchanged_spinbox A');
   Result := CallBackDefaultReturn;
   if LockOnChange(PgtkObject(Widget),0) > 0 then exit;
 
@@ -507,12 +521,16 @@ begin
       {$ENDIF}
       SValue := gtk_entry_get_text(PGtkEntry(Widget));
 
+      //debugln('gtkchanged_spinbox B');
+      //debugln('  SValue = ',SValue);
+
       {do not try to parse SValue if it's empty, eg started typing on
        selected value. issue #23190}
       if (SValue = '') or (SValue = ',') or
         (SValue = '.') or (SValue = '+') or
         (SValue = '-') or (SValue = ADecimalSeparator) then
       begin
+        debugln('  SValue in [<empty>,#32, +, -, comma, period, ADecimalSeparator]');
         FillByte(Mess{%H-},SizeOf(Mess),0);
         Mess.Msg := CM_TEXTCHANGED;
         DeliverMessage(Data, Mess);
@@ -521,6 +539,9 @@ begin
 
       SNewValue := SValue;
       AValue := StrToFloatDef(SValue, 0);
+      //debugln('gtkchanged_spinbox C');
+      //debugln('  SValue = ',SValue);
+      //debugln(format('  AValue = %.4f',[AValue]));
 
       {do not freeze (below) if clocale isn't used. issue #23190}
       if (ADecimalSeparator <> '.') and (Pos('.', SValue) <> 0) then
@@ -539,10 +560,12 @@ begin
         SNewValue := SValue;
         AValue := StrToFloatDef(SValue, 0);
       end;
+      //debugln('gtkchanged_spinbox D');
+      //debugln('  SValue = ',SValue);
+      //debugln('  SNewValue = ',SNewValue);
+      //debugln(format('  AValue = %.4f',[AValue]));
 
       gtk_spin_button_get_range(PGtkSpinButton(Widget), @AMin, @AMax);
-
-
       // woohoo
       // gtk2 have different meaning how validator should work and trigger
       // so we change it. #18679
@@ -557,19 +580,42 @@ begin
       end;
       if (Pos(ADecimalSeparator, SValue) > 0) and (length(SValue) > 1) then
       begin
-        SNewValue := Copy(SValue,Pos(ADecimalSeparator, SValue) + 1, length(SValue));
-        while length(SNewValue) > NumDigits do
+        //debugln('gtkchanged_spinbox E');
+        //debugln('  ADecimalSeparator = ',ADecimalSeparator);
+        //debugln('  SValue = ',SValue);
+        //debugln('  SNewValue = ',SNewValue);
+        //debugln(format('  AValue = %.4f',[AValue]));
+
+        //The widget allows to type in more digits than we set in DecimalPlaces, so we may need to trim those
+        TextDigits := Length(Copy(SValue,Pos(ADecimalSeparator, SValue) + 1, length(SValue)));
+        if (TextDigits > NumDigits) then
         begin
-          Delete(SValue, length(SValue), 1);
-          inc(NumDigits);
+          //debugln('gtkchanged_spinbox E1');
+          //DbgOut('  SValue = ',SValue,' -> ');
+          Delete(SValue, length(SValue) - (TextDigits-NumDigits-1), (TextDigits-NumDigits));
+          //debugln(SValue);
         end;
       end;
       if SNewValue <> SValue then
-        gtk_entry_set_text(PGtkEntry(Widget), PChar(SValue));
+      begin
+        //debugln('gtkchanged_spinbox F');
+        //debugln('  SValue = ',SValue);
+        //debugln('  SNewValue = ',SNewValue);
+        //debugln(format('  AValue = %.4f',[AValue]));
+        //debugln(format('  SValue: "%s" <> SNewValue: "%s"  call: gtk_entry_set_text',[SValue,SnewValue]));
 
+        //Suppress CM_TEXTXHANGED message in gtkchanged_editbox, which will lead
+        //to double OnChange events. Issue #0031618
+        g_object_set_data(PGObject(Widget),'lcl-suppress-cm_textchanged',Widget);
+        gtk_entry_set_text(PGtkEntry(Widget), PChar(SValue));
+      end;
+      //Suppress CM_TEXTXHANGED message in gtkchanged_editbox, which will lead
+      //to double OnChange events. Issue #0031618
+      g_object_set_data(PGObject(Widget),'lcl-suppress-cm_textchanged',Widget);
       // inform LCL about our changes to entry
       FillByte(Mess{%H-},SizeOf(Mess),0);
       Mess.Msg := CM_TEXTCHANGED;
+      //debugln('gtkchanged_spinbox H: DeliverMessage(CM_TextChanged)');
       DeliverMessage(Data, Mess);
     end else
       // always signal update to pure TSpinEdit
