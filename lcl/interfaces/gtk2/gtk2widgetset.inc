@@ -1004,6 +1004,8 @@ begin
   Result:= lpGtk2;
 end;
 
+function gdk_screen_get_resolution(screen:PGdkScreen):gdouble; cdecl; external gdklib;
+
 {------------------------------------------------------------------------------
   Method: TGtk2WidgetSet.AppInit
   Params:  None
@@ -1025,9 +1027,16 @@ begin
   InitKeyboardTables;
   { Compute pixels per inch variable }
   ScreenInfo.PixelsPerInchX :=
-    RoundToInt(gdk_screen_width / (GetScreenWidthMM / 25.4));
+    RoundToInt(gdk_screen_get_resolution(gdk_screen_get_default));
   ScreenInfo.PixelsPerInchY :=
-    RoundToInt(gdk_screen_height / (GetScreenHeightMM / 25.4));
+    ScreenInfo.PixelsPerInchX;
+  if ScreenInfo.PixelsPerInchX <= 0 then
+  begin
+    ScreenInfo.PixelsPerInchX :=
+      RoundToInt(gdk_screen_width / (GetScreenWidthMM / 25.4));
+    ScreenInfo.PixelsPerInchY :=
+      RoundToInt(gdk_screen_height / (GetScreenHeightMM / 25.4));
+  end;
   ScreenInfo.ColorDepth := gdk_visual_get_system^.depth;
 end;
 
