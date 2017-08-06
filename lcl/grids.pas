@@ -1508,7 +1508,7 @@ type
     //property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
-    property CellHintPriority;
+//    property CellHintPriority;
     property Color;
     property ColCount;
     property ColumnClickSorts;
