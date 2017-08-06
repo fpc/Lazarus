@@ -113,7 +113,7 @@ type
     procedure Clear;
     function IsEqual(Node: TAnchorDockLayoutTreeNode): boolean;
     procedure Assign(Node: TAnchorDockLayoutTreeNode); overload;
-    procedure Assign(AControl: TControl); overload;
+    procedure Assign(AControl: TControl; OverrideBoundsRect: Boolean=false); overload;
     procedure LoadFromConfig(Config: TConfigStorage); overload;
     procedure LoadFromConfig(Path: string; Config: TRttiXMLConfig); overload;
     procedure SaveToConfig(Config: TConfigStorage); overload;
@@ -1113,13 +1113,16 @@ begin
   end;
 end;
 
-procedure TAnchorDockLayoutTreeNode.Assign(AControl: TControl);
+procedure TAnchorDockLayoutTreeNode.Assign(AControl: TControl; OverrideBoundsRect: Boolean=false);
 var
   AnchorControl: TControl;
   a: TAnchorKind;
 begin
   Name:=AControl.Name;
-  BoundsRect:=AControl.BoundsRect;
+  if OverrideBoundsRect then
+    BoundsRect:=GetParentForm(AControl).BoundsRect
+  else
+    BoundsRect:=AControl.BoundsRect;
   Align:=AControl.Align;
   if (AControl.Parent=nil) and (AControl is TCustomForm) then begin
     WindowState:=TCustomForm(AControl).WindowState;

@@ -8,8 +8,16 @@ unit anchordockpkg;
 interface
 
 uses
-  AnchorDocking, AnchorDockStorage, AnchorDockStr, AnchorDockOptionsDlg;
+  AnchorDocking, AnchorDockStorage, AnchorDockStr, AnchorDockOptionsDlg, 
+  AnchorDockPanel, LazarusPackageIntf;
 
 implementation
 
+procedure Register;
+begin
+  RegisterUnit('AnchorDockPanel', @AnchorDockPanel.Register);
+end;
+
+initialization
+  RegisterPackage('AnchorDocking', @Register);
 end.
