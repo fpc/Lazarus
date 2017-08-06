@@ -3962,9 +3962,13 @@ begin
       begin
         AddToHint(txt, txt1);
         AddToHint(txt, txt2);
-        if txt <> '' then begin
-          txt := GetShortHint(FSavedHint) + LineEnding + txt;
-          AppHint := GetLongHint(FSavedHint) + LineEnding + txt;
+        if (txt <> '') then begin
+          if FSavedHint = '' then
+            AppHint := txt
+          else begin
+            txt := GetShortHint(FSavedHint) + LineEnding + txt;
+            AppHint := GetLongHint(FSavedHint) + LineEnding + txt;
+          end;
         end else
         begin
           txt := GetShortHint(FSavedHint);
