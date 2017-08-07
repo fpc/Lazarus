@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CONFIG>
+  <MainConfig>
+    <Nodes ChildCount="1">
+      <Item1 Name="AnchorDockPanel1" Type="CustomSite" ChildCount="1">
+        <Bounds Top="43" Left="45" Width="568" Height="418"/>
+        <Anchors Align="Client"/>
+        <Item1 Name="AnchorDockSite1" Type="Layout" ChildCount="3">
+          <Bounds Top="1" Left="1" Width="524" Height="325"/>
+          <Anchors Align="Client"/>
+          <Item1 Name="SourceEditor1" Type="Control">
+            <Bounds Width="524" Height="171"/>
+            <Anchors Bottom="AnchorDockSplitter1"/>
+          </Item1>
+          <Item2 Name="AnchorDockSplitter1" Type="SplitterHorizontal">
+            <Bounds Top="171" Width="524" Height="4"/>
+          </Item2>
+          <Item3 Name="DebugOutput" Type="Control">
+            <Bounds Top="175" Width="524" Height="150"/>
+            <Anchors Top="AnchorDockSplitter1"/>
+          </Item3>
+        </Item1>
+      </Item1>
+    </Nodes>
+  </MainConfig>
+</CONFIG>

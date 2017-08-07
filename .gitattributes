@@ -592,6 +592,14 @@ components/anchordocking/minide/simplefrm.lfm svneol=native#text/plain
 components/anchordocking/minide/simplefrm.pas svneol=native#text/plain
 components/anchordocking/minide/unit1.lfm svneol=native#text/plain
 components/anchordocking/minide/unit1.pas svneol=native#text/plain
+components/anchordocking/minidewithdockpanel/layout.xml -text svneol=native#text/plain
+components/anchordocking/minidewithdockpanel/miniide1.lpi -text svneol=native#text/plain
+components/anchordocking/minidewithdockpanel/miniide1.lpr -text svneol=native#text/pascal
+components/anchordocking/minidewithdockpanel/miniide1.res -text
+components/anchordocking/minidewithdockpanel/simplefrm.lfm -text svneol=native#text/plain
+components/anchordocking/minidewithdockpanel/simplefrm.pas -text svneol=native#text/pascal
+components/anchordocking/minidewithdockpanel/unit1.lfm -text svneol=native#text/plain
+components/anchordocking/minidewithdockpanel/unit1.pas -text svneol=native#text/pascal
 components/anchordocking/restoredebugger/ADRestoreDebugger.lpi svneol=native#text/plain
 components/anchordocking/restoredebugger/ADRestoreDebugger.lpr svneol=native#text/plain
 components/anchordocking/restoredebugger/adlayoutviewer.pas svneol=native#text/plain
