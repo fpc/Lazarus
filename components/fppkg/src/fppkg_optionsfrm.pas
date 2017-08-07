@@ -284,7 +284,7 @@ begin
     Checked[Items.IndexOf('Info')] := llInfo in LazPkgOptions.Verbosity;
     Checked[Items.IndexOf('Commands')] := llCommands in LazPkgOptions.Verbosity;
     Checked[Items.IndexOf('Debug')] := llDebug in LazPkgOptions.Verbosity;
-    Checked[Items.IndexOf('Progress')] := llProgres in LazPkgOptions.Verbosity;
+    Checked[Items.IndexOf('Progress')] := llProgress in LazPkgOptions.Verbosity;
   end;
 end;
 
