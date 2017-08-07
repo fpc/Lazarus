@@ -1121,8 +1121,8 @@ msgid "Update package list"
 msgstr "Список обновляемых пакетов"
 
 #: opkman_const.rspackagesfound
-msgid "(%s packages found)"
-msgstr "(найдено пакетов: %s)"
+msgid "(%s repository packages found, containing %s lpk files, total size %s)"
+msgstr "(найдено пакетов в репозитории: %s; файлов LPK в пакетах: %s; общий размер: %s)"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"

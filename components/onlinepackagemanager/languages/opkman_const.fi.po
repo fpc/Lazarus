@@ -1137,7 +1137,7 @@ msgid "Update package list"
 msgstr "Päivitä pakettiluettelo"
 
 #: opkman_const.rspackagesfound
-msgid "(%s packages found)"
+msgid "(%s repository packages found, containing %s lpk files, total size %s)"
 msgstr ""
 
 #: opkman_const.rsprogressfrm_caption0
