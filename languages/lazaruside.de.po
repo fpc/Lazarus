@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-06-04 19:21+0200\n"
+"PO-Revision-Date: 2017-08-06 18:21+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -1238,7 +1238,7 @@ msgstr "Voreinstellung"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
-msgstr "Vorlage löschen"
+msgstr "Vorlage löschen "
 
 #: lazarusidestrconsts.dlgdesktopbuttons
 msgid "Buttons - "
@@ -3049,7 +3049,7 @@ msgstr "Vista-8: an, 8.1+: pro Monitor"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
 msgid "Vista-8: on, 8.1/10+: per monitor/V2"
-msgstr ""
+msgstr "Vista-8: an, 8.1/10+: pro Monitor/V2"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
@@ -3156,7 +3156,7 @@ msgstr "Projektdateien"
 
 #: lazarusidestrconsts.dlgpromptonreplace
 msgid "&Prompt on replace"
-msgstr "Beim Überschreiben nachfragen "
+msgstr "Beim Überschreiben nachfragen"
 
 #: lazarusidestrconsts.dlgpropertycompletion
 msgid "Property completion"
@@ -3974,7 +3974,7 @@ msgstr "Neue Datei anlegen"
 
 #: lazarusidestrconsts.lisa2pcreatenewreq
 msgid "Create New Requirement"
-msgstr "Neue Abhängigkeit erzeugen "
+msgstr "Neue Abhängigkeit erzeugen"
 
 #: lazarusidestrconsts.lisa2pdependency
 msgid "Dependency"
@@ -4126,7 +4126,7 @@ msgstr "Die Maximalversion \"%s\" ist ungültig.%sBitte verwenden Sie das Format
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr "Die Maximalversion ist kleiner als die Minimalversion"
+msgstr "Die Maximalversion ist kleiner als die Minimalversion."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
@@ -6215,7 +6215,7 @@ msgstr "ElseIf"
 
 #: lazarusidestrconsts.liscodetoolsdefsexitwithoutsave
 msgid "Exit without Save"
-msgstr "Beenden ohne zu speichern "
+msgstr "Beenden ohne zu speichern"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
@@ -7088,7 +7088,7 @@ msgstr "Aufruf %s mit %s ersetzt"
 
 #: lazarusidestrconsts.lisconvreplfuncparameternum
 msgid "Replacement function parameter number should be >= 1: %s"
-msgstr ""
+msgstr "Parameternummer der  Ersatzfunktion sollte >= 1 sein: %s"
 
 #: lazarusidestrconsts.lisconvshouldbefollowedbynumber
 msgid "\"$\" should be followed by a number: %s"
@@ -7461,7 +7461,7 @@ msgstr "(Neues Package erstellen)"
 
 #: lazarusidestrconsts.liscreatenewpackagecomponent
 msgid "Create new package component"
-msgstr "Neue Komponente erstellen in..."
+msgstr "Neue Package-Komponente erstellen"
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
@@ -7531,7 +7531,7 @@ msgstr "Mehrfache Prozedur-Signaturen aktualisieren"
 
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
-msgstr "Bitte wählen Sie ein Makro aus"
+msgstr "Bitte wählen Sie ein Makro aus."
 
 #: lazarusidestrconsts.lisctselectcodemacro
 msgid "Select Code Macro"
@@ -8061,7 +8061,7 @@ msgstr "Diese Hinzufügung löschen"
 
 #: lazarusidestrconsts.lisdeletevalue
 msgid "Delete value \"%s\"?"
-msgstr "Wert \"%s\" löschen"
+msgstr "Wert \"%s\" löschen?"
 
 #: lazarusidestrconsts.lisdeletevalue2
 msgid "Delete value %s"
@@ -10799,22 +10799,16 @@ msgid "Keymapping Scheme"
 msgstr "Tastaturbelegung"
 
 #: lazarusidestrconsts.liskmlazarusdefault
-#, fuzzy
-#| msgid "Lazarus (default)"
 msgid "Lazarus default"
 msgstr "Lazarus (Voreinstellung)"
 
 #: lazarusidestrconsts.liskmmacosxapple
-#, fuzzy
-#| msgid "Mac OS X (Apple style)"
 msgid "macOS, Apple style"
-msgstr "Mac OS X (Apple-Stil)"
+msgstr "macOS (Apple-Stil)"
 
 #: lazarusidestrconsts.liskmmacosxlaz
-#, fuzzy
-#| msgid "Mac OS X (Lazarus style)"
 msgid "macOS, Lazarus style"
-msgstr "Mac OS X (Lazarus-Stil)"
+msgstr "macOS (Lazarus-Stil)"
 
 #: lazarusidestrconsts.liskmnewpackage
 msgid "New package"
@@ -11176,7 +11170,7 @@ msgstr "Allgemeine Einstellungen"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before build"
-msgstr "Kompilieren von Lazarus bestätigen "
+msgstr "Kompilieren von Lazarus bestätigen"
 
 #: lazarusidestrconsts.lislazbuildconfirmdeletion
 msgid "Confirm deletion"
@@ -13283,7 +13277,7 @@ msgstr "Besitzt kein IDE-Makro %s:=%s"
 
 #: lazarusidestrconsts.lismmdoesnotoverrideoutdirfu
 msgid "Does not override OutDir (-FU)"
-msgstr ""
+msgstr "Ausgabeverzeichnis nicht ersetzen (-FU)"
 
 #: lazarusidestrconsts.lismmexcludeallpackagesmatching
 msgid "Exclude all packages matching name \"%s\""
@@ -13337,7 +13331,7 @@ msgstr "Neues Ziel"
 
 #: lazarusidestrconsts.lismmoverrideoutdirfu
 msgid "Override OutDir (-FU): %s"
-msgstr ""
+msgstr "Ausgabeverzeichnis ersetzen (-FU): %s"
 
 #: lazarusidestrconsts.lismmoverrideoutputdirectory
 msgid "Override output directory (-FU)"
@@ -13730,7 +13724,7 @@ msgstr "%skeine"
 
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
-msgstr "keine, klicken Sie, um eine auszuwählen "
+msgstr "keine, klicken Sie, um eine auszuwählen"
 
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
@@ -14138,7 +14132,7 @@ msgstr "Sprache überschreiben. Beispielsweise --language=de. Für die mögliche
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
 msgid "Override function result string types with the first parameter expression type"
-msgstr ""
+msgstr "Funktionsergebnis-Stringtypen mit erstem Parameter-Ausdruckstyp überschreiben"
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
@@ -15486,7 +15480,7 @@ msgstr "Package-Links"
 
 #: lazarusidestrconsts.lispldshowgloballinksin
 msgid "Show global links in "
-msgstr "Zeige globale Links in"
+msgstr "Zeige globale Links in "
 
 #: lazarusidestrconsts.lispldshowonlinelinks
 msgid "Show online links"
@@ -15494,7 +15488,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
-msgstr "Zeige Benutzer-Links in"
+msgstr "Zeige Benutzer-Links in "
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -15608,7 +15602,7 @@ msgstr "Vorheriges Wort"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
-msgstr "primäres Konfigurationsverzeichnis in dem Lazarus seine Konfigurationsdateien speichert. Voreinstellung ist"
+msgstr "primäres Konfigurationsverzeichnis in dem Lazarus seine Konfigurationsdateien speichert. Voreinstellung ist "
 
 #: lazarusidestrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -15955,7 +15949,7 @@ msgstr "Benutzer nach Entscheidung fragen"
 
 #: lazarusidestrconsts.lisproperties
 msgid "Properties (replace or remove)"
-msgstr "Eigenschaften (ersetzen oder entfernen"
+msgstr "Eigenschaften (ersetzen oder entfernen)"
 
 #: lazarusidestrconsts.lisprotected
 msgid "Protected"
@@ -16661,7 +16655,7 @@ msgstr "Suche Unit \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr "sekundäres Konfigurationsverzeichnis in dem Lazarus nach Vorlagendateien sucht. Voreinstellung ist"
+msgstr "sekundäres Konfigurationsverzeichnis in dem Lazarus nach Vorlagendateien sucht. Voreinstellung ist "
 
 #: lazarusidestrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
@@ -17486,7 +17480,7 @@ msgstr "Die Datei \"%s\" scheint ein Programm zu sein.%sAktuelles Projekt schlie
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
-msgstr "Die Datei %s scheint die Programmdatei eines vorhandenen Lazarus-Projekts zu sein"
+msgstr "Die Datei %s scheint die Programmdatei eines vorhandenen Lazarus-Projekts zu sein."
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
@@ -17590,7 +17584,7 @@ msgstr "Das Ausgabeverzeichnis von %s ist im Unit-Suchpfad von %s aufgeführt."
 
 #: lazarusidestrconsts.listheoutputdirectoryshouldbeaseparatedirectoryandnot
 msgid " The output directory should be a separate directory and not contain any source files."
-msgstr "Das Ausgabeverzeichnis sollte ein eigenes Verzeichnis sein und keine Quelldateien enthalten."
+msgstr " Das Ausgabeverzeichnis sollte ein eigenes Verzeichnis sein und keine Quelldateien enthalten."
 
 #: lazarusidestrconsts.listheownerclasshasthisname
 msgid "The owner class has this name"
@@ -17798,7 +17792,7 @@ msgstr "Die Unit \"%s\" existiert bereits."
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
-msgstr "Die Unit gehört zum Package %s"
+msgstr "Die Unit gehört zum Package %s."
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
@@ -19022,7 +19016,7 @@ msgstr "Fenster immer oben"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
-msgstr ", mit Includes"
+msgstr ", mit Includes "
 
 #: lazarusidestrconsts.liswithoutapropercompilerthecodebrowsingandcompilingw
 msgid "Without a proper compiler the code browsing and compiling will be disappointing."
@@ -19613,7 +19607,7 @@ msgstr "Befehl:"
 
 #: lazarusidestrconsts.srkmconflic
 msgid "Conflict "
-msgstr "Konflikt"
+msgstr "Konflikt "
 
 #: lazarusidestrconsts.srkmecabortbuild
 msgid "abort build"
@@ -21171,4 +21165,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-

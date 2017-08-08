@@ -209,7 +209,7 @@ msgstr "Bitte geben Sie die unterstützten Lazarus-Versionen ein für Package:"
 
 #: opkman_const.rscreaterepositorypackagefrm_message10
 msgid "Cancelling upload. Please wait..."
-msgstr ""
+msgstr "Breche Upload ab. Bitte warten..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message2
 msgid "Please enter supported FPC versions for package:"
@@ -733,7 +733,7 @@ msgstr "Andere"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory27
 msgid "Games and Game Engines"
-msgstr ""
+msgstr "Spiele und Spiele-Engines"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory3
 msgid "Date and Time"
@@ -915,7 +915,7 @@ msgstr "Proxy verwenden"
 
 #: opkman_const.rsoptions_cbregular_caption
 msgid "Show regular icon for newly added packages after install"
-msgstr ""
+msgstr "Zeige reguläres Icon für neue Packages nach Installation"
 
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
@@ -995,7 +995,7 @@ msgstr "Nach Package-Updates suchen"
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
-msgstr ""
+msgstr "Zeige anderes Icon für neue Packages für (Tage):"
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
@@ -1115,10 +1115,8 @@ msgid "Update package list"
 msgstr "Aktualisierte-Packages-Liste"
 
 #: opkman_const.rspackagesfound
-#, fuzzy,badformat
-#| msgid "(%s packages found)"
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
-msgstr "(%s Packages gefunden)"
+msgstr "(%s Repository-Packages gefunden, mit %s lpk-Dateien, Gesamtgröße %s)"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
@@ -1313,4 +1311,3 @@ msgstr "Geben Sie die Repository-Adresse ein"
 #: opkman_const.rsrepositories_vst_headercolumn
 msgid "Repository Address"
 msgstr "Repository-Adresse"
-
