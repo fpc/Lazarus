@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-14 14:33+0300\n"
+"PO-Revision-Date: 2017-08-10 00:59+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -36,7 +36,7 @@ msgstr "Додаткові параметри для fpdoc"
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
 msgid "&Build"
-msgstr "По&будувати"
+msgstr "Зі&брати"
 
 #: lazdemsg.sbuilddocumentation
 msgid "Build documentation"
@@ -109,11 +109,11 @@ msgstr "Змінити файл опису"
 
 #: lazdemsg.serrfpdoc
 msgid "Building failed with exit code %d. Please check log."
-msgstr "Побудова провалилась з кодом виходу %d. Перевірте звіт."
+msgstr "Збирання провалилось з кодом виходу %d. Перевірте звіт."
 
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
-msgstr "Не знайдено модуля для вставки елементу \"%s\""
+msgstr "Не знайдено модуля для вставляння елемента \"%s\""
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
@@ -137,7 +137,7 @@ msgstr "Помилки"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr "Невідомий DOM елемент як батьківський для вибраного елементу: \"%s\""
+msgstr "Невідомий DOM елемент як батьківський для вибраного елемента: \"%s\""
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
@@ -363,7 +363,7 @@ msgstr "Згенерувати новий документ з сирцевого
 
 #: lazdemsg.smarkselection
 msgid "Mark selection %s"
-msgstr "Позначити виділення %s"
+msgstr "Позначити вибране %s"
 
 #: lazdemsg.smenucollapseall
 msgid "Collapse All"
@@ -385,7 +385,7 @@ msgstr "&Екстра"
 #: lazdemsg.smenuextrabuild
 msgctxt "lazdemsg.smenuextrabuild"
 msgid "&Build"
-msgstr "&Побудувати"
+msgstr "&Зібрати"
 
 #: lazdemsg.smenuextraoptions
 msgid "&Options"
@@ -677,7 +677,7 @@ msgstr "Є незбережені зміни в \"%s\".%sЇх слід збер�
 
 #: lazdemsg.sseealso
 msgid "See Also"
-msgstr "Див Також"
+msgstr "Див. також"
 
 #: lazdemsg.sselectoutputdirectory
 msgid "Select output directory"
