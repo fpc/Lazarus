@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-08-01 09:27+0300\n"
+"PO-Revision-Date: 2017-08-10 00:58+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -4918,7 +4918,7 @@ msgstr "Зібрати ІСР"
 
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
-msgstr "будувати ІСР з пакунками"
+msgstr "зібрати ІСР з пакунками"
 
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
@@ -5080,7 +5080,7 @@ msgstr "Неоднозначний компілятор"
 
 #: lazarusidestrconsts.lisccochecktestdir
 msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
-msgstr "Перевірте теку Тестів в %sІнструменти -> Параметри -> Файли -> Тека для створення тестових проектів"
+msgstr "Перевірте випробувальну теку в %sІнструменти -> Параметри -> Файли -> Тека для  збирання пробних проектів"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
@@ -5861,7 +5861,7 @@ msgstr "Очистити все"
 
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
-msgstr "Закрити всі відмічені"
+msgstr "Закрити всі позначені"
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
@@ -6734,7 +6734,7 @@ msgstr "Підтвердити видалення"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus with profile: %s?"
-msgstr "Перебудувати Lazarus з профілем: %s ?"
+msgstr "Перезібрати Lazarus з профілем: %s ?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
@@ -14478,7 +14478,7 @@ msgstr "Необхідно перекомпілювати все"
 
 #: lazarusidestrconsts.lispckeditrecompileclean
 msgid "Recompile Clean"
-msgstr "Перебудувати начисто"
+msgstr "Перекомпілювати начисто"
 
 #: lazarusidestrconsts.lispckeditrecompilethisandallrequiredpackages
 msgid "Re-Compile this and all required packages?"
@@ -14602,11 +14602,11 @@ msgstr "Автор"
 
 #: lazarusidestrconsts.lispckoptsautomaticallyrebuildasneeded
 msgid "Automatically rebuild as needed"
-msgstr "Перебудувати за необхідністю автоматично"
+msgstr "Перезібрати за необхідністю автоматично"
 
 #: lazarusidestrconsts.lispckoptsautorebuildwhenrebuildingall
 msgid "Auto rebuild when rebuilding all"
-msgstr "перебудувати при перезбиранні всіх"
+msgstr "Перезібрати автоматично при перезбиранні всіх"
 
 #: lazarusidestrconsts.lispckoptscustom
 msgid "Custom"
@@ -14694,7 +14694,7 @@ msgstr "Цей пакунок пропонує те саме що і такі п
 
 #: lazarusidestrconsts.lispckoptsupdaterebuild
 msgid "Update / Rebuild"
-msgstr "Оновити/Перебудувати"
+msgstr "Оновити/Перезібрати"
 
 #: lazarusidestrconsts.lispckoptsusage
 msgid "Usage"
@@ -15112,7 +15112,7 @@ msgstr "Проект: %s"
 
 #: lazarusidestrconsts.lispkgmangrebuildlazarus
 msgid "Rebuild Lazarus?"
-msgstr "Перебудувати Lazarus?"
+msgstr "Перезібрати Lazarus?"
 
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
@@ -15217,7 +15217,7 @@ msgstr "Пакунок \"%s\" компілюється автоматично, �
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
-msgstr "Пакунок \"%s\" відмічено для встановлення, але його не було знайдено.%sВидалити залежність зі списку установки пакунків?"
+msgstr "Пакунок \"%s\" позначено для встановлення, але його не було знайдено.%sВидалити залежність зі списку встановлення пакунків?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
 msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
@@ -15233,7 +15233,7 @@ msgstr "Назва пакунка \"%s\" %sфайлу \"%s\" є некорект
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
-msgstr "Пакунок \"%s\" відмічено.%sЗараз Lazarus підтримує тільки статично пов'язані пакунки. Поточне видалення потребує перезбирання і перезапуску Lazarus.%sВи бажаєте перезібрати Lazarus зараз?"
+msgstr "Пакунок \"%s\" позначено.%sЗараз Lazarus підтримує тільки статично пов'язані пакунки. Поточне видалення потребує перезбирання і перезапуску Lazarus.%sВи бажаєте перезібрати Lazarus зараз?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
 msgid "The package \"%s\" was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
@@ -15923,7 +15923,7 @@ msgstr "Неможливо записати файл стану у проект 
 
 #: lazarusidestrconsts.lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
-msgstr "Завжди будувати (навіть якщо нічого не мінялось)"
+msgstr "Завжди збирати (навіть якщо нічого не мінялось)"
 
 #: lazarusidestrconsts.lisprojoptsalwaysbuildhint
 msgid "May be needed if there is a bug in dependency check, normally not needed."
@@ -16516,7 +16516,7 @@ msgstr "Зберегти всі"
 
 #: lazarusidestrconsts.lissaveallchecked
 msgid "Save All Checked"
-msgstr "Зберегти всі відзначені"
+msgstr "Зберегти всі позначені"
 
 #: lazarusidestrconsts.lissaveallmodified
 msgid "Save all modified files"
@@ -16532,7 +16532,7 @@ msgstr "Зберегти і вийти з діалогу"
 
 #: lazarusidestrconsts.lissaveandrebuildide
 msgid "Save and rebuild IDE"
-msgstr "Зберегти і перебудувати ІСР"
+msgstr "Зберегти і перезібрати ІСР"
 
 #: lazarusidestrconsts.lissaveas
 msgctxt "lazarusidestrconsts.lissaveas"
@@ -17130,7 +17130,7 @@ msgstr "Закінчити"
 
 #: lazarusidestrconsts.lisstopcurrentdebuggingandrebuildproject
 msgid "Stop current debugging and rebuild project?"
-msgstr "Закінчити зневаджування і перебудувати проект?"
+msgstr "Закінчити зневаджування і перезібрати проект?"
 
 #: lazarusidestrconsts.lisstopdebugging
 msgid "Stop Debugging?"
@@ -17664,7 +17664,7 @@ msgstr "Інформаційний файл проекту \"%s\"%sзмінив�
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
-msgstr "Проект треба зберегти перед компіляцією%sЯкщо ви встановите тестову теку в параметрах ІСР,%sВи можете створювати проекти і будувати їх одразу.%sЗберегти проект?"
+msgstr "Проект треба зберегти перед компіляцією%sЯкщо ви встановите тестову теку в параметрах ІСР,%sВи можете створювати проекти і збирати їх одразу.%sЗберегти проект?"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
@@ -19126,7 +19126,7 @@ msgstr "FPC і його сирці можна звантажити з http://sou
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
-msgstr "Ви не можете перебудувати Lazarus  при зневаджуванні або компіляції."
+msgstr "Ви не можете перезібрати Lazarus  під час зневаджування або компіляції."
 
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"

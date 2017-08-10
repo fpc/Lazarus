@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
-"PO-Revision-Date: 2017-05-16 11:03+0300\n"
+"PO-Revision-Date: 2017-08-10 00:58+0300\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -466,7 +466,7 @@ msgid ""
 "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
 msgstr ""
 "%sСправді деінсталювати позначені пакунки?\n"
-"Зауважте: щоб зміни набули чинності потрібно перебудувати ІСР.\n"
+"Зауважте: щоб зміни набули чинності потрібно перезібрати ІСР.\n"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 msgid "Cannot uninstall package \"%s\"!"
@@ -1122,10 +1122,8 @@ msgid "Update package list"
 msgstr "Список оновлюваних пакунків"
 
 #: opkman_const.rspackagesfound
-#, fuzzy,badformat
-#| msgid "(%s packages found)"
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
-msgstr "(знайдено пакунків: %s)"
+msgstr "(знайдено %s пакунків сховища, які містять %s lpk-файлів, загальний розмір %s)"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
