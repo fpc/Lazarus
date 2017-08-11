@@ -42,8 +42,8 @@ const
   cLocalRepositoryConfig = 'config';
   cLocalRepositoryConfigFile = 'options.xml';
   cLocalRepositoryUpdatesFile = 'updates_%s.xml';
-  cExcludedFilesDef = '*.,*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~,*.exe,*.dbg,*.zip,*.json';
-  cExcludedFoldersDef = 'lib,backup,updates,compiled,.git,.svn';
+  cExcludedFilesDef = '*.,*.a,*.o,*.ppu,*.compiled,*.bak,*.or,*.rsj,*.~,*.exe,*.dbg,*.zip,*.so,*.dll,*.dylib';
+  cExcludedFoldersDef = 'lib,backup,updates,compiled,.git,.svn,units';
   cHelpPage = 'http://wiki.freepascal.org/Online_Package_Manager';
   cHelpPage_CreateRepositoryPackage = 'http://wiki.freepascal.org/Online_Package_Manager#Create_repository_package';
   cHelpPage_CreateExternalJSON = 'http://wiki.freepascal.org/Online_Package_Manager#Create_JSON_for_updates';
