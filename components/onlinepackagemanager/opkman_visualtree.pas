@@ -129,6 +129,7 @@ type
     procedure VSTExpanding(Sender: TBaseVirtualTree; {%H-}Node: PVirtualNode; var {%H-}Allowed: Boolean);
     procedure VSTCollapsing(Sender: TBaseVirtualTree; {%H-}Node: PVirtualNode; var {%H-}Allowed: Boolean);
     procedure VSTDblClick(Sender: TObject);
+    procedure VSTClick(Sender: TObject);
     procedure VSTScroll(Sender: TBaseVirtualTree; {%H-}DeltaX, {%H-}DeltaY: Integer);
     function GetDisplayString(const AStr: String): String;
     function IsAllChecked(const AChecking: PVirtualNode): Boolean;
@@ -264,6 +265,7 @@ begin
      OnMouseEnter := @VSTMouseEnter;
      OnMouseDown := @VSTMouseDown;
      OnDblClick := @VSTDblClick;
+     OnClick := @VSTClick;
      OnGetHint := @VSTGetHint;
      OnAfterCellPaint := @VSTAfterCellPaint;
      OnCollapsed := @VSTCollapsed;
@@ -1794,6 +1796,17 @@ begin
 end;
 
 procedure TVisualTree.VSTDblClick(Sender: TObject);
+begin
+{  if FLinkClicked then
+  begin
+    FLinkClicked := False;
+    FHoverColumn := -1;
+    FHoverNode := nil;
+    OpenURL(FLink);
+  end;}
+end;
+
+procedure TVisualTree.VSTClick(Sender: TObject);
 begin
   if FLinkClicked then
   begin
