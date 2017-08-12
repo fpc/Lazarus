@@ -273,7 +273,7 @@ begin
   FilenameOfClass:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                    ExtractFilePath(AFile.Filename),AnUnitName,InFilename);
   if FilenameOfClass='' then begin
-    debugln(['FindDeclarationOfOIProperty Row=',Row.Name,' Instance=',DbgSName(APersistent),' LookupRoot=',DbgSName(LookupRoot),' Unit not found: ',AnUnitName,' started search in directory of lookuproot: ',AFile.Filename]);
+    debugln(['FindDeclarationOfOIProperty FindUnitSourceInCompletePath failed: Row=',Row.Name,' Instance=',DbgSName(APersistent),' LookupRoot=',DbgSName(LookupRoot),' Unit not found: ',AnUnitName,' started search in directory of lookuproot: ',AFile.Filename]);
     exit;
   end;
   if not LazarusIDE.BeginCodeTools then begin
