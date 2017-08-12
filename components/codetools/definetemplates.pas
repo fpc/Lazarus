@@ -2301,10 +2301,12 @@ var
     RTLSrcOSDir:=TDefineTemplate.Create('SrcOS',SrcOS,'',
       SrcOS,da_Directory);
     IfTargetOSIsNotSrcOS.AddChild(RTLSrcOSDir);
+    // add include path inc
     RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
       'include path',
       IncludePathMacroName,IncPathMacro+';inc',
       da_Define));
+    // add include path $(TargetOS)
     RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
       'include path to TargetCPU directories',
       IncludePathMacroName,IncPathMacro+';'+aTargetCPU,
@@ -2536,6 +2538,17 @@ begin
       +';'+DefinePathMacro+'/'+SrcOS+DS
       +';'+IncPathMacro)
       ,da_DefineRecurse));
+    // packages/fcl-process/src
+    //   IF SrcOS=win then add include path winall
+    IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
+      '',''''+SrcOS+'''=''win''',da_If);
+    IFTempl.AddChild(TDefineTemplate.Create('Include Path',
+        Format(ctsIncludeDirectoriesPlusDirs,['winall']),
+        IncludePathMacroName,
+        IncPathMacro
+        +';winall',
+        da_DefineRecurse));
+    FCLSubDir.AddChild(IFTempl);
 
     // packages/fcl-async
     PackagesFCLAsyncDir:=TDefineTemplate.Create('fcl-async','fcl-async','','fcl-async',da_Directory);
