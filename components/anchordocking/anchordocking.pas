@@ -592,7 +592,7 @@ type
     procedure MakeDockSite(AForm: TCustomForm; Sites: TAnchors;
                            ResizePolicy: TADMResizePolicy;
                            AllowInside: boolean = false);
-    procedure MakeDockPanel(APanel:TAnchorDockPanel;
+    procedure MakeDockPanel(APanel: TAnchorDockPanel;
                             ResizePolicy: TADMResizePolicy);
     procedure MakeVisible(AControl: TControl; SwitchPages: boolean);
     function ShowControl(ControlName: string; BringToFront: boolean = false): TControl;
@@ -1590,8 +1590,7 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree);
   //    the SiteA. This way the corresponding root forms are kept which reduces
   //    flickering.
 
-    function FindMappedControl(ChildNode: TAnchorDockLayoutTreeNode
-      ): TCustomForm;
+    function FindMappedControl(ChildNode: TAnchorDockLayoutTreeNode): TCustomForm;
     var
       i: Integer;
     begin
@@ -1774,8 +1773,8 @@ var
         if (Node.Monitor>=0) and (Node.Monitor<Screen.MonitorCount) then
           aMonitor:=Screen.Monitors[Node.Monitor]
         else begin
-          if site is TCustomForm then
-            aMonitor:=(Site as TCustomForm).Monitor
+          if Site is TCustomForm then
+            aMonitor:=TCustomForm(Site).Monitor
           else
             aMonitor:=GetParentForm(Site).Monitor;
         end;
@@ -1805,9 +1804,8 @@ var
         Site.Align:=alClient;
       end
       else
-        NewBounds:=Rect(ScaleChildX(NewBounds.Left),ScaleChildY(NewBounds.Top),
-                      ScaleChildX(NewBounds.Right),ScaleChildY(NewBounds.Bottom));
-
+        NewBounds:=Rect(ScaleChildX(NewBounds.Left), ScaleChildY(NewBounds.Top),
+                        ScaleChildX(NewBounds.Right),ScaleChildY(NewBounds.Bottom));
     end;
     {$IFDEF VerboseAnchorDockRestore}
     if Scale then
@@ -1833,23 +1831,21 @@ var
       if (Node.NodeType<>adltnPages) and (aHostSite.Pages<>nil) then
         aHostSite.FreePages;
     end;
-    if not (TObject(Site) is TAnchorDockPanel) then
-    begin
-      if Parent=nil then begin
-        if Site is TCustomForm then
-          (Site as TCustomForm).WindowState:=Node.WindowState;
-      end else begin
-        if Site is TCustomForm then
-          (Site as TCustomForm).WindowState:=wsNormal;
-      end;
-    end;
+    if Site is TCustomForm then
+      if Parent=nil then
+        TCustomForm(Site).WindowState:=Node.WindowState
+      else
+        TCustomForm(Site).WindowState:=wsNormal;
   end;
 
   function GetNodeSite(Node: TAnchorDockLayoutTreeNode): TAnchorDockHostSite;
+  var
+    Site: TControl;
   begin
-    Result:=TAnchorDockHostSite(fTreeNameToDocker[Node.Name]);
-    if Result is TAnchorDockHostSite then exit;
-    if Result<>nil then
+    Site:=fTreeNameToDocker[Node.Name];
+    if Site is TAnchorDockHostSite then
+      exit(TAnchorDockHostSite(Site));
+    if Site<>nil then
       exit(nil);
     Result:=CreateSite;
     fDisabledAutosizing.Add(Result);
@@ -1889,14 +1885,15 @@ var
         MakeDockable(AControl,false)
       else
         ClearLayoutProperties(AControl);
-      Site:=AControl.HostDockSite as TAnchorDockHostSite;
       {$IFDEF VerboseAnchorDockRestore}
-      debugln(['TAnchorDockMaster.RestoreLayout.Restore Control Node.Name=',Node.Name,' Control=',DbgSName(AControl),' Site=',DbgSName(Site)]);
+      debugln(['TAnchorDockMaster.RestoreLayout.Restore Control Node.Name=',Node.Name,
+               ' Control=',DbgSName(AControl),' Site=',DbgSName(AControl.HostDockSite)]);
       {$ENDIF}
       AControl.Visible:=true;
-      SetupSite(Site,Node,Parent);
-      Result:=Site;
-    end else if Node.NodeType=adltnCustomSite then begin
+      SetupSite(AControl.HostDockSite,Node,Parent);
+      Result:=AControl.HostDockSite;
+    end
+    else if Node.NodeType=adltnCustomSite then begin
       // restore custom dock site
       // the control was already created
       // => position it
@@ -1913,10 +1910,10 @@ var
       SetupSite(TCustomForm(AControl),Node,nil);
       Result:=AControl;
       // restore docked site
-      if Node.Count>0 then begin
+      if Node.Count>0 then
         Restore(Node[0],TCustomForm(AControl));
-      end;
-    end else if Node.IsSplitter then begin
+    end
+    else if Node.IsSplitter then begin
       // restore splitter
       Splitter:=TAnchorDockSplitter(fTreeNameToDocker[Node.Name]);
       if Splitter=nil then begin
@@ -3439,8 +3436,7 @@ begin
   end;
 end;
 
-function TAnchorDockMaster.CreateSplitter(NamePrefix: string
-  ): TAnchorDockSplitter;
+function TAnchorDockMaster.CreateSplitter(NamePrefix: string): TAnchorDockSplitter;
 var
   i: Integer;
   NewName: String;
