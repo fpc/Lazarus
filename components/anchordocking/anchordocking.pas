@@ -601,7 +601,7 @@ type
     // save/restore layouts
     procedure SaveLayoutToConfig(Config: TConfigStorage);
     procedure SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
-    procedure SaveSiteLayoutToTree(AForm: TCustomForm;
+    procedure SaveSiteLayoutToTree(AControl: TWinControl;
                                    LayoutTree: TAnchorDockLayoutTree);
     function CreateRestoreLayout(AControl: TControl): TAnchorDockRestoreLayout;
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
@@ -1759,7 +1759,7 @@ var
                 div (SrcWorkArea.Bottom-SrcWorkArea.Top);
   end;
 
-  procedure SetupSite(Site: TCustomForm;
+  procedure SetupSite(Site: TWinControl;
     Node: TAnchorDockLayoutTreeNode; Parent: TWinControl);
   var
     aManager: TAnchorDockManager;
@@ -1767,14 +1767,18 @@ var
     aMonitor: TMonitor;
     aHostSite: TAnchorDockHostSite;
   begin
-    if TObject(Site) is TAnchorDockPanel then
+    if Site is TAnchorDockPanel then
       GetParentForm(Site).BoundsRect:=Node.BoundsRect
     else begin
       if Parent=nil then begin
         if (Node.Monitor>=0) and (Node.Monitor<Screen.MonitorCount) then
           aMonitor:=Screen.Monitors[Node.Monitor]
-        else
-          aMonitor:=Site.Monitor;
+        else begin
+          if site is TCustomForm then
+            aMonitor:=(Site as TCustomForm).Monitor
+          else
+            aMonitor:=GetParentForm(Site).Monitor;
+        end;
         WorkArea:=aMonitor.WorkareaRect;
         {$IFDEF VerboseAnchorDockRestore}
         debugln(['TAnchorDockMaster.RestoreLayout.SetupSite WorkArea=',dbgs(WorkArea)]);
@@ -1811,7 +1815,7 @@ var
     {$ENDIF}
     Site.BoundsRect:=NewBounds;
     Site.Visible:=true;
-    if not (TObject(Site) is TAnchorDockPanel) then
+    if not (Site is TAnchorDockPanel) then
       Site.Parent:=Parent;
     if IsCustomSite(Parent) then begin
       aManager:=TAnchorDockManager(Parent.DockManager);
@@ -1832,9 +1836,11 @@ var
     if not (TObject(Site) is TAnchorDockPanel) then
     begin
       if Parent=nil then begin
-        Site.WindowState:=Node.WindowState;
+        if Site is TCustomForm then
+          (Site as TCustomForm).WindowState:=Node.WindowState;
       end else begin
-        Site.WindowState:=wsNormal;
+        if Site is TCustomForm then
+          (Site as TCustomForm).WindowState:=wsNormal;
       end;
     end;
   end;
@@ -2881,19 +2887,19 @@ var
   Site: TAnchorDockHostSite;
   SavedSites: TFPList;
   LayoutNode: TAnchorDockLayoutTreeNode;
-  AForm: TCustomForm;
+  AFormOrDockPanel: TWinControl;
   VisibleControls: TStringList;
 
-  procedure SaveForm(theForm: TCustomForm; SaveChildren: boolean);
+  procedure SaveFormOrDockPanel(theFormOrDockPanel: TWinControl; SaveChildren: boolean);
   begin
     // custom dock site
     LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
     LayoutNode.NodeType:=adltnCustomSite;
-    LayoutNode.Assign(theForm,TObject(theForm) is TAnchorDockPanel);
+    LayoutNode.Assign(theFormOrDockPanel,theFormOrDockPanel is TAnchorDockPanel);
     // can have one normal dock site
     if SaveChildren then
     begin
-      Site:=TAnchorDockManager(theForm.DockManager).GetChildSite;
+      Site:=TAnchorDockManager(theFormOrDockPanel.DockManager).GetChildSite;
       if Site<>nil then begin
         LayoutNode:=LayoutTree.NewNode(LayoutNode);
         Site.SaveLayout(LayoutTree,LayoutNode);
@@ -2913,22 +2919,22 @@ begin
       AControl:=Controls[i];
       if not DockedControlIsVisible(AControl) then continue;
       VisibleControls.Add(AControl.Name);
-      AForm:=GetParentFormOrDockPanel(AControl);
-      if AForm=nil then continue;
-      if SavedSites.IndexOf(AForm)>=0 then continue;
-      SavedSites.Add(AForm);
-      debugln(['TAnchorDockMaster.SaveMainLayoutToTree AForm=',DbgSName(AForm)]);
-      DebugWriteChildAnchors(AForm,true,true);
-      if TObject(AForm) is TAnchorDockPanel then begin
-        SaveForm(GetParentFormOrDockPanel(AForm),{false}true);
+      AFormOrDockPanel:=GetParentFormOrDockPanel(AControl);
+      if AFormOrDockPanel=nil then continue;
+      if SavedSites.IndexOf(AFormOrDockPanel)>=0 then continue;
+      SavedSites.Add(AFormOrDockPanel);
+      debugln(['TAnchorDockMaster.SaveMainLayoutToTree AForm=',DbgSName(AFormOrDockPanel)]);
+      DebugWriteChildAnchors(AFormOrDockPanel,true,true);
+      if AFormOrDockPanel is TAnchorDockPanel then begin
+        SaveFormOrDockPanel(GetParentFormOrDockPanel(AFormOrDockPanel),{false}true);
         //LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
-        //TAnchorDockPanel(AForm).SaveLayout(LayoutTree,LayoutNode);
-      end else if AForm is TAnchorDockHostSite then begin
-        Site:=TAnchorDockHostSite(AForm);
+        //TAnchorDockPanel(AFormOrDockPanel).SaveLayout(LayoutTree,LayoutNode);
+      end else if AFormOrDockPanel is TAnchorDockHostSite then begin
+        Site:=TAnchorDockHostSite(AFormOrDockPanel);
         LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
         Site.SaveLayout(LayoutTree,LayoutNode);
-      end else if IsCustomSite(AForm) then begin
-        SaveForm(AForm,true);
+      end else if IsCustomSite(AFormOrDockPanel) then begin
+        SaveFormOrDockPanel(AFormOrDockPanel,true);
       end else
         raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
     end;
@@ -2940,28 +2946,28 @@ begin
   end;
 end;
 
-procedure TAnchorDockMaster.SaveSiteLayoutToTree(AForm: TCustomForm;
+procedure TAnchorDockMaster.SaveSiteLayoutToTree(AControl: TWinControl;
   LayoutTree: TAnchorDockLayoutTree);
 var
   LayoutNode: TAnchorDockLayoutTreeNode;
   Site: TAnchorDockHostSite;
 begin
-  if AForm is TAnchorDockHostSite then begin
-    Site:=TAnchorDockHostSite(AForm);
+  if AControl is TAnchorDockHostSite then begin
+    Site:=TAnchorDockHostSite(AControl);
     Site.SaveLayout(LayoutTree,LayoutTree.Root);
-  end else if TObject(AForm) is TAnchorDockPanel then begin
-    (TObject(AForm) as TAnchorDockPanel).SaveLayout(LayoutTree,LayoutTree.Root);
-  end else if IsCustomSite(AForm) then begin
+  end else if AControl is TAnchorDockPanel then begin
+    (AControl as TAnchorDockPanel).SaveLayout(LayoutTree,LayoutTree.Root);
+  end else if IsCustomSite(AControl) then begin
     LayoutTree.Root.NodeType:=adltnCustomSite;
-    LayoutTree.Root.Assign(AForm);
+    LayoutTree.Root.Assign(AControl);
     // can have one normal dock site
-    Site:=TAnchorDockManager(AForm.DockManager).GetChildSite;
+    Site:=TAnchorDockManager(AControl.DockManager).GetChildSite;
     if Site<>nil then begin
       LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
       Site.SaveLayout(LayoutTree,LayoutNode);
     end;
   end else
-    raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AForm));
+    raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
 end;
 
 function TAnchorDockMaster.CreateRestoreLayout(AControl: TControl
