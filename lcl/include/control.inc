@@ -781,6 +781,11 @@ begin
   Result := MulDiv(ASize, ParentForm.PixelsPerInch, 96);
 end;
 
+function TControl.Scale96ToScreen(const ASize: Integer): Integer;
+begin
+  Result := MulDiv(ASize, Screen.PixelsPerInch, 96);
+end;
+
 function TControl.ScaleFormTo96(const ASize: Integer): Integer;
 var
   ParentForm: TCustomDesignControl;
@@ -795,6 +800,11 @@ var
 begin
   ParentForm := NeedParentDesignControl(Self);
   Result := MulDiv(ASize, ParentForm.DesignTimePPI, ParentForm.PixelsPerInch);
+end;
+
+function TControl.ScaleScreenTo96(const ASize: Integer): Integer;
+begin
+  Result := MulDiv(ASize, 96, Screen.PixelsPerInch);
 end;
 
 function TControl.Scale96ToFont(const ASize: Integer): Integer;

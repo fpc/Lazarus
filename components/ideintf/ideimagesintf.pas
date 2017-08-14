@@ -51,7 +51,7 @@ type
     destructor Destroy; override;
 
     class function GetScalePercent: Integer;
-    class function ScaleImage(const AImage: TCustomBitmap; out ANewInstance: Boolean;
+    class function ScaleImage(const AImage: TGraphic; out ANewInstance: Boolean;
       TargetWidth, TargetHeight: Integer; const AFactor: Double): TCustomBitmap;
     class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap; deprecated 'Use the other overload instead.';
     class function CreateImage(ImageName: String; ImageSize: Integer = 16): TCustomBitmap;
@@ -317,17 +317,17 @@ begin
   Names.AddObject(ImageName, TObject(PtrInt(Result)));
 end;
 
-class function TIDEImages.ScaleImage(const AImage: TCustomBitmap; out
+class function TIDEImages.ScaleImage(const AImage: TGraphic; out
   ANewInstance: Boolean; TargetWidth, TargetHeight: Integer;
   const AFactor: Double): TCustomBitmap;
 var
   Bmp: TBitmap;
   TargetRect: TRect;
 begin
-  if SameValue(AFactor, 1) then
+  if SameValue(AFactor, 1) and (AImage is TCustomBitmap) then
   begin
     ANewInstance := False;
-    Exit(AImage);
+    Exit(TCustomBitmap(AImage));
   end;
 
   Bmp := TBitmap.Create;

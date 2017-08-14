@@ -17,8 +17,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts, LazFileCache,
-  LazMethodList, ImgList, Graphics;
+  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts, IDEImagesIntf,
+  LazFileCache, LazMethodList, ImgList, Graphics;
 
 const
   FileDescGroupName = 'File';
@@ -725,8 +725,10 @@ function LoadProjectIconIntoImages(const ProjFile: string;
 var
   xIconFile: String;
   xIcon: TIcon;
-  I: Integer;
+  I, xAlternativeIcon: Integer;
   xObj: TLoadProjectIconIntoImagesObject;
+  xScaledIcon: TCustomBitmap;
+  xNewIcon: Boolean;
 begin
   //ToDo: better index
 
@@ -749,6 +751,10 @@ begin
     xIcon := TIcon.Create;
     try
       xIcon.LoadFromFile(xIconFile);
+      if xIcon.Count>0 then
+        xAlternativeIcon := 0
+      else
+        xAlternativeIcon := -1;
       for I := 0 to xIcon.Count-1 do
       begin
         xIcon.Current := I;
@@ -757,6 +763,21 @@ begin
         begin
           Result := Images.AddIcon(xIcon);
           Break;
+        end;
+        if (xIcon.Width = 16)
+        and(xIcon.Height = 16) then
+          xAlternativeIcon := I;
+      end;
+
+      if (Result<0) and (xAlternativeIcon>=0) then
+      begin
+        xIcon.Current := xAlternativeIcon;
+        xScaledIcon := TIDEImages.ScaleImage(xIcon, xNewIcon, Images.Width, Images.Height, Images.Width/xIcon.Width);
+        try
+          Result := Images.Add(xScaledIcon, nil);
+        finally
+          if xNewIcon then
+            xScaledIcon.Free;
         end;
       end;
     finally
