@@ -1,36 +1,34 @@
 object OptionsFrm: TOptionsFrm
   Left = 719
-  Height = 408
+  Height = 442
   Top = 228
-  Width = 525
+  Width = 530
   BorderIcons = [biSystemMenu]
   Caption = 'Options'
-  ClientHeight = 408
-  ClientWidth = 525
-  Color = clBtnFace
+  ClientHeight = 442
+  ClientWidth = 530
   Constraints.MinHeight = 300
   Constraints.MinWidth = 475
   KeyPreview = True
   OnKeyPress = FormKeyPress
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
-  LCLVersion = '1.7'
   object pnBottom: TPanel
     Left = 0
     Height = 31
-    Top = 377
-    Width = 525
+    Top = 411
+    Width = 530
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 31
-    ClientWidth = 525
+    ClientWidth = 530
     TabOrder = 1
     object bOk: TButton
       AnchorSideRight.Control = bCancel
       AnchorSideBottom.Control = bRestore
       AnchorSideBottom.Side = asrBottom
-      Left = 353
+      Left = 358
       Height = 25
       Top = 0
       Width = 80
@@ -47,7 +45,7 @@ object OptionsFrm: TOptionsFrm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = bRestore
       AnchorSideBottom.Side = asrBottom
-      Left = 439
+      Left = 444
       Height = 25
       Top = 0
       Width = 80
@@ -78,9 +76,9 @@ object OptionsFrm: TOptionsFrm
   end
   object pgOptions: TPageControl
     Left = 6
-    Height = 365
+    Height = 399
     Top = 6
-    Width = 513
+    Width = 518
     ActivePage = tsGeneral
     Align = alClient
     BorderSpacing.Around = 6
@@ -88,26 +86,25 @@ object OptionsFrm: TOptionsFrm
     TabOrder = 0
     object tsGeneral: TTabSheet
       Caption = 'General'
-      ClientHeight = 337
-      ClientWidth = 505
+      ClientHeight = 371
+      ClientWidth = 510
       object pnGeneral: TPanel
         Left = 0
-        Height = 336
+        Height = 370
         Top = 0
-        Width = 505
+        Width = 510
         Align = alClient
         BorderSpacing.Bottom = 1
         BevelOuter = bvNone
-        ClientHeight = 336
-        ClientWidth = 505
-        Color = clBtnFace
+        ClientHeight = 370
+        ClientWidth = 510
         ParentColor = False
         TabOrder = 0
         object lbRemoteRepository: TLabel
           AnchorSideLeft.Control = pnGeneral
           Left = 6
           Height = 15
-          Top = 16
+          Top = 8
           Width = 100
           BorderSpacing.Left = 6
           Caption = 'Remote repository:'
@@ -119,7 +116,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 19
-          Top = 64
+          Top = 56
           Width = 235
           BorderSpacing.Top = 6
           Caption = ' Force download and extract of packages'
@@ -133,7 +130,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 19
-          Top = 85
+          Top = 77
           Width = 294
           BorderSpacing.Top = 2
           Caption = 'Delete downloaded zip files after installation/update'
@@ -145,7 +142,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideLeft.Control = lbRemoteRepository
           Left = 6
           Height = 15
-          Top = 144
+          Top = 141
           Width = 146
           Caption = 'Check for package updates:'
           ParentColor = False
@@ -156,7 +153,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 165
+          Top = 162
           Width = 209
           BorderSpacing.Top = 6
           ItemHeight = 15
@@ -180,7 +177,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Side = asrCenter
           Left = 230
           Height = 15
-          Top = 169
+          Top = 166
           Width = 64
           BorderSpacing.Left = 15
           Caption = 'Last update:'
@@ -194,15 +191,15 @@ object OptionsFrm: TOptionsFrm
           AnchorSideRight.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 35
-          Width = 493
+          Top = 27
+          Width = 498
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
           BorderSpacing.Top = 4
           BorderSpacing.Right = 6
           BevelOuter = bvNone
           ClientHeight = 23
-          ClientWidth = 493
+          ClientWidth = 498
           TabOrder = 0
           object cbRemoteRepository: TComboBox
             AnchorSideLeft.Control = pnRepositories
@@ -211,7 +208,7 @@ object OptionsFrm: TOptionsFrm
             Left = 0
             Height = 23
             Top = 0
-            Width = 430
+            Width = 435
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Right = 2
             ItemHeight = 15
@@ -226,7 +223,7 @@ object OptionsFrm: TOptionsFrm
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Control = cbRemoteRepository
             AnchorSideBottom.Side = asrBottom
-            Left = 432
+            Left = 437
             Height = 22
             Top = 0
             Width = 61
@@ -241,7 +238,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideLeft.Control = lbRemoteRepository
           Left = 6
           Height = 15
-          Top = 216
+          Top = 213
           Width = 204
           Caption = 'Show newly added packages for(days):'
           ParentColor = False
@@ -253,7 +250,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Side = asrCenter
           Left = 216
           Height = 23
-          Top = 212
+          Top = 209
           Width = 76
           BorderSpacing.Left = 6
           MaxValue = 365
@@ -263,34 +260,55 @@ object OptionsFrm: TOptionsFrm
         object cbRegularIcons: TCheckBox
           Left = 6
           Height = 19
-          Top = 240
+          Top = 237
           Width = 232
           Caption = 'Show regular icon for installed packages'
           TabOrder = 5
+        end
+        object cbUseDefaultTheme: TCheckBox
+          Left = 6
+          Height = 19
+          Top = 301
+          Width = 116
+          Caption = 'Use default theme'
+          TabOrder = 6
+        end
+        object Bevel1: TBevel
+          Left = 0
+          Height = 2
+          Top = 134
+          Width = 506
+          Anchors = [akTop, akLeft, akRight]
+        end
+        object Bevel2: TBevel
+          Left = 4
+          Height = 2
+          Top = 288
+          Width = 506
+          Anchors = [akTop, akLeft, akRight]
         end
       end
     end
     object tsProxy: TTabSheet
       Caption = 'Proxy'
-      ClientHeight = 330
-      ClientWidth = 509
+      ClientHeight = 337
+      ClientWidth = 505
       object pnProxy: TPanel
         Left = 0
-        Height = 342
+        Height = 337
         Top = 0
-        Width = 521
+        Width = 505
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 342
-        ClientWidth = 521
-        Color = clBtnFace
+        ClientHeight = 337
+        ClientWidth = 505
         ParentColor = False
         TabOrder = 0
         object cbProxy: TCheckBox
           Left = 8
-          Height = 24
+          Height = 19
           Top = 15
-          Width = 93
+          Width = 71
           Caption = 'Use Proxy'
           OnChange = cbProxyChange
           TabOrder = 0
@@ -301,7 +319,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 144
-          Top = 45
+          Top = 40
           Width = 411
           BorderSpacing.Top = 6
           Caption = 'Proxy Settings'
@@ -313,8 +331,8 @@ object OptionsFrm: TOptionsFrm
             AnchorSideTop.Control = lbServer
             AnchorSideTop.Side = asrBottom
             Left = 8
-            Height = 27
-            Top = 24
+            Height = 23
+            Top = 22
             Width = 304
             BorderSpacing.Top = 4
             OnKeyPress = edRemoteRepositoryKeyPress
@@ -323,9 +341,9 @@ object OptionsFrm: TOptionsFrm
           end
           object lbServer: TLabel
             Left = 8
-            Height = 17
+            Height = 15
             Top = 3
-            Width = 43
+            Width = 32
             Caption = 'Server'
             ParentColor = False
           end
@@ -334,9 +352,9 @@ object OptionsFrm: TOptionsFrm
             AnchorSideTop.Control = edProxyServer
             AnchorSideTop.Side = asrBottom
             Left = 8
-            Height = 17
-            Top = 57
-            Width = 68
+            Height = 15
+            Top = 51
+            Width = 53
             BorderSpacing.Top = 6
             Caption = 'Username'
             ParentColor = False
@@ -346,8 +364,8 @@ object OptionsFrm: TOptionsFrm
             AnchorSideTop.Control = lbUserName
             AnchorSideTop.Side = asrBottom
             Left = 8
-            Height = 27
-            Top = 78
+            Height = 23
+            Top = 70
             Width = 186
             BorderSpacing.Top = 4
             OnKeyPress = edRemoteRepositoryKeyPress
@@ -358,9 +376,9 @@ object OptionsFrm: TOptionsFrm
             AnchorSideLeft.Control = seProxyPort
             AnchorSideTop.Control = lbServer
             Left = 318
-            Height = 17
+            Height = 15
             Top = 3
-            Width = 30
+            Width = 22
             Caption = 'Port'
             ParentColor = False
           end
@@ -369,9 +387,9 @@ object OptionsFrm: TOptionsFrm
             AnchorSideLeft.Side = asrBottom
             AnchorSideTop.Control = lbUserName
             Left = 200
-            Height = 17
-            Top = 57
-            Width = 66
+            Height = 15
+            Top = 51
+            Width = 50
             BorderSpacing.Left = 6
             Caption = 'Password'
             ParentColor = False
@@ -382,8 +400,8 @@ object OptionsFrm: TOptionsFrm
             AnchorSideRight.Control = seProxyPort
             AnchorSideRight.Side = asrBottom
             Left = 200
-            Height = 27
-            Top = 78
+            Height = 23
+            Top = 70
             Width = 193
             Anchors = [akTop, akLeft, akRight]
             EchoMode = emPassword
@@ -397,8 +415,8 @@ object OptionsFrm: TOptionsFrm
             AnchorSideLeft.Side = asrBottom
             AnchorSideTop.Control = edProxyServer
             Left = 318
-            Height = 27
-            Top = 24
+            Height = 23
+            Top = 22
             Width = 75
             BorderSpacing.Left = 6
             MaxValue = 65635
@@ -409,25 +427,24 @@ object OptionsFrm: TOptionsFrm
     end
     object tsFolders: TTabSheet
       Caption = 'Folders'
-      ClientHeight = 330
-      ClientWidth = 509
+      ClientHeight = 337
+      ClientWidth = 505
       object pnFolders: TPanel
         Left = 0
-        Height = 298
+        Height = 337
         Top = 0
-        Width = 521
+        Width = 505
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 298
-        ClientWidth = 521
-        Color = clBtnFace
+        ClientHeight = 337
+        ClientWidth = 505
         ParentColor = False
         TabOrder = 0
         object lbLocalRepositoryPackages: TLabel
           Left = 8
-          Height = 17
+          Height = 15
           Top = 16
-          Width = 110
+          Width = 84
           Caption = 'Local repository'
           ParentColor = False
           ParentShowHint = False
@@ -437,9 +454,9 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Control = edLocalRepositoryPackages
           AnchorSideTop.Side = asrBottom
           Left = 8
-          Height = 17
-          Top = 76
-          Width = 161
+          Height = 15
+          Top = 70
+          Width = 125
           BorderSpacing.Top = 12
           Caption = 'Local repository archive'
           ParentColor = False
@@ -450,9 +467,9 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Control = edLocalRepositoryArchive
           AnchorSideTop.Side = asrBottom
           Left = 8
-          Height = 17
-          Top = 136
-          Width = 161
+          Height = 15
+          Top = 124
+          Width = 124
           BorderSpacing.Top = 12
           Caption = 'Local repository update'
           ParentColor = False
@@ -465,9 +482,9 @@ object OptionsFrm: TOptionsFrm
           AnchorSideRight.Control = pnFolders
           AnchorSideRight.Side = asrBottom
           Left = 8
-          Height = 27
-          Top = 37
-          Width = 507
+          Height = 23
+          Top = 35
+          Width = 491
           Directory = 'edLocalRepositoryPackages'
           ShowHidden = False
           ButtonWidth = 50
@@ -489,9 +506,9 @@ object OptionsFrm: TOptionsFrm
           AnchorSideRight.Control = edLocalRepositoryPackages
           AnchorSideRight.Side = asrBottom
           Left = 8
-          Height = 27
-          Top = 97
-          Width = 507
+          Height = 23
+          Top = 89
+          Width = 491
           ShowHidden = False
           ButtonWidth = 50
           NumGlyphs = 1
@@ -510,9 +527,9 @@ object OptionsFrm: TOptionsFrm
           AnchorSideRight.Control = edLocalRepositoryArchive
           AnchorSideRight.Side = asrBottom
           Left = 8
-          Height = 27
-          Top = 157
-          Width = 507
+          Height = 23
+          Top = 143
+          Width = 491
           ShowHidden = False
           ButtonWidth = 50
           NumGlyphs = 1
@@ -538,7 +555,6 @@ object OptionsFrm: TOptionsFrm
         BevelOuter = bvNone
         ClientHeight = 337
         ClientWidth = 505
-        Color = clBtnFace
         ParentColor = False
         TabOrder = 0
         object pnProfilesTop: TPanel
@@ -622,9 +638,7 @@ object OptionsFrm: TOptionsFrm
               BorderSpacing.Top = 4
               BorderSpacing.Right = 6
               BorderSpacing.Bottom = 6
-              Color = clBtnFace
               ItemHeight = 0
-              Options = [lboDrawFocusRect]
               ParentShowHint = False
               ScrollWidth = 151
               ShowHint = True
@@ -719,9 +733,7 @@ object OptionsFrm: TOptionsFrm
               BorderSpacing.Top = 4
               BorderSpacing.Right = 6
               BorderSpacing.Bottom = 6
-              Color = clBtnFace
               ItemHeight = 0
-              Options = [lboDrawFocusRect]
               ParentShowHint = False
               ScrollWidth = 164
               ShowHint = True

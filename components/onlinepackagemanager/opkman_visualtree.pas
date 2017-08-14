@@ -155,6 +155,7 @@ type
     procedure UpdatePackageUStatus;
     function ResolveDependencies: TModalResult;
     function GetCheckedRepositoryPackages: Integer;
+    procedure SetupColors;
   published
     property OnChecking: TOnChecking read FOnChecking write FOnChecking;
     property OnChecked: TNotifyEvent read FOnChecked write FOnChecked;
@@ -179,7 +180,6 @@ begin
      Anchors := [akLeft, akTop, akRight];
      Images := AImgList;
      PopupMenu := APopupMenu;
-     Color := clBtnFace;
      DefaultNodeHeight := MulDiv(25, Screen.PixelsPerInch, 96);
      Indent := 22;
      TabOrder := 1;
@@ -1186,6 +1186,8 @@ procedure TVisualTree.VSTBeforeCellPaint(Sender: TBaseVirtualTree;
 var
   Data: PData;
 begin
+  if Options.UseDefaultTheme then
+    Exit;
   if CellPaintMode = cpmPaint then
   begin
     Data := Sender.GetNodeData(Node);
@@ -1315,6 +1317,19 @@ begin
     if Result > 1 then
       Break;
     Node := FVST.GetNext(Node);
+  end;
+end;
+
+procedure TVisualTree.SetupColors;
+begin
+  if not Options.UseDefaultTheme then
+  begin
+    FVST.Color := clBtnFace;
+    FVST.TreeOptions.PaintOptions := FVST.TreeOptions.PaintOptions + [toAlwaysHideSelection];
+  end else
+  begin
+    FVST.Color := clDefault;
+    FVST.TreeOptions.PaintOptions := FVST.TreeOptions.PaintOptions - [toAlwaysHideSelection];
   end;
 end;
 

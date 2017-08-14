@@ -29,7 +29,7 @@ interface
 
 uses
   // LCL
-  Forms, StdCtrls, ExtCtrls, ButtonPanel;
+  Forms, StdCtrls, ExtCtrls, ButtonPanel, Classes, Graphics;
 
 type
 
@@ -38,6 +38,7 @@ type
   TPackageDetailsFrm = class(TForm)
     ButtonPanel: TButtonPanel;
     mDetails: TMemo;
+    procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: char);
   private
 
@@ -50,6 +51,8 @@ var
 
 implementation
 
+uses opkman_options;
+
 {$R *.lfm}
 
 { TPackageDetailsFrm }
@@ -58,6 +61,15 @@ procedure TPackageDetailsFrm.FormKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = #27 then
     Close;
+end;
+
+procedure TPackageDetailsFrm.FormCreate(Sender: TObject);
+begin
+  if not Options.UseDefaultTheme then
+  begin
+    Self.Color := clBtnFace;
+    mDetails.Color := clBtnFace;
+  end;
 end;
 
 end.

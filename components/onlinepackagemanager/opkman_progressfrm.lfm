@@ -7,7 +7,6 @@ object ProgressFrm: TProgressFrm
   Caption = 'Downloading packages'
   ClientHeight = 320
   ClientWidth = 502
-  Color = clBtnFace
   Constraints.MinHeight = 240
   Constraints.MinWidth = 450
   KeyPreview = True
@@ -18,7 +17,6 @@ object ProgressFrm: TProgressFrm
   OnShow = FormShow
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
-  LCLVersion = '1.7'
   object pnLabels: TPanel
     Left = 0
     Height = 249

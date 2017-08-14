@@ -62,6 +62,7 @@ type
     FLastUpdate: TDateTime;
     FDaysToShowNewPackages: Integer;
     FShowRegularIcons: Boolean;
+    FUseDefaultTheme: Boolean;
     FChanged: Boolean;
     FLastDownloadDir: String;
     FLastPackageDirSrc: String;
@@ -95,6 +96,7 @@ type
     property LastUpdate: TDateTime read FLastUpdate write FLastUpdate;
     property DaysToShowNewPackages: Integer read FDaysToShowNewPackages write FDaysToShowNewPackages;
     property ShowRegularIcons: Boolean read FShowRegularIcons write FShowRegularIcons;
+    property UseDefaultTheme: Boolean read FUseDefaultTheme write FUseDefaultTheme;
     property UserProfile: Integer read FUserProfile write FUserProfile;
     property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
     property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
@@ -178,6 +180,7 @@ begin
   FLastUpdate := FXML.GetExtendedValue('General/LastUpdate/Value', 0.0);
   FDaysToShowNewPackages := FXML.GetValue('General/DaysToShowNewPackages/Value', 31);
   FShowRegularIcons := FXML.GetValue('General/ShowRegularIcons/Value', True);
+  FUseDefaultTheme := FXML.GetValue('General/UseDefaultTheme/Value', True);
 
   FProxySettings.FEnabled := FXML.GetValue('Proxy/Enabled/Value', False);
   FProxySettings.FServer := FXML.GetValue('Proxy/Server/Value', '');
@@ -208,6 +211,8 @@ begin
   FXML.SetDeleteExtendedValue('General/LastUpdate/Value', FLastUpdate, 0.0);
   FXML.SetDeleteValue('General/DaysToShowNewPackages/Value', FDaysToShowNewPackages, 31);
   FXML.SetDeleteValue('General/ShowRegularIcons/Value', FShowRegularIcons, True);
+  FXML.SetDeleteValue('General/UseDefaultTheme/Value', FUseDefaultTheme, True);
+
 
   FXML.SetDeleteValue('Proxy/Enabled/Value', FProxySettings.FEnabled, false);
   FXML.SetDeleteValue('Proxy/Server/Value', FProxySettings.FServer, '');
@@ -239,6 +244,7 @@ begin
   FLastUpdate := 0.0;
   FDaysToShowNewPackages := 31;
   FShowRegularIcons := True;
+  FUseDefaultTheme := True;
 
   FProxySettings.FEnabled := False;
   FProxySettings.FServer := '';

@@ -27,12 +27,12 @@ unit opkman_progressfrm;
 interface
 
 uses
-  SysUtils,
+  SysUtils, Classes,
   // LCL
   Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls, ExtCtrls, ButtonPanel,
   // OpkMan
   opkman_installer, opkman_common, opkman_const, opkman_downloader, opkman_zipper,
-  opkman_VirtualTrees, Classes;
+  opkman_VirtualTrees, opkman_options;
 
 type
 
@@ -145,6 +145,8 @@ end;
 
 procedure TProgressFrm.FormCreate(Sender: TObject);
 begin
+  if not Options.UseDefaultTheme then
+    Self.Color := clBtnFace;
   FVST := TVirtualStringTree.Create(nil);
   with FVST do
   begin
@@ -152,7 +154,8 @@ begin
     Align := alClient;
     Anchors := [akLeft, akTop, akRight];
     Images := imTree;
-    Color := clBtnFace;
+    if not Options.UseDefaultTheme then
+      Color := clBtnFace;
     DefaultNodeHeight := 25;
     Indent := 0;
     TabOrder := 1;

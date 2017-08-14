@@ -30,7 +30,7 @@ unit opkman_optionsfrm;
 interface
 
 uses
-  SysUtils, Math,
+  SysUtils, Math, Graphics,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Spin, ComCtrls, EditBtn,
   // LazUtils
@@ -44,6 +44,8 @@ type
 
   TOptionsFrm = class(TForm)
     bCancel: TButton;
+    Bevel1: TBevel;
+    Bevel2: TBevel;
     bFilesAdd: TButton;
     bFilesDelete: TButton;
     bFilesEdit: TButton;
@@ -57,6 +59,7 @@ type
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
     cbCheckForUpdates: TComboBox;
+    cbUseDefaultTheme: TCheckBox;
     cbRemoteRepository: TComboBox;
     cbSelectProfile: TComboBox;
     cbRegularIcons: TCheckBox;
@@ -115,6 +118,7 @@ type
     procedure pnProfilesTopResize(Sender: TObject);
   private
     function GetSelectedText(AListBox: TListBox; var AIndex: Integer): String;
+    procedure SetupColors;
   public
     procedure SetupControls(const AActivePageIndex: Integer = 0);
   end;
@@ -181,6 +185,7 @@ begin
   Options.CheckForUpdates := cbCheckForUpdates.ItemIndex;
   Options.DaysToShowNewPackages := spDaysToShowNewPackages.Value;
   Options.ShowRegularIcons := cbRegularIcons.Checked;
+  Options.UseDefaultTheme := cbUseDefaultTheme.Checked;
 
   Options.ProxyEnabled := cbProxy.Checked;
   Options.ProxyServer := edProxyServer.Text;
@@ -249,6 +254,24 @@ begin
       AIndex := I;
       Break;
     end;
+  end;
+end;
+
+procedure TOptionsFrm.SetupColors;
+begin
+  if not Options.UseDefaultTheme then
+  begin
+    Self.Color := clBtnFace;
+    tsGeneral.Color := clBtnFace;
+    tsProxy.Color := clBtnFace;
+    tsFolders.Color := clBtnFace;
+    tsProfiles.Color := clBtnFace;
+    pnGeneral.Color := clBtnFace;
+    pnProxy.Color := clBtnFace;
+    pnFolders.Color := clBtnFace;
+    pnProfiles.Color := clBtnFace;
+    lbExcludeFiles.Color := clBtnFace;
+    lbExcludeFolders.Color := clBtnFace;
   end;
 end;
 
@@ -415,6 +438,8 @@ begin
   spDaysToShowNewPackages.Value := Options.DaysToShowNewPackages;
   cbRegularIcons.Checked := Options.ShowRegularIcons;
   cbRegularIcons.Caption := rsOptions_cbRegular_Caption;
+  cbUseDefaultTheme.Checked := Options.UseDefaultTheme;
+  cbUseDefaultTheme.Caption := rsOptions_cbUseDefaultTheme_Caption;
 
   //spDaysToShowNewPackages.Top := lbDaysToShowNewPackages.Top + 1 + (lbDaysToShowNewPackages.Height - spDaysToShowNewPackages.Height) div 2;
   //spDaysToShowNewPackages.Left := lbDaysToShowNewPackages.Left + lbDaysToShowNewPackages.Canvas.GetTextWidth(lbDaysToShowNewPackages.Caption) + 10;
@@ -472,6 +497,7 @@ begin
   lbExcludeFolders.Items.StrictDelimiter := True;
   lbExcludeFolders.Items.DelimitedText := Options.ExcludedFolders;
   pnProfilesMain.Visible := Options.UserProfile = 1;
+  SetupColors;
 end;
 
 procedure TOptionsFrm.pnProfilesMainResize(Sender: TObject);

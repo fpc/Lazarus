@@ -6,7 +6,6 @@ object MainFrm: TMainFrm
   Caption = 'Online Package Manager'
   ClientHeight = 600
   ClientWidth = 800
-  Color = clBtnFace
   Constraints.MinHeight = 400
   Constraints.MinWidth = 700
   KeyPreview = True
@@ -15,7 +14,6 @@ object MainFrm: TMainFrm
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
   object pnMain: TPanel
     Left = 0
     Height = 530
@@ -25,6 +23,7 @@ object MainFrm: TMainFrm
     BevelOuter = bvNone
     ClientHeight = 530
     ClientWidth = 800
+    ParentColor = False
     TabOrder = 0
     OnResize = pnMainResize
     object pnMessage: TPanel
@@ -41,6 +40,7 @@ object MainFrm: TMainFrm
       Font.Pitch = fpVariable
       Font.Quality = fqDraft
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
       TabOrder = 2
       Visible = False
@@ -54,7 +54,6 @@ object MainFrm: TMainFrm
       BevelOuter = bvNone
       ClientHeight = 60
       ClientWidth = 800
-      Color = clBtnFace
       ParentColor = False
       TabOrder = 0
       OnResize = pnTopResize
@@ -208,7 +207,7 @@ object MainFrm: TMainFrm
         ClientHeight = 28
         ClientWidth = 200
         ParentColor = False
-        TabOrder = 2
+        TabOrder = 1
         object spClear: TSpeedButton
           Left = 170
           Height = 28
@@ -268,35 +267,6 @@ object MainFrm: TMainFrm
           TabOrder = 0
         end
       end
-      object cbFilterBy: TComboBox
-        Left = 203
-        Height = 23
-        Top = 10
-        Width = 141
-        ItemHeight = 15
-        ItemIndex = 0
-        Items.Strings = (
-          'Packagename   '
-          'Package file(.lpk)'
-          'Package category'
-          'Package status'
-          'Version'
-          'Description     '
-          'Author    '
-          'Lazarus compatibility'
-          'FPC compatibility'
-          'Supported widget sets'
-          'Packagetype '
-          'Dependencies'
-          'License'
-        )
-        OnChange = cbFilterByChange
-        ParentShowHint = False
-        ShowHint = True
-        Style = csDropDownList
-        TabOrder = 1
-        Text = 'Packagename   '
-      end
       object lbFilterBy: TLabel
         Left = 152
         Height = 15
@@ -325,7 +295,7 @@ object MainFrm: TMainFrm
         )
         OnChange = cbPackageCategoryChange
         Style = csDropDownList
-        TabOrder = 3
+        TabOrder = 2
       end
       object cbPackageState: TComboBox
         Left = 352
@@ -343,7 +313,7 @@ object MainFrm: TMainFrm
         )
         OnChange = cbPackageStateChange
         Style = csDropDownList
-        TabOrder = 4
+        TabOrder = 3
       end
       object cbPackageType: TComboBox
         Left = 352
@@ -362,8 +332,37 @@ object MainFrm: TMainFrm
         )
         OnChange = cbPackageTypeChange
         Style = csDropDownList
-        TabOrder = 5
+        TabOrder = 4
         Text = 'Designtime and runtime'
+      end
+      object cbFilterBy: TComboBox
+        Left = 203
+        Height = 23
+        Top = 10
+        Width = 141
+        ItemHeight = 15
+        ItemIndex = 0
+        Items.Strings = (
+          'Packagename   '
+          'Package file(.lpk)'
+          'Package category'
+          'Package status'
+          'Version'
+          'Description     '
+          'Author    '
+          'Lazarus compatibility'
+          'FPC compatibility'
+          'Supported widget sets'
+          'Packagetype '
+          'Dependencies'
+          'License'
+        )
+        OnChange = cbFilterByChange
+        ParentShowHint = False
+        ShowHint = True
+        Style = csDropDownList
+        TabOrder = 5
+        Text = 'Packagename   '
       end
     end
     object mJSON: TMemo
@@ -372,7 +371,6 @@ object MainFrm: TMainFrm
       Top = 60
       Width = 800
       Align = alClient
-      Color = clBtnFace
       PopupMenu = pmMemo
       ReadOnly = True
       ScrollBars = ssBoth

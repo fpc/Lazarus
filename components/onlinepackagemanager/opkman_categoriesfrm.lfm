@@ -7,7 +7,6 @@ object CategoriesFrm: TCategoriesFrm
   Caption = 'CategoriesFrm'
   ClientHeight = 383
   ClientWidth = 345
-  Color = clBtnFace
   KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
@@ -15,7 +14,6 @@ object CategoriesFrm: TCategoriesFrm
   OnKeyPress = FormKeyPress
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
-  LCLVersion = '1.7'
   object pnMessage: TPanel
     Left = 0
     Height = 47
@@ -28,7 +26,7 @@ object CategoriesFrm: TCategoriesFrm
     TabOrder = 0
     object lbMessage: TLabel
       Left = 11
-      Height = 17
+      Height = 15
       Top = 11
       Width = 323
       Anchors = [akTop, akLeft, akRight]
@@ -40,8 +38,8 @@ object CategoriesFrm: TCategoriesFrm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 340
+    Height = 34
+    Top = 343
     Width = 333
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

@@ -6,12 +6,12 @@ object PackageDetailsFrm: TPackageDetailsFrm
   BorderIcons = [biSystemMenu]
   ClientHeight = 310
   ClientWidth = 477
-  Color = clBtnFace
   KeyPreview = True
+  OnCreate = FormCreate
   OnKeyPress = FormKeyPress
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object mDetails: TMemo
     Left = 5
     Height = 259

@@ -30,7 +30,7 @@ uses
   // LCL
   Forms, Controls, Graphics, ExtCtrls, StdCtrls,
   // OpkMan
-  opkman_VirtualTrees, opkman_const, opkman_serializablepackages;
+  opkman_VirtualTrees, opkman_const, opkman_serializablepackages, opkman_options;
 
 type
 
@@ -206,6 +206,8 @@ end;
 
 procedure TPackageListFrm.FormCreate(Sender: TObject);
 begin
+  if not Options.UseDefaultTheme then
+    Self.Color := clBtnFace;
   FVST := TVirtualStringTree.Create(nil);
   with FVST do
   begin
@@ -213,7 +215,8 @@ begin
     Align := alClient;
     Anchors := [akLeft, akTop, akRight];
     Images := imTree;
-    Color := clBtnFace;
+    if not Options.UseDefaultTheme then
+      Color := clBtnFace;
     DefaultNodeHeight := 25;
     Indent := 0;
     TabOrder := 1;

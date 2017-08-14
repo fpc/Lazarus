@@ -29,7 +29,7 @@ unit opkman_mainfrm;
 interface
 
 uses
-  Classes, SysUtils, contnrs, fpjson, md5,
+  Classes, SysUtils, contnrs, fpjson, md5, Graphics,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, Clipbrd,
   LCLIntf, LCLVersion, LCLProc,
@@ -49,6 +49,7 @@ type
   { TMainFrm }
 
   TMainFrm = class(TForm)
+    cbFilterBy: TComboBox;
     cbPackageCategory: TComboBox;
     cbPackageState: TComboBox;
     cbPackageType: TComboBox;
@@ -76,7 +77,6 @@ type
     tbUninstall: TToolButton;
     tbOptions: TToolButton;
     cbAll: TCheckBox;
-    cbFilterBy: TComboBox;
     edFilter: TEdit;
     imTree: TImageList;
     lbFilterBy: TLabel;
@@ -141,6 +141,7 @@ type
     procedure EnableDisableControls(const AEnable: Boolean);
     procedure SetupMessage(const AMessage: String = '');
     procedure SetupControls;
+    procedure SetupColors;
     procedure GetPackageList(const ARepositoryHasChanged: Boolean = False);
     procedure DoOnChecking(Sender: TObject; const AIsAllChecked: Boolean);
     procedure DoOnChecked(Sender: TObject);
@@ -230,6 +231,7 @@ end;
 procedure TMainFrm.FormShow(Sender: TObject);
 begin
   SetupControls;
+  SetupColors;
   GetPackageList;
 end;
 
@@ -416,15 +418,19 @@ end;
 procedure TMainFrm.ShowOptions(const AActivePageIndex: Integer = 0);
 var
   OldIndex: Integer;
+  DefaultTheme: Boolean;
 begin
   OptionsFrm := TOptionsFrm.Create(MainFrm);
   try
     OptionsFrm.SetupControls(AActivePageIndex);
     OldIndex := Options.ActiveRepositoryIndex;
+    DefaultTheme := Options.UseDefaultTheme;
     if OptionsFrm.ShowModal = mrOk then
     begin
       tbRefresh.Enabled := Trim(Options.RemoteRepository[Options.ActiveRepositoryIndex]) <> '';
       GetPackageList(OldIndex <> Options.ActiveRepositoryIndex);
+      if DefaultTheme <> Options.UseDefaultTheme then
+        SetupColors;
     end;
   finally
     OptionsFrm.Free;
@@ -1130,7 +1136,7 @@ procedure TMainFrm.miJSONShowClick(Sender: TObject);
 begin
   if not mJSON.Visible then
   begin
-    StopUpdates;
+    //StopUpdates;
     EnableDisableControls(False);
     mJSON.Visible := True;
     mJSON.BringToFront;
@@ -1140,7 +1146,7 @@ begin
     mJSON.SendToBack;
     mJSON.Visible := False;
     EnableDisableControls(True);
-    StartUpdates;
+    //StartUpdates;
   end;
 end;
 
@@ -1286,6 +1292,24 @@ begin
   cbPackageCategory.Visible := False;
   cbPackageType.Visible := False;
   cbPackageState.Visible := False;
+end;
+
+procedure TMainFrm.SetupColors;
+begin
+  VisualTree.SetupColors;
+  if not Options.UseDefaultTheme then
+  begin
+    Self.Color := clBtnFace;
+    pnMain.Color := clBtnFace;
+    pnMessage.Color := clBtnFace;
+    pnTop.Color := clBtnFace;
+    mJSON.Color := clBtnFace;
+  end
+  else
+  begin
+    pnMain.Color := VisualTree.VST.Color;
+    pnMessage.Color := VisualTree.VST.Color;
+  end;
 end;
 
 end.

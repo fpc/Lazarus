@@ -7,14 +7,12 @@ object CreateJSONForUpdatesFrm: TCreateJSONForUpdatesFrm
   Caption = 'CreateJSONForUpdatesFrm'
   ClientHeight = 304
   ClientWidth = 580
-  Color = clBtnFace
   Constraints.MinHeight = 200
   Constraints.MinWidth = 300
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
-  LCLVersion = '1.7'
   object pnButtons: TPanel
     Left = 0
     Height = 41

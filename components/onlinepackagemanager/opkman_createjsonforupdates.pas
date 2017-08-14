@@ -33,7 +33,7 @@ uses
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, LCLIntf,
   // OpkMan
   opkman_serializablepackages, opkman_const, opkman_common, opkman_updates,
-  opkman_VirtualTrees;
+  opkman_VirtualTrees, opkman_options;
 
 type
 
@@ -95,6 +95,8 @@ type
 
 procedure TCreateJSONForUpdatesFrm.FormCreate(Sender: TObject);
 begin
+  if not Options.UseDefaultTheme then
+    Self.Color := clBtnFace;
   Caption := rsCreateJSONForUpdatesFrm_Caption;
   lbLinkToZip.Caption := rsCreateJSONForUpdatesFrm_lbLinkToZip_Caption;
   bTest.Caption := rsCreateJSONForUpdatesFrm_bTest_Caption;
@@ -109,7 +111,8 @@ begin
      Align := alClient;
      Anchors := [akLeft, akTop, akRight];
      Images := imTree;
-     Color := clBtnFace;
+     if not Options.UseDefaultTheme then
+       Color := clBtnFace;
      DefaultNodeHeight := 25;
      Indent := 0;
      TabOrder := 1;

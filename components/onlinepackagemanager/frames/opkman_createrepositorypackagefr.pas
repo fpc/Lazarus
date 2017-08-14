@@ -171,6 +171,8 @@ begin
   bSubmit.Visible := ATyp = 0;
   cbJSONForUpdates.Visible := ATyp = 0;
   bCreate.Visible := ATyp = 0;
+  if not Options.UseDefaultTheme then
+    Self.Color := clBtnFace;
 
   FVSTPackages := TVirtualStringTree.Create(nil);
   with FVSTPackages do
@@ -179,7 +181,8 @@ begin
     Align := alClient;
     Anchors := [akLeft, akTop, akRight];
     Images := imTree;
-    Color := clBtnFace;
+    if not Options.UseDefaultTheme then
+      Color := clBtnFace;
     DefaultNodeHeight := 25;
     Indent := 15;
     TabOrder := 1;
@@ -216,7 +219,8 @@ begin
     Height := 200;
     Anchors := [akLeft, akTop, akRight];
     Images := imTree;
-    Color := clBtnFace;
+    if not Options.UseDefaultTheme then
+      Color := clBtnFace;
     DefaultNodeHeight := 25;
     Indent := 15;
     TabOrder := 1;

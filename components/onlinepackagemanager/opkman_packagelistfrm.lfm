@@ -8,7 +8,6 @@ object PackageListFrm: TPackageListFrm
   Caption = 'PackageListFrm'
   ClientHeight = 265
   ClientWidth = 394
-  Color = clBtnFace
   KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
@@ -16,7 +15,6 @@ object PackageListFrm: TPackageListFrm
   OnKeyPress = FormKeyPress
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
-  LCLVersion = '1.7'
   object pnMessage: TPanel
     Left = 0
     Height = 47

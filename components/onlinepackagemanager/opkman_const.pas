@@ -285,6 +285,7 @@ resourcestring
   rsOptions_LastUpdate_Never = 'never';
   rsOptions_lbDaysToShowNewPackages_Caption = 'Show different icon for newly added packages for (days):';
   rsOptions_cbRegular_Caption = 'Show regular icon for newly added packages after install';
+  rsOptions_cbUseDefaultTheme_Caption = 'Use default theme manager';
   rsOptions_lbFilterFiles_Caption = 'Excluded files (packages)';
   rsOptions_lbFilterDirs_Caption = 'Excluded folders (packages)';
   rsOptions_bAdd_Caption = 'Add';

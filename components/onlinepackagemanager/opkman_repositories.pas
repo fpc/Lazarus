@@ -90,6 +90,8 @@ type
 
 procedure TRepositoriesFrm.FormCreate(Sender: TObject);
 begin
+  if not Options.UseDefaultTheme then
+    Self.Color := clBtnFace;
   Caption := rsRepositories_Caption;
   bAdd.Caption := rsRepositories_bAdd_Caption;
   bEdit.Caption := rsRepositories_bEdit_Caption;

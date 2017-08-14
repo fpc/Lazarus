@@ -7,14 +7,12 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   Caption = 'CreateRepositoryPackagesFrm'
   ClientHeight = 454
   ClientWidth = 753
-  Color = clBtnFace
   Constraints.MinHeight = 450
   Constraints.MinWidth = 650
   OnClose = FormClose
   OnCreate = FormCreate
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
-  LCLVersion = '1.7'
   inline frCreateRep: TCreateRepositoryPackagefr
     Height = 454
     Width = 753
@@ -69,6 +67,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
       end
       inherited pnCategory: TPanel
         Width = 506
+        ClientHeight = 185
         ClientWidth = 502
         inherited lbOF2: TLabel
           Left = 477
@@ -103,6 +102,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
     inherited pnButtons: TPanel
       Top = 413
       Width = 753
+      ClientHeight = 37
       ClientWidth = 749
       inherited pnB: TPanel
         Left = 335
