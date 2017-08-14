@@ -13,6 +13,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   OnCreate = FormCreate
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
+  LCLVersion = '1.9.0.0'
   inline frCreateRep: TCreateRepositoryPackagefr
     Height = 454
     Width = 753
@@ -104,9 +105,6 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
       Width = 753
       ClientHeight = 37
       ClientWidth = 749
-      inherited pnB: TPanel
-        Left = 335
-      end
     end
   end
 end

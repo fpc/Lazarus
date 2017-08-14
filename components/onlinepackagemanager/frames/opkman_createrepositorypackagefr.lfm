@@ -372,11 +372,10 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = pnButtons
       AnchorSideRight.Side = asrBottom
-      Left = 332
+      Left = 290
       Height = 29
       Top = 4
       Width = 408
-      Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 1
