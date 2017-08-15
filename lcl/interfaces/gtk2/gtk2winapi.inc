@@ -5206,7 +5206,7 @@ begin
               if not pango_font_description_get_size_is_absolute(PangoDesc) or (AFontSize >= PANGO_SCALE) then
                 AFontSize := AFontSize div PANGO_SCALE;
 
-              PLogfont(Buf)^.lfHeight := MulDiv(AFontSize, GetDeviceCaps(0, LOGPIXELSX) , 72);
+              PLogfont(Buf)^.lfHeight := MulDiv(AFontSize, Screen.PixelsPerInch, 72);
             end;
           end;
         end else
