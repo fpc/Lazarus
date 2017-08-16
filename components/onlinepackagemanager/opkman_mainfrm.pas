@@ -1307,8 +1307,8 @@ begin
   end
   else
   begin
-    pnMain.Color := VisualTree.VST.Color;
-    pnMessage.Color := VisualTree.VST.Color;
+    pnMain.Color := VisualTree.VST.GetDefaultColor(dctBrush);
+    pnMessage.Color := VisualTree.VST.GetDefaultColor(dctBrush);
   end;
 end;
 

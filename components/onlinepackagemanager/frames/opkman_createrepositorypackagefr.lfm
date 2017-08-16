@@ -372,23 +372,23 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = pnButtons
       AnchorSideRight.Side = asrBottom
-      Left = 290
+      Left = 312
       Height = 29
       Top = 4
-      Width = 408
-      AutoSize = True
+      Width = 428
+      Anchors = [akTop, akRight]
       BorderSpacing.Around = 6
       BorderSpacing.InnerBorder = 1
       BevelOuter = bvNone
       ClientHeight = 29
-      ClientWidth = 408
+      ClientWidth = 428
       TabOrder = 1
       object bCancel: TButton
-        Left = 327
+        Left = 325
         Height = 27
         Top = 1
         Width = 80
-        Align = alRight
+        Align = alLeft
         AutoSize = True
         BorderSpacing.Around = 1
         Caption = 'Cancel'
@@ -401,11 +401,11 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         TabOrder = 4
       end
       object bCreate: TButton
-        Left = 165
+        Left = 163
         Height = 27
         Top = 1
         Width = 80
-        Align = alRight
+        Align = alLeft
         AutoSize = True
         BorderSpacing.Around = 1
         Caption = 'Create'
@@ -418,11 +418,11 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         Visible = False
       end
       object bSubmit: TButton
-        Left = 246
+        Left = 244
         Height = 27
         Top = 1
         Width = 80
-        Align = alRight
+        Align = alLeft
         AutoSize = True
         BorderSpacing.Around = 1
         Caption = 'Submit'
@@ -434,11 +434,11 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         TabOrder = 3
       end
       object bOptions: TButton
-        Left = 84
+        Left = 82
         Height = 27
         Top = 1
         Width = 80
-        Align = alRight
+        Align = alLeft
         AutoSize = True
         BorderSpacing.Around = 1
         Caption = 'Options'
@@ -450,11 +450,11 @@ object CreateRepositoryPackagefr: TCreateRepositoryPackagefr
         TabOrder = 1
       end
       object bHelp: TButton
-        Left = 3
+        Left = 1
         Height = 27
         Top = 1
         Width = 80
-        Align = alRight
+        Align = alLeft
         AutoSize = True
         BorderSpacing.Around = 1
         Caption = 'Help'
