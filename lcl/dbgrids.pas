@@ -40,6 +40,9 @@ uses
   {$DEFINE noautomatedbookmark}
 {$endif}
 
+const
+  DEFINDICATORCOLWIDTH = 12;
+
 type
   TCustomDbGrid = class;
   TColumn = class;
@@ -833,7 +836,7 @@ begin
   RowCount := OldFixedRows + 1;
   ColCount := OldFixedCols + 1;
   if dgIndicator in Options then
-    ColWidths[0]:=12;
+    ColWidths[0]:=Scale96ToFont(DEFINDICATORCOLWIDTH);
 end;
 
 procedure TCustomDBGrid.DoHeaderClick(Index: Integer);
@@ -1649,7 +1652,7 @@ begin
   {$endif}
   if FDefaultColWidths then begin
     if dgIndicator in Options then
-      ColWidths[0]:=12;
+      ColWidths[0]:=Scale96ToFont(12);
     if NeedAutoSizeColumns then
       UpdateAutoSizeColumns;
   end;
