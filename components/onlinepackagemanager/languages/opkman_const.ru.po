@@ -937,6 +937,10 @@ msgctxt "opkman_const.rsoptions_cbselectprofile_item1"
 msgid "Package maintainer"
 msgstr "Сопровождающий пакета"
 
+#: opkman_const.rsoptions_cbusedefaulttheme_caption
+msgid "Use default theme manager"
+msgstr "Использовать диспетчер тем по умолчанию"
+
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
 msgstr "Каталог для загрузки архивов из удалённого репозитория"
