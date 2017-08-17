@@ -2935,13 +2935,18 @@ var
       Details := ThemeServices.GetElementDetails(ttGlyphOpened)
     else
       Details := ThemeServices.GetElementDetails(ttGlyphClosed);
-    sz := ThemeServices.GetDetailSize(Details);
-    IconY:=((NameRect.Bottom - NameRect.Top - sz.cy) div 2) + NameRect.Top;
     if CanExpandRow(CurRow) then
+    begin
+      sz := ThemeServices.GetDetailSize(Details);
+      IconY:=((NameRect.Bottom - NameRect.Top - sz.cy) div 2) + NameRect.Top;
       ThemeServices.DrawElement(Canvas.Handle, Details,
                                 Rect(IconX, IconY, IconX + sz.cx, IconY + sz.cy), nil)
-    else if (ARow = FItemIndex) then
+    end else
+    if (ARow = FItemIndex) then
+    begin
+      IconY:=((NameRect.Bottom - NameRect.Top - FActiveRowBmp.Height) div 2) + NameRect.Top;
       Canvas.Draw(IconX, IconY, FActiveRowBmp);
+    end;
   end;
 
   procedure DrawName(DrawState: TPropEditDrawState);
