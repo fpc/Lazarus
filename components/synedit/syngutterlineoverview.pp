@@ -319,6 +319,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
     procedure AddMark(AMark: TSynGutterLOvMark);
+    procedure ScalePPI(const AScaleFactor: Double); override;
 
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
       HandleActionProc: TSynEditMouseActionHandler): Boolean; override;
@@ -1041,7 +1042,7 @@ var
 begin
   if FFirstTextLineChanged > 0 then ReScan;
 
-  AClip.Right := AClip.Left + 3;
+  AClip.Right := Round((AClip.Right - AClip.Left) / 3);
   i := AClip.Top - TopOffset;
   imax := AClip.Bottom - TopOffset;
   if imax > high(FPixLineStates) then imax := high(FPixLineStates);
@@ -1539,6 +1540,13 @@ end;
 function TSynGutterLineOverview.PreferedWidth: Integer;
 begin
   Result := 10;
+end;
+
+procedure TSynGutterLineOverview.ScalePPI(const AScaleFactor: Double);
+begin
+  AutoSize := False;
+  FLineMarks.ItemHeight := Round(FLineMarks.ItemHeight*AScaleFactor);
+  inherited ScalePPI(AScaleFactor);
 end;
 
 procedure TSynGutterLineOverview.Assign(Source : TPersistent);

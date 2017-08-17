@@ -98,6 +98,7 @@ type
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean; override;
     procedure ResetMouseActions; override; // set mouse-actions according to current Options / may clear them
+    procedure ScalePPI(const AScaleFactor: Double); override;
   published
     property MarkupInfo;
     property MouseActionsExpanded: TSynEditMouseActions
@@ -484,11 +485,17 @@ begin
   FMouseActionsCollapsed.ResetUserActions;
 end;
 
+procedure TSynGutterCodeFolding.ScalePPI(const AScaleFactor: Double);
+begin
+  AutoSize := False;
+  inherited ScalePPI(AScaleFactor);
+end;
+
 procedure TSynGutterCodeFolding.DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
   NodeType: TSynEditFoldLineCapability; SubType: TDrawNodeSymbolOptions);
 var
   Points: Array [0..3] of TPoint;
-  X, Y: Integer;
+  X, Y, LineBorder: Integer;
   AliasMode: TAntialiasingMode;
   OdlCosmetic: Boolean;
 begin
@@ -506,6 +513,7 @@ begin
   Canvas.Rectangle(Rect);
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Cosmetic := OdlCosmetic;
+  LineBorder := Round((Rect.Right-Rect.Left) / 5);
   X := (Rect.Left - 1 + Rect.Right) div 2;
   Y := (Rect.Top - 1 + Rect.Bottom) div 2;
 
@@ -513,8 +521,8 @@ begin
     cfFoldStart:
       begin
         // [-]
-        Canvas.MoveTo(X - 2, Y);
-        Canvas.LineTo(X + 3, Y);
+        Canvas.MoveTo(Rect.Left + LineBorder, Y);
+        Canvas.LineTo(Rect.Right - LineBorder, Y);
       end;
     cfHideStart:
       begin
@@ -525,10 +533,10 @@ begin
     cfCollapsedFold:
       begin
         // [+]
-        Canvas.MoveTo(X - 2, Y);
-        Canvas.LineTo(X + 3, Y);
-        Canvas.MoveTo(X, Y - 2);
-        Canvas.LineTo(X, Y + 3);
+        Canvas.MoveTo(Rect.Left + LineBorder, Y);
+        Canvas.LineTo(Rect.Right - LineBorder, Y);
+        Canvas.MoveTo(X, Rect.Top + LineBorder);
+        Canvas.LineTo(X, Rect.Bottom - LineBorder);
       end;
     cfCollapsedHide:
       begin
@@ -536,24 +544,22 @@ begin
           false: begin
               // [v]
               Points[0].X := X;
-              Points[0].y := Y + 2;
-              Points[1].X := X - 2;
+              Points[0].y := Rect.Bottom - LineBorder - 1;
+              Points[1].X := Rect.Left + LineBorder;
               Points[1].y := Y;
-              Points[2].X := X + 2;
+              Points[2].X := Rect.Right - LineBorder - 1;
               Points[2].y := Y;
-              Points[3].X := X;
-              Points[3].y := Y + 2;
+              Points[3] := Points[0];
           end;
           true: begin
               // [v]
               Points[0].X := X;
-              Points[0].y := Y - 2;
-              Points[1].X := X - 2;
+              Points[0].y := Rect.Top + LineBorder;
+              Points[1].X := Rect.Left + LineBorder;
               Points[1].y := Y;
-              Points[2].X := X + 2;
+              Points[2].X := Rect.Right - LineBorder - 1;
               Points[2].y := Y;
-              Points[3].X := X;
-              Points[3].y := Y - 2;
+              Points[3] := Points[0];
           end;
         end;
         Canvas.Polygon(Points);
