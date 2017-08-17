@@ -1042,7 +1042,7 @@ var
 begin
   if FFirstTextLineChanged > 0 then ReScan;
 
-  AClip.Right := Round((AClip.Right - AClip.Left) / 3);
+  AClip.Right := AClip.Left + Round((AClip.Right - AClip.Left) / 3);
   i := AClip.Top - TopOffset;
   imax := AClip.Bottom - TopOffset;
   if imax > high(FPixLineStates) then imax := high(FPixLineStates);
