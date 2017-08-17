@@ -123,14 +123,14 @@ end;
 
 procedure TListFilterEdit.MoveEnd(ASelect: Boolean);
 begin
-  if fFilteredListbox.Items.Count > 0 then
-    MoveTo(fFilteredListbox.Items.Count-1, ASelect);
+  if (fFilteredListbox = nil) or (fFilteredListbox.Count = 0) then Exit;
+  MoveTo(fFilteredListbox.Items.Count-1, ASelect);
 end;
 
 procedure TListFilterEdit.MoveHome(ASelect: Boolean);
 begin
-  if fFilteredListbox.Items.Count > 0 then
-    MoveTo(0, ASelect);
+  if (fFilteredListbox = nil) or (fFilteredListbox.Count = 0) then Exit;
+  MoveTo(0, ASelect);
 end;
 
 function TListFilterEdit.GetDefaultGlyph: TBitmap;
@@ -253,7 +253,7 @@ procedure TListFilterEdit.MoveNext(ASelect: Boolean);
 var
   i: Integer;
 begin
-  if fFilteredListbox.Count = 0 then Exit;
+  if (fFilteredListbox = nil) or (fFilteredListbox.Count = 0) then Exit;
   if (fFilteredListbox.ItemIndex=0) and not fFilteredListbox.Selected[0] then
     i := 0
   else
@@ -267,7 +267,7 @@ procedure TListFilterEdit.MovePrev(ASelect: Boolean);
 var
   i: Integer;
 begin
-  if fFilteredListbox.Count = 0 then Exit;
+  if (fFilteredListbox = nil) or (fFilteredListbox.Count = 0) then Exit;
   i := fFilteredListbox.ItemIndex - 1;
   if i < 0 then
     i := 0;
@@ -278,8 +278,7 @@ procedure TListFilterEdit.MovePageDown(ASelect: Boolean);
 var
   i, ih: Integer;
 begin
-  if fFilteredListbox.Items.Count = 0 then
-    Exit;
+  if (fFilteredListbox = nil) or (fFilteredListbox.Items.Count = 0) then Exit;
   ih := fFilteredListbox.ItemHeight;
   if ih = 0 then  //fFilteredListbox.ItemHeight is always zero. Why?
     ih := 22;
@@ -293,8 +292,7 @@ procedure TListFilterEdit.MovePageUp(ASelect: Boolean);
 var
   i, ih: Integer;
 begin
-  if fFilteredListbox.Items.Count = 0 then
-    Exit;
+  if (fFilteredListbox = nil) or (fFilteredListbox.Items.Count = 0) then Exit;
   ih := fFilteredListbox.ItemHeight;
   if ih = 0 then
     ih := 22;

@@ -603,12 +603,14 @@ end;
 
 procedure TTreeFilterEdit.MoveEnd(ASelect: Boolean);
 begin
-  fFilteredTreeview.MoveEnd(ASelect);
+  if Assigned(fFilteredTreeview) then
+    fFilteredTreeview.MoveEnd(ASelect);
 end;
 
 procedure TTreeFilterEdit.MoveHome(ASelect: Boolean);
 begin
-  fFilteredTreeview.MoveHome(ASelect);
+  if Assigned(fFilteredTreeview) then
+    fFilteredTreeview.MoveHome(ASelect);
 end;
 
 function TTreeFilterEdit.GetCleanBranch(ARootNode: TTreeNode): TTreeFilterBranch;
@@ -642,22 +644,26 @@ end;
 
 procedure TTreeFilterEdit.MoveNext(ASelect: Boolean);
 begin
-  fFilteredTreeview.MoveToNextNode(ASelect);
+  if Assigned(fFilteredTreeview) then
+    fFilteredTreeview.MoveToNextNode(ASelect);
 end;
 
 procedure TTreeFilterEdit.MovePageDown(ASelect: Boolean);
 begin
-  fFilteredTreeview.MovePageDown(ASelect);
+  if Assigned(fFilteredTreeview) then
+    fFilteredTreeview.MovePageDown(ASelect);
 end;
 
 procedure TTreeFilterEdit.MovePageUp(ASelect: Boolean);
 begin
-  fFilteredTreeview.MovePageUp(ASelect);
+  if Assigned(fFilteredTreeview) then
+    fFilteredTreeview.MovePageUp(ASelect);
 end;
 
 procedure TTreeFilterEdit.MovePrev(ASelect: Boolean);
 begin
-  fFilteredTreeview.MoveToPrevNode(ASelect);
+  if Assigned(fFilteredTreeview) then
+    fFilteredTreeview.MoveToPrevNode(ASelect);
 end;
 
 function TTreeFilterEdit.ReturnKeyHandled: Boolean;
