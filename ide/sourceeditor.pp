@@ -4927,6 +4927,8 @@ Begin
       RegisterMouseActionExecHandler(@EditorHandleMouseAction);
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
       Parent := AParent;
+      if AParent.Font.PixelsPerInch<>96 then
+        AutoAdjustLayout(lapAutoAdjustForDPI, 96, AParent.Font.PixelsPerInch, 0, 0);
     end;
     Manager.CodeTemplateModul.AddEditor(FEditor);
     Manager.FMacroRecorder.AddEditor(FEditor);
