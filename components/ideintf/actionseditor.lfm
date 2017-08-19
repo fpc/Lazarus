@@ -16,7 +16,7 @@ object ActionListEditor: TActionListEditor
   OnKeyPress = ActionListEditorKeyPress
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object PanelDescr: TPanel
     Left = 0
     Height = 26
@@ -33,7 +33,7 @@ object ActionListEditor: TActionListEditor
       Left = 6
       Height = 15
       Top = 6
-      Width = 67
+      Width = 59
       Caption = 'Categories:'
       ParentColor = False
     end
@@ -41,7 +41,7 @@ object ActionListEditor: TActionListEditor
       Left = 162
       Height = 15
       Top = 6
-      Width = 48
+      Width = 43
       Caption = 'Actions:'
       ParentColor = False
     end
@@ -101,34 +101,28 @@ object ActionListEditor: TActionListEditor
       Left = 1
       Top = 0
       Action = ActNew
-    end
-    object btnAddMore: TToolButton
-      Left = 27
-      Top = 0
-      Caption = 'btnAddMore'
       DropdownMenu = PopMenuToolBarActions
-      ImageIndex = 0
+      Style = tbsDropDown
     end
     object btnDelete: TToolButton
-      Left = 53
+      Left = 39
       Top = 0
       Action = ActDelete
     end
     object ToolButton4: TToolButton
-      Left = 79
+      Left = 65
       Height = 26
       Top = 0
-      Width = 5
       Caption = 'ToolButton4'
       Style = tbsDivider
     end
     object btnUp: TToolButton
-      Left = 84
+      Left = 70
       Top = 0
       Action = ActMoveUp
     end
     object btnDown: TToolButton
-      Left = 110
+      Left = 96
       Top = 0
       Action = ActMoveDown
     end

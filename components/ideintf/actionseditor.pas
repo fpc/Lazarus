@@ -106,7 +106,6 @@ type
     Splitter: TSplitter;
     ToolBar1: TToolBar;
     btnAdd: TToolButton;
-    btnAddMore: TToolButton;
     btnDelete: TToolButton;
     ToolButton4: TToolButton;
     btnUp: TToolButton;
@@ -391,7 +390,7 @@ begin
   ActMoveDown.Hint := cActionListEditorMoveDownAction;
   ActPanelDescr.Caption := cActionListEditorPanelDescrriptions;
   ActPanelToolBar.Caption := cActionListEditorPanelToolBar;
-  btnAddMore.Hint := cActionListEditorNewAction;
+  btnAdd.Hint := cActionListEditorNewAction;
   mItemToolBarNewAction.Caption := cActionListEditorNewAction;
   mItemToolBarNewStdAction.Caption := cActionListEditorNewStdAction;
   mItemActListNewAction.Caption := cActionListEditorNewAction;
@@ -413,21 +412,18 @@ end;
 procedure TActionListEditor.FormCreate(Sender: TObject);
 var
   ImageSize: Integer;
-  Details: TThemedElementDetails;
 begin
   ImageSize := TIDEImages.ScaledSize;
   ImageList1.Width := ImageSize;
   ImageList1.Height := ImageSize;
-  TIDEImages.AddImageToImageList(ImageList1, 'btn_downarrow'); //imageindex 0
-  TIDEImages.AddImageToImageList(ImageList1, 'laz_add'); //imageindex 1
-  TIDEImages.AddImageToImageList(ImageList1, 'laz_delete'); //imageindex 2
-  TIDEImages.AddImageToImageList(ImageList1, 'arrow_up'); //imadeindex 3
-  TIDEImages.AddImageToImageList(ImageList1, 'arrow_down'); //imageindex 4
-  btnAddMore.ImageIndex := 0;
-  btnAdd.ImageIndex := 1;
-  btnDelete.ImageIndex := 2;
-  btnUp.ImageIndex := 3;
-  btnDown.ImageIndex := 4;
+  TIDEImages.AddImageToImageList(ImageList1, 'laz_add'); //imageindex 0
+  TIDEImages.AddImageToImageList(ImageList1, 'laz_delete'); //imageindex 1
+  TIDEImages.AddImageToImageList(ImageList1, 'arrow_up'); //imadeindex 2
+  TIDEImages.AddImageToImageList(ImageList1, 'arrow_down'); //imageindex 3
+  btnAdd.ImageIndex := 0;
+  btnDelete.ImageIndex := 1;
+  btnUp.ImageIndex := 2;
+  btnDown.ImageIndex := 3;
 end;
 
 procedure TActionListEditor.FormShow(Sender: TObject);
