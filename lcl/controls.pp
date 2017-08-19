@@ -1493,6 +1493,8 @@ type
     function ScaleFontTo96(const ASize: Integer): Integer;
     function ScaleScreenToFont(const ASize: Integer): Integer;
     function ScaleFontToScreen(const ASize: Integer): Integer;
+    function Scale96ToScreen(const ASize: Integer): Integer;
+    function ScaleScreenTo96(const ASize: Integer): Integer;
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize

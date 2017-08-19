@@ -508,8 +508,8 @@ begin
   DropdownMenu := TPopupMenu.Create(Self);
   DropdownMenu.OnPopup := @RefreshMenu;
   DropdownMenu.Images := TCustomImageList.Create(Self);
-  DropdownMenu.Images.Width := 16;
-  DropdownMenu.Images.Height := 16;
+  DropdownMenu.Images.Width := Scale96ToScreen(16);
+  DropdownMenu.Images.Height := Scale96ToScreen(16);
   Style := tbsDropDown;
 end;
 
