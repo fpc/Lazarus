@@ -46,6 +46,7 @@ type
     function GetImages_24: TCustomImageList;
 
     class function CreateBitmapFromRes(const ImageName: string): TCustomBitmap;
+    class function CreateBestBitmapForScalingFromRes(const ImageName: string; const aDefScale: Integer; out aBitmap: TCustomBitmap): Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -121,7 +122,7 @@ begin
   if ScreenInfo.PixelsPerInchX <= 168 then
     Result := 150 // 126%-175% (144-168 DPI): 150% scaling
   else
-    Result := 200; // 200%: 200% scaling
+    Result := Round(ScreenInfo.PixelsPerInchX/96) * 100; // 200, 300, 400, ...
 end;
 
 function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
@@ -134,28 +135,17 @@ class function TIDEImages.CreateImage(ImageName: String; ImageSize: Integer
 var
   Grp: TCustomBitmap;
   GrpScaledNewInstance: Boolean;
-  ScalePercent: Integer;
+  ScalePercent, GrpScale: Integer;
 begin
   ScalePercent := GetScalePercent;
 
   Grp := nil;
   try
-    if ScalePercent<>100 then
-    begin
-      Grp := CreateBitmapFromRes(ImageName+'_'+IntToStr(ScalePercent));
-      if Grp<>nil then
-      begin
-        Result := Grp;
-        Grp := nil;
-        Exit; // found
-      end;
-    end;
-
-    Grp := CreateBitmapFromRes(ImageName);
+    GrpScale := CreateBestBitmapForScalingFromRes(ImageName, ScalePercent, Grp);
     if Grp<>nil then
     begin
       Result := ScaleImage(Grp, GrpScaledNewInstance,
-        ImageSize*ScalePercent div 100, ImageSize * ScalePercent div 100, ScalePercent / 100);
+        MulDiv(ImageSize, ScalePercent, GrpScale), MulDiv(ImageSize, ScalePercent, GrpScale), ScalePercent / GrpScale);
       if not GrpScaledNewInstance then
         Grp := nil;
       Exit; // found
@@ -221,6 +211,24 @@ begin
     Result := CreateBitmapFromLazarusResource(ResHandle)
   else
     Result := CreateBitmapFromResourceName(HInstance, ImageName);
+end;
+
+class function TIDEImages.CreateBestBitmapForScalingFromRes(
+  const ImageName: string; const aDefScale: Integer; out aBitmap: TCustomBitmap
+  ): Integer;
+begin
+  aBitmap := nil;
+  Result := aDefScale;
+  while (Result > 100) do
+  begin
+    aBitmap := CreateBitmapFromRes(ImageName+'_'+IntToStr(Result));
+    if aBitmap<>nil then Exit;
+    if (Result>300) and ((Result div 100) mod 2 = 1) then // 500, 700, 900 ...
+      Result := Result + 100;
+    Result := Result div 2;
+  end;
+  aBitmap := CreateBitmapFromRes(ImageName);
+  Result := 100;
 end;
 
 class function TIDEImages.CreateImage(ImageSize: Integer; ImageName: String
