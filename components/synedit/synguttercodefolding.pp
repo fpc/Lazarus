@@ -27,8 +27,9 @@ unit SynGutterCodeFolding;
 interface
 
 uses
-  SysUtils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase, SynEditMiscProcs,
-  SynEditFoldedView, SynEditMouseCmds, SynEditHighlighterFoldBase, LCLProc, LCLType, ImgList;
+  SysUtils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase,
+  SynEditMiscProcs, SynEditFoldedView, SynEditMouseCmds,
+  SynEditHighlighterFoldBase, LCLProc, LCLType, ImgList, Forms;
 
 type
 
@@ -59,6 +60,11 @@ type
 
   TDrawNodeSymbolOptions = set of (nsoSubtype, nsoLostHl, nsoBlockSel);
 
+  TSynGutterImageList = class(TImageList)
+  public
+    InitPPI: Integer;
+  end;
+
   { TSynGutterCodeFolding }
 
   TSynGutterCodeFolding = class(TSynGutterPartBase)
@@ -68,8 +74,9 @@ type
     FPopUp: TPopupMenu;
     FMenuInf: Array of TFoldViewNodeInfo;
     FIsFoldHidePreviousLine: Boolean;
-    FPopUpImageList: TImageList;
+    FPopUpImageList: TSynGutterImageList;
     FReversePopMenuOrder: Boolean;
+    procedure FPopUpOnPopup(Sender: TObject);
     function GetMouseActionsCollapsed: TSynEditMouseActions;
     function GetMouseActionsExpanded: TSynEditMouseActions;
     procedure SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
@@ -77,7 +84,7 @@ type
     function  FoldTypeForLine(AScreenLine: Integer): TSynEditFoldLineCapability;
     function  IsFoldHidePreviousLine(AScreenLine: Integer): Boolean;
     function  IsSingleLineHide(AScreenLine: Integer): Boolean;
-    procedure InitPopUpImageList;
+    procedure InitPopUpImageList(const APPI: Integer);
     procedure DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
                              NodeType: TSynEditFoldLineCapability;
                              SubType: TDrawNodeSymbolOptions);
@@ -114,7 +121,7 @@ uses
   SynEdit;
 
 var
-  GlobalPopUpImageList: TImageList = nil;
+  GlobalPopUpImageList: TSynGutterImageList = nil;
 
 
 { TSynGutterCodeFolding }
@@ -185,6 +192,15 @@ begin
   end;
 end;
 
+procedure TSynGutterCodeFolding.FPopUpOnPopup(Sender: TObject);
+var
+  MonitorPPI: Integer;
+begin
+  MonitorPPI := Screen.MonitorFromPoint(FPopUp.PopupPoint).PixelsPerInch;
+  if (FPopUpImageList.Count=0) or (FPopUpImageList.InitPPI<>MonitorPPI) then
+    InitPopUpImageList(MonitorPPI);
+end;
+
 function TSynGutterCodeFolding.IsFoldHidePreviousLine(AScreenLine: Integer): Boolean;
 begin
   FoldTypeForLine(AScreenLine);
@@ -205,40 +221,49 @@ begin
     Result := True;
 end;
 
-procedure TSynGutterCodeFolding.InitPopUpImageList;
+procedure TSynGutterCodeFolding.InitPopUpImageList(const APPI: Integer);
 var
   img: TBitmap;
+  R: TRect;
   procedure NewImg;
   begin
     img := TBitmap.Create;
-    img.SetSize(16, 16);
+    img.SetSize(FPopUpImageList.Width, FPopUpImageList.Height);
     img.Canvas.Brush.Color := clWhite;
-    img.Canvas.FillRect(0,0,16,16);
-    img.TransparentColor := clWhite;
+    img.Canvas.FillRect(img.Canvas.ClipRect);
     img.Canvas.Pen.Color := clBlack;
     img.Canvas.Pen.Width := 1;
   end;
 begin
   FPopUpImageList.DrawingStyle := dsTransparent;
+  FPopUpImageList.Clear;
+  FPopUpImageList.Width := MulDiv(16, APPI, 96);
+  FPopUpImageList.Height := FPopUpImageList.Width;
+  FPopUpImageList.InitPPI := APPI;
+
+  R.Left := MulDiv(3, APPI, 96);
+  R.Top := R.Left;
+  R.Right := MulDiv(14, APPI, 96);
+  R.Bottom := R.Right;
 
   NewImg;
-  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfFoldStart, []);  // [-]
-  FPopUpImageList.Add(img, nil);
+  DrawNodeSymbol(img.Canvas, R, cfFoldStart, []);  // [-]
+  FPopUpImageList.AddMasked(img, img.TransparentColor);
   img.Free;
 
   NewImg;
-  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfCollapsedFold, []);  // [+]
-  FPopUpImageList.Add(img, nil);
+  DrawNodeSymbol(img.Canvas, R, cfCollapsedFold, []);  // [+]
+  FPopUpImageList.AddMasked(img, img.TransparentColor);
   img.Free;
 
   NewImg;
-  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfHideStart, []);  // [.]
-  FPopUpImageList.Add(img, nil);
+  DrawNodeSymbol(img.Canvas, R, cfHideStart, []);  // [.]
+  FPopUpImageList.AddMasked(img, img.TransparentColor);
   img.Free;
 
   NewImg;
-  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfCollapsedHide, []);  // [v]
-  FPopUpImageList.Add(img, nil);
+  DrawNodeSymbol(img.Canvas, R, cfCollapsedHide, []);  // [v]
+  FPopUpImageList.AddMasked(img, img.TransparentColor);
   img.Free;
 
 end;
@@ -268,15 +293,15 @@ begin
     if not assigned(GlobalPopUpImageList) then begin
       // Todo: Add a flag, when using global list, or make list ref-counted
       // See Destroy
-      GlobalPopUpImageList  := TImageList.Create(nil);
+      GlobalPopUpImageList  := TSynGutterImageList.Create(nil);
       FPopUpImageList := GlobalPopUpImageList;
-      InitPopUpImageList;
     end
     else
       FPopUpImageList := GlobalPopUpImageList;
 
     APopUp := TPopupMenu.Create(nil);
     APopUp.Images := FPopUpImageList;
+    APopUp.OnPopup := @FPopUpOnPopup;
   end
   else
     APopUp.Items.Clear;
