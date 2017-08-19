@@ -1103,6 +1103,7 @@ class procedure TWin32WSCustomComboBox.SetDroppedDown(
 var
   aSelStart, aSelLength: Integer;
   aText: string;
+  OldItemIndex: Integer;
 begin
   if WSCheckHandleAllocated(ACustomComboBox, 'TWin32WSCustomComboBox.SetDroppedDown') then
   begin
@@ -1111,7 +1112,9 @@ begin
     aSelStart := GetSelStart(ACustomComboBox);
     aSelLength := GetSelLength(ACustomComboBox);
 
+    OldItemIndex := GetItemIndex(ACustomComboBox);
     SendMessage(ACustomComboBox.Handle, CB_SHOWDROPDOWN, WPARAM(ADroppedDown), 0);
+    SetItemIndex(ACustomComboBox, OldItemIndex);
 
     SetText(ACustomComboBox, aText);
     SetSelStart(ACustomComboBox, aSelStart);
