@@ -1390,9 +1390,7 @@ procedure TCustomCoolBar.WMSize(var Message: TLMSize);
 begin
   //DebugLn('WMSize');
   inherited WMSize(Message);
-  if not Autosize then begin
-    CalculateAndAlign;
-    Invalidate;  //required by GTK2
-  end;
+  CalculateAndAlign;
+  Invalidate;  //required by GTK2 and WINDOWS
 end;
 
