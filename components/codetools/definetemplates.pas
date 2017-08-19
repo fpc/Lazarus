@@ -2502,6 +2502,39 @@ begin
         d(DefinePathMacro+'/inc'),da_DefineRecurse));
     end;
 
+    // packages/rtl-console
+    PackagesSubDir:=TDefineTemplate.Create('rtl-console','rtl-console','','rtl-console',da_Directory);
+    PackagesDir.AddChild(PackagesSubDir);
+    PackagesSubDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['packages/rtl-console/src/inc']),
+      IncludePathMacroName,
+      d(DefinePathMacro+'/src/inc;'
+       +IncPathMacro)
+      ,da_DefineRecurse));
+
+    // packages/rtl-extra
+    PackagesSubDir:=TDefineTemplate.Create('rtl-extra','rtl-extra','','rtl-extra',da_Directory);
+    PackagesDir.AddChild(PackagesSubDir);
+    PackagesSubDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['packages/rtl-extra/src/OS']),
+      IncludePathMacroName,
+      d(DefinePathMacro+'/src/inc;'
+       +DefinePathMacro+'/src/'+TargetOSMacro+';'
+       +DefinePathMacro+'/src/'+SrcOS+';'
+       +DefinePathMacro+'/src/'+SrcOS2+';'
+       +IncPathMacro)
+      ,da_DefineRecurse));
+
+    // packages/rtl-objpas
+    PackagesSubDir:=TDefineTemplate.Create('rtl-objpas','rtl-objpas','','rtl-objpas',da_Directory);
+    PackagesDir.AddChild(PackagesSubDir);
+    PackagesSubDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['packages/rtl-objpas/src/inc']),
+      IncludePathMacroName,
+      d(DefinePathMacro+'/src/inc;'
+       +IncPathMacro)
+      ,da_DefineRecurse));
+
     // packages/fcl-base
     FCLBaseDir:=TDefineTemplate.Create('FCL-base',
         ctsFreePascalComponentLibrary,'','fcl-base',
@@ -2605,37 +2638,6 @@ begin
     PackagesDir.AddChild(PackagesSubDir);
     PackagesSubDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,['packages/graph/src/inc']),
-      IncludePathMacroName,
-      d(DefinePathMacro+'/src/inc;'
-       +IncPathMacro)
-      ,da_DefineRecurse));
-
-    // packages/rtl-console
-    PackagesSubDir:=TDefineTemplate.Create('rtl-console','rtl-console','','rtl-console',da_Directory);
-    PackagesDir.AddChild(PackagesSubDir);
-    PackagesSubDir.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,['packages/rtl-console/src/inc']),
-      IncludePathMacroName,
-      d(DefinePathMacro+'/src/inc;'
-       +IncPathMacro)
-      ,da_DefineRecurse));
-
-    // packages/rtl-extra
-    PackagesSubDir:=TDefineTemplate.Create('rtl-extra','rtl-extra','','rtl-extra',da_Directory);
-    PackagesDir.AddChild(PackagesSubDir);
-    PackagesSubDir.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,['packages/rtl-extra/src/OS']),
-      IncludePathMacroName,
-      d(DefinePathMacro+'/src/inc;'
-       +DefinePathMacro+'/src/'+TargetOSMacro+';'
-       +IncPathMacro)
-      ,da_DefineRecurse));
-
-    // packages/rtl-objpas
-    PackagesSubDir:=TDefineTemplate.Create('rtl-objpas','rtl-objpas','','rtl-objpas',da_Directory);
-    PackagesDir.AddChild(PackagesSubDir);
-    PackagesSubDir.AddChild(TDefineTemplate.Create('Include Path',
-      Format(ctsIncludeDirectoriesPlusDirs,['packages/rtl-objpas/src/inc']),
       IncludePathMacroName,
       d(DefinePathMacro+'/src/inc;'
        +IncPathMacro)
