@@ -2,6 +2,9 @@ unit opkman_VirtualTrees;
 
 {$mode delphi}{$H+}
 {$packset 1}
+{$if not (defined(CPU386) or Defined(CPUX64))}
+{$define PACKARRAYPASCAL}
+{$endif}
 
 // Version 4.8.7
 //
@@ -4918,7 +4921,10 @@ end;
 function HasMMX: Boolean;
 
 // Helper method to determine whether the current processor supports MMX.
-
+{$if not (defined(CPU386) or Defined(CPUX64))}
+begin
+  result := false;
+{$else}
 asm
         PUSH    EBX
         XOR     EAX, EAX     // Result := False
@@ -4946,7 +4952,9 @@ asm
         INC     EAX          // Result := True
 @1:
         POP     EBX
+{$endif}
 end;
+
 {$endif}
 //----------------------------------------------------------------------------------------------------------------------
 {$ifdef EnablePrint}
