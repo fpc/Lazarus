@@ -1305,14 +1305,14 @@ begin
         Canvas.Brush.Style := bsClear;
         Canvas.TextOut(aRect.Left, aRect.Top, FVisiBands[i].Text);
       end;
+      if not FRightToLeft or Vertical then
+        aRowEnd := IsRowEnd(aLeft, i)
+      else
+        aRowEnd := IsRowEnd(Width-x, i);
       if BandBorderStyle = bsSingle then begin
         //paint a Separator border below the row of bands ____
         x := aLeft;
         inc(aLeft, FVisiBands[i].Width);
-        if not FRightToLeft or Vertical then
-          aRowEnd := IsRowEnd(aLeft, i)
-        else
-          aRowEnd := IsRowEnd(Width-x, i);
         if (aRowEnd or ((i = aCountM1) and not AutoSize)) then begin
           if not Vertical or not FRightToLeft then
            PaintSeparator(aTop+FVisiBands[i].FHeight)
