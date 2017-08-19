@@ -148,7 +148,7 @@ begin
     if FileExists(GlobalIconPath) then
       DeleteFile(GlobalIconPath);
     GlobalIconPath := IconThemePath + FIconName + '.' + IconType;
-    gdk_pixbuf_save(GlobalIcon, PChar(GlobalIconPath), IconType, nil);
+    gdk_pixbuf_save(GlobalIcon, PChar(GlobalIconPath), IconType, nil, [nil]);
     if GlobalAppIndicator <> nil then
       app_indicator_set_icon(GlobalAppIndicator, PChar(FIconName));
   end
@@ -184,7 +184,7 @@ begin
     if FileExists(GlobalIconPath) then
       DeleteFile(GlobalIconPath);
     GlobalIconPath := IconThemePath + FIconName + '.' + IconType;
-    gdk_pixbuf_save(GlobalIcon, PChar(GlobalIconPath), IconType, nil);
+    gdk_pixbuf_save(GlobalIcon, PChar(GlobalIconPath), IconType, nil, [nil]);
     { Again it seems that icons can only come from files }
     app_indicator_set_icon(GlobalAppIndicator, PChar(FIconName));
   end;
