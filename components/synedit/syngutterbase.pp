@@ -71,6 +71,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure RecalcBounds;
+    procedure ScalePPI(const AScaleFactor: Double);
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                  HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
     procedure ResetMouseActions; virtual; // set mouse-actions according to current Options / may clear them
@@ -190,6 +191,7 @@ type
     property Height:Integer read FHeight;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       virtual abstract;
+    procedure ScalePPI(const AScaleFactor: Double); virtual;
   public
     // X/Y are relative to the gutter, not the gutter part
     function HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean; virtual;
@@ -320,6 +322,14 @@ procedure TSynGutterBase.ResetMouseActions;
 begin
   FMouseActions.Options := TCustomSynEdit(SynEdit).MouseOptions;
   FMouseActions.ResetUserActions;
+end;
+
+procedure TSynGutterBase.ScalePPI(const AScaleFactor: Double);
+var
+  I: Integer;
+begin
+  for I := 0 to PartCount-1 do
+    Parts[I].ScalePPI(AScaleFactor);
 end;
 
 procedure TSynGutterBase.RegisterResizeHandler(AHandler: TNotifyEvent);
@@ -743,6 +753,11 @@ procedure TSynGutterPartBase.ResetMouseActions;
 begin
   FMouseActions.Options := TCustomSynEdit(SynEdit).MouseOptions;
   FMouseActions.ResetUserActions;
+end;
+
+procedure TSynGutterPartBase.ScalePPI(const AScaleFactor: Double);
+begin
+  Width := Round(Width*AScaleFactor);
 end;
 
 procedure TSynGutterPartBase.DoOnGutterClick(X, Y : integer);
