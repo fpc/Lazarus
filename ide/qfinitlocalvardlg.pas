@@ -120,14 +120,22 @@ begin
 end;
 
 procedure TQFInitLocalVarDialog.ButtonPanel1OKButtonClick(Sender: TObject);
+var
+  OldChange: Boolean;
 begin
-  if CodeToolBoss.InsertStatements(
-    TInsertStatementPosDescription(InsertPositions[Max(0,WhereRadioGroup.ItemIndex)]),
-    Statements[Max(0,ValueRadioGroup.ItemIndex)])
-  then begin
-    ModalResult:=mrOk;
-  end else begin
-    ModalResult:=mrAbort;
+  OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
+  LazarusIDE.OpenEditorsOnCodeToolChange:=true;
+  try
+    if CodeToolBoss.InsertStatements(
+      TInsertStatementPosDescription(InsertPositions[Max(0,WhereRadioGroup.ItemIndex)]),
+      Statements[Max(0,ValueRadioGroup.ItemIndex)])
+    then begin
+      ModalResult:=mrOk;
+    end else begin
+      ModalResult:=mrAbort;
+    end;
+  finally
+    LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
   end;
 end;
 
