@@ -232,8 +232,8 @@ begin
   Result := ButtonID>=0;
   FModalResult := ButtonIDToModalResult(ButtonID);
 
-  if (TaskDlg.RadioRes>=0) and (TaskDlg.RadioRes<RadioButtons.Count) then
-    FRadioButton := RadioButtons[TaskDlg.RadioRes] as TTaskDialogRadioButtonItem
+  if (TaskDlg.RadioRes>=200) and (TaskDlg.RadioRes-200<RadioButtons.Count) then
+    FRadioButton := RadioButtons[TaskDlg.RadioRes-200] as TTaskDialogRadioButtonItem
   else
     FRadioButton := nil;
 end;
