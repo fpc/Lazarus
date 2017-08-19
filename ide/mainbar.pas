@@ -503,8 +503,8 @@ begin
   Assert(Result >= 0, 'TMainIDEBar.CalcNonClientHeight: Result '+IntToStr(Result)+' is below zero.');
 
   {$IFDEF LCLWin32}
-  //Win32 the constrained height has to be without SM_CYSIZEFRAME and SM_CYMENU
-  Result := Result - (LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) + LCLIntf.GetSystemMetrics(SM_CYMENU));
+  //Win32 the constrained height has to be without SM_CYSIZEFRAME and SM_CYCAPTION;
+  Result := Result - (LCLIntf.GetSystemMetrics(SM_CYSIZEFRAME) + LCLIntf.GetSystemMetrics(SM_CYCAPTION));
   {$ENDIF LCLWin32}
 
   {$ELSE}
