@@ -673,10 +673,11 @@ function TCustomComboBox.GetItemHeight: Integer;
 begin
   // FItemHeight is not initialized at class creating. we can, but with what value?
   // so, if it still uninitialized (=0), then we ask widgetset
-  if (FStyle in [csOwnerDrawFixed, csOwnerDrawVariable]) and (FItemHeight > 0) or not HandleAllocated then
-  begin
+  if (FStyle in [csOwnerDrawFixed, csOwnerDrawVariable,
+                 csOwnerDrawEditableFixed, csOwnerDrawEditableVariable])
+  and (FItemHeight > 0) or not HandleAllocated then
     Result := FItemHeight
-  end else
+  else
   begin
     Result := TWSCustomComboBoxClass(WidgetSetClass).GetItemHeight(Self);
     if (FItemHeight = 0) then
@@ -711,7 +712,8 @@ begin
   if (not HandleAllocated) then 
     exit;
 
-  if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+  if Style in [csOwnerDrawFixed, csOwnerDrawVariable,
+               csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
     TWSCustomComboBoxClass(WidgetSetClass).SetItemHeight(Self, FItemHeight);
 end;
 
