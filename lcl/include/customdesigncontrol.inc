@@ -18,7 +18,8 @@ begin
   FScaled := True;
   FDesignTimePPI := 96;
   FPixelsPerInch := FDesignTimePPI;
-  Font.PixelsPerInch := FDesignTimePPI;
+  if Application.Scaled then
+    Font.PixelsPerInch := FDesignTimePPI;
 end;
 
 procedure TCustomDesignControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
@@ -103,5 +104,10 @@ end;
 
 procedure TCustomDesignControl.SetScaled(const AScaled: Boolean);
 begin
+  if FScaled=AScaled then
+    Exit;
+
   FScaled := AScaled;
+  if not FScaled then
+    Font.PixelsPerInch := Screen.PixelsPerInch;
 end;
