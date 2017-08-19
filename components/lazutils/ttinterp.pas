@@ -2865,11 +2865,11 @@ end;
          if ( args^[0] and $100 <> 0 ) and
             ( pEC^.metrics.pointSize <= A ) then pEC^.GS.scan_Control := True;
 
-         if ( args^[0] and $200 <> 0 ) and
-            ( false ) then pEC^.GS.scan_Control := True;
+         //if ( args^[0] and $200 <> 0 ) and
+         //   ( false ) then pEC^.GS.scan_Control := True;
 
-         if ( args^[0] and $400 <> 0 ) and
-            ( false ) then pEC^.GS.scan_Control := True;
+         //if ( args^[0] and $400 <> 0 ) and
+         //   ( false ) then pEC^.GS.scan_Control := True;
 
          if ( args^[0] and $800 <> 0 ) and
             ( pEC^.metrics.pointSize > A ) then pEC^.GS.scan_Control := False;

@@ -105,7 +105,7 @@ type
     function InternalGetDataPtr(AItem: PMapItem): Pointer;
     function InternalGetId(AItem: PMapItem; out AID): Boolean;
     function InternalSetData(AItem: PMapItem; const AData): Boolean;
-    procedure ReleaseData(ADataPtr: Pointer); virtual;
+    procedure ReleaseData({%H-}ADataPtr: Pointer); virtual;
   public
     constructor Create(AIdType: TMapIdType; ADataSize: Cardinal);
     procedure Clear;
@@ -315,7 +315,7 @@ function TBaseMap.FindNode(const AId): TAvlTreeNode;
 var
   Item: TMapItem;
 begin
-  Move(AID, Item.ID, ID_LENGTH[FIdType]);
+  Move(AID, {%H-}Item.ID, ID_LENGTH[FIdType]);
   Result := FTree.Find(@Item);
 end;
 
@@ -413,7 +413,7 @@ begin
 
   p := @AItem^.ID;
   Inc(p, ID_LENGTH[FIdType]);
-  Move(p^, AData, FDataSize);
+  Move(p^, AData{%H-}, FDataSize);
 end;
 
 function TBaseMap.InternalGetDataPtr(AItem: PMapItem): Pointer;
@@ -433,7 +433,7 @@ begin
   Result := AItem <> nil;
   if not Result then Exit;
 
-  Move(AItem^.ID, AID, ID_LENGTH[FIdType]);
+  Move(AItem^.ID, AID{%H-}, ID_LENGTH[FIdType]);
 end;
 
 function TBaseMap.InternalSetData(AItem: PMapItem; const AData): Boolean;
@@ -551,7 +551,7 @@ begin
   Node := FMap.FTree.Root;
   if Node <> nil
   then begin
-    Move(AID, Item.ID, ID_LENGTH[FMap.FIdType]);
+    Move(AID, {%H-}Item.ID, ID_LENGTH[FMap.FIdType]);
     LastNext := nil;
     while True do
     begin

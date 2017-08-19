@@ -436,7 +436,7 @@ begin
       exit(FHashCacheIndex);
     if not Assigned(FCustomHashFunction) then begin
       if not Assigned(FOwnerHashFunction) then begin
-        Result:=Integer((PtrUInt(Key)+(PtrUint(Key) mod 17)) mod Cardinal(FCapacity));
+        Result:=Integer(({%H-}PtrUInt(Key)+({%H-}PtrUint(Key) mod 17)) mod Cardinal(FCapacity));
       end else
         Result:=FOwnerHashFunction(Key);
     end else
@@ -501,9 +501,9 @@ end;
 function TDynHashArray.SlowAlternativeHashMethod(Sender: TDynHashArray;
   Item: Pointer): integer;
 begin
-  Result:=integer((PtrUInt(Item) mod Cardinal(PrimeNumber))
-          +(PtrUInt(Item) mod 17)+(PtrUInt(Item) mod 173)
-          +(PtrUInt(Item) mod 521)
+  Result:=integer(({%H-}PtrUInt(Item) mod Cardinal(PrimeNumber))
+          +({%H-}PtrUInt(Item) mod 17)+({%H-}PtrUInt(Item) mod 173)
+          +({%H-}PtrUInt(Item) mod 521)
            ) mod FCapacity;
 end;
 
