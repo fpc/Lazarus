@@ -40,7 +40,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="--no-splash-screen"/>
+        <CommandLineParams Value="--no-splash-screen --pcp=C:/32fpc302/LazTrunk/Config"/>
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -97,6 +97,7 @@
         <Filename Value="frames/window_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="WindowOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit4>
       <Unit5>
@@ -245,6 +246,7 @@
       <Unit28>
         <Filename Value="projecticon.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ProjectIcon"/>
       </Unit28>
       <Unit29>
         <Filename Value="w32versioninfo.pas"/>
@@ -264,6 +266,7 @@
         <ComponentName Value="ComponentListForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ComponentList"/>
       </Unit31>
       <Unit32>
         <Filename Value="frames/codeexplorer_update_options.pas"/>
@@ -322,6 +325,7 @@
         <ComponentName Value="CodeBrowserView"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CodeBrowser"/>
       </Unit41>
       <Unit42>
         <Filename Value="project.pp"/>
@@ -338,6 +342,7 @@
         <ComponentName Value="AboutForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="AboutFrm"/>
       </Unit44>
       <Unit45>
         <Filename Value="idehelpmanager.pas"/>
@@ -673,6 +678,7 @@
         <ComponentName Value="MessagesView"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="etMessagesWnd"/>
       </Unit99>
       <Unit100>
         <Filename Value="frames/project_resources_options.pas"/>
@@ -730,12 +736,18 @@
       <Unit110>
         <Filename Value="initialsetupdlgs.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="InitialSetupDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="InitialSetupDlgs"/>
       </Unit110>
       <Unit111>
         <Filename Value="splash.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="SplashForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Splash"/>
       </Unit111>
       <Unit112>
         <Filename Value="unitdependencies.pas"/>
@@ -745,7 +757,10 @@
       <Unit113>
         <Filename Value="editorfilemanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorFileManagerForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="EditorFileManager"/>
       </Unit113>
       <Unit114>
         <Filename Value="lfmunitresource.pas"/>
@@ -754,6 +769,7 @@
       <Unit115>
         <Filename Value="sourcemarks.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="SourceMarks"/>
       </Unit115>
       <Unit116>
         <Filename Value="checklfmdlg.pas"/>
@@ -827,6 +843,7 @@
       <Unit130>
         <Filename Value="componentpalette.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ComponentPalette"/>
       </Unit130>
       <Unit131>
         <Filename Value="codecontextform.pas"/>
@@ -895,7 +912,10 @@
       <Unit145>
         <Filename Value="projectinspector.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectInspectorForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ProjectInspector"/>
       </Unit145>
       <Unit146>
         <Filename Value="diskdiffsdialog.pas"/>
@@ -958,7 +978,10 @@
       <Unit158>
         <Filename Value="restrictionbrowser.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="RestrictionBrowserView"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="RestrictionBrowser"/>
       </Unit158>
       <Unit159>
         <Filename Value="emptymethodsdlg.pas"/>
@@ -996,7 +1019,10 @@
       <Unit166>
         <Filename Value="comppagespopup.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="DlgCompPagesPopup"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CompPagesPopup"/>
       </Unit166>
       <Unit167>
         <Filename Value="fpdoceditwindow.pas"/>
@@ -1062,12 +1088,16 @@
       <Unit180>
         <Filename Value="codeexplorer.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="CodeExplorerView"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CodeExplorer"/>
       </Unit180>
       <Unit181>
         <Filename Value="projectwizarddlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="ProjectWizardDlg"/>
       </Unit181>
       <Unit182>
         <Filename Value="projectdefs.pas"/>
@@ -1198,6 +1228,7 @@
         <ComponentName Value="IDEOptionsDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEOptionsDlg"/>
       </Unit207>
       <Unit208>
         <Filename Value="findunitdlg.pas"/>
@@ -1221,7 +1252,10 @@
       <Unit212>
         <Filename Value="searchresultview.pp"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="SearchResultsView"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="SearchResultView"/>
       </Unit212>
       <Unit213>
         <Filename Value="invertassigntool.pas"/>
@@ -1248,12 +1282,15 @@
       <Unit218>
         <Filename Value="useunitdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="UseUnitDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="UseUnitDlg"/>
       </Unit218>
       <Unit219>
         <Filename Value="keymapping.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="KeyMapping"/>
       </Unit219>
       <Unit220>
         <Filename Value="redirect_stderr.pas"/>
@@ -1379,13 +1416,6 @@
       <OtherUnitFiles Value="frames;../converter;../debugger;../debugger/frames;../packager;../designer;../packager/frames;../ide"/>
       <UnitOutputDirectory Value="$(LazarusDir)/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
-    <Linking>
-      <Options>
-        <Win32>
-          <GraphicApplication Value="True"/>
-        </Win32>
-      </Options>
-    </Linking>
     <CompileReasons Compile="False" Build="False" Run="False"/>
   </CompilerOptions>
   <Debugging>

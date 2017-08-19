@@ -1081,6 +1081,7 @@ var
   aSelStart, aSelLength: Integer;
   aText: string;
   Editable: Boolean;
+  OldItemIndex: Integer;
 begin
   if WSCheckHandleAllocated(ACustomComboBox, 'TWin32WSCustomComboBox.SetDroppedDown') then
   begin
@@ -1093,7 +1094,9 @@ begin
       aSelLength := GetSelLength(ACustomComboBox);
     end;
 
+    OldItemIndex := GetItemIndex(ACustomComboBox);
     SendMessage(ACustomComboBox.Handle, CB_SHOWDROPDOWN, WPARAM(ADroppedDown), 0);
+    SetItemIndex(ACustomComboBox, OldItemIndex);
 
     if Editable then
     begin
