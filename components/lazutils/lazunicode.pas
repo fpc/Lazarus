@@ -50,6 +50,8 @@ uses
   function UnicodeToWinCP(const s: string): AnsiString;
   function WinCPToUnicode(const s: AnsiString): string;
 
+  function StringOfCodePoint(ACodePoint: String; N: Integer): String;
+
 type
   // Base class for CodePoint and Character enumerators.
   TUnicodeEnumeratorBase = class
@@ -220,6 +222,16 @@ begin
   {$ELSE}
    Result := WinCPToUTF8(s);
   {$ENDIF}
+end;
+
+function StringOfCodePoint(ACodePoint: String; N: Integer): String;
+// Like StringOfChar
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := 1 to N do
+    Result := Result + ACodePoint;
 end;
 
 { TUnicodeEnumeratorBase }
