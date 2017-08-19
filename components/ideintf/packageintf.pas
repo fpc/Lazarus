@@ -288,6 +288,9 @@ type
     function InstallPackages(PkgIdList: TObjectList;
                   Flags: TPkgInstallInIDEFlags = []): TModalResult; virtual; abstract;
 
+    //uninstall
+    function UninstallPackage(APackage: TIDEPackage; ShowAbort: boolean): TModalResult; virtual; abstract;
+
     // events
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerOnGraphChanged(const OnGraphChanged: TNotifyEvent;
