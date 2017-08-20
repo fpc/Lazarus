@@ -210,7 +210,7 @@ begin
       Prefix:=SCommand;
     llDebug :
       Prefix:=SDebug;
-    llProgres :
+    llProgress :
       Prefix:=SProgress
   else
     Prefix := '';
