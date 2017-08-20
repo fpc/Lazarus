@@ -27,7 +27,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="7">
+    <RequiredPackages Count="6">
       <Item1>
         <PackageName Value="lazfpreportdesign"/>
       </Item1>
@@ -44,12 +44,8 @@
         <PackageName Value="RunTimeTypeInfoControls"/>
       </Item5>
       <Item6>
-        <PackageName Value="fclfpreport"/>
-        <MaxVersion Major="1"/>
-      </Item6>
-      <Item7>
         <PackageName Value="LCL"/>
-      </Item7>
+      </Item6>
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
