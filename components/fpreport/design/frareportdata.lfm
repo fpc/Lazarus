@@ -1,0 +1,57 @@
+object ReportDataDisplay: TReportDataDisplay
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 658
+  DesignTop = 245
+  object PCData: TPageControl
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    ActivePage = TSVariables
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 0
+    object TSData: TTabSheet
+      Caption = 'Data'
+      ClientHeight = 205
+      ClientWidth = 314
+      object TVData: TTreeView
+        Left = 0
+        Height = 205
+        Top = 0
+        Width = 314
+        Align = alClient
+        DragMode = dmAutomatic
+        ReadOnly = True
+        TabOrder = 0
+        OnStartDrag = TVDataStartDrag
+        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      end
+    end
+    object TSVariables: TTabSheet
+      Caption = 'Variables'
+      ClientHeight = 205
+      ClientWidth = 314
+      object LBVariables: TListBox
+        Left = 0
+        Height = 205
+        Top = 0
+        Width = 314
+        Align = alClient
+        DragMode = dmAutomatic
+        ItemHeight = 0
+        OnStartDrag = LBVariablesStartDrag
+        Options = [lboDrawFocusRect]
+        ScrollWidth = 312
+        TabOrder = 0
+        TopIndex = -1
+      end
+    end
+  end
+end

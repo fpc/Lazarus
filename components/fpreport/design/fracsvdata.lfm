@@ -1,0 +1,109 @@
+object TCSVReportDataFrame: TTCSVReportDataFrame
+  Left = 0
+  Height = 283
+  Top = 0
+  Width = 391
+  ClientHeight = 283
+  ClientWidth = 391
+  TabOrder = 0
+  DesignLeft = 535
+  DesignTop = 378
+  object FEData: TFileNameEdit
+    Left = 16
+    Height = 27
+    Top = 32
+    Width = 359
+    DialogTitle = 'Select a file with comma-separated data'
+    DialogOptions = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Filter = 'CSV files|*.csv|Text files|*.txt|All files|*.*'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object LEFileName: TLabel
+    Left = 16
+    Height = 17
+    Top = 8
+    Width = 54
+    Caption = 'Filename:'
+    ParentColor = False
+  end
+  object RBFirstLineField: TRadioButton
+    Left = 16
+    Height = 22
+    Top = 72
+    Width = 162
+    Caption = 'First line has field names'
+    Checked = True
+    TabOrder = 1
+    TabStop = True
+  end
+  object RBUseTheseFieldNames: TRadioButton
+    Left = 16
+    Height = 22
+    Top = 104
+    Width = 188
+    Caption = 'Use the following field names'
+    TabOrder = 2
+  end
+  object MFieldNames: TMemo
+    Left = 16
+    Height = 113
+    Top = 136
+    Width = 359
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    OnEnter = MFieldNamesEnter
+    TabOrder = 3
+  end
+  object LExplain: TLabel
+    Left = 16
+    Height = 17
+    Top = 256
+    Width = 226
+    Anchors = [akLeft, akBottom]
+    Caption = '(one field per line, no special characters)'
+    ParentColor = False
+  end
+  object EQuoteChar: TEdit
+    Left = 351
+    Height = 27
+    Top = 76
+    Width = 24
+    Anchors = [akTop, akRight]
+    MaxLength = 1
+    TabOrder = 4
+    Text = '"'
+  end
+  object Label1: TLabel
+    Left = 278
+    Height = 17
+    Top = 76
+    Width = 62
+    Anchors = [akTop, akRight]
+    Caption = 'Quote char'
+    ParentColor = False
+  end
+  object EDelimiter: TEdit
+    Left = 351
+    Height = 27
+    Top = 102
+    Width = 24
+    Anchors = [akTop, akRight]
+    MaxLength = 1
+    TabOrder = 5
+    Text = ','
+  end
+  object LDelimiter: TLabel
+    Left = 284
+    Height = 17
+    Top = 107
+    Width = 56
+    Anchors = [akTop, akRight]
+    Caption = 'Separator'
+    ParentColor = False
+  end
+end

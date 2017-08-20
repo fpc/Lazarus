@@ -1,0 +1,64 @@
+object ReportDataPreviewForm: TReportDataPreviewForm
+  Left = 386
+  Height = 254
+  Top = 256
+  Width = 476
+  Caption = 'Preview data'
+  ClientHeight = 254
+  ClientWidth = 476
+  OnClose = FormClose
+  OnShow = FormShow
+  LCLVersion = '1.9.0.0'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 206
+    Width = 464
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbClose]
+  end
+  object NPreview: TDBNavigator
+    Left = 8
+    Height = 25
+    Top = 8
+    Width = 120
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.EnlargeVertical = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 100
+    ClientHeight = 25
+    ClientWidth = 120
+    DataSource = DSPreview
+    Options = []
+    TabOrder = 1
+    VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
+  end
+  object GPreview: TDBGrid
+    Left = 8
+    Height = 162
+    Top = 40
+    Width = 461
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Color = clWindow
+    Columns = <>
+    DataSource = DSPreview
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    ReadOnly = True
+    TabOrder = 2
+  end
+  object DSPreview: TDataSource
+    left = 136
+    top = 47
+  end
+end

@@ -1,0 +1,138 @@
+object ConfigFPImageExportForm: TConfigFPImageExportForm
+  Left = 485
+  Height = 203
+  Top = 343
+  Width = 332
+  BorderStyle = bsDialog
+  Caption = 'Export to images'
+  ClientHeight = 203
+  ClientWidth = 332
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.7'
+  object FEBaseFileName: TFileNameEdit
+    Left = 80
+    Height = 18
+    Top = 14
+    Width = 240
+    DialogKind = dkSave
+    DialogTitle = 'Base filename for image export'
+    DialogOptions = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Filter = 'PDF Files|*.pdf|All files|*.*'
+    FilterIndex = 0
+    DefaultExt = '.pdf'
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Flat = True
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object LFEPDF: TLabel
+    Left = 6
+    Height = 18
+    Top = 14
+    Width = 70
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Filename'
+    FocusControl = FEBaseFileName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object BPExport: TButtonPanel
+    Left = 6
+    Height = 33
+    Top = 164
+    Width = 320
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object GBOptions: TGroupBox
+    Left = 16
+    Height = 120
+    Top = 40
+    Width = 305
+    Caption = 'Options'
+    ClientHeight = 92
+    ClientWidth = 301
+    TabOrder = 2
+    object LCBDPI: TLabel
+      Left = 17
+      Height = 20
+      Top = 8
+      Width = 63
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '&DPI'
+      FocusControl = CBDPI
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object CBDPI: TComboBox
+      Left = 88
+      Height = 20
+      Top = 8
+      Width = 60
+      ItemHeight = 0
+      Items.Strings = (
+        '72'
+        '96'
+        '120'
+        '150'
+        '300'
+      )
+      TabOrder = 0
+    end
+    object SEDigits: TSpinEdit
+      Left = 88
+      Height = 18
+      Top = 35
+      Width = 56
+      MaxValue = 6
+      MinValue = 1
+      TabOrder = 1
+      Value = 1
+    end
+    object LSEDigits: TLabel
+      Left = 8
+      Height = 18
+      Top = 35
+      Width = 72
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '&Min. digits'
+      FocusControl = SEDigits
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object ESeparator: TEdit
+      Left = 88
+      Height = 18
+      Top = 64
+      Width = 80
+      MaxLength = 1
+      TabOrder = 2
+    end
+    object LESeparator: TLabel
+      Left = 8
+      Height = 18
+      Top = 64
+      Width = 72
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = '&Separator'
+      FocusControl = ESeparator
+      Layout = tlCenter
+      ParentColor = False
+    end
+  end
+end

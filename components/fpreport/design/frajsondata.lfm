@@ -1,0 +1,163 @@
+object JSONReportDataConfigFrame: TJSONReportDataConfigFrame
+  Left = 0
+  Height = 352
+  Top = 0
+  Width = 425
+  ClientHeight = 352
+  ClientWidth = 425
+  TabOrder = 0
+  DesignLeft = 385
+  DesignTop = 387
+  object RBFile: TRadioButton
+    Left = 16
+    Height = 22
+    Top = 8
+    Width = 85
+    Caption = 'File on disk'
+    Checked = True
+    TabOrder = 0
+    TabStop = True
+  end
+  object RBURL: TRadioButton
+    Left = 16
+    Height = 22
+    Top = 80
+    Width = 168
+    Caption = 'Download from URL (http)'
+    TabOrder = 1
+  end
+  object EURL: TEdit
+    Left = 20
+    Height = 27
+    Top = 112
+    Width = 389
+    Anchors = [akTop, akLeft, akRight]
+    OnEditingDone = EURLEditingDone
+    OnEnter = EURLEnter
+    TabOrder = 2
+  end
+  object FEData: TFileNameEdit
+    Left = 20
+    Height = 27
+    Top = 40
+    Width = 392
+    DialogOptions = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Filter = 'JSON files|*.json|All files|*.*'
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 3
+    OnEditingDone = FEDataEditingDone
+    OnEnter = FEDataEnter
+  end
+  object EDataPath: TEdit
+    Left = 20
+    Height = 27
+    Top = 168
+    Width = 215
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 4
+    TextHint = 'JSON Path expression'
+  end
+  object LDataPath: TLabel
+    Left = 19
+    Height = 17
+    Top = 145
+    Width = 100
+    Caption = 'Path to data array'
+    ParentColor = False
+  end
+  object SBrefresh: TSpeedButton
+    Left = 381
+    Height = 22
+    Top = 168
+    Width = 23
+    Action = ARefresh
+    Anchors = [akTop, akRight]
+    ShowCaption = False
+  end
+  object VLEFields: TValueListEditor
+    Left = 20
+    Height = 130
+    Top = 208
+    Width = 382
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    DefaultColWidth = 150
+    FixedCols = 0
+    Flat = True
+    RowCount = 2
+    TabOrder = 5
+    OnValidateEntry = VLEFieldsValidateEntry
+    KeyOptions = [keyUnique]
+    TitleCaptions.Strings = (
+      'Column'
+      'Type'
+    )
+    ColWidths = (
+      150
+      231
+    )
+  end
+  object CBArrayBased: TCheckBox
+    Left = 238
+    Height = 22
+    Top = 169
+    Width = 138
+    Anchors = [akTop, akRight]
+    Caption = 'Array based records'
+    TabOrder = 6
+  end
+  object ALJSON: TActionList
+    Images = ILJSON
+    left = 304
+    top = 8
+    object ARefresh: TAction
+      Caption = 'Refresh'
+      ImageIndex = 0
+      OnExecute = ARefreshExecute
+      OnUpdate = ARefreshUpdate
+    end
+  end
+  object ILJSON: TImageList
+    left = 248
+    top = 8
+    Bitmap = {
+      4C69010000001000000010000000FFFFFF00FFFFFF00FFFFFF00A465341DA769
+      3A9FA76A3ADEA56736F6A76939E5A76A3ABCA4653453A4653405FFFFFF00FFFF
+      FF00FFFFFF00A4653479A4653410FFFFFF00FFFFFF00A4653550A66838F6C090
+      68FAD3B08FFFDFC2A8FFDEC1A8FFD4B193FFB9875FF4A56737F0A4653458FFFF
+      FF00A4663566A46534FFA465340FFFFFFF00A4653429A66939F5D3AD8CFFDCBD
+      9DFFDDBEA1FFE5CBB4FFE9D3BFFFEEDDCCFFF0E2D5FFE7D2BFFFAF774BF5A567
+      36C0AB7143F7A46635FCA465340EFFFFFF00A769399BC09069FDC59872FFA86B
+      3CFFA46635FFA76A3AFCB7855DF3D9BBA1FEF1E4D8FFF2E6DBFFF3E8DDFFCEA7
+      88FDEAD8C8FFA76A3AF9A465340DFFFFFF00A66838F3AB7041FFA96C3CFEA76A
+      3AF5A4653475A4653419A4653445A66938CDB98861F5EBDBCDFFF5EBE2FFF6EE
+      E6FFF6EEE6FFA76A3AFAA465340BFFFFFF00A46535FEA76A3AFBC791689DA567
+      37E6A4653423FFFFFF00FFFFFF00FFFFFF00A4653460A46635FFE9D7C7FFEBD8
+      C6FFF5ECE3FFA66A3AFAA465340AFFFFFF00A46534FCB3794C7ECF9D762BBB83
+      5713A4653402FFFFFF00FFFFFF00A4653404A66838C4D0AC8FFAF6EEE7FFF2E6
+      DBFFF6EEE6FFA66A3AFBA4653409FFFFFF00A465340DFFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00A46534A0A46534FFAD7447F8AF774CF7AF77
+      4CF7AF784CF7A46534FFA4653408FFFFFF00A46534F9A46534FEA46534FEA465
+      34FDA46534FCA46534FBA46534B9A465341DA4653418A4653418A4653418A465
+      3418A4653418A465341CFFFFFF00FFFFFF00A46534FCF5EDE5FFF6EDE5FFF5EC
+      E4FFD7B79CFDA66837E0A4653410FFFFFF00FFFFFF00FFFFFF00FFFFFF00D5A4
+      7E1ACD997239A46534FCA465340CFFFFFF00A46635FCF6EEE6FFEBD7C4FFEAD9
+      C9FFA46534FEA465346AFFFFFF00FFFFFF00FFFFFF00A465340BA56635E9C995
+      6C8DB77F53C2A46534FFA4653405FFFFFF00A56737FDF6EEE6FFF5ECE3FFF5ED
+      E4FFE6D2C1FFB0794DF5A66938CAA4653436FFFFFF00A465346AA96B3CEDB67C
+      4FFFA76A3AFEA56837FAFFFFFF00FFFFFF00A66838FDF1E4D8FFD4B295FEF4E9
+      E0FFF3E8DDFFEDDCCCFFD2AD8FFEB0784CF5A56635FBA66939FFA66939FEA96D
+      3DFFB0784CFFA76A3AA8FFFFFF00FFFFFF00A56737FEB7845BF7A56736D4B17A
+      4EF4E3CAB4FFECDAC9FFE7D1BCFFE3C9B0FFDEBEA0FFD2AB88FFCEA582FFD3AE
+      8EFFA66838F5A465342AFFFFFF00FFFFFF00A46534FFA5673693FFFFFF00A465
+      3454A66737EEB58055F3CEA684FFD8B697FFDBB999FFD3AC8AFFC2946DFCA668
+      38F6A466355BFFFFFF00FFFFFF00FFFFFF00A46534A2A4653401FFFFFF00FFFF
+      FF00A4653405A4653453A76A3ABEA66938E9A46635FAA76A3AE4A76B3BAAA465
+      3424FFFFFF00FFFFFF00FFFFFF00
+    }
+  end
+end

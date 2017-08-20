@@ -1,0 +1,645 @@
+object ConfigHTMLExportForm: TConfigHTMLExportForm
+  Left = 485
+  Height = 359
+  Top = 343
+  Width = 521
+  BorderStyle = bsDialog
+  Caption = 'Export to html'
+  ClientHeight = 359
+  ClientWidth = 521
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.9.0.0'
+  object FEBaseFileName: TFileNameEdit
+    Left = 80
+    Height = 27
+    Top = 8
+    Width = 427
+    DialogKind = dkSave
+    DialogTitle = 'Base filename for image export'
+    DialogOptions = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Filter = 'PDF Files|*.pdf|All files|*.*'
+    FilterIndex = 0
+    DefaultExt = '.pdf'
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Flat = True
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object LFEPDF: TLabel
+    Left = 6
+    Height = 18
+    Top = 8
+    Width = 70
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Filename'
+    FocusControl = FEBaseFileName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object BPExport: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 311
+    Width = 509
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object PCOptions: TPageControl
+    Left = 8
+    Height = 264
+    Top = 40
+    Width = 499
+    ActivePage = TSOptions
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabIndex = 0
+    TabOrder = 2
+    object TSOptions: TTabSheet
+      Caption = 'Options'
+      ClientHeight = 229
+      ClientWidth = 493
+      object LCBDPI: TLabel
+        Left = 25
+        Height = 20
+        Top = 16
+        Width = 63
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = '&DPI'
+        FocusControl = CBDPI
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object CBDPI: TComboBox
+        Left = 96
+        Height = 29
+        Top = 16
+        Width = 72
+        ItemHeight = 0
+        Items.Strings = (
+          '72'
+          '96'
+          '120'
+          '150'
+          '300'
+        )
+        TabOrder = 0
+      end
+      object SEDigits: TSpinEdit
+        Left = 96
+        Height = 27
+        Top = 48
+        Width = 56
+        MaxValue = 6
+        MinValue = 1
+        TabOrder = 1
+        Value = 1
+      end
+      object LSEDigits: TLabel
+        Left = 16
+        Height = 18
+        Top = 48
+        Width = 72
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = '&Min. digits'
+        FocusControl = SEDigits
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object ESeparator: TEdit
+        Left = 96
+        Height = 27
+        Top = 77
+        Width = 80
+        MaxLength = 1
+        TabOrder = 2
+      end
+      object LESeparator: TLabel
+        Left = 16
+        Height = 18
+        Top = 77
+        Width = 72
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = '&Separator'
+        FocusControl = ESeparator
+        Layout = tlCenter
+        ParentColor = False
+      end
+      object CBAdvancedOptions: TCheckBox
+        Left = 10
+        Height = 22
+        Top = 192
+        Width = 158
+        Caption = 'Show advanced options.'
+        OnChange = CBAdvancedOptionsChange
+        TabOrder = 3
+      end
+      object CBTOCPage: TCheckBox
+        Left = 96
+        Height = 22
+        Top = 112
+        Width = 146
+        Caption = 'Create Contents Page'
+        TabOrder = 4
+      end
+    end
+    object Navigation: TTabSheet
+      Caption = 'Navigation'
+      ClientHeight = 229
+      ClientWidth = 493
+      object CBTopNavigator: TCheckBox
+        Left = 216
+        Height = 22
+        Top = 32
+        Width = 45
+        Caption = 'Top'
+        TabOrder = 0
+      end
+      object CBBottomNavigator: TCheckBox
+        Left = 216
+        Height = 22
+        Top = 60
+        Width = 65
+        Caption = 'Bottom'
+        TabOrder = 1
+      end
+      object CBLeftNavigator: TCheckBox
+        Left = 216
+        Height = 22
+        Top = 91
+        Width = 45
+        Caption = 'Left'
+        TabOrder = 2
+      end
+      object CBRightNavigator: TCheckBox
+        Left = 216
+        Height = 22
+        Top = 120
+        Width = 52
+        Caption = 'Right'
+        TabOrder = 3
+      end
+      object CBFrame: TCheckBox
+        Left = 17
+        Height = 22
+        Top = 120
+        Width = 132
+        Caption = 'Create Frame page'
+        TabOrder = 4
+      end
+      object CBPageEdit: TCheckBox
+        Left = 17
+        Height = 22
+        Top = 36
+        Width = 147
+        Caption = 'Editable Page number'
+        TabOrder = 5
+      end
+      object Label1: TLabel
+        Left = 216
+        Height = 17
+        Top = 8
+        Width = 56
+        Caption = 'Locations:'
+        ParentColor = False
+      end
+      object CBPageNofM: TCheckBox
+        Left = 17
+        Height = 22
+        Top = 64
+        Width = 120
+        Caption = 'Use page N of M.'
+        TabOrder = 6
+      end
+      object CBFirstlast: TCheckBox
+        Left = 17
+        Height = 22
+        Top = 91
+        Width = 187
+        Caption = 'Show links to First/Last pages'
+        TabOrder = 7
+      end
+      object CBPageNo: TCheckBox
+        Left = 17
+        Height = 22
+        Top = 8
+        Width = 132
+        Caption = 'Show page number'
+        TabOrder = 8
+      end
+      object CBNavigatorImages: TCheckBox
+        Left = 17
+        Height = 22
+        Top = 151
+        Width = 154
+        Caption = 'Use images for buttons'
+        TabOrder = 9
+      end
+    end
+    object TSAdvanced: TTabSheet
+      Caption = 'Advanced'
+      ClientHeight = 229
+      ClientWidth = 493
+      object CBInlineImage: TCheckBox
+        Left = 16
+        Height = 22
+        Top = 8
+        Width = 121
+        Caption = 'Inline image data'
+        TabOrder = 0
+      end
+      object CBIMGTag: TCheckBox
+        Left = 16
+        Height = 22
+        Top = 32
+        Width = 171
+        Caption = 'Use <IMG> tag for images'
+        TabOrder = 1
+      end
+      object RGStyle: TRadioGroup
+        Left = 224
+        Height = 112
+        Top = 8
+        Width = 144
+        AutoFill = True
+        Caption = 'Style'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        ClientHeight = 94
+        ClientWidth = 142
+        Items.Strings = (
+          'Inline'
+          'Style Tag'
+          'CSS File'
+        )
+        TabOrder = 2
+      end
+      object CBFixedPositioning: TCheckBox
+        Left = 16
+        Height = 22
+        Top = 56
+        Width = 186
+        Caption = 'Fixed positioning of elements'
+        TabOrder = 3
+      end
+      object CBMemoAsIS: TCheckBox
+        Left = 16
+        Height = 22
+        Top = 80
+        Width = 173
+        Caption = 'Let browser render memo.'
+        TabOrder = 4
+      end
+      object CBExternalJS: TCheckBox
+        Left = 16
+        Height = 22
+        Top = 104
+        Width = 131
+        Caption = 'Use external JS file.'
+        TabOrder = 5
+      end
+      object CBalwaysFirstLast: TCheckBox
+        Left = 16
+        Height = 22
+        Top = 128
+        Width = 252
+        Caption = 'Navigator always shows first/last buttons'
+        TabOrder = 6
+      end
+      object CBSkipStyling: TCheckBox
+        Left = 16
+        Height = 22
+        Top = 152
+        Width = 156
+        Caption = 'Skip styling of navigator'
+        TabOrder = 7
+      end
+    end
+    object TSFrame: TTabSheet
+      Caption = 'Frame TOC page'
+      ClientHeight = 229
+      ClientWidth = 493
+      object SETOCZoneWidth: TSpinEdit
+        Left = 80
+        Height = 27
+        Top = 72
+        Width = 83
+        TabOrder = 0
+      end
+      object FEFrameTOCHtml: TFileNameEdit
+        Left = 80
+        Height = 27
+        Top = 8
+        Width = 393
+        DialogKind = dkSave
+        DialogTitle = 'Select a HTML filename'
+        Filter = 'HTML Files|*.html|All files|*.*'
+        FilterIndex = 0
+        HideDirectories = False
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        MaxLength = 0
+        TabOrder = 1
+      end
+      object FEFrameTOCCSS: TFileNameEdit
+        Left = 80
+        Height = 27
+        Top = 40
+        Width = 393
+        DialogKind = dkSave
+        DialogTitle = 'Select a CSS filename'
+        Filter = 'CSS files|*.css|All files|*.*'
+        FilterIndex = 0
+        HideDirectories = False
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        MaxLength = 0
+        TabOrder = 2
+      end
+      object RGTocZone: TRadioGroup
+        Left = 82
+        Height = 84
+        Top = 108
+        Width = 206
+        AutoFill = True
+        Caption = 'TOC Zone'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 2
+        ClientHeight = 66
+        ClientWidth = 204
+        Columns = 2
+        Items.Strings = (
+          'Left'
+          'Right'
+          'Top'
+          'Bottom'
+        )
+        TabOrder = 3
+      end
+      object LTOCPageFileName: TLabel
+        Left = 28
+        Height = 17
+        Top = 14
+        Width = 33
+        Caption = 'HTML'
+        ParentColor = False
+      end
+      object Label3: TLabel
+        Left = 34
+        Height = 17
+        Top = 47
+        Width = 22
+        Caption = 'CSS'
+        ParentColor = False
+      end
+      object Label2: TLabel
+        Left = 19
+        Height = 17
+        Top = 75
+        Width = 44
+        Caption = 'Size (%)'
+        ParentColor = False
+      end
+      object Edit1: TEdit
+        Left = 88
+        Height = 27
+        Top = 200
+        Width = 80
+        TabOrder = 4
+        Text = 'Edit1'
+      end
+      object Edit2: TEdit
+        Left = 267
+        Height = 27
+        Top = 232
+        Width = 80
+        TabOrder = 5
+        Text = 'Edit2'
+      end
+    end
+    object TTocPage: TTabSheet
+      Caption = 'Contents Page'
+      ClientHeight = 229
+      ClientWidth = 493
+      object FETOCFileName: TFileNameEdit
+        Left = 80
+        Height = 27
+        Top = 8
+        Width = 393
+        DialogKind = dkSave
+        DialogTitle = 'Select a HTML filename'
+        Filter = 'HTML Files|*.html|All files|*.*'
+        FilterIndex = 0
+        HideDirectories = False
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        MaxLength = 0
+        TabOrder = 0
+      end
+      object FETOCCSSFileName: TFileNameEdit
+        Left = 80
+        Height = 27
+        Top = 40
+        Width = 393
+        DialogKind = dkSave
+        DialogTitle = 'Select a CSS filename'
+        Filter = 'CSS files|*.css|All files|*.*'
+        FilterIndex = 0
+        HideDirectories = False
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        MaxLength = 0
+        TabOrder = 1
+      end
+      object LTOCPageFileName1: TLabel
+        Left = 28
+        Height = 17
+        Top = 14
+        Width = 33
+        Caption = 'HTML'
+        ParentColor = False
+      end
+      object Label4: TLabel
+        Left = 34
+        Height = 17
+        Top = 47
+        Width = 22
+        Caption = 'CSS'
+        ParentColor = False
+      end
+      object CBTOCSkipStyling: TCheckBox
+        Left = 80
+        Height = 22
+        Top = 80
+        Width = 133
+        Caption = 'Do not apply styling'
+        TabOrder = 2
+      end
+      object EOddPageStyle: TEdit
+        Left = 80
+        Height = 27
+        Top = 136
+        Width = 402
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 3
+      end
+      object EEvenPageStyle: TEdit
+        Left = 80
+        Height = 27
+        Top = 176
+        Width = 402
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 4
+      end
+      object Label5: TLabel
+        Left = 20
+        Height = 17
+        Top = 142
+        Width = 58
+        Caption = 'Even page'
+        ParentColor = False
+      end
+      object Label6: TLabel
+        Left = 21
+        Height = 17
+        Top = 183
+        Width = 54
+        Caption = 'Odd page'
+        ParentColor = False
+      end
+      object LTOCStyling: TLabel
+        Left = 16
+        Height = 17
+        Top = 112
+        Width = 99
+        Caption = 'Page entry styling'
+        ParentColor = False
+      end
+    end
+    object TSNavigator: TTabSheet
+      Caption = 'Navigator'
+      ClientHeight = 229
+      ClientWidth = 493
+      object SENavigatorFixedWidth: TSpinEdit
+        Left = 88
+        Height = 27
+        Top = 32
+        Width = 72
+        TabOrder = 0
+      end
+      object LNavHeight: TLabel
+        Left = 9
+        Height = 17
+        Top = 32
+        Width = 65
+        Alignment = taRightJustify
+        Caption = 'LNavHeight'
+        ParentColor = False
+      end
+      object LNavWidth: TLabel
+        Left = 42
+        Height = 17
+        Top = 67
+        Width = 32
+        Alignment = taRightJustify
+        Caption = 'Width'
+        ParentColor = False
+      end
+      object Label9: TLabel
+        Left = 34
+        Height = 17
+        Top = 94
+        Width = 40
+        Alignment = taRightJustify
+        Caption = 'Margin'
+        ParentColor = False
+      end
+      object SENavigatorFixedHeight: TSpinEdit
+        Left = 88
+        Height = 27
+        Top = 64
+        Width = 72
+        TabOrder = 1
+      end
+      object SENavigatorFixedMargin: TSpinEdit
+        Left = 88
+        Height = 27
+        Top = 94
+        Width = 72
+        TabOrder = 2
+      end
+      object Label7: TLabel
+        Left = 9
+        Height = 17
+        Top = 7
+        Width = 72
+        Caption = 'Buttons/links'
+        ParentColor = False
+      end
+      object CBNavigatorInActiveColor: TColorButton
+        Left = 88
+        Height = 25
+        Top = 124
+        Width = 75
+        BorderWidth = 2
+        ButtonColorSize = 16
+        ButtonColor = clBlack
+      end
+      object CBNavigatorActiveColor: TColorButton
+        Left = 88
+        Height = 25
+        Top = 152
+        Width = 75
+        BorderWidth = 2
+        ButtonColorSize = 16
+        ButtonColor = clBlack
+      end
+      object LNavInactive: TLabel
+        Left = 30
+        Height = 17
+        Top = 126
+        Width = 44
+        Alignment = taRightJustify
+        Caption = 'Inactive'
+        ParentColor = False
+      end
+      object LNavActive: TLabel
+        Left = 12
+        Height = 17
+        Top = 156
+        Width = 62
+        Alignment = taRightJustify
+        Caption = 'LNavActive'
+        ParentColor = False
+      end
+    end
+  end
+end

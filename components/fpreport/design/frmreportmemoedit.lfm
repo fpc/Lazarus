@@ -1,0 +1,46 @@
+object fpReportMemoEditForm: TfpReportMemoEditForm
+  Left = 748
+  Height = 222
+  Top = 322
+  Width = 380
+  Caption = 'Memo Element'
+  ClientHeight = 222
+  ClientWidth = 380
+  OnCloseQuery = FormCloseQuery
+  Position = poMainFormCenter
+  LCLVersion = '1.9.0.0'
+  object BPMemo: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 174
+    Width = 368
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object MMemo: TMemo
+    Left = 0
+    Height = 136
+    Top = 32
+    Width = 380
+    Align = alClient
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+  end
+  object Pmemo: TPanel
+    Left = 0
+    Height = 32
+    Top = 0
+    Width = 380
+    Align = alTop
+    BevelOuter = bvLowered
+    TabOrder = 2
+  end
+end

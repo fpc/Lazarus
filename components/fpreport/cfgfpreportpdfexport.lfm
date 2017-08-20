@@ -1,0 +1,85 @@
+object ConfigPDFExportForm: TConfigPDFExportForm
+  Left = 485
+  Height = 191
+  Top = 343
+  Width = 332
+  BorderStyle = bsDialog
+  Caption = 'Export to PDF'
+  ClientHeight = 191
+  ClientWidth = 332
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.7'
+  object FEPDF: TFileNameEdit
+    Left = 80
+    Height = 18
+    Top = 14
+    Width = 240
+    DialogKind = dkSave
+    DialogTitle = 'Save PDF export as'
+    DialogOptions = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Filter = 'PDF Files|*.pdf|All files|*.*'
+    FilterIndex = 0
+    DefaultExt = '.pdf'
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Flat = True
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object LFEPDF: TLabel
+    Left = 6
+    Height = 18
+    Top = 14
+    Width = 70
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Filename'
+    FocusControl = FEPDF
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object BPExport: TButtonPanel
+    Left = 6
+    Height = 33
+    Top = 152
+    Width = 320
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object GBOptions: TGroupBox
+    Left = 16
+    Height = 105
+    Top = 40
+    Width = 305
+    Caption = 'Options'
+    ClientHeight = 77
+    ClientWidth = 301
+    TabOrder = 2
+    object CBCompress: TCheckBox
+      Left = 16
+      Height = 26
+      Top = 8
+      Width = 73
+      Caption = 'Compress'
+      TabOrder = 0
+    end
+    object CBOutline: TCheckBox
+      Left = 16
+      Height = 26
+      Top = 40
+      Width = 65
+      Caption = 'Outline'
+      TabOrder = 1
+    end
+  end
+end

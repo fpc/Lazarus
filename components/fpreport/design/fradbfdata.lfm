@@ -1,0 +1,35 @@
+object DBFReportDataFrame: TDBFReportDataFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 541
+  DesignTop = 490
+  object FEData: TFileNameEdit
+    Left = 8
+    Height = 27
+    Top = 31
+    Width = 296
+    DialogOptions = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Filter = 'DBF files|*.dbf|All files|*.*'
+    FilterIndex = 0
+    DefaultExt = 'dbf'
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object LFEData: TLabel
+    Left = 8
+    Height = 17
+    Top = 8
+    Width = 51
+    Caption = 'Filename'
+    ParentColor = False
+  end
+end

@@ -1,0 +1,104 @@
+object ReportImageEditorForm: TReportImageEditorForm
+  Left = 747
+  Height = 398
+  Top = 416
+  Width = 496
+  Caption = 'Edit report image'
+  ClientHeight = 398
+  ClientWidth = 496
+  OnCloseQuery = FormCloseQuery
+  LCLVersion = '1.9.0.0'
+  object BPImage: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 350
+    Width = 484
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object IImage: TImage
+    Left = 8
+    Height = 246
+    Top = 96
+    Width = 376
+    Anchors = [akTop, akLeft, akRight, akBottom]
+  end
+  object BLoad: TButton
+    Left = 390
+    Height = 25
+    Top = 96
+    Width = 94
+    Anchors = [akTop, akRight]
+    Caption = 'Load...'
+    OnClick = BLoadClick
+    TabOrder = 1
+  end
+  object BSave: TButton
+    Left = 390
+    Height = 25
+    Top = 128
+    Width = 94
+    Anchors = [akTop, akRight]
+    Caption = 'Save...'
+    OnClick = BSaveClick
+    TabOrder = 2
+  end
+  object RBFieldName: TRadioButton
+    Left = 14
+    Height = 22
+    Top = 7
+    Width = 76
+    Caption = 'Use field:'
+    Checked = True
+    OnChange = RBFixedImageChange
+    TabOrder = 3
+    TabStop = True
+  end
+  object RBFixedImage: TRadioButton
+    Left = 14
+    Height = 22
+    Top = 64
+    Width = 110
+    Caption = 'Use this image:'
+    OnChange = RBFixedImageChange
+    TabOrder = 4
+  end
+  object CBStretched: TCheckBox
+    Left = 385
+    Height = 22
+    Top = 325
+    Width = 64
+    Anchors = [akRight, akBottom]
+    Caption = 'Stretch'
+    OnChange = CBStretchedChange
+    TabOrder = 5
+  end
+  object CBFieldName: TComboBox
+    Left = 40
+    Height = 31
+    Top = 32
+    Width = 344
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 6
+  end
+  object ODPimage: TOpenPictureDialog
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 242
+    top = 80
+  end
+  object SDPImage: TSavePictureDialog
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
+    left = 256
+    top = 131
+  end
+end

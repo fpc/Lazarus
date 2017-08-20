@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="lazidefpreport"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files Count="2">
+      <Item1>
+        <Filename Value="lazideregfpreport.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="lazideregfpreport"/>
+      </Item1>
+      <Item2>
+        <Filename Value="frmideselectreportdata.pp"/>
+        <UnitName Value="frmideselectreportdata"/>
+      </Item2>
+    </Files>
+    <RequiredPkgs Count="3">
+      <Item1>
+        <PackageName Value="lazfpreportdesign"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="lclfpreport"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

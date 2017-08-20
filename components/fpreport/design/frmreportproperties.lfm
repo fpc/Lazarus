@@ -1,0 +1,97 @@
+object ReportPropertiesForm: TReportPropertiesForm
+  Left = 653
+  Height = 206
+  Top = 170
+  Width = 481
+  Caption = 'Report properties'
+  ClientHeight = 206
+  ClientWidth = 481
+  OnCloseQuery = FormCloseQuery
+  Position = poOwnerFormCenter
+  LCLVersion = '1.9.0.0'
+  object BPReportProps: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 158
+    Width = 469
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object ETitle: TEdit
+    Left = 97
+    Height = 27
+    Top = 8
+    Width = 376
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+    Text = 'ETitle'
+  end
+  object CBTwoPass: TCheckBox
+    Left = 97
+    Height = 22
+    Top = 88
+    Width = 22
+    TabOrder = 2
+  end
+  object EAuthor: TEdit
+    Left = 97
+    Height = 27
+    Top = 44
+    Width = 375
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 3
+    Text = 'EAuthor'
+  end
+  object LDateCreation: TLabel
+    Left = 97
+    Height = 17
+    Top = 120
+    Width = 64
+    Caption = '<unknown>'
+    ParentColor = False
+  end
+  object LTitle: TLabel
+    Left = 60
+    Height = 17
+    Top = 8
+    Width = 24
+    Alignment = taRightJustify
+    Caption = 'Title'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 46
+    Height = 17
+    Top = 44
+    Width = 38
+    Alignment = taRightJustify
+    Caption = 'Author'
+    ParentColor = False
+  end
+  object LCBTwoPass: TLabel
+    Left = 19
+    Height = 17
+    Top = 88
+    Width = 65
+    Alignment = taRightJustify
+    Caption = 'Two passes'
+    ParentColor = False
+  end
+  object LLDateCreated: TLabel
+    Left = 22
+    Height = 17
+    Top = 120
+    Width = 62
+    Alignment = taRightJustify
+    Caption = 'Created on'
+    ParentColor = False
+  end
+end

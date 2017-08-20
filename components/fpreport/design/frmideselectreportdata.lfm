@@ -1,0 +1,48 @@
+object SelectReportDataSourcesForm: TSelectReportDataSourcesForm
+  Left = 659
+  Height = 287
+  Top = 245
+  Width = 469
+  Caption = 'Select available data for report'
+  ClientHeight = 287
+  ClientWidth = 469
+  Position = poScreenCenter
+  LCLVersion = '1.9.0.0'
+  object CLBItems: TCheckListBox
+    Left = 16
+    Height = 191
+    Top = 40
+    Width = 441
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object BPSelectall: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 239
+    Width = 457
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object CBSelect: TCheckBox
+    Left = 16
+    Height = 22
+    Top = 8
+    Width = 58
+    Caption = 'Select'
+    Checked = True
+    OnChange = CBSelectChange
+    State = cbChecked
+    TabOrder = 2
+  end
+end
