@@ -4107,5 +4107,6 @@ begin
 end;
 
 initialization
+  RegisterPropertyToSkip(TTabControl, 'OnDrawTab', 'Property streamed in older Lazarus revision','');
 
 end.

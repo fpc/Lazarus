@@ -2248,5 +2248,6 @@ end;
 Initialization
   RegisterPropertyToSkip(TDateEdit, 'OKCaption', 'Property streamed in older Lazarus revision','');
   RegisterPropertyToSkip(TDateEdit, 'CancelCaption', 'Property streamed in older Lazarus revision','');
+  RegisterPropertyToSkip(TCustomControlFilterEdit, 'UseFormActivate', 'Property streamed in older Lazarus revision','');
 
 end.
