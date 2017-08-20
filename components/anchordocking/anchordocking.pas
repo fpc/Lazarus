@@ -1835,11 +1835,14 @@ begin
     if (ANode.NodeType<>adltnPages) and (aHostSite.Pages<>nil) then
       aHostSite.FreePages;
   end;
-  if Site is TCustomForm then
+  if Site is TCustomForm then begin
     if AParent=nil then
       TCustomForm(Site).WindowState:=ANode.WindowState
     else
       TCustomForm(Site).WindowState:=wsNormal;
+  end else
+    GetParentForm(Site).WindowState:=ANode.WindowState;
+
 end;
 
 function TAnchorDockMaster.GetNodeSite(Node: TAnchorDockLayoutTreeNode): TAnchorDockHostSite;

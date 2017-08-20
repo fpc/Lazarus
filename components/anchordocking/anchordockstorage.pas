@@ -1129,7 +1129,7 @@ begin
     Monitor:=TCustomForm(AControl).Monitor.MonitorNum;
     WorkAreaRect:=TCustomForm(AControl).Monitor.WorkareaRect;
   end else
-    WindowState:=wsNormal;
+    WindowState:=GetParentForm(AControl).WindowState;
   if AControl is TCustomTabControl then
     TabPosition:=TCustomTabControl(AControl).TabPosition
   else
