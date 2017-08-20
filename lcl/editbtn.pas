@@ -204,11 +204,9 @@ type
     fSortData: Boolean;             // Data needs to be sorted.
     fIsFirstSetFormActivate: Boolean;
     fOnAfterFilter: TNotifyEvent;
-    function GetUseFormActivate: Boolean;
     procedure SetFilter(const AValue: string);
     procedure SetIdleConnected(const AValue: Boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
-    procedure SetUseFormActivate(AValue: Boolean);
     function IsTextHintStored: Boolean;
   protected
     fNeedUpdate: Boolean;
@@ -255,7 +253,6 @@ type
       deprecated 'Use OnFilterItemEx with a caption parameter instead.';
     property OnFilterItemEx: TFilterItemExEvent read fOnFilterItemEx write fOnFilterItemEx;
     property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
-    property UseFormActivate: Boolean read GetUseFormActivate write SetUseFormActivate stored False; deprecated 'Will be removed after 1.8 release.';
     // TEditButton properties.
     property ButtonCaption;
     property ButtonCursor;
@@ -1154,11 +1151,6 @@ begin
     fOnAfterFilter(Self);
 end;
 
-procedure TCustomControlFilterEdit.SetUseFormActivate(AValue: Boolean);
-begin
-  // Remove after 1.8
-end;
-
 procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 begin
   Button.Enabled:=AValue<>'';
@@ -1272,11 +1264,6 @@ end;
 function TCustomControlFilterEdit.GetDefaultGlyphName: String;
 begin
   Result := ResBtnListFilter;
-end;
-
-function TCustomControlFilterEdit.GetUseFormActivate: Boolean;
-begin
-  Result := False;
 end;
 
 { TFileNameEdit }

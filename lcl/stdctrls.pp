@@ -731,8 +731,6 @@ type
     FSelStart: integer;
     FTextChangedByRealSetText: Boolean;
     FTextHint: TTranslateString;
-    function GetTextHintFontColor: TColor;       //Remove in 1.9
-    function GetTextHintFontStyle: TFontStyles;  //Remove in 1.9
     procedure ShowEmulatedTextHint;
     procedure HideEmulatedTextHint;
     procedure SetAlignment(const AValue: TAlignment);
@@ -743,8 +741,6 @@ type
     procedure SetMaxLength(Value: Integer);
     procedure SetModified(Value: Boolean);
     procedure SetPasswordChar(const AValue: Char);
-    procedure SetTextHintFontColor(const aTextHintFontColor: TColor);
-    procedure SetTextHintFontStyle(const aTextHintFontStyle: TFontStyles);
   protected type
     TEmulatedTextHintStatus = (thsHidden, thsShowing, thsChanging);
   protected
@@ -825,8 +821,6 @@ type
     property TabStop default true;
     property Text;
     property TextHint: TTranslateString read GetTextHint write SetTextHint;
-    property TextHintFontColor: TColor read GetTextHintFontColor write SetTextHintFontColor default clGrayText; deprecated 'Will be removed in the future'; //deprecated in 1.7
-    property TextHintFontStyle: TFontStyles read GetTextHintFontStyle write SetTextHintFontStyle default [fsItalic]; deprecated 'Will be removed in the future';
   end;
 
 

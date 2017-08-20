@@ -380,7 +380,6 @@ type
     FMultiSelect: Boolean;
     FOnChanging: TTabChangingEvent;
     FOnCloseTabClicked: TNotifyEvent;
-    FOnDrawTab: TDrawTabEvent;
     FOnGetImageIndex: TTabGetImageEvent;
     FOnPageChanged: TNotifyEvent;
     FOptions: TCTabControlOptions;
@@ -468,11 +467,9 @@ type
     property Tabs: TStrings read FAccess write SetPages;
     property TabIndex: Integer read FPageIndex write SetPageIndex default -1;
     property OnChange: TNotifyEvent read FOnPageChanged write FOnPageChanged;
-    property OnDrawTab: TDrawTabEvent read FOnDrawTab write FOnDrawTab; deprecated 'Will be deleted in Lazarus 1.8';
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    function TabIndexAtClientPos(ClientPos: TPoint): integer; deprecated 'Will be deleted in next major Lazarus release, use IndexOfPageAt';
     function TabRect(AIndex: Integer): TRect;
     function GetImageIndex(ThePageIndex: Integer): Integer; virtual;
     function IndexOf(APage: TPersistent): integer; virtual;
@@ -855,7 +852,6 @@ type
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging;
-    property OnDrawTab; deprecated 'Will be removed in 1.8';
     property OnGetImageIndex;
     property OwnerDraw: Boolean read GetOwnerDraw write SetOwnerDraw default False;
     property RaggedRight: Boolean read GetRaggedRight write SetRaggedRight default False;

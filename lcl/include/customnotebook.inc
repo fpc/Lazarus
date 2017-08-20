@@ -356,26 +356,6 @@ begin
   inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------
-  function TCustomTabControl.TabIndexAtClientPos(ClientPos: TPoint): integer;
-
-  Returns the index of the page of the tab at the client position.
-  For example:
-    Index:=NoteBook1.TabIndexAtClientPos(
-               NoteBook1.ScreenToClient(Mouse.CursorPos));
- ------------------------------------------------------------------------------}
-function TCustomTabControl.TabIndexAtClientPos(ClientPos: TPoint): integer;
-begin
-  if HandleAllocated then begin
-    Result := TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, ClientPos);
-    // Result is the index in visible tabs because invisible tabs are removed
-    //  from the native control. Calculate the real tab index here.
-    Result := TabToPageIndex(Result);
-  end
-  else
-    Result := -1;
-end;
-
 function TCustomTabControl.TabRect(AIndex: Integer): TRect;
 begin
   if HandleAllocated then
