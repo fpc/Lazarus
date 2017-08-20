@@ -1480,6 +1480,7 @@ components/fppkg/standalone/lazarusfppkg.ico -text svneol=unset#image/x-icon
 components/fppkg/standalone/lazarusfppkg.lpi svneol=native#text/plain
 components/fppkg/standalone/lazarusfppkg.pas svneol=native#text/plain
 components/fppkg/standalone/lazarusfppkg.res -text
+components/fpreport/README.txt svneol=native#text/plain
 components/fpreport/cfgfpreporthtmlexport.lfm svneol=native#text/plain
 components/fpreport/cfgfpreporthtmlexport.pp svneol=native#text/plain
 components/fpreport/cfgfpreportimageexport.lfm svneol=native#text/plain
