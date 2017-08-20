@@ -29,7 +29,7 @@ uses
   // RTL
   math,
   // LCL
-  Classes, Types, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
+  Classes, Types, Graphics, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
   // Widgetset
   WSProc, WSStdCtrls, WSLCLClasses;
 
@@ -154,6 +154,7 @@ type
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
 
     //class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure Cut(const ACustomEdit: TCustomEdit); override;
@@ -265,6 +266,14 @@ type
   published
   end;
 
+  { TEditHelper }
+
+  TEditHelper = class helper for TCustomEdit
+  public
+    function EmulatedTextHintStatus: TCustomEdit.TEmulatedTextHintStatus;
+    function CreateEmulatedTextHintFont: TFont;
+  end;
+
 
 implementation
 uses qtint;
@@ -290,6 +299,18 @@ const
     QFramePlain,
     QFrameSunken
   );
+
+{ TEditHelper }
+
+function TEditHelper.EmulatedTextHintStatus: TCustomEdit.TEmulatedTextHintStatus;
+begin
+  Result := FEmulatedTextHintStatus;
+end;
+
+function TEditHelper.CreateEmulatedTextHintFont: TFont;
+begin
+  Result := inherited CreateEmulatedTextHintFont;
+end;
 
 
 { TQtWSScrollBar }
@@ -1028,6 +1049,31 @@ begin
   AStart := GetSelStart(ACustomEdit);
   if Supports(Widget, IQtEdit, QtEdit) then
     QtEdit.setSelection(AStart, NewLength);
+end;
+
+class procedure TQtWSCustomEdit.ShowHide(const AWinControl: TWinControl);
+var
+  Widget: TQtWidget;
+  EditFont: TFont;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'ShowHide') then
+    Exit;
+
+  Widget := TQtWidget(AWinControl.Handle);
+  Widget.BeginUpdate;
+
+  TQtWSWinControl.ShowHide(AWinControl);
+  if AWinControl.HandleObjectShouldBeVisible
+  and (TCustomEdit(AWinControl).EmulatedTextHintStatus=thsShowing) then
+  begin
+    EditFont := TCustomEdit(AWinControl).CreateEmulatedTextHintFont;
+    try
+      SetFont(AWinControl, EditFont);
+    finally
+      EditFont.Free;
+    end;
+  end;
+  Widget.EndUpdate;
 end;
 
 class procedure TQtWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
