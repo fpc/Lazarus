@@ -94,7 +94,6 @@ object IDEOptionsDialog: TIDEOptionsDialog
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       MaxLength = 0
-      ParentFont = False
       TabOrder = 1
       FilteredTreeview = CategoryTree
     end
