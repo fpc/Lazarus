@@ -56,6 +56,7 @@ object MainFrm: TMainFrm
       ClientWidth = 800
       ParentColor = False
       TabOrder = 0
+      TabStop = True
       OnResize = pnTopResize
       object spExpand: TSpeedButton
         Tag = 1
@@ -173,7 +174,7 @@ object MainFrm: TMainFrm
         ClientHeight = 28
         ClientWidth = 200
         ParentColor = False
-        TabOrder = 1
+        TabOrder = 5
         object spClear: TSpeedButton
           Left = 170
           Height = 28
@@ -261,7 +262,7 @@ object MainFrm: TMainFrm
         )
         OnChange = cbPackageCategoryChange
         Style = csDropDownList
-        TabOrder = 2
+        TabOrder = 1
       end
       object cbPackageState: TComboBox
         Left = 352
@@ -279,7 +280,7 @@ object MainFrm: TMainFrm
         )
         OnChange = cbPackageStateChange
         Style = csDropDownList
-        TabOrder = 3
+        TabOrder = 2
       end
       object cbPackageType: TComboBox
         Left = 352
@@ -298,7 +299,7 @@ object MainFrm: TMainFrm
         )
         OnChange = cbPackageTypeChange
         Style = csDropDownList
-        TabOrder = 4
+        TabOrder = 3
         Text = 'Designtime and runtime'
       end
       object cbFilterBy: TComboBox
@@ -327,7 +328,7 @@ object MainFrm: TMainFrm
         ParentShowHint = False
         ShowHint = True
         Style = csDropDownList
-        TabOrder = 5
+        TabOrder = 4
         Text = 'Packagename   '
       end
     end
@@ -353,6 +354,7 @@ object MainFrm: TMainFrm
     ClientHeight = 70
     ClientWidth = 800
     TabOrder = 1
+    TabStop = True
     OnResize = pnToolBarResize
     object tbButtons: TToolBar
       Left = 81

@@ -128,6 +128,7 @@ type
     procedure VSTDblClick(Sender: TObject);
     procedure VSTClick(Sender: TObject);
     procedure VSTAfterPaint(Sender: TBaseVirtualTree; {%H-}TargetCanvas: TCanvas);
+    procedure VSTEnter(Sender: TObject);
     function GetDisplayString(const AStr: String): String;
     function IsAllChecked(const AChecking: PVirtualNode): Boolean;
     procedure ButtonClick(Sender: TObject);
@@ -268,6 +269,7 @@ begin
      OnGetHint := @VSTGetHint;
      OnAfterCellPaint := @VSTAfterCellPaint;
      OnAfterPaint := @VSTAfterPaint;
+     OnEnter := @VSTEnter;
      OnFreeNode := @VSTFreeNode;
    end;
 end;
@@ -593,6 +595,21 @@ procedure TVisualTree.VSTAfterPaint(Sender: TBaseVirtualTree;
   TargetCanvas: TCanvas);
 begin
   Sender.IterateSubtree(nil, @CallBack, nil);
+end;
+
+procedure TVisualTree.VSTEnter(Sender: TObject);
+var
+  Node: PVirtualNode;
+begin
+  if FVST.SelectedCount = 0 then
+  begin
+    Node := FVST.GetFirst;
+    if Node <> nil then
+    begin
+      FVST.Selected[Node] := True;
+      FVST.FocusedNode := Node;
+    end;
+  end;
 end;
 
 procedure TVisualTree.DrawStars(ACanvas: TCanvas; AStartIndex: Integer;
