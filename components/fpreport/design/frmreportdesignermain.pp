@@ -393,7 +393,7 @@ begin
     {$ENDIF}
     end;
   if (gTTFontCache.Count=0) then
-    gTTFontCache.BuildFontCache;
+    gTTFontCache.ReadStandardFonts;
   FDataParent:=TComponent.Create(nil);
   FreeAndNil(TSDesign); // Remove design-time added page
   FReportDesignData:=TDesignReportDataCollection.Create(TDesignReportData);
