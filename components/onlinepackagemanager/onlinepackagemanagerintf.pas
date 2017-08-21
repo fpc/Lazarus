@@ -59,7 +59,7 @@ begin
     if IDECommand <> nil then
       RegisterIDEButtonCommand(IDECommand);
   end;
-  RegisterIDEMenuCommand(itmPkgGraphSection, 'Online Package Manager', rsLazarusPackageManager, nil, @IDEMenuSectionClicked);
+  RegisterIDEMenuCommand(itmPkgGraphSection, 'Online Package Manager', rsLazarusPackageManager, nil, @IDEMenuSectionClicked, IDECommand);
 end;
 
 end.
