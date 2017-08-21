@@ -226,12 +226,18 @@ end;
 
 function StringOfCodePoint(ACodePoint: String; N: Integer): String;
 // Like StringOfChar
+{$IFDEF ReallyUseUTF16}
 var
   i: Integer;
+{$ENDIF}
 begin
+  {$IFDEF ReallyUseUTF16}
   Result := '';
   for i := 1 to N do
     Result := Result + ACodePoint;
+  {$ELSE}
+  Result := Utf8StringOfChar(ACodePoint, N);
+  {$ENDIF}
 end;
 
 { TUnicodeEnumeratorBase }
