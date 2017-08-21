@@ -98,6 +98,7 @@ begin
   FType:=rtTop;
   FUnits:=ruCm;
   FZeroOffset:=0;
+  FDPI:=96;
   RecalcParams;
 end;
 
