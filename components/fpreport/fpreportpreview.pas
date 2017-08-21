@@ -90,10 +90,10 @@ type
     procedure DoExport(Sender: TObject);
     procedure ExportReport(REC: TFPReportExporterClass);
     procedure FillExportMenu;
-    function GetPageNumber: Integer;
+    function GetPageIndex: Integer;
     procedure ResizePreview;
     procedure SetCurrentZoom(AValue: Integer);
-    procedure SetPageNumber(AValue: Integer);
+    procedure SetPageIndex(AValue: Integer);
   Protected
     function GetEnableHyperLinks: Boolean ; override;
     procedure SetEnableHyperLinks(AValue: Boolean); override;
@@ -106,7 +106,7 @@ type
     { public declarations }
     Property CurrentZoom : Integer Read FCurrentZoom Write SetCurrentZoom;
     // Zero based  !
-    Property PageNumber : Integer Read GetPageNumber Write SetPageNumber;
+    Property PageIndex : Integer Read GetPageIndex Write SetPageIndex;
     // If not set, the OpenURL method of LCL will be called.
     Property OnOpenURL : TOpenURLEvent Read FOnOpenURL Write FOnOpenURL;
   end;
@@ -175,27 +175,27 @@ end;
 
 procedure TFPReportPreviewForm.AExportPDFUpdate(Sender: TObject);
 begin
-
+  (Sender as TAction).Enabled:=ReportExportManager.FindExporter(PDFExport)<>Nil;
 end;
 
 procedure TFPReportPreviewForm.ANextExecute(Sender: TObject);
 begin
-  PageNumber:=PageNumber+1;
+  PageIndex:=PageIndex+1;
 end;
 
 procedure TFPReportPreviewForm.ANextUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=FRender.PageNumber<ReportPages.Count;
+  (Sender as TAction).Enabled:=PageIndex<ReportPages.Count-1;
 end;
 
 procedure TFPReportPreviewForm.APreviousExecute(Sender: TObject);
 begin
-  PageNumber:=PageNumber-1;
+  PageIndex:=PageIndex-1;
 end;
 
 procedure TFPReportPreviewForm.APreviousUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=FRender.PageNumber>0;
+  (Sender as TAction).Enabled:=PageIndex>0;
 end;
 
 procedure TFPReportPreviewForm.APrintExecute(Sender: TObject);
@@ -236,7 +236,7 @@ Var
 begin
   PN:=StrToIntDef(EPage.Text,-1);
   if (PN<1) or (PN>FRender.PageCount) then exit;
-  FRender.PageNumber:=PN-1;
+  FRender.PageIndex:=PN-1;
 end;
 
 
@@ -251,14 +251,14 @@ begin
   Frender.RenderCurrentPage;
 end;
 
-function TFPReportPreviewForm.GetPageNumber: Integer;
+function TFPReportPreviewForm.GetPageIndex: Integer;
 begin
-  Result:=FRender.PageNumber;
+  Result:=FRender.PageIndex;
 end;
 
-procedure TFPReportPreviewForm.SetPageNumber(AValue: Integer);
+procedure TFPReportPreviewForm.SetPageIndex(AValue: Integer);
 begin
-  FRender.PageNumber:=AValue;
+  FRender.PageIndex:=AValue;
   EPage.Text:=IntToStr(AValue+1);
 end;
 
@@ -281,7 +281,7 @@ begin
     FRender.Execute;
     LPageCount.Caption:=Format(SPageCount,[FRender.PageCount]);
     EPage.Text:='1';
-    PageNumber:=0;
+    PageIndex:=0;
     end;
 end;
 

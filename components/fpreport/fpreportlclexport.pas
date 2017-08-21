@@ -89,7 +89,7 @@ type
     FImageWidth: integer;
     FImageHeight: integer;
     FFonts : TFPObjectHashTable;
-    FPageNumber: Integer;
+    FPageIndex : Integer;
     FPages : TFPList;
     FVDPI: integer;
     FVertOffset: Integer;
@@ -102,7 +102,7 @@ type
     function GetPageCount: Integer;
     procedure PrepareCanvas;
     procedure SetHyperlinksEnabled(AValue: Boolean);
-    procedure SetPageNumber(AValue: Integer);
+    procedure SetPageIndex(AValue: Integer);
   protected
     procedure RenderFrame(const AFrame: TFPReportFrame; const ARect: Trect;  const ABackgroundColor: TColor);
     Procedure RenderImage(aRect : TFPReportRect; var AImage: TFPCustomImage) ; override;
@@ -153,7 +153,7 @@ type
     property    VDPI: integer read FVDPI write FVDPI;
     property    Zoom : Double read FZoom write FZoom;
     Property    Canvas : TCanvas Read FCanvas Write FCanvas;
-    Property    PageNumber : Integer Read FPageNumber Write SetPageNumber;
+    Property    PageIndex : Integer Read FPageIndex Write SetPageIndex;
     Property    PageCount : Integer Read GetPageCount;
     Property    CurrentPage : TFPReportPage Read GetCurrentPage;
     Property    HorzOffset : Integer Read FHorzOffset Write FHorzOffset;
@@ -176,7 +176,8 @@ uses
   fpwritepng,
   math;
 
-
+Resourcestring
+  SErrPageOutOfRange = 'Page index %d out of allowed range [0..%d]';
 
 type
 
@@ -288,8 +289,8 @@ end;
 
 function TFPReportExportCanvas.GetCurrentPage: TFPReportPage;
 begin
-  if Assigned(FPages) and (PageNumber<FPages.Count) then
-    Result:=TFPReportPage(FPages[PageNumber])
+  if Assigned(FPages) and (PageIndex<FPages.Count) then
+    Result:=TFPReportPage(FPages[PageIndex])
   else
     Result:=Nil;
 end;
@@ -301,7 +302,10 @@ end;
 
 function TFPReportExportCanvas.GetPageCount: Integer;
 begin
-  Result:=FPages.Count;
+  if Assigned(FPages) then
+    Result:=FPages.Count
+  else
+    Result:=0;
 end;
 
 function TFPReportExportCanvas.CoordToPoint(const APos: TFPReportPoint;
@@ -890,10 +894,12 @@ begin
     FreeAndNil(FHyperLinks);
 end;
 
-procedure TFPReportExportCanvas.SetPageNumber(AValue: Integer);
+procedure TFPReportExportCanvas.SetPageIndex(AValue: Integer);
 begin
-  if FPageNumber=AValue then Exit;
-  FPageNumber:=AValue;
+  if FPageIndex=AValue then Exit;
+  FPageIndex:=AValue;
+  if Assigned(Report) and (FPageIndex<0) or (FPageIndex>=PageCount) then
+    Raise EReportError.CreateFmt(SErrPageOutOfRange,[FPageIndex,PageCount-1]);
   RenderCurrentPage;
 end;
 

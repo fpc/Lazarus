@@ -229,7 +229,7 @@ end;
 
 procedure TFPreportPreviewForm.DoNextAction(Sender: TObject);
 begin
-  FRender.PageNumber:=FRender.PageNumber+1
+  FRender.PageIndex:=FRender.PageIndex+1
 end;
 
 procedure TFPreportPreviewForm.DoPaintReport(Sender: TObject);
@@ -239,17 +239,17 @@ end;
 
 procedure TFPreportPreviewForm.DoPreviousAction(Sender: TObject);
 begin
-  FRender.PageNumber:=FRender.PageNumber-1;
+  FRender.PageIndex:=FRender.PageIndex-1;
 end;
 
 procedure TFPreportPreviewForm.UpdateNextAction(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=(FRender.PageNumber<ReportPages.Count-1);
+  (Sender as TAction).Enabled:=(FRender.PageIndex<ReportPages.Count-1);
 end;
 
 procedure TFPreportPreviewForm.UpdatePreviousAction(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=(FRender.PageNumber>0);
+  (Sender as TAction).Enabled:=(FRender.PageIndex>0);
 
 end;
 

@@ -68,7 +68,7 @@ procedure TFPreportPrinterExport.PrintPage(P : TPrinter; E : TFPReportExportCanv
 
 begin
   E.Canvas:=P.Canvas;
-  E.PageNumber:=PageNo;
+  E.PageIndex:=PageNo;
   E.Execute;
 end;
 
