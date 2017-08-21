@@ -2179,7 +2179,12 @@ begin
         if Assigned(AClip) then
           gtk_clipboard_set_text(AClip, PgChar(AClipText), length(AClipText));
       end else
-        LCLIntf.SetFocus(AWinControl.Handle);
+      begin
+        if (AWinControl is TCustomTabControl) then
+          // do not grab focus. issue #32237
+        else
+          LCLIntf.SetFocus(AWinControl.Handle);
+      end;
     end;
 
     // send the message directly to the LCL
