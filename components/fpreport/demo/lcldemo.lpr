@@ -1,7 +1,7 @@
 program lcldemo;
 
 uses
-  udapp, regreports, rptcolumns, rptdataset, rptexpressions, rptframes,
+  udapp, fpextfuncs, regreports, rptcolumns, rptdataset, rptexpressions, rptframes,
   rptgrouping, rptimages, rptmasterdetail, rptmasterdetaildataset, rptshapes,
   rptsimplelist, rptttf;
 
