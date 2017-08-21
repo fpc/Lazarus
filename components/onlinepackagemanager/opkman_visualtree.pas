@@ -184,6 +184,7 @@ begin
      DefaultText := '';
      Header.AutoSizeIndex := 4;
      Header.Height := MulDiv(25, Screen.PixelsPerInch, 96);
+     VST.Font.Color := VST.Header.Font.Color;
      Colors.DisabledColor := clBlack;
      with Header.Columns.Add do
      begin

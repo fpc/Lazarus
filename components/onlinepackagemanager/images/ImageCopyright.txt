@@ -11,5 +11,13 @@
    Author: Mark James
    WebPage: http://www.famfamfam.com/lab/icons/mini/
    License: Free use for any purpose
+5. Name: Fugue Icons
+   Author: Yusuke Kamiyamane
+   WebPage: http://p.yusukekamiyamane.com/
+   License: Creative Commons Attribution 3.0 License
 
-
+   
+   
+   
+magnifier-minus.png --> Fugue Icons
+magnifier-plus.png  --> Fugue Icons  
