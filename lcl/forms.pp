@@ -2011,10 +2011,7 @@ end;
 
 //------------------------------------------------------------------------------
 function GetParentDesignControl(Control: TControl): TCustomDesignControl;
-var
-  SControl: TControl;
 begin
-  SControl := Control;
   while (Control <> nil) and (Control.Parent <> nil) do
     Control := Control.Parent;
 
