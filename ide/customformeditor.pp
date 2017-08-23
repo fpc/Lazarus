@@ -1337,8 +1337,18 @@ begin
       begin
         AControl := TControl(NewComponent);
         // calc bounds
-        if CompWidth <= 0 then CompWidth := Max(5, AControl.Width);
-        if CompHeight <= 0 then CompHeight := Max(5, AControl.Height);
+        if CompWidth <= 0 then
+        begin
+          CompWidth := Max(5, AControl.Width);
+          if AParent<>nil then
+            CompWidth := AParent.Scale96ToForm(CompWidth);
+        end;
+        if CompHeight <= 0 then
+        begin
+          CompHeight := Max(5, AControl.Height);
+          if AParent<>nil then
+            CompHeight := AParent.Scale96ToForm(CompHeight);
+        end;
         MonitorBounds := ActiveMonitor.BoundsRect;
         if (CompLeft < 0) and (AParent <> nil) then
           CompLeft := (AParent.Width - CompWidth) div 2
