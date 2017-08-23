@@ -225,6 +225,7 @@ type
     procedure APreviewExecute(Sender: TObject);
     procedure APreviewUpdate(Sender: TObject);
     procedure AReportDataExecute(Sender: TObject);
+    procedure AReportDataUpdate(Sender: TObject);
     procedure AReportPropertiesExecute(Sender: TObject);
     procedure AReportVariablesExecute(Sender: TObject);
     procedure AResizeExecute(Sender: TObject);
@@ -748,6 +749,7 @@ begin
   ODR:=CurrentDesigner.Objects.DeleteSelection;
   if (ODR=odrPage) then
     PCReport.ActivePage.Free;
+  FOI.RefreshReportTree;
 end;
 
 procedure TFPReportDesignerForm.ADeleteUpdate(Sender: TObject);
@@ -852,6 +854,7 @@ begin
     p.Margins.Right := 20;
     p.Margins.Bottom := 20;
     FReport.AddPage(P);
+    FOI.RefreshReportTree;
     Result:=True
     end;
 end;
@@ -898,6 +901,11 @@ begin
   finally
      F.Free;
   end;
+end;
+
+procedure TFPReportDesignerForm.AReportDataUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=Assigned(FReport);
 end;
 
 procedure TFPReportDesignerForm.CreateReportDataSets;

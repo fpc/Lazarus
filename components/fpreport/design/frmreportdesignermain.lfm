@@ -804,6 +804,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Caption = 'Report Data'
       ImageIndex = 35
       OnExecute = AReportDataExecute
+      OnUpdate = AReportDataUpdate
     end
   end
   object SDReport: TSaveDialog
