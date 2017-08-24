@@ -731,7 +731,7 @@ type
     FTextHint: TTranslateString;
     function GetTextHintFontColor: TColor;       //Remove in 1.9
     function GetTextHintFontStyle: TFontStyles;  //Remove in 1.9
-    procedure ShowEmulatedTextHint;
+    procedure ShowEmulatedTextHint(const ForceShow: Boolean = False);
     procedure HideEmulatedTextHint;
     procedure SetAlignment(const AValue: TAlignment);
     function GetCanUndo: Boolean;

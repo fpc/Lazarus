@@ -53,7 +53,8 @@ begin
   if WidgetSet.GetLCLCapability(lcTextHint) = LCL_CAPABILITY_YES then
     TWSCustomEditClass(WidgetSetClass).SetTextHint(Self, FTextHint)
   else
-    if CanShowEmulatedTextHint then ShowEmulatedTextHint;
+    if CanShowEmulatedTextHint then
+      ShowEmulatedTextHint(True);
 end;
 
 {------------------------------------------------------------------------------
@@ -691,11 +692,11 @@ begin
   DebugLn('TCustomEdit.TextHintFontStyle is deprecated and will be removed in Lazarus 1.9');
 end;
 
-procedure TCustomEdit.ShowEmulatedTextHint;
+procedure TCustomEdit.ShowEmulatedTextHint(const ForceShow: Boolean);
 var
   HintFont: TFont;
 begin
-  if (FEmulatedTextHintStatus<>thsHidden) then
+  if (FEmulatedTextHintStatus<>thsHidden) and not ForceShow then
     Exit;
 
   FEmulatedTextHintStatus := thsChanging;
