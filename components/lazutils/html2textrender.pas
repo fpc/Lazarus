@@ -88,7 +88,11 @@ begin
   fHorzLine:= '——————————————————';
   fLinkBegin:='_';
   fLinkEnd:='_';
-  fListItemMark:='* ';
+  fListItemMark:='✶ ';
+  //fListItemMark:='✳ ';
+  //fListItemMark:='✺ ';
+  //fListItemMark:='⚫ ';
+  //fListItemMark:='⚪ ';
   fMoreMark:='...';
   fIndentStep:=2;
 end;
