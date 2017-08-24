@@ -47,6 +47,7 @@ type
   { TAnchorDockOptionsFrame }
 
   TAnchorDockOptionsFrame = class(TFrame)
+    HighlightFocused: TCheckBox;
     FlattenHeaders: TCheckBox;
     FilledHeaders: TCheckBox;
     DragThresholdLabel: TLabel;
@@ -170,7 +171,7 @@ end;
 procedure TAnchorDockOptionsFrame.HeaderStyleComboBoxDrawItem(
   Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
 begin
-  DrawADHeader(TComboBox(Control).Canvas,TADHeaderStyle(Index),ARect,true);
+  DrawADHeader(TComboBox(Control).Canvas,TADHeaderStyle(Index),ARect,true,False);
 end;
 
 procedure TAnchorDockOptionsFrame.FrameClick(Sender: TObject);
@@ -298,6 +299,7 @@ begin
   TheSettings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionForFloatingCheckBox.Checked;
   TheSettings.HeaderFlatten:=FlattenHeaders.Checked;
   TheSettings.HeaderFilled:=FilledHeaders.Checked;
+  TheSettings.HeaderHighlightFocused:=HighlightFocused.Checked;
 end;
 
 procedure TAnchorDockOptionsFrame.LoadFromSettings(
@@ -363,6 +365,10 @@ begin
   FilledHeaders.Checked:=TheSettings.HeaderFilled;
   FilledHeaders.Caption:=adrsFilledHeaders;
   FilledHeaders.Hint:=adrsFilledHeadersHint;
+
+  HighlightFocused.Checked:=TheSettings.HeaderHighlightFocused;
+  HighlightFocused.Caption:=adrsHighlightFocused;
+  HighlightFocused.Hint:=adrsHighlightFocusedHint;
 end;
 
 end.

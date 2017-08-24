@@ -133,6 +133,7 @@ type
   private
     FCloseButton: TCustomSpeedButton;
     FHeaderPosition: TADLHeaderPosition;
+    fFocused:Boolean;
     procedure CloseButtonClick(Sender: TObject);
     procedure HeaderPositionItemClick(Sender: TObject);
     procedure UndockButtonClick(Sender: TObject);
@@ -262,8 +263,9 @@ type
     fUpdateLayout: integer;
     procedure SetHeaderSide(const AValue: TAnchorKind);
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-                           override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function DoDockClientMsg(DragDockObject: TDragDockObject;
                              aPosition: TPoint): boolean; override;
     function ExecuteDock(NewControl, DropOnControl: TControl; DockAlign: TAlign): boolean; virtual;
@@ -400,7 +402,9 @@ type
     adhsFrame3D,
     adhsLine,
     adhsLines,
-    adhsPoints
+    adhsPoints,
+    adhsThemedCaption,
+    adhsThemedButton
     );
 const
   adhsDefault = adhsFrame3D;
@@ -418,6 +422,7 @@ type
     FHeaderStyle: TADHeaderStyle;
     FHeaderFlatten: boolean;
     FHeaderFilled: boolean;
+    FHeaderHighlightFocused: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
     FPageAreaInPercent: integer;
     FScaleOnResize: boolean;
@@ -440,6 +445,7 @@ type
     procedure SetSplitterWidth(AValue: integer);
     procedure SetHeaderFlatten(AValue: boolean);
     procedure SetHeaderFilled(AValue: boolean);
+    procedure SetHeaderHighlightFocused(AValue: boolean);
   public
     property DragTreshold: integer read FDragTreshold write SetDragTreshold;
     property DockOutsideMargin: integer read FDockOutsideMargin write SetDockOutsideMargin;
@@ -457,6 +463,7 @@ type
     property HeaderStyle: TADHeaderStyle read FHeaderStyle write SetHeaderStyle;
     property HeaderFlatten: boolean read FHeaderFlatten write SetHeaderFlatten;
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled;
+    property HeaderHighlightFocused: boolean read FHeaderHighlightFocused write SetHeaderHighlightFocused;
     procedure IncreaseChangeStamp; inline;
     property ChangeStamp: integer read FChangeStamp;
     procedure LoadFromConfig(Config: TConfigStorage); overload;
@@ -492,6 +499,7 @@ type
     FHeaderStyle: TADHeaderStyle;
     FHeaderFlatten: boolean;
     FHeaderFilled: boolean;
+    FHeaderHighlightFocused: boolean;
     FIdleConnected: Boolean;
     FManagerClass: TAnchorDockManagerClass;
     FOnCreateControl: TADCreateControlEvent;
@@ -549,6 +557,7 @@ type
 
     procedure SetHeaderFlatten(AValue: boolean);
     procedure SetHeaderFilled(AValue: boolean);
+    procedure SetHeaderHighlightFocused(AValue: boolean);
 
     procedure SetShowMenuItemShowHeader(AValue: boolean);
     procedure SetupSite(Site: TWinControl; ANode: TAnchorDockLayoutTreeNode;
@@ -666,6 +675,7 @@ type
     property HeaderStyle: TADHeaderStyle read FHeaderStyle write SetHeaderStyle default adhsDefault;
     property HeaderFlatten: boolean read FHeaderFlatten write SetHeaderFlatten default true;
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled default true;
+    property HeaderHighlightFocused: boolean read FHeaderHighlightFocused write SetHeaderHighlightFocused default false;
 
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
@@ -690,13 +700,15 @@ const
     'Frame3D',
     'Line',
     'Lines',
-    'Points'
+    'Points',
+    'Themed caption',
+    'Themed button'
     );
 
 function StrToADHeaderStyle(const s: string): TADHeaderStyle;
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 
-procedure DrawADHeader(Canvas: TCanvas; Style: TADHeaderStyle; r: TRect; Horizontal: boolean);
+procedure DrawADHeader(Canvas: TCanvas; Style: TADHeaderStyle; r: TRect; Horizontal: boolean; Focused: boolean);
 
 procedure CopyAnchorBounds(Source, Target: TControl);
 procedure AnchorAndChangeBounds(AControl: TControl; Side: TAnchorKind;
@@ -731,10 +743,11 @@ begin
 end;
 
 procedure DrawADHeader(Canvas: TCanvas; Style: TADHeaderStyle; r: TRect;
-  Horizontal: boolean);
+  Horizontal: boolean; Focused: boolean);
 var
   Center: Integer;
   lx, ly, d, lt, lb, lm: Integer;
+  ted:TThemedElementDetails;
 begin
   case Style of
   adhsFrame3D:
@@ -807,6 +820,30 @@ begin
         Canvas.Pixels[lm, ly-2] := clBtnShadow;
         ly := ly - 4;
       end;
+    end;
+  adhsThemedCaption:
+    begin
+      if Focused then
+        ted:=ThemeServices.GetElementDetails(twSmallCaptionActive)
+      else
+        ted:=ThemeServices.GetElementDetails(twSmallCaptionInactive);
+      r.Bottom:=r.Bottom-3;
+      ThemeServices.DrawElement(Canvas.Handle,ted, r);
+      if Focused then
+        ted:=ThemeServices.GetElementDetails(twSmallFrameBottomActive)
+      else
+        ted:=ThemeServices.GetElementDetails(twSmallFrameBottomInactive);
+      r.Top:=r.Bottom;
+      r.Bottom:=r.Bottom+3;
+      ThemeServices.DrawElement(Canvas.Handle,ted, r);
+    end;
+  adhsThemedButton:
+    begin
+      if Focused then
+        ted:=ThemeServices.GetElementDetails(tbPushButtonHot)
+      else
+        ted:=ThemeServices.GetElementDetails(tbPushButtonNormal);
+      ThemeServices.DrawElement(Canvas.Handle,ted, r);
     end;
   end;
 end;
@@ -1292,6 +1329,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockSettings.SetHeaderHighlightFocused(AValue: boolean);
+begin
+  if FHeaderHighlightFocused=AValue then Exit;
+  FHeaderHighlightFocused:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockSettings.SetShowHeader(AValue: boolean);
 begin
   if FShowHeader=AValue then Exit;
@@ -1332,6 +1376,7 @@ begin
   FShowHeader := Source.FShowHeader;
   FShowHeaderCaption := Source.FShowHeaderCaption;
   FSplitterWidth := Source.FSplitterWidth;
+  FHeaderHighlightFocused:=Source.FHeaderHighlightFocused;
 end;
 
 procedure TAnchorDockSettings.IncreaseChangeStamp;
@@ -1357,6 +1402,7 @@ begin
   HeaderStyle:=StrToADHeaderStyle(Config.GetValue('HeaderStyle',ADHeaderStyleNames[adhsDefault]));
   HeaderFlatten:=Config.GetValue('HeaderFlatten',true);
   HeaderFilled:=Config.GetValue('HeaderFilled',true);
+  HeaderHighlightFocused:=Config.GetValue('HeaderHighlightFocused',False);
   Config.UndoAppendBasePath;
 end;
 
@@ -1378,6 +1424,7 @@ begin
   Config.SetDeleteValue(Path+'HeaderStyle',ADHeaderStyleNames[HeaderStyle],ADHeaderStyleNames[adhsDefault]);
   Config.SetDeleteValue(Path+'HeaderFlatten',HeaderFlatten,true);
   Config.SetDeleteValue(Path+'HeaderFilled',HeaderFilled,true);
+  Config.SetDeleteValue(Path+'HeaderHighlightFocused',HeaderHighlightFocused,False);
 end;
 
 procedure TAnchorDockSettings.SaveToConfig(Config: TConfigStorage);
@@ -1398,6 +1445,7 @@ begin
   Config.SetDeleteValue('HeaderStyle',ADHeaderStyleNames[HeaderStyle],ADHeaderStyleNames[adhsDefault]);
   Config.SetDeleteValue('HeaderFlatten',HeaderFlatten,true);
   Config.SetDeleteValue('HeaderFilled',HeaderFilled,true);
+  Config.SetDeleteValue('HeaderHighlightFocused',HeaderHighlightFocused,False);
   Config.UndoAppendBasePath;
 end;
 
@@ -1419,6 +1467,7 @@ begin
       and (HeaderStyle=Settings.HeaderStyle)
       and (HeaderFlatten=Settings.HeaderFlatten)
       and (HeaderFilled=Settings.HeaderFilled)
+      and (HeaderHighlightFocused=Settings.HeaderHighlightFocused)
       ;
 end;
 
@@ -1440,6 +1489,7 @@ begin
   HeaderStyle:=StrToADHeaderStyle(Config.GetValue(Path+'HeaderStyle',ADHeaderStyleNames[adhsDefault]));
   HeaderFlatten:=Config.GetValue(Path+'HeaderFlatten',true);
   HeaderFilled:=Config.GetValue(Path+'HeaderFilled',true);
+  HeaderHighlightFocused:=Config.GetValue(Path+'HeaderHighlightFocused',False);
 end;
 
 { TAnchorDockMaster }
@@ -2321,6 +2371,14 @@ begin
   InvalidateHeaders;
 end;
 
+procedure TAnchorDockMaster.SetHeaderHighlightFocused(AValue: boolean);
+begin
+  if FHeaderHighlightFocused=AValue then Exit;
+  FHeaderHighlightFocused:=AValue;
+  OptionsChanged;
+  InvalidateHeaders;
+end;
+
 procedure TAnchorDockMaster.SetScaleOnResize(AValue: boolean);
 begin
   if FScaleOnResize=AValue then Exit;
@@ -2504,6 +2562,7 @@ begin
   FPageControlClass:=TAnchorDockPageControl;
   FPageClass:=TAnchorDockPage;
   FRestoreLayouts:=TAnchorDockRestoreLayouts.Create;
+  FHeaderHighlightFocused:=false;
 end;
 
 destructor TAnchorDockMaster.Destroy;
@@ -3127,6 +3186,7 @@ begin
   HeaderStyle                      := Settings.HeaderStyle;
   HeaderFlatten                    := Settings.HeaderFlatten;
   HeaderFilled                     := Settings.HeaderFilled;
+  HeaderHighlightFocused           := Settings.HeaderHighlightFocused;
 end;
 
 procedure TAnchorDockMaster.SaveSettings(Settings: TAnchorDockSettings);
@@ -3146,6 +3206,7 @@ begin
   Settings.HeaderStyle:=HeaderStyle;
   Settings.HeaderFlatten:=HeaderFlatten;
   Settings.HeaderFilled:=HeaderFilled;
+  Settings.HeaderHighlightFocused:=HeaderHighlightFocused;
 end;
 
 function TAnchorDockMaster.SettingsAreEqual(Settings: TAnchorDockSettings
@@ -3493,6 +3554,22 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TAnchorDockHostSite.DoEnter;
+begin
+  inherited;
+  if Assigned(FHeader) then
+    FHeader.fFocused:=true;
+  invalidate;
+end;
+
+procedure TAnchorDockHostSite.DoExit;
+begin
+  inherited;
+  if Assigned(FHeader) then
+    FHeader.fFocused:=false;
+  invalidate;
 end;
 
 procedure TAnchorDockHostSite.Notification(AComponent: TComponent;
@@ -5392,13 +5469,22 @@ var
   TxtH: longint;
   TxtW: longint;
   dx,dy: Integer;
+  NeedDrawHeaderAfterText,NeedHighlightText:boolean;
 begin
   r:=ClientRect;
-  Canvas.Brush.Color := clForm;
-  if DockMaster.HeaderFilled then
-     Canvas.FillRect(r);
-  if not DockMaster.HeaderFlatten then
-     Canvas.Frame3d(r,1,bvRaised);
+  NeedDrawHeaderAfterText:=true;
+  NeedHighlightText:=true;
+  if DockMaster.HeaderStyle in [adhsThemedCaption,adhsThemedButton] then begin
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,not(Align in [alLeft,alRight]),fFocused);
+      NeedDrawHeaderAfterText:=false;
+      NeedHighlightText:=false;
+  end else begin
+    Canvas.Brush.Color := clForm;
+    if DockMaster.HeaderFilled then
+       Canvas.FillRect(r);
+    if not DockMaster.HeaderFlatten then
+       Canvas.Frame3d(r,1,bvRaised);
+  end;
   {case DockMaster.HeaderStyle of
   adhsPoints: Canvas.Brush.Color := clForm;
   else Canvas.Frame3d(r,1,bvRaised);
@@ -5414,6 +5500,10 @@ begin
 
   // caption
   if Caption<>'' then begin
+    if fFocused and DockMaster.HeaderHighlightFocused and NeedHighlightText then
+      Canvas.Font.Bold:=true
+    else
+      Canvas.Font.Bold:=False;
     Canvas.Brush.Color:=clNone;
     Canvas.Brush.Style:=bsClear;
     TxtH:=Canvas.TextHeight('ABCMgq');
@@ -5430,11 +5520,14 @@ begin
       begin
         // text fits
         Canvas.TextOut(r.Left+dx-1,r.Bottom-dy,Caption);
-        DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false);
-        DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false);
+        if NeedDrawHeaderAfterText then begin
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false,fFocused);
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false,fFocused);
+        end;
       end else begin
         // text does not fit
-        DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false);
+        if NeedDrawHeaderAfterText then
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false,fFocused);
       end;
     end else begin
       // horizontal
@@ -5445,19 +5538,22 @@ begin
       begin
         // text fits
         Canvas.TextRect(r,dx+2,dy,Caption);
-        DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),true);
-        DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),true);
+        if NeedDrawHeaderAfterText then begin
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),true,fFocused);
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),true,fFocused);
+        end;
       end else begin
         // text does not fit
-        DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true);
+        if NeedDrawHeaderAfterText then
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true,fFocused);
       end;
     end;
-  end else begin
+  end
+  else if NeedDrawHeaderAfterText then
     if Align in [alLeft,alRight] then
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false)
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false,fFocused)
     else
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true);
-  end;
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true,fFocused);
 end;
 
 procedure TAnchorDockHeader.CalculatePreferredSize(var PreferredWidth,
@@ -5565,6 +5661,7 @@ begin
   AutoSize:=true;
   ShowHint:=true;
   PopupMenu:=DockMaster.GetPopupMenu;
+  fFocused:=false;
 end;
 
 { TAnchorDockCloseButton }
