@@ -151,6 +151,14 @@ msgstr "Стиль заголовка:"
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
 msgstr "Скрывать названия заголовков для областей с единственным пристыкованным объектом (это название уже имеется в обычном заголовке окна)"
 
+#: anchordockstr.adrshighlightfocused
+msgid "Highlight focused"
+msgstr "Выделять объект в фокусе"
+
+#: anchordockstr.adrshighlightfocusedhint
+msgid "Highlight focused docked controls"
+msgstr "Выделять пристыкованный объект в фокусе"
+
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "слева"
@@ -277,7 +285,7 @@ msgstr "Положение заголовков вкладок"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
 msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
-msgstr "Установленный стыковочный менеджер уже имеется. В каждый момент времени может быть установлен только один такой пакет. Удалите стыковочный менеджер %s и перезапустите IDE"
+msgstr "Установленный диспетчер стыковки уже имеется. В каждый момент времени может быть установлен только один такой пакет. Удалите диспетчер стыковки %s и перезапустите IDE"
 
 #: anchordockstr.adrstop
 msgid "top"

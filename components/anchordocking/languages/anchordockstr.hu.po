@@ -151,6 +151,14 @@ msgstr "Fejléc stílusa:"
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
 msgstr "A fejléc-felírat elrejtése az olyan területek esetén, ahol csak egy dokkolt vezérlő van, mivel az már megjelenik az ablak címében."
 
+#: anchordockstr.adrshighlightfocused
+msgid "Highlight focused"
+msgstr ""
+
+#: anchordockstr.adrshighlightfocusedhint
+msgid "Highlight focused docked controls"
+msgstr ""
+
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "balra"

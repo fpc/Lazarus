@@ -149,6 +149,14 @@ msgstr ""
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
 msgstr ""
 
+#: anchordockstr.adrshighlightfocused
+msgid "Highlight focused"
+msgstr ""
+
+#: anchordockstr.adrshighlightfocusedhint
+msgid "Highlight focused docked controls"
+msgstr ""
+
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr ""

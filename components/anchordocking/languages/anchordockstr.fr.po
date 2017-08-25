@@ -151,6 +151,14 @@ msgstr "Style d'en-tête :"
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
 msgstr "Cacher les étiquettes d'en-têtes pour les zones qui ne contiennent qu'un contrôle amarré, comme c'est déjà la cas pour le titre d'une fenêtre normale"
 
+#: anchordockstr.adrshighlightfocused
+msgid "Highlight focused"
+msgstr ""
+
+#: anchordockstr.adrshighlightfocusedhint
+msgid "Highlight focused docked controls"
+msgstr ""
+
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "gauche"
