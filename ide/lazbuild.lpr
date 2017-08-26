@@ -785,25 +785,22 @@ var
     // apply options
     MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
-    if not SkipDependencies then begin
+    try
+    if not SkipDependencies then
+    begin
       // compile required packages
       CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
-
       PackageGraph.BeginUpdate(false);
-      try
-        // automatically compile required packages
-        CompilePolicy:=pupAsNeeded;
-        if BuildRecursive and BuildAll then
-          CompilePolicy:=pupOnRebuildingAll;
-        if PackageGraph.CompileRequiredPackages(nil,
-                                  Project1.FirstRequiredDependency,
-                                  not (pfUseDesignTimePackages in Project1.Flags),
-                                  CompilePolicy)<>mrOk
-        then
-          Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
-      finally
-        PackageGraph.EndUpdate;
-      end;
+      // automatically compile required packages
+      CompilePolicy:=pupAsNeeded;
+      if BuildRecursive and BuildAll then
+        CompilePolicy:=pupOnRebuildingAll;
+      if PackageGraph.CompileRequiredPackages(nil,
+                                Project1.FirstRequiredDependency,
+                                not (pfUseDesignTimePackages in Project1.Flags),
+                                CompilePolicy)<>mrOk
+      then
+        Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
     end;
 
     WorkingDir:=Project1.Directory;
@@ -895,6 +892,10 @@ var
 
     // no need to check for mrOk, we are exit if it wasn't
     Result:=true;
+    finally
+      if not SkipDependencies then
+        PackageGraph.EndUpdate;
+    end;
   end;
 
 begin
