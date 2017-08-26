@@ -786,112 +786,112 @@ var
     MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
     try
-    if not SkipDependencies then
-    begin
-      // compile required packages
-      CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
-      PackageGraph.BeginUpdate(false);
-      // automatically compile required packages
-      CompilePolicy:=pupAsNeeded;
-      if BuildRecursive and BuildAll then
-        CompilePolicy:=pupOnRebuildingAll;
-      if PackageGraph.CompileRequiredPackages(nil,
-                                Project1.FirstRequiredDependency,
-                                not (pfUseDesignTimePackages in Project1.Flags),
-                                CompilePolicy)<>mrOk
-      then
-        Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
-    end;
+      if not SkipDependencies then
+      begin
+        // compile required packages
+        CheckPackageGraphForCompilation(nil,Project1.FirstRequiredDependency);
+        PackageGraph.BeginUpdate(false);
+        // automatically compile required packages
+        CompilePolicy:=pupAsNeeded;
+        if BuildRecursive and BuildAll then
+          CompilePolicy:=pupOnRebuildingAll;
+        if PackageGraph.CompileRequiredPackages(nil,
+                                  Project1.FirstRequiredDependency,
+                                  not (pfUseDesignTimePackages in Project1.Flags),
+                                  CompilePolicy)<>mrOk
+        then
+          Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
+      end;
 
-    WorkingDir:=Project1.Directory;
-    SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+      WorkingDir:=Project1.Directory;
+      SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
 
-    NeedBuildAllFlag:=false;
-    CompileHint:='';
-    if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
-      // only check if NeedBuildAllFlag will be set
-      MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1, NeedBuildAllFlag,CompileHint);
-    end;
+      NeedBuildAllFlag:=false;
+      CompileHint:='';
+      if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
+        // only check if NeedBuildAllFlag will be set
+        MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1, NeedBuildAllFlag,CompileHint);
+      end;
 
-    // execute compilation tool 'Before'
-    ToolBefore:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteBefore);
-    if (CompReason in ToolBefore.CompileReasons) then begin
-      if ToolBefore.Execute(Project1.Directory,
-        lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
-      then
-        Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
-    end;
+      // execute compilation tool 'Before'
+      ToolBefore:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteBefore);
+      if (CompReason in ToolBefore.CompileReasons) then begin
+        if ToolBefore.Execute(Project1.Directory,
+          lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
+        then
+          Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
+      end;
 
-    // create unit output directory
-    UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
-    if not ForceDirectory(UnitOutputDirectory) then
-      Error(ErrorBuildFailed,'Unable to create project unit output directory '+UnitOutputDirectory);
+      // create unit output directory
+      UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
+      if not ForceDirectory(UnitOutputDirectory) then
+        Error(ErrorBuildFailed,'Unable to create project unit output directory '+UnitOutputDirectory);
 
-    // create target output directory
-    TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
-    TargetExeDir := ExtractFilePath(TargetExeName);
-    if not ForceDirectory(TargetExeDir) then
-      Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
+      // create target output directory
+      TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
+      TargetExeDir := ExtractFilePath(TargetExeName);
+      if not ForceDirectory(TargetExeDir) then
+        Error(ErrorBuildFailed,'Unable to create project target directory '+TargetExeDir);
 
-    // create LazBuildApp bundle
-    if Project1.UseAppBundle and (Project1.MainUnitID>=0)
-    and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
-    then begin
-      if not (CreateApplicationBundle(TargetExeName, Project1.Title) in [mrOk,mrIgnore]) then
-        Error(ErrorBuildFailed,'Unable to create application bundle for '+TargetExeName);
-      if not (CreateAppBundleSymbolicLink(TargetExeName) in [mrOk,mrIgnore]) then
-        Error(ErrorBuildFailed,'Unable to create application bundle symbolic link for '+TargetExeName);
-    end;
+      // create LazBuildApp bundle
+      if Project1.UseAppBundle and (Project1.MainUnitID>=0)
+      and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
+      then begin
+        if not (CreateApplicationBundle(TargetExeName, Project1.Title) in [mrOk,mrIgnore]) then
+          Error(ErrorBuildFailed,'Unable to create application bundle for '+TargetExeName);
+        if not (CreateAppBundleSymbolicLink(TargetExeName) in [mrOk,mrIgnore]) then
+          Error(ErrorBuildFailed,'Unable to create application bundle symbolic link for '+TargetExeName);
+      end;
 
-    // update all lrs files
-    MainBuildBoss.UpdateProjectAutomaticFiles('');
+      // update all lrs files
+      MainBuildBoss.UpdateProjectAutomaticFiles('');
 
-    // regenerate resources
-    if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
-    begin
-      if ConsoleVerbosity>=-1 then
-        DebugLn('Error: (lazarus) Project1.Resources.Regenerate failed of ',SrcFilename);
-    end;
+      // regenerate resources
+      if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
+      begin
+        if ConsoleVerbosity>=-1 then
+          DebugLn('Error: (lazarus) Project1.Resources.Regenerate failed of ',SrcFilename);
+      end;
 
-    // get compiler parameters
-    if CompilerOverride <> '' then
-      CompilerFilename := CompilerOverride
-    else
-      CompilerFilename:=Project1.GetCompilerFilename;
-    //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
-    // CompileHint: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
-    CompilerParams:=Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
-                                           +' '+PrepareCmdLineOption(SrcFilename);
+      // get compiler parameters
+      if CompilerOverride <> '' then
+        CompilerFilename := CompilerOverride
+      else
+        CompilerFilename:=Project1.GetCompilerFilename;
+      //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
+      // CompileHint: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
+      CompilerParams:=Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
+                                             +' '+PrepareCmdLineOption(SrcFilename);
 
-    if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
-      // compile
+      if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
+        // compile
 
-      // write state file to avoid building clean every time
-      if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
-        Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
-      if TheCompiler.Compile(Project1,
-                              WorkingDir,CompilerFilename,CompilerParams,
-                              BuildAll or NeedBuildAllFlag,false,false,false,
-                              CompileHint)<>mrOk
-      then
-        Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
-      // compilation succeded -> write state file
-      if Project1.SaveStateFile(CompilerFilename,CompilerParams,true)<>mrOk then
-        Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
-    end;
+        // write state file to avoid building clean every time
+        if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
+          Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
+        if TheCompiler.Compile(Project1,
+                                WorkingDir,CompilerFilename,CompilerParams,
+                                BuildAll or NeedBuildAllFlag,false,false,false,
+                                CompileHint)<>mrOk
+        then
+          Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
+        // compilation succeded -> write state file
+        if Project1.SaveStateFile(CompilerFilename,CompilerParams,true)<>mrOk then
+          Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
+      end;
 
-    // execute compilation tool 'After'
-    ToolAfter:=TProjectCompilationToolOptions(
-                                       Project1.CompilerOptions.ExecuteAfter);
-    if (CompReason in ToolAfter.CompileReasons) then begin
-      if ToolAfter.Execute(Project1.Directory,
-        lisProject2+lisExecutingCommandAfter,CompileHint)<>mrOk
-      then
-        Error(ErrorBuildFailed,'failed "tool after" of project '+AFilename);
-    end;
+      // execute compilation tool 'After'
+      ToolAfter:=TProjectCompilationToolOptions(
+                                         Project1.CompilerOptions.ExecuteAfter);
+      if (CompReason in ToolAfter.CompileReasons) then begin
+        if ToolAfter.Execute(Project1.Directory,
+          lisProject2+lisExecutingCommandAfter,CompileHint)<>mrOk
+        then
+          Error(ErrorBuildFailed,'failed "tool after" of project '+AFilename);
+      end;
 
-    // no need to check for mrOk, we are exit if it wasn't
-    Result:=true;
+      // no need to check for mrOk, we are exit if it wasn't
+      Result:=true;
     finally
       if not SkipDependencies then
         PackageGraph.EndUpdate;
