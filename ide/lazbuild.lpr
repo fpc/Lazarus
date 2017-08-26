@@ -40,9 +40,9 @@ uses
   // LazUtils
   Masks, LConvEncoding, Laz2_XMLCfg, FileUtil, LazFileUtils, LazUTF8,
   // IDE
-  IDEProcs, InitialSetupProc, ExtTools, CompilerOptions, ApplicationBundle,
-  TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
-  IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
+  IDEProcs, IDEUtils, InitialSetupProc, ExtTools, CompilerOptions,
+  ApplicationBundle, TransferMacros, EnvironmentOpts, IDETranslations,
+  LazarusIDEStrConsts, IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
 
@@ -232,8 +232,7 @@ begin
   DepOwner:=Dependency.Owner;
   if (DepOwner<>nil) then begin
     if DepOwner is TLazPackage then begin
-      Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]
-        );
+      Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]);
     end else if DepOwner is TProject then begin
       Description:=Format(lisPkgMangProject,
                           [ExtractFileNameOnly(TProject(DepOwner).ProjectInfoFile)]);
@@ -241,8 +240,7 @@ begin
       Description:=dbgsName(DepOwner)
     end;
   end else begin
-    Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]
-      );
+    Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]);
   end;
 end;
 
@@ -373,7 +371,7 @@ begin
   if not FileExistsUTF8(Filename) then
   begin
     // Check for packages if the specified name is a valid identifier
-    if IsValidIdent(OriginalFileName) then begin
+    if LazIsValidIdent(OriginalFileName) then begin
       if PackageAction=lpaAddPkgLinks then begin
         Error(ErrorFileNotFound,'lpk file expected, but '+OriginalFilename+' found');
         Exit;
@@ -488,7 +486,7 @@ begin
     XMLConfig.Free;
   end;
   // check Package Name
-  if (Result.Name='') or (not IsValidIdent(Result.Name)) then begin
+  if (Result.Name='') or (not LazIsValidIdent(Result.Name)) then begin
     Error(ErrorPackageNameInvalid,
           Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
                  [Result.Name, LineEnding, Result.Filename]));
@@ -819,8 +817,7 @@ var
     end;
 
     // execute compilation tool 'Before'
-    ToolBefore:=TProjectCompilationToolOptions(
-                                      Project1.CompilerOptions.ExecuteBefore);
+    ToolBefore:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteBefore);
     if (CompReason in ToolBefore.CompileReasons) then begin
       if ToolBefore.Execute(Project1.Directory,
         lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
@@ -1036,7 +1033,7 @@ var
   i: integer;
   Package: TLazPackage;
   PackageLink: TLazPackageLink;
-  PackageName:string;
+  PackageName: String;
   PkgFilename: String;
   ErrorMsg: String;
   ErrCode: Byte;
@@ -1055,7 +1052,7 @@ begin
     PkgFilename:='';
     if CompareFileExt(PackageNamesOrFiles[i],'.lpk')=0 then
       PkgFilename:=ExpandFileNameUTF8(PackageNamesOrFiles[i])
-    else if IsValidIdent(PackageNamesOrFiles[i]) then begin
+    else if LazIsValidIdent(PackageNamesOrFiles[i]) then begin
       PackageLink:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]));
       if PackageLink=nil then
       begin
