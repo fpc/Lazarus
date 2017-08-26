@@ -1019,7 +1019,6 @@ type
     procedure EditorSelectAll;
     procedure EditorShow(const SelAll: boolean); virtual;
     procedure EditorShowInCell(const aCol,aRow:Integer); virtual;
-    procedure EditorTextChanged(const aCol,aRow: Integer; const aText:string); virtual;
     procedure EditorWidthChanged(aCol,aWidth: Integer); virtual;
     function  FirstGridColumn: integer; virtual;
     function  FixedGrid: boolean;
@@ -1265,6 +1264,8 @@ type
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: Char);
     procedure EditorKeyUp(Sender: TObject; var key:Word; shift:TShiftState);
+    procedure EditorTextChanged(const aCol,aRow: Integer; const aText:string); virtual;
+
     procedure EndUpdate(aRefresh: boolean = true);
     procedure EraseBackground(DC: HDC); override;
     function  Focused: Boolean; override;
