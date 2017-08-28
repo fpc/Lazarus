@@ -624,6 +624,7 @@ begin
   FCharSet := DefFontData.CharSet;
   FQuality := DefFontData.Quality;
   FHeight := DefFontData.Height;
+  FStyle := DefFontData.Style;
   inherited SetSize(-MulDiv(FHeight, 72, FPixelsPerInch));
   DelayAllocate := True;
   inherited SetName(DefFontData.Name);
