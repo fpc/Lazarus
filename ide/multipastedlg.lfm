@@ -3,14 +3,15 @@ object MultiPasteDialog: TMultiPasteDialog
   Height = 504
   Top = 137
   Width = 466
-  BorderStyle = bsDialog
+  BorderStyle = bsSizeToolWin
   Caption = 'MultiPaste'
   ClientHeight = 504
   ClientWidth = 466
+  FormStyle = fsStayOnTop
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object PasteOptsGroupBox: TGroupBox
     Left = 6
     Height = 210
