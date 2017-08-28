@@ -795,8 +795,7 @@ var
         CompilePolicy:=pupAsNeeded;
         if BuildRecursive and BuildAll then
           CompilePolicy:=pupOnRebuildingAll;
-        if PackageGraph.CompileRequiredPackages(nil,
-                                  Project1.FirstRequiredDependency,
+        if PackageGraph.CompileRequiredPackages(nil,Project1.FirstRequiredDependency,
                                   not (pfUseDesignTimePackages in Project1.Flags),
                                   CompilePolicy)<>mrOk
         then
@@ -869,10 +868,9 @@ var
         // write state file to avoid building clean every time
         if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
           Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
-        if TheCompiler.Compile(Project1,
-                                WorkingDir,CompilerFilename,CompilerParams,
-                                BuildAll or NeedBuildAllFlag,false,false,false,
-                                CompileHint)<>mrOk
+        if TheCompiler.Compile(Project1,WorkingDir,CompilerFilename,CompilerParams,
+                               BuildAll or NeedBuildAllFlag,false,false,false,
+                               CompileHint)<>mrOk
         then
           Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
         // compilation succeded -> write state file
@@ -881,8 +879,7 @@ var
       end;
 
       // execute compilation tool 'After'
-      ToolAfter:=TProjectCompilationToolOptions(
-                                         Project1.CompilerOptions.ExecuteAfter);
+      ToolAfter:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteAfter);
       if (CompReason in ToolAfter.CompileReasons) then begin
         if ToolAfter.Execute(Project1.Directory,
           lisProject2+lisExecutingCommandAfter,CompileHint)<>mrOk
