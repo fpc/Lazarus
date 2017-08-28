@@ -48,7 +48,7 @@ uses
   IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
+  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, IDEUtils,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
   EnvironmentOpts, TransferMacros, CompilerOptions,
   ExtTools, etMakeMsgParser, etFPCMsgParser,
@@ -1595,7 +1595,7 @@ begin
             else
               continue;
             CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
-            if not IsValidIdent(CurUnitName) then
+            if not LazIsValidIdent(CurUnitName) then
               continue;
             CurFilename:=CurDir+FileInfo.Name;
             //DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles ',CurUnitName,' ',CurFilename]);
