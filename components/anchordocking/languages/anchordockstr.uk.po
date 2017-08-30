@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-02-10 14:59+0200\n"
+"PO-Revision-Date: 2017-08-29 14:49+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -151,15 +151,15 @@ msgstr "Стиль заголовка:"
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
-msgstr "Приховувати назви заголовків для областей з лише одним пристикованим об'єктом, бо ця назва вже присутня в звичайному заголовку вінка"
+msgstr "Приховувати назви заголовків для областей з лише одним стикованим елементом, бо ця назва вже присутня в звичайному заголовку вінка"
 
 #: anchordockstr.adrshighlightfocused
 msgid "Highlight focused"
-msgstr ""
+msgstr "Підсвітити фокус"
 
 #: anchordockstr.adrshighlightfocusedhint
 msgid "Highlight focused docked controls"
-msgstr ""
+msgstr "Підсвітити стиковані елементи у фокусі"
 
 #: anchordockstr.adrsleft
 msgid "left"
@@ -219,7 +219,7 @@ msgstr "Не показувати назви плаваючих областей
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
 msgid "No children allowed for Node=\"%s\" Type=%s"
-msgstr "Не дозволено мати нащадків для Вузла=\"%s\" Тип=%s"
+msgstr "Не дозволено мати нащадків для вузла=\"%s\" Тип=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
 msgid "Not supported: %s has parent %s"
@@ -263,7 +263,7 @@ msgstr "При зміні розмірів області масштабуват
 
 #: anchordockstr.adrsshowcaptionsofdockedcontrolsintheheader
 msgid "Show captions of docked controls in the header"
-msgstr "Показувати назви пристикованих об'єктів у заголовку"
+msgstr "Показувати назви стикованих елементів у заголовку"
 
 #: anchordockstr.adrsshowheadercaptions
 msgid "Show header captions"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-08-10 00:58+0300\n"
+"PO-Revision-Date: 2017-08-24 17:15+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -18758,7 +18758,7 @@ msgstr "Використовувати коментарі у параметра�
 
 #: lazarusidestrconsts.lisusedby
 msgid " used by %s"
-msgstr " використано %s"
+msgstr ", використаний в %s"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
