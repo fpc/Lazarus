@@ -582,6 +582,7 @@ begin
   AddKeyword('array', wtReservedWord, ttArray);
   AddKeyword('asm', wtReservedWord, ttAsm);
   AddKeyword('begin', wtReservedWord, ttBegin);
+  AddKeyword('bitpacked', wtReservedWord, ttPacked);
   AddKeyword('case', wtReservedWord, ttCase);
   AddKeyword('class', wtReservedWord, ttClass);
   AddKeyword('const', wtReservedWord, ttConst);
