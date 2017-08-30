@@ -713,6 +713,7 @@ type
   public
     procedure InitializeWidget; override;
     procedure DeInitializeWidget; override;
+    function CanPaintBackground: Boolean; override;
     procedure SetDefaultColorRoles; override;
     procedure setVisible(AVisible: Boolean); override;
     property NeedRestoreVisible: Boolean read FNeedRestoreVisible write FNeedRestoreVisible;
@@ -18241,6 +18242,12 @@ begin
   QtWidgetSet.RemoveHintHandle(Self);
   {$ENDIF}
   inherited DeInitializeWidget;
+end;
+
+function TQtHintWindow.CanPaintBackground: Boolean;
+begin
+  Result := CanSendLCLMessage and getEnabled and
+    (LCLObject.Color <> clDefault);
 end;
 
 procedure TQtHintWindow.SetDefaultColorRoles;
