@@ -335,6 +335,9 @@ begin
   while lbMore do
   begin
 
+    if fcTokenList.FirstSolidTokenType = ttSpecialize then
+      Recognise(ttSpecialize);
+
     RecogniseDottedName;
     if fcTokenList.FirstSolidTokenType = ttLessThan then
     begin
