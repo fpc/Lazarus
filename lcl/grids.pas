@@ -6177,6 +6177,8 @@ begin
   if IsColumn then begin
     if Index>ColCount-1 then
       Index := ColCount-1;
+    if Index<FixedCols then
+      inc(FFixedCols);
     if columns.Enabled then begin
       Columns.InsertColumn(ColumnIndexFromGridColumn(index));
       ColRowInserted(true, index);
@@ -6188,6 +6190,8 @@ begin
   end else begin
     Frows.Insert(Index, pointer(-1));
     FGCache.AccumHeight.Insert(Index, nil);
+    if Index<FixedRows then
+      inc(FFixedRows);
   end;
   ColRowInserted(IsColumn, index);
   VisualChange;
