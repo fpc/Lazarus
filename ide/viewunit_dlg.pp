@@ -383,7 +383,7 @@ begin
   begin
     Canvas.FillRect(ARect);
     IDEImages.Images_16.Draw(Canvas, 1, ARect.Top, FImageIndex);
-    Canvas.TextRect(ARect, ARect.Left + 20, ARect.Top, Items[Index]);
+    Canvas.TextRect(ARect, ARect.Left + IDEImages.Images_16.Width + Scale96ToFont(4), ARect.Top, Items[Index]);
   end;
 end;
 
