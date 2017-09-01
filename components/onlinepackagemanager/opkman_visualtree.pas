@@ -98,6 +98,7 @@ type
     FLeaving: Boolean;
     FOnChecking: TOnChecking;
     FOnChecked: TNotifyEvent;
+    FMouseEnter: Boolean;
     procedure VSTBeforeCellPaint(Sender: TBaseVirtualTree;
       TargetCanvas: TCanvas; Node: PVirtualNode; {%H-}Column: TColumnIndex;
       {%H-}CellPaintMode: TVTCellPaintMode; CellRect: TRect; var {%H-}ContentRect: TRect);
@@ -185,7 +186,6 @@ begin
      DefaultText := '';
      Header.AutoSizeIndex := 4;
      Header.Height := MulDiv(25, Screen.PixelsPerInch, 96);
-     VST.Font.Color := VST.Header.Font.Color;
      Colors.DisabledColor := clBlack;
      with Header.Columns.Add do
      begin
@@ -601,6 +601,11 @@ procedure TVisualTree.VSTEnter(Sender: TObject);
 var
   Node: PVirtualNode;
 begin
+  if FMouseEnter then
+  begin
+    FMouseEnter := False;
+    Exit;
+  end;
   if FVST.SelectedCount = 0 then
   begin
     Node := FVST.GetFirst;
@@ -1681,6 +1686,7 @@ var
  PackageName: String;
  MetaPkg: TMetaPackage;
 begin
+  FMouseEnter := True;
   Node := FVST.GetNodeAt(X, Y);
   if Node <> nil then
   begin
