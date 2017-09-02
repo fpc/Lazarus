@@ -5018,7 +5018,11 @@ var
 
 begin
   Result:=mrOk;
-  YesToAll:=False;
+  case EnvironmentOptions.AmbiguousFileAction of
+    afaIgnore: exit;
+    afaAutoDelete: YesToAll:=true;
+    else YesToAll:=false;
+  end;
   // search in every source directory for compiled versions of the units
   // A source directory is a directory with a used unit and it is not the output
   // directory
