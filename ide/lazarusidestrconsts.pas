@@ -2682,7 +2682,7 @@ resourcestring
   lisRunParamsFileNotExecutable = 'File not executable';
   lisRunParamsTheHostApplicationIsNotExecutable = 'The host application "%s" is not executable.';
   dlgTextToFind = '&Text to find';
-  dlgReplaceWith = '&Replace with';
+  dlgReplaceWith = 'Replace wit&h';
   lisBFWhenThisFileIsActiveInSourceEditor = 'When this file is active in source editor';
   lisBFOnBuildProjectExecuteTheBuildFileCommandInstead = 'On build project '
     +'execute the Build File command instead';

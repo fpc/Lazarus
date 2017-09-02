@@ -270,6 +270,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Width = 66
     BorderSpacing.Left = 6
     Caption = 'Text To Find:'
+    FocusControl = TextToFindComboBox
     ParentColor = False
   end
   object TextToFindComboBox: TComboBox
