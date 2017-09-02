@@ -759,7 +759,7 @@ begin
   Recognise(ttInterface, True);
 
   if fcTokenList.FirstSolidTokenType = ttUses then
-    RecogniseUsesClause(False);
+    RecogniseUsesClause(True);
 
   RecogniseInterfaceDecls;
 
@@ -869,7 +869,7 @@ begin
   Recognise(ttImplementation, True);
 
   if fcTokenList.FirstSolidTokenType = ttUses then
-    RecogniseUsesClause(False);
+    RecogniseUsesClause(True);
 
   RecogniseDeclSections;
 
