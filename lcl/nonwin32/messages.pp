@@ -71,7 +71,7 @@ const
 type
 
   TMessage = TLMessage;
-
+  // under Windows in unit windows
   TWMEraseBkgnd       = TLMEraseBkgnd;
   TWMKillFocus        = TLMKillFocus;
   TWMMouse            = TLMMouse;
