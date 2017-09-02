@@ -3025,6 +3025,7 @@ end;
 
 initialization
   DBG_LOCATION_INFO := DebugLogger.FindOrRegisterLogGroup('DBG_LOCATION_INFO' {$IFDEF DBG_LOCATION_INFO} , True {$ENDIF} );
+  if DBG_LOCATION_INFO=nil then ;
 
 end.
 

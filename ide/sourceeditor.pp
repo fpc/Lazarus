@@ -635,7 +635,7 @@ type
     procedure StatusBarClick(Sender: TObject);
     procedure StatusBarDblClick(Sender: TObject);
     procedure StatusBarContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
+      var {%H-}Handled: Boolean);
     procedure StatusBarDrawPanel({%H-}AStatusBar: TStatusBar; APanel: TStatusPanel;
       const ARect: TRect);
     procedure TabPopUpMenuPopup(Sender: TObject);
