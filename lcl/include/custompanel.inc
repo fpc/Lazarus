@@ -27,7 +27,7 @@ begin
   FCompStyle:= csPanel;
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
     csClickEvents, csSetCaption, csDoubleClicks, csReplicatable,
-    csNoFocus, csAutoSize0x0]
+    csNoFocus, csAutoSize0x0, csParentBackground]
     - [csOpaque]; // we need the default background
   FBevelColor := clDefault;
   FBevelOuter := bvRaised;
@@ -70,6 +70,17 @@ begin
     FBevelWidth := Value;
     Perform(CM_BORDERCHANGED, 0, 0);
   end;
+end;
+
+procedure TCustomPanel.SetParentBackground(const AParentBackground: Boolean);
+begin
+  if ParentBackground=AParentBackground then
+    Exit;
+  if AParentBackground then
+    ControlStyle := ControlStyle - [csOpaque]
+  else
+    ControlStyle := ControlStyle + [csOpaque];
+  inherited;
 end;
 
 procedure TCustomPanel.SetWordwrap(const Value: Boolean);

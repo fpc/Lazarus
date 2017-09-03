@@ -1047,6 +1047,7 @@ type
     procedure Loaded; override;
     procedure RealSetText(const Value: TCaption); override;
     procedure Paint; override;
+    procedure SetParentBackground(const AParentBackground: Boolean); override;
     procedure UpdateParentColorChange;
     property WordWrap: Boolean read FWordwrap write SetWordwrap default false;
   public
@@ -1059,6 +1060,7 @@ type
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
     property Color default {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
     property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True; // exists only for Delphi compatibility, has no effect in LCL
+    property ParentBackground default true;
     property ParentColor default true;
     property TabStop default False;
   end;
@@ -1093,6 +1095,7 @@ type
     property Enabled;
     property Font;
     property FullRepaint;
+    property ParentBackground;
     property ParentBidiMode;
     property ParentColor;
     property ParentFont;
