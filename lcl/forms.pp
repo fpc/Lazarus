@@ -218,6 +218,7 @@ type
     property Enabled;
     property Color nodefault;
     property Font;
+    property ParentBackground default False;
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
