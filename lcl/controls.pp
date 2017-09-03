@@ -2132,6 +2132,7 @@ type
     function  GetClientRect: TRect; override;
     function  GetControlOrigin: TPoint; override;
     function  GetDeviceContext(var WindowHandle: HWND): HDC; override;
+    function GetParentBackground: Boolean; inline;
     function  IsControlMouseMsg(var TheMessage): Boolean;
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
@@ -2155,6 +2156,7 @@ type
     procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
     procedure SetColor(Value: TColor); override;
     procedure SetChildZPosition(const AChild: TControl; const APosition: Integer);
+    procedure SetParentBackground(const AParentBackground: Boolean); virtual;
     procedure ShowControl(AControl: TControl); virtual;
     procedure UpdateControlState;
     procedure UpdateShowing; virtual; // checks control's handle visibility, called by DoAllAutoSize and UpdateControlState
@@ -2166,6 +2168,7 @@ type
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
     property OnGetSiteInfo: TGetSiteInfoEvent read FOnGetSiteInfo write FOnGetSiteInfo;
     property OnGetDockCaption: TGetDockCaptionEvent read FOnGetDockCaption write FOnGetDockCaption;
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   public
     // properties which are supported by all descendents
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
