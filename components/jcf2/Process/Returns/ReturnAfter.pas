@@ -85,6 +85,14 @@ begin
     exit;
   end;
 
+ { point 1b }
+ if (ptNext.HasParentNode(nHintDirectives)) then
+  begin
+    Result := False;
+    exit;
+  end;
+
+
   { point 2. to avoid the return,
     the next token must still be in the same  property}
   if ptNext.HasParentNode(nProperty) and (ptNext.TokenType <> ttProperty) then
