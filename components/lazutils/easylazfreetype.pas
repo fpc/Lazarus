@@ -837,7 +837,8 @@ end;
 
 destructor TFreeTypeGlyph.Destroy;
 begin
-  TT_Done_Glyph(FGlyphData);
+  if FreeTypeInitialized then
+    TT_Done_Glyph(FGlyphData);
   inherited Destroy;
 end;
 
