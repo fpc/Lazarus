@@ -50,6 +50,7 @@ type
   TQtWSCustomFrame = class(TWSCustomFrame)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TQtWSFrame }
@@ -154,6 +155,22 @@ begin
   {$ENDIF}
   QtFrame.MenuBar.AttachEvents;
   Result := TLCLIntfHandle(QtFrame);
+end;
+
+class procedure TQtWSCustomFrame.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+{$IFDEF QTSCROLLABLEFORMS}
+var
+  Widget: TQtMainWindow;
+{$ENDIF}
+begin
+  {$IFDEF QTSCROLLABLEFORMS}
+  if not WSCheckHandleAllocated(AWinControl, 'ScrollBy') then
+    Exit;
+  Widget := TQtMainWindow(AWinControl.Handle);
+  if Assigned(Widget.ScrollArea) then
+    Widget.ScrollArea.scroll(DeltaX, DeltaY);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
