@@ -462,9 +462,13 @@ begin
             gtk_editable_set_position(PGtkEditable(Widget), GStart);
           end else
           begin
-            g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
-            g_idle_add(@GtkEntryDelayCursorPos, Widget);
-            exit;
+            if gtk_minor_version < 17 then
+            begin
+              g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
+              g_idle_add(@GtkEntryDelayCursorPos, Widget);
+              exit;
+            end else
+              gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
           end;
         end;
       end;
