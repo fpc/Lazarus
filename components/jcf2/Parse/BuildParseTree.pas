@@ -63,6 +63,7 @@ type
     fcTokenList: TSourceTokenList;
 
     fiTokenCount: integer;
+    procedure RecogniseTypeHelper;
     procedure SplitGreaterThanOrEqual;
 
     procedure RecogniseGoal;
@@ -1153,6 +1154,18 @@ begin
 
 end;
 
+procedure TBuildParseTree.RecogniseTypeHelper;
+begin
+  PushNode(nClassType);
+  Recognise(ttType);
+  Recognise(ttHelper);
+  Recognise(ttFor);
+  RecogniseIdentifier(False, idStrict);
+  RecogniseClassBody;
+  Recognise(ttEnd);
+  PopNode;
+end;
+
 procedure TBuildParseTree.RecogniseTypeDecl;
 begin
   {
@@ -1183,6 +1196,13 @@ begin
   end;
 
   Recognise(ttEquals);
+
+  //Recognise type helper (for fpc)
+  if (fcTokenList.FirstSolidTokenType = ttType) and
+    (fcTokenList.SolidToken(2).TokenType=ttHelper) then
+  begin
+     RecogniseTypeHelper;
+  end else
 
   // type or restricted type
   if (fcTokenList.FirstSolidTokenType in [ttObject, ttClass, ttInterface,
