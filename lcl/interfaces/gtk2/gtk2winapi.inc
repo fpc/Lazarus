@@ -5575,7 +5575,9 @@ var
 {$ifdef HasX}
   ax,ay,ah,aw: gint;
 {$endif}
+{$IFDEF Win32}
   auw, auh: guint;
+{$ENDIF}
   screen: PGdkScreen;
   ARect: TGdkRectangle;
   AValue: TGValue;
@@ -5607,12 +5609,17 @@ begin
     SM_CXCURSOR,
     SM_CYCURSOR:
       begin
-        // Width and height of a cursor, in pixels. For win32 system cannot create cursors of other sizes.
-        // For gtk this should be maximal cursor sizes
-        gdk_display_get_maximal_cursor_size(gdk_display_get_default, @auw, @auh);
-        if nIndex = SM_CXCURSOR
-        then Result := auw // return width
-        else Result := auh; // return height
+        {$IFDEF Win32}
+          // Width and height of a cursor, in pixels. For win32 system cannot create cursors of other sizes.
+          // For gtk this should be maximal cursor sizes
+          gdk_display_get_maximal_cursor_size(gdk_display_get_default, @auw, @auh);
+          if nIndex = SM_CXCURSOR
+          then Result := auw // return width
+          else Result := auh; // return height
+        {$ELSE}
+          // At least on Linux, the default size should be taken: Issue #32385
+          Result := gdk_display_get_default_cursor_size(gdk_display_get_default);
+        {$ENDIF}
       end;
     SM_CXDOUBLECLK:
       begin
