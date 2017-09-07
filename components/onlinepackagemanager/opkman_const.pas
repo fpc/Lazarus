@@ -349,6 +349,8 @@ resourcestring
   rsCreateRepositoryPackageFrm_bOptions_Hint = 'Open options dialog';
   rsCreateRepositoryPackageFrm_bCreate_Caption = 'Create';
   rsCreateRepositoryPackageFrm_bCreate_Hint = 'Create files locally';
+  rsCreateRepositoryPackageFrm_bCreate_Caption1 = 'Add';
+  rsCreateRepositoryPackageFrm_bCreate_Hint1 = 'Add package to repository';
   rsCreateRepositoryPackageFrm_bSubmit_Caption = 'Submit';
   rsCreateRepositoryPackageFrm_bSubmit_Hint = 'Submit files to remote server';
   rsCreateRepositoryPackageFrm_bCancel_Caption = 'Cancel';

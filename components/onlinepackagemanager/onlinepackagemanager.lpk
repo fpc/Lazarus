@@ -83,8 +83,8 @@
         <UnitName Value="opkman_options"/>
       </Item14>
       <Item15>
-        <Filename Value="opkman_createrepositorypackage.pas"/>
-        <UnitName Value="opkman_createrepositorypackage"/>
+        <Filename Value="opkman_createrepositorypackagefrm.pas"/>
+        <UnitName Value="opkman_createrepositorypackagefrm"/>
         <ResourceBaseClass Value="Form"/>
       </Item15>
       <Item16>
@@ -100,8 +100,8 @@
         <UnitName Value="opkman_updates"/>
       </Item18>
       <Item19>
-        <Filename Value="opkman_createjsonforupdates.pas"/>
-        <UnitName Value="opkman_createjsonforupdates"/>
+        <Filename Value="opkman_createjsonforupdatesfrm.pas"/>
+        <UnitName Value="opkman_createjsonforupdatesfrm"/>
       </Item19>
       <Item20>
         <Filename Value="opkman_uploader.pas"/>

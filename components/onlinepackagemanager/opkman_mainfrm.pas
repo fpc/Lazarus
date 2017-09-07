@@ -41,8 +41,8 @@ uses
   opkman_VirtualTrees, opkman_downloader, opkman_installer,
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
   opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
-  opkman_optionsfrm, opkman_createrepositorypackage, opkman_updates,
-  opkman_createjsonforupdates;
+  opkman_optionsfrm, opkman_createrepositorypackagefrm, opkman_updates,
+  opkman_createjsonforupdatesfrm;
 
 type
 
@@ -983,6 +983,7 @@ procedure TMainFrm.miCreateRepositoryPackageClick(Sender: TObject);
 begin
   CreateRepositoryPackagesFrm := TCreateRepositoryPackagesFrm.Create(MainFrm);
   try
+    CreateRepositoryPackagesFrm.SetType(0);
     CreateRepositoryPackagesFrm.ShowModal;
   finally
     CreateRepositoryPackagesFrm.Free;
