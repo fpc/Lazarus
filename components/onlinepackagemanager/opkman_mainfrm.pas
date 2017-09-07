@@ -42,7 +42,7 @@ uses
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
   opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
   opkman_optionsfrm, opkman_createrepositorypackagefrm, opkman_updates,
-  opkman_createjsonforupdatesfrm;
+  opkman_createjsonforupdatesfrm, opkman_createrepositoryfrm;
 
 type
 
@@ -56,6 +56,8 @@ type
     imTBDis: TImageList;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    miCreateRepository: TMenuItem;
     miLoadChecks: TMenuItem;
     miSaveChecks: TMenuItem;
     miDateDsc: TMenuItem;
@@ -68,7 +70,7 @@ type
     miJSONSort: TMenuItem;
     miResetRating: TMenuItem;
     miCopyToClpBrd: TMenuItem;
-    miCreateRepository: TMenuItem;
+    miCreateJSONForUpdates: TMenuItem;
     miCreateRepositoryPackage: TMenuItem;
     OD: TOpenDialog;
     SD: TSaveDialog;
@@ -105,6 +107,7 @@ type
     tbCreate: TToolButton;
     tbUpdate: TToolButton;
     procedure miCopyToClpBrdClick(Sender: TObject);
+    procedure miCreateJSONForUpdatesClick(Sender: TObject);
     procedure miCreateRepositoryClick(Sender: TObject);
     procedure miCreateRepositoryPackageClick(Sender: TObject);
     procedure miLoadChecksClick(Sender: TObject);
@@ -990,7 +993,7 @@ begin
   end;
 end;
 
-procedure TMainFrm.miCreateRepositoryClick(Sender: TObject);
+procedure TMainFrm.miCreateJSONForUpdatesClick(Sender: TObject);
 var
   Msg: String;
 begin
@@ -1011,6 +1014,18 @@ begin
     CreateJSONForUpdatesFrm.ShowModal;
   finally
     CreateJSONForUpdatesFrm.Free;
+  end;
+end;
+
+procedure TMainFrm.miCreateRepositoryClick(Sender: TObject);
+var
+  CreateRepositoryFrm: TCreateRepositoryFrm;
+begin
+  CreateRepositoryFrm := TCreateRepositoryFrm.Create(MainFrm);
+  try
+    CreateRepositoryFrm.ShowModal;
+  finally
+    CreateRepositoryFrm.Free;
   end;
 end;
 
@@ -1255,7 +1270,8 @@ begin
   tbHelp.Hint := rsMainFrm_TBHelp_Hint;
 
   miCreateRepositoryPackage.Caption := rsMainFrm_miCreateRepositoryPackage;
-  miCreateRepository.Caption := rsMainFrm_miCreateJSONForUpdates;
+  miCreateJSONForUpdates.Caption := rsMainFrm_miCreateJSONForUpdates;
+  miCreateRepository.Caption := rsMainFrm_miCreateRepository;
   miJSONShow.Caption := rsMainFrm_miJSONShow;
   miJSONHide.Caption := rsMainFrm_miJSONHide;
   miJSONSort.Caption := rsMainFrm_miJSONSort;

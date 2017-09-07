@@ -1,3 +1,26 @@
+{
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.   *
+ *                                                                         *
+ ***************************************************************************
+
+ Author: Balázs Székely
+}
+
 unit opkman_createrepositorypackagefrm;
 
 {$mode objfpc}{$H+}
@@ -449,7 +472,7 @@ begin
           Data^.FPackageRelativePath := TPackageData(PackageList.Objects[I]).FPackageRelativePath;
           Data^.FFullPath := TPackageData(PackageList.Objects[I]).FFullPath;
           if not LoadPackageData(Data^.FFullPath, Data) then
-            MessageDlgEx(rsCreateRepositoryPackageFrm_Error0, mtError, [mbOk], TForm(Self.Parent));
+            MessageDlgEx(rsCreateRepositoryPackageFrm_Error0, mtError, [mbOk], Self);
           Data^.FLazCompatibility := '1.6, 1.8, Trunk';
           Data^.FFPCCompatibility := '2.6.4, 3.0.0, 3.0.2, 3.0.4';
           Data^.FSupportedWidgetSet := 'win32/64, gtk2, carbon';
@@ -466,7 +489,7 @@ begin
         FVSTPackages.SortTree(0, opkman_VirtualTrees.sdAscending);
       end
       else
-        MessageDlgEx(rsCreateRepositoryPackageFrm_NoPackage, mtInformation, [mbOk], TForm(Self.Parent));
+        MessageDlgEx(rsCreateRepositoryPackageFrm_NoPackage, mtInformation, [mbOk], Self);
     finally
       for I := PackageList.Count - 1 downto 0 do
         PackageList.Objects[I].Free;
@@ -488,7 +511,7 @@ end;
 
 procedure TCreateRepositoryPackagesFrm.spCategoriesClick(Sender: TObject);
 begin
-  CategoriesFrm := TCategoriesFrm.Create(Self.Parent);
+  CategoriesFrm := TCategoriesFrm.Create(Self);
   try
     CategoriesFrm.SetupControls;
     CategoriesFrm.CategoriesCSV := edCategories.Text;
@@ -525,7 +548,7 @@ begin
       if Data^.FCategory = '' then
       begin
         SelectAndFocusNode(Node);
-        MessageDlgEx(rsCreateRepositoryPackageFrm_Message0 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
+        MessageDlgEx(rsCreateRepositoryPackageFrm_Message0 + ' "' + Data^.FName + '".', mtInformation, [mbOk], Self);
         edCategories.SetFocus;
         Exit;
       end;
@@ -536,21 +559,21 @@ begin
       if Trim(Data^.FLazCompatibility) = '' then
       begin
         SelectAndFocusNode(Node);
-        MessageDlgEx(rsCreateRepositoryPackageFrm_Message1 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
+        MessageDlgEx(rsCreateRepositoryPackageFrm_Message1 + ' "' + Data^.FName + '".', mtInformation, [mbOk], Self);
         edLazCompatibility.SetFocus;
         Exit;
       end;
       if Trim(Data^.FFPCCompatibility) = '' then
       begin
         SelectAndFocusNode(Node);
-        MessageDlgEx(rsCreateRepositoryPackageFrm_Message2 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
+        MessageDlgEx(rsCreateRepositoryPackageFrm_Message2 + ' "' + Data^.FName + '".', mtInformation, [mbOk], Self);
         edFPCCompatibility.SetFocus;
         Exit;
       end;
       if Trim(Data^.FSupportedWidgetSet) = '' then
       begin
         SelectAndFocusNode(Node);
-        MessageDlgEx(rsCreateRepositoryPackageFrm_Message3 + ' "' + Data^.FName + '".', mtInformation, [mbOk], TForm(Self.Parent));
+        MessageDlgEx(rsCreateRepositoryPackageFrm_Message3 + ' "' + Data^.FName + '".', mtInformation, [mbOk], Self);
         edSupportedWidgetset.SetFocus;
         Exit;
       end;
@@ -635,8 +658,8 @@ procedure TCreateRepositoryPackagesFrm.bCancelClick(Sender: TObject);
 begin
   if Assigned(FPackageZipper) then
     FPackageZipper.Terminate;
-  TForm(Self.Parent).ModalResult := mrCancel;
-  TForm(Self.Parent).Close;
+  ModalResult := mrCancel;
+  Close;
 end;
 
 procedure TCreateRepositoryPackagesFrm.VSTPackagesGetText(
@@ -852,7 +875,7 @@ procedure TCreateRepositoryPackagesFrm.DoOnZippError(Sender: TObject;
 begin
   Screen.Cursor := crDefault;
   MessageDlgEx(rsCreateRepositoryPackageFrm_Error1 + ' "' + AZipFile + '". ' + rsProgressFrm_Error1 + sLineBreak +
-               AErrMsg, mtError, [mbOk], TForm(Self.Parent));
+               AErrMsg, mtError, [mbOk], Self);
   ShowHideControls(2);
   EnableDisableControls(True);
 end;
@@ -1042,7 +1065,7 @@ begin
   ErrMsg := '';
   if not CreateJSON(ErrMsg) then
   begin
-    MessageDlgEx(ErrMsg, mtError, [mbOk], TForm(Self.Parent));
+    MessageDlgEx(ErrMsg, mtError, [mbOk], Self);
     Exit;
   end;
 
@@ -1051,7 +1074,7 @@ begin
     ErrMsg := '';
     if not CreateJSONForUpdates(ErrMsg) then
     begin
-      MessageDlgEx(ErrMsg, mtError, [mbOk], TForm(Self.Parent));
+      MessageDlgEx(ErrMsg, mtError, [mbOk], Self);
       Exit;
     end;
   end;
@@ -1062,9 +1085,9 @@ begin
         Screen.Cursor := crDefault;
         ShowHideControls(2);
         EnableDisableControls(True);
-        MessageDlgEx(rsCreateRepositoryPackageFrm_Message7, mtInformation, [mbOk], TForm(Self.Parent));
-        TForm(Self.Parent).ModalResult := mrOk;
-        TForm(Self.Parent).Close;
+        MessageDlgEx(rsCreateRepositoryPackageFrm_Message7, mtInformation, [mbOk], Self);
+        ModalResult := mrOk;
+        Close;
       end;
     poSubmit:
       begin
@@ -1096,7 +1119,7 @@ begin
   Screen.Cursor := crDefault;
   ShowHideControls(2);
   EnableDisableControls(True);
-  MessageDlgEx(AErrMsg, mtError, [mbOk], TForm(Self.Parent));
+  MessageDlgEx(AErrMsg, mtError, [mbOk], Self);
 end;
 
 procedure TCreateRepositoryPackagesFrm.DoOnUploadCompleted(Sender: TObject);
@@ -1111,9 +1134,9 @@ begin
     DeleteFile(FDestDir + FPackageName + '.json');
   if FileExists(FDestDir + 'update_' + FPackageName + '.json') then
     DeleteFile(FDestDir + 'update_' + FPackageName + '.json');
-  MessageDlgEx(rsCreateRepositoryPackageFrm_Message9, mtInformation, [mbOk], TForm(Self.Parent));
-  TForm(Self.Parent).ModalResult := mrOk;
-  TForm(Self.Parent).Close;
+  MessageDlgEx(rsCreateRepositoryPackageFrm_Message9, mtInformation, [mbOk], Self);
+  Self.ModalResult := mrOk;
+  Self.Close;
 end;
 
 procedure TCreateRepositoryPackagesFrm.SetType(const ATyp: Integer);

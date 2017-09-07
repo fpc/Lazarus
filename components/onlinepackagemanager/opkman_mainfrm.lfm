@@ -562,8 +562,15 @@ object MainFrm: TMainFrm
       Caption = 'Create repository package'
       OnClick = miCreateRepositoryPackageClick
     end
-    object miCreateRepository: TMenuItem
+    object miCreateJSONForUpdates: TMenuItem
       Caption = 'Create JSON for updates'
+      OnClick = miCreateJSONForUpdatesClick
+    end
+    object MenuItem3: TMenuItem
+      Caption = '-'
+    end
+    object miCreateRepository: TMenuItem
+      Caption = 'Create personal repository'
       OnClick = miCreateRepositoryClick
     end
   end

@@ -164,6 +164,7 @@ resourcestring
   rsMainFrm_TBHelp_Hint = 'Help (' + cHelpPage + ')';
   rsMainFrm_miCreateRepositoryPackage = 'Create repository package';
   rsMainFrm_miCreateJSONForUpdates = 'Create JSON for updates';
+  rsMainFrm_miCreateRepository = 'Create private repository';
   rsMainFrm_miJSONShow =  'Show JSON';
   rsMainFrm_miJSONHide = 'Hide JSON';
   rsMainFrm_miJSONSort = 'Sort';
@@ -392,6 +393,20 @@ resourcestring
   rsRepositories_InputBox_Caption0 = 'Add repository';
   rsRepositories_InputBox_Caption1 = 'Edit repository';
   rsRepositories_InputBox_Text = 'Type the repository address:';
+
+  //create private repository
+  rsCreateRepositoryFrm_Caption = 'Create private repository';
+  rsCreateRepositoryFrm_bOpen_Caption = 'Open';
+  rsCreateRepositoryFrm_bOpen_Hint = 'Open private respository';
+  rsCreateRepositoryFrm_bCreate_Caption = 'Create';
+  rsCreateRepositoryFrm_bCreate_Hint = 'Create private repository';
+  rsCreateRepositoryFrm_bAdd_Caption = 'Add';
+  rsCreateRepositoryFrm_bAdd_Hint = 'Add package to the current repository';
+  rsCreateRepositoryFrm_bDelete_Caption = 'Delete';
+  rsCreateRepositoryFrm_bDelete_Hint = 'Delete package from the current repository';
+  rsCreateRepositoryFrm_bCancel_Caption = 'Cancel';
+  rsCreateRepositoryFrm_bCancel_Hint = 'Close this dialog';
+
 
 implementation
 

@@ -1,0 +1,87 @@
+object CreateRepositoryFrm: TCreateRepositoryFrm
+  Left = 350
+  Height = 600
+  Top = 250
+  Width = 800
+  BorderIcons = [biSystemMenu]
+  Caption = 'CreateRepositoryFrm'
+  ClientHeight = 600
+  ClientWidth = 800
+  Constraints.MinHeight = 450
+  Constraints.MinWidth = 650
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  PopupMode = pmExplicit
+  Position = poOwnerFormCenter
+  object pnButtons: TPanel
+    Left = 0
+    Height = 41
+    Top = 559
+    Width = 800
+    Align = alBottom
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 37
+    ClientWidth = 796
+    TabOrder = 0
+    OnResize = pnButtonsResize
+    object bOpen: TButton
+      Left = 6
+      Height = 27
+      Top = 4
+      Width = 80
+      Caption = 'Open'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object bCreate: TButton
+      Left = 87
+      Height = 27
+      Top = 4
+      Width = 80
+      Caption = 'Create'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+    object bAdd: TButton
+      Left = 368
+      Height = 27
+      Top = 4
+      Width = 80
+      BorderSpacing.Around = 1
+      Caption = 'Add'
+      Constraints.MinWidth = 80
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+    object bDelete: TButton
+      Left = 449
+      Height = 27
+      Top = 4
+      Width = 80
+      BorderSpacing.Around = 1
+      Caption = 'Delete'
+      Constraints.MinWidth = 80
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
+    object bCancel: TButton
+      Left = 705
+      Height = 27
+      Top = 4
+      Width = 80
+      Anchors = [akTop, akRight]
+      BorderSpacing.Around = 1
+      Caption = 'Cancel'
+      Constraints.MinWidth = 80
+      ModalResult = 2
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
+    end
+  end
+end
