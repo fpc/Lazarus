@@ -322,7 +322,8 @@ type
   public
     procedure AddSeries(ASeries: TBasicChartSeries);
     procedure ClearSeries;
-    function Clone: TChart;
+    function Clone: TChart; overload;
+    function Clone(ANewOwner, ANewParent: TComponent): TChart; overload;
     procedure CopyToClipboardBitmap;
     procedure DeleteSeries(ASeries: TBasicChartSeries);
     procedure DisableRedrawing;
@@ -599,6 +600,11 @@ begin
 end;
 
 function TChart.Clone: TChart;
+begin
+  Result := Clone(Owner, Parent);
+end;
+
+function TChart.Clone(ANewOwner, ANewParent: TComponent): TChart;
 var
   ms: TMemoryStream;
   cloned: TComponent = nil;
@@ -608,7 +614,7 @@ begin
     WriteComponentToStream(ms, Self);
     ms.Seek(0, soBeginning);
     ReadComponentFromBinaryStream(
-      ms, cloned, @FindComponentClass, Owner, Parent, Owner);
+      ms, cloned, @FindComponentClass, ANewOwner, ANewParent, Owner);
     Result := cloned as TChart;
   finally
     ms.Free;
