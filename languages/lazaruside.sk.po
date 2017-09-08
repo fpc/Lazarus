@@ -3330,8 +3330,8 @@ msgstr "N&ahradiť všetko"
 
 #: lazarusidestrconsts.dlgreplacewith
 #, fuzzy
-#| msgid "&Replace With"
-msgid "&Replace with"
+#| msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr "Na&hradiť s"
 
 #: lazarusidestrconsts.dlgreport

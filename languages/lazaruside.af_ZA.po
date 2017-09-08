@@ -3201,8 +3201,8 @@ msgstr "Vervang Alles"
 
 #: lazarusidestrconsts.dlgreplacewith
 #, fuzzy
-#| msgid "&Replace With"
-msgid "&Replace with"
+#| msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr "&Vervang met"
 
 #: lazarusidestrconsts.dlgreport

@@ -3212,7 +3212,9 @@ msgid "Replace &All"
 msgstr "Hepsini değiştir"
 
 #: lazarusidestrconsts.dlgreplacewith
-msgid "&Replace with"
+#, fuzzy
+#| msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr "&İle değiştirin"
 
 #: lazarusidestrconsts.dlgreport

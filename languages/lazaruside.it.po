@@ -3249,7 +3249,9 @@ msgid "Replace &All"
 msgstr "Sostituisci &Tutto"
 
 #: lazarusidestrconsts.dlgreplacewith
-msgid "&Replace with"
+#, fuzzy
+#| msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr "&Sostituisci con"
 
 #: lazarusidestrconsts.dlgreport

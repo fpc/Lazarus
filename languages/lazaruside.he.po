@@ -3379,8 +3379,8 @@ msgstr "החלף הכל"
 
 #: lazarusidestrconsts.dlgreplacewith
 #, fuzzy
-#| msgid "&Replace With"
-msgid "&Replace with"
+#| msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr "&החלף עם"
 
 #: lazarusidestrconsts.dlgreport

@@ -3216,7 +3216,9 @@ msgid "Replace &All"
 msgstr "Nahradit &vše"
 
 #: lazarusidestrconsts.dlgreplacewith
-msgid "&Replace with"
+#, fuzzy
+#| msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr "&Nahradit s"
 
 #: lazarusidestrconsts.dlgreport

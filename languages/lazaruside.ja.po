@@ -3205,7 +3205,9 @@ msgid "Replace &All"
 msgstr "すべて置換(&A)"
 
 #: lazarusidestrconsts.dlgreplacewith
-msgid "&Replace with"
+#, fuzzy
+#| msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr "次の文字列で置換(&R)"
 
 #: lazarusidestrconsts.dlgreport

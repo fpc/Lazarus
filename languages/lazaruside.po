@@ -3189,7 +3189,7 @@ msgid "Replace &All"
 msgstr ""
 
 #: lazarusidestrconsts.dlgreplacewith
-msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr ""
 
 #: lazarusidestrconsts.dlgreport

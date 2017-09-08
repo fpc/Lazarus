@@ -3206,7 +3206,9 @@ msgid "Replace &All"
 msgstr "&Remplacer tout"
 
 #: lazarusidestrconsts.dlgreplacewith
-msgid "&Replace with"
+#, fuzzy
+#| msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr "&Remplacer par"
 
 #: lazarusidestrconsts.dlgreport

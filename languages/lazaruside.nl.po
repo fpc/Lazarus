@@ -3299,8 +3299,8 @@ msgstr "Vervang &alles"
 
 #: lazarusidestrconsts.dlgreplacewith
 #, fuzzy
-#| msgid "&Replace With"
-msgid "&Replace with"
+#| msgid "&Replace with"
+msgid "Replace wit&h"
 msgstr "&Vervang Door"
 
 #: lazarusidestrconsts.dlgreport
