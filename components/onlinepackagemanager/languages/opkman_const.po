@@ -87,12 +87,94 @@ msgstr ""
 msgid "JSON for updates successfully created."
 msgstr ""
 
+#: opkman_const.rscreaterepositoryfrm_badd_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_badd_caption"
+msgid "Add"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_badd_hint
+msgid "Add package to the current repository"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_bcancel_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_caption"
+msgid "Cancel"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_bcancel_hint
+msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_hint"
+msgid "Close this dialog"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_bcreate_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_bcreate_caption"
+msgid "Create"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_bcreate_hint
+msgctxt "opkman_const.rscreaterepositoryfrm_bcreate_hint"
+msgid "Create private repository"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_bdelete_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_bdelete_caption"
+msgid "Delete"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_bdelete_hint
+msgid "Delete package from the current repository"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_bopen_caption
+msgid "Open"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_bopen_hint
+msgid "Open private respository"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_caption"
+msgid "Create private repository"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_error1
+msgid ""
+"Cannot open private repository. Error message: \n"
+"\"%s\"\n"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_error2
+msgid "File packagelist.json not found."
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_error3
+msgid ""
+"Cannot save private repository. Error message: \n"
+"\"%s\"\n"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_vstdetails_column0
+msgctxt "opkman_const.rscreaterepositoryfrm_vstdetails_column0"
+msgid "Description"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_vstdetails_column1
+msgctxt "opkman_const.rscreaterepositoryfrm_vstdetails_column1"
+msgid "Data"
+msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_vstpackages_column0
+msgid "Repository/Packages"
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
 msgid "Cancel"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_bcancel_hint
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_hint"
 msgid "Close this dialog"
 msgstr ""
 
@@ -101,8 +183,17 @@ msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption"
 msgid "Create"
 msgstr ""
 
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_caption1
+msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption1"
+msgid "Add"
+msgstr ""
+
 #: opkman_const.rscreaterepositorypackagefrm_bcreate_hint
 msgid "Create files locally"
+msgstr ""
+
+#: opkman_const.rscreaterepositorypackagefrm_bcreate_hint1
+msgid "Add package to repository"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_bhelp_caption
@@ -251,6 +342,7 @@ msgid "Description"
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_pncaption_caption2
+msgctxt "opkman_const.rscreaterepositorypackagefrm_pncaption_caption2"
 msgid "Data"
 msgstr ""
 
@@ -308,6 +400,11 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_micreatejsonforupdates
 msgid "Create JSON for updates"
+msgstr ""
+
+#: opkman_const.rsmainfrm_micreaterepository
+msgctxt "opkman_const.rsmainfrm_micreaterepository"
+msgid "Create private repository"
 msgstr ""
 
 #: opkman_const.rsmainfrm_micreaterepositorypackage
