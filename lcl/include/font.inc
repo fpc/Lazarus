@@ -858,6 +858,8 @@ begin
   OldPPI := FPixelsPerInch;
   FPixelsPerInch := APixelsPerInch;
 
+  if IsDefault then Exit;
+
   // the Height value is not correct anymore -> force recalculate it
   if Height<>0 then
     Height := MulDiv(Height, APixelsPerInch, OldPPI);
