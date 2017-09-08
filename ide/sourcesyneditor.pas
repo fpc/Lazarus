@@ -414,6 +414,7 @@ type
   protected
     procedure CheckTextBuffer;       // Todo: Add a notification, when TextBuffer Changes
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); override;
+    function PreferedWidth: Integer; override;
   public
     destructor Destroy; override;
     procedure BeginSetDebugMarks;
@@ -2221,6 +2222,14 @@ begin
      (FDebugMarkInfo.SrcLineToMarkLine[TxtIdx] > 0)
   then
     DrawDebugMark(aScreenLine);
+end;
+
+function TIDESynGutterMarks.PreferedWidth: Integer;
+begin
+  if Assigned(SourceEditorMarks) and Assigned(SourceEditorMarks.ImgList) then
+    Result := SourceEditorMarks.ImgList.Width * 2 + FBookMarkOpt.LeftMargin
+  else
+    Result := inherited PreferedWidth;
 end;
 
 destructor TIDESynGutterMarks.Destroy;
