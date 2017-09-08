@@ -74,16 +74,16 @@ type
     DescrShortEdit: TEdit;
     SynXMLSyn1: TSynXMLSyn;
     TopicShort: TEdit;
-    TopicDescr: TSynEdit;
+    TopicDescrSynEdit: TSynEdit;
     Panel3: TPanel;
     TopicListBox: TListBox;
     NewTopicNameEdit: TEdit;
     NewTopicButton: TButton;
     CopyFromInheritedButton: TButton;
     CreateButton: TButton;
-    DescrMemo: TSynEdit;
+    DescrSynEdit: TSynEdit;
     DescrTabSheet: TTabSheet;
-    ErrorsMemo: TSynEdit;
+    ErrorsSynEdit: TSynEdit;
     ErrorsTabSheet: TTabSheet;
     ExampleEdit: TEdit;
     ExampleTabSheet: TTabSheet;
@@ -102,7 +102,7 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     SaveButton: TSpeedButton;
-    SeeAlsoMemo: TSynEdit;
+    SeeAlsoSynEdit: TSynEdit;
     MoveToInheritedButton: TButton;
     OpenDialog: TOpenDialog;
     PageControl: TPageControl;
@@ -120,8 +120,8 @@ type
     procedure CopyFromInheritedButtonClick(Sender: TObject);
     procedure CopyShortToDescrMenuItemClick(Sender: TObject);
     procedure CreateButtonClick(Sender: TObject);
-    procedure DescrMemoChange(Sender: TObject);
-    procedure ErrorsMemoChange(Sender: TObject);
+    procedure DescrSynEditChange(Sender: TObject);
+    procedure ErrorsSynEditChange(Sender: TObject);
     procedure ExampleEditChange(Sender: TObject);
     procedure FormatButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -135,10 +135,10 @@ type
     procedure OpenXMLButtonClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
-    procedure SeeAlsoMemoChange(Sender: TObject);
+    procedure SeeAlsoSynEditChange(Sender: TObject);
     procedure ShortEditChange(Sender: TObject);
     procedure TopicControlEnter(Sender: TObject);
-    procedure TopicDescrChange(Sender: TObject);
+    procedure TopicDescrSynEditChange(Sender: TObject);
     procedure TopicListBoxClick(Sender: TObject);
   private
     FCaretXY: TPoint;
@@ -194,6 +194,7 @@ type
     procedure UpdateTopic;
   protected
     procedure UpdateShowing; override;
+    procedure Loaded; override;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -344,14 +345,14 @@ procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
       ShortEdit.SelText := StartTag + ShortEdit.SelText + EndTag;
       DescrShortEdit.Text:=ShortEdit.Text;
     end else if PageControl.ActivePage = DescrTabSheet then
-      DescrMemo.SelText := StartTag + DescrMemo.SelText + EndTag
+      DescrSynEdit.SelText := StartTag + DescrSynEdit.SelText + EndTag
     else if PageControl.ActivePage = ErrorsTabSheet then
-      ErrorsMemo.SelText := StartTag + ErrorsMemo.SelText + EndTag
+      ErrorsSynEdit.SelText := StartTag + ErrorsSynEdit.SelText + EndTag
     else if PageControl.ActivePage = TopicSheet then begin
       if (FLastTopicControl = TopicShort) then
         TopicShort.SelText := StartTag + TopicShort.SelText + EndTag;
-      if (FLastTopicControl = TopicDescr) then
-        TopicDescr.SelText := StartTag + TopicDescr.SelText + EndTag;
+      if (FLastTopicControl = TopicDescrSynEdit) then
+        TopicDescrSynEdit.SelText := StartTag + TopicDescrSynEdit.SelText + EndTag;
     end
     else
       exit;
@@ -410,16 +411,16 @@ begin
     DescrShortEdit.Text := ShortEdit.Text;
   end;
   if PageControl.ActivePage = DescrTabSheet then
-    DescrMemo.SelText := LinkSrc;
+    DescrSynEdit.SelText := LinkSrc;
   if PageControl.ActivePage = SeeAlsoTabSheet then
-    SeeAlsoMemo.SelText := LinkSrc;
+    SeeAlsoSynEdit.SelText := LinkSrc;
   if PageControl.ActivePage = ErrorsTabSheet then
-    ErrorsMemo.SelText := LinkSrc;
+    ErrorsSynEdit.SelText := LinkSrc;
   if PageControl.ActivePage = TopicSheet then begin
     if (FLastTopicControl = TopicShort) then
       TopicShort.SelText := LinkSrc;
-    if (FLastTopicControl = TopicDescr) then
-      TopicDescr.SelText := LinkSrc;
+    if (FLastTopicControl = TopicDescrSynEdit) then
+      TopicDescrSynEdit.SelText := LinkSrc;
   end;
 
   Modified:=true;
@@ -564,10 +565,10 @@ begin
   UpdateValueControls;
 end;
 
-procedure TFPDocEditor.SeeAlsoMemoChange(Sender: TObject);
+procedure TFPDocEditor.SeeAlsoSynEditChange(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
-  if SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso] then
+  if SeeAlsoSynEdit.Text<>FOldVisualValues[fpdiSeeAlso] then
     Modified:=true;
 end;
 
@@ -596,7 +597,7 @@ begin
   FLastTopicControl := TControl(Sender);
 end;
 
-procedure TFPDocEditor.TopicDescrChange(Sender: TObject);
+procedure TFPDocEditor.TopicDescrSynEditChange(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
   if fpdefTopicSettingUp in FFlags then exit;
@@ -635,9 +636,9 @@ begin
   Include(FFlags, fpdefTopicSettingUp);
   try
     TopicShort.Clear;
-    TopicDescr.Clear;
+    TopicDescrSynEdit.Clear;
     TopicShort.Enabled := False;
-    TopicDescr.Enabled := False;
+    TopicDescrSynEdit.Enabled := False;
   finally
     if not OldSettingUp then
       Exclude(FFlags, fpdefTopicSettingUp);
@@ -871,18 +872,18 @@ begin
     DescrShortEdit.Text := ShortEdit.Text;
     //debugln(['TFPDocEditor.LoadGUIValues "',ShortEdit.Text,'" "',FOldVisualValues[fpdiShort],'"']);
     LinkEdit.Text := FOldVisualValues[fpdiElementLink];
-    DescrMemo.Lines.Text := FOldVisualValues[fpdiDescription];
-    //debugln(['TFPDocEditor.LoadGUIValues DescrMemo="',dbgstr(DescrMemo.Lines.Text),'" Descr="',dbgstr(FOldVisualValues[fpdiDescription]),'"']);
-    SeeAlsoMemo.Text := FOldVisualValues[fpdiSeeAlso];
-    ErrorsMemo.Lines.Text := FOldVisualValues[fpdiErrors];
+    DescrSynEdit.Lines.Text := FOldVisualValues[fpdiDescription];
+    //debugln(['TFPDocEditor.LoadGUIValues DescrMemo="',dbgstr(DescrSynEdit.Lines.Text),'" Descr="',dbgstr(FOldVisualValues[fpdiDescription]),'"']);
+    SeeAlsoSynEdit.Text := FOldVisualValues[fpdiSeeAlso];
+    ErrorsSynEdit.Lines.Text := FOldVisualValues[fpdiErrors];
     ExampleEdit.Text := FOldVisualValues[fpdiExample];
 
     ShortEdit.Enabled := EnabledState;
     DescrShortEdit.Enabled := ShortEdit.Enabled;
     LinkEdit.Enabled := EnabledState;
-    DescrMemo.Enabled := EnabledState;
-    SeeAlsoMemo.Enabled := EnabledState;
-    ErrorsMemo.Enabled := EnabledState;
+    DescrSynEdit.Enabled := EnabledState;
+    SeeAlsoSynEdit.Enabled := EnabledState;
+    ErrorsSynEdit.Enabled := EnabledState;
     ExampleEdit.Enabled := EnabledState;
     BrowseExampleButton.Enabled := EnabledState;
 
@@ -1003,7 +1004,7 @@ begin
   fpdiDescription:
     begin
       PageControl.ActivePage:=DescrTabSheet;
-      DescrMemo.CaretXY:=LineCol;
+      DescrSynEdit.CaretXY:=LineCol;
     end;
   fpdiErrors: PageControl.ActivePage:=ErrorsTabSheet;
   fpdiSeeAlso: PageControl.ActivePage:=SeeAlsoTabSheet;
@@ -1028,21 +1029,21 @@ begin
   if fpdefReading in FFlags then exit(false);
   Result:=(ShortEdit.Text<>FOldVisualValues[fpdiShort])
     or (LinkEdit.Text<>FOldVisualValues[fpdiElementLink])
-    or (DescrMemo.Text<>FOldVisualValues[fpdiDescription])
-    or (SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso])
-    or (ErrorsMemo.Text<>FOldVisualValues[fpdiErrors])
+    or (DescrSynEdit.Text<>FOldVisualValues[fpdiDescription])
+    or (SeeAlsoSynEdit.Text<>FOldVisualValues[fpdiSeeAlso])
+    or (ErrorsSynEdit.Text<>FOldVisualValues[fpdiErrors])
     or (ExampleEdit.Text<>FOldVisualValues[fpdiExample]);
   if Result then begin
     if (ShortEdit.Text<>FOldVisualValues[fpdiShort]) then
       debugln(['TFPDocEditor.GUIModified Short ',dbgstr(ShortEdit.Text),' <> ',dbgstr(FOldVisualValues[fpdiShort])]);
     if (LinkEdit.Text<>FOldVisualValues[fpdiElementLink]) then
       debugln(['TFPDocEditor.GUIModified link ',dbgstr(LinkEdit.Text),' <> ',dbgstr(FOldVisualValues[fpdiElementLink])]);
-    if (DescrMemo.Text<>FOldVisualValues[fpdiDescription]) then
-      debugln(['TFPDocEditor.GUIModified Descr ',dbgstr(DescrMemo.Text),' <> ',dbgstr(FOldVisualValues[fpdiDescription])]);
-    if (SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso]) then
-      debugln(['TFPDocEditor.GUIModified SeeAlso ',dbgstr(SeeAlsoMemo.Text),' <> ',dbgstr(FOldVisualValues[fpdiSeeAlso])]);
-    if (ErrorsMemo.Text<>FOldVisualValues[fpdiErrors]) then
-      debugln(['TFPDocEditor.GUIModified Errors ',dbgstr(ErrorsMemo.Text),' <> ',dbgstr(FOldVisualValues[fpdiErrors])]);
+    if (DescrSynEdit.Text<>FOldVisualValues[fpdiDescription]) then
+      debugln(['TFPDocEditor.GUIModified Descr ',dbgstr(DescrSynEdit.Text),' <> ',dbgstr(FOldVisualValues[fpdiDescription])]);
+    if (SeeAlsoSynEdit.Text<>FOldVisualValues[fpdiSeeAlso]) then
+      debugln(['TFPDocEditor.GUIModified SeeAlso ',dbgstr(SeeAlsoSynEdit.Text),' <> ',dbgstr(FOldVisualValues[fpdiSeeAlso])]);
+    if (ErrorsSynEdit.Text<>FOldVisualValues[fpdiErrors]) then
+      debugln(['TFPDocEditor.GUIModified Errors ',dbgstr(ErrorsSynEdit.Text),' <> ',dbgstr(FOldVisualValues[fpdiErrors])]);
     if (ExampleEdit.Text<>FOldVisualValues[fpdiExample]) then
       debugln(['TFPDocEditor.GUIModified Example ',dbgstr(ExampleEdit.Text),' <> ',dbgstr(FOldVisualValues[fpdiExample])]);
   end;
@@ -1128,9 +1129,9 @@ begin
     ShortEdit.Clear;
     DescrShortEdit.Clear;
     LinkEdit.Clear;
-    DescrMemo.Clear;
-    SeeAlsoMemo.Clear;
-    ErrorsMemo.Clear;
+    DescrSynEdit.Clear;
+    SeeAlsoSynEdit.Clear;
+    ErrorsSynEdit.Clear;
     ExampleEdit.Clear;
     ClearTopicControls;
     for i:=Low(TFPDocItem) to high(TFPDocItem) do
@@ -1209,9 +1210,9 @@ begin
   Modified:=true;
   ShortEdit.Text:='';
   DescrShortEdit.Text:=ShortEdit.Text;
-  DescrMemo.Text:='';
-  SeeAlsoMemo.Text:='';
-  ErrorsMemo.Text:='';
+  DescrSynEdit.Text:='';
+  SeeAlsoSynEdit.Text:='';
+  ErrorsSynEdit.Text:='';
   ExampleEdit.Text:='';
   if DoSave then Save;
 end;
@@ -1256,9 +1257,9 @@ begin
         end;
         Child := Node.FindNode('descr');
         if (Child = nil)
-        or (TopicDocFile.GetChildValuesAsString(Child)<>TopicDescr.Text)
+        or (TopicDocFile.GetChildValuesAsString(Child)<>TopicDescrSynEdit.Text)
         then begin
-          TopicDocFile.SetChildValue(Node, 'descr', TopicDescr.Text);
+          TopicDocFile.SetChildValue(Node, 'descr', TopicDescrSynEdit.Text);
           TopicChanged:=true;
         end;
       end;
@@ -1299,9 +1300,9 @@ var
   i: TFPDocItem;
 begin
   Result[fpdiShort]:=ShortEdit.Text;
-  Result[fpdiDescription]:=DescrMemo.Text;
-  Result[fpdiErrors]:=ErrorsMemo.Text;
-  Result[fpdiSeeAlso]:=SeeAlsoMemo.Text;
+  Result[fpdiDescription]:=DescrSynEdit.Text;
+  Result[fpdiErrors]:=ErrorsSynEdit.Text;
+  Result[fpdiSeeAlso]:=SeeAlsoSynEdit.Text;
   Result[fpdiExample]:=ExampleEdit.Text;
   Result[fpdiElementLink]:=LinkEdit.Text;
   for i:=Low(TFPDocItem) to High(TFPDocItem) do
@@ -1340,9 +1341,9 @@ begin
         TopicShort.Text := DFile.GetChildValuesAsString(Child);
       Child := Node.FindNode('descr');
       if Child <> nil then
-        TopicDescr.Text := DFile.GetChildValuesAsString(Child);
+        TopicDescrSynEdit.Text := DFile.GetChildValuesAsString(Child);
       TopicShort.Enabled := True;
-      TopicDescr.Enabled := True;
+      TopicDescrSynEdit.Enabled := True;
       if TopicShort.IsVisible then
         TopicShort.SetFocus;
     finally
@@ -1363,6 +1364,12 @@ begin
   end;
 end;
 
+procedure TFPDocEditor.Loaded;
+begin
+  inherited Loaded;
+  DescrSynEdit.ControlStyle:=DescrSynEdit.ControlStyle+[];
+end;
+
 function TFPDocEditor.WriteNode(Element: TCodeHelpElement;
   Values: TFPDocElementValues; Interactive: Boolean): Boolean;
 var
@@ -1376,7 +1383,7 @@ var
   begin
     Result:=Test;
     if not Test then exit;
-    DebugLn(['TFPDocEditor.WriteNode  ERROR ',Msg]);
+    DebugLn(['TFPDocEditor.WriteNode ERROR ',Msg]);
     if Interactive then begin;
       if Element.FPDocFile<>nil then
         CurName:=Element.FPDocFile.Filename
@@ -1467,10 +1474,10 @@ begin
   LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
 end;
 
-procedure TFPDocEditor.ErrorsMemoChange(Sender: TObject);
+procedure TFPDocEditor.ErrorsSynEditChange(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
-  if ErrorsMemo.Text<>FOldVisualValues[fpdiErrors] then
+  if ErrorsSynEdit.Text<>FOldVisualValues[fpdiErrors] then
     Modified:=true;
 end;
 
@@ -1558,7 +1565,7 @@ end;
 
 procedure TFPDocEditor.CopyShortToDescrMenuItemClick(Sender: TObject);
 begin
-  DescrMemo.Append(ShortEdit.Text);
+  DescrSynEdit.Append(ShortEdit.Text);
   Modified:=true;
 end;
 
@@ -1573,10 +1580,10 @@ begin
   CreateElement(fChain[0]);
 end;
 
-procedure TFPDocEditor.DescrMemoChange(Sender: TObject);
+procedure TFPDocEditor.DescrSynEditChange(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
-  if DescrMemo.Text<>FOldVisualValues[fpdiDescription] then
+  if DescrSynEdit.Text<>FOldVisualValues[fpdiDescription] then
     Modified:=true;
 end;
 

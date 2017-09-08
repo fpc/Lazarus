@@ -26,7 +26,7 @@ object CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       Width = 517
       Align = alClient
       Font.Height = 9
-      Font.Name = '-misc-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-iso10646-1'
+      Font.Name = 'Courier New'
       Font.Pitch = fpFixed
       Font.Quality = fqNonAntialiased
       ParentColor = False
