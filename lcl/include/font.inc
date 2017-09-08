@@ -721,7 +721,6 @@ begin
   if (AFont=nil)
   or (CharSet<>AFont.CharSet)
   or (Color<>AFont.Color)
-  or (PixelsPerInch<>AFont.PixelsPerInch)
   or (Size<>AFont.Size)
   or (Height<>AFont.Height)
   or (Name<>AFont.Name)
