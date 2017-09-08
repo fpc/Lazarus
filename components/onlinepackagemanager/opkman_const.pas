@@ -406,7 +406,12 @@ resourcestring
   rsCreateRepositoryFrm_bDelete_Hint = 'Delete package from the current repository';
   rsCreateRepositoryFrm_bCancel_Caption = 'Cancel';
   rsCreateRepositoryFrm_bCancel_Hint = 'Close this dialog';
-
+  rsCreateRepositoryFrm_VSTPackages_Column0 = 'Repository/Packages';
+  rsCreateRepositoryFrm_VSTDetails_Column0 = 'Description';
+  rsCreateRepositoryFrm_VSTDetails_Column1 = 'Data';
+  rsCreateRepositoryFrm_Error1 = 'Cannot open private repository. Error message: ' + sLineBreak + '"%s"';
+  rsCreateRepositoryFrm_Error2 = 'File ' + cRemoteJSONFile + ' not found.';
+  rsCreateRepositoryFrm_Error3 = 'Cannot save private repository. Error message: ' + sLineBreak + '"%s"';
 
 implementation
 

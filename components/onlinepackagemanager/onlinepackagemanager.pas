@@ -15,7 +15,7 @@ uses
   opkman_createrepositorypackagefrm, opkman_categoriesfrm, 
   opkman_packagedetailsfrm, opkman_updates, opkman_createjsonforupdatesfrm, 
   opkman_uploader, opkman_repositories, opkman_createrepositoryfrm, 
-  LazarusPackageIntf;
+  opkman_repositorydetailsfrm, LazarusPackageIntf;
 
 implementation
 

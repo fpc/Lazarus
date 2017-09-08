@@ -38,33 +38,9 @@ uses
   opkman_VirtualTrees, opkman_serializablepackages, opkman_zipper, opkman_uploader;
 
 type
-  PPackageData = ^TData;
-  TData = record
-    FPackageRelativePath: String;
-    FPackageBaseDir: String;
-    FFullPath: String;
-    FDataType: Integer;
-    FName: String;
-    FDisplayName: String;
-    FPackageType: TPackageType;
-    FAuthor: String;
-    FDescription: String;
-    FLicense: String;
-    FVersionAsString: String;
-    FDependenciesAsString: String;
-    FCategory: String;
-    FLazCompatibility: String;
-    FFPCCompatibility: String;
-    FSupportedWidgetSet: String;
-    FHomePageURL: String;
-    FDownloadURL: String;
-    FSVNURL: String;
-  end;
-
   TPackageOperation = (poCreate, poSubmit);
 
   { TCreateRepositoryPackagesFrm }
-
   TCreateRepositoryPackagesFrm = class(TForm)
     bCancel: TButton;
     bCreate: TButton;
@@ -147,7 +123,7 @@ type
     procedure VSTPackageDataFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure DoOnZippError(Sender: TObject; AZipFile: String; const AErrMsg: String);
     procedure DoOnZipCompleted(Sender: TObject);
-    function LoadPackageData(const APath: String; AData: PPackageData): Boolean;
+//    function LoadPackageData(const APath: String; AData: PData): Boolean;
     procedure ShowHideControls(const AType: Integer);
     procedure EnableDisableControls(const AEnable: Boolean);
     procedure SaveExtraInfo(const ANode: PVirtualNode);
@@ -173,6 +149,30 @@ uses opkman_const, opkman_common, opkman_options, opkman_categoriesfrm,
 {$R *.lfm}
 
 { TCreateRepositoryPackagesFrm }
+
+type
+  PData = ^TData;
+  TData = record
+    FPackageRelativePath: String;
+    FPackageBaseDir: String;
+    FFullPath: String;
+    FDataType: Integer;
+    FName: String;
+    FDisplayName: String;
+    FPackageType: TPackageType;
+    FAuthor: String;
+    FDescription: String;
+    FLicense: String;
+    FVersionAsString: String;
+    FDependenciesAsString: String;
+    FCategory: String;
+    FLazCompatibility: String;
+    FFPCCompatibility: String;
+    FSupportedWidgetSet: String;
+    FHomePageURL: String;
+    FDownloadURL: String;
+    FSVNURL: String;
+  end;
 
 procedure TCreateRepositoryPackagesFrm.FormCreate(Sender: TObject);
 begin
@@ -298,8 +298,7 @@ begin
   FVSTPackageData.Free;
 end;
 
-function TCreateRepositoryPackagesFrm.LoadPackageData(const APath: String;
-  AData: PPackageData): Boolean;
+function LoadPackageData(const APath: String; AData: PData): Boolean;
 
   function PackageTypeIdentToType(const AStr: String): TPackageType;
   begin
@@ -431,7 +430,7 @@ var
   PackageList: TStringList;
   I: Integer;
   Node, RootNode: PVirtualNode;
-  Data, RootData: PPackageData;
+  Data, RootData: PData;
   CanGo: Boolean;
 begin
   CanGo := False;
@@ -532,7 +531,7 @@ function TCreateRepositoryPackagesFrm.CanCreate: Boolean;
 
 var
   Node: PVirtualNode;
-  Data: PPackageData;
+  Data: PData;
 begin
   Result := False;
   Node := FVSTPackages.GetFirstSelected;
@@ -586,7 +585,7 @@ end;
 procedure TCreateRepositoryPackagesFrm.bCreateClick(Sender: TObject);
 var
   RootNode: PVirtualNode;
-  RootData: PPackageData;
+  RootData: PData;
 begin
   if not CanCreate then
     Exit;
@@ -621,7 +620,7 @@ end;
 procedure TCreateRepositoryPackagesFrm.bSubmitClick(Sender: TObject);
 var
   RootNode: PVirtualNode;
-  RootData: PPackageData;
+  RootData: PData;
 begin
   if not CanCreate then
     Exit;
@@ -666,7 +665,7 @@ procedure TCreateRepositoryPackagesFrm.VSTPackagesGetText(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType; var CellText: String);
 var
-  Data: PPackageData;
+  Data: PData;
 begin
   Data := FVSTPackages.GetNodeData(Node);
   if Column = 0 then
@@ -683,7 +682,7 @@ end;
 
 procedure TCreateRepositoryPackagesFrm.SaveExtraInfo(const ANode: PVirtualNode);
 var
-  Data: PPackageData;
+  Data: PData;
 begin
   Data := FVSTPackages.GetNodeData(ANode);
   case FVSTPackages.GetNodeLevel(ANode) of
@@ -723,9 +722,9 @@ end;
 procedure TCreateRepositoryPackagesFrm.VSTPackagesFocusChanged(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex);
 var
-  Data: PPackageData;
+  Data: PData;
   PDNode: PVirtualNode;
-  PDData: PPackageData;
+  PDData: PData;
   Level: Integer;
 begin
   if Node = nil then
@@ -790,7 +789,7 @@ end;
 procedure TCreateRepositoryPackagesFrm.VSTPackagesFreeNode(
   Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PPackageData;
+  Data: PData;
 begin
   Data := FVSTPackages.GetNodeData(Node);
   Finalize(Data^);
@@ -800,7 +799,7 @@ procedure TCreateRepositoryPackagesFrm.VSTPackageDataGetText(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
   TextType: TVSTTextType; var CellText: String);
 var
-  Data: PPackageData;
+  Data: PData;
 begin
   Data := FVSTPackageData.GetNodeData(Node);
   case Column of
@@ -832,7 +831,7 @@ procedure TCreateRepositoryPackagesFrm.VSTPackageDataGetImageIndex(
   Sender: TBaseVirtualTree; Node: PVirtualNode; Kind: TVTImageKind;
   Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: Integer);
 var
-  Data: PPackageData;
+  Data: PData;
 begin
   if Column = 0 then
   begin
@@ -845,8 +844,8 @@ procedure TCreateRepositoryPackagesFrm.VSTCompareNodes(
   Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex;
   var Result: Integer);
 var
-  Data1: PPackageData;
-  Data2: PPackageData;
+  Data1: PData;
+  Data2: PData;
 begin
   Data1 := Sender.GetNodeData(Node1);
   Data2 := Sender.GetNodeData(Node2);
@@ -864,7 +863,7 @@ end;
 procedure TCreateRepositoryPackagesFrm.VSTPackageDataFreeNode(
   Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
-  Data: PPackageData;
+  Data: PData;
 begin
   Data := FVSTPackageData.GetNodeData(Node);
   Finalize(Data^);
@@ -924,7 +923,7 @@ function TCreateRepositoryPackagesFrm.CreateJSONForUpdates(var AErrMsg: String
   ): Boolean;
 var
   RootNode, Node: PVirtualNode;
-  RootData, Data: PPackageData;
+  RootData, Data: PData;
   JSON: TJSONStringType;
   Ms: TMemoryStream;
   UpdatePackage: TUpdatePackage;
@@ -985,7 +984,7 @@ var
   MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
   RootNode, Node: PVirtualNode;
-  RootData, Data: PPackageData;
+  RootData, Data: PData;
   JSON: TJSONStringType;
   MS: TMemoryStream;
 begin
