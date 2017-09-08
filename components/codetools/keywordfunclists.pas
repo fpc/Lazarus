@@ -1036,7 +1036,7 @@ begin
     Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INHERITED',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('INLINE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    //Add('INLINE',{$ifdef FPC}@{$endif}AllwaysTrue); can be used as identifier
     Add('INTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LABEL',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1049,13 +1049,13 @@ begin
     Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PACKED',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PRIVATE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    //Add('PRIVATE',{$ifdef FPC}@{$endif}AllwaysTrue); can be used as identifier
     Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROPERTY',{$ifdef FPC}@{$endif}AllwaysTrue);
-    //Add('PROTECTED',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PUBLIC',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PUBLISHED',{$ifdef FPC}@{$endif}AllwaysTrue);
+    //Add('PROTECTED',{$ifdef FPC}@{$endif}AllwaysTrue); can be used as identifier
+    //Add('PUBLIC',{$ifdef FPC}@{$endif}AllwaysTrue); can be used as identifier
+    //Add('PUBLISHED',{$ifdef FPC}@{$endif}AllwaysTrue); can be used as identifier
     Add('RAISE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
