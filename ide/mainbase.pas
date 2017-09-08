@@ -618,24 +618,29 @@ end;
 //  mnuApple: TIDEMenuSection = nil;
 //{$ENDIF}
 
+function FormMatchesCmd(aForm: TCustomForm; aCmd: TIDEMenuCommand): Boolean;
+begin
+  if EnvironmentOptions.Desktop.IDENameForDesignedFormList and IsFormDesign(aForm) then
+    Result := aForm.Name = aCmd.Caption
+  else
+    Result := aForm.Caption = aCmd.Caption;
+end;
+
 { TMainIDEBase }
 
 procedure TMainIDEBase.mnuWindowItemClick(Sender: TObject);
 var
   i: Integer;
   Form: TCustomForm;
-  nfd: Boolean;
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
     Form:=Screen.CustomForms[i];
-    nfd := EnvironmentOptions.Desktop.IDENameForDesignedFormList;
-    if (nfd and (Form.Name=(Sender as TIDEMenuCommand).Caption))
-    or ((not nfd) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
-      begin
-        IDEWindowCreators.ShowForm(Form,true);
-        break;
-      end;
+    if FormMatchesCmd(Form, Sender as TIDEMenuCommand) then
+    begin
+      IDEWindowCreators.ShowForm(Form,true);
+      break;
+    end;
     dec(i);
   end;
 end;
@@ -645,14 +650,11 @@ var
   i: Integer;
   Form: TCustomForm;
   r, NewBounds: TRect;
-  nfd: Boolean;
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
     Form:=Screen.CustomForms[i];
-    nfd := EnvironmentOptions.Desktop.IDENameForDesignedFormList;
-    if (nfd and (Form.Name=(Sender as TIDEMenuCommand).Caption))
-    or ((not nfd) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
+    if FormMatchesCmd(Form, Sender as TIDEMenuCommand) then
     begin
       // show
       if not Form.IsVisible then
