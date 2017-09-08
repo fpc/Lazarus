@@ -201,7 +201,8 @@ end;
 procedure TCustomCalendar.InitializeWnd;
 begin
   inherited InitializeWnd;
-  if FPropsChanged then SetProps;
+  //if FPropsChanged then   // removed to fix issue #0032379
+  SetProps;
 end;
 
 procedure TCustomCalendar.DestroyWnd;
