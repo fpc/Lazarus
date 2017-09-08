@@ -506,6 +506,21 @@ procedure TWin32ThemeServices.DrawText(ACanvas: TPersistent;
 
 var
   FontUnderlineSave:boolean;
+  DC: HDC;
+  DCIndex: Integer;
+  ARect: TRect;
+
+  procedure SaveState;
+  begin
+    if DCIndex <> 0 then exit;
+    DCIndex := SaveDC(DC);
+  end;
+
+  procedure RestoreState;
+  begin
+    if DCIndex = 0 then exit;
+    RestoreDC(DC, DCIndex);
+  end;
 
   function NotImplementedInXP: Boolean; inline;
   begin
@@ -532,7 +547,16 @@ begin
     // to fix it here with disabled button text
     if (Details.Element = teToolBar) and (Details.State = TS_DISABLED) then
       Details := GetElementDetails(tbPushButtonDisabled);
-    DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2);
+
+    DCIndex := 0;
+    DC := TCanvas(ACanvas).Handle;
+    if TCanvas(ACanvas).Font.IsDefault then
+    begin
+      SaveState;
+      SelectObject(DC, OnGetSystemFont());
+    end;
+    DrawText(DC, Details, S, R, Flags, Flags2);
+    RestoreState;
   end
   else
     inherited;
