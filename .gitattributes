@@ -6618,6 +6618,8 @@ images/components/tarrow_150.png -text
 images/components/tarrow_200.png -text
 images/components/tasyncprocess.png -text
 images/components/tbevel.png -text svneol=unset#image/png
+images/components/tbevel_150.png -text
+images/components/tbevel_200.png -text
 images/components/tbitbtn.png -text svneol=unset#image/png
 images/components/tbitbtn_150.png -text
 images/components/tbitbtn_200.png -text
@@ -6752,8 +6754,14 @@ images/components/thtmlhelpdatabase_150.png -text
 images/components/thtmlhelpdatabase_200.png -text
 images/components/tidedialoglayoutstorage.png -text svneol=unset#image/png
 images/components/tidletimer.png -text svneol=unset#image/png
+images/components/tidletimer_150.png -text
+images/components/tidletimer_200.png -text
 images/components/timage.png -text svneol=unset#image/png
+images/components/timage_150.png -text
+images/components/timage_200.png -text
 images/components/timagelist.png -text svneol=unset#image/png
+images/components/timagelist_150.png -text
+images/components/timagelist_200.png -text
 images/components/tinipropstorage.png -text svneol=unset#image/png
 images/components/tinipropstorage_150.png -text
 images/components/tinipropstorage_200.png -text
@@ -6786,6 +6794,8 @@ images/components/tmouse.png -text svneol=unset#image/png
 images/components/tmouse_150.png -text
 images/components/tmouse_200.png -text
 images/components/tnotebook.png -text svneol=unset#image/png
+images/components/tnotebook_150.png -text
+images/components/tnotebook_200.png -text
 images/components/topendialog.png -text svneol=unset#image/png
 images/components/topendialog_150.png -text
 images/components/topendialog_200.png -text
@@ -6797,6 +6807,8 @@ images/components/tpagecontrol_150.png -text
 images/components/tpagecontrol_200.png -text
 images/components/tpagesetupdialog_150.png -text
 images/components/tpaintbox.png -text svneol=unset#image/png
+images/components/tpaintbox_150.png -text
+images/components/tpaintbox_200.png -text
 images/components/tpairsplitter.png -text svneol=unset#image/png
 images/components/tpanel.png -text svneol=unset#image/png
 images/components/tpicture.png -text svneol=unset#image/png
@@ -6809,6 +6821,8 @@ images/components/tprintersetupdialog_150.png -text
 images/components/tprocess.png -text svneol=unset#image/png
 images/components/tprocessutf8.png -text
 images/components/tprogressbar.png -text svneol=unset#image/png
+images/components/tprogressbar_150.png -text
+images/components/tprogressbar_200.png -text
 images/components/tradiobutton.png -text svneol=unset#image/png
 images/components/tradiobutton_150.png -text
 images/components/tradiobutton_200.png -text
@@ -6845,6 +6859,8 @@ images/components/tspinedit.png -text svneol=unset#image/png
 images/components/tspinedit_150.png -text
 images/components/tspinedit_200.png -text
 images/components/tsplitter.png -text svneol=unset#image/png
+images/components/tsplitter_150.png -text
+images/components/tsplitter_200.png -text
 images/components/tstatictext.png -text svneol=unset#image/png
 images/components/tstatictext_150.png -text
 images/components/tstatictext_200.png -text
@@ -6860,11 +6876,15 @@ images/components/ttaskdialog_150.png -text
 images/components/ttaskdialog_200.png -text
 images/components/ttimeedit.png -text svneol=unset#image/png
 images/components/ttimer.png -text svneol=unset#image/png
+images/components/ttimer_150.png -text
+images/components/ttimer_200.png -text
 images/components/ttogglebox.png -text svneol=unset#image/png
 images/components/ttogglebox_150.png -text
 images/components/ttogglebox_200.png -text
 images/components/ttoolbar.png -text svneol=unset#image/png
 images/components/ttrackbar.png -text svneol=unset#image/png
+images/components/ttrackbar_150.png -text
+images/components/ttrackbar_200.png -text
 images/components/ttrayicon.png -text svneol=unset#image/png
 images/components/ttreeview.png -text svneol=unset#image/png
 images/components/ttreeview_150.png -text

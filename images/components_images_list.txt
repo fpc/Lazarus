@@ -8,6 +8,8 @@ components/tarrow_150.png
 components/tarrow_200.png
 components/tasyncprocess.png
 components/tbevel.png
+components/tbevel_150.png
+components/tbevel_200.png
 components/tbitbtn.png
 components/tbitbtn_150.png
 components/tbitbtn_200.png
@@ -142,8 +144,14 @@ components/thtmlhelpdatabase_150.png
 components/thtmlhelpdatabase_200.png
 components/tidedialoglayoutstorage.png
 components/tidletimer.png
+components/tidletimer_150.png
+components/tidletimer_200.png
 components/timage.png
+components/timage_150.png
+components/timage_200.png
 components/timagelist.png
+components/timagelist_150.png
+components/timagelist_200.png
 components/tinipropstorage.png
 components/tinipropstorage_150.png
 components/tinipropstorage_200.png
@@ -176,6 +184,8 @@ components/tmouse.png
 components/tmouse_150.png
 components/tmouse_200.png
 components/tnotebook.png
+components/tnotebook_150.png
+components/tnotebook_200.png
 components/topendialog.png
 components/topendialog_150.png
 components/topendialog_200.png
@@ -186,6 +196,8 @@ components/tpagecontrol.png
 components/tpagecontrol_150.png
 components/tpagecontrol_200.png
 components/tpaintbox.png
+components/tpaintbox_150.png
+components/tpaintbox_200.png
 components/tpairsplitter.png
 components/tpanel.png
 components/tpicture.png
@@ -196,6 +208,8 @@ components/tpopupnotifier.png
 components/tprocess.png
 components/tprocessutf8.png
 components/tprogressbar.png
+components/tprogressbar_150.png
+components/tprogressbar_200.png
 components/tradiobutton.png
 components/tradiobutton_150.png
 components/tradiobutton_200.png
@@ -232,6 +246,8 @@ components/tspinedit.png
 components/tspinedit_150.png
 components/tspinedit_200.png
 components/tsplitter.png
+components/tsplitter_150.png
+components/tsplitter_200.png
 components/tstatictext.png
 components/tstatictext_150.png
 components/tstatictext_200.png
@@ -247,11 +263,15 @@ components/ttaskdialog_150.png
 components/ttaskdialog_200.png
 components/ttimeedit.png
 components/ttimer.png
+components/ttimer_150.png
+components/ttimer_200.png
 components/ttogglebox.png
 components/ttogglebox_150.png
 components/ttogglebox_200.png
 components/ttoolbar.png
 components/ttrackbar.png
+components/ttrackbar_150.png
+components/ttrackbar_200.png
 components/ttrayicon.png
 components/ttreeview.png
 components/ttreeview_150.png
