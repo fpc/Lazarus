@@ -6903,6 +6903,8 @@ images/components/tfontdialog.png -text svneol=unset#image/png
 images/components/tfontdialog_150.png -text
 images/components/tfontdialog_200.png -text
 images/components/tframe.png -text svneol=unset#image/png
+images/components/tframe_150.png -text
+images/components/tframe_200.png -text
 images/components/tgroupbox.png -text svneol=unset#image/png
 images/components/tgroupbox_150.png -text
 images/components/tgroupbox_200.png -text
@@ -6972,6 +6974,8 @@ images/components/tpaintbox_150.png -text
 images/components/tpaintbox_200.png -text
 images/components/tpairsplitter.png -text svneol=unset#image/png
 images/components/tpanel.png -text svneol=unset#image/png
+images/components/tpanel_150.png -text
+images/components/tpanel_200.png -text
 images/components/tpicture.png -text svneol=unset#image/png
 images/components/tpopupmenu.png -text svneol=unset#image/png
 images/components/tpopupmenu_150.png -text
