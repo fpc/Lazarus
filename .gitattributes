@@ -6968,7 +6968,6 @@ images/components/topenpicturedialog_200.png -text
 images/components/tpagecontrol.png -text svneol=unset#image/png
 images/components/tpagecontrol_150.png -text
 images/components/tpagecontrol_200.png -text
-images/components/tpagesetupdialog_150.png -text
 images/components/tpaintbox.png -text svneol=unset#image/png
 images/components/tpaintbox_150.png -text
 images/components/tpaintbox_200.png -text
@@ -6981,8 +6980,6 @@ images/components/tpopupmenu.png -text svneol=unset#image/png
 images/components/tpopupmenu_150.png -text
 images/components/tpopupmenu_200.png -text
 images/components/tpopupnotifier.png -text svneol=unset#image/png
-images/components/tprintdialog_150.png -text
-images/components/tprintersetupdialog_150.png -text
 images/components/tprocess.png -text svneol=unset#image/png
 images/components/tprocessutf8.png -text
 images/components/tprogressbar.png -text svneol=unset#image/png
