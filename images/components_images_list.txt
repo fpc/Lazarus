@@ -132,6 +132,8 @@ components/tfontdialog.png
 components/tfontdialog_150.png
 components/tfontdialog_200.png
 components/tframe.png
+components/tframe_150.png
+components/tframe_200.png
 components/tgroupbox.png
 components/tgroupbox_150.png
 components/tgroupbox_200.png
@@ -200,6 +202,8 @@ components/tpaintbox_150.png
 components/tpaintbox_200.png
 components/tpairsplitter.png
 components/tpanel.png
+components/tpanel_150.png
+components/tpanel_200.png
 components/tpicture.png
 components/tpopupmenu.png
 components/tpopupmenu_150.png
