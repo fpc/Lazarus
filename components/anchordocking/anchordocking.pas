@@ -94,6 +94,7 @@ unit AnchorDocking;
 { $DEFINE VerboseAnchorDockRestore}
 { $DEFINE VerboseADCustomSite}
 { $DEFINE VerboseAnchorDockPages}
+{ $DEFINE VerboseAnchorDocking}
 
 interface
 
@@ -1869,8 +1870,8 @@ begin
                       ScaleChildX(NewBounds.Right),ScaleChildY(NewBounds.Bottom));
   end;
   {$IFDEF VerboseAnchorDockRestore}
-  if Scale then
-    debugln(['TAnchorDockMaster.RestoreLayout.SetupSite scale Site=',DbgSName(Site),' Caption="',Site.Caption,'" OldWorkArea=',dbgs(SrcWorkArea),' CurWorkArea=',dbgs(WorkArea),' OldBounds=',dbgs(Node.BoundsRect),' NewBounds=',dbgs(NewBounds)]);
+  //if Scale then
+    debugln(['TAnchorDockMaster.RestoreLayout.SetupSite scale Site=',DbgSName(Site),' Caption="',Site.Caption,'" OldWorkArea=',dbgs(SrcWorkArea),' CurWorkArea=',dbgs(WorkArea),' OldBounds=',dbgs(aNode.BoundsRect),' NewBounds=',dbgs(NewBounds)]);
   {$ENDIF}
   Site.BoundsRect:=NewBounds;
   Site.Visible:=true;
@@ -1880,7 +1881,7 @@ begin
     aManager:=TAnchorDockManager(AParent.DockManager);
     Site.Align:=ANode.Align;
     {$IFDEF VerboseAnchorDockRestore}
-    debugln(['TAnchorDockMaster.RestoreLayout.SetupSite custom Site=',DbgSName(Site),' Site.Bounds=',dbgs(Site.BoundsRect),' BoundSplitterPos=',Node.BoundSplitterPos]);
+    debugln(['TAnchorDockMaster.RestoreLayout.SetupSite custom Site=',DbgSName(Site),' Site.Bounds=',dbgs(Site.BoundsRect),' BoundSplitterPos=',aNode.BoundSplitterPos]);
     {$ENDIF}
     aManager.RestoreSite(ANode.BoundSplitterPos);
     Site.HostDockSite:=AParent;
@@ -1928,7 +1929,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
     if Scale and SrcRectValid(ANode.WorkAreaRect) then
       SrcWorkArea:=ANode.WorkAreaRect;
     {$IFDEF VerboseAnchorDockRestore}
-    debugln(['TAnchorDockMaster.RestoreLayout.Restore Node="',Node.Name,'" ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
+    debugln(['TAnchorDockMaster.RestoreLayout.Restore Node="',aNode.Name,'" ',dbgs(aNode.NodeType),' Bounds=',dbgs(aNode.BoundsRect),' Parent=',DbgSName(aParent),' ']);
     {$ENDIF}
     AControl:=nil;
     if ANode.NodeType in [adltnControl, adltnCustomSite] then
@@ -1949,7 +1950,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
       else
         ClearLayoutProperties(AControl);
       {$IFDEF VerboseAnchorDockRestore}
-      debugln(['TAnchorDockMaster.RestoreLayout.Restore Control Node.Name=',Node.Name,
+      debugln(['TAnchorDockMaster.RestoreLayout.Restore Control Node.Name=',aNode.Name,
                ' Control=',DbgSName(AControl),' Site=',DbgSName(AControl.HostDockSite)]);
       {$ENDIF}
       AControl.Visible:=true;
@@ -1978,7 +1979,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
         fTreeNameToDocker[ANode.Name]:=Splitter;
       end;
       {$IFDEF VerboseAnchorDockRestore}
-      debugln(['TAnchorDockMaster.RestoreLayout.Restore Splitter Node.Name=',Node.Name,' ',dbgs(Node.NodeType),' Splitter=',DbgSName(Splitter)]);
+      debugln(['TAnchorDockMaster.RestoreLayout.Restore Splitter Node.Name=',aNode.Name,' ',dbgs(aNode.NodeType),' Splitter=',DbgSName(Splitter)]);
       {$ENDIF}
       Splitter.Parent:=AParent;
       NewBounds:=ANode.BoundsRect;
@@ -2001,7 +2002,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
       // restore layout
       Site:=GetNodeSite(ANode);
       {$IFDEF VerboseAnchorDockRestore}
-      debugln(['TAnchorDockMaster.RestoreLayout.Restore Layout Node.Name=',Node.Name,' ChildCount=',Node.Count]);
+      debugln(['TAnchorDockMaster.RestoreLayout.Restore Layout Node.Name=',aNode.Name,' ChildCount=',aNode.Count]);
       {$ENDIF}
       Site.BeginUpdateLayout;
       try
@@ -2053,7 +2054,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
       // restore pages
       Site:=GetNodeSite(ANode);
       {$IFDEF VerboseAnchorDockRestore}
-      debugln(['TAnchorDockMaster.RestoreLayout.Restore Pages Node.Name=',Node.Name,' ChildCount=',Node.Count]);
+      debugln(['TAnchorDockMaster.RestoreLayout.Restore Pages Node.Name=',aNode.Name,' ChildCount=',aNode.Count]);
       {$ENDIF}
       Site.BeginUpdateLayout;
       j:=0;
