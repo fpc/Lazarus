@@ -61,7 +61,7 @@ type
   private
   protected
   public
-//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCocoaWSScrollBox }
@@ -375,6 +375,30 @@ end;
 procedure TLCLWindowCallback.SetEnabled(AValue: Boolean);
 begin
   NSWindow(Owner).contentView.lclSetEnabled(AValue);
+end;
+
+{ TCocoaWSScrollingWinControl}
+
+class function  TCocoaWSScrollingWinControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  scrollcon: TCocoaScrollView;
+  docview: TCocoaCustomControl;
+begin
+  scrollcon := TCocoaScrollView.alloc.lclInitWithCreateParams(AParams);
+  scrollcon.callback := TLCLCustomControlCallback.Create(scrollcon, AWinControl);
+  scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
+  scrollcon.setAutohidesScrollers(True);
+  scrollcon.setHasHorizontalScroller(True);
+  scrollcon.setHasVerticalScroller(True);
+  scrollcon.contentView.setCopiesOnScroll(False);
+
+  docview := TCocoaCustomControl.alloc.initWithFrame(scrollcon.contentview.frame);
+  docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
+  docview.callback := TLCLCustomControlCallback.Create(docview, AWinControl);
+  scrollcon.setDocumentView(docview);
+  scrollcon.setAutoresizesSubviews(True);
+  docview.autorelease;
+  Result := TLCLIntfHandle(scrollcon);
 end;
 
 

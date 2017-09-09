@@ -463,7 +463,8 @@ end;
 // Forms
 function RegisterScrollingWinControl: Boolean; alias : 'WSRegisterScrollingWinControl';
 begin
-  Result := False;
+  RegisterWSComponent(TScrollingWinControl, TCocoaWSScrollingWinControl);
+  Result := True;
 end;
 
 function RegisterScrollBox: Boolean; alias : 'WSRegisterScrollBox';

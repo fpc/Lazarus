@@ -460,6 +460,7 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    procedure addSubview(aView: NSView); override;
   end;
 
   TStatusItemData = record
@@ -1556,6 +1557,20 @@ procedure TCocoaScrollView.resetCursorRects;
 begin
   if not Assigned(callback) or not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+procedure TCocoaScrollView.addSubview(aView: NSView);
+var
+  r: NSRect;
+begin
+  if assigned(documentView) then 
+  begin
+    r := NSUnionRect(aView.frame, documentView.frame);
+    documentView.setFrame(r);
+    documentView.addSubview(aView);
+  end
+  else
+    inherited addSubview(aView);
 end;
 
 { TCocoaScrollBar }
