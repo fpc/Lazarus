@@ -2132,7 +2132,7 @@ type
     function  GetClientRect: TRect; override;
     function  GetControlOrigin: TPoint; override;
     function  GetDeviceContext(var WindowHandle: HWND): HDC; override;
-    function GetParentBackground: Boolean; inline;
+    function GetParentBackground: Boolean;
     function  IsControlMouseMsg(var TheMessage): Boolean;
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;

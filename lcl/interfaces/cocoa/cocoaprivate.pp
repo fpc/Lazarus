@@ -1565,7 +1565,7 @@ var
 begin
   if assigned(documentView) then 
   begin
-    r := NSUnionRect(aView.frame, documentView.frame);
+    r := NSUnionRect(aView.frame, NSRect(documentView.frame));
     documentView.setFrame(r);
     documentView.addSubview(aView);
   end

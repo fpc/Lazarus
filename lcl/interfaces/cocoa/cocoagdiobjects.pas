@@ -9,7 +9,7 @@ interface
 
 uses
   MacOSAll, // for CGContextRef
-  LCLtype, LCLProc, Graphics, fpcanvas,
+  LCLtype, LCLProc, Graphics, Controls, fpcanvas,
   CocoaAll, CocoaUtils,
   cocoa_extra,
   {$ifndef CocoaUseHITheme}
