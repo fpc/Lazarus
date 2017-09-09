@@ -12907,9 +12907,11 @@ Const
       </element>
       <!-- function Visibility: public -->
       <element name="TTreeNode.CustomSort">
-        <short>
-          <var>CustomSort</var> - if True, the customised sort method specified in <var>SortProc </var>is to be used</short>
-        <descr/>
+        <short><var>CustomSort</var> - Sorts the child nodes using SortProc.</short>
+        <descr>The child nodes (not the grand children) are sorted.
+If SortProc is nil the method DefaultTreeViewSort is used.
+The default implementation always returns true.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -12925,21 +12927,9 @@ Const
       <element name="TTreeNode.DefaultTreeViewSort">
         <short>
           <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
-        <descr>
-          <p>
-            <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p>
-          <p>
-            <var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
-</p>
-          <dl>
-            <dt>&lt; 0</dt>
-            <dd>if <var>Node1.Text&lt;Node2.Text</var>.</dd>
-            <dt>0</dt>
-            <dd>if <var>Node1.Text=Node2.Text</var>.</dd>
-            <dt>&gt; 0</dt>
-            <dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
-          </dl>
-          <p>The comparision takes into account Ansi characters, i.e. it takes
+        <descr><p><var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p><p><var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
+</p><dl><dt>&lt; 0</dt><dd>if <var>Node1.Text&lt;Node2.Text</var>.</dd><dt>0</dt><dd>if <var>Node1.Text=Node2.Text</var>.</dd><dt>&gt; 0</dt><dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
+          </dl><p>The comparision takes into account Ansi characters, i.e. it takes
 care of strange accented characters. Contrary to AnsiCompareText,
 the comparision is case sensitive.
 </p>
@@ -16822,7 +16812,10 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.SortType">
         
-        <descr/>
+        <descr>Changing the Text or Data of a node will sort again.
+While adding nodes does not. Call TreeView1.AlphaSort to sort the whole tree.
+Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
+</descr>
         <seealso/>
       <short>Allow to show items sorted: by caption, by Data property or both.</short>
       </element>
@@ -16866,9 +16859,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
           <var>Destroy</var> - destructor for <var>TCustomTreeView</var>: frees images, nodes and links, then calls inherited Destroy</short>
         <descr/>
         <errors/>
-        <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
+        <seealso><link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link><link id="#LCL.Controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -18440,21 +18431,9 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <element name="TCustomTreeView.DefaultTreeViewSort">
         <short>
           <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
-        <descr>
-          <p>
-            <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p>
-          <p>
-            <var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
-</p>
-          <dl>
-            <dt>&lt; 0</dt>
-            <dd>if <var>Node1.Text&lt;Node2.Text</var>.</dd>
-            <dt>0</dt>
-            <dd>if <var>Node1.Text=Node2.Text</var>.</dd>
-            <dt>&gt; 0</dt>
-            <dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
-          </dl>
-          <p>The comparision takes into account Ansi characters, i.e. it takes care of strange accented characters. Contrary to AnsiCompareText the comparision is case sensitive.
+        <descr><p><var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p><p><var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
+</p><dl><dt>&lt; 0</dt><dd>if <var>Node1.Text&lt;Node2.Text</var>.</dd><dt>0</dt><dd>if <var>Node1.Text=Node2.Text</var>.</dd><dt>&gt; 0</dt><dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
+          </dl><p>The comparision takes into account Ansi characters, i.e. it takes care of strange accented characters. Contrary to AnsiCompareText the comparision is case sensitive.
           </p>
         </descr>
       </element>
