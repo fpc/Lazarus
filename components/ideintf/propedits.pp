@@ -3658,7 +3658,7 @@ begin
   I := GetEnumValue(GetPropType, NewValue);
   if I < 0 then begin
     {raise EPropertyError.CreateRes(@SInvalidPropertyValue)};
-//    exit;
+    exit;
   end;
   SetOrdValue(I);
 end;
