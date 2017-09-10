@@ -464,9 +464,12 @@ type
   (sCircle, sTriangle, sSquare), etc.). }
 
   TEnumPropertyEditor = class(TOrdinalPropertyEditor)
+  private
+    FInvalid: Boolean;
   public
     function GetAttributes: TPropertyAttributes; override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
+    function GetVisualValue: ansistring; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
@@ -3637,6 +3640,14 @@ begin
   Result := GetEnumName(GetPropType, L);
 end;
 
+function TEnumPropertyEditor.GetVisualValue: ansistring;
+begin
+  if FInvalid then
+    Result := '(Invalid)'
+  else
+    Result := inherited GetVisualValue;
+end;
+
 procedure TEnumPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
@@ -3656,11 +3667,9 @@ var
   I: Integer;
 begin
   I := GetEnumValue(GetPropType, NewValue);
-  if I < 0 then begin
-    {raise EPropertyError.CreateRes(@SInvalidPropertyValue)};
-    exit;
-  end;
-  SetOrdValue(I);
+  FInvalid := I < 0;
+  if not FInvalid then
+    SetOrdValue(I);
 end;
 
 { TBoolPropertyEditor  }
