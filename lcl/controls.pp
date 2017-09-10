@@ -1591,8 +1591,8 @@ type
     function  GetTextLen: Integer; virtual;
     procedure SetTextBuf(Buffer: PChar); virtual;
     function  Perform(Msg: Cardinal; WParam: WParam; LParam: LParam): LRESULT;
-    function  ScreenToClient(const APoint: TPoint): TPoint;
-    function  ClientToScreen(const APoint: TPoint): TPoint;
+    function  ScreenToClient(const APoint: TPoint): TPoint; virtual;
+    function  ClientToScreen(const APoint: TPoint): TPoint; virtual;
     function  ScreenToControl(const APoint: TPoint): TPoint;
     function  ControlToScreen(const APoint: TPoint): TPoint;
     function  ClientToParent(const Point: TPoint; AParent: TWinControl = nil): TPoint;
