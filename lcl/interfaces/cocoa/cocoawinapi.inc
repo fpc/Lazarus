@@ -925,7 +925,9 @@ end;
 ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
-  win : NSWindow;
+  win: NSWindow;
+  lCocoaWin: TCocoaWindow = nil;
+  lWinContent: TCocoaWindowContent = nil;
 begin
   {$ifdef VerboseCocoaWinAPI}
     DebugLn('TCocoaWidgetSet.ShowWindow');
@@ -934,7 +936,11 @@ begin
   //todo: should a call to lclShowWindow (to be added) be made instead?
   if (NSObject(hWnd).isKindOfClass(TCocoaWindowContent)) and (not TCocoaWindowContent(hWnd).isembedded) then
   begin
-    win := TCocoaWindowContent(hWnd).window;
+    lWinContent := TCocoaWindowContent(hWnd);
+    win := lWinContent.window;
+    if win.isKindOfClass(TCocoaWindow) then
+      lCocoaWin := TCocoaWindow(win);
+
     case nCmdShow of
       SW_SHOW, SW_SHOWNORMAL:
         win.orderFront(nil);
@@ -945,9 +951,25 @@ begin
       SW_MAXIMIZE:
         win.zoom(nil);
     end;
+
+    // Fullscreen status change
+    if (nCmdShow <> SW_MINIMIZE) and (nCmdShow <> SW_HIDE) then
+    begin
+      // getting out of fullscreen
+      if (nCmdShow <> SW_SHOWFULLSCREEN) and lWinContent.isInFullScreenMode() then
+      begin
+        // lWinContent.exitFullScreenModeWithOptions(nil); <-- THIS CAUSES A CRASH!!!
+      end
+      // getting into fullscreen mode
+      else if (nCmdShow = SW_SHOWFULLSCREEN) and not lWinContent.isInFullScreenMode() then
+      begin
+        lWinContent.enterFullScreenMode_withOptions(NSScreen.mainScreen, nil);
+      end;
+    end;
   end
   else
     NSObject(hWnd).lclSetVisible(nCmdSHow <> SW_HIDE);
+
   Result:=true;
 end;
 
