@@ -510,7 +510,8 @@ end;
 
 function RegisterMainMenu: Boolean; alias : 'WSRegisterMainMenu';
 begin
-  Result := False;
+  RegisterWSComponent(TMainMenu, TCocoaWSMainMenu);
+  Result := True;
 end;
 
 function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';

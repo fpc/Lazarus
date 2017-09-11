@@ -290,15 +290,13 @@ begin
     if (ACustForm.Menu <> nil) and
        (ACustForm.Menu.HandleAllocated) then
     begin
-      if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenuItem) then
+      if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenu) then
       begin
-        if TCocoaMenuItem(ACustForm.Menu.Handle).hasSubmenu then
-          CocoaWidgetSet.SetMainMenu(HMENU(TCocoaMenuItem(ACustForm.Menu.Handle).submenu), ACustForm.Menu)
-        else
-          debugln('Warning: Menu does not have a valid handle.');
+        CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
+        TCocoaMenu(ACustForm.Menu.Handle).attachAppleMenu();
       end
       else
-        CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
+        debugln('Warning: Menu does not have a valid handle.');
     end
     else
       CocoaWidgetSet.SetMainMenu(0, nil);
