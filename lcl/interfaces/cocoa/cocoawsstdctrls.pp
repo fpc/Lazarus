@@ -50,6 +50,8 @@ type
   TCocoaWSCustomGroupBox = class(TWSCustomGroupBox)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TLCLComboboxCallback }
@@ -1304,6 +1306,22 @@ begin
     box.setContentView(lGroupBoxContents);
   end;
   Result := TLCLIntfHandle(box);
+end;
+
+class function TCocoaWSCustomGroupBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  box: TCocoaGroupBox;
+begin
+  box := TCocoaGroupBox(AWinControl.Handle);
+  AText := NSStringToString(box.title);
+end;
+
+class procedure TCocoaWSCustomGroupBox.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  box: TCocoaGroupBox;
+begin
+  box := TCocoaGroupBox(AWinControl.Handle);
+  box.setTitle(NSStringUTF8(AText));
 end;
 
 { TCocoaWSCustomListBox }
