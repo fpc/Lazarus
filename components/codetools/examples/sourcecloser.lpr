@@ -467,7 +467,7 @@ begin
   Changer:=CodeToolBoss.SourceChangeCache;
   Changer.MainScanner:=Tool.Scanner;
 
-  // add errors
+  // add errors, so that user cannot accidentally compile the unit
   s:='';
   for i:=0 to FClosedSrcError.Count-1 do begin
     s:=s+'{$Error '+FClosedSrcError[i]+'}'+LineEnding;
@@ -547,7 +547,7 @@ begin
   FUnitFilenames:=TStringList.Create;
   FRemovePrivateSections:=true;
   FClosedSrcError:=TStringList.Create;
-  FClosedSrcError.Add('This is a closed source unit. You can not compile it, it was already compiled.');
+  FClosedSrcError.Add('This is a closed source unit. You cannot compile it, it was already compiled.');
   FClosedSrcError.Add('Probably the IDE has cleaned up and you have to unpack the zip again.');
 end;
 

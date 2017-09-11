@@ -19,8 +19,8 @@ cp -a $SrcDir $ReleaseDir
 
 # delete development files
 rm -rf $ReleaseDir/lib $ReleaseDir/*.sh
-find $ReleaseDir -type d -name '.svn' -d -exec rm -rf {} \;
-find $ReleaseDir -name '*.cache' -d -exec rm -rf {} \;
+find $ReleaseDir -depth -type d -name '.svn' -exec rm -rf {} \;
+find $ReleaseDir -depth -name '*.cache' -exec rm -rf {} \;
 
 # convert lpk, add -Ur, set "Build Manually"
 sourcecloser $ReleaseDir/$PkgName.lpk
