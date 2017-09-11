@@ -479,26 +479,23 @@ begin
     NSApp.setMainMenu(lNSMenu);
     if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then Exit;
 
+    // Find the Apple menu, if the user provided any by setting the Caption to 
     // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
     // but its now private and in 10.10 it doesn't seam to do anything
+    // NSApp.setAppleMenu(NSMenu(lMenuObj));
     for i := 0 to ALCLMenu.Items.Count-1 do
     begin
       lCurItem := ALCLMenu.Items.Items[i];
-      if not lCurItem.HandleAllocated or (lCurItem.Caption <> '') then Continue;
+      if not lNSMenu.isKindOfClass_(TCocoaMenu) then Break;
+      if not lCurItem.HandleAllocated then Continue;
 
       lMenuObj := NSObject(lCurItem.Handle);
-      if lMenuObj.isKindOfClass_(TCocoaMenuItem) and NSMenuItem(lMenuObj).hasSubmenu and
-        (NSMenuItem(lMenuObj).submenu <> nil) then
+      if not lMenuObj.isKindOfClass_(TCocoaMenuItem) then Continue;
+      if TCocoaMenuItem(lMenuObj).isValidAppleMenu() then
       begin
-        TCocoaMenuItem(lMenuObj).attachAppleMenuItems();
-        //NSApp.setAppleMenu(NSMenuItem(lMenuObj).submenu);
-        Exit;
+        TCocoaMenu(lNSMenu).overrideAppleMenu(TCocoaMenuItem(lMenuObj));
+        Break;
       end;
-      {else if lMenuObj.isKindOfClass_(NSMenu) then
-      begin
-        //NSApp.setAppleMenu(NSMenu(lMenuObj));
-        Exit;
-      end;}
     end;
 
     // for modal windows work around bug, but doesn't work :(
