@@ -204,15 +204,21 @@ end;
 // For when there is a menu item with title 
 procedure TCocoaMenu.overrideAppleMenu(AItem: TCocoaMenuItem);
 begin
-  Self.removeItem(appleMenu);
-  appleMenu.release;
-  appleMenu := AItem;
+  if appleMenu <> nil then
+  begin
+    if indexOfItem(appleMenu) >= 0 then
+      removeItem(appleMenu);
+    appleMenu.release;
+    appleMenu := nil;
+  end;
+  attachedAppleMenu := False;
   AItem.attachAppleMenuItems();
 end;
 
 procedure TCocoaMenu.attachAppleMenu();
 begin
   if attachedAppleMenu then Exit;
+  if appleMenu = nil then Exit;
   attachedAppleMenu := True;
   insertItem_atIndex(appleMenu, 0);
 end;
