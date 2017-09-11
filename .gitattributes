@@ -7278,15 +7278,35 @@ images/menu/menu_file_revert.png -text svneol=unset#image/png
 images/menu/menu_file_revert_150.png -text
 images/menu/menu_file_revert_200.png -text
 images/menu/menu_goto_bookmark0.png -text
+images/menu/menu_goto_bookmark0_150.png -text
+images/menu/menu_goto_bookmark0_200.png -text
 images/menu/menu_goto_bookmark1.png -text
+images/menu/menu_goto_bookmark1_150.png -text
+images/menu/menu_goto_bookmark1_200.png -text
 images/menu/menu_goto_bookmark2.png -text
+images/menu/menu_goto_bookmark2_150.png -text
+images/menu/menu_goto_bookmark2_200.png -text
 images/menu/menu_goto_bookmark3.png -text
+images/menu/menu_goto_bookmark3_150.png -text
+images/menu/menu_goto_bookmark3_200.png -text
 images/menu/menu_goto_bookmark4.png -text
+images/menu/menu_goto_bookmark4_150.png -text
+images/menu/menu_goto_bookmark4_200.png -text
 images/menu/menu_goto_bookmark5.png -text
+images/menu/menu_goto_bookmark5_150.png -text
+images/menu/menu_goto_bookmark5_200.png -text
 images/menu/menu_goto_bookmark6.png -text
+images/menu/menu_goto_bookmark6_150.png -text
+images/menu/menu_goto_bookmark6_200.png -text
 images/menu/menu_goto_bookmark7.png -text
+images/menu/menu_goto_bookmark7_150.png -text
+images/menu/menu_goto_bookmark7_200.png -text
 images/menu/menu_goto_bookmark8.png -text
+images/menu/menu_goto_bookmark8_150.png -text
+images/menu/menu_goto_bookmark8_200.png -text
 images/menu/menu_goto_bookmark9.png -text
+images/menu/menu_goto_bookmark9_150.png -text
+images/menu/menu_goto_bookmark9_200.png -text
 images/menu/menu_goto_line.png -text svneol=unset#image/png
 images/menu/menu_goto_line_150.png -text
 images/menu/menu_goto_line_200.png -text
@@ -7393,15 +7413,35 @@ images/menu/menu_stepover_200.png -text
 images/menu/menu_stepover_instr.png -text svneol=unset#image/png
 images/menu/menu_stop.png -text svneol=unset#image/png
 images/menu/menu_toggle_bookmark0.png -text
+images/menu/menu_toggle_bookmark0_150.png -text
+images/menu/menu_toggle_bookmark0_200.png -text
 images/menu/menu_toggle_bookmark1.png -text
+images/menu/menu_toggle_bookmark1_150.png -text
+images/menu/menu_toggle_bookmark1_200.png -text
 images/menu/menu_toggle_bookmark2.png -text
+images/menu/menu_toggle_bookmark2_150.png -text
+images/menu/menu_toggle_bookmark2_200.png -text
 images/menu/menu_toggle_bookmark3.png -text
+images/menu/menu_toggle_bookmark3_150.png -text
+images/menu/menu_toggle_bookmark3_200.png -text
 images/menu/menu_toggle_bookmark4.png -text
+images/menu/menu_toggle_bookmark4_150.png -text
+images/menu/menu_toggle_bookmark4_200.png -text
 images/menu/menu_toggle_bookmark5.png -text
+images/menu/menu_toggle_bookmark5_150.png -text
+images/menu/menu_toggle_bookmark5_200.png -text
 images/menu/menu_toggle_bookmark6.png -text
+images/menu/menu_toggle_bookmark6_150.png -text
+images/menu/menu_toggle_bookmark6_200.png -text
 images/menu/menu_toggle_bookmark7.png -text
+images/menu/menu_toggle_bookmark7_150.png -text
+images/menu/menu_toggle_bookmark7_200.png -text
 images/menu/menu_toggle_bookmark8.png -text
+images/menu/menu_toggle_bookmark8_150.png -text
+images/menu/menu_toggle_bookmark8_200.png -text
 images/menu/menu_toggle_bookmark9.png -text
+images/menu/menu_toggle_bookmark9_150.png -text
+images/menu/menu_toggle_bookmark9_200.png -text
 images/menu/menu_tool_check_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_dfm_to_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_diff.png -text svneol=unset#image/png
