@@ -946,9 +946,7 @@ begin
 
   // If the font is a system font (Font.IsDefault), it is correctly
   // sized taken at runtime. Issue #32359
-  if Font.IsDefault then
-    Font.PixelsPerInch := ADesignTimePPI
-  else
+  if not Font.IsDefault then
     DoFixDesignFontPPI(Font, ADesignTimePPI);
 end;
 
