@@ -127,6 +127,7 @@ function GetDirSize(const ADirName: String; var AFileCnt, ADirCnt: Integer): Int
 procedure FindPackages(const ADirName: String; APackageList: TStrings);
 procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
 function FixProtocol(const AURL: String): String;
+function IsDirectoryEmpty(const ADirectory: String): Boolean;
 
 implementation
 
@@ -437,6 +438,28 @@ begin
   Result := AURL;
   if (Pos('http://', Result) = 0) and (Pos('https://', Result) = 0) then
     Result := 'https://' + Result;
+end;
+
+function IsDirectoryEmpty(const ADirectory: String): Boolean;
+var
+  SearchRec: TSearchRec;
+  SearchRes: Longint;
+begin
+  Result := true;
+  SearchRes := FindFirst(IncludeTrailingPathDelimiter(ADirectory) + AllFilesMask, faAnyFile + faSymLink, SearchRec);
+  try
+    while SearchRes = 0 do
+    begin
+      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+      begin
+        Result := False;
+        Break;
+      end;
+      SearchRes := FindNext(SearchRec);
+    end;
+  finally
+    SysUtils.FindClose(SearchRec);
+  end;
 end;
 
 end.

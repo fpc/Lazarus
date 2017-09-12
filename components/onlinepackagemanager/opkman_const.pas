@@ -393,6 +393,7 @@ resourcestring
   rsRepositories_InputBox_Caption0 = 'Add repository';
   rsRepositories_InputBox_Caption1 = 'Edit repository';
   rsRepositories_InputBox_Text = 'Type the repository address:';
+  rsRepositories_Info1 = 'The following repository: "%s" is already in the list.';
 
   //create private repository
   rsCreateRepositoryFrm_Caption = 'Create private repository';
@@ -409,9 +410,50 @@ resourcestring
   rsCreateRepositoryFrm_VSTPackages_Column0 = 'Repository/Packages';
   rsCreateRepositoryFrm_VSTDetails_Column0 = 'Description';
   rsCreateRepositoryFrm_VSTDetails_Column1 = 'Data';
+  rsCreateRepositoryFrm_RepositoryAddress = 'Address';
+  rsCreateRepositoryFrm_RepositoryDescription = 'Description';
+  rsCreateRepositoryFrm_VSTText_Category = 'Category';
+  rsCreateRepositoryFrm_VSTText_RepositoryFilename = 'Repository filename';
+  rsCreateRepositoryFrm_VSTText_RepositoryFileSize = 'Repository filesize';
+  rsCreateRepositoryFrm_VSTText_RepositoryFileHash = 'Repository filehash';
+  rsCreateRepositoryFrm_VSTText_RepositoryFileDate = 'Available since';
+  rsCreateRepositoryFrm_VSTText_HomePageURL = 'Home page';
+  rsCreateRepositoryFrm_VSTText_DownloadURL = 'Update link (JSON)';
+  rsCreateRepositoryFrm_VSTText_Version = 'Version';
+  rsCreateRepositoryFrm_VSTText_Description = 'Description';
+  rsCreateRepositoryFrm_VSTText_Author = 'Author';
+  rsCreateRepositoryFrm_VSTText_LazCompatibility = 'Lazarus compatibility';
+  rsCreateRepositoryFrm_VSTText_FPCCompatibility = 'FPC compatibility';
+  rsCreateRepositoryFrm_VSTText_SupportedWidgetsets = 'Supported widgetsets';
+  rsCreateRepositoryFrm_VSTText_Packagetype = 'Package type';
+  rsCreateRepositoryFrm_VSTText_Dependecies = 'Dependencies';
+  rsCreateRepositoryFrm_VSTText_License = 'License';
+  rsCreateRepositoryFrm_VSTText_PackageType0 = 'Designtime and runtime';
+  rsCreateRepositoryFrm_VSTText_PackageType1 = 'Designtime';
+  rsCreateRepositoryFrm_VSTText_PackageType2 = 'Runtime';
+  rsCreateRepositoryFrm_VSTText_PackageType3 = 'Runtime only, cannot be installed in IDE';
   rsCreateRepositoryFrm_Error1 = 'Cannot open private repository. Error message: ' + sLineBreak + '"%s"';
   rsCreateRepositoryFrm_Error2 = 'File ' + cRemoteJSONFile + ' not found.';
   rsCreateRepositoryFrm_Error3 = 'Cannot save private repository. Error message: ' + sLineBreak + '"%s"';
+  rsCreateRepositoryFrm_Info1 = 'The following directory: "%s" is not empty.' + sLineBreak + 'It''s recommended to save the repository to an empty directory. Continue?';
+  rsCreateRepositoryFrm_Info2 = 'The following directory: "%s" is read only.';
+
+  //repository details
+  rsRepositoryDetails_Caption = 'Repository details';
+  rsRepositoryDetails_lbName_Caption = 'Name';
+  rsRepositoryDetails_edName_Hint = 'Enter the repository name';
+  rsRepositoryDetails_lbAddress_Caption = 'Address';
+  rsRepositoryDetails_edAddress_Hint = 'Enter the repository address(Ex: "http://localhost/packages/")';
+  rsRepositoryDetails_lbDescription_Caption = 'Description';
+  rsRepositoryDetails_mDescription_Hint = 'Enter the repository description';
+  rsRepositoryDetails_bOk_Caption = 'OK';
+  rsRepositoryDetails_bOk_Hint = 'Save and close the dialog';
+  rsRepositoryDetails_bCancel_Caption = 'Cancel';
+  rsRepositoryDetails_bCancel_Hint = 'Close the dialog without saving';
+  rsRepositoryDetails_Info1 = 'Please enter the repository name.';
+  rsRepositoryDetails_Info2 = 'Please enter the repository address.';
+  rsRepositoryDetails_Info3 = 'The following repository: "%s" is already in the repository list. Continue?';
+
 
 implementation
 
