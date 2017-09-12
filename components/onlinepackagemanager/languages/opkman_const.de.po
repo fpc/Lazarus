@@ -98,29 +98,25 @@ msgid "JSON for updates successfully created."
 msgstr "JSON für Aktualisierungen erfolgreich erzeugt."
 
 #: opkman_const.rscreaterepositoryfrm_badd_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_badd_caption"
 msgid "Add"
 msgstr "Hinzufügen"
 
 #: opkman_const.rscreaterepositoryfrm_badd_hint
 msgid "Add package to the current repository"
-msgstr ""
+msgstr "Package zum aktuellen Repository hinzufügen"
 
 #: opkman_const.rscreaterepositoryfrm_bcancel_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_caption"
 msgid "Cancel"
 msgstr "Abbrechen"
 
 #: opkman_const.rscreaterepositoryfrm_bcancel_hint
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_hint"
 msgid "Close this dialog"
 msgstr "Diesen Dialog schließen"
 
 #: opkman_const.rscreaterepositoryfrm_bcreate_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_bcreate_caption"
 msgid "Create"
 msgstr "Erzeugen"
@@ -128,55 +124,78 @@ msgstr "Erzeugen"
 #: opkman_const.rscreaterepositoryfrm_bcreate_hint
 msgctxt "opkman_const.rscreaterepositoryfrm_bcreate_hint"
 msgid "Create private repository"
-msgstr ""
+msgstr "Privates Repository erzeugen"
 
 #: opkman_const.rscreaterepositoryfrm_bdelete_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_bdelete_caption"
 msgid "Delete"
 msgstr "Löschen"
 
 #: opkman_const.rscreaterepositoryfrm_bdelete_hint
 msgid "Delete package from the current repository"
-msgstr ""
+msgstr "Package aus dem aktuellen Repository entfernen"
 
 #: opkman_const.rscreaterepositoryfrm_bopen_caption
 msgid "Open"
-msgstr ""
+msgstr "Öffnen"
 
 #: opkman_const.rscreaterepositoryfrm_bopen_hint
 msgid "Open private respository"
-msgstr ""
+msgstr "Privates Repository öffnen"
 
 #: opkman_const.rscreaterepositoryfrm_caption
 msgctxt "opkman_const.rscreaterepositoryfrm_caption"
 msgid "Create private repository"
-msgstr ""
+msgstr "Privates Repository erzeugen"
 
 #: opkman_const.rscreaterepositoryfrm_error1
 msgid ""
 "Cannot open private repository. Error message: \n"
 "\"%s\"\n"
 msgstr ""
+"Kann privates Repository nicht öffnen. Fehlermeldung: \n"
+"\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error2
 msgid "File packagelist.json not found."
-msgstr ""
+msgstr "Datei packagelist.json wurde nicht gefunden."
 
 #: opkman_const.rscreaterepositoryfrm_error3
 msgid ""
 "Cannot save private repository. Error message: \n"
 "\"%s\"\n"
 msgstr ""
+"Kann privates Repository nicht speichern. Fehlermeldung: \n"
+"\"%s\"\n"
+
+#: opkman_const.rscreaterepositoryfrm_info1
+msgid ""
+"The following directory: \"%s\" is not empty.\n"
+"It's recommended to save the repository to an empty directory. Continue?\n"
+msgstr ""
+"Das Verzeichnis \"%s\" ist nicht leer.\n"
+"Es wird empfohlen, das Repository in ein leeres Verzeichnis zu speichern. Fortfahren?\n"
+
+#: opkman_const.rscreaterepositoryfrm_info2
+msgid "The following directory: \"%s\" is read only."
+msgstr "Das Verzeichnis \"%s\" ist schreibgeschützt."
+
+#: opkman_const.rscreaterepositoryfrm_repositoryaddress
+msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
+msgid "Address"
+msgstr "Adresse"
+
+#: opkman_const.rscreaterepositoryfrm_repositorydescription
+msgctxt "opkman_const.rscreaterepositoryfrm_repositorydescription"
+msgid "Description"
+msgstr "Beschreibung"
 
 #: opkman_const.rscreaterepositoryfrm_vstdetails_column0
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vstdetails_column0"
 msgid "Description"
 msgstr "Beschreibung"
 
 #: opkman_const.rscreaterepositoryfrm_vstdetails_column1
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vstdetails_column1"
 msgid "Data"
 msgstr "Daten"
@@ -184,6 +203,106 @@ msgstr "Daten"
 #: opkman_const.rscreaterepositoryfrm_vstpackages_column0
 msgid "Repository/Packages"
 msgstr ""
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_author
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_author"
+msgid "Author"
+msgstr "Autor"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_category
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_category"
+msgid "Category"
+msgstr "Kategorie"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_dependecies
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_dependecies"
+msgid "Dependencies"
+msgstr "Abhängigkeiten"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_description
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_description"
+msgid "Description"
+msgstr "Beschreibung"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_downloadurl
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_downloadurl"
+msgid "Update link (JSON)"
+msgstr "Update-Link (JSON)"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility"
+msgid "FPC compatibility"
+msgstr "FPC-Kompatibilität"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_homepageurl
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_homepageurl"
+msgid "Home page"
+msgstr "Homepage"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_lazcompatibility
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_lazcompatibility"
+msgid "Lazarus compatibility"
+msgstr "Lazarus-Kompatibilität"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_license
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_license"
+msgid "License"
+msgstr "Lizenz"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype"
+msgid "Package type"
+msgstr "Package-Typ"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype0
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype0"
+msgid "Designtime and runtime"
+msgstr "Entwicklungs- und Laufzeit"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype1
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype1"
+msgid "Designtime"
+msgstr "Entwicklungszeit"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype2
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype2"
+msgid "Runtime"
+msgstr "Laufzeit"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype3
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype3"
+msgid "Runtime only, cannot be installed in IDE"
+msgstr "Nur Laufzeit, kann nicht in IDE installiert werden"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfiledate
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfiledate"
+msgid "Available since"
+msgstr "Verfügbar seit"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash"
+msgid "Repository filehash"
+msgstr "Repository-Signatur (Hash)"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename"
+msgid "Repository filename"
+msgstr "Repository-Dateiname"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize"
+msgid "Repository filesize"
+msgstr "Repository-Dateigröße"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets"
+msgid "Supported widgetsets"
+msgstr "Unterstützte Widgetsets"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_version
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_version"
+msgid "Version"
+msgstr "Version"
 
 #: opkman_const.rscreaterepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
@@ -201,7 +320,6 @@ msgid "Create"
 msgstr "Erzeugen"
 
 #: opkman_const.rscreaterepositorypackagefrm_bcreate_caption1
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption1"
 msgid "Add"
 msgstr "Hinzufügen"
@@ -212,7 +330,7 @@ msgstr "Dateien lokal erzeugen"
 
 #: opkman_const.rscreaterepositorypackagefrm_bcreate_hint1
 msgid "Add package to repository"
-msgstr ""
+msgstr "Package zum Repository hinzufügen"
 
 #: opkman_const.rscreaterepositorypackagefrm_bhelp_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bhelp_caption"
@@ -423,7 +541,7 @@ msgstr "Erzeuge JSON für Aktualisierungen"
 #: opkman_const.rsmainfrm_micreaterepository
 msgctxt "opkman_const.rsmainfrm_micreaterepository"
 msgid "Create private repository"
-msgstr ""
+msgstr "Privates Repository erzeugen"
 
 #: opkman_const.rsmainfrm_micreaterepositorypackage
 msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
@@ -694,14 +812,17 @@ msgid "Update"
 msgstr "Aktualisierung"
 
 #: opkman_const.rsmainfrm_vsttext_author
+msgctxt "opkman_const.rsmainfrm_vsttext_author"
 msgid "Author"
 msgstr "Autor"
 
 #: opkman_const.rsmainfrm_vsttext_category
+msgctxt "opkman_const.rsmainfrm_vsttext_category"
 msgid "Category"
 msgstr "Kategorie"
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
+msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"
 msgid "Dependencies"
 msgstr "Abhängigkeiten"
 
@@ -715,14 +836,17 @@ msgid "Description"
 msgstr "Beschreibung"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
+msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
 msgid "Update link (JSON)"
 msgstr "Update-Link (JSON)"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
+msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
 msgid "FPC compatibility"
 msgstr "FPC-Kompatibilität"
 
 #: opkman_const.rsmainfrm_vsttext_homepageurl
+msgctxt "opkman_const.rsmainfrm_vsttext_homepageurl"
 msgid "Home page"
 msgstr "Homepage"
 
@@ -741,6 +865,7 @@ msgid "Partially"
 msgstr "Teilweise"
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
+msgctxt "opkman_const.rsmainfrm_vsttext_lazcompatibility"
 msgid "Lazarus compatibility"
 msgstr "Lazarus-Kompatibilität"
 
@@ -749,6 +874,7 @@ msgid "License info for package"
 msgstr "Lizenzinformation für Package"
 
 #: opkman_const.rsmainfrm_vsttext_license
+msgctxt "opkman_const.rsmainfrm_vsttext_license"
 msgid "License"
 msgstr "Lizenz"
 
@@ -909,42 +1035,52 @@ msgid "Package status"
 msgstr "Package-Status"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype"
 msgid "Package type"
 msgstr "Package-Typ"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype0
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype0"
 msgid "Designtime and runtime"
 msgstr "Entwicklungs- und Laufzeit"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype1
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype1"
 msgid "Designtime"
 msgstr "Entwicklungszeit"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype2
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype2"
 msgid "Runtime"
 msgstr "Laufzeit"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype3
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype3"
 msgid "Runtime only, cannot be installed in IDE"
 msgstr "Nur Laufzeit, kann nicht in IDE installiert werden"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfiledate
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfiledate"
 msgid "Available since"
 msgstr "Verfügbar seit"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilehash
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilehash"
 msgid "Repository filehash"
 msgstr "Repository-Signatur (Hash)"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilename
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilename"
 msgid "Repository filename"
 msgstr "Repository-Dateiname"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilesize
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilesize"
 msgid "Repository filesize"
 msgstr "Repository-Dateigröße"
 
 #: opkman_const.rsmainfrm_vsttext_supportedwidgetsets
+msgctxt "opkman_const.rsmainfrm_vsttext_supportedwidgetsets"
 msgid "Supported widgetsets"
 msgstr "Unterstützte Widgetsets"
 
@@ -1038,7 +1174,7 @@ msgstr "Package-Betreuer"
 
 #: opkman_const.rsoptions_cbusedefaulttheme_caption
 msgid "Use default theme manager"
-msgstr ""
+msgstr "Den Vorgabe-Themenmanager verwenden"
 
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
@@ -1405,6 +1541,10 @@ msgstr ""
 msgid "Delete selected repository \"%s\"?"
 msgstr "Gewähltes Repository \"%s\" löschen?"
 
+#: opkman_const.rsrepositories_info1
+msgid "The following repository: \"%s\" is already in the list."
+msgstr "Das Repository \"%s\" ist bereits in der Liste."
+
 #: opkman_const.rsrepositories_inputbox_caption0
 msgid "Add repository"
 msgstr "Repository hinzufügen"
@@ -1421,3 +1561,62 @@ msgstr "Geben Sie die Repository-Adresse ein"
 msgid "Repository Address"
 msgstr "Repository-Adresse"
 
+#: opkman_const.rsrepositorydetails_bcancel_caption
+msgctxt "opkman_const.rsrepositorydetails_bcancel_caption"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: opkman_const.rsrepositorydetails_bcancel_hint
+msgid "Close the dialog without saving"
+msgstr "Den Dialog schließen ohne Speichern"
+
+#: opkman_const.rsrepositorydetails_bok_caption
+msgctxt "opkman_const.rsrepositorydetails_bok_caption"
+msgid "OK"
+msgstr "OK"
+
+#: opkman_const.rsrepositorydetails_bok_hint
+msgid "Save and close the dialog"
+msgstr "Speichern und den Dialog schließen"
+
+#: opkman_const.rsrepositorydetails_caption
+msgid "Repository details"
+msgstr "Repository-Details"
+
+#: opkman_const.rsrepositorydetails_edaddress_hint
+msgid "Enter the repository address(Ex: \"http://localhost/packages/\")"
+msgstr ""
+
+#: opkman_const.rsrepositorydetails_edname_hint
+msgid "Enter the repository name"
+msgstr ""
+
+#: opkman_const.rsrepositorydetails_info1
+msgid "Please enter the repository name."
+msgstr ""
+
+#: opkman_const.rsrepositorydetails_info2
+msgid "Please enter the repository address."
+msgstr ""
+
+#: opkman_const.rsrepositorydetails_info3
+msgid "The following repository: \"%s\" is already in the repository list. Continue?"
+msgstr "Das Repository \"%s\" ist bereits in der Liste. Fortfahren?"
+
+#: opkman_const.rsrepositorydetails_lbaddress_caption
+msgctxt "opkman_const.rsrepositorydetails_lbaddress_caption"
+msgid "Address"
+msgstr "Adresse"
+
+#: opkman_const.rsrepositorydetails_lbdescription_caption
+msgctxt "opkman_const.rsrepositorydetails_lbdescription_caption"
+msgid "Description"
+msgstr "Beschreibung"
+
+#: opkman_const.rsrepositorydetails_lbname_caption
+msgid "Name"
+msgstr "Name"
+
+#: opkman_const.rsrepositorydetails_mdescription_hint
+msgid "Enter the repository description"
+msgstr ""
