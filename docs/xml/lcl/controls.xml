@@ -6645,23 +6645,16 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetBounds">
-        <short>Sets the bounds (left, top, height, width) of the control.</short>
-        <descr>
-          <p>SetBounds can be used to change the left, top, width, height all at once, reducing some overhead.
-          </p>
-          <p>Use DisableAutoSize/EnableAutoSize to reduce recomputing/moving/resizing further.
-          </p>
-          <p>SetBounds is called when the properties Left, Top, Width, Height, or BoundsRect is set.
-          </p>
-          <p>SetBounds updates the BaseBounds and BaseParentClientSize, which are used by anchoring to keep the distance.
+        <short>Sets the bounds (left, top, width, height) of the control.</short>
+        <descr><p>SetBounds can be used to change the left, top, width, height all at once, reducing some overhead.
+          </p><p>Use DisableAutoSize/EnableAutoSize to reduce recomputing/moving/resizing further.
+          </p><p>SetBounds is called when the properties Left, Top, Width, Height, or BoundsRect is set.
+          </p><p>SetBounds updates the BaseBounds and BaseParentClientSize, which are used by anchoring to keep the distance.
             For example loading a Form with TMemo and the lfm contains TMemo's Left and Width, then SetBounds is called two times for the memo.
-          </p>
-          <p>When the user maximizes a window, SetBounds is called for the form, but not for the Memo, keeping the BaseBounds of the Memo.
+          </p><p>When the user maximizes a window, SetBounds is called for the form, but not for the Memo, keeping the BaseBounds of the Memo.
             If the Memo is anchored to the right, the Width of the Memo is changed based on the BaseBounds and BaseParentClientSize.
-          </p>
-          <p>Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied.
-          </p>
-          <p>Delphi calls SetBounds more often. SetBounds calls ChangeBounds with KeepBase=false.
+          </p><p>Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied.
+          </p><p>Delphi calls SetBounds more often. SetBounds calls ChangeBounds with KeepBase=false.
           </p>
         </descr>
       </element>
