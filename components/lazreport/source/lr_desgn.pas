@@ -6006,6 +6006,14 @@ end;
 procedure TfrDesignerForm.PgB3Click(Sender: TObject); // page setup
 var
   w, h, p: Integer;
+  function PointsToMMStr(value:Integer): string;
+  begin
+    result := IntToStr(Trunc(value*5/18+0.5));
+  end;
+  function MMStrToPoints(value:string): Integer;
+  begin
+    result := Trunc(Trunc(StrToFloatDef(value, 0.0))*18/5+0.5)
+  end;
 begin
   frPgoptForm := TfrPgoptForm.Create(nil);
   with frPgoptForm, Page do
@@ -6026,11 +6034,12 @@ begin
       E2.Text := IntToStr(Height div 10);
     end;
     
-    E3.Text := IntToStr(Margins.Left * 5 div 18);
-    E4.Text := IntToStr(Margins.Top * 5 div 18);
-    E5.Text := IntToStr(Margins.Right * 5 div 18);
-    E6.Text := IntToStr(Margins.Bottom * 5 div 18);
-    E7.Text := IntToStr(ColGap * 5 div 18);
+    E3.Text := PointsToMMStr(Margins.Left);
+    E4.Text := PointsToMMStr(Margins.Top);
+    E5.Text := PointsToMMStr(Margins.Right);
+    E6.Text := PointsToMMStr(Margins.Bottom);
+    E7.Text := PointsToMMStr(ColGap);
+
     ecolCount.Value := ColCount;
     if LayoutOrder = loColumns then
       RBColumns.Checked := true
@@ -6062,20 +6071,13 @@ begin
         except
           on exception do p := 9; // A4
         end;
-        
-      try
-        Margins.AsRect := Rect(StrToInt(E3.Text) * 18 div 5,
-                          StrToInt(E4.Text) * 18 div 5,
-                          StrToInt(E5.Text) * 18 div 5,
-                          StrToInt(E6.Text) * 18 div 5);
-        ColGap := StrToInt(E7.Text) * 18 div 5;
-      except
-        on exception do
-        begin
-          Margins.AsRect := Rect(0, 0, 0, 0);
-          ColGap := 0;
-        end;
-      end;
+
+      Margins.Left := MMStrToPoints(E3.Text);
+      Margins.Top := MMStrToPoints(E4.Text);
+      Margins.Right := MMStrToPoints(E5.Text);
+      Margins.Bottom := MMStrToPoints(E6.Text);
+      ColGap := MMStrToPoints(E7.Text);
+
       ColCount := ecolCount.Value;
       ChangePaper(p, w, h, Orientation);
       CurPage := CurPage; // for repaint and other
