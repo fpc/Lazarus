@@ -316,6 +316,12 @@ begin
   inherited Destroy;
 end;
 
+function TScrollingWinControl.ControlAtPos(const Pos: TPoint;
+  Flags: TControlAtPosFlags): TControl;
+begin
+  Result := inherited ControlAtPos(Pos, Flags - [capfHasScrollOffset]);
+end;
+
 function TScrollingWinControl.ScreenToClient(const APoint: TPoint): TPoint;
 var
   P: TPoint;

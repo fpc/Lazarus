@@ -2219,7 +2219,7 @@ type
     function ControlAtPos(const Pos: TPoint; AllowDisabled: Boolean): TControl;
     function ControlAtPos(const Pos: TPoint;
                           AllowDisabled, AllowWinControls: Boolean): TControl;
-    function ControlAtPos(const Pos: TPoint; Flags: TControlAtPosFlags): TControl;
+    function ControlAtPos(const Pos: TPoint; Flags: TControlAtPosFlags): TControl; virtual;
     function  ContainsControl(Control: TControl): Boolean;
     procedure DoAdjustClientRectChange(const InvalidateRect: Boolean = True);
     procedure InvalidateClientRectCache(WithChildControls: boolean);
