@@ -58,7 +58,7 @@ const
   // CodeTreeNodeDescriptors
   ctnNone               = 0;
 
-  ctnProgram            = 1;
+  ctnProgram            = 1; // children are ctnInterface, each namespace and sourcename
   ctnPackage            = 2;
   ctnLibrary            = 3;
   ctnUnit               = 4;

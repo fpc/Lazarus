@@ -1254,10 +1254,12 @@ begin
     exit(false);
   repeat
     // read unit name
-    ReadNextToken;
-    if (TokenType<>lsttWord)
-    or WordIsKeyWord.DoItCaseInsensitive(@Src[SrcPos]) then exit(false);
-    ReadNextToken;
+    repeat
+      ReadNextToken;
+      if (TokenType<>lsttWord)
+      or WordIsKeyWord.DoItCaseInsensitive(@Src[SrcPos]) then exit(false);
+      ReadNextToken;
+    until TokenType<>lsttPoint;
     if TokenIs('in') then begin
       // read "in" filename
       ReadNextToken;

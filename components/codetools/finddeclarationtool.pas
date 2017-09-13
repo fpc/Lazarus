@@ -9113,8 +9113,10 @@ var
   function ResolveUseUnit(StartUseUnitNode: TCodeTreeNode): TCodeTreeNode;
   // IsStart=true, NextAtomType=vatPoint,
   // StartUseUnitNameNode.Desc=ctnUseUnit
-  // -> Find the longest namespaced used unit, that fits the start of the
+  // -> Find the longest namespaced used unit (ctnUseUnitNamespace,ctnUseUnitClearName)
+  //    or the source name (ctnIdentifier), that fits the start of the
   //    current identifier a.b.c...
+  //
 
     function GetPrevUseUnit(UseUnitNode: TCodeTreeNode): TCodeTreeNode;
     begin
@@ -9174,7 +9176,7 @@ var
     until CurPos.Flag<>cafPoint;
     //debugln(['ResolveUsenit DottedIdentifier="',DottedIdentifier,'"']);
 
-    // find longest dotted unit name in uses
+    // find longest dotted unit name in uses and source name
     UseUnitNode:=StartUseUnitNode;
     BestNode:=nil;
     BestLevel:=0;
@@ -9184,13 +9186,13 @@ var
       if (Node<>nil)
       and CompareSrcIdentifiers(CurAtom.StartPos,Node.StartPos) then begin
         // found candidate
-        //debugln(['ResolveUsenit Candidate=',ExtractNode(Node,[])]);
+        //debugln(['ResolveUseUnit Candidate=',ExtractNode(Node,[])]);
         Level:=1;
         p:=PChar(DottedIdentifier);
         repeat
           inc(p,GetIdentLen(p));
           if p^='.' then inc(p);
-          //writeln('ResolveUsenit p=',p,' NextBrother=',Node.NextBrother<>nil);
+          //writeln('ResolveUseUnit p=',p,' NextBrother=',Node.NextBrother<>nil);
           if Node.NextBrother=nil then begin
             // fits
             if Level>BestLevel then begin
@@ -9203,7 +9205,7 @@ var
             break;
           end else begin
             Node:=Node.NextBrother;
-            //writeln('ResolveUsenit p=',p,' node=',GetIdentifier(@Src[Node.StartPos]));
+            //writeln('ResolveUseUnit p=',p,' node=',GetIdentifier(@Src[Node.StartPos]));
             if not CompareSrcIdentifiers(Node.StartPos,p) then
               break;
             inc(Level);
@@ -9211,10 +9213,61 @@ var
         until false;
       end;
     until UseUnitNode=nil;
-    //debugln(['ResolveUsenit collected candidates Best=',ExtractNode(BestNode,[])]);
+    //debugln(['ResolveUseUnit collected candidates Best=',ExtractNode(BestNode,[])]);
 
-    Result:=BestNode.FirstChild;
+    //debugln(['ResolveUseUnit Src=',Tree.Root.DescAsString,' Name=',GetSourceName(false),' DottedIdentifier="',DottedIdentifier,'"']);
+    // check source name
+    if (Tree.Root.Desc in AllSourceTypes)
+    and (Tree.Root.FirstChild<>nil)
+    and CompareSrcIdentifiers(Tree.Root.FirstChild.StartPos,PChar(DottedIdentifier))
+    then begin
+      // found candidate
+      Level:=1;
+      Node:=Tree.Root.FirstChild;
+      //debugln(['ResolveUseUnit Candidate SrcName']);
+      p:=PChar(DottedIdentifier);
+      repeat
+        //debugln('ResolveUseUnit SrcName p=',p,' Node=',ExtractNode(Node,[]));
+        if (Node.NextBrother=nil) or (Node.NextBrother.Desc<>ctnIdentifier) then begin
+          // fits
+          //debugln(['ResolveUseUnit FITS Level=',Level,' Best=',BestLevel]);
+          if Level>BestLevel then begin
+            // source name fits best
+            Result:=Tree.Root.FirstChild;
+            // move cursor forward
+            while (Result.NextBrother<>nil)
+            and (NextAtom.EndPos<EndPos) do begin
+              if (Result.NextBrother.Desc<>ctnIdentifier) then
+                exit(Tree.Root);
+              ReadNextExpressionAtom; // read point
+              ReadNextExpressionAtom; // read namespace/unitname
+              //debugln(['ResolveUseUnit Next ',GetAtom(CurAtom)]);
+              Result:=Result.NextBrother;
+            end;
+            exit;
+            //debugln(['ResolveUseUnit SrcName fits better']);
+          end;
+          break;
+        end else if p^=#0 then begin
+          // source name too long
+          break;
+        end else begin
+          Node:=Node.NextBrother;
+          inc(p,GetIdentLen(p));
+          if p^='.' then inc(p);
+          //debugln('ResolveUseUnit SrcName NEXT p=',p,' Node=',ExtractNode(Node,[]));
+          if not CompareSrcIdentifiers(Node.StartPos,p) then
+            break;
+          inc(Level);
+        end;
+      until false;
+    end;
 
+    Result:=BestNode;
+    if Result=nil then exit;
+
+    // Result is now a ctnUseUnit
+    Result:=Result.FirstChild;
     // move cursor forward
     while (Result.NextBrother<>nil) and (NextAtom.EndPos<EndPos) do begin
       ReadNextExpressionAtom; // read point
