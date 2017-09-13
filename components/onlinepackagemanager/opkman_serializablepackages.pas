@@ -274,6 +274,7 @@ type
     procedure Clear;
     function AddMetaPackage(const AName: String): TMetaPackage;
     procedure DeletePackage(const AIndex: Integer);
+    function AddPackageFromJSON(JSON: TJSONStringType): Boolean;
     function FindMetaPackage(const AValue: String; const AFindPackageBy: TFindPackageBy): TMetaPackage;
     function FindPackageIndex(const AValue: String; const AFindPackageBy: TFindPackageBy): Integer;
     function FindLazarusPackage(const APackageName: String): TLazarusPackage;
@@ -719,6 +720,49 @@ begin
   if AIndex > FMetaPackages.Count - 1 then
     Exit;
   FMetaPackages.Delete(AIndex);
+end;
+
+function TSerializablePackages.AddPackageFromJSON(JSON: TJSONStringType): Boolean;
+var
+  Data: TJSONData;
+  Parser: TJSONParser;
+  I: Integer;
+  MetaPackage: TMetaPackage;
+begin
+  if Trim(JSON) = '' then
+    Exit(False);
+  Result := True;
+  Parser := TJSONParser.Create(JSON);
+  try
+    Data := Parser.Parse;
+    try
+      MetaPackage := nil;
+      try
+        if Data.JSONType = jtObject then
+        begin
+          for I := 0 to Data.Count - 1 do
+          begin
+            if Data.Items[I].JSONType = jtObject then
+            begin
+              if not JSONToPackageData(Data.Items[I], MetaPackage) then
+                Result := False;
+            end
+            else if Data.Items[I].JSONType = jtArray then
+            begin
+              if not JSONToLazarusPackages(Data.Items[I], MetaPackage) then
+                Result := False;
+            end;
+          end;
+        end;
+      except
+        Result := False;
+      end;
+    finally
+      Data.Free;
+    end;
+  finally
+    Parser.Free;
+  end;
 end;
 
 function TSerializablePackages.FindMetaPackage(const AValue: String;

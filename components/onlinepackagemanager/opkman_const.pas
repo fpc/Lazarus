@@ -396,7 +396,7 @@ resourcestring
   rsRepositories_Info1 = 'The following repository: "%s" is already in the list.';
 
   //create private repository
-  rsCreateRepositoryFrm_Caption = 'Create private repository';
+  rsCreateRepositoryFrm_Caption = 'Create/Edit private repository';
   rsCreateRepositoryFrm_bOpen_Caption = 'Open';
   rsCreateRepositoryFrm_bOpen_Hint = 'Open private respository';
   rsCreateRepositoryFrm_bCreate_Caption = 'Create';
@@ -432,27 +432,40 @@ resourcestring
   rsCreateRepositoryFrm_VSTText_PackageType1 = 'Designtime';
   rsCreateRepositoryFrm_VSTText_PackageType2 = 'Runtime';
   rsCreateRepositoryFrm_VSTText_PackageType3 = 'Runtime only, cannot be installed in IDE';
-  rsCreateRepositoryFrm_Error1 = 'Cannot open private repository. Error message: ' + sLineBreak + '"%s"';
+  rsCreateRepositoryFrm_Error1 = 'Cannot open private repository: "%s". Error message: ' + sLineBreak + '"%s"';
   rsCreateRepositoryFrm_Error2 = 'File ' + cRemoteJSONFile + ' not found.';
-  rsCreateRepositoryFrm_Error3 = 'Cannot save private repository. Error message: ' + sLineBreak + '"%s"';
+  rsCreateRepositoryFrm_Error3 = 'Cannot save private repository: "%s". Error message: ' + sLineBreak + '"%s"';
+  rsCreateRepositoryFrm_Error4 = 'Cannot add package to repository!';
   rsCreateRepositoryFrm_Info1 = 'The following directory: "%s" is not empty.' + sLineBreak + 'It''s recommended to save the repository to an empty directory. Continue?';
   rsCreateRepositoryFrm_Info2 = 'The following directory: "%s" is read only.';
+  rsCreateRepositoryFrm_Info3 = 'The following repository package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and lazarus package must be unique!';
+  rsCreateRepositoryFrm_Info4 = 'The following file: "%s" already exists in the current repository.';
+  rsCreateRepositoryFrm_Info5 = 'The following lazarus package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and lazarus package must be unique!';
 
   //repository details
-  rsRepositoryDetails_Caption = 'Repository details';
-  rsRepositoryDetails_lbName_Caption = 'Name';
-  rsRepositoryDetails_edName_Hint = 'Enter the repository name';
-  rsRepositoryDetails_lbAddress_Caption = 'Address';
-  rsRepositoryDetails_edAddress_Hint = 'Enter the repository address(Ex: "http://localhost/packages/")';
-  rsRepositoryDetails_lbDescription_Caption = 'Description';
-  rsRepositoryDetails_mDescription_Hint = 'Enter the repository description';
-  rsRepositoryDetails_bOk_Caption = 'OK';
-  rsRepositoryDetails_bOk_Hint = 'Save and close the dialog';
-  rsRepositoryDetails_bCancel_Caption = 'Cancel';
-  rsRepositoryDetails_bCancel_Hint = 'Close the dialog without saving';
-  rsRepositoryDetails_Info1 = 'Please enter the repository name.';
-  rsRepositoryDetails_Info2 = 'Please enter the repository address.';
-  rsRepositoryDetails_Info3 = 'The following repository: "%s" is already in the repository list. Continue?';
+  rsRepositoryDetailsFrm_Caption = 'Repository details';
+  rsRepositoryDetailsFrm_lbName_Caption = 'Name';
+  rsRepositoryDetailsFrm_edName_Hint = 'Enter the repository name';
+  rsRepositoryDetailsFrm_lbAddress_Caption = 'Address';
+  rsRepositoryDetailsFrm_edAddress_Hint = 'Enter the repository address(Ex: "http://localhost/packages/")';
+  rsRepositoryDetailsFrm_lbDescription_Caption = 'Description';
+  rsRepositoryDetailsFrm_mDescription_Hint = 'Enter the repository description';
+  rsRepositoryDetailsFrm_bOk_Caption = 'OK';
+  rsRepositoryDetailsFrm_bOk_Hint = 'Save and close the dialog';
+  rsRepositoryDetailsFrm_bCancel_Caption = 'Cancel';
+  rsRepositoryDetailsFrm_bCancel_Hint = 'Close the dialog without saving';
+  rsRepositoryDetailsFrm_Info1 = 'Please enter the repository name.';
+  rsRepositoryDetailsFrm_Info2 = 'Please enter the repository address.';
+  rsRepositoryDetailsFrm_Info3 = 'The following repository: "%s" is already in the repository list. Continue?';
+
+  //add package to repository
+  rsAddRepositoryPackageFrm_Caption = 'Add repository package';
+  rsAddRepositoryPackageFrm_rbCreateNew_Caption = 'Create a new repository package';
+  rsAddRepositoryPackageFrm_rbAddExisting_Caption = 'Add existing repository package from file';
+  rsAddRepositoryPackageFrm_bOk_Caption = 'OK';
+  rsAddRepositoryPackageFrm_bOk_Hint = 'Close the dialog and create the package';
+  rsAddRepositoryPackageFrm_bCancel_Caption = 'Cancel';
+  rsAddRepositoryPackageFrm_bCancel_Hint = 'Close the dialog';
 
 
 implementation

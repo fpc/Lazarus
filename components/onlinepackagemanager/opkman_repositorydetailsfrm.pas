@@ -44,17 +44,17 @@ uses opkman_const, opkman_common, opkman_options;
 
 procedure TRepositoryDetailsFrm.FormCreate(Sender: TObject);
 begin
-  Caption := rsRepositoryDetails_Caption;
-  lbName.Caption := rsRepositoryDetails_lbName_Caption;
-  edName.Hint := rsRepositoryDetails_edName_Hint;
-  lbAddress.Caption := rsRepositoryDetails_lbAddress_Caption;
-  edAddress.Hint := rsRepositoryDetails_edAddress_Hint;
-  lbDescription.Caption := rsRepositoryDetails_lbDescription_Caption;
-  mDescription.Hint := rsRepositoryDetails_mDescription_Hint;
-  bOk.Caption := rsRepositoryDetails_bOk_Caption;
-  bOk.Hint := rsRepositoryDetails_bOk_Hint;
-  bCancel.Caption := rsRepositoryDetails_bCancel_Caption;
-  bCancel.Hint := rsRepositoryDetails_bCancel_Hint;
+  Caption := rsRepositoryDetailsFrm_Caption;
+  lbName.Caption := rsRepositoryDetailsFrm_lbName_Caption;
+  edName.Hint := rsRepositoryDetailsFrm_edName_Hint;
+  lbAddress.Caption := rsRepositoryDetailsFrm_lbAddress_Caption;
+  edAddress.Hint := rsRepositoryDetailsFrm_edAddress_Hint;
+  lbDescription.Caption := rsRepositoryDetailsFrm_lbDescription_Caption;
+  mDescription.Hint := rsRepositoryDetailsFrm_mDescription_Hint;
+  bOk.Caption := rsRepositoryDetailsFrm_bOk_Caption;
+  bOk.Hint := rsRepositoryDetailsFrm_bOk_Hint;
+  bCancel.Caption := rsRepositoryDetailsFrm_bCancel_Caption;
+  bCancel.Hint := rsRepositoryDetailsFrm_bCancel_Hint;
   FAddress := '';
 end;
 
@@ -77,7 +77,7 @@ procedure TRepositoryDetailsFrm.bOkClick(Sender: TObject);
 begin
   if Trim(edName.Text) = '' then
   begin
-    MessageDlgEx(rsRepositoryDetails_Info1, mtInformation, [mbOk], Self);
+    MessageDlgEx(rsRepositoryDetailsFrm_Info1, mtInformation, [mbOk], Self);
     edName.SetFocus;
     Exit;
   end;
@@ -88,7 +88,7 @@ begin
       FAddress := FAddress + '/';
     if IsDuplicateRepository(FAddress) then
     begin
-      if MessageDlgEx(Format(rsRepositoryDetails_Info3, [FAddress]), mtInformation, [mbYes, mbNo], Self) = mrNo then
+      if MessageDlgEx(Format(rsRepositoryDetailsFrm_Info3, [FAddress]), mtInformation, [mbYes, mbNo], Self) = mrNo then
       begin
         edAddress.SetFocus;
         Exit;

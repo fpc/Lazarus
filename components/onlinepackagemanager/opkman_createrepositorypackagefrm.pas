@@ -89,6 +89,7 @@ type
     procedure bHelpClick(Sender: TObject);
     procedure bOptionsClick(Sender: TObject);
     procedure bSubmitClick(Sender: TObject);
+    procedure edDisplayNameKeyPress(Sender: TObject; var Key: char);
     procedure edPackageDirAcceptDirectory(Sender: TObject; Var Value: String);
     procedure edPackageDirButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -101,8 +102,10 @@ type
     FPackageDir: String;
     FPackageName: String;
     FPackageFile: String;
+    FJSONFile: String;
     FDestDir: String;
     FPackageOperation: TPackageOperation;
+    FTyp: Integer;
     procedure VSTPackagesGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; {%H-}TextType: TVSTTextType; var CellText: String);
     procedure VSTPackagesGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -134,8 +137,12 @@ type
     procedure DoOnUploadProgress(Sender: TObject; AFileName: String);
     procedure DoOnUploadError(Sender: TObject; AErrMsg: String);
     procedure DoOnUploadCompleted(Sender: TObject);
+    procedure CreatePackage;
   public
     procedure SetType(const ATyp: Integer);
+    property DestDir: String read FDestDir write FDestDir;
+    property PackageFile: string read FPackageFile;
+    property JSONFile: String read FJSONFile;
   end;
 
 var
@@ -582,39 +589,55 @@ begin
   Result := True;
 end;
 
-procedure TCreateRepositoryPackagesFrm.bCreateClick(Sender: TObject);
+procedure TCreateRepositoryPackagesFrm.CreatePackage;
 var
   RootNode: PVirtualNode;
   RootData: PData;
 begin
+  FPackageOperation := poCreate;
+  Screen.Cursor := crHourGlass;
+  ShowHideControls(1);
+  FPackageZipper := TPackageZipper.Create;
+  FPackageZipper.OnZipError := @DoOnZippError;
+  FPackageZipper.OnZipCompleted := @DoOnZipCompleted;
+  RootNode := FVSTPackages.GetFirst;
+  RootData := FVSTPackages.GetNodeData(RootNode);
+  if RootData^.FDisplayName <> '' then
+    FPackageName := StringReplace(RootData^.FDisplayName, ' ', '', [rfReplaceAll])
+  else
+    FPackageName := StringReplace(RootData^.FName, ' ', '', [rfReplaceAll]);
+  FPackageFile := FDestDir + FPackageName + '.zip';
+  FJSONFile := FDestDir + FPackageName + '.json';
+  pnMessage.Caption := rsCreateRepositoryPackageFrm_Message4;
+  fPackageZipper.StartZip(FPackageDir, FPackageFile);
+end;
+
+
+procedure TCreateRepositoryPackagesFrm.bCreateClick(Sender: TObject);
+begin
   if not CanCreate then
     Exit;
-  SDD.Title := rsCreateRepositoryPackageFrm_SDDTitleDst;
-  SDD.InitialDir := Options.LastPackagedirDst;
-  EnableDisableControls(False);
-  if SDD.Execute then
+  if FTyp = 0 then
   begin
-    FPackageOperation := poCreate;
-    Screen.Cursor := crHourGlass;
-    ShowHideControls(1);
-    FPackageZipper := TPackageZipper.Create;
-    FPackageZipper.OnZipError := @DoOnZippError;
-    FPackageZipper.OnZipCompleted := @DoOnZipCompleted;
-    FDestDir := AppendPathDelim(SDD.FileName);
-    Options.LastPackagedirDst := SDD.FileName;
-    Options.Changed := True;
-    RootNode := FVSTPackages.GetFirst;
-    RootData := FVSTPackages.GetNodeData(RootNode);
-    if RootData^.FDisplayName <> '' then
-      FPackageName := StringReplace(RootData^.FDisplayName, ' ', '', [rfReplaceAll])
+    SDD.Title := rsCreateRepositoryPackageFrm_SDDTitleDst;
+    SDD.InitialDir := Options.LastPackagedirDst;
+    EnableDisableControls(False);
+    if SDD.Execute then
+    begin
+      FDestDir := AppendPathDelim(SDD.FileName);
+      Options.LastPackagedirDst := FDestDir;
+      Options.Changed := True;
+      CreatePackage;
+    end
     else
-      FPackageName := StringReplace(RootData^.FName, ' ', '', [rfReplaceAll]);
-    FPackageFile := FDestDir + FPackageName + '.zip';
-    pnMessage.Caption := rsCreateRepositoryPackageFrm_Message4;
-    fPackageZipper.StartZip(FPackageDir, FPackageFile);
+      EnableDisableControls(True);
   end
-  else
-    EnableDisableControls(True);
+  else if FTyp = 1 then
+  begin
+    Options.LastPackagedirDst := FDestDir;
+    Options.Changed := True;
+    CreatePackage;
+  end;
 end;
 
 procedure TCreateRepositoryPackagesFrm.bSubmitClick(Sender: TObject);
@@ -639,8 +662,16 @@ begin
   else
     FPackageName := StringReplace(RootData^.FName, ' ', '', [rfReplaceAll]);
   FPackageFile := FDestDir + FPackageName + '.zip';
+  FJSONFile := FDestDir + FPackageName + '.json';
   pnMessage.Caption := rsCreateRepositoryPackageFrm_Message4;
   fPackageZipper.StartZip(FPackageDir, FPackageFile);
+end;
+
+procedure TCreateRepositoryPackagesFrm.edDisplayNameKeyPress(Sender: TObject;
+  var Key: char);
+begin
+  if Key in ['\', '/', ':', '*', '?', '"', '<', '>', '|'] then
+    Key := #0;
 end;
 
 procedure TCreateRepositoryPackagesFrm.bHelpClick(Sender: TObject);
@@ -658,7 +689,6 @@ begin
   if Assigned(FPackageZipper) then
     FPackageZipper.Terminate;
   ModalResult := mrCancel;
-  Close;
 end;
 
 procedure TCreateRepositoryPackagesFrm.VSTPackagesGetText(
@@ -1006,7 +1036,10 @@ begin
       MetaPkg.RepositoryFileHash := MD5Print(MD5File(FPackageFile));
       MetaPkg.RepositoryDate := Trunc(now);
       MetaPkg.PackageBaseDir := RootData^.FPackageBaseDir;
-      MetaPkg.DisplayName := RootData^.FDisplayName;
+      if Trim(RootData^.FDisplayName) <> '' then
+        MetaPkg.DisplayName := RootData^.FDisplayName
+      else
+        MetaPkg.DisplayName := RootData^.FName;
       MetaPkg.HomePageURL := RootData^.FHomePageURL;
       MetaPkg.DownloadURL := RootData^.FDownloadURL;
       MetaPkg.SVNURL := RootData^.FSVNURL;
@@ -1043,7 +1076,7 @@ begin
         try
           MS.Write(Pointer(JSON)^, Length(JSON));
           MS.Position := 0;
-          MS.SaveToFile(FDestDir + FPackageName + '.json');
+          MS.SaveToFile(FJSONFile);
           Result := True;
         finally
           MS.Free;
@@ -1084,9 +1117,9 @@ begin
         Screen.Cursor := crDefault;
         ShowHideControls(2);
         EnableDisableControls(True);
-        MessageDlgEx(rsCreateRepositoryPackageFrm_Message7, mtInformation, [mbOk], Self);
+        if FTyp = 0 then
+          MessageDlgEx(rsCreateRepositoryPackageFrm_Message7, mtInformation, [mbOk], Self);
         ModalResult := mrOk;
-        Close;
       end;
     poSubmit:
       begin
@@ -1098,8 +1131,7 @@ begin
           JsonUpd := FDestDir + 'update_' + FPackageName + '.json'
         else
           JsonUpd := '';
-        Uploader.StartUpload(cSubmitURL_Zip, cSubmitURL_JSON, FPackageFile,
-              FDestDir + FPackageName + '.json', JsonUpd);
+        Uploader.StartUpload(cSubmitURL_Zip, cSubmitURL_JSON, FPackageFile, FJSONFile, JsonUpd);
       end;
   end;
 end;
@@ -1129,26 +1161,26 @@ begin
   Uploader := nil;
   if FileExists(FPackageFile) then
     DeleteFile(FPackageFile);
-  if FileExists(FDestDir + FPackageName + '.json') then
-    DeleteFile(FDestDir + FPackageName + '.json');
+  if FileExists(FJSONFile) then
+    DeleteFile(FJSONFile);
   if FileExists(FDestDir + 'update_' + FPackageName + '.json') then
     DeleteFile(FDestDir + 'update_' + FPackageName + '.json');
   MessageDlgEx(rsCreateRepositoryPackageFrm_Message9, mtInformation, [mbOk], Self);
-  Self.ModalResult := mrOk;
-  Self.Close;
+  ModalResult := mrOk;
 end;
 
 procedure TCreateRepositoryPackagesFrm.SetType(const ATyp: Integer);
 begin
-  bSubmit.Visible := ATyp = 0;
-  cbJSONForUpdates.Visible := ATyp = 0;
+  FTyp := ATyp;
+  bSubmit.Visible := FTyp = 0;
+  cbJSONForUpdates.Visible := FTyp = 0;
   bCreate.Visible := True;
-  if ATyp = 1 then
+  if FTyp = 1 then
   begin
     bCreate.Caption := rsCreateRepositoryPackageFrm_bCreate_Caption1;
     bCreate.Hint := rsCreateRepositoryPackageFrm_bCreate_Hint1;
+    pnB.AutoSize := True;
   end;
-
 end;
 
 end.

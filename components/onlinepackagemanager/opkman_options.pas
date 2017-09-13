@@ -67,6 +67,7 @@ type
     FLastDownloadDir: String;
     FLastPackageDirSrc: String;
     FLastPackageDirDst: String;
+    FLastPrivateRepository: String;
     // Default values for local repositories.
     FLocalPackagesDefault: String;
     FLocalArchiveDefault: String;
@@ -101,6 +102,7 @@ type
     property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
     property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
     property LastPackagedirDst: String read FLastPackageDirDst write FLastPackageDirDst;
+    property LastPrivateRepository: String read FLastPrivateRepository write FLastPrivateRepository;
     property ProxyEnabled: Boolean read FProxySettings.FEnabled write FProxySettings.FEnabled;
     property ProxyServer: String read FProxySettings.FServer write FProxySettings.FServer;
     property ProxyPort: Word read FProxySettings.FPort write FProxySettings.FPort;
@@ -176,6 +178,7 @@ begin
   FLastDownloadDir := FXML.GetValue('General/LastDownloadDir/Value', '');
   FLastPackageDirSrc := FXML.GetValue('General/LastPackageDirSrc/Value', '');
   FLastPackageDirDst := FXML.GetValue('General/LastPackageDirDst/Value', '');
+  FLastPrivateRepository := FXML.GetValue('General/LastPrivateRepository/Value', '');
   FCheckForUpdates := FXML.GetValue('General/CheckForUpdates/Value', 0);
   FLastUpdate := FXML.GetExtendedValue('General/LastUpdate/Value', 0.0);
   FDaysToShowNewPackages := FXML.GetValue('General/DaysToShowNewPackages/Value', 31);
@@ -207,6 +210,7 @@ begin
   FXML.SetDeleteValue('General/LastDownloadDir/Value', FLastDownloadDir, '');
   FXML.SetDeleteValue('General/LastPackageDirSrc/Value', FLastPackageDirSrc, '');
   FXML.SetDeleteValue('General/LastPackageDirDst/Value', FLastPackageDirDst, '');
+  FXML.SetDeleteValue('General/LastPrivateRepository/Value', FLastPrivateRepository, '');
   FXML.SetDeleteValue('General/CheckForUpdates/Value', FCheckForUpdates, 0);
   FXML.SetDeleteExtendedValue('General/LastUpdate/Value', FLastUpdate, 0.0);
   FXML.SetDeleteValue('General/DaysToShowNewPackages/Value', FDaysToShowNewPackages, 31);

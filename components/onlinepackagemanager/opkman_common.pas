@@ -446,7 +446,7 @@ var
   SearchRes: Longint;
 begin
   Result := true;
-  SearchRes := FindFirst(IncludeTrailingPathDelimiter(ADirectory) + AllFilesMask, faAnyFile + faSymLink, SearchRec);
+  SearchRes := FindFirst(IncludeTrailingPathDelimiter(ADirectory) + AllFilesMask, faAnyFile, SearchRec);
   try
     while SearchRes = 0 do
     begin
