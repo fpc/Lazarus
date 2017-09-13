@@ -725,6 +725,8 @@ begin
     if AForm.HandleObjectShouldBeVisible and
       GTK_IS_WINDOW({%H-}PGtkWindow(AForm.Handle)) then
       begin
+        gtk_window_set_type_hint({%H-}PGtkWindow(AForm.Handle),
+           GtkWindowTypeHints[AForm.BorderStyle]);
         gtk_window_set_keep_above({%H-}PGtkWindow(AForm.Handle),
           GBoolean(AForm.FormStyle in fsAllStayOnTop))
       end
@@ -739,7 +741,6 @@ begin
   begin
     gtk_window_set_default_size(GtkWindow, Max(1,AForm.Width), Max(1,AForm.Height));
     gtk_widget_set_uposition(PGtkWidget(GtkWindow), AForm.Left, AForm.Top);
-    gtk_window_set_type_hint(GtkWindow, GDK_WINDOW_TYPE_HINT_DIALOG);
     GtkWindowShowModal(AForm, GtkWindow);
   end else
   begin
