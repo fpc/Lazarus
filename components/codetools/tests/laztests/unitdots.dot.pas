@@ -4,6 +4,8 @@ unit unitdots.dot;
 
 interface
 
+type
+  TColor = longint;
 var
   test: integer;
   foo: integer;
