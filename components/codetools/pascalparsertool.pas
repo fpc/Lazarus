@@ -6060,6 +6060,8 @@ begin
       if Result=nil then exit;
     end;
     Result:=Result.FirstChild;
+    while (Result<>nil) and (Result.Desc=ctnIdentifier) do
+      Result:=Result.NextBrother;
     if (Result=nil) then exit;
     if (Result.Desc<>ctnUsesSection) then Result:=nil;
   end;

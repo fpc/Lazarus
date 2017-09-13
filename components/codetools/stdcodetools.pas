@@ -1184,7 +1184,7 @@ end;
 function TStandardCodeTool.RemoveUnitFromAllUsesSections(
   const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
 var
-  SectionNode: TCodeTreeNode;
+  SectionNode, Node: TCodeTreeNode;
 begin
   Result:=false;
   if (AnUnitName='') or (SourceChangeCache=nil) then exit;
@@ -1194,9 +1194,12 @@ begin
   try
     SectionNode:=Tree.Root;
     while (SectionNode<>nil) do begin
-      if (SectionNode.FirstChild<>nil)
-      and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
-        if not RemoveUnitFromUsesSection(SectionNode.FirstChild,AnUnitName,
+      Node:=SectionNode.FirstChild;
+      while (Node<>nil) and (Node.Desc=ctnIdentifier) do
+        Node:=Node.NextBrother;
+      if (Node<>nil)
+      and (Node.Desc=ctnUsesSection) then begin
+        if not RemoveUnitFromUsesSection(Node,AnUnitName,
            SourceChangeCache)
         then begin
           exit;
