@@ -1036,6 +1036,8 @@ begin
   end;
   if InsertPos<1 then begin
     InsertNode:=FindFirstSectionChild;
+    while (InsertNode<>nil) and (InsertNode.Desc=ctnIdentifier) do
+      InsertNode:=InsertNode.NextBrother;
     if InsertNode<>nil then begin
       Indent:=Beauty.GetLineIndent(Src,InsertNode.StartPos);
       if InsertNode.Desc=ctnUsesSection then

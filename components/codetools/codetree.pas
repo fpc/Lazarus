@@ -74,7 +74,7 @@ const
   ctnResStrSection      = 13;
   ctnLabelSection       = 14;
   ctnPropertySection    = 15;
-  ctnUsesSection        = 16; // child nodes are ctnUseUnit
+  ctnUsesSection        = 16; // child nodes are ctnUseUnit, parent is ctnInterface,ctnImplementation,ctnProgram,ctnPackage,ctnLibrary
   ctnRequiresSection    = 17;
   ctnContainsSection    = 18; // child nodes are ctnUseUnit
   ctnExportsSection     = 19;
