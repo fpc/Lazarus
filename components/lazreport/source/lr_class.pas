@@ -47,6 +47,7 @@ const
   flBandOnLastPage         = $20;
   flBandRepeatHeader       = $40;
   flBandPrintChildIfNotVisible = $100;
+  flBandKeepChild          = $200;
 
   flPictCenter             = 2;
   flPictRatio              = 4;
@@ -578,6 +579,7 @@ type
     procedure P5Click(Sender: TObject);
     procedure P6Click(Sender: TObject);
     procedure P7Click(Sender: TObject);
+    procedure P8Click(Sender: TObject);
     function  GetTitleRect: TRect;
     function  TitleSize: Integer;
     procedure CalcTitleSize;
@@ -5379,6 +5381,15 @@ begin
     m.Checked := (Flags and flBandPrintChildIfNotVisible) <> 0;
     Popup.Items.Add(m);
   end;
+
+  if not (BandType in [btChild, btPageFooter]) then
+  begin
+    m := TMenuItem.Create(Popup);
+    m.Caption := sKeepChild;
+    m.OnClick := @P8Click;
+    m.Checked := (Flags and flBandKeepChild) <> 0;
+    Popup.Items.Add(m);
+  end;
 end;
 
 procedure TfrBandView.P1Click(Sender: TObject);
@@ -5474,6 +5485,16 @@ begin
   begin
     Checked := not Checked;
     Flags := (Flags and not flBandPrintChildIfNotVisible) + Word(Checked) * flBandPrintChildIfNotVisible;
+  end;
+end;
+
+procedure TfrBandView.P8Click(Sender: TObject);
+begin
+  frDesigner.BeforeChange;
+  with Sender as TMenuItem do
+  begin
+    Checked := not Checked;
+    Flags := (Flags and not flBandKeepChild) + Word(Checked) * flBandKeepChild;
   end;
 end;
 
@@ -7151,6 +7172,15 @@ begin
     Result := dy;
     CalculatedHeight := dy;
     if Stretched then Result := CalcHeight;
+  end;
+  if (Flags and flBandKeepChild) <> 0 then
+  begin
+    b := Self.ChildBand;
+    while Assigned(b) do
+    begin
+      Result := Result + b.CalcHeight;
+      b := b.ChildBand;
+    end;
   end;
 end;
 
