@@ -7256,7 +7256,11 @@ images/menu/menu_build_lazarus.png -text svneol=unset#image/png
 images/menu/menu_build_run_file.png -text
 images/menu/menu_clean.png -text svneol=unset#image/png
 images/menu/menu_clear_all_bookmarks.png -text
+images/menu/menu_clear_all_bookmarks_150.png -text
+images/menu/menu_clear_all_bookmarks_200.png -text
 images/menu/menu_clear_file_bookmarks.png -text
+images/menu/menu_clear_file_bookmarks_150.png -text
+images/menu/menu_clear_file_bookmarks_200.png -text
 images/menu/menu_close.png -text svneol=unset#image/png
 images/menu/menu_close_150.png -text
 images/menu/menu_close_200.png -text
@@ -7394,14 +7398,20 @@ images/menu/menu_search_jumpforward.png -text svneol=unset#image/png
 images/menu/menu_search_jumpforward_150.png -text
 images/menu/menu_search_jumpforward_200.png -text
 images/menu/menu_search_next_bookmark.png -text
+images/menu/menu_search_next_bookmark_150.png -text
+images/menu/menu_search_next_bookmark_200.png -text
 images/menu/menu_search_openfile_atcursor.png -text svneol=unset#image/png
 images/menu/menu_search_previous_bookmark.png -text
+images/menu/menu_search_previous_bookmark_150.png -text
+images/menu/menu_search_previous_bookmark_200.png -text
 images/menu/menu_search_replace.png -text svneol=unset#image/png
 images/menu/menu_search_replace_150.png -text
 images/menu/menu_search_replace_200.png -text
 images/menu/menu_search_set_bookmark.png -text svneol=unset#image/png
 images/menu/menu_select_all.png -text svneol=unset#image/png
 images/menu/menu_set_free_bookmark.png -text
+images/menu/menu_set_free_bookmark_150.png -text
+images/menu/menu_set_free_bookmark_200.png -text
 images/menu/menu_stepinto.png -text svneol=unset#image/png
 images/menu/menu_stepinto_150.png -text
 images/menu/menu_stepinto_200.png -text

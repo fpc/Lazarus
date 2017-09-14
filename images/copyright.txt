@@ -95,7 +95,11 @@ item_unit_200.png
 menu directory:
 
 menu_clear_all_bookmarks.png
+menu_clear_all_bookmarks_150.png
+menu_clear_all_bookmarks_200.png
 menu_clear_file_bookmarks.png
+menu_clear_file_bookmarks_150.png
+menu_clear_file_bookmarks_200.png
 menu_close.png
 menu_close_150.png
 menu_close_200.png
@@ -196,12 +200,18 @@ menu_search_jumpforward.png
 menu_search_jumpforward_150.png
 menu_search_jumpforward_200.png
 menu_search_next_bookmark.png
+menu_search_next_bookmark_150.png
+menu_search_next_bookmark_200.png
 menu_search_previous_bookmark.png
+menu_search_previous_bookmark_150.png
+menu_search_previous_bookmark_200.png
 menu_search_replace.png
 menu_search_replace_150.png
 menu_search_replace_200.png
 menu_search_set_bookmark.png
 menu_set_free_bookmark.png
+menu_set_free_bookmark_150.png
+menu_set_free_bookmark_200.png
 menu_stepinto.png
 menu_stepinto_150.png
 menu_stepinto_200.png
