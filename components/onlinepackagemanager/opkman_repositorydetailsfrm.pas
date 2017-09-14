@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls;
+  StdCtrls, LazFileUtils;
 
 type
 
@@ -23,21 +23,26 @@ type
     lbOF2: TLabel;
     mDescription: TMemo;
     pnButtons: TPanel;
+    SDRep: TSaveDialog;
     procedure bOkClick(Sender: TObject);
     procedure edAddressChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    FAddress: String;
-    function IsDuplicateRepository(const AAddress: String): Boolean;
+    FFileName: string;
+    FIsNew: boolean;
+    function IsDuplicateRepository(const AAddress: string): boolean;
   public
-    property Address: String read FAddress;
+    property FileName: string read FFileName;
+    property IsNew: boolean read FIsNew write FIsNew;
   end;
 
 var
   RepositoryDetailsFrm: TRepositoryDetailsFrm;
 
 implementation
+
 uses opkman_const, opkman_common, opkman_options;
+
 {$R *.lfm}
 
 { TRepositoryDetailsFrm }
@@ -55,12 +60,11 @@ begin
   bOk.Hint := rsRepositoryDetailsFrm_bOk_Hint;
   bCancel.Caption := rsRepositoryDetailsFrm_bCancel_Caption;
   bCancel.Hint := rsRepositoryDetailsFrm_bCancel_Hint;
-  FAddress := '';
 end;
 
-function TRepositoryDetailsFrm.IsDuplicateRepository(const AAddress: String): Boolean;
+function TRepositoryDetailsFrm.IsDuplicateRepository(const AAddress: string): boolean;
 var
-  I: Integer;
+  I: integer;
 begin
   Result := False;
   for I := 0 to Options.RemoteRepository.Count - 1 do
@@ -74,21 +78,43 @@ begin
 end;
 
 procedure TRepositoryDetailsFrm.bOkClick(Sender: TObject);
+var
+  Address: String;
 begin
   if Trim(edName.Text) = '' then
   begin
-    MessageDlgEx(rsRepositoryDetailsFrm_Info1, mtInformation, [mbOk], Self);
+    MessageDlgEx(rsRepositoryDetailsFrm_Info1, mtInformation, [mbOK], Self);
     edName.SetFocus;
     Exit;
   end;
+
+  if (FIsNew) then
+  begin
+    if SDRep.Execute then
+    begin
+      if (not IsDirectoryEmpty(ExtractFilePath(SDRep.FileName))) then
+        if MessageDlgEx(Format(rsCreateRepositoryFrm_Info1, [ExtractFilePath(SDRep.FileName)]), mtConfirmation, [mbYes, mbNo], Self) = mrNo then
+          Exit;
+      if not DirectoryIsWritable(ExtractFilePath(SDRep.FileName)) then
+      begin
+        MessageDlgEx(Format(rsCreateRepositoryFrm_Info1, [ExtractFilePath(SDRep.FileName)]), mtConfirmation, [mbOK], Self);
+        Exit;
+      end;
+      FFileName := SDRep.FileName;
+    end
+    else
+      Exit;
+  end;
+
   if Trim(edAddress.Text) <> '' then
   begin
-    FAddress := Trim(edAddress.Text);
-    if FAddress[Length(FAddress)] <> '/' then
-      FAddress := FAddress + '/';
-    if IsDuplicateRepository(FAddress) then
-      FAddress := '';
+    Address := Trim(edAddress.Text);
+    if Address[Length(Address)] <> '/' then
+      Address := Address + '/';
+    if not IsDuplicateRepository(Address) then
+      Options.RemoteRepository.Add(Address);
   end;
+
   ModalResult := mrOk;
 end;
 
@@ -98,4 +124,3 @@ begin
 end;
 
 end.
-

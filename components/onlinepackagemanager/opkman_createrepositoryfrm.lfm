@@ -1,12 +1,12 @@
 object CreateRepositoryFrm: TCreateRepositoryFrm
-  Left = 350
+  Left = 286
   Height = 600
-  Top = 250
-  Width = 800
+  Top = 116
+  Width = 900
   BorderIcons = [biSystemMenu]
   Caption = 'CreateRepositoryFrm'
   ClientHeight = 600
-  ClientWidth = 800
+  ClientWidth = 900
   Constraints.MinHeight = 450
   Constraints.MinWidth = 650
   OnCreate = FormCreate
@@ -19,12 +19,12 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
     Left = 0
     Height = 41
     Top = 559
-    Width = 800
+    Width = 900
     Align = alBottom
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 37
-    ClientWidth = 796
+    ClientHeight = 39
+    ClientWidth = 898
     TabOrder = 2
     OnResize = pnButtonsResize
     object bOpen: TButton
@@ -50,7 +50,7 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
       TabOrder = 0
     end
     object bCancel: TButton
-      Left = 700
+      Left = 802
       Height = 27
       Top = 4
       Width = 85
@@ -239,7 +239,7 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
     Left = 287
     Height = 559
     Top = 0
-    Width = 513
+    Width = 613
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
@@ -258,7 +258,7 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
     Left = 287
     Height = 559
     Top = 0
-    Width = 513
+    Width = 613
     Align = alClient
     BevelOuter = bvNone
     Caption = 'No items to show'
@@ -272,19 +272,6 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
     ParentFont = False
     TabOrder = 3
     Visible = False
-  end
-  object SD: TSaveDialog
-    DefaultExt = '.opkman'
-    Filter = '*.opkman|*.opkman'
-    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
-    left = 41
-    top = 83
-  end
-  object OD: TOpenDialog
-    DefaultExt = '.opkman'
-    Filter = '*.opkman|*.opkman'
-    left = 88
-    top = 84
   end
   object imTree: TImageList
     left = 40
@@ -1132,12 +1119,6 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
     left = 85
     top = 32
   end
-  object ODPack: TOpenDialog
-    DefaultExt = '.json'
-    Filter = '*.json|*.json'
-    left = 139
-    top = 84
-  end
   object pm: TPopupMenu
     left = 139
     top = 37
@@ -1145,5 +1126,11 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
       Caption = 'Repository details'
       OnClick = miRepDetailsClick
     end
+  end
+  object ODRep: TOpenDialog
+    DefaultExt = '.opmrep'
+    Filter = '*.opmrep|*.opmrep'
+    left = 85
+    top = 104
   end
 end

@@ -440,7 +440,7 @@ resourcestring
   rsCreateRepositoryFrm_Error5 = 'Cannot delete package: "%s"!';
   rsCreateRepositoryFrm_Info1 = 'The following directory: "%s" is not empty.' + sLineBreak + 'It''s recommended to save the repository to an empty directory. Continue?';
   rsCreateRepositoryFrm_Info2 = 'The following directory: "%s" is read only.';
-  rsCreateRepositoryFrm_Info3 = 'The following repository package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and lazarus package must be unique!';
+  rsCreateRepositoryFrm_Info3 = 'The following package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and lazarus package must be unique!';
   rsCreateRepositoryFrm_Info5 = 'The following lazarus package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and lazarus package must be unique!';
   rsCreateRepositoryFrm_Info6 = 'Cannot locate package file: "%s"!';
   rsCreateRepositoryFrm_Info7 = 'Package successfully added to repository.';

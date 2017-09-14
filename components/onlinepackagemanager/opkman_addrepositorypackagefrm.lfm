@@ -54,9 +54,9 @@ object AddRepositoryPackageFrm: TAddRepositoryPackageFrm
   LCLVersion = '1.9.0.0'
   object rbCreateNew: TRadioButton
     Left = 31
-    Height = 19
+    Height = 25
     Top = 24
-    Width = 135
+    Width = 168
     Caption = 'Create a new package'
     Checked = True
     TabOrder = 0
@@ -64,9 +64,9 @@ object AddRepositoryPackageFrm: TAddRepositoryPackageFrm
   end
   object rbAddExisting: TRadioButton
     Left = 31
-    Height = 19
+    Height = 25
     Top = 64
-    Width = 180
+    Width = 220
     Caption = 'Add existing package from file'
     TabOrder = 1
   end
@@ -78,23 +78,23 @@ object AddRepositoryPackageFrm: TAddRepositoryPackageFrm
     Align = alBottom
     BevelOuter = bvNone
     BorderStyle = bsSingle
-    ClientHeight = 37
-    ClientWidth = 455
+    ClientHeight = 39
+    ClientWidth = 457
     TabOrder = 2
     object bOk: TButton
-      Left = 266
+      Left = 268
       Height = 27
       Top = 4
       Width = 85
       Anchors = [akTop, akRight]
       Caption = 'OK'
-      ModalResult = 1
+      OnClick = bOkClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
     end
     object bCancel: TButton
-      Left = 352
+      Left = 354
       Height = 27
       Top = 4
       Width = 85
@@ -107,5 +107,11 @@ object AddRepositoryPackageFrm: TAddRepositoryPackageFrm
       ShowHint = True
       TabOrder = 1
     end
+  end
+  object ODPack: TOpenDialog
+    DefaultExt = '.json'
+    Filter = '*.json|*.json'
+    left = 304
+    top = 16
   end
 end
