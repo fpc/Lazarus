@@ -6776,6 +6776,8 @@ images/components/tactionlist.png -text svneol=unset#image/png
 images/components/tactionlist_150.png -text
 images/components/tactionlist_200.png -text
 images/components/tapplicationproperties.png -text svneol=unset#image/png
+images/components/tapplicationproperties_150.png -text
+images/components/tapplicationproperties_200.png -text
 images/components/tarrow.png -text svneol=unset#image/png
 images/components/tarrow_150.png -text
 images/components/tarrow_200.png -text
@@ -6830,6 +6832,8 @@ images/components/tcombobox_150.png -text
 images/components/tcombobox_200.png -text
 images/components/tcomboboxex.png -text svneol=unset#image/png
 images/components/tcontrolbar.png -text svneol=unset#image/png
+images/components/tcontrolbar_150.png -text
+images/components/tcontrolbar_200.png -text
 images/components/tcoolbar.png -text svneol=unset#image/png
 images/components/tdatasource.png -text svneol=unset#image/png
 images/components/tdatasource_150.png -text
@@ -6901,6 +6905,8 @@ images/components/tfloatspinedit.png -text svneol=unset#image/png
 images/components/tfloatspinedit_150.png -text
 images/components/tfloatspinedit_200.png -text
 images/components/tflowpanel.png -text svneol=unset#image/png
+images/components/tflowpanel_150.png -text
+images/components/tflowpanel_200.png -text
 images/components/tfontdialog.png -text svneol=unset#image/png
 images/components/tfontdialog_150.png -text
 images/components/tfontdialog_200.png -text
@@ -6974,6 +6980,8 @@ images/components/tpaintbox.png -text svneol=unset#image/png
 images/components/tpaintbox_150.png -text
 images/components/tpaintbox_200.png -text
 images/components/tpairsplitter.png -text svneol=unset#image/png
+images/components/tpairsplitter_150.png -text
+images/components/tpairsplitter_200.png -text
 images/components/tpanel.png -text svneol=unset#image/png
 images/components/tpanel_150.png -text
 images/components/tpanel_200.png -text
@@ -7006,6 +7014,8 @@ images/components/tscrollbar.png -text svneol=unset#image/png
 images/components/tscrollbar_150.png -text
 images/components/tscrollbar_200.png -text
 images/components/tscrollbox.png -text svneol=unset#image/png
+images/components/tscrollbox_150.png -text
+images/components/tscrollbox_200.png -text
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog_150.png -text
 images/components/tservicemanager.png -text svneol=unset#image/png
@@ -7050,6 +7060,8 @@ images/components/ttrackbar.png -text svneol=unset#image/png
 images/components/ttrackbar_150.png -text
 images/components/ttrackbar_200.png -text
 images/components/ttrayicon.png -text svneol=unset#image/png
+images/components/ttrayicon_150.png -text
+images/components/ttrayicon_200.png -text
 images/components/ttreeview.png -text svneol=unset#image/png
 images/components/ttreeview_150.png -text
 images/components/ttreeview_200.png -text
