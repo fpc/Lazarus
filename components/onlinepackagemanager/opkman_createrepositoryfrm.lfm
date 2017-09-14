@@ -220,6 +220,7 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
       }
       GlyphShowMode = gsmAlways
       NumGlyphs = 2
+      OnClick = bDeleteClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
@@ -1130,5 +1131,19 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
     OnTimer = tmWaitTimer
     left = 85
     top = 32
+  end
+  object ODPack: TOpenDialog
+    DefaultExt = '.json'
+    Filter = '*.json|*.json'
+    left = 139
+    top = 84
+  end
+  object pm: TPopupMenu
+    left = 139
+    top = 37
+    object miRepDetails: TMenuItem
+      Caption = 'Repository details'
+      OnClick = miRepDetailsClick
+    end
   end
 end

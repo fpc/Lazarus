@@ -5,8 +5,8 @@ unit opkman_repositorydetailsfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  ExtCtrls, StdCtrls;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  StdCtrls;
 
 type
 
@@ -81,19 +81,13 @@ begin
     edName.SetFocus;
     Exit;
   end;
-  if (Trim(edAddress.Text) <> '') and (edAddress.Font.Color <> clGray) then
+  if Trim(edAddress.Text) <> '' then
   begin
     FAddress := Trim(edAddress.Text);
     if FAddress[Length(FAddress)] <> '/' then
       FAddress := FAddress + '/';
     if IsDuplicateRepository(FAddress) then
-    begin
-      if MessageDlgEx(Format(rsRepositoryDetailsFrm_Info3, [FAddress]), mtInformation, [mbYes, mbNo], Self) = mrNo then
-      begin
-        edAddress.SetFocus;
-        Exit;
-      end;
-    end;
+      FAddress := '';
   end;
   ModalResult := mrOk;
 end;

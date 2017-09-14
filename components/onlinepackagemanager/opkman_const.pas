@@ -407,6 +407,7 @@ resourcestring
   rsCreateRepositoryFrm_bDelete_Hint = 'Delete package from the current repository';
   rsCreateRepositoryFrm_bCancel_Caption = 'Cancel';
   rsCreateRepositoryFrm_bCancel_Hint = 'Close this dialog';
+  rsCreateRepositoryFrm_miRepDetails_Caption = 'Edit repository details';
   rsCreateRepositoryFrm_VSTPackages_Column0 = 'Repository/Packages';
   rsCreateRepositoryFrm_VSTDetails_Column0 = 'Description';
   rsCreateRepositoryFrm_VSTDetails_Column1 = 'Data';
@@ -436,11 +437,15 @@ resourcestring
   rsCreateRepositoryFrm_Error2 = 'File ' + cRemoteJSONFile + ' not found.';
   rsCreateRepositoryFrm_Error3 = 'Cannot save private repository: "%s". Error message: ' + sLineBreak + '"%s"';
   rsCreateRepositoryFrm_Error4 = 'Cannot add package to repository!';
+  rsCreateRepositoryFrm_Error5 = 'Cannot delete package: "%s"!';
   rsCreateRepositoryFrm_Info1 = 'The following directory: "%s" is not empty.' + sLineBreak + 'It''s recommended to save the repository to an empty directory. Continue?';
   rsCreateRepositoryFrm_Info2 = 'The following directory: "%s" is read only.';
   rsCreateRepositoryFrm_Info3 = 'The following repository package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and lazarus package must be unique!';
-  rsCreateRepositoryFrm_Info4 = 'The following file: "%s" already exists in the current repository.';
   rsCreateRepositoryFrm_Info5 = 'The following lazarus package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and lazarus package must be unique!';
+  rsCreateRepositoryFrm_Info6 = 'Cannot locate package file: "%s"!';
+  rsCreateRepositoryFrm_Info7 = 'Package successfully added to repository.';
+  rsCreateRepositoryFrm_Conf1 = 'Are you sure you wish to delete package: "%s"?';
+  rsCreateRepositoryFrm_Conf2 = 'The following file: "%s" already exists in the current repository. Overwrite?';
 
   //repository details
   rsRepositoryDetailsFrm_Caption = 'Repository details';

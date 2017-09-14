@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, FileUtil, fpjson,
   // LCL
   Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons,
+  StdCtrls, Buttons, Menus,
   // LazUtils
   LazFileUtils, LazUTF8,
   // OpkMan
@@ -57,20 +57,25 @@ type
     bOpen: TButton;
     bCreate: TButton;
     imTree: TImageList;
+    miRepDetails: TMenuItem;
     OD: TOpenDialog;
+    ODPack: TOpenDialog;
     pnButtons: TPanel;
     pnMessage: TPanel;
     pnPackages: TPanel;
     pnDetails: TPanel;
+    pm: TPopupMenu;
     SD: TSaveDialog;
     spMain: TSplitter;
     tmWait: TTimer;
     procedure bAddClick(Sender: TObject);
     procedure bCreateClick(Sender: TObject);
+    procedure bDeleteClick(Sender: TObject);
     procedure bOpenClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure miRepDetailsClick(Sender: TObject);
     procedure pnButtonsResize(Sender: TObject);
     procedure tmWaitTimer(Sender: TObject);
   private
@@ -81,7 +86,7 @@ type
     procedure EnableDisableButtons(const AEnable: Boolean);
     procedure ShowHideControls(const AType: Integer);
     function LoadRepository(const AFileName: String): Boolean;
-    function SaveRepository(const AFileName: String): Boolean;
+    function SaveRepository(const AFileName: String; const AIsNew: Boolean): Boolean;
     procedure PopulatePackageTree;
     procedure AddNewPackage;
     procedure AddExistingPackage;
@@ -166,6 +171,7 @@ begin
   bDelete.Hint := rsCreateRepositoryFrm_bDelete_Hint;
   bCancel.Caption := rsCreateRepositoryFrm_bCancel_Caption;
   bCancel.Hint := rsCreateRepositoryFrm_bCancel_Hint;
+  miRepDetails.Caption := rsCreateRepositoryFrm_miRepDetails_Caption;
   EnableDisableButtons(True);
   ShowHideControls(0);
 
@@ -198,6 +204,7 @@ begin
     TreeOptions.PaintOptions := [toHideFocusRect, toPopupMode, toShowButtons, toShowDropmark, toShowRoot, toThemeAware, toUseBlendedImages];
     TreeOptions.SelectionOptions := [toRightClickSelect];
     TreeOptions.AutoOptions := [toAutoTristateTracking];
+    PopupMenu := pm;
     OnGetText := @VSTPackagesGetText;
     OnGetImageIndex := @VSTPackagesGetImageIndex;
     OnHeaderClick := @VSTPackagesHeaderClick;
@@ -238,6 +245,7 @@ begin
     TreeOptions.PaintOptions := [toHideFocusRect, toPopupMode, toShowButtons, toShowDropmark, toThemeAware, toUseBlendedImages];
     TreeOptions.SelectionOptions := [toRightClickSelect, toFullRowSelect];
     TreeOptions.AutoOptions := [toAutoTristateTracking];
+    PopupMenu := pm;
     OnGetText := @VSTDetailsGetText;
     OnGetImageIndex := @VSTDetailsGetImageIndex;
     OnFreeNode := @VSTDetailsFreeNode;
@@ -261,16 +269,12 @@ begin
       FRepository.FDescription := RepositoryDetailsFrm.mDescription.Text;
       if SD.Execute then
       begin
-        if SaveRepository(SD.FileName) then
+        if SaveRepository(SD.FileName, True) then
         begin
           if RepositoryDetailsFrm.Address <> '' then
             Options.RemoteRepository.Add(RepositoryDetailsFrm.Address);
           if LoadRepository(SD.FileName) then
-          begin
             PopulatePackageTree;
-            ShowHideControls(2);
-            EnableDisableButtons(True);
-          end;
         end
         else
           GoTo ShowFormAgain;
@@ -278,6 +282,49 @@ begin
     end;
   finally
     RepositoryDetailsFrm.Free;
+  end;
+end;
+
+procedure TCreateRepositoryFrm.bDeleteClick(Sender: TObject);
+var
+  Node: PVirtualNode;
+  Data: PData;
+  PackageFile: String;
+  PackageIndex: Integer;
+  CanGo: Boolean;
+  JSON: TJSONStringType;
+begin
+  Node := FVSTPackages.GetFirstSelected;
+  if Node <> nil then
+  begin
+    Data := FVSTPackages.GetNodeData(Node);
+    if Data^.FDataType = 1 then
+    begin
+      if MessageDlgEx(Format(rsCreateRepositoryFrm_Conf1, [Data^.FDisplayname]), mtConfirmation, [mbYes, mbNo], Self) = mrNo then
+        Exit;
+      CanGo := False;
+      PackageIndex := FSerializablePackages.FindPackageIndex(Data^.FName, fpbPackageName);
+      if PackageIndex <> -1 then
+      begin
+        PackageFile := ExtractFilePath(FRepository.FPath) + Data^.FRepositoryFileName;
+        FSerializablePackages.DeletePackage(PackageIndex);
+        JSON := '';
+        if FSerializablePackages.PackagesToJSON(JSON) then
+        begin
+          if SaveJSONToFile(ExtractFilePath(FRepository.FPath) + cRemoteJSONFile, JSON) then
+          begin
+            DeleteFile(PackageFile);
+            if LoadRepository(FRepository.FPath) then
+            begin
+              CanGo := True;
+              PopulatePackageTree;
+            end;
+          end;
+        end;
+      end;
+      if not CanGo then
+        MessageDlgEx(Format(rsCreateRepositoryFrm_Error5, [Data^.FDisplayname]), mtError, [mbOk], Self);
+    end;
   end;
 end;
 
@@ -304,13 +351,13 @@ begin
 
       if not Result then
       begin
-        for I := 0 to MetaPackage.LazarusPackages.Count - 1 do
+        for I := 0 to SP.Items[0].LazarusPackages.Count - 1 do
         begin
-          LazarusPackage := FSerializablePackages.FindLazarusPackage(TLazarusPackage(MetaPackage.LazarusPackages.Items[I]).Name);
+          LazarusPackage := FSerializablePackages.FindLazarusPackage(TLazarusPackage(SP.Items[0].LazarusPackages.Items[I]).Name);
           if LazarusPackage <> nil then
           begin
             Result := True;
-            MessageDlgEx(Format(rsCreateRepositoryFrm_Info5, [TLazarusPackage(MetaPackage.LazarusPackages.Items[I]).Name]), mtInformation, [mbOk], Self);
+            MessageDlgEx(Format(rsCreateRepositoryFrm_Info5, [TLazarusPackage(SP.Items[0].LazarusPackages.Items[I]).Name]), mtInformation, [mbOk], Self);
             Break;
           end;
         end;
@@ -318,14 +365,15 @@ begin
         if not Result then
         begin
           TargetPackageFile := AppendPathDelim(ExtractFilePath(FRepository.FPath)) + ExtractFileName(APackageFile);
-          if FileExists(TargetPackageFile) then
+          if TargetPackageFile <> APackageFile then
           begin
-            Result := True;
-            MessageDlgEx(Format(rsCreateRepositoryFrm_Info4, [TargetPackageFile]), mtInformation, [mbOk], Self);
-          end;
+            if FileExists(TargetPackageFile) then
+              if MessageDlgEx(Format(rsCreateRepositoryFrm_Conf2, [TargetPackageFile]), mtInformation, [mbYes, mbNo], Self) = mrNo then
+                Result := True;
 
-          if (not Result) and (not CopyFile(APackageFile, TargetPackageFile, True)) then
-            Result := True;
+            if (not Result) and (not CopyFile(APackageFile, TargetPackageFile, [cffOverwriteFile], True)) then
+              Result := True;
+          end;
         end;
       end;
     end;
@@ -369,18 +417,18 @@ begin
                     begin
                       CanGo := True;
                       PopulatePackageTree;
-                      ShowHideControls(2);
-                      EnableDisableButtons(True);
                     end;
                   end;
                 end;
               end;
             end;
           end;
-          //DeleteFile(JSONFile);
+          DeleteDirectory(DestDir, False);
         end;
         if not CanGo then
-          MessageDlgEx(rsCreateRepositoryFrm_Error4, mtError, [mbOk], Self);
+          MessageDlgEx(rsCreateRepositoryFrm_Error4, mtError, [mbOk], Self)
+        else
+          MessageDlgEx(rsCreateRepositoryFrm_Info7, mtInformation, [mbOk], Self);
       end;
     end;
   finally
@@ -389,8 +437,51 @@ begin
 end;
 
 procedure TCreateRepositoryFrm.AddExistingPackage;
+var
+  PackageFile: String;
+  JSONFile: String;
+  JSON: TJSONStringType;
+  CanGo: Boolean;
 begin
+  ODPack.InitialDir := Options.LastPackagedirDst;
+  if ODPack.Execute then
+  begin
+    JSONFile := ODPack.FileName;
+    PackageFile := ChangeFileExt(JSONFile, '.zip');
+    if not FileExists(PackageFile) then
+    begin
+      MessageDlgEx(Format(rsCreateRepositoryFrm_Info5, [ExtractFileName(PackageFile)]), mtInformation, [mbOk], Self);
+      MessageDlgEx(rsCreateRepositoryFrm_Error4, mtError, [mbOk], Self);
+      Exit;
+    end;
 
+    CanGo := False;
+    if LoadJSONFromFile(JSONFile, JSON) then
+    begin
+      if not IsDuplicatePackage(JSON, PackageFile) then
+      begin
+        if FSerializablePackages.AddPackageFromJSON(JSON) then
+        begin
+          JSON := '';
+          if FSerializablePackages.PackagesToJSON(JSON) then
+          begin
+            if SaveJSONToFile(ExtractFilePath(FRepository.FPath) + cRemoteJSONFile, JSON) then
+            begin
+              if LoadRepository(FRepository.FPath) then
+              begin
+                CanGo := True;
+                PopulatePackageTree;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+    if not CanGo then
+      MessageDlgEx(rsCreateRepositoryFrm_Error4, mtError, [mbOk], Self)
+    else
+      MessageDlgEx(rsCreateRepositoryFrm_Info7, mtInformation, [mbOk], Self);
+  end;
 end;
 
 procedure TCreateRepositoryFrm.bAddClick(Sender: TObject);
@@ -413,14 +504,8 @@ end;
 procedure TCreateRepositoryFrm.bOpenClick(Sender: TObject);
 begin
   if OD.Execute then
-  begin
     if LoadRepository(OD.FileName) then
-    begin
       PopulatePackageTree;
-      ShowHideControls(2);
-      EnableDisableButtons(True);
-    end
-  end
 end;
 
 procedure TCreateRepositoryFrm.FormDestroy(Sender: TObject);
@@ -435,19 +520,57 @@ begin
   tmWait.Enabled := True;
 end;
 
+procedure TCreateRepositoryFrm.miRepDetailsClick(Sender: TObject);
+var
+  RepositoryDetailsFrm: TRepositoryDetailsFrm;
+  Node: PVirtualNode;
+  Data: PData;
+begin
+  RepositoryDetailsFrm := TRepositoryDetailsFrm.Create(Self);
+  try
+    RepositoryDetailsFrm.edName.Text := FRepository.FName;
+    RepositoryDetailsFrm.edAddress.Text := FRepository.FAddress;
+    RepositoryDetailsFrm.mDescription.Text := FRepository.FDescription;
+    RepositoryDetailsFrm.ShowModal;
+    if RepositoryDetailsFrm.ModalResult = mrOk then
+    begin
+      if FRepository.FName <> RepositoryDetailsFrm.edName.Text then
+      begin
+        Node := FVSTPackages.GetFirst;
+        if Node <> nil then
+        begin
+          Data := FVSTPackages.GetNodeData(Node);
+          if Data^.FDataType = 0 then
+          begin
+            Data^.FName := RepositoryDetailsFrm.edName.Text;
+            FVSTPackages.ReinitNode(Node, False);
+            FVSTPackages.RepaintNode(Node);
+          end;
+        end;
+      end;
+      FRepository.FName := RepositoryDetailsFrm.edName.Text;
+      FRepository.FAddress := RepositoryDetailsFrm.edAddress.Text;
+      FRepository.FDescription := RepositoryDetailsFrm.mDescription.Text;
+      if SaveRepository(FRepository.FPath, False) then
+      begin
+        if RepositoryDetailsFrm.Address <> '' then
+           Options.RemoteRepository.Add(RepositoryDetailsFrm.Address);
+        if LoadRepository(FRepository.FPath) then
+          PopulatePackageTree;
+      end;
+    end;
+  finally
+    RepositoryDetailsFrm.Free;
+  end;
+end;
+
 procedure TCreateRepositoryFrm.tmWaitTimer(Sender: TObject);
 begin
   tmWait.Enabled := False;
-  if (Options.LastPrivateRepository <> '') and
-      (FileExists(Options.LastPrivateRepository)) and
-       (FileExists(AppendPathDelim(ExtractFilePath(Options.LastPrivateRepository)) + cRemoteJSONFile)) then
+  if (Options.LastPrivateRepository <> '') and (FileExists(Options.LastPrivateRepository)) then
   begin
     if LoadRepository(Options.LastPrivateRepository) then
-    begin
       PopulatePackageTree;
-      ShowHideControls(2);
-      EnableDisableButtons(True);
-    end;
   end;
 end;
 
@@ -502,6 +625,7 @@ end;
 function TCreateRepositoryFrm.LoadRepository(const AFileName: String): Boolean;
 var
   FS: TFileStream;
+  DestDir: String;
 begin
   Result := False;
   FS := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
@@ -514,6 +638,9 @@ begin
       Caption := rsCreateRepositoryFrm_Caption + '(' + AFileName + ')';
       Options.LastPrivateRepository := AFileName;
       Options.Changed := True;
+      DestDir := AppendPathDelim(AppendPathDelim(ExtractFilePath(AFileName)) + 'Temp');
+      if DirectoryExists(DestDir) then
+        DeleteDirectory(DestDir, False);
       Result := True;
     except
       on E: Exception do
@@ -528,25 +655,22 @@ begin
   end;
 end;
 
-function TCreateRepositoryFrm.SaveRepository(const AFileName: String): Boolean;
+function TCreateRepositoryFrm.SaveRepository(const AFileName: String;
+  const AIsNew: Boolean): Boolean;
 var
   FS: TFileStream;
   FHandle: THandle;
 begin
   Result := False;
-  if not IsDirectoryEmpty(ExtractFilePath(AFileName)) then
+  if (AIsNew) and (not IsDirectoryEmpty(ExtractFilePath(AFileName))) then
   begin
     if MessageDlgEx(Format(rsCreateRepositoryFrm_Info1, [ExtractFilePath(AFileName)]), mtConfirmation, [mbYes, mbNo], Self) = mrNo then
-    begin
-      Result := False;
       Exit;
-    end;
   end;
 
   if not DirectoryIsWritable(ExtractFilePath(AFileName)) then
   begin
     MessageDlgEx(Format(rsCreateRepositoryFrm_Info1, [ExtractFilePath(AFileName)]), mtConfirmation, [mbOk], Self);
-    Result := False;
     Exit;
   end;
 
@@ -556,12 +680,17 @@ begin
       FS.WriteAnsiString(FRepository.FName);
       FS.WriteAnsiString(FRepository.FAddress);
       FS.WriteAnsiString(FRepository.FDescription);
-      FHandle := FileCreate(ExtractFilePath(AFileName) + cRemoteJSONFile);
-      if fHandle <> THandle(-1) then
+      if AIsNew then
       begin
+        FHandle := FileCreate(ExtractFilePath(AFileName) + cRemoteJSONFile);
+        if fHandle <> THandle(-1) then
+        begin
+          Result := True;
+          FileClose(FHandle);
+        end;
+      end
+      else
         Result := True;
-        FileClose(FHandle);
-      end;
     except
       on E: Exception do
         MessageDlgEx(Format(rsCreateRepositoryFrm_Error3, [AFileName, E.Message]), mtError, [mbOk], Self);
@@ -597,10 +726,8 @@ begin
       MetaPackage := TMetaPackage(FSerializablePackages.Items[I]);
       Node := FVSTPackages.AddChild(RootNode);
       Data := FVSTPackages.GetNodeData(Node);
-      if Trim(MetaPackage.DisplayName) <> '' then
-        Data^.FName := MetaPackage.DisplayName
-      else
-        Data^.FName := MetaPackage.Name;
+      Data^.FDisplayName := MetaPackage.DisplayName;
+      Data^.FName := MetaPackage.Name;
       Data^.FCategory := MetaPackage.Category;
       Data^.FRepositoryFileName := MetaPackage.RepositoryFileName;
       Data^.FRepositoryFileSize := MetaPackage.RepositoryFileSize;
@@ -634,6 +761,8 @@ begin
     FVSTPackages.FocusedNode := RootNode;
     FVSTPackages.Expanded[RootNode] := True;
   end;
+  ShowHideControls(2);
+  EnableDisableButtons(True);
 end;
 
 function TCreateRepositoryFrm.GetDisplayString(const AStr: String): String;
@@ -704,7 +833,7 @@ begin
   Data := FVSTPackages.GetNodeData(Node);
   case Data^.FDataType of
     0: CellText := FRepository.FName;
-    1: CellText := Data^.FName;
+    1: CellText := Data^.FDisplayName;
     2: CellText := Data^.FName;
   end;
 end;
