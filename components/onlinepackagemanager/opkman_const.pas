@@ -434,15 +434,12 @@ resourcestring
   rsCreateRepositoryFrm_VSTText_PackageType2 = 'Runtime';
   rsCreateRepositoryFrm_VSTText_PackageType3 = 'Runtime only, cannot be installed in IDE';
   rsCreateRepositoryFrm_Error1 = 'Cannot open private repository: "%s". Error message: ' + sLineBreak + '"%s"';
-  rsCreateRepositoryFrm_Error2 = 'File ' + cRemoteJSONFile + ' not found.';
   rsCreateRepositoryFrm_Error3 = 'Cannot save private repository: "%s". Error message: ' + sLineBreak + '"%s"';
   rsCreateRepositoryFrm_Error4 = 'Cannot add package to repository!';
   rsCreateRepositoryFrm_Error5 = 'Cannot delete package: "%s"!';
   rsCreateRepositoryFrm_Info1 = 'The following directory: "%s" is not empty.' + sLineBreak + 'It''s recommended to save the repository to an empty directory. Continue?';
-  rsCreateRepositoryFrm_Info2 = 'The following directory: "%s" is read only.';
-  rsCreateRepositoryFrm_Info3 = 'The following package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and lazarus package must be unique!';
-  rsCreateRepositoryFrm_Info5 = 'The following lazarus package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and lazarus package must be unique!';
-  rsCreateRepositoryFrm_Info6 = 'Cannot locate package file: "%s"!';
+  rsCreateRepositoryFrm_Info3 = 'The following package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and Lazarus package must be unique!';
+  rsCreateRepositoryFrm_Info5 = 'The following Lazarus package: "%s" is already in the current repository.' + sLineBreak + 'Each repository and Lazarus package must be unique!';
   rsCreateRepositoryFrm_Info7 = 'Package successfully added to repository.';
   rsCreateRepositoryFrm_Conf1 = 'Are you sure you wish to delete package: "%s"?';
   rsCreateRepositoryFrm_Conf2 = 'The following file: "%s" already exists in the current repository. Overwrite?';
@@ -452,7 +449,7 @@ resourcestring
   rsRepositoryDetailsFrm_lbName_Caption = 'Name';
   rsRepositoryDetailsFrm_edName_Hint = 'Enter the repository name';
   rsRepositoryDetailsFrm_lbAddress_Caption = 'Address';
-  rsRepositoryDetailsFrm_edAddress_Hint = 'Enter the repository address(Ex: "http://localhost/packages/")';
+  rsRepositoryDetailsFrm_edAddress_Hint = 'Enter the repository address (e.g.: "http://localhost/packages/")';
   rsRepositoryDetailsFrm_lbDescription_Caption = 'Description';
   rsRepositoryDetailsFrm_mDescription_Hint = 'Enter the repository description';
   rsRepositoryDetailsFrm_bOk_Caption = 'OK';
@@ -460,8 +457,6 @@ resourcestring
   rsRepositoryDetailsFrm_bCancel_Caption = 'Cancel';
   rsRepositoryDetailsFrm_bCancel_Hint = 'Close the dialog without saving';
   rsRepositoryDetailsFrm_Info1 = 'Please enter the repository name.';
-  rsRepositoryDetailsFrm_Info2 = 'Please enter the repository address.';
-  rsRepositoryDetailsFrm_Info3 = 'The following repository: "%s" is already in the repository list. Continue?';
 
   //add package to repository
   rsAddRepositoryPackageFrm_Caption = 'Add repository package';
