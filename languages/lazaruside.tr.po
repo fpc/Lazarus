@@ -19475,6 +19475,10 @@ msgstr "FPC ve FPC kaynaklarını http://sourceforge.net/projects/lazarus/?sourc
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Hata ayıklama veya derleme yaparken Lazarus'u derleyemezsiniz."
 
+#: lazarusidestrconsts.lisyoucannotchangethebuildmodewhilecompiling
+msgid "You cannot change the build mode while compiling."
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"
 msgstr ""

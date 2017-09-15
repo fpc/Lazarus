@@ -18974,6 +18974,10 @@ msgstr "FPC ja sen lähdekoodit löytyvät: http://sourceforge.net/projects/laza
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Lazarusta ei voi koota kun ohjelmaa ajetaan tai käännetään."
 
+#: lazarusidestrconsts.lisyoucannotchangethebuildmodewhilecompiling
+msgid "You cannot change the build mode while compiling."
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"
 msgstr ""

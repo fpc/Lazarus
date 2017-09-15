@@ -19151,6 +19151,10 @@ msgstr "„FPC“ ir jo pirminius kodus galima parsisiųsti iš „http://source
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Derinimo ar kompiliavimo metu negalima daryti „Lazarus“."
 
+#: lazarusidestrconsts.lisyoucannotchangethebuildmodewhilecompiling
+msgid "You cannot change the build mode while compiling."
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"
 msgstr "Elementus galima pažymėti spaudžiant pabrauktų raidžių klavišus"

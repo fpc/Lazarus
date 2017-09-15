@@ -19788,6 +19788,10 @@ msgstr ""
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "No podeu muntar el lazarus mentre s'està depurant o compilant."
 
+#: lazarusidestrconsts.lisyoucannotchangethebuildmodewhilecompiling
+msgid "You cannot change the build mode while compiling."
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"
 msgstr ""

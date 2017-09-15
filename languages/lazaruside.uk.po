@@ -19130,6 +19130,10 @@ msgstr "FPC і його сирці можна звантажити з http://sou
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Ви не можете перезібрати Lazarus  під час зневаджування або компіляції."
 
+#: lazarusidestrconsts.lisyoucannotchangethebuildmodewhilecompiling
+msgid "You cannot change the build mode while compiling."
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"
 msgstr "Елементи можна вибрати, просто натискаючи підкреслені літери"

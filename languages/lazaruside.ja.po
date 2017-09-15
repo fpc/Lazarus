@@ -19126,6 +19126,10 @@ msgstr "次のURLからFPCとFPCソースをダウンロードできます：htt
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "デバッグ中もしくはコンパイル中に Lazarus を構築できません。"
 
+#: lazarusidestrconsts.lisyoucannotchangethebuildmodewhilecompiling
+msgid "You cannot change the build mode while compiling."
+msgstr ""
+
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"
 msgstr "アンダースコアされた文字列を押すだけで項目を選択できます。"
