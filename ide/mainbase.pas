@@ -357,7 +357,8 @@ begin
   NewMode := Project1.BuildModes[BuildModeIndex];
   if NewMode = Project1.ActiveBuildMode then exit;
   if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
-    IDEMessageDialog('Error','You can not change the build mode while compiling.',
+    IDEMessageDialog(dlgMsgWinColorUrgentError,
+      lisYouCanNotChangeTheBuildModeWhileCompiling,
       mtError,[mbOk]);
     exit;
   end;

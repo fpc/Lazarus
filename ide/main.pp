@@ -4119,7 +4119,7 @@ begin
   if Project1=nil then exit;
   // This is kind of a hack. Copy OtherDefines from project to current
   //  buildmode's compiler options and then back after they are modified.
-  // Only needed for projects, packages don't have buildmodes.
+  // Only needed for projects, because packages don't have buildmodes.
   Project1.CompilerOptions.OtherDefines.Assign(Project1.OtherDefines);
 
   Capt := Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]);
@@ -6680,161 +6680,162 @@ begin
       exit;
     end;
 
-    // get main source filename
-    if not Project1.IsVirtual then begin
-      WorkingDir:=Project1.Directory;
-      SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
-    end else begin
-      WorkingDir:=GetTestBuildDirectory;
-      SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
-    end;
+    try
+      // change tool status
+      //  It can still be itDebugger, if the debugger is still stopping.
+      //  Prevent any "Run" command after building, until the debugger is clear.
+      OldToolStatus := ToolStatus;
+      ToolStatus:=itBuilder;
 
-    // compile required packages
-    if not (pbfDoNotCompileDependencies in Flags) then begin
-      Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiling);
-      if Result<>mrOk then begin
-        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] handler lihtProjectDependenciesCompiling negative']);
-        exit;
+      // get main source filename
+      if not Project1.IsVirtual then begin
+        WorkingDir:=Project1.Directory;
+        SrcFilename:=CreateRelativePath(Project1.MainUnitInfo.Filename,WorkingDir);
+      end else begin
+        WorkingDir:=GetTestBuildDirectory;
+        SrcFilename:=MainBuildBoss.GetTestUnitFilename(Project1.MainUnitInfo);
       end;
-      PkgFlags:=[pcfDoNotSaveEditorFiles];
-      if pbfCompileDependenciesClean in Flags then
-        Include(PkgFlags,pcfCompileDependenciesClean);
-      Result:=PkgBoss.DoCompileProjectDependencies(Project1,PkgFlags);
-      if Result <> mrOk then
+
+      // compile required packages
+      if not (pbfDoNotCompileDependencies in Flags) then begin
+        Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiling);
+        if Result<>mrOk then begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] handler lihtProjectDependenciesCompiling negative']);
+          exit;
+        end;
+        PkgFlags:=[pcfDoNotSaveEditorFiles];
+        if pbfCompileDependenciesClean in Flags then
+          Include(PkgFlags,pcfCompileDependenciesClean);
+        Result:=PkgBoss.DoCompileProjectDependencies(Project1,PkgFlags);
+        if Result <> mrOk then
+        begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] PkgBoss.DoCompileProjectDependencies failed']);
+          exit;
+        end;
+        Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiled);
+        if Result<>mrOk then begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] handler lihtProjectDependenciesCompiled negative']);
+          exit;
+        end;
+      end;
+
+      // warn for ambiguous files
+      Result:=DoWarnAmbiguousFiles;
+      if Result<>mrOk then
       begin
-        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] PkgBoss.DoCompileProjectDependencies failed']);
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] DoWarnAmbiguousFiles negative']);
         exit;
       end;
-      Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiled);
-      if Result<>mrOk then begin
-        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] handler lihtProjectDependenciesCompiled negative']);
-        exit;
+
+      // check if build is needed (only if we will call the compiler)
+      // and check if a 'build all' is needed
+      NeedBuildAllFlag:=false;
+      NoBuildNeeded:= false;
+      aCompileHint:='';
+      if (AReason in Project1.CompilerOptions.CompileReasons) then begin
+        Result:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
+                                                   NeedBuildAllFlag,aCompileHint);
+        if  (AReason = crRun)
+        and (not (pfAlwaysBuild in Project1.Flags)) then begin
+          if Result=mrNo then begin
+            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
+            Result:=mrOk;
+            // continue for now, check if 'Before' tool is required
+            NoBuildNeeded:= true;
+          end
+          else
+          if Result<>mrYes then
+          begin
+            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
+            exit;
+          end;
+        end;
       end;
-    end;
+      if aCompileHint<>'' then
+        aCompileHint:='Compile Reason: '+aCompileHint;
 
-    // warn for ambiguous files
-    Result:=DoWarnAmbiguousFiles;
-    if Result<>mrOk then
-    begin
-      debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] DoWarnAmbiguousFiles negative']);
-      exit;
-    end;
+      // execute compilation tool 'Before'
+      if not (pbfSkipTools in Flags) then begin
+        ToolBefore:=TProjectCompilationToolOptions(
+                                          Project1.CompilerOptions.ExecuteBefore);
+        if (AReason in ToolBefore.CompileReasons) then begin
+          Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
+                 Project1.Directory, lisProject2+lisExecutingCommandBefore,
+                 aCompileHint);
+          if Result<>mrOk then
+          begin
+            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteBefore.Execute failed']);
+            exit;
+          end;
+        end;
+      end;
 
-    // check if build is needed (only if we will call the compiler)
-    // and check if a 'build all' is needed
-    NeedBuildAllFlag:=false;
-    NoBuildNeeded:= false;
-    aCompileHint:='';
-    if (AReason in Project1.CompilerOptions.CompileReasons) then begin
-      Result:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
-                                                 NeedBuildAllFlag,aCompileHint);
-      if  (AReason = crRun)
-      and (not (pfAlwaysBuild in Project1.Flags)) then begin
-        if Result=mrNo then begin
-          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
-          Result:=mrOk;
-          // continue for now, check if 'Before' tool is required
-          NoBuildNeeded:= true;
-        end
-        else
-        if Result<>mrYes then
-        begin
-          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
+      // leave if no further action is needed
+      if NoBuildNeeded then
+        exit;
+
+      // create unit output directory
+      UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
+      if Project1.IsVirtual and (not FilenameIsAbsolute(UnitOutputDirectory)) then
+        UnitOutputDirectory:=TrimFilename(WorkingDir+PathDelim+UnitOutputDirectory);
+      if (FilenameIsAbsolute(UnitOutputDirectory))
+      and (not DirPathExistsCached(UnitOutputDirectory)) then begin
+        if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
+          Result:=IDEQuestionDialog(lisCreateDirectory,
+            Format(lisTheOutputDirectoryIsMissing, [UnitOutputDirectory]),
+            mtConfirmation, [mrYes, lisCreateIt, mrCancel]);
+          if Result<>mrYes then exit;
+        end;
+        Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);
+        if Result<>mrOk then begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',UnitOutputDirectory,'" failed']);
           exit;
         end;
       end;
-    end;
-    if aCompileHint<>'' then
-      aCompileHint:='Compile Reason: '+aCompileHint;
 
-    // execute compilation tool 'Before'
-    if not (pbfSkipTools in Flags) then begin
-      ToolBefore:=TProjectCompilationToolOptions(
-                                        Project1.CompilerOptions.ExecuteBefore);
-      if (AReason in ToolBefore.CompileReasons) then begin
-        Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
-               Project1.Directory, lisProject2+lisExecutingCommandBefore,
-               aCompileHint);
-        if Result<>mrOk then
-        begin
-          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteBefore.Execute failed']);
+      // create target output directory
+      TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
+      TargetExeDirectory:=ExtractFilePath(TargetExeName);
+      if (FilenameIsAbsolute(TargetExeDirectory))
+      and (not DirPathExistsCached(TargetExeDirectory)) then begin
+        if not FileIsInPath(TargetExeDirectory,WorkingDir) then begin
+          Result:=IDEQuestionDialog(lisCreateDirectory,
+            Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
+            mtConfirmation, [mrYes, lisCreateIt, mrCancel]);
+          if Result<>mrYes then exit;
+        end;
+        Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
+        if Result<>mrOk then begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',TargetExeDirectory,'" failed']);
           exit;
         end;
       end;
-    end;
 
-    // leave if no further action is needed
-    if NoBuildNeeded then
-      exit;
-
-    // create unit output directory
-    UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
-    if Project1.IsVirtual and (not FilenameIsAbsolute(UnitOutputDirectory)) then
-      UnitOutputDirectory:=TrimFilename(WorkingDir+PathDelim+UnitOutputDirectory);
-    if (FilenameIsAbsolute(UnitOutputDirectory))
-    and (not DirPathExistsCached(UnitOutputDirectory)) then begin
-      if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
-        Result:=IDEQuestionDialog(lisCreateDirectory,
-          Format(lisTheOutputDirectoryIsMissing, [UnitOutputDirectory]),
-          mtConfirmation, [mrYes, lisCreateIt, mrCancel]);
-        if Result<>mrYes then exit;
+      // create application bundle
+      if Project1.UseAppBundle and (Project1.MainUnitID>=0)
+      and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
+      then begin
+        Result:=CreateApplicationBundle(TargetExeName, Project1.GetTitleOrName);
+        if not (Result in [mrOk,mrIgnore]) then begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CreateApplicationBundle "',TargetExeName,'" failed']);
+          exit;
+        end;
+        Result:=CreateAppBundleSymbolicLink(TargetExeName);
+        if not (Result in [mrOk,mrIgnore]) then begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CreateAppBundleSymbolicLink "',TargetExeName,'" failed']);
+          exit;
+        end;
       end;
-      Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);
-      if Result<>mrOk then begin
-        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',UnitOutputDirectory,'" failed']);
+
+      // update project resource files
+      if not Project1.ProjResources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory)
+      then begin
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ProjResources.Regenerate failed']);
         exit;
       end;
-    end;
 
-    // create target output directory
-    TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
-    TargetExeDirectory:=ExtractFilePath(TargetExeName);
-    if (FilenameIsAbsolute(TargetExeDirectory))
-    and (not DirPathExistsCached(TargetExeDirectory)) then begin
-      if not FileIsInPath(TargetExeDirectory,WorkingDir) then begin
-        Result:=IDEQuestionDialog(lisCreateDirectory,
-          Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
-          mtConfirmation, [mrYes, lisCreateIt, mrCancel]);
-        if Result<>mrYes then exit;
-      end;
-      Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
-      if Result<>mrOk then begin
-        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',TargetExeDirectory,'" failed']);
-        exit;
-      end;
-    end;
-
-    // create application bundle
-    if Project1.UseAppBundle and (Project1.MainUnitID>=0)
-    and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
-    then begin
-      Result:=CreateApplicationBundle(TargetExeName, Project1.GetTitleOrName);
-      if not (Result in [mrOk,mrIgnore]) then begin
-        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CreateApplicationBundle "',TargetExeName,'" failed']);
-        exit;
-      end;
-      Result:=CreateAppBundleSymbolicLink(TargetExeName);
-      if not (Result in [mrOk,mrIgnore]) then begin
-        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CreateAppBundleSymbolicLink "',TargetExeName,'" failed']);
-        exit;
-      end;
-    end;
-
-    // update project resource files
-    if not Project1.ProjResources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory)
-    then begin
-      debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ProjResources.Regenerate failed']);
-      exit;
-    end;
-
-    if (AReason in Project1.CompilerOptions.CompileReasons)
-    and (not (pbfDoNotCompileProject in Flags)) then begin
-      try
-        // change tool status
-        //  It can still be itDebugger, if the debugger is still stopping.
-        //  Prevent any "Run" command after building, until the debugger is clear.
-        OldToolStatus := ToolStatus;
-        ToolStatus:=itBuilder;
+      if (AReason in Project1.CompilerOptions.CompileReasons)
+      and (not (pbfDoNotCompileProject in Flags)) then begin
         // compile
         CompilerFilename:=Project1.GetCompilerFilename;
         // Hint: use absolute paths, because some external tools resolve symlinked directories
@@ -6882,36 +6883,35 @@ begin
           debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] UpdateProjectPOFile failed']);
           exit;
         end;
-
-      finally
-        if OldToolStatus = itDebugger then begin
-          ToolStatus := OldToolStatus;
-          if DebugBoss <> nil then
-            DebugBoss.UpdateToolStatus;  // Maybe "Reset Debugger was called and changed the state?
-        end
-        else
-          ToolStatus:=itNone;
       end;
-    end;
 
-    // execute compilation tool 'After'
-    if not (pbfSkipTools in Flags) then begin
-      ToolAfter:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteAfter);
-      // no need to check for mrOk, we are exit if it wasn't
-      if (AReason in ToolAfter.CompileReasons) then begin
-        Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
-                            Project1.Directory,
-                            lisProject2+lisExecutingCommandAfter,aCompileHint);
-        if Result<>mrOk then
-        begin
-          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteAfter.Execute failed']);
-          exit;
+      // execute compilation tool 'After'
+      if not (pbfSkipTools in Flags) then begin
+        ToolAfter:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteAfter);
+        // no need to check for mrOk, we are exit if it wasn't
+        if (AReason in ToolAfter.CompileReasons) then begin
+          Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
+                              Project1.Directory,
+                              lisProject2+lisExecutingCommandAfter,aCompileHint);
+          if Result<>mrOk then
+          begin
+            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteAfter.Execute failed']);
+            exit;
+          end;
         end;
       end;
-    end;
 
-    if FinalizeResources then
-      Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
+      if FinalizeResources then
+        Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
+    finally
+      if OldToolStatus = itDebugger then begin
+        ToolStatus := OldToolStatus;
+        if DebugBoss <> nil then
+          DebugBoss.UpdateToolStatus;  // Maybe "Reset Debugger was called and changed the state?
+      end
+      else
+        ToolStatus:=itNone;
+    end;
   finally
     // check sources
     DoCheckFilesOnDisk;
