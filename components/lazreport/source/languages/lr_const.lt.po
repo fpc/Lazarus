@@ -1564,6 +1564,10 @@ msgstr "Tekstas „%s“ nėra tinkamas kintamojo pavadinimui."
 msgid "Keep aspect ratio"
 msgstr "Išlaikyti kraštinių santykį"
 
+#: lr_const.skeepchild
+msgid "Keep child together with parent"
+msgstr ""
+
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "LazReport forma"

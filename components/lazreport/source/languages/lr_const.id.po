@@ -1605,6 +1605,10 @@ msgstr ""
 msgid "Keep aspect ratio"
 msgstr "Jaga raso aspek"
 
+#: lr_const.skeepchild
+msgid "Keep child together with parent"
+msgstr ""
+
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "Formulir LazReport"

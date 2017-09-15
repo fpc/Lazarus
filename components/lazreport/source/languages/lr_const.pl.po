@@ -1569,6 +1569,10 @@ msgstr "\"%s\" nie jest prawidłową wersją zmiennej"
 msgid "Keep aspect ratio"
 msgstr "Wymuszaj oryginalne proporcje"
 
+#: lr_const.skeepchild
+msgid "Keep child together with parent"
+msgstr ""
+
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "Formularz LazReport"
