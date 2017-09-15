@@ -241,6 +241,8 @@ components/tscrollbar.png
 components/tscrollbar_150.png
 components/tscrollbar_200.png
 components/tscrollbox.png
+components/tscrollbox_150.png
+components/tscrollbox_200.png
 components/tselectdirectorydialog.png
 components/tselectdirectorydialog_150.png
 components/tservicemanager.png
