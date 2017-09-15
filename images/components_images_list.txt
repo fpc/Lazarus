@@ -3,6 +3,8 @@ components/tactionlist.png
 components/tactionlist_150.png
 components/tactionlist_200.png
 components/tapplicationproperties.png
+components/tapplicationproperties_150.png
+components/tapplicationproperties_200.png
 components/tarrow.png
 components/tarrow_150.png
 components/tarrow_200.png
@@ -57,6 +59,8 @@ components/tcombobox_150.png
 components/tcombobox_200.png
 components/tcomboboxex.png
 components/tcontrolbar.png
+components/tcontrolbar_150.png
+components/tcontrolbar_200.png
 components/tcoolbar.png
 components/tdatasource.png
 components/tdatasource_150.png
@@ -128,6 +132,8 @@ components/tfloatspinedit.png
 components/tfloatspinedit_150.png
 components/tfloatspinedit_200.png
 components/tflowpanel.png
+components/tflowpanel_150.png
+components/tflowpanel_200.png
 components/tfontdialog.png
 components/tfontdialog_150.png
 components/tfontdialog_200.png
@@ -201,6 +207,8 @@ components/tpaintbox.png
 components/tpaintbox_150.png
 components/tpaintbox_200.png
 components/tpairsplitter.png
+components/tpairsplitter_150.png
+components/tpairsplitter_200.png
 components/tpanel.png
 components/tpanel_150.png
 components/tpanel_200.png
@@ -277,6 +285,8 @@ components/ttrackbar.png
 components/ttrackbar_150.png
 components/ttrackbar_200.png
 components/ttrayicon.png
+components/ttrayicon_150.png
+components/ttrayicon_200.png
 components/ttreeview.png
 components/ttreeview_150.png
 components/ttreeview_200.png
