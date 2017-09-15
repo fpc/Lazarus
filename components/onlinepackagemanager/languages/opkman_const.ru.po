@@ -11,6 +11,36 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 1.7.7\n"
 
+#: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
+msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
+msgid "Cancel"
+msgstr "Отмена"
+
+#: opkman_const.rsaddrepositorypackagefrm_bcancel_hint
+msgid "Close the dialog"
+msgstr "Закрыть диалог"
+
+#: opkman_const.rsaddrepositorypackagefrm_bok_caption
+msgctxt "opkman_const.rsaddrepositorypackagefrm_bok_caption"
+msgid "OK"
+msgstr "ОК"
+
+#: opkman_const.rsaddrepositorypackagefrm_bok_hint
+msgid "Close the dialog and create the package"
+msgstr "Закрыть диалог и создать пакет"
+
+#: opkman_const.rsaddrepositorypackagefrm_caption
+msgid "Add repository package"
+msgstr "Добавить пакет в репозиторий"
+
+#: opkman_const.rsaddrepositorypackagefrm_rbaddexisting_caption
+msgid "Add existing repository package from file"
+msgstr "Добавить существующий пакет из файла"
+
+#: opkman_const.rsaddrepositorypackagefrm_rbcreatenew_caption
+msgid "Create a new repository package"
+msgstr "Создать новый пакет"
+
 #: opkman_const.rscategoriesfrm_bcancel_caption
 msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
 msgid "Cancel"
@@ -145,28 +175,82 @@ msgstr "Открыть личный репозиторий"
 
 #: opkman_const.rscreaterepositoryfrm_caption
 msgctxt "opkman_const.rscreaterepositoryfrm_caption"
-msgid "Create private repository"
-msgstr "Создать личный репозиторий"
+msgid "Create/Edit private repository"
+msgstr "Создать или редактировать личный репозиторий"
+
+#: opkman_const.rscreaterepositoryfrm_conf1
+msgid "Are you sure you wish to delete package: \"%s\"?"
+msgstr "Вы действительно хотите удалить пакет \"%s\"?"
+
+#: opkman_const.rscreaterepositoryfrm_conf2
+msgid "The following file: \"%s\" already exists in the current repository. Overwrite?"
+msgstr "Файл \"%s\" уже имеется в текущем репозитории. Перезаписать?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
 msgid ""
-"Cannot open private repository. Error message: \n"
+"Cannot open private repository: \"%s\". Error message: \n"
 "\"%s\"\n"
 msgstr ""
-"Невозможно открыть личный репозиторий. Сообщение об ошибке: \n"
+"Невозможно открыть личный репозиторий: \"%s\". Сообщение об ошибке: \n"
 "\"%s\"\n"
-
-#: opkman_const.rscreaterepositoryfrm_error2
-msgid "File packagelist.json not found."
-msgstr "Файл packagelist.json не найден."
 
 #: opkman_const.rscreaterepositoryfrm_error3
 msgid ""
-"Cannot save private repository. Error message: \n"
+"Cannot save private repository: \"%s\". Error message: \n"
 "\"%s\"\n"
 msgstr ""
-"Невозможно сохранить личный репозиторий. Сообщение об ошибке: \n"
+"Невозможно сохранить личный репозиторий: \"%s\". Сообщение об ошибке: \n"
 "\"%s\"\n"
+
+#: opkman_const.rscreaterepositoryfrm_error4
+msgid "Cannot add package to repository!"
+msgstr "Невозможно добавить пакет в репозиторий!"
+
+#: opkman_const.rscreaterepositoryfrm_error5
+msgid "Cannot delete package: \"%s\"!"
+msgstr "Невозможно удалить пакет \"%s\"!"
+
+#: opkman_const.rscreaterepositoryfrm_info1
+msgid ""
+"The following directory: \"%s\" is not empty.\n"
+"It's recommended to save the repository to an empty directory. Continue?\n"
+msgstr ""
+"Каталог \"%s\" не пуст.\n"
+"Рекомендуется сохранять репозиторий в пустой каталог. Продолжить?\n"
+
+#: opkman_const.rscreaterepositoryfrm_info3
+msgid ""
+"The following package: \"%s\" is already in the current repository.\n"
+"Each repository and Lazarus package must be unique!\n"
+msgstr ""
+"Пакет \"%s\" уже имеется в текущем репозитории.\n"
+"Все пакеты репозитория и Lazarus должны быть уникальны!\n"
+
+#: opkman_const.rscreaterepositoryfrm_info5
+msgid ""
+"The following Lazarus package: \"%s\" is already in the current repository.\n"
+"Each repository and Lazarus package must be unique!\n"
+msgstr ""
+"Пакет Lazarus \"%s\" уже имеется в текущем репозитории.\n"
+"Все пакеты репозитория и Lazarus должны быть уникальны!\n"
+
+#: opkman_const.rscreaterepositoryfrm_info7
+msgid "Package successfully added to repository."
+msgstr "Пакет успешно добавлен в репозиторий."
+
+#: opkman_const.rscreaterepositoryfrm_mirepdetails_caption
+msgid "Edit repository details"
+msgstr "Изменить параметры репозитория"
+
+#: opkman_const.rscreaterepositoryfrm_repositoryaddress
+msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
+msgid "Address"
+msgstr "Адрес"
+
+#: opkman_const.rscreaterepositoryfrm_repositorydescription
+msgctxt "opkman_const.rscreaterepositoryfrm_repositorydescription"
+msgid "Description"
+msgstr "Описание"
 
 #: opkman_const.rscreaterepositoryfrm_vstdetails_column0
 msgctxt "opkman_const.rscreaterepositoryfrm_vstdetails_column0"
@@ -181,6 +265,106 @@ msgstr "Данные"
 #: opkman_const.rscreaterepositoryfrm_vstpackages_column0
 msgid "Repository/Packages"
 msgstr "Репозиторий/пакеты"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_author
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_author"
+msgid "Author"
+msgstr "Автор"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_category
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_category"
+msgid "Category"
+msgstr "Категория"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_dependecies
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_dependecies"
+msgid "Dependencies"
+msgstr "Зависимости"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_description
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_description"
+msgid "Description"
+msgstr "Описание"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_downloadurl
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_downloadurl"
+msgid "Update link (JSON)"
+msgstr "Адрес загрузки (JSON)"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility"
+msgid "FPC compatibility"
+msgstr "Совместимость с FPC"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_homepageurl
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_homepageurl"
+msgid "Home page"
+msgstr "Домашняя страница"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_lazcompatibility
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_lazcompatibility"
+msgid "Lazarus compatibility"
+msgstr "Совместимость с Lazarus"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_license
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_license"
+msgid "License"
+msgstr "Лицензия"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype"
+msgid "Package type"
+msgstr "Тип пакета"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype0
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype0"
+msgid "Designtime and runtime"
+msgstr "Времени разработки и исполнения"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype1
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype1"
+msgid "Designtime"
+msgstr "Времени разработки"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype2
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype2"
+msgid "Runtime"
+msgstr "Времени исполнения"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_packagetype3
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype3"
+msgid "Runtime only, cannot be installed in IDE"
+msgstr "Только времени исполнения, не может быть установлен в IDE"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfiledate
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfiledate"
+msgid "Available since"
+msgstr "Дата появления"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash"
+msgid "Repository filehash"
+msgstr "Хэш файла в репозитории"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename"
+msgid "Repository filename"
+msgstr "Имя файла в репозитории"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize"
+msgid "Repository filesize"
+msgstr "Размер файла в репозитории"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets"
+msgid "Supported widgetsets"
+msgstr "Поддерживаемые библиотеки виджетов"
+
+#: opkman_const.rscreaterepositoryfrm_vsttext_version
+msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_version"
+msgid "Version"
+msgstr "Версия"
 
 #: opkman_const.rscreaterepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcancel_caption"
@@ -696,14 +880,17 @@ msgid "Update"
 msgstr "Обновление"
 
 #: opkman_const.rsmainfrm_vsttext_author
+msgctxt "opkman_const.rsmainfrm_vsttext_author"
 msgid "Author"
 msgstr "Автор"
 
 #: opkman_const.rsmainfrm_vsttext_category
+msgctxt "opkman_const.rsmainfrm_vsttext_category"
 msgid "Category"
 msgstr "Категория"
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
+msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"
 msgid "Dependencies"
 msgstr "Зависимости"
 
@@ -717,14 +904,17 @@ msgid "Description"
 msgstr "Описание"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
+msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
 msgid "Update link (JSON)"
 msgstr "Адрес загрузки (JSON)"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
+msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
 msgid "FPC compatibility"
 msgstr "Совместимость с FPC"
 
 #: opkman_const.rsmainfrm_vsttext_homepageurl
+msgctxt "opkman_const.rsmainfrm_vsttext_homepageurl"
 msgid "Home page"
 msgstr "Домашняя страница"
 
@@ -743,6 +933,7 @@ msgid "Partially"
 msgstr "Частично"
 
 #: opkman_const.rsmainfrm_vsttext_lazcompatibility
+msgctxt "opkman_const.rsmainfrm_vsttext_lazcompatibility"
 msgid "Lazarus compatibility"
 msgstr "Совместимость с Lazarus"
 
@@ -751,6 +942,7 @@ msgid "License info for package"
 msgstr "Сведения о лицензии пакета"
 
 #: opkman_const.rsmainfrm_vsttext_license
+msgctxt "opkman_const.rsmainfrm_vsttext_license"
 msgid "License"
 msgstr "Лицензия"
 
@@ -911,42 +1103,52 @@ msgid "Package status"
 msgstr "Состояние пакета"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype"
 msgid "Package type"
 msgstr "Тип пакета"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype0
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype0"
 msgid "Designtime and runtime"
 msgstr "Времени разработки и исполнения"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype1
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype1"
 msgid "Designtime"
 msgstr "Времени разработки"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype2
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype2"
 msgid "Runtime"
 msgstr "Времени исполнения"
 
 #: opkman_const.rsmainfrm_vsttext_packagetype3
+msgctxt "opkman_const.rsmainfrm_vsttext_packagetype3"
 msgid "Runtime only, cannot be installed in IDE"
 msgstr "Только времени исполнения, не может быть установлен в IDE"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfiledate
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfiledate"
 msgid "Available since"
 msgstr "Дата появления"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilehash
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilehash"
 msgid "Repository filehash"
 msgstr "Хэш файла в репозитории"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilename
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilename"
 msgid "Repository filename"
 msgstr "Имя файла в репозитории"
 
 #: opkman_const.rsmainfrm_vsttext_repositoryfilesize
+msgctxt "opkman_const.rsmainfrm_vsttext_repositoryfilesize"
 msgid "Repository filesize"
 msgstr "Размер файла в репозитории"
 
 #: opkman_const.rsmainfrm_vsttext_supportedwidgetsets
+msgctxt "opkman_const.rsmainfrm_vsttext_supportedwidgetsets"
 msgid "Supported widgetsets"
 msgstr "Поддерживаемые библиотеки виджетов"
 
@@ -1407,6 +1609,10 @@ msgstr "Репозитории"
 msgid "Delete selected repository \"%s\"?"
 msgstr "Удалить выбранный репозиторий \"%s\"?"
 
+#: opkman_const.rsrepositories_info1
+msgid "The following repository: \"%s\" is already in the list."
+msgstr "Репозиторий \"%s\" уже имеется в списке."
+
 #: opkman_const.rsrepositories_inputbox_caption0
 msgid "Add repository"
 msgstr "Добавить репозиторий"
@@ -1422,4 +1628,56 @@ msgstr "Введите адрес репозитория:"
 #: opkman_const.rsrepositories_vst_headercolumn
 msgid "Repository Address"
 msgstr "Адрес репозитория"
+
+#: opkman_const.rsrepositorydetailsfrm_bcancel_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_bcancel_caption"
+msgid "Cancel"
+msgstr "Отмена"
+
+#: opkman_const.rsrepositorydetailsfrm_bcancel_hint
+msgid "Close the dialog without saving"
+msgstr "Закрыть диалог без сохранения"
+
+#: opkman_const.rsrepositorydetailsfrm_bok_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_bok_caption"
+msgid "OK"
+msgstr "ОК"
+
+#: opkman_const.rsrepositorydetailsfrm_bok_hint
+msgid "Save and close the dialog"
+msgstr "Сохранить и закрыть диалог"
+
+#: opkman_const.rsrepositorydetailsfrm_caption
+msgid "Repository details"
+msgstr "Параметры репозитория"
+
+#: opkman_const.rsrepositorydetailsfrm_edaddress_hint
+msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
+msgstr "Введите адрес репозитория (например, \"http://localhost/packages/\")"
+
+#: opkman_const.rsrepositorydetailsfrm_edname_hint
+msgid "Enter the repository name"
+msgstr "Введите имя репозитория"
+
+#: opkman_const.rsrepositorydetailsfrm_info1
+msgid "Please enter the repository name."
+msgstr "Следует ввести имя репозитория."
+
+#: opkman_const.rsrepositorydetailsfrm_lbaddress_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_lbaddress_caption"
+msgid "Address"
+msgstr "Адрес"
+
+#: opkman_const.rsrepositorydetailsfrm_lbdescription_caption
+msgctxt "opkman_const.rsrepositorydetailsfrm_lbdescription_caption"
+msgid "Description"
+msgstr "Описание"
+
+#: opkman_const.rsrepositorydetailsfrm_lbname_caption
+msgid "Name"
+msgstr "Имя"
+
+#: opkman_const.rsrepositorydetailsfrm_mdescription_hint
+msgid "Enter the repository description"
+msgstr "Введите описание репозитория"
 
