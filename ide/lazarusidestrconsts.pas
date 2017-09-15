@@ -5618,7 +5618,7 @@ resourcestring
   lisMessagesEditor = 'Messages Editor';
 
   lisSetDefault = 'Set default';
-  lisYouCanNotChangeTheBuildModeWhileCompiling = 'You can not change the build'
+  lisYouCanNotChangeTheBuildModeWhileCompiling = 'You cannot change the build'
     +' mode while compiling.';
   lisSelectedLeftNeighbour = '(selected left neighbour)';
   lisSelectedRightNeighbour = '(selected right neighbour)';
