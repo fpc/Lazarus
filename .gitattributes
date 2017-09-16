@@ -6839,6 +6839,8 @@ images/components/tcontrolbar.png -text svneol=unset#image/png
 images/components/tcontrolbar_150.png -text
 images/components/tcontrolbar_200.png -text
 images/components/tcoolbar.png -text svneol=unset#image/png
+images/components/tcoolbar_150.png -text
+images/components/tcoolbar_200.png -text
 images/components/tdatasource.png -text svneol=unset#image/png
 images/components/tdatasource_150.png -text
 images/components/tdatasource_200.png -text
@@ -6994,6 +6996,8 @@ images/components/tpopupmenu.png -text svneol=unset#image/png
 images/components/tpopupmenu_150.png -text
 images/components/tpopupmenu_200.png -text
 images/components/tpopupnotifier.png -text svneol=unset#image/png
+images/components/tpopupnotifier_150.png -text
+images/components/tpopupnotifier_200.png -text
 images/components/tprocess.png -text svneol=unset#image/png
 images/components/tprocessutf8.png -text
 images/components/tprogressbar.png -text svneol=unset#image/png
@@ -7043,6 +7047,8 @@ images/components/tstatictext.png -text svneol=unset#image/png
 images/components/tstatictext_150.png -text
 images/components/tstatictext_200.png -text
 images/components/tstatusbar.png -text svneol=unset#image/png
+images/components/tstatusbar_150.png -text
+images/components/tstatusbar_200.png -text
 images/components/tstringgrid.png -text svneol=unset#image/png
 images/components/tstringgrid_150.png -text
 images/components/tstringgrid_200.png -text
@@ -7060,6 +7066,8 @@ images/components/ttogglebox.png -text svneol=unset#image/png
 images/components/ttogglebox_150.png -text
 images/components/ttogglebox_200.png -text
 images/components/ttoolbar.png -text svneol=unset#image/png
+images/components/ttoolbar_150.png -text
+images/components/ttoolbar_200.png -text
 images/components/ttrackbar.png -text svneol=unset#image/png
 images/components/ttrackbar_150.png -text
 images/components/ttrackbar_200.png -text

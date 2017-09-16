@@ -62,6 +62,8 @@ components/tcontrolbar.png
 components/tcontrolbar_150.png
 components/tcontrolbar_200.png
 components/tcoolbar.png
+components/tcoolbar_150.png
+components/tcoolbar_200.png
 components/tdatasource.png
 components/tdatasource_150.png
 components/tdatasource_200.png
@@ -75,12 +77,12 @@ components/tdbcheckbox_200.png
 components/tdbcombobox.png
 components/tdbcombobox_150.png
 components/tdbcombobox_200.png
-components/tdbedit.png
-components/tdbedit_150.png
-components/tdbedit_200.png
 components/tdbdateedit.png
 components/tdbdateedit_150.png
 components/tdbdateedit_200.png
+components/tdbedit.png
+components/tdbedit_150.png
+components/tdbedit_200.png
 components/tdbgrid.png
 components/tdbgrid_150.png
 components/tdbgrid_200.png
@@ -217,6 +219,8 @@ components/tpopupmenu.png
 components/tpopupmenu_150.png
 components/tpopupmenu_200.png
 components/tpopupnotifier.png
+components/tpopupnotifier_150.png
+components/tpopupnotifier_200.png
 components/tprocess.png
 components/tprocessutf8.png
 components/tprogressbar.png
@@ -266,6 +270,8 @@ components/tstatictext.png
 components/tstatictext_150.png
 components/tstatictext_200.png
 components/tstatusbar.png
+components/tstatusbar_150.png
+components/tstatusbar_200.png
 components/tstringgrid.png
 components/tstringgrid_150.png
 components/tstringgrid_200.png
@@ -283,6 +289,8 @@ components/ttogglebox.png
 components/ttogglebox_150.png
 components/ttogglebox_200.png
 components/ttoolbar.png
+components/ttoolbar_150.png
+components/ttoolbar_200.png
 components/ttrackbar.png
 components/ttrackbar_150.png
 components/ttrackbar_200.png
