@@ -12,50 +12,22 @@
  }
 Uses InterfaceBase, LCLIntf;
 
-{ TQtPrinters }
-procedure TQtPrinters.CreatePrintSettings;
-var
-  i: Integer;
-begin
-  {enumerate pages}
-  FPagesEnum.Clear;
-  FPagesEnum.Add('A4');
-  FPagesEnum.Add('B5');
-  FPagesEnum.Add('Letter');
-  FPagesEnum.Add('Legal');
-  FPagesEnum.Add('Executive');
-  for i := 0 to 3 do
-    FPagesEnum.Add('A'+IntToStr(i));
-    
-  for i := 5 to 9 do
-    FPagesEnum.Add('A'+IntToStr(i));
-    
-  FPagesEnum.Add('B0');
-  FPagesEnum.Add('B1');
-  FPagesEnum.Add('B10');
-  for i := 2 to 9 do
-    if i <> 5 then
-      FPagesEnum.Add('B'+IntToStr(i));
-      
-  FPagesEnum.Add('C5E');
-  FPagesEnum.Add('Comm10E');
-  FPagesEnum.Add('DLE');
-  FPagesEnum.Add('Folio');
-  FPagesEnum.Add('Ledger');
-  FPagesEnum.Add('Tabloid');
-  FPagesEnum.Add('Custom');
-  {what to do with nPageSize
-  QPrinterNPageSize = 30 }
-end;
+{.$DEFINE UsePrinterSupportedPapers}
 
-function TQtPrinters.GetPaperSize(Const Str: String): {$IFDEF LCLQt5}QPagedPaintDevicePageSize{$ELSE}QPrinterPageSize{$ENDIF};
+const
+  DEFAULT_PAPER_NAME = 'A4';
+
+{ TQtPrinters }
+
+function TQtPrinters.GetPaperSize(const Str: String): QPrinterPageSize;
 var
   i: Integer;
 begin
-  Result := {$IFDEF LCLQt5}QPagedPaintDeviceA4{$ELSE}QPrinterA4{$ENDIF};
-  i := FPagesEnum.IndexOf(Str);
-  if i >= 0 then
-    Result := {$IFDEF LCLQt5}QPagedPaintDevicePageSize{$ELSE}QPrinterPageSize{$ENDIF}(i);
+  i := IndexOfPaper(Str);
+  if i>=0 then
+    result := FPapers[i].PageSize
+  else
+    Result := {$IFDEF LCLQt5}QPagedPaintDeviceA4{$ELSE}QPrinterA4{$ENDIF};
 end;
 
 procedure TQtPrinters.BeginPage;
@@ -95,19 +67,14 @@ begin
         QPrinterInfo_printerName(Prntr, @PrnName);
         PrnName := UTF8Encode(PrnName);
         if QPrinterInfo_isDefault(Prntr) then
-          Lst.Insert(0, PrnName)
+          Lst.InsertObject(0, PrnName, Prntr)
         else
-          Lst.Add(PrnName);
+          Lst.AddObject(PrnName, Prntr);
       end;
     end;
   finally
     QPrinterInfo_destroy(PrnInfo);
   end;
-end;
-
-procedure TQtPrinters.EnumQPapers(Lst: TStrings);
-begin
-  Lst.Text := FPagesEnum.Text;
 end;
 
 function TQtPrinters.GetColorMode: QPrinterColorMode;
@@ -140,16 +107,136 @@ begin
   QtDefaultPrinter.PageOrder := AValue;
 end;
 
+procedure TQtPrinters.CachePapers(OnlySupportedByPrinter: boolean);
+const
+  ArrPapers: array[QPrinterA4..QPrinterCustom] of string[12] = (
+    'A4',       'B5',         'Letter',     'Legal',      'Executive',
+    'A0',       'A1',         'A2',         'A3',         'A5',
+    'A6',       'A7',         'A8',         'A9',         'B0',
+    'B1',       'B10',        'B2',         'B3',         'B4',
+    'B6',       'B7',         'B8',         'B9',         'C5E',
+    'Comm10E',  'DLE',        'Folio',      'Ledger',     'Tabloid',
+    'Custom');
+var
+  PrinterList: TStringList;
+  Info: QPrinterInfoH;
+  Arr: TPtrIntArray;
+  CurrentPageSize, PageSize: QPrinterPageSize;
+  Index: Integer;
+  customPaperAdded: boolean;
+
+  procedure Add(PaperName: string; PgSize: QPrinterPageSize);
+  var
+    i: Integer;
+  begin
+    {$ifdef UsePrinterSupportedPapers}
+    // Apparently when Qt retrieve the papers from the printer source engine
+    // any printer supported paper that does not match a Qt known paper it is
+    // assigned a PageSize of 30 (Custom/Unknown).
+    //
+    // TODO: Find out if it is possible to get the dimensions of such custom
+    //       papers, in such case assign to every custom paper a number and
+    //       report them.
+    //
+    // In the mean time, in order to not present the user with multiple
+    // custom papers, just one is allowed.
+    {$endif}
+    if (pgSize=30) and customPaperAdded then
+      exit;
+    i := Length(FPapers);
+    SetLength(FPapers, i+1);
+    FPapers[i].PaperName := PaperName;
+    QtDefaultPrinter.PageSize := PgSize;
+    FPapers[i].PageRect := QtDefaultPrinter.PageRect;
+    FPapers[i].PaperRect := QtDefaultPrinter.PaperRect;
+    if PaperName=DEFAULT_PAPER_NAME then
+      FDefaultPaperIndex := i;
+    if pgSize=30 then
+      customPaperAdded := true;
+    //DebugLn('Cached: %20s PaperRect=%s PageRect=%s',[PaperName, dbgs(FPapers[i].PaperRect), dbgs(FPapers[i].PageRect)]);
+  end;
+
+  procedure AddAll;
+  var
+    i: Integer;
+  begin
+    for i:=QPrinterA4 to QPrinterCustom do
+      Add(ArrPapers[i], i);
+  end;
+
+begin
+  customPaperAdded := false;
+  SetLength(FPapers, 0);
+  if not OnlySupportedByPrinter then
+  begin
+    AddAll;
+    exit;
+  end;
+
+  PrinterList := TStringList.Create;
+  try
+    CurrentPageSize := QtDefaultPrinter.PageSize;
+    EnumQPrinters(PrinterList);
+    Index := PrinterList.IndexOf(UTF8Encode(QtDefaultPrinter.PrinterName));
+    if Index>=0 then
+    begin
+		  Info := QPrinterInfoH(PrinterList.Objects[Index]);
+		  QPrinterInfo_supportedPaperSizes(Info, @Arr);
+		  for PageSize in Arr do
+        for Index := QPrinterA4 to QPrinterCustom do
+        begin
+          if Index=PageSize then
+            Add(ArrPapers[Index], PageSize);
+        end;
+    end else
+      AddAll;
+  finally
+    QtDefaultPrinter.PageSize := CurrentPageSize;
+    PrinterList.Free;
+  end;
+end;
+
+function TQtPrinters.IndexOfPaper(const Paper: string; RetDefault: boolean
+  ): Integer;
+var
+  i: Integer;
+begin
+  result := -1;
+  for i:=0 to Length(FPapers)-1 do
+  begin
+    if FPapers[i].PaperName=Paper then begin
+      result := i;
+      exit;
+    end;
+  end;
+  if RetDefault and (Length(FPapers)>0) then
+    result := FDefaultPaperIndex;
+end;
+
+function TQtPrinters.IndexOfPageSize(const PageSize: QPrinterPageSize): Integer;
+var
+  i: Integer;
+begin
+  result := -1;
+  for i:=0 to Length(FPapers)-1 do begin
+    if FPapers[i].PageSize=PageSize then begin
+      result := i;
+      exit;
+    end;
+  end;
+  if Length(FPapers)>0 then
+    result := FDefaultPaperIndex;
+end;
+
 constructor TQtPrinters.Create;
 begin
   inherited Create;
-  FPagesEnum := TStringList.Create;
-  CreatePrintSettings;
+  CachePapers(false);
 end;
 
 procedure TQtPrinters.DoDestroy;
 begin
-  FPagesEnum.Free;
+  FPapers := nil;
   QtDefaultPrinter.endDoc;
   inherited DoDestroy;
 end;
@@ -270,19 +357,26 @@ begin
 end;
 
 procedure TQtPrinters.DoEnumPapers(Lst: TStrings);
+var
+  Paper: TPaperRec;
 begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoEnumPapers()');
   {$ENDIF}
-  EnumQPapers(Lst);
+  Lst.Clear;
+  for Paper in FPapers do
+    Lst.Add(Paper.PaperName);
 end;
 
 function TQtPrinters.DoGetPaperName: string;
 var
   i: Integer;
 begin
-  i := QtDefaultPrinter.PageSize;
-  Result := FPagesEnum[i];
+  i := IndexOfPageSize(QtDefaultPrinter.PageSize);
+  if i>=0 then
+    result := FPapers[i].PaperName
+  else
+    result := DEFAULT_PAPER_NAME;
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoGetPaperName() Result=',Result);
   {$ENDIF}
@@ -290,13 +384,16 @@ end;
 
 function TQtPrinters.DoGetDefaultPaperName: string;
 begin
-  Result := FPagesEnum[0];
+  if Length(FPapers)>0 then
+    result := FPapers[FDefaultPaperIndex].PaperName
+  else
+    result := DEFAULT_PAPER_NAME;
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoGetDefaultPaperName() Result=',Result);
   {$ENDIF}
 end;
 
-procedure TQtPrinters.DoSetPaperName(AName: string);
+procedure TQtPrinters.DoSetPaperName(aName: string);
 var
   O: TPrinterOrientation;
   i: Integer;
@@ -305,17 +402,17 @@ begin
   DebugLn('TQtPrinters.DoSetPaperName() AName=',AName);
   {$ENDIF}
   O := DoGetOrientation;
-
-  i := FPagesEnum.IndexOf(AName);
+  i := IndexOfPaper(aName, false);
   if i >= 0 then
   begin
-    QtDefaultPrinter.PageSize := i;
+    QtDefaultPrinter.PageSize := FPapers[i].PageSize;
     DoSetOrientation(O);
   end else
     raise Exception.Create('TQtPrinters: Paper '+AName+' not supported.');
 end;
 
-function TQtPrinters.DoGetPaperRect(AName: string; var APaperRc: TPaperRect): Integer;
+function TQtPrinters.DoGetPaperRect(aName: string; Var aPaperRc: TPaperRect
+			): Integer;
 var
   i: Integer;
 begin
@@ -323,13 +420,13 @@ begin
   DebugLn('TQtPrinters.DoGetPaperRect() AName=', AName);
   {$ENDIF}
   Result := inherited DoGetPaperRect(aName,aPaperRc);
-  i := FPagesEnum.IndexOf(AName);
-  if (i >= 0) and (i = QtDefaultPrinter.pageSize) then
+  i := IndexOfPaper(aName);
+  if i >= 0 then
   begin
     {When we set QPrinter into FullPage, rect is not same
      on all platforms, this is fixed with qt-4.4}
-    APaperRC.WorkRect := QtDefaultPrinter.pageRect;
-    APaperRC.PhysicalRect := QtDefaultPrinter.paperRect;
+    APaperRC.WorkRect := FPapers[i].PageRect;
+    APaperRC.PhysicalRect := FPapers[i].PaperRect;
     Result := 1;
   end;
 end;
@@ -347,8 +444,12 @@ begin
     Result := StrList.IndexOf(AName);
     if Result >= 0 then
     begin
-      if not QtDefaultPrinter.PrinterActive then
-        QtDefaultPrinter.PrinterName := aName
+      if not QtDefaultPrinter.PrinterActive then begin
+        QtDefaultPrinter.PrinterName := UTF8Decode(aName);
+        {$ifdef UsePrinterSupportedPapers}
+        CachePapers(true);
+        {$endif}
+      end
       else
         raise Exception.Create('TQtPrinters: Cannot change printer while printing active !');
     end;
@@ -366,7 +467,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TQtPrinters.DoSetCopies(AValue: Integer);
+procedure TQtPrinters.DoSetCopies(aValue: Integer);
 begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoSetCopies() AValue=', IntToStr(AValue));
@@ -390,7 +491,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TQtPrinters.DoSetOrientation(AValue: TPrinterOrientation);
+procedure TQtPrinters.DoSetOrientation(aValue: TPrinterOrientation);
 var
   O: QPrinterOrientation;
 begin

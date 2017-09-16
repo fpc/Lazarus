@@ -4,18 +4,27 @@ uses
   LCLType, LCLProc;
 
 type
+  TPaperRec = record
+    PageSize: QPrinterPageSize;
+    PaperName: string;
+    PageRect: TRect;
+    PaperRect: TRect;
+  end;
+
   { TQtPrinters }
   TQtPrinters = class(TPrinter)
   private
-    FPagesEnum: TStrings;
     FPrinterHandle: TQtPrinter;
+    FDefaultPaperIndex: Integer;
+    FPapers: array of TPaperRec;
 
-    procedure CreatePrintSettings;
     procedure BeginPage;
     procedure EndPage;
     
+    procedure CachePapers(OnlySupportedByPrinter:boolean);
     procedure EnumQPrinters(Lst: TStrings);
-    procedure EnumQPapers(Lst: TStrings);
+    function IndexOfPaper(const Paper: string; RetDefault:boolean=true): Integer;
+    function IndexOfPageSize(const PageSize: QPrinterPageSize): Integer;
     function GetColorMode: QPrinterColorMode;
     function GetFullPage: Boolean;
     function GetPageOrder: QPrinterPageOrder;
