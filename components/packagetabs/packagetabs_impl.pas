@@ -623,7 +623,7 @@ begin
   FTabLabelMenuViewProjectSource := TMenuItem.Create(Self);
   FTabLabelMenuViewProjectSource.Caption := IDECommandList.FindIDECommand(ecViewProjectSource).LocalizedName;
   FTabLabelMenuViewProjectSource.OnClick := @TabLabelMenuViewProjectSourceClick;
-  FTabLabelMenuViewProjectSource.ImageIndex := IDEImages.LoadImage('menu_project_viewsource');
+  FTabLabelMenuViewProjectSource.ImageIndex := IDEImages.LoadImage('item_project_source');
   FTabLabelMenu.Items.Add(FTabLabelMenuViewProjectSource);
   FTabLabelCopyToClipboard := TMenuItem.Create(Self);
   FTabLabelCopyToClipboard.Caption := sCopyFilePathToClipboard;
