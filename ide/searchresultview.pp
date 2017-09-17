@@ -314,7 +314,7 @@ begin
   mniCollapseAll.Caption := lisCollapseAll;
 
   ToolBar.Images := IDEImages.Images_16;
-  SearchAgainButton.ImageIndex := IDEImages.LoadImage('menu_search_find');
+  SearchAgainButton.ImageIndex := IDEImages.LoadImage('menu_new_search');
   ClosePageButton.ImageIndex := IDEImages.LoadImage('menu_close');
   ActionList.Images := IDEImages.Images_16;
   actClosePage.ImageIndex := IDEImages.LoadImage('menu_close');

@@ -1294,7 +1294,7 @@ begin
     CreateMenuItem(ParentMI,itmProjectRemoveFrom,'itmProjectRemoveFrom',lisMenuRemoveFromProject, 'menu_project_remove');
     CreateMenuItem(ParentMI,itmProjectViewUnits,'itmProjectViewUnits',lisMenuViewUnits, 'menu_view_units');
     CreateMenuItem(ParentMI,itmProjectViewForms,'itmProjectViewForms',lisMenuViewForms, 'menu_view_forms');
-    CreateMenuItem(ParentMI,itmProjectViewSource,'itmProjectViewSource',lisMenuViewProjectSource, 'menu_project_viewsource');
+    CreateMenuItem(ParentMI,itmProjectViewSource,'itmProjectViewSource',lisMenuViewProjectSource, 'item_project_source');
   end;
 end;
 
@@ -1431,7 +1431,7 @@ begin
   with MainIDEBar do begin
     CreateMenuSeparatorSection(mnuWindow,itmWindowManagers,'itmWindowManagers');
     ParentMI:=itmWindowManagers;
-    CreateMenuItem(ParentMI,itmWindowManager,'itmWindowManager', lisManageSourceEditors, 'pkg_files');
+    CreateMenuItem(ParentMI,itmWindowManager,'itmWindowManager', lisManageSourceEditors, 'menu_manage_source_editors');
     // Populated later with a list of editor names
     CreateMenuSeparatorSection(mnuWindow,itmWindowLists,'itmWindowLists');
     CreateMenuSeparatorSection(mnuWindow,itmCenterWindowLists,'itmCenterWindowLists');

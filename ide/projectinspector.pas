@@ -1017,7 +1017,7 @@ begin
   ImageIndexRequired        := IDEImages.LoadImage('pkg_required');
   ImageIndexConflict        := IDEImages.LoadImage('pkg_conflict');
   ImageIndexRemovedRequired := IDEImages.LoadImage('pkg_removedrequired');
-  ImageIndexProject         := IDEImages.LoadImage('item_project');
+  ImageIndexProject         := IDEImages.LoadImage('item_project_source');
   ImageIndexUnit            := IDEImages.LoadImage('item_unit');
   ImageIndexRegisterUnit    := IDEImages.LoadImage('pkg_registerunit');
   ImageIndexText            := IDEImages.LoadImage('pkg_text');
