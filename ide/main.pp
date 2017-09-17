@@ -12926,10 +12926,10 @@ begin
   if ObjectInspector1=Nil then Exit;
   if PropName='' then
     // Item may be added or deleted or whatever.
-    ObjectInspector1.ComponentTree.RebuildComponentNodes
+    ObjectInspector1.FillComponentList
   else
     // Any change of property can cause a change in display name.
-    ObjectInspector1.ComponentTree.UpdateComponentNodesValues;
+    ObjectInspector1.UpdateComponentValues;
 end;
 
 {-------------------------------------------------------------------------------

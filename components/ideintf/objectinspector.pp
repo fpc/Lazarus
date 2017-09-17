@@ -799,6 +799,7 @@ type
     procedure RefreshPropertyValues;
     procedure RebuildPropertyLists;
     procedure FillComponentList;
+    procedure UpdateComponentValues;
     procedure BeginUpdate;
     procedure EndUpdate;
     function GetActivePropertyGrid: TOICustomPropertyGrid;
@@ -4582,6 +4583,14 @@ procedure TObjectInspectorDlg.FillComponentList;
 begin
   if FShowComponentTree then
     ComponentTree.RebuildComponentNodes
+  else
+    FillPersistentComboBox;
+end;
+
+procedure TObjectInspectorDlg.UpdateComponentValues;
+begin
+  if FShowComponentTree then
+    ComponentTree.UpdateComponentNodesValues
   else
     FillPersistentComboBox;
 end;
