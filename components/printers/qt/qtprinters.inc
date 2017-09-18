@@ -149,7 +149,13 @@ var
     i := Length(FPapers);
     SetLength(FPapers, i+1);
     FPapers[i].PaperName := PaperName;
-    QtDefaultPrinter.PageSize := PgSize;
+
+    //CustomPageSize should be automatically set by setting different paper size
+    //than known paper size. Qt4 asserts when CustomPageSize is directly setted up.
+    {$IFDEF LCLQt}
+    if (pgSize > 30) then
+    {$ENDIF}
+      QtDefaultPrinter.PageSize := PgSize;
     FPapers[i].PageRect := QtDefaultPrinter.PageRect;
     FPapers[i].PaperRect := QtDefaultPrinter.PaperRect;
     if PaperName=DEFAULT_PAPER_NAME then
