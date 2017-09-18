@@ -141,7 +141,7 @@ begin
 
     if Result then
     begin
-      S := QtDefaultPrinter.PrinterName;
+      S := UTF16ToUTF8(QtDefaultPrinter.PrinterName);
       if Printer.Printers.IndexOf(S) <> -1 then
         Printer.SetPrinter(S);
       Collate := QtDefaultPrinter.Collate;

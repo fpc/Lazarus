@@ -19,7 +19,7 @@ const
 
 { TQtPrinters }
 
-function TQtPrinters.GetPaperSize(const Str: String): QPrinterPageSize;
+function TQtPrinters.GetPaperSize(const Str: String): QtLCLPrinterPageSize;
 var
   i: Integer;
 begin
@@ -65,11 +65,10 @@ begin
       if Assigned(Prntr) and not QPrinterInfo_isNull(Prntr) then
       begin
         QPrinterInfo_printerName(Prntr, @PrnName);
-        PrnName := UTF8Encode(PrnName);
         if QPrinterInfo_isDefault(Prntr) then
-          Lst.InsertObject(0, PrnName, Prntr)
+          Lst.InsertObject(0, UTF16ToUTF8(PrnName), Prntr)
         else
-          Lst.AddObject(PrnName, Prntr);
+          Lst.AddObject(UTF16ToUTF8(PrnName), Prntr);
       end;
     end;
   finally
@@ -109,7 +108,11 @@ end;
 
 procedure TQtPrinters.CachePapers(OnlySupportedByPrinter: boolean);
 const
+  {$IFDEF LCLQt5}
+  ArrPapers: array[0..QPagedPaintDeviceCustom] of string[12] = (
+  {$ELSE}
   ArrPapers: array[QPrinterA4..QPrinterCustom] of string[12] = (
+  {$ENDIF}
     'A4',       'B5',         'Letter',     'Legal',      'Executive',
     'A0',       'A1',         'A2',         'A3',         'A5',
     'A6',       'A7',         'A8',         'A9',         'B0',
@@ -121,11 +124,11 @@ var
   PrinterList: TStringList;
   Info: QPrinterInfoH;
   Arr: TPtrIntArray;
-  CurrentPageSize, PageSize: QPrinterPageSize;
+  CurrentPageSize, PageSize: QtLCLPrinterPageSize;
   Index: Integer;
   customPaperAdded: boolean;
 
-  procedure Add(PaperName: string; PgSize: QPrinterPageSize);
+  procedure Add(PaperName: string; PgSize: QtLCLPrinterPageSize);
   var
     i: Integer;
   begin
@@ -160,8 +163,13 @@ var
   var
     i: Integer;
   begin
+    {$IFDEF LCLQt5}
+    for i:=QPagedPaintDeviceA4 to QPagedPaintDeviceCustom do
+      Add(ArrPapers[i], i);
+    {$ELSE}
     for i:=QPrinterA4 to QPrinterCustom do
       Add(ArrPapers[i], i);
+    {$ENDIF}
   end;
 
 begin
@@ -183,7 +191,11 @@ begin
 		  Info := QPrinterInfoH(PrinterList.Objects[Index]);
 		  QPrinterInfo_supportedPaperSizes(Info, @Arr);
 		  for PageSize in Arr do
+        {$IFDEF LCLQt5}
+        for Index := QPagedPaintDeviceA4 to QPagedPaintDeviceCustom do
+        {$ELSE}
         for Index := QPrinterA4 to QPrinterCustom do
+        {$ENDIF}
         begin
           if Index=PageSize then
             Add(ArrPapers[Index], PageSize);
@@ -213,7 +225,7 @@ begin
     result := FDefaultPaperIndex;
 end;
 
-function TQtPrinters.IndexOfPageSize(const PageSize: QPrinterPageSize): Integer;
+function TQtPrinters.IndexOfPageSize(const PageSize: QtLCLPrinterPageSize): Integer;
 var
   i: Integer;
 begin
@@ -301,7 +313,7 @@ begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoBeginDoc()');
   {$ENDIF}
-  QtDefaultPrinter.DocName := Title;
+  QtDefaultPrinter.DocName := UTF8ToUTF16(Title);
   BeginPage;
 end;
 
@@ -343,7 +355,7 @@ begin
   {$ENDIF}
   Str := QtDefaultPrinter.PrinterName;
   EnumQPrinters(Lst);
-  i := Lst.IndexOf(Str);
+  i := Lst.IndexOf(UTF16ToUTF8(Str));
   if i > 0 then
     Lst.Move(i, 0);
 end;

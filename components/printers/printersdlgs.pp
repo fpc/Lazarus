@@ -108,11 +108,11 @@ implementation
     {$ENDIF}
   {$ELSE}
     {$IFDEF LCLQt}
-      uses qtobjects, qt4, qtint;
+      uses qtobjects, qt4, qtint, LazUTF8;
       {$I qtprndialogs.inc}
     {$ELSE}
     {$IFDEF LCLQt5}
-      uses qtobjects, qt5, qtint;
+      uses qtobjects, qt5, qtint, LazUTF8;
       {$I qtprndialogs.inc}
     {$ELSE}    
       uses udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup;
