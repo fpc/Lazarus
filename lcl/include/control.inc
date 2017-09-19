@@ -944,10 +944,7 @@ begin
   // be used for LCL HighDPI scaling.
   // Override this function - list all custom fonts in the overriden procedure
 
-  // If the font is a system font (Font.IsDefault), it is correctly
-  // sized taken at runtime. Issue #32359
-  if not Font.IsDefault then
-    DoFixDesignFontPPI(Font, ADesignTimePPI);
+  DoFixDesignFontPPI(Font, ADesignTimePPI);
 end;
 
 procedure TControl.ExecuteCancelAction;
@@ -1924,9 +1921,7 @@ procedure TControl.DoScaleFontPPI(const AFont: TFont;
 begin
   // If AFont.PixelsPerInch is different from "Screen.PixelsPerInch" (=GetDeviceCaps(DC, LOGPIXELSX))
   // then the font doesn't scale -> we have to assign a nonzero height value.
-  // If the font is a system font (Font.IsDefault), it is correctly
-  // sized taken at runtime. Issue #32359
-  if (AFont.Height=0) and not (csDesigning in ComponentState) and not AFont.IsDefault then
+  if (AFont.Height=0) and not (csDesigning in ComponentState) then
     AFont.Height := MulDiv(GetFontData(AFont.Reference.Handle).Height, AFont.PixelsPerInch, Screen.PixelsPerInch);
   AFont.PixelsPerInch := Round(AFont.PixelsPerInch*AProportion);
 end;
