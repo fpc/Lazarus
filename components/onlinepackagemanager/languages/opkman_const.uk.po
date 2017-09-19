@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
-"PO-Revision-Date: 2017-08-10 00:58+0300\n"
+"PO-Revision-Date: 2017-09-19 20:10+0300\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -13,36 +13,34 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
-#, fuzzy
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
 msgid "Cancel"
 msgstr "Скасувати"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_hint
 msgid "Close the dialog"
-msgstr ""
+msgstr "Закрити діалог"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_caption
-#, fuzzy
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bok_caption"
 msgid "OK"
 msgstr "Гаразд"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_hint
 msgid "Close the dialog and create the package"
-msgstr ""
+msgstr "Закрити діалог і створити пакунок"
 
 #: opkman_const.rsaddrepositorypackagefrm_caption
 msgid "Add repository package"
-msgstr ""
+msgstr "Створити пакунок зі сховища"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbaddexisting_caption
 msgid "Add existing repository package from file"
-msgstr ""
+msgstr "Додати наявний пакунок зі сховища з файлу"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbcreatenew_caption
 msgid "Create a new repository package"
-msgstr ""
+msgstr "Створити пакунок для сховища"
 
 #: opkman_const.rscategoriesfrm_bcancel_caption
 msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
@@ -131,29 +129,25 @@ msgid "JSON for updates successfully created."
 msgstr "JSON для оновлень успішно створено."
 
 #: opkman_const.rscreaterepositoryfrm_badd_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_badd_caption"
 msgid "Add"
 msgstr "Додати"
 
 #: opkman_const.rscreaterepositoryfrm_badd_hint
 msgid "Add package to the current repository"
-msgstr ""
+msgstr "Додати пакунок до поточного сховища"
 
 #: opkman_const.rscreaterepositoryfrm_bcancel_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_caption"
 msgid "Cancel"
 msgstr "Скасувати"
 
 #: opkman_const.rscreaterepositoryfrm_bcancel_hint
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_hint"
 msgid "Close this dialog"
 msgstr "Закрити цей діалог"
 
 #: opkman_const.rscreaterepositoryfrm_bcreate_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_bcreate_caption"
 msgid "Create"
 msgstr "Створити"
@@ -161,228 +155,214 @@ msgstr "Створити"
 #: opkman_const.rscreaterepositoryfrm_bcreate_hint
 msgctxt "opkman_const.rscreaterepositoryfrm_bcreate_hint"
 msgid "Create private repository"
-msgstr ""
+msgstr "Створити приватне сховище"
 
 #: opkman_const.rscreaterepositoryfrm_bdelete_caption
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_bdelete_caption"
 msgid "Delete"
 msgstr "Видалити"
 
 #: opkman_const.rscreaterepositoryfrm_bdelete_hint
 msgid "Delete package from the current repository"
-msgstr ""
+msgstr "Видалити пакунок з поточного сховища"
 
 #: opkman_const.rscreaterepositoryfrm_bopen_caption
 msgid "Open"
-msgstr ""
+msgstr "Відкрити"
 
 #: opkman_const.rscreaterepositoryfrm_bopen_hint
 msgid "Open private respository"
-msgstr ""
+msgstr "Відкрити приватне сховище"
 
 #: opkman_const.rscreaterepositoryfrm_caption
 msgctxt "opkman_const.rscreaterepositoryfrm_caption"
 msgid "Create/Edit private repository"
-msgstr ""
+msgstr "Створити/змінити приватне сховище"
 
 #: opkman_const.rscreaterepositoryfrm_conf1
 msgid "Are you sure you wish to delete package: \"%s\"?"
-msgstr ""
+msgstr "Справді видалити пакунок: \"%s\"?"
 
 #: opkman_const.rscreaterepositoryfrm_conf2
 msgid "The following file: \"%s\" already exists in the current repository. Overwrite?"
-msgstr ""
+msgstr "Файл \"%s\" вже існує в поточному сховищі. Перезаписати?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
 "\"%s\"\n"
 msgstr ""
+"Неможливо відкрити приватне сховище: \"%s\". Повідомлення про помилку: \n"
+"\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
 "\"%s\"\n"
 msgstr ""
+"Неможливо записати приватне сховище \"%s\". Повідомлення про помилку: \n"
+"\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error4
 msgid "Cannot add package to repository!"
-msgstr ""
+msgstr "Неможливо додати пакунок до сховища!"
 
 #: opkman_const.rscreaterepositoryfrm_error5
 msgid "Cannot delete package: \"%s\"!"
-msgstr ""
+msgstr "Неможливо видалити пакунок: \"%s\"!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
 "It's recommended to save the repository to an empty directory. Continue?\n"
 msgstr ""
+"Тека \"%s\" - не порожня.\n"
+"Сховище бажано записувати в порожню теку. Продовжити?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!\n"
 msgstr ""
+"Пакунок \"%s\" вже є в поточному сховищі.\n"
+"Кожен пакунок сховища і Lazarus має бути унікальним!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!\n"
 msgstr ""
+"Пакунок Lazarus \"%s\" вже є в поточному сховищі.\n"
+"Кожен пакунок сховища і Lazarus має бути унікальним!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info7
 msgid "Package successfully added to repository."
-msgstr ""
+msgstr "Пакунок успішно додано до сховища."
 
 #: opkman_const.rscreaterepositoryfrm_mirepdetails_caption
 msgid "Edit repository details"
-msgstr ""
+msgstr "Змінити подробиці сховища"
 
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
 msgid "Address"
-msgstr ""
+msgstr "Адреса"
 
 #: opkman_const.rscreaterepositoryfrm_repositorydescription
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_repositorydescription"
 msgid "Description"
 msgstr "Опис"
 
 #: opkman_const.rscreaterepositoryfrm_vstdetails_column0
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vstdetails_column0"
 msgid "Description"
 msgstr "Опис"
 
 #: opkman_const.rscreaterepositoryfrm_vstdetails_column1
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vstdetails_column1"
 msgid "Data"
 msgstr "Дані"
 
 #: opkman_const.rscreaterepositoryfrm_vstpackages_column0
 msgid "Repository/Packages"
-msgstr ""
+msgstr "Сховище/пакунки"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_author
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_author"
 msgid "Author"
 msgstr "Автор"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_category
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_category"
 msgid "Category"
 msgstr "Категорія"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_dependecies
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_dependecies"
 msgid "Dependencies"
 msgstr "Залежності"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_description
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_description"
 msgid "Description"
 msgstr "Опис"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_downloadurl
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_downloadurl"
 msgid "Update link (JSON)"
 msgstr "Адреса оновлення (JSON)"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_fpccompatibility"
 msgid "FPC compatibility"
 msgstr "Сумісність з FPC"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_homepageurl
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_homepageurl"
 msgid "Home page"
 msgstr "Домашня сторінка"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_lazcompatibility
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_lazcompatibility"
 msgid "Lazarus compatibility"
 msgstr "Сумісність з Lazarus"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_license
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_license"
 msgid "License"
 msgstr "Ліцензія"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_packagetype
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype"
 msgid "Package type"
 msgstr "Тип пакунка"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_packagetype0
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype0"
 msgid "Designtime and runtime"
 msgstr "Часу розробки і виконання"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_packagetype1
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype1"
 msgid "Designtime"
 msgstr "Часу розробки"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_packagetype2
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype2"
 msgid "Runtime"
 msgstr "Часу виконання"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_packagetype3
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_packagetype3"
 msgid "Runtime only, cannot be installed in IDE"
 msgstr "Для часу виконання, не можна встановити в ІСР"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfiledate
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfiledate"
 msgid "Available since"
 msgstr "Дата появи"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilehash"
 msgid "Repository filehash"
 msgstr "Хеш-файл у сховищі"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilename"
 msgid "Repository filename"
 msgstr "Назва файлу в сховищі"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_repositoryfilesize"
 msgid "Repository filesize"
 msgstr "Розмір файлу в сховищі"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_supportedwidgetsets"
 msgid "Supported widgetsets"
 msgstr "Підтримувані бібліотеки віджетів"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_version
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_version"
 msgid "Version"
 msgstr "Версія"
@@ -403,7 +383,6 @@ msgid "Create"
 msgstr "Створити"
 
 #: opkman_const.rscreaterepositorypackagefrm_bcreate_caption1
-#, fuzzy
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bcreate_caption1"
 msgid "Add"
 msgstr "Додати"
@@ -414,7 +393,7 @@ msgstr "Створити файли локально"
 
 #: opkman_const.rscreaterepositorypackagefrm_bcreate_hint1
 msgid "Add package to repository"
-msgstr ""
+msgstr "Додати пакунок до сховища"
 
 #: opkman_const.rscreaterepositorypackagefrm_bhelp_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_bhelp_caption"
@@ -627,7 +606,7 @@ msgstr "Створити JSON для оновлень"
 #: opkman_const.rsmainfrm_micreaterepository
 msgctxt "opkman_const.rsmainfrm_micreaterepository"
 msgid "Create private repository"
-msgstr ""
+msgstr "Створити приватне сховище"
 
 #: opkman_const.rsmainfrm_micreaterepositorypackage
 msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
@@ -1633,7 +1612,7 @@ msgstr "Видалити вибране сховище \"%s\"?"
 
 #: opkman_const.rsrepositories_info1
 msgid "The following repository: \"%s\" is already in the list."
-msgstr ""
+msgstr "Сховище \"%s\" вже в списку."
 
 #: opkman_const.rsrepositories_inputbox_caption0
 msgid "Add repository"
@@ -1652,57 +1631,54 @@ msgid "Repository Address"
 msgstr "Адреса сховища"
 
 #: opkman_const.rsrepositorydetailsfrm_bcancel_caption
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_bcancel_caption"
 msgid "Cancel"
 msgstr "Скасувати"
 
 #: opkman_const.rsrepositorydetailsfrm_bcancel_hint
 msgid "Close the dialog without saving"
-msgstr ""
+msgstr "Закрити діалог не записуючи"
 
 #: opkman_const.rsrepositorydetailsfrm_bok_caption
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_bok_caption"
 msgid "OK"
 msgstr "Гаразд"
 
 #: opkman_const.rsrepositorydetailsfrm_bok_hint
 msgid "Save and close the dialog"
-msgstr ""
+msgstr "Зберегти і закрити діалог"
 
 #: opkman_const.rsrepositorydetailsfrm_caption
 msgid "Repository details"
-msgstr ""
+msgstr "Подробиці сховища"
 
 #: opkman_const.rsrepositorydetailsfrm_edaddress_hint
 msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
-msgstr ""
+msgstr "Введіть адресу сховища (наприклад, \"http://localhost/packages/\")"
 
 #: opkman_const.rsrepositorydetailsfrm_edname_hint
 msgid "Enter the repository name"
-msgstr ""
+msgstr "Введіть назву сховища"
 
 #: opkman_const.rsrepositorydetailsfrm_info1
 msgid "Please enter the repository name."
-msgstr ""
+msgstr "Введіть назву сховища."
 
 #: opkman_const.rsrepositorydetailsfrm_lbaddress_caption
 msgctxt "opkman_const.rsrepositorydetailsfrm_lbaddress_caption"
 msgid "Address"
-msgstr ""
+msgstr "Адреса"
 
 #: opkman_const.rsrepositorydetailsfrm_lbdescription_caption
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_lbdescription_caption"
 msgid "Description"
 msgstr "Опис"
 
 #: opkman_const.rsrepositorydetailsfrm_lbname_caption
 msgid "Name"
-msgstr ""
+msgstr "Назва"
 
 #: opkman_const.rsrepositorydetailsfrm_mdescription_hint
 msgid "Enter the repository description"
-msgstr ""
+msgstr "Введіть опис сховища"
 

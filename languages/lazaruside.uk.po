@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-08-24 17:15+0300\n"
+"PO-Revision-Date: 2017-09-19 19:52+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -3204,8 +3204,6 @@ msgid "Replace &All"
 msgstr "Замінити &всі"
 
 #: lazarusidestrconsts.dlgreplacewith
-#, fuzzy
-#| msgid "&Replace with"
 msgid "Replace wit&h"
 msgstr "&Замінити на"
 
@@ -17534,7 +17532,7 @@ msgstr "Необхідний для виконання пакет програм
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application \"%s\"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local"
-msgstr "Виконуваний застосунок \"%s\"%sне існує або не є виконуваною.%sДивіться Виконання -> Параметри виконання -> Локальні"
+msgstr "Застосунок, що запускається, \"%s\"%sне існує або не є виконуваним файлом.%sДивіться Виконання -> Параметри виконання -> Локальні"
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
@@ -19132,7 +19130,7 @@ msgstr "Ви не можете перезібрати Lazarus  під час з�
 
 #: lazarusidestrconsts.lisyoucannotchangethebuildmodewhilecompiling
 msgid "You cannot change the build mode while compiling."
-msgstr ""
+msgstr "Ви не можете змінити режим збирання під час компіляції."
 
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"
