@@ -6613,6 +6613,8 @@ images/components/tactionlist.png -text svneol=unset#image/png
 images/components/tactionlist_150.png -text
 images/components/tactionlist_200.png -text
 images/components/tapplicationproperties.png -text svneol=unset#image/png
+images/components/tapplicationproperties_150.png -text
+images/components/tapplicationproperties_200.png -text
 images/components/tarrow.png -text svneol=unset#image/png
 images/components/tarrow_150.png -text
 images/components/tarrow_200.png -text
@@ -6667,7 +6669,11 @@ images/components/tcombobox_150.png -text
 images/components/tcombobox_200.png -text
 images/components/tcomboboxex.png -text svneol=unset#image/png
 images/components/tcontrolbar.png -text svneol=unset#image/png
+images/components/tcontrolbar_150.png -text
+images/components/tcontrolbar_200.png -text
 images/components/tcoolbar.png -text svneol=unset#image/png
+images/components/tcoolbar_150.png -text
+images/components/tcoolbar_200.png -text
 images/components/tdatasource.png -text svneol=unset#image/png
 images/components/tdatasource_150.png -text
 images/components/tdatasource_200.png -text
@@ -6738,10 +6744,14 @@ images/components/tfloatspinedit.png -text svneol=unset#image/png
 images/components/tfloatspinedit_150.png -text
 images/components/tfloatspinedit_200.png -text
 images/components/tflowpanel.png -text svneol=unset#image/png
+images/components/tflowpanel_150.png -text
+images/components/tflowpanel_200.png -text
 images/components/tfontdialog.png -text svneol=unset#image/png
 images/components/tfontdialog_150.png -text
 images/components/tfontdialog_200.png -text
 images/components/tframe.png -text svneol=unset#image/png
+images/components/tframe_150.png -text
+images/components/tframe_200.png -text
 images/components/tgroupbox.png -text svneol=unset#image/png
 images/components/tgroupbox_150.png -text
 images/components/tgroupbox_200.png -text
@@ -6805,19 +6815,22 @@ images/components/topenpicturedialog_200.png -text
 images/components/tpagecontrol.png -text svneol=unset#image/png
 images/components/tpagecontrol_150.png -text
 images/components/tpagecontrol_200.png -text
-images/components/tpagesetupdialog_150.png -text
 images/components/tpaintbox.png -text svneol=unset#image/png
 images/components/tpaintbox_150.png -text
 images/components/tpaintbox_200.png -text
 images/components/tpairsplitter.png -text svneol=unset#image/png
+images/components/tpairsplitter_150.png -text
+images/components/tpairsplitter_200.png -text
 images/components/tpanel.png -text svneol=unset#image/png
+images/components/tpanel_150.png -text
+images/components/tpanel_200.png -text
 images/components/tpicture.png -text svneol=unset#image/png
 images/components/tpopupmenu.png -text svneol=unset#image/png
 images/components/tpopupmenu_150.png -text
 images/components/tpopupmenu_200.png -text
 images/components/tpopupnotifier.png -text svneol=unset#image/png
-images/components/tprintdialog_150.png -text
-images/components/tprintersetupdialog_150.png -text
+images/components/tpopupnotifier_150.png -text
+images/components/tpopupnotifier_200.png -text
 images/components/tprocess.png -text svneol=unset#image/png
 images/components/tprocessutf8.png -text
 images/components/tprogressbar.png -text svneol=unset#image/png
@@ -6842,6 +6855,8 @@ images/components/tscrollbar.png -text svneol=unset#image/png
 images/components/tscrollbar_150.png -text
 images/components/tscrollbar_200.png -text
 images/components/tscrollbox.png -text svneol=unset#image/png
+images/components/tscrollbox_150.png -text
+images/components/tscrollbox_200.png -text
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog_150.png -text
 images/components/tservicemanager.png -text svneol=unset#image/png
@@ -6865,6 +6880,8 @@ images/components/tstatictext.png -text svneol=unset#image/png
 images/components/tstatictext_150.png -text
 images/components/tstatictext_200.png -text
 images/components/tstatusbar.png -text svneol=unset#image/png
+images/components/tstatusbar_150.png -text
+images/components/tstatusbar_200.png -text
 images/components/tstringgrid.png -text svneol=unset#image/png
 images/components/tstringgrid_150.png -text
 images/components/tstringgrid_200.png -text
@@ -6882,10 +6899,14 @@ images/components/ttogglebox.png -text svneol=unset#image/png
 images/components/ttogglebox_150.png -text
 images/components/ttogglebox_200.png -text
 images/components/ttoolbar.png -text svneol=unset#image/png
+images/components/ttoolbar_150.png -text
+images/components/ttoolbar_200.png -text
 images/components/ttrackbar.png -text svneol=unset#image/png
 images/components/ttrackbar_150.png -text
 images/components/ttrackbar_200.png -text
 images/components/ttrayicon.png -text svneol=unset#image/png
+images/components/ttrayicon_150.png -text
+images/components/ttrayicon_200.png -text
 images/components/ttreeview.png -text svneol=unset#image/png
 images/components/ttreeview_150.png -text
 images/components/ttreeview_200.png -text
@@ -6978,7 +6999,6 @@ images/designer/add_submenu_right.png -text svneol=unset#image/png
 images/designer/add_submenu_right_150.png -text
 images/designer/add_submenu_right_200.png -text
 images/designer/align.png -text
-images/designer/anchor_bottom.png -text svneol=unset#image/png
 images/designer/anchor_bottom_bottom.png -text
 images/designer/anchor_bottom_bottom_150.png -text
 images/designer/anchor_bottom_bottom_200.png -text
@@ -6988,9 +7008,6 @@ images/designer/anchor_bottom_center_200.png -text
 images/designer/anchor_bottom_top.png -text
 images/designer/anchor_bottom_top_150.png -text
 images/designer/anchor_bottom_top_200.png -text
-images/designer/anchor_center_horizontal.png -text svneol=unset#image/png
-images/designer/anchor_center_vertical.png -text svneol=unset#image/png
-images/designer/anchor_left.png -text svneol=unset#image/png
 images/designer/anchor_left_center.png -text
 images/designer/anchor_left_center_150.png -text
 images/designer/anchor_left_center_200.png -text
@@ -7000,7 +7017,6 @@ images/designer/anchor_left_left_200.png -text
 images/designer/anchor_left_right.png -text svneol=unset#image/png
 images/designer/anchor_left_right_150.png -text
 images/designer/anchor_left_right_200.png -text
-images/designer/anchor_right.png -text svneol=unset#image/png
 images/designer/anchor_right_center.png -text
 images/designer/anchor_right_center_150.png -text
 images/designer/anchor_right_center_200.png -text
@@ -7010,7 +7026,6 @@ images/designer/anchor_right_left_200.png -text
 images/designer/anchor_right_right.png -text
 images/designer/anchor_right_right_150.png -text
 images/designer/anchor_right_right_200.png -text
-images/designer/anchor_top.png -text svneol=unset#image/png
 images/designer/anchor_top_bottom.png -text svneol=unset#image/png
 images/designer/anchor_top_bottom_150.png -text
 images/designer/anchor_top_bottom_200.png -text
@@ -7058,6 +7073,9 @@ images/items/item_keyboard.png -text svneol=unset#image/png
 images/items/item_library.png -text svneol=unset#image/png
 images/items/item_package.png -text svneol=unset#image/png
 images/items/item_project.png -text svneol=unset#image/png
+images/items/item_project_source.png -text
+images/items/item_project_source_150.png -text
+images/items/item_project_source_200.png -text
 images/items/item_todo.png -text svneol=unset#image/png
 images/items/item_unit.png -text svneol=unset#image/png
 images/items/item_unit_150.png -text
@@ -7092,7 +7110,11 @@ images/menu/menu_build_lazarus.png -text svneol=unset#image/png
 images/menu/menu_build_run_file.png -text
 images/menu/menu_clean.png -text svneol=unset#image/png
 images/menu/menu_clear_all_bookmarks.png -text
+images/menu/menu_clear_all_bookmarks_150.png -text
+images/menu/menu_clear_all_bookmarks_200.png -text
 images/menu/menu_clear_file_bookmarks.png -text
+images/menu/menu_clear_file_bookmarks_150.png -text
+images/menu/menu_clear_file_bookmarks_200.png -text
 images/menu/menu_close.png -text svneol=unset#image/png
 images/menu/menu_close_150.png -text
 images/menu/menu_close_200.png -text
@@ -7116,15 +7138,35 @@ images/menu/menu_file_revert.png -text svneol=unset#image/png
 images/menu/menu_file_revert_150.png -text
 images/menu/menu_file_revert_200.png -text
 images/menu/menu_goto_bookmark0.png -text
+images/menu/menu_goto_bookmark0_150.png -text
+images/menu/menu_goto_bookmark0_200.png -text
 images/menu/menu_goto_bookmark1.png -text
+images/menu/menu_goto_bookmark1_150.png -text
+images/menu/menu_goto_bookmark1_200.png -text
 images/menu/menu_goto_bookmark2.png -text
+images/menu/menu_goto_bookmark2_150.png -text
+images/menu/menu_goto_bookmark2_200.png -text
 images/menu/menu_goto_bookmark3.png -text
+images/menu/menu_goto_bookmark3_150.png -text
+images/menu/menu_goto_bookmark3_200.png -text
 images/menu/menu_goto_bookmark4.png -text
+images/menu/menu_goto_bookmark4_150.png -text
+images/menu/menu_goto_bookmark4_200.png -text
 images/menu/menu_goto_bookmark5.png -text
+images/menu/menu_goto_bookmark5_150.png -text
+images/menu/menu_goto_bookmark5_200.png -text
 images/menu/menu_goto_bookmark6.png -text
+images/menu/menu_goto_bookmark6_150.png -text
+images/menu/menu_goto_bookmark6_200.png -text
 images/menu/menu_goto_bookmark7.png -text
+images/menu/menu_goto_bookmark7_150.png -text
+images/menu/menu_goto_bookmark7_200.png -text
 images/menu/menu_goto_bookmark8.png -text
+images/menu/menu_goto_bookmark8_150.png -text
+images/menu/menu_goto_bookmark8_200.png -text
 images/menu/menu_goto_bookmark9.png -text
+images/menu/menu_goto_bookmark9_150.png -text
+images/menu/menu_goto_bookmark9_200.png -text
 images/menu/menu_goto_line.png -text svneol=unset#image/png
 images/menu/menu_goto_line_150.png -text
 images/menu/menu_goto_line_200.png -text
@@ -7151,16 +7193,24 @@ images/menu/menu_jumpto_interfaceuses_200.png -text
 images/menu/menu_jumpto_procedurebegin.png -text svneol=unset#image/png
 images/menu/menu_jumpto_procedureheader.png -text svneol=unset#image/png
 images/menu/menu_manage_desktops.png -text svneol=unset#image/png
+images/menu/menu_manage_source_editors.png -text
+images/menu/menu_manage_source_editors_150.png -text
+images/menu/menu_manage_source_editors_200.png -text
 images/menu/menu_new.png -text svneol=unset#image/png
 images/menu/menu_new_150.png -text
 images/menu/menu_new_200.png -text
 images/menu/menu_new_form.png -text
 images/menu/menu_new_form_150.png -text
 images/menu/menu_new_form_200.png -text
+images/menu/menu_new_search.png -text
+images/menu/menu_new_search_150.png -text
+images/menu/menu_new_search_200.png -text
 images/menu/menu_new_unit.png -text
 images/menu/menu_new_unit_150.png -text
 images/menu/menu_new_unit_200.png -text
 images/menu/menu_pause.png -text svneol=unset#image/png
+images/menu/menu_pause_150.png -text
+images/menu/menu_pause_200.png -text
 images/menu/menu_project_add.png -text svneol=unset#image/png
 images/menu/menu_project_close.png -text svneol=unset#image/png
 images/menu/menu_project_from_file.png -text
@@ -7170,7 +7220,6 @@ images/menu/menu_project_options.png -text svneol=unset#image/png
 images/menu/menu_project_remove.png -text svneol=unset#image/png
 images/menu/menu_project_save.png -text svneol=unset#image/png
 images/menu/menu_project_saveas.png -text svneol=unset#image/png
-images/menu/menu_project_viewsource.png -text svneol=unset#image/png
 images/menu/menu_quick_compile.png -text svneol=unset#image/png
 images/menu/menu_redo.png -text svneol=unset#image/png
 images/menu/menu_redo_150.png -text
@@ -7178,10 +7227,18 @@ images/menu/menu_redo_200.png -text
 images/menu/menu_reportingbug.png -text svneol=unset#image/png
 images/menu/menu_reset_debugger.png -text svneol=unset#image/png
 images/menu/menu_run.png -text svneol=unset#image/png
+images/menu/menu_run_150.png -text
+images/menu/menu_run_200.png -text
 images/menu/menu_run_cursor.png -text svneol=unset#image/png
+images/menu/menu_run_cursor_150.png -text
+images/menu/menu_run_cursor_200.png -text
 images/menu/menu_run_file.png -text svneol=unset#image/png
 images/menu/menu_run_parameters.png -text svneol=unset#image/png
+images/menu/menu_run_parameters_150.png -text
+images/menu/menu_run_parameters_200.png -text
 images/menu/menu_run_withoutdebugging.png -text
+images/menu/menu_run_withoutdebugging_150.png -text
+images/menu/menu_run_withoutdebugging_200.png -text
 images/menu/menu_save_all.png -text svneol=unset#image/png
 images/menu/menu_save_all_150.png -text
 images/menu/menu_save_all_200.png -text
@@ -7210,14 +7267,20 @@ images/menu/menu_search_jumpforward.png -text svneol=unset#image/png
 images/menu/menu_search_jumpforward_150.png -text
 images/menu/menu_search_jumpforward_200.png -text
 images/menu/menu_search_next_bookmark.png -text
+images/menu/menu_search_next_bookmark_150.png -text
+images/menu/menu_search_next_bookmark_200.png -text
 images/menu/menu_search_openfile_atcursor.png -text svneol=unset#image/png
 images/menu/menu_search_previous_bookmark.png -text
+images/menu/menu_search_previous_bookmark_150.png -text
+images/menu/menu_search_previous_bookmark_200.png -text
 images/menu/menu_search_replace.png -text svneol=unset#image/png
 images/menu/menu_search_replace_150.png -text
 images/menu/menu_search_replace_200.png -text
 images/menu/menu_search_set_bookmark.png -text svneol=unset#image/png
 images/menu/menu_select_all.png -text svneol=unset#image/png
 images/menu/menu_set_free_bookmark.png -text
+images/menu/menu_set_free_bookmark_150.png -text
+images/menu/menu_set_free_bookmark_200.png -text
 images/menu/menu_stepinto.png -text svneol=unset#image/png
 images/menu/menu_stepinto_150.png -text
 images/menu/menu_stepinto_200.png -text
@@ -7230,16 +7293,38 @@ images/menu/menu_stepover_150.png -text
 images/menu/menu_stepover_200.png -text
 images/menu/menu_stepover_instr.png -text svneol=unset#image/png
 images/menu/menu_stop.png -text svneol=unset#image/png
+images/menu/menu_stop_150.png -text
+images/menu/menu_stop_200.png -text
 images/menu/menu_toggle_bookmark0.png -text
+images/menu/menu_toggle_bookmark0_150.png -text
+images/menu/menu_toggle_bookmark0_200.png -text
 images/menu/menu_toggle_bookmark1.png -text
+images/menu/menu_toggle_bookmark1_150.png -text
+images/menu/menu_toggle_bookmark1_200.png -text
 images/menu/menu_toggle_bookmark2.png -text
+images/menu/menu_toggle_bookmark2_150.png -text
+images/menu/menu_toggle_bookmark2_200.png -text
 images/menu/menu_toggle_bookmark3.png -text
+images/menu/menu_toggle_bookmark3_150.png -text
+images/menu/menu_toggle_bookmark3_200.png -text
 images/menu/menu_toggle_bookmark4.png -text
+images/menu/menu_toggle_bookmark4_150.png -text
+images/menu/menu_toggle_bookmark4_200.png -text
 images/menu/menu_toggle_bookmark5.png -text
+images/menu/menu_toggle_bookmark5_150.png -text
+images/menu/menu_toggle_bookmark5_200.png -text
 images/menu/menu_toggle_bookmark6.png -text
+images/menu/menu_toggle_bookmark6_150.png -text
+images/menu/menu_toggle_bookmark6_200.png -text
 images/menu/menu_toggle_bookmark7.png -text
+images/menu/menu_toggle_bookmark7_150.png -text
+images/menu/menu_toggle_bookmark7_200.png -text
 images/menu/menu_toggle_bookmark8.png -text
+images/menu/menu_toggle_bookmark8_150.png -text
+images/menu/menu_toggle_bookmark8_200.png -text
 images/menu/menu_toggle_bookmark9.png -text
+images/menu/menu_toggle_bookmark9_150.png -text
+images/menu/menu_toggle_bookmark9_200.png -text
 images/menu/menu_tool_check_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_dfm_to_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_diff.png -text svneol=unset#image/png
@@ -7272,6 +7357,8 @@ images/menu/menu_view_search_results.png -text
 images/menu/menu_view_search_results_150.png -text
 images/menu/menu_view_search_results_200.png -text
 images/menu/menu_view_source_editor.png -text svneol=unset#image/png
+images/menu/menu_view_source_editor_150.png -text
+images/menu/menu_view_source_editor_200.png -text
 images/menu/menu_view_todo.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit.png -text svneol=unset#image/png
 images/menu/menu_view_unit_info.png -text svneol=unset#image/png
