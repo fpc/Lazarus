@@ -31,6 +31,8 @@ procedure Register;
 
 implementation
 
+{$R datetimectrls.res}
+
 uses
   Classes, DateTimePicker, DBDateTimePicker, LResources;
 
@@ -39,9 +41,6 @@ begin
   RegisterComponents('Common Controls', [TDateTimePicker]);
   RegisterComponents('Data Controls', [TDBDateTimePicker]);
 end;
-
-initialization
-{$i datetimectrls.lrs}
 
 end.
 

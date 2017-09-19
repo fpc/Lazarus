@@ -1276,12 +1276,13 @@ begin
     gtk_window_set_title(PGtkWindow(Dialog), PGChar(Title));
   end;
 
-  if (gtk_major_version = 2) and (gtk_minor_version <= 12) then
-  begin
-    ActiveWindow := GetActiveWindow;
-    if ActiveWindow <> 0 then
-      gtk_window_set_transient_for(PGtkWindow(Dialog), {%H-}PGtkWindow(ActiveWindow));
-  end;
+  ActiveWindow := GetActiveWindow;
+  if ActiveWindow <> 0 then
+    gtk_window_set_transient_for(PGtkWindow(Dialog), {%H-}PGtkWindow(ActiveWindow));
+  // the following line keeps the old behaviour making the dialog appear
+  // at screen center instead of at ActiveWindow center
+  gtk_window_set_position(PGtkWindow(Dialog), GTK_WIN_POS_CENTER);
+
   gtk_dialog_run(PGtkDialog(Dialog));
   gtk_widget_destroy(Dialog);
   Result := ADialogResult;

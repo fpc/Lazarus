@@ -24,12 +24,12 @@
         <UnitName Value="DateTimeControlsReg"/>
       </Item1>
       <Item2>
-        <Filename Value="datetimectrls.lrs"/>
-        <Type Value="LRS"/>
-      </Item2>
-      <Item3>
         <Filename Value="datetimepickerpropedit.pas"/>
         <UnitName Value="DateTimePickerPropEdit"/>
+      </Item2>
+      <Item3>
+        <Filename Value="datetimectrls.res"/>
+        <Type Value="Binary"/>
       </Item3>
     </Files>
     <RequiredPkgs Count="3">

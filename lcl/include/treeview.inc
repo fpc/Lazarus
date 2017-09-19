@@ -4328,6 +4328,8 @@ var
   MaxHintWidth: Integer;
   TransparentHints: Boolean;
 begin
+  if not (tvoToolTips in FOptions) then exit;
+
   if FHintWnd=nil then
   begin
     FHintWnd:=THintWindow.Create(Self);
@@ -5540,8 +5542,7 @@ begin
   inherited MouseMove(Shift, x, y);
   if (tvoAutoInsertMark in FOptions) then
     UpdateInsertMark(X,Y);
-  if (tvoToolTips in FOptions) then
-    UpdateTooltip(X, Y);
+  UpdateTooltip(X, Y);
 end;
 
 procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;

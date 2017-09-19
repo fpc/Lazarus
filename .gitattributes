@@ -1145,7 +1145,7 @@ components/datetimectrls/design/Makefile svneol=native#text/plain
 components/datetimectrls/design/Makefile.compiled svneol=native#text/plain
 components/datetimectrls/design/Makefile.fpc svneol=native#text/plain
 components/datetimectrls/design/datetimecontrolsreg.pas svneol=native#text/pascal
-components/datetimectrls/design/datetimectrls.lrs svneol=native#text/pascal
+components/datetimectrls/design/datetimectrls.res -text
 components/datetimectrls/design/datetimectrlsdsgn.lpk svneol=native#text/xml
 components/datetimectrls/design/datetimectrlsdsgn.pas svneol=native#text/pascal
 components/datetimectrls/design/datetimepickerpropedit.pas svneol=native#text/pascal
@@ -1156,7 +1156,11 @@ components/datetimectrls/pictures/DateControls02.PNG -text svneol=unset#image/pn
 components/datetimectrls/pictures/DateControls03.PNG -text svneol=unset#image/png
 components/datetimectrls/pictures/TDBDateTimePicker.png -text svneol=unset#image/png
 components/datetimectrls/pictures/TDateTimePicker.png -text svneol=unset#image/png
+components/datetimectrls/pictures/TDateTimePicker_150.png -text
+components/datetimectrls/pictures/TDateTimePicker_200.png -text
+components/datetimectrls/pictures/datetimectrls_list.txt svneol=native#text/plain
 components/datetimectrls/pictures/datetimepickereditor.png -text
+components/datetimectrls/pictures/make_datetimectrls_images.bat svneol=native#text/plain
 components/datetimectrls/readme.txt svneol=native#text/plain
 components/dbexport/README.txt svneol=native#text/plain
 components/dbexport/dbexportimg.res -text
