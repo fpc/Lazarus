@@ -1988,7 +1988,6 @@ type
     procedure SetBorderWidth(Value: TBorderWidth);
     procedure SetParentWindow(const AValue: HWND);
     procedure SetTabOrder(NewTabOrder: TTabOrder);
-    procedure SetTabStop(NewTabStop: Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabOrder: TTabOrder);
     procedure Insert(AControl: TControl);
@@ -2033,12 +2032,14 @@ type
                                      WithThemeSpace: Boolean); override;
     procedure GetPreferredSizeClientFrame(out aWidth, aHeight: integer); virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    function GetTabStop: Boolean; virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var TheMessage: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
     procedure CreateBrush; virtual;
     procedure ScaleControls(Multiplier, Divider: Integer); virtual;
+    procedure SetTabStop(NewTabStop: Boolean); virtual;
     procedure ChangeScale(Multiplier, Divider: Integer); override;
   protected
     // messages
@@ -2188,7 +2189,7 @@ type
     property Handle: HWND read GetHandle write SetHandle;
     property IsResizing: Boolean read GetIsResizing;
     property TabOrder: TTabOrder read GetTabOrder write SetTabOrder default -1;
-    property TabStop: Boolean read FTabStop write SetTabStop default false;
+    property TabStop: Boolean read GetTabStop write SetTabStop default false;
     property OnAlignInsertBefore: TAlignInsertBeforeEvent read FOnAlignInsertBefore write FOnAlignInsertBefore;
     property OnAlignPosition: TAlignPositionEvent read FOnAlignPosition write FOnAlignPosition;
     property OnDockDrop: TDockDropEvent read FOnDockDrop write FOnDockDrop;

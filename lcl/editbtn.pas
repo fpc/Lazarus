@@ -103,6 +103,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure GetTabOrderList(List: TFPList); override;
   end;
 
  { TEditButton }
@@ -1074,6 +1075,7 @@ begin
   inherited Create(AOwner);
   FButtonOnlyWhenFocused := False;
   FocusOnButtonClick := False;
+  TabStop := True;
 
   SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);
 
@@ -1089,6 +1091,12 @@ end;
 destructor TCustomEditButton.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TCustomEditButton.GetTabOrderList(List: TFPList);
+begin
+// just the TCustomEditButton as container should be tabable, see issue #32335
+// so no inherited adding of child controls
 end;
 
 

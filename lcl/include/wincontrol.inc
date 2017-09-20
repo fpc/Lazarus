@@ -3909,6 +3909,11 @@ begin
   end;
 end;
 
+function TWinControl.GetTabStop: Boolean;
+begin
+  Result := FTabStop;
+end;
+
 {-------------------------------------------------------------------------------
   function TWinControl.ChildClassAllowed(ChildClass: TClass): boolean;
 
@@ -4243,15 +4248,6 @@ begin
     FTabOrder := NewTabOrder
   else
     UpdateTabOrder(NewTabOrder);
-end;
-
-procedure TWinControl.SetTabStop(NewTabStop: Boolean);
-begin
-  if FTabStop = NewTabStop then
-    Exit;
-  FTabStop := NewTabStop;
-  UpdateTabOrder(FTabOrder);
-  Perform(CM_TABSTOPCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -4986,6 +4982,15 @@ var
 begin
   for i := 0 to ControlCount - 1 do
     Controls[i].ChangeScale(Multiplier, Divider);
+end;
+
+procedure TWinControl.SetTabStop(NewTabStop: Boolean);
+begin
+  if FTabStop = NewTabStop then
+    Exit;
+  FTabStop := NewTabStop;
+  UpdateTabOrder(FTabOrder);
+  Perform(CM_TABSTOPCHANGED, 0, 0);
 end;
 
 procedure TWinControl.ChangeScale(Multiplier, Divider: Integer);
