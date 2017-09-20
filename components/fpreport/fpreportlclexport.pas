@@ -736,7 +736,7 @@ begin
   SR:=GetElementRect(BL,SL);
   { Frame must be drawn before the shape as it could have a fill color. }
   RenderFrame(AShape.Frame, SR, ABand.Frame.BackgroundColor);
-  Canvas.Pen.Color:=clBlack;
+  Canvas.Pen.Color:=TFPReportShape(AShape).Color;
   Canvas.Pen.Style:=psSolid;
   Canvas.Pen.Width:=1;
   lPt1.Left := BL.Left + SL.Left;
