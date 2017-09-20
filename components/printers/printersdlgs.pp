@@ -95,11 +95,11 @@ implementation
       {$I cocoaprndialogs.inc}
     {$ENDIF}
     {$IFDEF LCLQt}
-      uses qtobjects, qt4, qtint;
+      uses qtobjects, qt4, qtint, LazUTF8;
       {$I qtprndialogs.inc}
     {$ENDIF}
     {$IFDEF LCLQt5}
-      uses qtobjects, qt5, qtint;
+      uses qtobjects, qt5, qtint, LazUTF8;
       {$I qtprndialogs.inc}
     {$ENDIF}    
     {$IFDEF LCLGtk2}
@@ -125,12 +125,12 @@ implementation
 {$IFDEF MSWindows}
   {$IFDEF LCLQt}
     uses Windows,
-    qtobjects, qtwidgets, qt4, LCLIntf, LCLType;
+    qtobjects, qtwidgets, qt4, LCLIntf, LCLType, LazUTF8;
     {$I qtprndialogs.inc}
   {$ELSE}
   {$IFDEF LCLQt5}
     uses Windows,
-    qtobjects, qtwidgets, qt5, LCLIntf, LCLType;
+    qtobjects, qtwidgets, qt5, LCLIntf, LCLType, LazUTF8;
     {$I qtprndialogs.inc}
   {$ELSE}  
     uses Windows, WinUtilPrn, InterfaceBase, LCLIntf, LCLType, WinVer;
