@@ -101,7 +101,7 @@ end;
 
 destructor TDBText.Destroy;
 begin
-  FDataLink.Destroy;
+  FDataLink.Free;
   inherited Destroy;
 end;
 
