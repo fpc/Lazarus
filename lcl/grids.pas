@@ -1156,6 +1156,7 @@ type
     property BorderColor: TColor read FBorderColor write SetBorderColor default cl3DDKShadow;
     property CellHintPriority: TCellHintPriority read FCellHintPriority write FCellHintPriority default chpAllNoDefault;
     property Col: Integer read FCol write SetCol;
+    property Cols: TList read FCols;  // Raise visibility for debugging issue #31380.
     property ColCount: Integer read GetColCount write SetColCount default 5;
     property ColRow: TPoint read GetQuickColRow write SetQuickColRow;
     property ColumnClickSorts: boolean read FColumnClickSorts write SetColumnClickSorts default false;
@@ -2277,7 +2278,12 @@ var
   NewRowCount: Integer;
 begin
   OldC := FCols.Count;
-  if ACount=OldC then Exit;
+  if ACount = OldC then begin
+    // This is for debugging issue #31380. The IDE has many grids with count > 1.
+    if ACount = 1 then
+      DebugLn('TCustomGrid.InternalSetColCount: ACount = Cols.Count = 1');
+    Exit;
+  end;
   if ACount<1 then
     Clear
   else begin
@@ -2502,6 +2508,8 @@ end;
 function TCustomGrid.GetColCount: Integer;
 begin
   Result:=FCols.Count;
+  if Result<>FColumns.Count then
+    DebugLn(['TCustomGrid.GetColCount: FCols.Count (', Result, ') and FColumns.Count (', FColumns.Count, ') do not match.']);
 end;
 
 function TCustomGrid.GetRowCount: Integer;
@@ -2855,16 +2863,21 @@ end;
 
 procedure TCustomGrid.SetRawColWidths(ACol: Integer; AValue: Integer);
 begin
-  FCols[ACol]:=Pointer(PtrInt(Avalue));
+  if ACol < FCols.Count then      // Prevent a range error in case of a bug.
+    FCols[ACol]:=Pointer(PtrInt(Avalue))
+  else
+    DebugLn(['TCustomGrid.SetRawColWidths with Range Error: ACol=', ACol, ', Cols.Count=', FCols.Count]);
 end;
 
-procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, NewValue: Integer
-  );
+procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, NewValue: Integer);
+
   procedure AddDel(Lst: TList; aCount: Integer);
   begin
-    while lst.Count<aCount do Lst.Add(Pointer(-1)); // default width/height
+    while lst.Count<aCount do
+      Lst.Add(Pointer(-1)); // default width/height
     Lst.Count:=aCount;
   end;
+
 var
   OldCount, NewCount: integer;
 begin
@@ -3029,7 +3042,7 @@ begin
       CheckCount(NewColCount, AValue);
       AdjustCount(False, OldR, AValue);
     end else
-      Clear;
+      Clear;  // Issue #31380: Clears also FCols when it should not.
   end;
 end;
 
