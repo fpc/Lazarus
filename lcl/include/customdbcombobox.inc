@@ -35,7 +35,14 @@ end;
 procedure TCustomDBComboBox.Change;
 begin
   FDataLink.Modified;
-  inherited Change;
+  try
+    if FDataLink.CanModify then begin
+      FDataLink.Field.AsString := Text;
+      FDatalink.Modified;
+    end;
+  finally
+    inherited Change;
+  end;
 end;
 
 function TCustomDBComboBox.GetReadOnly: Boolean;
