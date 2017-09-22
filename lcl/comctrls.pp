@@ -499,8 +499,6 @@ type
     property TabHeight: Smallint read FTabHeight write SetTabHeight default 0;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
     property TabWidth: Smallint read FTabWidth write SetTabWidth default 0;
-  published
-    property TabStop default true;
   end;
 
   { TTabSheet }
@@ -625,7 +623,7 @@ type
     property TabIndex;
     property TabOrder;
     property TabPosition;
-    property TabStop;
+    property TabStop default true;
     property TabWidth;
     property Visible;
     property OnChange;
@@ -817,6 +815,7 @@ type
     procedure Change; override;
     procedure CreateWnd; override;
     procedure DestroyHandle; override;
+    procedure GetTabOrderList(List: TFPList); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetDragMode(Value: TDragMode); override;
     procedure SetTabIndex(Value: Integer); virtual;
@@ -862,7 +861,7 @@ type
     property TabHeight: Smallint read FTabHeight write SetTabHeight default 0;
     property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
     property Tabs: TStrings read FTabs write SetTabs;
-    property TabStop: Boolean read GetTabStop write SetTabStop default true; // workaround, see #30305
+    property TabStop default true;
     property TabWidth: Smallint read FTabWidth write SetTabWidth default 0;
     //
     property Align;

@@ -534,7 +534,8 @@ end;
 
 procedure TTabControl.SetTabStop(AValue: Boolean);
 begin
-  TTabControlNoteBookStrings(FTabs).NoteBook.TabStop := AValue;
+  if Assigned(FTabs) then
+    TTabControlNoteBookStrings(FTabs).NoteBook.TabStop := AValue;
 end;
 
 procedure TTabControl.SetTabWidth(AValue: Smallint);
@@ -602,6 +603,14 @@ begin
   BeginUpdate;
   inherited DestroyHandle;
   EndUpdate;
+end;
+
+procedure TTabControl.GetTabOrderList(List: TFPList);
+begin
+// just the TTabControlNoteBookStrings not the container should be tabable, see issue #32455
+  List.Remove(Self);
+  if Assigned(FTabs) then
+    List.Add(TTabControlNoteBookStrings(FTabs).NoteBook);
 end;
 
 procedure TTabControl.Notification(AComponent: TComponent;
@@ -754,8 +763,7 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FTabs := CreateTabNoteBookStrings;
-  TWinControl(Self).TabStop := False; // workaround, see #30305
-  TTabControlNoteBookStrings(FTabs).NoteBook.TabStop := True;
+  TabStop := True;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   BorderWidth:=0;
