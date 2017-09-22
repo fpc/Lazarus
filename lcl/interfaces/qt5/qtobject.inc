@@ -239,7 +239,7 @@ begin
   {$IFDEF QtUseNativeEventLoop}
   FMainTimerID := -1;
   ATimer := QTimer_Create(QCoreApplication_instance());
-  if StyleName = 'gtk' then
+  if (StyleName = 'gtk') or (StyleName = 'gtk+') then
     QTimer_setInterval(ATimer, 1) {issue #31191}
   else
     QTimer_setInterval(ATimer, 0);
