@@ -3463,7 +3463,6 @@ function TCustomDBGrid.UpdateGridCounts: Integer;
 var
   RecCount: Integer;
   FRCount, FCCount: Integer;
-  ColsCount: Integer;  // For debugging issue #31380.
 begin
   // find out the column count, if result=0 then
   // there are no visible columns defined or dataset is inactive
@@ -3472,13 +3471,10 @@ begin
   BeginUpdate;
   try
     Result := GetColumnCount;
-    ColsCount := Cols.Count;  // Issue #31380: Cols.Count=1, matches with Result. Good.
     if Result > 0 then begin
-
       if dgTitles in Options then FRCount := 1 else FRCount := 0;
       if dgIndicator in Options then FCCount := 1 else FCCount := 0;
       InternalSetColCount(Result + FCCount);
-
       if FDataLink.Active then begin
         UpdateBufferCount;
         RecCount := FDataLink.RecordCount;
@@ -3491,15 +3487,10 @@ begin
           // if there is one, and if there are no titles
           RecCount := FCCount;
       end;
-
       Inc(RecCount, FRCount);
-
       RowCount := RecCount;
-      ColsCount := Cols.Count;  // Issue #31380: RecCount=0 which cleared also Cols. Bad.
       FixedRows := FRCount;
-
       UpdateGridColumnSizes;
-
       if FDatalink.Active and (FDatalink.ActiveRecord>=0) then
         AdjustEditorBounds(Col, FixedRows + FDatalink.ActiveRecord);
     end;
