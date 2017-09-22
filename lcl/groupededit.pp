@@ -120,7 +120,6 @@ type
     function GetSelLength: Integer;
     function GetSelStart: Integer;
     function GetSelText: String;
-    function GetTabStop: Boolean;
     function GetTextHint: TTranslateString;
     function GetTextHintFontColor: TColor;      //Remove in 1.9
     function GetTextHintFontStyle: TFontStyles; //Remove in 1.9
@@ -175,7 +174,6 @@ type
     procedure SetSelStart(AValue: Integer);
     procedure SetSelText(AValue: String);
     procedure SetSpacing(const Value: integer);
-    procedure SetTabStop(AValue: Boolean);
     procedure SetTextHint(AValue: TTranslateString);
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
@@ -237,12 +235,14 @@ type
     function  EditCanModify: Boolean; virtual;
     procedure GetSel(out _SelStart: Integer; out _SelStop: Integer);
     function GetSpacing: Integer; virtual;
+    function GetTabStop: Boolean; override;
     procedure SetSel(const _SelStart: Integer; _SelStop: Integer);
     procedure Loaded; override;
     procedure Reset; virtual;
     procedure SetAutoSize(AValue: Boolean); override;
     procedure SetColor(AValue: TColor); reintroduce;
     procedure SetCursor(AValue: TCursor); override;
+    procedure SetTabStop(AValue: Boolean); override;
     procedure ShouldAutoAdjust(var AWidth, AHeight: Boolean); override;
 
     property AutoSelect: Boolean read GetAutoSelect write SetAutoSelect default True;
@@ -847,6 +847,11 @@ begin
   FEdit.Cursor := AValue;
 end;
 
+procedure TCustomAbstractGroupedEdit.SetTabStop(AValue: Boolean);
+begin
+  FEdit.TabStop := AValue;
+end;
+
 procedure TCustomAbstractGroupedEdit.ShouldAutoAdjust(var AWidth,
   AHeight: Boolean);
 begin
@@ -1127,11 +1132,6 @@ begin
   if (Value = FSpacing) then Exit;
   FSpacing := Value;
   if not (csLoading in ComponentState) then UpdateSpacing;
-end;
-
-procedure TCustomAbstractGroupedEdit.SetTabStop(AValue: Boolean);
-begin
-  FEdit.TabStop := AValue;
 end;
 
 procedure TCustomAbstractGroupedEdit.SetTextHint(AValue: TTranslateString);
