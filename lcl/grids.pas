@@ -1011,6 +1011,7 @@ type
     procedure DrawRow(aRow: Integer); virtual;
     procedure EditButtonClicked(Sender: TObject);
     procedure EditordoGetValue; virtual;
+    procedure EditordoResetValue; virtual;
     procedure EditordoSetValue; virtual;
     function  EditorCanAcceptKey(const ch: TUTF8Char): boolean; virtual;
     function  EditorIsReadOnly: boolean; virtual;
@@ -1312,6 +1313,7 @@ type
 
   TCustomDrawGrid=class(TCustomGrid)
   private
+    FEditorRow, FEditorCol: Integer;
     FOnColRowDeleted: TgridOperationEvent;
     FOnColRowExchanged: TgridOperationEvent;
     FOnColRowInserted: TGridOperationEvent;
@@ -1326,6 +1328,7 @@ type
     FOnSetEditText: TSetEditEvent;
     function CellNeedsCheckboxBitmaps(const aCol,aRow: Integer): boolean;
     procedure DrawCellCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect);
+    function  GetEditorValue(ACol, ARow: Integer): String;
   protected
     FGrid: TVirtualGrid;
     procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
@@ -1338,6 +1341,7 @@ type
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); virtual;
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect); override;
+    function  GetCells(ACol, ARow: Integer): string; override;
     procedure GetCheckBoxState(const aCol, aRow:Integer; var aState:TCheckboxState); virtual;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
@@ -1494,6 +1498,7 @@ type
     property OnStartDrag;
     property OnTopleftChanged;
     property OnUTF8KeyPress;
+    property OnValidateEntry;
   end;
 
 
@@ -1611,6 +1616,7 @@ type
     property OnTopleftChanged;
     property OnUserCheckboxBitmap;
     property OnUTF8KeyPress;
+    property OnValidateEntry;
   end;
 
   TCustomStringGrid = class;
@@ -7319,6 +7325,12 @@ begin
           Key := 0;
         end;
       end;
+    VK_ESCAPE:
+      begin
+        EditordoResetValue;
+        EditorHide;
+        Key := 0;
+      end;
   end;
   if FEditorKey and (not PreserveRowAutoInserted) then
     FRowAutoInserted:=False;
@@ -8260,6 +8272,21 @@ begin
     Msg.Col:=FCol;
     Msg.Row:=FRow;
     Msg.Value:=GetCells(FCol, FRow);
+    FEditor.Dispatch(Msg);
+    SetEditText(Msg.Col, Msg.Row, Msg.Value);
+  end;
+end;
+
+procedure TCustomGrid.EditordoResetValue;
+var
+  msg: TGridMessage;
+begin
+  if (FEditor<>nil) and FEditor.Visible then begin
+    Msg.LclMsg.msg:=GM_SETVALUE;
+    Msg.grid:=Self;
+    Msg.Col:=FCol;
+    Msg.Row:=FRow;
+    Msg.Value:=FEditorOldValue;
     FEditor.Dispatch(Msg);
     SetEditText(Msg.Col, Msg.Row, Msg.Value);
   end;
@@ -10277,6 +10304,21 @@ begin
   DrawGridCheckboxBitmaps(aCol, aRow, aRect, aState);
 end;
 
+function TCustomDrawGrid.GetEditorValue(ACol, ARow: Integer): String;
+var
+  msg: TGridMessage;
+begin
+  if Assigned(Editor) and Editor.Visible then begin
+    Msg.LclMsg.msg:=GM_GETVALUE;
+    Msg.grid:=Self;
+    Msg.Col:=ACol;
+    Msg.Row:=ARow;
+    Msg.Value:='';
+    Editor.Dispatch(Msg);
+    Result:=Msg.Value;
+  end;
+end;
+
 procedure TCustomDrawGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
 begin
   //
@@ -10339,6 +10381,13 @@ begin
       FFocusColor := OldFocusColor;
     end;
   end;
+end;
+
+function TCustomDrawGrid.GetCells(ACol, ARow: Integer): string;
+begin
+  Result:=inherited GetCells(ACol, ARow);
+  if (ACol = FEditorCol) and (ARow = FEditorRow) then
+    Result:=GetEditorValue(ACol, ARow);
 end;
 
 procedure TCustomDrawGrid.GetCheckBoxState(const aCol, aRow: Integer;
@@ -10423,6 +10472,9 @@ function TCustomDrawGrid.GetEditText(aCol, aRow: Longint): string;
 begin
   result:='';
   if assigned(OnGetEditText) then OnGetEditText(self, aCol, aRow, Result);
+  FEditorOldValue:=Result;
+  FEditorCol:=aCol;
+  FEditorRow:=aRow;
 end;
 
 procedure TCustomDrawGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
