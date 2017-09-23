@@ -660,6 +660,8 @@ type
   Property editor for all method properties. }
 
   TMethodPropertyEditor = class(TPropertyEditor)
+  private
+    function GetTrimmedEventName: shortstring;
   public
     function AllEqual: Boolean; override;
     procedure Edit; override;
@@ -670,7 +672,6 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
     function GetFormMethodName: shortstring;
-    function GetTrimmedEventName: shortstring;
     class function GetDefaultMethodName(Root, Component: TComponent;
         const RootClassName, ComponentName, PropName: shortstring): shortstring;
   end;
@@ -4682,27 +4683,55 @@ begin
             (I > 1) and (Result[I] in ['0'..'9'])
            )
     then
-      System.Delete(Result, I, 1);
+      Delete(Result, I, 1);
+end;
+
+function TrimDotsAndBrackets(const Txt: String): String;
+var
+  I: Integer;
+begin
+  Result := Txt;
+  for I := Length(Result) downto 1 do
+    if Result[I] in ['.','[',']'] then
+      Delete(Result, I, 1);
+end;
+
+function TrimEventName(const aName: shortstring): shortstring;
+begin
+  Result := aName;
+  if (Length(Result) >= 2)
+  and (Result[1] in ['O','o']) and (Result[2] in ['N','n'])
+  then
+    Delete(Result, 1, 2);
+end;
+
+function TMethodPropertyEditor.GetTrimmedEventName: shortstring;
+begin
+  Result := TrimEventName(GetName);
+end;
+
+function MethodNameSub(Root: TPersistent): shortstring;
+begin
+  if Root is TCustomForm then
+    Result := 'Form'
+  else
+  if Root is TDataModule then
+    Result := 'DataModule'
+  else
+  if Root is TFrame then
+    Result := 'Frame'
+  else
+    Result := '';
 end;
 
 function TMethodPropertyEditor.GetFormMethodName: shortstring;
 // returns the default name for a new method
-var
-  Root: TPersistent;
 begin
-  Result:='';
+  Result := '';
   if PropertyHook.LookupRoot=nil then exit;
   if GetComponent(0) = PropertyHook.LookupRoot then begin
-    Root:=PropertyHook.LookupRoot;
-    if Root is TCustomForm then
-      Result := 'Form'
-    else 
-    if Root is TDataModule then
-      Result := 'DataModule'
-    else
-    if Root is TFrame then
-      Result := 'Frame'
-    else 
+    Result := MethodNameSub(PropertyHook.LookupRoot);
+    if Result = '' then
       Result := ClassNameToComponentName(PropertyHook.GetRootClassName);
   end
   else
@@ -4712,53 +4741,23 @@ begin
   Result := Result + GetTrimmedEventName;
 end;
 
-function TMethodPropertyEditor.GetTrimmedEventName: shortstring;
-begin
-  Result := GetName;
-  if (Length(Result) >= 2)
-  and (Result[1] in ['O','o']) and (Result[2] in ['N','n'])
-  then
-    System.Delete(Result,1,2);
-end;
-
-class function TMethodPropertyEditor.GetDefaultMethodName(Root,
-  Component: TComponent; const RootClassName, ComponentName,
-  PropName: shortstring): shortstring;
+class function TMethodPropertyEditor.GetDefaultMethodName(Root, Component: TComponent;
+  const RootClassName, ComponentName, PropName: shortstring): shortstring;
 // returns the default name for a new method
-var I: Integer;
-  Postfix: shortstring;
 begin
-  Result:='';
+  Result := '';
   if Root=nil then exit;
   if Component = Root then begin
-    if Root is TCustomForm then
-      Result := 'Form'
-    else 
-    if Root is TDataModule then
-      Result := 'DataModule'
-    else
-    if Root is TFrame then
-      Result := 'Frame'
-    else 
-    begin
+    Result := MethodNameSub(Root);
+    if Result = '' then
       Result := ClassNameToComponentName(RootClassName);
-    end;
-  end else begin
-    Result := ComponentName;
-    for I := Length(Result) downto 1 do
-      if Result[I] in ['.','[',']'] then
-        System.Delete(Result, I, 1);
-  end;
-  if Result = '' then begin
-    DebugLn(['TMethodPropertyEditor.GetDefaultMethodName can not create name - this should never happen']);
-    exit;
-  end;
-  Postfix := PropName;
-  if (Length(Postfix) >= 2)
-  and (Postfix[1] in ['O','o']) and (Postfix[2] in ['N','n'])
-  then
-    System.Delete(Postfix,1,2);
-  Result:=Result+Postfix;
+  end
+  else
+    Result := TrimDotsAndBrackets(ComponentName);
+  if Result <> '' then
+    Result := Result + TrimEventName(PropName)
+  else
+    DebugLn(['TMethodPropertyEditor.GetDefaultMethodName cannot create name - should never happen']);
 end;
 
 function TMethodPropertyEditor.GetValue: ansistring;
