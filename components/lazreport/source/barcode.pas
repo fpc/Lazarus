@@ -1181,7 +1181,7 @@ begin
       weightC := 1;
     Inc(weightK);
     if weightK > 15 then
-      weightC := 1;
+      weightK := 1;
   end;
 
   Inc(checkK, checkC);
@@ -1229,7 +1229,7 @@ begin
   FText := '';
 
 
-  for i := 0 to Length(save) - 1 do
+  for i := 1 to Length(save) do
   begin
     if Ord(save[i]) <= 127 then
       FText := FText + code93x[Ord(save[i])];
