@@ -383,19 +383,19 @@ type
     procedure SetVarValue(const NewValue: Variant);
     procedure Modified(PropName: ShortString = '');
     function ValueAvailable: Boolean;
-    procedure ListMeasureWidth(const {%H-}AValue: ansistring; {%H-}Index:integer;
-                               {%H-}ACanvas:TCanvas; var {%H-}AWidth: Integer); virtual;
-    procedure ListMeasureHeight(const AValue: ansistring; {%H-}Index:integer;
-                                ACanvas:TCanvas; var AHeight: Integer); virtual;
-    procedure ListDrawValue(const AValue: ansistring; {%H-}Index:integer;
-                            ACanvas:TCanvas; const ARect: TRect;
-                            AState: TPropEditDrawState); virtual;
+    procedure ListMeasureWidth(const {%H-}AValue: ansistring; {%H-}Index: Integer;
+                               {%H-}ACanvas: TCanvas; var {%H-}AWidth: Integer); virtual;
+    procedure ListMeasureHeight(const AValue: ansistring; {%H-}Index: Integer;
+                                ACanvas: TCanvas; var AHeight: Integer); virtual;
+    procedure ListDrawValue(const AValue: ansistring; {%H-}Index: Integer;
+                            ACanvas: TCanvas; const ARect: TRect;
+                            {%H-}AState: TPropEditDrawState); virtual;
     procedure PropMeasureHeight(const {%H-}NewValue: ansistring;  {%H-}ACanvas: TCanvas;
-                                var {%H-}AHeight:Integer); virtual;
-    procedure PropDrawName(ACanvas: TCanvas; const ARect:TRect;
+                                var {%H-}AHeight: Integer); virtual;
+    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
                            {%H-}AState: TPropEditDrawState); virtual;
-    procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
-                            {%H-}AState:TPropEditDrawState); virtual;
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+                            {%H-}AState: TPropEditDrawState); virtual;
     procedure UpdateSubProperties; virtual;
     function SubPropertiesNeedsUpdate: boolean; virtual;
     function IsDefaultValue: boolean; virtual;
@@ -3331,19 +3331,19 @@ end;
   override the two measure procedures if the default width or height don't
   need to be changed. }
 procedure TPropertyEditor.ListMeasureHeight(const AValue: ansistring;
-  Index: integer; ACanvas: TCanvas; var AHeight: Integer);
+  Index: Integer; ACanvas: TCanvas; var AHeight: Integer);
 begin
   AHeight := ACanvas.TextHeight(AValue);
 end;
 
 procedure TPropertyEditor.ListMeasureWidth(const AValue: ansistring;
-  Index: integer; ACanvas: TCanvas; var AWidth: Integer);
+  Index: Integer; ACanvas: TCanvas; var AWidth: Integer);
 begin
   //
 end;
 
-procedure TPropertyEditor.ListDrawValue(const AValue:ansistring; Index:integer;
-  ACanvas:TCanvas; const ARect:TRect; AState: TPropEditDrawState);
+procedure TPropertyEditor.ListDrawValue(const AValue: ansistring; Index: Integer;
+  ACanvas: TCanvas; const ARect: TRect; AState: TPropEditDrawState);
 var
   Style : TTextStyle;
 begin
@@ -3364,8 +3364,8 @@ end;
 { these three procedures implement the default render behavior of the
   object inspector's property row. You don't need to override the measure
   procedure if the default height don't need to be changed. }
-procedure TPropertyEditor.PropMeasureHeight(const NewValue:ansistring;
-  ACanvas:TCanvas;  var AHeight:Integer);
+procedure TPropertyEditor.PropMeasureHeight(const NewValue: ansistring;
+  ACanvas: TCanvas; var AHeight: Integer);
 begin
   //
 end;
@@ -3390,7 +3390,7 @@ begin
   ACanvas.TextRect(ARect,ARect.Left+2,ARect.Top,GetName,Style);
 end;
 
-procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect: TRect;
+procedure TPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
   AState: TPropEditDrawState);
 begin
   DrawValue(GetVisualValue,ACanvas,ARect,AState);
