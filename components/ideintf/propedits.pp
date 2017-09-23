@@ -3643,7 +3643,7 @@ end;
 function TEnumPropertyEditor.GetVisualValue: ansistring;
 begin
   if FInvalid then
-    Result := '(Invalid)'
+    Result := oisInvalid
   else
     Result := inherited GetVisualValue;
 end;
