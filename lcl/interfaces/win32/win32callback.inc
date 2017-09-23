@@ -2126,9 +2126,21 @@ begin
         Window, Msg, WParam, LParam, LMessage.Result, WinProcess) then Exit(LMessage.Result);
       DoMsgColor(ChildWindowInfo);
     end;
-    WM_CLEAR: LMessage.Msg := LM_CLEAR;
-    WM_COPY:  LMessage.Msg := LM_COPY;
-    WM_CUT:   LMessage.Msg := LM_CUT;
+    WM_CLEAR:
+    begin
+      LMessage.Msg := LM_CLEAR;
+      WinProcess := False;
+    end;
+    WM_COPY:
+    begin
+      LMessage.Msg := LM_COPY;
+      WinProcess := False;
+    end;
+    WM_CUT:
+    begin
+      LMessage.Msg := LM_CUT;
+      WinProcess := False;
+    end;
     {$ifndef RedirectDestroyMessages}
     WM_DESTROY:
     begin
@@ -2260,7 +2272,11 @@ begin
     WM_PRINTCLIENT:
       if ((LParam and PRF_CLIENT) = PRF_CLIENT) and (lWinControl <> nil) then
         SendPaintMessage(HDC(WParam));
-    WM_PASTE:         LMessage.Msg := LM_PASTE;
+    WM_PASTE:
+    begin
+      LMessage.Msg := LM_PASTE;
+      WinProcess := False;
+    end;
     WM_CONTEXTMENU:
     begin
       DoMsgContextMenu;
@@ -2531,7 +2547,11 @@ begin
     WM_IME_REQUEST,
     WM_IME_SELECT,
     WM_IME_SETCONTEXT,
-    WM_IME_STARTCOMPOSITION:
+    WM_IME_STARTCOMPOSITION,
+    LM_CUT,
+    LM_COPY,
+    LM_PASTE,
+    LM_CLEAR:
     begin
       WinProcess := LMessage.Result = 0;
     end;
