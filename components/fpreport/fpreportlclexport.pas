@@ -736,6 +736,10 @@ begin
   SR:=GetElementRect(BL,SL);
   { Frame must be drawn before the shape as it could have a fill color. }
   RenderFrame(AShape.Frame, SR, ABand.Frame.BackgroundColor);
+  { exit if Shape will not be visible. }
+  if (TFPReportShape(AShape).Color = fpreport.clNone)
+  or (TFPReportShape(AShape).Color = AShape.Frame.BackgroundColor) then
+    exit;
   Canvas.Pen.Color:=TFPReportShape(AShape).Color;
   Canvas.Pen.Style:=psSolid;
   Canvas.Pen.Width:=1;
