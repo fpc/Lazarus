@@ -339,4 +339,70 @@ bookmark9.png
 bookmark9_150.png
 bookmark9_200.png
 
----
+--------------------------------------------------------------------------------
+
+The following component palette icons (in folder components) were created by
+Roland Hahn (no restrictions). svg sources can be found on Lazarus Components and
+Code Repository, folder image_sources.
+
+tactionlist.png, tactionlist_150.png, tactionlist_200.png
+tapplicationproperties.png, tapplicationproperties_150.png, tapplicationproperties_200.png
+tarrow.png, tarrow_150.png, tarrow_200.png
+tbevel.png, tbevel_150.png, tbevel_200.png
+tbitbtn.png, tbitbtn_150.png, tbitbtn_200.png
+tbutton.png, tbutton_150.png, tbutton_200.png
+tcheckbox.png, tcheckbox_150.png, tcheckbox_200.png
+tcheckgroup.png, tcheckgroup_150.png, tcheckgroup_200.png
+tchecklistbox.png, tchecklistbox_150.png, tchecklistbox_200.png
+tcolorbox.png, tcolorbox_150.png, tcolorbox_200.png
+tcolorlistbox.png, tcolorlistbox_150.png, tcolorlistbox_200.png
+tcombobox.png, tcombobox_150.png, tcombobox_200.png
+tcontrolbar.png, tcontrolbar_150.png, tcontrolbar_200.png
+tcoolbar.png, tcoolbar_150.png, tcoolbar_200.png
+tdrawgrid.png, tdrawgrid_150.png, tdrawgrid_200.png
+tedit.png, tedit_150.png, tedit_200.png
+teventlog.png, teventlog_150.png, teventlog_200.png
+tflowpanel.png, tflowpanel_150.png, tflowpanel_200.png
+tframe.png, tframe_150.png, tframe_200.png
+tgroupbox.png, tgroupbox_150.png, tgroupbox_200.png
+theadercontrol.png, theadercontrol_150.png, theadercontrol_200.png
+tidletimer.png, tidletimer_150.png, tidletimer_200.pgn
+timage.png, timage_150.png timage_200.png
+timagelist.png timagelist_150.pgn timagelist_200.pgn
+tlabel.png, tlabel_150.png, tlabel_200.png
+tlabelededit.png, tlabelededit_150.png, tlabelededit_200.png
+tlistbox.png, tlistbox_150.png, tlistbox_200.png
+tlistview.png, tlistview_150.png, tlistview_200.png
+tmainmenu.png, tmainmenu_150.png, tmainmenu_200.png
+tmaskededit.png, tmaskededit_150.png, tmaskededit_200.pgn
+tmemo.png, tmemo_150.png, tmemo_200.png
+tmouse.png, tmouse_150.png, tmouse_200.png
+tnotebook.png, tnotebook_150.png, tnotebook_200.png
+tpagecontrol.png, tpagecontrol_150.png, tpagecontrol_200.png
+tpaintbox.png, tpaintbox_150.png, tpaintbox_200.png
+tpairsplitter.png, tpairsplitter_150.png, tpairsplitter_200.png
+tpanel.png, tpanel_150.png, tpanel_200.png
+tpopupmenu.png, tpopupmenu_150.png tpopupmenu_200.png
+tpopupnotifier.png, tpopupnptifier_150.png, tpopupnotifier_200.png
+tprogressbar.png, tprogressbar_150.png, tprogressbar_200.png
+tradiobutton.png, tradiobutton_150.png, tradiobutton_200.png
+tradiogroup.png, tradiogroup_150.png, tradiogroup_200.png
+tscrollbar.png, tscrollbar_150.png, tscrollbar_200.png
+tscrollbox.png, tscrollbox_150.png, tscrollbox_200.png
+tshape.png, tshape_150.png, tshape_200.png
+tspeedbutton.png, tspeedbutton_150.png, tspeedbutton_200.png
+tsplitter.png, tsplitter_150.png, tsplitter_200.png
+tstatictext.png, tstatictext_150.png, tstatictext_200.png
+tstatusbar.png, tstatusbar_150.png, tstatusbar_200.png
+tstringgrid.png, tstringgrid_150.png, tstringgrid_200.png
+ttabcontrol.png, ttabcontrol_150.png, ttabcontrol_200.png
+ttimer.png, ttimer_150.png, ttimer_200.png
+ttogglebox.png, ttogglebox_150.png, ttogglebox_200.png
+ttoolbar.png, ttoolbar_150.png, ttoolbar_200.png
+ttrackbar.png, ttrackbar_150.png, ttrackbar_200.png
+ttrayicon.png, ttrayicon_150.png, ttrayicon_200.png
+ttreeview.png, ttreeview_150.png, ttreeview_200.png
+tupdown.png, tupdown_150.png, tupdown_200.png
+tvaluelisteditor.png, tvaluelisteditor_150.png, tvaluelisteditor_200.png
+
+
