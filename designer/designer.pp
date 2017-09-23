@@ -3482,6 +3482,8 @@ begin
   if (AComponent is TControl)
   and (csNoDesignVisible in TControl(AComponent).ControlStyle) then
     exit;
+  if (csDestroying in AComponent.ComponentState) then
+    exit;
 
   // draw children
   if (AComponent.Owner=nil) then
