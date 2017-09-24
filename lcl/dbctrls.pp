@@ -802,6 +802,7 @@ Type
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
     procedure DataChange(Sender: TObject); override;
