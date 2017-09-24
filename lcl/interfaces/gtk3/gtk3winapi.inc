@@ -2206,8 +2206,7 @@ begin
   with MonitorWorkArea do
     lpmi^.rcWork := Bounds(x, y, width, height);
   lpmi^.rcWork := lpmi^.rcMonitor;
-  // gtk uses zero position for primary monitor
-  if Monitor = 0 then
+  if Monitor = gdk_screen_get_primary_monitor(gdk_screen_get_default) then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
     lpmi^.dwFlags := 0;
