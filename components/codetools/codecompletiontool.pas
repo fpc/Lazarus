@@ -7243,8 +7243,6 @@ var
       AccessParam:=copy(Src,Parts[ppRead].StartPos,
                         Parts[ppRead].EndPos-Parts[ppRead].StartPos)
     else begin
-      AccessParam:=''; // This was missing
-      // ToDo: Fix this test. AccessParam is now empty.
       if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
       or (SysUtils.CompareText(AccessParamPrefix,
               LeftStr(AccessParam,length(AccessParamPrefix)))=0)
@@ -7299,9 +7297,8 @@ var
     end else begin
       // ToDo: find out type of index
       if (Parts[ppParamList].StartPos>0) then begin
-        // index + param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+IndexType+';')
-                        +CleanParamList+');';
+        // param list + index
+        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+CleanParamList+';'+IndexType+');');
       end else begin
         // index, no param list
         CleanAccessFunc:=UpperCaseStr(AccessParam+'('+IndexType+');');
@@ -7341,9 +7338,9 @@ var
           AccessFunc:='function '+AccessParam
                       +'('+ParamList+'):'+PropType+';';
         end else begin
-          // index + param list
+          // param list + index
           AccessFunc:='function '+AccessParam
-                      +'(AIndex:'+IndexType+';'+ParamList+'):'+PropType+';';
+                      +'('+ParamList+'; AIndex:'+IndexType+'):'+PropType+';';
         end;
       end else begin
         if (Parts[ppIndexWord].StartPos<1) then begin
@@ -7432,9 +7429,8 @@ var
     end else begin
       // ToDo: find out index type
       if (Parts[ppParamList].StartPos>0) then begin
-        // index + param list
-        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+IndexType+';'
-                  +CleanParamList+';'+PropType+');');
+        // param list + index
+        CleanAccessFunc:=UpperCaseStr(AccessParam+'('+CleanParamList+';'+IndexType+';'+PropType+');');
       end else begin
         // index, no param list
         CleanAccessFunc:=UpperCaseStr(AccessParam+'('+IndexType+';'+PropType+');');
@@ -7481,9 +7477,9 @@ var
                       +'('+ParamList+';'+AccessVariableNameParam+':'
                       +PropType+');';
         end else begin
-          // index + param list
+          // param list+ index
           AccessFunc:='procedure '+AccessParam
-                      +'(AIndex:'+IndexType+';'+ParamList+';'
+                      +'('+ParamList+';AIndex:'+IndexType+';'
                       +AccessVariableNameParam+':'+PropType+');';
         end;
       end else begin
@@ -7603,7 +7599,7 @@ var
         AccessFunc := 'function ' + AccessParam + '(AIndex:'+IndexType+'):Boolean;';
         CleanAccessFunc := UpperCaseStr(CleanAccessFunc + '('+IndexType+');');
         if IsClassProp then
-          AccessFunc:='class '+AccessFunc+' static;';;
+          AccessFunc:='class '+AccessFunc+' static;';
         // add new Insert Node
         if CompleteProperties then
           AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
