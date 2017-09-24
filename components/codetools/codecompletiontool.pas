@@ -486,6 +486,7 @@ function TCodeCompletionCodeTool.FindProcInCodeCompleteClass(
 // NameAndParams should be uppercase and contains the proc name and the
 // parameter list without names and default values
 // and should not contain any comments and no result type
+// e.g. DOIT(LONGINT;STRING)
 var
   ANodeExt: TCodeTreeNodeExtension;
   Params: TFindDeclarationParams;
@@ -7574,28 +7575,40 @@ var
     end else
       AccessParam:=PropName
         +BeautifyCodeOpts.PropertyStoredIdentPostfix;
-    CleanAccessFunc:=UpperCaseStr(AccessParam);
-    // check if procedure exists
-    if (not ProcExistsInCodeCompleteClass(CleanAccessFunc+';'))
-    and (not VarExistsInCodeCompleteClass(CleanAccessFunc))
-    then begin
-      // add insert demand for function
-      // build function code
-      if Parts[ppIndexWord].StartPos < 1 then begin
-        // no index
+    if (Parts[ppIndexWord].StartPos<1) then begin
+      // no index -> check if method or field exists
+      CleanAccessFunc:=UpperCaseStr(AccessParam);
+      if (not ProcExistsInCodeCompleteClass(CleanAccessFunc+';'))
+      and (not VarExistsInCodeCompleteClass(CleanAccessFunc))
+      then begin
+        // add insert demand for function
+        // build function code
         AccessFunc := 'function ' + AccessParam + ':Boolean;';
         CleanAccessFunc := CleanAccessFunc+';';
-      end else begin
-        // index
+        if IsClassProp then
+          AccessFunc:='class '+AccessFunc+' static;';;
+        // add new Insert Node
+        if CompleteProperties then
+          AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
+                            ncpPrivateProcs,PropNode);
+      end;
+    end else begin
+      // has index specifier -> check if method exists
+      CleanAccessFunc:=UpperCaseStr(AccessParam);
+      if (not ProcExistsInCodeCompleteClass(CleanAccessFunc+'('+UpperCaseStr(IndexType)+');'))
+      and (not VarExistsInCodeCompleteClass(CleanAccessFunc))
+      then begin
+        // add insert demand for function
+        // build function code
         AccessFunc := 'function ' + AccessParam + '(AIndex:'+IndexType+'):Boolean;';
         CleanAccessFunc := UpperCaseStr(CleanAccessFunc + '('+IndexType+');');
+        if IsClassProp then
+          AccessFunc:='class '+AccessFunc+' static;';;
+        // add new Insert Node
+        if CompleteProperties then
+          AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
+                            ncpPrivateProcs,PropNode);
       end;
-      if IsClassProp then
-        AccessFunc:='class '+AccessFunc+' static;';;
-      // add new Insert Node
-      if CompleteProperties then
-        AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
-                          ncpPrivateProcs,PropNode);
     end;
     if Parts[ppStored].StartPos<0 then begin
       // insert stored specifier
