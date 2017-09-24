@@ -4998,11 +4998,21 @@ begin
   else
   {$ENDIF}
   lpmi^.rcWork := lpmi^.rcMonitor;
-  // gtk uses zero position for primary monitor
-  if Monitor = 0 then
-    lpmi^.dwFlags := MONITORINFOF_PRIMARY
-  else
-    lpmi^.dwFlags := 0;
+  // since gtk-2.20 we have correct api to get primary monitor. issue #32464
+  if Assigned(gdk_screen_get_primary_monitor) then
+  begin
+    if (Monitor = gdk_screen_get_primary_monitor(gdk_screen_get_default)) then
+      lpmi^.dwFlags := MONITORINFOF_PRIMARY
+    else
+      lpmi^.dwFlags := 0;
+  end else
+  begin
+    // gtk2 below 2.20
+    if Monitor = 0 then
+      lpmi^.dwFlags := MONITORINFOF_PRIMARY
+    else
+      lpmi^.dwFlags := 0;
+  end;
 end;
 
 {------------------------------------------------------------------------------

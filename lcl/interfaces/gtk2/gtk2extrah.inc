@@ -341,6 +341,8 @@ var
   gtk_window_set_opacity: procedure(window: PGtkWindow; opacity: gdouble); cdecl;
   g_object_ref_sink: function(anObject: PGObject): gpointer; cdecl;
   gdk_window_get_cursor: function(window: PGdkWindow): PGdkCursor; cdecl;
+  // since 2.20
+  gdk_screen_get_primary_monitor: function(screen: PGdkScreen): gint; cdecl;
 
   // since 2.10
   gtk_tree_view_set_grid_lines: procedure(tree_view: PGtkTreeView; grid_lines: TGtkTreeViewGridLines); cdecl;
