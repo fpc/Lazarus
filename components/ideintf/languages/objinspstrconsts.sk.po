@@ -431,10 +431,6 @@ msgstr ""
 msgid "&Properties"
 msgstr ""
 
-#: objinspstrconsts.oiscadd
-msgid "&Add"
-msgstr "&Pridať"
-
 #: objinspstrconsts.oiscancel
 #, fuzzy
 #| msgid "&Cancel"
@@ -633,6 +629,10 @@ msgstr "Integer"
 #: objinspstrconsts.oisinterface
 msgid "Interface"
 msgstr "Rozhranie"
+
+#: objinspstrconsts.oisinvalid
+msgid "(Invalid)"
+msgstr ""
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"

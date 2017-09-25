@@ -432,10 +432,6 @@ msgstr ""
 msgid "&Properties"
 msgstr ""
 
-#: objinspstrconsts.oiscadd
-msgid "&Add"
-msgstr "添加(&A)"
-
 #: objinspstrconsts.oiscancel
 #, fuzzy
 #| msgid "&Cancel"
@@ -634,6 +630,10 @@ msgstr "Integer"
 #: objinspstrconsts.oisinterface
 msgid "Interface"
 msgstr "界面"
+
+#: objinspstrconsts.oisinvalid
+msgid "(Invalid)"
+msgstr ""
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"

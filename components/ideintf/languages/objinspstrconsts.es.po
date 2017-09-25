@@ -412,10 +412,6 @@ msgstr "Co&mponentes"
 msgid "&Properties"
 msgstr "&Propiedades"
 
-#: objinspstrconsts.oiscadd
-msgid "&Add"
-msgstr "&Añadir"
-
 #: objinspstrconsts.oiscancel
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
@@ -600,6 +596,10 @@ msgstr "Entero"
 #: objinspstrconsts.oisinterface
 msgid "Interface"
 msgstr "Interfaz"
+
+#: objinspstrconsts.oisinvalid
+msgid "(Invalid)"
+msgstr ""
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"

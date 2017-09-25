@@ -411,10 +411,6 @@ msgstr "Ko&mponentai"
 msgid "&Properties"
 msgstr "&Savybės"
 
-#: objinspstrconsts.oiscadd
-msgid "&Add"
-msgstr "Pri&dėti"
-
 #: objinspstrconsts.oiscancel
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
@@ -599,6 +595,10 @@ msgstr "Integer tipo sveikasis skaičius"
 #: objinspstrconsts.oisinterface
 msgid "Interface"
 msgstr "Interfeisas"
+
+#: objinspstrconsts.oisinvalid
+msgid "(Invalid)"
+msgstr ""
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"

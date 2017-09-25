@@ -410,10 +410,6 @@ msgstr "Ko&mponensek"
 msgid "&Properties"
 msgstr "Tulajdonságok"
 
-#: objinspstrconsts.oiscadd
-msgid "&Add"
-msgstr "Hozzá&adás"
-
 #: objinspstrconsts.oiscancel
 msgctxt "objinspstrconsts.oiscancel"
 msgid "Cancel"
@@ -598,6 +594,10 @@ msgstr "Egész szám"
 #: objinspstrconsts.oisinterface
 msgid "Interface"
 msgstr "Felület"
+
+#: objinspstrconsts.oisinvalid
+msgid "(Invalid)"
+msgstr ""
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
