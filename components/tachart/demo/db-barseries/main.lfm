@@ -1,0 +1,151 @@
+object Form1: TForm1
+  Left = 329
+  Height = 300
+  Top = 190
+  Width = 578
+  Caption = 'Form1'
+  ClientHeight = 300
+  ClientWidth = 578
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.9.0.0'
+  object Chart1: TChart
+    Left = 0
+    Height = 268
+    Top = 32
+    Width = 303
+    AxisList = <    
+      item
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+        Minors = <>
+      end>
+    AxisVisible = False
+    BackColor = clForm
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Frame.Visible = False
+    Legend.Alignment = laBottomCenter
+    Legend.ColumnCount = 3
+    Legend.Visible = True
+    Margins.Left = 8
+    Margins.Top = 8
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    Color = clForm
+    object Chart1PieSeries1: TPieSeries
+      Legend.Multiplicity = lmPoint
+      Marks.Format = '%2:s'
+      Marks.Style = smsLabel
+      Source = DbChartSource1
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 303
+    Height = 268
+    Top = 32
+    Width = 275
+    Align = alRight
+    AutoFillColumns = True
+    Color = clWindow
+    Columns = <>
+    DataSource = Datasource1
+    DefaultDrawing = False
+    Scrollbars = ssAutoBoth
+    TabOrder = 1
+    OnDrawColumnCell = DBGrid1DrawColumnCell
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 32
+    Top = 0
+    Width = 578
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 32
+    ClientWidth = 578
+    TabOrder = 2
+    object Label1: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 8
+      Height = 15
+      Top = 9
+      Width = 77
+      BorderSpacing.Left = 8
+      Caption = 'Get color from'
+      ParentColor = False
+    end
+    object ComboBox1: TComboBox
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 93
+      Height = 23
+      Top = 5
+      Width = 179
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 4
+      BorderSpacing.Bottom = 4
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'data field'
+        'OnGetItem event'
+      )
+      OnChange = ComboBox1Change
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'data field'
+    end
+  end
+  object MemDataset1: TMemDataset
+    Active = True
+    FieldDefs = <    
+      item
+        Name = 'X'
+        DataType = ftFloat
+      end    
+      item
+        Name = 'Y'
+        DataType = ftFloat
+      end    
+      item
+        Name = 'Txt'
+        DataType = ftString
+        Size = 10
+      end    
+      item
+        Name = 'Color'
+        DataType = ftInteger
+      end>
+    left = 144
+    top = 64
+  end
+  object Datasource1: TDataSource
+    DataSet = MemDataset1
+    left = 144
+    top = 128
+  end
+  object DbChartSource1: TDbChartSource
+    DataSource = Datasource1
+    FieldColor = 'Color'
+    FieldText = 'Txt'
+    FieldY = 'Y'
+    left = 144
+    top = 192
+  end
+end

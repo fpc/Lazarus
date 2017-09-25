@@ -310,7 +310,7 @@ end;
 
 procedure TDbChartSource.SetOnGetItem(AValue: TDbChartSourceGetItemEvent);
 begin
-  if FOnGetItem = AValue then exit;
+  if TMethod(FOnGetItem) = TMethod(AValue) then exit;
   FOnGetItem := AValue;
   Reset;
 end;
