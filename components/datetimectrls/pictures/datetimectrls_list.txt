@@ -2,3 +2,5 @@ tdatetimepicker.png
 tdatetimepicker_150.png
 tdatetimepicker_200.png
 tdbdatetimepicker.png
+tdbdatetimepicker_150.png
+tdbdatetimepicker_200.png

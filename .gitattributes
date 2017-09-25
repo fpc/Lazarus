@@ -1155,6 +1155,8 @@ components/datetimectrls/pictures/DateControls01.PNG -text svneol=unset#image/pn
 components/datetimectrls/pictures/DateControls02.PNG -text svneol=unset#image/png
 components/datetimectrls/pictures/DateControls03.PNG -text svneol=unset#image/png
 components/datetimectrls/pictures/TDBDateTimePicker.png -text svneol=unset#image/png
+components/datetimectrls/pictures/TDBDateTimePicker_150.png -text
+components/datetimectrls/pictures/TDBDateTimePicker_200.png -text
 components/datetimectrls/pictures/TDateTimePicker.png -text svneol=unset#image/png
 components/datetimectrls/pictures/TDateTimePicker_150.png -text
 components/datetimectrls/pictures/TDateTimePicker_200.png -text
