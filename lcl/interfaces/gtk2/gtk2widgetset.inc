@@ -783,9 +783,8 @@ begin
     LM_SYSKEYDOWN,
     LM_SYSKEYUP:
     begin
-      if (ALCLObject is TCustomComboBox) then
-        ConnectKeyPressReleaseEvents(PgtkObject(PgtkCombo(gObject)^.entry))
-      else if (ALCLObject is TCustomForm) then
+      if ((ALCLObject is TCustomComboBox) and gtk_is_combo_box_entry(gObject))
+      or (ALCLObject is TCustomForm) then
         ConnectKeyPressReleaseEvents(gObject);
 
       ConnectKeyPressReleaseEvents(gCore);
