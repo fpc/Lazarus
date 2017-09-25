@@ -4349,11 +4349,9 @@ end;
 procedure TCustomTreeView.UpdateTooltip(X, Y: integer);
 var
   Node: TTreeNode;
-  P: TPoint;
+  PHint, PLeft: TPoint;
   R, TextRect, IntRect: TRect;
-  SText: string;
-  MaxHintWidth: Integer;
-  TransparentHints: Boolean;
+  CurMonitor: TMonitor;
 begin
   if not (tvoToolTips in FOptions) then exit;
 
@@ -4363,46 +4361,50 @@ begin
     FHintWnd.OnMouseLeave:=@HintMouseLeave;
   end;
 
-  Node:=GetNodeAt(X, Y);
+  Node := GetNodeAt(X, Y);
   if Node=nil then
   begin
     FHintWnd.Hide;
     exit;
   end;
 
-  R := GetParentForm(Self).Monitor.WorkareaRect;
-  MaxHintWidth := R.Right-R.Left;
-
   TextRect := Rect(Node.DisplayTextLeft, Node.Top, Node.DisplayTextRight, Node.Top + Node.Height);
   OffsetRect(TextRect, 0, -ScrolledTop);
-
   if not PtInRect(TextRect, Point(X, Y))
-  or (IntersectRect(IntRect, TextRect, ClientRect)
-      and EqualRect(IntRect, TextRect)) then
+  or (IntersectRect(IntRect, TextRect, ClientRect) and EqualRect(IntRect, TextRect)) then
   begin
     FHintWnd.Hide;
     exit;
   end;
 
-  SText:=Node.Text;
-  R:=FHintWnd.CalcHintRect(MaxHintWidth, SText, nil);
+  // Get max width for hint from monitor's work area.
+  CurMonitor := GetParentForm(Self).Monitor;
+  R := CurMonitor.WorkareaRect;
+  R := FHintWnd.CalcHintRect(R.Right-R.Left, Node.Text, nil);
 
-  TransparentHints := WidgetSet.GetLCLCapability(lcTransparentWindow) = LCL_CAPABILITY_YES;
-  if TransparentHints then
-    P:=Point(TextRect.Left-1, TextRect.Top-3+BorderWidth)
-  else
-    P:=Point(ClientWidth, TextRect.Top-3+BorderWidth);
-
-  P:=ClientToScreen(P);
-  OffsetRect(R, P.X, P.Y);
-
-  if TransparentHints // use default hint font for non-transparent hint windows
-  and not FHintWnd.Visible then
+  if WidgetSet.GetLCLCapability(lcTransparentWindow) = LCL_CAPABILITY_YES then
   begin
-    FHintWnd.Font.Assign(Self.Font);
-    FHintWnd.Font.Color := Screen.HintFont.Color;
+    // Font is explicitly set for transparent hints, otherwise default font is used.
+    if not FHintWnd.Visible then
+    begin
+      FHintWnd.Font.Assign(Self.Font);
+      FHintWnd.Font.Color := Screen.HintFont.Color;
+    end;
+    // Put transparent hint exactly on the node.
+    PHint := ClientToScreen(Point(TextRect.Left-1, TextRect.Top-3+BorderWidth));
+  end
+  else begin
+    // By default put hint to the right side of node.
+    PHint := ClientToScreen(Point(ClientWidth, TextRect.Top-3+BorderWidth));
+    if PHint.X + R.Right > CurMonitor.BoundsRect.Right then
+    begin                      // No space on the right? Put it to the left side.
+      PLeft := ClientToScreen(Point(TextRect.Left-6, TextRect.Top));
+      if PLeft.X >= R.Right then  // enough space on left?
+        PHint.X := PLeft.X - R.Right;
+    end;
   end;
-  FHintWnd.ActivateHint(R, SText)
+  OffsetRect(R, PHint.X, PHint.Y);
+  FHintWnd.ActivateHint(R, Node.Text)
 end;
 
 function TCustomTreeView.GetSelection: TTreeNode;
