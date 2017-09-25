@@ -533,7 +533,8 @@ type
 
     function GetControls(Index: integer): TControl;
     function GetLocalizedHeaderHint: string;
-    function CloseUnneededControls(Tree: TAnchorDockLayoutTree): boolean;
+    procedure MarkCorrectlyLocatedControl(Tree: TAnchorDockLayoutTree);
+    function CloseUnneededAndWronglyLocatedControls(Tree: TAnchorDockLayoutTree): boolean;
     function CreateNeededControls(Tree: TAnchorDockLayoutTree;
                 DisableAutoSizing: boolean; ControlNames: TStrings): boolean;
     function GetNodeSite(Node: TAnchorDockLayoutTreeNode): TAnchorDockHostSite;
@@ -1524,18 +1525,140 @@ begin
   OptionsChanged;
 end;
 
-function TAnchorDockMaster.CloseUnneededControls(Tree: TAnchorDockLayoutTree
+procedure TAnchorDockMaster.MarkCorrectlyLocatedControl(Tree: TAnchorDockLayoutTree);
+var
+  Counter:integer;
+
+  function GetRealParent(Node:TAnchorDockLayoutTreeNode):TAnchorDockLayoutTreeNode;
+  begin
+    result := Node;
+    while Assigned(result.Parent) do begin
+      result := result.Parent;
+      fTreeNameToDocker[Node.Name];
+      if result.NodeType in [adltnControl,adltnCustomSite] then exit
+    end;
+  end;
+
+  function GetDockParent(Control: TControl): TControl;
+  begin
+    Control := Control.Parent;
+    while (Control <> nil) and (Control.Parent <> nil) do
+    begin
+      if not (Control is TAnchorDockHostSite) then
+        Break;
+      Control := Control.Parent;
+    end;
+    Result := Control;
+  end;
+
+  procedure RealChildrenCount(AWinControl:twincontrol;var realsubcontrolcoun:integer);
+  var
+    i:integer;
+    ACountedControl:tcontrol;
+  begin
+     for i:=0 to AWinControl.ControlCount-1 do
+       begin
+         ACountedControl:=AWinControl.Controls[i];
+         if not (ACountedControl is TAnchorDockHostSite) then
+         if not (ACountedControl is TAnchorDockHeader) then
+         if not (ACountedControl is TAnchorDockPageControl) then
+         if ACountedControl.IsVisible then
+           inc(realsubcontrolcoun);
+         if ACountedControl is TAnchorDockHostSite then
+         if ACountedControl.IsVisible then
+           RealChildrenCount(ACountedControl as TWinControl, realsubcontrolcoun);
+       end;
+  end;
+
+  function CheckNode(Node: TAnchorDockLayoutTreeNode; var ControlsCount: integer):TADLControlLocation;
+  var
+    i: Integer;
+    AControl,AParent: TControl;
+    SubControlsCount,realsubcontrolcoun: integer;
+  begin
+    if Node.IsSplitter then begin
+      inc(ControlsCount);
+      exit(adlclCorrect);
+    end
+    else if Node=Tree.Root then begin
+      result:=adlclCorrect;
+      AControl:=nil;
+      AParent:=nil;
+    end
+    else begin
+      AControl:=FindControl(Node.Name);
+      AParent:=FindControl(GetRealParent(Node).Name);
+      if Node.NodeType=adltnLayout then result:=adlclCorrect
+      else if AControl is TAnchorDockPanel then result:=adlclCorrect
+      else if AControl=nil then result:=adlclWrongly
+      else if GetDockParent(AControl)<>AParent then result:=adlclWrongly
+      else
+      begin
+      end;
+    end;
+    if AControl<>nil then
+    if not (AControl is TAnchorDockHostSite) then
+     inc(ControlsCount);
+    if result=adlclWrongly then exit;
+    if AControl=nil then AControl:=AParent;
+    SubControlsCount:=0;
+    for i:=0 to Node.Count-1 do
+    begin
+      result:=CheckNode(Node[i],SubControlsCount);
+      if result=adlclWrongly then exit;
+    end;
+    realsubcontrolcoun:=0;
+    if (AControl is TAnchorDockHostSite)or(AControl is TAnchorDockPanel) then
+    begin
+       RealChildrenCount(AControl as TWinControl,realsubcontrolcoun);
+       if SubControlsCount<>realsubcontrolcoun then Exit(adlclWrongly);
+    end;
+    ControlsCount:=ControlsCount+SubControlsCount;
+    if result=adlclWrongly then exit;
+    for i:=0 to Node.Count-1 do
+    begin
+      Node[i].ControlLocation:=adlclCorrect;
+    end;
+  end;
+
+begin
+  //We need compare dock tree and fact controls placement
+  //and mark controls which location is coincides with tree
+  //these controls can be not closrd in CloseUnneededAndWronglyLocatedControls
+  Counter:=0;
+  Tree.Root.ControlLocation:=CheckNode(Tree.Root,Counter);
+end;
+
+function TAnchorDockMaster.CloseUnneededAndWronglyLocatedControls(Tree: TAnchorDockLayoutTree
   ): boolean;
+
+  function GetParentAnchorDockPageControl(thisControl: TControl):TAnchorDockPageControl;
+  begin
+    while thisControl<>nil do
+    begin
+      if thisControl is TAnchorDockPageControl then
+        exit(thisControl as TAnchorDockPageControl);
+      thisControl:=thisControl.Parent;
+    end;
+    result:=nil;
+  end;
+
 var
   i: Integer;
   AControl: TControl;
+  TreeNodeControl: TAnchorDockLayoutTreeNode;
+  ParentAnchorDockPageControl:TAnchorDockPageControl;
 begin
   i:=ControlCount-1;
   while i>=0 do begin
     AControl:=Controls[i];
+    TreeNodeControl:=Tree.Root.FindChildNode(AControl.Name,true);
     if DockedControlIsVisible(AControl)
-    and (Tree.Root.FindChildNode(AControl.Name,true)=nil)
-    and (Application.MainForm<>AControl) then begin
+    and (Application.MainForm<>AControl)
+    and (not(AControl is TAnchorDockPanel))
+    and ((Tree.Root.FindChildNode(AControl.Name,true)=nil)
+    or (TreeNodeControl.ControlLocation=adlclWrongly)) then begin
+      ParentAnchorDockPageControl:=GetParentAnchorDockPageControl(AControl);
       DisableControlAutoSizing(AControl);
       // AControl is currently on a visible site, but not in the Tree
       // => close site
@@ -1561,6 +1684,9 @@ begin
           AControl.Parent:=nil;
         end;
       end;
+      if ParentAnchorDockPageControl<>nil then
+        if ParentAnchorDockPageControl.Parent<>nil then
+          ParentAnchorDockPageControl.Parent.Free;
     end;
     i:=Min(i,ControlCount)-1;
   end;
@@ -1822,6 +1948,7 @@ var
   aHostSite: TAnchorDockHostSite;
 begin
   if Site is TCustomForm then begin
+    Site.Align:=alNone;
     if AParent=nil then
       TCustomForm(Site).WindowState:=ANode.WindowState
     else
@@ -2209,8 +2336,10 @@ begin
   ControlNames:=TStringList.Create;
   fTreeNameToDocker:=TADNameToControl.Create;
   try
-    // close all unneeded forms/controls (not helper controls like splitters)
-    if not CloseUnneededControls(Tree) then exit;
+
+    // close all unneeded and wrongly allocated forms/controls (not helper controls like splitters)
+    MarkCorrectlyLocatedControl(Tree);
+    if not CloseUnneededAndWronglyLocatedControls(Tree) then exit;
 
     BeginUpdate;
     try
@@ -3102,8 +3231,9 @@ begin
     DebugWriteChildAnchors(Tree.Root);
     {$ENDIF}
 
-    // close all unneeded forms/controls (not helper controls like splitters)
-    if not CloseUnneededControls(Tree) then exit;
+    // close all unneeded and wrongly allocated forms/controls (not helper controls like splitters)
+    MarkCorrectlyLocatedControl(Tree);
+    if not CloseUnneededAndWronglyLocatedControls(Tree) then exit;
 
     BeginUpdate;
     try

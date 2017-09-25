@@ -60,6 +60,11 @@ type
     adlhpRight,
     adlhpBottom
     );
+
+  TADLControlLocation = (
+    adlclWrongly,
+    adlclCorrect
+    );
   TADLHeaderPositions = set of TADLHeaderPosition;
 
   EAnchorDockLayoutError = class(Exception);
@@ -81,6 +86,7 @@ type
     FWorkAreaRect: TRect;
     FTabPosition: TTabPosition;
     FWindowState: TWindowState;
+    FControlLocation: TADLControlLocation;
     function GetAnchors(Site: TAnchorKind): string;
     function GetBottom: integer;
     function GetHeight: integer;
@@ -156,6 +162,7 @@ type
     function IsSplitter: boolean;
     function IsRootWindow: boolean;
     property Nodes[Index: integer]: TAnchorDockLayoutTreeNode read GetNodes; default;
+    property ControlLocation: TADLControlLocation read FControlLocation write FControlLocation;
   end;
 
   TAnchorDockLayoutTree = class;
@@ -1028,6 +1035,7 @@ end;
 constructor TAnchorDockLayoutTreeNode.Create;
 begin
   FNodes:=TFPList.Create;
+  FControlLocation:=adlclwrongly;//control located wrongly by default
 end;
 
 destructor TAnchorDockLayoutTreeNode.Destroy;
