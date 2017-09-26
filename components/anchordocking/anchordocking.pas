@@ -184,6 +184,7 @@ type
     property DockBounds: TRect read FDockBounds;
     property DockParentClientSize: TSize read FDockParentClientSize;
     procedure UpdateDockBounds;
+    procedure AsyncUpdateDockBounds (Data: PtrInt);
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override; // any normal movement sets the DockBounds
     procedure SetBoundsPercentually;
     procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer); // movement for scaling keeps the DockBounds
@@ -2000,10 +2001,12 @@ begin
   //if Scale then
     debugln(['TAnchorDockMaster.RestoreLayout.SetupSite scale Site=',DbgSName(Site),' Caption="',Site.Caption,'" OldWorkArea=',dbgs(SrcWorkArea),' CurWorkArea=',dbgs(WorkArea),' OldBounds=',dbgs(aNode.BoundsRect),' NewBounds=',dbgs(NewBounds)]);
   {$ENDIF}
-  Site.BoundsRect:=NewBounds;
   Site.Visible:=true;
   if not (Site is TAnchorDockPanel) then
-    Site.Parent:=AParent;
+    begin
+      Site.BoundsRect:=NewBounds;
+      Site.Parent:=AParent;
+    end;
   if IsCustomSite(AParent) then begin
     aManager:=TAnchorDockManager(AParent.DockManager);
     Site.Align:=ANode.Align;
@@ -2125,6 +2128,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
         Splitter.AnchorSide[akBottom].Control:=nil;
       end;
       Result:=Splitter;
+      Application.QueueAsyncCall(@Splitter.AsyncUpdateDockBounds,0);
     end else if ANode.NodeType=adltnLayout then begin
       // restore layout
       Site:=GetNodeSite(ANode);
@@ -6437,6 +6441,13 @@ procedure TAnchorDockSplitter.PopupMenuPopup(Sender: TObject);
 begin
 
 end;
+
+procedure TAnchorDockSplitter.AsyncUpdateDockBounds (Data: PtrInt);
+begin
+  FPercentPosition:=-1;
+  UpdateDockBounds;
+end;
+
 
 procedure TAnchorDockSplitter.UpdateDockBounds;
 begin
