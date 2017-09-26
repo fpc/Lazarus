@@ -97,7 +97,9 @@ begin
           FDataLink.Modified;
           FDataLink.OnDataChange := @DataChange;
           inherited WndProc(Message);
-        end;
+        end
+        else
+          Message.Result := 1; // prevent calling default window proc
       end;
     else
       inherited WndProc(Message);

@@ -903,7 +903,7 @@ Type
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key:Char); override;
-    procedure WndProc(var AMessage : TLMessage); override;
+    procedure WndProc(var Message : TLMessage); override;
     class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
