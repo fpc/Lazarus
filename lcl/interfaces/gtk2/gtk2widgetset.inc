@@ -1003,6 +1003,16 @@ begin
   Result:= lpGtk2;
 end;
 
+function TGtk2WidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
+begin
+  case ACapability of
+    lcTransparentWindow: Result := LCL_CAPABILITY_YES;
+    // ToDo: Set other capabilities.
+  else
+    Result := inherited GetLCLCapability(ACapability);
+  end;
+end;
+
 function gdk_screen_get_resolution(screen:PGdkScreen):gdouble; cdecl; external gdklib;
 
 {------------------------------------------------------------------------------

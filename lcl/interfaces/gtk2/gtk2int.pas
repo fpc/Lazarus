@@ -259,6 +259,7 @@ type
     destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;
+    function GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppBringToFront; override;

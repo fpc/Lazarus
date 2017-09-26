@@ -89,11 +89,8 @@ begin
     lcFormIcon,
     lcModalWindow,
     lcReceivesLMClearCutCopyPasteReliably,
-    lcEmulatedMDI:
-      Result := LCL_CAPABILITY_YES;
-    lcSendsUTF8KeyPress:
-      Result := LCL_CAPABILITY_YES;
-    lcAccessibilitySupport: Result := LCL_CAPABILITY_NO;
+    lcSendsUTF8KeyPress,
+    lcEmulatedMDI: Result := LCL_CAPABILITY_YES;
   else
     Result := LCL_CAPABILITY_NO;
   end;
