@@ -4398,7 +4398,7 @@ begin
     PHint := ClientToScreen(Point(ClientWidth, TextRect.Top-3+BorderWidth));
     if PHint.X + R.Right > CurMonitor.BoundsRect.Right then
     begin                      // No space on the right? Put it to the left side.
-      PLeft := ClientToScreen(Point(TextRect.Left-6, TextRect.Top));
+      PLeft := ClientToScreen(Point(ClientRect.Left, ClientRect.Top));
       if PLeft.X >= R.Right then  // enough space on left?
         PHint.X := PLeft.X - R.Right;
     end;
