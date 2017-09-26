@@ -2396,7 +2396,7 @@ begin
       begin
         doOnKeyDown;
         if (Key<>0) and ValidDataset then begin
-          if dgTabs in Options then begin
+          if (dgTabs in Options) and not (dgRowSelect in Options) then begin
 
             if ((ssShift in shift) and
                (Col<=GetFirstVisibleColumn) and (Row<=GetFirstVisibleRow)) then begin
@@ -2428,7 +2428,7 @@ begin
           key:=0;
           if (dgEditing in Options) and not EditorMode then
             EditorMode:=true
-          else begin
+          else if not (dgRowSelect in Options) then begin
             GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow, AutoAdvance);
             MoveSel(True);
           end;
