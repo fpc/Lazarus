@@ -12,7 +12,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit frmresizeelements;
+unit frmfprdresizeelements;
 
 {$mode objfpc}{$H+}
 

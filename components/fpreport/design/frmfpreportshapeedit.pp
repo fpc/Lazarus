@@ -12,7 +12,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit frmreportshapeedit;
+unit frmfpreportshapeedit;
 
 {$mode objfpc}{$H+}
 

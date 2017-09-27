@@ -20,7 +20,7 @@ unit reportdesignbaseforms;
 interface
 
 uses
-  Classes, SysUtils, fpreport, forms, db, fpreportdesignobjectlist, designreportdata;
+  Classes, SysUtils, fpreport, forms, db, fpreportdesignobjectlist, fpreportdesignreportdata;
 
 Type
   { TReportEditorForm }

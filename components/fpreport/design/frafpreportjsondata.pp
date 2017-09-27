@@ -12,14 +12,14 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit frajsondata;
+unit frafpreportjsondata;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, EditBtn, Buttons, ActnList, ValEdit, fpjson, designreportdata, db,
+  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, EditBtn, Buttons, ActnList, ValEdit, fpjson, fpreportdesignreportdata, db,
   dialogs, fpjsondataset, Grids;
 
 type

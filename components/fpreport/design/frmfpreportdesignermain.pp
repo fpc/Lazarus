@@ -12,7 +12,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit frmreportdesignermain;
+unit frmfpreportdesignermain;
 
 {$mode objfpc}{$H+}
 
@@ -21,7 +21,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Menus, ActnList, ComCtrls, ExtCtrls, IniPropStorage, Types, fpreport, fpreportdesignctrl,
-  fraReportObjectInspector, designreportdata, frareportdata, fpreportdb;
+  fraReportObjectInspector, fpreportdesignreportdata, frafpreportdata, fpreportdb;
 
 type
   // If you add something here, do not forget to add to AllReportDesignOptions.

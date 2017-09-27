@@ -12,7 +12,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit frmalignelements;
+unit frmfpreportalignelements;
 
 {$mode objfpc}{$H+}
 

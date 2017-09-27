@@ -12,14 +12,14 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit fradbfdata;
+unit frafpreportdbfdata;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, dbf, FileUtil, Forms, Controls, EditBtn, StdCtrls, fpjson, designreportdata, db;
+  Classes, SysUtils, dbf, FileUtil, Forms, Controls, EditBtn, StdCtrls, fpjson, fpreportdesignreportdata, db;
 
 type
   TFrame = TReportDataConfigFrame;

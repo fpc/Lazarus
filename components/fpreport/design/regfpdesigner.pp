@@ -19,7 +19,7 @@ unit regfpdesigner;
 interface
 
 uses
-  Classes, SysUtils, fpreport, ideintf, propedits, ObjInspStrConsts, frmreportmemoedit;
+  Classes, SysUtils, fpreport, ideintf, propedits, ObjInspStrConsts, frmfpreportmemoedit;
 
 Type
 

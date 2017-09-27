@@ -13,7 +13,7 @@
 
  **********************************************************************}
 
-unit designreportdata;
+unit fpreportdesignreportdata;
 
 {$mode objfpc}{$H+}
 

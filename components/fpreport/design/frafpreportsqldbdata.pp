@@ -12,7 +12,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit frasqldbdata;
+unit frafpreportsqldbdata;
 
 {$mode objfpc}{$H+}
 
@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, EditBtn, StdCtrls, Buttons, ActnList, SynEdit, SynHighlighterSQL,
-  designreportdata, fpjson,  db, sqldb, reportdesigndatasql, dialogs;
+  fpreportdesignreportdata, fpjson,  db, sqldb, reportdesigndatasql, dialogs;
 
 type
   TFrame = TReportDataConfigFrame;
@@ -64,7 +64,7 @@ type
 
 implementation
 
-uses frmreportdataconnectioneditor, ibconnection, pqconnection, sqlite3conn, odbcconn;
+uses frmfpreportdataconnectioneditor, ibconnection, pqconnection, sqlite3conn, odbcconn;
 
 resourcestring
   SErrNoConnectionData = 'No connection data available';

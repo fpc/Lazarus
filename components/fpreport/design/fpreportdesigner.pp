@@ -19,11 +19,11 @@ unit FPReportDesigner;
 interface
 
 uses
-  Classes, SysUtils, forms, fpreport, frmreportdesignermain;
+  Classes, SysUtils, forms, fpreport, frmfpreportdesignermain;
 
 type
-  TFPReportDesignOption = frmreportdesignermain.TFPReportDesignOption;
-  TFPReportDesignOptions = frmreportdesignermain.TFPReportDesignOptions;
+  TFPReportDesignOption = frmfpreportdesignermain.TFPReportDesignOption;
+  TFPReportDesignOptions = frmfpreportdesignermain.TFPReportDesignOptions;
 
   { TFPReportDesigner }
 

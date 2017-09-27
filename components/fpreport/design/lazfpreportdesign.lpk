@@ -13,12 +13,12 @@
     </CompilerOptions>
     <Files Count="40">
       <Item1>
-        <Filename Value="designreportdata.pp"/>
-        <UnitName Value="designreportdata"/>
+        <Filename Value="fpreportdesignreportdata.pp"/>
+        <UnitName Value="fpreportdesignreportdata"/>
       </Item1>
       <Item2>
-        <Filename Value="drawruler.pp"/>
-        <UnitName Value="drawruler"/>
+        <Filename Value="fpreportdrawruler.pp"/>
+        <UnitName Value="fpreportdrawruler"/>
       </Item2>
       <Item3>
         <Filename Value="fpreportdesignctrl.pp"/>
@@ -29,148 +29,148 @@
         <UnitName Value="fpreportdesignobjectlist"/>
       </Item4>
       <Item5>
-        <Filename Value="fracsvdata.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="frafpreportcsvdata.pp"/>
+        <UnitName Value="frafpreportcsvdata"/>
       </Item5>
       <Item6>
-        <Filename Value="fracsvdata.pp"/>
-        <UnitName Value="fracsvdata"/>
+        <Filename Value="frafpreportdbfdata.pp"/>
+        <UnitName Value="frafpreportdbfdata"/>
       </Item6>
       <Item7>
-        <Filename Value="fradbfdata.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="frafpreportjsondata.pp"/>
+        <UnitName Value="frafpreportjsondata"/>
       </Item7>
       <Item8>
-        <Filename Value="fradbfdata.pp"/>
-        <UnitName Value="fradbfdata"/>
+        <Filename Value="frafpreportdata.pp"/>
+        <UnitName Value="frafpreportdata"/>
       </Item8>
       <Item9>
-        <Filename Value="frajsondata.lfm"/>
+        <Filename Value="frareportobjectinspector.lfm"/>
         <Type Value="LFM"/>
       </Item9>
       <Item10>
-        <Filename Value="frajsondata.pp"/>
-        <UnitName Value="frajsondata"/>
+        <Filename Value="frareportobjectinspector.pp"/>
+        <UnitName Value="fraReportObjectInspector"/>
       </Item10>
       <Item11>
-        <Filename Value="frareportdata.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="frafpreportsqldbdata.pp"/>
+        <UnitName Value="frafpreportsqldbdata"/>
       </Item11>
       <Item12>
-        <Filename Value="frareportdata.pp"/>
-        <UnitName Value="frareportdata"/>
+        <Filename Value="frmfpreportalignelements.pp"/>
+        <UnitName Value="frmfpreportalignelements"/>
       </Item12>
       <Item13>
-        <Filename Value="frareportobjectinspector.lfm"/>
+        <Filename Value="frmconfigreportdata.lfm"/>
         <Type Value="LFM"/>
       </Item13>
       <Item14>
-        <Filename Value="frareportobjectinspector.pp"/>
-        <UnitName Value="fraReportObjectInspector"/>
-      </Item14>
-      <Item15>
-        <Filename Value="frasqldbdata.lfm"/>
-        <Type Value="LFM"/>
-      </Item15>
-      <Item16>
-        <Filename Value="frasqldbdata.pp"/>
-        <UnitName Value="frasqldbdata"/>
-      </Item16>
-      <Item17>
-        <Filename Value="frmalignelements.lfm"/>
-        <Type Value="LFM"/>
-      </Item17>
-      <Item18>
-        <Filename Value="frmalignelements.pp"/>
-        <UnitName Value="frmalignelements"/>
-      </Item18>
-      <Item19>
-        <Filename Value="frmconfigreportdata.lfm"/>
-        <Type Value="LFM"/>
-      </Item19>
-      <Item20>
         <Filename Value="frmconfigreportdata.pp"/>
         <UnitName Value="frmconfigreportdata"/>
+      </Item14>
+      <Item15>
+        <Filename Value="frmfpreportdataconnectioneditor.pp"/>
+        <UnitName Value="frmfpreportdataconnectioneditor"/>
+      </Item15>
+      <Item16>
+        <Filename Value="frmfpreportdesignermain.pp"/>
+        <UnitName Value="frmfpreportdesignermain"/>
+      </Item16>
+      <Item17>
+        <Filename Value="frmfpreportimageedit.pp"/>
+        <UnitName Value="frmfpreportimageedit"/>
+      </Item17>
+      <Item18>
+        <Filename Value="frmfpreportmemoedit.pp"/>
+        <UnitName Value="frmfpreportmemoedit"/>
+      </Item18>
+      <Item19>
+        <Filename Value="frmfpreportpreviewdata.pp"/>
+        <UnitName Value="frmfpreportpreviewdata"/>
+      </Item19>
+      <Item20>
+        <Filename Value="frmfpreportproperties.pp"/>
+        <UnitName Value="frmfpreportproperties"/>
       </Item20>
       <Item21>
-        <Filename Value="frmreportdataconnectioneditor.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="frmfpreportshapeedit.pp"/>
+        <UnitName Value="frmfpreportshapeedit"/>
       </Item21>
       <Item22>
-        <Filename Value="frmreportdataconnectioneditor.pp"/>
-        <UnitName Value="frmreportdataconnectioneditor"/>
+        <Filename Value="frmfpreportvariables.pp"/>
+        <UnitName Value="frmfpreportvariables"/>
       </Item22>
       <Item23>
-        <Filename Value="frmreportdesignermain.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="frmfprdresizeelements.pp"/>
+        <UnitName Value="frmfprdresizeelements"/>
       </Item23>
       <Item24>
-        <Filename Value="frmreportdesignermain.pp"/>
-        <UnitName Value="frmreportdesignermain"/>
+        <Filename Value="regfpdesigner.pp"/>
+        <UnitName Value="regfpdesigner"/>
       </Item24>
       <Item25>
-        <Filename Value="frmreportimageedit.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="fpreportdesigner.pp"/>
+        <UnitName Value="FPReportDesigner"/>
       </Item25>
       <Item26>
-        <Filename Value="frmreportimageedit.pp"/>
-        <UnitName Value="frmreportimageedit"/>
+        <Filename Value="frmfprdresizeelements.lfm"/>
+        <Type Value="LFM"/>
       </Item26>
       <Item27>
-        <Filename Value="frmreportmemoedit.lfm"/>
+        <Filename Value="frafpreportcsvdata.lfm"/>
         <Type Value="LFM"/>
       </Item27>
       <Item28>
-        <Filename Value="frmreportmemoedit.pp"/>
-        <UnitName Value="frmreportmemoedit"/>
+        <Filename Value="frafpreportdbfdata.lfm"/>
+        <Type Value="LFM"/>
       </Item28>
       <Item29>
-        <Filename Value="frmreportpreviewdata.lfm"/>
+        <Filename Value="frafpreportjsondata.lfm"/>
         <Type Value="LFM"/>
       </Item29>
       <Item30>
-        <Filename Value="frmreportpreviewdata.pp"/>
-        <UnitName Value="frmreportpreviewdata"/>
+        <Filename Value="frafpreportdata.lfm"/>
+        <Type Value="LFM"/>
       </Item30>
       <Item31>
-        <Filename Value="frmreportproperties.lfm"/>
+        <Filename Value="frafpreportsqldbdata.lfm"/>
         <Type Value="LFM"/>
       </Item31>
       <Item32>
-        <Filename Value="frmreportproperties.pp"/>
-        <UnitName Value="frmreportproperties"/>
+        <Filename Value="frmfpreportalignelements.lfm"/>
+        <Type Value="LFM"/>
       </Item32>
       <Item33>
-        <Filename Value="frmreportshapeedit.lfm"/>
+        <Filename Value="frmfpreportdataconnectioneditor.lfm"/>
         <Type Value="LFM"/>
       </Item33>
       <Item34>
-        <Filename Value="frmreportshapeedit.pp"/>
-        <UnitName Value="frmreportshapeedit"/>
+        <Filename Value="frmfpreportdesignermain.lfm"/>
+        <Type Value="LFM"/>
       </Item34>
       <Item35>
-        <Filename Value="frmreportvariables.lfm"/>
+        <Filename Value="frmfpreportimageedit.lfm"/>
         <Type Value="LFM"/>
       </Item35>
       <Item36>
-        <Filename Value="frmreportvariables.pp"/>
-        <UnitName Value="frmreportvariables"/>
+        <Filename Value="frmfpreportmemoedit.lfm"/>
+        <Type Value="LFM"/>
       </Item36>
       <Item37>
-        <Filename Value="frmresizeelements.lfm"/>
+        <Filename Value="frmfpreportpreviewdata.lfm"/>
         <Type Value="LFM"/>
       </Item37>
       <Item38>
-        <Filename Value="frmresizeelements.pp"/>
-        <UnitName Value="frmresizeelements"/>
+        <Filename Value="frmfpreportproperties.lfm"/>
+        <Type Value="LFM"/>
       </Item38>
       <Item39>
-        <Filename Value="regfpdesigner.pp"/>
-        <UnitName Value="regfpdesigner"/>
+        <Filename Value="frmfpreportshapeedit.lfm"/>
+        <Type Value="LFM"/>
       </Item39>
       <Item40>
-        <Filename Value="fpreportdesigner.pp"/>
-        <UnitName Value="FPReportDesigner"/>
+        <Filename Value="frmfpreportvariables.lfm"/>
+        <Type Value="LFM"/>
       </Item40>
     </Files>
     <RequiredPkgs Count="4">

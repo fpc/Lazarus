@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, controls, fpreport, graphics, lmessages, fpreportlclexport, lcltype, menus,
-  fpreportdesignobjectlist, drawruler, graphutil, types;
+  fpreportdesignobjectlist, fpreportdrawruler, graphutil, types;
 
 Const
   clGrid  = TColor($E0E0E0);      // Default color for guide grid

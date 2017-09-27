@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ButtonPanel, ActnList, ComCtrls, ExtCtrls,
-  EditBtn, designreportdata, fpjson, db, reportdesignbaseforms;
+  EditBtn, fpreportdesignreportdata, fpjson, db, reportdesignbaseforms;
 
 type
   TForm = TBaseReportDataForm;
