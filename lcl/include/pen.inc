@@ -389,10 +389,18 @@ begin
     if IsGeometric then
       elpWidth := Width
     else
-      //(https://msdn.microsoft.com/en-us/library/windows/desktop/dd162705(v=vs.85).aspx
-      //https://msdn.microsoft.com/en-us/library/windows/desktop/dd162711(v=vs.85).aspx
-      //Issue #0022646
-      elpWidth := 1;
+    begin
+      // issue #32465, regression from fixing #22646. Pure cosmetic
+      // pen is created via TLogPen, not via TExtLogPen
+      if ((elpPenStyle and PS_STYLE_MASK) = elpPenStyle) and
+          (elpPenStyle <> PS_USERSTYLE) then
+        elpWidth := 0
+      else
+        //(https://msdn.microsoft.com/en-us/library/windows/desktop/dd162705(v=vs.85).aspx
+        //https://msdn.microsoft.com/en-us/library/windows/desktop/dd162711(v=vs.85).aspx
+        //Issue #0022646
+        elpWidth := 1;
+    end;
     elpBrushStyle := BS_SOLID;
     elpColor := TColorRef(FColor);
   end;
