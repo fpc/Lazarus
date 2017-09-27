@@ -237,6 +237,7 @@ begin
   PN:=StrToIntDef(EPage.Text,-1);
   if (PN<1) or (PN>FRender.PageCount) then exit;
   FRender.PageIndex:=PN-1;
+  PBPreview.Invalidate;
 end;
 
 
