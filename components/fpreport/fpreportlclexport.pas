@@ -853,9 +853,16 @@ end;
 procedure TFPReportExportCanvas.GetPageRenderSize(APage: TFPReportCustomPage;
   out AWidth, AHeight: Integer);
 begin
-  AWidth := HmmToPixels(APage.PageSize.Width);
-  AHeight := VmmToPixels(APage.PageSize.Height);
-
+  if (APage.Orientation=poPortrait) then
+    begin
+    AWidth := HmmToPixels(APage.PageSize.Width);
+    AHeight := VmmToPixels(APage.PageSize.Height);
+    end
+  else
+    begin
+    AWidth := VmmToPixels(APage.PageSize.Height);
+    AHeight := HmmToPixels(APage.PageSize.Width);
+    end;
 end;
 
 procedure TFPReportExportCanvas.RenderElement(ABand : TFPReportCustomBand; Element : TFPReportElement);

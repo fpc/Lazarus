@@ -128,13 +128,14 @@ Type
     procedure PaintBackGround; virtual;
     procedure PaintObjects(ObjectSelection : TObjectSelection = osAll);virtual;
     procedure PaintSelection;virtual;
-    Procedure PaintRulers;
+    Procedure PaintRulers; virtual;
     procedure Paint; override;
     Property VRuler : TDrawRuler Read FVRuler;
     Property HRuler : TDrawRuler Read FHRuler;
   public
     constructor Create(AOwner: TComponent); override;
     destructor destroy; override;
+    procedure UpdatePageParams; virtual;
     procedure Reset;
     procedure CancelOperation;
     Function AddBand(ABandClass : TFPReportBandClass) : TFPReportCustomBand;
@@ -269,17 +270,23 @@ begin
   Result:=Objects.GetObjectAt(P,AOPtions);
 end;
 
-procedure TFPReportDesignerControl.SetPage(AValue: TFPReportCustomPage);
+procedure TFPReportDesignerControl.UpdatePageParams;
 
 Var
   W,H : Integer;
 
 begin
-  If AValue=FPage then exit;
-  FPage:=AValue;
   // Top left is default set
-  W:=mmToPixels(FPage.PageSize.Width,CurrentDPI);
-  H:=mmToPixels(FPage.PageSize.Height,CurrentDPI);
+  if FPage.Orientation=poPortrait then
+    begin
+    W:=mmToPixels(FPage.PageSize.Width,CurrentDPI);
+    H:=mmToPixels(FPage.PageSize.Height,CurrentDPI);
+    end
+  else
+    begin
+    W:=mmToPixels(FPage.PageSize.Height,CurrentDPI);
+    H:=mmToPixels(FPage.PageSize.Width,CurrentDPI);
+    end;
   FPageRect.Right:=FPageRect.Left+W;
   FPageRect.Bottom:=FPageRect.Top+H;
   {$IFDEF DEBUGRD}  Writeln('Page width',FPage.Layout.Width,' at ',CurrentDPI,' : ',FPageRect.Right);{$ENDIF}
@@ -302,6 +309,15 @@ begin
     end;
   SetCanvasExportCoordinates;
   SetRulerParams;
+end;
+
+procedure TFPReportDesignerControl.SetPage(AValue: TFPReportCustomPage);
+
+
+begin
+  If AValue=FPage then exit;
+  FPage:=AValue;
+  UpdatePageParams;
   FObjects.LoadFromPage(AValue);
   FObjects.OrderBands(Canvas,CurrentDPI);
   Invalidate;

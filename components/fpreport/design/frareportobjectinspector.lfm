@@ -6,7 +6,6 @@ object ObjectInspectorFrame: TObjectInspectorFrame
   Align = alTop
   ClientHeight = 240
   ClientWidth = 320
-  LCLVersion = '1.9.0.0'
   TabOrder = 0
   DesignLeft = 577
   DesignTop = 218
@@ -66,6 +65,7 @@ object ObjectInspectorFrame: TObjectInspectorFrame
       Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkSString, tkLString, tkAString, tkWString, tkVariant, tkRecord, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkUString, tkUChar]
       Indent = 10
       NameFont.Color = clWindowText
+      OnModified = PGReportModified
       ValueFont.Color = clMaroon
     end
     object LPropertyGrid: TLabel

@@ -34,10 +34,12 @@ type
     PGReport: TTIPropertyGrid;
     Splitter1: TSplitter;
     TVReport: TTreeView;
+    procedure PGReportModified(Sender: TObject);
     procedure TVReportSelectionChanged(Sender: TObject);
   private
     FISC: Boolean;
     FList: TReportObjectList;
+    FOnModified: TNotifyEvent;
     FOnSelectElement: TSelectElementEvent;
     FReport: TFPReport;
     procedure AddElementChildren(AParentNode: TTreeNode; AParent: TFPReportElementWithChildren);
@@ -57,6 +59,7 @@ type
     Property ShowReportTree : Boolean Read GetSRT Write SetSRT;
     Property Report : TFPReport Read FReport Write SetReport;
     Property OnSelectElement  : TSelectElementEvent Read FOnSelectElement Write FOnSelectElement;
+    Property OnModified : TNotifyEvent Read FOnModified Write FOnModified;
   end;
 
 implementation
@@ -151,6 +154,12 @@ begin
     C:=Nil;
   if Assigned(OnSelectElement) then
     OnSelectElement(Self,C);
+end;
+
+procedure TObjectInspectorFrame.PGReportModified(Sender: TObject);
+begin
+  If Assigned(FOnModified) then
+    FOnModified(Self);
 end;
 
 procedure TObjectInspectorFrame.AddElementChildren(AParentNode : TTreeNode; AParent : TFPReportElementWithChildren);

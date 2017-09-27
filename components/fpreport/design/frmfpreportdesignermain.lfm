@@ -22,7 +22,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
   LCLVersion = '1.9.0.0'
   object PCReport: TPageControl
     Left = 240
-    Height = 678
+    Height = 655
     Top = 22
     Width = 395
     ActivePage = TSDesign
@@ -251,11 +251,11 @@ object FPReportDesignerForm: TFPReportDesignerForm
     end
   end
   inline FOI: TObjectInspectorFrame
-    Height = 678
+    Height = 655
     Top = 22
     Width = 235
     Align = alLeft
-    ClientHeight = 678
+    ClientHeight = 655
     ClientWidth = 235
     TabOrder = 2
     DesignLeft = 408
@@ -270,13 +270,13 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Width = 235
     end
     inherited Panel2: TPanel
-      Height = 508
+      Height = 485
       Width = 235
-      ClientHeight = 508
+      ClientHeight = 485
       ClientWidth = 235
       inherited PGReport: TTIPropertyGrid
-        Height = 480
-        Width = 231
+        Height = 461
+        Width = 235
       end
       inherited LPropertyGrid: TLabel
         Width = 144
@@ -285,14 +285,14 @@ object FPReportDesignerForm: TFPReportDesignerForm
   end
   object SObjectInspector: TSplitter
     Left = 235
-    Height = 678
+    Height = 655
     Top = 22
     Width = 5
   end
   object SBReport: TStatusBar
     Left = 0
     Height = 25
-    Top = 700
+    Top = 677
     Width = 890
     Panels = <    
       item
@@ -311,28 +311,28 @@ object FPReportDesignerForm: TFPReportDesignerForm
   end
   inline FReportData: TReportDataDisplay
     Left = 640
-    Height = 678
+    Height = 655
     Top = 22
     Width = 250
     Align = alRight
-    ClientHeight = 678
+    ClientHeight = 655
     ClientWidth = 250
     TabOrder = 5
     inherited PCData: TPageControl
-      Height = 678
+      Height = 655
       Width = 250
       ActivePage = FReportData.TSData
       TabIndex = 0
       inherited TSData: TTabSheet
-        ClientHeight = 643
+        ClientHeight = 620
         ClientWidth = 244
         inherited TVData: TTreeView
-          Height = 643
+          Height = 620
           Width = 244
         end
       end
       inherited TSVariables: TTabSheet
-        ClientHeight = 643
+        ClientHeight = 620
         ClientWidth = 244
         inherited LBVariables: TListBox
           Height = 643
@@ -344,7 +344,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
   end
   object Splitter1: TSplitter
     Left = 635
-    Height = 678
+    Height = 655
     Top = 22
     Width = 5
     Align = alRight
