@@ -2656,12 +2656,14 @@ begin
         if Gz=gzFixedRows then
           P.X := Col;
 
-        if P.Y=Row then begin
+        if P.Y=Row then begin      // The current active row was clicked again.
           //doAcceptValue;
 
           if ssCtrl in Shift then begin
             doMouseDown;
-            ToggleSelectedRow;
+            // Don't unselect the row if Right-click was for PopupMenu.
+            if (Button<>mbRight) or (PopupMenu=Nil) then
+              ToggleSelectedRow;
           end
           else begin
             if Button=mbLeft then
@@ -2684,8 +2686,11 @@ begin
             if IsMouseOverCellButton(X, Y) then
               StartPushCell;
           end;
-          if ssCtrl in Shift then
-            ToggleSelectedRow
+          if ssCtrl in Shift then begin
+            // Don't unselect if Right-click for PopupMenu. Select an unselected row.
+            if (Button<>mbRight) or (PopupMenu=Nil) or not FSelectedRows.CurrentRowSelected then
+              ToggleSelectedRow;
+          end
           else begin
             if Button=mbLeft then
               ClearSelection(true);
