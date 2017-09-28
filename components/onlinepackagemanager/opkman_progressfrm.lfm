@@ -17,6 +17,7 @@ object ProgressFrm: TProgressFrm
   OnShow = FormShow
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
+  LCLVersion = '1.9.0.0'
   object pnLabels: TPanel
     Left = 0
     Height = 249
@@ -29,35 +30,35 @@ object ProgressFrm: TProgressFrm
     ClientWidth = 497
     TabOrder = 0
     object lbPackageData: TLabel
-      Left = 88
+      Left = 116
       Height = 1
       Top = 12
-      Width = 404
+      Width = 373
       Anchors = [akTop, akLeft, akRight]
       ParentColor = False
     end
     object lbSpeedData: TLabel
-      Left = 88
+      Left = 116
       Height = 15
       Top = 34
-      Width = 404
+      Width = 373
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Calculating. Please wait...'
       ParentColor = False
     end
     object lbRemainingData: TLabel
-      Left = 88
+      Left = 116
       Height = 1
       Top = 78
-      Width = 404
+      Width = 373
       Anchors = [akTop, akLeft, akRight]
       ParentColor = False
     end
     object lbElapsedData: TLabel
-      Left = 88
+      Left = 116
       Height = 1
       Top = 56
-      Width = 404
+      Width = 373
       Anchors = [akTop, akLeft, akRight]
       ParentColor = False
     end
@@ -167,8 +168,8 @@ object ProgressFrm: TProgressFrm
     TabOrder = 1
   end
   object imTree: TImageList
-    left = 123
-    top = 72
+    left = 120
+    top = 128
     Bitmap = {
       4C69030000001000000010000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
