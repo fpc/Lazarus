@@ -2882,14 +2882,10 @@ end;
 
 procedure TSynEditScreenCaretPainterInternal.Init;
 begin
-  {$IFDEF LCLCarbon}
-    FForcePaintEvents := True;
-  {$ELSE}
-  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
-    FForcePaintEvents := True;
-  {$ELSE}
+  {$IFDEF LCLWin32}
     FForcePaintEvents := False;
-  {$ENDIF}
+  {$ELSE}
+    FForcePaintEvents := True;
   {$ENDIF}
   FSavePen := TPen.Create;
   FColor := clBlack;
