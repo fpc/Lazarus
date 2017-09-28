@@ -1006,8 +1006,8 @@ end;
 function TGtk2WidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
-    lcTransparentWindow: Result := LCL_CAPABILITY_YES;
-    // ToDo: Set other capabilities.
+    // Transparency partly works but code completion window would go behind SynEdit -> NO
+    lcTransparentWindow: Result := LCL_CAPABILITY_NO;
   else
     Result := inherited GetLCLCapability(ACapability);
   end;
