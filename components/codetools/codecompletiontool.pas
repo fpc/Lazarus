@@ -1357,10 +1357,8 @@ begin
       // there is no var/type/const section in front
       if (ParentNode.Desc=ctnProcedure) and (HeaderNode=nil) then
         HeaderNode:=ParentNode.FirstChild;
-      if (HeaderNode=nil)
-      and (ParentNode.FirstChild<>nil)
-      and (ParentNode.FirstChild.Desc=ctnUsesSection) then
-        HeaderNode:=ParentNode.FirstChild;
+      if (HeaderNode=nil) then
+        HeaderNode:=FindUsesNode(ParentNode);
 
       if CursorNode.Desc in [ctnBeginBlock,ctnAsmBlock] then begin
         // add the var section directly in front of the begin
@@ -6858,6 +6856,8 @@ begin
     ctnProgram,ctnLibrary,ctnPackage]
   then begin
     Node:=CursorNode.FirstChild;
+    while (Node<>nil) and (Node.Desc=ctnIdentifier) do
+      Node:=Node.NextBrother;
     // make sure to insert behind uses section and proc header
     if (Node<>nil) and (Node.Desc in [ctnUsesSection,ctnProcedureHead]) then
     begin

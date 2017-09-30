@@ -2850,11 +2850,16 @@ end;
 
 function TFindDeclarationTool.FindUnitInAllUsesSections(
   const AnUnitName: string; out NamePos, InPos: TAtomPosition): boolean;
-var SectionNode, UsesNode: TCodeTreeNode;
 
   procedure RaiseInvalidUnitName;
   begin
     raise Exception.Create('invalid unit name '+AnUnitName);
+  end;
+
+  function FindInSection(UsesNode: TCodeTreeNode): boolean;
+  begin
+    Result:=(UsesNode<>nil)
+           and FindUnitInUsesSection(UsesNode,AnUnitName,NamePos,InPos);
   end;
 
 begin
@@ -2864,18 +2869,8 @@ begin
   if not IsDottedIdentifier(AnUnitName) then
     RaiseInvalidUnitName;
   BuildTree(lsrImplementationUsesSectionEnd);
-  SectionNode:=Tree.Root;
-  while (SectionNode<>nil) and (SectionNode.Desc in [ctnProgram, ctnUnit,
-    ctnPackage,ctnLibrary,ctnInterface,ctnImplementation])
-  do begin
-    UsesNode:=SectionNode.FirstChild;
-    if (UsesNode<>nil) and (UsesNode.Desc=ctnUsesSection)
-    and FindUnitInUsesSection(UsesNode,AnUnitName,NamePos,InPos) then begin
-      Result:=true;
-      exit;
-    end;
-    SectionNode:=SectionNode.NextBrother;
-  end;
+  if FindInSection(FindMainUsesNode) then exit;
+  if FindInSection(FindImplementationUsesNode) then exit;
 end;
 
 function TFindDeclarationTool.GetUnitNameForUsesSection(

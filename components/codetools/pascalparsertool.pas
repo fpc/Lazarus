@@ -272,6 +272,7 @@ type
     // sections / scan range
     function FindRootNode(Desc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindInterfaceNode: TCodeTreeNode;
+    function FindUsesNode(Section: TCodeTreeNode): TCodeTreeNode;
     function FindMainUsesNode(UseContainsSection: boolean = false): TCodeTreeNode;
     function FindImplementationNode: TCodeTreeNode;
     function FindImplementationUsesNode: TCodeTreeNode;
@@ -5998,6 +5999,18 @@ begin
   Result:=FindRootNode(ctnInterface);
 end;
 
+function TPascalParserTool.FindUsesNode(Section: TCodeTreeNode): TCodeTreeNode;
+begin
+  Result:=nil;
+  if Section=nil then exit;
+  Result:=Section.FirstChild;
+  while (Result<>nil) and (Result.Desc=ctnIdentifier) do
+    Result:=Result.NextBrother;
+  if Result=nil then exit;
+  if Result.Desc<>ctnUsesSection then
+    Result:=nil;
+end;
+
 function TPascalParserTool.FindImplementationNode: TCodeTreeNode;
 begin
   Result:=FindRootNode(ctnImplementation);
@@ -6122,6 +6135,8 @@ begin
           exit;
         end;
         Result:=Result.FirstChild;
+        while (Result.NextBrother<>nil) and (Result.Desc=ctnIdentifier) do
+          Result:=Result.NextBrother;
         // lsrMainUsesSectionStart in unit
         if Range=lsrMainUsesSectionStart then exit;
         if Result.Desc=ctnUsesSection then begin
@@ -6147,6 +6162,8 @@ begin
             exit;
           end;
           Result:=Result.FirstChild;
+          while (Result.NextBrother<>nil) and (Result.Desc=ctnIdentifier) do
+            Result:=Result.NextBrother;
           // lsrImplementationUsesSectionStart
           if Range=lsrImplementationUsesSectionStart then exit;
           if Result.Desc=ctnUsesSection then begin
