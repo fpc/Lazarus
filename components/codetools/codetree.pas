@@ -58,7 +58,7 @@ const
   // CodeTreeNodeDescriptors
   ctnNone               = 0;
 
-  ctnProgram            = 1; // children are ctnInterface, each namespace and sourcename
+  ctnProgram            = 1; // children are ctnSrcName, ctnUsesSection
   ctnPackage            = 2;
   ctnLibrary            = 3;
   ctnUnit               = 4;
@@ -84,9 +84,10 @@ const
   ctnConstDefinition    = 22;
   ctnGlobalProperty     = 23;
   ctnVarArgs            = 24;
-  ctnUseUnit            = 25; // StartPos=unit, EndPos=unitname+inFilename, children ctnUseUnitNamespace, ctnUseUnitClearName, parent ctnUsesSection
-  ctnUseUnitNamespace   = 26; // <namespace>.clearname.pas, parent ctnUseUnit
-  ctnUseUnitClearName   = 27; // namespace.<clearname>.pas, parent ctnUseUnit
+  ctnSrcName            = 25; // children are ctnIdentifier
+  ctnUseUnit            = 26; // StartPos=unit, EndPos=unitname+inFilename, children ctnUseUnitNamespace, ctnUseUnitClearName, parent ctnUsesSection
+  ctnUseUnitNamespace   = 27; // <namespace>.clearname.pas, parent ctnUseUnit
+  ctnUseUnitClearName   = 28; // namespace.<clearname>.pas, parent ctnUseUnit
 
   ctnClass              = 30;
   ctnClassInterface     = 31;
@@ -407,6 +408,8 @@ begin
   ctnPackage: Result:='Package';
   ctnLibrary: Result:='Library';
   ctnUnit: Result:='Unit';
+  ctnSrcName: Result:='SourceName';
+  ctnUseUnit: Result:='use unit';
   ctnUseUnitNamespace: Result:='Namespace';
   ctnUseUnitClearName: Result:='Use unit name';
   ctnInterface: Result:='Interface Section';
@@ -429,7 +432,6 @@ begin
   ctnVarDefinition: Result:='Var';
   ctnConstDefinition: Result:='Const';
   ctnGlobalProperty: Result:='Global Property';
-  ctnUseUnit: Result:='use unit';
   ctnVarArgs: Result:='VarArgs';
 
   ctnProperty: Result:='Property'; // can start with 'class property'

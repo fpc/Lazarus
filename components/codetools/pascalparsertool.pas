@@ -643,8 +643,7 @@ begin
       then begin
         // parse source from the beginning
         if CurNode<>nil then
-          while CurNode.FirstChild<>nil do
-            Tree.DeleteNode(CurNode.FirstChild);
+          DoDeleteNodes(CurNode.FirstChild);
 
         if (CurPos.StartPos=1) and (Src<>'') then begin
           // skip shebang
@@ -699,8 +698,14 @@ begin
             if (CurPos.Flag<>cafWord)
             or (CurSection in [ctnUnit,ctnPackage]) then
               AtomIsIdentifierSaveE;
+            if aNameSpace='' then begin
+              CreateChildNode;
+              CurNode.Desc:=ctnSrcName;
+            end;
             CreateChildNode;
             CurNode.Desc:=ctnIdentifier;
+            CurNode.EndPos:=CurPos.EndPos;
+            EndChildNode;
             aName:=GetAtom;
             ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
             if CurPos.Flag=cafPoint then begin
@@ -709,7 +714,7 @@ begin
             end else
               break;
           until false;
-          while CurNode.Desc=ctnIdentifier do begin
+          if CurNode.Desc=ctnSrcName then begin
             CurNode.EndPos:=CurPos.StartPos;
             EndChildNode;
           end;
@@ -804,7 +809,7 @@ begin
             MoveCursorToCleanPos(Node.StartPos);
           end else begin
             SubNode:=Node.FirstChild;
-            while (SubNode<>nil) and (SubNode.Desc=ctnIdentifier) do
+            if (SubNode<>nil) and (SubNode.Desc=ctnSrcName) then
               SubNode:=SubNode.NextBrother;
             if (SubNode<>nil) and (SubNode.Desc=ctnUsesSection) then begin
               // uses section is already parsed
@@ -6015,7 +6020,7 @@ begin
   Result:=nil;
   if Section=nil then exit;
   Result:=Section.FirstChild;
-  while (Result<>nil) and (Result.Desc=ctnIdentifier) do
+  if (Result<>nil) and (Result.Desc=ctnSrcName) then
     Result:=Result.NextBrother;
   if Result=nil then exit;
   if Result.Desc<>ctnUsesSection then
@@ -6087,7 +6092,7 @@ begin
       if Result=nil then exit;
     end;
     Result:=Result.FirstChild;
-    while (Result<>nil) and (Result.Desc=ctnIdentifier) do
+    if (Result<>nil) and (Result.Desc=ctnSrcName) then
       Result:=Result.NextBrother;
     if (Result=nil) then exit;
     if (Result.Desc<>ctnUsesSection) then Result:=nil;
@@ -6131,7 +6136,7 @@ begin
   // lsrSourceName
   if Range=lsrSourceName then begin
     if (Result.Desc in AllSourceTypes) and (Result.FirstChild<>nil)
-    and (Result.FirstChild.Desc=ctnIdentifier) then
+    and (Result.FirstChild.Desc=ctnSrcName) then
       Result:=Result.FirstChild;
     exit;
   end;
@@ -6149,7 +6154,7 @@ begin
           exit;
         end;
         Result:=Result.FirstChild;
-        while (Result.NextBrother<>nil) and (Result.Desc=ctnIdentifier) do
+        if (Result.NextBrother<>nil) and (Result.Desc=ctnSrcName) then
           Result:=Result.NextBrother;
         // lsrMainUsesSectionStart in unit
         if Range=lsrMainUsesSectionStart then exit;
@@ -6176,7 +6181,7 @@ begin
             exit;
           end;
           Result:=Result.FirstChild;
-          while (Result.NextBrother<>nil) and (Result.Desc=ctnIdentifier) do
+          if (Result.NextBrother<>nil) and (Result.Desc=ctnSrcName) then
             Result:=Result.NextBrother;
           // lsrImplementationUsesSectionStart
           if Range=lsrImplementationUsesSectionStart then exit;
@@ -6222,7 +6227,7 @@ begin
           exit;
         end;
         Result:=Result.FirstChild;
-        while (Result.NextBrother<>nil) and (Result.Desc=ctnIdentifier) do
+        if (Result.NextBrother<>nil) and (Result.Desc=ctnSrcName) then
           Result:=Result.NextBrother;
         if Result.Desc<>ctnUsesSection then exit;
         // lsrMainUsesSectionStart in program
@@ -6239,7 +6244,7 @@ begin
           exit;
         end;
         Result:=Result.FirstChild;
-        while (Result.NextBrother<>nil) and (Result.Desc=ctnIdentifier) do
+        if (Result.NextBrother<>nil) and (Result.Desc=ctnSrcName) then
           Result:=Result.NextBrother;
         if Result.Desc=ctnUsesSection then
           Result:=Result.NextSkipChilds;
@@ -6269,7 +6274,7 @@ begin
   Result:=FindSectionNodeAtPos(P);
   if Result=nil then exit;
   UsesNode:=Result.FirstChild;
-  while (UsesNode<>nil) and (UsesNode.Desc=ctnIdentifier) do
+  if (UsesNode<>nil) and (UsesNode.Desc=ctnSrcName) then
     UsesNode:=UsesNode.NextBrother;
   if (UsesNode<>nil) and (UsesNode.Desc=ctnUsesSection) then
   begin

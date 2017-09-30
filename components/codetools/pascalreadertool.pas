@@ -1839,7 +1839,7 @@ begin
   ctnProperty:
      Result:=GetPropertyNameIdentifier(Node);
   ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,
-  ctnEnumIdentifier,ctnIdentifier:
+  ctnEnumIdentifier,ctnIdentifier,ctnSrcName:
     Result:=@Src[Node.StartPos];
   end;
 end;

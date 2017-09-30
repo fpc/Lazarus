@@ -1044,7 +1044,7 @@ begin
   end;
   if InsertPos<1 then begin
     InsertNode:=FindFirstSectionChild;
-    while (InsertNode<>nil) and (InsertNode.Desc=ctnIdentifier) do
+    if (InsertNode<>nil) and (InsertNode.Desc=ctnSrcName) then
       InsertNode:=InsertNode.NextBrother;
     if InsertNode<>nil then begin
       Indent:=Beauty.GetLineIndent(Src,InsertNode.StartPos);
@@ -6856,7 +6856,7 @@ begin
     ctnProgram,ctnLibrary,ctnPackage]
   then begin
     Node:=CursorNode.FirstChild;
-    while (Node<>nil) and (Node.Desc=ctnIdentifier) do
+    if (Node<>nil) and (Node.Desc=ctnSrcName) then
       Node:=Node.NextBrother;
     // make sure to insert behind uses section and proc header
     if (Node<>nil) and (Node.Desc in [ctnUsesSection,ctnProcedureHead]) then

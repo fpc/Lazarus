@@ -754,7 +754,7 @@ type
     function FindIdentifierInAncestors(ClassNode: TCodeTreeNode;
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInUsesSection(UsesNode: TCodeTreeNode;
-      Params: TFindDeclarationParams; FindMissingFPCUnits: Boolean): boolean; // ToDo: dotted
+      Params: TFindDeclarationParams; FindMissingFPCUnits: Boolean): boolean;
     function FindIdentifierInHiddenUsedUnits(
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInUsedUnit(const AnUnitName: string;
@@ -5497,6 +5497,13 @@ begin
       then begin
         // this is the ON variable node, the type comes right behind
         Result.Node:=Result.Node.NextBrother;
+      end else if Result.Node.Desc=ctnSrcName then begin
+        break;
+      end else if (Result.Node.Desc=ctnIdentifier)
+      and (Result.Node.Parent.Desc=ctnSrcName) then begin
+        if (Result.Node.NextBrother=nil) then
+          Result.Node:=Result.Node.Parent;
+        break;
       end else
       if (Result.Node.Desc in [ctnIdentifier,ctnOnIdentifier])
       then begin
@@ -9135,7 +9142,7 @@ var
     DottedIdentifier: String;
   begin
     Result:=StartUseUnitNode.FirstChild;
-    //debugln(['ResolveUsenit START ',NextAtomType,' ',StartUseUnitNode.DescAsString]);
+    //debugln(['ResolveUsenit START ',NextAtomType,' ',StartUseUnitNode.DescAsString,' "',GetIdentifier(@Src[CurAtom.StartPos]),'"']);
     // find all candidates
     Count:=0;
     HasNamespace:=false;
@@ -9153,7 +9160,7 @@ var
       UseUnitNode:=GetPrevUseUnit(UseUnitNode);
     until UseUnitNode=nil;
     //debugln(['ResolveUsenit CandidateCount=',Count,' HasNamespace=',HasNamespace]);
-    if (Count<=1) or not HasNamespace then exit;
+    if not HasNamespace then exit;
 
     // multiple uses start with this identifier -> collect candidates
     //debugln(['ResolveUsenit collect candidates ...']);
@@ -9214,33 +9221,34 @@ var
     // check source name
     if (Tree.Root.Desc in AllSourceTypes)
     and (Tree.Root.FirstChild<>nil)
+    and (Tree.Root.FirstChild.Desc=ctnSrcName)
     and CompareSrcIdentifiers(Tree.Root.FirstChild.StartPos,PChar(DottedIdentifier))
     then begin
       // found candidate
       Level:=1;
-      Node:=Tree.Root.FirstChild;
+      Node:=Tree.Root.FirstChild.FirstChild;
       //debugln(['ResolveUseUnit Candidate SrcName']);
       p:=PChar(DottedIdentifier);
       repeat
         //debugln('ResolveUseUnit SrcName p=',p,' Node=',ExtractNode(Node,[]));
-        if (Node.NextBrother=nil) or (Node.NextBrother.Desc<>ctnIdentifier) then begin
+        if (Node.FirstChild=nil) or (Node.NextBrother.Desc<>ctnIdentifier) then begin
           // fits
           //debugln(['ResolveUseUnit FITS Level=',Level,' Best=',BestLevel]);
           if Level>BestLevel then begin
             // source name fits best
-            Result:=Tree.Root.FirstChild;
+            Result:=Tree.Root.FirstChild.FirstChild;
             // move cursor forward
             while (Result.NextBrother<>nil)
             and (NextAtom.EndPos<EndPos) do begin
-              if (Result.NextBrother.Desc<>ctnIdentifier) then
+              if (Result.NextBrother=nil) then
                 exit(Tree.Root);
               ReadNextExpressionAtom; // read point
               ReadNextExpressionAtom; // read namespace/unitname
               //debugln(['ResolveUseUnit Next ',GetAtom(CurAtom)]);
               Result:=Result.NextBrother;
             end;
-            exit;
             //debugln(['ResolveUseUnit SrcName fits better']);
+            exit;
           end;
           break;
         end else if p^=#0 then begin
@@ -9590,8 +9598,13 @@ var
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveChildren ExprType=',ExprTypeToString(ExprType)]);
     {$ENDIF}
-    if (ExprType.Context.Node=nil) then exit;
-    if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
+    NewNode:=ExprType.Context.Node;
+    if (NewNode=nil) then exit;
+    if (NewNode.Desc in AllUsableSourceTypes)
+    or (NewNode.Desc=ctnSrcName)
+    or ((NewNode.Desc=ctnIdentifier) and (NewNode.Parent.Desc=ctnSrcName)
+      and (NewNode.NextBrother=nil))
+    then begin
       if ExprType.Context.Tool=Self then begin
         // unit name of this unit => implementation
         // Note: allowed for programs too
