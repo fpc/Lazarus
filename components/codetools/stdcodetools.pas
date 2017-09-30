@@ -1183,8 +1183,13 @@ end;
 
 function TStandardCodeTool.RemoveUnitFromAllUsesSections(
   const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
-var
-  SectionNode, Node: TCodeTreeNode;
+
+  function RemoveFromSection(UsesNode: TCodeTreeNode): boolean;
+  begin
+    Result:=(UsesNode=nil)
+      or (RemoveUnitFromUsesSection(UsesNode,AnUnitName,SourceChangeCache));
+  end;
+
 begin
   Result:=false;
   if (AnUnitName='') or (SourceChangeCache=nil) then exit;
@@ -1192,21 +1197,8 @@ begin
 
   SourceChangeCache.BeginUpdate;
   try
-    SectionNode:=Tree.Root;
-    while (SectionNode<>nil) do begin
-      Node:=SectionNode.FirstChild;
-      while (Node<>nil) and (Node.Desc=ctnIdentifier) do
-        Node:=Node.NextBrother;
-      if (Node<>nil)
-      and (Node.Desc=ctnUsesSection) then begin
-        if not RemoveUnitFromUsesSection(Node,AnUnitName,
-           SourceChangeCache)
-        then begin
-          exit;
-        end;
-      end;
-      SectionNode:=SectionNode.NextBrother;
-    end;
+    if not RemoveFromSection(FindMainUsesNode) then exit;
+    if not RemoveFromSection(FindImplementationUsesNode) then exit;
   finally
     Result:=SourceChangeCache.EndUpdate;
   end;
@@ -1214,24 +1206,18 @@ end;
 
 function TStandardCodeTool.FixUsedUnitCase(
   SourceChangeCache: TSourceChangeCache): boolean;
-var
-  SectionNode: TCodeTreeNode;
+
+  function FixUsesSection(UsesNode: TCodeTreeNode): boolean;
+  begin
+    Result:=(UsesNode=nil) or FixUsedUnitCaseInUsesSection(UsesNode,SourceChangeCache);
+  end;
+
 begin
   //debugln('TStandardCodeTool.FixUsedUnitCase ',MainFilename);
   Result:=false;
   BuildTree(lsrImplementationUsesSectionEnd);
-  SectionNode:=Tree.Root;
-  while (SectionNode<>nil) do begin
-    if (SectionNode.FirstChild<>nil)
-    and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
-      if not FixUsedUnitCaseInUsesSection(
-        SectionNode.FirstChild,SourceChangeCache)
-      then begin
-        exit;
-      end;
-    end;
-    SectionNode:=SectionNode.NextBrother;
-  end;
+  if not FixUsesSection(FindMainUsesNode) then exit;
+  if not FixUsesSection(FindImplementationUsesNode) then exit;
   Result:=true;
 end;
 
