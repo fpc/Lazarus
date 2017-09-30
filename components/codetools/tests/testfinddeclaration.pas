@@ -170,13 +170,19 @@ procedure TCustomTestFindDeclaration.FindDeclarations(Filename: string);
         PrependPath(Tool.ExtractProcName(Node,[]),Result);
       ctnProperty:
         PrependPath(Tool.ExtractPropName(Node,false),Result);
+      ctnUseUnit:
+        begin
+          writeln('CCC1 NodeAsPath ',Node.StartPos,' ',Node.FirstChild.StartPos,'-',Node.FirstChild.EndPos);
+        PrependPath(Tool.ExtractUsedUnitName(Node),Result);
+        end;
       ctnUseUnitNamespace,ctnUseUnitClearName:
         begin
           PrependPath(GetIdentifier(@Tool.Src[Node.StartPos]),Result);
           if Node.PriorBrother<>nil then begin
             Node:=Node.PriorBrother;
             continue;
-          end;
+          end else
+            Node:=Node.Parent;
         end;
       //else debugln(['NodeAsPath ',Node.DescAsString]);
       end;
@@ -265,7 +271,7 @@ begin
     if (Marker='declaration') then begin
       ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
       {$IFDEF VerboseFindDeclarationTests}
-      debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
+      debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',MainTool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
       {$ENDIF}
       MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
 
@@ -282,13 +288,16 @@ begin
       end else begin
         FoundTool:=CodeToolBoss.GetCodeToolForSource(FoundCursorPos.Code,true,true) as TFindDeclarationTool;
         FoundPath:='';
+        FoundNode:=nil;
         if (FoundCursorPos.Y=1) and (FoundCursorPos.X=1) then begin
           // unit
           FoundPath:=ExtractFileNameOnly(FoundCursorPos.Code.Filename);
         end else begin
           FoundTool.CaretToCleanPos(FoundCursorPos,FoundCleanPos);
+          if (FoundCleanPos>1) and (IsIdentChar[FoundTool.Src[FoundCleanPos-1]]) then
+            dec(FoundCleanPos);
           FoundNode:=FoundTool.FindDeepestNodeAtPos(FoundCleanPos,true);
-          //debugln(['TTestFindDeclaration.FindDeclarations Found: ',FoundTool.CleanPosToStr(FoundNode.StartPos,true)]);
+          //debugln(['TTestFindDeclaration.FindDeclarations Found: ',FoundTool.CleanPosToStr(FoundNode.StartPos,true),' FoundNode=',FoundNode.DescAsString]);
           FoundPath:=NodeAsPath(FoundTool,FoundNode);
         end;
         //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);

@@ -8,8 +8,8 @@ uses
     .nsAA{declaration:unitdots.nsA.nsAA}.nsAAA{declaration:unitdots.nsA.nsAA.nsAAA};
 
 type
-  TPrgColor  = unitdots.dot.tcolor{declaration:unitdots.tcolor};
-  TStrange   = unitdots.tprogramdots1.tprgcolor{declaration:unitdots.tprogramdots1.tprgcolor};
+  TPrgColor  = dot.tcolor{declaration:unitdots.dot.tcolor};
+  TStrange   = unitdots.tprogramdots1.tprgcolor{declaration:tprgcolor};
 
 begin
 end.
