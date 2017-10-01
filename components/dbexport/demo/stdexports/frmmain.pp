@@ -32,7 +32,6 @@ type
     MISep: TMenuItem;
     MFile: TMenuItem;
     ODDBF: TOpenDialog;
-    PButtons: TPanel;
     SDExport: TSaveDialog;
     SDDBF: TSaveDialog;
     StandardExportFormats1: TStandardExportFormats;

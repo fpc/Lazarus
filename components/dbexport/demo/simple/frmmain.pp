@@ -53,7 +53,6 @@ type
     MISep: TMenuItem;
     MFile: TMenuItem;
     ODDBF: TOpenDialog;
-    PButtons: TPanel;
     ExRTF: TRTFExporter;
     SDExport: TSaveDialog;
     SDDBF: TSaveDialog;
@@ -82,10 +81,8 @@ type
     procedure AExportTeXExecute(Sender: TObject);
     procedure AExportXMLExecute(Sender: TObject);
     procedure ANewExecute(Sender: TObject);
-    procedure ANewUpdate(Sender: TObject);
     procedure AOpenExecute(Sender: TObject);
     procedure AQuitExecute(Sender: TObject);
-    procedure ExCSVExportRow(Sender: TObject; var AllowExport: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure HaveData(Sender: TObject);
   private
@@ -127,11 +124,6 @@ Resourcestring
 
 { TMainForm }
 
-procedure TMainForm.ANewUpdate(Sender: TObject);
-begin
-
-end;
-
 procedure TMainForm.AOpenExecute(Sender: TObject);
 begin
   If ODDBF.Execute then
@@ -141,12 +133,6 @@ end;
 procedure TMainForm.AQuitExecute(Sender: TObject);
 begin
   Close;
-end;
-
-procedure TMainForm.ExCSVExportRow(Sender: TObject;
-  var AllowExport: Boolean);
-begin
-
 end;
 
 procedure TMainForm.ANewExecute(Sender: TObject);
@@ -159,23 +145,33 @@ begin
 end;
 
 procedure TMainForm.DoExport(E : TCustomDatasetExporter; Const ATitle,AFilter : String);
-
+var
+  s: String;
 begin
   if MIExportDLG.Checked then
-    begin
+  begin
     If not ShowBaseExportConfig(E) then
       Exit;
-    end
+  end
   else
+  begin
+    SDExport.FileName := '';
+    SDExport.Title:=ATitle;
+    SDExport.Filter:=AFilter;
+    s := AFilter.Split('|')[1];
+    Delete(s, 1, 1);
+    SDExport.DefaultExt:= s;
+    E.Dataset.First;
+    if SDExport.Execute then
     begin
-    If E is TCustomFileExporter then
-      begin
-      SDExport.Title:=ATitle;
-      SDExport.Filter:=AFilter;
-      If SDExport.Execute then
+      if (E is TFPDBFExport) then
+        (E as TFPDBFExport).FileName:=SDExport.FileName
+      else
+      if (E is TCustomFileExporter) then
         (E as TCustomFileExporter).FileName:=SDExport.FileName;
-      end;
-    end;
+    end else
+      exit;
+  end;
   E.Execute;
 end;
 

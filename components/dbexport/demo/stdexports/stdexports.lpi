@@ -1,18 +1,19 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="6"/>
+    <Version Value="10"/>
     <General>
+      <Flags>
+        <LRSInOutputDirectory Value="False"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
-      <TargetFileExt Value=""/>
       <Title Value="Standard export routines"/>
+      <UseXPManifest Value="True"/>
     </General>
-    <VersionInfo>
-      <ProjectVersion Value=""/>
-    </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
@@ -48,30 +49,30 @@
       <Unit0>
         <Filename Value="stdexports.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="stdexports"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pp"/>
-        <ComponentName Value="MainForm"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="frmmain.lrs"/>
-        <UnitName Value="frmmain"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
       </Unit1>
       <Unit2>
         <Filename Value="../gendata.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="gendata"/>
       </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="11"/>
     <SearchPaths>
-      <OtherUnitFiles Value="../"/>
+      <OtherUnitFiles Value=".."/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Options>
         <Win32>
@@ -79,8 +80,5 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>
