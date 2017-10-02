@@ -461,6 +461,12 @@ begin
   FVST.SortTree(0, opkman_VirtualTrees.sdAscending);
   ExpandEx;
   CollapseEx;
+  RootNode := VST.GetFirst;
+  if RootNode <> nil then
+  begin
+    FVST.Selected[RootNode] := True;
+    FVST.FocusedNode := RootNode;
+  end;
 end;
 
 function TVisualTree.IsAllChecked(const AChecking: PVirtualNode): Boolean;
