@@ -11,6 +11,8 @@ uses
   { you can add units after this }, frmmain, gendata, DBFLaz,
   RunTimeTypeInfoControls, lazdbexport;
 
+{$R *.res}
+
 begin
   Application.Title:='simple data export demo';
   Application.Initialize;

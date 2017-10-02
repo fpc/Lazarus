@@ -7,196 +7,185 @@ object MainForm: TMainForm
   VertScrollBar.Page = 363
   ActiveControl = GData
   Caption = 'Simple export demo'
-  ClientHeight = 364
+  ClientHeight = 370
   ClientWidth = 651
   Menu = MMMain
   OnCreate = FormCreate
-  object PButtons: TPanel
-    Height = 26
+  LCLVersion = '1.9.0.0'
+  object GData: TDBGrid
+    Left = 0
+    Height = 342
+    Top = 28
     Width = 651
-    Align = alTop
-    ClientHeight = 26
-    ClientWidth = 651
+    Align = alClient
+    Color = clWindow
+    Columns = <>
+    DataSource = DSData
+    ReadOnly = True
     TabOrder = 0
-    object TBMain: TToolBar
+  end
+  object TBMain: TToolBar
+    Left = 0
+    Height = 28
+    Top = 0
+    Width = 651
+    AutoSize = True
+    ButtonHeight = 26
+    ButtonWidth = 24
+    Caption = 'TBMain'
+    Images = ILMain
+    TabOrder = 1
+    object ToolButton1: TToolButton
       Left = 1
-      Height = 24
-      Top = 1
-      Width = 311
-      Align = alLeft
-      Caption = 'TBMain'
-      Images = ILMain
-      TabOrder = 0
-      object ToolButton1: TToolButton
-        Left = 1
-        Top = 2
-        Action = ANew
-      end
-      object ToolButton2: TToolButton
-        Left = 29
-        Top = 2
-        Action = AOpen
-      end
-      object ToolButton3: TToolButton
-        Left = 57
-        Top = 2
-        Width = 14
-        Caption = 'ToolButton3'
-        Style = tbsSeparator
-      end
-      object TBCSVExport: TToolButton
-        Left = 71
-        Top = 2
-        Action = AExportCSV
-      end
-      object TBFixedExport: TToolButton
-        Left = 99
-        Top = 2
-        Action = AExportFixed
-      end
-      object TBJSONExport: TToolButton
-        Left = 127
-        Top = 2
-        Action = AExportJSON
-      end
-      object TBXMLExport: TToolButton
-        Left = 155
-        Top = 2
-        Action = AExportXML
-      end
-      object TBDBFExport: TToolButton
-        Left = 183
-        Top = 2
-        Action = AExportDBF
-      end
-      object TBSQLExport: TToolButton
-        Left = 211
-        Top = 2
-        Action = AExportSQL
-      end
-      object TBTexExport: TToolButton
-        Left = 239
-        Top = 2
-        Action = AExportTeX
-      end
-      object TBRTFExport: TToolButton
-        Left = 267
-        Top = 2
-        Action = AExportRTF
-      end
+      Top = 2
+      Action = ANew
+    end
+    object ToolButton2: TToolButton
+      Left = 29
+      Top = 2
+      Action = AOpen
+    end
+    object ToolButton3: TToolButton
+      Left = 57
+      Height = 26
+      Top = 2
+      Caption = 'ToolButton3'
+      Style = tbsDivider
+    end
+    object TBCSVExport: TToolButton
+      Left = 62
+      Top = 2
+      Action = AExportCSV
+    end
+    object TBFixedExport: TToolButton
+      Left = 90
+      Top = 2
+      Action = AExportFixed
+    end
+    object TBJSONExport: TToolButton
+      Left = 118
+      Top = 2
+      Action = AExportJSON
+    end
+    object TBXMLExport: TToolButton
+      Left = 146
+      Top = 2
+      Action = AExportXML
+    end
+    object TBDBFExport: TToolButton
+      Left = 174
+      Top = 2
+      Action = AExportDBF
+    end
+    object TBSQLExport: TToolButton
+      Left = 202
+      Top = 2
+      Action = AExportSQL
+    end
+    object TBTexExport: TToolButton
+      Left = 230
+      Top = 2
+      Action = AExportTeX
+    end
+    object TBRTFExport: TToolButton
+      Left = 258
+      Top = 2
+      Action = AExportRTF
     end
     object NBData: TDBNavigator
-      Left = 409
-      Height = 24
-      Top = 1
+      Left = 410
+      Height = 26
+      Top = 2
       Width = 241
       Align = alRight
       BevelOuter = bvNone
-      ClientHeight = 24
+      ChildSizing.EnlargeHorizontal = crsScaleChilds
+      ChildSizing.EnlargeVertical = crsScaleChilds
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 100
+      ClientHeight = 26
       ClientWidth = 241
       DataSource = DSData
+      Flat = True
+      Options = []
+      TabOrder = 0
     end
-  end
-  object GData: TDBGrid
-    Height = 338
-    Top = 26
-    Width = 651
-    Align = alClient
-    DataSource = DSData
-    FixedColor = clBtnFace
-    FixedHotColor = cl3DLight
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
-    ParentColor = False
-    ReadOnly = True
-    TabOrder = 1
-    TabStop = True
   end
   object ALMain: TActionList
     Images = ILMain
-    left = 123
+    left = 128
     top = 67
     object ANew: TAction
       Caption = '&New'
-      DisableIfNoHandler = True
       ImageIndex = 0
       OnExecute = ANewExecute
-      OnUpdate = ANewUpdate
       ShortCut = 16462
     end
     object AOpen: TAction
       Caption = '&Open'
-      DisableIfNoHandler = True
       ImageIndex = 1
       OnExecute = AOpenExecute
       ShortCut = 16463
     end
     object AQuit: TAction
       Caption = '&Quit'
-      DisableIfNoHandler = True
       ImageIndex = 2
       OnExecute = AQuitExecute
       ShortCut = 16465
     end
     object AExportCSV: TAction
       Caption = 'CSV Export'
-      DisableIfNoHandler = True
       ImageIndex = 3
       OnExecute = AExportCSVExecute
       OnUpdate = HaveData
     end
     object AExportFixed: TAction
       Caption = 'Fixed Length Export'
-      DisableIfNoHandler = True
       ImageIndex = 4
       OnExecute = AExportFixedExecute
       OnUpdate = HaveData
     end
     object AExportJSON: TAction
       Caption = 'JSON export'
-      DisableIfNoHandler = True
       ImageIndex = 6
       OnExecute = AExportJSONExecute
       OnUpdate = HaveData
     end
     object AExportXML: TAction
       Caption = 'XML export'
-      DisableIfNoHandler = True
       ImageIndex = 7
       OnExecute = AExportXMLExecute
       OnUpdate = HaveData
     end
     object AExportDBF: TAction
       Caption = 'DBF Export'
-      DisableIfNoHandler = True
       ImageIndex = 5
       OnExecute = AExportDBFExecute
       OnUpdate = HaveData
     end
     object AExportSQL: TAction
       Caption = 'SQL Export'
-      DisableIfNoHandler = True
       ImageIndex = 8
       OnExecute = AExportSQLExecute
       OnUpdate = HaveData
     end
     object AExportTeX: TAction
       Caption = 'TeX Export'
-      DisableIfNoHandler = True
       ImageIndex = 9
       OnExecute = AExportTeXExecute
       OnUpdate = HaveData
     end
     object AExportRTF: TAction
       Caption = 'RTF Export'
-      DisableIfNoHandler = True
       ImageIndex = 10
       OnExecute = AExportRTFExecute
       OnUpdate = HaveData
     end
   end
   object MMMain: TMainMenu
-    left = 80
+    left = 64
     top = 67
     object MFile: TMenuItem
       Caption = '&File'
@@ -262,8 +251,8 @@ object MainForm: TMainForm
   object ILMain: TImageList
     Height = 24
     Width = 24
-    left = 80
-    top = 105
+    left = 64
+    top = 118
     Bitmap = {
       4C690B0000001800000018000000FF00FF00FF00FF00FF00FF00FF00FF00FF00
       FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00FF00
@@ -1065,82 +1054,128 @@ object MainForm: TMainForm
     DefaultExt = '.dbf'
     Filter = 'DBase files|*.dbf|All files|*.*'
     left = 128
-    top = 105
+    top = 118
   end
   object DBFData: TDbf
     IndexDefs = <>
     TableLevel = 4
-    left = 78
-    top = 147
+    FilterOptions = []
+    left = 64
+    top = 168
   end
-  object DSData: TDatasource
+  object DSData: TDataSource
     DataSet = DBFData
     left = 123
-    top = 147
+    top = 168
   end
   object ODDBF: TOpenDialog
     Title = 'Open existing DBase file'
     DefaultExt = '.dbf'
     Filter = 'DBase files|*.dbf|All files|*.*'
-    left = 160
-    top = 105
+    left = 184
+    top = 118
   end
   object SDExport: TSaveDialog
-    Title = 'Save file as'
-    left = 242
-    top = 108
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    left = 240
+    top = 118
   end
   object ExCSV: TCSVExporter
     Dataset = DBFData
     ExportFields = <>
+    RestorePosition = False
+    FormatSettings.DecimalSeparator = #0
+    FormatSettings.CurrencyDigits = 0
     FormatSettings.FieldDelimiter = ','
-    FormatSettings.StringQuoteChar = '"'
-    OnExportRow = ExCSVExportRow
-    left = 304
-    top = 84
+    FormatSettings.IgnoreOuterWhitespace = False
+    FormatSettings.RowDelimiter = #13#10
+    FormatSettings.QuoteChar = '"'
+    left = 321
+    top = 71
   end
   object ExFixed: TFixedLengthExporter
     Dataset = DBFData
     ExportFields = <>
-    left = 301
-    top = 118
+    RestorePosition = False
+    FormatSettings.DecimalSeparator = #0
+    FormatSettings.CurrencyDigits = 0
+    left = 318
+    top = 123
   end
   object ExSQL: TSQLExporter
     Dataset = DBFData
     ExportFields = <>
-    left = 301
-    top = 152
+    RestorePosition = False
+    FormatSettings.DecimalSeparator = #0
+    FormatSettings.CurrencyDigits = 0
+    FormatSettings.EscapeStyle = sesFirebird
+    FormatSettings.StatementKind = skInsert
+    FormatSettings.QuoteIdentifiers = False
+    FormatSettings.TableName = 'Exported'
+    left = 318
+    top = 176
   end
   object ExXML: TSimpleXMLExporter
     Dataset = DBFData
     ExportFields = <>
-    left = 352
-    top = 84
+    RestorePosition = False
+    FormatSettings.DecimalSeparator = #0
+    FormatSettings.CurrencyDigits = 0
+    FormatSettings.FieldAsAttributes = False
+    FormatSettings.IndentSize = 0
+    left = 369
+    top = 71
   end
   object ExJSON: TSimpleJSONExporter
     Dataset = DBFData
     ExportFields = <>
-    left = 352
-    top = 118
+    RestorePosition = False
+    FormatSettings.DecimalSeparator = #0
+    FormatSettings.CurrencyDigits = 0
+    FormatSettings.RowFormat = rfArray
+    FormatSettings.ColumnFormat = cfObject
+    FormatSettings.IndentSize = 0
+    left = 369
+    top = 123
   end
   object ExDBF: TFPDBFExport
     Dataset = DBFData
     ExportFields = <>
-    left = 352
-    top = 152
+    RestorePosition = False
+    FormatSettings.IntegerFormat = '%d'
+    FormatSettings.DecimalSeparator = ','
+    FormatSettings.CurrencySymbol = '€'
+    FormatSettings.CurrencyDigits = 0
+    FormatSettings.BooleanTrue = 'True'
+    FormatSettings.BooleanFalse = 'False'
+    FormatSettings.DateFormat = 'dd.MM.yyyy'
+    FormatSettings.TimeFormat = 'hh:nn'
+    FormatSettings.DateTimeFormat = 'dd.MM.yyyy hh:nn'
+    FormatSettings.TableFormat = tfDBaseIV
+    FormatSettings.AutoRenameFields = True
+    left = 369
+    top = 174
   end
   object ExTeX: TTeXExporter
     Dataset = DBFData
     ExportFields = <>
+    RestorePosition = False
+    FormatSettings.DecimalSeparator = #0
+    FormatSettings.CurrencyDigits = 0
     FormatSettings.Options = [teHeaderRow, teTableEnvironment, teTopLine, teBottomLine]
-    left = 301
-    top = 188
+    FormatSettings.Units = tuEm
+    FormatSettings.Tabular = ttTabular
+    left = 318
+    top = 223
   end
   object ExRTF: TRTFExporter
     Dataset = DBFData
     ExportFields = <>
+    RestorePosition = False
+    FormatSettings.DecimalSeparator = #0
+    FormatSettings.CurrencyDigits = 0
     FormatSettings.Options = [reHeaderRow, reTopLine, reBottomLine]
-    left = 352
-    top = 188
+    left = 369
+    top = 223
   end
 end
