@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-08-06 18:21+0200\n"
+"PO-Revision-Date: 2017-10-01 20:25+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -3203,8 +3203,6 @@ msgid "Replace &All"
 msgstr "&Alle ersetzen"
 
 #: lazarusidestrconsts.dlgreplacewith
-#, fuzzy
-#| msgid "&Replace with"
 msgid "Replace wit&h"
 msgstr "E&rsetzen mit"
 
@@ -4574,7 +4572,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisanchorsof
 msgid "Anchors of %s"
-msgstr ""
+msgstr "Anker von %s"
 
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
@@ -12303,7 +12301,7 @@ msgstr "Verwendete Tastaturbefehle in %s (%d)"
 
 #: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
 msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr ""
+msgstr "ShowMenuEditor: TMenu-Parameter ist nil"
 
 #: lazarusidestrconsts.lismenueditorsins
 msgid "\"%s\" in %s"
@@ -12671,7 +12669,7 @@ msgstr "Datei unter Cursor öffnen"
 
 #: lazarusidestrconsts.lismenuopenfolder
 msgid "Open Folder ..."
-msgstr ""
+msgstr "Ordner öffnen ..."
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open Loaded Package ..."
@@ -13283,7 +13281,7 @@ msgstr "Ausgabeverzeichnis nicht ersetzen (-FU)"
 
 #: lazarusidestrconsts.lismmexcludeallpackagesmatching
 msgid "Exclude all packages matching name \"%s\""
-msgstr ""
+msgstr "Schließe alle Packages aus, die \"%s\" entsprechen"
 
 #: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
 msgid "expected \":=\" after macro name, but found \"%s\""
@@ -13393,7 +13391,7 @@ msgstr "(war \"%s\")"
 
 #: lazarusidestrconsts.lismmwidgetsetavailableforlclproject
 msgid "WidgetSet change is available only for LCL projects"
-msgstr ""
+msgstr "Eine WidgetSet-Änderung ist nur bei LCL-Projekten möglich."
 
 #: lazarusidestrconsts.lismode
 msgid ", Mode: %s"
@@ -21171,4 +21169,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-

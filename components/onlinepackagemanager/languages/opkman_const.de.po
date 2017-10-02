@@ -12,24 +12,22 @@ msgstr ""
 "X-Generator: Poedit 2.0.1\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
-#, fuzzy
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
 msgid "Cancel"
 msgstr "Abbrechen"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_hint
 msgid "Close the dialog"
-msgstr ""
+msgstr "Den Dialog schließen"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_caption
-#, fuzzy
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bok_caption"
 msgid "OK"
 msgstr "OK"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_hint
 msgid "Close the dialog and create the package"
-msgstr ""
+msgstr "Den Dialog schließen und das Package erzeugen"
 
 #: opkman_const.rsaddrepositorypackagefrm_caption
 msgid "Add repository package"
@@ -176,51 +174,41 @@ msgid "Open private respository"
 msgstr "Privates Repository öffnen"
 
 #: opkman_const.rscreaterepositoryfrm_caption
-#, fuzzy
-#| msgid "Create private repository"
 msgctxt "opkman_const.rscreaterepositoryfrm_caption"
 msgid "Create/Edit private repository"
-msgstr "Privates Repository erzeugen"
+msgstr "Privates Repository erzeugen/bearbeiten"
 
 #: opkman_const.rscreaterepositoryfrm_conf1
 msgid "Are you sure you wish to delete package: \"%s\"?"
-msgstr ""
+msgstr "Wollen Sie Package \"%s\" wirklich löschen?"
 
 #: opkman_const.rscreaterepositoryfrm_conf2
 msgid "The following file: \"%s\" already exists in the current repository. Overwrite?"
-msgstr ""
+msgstr "Die Datei: \"%s\" existiert bereits im aktuellen Repository. Überschreiben?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
-#, fuzzy,badformat
-#| msgid ""
-#| "Cannot open private repository. Error message: \n"
-#| "\"%s\"\n"
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
 "\"%s\"\n"
 msgstr ""
-"Kann privates Repository nicht öffnen. Fehlermeldung: \n"
+"Kann privates Repository \"%s\" nicht öffnen. Fehlermeldung: \n"
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
-#, fuzzy,badformat
-#| msgid ""
-#| "Cannot save private repository. Error message: \n"
-#| "\"%s\"\n"
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
 "\"%s\"\n"
 msgstr ""
-"Kann privates Repository nicht speichern. Fehlermeldung: \n"
+"Kann privates Repository \"%s\" nicht speichern. Fehlermeldung: \n"
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error4
 msgid "Cannot add package to repository!"
-msgstr ""
+msgstr "Kann Package nicht zum Repository hinzufügen!"
 
 #: opkman_const.rscreaterepositoryfrm_error5
 msgid "Cannot delete package: \"%s\"!"
-msgstr ""
+msgstr "Kann Package: \"%s\" nicht löschen!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
 msgid ""
@@ -235,20 +223,24 @@ msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!\n"
 msgstr ""
+"Das Package: \"%s\" befindet sich bereits im aktuellen Repository.\n"
+"Jedes Repository und Lazarus-Package müssen eindeutig sein!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!\n"
 msgstr ""
+"Das Lazarus-Package: \"%s\" befindet sich bereits im aktuellen Repository.\n"
+"Jedes Repository und Lazarus-Package müssen eindeutig sein!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info7
 msgid "Package successfully added to repository."
-msgstr ""
+msgstr "Package erfolgreich zum Repository hinzugefügt."
 
 #: opkman_const.rscreaterepositoryfrm_mirepdetails_caption
 msgid "Edit repository details"
-msgstr ""
+msgstr "Repository-Details bearbeiten"
 
 #: opkman_const.rscreaterepositoryfrm_repositoryaddress
 msgctxt "opkman_const.rscreaterepositoryfrm_repositoryaddress"
@@ -1632,31 +1624,26 @@ msgid "Repository Address"
 msgstr "Repository-Adresse"
 
 #: opkman_const.rsrepositorydetailsfrm_bcancel_caption
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_bcancel_caption"
 msgid "Cancel"
 msgstr "Abbrechen"
 
 #: opkman_const.rsrepositorydetailsfrm_bcancel_hint
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_bcancel_hint"
 msgid "Close the dialog without saving"
 msgstr "Den Dialog schließen ohne Speichern"
 
 #: opkman_const.rsrepositorydetailsfrm_bok_caption
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_bok_caption"
 msgid "OK"
 msgstr "OK"
 
 #: opkman_const.rsrepositorydetailsfrm_bok_hint
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_bok_hint"
 msgid "Save and close the dialog"
 msgstr "Speichern und den Dialog schließen"
 
 #: opkman_const.rsrepositorydetailsfrm_caption
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_caption"
 msgid "Repository details"
 msgstr "Repository-Details"
@@ -1677,19 +1664,16 @@ msgid "Please enter the repository name."
 msgstr ""
 
 #: opkman_const.rsrepositorydetailsfrm_lbaddress_caption
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_lbaddress_caption"
 msgid "Address"
 msgstr "Adresse"
 
 #: opkman_const.rsrepositorydetailsfrm_lbdescription_caption
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_lbdescription_caption"
 msgid "Description"
 msgstr "Beschreibung"
 
 #: opkman_const.rsrepositorydetailsfrm_lbname_caption
-#, fuzzy
 msgctxt "opkman_const.rsrepositorydetailsfrm_lbname_caption"
 msgid "Name"
 msgstr "Name"
@@ -1698,4 +1682,3 @@ msgstr "Name"
 msgctxt "opkman_const.rsrepositorydetailsfrm_mdescription_hint"
 msgid "Enter the repository description"
 msgstr ""
-

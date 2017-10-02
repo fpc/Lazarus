@@ -184,7 +184,7 @@ type
     property DockBounds: TRect read FDockBounds;
     property DockParentClientSize: TSize read FDockParentClientSize;
     procedure UpdateDockBounds;
-    procedure AsyncUpdateDockBounds (Data: PtrInt);
+    procedure AsyncUpdateDockBounds ({%H-}Data: PtrInt);
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override; // any normal movement sets the DockBounds
     procedure SetBoundsPercentually;
     procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer); // movement for scaling keeps the DockBounds
