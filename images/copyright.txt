@@ -380,9 +380,11 @@ bookmark9_200.png
 
 --------------------------------------------------------------------------------
 
-The following component palette icons (in folder components) were created by
+The following component palette and menu/toolbar icons were created by
 Roland Hahn (no restrictions). svg sources can be found on Lazarus Components and
 Code Repository, folder image_sources.
+
+components folder:
 
 tactionlist.png, tactionlist_150.png, tactionlist_200.png
 tapplicationproperties.png, tapplicationproperties_150.png, tapplicationproperties_200.png
@@ -444,4 +446,16 @@ ttreeview.png, ttreeview_150.png, ttreeview_200.png
 tupdown.png, tupdown_150.png, tupdown_200.png
 tvaluelisteditor.png, tvaluelisteditor_150.png, tvaluelisteditor_200.png
 
+menu directory
 
+menu_abort_build.png, menu_abort_build_150.png, menu_abort_build_200.png
+menu_build.png, menu_build_150.png, menu_build_200.png
+menu_build_all.png, menu_build_all_150.png, menu_build_all_200.png
+menu_build_file.png, menu_build_file_150.png, menu_build_file_200.png
+menu_build_lazarus.png, menu_build_lazarus_150.png, menu_build_lazarus_200.png
+menu_build_run_file.png, menu_build_run_file_150.png, menu_build_run_file_200.png
+menu_comment.png, menu_comment_150.png, menu_comment_200.png
+menu_quick_compile.png, menu_quick_compile_150.png, menu_quick_compile_200.png
+menu_reset_debugger.png, menu_reset_debugger_150.png, menu_reset_debugger_200.png
+menu_run_file.png, menu_run_file_150.png, menu_run_file_200.png
+menu_uncomment.png, menu_uncomment_150.png, menu_uncomment_200.png
