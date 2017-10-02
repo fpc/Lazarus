@@ -7083,6 +7083,8 @@ images/items/item_keyboard.png -text svneol=unset#image/png
 images/items/item_library.png -text svneol=unset#image/png
 images/items/item_package.png -text svneol=unset#image/png
 images/items/item_project.png -text svneol=unset#image/png
+images/items/item_project_150.png -text
+images/items/item_project_200.png -text
 images/items/item_project_source.png -text
 images/items/item_project_source_150.png -text
 images/items/item_project_source_200.png -text
@@ -7112,12 +7114,24 @@ images/mainiconproject.ico -text svneol=unset#image/x-icon
 images/menu/SelCompPage.png -text svneol=unset#image/png
 images/menu/bug_small.png -text
 images/menu/menu_abort_build.png -text svneol=unset#image/png
+images/menu/menu_abort_build_150.png -text
+images/menu/menu_abort_build_200.png -text
 images/menu/menu_build.png -text svneol=unset#image/png
+images/menu/menu_build_150.png -text
+images/menu/menu_build_200.png -text
 images/menu/menu_build_all.png -text svneol=unset#image/png
+images/menu/menu_build_all_150.png -text
+images/menu/menu_build_all_200.png -text
 images/menu/menu_build_clean.png -text svneol=unset#image/png
 images/menu/menu_build_file.png -text svneol=unset#image/png
+images/menu/menu_build_file_150.png -text
+images/menu/menu_build_file_200.png -text
 images/menu/menu_build_lazarus.png -text svneol=unset#image/png
+images/menu/menu_build_lazarus_150.png -text
+images/menu/menu_build_lazarus_200.png -text
 images/menu/menu_build_run_file.png -text
+images/menu/menu_build_run_file_150.png -text
+images/menu/menu_build_run_file_200.png -text
 images/menu/menu_clean.png -text svneol=unset#image/png
 images/menu/menu_clear_all_bookmarks.png -text
 images/menu/menu_clear_all_bookmarks_150.png -text
@@ -7134,6 +7148,8 @@ images/menu/menu_close_all_200.png -text
 images/menu/menu_codetoolsdefineseditor.png -text svneol=unset#image/png
 images/menu/menu_codetoolsoptions.png -text svneol=unset#image/png
 images/menu/menu_comment.png -text
+images/menu/menu_comment_150.png -text
+images/menu/menu_comment_200.png -text
 images/menu/menu_compiler_options.png -text svneol=unset#image/png
 images/menu/menu_configure_build_lazarus.png -text svneol=unset#image/png
 images/menu/menu_configure_help.png -text svneol=unset#image/png
@@ -7223,19 +7239,43 @@ images/menu/menu_pause_150.png -text
 images/menu/menu_pause_200.png -text
 images/menu/menu_project_add.png -text svneol=unset#image/png
 images/menu/menu_project_close.png -text svneol=unset#image/png
+images/menu/menu_project_close_150.png -text
+images/menu/menu_project_close_200.png -text
 images/menu/menu_project_from_file.png -text
+images/menu/menu_project_from_file_150.png -text
+images/menu/menu_project_from_file_200.png -text
 images/menu/menu_project_inspector.png -text svneol=unset#image/png
+images/menu/menu_project_inspector_150.png -text
+images/menu/menu_project_inspector_200.png -text
+images/menu/menu_project_new.png -text
+images/menu/menu_project_new_150.png -text
+images/menu/menu_project_new_200.png -text
 images/menu/menu_project_open.png -text svneol=unset#image/png
+images/menu/menu_project_open_150.png -text
+images/menu/menu_project_open_200.png -text
+images/menu/menu_project_open_recent.png -text
+images/menu/menu_project_open_recent_150.png -text
+images/menu/menu_project_open_recent_200.png -text
 images/menu/menu_project_options.png -text svneol=unset#image/png
+images/menu/menu_project_options_150.png -text
+images/menu/menu_project_options_200.png -text
 images/menu/menu_project_remove.png -text svneol=unset#image/png
 images/menu/menu_project_save.png -text svneol=unset#image/png
-images/menu/menu_project_saveas.png -text svneol=unset#image/png
+images/menu/menu_project_save_150.png -text
+images/menu/menu_project_save_200.png -text
+images/menu/menu_project_save_as.png -text
+images/menu/menu_project_save_as_150.png -text
+images/menu/menu_project_save_as_200.png -text
 images/menu/menu_quick_compile.png -text svneol=unset#image/png
+images/menu/menu_quick_compile_150.png -text
+images/menu/menu_quick_compile_200.png -text
 images/menu/menu_redo.png -text svneol=unset#image/png
 images/menu/menu_redo_150.png -text
 images/menu/menu_redo_200.png -text
 images/menu/menu_reportingbug.png -text svneol=unset#image/png
 images/menu/menu_reset_debugger.png -text svneol=unset#image/png
+images/menu/menu_reset_debugger_150.png -text
+images/menu/menu_reset_debugger_200.png -text
 images/menu/menu_run.png -text svneol=unset#image/png
 images/menu/menu_run_150.png -text
 images/menu/menu_run_200.png -text
@@ -7243,6 +7283,8 @@ images/menu/menu_run_cursor.png -text svneol=unset#image/png
 images/menu/menu_run_cursor_150.png -text
 images/menu/menu_run_cursor_200.png -text
 images/menu/menu_run_file.png -text svneol=unset#image/png
+images/menu/menu_run_file_150.png -text
+images/menu/menu_run_file_200.png -text
 images/menu/menu_run_parameters.png -text svneol=unset#image/png
 images/menu/menu_run_parameters_150.png -text
 images/menu/menu_run_parameters_200.png -text
@@ -7341,6 +7383,8 @@ images/menu/menu_tool_diff.png -text svneol=unset#image/png
 images/menu/menu_tool_make_resourcestring.png -text svneol=unset#image/png
 images/menu/menu_tool_syntax_check.png -text svneol=unset#image/png
 images/menu/menu_uncomment.png -text
+images/menu/menu_uncomment_150.png -text
+images/menu/menu_uncomment_200.png -text
 images/menu/menu_undo.png -text svneol=unset#image/png
 images/menu/menu_undo_150.png -text
 images/menu/menu_undo_200.png -text
@@ -7349,7 +7393,11 @@ images/menu/menu_unindent_150.png -text
 images/menu/menu_unindent_200.png -text
 images/menu/menu_view_anchor_editor.png -text svneol=unset#image/png
 images/menu/menu_view_code_browser.png -text
+images/menu/menu_view_code_browser_150.png -text
+images/menu/menu_view_code_browser_200.png -text
 images/menu/menu_view_code_explorer.png -text svneol=unset#image/png
+images/menu/menu_view_code_explorer_150.png -text
+images/menu/menu_view_code_explorer_200.png -text
 images/menu/menu_view_components.png -text
 images/menu/menu_view_components_150.png -text
 images/menu/menu_view_components_200.png -text
@@ -7362,7 +7410,9 @@ images/menu/menu_view_inspector_200.png -text
 images/menu/menu_view_messages.png -text
 images/menu/menu_view_messages_150.png -text
 images/menu/menu_view_messages_200.png -text
-images/menu/menu_view_rectriction_browser.png -text
+images/menu/menu_view_restriction_browser.png -text
+images/menu/menu_view_restriction_browser_150.png -text
+images/menu/menu_view_restriction_browser_200.png -text
 images/menu/menu_view_search_results.png -text
 images/menu/menu_view_search_results_150.png -text
 images/menu/menu_view_search_results_200.png -text
