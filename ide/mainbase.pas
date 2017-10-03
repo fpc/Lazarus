@@ -999,8 +999,8 @@ begin
     ParentMI:=itmFileOpenSave;
     CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'laz_open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert, 'menu_file_revert');
-    CreateMenuItem(ParentMI, itmFileOpenUnit, 'itmFileOpenUnit', lisMenuOpenUnit, 'laz_openunit');
-    CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
+    CreateMenuItem(ParentMI, itmFileOpenUnit, 'itmFileOpenUnit', lisMenuOpenUnit, 'laz_open_unit');
+    CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent, 'laz_open_recent');
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'laz_save');
     CreateMenuItem(ParentMI,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_saveas');
     CreateMenuItem(ParentMI,itmFileSaveAll,'itmFileSaveAll',lisSaveAll,'menu_save_all');
