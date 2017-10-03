@@ -411,10 +411,12 @@ var
   ReturnList: QStringListH;
   i: integer;
   QtFileDialog: TQtFileDialog;
+  {$if defined(QT_NATIVE_DIALOGS) or defined(MSWINDOWS)}
+  s: string;
+  {$endif}
   {$ifdef QT_NATIVE_DIALOGS}
   selectedFilter, saveFileName, saveFilter, saveTitle, sDir: WideString;
   Flags: Cardinal;
-  s: string;
   {$endif}
   ActiveWin: HWND;
 begin

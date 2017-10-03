@@ -4957,7 +4957,9 @@ end;
 
 function TQtWidgetSet.IsIconic(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).isMinimized;
+  Result := False;
+  if IsValidHandle(Handle) then
+    Result := TQtWidget(Handle).isMinimized;
 end;
 
 function TQtWidgetSet.IsWindow(handle: HWND): boolean;
@@ -4967,17 +4969,23 @@ end;
 
 function TQtWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).getEnabled and TQtWidget(Handle).getVisible;
+  Result := False;
+  if IsValidHandle(Handle) then
+    Result := TQtWidget(Handle).getEnabled and TQtWidget(Handle).getVisible;
 end;
 
 function TQtWidgetSet.IsWindowVisible(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).getVisible;
+  Result := False;
+  if IsValidHandle(Handle) then
+    Result := TQtWidget(Handle).getVisible;
 end;
 
 function TQtWidgetSet.IsZoomed(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).isMaximized;
+  Result := False;
+  if IsValidHandle(Handle) then
+    Result := TQtWidget(Handle).isMaximized;
 end;
 
 {------------------------------------------------------------------------------

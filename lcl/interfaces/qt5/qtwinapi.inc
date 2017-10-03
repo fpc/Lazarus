@@ -4788,6 +4788,74 @@ begin
   CritSection:=TCriticalSection(ACritSec);
 end;
 
+function TQtWidgetSet.InitStockFont(AFont: TObject; AStockFont: TStockFont
+  ): Boolean;
+var
+  Font: TFont absolute AFont;
+  AMenu: QMenuH;
+  QtFont: QFontH;
+  AName: WideString;
+begin
+  Result := False;
+  if AStockFont = sfMenu then
+  begin
+    AName := 'MenuTitle';
+    AMenu := QMenu_create(@AName, nil);
+    try
+      QtFont := QWidget_font(AMenu);
+      QFont_family(QtFont, @AName);
+      Font.Name := UTF16ToUTF8(AName);
+      if QFont_pointSize(QtFont) > 0 then
+        Font.Size := QFont_pointSize(QtFont)
+      else
+        Font.Height := QFont_pixelSize(QtFont);
+      if QFont_bold(QtFont) then
+        Font.Style := Font.Style + [fsBold];
+      if QFont_italic(QtFont) then
+        Font.Style := Font.Style + [fsItalic];
+      if QFont_underline(QtFont) then
+        Font.Style := Font.Style + [fsUnderline];
+      if QFont_strikeOut(QtFont) then
+        Font.Style := Font.Style + [fsStrikeOut];
+      Font.Color := clMenuText;
+      Result := True;
+    finally
+      QWidget_destroy(AMenu);
+    end;
+  end else
+  begin
+    QtFont := QFont_create;
+    try
+      if AStockFont = sfHint then
+        QToolTip_font(QtFont)
+      else
+        QApplication_font(QtFont);
+      QFont_family(QtFont, @AName);
+      Font.Name := UTF16ToUTF8(AName);
+      if QFont_pointSize(QtFont) > 0 then
+        Font.Size := QFont_pointSize(QtFont)
+      else
+        Font.Height := QFont_pixelSize(QtFont);
+      if QFont_bold(QtFont) then
+        Font.Style := Font.Style + [fsBold];
+      if QFont_italic(QtFont) then
+        Font.Style := Font.Style + [fsItalic];
+      if QFont_underline(QtFont) then
+        Font.Style := Font.Style + [fsUnderline];
+      if QFont_strikeOut(QtFont) then
+        Font.Style := Font.Style + [fsStrikeOut];
+
+      {comment font.color for check if hintfont works correct}
+      if AStockFont = sfHint then
+        Font.Color := clInfoText;
+
+      Result := True;
+    finally
+      QFont_destroy(QtFont);
+    end;
+  end;
+end;
+
 function TQtWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
 var
   QtDC: TQtDeviceContext absolute dc;
@@ -4832,7 +4900,9 @@ end;
 
 function TQtWidgetSet.IsIconic(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).isMinimized;
+  Result := False;
+  if IsValidHandle(Handle) then
+    Result := TQtWidget(Handle).isMinimized;
 end;
 
 function TQtWidgetSet.IsWindow(handle: HWND): boolean;
@@ -4842,17 +4912,23 @@ end;
 
 function TQtWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).getEnabled and TQtWidget(Handle).getVisible;
+  Result := False;
+  if IsValidHandle(Handle) then
+    Result := TQtWidget(Handle).getEnabled and TQtWidget(Handle).getVisible;
 end;
 
 function TQtWidgetSet.IsWindowVisible(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).getVisible;
+  Result := False;
+  if IsValidHandle(Handle) then
+    Result := TQtWidget(Handle).getVisible;
 end;
 
 function TQtWidgetSet.IsZoomed(Handle: HWND): boolean;
 begin
-  Result := TQtWidget(Handle).isMaximized;
+  Result := False;
+  if IsValidHandle(Handle) then
+    Result := TQtWidget(Handle).isMaximized;
 end;
 
 {------------------------------------------------------------------------------
@@ -6684,7 +6760,8 @@ begin
     begin
       with SrcQDC.getDeviceSize do
         TmpPixmap := QPixmap_create(x, y);
-      QPixmap_grabWindow(TmpPixmap, QWidget_winId(SrcQDC.Parent), 0, 0);
+      QScreen_grabWindow(QGuiApplication_primaryScreen, TmpPixmap, QWidget_winId(SrcQDC.Parent), 0, 0);
+      // QPixmap_grabWindow(TmpPixmap, QWidget_winId(SrcQDC.Parent), 0, 0);
       Image := QImage_create();
       QPixmap_toImage(TmpPixmap, Image);
       QPixmap_destroy(TmpPixmap);

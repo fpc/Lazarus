@@ -713,6 +713,7 @@ type
   public
     procedure InitializeWidget; override;
     procedure DeInitializeWidget; override;
+    function CanPaintBackground: Boolean; override;
     procedure SetDefaultColorRoles; override;
     procedure setVisible(AVisible: Boolean); override;
     property NeedRestoreVisible: Boolean read FNeedRestoreVisible write FNeedRestoreVisible;
@@ -1523,6 +1524,7 @@ type
     procedure setHeaderVisible(AVisible: Boolean);
     procedure setItemSelected(AItem: QTreeWidgetItemH; ASelect: Boolean);
     procedure setStretchLastSection(AValue: Boolean);
+    procedure scrollToItem(Item: QTreeWidgetItemH; hint: QAbstractItemViewScrollHint);
     {$IFDEF TEST_QT_SORTING}
     // direct Qt sorting via QtUserData ptr = our TListItem, crashes sometimes - qt bug.
     procedure sortItems(Acolumn: Integer; AOrder: QtSortOrder);
@@ -15395,6 +15397,12 @@ begin
     Header.setStretchLastSection(AValue);
 end;
 
+procedure TQtTreeWidget.scrollToItem(Item: QTreeWidgetItemH;
+  hint: QAbstractItemViewScrollHint);
+begin
+  QTreeWidget_scrollToItem(QTreeWidgetH(Widget), Item, hint);
+end;
+
 {$IFDEF TEST_QT_SORTING}
 procedure TQtTreeWidget.sortItems(Acolumn: Integer; AOrder: QtSortOrder);
 var
@@ -18236,6 +18244,12 @@ begin
   QtWidgetSet.RemoveHintHandle(Self);
   {$ENDIF}
   inherited DeInitializeWidget;
+end;
+
+function TQtHintWindow.CanPaintBackground: Boolean;
+begin
+  Result := CanSendLCLMessage and getEnabled and
+    (LCLObject.Color <> clDefault);
 end;
 
 procedure TQtHintWindow.SetDefaultColorRoles;
