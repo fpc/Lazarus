@@ -125,7 +125,7 @@ type
     function Dispatch(
       AChart: TChart; AEventId: TChartToolEventId;
       AShift: TShiftState; APoint: TPoint): Boolean; virtual; abstract; overload;
-      procedure Draw(AChart: TChart; ADrawer: IChartDrawer); virtual; abstract;
+    procedure Draw(AChart: TChart; ADrawer: IChartDrawer); virtual; abstract;
   end;
 
   TBasicChartSeriesEnumerator = class(TFPListEnumerator)
@@ -462,18 +462,16 @@ procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; ACaptionPtr: PStr); ov
 
 var
   SeriesClassRegistry: TClassRegistry = nil;
-  OnInitBuiltinTools: function(AChart: TChart): TBasicChartToolset;
+  OnInitBuiltinTools: function(AChart: TChart): TBasicChartToolset = nil;
 
 implementation
 
 {$R tagraph.res}
 
 uses
+  lazlogger,
   Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, Types,
   TADrawerCanvas, TAGeometry, TAMath, TAStyles;
-
-//  TATools;  // needed to initialize OnInitBuiltinTools; added to avoid crash of converted Delphi projects
-// wp: removed again, causes compilation error with fpc 2.6.4
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
@@ -688,7 +686,8 @@ begin
   FMargins := TChartMargins.Create(Self);
   FMarginsExternal := TChartMargins.Create(Self);
 
-  FBuiltinToolset := OnInitBuiltinTools(Self);
+  if OnInitBuiltinTools <> nil then
+    FBuiltinToolset := OnInitBuiltinTools(Self);
   FActiveToolIndex := -1;
 
   FLogicalExtent := EmptyExtent;
@@ -823,10 +822,15 @@ function TChart.DoMouseWheel(
 const
   EV: array [Boolean] of TChartToolEventId = (
     evidMouseWheelDown, evidMouseWheelUp);
+var
+  ts: TBasicChartToolset;
 begin
-  Result :=
-    GetToolset.Dispatch(Self, EV[AWheelDelta > 0], AShift, AMousePos) or
-    inherited DoMouseWheel(AShift, AWheelDelta, AMousePos);
+  ts := GetToolset;
+  if ts = nil then
+    result := false
+  else
+    Result := ts.Dispatch(Self, EV[AWheelDelta > 0], AShift, AMousePos) or
+      inherited DoMouseWheel(AShift, AWheelDelta, AMousePos);
 end;
 
 {$IFDEF LCLGtk2}
@@ -842,6 +846,7 @@ procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   ldd: TChartLegendDrawingData;
   s: TBasicChartSeries;
+  ts: TBasicChartToolset;
 begin
   Prepare;
 
@@ -888,7 +893,8 @@ begin
     ldd.FItems.Free;
   end;
   DrawReticule(ADrawer);
-  GetToolset.Draw(Self, ADrawer);
+  ts := GetToolset;
+  if ts <> nil then ts.Draw(Self, ADrawer);
 
   for s in Series do
     s.AfterDraw;
@@ -1226,15 +1232,18 @@ end;
 procedure TChart.KeyDownAfterInterface(var AKey: Word; AShift: TShiftState);
 var
   p: TPoint;
+  ts: TBasicChartToolset;
 begin
   p := ScreenToClient(Mouse.CursorPos);
-  if GetToolset.Dispatch(Self, evidKeyDown, AShift, p) then exit;
+  ts := GetToolset;
+  if (ts <> nil) and ts.Dispatch(Self, evidKeyDown, AShift, p) then exit;
   inherited;
 end;
 
 procedure TChart.KeyUpAfterInterface(var AKey: Word; AShift: TShiftState);
 var
   p: TPoint;
+  ts: TBasicChartToolset;
 begin
   p := ScreenToClient(Mouse.CursorPos);
   // To find a tool, toolset must see the shift state with the key still down.
@@ -1243,26 +1252,34 @@ begin
     VK_MENU: AShift += [ssAlt];
     VK_SHIFT: AShift += [ssShift];
   end;
-  if GetToolset.Dispatch(Self, evidKeyUp, AShift, p) then exit;
+  ts := GetToolset;
+  if (ts <> nil) and ts.Dispatch(Self, evidKeyUp, AShift, p) then exit;
   inherited;
 end;
 
 procedure TChart.MouseDown(
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  ts: TBasicChartToolset;
 begin
+  ts := GetToolset;
   if
     PtInRect(FClipRect, Point(X, Y)) and
-    GetToolset.Dispatch(Self, evidMouseDown, Shift, Point(X, Y))
+    (ts <> nil) and ts.Dispatch(Self, evidMouseDown, Shift, Point(X, Y))
   then
     exit;
   inherited;
 end;
 
 procedure TChart.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  ts: TBasicChartToolset;
 begin
   if AutoFocus then
     SetFocus;
-  if GetToolset.Dispatch(Self, evidMouseMove, Shift, Point(X, Y)) then exit;
+  ts := GetToolset;
+  if (ts <> nil) and ts.Dispatch(Self, evidMouseMove, Shift, Point(X, Y)) then
+    exit;
   inherited;
 end;
 
@@ -1271,10 +1288,14 @@ procedure TChart.MouseUp(
 const
   MOUSE_BUTTON_TO_SHIFT: array [TMouseButton] of TShiftStateEnum = (
     ssLeft, ssRight, ssMiddle, ssExtra1, ssExtra2);
+var
+  ts: TBasicChartToolset;
 begin
   // To find a tool, toolset must see the shift state with the button still down.
   Include(AShift, MOUSE_BUTTON_TO_SHIFT[AButton]);
-  if GetToolset.Dispatch(Self, evidMouseUp, AShift, Point(AX, AY)) then exit;
+  ts := GetToolset;
+  if (ts <> nil) and ts.Dispatch(Self, evidMouseUp, AShift, Point(AX, AY)) then
+    exit;
   inherited;
 end;
 
