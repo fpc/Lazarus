@@ -422,19 +422,16 @@ begin
   end;
 end;
 
-procedure TProjectVersionInfo.WriteToProjectFile(AConfig: TObject;
-  const Path: string);
+procedure TProjectVersionInfo.WriteToProjectFile(AConfig: TObject; const Path: string);
 var
   i: integer;
   Key: string;
-  DefaultValue: String;
   attr: TProjectVersionAttribute;
 begin
   with TXMLConfig(AConfig) do
   begin
     SetDeleteValue(Path + 'VersionInfo/UseVersionInfo/Value', UseVersionInfo, False);
-    SetDeleteValue(Path + 'VersionInfo/AutoIncrementBuild/Value',
-      AutoIncrementBuild, False);
+    SetDeleteValue(Path + 'VersionInfo/AutoIncrementBuild/Value', AutoIncrementBuild, False);
     SetDeleteValue(Path + 'VersionInfo/MajorVersionNr/Value', MajorVersionNr, 0);
     SetDeleteValue(Path + 'VersionInfo/MinorVersionNr/Value', MinorVersionNr, 0);
     SetDeleteValue(Path + 'VersionInfo/RevisionNr/Value', RevisionNr, 0);
@@ -452,17 +449,12 @@ begin
     for i := 0 to StringTable.Count - 1 do begin
       Key:=StringTable.Keys[i];
       if Key='FileVersion' then continue; // FileVersion is created automatically
-      DefaultValue:='';
-      if (Key='ProductVersion') then
-        DefaultValue:=BuildFileVersionString;
-      SetDeleteValue(Path + 'VersionInfo/StringTable/' + StringTable.Keys[i],
-        StringTable.ValuesByIndex[i],DefaultValue);
+      SetDeleteValue(Path + 'VersionInfo/StringTable/' + Key, StringTable.ValuesByIndex[i], '');
     end;
   end;
 end;
 
-procedure TProjectVersionInfo.ReadFromProjectFile(AConfig: TObject;
-  const Path: string);
+procedure TProjectVersionInfo.ReadFromProjectFile(AConfig: TObject; const Path: string);
 var
   i: integer;
   Node: TDomNode;
@@ -519,7 +511,7 @@ begin
       StringTable['LegalTrademarks'] := GetValue(Path + 'VersionInfo/LegalTrademarks/Value', '');
       StringTable['OriginalFilename'] := GetValue(Path + 'VersionInfo/OriginalFilename/Value', '');
       StringTable['ProductName'] := GetValue(Path + 'VersionInfo/ProductName/Value', '');
-      StringTable['ProductVersion'] := GetValue(Path + 'VersionInfo/ProjectVersion/Value', BuildFileVersionString);
+      StringTable['ProductVersion'] := GetValue(Path + 'VersionInfo/ProductVersion/Value', BuildFileVersionString);
     end;
 
     SetFileVersionFromVersion;
