@@ -9,6 +9,8 @@ components/tarrow.png
 components/tarrow_150.png
 components/tarrow_200.png
 components/tasyncprocess.png
+components/tasyncprocess_150.png
+components/tasyncprocess_200.png
 components/tbevel.png
 components/tbevel_150.png
 components/tbevel_200.png
@@ -124,6 +126,8 @@ components/teditbutton.png
 components/teditbutton_150.png
 components/teditbutton_200.png
 components/teventlog.png
+components/teventlog_150.png
+components/teventlog_200.png
 components/tfilelistbox.png
 components/tfilenameedit.png
 components/tfiltercombobox.png
@@ -149,6 +153,8 @@ components/theadercontrol.png
 components/theadercontrol_150.png
 components/theadercontrol_200.png
 components/thtmlbrowserhelpviewer.png
+components/thtmlbrowserhelpviewer_150.png
+components/thtmlbrowserhelpviewer_200.png
 components/thtmlhelpdatabase.png
 components/thtmlhelpdatabase_150.png
 components/thtmlhelpdatabase_200.png
@@ -175,6 +181,8 @@ components/tlabelededit.png
 components/tlabelededit_150.png
 components/tlabelededit_200.png
 components/tlazcomponentqueue.png
+components/tlazcomponentqueue_150.png
+components/tlazcomponentqueue_200.png
 components/tlistbox.png
 components/tlistbox_150.png
 components/tlistbox_200.png
@@ -222,7 +230,11 @@ components/tpopupnotifier.png
 components/tpopupnotifier_150.png
 components/tpopupnotifier_200.png
 components/tprocess.png
+components/tprocess_150.png
+components/tprocess_200.png
 components/tprocessutf8.png
+components/tprocessutf8_150.png
+components/tprocessutf8_200.png
 components/tprogressbar.png
 components/tprogressbar_150.png
 components/tprogressbar_200.png
@@ -250,13 +262,19 @@ components/tscrollbox_200.png
 components/tselectdirectorydialog.png
 components/tselectdirectorydialog_150.png
 components/tservicemanager.png
+components/tservicemanager_150.png
+components/tservicemanager_200.png
 components/tshape.png
 components/tshape_150.png
 components/tshape_200.png
 components/tshelllistview.png
 components/tshelltreeview.png
 components/tsimpleipcclient.png
+components/tsimpleipcclient_150.png
+components/tsimpleipcclient_200.png
 components/tsimpleipcserver.png
+components/tsimpleipcserver_150.png
+components/tsimpleipcserver_200.png
 components/tspeedbutton.png
 components/tspeedbutton_150.png
 components/tspeedbutton_200.png
