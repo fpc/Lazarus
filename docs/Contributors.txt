@@ -176,6 +176,7 @@ Petr Kristan
 Philip J. Hess
 Philippe Picard
 Pierre Gillmann
+Pino Toscano
 Przemyslaw Nagay
 Radek Cervinka
 Raul Moratalla
