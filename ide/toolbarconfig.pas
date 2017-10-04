@@ -82,8 +82,6 @@ type
     procedure btnMoveDownClick(Sender: TObject);
     procedure btnMoveUpClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
-    procedure lvToolbarDrawItem(Sender: TCustomListView; AItem: TListItem;
-      ARect: TRect; {%H-}AState: TOwnerDrawState);
     procedure lvToolbarSelectItem(Sender: TObject; {%H-}Item: TListItem;
       {%H-}Selected: Boolean);
     procedure TVSelectionChanged(Sender: TObject);
@@ -184,10 +182,6 @@ end;
 procedure TToolBarConfig.FormCreate(Sender: TObject);
 begin
   inherited;
-  //we have to ownerdraw the listview on qt
-  {$IF DEFINED(LCLQT) OR DEFINED(LCLQT5)}
-  lvToolbar.OwnerDraw := True;
-  {$ENDIF}
   pnlButtons.Color := clBtnFace;
   lblSelect.Caption := '';
   // load button images
@@ -406,41 +400,6 @@ begin
       Node.Visible:= True;
   end;
   UpdateButtonsState;
-end;
-
-procedure TToolBarConfig.lvToolbarDrawItem(Sender: TCustomListView;
-  AItem: TListItem; ARect: TRect; AState: TOwnerDrawState);
-var
-  ImgInd: integer;
-begin
-  with Sender.Canvas do
-  begin
-    if AItem.Selected then
-    begin
-      Brush.Color := clHighlight;
-      Font.Color := clHighlightText;
-    end
-    else begin
-      Brush.Color := clDefault;
-      Font.Color := clDefault;
-    end;
-    FillRect(ARect);
-
-    ImgInd := -1;
-    if AItem.Caption = cIDEToolbarDivider then
-      ImgInd := divImageIndex
-    else if Assigned(AItem.Data) and (TIDEButtonCommand(AItem.Data).ImageIndex > -1) then
-      ImgInd := TIDEButtonCommand(AItem.Data).ImageIndex
-    else if AItem.Caption <> cTailItemCaption then
-      ImgInd := defImageIndex;
-    if ImgInd > -1 then
-    begin
-      Image.Clear;
-      lvToolBar.SmallImages.GetBitmap(ImgInd, Image);
-      Draw(ARect.Left + 2, ARect.Top + 2, Image);
-    end;
-    TextOut(ARect.Left + 21, ARect.Top + 2, AItem.Caption);
-  end;
 end;
 
 procedure TToolBarConfig.lvToolbarSelectItem(Sender: TObject;

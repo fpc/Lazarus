@@ -11,15 +11,15 @@ object ToolBarConfig: TToolBarConfig
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object lblMenuTree: TLabel
     AnchorSideLeft.Control = TV
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
-    Left = 147
-    Height = 13
+    Left = 140
+    Height = 15
     Top = 6
-    Width = 70
+    Width = 84
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     Caption = 'lblMenuTree'
@@ -31,10 +31,10 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideLeft.Control = lvToolbar
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = lblMenuTree
-    Left = 522
-    Height = 13
+    Left = 517
+    Height = 15
     Top = 6
-    Width = 56
+    Width = 67
     BorderSpacing.Bottom = 6
     Caption = 'lblToolbar'
     Font.Style = [fsBold]
@@ -47,7 +47,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideTop.Side = asrBottom
     Left = 372
     Height = 26
-    Top = 111
+    Top = 121
     Width = 26
     BorderSpacing.Top = 3
     Enabled = False
@@ -61,7 +61,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideTop.Control = TV
     Left = 372
     Height = 26
-    Top = 82
+    Top = 92
     Width = 26
     BorderSpacing.Left = 3
     BorderSpacing.Top = 30
@@ -76,7 +76,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideTop.Side = asrBottom
     Left = 372
     Height = 26
-    Top = 162
+    Top = 172
     Width = 26
     BorderSpacing.Top = 25
     Enabled = False
@@ -90,7 +90,7 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideTop.Side = asrBottom
     Left = 372
     Height = 26
-    Top = 191
+    Top = 201
     Width = 26
     BorderSpacing.Top = 3
     Enabled = False
@@ -104,15 +104,14 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Splitter1
     Left = 8
-    Height = 357
-    Top = 52
+    Height = 347
+    Top = 62
     Width = 349
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 8
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
-    DefaultItemHeight = 16
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
@@ -127,8 +126,8 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideRight.Control = TV
     AnchorSideRight.Side = asrBottom
     Left = 8
-    Height = 21
-    Top = 25
+    Height = 29
+    Top = 27
     Width = 349
     ButtonWidth = 23
     NumGlyphs = 1
@@ -146,8 +145,8 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideBottom.Control = TV
     AnchorSideBottom.Side = asrBottom
     Left = 360
-    Height = 357
-    Top = 52
+    Height = 347
+    Top = 62
     Width = 9
     Align = alNone
     Anchors = [akTop, akBottom]
@@ -161,8 +160,8 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideBottom.Control = TV
     AnchorSideBottom.Side = asrBottom
     Left = 413
-    Height = 357
-    Top = 52
+    Height = 347
+    Top = 62
     Width = 275
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 15
@@ -171,7 +170,7 @@ object ToolBarConfig: TToolBarConfig
       item
         AutoSize = True
         Caption = 'Name'
-        Width = 40
+        Width = 100
       end>
     HideSelection = False
     ReadOnly = True
@@ -180,7 +179,6 @@ object ToolBarConfig: TToolBarConfig
     TabOrder = 3
     ViewStyle = vsReport
     OnDblClick = lvToolbarDblClick
-    OnDrawItem = lvToolbarDrawItem
     OnEnter = lvToolbarEnterExit
     OnExit = lvToolbarEnterExit
     OnSelectItem = lvToolbarSelectItem
@@ -206,20 +204,21 @@ object ToolBarConfig: TToolBarConfig
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrCenter
-    Left = 649
-    Height = 13
-    Top = 28
-    Width = 39
+    Left = 636
+    Height = 15
+    Top = 33
+    Width = 52
     Anchors = [akRight, akBottom]
     BorderSpacing.Bottom = 6
     Caption = 'lblSelect'
     Color = clDefault
+    ParentColor = False
     Transparent = False
   end
   object pnlButtons: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 417
+    Height = 35
+    Top = 416
     Width = 684
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
