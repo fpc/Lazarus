@@ -37,13 +37,12 @@ uses
   LazarusIDEStrConsts;
 
 const
-  IDEToolBarConfigVersion = 1;
-  // 1 added file version in config
+  IDEToolBarConfigVersion = 1;  // File version in configuration.
 
 type
   { TLvItem }
   TLvItem = class (TObject)
-    Item: TIDEButtonCommand;
+    Command: TIDEButtonCommand;
     LvIndex: Integer;
   end;
 
@@ -96,17 +95,18 @@ type
     MainList: TStringList;
     procedure AddCommand;
     procedure AddTailItem;
-    function GetMainListIndex(Item: TListItem): Integer;
-    procedure InsertMainListItem(Item, NextItem: TListItem);
+    function GetMainListIndex(aLvIndex: Integer): Integer;
+    procedure InsertMainListItem(Item: TListItem);
+    function NewLvItem(aCaption: string): TListItem;
     procedure RemoveCommand;
     procedure RemoveMainListItem(Item: TListItem);
     procedure ExchangeMainListItem(Item1, Item2: TListItem);
     procedure SetupCaptions;
     procedure LoadCategories;
-    procedure AddMenuItem(ParentNode: TTreeNode; Item: TIDEButtonCommand);
-    function RootNodeCaption(Item: TIDEButtonCommand): string;
-    procedure AddListItem(Item: TIDEButtonCommand);
-    procedure AddToolBarItem(Item: TIDEButtonCommand);
+    procedure AddMenuItem(ParentNode: TTreeNode; CmdItem: TIDEButtonCommand);
+    function RootNodeCaption(CmdItem: TIDEButtonCommand): string;
+    procedure AddListItem(CmdItem: TIDEButtonCommand);
+    procedure AddToolBarItem(CmdItem: TIDEButtonCommand);
     procedure AddDivider;
     procedure FillToolBar;
   public
@@ -262,27 +262,35 @@ begin
   UpdateButtonsState;
 end;
 
-function TToolBarConfig.GetMainListIndex(Item: TListItem): Integer;
+function TToolBarConfig.GetMainListIndex(aLvIndex: Integer): Integer;
 var
   I: Integer;
 begin
   for I:= 0 to MainList.Count -1 do
-    if TLvItem(MainList.Objects[I]).LvIndex = Item.Index then
+    if TLvItem(MainList.Objects[I]).LvIndex = aLvIndex then
       Exit(I);
   Result := -1;
 end;
 
-procedure TToolBarConfig.InsertMainListItem(Item, NextItem: TListItem);
+procedure TToolBarConfig.InsertMainListItem(Item: TListItem);
 var
   NextInd, I: Integer;
   aMainListItem: TLvItem;
 begin
+  // New selection. Clear previous selection to avoid double sel in Qt.
+  lvToolbar.ItemIndex := -1;
+  lvToolbar.Selected := nil;
+  if Item.Index < lvToolbar.Items.Count then
+    lvToolbar.ItemIndex := Item.Index+1
+  else
+    lvToolbar.ItemIndex := Item.Index;
+  // New MainList item.
   aMainListItem := TLvItem.Create;
-  aMainListItem.Item := TIDEButtonCommand(Item.Data);
+  aMainListItem.Command := TIDEButtonCommand(Item.Data);
   aMainListItem.LvIndex := Item.Index;
-  Assert(Assigned(NextItem), 'TToolBarConfig.InsertMainListItem: NextItem = Nil.');
-  NextInd := GetMainListIndex(NextItem);
+  NextInd := GetMainListIndex(Item.Index);
   MainList.InsertObject(NextInd, Item.Caption, aMainListItem);
+  // Update indices of existing MainList items.
   for I := NextInd+1 to MainList.Count -1 do
   begin
     aMainListItem := TLvItem(MainList.Objects[I]);
@@ -292,10 +300,10 @@ end;
 
 procedure TToolBarConfig.RemoveMainListItem(Item: TListItem);
 var
-  I,J: Integer;
+  I, J: Integer;
   aMainListItem: TLvItem;
 begin
-  I := GetMainListIndex(Item);
+  I := GetMainListIndex(Item.Index);
   if I > -1 then begin
     MainList.Delete(I);
     for J := I to MainList.Count -1 do begin
@@ -310,8 +318,8 @@ var
   MainIndex1,MainIndex2: Integer;
   aMainListItem: TLvItem;
 begin
-  MainIndex1:= GetMainListIndex(Item1);
-  MainIndex2:= GetMainListIndex(Item2);
+  MainIndex1:= GetMainListIndex(Item1.Index);
+  MainIndex2:= GetMainListIndex(Item2.Index);
   MainList.Exchange(MainIndex1,MainIndex2);
   aMainListItem := TLvItem(MainList.Objects[MainIndex1]);
   aMainListItem.LvIndex:= Item1.Index;
@@ -324,66 +332,56 @@ begin
   AddCommand;
 end;
 
+function TToolBarConfig.NewLvItem(aCaption: string): TListItem;
+var
+  I: Integer;
+begin
+  I := lvToolbar.ItemIndex;
+  if I = -1 then
+    I := lvToolbar.Items.Count-1;    // Add before the last empty item.
+  Result := lvToolbar.Items.Insert(I);
+  Result.Caption := aCaption;
+end;
+
 procedure TToolBarConfig.AddCommand;
 var
-  n, nNext: TTreeNode;
-  ACaption: string;
+  Node: TTreeNode;
+  CmdCaption: string;
   lvItem: TListItem;
-  anIndex: Integer;
 begin
-  n := TV.Selected;
-  if (n = Nil) or (n.Data = Nil) then
+  Node := TV.Selected;
+  if (Node = Nil) or (Node.Data = Nil) then
     Exit;
-  ACaption := TIDEButtonCommand(n.Data).Caption;
-  DeleteAmpersands(ACaption);
-  anIndex := lvToolbar.ItemIndex;
-  if anIndex = -1 then
-  begin
-    anIndex := lvToolbar.Items.Count-1;    // Add before the last empty item.
-    Assert(anIndex >= 0, 'TToolBarConfig.AddCommand: Index < 0.');
-  end;
-  lvItem := lvToolbar.Items.Insert(anIndex);
-  lvItem.Caption := ACaption;
-  lvItem.Data := n.Data;
+  CmdCaption := TIDEButtonCommand(Node.Data).Caption;
+  DeleteAmpersands(CmdCaption);
+  lvItem := NewLvItem(CmdCaption);
+  lvItem.Data := Node.Data;
   {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
-  if n.ImageIndex > -1 then
-    lvItem.ImageIndex := n.ImageIndex
+  if Node.ImageIndex > -1 then
+    lvItem.ImageIndex := Node.ImageIndex
   else
     lvItem.ImageIndex := defImageIndex;
   {$ENDIF}
   //lvItem.SubItems.Add(IntToStr(CurrProfile));
-  // clear previous selection to avoid double sel in Qt
-  lvToolbar.Selected := nil;
-  lvToolbar.ItemIndex := lvItem.Index;
-  InsertMainListItem(lvItem, lvToolbar.Items[anIndex]);
+  // Add the newly created item to ListView.
+  InsertMainListItem(lvItem);
   // Update selection in TreeView.
-  nNext := TV.Selected.GetNext;
+  Node := TV.Selected.GetNext;
   TV.Selected.Visible:= False;
-  if nNext <> nil then
-    TV.Selected := nNext;
+  if Node <> nil then
+    TV.Selected := Node;
   UpdateButtonsState;
 end;
 
 procedure TToolBarConfig.btnAddDividerClick(Sender: TObject);
 var
   lvItem: TListItem;
-  anIndex: Integer;
 begin
-  anIndex := lvToolbar.ItemIndex;
-  if anIndex = -1 then
-  begin
-    anIndex := lvToolbar.Items.Count-1;    // Add before the last empty item.
-    Assert(anIndex >= 0, 'TToolBarConfig.btnAddDividerClick: Index < 0.');
-  end;
-  lvItem := lvToolbar.Items.Insert(anIndex);
-  //lvItem.Selected := False;
-  lvItem.Caption:= cIDEToolbarDivider;
+  lvItem := NewLvItem(cIDEToolbarDivider);
   {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
   lvItem.ImageIndex := divImageIndex;
   {$ENDIF}
-  lvToolbar.Selected := nil;
-  lvToolbar.ItemIndex := lvItem.Index;
-  InsertMainListItem(lvItem, lvToolbar.Items[anIndex]);
+  InsertMainListItem(lvItem);
   UpdateButtonsState;
 end;
 
@@ -456,7 +454,6 @@ procedure TToolBarConfig.lvToolbarSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
   UpdateButtonsState;
-
   if lvToolbar.ItemIndex<lvToolbar.Items.Count-1 then
     lblSelect.Caption:=Format('%d / %d', [lvToolbar.ItemIndex+1, lvToolbar.Items.Count-1])
   else
@@ -530,24 +527,23 @@ begin
   end;
 end;
 
-procedure TToolBarConfig.AddMenuItem(ParentNode: TTreeNode;
-  Item: TIDEButtonCommand);
+procedure TToolBarConfig.AddMenuItem(ParentNode: TTreeNode; CmdItem: TIDEButtonCommand);
 var
   n: TTreeNode;
 begin
-  if Item.Caption <> '-' then begin // workaround for HTML Editor dividers
-    n := TV.Items.AddChild(ParentNode, Format('%s', [Item.GetCaptionWithShortCut]));
-    n.ImageIndex := Item.ImageIndex;
-    n.SelectedIndex := Item.ImageIndex;
-    n.Data := Item;
+  if CmdItem.Caption <> '-' then begin // workaround for HTML Editor dividers
+    n := TV.Items.AddChild(ParentNode, Format('%s', [CmdItem.GetCaptionWithShortCut]));
+    n.ImageIndex := CmdItem.ImageIndex;
+    n.SelectedIndex := CmdItem.ImageIndex;
+    n.Data := CmdItem;
   end;
 end;
 
-function TToolBarConfig.RootNodeCaption(Item: TIDEButtonCommand): string;
+function TToolBarConfig.RootNodeCaption(CmdItem: TIDEButtonCommand): string;
 var
   aCaption: string;
 begin
-  aCaption:= Item.Caption;
+  aCaption:= CmdItem.Caption;
   case aCaption of
     'IDEMainMenu':            Result := lisCoolbarIDEMainMenu;    // mnuMain
     'SourceTab':              Result := lisCoolbarSourceTab;      // SourceTabMenuRootName
@@ -562,41 +558,40 @@ begin
   end;
 end;
 
-procedure TToolBarConfig.AddListItem(Item: TIDEButtonCommand);
+procedure TToolBarConfig.AddListItem(CmdItem: TIDEButtonCommand);
 var
   aListItem: TLvItem;
 begin
   aListItem := TLvItem.Create;
-  if assigned(Item) then begin
-    aListItem.Item := Item;
-    MainList.AddObject(Item.Caption,aListItem);
+  if assigned(CmdItem) then begin
+    aListItem.Command := CmdItem;
+    MainList.AddObject(CmdItem.Caption, aListItem);
   end
   else begin
-    aListItem.Item := nil;
-    MainList.AddObject(cIDEToolbarDivider,aListItem);
+    aListItem.Command := nil;
+    MainList.AddObject(cIDEToolbarDivider, aListItem);
   end;
 end;
 
-procedure TToolBarConfig.AddToolBarItem(Item: TIDEButtonCommand);
+procedure TToolBarConfig.AddToolBarItem(CmdItem: TIDEButtonCommand);
 Var
-  n: TTreeNode;
+  Node: TTreeNode;
   lvItem: TListItem;
 begin
-  if Assigned(Item) then begin
-    lvItem := lvToolbar.Items.Add;
-    lvItem.Caption:= Item.GetCaptionWithShortCut;
-    lvItem.Data:= Item;
-    {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
-    if Item.ImageIndex > -1 then
-      lvItem.ImageIndex:= Item.ImageIndex
-    else
-      lvItem.ImageIndex:= defImageIndex;
-    {$ENDIF}
-   // lvItem.SubItems.Add(IntToStr(PMask));
-    n:= TV.Items.FindNodeWithData(Item);
-    if n<>nil then
-      n.Visible:= False;
-  end;
+  if CmdItem=Nil then Exit;
+  lvItem := lvToolbar.Items.Add;
+  lvItem.Caption := CmdItem.GetCaptionWithShortCut;
+  lvItem.Data := CmdItem;
+  {$IF not DEFINED(LCLQt) and not DEFINED(LCLQt5)}
+  if CmdItem.ImageIndex > -1 then
+    lvItem.ImageIndex := CmdItem.ImageIndex
+  else
+    lvItem.ImageIndex := defImageIndex;
+  {$ENDIF}
+  // lvItem.SubItems.Add(IntToStr(PMask));
+  Node := TV.Items.FindNodeWithData(CmdItem);
+  if Node<>nil then
+    Node.Visible := False;
 end;
 
 procedure TToolBarConfig.AddDivider;
@@ -634,20 +629,20 @@ var
   I: Integer;
   aListItem: TLvItem;
   aCaption: string;
-  mi: TIDEButtonCommand;
+  Cmd: TIDEButtonCommand;
 begin
-  for I:= 0 to MainList.Count -1 do
+  for I := 0 to MainList.Count -1 do
   begin
     aListItem := TLvItem(MainList.Objects[I]);
-    mi := aListItem.Item;
+    Cmd := aListItem.Command;
     aCaption := MainList.Strings[I];
     if aCaption = cIDEToolbarDivider then
-      if i<(MainList.Count-1) then
+      if I < MainList.Count-1 then
         AddDivider
       else
         AddTailItem  // add tail item instead extra divider at the end of list
     else
-      AddToolBarItem(mi);
+      AddToolBarItem(Cmd);
     aListItem.LvIndex:= lvToolbar.Items.Count - 1;
   end;
 end;
@@ -656,20 +651,20 @@ procedure TToolBarConfig.LoadSettings(SL: TStringList);
 var
   I: Integer;
   Value: string;
-  MI: TIDEButtonCommand;
+  Cmd: TIDEButtonCommand;
 begin
   for I := 0 to SL.Count - 1 do
   begin
     Value := SL[I];
     if Value = '' then Continue;
     if Value = cIDEToolbarDivider then
-      MI := nil
+      Cmd := nil
     else
     begin
-      MI := IDEToolButtonCategories.FindItemByMenuPathOrName(Value);
+      Cmd := IDEToolButtonCategories.FindItemByMenuPathOrName(Value);
       SL[I] := Value;
     end;
-    AddListItem(MI);
+    AddListItem(Cmd);
   end;
 
   AddListItem(nil);  // add extra divider at the end of list. This extra divider
@@ -684,13 +679,13 @@ var
   I: Integer;
 begin
   SL.Clear;
-  for i := 0 to MainList.Count - 2 do  // excluding tail item
+  for I := 0 to MainList.Count - 2 do  // excluding tail item
   begin
     lvItem := TLvItem(MainList.Objects[I]);
     if MainList[I] = cIDEToolbarDivider then
       SL.Add(cIDEToolbarDivider)
     else
-      SL.Add(lvItem.Item.Name);
+      SL.Add(lvItem.Command.Name);
   end;
 end;
 
