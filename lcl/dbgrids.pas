@@ -2691,14 +2691,14 @@ begin
             if IsMouseOverCellButton(X, Y) then
               StartPushCell;
           end;
-          if ssCtrl in Shift then begin
-            // Don't unselect if Right-click for PopupMenu. Select an unselected row.
-            if (Button<>mbRight) or (PopupMenu=Nil) or not FSelectedRows.CurrentRowSelected then
-              ToggleSelectedRow;
-          end
+          if ssCtrl in Shift then
+            ToggleSelectedRow
           else begin
             if Button=mbLeft then
-              ClearSelection(true);
+              ClearSelection(true)
+            // Select row before popupmenu
+            else if (Button=mbRight) and Assigned(PopupMenu) and not FSelectedRows.CurrentRowSelected then
+              ToggleSelectedRow;
             doMoveToColumn;
           end;
         end;
