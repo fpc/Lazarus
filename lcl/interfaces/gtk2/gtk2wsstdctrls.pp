@@ -1668,9 +1668,13 @@ begin
   else
     InputObject := AGtkObject;
 
-  Gtk2WidgetSet.SetCallbackDirect(LM_KEYDOWN, InputObject, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_KEYUP, InputObject, AWinControl);
-  Gtk2WidgetSet.SetCallbackDirect(LM_CHAR, InputObject, AWinControl);
+  if TCustomComboBox(AWinControl).Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable] then
+  begin
+    // Just a combobox without a edit should handle its own keys. Issue #32458
+    Gtk2WidgetSet.SetCallbackDirect(LM_KEYDOWN, InputObject, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_KEYUP, InputObject, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_CHAR, InputObject, AWinControl);
+  end;
   Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEMOVE, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONDOWN, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_LBUTTONUP, InputObject, AWinControl);
@@ -1687,9 +1691,13 @@ begin
 
   // And now the same for the Button in the combo
   if AButton<>nil then begin
-    Gtk2WidgetSet.SetCallbackDirect(LM_KEYDOWN, AButton, AWinControl);
-    Gtk2WidgetSet.SetCallbackDirect(LM_KEYUP, AButton, AWinControl);
-    Gtk2WidgetSet.SetCallbackDirect(LM_CHAR, AButton, AWinControl);
+    if TCustomComboBox(AWinControl).Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable] then
+    begin
+      // Just a combobox without a edit should handle its own keys. Issue #32458
+      Gtk2WidgetSet.SetCallbackDirect(LM_KEYDOWN, AButton, AWinControl);
+      Gtk2WidgetSet.SetCallbackDirect(LM_KEYUP, AButton, AWinControl);
+      Gtk2WidgetSet.SetCallbackDirect(LM_CHAR, AButton, AWinControl);
+    end;
     if not GtkWidgetIsA(PGtkWidget(AButton),GTK_TYPE_CELL_VIEW) then begin
       Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEENTER, AButton, AWinControl);
       Gtk2WidgetSet.SetCallbackDirect(LM_MOUSELEAVE, AButton, AWinControl);
