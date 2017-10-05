@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -1139,7 +1139,7 @@ msgstr "-im, beállítja a beviteli mód kiszolgálóját (ugyanúgy mint az XMO
 
 #: lclstrconsts.rsqtoptionx11inputstyle
 msgid "-inputstyle, defines how the input is inserted into the given widget, e.g. onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."
-msgstr "-inputstyle, meghatározza a bevitel beszúrásának módját az adott vezérlőelembe, pl.: onTheSpot hatására a bevitel közvetlenül a vezérlőelemben jelenik meg, az overTheSpot hatására pedig a bevitel egy lebegő dobozban jelenik meg a vezérlőelem fölött és csak a szerkesztés befejezésekor lesz beszúrva."
+msgstr "-inputstyle, meghatározza a bevitel beszúrásának módját az adott vezérlőelembe, pl. onTheSpot hatására a bevitel közvetlenül a vezérlőelemben jelenik meg, az overTheSpot hatására pedig a bevitel egy lebegő dobozban jelenik meg a vezérlőelem fölött és csak a szerkesztés befejezésekor lesz beszúrva."
 
 #: lclstrconsts.rsqtoptionx11name
 msgid "-name name, sets the application name."

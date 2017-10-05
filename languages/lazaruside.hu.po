@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -13321,7 +13321,7 @@ msgstr "Legutóbb visszavont művelet megismétlése e rácsban"
 
 #: lazarusidestrconsts.lismmsetanidemacroeglclwidgettypewin32
 msgid "Set an IDE macro, e.g.: LCLWidgetType:=win32"
-msgstr "Egy IDE makró beállítása, pl.: LCLWidgetType:=win32"
+msgstr "Egy IDE makró beállítása, pl. LCLWidgetType:=win32"
 
 #: lazarusidestrconsts.lismmsets
 msgid "Set \"%s\""
