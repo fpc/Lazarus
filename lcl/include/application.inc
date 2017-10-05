@@ -2110,6 +2110,7 @@ procedure TApplication.DoEscapeKey(AControl: TWinControl; var Key: Word;
   Shift: TShiftState);
 var
   Form: TCustomForm;
+  lCancelControl: TControl;
 begin
   if (Shift = []) and (Key = VK_ESCAPE) and
      (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) and
@@ -2117,11 +2118,19 @@ begin
      (anoEscapeForCancelControl in Navigation) then
   begin
     Form := GetParentForm(AControl);
-    if Assigned(Form) and Assigned(Form.CancelControl) then
+    if Assigned(Form) then
     begin
-      //debugln('TApplication.ControlKeyUp VK_ESCAPE ', Acontrol.Name);
-      Form.CancelControl.ExecuteCancelAction;
-      Key := VK_UNKNOWN;
+      lCancelControl := Form.CancelControl;
+      if Assigned(lCancelControl)
+        and lCancelControl.Enabled and lCancelControl.Visible then
+      begin
+        //debugln('TApplication.ControlKeyUp VK_ESCAPE ', Acontrol.Name);
+        try
+          lCancelControl.ExecuteCancelAction;
+        finally
+          Key := VK_UNKNOWN;
+        end;
+      end;
     end;
   end;
 end;
