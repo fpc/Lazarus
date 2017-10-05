@@ -54,7 +54,14 @@ actions/laz_edit.png
 actions/laz_export.png
 actions/laz_highlighter.png
 actions/laz_open.png
-actions/laz_openunit.png
+actions/laz_open_150.png
+actions/laz_open_200.png
+actions/laz_open_recent.png
+actions/laz_open_recent_150.png
+actions/laz_open_recent_200.png
+actions/laz_open_unit.png
+actions/laz_open_unit_150.png
+actions/laz_open_unit_200.png
 actions/laz_refresh.png
 actions/laz_save.png
 actions/laz_save_150.png
@@ -435,6 +442,8 @@ menu/menu_search_next_bookmark.png
 menu/menu_search_next_bookmark_150.png
 menu/menu_search_next_bookmark_200.png
 menu/menu_search_openfile_atcursor.png
+menu/menu_search_openfile_atcursor_150.png
+menu/menu_search_openfile_atcursor_200.png
 menu/menu_search_previous_bookmark.png
 menu/menu_search_previous_bookmark_150.png
 menu/menu_search_previous_bookmark_200.png

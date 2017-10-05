@@ -659,6 +659,7 @@ components/chmhelp/lhelp/lnethttpdataprovider.pas svneol=native#text/plain
 components/chmhelp/packages/help/Makefile svneol=native#text/plain
 components/chmhelp/packages/help/Makefile.compiled svneol=native#text/plain
 components/chmhelp/packages/help/Makefile.fpc svneol=native#text/plain
+components/chmhelp/packages/help/design/copyright.txt svneol=native#text/plain
 components/chmhelp/packages/help/design/lazhelpchm.bat svneol=native#text/plain
 components/chmhelp/packages/help/design/lazhelpchm.sh svneol=native#text/plain
 components/chmhelp/packages/help/design/lazhelpchm.txt svneol=native#text/plain
@@ -6563,7 +6564,14 @@ images/actions/laz_edit.png -text svneol=unset#image/png
 images/actions/laz_export.png -text svneol=unset#image/png
 images/actions/laz_highlighter.png -text svneol=unset#image/png
 images/actions/laz_open.png -text svneol=unset#image/png
-images/actions/laz_openunit.png -text
+images/actions/laz_open_150.png -text
+images/actions/laz_open_200.png -text
+images/actions/laz_open_recent.png -text
+images/actions/laz_open_recent_150.png -text
+images/actions/laz_open_recent_200.png -text
+images/actions/laz_open_unit.png -text
+images/actions/laz_open_unit_150.png -text
+images/actions/laz_open_unit_200.png -text
 images/actions/laz_refresh.png -text svneol=unset#image/png
 images/actions/laz_save.png -text svneol=unset#image/png
 images/actions/laz_save_150.png -text
@@ -6629,6 +6637,8 @@ images/components/tarrow.png -text svneol=unset#image/png
 images/components/tarrow_150.png -text
 images/components/tarrow_200.png -text
 images/components/tasyncprocess.png -text
+images/components/tasyncprocess_150.png -text
+images/components/tasyncprocess_200.png -text
 images/components/tbevel.png -text svneol=unset#image/png
 images/components/tbevel_150.png -text
 images/components/tbevel_200.png -text
@@ -6744,6 +6754,8 @@ images/components/teditbutton.png -text svneol=unset#image/png
 images/components/teditbutton_150.png -text
 images/components/teditbutton_200.png -text
 images/components/teventlog.png -text svneol=unset#image/png
+images/components/teventlog_150.png -text
+images/components/teventlog_200.png -text
 images/components/tfilelistbox.png -text svneol=unset#image/png
 images/components/tfilenameedit.png -text svneol=unset#image/png
 images/components/tfiltercombobox.png -text
@@ -6769,6 +6781,8 @@ images/components/theadercontrol.png -text svneol=unset#image/png
 images/components/theadercontrol_150.png -text
 images/components/theadercontrol_200.png -text
 images/components/thtmlbrowserhelpviewer.png -text svneol=unset#image/png
+images/components/thtmlbrowserhelpviewer_150.png -text
+images/components/thtmlbrowserhelpviewer_200.png -text
 images/components/thtmlhelpdatabase.png -text svneol=unset#image/png
 images/components/thtmlhelpdatabase_150.png -text
 images/components/thtmlhelpdatabase_200.png -text
@@ -6795,6 +6809,8 @@ images/components/tlabelededit.png -text svneol=unset#image/png
 images/components/tlabelededit_150.png -text
 images/components/tlabelededit_200.png -text
 images/components/tlazcomponentqueue.png -text svneol=unset#image/png
+images/components/tlazcomponentqueue_150.png -text
+images/components/tlazcomponentqueue_200.png -text
 images/components/tlistbox.png -text svneol=unset#image/png
 images/components/tlistbox_150.png -text
 images/components/tlistbox_200.png -text
@@ -6842,7 +6858,11 @@ images/components/tpopupnotifier.png -text svneol=unset#image/png
 images/components/tpopupnotifier_150.png -text
 images/components/tpopupnotifier_200.png -text
 images/components/tprocess.png -text svneol=unset#image/png
+images/components/tprocess_150.png -text
+images/components/tprocess_200.png -text
 images/components/tprocessutf8.png -text
+images/components/tprocessutf8_150.png -text
+images/components/tprocessutf8_200.png -text
 images/components/tprogressbar.png -text svneol=unset#image/png
 images/components/tprogressbar_150.png -text
 images/components/tprogressbar_200.png -text
@@ -6870,13 +6890,19 @@ images/components/tscrollbox_200.png -text
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog_150.png -text
 images/components/tservicemanager.png -text svneol=unset#image/png
+images/components/tservicemanager_150.png -text
+images/components/tservicemanager_200.png -text
 images/components/tshape.png -text svneol=unset#image/png
 images/components/tshape_150.png -text
 images/components/tshape_200.png -text
 images/components/tshelllistview.png -text
 images/components/tshelltreeview.png -text
 images/components/tsimpleipcclient.png -text svneol=unset#image/png
+images/components/tsimpleipcclient_150.png -text
+images/components/tsimpleipcclient_200.png -text
 images/components/tsimpleipcserver.png -text svneol=unset#image/png
+images/components/tsimpleipcserver_150.png -text
+images/components/tsimpleipcserver_200.png -text
 images/components/tspeedbutton.png -text svneol=unset#image/png
 images/components/tspeedbutton_150.png -text
 images/components/tspeedbutton_200.png -text
@@ -7322,6 +7348,8 @@ images/menu/menu_search_next_bookmark.png -text
 images/menu/menu_search_next_bookmark_150.png -text
 images/menu/menu_search_next_bookmark_200.png -text
 images/menu/menu_search_openfile_atcursor.png -text svneol=unset#image/png
+images/menu/menu_search_openfile_atcursor_150.png -text
+images/menu/menu_search_openfile_atcursor_200.png -text
 images/menu/menu_search_previous_bookmark.png -text
 images/menu/menu_search_previous_bookmark_150.png -text
 images/menu/menu_search_previous_bookmark_200.png -text
