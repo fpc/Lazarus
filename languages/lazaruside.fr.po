@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-09-22 10:26+0200\n"
+"PO-Revision-Date: 2017-10-04 08:43+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -5194,7 +5194,7 @@ msgstr "caractères insolites"
 #: lazarusidestrconsts.lisccowarningcaption
 msgctxt "lazarusidestrconsts.lisccowarningcaption"
 msgid "Warning"
-msgstr "Attention"
+msgstr "Avertissement"
 
 #: lazarusidestrconsts.lisccowarningmsg
 msgid "WARNING: "
@@ -15631,7 +15631,7 @@ msgstr "Méthode privée"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
-msgstr "Vous devez probablement installer certains paquets avant de pouvoir continuer.%sAttention :%sLe projet dépend de certains paquets au moment de la conception, qui pourraient être nécessaires pour ouvrir la fiche dans le concepteur. Si vous continuez, vous pourriez obtenir des erreurs relatives aux composants absents et le chargement de la fiche produira probablement des résultats très désagréables.%sIl est préférable d'abandonner et d'installer d'abord ces paquets."
+msgstr "Vous devez probablement installer certains paquets avant de pouvoir continuer.%sAvertissement :%sLe projet dépend de certains paquets au moment de la conception, qui pourraient être nécessaires pour ouvrir la fiche dans le concepteur. Si vous continuez, vous pourriez obtenir des erreurs relatives aux composants absents et le chargement de la fiche produira sans doute des résultats très désagréables.%sIl est préférable d'abandonner et d'installer d'abord ces paquets."
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -18922,7 +18922,7 @@ msgstr "Avertissement : "
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
-msgstr "Avertissement : fichier équivoque trouvé : \"%s\". Le fichier de code source est : \"%s\""
+msgstr "Avertissement : le fichier équivoque \"%s\" est équivoque. Le fichier de code source est : \"%s\""
 
 #: lazarusidestrconsts.liswarnings
 msgid ", Warnings: %s"
