@@ -45,7 +45,7 @@ msgstr "Csomag(ok) telepítése"
 
 #: fppkg_mainfrm.sactuninstpackages
 msgid "uninstall package(s)"
-msgstr ""
+msgstr "Csomag(ok) eltávolítása"
 
 #: fppkg_mainfrm.sactupdate
 msgid "update repository"
@@ -211,7 +211,7 @@ msgstr "Eszköztár"
 
 #: tfppkgform.uninstallbutton.caption
 msgid "Uninstall"
-msgstr ""
+msgstr "Eltávolítás"
 
 #: tfppkgform.updatebutton.caption
 msgid "Update"

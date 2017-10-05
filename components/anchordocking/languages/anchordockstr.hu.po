@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
@@ -153,11 +153,11 @@ msgstr "A fejléc-felírat elrejtése az olyan területek esetén, ahol csak egy
 
 #: anchordockstr.adrshighlightfocused
 msgid "Highlight focused"
-msgstr ""
+msgstr "Kiválasztott elem kiemelése"
 
 #: anchordockstr.adrshighlightfocusedhint
 msgid "Highlight focused docked controls"
-msgstr ""
+msgstr "Kiválasztott dokkolt vezérlők kiemelése"
 
 #: anchordockstr.adrsleft
 msgid "left"

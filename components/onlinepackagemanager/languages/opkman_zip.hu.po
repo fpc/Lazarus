@@ -21,7 +21,7 @@ msgstr "Sérült ZIP fájl: %s"
 
 #: opkman_zip.serrencryptionnotsupported
 msgid "Cannot unzip item \"%s\": encryption is not supported."
-msgstr "Nem lehet kicsomagolni a(z) \"%s\" elemet: a titkosítás nincs támogatva"
+msgstr ""
 
 #: opkman_zip.serrfilechange
 msgid "Changing output file name is not allowed while (un)zipping."
@@ -57,7 +57,7 @@ msgstr "Nincs megnyitva adatfolyam."
 
 #: opkman_zip.serrpatchsetnotsupported
 msgid "Cannot unzip item \"%s\": patch sets are not supported."
-msgstr "Nem lehet kicsomagolni a(z) \"%s\" elemet: a foltkészletek nincsenek támogatva"
+msgstr ""
 
 #: opkman_zip.serrpostoolarge
 msgid "Position/offset %d is larger than maximum supported %d."

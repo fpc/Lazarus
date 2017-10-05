@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -1950,7 +1950,7 @@ msgstr "Méretező színe"
 
 #: lazarusidestrconsts.dlggrayeddesktopsdocked
 msgid "Grayed desktops are for docked environment."
-msgstr ""
+msgstr "Az elhalványított felületek dokkolt környezethez tartoznak."
 
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
@@ -2439,10 +2439,8 @@ msgid "Word Brackets on caret (global)"
 msgstr "Szó-zárójelek a kurzornál (globális)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-#, fuzzy
-#| msgid "Match word boundaries for words up to this length:"
 msgid "Match whole words, if length is less or equal to:"
-msgstr "Csak a teljes szóegyezések kiemelése ennyi karakternél rövidebb kifejezésekre:"
+msgstr "Teljes szóegyezés, ha a hossz kevesebb vagy egyenlő ezzel:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
@@ -3204,8 +3202,6 @@ msgid "Replace &All"
 msgstr "Összes cseréje"
 
 #: lazarusidestrconsts.dlgreplacewith
-#, fuzzy
-#| msgid "&Replace with"
 msgid "Replace wit&h"
 msgstr "Csere erre:"
 
@@ -10678,10 +10674,8 @@ msgid "Cut selected components"
 msgstr "Kijelölt komponensek kivágása"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
-#, fuzzy
-#| msgid "Default adapted to OS X"
 msgid "Default adapted to macOS"
-msgstr "Alapértelmezés Mac OS X rendszerhez igazítva"
+msgstr "Alapértelmezés macOS rendszerhez igazítva"
 
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
@@ -10816,22 +10810,16 @@ msgid "Keymapping Scheme"
 msgstr "Gyorsbillentyű séma"
 
 #: lazarusidestrconsts.liskmlazarusdefault
-#, fuzzy
-#| msgid "Lazarus (default)"
 msgid "Lazarus default"
-msgstr "Lazarus (alapértelmezett)"
+msgstr "Lazarus alapértelmezés"
 
 #: lazarusidestrconsts.liskmmacosxapple
-#, fuzzy
-#| msgid "Mac OS X (Apple style)"
 msgid "macOS, Apple style"
-msgstr "Mac OS X (Apple stílus)"
+msgstr "macOS, Apple stílus"
 
 #: lazarusidestrconsts.liskmmacosxlaz
-#, fuzzy
-#| msgid "Mac OS X (Lazarus style)"
 msgid "macOS, Lazarus style"
-msgstr "Mac OS X (Lazarus stílus)"
+msgstr "macOS, Lazarus stílus"
 
 #: lazarusidestrconsts.liskmnewpackage
 msgid "New package"
@@ -12682,7 +12670,7 @@ msgstr "A kurzornál lévő fájl megnyitása"
 
 #: lazarusidestrconsts.lismenuopenfolder
 msgid "Open Folder ..."
-msgstr ""
+msgstr "Mappa megnyitása..."
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open Loaded Package ..."
@@ -13369,7 +13357,7 @@ msgstr "Legutóbb visszavont művelet megismétlése e rácsban"
 
 #: lazarusidestrconsts.lismmsetanidemacroeglclwidgettypewin32
 msgid "Set an IDE macro, e.g.: LCLWidgetType:=win32"
-msgstr "Egy IDE makró beállítása, pl.: LCLWidgetType:=win32"
+msgstr "Egy IDE makró beállítása, pl. LCLWidgetType:=win32"
 
 #: lazarusidestrconsts.lismmsets
 msgid "Set \"%s\""
@@ -19139,7 +19127,7 @@ msgstr "A Lazarus nem építhető fordítás vagy hibakeresés közben."
 
 #: lazarusidestrconsts.lisyoucannotchangethebuildmodewhilecompiling
 msgid "You cannot change the build mode while compiling."
-msgstr ""
+msgstr "Fordítás közben nem változtatható meg az építési mód."
 
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"

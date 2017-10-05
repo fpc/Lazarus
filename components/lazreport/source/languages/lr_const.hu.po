@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -1565,7 +1565,7 @@ msgstr "Méretarány megtartása"
 
 #: lr_const.skeepchild
 msgid "Keep child together with parent"
-msgstr ""
+msgstr "A gyermek legyen együtt tartva a szülővel"
 
 #: lr_const.slazformfile
 msgid "LazReport form"

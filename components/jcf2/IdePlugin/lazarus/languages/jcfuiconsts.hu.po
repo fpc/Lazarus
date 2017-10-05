@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
@@ -412,7 +412,7 @@ msgstr "Szólista:"
 
 #: jcfuiconsts.lisfrfileconfirmformat
 msgid "Show confirmation dialog before format"
-msgstr ""
+msgstr "Párbeszédablak megjelenítése formázás előtt"
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
@@ -436,15 +436,15 @@ msgstr "A fájl nem található"
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"
-msgstr ""
+msgstr "Mappa megnyitása..."
 
 #: jcfuiconsts.lisfrfilessettingsfile
 msgid "Settings File"
-msgstr ""
+msgstr "Beállítási fájl"
 
 #: jcfuiconsts.lisfrfilessettingsfileis
 msgid "Settings file is:"
-msgstr ""
+msgstr "A beállítási fájl:"
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 msgid "Version that wrote this file: %s"
@@ -516,7 +516,7 @@ msgstr "JCF formázás beállításai"
 
 #: jcfuiconsts.lisjedicodeformatallopenwindow
 msgid "JEDI Code Format of all open windows?"
-msgstr ""
+msgstr "JEDI Code Format futtatása minden nyitott állományon?"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
