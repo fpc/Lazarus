@@ -30,7 +30,7 @@ uses
   cthreads,
   {$ENDIF}
   Classes, SysUtils, LazFileUtils, laz2_XMLRead, laz2_DOM, laz2_XMLWrite,
-  LazLogger, LazUTF8, CodeToolsStructs, CustApp, AVL_Tree, strutils,
+  LazLogger, LazUTF8, CodeToolsStructs, CustApp, Laz_AVL_Tree, avglvltree, strutils,
   {$IF FPC_FULLVERSION<20701}
   myfphttpclient,
   {$ELSE}
@@ -605,7 +605,7 @@ var
   Files: TFilenameToStringTree;
   FileInfo: TSearchRec;
   Filename: string;
-  Item: PStringToStringTreeItem;
+  Item: PStringToStringItem;
 begin
   Files:=TFilenameToStringTree.Create(false);
   try
