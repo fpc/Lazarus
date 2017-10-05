@@ -496,8 +496,6 @@ begin
       for i := 0 to Node.Attributes.Length - 1 do
         StringTable[Node.Attributes[i].NodeName] := Node.Attributes[i].NodeValue;
       StringTable.AddRequired;
-      if StringTable['ProductVersion'] = '' then
-        StringTable['ProductVersion'] := BuildFileVersionString;
     end
     else
     begin
@@ -505,13 +503,13 @@ begin
       StringTable['Comments'] := GetValue(Path + 'VersionInfo/Comments/Value', '');
       StringTable['CompanyName'] := GetValue(Path + 'VersionInfo/CompanyName/Value', '');
       StringTable['FileDescription'] := GetValue(Path + 'VersionInfo/FileDescription/Value', '');
-      StringTable['FileVersion'] := BuildFileVersionString;
+      // StringTable['FileVersion'] := BuildFileVersionString;  // not needed due to SetFileVersionFromVersion
       StringTable['InternalName'] := GetValue(Path + 'VersionInfo/InternalName/Value', '');
       StringTable['LegalCopyright'] := GetValue(Path + 'VersionInfo/LegalCopyright/Value', '');
       StringTable['LegalTrademarks'] := GetValue(Path + 'VersionInfo/LegalTrademarks/Value', '');
       StringTable['OriginalFilename'] := GetValue(Path + 'VersionInfo/OriginalFilename/Value', '');
       StringTable['ProductName'] := GetValue(Path + 'VersionInfo/ProductName/Value', '');
-      StringTable['ProductVersion'] := GetValue(Path + 'VersionInfo/ProductVersion/Value', BuildFileVersionString);
+      StringTable['ProductVersion'] := GetValue(Path + 'VersionInfo/ProductVersion/Value', '');
     end;
 
     SetFileVersionFromVersion;
