@@ -16,9 +16,14 @@ unit StringsPropEditDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, Dialogs, StdCtrls,
-  TextTools, ObjInspStrConsts, ExtCtrls, ButtonPanel, LazUTF8;
-  
+  SysUtils,
+  // LCL
+  Forms, Controls, StdCtrls, ButtonPanel,
+  // LazUtils
+  LazUTF8,
+  // IdeIntf
+  TextTools, ObjInspStrConsts, IDEWindowIntf;
+
 type
 
   { TStringsPropEditorFrm }
@@ -31,6 +36,7 @@ type
     TextGroupBox: TGroupBox;
     Memo: TMemo;
     procedure ClearButtonClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MemoChange(Sender: TObject);
     procedure SortButtonClick(Sender: TObject);
@@ -51,8 +57,13 @@ begin
   StatusLabel.Caption := ois0Lines0Chars;
   SortButton.Caption := oisSort;
   ClearButton.Caption := oisClear;
-
   AddButtons;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TStringsPropEditorFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TStringsPropEditorFrm.ClearButtonClick(Sender: TObject);

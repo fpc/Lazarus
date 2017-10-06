@@ -14,8 +14,11 @@ unit KeyValPropEditDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Dialogs, StdCtrls,
-  TextTools, ObjInspStrConsts, ExtCtrls, ButtonPanel, ValEdit;
+  SysUtils,
+  // LCL
+  Forms, StdCtrls, ButtonPanel, ValEdit,
+  // IdeIntf
+  TextTools, ObjInspStrConsts, IDEWindowIntf;
   
 type
 
@@ -27,6 +30,7 @@ type
     StatusLabel: TLabel;
     SortButton: TButton;
     TextGroupBox: TGroupBox;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure SortButtonClick(Sender: TObject);
   public
@@ -44,6 +48,12 @@ begin
   Caption := oisStringsEditorDialog;
   StatusLabel.Caption := ois0Lines0Chars;
   //SortButton.Caption := oisSort;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TKeyValPropEditorFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TKeyValPropEditorFrm.SortButtonClick(Sender: TObject);

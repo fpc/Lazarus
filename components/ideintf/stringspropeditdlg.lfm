@@ -9,9 +9,10 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   ClientWidth = 400
   Constraints.MinHeight = 160
   Constraints.MinWidth = 180
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object TextGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -19,22 +20,22 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 258
+    Height = 257
     Top = 6
     Width = 388
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    ClientHeight = 240
+    ClientHeight = 253
     ClientWidth = 384
     TabOrder = 0
     object StatusLabel: TLabel
       AnchorSideBottom.Control = TextGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 9
-      Height = 14
-      Top = 220
-      Width = 57
+      Height = 15
+      Top = 232
+      Width = 71
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'StatusLabel'
@@ -45,7 +46,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       AnchorSideRight.Control = SortButton
       AnchorSideBottom.Control = StatusLabel
       Left = 6
-      Height = 208
+      Height = 220
       Top = 6
       Width = 291
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -61,7 +62,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       AnchorSideRight.Control = TextGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 303
-      Height = 23
+      Height = 25
       Top = 6
       Width = 75
       Anchors = [akTop, akRight]
@@ -80,7 +81,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       AnchorSideRight.Side = asrBottom
       Left = 303
       Height = 27
-      Top = 39
+      Top = 37
       Width = 75
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Clear'
@@ -90,9 +91,17 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 270
+    Height = 27
+    Top = 269
     Width = 388
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False

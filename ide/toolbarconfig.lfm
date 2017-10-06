@@ -8,6 +8,7 @@ object ToolBarConfig: TToolBarConfig
   ClientWidth = 696
   Constraints.MinHeight = 350
   Constraints.MinWidth = 500
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter

@@ -32,7 +32,7 @@ uses
   // LazUtils
   Laz2_XMLCfg,
   // IdeIntf
-  ToolBarIntf, IDEImagesIntf,
+  ToolBarIntf, IDEImagesIntf, IDEWindowIntf,
   // IDE
   LazarusIDEStrConsts;
 
@@ -65,6 +65,7 @@ type
     Splitter1: TSplitter;
     TV: TTreeView;
     procedure btnHelpClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lvToolbarDblClick(Sender: TObject);
@@ -180,7 +181,6 @@ begin
   TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 
   btnAddDivider.Caption := '---';
-
   btnAdd.Hint       := lisCoolBarAddSelected;
   btnRemove.Hint    := lisCoolBarRemoveSelected;
   btnMoveUp.Hint    := lisCoolBarMoveSelectedUp;
@@ -197,6 +197,12 @@ begin
   Image := TBitmap.Create;
   SetupCaptions;
   LoadCategories;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TToolBarConfig.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TToolBarConfig.FormDestroy(Sender: TObject);

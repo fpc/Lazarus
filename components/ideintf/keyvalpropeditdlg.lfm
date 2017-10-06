@@ -8,9 +8,10 @@ object KeyValPropEditorFrm: TKeyValPropEditorFrm
   ClientWidth = 400
   Constraints.MinHeight = 160
   Constraints.MinWidth = 180
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.9.0.0'
   object TextGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -18,13 +19,13 @@ object KeyValPropEditorFrm: TKeyValPropEditorFrm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 251
+    Height = 257
     Top = 6
     Width = 388
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    ClientHeight = 247
+    ClientHeight = 253
     ClientWidth = 384
     TabOrder = 0
     object StatusLabel: TLabel
@@ -32,8 +33,8 @@ object KeyValPropEditorFrm: TKeyValPropEditorFrm
       AnchorSideBottom.Side = asrBottom
       Left = 9
       Height = 15
-      Top = 226
-      Width = 74
+      Top = 232
+      Width = 71
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'StatusLabel'
@@ -43,10 +44,10 @@ object KeyValPropEditorFrm: TKeyValPropEditorFrm
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Control = TextGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 268
+      Left = 274
       Height = 25
       Top = 6
-      Width = 110
+      Width = 104
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -60,9 +61,9 @@ object KeyValPropEditorFrm: TKeyValPropEditorFrm
       AnchorSideRight.Control = SortButton
       AnchorSideBottom.Control = StatusLabel
       Left = 6
-      Height = 214
+      Height = 220
       Top = 6
-      Width = 256
+      Width = 262
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       DefaultColWidth = 100
@@ -76,14 +77,14 @@ object KeyValPropEditorFrm: TKeyValPropEditorFrm
       )
       ColWidths = (
         100
-        152
+        158
       )
     end
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 33
-    Top = 263
+    Height = 27
+    Top = 269
     Width = 388
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
