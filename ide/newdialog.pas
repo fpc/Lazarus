@@ -435,7 +435,6 @@ begin
   FillProjectInheritableItemsList;
   CompFilterEdit.Visible := false;
   InheritableComponentsListView.Visible := false;
-  IDEDialogLayoutList.ApplyLayout(Self, 570, 400);
 
   Node:=FindItem(InputHistories.NewFileType);
   if Node=nil then
