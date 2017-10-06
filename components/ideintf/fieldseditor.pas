@@ -16,10 +16,12 @@ unit fieldseditor;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Menus, Graphics,
-  Dialogs, ComCtrls, db, ActnList, StdCtrls, ObjInspStrConsts, ComponentEditors,
-  PropEdits, PropEditUtils, LCLType, ExtCtrls, NewField, FieldsList,
-  types;
+  Classes, SysUtils, types, db,
+  // LCL
+  LCLType, Forms, Controls, Menus, Dialogs, ComCtrls, ActnList, StdCtrls,
+  // IdeIntf
+  ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils,
+  NewField, FieldsList, IDEImagesIntf, IDEWindowIntf;
 
 type
 
@@ -67,6 +69,7 @@ type
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FieldsListBoxKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FormCreate(Sender: TObject);
     procedure NewActnExecute(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
     procedure MoveDownActnExecute(Sender: TObject);
@@ -74,7 +77,6 @@ type
     procedure SelectAllActnExecute(Sender: TObject);
     procedure UnselectAllActnExecute(Sender: TObject);
   protected
-    { protected declarations }
     procedure DoSelected(All: boolean);
     procedure SelectionChanged(AOrderChanged: Boolean = false);
     procedure OnComponentRenamed(AComponent: TComponent);
@@ -83,7 +85,6 @@ type
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
   private
-    { private declarations }
     LinkDataset: TDataset;
     FDesigner: TComponentEditorDesigner;
     FComponentEditor: TFieldsComponentEditor;
@@ -94,7 +95,6 @@ type
     procedure RefreshFieldsListBox(SelectAllNew: boolean);
     function FindChild(ACandidate: TPersistent; out AIndex: Integer): Boolean;
   public
-    { public declarations }
     constructor Create(AOwner: TComponent; ADataset: TDataset;
       ADesigner: TComponentEditorDesigner); reintroduce;
     destructor Destroy; override;
@@ -115,29 +115,7 @@ implementation
 
 {$R *.lfm}
 
-uses
-  IDEImagesIntf;
-
 { TDSFieldsEditorFrm }
-
-procedure TDSFieldsEditorFrm.AddFieldsActnExecute(Sender: TObject);
-var FieldsList: TFieldsListFrm;
-begin
-  try
-    FieldsList :=  TFieldsListFrm.Create(Self, LinkDataset, Designer);
-  except
-    on E:Exception do begin
-      ShowMessage(fesNoFields+^M+fesCheckDSet+^M^M+E.Message);
-      exit;
-    end;
-  end;
-  try
-    FieldsList.ShowModal;
-  finally
-    FieldsList.Free;
-  end;
-  SelectionChanged;
-end;
 
 constructor TDSFieldsEditorFrm.Create(AOwner: TComponent; ADataset: TDataset;
     ADesigner: TComponentEditorDesigner);
@@ -192,6 +170,37 @@ begin
   inherited Destroy;
 end;
 
+procedure TDSFieldsEditorFrm.FormCreate(Sender: TObject);
+begin
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TDSFieldsEditorFrm.FieldsEditorFrmClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+  CloseAction := caFree;
+end;
+
+procedure TDSFieldsEditorFrm.AddFieldsActnExecute(Sender: TObject);
+var FieldsList: TFieldsListFrm;
+begin
+  try
+    FieldsList :=  TFieldsListFrm.Create(Self, LinkDataset, Designer);
+  except
+    on E:Exception do begin
+      ShowMessage(fesNoFields+^M+fesCheckDSet+^M^M+E.Message);
+      exit;
+    end;
+  end;
+  try
+    FieldsList.ShowModal;
+  finally
+    FieldsList.Free;
+  end;
+  SelectionChanged;
+end;
+
 procedure TDSFieldsEditorFrm.DeleteFieldsActnExecute(Sender: TObject);
 var
   PreActive: boolean;
@@ -205,12 +214,6 @@ begin
   EndUpdateSelection;
   if PreActive then
     LinkDataSet.Active := True;
-end;
-
-procedure TDSFieldsEditorFrm.FieldsEditorFrmClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  CloseAction := caFree;
 end;
 
 procedure TDSFieldsEditorFrm.FieldsEditorFrmDestroy(Sender: TObject);

@@ -11,9 +11,12 @@ unit CheckGroupEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, Menus, ComCtrls,
-  ObjInspStrConsts, IDEImagesIntf, ButtonPanel;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, Menus,
+  ComCtrls, ButtonPanel,
+  // IdeIntf
+  ObjInspStrConsts, IDEImagesIntf, IDEWindowIntf;
 
 type
 
@@ -41,6 +44,7 @@ type
     procedure ColumnsEditChange(Sender: TObject);
     procedure CreateItems(Sender: TObject);
     procedure DeleteItem(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ItemClick(Sender: TObject; Index: integer);
     procedure ModifyItem(Sender: TObject);
@@ -84,6 +88,40 @@ end;
 
 { TCheckGroupEditorDlg }
 
+procedure TCheckGroupEditorDlg.FormCreate(Sender: TObject);
+begin
+  ToolBar.Images := IDEImages.Images_16;
+  tbAdd.ImageIndex := IDEImages.LoadImage('laz_add');
+  tbDelete.ImageIndex := IDEImages.LoadImage('laz_delete');
+  tbUp.ImageIndex := IDEImages.LoadImage('arrow_up');
+  tbDown.ImageIndex := IDEImages.LoadImage('arrow_down');
+  tbEdit.ImageIndex := IDEImages.LoadImage('laz_edit');
+
+  Caption := cgCheckGroupEditor;
+  FItemIndex := -1;
+  ColumnsLabel.Caption := cgColumns;
+  DuplicateCheckBox.Caption := cgCheckDuplicate;
+  LabelDisable.Caption := cgDisable;
+  BtnPanel.CloseButton.Caption := sccsTrEdtApply;
+  BtnPanel.CloseButton.Kind := bkCustom;
+  BtnPanel.CloseButton.Glyph := nil;
+  BtnPanel.CloseButton.ModalResult := mrNone;
+  BtnPanel.CloseButton.OnClick := @ApplyCheck;
+
+  tbAdd.Hint := clbAdd;
+  tbDelete.Hint := clbDeleteHint;
+  tbUp.Hint := clbUp;
+  tbDown.Hint := clbDown;
+  tbEdit.Hint := clbModify;
+  Change;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TCheckGroupEditorDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
 procedure TCheckGroupEditorDlg.AddItem(Sender:TObject);
 var 
   strItem: string;
@@ -125,34 +163,6 @@ begin
     if ItemIndex <> -1 then
       FCheck.Controls[ItemIndex].Color := SelectedColor;
   end;
-end;
-
-procedure TCheckGroupEditorDlg.FormCreate(Sender: TObject);
-begin
-  ToolBar.Images := IDEImages.Images_16;
-  tbAdd.ImageIndex := IDEImages.LoadImage('laz_add');
-  tbDelete.ImageIndex := IDEImages.LoadImage('laz_delete');
-  tbUp.ImageIndex := IDEImages.LoadImage('arrow_up');
-  tbDown.ImageIndex := IDEImages.LoadImage('arrow_down');
-  tbEdit.ImageIndex := IDEImages.LoadImage('laz_edit');
-
-  Caption := cgCheckGroupEditor;
-  FItemIndex := -1;
-  ColumnsLabel.Caption := cgColumns;
-  DuplicateCheckBox.Caption := cgCheckDuplicate;
-  LabelDisable.Caption := cgDisable;
-  BtnPanel.CloseButton.Caption := sccsTrEdtApply;
-  BtnPanel.CloseButton.Kind := bkCustom;
-  BtnPanel.CloseButton.Glyph := nil;
-  BtnPanel.CloseButton.ModalResult := mrNone;
-  BtnPanel.CloseButton.OnClick := @ApplyCheck;
-
-  tbAdd.Hint := clbAdd;
-  tbDelete.Hint := clbDeleteHint;
-  tbUp.Hint := clbUp;
-  tbDown.Hint := clbDown;
-  tbEdit.Hint := clbModify;
-  Change;
 end;
 
 procedure TCheckGroupEditorDlg.MoveUpItem(Sender:TObject);

@@ -7,7 +7,9 @@ object FieldsListFrm: TFieldsListFrm
   Caption = 'FieldsListFrm'
   ClientHeight = 271
   ClientWidth = 173
-  LCLVersion = '1.7'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  LCLVersion = '1.9.0.0'
   object BitBtnOk: TBitBtn
     Left = 9
     Height = 25

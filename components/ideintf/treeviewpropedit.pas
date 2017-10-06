@@ -18,9 +18,11 @@ unit TreeViewPropEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  PropEdits, Componenteditors, StdCtrls, ComCtrls, IDEImagesIntf,
-  ObjInspStrConsts, ExtCtrls;
+  Classes, SysUtils,
+  // LCL
+  Forms, Dialogs, Buttons, Controls, StdCtrls, ComCtrls,
+  // IdeIntf
+  PropEdits, Componenteditors, ObjInspStrConsts, IDEImagesIntf, IDEWindowIntf;
 
 type
 
@@ -53,6 +55,7 @@ type
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
@@ -109,28 +112,6 @@ end;
 
 { TTreeViewItemsEditorForm }
 
-procedure TTreeViewItemsEditorForm.BtnNewItemClick(Sender: TObject);
-var
-  S: String;
-begin
-  S := sccsTrEdtItem + IntToStr(TreeView1.Items.Count);
-  if (Sender as TComponent).Tag = 1 then
-    TreeView1.Selected := TreeView1.Items.Add(TreeView1.Selected, S)
-  else
-    TreeView1.Selected := TreeView1.Items.AddChild(TreeView1.Selected, S);
-
-  GroupBox2.Enabled := TreeView1.Items.Count > 0;
-  
-  edtText.SetFocus;
-  edtText.SelectAll;
-end;
-
-procedure TTreeViewItemsEditorForm.Edit1Change(Sender: TObject);
-begin
-  if Assigned(TreeView1.Selected) then
-    TreeView1.Selected.Text := edtText.Text;
-end;
-
 procedure TTreeViewItemsEditorForm.FormCreate(Sender: TObject);
 begin
   Caption := sccsTrEdtCaption;
@@ -152,9 +133,38 @@ begin
   LabelImageIndex.Caption := sccsTrEdtLabelImageIndex;
   LabelSelectedIndex.Caption := sccsTrEdtLabelSelIndex;
   LabelStateIndex.Caption := sccsTrEdtLabelStateIndex;
-  
+
   OpenDialog1.Title := sccsTrEdtOpenDialog;
   SaveDialog1.Title := sccsTrEdtSaveDialog;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TTreeViewItemsEditorForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TTreeViewItemsEditorForm.BtnNewItemClick(Sender: TObject);
+var
+  S: String;
+begin
+  S := sccsTrEdtItem + IntToStr(TreeView1.Items.Count);
+  if (Sender as TComponent).Tag = 1 then
+    TreeView1.Selected := TreeView1.Items.Add(TreeView1.Selected, S)
+  else
+    TreeView1.Selected := TreeView1.Items.AddChild(TreeView1.Selected, S);
+
+  GroupBox2.Enabled := TreeView1.Items.Count > 0;
+  
+  edtText.SetFocus;
+  edtText.SelectAll;
+end;
+
+procedure TTreeViewItemsEditorForm.Edit1Change(Sender: TObject);
+begin
+  if Assigned(TreeView1.Selected) then
+    TreeView1.Selected.Text := edtText.Text;
 end;
 
 procedure TTreeViewItemsEditorForm.MoveUpBtnClick(Sender: TObject);

@@ -27,9 +27,12 @@ unit ImageListEditor;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, Buttons, ExtCtrls, Menus, LCLProc, ColorBox, ExtDlgs,
-  IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, ButtonPanel;
+  Classes, SysUtils, Math,
+  // LCL
+  LCLProc, Forms, Controls, Graphics, GraphType, Dialogs, ComCtrls, StdCtrls,
+  ExtCtrls, ExtDlgs, ColorBox, Buttons, ButtonPanel,
+  // IdeIntf
+  IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
 
 type
   TGlyphAdjustment = (gaNone, gaStretch, gaCrop, gaCenter);
@@ -72,6 +75,7 @@ type
     procedure btnSaveAllClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure ColorBoxTransparentClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PreviewPaint(Sender: TObject);
@@ -105,9 +109,6 @@ type
 
 
 implementation
-
-uses
-  Math, GraphType;
 
 {$R *.lfm}
 
@@ -221,6 +222,13 @@ begin
   
   OpenDialog.Title := sccsILEdtOpenDialog;
   SaveDialog.Title := sccsILEdtSaveDialog;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TImageListEditorDlg.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TImageListEditorDlg.FormDestroy(Sender: TObject);

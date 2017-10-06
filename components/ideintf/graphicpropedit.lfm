@@ -9,25 +9,26 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   ClientWidth = 436
   Constraints.MinHeight = 180
   Constraints.MinWidth = 200
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object GroupBox1: TGroupBox
     Left = 6
-    Height = 334
+    Height = 336
     Top = 6
     Width = 424
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'Picture'
-    ClientHeight = 315
+    ClientHeight = 309
     ClientWidth = 420
     TabOrder = 0
     object ScrollBox: TScrollBox
       AnchorSideRight.Control = GroupBox1
       AnchorSideBottom.Control = GroupBox1
       Left = 6
-      Height = 303
+      Height = 297
       Top = 6
       Width = 322
       HorzScrollBar.Page = 100
@@ -36,8 +37,8 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       VertScrollBar.Tracking = True
       Align = alClient
       BorderSpacing.Around = 6
-      ClientHeight = 301
-      ClientWidth = 320
+      ClientHeight = 293
+      ClientWidth = 318
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
@@ -54,17 +55,17 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     end
     object LoadSaveBtnPanel: TPanel
       Left = 334
-      Height = 315
+      Height = 309
       Top = 0
       Width = 86
       Align = alRight
       BevelOuter = bvNone
-      ClientHeight = 315
+      ClientHeight = 309
       ClientWidth = 86
       TabOrder = 1
       object LoadButton: TButton
         Left = 6
-        Height = 29
+        Height = 25
         Top = 6
         Width = 74
         Action = FileOpenAction
@@ -80,8 +81,8 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
         AnchorSideRight.Control = LoadButton
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 29
-        Top = 41
+        Height = 25
+        Top = 37
         Width = 74
         Action = FileSaveAction
         Align = alTop
@@ -96,8 +97,8 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
         AnchorSideRight.Control = LoadButton
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 29
-        Top = 76
+        Height = 25
+        Top = 68
         Width = 74
         Action = ClearAction
         Align = alTop
@@ -112,8 +113,8 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
         AnchorSideRight.Control = LoadButton
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 29
-        Top = 111
+        Height = 25
+        Top = 99
         Width = 74
         Action = CopyAction
         Anchors = [akTop, akLeft, akRight]
@@ -128,8 +129,8 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
         AnchorSideRight.Control = LoadButton
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 29
-        Top = 146
+        Height = 25
+        Top = 130
         Width = 74
         Action = PasteAction
         Anchors = [akTop, akLeft, akRight]
@@ -141,8 +142,8 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   end
   object OkCancelButtonPanel: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 346
+    Height = 27
+    Top = 348
     Width = 424
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

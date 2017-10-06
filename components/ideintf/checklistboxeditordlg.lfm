@@ -10,12 +10,13 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
   ClientWidth = 445
   Constraints.MinHeight = 100
   Constraints.MinWidth = 200
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.9.0.0'
   object FCheck: TCheckListBox
     Left = 0
-    Height = 232
+    Height = 231
     Top = 24
     Width = 445
     Align = alClient
@@ -49,34 +50,34 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     end
     object ToolButton3: TToolButton
       Left = 47
+      Height = 22
       Top = 2
-      Width = 4
       Caption = 'ToolButton3'
       Style = tbsDivider
     end
     object tbUp: TToolButton
-      Left = 51
+      Left = 52
       Top = 2
       Action = actMoveUp
       ParentShowHint = False
       ShowHint = True
     end
     object tbDown: TToolButton
-      Left = 74
+      Left = 75
       Top = 2
       Action = actMoveDown
       ParentShowHint = False
       ShowHint = True
     end
     object ToolButton6: TToolButton
-      Left = 97
+      Left = 98
+      Height = 22
       Top = 2
-      Width = 4
       Caption = 'ToolButton6'
       Style = tbsDivider
     end
     object tbEdit: TToolButton
-      Left = 101
+      Left = 103
       Top = 2
       Action = actEdit
       ParentShowHint = False
@@ -85,9 +86,17 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 262
+    Height = 27
+    Top = 261
     Width = 433
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
     ShowBevel = False
   end

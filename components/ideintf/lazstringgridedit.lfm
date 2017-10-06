@@ -8,20 +8,21 @@ object StringGridEditorDlg: TStringGridEditorDlg
   ClientWidth = 520
   Constraints.MinHeight = 270
   Constraints.MinWidth = 340
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.9.0.0'
   object GroupBox: TGroupBox
     AnchorSideBottom.Control = BtnOK
     Left = 6
-    Height = 276
+    Height = 275
     Top = 6
     Width = 508
     Align = alClient
     Anchors = [akRight]
     BorderSpacing.Around = 6
     Caption = 'String Grid'
-    ClientHeight = 258
+    ClientHeight = 248
     ClientWidth = 504
     TabOrder = 0
     object LabelMove: TLabel
@@ -32,8 +33,8 @@ object StringGridEditorDlg: TStringGridEditorDlg
       AnchorSideRight.Control = GroupBox
       AnchorSideRight.Side = asrBottom
       Left = 417
-      Height = 14
-      Top = 181
+      Height = 29
+      Top = 187
       Width = 87
       Alignment = taCenter
       Anchors = [akTop, akLeft, akRight]
@@ -48,9 +49,11 @@ object StringGridEditorDlg: TStringGridEditorDlg
       AnchorSideRight.Control = ArrowUp
       Left = 421
       Height = 26
-      Top = 129
+      Top = 135
       Width = 26
       Anchors = [akTop, akRight]
+      Constraints.MinHeight = 8
+      Constraints.MinWidth = 8
       OnClick = SwapRowCol
     end
     object ArrowRight: TArrow
@@ -60,9 +63,11 @@ object StringGridEditorDlg: TStringGridEditorDlg
       AnchorSideTop.Side = asrBottom
       Left = 473
       Height = 26
-      Top = 129
+      Top = 135
       Width = 26
       ArrowType = atRight
+      Constraints.MinHeight = 8
+      Constraints.MinWidth = 8
       OnClick = SwapRowCol
     end
     object ArrowDown: TArrow
@@ -72,9 +77,11 @@ object StringGridEditorDlg: TStringGridEditorDlg
       AnchorSideTop.Side = asrBottom
       Left = 447
       Height = 26
-      Top = 155
+      Top = 161
       Width = 26
       ArrowType = atDown
+      Constraints.MinHeight = 8
+      Constraints.MinWidth = 8
       OnClick = SwapRowCol
     end
     object ArrowUp: TArrow
@@ -84,16 +91,18 @@ object StringGridEditorDlg: TStringGridEditorDlg
       AnchorSideTop.Side = asrBottom
       Left = 447
       Height = 26
-      Top = 103
+      Top = 109
       Width = 26
       ArrowType = atUp
       BorderSpacing.Top = 10
+      Constraints.MinHeight = 8
+      Constraints.MinWidth = 8
       OnClick = SwapRowCol
     end
     object StringGrid: TStringGrid
       AnchorSideRight.Control = LoadSavePanel
       Left = 6
-      Height = 246
+      Height = 236
       Top = 6
       Width = 405
       Align = alLeft
@@ -110,20 +119,20 @@ object StringGridEditorDlg: TStringGridEditorDlg
       AnchorSideRight.Control = GroupBox
       AnchorSideRight.Side = asrBottom
       Left = 417
-      Height = 93
+      Height = 99
       Top = 0
       Width = 87
       Anchors = [akTop, akRight]
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 93
+      ClientHeight = 99
       ClientWidth = 87
-      TabOrder = 5
+      TabOrder = 1
       object BtnLoad: TButton
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 23
+        Height = 25
         Top = 6
         Width = 75
         Align = alTop
@@ -137,8 +146,8 @@ object StringGridEditorDlg: TStringGridEditorDlg
       object BtnSave: TButton
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 35
+        Height = 25
+        Top = 37
         Width = 75
         Align = alTop
         AutoSize = True
@@ -150,8 +159,8 @@ object StringGridEditorDlg: TStringGridEditorDlg
       object BtnClean: TButton
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 64
+        Height = 25
+        Top = 68
         Width = 75
         Align = alTop
         AutoSize = True
@@ -164,20 +173,20 @@ object StringGridEditorDlg: TStringGridEditorDlg
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 38
-    Top = 288
+    Height = 39
+    Top = 287
     Width = 520
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 38
+    ClientHeight = 39
     ClientWidth = 520
     TabOrder = 1
     object BtnHelp: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 439
-      Height = 26
+      Height = 27
       Top = 6
       Width = 75
       Align = alRight
@@ -186,13 +195,12 @@ object StringGridEditorDlg: TStringGridEditorDlg
       Caption = '&Help'
       Constraints.MinWidth = 75
       Kind = bkHelp
-      NumGlyphs = 0
       TabOrder = 0
     end
     object BtnApply: TBitBtn
       AnchorSideBottom.Side = asrBottom
       Left = 358
-      Height = 26
+      Height = 27
       Top = 6
       Width = 75
       Align = alRight
@@ -200,16 +208,15 @@ object StringGridEditorDlg: TStringGridEditorDlg
       BorderSpacing.Around = 6
       Caption = '&Apply'
       Constraints.MinWidth = 75
-      NumGlyphs = 0
       OnClick = BtnApplyClick
       TabOrder = 1
     end
     object BtnCancel: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 275
-      Height = 26
+      Left = 269
+      Height = 27
       Top = 6
-      Width = 77
+      Width = 83
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -217,13 +224,12 @@ object StringGridEditorDlg: TStringGridEditorDlg
       Constraints.MinWidth = 75
       Kind = bkCancel
       ModalResult = 2
-      NumGlyphs = 0
       TabOrder = 2
     end
     object BtnOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 194
-      Height = 26
+      Left = 188
+      Height = 27
       Top = 6
       Width = 75
       Align = alRight
@@ -234,7 +240,6 @@ object StringGridEditorDlg: TStringGridEditorDlg
       Default = True
       Kind = bkOK
       ModalResult = 1
-      NumGlyphs = 0
       TabOrder = 3
     end
   end

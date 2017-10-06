@@ -17,9 +17,12 @@ unit GraphicPropEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, ButtonPanel, ExtDlgs, ActnList, StdActns, Clipbrd,
-  IDEDialogs, ObjInspStrConsts;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ButtonPanel, ExtDlgs,
+  ActnList, StdActns, Clipbrd,
+  // IdeIntf
+  IDEDialogs, ObjInspStrConsts, IDEWindowIntf;
 
 type
 
@@ -46,6 +49,7 @@ type
     ScrollBox: TScrollBox;
     procedure CopyActionExecute(Sender: TObject);
     procedure CopyActionUpdate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure ImagePreviewPaintBackground({%H-}ASender: TObject; ACanvas: TCanvas;
       ARect: TRect);
     procedure PasteActionExecute(Sender: TObject);
@@ -90,6 +94,13 @@ begin
   OpenDialog.Title:=oisPEOpenImageFile;
   SaveDialog.Title:=oisPESaveImageAs;
   ImagePreview.OnPictureChanged:=@PictureChanged;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TGraphicPropertyEditorForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TGraphicPropertyEditorForm.ClearActionExecute(Sender: TObject);

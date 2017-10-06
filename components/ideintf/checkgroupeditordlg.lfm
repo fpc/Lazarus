@@ -9,17 +9,18 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
   Caption = 'CheckGroupEditorDlg'
   ClientHeight = 300
   ClientWidth = 608
+  OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.9.0.0'
   object ColumnsLabel: TLabel
     AnchorSideLeft.Control = FCheck
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = DuplicateCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 372
-    Height = 18
-    Top = 76
-    Width = 93
+    Height = 15
+    Top = 74
+    Width = 85
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'ColumnsLabel'
@@ -30,7 +31,7 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     AnchorSideTop.Control = ToolBar
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 220
+    Height = 229
     Top = 32
     Width = 360
     Align = alLeft
@@ -58,7 +59,7 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 372
-    Height = 22
+    Height = 20
     Top = 48
     Width = 230
     Anchors = [akTop, akLeft, akRight]
@@ -75,8 +76,8 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     AnchorSideTop.Control = ColumnsLabel
     AnchorSideTop.Side = asrBottom
     Left = 375
-    Height = 23
-    Top = 97
+    Height = 29
+    Top = 92
     Width = 34
     BorderSpacing.Left = 3
     BorderSpacing.Top = 3
@@ -93,8 +94,8 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
     AnchorSideBottom.Control = ColumnsEdit
     AnchorSideBottom.Side = asrBottom
     Left = 409
-    Height = 23
-    Top = 97
+    Height = 29
+    Top = 92
     Width = 17
     Anchors = [akTop, akLeft, akBottom]
     Associate = ColumnsEdit
@@ -114,63 +115,63 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
       Left = 1
       Top = 2
       Caption = 'tbAdd'
+      OnClick = AddItem
       ParentShowHint = False
       ShowHint = True
-      OnClick = AddItem
     end
     object tbDelete: TToolButton
       Left = 24
       Top = 2
       Caption = 'tbDelete'
+      OnClick = DeleteItem
       ParentShowHint = False
       ShowHint = True
-      OnClick = DeleteItem
     end
     object ToolButton3: TToolButton
       Left = 47
+      Height = 22
       Top = 2
-      Width = 3
       Caption = 'ToolButton3'
       Style = tbsDivider
     end
     object tbUp: TToolButton
-      Left = 50
+      Left = 52
       Top = 2
       Caption = 'tbUp'
+      OnClick = MoveUpItem
       ParentShowHint = False
       ShowHint = True
-      OnClick = MoveUpItem
     end
     object tbDown: TToolButton
-      Left = 73
+      Left = 75
       Top = 2
       Caption = 'tbDown'
+      OnClick = MoveDownItem
       ParentShowHint = False
       ShowHint = True
-      OnClick = MoveDownItem
     end
     object ToolButton6: TToolButton
-      Left = 96
+      Left = 98
+      Height = 22
       Top = 2
-      Width = 3
       Caption = 'ToolButton6'
       Style = tbsDivider
     end
     object tbEdit: TToolButton
-      Left = 99
+      Left = 103
       Top = 2
       Caption = 'tbEdit'
+      OnClick = ModifyItem
       ParentShowHint = False
       ShowHint = True
-      OnClick = ModifyItem
     end
     object LabelDisable: TLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Side = asrBottom
-      Left = 122
-      Height = 18
+      Left = 126
+      Height = 15
       Top = 2
-      Width = 85
+      Width = 77
       Caption = 'LabelDisable'
       Font.Color = clHighlight
       ParentColor = False
@@ -179,9 +180,17 @@ object CheckGroupEditorDlg: TCheckGroupEditorDlg
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 258
+    Height = 27
+    Top = 267
     Width = 596
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 5
     ShowBevel = False
   end

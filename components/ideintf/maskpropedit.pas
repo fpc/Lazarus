@@ -18,9 +18,13 @@ unit MaskPropEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, LazUTF8, LazFileUtils, MaskEdit, LazIDEIntf,
-  PropEdits, ComponentEditors, ObjInspStrConsts, ButtonPanel;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ButtonPanel, MaskEdit,
+  // LazUtils
+  LazUTF8, LazFileUtils,
+  // IdeIntf
+  LazIDEIntf, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
 
 type
 
@@ -40,6 +44,7 @@ type
     TestMaskEdit: TMaskEdit;
     OpenDialog1: TOpenDialog;
     TestInputPanel: TPanel;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure LoadSampleMasksButtonClick(Sender: TObject);
     procedure SampleMasksListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
@@ -125,6 +130,32 @@ begin
 end;
 
 { TMaskEditorForm }
+
+procedure TMaskEditorForm.MaskEditorFormCreate(Sender: TObject);
+var
+  aDemFile: string;
+begin
+  LoadSampleMasksButton.Caption := oisMasks;
+  SaveLiteralCheckBox.Caption := oisSaveLiteralCharacters;
+  InputMaskLabel.Caption := oisInputMask;
+  SampleMasksLabel.Caption := oisSampleMasks;
+  CharactersForBlanksLabel.Caption := oisCharactersForBlanks;
+  TestInputLabel.Caption := oisTestInput;
+
+  if LazarusIDE<>nil then
+    aDemFile:=LazarusIDE.GetPrimaryConfigPath
+  else
+    aDemFile:=ExtractFileDir(ParamStrUTF8(0));
+  aDemFile:=CleanAndExpandDirectory(aDemFile)+'maskeditmasks.txt';
+  if FileExistsUTF8(aDemFile) then
+    LoadDEMFile(aDemFile);
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TMaskEditorForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
 
 procedure TMaskEditorForm.LoadSampleMasksButtonClick(Sender: TObject);
 begin
@@ -234,26 +265,6 @@ begin
       AMaskCaption, AMaskExample, AEditMask);
     EditMask := AEditMask;
   end;
-end;
-
-procedure TMaskEditorForm.MaskEditorFormCreate(Sender: TObject);
-var
-  aDemFile: string;
-begin
-  LoadSampleMasksButton.Caption := oisMasks;
-  SaveLiteralCheckBox.Caption := oisSaveLiteralCharacters;
-  InputMaskLabel.Caption := oisInputMask;
-  SampleMasksLabel.Caption := oisSampleMasks;
-  CharactersForBlanksLabel.Caption := oisCharactersForBlanks;
-  TestInputLabel.Caption := oisTestInput;
-
-  if LazarusIDE<>nil then
-    aDemFile:=LazarusIDE.GetPrimaryConfigPath
-  else
-    aDemFile:=ExtractFileDir(ParamStrUTF8(0));
-  aDemFile:=CleanAndExpandDirectory(aDemFile)+'maskeditmasks.txt';
-  if FileExistsUTF8(aDemFile) then
-    LoadDEMFile(aDemFile);
 end;
 
 function TMaskEditorForm.GetEditMask: string;

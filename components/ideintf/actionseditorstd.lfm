@@ -10,15 +10,16 @@ object FormActStandard: TFormActStandard
   ClientWidth = 330
   KeyPreview = True
   OnClose = FormActStandardClose
+  OnCreate = FormCreate
   Position = poOwnerFormCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.9.0.0'
   object LabelHeadLine: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 14
+    Height = 15
     Top = 6
-    Width = 70
+    Width = 89
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'LabelHeadLine'
@@ -32,15 +33,14 @@ object FormActStandard: TFormActStandard
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 422
-    Top = 23
+    Height = 420
+    Top = 24
     Width = 318
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoExpand = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
     BorderSpacing.Right = 6
-    DefaultItemHeight = 15
     HideSelection = False
     HotTrack = True
     ReadOnly = True
@@ -52,9 +52,17 @@ object FormActStandard: TFormActStandard
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 451
+    Height = 27
+    Top = 450
     Width = 318
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False

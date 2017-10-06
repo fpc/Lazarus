@@ -14,7 +14,9 @@ interface
 
 uses
   Classes, SysUtils, RTTIUtils, TypInfo,
+  // LCL
   Forms, StdCtrls, Buttons, ExtCtrls, ButtonPanel,
+  // IdeIntf
   IDEWindowIntf, IDEImagesIntf, ObjInspStrConsts;
 
 type
@@ -71,6 +73,26 @@ implementation
 
 { TSelectPropertiesForm }
 
+procedure TSelectPropertiesForm.SelectPropertiesFormCreate(Sender: TObject);
+begin
+  BAdd.Caption:=ilesAdd;
+  TIDEImages.AssignImage(BAdd.Glyph, 'laz_add');
+  BDelete.Caption:=oisDelete;
+  TIDEImages.AssignImage(BDelete.Glyph, 'laz_delete');
+  BClear.Caption:=oisClear;
+  TIDEImages.AssignImage(BClear.Glyph, 'menu_clean');
+  LComponents.Caption:=oisBtnComponents;
+  LProperties.Caption:=oisBtnProperties;
+  LLBSelected.Caption:=oisSelectedProperties;
+  IDEDialogLayoutList.ApplyLayout(Self,485,460);
+end;
+
+procedure TSelectPropertiesForm.SelectPropertiesFormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
 procedure TSelectPropertiesForm.SetPropComponent(const AValue: TComponent);
 begin
   if FPropComponent=AValue then exit;
@@ -87,26 +109,6 @@ end;
 procedure TSelectPropertiesForm.LBPropertiesDblClick(Sender: TObject);
 begin
   AddSelectedProperties;
-end;
-
-procedure TSelectPropertiesForm.SelectPropertiesFormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  IDEDialogLayoutList.SaveLayout(Self);
-end;
-
-procedure TSelectPropertiesForm.SelectPropertiesFormCreate(Sender: TObject);
-begin
-  BAdd.Caption:=ilesAdd;
-  TIDEImages.AssignImage(BAdd.Glyph, 'laz_add');
-  BDelete.Caption:=oisDelete;
-  TIDEImages.AssignImage(BDelete.Glyph, 'laz_delete');
-  BClear.Caption:=oisClear;
-  TIDEImages.AssignImage(BClear.Glyph, 'menu_clean');
-  LComponents.Caption:=oisBtnComponents;
-  LProperties.Caption:=oisBtnProperties;
-  LLBSelected.Caption:=oisSelectedProperties;
-  IDEDialogLayoutList.ApplyLayout(Self,485,460);
 end;
 
 procedure TSelectPropertiesForm.BAddClick(Sender: TObject);

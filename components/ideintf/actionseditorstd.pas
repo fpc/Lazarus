@@ -25,9 +25,11 @@ unit ActionsEditorStd;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, Buttons, ActnList, StdActns, DBActns, LCLType,
-  LCLProc, ActionsEditor, ObjInspStrConsts, ExtCtrls, ButtonPanel;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, StdCtrls, ComCtrls, StdActns, DBActns, ButtonPanel,
+  // IdeIntf
+  ActionsEditor, ObjInspStrConsts, IDEWindowIntf;
 
 type
 
@@ -39,6 +41,7 @@ type
     BtnPanel: TButtonPanel;
     procedure FormActStandardClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure btnOKClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure tvActStdListDblClick(Sender: TObject);
   private
     FResultActionProc: TResultActProc;
@@ -58,9 +61,15 @@ implementation
 
 { TFormActStandard }
 
+procedure TFormActStandard.FormCreate(Sender: TObject);
+begin
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
 procedure TFormActStandard.FormActStandardClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   CloseAction := caFree;
 end;
 

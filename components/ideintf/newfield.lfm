@@ -9,10 +9,11 @@ object NewFieldFrm: TNewFieldFrm
   Caption = 'Dialog'
   ClientHeight = 439
   ClientWidth = 383
+  OnClose = FormClose
   OnCreate = FormCreate
   ParentFont = True
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object Panel2: TPanel
     Left = 0
     Height = 145
@@ -30,14 +31,14 @@ object NewFieldFrm: TNewFieldFrm
       Width = 365
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Field properties'
-      ClientHeight = 115
+      ClientHeight = 105
       ClientWidth = 361
       TabOrder = 0
       object Label1: TLabel
         Left = 6
         Height = 15
         Top = 11
-        Width = 35
+        Width = 40
         Caption = '&Name:'
         FocusControl = EditName
         ParentColor = False
@@ -46,7 +47,7 @@ object NewFieldFrm: TNewFieldFrm
         Left = 6
         Height = 15
         Top = 59
-        Width = 30
+        Width = 32
         Caption = '&Type:'
         FocusControl = SelectType
         ParentColor = False
@@ -55,14 +56,14 @@ object NewFieldFrm: TNewFieldFrm
         Left = 6
         Height = 15
         Top = 83
-        Width = 25
+        Width = 29
         Caption = '&Size:'
         FocusControl = EditSize
         ParentColor = False
       end
       object EditName: TEdit
         Left = 158
-        Height = 25
+        Height = 29
         Top = 8
         Width = 168
         OnChange = EditNameChange
@@ -75,7 +76,7 @@ object NewFieldFrm: TNewFieldFrm
         Height = 29
         Top = 56
         Width = 168
-        ItemHeight = 0
+        ItemHeight = 21
         Items.Strings = (
           'String'
           'Integer'
@@ -98,7 +99,7 @@ object NewFieldFrm: TNewFieldFrm
       end
       object EditSize: TEdit
         Left = 158
-        Height = 25
+        Height = 29
         Top = 80
         Width = 168
         Color = clBtnFace
@@ -109,14 +110,14 @@ object NewFieldFrm: TNewFieldFrm
         Left = 6
         Height = 15
         Top = 35
-        Width = 102
+        Width = 113
         Caption = 'Co&mponent Name:'
         FocusControl = EditCompName
         ParentColor = False
       end
       object EditCompName: TEdit
         Left = 158
-        Height = 25
+        Height = 29
         Top = 32
         Width = 168
         OnChange = EditCompNameChange
@@ -144,14 +145,14 @@ object NewFieldFrm: TNewFieldFrm
       Width = 365
       Anchors = [akTop, akLeft, akRight, akBottom]
       Caption = 'Lookup definition'
-      ClientHeight = 112
+      ClientHeight = 102
       ClientWidth = 361
       TabOrder = 0
       object Label4: TLabel
         Left = 6
         Height = 15
         Top = 10
-        Width = 54
+        Width = 58
         Caption = '&Key fields'
         FocusControl = SelectKeyFields
         ParentColor = False
@@ -160,7 +161,7 @@ object NewFieldFrm: TNewFieldFrm
         Left = 6
         Height = 15
         Top = 58
-        Width = 67
+        Width = 75
         Caption = 'L&ookup keys'
         FocusControl = SelectLookupKeys
         ParentColor = False
@@ -169,7 +170,7 @@ object NewFieldFrm: TNewFieldFrm
         Left = 6
         Height = 15
         Top = 82
-        Width = 69
+        Width = 75
         Caption = '&Result Fields'
         FocusControl = SelectResultField
         ParentColor = False
@@ -178,16 +179,16 @@ object NewFieldFrm: TNewFieldFrm
         Left = 6
         Height = 15
         Top = 34
-        Width = 43
+        Width = 47
         Caption = 'Dataset'
         ParentColor = False
       end
       object SelectKeyFields: TComboBox
         Left = 158
-        Height = 27
+        Height = 29
         Top = 7
         Width = 168
-        ItemHeight = 0
+        ItemHeight = 21
         OnChange = SelectKeyFieldsChange
         ParentShowHint = False
         ShowHint = True
@@ -195,21 +196,21 @@ object NewFieldFrm: TNewFieldFrm
       end
       object SelectLookupKeys: TComboBox
         Left = 158
-        Height = 27
+        Height = 29
         Top = 55
         Width = 168
         Enabled = False
-        ItemHeight = 0
+        ItemHeight = 21
         OnChange = SelectLookupKeysChange
         TabOrder = 2
       end
       object SelectResultField: TComboBox
         Left = 158
-        Height = 27
+        Height = 29
         Top = 79
         Width = 168
         Enabled = False
-        ItemHeight = 0
+        ItemHeight = 21
         OnChange = SelectResultFieldChange
         TabOrder = 3
       end
@@ -218,7 +219,7 @@ object NewFieldFrm: TNewFieldFrm
         Height = 29
         Top = 31
         Width = 168
-        ItemHeight = 0
+        ItemHeight = 15
         OnChange = DataSetsComboChange
         ParentShowHint = False
         ShowHint = True
@@ -266,7 +267,7 @@ object NewFieldFrm: TNewFieldFrm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 31
+      ClientHeight = 21
       ClientWidth = 365
       Columns = 3
       ItemIndex = 0
@@ -281,8 +282,8 @@ object NewFieldFrm: TNewFieldFrm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 397
+    Height = 35
+    Top = 398
     Width = 371
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

@@ -5,7 +5,12 @@ unit CollectionPropEditForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, ComCtrls, StdCtrls, ActnList, LCLType;
+  Classes, SysUtils,
+  // LCL
+  LCLType, LCLProc, Forms, Controls, Dialogs, ComCtrls, StdCtrls, ActnList,
+  // IdeIntf
+  ObjInspStrConsts, PropEditUtils, IDEImagesIntf, IDEWindowIntf;
+
 
 type
   { TCollectionPropertyEditorForm }
@@ -27,6 +32,7 @@ type
     procedure actDelExecute(Sender: TObject);
     procedure actMoveUpDownExecute(Sender: TObject);
     procedure CollectionListBoxClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -60,8 +66,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Controls, Dialogs, LCLProc, IDEImagesIntf, ObjInspStrConsts, PropEdits,
-  PropEditUtils;
+  PropEdits;
 
 type
   TPersistentAccess = class(TPersistent)
@@ -86,6 +91,13 @@ begin
   actDel.Hint := oiColEditDelete;
   actMoveUp.Hint := oiColEditUp;
   actMoveDown.Hint := oiColEditDown;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TCollectionPropertyEditorForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TCollectionPropertyEditorForm.FormDestroy(Sender: TObject);

@@ -16,9 +16,11 @@ unit NewField;
 interface
 
 uses
-  Classes, Math, SysUtils, LCLIntf, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, ButtonPanel, DB, ObjInspStrConsts,
-  ComponentEditors, PropEdits, PropEditUtils, TypInfo;
+  Classes, SysUtils, TypInfo, Math, DB,
+  // LCL
+  Forms, Dialogs, Graphics, Controls, ExtCtrls, StdCtrls, ButtonPanel,
+  // IdeIntf
+  ObjInspStrConsts, ComponentEditors, PropEdits, IDEWindowIntf;
 
 type
 
@@ -52,6 +54,7 @@ type
     procedure DataSetsComboChange(Sender: TObject);
     procedure EditCompNameChange(Sender: TObject);
     procedure EditNameChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure OKBtnClick(Sender: TObject);
     procedure RadioGroup1Click(Sender: TObject);
     procedure SelectKeyFieldsChange(Sender: TObject);
@@ -120,21 +123,7 @@ begin
   if F <> '' then AList.Add(F);
 end;
 
-function TNewFieldFrm.CreateField(fType: TFieldType; FName: string): TField;
-begin
-  Result := Nil;
-  if DefaultFieldClasses[fType] <> Nil then begin
-    Result := DefaultFieldClasses[fType].Create(LinkDataSet.Owner);
-    Result.FieldName := fName;
-    Result.Name := PersistentName;
-    try
-      if (EditSize.Enabled) and (Trim(EditSize.Text)<> '') then
-         Result.Size := StrToInt(EditSize.Text);
-    except
-    end;
-    Result.DataSet := LinkDataSet;
-  end;
-end;
+{ TNewFieldFrm }
 
 constructor TNewFieldFrm.Create(AOwner: TComponent; ADataset: TDataset;
   ADesigner: TComponentEditorDesigner);
@@ -147,25 +136,10 @@ begin
   UpdateLookupDatasets(Self);
 end;
 
-procedure TNewFieldFrm.DataSetsComboChange(Sender: TObject);
+destructor TNewFieldFrm.Destroy;
 begin
-  UpdateResultFields;
-  SetButtons;
-end ;
-
-procedure TNewFieldFrm.EditCompNameChange(Sender: TObject);
-begin
-  SetButtons;
+  inherited Destroy;
 end;
-
-procedure TNewFieldFrm.EditNameChange(Sender: TObject);
-begin
-  if Trim(EditName.Text) <> '' then
-    PersistentName := CreateFieldName(LinkDataset.Name + EditName.Text)
-  else
-    PersistentName := '';
-  SetButtons;
-end ;
 
 procedure TNewFieldFrm.FormCreate(Sender: TObject);
 var i: integer;
@@ -212,7 +186,49 @@ begin
     RadioGroup1.ItemIndex := 0;
 
   RadioGroup1Click(Nil);
+  IDEDialogLayoutList.ApplyLayout(Self);
 end;
+
+procedure TNewFieldFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+function TNewFieldFrm.CreateField(fType: TFieldType; FName: string): TField;
+begin
+  Result := Nil;
+  if DefaultFieldClasses[fType] <> Nil then begin
+    Result := DefaultFieldClasses[fType].Create(LinkDataSet.Owner);
+    Result.FieldName := fName;
+    Result.Name := PersistentName;
+    try
+      if (EditSize.Enabled) and (Trim(EditSize.Text)<> '') then
+         Result.Size := StrToInt(EditSize.Text);
+    except
+    end;
+    Result.DataSet := LinkDataSet;
+  end;
+end;
+
+procedure TNewFieldFrm.DataSetsComboChange(Sender: TObject);
+begin
+  UpdateResultFields;
+  SetButtons;
+end ;
+
+procedure TNewFieldFrm.EditCompNameChange(Sender: TObject);
+begin
+  SetButtons;
+end;
+
+procedure TNewFieldFrm.EditNameChange(Sender: TObject);
+begin
+  if Trim(EditName.Text) <> '' then
+    PersistentName := CreateFieldName(LinkDataset.Name + EditName.Text)
+  else
+    PersistentName := '';
+  SetButtons;
+end ;
 
 procedure TNewFieldFrm.UpdateLookupDatasets(Sender: TObject);
 var
@@ -474,11 +490,6 @@ begin
     end
   else
     Result := False;
-end;
-
-destructor TNewFieldFrm.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TNewFieldFrm.CreateFieldName(BaseName: String): String ;

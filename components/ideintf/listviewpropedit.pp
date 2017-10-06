@@ -27,9 +27,11 @@ unit ListViewPropEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
-  Buttons, ExtCtrls, Menus, PropEdits, ComponentEditors, LCLProc, ButtonPanel,
-  ObjInspStrConsts;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, ComCtrls, StdCtrls, Buttons, ButtonPanel,
+  // IdeIntf
+  PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
 
 type
   { TListViewItemsEditorForm }
@@ -50,6 +52,7 @@ type
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure TreeView1SelectionChanged(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
@@ -104,6 +107,37 @@ end;
 
 { TListViewItemsEditorForm }
 
+procedure TListViewItemsEditorForm.FormCreate(Sender: TObject);
+begin
+  Caption  := sccsLvEdtCaption;
+
+  GroupBox1.Caption := sccsLvEdtGrpLCaption;
+  GroupBox2.Caption := sccsLvEdtGrpRCaption;
+
+  BtnNewItem.Caption := sccsLvEdtNewItem;
+  BtnNewSubItem.Caption := sccsLvEdtNewSubItem;
+  BtnDelete.Caption := sccsLvEdtDelete;
+
+  ButtonPanel.HelpButton.Caption := oisHelp;
+  ButtonPanel.OKButton.Caption := oisOK;
+  ButtonPanel.CancelButton.Caption := oisCancel;
+  ButtonPanel.CloseButton.Caption := sccsLvEdtApply;
+  ButtonPanel.CloseButton.Kind := bkCustom;
+  ButtonPanel.CloseButton.Glyph := nil;
+  ButtonPanel.CloseButton.ModalResult := mrNone;
+
+  LabelCaption.Caption := sccsLvEdtLabelCaption;
+  LabelImageIndex.Caption := sccsLvEdtLabelImageIndex;
+  LabelStateIndex.Caption := sccsLvEdtLabelStateIndex;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TListViewItemsEditorForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
 procedure TListViewItemsEditorForm.BtnNewItemClick(Sender: TObject);
 var
   S: String;
@@ -129,30 +163,6 @@ procedure TListViewItemsEditorForm.Edit1Change(Sender: TObject);
 begin
   if Assigned(TreeView1.Selected) then
     TreeView1.Selected.Text := edtText.Text;
-end;
-
-procedure TListViewItemsEditorForm.FormCreate(Sender: TObject);
-begin
-  Caption  := sccsLvEdtCaption;
-  
-  GroupBox1.Caption := sccsLvEdtGrpLCaption;
-  GroupBox2.Caption := sccsLvEdtGrpRCaption;
-
-  BtnNewItem.Caption := sccsLvEdtNewItem;
-  BtnNewSubItem.Caption := sccsLvEdtNewSubItem;
-  BtnDelete.Caption := sccsLvEdtDelete;
-
-  ButtonPanel.HelpButton.Caption := oisHelp;
-  ButtonPanel.OKButton.Caption := oisOK;
-  ButtonPanel.CancelButton.Caption := oisCancel;
-  ButtonPanel.CloseButton.Caption := sccsLvEdtApply;
-  ButtonPanel.CloseButton.Kind := bkCustom;
-  ButtonPanel.CloseButton.Glyph := nil;
-  ButtonPanel.CloseButton.ModalResult := mrNone;
-  
-  LabelCaption.Caption := sccsLvEdtLabelCaption;
-  LabelImageIndex.Caption := sccsLvEdtLabelImageIndex;
-  LabelStateIndex.Caption := sccsLvEdtLabelStateIndex;
 end;
 
 procedure TListViewItemsEditorForm.TreeView1SelectionChanged(

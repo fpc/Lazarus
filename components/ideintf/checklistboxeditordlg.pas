@@ -11,9 +11,12 @@ unit CheckListboxEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, CheckLst,
-  ExtCtrls, Buttons, ComCtrls, ButtonPanel, IDEImagesIntf, ObjInspStrConsts,
-  LCLType, ActnList;
+  Classes, SysUtils,
+  // LCL
+  LCLType, Forms, Controls, Dialogs, CheckLst, Buttons, ComCtrls, ButtonPanel,
+  ActnList,
+  // IdeIntf
+  IDEImagesIntf, ObjInspStrConsts, IDEWindowIntf;
 
 type
 
@@ -43,14 +46,13 @@ type
     procedure actMoveDownExecute(Sender: TObject);
     procedure actMoveUpExecute(Sender: TObject);
     procedure FCheckClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ApplyCheck(Sender: TObject);
   private
-    { private declarations }
     FModified: Boolean;
     procedure Change;
   public
-    { public declarations }
     property Modified: Boolean read FModified write FModified;
   end;
   
@@ -77,6 +79,41 @@ begin
 end;
 
 { TCheckListBoxEditorDlg }
+
+procedure TCheckListBoxEditorDlg.FormCreate(Sender: TObject);
+begin
+  ToolBar.Images := IDEImages.Images_16;
+  actAdd.ImageIndex := IDEImages.LoadImage('laz_add');
+  actDel.ImageIndex := IDEImages.LoadImage('laz_delete');
+  actMoveUp.ImageIndex := IDEImages.LoadImage('arrow_up');
+  actMoveDown.ImageIndex := IDEImages.LoadImage('arrow_down');
+  actEdit.ImageIndex := IDEImages.LoadImage('laz_edit');
+
+  Caption := clbCheckListBoxEditor;
+  BtnPanel.OKButton.Caption := oisOk;
+  BtnPanel.CancelButton.Caption := oisCancel;
+  BtnPanel.HelpButton.Caption := cActionListEditorHelpCategory;
+  BtnPanel.CloseButton.Kind := bkCustom;
+  BtnPanel.CloseButton.LoadGlyphFromStock(idButtonYes);
+  BtnPanel.CloseButton.Caption := sccsTrEdtApply;
+  BtnPanel.CloseButton.OnClick := @ApplyCheck;
+
+  actAdd.Hint := clbAdd;
+  actDel.Hint := clbDeleteHint;
+  actMoveUp.Hint := clbUp;
+  actMoveDown.Hint := clbDown;
+  actEdit.Hint := clbModify;
+
+  actMoveUp.ShortCut := scCtrl or VK_UP;
+  actMoveDown.ShortCut := scCtrl or VK_DOWN;
+  Modified := False;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TCheckListBoxEditorDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
 
 procedure TCheckListBoxEditorDlg.actAddExecute(Sender: TObject);
 var
@@ -150,35 +187,6 @@ end;
 procedure TCheckListBoxEditorDlg.FCheckClick(Sender: TObject);
 begin
   Change;
-end;
-
-procedure TCheckListBoxEditorDlg.FormCreate(Sender: TObject);
-begin
-  ToolBar.Images := IDEImages.Images_16;
-  actAdd.ImageIndex := IDEImages.LoadImage('laz_add');
-  actDel.ImageIndex := IDEImages.LoadImage('laz_delete');
-  actMoveUp.ImageIndex := IDEImages.LoadImage('arrow_up');
-  actMoveDown.ImageIndex := IDEImages.LoadImage('arrow_down');
-  actEdit.ImageIndex := IDEImages.LoadImage('laz_edit');
-
-  Caption := clbCheckListBoxEditor;
-  BtnPanel.OKButton.Caption := oisOk;
-  BtnPanel.CancelButton.Caption := oisCancel;
-  BtnPanel.HelpButton.Caption := cActionListEditorHelpCategory;
-  BtnPanel.CloseButton.Kind := bkCustom;
-  BtnPanel.CloseButton.LoadGlyphFromStock(idButtonYes);
-  BtnPanel.CloseButton.Caption := sccsTrEdtApply;
-  BtnPanel.CloseButton.OnClick := @ApplyCheck;
-
-  actAdd.Hint := clbAdd;
-  actDel.Hint := clbDeleteHint;
-  actMoveUp.Hint := clbUp;
-  actMoveDown.Hint := clbDown;
-  actEdit.Hint := clbModify;
-
-  actMoveUp.ShortCut := scCtrl or VK_UP;
-  actMoveDown.ShortCut := scCtrl or VK_DOWN;
-  Modified := False;
 end;
 
 procedure TCheckListBoxEditorDlg.ApplyCheck(Sender:TObject);

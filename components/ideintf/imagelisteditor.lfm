@@ -9,30 +9,31 @@ object ImageListEditorDlg: TImageListEditorDlg
   ClientWidth = 616
   Constraints.MinHeight = 345
   Constraints.MinWidth = 520
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object GroupBoxR: TGroupBox
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 376
-    Height = 335
+    Height = 334
     Top = 6
     Width = 234
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Selected Image'
-    ClientHeight = 315
+    ClientHeight = 307
     ClientWidth = 230
     TabOrder = 1
     object LabelTransparent: TLabel
       Left = 110
       Height = 15
-      Top = 208
-      Width = 98
+      Top = 200
+      Width = 111
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'Transparent Color:'
@@ -47,7 +48,7 @@ object ImageListEditorDlg: TImageListEditorDlg
     end
     object Preview: TScrollBox
       Left = 6
-      Height = 167
+      Height = 159
       Top = 32
       Width = 217
       HorzScrollBar.Page = 1
@@ -62,7 +63,7 @@ object ImageListEditorDlg: TImageListEditorDlg
     object RadioGroup: TRadioGroup
       Left = 7
       Height = 105
-      Top = 205
+      Top = 197
       Width = 96
       Anchors = [akLeft, akBottom]
       AutoFill = True
@@ -76,7 +77,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 85
+      ClientHeight = 78
       ClientWidth = 92
       Enabled = False
       ItemIndex = 0
@@ -93,8 +94,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideTop.Control = LabelTransparent
       AnchorSideTop.Side = asrBottom
       Left = 110
-      Height = 22
-      Top = 229
+      Height = 29
+      Top = 221
       Width = 96
       Selected = clFuchsia
       Style = [cbStandardColors, cbExtendedColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
@@ -109,25 +110,24 @@ object ImageListEditorDlg: TImageListEditorDlg
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 335
+    Height = 334
     Top = 6
     Width = 364
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Images'
-    ClientHeight = 315
+    ClientHeight = 307
     ClientWidth = 360
     TabOrder = 0
     object TreeView: TTreeView
       AnchorSideLeft.Control = GroupBoxL
       AnchorSideTop.Control = GroupBoxL
       Left = 6
-      Height = 304
+      Height = 296
       Top = 6
       Width = 186
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
-      DefaultItemHeight = 18
       HideSelection = False
       Images = ImageList
       ReadOnly = True
@@ -281,8 +281,8 @@ object ImageListEditorDlg: TImageListEditorDlg
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 347
+    Height = 27
+    Top = 346
     Width = 604
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

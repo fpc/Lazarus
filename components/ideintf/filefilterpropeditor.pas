@@ -5,8 +5,11 @@ unit FileFilterPropEditor;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  IDEImagesIntf, Grids, Buttons, ObjInspStrConsts;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, ButtonPanel, Grids, Buttons,
+  // IdeIntf
+  ObjInspStrConsts, IDEImagesIntf, IDEWindowIntf;
 
 type
 
@@ -17,6 +20,7 @@ type
     MoveDownBtn: TSpeedButton;
     MoveUpBtn: TSpeedButton;
     StringGrid1: TStringGrid;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
@@ -49,6 +53,13 @@ begin
   TIDEImages.AssignImage(MoveDownBtn.Glyph, 'arrow_down');
   MoveUpBtn.Hint := rscdMoveUp;
   MoveDownBtn.Hint := rscdMoveDown;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TFileFilterPropEditForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TFileFilterPropEditForm.MoveUpBtnClick(Sender: TObject);

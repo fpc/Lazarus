@@ -11,10 +11,11 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
   ClientWidth = 190
   Constraints.MinHeight = 100
   Constraints.MinWidth = 190
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDefaultPosOnly
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 42
@@ -42,8 +43,8 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
     end
     object DividerToolButton: TToolButton
       Left = 89
+      Height = 40
       Top = 2
-      Width = 5
       Caption = 'DividerToolButton'
       Style = tbsDivider
     end

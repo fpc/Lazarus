@@ -32,8 +32,11 @@ unit fieldslist;
 interface
 
 uses
-  Classes, SysUtils, Forms, Dialogs,
-  Buttons, DB, StdCtrls, ObjInspStrConsts, ComponentEditors;
+  Classes, SysUtils, DB,
+  // LCL
+  Forms, Dialogs, Buttons, StdCtrls,
+  // IdeIntf
+  ObjInspStrConsts, ComponentEditors, IDEWindowIntf;
 
 type
 
@@ -44,8 +47,9 @@ type
     BitBtnCancel: TBitBtn;
     ListBox1: TListBox;
     procedure BitBtnOkClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
     FDesigner: TComponentEditorDesigner;
     LinkDataset: TDataset;
   protected
@@ -53,7 +57,6 @@ type
     procedure SelectAll; virtual;
     procedure DoShow; override;
   public
-    { public declarations }
     constructor Create(AOwner: TComponent; ADataset: TDataset;
       ADesigner: TComponentEditorDesigner); reintroduce;
   end;
@@ -66,6 +69,16 @@ implementation
 {$R *.lfm}
 
 { TFieldsListFrm }
+
+procedure TFieldsListFrm.FormCreate(Sender: TObject);
+begin
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TFieldsListFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
 
 procedure TFieldsListFrm.BitBtnOkClick(Sender: TObject);
 var

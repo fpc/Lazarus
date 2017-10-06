@@ -11,9 +11,11 @@ unit LazStringGridEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  Arrow, StdCtrls, Buttons, Grids, ExtCtrls,
-  ObjInspStrConsts;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Dialogs, Arrow, StdCtrls, Buttons, Grids, ExtCtrls,
+  // IdeIntf
+  ObjInspStrConsts, IDEWindowIntf;
 
 type
 
@@ -42,6 +44,7 @@ type
     procedure BtnCleanClick(Sender: TObject);
     procedure BtnLoadClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure StringGridPrepareCanvas({%H-}sender: TObject; Col, Row: Integer;
       {%H-}aState: TGridDrawState);
@@ -89,6 +92,34 @@ end;
 
 { TStringGridEditorDlg }
 
+procedure TStringGridEditorDlg.FormCreate(Sender: TObject);
+begin
+  Caption := sccsSGEdtCaption;
+
+  GroupBox.Caption := sccsSGEdtGrp;
+  BtnClean.Caption := sccsSGEdtClean;
+  BtnApply.Caption := sccsSGEdtApply;
+  BtnLoad.Caption := sccsSGEdtLoad;
+  BtnSave.Caption := sccsSGEdtSave;
+  LabelMove.Caption := sccsSGEdtMoveRowsCols;
+
+  BtnHelp.Caption:=cActionListEditorHelpCategory;
+  BtnCancel.Caption:=oiStdActDataSetCancel1Hint;
+  BtnOK.Caption:=oisOk2;
+
+  OpenDialog.Title := sccsSGEdtOpenDialog;
+  SaveDialog.Title := sccsSGEdtSaveDialog;
+
+  StringGrid.ExtendedColSizing := True;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TStringGridEditorDlg.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
 procedure TStringGridEditorDlg.BtnApplyClick(Sender: TObject);
 begin
   SaveToGrid;
@@ -113,27 +144,6 @@ begin
   begin
     StringGrid.SaveToFile(SaveDialog.FileName);
   end;
-end;
-
-procedure TStringGridEditorDlg.FormCreate(Sender: TObject);
-begin
-  Caption := sccsSGEdtCaption;
-
-  GroupBox.Caption := sccsSGEdtGrp;
-  BtnClean.Caption := sccsSGEdtClean;
-  BtnApply.Caption := sccsSGEdtApply;
-  BtnLoad.Caption := sccsSGEdtLoad;
-  BtnSave.Caption := sccsSGEdtSave;
-  LabelMove.Caption := sccsSGEdtMoveRowsCols;
-
-  BtnHelp.Caption:=cActionListEditorHelpCategory;
-  BtnCancel.Caption:=oiStdActDataSetCancel1Hint;
-  BtnOK.Caption:=oisOk2;
-
-  OpenDialog.Title := sccsSGEdtOpenDialog;
-  SaveDialog.Title := sccsSGEdtSaveDialog;
-
-  StringGrid.ExtendedColSizing := True;
 end;
 
 procedure TStringGridEditorDlg.StringGridPrepareCanvas(sender: TObject; Col,

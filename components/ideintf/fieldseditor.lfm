@@ -9,8 +9,9 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
   ClientHeight = 334
   ClientWidth = 257
   OnClose = FieldsEditorFrmClose
+  OnCreate = FormCreate
   OnDestroy = FieldsEditorFrmDestroy
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.9.0.0'
   object FieldsListBox: TListBox
     Left = 0
     Height = 302
@@ -48,47 +49,47 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     end
     object ToolButton4: TToolButton
       Left = 69
+      Height = 30
       Top = 2
-      Width = 4
       Caption = 'ToolButton4'
       Style = tbsDivider
     end
     object tbNewFld: TToolButton
-      Left = 73
+      Left = 74
       Top = 2
       Action = NewActn
     end
     object ToolButton5: TToolButton
-      Left = 107
+      Left = 108
+      Height = 30
       Top = 2
-      Width = 4
       Caption = 'ToolButton5'
       Style = tbsDivider
     end
     object tbMoveUp: TToolButton
-      Left = 111
+      Left = 113
       Top = 2
       Action = MoveUpActn
     end
     object tbMoveDown: TToolButton
-      Left = 145
+      Left = 147
       Top = 2
       Action = MoveDownActn
     end
     object ToolButton8: TToolButton
-      Left = 179
+      Left = 181
+      Height = 30
       Top = 2
-      Width = 4
       Caption = 'ToolButton8'
       Style = tbsDivider
     end
     object tbSelect: TToolButton
-      Left = 183
+      Left = 186
       Top = 2
       Action = SelectAllActn
     end
     object tbUnselect: TToolButton
-      Left = 217
+      Left = 220
       Top = 2
       Action = UnselectAllActn
     end

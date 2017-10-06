@@ -7,13 +7,14 @@ object FileFilterPropEditForm: TFileFilterPropEditForm
   Caption = 'Filter editor'
   ClientHeight = 318
   ClientWidth = 473
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.9.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 272
+    Height = 35
+    Top = 277
     Width = 461
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -32,7 +33,7 @@ object FileFilterPropEditForm: TFileFilterPropEditForm
     AnchorSideRight.Control = MoveUpBtn
     AnchorSideBottom.Control = ButtonPanel1
     Left = 3
-    Height = 263
+    Height = 268
     Top = 3
     Width = 429
     Anchors = [akTop, akLeft, akRight, akBottom]

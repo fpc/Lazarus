@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, contnrs,
   // LCL
   LCLIntf, LCLType, LCLProc, Forms, Controls, Dialogs, ExtCtrls, StdCtrls,
-  Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList, Themes,
+  Graphics, Menus, ComCtrls, DBActns, StdActns, ActnList,
   // IDEIntf
   ObjInspStrConsts, ComponentEditors, PropEdits, PropEditUtils, IDEWindowIntf,
   IDEImagesIntf;
@@ -424,6 +424,14 @@ begin
   btnDelete.ImageIndex := 1;
   btnUp.ImageIndex := 2;
   btnDown.ImageIndex := 3;
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TActionListEditor.ActionListEditorClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+  CloseAction := caFree;
 end;
 
 procedure TActionListEditor.FormShow(Sender: TObject);
@@ -734,12 +742,6 @@ end;
 procedure TActionListEditor.ActPanelToolBarExecute(Sender: TObject);
 begin
   ToolBar1.Visible := TAction(Sender).Checked;
-end;
-
-procedure TActionListEditor.ActionListEditorClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  CloseAction := caFree;
 end;
 
 procedure TActionListEditor.ActionListEditorKeyDown(Sender: TObject;
