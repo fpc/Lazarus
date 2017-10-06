@@ -193,7 +193,7 @@ end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogCreate(Sender: TObject);
 begin
-  IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
+  IDEDialogLayoutList.ApplyLayout(Self);
 
   InstallTreeView.Images := IDEImages.Images_16;
   AvailableTreeView.Images := IDEImages.Images_16;

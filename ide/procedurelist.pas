@@ -669,7 +669,7 @@ begin
   PopulateGrid;
   StatusBar.Panels[0].Text := self.MainFilename;
 
-  IDEDialogLayoutList.ApplyLayout(Self, 950, 680, false);
+  IDEDialogLayoutList.ApplyLayout(Self, 950, 680);
 end;
 
 procedure TProcedureListForm.FormDestroy(Sender: TObject);

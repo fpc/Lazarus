@@ -361,7 +361,7 @@ end;
 
 procedure TNewOtherDialog.FormCreate(Sender: TObject);
 begin
-  IDEDialogLayoutList.ApplyLayout(Self, 750, 410, False);
+  IDEDialogLayoutList.ApplyLayout(Self, 750, 410);
 end;
 
 procedure TNewOtherDialog.SetupComponents;

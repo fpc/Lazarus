@@ -370,7 +370,7 @@ var
   aSize: TSize;
   Img: TBitmap;
 begin
-  IDEDialogLayoutList.ApplyLayout(Self,Width,Height);
+  IDEDialogLayoutList.ApplyLayout(Self);
 
   DeleteSelectedFilesButton:=TButton.Create(Self);
   with DeleteSelectedFilesButton do

@@ -185,7 +185,7 @@ end;
 procedure TUseUnitDialog.FormCreate(Sender: TObject);
 begin
   // Internationalization
-  IDEDialogLayoutList.ApplyLayout(Self, 500, 460, False);
+  IDEDialogLayoutList.ApplyLayout(Self, 500, 460);
   AllUnitsCheckBox.Caption := dlgShowAllUnits;
   SectionRadioGroup.Caption := dlgInsertSection;
   SectionRadioGroup.Items.Clear;

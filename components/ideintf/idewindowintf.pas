@@ -74,7 +74,7 @@ type
     procedure Assign(Source: TIDEDialogLayoutList);
     procedure ApplyLayout(ADialog: TControl;
                           DefaultWidth, DefaultHeight: integer;
-                          UseAsMin: boolean = true);
+                          UseAsMin: boolean = false);
     procedure ApplyLayout(ADialog: TControl);
     procedure SaveLayout(ADialog: TControl);
     procedure Clear;

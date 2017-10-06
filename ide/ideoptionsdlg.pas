@@ -160,7 +160,7 @@ begin
   SetBuildModeVisibility(False);
   UseBuildModeCheckBox.Caption:=lisBuildModes;
 
-  IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
+  IDEDialogLayoutList.ApplyLayout(Self);
   Caption := dlgIDEOptions;
   ButtonPanel.OKButton.Caption := lisMenuOk;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
