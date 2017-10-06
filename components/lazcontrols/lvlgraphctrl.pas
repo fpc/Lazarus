@@ -196,6 +196,7 @@ type
     FOnInvalidate: TNotifyEvent;
     FNodes: TFPList; // list of TLvlGraphNode
     fLevels: TFPList;
+    FCaseSensitive: Boolean;
     FOnSelectionChanged: TNotifyEvent;
     FOnStructureChanged: TOnLvlGraphStructureChanged;
     function GetLevelCount: integer;
@@ -229,6 +230,7 @@ type
     procedure ClearSelection;
     procedure SingleSelect(Node: TLvlGraphNode);
     function IsMultiSelection: boolean;
+    property CaseSensitive: Boolean read FCaseSensitive write FCaseSensitive;
 
     // edges
     function GetEdge(SourceCaption, TargetCaption: string;
@@ -2976,7 +2978,11 @@ var
   i: Integer;
 begin
   i:=NodeCount-1;
-  while (i>=0) and (aCaption<>Nodes[i].Caption) do dec(i);
+  if FCaseSensitive then
+    while (i>=0) and (aCaption<>Nodes[i].Caption) do dec(i)
+  else
+    while (i>=0) and not SameText(aCaption, Nodes[i].Caption) do dec(i);
+
   if i>=0 then begin
     Result:=Nodes[i];
   end else if CreateIfNotExists then begin
