@@ -147,6 +147,7 @@ type
     function OpenNotExistingFile: TModalResult;
     function PrepareFile: TModalResult;
     function PrepareRevert(DiskFilename: String): TModalResult;
+    function ResolvePossibleSymlink: TModalResult;
     // Used by OpenFileAtCursor
     function CheckIfIncludeDirectiveInFront(const Line: string; X: integer): boolean;
     function FindFile(SearchPath: String): Boolean;
@@ -338,6 +339,7 @@ function SourceFileMgr: TLazSourceFileManager;
 function CreateSrcEditPageName(const AnUnitName, AFilename: string;
   IgnoreEditor: TSourceEditor): string;
 procedure UpdateDefaultPasFileExt;
+function SplitSrcPath(const ASearchPath, ACurrentDir: string): string;
 
 // Wrappers for TFileOpener methods.
 // WindowIndex is WindowID
@@ -386,6 +388,27 @@ begin
   DefPasExt:=PascalExtension[EnvironmentOptions.PascalFileExtension];
   if LazProjectFileDescriptors<>nil then
     LazProjectFileDescriptors.DefaultPascalFileExt:=DefPasExt;
+end;
+
+function SplitSrcPath(const ASearchPath, ACurrentDir: string): string;
+// Splits a ";" separated list of search paths into a TStringList.
+//  Replace path "." with ACurrentDir.
+var
+  p: Integer;
+  Dir: String;
+begin
+  Result := '';
+  p := 1;
+  while p <= length(ASearchPath) do
+  begin
+    Dir := GetNextDirectoryInSearchPath(ASearchPath,p);
+    if Dir <> '' then
+    begin
+      if Dir = '.' then
+        Dir := ACurrentDir;
+      Result := Result + Dir + ';';
+    end;
+  end;
 end;
 
 // Wrappers for TFileOpener methods.
@@ -1192,6 +1215,34 @@ begin
   end;
 end;
 
+function TFileOpener.ResolvePossibleSymlink: TModalResult;
+// Check if symlink and ask user if the real file should be opened instead.
+// Note that compiler never resolves symlinks, so files in the compiler
+//  search path must not be resolved.
+var
+  Path, Target: String;  // Search path and target file for the symlink.
+begin
+  Result := mrOK;
+  Assert(FileExistsCached(FFilename),'TFileOpener.ResolveSymlink: '+FFilename+' does not exist.');
+  // Include absolute Project1.Directory in the search path.
+  Path := SplitSrcPath(CodeToolBoss.GetCompleteSrcPathForDirectory(''), Project1.Directory);
+  if (SearchDirectoryInSearchPath(Path, ExtractFilePath(FFileName)) > 0)
+  or Assigned(SourceEditorManager.SourceEditorIntfWithFilename(FFileName))
+  then            // FileName found in search path or in editor -> all good.
+    Exit;
+  // File is not in project search path nor open in editor => check for a symlink.
+  Target := GetPhysicalFilenameCached(FFileName,false);
+  if Target <> FFilename then
+  begin           // A symlink
+    if (SearchDirectoryInSearchPath(Path, ExtractFilePath(Target)) > 0)
+    or Assigned(SourceEditorManager.SourceEditorIntfWithFilename(Target))
+    then          // Target found in search path or in editor -> use Target name.
+      FFileName := Target
+    else          // Neither filename nor target was found anywhere, ask user.
+      Result := ChooseSymlink(FFileName, Target);
+  end;
+end;
+
 function TFileOpener.OpenEditorFile(APageIndex, AWindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags): TModalResult;
 var
@@ -1239,21 +1290,15 @@ begin
   if not (ofRegularFile in FFlags) then begin
     DiskFilename:=GetShellLinkTarget(FFileName);
     if DiskFilename<>FFilename then begin
-      // the case is different
+      // not regular file
       DebugLn(['TFileOpener.OpenEditorFile Fixing file name: ',FFilename,' -> ',DiskFilename]);
       FFilename:=DiskFilename;
     end;
   end;
 
-  // check if symlink and ask user if the real file should be opened instead
-  // Note that compiler never resolves symlinks, so files in the compiler
-  // search path must not be resolved.
   if FilenameIsAbsolute(FFileName) then begin
-    s:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
-    if SearchDirectoryInSearchPath(s,ExtractFilePath(FFileName))<1 then
-      // the file is not in the project search path => check if it is a symlink
-      if ChooseSymlink(FFilename,true) <> mrOK then
-        exit(mrCancel);
+    Result := ResolvePossibleSymlink;
+    if Result <> mrOK then exit;
   end;
 
   // check to not open directories
@@ -1751,8 +1796,7 @@ begin
   MainIDE.SaveEnvironment;
 end;
 
-procedure TLazSourceFileManager.RemoveRecentProjectFile(const AFilename: string
-  );
+procedure TLazSourceFileManager.RemoveRecentProjectFile(const AFilename: string);
 begin
   EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
   MainIDE.SetRecentProjectFilesMenu;

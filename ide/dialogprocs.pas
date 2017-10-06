@@ -100,7 +100,7 @@ function CheckExecutable(const OldFilename,
   SearchInPath: boolean = true): boolean;
 function CheckDirPathExists(const Dir,
   ErrorCaption, ErrorMsg: string): TModalResult;
-function ChooseSymlink(var Filename: string; AskOnSymlink: boolean): TModalResult;
+function ChooseSymlink(var Filename: string; const TargetFilename: string): TModalResult;
 function CreateSymlinkInteractive(const {%H-}LinkFilename, {%H-}TargetFilename: string;
                                   {%H-}ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
@@ -506,28 +506,16 @@ begin
   Result:=mrOk;
 end;
 
-function ChooseSymlink(var Filename: string; AskOnSymlink: boolean): TModalResult;
-var
-  TargetFilename: String;
+function ChooseSymlink(var Filename: string; const TargetFilename: string): TModalResult;
 begin
-  if not FileExistsCached(Filename) then
-    exit(mrOk); // no symlink to choose
-  TargetFilename:=GetPhysicalFilenameCached(Filename,false);
-  if TargetFilename=Filename then begin
-    // no symlink to choose
-  end else if not AskOnSymlink then begin
-    // choose physical file
-    Filename:=TargetFilename;
-  end else begin
-    // ask which filename to use
-    case IDEQuestionDialog(lisFileIsSymlink,
-      Format(lisTheFileIsASymlinkOpenInstead,[Filename,LineEnding+LineEnding,TargetFilename]),
-      mtConfirmation, [mrYes, lisOpenTarget, mrNo, lisOpenSymlink, mrCancel])
-    of
-      mrYes: Filename:=TargetFilename;
-      mrNo: ;
-      else exit(mrCancel);
-    end;
+  // ask which filename to use
+  case IDEQuestionDialog(lisFileIsSymlink,
+    Format(lisTheFileIsASymlinkOpenInstead,[Filename,LineEnding+LineEnding,TargetFilename]),
+    mtConfirmation, [mrYes, lisOpenTarget, mrNo, lisOpenSymlink, mrCancel])
+  of
+    mrYes: Filename:=TargetFilename;
+    mrNo: ;
+    else exit(mrCancel);
   end;
   Result:=mrOk;
 end;
