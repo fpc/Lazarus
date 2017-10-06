@@ -361,8 +361,7 @@ begin
       end;
     end;
   FilterEdit.InvalidateFilter;
-  FileCountLabel.Caption:=Format(dlgFiles, [IntToStr(SourceEditorManager.
-    SourceEditorCount)]);
+  FileCountLabel.Caption:=Format(dlgFiles,[IntToStr(SourceEditorManager.SourceEditorCount)]);
 end;
 
 function TEditorFileManagerForm.SrcEditorByListItem(ListIndex: integer): TSourceEditor;

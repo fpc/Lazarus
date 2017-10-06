@@ -2237,7 +2237,6 @@ var
     SrcEdit: TSourceEditorInterface;
   begin
     for i:=SourceEditorManagerIntf.SourceEditorCount-1 downto 0 do begin
-      if i>=SourceEditorManagerIntf.SourceEditorCount then continue;
       SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
       if not AllChangedFilenames.Contains(SrcEdit.FileName) then continue;
       if LazarusIDE.DoCloseEditorFile(SrcEdit,
