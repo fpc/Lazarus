@@ -389,26 +389,6 @@ begin
     LazProjectFileDescriptors.DefaultPascalFileExt:=DefPasExt;
 end;
 
-function UseCurrentDirInSrcPath(const ASearchPath, ACurrentDir: string): string;
-// Replace path "." with ACurrentDir in a ";" separated list of search paths.
-var
-  p: Integer;
-  Dir: String;
-begin
-  Result := '';
-  p := 1;
-  while p <= length(ASearchPath) do
-  begin
-    Dir := GetNextDirectoryInSearchPath(ASearchPath,p);
-    if Dir <> '' then
-    begin
-      if Dir = '.' then
-        Dir := ACurrentDir;
-      Result := Result + Dir + ';';
-    end;
-  end;
-end;
-
 // Wrappers for TFileOpener methods.
 
 function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
@@ -1221,14 +1201,12 @@ var
   SPath, Target: String;  // Search path and target file for the symlink.
 begin
   Result := mrOK;
-  Assert(FileExistsCached(FFilename),'TFileOpener.ResolveSymlink: '+FFilename+' does not exist.');
+  if not MainIDE.IDEStarted then Exit; // Use the given name at initial load.
   Target := GetPhysicalFilenameCached(FFileName,false);
   if Target = FFilename then Exit;  // Not a symlink, continue with FFilename.
   // ToDo: Check if there is an editor with a symlink for this "physical" file.
 
-  // Include absolute Project1.Directory in the search path.
-  SPath := UseCurrentDirInSrcPath(CodeToolBoss.GetCompleteSrcPathForDirectory(''),
-                                  Project1.Directory);
+  SPath := CodeToolBoss.GetCompleteSrcPathForDirectory('');
   // Check if "physical" target for a symlink is found in search path or in editor.
   if (SearchDirectoryInSearchPath(SPath, ExtractFilePath(Target)) > 0)
   or Assigned(SourceEditorManager.SourceEditorIntfWithFilename(Target))
