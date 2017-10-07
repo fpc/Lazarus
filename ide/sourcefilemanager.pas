@@ -1201,7 +1201,7 @@ var
   SPath, Target: String;  // Search path and target file for the symlink.
 begin
   Result := mrOK;
-  if not MainIDE.IDEStarted then Exit; // Use the given name at initial load.
+  if ofProjectLoading in FFlags then Exit; // Use the given name when project loads.
   Target := GetPhysicalFilenameCached(FFileName,false);
   if Target = FFilename then Exit;  // Not a symlink, continue with FFilename.
   // ToDo: Check if there is an editor with a symlink for this "physical" file.
