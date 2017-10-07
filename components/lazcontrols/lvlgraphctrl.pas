@@ -2483,7 +2483,7 @@ begin
   // background
   if Draw(lgdsBackground) then begin
     Canvas.Brush.Style:=bsSolid;
-    Canvas.Brush.Color:=clWhite;
+    Canvas.Brush.Color:=Color; //clWhite;
     Canvas.FillRect(ClientRect);
   end;
 
@@ -2627,6 +2627,7 @@ constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle:=ControlStyle+[csAcceptsControls];
+  Color := clWhite;
   FOptions:=DefaultLvlGraphCtrlOptions;
   FGraph:=TLvlGraph.Create;
   FGraph.OnInvalidate:=@GraphInvalidate;
