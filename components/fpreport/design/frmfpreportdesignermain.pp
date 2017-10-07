@@ -1213,7 +1213,8 @@ begin
   rs.JSON := lJSON; // rs takes ownership of lJSON
   try
     DD:=lJSON.Get('DesignData',TJSONObject(Nil));
-    FReportDesignData.LoadFromJSON(DD);
+    if Assigned(DD) then
+      FReportDesignData.LoadFromJSON(DD);
     // We must do this before the report is loaded, so the pages/bands can find their data
     CreateReportDataSets;
     FReport.ReadElement(rs);
