@@ -211,7 +211,7 @@ end;
 
 procedure TBasicResizeFrame.pBGPaint(Sender: TObject);
 begin
-  pBG.Visible := False;
+  pBG.SendToBack;
 end;
 
 procedure TBasicResizeFrame.sbVerticalScroll(Sender: TObject;
@@ -345,7 +345,7 @@ begin
   pB.Repaint;
 
   HideSizeRects;
-  pBG.Visible := False;
+  pBG.SendToBack;
 end;
 
 procedure TBasicResizeFrame.ShowSizeRects;
@@ -370,7 +370,7 @@ begin
   pB.Repaint;
 
   ShowSizeRects;
-  pBG.Visible := True;
+  //pBG.Visible := True;
 end;
 
 procedure TBasicResizeFrame.CreateNodes;
@@ -846,7 +846,7 @@ begin
   FLastDesignedWidthToScroll:=DesignedWidthToScroll;
   FLastDesignedHeightToScroll:=DesignedHeightToScroll;
   pBG.OnPaint := nil;
-  pBG.Visible := True;
+  pBG.SendToBack;
 end;
 
 procedure TBasicResizeFrame.EndFormSizeUpdate(Sender: TObject);
