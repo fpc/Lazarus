@@ -1207,6 +1207,11 @@ begin
   // ToDo: Check if there is an editor with a symlink for this "physical" file.
 
   SPath := CodeToolBoss.GetCompleteSrcPathForDirectory('');
+  // Check if symlink is found in search path or in editor.
+  if (SearchDirectoryInSearchPath(SPath, ExtractFilePath(FFileName)) > 0)
+  or Assigned(SourceEditorManager.SourceEditorIntfWithFilename(FFileName))
+  then
+    Exit;       // Symlink found -> use it.
   // Check if "physical" target for a symlink is found in search path or in editor.
   if (SearchDirectoryInSearchPath(SPath, ExtractFilePath(Target)) > 0)
   or Assigned(SourceEditorManager.SourceEditorIntfWithFilename(Target))
