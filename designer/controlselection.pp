@@ -1231,25 +1231,26 @@ end;
 
 procedure TControlSelection.AdjustGrabbers;
 var g:TGrabIndex;
-  OutPix, InPix, NewGrabberLeft, NewGrabberTop: integer;
+  OutPix, InPix, NewGrabberLeft, NewGrabberTop, AGrabberSize: integer;
 begin
-  OutPix:=GetRealGrabberSize div 2;
-  InPix:=GetRealGrabberSize-OutPix;
+  AGrabberSize := GetRealGrabberSize;
+  OutPix:=AGrabberSize div 2;
+  InPix:=AGrabberSize-OutPix;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
     if gpLeft in FGrabbers[g].Positions then
       NewGrabberLeft:=FRealLeft-OutPix
     else if gpRight in FGrabbers[g].Positions then
       NewGrabberLeft:=FRealLeft+FRealWidth-InPix
     else
-      NewGrabberLeft:=FRealLeft+((FRealWidth-GetRealGrabberSize) div 2);
+      NewGrabberLeft:=FRealLeft+((FRealWidth-AGrabberSize) div 2);
     if gpTop in FGrabbers[g].Positions then
       NewGrabberTop:=FRealTop-OutPix
     else if gpBottom in FGrabbers[g].Positions then
       NewGrabberTop:=FRealTop+FRealHeight-InPix
     else
-      NewGrabberTop:=FRealTop+((FRealHeight-GetRealGrabberSize) div 2);
-    FGrabbers[g].Width:=GetRealGrabberSize;
-    FGrabbers[g].Height:=GetRealGrabberSize;
+      NewGrabberTop:=FRealTop+((FRealHeight-AGrabberSize) div 2);
+    FGrabbers[g].Width:=AGrabberSize;
+    FGrabbers[g].Height:=AGrabberSize;
     FGrabbers[g].Move(NewGrabberLeft,NewGrabberTop);
   end;
 end;
