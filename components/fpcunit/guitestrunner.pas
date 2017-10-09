@@ -31,11 +31,19 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, LazUTF8, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
+  ExtCtrls, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls, LCLProc,
   IniFiles, testdecorator, xmltestreport,
   fpcunit, testregistry, SynEdit, SynHighlighterXML, gettext, Translations;
 
 type
+  TGuiTestRunnerHandlerType = (
+    gtrhtBeforeRunTest, // called at the beginning of RunTest
+    gtrhtAfterRunTest // called at the end of RunTest
+    );
+
+  TGUITestRunner = class;
+
+  TOnBeforeOrAfterRunTestEvent = procedure(AGUITestRunnerForm: TGUITestRunner) of object;
 
   { TGUITestRunner }
 
@@ -159,16 +167,30 @@ type
     procedure RestoreTree;
     procedure SaveTree;
     procedure ShowDetails(const Node: TTreeNode);
+    class procedure AddHandler(HandlerType: TGuiTestRunnerHandlerType;
+                         const AMethod: TMethod; AsLast: boolean = false);
+    class procedure RemoveHandler(HandlerType: TGuiTestRunnerHandlerType;
+                            const AMethod: TMethod);
+  protected
+    class var FGuiTestRunnerHandlers: array[TGuiTestRunnerHandlerType] of TMethodList;
   public
     procedure AddFailure(ATest: TTest; AFailure: TTestFailure);
     procedure AddError(ATest: TTest; AError: TTestFailure);
     procedure StartTest(ATest: TTest);
     procedure EndTest(ATest: TTest);
-    procedure RunTest(ATest: TTest);
+    procedure RunTest(ATest: TTest); virtual;
     procedure StartTestSuite(ATestSuite: TTestSuite);
     procedure EndTestSuite(ATestSuite: TTestSuite);
     procedure NextError;
     procedure PrevError;
+  public
+    class destructor Destroy;
+    class procedure AddHandlerBeforeRunTest(const OnBeforeRunTest: TOnBeforeOrAfterRunTestEvent;
+                                      AsLast: boolean = false);
+    class procedure RemoveHandlerBeforeRunTest(const OnBeforeRunTest: TOnBeforeOrAfterRunTestEvent);
+    class procedure AddHandlerAfterRunTest(const OnAfterRunTest: TOnBeforeOrAfterRunTestEvent;
+                                     AsLast: boolean = false);
+    class procedure RemoveHandlerAfterRunTest(const OnAfterRunTest: TOnBeforeOrAfterRunTestEvent);
   end;
 
 var
@@ -570,6 +592,21 @@ begin
     AddMessages(Node);
 end;
 
+class procedure TGUITestRunner.AddHandler(
+  HandlerType: TGuiTestRunnerHandlerType; const AMethod: TMethod;
+  AsLast: boolean);
+begin
+  if FGuiTestRunnerHandlers[HandlerType]=nil then
+    FGuiTestRunnerHandlers[HandlerType]:=TMethodList.Create;
+  FGuiTestRunnerHandlers[HandlerType].Add(AMethod,AsLast);
+end;
+
+class procedure TGUITestRunner.RemoveHandler(
+  HandlerType: TGuiTestRunnerHandlerType; const AMethod: TMethod);
+begin
+  FGuiTestRunnerHandlers[HandlerType].Remove(AMethod);
+end;
+
 procedure TGUITestRunner.TestTreeSelectionChanged(Sender: TObject);
 begin
   if (Sender as TTreeView).Selected <> nil then
@@ -962,7 +999,17 @@ var
   TestResult:TTestResult;
   w: TXMLResultsWriter;
   m: TMemoryStream;
+  xMethod: TOnBeforeOrAfterRunTestEvent;
+  I: integer;
 begin
+  if Assigned(FGuiTestRunnerHandlers[gtrhtBeforeRunTest]) then
+  begin
+    for I := 0 to FGuiTestRunnerHandlers[gtrhtBeforeRunTest].Count-1 do
+    begin
+      xMethod := TOnBeforeOrAfterRunTestEvent(FGuiTestRunnerHandlers[gtrhtBeforeRunTest][i]);
+      xMethod(Self);
+    end;
+  end;
   SaveTree;
   ClearDetails;
   barcolor := clGreen;
@@ -1009,6 +1056,14 @@ begin
   finally
     EnableRunActions(true);
     TestResult.Free;
+    if Assigned(FGuiTestRunnerHandlers[gtrhtAfterRunTest]) then
+    begin
+      for I := 0 to FGuiTestRunnerHandlers[gtrhtAfterRunTest].Count-1 do
+      begin
+        xMethod := TOnBeforeOrAfterRunTestEvent(FGuiTestRunnerHandlers[gtrhtAfterRunTest][i]);
+        xMethod(Self);
+      end;
+    end;
   end;
 end;
 
@@ -1067,6 +1122,38 @@ begin
       Exit;
     end;
   end;
+end;
+
+class destructor TGUITestRunner.Destroy;
+var
+  HandlerType: TGuiTestRunnerHandlerType;
+begin
+  for HandlerType := Low(TGuiTestRunnerHandlerType) to High(TGuiTestRunnerHandlerType) do
+    FreeAndNil(FGuiTestRunnerHandlers[HandlerType]);
+end;
+
+class procedure TGUITestRunner.AddHandlerBeforeRunTest(
+  const OnBeforeRunTest: TOnBeforeOrAfterRunTestEvent; AsLast: boolean);
+begin
+  AddHandler(gtrhtBeforeRunTest,TMethod(OnBeforeRunTest),AsLast);
+end;
+
+class procedure TGUITestRunner.RemoveHandlerBeforeRunTest(
+  const OnBeforeRunTest: TOnBeforeOrAfterRunTestEvent);
+begin
+  RemoveHandler(gtrhtBeforeRunTest,TMethod(OnBeforeRunTest));
+end;
+
+class procedure TGUITestRunner.AddHandlerAfterRunTest(
+  const OnAfterRunTest: TOnBeforeOrAfterRunTestEvent; AsLast: boolean);
+begin
+  AddHandler(gtrhtAfterRunTest,TMethod(OnAfterRunTest),AsLast);
+end;
+
+class procedure TGUITestRunner.RemoveHandlerAfterRunTest(
+  const OnAfterRunTest: TOnBeforeOrAfterRunTestEvent);
+begin
+  RemoveHandler(gtrhtAfterRunTest,TMethod(OnAfterRunTest));
 end;
 
 procedure TranslateResStrings;
