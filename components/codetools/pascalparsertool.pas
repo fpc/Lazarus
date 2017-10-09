@@ -3429,6 +3429,11 @@ begin
       if ParentNode.Parent.Desc in AllCodeSections+[ctnProcedure] then begin
         ReadNextAtom;
         ReadConstant(true,false,[]);
+        if CurPos.Flag=cafColon then
+        begin
+          ReadNextAtom;
+          ReadConstant(true,false,[]);
+        end;
       end;
     end;
   end;
