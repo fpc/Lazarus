@@ -4666,6 +4666,9 @@ end;
 function TBookmarkList.Refresh: boolean;
 var
   i: LongInt;
+  {$ifndef noautomatedbookmark}
+  Bookmark: Pointer;
+  {$endif}
 begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.Refresh', [ClassName]);
@@ -4674,6 +4677,11 @@ begin
   for i := FList.Count - 1 downto 0 do
     if not FDataset.BookmarkValid(TBookMark(Items[i])) then begin
       Result := True;
+      FDataset.FreeBookmark(Items[i]);
+      {$ifndef noautomatedbookmark}
+      Bookmark := FList[i];
+      SetLength(TBookmark(Bookmark),0); // decrease reference count
+      {$endif noautomatedbookmark}
       Flist.Delete(i);
     end;
   if Result then
