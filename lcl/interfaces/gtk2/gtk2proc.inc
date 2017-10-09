@@ -2251,6 +2251,9 @@ begin
   // handle every key event only once
   if HandledByLCL then exit;
 
+  while (not GtkWidgetIsA(AWidget, gtk_window_get_type)) and (AWidget^.parent <> nil) do
+    AWidget := AWidget^.parent;
+
   TargetWidget := AWidget;
   TargetObj := AData;
   FocusedWinControl := nil;
