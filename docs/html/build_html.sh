@@ -5,6 +5,8 @@
 #
 # Before running this file, first compile the project build_lcl_docs.lpi
 #
-./build_lcl_docs --outfmt html
+# In order to link to RTL and FCL, place rtl.xct and fcl.xct in ../chm/
+#
+./build_lcl_docs --fpcdocs=../chm --outfmt html
 
 

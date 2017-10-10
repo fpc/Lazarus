@@ -11,6 +11,7 @@ documentation.
 Build build_lcl_docs.lpi
 ../../lazbuild build_lcl_docs.lpi
 
+./build_lcl_docs --fpdoc /path/to/fpc/trunk/fpdoc --fpcdocs=../chm --outfmt chm
 
 For Windows:
 
