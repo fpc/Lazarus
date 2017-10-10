@@ -902,6 +902,10 @@ msgstr "מלת מפתח לא צפויה \"%s\" נמצאה בתוך בלוק \"ה
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "מלת מפתח לא צפויה \"%s\" נמצאה בזמן קריאת בלוקים מהסוף להתחלה"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "אופרטור בלתי צפוי של תת תחום  '..' נמצא"
@@ -923,11 +927,6 @@ msgstr "פונקציה לא ידועה s%"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(שם קובץ ראשי לא ידוע)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-#, fuzzy,badformat
-msgid "unknown section keyword %s found"
-msgstr "מלת מפתח s% לא ידוע באזור נמצאה"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 #, fuzzy,badformat

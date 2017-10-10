@@ -852,6 +852,10 @@ msgstr "tarp „begin“ ir „end“ aptiktas netikėtas raktažodis „%s“"
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "skaitant blokus atygaline tvarka aptiktas netikėtas raktažodis „%s“"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "aptiktas netikėtas poaibio operatorius „..“"
@@ -871,10 +875,6 @@ msgstr "Nežinoma funkcija %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(nežinomas pagrindinio failo pavadinimas)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "aptiktas nežinomas sekcijos raktažodis %s"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

@@ -865,6 +865,10 @@ msgstr "paraula clau \"%S\" no esperada a begin..end"
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "s'ha trobat la paraula clau \"%S\" mentre es llegia blocs enrera"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "s'ha trobat operador de sotabast '..' no esperat"
@@ -884,10 +888,6 @@ msgstr "Funció desconeguda %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(Nom del fitxer principal desconegut)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "s'ha trobat paraula clau de secció %s desconeguda"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

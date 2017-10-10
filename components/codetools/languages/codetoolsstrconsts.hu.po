@@ -851,6 +851,10 @@ msgstr "váratlan kulcsszó található a begin..end részben: %s"
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "váratlan kulcsszó: \"%s\" a blokkok visszafelé olvasása közben"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "váratlan résztartomány '..' jel"
@@ -870,10 +874,6 @@ msgstr "Ismeretlen eljárás: %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(ismeretlen főfájlnév)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "ismeretlen szakasz kulcsszó: %s"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

@@ -853,6 +853,10 @@ msgstr "знайдено неочікуване ключове слово \"%s\"
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "знайдено неочікуване ключове слово \"%s\" при читанні блоків у зворотному порядку"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "знайдено неочікуваний оператор піддіапазону '..'"
@@ -872,10 +876,6 @@ msgstr "Невідома функція %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(невідома назва головного файлу)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "знайдене невідоме ключове слово секції %s"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"
