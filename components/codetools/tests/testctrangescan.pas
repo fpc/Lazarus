@@ -23,7 +23,7 @@ interface
 uses
   Classes, SysUtils, fpcunit, testregistry, FileProcs,
   CodeToolManager, CodeCache, CustomCodeTool, LinkScanner, CodeTree,
-  EventCodeTool, PascalParserTool;
+  EventCodeTool, PascalParserTool, BasicCodeTools;
 
 const
   ctrsCommentOfProc1 = 'comment of Proc1';
@@ -59,6 +59,7 @@ type
     procedure TestCTScanRangeLibraryInitializationModified;
     procedure TestCTScanRangeScannerAtEnd;
     procedure TestCTScanRangeProgramNoName;
+    procedure TestCTScanRangeUnitModified;
   end;
 
 implementation
@@ -235,7 +236,10 @@ begin
     lsrSourceType:
       AssertEquals('source type scanned',true,RootNode<>nil);
     lsrSourceName:
-      AssertEquals('source name scanned',true,RootNode<>nil);
+      begin
+        AssertEquals('source name scanned',true,RootNode.FirstChild<>nil);
+        AssertEquals('source name found',true,RootNode.FirstChild.Desc=ctnSrcName);
+      end;
     lsrInterfaceStart:
       AssertEquals('interface start scanned',true,Tool.FindInterfaceNode<>nil);
     lsrMainUsesSectionStart:
@@ -447,6 +451,52 @@ begin
       AssertEquals('end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
     end;
   end;
+end;
+
+procedure TTestCodetoolsRangeScan.TestCTScanRangeUnitModified;
+// scan a unit
+// change each lowercase word and scan again
+var
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+  p, AtomStart: integer;
+  Src: String;
+begin
+  Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
+  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+
+  Src:=
+     'unit testrangescan;'+LineEnding
+    +'interface'+LineEnding
+    +'uses sysutils;'+LineEnding
+    +'implementation'+LineEnding
+    +'initialization'+LineEnding
+    +'write;'+LineEnding
+    +'finalization'+LineEnding
+    +'writeln;'+LineEnding
+    +'end.'+LineEnding;
+  Code.Source:=Src;
+  Tool.BuildTree(lsrEnd);
+  p:=1;
+  repeat
+    ReadRawNextPascalAtom(Src,p,AtomStart);
+    if p>=length(Src) then break;
+    if Src[AtomStart] in ['a'..'z'] then begin
+      try
+        {$IFDEF VerboseTestCTRangeScan}
+        debugln(['TTestCodetoolsRangeScan.TestCTScanRangeAscending Word="',GetIdentifier(@Src[AtomStart]),'"']);
+        {$ENDIF}
+        Src[AtomStart]:=upcase(Src[AtomStart]);
+        Code.Source:=Src;
+        Tool.BuildTree(lsrEnd);
+      except
+        on E: Exception do begin
+          debugln(['TTestCodetoolsRangeScan.TestCTScanRangeUnitModified word="'+GetIdentifier(@Src[AtomStart])+'" ',E.ClassName,' Msg=',E.Message]);
+          Fail(E.Message);
+        end;
+      end;
+    end;
+  until false;
 end;
 
 initialization
