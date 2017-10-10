@@ -13,7 +13,7 @@ fi
 
 # the binutils version to download
 BinutilsVersion=2.20
-BinutilsDownloadPath=http://ftp.gnu.org/gnu/binutils/
+BinutilsDownloadPath=http://ftp.gnu.org/gnu/binutils
 
 # the FPC targets
 Targets="i386-win32";
