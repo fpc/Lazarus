@@ -862,6 +862,10 @@ msgstr "palavra-chave inesperada \"%s\" encontrada em \"begin..end\""
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "palavra-chave inesperada \"%s\" encontrada durante leitura reversa dos blocos"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "operador subfaixa \"..\" encontrado inexperadamente"
@@ -881,10 +885,6 @@ msgstr "Função desconhecida %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(arquivo principal desconhecido)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "encontrada palavra-chave de seção desconhecida: %s "
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

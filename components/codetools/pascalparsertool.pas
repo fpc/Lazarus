@@ -638,7 +638,7 @@ begin
       if (CurNode=nil)
       or ((CurNode.Desc in AllSourceTypes)
         and ((CurNode.FirstChild=nil)
-          or ((CurNode.FirstChild.Desc=ctnIdentifier)
+          or ((CurNode.FirstChild.Desc=ctnSrcName)
             and (CurNode.FirstChild.NextBrother=nil))))
       then begin
         // parse source from the beginning
@@ -674,10 +674,12 @@ begin
         else begin
           // the source type is missing
           // this is allowed for program
-          if UpAtomIs('USES') or UpAtomIs('TYPE') or UpAtomIs('VAR')
-          or UpAtomIs('CONST') or UpAtomIs('RESOURCESTRING')
-          or UpAtomIs('BEGIN') or UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')
-          or UpAtomIs('OPERATOR') then begin
+          if UpAtomIs('USES')
+          or UpAtomIs('TYPE') or UpAtomIs('VAR') or UpAtomIs('CONST')
+          or UpAtomIs('RESOURCESTRING') or UpAtomIs('LABEL')
+          or UpAtomIs('BEGIN') or UpAtomIs('ASM')
+          or UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') or UpAtomIs('OPERATOR')
+          then begin
             CurSection:=ctnProgram;
             HasSourceType:=false;
             CurPos.EndPos:=CurPos.StartPos;
@@ -2558,7 +2560,7 @@ function TPascalParserTool.KeyWordFuncSection: boolean;
 
   procedure RaiseUnexpectedSectionKeyWord;
   begin
-    SaveRaiseExceptionFmt(20170421195027,ctsUnknownSectionKeyword,[GetAtom]);
+    SaveRaiseExceptionFmt(20170421195027,ctsUnexpectedSectionKeyword,[GetAtom]);
   end;
 
 begin

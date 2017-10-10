@@ -867,6 +867,10 @@ msgstr "keyword \"%s\" yang tidak diharapkan dalam begin..end ditemukan"
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "keyword \"%s\" yang tidak diharapkan ditemukan saat pembacaan blok mundur"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "operator sub jangkauan  '..' yang tidak diharapkan ditemukan"
@@ -886,10 +890,6 @@ msgstr "Fungsi tidak dikenal %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(nama file utama tidak dikenal)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "bagian keyword %s yang ditemukan tidak dikenal"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

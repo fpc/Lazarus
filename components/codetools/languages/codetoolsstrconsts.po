@@ -844,6 +844,10 @@ msgstr ""
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr ""
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr ""
@@ -862,10 +866,6 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
-msgstr ""
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor

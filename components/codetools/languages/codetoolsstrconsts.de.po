@@ -852,6 +852,10 @@ msgstr "unerwartetes Schlüsselwort \"%s\" in Begin..End gefunden"
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "unerwartetes Schlüsselwort \"%s\" beim Rückwärtslesen der Blocks gefunden"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "ungültigen Unterbereichsoperator '..' gefunden"
@@ -871,10 +875,6 @@ msgstr "Unbekannte Funktion %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(unbekannter Hauptdateiname)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "ungültiges Bereichsschlüsselwort %s gefunden"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

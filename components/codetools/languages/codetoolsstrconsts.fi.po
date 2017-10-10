@@ -844,6 +844,10 @@ msgstr "odottamaton avainsana \"%s\" löydettiin begin..end sisällä"
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "odottamaton avainsana \"%s\" löydettiin kun lohkoja luettiin taaksepäin"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "odottamaton osaväli operaattori '..' löytyi"
@@ -863,10 +867,6 @@ msgstr "Tuntematon funktio %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(tuntematon päätiedosto)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "tuntematon lohkon avainsana %s löytyi"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

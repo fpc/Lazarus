@@ -865,6 +865,10 @@ msgstr "nalezeno neočekávané klíčové slovo \"%s\" v begin..end"
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "nalezeno neočekávané klíčové slovo \"%s\" při zpětném čtení bloků"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "nalezen neočekávaný podrozsahový oprátor '...'"
@@ -884,10 +888,6 @@ msgstr "Neznámá funkce %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(neznámé jméno hlavního souboru)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "nalezeno neznámé klíčové slovo sekce %s"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

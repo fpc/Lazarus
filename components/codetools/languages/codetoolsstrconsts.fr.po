@@ -852,6 +852,10 @@ msgstr "mot-clé \"%s\" inattendu dans un bloc \"begin..end\""
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "mot-clé \"%s\" inattendu rencontré lors de la lecture des blocs vers le haut"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "opérateur de plage \"..\" inattendu trouvé"
@@ -871,10 +875,6 @@ msgstr "Fonction %s inconnue"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(Nom de fichier principal inconnu)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "section inconnue, mot-clé %s trouvé"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

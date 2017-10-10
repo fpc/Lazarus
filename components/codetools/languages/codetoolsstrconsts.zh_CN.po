@@ -869,6 +869,10 @@ msgstr "关键字 \"%s\" 不应该出现在 begin..end块中间"
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
 msgstr "unexpected keyword \"%s\" found while reading blocks backwards"
 
+#: codetoolsstrconsts.ctsunexpectedsectionkeyword
+msgid "unexpected section keyword %s found"
+msgstr ""
+
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "没有子界符 '..' "
@@ -889,10 +893,6 @@ msgstr "未知的函数: %s"
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
 msgstr "(未知主文件名)"
-
-#: codetoolsstrconsts.ctsunknownsectionkeyword
-msgid "unknown section keyword %s found"
-msgstr "未知的节关键字 %s 出现"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"

@@ -99,7 +99,7 @@ ResourceString
   ctsConstant = 'constant';
   ctsSemicolonAfterPropSpecMissing =
     '; expected after "%s" property specifier, but %s found';
-  ctsUnknownSectionKeyword = 'unknown section keyword %s found';
+  ctsUnexpectedSectionKeyword = 'unexpected section keyword %s found';
   ctsIllegalQualifier = 'illegal qualifier %s found';
   ctsMethodSignatureSNotFoundInClass = 'Method signature %s not found in class';
   ctsUnexpectedEndOfSource = 'unexpected end of source';
