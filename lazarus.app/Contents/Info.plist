@@ -152,7 +152,7 @@
 	<key>CFBundleSignature</key>
 	<string>1</string>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>5</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 	<key>NSHighResolutionCapable</key>
