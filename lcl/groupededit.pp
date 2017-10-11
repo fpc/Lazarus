@@ -407,18 +407,10 @@ implementation
 
 function TGEEdit.PerformTab(ForwardTab: boolean): boolean;
 begin
-  //if not Forward then inherited PerFormTab will set focus to the owning
-  //TCustomAbstractGroupedEdit, which immediately transfers the focus back to the TGEEdit
-  //so let TCustomAbstractGroupedEdit do the Performtab in this case
-  if ForwardTab then
-    Result := inherited PerformTab(ForwardTab)
+  if Assigned(Owner) and (Owner is TCustomAbstractGroupedEdit) then
+    Result :=  TCustomAbstractGroupedEdit(Owner).PerformTab(ForwardTab)
   else
-  begin
-    if Assigned(Owner) and (Owner is TCustomAbstractGroupedEdit) then
-      Result :=  TCustomAbstractGroupedEdit(Owner).PerformTab(ForwardTab)
-    else
-      Result := False;
-  end;
+    Result := False;
 end;
 
 { TCustomAbstractGroupedEdit }
