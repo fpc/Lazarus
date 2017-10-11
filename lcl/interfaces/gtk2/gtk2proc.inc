@@ -2176,7 +2176,8 @@ var
 
     if (
         GtkWidgetIsA(TargetWidget, gtk_type_entry) or
-        GtkWidgetIsA(TargetWidget, gtk_type_text_view)
+        GtkWidgetIsA(TargetWidget, gtk_type_text_view) or
+        GtkWidgetIsA(TargetWidget, gtk_type_tree_view)
        )
        and
       (gdk_event_get_type(AEvent) = GDK_KEY_PRESS) and
