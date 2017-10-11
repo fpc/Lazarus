@@ -269,8 +269,16 @@ end;
 procedure TFPReportExportCanvas.SetupPageRender(const APage: TFPReportPage);
 
 begin
-  FImageWidth := HmmToPixels(APage.PageSize.Width);
-  FImageHeight := VmmToPixels(APage.PageSize.Height);
+  if APage.Orientation = poPortrait then 
+    begin
+    FImageWidth := HmmToPixels(APage.PageSize.Width);
+    FImageHeight := VmmToPixels(APage.PageSize.Height);
+    end  
+  else 
+    begin
+    FImageWidth := HmmToPixels(APage.PageSize.Height);
+    FImageHeight := VmmToPixels(APage.PageSize.Width);
+    end;
   PrepareCanvas;
 end;
 
