@@ -4626,15 +4626,13 @@ begin
         {$IFDEF VerboseMethodPropEdit}
         debugln(['TMethodPropertyEditor.Edit NewValue="',NewMethodName,'"']);
         {$ENDIF}
-        if not IsValidIdent(NewMethodName) then
-          raise EPropertyError.Create('Method name "'+NewMethodName+'" must be an identifier');
+        Assert(IsValidIdent(NewMethodName),'Method name "'+NewMethodName+'" must be an identifier');
         NewMethodName:=PropertyHook.LookupRoot.ClassName+'.'+NewMethodName;
         {$IFDEF VerboseMethodPropEdit}
         debugln(['TMethodPropertyEditor.Edit CreateMethod "',NewMethodName,'"...']);
         {$ENDIF}
-        SetMethodValue(
-           PropertyHook.CreateMethod(NewMethodName, GetPropType,
-                                     GetComponent(0), GetPropertyPath(0)));
+        SetMethodValue(PropertyHook.CreateMethod(NewMethodName, GetPropType,
+                                                 GetComponent(0), GetPropertyPath(0)));
         {$IFDEF VerboseMethodPropEdit}
         debugln(['TMethodPropertyEditor.Edit CHANGED new method=',GetValue]);
         {$ENDIF}
