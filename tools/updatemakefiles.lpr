@@ -164,9 +164,9 @@ begin
   if Paramcount>0 then begin
     writeln('Updates for every lpk in the lazarus directory the Makefile.fpc, Makefile.compiled and Makefile.');
     writeln;
-    writeln('Usage: PATH=/path/to/trunk/fpc/utils/fpcm/bin/cpu-os/:$PATH ./tools/updatemakefiles');
+    writeln('Usage: FPCDIR=/path/fpc/src/trunk PATH=/path/to/trunk/fpc/utils/fpcm/bin/cpu-os/:$PATH ./tools/updatemakefiles');
     writeln;
-    writeln('IMPORTANT: this needs the fpc trunk version of fpcmake to support all targets');
+    writeln('IMPORTANT: this needs the fpc trunk version to support all targets');
     exit;
   end;
   CheckFPCMake;
