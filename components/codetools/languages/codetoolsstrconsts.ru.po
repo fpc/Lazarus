@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-04-24 01:17+0300\n"
+"PO-Revision-Date: 2017-10-13 01:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
@@ -853,7 +853,7 @@ msgstr "обнаружено неожиданное ключевое слово 
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
 msgid "unexpected section keyword %s found"
-msgstr ""
+msgstr "обнаружено неожиданное ключевое слово секции %s"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
