@@ -1402,8 +1402,7 @@ begin
       if (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose])
       and (Src[CurPos.StartPos] = CloseBracket)
       then begin
-        // chomp empty brackets
-        ExtractMemStream.Position := ExtractMemStream.Position - 1;
+        // opening bracket was not streamed, keep ExtractMemStream intact.
         ReadNextAtom;
         exit(true);
       end;
