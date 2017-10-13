@@ -5506,11 +5506,11 @@ begin
       Result:=Result.PriorBrother;
   end else begin
     Result:=Result.Parent;
-    while (Result.Desc in AllCodeSections) and (Result.PriorBrother<>nil) do
-      Result:=Result.PriorBrother;
-    while (Result<>nil) and (Result.FirstChild=nil) do
-      Result:=Result.NextBrother;
-    Result:=Result.FirstChild;
+    if (Result.Desc=ctnImplementation) and (Result.PriorBrother.Desc=ctnInterface)
+    and (Result.PriorBrother.FirstChild<>nil) then
+      Result:=Result.PriorBrother.FirstChild
+    else
+      Result:=Result.FirstChild;
   end;
 end;
 

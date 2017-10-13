@@ -1754,10 +1754,11 @@ begin
   try
     // gather all proc definitions
     StartNode:=nil;
-    if (ProcNode.Parent.Desc=ctnImplementation)
-    and (ProcNode.Parent.PriorBrother<>nil)
-    and (ProcNode.Parent.PriorBrother.Desc=ctnInterface) then
-      StartNode:=ProcNode.Parent.PriorBrother.FirstChild;
+    if (ProcNode.Parent.Desc=ctnImplementation) then begin
+      StartNode:=FindInterfaceNode;
+      if StartNode<>nil then
+        StartNode:=StartNode.FirstChild;
+    end;
     if StartNode=nil then
       StartNode:=FindFirstNodeOnSameLvl(ProcNode);
     //debugln(['TCodeCompletionCodeTool.CompleteForwardProcs StartNode=',StartNode.DescAsString,' at ',CleanPosToStr(StartNode.StartPos),'=',ExtractProcName(StartNode,[])]);
