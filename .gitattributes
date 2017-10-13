@@ -7160,6 +7160,8 @@ images/debugger/clock.png -text
 images/debugger/debugger.png -text svneol=unset#image/png
 images/debugger/debugger_breakpoints.png -text svneol=unset#image/png
 images/debugger/debugger_call_stack.png -text svneol=unset#image/png
+images/debugger/debugger_call_stack_150.png -text
+images/debugger/debugger_call_stack_200.png -text
 images/debugger/debugger_current_line.png -text
 images/debugger/debugger_current_line_breakpoint.png -text
 images/debugger/debugger_current_line_disabled_breakpoint.png -text svneol=unset#image/png
@@ -7251,6 +7253,8 @@ images/designer/mirror_vertical.png -text
 images/designer/scale.png -text
 images/designer/size.png -text
 images/designer/tab_order.png -text
+images/designer/tab_order_150.png -text
+images/designer/tab_order_200.png -text
 images/folder.png -text
 images/icon-naming-spec.xml svneol=native#text/plain
 images/icons/aqua.ico -text
@@ -7420,6 +7424,8 @@ images/menu/menu_jumpto_interfaceuses_200.png -text
 images/menu/menu_jumpto_procedurebegin.png -text svneol=unset#image/png
 images/menu/menu_jumpto_procedureheader.png -text svneol=unset#image/png
 images/menu/menu_manage_desktops.png -text svneol=unset#image/png
+images/menu/menu_manage_desktops_150.png -text
+images/menu/menu_manage_desktops_200.png -text
 images/menu/menu_manage_source_editors.png -text
 images/menu/menu_manage_source_editors_150.png -text
 images/menu/menu_manage_source_editors_200.png -text
@@ -7595,6 +7601,8 @@ images/menu/menu_unindent.png -text svneol=unset#image/png
 images/menu/menu_unindent_150.png -text
 images/menu/menu_unindent_200.png -text
 images/menu/menu_view_anchor_editor.png -text svneol=unset#image/png
+images/menu/menu_view_anchor_editor_150.png -text
+images/menu/menu_view_anchor_editor_200.png -text
 images/menu/menu_view_code_browser.png -text
 images/menu/menu_view_code_browser_150.png -text
 images/menu/menu_view_code_browser_200.png -text
@@ -7624,6 +7632,8 @@ images/menu/menu_view_source_editor_150.png -text
 images/menu/menu_view_source_editor_200.png -text
 images/menu/menu_view_todo.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit.png -text svneol=unset#image/png
+images/menu/menu_view_toggle_form_unit_150.png -text
+images/menu/menu_view_toggle_form_unit_200.png -text
 images/menu/menu_view_unit_info.png -text svneol=unset#image/png
 images/menu/menu_view_units.png -text svneol=unset#image/png
 images/menu/menu_view_units_150.png -text

@@ -53,6 +53,12 @@ laz_save.png
 laz_save_150.png
 laz_save_200.png
 
+debugger directory:
+
+debugger_call_stack.png
+debugger_call_stack_150.png
+debugger_call_stack_200.png
+
 designer directory:
 
 anchor_bottom_bottom.png
@@ -91,6 +97,9 @@ anchor_top_center_200.png
 anchor_top_top.png
 anchor_top_top_150.png
 anchor_top_top_200.png
+tab_order.png
+tab_order_150.png
+tab_order_200.png
 
 items directory:
 
@@ -175,6 +184,9 @@ menu_jumpto_interfaceuses_150.png
 menu_jumpto_interfaceuses_200.png
 menu_jumpto_interface_150.png
 menu_jumpto_interface_200.png
+menu_manage_desktops.png
+menu_manage_desktops_150.png
+menu_manage_desktops_200.png
 menu_manage_source_editors.png
 menu_manage_source_editors_150.png
 menu_manage_source_editors_200.png
@@ -326,6 +338,9 @@ menu_undo_200.png
 menu_unindent.png
 menu_unindent_150.png
 menu_unindent_200.png
+menu_view_anchor_editor.png
+menu_view_anchor_editor_150.png
+menu_view_anchor_editor_200.png
 menu_view_code_browser.png
 menu_view_code_browser_150.png
 menu_view_code_browser_200.png
@@ -353,6 +368,9 @@ menu_view_search_results_200.png
 menu_view_source_editor.png
 menu_view_source_editor_150.png
 menu_view_source_editor_200.png
+menu_view_toggle_form_unit.png
+menu_view_toggle_form_unit_150.png
+menu_view_toggle_form_unit_200.png
 menu_view_units.png
 menu_view_units_150.png
 menu_view_units_200.png
