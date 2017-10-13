@@ -860,79 +860,149 @@ begin
   // of messages send to the interface
   //-------------
 
-  LM_ACTIVATE        : Result:='LM_ACTIVATE';
-  LM_SETFOCUS        : Result:='LM_SETFOCUS';
-  LM_KILLFOCUS       : Result:='LM_KILLFOCUS';
-  LM_SHOWWINDOW      : Result:='LM_SHOWWINDOW';
-  LM_SIZE            : Result:='LM_SIZE';
-  LM_MOVE            : Result:='LM_MOVE';
+  // LM_NULL
+  LM_CREATE            : Result := 'LM_CREATE';
+  LM_DESTROY           : Result := 'LM_DESTROY';
+  LM_MOVE              : Result := 'LM_MOVE';
+  LM_SIZE              : Result := 'LM_SIZE';
+  LM_ACTIVATE          : Result := 'LM_ACTIVATE';
+  LM_SETFOCUS          : Result := 'LM_SETFOCUS';
+  LM_KILLFOCUS         : Result := 'LM_KILLFOCUS';
+  LM_ENABLE            : Result := 'LM_ENABLE';
+  LM_GETTEXTLENGTH     : Result := 'LM_GETTEXTLENGTH';
+  LM_PAINT             : Result := 'LM_PAINT';
+  LM_ERASEBKGND        : Result := 'LM_ERASEBKGND';
+  LM_SHOWWINDOW        : Result := 'LM_SHOWWINDOW';
 
-//  LM_MOUSEFIRST      : Result:='LM_MOUSEFIRST';
-  LM_MOUSEMOVE       : Result:='LM_MOUSEMOVE';
-  LM_LBUTTONDOWN     : Result:='LM_LBUTTONDOWN';
-  LM_LBUTTONUP       : Result:='LM_LBUTTONUP';
-  LM_CAPTURECHANGED  : Result:='LM_CAPTURECHANGED';
-  LM_SELCHANGE       : Result:='LM_SELCHANGE';
+  LM_CANCELMODE        : Result := 'LM_CANCELMODE';
+  LM_SETCURSOR         : Result := 'LM_SETCURSOR';
+  LM_DRAWITEM          : Result := 'LM_DRAWITEM';
+  LM_MEASUREITEM       : Result := 'LM_MEASUREITEM';
+  LM_DELETEITEM        : Result := 'LM_DELETEITEM';
+  LM_VKEYTOITEM        : Result := 'LM_VKEYTOITEM';
+  LM_CHARTOITEM        : Result := 'LM_CHARTOITEM';
+  LM_SETFONT           : Result := 'LM_SETFONT';
 
+  LM_COMPAREITEM       : Result := 'LM_COMPAREITEM';
+  LM_WINDOWPOSCHANGING : Result := 'LM_WINDOWPOSCHANGING';
+  LM_WINDOWPOSCHANGED  : Result := 'LM_WINDOWPOSCHANGED';
+  LM_NOTIFY            : Result := 'LM_NOTIFY';
+  LM_HELP              : Result := 'LM_HELP';
+  LM_NOTIFYFORMAT      : Result := 'LM_NOTIFYFORMAT';
+  LM_CONTEXTMENU       : Result := 'LM_CONTEXTMENU';
 
-  LM_USER           :Result:='LM_USER';
-  LM_DESTROY        :Result:='LM_DESTROY';
-  LM_ACTIVATEITEM   :Result:='LM_ACTIVATEITEM';
-  LM_CHANGED        :Result:='LM_CHANGED';
-  LM_FOCUS          :Result:='LM_FOCUS';
-  LM_CLICKED        :Result:='LM_CLICKED';
-  LM_ENTER          :Result:='LM_ENTER';
-  LM_LEAVE          :Result:='LM_LEAVE';
-  LM_CHECKRESIZE    :Result:='LM_CHECKRESIZE';
-  LM_SETEDITABLE    :Result:='LM_SETEDITABLE';
-  LM_MOVEWORD       :Result:='LM_MOVEWORD';
-  LM_MOVEPAGE       :Result:='LM_MOVEPAGE';
-  LM_MOVETOROW      :Result:='LM_MOVETOROW';
-  LM_MOVETOCOLUMN   :Result:='LM_MOVETOCOLUMN';
-  LM_KILLCHAR       :Result:='LM_KILLCHAR';
-  LM_KILLWORD       :Result:='LM_KILLWORD';
-  LM_KILLLINE       :Result:='LM_KILLLINE';
-  LM_CUT            :Result:='LM_CUT';
-  LM_COPY           :Result:='LM_COPY';
-  LM_PASTE          :Result:='LM_PASTE';
-  LM_CLEAR          :Result:='LM_CLEAR';
-  LM_CONFIGUREEVENT :Result:='LM_CONFIGUREEVENT';
-  LM_PAINT          :Result:='LM_PAINT';
-  LM_KEYDOWN        :Result:='LM_KEYDOWN';
-  LM_KEYUP          :Result:='LM_KEYUP';
-  LM_TIMER          :Result:='LM_TIMER';
-  LM_EXIT           :Result:='LM_EXIT';
-  LM_CLOSEQUERY     :Result:='LM_CLOSEQUERY';
-  LM_DRAGSTART      :Result:='LM_DRAGSTART';
+  LM_NCCALCSIZE        : Result := 'LM_NCCALCSIZE';
+  LM_NCHITTEST         : Result := 'LM_NCHITTEST';
+  LM_NCPAINT           : Result := 'LM_NCPAINT';
+  LM_NCACTIVATE        : Result := 'LM_NCACTIVATE';
+  LM_GETDLGCODE        : Result := 'LM_GETDLGCODE';
+  LM_NCMOUSEMOVE       : Result := 'LM_NCMOUSEMOVE';
+  LM_NCLBUTTONDOWN     : Result := 'LM_NCLBUTTONDOWN';
+  LM_NCLBUTTONUP       : Result := 'LM_NCLBUTTONUP';
+  LM_NCLBUTTONDBLCLK   : Result := 'LM_NCLBUTTONDBLCLK';
 
-  LM_MONTHCHANGED   :Result:='LM_MONTHCHANGED';
-  LM_YEARCHANGED    :Result:='LM_YEARCHANGED';
-  LM_DAYCHANGED     :Result:='LM_DAYCHANGED';
+  // LM_KEYFIRST
+  LM_KEYDOWN           : Result := 'LM_KEYDOWN';
+  LM_KEYUP             : Result := 'LM_KEYUP';
+  LM_CHAR              : Result := 'LM_CHAR';
+  LM_SYSKEYDOWN        : Result := 'LM_SYSKEYDOWN';
+  LM_SYSKEYUP          : Result := 'LM_SYSKEYUP';
+  LM_SYSCHAR           : Result := 'LM_SYSCHAR';
+  // LM_KEYLAST
 
-  //LM_MOUSEFIRST2    :Result:='';
-  LM_LBUTTONTRIPLECLK :Result:='LM_LBUTTONTRIPLECLK';
-  LM_LBUTTONQUADCLK :Result:='LM_LBUTTONQUADCLK';
-  LM_MBUTTONTRIPLECLK :Result:='LM_MBUTTONTRIPLECLK';
-  LM_MBUTTONQUADCLK :Result:='LM_MBUTTONQUADCLK';
-  LM_RBUTTONTRIPLECLK :Result:='LM_RBUTTONTRIPLECLK';
-  LM_RBUTTONQUADCLK :Result:='LM_RBUTTONQUADCLK';
-  LM_MOUSEENTER     :Result:='LM_MOUSEENTER';
-  LM_MOUSELEAVE     :Result:='LM_MOUSELEAVE';
-  //LM_MOUSELAST2     :Result:='';
+  LM_COMMAND           : Result := 'LM_COMMAND';
+  LM_SYSCOMMAND        : Result := 'LM_SYSCOMMAND';
+  LM_TIMER             : Result := 'LM_TIMER';
+  LM_HSCROLL           : Result := 'LM_HSCROLL';
+  LM_VSCROLL           : Result := 'LM_VSCROLL';
+  LM_CTLCOLORMSGBOX    : Result := 'LM_CTLCOLORMSGBOX';
+  LM_CTLCOLOREDIT      : Result := 'LM_CTLCOLOREDIT';
+  LM_CTLCOLORLISTBOX   : Result := 'LM_CTLCOLORLISTBOX';
+  LM_CTLCOLORBTN       : Result := 'LM_CTLCOLORBTN';
+  LM_CTLCOLORDLG       : Result := 'LM_CTLCOLORDLG';
+  LM_CTLCOLORSCROLLBAR : Result := 'LM_CTLCOLORSCROLLBAR';
+  LM_CTLCOLORSTATIC    : Result := 'LM_CTLCOLORSTATIC';
 
-  LM_GRABFOCUS      :Result:='LM_GRABFOCUS';
+  // LM_MOUSEFIRST
+  LM_MOUSEMOVE         : Result := 'LM_MOUSEMOVE';
+  LM_LBUTTONDOWN       : Result := 'LM_LBUTTONDOWN';
+  LM_LBUTTONUP         : Result := 'LM_LBUTTONUP';
+  LM_LBUTTONDBLCLK     : Result := 'LM_LBUTTONDBLCLK';
+  LM_RBUTTONDOWN       : Result := 'LM_RBUTTONDOWN';
+  LM_RBUTTONUP         : Result := 'LM_RBUTTONUP';
+  LM_RBUTTONDBLCLK     : Result := 'LM_RBUTTONDBLCLK';
+  LM_MBUTTONDOWN       : Result := 'LM_MBUTTONDOWN';
+  LM_MBUTTONUP         : Result := 'LM_MBUTTONUP';
+  LM_MBUTTONDBLCLK     : Result := 'LM_MBUTTONDBLCLK';
+  LM_MOUSEWHEEL        : Result := 'LM_MOUSEWHEEL';
+  LM_XBUTTONDOWN       : Result := 'LM_XBUTTONDOWN';
+  LM_XBUTTONUP         : Result := 'LM_XBUTTONUP';
+  LM_XBUTTONDBLCLK     : Result := 'LM_XBUTTONDBLCLK';
+  // LM_MOUSELAST
 
-  LM_DRAWLISTITEM   :Result:='LM_DRAWLISTITEM';
+  LM_PARENTNOTIFY      : Result := 'LM_PARENTNOTIFY';
+  LM_CAPTURECHANGED    : Result := 'LM_CAPTURECHANGED';
+  LM_DROPFILES         : Result := 'LM_DROPFILES';
+
+  LM_SELCHANGE         : Result := 'LM_SELCHANGE';
+  LM_DPICHANGED        : Result := 'LM_DPICHANGED';
+  LM_CUT               : Result := 'LM_CUT';
+  LM_COPY              : Result := 'LM_COPY';
+  LM_PASTE             : Result := 'LM_PASTE';
+  LM_CLEAR             : Result := 'LM_CLEAR';
+
+  // lcl messages
+  LM_USER              : Result := 'LM_USER';
+  LM_LCL               : Result := 'LM_LCL';
+
+  LM_ACTIVATEITEM      : Result := 'LM_ACTIVATEITEM';
+  LM_CHANGED           : Result := 'LM_CHANGED';
+  LM_FOCUS             : Result := 'LM_FOCUS';
+  LM_CLICKED           : Result := 'LM_CLICKED';
+  LM_RELEASED          : Result := 'LM_RELEASED';
+  LM_ENTER             : Result := 'LM_ENTER';
+  LM_LEAVE             : Result := 'LM_LEAVE';
+  LM_CHECKRESIZE       : Result := 'LM_CHECKRESIZE';
+  LM_SETEDITABLE       : Result := 'LM_SETEDITABLE';
+  LM_MOVEWORD          : Result := 'LM_MOVEWORD';
+  LM_MOVEPAGE          : Result := 'LM_MOVEPAGE';
+  LM_MOVETOROW         : Result := 'LM_MOVETOROW';
+  LM_MOVETOCOLUMN      : Result := 'LM_MOVETOCOLUMN';
+  LM_KILLCHAR          : Result := 'LM_KILLCHAR';
+  LM_KILLWORD          : Result := 'LM_KILLWORD';
+  LM_KILLLINE          : Result := 'LM_KILLLINE';
+  LM_CONFIGUREEVENT    : Result := 'LM_CONFIGUREEVENT';
+  LM_EXIT              : Result := 'LM_EXIT';
+  LM_CLOSEQUERY        : Result := 'LM_CLOSEQUERY';
+  LM_DRAGSTART         : Result := 'LM_DRAGSTART';
+  LM_QUIT              : Result := 'LM_QUIT';
+  LM_MONTHCHANGED      : Result := 'LM_MONTHCHANGED';
+  LM_YEARCHANGED       : Result := 'LM_YEARCHANGED';
+  LM_DAYCHANGED        : Result := 'LM_DAYCHANGED';
+
+  // LM_MOUSEFIRST2
+  LM_LBUTTONTRIPLECLK  : Result := 'LM_LBUTTONTRIPLECLK';
+  LM_LBUTTONQUADCLK    : Result := 'LM_LBUTTONQUADCLK';
+  LM_MBUTTONTRIPLECLK  : Result := 'LM_MBUTTONTRIPLECLK';
+  LM_MBUTTONQUADCLK    : Result := 'LM_MBUTTONQUADCLK';
+  LM_RBUTTONTRIPLECLK  : Result := 'LM_RBUTTONTRIPLECLK';
+  LM_RBUTTONQUADCLK    : Result := 'LM_RBUTTONQUADCLK';
+  LM_MOUSEENTER        : Result := 'LM_MOUSEENTER';
+  LM_MOUSELEAVE        : Result := 'LM_MOUSELEAVE';
+  LM_XBUTTONTRIPLECLK  : Result := 'LM_XBUTTONTRIPLECLK';
+  LM_XBUTTONQUADCLK    : Result := 'LM_XBUTTONQUADCLK';
+  // LM_MOUSELAST2
+
+  LM_GRABFOCUS         : Result := 'LM_GRABFOCUS';
+  LM_DRAWLISTITEM      : Result := 'LM_DRAWLISTITEM';
 
   // these IDs are reserved for internal messages in the interfaces
-  LM_INTERFACEFIRST :Result:='LM_INTERFACEFIRST';
-  LM_INTERFACELAST  :Result:='LM_INTERFACELAST';
-
-  LM_UNKNOWN        :Result:='LM_UNKNOWN';
+  LM_INTERFACEFIRST    : Result := 'LM_INTERFACEFIRST';
+  LM_INTERFACELAST     : Result := 'LM_INTERFACELAST';
+  LM_UNKNOWN           : Result := 'LM_UNKNOWN';
   else
     Result := Format('Unknown message 0x%x (%d)', [AMessage, AMessage]);
   end;
-  Result  := Trim(Result);
 end;
 
 
