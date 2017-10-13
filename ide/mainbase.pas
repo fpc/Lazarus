@@ -516,7 +516,7 @@ end;
 
 procedure TOpenFileToolButton.mnuOpenFile(Sender: TObject);
 begin
-  if MainIDE.DoOpenEditorFile((Sender as TOpenFileMenuItem).FileName,-1,-1,
+  if MainIDE.DoOpenEditorFile((Sender as TOpenFileMenuItem).Hint, -1, -1,
     [ofAddToRecent])=mrOk then
   begin
     MainIDE.SetRecentFilesMenu;
@@ -526,10 +526,12 @@ end;
 
 procedure TOpenFileToolButton.mnuProjectFile(Sender: TObject);
 begin
-  MainIDE.DoOpenProjectFile((Sender as TOpenFileMenuItem).FileName,[ofAddToRecent]);
+  // Hint holds the full filename, Caption may have a shortened form.
+  MainIDE.DoOpenProjectFile((Sender as TOpenFileMenuItem).Hint, [ofAddToRecent]);
 end;
 
 procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
+
   procedure AddFile(const AFileName: string; const AOnClick: TNotifyEvent);
   var
     AMenuItem: TOpenFileMenuItem;
@@ -539,7 +541,8 @@ procedure TOpenFileToolButton.RefreshMenu(Sender: TObject);
     DropdownMenu.Items.Add(AMenuItem);
     AMenuItem.OnClick := AOnClick;
     AMenuItem.FileName := AFileName;
-    AMenuItem.Caption := AFilename;
+    AMenuItem.Caption := ShortDisplayFilename(AFilename);
+    AMenuItem.Hint := AFilename; // Hint is not shown, it just holds the full filename.
     xExt := ExtractFileExt(AFileName);
     if SameFileName(xExt, '.lpi') or SameFileName(xExt, '.lpr') then
       AMenuItem.ImageIndex := LoadProjectIconIntoImages(AFileName, DropdownMenu.Images, FIndex);
@@ -1933,7 +1936,8 @@ begin
   // set captions and event
   for i:=0 to FileList.Count-1 do begin
     AMenuItem:=Section.Items[i];
-    AMenuItem.Caption := FileList[i];
+    AMenuItem.Caption := ShortDisplayFilename(FileList[i]);
+    AMenuItem.Hint := FileList[i]; // Hint is not shown, it just holds the full filename.
     AMenuItem.OnClick := OnClickEvent;
   end;
 end;

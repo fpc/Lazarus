@@ -2995,7 +2995,8 @@ procedure TMainIDE.mnuOpenRecentClicked(Sender: TObject);
 var
   AFilename: string;
 begin
-  AFileName:=ExpandFileNameUTF8((Sender as TIDEMenuItem).Caption);
+  // Hint holds the full filename, Caption may have a shortened form.
+  AFileName:=(Sender as TIDEMenuItem).Hint;
   if DoOpenEditorFile(AFilename,-1,-1,[ofAddToRecent])=mrOk then begin
     UpdateEnvironment;
   end else begin

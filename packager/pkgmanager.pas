@@ -1065,14 +1065,15 @@ procedure TPkgManager.MainIDEitmOpenRecentPackageClicked(Sender: TObject);
 var
   AFilename: string;
 begin
-  AFileName:=ExpandFileNameUTF8((Sender as TIDEMenuItem).Caption);
+  // Hint holds the full filename, Caption may have a shortened form.
+  AFileName:=(Sender as TIDEMenuItem).Hint;
   if DoOpenPackageFile(AFilename,[pofAddToRecent],false)=mrOk then begin
     UpdateEnvironment;
   end else begin
     // open failed
     if not FileExistsUTF8(AFilename) then begin
       // file does not exist -> delete it from recent file list
-      RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
+      EnvironmentOptions.RemoveFromRecentPackageFiles(AFilename);
       UpdateEnvironment;
     end;
   end;
@@ -3034,7 +3035,8 @@ end;
 procedure TPkgManager.SetRecentPackagesMenu;
 begin
   MainIDE.SetRecentSubMenu(itmPkgOpenRecent,
-     EnvironmentOptions.RecentPackageFiles,@MainIDEitmOpenRecentPackageClicked);
+                           EnvironmentOptions.RecentPackageFiles,
+                           @MainIDEitmOpenRecentPackageClicked);
 end;
 
 procedure TPkgManager.AddToMenuRecentPackages(const Filename: string);

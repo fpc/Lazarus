@@ -2466,8 +2466,7 @@ begin
   RemoveFromRecentList(AFilename,FRecentOpenFiles,rltFile);
 end;
 
-procedure TEnvironmentOptions.RemoveFromRecentPackageFiles(
-  const AFilename: string);
+procedure TEnvironmentOptions.RemoveFromRecentPackageFiles(const AFilename: string);
 begin
   RemoveFromRecentList(AFilename,FRecentPackageFiles,rltFile);
 end;

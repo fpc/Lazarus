@@ -108,6 +108,7 @@ function SwitchPathDelims(const Filename: string; Switch: boolean): string;
 function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPathDelimSwitch;
 function IsCurrentPathDelim(Switch: TPathDelimSwitch): boolean;
 function ChompEndNumber(const s: string): string;
+function ShortDisplayFilename(const aFileName: string): string;
 
 // cmd line
 procedure SplitCmdLine(const CmdLine: string;
@@ -921,6 +922,35 @@ begin
   while (NewLen>0) and (Result[NewLen] in ['0'..'9']) do
     dec(NewLen);
   Result:=copy(Result,1,NewLen);
+end;
+
+function ShortDisplayFilename(const aFileName: string): string;
+// Shorten a long filename for display.
+// Add '...' after the 2. path delimiter, then the end part of filename.
+const
+  Limit = 80;
+var
+  StartLen, EndLen, SepCnt: Integer;
+begin
+  if Length(aFileName) > Limit then
+  begin
+    StartLen := 1;
+    SepCnt := 0;
+    while StartLen < Length(aFileName) - (Limit div 2) do
+    begin
+      if aFileName[StartLen] in AllowDirectorySeparators then
+      begin
+        Inc(SepCnt);
+        if SepCnt = 2 then Break;
+      end;
+      Inc(StartLen);
+    end;
+    EndLen := Limit - StartLen - 3;
+    Result := Copy(aFileName, 1, StartLen) + '...'
+            + Copy(aFileName, Length(aFileName)-EndLen+1, EndLen);
+  end
+  else
+    Result := aFileName;
 end;
 
 function FindFirstFileWithExt(const Directory, Ext: string): string;

@@ -4361,15 +4361,19 @@ end;
 
 procedure TLazSourceFileManager.OpenProject(aMenuItem: TIDEMenuItem);
 var
-  OpenDialog:TOpenDialog;
+  OpenDialog: TOpenDialog;
   AFileName: string;
   LoadFlags: TLoadBufferFlags;
   PreReadBuf: TCodeBuffer;
   SourceType: String;
   LPIFilename: String;
 begin
-  if Assigned(aMenuItem) and (aMenuItem.Section=itmProjectRecentOpen) then begin
-    AFileName:=ExpandFileNameUTF8(aMenuItem.Caption);
+  if Assigned(aMenuItem) and (aMenuItem.Section=itmProjectRecentOpen) then
+  begin
+    // Hint holds the full filename, Caption may have a shortened form.
+    AFileName:=aMenuItem.Hint;
+    Assert(AFileName = ExpandFileNameUTF8(AFileName),
+           'TLazSourceFileManager.OpenProject: AFileName is not absolute.');
     if MainIDE.DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
       AddRecentProjectFile(AFilename);
     end else begin
