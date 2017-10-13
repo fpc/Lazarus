@@ -37,7 +37,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="runtestscodetools.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -89,6 +89,11 @@
         <Filename Value="moduletests/fdt_arrays.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="testcodecompletion.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestCodeCompletion"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -1024,6 +1024,7 @@ components/codetools/tests/runtestscodetools.lpi svneol=native#text/plain
 components/codetools/tests/runtestscodetools.lpr svneol=native#text/plain
 components/codetools/tests/testbasiccodetools.pas svneol=native#text/plain
 components/codetools/tests/testcfgscript.pas svneol=native#text/plain
+components/codetools/tests/testcodecompletion.pas svneol=native#text/plain
 components/codetools/tests/testcompleteblock.pas svneol=native#text/plain
 components/codetools/tests/testcth2pas.pas svneol=native#text/pascal
 components/codetools/tests/testctrangescan.pas svneol=native#text/plain

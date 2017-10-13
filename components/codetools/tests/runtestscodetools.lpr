@@ -38,7 +38,7 @@ uses
   {$ENDIF}
   TestBasicCodetools,
   TestCTRangeScan, TestPascalParser, TestMethodJumpTool, TestStdCodetools,
-  TestFindDeclaration, TestCompleteBlock, TestRefactoring, fdt_arrays;
+  TestFindDeclaration, TestCompleteBlock, TestRefactoring, fdt_arrays, testcodecompletion;
 
 const
   ConfigFilename = 'codetools.config';
