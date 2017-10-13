@@ -2184,8 +2184,9 @@ begin
           gtk_clipboard_set_text(AClip, PgChar(AClipText), length(AClipText));
       end else
       begin
-        if (AWinControl is TCustomTabControl) then
-          // do not grab focus. issue #32237
+        if (AWinControl is TCustomTabControl)
+        or (AWinControl is TCustomPanel) then
+          // do not grab focus. issue #32237, #32515
         else
           LCLIntf.SetFocus(AWinControl.Handle);
       end;
