@@ -19,7 +19,7 @@
     </CompilerOptions>
     <Description Value="Online package manger"/>
     <License Value="GPL"/>
-    <Version Major="1"/>
+    <Version Major="1" Release="1"/>
     <Files Count="24">
       <Item1>
         <Filename Value="onlinepackagemanagerintf.pas"/>
