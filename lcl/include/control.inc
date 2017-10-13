@@ -625,25 +625,23 @@ procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer;
   KeepBase: boolean);
 var
   SizeChanged, PosChanged : boolean;
-  OldLeft: Integer;
-  OldTop: Integer;
-  OldWidth: Integer;
-  OldHeight: Integer;
+  OldLeft, OldTop, OldWidth, OldHeight: Integer;
 
-  function PosSizeKept: boolean;
+  function PosSizeChanged: boolean;
   begin
     SizeChanged:= (FWidth <> OldWidth) or (FHeight <> OldHeight);
     PosChanged:= (FLeft <> OldLeft) or (FTop <> OldTop);
-    Result:=(not SizeChanged) and (not PosChanged);
+    Result:= SizeChanged or PosChanged;
   end;
 
-  procedure CheckLoop;
+  procedure DebugInvalidPos(N: integer);
   begin
-    if (not KeepBase) and (cfKillChangeBounds in GetTopParent.FControlFlags) then
-      raise Exception.Create('TControl.ChangeBounds loop detected '+DbgSName(Self)
-        +' Left='+dbgs(Left)+',Top='+dbgs(Top)+',Width='+dbgs(Width)+',Height='+dbgs(Height)
-        +' NewLeft='+dbgs(aLeft)+',NewTop='+dbgs(aTop)+',NewWidth='+dbgs(aWidth)+',NewHeight='+dbgs(aHeight)
-        );
+    if (FLeft < Low(Smallint)) or (FLeft > High(Smallint))
+    or (FTop  < Low(Smallint)) or (FTop  > High(Smallint)) then
+      DebugLn(['TControl.ChangeBounds test(',N,')',DbgSName(Self),
+        ' Old=',OldLeft,',',OldTop,',',OldWidth,',',OldHeight,
+        ' New=',ALeft,',',ATop,',',AWidth,',',AHeight,
+        ' Real=',FLeft,',',FTop,',',FWidth,',',FHeight]);
   end;
 
 begin
@@ -663,39 +661,45 @@ begin
   // check if something would change
   SizeChanged := (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged := (FLeft <> ALeft) or (FTop <> ATop);
-  if (not SizeChanged) and (not PosChanged) then Exit;
+  if not (SizeChanged or PosChanged) then Exit;
 
-  CheckLoop;
-
+  // check for loop.
+  if (not KeepBase) and (cfKillChangeBounds in GetTopParent.FControlFlags) then
+    raise Exception.Create('TControl.ChangeBounds loop detected '+DbgSName(Self)
+      +' Left='+dbgs(Left)+',Top='+dbgs(Top)+',Width='+dbgs(Width)+',Height='+dbgs(Height)
+      +' NewLeft='+dbgs(aLeft)+',NewTop='+dbgs(aTop)+',NewWidth='+dbgs(aWidth)+',NewHeight='+dbgs(aHeight)
+      );
   OldLeft := FLeft;
   OldTop := FTop;
   OldWidth := FWidth;
   OldHeight := FHeight;
 
   //DebugLn('TControl.ChangeBounds A ',DbgSName(Self),' Old=',dbgs(BoundsRect),' New=',dbgs(Bounds(ALeft,ATop,AWidth,AHeight)));
-  if (not (csLoading in ComponentState))
-  and (not (Self is TWinControl)) then
+  if not ((csLoading in ComponentState) or (Self is TWinControl)) then
     InvalidateControl(IsControlVisible, False, true);
   //DebugLn('TControl.ChangeBounds B ',Name,':',ClassName);
   DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  DebugInvalidPos(1);
 
   // change base bounds
   // (base bounds are the base for the automatic resizing)
   if not KeepBase then
     UpdateAnchorRules;
+  DebugInvalidPos(2);
 
   // lock size messages
   inc(FSizeLock);
   try
     // notify before autosizing
     BoundsChanged;
-    if PosSizeKept then exit;
+    if not PosSizeChanged then exit;
     if (Parent<>nil) or SizeChanged then
       AdjustSize;
   finally
     dec(FSizeLock);
   end;
-  if PosSizeKept then exit;
+  if not PosSizeChanged then exit;
+  DebugInvalidPos(3);
 
   // send messages, if this is the top level call
   if FSizeLock > 0 then exit;
@@ -706,14 +710,17 @@ begin
   else
   if (not (csLoading in ComponentState)) and (not (Self is TWinControl)) then
     Invalidate;
+  DebugInvalidPos(4);
   // notify user about resize
   if (not (csLoading in ComponentState)) then
   begin
     Resize;
+    DebugInvalidPos(5);
     CheckOnChangeBounds;
+    DebugInvalidPos(6);
     // for delphi compatibility send size/move messages
-    PosSizeKept;
-    SendMoveSizeMessages(SizeChanged,PosChanged);
+    if PosSizeChanged then
+      SendMoveSizeMessages(SizeChanged,PosChanged);
   end;
 end;
 
