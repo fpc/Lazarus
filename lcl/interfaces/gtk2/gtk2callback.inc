@@ -2074,15 +2074,21 @@ var
       end;
     end;
 
-    if (LastMouse.Down) and
-      (not (gdk_event_get_type(Event) in [GDK_BUTTON_PRESS, gdk_2button_press, gdk_3button_press]))
-    then begin
-      {$IFDEF VerboseMouseBugfix}
-      DebugLn('DeliverMouseDownMessage: NO CLICK: LastMouse.Down=',dbgs(LastMouse.Down),
-              ' Event^.theType=',dbgs(gdk_event_get_type(Event)));
-      {$ENDIF}
-      Exit;
-    end;
+    if (LastMouse.Down) then
+      if (gdk_event_get_type(Event) in [GDK_BUTTON_PRESS, gdk_2button_press, gdk_3button_press]) then
+      begin
+        // After a LastMouse.Down has to follow a LastMouse.Up. Issue #32199
+        if LastMouse.WinControl <> AWinControl then
+          Exit;
+      end
+      else
+      begin
+        {$IFDEF VerboseMouseBugfix}
+        DebugLn('DeliverMouseDownMessage: NO CLICK: LastMouse.Down=',dbgs(LastMouse.Down),
+                ' Event^.theType=',dbgs(gdk_event_get_type(Event)));
+        {$ENDIF}
+        Exit;
+      end;
 
     if (LastMouse.Down) and (gdk_event_get_type(Event) = GDK_BUTTON_PRESS) and
       (csDesigning in AWinControl.ComponentState) then
