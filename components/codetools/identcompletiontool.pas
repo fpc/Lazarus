@@ -408,9 +408,9 @@ type
       CleanPos: integer; BeautifyCodeOptions: TBeautifyCodeOptions);
     procedure InitCollectIdentifiers(const CursorPos: TCodeXYPosition;
       var IdentifierList: TIdentifierList);
-    procedure ParseSourceTillCollectionStart(const CursorPos: TCodeXYPosition;
+    function ParseSourceTillCollectionStart(const CursorPos: TCodeXYPosition;
       out CleanCursorPos: integer; out CursorNode: TCodeTreeNode;
-      out IdentStartPos, IdentEndPos: integer);
+      out IdentStartPos, IdentEndPos: integer): boolean;
     function FindIdentifierStartPos(const CursorPos: TCodeXYPosition
                                       ): TCodeXYPosition;
     procedure FindCollectionContext(Params: TFindDeclarationParams;
@@ -2005,13 +2005,14 @@ begin
   CurrentIdentifierList.StartContext:=StartContext;
 end;
 
-procedure TIdentCompletionTool.ParseSourceTillCollectionStart(
+function TIdentCompletionTool.ParseSourceTillCollectionStart(
   const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
-  out CursorNode: TCodeTreeNode; out IdentStartPos, IdentEndPos: integer);
+  out CursorNode: TCodeTreeNode; out IdentStartPos, IdentEndPos: integer): boolean;
 var
   StartContext: TFindContext;
   ContextPos: Integer;
 begin
+  Result:=false;
   CleanCursorPos:=0;
   CursorNode:=nil;
   IdentStartPos:=0;
@@ -2023,7 +2024,12 @@ begin
   {$ENDIF}
   BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                           [btSetIgnoreErrorPos]);
-  if FindDeepestNodeAtPos(CleanCursorPos,false)=nil then begin
+  // Return if CleanCursorPos is before Tree.Root.StartNode.
+  // For example a comment at the beginning of a unit.
+  if Tree.Root.StartPos>CleanCursorPos then
+    Exit;
+  if FindDeepestNodeAtPos(CleanCursorPos,false)=nil then
+  begin
     debugln(['TIdentCompletionTool.ParseSourceTillCollectionStart',
       ' BuildTreeAndGetCleanPos worked, but no node found.',
       ' CursorPos=',dbgs(CursorPos),' CleanCursorPos=',CleanCursorPos,
@@ -2077,6 +2083,7 @@ begin
   //DebugLn(['TIdentCompletionTool.ParseSourceTillCollectionStart ',dbgstr(copy(Src,IdentStartPos,10)),' CursorPos.X=',CursorPos.X,' LineLen=',CursorPos.Code.GetLineLength(CursorPos.Y-1),' ',CursorPos.Code.GetLine(CursorPos.Y-1)]);
   if CursorPos.X>CursorPos.Code.GetLineLength(CursorPos.Y-1)+1 then
     IdentStartPos:=IdentEndPos;
+  Result:=true;
 end;
 
 function TIdentCompletionTool.FindIdentifierStartPos(
@@ -2742,8 +2749,9 @@ begin
     IdentStartXY:=FindIdentifierStartPos(CursorPos);
     if CheckCursorInCompilerDirective(IdentStartXY) then exit(true);
 
-    ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
-                                   IdentStartPos,IdentEndPos);
+    if not ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
+                                          IdentStartPos,IdentEndPos) then
+      Exit;
     Params:=TFindDeclarationParams.Create(Self,CursorNode);
     try
       if CleanCursorPos=0 then ;
@@ -3198,17 +3206,17 @@ var
   IdentifierList: TIdentifierList;
   IdentStartPos, IdentEndPos: integer;
 begin
-  CodeContexts:=nil;
   Result:=false;
-
+  CodeContexts:=nil;
   IdentifierList:=nil;
   CurrentIdentifierContexts:=CodeContexts;
 
   ActivateGlobalWriteLock;
   try
     InitCollectIdentifiers(CursorPos,IdentifierList);
-    ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
-                                   IdentStartPos,IdentEndPos);
+    if not ParseSourceTillCollectionStart(CursorPos,CleanCursorPos,CursorNode,
+                                          IdentStartPos,IdentEndPos) then
+      Exit;
     Params:=TFindDeclarationParams.Create(Self, CursorNode);
     try
       if IdentStartPos=0 then ;
