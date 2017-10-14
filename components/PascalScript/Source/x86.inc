@@ -391,7 +391,7 @@ var
             {$IFDEF FPC}
             {$IF FPC_FULLVERSION < 30101}
               // pass dyn. array on stack
-              UseReg := false;
+            UseReg := false;
             {$ELSE}
               // pass dyn. arrays in registers when i386 register calling conventions are used
               // more details -> FPC r30870
@@ -475,7 +475,7 @@ var
             TempStr := StringOfChar(AnsiChar(#0),4);
             Pointer((@TempStr[1])^) := @MethodData;
 {$ELSE}
-            tempstr := StringOfChar(AnsiChar(#0),8);
+            TempStr := StringOfChar(AnsiChar(#0),8);
             TMethod((@TempStr[1])^) := MKMethod(Self, Longint(FVar.Dta^));
             UseReg := false;
 {$ENDIF}
@@ -594,12 +594,12 @@ begin
               {$IFNDEF PS_NOWIDESTRING}btWideChar, {$ENDIF}btu16, bts16:  tbtu16(res.dta^) := RealCall_Register(Address, EAX, EDX, ECX, @Stack[Length(Stack)-3], Length(Stack) div 4, 2, nil);
               btClass :
               begin
-              {$IFDEF FPC}
+              {$IF DEFINED (fpc) and (fpc_version <= 3)}
                 if IsConstructor or IsVirtualCons then
                   tbtu32(res.dta^) := RealCall_Register(Address, EDX, EAX, ECX,
                   @Stack[Length(Stack) - 3], Length(Stack) div 4, 4, nil)
                 else
-             {$ENDIF}
+             {$IFEND}
                   tbtu32(res.dta^) := RealCall_Register(Address, EAX, EDX, ECX,
                   @Stack[Length(Stack) - 3], Length(Stack) div 4, 4, nil);
               end;
@@ -663,7 +663,7 @@ begin
               btChar, btU8, btS8:    tbtu8(res^.Dta^) := RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 1, nil);
               {$IFNDEF PS_NOWIDESTRING}btWideChar, {$ENDIF}btu16, bts16:  tbtu16(res^.Dta^) := RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 2, nil);
               btClass, btu32, bts32:  tbtu32(res^.Dta^):= RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, nil);
-              btPChar:       TBTSTRING(res^.dta^) := Pansichar(RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, nil));
+              btPChar:       pansichar(res^.dta^) := Pansichar(RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, nil));
               {$IFNDEF PS_NOINT64}bts64:
                 begin
                   EAX := RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, @EDX);
@@ -722,7 +722,7 @@ begin
               btCHar, btU8, btS8:    tbtu8(res^.dta^) := RealCall_Cdecl(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 1, nil);
               {$IFNDEF PS_NOWIDESTRING}btWideChar, {$ENDIF}btu16, bts16:  tbtu16(res^.dta^) := RealCall_Cdecl(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 2, nil);
               btClass, btu32, bts32:  tbtu32(res^.dta^) := RealCall_Cdecl(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, nil);
-              btPChar:       TBTSTRING(res^.dta^) := Pansichar(RealCall_Cdecl(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, nil));
+              btPChar:       pansichar(res^.dta^) := Pansichar(RealCall_Cdecl(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, nil));
               {$IFNDEF PS_NOINT64}bts64:
                 begin
                   EAX := RealCall_CDecl(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, @EDX);
@@ -757,7 +757,7 @@ begin
               btChar, btU8, btS8:    tbtu8(res^.dta^) := RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 1, nil);
               {$IFNDEF PS_NOWIDESTRING}btWideChar, {$ENDIF}btu16, bts16:  tbtu16(res^.dta^) := RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 2, nil);
               btclass, btu32, bts32:  tbtu32(res^.dta^) := RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, nil);
-              btPChar:       TBTSTRING(res^.dta^) := Pansichar(RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, nil));
+              btPChar:       pansichar(res^.dta^) := Pansichar(RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, nil));
               {$IFNDEF PS_NOINT64}bts64:
                 begin
                   EAX := RealCall_Other(Address, @Stack[Length(Stack)-3], Length(Stack) div 4, 4, @EDX);

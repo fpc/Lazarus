@@ -266,7 +266,7 @@ end;
 
 procedure TCompilerTestSimple.CreateObject;
 begin
-  CompileRun('var r: TObject; begin r := TObject.Create; r.Free; end.');
+  CompileRun('var r: TObject; begin r := TObject.Create; r.Destroy; end.');
 end;
 
 procedure TCompilerTestSimple.CharTest2;
