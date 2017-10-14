@@ -54,9 +54,9 @@ type
     cbPackageState: TComboBox;
     cbPackageType: TComboBox;
     imTBDis: TImageList;
-    MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
-    MenuItem3: TMenuItem;
+    miSep2: TMenuItem;
+    miSep3: TMenuItem;
+    miSep1: TMenuItem;
     miCreateRepository: TMenuItem;
     miLoadChecks: TMenuItem;
     miSaveChecks: TMenuItem;
@@ -106,6 +106,7 @@ type
     tbCleanUp: TToolButton;
     tbCreate: TToolButton;
     tbUpdate: TToolButton;
+    tbOpenRepo: TToolButton;
     procedure miCopyToClpBrdClick(Sender: TObject);
     procedure miCreateJSONForUpdatesClick(Sender: TObject);
     procedure miCreateRepositoryClick(Sender: TObject);
@@ -120,6 +121,7 @@ type
     procedure tbDownloadClick(Sender: TObject);
     procedure tbHelpClick(Sender: TObject);
     procedure tbInstallClick(Sender: TObject);
+    procedure tbOpenRepoClick(Sender: TObject);
     procedure tbOptionsClick(Sender: TObject);
     procedure tbRefreshClick(Sender: TObject);
     procedure cbAllClick(Sender: TObject);
@@ -458,6 +460,7 @@ begin
   tbInstall.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbUninstall.Enabled := (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
   tbUpdate.Enabled :=  (AEnable) and (SerializablePackages.Count > 0) and (VisualTree.VST.CheckedCount > 0);
+  tbOpenRepo.Enabled := (AEnable);
   tbCleanUp.Enabled := (AEnable) and (SerializablePackages.Count > 0);
   tbCreate.Visible := Options.UserProfile = 1;
   if tbCreate.Visible then
@@ -948,6 +951,11 @@ begin
   end;
 end;
 
+procedure TMainFrm.tbOpenRepoClick(Sender: TObject);
+begin
+  OpenDocument(Options.LocalRepositoryPackages);
+end;
+
 procedure TMainFrm.tbCleanUpClick(Sender: TObject);
 var
   Cnt: Integer;
@@ -1260,6 +1268,8 @@ begin
   tbUpdate.Hint := rsMainFrm_TBUpdate_Hint;
   tbUninstall.Caption := rsMainFrm_TBUninstall_Caption;
   tbUninstall.Hint := rsMainFrm_TBUninstall_Hint;
+  tbOpenRepo.Caption := rsMainFrm_TBOpenRepo_Caption;
+  tbOpenRepo.Hint := rsMainFrm_TBOpenRepo_Hint;
   tbCleanUp.Caption := rsMainFrm_TBCleanUp_Caption;
   tbCleanUp.Hint := rsMainFrm_TBCleanUp_Hint;
   tbCreate.Caption := rsMainFrm_TBRepository_Caption;

@@ -198,7 +198,9 @@ begin
        Position := 1;
        Alignment := taCenter;
        Width := MulDiv(90, Screen.PixelsPerInch, 96);
+       {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
+       {$ENDIF}
        Text := rsMainFrm_VSTHeaderColumn_Installed;
      end;
      with Header.Columns.Add do
@@ -206,7 +208,9 @@ begin
        Position := 2;
        Alignment := taCenter;
        Width := MulDiv(90, Screen.PixelsPerInch, 96);
+       {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
+       {$ENDIF}
        Text := rsMainFrm_VSTHeaderColumn_Repository;
      end;
      with Header.Columns.Add do
@@ -214,14 +218,18 @@ begin
        Position := 3;
        Alignment := taCenter;
        Width := MulDiv(90, Screen.PixelsPerInch, 96);
+       {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
+       {$ENDIF}
        Text := rsMainFrm_VSTHeaderColumn_Update;
      end;
      with Header.Columns.Add do
      begin
         Position := 4;
-        Width := MulDiv(280, Screen.PixelsPerInch, 96);//280;
+        Width := MulDiv(280, Screen.PixelsPerInch, 96);
+        {$IFDEF LCLCarbon}
         Options := Options - [coResizable];
+        {$ENDIF}
         Text := rsMainFrm_VSTHeaderColumn_Data;
       end;
      with Header.Columns.Add do
@@ -239,7 +247,7 @@ begin
         Width := MulDiv(20, Screen.PixelsPerInch, 96);
         Options := Options - [coResizable];
      end;
-     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoAutoSpring];
+     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible];
      {$IFDEF LCLCarbon}
      Header.Options := Header.Options - [hoShowSortGlyphs];
      {$ENDIF}
