@@ -631,6 +631,23 @@ begin
   PkgEditMenuViewPackageSource:=RegisterIDEMenuCommand(AParent,'View Package Source',lisPckEditViewPackageSource);
 end;
 
+function DependencyAsString(ADependency: TPkgDependency): string;
+// A display text for a dependency including min/max versions + other info.
+// ToDo: Modify Dependency.AsString output to replace this function,
+//       or create a new method for the task.
+var
+  aFilename: String;
+begin
+  Result:=ADependency.AsString;
+  if ADependency.DefaultFilename<>'' then begin
+    aFilename:=ADependency.MakeFilenameRelativeToOwner(ADependency.DefaultFilename);
+    if ADependency.PreferDefaultFilename then
+      Result:=Result+' in '+aFilename // like the 'in' keyword in uses section
+    else
+      Result:=Format(lisPckEditDefault, [Result, aFilename]);
+  end;
+end;
+
 { TPENodeData }
 
 constructor TPENodeData.Create(aTyp: TPENodeType; aName: string;
@@ -2523,7 +2540,7 @@ procedure TPackageEditorForm.UpdateRequiredPkgs(Immediately: boolean);
 var
   CurDependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
-  CurNodeText, aFilename, OldFilter: String;
+  OldFilter: String;
   NodeData: TPENodeData;
 begin
   if not CanUpdate(pefNeedUpdateRequiredPkgs,Immediately) then exit;
@@ -2537,20 +2554,12 @@ begin
   CurDependency:=LazPackage.FirstRequiredDependency;
   FilterEdit.SelectedPart:=nil;
   while CurDependency<>nil do begin
-    CurNodeText:=CurDependency.AsString;
-    if CurDependency.DefaultFilename<>'' then begin
-      aFilename:=CurDependency.MakeFilenameRelativeToOwner(CurDependency.DefaultFilename);
-      if CurDependency.PreferDefaultFilename then
-        CurNodeText:=CurNodeText+' in '+aFilename // like the 'in' keyword in uses section
-      else
-        CurNodeText:=Format(lisPckEditDefault, [CurNodeText, aFilename]);
-    end;
     NodeData:=CreateNodeData(penDependency,CurDependency.PackageName,false);
     if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency)
     and (FNextSelectedPart.Name=NodeData.Name)
     then
       FilterEdit.SelectedPart:=NodeData;
-    RequiredBranch.AddNodeData(CurNodeText, NodeData);
+    RequiredBranch.AddNodeData(DependencyAsString(CurDependency), NodeData);
     CurDependency:=CurDependency.NextRequiresDependency;
   end;
   if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency) then
@@ -2569,7 +2578,7 @@ begin
     RemovedBranch.ClearNodeData;
     while CurDependency<>nil do begin
       NodeData:=CreateNodeData(penDependency,CurDependency.PackageName,true);
-      RemovedBranch.AddNodeData(CurDependency.AsString, NodeData);
+      RemovedBranch.AddNodeData(DependencyAsString(CurDependency), NodeData);
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
     RemovedBranch.InvalidateBranch;
@@ -3257,8 +3266,9 @@ begin
   if not Moved then exit;
   LazPackage.ModifySilently;
   RequiredBranch:=FilterEdit.GetExistingBranch(FRequiredPackagesNode);
-  OldIndex:=RequiredBranch.Items.IndexOf(FSingleSelectedDep.PackageName);
-  Assert(OldIndex<>-1, 'TPackageEditorForm.DoMoveDependency: "'+FSingleSelectedDep.PackageName+'" not found in FilterBranch.');
+  OldIndex:=RequiredBranch.Items.IndexOf(DependencyAsString(FSingleSelectedDep));
+  Assert(OldIndex<>-1, 'TPackageEditorForm.DoMoveDependency: "' +
+          DependencyAsString(FSingleSelectedDep)+'" not found in FilterBranch.');
   NewIndex:=OldIndex+Offset;
   RequiredBranch.Move(OldIndex,NewIndex);
   UpdatePEProperties;
