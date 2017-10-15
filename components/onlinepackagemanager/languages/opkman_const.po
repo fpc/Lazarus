@@ -156,6 +156,7 @@ msgid "Delete package from the current repository"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_bopen_caption
+msgctxt "opkman_const.rscreaterepositoryfrm_bopen_caption"
 msgid "Open"
 msgstr ""
 
@@ -777,6 +778,15 @@ msgstr ""
 msgid "Install packages"
 msgstr ""
 
+#: opkman_const.rsmainfrm_tbopenrepo_caption
+msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
+msgid "Open"
+msgstr ""
+
+#: opkman_const.rsmainfrm_tbopenrepo_hint
+msgid "Open local repository"
+msgstr ""
+
 #: opkman_const.rsmainfrm_tboptions_caption
 msgctxt "opkman_const.rsmainfrm_tboptions_caption"
 msgid "Options"
@@ -1276,6 +1286,14 @@ msgstr ""
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption
 msgid "Check for package updates"
+msgstr ""
+
+#: opkman_const.rsoptions_lbcontimeout_caption
+msgid "Connection timeout (seconds):"
+msgstr ""
+
+#: opkman_const.rsoptions_lbcontimeout_hint
+msgid "The number of seconds after which package manager drops connection"
 msgstr ""
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
