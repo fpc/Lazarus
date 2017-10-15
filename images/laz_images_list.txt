@@ -123,6 +123,8 @@ debugger/clock.png
 debugger/debugger.png
 debugger/debugger_breakpoints.png
 debugger/debugger_call_stack.png
+debugger/debugger_call_stack_150.png
+debugger/debugger_call_stack_200.png
 debugger/debugger_current_line.png
 debugger/debugger_current_line_breakpoint.png
 debugger/debugger_current_line_disabled_breakpoint.png
@@ -214,6 +216,8 @@ designer/Order_move_front.png
 designer/scale.png
 designer/size.png
 designer/tab_order.png
+designer/tab_order_150.png
+designer/tab_order_200.png
 items/item_character.png
 items/item_filter.png
 items/item_font.png
@@ -339,6 +343,8 @@ menu/menu_jumpto_interface_200.png
 menu/menu_jumpto_procedurebegin.png
 menu/menu_jumpto_procedureheader.png
 menu/menu_manage_desktops.png
+menu/menu_manage_desktops_150.png
+menu/menu_manage_desktops_200.png
 menu/menu_manage_source_editors.png
 menu/menu_manage_source_editors_150.png
 menu/menu_manage_source_editors_200.png
@@ -514,6 +520,8 @@ menu/menu_unindent.png
 menu/menu_unindent_150.png
 menu/menu_unindent_200.png
 menu/menu_view_anchor_editor.png
+menu/menu_view_anchor_editor_150.png
+menu/menu_view_anchor_editor_200.png
 menu/menu_view_code_browser.png
 menu/menu_view_code_browser_150.png
 menu/menu_view_code_browser_200.png
@@ -543,6 +551,8 @@ menu/menu_view_source_editor_150.png
 menu/menu_view_source_editor_200.png
 menu/menu_view_todo.png
 menu/menu_view_toggle_form_unit.png
+menu/menu_view_toggle_form_unit_150.png
+menu/menu_view_toggle_form_unit_200.png
 menu/menu_view_units.png
 menu/menu_view_units_150.png
 menu/menu_view_units_200.png
