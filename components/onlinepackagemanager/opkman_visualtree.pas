@@ -880,7 +880,7 @@ begin
       fbPackageName:
         begin
           if (Data^.DataType = 1) then
-            FilterNode(Node, Data^.PackageName);
+            FilterNode(Node, Data^.PackageDisplayName);
         end;
       fbLazarusPackageName:
         begin
