@@ -125,7 +125,7 @@ type
 
     procedure DoMnuWindowClicked(Sender: TObject);
     procedure mnuOpenProjectClicked(Sender: TObject); virtual; abstract;
-    procedure mnuOpenRecentClicked(Sender: TObject); virtual; abstract;
+    procedure mnuOpenRecentClicked(Sender: TObject);
     procedure mnuWindowItemClick(Sender: TObject); virtual;
     procedure mnuCenterWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
@@ -141,8 +141,6 @@ type
     destructor Destroy; override;
     procedure CreateOftenUsedForms; virtual; abstract;
     function GetMainBar: TForm; override;
-    procedure SetRecentProjectFilesMenu;
-    procedure SetRecentFilesMenu;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
                            out ActiveUnitInfo: TUnitInfo;
                            Flags: TCodeToolsFlags): boolean;
@@ -184,6 +182,11 @@ type
 
     procedure SetRecentSubMenu(Section: TIDEMenuSection; FileList: TStringList;
                                OnClickEvent: TNotifyEvent); override;
+    procedure SetRecentProjectFilesMenu;
+    procedure SetRecentFilesMenu;
+    procedure UpdateRecentFilesEnv;
+    procedure DoOpenRecentFile(AFilename: string);
+
     procedure UpdateHighlighters(Immediately: boolean = false); override;
 
     procedure FindInFilesPerDialog(AProject: TProject); override;
@@ -516,17 +519,12 @@ end;
 
 procedure TOpenFileToolButton.mnuOpenFile(Sender: TObject);
 begin
-  if MainIDE.DoOpenEditorFile((Sender as TOpenFileMenuItem).Hint, -1, -1,
-    [ofAddToRecent])=mrOk then
-  begin
-    MainIDE.SetRecentFilesMenu;
-    MainIDE.SaveEnvironment;
-  end;
+  // Hint holds the full filename, Caption may have a shortened form.
+  MainIDE.DoOpenRecentFile((Sender as TOpenFileMenuItem).Hint);
 end;
 
 procedure TOpenFileToolButton.mnuProjectFile(Sender: TObject);
 begin
-  // Hint holds the full filename, Caption may have a shortened form.
   MainIDE.DoOpenProjectFile((Sender as TOpenFileMenuItem).Hint, [ofAddToRecent]);
 end;
 
@@ -564,11 +562,13 @@ begin
   DropdownMenu.Items.Clear;
 
   // first add recent projects
-  AddFiles(EnvironmentOptions.RecentProjectFiles, EnvironmentOptions.MaxRecentProjectFiles, @mnuProjectFile);
+  AddFiles(EnvironmentOptions.RecentProjectFiles, EnvironmentOptions.MaxRecentProjectFiles,
+           @mnuProjectFile);
   // add a separator
   DropdownMenu.Items.AddSeparator;
   // then add recent files
-  AddFiles(EnvironmentOptions.RecentOpenFiles, EnvironmentOptions.MaxRecentOpenFiles, @mnuOpenFile);
+  AddFiles(EnvironmentOptions.RecentOpenFiles, EnvironmentOptions.MaxRecentOpenFiles,
+           @mnuOpenFile);
 end;
 
 { TSetBuildModeToolButton }
@@ -750,20 +750,6 @@ end;
 function TMainIDEBase.GetMainBar: TForm;
 begin
   Result:=MainIDEBar;
-end;
-
-procedure TMainIDEBase.SetRecentProjectFilesMenu;
-begin
-  SetRecentSubMenu(itmProjectRecentOpen,
-                   EnvironmentOptions.RecentProjectFiles,
-                   @mnuOpenProjectClicked);
-end;
-
-procedure TMainIDEBase.SetRecentFilesMenu;
-begin
-  SetRecentSubMenu(itmFileRecentOpen,
-                   EnvironmentOptions.RecentOpenFiles,
-                   @mnuOpenRecentClicked);
 end;
 
 function TMainIDEBase.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
@@ -1940,6 +1926,46 @@ begin
     AMenuItem.Hint := FileList[i]; // Hint is not shown, it just holds the full filename.
     AMenuItem.OnClick := OnClickEvent;
   end;
+end;
+
+procedure TMainIDEBase.SetRecentProjectFilesMenu;
+begin
+  SetRecentSubMenu(itmProjectRecentOpen,
+                   EnvironmentOptions.RecentProjectFiles,
+                   @mnuOpenProjectClicked);
+end;
+
+procedure TMainIDEBase.SetRecentFilesMenu;
+begin
+  SetRecentSubMenu(itmFileRecentOpen,
+                   EnvironmentOptions.RecentOpenFiles,
+                   @mnuOpenRecentClicked);
+end;
+
+procedure TMainIDEBase.UpdateRecentFilesEnv;
+begin
+  SetRecentFilesMenu;
+  SaveEnvironment;
+end;
+
+procedure TMainIDEBase.DoOpenRecentFile(AFilename: string);
+begin
+  if DoOpenEditorFile(AFilename,-1,-1,[ofAddToRecent])=mrOk then
+    UpdateRecentFilesEnv
+  else begin
+    // open failed
+    if not FileExistsUTF8(AFilename) then begin
+      // file does not exist -> delete it from recent file list
+      EnvironmentOptions.RemoveFromRecentOpenFiles(AFilename);
+      UpdateRecentFilesEnv;
+    end;
+  end;
+end;
+
+procedure TMainIDEBase.mnuOpenRecentClicked(Sender: TObject);
+begin
+  // Hint holds the full filename, Caption may have a shortened form.
+  DoOpenRecentFile((Sender as TIDEMenuItem).Hint);
 end;
 
 procedure TMainIDEBase.UpdateHighlighters(Immediately: boolean = false);

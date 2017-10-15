@@ -197,7 +197,6 @@ type
     procedure mnuNewOtherClicked(Sender: TObject);
     procedure mnuOpenClicked(Sender: TObject);
     procedure mnuOpenUnitClicked(Sender: TObject);
-    procedure mnuOpenRecentClicked(Sender: TObject); override;
     procedure mnuRevertClicked(Sender: TObject);
     procedure mnuSaveClicked(Sender: TObject);
     procedure mnuSaveAsClicked(Sender: TObject);
@@ -2905,13 +2904,6 @@ begin
 end;
 
 procedure TMainIDE.mnuOpenClicked(Sender: TObject);
-
-  procedure UpdateEnvironment;
-  begin
-    SetRecentFilesMenu;
-    SaveEnvironment;
-  end;
-
 var
   OpenDialog: TOpenDialog;
   AFilename: string;
@@ -2976,36 +2968,11 @@ begin
         finally
           SourceEditorManager.DecUpdateLock;
         end;
-      UpdateEnvironment;
+      UpdateRecentFilesEnv;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
     OpenDialog.Free;
-  end;
-end;
-
-procedure TMainIDE.mnuOpenRecentClicked(Sender: TObject);
-
-  procedure UpdateEnvironment;
-  begin
-    SetRecentFilesMenu;
-    SaveEnvironment;
-  end;
-
-var
-  AFilename: string;
-begin
-  // Hint holds the full filename, Caption may have a shortened form.
-  AFileName:=(Sender as TIDEMenuItem).Hint;
-  if DoOpenEditorFile(AFilename,-1,-1,[ofAddToRecent])=mrOk then begin
-    UpdateEnvironment;
-  end else begin
-    // open failed
-    if not FileExistsUTF8(AFilename) then begin
-      // file does not exist -> delete it from recent file list
-      EnvironmentOptions.RemoveFromRecentOpenFiles(AFilename);
-      UpdateEnvironment;
-    end;
   end;
 end;
 
@@ -4465,10 +4432,8 @@ begin
       OpenEditorsOnCodeToolChange:=true;
       Converter:=TConvertDelphiUnit.Create(OpenDialog.Files);
       try
-        if Converter.Convert=mrOK then begin
-          SetRecentFilesMenu;
-          SaveEnvironment;
-        end;
+        if Converter.Convert=mrOK then
+          UpdateRecentFilesEnv;
       finally
         Converter.Free;
         OpenEditorsOnCodeToolChange:=OldChange;
@@ -4501,8 +4466,7 @@ begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       if FileExistsUTF8(AFilename) then
         DoConvertDelphiProject(AFilename);
-      SetRecentFilesMenu;
-      SaveEnvironment;
+      UpdateRecentFilesEnv;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -4531,8 +4495,7 @@ begin
       //debugln('TMainIDE.mnuToolConvertDelphiProjectClicked A ',AFilename);
       if FileExistsUTF8(AFilename) then
         DoConvertDelphiPackage(AFilename);
-      SetRecentFilesMenu;
-      SaveEnvironment;
+      UpdateRecentFilesEnv;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -5682,7 +5645,7 @@ begin
   finally
     SourceEditorManager.DecUpdateLock;
   end;
-  SetRecentFilesMenu;
+  UpdateRecentFilesEnv;
 end;
 
 procedure TMainIDE.DoDropFilesAsync(Data: PtrInt);
