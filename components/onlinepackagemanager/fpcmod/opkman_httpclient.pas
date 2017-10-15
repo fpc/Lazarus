@@ -456,7 +456,7 @@ function TProxyData.GetProxyHeaders: String;
 begin
   Result:='';
   if (UserName<>'') then
-   Result:='Proxy-Authorization: Basic ' + EncodeStringBase64(UserName+':'+UserName);
+   Result:='Proxy-Authorization: Basic ' + EncodeStringBase64(UserName+':'+Password);
 end;
 
 procedure TProxyData.Assign(Source: TPersistent);
