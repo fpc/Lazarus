@@ -1,34 +1,35 @@
 object OptionsFrm: TOptionsFrm
-  Left = 719
-  Height = 442
-  Top = 228
-  Width = 530
+  Left = 428
+  Height = 484
+  Top = 141
+  Width = 590
   BorderIcons = [biSystemMenu]
   Caption = 'Options'
-  ClientHeight = 442
-  ClientWidth = 530
+  ClientHeight = 484
+  ClientWidth = 590
   Constraints.MinHeight = 300
   Constraints.MinWidth = 475
   KeyPreview = True
   OnKeyPress = FormKeyPress
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
+  LCLVersion = '1.9.0.0'
   object pnBottom: TPanel
     Left = 0
     Height = 31
-    Top = 411
-    Width = 530
+    Top = 453
+    Width = 590
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 31
-    ClientWidth = 530
+    ClientWidth = 590
     TabOrder = 1
     object bOk: TButton
       AnchorSideRight.Control = bCancel
       AnchorSideBottom.Control = bRestore
       AnchorSideBottom.Side = asrBottom
-      Left = 358
+      Left = 418
       Height = 25
       Top = 0
       Width = 80
@@ -45,7 +46,7 @@ object OptionsFrm: TOptionsFrm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = bRestore
       AnchorSideBottom.Side = asrBottom
-      Left = 444
+      Left = 504
       Height = 25
       Top = 0
       Width = 80
@@ -76,9 +77,9 @@ object OptionsFrm: TOptionsFrm
   end
   object pgOptions: TPageControl
     Left = 6
-    Height = 399
+    Height = 441
     Top = 6
-    Width = 518
+    Width = 578
     ActivePage = tsGeneral
     Align = alClient
     BorderSpacing.Around = 6
@@ -86,18 +87,17 @@ object OptionsFrm: TOptionsFrm
     TabOrder = 0
     object tsGeneral: TTabSheet
       Caption = 'General'
-      ClientHeight = 371
-      ClientWidth = 510
+      ClientHeight = 413
+      ClientWidth = 570
       object pnGeneral: TPanel
         Left = 0
-        Height = 370
+        Height = 413
         Top = 0
-        Width = 510
+        Width = 570
         Align = alClient
-        BorderSpacing.Bottom = 1
         BevelOuter = bvNone
-        ClientHeight = 370
-        ClientWidth = 510
+        ClientHeight = 413
+        ClientWidth = 570
         ParentColor = False
         TabOrder = 0
         object lbRemoteRepository: TLabel
@@ -140,10 +140,12 @@ object OptionsFrm: TOptionsFrm
         end
         object lbUpdates: TLabel
           AnchorSideLeft.Control = lbRemoteRepository
+          AnchorSideTop.Control = Bevel1
           Left = 6
           Height = 15
-          Top = 141
+          Top = 157
           Width = 146
+          BorderSpacing.Top = 5
           Caption = 'Check for package updates:'
           ParentColor = False
         end
@@ -153,7 +155,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 23
-          Top = 162
+          Top = 178
           Width = 209
           BorderSpacing.Top = 6
           ItemHeight = 15
@@ -177,7 +179,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Side = asrCenter
           Left = 230
           Height = 15
-          Top = 166
+          Top = 182
           Width = 64
           BorderSpacing.Left = 15
           Caption = 'Last update:'
@@ -192,14 +194,14 @@ object OptionsFrm: TOptionsFrm
           Left = 6
           Height = 23
           Top = 27
-          Width = 498
+          Width = 558
           Anchors = [akTop, akLeft, akRight]
           AutoSize = True
           BorderSpacing.Top = 4
           BorderSpacing.Right = 6
           BevelOuter = bvNone
           ClientHeight = 23
-          ClientWidth = 498
+          ClientWidth = 558
           TabOrder = 0
           object cbRemoteRepository: TComboBox
             AnchorSideLeft.Control = pnRepositories
@@ -208,7 +210,7 @@ object OptionsFrm: TOptionsFrm
             Left = 0
             Height = 23
             Top = 0
-            Width = 435
+            Width = 495
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Right = 2
             ItemHeight = 15
@@ -223,12 +225,11 @@ object OptionsFrm: TOptionsFrm
             AnchorSideRight.Side = asrBottom
             AnchorSideBottom.Control = cbRemoteRepository
             AnchorSideBottom.Side = asrBottom
-            Left = 437
-            Height = 22
+            Left = 497
+            Height = 23
             Top = 0
             Width = 61
             Anchors = [akTop, akRight, akBottom]
-            BorderSpacing.Bottom = 1
             Caption = '...'
             OnClick = bOpenClick
             TabOrder = 1
@@ -236,10 +237,13 @@ object OptionsFrm: TOptionsFrm
         end
         object lbDaysToShowNewPackages: TLabel
           AnchorSideLeft.Control = lbRemoteRepository
+          AnchorSideTop.Control = cbCheckForUpdates
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 15
-          Top = 213
+          Top = 216
           Width = 204
+          BorderSpacing.Top = 15
           Caption = 'Show newly added packages for(days):'
           ParentColor = False
         end
@@ -250,7 +254,7 @@ object OptionsFrm: TOptionsFrm
           AnchorSideTop.Side = asrCenter
           Left = 216
           Height = 23
-          Top = 209
+          Top = 212
           Width = 76
           BorderSpacing.Left = 6
           MaxValue = 365
@@ -258,41 +262,81 @@ object OptionsFrm: TOptionsFrm
           Value = 31
         end
         object cbRegularIcons: TCheckBox
+          AnchorSideTop.Control = lbDaysToShowNewPackages
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 19
-          Top = 237
+          Top = 241
           Width = 232
+          BorderSpacing.Top = 10
           Caption = 'Show regular icon for installed packages'
           TabOrder = 5
         end
         object cbUseDefaultTheme: TCheckBox
+          AnchorSideTop.Control = Bevel2
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 19
-          Top = 301
+          Top = 291
           Width = 116
+          BorderSpacing.Top = 4
           Caption = 'Use default theme'
           TabOrder = 6
         end
         object Bevel1: TBevel
+          AnchorSideTop.Control = lbConTimeOut
+          AnchorSideTop.Side = asrBottom
           Left = 0
           Height = 2
-          Top = 134
-          Width = 506
+          Top = 152
+          Width = 566
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 25
         end
         object Bevel2: TBevel
+          AnchorSideTop.Control = cbRegularIcons
+          AnchorSideTop.Side = asrBottom
           Left = 4
           Height = 2
-          Top = 288
-          Width = 506
+          Top = 285
+          Width = 566
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 25
+        end
+        object lbConTimeOut: TLabel
+          AnchorSideLeft.Control = lbRemoteRepository
+          AnchorSideTop.Control = cbDeleteZipAfterInstall
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 15
+          Top = 112
+          Width = 164
+          BorderSpacing.Top = 16
+          Caption = 'Connection timeout(seconds): '
+          ParentColor = False
+          ParentShowHint = False
+          ShowHint = True
+        end
+        object spConTimeOut: TSpinEdit
+          AnchorSideLeft.Control = lbConTimeOut
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lbConTimeOut
+          AnchorSideTop.Side = asrCenter
+          Left = 176
+          Height = 23
+          Top = 108
+          Width = 55
+          BorderSpacing.Left = 6
+          MinValue = 1
+          TabOrder = 7
+          Value = 10
         end
       end
     end
     object tsProxy: TTabSheet
       Caption = 'Proxy'
-      ClientHeight = 337
-      ClientWidth = 505
+      ClientHeight = 394
+      ClientWidth = 572
       object pnProxy: TPanel
         Left = 0
         Height = 337
@@ -427,17 +471,17 @@ object OptionsFrm: TOptionsFrm
     end
     object tsFolders: TTabSheet
       Caption = 'Folders'
-      ClientHeight = 337
-      ClientWidth = 505
+      ClientHeight = 413
+      ClientWidth = 570
       object pnFolders: TPanel
         Left = 0
-        Height = 337
+        Height = 413
         Top = 0
-        Width = 505
+        Width = 570
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 337
-        ClientWidth = 505
+        ClientHeight = 413
+        ClientWidth = 570
         ParentColor = False
         TabOrder = 0
         object lbLocalRepositoryPackages: TLabel
@@ -484,7 +528,7 @@ object OptionsFrm: TOptionsFrm
           Left = 8
           Height = 23
           Top = 35
-          Width = 491
+          Width = 556
           Directory = 'edLocalRepositoryPackages'
           ShowHidden = False
           ButtonWidth = 50
@@ -508,7 +552,7 @@ object OptionsFrm: TOptionsFrm
           Left = 8
           Height = 23
           Top = 89
-          Width = 491
+          Width = 556
           ShowHidden = False
           ButtonWidth = 50
           NumGlyphs = 1
@@ -529,7 +573,7 @@ object OptionsFrm: TOptionsFrm
           Left = 8
           Height = 23
           Top = 143
-          Width = 491
+          Width = 556
           ShowHidden = False
           ButtonWidth = 50
           NumGlyphs = 1
@@ -544,28 +588,28 @@ object OptionsFrm: TOptionsFrm
     end
     object tsProfiles: TTabSheet
       Caption = 'Profiles'
-      ClientHeight = 337
-      ClientWidth = 505
+      ClientHeight = 413
+      ClientWidth = 570
       object pnProfiles: TPanel
         Left = 0
-        Height = 337
+        Height = 413
         Top = 0
-        Width = 505
+        Width = 570
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 337
-        ClientWidth = 505
+        ClientHeight = 413
+        ClientWidth = 570
         ParentColor = False
         TabOrder = 0
         object pnProfilesTop: TPanel
           Left = 0
           Height = 48
           Top = 0
-          Width = 505
+          Width = 570
           Align = alTop
           BevelOuter = bvNone
           ClientHeight = 48
-          ClientWidth = 505
+          ClientWidth = 570
           TabOrder = 0
           OnResize = pnProfilesTopResize
           object lbSelectProfile: TLabel
@@ -602,26 +646,26 @@ object OptionsFrm: TOptionsFrm
         end
         object pnProfilesMain: TPanel
           Left = 0
-          Height = 289
+          Height = 365
           Top = 48
-          Width = 505
+          Width = 570
           Align = alClient
           BevelOuter = bvNone
-          ClientHeight = 289
-          ClientWidth = 505
+          ClientHeight = 365
+          ClientWidth = 570
           TabOrder = 1
           OnResize = pnProfilesMainResize
           object pnProfilesLeft: TPanel
             AnchorSideLeft.Control = pnProfilesMain
             AnchorSideTop.Control = pnProfilesMain
             Left = 0
-            Height = 289
+            Height = 365
             Top = 0
-            Width = 245
+            Width = 282
             Align = alLeft
             BevelOuter = bvNone
-            ClientHeight = 289
-            ClientWidth = 245
+            ClientHeight = 365
+            ClientWidth = 282
             TabOrder = 0
             object lbExcludeFiles: TListBox
               AnchorSideLeft.Control = lbFilterFiles
@@ -631,9 +675,9 @@ object OptionsFrm: TOptionsFrm
               AnchorSideBottom.Control = pnProfilesLeft
               AnchorSideBottom.Side = asrBottom
               Left = 6
-              Height = 260
+              Height = 336
               Top = 23
-              Width = 153
+              Width = 190
               Anchors = [akTop, akLeft, akRight, akBottom]
               BorderSpacing.Top = 4
               BorderSpacing.Right = 6
@@ -661,7 +705,7 @@ object OptionsFrm: TOptionsFrm
               AnchorSideTop.Control = lbExcludeFiles
               AnchorSideRight.Control = pnProfilesLeft
               AnchorSideRight.Side = asrBottom
-              Left = 165
+              Left = 202
               Height = 25
               Top = 23
               Width = 80
@@ -678,7 +722,7 @@ object OptionsFrm: TOptionsFrm
               AnchorSideTop.Side = asrBottom
               AnchorSideRight.Control = pnProfilesLeft
               AnchorSideRight.Side = asrBottom
-              Left = 165
+              Left = 202
               Height = 25
               Top = 52
               Width = 80
@@ -695,7 +739,7 @@ object OptionsFrm: TOptionsFrm
               AnchorSideTop.Side = asrBottom
               AnchorSideRight.Control = pnProfilesLeft
               AnchorSideRight.Side = asrBottom
-              Left = 165
+              Left = 202
               Height = 25
               Top = 81
               Width = 80
@@ -708,15 +752,15 @@ object OptionsFrm: TOptionsFrm
             end
           end
           object pnProfilesRight: TPanel
-            Left = 245
-            Height = 289
+            Left = 282
+            Height = 365
             Top = 0
-            Width = 254
+            Width = 282
             Align = alClient
             BorderSpacing.Right = 6
             BevelOuter = bvNone
-            ClientHeight = 289
-            ClientWidth = 254
+            ClientHeight = 365
+            ClientWidth = 282
             TabOrder = 1
             object lbExcludeFolders: TListBox
               AnchorSideLeft.Control = lbFilterDirs
@@ -726,16 +770,16 @@ object OptionsFrm: TOptionsFrm
               AnchorSideBottom.Control = pnProfilesRight
               AnchorSideBottom.Side = asrBottom
               Left = 6
-              Height = 260
+              Height = 336
               Top = 23
-              Width = 162
+              Width = 190
               Anchors = [akTop, akLeft, akRight, akBottom]
               BorderSpacing.Top = 4
               BorderSpacing.Right = 6
               BorderSpacing.Bottom = 6
               ItemHeight = 0
               ParentShowHint = False
-              ScrollWidth = 164
+              ScrollWidth = 160
               ShowHint = True
               Sorted = True
               TabOrder = 0
@@ -757,7 +801,7 @@ object OptionsFrm: TOptionsFrm
               AnchorSideTop.Control = lbExcludeFolders
               AnchorSideRight.Control = pnProfilesRight
               AnchorSideRight.Side = asrBottom
-              Left = 174
+              Left = 202
               Height = 25
               Top = 23
               Width = 80
@@ -775,7 +819,7 @@ object OptionsFrm: TOptionsFrm
               AnchorSideTop.Side = asrBottom
               AnchorSideRight.Control = pnProfilesRight
               AnchorSideRight.Side = asrBottom
-              Left = 174
+              Left = 202
               Height = 25
               Top = 52
               Width = 80
@@ -793,7 +837,7 @@ object OptionsFrm: TOptionsFrm
               AnchorSideTop.Side = asrBottom
               AnchorSideRight.Control = pnProfilesRight
               AnchorSideRight.Side = asrBottom
-              Left = 174
+              Left = 202
               Height = 25
               Top = 81
               Width = 80

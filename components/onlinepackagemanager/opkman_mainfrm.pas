@@ -257,7 +257,7 @@ begin
   else
     Updates.PauseUpdate;
   SetupMessage(rsMainFrm_rsMessageDownload);
-  PackageDownloader.DownloadJSON(10000);
+  PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
 end;
 
 function TMainFrm.IsSomethingChecked(const AResolveDependencies: Boolean = True): Boolean;

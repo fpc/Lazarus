@@ -70,6 +70,7 @@ type
     edProxyServer: TEdit;
     edProxyUser: TEdit;
     gbProxySettings: TGroupBox;
+    lbConTimeOut: TLabel;
     lbFilterDirs: TLabel;
     lbFilterFiles: TLabel;
     lbLastUpdate: TLabel;
@@ -100,6 +101,7 @@ type
     SDD: TSelectDirectoryDialog;
     seProxyPort: TSpinEdit;
     spDaysToShowNewPackages: TSpinEdit;
+    spConTimeOut: TSpinEdit;
     tsFolders: TTabSheet;
     tsProfiles: TTabSheet;
     tsGeneral: TTabSheet;
@@ -181,6 +183,7 @@ begin
     Options.RemoteRepository.Text := Options.RemoteRepositoryTmp.Text;
   Options.ActiveRepositoryIndex := cbRemoteRepository.ItemIndex;
   Options.ForceDownloadAndExtract := cbForceDownloadExtract.Checked;
+  Options.ConTimeOut := spConTimeOut.Value;
   Options.DeleteZipAfterInstall := cbDeleteZipAfterInstall.Checked;
   Options.CheckForUpdates := cbCheckForUpdates.ItemIndex;
   Options.DaysToShowNewPackages := spDaysToShowNewPackages.Value;
@@ -419,6 +422,9 @@ begin
   cbDeleteZipAfterInstall.Checked := Options.DeleteZipAfterInstall;
   cbForceDownloadExtract.Caption := rsOptions_cbForceDownloadExtract_Caption;
   cbForceDownloadExtract.Hint := rsOptions_cbForceDownloadExtract_Hint;
+  lbConTimeOut.Caption := rsOptions_lbConTimeOut_Caption;
+  lbConTimeOut.Hint := rsOptions_lbConTimeOut_Hint;
+  spConTimeOut.Value := Options.ConTimeOut;
   cbDeleteZipAfterInstall.Caption := rsOptions_cbDelete_Caption;
   cbDeleteZipAfterInstall.Hint := rsOptions_cbDelete_Hint;
   lbUpdates.Caption := rsOptions_lbCheckForUpdates_Caption;
@@ -440,10 +446,6 @@ begin
   cbRegularIcons.Caption := rsOptions_cbRegular_Caption;
   cbUseDefaultTheme.Checked := Options.UseDefaultTheme;
   cbUseDefaultTheme.Caption := rsOptions_cbUseDefaultTheme_Caption;
-
-  //spDaysToShowNewPackages.Top := lbDaysToShowNewPackages.Top + 1 + (lbDaysToShowNewPackages.Height - spDaysToShowNewPackages.Height) div 2;
-  //spDaysToShowNewPackages.Left := lbDaysToShowNewPackages.Left + lbDaysToShowNewPackages.Canvas.GetTextWidth(lbDaysToShowNewPackages.Caption) + 10;
-
   tsProxy.Caption := rsOptions_tsProxy_Caption;
   cbProxy.Caption := rsOptions_cbProxy_Caption;
   gbProxySettings.Caption := rsOptions_gbProxySettings_Caption;

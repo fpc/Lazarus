@@ -60,6 +60,7 @@ type
     FDeleteZipAfterInstall: Boolean;
     FCheckForUpdates: Integer;
     FLastUpdate: TDateTime;
+    FConTimeOut: Integer;
     FDaysToShowNewPackages: Integer;
     FShowRegularIcons: Boolean;
     FUseDefaultTheme: Boolean;
@@ -95,6 +96,7 @@ type
     property DeleteZipAfterInstall: Boolean read FDeleteZipAfterInstall write FDeleteZipAfterInstall;
     property CheckForUpdates: Integer read FCheckForUpdates write FCheckForUpdates;
     property LastUpdate: TDateTime read FLastUpdate write FLastUpdate;
+    property ConTimeOut: Integer read FConTimeOut write FConTimeOut;
     property DaysToShowNewPackages: Integer read FDaysToShowNewPackages write FDaysToShowNewPackages;
     property ShowRegularIcons: Boolean read FShowRegularIcons write FShowRegularIcons;
     property UseDefaultTheme: Boolean read FUseDefaultTheme write FUseDefaultTheme;
@@ -181,6 +183,7 @@ begin
   FLastPrivateRepository := FXML.GetValue('General/LastPrivateRepository/Value', '');
   FCheckForUpdates := FXML.GetValue('General/CheckForUpdates/Value', 0);
   FLastUpdate := FXML.GetExtendedValue('General/LastUpdate/Value', 0.0);
+  FConTimeOut := FXML.GetValue('General/ConTimeOut/Value', 10);
   FDaysToShowNewPackages := FXML.GetValue('General/DaysToShowNewPackages/Value', 31);
   FShowRegularIcons := FXML.GetValue('General/ShowRegularIcons/Value', True);
   FUseDefaultTheme := FXML.GetValue('General/UseDefaultTheme/Value', True);
@@ -213,6 +216,7 @@ begin
   FXML.SetDeleteValue('General/LastPrivateRepository/Value', FLastPrivateRepository, '');
   FXML.SetDeleteValue('General/CheckForUpdates/Value', FCheckForUpdates, 0);
   FXML.SetDeleteExtendedValue('General/LastUpdate/Value', FLastUpdate, 0.0);
+  FXML.SetDeleteValue('General/ConTimeOut/Value', FConTimeOut, 10);
   FXML.SetDeleteValue('General/DaysToShowNewPackages/Value', FDaysToShowNewPackages, 31);
   FXML.SetDeleteValue('General/ShowRegularIcons/Value', FShowRegularIcons, True);
   FXML.SetDeleteValue('General/UseDefaultTheme/Value', FUseDefaultTheme, True);
@@ -246,6 +250,7 @@ begin
   FDeleteZipAfterInstall := True;
   FCheckForUpdates := 0;
   FLastUpdate := 0.0;
+  FConTimeOut := 10;
   FDaysToShowNewPackages := 31;
   FShowRegularIcons := True;
   FUseDefaultTheme := True;

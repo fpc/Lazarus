@@ -254,6 +254,8 @@ resourcestring
   rsOptions_lbRemoteRepository_Caption = 'Remote repository';
   rsOptions_cbForceDownloadExtract_Caption = 'Always force download and extract';
   rsOptions_cbForceDownloadExtract_Hint = 'If this option is checked the packages are always re-downloaded/extracted before install';
+  rsOptions_lbConTimeOut_Caption = 'Connection timeout(seconds):';
+  rsOptions_lbConTimeOut_Hint = 'The number of seconds after OPM drops connection';
   rsOptions_lbSelectProfile_Caption = 'Select profile';
   rsOptions_cbSelectProfile_Item0 = 'Regular user';
   rsOptions_cbSelectProfile_Item1 = 'Package maintainer';
