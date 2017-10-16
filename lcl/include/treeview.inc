@@ -5705,7 +5705,8 @@ begin
   FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,
                     tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
   if Assigned(FHintWnd) and FHintWnd.Visible
-  and not PtInRect(ClientRect, ScreenToClient(Mouse.CursorPos)) then
+  and ((WidgetSet.GetLCLCapability(lcTransparentWindow) = LCL_CAPABILITY_YES)
+       or not PtInRect(ClientRect, ScreenToClient(Mouse.CursorPos))) then
     FHintWnd.Hide;
   inherited MouseLeave;
 end;
