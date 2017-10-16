@@ -1535,6 +1535,15 @@ begin
 end;
 
 function TFileOpener.OpenFileAtCursor: TModalResult;
+
+  function ShowNotFound(aFilename: string): TModalResult;
+  begin
+    Result:=mrCancel;
+    if aFilename<>'' then
+      IDEMessageDialog(lisOpenFileAtCursor, lisFileNotFound+':'#13+aFileName,
+        mtError, [mbOk]);
+  end;
+
 var
   Found: Boolean;
   BaseDir: String;
@@ -1560,7 +1569,7 @@ begin
       if FileExistsCached(FFileName) then
         Found:=true
       else
-        exit;
+        exit(ShowNotFound(FFileName));
     end;
   end;
 
@@ -1569,8 +1578,11 @@ begin
     if CodeToolBoss.FindFileAtCursor(FActiveSrcEdit.CodeBuffer,
       Edit.LogicalCaretXY.X,Edit.LogicalCaretXY.Y,FoundType,FFileName) then
       Found:=true
-    else
-      exit;
+    else begin
+      FFileName:=FActiveSrcEdit.EditorComponent.GetWordAtRowCol(
+        FActiveSrcEdit.EditorComponent.LogicalCaretXY);
+      exit(ShowNotFound(FFileName));
+    end;
   end;
 
   if not Found then begin
@@ -1582,7 +1594,7 @@ begin
       if FileExistsCached(FFileName) then
         Found:=true
       else
-        exit;
+        exit(ShowNotFound(FFileName));
     end;
 
     if FIsIncludeDirective then
@@ -1655,7 +1667,8 @@ begin
     InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FFileName));
     FUseWindowID:=False;
     Result:=OpenEditorFile(-1, -1, nil, [ofAddToRecent]);
-  end;
+  end else
+    exit(ShowNotFound(FFileName));
 end;
 
 function TFileOpener.OpenMainUnit: TModalResult;
