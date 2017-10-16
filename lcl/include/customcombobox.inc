@@ -495,7 +495,11 @@ begin
   PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE];
   if PreventDropDown then
   begin
-    if DroppedDown then Key := VK_UNKNOWN; //prevent execution of DefaultAction (Delphi compatibility)
+    // Prevent execution of DefaultAction (Delphi compatibility) except for
+    // style csSimple. There DroppedDown is always true (Delphi compatible).
+    // Tab key should work further and shouldn't be deleted. Issue #32559
+    if DroppedDown and not (Style = csSimple) then
+      Key := VK_UNKNOWN;
     DroppedDown := False;
   end;
   // if AutoDropDown then don't close DropDown, like in Delphi, issue #31247
