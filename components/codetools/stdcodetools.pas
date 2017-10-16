@@ -6578,7 +6578,19 @@ begin
   end;
 
   MaxPos:=0;
-  Node:=Tree.Root.NextBrother;
+  Node:=FindInterfaceNode;
+  if Node=nil then
+    Node:=FindMainUsesNode;
+  debugln(['TStandardCodeTool.AddUnitWarnDirective AAA1 ',Tree.Root.DescAsString]);
+  debugln(['TStandardCodeTool.AddUnitWarnDirective AAA2 ',Tree.Root.FirstChild.DescAsString]);
+  if Node=nil then begin
+    Node:=Tree.Root.FirstChild;
+    if (Node<>nil) and (Node.Desc=ctnSrcName) then begin
+      debugln(['TStandardCodeTool.AddUnitWarnDirective AA3 ',Node.DescAsString]);
+      Node:=Node.NextSkipChilds;
+    end;
+  end;
+  debugln(['TStandardCodeTool.AddUnitWarnDirective ',Node.DescAsString]);
   if Node<>nil then
     MaxPos:=Node.StartPos
   else
