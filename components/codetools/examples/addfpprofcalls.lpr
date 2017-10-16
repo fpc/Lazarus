@@ -70,7 +70,7 @@ begin
   // read parameters
   Tool.ReadNextAtom;
   if Tool.CurPos.Flag<>cafRoundBracketOpen then
-    Tool.RaiseException('( expected, but '+Tool.GetAtom+' found');
+    Tool.RaiseException(20171014154139,'( expected, but '+Tool.GetAtom+' found');
   Tool.ReadTilBracketClose(true);
   ToPos:=Tool.CurPos.EndPos;
   // read semicolon
