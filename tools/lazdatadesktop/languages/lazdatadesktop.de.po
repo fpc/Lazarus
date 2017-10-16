@@ -8,7 +8,7 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 2.0.1\n"
 "Language: de\n"
 
 #: lazdatadeskstr.eoaddterminator
@@ -99,7 +99,7 @@ msgid ""
 "Data dictionary \"%s\" has changed.\n"
 "What do you want to do with the changes?\n"
 msgstr ""
-"Data dictionary »%s« wurde geändert.\n"
+"Daten-Verzeichnis »%s« wurde geändert.\n"
 "Was wollen Sie mit den Änderungen machen?\n"
 
 #: lazdatadeskstr.sdeleteobject
@@ -229,7 +229,7 @@ msgstr "SQL Anweisung in Datei speichern"
 
 #: lazdatadeskstr.simportdictinto
 msgid "Import data dictionary"
-msgstr "Datadictionary importieren"
+msgstr "Daten-Verzeichnis importieren"
 
 #: lazdatadeskstr.sindex
 msgid "Index"
@@ -241,7 +241,7 @@ msgstr "Neue Domain"
 
 #: lazdatadeskstr.sld_actionadddomainh
 msgid "Add a domain to the data dictionary"
-msgstr "Domain zum Datadictionary hinzufügen"
+msgstr "Domain zum Daten-Verzeichnis hinzufügen"
 
 #: lazdatadeskstr.sld_actionaddforeignkey
 msgid "New Foreign Key"
@@ -269,11 +269,11 @@ msgstr "&Alle schließen"
 
 #: lazdatadeskstr.sld_actioncloseallh
 msgid "Close all Data Dictionaries"
-msgstr "Alles Datadictionaries schließen"
+msgstr "Alle Daten-Verzeichnisse schließen"
 
 #: lazdatadeskstr.sld_actioncloseh
 msgid "Close current Data Dictionary"
-msgstr "Aktuelles Datadictionary schließen"
+msgstr "Aktuelles Daten-Verzeichnis schließen"
 
 #: lazdatadeskstr.sld_actioncopy
 msgid "&Copy"
@@ -354,7 +354,7 @@ msgstr "Erstelle ein neues Feld in der aktuellen Tabelle"
 
 #: lazdatadeskstr.sld_actionnewh
 msgid "Create a new Data Dictionary"
-msgstr "Neues Datadictionary anlegen"
+msgstr "Neues Daten-Verzeichnis anlegen"
 
 #: lazdatadeskstr.sld_actionnewindex
 msgid "New index"
@@ -386,7 +386,7 @@ msgstr "Zuletzt ausgewählte Verbindung öffnen"
 
 #: lazdatadeskstr.sld_actionopenh
 msgid "Open a new Data Dictionary"
-msgstr "Neues Datadictionary öffnen"
+msgstr "Neues Daten-Verzeichnis öffnen"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadict
 msgid "Open"
@@ -394,7 +394,7 @@ msgstr "Öffnen"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
 msgid "Open selected recent data dictionary"
-msgstr "Zuletzt ausgewähltes Datadictionary öffnen"
+msgstr "Zuletzt ausgewähltes Daten-Verzeichnis öffnen"
 
 #: lazdatadeskstr.sld_actionpaste
 msgid "&Paste"
@@ -414,11 +414,11 @@ msgstr "Speichern unter"
 
 #: lazdatadeskstr.sld_actionsaveash
 msgid "Save data dictionary as"
-msgstr "Datadictionary sichern unter"
+msgstr "Daten-Verzeichnis sichern unter"
 
 #: lazdatadeskstr.sld_actionsaveh
 msgid "Save Data Dictionary"
-msgstr "Datadictionary sichern"
+msgstr "Daten-Verzeichnis sichern"
 
 #: lazdatadeskstr.sld_cancel
 msgid "&Cancel"
@@ -479,11 +479,11 @@ msgstr "Löschen"
 
 #: lazdatadeskstr.sld_dictionaries
 msgid "Dictionaries"
-msgstr "Datadictionaries"
+msgstr "Verzeichnisse"
 
 #: lazdatadeskstr.sld_firststart
 msgid "First start of database desktop"
-msgstr "Erster Start des Datenbank-Desktops"
+msgstr "Erster Start des Daten-Desktops"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
@@ -503,7 +503,7 @@ msgstr "Host"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
 msgid "Import/Update data dictionary"
-msgstr "Importiere/Aktualisiere Datadictionary"
+msgstr "Importiere/Aktualisiere Daten-Verzeichnis"
 
 #: lazdatadeskstr.sld_indent
 msgid "I&ndent"
@@ -519,7 +519,7 @@ msgstr "Schlüsselfelder"
 
 #: lazdatadeskstr.sld_lazarusdatabasedesktop
 msgid "Lazarus Database Desktop"
-msgstr "Lazarus Datenbank-Desktop"
+msgstr "Lazarus Daten-Desktop"
 
 #: lazdatadeskstr.sld_legacyview
 msgid "Legacy List View"
@@ -557,11 +557,11 @@ msgstr "&OK"
 #: lazdatadeskstr.sld_opendatadictionaryfilter
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Datadictionary-Dateien (fdd)|*.fdd|Ini-Dateien|*.ini|Alle Dateien|*.*"
+msgstr "Daten-Verzeichnis-Dateien (fdd)|*.fdd|Ini-Dateien|*.ini|Alle Dateien|*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
-msgstr "Datadictionary öffnen"
+msgstr "Daten-Verzeichnis öffnen"
 
 #: lazdatadeskstr.sld_options
 msgctxt "lazdatadeskstr.sld_options"
@@ -588,7 +588,7 @@ msgstr "zuletzt verwendet am"
 #: lazdatadeskstr.sld_savefileasfilter
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Datadictionary-Dateien (fdd)|*.fdd|Ini-Dateien|*.ini|Alle Dateien|*.*"
+msgstr "Daten-Verzeichnis-Dateien (fdd)|*.fdd|Ini-Dateien|*.ini|Alle Dateien|*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
@@ -684,7 +684,7 @@ msgstr "Neue Verbindung"
 
 #: lazdatadeskstr.snewdictionary
 msgid "New data dictionary"
-msgstr "Neues Datadictionary"
+msgstr "Neues Daten-Verzeichnis"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
@@ -749,7 +749,7 @@ msgstr "Datenbank"
 
 #: lazdatadeskstr.snodedatadictionary
 msgid "Data dictionary"
-msgstr "Datadictionary"
+msgstr "Daten-Verzeichnis"
 
 #: lazdatadeskstr.snodedomains
 msgid "Domains"
@@ -805,8 +805,8 @@ msgid ""
 "No connections or data dictionaries were found.\n"
 " Start by creating a new connection or data dictionary.\n"
 msgstr ""
-"Keine Verbindungen oder Data Dictionarys wurden gefunden.\n"
-" Beginnen Sie mit der Erzeugung einer neuen Verbindung oder eines Data Dictionary.\n"
+"Keine Verbindungen oder Daten-Verzeichnisse wurden gefunden.\n"
+" Beginnen Sie mit der Erzeugung einer neuen Verbindung oder eines Daten-Verzeichnisses.\n"
 
 #: lazdatadeskstr.squery
 msgid "Run query"
@@ -894,7 +894,7 @@ msgstr "Unbekannte Verbindung: %s"
 
 #: lazdatadeskstr.sunknowndictionary
 msgid "Unknown data dictionary: %s"
-msgstr "Unbekanntes Datadictionary: %s"
+msgstr "Unbekanntes Daten-Verzeichnis: %s"
 
 #: lazdatadeskstr.susecurrentdict
 msgid "Yes, use the active dictionary"
@@ -910,5 +910,4 @@ msgstr "Wert"
 
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
-msgstr "Es ist ein Datadictionary aktiv. Soll in dieses Datadictionary importiert werden?"
-
+msgstr "Es ist ein Daten-Verzeichnis aktiv. Soll in dieses Daten-Verzeichnis importiert werden?"

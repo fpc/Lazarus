@@ -801,14 +801,13 @@ msgid "Install packages"
 msgstr "Packages installieren"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
 msgid "Open"
 msgstr "Öffnen"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
 msgid "Open local repository"
-msgstr ""
+msgstr "Lokales Repository öffnen"
 
 #: opkman_const.rsmainfrm_tboptions_caption
 msgctxt "opkman_const.rsmainfrm_tboptions_caption"
@@ -1312,11 +1311,11 @@ msgid "Check for package updates"
 msgstr "Nach Package-Updates suchen"
 
 #: opkman_const.rsoptions_lbcontimeout_caption
-msgid "Connection timeout (seconds):"
-msgstr ""
+msgid "Connection timeout(seconds):"
+msgstr "Abfallzeit (Sekunden):"
 
 #: opkman_const.rsoptions_lbcontimeout_hint
-msgid "The number of seconds after which package manager drops connection"
+msgid "The number of seconds after OPM drops connection"
 msgstr ""
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
@@ -1670,17 +1669,17 @@ msgstr "Repository-Details"
 #: opkman_const.rsrepositorydetailsfrm_edaddress_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_edaddress_hint"
 msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
-msgstr ""
+msgstr "Geben Sie die Repository-Addresse ein (z.B.: \"http://localhost/packages/\")"
 
 #: opkman_const.rsrepositorydetailsfrm_edname_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_edname_hint"
 msgid "Enter the repository name"
-msgstr ""
+msgstr "Geben Sie den Repository-Namen ein"
 
 #: opkman_const.rsrepositorydetailsfrm_info1
 msgctxt "opkman_const.rsrepositorydetailsfrm_info1"
 msgid "Please enter the repository name."
-msgstr ""
+msgstr "Bitte geben Sie den Repository-Namen ein."
 
 #: opkman_const.rsrepositorydetailsfrm_lbaddress_caption
 msgctxt "opkman_const.rsrepositorydetailsfrm_lbaddress_caption"
@@ -1700,5 +1699,4 @@ msgstr "Name"
 #: opkman_const.rsrepositorydetailsfrm_mdescription_hint
 msgctxt "opkman_const.rsrepositorydetailsfrm_mdescription_hint"
 msgid "Enter the repository description"
-msgstr ""
-
+msgstr "Geben Sie die Repository-Beschreibung ein"

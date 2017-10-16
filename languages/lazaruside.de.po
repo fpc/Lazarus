@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-10-01 20:25+0200\n"
+"PO-Revision-Date: 2017-10-15 23:22+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -5682,7 +5682,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lischoosefpcsourcedir
 msgid "Choose FPC source directory"
-msgstr "FPC Quelltextverzeichnis auswählen"
+msgstr "FPC-Quelltextverzeichnis auswählen"
 
 #: lazarusidestrconsts.lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
@@ -6097,7 +6097,7 @@ msgstr "Codevorlage hinzufügen"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
 msgid " A token \"%s\" already exists! "
-msgstr " Es gibt bereits ein Token \"%s\"!"
+msgstr " Es gibt bereits ein Token \"%s\"! "
 
 #: lazarusidestrconsts.liscodetemplautocompleteon
 msgid "Auto complete on"
@@ -6711,7 +6711,7 @@ msgstr "Symbolleiste konfigurieren"
 
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
-msgstr "Lazarus IDE einrichten"
+msgstr "Lazarus-IDE einrichten"
 
 #: lazarusidestrconsts.lisconfirm
 msgid "Confirm"
@@ -6954,7 +6954,7 @@ msgstr "Unit \"%s\" aus dem uses-Abschnitt entfernt."
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
 msgid "*** Fixing used units and Repairing form files ***"
-msgstr "*** Repariere Formulardateien ... ***"
+msgstr "*** Repariere verwendete Units und Formulardateien ... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
 msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
@@ -7080,7 +7080,7 @@ msgstr "Probleme beim Reparieren der Formulardatei %s"
 
 #: lazarusidestrconsts.lisconvrepairingincludefiles
 msgid "Repairing include files : "
-msgstr "Repariere Include-Dateien :"
+msgstr "Repariere Include-Dateien : "
 
 #: lazarusidestrconsts.lisconvreplacedcall
 msgid "Replaced call %s with %s"
@@ -7469,7 +7469,7 @@ msgstr "Projekt anlegen"
 
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
 msgid "Create/update .po file when saving a lfm file"
-msgstr ".po-Datei beim Speichern einer lfm-Datei erstellen/aktualisieren"
+msgstr ".po-Datei beim Speichern einer .lfm-Datei erstellen/aktualisieren"
 
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
@@ -7548,7 +7548,7 @@ msgstr "Aktuelles LCL-Widgetset: \"%s\""
 
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
-msgstr "Aktueller Status:"
+msgstr "Aktueller Status: "
 
 #: lazarusidestrconsts.liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
@@ -7779,7 +7779,7 @@ msgstr "Debugger"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
-msgstr "Debuggerfehler%sDer Debugger ist abgestürzt.%sSpeichern Sie Ihre Arbeit!%sDrücken Sie »Ok« und hoffen Sie auf einen Fix für diesen Fehler."
+msgstr "Debuggerfehler%sDer Debugger ist abgestürzt mit Status%sSpeichern Sie Ihre Arbeit jetzt!%sDrücken Sie »Stop« und hoffen Sie auf einen Fix für diesen Fehler."
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror
 msgid "Debugger Error"
@@ -8161,7 +8161,7 @@ msgstr "Verzeichnisse"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr "Verzeichnis:"
+msgstr "Verzeichnis: "
 
 #: lazarusidestrconsts.lisdirectorynotfound
 msgid "Directory \"%s\" not found."
@@ -8177,7 +8177,7 @@ msgstr "Verzeichnis nicht beschreibbar"
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
-msgstr "Verzeichnis wo die IDE die .po Dateien ablegt"
+msgstr "Verzeichnis wo die IDE die .po-Dateien ablegt"
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -8197,7 +8197,7 @@ msgstr "Gruppen deaktivieren"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
-msgstr "i18n für lfm-Dateien ausschalten"
+msgstr "i18n für .lfm-Dateien ausschalten"
 
 #: lazarusidestrconsts.lisdisableoptionxg
 msgid "Disable Option -Xg?"
@@ -8450,7 +8450,7 @@ msgstr "Doppelter Name: Eine Komponente namens \"%s\" existiert bereits in der e
 
 #: lazarusidestrconsts.lisduplicateppufilesdeleteoneormakesureallsearchpaths
 msgid "Duplicate ppu files. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
-msgstr "Doppelte ppu Dateien. Löschen sie eine oder stellen sie die richtige Reihenfolge ihrer Suchpfade sicher (Hinweis: FPC verwendet den letzten Pfad zuerst)."
+msgstr "Doppelte .ppu-Dateien. Löschen sie eine oder stellen sie die richtige Reihenfolge ihrer Suchpfade sicher (Hinweis: FPC verwendet den letzten Pfad zuerst)."
 
 #: lazarusidestrconsts.lisduplicatesearchpath
 msgid "Duplicate search path"
@@ -8692,7 +8692,7 @@ msgstr "Gruppen aktivieren"
 
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
-msgstr "i18n für lfm-Dateien einschalten"
+msgstr "i18n für .lfm-Dateien einschalten"
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -8793,7 +8793,7 @@ msgstr "Fehler in den benutzerdefinierten Linkereinstellungen (Linken / Einstell
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
 msgid "Error in the \"Debugger path addition\":"
-msgstr ""
+msgstr "Fehler im \"Zusätzlichen Debuggerpfad\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforincludefiles
 msgid "Error in the search path for \"Include files\":"
@@ -8801,7 +8801,7 @@ msgstr "Fehler im Suchpfad für \"Include-Dateien\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforlibraries
 msgid "Error in the search path for \"Libraries\":"
-msgstr "Fehler im Suchpfad für \"Libraries\":"
+msgstr "Fehler im Suchpfad für \"Bibliotheken\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforobjectfiles
 msgid "Error in the search path for \"Object files\":"
@@ -8809,11 +8809,11 @@ msgstr "Fehler im Suchpfad für \"Object files\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforothersources
 msgid "Error in the search path for \"Other sources\":"
-msgstr "Fehler im Suchpfad für \"Other sources\":"
+msgstr "Fehler im Suchpfad für \"Andere Quellen\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforotherunitfiles
 msgid "Error in the search path for \"Other unit files\":"
-msgstr "Fehler im Suchpfad für \"Other unit files\":"
+msgstr "Fehler im Suchpfad für \"Andere Units\":"
 
 #: lazarusidestrconsts.liserrorintheunitoutputdirectory
 msgid "Error in the \"unit output directory\":"
@@ -8869,7 +8869,7 @@ msgstr "Fehler beim XML-Lesen"
 
 #: lazarusidestrconsts.liserrorreadingxmlfile
 msgid "Error reading xml file \"%s\"%s%s"
-msgstr "Fehler beim Lesen der XML-Datei \"%s\"%s%s"
+msgstr "Fehler beim Lesen der .xml-Datei \"%s\"%s%s"
 
 #: lazarusidestrconsts.liserrorrenamingfile
 msgid "Error renaming file"
@@ -8894,7 +8894,7 @@ msgstr "Fehler beim Speichern von %s nach %s%s%s%s"
 
 #: lazarusidestrconsts.liserrorsettingthenameofacomponentto
 msgid "Error setting the name of a component %s to %s"
-msgstr "Fehler beim Festlegen des Names einer Komponente %s to %s"
+msgstr "Fehler beim Festlegen des Names einer Komponente %s zu %s"
 
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
@@ -9154,7 +9154,7 @@ msgstr "Datei"
 
 #: lazarusidestrconsts.lisfile2
 msgid "File: "
-msgstr "Datei:"
+msgstr "Datei: "
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -9428,7 +9428,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
-msgstr ".LFM-Datei korrigieren"
+msgstr ".lfm-Datei korrigieren"
 
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
@@ -9980,7 +9980,7 @@ msgstr "Fehler beim Öffnen von XML"
 
 #: lazarusidestrconsts.lisiecoerroropeningxmlfile
 msgid "Error opening XML file \"%s\":%s%s"
-msgstr "Fehler beim Öffnen der XML-Datei \"%s\":%s%s"
+msgstr "Fehler beim Öffnen der .xml-Datei \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisiecoexportcompileroptions
 msgid "Export Compiler Options"
@@ -10152,7 +10152,7 @@ msgstr "Informationen über verwendeten FPC"
 
 #: lazarusidestrconsts.lisinfpcunitsearchpathprobablyinstalledbythefpcpackag
 msgid "In FPC unit search path. Probably installed by the FPC package. Check if the compiler and the ppu file are from the same installation."
-msgstr "Im FPC-Unit-Suchpfad. Vermutlich durch das FPC-Package installiert. Prüfen Sie, ob der Compiler und die ppu-Datei aus der gleichen Installation stammen."
+msgstr "Im FPC-Unit-Suchpfad. Vermutlich durch das FPC-Package installiert. Prüfen Sie, ob der Compiler und die .ppu-Datei aus der gleichen Installation stammen."
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
@@ -10595,7 +10595,7 @@ msgstr "Überwachung hinzufügen"
 
 #: lazarusidestrconsts.liskmbuildmanymodes
 msgid "Build many modes"
-msgstr ""
+msgstr "Viele Modi erstellen"
 
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
@@ -10652,7 +10652,7 @@ msgstr "Delphi- in Lazarus-Unit umwandeln"
 
 #: lazarusidestrconsts.liskmconvertdfmfiletolfm
 msgid "Convert DFM File to LFM"
-msgstr "DFM- in LFM-Datei umwandeln"
+msgstr ".dfm- in .lfm-Datei umwandeln"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
 msgid "Copy selected components"
@@ -10788,7 +10788,7 @@ msgstr "Datum und Uhrzeit einfügen"
 
 #: lazarusidestrconsts.liskminsertusername
 msgid "Insert username"
-msgstr "Username einfügen"
+msgstr "Benutzername einfügen"
 
 #: lazarusidestrconsts.liskminspect
 msgid "Inspect"
@@ -11121,7 +11121,7 @@ msgstr "Lazarus-Vorgabe"
 
 #: lazarusidestrconsts.lislazarusdirectory
 msgid "Lazarus directory"
-msgstr "Lazarus Verzeichnis"
+msgstr "Lazarus-Verzeichnis"
 
 #: lazarusidestrconsts.lislazarusdiroverride
 msgid "directory, to be used as a basedirectory"
@@ -11129,7 +11129,7 @@ msgstr "Verzeichnis, wird als Basisordner festgelegt"
 
 #: lazarusidestrconsts.lislazaruseditorv
 msgid "Lazarus IDE v%s"
-msgstr "Lazarus IDE v%s"
+msgstr "Lazarus-IDE v%s"
 
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
@@ -11376,15 +11376,15 @@ msgstr "Stufen"
 
 #: lazarusidestrconsts.lislfmfile
 msgid "LFM file"
-msgstr "LFM-Datei"
+msgstr ".lfm-Datei"
 
 #: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
 msgid "The LFM file contains unknown properties/classes which do not exist in the LCL. They can be replaced or removed."
-msgstr "Die LFM-Datei enthält unbekannte Eigenschaften/Klassen, die in der LCL nicht existieren. Sie können ersetzt oder entfernt werden."
+msgstr "Die .lfm-Datei enthält unbekannte Eigenschaften/Klassen, die in der LCL nicht existieren. Sie können ersetzt oder entfernt werden."
 
 #: lazarusidestrconsts.lislfmfilecorrupt
 msgid "LFM file corrupt"
-msgstr "LFM-Datei ist defekt"
+msgstr ".lfm-Datei ist defekt"
 
 #: lazarusidestrconsts.lislfmisok
 msgid "LFM is ok"
@@ -11493,7 +11493,7 @@ msgstr "Aufrufstack protokollieren"
 
 #: lazarusidestrconsts.lislogcallstacklimit
 msgid "(frames limit. 0 - no limits)"
-msgstr "(Limit für Frames. 0 - keine Limits) "
+msgstr "(Limit für Frames. 0 - keine Limits)"
 
 #: lazarusidestrconsts.lislogevalexpression
 msgctxt "lazarusidestrconsts.lislogevalexpression"
@@ -11724,7 +11724,7 @@ msgstr "Kompiliere Lazarus mit Profil: %s"
 
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
-msgstr "LFM-Datei im Editor überprüfen"
+msgstr ".lfm-Datei im Editor überprüfen"
 
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean Directory ..."
@@ -13030,7 +13030,7 @@ msgstr "CodeExplorer ..."
 
 #: lazarusidestrconsts.lismenuviewcomponentpalette
 msgid "Component Palette"
-msgstr "Komponentenpalette anzeigen"
+msgstr "Komponentenpalette"
 
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
@@ -13367,7 +13367,7 @@ msgstr "Gespeichert in der Projektsitzung (.lps)"
 
 #: lazarusidestrconsts.lismmtargets
 msgid "Targets: "
-msgstr "Ziele:"
+msgstr "Ziele: "
 
 #: lazarusidestrconsts.lismmundolastchangetothisgrid
 msgid "Undo last change to this grid"
@@ -13496,7 +13496,7 @@ msgstr "Gewähltes Element nach oben bewegen (Strg+hoch)"
 
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
-msgstr "Verschieben zu:"
+msgstr "Verschieben zu: "
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
@@ -13632,7 +13632,7 @@ msgstr "Keine Einträge gewählt"
 
 #: lazarusidestrconsts.lisnewdlgpleaseselectanitemfirst
 msgid "Please select an item first."
-msgstr "Bitte wählen Sie zuerst einen Eintrag"
+msgstr "Bitte wählen Sie zuerst einen Eintrag."
 
 #: lazarusidestrconsts.lisnewencoding
 msgid "New encoding:"
@@ -13704,7 +13704,7 @@ msgstr "Kein IDE-Fenster ausgewählt"
 
 #: lazarusidestrconsts.lisnolfmfile
 msgid "No LFM file"
-msgstr "Keine LFM Datei"
+msgstr "Keine .lfm-Datei"
 
 #: lazarusidestrconsts.lisnomacroselected
 msgid "No macro selected"
@@ -13826,7 +13826,7 @@ msgstr "Nicht jetzt"
 
 #: lazarusidestrconsts.lisnowloadedscheme
 msgid "Now loaded: "
-msgstr "Aktuell geladen:"
+msgstr "Aktuell geladen: "
 
 #: lazarusidestrconsts.lisnpcreate
 msgid "Create"
@@ -13894,7 +13894,7 @@ msgstr "statische automatische Installation"
 
 #: lazarusidestrconsts.lisoipdescription
 msgid "Description:  "
-msgstr "Beschreibung:"
+msgstr "Beschreibung: "
 
 #: lazarusidestrconsts.lisoipdescriptiondescription
 msgid "%sDescription:  %s"
@@ -14152,7 +14152,7 @@ msgstr "%süberschreibt das Betriebssystem des Projekts, z.B. win32, linux. Vore
 
 #: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
 msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sÜberschreibt das Widget-Set des Projekts. Z.B. GTK, GTK2, Qt, Win32, Carbon. Voreinstellung: %s"
+msgstr "%sÜberschreibt das Widget-Set des Projekts. z.B. GTK, GTK2, Qt, Win32, Carbon. Voreinstellung: %s"
 
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
@@ -14237,7 +14237,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
-msgstr ", analysiert"
+msgstr ", analysiert "
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
@@ -14345,7 +14345,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckdisablei18noflfm
 msgid "Disable I18N of lfm"
-msgstr "i18n für lfm-Dateien ausschalten"
+msgstr "i18n für .lfm-Dateien ausschalten"
 
 #: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
 msgid "Add Files from File System"
@@ -14991,7 +14991,7 @@ msgstr "Fehler beim Lesen des Packages"
 
 #: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
 msgid "Error: updating po files failed for package %s"
-msgstr "Fehler: Update der po Dateien für Package %s fehlgeschlagen"
+msgstr "Fehler: Update der .po-Dateien für Package %s fehlgeschlagen"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
@@ -15414,7 +15414,7 @@ msgstr "RegisterUnit wurde aufgerufen aber es wurde kein Package registriert."
 
 #: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
 msgid "%s%sThe lpk file was not found."
-msgstr "%s%sDie lpk-Datei wurde nicht gefunden."
+msgstr "%s%sDie .lpk-Datei wurde nicht gefunden."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -15426,7 +15426,7 @@ msgstr "Das ist das Standard-Package nur für Komponenten ohne Package. Solche K
 
 #: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr "Dieses Package ist installiert, aber die lpk-Datei wurde nicht gefunden. Alle enthaltenen Komponenten sind abgeschaltet. Bitte beheben Sie den Fehler."
+msgstr "Dieses Package ist installiert, aber die .lpk-Datei wurde nicht gefunden. Alle enthaltenen Komponenten sind abgeschaltet. Bitte beheben Sie den Fehler."
 
 #: lazarusidestrconsts.lispkgsysunitname
 msgid "%s%sUnit Name: \"%s\""
@@ -15566,11 +15566,11 @@ msgstr "Im IDE-Konfigurationsverzeichnis speichern"
 
 #: lazarusidestrconsts.lisposaveinlpifil
 msgid "Save in .lpi file"
-msgstr "In lpi-Datei speichern"
+msgstr "In .lpi-Datei speichern"
 
 #: lazarusidestrconsts.lisposaveinlpsfileinprojectdirectory
 msgid "Save in .lps file in project directory"
-msgstr "lps-Datei im Projektverzeichnis speichern"
+msgstr ".lps-Datei im Projektverzeichnis speichern"
 
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
@@ -15669,7 +15669,7 @@ msgstr "Dateien hinzufügen"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
-msgstr "Ungültiger Min-/Max-Version"
+msgstr "Ungültige Min-/Max-Version"
 
 #: lazarusidestrconsts.lisprojaddinvalidpascalunitname
 msgid "Invalid Pascal unit name"
@@ -15732,7 +15732,7 @@ msgstr "Der Unit-Name \"%s\" ist bereits der Auswahl%s mit der Datei: \"%s\" ent
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
 msgid "The unit name \"%s\" is not a valid Pascal identifier."
-msgstr "Der Unitname \"%s\" ist kein gültiger Pascal-Bezeichner"
+msgstr "Der Unit-Name \"%s\" ist kein gültiger Pascal-Bezeichner"
 
 #: lazarusidestrconsts.lisprojaddtoproject
 msgctxt "lazarusidestrconsts.lisprojaddtoproject"
@@ -15749,7 +15749,7 @@ msgstr "Projekt %s"
 
 #: lazarusidestrconsts.lisproject2
 msgid "Project: "
-msgstr "Projekt:"
+msgstr "Projekt: "
 
 #: lazarusidestrconsts.lisproject3
 msgid "project"
@@ -15819,7 +15819,7 @@ msgstr "Projekteinstellung"
 
 #: lazarusidestrconsts.lisprojectoutdir
 msgid "Project Output directory (e.g. the ppu directory)"
-msgstr "Projekt-Ausgabeverzeichnis (z.B. das ppu Verzeichnis)"
+msgstr "Projekt-Ausgabeverzeichnis (z.B. das ppu-Verzeichnis)"
 
 #: lazarusidestrconsts.lisprojectoutputdirectory
 msgid "Project output directory"
@@ -16772,7 +16772,7 @@ msgstr "Alle Farben setzen"
 
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
-msgstr "Voreinstellungens setzen"
+msgstr "Voreinstellungen setzen"
 
 #: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
 msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
@@ -17130,7 +17130,7 @@ msgstr "Debuggen abbrechen?"
 
 #: lazarusidestrconsts.lisstopdebugging2
 msgid "Stop debugging?"
-msgstr "Debuggiung beenden?"
+msgstr "Debugging beenden?"
 
 #: lazarusidestrconsts.lisstoponexception
 msgid "Stop on exception"
@@ -17384,7 +17384,7 @@ msgstr "Die Komponente %s ist von %s abgeleitet.%sUm eine abgeleitete Komponente
 
 #: lazarusidestrconsts.listhecomponentnamemustbeuniqueinallcomponentsonthefo
 msgid "The component name must be unique in all components on the form/datamodule.The name is compared case insensitive like a normal Pascal identifier."
-msgstr "Alle Komponenten auf dem Formular/Datamodul müssen einen eindeutigen Namen besitzen. Er ist wie jeder Pascal-Bezeichner schreibweisenunabhängig."
+msgstr "Alle Komponenten auf dem Formular/Datenmodul müssen einen eindeutigen Namen besitzen. Er ist wie jeder Pascal-Bezeichner schreibweisenunabhängig."
 
 #: lazarusidestrconsts.listheconfigurationwillbedowngradedconverted
 msgid "The configuration will be downgraded/converted."
@@ -17748,7 +17748,7 @@ msgstr "Die Ressourcenklasse \"%s\" ist von \"%s\" abgeleitet. Vielleicht ist da
 
 #: lazarusidestrconsts.listherewasanerrorduringwritingtheselectedcomponent
 msgid "There was an error during writing the selected component %s:%s:%s%s"
-msgstr "Beim Schreiben der gewählten Komponte %s trat ein Fehler auf:%s:%s%s"
+msgstr "Beim Schreiben der gewählten Komponente %s trat ein Fehler auf:%s:%s%s"
 
 #: lazarusidestrconsts.listherewasanerrorwhileconvertingthebinarystreamofthe
 msgid "There was an error while converting the binary stream of the selected component %s:%s:%s%s"
@@ -18419,7 +18419,7 @@ msgstr "Kann Methode nicht finden"
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s\"%s\""
-msgstr "Kann keine Pascal-Unit (.pas,.pp) finden für .lfm Datei%s\"%s\""
+msgstr "Kann keine Pascal-Unit (.pas,.pp) finden für .lfm-Datei%s\"%s\""
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
 msgid "Unable to find the component class \"%s\".%sIt is not registered via RegisterClass and no lfm was found.%sIt is needed by unit:%s%s"
@@ -18784,7 +18784,7 @@ msgstr "Startprogramm"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
-msgstr "Verwende Package %s in Ppackage %s"
+msgstr "Verwende Package %s in Package %s"
 
 #: lazarusidestrconsts.lisusepackageinpackage2
 msgid "Use package in package"
@@ -18843,7 +18843,7 @@ msgstr "Wert%s"
 
 #: lazarusidestrconsts.lisvalue3
 msgid "Value: "
-msgstr "Wert:"
+msgstr "Wert: "
 
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
@@ -18907,7 +18907,7 @@ msgstr "Quelltext (.lfm) anzeigen"
 
 #: lazarusidestrconsts.liswarning
 msgid "Warning: "
-msgstr "Warnung:"
+msgstr "Warnung: "
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
@@ -19150,11 +19150,11 @@ msgstr "ungültig"
 
 #: lazarusidestrconsts.lrspldlpkfileinvalid
 msgid "lpk file invalid (%s)"
-msgstr "ungültige lpk-Dateien (%s)"
+msgstr "ungültige lpk-Datei (%s)"
 
 #: lazarusidestrconsts.lrspldlpkfilevalid
 msgid "lpk file valid (%s)"
-msgstr "gültige lpk-Dateien (%s)"
+msgstr "gültige lpk-Datei (%s)"
 
 #: lazarusidestrconsts.lrspldunabletodeletefile
 msgid "Unable to delete file \"%s\""
@@ -19493,7 +19493,7 @@ msgstr "Typ"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
-msgstr "&Revision"
+msgstr "&Revision:"
 
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
@@ -20096,7 +20096,7 @@ msgstr "Angepaßten LGPL-Hinweis (übersetzt) einfügen"
 
 #: lazarusidestrconsts.srkmecinsertusername
 msgid "Insert current username"
-msgstr "Aktuellen Usernamen eintragen"
+msgstr "Aktuellen Benutzernamen eintragen"
 
 #: lazarusidestrconsts.srkmecinspect
 msgid "inspect"
@@ -20581,7 +20581,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
-msgstr "Synchonbearbeitung beginnen"
+msgstr "Synchronbearbeitung beginnen"
 
 #: lazarusidestrconsts.srkmecsynptmpledcellend
 msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"
@@ -20680,7 +20680,7 @@ msgstr "Haltepunkte anzeigen"
 
 #: lazarusidestrconsts.srkmectogglecallstack
 msgid "View call stack"
-msgstr "Aufruf-Stacks anzeigen"
+msgstr "Aufruf-Stack anzeigen"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
@@ -21169,4 +21169,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
