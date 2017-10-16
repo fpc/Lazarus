@@ -6555,7 +6555,7 @@ end;
 function TStandardCodeTool.AddUnitWarnDirective(WarnID, Comment: string;
   TurnOn: boolean; SourceChangeCache: TSourceChangeCache): boolean;
 const
-  DirectiveFlagValue: array[boolean] of string = ('on','off');
+  DirectiveFlagValue: array[boolean] of string = ('off','on');
 var
   ACleanPos, DirEndPos, InsertStartPos, MaxPos: Integer;
   Node: TCodeTreeNode;
@@ -6577,24 +6577,18 @@ begin
     if not (Comment[1] in [' ',#9,#10,#13]) then Comment:=' '+Comment;
   end;
 
-  MaxPos:=0;
-  Node:=FindInterfaceNode;
-  if Node=nil then
-    Node:=FindMainUsesNode;
-  debugln(['TStandardCodeTool.AddUnitWarnDirective AAA1 ',Tree.Root.DescAsString]);
-  debugln(['TStandardCodeTool.AddUnitWarnDirective AAA2 ',Tree.Root.FirstChild.DescAsString]);
-  if Node=nil then begin
-    Node:=Tree.Root.FirstChild;
-    if (Node<>nil) and (Node.Desc=ctnSrcName) then begin
-      debugln(['TStandardCodeTool.AddUnitWarnDirective AA3 ',Node.DescAsString]);
-      Node:=Node.NextSkipChilds;
-    end;
+  // insert in front of first node after source name
+  Node:=Tree.Root;
+  MaxPos:=Node.StartPos;
+  if Node.Desc in AllSourceTypes then
+    Node:=Node.Next;
+  if (Node<>nil) and (Node.Desc=ctnSrcName) then begin
+    MaxPos:=Node.EndPos;
+    Node:=Node.NextSkipChilds;
   end;
-  debugln(['TStandardCodeTool.AddUnitWarnDirective ',Node.DescAsString]);
   if Node<>nil then
-    MaxPos:=Node.StartPos
-  else
-    MaxPos:=SrcLen;
+    MaxPos:=Node.StartPos;
+  MaxPos:=FindLineEndOrCodeAfterPosition(MaxPos,true,true);
 
   // find existing directive for replacement
   ACleanPos:=1;

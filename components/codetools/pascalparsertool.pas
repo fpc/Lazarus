@@ -717,7 +717,7 @@ begin
               break;
           until false;
           if CurNode.Desc=ctnSrcName then begin
-            CurNode.EndPos:=CurPos.StartPos;
+            CurNode.EndPos:=CurPos.EndPos;
             EndChildNode;
           end;
           if CurSection in [ctnProgram,ctnLibrary,ctnPackage] then
