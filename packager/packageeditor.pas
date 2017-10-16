@@ -325,6 +325,7 @@ type
     procedure DoAddNewFile(NewItem: TNewIDEItemTemplate);
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
+    function GetSingleSelectedDep: TPkgDependency;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetIdleConnected(AValue: boolean);
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
@@ -1422,7 +1423,7 @@ begin
       fForcedFlags:=fForcedFlags+[pefNeedUpdateRemovedFiles];
     if PkgCount>0 then
       fForcedFlags:=fForcedFlags+[pefNeedUpdateRemovedFiles,pefNeedUpdateRequiredPkgs];
-    LazPackage.Modified:=True; // This will update also other possible editors.
+    LazPackage.Modified:=True;
 
   finally
     EndUpdate;
@@ -2809,33 +2810,37 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.UpdateApplyDependencyButton(Immediately: boolean);
+function TPackageEditorForm.GetSingleSelectedDep: TPkgDependency;
 var
-  DependencyChanged: Boolean;
-  AVersion: TPkgVersion;
   i: Integer;
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
 begin
-  if not CanUpdate(pefNeedUpdateApplyDependencyButton,Immediately) then exit;
-
-  FSingleSelectedDep:=nil;
+  Result:=nil;
   for i:=0 to ItemsTreeView.SelectionCount-1 do begin
     TVNode:=ItemsTreeView.Selections[i];
     if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
     if Item is TPkgFile then begin
-      FSingleSelectedDep:=nil;
+      Result:=nil;
       break;
     end else if Item is TPkgDependency then begin
-      if FSingleSelectedDep<>nil then begin
-        FSingleSelectedDep:=nil;
+      if Result<>nil then begin
+        Result:=nil;
         break;
       end;
-      FSingleSelectedDep:=TPkgDependency(Item);
+      Result:=TPkgDependency(Item);
     end;
   end;
+end;
 
+procedure TPackageEditorForm.UpdateApplyDependencyButton(Immediately: boolean);
+var
+  DependencyChanged: Boolean;
+  AVersion: TPkgVersion;
+begin
+  if not CanUpdate(pefNeedUpdateApplyDependencyButton,Immediately) then exit;
+  FSingleSelectedDep:=GetSingleSelectedDep;
   DependencyChanged:=false;
   if (FSingleSelectedDep<>nil) then begin
     // check min version
