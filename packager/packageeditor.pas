@@ -1721,7 +1721,9 @@ begin
     FSingleSelectedDep.Flags := Flags;
     FSingleSelectedDep.MinVersion.Assign(MinVers);
     FSingleSelectedDep.MaxVersion.Assign(MaxVers);
-    LazPackage.ModifySilently;
+
+    fForcedFlags:=[pefNeedUpdateRequiredPkgs];
+    LazPackage.Modified:=True;
   finally
     MaxVers.Free;
     MinVers.Free;
