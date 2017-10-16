@@ -35,7 +35,9 @@ type
   published
     procedure TestCTStdFindBlockStart;
     procedure TestCTRemoveUnitFromAllUsesSections;
-    procedure TestCTAddUnitWarn;
+    procedure TestCTAddUnitWarnProgram;
+    procedure TestCTAddUnitWarnProgramNoName;
+    procedure TestCTAddUnitWarnUnit;
   end;
 
 implementation
@@ -367,7 +369,7 @@ begin
   );
 end;
 
-procedure TTestCTStdCodetools.TestCTAddUnitWarn;
+procedure TTestCTStdCodetools.TestCTAddUnitWarnProgram;
 begin
   DoTestAddUnitWarn(
   'TestCTAddUnitWarn',
@@ -375,8 +377,32 @@ begin
   ,'begin'
   ,'end.'],
   ['program test1;'
-  ,'{$warn 5025 off}'
+  ,'{$WARN 5025 off}'
   ,'begin'
+  ,'end.'],'5025','',false);
+end;
+
+procedure TTestCTStdCodetools.TestCTAddUnitWarnProgramNoName;
+begin
+  DoTestAddUnitWarn(
+  'TestCTAddUnitWarn',
+  ['begin'
+  ,'end.'],
+  ['{$WARN 5025 off}'
+  ,'begin'
+  ,'end.'],'5025','',false);
+end;
+
+procedure TTestCTStdCodetools.TestCTAddUnitWarnUnit;
+begin
+  DoTestAddUnitWarn(
+  'TestCTAddUnitWarn',
+  ['unit test1;'
+  ,'interface'
+  ,'end.'],
+  ['unit test1;'
+  ,'{$WARN 5025 off}'
+  ,'interface'
   ,'end.'],'5025','',false);
 end;
 
