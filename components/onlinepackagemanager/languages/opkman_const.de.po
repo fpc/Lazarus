@@ -1311,11 +1311,13 @@ msgid "Check for package updates"
 msgstr "Nach Package-Updates suchen"
 
 #: opkman_const.rsoptions_lbcontimeout_caption
-msgid "Connection timeout(seconds):"
+#, fuzzy
+#| msgid "Connection timeout(seconds):"
+msgid "Connection timeout (seconds):"
 msgstr "Abfallzeit (Sekunden):"
 
 #: opkman_const.rsoptions_lbcontimeout_hint
-msgid "The number of seconds after OPM drops connection"
+msgid "The number of seconds after which package manager drops connection"
 msgstr ""
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
@@ -1700,3 +1702,4 @@ msgstr "Name"
 msgctxt "opkman_const.rsrepositorydetailsfrm_mdescription_hint"
 msgid "Enter the repository description"
 msgstr "Geben Sie die Repository-Beschreibung ein"
+
