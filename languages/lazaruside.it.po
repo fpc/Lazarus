@@ -14194,6 +14194,10 @@ msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Apri file"
 
+#: lazarusidestrconsts.lisopenfileatcursor
+msgid "Open file at cursor"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
 msgstr "Apri %s"
@@ -17842,13 +17846,13 @@ msgstr "Il file informazioni di progetto\"%s\"%sè stato modificato sul disco."
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Il progetto deve essere salvato prima della costruzione%sSe si imposta la cartella di test nelle opzioni di ambiente,%ssi possono creare nuovi progetti e costruirli tutti insieme.%sSalvare il progetto? "
 
+#: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
+msgid "The project uses FPC resources, which require at least FPC 2.4"
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "Il progetto ha destinazioni OS=%s e CPU=%s.%sLa unit system.ppu per queste destinazioni non è stata trovata nelle cartelle binarie di FPC. %sAssicuratevi che FPC sia installato correttamente per queste destinazioni e che fpc.cfg contenga le cartelle giuste."
-
-#: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
-msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
-msgstr "Il progetto una le nuove risorse FPC, quindi necessita di FPC 2.4 o più recente"
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."

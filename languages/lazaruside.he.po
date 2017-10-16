@@ -14990,6 +14990,10 @@ msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "פתח קובץ"
 
+#: lazarusidestrconsts.lisopenfileatcursor
+msgid "Open file at cursor"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
 msgstr "פתח %s"
@@ -18982,15 +18986,15 @@ msgstr "קובץ מידע הפרוייקט %s%s%s%s השתנה על הדיסק."
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "הפרוייקט חייב להשמר לפני הבנייה. אם תקבע את תיקיית הביקורת באפשרויות הסביבה, תוכל ליצור פרוייקטים חדשים ולבנות אותם מיד. לשמור את הפרוייקט?"
 
+#: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
+msgid "The project uses FPC resources, which require at least FPC 2.4"
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 #, fuzzy,badformat
 #| msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "הפרוייקט משתמש כמטרה במערכת ההפעלה = s% ובמעבד = s%. הקובץ system.ppu עבור מטרה זאת לא נמצא בתיקיית הקבצים הבינאריים של FPC.ודא ש fpc מותקו כראוי עבור מטרה זאת ושהקובץ fpc.cfg מכיל את התיקיות הנכונות."
-
-#: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
-msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
-msgstr "הפרוייקט משתמש במשאבי FPC חדשים, אשר דורשים לפחות FPC 2.4"
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."

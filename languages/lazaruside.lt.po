@@ -14047,6 +14047,10 @@ msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Atverti failą"
 
+#: lazarusidestrconsts.lisopenfileatcursor
+msgid "Open file at cursor"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
 msgstr "Atverti %s"
@@ -17687,13 +17691,13 @@ msgstr "Diske pakito projekto informacinis failas%1:s „%0:s“."
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Prieš darymą projektas turi būti įrašytas%sAplinkos parinktyse parinkę testo aplanką,%snaujus projektus bus galima kurti ir daryti vienu metu.%sĮrašyti projektą?"
 
+#: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
+msgid "The project uses FPC resources, which require at least FPC 2.4"
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "Projekto paskirties operacinė sistema yra „%s“, procesorius – „%s“.%s„FPC“ dvejetainių failų aplankuose nepavyko rasti šiai paskirčiai skirto „system.ppu“ failo. %s Pasirūpinkite kad šios paskirties tipui būtų tinkamai įdiegtas „FPC“, bei faile „fpc.cfg“ būtų įrašyti tinkamų aplankų pavadinimai."
-
-#: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
-msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
-msgstr "Projekte naudojami naujos laidos FPC ištekliai, tam būtinas bent 2.4 laidos FPC."
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."

@@ -14014,6 +14014,10 @@ msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "ファイルを開く"
 
+#: lazarusidestrconsts.lisopenfileatcursor
+msgid "Open file at cursor"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
 msgstr "%s を開く"
@@ -17660,13 +17664,13 @@ msgstr "プロジェクト情報ファイル \"%s\"%s はディスク上で変�
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "構築前にプロジェクトを保存しなければなりません。%sIDE オプションでテストディレクトリを設定した場合は、%s新しいプロジェクトを（複数）作成でき、それらを一度に構築できます。%sプロジェクトを保存しますか？ "
 
+#: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
+msgid "The project uses FPC resources, which require at least FPC 2.4"
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "プロジェクトは、 ターゲット OS=%s と CPU=%s を使っています。%sこのターゲットのためのシステム.ppu は、 FPCバイナリフォルダ内で見つかりません。%sfpcは、 このターゲット用に正しくインストールされていますか。 またfpc.cfg には正しいフォルダ情報が含まれていますか。"
-
-#: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
-msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
-msgstr "プロジェクトは、新しいFPCリソースを使っています。 少なくともFPC 2.4を必要とします。"
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."

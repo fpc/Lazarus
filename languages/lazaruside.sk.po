@@ -14736,6 +14736,10 @@ msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Otvoriť súbor"
 
+#: lazarusidestrconsts.lisopenfileatcursor
+msgid "Open file at cursor"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
 msgstr "Otvoriť %s"
@@ -18634,12 +18638,12 @@ msgstr ""
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Pred vybudovaním musíte projekt uložiť%sAk ste nastavili testovací adresár vo voľabch prostredia,%smôžete nový projekt naraz vytvoriť a vybudovať.%sUložiť projekt?"
 
-#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
-msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+#: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
+msgid "The project uses FPC resources, which require at least FPC 2.4"
 msgstr ""
 
-#: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
-msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
+#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe

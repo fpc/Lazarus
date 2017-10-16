@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-09-16 00:46+0300\n"
+"PO-Revision-Date: 2017-10-17 01:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14025,6 +14025,10 @@ msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Открыть файл"
 
+#: lazarusidestrconsts.lisopenfileatcursor
+msgid "Open file at cursor"
+msgstr "Открытие файла у курсора"
+
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
 msgstr "Открыть %s"
@@ -17663,13 +17667,13 @@ msgstr "Файл сведений о проекте \"%s\"%sбыл изменё�
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Проект требуется сохранить перед компиляцией%sВыбор каталога для сборки пробных проектов в параметрах IDE%sпозволит создавать новые проекты и сразу собирать их.%sСохранить проект?"
 
+#: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
+msgid "The project uses FPC resources, which require at least FPC 2.4"
+msgstr "Проект использует ресурсы FPC, требующие компилятор версии не ниже 2.4"
+
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "Проект использует целевую ОС %s и процессор %s.%sSystem.ppu для этой цели не был найден в каталогах двоичных файлов FPC.%sУбедитесь в том, что FPC установлен корректно для данной цели, и что файл fpc.cfg содержит верные каталоги."
-
-#: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
-msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
-msgstr "Проект использует новые ресурсы FPC, требующие FPC версии 2.4 либо выше"
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."

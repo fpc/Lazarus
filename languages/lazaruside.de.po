@@ -14029,6 +14029,10 @@ msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Datei öffnen"
 
+#: lazarusidestrconsts.lisopenfileatcursor
+msgid "Open file at cursor"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
 msgstr "Öffne %s"
@@ -17658,13 +17662,13 @@ msgstr "Die Projektinformationsdatei \"%s\"%sauf dem Datenträger hat sich geän
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Das Projekt muß vor dem Kompilieren gesichert werden.%sWenn Sie das Testverzeichnis in den Umgebungseinstellungen setzen,%skönnen Sie neue Projekte erzeugen und sofort kompilieren.%sProjekt speichern?"
 
+#: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
+msgid "The project uses FPC resources, which require at least FPC 2.4"
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "Das Projekt nutzt die Ziele OS=%s und CPU=%s.%sDie system.ppu für dieses Ziel wurde nicht in den Binärverzeichnissen von FPC gefunden. %sStellen Sie sicher, daß fpc für diese Zielplattform richtig installiert ist und daß die fpc.cfg die richtigen Verzeichnisangaben enthält."
-
-#: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
-msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
-msgstr "Das Projekt verwendet die neuen FPC Ressourcen, welche wenigstens FPC 2.4 benötigen"
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
@@ -21169,3 +21173,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+
