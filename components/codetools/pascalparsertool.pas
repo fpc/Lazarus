@@ -1401,9 +1401,8 @@ begin
       ExtractNextAtom(not (phpWithoutBrackets in Attr),Attr);
       if (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose])
       and (Src[CurPos.StartPos] = CloseBracket)
-      then begin
-        // opening bracket was not streamed, keep ExtractMemStream intact.
-        ReadNextAtom;
+      then begin             // empty brackets: extract also the closing bracket.
+        ExtractNextAtom(not (phpWithoutBrackets in Attr),Attr);
         exit(true);
       end;
     end;
