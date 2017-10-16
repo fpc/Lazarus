@@ -1024,8 +1024,8 @@ resourcestring
   lisStopTheDebugging = 'Stop the debugging?';
   lisCannotFindLazarusStarter = 'Cannot find Lazarus starter:%s%s';
   lisFPCTooOld = 'FPC too old';
-  lisTheProjectUsesTheNewFPCResourcesWhichRequiresAtLea = 'The project uses '
-    +'the new FPC resources, which requires at least FPC 2.4';
+  lisTheProjectUsesFPCResourcesWhichRequireAtLeast = 'The project uses '
+    +'FPC resources, which require at least FPC 2.4';
   lisCreateDirectory = 'Create directory?';
   lisTheOutputDirectoryIsMissing = 'The output directory "%s" is missing.';
   lisCreateIt = 'Create it';

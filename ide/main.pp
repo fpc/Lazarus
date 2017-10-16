@@ -6631,7 +6631,7 @@ begin
         ExtractFilePath(Project1.MainFilename),FPCVersion,FPCRelease,FPCPatch);
       if (FPCVersion=2) and (FPCRelease<4) then begin
         IDEMessageDialog(lisFPCTooOld,
-          lisTheProjectUsesTheNewFPCResourcesWhichRequiresAtLea,
+          lisTheProjectUsesFPCResourcesWhichRequireAtLeast,
           mtError,[mbCancel]);
         exit(mrCancel);
       end;
