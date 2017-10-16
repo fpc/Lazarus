@@ -3824,7 +3824,7 @@ begin
             end;
           until false;
           Col:=p-PChar(Line)+1;
-          writeln('TFindDeclarationTool.FindFileAtCursor Col=',Col,' CursorCol=',CursorPos.X,' Literal=',copy(Line,StartCol+1,p-StartP));
+          //writeln('TFindDeclarationTool.FindFileAtCursor Col=',Col,' CursorCol=',CursorPos.X,' Literal=',copy(Line,StartCol+1,p-StartP));
           if (p>StartP) and (CursorPos.X>=StartCol) and (CursorPos.X<=Col) then begin
             Literal:=copy(Line,StartCol+1,p-StartP);
             if not FilenameIsAbsolute(Literal) then

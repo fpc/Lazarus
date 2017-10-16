@@ -4274,6 +4274,7 @@ resourcestring
   lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName = 'The package '
     +'file name "%s" in%s"%s" is not a valid Lazarus package name.';
   lisPkgMangFileNotFound = 'File "%s" not found.';
+  lisOpenFileAtCursor = 'Open file at cursor';
   lisPkgMangErrorReadingPackage = 'Error Reading Package';
   lisPkgUnableToReadPackageFileError = 'Unable to read package file "%s".%sError: %s';
   lisPkgMangFilenameDiffersFromPackagename = 'Filename differs from Packagename';
