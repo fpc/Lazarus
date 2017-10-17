@@ -599,6 +599,7 @@
         <ComponentName Value="MacroListView"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="EditorMacroListViewer"/>
       </Unit86>
       <Unit87>
         <Filename Value="sourcesyneditor.pas"/>
@@ -798,7 +799,10 @@
       <Unit124>
         <Filename Value="codetemplatesdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="CodeTemplateDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CodeTemplatesDlg"/>
       </Unit124>
       <Unit125>
         <Filename Value="mainintf.pas"/>
