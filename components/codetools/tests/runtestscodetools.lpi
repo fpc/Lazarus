@@ -37,7 +37,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="13">
       <Unit0>
         <Filename Value="runtestscodetools.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -94,6 +94,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestCodeCompletion"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="testcompreaderwriterpas.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestCompReaderWriterPas"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

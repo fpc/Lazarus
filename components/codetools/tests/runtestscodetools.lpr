@@ -36,9 +36,9 @@ uses
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
   {$ENDIF}
-  TestBasicCodetools,
-  TestCTRangeScan, TestPascalParser, TestMethodJumpTool, TestStdCodetools,
-  TestFindDeclaration, TestCompleteBlock, TestRefactoring, fdt_arrays, testcodecompletion;
+  TestBasicCodetools, TestCTRangeScan, TestPascalParser, TestMethodJumpTool,
+  TestStdCodetools, TestFindDeclaration, TestCompleteBlock, TestRefactoring,
+  fdt_arrays, testcodecompletion, TestCompReaderWriterPas;
 
 const
   ConfigFilename = 'codetools.config';
