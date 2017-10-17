@@ -37,11 +37,12 @@ unit PublishProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, Forms, Controls, Graphics, Buttons,
-  StdCtrls, Dialogs, LCLType,
+  Classes, SysUtils,
+  LazFileUtils, Forms, Controls, Graphics, Buttons,
+  StdCtrls, Dialogs, LCLType, ExtCtrls, ButtonPanel,
   IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf,
   ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, IDEProcs, ExtCtrls, ButtonPanel;
+  LazarusIDEStrConsts, IDEProcs;
 
 type
   { TPublishProjectDialog }
@@ -305,8 +306,7 @@ constructor TPublishProjectDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,500,500);
-  if Height<500 then Height:=500;
+  IDEDialogLayoutList.ApplyLayout(Self);
   LoadHistoryLists;
 end;
 
