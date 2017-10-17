@@ -143,6 +143,7 @@ type
     procedure tbUpdateClick(Sender: TObject);
   private
     FHintTimeOut: Integer;
+    FFormIsHiden: Boolean;
     procedure EnableDisableControls(const AEnable: Boolean);
     procedure SetupMessage(const AMessage: String = '');
     procedure SetupControls;
@@ -161,6 +162,7 @@ type
     function UpdateP(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     procedure StartUpdates;
     procedure StopUpdates;
+    procedure Rebuild;
   public
     procedure ShowOptions(const AActivePageIndex: Integer = 0);
   end;
@@ -235,9 +237,12 @@ end;
 
 procedure TMainFrm.FormShow(Sender: TObject);
 begin
-  SetupControls;
-  SetupColors;
-  GetPackageList;
+  if not FFormIsHiden then
+  begin
+    SetupControls;
+    SetupColors;
+    GetPackageList;
+  end;
 end;
 
 procedure TMainFrm.GetPackageList(const ARepositoryHasChanged: Boolean = False);
@@ -689,6 +694,15 @@ begin
   Updates.StartUpdate;
 end;
 
+procedure TMainFrm.Rebuild;
+begin
+  FFormIsHiden := True;
+  Self.Hide;
+  IDECommands.ExecuteIDECommand(Self, ecBuildLazarus);
+  Self.Show;
+  FFormIsHiden := False;
+end;
+
 procedure TMainFrm.tbUpdateClick(Sender: TObject);
 var
   CanGo: Boolean;
@@ -752,11 +766,7 @@ begin
               SerializablePackages.MarkRuntimePackages;
               VisualTree.UpdatePackageStates;
               if NeedToRebuild then
-              begin
-                EnableDisableControls(False);
-                IDECommands.ExecuteIDECommand(Self, ecBuildLazarus);
-                EnableDisableControls(True);
-              end;
+                Rebuild;
             end;
           end;
         end;
@@ -866,11 +876,7 @@ begin
     end;
   end;
   if NeedToRebuild then
-  begin
-    EnableDisableControls(False);
-    IDECommands.ExecuteIDECommand(Self, ecBuildLazarus);
-    EnableDisableControls(True);
-  end;
+    Rebuild;
 end;
 
 procedure TMainFrm.tbInstallClick(Sender: TObject);
@@ -931,14 +937,8 @@ begin
             SerializablePackages.MarkRuntimePackages;
             VisualTree.UpdatePackageStates;
             if (InstallStatus = isSuccess) or (InstallStatus = isPartiallyFailed) then
-            begin
               if NeedToRebuild then
-              begin
-                EnableDisableControls(False);
-                IDECommands.ExecuteIDECommand(Self, ecBuildLazarus);
-                EnableDisableControls(True);
-              end;
-            end;
+                Rebuild;
           end;
         end;
       end;
