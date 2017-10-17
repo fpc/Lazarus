@@ -28,14 +28,14 @@
     - a reader
 }
 
-unit ComponentStreamPas;
+unit CompWriterPas;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, LCLProc, typinfo;
+  Classes, SysUtils, typinfo, LazLoggerBase;
 
 type
 
@@ -107,7 +107,7 @@ type
     procedure WriteUInt64(Value: QWord); override;
     procedure WriteUnicodeString(const Value: UnicodeString); override;
     procedure WriteVariant(const VarValue: Variant); override;
-    procedure Write(const Buffer; Count: Longint); override;
+    procedure Write(const {%H-}Buffer; {%H-}Count: Longint); override;
   public
     property Stream: TStream read FStream;
   end;
@@ -283,6 +283,9 @@ var
   i: Integer;
   Item: TPASObjectWriterStackEl;
 begin
+  if Flags<>[] then ; // ToDo
+  if ChildPos>0 then ; //
+
   if not IsValidIdent(Component.Name) then
     raise Exception.Create('TPASObjectWriter.BeginComponent not pascal identifier');
   if (FStack<>nil) and (FStack.Count>0) then begin
@@ -500,6 +503,7 @@ end;
 procedure TPASObjectWriter.Write(const Buffer; Count: Longint);
 begin
   // there can be arbitrary lots of Write calls
+  // ToDo
   raise Exception.Create('TPASObjectWriter.Write not supported');
 end;
 

@@ -16,7 +16,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="93">
+    <Files Count="94">
       <Item1>
         <Filename Value="LazLoggerImpl.inc"/>
         <Type Value="Include"/>
@@ -389,6 +389,10 @@
         <Filename Value="laz_avl_tree.pp"/>
         <UnitName Value="Laz_AVL_Tree"/>
       </Item93>
+      <Item94>
+        <Filename Value="compwriterpas.pas"/>
+        <UnitName Value="ComponentStreamPas"/>
+      </Item94>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>

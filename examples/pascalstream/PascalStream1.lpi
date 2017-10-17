@@ -38,21 +38,16 @@
         <MinVersion Major="1" Release="1" Valid="True"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="PascalStream1.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="componentstreampas.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ComponentStreamPas"/>
-      </Unit1>
-      <Unit2>
         <Filename Value="unit1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Unit1"/>
-      </Unit2>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

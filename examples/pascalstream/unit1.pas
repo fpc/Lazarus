@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, typinfo, ComponentStreamPas;
+  Classes, SysUtils, LCLProc, typinfo, CompWriterPas;
 
 type
   TMyEnum = (myEnum1, myEnum2, myEnum3);
