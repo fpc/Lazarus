@@ -1,39 +1,40 @@
 object HeapTrcViewForm: THeapTrcViewForm
-  Left = 677
-  Height = 516
-  Top = 155
-  Width = 689
+  Left = 320
+  Height = 444
+  Top = 164
+  Width = 637
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'HeapTrcViewForm'
-  ClientHeight = 516
-  ClientWidth = 689
+  ClientHeight = 444
+  ClientWidth = 637
   FormStyle = fsStayOnTop
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object lblTrcFile: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = edtTrcFileName
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 17
-    Top = 14
-    Width = 47
+    Height = 13
+    Top = 15
+    Width = 40
     BorderSpacing.Left = 6
     Caption = '.trc file'
     ParentColor = False
   end
   object btnUpdate: TButton
     AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtTrcFileName
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 29
-    Top = 40
-    Width = 62
+    Height = 25
+    Top = 41
+    Width = 52
     AutoSize = True
     BorderSpacing.Left = 6
-    BorderSpacing.Top = 12
+    BorderSpacing.Top = 6
     Caption = 'Update'
     OnClick = btnUpdateClick
     TabOrder = 2
@@ -43,10 +44,10 @@ object HeapTrcViewForm: THeapTrcViewForm
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 581
+    Left = 543
     Height = 24
-    Top = 42
-    Width = 102
+    Top = 41
+    Width = 88
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     Caption = 'Stay on top'
@@ -55,10 +56,12 @@ object HeapTrcViewForm: THeapTrcViewForm
   end
   object btnBrowse: TButton
     AnchorSideTop.Control = edtTrcFileName
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = edtTrcFileName
     AnchorSideBottom.Side = asrBottom
-    Left = 616
-    Height = 29
+    Left = 564
+    Height = 27
     Top = 8
     Width = 67
     Anchors = [akTop, akRight, akBottom]
@@ -73,10 +76,10 @@ object HeapTrcViewForm: THeapTrcViewForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = btnUpdate
     AnchorSideTop.Side = asrCenter
-    Left = 293
+    Left = 248
     Height = 24
-    Top = 42
-    Width = 119
+    Top = 41
+    Width = 101
     BorderSpacing.Left = 6
     Caption = 'Raw leak data'
     Checked = True
@@ -93,21 +96,21 @@ object HeapTrcViewForm: THeapTrcViewForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 435
-    Top = 75
-    Width = 677
+    Height = 366
+    Top = 72
+    Width = 625
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 435
-    ClientWidth = 677
+    ClientHeight = 366
+    ClientWidth = 625
     TabOrder = 7
     object trvTraceInfo: TTreeView
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 343
+      Height = 274
       Top = 6
-      Width = 677
+      Width = 625
       Align = alClient
       BorderSpacing.Top = 6
       ReadOnly = True
@@ -118,8 +121,8 @@ object HeapTrcViewForm: THeapTrcViewForm
     object memoSummary: TMemo
       Left = 0
       Height = 81
-      Top = 354
-      Width = 677
+      Top = 285
+      Width = 625
       Align = alBottom
       ReadOnly = True
       ScrollBars = ssVertical
@@ -129,8 +132,8 @@ object HeapTrcViewForm: THeapTrcViewForm
       Cursor = crVSplit
       Left = 0
       Height = 5
-      Top = 349
-      Width = 677
+      Top = 280
+      Width = 625
       Align = alBottom
       ResizeAnchor = akBottom
     end
@@ -139,10 +142,10 @@ object HeapTrcViewForm: THeapTrcViewForm
     AnchorSideLeft.Control = btnUpdate
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = btnUpdate
-    Left = 74
-    Height = 29
-    Top = 40
-    Width = 120
+    Left = 64
+    Height = 25
+    Top = 41
+    Width = 97
     AutoSize = True
     BorderSpacing.Left = 6
     Caption = 'Paste Clipboard'
@@ -153,10 +156,10 @@ object HeapTrcViewForm: THeapTrcViewForm
     AnchorSideLeft.Control = lblTrcFile
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = btnBrowse
-    Left = 59
-    Height = 29
+    Left = 52
+    Height = 27
     Top = 8
-    Width = 551
+    Width = 506
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     ItemHeight = 0
@@ -167,10 +170,10 @@ object HeapTrcViewForm: THeapTrcViewForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = btnUpdate
     AnchorSideTop.Side = asrCenter
-    Left = 200
-    Height = 29
-    Top = 40
-    Width = 87
+    Left = 167
+    Height = 25
+    Top = 41
+    Width = 75
     AutoSize = True
     BorderSpacing.Left = 6
     Caption = 'BtnResolve'
