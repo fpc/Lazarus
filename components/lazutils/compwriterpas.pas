@@ -25,6 +25,8 @@
        Edit1.AnchorSide[akLeft].Control:=Label1;
        Label1:=TLabel.Create(Form1);
        Label1.AnchorSide[akTop].Control:=Edit1;
+    - ChildPos
+    - Flags
     - a reader
 }
 
