@@ -1036,7 +1036,10 @@
       <Unit174>
         <Filename Value="publishprojectdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="PublishProjectDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="PublishProjectDlg"/>
       </Unit174>
       <Unit175>
         <Filename Value="findoverloadsdlg.pas"/>
