@@ -16,7 +16,8 @@ uses
   KeyMapShortCutDlg, MainIntf, IDEDialogs;
 
 type
-  TSynEditorMacro = class(TSynMacroRecorder) end;
+  TSynEditorMacro = class(TSynMacroRecorder)
+  end;
 
   { TIdeEditorMacro }
 
