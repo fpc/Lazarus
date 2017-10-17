@@ -398,14 +398,17 @@ var
   Node: TTreeNode;
   SortedCtgList: TStringList;
 begin
-  SortedCtgList := TStringList.Create;
-  SortedCtgList.OwnsObjects := False;
-  for i := 0 to IDEToolButtonCategories.Count-1 do
-    SortedCtgList.AddObject(IDEToolButtonCategories[i].Description, IDEToolButtonCategories[i]);
-  SortCategories(SortedCtgList);
-
   TV.Items.BeginUpdate;
+  SortedCtgList := TStringList.Create;
   try
+    SortedCtgList.OwnsObjects := False;
+    for i := 0 to IDEToolButtonCategories.Count-1 do
+    begin
+      xCategory := IDEToolButtonCategories[i];
+      SortedCtgList.AddObject(xCategory.Description, xCategory);
+    end;
+    SortCategories(SortedCtgList);
+
     TV.Items.Clear;
     for i := 0 to SortedCtgList.Count-1 do
     begin
@@ -417,8 +420,8 @@ begin
         AddMenuItem(Node, xCategory.Buttons[l]);
     end;
   finally
-    TV.Items.EndUpdate;
     SortedCtgList.Free;
+    TV.Items.EndUpdate;
   end;
 end;
 
