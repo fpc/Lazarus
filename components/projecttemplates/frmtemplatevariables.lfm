@@ -1,41 +1,51 @@
 object ProjectVariablesForm: TProjectVariablesForm
   Left = 505
-  Height = 350
+  Height = 345
   Top = 306
-  Width = 584
+  Width = 539
   Caption = 'New project from template'
-  ClientHeight = 350
-  ClientWidth = 584
+  ClientHeight = 345
+  ClientWidth = 539
   OnCreate = FormCreate
   OnShow = ProjectVariablesFormShow
   Position = poScreenCenter
-  LCLVersion = '1.5'
-  object Label1: TLabel
+  LCLVersion = '1.9.0.0'
+  object ProjNameLabel: TLabel
+    AnchorSideTop.Control = EProjectName
+    AnchorSideTop.Side = asrCenter
     Left = 8
-    Height = 15
-    Top = 16
-    Width = 118
+    Height = 13
+    Top = 21
+    Width = 124
     Alignment = taRightJustify
     Caption = '&Name for new project:'
     Layout = tlCenter
     ParentColor = False
   end
-  object Label2: TLabel
+  object DEDestDirLabel: TLabel
+    AnchorSideTop.Control = DEDestDir
+    AnchorSideTop.Side = asrCenter
     Left = 8
-    Height = 15
-    Top = 48
-    Width = 100
+    Height = 13
+    Top = 53
+    Width = 107
     Alignment = taRightJustify
     Caption = 'Create in &directory:'
     Layout = tlCenter
     ParentColor = False
   end
   object PDescription: TPanel
-    Left = 8
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DEDestDir
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
     Height = 58
-    Top = 80
-    Width = 570
+    Top = 77
+    Width = 527
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
     BevelInner = bvRaised
     BevelOuter = bvLowered
     Caption = 'This project contains some additional variables. Please provide values for these variables'
@@ -43,43 +53,50 @@ object ProjectVariablesForm: TProjectVariablesForm
     TabOrder = 0
   end
   object SGVariables: TStringGrid
-    Left = 10
-    Height = 162
-    Top = 144
-    Width = 568
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PDescription
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 156
+    Top = 141
+    Width = 527
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFillColumns = True
+    BorderSpacing.Around = 6
     ColCount = 3
     DefaultColWidth = 120
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goAlwaysShowEditor, goDblClickAutoSize, goSmoothScroll]
     TabOrder = 3
     ColWidths = (
       120
-      222
-      222
+      202
+      203
     )
   end
   object EProjectName: TEdit
-    AnchorSideLeft.Control = Label1
+    AnchorSideLeft.Control = ProjNameLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 132
+    Left = 138
     Height = 23
     Top = 16
-    Width = 446
+    Width = 395
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     TabOrder = 1
   end
-  object DEProject: TDirectoryEdit
+  object DEDestDir: TDirectoryEdit
     AnchorSideLeft.Control = EProjectName
     AnchorSideRight.Side = asrBottom
-    Left = 132
+    Left = 138
     Height = 23
     Top = 48
-    Width = 444
+    Width = 393
     ShowHidden = False
     ButtonWidth = 23
     NumGlyphs = 1
@@ -89,9 +106,9 @@ object ProjectVariablesForm: TProjectVariablesForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 310
-    Width = 572
+    Height = 36
+    Top = 303
+    Width = 527
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = BOKClick
