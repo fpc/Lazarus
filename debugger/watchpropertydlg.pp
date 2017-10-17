@@ -39,7 +39,7 @@ unit WatchPropertyDlg;
 interface
 
 uses
-  Classes, sysutils, Forms, StdCtrls, Extctrls, ButtonPanel, LazarusIDEStrConsts,
+  Classes, SysUtils, Forms, StdCtrls, Extctrls, ButtonPanel, LazarusIDEStrConsts,
   IDEHelpIntf, DbgIntfDebuggerBase, Debugger, BaseDebugManager, DebuggerStrConst;
 
 type
