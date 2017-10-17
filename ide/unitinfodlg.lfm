@@ -10,13 +10,13 @@ object UnitInfoDialog: TUnitInfoDialog
   ClientWidth = 500
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object OkButton: TBitBtn
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 419
-    Height = 26
-    Top = 275
+    Height = 28
+    Top = 273
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -32,7 +32,7 @@ object UnitInfoDialog: TUnitInfoDialog
   object Notebook: TPageControl
     AnchorSideBottom.Control = OkButton
     Left = 6
-    Height = 263
+    Height = 261
     Top = 6
     Width = 488
     ActivePage = GeneralPage
@@ -43,36 +43,37 @@ object UnitInfoDialog: TUnitInfoDialog
     TabOrder = 1
     object GeneralPage: TTabSheet
       Caption = 'GeneralPage'
-      ClientHeight = 235
-      ClientWidth = 480
+      ClientHeight = 234
+      ClientWidth = 484
       object ClearIncludedBy: TButton
         Left = 6
         Height = 25
-        Top = 204
-        Width = 112
+        Top = 203
+        Width = 101
         Anchors = [akLeft, akBottom]
         AutoSize = True
-        BorderSpacing.Top = 20
+        BorderSpacing.Top = 6
         Caption = 'ClearIncludedBy'
         OnClick = clearIncludedByClick
         TabOrder = 0
       end
       object ListValues: TListView
+        AnchorSideBottom.Control = ClearIncludedBy
         Left = 6
         Height = 191
         Top = 6
-        Width = 468
+        Width = 472
         Anchors = [akTop, akLeft, akRight, akBottom]
         Columns = <        
           item
             AutoSize = True
             Caption = '(name)'
-            Width = 464
+            Width = 0
           end        
           item
             AutoSize = True
             Caption = '(value)'
-            Width = 48
+            Width = 470
           end>
         ReadOnly = True
         RowSelect = True
@@ -84,8 +85,8 @@ object UnitInfoDialog: TUnitInfoDialog
     end
     object UnitPathsPage: TTabSheet
       Caption = 'UnitPathsPage'
-      ClientHeight = 235
-      ClientWidth = 480
+      ClientHeight = 234
+      ClientWidth = 484
       object UnitPathMemo: TMemo
         Left = 6
         Height = 223
@@ -100,8 +101,8 @@ object UnitInfoDialog: TUnitInfoDialog
     end
     object IncludePathsPage: TTabSheet
       Caption = 'IncludePathsPage'
-      ClientHeight = 235
-      ClientWidth = 480
+      ClientHeight = 234
+      ClientWidth = 484
       object IncludePathMemo: TMemo
         Left = 6
         Height = 223
@@ -116,8 +117,8 @@ object UnitInfoDialog: TUnitInfoDialog
     end
     object CompleteUnitPathsPage: TTabSheet
       Caption = 'CompleteUnitPathsPage'
-      ClientHeight = 235
-      ClientWidth = 480
+      ClientHeight = 234
+      ClientWidth = 484
       object SrcPathMemo: TMemo
         Left = 6
         Height = 223
@@ -136,9 +137,9 @@ object UnitInfoDialog: TUnitInfoDialog
     AnchorSideBottom.Control = OkButton
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 26
-    Top = 275
-    Width = 142
+    Height = 28
+    Top = 273
+    Width = 133
     Anchors = [akTop, akLeft, akBottom]
     AutoSize = True
     Caption = 'CodeToolsDefsButton'
@@ -150,10 +151,10 @@ object UnitInfoDialog: TUnitInfoDialog
     AnchorSideRight.Control = OkButton
     AnchorSideBottom.Control = OkButton
     AnchorSideBottom.Side = asrBottom
-    Left = 240
-    Height = 26
-    Top = 275
-    Width = 173
+    Left = 244
+    Height = 28
+    Top = 273
+    Width = 169
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
