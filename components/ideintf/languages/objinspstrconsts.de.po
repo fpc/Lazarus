@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-09-29 18:32+0100\n"
+"PO-Revision-Date: 2017-10-17 22:56+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.0.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -366,7 +366,6 @@ msgid "ActionList Editor"
 msgstr "Aktionslisteneditor"
 
 #: objinspstrconsts.oisadd
-#, fuzzy
 msgctxt "objinspstrconsts.oisadd"
 msgid "Add"
 msgstr "&Hinzufügen"
@@ -384,7 +383,6 @@ msgid "Add fields from FieldDefs"
 msgstr "Felder aus Felddefs hinzufügen"
 
 #: objinspstrconsts.oisaddpage
-#, fuzzy
 msgctxt "objinspstrconsts.oisaddpage"
 msgid "Add Page"
 msgstr "Seite hinzufügen"
@@ -512,7 +510,7 @@ msgstr "Eintrag \"%s\" löschen?"
 
 #: objinspstrconsts.oisdeletepagequestion
 msgid "Do you want to delete the page?"
-msgstr ""
+msgstr "Wollen Sie die Seite löschen?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -584,7 +582,7 @@ msgstr "Eingabemaske:"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
-msgstr ""
+msgstr "Seitennamen einfügen"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -600,7 +598,7 @@ msgstr "Interface"
 
 #: objinspstrconsts.oisinvalid
 msgid "(Invalid)"
-msgstr ""
+msgstr "(Ungültig)"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -709,11 +707,11 @@ msgstr "Nach vorn"
 
 #: objinspstrconsts.oispages
 msgid "Pages"
-msgstr ""
+msgstr "Seiten"
 
 #: objinspstrconsts.oispageseditordialog
 msgid "Pages Editor"
-msgstr ""
+msgstr "Seiten-Editor"
 
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
@@ -754,11 +752,11 @@ msgstr "Von Favoriten entfernen"
 
 #: objinspstrconsts.oisrename
 msgid "Rename"
-msgstr ""
+msgstr "Umbenennen"
 
 #: objinspstrconsts.oisrenamepage
 msgid "Rename Page"
-msgstr ""
+msgstr "Seite umbenennen"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
@@ -818,7 +816,7 @@ msgstr "Set"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "Setze MaxHeight=%d, MaxWidth=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
@@ -826,7 +824,7 @@ msgstr ""
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "Setze MinHeight=%d, MinWidth=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
@@ -842,7 +840,7 @@ msgstr "Eigenschaftswert auf Vorgabe setzen"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
-msgstr ""
+msgstr "Zeige Klassen"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -1165,7 +1163,7 @@ msgstr "Ersetzen"
 
 #: objinspstrconsts.oistestdialog
 msgid "Test dialog ..."
-msgstr "Prüfdialog ..."
+msgstr "Dialog ausprobieren ..."
 
 #: objinspstrconsts.oistestinput
 msgid "Test Input"
@@ -1371,7 +1369,7 @@ msgstr "Transparente Farbe:"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
-msgstr ""
+msgstr "E&rsetzen ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1640,4 +1638,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-
