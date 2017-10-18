@@ -3200,7 +3200,7 @@ help:
 	@$(ECHO) "   USESVN2REVISIONINC=0   do not update ide/revision.inc"
 	@$(ECHO) "   INSTALL_PREFIX=/usr    used by 'install' as path prefix"
 	@$(ECHO) "   FPC_DIR=/usr/share/fpcsrc/3.0.4   used by fpcmake when regenerating Makefiles"
-	@$(ECHO) "   OPT='-vwnbq -gh'       append these options when calling the compiler
+	@$(ECHO) "   OPT='-vwnbq -gh'       append these options when calling the compiler"
 	@$(ECHO)
 	@$(ECHO) " Usage examples:"
 	@$(ECHO)
