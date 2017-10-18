@@ -788,11 +788,13 @@ begin
   begin
     if Shift = [ssCtrl] then 
     begin
+      Key := 0;
       PageIndex := (PageIndex + 1) mod PageCount;
       Exit;
     end
     else if Shift = [ssCtrl, ssShift] then 
     begin
+      Key := 0;
       PageIndex := (PageIndex + PageCount - 1) mod PageCount;
       Exit;
     end;
