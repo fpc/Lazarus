@@ -52,7 +52,7 @@ type
   TUpdateTranslator = class(TAbstractTranslator)
   private
     FStackPath: string;
-    procedure IntUpdateTranslation(AnInstance: TPersistent);
+    procedure IntUpdateTranslation(AnInstance: TPersistent; Level: integer = 0);
   public
     procedure UpdateTranslation(AnInstance: TPersistent);
   end;
@@ -316,7 +316,7 @@ var
 
 { TUpdateTranslator }
 
-procedure TUpdateTranslator.IntUpdateTranslation(AnInstance: TPersistent);
+procedure TUpdateTranslator.IntUpdateTranslation(AnInstance: TPersistent; Level: integer = 0);
 var
   i,j: integer;
   APropCount: integer;
@@ -327,13 +327,16 @@ var
   StoreStackPath: string;
   AComponent, SubComponent: TComponent;
 begin
+  {$IFDEF VerbosePOTranslator}
+  debugln(['TUpdateTranslator.IntUpdateTranslation START ',DbgSName(AnInstance),' Level=',Level]);
+  {$ENDIF}
   APropCount := GetPropList(AnInstance.ClassInfo, APropList);
   try
     for i := 0 to APropCount-1 do
       begin
       APropInfo:=APropList^[i];
       if Assigned(PPropInfo(APropInfo)^.GetProc) and
-         assigned(APropInfo^.PropType) and
+         Assigned(APropInfo^.PropType) and
          IsStoredProp(AnInstance, APropInfo) then
         case APropInfo^.PropType^.Kind of
           tkSString,
@@ -360,7 +363,7 @@ begin
                   begin
                     StoreStackPath:=FStackPath;
                     FStackPath:=FStackPath+'.'+APropInfo^.Name+'['+IntToStr(j)+']';
-                    IntUpdateTranslation(TCollection(APersistentProp).Items[j]);
+                    IntUpdateTranslation(TCollection(APersistentProp).Items[j],Level+1);
                     FStackPath:=StoreStackPath;
                   end;
                 end
@@ -369,12 +372,11 @@ begin
                   if APersistentProp is TComponent then
                   begin
                     AComponent:=TComponent(APersistentProp);
-                    if AComponent.Name='' then continue;
                     if (csSubComponent in AComponent.ComponentStyle) then
                     begin
                       StoreStackPath:=FStackPath;
-                      FStackPath:=FStackPath+'.'+AComponent.Name;
-                      IntUpdateTranslation(APersistentProp);
+                      FStackPath:=FStackPath+'.'+APropInfo^.Name;
+                      IntUpdateTranslation(APersistentProp,Level+1);
                       FStackPath:=StoreStackPath;
                     end
                   end
@@ -382,7 +384,7 @@ begin
                   begin
                     StoreStackPath:=FStackPath;
                     FStackPath:=FStackPath+'.'+APropInfo^.Name;
-                    IntUpdateTranslation(APersistentProp);
+                    IntUpdateTranslation(APersistentProp,Level+1);
                     FStackPath:=StoreStackPath;
                   end;
                 end;
@@ -391,21 +393,21 @@ begin
           end;
       end;
   finally
-    freemem(APropList);
+    Freemem(APropList);
   end;
 
-  if (AnInstance is TComponent) then
+  if (Level=0) and (AnInstance is TComponent) then
   begin
     AComponent:=TComponent(AnInstance);
     for i := 0 to AComponent.ComponentCount-1 do
     begin
       SubComponent:=AComponent.Components[i];
-      if SubComponent.Name='' then continue;
       StoreStackPath:=FStackPath;
       if SubComponent is TCustomFrame then
         UpdateTranslation(SubComponent);
+      if SubComponent.Name='' then continue;
       FStackPath:=StoreStackPath+'.'+SubComponent.Name;
-      IntUpdateTranslation(SubComponent);
+      IntUpdateTranslation(SubComponent,Level+1);
       FStackPath:=StoreStackPath;
     end;
   end;
