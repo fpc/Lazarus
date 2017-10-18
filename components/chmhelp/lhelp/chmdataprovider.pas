@@ -195,36 +195,39 @@ begin
   end;
 
   ParentDirs := GetDirsParents(OldURL);
-  RemoveDirCount := 0;
-  repeat
-    X := Pos('../', fNewURL);
-    if X > 0 then
-    begin
-      Delete(fNewURL, X, 3);
-      Inc(RemoveDirCount);
-    end;
-  until X = 0;
+  try
+    RemoveDirCount := 0;
+    repeat
+      X := Pos('../', fNewURL);
+      if X > 0 then
+      begin
+        Delete(fNewURL, X, 3);
+        Inc(RemoveDirCount);
+      end;
+    until X = 0;
 
-  repeat
-    X := Pos('./', fNewURL);
-    if X > 0 then
-      Delete(fNewURL, X, 2);
-  until X = 0;
+    repeat
+      X := Pos('./', fNewURL);
+      if X > 0 then
+        Delete(fNewURL, X, 2);
+    until X = 0;
 
-  Result := '';
-  for X := 0 to ParentDirs.Count-RemoveDirCount-1 do
-    Result := Result + ParentDirs[X] + '/';
+    Result := '';
+    for X := 0 to ParentDirs.Count-RemoveDirCount-1 do
+      Result := Result + ParentDirs[X] + '/';
 
-  Result := Result+fNewURL;
+    Result := Result+fNewURL;
 
-  repeat
-    X := Pos('//', Result);
-    if X > 0 then
-      Delete(Result, X, 1);
-  until X = 0;
+    repeat
+      X := Pos('//', Result);
+      if X > 0 then
+        Delete(Result, X, 1);
+    until X = 0;
 
-  ParentDirs.Free;
-  //WriteLn('res = ', Result);
+  finally
+    ParentDirs.Free;
+    //WriteLn('res = ', Result);
+  end;
 end;
 
 function TIpChmDataProvider.GetDirsParents(ADir: String): TStringList;
