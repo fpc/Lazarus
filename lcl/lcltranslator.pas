@@ -149,7 +149,7 @@ var
       if FileExistsUTF8(Result) then
         exit;
       {$ENDIF}
-      //Let us search for reducted files
+      //Let us search for short id files
       LangShortID := copy(LangID, 1, 2);
       Defaultlang := LangShortID;
 
@@ -325,6 +325,7 @@ var
   TmpStr: string;
   APersistentProp: TPersistent;
   StoreStackPath: string;
+  AComponent, SubComponent: TComponent;
 begin
   APropCount := GetPropList(AnInstance.ClassInfo, APropList);
   try
@@ -367,10 +368,12 @@ begin
                 begin
                   if APersistentProp is TComponent then
                   begin
-                    if (csSubComponent in TComponent(APersistentProp).ComponentStyle) then
+                    AComponent:=TComponent(APersistentProp);
+                    if AComponent.Name='' then continue;
+                    if (csSubComponent in AComponent.ComponentStyle) then
                     begin
                       StoreStackPath:=FStackPath;
-                      FStackPath:=FStackPath+'.'+TComponent(APersistentProp).Name;
+                      FStackPath:=FStackPath+'.'+AComponent.Name;
                       IntUpdateTranslation(APersistentProp);
                       FStackPath:=StoreStackPath;
                     end
@@ -392,15 +395,20 @@ begin
   end;
 
   if (AnInstance is TComponent) then
-    for i := 0 to TComponent(AnInstance).ComponentCount-1 do
-      begin
+  begin
+    AComponent:=TComponent(AnInstance);
+    for i := 0 to AComponent.ComponentCount-1 do
+    begin
+      SubComponent:=AComponent.Components[i];
+      if SubComponent.Name='' then continue;
       StoreStackPath:=FStackPath;
-      if TComponent(AnInstance).Components[i] is TCustomFrame then
-        UpdateTranslation(TComponent(AnInstance).Components[i]);
-      FStackPath:=StoreStackPath+'.'+TComponent(AnInstance).Components[i].Name;
-      IntUpdateTranslation(TComponent(AnInstance).Components[i]);
+      if SubComponent is TCustomFrame then
+        UpdateTranslation(SubComponent);
+      FStackPath:=StoreStackPath+'.'+SubComponent.Name;
+      IntUpdateTranslation(SubComponent);
       FStackPath:=StoreStackPath;
-      end;
+    end;
+  end;
 end;
 
 procedure TUpdateTranslator.UpdateTranslation(AnInstance: TPersistent);
