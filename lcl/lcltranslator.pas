@@ -38,8 +38,11 @@ uses
   // RTL + FCL
   Classes, SysUtils, typinfo, GetText,
   // LCL
-  LResources, Forms,
+  LResources, Forms, LCLType,
   // LazUtils
+  {$IFDEF VerbosePOTranslator}
+  LazLoggerBase,
+  {$ENDIF}
   Translations, LazFileUtils, LazUTF8;
 
 type
@@ -334,48 +337,54 @@ begin
         case APropInfo^.PropType^.Kind of
           tkSString,
           tkLString,
-          tkAString:  begin
-                      TmpStr := '';
-                      LRSTranslator.TranslateStringProperty(self,aninstance,APropInfo,TmpStr);
-                      if TmpStr <>'' then
-                        SetStrProp(AnInstance, APropInfo, TmpStr);
-                      end;
-          tkclass:    begin
-                      APersistentProp := TPersistent(GetObjectProp(AnInstance, APropInfo, TPersistent));
-                      if Assigned(APersistentProp) then
-                        begin
-                        if APersistentProp is TCollection then
-                          begin
-                          for j := 0 to TCollection(APersistentProp).Count-1 do
-                            begin
-                            StoreStackPath:=FStackPath;
-                            FStackPath:=FStackPath+'.'+APropInfo^.Name+'['+inttostr(j)+']';
-                            IntUpdateTranslation(TCollection(APersistentProp).Items[j]);
-                            FStackPath:=StoreStackPath;
-                            end;
-                          end
-                        else
-                          begin
-                          if APersistentProp is TComponent then
-                            begin
-                            if (csSubComponent in TComponent(APersistentProp).ComponentStyle) then
-                              begin
-                              StoreStackPath:=FStackPath;
-                              FStackPath:=FStackPath+'.'+TComponent(APersistentProp).Name;
-                              IntUpdateTranslation(APersistentProp);
-                              FStackPath:=StoreStackPath;
-                              end
-                            end
-                          else
-                            begin
-                            StoreStackPath:=FStackPath;
-                            FStackPath:=FStackPath+'.'+APropInfo^.Name;
-                            IntUpdateTranslation(APersistentProp);
-                            FStackPath:=StoreStackPath;
-                            end;
-                          end;
-                        end;
-                      end;
+          tkAString:
+            if APropInfo^.PropType=TypeInfo(TTranslateString) then
+            begin
+              TmpStr := '';
+              {$IFDEF VerbosePOTranslator}
+              debugln(['TUpdateTranslator.IntUpdateTranslation ',GetStrProp(AnInstance,APropInfo)]);
+              {$ENDIF}
+              LRSTranslator.TranslateStringProperty(Self,AnInstance,APropInfo,TmpStr);
+              if TmpStr <>'' then
+                SetStrProp(AnInstance, APropInfo, TmpStr);
+            end;
+          tkClass:
+            begin
+              APersistentProp := TPersistent(GetObjectProp(AnInstance, APropInfo, TPersistent));
+              if Assigned(APersistentProp) then
+              begin
+                if APersistentProp is TCollection then
+                begin
+                  for j := 0 to TCollection(APersistentProp).Count-1 do
+                  begin
+                    StoreStackPath:=FStackPath;
+                    FStackPath:=FStackPath+'.'+APropInfo^.Name+'['+IntToStr(j)+']';
+                    IntUpdateTranslation(TCollection(APersistentProp).Items[j]);
+                    FStackPath:=StoreStackPath;
+                  end;
+                end
+                else
+                begin
+                  if APersistentProp is TComponent then
+                  begin
+                    if (csSubComponent in TComponent(APersistentProp).ComponentStyle) then
+                    begin
+                      StoreStackPath:=FStackPath;
+                      FStackPath:=FStackPath+'.'+TComponent(APersistentProp).Name;
+                      IntUpdateTranslation(APersistentProp);
+                      FStackPath:=StoreStackPath;
+                    end
+                  end
+                  else
+                  begin
+                    StoreStackPath:=FStackPath;
+                    FStackPath:=FStackPath+'.'+APropInfo^.Name;
+                    IntUpdateTranslation(APersistentProp);
+                    FStackPath:=StoreStackPath;
+                  end;
+                end;
+              end;
+            end;
           end;
       end;
   finally
@@ -470,6 +479,9 @@ begin
   if Assigned(FPOFile) then
   begin
     s := GetIdentifierPath(Sender, Instance, PropInfo);
+    {$IFDEF VerbosePOTranslator}
+    debugln(['TPOTranslator.TranslateStringProperty Content="',Content,'" s="',s,'" Instance=',Instance.ClassName,' PropInfo.Name=',PropInfo^.Name]);
+    {$ENDIF}
     if s <> '' then
     begin
       s := FPOFile.Translate(s, Content);
@@ -517,7 +529,7 @@ begin
 
   if lcfn='' then
   begin
-    // try now with MO traslation resources
+    // try now with MO translation resources
     try
       lcfn := FindLocaleFileName('.mo', Lang, Dir);
       if lcfn <> '' then
