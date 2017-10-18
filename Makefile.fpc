@@ -76,6 +76,13 @@ help:
 	@$(ECHO) "   examples       build basic examples, requires basecomponents"
 	@$(ECHO) "                  Note: There are more examples having their own directory"
 	@$(ECHO)
+	@$(ECHO) " Flags:"
+	@$(ECHO) "   PP=/path/to/fpc        use another compiler"
+	@$(ECHO) "   USESVN2REVISIONINC=0   do not update ide/revision.inc"
+	@$(ECHO) "   INSTALL_PREFIX=/usr    used by 'install' as path prefix"
+	@$(ECHO) "   FPC_DIR=/usr/share/fpcsrc/3.0.4   used by fpcmake when regenerating Makefiles"
+	@$(ECHO) "   OPT='-vwnbq -gh'       append these options when calling the compiler
+	@$(ECHO)
 	@$(ECHO) " Usage examples:"
 	@$(ECHO)
 	@$(ECHO) " Updating svn and build a minimal IDE, startlazarus and lazbuild:"
