@@ -1,3 +1,22 @@
+{
+ Test with:
+     ./runtests --format=plain --suite=TTestCompReaderWriterPas
+     ./runtests --format=plain --suite=TTestCompReaderWriterPas.TestWriteProperties
+
+ToDo:
+- write root properties
+- write base types
+- write UTF-8 string
+- write unicodestring
+- write variant
+- write datetime
+- write subcomponents
+- write cycle in subcomponents
+- write with ancestor
+- write inline component
+- write collection
+- DefineProperty
+}
 unit TestCompReaderWriterPas;
 
 {$mode objfpc}{$H+}
