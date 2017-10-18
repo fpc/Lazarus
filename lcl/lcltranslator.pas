@@ -284,8 +284,7 @@ var
   Reader: TReader;
 begin
   Result := '';
-  if (PropInfo = nil) or
-     (SysUtils.CompareText(PropInfo^.PropType^.Name, 'TTRANSLATESTRING') <> 0) then
+  if (PropInfo=nil) or (PropInfo^.PropType<>TypeInfo(TTranslateString)) then
     exit;
 
   // do not translate at design time
