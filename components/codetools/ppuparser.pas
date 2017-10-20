@@ -1478,7 +1478,8 @@ type
     cpu_iA64,                     { 7 }
     cpu_x86_64,                   { 8 }
     cpu_mips,                     { 9 }
-    cpu_arm                       { 10 }
+    cpu_arm,                      { 10 }
+    cpu_powerpc64                 { 11 }
   );
 var
   EntryNr: Byte;

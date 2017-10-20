@@ -1575,12 +1575,15 @@ end;
 { =========================================================================== }
 
 function CpuNameToPtrSize(const CpuName: String): Integer;
+var
+  lcCpu: String;
 begin
   //'x86', 'i386', 'i486', 'i586', 'i686',
   //'ia64', 'x86_64', 'powerpc', aarch64
   //'sparc', 'arm'
   Result := 4;
-  if (LowerCase(CpuName) = 'ia64') or (LowerCase(CpuName) = 'x86_64') or (LowerCase(CpuName) = 'aarch64')
+  lcCpu := LowerCase(CpuName);
+  if (lcCpu='ia64') or (lcCpu='x86_64') or (lcCpu='aarch64') or (lcCpu='powerpc64')
   then Result := 8;
 end;
 
@@ -2269,7 +2272,7 @@ begin
 
   case StringCase(TargetInfo^.TargetCPU, [
     'x86', 'i386', 'i486', 'i586', 'i686',
-    'ia64', 'x86_64', 'powerpc',
+    'ia64', 'x86_64', 'powerpc', 'powerpc64',
     'sparc', 'arm', 'aarch64'
   ], True, False) of
     0..4: begin // x86
@@ -2296,7 +2299,7 @@ begin
         TargetInfo^.TargetRegisters[2] := '$rdx';
       end;
     end;
-    7: begin // powerpc
+    7, 8: begin // powerpc,powerpc64
       TargetInfo^.TargetIsBE := True;
       // alltough darwin can start with r2, it seems that all OS start with r3
 //        if UpperCase(FTargetInfo.TargetOS) = 'DARWIN'
@@ -2311,18 +2314,18 @@ begin
         TargetInfo^.TargetRegisters[2] := '$r5';
 //        end;
     end;
-    8: begin // sparc
+    9: begin // sparc
       TargetInfo^.TargetIsBE := True;
       TargetInfo^.TargetRegisters[0] := '$g1';
       TargetInfo^.TargetRegisters[1] := '$o0';
       TargetInfo^.TargetRegisters[2] := '$o1';
     end;
-    9: begin // arm
+    10: begin // arm
       TargetInfo^.TargetRegisters[0] := '$r0';
       TargetInfo^.TargetRegisters[1] := '$r1';
       TargetInfo^.TargetRegisters[2] := '$r2';
     end;
-    10: begin // aarch64
+    11: begin // aarch64
       //TargetInfo^.TargetRegisters[0] := '$r0';
       //TargetInfo^.TargetRegisters[1] := '$r1';
       //TargetInfo^.TargetRegisters[2] := '$r2';

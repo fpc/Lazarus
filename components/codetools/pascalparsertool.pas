@@ -1662,7 +1662,9 @@ begin
   if AtomIsChar('<') then
     ReadGenericParam
   else if UpAtomIs('LOCATION')
-  and (Scanner.Values.IsDefined('CPUM68K') or Scanner.Values.IsDefined('CPUPOWERPC'))
+  and ( Scanner.Values.IsDefined('CPUM68K')
+     or Scanner.Values.IsDefined('CPUPOWERPC')
+     or Scanner.Values.IsDefined('CPUPOWERPC64') )
   then begin
     // for example Domain: LongInt location 'd0'
     ReadNextAtom;

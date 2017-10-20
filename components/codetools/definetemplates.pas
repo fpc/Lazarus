@@ -184,7 +184,7 @@ const
   FPCOperatingSystemAlternative2Names: array[1..2] of shortstring =(
       'bsd', 'linux' // see GetDefaultSrcOS2ForTargetOS
     );
-  FPCProcessorNames: array[1..12] of shortstring =(
+  FPCProcessorNames: array[1..13] of shortstring =(
       'aarch64',
       'arm',
       'avr',
@@ -195,6 +195,7 @@ const
       'mips',
       'mipsel',
       'powerpc',
+      'powerpc64',
       'sparc',
       'x86_64'
     );
@@ -202,7 +203,7 @@ const
     'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas', 'ISO'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..81] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..91] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
@@ -253,6 +254,16 @@ const
     'powerpc-linux-nogui',
     'powerpc-morphos-mui',
     'powerpc-morphos-nogui',
+    'powerpc64-darwin-gtk',
+    'powerpc64-darwin-gtk2',
+    'powerpc64-darwin-cocoa',
+    'powerpc64-darwin-nogui',
+    'powerpc64-linux-gtk',
+    'powerpc64-linux-gtk2',
+    'powerpc64-linux-nogui',
+    'powerpc64-aix-gtk',
+    'powerpc64-aix-gtk2',
+    'powerpc64-aix-nogui',
     'sparc-linux-gtk',
     'sparc-linux-gtk2',
     'sparc-linux-nogui',
@@ -3550,6 +3561,18 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
     aList.Add('970');
   end;
 
+  procedure PowerPC64;
+  begin
+    //aList.Add('power4');
+    aList.Add('970');
+    //aList.Add('power5');
+    //aList.Add('power5+');
+    //aList.Add('power6');
+    //aList.Add('power6x');
+    //aList.Add('power7');
+    //aList.Add('power8');
+  end;
+
   procedure Sparc;
   begin
     aList.Add('SPARC V7');
@@ -3601,12 +3624,13 @@ begin
     'avr'    : AVR;
     'i386'   : Intel_i386;
     'm68k'   : M68k;
-    'powerpc': PowerPC;
+    'powerpc'  : PowerPC;
+    'powerpc64': PowerPC64;
     'sparc'  : Sparc;
     'x86_64' : Intel_x86_64;
     'mipsel','mips' : Mips;
     'jvm'    : ;
-    'aarch64': ;
+    'aarch64'  : ;
   end;
 end;
 

@@ -1096,6 +1096,7 @@ begin
       Add('i386');
       Add('m68k');
       Add('powerpc');
+      Add('powerpc64');
       Add('sparc');
       Add('x86_64');
     end;
