@@ -38,6 +38,7 @@ type
   public
     //property Sorted: boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
+    property QueueCursorMovePos: Integer read FQueueCursorMove;
     property QueueSelLength: Integer read FQueueSelLength;
   end;
 {$ELSE}

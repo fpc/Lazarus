@@ -328,6 +328,7 @@ end;
 class function TGtk2WSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
 var
+  MemoStrings: TGtk2MemoStrings;
   TextView: PGtkTextView;
   TextBuffer: PGtkTextBuffer;
   TextMark: PGtkTextMark;
@@ -337,6 +338,11 @@ var
 begin
   Result := 0;
   if not WSCheckHandleAllocated(ACustomEdit, 'GetSelStart') then
+    Exit;
+
+  MemoStrings := TCustomMemo(ACustomEdit).Lines as TGtk2MemoStrings;
+  Result := MemoStrings.QueueCursorMovePos;
+  if Result > 0 then
     Exit;
 
   TextView := PGtkTextView(GetWidgetInfo({%H-}Pointer(ACustomEdit.Handle), False)^.CoreWidget);
