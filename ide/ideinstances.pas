@@ -39,7 +39,7 @@ interface
 uses
   sysutils, Interfaces, Classes, Controls, Forms, Dialogs, ExtCtrls,
   LCLProc, LCLIntf, LCLType, LazFileUtils, LazUTF8, laz2_XMLRead, laz2_XMLWrite,
-  Laz2_DOM, LazarusIDEStrConsts, IDECmdLine,
+  Laz2_DOM, LazarusIDEStrConsts, IDECmdLine, crc,
   {$IF (FPC_FULLVERSION >= 30101)}
   AdvancedIPC
   {$ELSE}
@@ -149,7 +149,6 @@ function LazIDEInstances: TIDEInstances;
 implementation
 
 const
-  SERVERPREFIX_MAIN = 'LazarusMain';
   SERVERNAME_COLLECT = 'LazarusCollect';
   MESSAGETYPE_XML = 2;
   ELEMENT_ROOT = 'ideinstances';
@@ -171,11 +170,27 @@ const
   TIMEOUT_GETOPENEDPROJECT = 100;
 var
   FLazIDEInstances: TIDEInstances;
+  FServerPrefix: string;
 
 function LazIDEInstances: TIDEInstances;
 begin
   Result := FLazIDEInstances;
 end;
+
+function LazServerPrefix: string;
+// allow for multiple users on lazarus host system - encode to prevent illegal chars
+begin
+  if FServerPrefix = '' then
+  begin
+    // Calculate the user specific instance prefix only once.
+    FServerPrefix := GetEnvironmentVariable('USER');    // current user
+    // encode to cover illegal chars ('-' etc)
+    FServerPrefix := IntToStr( crc32(0, pbyte(FServerPrefix), Length(FServerPrefix)) )
+                     + '_LazarusMain';
+  end;
+  Result := FServerPrefix;
+end;
+
 
 { TIDEInstances }
 
@@ -208,7 +223,7 @@ begin
     xServerIDs := TStringList.Create;
     xOpenedProjectFiles := TStringList.Create;
 
-    xStartClient.FindRunningServers(SERVERPREFIX_MAIN, xServerIDs);
+    xStartClient.FindRunningServers(LazServerPrefix, xServerIDs);
 
     for I := 0 to xServerIDs.Count-1 do
     begin
@@ -252,7 +267,7 @@ begin
   Assert(FMainServer = nil);
 
   FMainServer := TMainServer.Create(Self);
-  FMainServer.StartUnique(SERVERPREFIX_MAIN);
+  FMainServer.StartUnique(LazServerPrefix);
 end;
 
 procedure TIDEInstances.StopListening;
@@ -379,8 +394,8 @@ begin
   Result := ofrStartNewInstance;
   xStartClient := TResponseClient.Create(nil);
   xServerIDs := TStringList.Create;
-  try
-    xStartClient.FindRunningServers(SERVERPREFIX_MAIN, xServerIDs);//check for multiple instances
+  try                                      //check for multiple instances
+    xStartClient.FindRunningServers(LazServerPrefix, xServerIDs);
     xServerIDs.Sort;
 
     for I := xServerIDs.Count-1 downto 0 do//last started is first to choose
