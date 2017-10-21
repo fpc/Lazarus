@@ -601,20 +601,16 @@ begin
   if AUnitinfo.SrcClassName<>'' then
     ProcDef := AUnitinfo.SrcClassName+'.';
   ProcDef := ProcDef+AUnitinfo.FunctionName;
-  debugln(['TDebugManager.FindFullFilenameSrc Code="',Code.Filename,'" ProcDef="',ProcDef,'"']);
   // search proc in unit
   if not CodeToolBoss.FindProcDeclaration(Code,ProcDef,CurCodeTool,CurCodeNode,
     [phpWithoutParamList,phpWithoutBrackets,phpWithoutClassKeyword,phpWithoutSemicolon])
-  then begin
-    debugln(['TDebugManager.FindFullFilenameSrc not found: Code="',Code.Filename,'" ProcDef="',ProcDef,'"']);
+  then
     exit;
-  end;
   // get file, line, column
   if CurCodeNode.Desc=ctnProcedure then
     CurCodeNode := CurCodeNode.FirstChild; // jump to Name instead of keyword 'procedure'
   if not CurCodeTool.CleanPosToCaret(CurCodeNode.StartPos,CodePos) then
     exit;
-  debugln(['TDebugManager.FindFullFilenameSrc found ',CodePos.Code.Filename,' Line=',CodePos.Y,' Col=',CodePos.X]);
   AUnitinfo.LocationFullFile := CodePos.Code.Filename;
   AUnitinfo.SrcLine := CodePos.Y;
   //DumpStack;
@@ -627,22 +623,14 @@ function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
   function ResolveFromDbg: Boolean;
   begin
     Filename := AUnitinfo.FileName;
-    if Filename<>'' then
-      DebugLn('TDebugManager.GetFullFilename->ResolveFromDbg: Trying with Filename=', Filename);
     Result := (Filename<>'') and GetFullFilename(Filename, False) and FileExistsUTF8(Filename);
+    if Result then Exit;
+    Filename := AUnitinfo.DbgFullName;
+    if Filename='' then
+      Exit(False);
+    Result := FileExistsUTF8(Filename);
     if not Result then
-    begin
-      Filename := AUnitinfo.DbgFullName;
-      if Filename='' then
-        Exit(False);
-      DebugLn('TDebugManager.GetFullFilename->ResolveFromDbg: Trying with DbgFullName=', Filename);
-      Result := FileExistsUTF8(Filename);
-      if not Result then
-      begin
-        DebugLn('TDebugManager.GetFullFilename->ResolveFromDbg: DbgFullName=', Filename, ' does not exist.');
-        Result := GetFullFilename(Filename, AskUserIfNotFound);
-      end;
-    end;
+      Result := GetFullFilename(Filename, AskUserIfNotFound);
   end;
 
 begin
