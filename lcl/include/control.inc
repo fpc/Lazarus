@@ -4665,7 +4665,8 @@ begin
       if OldHostDockSite<>nil then OldHostDockSite.DoRemoveDockClient(Self);
     end;
   finally
-    if (FHostDockSite<>NewDockSite) and (NewDockSite.FDockClients<>nil) then
+    if (FHostDockSite<>NewDockSite)
+    and (NewDockSite<>nil) and (NewDockSite.FDockClients<>nil) then
       NewDockSite.FDockClients.Remove(Self);
     Exclude(FControlState, csDocking);
   end;
