@@ -34,6 +34,8 @@ uses
   Classes, SysUtils, typinfo, RtlConsts, LazLoggerBase, fpcunit,
   testregistry, CodeToolManager, LinkScanner, TestStdCodetools;
 
+const
+  CWPDefaultSignature = '// Pascal writer V1.0';
 type
   TDummyComp = class(TComponent); // to access TComponent protected members
   TCWPFindAncestorEvent = procedure(Sender: TObject; Component: TComponent;
@@ -77,6 +79,7 @@ type
     procedure WriteProperty(Instance: TPersistent; PropInfo: PPropInfo);
     procedure WriteProperties(Instance: TComponent);
     function GetStringLiteral(const s: string): string;
+    function GetFloatLiteral(const e: Extended): string;
   public
     constructor Create(AStream: TStream);
     destructor Destroy; override;
@@ -108,6 +111,16 @@ type
     property Signature: String read FSignature write FSignature;
   end;
 
+// Tests =======================================================================
+const
+  MinSafeIntCurrency = -922337203685477;
+  MaxSafeIntCurrency =  922337203685477;
+  MinSafeIntSingle = -16777216;
+  MaxSafeIntSingle =  16777216;
+  MaskUIntSingle = $3fffff;
+  MinSafeIntDouble = -$10000000000000;
+  MaxSafeIntDouble =   $fffffffffffff;
+  MaskUIntDouble = $fffffffffffff;
 type
   TEnum = (red, green, blue, white, black);
   TEnumRg = green..white;
@@ -155,7 +168,6 @@ type
   published
     constructor Create(AOwner: TComponent); override;
     property ABoolean: Boolean read FABoolean write FABoolean default false;
-  public
     property AByteBool: ByteBool read FAByteBool write FAByteBool default false;
     property AWordBool: WordBool read FAWordBool write FAWordBool default false;
     property ALongBool: LongBool read FALongBool write FALongBool default false;
@@ -183,11 +195,129 @@ type
     property SetOfEnumRg: TSetOfEnumRg read FSetOfEnumRg write FSetOfEnumRg default [];
   end;
 
+  { TCompBaseTypesCustomStored }
+
+  TCompBaseTypesCustomStored = class(TComponent)
+  private
+    FABoolean: Boolean;
+    FAByte: Byte;
+    FAByteBool: ByteBool;
+    FAChar: Char;
+    FACurrency: Currency;
+    FADouble: Double;
+    FAExtended: Extended;
+    FAInt64: Int64;
+    FALongBool: LongBool;
+    FALongInt: LongInt;
+    FALongWord: LongWord;
+    FAQWord: QWord;
+    FAShortInt: ShortInt;
+    FAShortString: ShortString;
+    FASingle: Single;
+    FASmallInt: SmallInt;
+    FAString: String;
+    FAUnicodeString: UnicodeString;
+    FAWideChar: WideChar;
+    FAWideString: WideString;
+    FAWord: Word;
+    FAWordBool: WordBool;
+    FEnum: TEnum;
+    FEnumRg: TEnumRg;
+    FSetOfEnum: TSetOfEnum;
+    FSetOfEnumRg: TSetOfEnumRg;
+    function ABooleanIsStored: Boolean;
+    function AByteBoolIsStored: Boolean;
+    function AByteIsStored: Boolean;
+    function ACharIsStored: Boolean;
+    function ACurrencyIsStored: Boolean;
+    function ADoubleIsStored: Boolean;
+    function AExtendedIsStored: Boolean;
+    function AInt64IsStored: Boolean;
+    function ALongBoolIsStored: Boolean;
+    function ALongIntIsStored: Boolean;
+    function ALongWordIsStored: Boolean;
+    function AQWordIsStored: Boolean;
+    function AShortIntIsStored: Boolean;
+    function AShortStringIsStored: Boolean;
+    function ASingleIsStored: Boolean;
+    function ASmallIntIsStored: Boolean;
+    function AStringIsStored: Boolean;
+    function AUnicodeStringIsStored: Boolean;
+    function AWideCharIsStored: Boolean;
+    function AWideStringIsStored: Boolean;
+    function AWordBoolIsStored: Boolean;
+    function AWordIsStored: Boolean;
+    function EnumIsStored: Boolean;
+    function EnumRgIsStored: Boolean;
+    function SetOfEnumIsStored: Boolean;
+    function SetOfEnumRgIsStored: Boolean;
+  public
+    DefABoolean: Boolean;
+    DefAByteBool: ByteBool;
+    DefAWordBool: WordBool;
+    DefALongBool: LongBool;
+    DefAByte: Byte;
+    DefAShortInt: ShortInt;
+    DefAWord: Word;
+    DefASmallInt: SmallInt;
+    DefALongWord: LongWord;
+    DefALongInt: LongInt;
+    DefAQWord: QWord;
+    DefAInt64: Int64;
+    DefACurrency: Currency;
+    DefASingle: Single;
+    DefADouble: Double;
+    DefAExtended: Extended;
+    DefAChar: Char;
+    DefAWideChar: WideChar;
+    DefAString: String;
+    DefAShortString: ShortString;
+    DefAWideString: WideString;
+    DefAUnicodeString: UnicodeString;
+    DefEnum: TEnum;
+    DefEnumRg: TEnumRg;
+    DefSetOfEnum: TSetOfEnum;
+    DefSetOfEnumRg: TSetOfEnumRg;
+  published
+    constructor Create(AOwner: TComponent); override;
+    property ABoolean: Boolean read FABoolean write FABoolean stored ABooleanIsStored;
+    property AByteBool: ByteBool read FAByteBool write FAByteBool stored AByteBoolIsStored;
+    property AWordBool: WordBool read FAWordBool write FAWordBool stored AWordBoolIsStored;
+    property ALongBool: LongBool read FALongBool write FALongBool stored ALongBoolIsStored;
+    property AByte: Byte read FAByte write FAByte stored AByteIsStored;
+    property AShortInt: ShortInt read FAShortInt write FAShortInt stored AShortIntIsStored;
+    property AWord: Word read FAWord write FAWord stored AWordIsStored;
+    property ASmallInt: SmallInt read FASmallInt write FASmallInt stored ASmallIntIsStored;
+    property ALongWord: LongWord read FALongWord write FALongWord stored ALongWordIsStored;
+    property ALongInt: LongInt read FALongInt write FALongInt stored ALongIntIsStored;
+    property AQWord: QWord read FAQWord write FAQWord stored AQWordIsStored;
+    property AInt64: Int64 read FAInt64 write FAInt64 stored AInt64IsStored;
+    property ACurrency: Currency read FACurrency write FACurrency stored ACurrencyIsStored;
+    property ASingle: Single read FASingle write FASingle stored ASingleIsStored;
+    property ADouble: Double read FADouble write FADouble stored ADoubleIsStored;
+    property AExtended: Extended read FAExtended write FAExtended stored AExtendedIsStored;
+    property AChar: Char read FAChar write FAChar stored ACharIsStored;
+    property AWideChar: WideChar read FAWideChar write FAWideChar stored AWideCharIsStored;
+    property AString: String read FAString write FAString stored AStringIsStored;
+    property AShortString: ShortString read FAShortString write FAShortString stored AShortStringIsStored;
+    property AWideString: WideString read FAWideString write FAWideString stored AWideStringIsStored;
+    property AUnicodeString: UnicodeString read FAUnicodeString write FAUnicodeString stored AUnicodeStringIsStored;
+    property Enum: TEnum read FEnum write FEnum stored EnumIsStored;
+    property EnumRg: TEnumRg read FEnumRg write FEnumRg stored EnumRgIsStored;
+    property SetOfEnum: TSetOfEnum read FSetOfEnum write FSetOfEnum stored SetOfEnumIsStored;
+    property SetOfEnumRg: TSetOfEnumRg read FSetOfEnumRg write FSetOfEnumRg stored SetOfEnumRgIsStored;
+  end;
+
   { TTestCompReaderWriterPas }
 
   TTestCompReaderWriterPas = class(TCustomTestCTStdCodetools)
+  protected
+    function WriteDescendant(Component: TComponent; Ancestor: TComponent = nil): string;
+    procedure TestWriteDescendant(Msg: string; Component: TComponent;
+      Ancestor: TComponent; const Expected: array of string);
   published
-    procedure TestWriteProperties;
+    procedure TestBaseTypesSkipDefaultValue;
+    procedure TestBaseTypesMinValues;
   end;
 
 implementation
@@ -201,6 +331,143 @@ Type
     FComponent: TComponent;
     constructor Create(APos: Integer; AComponent: TComponent);
   end;
+
+{ TCompBaseTypesCustomStored }
+
+function TCompBaseTypesCustomStored.ABooleanIsStored: Boolean;
+begin
+  Result:=FABoolean<>DefABoolean;
+end;
+
+function TCompBaseTypesCustomStored.AByteBoolIsStored: Boolean;
+begin
+  Result:=FAByteBool<>DefAByteBool;
+end;
+
+function TCompBaseTypesCustomStored.AByteIsStored: Boolean;
+begin
+  Result:=FAByte<>DefAByte;
+end;
+
+function TCompBaseTypesCustomStored.ACharIsStored: Boolean;
+begin
+  Result:=FAChar<>DefAChar;
+end;
+
+function TCompBaseTypesCustomStored.ACurrencyIsStored: Boolean;
+begin
+  Result:=FACurrency<>DefACurrency;
+end;
+
+function TCompBaseTypesCustomStored.ADoubleIsStored: Boolean;
+begin
+  Result:=FADouble<>DefADouble;
+end;
+
+function TCompBaseTypesCustomStored.AExtendedIsStored: Boolean;
+begin
+  Result:=FAExtended<>DefAExtended;
+end;
+
+function TCompBaseTypesCustomStored.AInt64IsStored: Boolean;
+begin
+  Result:=FAInt64<>DefAInt64;
+end;
+
+function TCompBaseTypesCustomStored.ALongBoolIsStored: Boolean;
+begin
+  Result:=FALongBool<>DefALongBool;
+end;
+
+function TCompBaseTypesCustomStored.ALongIntIsStored: Boolean;
+begin
+  Result:=FALongInt<>DefALongInt;
+end;
+
+function TCompBaseTypesCustomStored.ALongWordIsStored: Boolean;
+begin
+  Result:=FALongWord<>DefALongWord;
+end;
+
+function TCompBaseTypesCustomStored.AQWordIsStored: Boolean;
+begin
+  Result:=FAWord<>DefAWord;
+end;
+
+function TCompBaseTypesCustomStored.AShortIntIsStored: Boolean;
+begin
+  Result:=FAShortInt<>DefAShortInt;
+end;
+
+function TCompBaseTypesCustomStored.AShortStringIsStored: Boolean;
+begin
+  Result:=FAShortString<>DefAShortString;
+end;
+
+function TCompBaseTypesCustomStored.ASingleIsStored: Boolean;
+begin
+  Result:=FASingle<>DefASingle;
+end;
+
+function TCompBaseTypesCustomStored.ASmallIntIsStored: Boolean;
+begin
+  Result:=FASmallInt<>DefASmallInt;
+end;
+
+function TCompBaseTypesCustomStored.AStringIsStored: Boolean;
+begin
+  Result:=FAString<>DefAString;
+end;
+
+function TCompBaseTypesCustomStored.AUnicodeStringIsStored: Boolean;
+begin
+  Result:=FAUnicodeString<>DefAUnicodeString;
+end;
+
+function TCompBaseTypesCustomStored.AWideCharIsStored: Boolean;
+begin
+  Result:=FAWideChar<>DefAWideChar;
+end;
+
+function TCompBaseTypesCustomStored.AWideStringIsStored: Boolean;
+begin
+  Result:=FAWideString<>DefAWideString;
+end;
+
+function TCompBaseTypesCustomStored.AWordBoolIsStored: Boolean;
+begin
+  Result:=FAWordBool<>DefAWordBool;
+end;
+
+function TCompBaseTypesCustomStored.AWordIsStored: Boolean;
+begin
+  Result:=FAWord<>DefAWord;
+end;
+
+function TCompBaseTypesCustomStored.EnumIsStored: Boolean;
+begin
+  Result:=FEnum<>DefEnum;
+end;
+
+function TCompBaseTypesCustomStored.EnumRgIsStored: Boolean;
+begin
+  Result:=FEnumRg<>DefEnumRg;
+end;
+
+function TCompBaseTypesCustomStored.SetOfEnumIsStored: Boolean;
+begin
+  Result:=FSetOfEnum<>DefSetOfEnum;
+end;
+
+function TCompBaseTypesCustomStored.SetOfEnumRgIsStored: Boolean;
+begin
+  Result:=FSetOfEnumRg<>DefSetOfEnumRg;
+end;
+
+constructor TCompBaseTypesCustomStored.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
 
 { TPosComponent }
 
@@ -306,6 +573,7 @@ begin
   // do not stream properties without getter
   if not Assigned(PropInfo^.GetProc) then
     exit;
+
   // properties without setter are only allowed, if they are subcomponents
   PropType := PropInfo^.PropType;
   if not Assigned(PropInfo^.SetProc) then begin
@@ -320,9 +588,9 @@ begin
   { Check if the ancestor can be used }
   HasAncestor := Assigned(Ancestor) and ((Instance = Root) or
     (Instance.ClassType = Ancestor.ClassType));
-  System.writeln('TWriter.WriteProperty Name=',PropType^.Name,' Kind=',GetEnumName(TypeInfo(TTypeKind),ord(PropType^.Kind)),' HasAncestor=',HasAncestor);
-
   PropName:=FPropPath + PropInfo^.Name;
+  System.writeln('TWriter.WriteProperty PropName="',PropName,'" TypeName=',PropType^.Name,' Kind=',GetEnumName(TypeInfo(TTypeKind),ord(PropType^.Kind)),' HasAncestor=',HasAncestor);
+
   case PropType^.Kind of
     tkInteger, tkChar, tkEnumeration, tkSet, tkWChar:
       begin
@@ -406,11 +674,7 @@ begin
           DefFloatValue:=PSingle(@PropInfo^.Default)^;
           end;
         if (FloatValue<>DefFloatValue) or (DefValue=longint($80000000)) then
-        begin
-          s:='';
-          str(FloatValue,s);
-          WriteAssign(PropName,s);
-        end;
+          WriteAssign(PropName,GetFloatLiteral(FloatValue));
       end;
     tkMethod:
       begin
@@ -607,13 +871,39 @@ begin
     Result:=Result+'''';
 end;
 
+function TCompWriterPas.GetFloatLiteral(const e: Extended): string;
+var
+  s: String;
+  p, i: SizeInt;
+begin
+  s:='';
+  str(e,s);
+  // remove unneeded leading 0 of exponent
+  p:=Pos('E',s);
+  if p<1 then exit;
+  i:=p;
+  if s[i+1]='+' then inc(i);
+  while (i<length(s)) and (s[i+1]='0') do
+    inc(i);
+  if i>p then
+    Delete(s,p+1,i-p);
+  // remove trailing 0 of base
+  i:=p;
+  while (i>2) and (s[i-1]='0') do
+    dec(i);
+  if s[i-1] in ['+','-'] then inc(i);
+  if i<p then
+    Delete(s,i,p-i);
+  Result:=s;
+end;
+
 constructor TCompWriterPas.Create(AStream: TStream);
 begin
   FIndentStep:=2;
   FStream:=AStream;
   FLineEnding:=system.LineEnding;
   FAssignOp:=':=';
-  FSignature:='// Pascal writer V1.0';
+  FSignature:=CWPDefaultSignature;
 end;
 
 destructor TCompWriterPas.Destroy;
@@ -745,27 +1035,114 @@ end;
 
 { TTestCompReaderWriterPas }
 
-procedure TTestCompReaderWriterPas.TestWriteProperties;
+function TTestCompReaderWriterPas.WriteDescendant(Component: TComponent;
+  Ancestor: TComponent): string;
 var
-  AComponent: TCompBaseTypes;
   aStream: TMemoryStream;
-  Actual: string;
   Writer: TCompWriterPas;
 begin
   Writer:=nil;
-  AComponent:=TCompBaseTypes.Create(nil);
   aStream:=TMemoryStream.Create;
   try
-    AComponent.Name:=AComponent.ClassName+'1';
-    AComponent.ABoolean:=true;
     Writer:=TCompWriterPas.Create(aStream);
-    Writer.WriteDescendant(AComponent,nil);
+    Writer.WriteDescendant(Component,Ancestor);
     aStream.Position:=0;
-    SetLength(Actual,aStream.size);
-    aStream.Read(Actual[1],length(Actual));
-    writeln('TTestCompReaderWriterPas.TestWriteProperties "',Actual,'"');
+    SetLength(Result,aStream.size);
+    if Result<>'' then
+      aStream.Read(Result[1],length(Result));
+    {$IFDEF VerboseCompWriterPas}
+    writeln('TTestCompReaderWriterPas.WriteDescendant "',Result,'"');
+    {$ENDIF}
   finally
+    Writer.Free;
     aStream.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestWriteDescendant(Msg: string;
+  Component: TComponent; Ancestor: TComponent; const Expected: array of string);
+var
+  Actual, ExpS, s: String;
+begin
+  Actual:=WriteDescendant(Component,Ancestor);
+  ExpS:=CWPDefaultSignature+LineEnding
+    +'Name:='''+Component.Name+''';'+LineEnding;
+  for s in Expected do
+    ExpS:=ExpS+s+LineEnding;
+  CheckDiff(Msg,ExpS,Actual);
+end;
+
+procedure TTestCompReaderWriterPas.TestBaseTypesSkipDefaultValue;
+var
+  AComponent: TCompBaseTypes;
+begin
+  AComponent:=TCompBaseTypes.Create(nil);
+  try
+    AComponent.Name:=AComponent.ClassName+'1';
+    TestWriteDescendant('TestBaseTypesSkipDefaultValue',AComponent,nil,[
+    ]);
+  finally
+    AComponent.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestBaseTypesMinValues;
+var
+  AComponent: TCompBaseTypesCustomStored;
+begin
+  AComponent:=TCompBaseTypesCustomStored.Create(nil);
+  try
+    with AComponent do begin
+    Name:=AComponent.ClassName+'1';
+    ABoolean:=low(boolean);
+    DefABoolean:=not ABoolean;
+    AByteBool:=boolean(low(byte));
+    DefAByteBool:=not AByteBool;
+    AWordBool:=boolean(low(word));
+    DefAWordBool:=not AWordBool;
+    ALongBool:=boolean(low(longword));
+    DefALongBool:=not ALongBool;
+    AByte:=low(byte);
+    DefAByte:=AByte+1;
+    AShortInt:=low(ShortInt);
+    DefAShortInt:=AShortInt+1;
+    AWord:=low(word);
+    DefAWord:=AWord+1;
+    ASmallInt:=low(SmallInt);
+    DefASmallInt:=ASmallInt+1;
+    ALongWord:=low(LongWord);
+    DefALongWord:=ALongWord+1;
+    ALongInt:=low(LongInt);
+    DefALongInt:=ALongInt+1;
+    AQWord:=low(qword);
+    DefAQWord:=AQWord+1;
+    AInt64:=low(Int64);
+    DefAInt64:=AInt64+1;
+    ACurrency:=MinSafeIntCurrency;
+    DefACurrency:=ACurrency+1;
+    ASingle:=MinSafeIntSingle;
+    DefASingle:=ASingle+1;
+    ADouble:=MinSafeIntDouble;
+    DefADouble:=ADouble+1;
+    // ToDo: extended
+    end;
+    TestWriteDescendant('TestBaseTypesSkipDefaultValue',AComponent,nil,[
+    'ABoolean:=False;',
+    'AByteBool:=False;',
+    'AWordBool:=False;',
+    'ALongBool:=False;',
+    'AByte:=0;',
+    'AShortInt:=-128;',
+    'AWord:=0;',
+    'ASmallInt:=-32768;',
+    'ALongWord:=0;',
+    'ALongInt:=-2147483648;',
+    'AInt64:=-9223372036854775808;',
+    'ACurrency:=-9.22337203685477E14;',
+    'ASingle:=-1.6777216E7;',
+    'ADouble:=-4.503599627370496E15;',
+    '']);
+  finally
     AComponent.Free;
   end;
 end;
