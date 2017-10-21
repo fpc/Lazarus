@@ -4731,7 +4731,7 @@ procedure TAnchorDockHostSite.DoDock(NewDockSite: TWinControl; var ARect: TRect)
 begin
   inherited DoDock(NewDockSite, ARect);
   if DockMaster <> nil then
-    DockMaster.SimplifyPendingLayouts;
+    DockMaster.QueueSimplify:=True; // Async call to SimplifyPendingLayouts;
 end;
 
 procedure TAnchorDockHostSite.SetParent(NewParent: TWinControl);
