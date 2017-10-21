@@ -238,7 +238,7 @@ begin
 
   // issue #23940. Hide panel if we are not visible, but before setting callbacks.
   // so it won't trigger unnecessary events to LCL.
-  if not AWinControl.Visible and not (csDesigning in AWinControl.ComponentState) then
+  if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
     gtk_widget_hide(Frame);
 
   SetCallbacks(Frame, WidgetInfo);
