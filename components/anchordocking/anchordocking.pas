@@ -3148,7 +3148,7 @@ begin
     RaiseGDBException('');
   dec(fUpdateCount);
   if fUpdateCount=0 then
-    SimplifyPendingLayouts;
+    QueueSimplify:=True;
 end;
 
 procedure TAnchorDockMaster.NeedSimplify(AControl: TControl);
@@ -3433,7 +3433,7 @@ begin
   try
     BeginUpdateLayout;
     try
-      DockMaster.SimplifyPendingLayouts;
+      DockMaster.QueueSimplify:=True;
       NewControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.ExecuteDock NewControl'){$ENDIF};
 
       if (NewControl.Parent=Self) and (SiteType=adhstLayout) then begin
@@ -4428,7 +4428,7 @@ procedure TAnchorDockHostSite.DoDock(NewDockSite: TWinControl; var ARect: TRect)
 begin
   inherited DoDock(NewDockSite, ARect);
   if DockMaster <> nil then
-    DockMaster.SimplifyPendingLayouts;
+    DockMaster.QueueSimplify:=True; // Async call to SimplifyPendingLayouts;
 end;
 
 procedure TAnchorDockHostSite.SetParent(NewParent: TWinControl);
@@ -6345,7 +6345,7 @@ begin
   if Site=nil then exit;
   DockMaster.RestoreLayouts.Add(DockMaster.CreateRestoreLayout(Site),true);
   Site.CloseSite;
-  DockMaster.SimplifyPendingLayouts;
+  DockMaster.QueueSimplify:=True;
 end;
 
 procedure TAnchorDockPageControl.MoveLeftButtonClick(Sender: TObject);
