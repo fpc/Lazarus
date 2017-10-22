@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2017-02-06 11:11+0100\n"
-"PO-Revision-Date: 2017-09-22 10:41+0200\n"
+"PO-Revision-Date: 2017-10-20 16:35+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -808,14 +808,13 @@ msgid "Install packages"
 msgstr "Installer les paquets"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
 msgid "Open"
 msgstr "Ouvrir"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
 msgid "Open local repository"
-msgstr ""
+msgstr "Ouvrir le répertoire local"
 
 #: opkman_const.rsmainfrm_tboptions_caption
 msgctxt "opkman_const.rsmainfrm_tboptions_caption"
@@ -1320,11 +1319,11 @@ msgstr "Vérifier les mises à jour des paquets"
 
 #: opkman_const.rsoptions_lbcontimeout_caption
 msgid "Connection timeout (seconds):"
-msgstr ""
+msgstr "Temps de connexion dépassé (en secondes) :"
 
 #: opkman_const.rsoptions_lbcontimeout_hint
 msgid "The number of seconds after which package manager drops connection"
-msgstr ""
+msgstr "Le nombre de secondes après lequel le gestionnaire de paquets abandonne la connexion"
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"

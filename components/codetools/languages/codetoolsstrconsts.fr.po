@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-24 09:25+0200\n"
+"PO-Revision-Date: 2017-10-20 16:30+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
@@ -854,7 +854,7 @@ msgstr "mot-clé \"%s\" inattendu rencontré lors de la lecture des blocs vers l
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
 msgid "unexpected section keyword %s found"
-msgstr ""
+msgstr "mot-clé \"%s\" de section inattendu trouvé"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
