@@ -4,7 +4,6 @@
      ./runtests --format=plain --suite=TTestCompReaderWriterPas.TestWriteProperties
 
 ToDo:
-- root properties
 - base types
 - UTF-8 string
 - unicodestring
@@ -31,11 +30,11 @@ unit TestCompReaderWriterPas;
 interface
 
 uses
-  Classes, SysUtils, typinfo, RtlConsts, LazLoggerBase, fpcunit,
+  Classes, SysUtils, typinfo, RtlConsts, LazLoggerBase, LazUTF8, fpcunit,
   testregistry, CodeToolManager, LinkScanner, TestStdCodetools;
 
 const
-  CWPDefaultSignature = '// Pascal writer V1.0';
+  CWPDefaultSignature = '// component writer V1.0';
 type
   TDummyComp = class(TComponent); // to access TComponent protected members
   TCWPFindAncestorEvent = procedure(Sender: TObject; Component: TComponent;
@@ -46,7 +45,7 @@ type
   TCWPOption = (
     cwpoNoSignature,
     cwpoSetParentFirst,  // add "Parent:=" before properties
-    cwpoWideStringAsUTF8
+    cwpoSrcCodepageUTF8
     );
   TCWPOptions = set of TCWPOption;
 
@@ -79,6 +78,7 @@ type
     procedure WriteProperty(Instance: TPersistent; PropInfo: PPropInfo);
     procedure WriteProperties(Instance: TComponent);
     function GetStringLiteral(const s: string): string;
+    function GetWStringLiteral(p: PWideChar; Count: integer): string;
     function GetFloatLiteral(const e: Extended): string;
   public
     constructor Create(AStream: TStream);
@@ -113,8 +113,8 @@ type
 
 // Tests =======================================================================
 const
-  MinSafeIntCurrency = -922337203685477;
-  MaxSafeIntCurrency =  922337203685477;
+  MinSafeIntCurrency = Low(Int64) div 10000;
+  MaxSafeIntCurrency = High(Int64) div 10000;
   MinSafeIntSingle = -16777216;
   MaxSafeIntSingle =  16777216;
   MaskUIntSingle = $3fffff;
@@ -311,16 +311,93 @@ type
   { TTestCompReaderWriterPas }
 
   TTestCompReaderWriterPas = class(TCustomTestCTStdCodetools)
+  private
+    FStream: TMemoryStream;
+    FWriter: TCompWriterPas;
   protected
+    procedure SetUp; override;
+    procedure TearDown; override;
     function WriteDescendant(Component: TComponent; Ancestor: TComponent = nil): string;
     procedure TestWriteDescendant(Msg: string; Component: TComponent;
       Ancestor: TComponent; const Expected: array of string);
+    property Writer: TCompWriterPas read FWriter write FWriter;
   published
     procedure TestBaseTypesSkipDefaultValue;
+    procedure TestBaseTypesZeroes;
     procedure TestBaseTypesMinValues;
+    procedure TestBaseTypesMaxValues;
+    procedure TestStringASCII;
+    procedure TestStringUTF8;
+    procedure TestWideString_SrcCodePageSystem;
+    procedure TestWideString_SrcCodePageUTF8;
   end;
 
 implementation
+
+function IsValidUTF8(p: PChar): integer;
+var
+  c: Char;
+begin
+  c:=p^;
+  if ord(c)<%10000000 then begin
+    // regular single byte ASCII character (#0 is a character, this is Pascal ;)
+    Result:=1;
+  end else if ord(c)<=%11000001 then begin
+    // single byte character, between valid UTF-8 encodings
+    // %11000000 and %11000001 map 2 byte to #0..#128, which is invalid and used for XSS attacks
+    Result:=0;
+  end else if ord(c)<=%11011111 then begin
+    // could be 2 byte character (%110xxxxx %10xxxxxx)
+    if ((ord(p[1]) and %11000000) = %10000000) then
+      Result:=2
+    else
+      Result:=0; // missing following bytes
+  end
+  else if ord(c)<=%11101111 then begin
+    // could be 3 byte character (%1110xxxx %10xxxxxx %10xxxxxx)
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000) then begin
+      if (ord(c)=%11100000) and (ord(p[1])<=%10011111) then
+        Result:=0; // XSS attack: 3 bytes are mapped to the 1 or 2 byte codes
+      Result:=3;
+    end else
+      Result:=0; // missing following bytes
+  end
+  else if ord(c)<=%11110111 then begin
+    // could be 4 byte character (%11110xxx %10xxxxxx %10xxxxxx %10xxxxxx)
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000)
+    and ((ord(p[3]) and %11000000) = %10000000) then begin
+      if (ord(c)=%11110000) and (ord(p[1])<=%10001111) then
+        Result:=0; // XSS attack: 4 bytes are mapped to the 1-3 byte codes
+      Result:=4;
+    end else
+      Result:=0; // missing following bytes
+  end
+  else begin
+    Result:=0;
+  end;
+end;
+
+function IsValidUTF16(p: PWideChar): integer;
+var
+  c: WideChar;
+begin
+  c:=p^;
+  if c<=#$DC7F then
+    exit(1)
+  else if c<=#$DBFF then begin
+    c:=p[1];
+    if (c>=#$DC00) and (c<=#$DFFF) then
+      exit(2)
+    else
+      exit(0);
+  end else if c<=#$Dfff then begin
+    exit(0);
+  end else
+    exit(1);
+end;
+
 
 Type
 
@@ -331,6 +408,14 @@ Type
     FComponent: TComponent;
     constructor Create(APos: Integer; AComponent: TComponent);
   end;
+
+{ TPosComponent }
+
+constructor TPosComponent.Create(APos: Integer; AComponent: TComponent);
+begin
+  FPos:=APos;
+  FComponent:=AComponent;
+end;
 
 { TCompBaseTypesCustomStored }
 
@@ -469,14 +554,6 @@ begin
   inherited Create(AOwner);
 end;
 
-{ TPosComponent }
-
-constructor TPosComponent.Create(APos: Integer; AComponent: TComponent);
-begin
-  FPos:=APos;
-  FComponent:=AComponent;
-end;
-
 { TCompWriterPas }
 
 procedure TCompWriterPas.DetermineAncestor(Component: TComponent);
@@ -569,6 +646,7 @@ var
   WStrValue, WDefStrValue: WideString;
   UStrValue, UDefStrValue: UnicodeString;
   VarValue, DefVarValue: tvardata;
+  aTypeData: PTypeData;
 begin
   // do not stream properties without getter
   if not Assigned(PropInfo^.GetProc) then
@@ -612,9 +690,14 @@ begin
                   // Integer with a custom identifier
                   // ToDo: check if this is an actual Pascal constant and remember the unit
                   WriteAssign(PropName,Ident)
-                else
+                else begin
                   // Integer has to be written just as number
-                  WriteAssign(PropName,IntToStr(Int32Value));
+                  aTypeData:=GetTypeData(PropInfo^.PropType);
+                  if aTypeData^.MinValue>=0 then
+                    WriteAssign(PropName,IntToStr(longword(Int32Value)))
+                  else
+                    WriteAssign(PropName,IntToStr(Int32Value));
+                end;
               end;
             tkChar:
               case Int32Value of
@@ -630,8 +713,8 @@ begin
               0..31,127..255,$D800..$DFFF:
                 WriteAssign(PropName,'#'+IntToStr(Int32Value));
               else
-                if cwpoWideStringAsUTF8 in Options then
-                  WriteAssign(PropName,''''+UTF8Encode(WideChar(Int32Value))+'''')
+                if cwpoSrcCodepageUTF8 in Options then
+                  WriteAssign(PropName,''''+UTF16ToUTF8(WideChar(Int32Value))+'''')
                 else
                   WriteAssign(PropName,'#'+IntToStr(Int32Value));
               end;
@@ -734,13 +817,8 @@ begin
         else
           WDefStrValue := '';
 
-        if WStrValue <> WDefStrValue then begin
-          {$IFDEF VerboseCompWriterPas}
-          System.writeln('TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind);
-          raise EWriteError.Create('proptype not supported: '+GetEnumName(TypeInfo(PropType^.Kind),ord(PropType^.Kind)));
-          {$ENDIF}
-          //ToDo: WriteAssign(PropName,GetWStringLiteral(WStrValue));
-        end;
+        if WStrValue <> WDefStrValue then
+          WriteAssign(PropName,GetWStringLiteral(PWideChar(WStrValue),length(WStrValue)));
       end;
     tkUString:
       begin
@@ -750,13 +828,8 @@ begin
         else
           SetLength(UDefStrValue, 0);
 
-        if UStrValue <> UDefStrValue then begin
-          {$IFDEF VerboseCompWriterPas}
-          System.writeln('TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind);
-          raise EWriteError.Create('proptype not supported: '+GetEnumName(TypeInfo(PropType^.Kind),ord(PropType^.Kind)));
-          {$ENDIF}
-          // ToDo: WriteAssign(PropName,GetWStringLiteral(UStrValue));
-        end;
+        if UStrValue <> UDefStrValue then
+          WriteAssign(PropName,GetWStringLiteral(PWideChar(UStrValue),length(UStrValue)));
       end;
     tkVariant:
       begin
@@ -831,42 +904,121 @@ begin
 end;
 
 function TCompWriterPas.GetStringLiteral(const s: string): string;
-const
-  SpecialChars = [#0..#31,#127..#192];
+
+  function IsSpecialChar(p: PChar): boolean;
+  const
+    SpecialChars = [#0..#31,#127,#255];
+  begin
+    Result:=(p^ in SpecialChars) or (IsValidUTF8(p)=0);
+  end;
+
 var
-  i, StartPos: Integer;
   InLit: Boolean;
+  p, StartP: PChar;
+  c: Char;
 begin
   Result:='';
+  if s='' then exit;
   InLit:=false;
-  i:=1;
-  while i<=length(s) do begin
-    if s[i] in SpecialChars then
+  p:=PChar(s);
+  repeat
+    c:=p^;
+    if (c=#0) and (p-PChar(s)=length(s)) then
+      break
+    else if IsSpecialChar(p) then
     begin
       if InLit then begin
         InLit:=false;
         Result:=Result+'''';
       end;
-      Result:=Result+'#'+IntToStr(ord(s[i]));
-      inc(i);
+      Result:=Result+'#'+IntToStr(ord(c));
+      inc(p);
     end else begin
       if not InLit then begin
         InLit:=true;
         Result:=Result+'''';
       end;
-      if s[i]='''' then begin
+      if c='''' then begin
         Result:=Result+'''''';
-        inc(i);
+        inc(p);
       end else begin
-        StartPos:=i;
+        StartP:=p;
         repeat
-          inc(i);
-        until (i>length(s)) or (s[i] in SpecialChars) or (s[i]='''');
-        // ToDo: source codepage<>UTF-8
-        Result:=Result+copy(s,StartPos,i-StartPos);
+          inc(p,IsValidUTF8(p));
+          c:=p^;
+        until ((c=#0) and (p-PChar(s)=length(s))) or IsSpecialChar(p) or (c='''');
+        Result:=Result+copy(s,StartP-PChar(s)+1,p-StartP);
       end;
     end;
+  until false;
+  if InLit then
+    Result:=Result+'''';
+end;
+
+function TCompWriterPas.GetWStringLiteral(p: PWideChar; Count: integer): string;
+
+  function IsSpecialChar(w: PWideChar): boolean;
+  const
+    SpecialChars = [#0..#31,#127];
+  begin
+    if w^ in SpecialChars then exit(true);
+    if cwpoSrcCodepageUTF8 in FOptions then begin
+      Result:=IsValidUTF16(w)=0;
+    end else begin
+      Result:=w^>=#$7f;
+    end;
   end;
+
+var
+  InLit: Boolean;
+  c: WideChar;
+  FirstP, StartP: PWideChar;
+  AddLen: SizeUInt;
+  s: string;
+  OldLen: Integer;
+begin
+  Result:='';
+  if Count=0 then exit;
+  FirstP:=p;
+  InLit:=false;
+  s:='';
+  repeat
+    c:=p^;
+    if (c=#0) and (p-FirstP=Count) then
+      break
+    else if IsSpecialChar(p) then
+    begin
+      if InLit then begin
+        InLit:=false;
+        Result:=Result+'''';
+      end;
+      Result:=Result+'#'+Format('%.4d',[ord(c)]);
+      inc(p);
+    end else begin
+      if not InLit then begin
+        InLit:=true;
+        Result:=Result+'''';
+      end;
+      if c='''' then begin
+        Result:=Result+'''''';
+        inc(p);
+      end else begin
+        StartP:=p;
+        repeat
+          inc(p,IsValidUTF16(p));
+          c:=p^;
+        until ((c=#0) and (p-FirstP=Count)) or IsSpecialChar(p) or (c='''');
+        AddLen:=p-StartP;
+        if length(s)<AddLen*3 then SetLength(s,AddLen*3);
+        if ConvertUTF16ToUTF8(@s[1],length(s),StartP,AddLen,
+            [toInvalidCharError,toUnfinishedCharError],AddLen)=trNoError then
+          dec(AddLen); // omit #0
+        OldLen:=length(Result);
+        SetLength(Result,OldLen+AddLen);
+        System.Move(s[1],Result[OldLen+1],AddLen);
+      end;
+    end;
+  until false;
   if InLit then
     Result:=Result+'''';
 end;
@@ -886,14 +1038,20 @@ begin
   while (i<length(s)) and (s[i+1]='0') do
     inc(i);
   if i>p then
-    Delete(s,p+1,i-p);
+    if i=length(s) then
+      Delete(s,p,i-p+1) // delete whole exponent
+    else
+      Delete(s,p+1,i-p);
   // remove trailing 0 of base
   i:=p;
   while (i>2) and (s[i-1]='0') do
     dec(i);
-  if s[i-1] in ['+','-'] then inc(i);
+  if not (s[i-1] in ['0'..'9']) then inc(i);
   if i<p then
     Delete(s,i,p-i);
+  // remove leading space
+  if s[1]=' ' then
+    Delete(s,1,1);
   Result:=s;
 end;
 
@@ -1035,28 +1193,31 @@ end;
 
 { TTestCompReaderWriterPas }
 
+procedure TTestCompReaderWriterPas.SetUp;
+begin
+  inherited SetUp;
+  FStream:=TMemoryStream.Create;
+  FWriter:=TCompWriterPas.Create(FStream);
+end;
+
+procedure TTestCompReaderWriterPas.TearDown;
+begin
+  FreeAndNil(FWriter);
+  FreeAndNil(FStream);
+  inherited TearDown;
+end;
+
 function TTestCompReaderWriterPas.WriteDescendant(Component: TComponent;
   Ancestor: TComponent): string;
-var
-  aStream: TMemoryStream;
-  Writer: TCompWriterPas;
 begin
-  Writer:=nil;
-  aStream:=TMemoryStream.Create;
-  try
-    Writer:=TCompWriterPas.Create(aStream);
-    Writer.WriteDescendant(Component,Ancestor);
-    aStream.Position:=0;
-    SetLength(Result,aStream.size);
-    if Result<>'' then
-      aStream.Read(Result[1],length(Result));
-    {$IFDEF VerboseCompWriterPas}
-    writeln('TTestCompReaderWriterPas.WriteDescendant "',Result,'"');
-    {$ENDIF}
-  finally
-    Writer.Free;
-    aStream.Free;
-  end;
+  Writer.WriteDescendant(Component,Ancestor);
+  FStream.Position:=0;
+  SetLength(Result,FStream.size);
+  if Result<>'' then
+    FStream.Read(Result[1],length(Result));
+  {$IFDEF VerboseCompWriterPas}
+  writeln('TTestCompReaderWriterPas.WriteDescendant "',Result,'"');
+  {$ENDIF}
 end;
 
 procedure TTestCompReaderWriterPas.TestWriteDescendant(Msg: string;
@@ -1086,6 +1247,60 @@ begin
   end;
 end;
 
+procedure TTestCompReaderWriterPas.TestBaseTypesZeroes;
+var
+  AComponent: TCompBaseTypesCustomStored;
+begin
+  AComponent:=TCompBaseTypesCustomStored.Create(nil);
+  try
+    with AComponent do begin
+      Name:=AComponent.ClassName+'1';
+      AByte:=0;
+      DefAByte:=AByte+1;
+      AShortInt:=0;
+      DefAShortInt:=AShortInt+1;
+      AWord:=0;
+      DefAWord:=AWord+1;
+      ASmallInt:=0;
+      DefASmallInt:=ASmallInt+1;
+      ALongWord:=0;
+      DefALongWord:=ALongWord+1;
+      ALongInt:=0;
+      DefALongInt:=ALongInt+1;
+      AQWord:=0;
+      DefAQWord:=AQWord+1;
+      AInt64:=0;
+      DefAInt64:=AInt64+1;
+      ACurrency:=0;
+      DefACurrency:=ACurrency+1;
+      ASingle:=0;
+      DefASingle:=ASingle+1;
+      ADouble:=0;
+      DefADouble:=ADouble+1;
+      AChar:=#0;
+      DefAChar:=succ(AChar);
+      AWideChar:=#0;
+      DefAWideChar:=succ(AWideChar);
+      // ToDo: extended
+    end;
+    TestWriteDescendant('TestBaseTypesZeroes',AComponent,nil,[
+    'AByte:=0;',
+    'AShortInt:=0;',
+    'AWord:=0;',
+    'ASmallInt:=0;',
+    'ALongWord:=0;',
+    'ALongInt:=0;',
+    'ACurrency:= 0.0;',
+    'ASingle:= 0.0;',
+    'ADouble:= 0.0;',
+    'AChar:=#0;',
+    'AWideChar:=#0;',
+    '']);
+  finally
+    AComponent.Free;
+  end;
+end;
+
 procedure TTestCompReaderWriterPas.TestBaseTypesMinValues;
 var
   AComponent: TCompBaseTypesCustomStored;
@@ -1093,40 +1308,44 @@ begin
   AComponent:=TCompBaseTypesCustomStored.Create(nil);
   try
     with AComponent do begin
-    Name:=AComponent.ClassName+'1';
-    ABoolean:=low(boolean);
-    DefABoolean:=not ABoolean;
-    AByteBool:=boolean(low(byte));
-    DefAByteBool:=not AByteBool;
-    AWordBool:=boolean(low(word));
-    DefAWordBool:=not AWordBool;
-    ALongBool:=boolean(low(longword));
-    DefALongBool:=not ALongBool;
-    AByte:=low(byte);
-    DefAByte:=AByte+1;
-    AShortInt:=low(ShortInt);
-    DefAShortInt:=AShortInt+1;
-    AWord:=low(word);
-    DefAWord:=AWord+1;
-    ASmallInt:=low(SmallInt);
-    DefASmallInt:=ASmallInt+1;
-    ALongWord:=low(LongWord);
-    DefALongWord:=ALongWord+1;
-    ALongInt:=low(LongInt);
-    DefALongInt:=ALongInt+1;
-    AQWord:=low(qword);
-    DefAQWord:=AQWord+1;
-    AInt64:=low(Int64);
-    DefAInt64:=AInt64+1;
-    ACurrency:=MinSafeIntCurrency;
-    DefACurrency:=ACurrency+1;
-    ASingle:=MinSafeIntSingle;
-    DefASingle:=ASingle+1;
-    ADouble:=MinSafeIntDouble;
-    DefADouble:=ADouble+1;
-    // ToDo: extended
+      Name:=AComponent.ClassName+'1';
+      ABoolean:=low(boolean);
+      DefABoolean:=not ABoolean;
+      AByteBool:=boolean(low(byte));
+      DefAByteBool:=not AByteBool;
+      AWordBool:=boolean(low(word));
+      DefAWordBool:=not AWordBool;
+      ALongBool:=boolean(low(longword));
+      DefALongBool:=not ALongBool;
+      AByte:=low(byte);
+      DefAByte:=AByte+1;
+      AShortInt:=low(ShortInt);
+      DefAShortInt:=AShortInt+1;
+      AWord:=low(word);
+      DefAWord:=AWord+1;
+      ASmallInt:=low(SmallInt);
+      DefASmallInt:=ASmallInt+1;
+      ALongWord:=low(LongWord);
+      DefALongWord:=ALongWord+1;
+      ALongInt:=low(LongInt);
+      DefALongInt:=ALongInt+1;
+      AQWord:=low(qword);
+      DefAQWord:=AQWord+1;
+      AInt64:=low(Int64);
+      DefAInt64:=AInt64+1;
+      ACurrency:=MinSafeIntCurrency;
+      DefACurrency:=ACurrency+1;
+      ASingle:=MinSafeIntSingle;
+      DefASingle:=ASingle+1;
+      ADouble:=MinSafeIntDouble;
+      DefADouble:=ADouble+1;
+      AChar:=low(char);
+      DefAChar:=succ(AChar);
+      AWideChar:=low(WideChar);
+      DefAWideChar:=succ(AWideChar);
+      // ToDo: extended
     end;
-    TestWriteDescendant('TestBaseTypesSkipDefaultValue',AComponent,nil,[
+    TestWriteDescendant('TestBaseTypesMinValues',AComponent,nil,[
     'ABoolean:=False;',
     'AByteBool:=False;',
     'AWordBool:=False;',
@@ -1141,6 +1360,154 @@ begin
     'ACurrency:=-9.22337203685477E14;',
     'ASingle:=-1.6777216E7;',
     'ADouble:=-4.503599627370496E15;',
+    'AChar:=#0;',
+    'AWideChar:=#0;',
+    '']);
+  finally
+    AComponent.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestBaseTypesMaxValues;
+var
+  AComponent: TCompBaseTypesCustomStored;
+begin
+  AComponent:=TCompBaseTypesCustomStored.Create(nil);
+  try
+    with AComponent do begin
+      Name:=AComponent.ClassName+'1';
+      ABoolean:=high(boolean);
+      DefABoolean:=not ABoolean;
+      AByteBool:=boolean(high(byte));
+      DefAByteBool:=not AByteBool;
+      AWordBool:=boolean(high(word));
+      DefAWordBool:=not AWordBool;
+      ALongBool:=boolean(high(longword));
+      DefALongBool:=not ALongBool;
+      AByte:=high(byte);
+      DefAByte:=AByte-1;
+      AShortInt:=high(ShortInt);
+      DefAShortInt:=AShortInt-1;
+      AWord:=high(word);
+      DefAWord:=AWord-1;
+      ASmallInt:=high(SmallInt);
+      DefASmallInt:=ASmallInt-1;
+      ALongWord:=high(LongWord);
+      DefALongWord:=ALongWord-1;
+      ALongInt:=high(LongInt);
+      DefALongInt:=ALongInt-1;
+      AQWord:=high(qword);
+      DefAQWord:=AQWord-1;
+      AInt64:=high(Int64);
+      DefAInt64:=AInt64-1;
+      ACurrency:=MaxSafeIntCurrency;
+      DefACurrency:=ACurrency-1;
+      ASingle:=MaxSafeIntSingle;
+      DefASingle:=ASingle-1;
+      ADouble:=MaxSafeIntDouble;
+      DefADouble:=ADouble-1;
+      AChar:=high(char);
+      DefAChar:=pred(AChar);
+      AWideChar:=high(WideChar);
+      DefAWideChar:=pred(AWideChar);
+      // ToDo: extended
+    end;
+    TestWriteDescendant('TestBaseTypesMaxValues',AComponent,nil,[
+    'ABoolean:=True;',
+    'AByteBool:=True;',
+    'AWordBool:=True;',
+    'ALongBool:=True;',
+    'AByte:=255;',
+    'AShortInt:=127;',
+    'AWord:=65535;',
+    'ASmallInt:=32767;',
+    'ALongWord:=4294967295;',
+    'ALongInt:=2147483647;',
+    'AQWord:=18446744073709551615;',
+    'AInt64:=9223372036854775807;',
+    'ACurrency:=9.22337203685477E14;',
+    'ASingle:=1.6777216E7;',
+    'ADouble:=4.503599627370495E15;',
+    'AChar:=#255;',
+    'AWideChar:=#65535;',
+    '']);
+  finally
+    AComponent.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestStringASCII;
+var
+  AComponent: TCompBaseTypes;
+begin
+  AComponent:=TCompBaseTypes.Create(nil);
+  try
+    with AComponent do begin
+      Name:=AComponent.ClassName+'1';
+      AString:=#9'A'#13#10;
+    end;
+    TestWriteDescendant('TestStringASCII',AComponent,nil,[
+    'AString:=#9''A''#13#10;']);
+  finally
+    AComponent.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestStringUTF8;
+var
+  AComponent: TCompBaseTypes;
+begin
+  AComponent:=TCompBaseTypes.Create(nil);
+  try
+    with AComponent do begin
+      Name:=AComponent.ClassName+'1';
+      AString:='äöü';
+      AShortString:='äöü';
+    end;
+    TestWriteDescendant('TestStringUTF8',AComponent,nil,[
+    'AString:=''äöü'';',
+    'AShortString:=''äöü'';',
+    '']);
+  finally
+    AComponent.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestWideString_SrcCodePageSystem;
+var
+  AComponent: TCompBaseTypes;
+begin
+  AComponent:=TCompBaseTypes.Create(nil);
+  try
+    with AComponent do begin
+      Name:=AComponent.ClassName+'1';
+      AWideString:=UTF8ToUTF16('äAöü');
+      AUnicodeString:=UTF8ToUTF16('äöBCü');
+    end;
+    TestWriteDescendant('TestWideString_SrcCodePageSystem',AComponent,nil,[
+    'AWideString:=#0228''A''#0246#0252;',
+    'AUnicodeString:=#0228#0246''BC''#0252;',
+    '']);
+  finally
+    AComponent.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestWideString_SrcCodePageUTF8;
+var
+  AComponent: TCompBaseTypes;
+begin
+  Writer.Options:=Writer.Options+[cwpoSrcCodepageUTF8];
+  AComponent:=TCompBaseTypes.Create(nil);
+  try
+    with AComponent do begin
+      Name:=AComponent.ClassName+'1';
+      AWideString:=UTF8ToUTF16('äöü');
+      AUnicodeString:=UTF8ToUTF16('äöü');
+    end;
+    TestWriteDescendant('TestWideString_SrcCodePageUTF8',AComponent,nil,[
+    'AWideString:=''äöü'';',
+    'AUnicodeString:=''äöü'';',
     '']);
   finally
     AComponent.Free;
