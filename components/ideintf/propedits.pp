@@ -5449,9 +5449,9 @@ var
   V: Variant;
 begin
   try
-    VarCast(V{%H-}, Value, VarType(GetVarValue));
-  except
     V := Value;
+  except
+    V := 0; // Some backup value.
   end;
   SetVarValue(V);
 end;
