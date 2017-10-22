@@ -2042,8 +2042,11 @@ var
       (csDesigning in AWinControl.ComponentState) then
         exit;
 
-    MessI.Msg := CheckMouseButtonDownUp({%H-}TLCLIntfHandle(widget), AWinControl, LastMouse, EventXY, MouseButton, True);
+    MessI.Msg := CheckMouseButtonDownUp({%H-}TLCLIntfHandle(widget), AWinControl,
+                                        LastMouse, EventXY, MouseButton, True);
     MessI.Keys := MessI.Keys or BtnKey;
+    if BtnKey in [MK_XBUTTON1, MK_XBUTTON2] then
+      MessI.Keys :=  MessI.Keys or BtnKey shl 11;
     case LastMouse.ClickCount of
       2: MessI.Keys := MessI.Keys or MK_DOUBLECLICK;
       3: MessI.Keys := MessI.Keys or MK_TRIPLECLICK;
@@ -2103,7 +2106,7 @@ begin
       2: if not CheckMouseButtonDown(3, MK_MBUTTON) then Exit;
       3: if not CheckMouseButtonDown(2, MK_RBUTTON) then Exit;
       8: if not CheckMouseButtonDown(4, MK_XBUTTON1) then Exit;
-      9: if not CheckMouseButtonDown(4, MK_XBUTTON2) then Exit;
+      9: if not CheckMouseButtonDown(5, MK_XBUTTON2) then Exit;
       else
         begin
           MessI.Msg := LM_NULL;
@@ -2215,11 +2218,11 @@ var
   MappedXY: TPoint;
   EventXY: TPoint;
 
-  function CheckMouseButtonUp(MouseButton, MsgID: longint): boolean;
+  function CheckMouseButtonUp(MouseButton: longint; BtnShiftState: TShiftStateEnum): boolean;
   begin
-    if MsgID=0 then ;
     MessI.Msg := CheckMouseButtonDownUp({%H-}TLCLIntfHandle(widget),
                            AWinControl, LastMouse, EventXY, MouseButton, False);
+    Include(ShiftState, BtnShiftState);
     Result := True;
  end;
 
@@ -2238,11 +2241,11 @@ begin
   ShiftState := GTKEventStateToShiftState(Event^.State);
 
   case event^.Button of
-    1: if not CheckMouseButtonUp(1, LM_LBUTTONUP) then Exit;
-    2: if not CheckMouseButtonUp(3, LM_MBUTTONUP) then Exit;
-    3: if not CheckMouseButtonUp(2, LM_RBUTTONUP) then exit;
-    8: if not CheckMouseButtonUp(4, LM_XBUTTONUP) then exit;
-    9: if not CheckMouseButtonUp(4, LM_XBUTTONUP) then exit;
+    1: if not CheckMouseButtonUp(1, ssLeft) then Exit;
+    2: if not CheckMouseButtonUp(3, ssMiddle) then Exit;
+    3: if not CheckMouseButtonUp(2, ssRight) then Exit;
+    8: if not CheckMouseButtonUp(4, ssExtra1) then Exit;
+    9: if not CheckMouseButtonUp(5, ssExtra2) then Exit;
   else
     begin
       MessI.Msg := LM_NULL;

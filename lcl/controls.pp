@@ -3100,6 +3100,7 @@ const
 var
   IsMultiClick: boolean;
   TargetControl: TControl;
+  Button: Byte;
 begin
   Result := LM_NULL;
 
@@ -3152,10 +3153,16 @@ begin
   end;
   LastMouse.Down := AMouseDown;
 
-  if AMouseDown then
-    Result := MSGKINDDOWN[AButton][LastMouse.ClickCount]
+  // mouse buttons 4,5 share same messages
+  if AButton = 5 then
+    Button := 4
   else
-    Result := MSGKINDUP[AButton];
+    Button := AButton;
+
+  if AMouseDown then
+    Result := MSGKINDDOWN[Button][LastMouse.ClickCount]
+  else
+    Result := MSGKINDUP[Button];
 end;
 
 function GetKeyShiftState: TShiftState;
