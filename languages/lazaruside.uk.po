@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-09-19 19:52+0300\n"
+"PO-Revision-Date: 2017-10-21 01:48+0300\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -6170,7 +6170,7 @@ msgstr "Створити визначення для текстів програ
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
 msgid "Create Defines for %s Project"
-msgstr "Створити означення для %s Проекту"
+msgstr "Створити означення для Проекту %s"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
@@ -9819,7 +9819,7 @@ msgstr "На крок в обхід"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
-msgstr "Довідка: функція Створити Рядок Ресурсів вимагає рядкової константи.%sВиберіть вираз і спробуйте спочатку."
+msgstr "Довідка: функція \"Створити рядок ресурсів\" вимагає рядкової константи.%sВиберіть вираз і спробуйте спочатку."
 
 #: lazarusidestrconsts.lishinttoggleformunit
 msgid "Toggle Form/Unit"
@@ -14030,7 +14030,7 @@ msgstr "Відкрити файл"
 
 #: lazarusidestrconsts.lisopenfileatcursor
 msgid "Open file at cursor"
-msgstr ""
+msgstr "Відкрити файл біля курсору"
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -17672,7 +17672,7 @@ msgstr "Проект треба зберегти перед компіляціє
 
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
 msgid "The project uses FPC resources, which require at least FPC 2.4"
-msgstr ""
+msgstr "У проекті використовуються ресурси FPC, для яких потрібен принаймні FPC 2.4"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."

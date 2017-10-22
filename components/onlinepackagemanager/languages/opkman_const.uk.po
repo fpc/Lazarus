@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
-"PO-Revision-Date: 2017-09-19 20:10+0300\n"
+"PO-Revision-Date: 2017-10-21 01:29+0300\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -808,14 +808,13 @@ msgid "Install packages"
 msgstr "Встановити пакунки"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
 msgid "Open"
 msgstr "Відкрити"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
 msgid "Open local repository"
-msgstr ""
+msgstr "Відкрити локальне сховище"
 
 #: opkman_const.rsmainfrm_tboptions_caption
 msgctxt "opkman_const.rsmainfrm_tboptions_caption"
@@ -1320,11 +1319,11 @@ msgstr "Перевіряти наявність оновлень пакункі�
 
 #: opkman_const.rsoptions_lbcontimeout_caption
 msgid "Connection timeout (seconds):"
-msgstr ""
+msgstr "Час очікування з’єднання (сек):"
 
 #: opkman_const.rsoptions_lbcontimeout_hint
 msgid "The number of seconds after which package manager drops connection"
-msgstr ""
+msgstr "Число секунд, після якого менеджер пакунків скидає з'єднання"
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
