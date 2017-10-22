@@ -43,10 +43,14 @@ type
     FOnModified: TNotifyEvent;
     FPropertyEditorHook: TPropertyEditorHook;
     FImageList: TImageList;
+    function CollectionCaption(ACollection: TCollection; DefaultName: string): string;
+    function CollectionItemCaption(ACollItem: TCollectionItem): string;
+    function ComponentCaption(AComponent: TComponent): String;
     function GetSelection: TPersistentSelectionList;
     procedure SetPropertyEditorHook(AValue: TPropertyEditorHook);
     procedure SetSelection(NewSelection: TPersistentSelectionList);
     procedure UpdateSelected;
+    function CreateNodeCaption(APersistent: TPersistent; DefaultName: string = ''): string;
   protected
     procedure DoSelectionChanged; override;
     function GetImageFor(APersistent: TPersistent):integer;
@@ -64,7 +68,6 @@ type
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     procedure RebuildComponentNodes; virtual;
     procedure UpdateComponentNodesValues; virtual;
-    function CreateNodeCaption(APersistent: TPersistent; DefaultName: string = ''): string; virtual;
   public
     ImgIndexForm: Integer;
     ImgIndexComponent: Integer;
@@ -192,7 +195,7 @@ begin
   Candidate.Added := True;
 
   OldNode := FNode;
-  FNode := FComponentTV.Items.AddChild(FNode, FComponentTV.CreateNodeCaption(AComponent));
+  FNode := FComponentTV.Items.AddChild(FNode, FComponentTV.ComponentCaption(AComponent));
   FNode.Data := AComponent;
   FNode.ImageIndex := FComponentTV.GetImageFor(AComponent);
   FNode.SelectedIndex := FNode.ImageIndex;
@@ -244,7 +247,7 @@ begin
     for i := 0 to ACollection.Count - 1 do
     begin
       Item := ACollection.Items[i];
-      ItemNode := FComponentTV.Items.AddChild(TVNode, FComponentTV.CreateNodeCaption(Item));
+      ItemNode := FComponentTV.Items.AddChild(TVNode, FComponentTV.CollectionItemCaption(Item));
       ItemNode.Data := Item;
       ItemNode.ImageIndex := FComponentTV.GetImageFor(Item);
       ItemNode.SelectedIndex := ItemNode.ImageIndex;
@@ -716,8 +719,13 @@ procedure TComponentTreeView.UpdateComponentNodesValues;
   begin
     if ANode = nil then Exit;
     APersistent := TPersistent(ANode.Data);
-    ANode.Text := CreateNodeCaption(APersistent);
-    UpdateComponentNode(ANode.GetFirstChild);
+    if APersistent is TComponent then
+      ANode.Text := ComponentCaption(TComponent(APersistent))
+    else if APersistent is TCollectionItem then
+      ANode.Text := CollectionItemCaption(TCollectionItem(APersistent));
+    // Note: Collection name does not change, don't update.
+
+    UpdateComponentNode(ANode.GetFirstChild);    // Recursive call.
     UpdateComponentNode(ANode.GetNextSibling);
   end;
 
@@ -747,47 +755,55 @@ begin
   EndUpdate;
 end;
 
-function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent;
-  DefaultName: string): string;
-
-  function GetCollectionName(ACollection: TCollection): String;
-  var
-    PropList: PPropList;
-    i, PropCount: Integer;
+function TComponentTreeView.CollectionCaption(ACollection: TCollection; DefaultName: string): string;
+var
+  PropList: PPropList;
+  i, PropCount: Integer;
+begin
+  Result := '';
+  if Result <> '' then
+    Result := TCollectionAccess(ACollection).PropName
+  else if DefaultName<>'' then
+    Result := DefaultName  // DefaultName is the property name.
+  else if ACollection.Owner <> nil then
   begin
-    Result := TCollectionAccess(ACollection).PropName;
-    if Result <> '' then
-      Exit;
-
-    // if there is a DefaultName it is the property name
-    if DefaultName<>'' then
-      exit(DefaultName);
-
-    // find the property name, where ACollection can be found
-    if ACollection.Owner <> nil then
-    begin
-      PropCount := GetPropList(ACollection.Owner, PropList);
-      try
-        for i := 0 to PropCount - 1 do
-          if (PropList^[i]^.PropType^.Kind = tkClass) and
-             (GetObjectProp(ACollection.Owner, PropList^[i], ACollection.ClassType) = ACollection) then
-            Exit(PropList^[i]^.Name);
-      finally
-        FreeMem(PropList);
-      end;
+    PropCount := GetPropList(ACollection.Owner, PropList);
+    try                 // Find the property name where ACollection can be found.
+      for i := 0 to PropCount - 1 do
+        if (PropList^[i]^.PropType^.Kind = tkClass) then
+          if GetObjectProp(ACollection.Owner, PropList^[i], ACollection.ClassType) = ACollection then
+          begin
+            Result := PropList^[i]^.Name;
+            Break;
+          end;
+    finally
+      FreeMem(PropList);
     end;
-
-    Result := '<unknown collection>';
   end;
+  if Result = '' then
+    Result := '<unknown collection>';
+  Result := Result + ': ' + ACollection.ClassName;
+end;
 
+function TComponentTreeView.CollectionItemCaption(ACollItem: TCollectionItem): string;
+begin
+  Result := IntToStr(ACollItem.Index)+' - '+ACollItem.DisplayName+': '+ACollItem.ClassName;
+end;
+
+function TComponentTreeView.ComponentCaption(AComponent: TComponent): String;
+begin
+  Result := AComponent.Name + ': ' + AComponent.ClassName;
+end;
+
+function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent; DefaultName: string): string;
 begin
   Result := APersistent.ClassName;
   if APersistent is TComponent then
-    Result := TComponent(APersistent).Name + ': ' + Result
+    Result := ComponentCaption(TComponent(APersistent))
   else if APersistent is TCollection then
-    Result := GetCollectionName(TCollection(APersistent)) + ': ' + Result
+    Result := CollectionCaption(TCollection(APersistent), DefaultName)
   else if APersistent is TCollectionItem then
-    Result := IntToStr(TCollectionItem(APersistent).Index) + ' - ' + TCollectionItem(APersistent).DisplayName + ': ' + Result
+    Result := CollectionItemCaption(TCollectionItem(APersistent))
   else if DefaultName<>'' then
     Result := DefaultName + ':' + Result;
 end;
