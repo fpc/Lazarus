@@ -230,7 +230,9 @@ begin
   g_signal_connect_after(Selection, 'changed',
     G_CALLBACK(@Gtk2WS_CheckListBoxSelectionChanged), WidgetInfo);
 
-  Set_RC_Name(AWinControl, P);  
+  Set_RC_Name(AWinControl, P);
+  if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
+    gtk_widget_hide(p);
   SetCallbacks(p, WidgetInfo);
 end;
 

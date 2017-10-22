@@ -786,6 +786,8 @@ begin
   g_object_set_data(PGObject(TVWidget), 'lclcustomlistboxstyle', {%H-}gPointer(Ord(TListBox(AWinControl).Style)));
 
   // Sets the callbacks
+  if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
+    gtk_widget_hide(p);
   SetCallbacks(p, WidgetInfo);
 end;
 

@@ -24,7 +24,7 @@ uses
   glib2, gtk2, gdk2, gdk2pixbuf,
   // LCL
 ////////////////////////////////////////////////////
-  LCLType, Controls, Buttons, Graphics, GraphType,
+  LCLType, Controls, Buttons, Graphics, GraphType, Classes,
   {$IFDEF DebugLCLComponents}
   LazLoggerBase,
   {$ENDIF}
@@ -213,6 +213,8 @@ begin
   gtk_widget_size_allocate({%H-}PGtkWidget(Result), @Allocation);
 
   Set_RC_Name(AWinControl, {%H-}PGtkWidget(Result));
+  if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
+    gtk_widget_hide({%H-}PGtkWidget(Result));
   SetCallbacks({%H-}PGtkWidget(Result), WidgetInfo);
 end;
 

@@ -22,7 +22,7 @@ interface
 
 uses
   // RTL
-  glib2, gtk2, SysUtils, Math,
+  glib2, gtk2, SysUtils, Classes, Math,
   // LCL
   Controls, LCLType, LCLProc, Spin, StdCtrls,
   // Widgetset
@@ -229,6 +229,8 @@ begin
 
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
+  if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
+    gtk_widget_hide(Widget);
   SetCallbacks(Widget, WidgetInfo);
   if Result <> 0 then
   begin
