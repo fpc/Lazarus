@@ -41,9 +41,8 @@ uses
   testregistry, CodeToolManager, LinkScanner, TestStdCodetools, variants;
 
 const
-  CWPDefaultSignature = '// component writer V1.0';
+  CWPDefaultSignature = '// Pascal stream V1.0';
 type
-  TDummyComp = class(TComponent); // to access TComponent protected members
   TCWPFindAncestorEvent = procedure(Sender: TObject; Component: TComponent;
     const Name: string; var Ancestor, RootAncestor: TComponent) of object;
   TCWPGetMethodName = procedure(Sender: TObject; Instance: TPersistent;
@@ -62,6 +61,7 @@ type
   private
     FAssignOp: String;
     FCurIndent: integer;
+    FIgnoreChildren: Boolean;
     FIndentStep: integer;
     FLineEnding: string;
     FOnGetMethodName: TCWPGetMethodName;
@@ -76,12 +76,14 @@ type
     FRootAncestor: TComponent;
     FAncestors: TStringList;
     FAncestorPos: Integer;
-    //FCurrentPos: Integer;
+    FCurrentPos: Integer;
     FOnFindAncestor: TCWPFindAncestorEvent;
+    procedure AddToAncestorList(Component: TComponent);
     procedure DetermineAncestor(Component: TComponent);
     procedure DoFindAncestor(Component: TComponent);
     procedure SetRoot(const AValue: TComponent);
     procedure WriteComponentData(Instance: TComponent);
+    procedure WriteChildren(Component: TComponent);
     procedure WriteProperty(Instance: TPersistent; PropInfo: PPropInfo);
     procedure WriteProperties(Instance: TPersistent);
     function GetBoolLiteral(b: boolean): string;
@@ -116,6 +118,7 @@ type
     property CurIndent: integer read FCurIndent write FCurIndent;
     property IndentStep: integer read FIndentStep write FIndentStep;
     property Options: TCWPOptions read FOptions write FOptions;
+    property IgnoreChildren: Boolean read FIgnoreChildren write FIgnoreChildren;
   public
     // code snippets
     property LineEnding: string read FLineEnding write FLineEnding;
@@ -386,10 +389,14 @@ type
   { TCompPropPersistent }
 
   TCompPropPersistent = class(TComponent)
+    procedure OnA(Sender: TObject);
+    procedure OnB(Sender: TObject);
+    procedure OnC(Sender: TObject);
   private
     FAfter: longint;
     FBefore: longint;
     FMiddle: longint;
+    FOnClick: TNotifyEvent;
     FSub: TPersistentSimple;
     FSub2: TPersistentSimple;
   published
@@ -398,6 +405,32 @@ type
     property Middle: longint read FMiddle write FMiddle;
     property Sub2: TPersistentSimple read FSub2 write FSub2;
     property After: longint read FAfter write FAfter;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
+  end;
+
+  { TSimpleControl }
+
+  TSimpleControl = class(TComponent)
+    procedure OnA(Sender: TObject);
+    procedure OnB(Sender: TObject);
+    procedure OnC(Sender: TObject);
+  private
+    FChildren: TFPList;
+    FNext: TSimpleControl;
+    FOnClick: TNotifyEvent;
+    FParent: TSimpleControl;
+    FSub: TPersistentSimple;
+    procedure SetParent(const AValue: TSimpleControl);
+  protected
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Parent: TSimpleControl read FParent write SetParent;
+  published
+    property Next: TSimpleControl read FNext write FNext;
+    property Sub: TPersistentSimple read FSub write FSub;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
   { TTestCompReaderWriterPas }
@@ -424,7 +457,7 @@ type
     procedure TestWideString_SrcCodePageUTF8;
     procedure TestVariant;
     procedure TestPropPersistent;
-    procedure TestChildComponent; // ToDo
+    procedure TestChildComponent;
   end;
 
 implementation
@@ -495,6 +528,7 @@ end;
 
 
 Type
+  TAccessComp = class(TComponent); // to access TComponent protected members
 
   { TPosComponent }
 
@@ -503,6 +537,75 @@ Type
     FComponent: TComponent;
     constructor Create(APos: Integer; AComponent: TComponent);
   end;
+
+{ TSimpleControl }
+
+procedure TSimpleControl.OnA(Sender: TObject);
+begin
+  if Sender=nil then ;
+end;
+
+procedure TSimpleControl.OnB(Sender: TObject);
+begin
+  if Sender=nil then ;
+end;
+
+procedure TSimpleControl.OnC(Sender: TObject);
+begin
+  if Sender=nil then ;
+end;
+
+procedure TSimpleControl.SetParent(const AValue: TSimpleControl);
+begin
+  if FParent=AValue then Exit;
+  if FParent<>nil then
+    FParent.FChildren.Remove(Self);
+  FParent:=AValue;
+  if FParent<>nil then
+    FParent.FChildren.Add(Self);
+end;
+
+procedure TSimpleControl.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var
+  i: Integer;
+begin
+  if Root=nil then ;
+  for i:=0 to FChildren.Count-1 do
+    Proc(TComponent(FChildren[i]));
+end;
+
+constructor TSimpleControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FChildren:=TFPList.Create;
+end;
+
+destructor TSimpleControl.Destroy;
+var
+  i: Integer;
+begin
+  for i:=FChildren.Count-1 downto 0 do
+    TSimpleControl(FChildren[i]).Parent:=nil;
+  FreeAndNil(FChildren);
+  inherited Destroy;
+end;
+
+{ TCompPropPersistent }
+
+procedure TCompPropPersistent.OnA(Sender: TObject);
+begin
+  if Sender=nil then ;
+end;
+
+procedure TCompPropPersistent.OnB(Sender: TObject);
+begin
+  if Sender=nil then ;
+end;
+
+procedure TCompPropPersistent.OnC(Sender: TObject);
+begin
+  if Sender=nil then ;
+end;
 
 { TPosComponent }
 
@@ -661,6 +764,11 @@ end;
 
 { TCompWriterPas }
 
+procedure TCompWriterPas.AddToAncestorList(Component: TComponent);
+begin
+  FAncestors.AddObject(Component.Name,TPosComponent.Create(FAncestors.Count,Component));
+end;
+
 procedure TCompWriterPas.DetermineAncestor(Component: TComponent);
 var
   i : Integer;
@@ -730,6 +838,52 @@ begin
     WriteIndent;
     Write('end;');
     WriteLn;
+  end;
+  if not IgnoreChildren then
+    WriteChildren(Instance);
+end;
+
+procedure TCompWriterPas.WriteChildren(Component: TComponent);
+var
+  SRoot, SRootA: TComponent;
+  SList: TStringList;
+  SPos, i: Integer;
+begin
+  // Write children list.
+  // While writing children, the ancestor environment must be saved
+  // This is recursive...
+  SRoot:=FRoot;
+  SRootA:=FRootAncestor;
+  SList:=FAncestors;
+  SPos:=FCurrentPos;
+  try
+    FAncestors:=Nil;
+    FCurrentPos:=0;
+    FAncestorPos:=-1;
+    if csInline in Component.ComponentState then
+      FRoot:=Component;
+    if (FAncestor is TComponent) then
+    begin
+      FAncestors:=TStringList.Create;
+      if csInline in TComponent(FAncestor).ComponentState then
+        FRootAncestor := TComponent(FAncestor);
+      TAccessComp(FAncestor).GetChildren(@AddToAncestorList,FRootAncestor);
+      FAncestors.Sorted:=True;
+    end;
+    try
+      TAccessComp(Component).GetChildren(@WriteComponent, FRoot);
+    finally
+      if Assigned(FAncestor) then
+        for i:=0 to FAncestors.Count-1 do
+          FAncestors.Objects[i].Free;
+      FreeAndNil(FAncestors);
+    end;
+  finally
+    FAncestors:=SList;
+    FRoot:=SRoot;
+    FRootAncestor:=SRootA;
+    FCurrentPos:=SPos;
+    FAncestorPos:=SPos;
   end;
 end;
 
@@ -1915,14 +2069,27 @@ end;
 
 procedure TTestCompReaderWriterPas.TestChildComponent;
 var
-  aRoot: TCompVariants;
+  aRoot, Button1: TSimpleControl;
 begin
-  aRoot:=TCompVariants.Create(nil);
+  aRoot:=TSimpleControl.Create(nil);
   try
     with aRoot do begin
       Name:=aRoot.ClassName+'1';
+      Tag:=1;
     end;
+    Button1:=TSimpleControl.Create(aRoot);
+    with Button1 do begin
+      Name:='Button1';
+      Tag:=2;
+      Parent:=aRoot;
+    end;
+
     TestWriteDescendant('TestChildComponent',aRoot,nil,[
+    'Tag:=1;',
+    'with Button1 do begin',
+    '  Name:=''Button1'';',
+    '  Tag:=2;',
+    'end;',
     '']);
   finally
     aRoot.Free;
