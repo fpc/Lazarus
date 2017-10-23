@@ -6,11 +6,14 @@
 Working:
 - boolean
 - integer
-- strings
+- strings, codepage system and UTF8
+- float, currency
 - enum, custom enum range
 - set of enum, set of custom enum range
 - variant
 - method
+- persistent
+- root children
 
 ToDo:
 - enum: add unit, avoid nameclash with-do
@@ -18,13 +21,14 @@ ToDo:
 - set of char
 - custom integer TColor, add unit, avoid nameclash with-do
 - method, avoid nameclash with-do
-- TComponent.Left/Right
-- subcomponents
-- cycle in subcomponents
+- reference not yet created child component -> delay property setter
 - ancestor
 - childpos
 - inline component
+- reference foreign root
+- reference foreign component
 - collection
+- TComponent.Left/Right
 - DefineProperties
 - tkInterface
 }
@@ -86,6 +90,7 @@ type
     procedure WriteChildren(Component: TComponent);
     procedure WriteProperty(Instance: TPersistent; PropInfo: PPropInfo);
     procedure WriteProperties(Instance: TPersistent);
+    function GetComponentPath(Component: TComponent): string;
     function GetBoolLiteral(b: boolean): string;
     function GetStringLiteral(const s: string): string;
     function GetWStringLiteral(p: PWideChar; Count: integer): string;
@@ -462,6 +467,13 @@ type
 
 implementation
 
+function CreateRootName(aComponent: TComponent): string;
+begin
+  Result:=aComponent.ClassName;
+  Delete(Result,1,1);
+  Result:=Result+'1';
+end;
+
 function IsValidUTF8(p: PChar): integer;
 var
   c: Char;
@@ -813,12 +825,13 @@ procedure TCompWriterPas.WriteComponentData(Instance: TComponent);
   procedure WriteSetParent;
   begin
     if Parent=nil then exit;
-    WriteAssign('Parent',Parent.Name);
+    WriteAssign('Parent',GetComponentPath(Parent));
   end;
 
 begin
   if Instance<>LookupRoot then
   begin
+    WriteAssign(Instance.Name,Instance.ClassName+'.Create(Self)');
     WriteIndent;
     Write('with ');
     Write(Instance.Name);
@@ -845,7 +858,7 @@ end;
 
 procedure TCompWriterPas.WriteChildren(Component: TComponent);
 var
-  SRoot, SRootA: TComponent;
+  SRoot, SRootA, SParent: TComponent;
   SList: TStringList;
   SPos, i: Integer;
 begin
@@ -856,10 +869,12 @@ begin
   SRootA:=FRootAncestor;
   SList:=FAncestors;
   SPos:=FCurrentPos;
+  SParent:=Parent;
   try
     FAncestors:=Nil;
     FCurrentPos:=0;
     FAncestorPos:=-1;
+    FParent:=Component;
     if csInline in Component.ComponentState then
       FRoot:=Component;
     if (FAncestor is TComponent) then
@@ -879,6 +894,7 @@ begin
       FreeAndNil(FAncestors);
     end;
   finally
+    FParent:=SParent;
     FAncestors:=SList;
     FRoot:=SRoot;
     FRootAncestor:=SRootA;
@@ -1298,6 +1314,14 @@ begin
   // ToDo: Instance.DefineProperties(Self);
 end;
 
+function TCompWriterPas.GetComponentPath(Component: TComponent): string;
+begin
+  if Component=LookupRoot then
+    Result:='Self'
+  else
+    Result:=Component.Name;
+end;
+
 function TCompWriterPas.GetBoolLiteral(b: boolean): string;
 begin
   if b then
@@ -1671,7 +1695,7 @@ var
 begin
   AComponent:=TCompBaseTypes.Create(nil);
   try
-    AComponent.Name:=AComponent.ClassName+'1';
+    AComponent.Name:=CreateRootName(AComponent);
     TestWriteDescendant('TestBaseTypesSkipDefaultValue',AComponent,nil,[
     ]);
   finally
@@ -1686,7 +1710,7 @@ begin
   AComponent:=TCompBaseTypesCustomStored.Create(nil);
   try
     with AComponent do begin
-      Name:=AComponent.ClassName+'1';
+      Name:=CreateRootName(AComponent);
       AByte:=0;
       DefAByte:=AByte+1;
       AShortInt:=0;
@@ -1755,7 +1779,7 @@ begin
   AComponent:=TCompBaseTypesCustomStored.Create(nil);
   try
     with AComponent do begin
-      Name:=AComponent.ClassName+'1';
+      Name:=CreateRootName(AComponent);
       ABoolean:=low(boolean);
       DefABoolean:=not ABoolean;
       AByteBool:=boolean(low(byte));
@@ -1837,7 +1861,7 @@ begin
   AComponent:=TCompBaseTypesCustomStored.Create(nil);
   try
     with AComponent do begin
-      Name:=AComponent.ClassName+'1';
+      Name:=CreateRootName(AComponent);
       ABoolean:=high(boolean);
       DefABoolean:=not ABoolean;
       AByteBool:=boolean(high(byte));
@@ -1917,7 +1941,7 @@ begin
   AComponent:=TCompBaseTypes.Create(nil);
   try
     with AComponent do begin
-      Name:=AComponent.ClassName+'1';
+      Name:=CreateRootName(AComponent);
       AString:=#9'A'#13#10;
       AShortString:=#9'A'#13#10;
     end;
@@ -1936,7 +1960,7 @@ begin
   AComponent:=TCompBaseTypes.Create(nil);
   try
     with AComponent do begin
-      Name:=AComponent.ClassName+'1';
+      Name:=CreateRootName(AComponent);
       AString:='äöü';
       AShortString:='äöü';
     end;
@@ -1956,7 +1980,7 @@ begin
   AComponent:=TCompBaseTypes.Create(nil);
   try
     with AComponent do begin
-      Name:=AComponent.ClassName+'1';
+      Name:=CreateRootName(AComponent);
       AWideString:=UTF8ToUTF16('äAöü');
       AUnicodeString:=UTF8ToUTF16('äöBCü');
     end;
@@ -1977,7 +2001,7 @@ begin
   AComponent:=TCompBaseTypes.Create(nil);
   try
     with AComponent do begin
-      Name:=AComponent.ClassName+'1';
+      Name:=CreateRootName(AComponent);
       AWideString:=UTF8ToUTF16('äöü');
       AUnicodeString:=UTF8ToUTF16('äöü');
     end;
@@ -1998,7 +2022,7 @@ begin
   AComponent:=TCompVariants.Create(nil);
   try
     with AComponent do begin
-      Name:=AComponent.ClassName+'1';
+      Name:=CreateRootName(AComponent);
       V1:=high(byte);
       V2:=low(ShortInt);
       V3:=high(Word);
@@ -2040,7 +2064,7 @@ begin
   aRoot:=TCompPropPersistent.Create(nil);
   try
     with aRoot do begin
-      Name:=aRoot.ClassName+'1';
+      Name:=CreateRootName(aRoot);
       Before:=1;
       Sub:=TPersistentSimple.Create;
       Sub.Size:=11;
@@ -2074,7 +2098,7 @@ begin
   aRoot:=TSimpleControl.Create(nil);
   try
     with aRoot do begin
-      Name:=aRoot.ClassName+'1';
+      Name:=CreateRootName(aRoot);
       Tag:=1;
     end;
     Button1:=TSimpleControl.Create(aRoot);
@@ -2086,9 +2110,11 @@ begin
 
     TestWriteDescendant('TestChildComponent',aRoot,nil,[
     'Tag:=1;',
+    'Button1:=TSimpleControl.Create(Self);',
     'with Button1 do begin',
     '  Name:=''Button1'';',
     '  Tag:=2;',
+    '  Parent:=Self;',
     'end;',
     '']);
   finally
