@@ -80,6 +80,8 @@ type
     function GetStringLiteral(const s: string): string;
     function GetWStringLiteral(p: PWideChar; Count: integer): string;
     function GetFloatLiteral(const e: Extended): string;
+    function GetEnumExpr(TypeInfo: PTypeInfo; Value: integer;
+      AllowOutOfRange: boolean): string;
   public
     constructor Create(AStream: TStream);
     destructor Destroy; override;
@@ -729,12 +731,12 @@ begin
                 begin
                   if s<>'' then s:=s+',';
                   // ToDo: store needed unit
-                  s:=s+GetEnumName(CompType, i);
+                  s:=s+GetEnumExpr(CompType, i,false);
                   j:=i;
                   while (i<31) and (byte(i+1) in TSet(Int32Value)) do
                     inc(i);
                   if i>j then
-                    s:=s+'..'+GetEnumName(CompType, i);
+                    s:=s+'..'+GetEnumExpr(CompType, i,false);
                 end;
                 inc(i);
               end;
@@ -742,7 +744,7 @@ begin
               end;
             tkEnumeration:
               // ToDo: store needed unit
-              WriteAssign(PropName,GetEnumName(PropType, Int32Value));
+              WriteAssign(PropName,GetEnumExpr(PropType, Int32Value,true));
           end;
         end;
       end;
@@ -781,6 +783,7 @@ begin
               if Ident='' then
                 WriteAssign(PropName,'nil')
               else
+                // ToDo: check nameclash of Ident with current with-do block
                 WriteAssign(PropName,'@'+Ident);
             end;
           end;
@@ -788,13 +791,14 @@ begin
           if (MethodValue.Code <> DefMethodValue.Code) then
           begin
             if not Assigned(MethodValue.Code) then
-              s:=''
+              Ident:=''
             else
-              s:=FLookupRoot.MethodName(MethodValue.Code);
-            if s='' then
+              Ident:=FLookupRoot.MethodName(MethodValue.Code);
+            if Ident='' then
               WriteAssign(PropName,'nil')
             else
-              WriteAssign(PropName,'@'+s);
+              // ToDo: check nameclash of Ident with current with-do block
+              WriteAssign(PropName,'@'+Ident);
           end;
         end;
       end;
@@ -1055,6 +1059,20 @@ begin
   Result:=s;
 end;
 
+function TCompWriterPas.GetEnumExpr(TypeInfo: PTypeInfo; Value: integer;
+  AllowOutOfRange: boolean): string;
+var
+  PT: PTypeData;
+begin
+  PT:=GetTypeData(TypeInfo);
+  if (Value>=PT^.MinValue) and (Value<=PT^.MaxValue) then
+    Result:=GetEnumName(TypeInfo,Value)
+  else if AllowOutOfRange then
+    Result:=TypeInfo^.Name+'('+IntToStr(Value)+')'
+  else
+    raise EStreamError.Create('enum '+IntToStr(Value)+' is out of range of type "'+TypeInfo^.Name+'"');
+end;
+
 constructor TCompWriterPas.Create(AStream: TStream);
 begin
   FIndentStep:=2;
@@ -1277,11 +1295,19 @@ begin
       DefASingle:=ASingle+1;
       ADouble:=0;
       DefADouble:=ADouble+1;
+      // ToDo: extended
       AChar:=#0;
       DefAChar:=succ(AChar);
       AWideChar:=#0;
       DefAWideChar:=succ(AWideChar);
-      // ToDo: extended
+      Enum:=TEnum(0);
+      DefEnum:=succ(Enum);
+      EnumRg:=TEnumRg(0);
+      DefEnumRg:=succ(EnumRg);
+      SetOfEnum:=[];
+      DefSetOfEnum:=[red];
+      SetOfEnumRg:=[];
+      DefSetOfEnumRg:=[red];
     end;
     TestWriteDescendant('TestBaseTypesZeroes',AComponent,nil,[
     'AByte:=0;',
@@ -1295,6 +1321,10 @@ begin
     'ADouble:= 0.0;',
     'AChar:=#0;',
     'AWideChar:=#0;',
+    'Enum:=red;',
+    'EnumRg:=TEnumRg(0);',
+    'SetOfEnum:=[];',
+    'SetOfEnumRg:=[];',
     '']);
   finally
     AComponent.Free;
