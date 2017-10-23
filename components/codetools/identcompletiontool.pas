@@ -3523,7 +3523,10 @@ begin
       if UpAtomIs('CASE') then
         CaseAtom:=CurPos
     until (CurPos.EndPos>SrcLen) or (CurPos.EndPos>CleanCursorPos);
-    if CaseAtom.StartPos<1 then exit;
+    if CaseAtom.StartPos<1 then begin
+      debugln(['TIdentCompletionTool.GetValuesOfCaseVariable "case" not found']);
+      exit;
+    end;
 
     // find case variable
     EndPos:=FindEndOfExpression(CaseAtom.EndPos);

@@ -1823,11 +1823,13 @@ begin
   while (IdentEnd<=length(Source))
   and (IsIdentChar[Source[IdentEnd]]) do
     inc(IdentEnd);
-  while (IdentStart<IdentEnd)
+  while (IdentStart<Position)
   and (not IsIdentStartChar[Source[IdentStart]]) do
     inc(IdentStart);
   if (IdentStart>1) and (Source[IdentStart-1]='&') then
     dec(IdentStart);
+  if not IsIdentStartChar[Source[IdentStart]] then
+    IdentEnd:=IdentStart;
 end;
 
 function GetIdentStartPosition(const Source: string; Position: integer
