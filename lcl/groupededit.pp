@@ -1167,7 +1167,6 @@ begin
   FDirectInput := True;
   FIsReadOnly := False;
   TabStop := True;
-  inherited TabStop := False;
   FocusOnBuddyClick := False;
   FSpacing := 0;
   SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);

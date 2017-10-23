@@ -368,6 +368,12 @@ begin
     SetInitialBounds(0, 0, CX, CY);
 end;
 
+procedure TCustomFloatSpinEditEx.GetTabOrderList(List: TFPList);
+begin
+// just the TCustomEditButton as container should be tabable, see issue #32335
+// so no inherited adding of child controls
+end;
+
 function TCustomFloatSpinEditEx.GetLimitedValue(const AValue: Double): Double;
 begin
   Result := AValue;
