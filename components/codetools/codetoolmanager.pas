@@ -513,7 +513,7 @@ type
           out ListOfPCodeXYPosition: TFPList;
           SkipAbstractsInStartClass: boolean = false): boolean;
     function GetValuesOfCaseVariable(Code: TCodeBuffer; X,Y: integer;
-          List: TStrings; WithTypeDefIfScoped: boolean): boolean;
+          List: TStrings; WithTypeDefIfScoped: boolean = true): boolean;
     function GatherOverloads(Code: TCodeBuffer; X,Y: integer;
           out Graph: TDeclarationOverloadsGraph): boolean;
 

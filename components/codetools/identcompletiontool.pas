@@ -434,7 +434,7 @@ type
                                  out ListOfPCodeXYPosition: TFPList;
                                  SkipAbstractsInStartClass: boolean = false): boolean;
     function GetValuesOfCaseVariable(const CursorPos: TCodeXYPosition;
-                                     List: TStrings; WithTypeDefIfScoped: boolean): boolean;
+                                     List: TStrings; WithTypeDefIfScoped: boolean = true): boolean;
     property Beautifier: TBeautifyCodeOptions read FBeautifier write FBeautifier;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
