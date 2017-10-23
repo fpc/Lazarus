@@ -4,10 +4,13 @@
      ./runtests --format=plain --suite=TTestCompReaderWriterPas.TestBaseTypesMaxValues
 
 Working:
+- boolean
 - integer
 - strings
 - enum, custom enum range
 - set of enum, set of custom enum range
+- variant
+- method
 
 ToDo:
 - enum: add unit, avoid nameclash with-do
@@ -15,8 +18,6 @@ ToDo:
 - set of char
 - custom integer TColor, add unit, avoid nameclash with-do
 - method, avoid nameclash with-do
-- variant
-- datetime
 - TComponent.Left/Right
 - subcomponents
 - cycle in subcomponents
@@ -25,6 +26,7 @@ ToDo:
 - inline component
 - collection
 - DefineProperties
+- tkInterface
 }
 unit TestCompReaderWriterPas;
 
@@ -81,7 +83,7 @@ type
     procedure SetRoot(const AValue: TComponent);
     procedure WriteComponentData(Instance: TComponent);
     procedure WriteProperty(Instance: TPersistent; PropInfo: PPropInfo);
-    procedure WriteProperties(Instance: TComponent);
+    procedure WriteProperties(Instance: TPersistent);
     function GetBoolLiteral(b: boolean): string;
     function GetStringLiteral(const s: string): string;
     function GetWStringLiteral(p: PWideChar; Count: integer): string;
@@ -370,6 +372,34 @@ type
     property V20: variant read FV20 write FV20;
   end;
 
+  { TPersistentSimple }
+
+  TPersistentSimple = class(TPersistent)
+  private
+    FSize: longint;
+    FSub: TPersistentSimple;
+  published
+    property Size: longint read FSize write FSize;
+    property Sub: TPersistentSimple read FSub write FSub;
+  end;
+
+  { TCompPropPersistent }
+
+  TCompPropPersistent = class(TComponent)
+  private
+    FAfter: longint;
+    FBefore: longint;
+    FMiddle: longint;
+    FSub: TPersistentSimple;
+    FSub2: TPersistentSimple;
+  published
+    property Before: longint read FBefore write FBefore;
+    property Sub: TPersistentSimple read FSub write FSub;
+    property Middle: longint read FMiddle write FMiddle;
+    property Sub2: TPersistentSimple read FSub2 write FSub2;
+    property After: longint read FAfter write FAfter;
+  end;
+
   { TTestCompReaderWriterPas }
 
   TTestCompReaderWriterPas = class(TCustomTestCTStdCodetools)
@@ -393,6 +423,8 @@ type
     procedure TestWideString_SrcCodePageSystem;
     procedure TestWideString_SrcCodePageUTF8;
     procedure TestVariant;
+    procedure TestPropPersistent;
+    procedure TestChildComponent; // ToDo
   end;
 
 implementation
@@ -707,10 +739,10 @@ type
   TSet = set of 0..31;
 var
   PropType, CompType: PTypeInfo;
-  ObjValue: TObject;
+  ObjValue, AncestorObj: TObject;
   HasAncestor, BoolValue, DefBoolValue: Boolean;
   Int32Value, DefValue: longint;
-  PropName, Ident, s, StrValue, DefStrValue: String;
+  PropName, Ident, s, StrValue, DefStrValue, Name, SavedPropPath: String;
   IntToIdentFn: TIntToIdent;
   i, j: Integer;
   Int64Value, DefInt64Value: Int64;
@@ -720,6 +752,8 @@ var
   UStrValue, UDefStrValue: UnicodeString;
   VarValue, DefVarValue: tvardata;
   aTypeData: PTypeData;
+  Component, C: TComponent;
+  SavedAncestor: TPersistent;
 begin
   // do not stream properties without getter
   if not Assigned(PropInfo^.GetProc) then
@@ -923,24 +957,24 @@ begin
           begin
             // can't use variant() typecast, pulls in variants unit
             case VarValue.vtype of
-            varsmallint : WriteAssign(PropName,IntToStr(VarValue.vsmallint));
-            varinteger : WriteAssign(PropName,IntToStr(VarValue.vinteger));
-            varsingle : WriteAssign(PropName,GetFloatLiteral(VarValue.vsingle));
-            vardouble : WriteAssign(PropName,GetFloatLiteral(VarValue.vdouble));
-            vardate : WriteAssign(PropName,GetFloatLiteral(VarValue.vdate));
-            varcurrency : WriteAssign(PropName,GetCurrencyLiteral(VarValue.vcurrency));
+            varsmallint : WriteAssign(PropName,'SmallInt('+IntToStr(VarValue.vsmallint)+')');
+            varinteger : WriteAssign(PropName,'LongInt('+IntToStr(VarValue.vinteger)+')');
+            varsingle : WriteAssign(PropName,'Single('+GetFloatLiteral(VarValue.vsingle)+')');
+            vardouble : WriteAssign(PropName,'Double('+GetFloatLiteral(VarValue.vdouble)+')');
+            vardate : WriteAssign(PropName,'TDateTime('+GetFloatLiteral(VarValue.vdate)+')');
+            varcurrency : WriteAssign(PropName,'Currency('+GetCurrencyLiteral(VarValue.vcurrency)+')');
             //varolestr : (volestr : pwidechar);
             //vardispatch : (vdispatch : pointer);
             //varerror : (verror : hresult);
             varboolean : WriteAssign(PropName,GetBoolLiteral(VarValue.vboolean));
             //varunknown : (vunknown : pointer);
             // vardecimal : ( : );
-            varshortint : WriteAssign(PropName,IntToStr(VarValue.vshortint));
-            varbyte : WriteAssign(PropName,IntToStr(VarValue.vbyte));
-            varword : WriteAssign(PropName,IntToStr(VarValue.vword));
-            varlongword : WriteAssign(PropName,IntToStr(VarValue.vlongword));
-            varint64 : WriteAssign(PropName,IntToStr(VarValue.vint64));
-            varqword : WriteAssign(PropName,IntToStr(VarValue.vqword));
+            varshortint : WriteAssign(PropName,'ShortInt('+IntToStr(VarValue.vshortint)+')');
+            varbyte : WriteAssign(PropName,'Byte('+IntToStr(VarValue.vbyte)+')');
+            varword : WriteAssign(PropName,'Word('+IntToStr(VarValue.vword)+')');
+            varlongword : WriteAssign(PropName,'LongWord('+IntToStr(VarValue.vlongword)+')');
+            varint64 : WriteAssign(PropName,'Int64('+IntToStr(VarValue.vint64)+')');
+            varqword : WriteAssign(PropName,'QWord('+IntToStr(VarValue.vqword)+')');
             // duplicate: varword64
             varstring : WriteAssign(PropName,GetStringLiteral(AnsiString(VarValue.vstring)));
             //varany :  (vany : pointer);
@@ -955,6 +989,110 @@ begin
             end;
             //ToDo WriteVariant(pvariant(@VarValue)^);
           end;
+      end;
+    tkClass:
+      begin
+        ObjValue := TObject(GetObjectProp(Instance, PropInfo));
+        if HasAncestor then
+        begin
+          AncestorObj := TObject(GetObjectProp(Ancestor, PropInfo));
+          if (AncestorObj is TComponent) and
+             (ObjValue is TComponent) then
+          begin
+            //debugln(['TWriter.WriteProperty AncestorObj=',TComponent(AncestorObj).Name,' OwnerFit=',TComponent(AncestorObj).Owner = FRootAncestor,' ',TComponent(ObjValue).Name,' OwnerFit=',TComponent(ObjValue).Owner = Root]);
+            if (AncestorObj<>ObjValue) and
+               (TComponent(AncestorObj).Owner = FRootAncestor) and
+               (TComponent(ObjValue).Owner = Root) and
+               (CompareText(TComponent(AncestorObj).Name,TComponent(ObjValue).Name)=0) then
+            begin
+              // different components, but with the same name
+              // -> keep property value
+              AncestorObj := ObjValue;
+            end;
+          end;
+        end else
+          AncestorObj := nil;
+
+        if not Assigned(ObjValue) then
+        begin
+          if ObjValue <> AncestorObj then
+            WriteAssign(PropName,'Nil');
+        end
+        else if ObjValue.InheritsFrom(TPersistent) then
+        begin
+          // Subcomponents are streamed the same way as persistents
+          if ObjValue.InheritsFrom(TComponent)
+            and ((not (csSubComponent in TComponent(ObjValue).ComponentStyle))
+                 or ((TComponent(ObjValue).Owner<>Instance) and (TComponent(ObjValue).Owner<>Nil))) then
+          begin
+            Component := TComponent(ObjValue);
+            if (ObjValue <> AncestorObj)
+                and not (csTransient in Component.ComponentStyle) then
+            begin
+              // set property value
+              Name:= '';
+              C:= Component;
+              While (C<>Nil) and (C.Name<>'') do
+              begin
+                If (Name<>'') Then
+                  Name:='.'+Name;
+                if C.Owner = LookupRoot then
+                begin
+                  Name := C.Name+Name;
+                  break;
+                end
+                else if C = LookupRoot then
+                begin
+                  Name := 'Self' + Name;
+                  break;
+                end;
+                Name:=C.Name + Name;
+                C:= C.Owner;
+              end;
+              if (C=nil) and (Component.Owner=nil) then
+                if (Name<>'') then // Component is a foreign root
+                  ; // Name:=Name+'.Owner';
+              if Length(Name) > 0 then
+                WriteAssign(PropName,Name);
+            end; //(ObjValue <> AncestorObj)
+          end // ObjValue.InheritsFrom(TComponent)
+          else
+          begin
+            // keep property value, set sub properties recursively with full path
+            // e.g. Font.Size:=5;
+            SavedAncestor := Ancestor;
+            SavedPropPath := FPropPath;
+            try
+              FPropPath := FPropPath + PPropInfo(PropInfo)^.Name + '.';
+              if HasAncestor then
+                Ancestor := TPersistent(GetObjectProp(Ancestor, PropInfo));
+              WriteProperties(TPersistent(ObjValue));
+            finally
+              Ancestor := SavedAncestor;
+              FPropPath := SavedPropPath;
+            end;
+            if ObjValue.InheritsFrom(TCollection) then
+            begin
+              if (not HasAncestor) or (not CollectionsEqual(TCollection(ObjValue),
+                TCollection(GetObjectProp(Ancestor, PropInfo)),Root,RootAncestor)) then
+              begin
+                // create collection items
+                {$IFDEF VerboseCompWriterPas}
+                debugln(['TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind,' ObjValue=',DbgSName(ObjValue)]);
+                raise EWriteError.Create('storing collection not yet supported');
+                {$ENDIF}
+                //Driver.BeginProperty(FPropPath + PPropInfo(PropInfo)^.Name);
+                SavedPropPath := FPropPath;
+                try
+                  SetLength(FPropPath, 0);
+                  //WriteCollection(TCollection(ObjValue));
+                finally
+                  FPropPath := SavedPropPath;
+                end;
+              end;
+            end // TCollection
+          end;
+        end; // Inheritsfrom(TPersistent)
       end;
     tkInt64, tkQWord:
       begin
@@ -989,7 +1127,7 @@ begin
   end;
 end;
 
-procedure TCompWriterPas.WriteProperties(Instance: TComponent);
+procedure TCompWriterPas.WriteProperties(Instance: TPersistent);
 var
   PropCount, i: integer;
   PropList: PPropList;
@@ -1722,22 +1860,72 @@ begin
       V13:=currency(17.0001);
     end;
     TestWriteDescendant('TestVariant',AComponent,nil,[
-    'V1:=255;',
-    'V2:=-128;',
-    'V3:=65535;',
-    'V4:=-32768;',
-    'V5:=4294967295;',
-    'V6:=-2147483648;',
-    'V7:=18446744073709551615;',
-    'V8:=-9223372036854775808;',
+    'V1:=Byte(255);',
+    'V2:=ShortInt(-128);',
+    'V3:=Word(65535);',
+    'V4:=SmallInt(-32768);',
+    'V5:=LongWord(4294967295);',
+    'V6:=LongInt(-2147483648);',
+    'V7:=QWord(18446744073709551615);',
+    'V8:=Int64(-9223372036854775808);',
     'V9:=True;',
     'V10:=''äöü'';',
-    'V11:=-1.25;',
-    'V12:=1.5;',
-    'V13:=1.70001E1;',
+    'V11:=Double(-1.25);',
+    'V12:=Double(1.5);',
+    'V13:=Currency(1.70001E1);',
     '']);
   finally
     AComponent.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestPropPersistent;
+var
+  aRoot: TCompPropPersistent;
+begin
+  aRoot:=TCompPropPersistent.Create(nil);
+  try
+    with aRoot do begin
+      Name:=aRoot.ClassName+'1';
+      Before:=1;
+      Sub:=TPersistentSimple.Create;
+      Sub.Size:=11;
+      Middle:=2;
+      Sub2:=TPersistentSimple.Create;
+      Sub2.Size:=21;
+      Sub2.Sub:=TPersistentSimple.Create;
+      Sub2.Sub.Size:=211;
+      After:=3;
+    end;
+    TestWriteDescendant('TestPropPersistent',aRoot,nil,[
+    'Before:=1;',
+    'Sub.Size:=11;',
+    'Middle:=2;',
+    'Sub2.Size:=21;',
+    'Sub2.Sub.Size:=211;',
+    'After:=3;',
+    '']);
+  finally
+    FreeAndNil(aRoot.FSub2.FSub);
+    FreeAndNil(aRoot.FSub2);
+    FreeAndNil(aRoot.FSub);
+    aRoot.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestChildComponent;
+var
+  aRoot: TCompVariants;
+begin
+  aRoot:=TCompVariants.Create(nil);
+  try
+    with aRoot do begin
+      Name:=aRoot.ClassName+'1';
+    end;
+    TestWriteDescendant('TestChildComponent',aRoot,nil,[
+    '']);
+  finally
+    aRoot.Free;
   end;
 end;
 
