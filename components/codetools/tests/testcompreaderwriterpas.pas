@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, typinfo, RtlConsts, LazLoggerBase, LazUTF8, fpcunit,
-  testregistry, CodeToolManager, LinkScanner, TestStdCodetools;
+  testregistry, CodeToolManager, LinkScanner, TestStdCodetools, variants;
 
 const
   CWPDefaultSignature = '// component writer V1.0';
@@ -82,6 +82,7 @@ type
     procedure WriteComponentData(Instance: TComponent);
     procedure WriteProperty(Instance: TPersistent; PropInfo: PPropInfo);
     procedure WriteProperties(Instance: TComponent);
+    function GetBoolLiteral(b: boolean): string;
     function GetStringLiteral(const s: string): string;
     function GetWStringLiteral(p: PWideChar; Count: integer): string;
     function GetFloatLiteral(const e: Extended): string;
@@ -320,6 +321,53 @@ type
     property Event: TNotifyEvent read FEvent write FEvent stored EventIsStored;
   end;
 
+  { TCompVariants }
+
+  TCompVariants = class(TComponent)
+  private
+    FV1: variant;
+    FV10: variant;
+    FV11: variant;
+    FV12: variant;
+    FV13: variant;
+    FV14: variant;
+    FV15: variant;
+    FV16: variant;
+    FV17: variant;
+    FV18: variant;
+    FV19: variant;
+    FV2: variant;
+    FV20: variant;
+    FV3: variant;
+    FV4: variant;
+    FV5: variant;
+    FV6: variant;
+    FV7: variant;
+    FV8: variant;
+    FV9: variant;
+  published
+    property V1: variant read FV1 write FV1;
+    property V2: variant read FV2 write FV2;
+    property V3: variant read FV3 write FV3;
+    property V4: variant read FV4 write FV4;
+    property V5: variant read FV5 write FV5;
+    property V6: variant read FV6 write FV6;
+    property V7: variant read FV7 write FV7;
+    property V8: variant read FV8 write FV8;
+    property V9: variant read FV9 write FV9;
+    property V10: variant read FV10 write FV10;
+    property V11: variant read FV11 write FV11;
+    property V12: variant read FV12 write FV12;
+    property V13: variant read FV13 write FV13;
+    property V14: variant read FV14 write FV14;
+    property V15: variant read FV15 write FV15;
+    property V16: variant read FV16 write FV16;
+    property V17: variant read FV17 write FV17;
+    property V18: variant read FV18 write FV18;
+    property V19: variant read FV19 write FV19;
+    property V20: variant read FV20 write FV20;
+  end;
+
   { TTestCompReaderWriterPas }
 
   TTestCompReaderWriterPas = class(TCustomTestCTStdCodetools)
@@ -342,6 +390,7 @@ type
     procedure TestStringUTF8;
     procedure TestWideString_SrcCodePageSystem;
     procedure TestWideString_SrcCodePageUTF8;
+    procedure TestVariant;
   end;
 
 implementation
@@ -689,7 +738,7 @@ begin
   HasAncestor := Assigned(Ancestor) and ((Instance = Root) or
     (Instance.ClassType = Ancestor.ClassType));
   PropName:=FPropPath + PropInfo^.Name;
-  System.writeln('TWriter.WriteProperty PropName="',PropName,'" TypeName=',PropType^.Name,' Kind=',GetEnumName(TypeInfo(TTypeKind),ord(PropType^.Kind)),' HasAncestor=',HasAncestor);
+  debugln(['TWriter.WriteProperty PropName="',PropName,'" TypeName=',PropType^.Name,' Kind=',GetEnumName(TypeInfo(TTypeKind),ord(PropType^.Kind)),' HasAncestor=',HasAncestor]);
 
   case PropType^.Kind of
     tkInteger, tkChar, tkEnumeration, tkSet, tkWChar:
@@ -699,7 +748,7 @@ begin
           DefValue := GetOrdProp(Ancestor, PropInfo)
         else
           DefValue := PPropInfo(PropInfo)^.Default;
-        //System.writeln(PropInfo^.Name,', HasAncestor=',HasAncestor,', Value=',Int32Value,', Default=',DefValue);
+        //debugln([PropInfo^.Name,', HasAncestor=',HasAncestor,', Value=',Int32Value,', Default=',DefValue]);
         if (Int32Value <> DefValue) or (DefValue=longint($80000000)) then
         begin
           case PropType^.Kind of
@@ -791,7 +840,7 @@ begin
           DefMethodValue.Code := nil;
         end;
 
-        //system.writeln('TCompWriterPas.WriteProperty ',dbgs(MethodValue.Data),' ',dbgs(MethodValue.Code),' ',dbgs(DefMethodValue.Data),' ',dbgs(DefMethodValue.Code));
+        //debugln(['TCompWriterPas.WriteProperty ',dbgs(MethodValue.Data),' ',dbgs(MethodValue.Code),' ',dbgs(DefMethodValue.Data),' ',dbgs(DefMethodValue.Code)]);
         if Assigned(OnGetMethodName) then
         begin
           if (MethodValue.Code <> DefMethodValue.Code) or
@@ -870,13 +919,38 @@ begin
 
         if (CompareByte(VarValue,DefVarValue,sizeof(VarValue)) <> 0) then
           begin
-            {$IFDEF VerboseCompWriterPas}
-            System.writeln('TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind);
-            raise EWriteError.Create('proptype not supported: '+GetEnumName(TypeInfo(PropType^.Kind),ord(PropType^.Kind)));
-            {$ENDIF}
             // can't use variant() typecast, pulls in variants unit
-            //case VarValue.vtype ofall
-
+            case VarValue.vtype of
+            varsmallint : WriteAssign(PropName,IntToStr(VarValue.vsmallint));
+            varinteger : WriteAssign(PropName,IntToStr(VarValue.vinteger));
+            varsingle : WriteAssign(PropName,GetFloatLiteral(VarValue.vsingle));
+            vardouble : WriteAssign(PropName,GetFloatLiteral(VarValue.vdouble));
+            vardate : WriteAssign(PropName,GetFloatLiteral(VarValue.vdate));
+            varcurrency : WriteAssign(PropName,GetFloatLiteral(VarValue.vcurrency));
+            //varolestr : (volestr : pwidechar);
+            //vardispatch : (vdispatch : pointer);
+            //varerror : (verror : hresult);
+            varboolean : WriteAssign(PropName,GetBoolLiteral(VarValue.vboolean));
+            //varunknown : (vunknown : pointer);
+            // vardecimal : ( : );
+            varshortint : WriteAssign(PropName,IntToStr(VarValue.vshortint));
+            varbyte : WriteAssign(PropName,IntToStr(VarValue.vbyte));
+            varword : WriteAssign(PropName,IntToStr(VarValue.vword));
+            varlongword : WriteAssign(PropName,IntToStr(VarValue.vlongword));
+            varint64 : WriteAssign(PropName,IntToStr(VarValue.vint64));
+            varqword : WriteAssign(PropName,IntToStr(VarValue.vqword));
+            // duplicate: varword64
+            varstring : WriteAssign(PropName,GetStringLiteral(AnsiString(VarValue.vstring)));
+            //varany :  (vany : pointer);
+            //vararray : (varray : pvararray);
+            //varbyref : (vpointer : pointer);
+            //varrecord : (vrecord : pointer;precinfo : pointer);
+            else
+              {$IFDEF VerboseCompWriterPas}
+              debugln(['TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind,' vtype=',VarValue.vtype]);
+              raise EWriteError.Create('proptype not supported: '+GetEnumName(TypeInfo(PropType^.Kind),ord(PropType^.Kind))+' vtype='+dbgs(VarValue.vtype));
+              {$ENDIF}
+            end;
             //ToDo WriteVariant(pvariant(@VarValue)^);
           end;
       end;
@@ -901,13 +975,13 @@ begin
         else
           DefBoolValue := PropInfo^.Default<>0;
         DefValue:=PropInfo^.Default;
-        //System.writeln(PropInfo^.Name,', HasAncestor=',HasAncestor,', BoolValue=',BoolValue,', DefBoolValue=',DefBoolValue,' Default=',DefValue);
+        //debugln([PropInfo^.Name,', HasAncestor=',HasAncestor,', BoolValue=',BoolValue,', DefBoolValue=',DefBoolValue,' Default=',DefValue]);
         if (BoolValue<>DefBoolValue) or (DefValue=longint($80000000)) then
-          WriteAssign(PropName,BoolToStr(BoolValue,'True','False'));
+          WriteAssign(PropName,GetBoolLiteral(BoolValue));
       end;
   else
     {$IFDEF VerboseCompWriterPas}
-    System.writeln('TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind);
+    debugln(['TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind]);
     raise EWriteError.Create('proptype not supported: '+GetEnumName(TypeInfo(PropType^.Kind),ord(PropType^.Kind)));
     {$ENDIF}
   end;
@@ -928,6 +1002,14 @@ begin
       Freemem(PropList);
     end;
   // ToDo: Instance.DefineProperties(Self);
+end;
+
+function TCompWriterPas.GetBoolLiteral(b: boolean): string;
+begin
+  if b then
+    Result:='True'
+  else
+    Result:='False';
 end;
 
 function TCompWriterPas.GetStringLiteral(const s: string): string;
@@ -1593,6 +1675,43 @@ begin
     TestWriteDescendant('TestWideString_SrcCodePageUTF8',AComponent,nil,[
     'AWideString:=''äöü'';',
     'AUnicodeString:=''äöü'';',
+    '']);
+  finally
+    AComponent.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestVariant;
+var
+  AComponent: TCompVariants;
+begin
+  Writer.Options:=Writer.Options+[cwpoSrcCodepageUTF8];
+  AComponent:=TCompVariants.Create(nil);
+  try
+    with AComponent do begin
+      Name:=AComponent.ClassName+'1';
+      V1:=high(byte);
+      V2:=low(ShortInt);
+      V3:=high(Word);
+      V4:=low(SmallInt);
+      V5:=high(LongWord);
+      V6:=low(LongInt);
+      V7:=high(QWord);
+      V8:=low(int64);
+      V9:=true;
+      V10:='äöü';
+    end;
+    TestWriteDescendant('TestVariant',AComponent,nil,[
+    'V1:=255;',
+    'V2:=-128;',
+    'V3:=65535;',
+    'V4:=-32768;',
+    'V5:=4294967295;',
+    'V6:=-2147483648;',
+    'V7:=18446744073709551615;',
+    'V8:=-9223372036854775808;',
+    'V9:=True;',
+    'V10:=''äöü'';',
     '']);
   finally
     AComponent.Free;
