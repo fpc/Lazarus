@@ -14,6 +14,7 @@ Working:
 - method
 - persistent
 - root children
+- collection
 
 ToDo:
 - enum: add unit, avoid nameclash with-do
@@ -23,14 +24,16 @@ ToDo:
 - method, avoid nameclash with-do
 - reference not yet created child component -> delay property setter
 - ancestor
-- childpos
+- ancestor: childpos
+- ancestor: change parent
+- ancestor: change name
 - inline component
 - reference foreign root
 - reference foreign component
-- collection
 - TComponent.Left/Right
 - DefineProperties
 - tkInterface
+- optional: use SetParentComponent instead of Parent:=
 }
 unit TestCompReaderWriterPas;
 
@@ -429,9 +432,11 @@ type
     procedure SetParent(const AValue: TSimpleControl);
   protected
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure SetParentComponent(Value: TComponent); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetParentComponent: TComponent; override;
     property Parent: TSimpleControl read FParent write SetParent;
   published
     property Next: TSimpleControl read FNext write FNext;
@@ -496,6 +501,7 @@ type
     procedure TestWideString_SrcCodePageUTF8;
     procedure TestVariant;
     procedure TestPropPersistent;
+    procedure TestAncestor;
     procedure TestChildComponent;
     procedure TestCollection;
   end;
@@ -649,6 +655,11 @@ begin
     Proc(TComponent(FChildren[i]));
 end;
 
+procedure TSimpleControl.SetParentComponent(Value: TComponent);
+begin
+  Parent:=Value as TSimpleControl;
+end;
+
 constructor TSimpleControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -663,6 +674,11 @@ begin
     TSimpleControl(FChildren[i]).Parent:=nil;
   FreeAndNil(FChildren);
   inherited Destroy;
+end;
+
+function TSimpleControl.GetParentComponent: TComponent;
+begin
+  Result:=FParent;
 end;
 
 { TCompPropPersistent }
@@ -884,32 +900,55 @@ begin
 end;
 
 procedure TCompWriterPas.WriteComponentData(Instance: TComponent);
+var
+  HasAncestor: Boolean;
 
   procedure WriteSetParent;
+  var
+    DefParent: TComponent;
   begin
-    if Parent=nil then exit;
+    if HasAncestor and (Ancestor is TComponent) then
+    begin
+      DefParent:=TComponent(Ancestor).GetParentComponent;
+      if Assigned(DefParent) then
+      begin
+        if DefParent=FRootAncestor then
+          DefParent:=Root
+        else if (DefParent.Owner = FRootAncestor) and
+            (Parent.Owner = Root) and
+            (CompareText(DefParent.Name,Parent.Name)=0) then
+          DefParent:=Parent;
+      end;
+    end else
+      DefParent:=nil;
+    if Parent=DefParent then exit;
     WriteAssign('Parent',GetComponentPath(Parent));
   end;
 
 begin
-  if Instance<>LookupRoot then
-  begin
-    WriteAssign(Instance.Name,Instance.ClassName+'.Create(Self)');
+  HasAncestor := Assigned(Ancestor) and ((Instance = Root) or
+    (Instance.ClassType = Ancestor.ClassType));
+  if Instance=LookupRoot then
+    WriteAssign('Name',''''+Instance.Name+'''')
+  else begin
+    if not HasAncestor then
+      WriteAssign(Instance.Name,Instance.ClassName+'.Create(Self)');
     WriteIndent;
     Write('with ');
     Write(Instance.Name);
     Write(' do begin');
     WriteLn;
     Indent;
+    if not HasAncestor then
+      WriteAssign('Name',''''+Instance.Name+'''');
+    if cwpoSetParentFirst in Options then
+      WriteSetParent;
   end;
-  WriteAssign('Name',''''+Instance.Name+'''');
-  if cwpoSetParentFirst in Options then
-    WriteSetParent;
   WriteProperties(Instance);
-  if not (cwpoSetParentFirst in Options) then
-    WriteSetParent;
   if Instance<>LookupRoot then
   begin
+    if not (cwpoSetParentFirst in Options) then
+      WriteSetParent;
     Unindent;
     WriteIndent;
     Write('end;');
@@ -1378,6 +1417,9 @@ var
   i: Integer;
   Item: TCollectionItem;
 begin
+  WriteIndent;
+  Write(PropName+'.Clear;');
+  WriteLn;
   for i:=0 to Collection.Count-1 do
   begin
     Item:=Collection.Items[i];
@@ -1395,7 +1437,9 @@ end;
 
 function TCompWriterPas.GetComponentPath(Component: TComponent): string;
 begin
-  if Component=LookupRoot then
+  if Component=nil then
+    Result:='Nil'
+  else if Component=LookupRoot then
     Result:='Self'
   else
     Result:=Component.Name;
@@ -2170,6 +2214,48 @@ begin
   end;
 end;
 
+procedure TTestCompReaderWriterPas.TestAncestor;
+
+  procedure InitAncestor(C: TSimpleControl);
+  var
+    Button1: TSimpleControl;
+  begin
+    C.Tag:=1;
+    Button1:=TSimpleControl.Create(C);
+    with Button1 do begin
+      Name:='Button1';
+      Tag:=2;
+      OnClick:=@C.OnA;
+      Parent:=C;
+    end;
+  end;
+
+var
+  aRoot, Ancestor: TSimpleControl;
+begin
+  Ancestor:=TSimpleControl.Create(nil);
+  aRoot:=TSimpleControl.Create(nil);
+  try
+    with Ancestor do begin
+      Name:='Ancestor';
+    end;
+    InitAncestor(Ancestor);
+
+    with aRoot do begin
+      Name:='Descendant';
+    end;
+    InitAncestor(aRoot);
+
+    TestWriteDescendant('TestAncestor',aRoot,Ancestor,[
+    'with Button1 do begin',
+    'end;',
+    '']);
+  finally
+    aRoot.Free;
+    Ancestor.Free;
+  end;
+end;
+
 procedure TTestCompReaderWriterPas.TestChildComponent;
 var
   aRoot, Button1: TSimpleControl;
@@ -2223,6 +2309,7 @@ begin
 
     TestWriteDescendant('TestCollection',aRoot,nil,[
     'Tag:=1;',
+    'Items.Clear;',
     'with TSimpleCollectionItem(Items.Add) do begin',
     '  Sub.Size:=11;',
     '  OnClick:=@OnA;',
