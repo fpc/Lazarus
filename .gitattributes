@@ -1032,6 +1032,7 @@ components/codetools/tests/testctrangescan.pas svneol=native#text/plain
 components/codetools/tests/testctxmlfixfragments.pas svneol=native#text/pascal
 components/codetools/tests/testfinddeclaration.pas svneol=native#text/plain
 components/codetools/tests/testglobals.pas svneol=native#text/plain
+components/codetools/tests/testidentcompletion.pas svneol=native#text/plain
 components/codetools/tests/testmethodjumptool.pas svneol=native#text/plain
 components/codetools/tests/testpascalparser.pas svneol=native#text/plain
 components/codetools/tests/testrefactoring.pas svneol=native#text/plain
