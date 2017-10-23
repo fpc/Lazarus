@@ -887,24 +887,27 @@ begin
 end;
 
 function UTF8CharacterStrictLength(P: PChar): integer;
+var
+  c: Char;
 begin
   if p=nil then exit(0);
-  if ord(p^)<%10000000 then begin
+  c:=p^;
+  if ord(c)<%10000000 then begin
     // regular single byte character
     exit(1);
   end
-  else if ord(p^)<%11000000 then begin
+  else if ord(c)<%11000000 then begin
     // invalid single byte character
     exit(0);
   end
-  else if ((ord(p^) and %11100000) = %11000000) then begin
+  else if ((ord(c) and %11100000) = %11000000) then begin
     // should be 2 byte character
     if (ord(p[1]) and %11000000) = %10000000 then
       exit(2)
     else
       exit(0);
   end
-  else if ((ord(p^) and %11110000) = %11100000) then begin
+  else if ((ord(c) and %11110000) = %11100000) then begin
     // should be 3 byte character
     if ((ord(p[1]) and %11000000) = %10000000)
     and ((ord(p[2]) and %11000000) = %10000000) then
@@ -912,7 +915,7 @@ begin
     else
       exit(0);
   end
-  else if ((ord(p^) and %11111000) = %11110000) then begin
+  else if ((ord(c) and %11111000) = %11110000) then begin
     // should be 4 byte character
     if ((ord(p[1]) and %11000000) = %10000000)
     and ((ord(p[2]) and %11000000) = %10000000)
