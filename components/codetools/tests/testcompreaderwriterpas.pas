@@ -1369,11 +1369,19 @@ begin
       DefASingle:=ASingle+1;
       ADouble:=MinSafeIntDouble;
       DefADouble:=ADouble+1;
+      // ToDo: extended
       AChar:=low(char);
       DefAChar:=succ(AChar);
       AWideChar:=low(WideChar);
       DefAWideChar:=succ(AWideChar);
-      // ToDo: extended
+      Enum:=low(TEnum);
+      DefEnum:=succ(Enum);
+      EnumRg:=low(TEnumRg);
+      DefEnumRg:=succ(EnumRg);
+      SetOfEnum:=[];
+      DefSetOfEnum:=[red];
+      SetOfEnumRg:=[];
+      DefSetOfEnumRg:=[red];
     end;
     TestWriteDescendant('TestBaseTypesMinValues',AComponent,nil,[
     'ABoolean:=False;',
@@ -1392,6 +1400,10 @@ begin
     'ADouble:=-4.503599627370496E15;',
     'AChar:=#0;',
     'AWideChar:=#0;',
+    'Enum:=red;',
+    'EnumRg:=green;',
+    'SetOfEnum:=[];',
+    'SetOfEnumRg:=[];',
     '']);
   finally
     AComponent.Free;
@@ -1436,11 +1448,19 @@ begin
       DefASingle:=ASingle-1;
       ADouble:=MaxSafeIntDouble;
       DefADouble:=ADouble-1;
+      // ToDo: extended
       AChar:=high(char);
       DefAChar:=pred(AChar);
       AWideChar:=high(WideChar);
       DefAWideChar:=pred(AWideChar);
-      // ToDo: extended
+      Enum:=high(TEnum);
+      DefEnum:=pred(Enum);
+      EnumRg:=high(TEnumRg);
+      DefEnumRg:=pred(EnumRg);
+      SetOfEnum:=[low(SetOfEnum)..high(SetOfEnum)];
+      DefSetOfEnum:=[red];
+      SetOfEnumRg:=[low(SetOfEnumRg)..high(SetOfEnumRg)];
+      DefSetOfEnumRg:=[red];
     end;
     TestWriteDescendant('TestBaseTypesMaxValues',AComponent,nil,[
     'ABoolean:=True;',
@@ -1460,6 +1480,10 @@ begin
     'ADouble:=4.503599627370495E15;',
     'AChar:=#255;',
     'AWideChar:=#65535;',
+    'Enum:=black;',
+    'EnumRg:=white;',
+    'SetOfEnum:=[red..black];',
+    'SetOfEnumRg:=[green..white];',
     '']);
   finally
     AComponent.Free;
