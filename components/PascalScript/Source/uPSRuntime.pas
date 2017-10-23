@@ -10247,7 +10247,11 @@ begin
   CurrStack := Cardinal(Stack.Count) - Cardinal(length(s)) -1;
   if s[1] = #0 then inc(CurrStack);
   {$IFnDEF PS_NOINT64}
+  {$IFDEF cpu32}
+  IntVal := CreateHeapVariant(Caller.FindType2(btU32));
+  {$ELSE}
   IntVal := CreateHeapVariant(Caller.FindType2(btS64));
+  {$ENDIF}
   {$ELSE}
   IntVal := CreateHeapVariant(Caller.FindType2(btU32));
   {$ENDIF}
