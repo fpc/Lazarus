@@ -1,25 +1,30 @@
 {
  Test with:
      ./runtests --format=plain --suite=TTestCompReaderWriterPas
-     ./runtests --format=plain --suite=TTestCompReaderWriterPas.TestWriteProperties
+     ./runtests --format=plain --suite=TTestCompReaderWriterPas.TestBaseTypesMaxValues
+
+Working:
+- integer
+- strings
+- enum, custom enum range
+- set of enum, set of custom enum range
 
 ToDo:
-- base types
-- UTF-8 string
-- unicodestring
-- enum
-- set
+- enum: add unit, avoid nameclash with-do
+- set of boolean
+- set of char
+- custom integer TColor, add unit, avoid nameclash with-do
+- method, avoid nameclash with-do
 - variant
 - datetime
 - TComponent.Left/Right
-- custom range TColor
 - subcomponents
 - cycle in subcomponents
 - ancestor
 - childpos
 - inline component
 - collection
-- DefineProperty
+- DefineProperties
 }
 unit TestCompReaderWriterPas;
 
@@ -200,6 +205,7 @@ type
   { TCompBaseTypesCustomStored }
 
   TCompBaseTypesCustomStored = class(TComponent)
+    procedure OnClick(Sender: TObject);
   private
     FABoolean: Boolean;
     FAByte: Byte;
@@ -225,6 +231,7 @@ type
     FAWordBool: WordBool;
     FEnum: TEnum;
     FEnumRg: TEnumRg;
+    FEvent: TNotifyEvent;
     FSetOfEnum: TSetOfEnum;
     FSetOfEnumRg: TSetOfEnumRg;
     function ABooleanIsStored: Boolean;
@@ -251,6 +258,7 @@ type
     function AWordIsStored: Boolean;
     function EnumIsStored: Boolean;
     function EnumRgIsStored: Boolean;
+    function EventIsStored: Boolean;
     function SetOfEnumIsStored: Boolean;
     function SetOfEnumRgIsStored: Boolean;
   public
@@ -280,8 +288,9 @@ type
     DefEnumRg: TEnumRg;
     DefSetOfEnum: TSetOfEnum;
     DefSetOfEnumRg: TSetOfEnumRg;
-  published
+    DefEvent: TNotifyEvent;
     constructor Create(AOwner: TComponent); override;
+  published
     property ABoolean: Boolean read FABoolean write FABoolean stored ABooleanIsStored;
     property AByteBool: ByteBool read FAByteBool write FAByteBool stored AByteBoolIsStored;
     property AWordBool: WordBool read FAWordBool write FAWordBool stored AWordBoolIsStored;
@@ -308,6 +317,7 @@ type
     property EnumRg: TEnumRg read FEnumRg write FEnumRg stored EnumRgIsStored;
     property SetOfEnum: TSetOfEnum read FSetOfEnum write FSetOfEnum stored SetOfEnumIsStored;
     property SetOfEnumRg: TSetOfEnumRg read FSetOfEnumRg write FSetOfEnumRg stored SetOfEnumRgIsStored;
+    property Event: TNotifyEvent read FEvent write FEvent stored EventIsStored;
   end;
 
   { TTestCompReaderWriterPas }
@@ -420,6 +430,11 @@ begin
 end;
 
 { TCompBaseTypesCustomStored }
+
+procedure TCompBaseTypesCustomStored.OnClick(Sender: TObject);
+begin
+  if Sender=nil then ;
+end;
 
 function TCompBaseTypesCustomStored.ABooleanIsStored: Boolean;
 begin
@@ -539,6 +554,11 @@ end;
 function TCompBaseTypesCustomStored.EnumRgIsStored: Boolean;
 begin
   Result:=FEnumRg<>DefEnumRg;
+end;
+
+function TCompBaseTypesCustomStored.EventIsStored: Boolean;
+begin
+  Result:=TMethod(FEvent).Code<>TMethod(DefEvent).Code;
 end;
 
 function TCompBaseTypesCustomStored.SetOfEnumIsStored: Boolean;
@@ -771,6 +791,7 @@ begin
           DefMethodValue.Code := nil;
         end;
 
+        //system.writeln('TCompWriterPas.WriteProperty ',dbgs(MethodValue.Data),' ',dbgs(MethodValue.Code),' ',dbgs(DefMethodValue.Data),' ',dbgs(DefMethodValue.Code));
         if Assigned(OnGetMethodName) then
         begin
           if (MethodValue.Code <> DefMethodValue.Code) or
@@ -837,8 +858,8 @@ begin
       end;
     tkVariant:
       begin
-        { Ensure that a Variant manager is installed }
-        if not assigned(VarClearProc) then
+        // Ensure that a Variant manager is installed
+        if not Assigned(VarClearProc) then
           raise EWriteError.Create(SErrNoVariantSupport);
 
         VarValue := tvardata(GetVariantProp(Instance, PropInfo));
@@ -853,7 +874,9 @@ begin
             System.writeln('TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind);
             raise EWriteError.Create('proptype not supported: '+GetEnumName(TypeInfo(PropType^.Kind),ord(PropType^.Kind)));
             {$ENDIF}
-            { can't use variant() typecast, pulls in variants unit }
+            // can't use variant() typecast, pulls in variants unit
+            //case VarValue.vtype ofall
+
             //ToDo WriteVariant(pvariant(@VarValue)^);
           end;
       end;
@@ -1308,6 +1331,8 @@ begin
       DefSetOfEnum:=[red];
       SetOfEnumRg:=[];
       DefSetOfEnumRg:=[red];
+      Event:=nil;
+      DefEvent:=@OnClick;
     end;
     TestWriteDescendant('TestBaseTypesZeroes',AComponent,nil,[
     'AByte:=0;',
@@ -1325,6 +1350,7 @@ begin
     'EnumRg:=TEnumRg(0);',
     'SetOfEnum:=[];',
     'SetOfEnumRg:=[];',
+    //'Event:=nil;', must not be written
     '']);
   finally
     AComponent.Free;
@@ -1382,6 +1408,8 @@ begin
       DefSetOfEnum:=[red];
       SetOfEnumRg:=[];
       DefSetOfEnumRg:=[red];
+      Event:=@OnClick;
+      DefEvent:=nil;
     end;
     TestWriteDescendant('TestBaseTypesMinValues',AComponent,nil,[
     'ABoolean:=False;',
@@ -1404,6 +1432,7 @@ begin
     'EnumRg:=green;',
     'SetOfEnum:=[];',
     'SetOfEnumRg:=[];',
+    'Event:=@OnClick;',
     '']);
   finally
     AComponent.Free;
@@ -1499,9 +1528,11 @@ begin
     with AComponent do begin
       Name:=AComponent.ClassName+'1';
       AString:=#9'A'#13#10;
+      AShortString:=#9'A'#13#10;
     end;
     TestWriteDescendant('TestStringASCII',AComponent,nil,[
-    'AString:=#9''A''#13#10;']);
+    'AString:=#9''A''#13#10;',
+    'AShortString:=#9''A''#13#10;']);
   finally
     AComponent.Free;
   end;

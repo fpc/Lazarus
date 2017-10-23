@@ -37,8 +37,9 @@ uses
   fdt_objccategory, fdt_objcclass,
   {$ENDIF}
   TestBasicCodetools, TestCTRangeScan, TestPascalParser, TestMethodJumpTool,
-  TestStdCodetools, TestFindDeclaration, TestCompleteBlock, TestRefactoring,
-  fdt_arrays, testcodecompletion, TestCompReaderWriterPas;
+  TestStdCodetools, TestFindDeclaration, TestIdentCompletion, TestCompleteBlock,
+  TestRefactoring, TestCodeCompletion, TestCompReaderWriterPas,
+  fdt_arrays;
 
 const
   ConfigFilename = 'codetools.config';
