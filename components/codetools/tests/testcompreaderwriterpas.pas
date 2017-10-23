@@ -90,6 +90,7 @@ type
     procedure WriteChildren(Component: TComponent);
     procedure WriteProperty(Instance: TPersistent; PropInfo: PPropInfo);
     procedure WriteProperties(Instance: TPersistent);
+    procedure WriteCollection(PropName: string; Collection: TCollection);
     function GetComponentPath(Component: TComponent): string;
     function GetBoolLiteral(b: boolean): string;
     function GetStringLiteral(const s: string): string;
@@ -387,7 +388,7 @@ type
     FSize: longint;
     FSub: TPersistentSimple;
   published
-    property Size: longint read FSize write FSize;
+    property Size: longint read FSize write FSize default 0;
     property Sub: TPersistentSimple read FSub write FSub;
   end;
 
@@ -405,11 +406,11 @@ type
     FSub: TPersistentSimple;
     FSub2: TPersistentSimple;
   published
-    property Before: longint read FBefore write FBefore;
+    property Before: longint read FBefore write FBefore default 0;
     property Sub: TPersistentSimple read FSub write FSub;
-    property Middle: longint read FMiddle write FMiddle;
+    property Middle: longint read FMiddle write FMiddle default 0;
     property Sub2: TPersistentSimple read FSub2 write FSub2;
-    property After: longint read FAfter write FAfter;
+    property After: longint read FAfter write FAfter default 0;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
@@ -438,6 +439,39 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
+  { TSimpleCollectionItem }
+
+  TSimpleCollectionItem = class(TCollectionItem)
+  private
+    FBefore: longint;
+    FOnClick: TNotifyEvent;
+    FSub: TPersistentSimple;
+  published
+    property Before: longint read FBefore write FBefore default 0;
+    property Sub: TPersistentSimple read FSub write FSub;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
+  end;
+
+  TSimpleCollection = class(TCollection)
+  private
+    function GetThings(Index: integer): TSimpleCollectionItem;
+  public
+    property Things[Index: integer]: TSimpleCollectionItem read GetThings; default;
+  end;
+
+  { TSimpleControlWithCollection }
+
+  TSimpleControlWithCollection = class(TSimpleControl)
+  private
+    FItems: TSimpleCollection;
+    procedure SetItems(const AValue: TSimpleCollection);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Items: TSimpleCollection read FItems write SetItems;
+  end;
+
   { TTestCompReaderWriterPas }
 
   TTestCompReaderWriterPas = class(TCustomTestCTStdCodetools)
@@ -463,6 +497,7 @@ type
     procedure TestVariant;
     procedure TestPropPersistent;
     procedure TestChildComponent;
+    procedure TestCollection;
   end;
 
 implementation
@@ -549,6 +584,34 @@ Type
     FComponent: TComponent;
     constructor Create(APos: Integer; AComponent: TComponent);
   end;
+
+{ TSimpleCollection }
+
+function TSimpleCollection.GetThings(Index: integer): TSimpleCollectionItem;
+begin
+  Result:=TSimpleCollectionItem(Items[Index]);
+end;
+
+{ TSimpleControlWithCollection }
+
+procedure TSimpleControlWithCollection.SetItems(const AValue: TSimpleCollection
+  );
+begin
+  if FItems=AValue then Exit;
+  FItems.Assign(AValue);
+end;
+
+constructor TSimpleControlWithCollection.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FItems:=TSimpleCollection.Create(TSimpleCollectionItem);
+end;
+
+destructor TSimpleControlWithCollection.Destroy;
+begin
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
 
 { TSimpleControl }
 
@@ -1247,15 +1310,10 @@ begin
                 TCollection(GetObjectProp(Ancestor, PropInfo)),Root,RootAncestor)) then
               begin
                 // create collection items
-                {$IFDEF VerboseCompWriterPas}
-                debugln(['TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind,' ObjValue=',DbgSName(ObjValue)]);
-                raise EWriteError.Create('storing collection not yet supported');
-                {$ENDIF}
-                //Driver.BeginProperty(FPropPath + PPropInfo(PropInfo)^.Name);
                 SavedPropPath := FPropPath;
                 try
                   SetLength(FPropPath, 0);
-                  //WriteCollection(TCollection(ObjValue));
+                  WriteCollection(PropName,TCollection(ObjValue));
                 finally
                   FPropPath := SavedPropPath;
                 end;
@@ -1312,6 +1370,27 @@ begin
       Freemem(PropList);
     end;
   // ToDo: Instance.DefineProperties(Self);
+end;
+
+procedure TCompWriterPas.WriteCollection(PropName: string;
+  Collection: TCollection);
+var
+  i: Integer;
+  Item: TCollectionItem;
+begin
+  for i:=0 to Collection.Count-1 do
+  begin
+    Item:=Collection.Items[i];
+    WriteIndent;
+    Write('with '+Item.ClassName+'('+PropName+'.Add) do begin');
+    WriteLn;
+    Indent;
+    WriteProperties(Item);
+    Unindent;
+    WriteIndent;
+    Write('end;');
+    WriteLn;
+  end;
 end;
 
 function TCompWriterPas.GetComponentPath(Component: TComponent): string;
@@ -2118,6 +2197,43 @@ begin
     'end;',
     '']);
   finally
+    aRoot.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestCollection;
+var
+  aRoot: TSimpleControlWithCollection;
+begin
+  aRoot:=TSimpleControlWithCollection.Create(nil);
+  try
+    with aRoot do begin
+      Name:=CreateRootName(aRoot);
+      Tag:=1;
+      with TSimpleCollectionItem(Items.Add) do begin
+        OnClick:=@OnA;
+        Sub:=TPersistentSimple.Create;
+        Sub.Size:=11;
+      end;
+      with TSimpleCollectionItem(Items.Add) do begin
+        Sub:=TPersistentSimple.Create;
+        Sub.Size:=12;
+      end;
+    end;
+
+    TestWriteDescendant('TestCollection',aRoot,nil,[
+    'Tag:=1;',
+    'with TSimpleCollectionItem(Items.Add) do begin',
+    '  Sub.Size:=11;',
+    '  OnClick:=@OnA;',
+    'end;',
+    'with TSimpleCollectionItem(Items.Add) do begin',
+    '  Sub.Size:=12;',
+    'end;',
+    '']);
+  finally
+    FreeAndNil(aRoot.Items[0].FSub);
+    FreeAndNil(aRoot.Items[1].FSub);
     aRoot.Free;
   end;
 end;
