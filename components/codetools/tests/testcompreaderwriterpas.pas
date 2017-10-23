@@ -86,6 +86,8 @@ type
     function GetStringLiteral(const s: string): string;
     function GetWStringLiteral(p: PWideChar; Count: integer): string;
     function GetFloatLiteral(const e: Extended): string;
+    function GetCurrencyLiteral(const c: currency): string;
+    function ShortenFloat(s: string): string;
     function GetEnumExpr(TypeInfo: PTypeInfo; Value: integer;
       AllowOutOfRange: boolean): string;
   public
@@ -926,7 +928,7 @@ begin
             varsingle : WriteAssign(PropName,GetFloatLiteral(VarValue.vsingle));
             vardouble : WriteAssign(PropName,GetFloatLiteral(VarValue.vdouble));
             vardate : WriteAssign(PropName,GetFloatLiteral(VarValue.vdate));
-            varcurrency : WriteAssign(PropName,GetFloatLiteral(VarValue.vcurrency));
+            varcurrency : WriteAssign(PropName,GetCurrencyLiteral(VarValue.vcurrency));
             //varolestr : (volestr : pwidechar);
             //vardispatch : (vdispatch : pointer);
             //varerror : (verror : hresult);
@@ -1135,10 +1137,25 @@ end;
 function TCompWriterPas.GetFloatLiteral(const e: Extended): string;
 var
   s: String;
-  p, i: SizeInt;
 begin
   s:='';
   str(e,s);
+  Result:=ShortenFloat(s);
+end;
+
+function TCompWriterPas.GetCurrencyLiteral(const c: currency): string;
+var
+  s: String;
+begin
+  s:='';
+  str(c,s);
+  Result:=ShortenFloat(s);
+end;
+
+function TCompWriterPas.ShortenFloat(s: string): string;
+var
+  p, i: SizeInt;
+begin
   // remove unneeded leading 0 of exponent
   p:=Pos('E',s);
   if p<1 then exit;
@@ -1700,6 +1717,9 @@ begin
       V8:=low(int64);
       V9:=true;
       V10:='äöü';
+      V11:=single(-1.25);
+      V12:=double(1.5);
+      V13:=currency(17.0001);
     end;
     TestWriteDescendant('TestVariant',AComponent,nil,[
     'V1:=255;',
@@ -1712,6 +1732,9 @@ begin
     'V8:=-9223372036854775808;',
     'V9:=True;',
     'V10:=''äöü'';',
+    'V11:=-1.25;',
+    'V12:=1.5;',
+    'V13:=1.70001E1;',
     '']);
   finally
     AComponent.Free;
