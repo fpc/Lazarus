@@ -4,29 +4,26 @@
      ./runtests --format=plain --suite=TTestCompReaderWriterPas.TestBaseTypesMaxValues
 
 Working:
-- boolean
-- integer
+- boolean, set of boolean
+- char, widechar, custom char, set of custom char
+- integers, custom int, set of custom int
 - strings, codepage system and UTF8
 - float, currency
 - enum, custom enum range
 - set of enum, set of custom enum range
-- variant
+- variant: integers, boolean, string, floats, currency
 - method
 - persistent
-- root children
+- component children
 - collection
+- with ancestor
+- ancestor: change ComponentIndex -> call SetChildPos
 
 ToDo:
 - enum: add unit, avoid nameclash with-do
-- set of boolean
-- set of char
 - custom integer TColor, add unit, avoid nameclash with-do
 - method, avoid nameclash with-do
 - reference not yet created child component -> delay property setter
-- ancestor
-- ancestor: childpos
-- ancestor: change parent
-- ancestor: change name
 - inline component
 - reference foreign root
 - reference foreign component
@@ -34,6 +31,7 @@ ToDo:
 - DefineProperties
 - tkInterface
 - optional: use SetParentComponent instead of Parent:=
+- report bug: WriteChildren restore FAncestorPos
 }
 unit TestCompReaderWriterPas;
 
@@ -48,7 +46,8 @@ uses
   testregistry, CodeToolManager, LinkScanner, TestStdCodetools, variants;
 
 const
-  CWPDefaultSignature = '// Pascal stream V1.0';
+  CSPDefaultSignature = '// Pascal stream V1.0';
+  CSPDefaultAccessClass = 'TPasStreamAccess';
 type
   TCWPFindAncestorEvent = procedure(Sender: TObject; Component: TComponent;
     const Name: string; var Ancestor, RootAncestor: TComponent) of object;
@@ -71,10 +70,12 @@ type
     FIgnoreChildren: Boolean;
     FIndentStep: integer;
     FLineEnding: string;
+    FNeedAccessClass: boolean;
     FOnGetMethodName: TCWPGetMethodName;
     FOptions: TCWPOptions;
     FParent: TComponent;
     FPropPath: string;
+    FAccessClass: string;
     FSignature: String;
     FStream: TStream;
     FRoot: TComponent;
@@ -96,6 +97,7 @@ type
     procedure WriteCollection(PropName: string; Collection: TCollection);
     function GetComponentPath(Component: TComponent): string;
     function GetBoolLiteral(b: boolean): string;
+    function GetCharLiteral(c: integer): string;
     function GetStringLiteral(const s: string): string;
     function GetWStringLiteral(p: PWideChar; Count: integer): string;
     function GetFloatLiteral(const e: Extended): string;
@@ -133,6 +135,9 @@ type
     property LineEnding: string read FLineEnding write FLineEnding;
     property AssignOp: String read FAssignOp write FAssignOp;
     property Signature: String read FSignature write FSignature;
+    property AccessClass: string read FAccessClass
+      write FAccessClass; // classname used to access protected TComponent members like SetChildOrder
+    property NeedAccessClass: boolean read FNeedAccessClass write FNeedAccessClass; // some property needed AccessClass
   end;
 
 // Tests =======================================================================
@@ -150,6 +155,11 @@ type
   TEnumRg = green..white;
   TSetOfEnum = set of TEnum;
   TSetOfEnumRg = set of TEnumRg;
+  TSetOfBool = set of boolean;
+  TMyInt = 1..7;
+  TSetOfMyInt = set of TMyInt;
+  TMyChar = #3..#10;
+  TSetOfMyChar = set of TMyChar;
 
   { TCompBaseTypes }
 
@@ -179,8 +189,13 @@ type
     FAWordBool: WordBool;
     FEnum: TEnum;
     FEnumRg: TEnumRg;
+    FMyChar: TMyChar;
+    FMyInt: TMyInt;
+    FSetOfBool: TSetOfBool;
     FSetOfEnum: TSetOfEnum;
     FSetOfEnumRg: TSetOfEnumRg;
+    FSetOfMyChar: TSetOfMyChar;
+    FSetOfMyInt: TSetOfMyInt;
     function isACurrencyStored: Boolean;
     function isADoubleStored: Boolean;
     function isAExtendedStored: Boolean;
@@ -217,6 +232,11 @@ type
     property EnumRg: TEnumRg read FEnumRg write FEnumRg default low(TEnumRg);
     property SetOfEnum: TSetOfEnum read FSetOfEnum write FSetOfEnum default [];
     property SetOfEnumRg: TSetOfEnumRg read FSetOfEnumRg write FSetOfEnumRg default [];
+    property SetOfBool: TSetOfBool read FSetOfBool write FSetOfBool default [];
+    property MyInt: TMyInt read FMyInt write FMyInt default low(TMyInt);
+    property SetOfMyInt: TSetOfMyInt read FSetOfMyInt write FSetOfMyInt default [];
+    property MyChar: TMyChar read FMyChar write FMyChar default low(TMyChar);
+    property SetOfMyChar: TSetOfMyChar read FSetOfMyChar write FSetOfMyChar default [];
   end;
 
   { TCompBaseTypesCustomStored }
@@ -249,8 +269,13 @@ type
     FEnum: TEnum;
     FEnumRg: TEnumRg;
     FEvent: TNotifyEvent;
+    FMyChar: TMyChar;
+    FMyInt: TMyInt;
+    FSetOfBool: TSetOfBool;
     FSetOfEnum: TSetOfEnum;
     FSetOfEnumRg: TSetOfEnumRg;
+    FSetOfMyChar: TSetOfMyChar;
+    FSetOfMyInt: TSetOfMyInt;
     function ABooleanIsStored: Boolean;
     function AByteBoolIsStored: Boolean;
     function AByteIsStored: Boolean;
@@ -276,8 +301,13 @@ type
     function EnumIsStored: Boolean;
     function EnumRgIsStored: Boolean;
     function EventIsStored: Boolean;
+    function MyCharIsStored: Boolean;
+    function MyIntIsStored: Boolean;
+    function SetOfBoolIsStored: Boolean;
     function SetOfEnumIsStored: Boolean;
     function SetOfEnumRgIsStored: Boolean;
+    function SetOfMyCharIsStored: Boolean;
+    function SetOfMyIntIsStored: Boolean;
   public
     DefABoolean: Boolean;
     DefAByteBool: ByteBool;
@@ -305,6 +335,11 @@ type
     DefEnumRg: TEnumRg;
     DefSetOfEnum: TSetOfEnum;
     DefSetOfEnumRg: TSetOfEnumRg;
+    DefSetOfBool: TSetOfBool;
+    DefMyInt: TMyInt;
+    DefSetOfMyInt: TSetOfMyInt;
+    DefMyChar: TMyChar;
+    DefSetOfMyChar: TSetOfMyChar;
     DefEvent: TNotifyEvent;
     constructor Create(AOwner: TComponent); override;
   published
@@ -334,6 +369,11 @@ type
     property EnumRg: TEnumRg read FEnumRg write FEnumRg stored EnumRgIsStored;
     property SetOfEnum: TSetOfEnum read FSetOfEnum write FSetOfEnum stored SetOfEnumIsStored;
     property SetOfEnumRg: TSetOfEnumRg read FSetOfEnumRg write FSetOfEnumRg stored SetOfEnumRgIsStored;
+    property SetOfBool: TSetOfBool read FSetOfBool write FSetOfBool stored SetOfBoolIsStored;
+    property MyInt: TMyInt read FMyInt write FMyInt stored MyIntIsStored;
+    property SetOfMyInt: TSetOfMyInt read FSetOfMyInt write FSetOfMyInt stored SetOfMyIntIsStored;
+    property MyChar: TMyChar read FMyChar write FMyChar stored MyCharIsStored;
+    property SetOfMyChar: TSetOfMyChar read FSetOfMyChar write FSetOfMyChar stored SetOfMyCharIsStored;
     property Event: TNotifyEvent read FEvent write FEvent stored EventIsStored;
   end;
 
@@ -429,15 +469,19 @@ type
     FOnClick: TNotifyEvent;
     FParent: TSimpleControl;
     FSub: TPersistentSimple;
+    function GetControls(Index: integer): TSimpleControl;
     procedure SetParent(const AValue: TSimpleControl);
   protected
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure SetParentComponent(Value: TComponent); override;
+    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetParentComponent: TComponent; override;
     property Parent: TSimpleControl read FParent write SetParent;
+    function ControlCount: integer;
+    property Controls[Index: integer]: TSimpleControl read GetControls;
   published
     property Next: TSimpleControl read FNext write FNext;
     property Sub: TPersistentSimple read FSub write FSub;
@@ -502,6 +546,7 @@ type
     procedure TestVariant;
     procedure TestPropPersistent;
     procedure TestAncestor;
+    procedure TestAncestorChildPos;
     procedure TestChildComponent;
     procedure TestCollection;
   end;
@@ -646,18 +691,28 @@ begin
     FParent.FChildren.Add(Self);
 end;
 
+function TSimpleControl.GetControls(Index: integer): TSimpleControl;
+begin
+  Result:=TSimpleControl(FChildren[INdex]);
+end;
+
 procedure TSimpleControl.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   i: Integer;
 begin
   if Root=nil then ;
-  for i:=0 to FChildren.Count-1 do
-    Proc(TComponent(FChildren[i]));
+  for i:=0 to ControlCount-1 do
+    Proc(Controls[i]);
 end;
 
 procedure TSimpleControl.SetParentComponent(Value: TComponent);
 begin
   Parent:=Value as TSimpleControl;
+end;
+
+procedure TSimpleControl.SetChildOrder(Child: TComponent; Order: Integer);
+begin
+  FChildren.Move(FChildren.IndexOf(Child),Order);
 end;
 
 constructor TSimpleControl.Create(AOwner: TComponent);
@@ -679,6 +734,11 @@ end;
 function TSimpleControl.GetParentComponent: TComponent;
 begin
   Result:=FParent;
+end;
+
+function TSimpleControl.ControlCount: integer;
+begin
+  Result:=FChildren.Count;
 end;
 
 { TCompPropPersistent }
@@ -838,6 +898,21 @@ begin
   Result:=TMethod(FEvent).Code<>TMethod(DefEvent).Code;
 end;
 
+function TCompBaseTypesCustomStored.MyCharIsStored: Boolean;
+begin
+  Result:=MyChar<>DefMyChar;
+end;
+
+function TCompBaseTypesCustomStored.MyIntIsStored: Boolean;
+begin
+  Result:=FMyInt<>DefMyInt;
+end;
+
+function TCompBaseTypesCustomStored.SetOfBoolIsStored: Boolean;
+begin
+  Result:=FSetOfBool<>DefSetOfBool;
+end;
+
 function TCompBaseTypesCustomStored.SetOfEnumIsStored: Boolean;
 begin
   Result:=FSetOfEnum<>DefSetOfEnum;
@@ -846,6 +921,16 @@ end;
 function TCompBaseTypesCustomStored.SetOfEnumRgIsStored: Boolean;
 begin
   Result:=FSetOfEnumRg<>DefSetOfEnumRg;
+end;
+
+function TCompBaseTypesCustomStored.SetOfMyCharIsStored: Boolean;
+begin
+  Result:=SetOfMyChar<>DefSetOfMyChar;
+end;
+
+function TCompBaseTypesCustomStored.SetOfMyIntIsStored: Boolean;
+begin
+  Result:=FSetOfMyInt<>DefSetOfMyInt;
 end;
 
 constructor TCompBaseTypesCustomStored.Create(AOwner: TComponent);
@@ -904,24 +989,9 @@ var
   HasAncestor: Boolean;
 
   procedure WriteSetParent;
-  var
-    DefParent: TComponent;
   begin
-    if HasAncestor and (Ancestor is TComponent) then
-    begin
-      DefParent:=TComponent(Ancestor).GetParentComponent;
-      if Assigned(DefParent) then
-      begin
-        if DefParent=FRootAncestor then
-          DefParent:=Root
-        else if (DefParent.Owner = FRootAncestor) and
-            (Parent.Owner = Root) and
-            (CompareText(DefParent.Name,Parent.Name)=0) then
-          DefParent:=Parent;
-      end;
-    end else
-      DefParent:=nil;
-    if Parent=DefParent then exit;
+    if HasAncestor then exit;
+    if Parent=nil then exit;
     WriteAssign('Parent',GetComponentPath(Parent));
   end;
 
@@ -956,13 +1026,24 @@ begin
   end;
   if not IgnoreChildren then
     WriteChildren(Instance);
+  if HasAncestor and (FCurrentPos<>FAncestorPos) then
+  begin
+    WriteIndent;
+    if Parent=LookupRoot then
+      Write('SetChildOrder('+GetComponentPath(Instance)+','+IntToStr(FCurrentPos)+');')
+    else begin
+      NeedAccessClass:=true;
+      Write(AccessClass+'('+GetComponentPath(Parent)+').SetChildOrder('+GetComponentPath(Instance)+','+IntToStr(FCurrentPos)+');');
+    end;
+    WriteLn;
+  end;
 end;
 
 procedure TCompWriterPas.WriteChildren(Component: TComponent);
 var
   SRoot, SRootA, SParent: TComponent;
   SList: TStringList;
-  SPos, i: Integer;
+  SPos, i, SAncestorPos: Integer;
 begin
   // Write children list.
   // While writing children, the ancestor environment must be saved
@@ -971,6 +1052,7 @@ begin
   SRootA:=FRootAncestor;
   SList:=FAncestors;
   SPos:=FCurrentPos;
+  SAncestorPos:=FAncestorPos;
   SParent:=Parent;
   try
     FAncestors:=Nil;
@@ -1001,7 +1083,7 @@ begin
     FRoot:=SRoot;
     FRootAncestor:=SRootA;
     FCurrentPos:=SPos;
-    FAncestorPos:=SPos;
+    FAncestorPos:=SAncestorPos;
   end;
 end;
 
@@ -1079,12 +1161,7 @@ begin
                 end;
               end;
             tkChar:
-              case Int32Value of
-              0..31,127..255:
-                WriteAssign(PropName,'#'+IntToStr(Int32Value))
-              else
-                WriteAssign(PropName,''''+chr(Int32Value)+'''');
-              end;
+              WriteAssign(PropName,GetCharLiteral(Int32Value));
             tkWChar:
               case Int32Value of
               32..126:
@@ -1453,6 +1530,14 @@ begin
     Result:='False';
 end;
 
+function TCompWriterPas.GetCharLiteral(c: integer): string;
+begin
+  case c of
+  32..126: Result:=''''+chr(c)+'''';
+  else     Result:='#'+IntToStr(c);
+  end;
+end;
+
 function TCompWriterPas.GetStringLiteral(const s: string): string;
 
   function IsSpecialChar(p: PChar): boolean;
@@ -1584,11 +1669,22 @@ end;
 
 function TCompWriterPas.GetCurrencyLiteral(const c: currency): string;
 var
+  i: int64 absolute c;
+var
   s: String;
 begin
-  s:='';
-  str(c,s);
-  Result:=ShortenFloat(s);
+  if i mod 10000=0 then
+    s:=IntToStr(i div 10000)
+  else begin
+    s:=IntToStr(i);
+    while length(s)<4 do
+      s:='0'+s;
+    if length(s)=4 then
+      s:='0.'+s
+    else
+      system.insert('.',s,length(s)-3);
+  end;
+  Result:=s;
 end;
 
 function TCompWriterPas.ShortenFloat(s: string): string;
@@ -1627,7 +1723,12 @@ var
 begin
   PT:=GetTypeData(TypeInfo);
   if (Value>=PT^.MinValue) and (Value<=PT^.MaxValue) then
-    Result:=GetEnumName(TypeInfo,Value)
+    case TypeInfo^.Kind of
+    tkBool: Result:=GetBoolLiteral(Value=ord(true));
+    tkChar: Result:=GetCharLiteral(Value);
+    tkEnumeration: Result:=GetEnumName(TypeInfo,Value);
+    else Result:=IntToStr(Value);
+    end
   else if AllowOutOfRange then
     Result:=TypeInfo^.Name+'('+IntToStr(Value)+')'
   else
@@ -1640,7 +1741,8 @@ begin
   FStream:=AStream;
   FLineEnding:=system.LineEnding;
   FAssignOp:=':=';
-  FSignature:=CWPDefaultSignature;
+  FSignature:=CSPDefaultSignature;
+  FAccessClass:=CSPDefaultAccessClass;
 end;
 
 destructor TCompWriterPas.Destroy;
@@ -1674,6 +1776,7 @@ begin
   FAncestor := AAncestor;
   FRootAncestor := AAncestor;
   FLookupRoot := ARoot;
+  FNeedAccessClass := false;
   if not (cwpoNoSignature in Options) then
     WriteSignature;
   WriteComponent(ARoot);
@@ -1768,6 +1871,8 @@ constructor TCompBaseTypes.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   EnumRg:=low(TEnumRg);
+  MyInt:=low(TMyInt);
+  MyChar:=low(TMyChar);
 end;
 
 { TTestCompReaderWriterPas }
@@ -1805,7 +1910,7 @@ var
   Actual, ExpS, s: String;
 begin
   Actual:=WriteDescendant(Component,Ancestor);
-  ExpS:=CWPDefaultSignature+LineEnding
+  ExpS:=CSPDefaultSignature+LineEnding
     +'Name:='''+Component.Name+''';'+LineEnding;
   for s in Expected do
     ExpS:=ExpS+s+LineEnding;
@@ -1869,6 +1974,16 @@ begin
       DefSetOfEnum:=[red];
       SetOfEnumRg:=[];
       DefSetOfEnumRg:=[red];
+      SetOfBool:=[];
+      DefSetOfBool:=[true];
+      MyInt:=TMyInt(0);
+      DefMyInt:=MyInt+1;
+      SetOfMyInt:=[];
+      DefSetOfMyInt:=[2];
+      MyChar:=TMyChar(0);
+      DefMyChar:=succ(MyChar);
+      SetOfMyChar:=[];
+      DefSetOfMyChar:=[#4];
       Event:=nil;
       DefEvent:=@OnClick;
     end;
@@ -1888,6 +2003,11 @@ begin
     'EnumRg:=TEnumRg(0);',
     'SetOfEnum:=[];',
     'SetOfEnumRg:=[];',
+    'SetOfBool:=[];',
+    'MyInt:=0;',
+    'SetOfMyInt:=[];',
+    'MyChar:=#0;',
+    'SetOfMyChar:=[];',
     //'Event:=nil;', must not be written
     '']);
   finally
@@ -1946,6 +2066,16 @@ begin
       DefSetOfEnum:=[red];
       SetOfEnumRg:=[];
       DefSetOfEnumRg:=[red];
+      SetOfBool:=[];
+      DefSetOfBool:=[true];
+      MyInt:=low(TMyInt);
+      DefMyInt:=MyInt+1;
+      SetOfMyInt:=[];
+      DefSetOfMyInt:=[2];
+      MyChar:=low(TMyChar);
+      DefMyChar:=succ(MyChar);
+      SetOfMyChar:=[];
+      DefSetOfMyChar:=[#4];
       Event:=@OnClick;
       DefEvent:=nil;
     end;
@@ -1970,6 +2100,11 @@ begin
     'EnumRg:=green;',
     'SetOfEnum:=[];',
     'SetOfEnumRg:=[];',
+    'SetOfBool:=[];',
+    'MyInt:=1;',
+    'SetOfMyInt:=[];',
+    'MyChar:=#3;',
+    'SetOfMyChar:=[];',
     'Event:=@OnClick;',
     '']);
   finally
@@ -2028,6 +2163,16 @@ begin
       DefSetOfEnum:=[red];
       SetOfEnumRg:=[low(SetOfEnumRg)..high(SetOfEnumRg)];
       DefSetOfEnumRg:=[red];
+      SetOfBool:=[low(Boolean)..high(Boolean)];
+      DefSetOfBool:=[true];
+      MyInt:=high(TMyInt);
+      DefMyInt:=pred(MyInt);
+      SetOfMyInt:=[low(MyInt)..high(MyInt)];
+      DefSetOfMyInt:=[3];
+      MyChar:=high(TMyChar);
+      DefMyChar:=pred(MyChar);
+      SetOfMyChar:=[low(MyChar)..high(MyChar)];
+      DefSetOfMyChar:=[#5];
     end;
     TestWriteDescendant('TestBaseTypesMaxValues',AComponent,nil,[
     'ABoolean:=True;',
@@ -2051,6 +2196,11 @@ begin
     'EnumRg:=white;',
     'SetOfEnum:=[red..black];',
     'SetOfEnumRg:=[green..white];',
+    'SetOfBool:=[False..True];',
+    'MyInt:=7;',
+    'SetOfMyInt:=[1..7];',
+    'MyChar:=#10;',
+    'SetOfMyChar:=[#3..#10];',
     '']);
   finally
     AComponent.Free;
@@ -2173,7 +2323,7 @@ begin
     'V10:=''äöü'';',
     'V11:=Double(-1.25);',
     'V12:=Double(1.5);',
-    'V13:=Currency(1.70001E1);',
+    'V13:=Currency(17.0001);',
     '']);
   finally
     AComponent.Free;
@@ -2247,6 +2397,57 @@ begin
     InitAncestor(aRoot);
 
     TestWriteDescendant('TestAncestor',aRoot,Ancestor,[
+    'with Button1 do begin',
+    'end;',
+    '']);
+  finally
+    aRoot.Free;
+    Ancestor.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestAncestorChildPos;
+
+  procedure InitAncestor(C: TSimpleControl);
+  var
+    Button1, Button2: TSimpleControl;
+  begin
+    C.Tag:=1;
+    Button1:=TSimpleControl.Create(C);
+    with Button1 do begin
+      Name:='Button1';
+      Tag:=11;
+      Parent:=C;
+    end;
+    Button2:=TSimpleControl.Create(C);
+    with Button2 do begin
+      Name:='Button2';
+      Tag:=12;
+      Parent:=C;
+    end;
+  end;
+
+var
+  aRoot, Ancestor: TSimpleControl;
+begin
+  Ancestor:=TSimpleControl.Create(nil);
+  aRoot:=TSimpleControl.Create(nil);
+  try
+    with Ancestor do begin
+      Name:='Ancestor';
+    end;
+    InitAncestor(Ancestor);
+
+    with aRoot do begin
+      Name:='Descendant';
+    end;
+    InitAncestor(aRoot);
+    aRoot.FChildren.Move(0,1);
+
+    TestWriteDescendant('TestAncestorChildPos',aRoot,Ancestor,[
+    'with Button2 do begin',
+    'end;',
+    'SetChildOrder(Button2,0);',
     'with Button1 do begin',
     'end;',
     '']);
