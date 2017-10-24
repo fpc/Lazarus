@@ -18,6 +18,7 @@ Working:
 - collection
 - with ancestor
 - ancestor: change ComponentIndex -> call SetChildPos
+- reference foreign root, reference foreign component
 
 ToDo:
 - enum: add unit, avoid nameclash with-do
@@ -25,13 +26,11 @@ ToDo:
 - method, avoid nameclash with-do
 - reference not yet created child component -> delay property setter
 - inline component
-- reference foreign root
-- reference foreign component
 - TComponent.Left/Right
 - DefineProperties
 - tkInterface
 - optional: use SetParentComponent instead of Parent:=
-- report bug: WriteChildren restore FAncestorPos
+- insert/update code and helper class into unit/program
 }
 unit TestCompReaderWriterPas;
 
@@ -532,7 +531,7 @@ type
     procedure TearDown; override;
     function WriteDescendant(Component: TComponent; Ancestor: TComponent = nil): string;
     procedure TestWriteDescendant(Msg: string; Component: TComponent;
-      Ancestor: TComponent; const Expected: array of string);
+      Ancestor: TComponent; const Expected: array of string; NeedAccessClass: boolean = false);
     property Writer: TCompWriterPas read FWriter write FWriter;
   published
     procedure TestBaseTypesSkipDefaultValue;
@@ -548,6 +547,7 @@ type
     procedure TestAncestor;
     procedure TestAncestorChildPos;
     procedure TestChildComponent;
+    procedure TestForeignReference;
     procedure TestCollection;
   end;
 
@@ -990,8 +990,10 @@ var
 
   procedure WriteSetParent;
   begin
-    if HasAncestor then exit;
+    if HasAncestor then
+      exit; // descendants cannot change parent
     if Parent=nil then exit;
+    if Instance.GetParentComponent=nil then exit;
     WriteAssign('Parent',GetComponentPath(Parent));
   end;
 
@@ -1015,17 +1017,17 @@ begin
       WriteSetParent;
   end;
   WriteProperties(Instance);
+  if not (cwpoSetParentFirst in Options) then
+    WriteSetParent;
+  if not IgnoreChildren then
+    WriteChildren(Instance);
   if Instance<>LookupRoot then
   begin
-    if not (cwpoSetParentFirst in Options) then
-      WriteSetParent;
     Unindent;
     WriteIndent;
     Write('end;');
     WriteLn;
   end;
-  if not IgnoreChildren then
-    WriteChildren(Instance);
   if HasAncestor and (FCurrentPos<>FAncestorPos) then
   begin
     WriteIndent;
@@ -1905,7 +1907,8 @@ begin
 end;
 
 procedure TTestCompReaderWriterPas.TestWriteDescendant(Msg: string;
-  Component: TComponent; Ancestor: TComponent; const Expected: array of string);
+  Component: TComponent; Ancestor: TComponent; const Expected: array of string;
+  NeedAccessClass: boolean);
 var
   Actual, ExpS, s: String;
 begin
@@ -1915,6 +1918,7 @@ begin
   for s in Expected do
     ExpS:=ExpS+s+LineEnding;
   CheckDiff(Msg,ExpS,Actual);
+  AssertEquals(Msg+' NeedAccessClass',NeedAccessClass,Writer.NeedAccessClass);
 end;
 
 procedure TTestCompReaderWriterPas.TestBaseTypesSkipDefaultValue;
@@ -2410,7 +2414,7 @@ procedure TTestCompReaderWriterPas.TestAncestorChildPos;
 
   procedure InitAncestor(C: TSimpleControl);
   var
-    Button1, Button2: TSimpleControl;
+    Button1, Panel2, Button21, Button22: TSimpleControl;
   begin
     C.Tag:=1;
     Button1:=TSimpleControl.Create(C);
@@ -2419,11 +2423,23 @@ procedure TTestCompReaderWriterPas.TestAncestorChildPos;
       Tag:=11;
       Parent:=C;
     end;
-    Button2:=TSimpleControl.Create(C);
-    with Button2 do begin
-      Name:='Button2';
+    Panel2:=TSimpleControl.Create(C);
+    with Panel2 do begin
+      Name:='Panel2';
       Tag:=12;
       Parent:=C;
+      Button21:=TSimpleControl.Create(C);
+      with Button21 do begin
+        Name:='Button21';
+        Tag:=121;
+        Parent:=Panel2;
+      end;
+      Button22:=TSimpleControl.Create(C);
+      with Button22 do begin
+        Name:='Button22';
+        Tag:=122;
+        Parent:=Panel2;
+      end;
     end;
   end;
 
@@ -2442,15 +2458,25 @@ begin
       Name:='Descendant';
     end;
     InitAncestor(aRoot);
+
+    // switch Button21 and Button22
+    aRoot.Controls[1].FChildren.Move(0,1);
+
+    // switch Button1 and Panel2
     aRoot.FChildren.Move(0,1);
 
     TestWriteDescendant('TestAncestorChildPos',aRoot,Ancestor,[
-    'with Button2 do begin',
+    'with Panel2 do begin',
+    '  with Button22 do begin',
+    '  end;',
+    '  TPasStreamAccess(Panel2).SetChildOrder(Button22,0);',
+    '  with Button21 do begin',
+    '  end;',
     'end;',
-    'SetChildOrder(Button2,0);',
+    'SetChildOrder(Panel2,0);',
     'with Button1 do begin',
     'end;',
-    '']);
+    ''],true);
   finally
     aRoot.Free;
     Ancestor.Free;
@@ -2459,7 +2485,7 @@ end;
 
 procedure TTestCompReaderWriterPas.TestChildComponent;
 var
-  aRoot, Button1: TSimpleControl;
+  aRoot, Button1, Panel1: TSimpleControl;
 begin
   aRoot:=TSimpleControl.Create(nil);
   try
@@ -2467,24 +2493,85 @@ begin
       Name:=CreateRootName(aRoot);
       Tag:=1;
     end;
-    Button1:=TSimpleControl.Create(aRoot);
-    with Button1 do begin
-      Name:='Button1';
+    Panel1:=TSimpleControl.Create(aRoot);
+    with Panel1 do begin
+      Name:='Panel1';
       Tag:=2;
       Parent:=aRoot;
+      Button1:=TSimpleControl.Create(aRoot);
+      with Button1 do begin
+        Name:='Button1';
+        Tag:=3;
+        Parent:=Panel1;
+      end;
     end;
 
     TestWriteDescendant('TestChildComponent',aRoot,nil,[
     'Tag:=1;',
+    'Panel1:=TSimpleControl.Create(Self);',
+    'with Panel1 do begin',
+    '  Name:=''Panel1'';',
+    '  Tag:=2;',
+    '  Parent:=Self;',
+    '  Button1:=TSimpleControl.Create(Self);',
+    '  with Button1 do begin',
+    '    Name:=''Button1'';',
+    '    Tag:=3;',
+    '    Parent:=Panel1;',
+    '  end;',
+    'end;',
+    '']);
+  finally
+    aRoot.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestForeignReference;
+var
+  aRoot, Button1, aRoot2, Button2: TSimpleControl;
+begin
+  aRoot:=TSimpleControl.Create(nil);
+  aRoot2:=TSimpleControl.Create(nil);
+  try
+    with aRoot do begin
+      Name:=CreateRootName(aRoot);
+      Tag:=11;
+    end;
+    Button1:=TSimpleControl.Create(aRoot);
+    with Button1 do begin
+      Name:='Button1';
+      Tag:=12;
+      Parent:=aRoot;
+    end;
+
+    with aRoot2 do begin
+      Name:='OtherRoot';
+      Tag:=21;
+    end;
+    Button2:=TSimpleControl.Create(aRoot2);
+    with Button2 do begin
+      Name:='Button2';
+      Tag:=22;
+      Parent:=aRoot2;
+    end;
+
+    aRoot.Next:=aRoot2;
+    Button1.Next:=Button2;
+
+    TestWriteDescendant('TestForeignReference',aRoot,nil,[
+    'Tag:=11;',
+    'Next:=OtherRoot;',
     'Button1:=TSimpleControl.Create(Self);',
     'with Button1 do begin',
     '  Name:=''Button1'';',
-    '  Tag:=2;',
+    '  Tag:=12;',
+    '  Next:=OtherRoot.Button2;',
     '  Parent:=Self;',
     'end;',
     '']);
   finally
     aRoot.Free;
+    aRoot2.Free;
   end;
 end;
 
