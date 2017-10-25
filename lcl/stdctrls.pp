@@ -729,7 +729,7 @@ type
     FOnChange: TNotifyEvent;
     FSelLength: integer;
     FSelStart: integer;
-    FTextChangedByRealSetText: Boolean;
+    FTextChangedByRealSetTextCounter: Integer;
     FTextHint: TTranslateString;
     procedure ShowEmulatedTextHint(const ForceShow: Boolean = False);
     procedure HideEmulatedTextHint;

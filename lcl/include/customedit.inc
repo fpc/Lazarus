@@ -81,7 +81,7 @@ begin
   BorderStyle := bsSingle;
   FAutoSelect := True;
   FAutoSelected := False;
-  FTextChangedByRealSetText := False;
+  FTextChangedByRealSetTextCounter := 0;
   AutoSize := True;
   // Accessibility
   AccessibleRole := larTextEditorSingleline;
@@ -548,10 +548,11 @@ begin
   if (FEmulatedTextHintStatus=thsShowing) and (AValue<>'') then
     HideEmulatedTextHint;
 
-  FTextChangedByRealSetText := True;
+  Inc(FTextChangedByRealSetTextCounter);
   Modified := False;
   inherited RealSetText(AValue);
-  FTextChangedByRealSetText := False;
+  Dec(FTextChangedByRealSetTextCounter);
+  if (FTextChangedByRealSetTextCounter < 0) then FTextChangedByRealSetTextCounter := 0;
 
   if (FEmulatedTextHintStatus=thsHidden) and CanShowEmulatedTextHint then
     ShowEmulatedTextHint;
@@ -601,7 +602,7 @@ begin
   begin
     if ([csLoading,csDestroying]*ComponentState=[]) then
     begin
-      if not FTextChangedByRealSetText then
+      if (FTextChangedByRealSetTextCounter = 0) then
         Modified := True;
       Change;
     end;
