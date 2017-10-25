@@ -1828,7 +1828,7 @@ begin
     inc(IdentStart);
   if (IdentStart>1) and (Source[IdentStart-1]='&') then
     dec(IdentStart);
-  if not IsIdentStartChar[Source[IdentStart]] then
+  if (IdentStart>length(Source)) or not IsIdentStartChar[Source[IdentStart]] then
     IdentEnd:=IdentStart;
 end;
 
