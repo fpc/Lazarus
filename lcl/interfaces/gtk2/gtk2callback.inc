@@ -1053,7 +1053,7 @@ begin
     if AInfo <> nil then
     begin
       if (AInfo^.LCLObject is TCustomEdit)
-      and (AInfo^.CursorPos > 0) or (AInfo^.SelLength > 0) then
+      and ((AInfo^.CursorPos > 0) or (AInfo^.SelLength > 0)) then
       begin
         // gtk_entry_set_position(PGtkEntry(Widget), AInfo^.CursorPos);
         // gtk_editable_select_region(PGtkEditable(Widget), AInfo^.CursorPos, AInfo^.CursorPos);
