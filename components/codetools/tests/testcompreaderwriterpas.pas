@@ -21,12 +21,12 @@ Working:
 - reference foreign root, reference foreign component
 - create components before setting properties to avoid having to set references
   later
+- csInline
 
 ToDo:
 - enum: add unit, avoid nameclash with-do
 - custom integer TColor, add unit, avoid nameclash with-do
 - method, avoid nameclash with-do
-- inline component
 - inline with ancestor
 - ancestor with inline
 - inline in inline
@@ -125,6 +125,7 @@ type
     procedure WriteIndent;
     procedure Write(const s: string);
     procedure WriteLn;
+    procedure WriteStatement(const s: string);
     procedure WriteAssign(const LHS, RHS: string);
     procedure Indent;
     procedure Unindent;
@@ -1021,11 +1022,7 @@ begin
     WriteChildren(Instance,cwpcsCreate);
   end
   else begin
-    WriteIndent;
-    Write('with ');
-    Write(Instance.Name);
-    Write(' do begin');
-    WriteLn;
+    WriteStatement('with '+Instance.Name+' do begin');
     Indent;
     if not HasAncestor then
       WriteAssign('Name',''''+Instance.Name+'''');
@@ -1040,21 +1037,17 @@ begin
   if Instance<>LookupRoot then
   begin
     Unindent;
-    WriteIndent;
-    Write('end;');
-    WriteLn;
+    WriteStatement('end;');
   end;
   if HasAncestor and (Ancestor<>FRootAncestor)
       and (FCurrentPos<>FAncestorPos) then
   begin
-    WriteIndent;
     if Parent=LookupRoot then
-      Write('SetChildOrder('+GetComponentPath(Instance)+','+IntToStr(FCurrentPos)+');')
+      WriteStatement('SetChildOrder('+GetComponentPath(Instance)+','+IntToStr(FCurrentPos)+');')
     else begin
       NeedAccessClass:=true;
-      Write(AccessClass+'(TComponent('+GetComponentPath(Parent)+')).SetChildOrder('+GetComponentPath(Instance)+','+IntToStr(FCurrentPos)+');');
+      WriteStatement(AccessClass+'(TComponent('+GetComponentPath(Parent)+')).SetChildOrder('+GetComponentPath(Instance)+','+IntToStr(FCurrentPos)+');');
     end;
-    WriteLn;
   end;
   Inc(FCurrentPos);
 end;
@@ -1512,21 +1505,15 @@ var
   i: Integer;
   Item: TCollectionItem;
 begin
-  WriteIndent;
-  Write(PropName+'.Clear;');
-  WriteLn;
+  WriteStatement(PropName+'.Clear;');
   for i:=0 to Collection.Count-1 do
   begin
     Item:=Collection.Items[i];
-    WriteIndent;
-    Write('with '+Item.ClassName+'('+PropName+'.Add) do begin');
-    WriteLn;
+    WriteStatement('with '+Item.ClassName+'('+PropName+'.Add) do begin');
     Indent;
     WriteProperties(Item);
     Unindent;
-    WriteIndent;
-    Write('end;');
-    WriteLn;
+    WriteStatement('end;');
   end;
 end;
 
@@ -1787,7 +1774,6 @@ procedure TCompWriterPas.WriteComponentCreate(Component: TComponent);
 var
   OldAncestor : TPersistent;
   OldRoot, OldRootAncestor : TComponent;
-  HasAncestor: Boolean;
 begin
   if (Component=LookupRoot) then exit;
   OldRoot:=FRoot;
@@ -1795,10 +1781,24 @@ begin
   OldRootAncestor:=FRootAncestor;
   Try
     DetermineAncestor(Component);
-    HasAncestor := Assigned(Ancestor) and ((Component = Root) or
-      (Component.ClassType = Ancestor.ClassType));
-    if not HasAncestor then
+    if (FAncestor is TComponent)
+       and (TComponent(FAncestor).Owner = FRootAncestor)
+       and (Component.Owner = Root)
+       and SameText(Component.Name,TComponent(FAncestor).Name)
+    then
+      // ancestor already created it
+    else
       WriteAssign(Component.Name,Component.ClassName+'.Create(Self)');
+    if csInline in Component.ComponentState then
+    begin
+      NeedAccessClass:=true;
+      WriteStatement(AccessClass+'(TComponent('+Component.Name+')).SetInline('+GetBoolLiteral(true)+');');
+    end;
+    if csAncestor in Component.ComponentState then
+    begin
+      NeedAccessClass:=true;
+      WriteStatement(AccessClass+'(TComponent('+Component.Name+')).SetAncestor('+GetBoolLiteral(true)+');');
+    end;
     if not IgnoreChildren then
       WriteChildren(Component,cwpcsCreate);
   finally
@@ -1841,9 +1841,7 @@ end;
 
 procedure TCompWriterPas.WriteSignature;
 begin
-  WriteIndent;
-  Write(Signature);
-  WriteLn;
+  WriteStatement(Signature);
 end;
 
 procedure TCompWriterPas.WriteIndent;
@@ -1860,6 +1858,13 @@ end;
 procedure TCompWriterPas.WriteLn;
 begin
   Write(LineEnding);
+end;
+
+procedure TCompWriterPas.WriteStatement(const s: string);
+begin
+  WriteIndent;
+  Write(s);
+  WriteLn;
 end;
 
 procedure TCompWriterPas.WriteAssign(const LHS, RHS: string);
@@ -2749,6 +2754,8 @@ begin
     AddAncestor(Frame1,AncestorFrame);
     TestWriteDescendant('TestInline',aRoot,nil,[
     'Button1:=TSimpleControl.Create(Self);',
+    'Frame1:=TSimpleControl.Create(Self);',
+    CSPDefaultAccessClass+'(TComponent(Frame1)).SetInline(True);',
     'Tag:=1;',
     'with Button1 do begin',
     '  Name:=''Button1'';',
@@ -2758,7 +2765,7 @@ begin
     '  with FrameButton1 do begin',
     '  end;',
     'end;',
-    '']);
+    ''],true);
   finally
     AncestorFrame.Free;
     aRoot.Free;
