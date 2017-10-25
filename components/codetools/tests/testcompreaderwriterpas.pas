@@ -19,13 +19,15 @@ Working:
 - with ancestor
 - ancestor: change ComponentIndex -> call SetChildPos
 - reference foreign root, reference foreign component
+- create components before setting properties to avoid having to set references
+  later
 
 ToDo:
 - enum: add unit, avoid nameclash with-do
 - custom integer TColor, add unit, avoid nameclash with-do
 - method, avoid nameclash with-do
-- reference not yet created child component -> delay property setter
 - inline component
+- flags as comments
 - TComponent.Left/Right
 - DefineProperties
 - tkInterface
@@ -60,6 +62,11 @@ type
     );
   TCWPOptions = set of TCWPOption;
 
+  TCWPChildrenStep = (
+    cwpcsCreate,
+    cwpcsProperties
+  );
+
   { TCompWriterPas }
 
   TCompWriterPas = class
@@ -87,10 +94,9 @@ type
     FOnFindAncestor: TCWPFindAncestorEvent;
     procedure AddToAncestorList(Component: TComponent);
     procedure DetermineAncestor(Component: TComponent);
-    procedure DoFindAncestor(Component: TComponent);
     procedure SetRoot(const AValue: TComponent);
     procedure WriteComponentData(Instance: TComponent);
-    procedure WriteChildren(Component: TComponent);
+    procedure WriteChildren(Component: TComponent; Step: TCWPChildrenStep);
     procedure WriteProperty(Instance: TPersistent; PropInfo: PPropInfo);
     procedure WriteProperties(Instance: TPersistent);
     procedure WriteCollection(PropName: string; Collection: TCollection);
@@ -107,6 +113,7 @@ type
   public
     constructor Create(AStream: TStream);
     destructor Destroy; override;
+    procedure WriteComponentCreate(Component: TComponent);
     procedure WriteComponent(Component: TComponent);
     procedure WriteDescendant(ARoot: TComponent; AAncestor: TComponent = nil);
     procedure WriteSignature;
@@ -546,7 +553,7 @@ type
     procedure TestPropPersistent;
     procedure TestAncestor;
     procedure TestAncestorChildPos;
-    procedure TestChildComponent;
+    procedure TestChildComponents;
     procedure TestForeignReference;
     procedure TestCollection;
   end;
@@ -948,27 +955,23 @@ end;
 procedure TCompWriterPas.DetermineAncestor(Component: TComponent);
 var
   i : Integer;
-begin
-  if not Assigned(FAncestors) then
-    exit;
-  i:=FAncestors.IndexOf(Component.Name);
-  if i<0 then
-  begin
-    FAncestor:=nil;
-    FAncestorPos:=-1;
-  end
-  else
-    With TPosComponent(FAncestors.Objects[i]) do
-    begin
-      FAncestor:=FComponent;
-      FAncestorPos:=FPos;
-    end;
-end;
-
-procedure TCompWriterPas.DoFindAncestor(Component: TComponent);
-var
   C: TComponent;
 begin
+  if Assigned(FAncestors) then
+  begin
+    i:=FAncestors.IndexOf(Component.Name);
+    if i<0 then
+    begin
+      FAncestor:=nil;
+      FAncestorPos:=-1;
+    end
+    else
+      With TPosComponent(FAncestors.Objects[i]) do
+      begin
+        FAncestor:=FComponent;
+        FAncestorPos:=FPos;
+      end;
+  end;
   if Assigned(FOnFindAncestor) then
     if (Ancestor=Nil) or (Ancestor is TComponent) then
     begin
@@ -1000,11 +1003,11 @@ var
 begin
   HasAncestor := Assigned(Ancestor) and ((Instance = Root) or
     (Instance.ClassType = Ancestor.ClassType));
-  if Instance=LookupRoot then
-    WriteAssign('Name',''''+Instance.Name+'''')
+  if Instance=LookupRoot then begin
+    WriteAssign('Name',''''+Instance.Name+'''');
+    WriteChildren(Instance,cwpcsCreate);
+  end
   else begin
-    if not HasAncestor then
-      WriteAssign(Instance.Name,Instance.ClassName+'.Create(Self)');
     WriteIndent;
     Write('with ');
     Write(Instance.Name);
@@ -1020,7 +1023,7 @@ begin
   if not (cwpoSetParentFirst in Options) then
     WriteSetParent;
   if not IgnoreChildren then
-    WriteChildren(Instance);
+    WriteChildren(Instance,cwpcsProperties);
   if Instance<>LookupRoot then
   begin
     Unindent;
@@ -1041,7 +1044,8 @@ begin
   end;
 end;
 
-procedure TCompWriterPas.WriteChildren(Component: TComponent);
+procedure TCompWriterPas.WriteChildren(Component: TComponent;
+  Step: TCWPChildrenStep);
 var
   SRoot, SRootA, SParent: TComponent;
   SList: TStringList;
@@ -1072,7 +1076,12 @@ begin
       FAncestors.Sorted:=True;
     end;
     try
-      TAccessComp(Component).GetChildren(@WriteComponent, FRoot);
+      case Step of
+      cwpcsCreate:
+        TAccessComp(Component).GetChildren(@WriteComponentCreate, FRoot);
+      cwpcsProperties:
+        TAccessComp(Component).GetChildren(@WriteComponent, FRoot);
+      end;
     finally
       if Assigned(FAncestor) then
         for i:=0 to FAncestors.Count-1 do
@@ -1752,6 +1761,31 @@ begin
   inherited Destroy;
 end;
 
+procedure TCompWriterPas.WriteComponentCreate(Component: TComponent);
+var
+  OldAncestor : TPersistent;
+  OldRoot, OldRootAncestor : TComponent;
+  HasAncestor: Boolean;
+begin
+  if (Component=LookupRoot) then exit;
+  OldRoot:=FRoot;
+  OldAncestor:=FAncestor;
+  OldRootAncestor:=FRootAncestor;
+  Try
+    DetermineAncestor(Component);
+    HasAncestor := Assigned(Ancestor) and ((Component = Root) or
+      (Component.ClassType = Ancestor.ClassType));
+    if not HasAncestor then
+      WriteAssign(Component.Name,Component.ClassName+'.Create(Self)');
+    if not IgnoreChildren then
+      WriteChildren(Component,cwpcsCreate);
+  finally
+    FAncestor:=OldAncestor;
+    FRoot:=OldRoot;
+    FRootAncestor:=OldRootAncestor;
+  end;
+end;
+
 procedure TCompWriterPas.WriteComponent(Component: TComponent);
 var
   OldAncestor : TPersistent;
@@ -1763,7 +1797,6 @@ begin
   Try
     // Component.ComponentState:=Component.FComponentState+[csWriting];
     DetermineAncestor(Component);
-    DoFindAncestor(Component); // Mainly for IDE when a parent form had an ancestor renamed...
     WriteComponentData(Component);
   finally
     FAncestor:=OldAncestor;
@@ -2483,7 +2516,7 @@ begin
   end;
 end;
 
-procedure TTestCompReaderWriterPas.TestChildComponent;
+procedure TTestCompReaderWriterPas.TestChildComponents;
 var
   aRoot, Button1, Panel1: TSimpleControl;
 begin
@@ -2507,13 +2540,13 @@ begin
     end;
 
     TestWriteDescendant('TestChildComponent',aRoot,nil,[
-    'Tag:=1;',
     'Panel1:=TSimpleControl.Create(Self);',
+    'Button1:=TSimpleControl.Create(Self);',
+    'Tag:=1;',
     'with Panel1 do begin',
     '  Name:=''Panel1'';',
     '  Tag:=2;',
     '  Parent:=Self;',
-    '  Button1:=TSimpleControl.Create(Self);',
     '  with Button1 do begin',
     '    Name:=''Button1'';',
     '    Tag:=3;',
@@ -2559,9 +2592,9 @@ begin
     Button1.Next:=Button2;
 
     TestWriteDescendant('TestForeignReference',aRoot,nil,[
+    'Button1:=TSimpleControl.Create(Self);',
     'Tag:=11;',
     'Next:=OtherRoot;',
-    'Button1:=TSimpleControl.Create(Self);',
     'with Button1 do begin',
     '  Name:=''Button1'';',
     '  Tag:=12;',
