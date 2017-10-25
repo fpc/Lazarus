@@ -82,7 +82,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="13">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -136,6 +136,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLazUTF16"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="lazutils\testlazfileutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLazFileUtils"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

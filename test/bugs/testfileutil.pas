@@ -97,7 +97,6 @@ begin
 end;
 
 initialization
-  // Maybe this test case should be moved to another testsuite, e.g. lcl test
-  AddToBugsTestSuite(TTestSuite.Create(TTestFileUtil, 'TestFileUtil'));
+  AddToLazUtilsTestSuite(TTestFileUtil);
 end.
 
