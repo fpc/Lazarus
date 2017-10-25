@@ -560,7 +560,7 @@ begin
     end;
     if not CodeToolBoss.GetValuesOfCaseVariable(
       SrcEdit.CodeToolsBuffer as TCodeBuffer,
-      CaretXY.X,CaretXY.Y,List,True) then
+      CaretXY.X,CaretXY.Y,List) then
     begin
       Result:=false;
       ErrorMsg:=CodeToolBoss.ErrorMessage;
