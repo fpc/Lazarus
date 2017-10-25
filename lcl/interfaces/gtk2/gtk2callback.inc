@@ -981,9 +981,6 @@ begin
   end;
 end;
 
-type
-  TCustomEditHack = class(TCustomEdit);
-
 function GTKFocusCB(widget: PGtkWidget; {%H-}event: PGdkEventFocus; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -1055,9 +1052,8 @@ begin
     AInfo := GetWidgetInfo(Widget);
     if AInfo <> nil then
     begin
-      if (AInfo^.LCLObject is TCustomEdit) and
-        not TCustomEditHack(AInfo^.LCLObject).AutoSelect then
-      if (AInfo^.CursorPos > 0) or (AInfo^.SelLength > 0) then
+      if (AInfo^.LCLObject is TCustomEdit)
+      and (AInfo^.CursorPos > 0) or (AInfo^.SelLength > 0) then
       begin
         // gtk_entry_set_position(PGtkEntry(Widget), AInfo^.CursorPos);
         // gtk_editable_select_region(PGtkEditable(Widget), AInfo^.CursorPos, AInfo^.CursorPos);
@@ -1195,8 +1191,7 @@ begin
       Info := GetWidgetInfo(Widget);
       if Info <> nil then
       begin
-        if (Info^.LCLObject is TCustomEdit) and
-          not TCustomEditHack(Info^.LCLObject).AutoSelect then
+        if (Info^.LCLObject is TCustomEdit) then
         begin
           gtk_editable_get_selection_bounds(PGtkEditable(Widget),@AStart, @AEnd);
           Info^.CursorPos := Min(AStart, AEnd);
