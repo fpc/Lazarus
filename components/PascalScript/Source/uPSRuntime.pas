@@ -1349,36 +1349,36 @@ end;
 {$IFNDEF PS_NOWIDESTRING}
 function wPadl(s: tbtwidestring; i: longInt): tbtwidestring;
 begin
-  result := StringOfChar(' ', i - length(s)) + s;
+  result := StringOfChar(tbtwidechar(' '), i - length(s)) + s;
 end;
 //-------------------------------------------------------------------
 
 function wPadz(s: tbtwidestring; i: longInt): tbtwidestring;
 begin
-  result := StringOfChar('0', i - length(s)) + s;
+  result := StringOfChar(tbtwidechar('0'), i - length(s)) + s;
 end;
 //-------------------------------------------------------------------
 
 function wPadr(s: tbtwidestring; i: longInt): tbtwidestring;
 begin
-  result := s + StringOfChar(' ', i - Length(s));
+  result := s + StringOfChar(tbtwidechar(' '), i - Length(s));
 end;
 
 function uPadl(s: tbtunicodestring; i: longInt): tbtunicodestring;
 begin
-  result := StringOfChar(' ', i - length(s)) + s;
+  result := StringOfChar(tbtwidechar(' '), i - length(s)) + s;
 end;
 //-------------------------------------------------------------------
 
 function uPadz(s: tbtunicodestring; i: longInt): tbtunicodestring;
 begin
-  result := StringOfChar('0', i - length(s)) + s;
+  result := StringOfChar(tbtwidechar('0'), i - length(s)) + s;
 end;
 //-------------------------------------------------------------------
 
 function uPadr(s: tbtunicodestring; i: longInt): tbtunicodestring;
 begin
-  result := s + StringOfChar(' ', i - Length(s));
+  result := s + StringOfChar(tbtwidechar(' '), i - Length(s));
 end;
 
 {$ENDIF}
@@ -3886,13 +3886,12 @@ function CopyArrayContents(dest, src: Pointer; Len: Longint; aType: TPSTypeRec):
 
 function CopyRecordContents(dest, src: Pointer; aType: TPSTypeRec_Record): Boolean;
 var
-  i: Longint;
-  o: Cardinal;
+  o, i: Longint;
 begin
   for i := 0 to aType.FieldTypes.Count -1 do
   begin
-    o := PtrUInt(atype.RealFieldOffsets[i]);
-    CopyArrayContents(Pointer(IPointer(Dest)+o), Pointer(IPointer(Src)+o), 1, aType.FieldTypes[i]);
+    o := Longint(atype.RealFieldOffsets[i]);
+    CopyArrayContents(Pointer(IPointer(Dest)+Cardinal(o)), Pointer(IPointer(Src)+Cardinal(o)), 1, aType.FieldTypes[i]);
   end;
   Result := true;
 end;
@@ -8709,7 +8708,7 @@ function NVarProc(Caller: TPSExec; p: TPSExternalProcRec; Global, Stack: TPSStac
 var
   tmp: TPSVariantIFC;
 begin
-   case PtrUInt(p.Ext1) of
+   case Longint(p.Ext1) of
     0:
       begin
         if @Caller.FOnSetNVariant = nil then begin Result := False; exit; end;
@@ -8744,7 +8743,7 @@ begin
     -UPSRuntime.DefProc
     -UPSRuntime.TPSExec.RegisterStandardProcs
   }
-  case PtrUInt(p.Ext1) of
+  case Longint(p.Ext1) of
     0: Stack.SetAnsiString(-1, tbtstring(SysUtils.IntToStr(Stack.{$IFNDEF PS_NOINT64}GetInt64{$ELSE}GetInt{$ENDIF}(-2)))); // inttostr
     1: Stack.SetInt(-1, StrToInt(Stack.GetAnsiString(-2))); // strtoint
     2: Stack.SetInt(-1, StrToIntDef(Stack.GetAnsiString(-2), Stack.GetInt(-3))); // strtointdef
@@ -9913,7 +9912,7 @@ var
 begin
  {$IFDEF FPC}
  x := Pointer(TObject(FSelf).ClassType) + vmtMethodStart;
- Result := x^[PtrUInt(Ptr)];
+ Result := x^[Longint(Ptr)];
  {$ELSE}
  Result := PPtrArr(PPointer(FSelf)^)^[Longint(Ptr)];
  {$ENDIF}
@@ -9927,7 +9926,7 @@ var
 begin
   {$IFDEF FPC}
   x := Pointer(FSelf) + vmtMethodStart;
-  Result := x^[PtrUInt(Ptr)];
+  Result := x^[Longint(Ptr)];
   {$ELSE}
   Result := PPtrArr(FSelf)^[Longint(Ptr)];
   {$ENDIF}
@@ -10008,7 +10007,7 @@ end;
 function FindVirtualMethodPtr(Ret: TPSRuntimeClass; FClass: TClass; Ptr: Pointer): Pointer;
 var
   x,p: PPtrArr;
-  I: PtrUInt;
+  I: Longint;
   t : Pointer;
 begin
   p := Pointer(FClass) + vmtMethodStart;
@@ -10052,12 +10051,12 @@ end;
 
 function NewTPSVariantRecordIFC(avar: PPSVariant; Fieldno: Longint): TPSVariantIFC;
 var
-  offs: PtrUInt;
+  offs: Cardinal;
 begin
   Result := NewTPSVariantIFC(avar, false);
   if Result.aType.BaseType = btRecord then
   begin
-    Offs := PtrUInt(TPSTypeRec_Record(Result.aType).RealFieldOffsets[FieldNo]);
+    Offs := Cardinal(TPSTypeRec_Record(Result.aType).RealFieldOffsets[FieldNo]);
     Result.Dta := Pointer(IPointer(Result.dta) + Offs);
     Result.aType := TPSTypeRec_Record(Result.aType).FieldTypes[FieldNo];
   end else
@@ -10101,12 +10100,12 @@ end;
 
 function PSGetRecField(const avar: TPSVariantIFC; Fieldno: Longint): TPSVariantIFC;
 var
-  offs: PtrUInt;
+  offs: Cardinal;
 begin
   Result := aVar;
   if Result.aType.BaseType = btRecord then
   begin
-    Offs := PtrUInt(TPSTypeRec_Record(Result.aType).RealFieldOffsets[FieldNo]);
+    Offs := Cardinal(TPSTypeRec_Record(Result.aType).RealFieldOffsets[FieldNo]);
     Result.aType := TPSTypeRec_Record(Result.aType).FieldTypes[FieldNo];
     Result.Dta := Pointer(IPointer(Result.dta) + Offs);
   end else
@@ -10246,12 +10245,8 @@ begin
   Delete(s, 1, 1);
   CurrStack := Cardinal(Stack.Count) - Cardinal(length(s)) -1;
   if s[1] = #0 then inc(CurrStack);
-  {$IFnDEF PS_NOINT64}
-  {$IFDEF cpu32}
-  IntVal := CreateHeapVariant(Caller.FindType2(btU32));
-  {$ELSE}
+  {$IFDEF CPU64}
   IntVal := CreateHeapVariant(Caller.FindType2(btS64));
-  {$ENDIF}
   {$ELSE}
   IntVal := CreateHeapVariant(Caller.FindType2(btU32));
   {$ENDIF}
@@ -10544,7 +10539,7 @@ begin
     n2 := NewPPSVariantIFC(Stack[CurrStack + 1], True);
   end else n2 := nil;
   try
-    Caller.InnerfuseCall(FSelf, Pointer(Pointer(IPointer(FSelf^) + (PtrUInt(p.Ext1) * Sizeof(Pointer)))^), cc, MyList, n2);
+    Caller.InnerfuseCall(FSelf, Pointer(Pointer(IPointer(FSelf^) + (Cardinal(p.Ext1) * Sizeof(Pointer)))^), cc, MyList, n2);
     result := true;
   finally
     DisposePPSVariantIFC(n2);

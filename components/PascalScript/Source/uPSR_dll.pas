@@ -79,8 +79,8 @@ var
   h, i: Longint;
   ph: PLoadedDll;
   dllhandle: THandle;
-  {$IFnDEF UNIX}
   loadwithalteredsearchpath: Boolean;
+  {$IFNDEF UNIX}
   Filename: String;
   {$ENDIF}
 begin
@@ -91,9 +91,7 @@ begin
   h := makehash(s2);
   s3 := copy(s, 1, pos(tbtchar(#0), s)-1);
   delete(s, 1, length(s3)+1);
-  {$IFnDEF UNIX}
   loadwithalteredsearchpath := bytebool(s[3]);
-  {$ENDIF}
   i := 2147483647; // maxint
   dllhandle := 0;
   repeat
@@ -107,6 +105,7 @@ begin
         Result := False;
         exit;
       end;
+
       {$IFDEF UNIX}
       dllhandle := LoadLibrary(PChar(s2));
       {$ELSE}
@@ -295,8 +294,8 @@ begin
   if AddDllProcImport then
     Caller.AddSpecialProcImport('dll', @ProcessDllImport, nil);
   if RegisterUnloadDLL then
-    Caller.RegisterFunctionName('UNLOADDLL', UnloadProc, nil, nil);
-  Caller.RegisterFunctionName('DLLGETLASTERROR', GetLastErrorProc, nil, nil);
+    Caller.RegisterFunctionName('UnloadDll', UnloadProc, nil, nil);
+  Caller.RegisterFunctionName('DllGetLastError', GetLastErrorProc, nil, nil);
 end;
 
 end.

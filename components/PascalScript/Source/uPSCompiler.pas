@@ -9866,9 +9866,9 @@ begin
   function ProcessWhile: Boolean;
   var
     vin, vout: TPSValue;
-    SPos, I: Longint;
-    EPos: PtrInt;
+    SPos, EPos: Cardinal;
     OldCo, OldBO: TPSList;
+    I: Longint;
     Block: TPSBlockInfo;
 
 		iOldWithCount: Integer;
@@ -9947,28 +9947,28 @@ begin
     Block.Free;
     Debug_WriteLine(BlockInfo);
     BlockWriteByte(BlockInfo, Cm_G);
-    BlockWriteLong(BlockInfo, SPos - Length(BlockInfo.Proc.Data) - 4);
+    BlockWriteLong(BlockInfo, Longint(SPos) - Length(BlockInfo.Proc.Data) - 4);
     {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
     unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := Length(BlockInfo.Proc.Data) - Longint(EPos) - 5;
     {$else}
-    Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Length(BlockInfo.Proc.Data) - EPos - 5;
+    Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Length(BlockInfo.Proc.Data) - Longint(EPos) - 5;
     {$endif}
     for i := 0 to FBreakOffsets.Count -1 do
     begin
-      EPos := PtrInt(FBreakOffsets[I]);
+      EPos := Cardinal(FBreakOffsets[I]);
       {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
       unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := Length(BlockInfo.Proc.Data) - Longint(EPos);
       {$else}
-      Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Length(BlockInfo.Proc.Data) - EPos;
+      Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Length(BlockInfo.Proc.Data) - Longint(EPos);
       {$endif}
     end;
     for i := 0 to FContinueOffsets.Count -1 do
     begin
-      EPos := PtrInt(FContinueOffsets[I]);
+      EPos := Cardinal(FContinueOffsets[I]);
       {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
-      unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := SPos - Longint(EPos);
+      unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := Longint(SPos) - Longint(EPos);
       {$else}
-      Longint((@BlockInfo.Proc.Data[EPos - 3])^) := SPos - EPos;
+      Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Longint(SPos) - Longint(EPos);
       {$endif}
     end;
     FBreakOffsets.Free;
@@ -9992,8 +9992,7 @@ begin
   function ProcessRepeat: Boolean;
   var
     vin, vout: TPSValue;
-    CPos, SPos: Cardinal;
-    EPos: PtrInt;
+    CPos, SPos, EPos: Cardinal;
     I: Longint;
     OldCo, OldBO: TPSList;
     Block: TPSBlockInfo;
@@ -10090,26 +10089,28 @@ begin
       exit;
     end;
     {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
-    unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := SPos - Length(BlockInfo.Proc.Data);
+    unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := Longint(SPos) -
+      Length(BlockInfo.Proc.Data);
     {$else}
-    Longint((@BlockInfo.Proc.Data[EPos - 3])^) := SPos - Length(BlockInfo.Proc.Data);
+    Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Longint(SPos) -
+      Length(BlockInfo.Proc.Data);
     {$endif}
     for i := 0 to FBreakOffsets.Count -1 do
     begin
-      EPos := PtrInt(FBreakOffsets[I]);
+      EPos := Cardinal(FBreakOffsets[I]);
       {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
-      unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := Length(BlockInfo. Proc.Data) - EPos;
+      unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := Length(BlockInfo. Proc.Data) - Longint(EPos);
       {$else}
-      Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Length(BlockInfo. Proc.Data) - EPos;
+      Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Length(BlockInfo. Proc.Data) - Longint(EPos);
       {$endif}
     end;
     for i := 0 to FContinueOffsets.Count -1 do
     begin
-      EPos := PtrInt(FContinueOffsets[I]);
+      EPos := Cardinal(FContinueOffsets[I]);
       {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
-      unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := Longint(CPos) - EPos;
+      unaligned(Longint((@BlockInfo.Proc.Data[EPos - 3])^)) := Longint(CPos) - Longint(EPos);
       {$else}
-      Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Longint(CPos) - EPos;
+      Longint((@BlockInfo.Proc.Data[EPos - 3])^) := Longint(CPos) - Longint(EPos);
       {$endif}
     end;
     FBreakOffsets.Free;
@@ -10497,7 +10498,7 @@ begin
       {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
       unaligned(Cardinal((@BlockInfo.Proc.Data[Cardinal(EndReloc[I])- 3])^)) := Cardinal(Length(BlockInfo.Proc.Data)) - Cardinal(EndReloc[I]);
       {$else}
-      Cardinal((@BlockInfo.Proc.Data[PtrUInt(EndReloc[I])- 3])^) := PtrUInt(Length(BlockInfo.Proc.Data)) - PtrUInt(EndReloc[I]);
+      Cardinal((@BlockInfo.Proc.Data[Cardinal(EndReloc[I])- 3])^) := Cardinal(Length(BlockInfo.Proc.Data)) - Cardinal(EndReloc[I]);
       {$endif}
     end;
     CalcItem.Free;
@@ -10507,12 +10508,12 @@ begin
     begin
       for i := 0 to FContinueOffsets.Count -1 do
       begin
-        if PtrUInt(FContinueOffsets[i]) >= SPos then
+        if Cardinal(FContinueOffsets[i]) >= SPos then
         begin
           {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
           unaligned(Byte((@BlockInfo.Proc.Data[Longint(FContinueOffsets[i]) - 4])^)) := Cm_P2G;
 	  {$else}
-          Byte((@BlockInfo.Proc.Data[PtrUInt(FContinueOffsets[i]) - 4])^) := Cm_P2G;
+          Byte((@BlockInfo.Proc.Data[Longint(FContinueOffsets[i]) - 4])^) := Cm_P2G;
 	  {$endif}
         end;
       end;
@@ -10521,12 +10522,12 @@ begin
     begin
       for i := 0 to FBreakOffsets.Count -1 do
       begin
-        if PtrUInt(FBreakOffsets[i]) >= SPos then
+        if Cardinal(FBreakOffsets[i]) >= SPos then
         begin
           {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
           unaligned(Byte((@BlockInfo.Proc.Data[Longint(FBreakOffsets[i]) - 4])^)) := Cm_P2G;
 	  {$else}
-          Byte((@BlockInfo.Proc.Data[PtrUInt(FBreakOffsets[i]) - 4])^) := Cm_P2G;
+          Byte((@BlockInfo.Proc.Data[Longint(FBreakOffsets[i]) - 4])^) := Cm_P2G;
 	  {$endif}
         end;
       end;
@@ -12996,9 +12997,7 @@ end;
 {$IFNDEF PS_NOINTERFACES}
 const
   IUnknown_Guid: TGuid = (D1: 0; d2: 0; d3: 0; d4: ($c0,00,00,00,00,00,00,$46));
-  {$IFnDEF PS_NOIDISPATCH}
   IDispatch_Guid: Tguid = (D1: $20400; D2: $0; D3: $0; D4:($C0, $0, $0, $0, $0, $0, $0, $46));
-  {$ENDIF}
 {$ENDIF}
 
 procedure TPSPascalCompiler.DefineStandardProcedures;
@@ -13555,6 +13554,7 @@ begin
   f := FindType(Name);
   if (f<>nil) and not(FAllowDuplicateRegister) then
     Raise EPSCompilerException.CreateFmt(RPS_DuplicateIdent, [Name]);
+
   if (f <> nil) and (f is TPSInterfaceType) then
   begin
     result := TPSInterfaceType(f).Intf;
