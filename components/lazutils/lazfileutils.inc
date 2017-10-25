@@ -14,9 +14,10 @@ begin
   {$endif}
 
   l:=length(AFilename);
+  if l=0 then exit('');
+
   SrcPos:=1;
   DestPos:=1;
-
 
   // trim double path delimiters and special dirs . and ..
   while (SrcPos<=l) do begin
@@ -45,13 +46,15 @@ begin
     if (c='.') then begin
       if (SrcPos<l) then begin
         if (AFilename[SrcPos+1]=PathDelim)
-        and ((DestPos=1) or (AFilename[SrcPos-1]=PathDelim)) then begin
+        and ((DestPos=1) or (Result[DestPos-1]=PathDelim)) then begin
           // special dir ./ or */./
           // -> skip
           inc(SrcPos,2);
+          while (SrcPos<=l) and (AFilename[SrcPos]=PathDelim) do
+            inc(SrcPos);
           continue;
         end else if (AFilename[SrcPos+1]='.')
-        and (SrcPos+1=l) or (AFilename[SrcPos+2]=PathDelim) then
+        and ((SrcPos+1=l) or (AFilename[SrcPos+2]=PathDelim)) then
         begin
           // special dir ..
           //  1. ..      -> copy
@@ -155,7 +158,10 @@ begin
   end;
   // trim result
   if DestPos<=length(AFilename) then
-    SetLength(Result,DestPos-1);
+    if (DestPos=1) then
+      Result:='.'
+    else
+      SetLength(Result,DestPos-1);
 end;
 
 function FilenameIsWinAbsolute(const TheFilename: string): boolean;
