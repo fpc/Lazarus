@@ -21,15 +21,12 @@ Working:
 - reference foreign root, reference foreign component
 - create components before setting properties to avoid having to set references
   later
-- inline component, csInline, call SetInline
+- inline component, csInline, call SetInline, inherited inline, inline on inherited
 
 ToDo:
 - enum: add unit, avoid nameclash with-do
 - custom integer TColor, add unit, avoid nameclash with-do
 - method, avoid nameclash with-do
-- inline with ancestor
-- ancestor with inline
-- inline in inline
 - TComponent.Left/Right
 - DefineProperties
 - tkInterface

@@ -3493,7 +3493,7 @@ begin
   Result := False;
   
   if selection_data^.data <> nil then // data is list of uri
-  begin
+  try
     SetLength(Files, 0);
     S := TStringList.Create;
     try
@@ -3539,6 +3539,8 @@ begin
         
       Result := True;
     end;
+  except
+    Application.HandleException(nil);
   end;
   
   gtk_drag_finish(Context, Result, false, time);
