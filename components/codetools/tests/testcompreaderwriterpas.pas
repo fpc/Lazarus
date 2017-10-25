@@ -128,6 +128,7 @@ type
     procedure WriteLn;
     procedure WriteStatement(const s: string);
     procedure WriteAssign(const LHS, RHS: string);
+    function CreatedByAncestor(Component: TComponent): boolean;
     procedure Indent;
     procedure Unindent;
     property Stream: TStream read FStream;
@@ -574,7 +575,8 @@ type
     procedure TestForeignReference;
     procedure TestCollection;
     procedure TestInline;
-    procedure TestAncestorWithInline;
+    procedure TestAncestorWithInline; // e.g. a Form inherited from a Form with a Frame
+    procedure TestInlineDescendant; // e.g. a Form with a Frame, Frame is inherited from another Frame
   end;
 
 implementation
@@ -1014,10 +1016,13 @@ var
   var
     PropName: String;
   begin
-    if HasAncestor then
-      exit; // descendants cannot change parent
     if Parent=nil then exit;
     if Instance.GetParentComponent=nil then exit;
+    if CreatedByAncestor(Instance) then begin
+      // ancestor creates the component
+      // and descendants cannot change parent
+      exit;
+    end;
     PropName:='';
     if Assigned(OnGetParentProperty) then
       OnGetParentProperty(Self,Instance,PropName);
@@ -1039,7 +1044,7 @@ begin
   else begin
     WriteStatement('with '+Instance.Name+' do begin');
     Indent;
-    if not HasAncestor then
+    if not CreatedByAncestor(Instance) then
       WriteAssign('Name',''''+Instance.Name+'''');
     if cwpoSetParentFirst in Options then
       WriteSetParent;
@@ -1798,13 +1803,7 @@ begin
   Try
     DetermineAncestor(Component);
     HasAncestor:=FAncestor is TComponent;
-    if HasAncestor
-       and (TComponent(FAncestor).Owner = FRootAncestor)
-       and (Component.Owner = Root)
-       and SameText(Component.Name,TComponent(FAncestor).Name)
-    then
-      // ancestor creates the component
-    else
+    if not CreatedByAncestor(Component) then
       WriteAssign(Component.Name,Component.ClassName+'.Create(Self)');
     if HasAncestor then begin
       if (csInline in Component.ComponentState)
@@ -1896,6 +1895,14 @@ begin
   Write(RHS);
   Write(';');
   WriteLn;
+end;
+
+function TCompWriterPas.CreatedByAncestor(Component: TComponent): boolean;
+begin
+  Result:=(FAncestor is TComponent)
+    and (TComponent(FAncestor).Owner = FRootAncestor)
+    and (Component.Owner = Root)
+    and SameText(Component.Name,TComponent(FAncestor).Name)
 end;
 
 procedure TCompWriterPas.Indent;
@@ -2794,6 +2801,8 @@ begin
     '  Parent:=Self;',
     'end;',
     'with Frame1 do begin',
+    '  Name:=''Frame1'';',
+    '  Parent:=Self;',
     '  with FrameButton1 do begin',
     '  end;',
     'end;',
@@ -2886,7 +2895,7 @@ begin
       Parent:=Form;
     end;
 
-    TestWriteDescendant('TestInline',Form,AncestorForm,[
+    TestWriteDescendant('TestAncestorWithInline',Form,AncestorForm,[
     'Label1:=TSimpleControl.Create(Self);',
     'with Frame1 do begin',
     '  Tag:=32;',
@@ -2911,6 +2920,101 @@ begin
   finally
     Form.Free;
     AncestorForm.Free;
+    AncestorFrame.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestInlineDescendant;
+
+  procedure InitFrame(Frame: TSimpleControl);
+  var
+    FrameButton1, FrameButton2: TSimpleControl;
+  begin
+    with Frame do begin
+      Tag:=1;
+      FrameButton1:=TSimpleControl.Create(Frame);
+      with FrameButton1 do begin
+        Name:='FrameButton1';
+        Tag:=11;
+        Parent:=Frame;
+      end;
+      FrameButton2:=TSimpleControl.Create(Frame);
+      with FrameButton2 do begin
+        Name:='FrameButton2';
+        Tag:=12;
+        Parent:=Frame;
+      end;
+    end;
+  end;
+
+  procedure InitForm(Form: TSimpleControl; out Frame1: TSimpleControl);
+  var
+    Button1: TSimpleControl;
+  begin
+    with Form do begin
+      // add a button
+      Button1:=TSimpleControl.Create(Form);
+      with Button1 do begin
+        Name:='Button1';
+        Tag:=21;
+        Parent:=Form;
+      end;
+      // add a frame
+      Frame1:=TSimpleControl.Create(Form);
+      TAccessComp(TComponent(Frame1)).SetInline(true);
+      InitFrame(Frame1);
+      with Frame1 do begin
+        Name:='Frame1';
+        Tag:=22;
+        Parent:=Form;
+      end;
+    end;
+  end;
+
+var
+  AncestorFrame, DescendantFrame, Form, Frame: TSimpleControl;
+begin
+  // e.g. a form inherited from with a frame
+  AncestorFrame:=nil;
+  DescendantFrame:=nil;
+  Form:=nil;
+  try
+    AncestorFrame:=TSimpleControl.Create(nil);
+    AncestorFrame.Name:='AncestorFrame';
+    InitFrame(AncestorFrame);
+
+    DescendantFrame:=TSimpleControl.Create(nil);
+    DescendantFrame.Name:='DescendantFrame';
+    InitFrame(DescendantFrame);
+    AddAncestor(DescendantFrame,AncestorFrame);
+
+    Form:=TSimpleControl.Create(nil);
+    Form.Name:='Form';
+    InitForm(Form,Frame);
+    AddAncestor(Frame,DescendantFrame);
+
+    TestWriteDescendant('TestInlineDescendant',Form,nil,[
+    'Button1:=TSimpleControl.Create(Self);',
+    'Frame1:=TSimpleControl.Create(Self);',
+    'TPasStreamAccess(TComponent(Frame1)).SetInline(True);',
+    'with Button1 do begin',
+    '  Name:=''Button1'';',
+    '  Tag:=21;',
+    '  Parent:=Self;',
+    'end;',
+    'with Frame1 do begin',
+    '  Name:=''Frame1'';',
+    '  Tag:=22;',
+    '  Parent:=Self;',
+    '  with FrameButton1 do begin',
+    '  end;',
+    '  with FrameButton2 do begin',
+    '  end;',
+    'end;',
+    ''],true);
+  finally
+    Form.Free;
+    DescendantFrame.Free;
     AncestorFrame.Free;
   end;
 end;
