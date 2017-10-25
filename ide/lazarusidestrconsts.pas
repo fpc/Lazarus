@@ -55,6 +55,7 @@ resourcestring
   lisRemove = 'Remove';
   lisBtnRemove = '&Remove';
   lisRename = 'Rename';
+  lisBtnRename = '&Rename';
   lisRename2 = 'Rename ...';
   lisReplace = 'Replace';
   lisBtnReplace = '&Replace';

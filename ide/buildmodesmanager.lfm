@@ -26,7 +26,7 @@ object BuildModesForm: TBuildModesForm
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 2
+    TabOrder = 4
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end
@@ -49,7 +49,7 @@ object BuildModesForm: TBuildModesForm
     Images = ImageList1
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 0
+    TabOrder = 1
     object ToolButtonAdd: TToolButton
       Left = 1
       Top = 0
@@ -78,7 +78,6 @@ object BuildModesForm: TBuildModesForm
       Left = 110
       Height = 26
       Top = 0
-      Width = 5
       Caption = 'ToolButton5'
       Style = tbsDivider
     end
@@ -92,7 +91,6 @@ object BuildModesForm: TBuildModesForm
       Left = 53
       Height = 26
       Top = 0
-      Width = 5
       Caption = 'ToolButton1'
       Style = tbsDivider
     end
@@ -146,7 +144,7 @@ object BuildModesForm: TBuildModesForm
       end>
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goRowSelect, goThumbTracking, goSmoothScroll]
-    TabOrder = 1
+    TabOrder = 3
     TitleStyle = tsNative
     OnCheckboxToggled = BuildModesCheckboxToggled
     OnDrawCell = BuildModesStringGridDrawCell
@@ -172,7 +170,21 @@ object BuildModesForm: TBuildModesForm
     OnClick = btnCreateDefaultModesClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 3
+    TabOrder = 0
+  end
+  object RenameButton: TButton
+    AnchorSideTop.Control = btnCreateDefaultModes
+    AnchorSideRight.Control = BuildModesStringGrid
+    AnchorSideRight.Side = asrBottom
+    Left = 536
+    Height = 25
+    Top = 6
+    Width = 72
+    Anchors = [akTop, akRight]
+    AutoSize = True
+    Caption = '&Rename'
+    OnClick = RenameButtonClick
+    TabOrder = 2
   end
   object BuildModesPopupMenu: TPopupMenu
     left = 168

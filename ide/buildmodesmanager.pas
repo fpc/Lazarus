@@ -44,6 +44,7 @@ type
   TBuildModesForm = class(TForm)
     btnCreateDefaultModes: TButton;
     BuildModesStringGrid: TStringGrid;
+    RenameButton: TButton;
     ImageList1: TImageList;
     BuildModesPopupMenu: TPopupMenu;
     ButtonPanel1: TButtonPanel;
@@ -73,6 +74,7 @@ type
     procedure BuildModesStringGridValidateEntry(Sender: TObject;
       aCol, aRow: Integer; const OldValue: string; var NewValue: String);
     procedure FormShow(Sender: TObject);
+    procedure RenameButtonClick(Sender: TObject);
   private
     fActiveBuildMode: TProjectBuildMode;
     fBuildModes: TProjectBuildModes;
@@ -219,6 +221,26 @@ begin
   ToolButtonMoveUp.ImageIndex:=2;
   ToolButtonMoveDown.ImageIndex:=3;
   ToolButtonDiff.ImageIndex:=4;
+  RenameButton.Caption:=lisBtnRename;
+end;
+
+procedure TBuildModesForm.RenameButtonClick(Sender: TObject);
+var
+  CurMode: TProjectBuildMode;
+  Value: string;
+  i: Integer;
+begin
+  i:=BuildModesStringGrid.Row-1;
+  if (i>=0) then
+    CurMode:=fBuildModes[i]
+  else
+    exit;
+  Value:=CurMode.Identifier;
+  if InputQuery(lisRename, lisUIDName, Value) then
+  begin
+    CurMode.Identifier:=Value;
+    FillBuildModesGrid;
+  end;
 end;
 
 procedure TBuildModesForm.DiffSpeedButtonClick(Sender: TObject);
