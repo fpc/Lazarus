@@ -9890,6 +9890,7 @@ test/ideintf/testmenuintf.lfm svneol=native#text/plain
 test/ideintf/testmenuintf.pas svneol=native#text/plain
 test/lazutils/TestLazLogger.lpr svneol=native#text/pascal
 test/lazutils/testavglvltree.pas svneol=native#text/plain
+test/lazutils/testlazfileutils.pas svneol=native#text/plain
 test/lazutils/testlazloggercase.pas svneol=native#text/pascal
 test/lazutils/testlazutf16.pas svneol=native#text/plain
 test/lazutils/testlazutf8.pas svneol=native#text/plain
