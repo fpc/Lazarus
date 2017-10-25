@@ -3,7 +3,7 @@
 function ResolveDots(const AFilename: string): string;
 //trim double path delims and expand special dirs like .. and .
 //on Windows change also '/' to '\' except for filenames starting with '\\?\'
-var SrcPos, DestPos, l, DirStart: integer;
+var SrcPos, DestPos, Len, DirStart: integer;
   c: char;
   MacroPos: LongInt;
 begin
@@ -13,14 +13,14 @@ begin
   if (Pos('\\?\', AFilename) = 1) then Exit;
   {$endif}
 
-  l:=length(AFilename);
-  if l=0 then exit('');
+  Len:=length(AFilename);
+  if Len=0 then exit('');
 
   SrcPos:=1;
   DestPos:=1;
 
   // trim double path delimiters and special dirs . and ..
-  while (SrcPos<=l) do begin
+  while (SrcPos<=Len) do begin
     c:=AFilename[SrcPos];
     {$ifdef windows}
     //change / to \. The WinApi accepts both, but it leads to strange effects in other places
@@ -44,17 +44,17 @@ begin
     end;
     // check for special dirs . and ..
     if (c='.') then begin
-      if (SrcPos<l) then begin
+      if (SrcPos<Len) then begin
         if (AFilename[SrcPos+1]=PathDelim)
         and ((DestPos=1) or (Result[DestPos-1]=PathDelim)) then begin
           // special dir ./ or */./
           // -> skip
           inc(SrcPos,2);
-          while (SrcPos<=l) and (AFilename[SrcPos]=PathDelim) do
+          while (SrcPos<=Len) and (AFilename[SrcPos]=PathDelim) do
             inc(SrcPos);
           continue;
         end else if (AFilename[SrcPos+1]='.')
-        and ((SrcPos+1=l) or (AFilename[SrcPos+2]=PathDelim)) then
+        and ((SrcPos+1=Len) or (AFilename[SrcPos+2]=PathDelim)) then
         begin
           // special dir ..
           //  1. ..      -> copy
@@ -111,7 +111,7 @@ begin
                 DestPos:=DirStart;
                 inc(SrcPos,2);
                 //writeln('ResolveDots ',DestPos,' SrcPos=',SrcPos,' File="',AFilename,'" Result="',copy(Result,1,DestPos-1),'"');
-                if SrcPos>l then begin
+                if SrcPos>Len then begin
                   // '..' at end of filename
                   if (DestPos>1) and (Result[DestPos-1]<>PathDelim) then begin
                     // foo/dir/.. -> foo
@@ -123,7 +123,7 @@ begin
                   end;
                 end else if DestPos=1 then begin
                   // e.g. 'foo/../'
-                  while (SrcPos<=l) and (AFilename[SrcPos] in AllowDirectorySeparators) do
+                  while (SrcPos<=Len) and (AFilename[SrcPos] in AllowDirectorySeparators) do
                     inc(SrcPos);
                 end;
                 continue;
@@ -147,7 +147,7 @@ begin
       Result[DestPos]:=c;
       inc(DestPos);
       inc(SrcPos);
-      if (SrcPos>l) then break;
+      if (SrcPos>Len) then break;
       c:=AFilename[SrcPos];
       {$ifdef windows}
       //change / to \. The WinApi accepts both, but it leads to strange effects in other places
