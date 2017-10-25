@@ -61,6 +61,7 @@ begin
   DoTest('c:\LazarusDir\..\dir\','c:\dir\');
 {$endif}
   DoTest('$(LazarusDir)\..\dir\','$(LazarusDir)\..\dir\');
+  // see also TestLazFileUtils.TestResolveDots
 end;
 
 procedure TTestFileUtil.TestFileCopyPreserveTime;
