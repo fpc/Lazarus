@@ -6,28 +6,35 @@
   for details about the license.
  *****************************************************************************
 
-  Component serialisation drivers for pascal.
+Component serialisation into Pascal.
 
-  Works:
-    - simple properties: integer, strings, events, ...
-    - nested components (e.g. the child controls of a form)
-    - class properties (e.g. TControl.Font)
+Author: Mattias Gaertner
 
-  ToDo:
-    - TCollection needs a typecast to the item class
-    - variants
-    - widestrings need special encoding conversions, but the driver does not
-      know, that a widestring is assigned
-    - what to do with DefineProperties?
-    - the 'with' can conflict
-    - circle dependencies:
-       Edit1:=TEdit.Create(Form1);
-       Edit1.AnchorSide[akLeft].Control:=Label1;
-       Label1:=TLabel.Create(Form1);
-       Label1.AnchorSide[akTop].Control:=Edit1;
-    - ChildPos
-    - Flags
-    - a reader
+Working:
+- boolean, set of boolean
+- char, widechar, custom char, set of custom char
+- integers, custom int, set of custom int
+- strings, codepage system and UTF8
+- float, currency
+- enum, custom enum range
+- set of enum, set of custom enum range
+- variant: integers, boolean, string, floats, currency
+- method
+- persistent
+- component children, use SetParentComponent or optional Parent:=
+- collection
+- IInterfaceComponentReference
+- with ancestor
+- ancestor: change ComponentIndex -> call SetChildPos
+- reference foreign root, reference foreign component
+- create components before setting properties to avoid having to set references
+  later
+- inline component, csInline, call SetInline, inherited inline, inline on inherited
+- TComponent.Left/Right via DesignInfo
+- DefineProperties
+
+ToDo:
+- RegisterPascalProperties(aClass,@);
 }
 
 unit CompWriterPas;
@@ -47,7 +54,7 @@ const
   CSPDefaultSignatureBegin = CSPDefaultSignature+' - Begin';
   CSPDefaultSignatureEnd = CSPDefaultSignature+' - End';
   CSPDefaultAccessClass = 'TPasStreamAccess';
-  CSPDefaultExecCustomLFM = 'ExecCustomLFM';
+  CSPDefaultExecCustomCSP = 'ExecCustomCSP';
   CSPDefaultMaxColumn = 80;
   CWPSkipParentName = '-';
 type
@@ -1255,7 +1262,7 @@ begin
   FAssignOp:=':=';
   FSignature:=CSPDefaultSignature;
   FMaxColumn:=CSPDefaultMaxColumn;
-  FExecCustomData:=CSPDefaultExecCustomLFM;
+  FExecCustomData:=CSPDefaultExecCustomCSP;
   FAccessClass:=CSPDefaultAccessClass;
   C:=TAccessComp.Create(nil);
   FDefaultDefineProperties:=TMethod(@C.DefineProperties).Code;

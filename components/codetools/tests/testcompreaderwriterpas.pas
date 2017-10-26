@@ -3,32 +3,7 @@
      ./runtests --format=plain --suite=TTestCompReaderWriterPas
      ./runtests --format=plain --suite=TTestCompReaderWriterPas.TestBaseTypesMaxValues
 
-Working:
-- boolean, set of boolean
-- char, widechar, custom char, set of custom char
-- integers, custom int, set of custom int
-- strings, codepage system and UTF8
-- float, currency
-- enum, custom enum range
-- set of enum, set of custom enum range
-- variant: integers, boolean, string, floats, currency
-- method
-- persistent
-- component children, use SetParentComponent or optional Parent:=
-- collection
-- IInterfaceComponentReference
-- with ancestor
-- ancestor: change ComponentIndex -> call SetChildPos
-- reference foreign root, reference foreign component
-- create components before setting properties to avoid having to set references
-  later
-- inline component, csInline, call SetInline, inherited inline, inline on inherited
-- TComponent.Left/Right via DesignInfo
-- DefineProperties
-
 ToDo:
-- OnWriteMethodProperty
-- OnWriteStringProperty
 - RegisterPascalProperties(aClass,@);
 - enum: add unit, avoid nameclash with-do
 - custom integer TColor, add unit, avoid nameclash with-do
@@ -52,8 +27,8 @@ unit TestCompReaderWriterPas;
 interface
 
 uses
-  Classes, SysUtils, typinfo, LazLoggerBase, LazUTF8, LazLogger,
-  CompWriterPas, fpcunit, testregistry, CodeToolManager, LinkScanner,
+  Classes, SysUtils, typinfo, LazLoggerBase, LazUTF8, LazLogger, CompWriterPas,
+  LazPasReadUtil, fpcunit, testregistry, CodeToolManager, LinkScanner,
   CodeToolsStructs, CodeCache, BasicCodeTools, TestStdCodetools, TestGlobals,
   variants;
 
@@ -1985,47 +1960,6 @@ begin
   end;
 end;
 
-type
-
-  { TCSPReader }
-
-  TCSPReader = class(TReader)
-  public
-    procedure ReadProperties(Instance: TPersistent);
-  end;
-
-{ TCSPReader }
-
-procedure TCSPReader.ReadProperties(Instance: TPersistent);
-begin
-  while not EndOfList do
-    ReadProperty(Instance);
-end;
-
-procedure ExecCustomLFM(Instance: TPersistent; const Data: array of string);
-var
-  MemStream: TMemoryStream;
-  i: Integer;
-  s: String;
-  Reader: TCSPReader;
-begin
-  MemStream:=TMemoryStream.Create;
-  Reader:=nil;
-  try
-    for i:=low(Data) to High(Data) do
-    begin
-      s:=Data[i];
-      MemStream.Write(s[1],length(s));
-    end;
-    MemStream.Position:=0;
-    Reader:=TCSPReader.Create(MemStream,1024);
-    Reader.ReadProperties(Instance);
-  finally
-    Reader.Free;
-    MemStream.Free;
-  end;
-end;
-
 procedure TTestCompReaderWriterPas.TestDefineProperites_ListOfStrings;
 var
   ARoot: TSimpleControlWithStrings;
@@ -2042,11 +1976,11 @@ begin
     end;
     Expected:=#7'Strings'#1#6#5'First'#6#6'Second'#0#0;
     TestWriteDescendant('TestDefineProperites_ListOfStrings',ARoot,nil,[
-    CSPDefaultExecCustomLFM+'(Lines,[#7''Strings''#1#6#5''First''#6#6''Second''#0#0]);',
+    CSPDefaultExecCustomCSP+'(Lines,[#7''Strings''#1#6#5''First''#6#6''Second''#0#0]);',
     '']);
 
     Lines2:=TStringList.Create;
-    ExecCustomLFM(Lines2,[Expected]);
+    ExecCustomCSP(Lines2,[Expected]);
     AssertEquals('read TStrings.Text',ARoot.Lines.Text,Lines2.Text);
 
   finally
