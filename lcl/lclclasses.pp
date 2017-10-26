@@ -28,7 +28,7 @@ uses
 type
 
   // SysUtils.LongRec has unsigned Word for Lo and Hi,
-  //  we need a similar record with signed ShortInt
+  //  we need a similar record with signed SmallInt
   LazLongRec = packed record
 {$ifdef FPC_LITTLE_ENDIAN}
     Lo,Hi : SmallInt;
