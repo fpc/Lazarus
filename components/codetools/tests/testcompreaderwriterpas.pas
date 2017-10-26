@@ -4,7 +4,6 @@
      ./runtests --format=plain --suite=TTestCompReaderWriterPas.TestBaseTypesMaxValues
 
 ToDo:
-- RegisterPascalProperties(aClass,@);
 - enum: add unit, avoid nameclash with-do
 - custom integer TColor, add unit, avoid nameclash with-do
 - method, avoid nameclash with-do
@@ -440,9 +439,11 @@ type
     FStream: TMemoryStream;
     FWriter: TCompWriterPas;
     FAncestors: TPointerToPointerTree;
-    procedure OnWriterFindAncestor(Sender: TObject; Component: TComponent;
+    procedure OnDefinePropertiesTStrings(Writer: TCompWriterPas;
+      Instance: TPersistent; const Identifier: string; var Handled: boolean);
+    procedure OnWriterFindAncestor(Sender: TCompWriterPas; Component: TComponent;
       const Name: string; var Ancestor, RootAncestor: TComponent);
-    procedure OnWriterGetParentProperty(Sender: TObject; Component: TComponent;
+    procedure OnWriterGetParentProperty(Sender: TCompWriterPas; Component: TComponent;
       var PropName: string);
   protected
     procedure SetUp; override;
@@ -477,9 +478,8 @@ type
     procedure TestInlineDescendant; // e.g. a Form with a Frame, Frame is inherited from another Frame
 
     procedure TestDesignInfo;
-    procedure TestDefineProperites_ListOfStrings; // ToDo
-    // ToDo: WriteUnicodeString, WriteWideString, WriteInteger, Write
-    // ToDo: DefineBinaryProperty
+    procedure TestDefineProperties_ListOfStrings;
+    procedure Test_TStrings;
 
     procedure TestFindComponentInit; // ToDo
   end;
@@ -849,7 +849,7 @@ end;
 
 { TTestCompReaderWriterPas }
 
-procedure TTestCompReaderWriterPas.OnWriterFindAncestor(Sender: TObject;
+procedure TTestCompReaderWriterPas.OnWriterFindAncestor(Sender: TCompWriterPas;
   Component: TComponent; const Name: string; var Ancestor,
   RootAncestor: TComponent);
 var
@@ -863,8 +863,37 @@ begin
     RootAncestor:=C;
 end;
 
-procedure TTestCompReaderWriterPas.OnWriterGetParentProperty(Sender: TObject;
-  Component: TComponent; var PropName: string);
+procedure TTestCompReaderWriterPas.OnDefinePropertiesTStrings(
+  Writer: TCompWriterPas; Instance: TPersistent; const Identifier: string;
+  var Handled: boolean);
+var
+  List: TStrings;
+  HasData: Boolean;
+  i: Integer;
+begin
+  if not (Instance is TStrings) then exit;
+  List:=TStrings(Instance);
+  if Assigned(Writer.Ancestor) then
+    // Only serialize if string list is different from ancestor
+    if Writer.Ancestor.InheritsFrom(TStrings) then
+      HasData := not Equals(TStrings(Writer.Ancestor))
+    else
+      HasData := True
+  else
+    HasData := List.Count > 0;
+  if not HasData then exit;
+  Writer.WriteStatement('with '+Identifier+' do begin');
+  Writer.Indent;
+  Writer.WriteStatement('Clear;');
+  for i:=0 to List.Count-1 do
+    Writer.WriteStatement('Add('+Writer.GetStringLiteral(List[i])+');');
+  Writer.Unindent;
+  Writer.WriteStatement('end;');
+  Handled:=true;
+end;
+
+procedure TTestCompReaderWriterPas.OnWriterGetParentProperty(
+  Sender: TCompWriterPas; Component: TComponent; var PropName: string);
 begin
   if Component is TSimpleControl then
     PropName:='Parent';
@@ -1960,7 +1989,7 @@ begin
   end;
 end;
 
-procedure TTestCompReaderWriterPas.TestDefineProperites_ListOfStrings;
+procedure TTestCompReaderWriterPas.TestDefineProperties_ListOfStrings;
 var
   ARoot: TSimpleControlWithStrings;
   Expected: String;
@@ -1985,6 +2014,32 @@ begin
 
   finally
     Lines2.Free;
+    FreeAndNil(ARoot.FLines);
+    ARoot.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.Test_TStrings;
+var
+  ARoot: TSimpleControlWithStrings;
+begin
+  ARoot:=TSimpleControlWithStrings.Create(nil);
+  try
+    with ARoot do begin
+      Name:=CreateRootName(ARoot);
+      Lines:=TStringList.Create;
+      Lines.Text:='First'+LineEnding+'Second';
+    end;
+    Writer.OnDefineProperties:=@OnDefinePropertiesTStrings;
+
+    TestWriteDescendant('Test_TStrings',ARoot,nil,[
+    'with Lines do begin',
+    '  Clear;',
+    '  Add(''First'');',
+    '  Add(''Second'');',
+    'end;',
+    '']);
+  finally
     FreeAndNil(ARoot.FLines);
     ARoot.Free;
   end;
