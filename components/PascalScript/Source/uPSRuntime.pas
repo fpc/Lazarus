@@ -9383,7 +9383,7 @@ begin
   {$ENDIF}
   RegisterDelphiFunction(@Null, 'Null', cdRegister);
   RegisterDelphiFunction(@VarIsNull, 'VarIsNull', cdRegister);
-  RegisterDelphiFunction(@variants.VarType, 'VarType', cdRegister);
+  RegisterDelphiFunction(@{$IFDEF FPC}variants.{$ENDIF}VarType, 'VarType', cdRegister);
   {$IFNDEF PS_NOIDISPATCH}
   RegisterDelphiFunction(@IDispatchInvoke, 'IdispatchInvoke', cdregister);
   {$ENDIF}
@@ -10260,7 +10260,7 @@ begin
   // the VMT class pointer in EDX so they are effectively swaped
   // using register calling convention
   {$IFDEF CPU64}
-  PPSVariantU32(IntVal).Data := Int64(FSelf);
+  PPSVariantS64(IntVal).Data := Int64(FSelf);
   {$ELSE}
   PPSVariantU32(IntVal).Data := Cardinal(FSelf);
   {$ENDIF}
