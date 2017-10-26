@@ -32,9 +32,7 @@ Working:
 - inline component, csInline, call SetInline, inherited inline, inline on inherited
 - TComponent.Left/Right via DesignInfo
 - DefineProperties
-
-ToDo:
-- RegisterPascalProperties(aClass,@);
+- RegisterDefinePropertiesPas
 }
 
 unit CompWriterPas;
@@ -46,7 +44,8 @@ unit CompWriterPas;
 interface
 
 uses
-  Classes, SysUtils, typinfo, RtlConsts, LazLoggerBase, LazUTF8;
+  Classes, SysUtils, typinfo, RtlConsts, contnrs, LazLoggerBase, LazUTF8,
+  LazMethodList;
 
 const
   // Component serialized as Pascal
@@ -58,12 +57,15 @@ const
   CSPDefaultMaxColumn = 80;
   CWPSkipParentName = '-';
 type
-  TCWPFindAncestorEvent = procedure(Sender: TObject; Component: TComponent;
+  TCompWriterPas = class;
+  TCWPFindAncestorEvent = procedure(Writer: TCompWriterPas; Component: TComponent;
     const Name: string; var Ancestor, RootAncestor: TComponent) of object;
-  TCWPGetMethodName = procedure(Sender: TObject; Instance: TPersistent;
+  TCWPGetMethodName = procedure(Writer: TCompWriterPas; Instance: TPersistent;
     PropInfo: PPropInfo; out Name: String) of object;
-  TCWPGetParentProperty = procedure(Sender: TObject; Component: TComponent;
-    var PropName: string) of object;
+  TCWPGetParentPropertyEvent = procedure(Writer: TCompWriterPas;
+    Component: TComponent; var PropName: string) of object;
+  TCWPDefinePropertiesEvent = procedure(Writer: TCompWriterPas;
+    Instance: TPersistent; const Identifier: string; var Handled: boolean) of object;
 
   TCWPOption = (
     cwpoNoSignature,
@@ -96,9 +98,10 @@ type
     FLookupRoot: TComponent;
     FMaxColumn: integer;
     FNeedAccessClass: boolean;
+    FOnDefineProperties: TCWPDefinePropertiesEvent;
     FOnFindAncestor: TCWPFindAncestorEvent;
     FOnGetMethodName: TCWPGetMethodName;
-    FOnGetParentProperty: TCWPGetParentProperty;
+    FOnGetParentProperty: TCWPGetParentPropertyEvent;
     FOnWriteMethodProperty: TWriteMethodPropertyEvent;
     FOnWriteStringProperty: TReadWriteStringPropertyEvent;
     FOptions: TCWPOptions;
@@ -156,11 +159,12 @@ type
     property IndentStep: integer read FIndentStep write FIndentStep;
     property Options: TCWPOptions read FOptions write FOptions;
     property IgnoreChildren: Boolean read FIgnoreChildren write FIgnoreChildren;
-    property OnGetParentProperty: TCWPGetParentProperty read FOnGetParentProperty write FOnGetParentProperty;
+    property OnGetParentProperty: TCWPGetParentPropertyEvent read FOnGetParentProperty write FOnGetParentProperty;
   public
     // for custom DefineProperties
     property OnWriteMethodProperty: TWriteMethodPropertyEvent read FOnWriteMethodProperty write FOnWriteMethodProperty;
     property OnWriteStringProperty: TReadWriteStringPropertyEvent read FOnWriteStringProperty write FOnWriteStringProperty;
+    property OnDefineProperties: TCWPDefinePropertiesEvent read FOnDefineProperties write FOnDefineProperties;
   public
     // code snippets
     property LineEnding: string read FLineEnding write FLineEnding;
@@ -175,7 +179,27 @@ type
 
 procedure WriteComponentToPasStream(AComponent: TComponent; AStream: TStream);
 
+type
+  TCWPDefinePropertiesProc = procedure(Sender: TCompWriterPas;
+    Instance: TPersistent; const Identifier: string; var Handled: boolean);
+
+procedure RegisterDefinePropertiesPas(aClass: TPersistentClass;
+  const OnDefineProperties: TCWPDefinePropertiesProc);
+procedure UnregisterDefinePropertiesPas(
+  const OnDefineProperties: TCWPDefinePropertiesProc);
+procedure CallDefinePropertiesPas(Writer: TCompWriterPas; Instance: TPersistent;
+  const Identifier: string; var Handled: boolean);
+
 implementation
+
+type
+  TDefinePropertiesPas = class
+    BaseClass: TPersistentClass;
+    Event: TCWPDefinePropertiesProc;
+  end;
+
+var
+  DefinePropertiesEvents: TObjectList = nil;
 
 procedure WriteComponentToPasStream(AComponent: TComponent; AStream: TStream);
 var
@@ -186,6 +210,68 @@ begin
     Writer.WriteDescendant(AComponent);
   finally
     Writer.Free;
+  end;
+end;
+
+function CompareMethods(const m1, m2: TMethod): boolean;
+begin
+  Result:=(m1.Code=m2.Code) and (m1.Data=m2.Data);
+end;
+
+procedure RegisterDefinePropertiesPas(aClass: TPersistentClass;
+  const OnDefineProperties: TCWPDefinePropertiesProc);
+var
+  i, Cnt: Integer;
+  E: TDefinePropertiesPas;
+begin
+  if not Assigned(OnDefineProperties) then
+    raise Exception.Create('');
+  if not Assigned(aClass) then
+    raise Exception.Create('');
+  if DefinePropertiesEvents=nil then
+    DefinePropertiesEvents:=TObjectList.Create(true);
+  Cnt:=DefinePropertiesEvents.Count;
+  i:=0;
+  while i<Cnt do
+  begin
+    E:=TDefinePropertiesPas(DefinePropertiesEvents[i]);
+    if E.BaseClass.InheritsFrom(aClass) then
+      break;
+    inc(Cnt);
+  end;
+  E:=TDefinePropertiesPas.Create;
+  E.BaseClass:=aClass;
+  E.Event:=OnDefineProperties;
+  DefinePropertiesEvents.Insert(i,E);
+end;
+
+procedure UnregisterDefinePropertiesPas(
+  const OnDefineProperties: TCWPDefinePropertiesProc);
+var
+  i: Integer;
+  E: TDefinePropertiesPas;
+begin
+  for i:=DefinePropertiesEvents.Count-1 downto 0 do
+  begin
+    E:=TDefinePropertiesPas(DefinePropertiesEvents[i]);
+    if E.Event=OnDefineProperties then
+      DefinePropertiesEvents.Delete(i);
+  end;
+end;
+
+procedure CallDefinePropertiesPas(Writer: TCompWriterPas;
+  Instance: TPersistent; const Identifier: string; var Handled: boolean);
+var
+  i: Integer;
+  E: TDefinePropertiesPas;
+begin
+  if DefinePropertiesEvents=nil then exit;
+  for i:=0 to DefinePropertiesEvents.Count-1 do begin
+    E:=TDefinePropertiesPas(DefinePropertiesEvents[i]);
+    if not Instance.InheritsFrom(E.BaseClass) then
+      continue;
+    E.Event(Writer,Instance,Identifier,Handled);
+    if Handled then exit;
   end;
 end;
 
@@ -850,6 +936,7 @@ procedure TCompWriterPas.WriteDefineProperties(Instance: TPersistent);
 var
   Col: Integer;
   InLit, NeedComma: boolean;
+  InstancePath: String;
 
   function CheckCol(aCol: integer): boolean;
   begin
@@ -863,8 +950,27 @@ var
     NeedComma:=false;
   end;
 
+  function GetPath: string;
+  begin
+    if InstancePath='' then
+    begin
+      if PropertyPath<>'' then
+      begin
+        InstancePath:=PropertyPath;
+        Delete(InstancePath,length(InstancePath),1); // chomp '.'
+      end
+      else if Instance is TComponent then
+        InstancePath:=GetComponentPath(TComponent(Instance))
+      else
+        InstancePath:='';
+      if InstancePath='' then
+        raise EWriteError.Create('cannot write DefineProperties of "'+DbgSName(Instance)+'"');
+    end;
+    Result:=InstancePath;
+  end;
+
 var
-  HasAncestor: Boolean;
+  HasAncestor, Handled: Boolean;
   DefValue, Value: LongInt;
   aStream: TMemoryStream;
   BinWriter: TWriter;
@@ -873,7 +979,24 @@ var
   c: Char;
   i: Integer;
 begin
-  if Instance is TComponent then begin
+  InstancePath:='';
+
+  Handled:=false;
+  if Assigned(OnDefineProperties) then
+  begin
+    s:=GetPath;
+    OnDefineProperties(Self,Instance,s,Handled);
+    if Handled then exit;
+  end;
+  if DefinePropertiesEvents<>nil then
+  begin
+    s:=GetPath;
+    CallDefinePropertiesPas(Self,Instance,s,Handled);
+    if Handled then exit;
+  end;
+
+  if Instance is TComponent then
+  begin
     HasAncestor := Assigned(Ancestor) and ((Instance = Root) or
       (Instance.ClassType = Ancestor.ClassType));
     if HasAncestor then
@@ -882,10 +1005,20 @@ begin
       DefValue := 0;
     Value:=TComponent(Instance).DesignInfo;
     if Value<>DefValue then
+    begin
       // Note: DesignInfo contains Left/Top. On BigEndian systems the order
       // is reversed, which is already handled in TComponent.DefineProperties
       // -> it is the same longint value on Little and BigEndian system
-      WriteAssign(FPropPath + 'DesignInfo',IntToStr(Value));
+      s:=GetPath;
+      if s<>'' then
+      begin
+        if SameText(s,'Self') then
+          s:=''
+        else
+          s:=s+'.';
+      end;
+      WriteAssign(s + 'DesignInfo',IntToStr(Value));
+    end;
   end;
 
   if TMethod(@TAccessComp(Instance).DefineProperties).Code<>FDefaultDefineProperties
@@ -906,18 +1039,7 @@ begin
       if aStream.Size>1 then
       begin
         WriteIndent;
-        if PropertyPath<>'' then
-        begin
-          s:=PropertyPath;
-          Delete(s,length(s),1); // chomp '.'
-        end
-        else if Instance is TComponent then
-          s:=GetComponentPath(TComponent(Instance))
-        else
-          s:='';
-        if s='' then
-          raise EWriteError.Create('cannot write DefineProperties of "'+DbgSName(Instance)+'"');
-
+        s:=GetPath;
         s:=ExecCustomData+'('+s+',[';
         Write(s);
         Col:=CurIndent+length(s)+1;
@@ -1398,6 +1520,9 @@ procedure TCompWriterPas.Unindent;
 begin
   CurIndent:=CurIndent-IndentStep;
 end;
+
+finalization
+  DefinePropertiesEvents.Free;
 
 end.
 
