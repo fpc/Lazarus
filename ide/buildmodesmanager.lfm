@@ -143,7 +143,7 @@ object BuildModesForm: TBuildModesForm
         Width = 200
       end>
     FixedCols = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goRowSelect, goThumbTracking, goSmoothScroll]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goRowSelect, goThumbTracking, goSmoothScroll]
     TabOrder = 3
     TitleStyle = tsNative
     OnCheckboxToggled = BuildModesCheckboxToggled
