@@ -53,7 +53,8 @@ const
   CSPDefaultSignatureBegin = CSPDefaultSignature+' - Begin';
   CSPDefaultSignatureEnd = CSPDefaultSignature+' - End';
   CSPDefaultAccessClass = 'TPasStreamAccess';
-  CSPDefaultExecCustomCSP = 'ExecCustomCSP';
+  CSPDefaultExecCustomProc = 'ExecCustomCSP';
+  CSPDefaultExecCustomProcUnit = 'LazPasReadUtil';
   CSPDefaultMaxColumn = 80;
   CWPSkipParentName = '-';
 type
@@ -91,13 +92,15 @@ type
     FCurIndent: integer;
     FCurrentPos: Integer;
     FDefaultDefineProperties: CodePointer;
-    FExecCustomData: string;
+    FExecCustomProc: string;
+    FExecCustomProcUnit: string;
     FIgnoreChildren: Boolean;
     FIndentStep: integer;
     FLineEnding: string;
     FLookupRoot: TComponent;
     FMaxColumn: integer;
     FNeedAccessClass: boolean;
+    FNeededUnits: TStrings;
     FOnDefineProperties: TCWPDefinePropertiesEvent;
     FOnFindAncestor: TCWPFindAncestorEvent;
     FOnGetMethodName: TCWPGetMethodName;
@@ -113,6 +116,7 @@ type
     FStream: TStream;
     procedure AddToAncestorList(Component: TComponent);
     procedure DetermineAncestor(Component: TComponent);
+    procedure SetNeededUnits(const AValue: TStrings);
     procedure SetRoot(const AValue: TComponent);
     procedure WriteComponentData(Instance: TComponent);
     procedure WriteChildren(Component: TComponent; Step: TCWPChildrenStep);
@@ -144,6 +148,7 @@ type
     function GetEnumExpr(TypeInfo: PTypeInfo; Value: integer;
       AllowOutOfRange: boolean): string;
     function CreatedByAncestor(Component: TComponent): boolean;
+    procedure AddNeededUnit(const AnUnitName: string);
     procedure Indent;
     procedure Unindent;
     property Stream: TStream read FStream;
@@ -173,8 +178,10 @@ type
     property AccessClass: string read FAccessClass
       write FAccessClass; // classname used to access protected TComponent members like SetChildOrder
     property NeedAccessClass: boolean read FNeedAccessClass write FNeedAccessClass; // some property needed AccessClass
-    property ExecCustomData: string read FExecCustomData write FExecCustomData;
+    property ExecCustomProc: string read FExecCustomProc write FExecCustomProc;
+    property ExecCustomProcUnit: string read FExecCustomProcUnit write FExecCustomProcUnit;
     property MaxColumn: integer read FMaxColumn write FMaxColumn default CSPDefaultMaxColumn;
+    property NeededUnits: TStrings read FNeededUnits write SetNeededUnits;
   end;
 
 procedure WriteComponentToPasStream(AComponent: TComponent; AStream: TStream);
@@ -393,6 +400,12 @@ begin
       FOnFindAncestor(Self,Component,Component.Name,C,FRootAncestor);
       Ancestor:=C;
     end;
+end;
+
+procedure TCompWriterPas.SetNeededUnits(const AValue: TStrings);
+begin
+  if FNeededUnits=AValue then Exit;
+  FNeededUnits.Assign(AValue);
 end;
 
 procedure TCompWriterPas.SetRoot(const AValue: TComponent);
@@ -1040,8 +1053,9 @@ begin
       begin
         WriteIndent;
         s:=GetPath;
-        s:=ExecCustomData+'('+s+',[';
+        s:=ExecCustomProc+'('+s+',[';
         Write(s);
+        AddNeededUnit(ExecCustomProcUnit);
         Col:=CurIndent+length(s)+1;
         Indent;
         NeedComma:=false;
@@ -1384,7 +1398,9 @@ begin
   FAssignOp:=':=';
   FSignature:=CSPDefaultSignature;
   FMaxColumn:=CSPDefaultMaxColumn;
-  FExecCustomData:=CSPDefaultExecCustomCSP;
+  FExecCustomProc:=CSPDefaultExecCustomProc;
+  FExecCustomProcUnit:=CSPDefaultExecCustomProcUnit;
+  FNeededUnits:=TStringList.Create;
   FAccessClass:=CSPDefaultAccessClass;
   C:=TAccessComp.Create(nil);
   FDefaultDefineProperties:=TMethod(@C.DefineProperties).Code;
@@ -1393,6 +1409,7 @@ end;
 
 destructor TCompWriterPas.Destroy;
 begin
+  FreeAndNil(FNeededUnits);
   inherited Destroy;
 end;
 
@@ -1509,6 +1526,12 @@ begin
     and (TComponent(FAncestor).Owner = FRootAncestor)
     and (Component.Owner = Root)
     and SameText(Component.Name,TComponent(FAncestor).Name)
+end;
+
+procedure TCompWriterPas.AddNeededUnit(const AnUnitName: string);
+begin
+  if FNeededUnits.IndexOf(AnUnitName)>=0 then exit;
+  FNeededUnits.Add(AnUnitName);
 end;
 
 procedure TCompWriterPas.Indent;

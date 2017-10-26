@@ -2005,12 +2005,15 @@ begin
     end;
     Expected:=#7'Strings'#1#6#5'First'#6#6'Second'#0#0;
     TestWriteDescendant('TestDefineProperites_ListOfStrings',ARoot,nil,[
-    CSPDefaultExecCustomCSP+'(Lines,[#7''Strings''#1#6#5''First''#6#6''Second''#0#0]);',
+    CSPDefaultExecCustomProc+'(Lines,[#7''Strings''#1#6#5''First''#6#6''Second''#0#0]);',
     '']);
 
     Lines2:=TStringList.Create;
     ExecCustomCSP(Lines2,[Expected]);
     AssertEquals('read TStrings.Text',ARoot.Lines.Text,Lines2.Text);
+
+    AssertEquals('NeededUnits.Count',1,Writer.NeededUnits.Count);
+    AssertEquals('NeededUnits[0]',Writer.ExecCustomProcUnit,Writer.NeededUnits[0]);
 
   finally
     Lines2.Free;
