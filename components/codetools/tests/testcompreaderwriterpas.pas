@@ -16,6 +16,7 @@ Working:
 - persistent
 - component children, use SetParentComponent or optional Parent:=
 - collection
+- IInterfaceComponentReference
 - with ancestor
 - ancestor: change ComponentIndex -> call SetChildPos
 - reference foreign root, reference foreign component
@@ -29,8 +30,15 @@ ToDo:
 - method, avoid nameclash with-do
 - TComponent.Left/Right
 - DefineProperties
-- tkInterface
 - insert/update code and helper class into unit/program
+  - find old access class
+  - find constructor
+  - find old init code
+  - add new access class
+  - error if access class is behind constructor
+  - add constructor
+  - add new init code
+  - replace init code
 }
 unit TestCompReaderWriterPas;
 
@@ -42,12 +50,15 @@ interface
 
 uses
   Classes, SysUtils, typinfo, RtlConsts, LazLoggerBase, LazUTF8, fpcunit,
-  testregistry, CodeToolManager, LinkScanner, CodeToolsStructs,
-  TestStdCodetools, variants;
+  testregistry, CodeToolManager, LinkScanner, CodeToolsStructs, CodeCache,
+  BasicCodeTools, TestStdCodetools, TestGlobals, variants;
 
 const
   CSPDefaultSignature = '// Pascal stream V1.0';
+  CSPDefaultSignatureBegin = CSPDefaultSignature+' - DO NOT EDIT! - Begin';
+  CSPDefaultSignatureEnd = CSPDefaultSignature+' - End';
   CSPDefaultAccessClass = 'TPasStreamAccess';
+  CWPSkipParentName = '-';
 type
   TCWPFindAncestorEvent = procedure(Sender: TObject; Component: TComponent;
     const Name: string; var Ancestor, RootAncestor: TComponent) of object;
@@ -533,6 +544,17 @@ type
     property Items: TSimpleCollection read FItems write SetItems;
   end;
 
+  { TSimpleControlWithInterface }
+
+  TSimpleControlWithInterface = class(TSimpleControl, IInterfaceComponentReference)
+  private
+    FIntf: IInterfaceComponentReference;
+  public
+    function GetComponent: TComponent;
+  published
+    property Intf: IInterfaceComponentReference read FIntf write FIntf;
+  end;
+
   { TTestCompReaderWriterPas }
 
   TTestCompReaderWriterPas = class(TCustomTestCTStdCodetools)
@@ -566,6 +588,7 @@ type
     procedure TestWideString_SrcCodePageUTF8;
     procedure TestVariant;
     procedure TestPropPersistent;
+    procedure TestInterface;
     procedure TestAncestor;
     procedure TestAncestorChildPos;
     procedure TestChildComponents;
@@ -574,6 +597,7 @@ type
     procedure TestInline;
     procedure TestAncestorWithInline; // e.g. a Form inherited from a Form with a Frame
     procedure TestInlineDescendant; // e.g. a Form with a Frame, Frame is inherited from another Frame
+    procedure TestFindComponentInit; // ToDo
   end;
 
 implementation
@@ -660,6 +684,13 @@ Type
     FComponent: TComponent;
     constructor Create(APos: Integer; AComponent: TComponent);
   end;
+
+{ TSimpleControlWithInterface }
+
+function TSimpleControlWithInterface.GetComponent: TComponent;
+begin
+  Result:=Self;
+end;
 
 { TSimpleCollection }
 
@@ -1023,7 +1054,8 @@ var
     PropName:='';
     if Assigned(OnGetParentProperty) then
       OnGetParentProperty(Self,Instance,PropName);
-    if PropName<>'' then
+    if PropName=CWPSkipParentName then
+    else if PropName<>'' then
       WriteAssign(PropName,GetComponentPath(Parent))
     else begin
       NeedAccessClass:=true;
@@ -1142,8 +1174,10 @@ var
   UStrValue, UDefStrValue: UnicodeString;
   VarValue, DefVarValue: tvardata;
   aTypeData: PTypeData;
-  Component, C: TComponent;
+  Component: TComponent;
   SavedAncestor: TPersistent;
+  IntfValue: IInterface;
+  CompRef: IInterfaceComponentReference;
 begin
   // do not stream properties without getter
   if not Assigned(PropInfo^.GetProc) then
@@ -1380,10 +1414,10 @@ begin
             if (AncestorObj<>ObjValue) and
                (TComponent(AncestorObj).Owner = FRootAncestor) and
                (TComponent(ObjValue).Owner = Root) and
-               (CompareText(TComponent(AncestorObj).Name,TComponent(ObjValue).Name)=0) then
+               SameText(TComponent(AncestorObj).Name,TComponent(ObjValue).Name) then
             begin
-              // different components, but with the same name
-              // -> keep property value
+              // value is a component, and it is the same as in the ancestor
+              // Note: a descendant has new instances with same names
               AncestorObj := ObjValue;
             end;
           end;
@@ -1407,30 +1441,10 @@ begin
                 and not (csTransient in Component.ComponentStyle) then
             begin
               // set property value
-              Name:= '';
-              C:= Component;
-              While (C<>Nil) and (C.Name<>'') do
-              begin
-                If (Name<>'') Then
-                  Name:='.'+Name;
-                if C.Owner = LookupRoot then
-                begin
-                  Name := C.Name+Name;
-                  break;
-                end
-                else if C = LookupRoot then
-                begin
-                  Name := 'Self' + Name;
-                  break;
-                end;
-                Name:=C.Name + Name;
-                C:= C.Owner;
-              end;
-              if (C=nil) and (Component.Owner=nil) then
-                if (Name<>'') then // Component is a foreign root
-                  ; // Name:=Name+'.Owner';
-              if Length(Name) > 0 then
-                WriteAssign(PropName,Name);
+              Name:=GetComponentPath(Component);
+              if Name='' then
+                raise EStreamError.Create('cannot write property "'+DbgSName(Instance)+'.'+PropName+'"');
+              WriteAssign(PropName,Name);
             end; //(ObjValue <> AncestorObj)
           end // ObjValue.InheritsFrom(TComponent)
           else
@@ -1491,6 +1505,21 @@ begin
         if (BoolValue<>DefBoolValue) or (DefValue=longint($80000000)) then
           WriteAssign(PropName,GetBoolLiteral(BoolValue));
       end;
+    tkInterface:
+      begin
+        IntfValue := GetInterfaceProp(Instance, PropInfo);
+        if not Assigned(IntfValue) then
+          WriteAssign(PropName,'Nil')
+        else if Supports(IntfValue, IInterfaceComponentReference, CompRef) then
+        begin
+          Component := CompRef.GetComponent;
+          Name:=GetComponentPath(Component);
+          if Name='' then
+            raise EStreamError.Create('cannot write property "'+DbgSName(Instance)+'.'+PropName+'"');
+          WriteAssign(PropName,Name);
+        end else
+          raise EStreamError.Create('interface property "'+PropName+'" does not support IInterfaceComponentReference');
+      end;
   else
     {$IFDEF VerboseCompWriterPas}
     debugln(['TCompWriterPas.WriteProperty Property="',PropName,'" Kind=',PropType^.Kind]);
@@ -1535,13 +1564,38 @@ begin
 end;
 
 function TCompWriterPas.GetComponentPath(Component: TComponent): string;
+var
+  Name: String;
+  C: TComponent;
 begin
   if Component=nil then
     Result:='Nil'
   else if Component=LookupRoot then
     Result:='Self'
-  else
-    Result:=Component.Name;
+  else begin
+    Name:= '';
+    C:=Component;
+    While (C<>Nil) do
+    begin
+      if (Name<>'') Then
+        Name:='.'+Name;
+      if C.Owner = LookupRoot then
+      begin
+        Name := C.Name+Name;
+        break;
+      end
+      else if C = LookupRoot then
+      begin
+        Name := 'Self'+Name;
+        break;
+      end else if C.Name='' then
+        exit('');
+      Name:=C.Name+Name;
+      // ToDo: store used unit
+      C:=C.Owner;
+    end;
+    Result:=Name;
+  end;
 end;
 
 function TCompWriterPas.GetBoolLiteral(b: boolean): string;
@@ -2494,6 +2548,47 @@ begin
   end;
 end;
 
+procedure TTestCompReaderWriterPas.TestInterface;
+var
+  aRoot: TSimpleControl;
+  Button1, Label1: TSimpleControlWithInterface;
+begin
+  aRoot:=TSimpleControl.Create(nil);
+  try
+    with aRoot do begin
+      Name:=CreateRootName(aRoot);
+      Button1:=TSimpleControlWithInterface.Create(aRoot);
+      with Button1 do begin
+        Name:='Button1';
+        Parent:=aRoot;
+      end;
+      Label1:=TSimpleControlWithInterface.Create(aRoot);
+      with Label1 do begin
+        Name:='Label1';
+        Parent:=aRoot;
+        Intf:=Button1;
+      end;
+      Button1.Intf:=Label1;
+    end;
+    TestWriteDescendant('TestInterface',aRoot,nil,[
+    'Button1:=TSimpleControlWithInterface.Create(Self);',
+    'Label1:=TSimpleControlWithInterface.Create(Self);',
+    'with Button1 do begin',
+    '  Name:=''Button1'';',
+    '  Intf:=Label1;',
+    '  Parent:=Self;',
+    'end;',
+    'with Label1 do begin',
+    '  Name:=''Label1'';',
+    '  Intf:=Button1;',
+    '  Parent:=Self;',
+    'end;',
+    '']);
+  finally
+    aRoot.Free;
+  end;
+end;
+
 procedure TTestCompReaderWriterPas.TestAncestor;
 
   procedure InitAncestor(C: TSimpleControl);
@@ -2898,11 +2993,11 @@ begin
     '  Tag:=32;',
     '  with FrameButton2 do begin',
     '  end;',
-    '  TPasStreamAccess(TComponent(Frame1)).SetChildOrder(FrameButton2,0);',
+    '  TPasStreamAccess(TComponent(Frame1)).SetChildOrder(Frame1.FrameButton2,0);',
     '  with FrameButton1 do begin',
     '    Tag:=421;',
     '  end;',
-    '  TPasStreamAccess(TComponent(Frame1)).SetChildOrder(FrameButton1,1);',
+    '  TPasStreamAccess(TComponent(Frame1)).SetChildOrder(Frame1.FrameButton1,1);',
     'end;',
     'SetChildOrder(Frame1,0);',
     'with Button1 do begin',
@@ -3014,6 +3109,45 @@ begin
     DescendantFrame.Free;
     AncestorFrame.Free;
   end;
+end;
+
+procedure TTestCompReaderWriterPas.TestFindComponentInit;
+var
+  Code: TCodeBuffer;
+  Init, IndentedInit, Src: String;
+begin
+  exit;
+
+  Code:=CodeToolBoss.CreateFile('form1.pas');
+  Init:='Name:=''Form1'';'+LineEnding;
+  IndentText(CSPDefaultSignatureBegin+LineEnding
+    +Init
+    +CSPDefaultSignatureEnd+LineEnding,2,8,IndentedInit);
+  Src:=LinesToStr(['unit Unit1;'
+    ,'{$mode objfpc}{$H+}'
+    ,'interface'
+    ,'uses Classes;'
+    ,'type'
+    ,'  TForm1 = class(TComponent)'
+    ,'  public'
+    ,'    constructor Create(TheOwner: TComponent); override;'
+    ,'  end;'
+    ,'implementation'
+    ,'type'
+    ,'  '+CSPDefaultAccessClass+' = class(TComponent);'
+    ,'constructor TForm.Create(TheOwner: TComponent);'
+    ,'begin'+LineEnding
+    ,'  inherited;'])
+    +IndentedInit
+    +LinesToStr(['end;'
+    ,'end.']);
+  Code.Source:=Src;
+  if not CodeToolBoss.UpdateComponentInit(Code,'TForm1',CSPDefaultAccessClass,
+    CSPDefaultSignatureBegin,CSPDefaultSignatureEnd,Init)
+  then begin
+    Fail('CodeToolBoss.UpdateComponentInit failed');
+  end;
+  CheckDiff('TestFindComponentInit',Src,Code.Source);
 end;
 
 initialization
