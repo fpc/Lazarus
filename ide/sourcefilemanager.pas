@@ -169,7 +169,6 @@ type
   private
     FProject: TProject;
     FListForm: TGenericCheckListForm;
-    FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
     function AskToSaveEditors(EditorList: TList): TModalResult;
     function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
@@ -325,11 +324,9 @@ type
     procedure UpdateProjectResourceInfo;
   public
     function AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
-
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
   public
     function CheckFilesOnDisk(Instantaneous: boolean = false): TModalResult;
-    property CheckingFilesOnDisk: boolean read FCheckingFilesOnDisk write FCheckingFilesOnDisk;
     property CheckFilesOnDiskNeeded: boolean read FCheckFilesOnDiskNeeded;
   end;
 
@@ -3345,7 +3342,7 @@ var
   CurUnit: TUnitInfo;
 begin
   Result:=mrOk;
-  if FCheckingFilesOnDisk then exit;
+  if not MainIDE.CheckFilesOnDiskEnabled then exit;
   if Project1=nil then exit;
   if Screen.GetCurrentModalForm<>nil then exit;
 
@@ -3355,7 +3352,7 @@ begin
   end;
   FCheckFilesOnDiskNeeded:=false;
 
-  FCheckingFilesOnDisk:=true;
+  MainIDE.CheckFilesOnDiskEnabled:=False;
   AnUnitList:=nil;
   APackageList:=nil;
   AIgnoreList:=nil;
@@ -3422,7 +3419,7 @@ begin
 
     Result:=mrOk;
   finally
-    FCheckingFilesOnDisk:=false;
+    MainIDE.CheckFilesOnDiskEnabled:=True;
     AnUnitList.Free;
     APackageList.Free;
     AIgnoreList.Free;

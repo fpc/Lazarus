@@ -273,6 +273,7 @@ type
     FOpenEditorsOnCodeToolChange: boolean;
     FOpenMainSourceOnCodeToolChange: boolean;
     FSaveClosedSourcesOnCodeToolChange: boolean;
+    FCheckFilesOnDiskEnabled: boolean;
     procedure AddHandler(HandlerType: TLazarusIDEHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TLazarusIDEHandlerType;
@@ -534,6 +535,7 @@ type
     property IDEIsClosing: boolean read FIDEIsClosing;
     property LastActivatedWindows: TFPList read FLastActivatedWindows;
     property LastFormActivated: TCustomForm read FLastFormActivated write FLastFormActivated;
+    property CheckFilesOnDiskEnabled: boolean read FCheckFilesOnDiskEnabled write FCheckFilesOnDiskEnabled;
   end;
 
   { TIDETabMaster }
@@ -716,6 +718,7 @@ end;
 constructor TLazIDEInterface.Create(TheOwner: TComponent);
 begin
   LazarusIDE:=Self;
+  FCheckFilesOnDiskEnabled:=True;
   inherited Create(TheOwner);
 end;
 

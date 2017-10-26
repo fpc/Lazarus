@@ -2026,7 +2026,7 @@ begin
   if IDEIsClosing then Exit;
   FIDEIsClosing := True;
   CanClose := False;
-  SourceFileMgr.CheckingFilesOnDisk := True;
+  CheckFilesOnDiskEnabled := False;
   try
     if (ToolStatus = itExiting) then exit;
 
@@ -2047,7 +2047,7 @@ begin
     CanClose:=(DoCloseProject <> mrAbort);
   finally
     FIDEIsClosing := CanClose;
-    SourceFileMgr.CheckingFilesOnDisk:=false;
+    CheckFilesOnDiskEnabled:=True;
     if not CanClose then
       DoCheckFilesOnDisk(false);
   end;
