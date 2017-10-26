@@ -6,7 +6,7 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Classes, XMLStreaming, Unit1;
+  Classes, Unit1;
 
 begin
   StreamAsPasForm:=TStreamAsPasForm.Create(nil);

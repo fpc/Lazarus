@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, typinfo, CompWriterPas;
+  Classes, SysUtils, typinfo, CompWriterPas, LazLogger;
 
 type
   TMyEnum = (myEnum1, myEnum2, myEnum3);
@@ -199,7 +199,7 @@ begin
     SetLength(s,ms.Size);
     if s<>'' then
       ms.Read(s[1],length(s));
-    debugln(['TStreamAsPasForm.WriteComponents ',s]);
+    DebugLn(['TStreamAsPasForm.WriteComponents ',s]);
   finally
     ms.Free;
   end;

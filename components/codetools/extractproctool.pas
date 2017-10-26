@@ -124,6 +124,10 @@ type
       const WithExpr: string; // if empty: collect Candidates
       Candidates: TStrings; SourceChangeCache: TSourceChangeCache): boolean;
 
+    function UpdateComponentInit(const aClassName, AccessClass,
+         StartSignature, EndSignature, InitSrc: string;
+         SourceChangeCache: TSourceChangeCache): boolean;
+
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
   
@@ -1694,6 +1698,35 @@ begin
     if not SourceChangeCache.Apply then exit;
   end;
   Result:=true;
+end;
+
+function TExtractProcTool.UpdateComponentInit(const aClassName, AccessClass,
+  StartSignature, EndSignature, InitSrc: string;
+  SourceChangeCache: TSourceChangeCache): boolean;
+
+  procedure E(TheID: int64; Msg: string);
+  begin
+    raise ECodeToolError.Create(Self,TheID,'TExtractProcTool.UpdateComponentInit: '+Msg);
+  end;
+
+begin
+  Result:=false;
+  {$IFDEF VerbosePasStream}
+  debugln(['TExtractProcTool.UpdateComponentInit START ',MainFilename,' aClassName="'+aClassName+'" AccessClass="'+AccessClass+'" StartSignature={'+DbgStr(StartSignature)+'} EndSignature={'+dbgstr(EndSignature)+'} InitSrc={'+InitSrc+'}']);
+  {$ENDIF}
+  if aClassName='' then
+    E(20171025224428,'missing aClassName');
+  if not IsValidIdent(aClassName) then
+    E(20171025224540,'invalid aClassName "'+aClassName+'"');
+  if (AccessClass<>'') and not IsValidIdent(AccessClass) then
+    E(20171025224607,'invalid AccessClass "'+AccessClass+'"');
+  if StartSignature='' then
+    E(20171025224636,'missing StartSignature');
+  if EndSignature='' then
+    E(20171025224647,'missing EndSignature');
+
+  // find class
+  // ToDo
 end;
 
 procedure TExtractProcTool.CalcMemSize(Stats: TCTMemStats);
