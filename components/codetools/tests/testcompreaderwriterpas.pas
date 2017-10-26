@@ -24,21 +24,24 @@ Working:
   later
 - inline component, csInline, call SetInline, inherited inline, inline on inherited
 - TComponent.Left/Right via DesignInfo
+- DefineProperties
 
 ToDo:
+- OnWriteMethodProperty
+- OnWriteStringProperty
+- RegisterPascalProperties(aClass,@);
 - enum: add unit, avoid nameclash with-do
 - custom integer TColor, add unit, avoid nameclash with-do
 - method, avoid nameclash with-do
-- DefineProperties
 - insert/update code and helper class into unit/program
-  - find old access class
-  - find constructor
+  - find call init proc
   - find old init code
-  - add new access class
-  - error if access class is behind constructor
-  - add constructor
+  - error if init proc is behind call
+  - add call in existing constructor
+  - add constructor with call
   - add new init code
   - replace init code
+  - add missing units
 }
 unit TestCompReaderWriterPas;
 
@@ -49,15 +52,18 @@ unit TestCompReaderWriterPas;
 interface
 
 uses
-  Classes, SysUtils, typinfo, RtlConsts, LazLoggerBase, LazUTF8, fpcunit,
-  testregistry, CodeToolManager, LinkScanner, CodeToolsStructs, CodeCache,
-  BasicCodeTools, TestStdCodetools, TestGlobals, variants;
+  Classes, SysUtils, typinfo, RtlConsts, LazLoggerBase, LazUTF8, LazLogger,
+  fpcunit, testregistry, CodeToolManager, LinkScanner, CodeToolsStructs,
+  CodeCache, BasicCodeTools, TestStdCodetools, TestGlobals, variants;
 
 const
-  CSPDefaultSignature = '// Pascal stream V1.0';
-  CSPDefaultSignatureBegin = CSPDefaultSignature+' - DO NOT EDIT! - Begin';
+  // Component Stream as Pascal
+  CSPDefaultSignature = '// Component Stream as Pascal';
+  CSPDefaultSignatureBegin = CSPDefaultSignature+' - Begin';
   CSPDefaultSignatureEnd = CSPDefaultSignature+' - End';
   CSPDefaultAccessClass = 'TPasStreamAccess';
+  CSPDefaultExecCustomLFM = 'ExecCustomLFM';
+  CSPDefaultMaxColumn = 80;
   CWPSkipParentName = '-';
 type
   TCWPFindAncestorEvent = procedure(Sender: TObject; Component: TComponent;
@@ -83,28 +89,33 @@ type
 
   TCompWriterPas = class
   private
+    FAccessClass: string;
+    FAncestor: TPersistent;
+    FAncestorPos: Integer;
+    FAncestors: TStringList;
     FAssignOp: String;
     FCurIndent: integer;
+    FCurrentPos: Integer;
+    FDefaultDefineProperties: CodePointer;
+    FExecCustomData: string;
     FIgnoreChildren: Boolean;
     FIndentStep: integer;
     FLineEnding: string;
+    FLookupRoot: TComponent;
+    FMaxColumn: integer;
     FNeedAccessClass: boolean;
+    FOnFindAncestor: TCWPFindAncestorEvent;
     FOnGetMethodName: TCWPGetMethodName;
     FOnGetParentProperty: TCWPGetParentProperty;
+    FOnWriteMethodProperty: TWriteMethodPropertyEvent;
+    FOnWriteStringProperty: TReadWriteStringPropertyEvent;
     FOptions: TCWPOptions;
     FParent: TComponent;
     FPropPath: string;
-    FAccessClass: string;
+    FRoot: TComponent;
+    FRootAncestor: TComponent;
     FSignature: String;
     FStream: TStream;
-    FRoot: TComponent;
-    FLookupRoot: TComponent;
-    FAncestor: TPersistent;
-    FRootAncestor: TComponent;
-    FAncestors: TStringList;
-    FAncestorPos: Integer;
-    FCurrentPos: Integer;
-    FOnFindAncestor: TCWPFindAncestorEvent;
     procedure AddToAncestorList(Component: TComponent);
     procedure DetermineAncestor(Component: TComponent);
     procedure SetRoot(const AValue: TComponent);
@@ -112,18 +123,9 @@ type
     procedure WriteChildren(Component: TComponent; Step: TCWPChildrenStep);
     procedure WriteProperty(Instance: TPersistent; PropInfo: PPropInfo);
     procedure WriteProperties(Instance: TPersistent);
+    procedure WriteDefineProperties(Instance: TPersistent);
     procedure WriteCollection(PropName: string; Collection: TCollection);
-    function GetComponentPath(Component: TComponent): string;
-    function GetBoolLiteral(b: boolean): string;
-    function GetCharLiteral(c: integer): string;
-    function GetWideCharLiteral(c: integer): string;
-    function GetStringLiteral(const s: string): string;
-    function GetWStringLiteral(p: PWideChar; Count: integer): string;
-    function GetFloatLiteral(const e: Extended): string;
-    function GetCurrencyLiteral(const c: currency): string;
     function ShortenFloat(s: string): string;
-    function GetEnumExpr(TypeInfo: PTypeInfo; Value: integer;
-      AllowOutOfRange: boolean): string;
   public
     constructor Create(AStream: TStream);
     destructor Destroy; override;
@@ -136,6 +138,16 @@ type
     procedure WriteLn;
     procedure WriteStatement(const s: string);
     procedure WriteAssign(const LHS, RHS: string);
+    function GetComponentPath(Component: TComponent): string;
+    function GetBoolLiteral(b: boolean): string;
+    function GetCharLiteral(c: integer): string;
+    function GetWideCharLiteral(c: integer): string;
+    function GetStringLiteral(const s: string): string;
+    function GetWStringLiteral(p: PWideChar; Count: integer): string;
+    function GetFloatLiteral(const e: Extended): string;
+    function GetCurrencyLiteral(const c: currency): string;
+    function GetEnumExpr(TypeInfo: PTypeInfo; Value: integer;
+      AllowOutOfRange: boolean): string;
     function CreatedByAncestor(Component: TComponent): boolean;
     procedure Indent;
     procedure Unindent;
@@ -152,6 +164,11 @@ type
     property IndentStep: integer read FIndentStep write FIndentStep;
     property Options: TCWPOptions read FOptions write FOptions;
     property IgnoreChildren: Boolean read FIgnoreChildren write FIgnoreChildren;
+    property OnGetParentProperty: TCWPGetParentProperty read FOnGetParentProperty write FOnGetParentProperty;
+  public
+    // for custom DefineProperties
+    property OnWriteMethodProperty: TWriteMethodPropertyEvent read FOnWriteMethodProperty write FOnWriteMethodProperty;
+    property OnWriteStringProperty: TReadWriteStringPropertyEvent read FOnWriteStringProperty write FOnWriteStringProperty;
   public
     // code snippets
     property LineEnding: string read FLineEnding write FLineEnding;
@@ -160,7 +177,8 @@ type
     property AccessClass: string read FAccessClass
       write FAccessClass; // classname used to access protected TComponent members like SetChildOrder
     property NeedAccessClass: boolean read FNeedAccessClass write FNeedAccessClass; // some property needed AccessClass
-    property OnGetParentProperty: TCWPGetParentProperty read FOnGetParentProperty write FOnGetParentProperty;
+    property ExecCustomData: string read FExecCustomData write FExecCustomData;
+    property MaxColumn: integer read FMaxColumn write FMaxColumn default CSPDefaultMaxColumn;
   end;
 
 // Tests =======================================================================
@@ -555,6 +573,15 @@ type
     property Intf: IInterfaceComponentReference read FIntf write FIntf;
   end;
 
+  { TSimpleControlWithStrings }
+
+  TSimpleControlWithStrings = class(TSimpleControl)
+  private
+    FLines: TStrings;
+  published
+    property Lines: TStrings read FLines write FLines;
+  end;
+
   { TTestCompReaderWriterPas }
 
   TTestCompReaderWriterPas = class(TCustomTestCTStdCodetools)
@@ -599,6 +626,9 @@ type
     procedure TestInlineDescendant; // e.g. a Form with a Frame, Frame is inherited from another Frame
 
     procedure TestDesignInfo;
+    procedure TestDefineProperites_ListOfStrings; // ToDo
+    // ToDo: WriteUnicodeString, WriteWideString, WriteInteger, Write
+    // ToDo: DefineBinaryProperty
 
     procedure TestFindComponentInit; // ToDo
   end;
@@ -1177,9 +1207,9 @@ var
   UStrValue, UDefStrValue: UnicodeString;
   VarValue, DefVarValue: tvardata;
   aTypeData: PTypeData;
-  Component: TComponent;
+  Component, AncestorComponent: TComponent;
   SavedAncestor: TPersistent;
-  IntfValue: IInterface;
+  IntfValue, AncestorIntf: IInterface;
   CompRef: IInterfaceComponentReference;
 begin
   // do not stream properties without getter
@@ -1446,7 +1476,7 @@ begin
               // set property value
               Name:=GetComponentPath(Component);
               if Name='' then
-                raise EStreamError.Create('cannot write property "'+DbgSName(Instance)+'.'+PropName+'"');
+                raise EWriteError.Create('cannot write property "'+DbgSName(Instance)+'.'+PropName+'"');
               WriteAssign(PropName,Name);
             end; //(ObjValue <> AncestorObj)
           end // ObjValue.InheritsFrom(TComponent)
@@ -1516,12 +1546,34 @@ begin
         else if Supports(IntfValue, IInterfaceComponentReference, CompRef) then
         begin
           Component := CompRef.GetComponent;
-          Name:=GetComponentPath(Component);
-          if Name='' then
-            raise EStreamError.Create('cannot write property "'+DbgSName(Instance)+'.'+PropName+'"');
-          WriteAssign(PropName,Name);
+          AncestorComponent := nil;
+          if HasAncestor then
+          begin
+            AncestorIntf := GetInterfaceProp(Instance, PropInfo);
+            if Supports(AncestorIntf, IInterfaceComponentReference, CompRef) then
+            begin
+              AncestorComponent := CompRef.GetComponent;
+              if (AncestorComponent<>Component) and
+                 (AncestorComponent.Owner = FRootAncestor) and
+                 (Component.Owner = Root) and
+                 SameText(AncestorComponent.Name,Component.Name) then
+              begin
+                // value is a component, and it is the same as in the ancestor
+                // Note: a descendant has new instances with same names
+                AncestorComponent := Component;
+              end;
+            end;
+          end;
+
+          if Component<>AncestorComponent then
+          begin
+            Name:=GetComponentPath(Component);
+            if Name='' then
+              raise EWriteError.Create('cannot write property "'+DbgSName(Instance)+'.'+PropName+'"');
+            WriteAssign(PropName,Name);
+          end;
         end else
-          raise EStreamError.Create('interface property "'+PropName+'" does not support IInterfaceComponentReference');
+          raise EWriteError.Create('interface property "'+PropName+'" does not support IInterfaceComponentReference');
       end;
   else
     {$IFDEF VerboseCompWriterPas}
@@ -1535,8 +1587,6 @@ procedure TCompWriterPas.WriteProperties(Instance: TPersistent);
 var
   PropCount, i: integer;
   PropList: PPropList;
-  HasAncestor: Boolean;
-  DefValue, Value: LongInt;
 begin
   PropCount:=GetPropList(Instance,PropList);
   if PropCount>0 then
@@ -1547,6 +1597,36 @@ begin
     finally
       Freemem(PropList);
     end;
+  WriteDefineProperties(Instance);
+end;
+
+procedure TCompWriterPas.WriteDefineProperties(Instance: TPersistent);
+var
+  Col: Integer;
+  InLit, NeedComma: boolean;
+
+  function CheckCol(aCol: integer): boolean;
+  begin
+    if (Col<=CurIndent+1) or (aCol<=MaxColumn) then exit(true);
+    Result:=false;
+    if NeedComma then
+      Write(',');
+    WriteLn;
+    WriteIndent;
+    Col:=CurIndent+1;
+    NeedComma:=false;
+  end;
+
+var
+  HasAncestor: Boolean;
+  DefValue, Value: LongInt;
+  aStream: TMemoryStream;
+  BinWriter: TWriter;
+  s: String;
+  p: PChar;
+  c: Char;
+  i: Integer;
+begin
   if Instance is TComponent then begin
     HasAncestor := Assigned(Ancestor) and ((Instance = Root) or
       (Instance.ClassType = Ancestor.ClassType));
@@ -1561,7 +1641,88 @@ begin
       // -> it is the same longint value on Little and BigEndian system
       WriteAssign(FPropPath + 'DesignInfo',IntToStr(Value));
   end;
-  // ToDo: Instance.DefineProperties(Self);
+
+  if TMethod(@TAccessComp(Instance).DefineProperties).Code<>FDefaultDefineProperties
+  then begin
+    // this class has overriden DefineProperties
+    aStream:=TMemoryStream.Create;
+    BinWriter:=TWriter.Create(aStream,1024);
+    try
+      BinWriter.Root:=Root;
+      BinWriter.RootAncestor:=RootAncestor;
+      BinWriter.Ancestor:=Ancestor;
+      BinWriter.IgnoreChildren:=IgnoreChildren;
+      BinWriter.OnWriteMethodProperty:=OnWriteMethodProperty;
+      BinWriter.OnWriteStringProperty:=OnWriteStringProperty;
+      TAccessComp(Instance).DefineProperties(BinWriter);
+      BinWriter.WriteListEnd;
+      FreeAndNil(BinWriter); // flush buffer to stream
+      if aStream.Size>1 then
+      begin
+        WriteIndent;
+        if PropertyPath<>'' then
+        begin
+          s:=PropertyPath;
+          Delete(s,length(s),1); // chomp '.'
+        end
+        else if Instance is TComponent then
+          s:=GetComponentPath(TComponent(Instance))
+        else
+          s:='';
+        if s='' then
+          raise EWriteError.Create('cannot write DefineProperties of "'+DbgSName(Instance)+'"');
+
+        s:=ExecCustomData+'('+s+',[';
+        Write(s);
+        Col:=CurIndent+length(s)+1;
+        Indent;
+        NeedComma:=false;
+        CheckCol(Col);
+        InLit:=false;
+        p:=PChar(aStream.Memory);
+        for i:=0 to aStream.Size-1 do
+        begin
+          c:=p^;
+          if c in [#32..#126] then
+          begin
+            if (not InLit) or (Col+2>MaxColumn) then
+            begin
+              if InLit then
+                Write('''');
+              CheckCol(Col+3);
+              InLit:=true;
+              Write('''');
+              inc(Col);
+            end;
+            Write(c);
+            inc(Col);
+            NeedComma:=true;
+          end else begin
+            if InLit then
+            begin
+              Write('''');
+              inc(Col);
+              InLit:=false;
+            end;
+            s:='#'+IntToStr(ord(c));
+            CheckCol(Col+length(s));
+            Write(s);
+            inc(Col,length(s));
+            NeedComma:=true;
+          end;
+          inc(p);
+        end;
+        if InLit then
+          Write('''');
+        Write(']);');
+        WriteLn;
+        Unindent;
+      end;
+    finally
+      BinWriter.Free;
+      aStream.Free;
+    end;
+  end;
 end;
 
 procedure TCompWriterPas.WriteCollection(PropName: string;
@@ -1842,17 +2003,24 @@ begin
   else if AllowOutOfRange then
     Result:=TypeInfo^.Name+'('+IntToStr(Value)+')'
   else
-    raise EStreamError.Create('enum '+IntToStr(Value)+' is out of range of type "'+TypeInfo^.Name+'"');
+    raise EWriteError.Create('enum '+IntToStr(Value)+' is out of range of type "'+TypeInfo^.Name+'"');
 end;
 
 constructor TCompWriterPas.Create(AStream: TStream);
+var
+  C: TAccessComp;
 begin
   FIndentStep:=2;
   FStream:=AStream;
   FLineEnding:=system.LineEnding;
   FAssignOp:=':=';
   FSignature:=CSPDefaultSignature;
+  FMaxColumn:=CSPDefaultMaxColumn;
+  FExecCustomData:=CSPDefaultExecCustomLFM;
   FAccessClass:=CSPDefaultAccessClass;
+  C:=TAccessComp.Create(nil);
+  FDefaultDefineProperties:=TMethod(@C.DefineProperties).Code;
+  C.Free;
 end;
 
 destructor TCompWriterPas.Destroy;
@@ -3145,6 +3313,77 @@ begin
     '']);
   finally
     aComponent.Free;
+  end;
+end;
+
+type
+
+  { TCSPReader }
+
+  TCSPReader = class(TReader)
+  public
+    procedure ReadProperties(Instance: TPersistent);
+  end;
+
+{ TCSPReader }
+
+procedure TCSPReader.ReadProperties(Instance: TPersistent);
+begin
+  while not EndOfList do
+    ReadProperty(Instance);
+end;
+
+procedure ExecCustomLFM(Instance: TPersistent; const Data: array of string);
+var
+  MemStream: TMemoryStream;
+  i: Integer;
+  s: String;
+  Reader: TCSPReader;
+begin
+  MemStream:=TMemoryStream.Create;
+  Reader:=nil;
+  try
+    for i:=low(Data) to High(Data) do
+    begin
+      s:=Data[i];
+      MemStream.Write(s[1],length(s));
+    end;
+    MemStream.Position:=0;
+    Reader:=TCSPReader.Create(MemStream,1024);
+    Reader.ReadProperties(Instance);
+  finally
+    Reader.Free;
+    MemStream.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestDefineProperites_ListOfStrings;
+var
+  ARoot: TSimpleControlWithStrings;
+  Expected: String;
+  Lines2: TStringList;
+begin
+  ARoot:=TSimpleControlWithStrings.Create(nil);
+  Lines2:=nil;
+  try
+    with ARoot do begin
+      Name:=CreateRootName(ARoot);
+      Lines:=TStringList.Create;
+      Lines.Text:='First'+LineEnding+'Second';
+    end;
+    Expected:=#7'Strings'#1#6#5'First'#6#6'Second'#0#0;
+    TestWriteDescendant('TestDefineProperites_ListOfStrings',ARoot,nil,[
+    CSPDefaultExecCustomLFM+'(Lines,[#7''Strings''#1#6#5''First''#6#6''Second''#0#0]);',
+    '']);
+
+    Lines2:=TStringList.Create;
+    ExecCustomLFM(Lines2,[Expected]);
+    AssertEquals('read TStrings.Text',ARoot.Lines.Text,Lines2.Text);
+
+  finally
+    Lines2.Free;
+    FreeAndNil(ARoot.FLines);
+    ARoot.Free;
   end;
 end;
 
