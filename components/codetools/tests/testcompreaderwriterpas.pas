@@ -23,12 +23,12 @@ Working:
 - create components before setting properties to avoid having to set references
   later
 - inline component, csInline, call SetInline, inherited inline, inline on inherited
+- TComponent.Left/Right via DesignInfo
 
 ToDo:
 - enum: add unit, avoid nameclash with-do
 - custom integer TColor, add unit, avoid nameclash with-do
 - method, avoid nameclash with-do
-- TComponent.Left/Right
 - DefineProperties
 - insert/update code and helper class into unit/program
   - find old access class
@@ -594,9 +594,12 @@ type
     procedure TestChildComponents;
     procedure TestForeignReference;
     procedure TestCollection;
-    procedure TestInline;
+    procedure TestInline; // e.g. a Frame on a Form
     procedure TestAncestorWithInline; // e.g. a Form inherited from a Form with a Frame
     procedure TestInlineDescendant; // e.g. a Form with a Frame, Frame is inherited from another Frame
+
+    procedure TestDesignInfo;
+
     procedure TestFindComponentInit; // ToDo
   end;
 
@@ -1532,6 +1535,8 @@ procedure TCompWriterPas.WriteProperties(Instance: TPersistent);
 var
   PropCount, i: integer;
   PropList: PPropList;
+  HasAncestor: Boolean;
+  DefValue, Value: LongInt;
 begin
   PropCount:=GetPropList(Instance,PropList);
   if PropCount>0 then
@@ -1542,6 +1547,20 @@ begin
     finally
       Freemem(PropList);
     end;
+  if Instance is TComponent then begin
+    HasAncestor := Assigned(Ancestor) and ((Instance = Root) or
+      (Instance.ClassType = Ancestor.ClassType));
+    if HasAncestor then
+      DefValue := TComponent(Ancestor).DesignInfo
+    else
+      DefValue := 0;
+    Value:=TComponent(Instance).DesignInfo;
+    if Value<>DefValue then
+      // Note: DesignInfo contains Left/Top. On BigEndian systems the order
+      // is reversed, which is already handled in TComponent.DefineProperties
+      // -> it is the same longint value on Little and BigEndian system
+      WriteAssign(FPropPath + 'DesignInfo',IntToStr(Value));
+  end;
   // ToDo: Instance.DefineProperties(Self);
 end;
 
@@ -3108,6 +3127,24 @@ begin
     Form.Free;
     DescendantFrame.Free;
     AncestorFrame.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestDesignInfo;
+var
+  AComponent: TComponent;
+begin
+  AComponent:=TComponent.Create(nil);
+  try
+    with AComponent do begin
+      Name:=CreateRootName(AComponent);
+      DesignInfo:=12345678;
+    end;
+    TestWriteDescendant('TestDesignInfo',AComponent,nil,[
+    'DesignInfo:=12345678;',
+    '']);
+  finally
+    aComponent.Free;
   end;
 end;
 
