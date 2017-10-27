@@ -65,7 +65,7 @@ uses
   LCLProc, LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
   ActnList, ButtonPanel, XMLPropStorage,
   // LazUtils
-  AvgLvlTree, LazUTF8Classes, LazFileUtils, LazFileCache,
+  LazUTF8Classes, LazFileUtils, LazFileCache,
   // Codetools
   CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
   // IDEIntf
@@ -162,7 +162,7 @@ type
     procedure chkPackagesChange(Sender: TObject);
     procedure chkSourceEditorChange(Sender: TObject);
     procedure chkUsedChange(Sender: TObject);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
+    procedure FormCloseQuery(Sender: TObject; var {%H-}CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure FormShow(Sender: TObject);
