@@ -4,9 +4,11 @@
      ./runtests --format=plain --suite=TTestCompReaderWriterPas.TestBaseTypesMaxValues
 
 ToDo:
-- enum: add unit, avoid nameclash with-do
-- custom integer TColor, add unit, avoid nameclash with-do
-- method, avoid nameclash with-do
+- enum: add unit
+- enum: avoid nameclash with-do
+- custom integer TColor: add unit
+- custom integer: avoid nameclash with-do
+- method: avoid nameclash with-do
 - insert/update code and helper class into unit/program
   - find call init proc
   - find old init code
@@ -936,10 +938,12 @@ var
   Actual, ExpS, s: String;
 begin
   Actual:=WriteDescendant(Component,Ancestor);
-  ExpS:=CSPDefaultSignature+LineEnding
-    +'Name:='''+Component.Name+''';'+LineEnding;
+  ExpS:=CSPDefaultSignatureBegin+LineEnding;
+  ExpS:=ExpS+Writer.GetVersionStatement+LineEnding;
+  ExpS:=ExpS+'Name:='''+Component.Name+''';'+LineEnding;
   for s in Expected do
     ExpS:=ExpS+s+LineEnding;
+  ExpS:=ExpS+CSPDefaultSignatureEnd+LineEnding;
   CheckDiff(Msg,ExpS,Actual);
   AssertEquals(Msg+' NeedAccessClass',NeedAccessClass,Writer.NeedAccessClass);
 end;

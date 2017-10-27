@@ -44,11 +44,11 @@ unit CompWriterPas;
 interface
 
 uses
-  Classes, SysUtils, typinfo, RtlConsts, contnrs, LazLoggerBase, LazUTF8,
-  LazMethodList;
+  Classes, SysUtils, typinfo, RtlConsts, contnrs, LazLoggerBase, LazUTF8;
 
 const
   // Component serialized as Pascal
+  CSPVersion = 1;
   CSPDefaultSignature = '// Component serialized as Pascal';
   CSPDefaultSignatureBegin = CSPDefaultSignature+' - Begin';
   CSPDefaultSignatureEnd = CSPDefaultSignature+' - End';
@@ -112,7 +112,8 @@ type
     FPropPath: string;
     FRoot: TComponent;
     FRootAncestor: TComponent;
-    FSignature: String;
+    FSignatureBegin: String;
+    FSignatureEnd: String;
     FStream: TStream;
     procedure AddToAncestorList(Component: TComponent);
     procedure DetermineAncestor(Component: TComponent);
@@ -128,10 +129,11 @@ type
   public
     constructor Create(AStream: TStream);
     destructor Destroy; override;
+    // stream a component:
+    procedure WriteDescendant(ARoot: TComponent; AAncestor: TComponent = nil);
+    // utility functions:
     procedure WriteComponentCreate(Component: TComponent);
     procedure WriteComponent(Component: TComponent);
-    procedure WriteDescendant(ARoot: TComponent; AAncestor: TComponent = nil);
-    procedure WriteSignature;
     procedure WriteIndent;
     procedure Write(const s: string);
     procedure WriteLn;
@@ -147,6 +149,7 @@ type
     function GetCurrencyLiteral(const c: currency): string;
     function GetEnumExpr(TypeInfo: PTypeInfo; Value: integer;
       AllowOutOfRange: boolean): string;
+    function GetVersionStatement: string;
     function CreatedByAncestor(Component: TComponent): boolean;
     procedure AddNeededUnit(const AnUnitName: string);
     procedure Indent;
@@ -174,7 +177,8 @@ type
     // code snippets
     property LineEnding: string read FLineEnding write FLineEnding;
     property AssignOp: String read FAssignOp write FAssignOp;
-    property Signature: String read FSignature write FSignature;
+    property SignatureBegin: String read FSignatureBegin write FSignatureBegin;
+    property SignatureEnd: String read FSignatureEnd write FSignatureEnd;
     property AccessClass: string read FAccessClass
       write FAccessClass; // classname used to access protected TComponent members like SetChildOrder
     property NeedAccessClass: boolean read FNeedAccessClass write FNeedAccessClass; // some property needed AccessClass
@@ -1388,6 +1392,11 @@ begin
     raise EWriteError.Create('enum '+IntToStr(Value)+' is out of range of type "'+TypeInfo^.Name+'"');
 end;
 
+function TCompWriterPas.GetVersionStatement: string;
+begin
+  Result:='// Format version '+IntToStr(CSPVersion);
+end;
+
 constructor TCompWriterPas.Create(AStream: TStream);
 var
   C: TAccessComp;
@@ -1396,7 +1405,8 @@ begin
   FStream:=AStream;
   FLineEnding:=system.LineEnding;
   FAssignOp:=':=';
-  FSignature:=CSPDefaultSignature;
+  FSignatureBegin:=CSPDefaultSignatureBegin;
+  FSignatureEnd:=CSPDefaultSignatureEnd;
   FMaxColumn:=CSPDefaultMaxColumn;
   FExecCustomProc:=CSPDefaultExecCustomProc;
   FExecCustomProcUnit:=CSPDefaultExecCustomProcUnit;
@@ -1478,13 +1488,11 @@ begin
   FLookupRoot := ARoot;
   FNeedAccessClass := false;
   if not (cwpoNoSignature in Options) then
-    WriteSignature;
+    WriteStatement(SignatureBegin);
+  WriteStatement(GetVersionStatement);
   WriteComponent(ARoot);
-end;
-
-procedure TCompWriterPas.WriteSignature;
-begin
-  WriteStatement(Signature);
+  if not (cwpoNoSignature in Options) then
+    WriteStatement(SignatureEnd);
 end;
 
 procedure TCompWriterPas.WriteIndent;

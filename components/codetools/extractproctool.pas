@@ -1711,7 +1711,7 @@ function TExtractProcTool.UpdateComponentInit(const aClassName, AccessClass,
 
 begin
   Result:=false;
-  {$IFDEF VerbosePasStream}
+  {$IFDEF VerboseCompWriterPas}
   debugln(['TExtractProcTool.UpdateComponentInit START ',MainFilename,' aClassName="'+aClassName+'" AccessClass="'+AccessClass+'" StartSignature={'+DbgStr(StartSignature)+'} EndSignature={'+dbgstr(EndSignature)+'} InitSrc={'+InitSrc+'}']);
   {$ENDIF}
   if aClassName='' then
