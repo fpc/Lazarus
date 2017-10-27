@@ -1805,6 +1805,7 @@ var
 function GetParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
 function GetDesignerForm(Control: TControl): TCustomForm;
 function GetFirstParentForm(Control:TControl): TCustomForm;
+function GetTopFormSkipNonDocked(Control: TControl): TCustomForm;
 function ValidParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
 function GetDesignerForm(APersistent: TPersistent): TCustomForm;
 function FindRootDesigner(APersistent: TPersistent): TIDesigner;
@@ -2045,6 +2046,20 @@ begin
       Result := TCustomForm(Control);
     Control := Control.Parent;
   end;
+end;
+
+function GetTopFormSkipNonDocked(Control: TControl): TCustomForm;
+var
+  aForm: TCustomForm;
+begin
+  Result:=GetParentForm(Control, False);
+  if Result=nil then exit;
+  if Result.DockSite or Result.UseDockManager then exit;
+  repeat
+    aForm:=GetParentForm(Result.Parent,false);
+    if (aForm=nil) or aForm.DockSite or aForm.UseDockManager then exit;
+    Result:=aForm;
+  until false;
 end;
 
 //------------------------------------------------------------------------------

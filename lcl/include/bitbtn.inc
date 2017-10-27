@@ -46,11 +46,12 @@ begin
     - Close the ParentForm if ModalResult = mrNone.
       It should not set ParentForm.ModalResult in this case
     - Close a non-modal ParentForm if ModalResult in [mrNone, mrClose]
+    - on nested forms it will close the non docked form
     - In all other cases it should behave like any other TBitBtn
   }
   if (FKind = bkClose) then
   begin
-    Form := GetParentForm(Self);
+    Form := GetTopFormSkipNonDocked(Self);
     if (Form <> nil) then
     begin
       if (ModalResult = mrNone) or
