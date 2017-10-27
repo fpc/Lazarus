@@ -24,6 +24,10 @@ msgstr "Odśwież"
 msgid "Insert Macro"
 msgstr "Wstaw Makro"
 
+#: todoliststrconsts.lishelp
+msgid "Help"
+msgstr ""
+
 #: todoliststrconsts.lisoptions
 msgid "Options"
 msgstr ""

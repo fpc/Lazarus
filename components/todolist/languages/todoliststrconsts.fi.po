@@ -13,6 +13,10 @@ msgstr "Päivitä"
 msgid "Insert Macro"
 msgstr "Lisää Makro"
 
+#: todoliststrconsts.lishelp
+msgid "Help"
+msgstr ""
+
 #: todoliststrconsts.lisoptions
 msgid "Options"
 msgstr ""

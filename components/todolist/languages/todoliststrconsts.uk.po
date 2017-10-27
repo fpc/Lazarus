@@ -25,6 +25,10 @@ msgstr "Оновити"
 msgid "Insert Macro"
 msgstr "Вставити макрос"
 
+#: todoliststrconsts.lishelp
+msgid "Help"
+msgstr ""
+
 #: todoliststrconsts.lisoptions
 msgid "Options"
 msgstr "Параметри"

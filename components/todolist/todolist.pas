@@ -63,7 +63,7 @@ uses
   Classes, SysUtils, Math, StrUtils, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
-  ActnList, ButtonPanel, XMLPropStorage,
+  ActnList, XMLPropStorage,
   // LazUtils
   LazUTF8Classes, LazFileUtils, LazFileCache,
   // Codetools
@@ -140,8 +140,8 @@ type
     acGoto: TAction;
     acRefresh: TAction;
     acExport: TAction;
+    acHelp: TAction;
     ActionList: TActionList;
-    ButtonPanel: TButtonPanel;
     chkListed: TCheckBox;
     chkUsed: TCheckBox;
     chkPackages: TCheckBox;
@@ -154,9 +154,11 @@ type
     tbRefresh: TToolButton;
     tbExport: TToolButton;
     N1: TToolButton;
+    tbHelp: TToolButton;
     XMLPropStorage: TXMLPropStorage;
     procedure acExportExecute(Sender: TObject);
     procedure acGotoExecute(Sender: TObject);
+    procedure acHelpExecute(Sender: TObject);
     procedure acRefreshExecute(Sender: TObject);
     procedure chkListedChange(Sender: TObject);
     procedure chkPackagesChange(Sender: TObject);
@@ -166,7 +168,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure FormShow(Sender: TObject);
-    procedure HelpButtonClick(Sender: TObject);
     procedure lvTodoClick(Sender: TObject);
     procedure lvTodoColumnClick(Sender : TObject; Column : TListColumn);
     procedure lvTodoCompare(Sender : TObject; Item1, Item2 : TListItem;
@@ -243,6 +244,7 @@ begin
   acGoto.ImageIndex := IDEImages.LoadImage('menu_goto_line');
   acRefresh.ImageIndex := IDEImages.LoadImage('laz_refresh');
   acExport.ImageIndex := IDEImages.LoadImage('menu_saveas');
+  acHelp.ImageIndex := IDEImages.LoadImage('menu_help');
 
   SaveDialog.Filter:= dlgFilterCsv+'|*.csv';
 end;
@@ -340,12 +342,6 @@ end;
 procedure TIDETodoWindow.FormShow(Sender: TObject);
 begin
   UpdateTodos;
-end;
-
-procedure TIDETodoWindow.HelpButtonClick(Sender: TObject);
-begin
-  // usual API from IdeHelpIntf don't work
-  OpenURL('http://wiki.freepascal.org/IDE_Window:_ToDo_List');
 end;
 
 procedure TIDETodoWindow.lvTodoClick(Sender: TObject);
@@ -642,6 +638,7 @@ begin
   tbRefresh.Caption := dlgUnitDepRefresh;
   tbGoto.Caption := lisToDoGoto;
   tbExport.Caption := lisToDoExport;
+  tbHelp.Caption := lisHelp;
 
   grbOptions.Caption := lisOptions;
   chkListed.Caption := lisToDoListed;
@@ -690,6 +687,12 @@ begin
       LazarusIDE.DoOpenFileAndJumpToPos(CurFilename,Point(1,TheLine),-1,-1,-1,
         [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoNotLoadResource]);
   end;
+end;
+
+procedure TIDETodoWindow.acHelpExecute(Sender: TObject);
+begin
+  // usual API from IdeHelpIntf don't work
+  OpenURL('http://wiki.freepascal.org/IDE_Window:_ToDo_List');
 end;
 
 procedure TIDETodoWindow.acExportExecute(Sender: TObject);

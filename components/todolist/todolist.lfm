@@ -14,10 +14,10 @@ object IDETodoWindow: TIDETodoWindow
   OnShow = FormShow
   Position = poScreenCenter
   SessionProperties = 'chkListed.Checked;chkUsed.Checked;chkSourceEditor.Checked;chkPackages.Checked'
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object lvTodo: TListView
     Left = 6
-    Height = 207
+    Height = 240
     Top = 54
     Width = 825
     Align = alClient
@@ -79,40 +79,39 @@ object IDETodoWindow: TIDETodoWindow
       AutoSize = True
     end
     object tbGoto: TToolButton
-      Left = 52
+      Left = 53
       Top = 2
       Action = acGoto
       AutoSize = True
     end
     object tbExport: TToolButton
-      Left = 99
+      Left = 100
       Top = 2
       Action = acExport
       AutoSize = True
     end
     object N1: TToolButton
-      Left = 146
+      Left = 147
       Height = 46
       Top = 2
-      Width = 5
       Caption = 'N1'
       Style = tbsDivider
     end
     object grbOptions: TGroupBox
-      Left = 151
-      Height = 40
+      Left = 152
+      Height = 39
       Top = 2
-      Width = 244
+      Width = 252
       AutoSize = True
       Caption = 'Options'
-      ClientHeight = 21
-      ClientWidth = 240
+      ClientHeight = 24
+      ClientWidth = 248
       TabOrder = 0
       object chkListed: TCheckBox
         Left = 0
-        Height = 21
+        Height = 24
         Top = 0
-        Width = 56
+        Width = 59
         Align = alLeft
         Caption = '&Listed'
         Checked = True
@@ -121,10 +120,10 @@ object IDETodoWindow: TIDETodoWindow
         TabOrder = 0
       end
       object chkUsed: TCheckBox
-        Left = 56
-        Height = 21
+        Left = 59
+        Height = 24
         Top = 0
-        Width = 52
+        Width = 53
         Align = alLeft
         Caption = '&Used'
         Checked = True
@@ -133,10 +132,10 @@ object IDETodoWindow: TIDETodoWindow
         TabOrder = 1
       end
       object chkSourceEditor: TCheckBox
-        Left = 108
-        Height = 21
+        Left = 112
+        Height = 24
         Top = 0
-        Width = 56
+        Width = 60
         Align = alLeft
         Caption = 'Editor'
         Checked = True
@@ -145,8 +144,8 @@ object IDETodoWindow: TIDETodoWindow
         TabOrder = 2
       end
       object chkPackages: TCheckBox
-        Left = 164
-        Height = 21
+        Left = 172
+        Height = 24
         Top = 0
         Width = 76
         Align = alLeft
@@ -155,28 +154,15 @@ object IDETodoWindow: TIDETodoWindow
         TabOrder = 3
       end
     end
-  end
-  object ButtonPanel: TButtonPanel
-    Left = 6
-    Height = 27
-    Top = 267
-    Width = 825
-    OKButton.Name = 'OKButton'
-    OKButton.DefaultCaption = True
-    HelpButton.Name = 'HelpButton'
-    HelpButton.DefaultCaption = True
-    HelpButton.OnClick = HelpButtonClick
-    CloseButton.Name = 'CloseButton'
-    CloseButton.DefaultCaption = True
-    CancelButton.Name = 'CancelButton'
-    CancelButton.DefaultCaption = True
-    TabOrder = 2
-    ShowButtons = [pbClose, pbHelp]
-    ShowBevel = False
+    object tbHelp: TToolButton
+      Left = 404
+      Top = 2
+      Action = acHelp
+    end
   end
   object ActionList: TActionList
-    Left = 368
-    Top = 11
+    left = 648
+    top = 10
     object acGoto: TAction
       Caption = 'Goto'
       OnExecute = acGotoExecute
@@ -189,14 +175,18 @@ object IDETodoWindow: TIDETodoWindow
       Caption = 'Export'
       OnExecute = acExportExecute
     end
+    object acHelp: TAction
+      Caption = 'acHelp'
+      OnExecute = acHelpExecute
+    end
   end
   object SaveDialog: TSaveDialog
     OnShow = SaveDialogShow
     DefaultExt = '.csv'
     Filter = 'csv|*.csv'
     Options = [ofCreatePrompt, ofEnableSizing, ofViewDetail]
-    Left = 448
-    Top = 11
+    left = 448
+    top = 11
   end
   object XMLPropStorage: TXMLPropStorage
     StoredValues = <>
@@ -204,7 +194,7 @@ object IDETodoWindow: TIDETodoWindow
     Active = False
     OnRestoringProperties = XMLPropStorageRestoringProperties
     OnRestoreProperties = XMLPropStorageRestoreProperties
-    Left = 544
-    Top = 11
+    left = 544
+    top = 11
   end
 end

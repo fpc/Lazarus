@@ -41,6 +41,7 @@ resourcestring
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';
   lisOptions = 'Options';
+  lisHelp = 'Help';
   lisToDoListed = 'Listed';
   lisToDoListedHint = 'Add units listed in project inspector/package editor';
   lisToDoUsed = 'Used';
