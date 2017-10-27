@@ -2386,16 +2386,38 @@ components/lazcontrols/fpmake.pp svneol=native#text/plain
 components/lazcontrols/images/lazcontrols.bat svneol=native#text/plain
 components/lazcontrols/images/lazcontrols_list.txt svneol=native#text/plain
 components/lazcontrols/images/tcheckboxthemed.png -text svneol=unset#image/png
+components/lazcontrols/images/tcheckboxthemed_150.png -text
+components/lazcontrols/images/tcheckboxthemed_200.png -text
 components/lazcontrols/images/tdividerbevel.png -text
+components/lazcontrols/images/tdividerbevel_150.png -text
+components/lazcontrols/images/tdividerbevel_200.png -text
 components/lazcontrols/images/textendednotebook.png -text
+components/lazcontrols/images/textendednotebook_150.png -text
+components/lazcontrols/images/textendednotebook_200.png -text
 components/lazcontrols/images/textendedtabcontrol.png -text svneol=unset#image/png
+components/lazcontrols/images/textendedtabcontrol_150.png -text
+components/lazcontrols/images/textendedtabcontrol_200.png -text
 components/lazcontrols/images/tfloatspineditex.png -text svneol=unset#image/png
+components/lazcontrols/images/tfloatspineditex_150.png -text
+components/lazcontrols/images/tfloatspineditex_200.png -text
 components/lazcontrols/images/tlistfilteredit.png -text
+components/lazcontrols/images/tlistfilteredit_150.png -text
+components/lazcontrols/images/tlistfilteredit_200.png -text
 components/lazcontrols/images/tlistviewfilteredit.png -text svneol=unset#image/png
+components/lazcontrols/images/tlistviewfilteredit_150.png -text
+components/lazcontrols/images/tlistviewfilteredit_200.png -text
 components/lazcontrols/images/tlvlgraphcontrol.png -text svneol=unset#image/png
+components/lazcontrols/images/tlvlgraphcontrol_150.png -text
+components/lazcontrols/images/tlvlgraphcontrol_200.png -text
 components/lazcontrols/images/tshortpathedit.png -text svneol=unset#image/png
+components/lazcontrols/images/tshortpathedit_150.png -text
+components/lazcontrols/images/tshortpathedit_200.png -text
 components/lazcontrols/images/tspineditex.png -text svneol=unset#image/png
+components/lazcontrols/images/tspineditex_150.png -text
+components/lazcontrols/images/tspineditex_200.png -text
 components/lazcontrols/images/ttreefilteredit.png -text svneol=unset#image/png
+components/lazcontrols/images/ttreefilteredit_150.png -text
+components/lazcontrols/images/ttreefilteredit_200.png -text
 components/lazcontrols/lazcontrols.lpk svneol=native#text/xml
 components/lazcontrols/lazcontrols.pas svneol=native#text/pascal
 components/lazcontrols/lazcontrols.res -text
