@@ -472,6 +472,7 @@ type
     procedure TestInterface;
     procedure TestAncestor;
     procedure TestAncestorChildPos;
+    procedure TestWithLookupRootName;
     procedure TestChildComponents;
     procedure TestForeignReference;
     procedure TestCollection;
@@ -940,9 +941,15 @@ begin
   Actual:=WriteDescendant(Component,Ancestor);
   ExpS:=CSPDefaultSignatureBegin+LineEnding;
   ExpS:=ExpS+Writer.GetVersionStatement+LineEnding;
-  ExpS:=ExpS+'Name:='''+Component.Name+''';'+LineEnding;
+  if cwpoWithLookupRootName in Writer.Options then begin
+    ExpS:=ExpS+'with '+Component.Name+' do begin'+LineEnding;
+    ExpS:=ExpS+'  Name:='''+Component.Name+''';'+LineEnding;
+  end else
+    ExpS:=ExpS+'Name:='''+Component.Name+''';'+LineEnding;
   for s in Expected do
     ExpS:=ExpS+s+LineEnding;
+  if cwpoWithLookupRootName in Writer.Options then
+    ExpS:=ExpS+'end;'+LineEnding;
   ExpS:=ExpS+CSPDefaultSignatureEnd+LineEnding;
   CheckDiff(Msg,ExpS,Actual);
   AssertEquals(Msg+' NeedAccessClass',NeedAccessClass,Writer.NeedAccessClass);
@@ -1563,6 +1570,96 @@ begin
     'with Button1 do begin',
     'end;',
     'SetChildOrder(Button1,1);',
+    ''],true);
+  finally
+    aRoot.Free;
+    Ancestor.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestWithLookupRootName;
+
+  procedure InitAncestor(C: TSimpleControl);
+  var
+    Button1, Panel2, Button21, Button22: TSimpleControl;
+  begin
+    C.Tag:=1;
+    Button1:=TSimpleControl.Create(C);
+    with Button1 do begin
+      Name:='Button1';
+      Tag:=11;
+      Parent:=C;
+    end;
+    Panel2:=TSimpleControl.Create(C);
+    with Panel2 do begin
+      Name:='Panel2';
+      Tag:=12;
+      Parent:=C;
+      Button21:=TSimpleControl.Create(C);
+      with Button21 do begin
+        Name:='Button21';
+        Tag:=121;
+        Parent:=Panel2;
+      end;
+      Button22:=TSimpleControl.Create(C);
+      with Button22 do begin
+        Name:='Button22';
+        Tag:=122;
+        Parent:=Panel2;
+      end;
+    end;
+  end;
+
+var
+  aRoot, Ancestor, Label1: TSimpleControl;
+begin
+  Ancestor:=TSimpleControl.Create(nil);
+  aRoot:=TSimpleControl.Create(nil);
+  try
+    with Ancestor do begin
+      Name:='Ancestor';
+    end;
+    InitAncestor(Ancestor);
+
+    with aRoot do begin
+      Name:='Descendant';
+    end;
+    InitAncestor(aRoot);
+    aRoot.Controls[0].Next:=aRoot;
+    aRoot.Next:=aRoot.Controls[0];
+    Label1:=TSimpleControl.Create(aRoot);
+    with Label1 do begin
+      Name:='Label1';
+      Parent:=aRoot;
+    end;
+
+    // switch Button21 and Button22
+    aRoot.Controls[1].FChildren.Move(0,1);
+
+    // switch Button1 and Panel2
+    aRoot.FChildren.Move(0,1);
+
+    Writer.Options:=Writer.Options+[cwpoWithLookupRootName];
+    TestWriteDescendant('TestWithLookupRootName',aRoot,Ancestor,[
+    '  Label1:=TSimpleControl.Create(Descendant);',
+    '  Next:=Button1;',
+    '  with Panel2 do begin',
+    '    with Button22 do begin',
+    '    end;',
+    '    TPasStreamAccess(TComponent(Panel2)).SetChildOrder(Button22,0);',
+    '    with Button21 do begin',
+    '    end;',
+    '    TPasStreamAccess(TComponent(Panel2)).SetChildOrder(Button21,1);',
+    '  end;',
+    '  TPasStreamAccess(TComponent(Descendant)).SetChildOrder(Panel2,0);',
+    '  with Button1 do begin',
+    '    Next:=Descendant;',
+    '  end;',
+    '  TPasStreamAccess(TComponent(Descendant)).SetChildOrder(Button1,1);',
+    '  with Label1 do begin',
+    '    Name:=''Label1'';',
+    '    Parent:=Descendant;',
+    '  end;',
     ''],true);
   finally
     aRoot.Free;

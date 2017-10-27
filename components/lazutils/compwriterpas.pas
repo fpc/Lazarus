@@ -11,6 +11,7 @@ Component serialisation into Pascal.
 Author: Mattias Gaertner
 
 Working:
+- signature begin, end, version
 - boolean, set of boolean
 - char, widechar, custom char, set of custom char
 - integers, custom int, set of custom int
@@ -69,9 +70,10 @@ type
     Instance: TPersistent; const Identifier: string; var Handled: boolean) of object;
 
   TCWPOption = (
-    cwpoNoSignature,
-    cwpoSetParentFirst,  // add "Parent:=" before properties
-    cwpoSrcCodepageUTF8
+    cwpoNoSignature,     // do not write Begin, End signatures
+    cwpoWithLookupRootName,// enclose in "with LookupRootname do begin"
+    cwpoSetParentFirst,  // add "SetParentComponent" before setting properties, default: after
+    cwpoSrcCodepageUTF8  // target unit uses $codepage utf-8, aka do not convert UTF-8 string literals
     );
   TCWPOptions = set of TCWPOption;
 
@@ -139,6 +141,8 @@ type
     procedure WriteLn;
     procedure WriteStatement(const s: string);
     procedure WriteAssign(const LHS, RHS: string);
+    procedure WriteWithDo(const Expr: string);
+    procedure WriteWithEnd;
     function GetComponentPath(Component: TComponent): string;
     function GetBoolLiteral(b: boolean): string;
     function GetCharLiteral(c: integer): string;
@@ -453,8 +457,7 @@ begin
     WriteChildren(Instance,cwpcsCreate);
   end
   else begin
-    WriteStatement('with '+Instance.Name+' do begin');
-    Indent;
+    WriteWithDo(Instance.Name);
     if not CreatedByAncestor(Instance) then
       WriteAssign('Name',''''+Instance.Name+'''');
     if cwpoSetParentFirst in Options then
@@ -466,14 +469,11 @@ begin
   if not IgnoreChildren then
     WriteChildren(Instance,cwpcsProperties);
   if Instance<>LookupRoot then
-  begin
-    Unindent;
-    WriteStatement('end;');
-  end;
+    WriteWithEnd;
   if HasAncestor and (Ancestor<>FRootAncestor)
       and (FCurrentPos<>FAncestorPos) then
   begin
-    if Parent=LookupRoot then
+    if (Parent=LookupRoot) and not (cwpoWithLookupRootName in Options) then
       WriteStatement('SetChildOrder('+GetComponentPath(Instance)+','+IntToStr(FCurrentPos)+');')
     else begin
       NeedAccessClass:=true;
@@ -1121,11 +1121,9 @@ begin
   for i:=0 to Collection.Count-1 do
   begin
     Item:=Collection.Items[i];
-    WriteStatement('with '+Item.ClassName+'('+PropName+'.Add) do begin');
-    Indent;
+    WriteWithDo(Item.ClassName+'('+PropName+'.Add)');
     WriteProperties(Item);
-    Unindent;
-    WriteStatement('end;');
+    WriteWithEnd;
   end;
 end;
 
@@ -1137,7 +1135,12 @@ begin
   if Component=nil then
     Result:='Nil'
   else if Component=LookupRoot then
-    Result:='Self'
+  begin
+    if cwpoWithLookupRootName in Options then
+      Result:=LookupRoot.Name
+    else
+      Result:='Self';
+  end
   else begin
     Name:= '';
     C:=Component;
@@ -1152,7 +1155,10 @@ begin
       end
       else if C = LookupRoot then
       begin
-        Name := 'Self'+Name;
+        if cwpoWithLookupRootName in Options then
+          Name := C.Name+Name
+        else
+          Name := 'Self'+Name;
         break;
       end else if C.Name='' then
         exit('');
@@ -1437,7 +1443,7 @@ begin
     DetermineAncestor(Component);
     HasAncestor:=FAncestor is TComponent;
     if not CreatedByAncestor(Component) then
-      WriteAssign(Component.Name,Component.ClassName+'.Create(Self)');
+      WriteAssign(Component.Name,Component.ClassName+'.Create('+GetComponentPath(Root)+')');
     if HasAncestor then begin
       if (csInline in Component.ComponentState)
       and not (csInline in TComponent(Ancestor).ComponentState) then
@@ -1490,7 +1496,11 @@ begin
   if not (cwpoNoSignature in Options) then
     WriteStatement(SignatureBegin);
   WriteStatement(GetVersionStatement);
+  if cwpoWithLookupRootName in Options then
+    WriteWithDo(ARoot.Name);
   WriteComponent(ARoot);
+  if cwpoWithLookupRootName in Options then
+    WriteWithEnd;
   if not (cwpoNoSignature in Options) then
     WriteStatement(SignatureEnd);
 end;
@@ -1526,6 +1536,18 @@ begin
   Write(RHS);
   Write(';');
   WriteLn;
+end;
+
+procedure TCompWriterPas.WriteWithDo(const Expr: string);
+begin
+  WriteStatement('with '+Expr+' do begin');
+  Indent;
+end;
+
+procedure TCompWriterPas.WriteWithEnd;
+begin
+  Unindent;
+  WriteStatement('end;');
 end;
 
 function TCompWriterPas.CreatedByAncestor(Component: TComponent): boolean;
