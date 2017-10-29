@@ -155,7 +155,7 @@ begin
     then begin
       // leave one column empty
       MarkRect.Left := MarkRect.Right;
-      MarkRect.Right := Max(MarkRect.Right + FColumnWidth, AClip.Right);
+      MarkRect.Right := Min(MarkRect.Right + FColumnWidth, AClip.Right);
     end;
 
     DoPaintMark(MLine[j], MarkRect);
