@@ -718,7 +718,7 @@ begin
     end else begin
       ExeFile:=FindDefaultExecutablePath(Process.Executable,GetCurrentDirUTF8);
       if ExeFile='' then begin
-        ErrorMessage:=Format(lisCanNotFindExecutable, [ExeFile]);
+        ErrorMessage:=Format(lisCanNotFindExecutable, [Process.Executable]);
         CheckError;
         exit;
       end;
@@ -726,17 +726,17 @@ begin
     end;
   end;
   if not FileExistsUTF8(Process.Executable) then begin
-    ErrorMessage:=Format(lisMissingExecutable, [ExeFile]);
+    ErrorMessage:=Format(lisMissingExecutable, [Process.Executable]);
     CheckError;
     exit;
   end;
   if DirectoryExistsUTF8(Process.Executable) then begin
-    ErrorMessage:=Format(lisExecutableIsADirectory, [ExeFile]);
+    ErrorMessage:=Format(lisExecutableIsADirectory, [Process.Executable]);
     CheckError;
     exit;
   end;
   if not FileIsExecutable(Process.Executable) then begin
-    ErrorMessage:=Format(lisExecutableLacksThePermissionToRun, [ExeFile]);
+    ErrorMessage:=Format(lisExecutableLacksThePermissionToRun, [Process.Executable]);
     CheckError;
     exit;
   end;
