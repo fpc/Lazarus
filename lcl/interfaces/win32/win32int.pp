@@ -296,19 +296,18 @@ function InitShellScalingStubs: Boolean;
 var
   hShcore: Windows.HMODULE;
 begin
-  if g_fShellScalingInitDone then
-    Exit(@g_pfnGetDpiForMonitor <> nil);
-
-  hShcore := GetModuleHandle('Shcore');
-  if hShcore<>0 then
+  if not g_fShellScalingInitDone then
   begin
-    Pointer(g_pfnGetDpiForMonitor) := GetProcAddress(hShcore, 'GetDpiForMonitor');
+    hShcore := GetModuleHandle('Shcore');
+    if hShcore<>0 then
+      Pointer(g_pfnGetDpiForMonitor) := GetProcAddress(hShcore, 'GetDpiForMonitor')
+    else
+      Pointer(g_pfnGetDpiForMonitor) := nil;
 
     g_fShellScalingInitDone := True;
-  end else
-  begin
-    Pointer(g_pfnGetDpiForMonitor)    := nil;
   end;
+
+  Result := (Pointer(g_pfnGetDpiForMonitor)<>nil) and (@g_pfnGetDpiForMonitor <> nil);
 end;
 
 function xGetDpiForMonitor(hmonitor: HMONITOR; dpiType: TMonitorDpiType;
