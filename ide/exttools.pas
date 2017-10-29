@@ -725,18 +725,19 @@ begin
       Process.Executable:=ExeFile;
     end;
   end;
-  if not FileExistsUTF8(Process.Executable) then begin
-    ErrorMessage:=Format(lisMissingExecutable, [Process.Executable]);
+  ExeFile:=Process.Executable;
+  if not FileExistsUTF8(ExeFile) then begin
+    ErrorMessage:=Format(lisMissingExecutable, [ExeFile]);
     CheckError;
     exit;
   end;
-  if DirectoryExistsUTF8(Process.Executable) then begin
-    ErrorMessage:=Format(lisExecutableIsADirectory, [Process.Executable]);
+  if DirectoryExistsUTF8(ExeFile) then begin
+    ErrorMessage:=Format(lisExecutableIsADirectory, [ExeFile]);
     CheckError;
     exit;
   end;
-  if not FileIsExecutable(Process.Executable) then begin
-    ErrorMessage:=Format(lisExecutableLacksThePermissionToRun, [Process.Executable]);
+  if not FileIsExecutable(ExeFile) then begin
+    ErrorMessage:=Format(lisExecutableLacksThePermissionToRun, [ExeFile]);
     CheckError;
     exit;
   end;
