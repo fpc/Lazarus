@@ -71,9 +71,10 @@ type
 
   TCWPOption = (
     cwpoNoSignature,     // do not write Begin, End signatures
-    cwpoWithLookupRootName,// enclose in "with LookupRootname do begin"
+    cwpoNoSelf,// enclose in "with LookupRootname do begin"
     cwpoSetParentFirst,  // add "SetParentComponent" before setting properties, default: after
-    cwpoSrcCodepageUTF8  // target unit uses $codepage utf-8, aka do not convert UTF-8 string literals
+    cwpoSrcCodepageUTF8, // target unit uses $codepage utf-8, aka do not convert UTF-8 string literals
+    cwpoNoWithBlocks     // do not use with-do
     );
   TCWPOptions = set of TCWPOption;
 
@@ -425,6 +426,7 @@ end;
 procedure TCompWriterPas.WriteComponentData(Instance: TComponent);
 var
   HasAncestor: Boolean;
+  SavedPropPath: String;
 
   procedure WriteSetParent;
   var
@@ -442,7 +444,7 @@ var
       OnGetParentProperty(Self,Instance,PropName);
     if PropName=CWPSkipParentName then
     else if PropName<>'' then
-      WriteAssign(PropName,GetComponentPath(Parent))
+      WriteAssign(PropertyPath+PropName,GetComponentPath(Parent))
     else begin
       NeedAccessClass:=true;
       WriteStatement(AccessClass+'(TComponent('+Instance.Name+')).SetParentComponent('+GetComponentPath(Parent)+');');
@@ -452,28 +454,38 @@ var
 begin
   HasAncestor := Assigned(Ancestor) and ((Instance = Root) or
     (Instance.ClassType = Ancestor.ClassType));
-  if Instance=LookupRoot then begin
-    WriteAssign('Name',''''+Instance.Name+'''');
-    WriteChildren(Instance,cwpcsCreate);
-  end
-  else begin
-    WriteWithDo(Instance.Name);
-    if not CreatedByAncestor(Instance) then
+  SavedPropPath:=FPropPath;
+  try
+    if Instance=LookupRoot then begin
       WriteAssign('Name',''''+Instance.Name+'''');
-    if cwpoSetParentFirst in Options then
+      WriteChildren(Instance,cwpcsCreate);
+    end
+    else begin
+      WriteWithDo(Instance.Name);
+      if cwpoNoWithBlocks in Options then
+        FPropPath:=GetComponentPath(Instance)+'.';
+      if not CreatedByAncestor(Instance) then
+        WriteAssign(PropertyPath+'Name',''''+Instance.Name+'''');
+      if cwpoSetParentFirst in Options then
+        WriteSetParent;
+    end;
+
+    WriteProperties(Instance);
+
+    if not (cwpoSetParentFirst in Options) then
       WriteSetParent;
+
+    if not IgnoreChildren then
+      WriteChildren(Instance,cwpcsProperties);
+    if Instance<>LookupRoot then
+      WriteWithEnd;
+  finally
+    FPropPath:=SavedPropPath;
   end;
-  WriteProperties(Instance);
-  if not (cwpoSetParentFirst in Options) then
-    WriteSetParent;
-  if not IgnoreChildren then
-    WriteChildren(Instance,cwpcsProperties);
-  if Instance<>LookupRoot then
-    WriteWithEnd;
   if HasAncestor and (Ancestor<>FRootAncestor)
       and (FCurrentPos<>FAncestorPos) then
   begin
-    if (Parent=LookupRoot) and not (cwpoWithLookupRootName in Options) then
+    if (Parent=LookupRoot) and not (cwpoNoSelf in Options) then
       WriteStatement('SetChildOrder('+GetComponentPath(Instance)+','+IntToStr(FCurrentPos)+');')
     else begin
       NeedAccessClass:=true;
@@ -852,7 +864,10 @@ begin
                 // create collection items
                 SavedPropPath := FPropPath;
                 try
-                  SetLength(FPropPath, 0);
+                  if cwpoNoWithBlocks in Options then
+                    FPropPath:=PropName+'.'
+                  else
+                    FPropPath:='';
                   WriteCollection(PropName,TCollection(ObjValue));
                 finally
                   FPropPath := SavedPropPath;
@@ -1136,7 +1151,7 @@ begin
     Result:='Nil'
   else if Component=LookupRoot then
   begin
-    if cwpoWithLookupRootName in Options then
+    if cwpoNoSelf in Options then
       Result:=LookupRoot.Name
     else
       Result:='Self';
@@ -1151,11 +1166,16 @@ begin
       if C.Owner = LookupRoot then
       begin
         Name := C.Name+Name;
+        if (cwpoNoWithBlocks in Options) then
+        begin
+          if cwpoNoSelf in Options then
+            Name := C.Owner.Name+'.'+Name;
+        end;
         break;
       end
       else if C = LookupRoot then
       begin
-        if cwpoWithLookupRootName in Options then
+        if cwpoNoSelf in Options then
           Name := C.Name+Name
         else
           Name := 'Self'+Name;
@@ -1496,10 +1516,10 @@ begin
   if not (cwpoNoSignature in Options) then
     WriteStatement(SignatureBegin);
   WriteStatement(GetVersionStatement);
-  if cwpoWithLookupRootName in Options then
+  if cwpoNoSelf in Options then
     WriteWithDo(ARoot.Name);
   WriteComponent(ARoot);
-  if cwpoWithLookupRootName in Options then
+  if cwpoNoSelf in Options then
     WriteWithEnd;
   if not (cwpoNoSignature in Options) then
     WriteStatement(SignatureEnd);
@@ -1540,14 +1560,16 @@ end;
 
 procedure TCompWriterPas.WriteWithDo(const Expr: string);
 begin
-  WriteStatement('with '+Expr+' do begin');
+  if not (cwpoNoWithBlocks in Options) then
+    WriteStatement('with '+Expr+' do begin');
   Indent;
 end;
 
 procedure TCompWriterPas.WriteWithEnd;
 begin
   Unindent;
-  WriteStatement('end;');
+  if not (cwpoNoWithBlocks in Options) then
+    WriteStatement('end;');
 end;
 
 function TCompWriterPas.CreatedByAncestor(Component: TComponent): boolean;

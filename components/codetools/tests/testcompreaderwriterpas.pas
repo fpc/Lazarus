@@ -474,6 +474,7 @@ type
     procedure TestAncestorChildPos;
     procedure TestWithLookupRootName;
     procedure TestChildComponents;
+    procedure TestChildComponentsNoWith;
     procedure TestForeignReference;
     procedure TestCollection;
     procedure TestInline; // e.g. a Frame on a Form
@@ -941,14 +942,14 @@ begin
   Actual:=WriteDescendant(Component,Ancestor);
   ExpS:=CSPDefaultSignatureBegin+LineEnding;
   ExpS:=ExpS+Writer.GetVersionStatement+LineEnding;
-  if cwpoWithLookupRootName in Writer.Options then begin
+  if cwpoNoSelf in Writer.Options then begin
     ExpS:=ExpS+'with '+Component.Name+' do begin'+LineEnding;
     ExpS:=ExpS+'  Name:='''+Component.Name+''';'+LineEnding;
   end else
     ExpS:=ExpS+'Name:='''+Component.Name+''';'+LineEnding;
   for s in Expected do
     ExpS:=ExpS+s+LineEnding;
-  if cwpoWithLookupRootName in Writer.Options then
+  if cwpoNoSelf in Writer.Options then
     ExpS:=ExpS+'end;'+LineEnding;
   ExpS:=ExpS+CSPDefaultSignatureEnd+LineEnding;
   CheckDiff(Msg,ExpS,Actual);
@@ -1639,7 +1640,7 @@ begin
     // switch Button1 and Panel2
     aRoot.FChildren.Move(0,1);
 
-    Writer.Options:=Writer.Options+[cwpoWithLookupRootName];
+    Writer.Options:=Writer.Options+[cwpoNoSelf];
     TestWriteDescendant('TestWithLookupRootName',aRoot,Ancestor,[
     '  Label1:=TSimpleControl.Create(Descendant);',
     '  Next:=Button1;',
@@ -1704,6 +1705,46 @@ begin
     '    Parent:=Panel1;',
     '  end;',
     'end;',
+    '']);
+  finally
+    aRoot.Free;
+  end;
+end;
+
+procedure TTestCompReaderWriterPas.TestChildComponentsNoWith;
+var
+  aRoot, Button1, Panel1: TSimpleControl;
+begin
+  aRoot:=TSimpleControl.Create(nil);
+  try
+    with aRoot do begin
+      Name:='Root';
+      Tag:=1;
+    end;
+    Panel1:=TSimpleControl.Create(aRoot);
+    with Panel1 do begin
+      Name:='Panel1';
+      Tag:=2;
+      Parent:=aRoot;
+      Button1:=TSimpleControl.Create(aRoot);
+      with Button1 do begin
+        Name:='Button1';
+        Tag:=3;
+        Parent:=Panel1;
+      end;
+    end;
+
+    Writer.Options:=Writer.Options+[cwpoNoWithBlocks];
+    TestWriteDescendant('TestChildComponent',aRoot,nil,[
+    'Panel1:=TSimpleControl.Create(Self);',
+    'Button1:=TSimpleControl.Create(Self);',
+    'Tag:=1;',
+    '  Panel1.Name:=''Panel1'';',
+    '  Panel1.Tag:=2;',
+    '  Panel1.Parent:=Self;',
+    '    Button1.Name:=''Button1'';',
+    '    Button1.Tag:=3;',
+    '    Button1.Parent:=Panel1;',
     '']);
   finally
     aRoot.Free;
