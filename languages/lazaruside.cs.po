@@ -4906,6 +4906,10 @@ msgctxt "lazarusidestrconsts.lisbtnremove"
 msgid "&Remove"
 msgstr "&Odstranit"
 
+#: lazarusidestrconsts.lisbtnrename
+msgid "&Rename"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
 msgstr "&Nahradit"

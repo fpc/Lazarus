@@ -25,7 +25,7 @@ msgstr "Вставить макрос"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
-msgstr ""
+msgstr "Справка"
 
 #: todoliststrconsts.lisoptions
 msgid "Options"

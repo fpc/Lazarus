@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-10-17 01:35+0300\n"
+"PO-Revision-Date: 2017-10-30 01:04+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4888,6 +4888,10 @@ msgstr "В&ыход"
 msgctxt "lazarusidestrconsts.lisbtnremove"
 msgid "&Remove"
 msgstr "&Удалить"
+
+#: lazarusidestrconsts.lisbtnrename
+msgid "&Rename"
+msgstr "&Переименовать"
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
