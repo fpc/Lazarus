@@ -961,7 +961,7 @@ function TStandardCodeTool.AddUnitToSpecificUsesSection(UsesSection: TUsesSectio
   const NewUnitName, NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
   AsLast: boolean; CheckSpecialUnits: boolean): boolean;
 var
-  UsesNode, OtherUsesNode, SectionNode: TCodeTreeNode;
+  UsesNode, OtherUsesNode, SectionNode, Node: TCodeTreeNode;
   NewUsesTerm: string;
   InsertPos: integer;
   Junk: TAtomPosition;
@@ -1047,8 +1047,11 @@ begin
       if InsertPos<1 then begin
         // not a unit (i.e. program)
         // => insert after title and directives
-        if SectionNode.Next<>nil then begin
-          InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.Next.StartPos,
+        Node:=SectionNode.Next;
+        if (Node<>nil) and (Node.Desc=ctnSrcName) then
+          Node:=Node.NextSkipChilds;
+        if Node<>nil then begin
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos,
             true);
         end else begin
           // program empty => add at end
