@@ -23,7 +23,7 @@ program synedit1;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, LazUTF8, Forms, Graphics, SynEdit, SynHighlighterPas;
+  Classes, LazUTF8, Forms, Graphics, Interfaces, SynEdit, SynHighlighterPas;
 
 type
   TForm1 = class(TForm)
