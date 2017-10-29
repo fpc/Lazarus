@@ -346,12 +346,12 @@ type
     function CreateDialog(AKind: TDialogKind): TCommonDialog; virtual;
     procedure SaveDialogResult(AKind: TDialogKind; D: TCommonDialog); virtual;
     procedure ButtonClick; override;
-    procedure RunDialog; virtual;
     procedure EditChange; override;
     procedure DoFolderChange(Sender:TObject); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure RunDialog; virtual;
     property AutoSelected;
     property DialogFiles: TStrings read FDialogFiles;
   published
@@ -451,10 +451,10 @@ type
     function CreateDialog: TCommonDialog; virtual;
     function GetDialogResult(D : TCommonDialog) : String; virtual;
     procedure ButtonClick; override;
-    procedure RunDialog; virtual;
   public
     property AutoSelected;
     constructor Create(AOwner: TComponent); override;
+    procedure RunDialog; virtual;
   published
     // TDirectory properties.
     property Directory: String read GetDirectory write SetDirectory;
@@ -768,9 +768,9 @@ type
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
     procedure ButtonClick; override;
-    procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure RunDialog; virtual;
     property AutoSelected;
   published
     // CalcEdit properties
@@ -1468,7 +1468,6 @@ function TDirectoryEdit.GetDialogResult(D: TCommonDialog) : String;
 begin
   Result:=TSelectDirectoryDialog(D).FileName;
 end;
-
 
 procedure TDirectoryEdit.ButtonClick;
 begin
