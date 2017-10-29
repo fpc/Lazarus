@@ -25,7 +25,6 @@
     Dialog to view and search the whole list.
 
   ToDo:
-    -quickfix for identifier not found
     -use identifier: check package version
     -check for conflict: other unit with same name already in search path
     -check for conflict: other identifier in scope, use unitname.identifier
