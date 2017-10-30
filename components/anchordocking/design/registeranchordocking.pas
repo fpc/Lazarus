@@ -251,7 +251,12 @@ begin
   Result:=false;
   if AForm is TAnchorDockHostSite then exit;
   if (DockMaster.FindControl(AForm.Name)=nil) and (AForm.Parent<>nil) then exit;
-  Result:=true;
+  Result := AForm.IsVisible
+    or (
+      Assigned(AForm.Parent)
+      and Assigned(AForm.Parent.Parent)
+      and (AForm.Parent.Parent is TAnchorDockPage)
+    );
 end;
 
 procedure TIDEAnchorDockMaster.AdjustMainIDEWindowHeight(

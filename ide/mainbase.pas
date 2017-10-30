@@ -1785,14 +1785,14 @@ begin
   for i:=0 to Screen.FormCount-1 do begin
     AForm:=Screen.Forms[i];
     //debugln(['TMainIDEBase.UpdateWindowMenu ',DbgSName(AForm),' Vis=',AForm.IsVisible,' Des=',DbgSName(AForm.Designer)]);
-    if (not AForm.IsVisible) or (AForm=MainIDEBar) or (AForm=SplashForm)
-    or IsFormDesign(AForm) or (WindowsList.IndexOf(AForm)>=0) then
+    if (AForm=MainIDEBar) or (AForm=SplashForm) or IsFormDesign(AForm)
+    or (WindowsList.IndexOf(AForm)>=0) then
       continue;
     if IDEDockMaster<>nil then
     begin
       if not IDEDockMaster.AddableInWindowMenu(AForm) then continue;
     end else begin
-      if AForm.Parent<>nil then continue;
+      if (AForm.Parent<>nil) or not AForm.IsVisible then continue;
     end;
     WindowsList.Add(AForm);
   end;
