@@ -21,6 +21,7 @@ type
     FGotExceptClass: String;
     FGotExceptMsg: String;
     FGotExceptType: TDBGExceptionType;
+    FGotExceptionLocation: TDBGLocationRec;
 
     procedure DoDebuggerException(Sender: TObject;
                                   const AExceptionType: TDBGExceptionType;
@@ -61,6 +62,7 @@ begin
   FGotExceptClass := AExceptionClass;
   FGotExceptMsg   := AExceptionText;
   FGotExceptType  := AExceptionType;
+  FGotExceptionLocation := AExceptionLocation;
   AContinue := False;
 end;
 
@@ -77,26 +79,106 @@ var
 begin
   if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestException')] then exit;
   ClearTestErrors;
 
-  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '', '-gt -gh');
+  TstName := 'All';
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_raise_at', '-gt -gh -dTEST_EXCEPTION_AT');
   try
-    FGotExceptCount := 0; TstName := 'all';
+    FGotExceptCount := 0;
     dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
-    TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
+    TstName := 'All - raise';
+    TestEquals(TstName+' Got 1 exception',   1, FGotExceptCount);
+    TestEquals(TstName+' Got class',         'Exception', FGotExceptClass);
+    TestEquals(TstName+' Got msg',           'foo', FGotExceptMsg, 060000);
+    TestEquals(TstName+' Got location Line',  113, FGotExceptionLocation.SrcLine);
+    TestMatches(TstName+' Got location File', 'ExceptPrg\.pas$', FGotExceptionLocation.SrcFile);
+    TestMatches(TstName+' Got location Proc', '^main$', FGotExceptionLocation.FuncName);
+    TestTrue(TstName+' Got type', FGotExceptType = deInternal);
+
+    dbg.Run;
+    TstName := 'All - raise at 2 down';
+    TestEquals(TstName+' Got exception 2', 2, FGotExceptCount);
     TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
-    TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 060000);
+    TestEquals(TstName+' Got msg',   'at1', FGotExceptMsg, 060000);
+    TestEquals(TstName+' Got location Line',  53, FGotExceptionLocation.SrcLine);
+    TestMatches(TstName+' Got location File', 'ExceptPrg\.pas$', FGotExceptionLocation.SrcFile);
+    TestMatches(TstName+' Got location Proc', '^Bar2$', FGotExceptionLocation.FuncName);
+    TestTrue(TstName+' Got type', FGotExceptType = deInternal);
+
     dbg.Run;
-    TestEquals(TstName+' Got 2nd exception', 2, FGotExceptCount);
+    TstName := 'All - raise at 1 down';
+    TestEquals(TstName+' Got exception 3', 3, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'at2', FGotExceptMsg, 060000);
+    TestEquals(TstName+' Got location Line',  65, FGotExceptionLocation.SrcLine);
+    TestMatches(TstName+' Got location File', 'ExceptPrg\.pas$', FGotExceptionLocation.SrcFile);
+    TestMatches(TstName+' Got location Proc', '^BarBar1$', FGotExceptionLocation.FuncName);
+    TestTrue(TstName+' Got type', FGotExceptType = deInternal);
+
     dbg.Run;
-    TestEquals(TstName+' Got no more exception', 2, FGotExceptCount);
+    TstName := 'All - raise subclass';
+    TestEquals(TstName+'Got exception 4', 4, FGotExceptCount);
     TestEquals(TstName+' Got class', 'MyESome', FGotExceptClass);
     // not yet MakePrintable
     //TestEquals(TstName+' Got msg',   'abc üü {[''''[{ \n\t''#13#9''#', FGotExceptMsg, 050300);
     TestEquals(TstName+' Got msg',   'abc üü {[''[{ \n\t'#13#9'#', FGotExceptMsg, 050300);
+    TestEquals(TstName+' Got location Line',  34, FGotExceptionLocation.SrcLine);
+    TestMatches(TstName+' Got location File', 'ExceptPrg\.pas$', FGotExceptionLocation.SrcFile);
+    TestMatches(TstName+' Got location Proc', '^foo$', FGotExceptionLocation.FuncName);
+    TestTrue(TstName+' Got type', FGotExceptType = deInternal);
+
+    dbg.Run;
+    TestEquals(TstName+' Got no more exception', 4, FGotExceptCount);
+    dbg.Stop;
+  finally
+    dbg.Done;
+    CleanGdb;
+    dbg.Free;
+  end;
+
+  TstName := 'RunError';
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_runerr', '-gt -gh -dTEST_SKIP_EXCEPTION_1 -dTEST_RUNERR');
+  try
+    FGotExceptCount := 0;
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+
+    dbg.Run;
+    TestEquals(TstName+' Got run err', 1, FGotExceptCount);
+    TestMatches(TstName+' Got class', 'RunError', FGotExceptClass);
+    //TestEquals(TstName+' Got msg',   'at2', FGotExceptMsg, 060000);
+    TestEquals(TstName+' Got location Line',  81, FGotExceptionLocation.SrcLine);
+    TestMatches(TstName+' Got location File', 'ExceptPrg\.pas$', FGotExceptionLocation.SrcFile);
+    TestMatches(TstName+' Got location Proc', '^Run$', FGotExceptionLocation.FuncName);
+    TestTrue(TstName+' Got type', FGotExceptType = deRunError);
+
+    dbg.Stop;
+  finally
+    dbg.Done;
+    CleanGdb;
+    dbg.Free;
+  end;
+
+  TstName := 'Assert';
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_assert', '-gt -gh -dTEST_SKIP_EXCEPTION_1 -dTEST_ASSERT');
+  try
+    FGotExceptCount := 0;
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+
+    dbg.Run;
+    TestEquals(TstName+' Got Assert', 1, FGotExceptCount);
+    TestMatches(TstName+' Got class', 'EAssertionFailed', FGotExceptClass);
+    TestMatches(TstName+' Got msg',   'denied', FGotExceptMsg, 060000);
+//    TestEquals(TstName+' Got location Line',  94, FGotExceptionLocation.SrcLine);
+    TestMatches(TstName+' Got location File', 'ExceptPrg\.pas$', FGotExceptionLocation.SrcFile);
+//    TestMatches(TstName+' Got location Proc', '^check$', FGotExceptionLocation.FuncName);
+    TestTrue(TstName+' Got type', FGotExceptType = deInternal);
+
     dbg.Stop;
   finally
     dbg.Done;
@@ -243,6 +325,7 @@ var
 begin
   if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestExceptionStepOut')] then exit;
   ClearTestErrors;
 
   TestCompile(AppDir + 'ExceptPrgStep.pas', TestExeName, '', '');
@@ -289,7 +372,7 @@ end;
 
 initialization
   RegisterDbgTest(TTestExceptionOne);
-  RegisterTestSelectors(['TTestExceptionOne'
+  RegisterTestSelectors(['TTestExceptionOne', '  TTestException', '  TTestExceptionStepOut'
                         ]);
 
 end.

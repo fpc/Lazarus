@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry, LCLProc, LazLogger,
-  LazFileUtils, DbgIntfDebuggerBase, CompileHelpers, Dialogs, TestGDBMIControl, GDBMIDebugger; // , FpGdbmiDebugger;
+  LazFileUtils, DbgIntfDebuggerBase, CompileHelpers, Dialogs, TestGDBMIControl,
+  RegExpr, GDBMIDebugger; // , FpGdbmiDebugger;
   // EnvironmentOpts, ExtToolDialog, TransferMacros,
 
 (*
@@ -374,6 +375,10 @@ type
     procedure AddTestError(s: string; MinGdbVers: Integer; MinFpcVers: Integer;AIgnoreReason: String = '');
     procedure AddTestSuccess(s: string; MinGdbVers: Integer = 0; AIgnoreReason: String = '');
     procedure AddTestSuccess(s: string; MinGdbVers: Integer; MinFpcVers: Integer;AIgnoreReason: String = '');
+
+    function TestMatches(Expected, Got: string): Boolean;
+    function TestMatches(Name: string; Expected, Got: string; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestMatches(Name: string; Expected, Got: string; MinGdbVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
 
     function TestEquals(Expected, Got: string): Boolean;
     function TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
@@ -1064,6 +1069,32 @@ begin
   end
   else
     inc(FSucessCnt);
+end;
+
+function TGDBTestCase.TestMatches(Expected, Got: string): Boolean;
+begin
+  Result := TestMatches('', Expected, Got);
+end;
+
+function TGDBTestCase.TestMatches(Name: string; Expected, Got: string;
+  MinGdbVers: Integer; AIgnoreReason: String): Boolean;
+begin
+  Result := TestMatches(Name, Expected, Got, MinGdbVers, 0, AIgnoreReason);
+end;
+
+function TGDBTestCase.TestMatches(Name: string; Expected, Got: string;
+  MinGdbVers: Integer; MinFpcVers: Integer; AIgnoreReason: String): Boolean;
+var
+  rx: TRegExpr;
+begin
+  rx := TRegExpr.Create;
+  rx.ModifierI := true;
+  rx.Expression := Expected;
+  Result :=  rx.Exec(Got);
+  FreeAndNil(rx);
+  if Result
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+Got+'"', MinGdbVers, MinFpcVers, AIgnoreReason)
+  else AddTestError(Name + ': Expected "'+Expected+'", Got "'+Got+'"', MinGdbVers, MinFpcVers, AIgnoreReason);
 end;
 
 function TGDBTestCase.TestEquals(Expected, Got: string): Boolean;

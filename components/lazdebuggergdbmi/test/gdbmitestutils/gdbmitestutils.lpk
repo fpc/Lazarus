@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="GdbmiTestUtils"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="M Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -10,12 +11,11 @@
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Other>
-        <CompilerMessages>
-          <MsgFileName Value=""/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
+      <Linking>
+        <Debugging>
+          <DebugInfoType Value="dsDwarf2Set"/>
+        </Debugging>
+      </Linking>
     </CompilerOptions>
     <Description Value="Test helper units for LazDebuggerGDBMI"/>
     <License Value="GPL2"/>
@@ -39,10 +39,9 @@
       </Item4>
       <Item5>
         <Filename Value="testwatchutils.pas"/>
-        <UnitName Value="testwatchutils"/>
+        <UnitName Value="TestWatchUtils"/>
       </Item5>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="FPCUnitTestRunner"/>

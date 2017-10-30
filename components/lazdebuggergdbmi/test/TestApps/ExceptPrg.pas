@@ -1,4 +1,4 @@
-program ExceptPrg;
+program ExceptPrg;  {$INLINE OFF}
 {$IFDEF TEST_WITH_HPLUS}
   {$H+}
 {$ELSE}
@@ -35,12 +35,78 @@ var
   end;
   {$ENDIF}
 
+  {$IFDEF TEST_EXCEPTION_AT}
+  procedure Bar;
+  begin
+    raise Exception.create('at1') at
+    get_caller_addr(get_caller_frame(get_frame)),
+    get_caller_frame(get_caller_frame(get_frame));
+  end;
+
+  procedure Bar1;
+  begin
+    Bar();
+  end;
+
+  procedure Bar2;
+  begin
+    Bar1();
+  end;
+
+  procedure BarBar;
+  begin
+    raise Exception.create('at2') at
+    get_caller_addr(get_frame),
+    get_caller_frame(get_frame);
+  end;
+
+  procedure BarBar1;
+  begin
+    BarBar();
+  end;
+
+  procedure BarBar2;
+  begin
+    BarBar1();
+  end;
+  {$ENDIF}
+
+  {$IFDEF TEST_RUNERR}
+  {$R+}
+  procedure Run;
+  var a: array of integer;
+  begin
+    SetLength(a, 2);
+    a[0] := -2;
+    a[1] := a[length(a)-a[0]];
+  end;
+
+  procedure Run1;
+  begin
+    Run();
+  end;
+  {$ENDIF}
+
+  {$IFDEF TEST_ASSERT}
+  {$C+}
+  procedure check;
+  begin
+    Assert(false, 'denied');
+  end;
+
+  procedure check1;
+  begin
+    check();
+  end;
+  {$ENDIF}
+
 begin
   {$IFnDEF TEST_NO_POINTER_VAR}
   p := nil;
   {$ENDIF}
   //foo;
 
+  {$IFnDEF TEST_SKIP_EXCEPTION_1}
   try
     {$IFnDEF TEST_NO_EXCEPTION_VAR}
     x := Exception.Create('foo');
@@ -59,8 +125,28 @@ begin
     end;
   end;
   writeln(1);
+  {$ENDIF}
+
+  {$IFDEF TEST_EXCEPTION_AT}
+  try
+  Bar2();
+  except end;
+  try
+  BarBar2();
+  except end;
+  {$ENDIF}
+
+  {$IFDEF TEST_RUNERR}
+  Run1();
+  {$ENDIF}
+
+  {$IFDEF TEST_ASSERT}
+  check1();
+  {$ENDIF}
+
   {$IFnDEF TEST_NO_EXCEPTION_TYPE}
   foo;
   {$ENDIF}
+
   writeln(2);
 end.
