@@ -53,6 +53,7 @@ uses
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   DefaultFormatSettings.ShortDateFormat := 'd/m/yyyy';
+  DefaultFormatSettings.DateSeparator := '/';
   if not FileExistsUTF8(Dbf1.TableName) then
   begin
     Dbf1.FieldDefs.Clear;

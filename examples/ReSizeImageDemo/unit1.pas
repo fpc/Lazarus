@@ -13,7 +13,7 @@ unit Unit1;
 interface
 
 uses
-  {$ifdef Windows} Windows, {$Endif}SysUtils, Forms, Graphics, ExtCtrls, StdCtrls;
+  SysUtils, Forms, Graphics, ExtCtrls, StdCtrls;
 
 type
 
