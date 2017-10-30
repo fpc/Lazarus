@@ -1254,6 +1254,7 @@ type
     procedure AutoAdjustColumns; virtual;
     procedure BeginUpdate;
     function  CellRect(ACol, ARow: Integer): TRect;
+    function  CellRectValid(ACol, ARow: Integer; out ARect: TRect): Boolean;
     function  CellToGridZone(aCol,aRow: Integer): TGridZone;
     procedure CheckPosition;
     procedure Clear;
@@ -3393,12 +3394,18 @@ begin
   end;
 end;
 
-{ Returns a reactagle corresponding to a fisical cell[aCol,aRow] }
+{ Returns a reactagle corresponding to a physical cell[aCol,aRow] }
 function TCustomGrid.CellRect(ACol, ARow: Integer): TRect;
 begin
-  //Result:=ColRowToClientCellRect(aCol,aRow);
-  ColRowToOffset(True, True, ACol, Result.Left, Result.Right);
-  ColRowToOffSet(False,True, ARow, Result.Top, Result.Bottom);
+  Assert( (ACol<ColCount) and (ARow<RowCount),
+    Format('TCustomGrid.CellRect: ACol (%d) or ARow (%d) out of range.',[ACol,ARow]) );
+  CellRectValid(ACol, ARow, Result);
+end;
+
+function TCustomGrid.CellRectValid(ACol, ARow: Integer; out ARect: TRect): Boolean;
+begin
+  Result := ColRowToOffset(True, True, ACol, ARect.Left, ARect.Right)
+        and ColRowToOffSet(False,True, ARow, ARect.Top, ARect.Bottom);
 end;
 
 // The visible grid Depends on  TopLeft and ClientWidht,ClientHeight,
@@ -8136,6 +8143,7 @@ procedure TCustomGrid.EditorPos;
 var
   msg: TGridMessage;
   CellR: TRect;
+  PosValid: Boolean;
 begin
   {$ifdef dbgGrid} DebugLn('Grid.EditorPos INIT');{$endif}
   if HandleAllocated and (FEditor<>nil) then begin
@@ -8148,9 +8156,11 @@ begin
     FEditor.Dispatch(Msg);
 
     // send editor bounds
-    CellR:=CellRect(FCol,FRow);
+    PosValid := CellRectValid(FCol, FRow, CellR);
+    if not PosValid then // Can't position editor; ensure sane values
+      CellR := Rect(0,0,FEditor.Width, FEditor.Height);
 
-    if (CellR.Top<FGCache.FixedHeight) or (CellR.Top>FGCache.ClientHeight) or
+    if not PosValid or (CellR.Top<FGCache.FixedHeight) or (CellR.Top>FGCache.ClientHeight) or
        (UseRightToLeftAlignment and ((CellR.Right-1>FlipX(FGCache.FixedWidth)) or (CellR.Right<0))) or
        (not UseRightToLeftAlignment and ((CellR.Left<FGCache.FixedWidth) or (CellR.Left>FGCache.ClientWidth)))
     then
