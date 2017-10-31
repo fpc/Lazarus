@@ -3154,8 +3154,8 @@ begin
   for i := 0 to Cmd.Count - 1 do
     CurrentThreads.Add(Cmd.Threads[i]);
 
-  CurrentThreads.SetValidity(ddsValid);
   CurrentThreads.CurrentThreadId := Cmd.CurrentThreadId;
+  CurrentThreads.SetValidity(ddsValid);
   Debugger.FCurrentThreadId := CurrentThreads.CurrentThreadId;
   Debugger.FCurrentThreadIdValid := True;
 end;
