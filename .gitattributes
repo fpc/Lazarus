@@ -6811,10 +6811,14 @@ images/components/tbuttonpanel.png -text svneol=unset#image/png
 images/components/tbuttonpanel_150.png -text
 images/components/tbuttonpanel_200.png -text
 images/components/tcalcedit.png -text svneol=unset#image/png
+images/components/tcalcedit_150.png -text
+images/components/tcalcedit_200.png -text
 images/components/tcalculatordialog.png -text svneol=unset#image/png
 images/components/tcalculatordialog_150.png -text
 images/components/tcalculatordialog_200.png -text
 images/components/tcalendar.png -text svneol=unset#image/png
+images/components/tcalendar_150.png -text
+images/components/tcalendar_200.png -text
 images/components/tcalendardialog.png -text svneol=unset#image/png
 images/components/tcalendardialog_150.png -text
 images/components/tcalendardialog_200.png -text
@@ -6822,6 +6826,8 @@ images/components/tcheckbox.png -text svneol=unset#image/png
 images/components/tcheckbox_150.png -text
 images/components/tcheckbox_200.png -text
 images/components/tcheckcombobox.png -text svneol=unset#image/png
+images/components/tcheckcombobox_150.png -text
+images/components/tcheckcombobox_200.png -text
 images/components/tcheckgroup.png -text svneol=unset#image/png
 images/components/tcheckgroup_150.png -text
 images/components/tcheckgroup_200.png -text
@@ -6844,6 +6850,8 @@ images/components/tcombobox.png -text svneol=unset#image/png
 images/components/tcombobox_150.png -text
 images/components/tcombobox_200.png -text
 images/components/tcomboboxex.png -text svneol=unset#image/png
+images/components/tcomboboxex_150.png -text
+images/components/tcomboboxex_200.png -text
 images/components/tcontrolbar.png -text svneol=unset#image/png
 images/components/tcontrolbar_150.png -text
 images/components/tcontrolbar_200.png -text
@@ -6854,6 +6862,8 @@ images/components/tdatasource.png -text svneol=unset#image/png
 images/components/tdatasource_150.png -text
 images/components/tdatasource_200.png -text
 images/components/tdateedit.png -text svneol=unset#image/png
+images/components/tdateedit_150.png -text
+images/components/tdateedit_200.png -text
 images/components/tdbcalendar.png -text svneol=unset#image/png
 images/components/tdbcalendar_150.png -text
 images/components/tdbcalendar_200.png -text
@@ -6900,6 +6910,8 @@ images/components/tdbtext.png -text svneol=unset#image/png
 images/components/tdbtext_150.png -text
 images/components/tdbtext_200.png -text
 images/components/tdirectoryedit.png -text svneol=unset#image/png
+images/components/tdirectoryedit_150.png -text
+images/components/tdirectoryedit_200.png -text
 images/components/tdrawgrid.png -text svneol=unset#image/png
 images/components/tdrawgrid_150.png -text
 images/components/tdrawgrid_200.png -text
@@ -6913,8 +6925,14 @@ images/components/teventlog.png -text svneol=unset#image/png
 images/components/teventlog_150.png -text
 images/components/teventlog_200.png -text
 images/components/tfilelistbox.png -text svneol=unset#image/png
+images/components/tfilelistbox_150.png -text
+images/components/tfilelistbox_200.png -text
 images/components/tfilenameedit.png -text svneol=unset#image/png
+images/components/tfilenameedit_150.png -text
+images/components/tfilenameedit_200.png -text
 images/components/tfiltercombobox.png -text
+images/components/tfiltercombobox_150.png -text
+images/components/tfiltercombobox_200.png -text
 images/components/tfinddialog.png -text svneol=unset#image/png
 images/components/tfinddialog_150.png -text
 images/components/tfinddialog_200.png -text
@@ -6943,6 +6961,8 @@ images/components/thtmlhelpdatabase.png -text svneol=unset#image/png
 images/components/thtmlhelpdatabase_150.png -text
 images/components/thtmlhelpdatabase_200.png -text
 images/components/tidedialoglayoutstorage.png -text svneol=unset#image/png
+images/components/tidedialoglayoutstorage_150.png -text
+images/components/tidedialoglayoutstorage_200.png -text
 images/components/tidletimer.png -text svneol=unset#image/png
 images/components/tidletimer_150.png -text
 images/components/tidletimer_200.png -text
@@ -7045,6 +7065,7 @@ images/components/tscrollbox_150.png -text
 images/components/tscrollbox_200.png -text
 images/components/tselectdirectorydialog.png -text svneol=unset#image/png
 images/components/tselectdirectorydialog_150.png -text
+images/components/tselectdirectorydialog_200.png -text
 images/components/tservicemanager.png -text svneol=unset#image/png
 images/components/tservicemanager_150.png -text
 images/components/tservicemanager_200.png -text
@@ -7052,7 +7073,11 @@ images/components/tshape.png -text svneol=unset#image/png
 images/components/tshape_150.png -text
 images/components/tshape_200.png -text
 images/components/tshelllistview.png -text
+images/components/tshelllistview_150.png -text
+images/components/tshelllistview_200.png -text
 images/components/tshelltreeview.png -text
+images/components/tshelltreeview_150.png -text
+images/components/tshelltreeview_200.png -text
 images/components/tsimpleipcclient.png -text svneol=unset#image/png
 images/components/tsimpleipcclient_150.png -text
 images/components/tsimpleipcclient_200.png -text
@@ -7084,6 +7109,8 @@ images/components/ttaskdialog.png -text
 images/components/ttaskdialog_150.png -text
 images/components/ttaskdialog_200.png -text
 images/components/ttimeedit.png -text svneol=unset#image/png
+images/components/ttimeedit_150.png -text
+images/components/ttimeedit_200.png -text
 images/components/ttimer.png -text svneol=unset#image/png
 images/components/ttimer_150.png -text
 images/components/ttimer_200.png -text
