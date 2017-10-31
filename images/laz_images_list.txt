@@ -364,6 +364,8 @@ menu/menu_pause.png
 menu/menu_pause_150.png
 menu/menu_pause_200.png
 menu/menu_project_add.png
+menu/menu_project_add_150.png
+menu/menu_project_add_200.png
 menu/menu_project_close.png
 menu/menu_project_close_150.png
 menu/menu_project_close_200.png
@@ -386,6 +388,8 @@ menu/menu_project_options.png
 menu/menu_project_options_150.png
 menu/menu_project_options_200.png
 menu/menu_project_remove.png
+menu/menu_project_remove_150.png
+menu/menu_project_remove_200.png
 menu/menu_project_save.png
 menu/menu_project_save_150.png
 menu/menu_project_save_200.png
@@ -506,10 +510,14 @@ menu/menu_toggle_bookmark9.png
 menu/menu_toggle_bookmark9_150.png
 menu/menu_toggle_bookmark9_200.png
 menu/menu_tool_check_lfm.png
+menu/menu_tool_check_lfm_150.png
+menu/menu_tool_check_lfm_200.png
 menu/menu_tool_dfm_to_lfm.png
 menu/menu_tool_diff.png
 menu/menu_tool_make_resourcestring.png
 menu/menu_tool_syntax_check.png
+menu/menu_tool_syntax_check_150.png
+menu/menu_tool_syntax_check_200.png
 menu/menu_uncomment.png
 menu/menu_uncomment_150.png
 menu/menu_uncomment_200.png
@@ -557,6 +565,8 @@ menu/menu_view_units.png
 menu/menu_view_units_150.png
 menu/menu_view_units_200.png
 menu/menu_view_unit_info.png
+menu/menu_view_unit_info_150.png
+menu/menu_view_unit_info_200.png
 menu/SelCompPage.png
 packages/pkg_add.png
 packages/pkg_binary.png

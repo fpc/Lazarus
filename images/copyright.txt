@@ -205,6 +205,9 @@ menu_new_unit_200.png
 menu_pause.png
 menu_pause_150.png
 menu_pause_200.png
+menu_project_add.png
+menu_project_add_150.png
+menu_project_add_200.png
 menu_project_close.png
 menu_project_close_150.png
 menu_project_close_200.png
@@ -226,6 +229,9 @@ menu_project_open_recent_200.png
 menu_project_options.png
 menu_project_options_150.png
 menu_project_options_200.png
+menu_project_remove.png
+menu_project_remove_150.png
+menu_project_remove_200.png
 menu_project_save.png
 menu_project_save_150.png
 menu_project_save_200.png
@@ -332,6 +338,12 @@ menu_toggle_bookmark8_200.png
 menu_toggle_bookmark9.png
 menu_toggle_bookmark9_150.png
 menu_toggle_bookmark9_200.png
+menu_tool_check_lfm.png
+menu_tool_check_lfm_150.png
+menu_tool_check_lfm_200.png
+menu_tool_syntax_check.png
+menu_tool_syntax_check_150.png
+menu_tool_syntax_check_200.png
 menu_undo.png
 menu_undo_150.png
 menu_undo_200.png
@@ -374,6 +386,9 @@ menu_view_toggle_form_unit_200.png
 menu_view_units.png
 menu_view_units_150.png
 menu_view_units_200.png
+menu_view_unit_info.png
+menu_view_unit_info_150.png
+menu_view_unit_info_200.png
 
 sourceeditor directory:
 
