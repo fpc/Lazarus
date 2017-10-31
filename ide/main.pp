@@ -59,7 +59,7 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, TypInfo, types, strutils, Laz_AVL_Tree,
+  Math, Classes, SysUtils, TypInfo, types, strutils, process, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, LCLIntf, LResources, HelpIntfs, InterfaceBase, LCLPlatformDef,
   ComCtrls, Forms, Buttons, Menus, Controls, GraphType, Graphics, ExtCtrls,
@@ -155,7 +155,7 @@ uses
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
   EditorMacroListViewer, SourceFileManager, EditorToolbarStatic,
-  IDEInstances, process,
+  IDEInstances, NotifyProcessEnd,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -7092,8 +7092,8 @@ begin
       Exit(mrNone);
     end;
 
-    Process.Execute;
-  finally
+    TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
+  except
     Process.Free;
   end;
 end;

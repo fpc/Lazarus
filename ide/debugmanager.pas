@@ -1250,6 +1250,7 @@ begin
       FPrevShownWindow:=0;
       if (OldState<>dsIdle)
       then begin
+        MainIDE.DoCallRunFinishedHandler;
         if EnvironmentOptions.DebuggerShowStopMessage
         then begin
           MsgResult:=IDEQuestionDialog(lisExecutionStopped,

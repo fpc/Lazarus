@@ -246,7 +246,8 @@ type
     lihtGetFPCFrontEndPath, // called when the IDE gets the path of the 'fpc' front end tool
     lihtShowDesignerFormOfSource, // called after showing a designer form for code editor (AEditor can be nil!)
     lihtShowSourceOfActiveDesignerForm, // called after showing a code of designer form
-    lihtChangeToolStatus//called when IDEToolStatus has changed (e.g. itNone->itBuilder etc.)
+    lihtChangeToolStatus, //called when IDEToolStatus has changed (e.g. itNone->itBuilder etc.)
+    lihtRunFinished //called when ran program finishes
     );
     
   TLazToolStatus = (
@@ -377,6 +378,7 @@ type
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
     function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
                                          AProject: TLazProject): TModalResult;
+    procedure DoCallRunFinishedHandler;
     function DoAddUnitToProject(AEditor: TSourceEditorInterface): TModalResult; virtual; abstract;
 
     // configs
@@ -512,8 +514,7 @@ type
     function CallHandlerGetFPCFrontEndParams(Sender: TObject; var Params: string): boolean;
     procedure AddHandlerGetFPCFrontEndPath(
                  const Handler: TGetFPCFrontEndPath; AsLast: boolean = false);
-    procedure RemoveHandlerGetFPCFrontEndPath(
-                                          const Handler: TGetFPCFrontEndPath);
+    procedure RemoveHandlerGetFPCFrontEndPath(const Handler: TGetFPCFrontEndPath);
     function CallHandlerGetFPCFrontEndPath(Sender: TObject; var Path: string): boolean;
     procedure AddHandlerOnShowDesignerFormOfSource(
                            const OnShowDesignerFormOfSourceEvent: TShowDesignerFormOfSourceFunction;
@@ -530,6 +531,9 @@ type
                            AsLast: boolean = false);
     procedure RemoveHandlerOnChangeToolStatus(
                                const OnChangeToolStatus: TLazToolStatusChangeEvent);
+    procedure AddHandlerOnRunFinished(const OnRunFinishedEvent: TNotifyEvent;
+                                      AsLast: boolean = false);
+    procedure RemoveHandlerOnRunFinished(const OnRunFinishedEvent: TNotifyEvent);
 
     property IDEStarted: boolean read FIDEStarted;
     property IDEIsClosing: boolean read FIDEIsClosing;
@@ -765,6 +769,11 @@ begin
   end;
 end;
 
+procedure TLazIDEInterface.DoCallRunFinishedHandler;
+begin
+  DoCallNotifyHandler(lihtRunFinished);
+end;
+
 procedure TLazIDEInterface.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TLazarusIDEHandlerType;
@@ -993,6 +1002,18 @@ procedure TLazIDEInterface.RemoveHandlerOnChangeToolStatus(
   const OnChangeToolStatus: TLazToolStatusChangeEvent);
 begin
   RemoveHandler(lihtChangeToolStatus,TMethod(OnChangeToolStatus));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnRunFinished(
+  const OnRunFinishedEvent: TNotifyEvent; AsLast: boolean);
+begin
+  AddHandler(lihtRunFinished,TMethod(OnRunFinishedEvent),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnRunFinished(
+  const OnRunFinishedEvent: TNotifyEvent);
+begin
+  RemoveHandler(lihtRunFinished,TMethod(OnRunFinishedEvent));
 end;
 
 function TLazIDEInterface.CallHandlerGetFPCFrontEndPath(Sender: TObject;
