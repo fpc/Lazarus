@@ -28,7 +28,7 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, StdCtrls, Buttons, ExtCtrls, ComCtrls, Menus,
-  LCLIntf, LazConf, InterfaceBase, LCLPlatformDef, Clipbrd,
+  LCLIntf, LazConf, InterfaceBase, LCLPlatformDef, Clipbrd, LCLVersion,
   // LazUtils
   FPCAdds, LazFileUtils, lazutf8classes,
   // Codetools
@@ -114,7 +114,8 @@ function ShowAboutForm: TModalResult;
 var
   LazarusRevisionStr: string;
   
-function GetLazarusVersionString : string;
+function GetLazarusVersionString: string;
+function GetLazarusRevision: string;
 
 implementation
 
@@ -132,6 +133,11 @@ end;
 function GetLazarusVersionString: string;
 begin
   Result:=LazarusVersionStr;
+end;
+
+function GetLazarusRevision: string;
+begin
+  Result:=LazarusRevisionStr;
 end;
 
 { TAboutForm }
@@ -439,6 +445,9 @@ begin
   FBuffer.Free;
   inherited Destroy;
 end;
+
+initialization
+  lcl_revision_func := @GetLazarusRevision;
 
 end.
 

@@ -31,6 +31,9 @@ unit LCLVersion;
 
 interface
 
+type
+  TStringFunc = function: String;
+
 const
   lcl_major = 1;
   lcl_minor = 9;
@@ -39,7 +42,18 @@ const
   lcl_fullversion = ((lcl_major *  100 + lcl_minor) * 100 + lcl_release) * 100 + lcl_patch;
   lcl_version = '1.9.0.0';
 
+var
+  lcl_revision_func: TStringFunc;
+
 implementation
+
+function LCLRevisionFuncDummy: String;
+begin
+  Result := '';
+end;
+
+initialization
+  lcl_revision_func := @LCLRevisionFuncDummy;
 
 end.
 
