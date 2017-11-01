@@ -348,7 +348,6 @@ begin
     P.Sources.AddSrc('msgquickfixes.pas');
     P.Sources.AddSrc('msgview.pp');
     P.Sources.AddSrc('msgvieweditor.pas');
-    P.Sources.AddSrc('multireplacedlg.pas');
     P.Sources.AddSrc('newdialog.pas');
     P.Sources.AddSrc('newprojectdlg.pp');
     P.Sources.AddSrc('objectlists.pas');

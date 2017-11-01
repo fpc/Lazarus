@@ -998,7 +998,6 @@ Name: {app}\ide\makeresstrdlg.lrs; Type: files
 Name: {app}\ide\mouseactiondialog.lrs; Type: files
 Name: {app}\ide\msgvieweditor.lrs; Type: files
 Name: {app}\ide\msgview.lrs; Type: files
-Name: {app}\ide\multireplacedlg.lrs; Type: files
 Name: {app}\ide\newdialog.lrs; Type: files
 Name: {app}\ide\newprojectdlg.lrs; Type: files
 Name: {app}\ide\patheditordlg.lrs; Type: files
