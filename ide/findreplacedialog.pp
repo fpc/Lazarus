@@ -220,8 +220,7 @@ begin
     DlgHistoryIndex[c] := -1;
 end;
 
-procedure TLazFindReplaceDialog.RestoreState(const AState: TLazFindReplaceState
-  );
+procedure TLazFindReplaceDialog.RestoreState(const AState: TLazFindReplaceState);
 begin
   Options:=AState.Options;
   FindText:=AState.FindText;

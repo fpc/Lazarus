@@ -4385,15 +4385,18 @@ begin
 end;
 
 function TProject.FileIsInProjectDir(const AFilename: string): boolean;
-var ProjectDir, FilePath: string;
+var
+  ProjectDir, FilePath: string;
 begin
-  if FilenameIsAbsolute(AFilename) then begin
-    if (not IsVirtual) then begin
+  if FilenameIsAbsolute(AFilename) then
+  begin
+    if IsVirtual then
+      Result:=false
+    else begin
       ProjectDir:=Directory;
       FilePath:=LeftStr(AFilename,length(ProjectDir));
-      Result:=(CompareFileNames(ProjectDir,FilePath)=0);
-    end else
-      Result:=false;
+      Result:=CompareFileNames(ProjectDir,FilePath)=0;
+    end;
   end else
     Result:=true;
 end;
