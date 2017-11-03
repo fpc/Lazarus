@@ -49,7 +49,7 @@ begin
   try
     if Paramcount>0 then begin
       if Paramcount<4 then begin
-        writeln('Usage: '+ParamStrUTF8(0)+' filename line column define1 define2');
+        writeln('Usage: '+ParamStrUTF8(0)+' filename line column define1 define2 ...');
         exit;
       end;
       Filename:=ExpandFileNameUTF8(ParamStrUTF8(1));
@@ -58,9 +58,9 @@ begin
       for p:=4 to Paramcount do
         Defines.Add(ParamStrUTF8(p));
     end else begin
-      Filename:=ExpandFileNameUTF8('testscompleteblock/procedurebegin1.inc');
+      Filename:=ExpandFileNameUTF8('scanexamples/completeprocbeginend.pas');
       X:=1;
-      Y:=4;
+      Y:=6;
       Defines.Add('procedurebegin');
     end;
 
