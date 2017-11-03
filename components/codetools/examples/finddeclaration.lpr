@@ -40,7 +40,7 @@ var
   NewX, NewY, NewTopLine: integer;
   Code: TCodeBuffer;
   X: Integer;
-  Y: Integer;
+  Y, BlockTopLine, BlockBottomLine: Integer;
   Filename: String;
   Line: String;
 begin
@@ -103,7 +103,8 @@ begin
     writeln('Line ',Y,': ',copy(Line,1,X-1),'|',copy(Line,X,length(Line)));
 
     // Step 2: find declaration
-    if CodeToolBoss.FindDeclaration(Code,X,Y,NewCode,NewX,NewY,NewTopLine) then
+    if CodeToolBoss.FindDeclaration(Code,X,Y,NewCode,NewX,NewY,NewTopLine,
+      BlockTopLine,BlockBottomLine) then
     begin
       writeln('Declaration found: ',NewCode.Filename,' Line=',NewY,' Column=',NewX);
     end else begin
