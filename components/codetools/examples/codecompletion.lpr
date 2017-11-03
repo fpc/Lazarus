@@ -39,7 +39,7 @@ var
   Code: TCodeBuffer;
   X: Integer;
   Y: Integer;
-  TopLine: Integer;
+  TopLine, BlockTopLine, BlockBottomLine: Integer;
   Filename: String;
 begin
   if (ParamCount>=1) and (Paramcount<>3) then begin
@@ -70,7 +70,8 @@ begin
       raise Exception.Create('loading failed '+Filename);
 
     // complete code
-    if CodeToolBoss.CompleteCode(Code,X,Y,TopLine,NewCode,NewX,NewY,NewTopLine,false)
+    if CodeToolBoss.CompleteCode(Code,X,Y,TopLine,NewCode,NewX,NewY,NewTopLine,
+      BlockTopLine,BlockBottomLine,false)
     then begin
       writeln('Code completed: ',NewCode.Filename,' Line=',NewY,' Column=',NewX);
       writeln(Code.Source);
