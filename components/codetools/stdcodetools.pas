@@ -1579,7 +1579,7 @@ begin
   if FixCase then
     SourceChangeCache.MainScanner:=Scanner;
   try
-    if not CheckUsesSection(FindMainUsesNode(true)) then exit;
+    if not CheckUsesSection(FindMainUsesNode) then exit;
     if SearchImplementation
     and not CheckUsesSection(FindImplementationUsesNode) then exit;
   except
