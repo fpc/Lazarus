@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Demonstration of how to reduce IFDEFs in a source file.
+    Demonstration of how to add or remove resource directives.
 }
 program ReplaceResourceDirectives;
 
