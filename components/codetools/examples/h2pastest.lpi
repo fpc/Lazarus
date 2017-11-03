@@ -33,7 +33,7 @@
         <PackageName Value="CodeTools"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="3">
       <Unit0>
         <Filename Value="h2pastest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -44,13 +44,9 @@
         <IsPartOfProject Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="convert_glib.sh"/>
-        <IsPartOfProject Value="True"/>
-      </Unit2>
-      <Unit3>
         <Filename Value="convert_glib3.sh"/>
         <IsPartOfProject Value="True"/>
-      </Unit3>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
