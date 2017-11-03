@@ -4,7 +4,7 @@
   Works also in Delphi where String=UnicodeString. Just rename this file as *.dpr.
    For Delphi you must copy units LazUnicode and LazUTF16, both part of LazUtils package.
 }
-program LazUnicodeTest;
+program LazUnicodeConsole;
 
 {$IFDEF FPC}
  {$mode objfpc}{$H+}
@@ -68,27 +68,11 @@ begin
 
   // Use CodePoint enumerator explicitly
   writeln('');
-  writeln('*** Using CodePoint iterator explicitly: ***');
+  writeln('*** Using CodePoint enumerator explicitly: ***');
   cpIter := TCodePointEnumerator.Create(s);
   while cpIter.MoveNext do
     writeln('ch=', cpIter.Current, '  has ', cpIter.CurrentCodeUnitCount, ' codeunits.');
   cpIter.Free;
-
-  {$IFDEF FPC}
-  // Use for-in loop for CodePoints.
-  writeln('');
-  writeln('*** Using for-in loop for CodePoints : ***');
-  for ch in s do
-    writeln('ch=',ch);
-  {$ENDIF}
-
-  // Use for-in loop for codeunits using a Char variable still works.
-  {    Uncomment to test.
-  writeln('');
-  writeln('*** Using for-in loop for codeunits: ***');
-  for CodeUnit in s do
-    writeln('CodeUnit=',CodeUnit);        // The output makes no sense obviously.
-  }
 
   s_UTF8 := Combining;
   s := s_UTF8;                              // Converts encoding when needed.
@@ -97,11 +81,27 @@ begin
 
   // Use UnicodeCharacter enumerator explicitly
   writeln('');
-  writeln('*** Using UnicodeCharacter iterator explicitly: ***');
+  writeln('*** Using UnicodeCharacter enumerator explicitly: ***');
   ucIter := TUnicodeCharacterEnumerator.Create(s);
   while ucIter.MoveNext do
     writeln('ch=', ucIter.Current, '  has ', ucIter.CurrentCodePointCount, ' codepoints and ', ucIter.CurrentCodeUnitCount, ' codeunits.');
   ucIter.Free;
+
+  {$IFDEF FPC}
+  // Use for-in loop for Unicode Characters.
+  writeln('');
+  writeln('*** Using for-in loop for Unicode Characters : ***');
+  for ch in s do
+    writeln('ch=',ch);
+  {$ENDIF}
+
+  // for-in loop for codeunits using a Char variable still works.
+  {    Uncomment to test.
+  writeln('');
+  writeln('*** Using for-in loop for codeunits: ***');
+  for CodeUnit in s do
+    writeln('CodeUnit=',CodeUnit);        // The output makes no sense obviously.
+  }
 
 end.
 

@@ -93,12 +93,13 @@ type
   end;
 
   {$IFDEF FPC}
-  // Enumerator for CodePoints is used for for-in loop now.
-  operator Enumerator(A: String): TCodePointEnumerator;
+  // Enumerator for CodePoints could be used for the for-in loop.
+  //operator Enumerator(A: String): TCodePointEnumerator;
 
-  // This enumerator combines diacritical marks. Not enabled by default because
-  //  there are many more rules for combining codepoints.
-  //operator Enumerator(A: String): TUnicodeCharacterEnumerator;
+  // This enumerator combines diacritical marks.
+  // It is used by default although there are more rules for combining codepoints.
+  // Diacritical marks cover rules for most western languages.
+  operator Enumerator(A: String): TUnicodeCharacterEnumerator;
   {$ENDIF}
 
 implementation
@@ -311,9 +312,9 @@ end;
 // Enumerator
 //---
 {$IFDEF FPC}
-operator Enumerator(A: String): TCodePointEnumerator;
+operator Enumerator(A: String): TUnicodeCharacterEnumerator;
 begin
-  Result := TCodePointEnumerator.Create(A);
+  Result := TUnicodeCharacterEnumerator.Create(A);
 end;
 {$ENDIF}
 

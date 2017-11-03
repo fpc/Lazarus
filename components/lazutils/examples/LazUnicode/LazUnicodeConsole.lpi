@@ -9,7 +9,7 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="LazUnicodeTest"/>
+      <Title Value="LazUnicodeConsole"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -19,7 +19,7 @@
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
-            <Filename Value="LazUnicodeTest"/>
+            <Filename Value="LazUnicodeConsole"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -51,7 +51,7 @@
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
-        <Filename Value="LazUnicodeTest.lpr"/>
+        <Filename Value="LazUnicodeConsole.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
     </Units>
@@ -59,7 +59,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="LazUnicodeTest"/>
+      <Filename Value="LazUnicodeConsole"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
