@@ -830,6 +830,7 @@ components/codetools/examples/scanexamples/genericsexample.pas svneol=native#tex
 components/codetools/examples/scanexamples/getcontextexample.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/getterexample1.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/identcomplexample.pas svneol=native#text/plain
+components/codetools/examples/scanexamples/include/BrokenIncFile2.inc svneol=native#text/plain
 components/codetools/examples/scanexamples/indentation.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/initvars1.pas svneol=native#text/plain
 components/codetools/examples/scanexamples/methodjump1.pas svneol=native#text/plain

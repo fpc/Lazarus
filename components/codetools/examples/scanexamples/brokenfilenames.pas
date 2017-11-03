@@ -6,7 +6,7 @@ interface
 
 
 uses
-  Classes,
+  cLasses,
   CustApp,
   biglettersunit, // must be fixed to BigLettersUnit
   biglettersunit in 'biglettersunit.pas',// -> BigLettersUnit.pas
@@ -19,7 +19,7 @@ uses
   {$ENDIF};
 
 {$I BROKENincfiles.inc}// must be fixed to brokenincfiles.inc
-{$I ../ScanInstances/BROKENincfile2.inc}// must be fixed to ../scaninstances/brokenincfiles.inc
+{$I ../scanexamples/include/BROKENincfile2.inc}// must be fixed to include/BrokenIncFile2.inc
 
 implementation
 

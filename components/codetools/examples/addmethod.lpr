@@ -48,22 +48,11 @@ var
   MethodDefinition: String;
   CleanMethodDefinition: String;
   i: Integer;
-  Options: TCodeToolsOptions;
 begin
   // Example: find declaration of 'TObject'
 
-  // setup the Options
-  Options:=TCodeToolsOptions.Create;
-  // setup your paths
-  writeln('Config=',ConfigFilename);
-  if FileExists(ConfigFilename) then begin
-    // To not parse the FPC sources every time, the options are saved to a file.
-    Options.LoadFromFile(ConfigFilename);
-  end;
-  Options.InitWithEnvironmentVariables;
-  CodeToolBoss.Init(Options);
-  // save the options and the FPC unit links results.
-  Options.SaveToFile(ConfigFilename);
+  // init the codetools
+  CodeToolBoss.SimpleInit(ConfigFilename);
 
   // load the file
   Filename:=AppendPathDelim(GetCurrentDir)+'scanexamples'+PathDelim
@@ -106,8 +95,6 @@ begin
     raise Exception.Create('Explore failed');
   writeln('Method added: ');
   writeln(Code.Source);
-
-  Options.Free;
 end.
 
 
