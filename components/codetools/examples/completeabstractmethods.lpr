@@ -42,7 +42,7 @@ var
   i: Integer;
   CodeXYPos: TCodeXYPosition;
   NewCode: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
 begin
   if (ParamCount>=1) and (Paramcount<>3) then begin
     writeln('Usage:');
@@ -86,7 +86,7 @@ begin
     end;
     
     if CodeToolBoss.AddMethods(Code,X,Y,1,ListOfPCodeXYPosition,true,
-      NewCode,NewX,NewY,NewTopLine)
+      NewCode,NewX,NewY,NewTopLine,BlockTopLine,BlockBottomLine)
     then begin
       writeln('AddMethods succeeded: ',NewCode.Filename,' (',NewY,',',NewX,') ');
       writeln(Code.Source);
