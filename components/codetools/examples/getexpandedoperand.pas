@@ -48,7 +48,7 @@ var
 begin
   Filename:='scanexamples/getterexample1.pas';
   X:=14;
-  Y:=56;
+  Y:=54;
   if (ParamCount>=1) and (Paramcount<3) then begin
     writeln('Usage:');
     writeln('  ',ParamStr(0));
