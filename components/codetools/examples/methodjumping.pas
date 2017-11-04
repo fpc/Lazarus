@@ -41,7 +41,7 @@ var
   NewX, NewY, NewTopLine: integer;
   RevertableJump: boolean;
   X: Integer;
-  Y: Integer;
+  Y, BlockTopLine, BlockBottomLine: Integer;
 begin
   if (ParamCount>=1) and (Paramcount<3) then begin
     writeln('Usage:');
@@ -62,7 +62,7 @@ begin
   if CodeBuf=nil then
     raise Exception.Create('failed loading '+ExpandedFilename);
   if CodeToolBoss.JumpToMethod(CodeBuf,X,Y,NewCode,NewX,NewY,NewTopLine,
-                               RevertableJump)
+                               BlockTopLine,BlockBottomLine,RevertableJump)
   then
     writeln(NewCode.Filename,' ',NewX,',',NewY,' TopLine=',NewTopLine,
             ' RevertableJump=',RevertableJump)
