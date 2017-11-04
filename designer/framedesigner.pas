@@ -120,7 +120,7 @@ end;
 procedure TFrameDesignerForm.Create;
 begin
   inherited Create;
-  // workaround problem with out assumption that Width = ClientWidth, Height = ClientHeight
+  // workaround problem with assumption that Width = ClientWidth, Height = ClientHeight
   NonFormProxyDesignerForm.AutoScroll := False;
 end;
 

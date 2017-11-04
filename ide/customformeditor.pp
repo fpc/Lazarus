@@ -86,7 +86,7 @@ type
     function OnPropHookGetAncestorInstProp(const InstProp: TInstProp;
                                       out AncestorInstProp: TInstProp): boolean;
   protected
-    FNonFormForms: TAvlTree; // tree of TNonControlDesignerForm sorted for LookupRoot
+    FNonFormForms: TAvlTree; // tree of TNonFormProxyDesignerForm sorted for LookupRoot
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
@@ -845,7 +845,8 @@ begin
     (Result as INonFormDesigner).LookupRoot := LookupRoot;
     FNonFormForms.Add(Result);
 
-    if Result is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId] then begin
+    if Result is BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId]
+    then begin
       // create the mediator
       MediatorClass:=GetDesignerMediatorClass(TComponentClass(LookupRoot.ClassType));
       if MediatorClass<>nil then
