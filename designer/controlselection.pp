@@ -759,6 +759,7 @@ begin
       FOldWidth:=r.Right-r.Left;
       FOldHeight:=r.Bottom-r.Top;
     end;
+    FOldFormRelativeLeftTop:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
   end else begin
     GetComponentBounds(TComponent(FPersistent),
                        FOldLeft,FOldTop,FOldWidth,FOldHeight);
