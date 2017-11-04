@@ -925,6 +925,8 @@ begin
                 }
                 NextSubNode:=SubNode.NextSkipChilds;
                 DebugLn(['TCompilerDirectivesTree.MoveIfNotThenDefsUp IFDEF + DEFINE => the define is not needed']);
+                if NextNode=SubNode then
+                  NextNode:=NextNode.NextSkipChilds;
                 DisableDefineNode(SubNode,Changed);
                 SubNode:=nil;
               end;
@@ -972,6 +974,8 @@ begin
             // the name was not read after it was set -> disable the define
             // in the block
             DebugLn(['TCompilerDirectivesTree.MoveIfNotThenDefsUp old DEFINE is not needed anymore']);
+            if NextNode=LastDefineNode then
+              NextNode:=NextNode.NextSkipChilds;
             DisableDefineNode(LastDefineNode,Changed);
           end;
         end;
