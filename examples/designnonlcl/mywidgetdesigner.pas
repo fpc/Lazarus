@@ -42,6 +42,9 @@ type
   TMyWidgetMediator = class(TDesignerMediator,IMyWidgetDesigner)
   private
     FMyForm: TMyForm;
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     // needed by the Lazarus form editor
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator;
@@ -102,6 +105,20 @@ begin
   inherited Destroy;
 end;
 
+procedure TMyWidgetMediator.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then
+  begin
+    if FMyForm=AComponent then
+    begin
+      FMyForm.Designer:=nil;
+      FMyForm:=nil;
+    end;
+  end;
+end;
+
 class function TMyWidgetMediator.CreateMediator(TheOwner, aForm: TComponent
   ): TDesignerMediator;
 var
@@ -110,6 +127,7 @@ begin
   Result:=inherited CreateMediator(TheOwner,aForm);
   Mediator:=TMyWidgetMediator(Result);
   Mediator.FMyForm:=aForm as TMyForm;
+  Mediator.FMyForm.FreeNotification(Mediator);
   Mediator.FMyForm.Designer:=Mediator;
 end;
 
