@@ -4157,11 +4157,14 @@ var
                 end;
                 ContextNode := Params.NewNode;
                 Exit(False);
-              end else Params.AddOperandPart(GetIdentifier(Params.Identifier));
+              end else
+                Params.AddOperandPart(GetIdentifier(Params.Identifier));
             end;
           ctnProcedure:
-            // function execution is not implemented yet
-            RaiseException(20170421200108,'not implemented');
+            begin
+              Params.AddOperandPart(ExtractProcName(Params.NewNode,[]));
+              // ToDo: add default parameters
+            end;
         end;
 
       if CallOnIdentifierFound then begin
@@ -9307,7 +9310,8 @@ var
         if CompareSrcIdentifiers(CurAtom.StartPos,'SELF') then begin
           // SELF in a method is the object itself
           // -> check if in a method or nested proc of a method
-          if fdfExtractOperand in Params.Flags then Params.AddOperandPart('Self');
+          if fdfExtractOperand in Params.Flags then
+            Params.AddOperandPart('Self');
           ProcNode:=StartNode;
           while (ProcNode<>nil) do begin
             if (ProcNode.Desc=ctnProcedure) and NodeIsMethodBody(ProcNode) then
@@ -9649,7 +9653,8 @@ var
   procedure ResolvePoint;
   begin
     // for example 'A.B'
-    if fdfExtractOperand in Params.Flags then Params.AddOperandPart('.');
+    if fdfExtractOperand in Params.Flags then
+      Params.AddOperandPart('.');
     if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
@@ -9697,7 +9702,8 @@ var
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveUp']);
     {$ENDIF}
-    if fdfExtractOperand in Params.Flags then Params.AddOperandPart('^');
+    if fdfExtractOperand in Params.Flags then
+      Params.AddOperandPart('^');
     if (not (NextAtomType in [vatSpace,vatPoint,vatUp,vatAS,vatEdgedBracketOpen]))
     or ((ExprType.Context.Node=nil) and (ExprType.Desc<>xtPointer))
     then begin
