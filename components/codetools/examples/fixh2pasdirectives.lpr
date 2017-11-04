@@ -22,7 +22,7 @@
 
   Abstract:
     Demonstration of how to add the missing IFDEFs, that h2pas forgets to add
-    and to remove unneeded IFDEFs.
+    to the implementation, and how to remove unneeded IFDEFs.
     
   Usage:
     fixh2pasdirectives [-name1] [+name2] ... [filename]
@@ -33,7 +33,7 @@
   that means {$IFDEF NAME} will be true.
   All other macros are treated as 'any'.
   Names are case insensitive.
-  Otherwise the parameter is used a filename to load.
+  Otherwise the parameter is used as a filename to load.
   Example:
   
     ./fixh2pasdirectives -ENDIAN_BIG -Debug +FPC scanexamples/missingh2pasdirectives.pas
