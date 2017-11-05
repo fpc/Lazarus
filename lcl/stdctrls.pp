@@ -730,6 +730,7 @@ type
     FSelLength: integer;
     FSelStart: integer;
     FTextChangedByRealSetTextCounter: Integer;
+    FTextChangingCounter: integer;
     FTextHint: TTranslateString;
     procedure ShowEmulatedTextHint(const ForceShow: Boolean = False);
     procedure HideEmulatedTextHint;

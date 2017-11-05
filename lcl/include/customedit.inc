@@ -82,6 +82,7 @@ begin
   FAutoSelect := True;
   FAutoSelected := False;
   FTextChangedByRealSetTextCounter := 0;
+  FTextChangingCounter := 0;
   AutoSize := True;
   // Accessibility
   AccessibleRole := larTextEditorSingleline;
@@ -578,6 +579,8 @@ var
   SStart, SLen: Integer;
 begin
   //debugln('TCustomEdit.TextChanged ',DbgSName(Self));
+  if FTextChangingCounter > 0 then
+    Exit;
   if FCharCase in [ecUppercase, ecLowercase] then
   begin
     // use a local variable to reduce amounts of widgetset calls
@@ -592,7 +595,12 @@ begin
       CPos := CaretPos;
       SStart := SelStart;
       SLen := SelLength;
-      Text := Temp;
+      Inc(FTextChangingCounter);
+      try
+        Text := Temp;
+      finally
+        Dec(FTextChangingCounter);
+      end;
       SelStart  := SStart;
       SelLength := SLen;
       CaretPos  := CPos;
