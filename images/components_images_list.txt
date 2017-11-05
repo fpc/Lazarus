@@ -1,4 +1,6 @@
 components/default.png
+components/default_150.png
+components/default_200.png
 components/tactionlist.png
 components/tactionlist_150.png
 components/tactionlist_200.png
@@ -358,4 +360,5 @@ components/txmlpropstorage.png
 components/txmlpropstorage_150.png
 components/txmlpropstorage_200.png
 components/unregisteredcomponent.png
-
+components/unregisteredcomponent_150.png
+components/unregisteredcomponent_200.png
