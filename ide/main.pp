@@ -2922,7 +2922,7 @@ begin
 
     OpenDialog.Options:=OpenDialog.Options+[
       ofAllowMultiSelect,
-      ofNoDereferenceLinks // Note: do not always resolve symlinked files, some links are resolved later
+      ofNoResolveLinks // Note: do not always resolve symlinked files, some links are resolved later
       ];
 
     // set InitialDir to
