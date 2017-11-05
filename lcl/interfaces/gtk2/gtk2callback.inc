@@ -408,6 +408,43 @@ begin
   end;
 end;
 
+function postpone_changed_signal(Widget: PGtkWidget): GBoolean; cdecl;
+begin
+  Result := gtk_false;
+  g_object_set_data(PGObject(Widget), 'lcl-postpone-changed-signal', nil);
+  gtkchanged_editbox(Widget, GetWidgetInfo(Widget, False)^.LCLObject);
+end;
+
+procedure gtkchanged_editbox_delete_text(Widget: PGtkWidget; AStartPos,
+  AEndPos: gint; data: gPointer); cdecl;
+var
+  id: gPointer;
+begin
+  id := g_object_get_data(PGObject(Widget), 'lcl-postpone-changed-signal');
+  if id = nil then
+  begin
+    {%H-}PtrUInt(id) := g_idle_add(TGtkFunction(@postpone_changed_signal), Widget);
+    g_object_set_data(PGObject(Widget), 'lcl-postpone-changed-signal', id);
+  end;
+end;
+
+procedure gtkchanged_editbox_insert_text(Widget: PGtkWidget; ANewText: gChar;
+  ANewTextLength: gint; APosition: pgint; data: gPointer); cdecl;
+var
+  id: gPointer;
+begin
+  id := g_object_get_data(PGObject(Widget), 'lcl-postpone-changed-signal');
+  if id <> nil then
+  begin
+    g_source_remove({%H-}PtrUInt(id));
+    g_object_set_data(PGObject(Widget), 'lcl-postpone-changed-signal', nil);
+  end;
+  if LockOnChange(PgtkObject(Widget), 0) > 0 then
+    g_object_set_data(PGObject(Widget), 'lcl-lock-changed-signal', gPointer(-1))
+  else
+    g_object_set_data(PGObject(Widget), 'lcl-lock-changed-signal', nil);
+end;
+
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -419,6 +456,13 @@ begin
   //debugln('gtkchanged_editbox');
   Result := CallBackDefaultReturn;
 
+  if g_object_get_data(PGObject(Widget), 'lcl-lock-changed-signal') <> nil then
+  begin
+    g_object_set_data(PGObject(Widget), 'lcl-lock-changed-signal', nil);
+    Exit;
+  end;
+  if g_object_get_data(PGObject(Widget), 'lcl-postpone-changed-signal') <> nil then
+    Exit;
   if LockOnChange(PgtkObject(Widget),0)>0 then exit;
   {$IFDEF EventTrace}
   EventTrace('changed_editbox', data);
@@ -455,20 +499,16 @@ begin
         begin
           // if we change selstart in OnChange event new cursor pos need to
           // be postponed in TGtk2WSCustomEdit.SetSelStart
-          NeedCursorCheck := True;
           if g_object_get_data(PGObject(Widget),'lcl-gtkentry-pasted-data') <> nil then
           begin
             g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',nil);
             gtk_editable_set_position(PGtkEditable(Widget), GStart);
           end else
           begin
-            if gtk_minor_version < 17 then
-            begin
-              g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
-              g_idle_add(@GtkEntryDelayCursorPos, Widget);
-              exit;
-            end else
-              gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
+            NeedCursorCheck := True;
+            g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
+            g_idle_add(@GtkEntryDelayCursorPos, Widget);
+            exit;
           end;
         end;
       end;
@@ -654,9 +694,20 @@ end;
 function gtkchanged_editbox_delete(widget: PGtkWidget;
   AType: TGtkDeleteType; APos: gint; data: gPointer): GBoolean; cdecl;
 var
- Info: PWidgetInfo;
+  Info: PWidgetInfo;
+  EntryText: PgChar;
 begin
   Result := CallBackDefaultReturn;
+  if GTK_IS_ENTRY(Widget) then
+  begin
+    EntryText := gtk_entry_get_text(PGtkEntry(Widget));
+    if (PGtkEntry(Widget)^.current_pos = PGtkEntry(Widget)^.selection_bound)
+    and (PGtkEntry(Widget)^.current_pos = UTF8Length(EntryText)) then
+    begin
+      g_signal_stop_emission_by_name(Widget, 'delete-from-cursor');
+      Exit;
+    end;
+  end;
   Info := GetWidgetInfo(Widget, False);
   include(Info^.Flags, wwiInvalidEvent);
 end;

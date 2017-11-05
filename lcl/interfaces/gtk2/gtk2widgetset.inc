@@ -442,6 +442,8 @@ begin
        begin
          if GTK_IS_ENTRY(gObject) then
          begin
+           ConnectSenderSignal(gObject,'delete-text', @gtkchanged_editbox_delete_text);
+           ConnectSenderSignal(gObject,'insert-text', @gtkchanged_editbox_insert_text);
            ConnectSenderSignal(gObject,'backspace', @gtkchanged_editbox_backspace);
            ConnectSenderSignal(gObject,'delete-from-cursor', @gtkchanged_editbox_delete);
          end;

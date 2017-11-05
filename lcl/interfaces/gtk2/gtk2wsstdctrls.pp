@@ -25,7 +25,7 @@ uses
   glib2,  gdk2, gtk2,
   Classes, SysUtils, Math,
   // LCL
-  Controls, Graphics, StdCtrls, LMessages, LCLType, LCLProc, LazUtf8Classes,
+  Controls, Graphics, StdCtrls, LMessages, LCLType, LCLProc, LazUtf8Classes, LazUTF8,
   // Widgetset
   WSControls, WSProc, WSStdCtrls, Gtk2Int, Gtk2Def,
   Gtk2CellRenderer, Gtk2Globals, Gtk2Proc, InterfaceBase,
@@ -202,6 +202,7 @@ type
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); override;
 
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
@@ -241,6 +242,7 @@ type
     class procedure SetCharCase(const {%H-}ACustomEdit: TCustomEdit; {%H-}NewCase: TEditCharCase); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+    class procedure SetSelText(const ACustomEdit: TCustomEdit; const NewSelText: string); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
 
@@ -1106,6 +1108,7 @@ begin
   finally
     LockOnChange(PgtkObject(Widget), -1);
   end;
+  SetSelStart(TCustomEdit(AWinControl), 0);
   {$IFDEF VerboseTWinControlRealText}
   DebugLn(['TGtkWSCustomEdit.SetText SEND TEXTCHANGED message ',DbgSName(AWinControl),' New="',gtk_entry_get_text(PGtkEntry(AWinControl.Handle)),'"']);
   {$ENDIF}
@@ -1116,6 +1119,42 @@ begin
   {$IFDEF VerboseTWinControlRealText}
   DebugLn(['TGtkWSCustomEdit.SetText END ',DbgSName(AWinControl),' New="',gtk_entry_get_text(PGtkEntry(AWinControl.Handle)),'"']);
   {$ENDIF}
+end;
+
+class procedure TGtk2WSCustomEdit.SetSelText(const ACustomEdit: TCustomEdit;
+  const NewSelText: string);
+var
+  Widget: PGtkWidget;
+  Entry: PGtkEntry;
+  Text: string;
+  SelStart: Integer;
+  Mess : TLMessage;
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetSelText') then
+    Exit;
+  Widget:={%H-}PGtkWidget(ACustomEdit.Handle);
+  if GTK_IS_SPIN_BUTTON(Widget) then
+    Entry := @PGtkSpinButton(Widget)^.entry
+  else
+    Entry := PGtkEntry(Widget);
+  Text := gtk_entry_get_text(Entry);
+  SelStart := GetSelStart(ACustomEdit);
+  Text := UTF8Copy(Text, 1, SelStart) + NewSelText +
+    UTF8Copy(Text, SelStart + GetSelLength(ACustomEdit) + 1, MaxInt);
+  SelStart := SelStart + UTF8Length(NewSelText);
+  // some gtk2 versions fire the change event twice
+  // lock the event and send the message afterwards
+  // see bug http://bugs.freepascal.org/view.php?id=14615
+  LockOnChange(PgtkObject(Widget), +1);
+  try
+    gtk_entry_set_text(Entry, PChar(Text));
+  finally
+    LockOnChange(PgtkObject(Widget), -1);
+  end;
+  SetSelStart(ACustomEdit, SelStart);
+  FillByte(Mess{%H-},SizeOf(Mess),0);
+  Mess.Msg := CM_TEXTCHANGED;
+  DeliverMessage(ACustomEdit, Mess);
 end;
 
 class procedure TGtk2WSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit;
@@ -1182,15 +1221,21 @@ end;
 class function TGtk2WSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit
   ): TPoint;
 var
-  Widget: PGtkWidget;
+  Entry: PGtkEntry;
+  AInfo: PWidgetInfo;
 begin
   Result := Point(0,0);
   if not WSCheckHandleAllocated(ACustomEdit, 'GetCaretPos') then
     Exit;
-  Widget := {%H-}PGtkWidget(ACustomEdit.Handle);
-  Result.X := gtk_editable_get_position(PGtkEditable(Widget));
+  Entry := {%H-}PGtkEntry(ACustomEdit.Handle);
+  if gtk_widget_has_focus(PGtkWidget(Entry)) then
+    Result.X := Max(Entry^.current_pos, Entry^.selection_bound)
+  else begin
+    AInfo := GetWidgetInfo(PGtkWidget(Entry));
+    if AInfo <> nil then
+      Result.X := AInfo^.CursorPos + AInfo^.SelLength;
+  end;
 end;
-
 
 class function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
@@ -1255,22 +1300,29 @@ end;
 class procedure TGtk2WSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit;
   const NewPos: TPoint);
 var
+  NewStart: Integer;
   Entry: PGtkEntry;
   WidgetInfo: PWidgetInfo;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetCaretPos') then
     Exit;
+  SetSelLength(ACustomEdit, 0);
   Entry := {%H-}PGtkEntry(ACustomEdit.Handle);
-  if GetCaretPos(ACustomEdit).X = NewPos.X then exit;
+  // make gtk2 consistent with others. issue #11802
+  // if GetCaretPos(ACustomEdit).X = NewPos.X then exit;
 
+  if Entry^.text_max_length > 0 then
+    NewStart := Min(NewPos.X, Entry^.text_max_length)
+  else
+    NewStart := Min(NewPos.X, Entry^.text_length);
+  WidgetInfo := GetWidgetInfo(Entry);
+  WidgetInfo^.CursorPos := NewStart;
   if LockOnChange(PgtkObject(Entry),0) > 0 then
   begin
-    WidgetInfo := GetWidgetInfo(Entry);
-    WidgetInfo^.CursorPos := NewPos.X;
     // postpone
     g_idle_add(@gtk2WSDelayedSelStart, WidgetInfo);
   end else
-    gtk_editable_set_position(PGtkEditable(Entry), NewPos.X);
+    gtk_editable_set_position(PGtkEditable(Entry), NewStart);
 end;
 
 class procedure TGtk2WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit;
@@ -1327,6 +1379,7 @@ var
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
     Exit;
+  SetSelLength(ACustomEdit, 0);
   Entry := {%H-}PGtkEntry(ACustomEdit.Handle);
   // make gtk2 consistent with others. issue #11802
   // if GetSelStart(ACustomEdit) = NewStart then exit;
