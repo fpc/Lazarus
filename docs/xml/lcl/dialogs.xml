@@ -757,10 +757,7 @@ An entry can contain multiple masks separated by semicolon, e.g. "Pascal units|*
       <element name="TOpenOption">
         <short>
           <var>TOpenOption</var> - a list of possible options which can be used in OpenDialog</short>
-        <descr>
-          <p>
-            <var>TOpenOption</var> - a list of possible options which can be used in OpenDialog</p>
-          <pre>ofReadOnly,
+        <descr><p><var>TOpenOption</var> - a list of possible options which can be used in OpenDialog</p><pre>ofReadOnly,
     ofOverwritePrompt, // if selected file exists shows a message, that file
                        // will be overwritten
     ofHideReadOnly,    // hide read only file
@@ -778,7 +775,8 @@ An entry can contain multiple masks separated by semicolon, e.g. "Pascal units|*
     ofNoNetworkButton,
     ofNoLongNames,
     ofOldStyleDialog,
-    ofNoDereferenceLinks,// do not expand filenames
+    ofNoDereferenceLinks,// do not resolve links while dialog is shown (only on Windows, see OFN_NODEREFERENCELINKS)
+    ofNoResolveLinks,  // do not resolve links after Execute
     ofEnableIncludeNotify,
     ofEnableSizing,    // dialog can be resized, e.g. via the mouse
     ofDontAddToRecent, // do not add the path to the history list

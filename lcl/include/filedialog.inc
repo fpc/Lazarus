@@ -243,7 +243,7 @@ begin
   RegisterOpenDialog;
 end;
 
-procedure TOpenDialog.DereferenceLinks;
+procedure TOpenDialog.ResolveLinks;
 var i: integer;
 begin
   if Filename<>'' then
@@ -254,6 +254,11 @@ begin
         Files[i]:=GetPhysicalFilename(Files[i],pfeOriginal);
     end;
   end;
+end;
+
+procedure TOpenDialog.DereferenceLinks;
+begin
+  ResolveLinks;
 end;
 
 
@@ -402,8 +407,12 @@ end;
 function TOpenDialog.DoExecute: boolean;
 begin
   Result:=inherited DoExecute;
-  if (not (ofNoDereferenceLinks in Options)) then begin
-    DereferenceLinks;
+  if (not (ofNoResolveLinks in Options)) then begin
+    if TMethod(@Self.DereferenceLinks).Code <> Pointer(@TOpenDialog.DereferenceLinks)
+    then begin
+      DereferenceLinks{%H-}; // call for compatibility
+    end else
+      ResolveLinks;
   end;
   if (not (ofNoChangeDir in Options)) then begin
     if (ExtractFilePath(Filename)<>'') then

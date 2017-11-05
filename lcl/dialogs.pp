@@ -177,7 +177,8 @@ type
     ofNoNetworkButton,
     ofNoLongNames,
     ofOldStyleDialog,
-    ofNoDereferenceLinks,// do not expand filenames
+    ofNoDereferenceLinks,// do not resolve links while dialog is shown (only on Windows, see OFN_NODEREFERENCELINKS)
+    ofNoResolveLinks,  // do not resolve links after Execute
     ofEnableIncludeNotify,
     ofEnableSizing,    // dialog can be resized, e.g. via the mouse
     ofDontAddToRecent, // do not add the path to the history list
@@ -200,7 +201,8 @@ type
     FLastSelectionChangeFilename: string;
   protected
     class procedure WSRegisterClass; override;
-    procedure DereferenceLinks; virtual;
+    procedure ResolveLinks; virtual;
+    procedure DereferenceLinks; virtual; deprecated 'override ResolveLinks instead' {Laz 1.9};
     function CheckFile(var AFilename: string): boolean; virtual;
     function CheckFileMustExist(const AFileName: string): boolean; virtual;
     function CheckAllFiles: boolean; virtual;
