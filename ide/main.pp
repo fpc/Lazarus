@@ -2927,8 +2927,10 @@ begin
     OpenDialog.Title:=lisOpenFile;
 
     OpenDialog.Options:=OpenDialog.Options+[
-      ofAllowMultiSelect,
-      ofNoDereferenceLinks // Note: do not always resolve symlinked files, some links are resolved later
+      ofAllowMultiSelect
+      {$IFDEF Unix}
+      ,ofNoDereferenceLinks // Note: do not always resolve symlinked files, some links are resolved later
+      {$ENDIF}
       ];
 
     // set InitialDir to
