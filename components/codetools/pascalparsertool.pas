@@ -233,7 +233,8 @@ type
     function ReadTilGetterOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
     procedure ReadClassInheritance(CreateChildNodes: boolean);
-    procedure ReadSpecialize(CreateChildNodes: boolean);
+    procedure ReadSpecialize(CreateChildNodes: boolean; Extract: boolean = false;
+      Copying: boolean = false; const Attr: TProcHeadAttributes = []);
     function WordIsPropertyEnd: boolean;
   public
     CurSection: TCodeTreeNodeDesc;
@@ -1567,12 +1568,21 @@ function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
 //   LongInt location 'd0'  (only m68k, powerpc)
 //   univ longint  (only macpas)
 var
-  copying: boolean;
+  Copying: boolean;
   IsArrayType: Boolean;
   IsFileType: Boolean;
   NeedIdentifier: boolean;
+
+  procedure Next; inline;
+  begin
+    if not Extract then
+      ReadNextAtom
+    else
+      ExtractNextAtom(Copying,Attr);
+  end;
+
 begin
-  copying:=[phpWithoutParamList,phpWithoutParamTypes]*Attr=[];
+  Copying:=[phpWithoutParamList,phpWithoutParamTypes]*Attr=[];
   Result:=false;
   if (Scanner.CompilerMode=cmMacPas) and UpAtomIs('UNIV') then
     ReadNextAtom;
@@ -1585,20 +1595,20 @@ begin
         CreateChildNode;
         CurNode.Desc:=ctnOpenArrayType;
       end;
-      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+      Next;
       if not UpAtomIs('OF') then begin
         if ExceptionOnError then
           SaveRaiseStringExpectedButAtomFound(20170421195440,'"of"')
         else
           exit;
       end;
-      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+      Next;
       if UpAtomIs('CONST') then begin
         if (phpCreateNodes in Attr) then begin
           CreateChildNode;
           CurNode.Desc:=ctnOfConstType;
         end;
-        if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+        Next;
         if (phpCreateNodes in Attr) then begin
           CurNode.EndPos:=CurPos.EndPos;
           EndChildNode;
@@ -1616,14 +1626,14 @@ begin
         CreateChildNode;
         CurNode.Desc:=ctnFileType;
       end;
-      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+      Next;
       if UpAtomIs('OF') then begin
-        if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+        Next;
       end else begin
         NeedIdentifier:=false;
       end;
     end else if UpAtomIs('SPECIALIZE') then begin
-      ReadSpecialize(phpCreateNodes in Attr);
+      ReadSpecialize(phpCreateNodes in Attr,Extract,Copying,Attr);
       NeedIdentifier:=false;
     end;
     if NeedIdentifier then begin
@@ -1637,9 +1647,9 @@ begin
         CurNode.Desc:=ctnIdentifier;
         CurNode.EndPos:=CurPos.EndPos;
       end;
-      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+      Next;
       while CurPos.Flag=cafPoint do begin
-        if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+        Next;
         if not AtomIsIdentifier then begin
           if ExceptionOnError then
             AtomIsIdentifierSaveE;
@@ -1647,7 +1657,7 @@ begin
         end;
         if (phpCreateNodes in Attr) then
           CurNode.EndPos:=CurPos.EndPos;
-        if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
+        Next;
       end;
       if (phpCreateNodes in Attr) then begin
         EndChildNode;
@@ -1676,10 +1686,10 @@ begin
      or Scanner.Values.IsDefined('CPUPOWERPC64') )
   then begin
     // for example Domain: LongInt location 'd0'
-    ReadNextAtom;
+    Next;
     if not AtomIsStringConstant then
       SaveRaiseStringExpectedButAtomFound(20170421195444,ctsStringConstant);
-    ReadNextAtom;
+    Next;
   end;
   Result:=true;
 end;
@@ -5765,34 +5775,44 @@ begin
   end;
 end;
 
-procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean);
+procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean;
+  Extract: boolean; Copying: boolean; const Attr: TProcHeadAttributes);
 // specialize template
 // after parsing the cursor is on the atom behind the >
 // examples:
 //   type TListOfInteger = specialize TGenericList<integer,string>;
 //   type TListOfChar = specialize Classes.TGenericList<integer,objpas.integer>;
 //   type l = class(specialize TFPGObjectList<TControl>)
+
+  procedure Next; inline;
+  begin
+    if not Extract then
+      ReadNextAtom
+    else
+      ExtractNextAtom(Copying,Attr);
+  end;
+
 begin
   if CreateChildNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnSpecialize;
   end;
   // read identifier (the name of the generic)
-  ReadNextAtom;
+  Next;
   AtomIsIdentifierSaveE;
   if CreateChildNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnSpecializeType;
     CurNode.EndPos:=CurPos.EndPos;
   end;
-  ReadNextAtom;
+  Next;
   while Curpos.Flag=cafPoint do begin
     // first identifier was unitname, now read the type
-    ReadNextAtom;
+    Next;
     AtomIsIdentifierSaveE;
     if CreateChildNodes then
       CurNode.EndPos:=CurPos.EndPos;
-    ReadNextAtom;
+    Next;
   end;
   if CreateChildNodes then begin
     EndChildNode; // end ctnSpecializeType
@@ -5807,21 +5827,21 @@ begin
   // read list of types
   repeat
     // read identifier (a parameter of the generic type)
-    ReadNextAtom;
+    Next;
     AtomIsIdentifierSaveE;
     if CreateChildNodes then begin
       CreateChildNode;
       CurNode.Desc:=ctnSpecializeParam;
       CurNode.EndPos:=CurPos.EndPos;
     end;
-    ReadNextAtom;
+    Next;
     while Curpos.Flag=cafPoint do begin
       // first identifier was unitname, now read the type
-      ReadNextAtom;
+      Next;
       AtomIsIdentifierSaveE;
       if CreateChildNodes then
         CurNode.EndPos:=CurPos.EndPos;
-      ReadNextAtom;
+      Next;
     end;
     if CreateChildNodes then
       EndChildNode; // close ctnSpecializeParam
@@ -5840,7 +5860,7 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode; // end ctnSpecialize
   end;
-  ReadNextAtom;
+  Next;
 end;
 
 function TPascalParserTool.WordIsPropertyEnd: boolean;
