@@ -1,25 +1,27 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="lazplotfunction"/>
-    <AddToProjectUsesSection Value="False"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
     </CompilerOptions>
-    <Description Value="2 components to plot a 2-D function y=f(x) in a grid.
-The function result can be specified in an event 
-or in an expression
+    <Description Value="Components to plot a function y=f(x).
+The function values can be specified in an event 
+or in an expression.
 "/>
     <License Value="Modified LGPL
 "/>
-    <Version Release="1"/>
+    <Version Release="2"/>
     <Files Count="3">
       <Item1>
         <Filename Value="regplotpanel.pp"/>
@@ -35,7 +37,6 @@ or in an expression
         <UnitName Value="plotpanel"/>
       </Item3>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="LCL"/>
@@ -46,11 +47,14 @@ or in an expression
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>
