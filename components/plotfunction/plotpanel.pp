@@ -1168,6 +1168,8 @@ procedure TCanvasPlotter.PlotFunction(ACanvas: TCanvas);
 Var
   POX,PX,PXW,PY,POY,PEY,PYH,PLX,PLY : Integer; // Pixel units
   X,Y,XI,YI,YO : TPlotFloat;         // Plot units
+  R: TRect;
+  clp: Boolean;
 
 begin
   // X-origin in pixels.
@@ -1196,35 +1198,44 @@ begin
   ACanvas.Pen.Width := FPlotLineWidth;
   PLX:=POX;
   PLY:=POY;
-  For PX:=0 to PXW do
-    begin
-    try
-      Y:=CalcFunction(X);
-      PY:=POY-Trunc((Y-YO)*YI);
-    except
-      // Catch math calculation exceptions.
-      On E : EMathError do
-        begin
-        PY:=PEY+1;
-        end;
-      On E : EIntError do
-        begin
-        PY:=PEY+1;
-        end;
-      On E : Exception do
-        Raise;
-    end;
-    If (PX>0) and (PY>=PEY) and (PY<=POY) then
+  R := ACanvas.ClipRect;
+  clp := ACanvas.Clipping;
+  ACanvas.ClipRect := Rect(POX, FYAxis.TopMargin, PXW + POX,  POY);
+  ACanvas.Clipping := true;
+  try
+    For PX:=0 to PXW do
       begin
-  //    Writeln(Format('(%f,%f) -> (%d,%d)',[X,Y,PX+Pox,PY]));
-//      ACanvas.Pixels[PX+Pox,PY]:=PlotColor;
-      ACanvas.Line(Pox+PLX,PLY,POX+PX,PY);
+      try
+        Y:=CalcFunction(X);
+        PY:=POY-Trunc((Y-YO)*YI);
+      except
+        // Catch math calculation exceptions.
+        On E : EMathError do
+          begin
+          PY:=PEY+1;
+          end;
+        On E : EIntError do
+          begin
+          PY:=PEY+1;
+          end;
+        On E : Exception do
+          Raise;
       end;
-    PLX:=PX;
-    PLY:=PY;
-    X:=X+XI;
+      If (PX>0) and (PY>=PEY) and (PY<=POY) then
+        begin
+    //    Writeln(Format('(%f,%f) -> (%d,%d)',[X,Y,PX+Pox,PY]));
+  //      ACanvas.Pixels[PX+Pox,PY]:=PlotColor;
+        ACanvas.Line(Pox+PLX,PLY,POX+PX,PY);
+        end;
+      PLX:=PX;
+      PLY:=PY;
+      X:=X+XI;
 
-    end;
+      end;
+  finally
+    ACanvas.ClipRect := R;
+    ACanvas.Clipping := clp;
+  end;
 end;
 
 function TCanvasPlotter.GetHDimension: Integer;
