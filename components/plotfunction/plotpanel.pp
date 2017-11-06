@@ -923,8 +923,8 @@ begin
       CW:=ACanvas.TextWidth(L);
       Case AVAxis.Caption.Alignment of
         taLeftJustify  : CY:=OY;
-        taRightJustify : CY:=EY-CW;
-        taCenter       : CY:=(EY+OY-CW) div 2;
+        taRightJustify : CY:=EY+CW;
+        taCenter       : CY:=(EY+OY+CW) div 2;
       end;
       TextOut(ACanvas.Handle, 4, CY, PChar(L), Length(L));
       if OldFont <> 0 then
