@@ -1559,7 +1559,13 @@ function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
   const Attr: TProcHeadAttributes): boolean;
 // after reading, CurPos is the atom after the type
 // Examples:
-//   Domain: LongInt location 'd0'  (only m68k, powerpc)
+//   integer
+//   array of integer
+//   array of const
+//   file
+//   file of integer
+//   LongInt location 'd0'  (only m68k, powerpc)
+//   univ longint  (only macpas)
 var
   copying: boolean;
   IsArrayType: Boolean;
@@ -1616,6 +1622,9 @@ begin
       end else begin
         NeedIdentifier:=false;
       end;
+    end else if UpAtomIs('SPECIALIZE') then begin
+      ReadSpecialize(phpCreateNodes in Attr);
+      NeedIdentifier:=false;
     end;
     if NeedIdentifier then begin
       if not AtomIsIdentifier then begin
