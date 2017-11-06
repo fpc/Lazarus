@@ -91,6 +91,7 @@ type
     procedure TestFindDeclaration_ObjCCategory;
     procedure TestFindDeclaration_Generics;
     procedure TestFindDeclaration_GenericFunction;
+    procedure TestFindDeclaration_Generics_Enumerator;
     procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_CBlocks;
@@ -557,13 +558,41 @@ procedure TTestFindDeclaration.TestFindDeclaration_GenericFunction;
 begin
   StartProgram;
   Add([
-    'generic function RandomFrom<T>(const AValues:array of T):T;',
-    'begin',
-    '  Result:=Avalue[1];',
-    'end;',
-    'begin',
-    '  i:=RandomFrom<longint>([1,2,3]);',
-    'end.',
+  'generic function RandomFrom<T>(const AValues:array of T):T;',
+  'begin',
+  '  Result:=Avalue[1];',
+  'end;',
+  'begin',
+  '  i:=RandomFrom<longint>([1,2,3]);',
+  'end.',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Generics_Enumerator;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  integer = longint;',
+  '  TOwnedCollection = class',
+  '  end;',
+  '  generic TTMSFNCOwnedCollection<T: class> = class(TOwnedCollection)',
+  '  public type',
+  '    TEnumerator = class',
+  '    private',
+  '      FIndex: Integer;',
+  '      FCol: specialize TTMSFNCOwnedCollection<T>;',
+  '    public',
+  '      constructor Create(ACol: specialize TTMSFNCOwnedCollection<T>);',
+  '      function GetCurrent: T;',
+  '      function MoveNext: Boolean;',
+  '      property Current: T read GetCurrent;',
+  '    end;',
+  '  public',
+  '    function GetEnumerator: TEnumerator;',
+  '    function GetItem(AIndex: Integer): T;',
+  '  end;',
   '']);
   ParseModule;
 end;
