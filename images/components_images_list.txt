@@ -27,10 +27,14 @@ components/tbuttonpanel.png
 components/tbuttonpanel_150.png
 components/tbuttonpanel_200.png
 components/tcalcedit.png
+components/tcalcedit_150.png
+components/tcalcedit_200.png
 components/tcalculatordialog.png
 components/tcalculatordialog_150.png
 components/tcalculatordialog_200.png
 components/tcalendar.png
+components/tcalendar_150.png
+components/tcalendar_200.png
 components/tcalendardialog.png
 components/tcalendardialog_150.png
 components/tcalendardialog_200.png
@@ -38,6 +42,8 @@ components/tcheckbox.png
 components/tcheckbox_150.png
 components/tcheckbox_200.png
 components/tcheckcombobox.png
+components/tcheckcombobox_150.png
+components/tcheckcombobox_200.png
 components/tcheckgroup.png
 components/tcheckgroup_150.png
 components/tcheckgroup_200.png
@@ -60,6 +66,8 @@ components/tcombobox.png
 components/tcombobox_150.png
 components/tcombobox_200.png
 components/tcomboboxex.png
+components/tcomboboxex_150.png
+components/tcomboboxex_200.png
 components/tcontrolbar.png
 components/tcontrolbar_150.png
 components/tcontrolbar_200.png
@@ -70,6 +78,8 @@ components/tdatasource.png
 components/tdatasource_150.png
 components/tdatasource_200.png
 components/tdateedit.png
+components/tdateedit_150.png
+components/tdateedit_200.png
 components/tdbcalendar.png
 components/tdbcalendar_150.png
 components/tdbcalendar_200.png
@@ -116,6 +126,8 @@ components/tdbtext.png
 components/tdbtext_150.png
 components/tdbtext_200.png
 components/tdirectoryedit.png
+components/tdirectoryedit_150.png
+components/tdirectoryedit_200.png
 components/tdrawgrid.png
 components/tdrawgrid_150.png
 components/tdrawgrid_200.png
@@ -129,8 +141,14 @@ components/teventlog.png
 components/teventlog_150.png
 components/teventlog_200.png
 components/tfilelistbox.png
+components/tfilelistbox_150.png
+components/tfilelistbox_200.png
 components/tfilenameedit.png
+components/tfilenameedit_150.png
+components/tfilenameedit_200.png
 components/tfiltercombobox.png
+components/tfiltercombobox_150.png
+components/tfiltercombobox_200.png
 components/tfinddialog.png
 components/tfinddialog_150.png
 components/tfinddialog_200.png
@@ -159,6 +177,8 @@ components/thtmlhelpdatabase.png
 components/thtmlhelpdatabase_150.png
 components/thtmlhelpdatabase_200.png
 components/tidedialoglayoutstorage.png
+components/tidedialoglayoutstorage_150.png
+components/tidedialoglayoutstorage_200.png
 components/tidletimer.png
 components/tidletimer_150.png
 components/tidletimer_200.png
@@ -261,6 +281,7 @@ components/tscrollbox_150.png
 components/tscrollbox_200.png
 components/tselectdirectorydialog.png
 components/tselectdirectorydialog_150.png
+components/tselectdirectorydialog_200.png
 components/tservicemanager.png
 components/tservicemanager_150.png
 components/tservicemanager_200.png
@@ -268,7 +289,11 @@ components/tshape.png
 components/tshape_150.png
 components/tshape_200.png
 components/tshelllistview.png
+components/tshelllistview_150.png
+components/tshelllistview_200.png
 components/tshelltreeview.png
+components/tshelltreeview_150.png
+components/tshelltreeview_200.png
 components/tsimpleipcclient.png
 components/tsimpleipcclient_150.png
 components/tsimpleipcclient_200.png
@@ -300,6 +325,8 @@ components/ttaskdialog.png
 components/ttaskdialog_150.png
 components/ttaskdialog_200.png
 components/ttimeedit.png
+components/ttimeedit_150.png
+components/ttimeedit_200.png
 components/ttimer.png
 components/ttimer_150.png
 components/ttimer_200.png
