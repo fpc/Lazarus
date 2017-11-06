@@ -3934,26 +3934,62 @@ components/sqldb/design/registersqldb.bat svneol=native#text/x-msdos-program
 components/sqldb/design/registersqldb.sh svneol=native#text/plain
 components/sqldb/design/registersqldb.txt svneol=native#text/plain
 components/sqldb/design/tfbadmin.png -text svneol=unset#image/png
+components/sqldb/design/tfbadmin_150.png -text svneol=unset#image/png
+components/sqldb/design/tfbadmin_200.png -text svneol=unset#image/png
 components/sqldb/design/tfbeventmonitor.png -text
+components/sqldb/design/tfbeventmonitor_150.png -text svneol=unset#image/png
+components/sqldb/design/tfbeventmonitor_200.png -text svneol=unset#image/png
 components/sqldb/design/tibconnection.png -text svneol=unset#image/png
+components/sqldb/design/tibconnection_150.png -text svneol=unset#image/png
+components/sqldb/design/tibconnection_200.png -text svneol=unset#image/png
 components/sqldb/design/tmssqlconnection.png -text svneol=unset#image/png
+components/sqldb/design/tmssqlconnection_150.png -text svneol=unset#image/png
+components/sqldb/design/tmssqlconnection_200.png -text svneol=unset#image/png
 components/sqldb/design/tmysql40connection.png -text svneol=unset#image/png
+components/sqldb/design/tmysql40connection_150.png -text svneol=unset#image/png
+components/sqldb/design/tmysql40connection_200.png -text svneol=unset#image/png
 components/sqldb/design/tmysql41connection.png -text svneol=unset#image/png
+components/sqldb/design/tmysql41connection_150.png -text svneol=unset#image/png
+components/sqldb/design/tmysql41connection_200.png -text svneol=unset#image/png
 components/sqldb/design/tmysql50connection.png -text svneol=unset#image/png
+components/sqldb/design/tmysql50connection_150.png -text svneol=unset#image/png
+components/sqldb/design/tmysql50connection_200.png -text svneol=unset#image/png
 components/sqldb/design/tmysql51connection.png -text svneol=unset#image/png
+components/sqldb/design/tmysql51connection_150.png -text svneol=unset#image/png
+components/sqldb/design/tmysql51connection_200.png -text svneol=unset#image/png
 components/sqldb/design/tmysql55connection.png -text svneol=unset#image/png
+components/sqldb/design/tmysql55connection_150.png -text svneol=unset#image/png
+components/sqldb/design/tmysql55connection_200.png -text svneol=unset#image/png
 components/sqldb/design/tmysql56connection.png -text svneol=unset#image/png
+components/sqldb/design/tmysql56connection_150.png -text svneol=unset#image/png
+components/sqldb/design/tmysql56connection_200.png -text svneol=unset#image/png
 components/sqldb/design/tmysql57connection.png -text svneol=unset#image/png
+components/sqldb/design/tmysql57connection_150.png -text svneol=unset#image/png
+components/sqldb/design/tmysql57connection_200.png -text svneol=unset#image/png
 components/sqldb/design/tmysqlconnection.png -text svneol=unset#image/png
+components/sqldb/design/tmysqlconnection_150.png -text svneol=unset#image/png
+components/sqldb/design/tmysqlconnection_200.png -text svneol=unset#image/png
 components/sqldb/design/todbcconnection.png -text svneol=unset#image/png
+components/sqldb/design/todbcconnection_150.png -text svneol=unset#image/png
+components/sqldb/design/todbcconnection_200.png -text svneol=unset#image/png
 components/sqldb/design/toracleconnection.png -text svneol=unset#image/png
+components/sqldb/design/toracleconnection_150.png -text svneol=unset#image/png
+components/sqldb/design/toracleconnection_200.png -text svneol=unset#image/png
 components/sqldb/design/tpqconnection.png -text svneol=unset#image/png
+components/sqldb/design/tpqconnection_150.png -text svneol=unset#image/png
+components/sqldb/design/tpqconnection_200.png -text svneol=unset#image/png
 components/sqldb/design/tpqteventmonitor.png -text
+components/sqldb/design/tpqteventmonitor_150.png -text svneol=unset#image/png
+components/sqldb/design/tpqteventmonitor_200.png -text svneol=unset#image/png
 components/sqldb/design/tsqlconnector.png -text svneol=unset#image/png
 components/sqldb/design/tsqlconnector_150.png -text
 components/sqldb/design/tsqlconnector_200.png -text
 components/sqldb/design/tsqldblibraryloader.png -text svneol=unset#image/png
+components/sqldb/design/tsqldblibraryloader_150.png -text svneol=unset#image/png
+components/sqldb/design/tsqldblibraryloader_200.png -text svneol=unset#image/png
 components/sqldb/design/tsqlite3connection.png -text svneol=unset#image/png
+components/sqldb/design/tsqlite3connection_150.png -text svneol=unset#image/png
+components/sqldb/design/tsqlite3connection_200.png -text svneol=unset#image/png
 components/sqldb/design/tsqlquery.png -text svneol=unset#image/png
 components/sqldb/design/tsqlquery_150.png -text
 components/sqldb/design/tsqlquery_200.png -text
@@ -3964,6 +4000,8 @@ components/sqldb/design/tsqltransaction.png -text svneol=unset#image/png
 components/sqldb/design/tsqltransaction_150.png -text
 components/sqldb/design/tsqltransaction_200.png -text
 components/sqldb/design/tsybaseconnection.png -text svneol=unset#image/png
+components/sqldb/design/tsybaseconnection_150.png -text svneol=unset#image/png
+components/sqldb/design/tsybaseconnection_200.png -text svneol=unset#image/png
 components/sqldb/fpmake.pp svneol=native#text/plain
 components/sqldb/languages/registersqldb.cs.po svneol=native#text/plain
 components/sqldb/languages/registersqldb.de.po svneol=native#text/plain
