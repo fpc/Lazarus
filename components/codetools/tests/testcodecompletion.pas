@@ -20,6 +20,7 @@ type
   published
     procedure TestIntfProcUpdateArgName;
     procedure TestCompleteMethodBody_ParamSpecialize;
+    procedure TestCompleteMethodBody_ParamDelphiSpecialize;
   end;
 
 implementation
@@ -103,6 +104,38 @@ begin
     'implementation',
     '',
     'procedure TBird.DoIt(i: specialize TGenList<longint>);',
+    'begin',
+    'end;',
+    '',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodBody_ParamDelphiSpecialize;
+begin
+  Test('TestCompleteMethodBody_ParamSpecialize',
+    ['unit test1;',
+    '{$mode delphi}',
+    'interface',
+    'type',
+    '  TBird = class',
+    '    procedure DoIt(i: TGenList<longint>);',
+    '  end;',
+    'implementation',
+    'end.'],
+    6,1,
+    ['unit test1;',
+    '{$mode delphi}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird = class',
+    '    procedure DoIt(i: TGenList<longint>);',
+    '  end;',
+    'implementation',
+    '',
+    'procedure TBird.DoIt(i: TGenList<longint>);',
     'begin',
     'end;',
     '',

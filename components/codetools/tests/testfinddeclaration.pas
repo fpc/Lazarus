@@ -558,6 +558,7 @@ procedure TTestFindDeclaration.TestFindDeclaration_GenericFunction;
 begin
   StartProgram;
   Add([
+  '{$mode objfpc}',
   'generic function RandomFrom<T>(const AValues:array of T):T;',
   'begin',
   '  Result:=Avalue[1];',
