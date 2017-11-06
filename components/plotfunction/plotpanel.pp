@@ -565,6 +565,8 @@ end;
 
 destructor TPlotAxis.Destroy;
 begin
+  FreeAndNil(FTickFont);
+  FreeAndNil(FCaption);
   inherited Destroy;
 end;
 
