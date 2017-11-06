@@ -19,6 +19,7 @@ type
       Expected: array of string);
   published
     procedure TestIntfProcUpdateArgName;
+    procedure TestCompleteMethodBody_ParamSpecialize;
   end;
 
 implementation
@@ -41,7 +42,13 @@ begin
   if not CodeToolBoss.CompleteCode(Code,Col,Line,Line,NewCode,NewX,NewY,NewTopLine,
     BlockTopLine,BlockBottomLine,false) then
   begin
-    WriteSource(Code.Filename,Line,Col);
+    NewY:=Line;
+    NewX:=Col;
+    if CodeToolBoss.ErrorLine>0 then begin
+      NewY:=CodeToolBoss.ErrorLine;
+      NewX:=CodeToolBoss.ErrorColumn;
+    end;
+    WriteSource(Code.Filename,NewY,NewX);
     Fail(Title+'call CompleteCode failed: '+CodeToolBoss.ErrorDbgMsg);
   end;
   s:='';
@@ -68,6 +75,38 @@ begin
     ,'procedure DoIt(a: longint);'
     ,'begin end;'
     ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodBody_ParamSpecialize;
+begin
+  Test('TestCompleteMethodBody_ParamSpecialize',
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '  TBird = class',
+    '    procedure DoIt(i: specialize TGenList<longint>);',
+    '  end;',
+    'implementation',
+    'end.'],
+    6,1,
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird = class',
+    '    procedure DoIt(i: specialize TGenList<longint>);',
+    '  end;',
+    'implementation',
+    '',
+    'procedure TBird.DoIt(i: specialize TGenList<longint>);',
+    'begin',
+    'end;',
+    '',
+    'end.']);
 end;
 
 initialization
