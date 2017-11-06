@@ -18,16 +18,22 @@ Active : If set to false, only the grid is drawn.
 
 PlotColor : Color of the plotted line
 
+BackgroundColor : Background color of the area spanned by the axes
+
+Color : Background color of the entire control.
+
 Caption : Caption of the graph
 
 
 XAxis, YAxis: These control the appearance of the X and Y axis.
   They have both the following properties:
     Color     : Axis color
+    Linewidth : Width of the axis line
     TickColor : Color of the tick marks on the axis.
     Ticks     : Number of tick marks or distance between tick marks on the
                 axis.
     TickSize  : Length of the tick mark.
+    TickLinewidth : Linewidth for the tick marks
     TickMode  : Ticks is number of ticks or distance (in pixels) between  ticks.
     TickFont  : Font for the tick labels
     Caption   : Caption of the axis.
@@ -42,4 +48,5 @@ XAxis, YAxis: These control the appearance of the X and Y axis.
                    This should be a valid float formatting specifier (used in FormatFloat);
     GridInterval : The number of ticks at which a grid line must be drawn.
     GridColor : Color of the grid line.
+    GridLinewidth : Width for the grid line
 

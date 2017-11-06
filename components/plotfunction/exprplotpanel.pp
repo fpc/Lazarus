@@ -72,12 +72,16 @@ Type
   Published
     Property Expression : String Read GetExpression Write SetExpression;
     Property Identifiers : TFPExprIdentifierDefs Read GetIdentifiers Write SetIdentifiers;
-    Property Anchors;
+    Property Active;
     Property Align;
+    Property Anchors;
+    Property BackgroundColor;
+    Property BorderSpacing;
+    Property Color;
+    Property PlotColor;
+    property PlotLinewidth;
     Property XAxis;
     Property YAxis;
-    Property Active;
-    Property PlotColor;
   end;
 
 implementation

@@ -54,6 +54,7 @@ Const
   DefGridInterval     = 1;
   DefGridColor        = clSilver;
   DefPlotColor        = clRed;
+  DefLineWidth        = 1;
 
 Type
   TPlotFloat = Double;
@@ -88,6 +89,7 @@ Type
   private
     FDrawZero: Boolean;
     FGridColor: TColor;
+    FGridLinewidth: Integer;
     FGridInterval: Integer;
     FInterval: TPlotFloat;
     FCaption: TPlotCaption;
@@ -96,20 +98,27 @@ Type
     FOrigin: TPlotFloat;
     FPlotter : TCanvasPlotter;
     FColor: TColor;
+    FLinewidth: Integer;
     FTickColor: TColor;
     FTickFont: TFont;
     FTickMode: TTickMode;
     FTicks: Integer;
     FTickSize: integer;
+    FTickLinewidth: Integer;
     procedure SetAxisColor(const AValue: TColor);
+    procedure SetLinewidth(const AValue: Integer);
     procedure SetDrawZero(const AValue: Boolean);
     procedure SetInterval(const AValue: TPlotFloat);
     procedure SetCaption(const AValue: TPlotCaption);
+    procedure SetGridColor(const AValue: TColor);
+    procedure SetGridInterval(const AValue: Integer);
+    procedure SetGridLinewidth(const AValue: Integer);
     procedure SetLegendInterval(const AValue: Integer);
     procedure SetLegendFormat(const AValue: String);
     procedure SetOrigin(const AValue: TPlotFloat);
     procedure SetTickColor(const AValue: TColor);
     procedure SetTickFont(const AValue: TFont);
+    procedure SetTickLinewidth(const AValue: Integer);
     procedure SetTickMode(const AValue: TTickMode);
     procedure SetTicks(const AValue: Integer);
     procedure SetTickSize(const AValue: integer);
@@ -126,6 +135,8 @@ Type
     Constructor Create;virtual;
     Destructor Destroy; override;
   Published
+    // Linewidth of axis line
+    Property LineWidth: Integer read FLineWidth write SetLineWidth default DefLineWidth;
     // Graph color
     Property Color : TColor Read FColor Write SetAxisColor default defAxisColor;
     // Color of ticks on axis
@@ -134,6 +145,8 @@ Type
     Property Ticks : Integer Read FTicks Write SetTicks;
     // Length of ticks on axis
     Property TickSize : integer Read FTickSize Write SetTickSize;
+    // Linewidth of ticks on axis
+    Property TickLinewidth: Integer read FTickLinewidth write SetTickLinewidth default DefLinewidth;
     // Ticks is number of ticks or distance (in pixels) between ticks ?
     Property TickMode : TTickMode Read FTickMode Write SetTickMode;
     // Font for tick legend
@@ -151,9 +164,11 @@ Type
     // Format for legend (formatfloat);
     Property LegendFormat : String Read FLegendFormat write SetLegendFormat;
     // Interval (in ticks) of grid. 0 means no grid.
-    Property GridInterval : Integer Read FGridInterval Write FGridInterval default DefGridInterval;
+    Property GridInterval : Integer Read FGridInterval Write SetGridInterval default DefGridInterval;
     // Grid color.
-    Property GridColor    : TColor Read FGridColor Write FGridColor default DefGridColor;
+    Property GridColor : TColor Read FGridColor Write SetGridColor default DefGridColor;
+    // Grid linewidth
+    Property GridLinewidth: Integer Read FGridLinewidth Write SetGridLinewidth default DefLineWidth;
   end;
 
   { TPlotXAxis }
@@ -208,7 +223,9 @@ Type
     FBackGroundColor: TColor;
     FBoundsRect: TRect;
     FCaption: TPlotCaption;
+    FColor: TColor;
     FPlotColor: TColor;
+    FPlotLineWidth: Integer;
     FXaxis: TPlotXAxis;
     FYaxis: TPlotYAxis;
     FCanvas: TCanvas;
@@ -221,7 +238,9 @@ Type
     procedure SetBoundsRect(const AValue: TRect);
     procedure SetCanvas(const AValue: TCanvas);
     procedure SetCaption(const AValue: TPlotCaption);
+    procedure SetColor(const AValue: TColor);
     procedure SetPlotColor(const AValue: TColor);
+    procedure SetPlotLineWidth(const AValue: Integer);
     procedure SetXAxis(const AValue: TPlotXAxis);
     procedure SetYAxis(const AValue: TPlotYAxis);
   Protected
@@ -243,7 +262,9 @@ Type
     Property XAxis : TPlotXAxis Read FXaxis Write SetXAxis;
     Property YAxis : TPlotYAxis Read FYaxis Write SetYAxis;
     Property BackgroundColor : TColor Read FBackGroundColor Write SetBackGroundColor;
+    Property Color: TColor Read FColor write SetColor;
     Property PlotColor : TColor Read FPlotColor Write SetPlotColor;
+    Property PlotLinewidth: Integer read FPlotLineWidth Write SetPlotLineWidth;
     Property Active : Boolean Read FActive Write SetActive;
     Property Caption : TPlotCaption Read FCaption Write SetCaption;
   end;
@@ -277,13 +298,18 @@ Type
   private
     FPlotter: TCanvasPlotter;
     function GetActive: Boolean;
+    function GetBackgroundColor: TColor;
     function GetCaption: TPlotCaption;
+    function GetColor: TColor;
     function GetPlotColor: TColor;
+    function GetPlotLineWidth: Integer;
     function GetXaxis: TPlotXAxis;
     function GetYaxis: TPlotYAxis;
     procedure SetActive(const AValue: Boolean);
+    procedure SetBackgroundColor(const AValue: TColor);
     procedure SetCaption(const AValue: TPlotCaption);
     procedure SetPlotColor(const AValue: TColor);
+    procedure SetPlotLineWidth(const AValue: Integer);
     procedure SetXAxis(const AValue: TPlotXAxis);
     procedure SetYAxis(const AValue: TPlotYAxis);
   Protected
@@ -294,13 +320,15 @@ Type
   Public
     Constructor Create(AOwner : TComponent); override;
     Destructor Destroy; override;
-    Property Anchors;
     Property Align;
+    Property Active : Boolean Read GetActive Write SetActive;
+    Property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor default clDefault;
+    Property Caption : TPlotCaption Read GetCaption Write SetCaption;
+    Property Color: TColor read GetColor write SetColor default clDefault;
+    Property PlotColor : TColor Read GetPlotColor Write SetPlotColor;
+    Property PlotLineWidth: Integer read GetPlotLinewidth Write SetPlotLinewidth default DefLinewidth;
     Property XAxis : TPlotXAxis Read GetXaxis Write SetXAxis;
     Property YAxis : TPlotYAxis Read GetYaxis Write SetYAxis;
-    Property Active : Boolean Read GetActive Write SetActive;
-    Property PlotColor : TColor Read GetPlotColor Write SetPlotColor;
-    Property Caption : TPlotCaption Read GetCaption Write SetCaption;
   end;
 
   { TPlotFunctionPanel }
@@ -313,12 +341,16 @@ Type
     Function CreatePlotter : TCanvasPlotter; override;
   Published
     Property OnCalcPlot : TOnCalcPlotEvent Read GetOnCalcPlot Write SetOnCalcPlot;
-    Property Anchors;
     Property Align;
+    Property Anchors;
+    Property Active;
+    Property BackgroundColor;
+    Property BorderSpacing;
+    Property Color;
+    Property PlotColor;
+    property PlotLinewidth;
     Property XAxis;
     Property YAxis;
-    Property Active;
-    Property PlotColor;
   end;
 
   EPlotPanel = Class(Exception);
@@ -351,14 +383,29 @@ begin
   Result:=FPlotter.Active;
 end;
 
+function TCustomPlotFunctionPanel.GetBackgroundColor: TColor;
+begin
+  Result := FPlotter.BackgroundColor;
+end;
+
 function TCustomPlotFunctionPanel.GetCaption: TPlotCaption;
 begin
   Result:=FPlotter.Caption;
 end;
 
+function TCustomPlotFunctionPanel.GetColor: TColor;
+begin
+  Result := FPlotter.Color;
+end;
+
 function TCustomPlotFunctionPanel.GetPlotColor: TColor;
 begin
   Result:=FPlotter.PlotColor;
+end;
+
+function TCustomPlotFunctionPanel.GetPlotLinewidth: Integer;
+begin
+  Result := FPlotter.PlotLinewidth;
 end;
 
 function TCustomPlotFunctionPanel.GetXaxis: TPlotXAxis;
@@ -376,6 +423,11 @@ begin
   FPlotter.Active:=AValue;
 end;
 
+procedure TCustomPlotFunctionPanel.SetBackgroundColor(const AValue: TColor);
+begin
+  FPlotter.BackgroundColor := AValue;
+end;
+
 procedure TCustomPlotFunctionPanel.SetCaption(const AValue: TPlotCaption);
 begin
   FPlotter.Caption.Assign(AValue);
@@ -384,6 +436,11 @@ end;
 procedure TCustomPlotFunctionPanel.SetPlotColor(const AValue: TColor);
 begin
   FPlotter.PlotColor:=AValue;
+end;
+
+procedure TCustomPlotFunctionPanel.SetPlotLineWidth(const AValue: Integer);
+begin
+  FPlotter.PlotLinewidth := AValue;
 end;
 
 procedure TCustomPlotFunctionPanel.SetYAxis(const AValue: TPlotYAxis);
@@ -402,7 +459,7 @@ procedure TCustomPlotFunctionPanel.SetColor(Value: TColor);
 begin
   inherited SetColor(Value);
   If Assigned(FPlotter) then
-    FPLotter.BackgroundColor:=Value;
+    FPLotter.Color:=Value;
 end;
 
 
@@ -434,6 +491,12 @@ begin
   Changed;
 end;
 
+procedure TPlotAxis.SetLinewidth(const AValue: Integer);
+begin
+  if FLinewidth = AValue then exit;
+  FLinewidth := AValue;
+  Changed;
+end;
 
 procedure TPlotAxis.SetDrawZero(const AValue: Boolean);
 begin
@@ -455,6 +518,27 @@ procedure TPlotAxis.SetCaption(const AValue: TPlotCaption);
 begin
   if FCaption=AValue then exit;
   FCaption.Assign(AValue);
+  Changed;
+end;
+
+procedure TPlotAxis.SetGridColor(const AValue: TColor);
+begin
+  if FGridColor=AValue then exit;
+  FGridColor := AValue;
+  Changed;
+end;
+
+procedure TPlotAxis.SetGridInterval(const AValue: Integer);
+begin
+  if FGridInterval = AValue then exit;
+  FGridInterval := AValue;
+  Changed;
+end;
+
+procedure TPlotAxis.SetGridLinewidth(const AValue: Integer);
+begin
+  if FGridLinewidth = AValue then exit;
+  FGridLinewidth := AValue;
   Changed;
 end;
 
@@ -492,6 +576,13 @@ procedure TPlotAxis.SetTickFont(const AValue: TFont);
 begin
   if FTickFont=AValue then exit;
   FTickFont:=AValue;
+  Changed;
+end;
+
+procedure TPlotAxis.SetTickLinewidth(const AValue: Integer);
+begin
+  if FTickLinewidth = AValue then exit;
+  FTickLinewidth := AValue;
   Changed;
 end;
 
@@ -558,12 +649,15 @@ begin
   FCaption.FOnChange:=@DoCaptionChange;
   FCaption.Font.OnChange:= @DoCaptionChange;
   FColor:=DefAxisColor;
+  FLineWidth:= DefLineWidth;
   FTickFont:=TFont.Create;
   FTickFont.OnChange := @DoCaptionChange;
+  FTickLinewidth := DefLinewidth;
   FLegendInterval:=DefLegendInterval;
   FInterval:=DefInterval;
   FTickColor:=DefTickColor;
   FGridColor:=DefGridColor;
+  FGridLinewidth:=DefLineWidth;
   FGridInterval:=DefGridInterval;
 end;
 
@@ -696,10 +790,24 @@ begin
   Changed;
 end;
 
+procedure TCanvasPlotter.SetColor(const AValue: TColor);
+begin
+  if FColor = AValue then exit;
+  FColor := AValue;
+  Changed;
+end;
+
 procedure TCanvasPlotter.SetPlotColor(const AValue: TColor);
 begin
   If (FPlotColor=AValue) then Exit;
   FPlotColor:=AValue;
+  Changed;
+end;
+
+procedure TCanvasPlotter.SetPlotLineWidth(const AValue: Integer);
+begin
+  if (FPlotLinewidth=AValue) then exit;
+  FPlotLineWidth := AValue;
   Changed;
 end;
 
@@ -737,7 +845,10 @@ begin
   FYAxis:=TPlotYAxis.Create;
   FYAxis.FPlotter:=Self;
   FPlotColor:=DefPlotColor;
+  FPlotLinewidth:=DefLinewidth;
   FCaption:=TPlotCaption.Create;
+  FBackgroundColor := clDefault;
+  FColor := clDefault;
 end;
 
 destructor TCanvasPlotter.Destroy;
@@ -782,11 +893,20 @@ end;
 procedure TCanvasPlotter.DrawBackground(ACanvas: TCanvas);
 
 begin
-//  self.ClientRect
-  ACanvas.Brush.Color:=BackgroundColor;
+  // Color paints the entire diagram background
+  ACanvas.Brush.Color:=Color;
   ACanvas.Brush.Style:=bsSolid;
   ACanvas.FillRect(BoundsRect);
-//  ACanvas.FillRect(0,0,ACanvas.Width,ACanvas.Height);
+
+  // Background color paints the background spanned by the axes
+  ACanvas.Brush.Color := BackgroundColor;
+  ACanvas.FillRect(
+    FXAxis.LeftMargin,
+    FYAxis.TopMargin,
+    BoundsRect.Width-FXAxis.RightMargin,
+    BoundsRect.Height-FYAxis.BottomMargin
+  );
+
   DrawHAxis(ACanvas,FXAxis,FYAxis);
   DrawVAxis(ACanvas,FYAxis,FXAxis);
 end;
@@ -808,7 +928,9 @@ begin
   EY:=FBoundsRect.Top+AVAxis.Margin2;
 //  Writeln(Format('(%d,%d) -> (%d,%d) (%d,%d) (%d,%d)',[width,height,ox,oy,ox,ey,ex,oy]));
   // X axis
+  ACanvas.Brush.Style := bsClear;
   ACanvas.Pen.Color:=AHAxis.Color;
+  ACanvas.Pen.Width:=AHAxis.LineWidth;
   ACanvas.Line(OX,OY,EX,OY);
   Canvas.Font:=AHAxis.TickFont;
   TickDelta:=AHAxis.TickDelta;
@@ -821,11 +943,13 @@ begin
     L:='#0.#';
   Repeat
     ACanvas.Pen.Color:=AHAxis.TickColor;
+    ACanvas.Pen.Width := AHAxis.TickLinewidth;
     X:=OX+Round(I*TickDelta);
     ACanvas.Line(X,OY,X,TE);
     If (AHAxis.GridInterval<>0) and ((I mod AHAxis.GridInterval)=0) then
       begin
       ACanvas.Pen.Color:=AHAxis.GridColor;
+      ACanvas.Pen.Width := AHAxis.GridLinewidth;
       ACanvas.Line(X,OY,X,EY);
       end;
     If (AHAxis.LegendInterval<>0) and ((I mod AHAxis.LegendInterval)=0) then
@@ -841,6 +965,7 @@ begin
     begin
     X:=OX+Round((EX-OX)*Abs(AHAxis.Origin)/AHAxis.Interval);
     ACanvas.Pen.Color:=AHAxis.TickColor;
+    ACanvas.Pen.Width := AHAxis.TickLinewidth;
     ACanvas.Line(X,OY,X,EY);
     end;
   Canvas.Font:=AHAxis.Caption.Font;
@@ -877,7 +1002,9 @@ begin
   EX:=FBoundsRect.Right-AHAxis.Margin2;
   OY:=FBoundsRect.Bottom-AVAxis.Margin1;
   EY:=FBoundsRect.Top+AVAxis.Margin2;
+  ACanvas.Brush.Style := bsClear;
   ACanvas.Pen.Color:=AVAxis.Color;
+  ACanvas.Pen.Width:=AVAxis.Linewidth;
   ACanvas.Line(OX,OY,OX,EY);
   TickDelta:=AVAxis.TickDelta;
   VD:=AVAxis.ValueDelta;
@@ -892,10 +1019,12 @@ begin
   Repeat
     Y:=OY-Round(I*TickDelta);
     ACanvas.Pen.Color:=AVAxis.TickColor;
+    ACanvas.Pen.Width := AVAxis.TickLinewidth;
     ACanvas.Line(TE,Y,OX,Y);
     If (Y<>OY) and (AVAxis.GridInterval<>0) and ((I mod AVAxis.GridInterval)=0) then
       begin
       ACanvas.Pen.Color:=AVAxis.GridColor;
+      ACanvas.Pen.Width := AVAxis.GridLinewidth;
       ACanvas.Line(OX,Y,EX,Y);
       end;
     If (AVAxis.LegendInterval<>0) and ((I mod AVAxis.LegendInterval)=0) then
@@ -911,6 +1040,7 @@ begin
     begin
     Y:=OY-Round((OY-EY)*Abs(AVAxis.Origin)/AVAxis.Interval);
     ACanvas.Pen.Color:=AVAxis.TickColor;
+    ACanvas.Pen.Width := AVAxis.TickLinewidth;
     ACanvas.Line(OX,Y,EX,Y);
     end;
   L:=AVAxis.Caption.Title;
@@ -1051,6 +1181,7 @@ begin
   // Start value
   X:=FXAxis.Origin;
   ACanvas.Pen.Color:=PlotColor;
+  ACanvas.Pen.Width := FPlotLineWidth;
   PLX:=POX;
   PLY:=POY;
   For PX:=0 to PXW do
@@ -1108,12 +1239,14 @@ begin
   If AOwner is TCOntrol then
     begin
     FControl:=AOwner as TControl;
-    FBackGroundColor:=FControl.Color;
+    if FColor = clDefault then
+      FColor := FControl.Color;
+    if FBackgroundColor = clDefault then
+      FBackGroundColor:=FControl.Color;
     end;
 end;
 
 { TEventControlPlotter }
-
 
 procedure TEventControlPlotter.SetOnCalcPlot(const AValue: TOnCalcPlotEvent);
 begin
