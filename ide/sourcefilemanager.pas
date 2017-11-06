@@ -5070,37 +5070,34 @@ begin
   end;
 
   // check unitname
-  if FilenameIsPascalUnit(NewFilename) then begin
-    NewUnitName:=ExtractFileNameOnly(NewFilename);
-    // do not rename the unit if new filename differs from its name only in case
-    if LowerCase(OldUnitName)=NewUnitName then
-      NewUnitName:=OldUnitName;
-    if NewUnitName='' then begin
-      Result:=mrCancel;
+  NewUnitName:=ExtractFileNameOnly(NewFilename);
+  // Do not rename the unit if new filename differs from its name only in case
+  if LowerCase(OldUnitName)=NewUnitName then
+    NewUnitName:=OldUnitName;
+  if NewUnitName='' then
+    exit(mrCancel);
+  // Is it a valid name? Offer an alternative name if not.
+  if not IsValidUnitName(NewUnitName) then
+  begin
+    AlternativeUnitName:=NameToValidIdentifier(NewUnitName);
+    Result:=IDEMessageDialogAb(lisInvalidPascalIdentifierCap,
+      Format(lisInvalidPascalIdentifierName,[NewUnitName,LineEnding,AlternativeUnitName]),
+                               mtWarning,[mbYes,mbNo],False);
+    if Result=mrNo then
+      exit(mrCancel);
+    NewUnitName:=AlternativeUnitName;
+    NewFileName:=ExtractFilePath(NewFilename)+LowerCase(NewUnitName)+SaveAsFileExt;
+  end;
+  // Does the project alreade have such unit?
+  if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
+  begin
+    Result:=IDEQuestionDialogAb(lisUnitNameAlreadyExistsCap,
+       Format(lisTheUnitAlreadyExists, [NewUnitName]),
+        mtConfirmation, [mrIgnore, lisForceRenaming,
+                        mrCancel, lisCancelRenaming,
+                        mrAbort, lisAbortAll], not CanAbort);
+    if Result<>mrIgnore then
       exit;
-    end;
-    if not IsValidUnitName(NewUnitName) then begin
-      AlternativeUnitName:=NameToValidIdentifier(NewUnitName);
-      Result:=IDEMessageDialogAb(lisInvalidPascalIdentifierCap,
-        Format(lisInvalidPascalIdentifierText,[NewUnitName,AlternativeUnitName]),
-        mtWarning,[mbIgnore,mbCancel],CanAbort);
-      if Result in [mrCancel,mrAbort] then exit;
-      NewUnitName:=AlternativeUnitName;
-    end;
-    if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
-    begin
-      Result:=IDEQuestionDialogAb(lisUnitNameAlreadyExistsCap,
-         Format(lisTheUnitAlreadyExists, [NewUnitName]),
-          mtConfirmation, [mrIgnore, lisForceRenaming,
-                          mrCancel, lisCancelRenaming,
-                          mrAbort, lisAbortAll], not CanAbort);
-      if Result=mrIgnore then
-        Result:=mrCancel
-      else
-        exit;
-    end;
-  end else begin
-    NewUnitName:='';
   end;
 
   // check filename
@@ -8072,8 +8069,8 @@ begin
           exit;
         end;
         AFilename:=ExpandFileNameUTF8(SaveDialog.FileName);
-        if not FilenameIsAbsolute(AFilename) then
-          RaiseException('TLazSourceFileManager.ShowSaveProjectAsDialog: buggy ExpandFileNameUTF8');
+        Assert(FilenameIsAbsolute(AFilename),
+               'TLazSourceFileManager.ShowSaveProjectAsDialog: buggy ExpandFileNameUTF8');
 
         // check program name
         NewProgramName:=ExtractFileNameOnly(AFilename);
@@ -8118,9 +8115,9 @@ begin
             continue; // try again
           end;
           // check programname
-          if FilenameIsPascalUnit(NewProgramFN)
-          and (Project1.IndexOfUnitWithName(NewProgramName,true,
-                                         Project1.MainUnitInfo)>=0) then
+          //if FilenameIsPascalUnit(NewProgramFN)
+          if (Project1.IndexOfUnitWithName(NewProgramName,true,
+                                           Project1.MainUnitInfo)>=0) then
           begin
             ACaption:=lisUnitIdentifierExists;
             AText:=Format(lisThereIsAUnitWithTheNameInTheProjectPleaseChoose,[NewProgramName,LineEnding]);
