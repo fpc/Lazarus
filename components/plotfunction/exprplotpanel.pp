@@ -75,7 +75,7 @@ Type
     Property Active;
     Property Align;
     Property Anchors;
-    Property BackgroundColor;
+    Property BkColor;
     Property BorderSpacing;
     Property Color;
     Property PlotColor;

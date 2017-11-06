@@ -220,7 +220,7 @@ Type
   TCanvasPlotter = Class(TComponent)
   private
     FActive: Boolean;
-    FBackGroundColor: TColor;
+    FBkColor: TColor;
     FBoundsRect: TRect;
     FCaption: TPlotCaption;
     FColor: TColor;
@@ -234,7 +234,7 @@ Type
     FLastFont : TFont;
     procedure DrawCaption(ACanvas: TCanvas);
     procedure SetActive(const AValue: Boolean);
-    procedure SetBackGroundColor(const AValue: TColor);
+    procedure SetBkColor(const AValue: TColor);
     procedure SetBoundsRect(const AValue: TRect);
     procedure SetCanvas(const AValue: TCanvas);
     procedure SetCaption(const AValue: TPlotCaption);
@@ -261,7 +261,7 @@ Type
     Property Canvas : TCanvas Read FCanvas Write SetCanvas;
     Property XAxis : TPlotXAxis Read FXaxis Write SetXAxis;
     Property YAxis : TPlotYAxis Read FYaxis Write SetYAxis;
-    Property BackgroundColor : TColor Read FBackGroundColor Write SetBackGroundColor;
+    Property BkColor : TColor Read FBkColor Write SetBkColor;
     Property Color: TColor Read FColor write SetColor;
     Property PlotColor : TColor Read FPlotColor Write SetPlotColor;
     Property PlotLinewidth: Integer read FPlotLineWidth Write SetPlotLineWidth;
@@ -298,7 +298,7 @@ Type
   private
     FPlotter: TCanvasPlotter;
     function GetActive: Boolean;
-    function GetBackgroundColor: TColor;
+    function GetBkColor: TColor;
     function GetCaption: TPlotCaption;
     function GetColor: TColor;
     function GetPlotColor: TColor;
@@ -306,7 +306,7 @@ Type
     function GetXaxis: TPlotXAxis;
     function GetYaxis: TPlotYAxis;
     procedure SetActive(const AValue: Boolean);
-    procedure SetBackgroundColor(const AValue: TColor);
+    procedure SetBkColor(const AValue: TColor);
     procedure SetCaption(const AValue: TPlotCaption);
     procedure SetPlotColor(const AValue: TColor);
     procedure SetPlotLineWidth(const AValue: Integer);
@@ -322,7 +322,7 @@ Type
     Destructor Destroy; override;
     Property Align;
     Property Active : Boolean Read GetActive Write SetActive;
-    Property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor default clDefault;
+    Property BkColor: TColor read GetBkColor write SetBkColor default clDefault;
     Property Caption : TPlotCaption Read GetCaption Write SetCaption;
     Property Color: TColor read GetColor write SetColor default clDefault;
     Property PlotColor : TColor Read GetPlotColor Write SetPlotColor;
@@ -344,7 +344,7 @@ Type
     Property Align;
     Property Anchors;
     Property Active;
-    Property BackgroundColor;
+    Property BkColor;
     Property BorderSpacing;
     Property Color;
     Property PlotColor;
@@ -383,9 +383,9 @@ begin
   Result:=FPlotter.Active;
 end;
 
-function TCustomPlotFunctionPanel.GetBackgroundColor: TColor;
+function TCustomPlotFunctionPanel.GetBkColor: TColor;
 begin
-  Result := FPlotter.BackgroundColor;
+  Result := FPlotter.BkColor;
 end;
 
 function TCustomPlotFunctionPanel.GetCaption: TPlotCaption;
@@ -423,9 +423,9 @@ begin
   FPlotter.Active:=AValue;
 end;
 
-procedure TCustomPlotFunctionPanel.SetBackgroundColor(const AValue: TColor);
+procedure TCustomPlotFunctionPanel.SetBkColor(const AValue: TColor);
 begin
-  FPlotter.BackgroundColor := AValue;
+  FPlotter.BkColor := AValue;
 end;
 
 procedure TCustomPlotFunctionPanel.SetCaption(const AValue: TPlotCaption);
@@ -759,10 +759,10 @@ begin
   Changed;
 end;
 
-procedure TCanvasPlotter.SetBackGroundColor(const AValue: TColor);
+procedure TCanvasPlotter.SetBkColor(const AValue: TColor);
 begin
-  if FBackGroundColor=AValue then exit;
-  FBackGroundColor:=AValue;
+  if FBkColor=AValue then exit;
+  FBkColor:=AValue;
   Changed;
 end;
 
@@ -847,7 +847,7 @@ begin
   FPlotColor:=DefPlotColor;
   FPlotLinewidth:=DefLinewidth;
   FCaption:=TPlotCaption.Create;
-  FBackgroundColor := clDefault;
+  FBkColor := clDefault;
   FColor := clDefault;
 end;
 
@@ -898,8 +898,8 @@ begin
   ACanvas.Brush.Style:=bsSolid;
   ACanvas.FillRect(BoundsRect);
 
-  // Background color paints the background spanned by the axes
-  ACanvas.Brush.Color := BackgroundColor;
+  // BkColor paints the background spanned by the axes
+  ACanvas.Brush.Color := BkColor;
   ACanvas.FillRect(
     FXAxis.LeftMargin,
     FYAxis.TopMargin,
@@ -1119,7 +1119,7 @@ begin
     CW:=BMP.Canvas.TextWidth(L);
     BMP.Width:=CW;
     BMP.Height:=CH;
-    BMP.Canvas.Brush.Color:=Self.BackgroundColor;
+    BMP.Canvas.Brush.Color:=Self.Color;
     BMP.Canvas.Brush.Style:=bsSolid;
     BMP.Canvas.FillRect(0,0,CW,CH);
     BMP.Canvas.TextOut(0,0,L);
@@ -1241,8 +1241,8 @@ begin
     FControl:=AOwner as TControl;
     if FColor = clDefault then
       FColor := FControl.Color;
-    if FBackgroundColor = clDefault then
-      FBackGroundColor:=FControl.Color;
+    if FBkColor = clDefault then
+      FBkColor := FControl.Color;
     end;
 end;
 
