@@ -1131,7 +1131,7 @@ resourcestring
   lisCancelRenaming = 'Cancel renaming';
   lisAbortAll = 'Abort all';
   lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
-  lisInvalidPascalIdentifierName = 'The name "%s" is not a valid Pascal identifier. '
+  lisInvalidPascalIdentifierName = 'The name "%s" is not a valid Pascal identifier.'
       +'%sUse an alternative name "%s" instead?';
   lisCopyError = 'Copy Error';
 
