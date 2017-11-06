@@ -163,7 +163,7 @@ type
     procedure ReadConstExpr;
     // types
     procedure ReadTypeNameAndDefinition;
-    procedure ReadGenericParamList;
+    procedure ReadGenericParamList(Must: boolean);
     procedure ReadTypeReference;
     procedure ReadClassInterfaceContent;
     function KeyWordFuncTypeClass: boolean;
@@ -201,7 +201,6 @@ type
     function UnexpectedKeyWord: boolean;
     function EndOfSourceExpected: boolean;
     // read functions
-    procedure ReadGenericParam;
     function ReadTilProcedureHeadEnd(ParseAttr: TParseProcHeadAttributes;
         var HasForwardModifier: boolean): boolean;
     function ReadConstant(ExceptionOnError, Extract: boolean;
@@ -1529,33 +1528,6 @@ begin
   Result:=true;
 end;
 
-// Support generics in methods parameters and return types
-procedure TPascalParserTool.ReadGenericParam;
-// example:  <a,b<c.d.e>>
-var
-  Level: Integer;
-begin
-  Level:=0;
-  repeat
-    if CurPos.Flag in [cafPoint, cafComma] then begin
-      ReadNextAtom;
-      AtomIsIdentifierSaveE;
-    end
-    else if AtomIsChar('<') then begin
-      inc(Level);
-      ReadNextAtom;
-      AtomIsIdentifierSaveE;
-    end
-    else if AtomIsChar('>') then begin
-      dec(Level);
-      if Level=0 then break;
-    end else
-      SaveRaiseCharExpectedButAtomFound(20170421195437,'>');
-    ReadNextAtom;
-  until false;
-  ReadNextAtom;
-end;
-
 function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
   const Attr: TProcHeadAttributes): boolean;
 // after reading, CurPos is the atom after the type
@@ -1632,7 +1604,8 @@ begin
       end else begin
         NeedIdentifier:=false;
       end;
-    end else if UpAtomIs('SPECIALIZE') then begin
+    end;
+    if NeedIdentifier and UpAtomIs('SPECIALIZE') then begin
       ReadSpecialize(phpCreateNodes in Attr,Extract,Copying,Attr);
       NeedIdentifier:=false;
     end;
@@ -1662,6 +1635,8 @@ begin
       if (phpCreateNodes in Attr) then begin
         EndChildNode;
       end;
+      if (Scanner.CompilerMode=cmDELPHI) and AtomIsChar('<') then
+        ReadSpecialize(phpCreateNodes in Attr,Extract,Copying,Attr);
     end;
     if (phpCreateNodes in Attr) then begin
       if IsFileType then begin
@@ -1678,9 +1653,7 @@ begin
       SaveRaiseStringExpectedButAtomFound(20170421195442,ctsIdentifier)
     else exit;
   end;
-  if AtomIsChar('<') then
-    ReadGenericParam
-  else if UpAtomIs('LOCATION')
+  if UpAtomIs('LOCATION')
   and ( Scanner.Values.IsDefined('CPUM68K')
      or Scanner.Values.IsDefined('CPUPOWERPC')
      or Scanner.Values.IsDefined('CPUPOWERPC64') )
@@ -1782,8 +1755,8 @@ begin
         end;
         repeat
           ReadNextAtom;
-          if AtomIsChar('<') then
-            ReadGenericParam;
+          if (Scanner.CompilerMode=cmDELPHI) and AtomIsChar('<') then
+            ReadSpecialize(pphCreateNodes in ParseAttr);
           if CurPos.Flag<>cafPoint then break;
           //  unitname.classname<T>.identifier
           ReadNextAtom;
@@ -2776,13 +2749,7 @@ begin
       ReadNextAtom;
     end;
   end;
-  if (Scanner.CompilerMode = cmDELPHI) and AtomIsChar('<') then
-    ReadGenericParamList
-  else if IsGeneric then begin
-    if not AtomIsChar('<') then
-      SaveRaiseCharExpectedButAtomFound(20170710202211,'<');
-    ReadGenericParamList;
-  end;
+  ReadGenericParamList(IsGeneric);
   // read rest of procedure head
   HasForwardModifier:=false;
   ParseAttr:=[];
@@ -4066,15 +4033,19 @@ procedure TPascalParserTool.ReadTypeNameAndDefinition;
 var
   TypeNode: TCodeTreeNode;
   NamePos: TAtomPosition;
+  IsGeneric: Boolean;
 begin
   CreateChildNode;
   TypeNode:=CurNode;
   if (Scanner.CompilerMode in [cmOBJFPC,cmFPC]) and UpAtomIs('GENERIC') then begin
+    IsGeneric:=true;
     CurNode.Desc:=ctnGenericType;
     ReadNextAtom;
   end
-  else
+  else begin
+    IsGeneric:=false;
     CurNode.Desc:=ctnTypeDefinition;
+  end;
   // read name
   AtomIsIdentifierSaveE;
   ReadNextAtom;
@@ -4090,8 +4061,8 @@ begin
     CurNode.EndPos:=NamePos.EndPos;
     //debugln(['TPascalParserTool.ReadTypeNameAndDefinition Name="',copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos),'"']);
     EndChildNode;
-    // read parameter list
-    ReadGenericParamList;
+    // read generic parameter list
+    ReadGenericParamList(IsGeneric);
   end;
   // read =
   if (CurPos.Flag<>cafEqual) then
@@ -4110,7 +4081,7 @@ begin
   EndChildNode;
 end;
 
-procedure TPascalParserTool.ReadGenericParamList;
+procedure TPascalParserTool.ReadGenericParamList(Must: boolean);
 { At start cursor is on <
   At end cursor is on atom after >
 
@@ -4121,6 +4092,12 @@ procedure TPascalParserTool.ReadGenericParamList;
   <T1: record; T2,T3: class; T4: constructor; T5: name> = type
 }
 begin
+  if not AtomIsChar('<') then begin
+    if Must then
+      SaveRaiseCharExpectedButAtomFound(20171106143341,'<');
+    exit;
+  end else if not (Scanner.CompilerMode in cmAllModesWithGeneric) then
+    exit;
   CreateChildNode;
   CurNode.Desc:=ctnGenericParams;
   ReadNextAtom;
@@ -4207,10 +4184,16 @@ procedure TPascalParserTool.ReadTypeReference;
     controls.TButton
     TGenericClass<TypeReference,TypeReference>
     TGenericClass<TypeReference,TypeReference>.TNestedClass
+    specialize TGenericClass<TypeReference,TypeReference>.TNestedClass
 }
 var SavePos: TAtomPosition;
 begin
   SavePos := CurPos;
+  // ToDo: specialize
+  {if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
+    IsGeneric:=true;
+    ReadNextAtom;
+  end;}
   ReadNextAtom;
   while CurPos.Flag=cafPoint do begin
     ReadNextAtom;
@@ -4360,7 +4343,7 @@ var
   IsHelper: Boolean;
   HelperForNode: TCodeTreeNode;
 begin
-  //debugln(['TPascalParserTool.KeyWordFuncTypeClass ',GetAtom,' ',CleanPosToStr(CurPos.StartPos)]);
+  //debugln(['TPascalParserTool.KeyWordFuncTypeClass START ',GetAtom,' ',CleanPosToStr(CurPos.StartPos),' ',CurNode.DescAsString]);
   // class or 'class of' start found
   if UpAtomIs('CLASS') then
     ClassDesc:=ctnClass
@@ -4379,9 +4362,9 @@ begin
   else
     SaveRaiseStringExpectedButAtomFound(20170421195754,'class');
   ContextDesc:=CurNode.Desc;
-  if not(ClassDesc in [ctnRecordType, ctnTypeType]) then begin
-    if not (ContextDesc in [ctnTypeDefinition,ctnGenericType])
-    then
+  //debugln(['TPascalParserTool.KeyWordFuncTypeClass ContextDesc=',NodeDescToStr(ContextDesc),' ClassDesc=',NodeDescToStr(ClassDesc),' CurNode=',CurNode.DescAsString,' CurNode.Parent=',CurNode.Parent.DescAsString]);
+  if not (ClassDesc in [ctnRecordType, ctnTypeType]) then begin
+    if not (ContextDesc in [ctnTypeDefinition,ctnGenericType]) then
       SaveRaiseExceptionFmt(20170421195127,ctsAnonymDefinitionsAreNotAllowed,[GetAtom]);
     if CurNode.Parent.Desc<>ctnTypeSection then
       SaveRaiseExceptionFmt(20170421195129,ctsNestedDefinitionsAreNotAllowed,[GetAtom]);
@@ -5780,9 +5763,11 @@ procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean;
 // specialize template
 // after parsing the cursor is on the atom behind the >
 // examples:
+//  $mode objfpc:
 //   type TListOfInteger = specialize TGenericList<integer,string>;
 //   type TListOfChar = specialize Classes.TGenericList<integer,objpas.integer>;
 //   type l = class(specialize TFPGObjectList<TControl>)
+//  $mode delphi: same as objfpc, but without the specialize keyword
 
   procedure Next; inline;
   begin
@@ -5793,19 +5778,37 @@ procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean;
   end;
 
 begin
-  if CreateChildNodes then begin
-    CreateChildNode;
-    CurNode.Desc:=ctnSpecialize;
-  end;
+  //debugln(['TPascalParserTool.ReadSpecialize START ',GetAtom]);
+  if Scanner.CompilerMode=cmOBJFPC then begin
+    {$IFDEF CheckNodeTool}
+    if not UpAtomIs('SPECIALIZE') then
+      SaveRaiseIllegalQualifier(20171106150016);
+    {$ENDIF}
+    if CreateChildNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnSpecialize;
+    end;
+    Next;
+  end else if Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE] then begin
+    UndoReadNextAtom;
+    if CreateChildNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnSpecialize;
+    end;
+  end else
+    SaveRaiseIllegalQualifier(20171106145928);
+
   // read identifier (the name of the generic)
-  Next;
   AtomIsIdentifierSaveE;
   if CreateChildNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnSpecializeType;
     CurNode.EndPos:=CurPos.EndPos;
   end;
-  Next;
+  if Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE] then
+    ReadNextAtom // if Extract=true: was already extracted
+  else
+    Next;
   while Curpos.Flag=cafPoint do begin
     // first identifier was unitname, now read the type
     Next;
@@ -5861,6 +5864,7 @@ begin
     EndChildNode; // end ctnSpecialize
   end;
   Next;
+  //debugln(['TPascalParserTool.ReadSpecialize END ',GetAtom,' ',CurNode.DescAsString]);
 end;
 
 function TPascalParserTool.WordIsPropertyEnd: boolean;
@@ -5896,7 +5900,7 @@ procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
 var
   HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
   ParseAttr: TParseProcHeadAttributes;
-  IsProcType: Boolean;
+  IsProcType, IsGeneric: Boolean;
   ProcHeadNode: TCodeTreeNode;
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
@@ -5931,6 +5935,12 @@ begin
     IsMethod:=(ProcNode.Parent<>nil) and (ProcNode.Parent.Desc in (AllClasses+AllClassSections));
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
+    if (Scanner.CompilerMode in [cmOBJFPC,cmFPC]) and UpAtomIs('GENERIC') then begin
+      IsGeneric:=true;
+      CurNode.Desc:=ctnGenericType;
+      ReadNextAtom;
+    end else
+      IsGeneric:=false;
     if UpAtomIs('CLASS') then
       ReadNextAtom;
     IsFunction:=UpAtomIs('FUNCTION');
@@ -5951,8 +5961,8 @@ begin
       repeat
         CheckOperatorProc(IsOperator,IsFunction);
         ReadNextAtom;
-        if AtomIsChar('<') then
-          ReadGenericParam;
+        // read generic parameter list
+        ReadGenericParamList(IsGeneric);
         if CurPos.Flag<>cafPoint then break;
         ReadNextAtom;
       until false;

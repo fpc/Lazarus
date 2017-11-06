@@ -139,15 +139,15 @@ const
   ctnPointerType        = 85;
   ctnClassOfType        = 86; // 1st child = ctnIdentifier
   ctnVariantType        = 87;
-  ctnSpecialize         = 88; // 1st child = ctnSpecializeType, 2nd child = ctnSpecializeParams
-  ctnSpecializeType     = 89; // parent = ctnSpecialize
-  ctnSpecializeParams   = 90; // list of ctnSpecializeParam, parent = ctnSpecialize
-  ctnSpecializeParam    = 91; // parent = ctnSpecializeParams
-  ctnGenericType        = 92;// 1st child = ctnGenericName, 2nd child = ctnGenericParams, 3th child = type
-  ctnGenericName        = 93; // parent = ctnGenericType
-  ctnGenericParams      = 94; // parent = ctnGenericType, children = ctnGenericParameter
-  ctnGenericParameter   = 95; // can has a child ctnGenericConstraint
-  ctnGenericConstraint  = 96; // parent = ctnGenericParameter
+  ctnGenericType        = 88;// 1st child = ctnGenericName, 2nd child = ctnGenericParams, 3th child = type
+  ctnGenericName        = 89; // parent = ctnGenericType
+  ctnGenericParams      = 90; // parent = ctnGenericType, children = ctnGenericParameter
+  ctnGenericParameter   = 91; // can has a child ctnGenericConstraint
+  ctnGenericConstraint  = 92; // parent = ctnGenericParameter
+  ctnSpecialize         = 93; // 1st child = ctnSpecializeType, 2nd child = ctnSpecializeParams, in mode ObjFPC it starts at keyword 'specialize'
+  ctnSpecializeType     = 94; // parent = ctnSpecialize
+  ctnSpecializeParams   = 95; // list of ctnSpecializeParam, parent = ctnSpecialize
+  ctnSpecializeParam    = 96; // parent = ctnSpecializeParams
   ctnReferenceTo        = 97; // 1st child = ctnProcedureType
   ctnConstant           = 98;
   ctnHintModifier       = 99; // deprecated, platform, unimplemented, library, experimental
