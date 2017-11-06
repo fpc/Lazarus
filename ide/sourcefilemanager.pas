@@ -250,6 +250,7 @@ type
     // ask the user if he wants to extend dependencies or the Unit Search Paths.
     function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
 
+  private
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
         NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
@@ -271,7 +272,7 @@ type
     function ReplaceUnitUse(OldFilename, OldUnitName,
                             NewFilename, NewUnitName: string;
                             IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
-  private
+
     // private help methods for designer
     function LoadResourceFile(AnUnitInfo: TUnitInfo; var LFMCode, LRSCode: TCodeBuffer;
         AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
@@ -2477,8 +2478,7 @@ begin
   //   manually editing the lpi file, because this is only needed in
   //   special cases (rare functions don't need front ends).
   MainUnitInfo:=AnUnitInfo.Project.MainUnitInfo;
-  if (sfSaveAs in Flags) and (not (sfProjectSaving in Flags))
-  and (AnUnitInfo=MainUnitInfo)
+  if (sfSaveAs in Flags) and (not (sfProjectSaving in Flags)) and (AnUnitInfo=MainUnitInfo)
   then begin
     Result:=SaveProject([sfSaveAs,sfSaveMainSourceAs]);
     exit;
@@ -4954,17 +4954,12 @@ function TLazSourceFileManager.ShowSaveFileAsDialog(var AFilename: string;
   AnUnitInfo: TUnitInfo; var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean): TModalResult;
 var
   SaveDialog: TSaveDialog;
-  SaveAsFilename, SaveAsFileExt, NewFilename, NewUnitName, NewFilePath,
-  AlternativeUnitName: string;
-  ACaption, AText: string;
   SrcEdit: TSourceEditor;
-  FileWithoutPath: String;
-  PkgDefaultDirectory: String;
-  OldUnitName: String;
-  IsPascal: Boolean;
-  Filter: String;
-  AllEditorExt: string;
-  AllFilter: string;
+  SaveAsFilename, SaveAsFileExt: string;
+  NewFilename, NewUnitName, FileWithoutPath: string;
+  ACaption, AText, APath: string;
+  OldUnitName, AlternativeUnitName: String;
+  Filter, AllEditorExt, AllFilter: string;
 begin
   if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount>0) then
     SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)
@@ -4975,15 +4970,13 @@ begin
   // try to keep the old filename and extension
   SaveAsFileExt:=ExtractFileExt(AFileName);
   if (SaveAsFileExt='') and (SrcEdit<>nil) then begin
-    if (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi])
-    then
+    if (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
       SaveAsFileExt:=PascalExtension[EnvironmentOptions.PascalFileExtension]
     else
       SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
                          SrcEdit.SyntaxHighlighterType);
   end;
-  IsPascal:=FilenameIsPascalSource(AFilename);
-  if IsPascal then begin
+  if FilenameIsPascalSource(AFilename) then begin
     if AnUnitInfo<>nil then
       OldUnitName:=AnUnitInfo.ReadUnitNameFromSource(false)
     else
@@ -5037,17 +5030,12 @@ begin
       SaveDialog.InitialDir:=Project1.Directory;
     end;
     // if this is a package file, then start in package directory
-    PkgDefaultDirectory:=PkgBoss.GetDefaultSaveDirectoryForFile(AFilename);
-    if (PkgDefaultDirectory<>'')
-    and (not FileIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
-      SaveDialog.InitialDir:=PkgDefaultDirectory;
+    APath:=PkgBoss.GetDefaultSaveDirectoryForFile(AFilename);
+    if (APath<>'') and (not FileIsInPath(SaveDialog.InitialDir,APath)) then
+      SaveDialog.InitialDir:=APath;
     // show save dialog
-    if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
-    then begin
-      // user cancels
-      Result:=mrCancel;
-      exit;
-    end;
+    if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='') then
+      exit(mrCancel);  // user cancels
     NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
     //debugln(['TLazSourceFileManager.ShowSaveFileAsDialog SaveDialog.Filename="',SaveDialog.Filename,'" NewFilename="',NewFilename,'"']);
   finally
@@ -5061,10 +5049,10 @@ begin
   end;
 
   // check file path
-  NewFilePath:=ExtractFilePath(NewFilename);
-  if not DirPathExists(NewFilePath) then begin
+  APath:=ExtractFilePath(NewFilename);
+  if not DirPathExists(APath) then begin
     ACaption:=lisEnvOptDlgDirectoryNotFound;
-    AText:=Format(lisTheDestinationDirectoryDoesNotExist, [LineEnding, NewFilePath]);
+    AText:=Format(lisTheDestinationDirectoryDoesNotExist, [LineEnding, APath]);
     Result:=IDEMessageDialogAb(ACaption, AText, mtConfirmation,[mbCancel],CanAbort);
     exit;
   end;
@@ -5104,10 +5092,8 @@ begin
   if FilenameIsPascalUnit(NewFilename) then begin
     FileWithoutPath:=ExtractFileName(NewFilename);
     // check if file should be auto renamed
-
     if EnvironmentOptions.CharcaseFileAction = ccfaAsk then begin
-      if lowercase(FileWithoutPath)<>FileWithoutPath
-      then begin
+      if LowerCase(FileWithoutPath)<>FileWithoutPath then begin
         Result:=IDEQuestionDialogAb(lisRenameFile,
           Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC,
                  [LineEnding, LineEnding]),
@@ -5130,8 +5116,7 @@ begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewFilename, LineEnding]);
     Result:=IDEQuestionDialogAb(ACaption, AText, mtConfirmation,
-      [mrYes, lisOverwriteFileOnDisk, mrCancel,
-       mrAbort, lisAbortAll], not CanAbort);
+      [mrYes, lisOverwriteFileOnDisk, mrCancel, mrAbort, lisAbortAll], not CanAbort);
     if Result=mrCancel then exit;
   end;
 

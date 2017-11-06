@@ -29,8 +29,7 @@ type
   TIDEQuestionDialog = function(const aCaption, aMsg: string;
                                 DlgType: TMsgDlgType; Buttons: array of const;
                                 const HelpKeyword: string = ''): Integer of object;
-function LazSelectDirectory(const Title: string; const InitialDir: string = ''
-  ): string;
+function LazSelectDirectory(const Title: string; const InitialDir: string = ''): string;
 
 var
   LazIDESelectDirectory: TIDESelectDirectory = nil;// set by the IDE
@@ -83,19 +82,16 @@ var
 
 implementation
 
-function LazSelectDirectory(const Title: string; const InitialDir: string
-  ): string;
+function LazSelectDirectory(const Title: string; const InitialDir: string): string;
 begin
   Result:=LazIDESelectDirectory(Title,InitialDir);
 end;
 
 function IDEMessageDialogAb(const aCaption, aMsg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons; ShowAbort: boolean; const HelpKeyword: string
-  ): Integer;
+  Buttons: TMsgDlgButtons; ShowAbort: boolean; const HelpKeyword: string): Integer;
 begin
   if ShowAbort then begin
-    // add an abort button for 'Cancel all'
-    // and replace a Cancel with Ignore
+    // add an abort button for 'Cancel all' and replace a Cancel with Ignore
     Buttons:=Buttons+[mbAbort];
     if mbCancel in Buttons then
       Buttons:=Buttons-[mbCancel]+[mbIgnore];

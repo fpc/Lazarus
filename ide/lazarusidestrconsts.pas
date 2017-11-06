@@ -780,7 +780,8 @@ resourcestring
   lisRenameToLowercase = 'Rename to lowercase';
   lisKeepName = 'Keep name';
   lisOverwriteFile = 'Overwrite file?';
-  lisAFileAlreadyExistsReplaceIt = 'A file "%s" already exists.%sReplace it?';
+  lisAFileAlreadyExistsReplaceIt = 'A file "%s" already exists.'
+    +'%sReplace it?';
   lisOverwriteFileOnDisk = 'Overwrite file on disk';
   lisAmbiguousFilesFound = 'Ambiguous files found';
   lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files in '
