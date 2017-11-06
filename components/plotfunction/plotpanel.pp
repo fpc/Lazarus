@@ -1029,18 +1029,20 @@ Var
 
 begin
   // X-origin in pixels.
+  // NOTE: this is not the location of "zero" but the left edge of the plot area.
   POX:=FXAxis.LeftMargin;
   // Width in pixels
-  PXW:=ACanvas.Width-FXAxis.RightMargin-POX+1;
+  PXW:= BoundsRect.Width - FXAxis.RightMargin - POX + 1;
   // Y origin in pixels
-  POY:=ACanvas.Height-FYAxis.BottomMargin;
+  // NOTE: this is not the location of "zero" but the bottom edge of the plot area.
+  POY := BoundsRect.Height - FYAxis.BottomMargin;
   // Height in pixels
   PYH:=POY-FYAxis.TopMargin+1;
   // Y top
   YI:=PYH/FYAxis.Interval;
   // Interval in plot units
   XI:=FXAxis.Interval/PXW;
-  // Y plot Origin
+  // Y plot Origin, i.e. bottom edge of the plot area, in world coordinates
   YO:=FYAxis.Origin;
   // Y plot max value
   PEY:=FYAxis.TopMargin;
