@@ -105,6 +105,7 @@ Type
     FTicks: Integer;
     FTickSize: integer;
     FTickLinewidth: Integer;
+    FZeroLinewidth: Integer;
     procedure SetAxisColor(const AValue: TColor);
     procedure SetLinewidth(const AValue: Integer);
     procedure SetDrawZero(const AValue: Boolean);
@@ -122,6 +123,7 @@ Type
     procedure SetTickMode(const AValue: TTickMode);
     procedure SetTicks(const AValue: Integer);
     procedure SetTickSize(const AValue: integer);
+    procedure SetZeroLinewidth(const AValue: Integer);
   Protected
     Procedure DoCaptionChange(Sender : TObject);
     procedure Changed;
@@ -169,6 +171,8 @@ Type
     Property GridColor : TColor Read FGridColor Write SetGridColor default DefGridColor;
     // Grid linewidth
     Property GridLinewidth: Integer Read FGridLinewidth Write SetGridLinewidth default DefLineWidth;
+    // Width of zero lines
+    Property ZeroLineWidth: Integer read FZeroLineWidth Write SetZeroLineWidth default DefLineWidth;
   end;
 
   { TPlotXAxis }
@@ -371,6 +375,11 @@ resourcestring
   DefXCaption = 'X values';
   DefYCaption = 'Y values';
 
+function Max(a, b: Integer): Integer;
+begin
+  if a > b then Result := a else Result := b;
+end;
+
 { TCustomPlotFunctionPanel }
 
 procedure TCustomPlotFunctionPanel.SetXAxis(const AValue: TPlotXAxis);
@@ -440,7 +449,7 @@ end;
 
 procedure TCustomPlotFunctionPanel.SetPlotLineWidth(const AValue: Integer);
 begin
-  FPlotter.PlotLinewidth := AValue;
+  FPlotter.PlotLinewidth := Max(1, AValue);
 end;
 
 procedure TCustomPlotFunctionPanel.SetYAxis(const AValue: TPlotYAxis);
@@ -494,7 +503,7 @@ end;
 procedure TPlotAxis.SetLinewidth(const AValue: Integer);
 begin
   if FLinewidth = AValue then exit;
-  FLinewidth := AValue;
+  FLinewidth := Max(1, AValue);
   Changed;
 end;
 
@@ -538,16 +547,14 @@ end;
 procedure TPlotAxis.SetGridLinewidth(const AValue: Integer);
 begin
   if FGridLinewidth = AValue then exit;
-  FGridLinewidth := AValue;
+  FGridLinewidth := Max(1, AValue);
   Changed;
 end;
 
 procedure TPlotAxis.SetLegendInterval(const AValue: Integer);
 begin
   if FLegendInterval=AValue then exit;
-  FLegendInterval:=AValue;
-  If FLegendInterval<0 then
-    FLegendInterval:=0;
+  FLegendInterval:=Max(0, AValue);
   Changed;
 end;
 
@@ -582,7 +589,7 @@ end;
 procedure TPlotAxis.SetTickLinewidth(const AValue: Integer);
 begin
   if FTickLinewidth = AValue then exit;
-  FTickLinewidth := AValue;
+  FTickLinewidth := Max(1, AValue);
   Changed;
 end;
 
@@ -600,18 +607,21 @@ end;
 procedure TPlotAxis.SetTicks(const AValue: Integer);
 begin
   if FTicks=AValue then exit;
-  FTicks:=AValue;
-  If FTicks<1 then
-    FTicks:=1;
+  FTicks:=Max(1, AValue);
   Changed;
 end;
 
 procedure TPlotAxis.SetTickSize(const AValue: integer);
 begin
   if FTickSize=AValue then exit;
-  FTickSize:=AValue;
-  If FTickSize<1 then
-    FTickSize:=1;
+  FTickSize:=Max(1, AValue);
+  Changed;
+end;
+
+procedure TPlotAxis.SetZeroLinewidth(const AValue: Integer);
+begin
+  if FZeroLinewidth = AValue then exit;
+  FZeroLinewidth := Max(1, AValue);
   Changed;
 end;
 
@@ -659,6 +669,7 @@ begin
   FGridColor:=DefGridColor;
   FGridLinewidth:=DefLineWidth;
   FGridInterval:=DefGridInterval;
+  FZeroLinewidth:=DefLinewidth;
 end;
 
 destructor TPlotAxis.Destroy;
@@ -674,12 +685,14 @@ procedure TPlotXAxis.SetLeftMargin(const AValue: Integer);
 begin
   if FLeftMargin=AValue then exit;
   FLeftMargin:=AValue;
+  Changed;
 end;
 
 procedure TPlotXAxis.SetRightMargin(const AValue: Integer);
 begin
   if FRightMargin=AValue then exit;
   FRightMargin:=AValue;
+  Changed;
 end;
 
 function TPlotXAxis.GetDimension: Integer;
@@ -965,7 +978,7 @@ begin
     begin
     X:=OX+Round((EX-OX)*Abs(AHAxis.Origin)/AHAxis.Interval);
     ACanvas.Pen.Color:=AHAxis.TickColor;
-    ACanvas.Pen.Width := AHAxis.TickLinewidth;
+    ACanvas.Pen.Width := AHAxis.ZeroLinewidth;
     ACanvas.Line(X,OY,X,EY);
     end;
   Canvas.Font:=AHAxis.Caption.Font;
@@ -1040,7 +1053,7 @@ begin
     begin
     Y:=OY-Round((OY-EY)*Abs(AVAxis.Origin)/AVAxis.Interval);
     ACanvas.Pen.Color:=AVAxis.TickColor;
-    ACanvas.Pen.Width := AVAxis.TickLinewidth;
+    ACanvas.Pen.Width := AVAxis.ZeroLinewidth;
     ACanvas.Line(OX,Y,EX,Y);
     end;
   L:=AVAxis.Caption.Title;
@@ -1316,6 +1329,7 @@ end;
 constructor TPlotCaption.Create;
 begin
   FFont:=TFont.Create;
+  FFont.OnChange := FOnChange;
 end;
 
 destructor TPlotCaption.Destroy;
