@@ -41,15 +41,27 @@ type
   { TInputHistoriesWithSearchOpt }
 
   TInputHistoriesWithSearchOpt = class(TInputHistories)
+  private const
+    PathToOptions0: array[Boolean] of string = ('Options', 'Options');    // old config file
+    PathToOptions1: array[Boolean] of string = ('Options', 'SelOptions'); // new config file
+    XMLConfigVersion = 1;
+  public const
+    SaveOptionsGeneral = [ssoMatchCase, ssoWholeWord, ssoRegExpr, ssoRegExprMultiLine,
+      ssoPrompt, ssoBackwards];
+    SaveOptionsSelSpecific = [ssoEntireScope, ssoSelectedOnly];
+    SaveOptions = SaveOptionsGeneral + SaveOptionsSelSpecific;
   private
-    FFindOptions: TSynSearchOptions;
+    FFindOptions: array[Boolean] of TSynSearchOptions; // array[SelAvail] - selection available
+    function GetFindOptions(const ASelAvail: Boolean): TSynSearchOptions;
+    procedure SetFindOptions(const ASelAvail: Boolean;
+      const AFindOptions: TSynSearchOptions);
   protected
     procedure LoadSearchOptions(XMLConfig: TXMLConfig; const Path: string); override;
     procedure SaveSearchOptions(XMLConfig: TXMLConfig; const Path: string); override;
   public
     constructor Create;
     destructor Destroy; override;
-    property FindOptions: TSynSearchOptions read FFindOptions write FFindOptions;
+    property FindOptions[const ASelAvail: Boolean]: TSynSearchOptions read GetFindOptions write SetFindOptions;
   end;
 
 const
@@ -86,30 +98,61 @@ begin
   inherited Destroy;
 end;
 
+function TInputHistoriesWithSearchOpt.GetFindOptions(
+  const ASelAvail: Boolean): TSynSearchOptions;
+begin
+  Result := FFindOptions[ASelAvail]*SaveOptions;
+end;
+
 procedure TInputHistoriesWithSearchOpt.LoadSearchOptions(XMLConfig: TXMLConfig; const Path: string);
 var
   FindOption: TSynSearchOption;
+  PathToOptions: array[Boolean] of string;
+  I: Boolean;
 begin
-  FFindOptions:=[];
-  for FindOption:=Low(FFindOptions) to High(FFindOptions) do
+  if XMLConfig.GetValue(Path+'Find/Version/Value',0)<=0 then
+    PathToOptions := PathToOptions0
+  else
+    PathToOptions := PathToOptions1;
+
+  for I := Low(FFindOptions) to High(FFindOptions) do
   begin
-    if XMLConfig.GetValue(Path+'Find/Options/'+LazFindSearchOptionNames[FindOption],
-                          FindOption in LazFindSearchOptionsDefault)
-    then
-      Include(FFindOptions,FindOption);
+    FFindOptions[I]:=[];
+    for FindOption:=Low(FFindOptions[I]) to High(FFindOptions[I]) do
+    begin
+      if XMLConfig.GetValue(Path+'Find/'+PathToOptions[I]+'/'+LazFindSearchOptionNames[FindOption],
+                            FindOption in LazFindSearchOptionsDefault[I])
+      then
+        Include(FFindOptions[I],FindOption);
+    end;
   end;
 end;
 
 procedure TInputHistoriesWithSearchOpt.SaveSearchOptions(XMLConfig: TXMLConfig; const Path: string);
 var
   FindOption: TSynSearchOption;
+  I: Boolean;
 begin
-  for FindOption:=Low(FFindOptions) to High(FFindOptions) do begin
-    XMLConfig.SetDeleteValue(
-      Path+'Find/Options/'+LazFindSearchOptionNames[FindOption],
-      FindOption in FindOptions,
-      FindOption in LazFindSearchOptionsDefault);
+  for I := Low(FFindOptions) to High(FFindOptions) do
+  begin
+    XMLConfig.SetValue(Path+'Find/Version/Value', XMLConfigVersion);
+
+    for FindOption:=Low(FFindOptions[I]) to High(FFindOptions[I]) do
+    begin
+      XMLConfig.SetDeleteValue(
+        Path+'Find/'+PathToOptions1[I]+'/'+LazFindSearchOptionNames[FindOption],
+        FindOption in FindOptions[I],
+        FindOption in LazFindSearchOptionsDefault[I]);
+    end;
   end;
+end;
+
+procedure TInputHistoriesWithSearchOpt.SetFindOptions(const ASelAvail: Boolean;
+  const AFindOptions: TSynSearchOptions);
+begin
+  FFindOptions[ASelAvail] := AFindOptions*SaveOptions;
+  FFindOptions[not ASelAvail] := AFindOptions*SaveOptionsGeneral // change only general options
+    + FFindOptions[not ASelAvail]*SaveOptionsSelSpecific;
 end;
 
 end.

@@ -375,7 +375,7 @@ begin
   AssignToComboBox(FileMaskComboBox, InputHistories.FindInFilesMaskHistory);
   Options := InputHistories.FindInFilesSearchOptions;
   //share basic options with FindReplaceDlg
-  SynSearchOptions := InputHistoriesSO.FindOptions * SharedOptions;
+  SynSearchOptions := InputHistoriesSO.FindOptions[False] * SharedOptions;
 end;
 
 procedure TLazFindInFilesDialog.SaveHistory;
@@ -391,7 +391,7 @@ begin
   InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
   InputHistories.FindInFilesSearchOptions:=Options;
   //share basic options with FindReplaceDlg
-  InputHistoriesSO.FindOptions := InputHistoriesSO.FindOptions - SharedOptions
+  InputHistoriesSO.FindOptions[False] := InputHistoriesSO.FindOptions[False] - SharedOptions
                                               + (SynSearchOptions*SharedOptions);
   InputHistories.Save;
 end;

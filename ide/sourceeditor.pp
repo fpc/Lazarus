@@ -3328,9 +3328,6 @@ end;
 
 {------------------------------S T A R T  F I N D-----------------------------}
 procedure TSourceEditor.StartFindAndReplace(Replace:boolean);
-const
-  SaveOptions = [ssoMatchCase, ssoWholeWord, ssoRegExpr, ssoRegExprMultiLine,
-                 ssoPrompt, ssoEntireScope, ssoBackwards];
 var
   NewOptions: TSynSearchOptions;
   ALeft,ATop:integer;
@@ -3346,16 +3343,14 @@ begin
     NewOptions := NewOptions + [ssoReplace, ssoReplaceAll]
   else
     NewOptions := NewOptions - [ssoReplace, ssoReplaceAll];
-  NewOptions:=NewOptions-SaveOptions+InputHistoriesSO.FindOptions*SaveOptions
-                        -[ssoSelectedOnly];
+  NewOptions:=NewOptions-InputHistoriesSO.SaveOptions
+    +InputHistoriesSO.FindOptions[EditorComponent.SelAvail];
 
   // Fill in history items
   LazFindReplaceDialog.TextToFindComboBox.Items.Assign(InputHistoriesSO.FindHistory);
   LazFindReplaceDialog.ReplaceTextComboBox.Items.Assign(InputHistoriesSO.ReplaceHistory);
 
   with EditorComponent do begin
-    if SelAvail then
-      NewOptions := NewOptions + [ssoSelectedOnly, ssoEntireScope];
     if EditorOpts.FindTextAtCursor then begin
       if SelAvail and (BlockBegin.Y = BlockEnd.Y) and
          (  ((ComparePoints(BlockBegin, LogicalCaretXY) <= 0) and
@@ -3386,7 +3381,7 @@ begin
 
   LazFindReplaceDialog.Options := NewOptions;
   DlgResult:=LazFindReplaceDialog.ShowModal;
-  InputHistoriesSO.FindOptions:=LazFindReplaceDialog.Options*SaveOptions;
+  InputHistoriesSO.FindOptions[EditorComponent.SelAvail]:=LazFindReplaceDialog.Options;
   InputHistoriesSO.FindAutoComplete:=LazFindReplaceDialog.EnableAutoComplete;
   if DlgResult = mrCancel then
   begin
