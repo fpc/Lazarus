@@ -6642,6 +6642,8 @@ images/codetoolsdefines/da_undefine.png -text svneol=unset#image/png
 images/codetoolsdefines/da_undefineall.png -text svneol=unset#image/png
 images/codetoolsdefines/da_undefinerecurse.png -text svneol=unset#image/png
 images/components/default.png -text svneol=unset#image/png
+images/components/default_150.png -text
+images/components/default_200.png -text
 images/components/tactionlist.png -text svneol=unset#image/png
 images/components/tactionlist_150.png -text
 images/components/tactionlist_200.png -text
@@ -7001,6 +7003,8 @@ images/components/txmlpropstorage.png -text svneol=unset#image/png
 images/components/txmlpropstorage_150.png -text
 images/components/txmlpropstorage_200.png -text
 images/components/unregisteredcomponent.png -text svneol=unset#image/png
+images/components/unregisteredcomponent_150.png -text
+images/components/unregisteredcomponent_200.png -text
 images/components_images.bat svneol=native#text/x-msdos-program
 images/components_images.res -text
 images/components_images.sh svneol=native#text/plain
