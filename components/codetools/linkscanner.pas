@@ -243,6 +243,7 @@ const
      cmsISOLike_Program_Para,
      cmsISOLike_Mod]
     );
+  cmAllModesWithGeneric = [cmDELPHI,cmDELPHIUNICODE,cmOBJFPC];
 
 type
   // see fpcsrc/compiler/globtype.pas toptimizerswitch
