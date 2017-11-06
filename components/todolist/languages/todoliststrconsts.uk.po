@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-03-01 19:38+0200\n"
+"PO-Revision-Date: 2017-11-04 15:21+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -27,7 +27,7 @@ msgstr "Вставити макрос"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
-msgstr ""
+msgstr "Довідка"
 
 #: todoliststrconsts.lisoptions
 msgid "Options"

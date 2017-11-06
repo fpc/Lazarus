@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-10-21 01:48+0300\n"
+"PO-Revision-Date: 2017-11-04 15:22+0200\n"
 "Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -4892,7 +4892,7 @@ msgstr "&Видалити"
 
 #: lazarusidestrconsts.lisbtnrename
 msgid "&Rename"
-msgstr ""
+msgstr "&Перейменувати"
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
