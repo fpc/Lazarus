@@ -10697,11 +10697,9 @@ msgstr ""
 msgid "Invalid Pascal Identifier"
 msgstr "Nieprawidłowy identyfikator pascala"
 
-#: lazarusidestrconsts.lisinvalidpascalidentifiertext
-#, fuzzy
-#| msgid "The name \"%s\" is not a valid pascal identifier."
-msgid "The name \"%s\" is not a valid Pascal identifier."
-msgstr "Nazwa \"%s\" nie jest prawid?owym identyfikatorem pascala."
+#: lazarusidestrconsts.lisinvalidpascalidentifiername
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"

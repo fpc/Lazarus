@@ -10476,9 +10476,9 @@ msgstr "Neplatný (Zapnuto)"
 msgid "Invalid Pascal Identifier"
 msgstr "Neplatný Pascalovský identifikátor"
 
-#: lazarusidestrconsts.lisinvalidpascalidentifiertext
-msgid "The name \"%s\" is not a valid Pascal identifier."
-msgstr "Jméno \"%s\" není platný pascalovský identifikátor."
+#: lazarusidestrconsts.lisinvalidpascalidentifiername
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"

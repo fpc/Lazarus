@@ -10696,9 +10696,9 @@ msgstr "Inválido (Ligado)"
 msgid "Invalid Pascal Identifier"
 msgstr "Identificador Pascal inválido"
 
-#: lazarusidestrconsts.lisinvalidpascalidentifiertext
-msgid "The name \"%s\" is not a valid Pascal identifier."
-msgstr "O nome \"%s\" não é um identificador Pascal válido."
+#: lazarusidestrconsts.lisinvalidpascalidentifiername
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"

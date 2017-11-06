@@ -10443,9 +10443,9 @@ msgstr "無効 (On)"
 msgid "Invalid Pascal Identifier"
 msgstr "無効なPascal識別子"
 
-#: lazarusidestrconsts.lisinvalidpascalidentifiertext
-msgid "The name \"%s\" is not a valid Pascal identifier."
-msgstr "名前 \"%s\" は有効な Pascal 識別子ではありません。"
+#: lazarusidestrconsts.lisinvalidpascalidentifiername
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"

@@ -10566,10 +10566,9 @@ msgstr "Geçersiz (Açık)"
 msgid "Invalid Pascal Identifier"
 msgstr "Geçersiz Pascal Tanımlayıcı"
 
-#: lazarusidestrconsts.lisinvalidpascalidentifiertext
-#, fuzzy,badformat
-msgid "The name \"%s\" is not a valid Pascal identifier."
-msgstr "\"% S \\ \"adı geçerli bir Pascal tanımlayıcısı değil."
+#: lazarusidestrconsts.lisinvalidpascalidentifiername
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"

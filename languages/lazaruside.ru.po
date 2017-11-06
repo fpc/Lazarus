@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-10-30 01:04+0300\n"
+"PO-Revision-Date: 2017-11-07 01:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10456,9 +10456,9 @@ msgstr "Неверная (Вкл.)"
 msgid "Invalid Pascal Identifier"
 msgstr "Некорректный идентификатор Паскаля"
 
-#: lazarusidestrconsts.lisinvalidpascalidentifiertext
-msgid "The name \"%s\" is not a valid Pascal identifier."
-msgstr "Имя \"%s\" не является корректным идентификатором Паскаля."
+#: lazarusidestrconsts.lisinvalidpascalidentifiername
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgstr "Имя \"%s\" не является корректным идентификатором Паскаля.%sИспользовать вместо него имя \"%s\"?"
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"

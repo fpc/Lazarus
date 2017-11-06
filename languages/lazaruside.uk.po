@@ -10460,9 +10460,9 @@ msgstr "Неправильний (Увімк)"
 msgid "Invalid Pascal Identifier"
 msgstr "Некоректний ідентифікатор паскаля"
 
-#: lazarusidestrconsts.lisinvalidpascalidentifiertext
-msgid "The name \"%s\" is not a valid Pascal identifier."
-msgstr "Назва \"%s\" не є правильним ідентифікатором мови Pascal."
+#: lazarusidestrconsts.lisinvalidpascalidentifiername
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"
