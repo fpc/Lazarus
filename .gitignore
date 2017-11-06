@@ -402,10 +402,6 @@ examples/exploremenu/*.bak
 examples/exploremenu/units
 examples/fontenum/*.bak
 examples/fontenum/units
-examples/gridexamples/grid_semaphor/*.bak
-examples/gridexamples/grid_semaphor/example/*.bak
-examples/gridexamples/grid_semaphor/example/units
-examples/gridexamples/grid_semaphor/units
 examples/gridexamples/gridcelleditor/*.bak
 examples/gridexamples/gridcelleditor/units
 examples/helphtml/*.bak
