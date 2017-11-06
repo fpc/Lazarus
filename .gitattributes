@@ -7274,6 +7274,8 @@ images/menu/menu_pause.png -text svneol=unset#image/png
 images/menu/menu_pause_150.png -text
 images/menu/menu_pause_200.png -text
 images/menu/menu_project_add.png -text svneol=unset#image/png
+images/menu/menu_project_add_150.png -text
+images/menu/menu_project_add_200.png -text
 images/menu/menu_project_close.png -text svneol=unset#image/png
 images/menu/menu_project_close_150.png -text
 images/menu/menu_project_close_200.png -text
@@ -7296,6 +7298,8 @@ images/menu/menu_project_options.png -text svneol=unset#image/png
 images/menu/menu_project_options_150.png -text
 images/menu/menu_project_options_200.png -text
 images/menu/menu_project_remove.png -text svneol=unset#image/png
+images/menu/menu_project_remove_150.png -text
+images/menu/menu_project_remove_200.png -text
 images/menu/menu_project_save.png -text svneol=unset#image/png
 images/menu/menu_project_save_150.png -text
 images/menu/menu_project_save_200.png -text
@@ -7416,10 +7420,14 @@ images/menu/menu_toggle_bookmark9.png -text
 images/menu/menu_toggle_bookmark9_150.png -text
 images/menu/menu_toggle_bookmark9_200.png -text
 images/menu/menu_tool_check_lfm.png -text svneol=unset#image/png
+images/menu/menu_tool_check_lfm_150.png -text
+images/menu/menu_tool_check_lfm_200.png -text
 images/menu/menu_tool_dfm_to_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_diff.png -text svneol=unset#image/png
 images/menu/menu_tool_make_resourcestring.png -text svneol=unset#image/png
 images/menu/menu_tool_syntax_check.png -text svneol=unset#image/png
+images/menu/menu_tool_syntax_check_150.png -text
+images/menu/menu_tool_syntax_check_200.png -text
 images/menu/menu_uncomment.png -text
 images/menu/menu_uncomment_150.png -text
 images/menu/menu_uncomment_200.png -text
@@ -7464,6 +7472,8 @@ images/menu/menu_view_toggle_form_unit.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit_150.png -text
 images/menu/menu_view_toggle_form_unit_200.png -text
 images/menu/menu_view_unit_info.png -text svneol=unset#image/png
+images/menu/menu_view_unit_info_150.png -text
+images/menu/menu_view_unit_info_200.png -text
 images/menu/menu_view_units.png -text svneol=unset#image/png
 images/menu/menu_view_units_150.png -text
 images/menu/menu_view_units_200.png -text
