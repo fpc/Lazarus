@@ -2445,7 +2445,7 @@ procedure TThreads.Add(AThread: TThreadEntry);
 begin
   FList.Add(AThread.CreateCopy);
   if FList.Count = 1 then
-    FCurrentThreadId := AThread.ThreadId;
+    FCurrentThreadId := AThread.ThreadId; // TODO: this should never be needed?
 end;
 
 procedure TThreads.Remove(AThread: TThreadEntry);
