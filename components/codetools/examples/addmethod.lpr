@@ -32,8 +32,10 @@ uses
   // LazUtils
   LazFileUtils,
   // CodeTools
-  CodeCache, CodeToolManager, CodeCompletionTool, SimpleUnit1;
+  CodeCache, CodeToolsConfig, CodeToolManager, CodeCompletionTool, SimpleUnit1;
   
+const
+  ConfigFilename = 'codetools.config';
 type
   TMyMethodType = function(Sender: TObject; AValue: integer): string of object;
 
@@ -46,8 +48,22 @@ var
   MethodDefinition: String;
   CleanMethodDefinition: String;
   i: Integer;
+  Options: TCodeToolsOptions;
 begin
   // Example: find declaration of 'TObject'
+
+  // setup the Options
+  Options:=TCodeToolsOptions.Create;
+  // setup your paths
+  writeln('Config=',ConfigFilename);
+  if FileExists(ConfigFilename) then begin
+    // To not parse the FPC sources every time, the options are saved to a file.
+    Options.LoadFromFile(ConfigFilename);
+  end;
+  Options.InitWithEnvironmentVariables;
+  CodeToolBoss.Init(Options);
+  // save the options and the FPC unit links results.
+  Options.SaveToFile(ConfigFilename);
 
   // load the file
   Filename:=AppendPathDelim(GetCurrentDir)+'scanexamples'+PathDelim
@@ -55,7 +71,7 @@ begin
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
-    
+
   // Example 1: add a method compatible to TMyMethodType
   if CodeToolBoss.CreatePublishedMethod(Code,'TMyClass','NewMethod',
     typeinfo(TMyMethodType),true) then
@@ -90,6 +106,8 @@ begin
     raise Exception.Create('Explore failed');
   writeln('Method added: ');
   writeln(Code.Source);
+
+  Options.Free;
 end.
 
 
