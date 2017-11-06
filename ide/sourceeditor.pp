@@ -3320,7 +3320,8 @@ end;
 {------------------------------S T A R T  F I N D-----------------------------}
 procedure TSourceEditor.StartFindAndReplace(Replace:boolean);
 const
-  SaveOptions = [ssoMatchCase,ssoWholeWord,ssoRegExpr,ssoRegExprMultiLine,ssoPrompt,ssoBackwards];
+  SaveOptions = [ssoMatchCase, ssoWholeWord, ssoRegExpr, ssoRegExprMultiLine,
+                 ssoPrompt, ssoEntireScope, ssoBackwards];
 var
   NewOptions: TSynSearchOptions;
   ALeft,ATop:integer;
@@ -3337,7 +3338,7 @@ begin
   else
     NewOptions := NewOptions - [ssoReplace, ssoReplaceAll];
   NewOptions:=NewOptions-SaveOptions+InputHistoriesSO.FindOptions*SaveOptions
-                        -[ssoSelectedOnly, ssoEntireScope];
+                        -[ssoSelectedOnly];
 
   // Fill in history items
   LazFindReplaceDialog.TextToFindComboBox.Items.Assign(InputHistoriesSO.FindHistory);
