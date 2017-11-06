@@ -431,6 +431,7 @@ procedure TPlotAxis.SetAxisColor(const AValue: TColor);
 begin
   if FColor=AValue then exit;
   FColor:=AValue;
+  Changed;
 end;
 
 
@@ -447,6 +448,7 @@ begin
   If FInterval<=0 then
     Raise EPlotPanel.CreateFmt(SerrInvalidInterval,[AValue]);
   FInterval:=AValue;
+  Changed;
 end;
 
 procedure TPlotAxis.SetCaption(const AValue: TPlotCaption);
@@ -554,8 +556,10 @@ begin
   inherited Create;
   FCaption:=TPlotCaption.Create;
   FCaption.FOnChange:=@DoCaptionChange;
+  FCaption.Font.OnChange:= @DoCaptionChange;
   FColor:=DefAxisColor;
   FTickFont:=TFont.Create;
+  FTickFont.OnChange := @DoCaptionChange;
   FLegendInterval:=DefLegendInterval;
   FInterval:=DefInterval;
   FTickColor:=DefTickColor;
