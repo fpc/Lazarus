@@ -1939,6 +1939,16 @@ begin
       if OSError(CollapseWindow(fWindowRef, True),
         Self, SName, SCollapse) then Exit;
     end;
+  SW_RESTORE:
+    begin
+      if IsIconic then
+        SetForeground
+      else if IsZoomed then begin
+        if OSError(ZoomWindowIdeal(fWindowRef, inZoomIn, P),
+          Self, SName, SZoomIdeal, 'inZoomIn') then Exit;
+        SetForeground;
+      end;
+    end;
   end;
 
   Result := True;
