@@ -372,8 +372,8 @@ uses
 
 resourcestring
   SerrInvalidInterval = 'Invalid interval. Interval must be a positive number: %f';
-  DefXCaption = 'X values';
-  DefYCaption = 'Y values';
+//  DefXCaption = 'X values';
+//  DefYCaption = 'Y values';
 
 function Max(a, b: Integer): Integer;
 begin
@@ -719,7 +719,7 @@ begin
   FRightMargin:=DefRightMargin;
   FTicks:=DefXTicks;
   FTickSize:=DefXTickSize;
-  FCaption.Title:=DefXCaption;
+//  FCaption.Title:=DefXCaption;
 end;
 
 { TPlotYAxis }
@@ -760,7 +760,7 @@ begin
   FBottomMargin:=DefBottomMargin;
   FTicks:=DefYTicks;
   FTickSize:=DefYTickSize;
-  FCaption.FTitle:=DefYCaption;
+//  FCaption.FTitle:=DefYCaption;
 end;
 
 { TCanvasPlotter }
@@ -1168,7 +1168,6 @@ procedure TCanvasPlotter.PlotFunction(ACanvas: TCanvas);
 Var
   POX,PX,PXW,PY,POY,PEY,PYH,PLX,PLY : Integer; // Pixel units
   X,Y,XI,YI,YO : TPlotFloat;         // Plot units
-
 
 begin
   // X-origin in pixels.
