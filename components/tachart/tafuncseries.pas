@@ -34,21 +34,19 @@ type
 
   TFuncSeriesStep = 1..MaxInt;
 
-  TFuncSeries = class(TBasicFuncSeries)
+  TCustomFuncSeries = class(TBasicFuncSeries)
   strict private
     FDomainExclusions: TIntervalList;
     FExtentAutoY: Boolean;
-    FOnCalculate: TFuncCalculateEvent;
     FPen: TChartPen;
     FStep: TFuncSeriesStep;
 
-    function DoCalcIdentity(AX: Double): Double;
-    function DoCalculate(AX: Double): Double;
     procedure SetExtentAutoY(AValue: Boolean);
-    procedure SetOnCalculate(AValue: TFuncCalculateEvent);
     procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
+
   protected
+    function DoCalculate(AX: Double): Double; virtual; abstract;
     procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
 
@@ -61,19 +59,36 @@ type
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
-    function IsEmpty: Boolean; override;
   public
     property DomainExclusions: TIntervalList read FDomainExclusions;
   published
     property AxisIndexX;
     property AxisIndexY;
-    property OnCalculate: TFuncCalculateEvent
-      read FOnCalculate write SetOnCalculate;
     property ExtentAutoY: Boolean
       read FExtentAutoY write SetExtentAutoY default false;
     property Pen: TChartPen read FPen write SetPen;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_FUNC_STEP;
+  end;
+
+  TFuncSeries = class(TCustomFuncSeries)
+  strict private
+    FOnCalculate: TFuncCalculateEvent;
+    procedure SetOnCalculate(AValue: TFuncCalculateEvent);
+  protected
+    function DoCalcIdentity(AX: Double): Double;
+    function DoCalculate(AX: Double): Double; override;
+    procedure GetBounds(var ABounds: TDoubleRect); override;
+  public
+    procedure Assign(ASource: TPersistent); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
+    function GetNearestPoint(
+      const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
+    function IsEmpty: Boolean; override;
+  published
+    property OnCalculate: TFuncCalculateEvent
+      read FOnCalculate write SetOnCalculate;
   end;
 
   TParametricCurveCalculateEvent = procedure (
@@ -477,22 +492,22 @@ begin
   inherited;
 end;
 
-{ TFuncSeries }
 
-procedure TFuncSeries.Assign(ASource: TPersistent);
+{ TCustomFuncSeries }
+
+procedure TCustomFuncSeries.Assign(ASource: TPersistent);
 begin
-  if ASource is TFuncSeries then
+  if ASource is TCustomFuncSeries then
     with TFuncSeries(ASource) do begin
       Self.FDomainExclusions.Assign(FDomainExclusions);
       Self.FExtentAutoY := FExtentAutoY;
-      Self.FOnCalculate := FOnCalculate;
       Self.Pen := FPen;
       Self.FStep := FStep;
     end;
   inherited Assign(ASource);
 end;
 
-constructor TFuncSeries.Create(AOwner: TComponent);
+constructor TCustomFuncSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDomainExclusions := TIntervalList.Create;
@@ -502,11 +517,94 @@ begin
   FStep := DEF_FUNC_STEP;
 end;
 
-destructor TFuncSeries.Destroy;
+destructor TCustomFuncSeries.Destroy;
 begin
   FreeAndNil(FDomainExclusions);
   FreeAndNil(FPen);
   inherited;
+end;
+
+procedure TCustomFuncSeries.Draw(ADrawer: IChartDrawer);
+begin
+  ADrawer.SetBrushParams(bsClear, clTAColor);
+  ADrawer.Pen := Pen;
+  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
+    try
+      DrawFunction(ADrawer);
+    finally
+      Free;
+    end;
+end;
+
+procedure TCustomFuncSeries.GetBounds(var ABounds: TDoubleRect);
+var
+  ymin, ymax: Double;
+begin
+  inherited GetBounds(ABounds);
+  if not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY then
+    exit;
+  ymin := SafeInfinity;
+  ymax := NegInfinity;
+  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
+    try
+      CalcAxisExtentY(ABounds.a.X, ABounds.b.X, ymin, ymax);
+      if not Extent.UseYMin or (ymin > Extent.YMin) then
+        ABounds.a.Y := ymin;
+      if not Extent.UseYMax or (ymax < Extent.YMax) then
+        ABounds.b.Y := ymax;
+    finally
+      Free;
+    end;
+end;
+
+procedure TCustomFuncSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
+end;
+
+function TCustomFuncSeries.GetNearestPoint(
+  const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+begin
+  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
+    try
+      Result := GetNearestPoint(AParams, AResults);
+    finally
+      Free;
+    end;
+end;
+
+procedure TCustomFuncSeries.SetExtentAutoY(AValue: Boolean);
+begin
+  if FExtentAutoY = AValue then exit;
+  FExtentAutoY := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomFuncSeries.SetPen(AValue: TChartPen);
+begin
+  if FPen = AValue then exit;
+  FPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TCustomFuncSeries.SetStep(AValue: TFuncSeriesStep);
+begin
+  if FStep = AValue then exit;
+  FStep := AValue;
+  UpdateParentChart;
+end;
+
+
+{ TFuncSeries }
+
+procedure TFuncSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TFuncSeries then
+    with TFuncSeries(ASource) do begin
+      Self.FOnCalculate := FOnCalculate;
+    end;
+  inherited Assign(ASource);
 end;
 
 function TFuncSeries.DoCalcIdentity(AX: Double): Double;
@@ -544,28 +642,8 @@ var
   ymin, ymax: Double;
 begin
   inherited GetBounds(ABounds);
-  if
-    not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY
-    or not Assigned(OnCalculate)
-  then
+  if Assigned(OnCalculate) then
     exit;
-  ymin := SafeInfinity;
-  ymax := NegInfinity;
-  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
-    try
-      CalcAxisExtentY(ABounds.a.X, ABounds.b.X, ymin, ymax);
-      if not Extent.UseYMin or (ymin > Extent.YMin) then
-        ABounds.a.Y := ymin;
-      if not Extent.UseYMax or (ymax < Extent.YMax) then
-        ABounds.b.Y := ymax;
-    finally
-      Free;
-    end;
-end;
-
-procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
-begin
-  AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
 end;
 
 function TFuncSeries.GetNearestPoint(
@@ -573,26 +651,14 @@ function TFuncSeries.GetNearestPoint(
   out AResults: TNearestPointResults): Boolean;
 begin
   AResults.FIndex := -1;
-  if not Assigned(OnCalculate) then exit(false);
-
-  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
-    try
-      Result := GetNearestPoint(AParams, AResults);
-    finally
-      Free;
-    end;
+  if not Assigned(OnCalculate) then
+    exit(false);
+  Result := inherited;
 end;
 
 function TFuncSeries.IsEmpty: Boolean;
 begin
   Result := not Assigned(OnCalculate);
-end;
-
-procedure TFuncSeries.SetExtentAutoY(AValue: Boolean);
-begin
-  if FExtentAutoY = AValue then exit;
-  FExtentAutoY := AValue;
-  UpdateParentChart;
 end;
 
 procedure TFuncSeries.SetOnCalculate(AValue: TFuncCalculateEvent);
@@ -602,19 +668,6 @@ begin
   UpdateParentChart;
 end;
 
-procedure TFuncSeries.SetPen(AValue: TChartPen);
-begin
-  if FPen = AValue then exit;
-  FPen.Assign(AValue);
-  UpdateParentChart;
-end;
-
-procedure TFuncSeries.SetStep(AValue: TFuncSeriesStep);
-begin
-  if FStep = AValue then exit;
-  FStep := AValue;
-  UpdateParentChart;
-end;
 
 { TParametricCurveSeries }
 

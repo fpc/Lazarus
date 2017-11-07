@@ -469,7 +469,6 @@ implementation
 {$R tagraph.res}
 
 uses
-  lazlogger,
   Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, Types,
   TADrawerCanvas, TAGeometry, TAMath, TAStyles;
 
