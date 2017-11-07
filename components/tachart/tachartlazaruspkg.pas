@@ -18,7 +18,7 @@ uses
   TAAnimatedSource, TATextElements, TAAxisSource, TASeriesPropEditors, 
   TACustomFuncSeries, TAFitUtils, TAGUIConnector, TADiagram, TADiagramDrawing, 
   TADiagramLayout, TAChartStrConsts, TAChartCombos, TAHtml, TAFonts, 
-  LazarusPackageIntf;
+  TAExpressionSeries, LazarusPackageIntf;
 
 implementation
 
