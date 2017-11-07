@@ -1,6 +1,16 @@
 btnfiltercancel.png
 btncalculator.png
+btncalculator_150.png
+btncalculator_200.png
 btncalendar.png
+btncalendar_150.png
+btncalendar_200.png
 btnseldir.png
+btnseldir_150.png
+btnseldir_200.png
 btnselfile.png
+btnselfile_150.png
+btnselfile_200.png
 btntime.png
+btntime_150.png
+btntime_200.png
