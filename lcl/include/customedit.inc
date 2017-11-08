@@ -640,6 +640,12 @@ begin
   inherited DoExit;
 end;
 
+procedure TCustomEdit.EditingDone;
+begin
+  if not ReadOnly then
+    inherited EditingDone;
+end;
+
 procedure TCustomEdit.FontChanged(Sender: TObject);
 var
   HintFont: TObject;
