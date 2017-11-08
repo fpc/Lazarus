@@ -165,6 +165,14 @@ msgstr "Atstumo matavimas"
 msgid "Down triangle"
 msgstr "Trikampis į apačią"
 
+#: tachartstrconsts.rserrinvalidresulttype
+msgid "Expression result type must be integer or float. Got \"%s\"."
+msgstr ""
+
+#: tachartstrconsts.rsexpressionseries
+msgid "Math expression series"
+msgstr ""
+
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
 msgstr "Vektorinio lauko sekos"

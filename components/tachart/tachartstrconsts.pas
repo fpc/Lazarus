@@ -24,6 +24,7 @@ resourcestring
   rsPieSeries = 'Pie series';
   rsPolarSeries = 'Polar series';
   rsUserDrawnSeries = 'User-drawn series';
+  rsExpressionSeries = 'Math expression series';
 
   // Series editor
   sesSeriesEditorTitle = 'Edit series';
@@ -119,6 +120,8 @@ resourcestring
   rsBSClear = 'no fill';
   rsBSImage = 'image fill';
   rsBSPattern = 'pattern fill';
+
+  rsErrInvalidResultType = 'Expression result type must be integer or float. Got "%s".';
 
 implementation
 

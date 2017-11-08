@@ -103,13 +103,7 @@ type
 implementation
 
 uses
-  Math, TAGraph;
-
-resourcestring
-  rsExpressionSeries = 'Math expression series';
-  rsErrInvalidBoolean = 'Expression must return a boolean value. Got "%s".';
-  rsErrInvalidResultType = 'Expression result type must be integer or float. Got %s".';
-
+  Math, TAGraph, TAChartStrConsts;
 
   { TChartExprParam }
 

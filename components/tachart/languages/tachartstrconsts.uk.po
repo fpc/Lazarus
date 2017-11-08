@@ -166,6 +166,14 @@ msgstr "Вимірювання відстані"
 msgid "Down triangle"
 msgstr "Трикутник з вершиною донизу"
 
+#: tachartstrconsts.rserrinvalidresulttype
+msgid "Expression result type must be integer or float. Got \"%s\"."
+msgstr ""
+
+#: tachartstrconsts.rsexpressionseries
+msgid "Math expression series"
+msgstr ""
+
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
 msgstr "Діаграма з векторним полем"
