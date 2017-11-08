@@ -33,6 +33,7 @@ const
   PERCENT = 0.01;
   clTAColor = $20000000; // = clDefault, but avoiding dependency on Graphics
   DEFAULT_FONT_SIZE = 10;
+  DEFAULT_EPSILON = 1e-6;
 
 type
   EChartError = class(Exception);
@@ -706,8 +707,6 @@ begin
 end;
 
 constructor TIntervalList.Create;
-const
-  DEFAULT_EPSILON = 1e-6;
 begin
   FEpsilon := DEFAULT_EPSILON;
 end;
