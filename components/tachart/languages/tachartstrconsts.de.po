@@ -112,7 +112,7 @@ msgstr "Kreis"
 
 #: tachartstrconsts.rscolormapseries
 msgid "Color map series"
-msgstr "Farbkarten-Plot"
+msgstr "Farbkodiertes Diagramm"
 
 #: tachartstrconsts.rsconstantline
 msgid "Constant line"
