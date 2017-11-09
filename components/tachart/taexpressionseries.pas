@@ -48,14 +48,16 @@ type
   end;
 
   TDomainParts = array[0..4] of String;
-  // parts of a domain expression '1 >= x > 0' --> '1', '>=', 'x', '>', '0'
+  // parts of a domain expression
+  // e.g. '1>= x >0' has the parts '1', '>=', 'x', '>', '0'
 
   TChartDomainScanner = class
   private
+    FSeries: TExpressionSeries;
     FParser: TFpExpressionParser;
-    FVariable: String;
     FExpression: String;
     FEpsilon: Double;
+    function GetVariable: String;
   protected
     procedure Analyze(AList, ADomain: TIntervalList; const AParts: TDomainParts);
     procedure ConvertToExclusions(AList, ADomain: TIntervalList);
@@ -66,7 +68,7 @@ type
     procedure ExtractDomainExclusions(AList: TIntervalList);
     property Epsilon: Double read FEpsilon write FEpsilon;
     property Expression: String read FExpression write FExpression;
-    property Variable: String read FVariable write FVariable;
+    property Variable: String read GetVariable;
   end;
 
   TExpressionSeries = class(TCustomFuncSeries)
@@ -170,8 +172,8 @@ end;
 
 constructor TChartDomainScanner.Create(ASeries: TExpressionSeries);
 begin
+  FSeries := ASeries;
   FParser := ASeries.FParser;
-  FVariable := ASeries.Variable;
 end;
 
 { Analyzes the parts of the domain expression and extract the intervals on
@@ -184,7 +186,7 @@ var
   a, b: Double;
 begin
   // two-sided interval, e.g. "0 < x <= 1", or "2 > x >= 1"
-  if (AParts[2] = FVariable) and (AParts[3] <> '') and (AParts[4] <> '') then
+  if (AParts[2] = Variable) and (AParts[3] <> '') and (AParts[4] <> '') then
   begin
     FParser.Expression := AParts[0];
     a := ArgToFloat(FParser.Evaluate);
@@ -197,7 +199,7 @@ begin
       ADomain.AddRange(b, a);
   end else
   // one-sided interval, variable is at left
-  if (AParts[0] = FVariable) and (AParts[3] = '') and (AParts[4] = '') then
+  if (AParts[0] = Variable) and (AParts[3] = '') and (AParts[4] = '') then
   begin
     FParser.Expression := AParts[2];
     a := ArgToFloat(FParser.Evaluate);
@@ -209,7 +211,7 @@ begin
     end;
   end else
   // one-sided interval, variable is at right
-  if (AParts[2] = FVariable) and (AParts[3] = '') and (AParts[4] = '') then
+  if (AParts[2] = Variable) and (AParts[3] = '') and (AParts[4] = '') then
   begin
     FParser.Expression := AParts[0];
     a := ArgToFloat(FParser.Evaluate);
@@ -330,6 +332,11 @@ begin
     domains.Free;
     FParser.Expression := savedExpr;
   end;
+end;
+
+function TChartDomainScanner.GetVariable: String;
+begin
+  Result := FSeries.Variable;
 end;
 
 { Parses the expression string and creates an interval list with the
@@ -496,8 +503,8 @@ procedure TExpressionSeries.SetVariable(const AValue: String);
 begin
   if FVariable = AValue then exit;
   FVariable := AValue;
-  FDomainScanner.Variable := AValue;
   SetParams(FParams);
+  UpdateParentChart;
 end;
 
 
