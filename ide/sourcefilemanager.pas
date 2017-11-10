@@ -4956,9 +4956,9 @@ var
   SaveDialog: TSaveDialog;
   SrcEdit: TSourceEditor;
   SaveAsFilename, SaveAsFileExt: string;
-  NewFilename, NewUnitName, FileWithoutPath: string;
+  NewFilename, NewFileExt: string;
+  OldUnitName, NewUnitName: string;
   ACaption, AText, APath: string;
-  OldUnitName, AlternativeUnitName: String;
   Filter, AllEditorExt, AllFilter: string;
 begin
   if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount>0) then
@@ -5033,90 +5033,101 @@ begin
     APath:=PkgBoss.GetDefaultSaveDirectoryForFile(AFilename);
     if (APath<>'') and (not FileIsInPath(SaveDialog.InitialDir,APath)) then
       SaveDialog.InitialDir:=APath;
-    // show save dialog
-    if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='') then
-      exit(mrCancel);  // user cancels
-    NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
-    //debugln(['TLazSourceFileManager.ShowSaveFileAsDialog SaveDialog.Filename="',SaveDialog.Filename,'" NewFilename="',NewFilename,'"']);
+
+    repeat
+      // show save dialog
+      if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='') then
+        exit(mrCancel);  // user cancels
+      NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
+
+      // check file extension
+      NewFileExt:=ExtractFileExt(NewFilename);
+      if NewFileExt='' then begin
+        NewFileExt:=SaveAsFileExt;
+        NewFilename:=NewFilename+SaveAsFileExt;
+      end;
+
+      // check file path
+      APath:=ExtractFilePath(NewFilename);
+      if not DirPathExists(APath) then begin
+        ACaption:=lisEnvOptDlgDirectoryNotFound;
+        AText:=Format(lisTheDestinationDirectoryDoesNotExist, [LineEnding, APath]);
+        Result:=IDEMessageDialogAb(ACaption, AText, mtConfirmation,[mbCancel],CanAbort);
+        exit;
+      end;
+
+      // check unitname
+      if (NewFileExt<>'') and IsPascalUnitExt(PChar(NewFileExt)) then begin
+        NewUnitName:=ExtractFileNameOnly(NewFilename);
+        // Do not rename the unit if new filename differs from its name only in case
+        if LowerCase(OldUnitName)=NewUnitName then
+          NewUnitName:=OldUnitName;
+        if NewUnitName='' then
+          exit(mrCancel);
+        // Is it a valid name? Ask user.
+        if not IsValidUnitName(NewUnitName) then
+        begin
+          Result:=IDEQuestionDialogAb(lisInvalidPascalIdentifierCap,
+              Format(lisInvalidPascalIdentifierName,[NewUnitName,LineEnding]),
+              mtConfirmation, [mrIgnore, lisSave,
+                               mrCancel, lisCancel,
+                               mrRetry, lisChooseADifferentName,
+                               mrAbort, lisAbort], not CanAbort);
+          if Result=mrRetry then
+            continue;
+          if Result in [mrCancel,mrAbort] then
+            exit;
+        end;
+        // Does the project already have such unit?
+        if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
+        begin
+          Result:=IDEQuestionDialogAb(lisUnitNameAlreadyExistsCap,
+              Format(lisTheUnitAlreadyExists, [NewUnitName]),
+              mtConfirmation, [mrIgnore, lisForceRenaming,
+                               mrCancel, lisCancelRenaming,
+                               mrAbort, lisAbort], not CanAbort);
+          if Result<>mrIgnore then
+            exit;
+        end;
+      end;
+    until Result<>mrRetry;
   finally
     InputHistories.StoreFileDialogSettings(SaveDialog);
     SaveDialog.Free;
   end;
 
-  // check file extension
-  if ExtractFileExt(NewFilename)='' then begin
-    NewFilename:=NewFilename+SaveAsFileExt;
-  end;
-
-  // check file path
-  APath:=ExtractFilePath(NewFilename);
-  if not DirPathExists(APath) then begin
-    ACaption:=lisEnvOptDlgDirectoryNotFound;
-    AText:=Format(lisTheDestinationDirectoryDoesNotExist, [LineEnding, APath]);
-    Result:=IDEMessageDialogAb(ACaption, AText, mtConfirmation,[mbCancel],CanAbort);
-    exit;
-  end;
-
-  // check unitname
-  NewUnitName:=ExtractFileNameOnly(NewFilename);
-  // Do not rename the unit if new filename differs from its name only in case
-  if LowerCase(OldUnitName)=NewUnitName then
-    NewUnitName:=OldUnitName;
-  if NewUnitName='' then
-    exit(mrCancel);
-  // Is it a valid name? Offer an alternative name if not.
-  if not IsValidUnitName(NewUnitName) then
-  begin
-    AlternativeUnitName:=NameToValidIdentifier(NewUnitName);
-    Result:=IDEMessageDialogAb(lisInvalidPascalIdentifierCap,
-      Format(lisInvalidPascalIdentifierName,[NewUnitName,LineEnding,AlternativeUnitName]),
-                               mtWarning,[mbYes,mbNo],False);
-    if Result=mrNo then
-      exit(mrCancel);
-    NewUnitName:=AlternativeUnitName;
-    NewFileName:=ExtractFilePath(NewFilename)+LowerCase(NewUnitName)+SaveAsFileExt;
-  end;
-  // Does the project alreade have such unit?
-  if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
-  begin
-    Result:=IDEQuestionDialogAb(lisUnitNameAlreadyExistsCap,
-       Format(lisTheUnitAlreadyExists, [NewUnitName]),
-        mtConfirmation, [mrIgnore, lisForceRenaming,
-                        mrCancel, lisCancelRenaming,
-                        mrAbort, lisAbortAll], not CanAbort);
-    if Result<>mrIgnore then
-      exit;
-  end;
-
   // check filename
   if FilenameIsPascalUnit(NewFilename) then begin
-    FileWithoutPath:=ExtractFileName(NewFilename);
+    AText:=ExtractFileName(NewFilename);
     // check if file should be auto renamed
     if EnvironmentOptions.CharcaseFileAction = ccfaAsk then begin
-      if LowerCase(FileWithoutPath)<>FileWithoutPath then begin
+      if LowerCase(AText)<>AText then begin
         Result:=IDEQuestionDialogAb(lisRenameFile,
-          Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC,
-                 [LineEnding, LineEnding]),
-          mtWarning, [mrYes, lisRenameToLowercase, mrNoToAll, lisKeepName,
-                      mrAbort, lisAbortAll], not CanAbort);
+            Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC,
+                   [LineEnding, LineEnding]),
+            mtWarning, [mrYes, lisRenameToLowercase,
+                        mrNoToAll, lisKeepName,
+                        mrAbort, lisAbort], not CanAbort);
         if Result=mrYes then
-          NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
+          NewFileName:=ExtractFilePath(NewFilename)+lowercase(AText);
         Result:=mrOk;
       end;
     end else begin
       if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then
-        NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
+        NewFileName:=ExtractFilePath(NewFilename)+LowerCase(AText);
     end;
   end;
 
   // check overwrite existing file
-  if ((not FilenameIsAbsolute(AFilename))
-      or (CompareFilenames(NewFilename,AFilename)<>0))
-  and FileExistsUTF8(NewFilename) then begin
+  if ((not FilenameIsAbsolute(AFilename)) or (CompareFilenames(NewFilename,AFilename)<>0))
+  and FileExistsUTF8(NewFilename) then
+  begin
     ACaption:=lisOverwriteFile;
     AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewFilename, LineEnding]);
     Result:=IDEQuestionDialogAb(ACaption, AText, mtConfirmation,
-      [mrYes, lisOverwriteFileOnDisk, mrCancel, mrAbort, lisAbortAll], not CanAbort);
+                                [mrYes, lisOverwriteFileOnDisk,
+                                 mrCancel,
+                                 mrAbort, lisAbort], not CanAbort);
     if Result=mrCancel then exit;
   end;
 

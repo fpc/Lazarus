@@ -1132,7 +1132,7 @@ resourcestring
   lisAbortAll = 'Abort all';
   lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
   lisInvalidPascalIdentifierName = 'The name "%s" is not a valid Pascal identifier.'
-      +'%sUse an alternative name "%s" instead?';
+      +'%sUse it anyway?';
   lisCopyError = 'Copy Error';
 
   lisCloseAllTabsTitle = 'Close Source Editor Window';
