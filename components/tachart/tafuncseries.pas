@@ -345,7 +345,7 @@ type
   TFuncCalculate3DEvent =
     procedure (const AX, AY: Double; out AZ: Double) of object;
 
-  TColorMapSeries = class(TBasicFuncSeries)
+  TCustomColorMapSeries = class(TBasicFuncSeries)
   public
   type
     TUseImage = (cmuiAuto, cmuiAlways, cmuiNever);
@@ -354,14 +354,12 @@ type
     FColorSource: TCustomChartSource;
     FColorSourceListener: TListener;
     FInterpolate: Boolean;
-    FOnCalculate: TFuncCalculate3DEvent;
     FStepX: TFuncSeriesStep;
     FStepY: TFuncSeriesStep;
     FUseImage: TUseImage;
     procedure SetBrush(AValue: TBrush);
     procedure SetColorSource(AValue: TCustomChartSource);
     procedure SetInterpolate(AValue: Boolean);
-    procedure SetOnCalculate(AValue: TFuncCalculate3DEvent);
     procedure SetStepX(AValue: TFuncSeriesStep);
     procedure SetStepY(AValue: TFuncSeriesStep);
     procedure SetUseImage(AValue: TUseImage);
@@ -375,6 +373,7 @@ type
 
   public
     function ColorByValue(AValue: Double): TColor;
+    function FunctionValue(AX, AY: Double): Double; virtual;
     procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
   published
@@ -385,8 +384,6 @@ type
       read FColorSource write SetColorSource;
     property Interpolate: Boolean
       read FInterpolate write SetInterpolate default false;
-    property OnCalculate: TFuncCalculate3DEvent
-      read FOnCalculate write SetOnCalculate;
     property StepX: TFuncSeriesStep
       read FStepX write SetStepX default DEF_COLORMAP_STEP;
     property StepY: TFuncSeriesStep
@@ -394,6 +391,20 @@ type
     property UseImage: TUseImage
       read FUseImage write SetUseImage default cmuiAuto;
   end;
+
+  TColorMapSeries = class(TCustomColorMapSeries)
+  private
+    FOnCalculate: TFuncCalculate3DEvent;
+    procedure SetOnCalculate(AValue: TFuncCalculate3DEvent);
+  public
+    procedure Assign(ASource: TPersistent); override;
+    function FunctionValue(AX, AY: Double): Double; override;
+    function IsEmpty: Boolean; override;
+  published
+    property OnCalculate: TFuncCalculate3DEvent
+      read FOnCalculate write SetOnCalculate;
+  end;
+
 
   // Builds an equation string based on the parameters and the type of equation.
   // AXText and AYText are placeholders for the x and y variables, respectively.
@@ -1776,23 +1787,23 @@ begin
     ANewY := AY;
 end;
 
-{ TColorMapSeries }
 
-procedure TColorMapSeries.Assign(ASource: TPersistent);
+{ TCustomColorMapSeries }
+
+procedure TCustomColorMapSeries.Assign(ASource: TPersistent);
 begin
-  if ASource is TColorMapSeries then
-    with TColorMapSeries(ASource) do begin
+  if ASource is TCustomColorMapSeries then
+    with TCustomColorMapSeries(ASource) do begin
       Self.Brush := FBrush;
       Self.ColorSource := FColorSource;
       Self.FInterpolate := FInterpolate;
-      Self.FOnCalculate := FOnCalculate;
       Self.FStepX := FStepX;
       Self.FStepY := FStepY;
     end;
   inherited Assign(ASource);
 end;
 
-function TColorMapSeries.ColorByValue(AValue: Double): TColor;
+function TCustomColorMapSeries.ColorByValue(AValue: Double): TColor;
 var
   lb, ub: Integer;
   c1, c2: TColor;
@@ -1818,7 +1829,7 @@ begin
     Result := ColorSource[EnsureRange(lb, 0, ColorSource.Count - 1)]^.Color;
 end;
 
-constructor TColorMapSeries.Create(AOwner: TComponent);
+constructor TCustomColorMapSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColorSourceListener := TListener.Create(@FColorSource, @StyleChanged);
@@ -1828,14 +1839,14 @@ begin
   FStepY := DEF_COLORMAP_STEP;
 end;
 
-destructor TColorMapSeries.Destroy;
+destructor TCustomColorMapSeries.Destroy;
 begin
   FreeAndNil(FColorSourceListener);
   FreeAndNil(FBrush);
   inherited Destroy;
 end;
 
-procedure TColorMapSeries.Draw(ADrawer: IChartDrawer);
+procedure TCustomColorMapSeries.Draw(ADrawer: IChartDrawer);
 var
   ext: TDoubleRect;
   bounds: TDoubleRect;
@@ -1897,7 +1908,7 @@ begin
         end;
         gp := GraphToAxis(ParentChart.ImageToGraph((pt + next) div 2));
         if not (csDesigning in ComponentState) then
-          OnCalculate(gp.X, gp.Y, v);
+          v := FunctionValue(gp.X, gp.Y);
         cell := Rect(
           Max(pt.X, r.Left), Max(pt.Y, r.Top),
           Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
@@ -1926,7 +1937,12 @@ begin
   end;
 end;
 
-procedure TColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
+function TCustomColorMapSeries.FunctionValue(AX, AY: Double): Double;
+begin
+  Result := 0.0;
+end;
+
+procedure TCustomColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
 
   function PrepareFormats: TStrings;
   const
@@ -1999,19 +2015,19 @@ begin
   end;
 end;
 
-function TColorMapSeries.IsEmpty: Boolean;
+function TCustomColorMapSeries.IsEmpty: Boolean;
 begin
-  Result := not Assigned(OnCalculate);
+  Result := true;
 end;
 
-procedure TColorMapSeries.SetBrush(AValue: TBrush);
+procedure TCustomColorMapSeries.SetBrush(AValue: TBrush);
 begin
   if FBrush = AValue then exit;
   FBrush := AValue;
   UpdateParentChart;
 end;
 
-procedure TColorMapSeries.SetColorSource(AValue: TCustomChartSource);
+procedure TCustomColorMapSeries.SetColorSource(AValue: TCustomChartSource);
 begin
   if FColorSource = AValue then exit;
   if FColorSourceListener.IsListening then
@@ -2022,11 +2038,54 @@ begin
   UpdateParentChart;
 end;
 
-procedure TColorMapSeries.SetInterpolate(AValue: Boolean);
+procedure TCustomColorMapSeries.SetInterpolate(AValue: Boolean);
 begin
   if FInterpolate = AValue then exit;
   FInterpolate := AValue;
   UpdateParentChart;
+end;
+
+procedure TCustomColorMapSeries.SetStepX(AValue: TFuncSeriesStep);
+begin
+  if FStepX = AValue then exit;
+  FStepX := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomColorMapSeries.SetStepY(AValue: TFuncSeriesStep);
+begin
+  if FStepY = AValue then exit;
+  FStepY := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomColorMapSeries.SetUseImage(AValue: TUseImage);
+begin
+  if FUseImage = AValue then exit;
+  FUseImage := AValue;
+  UpdateParentChart;
+end;
+
+
+{ TColorMapSeries }
+
+procedure TColorMapSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TColorMapSeries then
+    with TCustomColorMapSeries(ASource) do begin
+      Self.FOnCalculate := FOnCalculate;
+    end;
+  inherited;
+end;
+
+function TColorMapSeries.FunctionValue(AX, AY: Double): Double;
+begin
+  OnCalculate(AX, AY, Result);
+end;
+
+function TColorMapSeries.IsEmpty: Boolean;
+begin
+  Result := not Assigned(OnCalculate);
 end;
 
 procedure TColorMapSeries.SetOnCalculate(AValue: TFuncCalculate3DEvent);
@@ -2036,26 +2095,6 @@ begin
   UpdateParentChart;
 end;
 
-procedure TColorMapSeries.SetStepX(AValue: TFuncSeriesStep);
-begin
-  if FStepX = AValue then exit;
-  FStepX := AValue;
-  UpdateParentChart;
-end;
-
-procedure TColorMapSeries.SetStepY(AValue: TFuncSeriesStep);
-begin
-  if FStepY = AValue then exit;
-  FStepY := AValue;
-  UpdateParentChart;
-end;
-
-procedure TColorMapSeries.SetUseImage(AValue: TUseImage);
-begin
-  if FUseImage = AValue then exit;
-  FUseImage := AValue;
-  UpdateParentChart;
-end;
 
 initialization
   RegisterSeriesClass(TFuncSeries, @rsFunctionSeries);
