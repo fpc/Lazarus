@@ -7,9 +7,15 @@
   for details about the license.
  *****************************************************************************
 
- Author: Werner Pamler
+ AUTHOR: Werner Pamler
+
+ NOTE:
+ Set/unset the define MATH_EXPRESSIONS to get/remove design-time access to
+ functions declared in the unit Math. For runtime-only access call
+ "ExtendExprBuiltIns()".
 
 }
+
 unit TAExpressionSeries;
 
 {$H+}
@@ -17,8 +23,8 @@ unit TAExpressionSeries;
 interface
 
 uses
-  Classes, Graphics, typ, Types, SysUtils, fpexprpars,
-  TAChartUtils, TAFuncSeries;
+  Classes, Graphics, SysUtils, fpexprpars,
+  TAChartUtils, TADrawUtils, TAFuncSeries;
 
 type
   TExpressionSeries = class;
@@ -27,23 +33,27 @@ type
   private
     FName: String;
     FValue: Double;
+    procedure ParamChanged(ASender: TObject);
+    procedure SetName(const AValue: String);
+    procedure SetValue(const AValue: Double);
   public
     procedure Assign(Source: TPersistent); override;
   published
-    property Name: String read FName write FName;
-    property Value: Double read FValue write FValue;
+    property Name: String read FName write SetName;
+    property Value: Double read FValue write SetValue;
   end;
 
   TChartExprParams = class(TCollection)
   private
     FParser: TFpExpressionParser;
+    FSeries: TExpressionSeries;
     function GetP(AIndex: Integer): TChartExprParam;
     procedure SetP(AIndex: Integer; AValue: TChartExprParam);
   protected
-    procedure UpdateIdentifier(const AName: String; const AValue: Double);
+    procedure Changed;
   public
+    constructor Create(ASeries: TExpressionSeries);
     function AddParam(const AName: String; const AValue: Double): TChartExprParam;
-    procedure Update(AItem: TCollectionItem); override;
     property Params[AIndex: Integer]: TChartExprParam read GetP write SetP; default;
   end;
 
@@ -73,14 +83,15 @@ type
 
   TExpressionSeries = class(TCustomFuncSeries)
   private
-    FParser: TFpExpressionParser;
+    FDomain: String;
+    FDomainEpsilon: Double;
     FDomainScanner: TChartDomainScanner;
+    FExpression: String;
     FParams: TChartExprParams;
-    FX: TFPExprIdentifierDef;
+    FParser: TFpExpressionParser;
     FVariable: String;
-    function GetDomain: String;
-    function GetDomainEpsilon: Double;
-    function GetExpression: String;
+    FX: TFPExprIdentifierDef;
+    FDirty: Boolean;
     procedure SetDomain(const AValue: String);
     procedure SetDomainEpsilon(const AValue: Double);
     procedure SetExpression(const AValue: string);
@@ -88,38 +99,73 @@ type
     procedure SetVariable(const AValue: String);
   protected
     function DoCalculate(AX: Double): Double; override;
+    procedure GetBounds(var ABounds: TDoubleRect); override;
+    procedure SetupParser;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(ASource: TPersistent); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
+    procedure RequestParserUpdate; inline;
   published
-    property Domain: String read GetDomain write SetDomain;
-    property DomainEpsilon: Double read GetDomainEpsilon write SetDomainEpsilon;
-    property Expression: String read GetExpression write SetExpression;
+    property DomainEpsilon: Double read FDomainEpsilon write SetDomainEpsilon;
     property Params: TChartExprParams read FParams write SetParams;
     property Variable: String read FVariable write SetVariable;
+    property Domain: String read FDomain write SetDomain;
+    property Expression: String read FExpression write SetExpression;
   end;
+
+procedure ExtendExprBuiltins;
 
 
 implementation
 
 uses
-  Math, TAGraph, TAChartStrConsts;
+  Math,
+  TAGraph, TAChartStrConsts;
 
-  { TChartExprParam }
+
+{ TChartExprParam }
 
 procedure TChartExprParam.Assign(Source: TPersistent);
 begin
   if Source is TChartExprParam then begin
     FName := TChartExprParam(Source).Name;
     FValue := TChartExprParam(Source).Value;
-  end else
-    inherited Assign(Source);
+  end;
+  inherited Assign(Source);
+end;
+
+procedure TChartExprParam.ParamChanged(ASender: TObject);
+begin
+  Unused(ASender);
+  TChartExprParams(Collection).Changed;
+end;
+
+procedure TChartExprParam.SetName(const AValue: String);
+begin
+  if AValue = FName then exit;
+  FName := AValue;
+  ParamChanged(self);
+end;
+
+procedure TChartExprParam.SetValue(const AValue: Double);
+begin
+  if AValue = FValue then exit;
+  FValue := AValue;
+  ParamChanged(self);
 end;
 
 
 { TChartExprParams }
+
+constructor TChartExprParams.Create(ASeries: TExpressionSeries);
+begin
+  inherited Create(TChartExprParam);
+  FSeries := ASeries;
+  FParser := ASeries.FParser;
+end;
 
 function TChartExprParams.AddParam(const AName: String;
   const AValue: Double): TChartExprParam;
@@ -127,8 +173,13 @@ begin
   Result := Add as TChartExprParam;
   Result.FName := AName;
   Result.FValue := AValue;
-  UpdateIdentifier(AName, AValue);
-  //Changed;
+  FSeries.RequestParserUpdate;
+end;
+
+procedure TChartExprParams.Changed;
+begin
+  FSeries.RequestParserUpdate;
+  FSeries.UpdateParentChart;
 end;
 
 function TChartExprParams.GetP(AIndex: Integer): TChartExprParam;
@@ -140,31 +191,6 @@ procedure TChartExprParams.SetP(AIndex: Integer;
   AValue: TChartExprParam);
 begin
   Items[AIndex] := AValue;
-  UpdateIdentifier(AValue.Name, AValue.Value);
-end;
-
-procedure TChartExprParams.Update(AItem: TCollectionItem);
-var
-  p: TChartExprParam;
-begin
-  if Assigned(FParser) then begin
-    p := TChartExprParam(AItem);
-    if p <> nil then UpdateIdentifier(p.Name, p.Value);
-  end;
-end;
-
-procedure TChartExprParams.UpdateIdentifier(const AName: String;
-  const AValue: Double);
-var
-  ident: TFpExprIdentifierDef;
-  s: String;
-begin
-  Str(AValue:0, s);
-  ident := FParser.Identifiers.FindIdentifier(AName);
-  if ident = nil then
-    FParser.Identifiers.AddFloatVariable(AName, AValue)
-  else
-    ident.Value := s;
 end;
 
 
@@ -244,10 +270,7 @@ type
 var
   a, b: Double;
   i, j: Integer;
-  intervalWithStart: Boolean;
-  intervalWithEnd: Boolean;
   points: array of TIntervalPoint;
-  npoints: Integer;
 begin
   if ADomain.IntervalCount = 0 then
     exit;
@@ -396,23 +419,26 @@ end;
 constructor TExpressionSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDirty := true;
+
   FVariable := 'x';
+  FExpression := 'x';
 
   FParser := TFpExpressionParser.Create(self);
   FParser.BuiltIns := [bcMath];
   FX := FParser.Identifiers.AddFloatVariable(FVariable, 0.0);
-  FParser.Expression := FVariable;
 
   FDomainScanner := TChartDomainScanner.Create(self);
-  FDomainScanner.Epsilon := DEFAULT_EPSILON;
+  FDomainEpsilon := DEFAULT_EPSILON;
 
-  FParams := TChartExprParams.Create(TChartExprParam);
+  FParams := TChartExprParams.Create(self);
   FParams.FParser := FParser;
 end;
 
 destructor TExpressionSeries.Destroy;
 begin
   FX := nil;
+  FParams.Free;
   FDomainScanner.Free;
   inherited;
 end;
@@ -445,19 +471,16 @@ begin
   end;
 end;
 
-function TExpressionSeries.GetDomain: String;
+procedure TExpressionSeries.Draw(ADrawer: IChartDrawer);
 begin
-  Result := FDomainScanner.Expression;
+  SetupParser;
+  inherited;
 end;
 
-function TExpressionSeries.GetDomainEpsilon: Double;
+procedure TExpressionSeries.GetBounds(var ABounds: TDoubleRect);
 begin
-  Result := FDomainScanner.Epsilon;
-end;
-
-function TExpressionSeries.GetExpression: String;
-begin
-  Result := FParser.Expression;
+  SetupParser;
+  inherited;
 end;
 
 function TExpressionSeries.IsEmpty: Boolean;
@@ -465,10 +488,16 @@ begin
   Result := FParser.Expression <> '';
 end;
 
+procedure TExpressionSeries.RequestParserUpdate;
+begin
+  FDirty := true;
+end;
+
 procedure TExpressionSeries.SetDomain(const AValue: String);
 begin
-  FDomainScanner.Expression := AValue;
-  FDomainScanner.ExtractDomainExclusions(DomainExclusions);
+  if FDomain = AValue then exit;
+  FDomain := AValue;
+  RequestParserUpdate;
   UpdateParentChart;
 end;
 
@@ -479,31 +508,51 @@ end;
 
 procedure TExpressionSeries.SetExpression(const AValue: String);
 begin
-  FParser.Expression := AValue;
-  if not (FParser.ResultType in [rtInteger, rtFLoat]) then
-    raise EExprParser.CreateFmt(rsErrInvalidResultType, [ResultTypeName(FParser.ResultType)]);
+  if FParser.Expression = AValue then
+    exit;
+  FExpression := AValue;
+  RequestParserUpdate;
   UpdateParentChart;
 end;
 
 procedure TExpressionSeries.SetParams(const AValue: TChartExprParams);
+begin
+  RequestParserUpdate;
+  FParams.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TExpressionSeries.SetupParser;
 var
   i: Integer;
   p: TChartExprParam;
 begin
-  FParams.Assign(AValue);
+  if (not FDirty) then
+    exit;
+
   FParser.Identifiers.Clear;
   FX := FParser.Identifiers.AddFloatVariable(FVariable, 0.0);
   for i:=0 to FParams.Count-1 do begin
     p := FParams[i];
     FParser.Identifiers.AddFloatVariable(p.Name, p.Value);
   end;
+
+  FDomainScanner.Epsilon := FDomainEpsilon;
+  FDomainScanner.Expression := FDomain;
+  FDomainScanner.ExtractDomainExclusions(DomainExclusions);
+
+  FParser.Expression := FExpression;
+  if not (FParser.ResultType in [rtInteger, rtFLoat]) then
+    raise EExprParser.CreateFmt(rsErrInvalidResultType, [ResultTypeName(FParser.ResultType)]);
+
+  FDirty := false;
 end;
 
 procedure TExpressionSeries.SetVariable(const AValue: String);
 begin
   if FVariable = AValue then exit;
   FVariable := AValue;
-  SetParams(FParams);
+  RequestParserUpdate;
   UpdateParentChart;
 end;
 
@@ -541,129 +590,97 @@ begin
   x := ArgToFloat(Args[0]);
   Result.resFloat := cot(x);
 end;
-(*
+
 procedure ExprArcsin(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) and InRange(x, -1.0, 1.0) then
-    Result.resFloat := arcsin(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := arcsin(x);
 end;
 
-procedure ExprArccos(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprArccos(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) and InRange(x, -1.0, 1.0) then
-    Result.resFloat := arccos(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := arccos(x);
 end;
 
-Procedure ExprArccot(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprArccot(Var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) and InRange(x, -1.0, 1.0) then
-    Result.resFloat := pi/2 - arctan(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := pi/2 - arctan(x);
 end;
 
-procedure ExprCosh(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprCosh(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := cosh(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := cosh(x);
 end;
 
-procedure ExprCoth(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+{ Hyperbolic cotangent coth(x); x <> 0 }
+procedure ExprCoth(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) and (x <> 0.0) then
-    Result.resFloat := 1/tanh(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := 1/tanh(x);
 end;
 
-procedure ExprSinh(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprSinh(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := sinh(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := sinh(x);
 end;
 
-procedure ExprTanh(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprTanh(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := tanh(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := tanh(x);
 end;
 
-procedure ExprArcosh(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprArcosh(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) and (x >= 1.0) then
-    Result.resFloat := arcosh(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := arcosh(x);
 end;
 
-procedure ExprArsinh(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprArsinh(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgtoFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := arsinh(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := arsinh(x);
 end;
 
-procedure ExprArtanh(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprArtanh(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) and (x > -1.0) and (x < 1.0) then
-    Result.resFloat := artanh(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := artanh(x);
 end;
 
-procedure ExprArcoth(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprArcoth(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) and (x < -1.0) and (x > 1.0) then
-    Result.resFloat := artanh(1.0/x)
-  else
-    Result.resFloat := NaN;
-end;                   *)
+  Result.resFloat := artanh(1.0/x);
+end;
 
-procedure ExprSinc(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprSinc(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
@@ -674,7 +691,7 @@ begin
     Result.resFloat := sin(x)/x;
 end;
 
-procedure ExprPower(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprPower(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x,y: Double;
 begin
@@ -683,7 +700,7 @@ begin
   Result.resFloat := Power(x, y);
 end;
 
-procedure ExprHypot(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprHypot(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x,y: Double;
 begin
@@ -691,283 +708,59 @@ begin
   y := ArgToFloat(Args[1]);
   Result.resFloat := Hypot(x,y);
 end;
-                    (*
-procedure ExprLg(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+
+procedure ExprLg(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := log10(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := log10(x);
 end;
 
-procedure ExprLog10(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprLog10(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := log10(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := log10(x);
 end;
 
-procedure ExprLog2(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprLog2(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x: Double;
 begin
   x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := log2(x)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := log2(x);
 end;
 
-procedure ExprErf(Var Result: TFPExpressionResult; const Args: TExprParameterArray);
-// Error function
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := speerf(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprErfc(Var Result: TFPExpressionResult; const Args: TExprParameterArray);
-// Error function complement
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := speefc(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-// Incomplete gamma function P
-procedure ExprGammaP(var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-var
-  x, s: Double;
-begin
-  s := ArgToFloat(Args[0]);
-  x := ArgToFloat(Args[1]);
-  if IsNumber(x) and IsNumber(s) then
-    Result.resFloat := gammap(s, x)
-  else
-    Result.resFloat := NaN;
-end;
-
-// Incomplete gamma function Q
-procedure ExprGammaQ(var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-var
-  x, s: Double;
-begin
-  s := ArgToFloat(Args[0]);
-  x := ArgToFloat(Args[1]);
-  if IsNumber(x) and IsNumber(s) then
-    Result.resFloat := gammaq(s, x)
-  else
-    Result.resFloat := NaN;
-end;
-
-// Incomplete beta function
-procedure ExprBetaI(var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-var
-  a, b, x: Double;
-begin
-  a := ArgToFloat(Args[0]);
-  b := ArgToFloat(Args[1]);
-  x := ArgToFloat(Args[2]);
-  if IsNumber(x) and IsNumber(a) and IsNumber(b) then
-    Result.resFloat := betai(a, b, x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprChi2Dist(var  Result: TFPExpressionResult; const Args: TExprParameterArray);
-var
-  x: Double;
-  n: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  n := ArgToFloat(Args[1]);
-  if IsNumber(x) and IsNumber(n) then
-    Result.resFloat := chi2dist(x, round(n))
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprtDist(var  Result: TFPExpressionResult; const Args: TExprParameterArray);
-var
-  x: Double;
-  n: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  n := ArgToFloat(Args[1]);
-  if IsNumber(x) and IsNumber(n) then
-    Result.resFloat := tdist(x, round(n))
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprFDist(var  Result: TFPExpressionResult; const Args: TExprParameterArray);
-var
-  x: Double;
-  n1, n2: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  n1 := ArgToFloat(Args[1]);
-  n2 := ArgToFloat(Args[2]);
-  if IsNumber(x) and IsNumber(n1) and IsNumber(n2) then
-    Result.resFloat := Fdist(x, round(n1), round(n2))
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprI0(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-// Bessel function of the first kind I0(x)
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := spebi0(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprI1(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-// Bessel function of the first kind I1(x)
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := spebi1(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprJ0(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-// Bessel function of the first kind J0(x)
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := spebj0(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprJ1(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-// Bessel function of the first kind J1(x)
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := spebj1(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprK0(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-// Bessel function of the second kind K0(x)
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := spebk0(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprK1(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-// Bessel function of the second kind K1(x)
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := spebk1(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprY0(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-// Bessel function of the second kind Y0(x)
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := speby0(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprY1(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
-// Bessel function of the second kind Y1(x)
-var
-  x: Double;
-begin
-  x := ArgToFloat(Args[0]);
-  if IsNumber(x) then
-    Result.resFloat := speby1(x)
-  else
-    Result.resFloat := NaN;
-end;
-
-procedure ExprMax(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprMax(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x1, x2: Double;
 begin
   x1 := ArgToFloat(Args[0]);
   x2 := ArgToFloat(Args[1]);
-  if IsNumber(x1) and IsNumber(x2) then
-    Result.resFloat := Max(x1, x2)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := Max(x1, x2);
 end;
 
-procedure ExprMin(Var Result: TFPExpressionResult; Const Args: TExprParameterArray);
+procedure ExprMin(var Result: TFPExpressionResult; const Args: TExprParameterArray);
 var
   x1, x2: Double;
 begin
   x1 := ArgToFloat(Args[0]);
   x2 := ArgToFloat(Args[1]);
-  if IsNumber(x1) and IsNumber(x2) then
-    Result.resFloat := Min(x1, x2)
-  else
-    Result.resFloat := NaN;
+  Result.resFloat := Min(x1, x2);
 end;
 
-function FixDecSep(const AExpression: String): String;
+procedure ExtendExprBuiltins;
 var
   i: Integer;
 begin
-  Result := AExpression;
-  for i:=1 to Length(Result) do begin
-    if Result[i] = ',' then Result[i] := '.';
-  end;
-end;*)
-
-procedure ExtendBuiltins;
-begin
   with BuiltinIdentifiers do begin
+    // Trigonometric and related
     AddFunction(bcMath, 'degtorad', 'F', 'F', @ExprDegtorad);
     AddFunction(bcMath, 'radtodeg', 'F', 'F', @ExprRadtodeg);
-
     AddFunction(bcMath, 'tan', 'F', 'F', @ExprTan);
     AddFunction(bcMath, 'cot', 'F', 'F', @ExprCot);
-    (*
     AddFunction(bcMath, 'arcsin', 'F', 'F', @ExprArcSin);
     AddFunction(bcMath, 'arccos', 'F', 'F', @ExprArcCos);
     AddFunction(bcMath, 'arccot', 'F', 'F', @ExprArcCot);
@@ -979,52 +772,28 @@ begin
     AddFunction(bcMath, 'arsinh', 'F', 'F', @ExprArsinh);
     AddFunction(bcMath, 'artanh', 'F', 'F', @ExprArtanh);
     AddFunction(bcMath, 'arcoth', 'F', 'F', @ExprArcoth);
-    *)
     AddFunction(bcMath, 'sinc', 'F', 'F', @ExprSinc);
 
+    // Power
     AddFunction(bcMath, 'power', 'F', 'FF', @ExprPower);
     AddFunction(bcMath, 'hypot', 'F', 'FF', @ExprHypot);
 
-(*
+    // Logarithm
     AddFunction(bcMath, 'lg', 'F', 'F', @ExprLog10);
     AddFunction(bcMath, 'log10', 'F', 'F', @ExprLog10);
     AddFunction(bcMath, 'log2', 'F', 'F', @ExprLog2);
 
-    // Error function
-    AddFunction(bcMath, 'erf', 'F', 'F', @ExprErf);
-    AddFunction(bcMath, 'erfc', 'F', 'F', @ExprErfc);
-
-    // Incomplete gamma and beta functions
-    AddFunction(bcMath, 'gammap', 'F', 'FF', @ExprGammaP);
-    AddFunction(bcMath, 'gammaq', 'F', 'FF', @ExprGammaQ);
-    AddFunction(bcMath, 'betai', 'F', 'FFF', @ExprBetaI);
-
-    // Probability distributions
-    AddFunction(bcMath, 'chi2dist', 'F', 'FI', @ExprChi2Dist);
-    AddFunction(bcMath, 'tdist', 'F', 'FI', @Exprtdist);
-    AddFunction(bcMath, 'Fdist', 'F', 'FII', @ExprFDist);
-
-    // Bessel functions of the first kind
-    AddFunction(bcMath, 'I0', 'F', 'F', @ExprI0);
-    AddFunction(bcMath, 'I1', 'F', 'F', @ExprI1);
-    AddFunction(bcMath, 'J0', 'F', 'F', @ExprJ0);
-    AddFunction(bcMath, 'J1', 'F', 'F', @ExprJ1);
-
-    // Bessel functions of the second kind
-    AddFunction(bcMath, 'K0', 'F', 'F', @ExprK0);
-    AddFunction(bcMath, 'K1', 'F', 'F', @ExprK1);
-    AddFunction(bcMath, 'Y0', 'F', 'F', @ExprY0);
-    AddFunction(bcMath, 'Y1', 'F', 'F', @ExprY1);
-
     // Max/min
-    AddFunction(bcMath, 'max', 'F', 'FF', @ExprMax);
-    AddFunction(bcMath, 'min', 'F', 'FF', @ExprMin);
-    *)
+    //AddFunction(bcMath, 'max', 'F', 'FF', @ExprMax);
+    //AddFunction(bcMath, 'min', 'F', 'FF', @ExprMin);
   end;
 end;
 
 initialization
-  ExtendBuiltins;
+  {$IFDEF MATH_EXPRESSIONS}
+  ExtendExprBuiltins;
+  {$ENDIF}
+
   RegisterSeriesClass(TExpressionSeries, @rsExpressionSeries);
 
 end.

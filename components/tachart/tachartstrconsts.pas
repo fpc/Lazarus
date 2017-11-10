@@ -122,6 +122,7 @@ resourcestring
   rsBSPattern = 'pattern fill';
 
   rsErrInvalidResultType = 'Expression result type must be integer or float. Got "%s".';
+//  rsTDistParamError = 'Function tdist() requires parameter "tails" to be 1 or 2. Get %d.';
 
 implementation
 

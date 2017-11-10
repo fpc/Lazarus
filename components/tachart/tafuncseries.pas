@@ -638,8 +638,6 @@ begin
 end;
 
 procedure TFuncSeries.GetBounds(var ABounds: TDoubleRect);
-var
-  ymin, ymax: Double;
 begin
   inherited GetBounds(ABounds);
   if Assigned(OnCalculate) then

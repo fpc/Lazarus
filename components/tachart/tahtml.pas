@@ -15,7 +15,7 @@ function HTMLToFPColor(const AText: String): TFPColor;
 implementation
 
 uses
-  SysUtils, math, contnrs, htmldefs, LazUTF8,
+  SysUtils, htmldefs, LazUTF8,
   TAChartUtils, TAGeometry;
 
 function ReplaceHTMLEntities(const AText: String): String;
