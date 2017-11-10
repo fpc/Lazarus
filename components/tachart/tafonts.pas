@@ -14,6 +14,8 @@
 
 unit TAFonts;
 
+{$mode objfpc}{$H+}
+
 interface
 
 uses

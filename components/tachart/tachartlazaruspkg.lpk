@@ -13,11 +13,6 @@
         <OtherUnitFiles Value="numlib_fix;editors"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
-      <Parsing>
-        <SyntaxOptions>
-          <UseAnsiStrings Value="False"/>
-        </SyntaxOptions>
-      </Parsing>
       <CodeGeneration>
         <Checks>
           <RangeChecks Value="True"/>

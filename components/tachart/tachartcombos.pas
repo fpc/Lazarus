@@ -1,5 +1,7 @@
 unit TAChartCombos;
 
+{$mode ObjFPC}{$H+}
+
 interface
 
 uses
