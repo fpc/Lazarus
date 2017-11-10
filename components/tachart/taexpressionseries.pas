@@ -48,13 +48,17 @@ type
     FParser: TFpExpressionParser;
     FSeries: TExpressionSeries;
     function GetP(AIndex: Integer): TChartExprParam;
+    function GetValByName(AName: String): Double;
     procedure SetP(AIndex: Integer; AValue: TChartExprParam);
+    procedure SetValByName(AName: String; AValue: Double);
   protected
     procedure Changed;
   public
     constructor Create(ASeries: TExpressionSeries);
     function AddParam(const AName: String; const AValue: Double): TChartExprParam;
+    function FindParamByName(AName: String): TChartExprParam;
     property Params[AIndex: Integer]: TChartExprParam read GetP write SetP; default;
+    property ValueByName[AName: String]: Double read GetValByName write SetValByName;
   end;
 
   TDomainParts = array[0..4] of String;
@@ -182,15 +186,48 @@ begin
   FSeries.UpdateParentChart;
 end;
 
+function TChartExprParams.FindParamByName(AName: String): TChartExprParam;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    Result := Params[i];
+    if Result.Name = AName then
+      exit;
+  end;
+  Result := nil;
+end;
+
 function TChartExprParams.GetP(AIndex: Integer): TChartExprParam;
 begin
   Result := TChartExprParam(Items[AIndex]);
+end;
+
+function TChartExprParams.GetValByName(AName: String): Double;
+var
+  P : TChartExprParam;
+begin
+  P := FindParamByName(AName);
+  if P = nil then
+    raise Exception.CreateFmt('Parameter "%s" not found.', [AName]);
+  Result := P.Value;
 end;
 
 procedure TChartExprParams.SetP(AIndex: Integer;
   AValue: TChartExprParam);
 begin
   Items[AIndex] := AValue;
+end;
+
+procedure TChartExprParams.SetValByName(AName: String; AValue: Double);
+var
+  P: TChartExprParam;
+begin
+  P := FindParamByName(AName);
+  if P = nil then
+    raise Exception.CreateFmt('Parameter "%s" not found.', [AName]);
+  P.Value := AValue;
+  Changed;
 end;
 
 
