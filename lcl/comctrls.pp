@@ -793,7 +793,7 @@ type
     function GetScrollOpposite: Boolean;
     function GetTabIndex: Integer;
     function GetTabRectWithBorder: TRect;
-    function GetTabStop: Boolean; override;
+    function GetTabStop: Boolean;
     procedure SetHotTrack(const AValue: Boolean);
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetMultiLine(const AValue: Boolean);
@@ -805,7 +805,7 @@ type
     procedure SetTabHeight(AValue: Smallint);
     procedure SetTabPosition(AValue: TTabPosition); override;
     procedure SetTabs(const AValue: TStrings);
-    procedure SetTabStop(AValue: Boolean); override;
+    procedure SetTabStop(const AValue: Boolean);
     procedure SetTabWidth(AValue: Smallint);
   protected
     procedure SetOptions(const AValue: TCTabControlOptions); override;

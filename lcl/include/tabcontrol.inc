@@ -532,7 +532,7 @@ begin
   FTabs.Assign(AValue);
 end;
 
-procedure TTabControl.SetTabStop(AValue: Boolean);
+procedure TTabControl.SetTabStop(const AValue: Boolean);
 begin
   if Assigned(FTabs) then
     TTabControlNoteBookStrings(FTabs).NoteBook.TabStop := AValue;

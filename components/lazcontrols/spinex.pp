@@ -144,7 +144,6 @@ type
     property MinRepeatValue: Byte read FMinRepeatValue write SetMinRepeatValue default 100;
   public
     constructor Create(TheOwner: TComponent); override;
-    procedure GetTabOrderList(List: TFPList); override;
     function GetLimitedValue(const AValue: Double): Double; virtual;
     function ValueToStr(const AValue: Double): String; virtual;
     function StrToValue(const S: String): Double; virtual;
