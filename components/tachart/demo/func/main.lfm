@@ -6,8 +6,9 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 459
   ClientWidth = 550
+  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.9.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 459
@@ -20,11 +21,11 @@ object Form1: TForm1
     OnChange = PageControl1Change
     object tsDomain: TTabSheet
       Caption = 'Domain'
-      ClientHeight = 433
+      ClientHeight = 431
       ClientWidth = 542
       object Chart1: TChart
         Left = 0
-        Height = 433
+        Height = 431
         Top = 0
         Width = 542
         AxisList = <        
@@ -55,7 +56,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        ParentColor = False
+        Color = clNone
         object Chart1FuncSeries1: TFuncSeries
           Extent.UseXMax = True
           Extent.UseXMin = True
@@ -64,10 +65,10 @@ object Form1: TForm1
           Extent.YMax = 2
           Extent.YMin = -2
           Title = '1 / Sin(x)'
-          OnCalculate = Chart1FuncSeries1Calculate
           Pen.Color = clOlive
           Pen.Width = 2
           Step = 4
+          OnCalculate = Chart1FuncSeries1Calculate
         end
         object Chart1XAxis: TConstantLine
           Legend.Visible = False
@@ -96,20 +97,20 @@ object Form1: TForm1
         end
       end
       object cbDomain: TCheckBox
-        Left = 477
-        Height = 17
-        Top = 395
-        Width = 55
+        Left = 470
+        Height = 19
+        Top = 391
+        Width = 62
         Anchors = [akRight, akBottom]
         Caption = 'Domain'
         OnChange = cbDomainChange
         TabOrder = 1
       end
       object cbRotate: TCheckBox
-        Left = 477
-        Height = 17
-        Top = 371
-        Width = 53
+        Left = 470
+        Height = 19
+        Top = 367
+        Width = 54
         Anchors = [akRight, akBottom]
         Caption = 'Rotate'
         OnChange = cbRotateChange
@@ -118,11 +119,11 @@ object Form1: TForm1
     end
     object tsColorMap: TTabSheet
       Caption = 'Color map'
-      ClientHeight = 433
+      ClientHeight = 431
       ClientWidth = 542
       object ChartColorMap: TChart
         Left = 0
-        Height = 433
+        Height = 431
         Top = 0
         Width = 416
         AxisList = <        
@@ -152,8 +153,8 @@ object Form1: TForm1
         )
         Toolset = chtsColorMap
         Align = alClient
+        Color = clDefault
         DoubleBuffered = True
-        ParentColor = False
         object ChartColorMapColorMapSeries1: TColorMapSeries
           Extent.UseXMax = True
           Extent.UseXMin = True
@@ -166,12 +167,12 @@ object Form1: TForm1
       end
       object Panel1: TPanel
         Left = 421
-        Height = 433
+        Height = 431
         Top = 0
         Width = 121
         Align = alRight
         BevelOuter = bvNone
-        ClientHeight = 433
+        ClientHeight = 431
         ClientWidth = 121
         TabOrder = 1
         object ChartLegendPanel1: TChartLegendPanel
@@ -184,9 +185,9 @@ object Form1: TForm1
         end
         object cbInterpolate: TCheckBox
           Left = 8
-          Height = 17
-          Top = 403
-          Width = 74
+          Height = 19
+          Top = 399
+          Width = 77
           Anchors = [akLeft, akBottom]
           Caption = 'Interpolate'
           OnChange = cbInterpolateChange
@@ -194,9 +195,9 @@ object Form1: TForm1
         end
         object cbMultLegend: TCheckBox
           Left = 8
-          Height = 17
-          Top = 375
-          Width = 91
+          Height = 19
+          Top = 371
+          Width = 97
           Anchors = [akLeft, akBottom]
           Caption = 'Expand legend'
           OnChange = cbMultLegendChange
@@ -205,7 +206,7 @@ object Form1: TForm1
       end
       object Splitter1: TSplitter
         Left = 416
-        Height = 433
+        Height = 431
         Top = 0
         Width = 5
         Align = alRight
@@ -214,11 +215,11 @@ object Form1: TForm1
     end
     object tsSpline: TTabSheet
       Caption = 'Spline'
-      ClientHeight = 433
+      ClientHeight = 431
       ClientWidth = 542
       object ChartSpline: TChart
         Left = 0
-        Height = 395
+        Height = 397
         Top = 0
         Width = 542
         AxisList = <        
@@ -246,8 +247,8 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clDefault
         DoubleBuffered = True
-        ParentColor = False
         object ChartSplineLineSeries1: TLineSeries
           AxisIndexX = 1
           AxisIndexY = 0
@@ -275,18 +276,26 @@ object Form1: TForm1
       end
       object pnSpline: TPanel
         Left = 0
-        Height = 38
-        Top = 395
+        Height = 34
+        Top = 397
         Width = 542
         Align = alBottom
-        ClientHeight = 38
+        AutoSize = True
+        ClientHeight = 34
         ClientWidth = 542
         TabOrder = 1
         object iseSplineDegree: TTISpinEdit
-          Left = 60
-          Height = 21
-          Top = 4
+          AnchorSideLeft.Control = lblSplineDegree
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = pnSpline
+          AnchorSideTop.Side = asrCenter
+          Left = 50
+          Height = 23
+          Top = 6
           Width = 50
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          BorderSpacing.Bottom = 4
           Link.TIObject = ChartSplineBSplineSeries1
           Link.TIPropertyName = 'Degree'
           MinValue = 1
@@ -294,10 +303,16 @@ object Form1: TForm1
           TabOrder = 0
         end
         object icbSplineRandomX: TTICheckBox
-          Left = 128
-          Height = 23
-          Top = 4
-          Width = 90
+          AnchorSideLeft.Control = iseSplineDegree
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = iseSplineDegree
+          AnchorSideTop.Side = asrCenter
+          Left = 124
+          Height = 19
+          Top = 8
+          Width = 75
+          AutoSize = True
+          BorderSpacing.Left = 24
           Caption = 'Random X'
           Link.TIObject = RandomChartSource1
           Link.TIPropertyName = 'RandomX'
@@ -305,18 +320,28 @@ object Form1: TForm1
           TabOrder = 1
         end
         object lblSplineDegree: TLabel
-          Left = 12
-          Height = 13
-          Top = 8
-          Width = 35
+          AnchorSideLeft.Control = pnSpline
+          AnchorSideTop.Control = iseSplineDegree
+          AnchorSideTop.Side = asrCenter
+          Left = 5
+          Height = 15
+          Top = 10
+          Width = 37
+          BorderSpacing.Left = 4
           Caption = 'Degree'
           ParentColor = False
         end
         object cbCubic: TTICheckBox
-          Left = 312
-          Height = 23
-          Top = 4
-          Width = 90
+          AnchorSideLeft.Control = cbBSpline
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = iseSplineDegree
+          AnchorSideTop.Side = asrCenter
+          Left = 295
+          Height = 19
+          Top = 8
+          Width = 51
+          AutoSize = True
+          BorderSpacing.Left = 16
           Caption = 'Cubic'
           Link.TIObject = ChartSplineCubicSplineSeries1
           Link.TIPropertyName = 'Active'
@@ -325,10 +350,16 @@ object Form1: TForm1
           TabOrder = 2
         end
         object cbBSpline: TTICheckBox
-          Left = 220
-          Height = 23
-          Top = 4
-          Width = 90
+          AnchorSideLeft.Control = icbSplineRandomX
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = pnSpline
+          AnchorSideTop.Side = asrCenter
+          Left = 215
+          Height = 19
+          Top = 8
+          Width = 64
+          AutoSize = True
+          BorderSpacing.Left = 16
           Caption = 'B-Spline'
           Link.TIObject = ChartSplineBSplineSeries1
           Link.TIPropertyName = 'Active'
@@ -336,10 +367,16 @@ object Form1: TForm1
           TabOrder = 3
         end
         object cbLogY: TTICheckBox
-          Left = 404
-          Height = 23
-          Top = 4
-          Width = 90
+          AnchorSideLeft.Control = cbCubic
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = iseSplineDegree
+          AnchorSideTop.Side = asrCenter
+          Left = 370
+          Height = 19
+          Top = 8
+          Width = 50
+          AutoSize = True
+          BorderSpacing.Left = 24
           Caption = 'Log Y'
           Link.TIObject = catSplineLogarithmAxisTransform
           Link.TIPropertyName = 'Enabled'
@@ -350,7 +387,7 @@ object Form1: TForm1
     end
     object tsAutoExtentY: TTabSheet
       Caption = 'Auto Y extent'
-      ClientHeight = 433
+      ClientHeight = 431
       ClientWidth = 542
       object chAutoExtentY: TChart
         Left = 0
@@ -374,8 +411,8 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clDefault
         DoubleBuffered = True
-        ParentColor = False
         object chAutoExtentYFuncSeries1: TFuncSeries
           Extent.UseXMax = True
           Extent.UseXMin = True
@@ -384,25 +421,30 @@ object Form1: TForm1
           Extent.XMax = 1
           Extent.YMax = 5
           Extent.YMin = -5
-          OnCalculate = chAutoExtentYFuncSeries1Calculate
           Pen.Color = 16711808
           Pen.Width = 2
+          OnCalculate = chAutoExtentYFuncSeries1Calculate
         end
       end
       object pnlAutoExtentY: TPanel
         Left = 0
-        Height = 31
+        Height = 29
         Top = 402
         Width = 542
         Align = alBottom
-        ClientHeight = 31
+        AutoSize = True
+        ClientHeight = 29
         ClientWidth = 542
         TabOrder = 1
         object cbAutoExtentY: TCheckBox
-          Left = 8
-          Height = 17
-          Top = 8
-          Width = 87
+          AnchorSideLeft.Control = pnlAutoExtentY
+          Left = 5
+          Height = 19
+          Top = 5
+          Width = 91
+          BorderSpacing.Left = 4
+          BorderSpacing.Top = 4
+          BorderSpacing.Bottom = 4
           Caption = 'Auto Y extent'
           OnChange = cbAutoExtentYChange
           TabOrder = 0
@@ -411,11 +453,11 @@ object Form1: TForm1
     end
     object tsParametric: TTabSheet
       Caption = 'Parametric'
-      ClientHeight = 433
+      ClientHeight = 431
       ClientWidth = 542
       object chParametric: TChart
         Left = 0
-        Height = 433
+        Height = 431
         Top = 0
         Width = 412
         AxisList = <        
@@ -435,7 +477,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        ParentColor = False
+        Color = clDefault
         object chParametricParametricCurveSeries1: TParametricCurveSeries
           Extent.UseXMax = True
           Extent.UseXMin = True
@@ -453,17 +495,17 @@ object Form1: TForm1
       end
       object pnlParametric: TPanel
         Left = 412
-        Height = 433
+        Height = 431
         Top = 0
         Width = 130
         Align = alRight
         BevelOuter = bvNone
-        ClientHeight = 433
+        ClientHeight = 431
         ClientWidth = 130
         TabOrder = 1
         object seJ: TSpinEdit
           Left = 24
-          Height = 21
+          Height = 23
           Top = 182
           Width = 50
           OnChange = ParamChange
@@ -472,7 +514,7 @@ object Form1: TForm1
         end
         object seK: TSpinEdit
           Left = 24
-          Height = 21
+          Height = 23
           Top = 210
           Width = 50
           OnChange = ParamChange
@@ -600,6 +642,180 @@ object Form1: TForm1
           Font.Style = [fsItalic]
           ParentColor = False
           ParentFont = False
+        end
+      end
+    end
+    object tsExpression: TTabSheet
+      Caption = 'Expression'
+      ClientHeight = 431
+      ClientWidth = 542
+      object Panel2: TPanel
+        Left = 0
+        Height = 93
+        Top = 338
+        Width = 542
+        Align = alBottom
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 93
+        ClientWidth = 542
+        TabOrder = 0
+        object LblExpression: TLabel
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = EdExpression
+          AnchorSideTop.Side = asrCenter
+          Left = 8
+          Height = 15
+          Top = 8
+          Width = 88
+          BorderSpacing.Left = 8
+          BorderSpacing.Right = 8
+          Caption = 'Expression y(x) ='
+          ParentColor = False
+        end
+        object EdExpression: TEdit
+          AnchorSideLeft.Control = LblExpression
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel2
+          AnchorSideRight.Control = Panel2
+          AnchorSideRight.Side = asrBottom
+          Left = 104
+          Height = 23
+          Top = 4
+          Width = 430
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 8
+          OnEditingDone = EdExpressionEditingDone
+          TabOrder = 0
+        end
+        object LblExprDomain: TLabel
+          AnchorSideTop.Control = EdExprDomain
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EdExprDomain
+          Left = 54
+          Height = 15
+          Top = 35
+          Width = 42
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 8
+          Caption = 'Domain'
+          ParentColor = False
+        end
+        object EdExprDomain: TEdit
+          AnchorSideLeft.Control = EdExpression
+          AnchorSideTop.Control = EdExpression
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = EdExpression
+          AnchorSideRight.Side = asrBottom
+          Left = 104
+          Height = 23
+          Top = 31
+          Width = 430
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 4
+          OnEditingDone = EdExprDomainEditingDone
+          TabOrder = 1
+        end
+        object LblExprParamA: TLabel
+          AnchorSideTop.Control = EdExprParamA
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EdExprParamA
+          Left = 79
+          Height = 15
+          Top = 66
+          Width = 17
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 8
+          Caption = 'a ='
+          ParentColor = False
+        end
+        object EdExprParamA: TEdit
+          AnchorSideLeft.Control = EdExpression
+          AnchorSideTop.Control = EdExprDomain
+          AnchorSideTop.Side = asrBottom
+          Left = 104
+          Height = 23
+          Top = 62
+          Width = 80
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
+          OnEditingDone = EdExprParamAEditingDone
+          TabOrder = 2
+        end
+        object LblExprParamB: TLabel
+          AnchorSideLeft.Control = EdExprParamA
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = EdExprParamA
+          AnchorSideTop.Side = asrCenter
+          Left = 200
+          Height = 15
+          Top = 66
+          Width = 18
+          BorderSpacing.Left = 16
+          Caption = 'b ='
+          ParentColor = False
+        end
+        object EdExprParamB: TEdit
+          AnchorSideLeft.Control = LblExprParamB
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = EdExprParamA
+          Left = 226
+          Height = 23
+          Top = 62
+          Width = 80
+          BorderSpacing.Left = 8
+          BorderSpacing.Bottom = 8
+          OnEditingDone = EdExprParamBEditingDone
+          TabOrder = 3
+        end
+      end
+      object ExpressionChart: TChart
+        Left = 0
+        Height = 338
+        Top = 0
+        Width = 542
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'y'
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'x'
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clDefault
+        object ExpressionSeries: TExpressionSeries
+          Extent.UseXMax = True
+          Extent.UseXMin = True
+          Extent.XMax = 10
+          Extent.XMin = -1
+          ExtentAutoY = True
+          DomainEpsilon = 1E-6
+          Params = <          
+            item
+              Name = 'a'
+              Value = 1
+            end          
+            item
+              Name = 'b'
+              Value = -0.5
+            end>
+          Variable = 'x'
+          Domain = 'x >= a; x<>b'
+          Expression = 'a*sqrt(x-a)/(x-b)'
         end
       end
     end

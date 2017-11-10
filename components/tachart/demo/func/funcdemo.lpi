@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="10"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -11,10 +11,8 @@
       <MainUnit Value="0"/>
       <Title Value="TAChart function series demo"/>
       <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
     </General>
-    <VersionInfo>
-      <StringTable ProductVersion=""/>
-    </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
     </BuildModes>
@@ -51,7 +49,6 @@
       <Unit0>
         <Filename Value="funcdemo.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="funcdemo"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -59,7 +56,6 @@
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="main"/>
       </Unit1>
     </Units>
   </ProjectOptions>
@@ -77,11 +73,5 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

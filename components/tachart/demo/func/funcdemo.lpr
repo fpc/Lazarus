@@ -11,6 +11,8 @@ uses
   { you can add units after this }, main, runtimetypeinfocontrols,
   TAChartLazarusPkg;
 
+{$R *.res}
+
 begin
   Application.Title := 'TAChart function series demo';
   Application.Initialize;

@@ -7,7 +7,7 @@ interface
 uses
   Classes, ComCtrls, ExtCtrls, RTTICtrls, Spin, StdCtrls, Forms, Graphics,
   TAFuncSeries, TAGraph, TALegendPanel, TASeries, TACustomSource, TASources,
-  TATools, TATransformations;
+  TATools, TATransformations, TAExpressionSeries;
 
 type
 
@@ -28,6 +28,8 @@ type
     Chart1YAxis: TConstantLine;
     catSpline: TChartAxisTransformations;
     catSplineLogarithmAxisTransform: TLogarithmAxisTransform;
+    ExpressionChart: TChart;
+    ExpressionSeries: TExpressionSeries;
     chParametric: TChart;
     chParametricParametricCurveSeries1: TParametricCurveSeries;
     chAutoExtentY: TChart;
@@ -43,6 +45,14 @@ type
     chtsColorMap: TChartToolset;
     chtsColorMapPanDragTool1: TPanDragTool;
     chtsColorMapZoomDragTool1: TZoomDragTool;
+    EdExpression: TEdit;
+    EdExprDomain: TEdit;
+    EdExprParamA: TEdit;
+    EdExprParamB: TEdit;
+    LblExpression: TLabel;
+    LblExprDomain: TLabel;
+    LblExprParamA: TLabel;
+    LblExprParamB: TLabel;
     lblA: TLabel;
     lblB: TLabel;
     lblD: TLabel;
@@ -53,6 +63,7 @@ type
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    Panel2: TPanel;
     pnlParametric: TPanel;
     pnlAutoExtentY: TPanel;
     pnSpline: TPanel;
@@ -63,6 +74,7 @@ type
     seJ: TSpinEdit;
     seK: TSpinEdit;
     stEq: TStaticText;
+    tsExpression: TTabSheet;
     tbA: TTrackBar;
     tbB: TTrackBar;
     tbC: TTrackBar;
@@ -88,6 +100,11 @@ type
       AY: Double);
     procedure chParametricParametricCurveSeries1Calculate(const AT: Double; out
       AX, AY: Double);
+    procedure EdExprDomainEditingDone(Sender: TObject);
+    procedure EdExpressionEditingDone(Sender: TObject);
+    procedure EdExprParamAEditingDone(Sender: TObject);
+    procedure EdExprParamBEditingDone(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure iseSplineDegreeChange(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure ParamChange(Sender: TObject);
@@ -103,7 +120,7 @@ var
 implementation
 
 uses
-  Math,
+  SysUtils, Math,
   TAChartUtils, TALegend;
 
 {$R *.lfm}
@@ -200,6 +217,34 @@ begin
   d := tbD.Position / tbD.Frequency;
   AX := Cos(a * AT) - IntPower(Cos(b * AT), seJ.Value);
   AY := Sin(c * AT) - IntPower(Sin(d * AT), seK.Value);
+end;
+
+procedure TForm1.EdExprDomainEditingDone(Sender: TObject);
+begin
+  ExpressionSeries.Domain := EdExprDomain.Text;
+end;
+
+procedure TForm1.EdExpressionEditingDone(Sender: TObject);
+begin
+  ExpressionSeries.Expression := EdExpression.Text;
+end;
+
+procedure TForm1.EdExprParamAEditingDone(Sender: TObject);
+begin
+  ExpressionSeries.Params.ValueByName['a'] := StrToFloat(EdExprParamA.Text);
+end;
+
+procedure TForm1.EdExprParamBEditingDone(Sender: TObject);
+begin
+  ExpressionSeries.Params.ValueByName['b'] := StrToFloat(EdExprParamB.Text);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  EdExpression.Text := ExpressionSeries.Expression;
+  EdExprDomain.Text := ExpressionSeries.Domain;
+  EdExprParamA.Text := FloatToStr(ExpressionSeries.Params.ValueByName['a']);
+  EdExprParamB.Text := FloatToStr(ExpressionSeries.Params.ValueByName['b']);
 end;
 
 procedure TForm1.iseSplineDegreeChange(Sender: TObject);
