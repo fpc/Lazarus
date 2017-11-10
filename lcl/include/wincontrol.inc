@@ -8292,11 +8292,7 @@ begin
   begin
     WSSetText(AValue);
     InvalidatePreferredSize;
-    //don't call inherited (=TControl.)RealSetText(AValue) since it can issue a
-    //second OnChange if RealSetText is called from within OnChange (#0032602)
-    //instead just update FCaption.
-    //WSSetText already makes sure an OnChange will be performed
-    FCaption := AValue;
+    inherited RealSetText(AValue);
     AdjustSize;
   end
   else inherited RealSetText(AValue);
