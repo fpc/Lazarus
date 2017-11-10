@@ -1266,9 +1266,11 @@ begin
     debugln(['Hint: (lazarus) AltPrgName="',AltPrgName,'"']);
     MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
         SimpleFormat(lisIDEConficurationFoundMayBelongToOtherLazarus,
-        [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
-         EnvironmentOptions.LastCalledByLazarusFullPath, CurPrgName]),
-      mtWarning, [mrOK, lisUpdateInfo, mrIgnore, mrAbort]);
+            [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
+             EnvironmentOptions.LastCalledByLazarusFullPath, CurPrgName]),
+        mtWarning, [mrOK, lisUpdateInfo,
+                    mrIgnore,
+                    mrAbort]);
 
     case MsgResult of
       mrOk: begin
@@ -1305,11 +1307,13 @@ begin
       +LineEnding;
     s+=GetSecondConfDirWarning;
     if IsUpgrade then
-      MsgResult:=IDEQuestionDialog(lisUpgradeConfiguration, s, mtConfirmation, [
-        mrOK, lisUpgrade, mrAbort])
+      MsgResult:=IDEQuestionDialog(lisUpgradeConfiguration, s,
+          mtConfirmation, [mrOK, lisUpgrade,
+                           mrAbort])
     else
-      MsgResult:=IDEQuestionDialog(lisDowngradeConfiguration, s, mtWarning, [
-        mrOK, lisDowngrade, mrAbort]);
+      MsgResult:=IDEQuestionDialog(lisDowngradeConfiguration, s,
+          mtWarning, [mrOK, lisDowngrade,
+                      mrAbort]);
     if MsgResult<>mrOk then begin
       Application.Terminate;
       exit;
@@ -2221,10 +2225,10 @@ procedure TMainIDE.SetupStartProject;
   begin
     debugln(['Hint: (lazarus) AskIfLoadLastFailingProject START']);
     Result:=IDEQuestionDialog(lisOpenProject2,
-      Format(lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro,
-             [EnvironmentOptions.LastSavedProjectFile, LineEnding+LineEnding]),
-      mtWarning,
-      [mrYes, lisOpenProjectAgain, mrNoToAll, lisStartWithANewProject])=mrYes;
+        Format(lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro,
+               [EnvironmentOptions.LastSavedProjectFile, LineEnding+LineEnding]),
+        mtWarning, [mrYes, lisOpenProjectAgain,
+                    mrNoToAll, lisStartWithANewProject]) = mrYes;
     debugln(['Hint: (lazarus) AskIfLoadLastFailingProject END ',dbgs(Result)]);
   end;
 
@@ -3565,8 +3569,9 @@ begin
     itDebugger:
       begin
         if (rfInteractive in AFlags)
-        and (IDEQuestionDialog(lisStopDebugging, lisStopTheDebugging, mtConfirmation,
-            [mrYes, lisStop, mrCancel, lisContinue]) <> mrYes)
+        and (IDEQuestionDialog(lisStopDebugging, lisStopTheDebugging,
+                 mtConfirmation, [mrYes, lisStop,
+                                  mrCancel, lisContinue]) <> mrYes)
         then exit;
         if (DebugBoss.DoStopProject = mrOK) and (ToolStatus = itDebugger) and (rfCloseOnDone in AFlags) then
           FWaitForClose := True;
@@ -3977,9 +3982,10 @@ begin
   // check project
   if SourceFileMgr.SomethingOfProjectIsModified then begin
     DlgResult:=IDEQuestionDialog(lisProjectChanged,
-      Format(lisSaveChangesToProject, [Project1.GetTitleOrName]), mtConfirmation,
-      [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
-       mrAbort, lisDoNotCloseTheProject]);
+        Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
+        mtConfirmation, [mrYes, lisMenuSave,
+                         mrNoToAll, lisDiscardChanges,
+                         mrAbort, lisDoNotCloseTheProject]);
     case DlgResult of
     mrYes:
       if not (DoSaveProject([]) in [mrOk,mrIgnore]) then exit;
@@ -6323,8 +6329,9 @@ begin
   end;
   if not FileReadable then begin
     Result:=IDEQuestionDialog(lisUnableToReadFile,
-      Format(lisUnableToReadFile2, [AFilename]),
-      mtError, [mrCancel, lisSkipFile, mrAbort, lisAbortAllLoading]);
+        Format(lisUnableToReadFile2, [AFilename]),
+        mtError, [mrCancel, lisSkipFile,
+                  mrAbort, lisAbortAllLoading]);
     exit;
   end;
 
@@ -6746,8 +6753,9 @@ begin
       and (not DirPathExistsCached(UnitOutputDirectory)) then begin
         if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
           Result:=IDEQuestionDialog(lisCreateDirectory,
-            Format(lisTheOutputDirectoryIsMissing, [UnitOutputDirectory]),
-            mtConfirmation, [mrYes, lisCreateIt, mrCancel]);
+              Format(lisTheOutputDirectoryIsMissing, [UnitOutputDirectory]),
+              mtConfirmation, [mrYes, lisCreateIt,
+                               mrCancel]);
           if Result<>mrYes then exit;
         end;
         Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);
@@ -6764,8 +6772,9 @@ begin
       and (not DirPathExistsCached(TargetExeDirectory)) then begin
         if not FileIsInPath(TargetExeDirectory,WorkingDir) then begin
           Result:=IDEQuestionDialog(lisCreateDirectory,
-            Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
-            mtConfirmation, [mrYes, lisCreateIt, mrCancel]);
+              Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
+              mtConfirmation, [mrYes, lisCreateIt,
+                               mrCancel]);
           if Result<>mrYes then exit;
         end;
         Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
@@ -6896,8 +6905,8 @@ begin
   if Interactive then
   begin
     if IDEQuestionDialog(lisBuilding, lisTheIDEIsStillBuilding,
-      mtConfirmation, [mrAbort, lisKMAbortBuilding, 'IsDefault', mrNo, lisContinueBuilding])
-      <> mrAbort
+          mtConfirmation, [mrAbort, lisKMAbortBuilding, 'IsDefault',
+                           mrNo, lisContinueBuilding]) <> mrAbort
     then
       exit;
   end;
@@ -6959,11 +6968,12 @@ begin
   and (Project1.CompilerOptions.UseExternalDbgSyms) then
   begin
     // this debugger does not support external debug symbols
-    if IDEQuestionDialog(lisDisableOptionXg, Format(
-      lisTheProjectWritesTheDebugSymbolsToAnExternalFileThe, [DebugClass.Caption
-      ]),
-      mtConfirmation, [mrYes, lisDisableOptionXg2, mrCancel])<>mrYes then
-        exit;
+    if IDEQuestionDialog(lisDisableOptionXg,
+        Format(lisTheProjectWritesTheDebugSymbolsToAnExternalFileThe, [DebugClass.Caption]),
+        mtConfirmation, [mrYes, lisDisableOptionXg2,
+                         mrCancel]) <> mrYes
+    then
+      exit;
     Project1.CompilerOptions.UseExternalDbgSyms:=false;
   end;
 
@@ -11183,7 +11193,9 @@ begin
     case IDEQuestionDialog(lisSaveChanges,
           Format(lisSaveFileBeforeClosingForm,
                  [AnUnitInfo.Filename, LineEnding, ADesigner.LookupRoot.Name]),
-          mtConfirmation,[mrYes,mrNoToAll,rsmbNo,mrCancel],'') of
+          mtConfirmation,[mrYes,
+                          mrNoToAll, rsmbNo,
+                          mrCancel], '') of
       mrYes: begin
         if DoSaveEditorFile(ASrcEdit,[sfCheckAmbiguousFiles])<>mrOk
         then Exit;
@@ -11812,8 +11824,10 @@ begin
   end;
 
   CloseAction := caHide;
-  case IDEQuestionDialog(lisCloseAllTabsTitle, lisCloseAllTabsQuestion, mtConfirmation,
-                  [mrYes, lisCloseAllTabsClose, mrNo, lisCloseAllTabsHide, mrCancel])
+  case IDEQuestionDialog(lisCloseAllTabsTitle, lisCloseAllTabsQuestion,
+          mtConfirmation, [mrYes, lisCloseAllTabsClose,
+                           mrNo, lisCloseAllTabsHide,
+                           mrCancel])
   of
     mrYes : begin
         SourceEditorManager.IncUpdateLock;

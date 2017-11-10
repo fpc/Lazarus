@@ -1309,9 +1309,10 @@ begin
     if (CompareFileExt(FFilename,'.lpi',false)=0) then
     begin
       case
-        IDEQuestionDialog(
-          lisOpenProject, Format(lisOpenTheProject, [FFilename]), mtConfirmation,
-          [mrYes, lisOpenProject2, mrNoToAll, lisOpenAsXmlFile, mrCancel])
+        IDEQuestionDialog(lisOpenProject, Format(lisOpenTheProject, [FFilename]),
+            mtConfirmation, [mrYes, lisOpenProject2,
+                             mrNoToAll, lisOpenAsXmlFile,
+                             mrCancel])
       of
         mrYes: begin
           Result:=MainIDE.DoOpenProjectFile(FFilename,[ofAddToRecent]);
@@ -1326,9 +1327,11 @@ begin
     if (CompareFileExt(FFilename,'.lpk',false)=0) then
     begin
       case
-        IDEQuestionDialog(
-          lisOpenPackage, Format(lisOpenThePackage, [FFilename]), mtConfirmation,
-          [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile, mrCancel])
+        IDEQuestionDialog(lisOpenPackage,
+            Format(lisOpenThePackage, [FFilename]),
+            mtConfirmation, [mrYes, lisCompPalOpenPackage,
+                             mrNoToAll, lisOpenAsXmlFile,
+                             mrCancel])
       of
         mrYes: begin
           Result:=PkgBoss.DoOpenPackageFile(FFilename,[pofAddToRecent],
@@ -1763,8 +1766,10 @@ begin
     begin
       MsgResult:=IDEQuestionDialog(lisCCOWarningCaption,
         Format(lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems, [LineEnding]),
-        mtWarning, [mrYes, lisAddUnitInterfaces, mrNo, lisIgnore,
-                    mrNoToAll, lisAlwaysIgnore, mrCancel]);
+        mtWarning, [mrYes, lisAddUnitInterfaces,
+                    mrNo, lisIgnore,
+                    mrNoToAll, lisAlwaysIgnore,
+                    mrCancel]);
       case MsgResult of
         mrNo: exit;
         mrNoToAll: begin Project1.SkipCheckLCLInterfaces:=true; exit; end;
@@ -1848,7 +1853,8 @@ begin
           MsgResult:=IDEQuestionDialog(lisAddPackageRequirement,
             Format(lisTheUnitBelongsToPackage, [APackage.IDAsString]),
             mtConfirmation, [mrYes, lisAddPackageToProject2,
-                            mrIgnore, lisAddUnitNotRecommended, mrCancel],'');
+                             mrIgnore, lisAddUnitNotRecommended,
+                             mrCancel],'');
           case MsgResult of
             mrYes:
               begin
@@ -2712,7 +2718,9 @@ begin
           AText:=Format(lisSourceOfPageHasChangedSave, [TSourceEditor(AEditor).PageName]);
         ACaption:=lisSourceModified;
         Result:=IDEQuestionDialog(ACaption, AText,
-            mtConfirmation, [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort]);
+            mtConfirmation, [mrYes, lisMenuSave,
+                             mrNo, lisDiscardChanges,
+                             mrAbort]);
       end else
         Result:=mrYes;
       if Result=mrYes then begin
@@ -3363,7 +3371,8 @@ begin
     if Project1.HasProjectInfoFileChangedOnDisk then begin
       if IDEQuestionDialog(lisProjectChangedOnDisk,
         Format(lisTheProjectInformationFileHasChangedOnDisk,[Project1.ProjectInfoFile,LineEnding]),
-        mtConfirmation, [mrYes, lisReopenProject, mrIgnore], '')=mrYes
+        mtConfirmation, [mrYes, lisReopenProject,
+                         mrIgnore], '') = mrYes
       then begin
         MainIDE.DoOpenProjectFile(Project1.ProjectInfoFile,[]);
       end else begin
@@ -4422,8 +4431,9 @@ begin
             LPIFilename:=ChangeFileExt(AFilename,'.lpi');
             if FileExistsCached(LPIFilename) then begin
               if IDEQuestionDialog(lisProjectInfoFileDetected,
-                  Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
-                  AFilename]), mtConfirmation, [mrOk,lisOpenProject2,mrCancel])<>mrOk
+                  Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [AFilename]),
+                  mtConfirmation, [mrOk,lisOpenProject2,
+                                   mrCancel]) <> mrOk
               then
                 exit;
               AFilename:=LPIFilename;
@@ -4431,7 +4441,8 @@ begin
               if IDEQuestionDialog(lisFileHasNoProject,
                 Format(lisTheFileIsNotALazarusProjectCreateANewProjectForThi,
                        [AFilename, LineEnding, lowercase(SourceType)]),
-                mtConfirmation, [mrYes, lisCreateProject, mrCancel])<>mrYes
+                mtConfirmation, [mrYes, lisCreateProject,
+                                 mrCancel]) <> mrYes
               then
                 exit;
               CreateProjectForProgram(PreReadBuf);
@@ -4460,7 +4471,9 @@ begin
     Ed := TSourceEditor(EditorList[0]);
     r := IDEQuestionDialog(lisSourceModified,
            Format(lisSourceOfPageHasChangedSave, [Ed.PageName]),
-           mtConfirmation, [mrYes,lisMenuSave, mrNo,lisDiscardChanges, mrAbort]);
+           mtConfirmation, [mrYes, lisMenuSave,
+                            mrNo, lisDiscardChanges,
+                            mrAbort]);
     case r of
       mrYes: SaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
       mrNo: ; // don't save
@@ -4473,9 +4486,11 @@ begin
       Remain := EditorList.Count-i-1;    // Remaining number of files to go.
       r := IDEQuestionDialog(lisSourceModified,
             Format(lisSourceOfPageHasChangedSaveEx, [Ed.PageName,Remain]),
-            mtConfirmation,
-            [mrYes,lisMenuSave, mrAll,lisSaveAll, mrNo,lisDiscardChanges,
-             mrIgnore,lisDiscardChangesAll, mrAbort]);
+            mtConfirmation, [mrYes, lisMenuSave,
+                             mrAll, lisSaveAll,
+                             mrNo, lisDiscardChanges,
+                             mrIgnore, lisDiscardChangesAll,
+                             mrAbort]);
       case r of
         mrYes: SaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
         mrNo: ; // don't save
@@ -7430,7 +7445,7 @@ begin
   if AnUnitInfo.LoadingComponent then begin
     Result:=IDEQuestionDialogAb(lisCodeTemplError,
       Format(lisUnableToLoadTheComponentClassBecauseItDependsOnIts, [AComponentClassName]),
-      mtError, [mrCancel, lisCancelLoadingThisComponent],HideAbort);
+      mtError, [mrCancel, lisCancelLoadingThisComponent], HideAbort);
     exit;
   end;
 
@@ -7467,14 +7482,12 @@ begin
       MsgText:=Format(lisUnableToFindTheComponentClassItIsNotRegisteredViaR, [
           AComponentClassName, LineEnding, LineEnding, LineEnding, AnUnitInfo.Filename]);
       if IgnoreBtnText<>'' then
-        Result:=IDEQuestionDialogAb(lisCodeTemplError,
-                  MsgText, mtError,
+        Result:=IDEQuestionDialogAb(lisCodeTemplError, MsgText, mtError,
                   [mrCancel, lisCancelLoadingThisComponent,
-                   mrIgnore, IgnoreBtnText],
-                   HideAbort)
+                   mrIgnore, IgnoreBtnText], HideAbort)
       else
-        Result:=IDEQuestionDialogAb(lisCodeTemplError,
-          MsgText,mtError,[mrCancel, lisCancelLoadingThisComponent],HideAbort);
+        Result:=IDEQuestionDialogAb(lisCodeTemplError, MsgText, mtError,
+                  [mrCancel, lisCancelLoadingThisComponent], HideAbort);
     end;
   finally
     AnUnitInfo.LoadingComponent:=false;
@@ -7729,8 +7742,9 @@ begin
         // Ask confirmation once for each path.
         // In fact there should be only one path after one source file is removed.
         if (QRes=mrNone) or ((PrevResolvedDir<>'') and (PrevResolvedDir<>ResolvedDir)) then
-          QRes:=IDEQuestionDialog(DlgCapt,Format(DlgMsg,[CurDir]),mtConfirmation,
-                                  [mrYes,lisRemove,mrNo,lisKeep2], '');
+          QRes:=IDEQuestionDialog(DlgCapt,Format(DlgMsg,[CurDir]),
+                   mtConfirmation, [mrYes, lisRemove,
+                                    mrNo, lisKeep2], '');
         if QRes=mrYes then begin
           // remove
           if pcos=pcosUnitPath then
@@ -8270,8 +8284,10 @@ begin
   then begin
     // lpi file will change => ask
     Result:=IDEQuestionDialog(lisProjectChanged,
-      Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
-      mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mrCancel], '');
+        Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
+        mtConfirmation, [mrYes,
+                         mrNoToAll, rsmbNo,
+                         mrCancel], '');
     if Result=mrNoToAll then exit(mrOk);
     if Result<>mrYes then exit(mrCancel);
   end
@@ -8279,7 +8295,9 @@ begin
   begin
     // some non project files were changes in the source editor
     Result:=IDEQuestionDialog(lisSaveChangedFiles,lisSaveChangedFiles,
-      mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mrCancel], '');
+        mtConfirmation, [mrYes,
+                         mrNoToAll, rsmbNo,
+                         mrCancel], '');
     if Result=mrNoToAll then exit(mrOk);
     if Result<>mrYes then exit(mrCancel);
   end
@@ -8295,8 +8313,10 @@ begin
       // session is saved separately
       if EnvironmentOptions.AskSaveSessionOnly then begin
         Result:=IDEQuestionDialog(lisProjectSessionChanged,
-          Format(lisSaveSessionChangesToProject, [Project1.GetTitleOrName]),
-          mtConfirmation, [mrYes, mrNoToAll, rsmbNo, mrCancel], '');
+            Format(lisSaveSessionChangesToProject, [Project1.GetTitleOrName]),
+            mtConfirmation, [mrYes,
+                             mrNoToAll, rsmbNo,
+                             mrCancel], '');
         if Result=mrNoToAll then exit(mrOk);
         if Result<>mrYes then exit(mrCancel);
       end;

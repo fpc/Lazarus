@@ -3531,8 +3531,8 @@ begin
     if IDEQuestionDialog(lisNotAnInstallPackage,
       Format(lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi,
              [APackage.Name, LineEnding+LineEnding]),
-      mtWarning,
-      [mrIgnore, lisInstallItILikeTheFat, mrCancel, lisCancel], '')<>mrIgnore
+      mtWarning, [mrIgnore, lisInstallItILikeTheFat,
+                  mrCancel, lisCancel], '') <> mrIgnore
     then exit(mrCancel);
   end;
   if Assigned(OnInstallPackage) then

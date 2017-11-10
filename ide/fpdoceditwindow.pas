@@ -504,9 +504,9 @@ begin
           // the inherited entry already contains a description.
           // ask if it should be really replaced
           if IDEQuestionDialog(lisCodeHelpConfirmreplace,
-            GetContextTitle(Element)+' already contains the help:'+LineEnding
-            +ShortDescr,
-            mtConfirmation,[mrYes,lisReplace,mrCancel])<>mrYes then exit;
+            GetContextTitle(Element)+' already contains the help:'+LineEnding+ShortDescr,
+            mtConfirmation, [mrYes, lisReplace,
+                             mrCancel]) <> mrYes then exit;
         end;
       end;
     end else begin
@@ -1555,9 +1555,9 @@ begin
   //DebugLn(['TFPDocEditForm.CopyFromInheritedButtonClick ']);
   if ShortEdit.Text<>'' then begin
     if IDEQuestionDialog('Confirm replace',
-      GetContextTitle(fChain[0])+' already contains the help:'+LineEnding
-      +ShortEdit.Text,
-      mtConfirmation,[mrYes,'Replace',mrCancel])<>mrYes then exit;
+      GetContextTitle(fChain[0])+' already contains the help:'+LineEnding+ShortEdit.Text,
+      mtConfirmation, [mrYes,'Replace',
+                       mrCancel]) <> mrYes then exit;
   end;
   LoadGUIValues(fChain[i]);
   Modified:=true;

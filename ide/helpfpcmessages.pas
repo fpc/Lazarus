@@ -917,12 +917,12 @@ begin
         IDEMessageDialog(lisHFMHelpForFreePascalCompilerMessage, FoundComment,
                    mtInformation,[mbOk]);
       end else begin
-        if IDEQuestionDialog(lisHFMHelpForFreePascalCompilerMessage, Format(
-          lisThereAreAdditionalNotesForThisMessageOn, [FoundComment
-                   +LineEnding+LineEnding, LineEnding+URL]),
-                   mtInformation, [mrYes, lisOpenURL, mrClose, lisClose])=mrYes
-                     then
-        begin
+        if IDEQuestionDialog(lisHFMHelpForFreePascalCompilerMessage,
+          Format(lisThereAreAdditionalNotesForThisMessageOn,
+                 [FoundComment+LineEnding+LineEnding, LineEnding+URL]),
+          mtInformation, [mrYes, lisOpenURL,
+                          mrClose, lisClose]) = mrYes
+        then begin
           if not OpenURL(URL) then
             exit(shrViewerError);
         end;

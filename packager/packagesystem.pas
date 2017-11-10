@@ -1967,8 +1967,10 @@ begin
 
   // tell user
   IgnoreAll:=mrLast+1;
-  DlgResult:=IDEQuestionDialog(lisPkgSysPackageRegistrationError,
-               ErrorMsg, mtError, [mrIgnore, IgnoreAll, lisIgnoreAll, mrAbort]);
+  DlgResult:=IDEQuestionDialog(lisPkgSysPackageRegistrationError, ErrorMsg,
+                     mtError, [mrIgnore,
+                               IgnoreAll, lisIgnoreAll,
+                               mrAbort]);
   if DlgResult=IgnoreAll then
     QuietRegistration:=true;
   if DlgResult=mrAbort then

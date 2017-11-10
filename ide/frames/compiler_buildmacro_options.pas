@@ -153,9 +153,10 @@ begin
         then  begin
           BetterName:=GetMacroNamePrefix(cbmpMedium)+S;
           DlgResult:=IDEQuestionDialog(lisCCOWarningCaption,
-            Format(lisTheMacroDoesNotBeginWith, [S, Prefix]),
-            mtWarning, [mrCancel, mrYes, Format(lisRenameTo, [BetterName]),
-              mrIgnore]);
+              Format(lisTheMacroDoesNotBeginWith, [S, Prefix]),
+              mtWarning, [mrCancel,
+                          mrYes, Format(lisRenameTo, [BetterName]),
+                          mrIgnore]);
           if DlgResult=mrIgnore then begin
           end else if DlgResult=mrYes then
             S:=BetterName

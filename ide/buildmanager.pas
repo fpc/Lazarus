@@ -1614,7 +1614,9 @@ begin
                 +'2. "'+CurFilename+'"'+LineEnding
                 +LineEnding
                 +lisHintCheckIfTwoPackagesContainAUnitWithTheSameName,
-                mtWarning, [mrIgnore, mrYesToAll, lisIgnoreAll, mrAbort]);
+                mtWarning, [mrIgnore,
+                            mrYesToAll, lisIgnoreAll,
+                            mrAbort]);
               case Result of
               mrIgnore: ;
               mrYesToAll: IgnoreAll:=true;

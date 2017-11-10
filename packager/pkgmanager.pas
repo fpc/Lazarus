@@ -3438,9 +3438,10 @@ begin
           Msg:=Format(lisUnitInPackage,
             [Msg, PkgFile.Unit_Name, PkgFile.LazPackage.IDAsString]) + LineEnding;
         end;
-        Result:=IDEQuestionDialog(lisPackageNeedsInstallation,
-          Msg,mtWarning,
-          [mrIgnore,'Continue without install',mrYes,'Install these packages',mrCancel,'Cancel','IsDefault']);
+        Result:=IDEQuestionDialog(lisPackageNeedsInstallation, Msg,
+                  mtWarning, [mrIgnore,'Continue without install',
+                              mrYes,'Install these packages',
+                              mrCancel,'Cancel','IsDefault']);
         if Result=mrIgnore then begin
           // continue
         end else if Result=mrYes then
@@ -3556,10 +3557,10 @@ var
   begin
     if pofMultiOpen in Flags then
       Result:=IDEQuestionDialog(Caption, Message,
-        mtError, [mrIgnore, lisPkgMangSkipThisPackage, mrAbort])
+                mtError, [mrIgnore, lisPkgMangSkipThisPackage,
+                          mrAbort])
     else
-      Result:=IDEQuestionDialog(Caption, Message,
-        mtError,[mrAbort])
+      Result:=IDEQuestionDialog(Caption, Message, mtError, [mrAbort])
   end;
 begin
   // replace macros
@@ -5143,9 +5144,8 @@ begin
     if FilenameIsAbsolute(AFilename) and FileExistsCached(AFilename) then
       continue;
     Result:=IDEQuestionDialog(lisPkgSysPackageFileNotFound,
-      Format(lisPkgMangTheFileOfPackageWasNotFound, [AFilename, APackage.
-        IDAsString]),
-      mtWarning,[mrIgnore,mrAbort]);
+      Format(lisPkgMangTheFileOfPackageWasNotFound, [AFilename, APackage.IDAsString]),
+      mtWarning, [mrIgnore,mrAbort]);
     if Result<>mrAbort then
       Result:=mrOk;
     // one warning is enough
@@ -5214,8 +5214,10 @@ var
         Result:=IDEQuestionDialog(lisSuspiciousIncludePath,
           Format(lisThePackageAddsThePathToTheIncludePathOfTheIDEThisI, [
             APackage.IDAsString, dbgstr(APackage.UsageOptions.IncludePath), LineEnding]
-            ),
-          mtWarning, [mrYes, lisContinue, mrYesToAll, lisContinueAndDoNotAskAgain, mrCancel]);
+          ),
+          mtWarning, [mrYes, lisContinue,
+                      mrYesToAll, lisContinueAndDoNotAskAgain,
+                      mrCancel]);
         case Result of
         mrYes: ;
         mrYesToAll:
@@ -5239,7 +5241,9 @@ var
         Result:=IDEQuestionDialog(lisSuspiciousUnitPath,
           Format(lisThePackageAddsThePathToTheUnitPathOfTheIDEThisIsPr, [
             APackage.IDAsString, dbgstr(APackage.UsageOptions.UnitPath), LineEnding]),
-          mtWarning, [mrYes, lisContinue, mrYesToAll, lisContinueAndDoNotAskAgain, mrCancel]);
+          mtWarning, [mrYes, lisContinue,
+                      mrYesToAll, lisContinueAndDoNotAskAgain,
+                      mrCancel]);
         case Result of
         mrYes: ;
         mrYesToAll:

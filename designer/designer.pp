@@ -4092,9 +4092,10 @@ var
   AncestorComponent: TComponent;
 begin
   MsgResult:=IDEQuestionDialog(lisReset,
-    lisResetLeftTopWidthHeightOfSelectedComponentsToTheir,
-    mtConfirmation, [mrYes, lisSelected, mrYesToAll,
-      lisSelectedAndChildControls, mrCancel]);
+      lisResetLeftTopWidthHeightOfSelectedComponentsToTheir,
+      mtConfirmation, [mrYes, lisSelected,
+                       mrYesToAll, lisSelectedAndChildControls,
+                       mrCancel]);
   if not (MsgResult in [mrYes,mrYesToAll]) then exit;
   HasChanged:=false;
   Form.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.OnResetPopupMenuClick'){$ENDIF};

@@ -559,8 +559,11 @@ begin
         if FileExistsUTF8(Filename) and (not DeleteFileUTF8(Filename))
         and (not Quiet) then begin
           Result:=IDEQuestionDialog(lisDeleteFileFailed,
-            Format(lisPkgMangUnableToDeleteFile, [Filename]),
-            mtError, [mrRetry, mrCancel, mrNo, lisCCOSkip, mrNoToAll, lisSkipErrors]);
+              Format(lisPkgMangUnableToDeleteFile, [Filename]),
+              mtError, [mrRetry,
+                        mrCancel,
+                        mrNo, lisCCOSkip,
+                        mrNoToAll, lisSkipErrors]);
           if Result=mrNoToAll then begin
             Quiet:=true;
             break;

@@ -1515,8 +1515,8 @@ begin
         if IDEQuestionDialog(crsPackageWithSameName,
           Format(crsThereIsAlreadyAnotherPackageLoadedWithTheSameNameO, [LineEnding,
             Pkg.Filename, LineEnding, NewGroupFilename, LineEnding]),
-          mtConfirmation, [mrCancel, crsBTNCancel, mrOk,
-            crsCloseOtherPackageAndOpenNew])<> mrOk
+          mtConfirmation, [mrCancel, crsBTNCancel,
+                           mrOk, crsCloseOtherPackageAndOpenNew]) <> mrOk
         then exit;
       end;
     end else begin

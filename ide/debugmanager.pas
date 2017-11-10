@@ -1253,9 +1253,9 @@ begin
         MainIDE.DoCallRunFinishedHandler;
         if EnvironmentOptions.DebuggerShowStopMessage
         then begin
-          MsgResult:=IDEQuestionDialog(lisExecutionStopped,
-            lisExecutionStopped, mtInformation,
-            [mrOK, lisMenuOk, mrYesToAll, lisDoNotShowThisMessageAgain], '');
+          MsgResult:=IDEQuestionDialog(lisExecutionStopped, lisExecutionStopped,
+              mtInformation, [mrOK, lisMenuOk,
+                              mrYesToAll, lisDoNotShowThisMessageAgain], '');
           if MsgResult=mrYesToAll then
             EnvironmentOptions.DebuggerShowStopMessage:=false;
         end;
@@ -2390,8 +2390,7 @@ begin
   then begin
     if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
       Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,[LineEnding]),
-      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])
-      <>mrIgnore
+      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway]) <> mrIgnore
     then
       exit(false);
   end;

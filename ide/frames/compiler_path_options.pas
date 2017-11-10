@@ -399,8 +399,8 @@ begin
       if IDEQuestionDialog(lisDuplicateSearchPath,
         Format(lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT,
               [LineEnding+LineEnding, Duplicates.DelimitedText]),
-        mtError, [mrCancel, mrYes, lisRemoveThePathsFromOtherSources, 'IsDefault']
-        )=mrYes
+        mtError, [mrCancel,
+                  mrYes, lisRemoveThePathsFromOtherSources, 'IsDefault']) = mrYes
       then begin
         // remove paths from SrcPath
         OldUnparsedSrcPath:=FCompilerOpts.SrcPath;
