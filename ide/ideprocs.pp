@@ -214,7 +214,6 @@ function UncommentLines(const s: string): string;
 function CrossReplaceChars(const Src: string; PrefixChar: char;
                            const SpecialChars: string): string;
 function SimpleSyntaxToRegExpr(const Src: string): string;
-function NameToValidIdentifier(const s: string): string;
 function BinaryStrToText(const s: string): string;
 function SplitString(const s: string; Delimiter: char): TStrings;
 procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
@@ -1932,32 +1931,6 @@ begin
     if p>length(s) then begin
       List.Add('');
       exit;
-    end;
-  end;
-end;
-
-{-------------------------------------------------------------------------------
-  NameToValidIdentifier
-
-  Params: const s: string
-  Result: string
-
-  Replaces all non identifier characters into underscores '_'
--------------------------------------------------------------------------------}
-function NameToValidIdentifier(const s: string): string;
-var i: integer;
-begin
-  if s='' then begin
-    Result:='_';
-  end else begin
-    Result:=s;
-    if not (Result[1] in ['A'..'Z', 'a'..'z', '_']) then begin
-      Result[1]:='_';
-    end;
-    for i:=2 to length(Result) do begin
-      if not (Result[i] in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then begin
-        Result[i]:='_';
-      end;
     end;
   end;
 end;
