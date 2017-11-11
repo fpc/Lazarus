@@ -3635,6 +3635,7 @@ var
   IdentFound, StringFound: Boolean;
   ActiveDesigner: TComponentEditorDesigner;
   CurWordAtCursor: string;
+  FindDeclarationCmd: TIDECommand;
 begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
   ActiveDesigner := GetActiveDesignerSkipMainBar;
@@ -3731,13 +3732,12 @@ begin
   IDECommandList.FindIDECommand(ecShowAbstractMethods).Enabled := Editable;
   IDECommandList.FindIDECommand(ecRemoveEmptyMethods).Enabled := Editable;
 
-  IDECommandList.FindIDECommand(ecFindDeclaration).Enabled := CurWordAtCursor<>'';
+  FindDeclarationCmd := IDECommandList.FindIDECommand(ecFindDeclaration);
+  FindDeclarationCmd.Enabled := CurWordAtCursor<>'';
   if CurWordAtCursor<>'' then
-    IDECommandList.FindIDECommand(ecFindDeclaration).Caption :=
-      Format(lisFindDeclarationOf, [CurWordAtCursor])
+    FindDeclarationCmd.Caption := Format(lisFindDeclarationOf, [CurWordAtCursor])
   else
-    IDECommandList.FindIDECommand(ecFindDeclaration).Caption :=
-      uemFindDeclaration;
+    FindDeclarationCmd.Caption := uemFindDeclaration;
 end;
 
 procedure TMainIDE.UpdateEditorTabCommands(Sender: TObject);
@@ -9895,12 +9895,14 @@ begin
           NewX,NewY,BodySource,BodyX,BodyY,BodyTopLine,BlockTopLine,BlockBottomLine,RevertableJump))
         then
           JumpToBodySuccess := DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-            BodySource, BodyX, BodyY, BodyTopLine, BlockTopLine, BlockBottomLine, [jfAddJumpPoint, jfFocusEditor]) = mrOK;
+              BodySource, BodyX, BodyY, BodyTopLine, BlockTopLine, BlockBottomLine,
+              [jfAddJumpPoint, jfFocusEditor]) = mrOK;
       end;
     end;
     if not JumpToBodySuccess then
       DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
-        NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine, [jfAddJumpPoint, jfFocusEditor]);
+          NewSource, NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine,
+          [jfAddJumpPoint, jfFocusEditor]);
   end else begin
     DoJumpToCodeToolBossError;
   end;
