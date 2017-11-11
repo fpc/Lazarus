@@ -1802,7 +1802,7 @@ begin
     else
        CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
     CurMenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
-    CurMenuItem.UserTag := PtrUInt(WindowsList[i]);
+    CurMenuItem.UserTag := {%H-}PtrUInt(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
