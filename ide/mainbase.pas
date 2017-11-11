@@ -633,20 +633,8 @@ end;
 { TMainIDEBase }
 
 procedure TMainIDEBase.mnuWindowItemClick(Sender: TObject);
-var
-  i: Integer;
-  Form: TCustomForm;
 begin
-  i:=Screen.CustomFormCount-1;
-  while (i>=0) do begin
-    Form:=Screen.CustomForms[i];
-    if FormMatchesCmd(Form, Sender as TIDEMenuCommand) then
-    begin
-      IDEWindowCreators.ShowForm(Form,true);
-      break;
-    end;
-    dec(i);
-  end;
+  IDEWindowCreators.ShowForm(TCustomForm(TIDEMenuCommand(Sender).UserTag), true);
 end;
 
 procedure TMainIDEBase.mnuCenterWindowItemClick(Sender: TObject);
@@ -1814,6 +1802,7 @@ begin
     else
        CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
     CurMenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
+    CurMenuItem.UserTag := PtrUInt(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
