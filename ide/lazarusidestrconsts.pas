@@ -2795,7 +2795,6 @@ resourcestring
   rsiwpSplitterCustomPosition        = 'Custom Size';
 
   // Code Explorer
-  lisCodeExplorer = 'Code Explorer';
   lisCode = 'Code';
 
   // Unit editor

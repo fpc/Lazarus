@@ -453,7 +453,7 @@ begin
   if Fits('MessagesView',dlgMsgs) then exit;
   if Fits('ObjectInspectorDlg',oisObjectInspector) then exit;
   if Fits('UnitDependencies',dlgUnitDepCaption) then exit;
-  if Fits('CodeExplorerView',lisCodeExplorer) then exit;
+  if Fits('CodeExplorerView',lisMenuViewCodeExplorer) then exit;
   if Fits('FPDocEditor',lisCodeHelpMainFormCaption) then exit;
   if Fits('PkgGraphExplorer',lisMenuPackageGraph) then exit;
   if Fits('ProjectInspector',lisMenuProjectInspector) then exit;
