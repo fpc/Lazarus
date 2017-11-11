@@ -287,6 +287,7 @@
         <Filename Value="frames/help_general_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="HelpGeneralOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit35>
       <Unit36>

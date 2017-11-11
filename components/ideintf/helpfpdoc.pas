@@ -63,9 +63,8 @@ begin
   Result:=TFPDocHTMLHelpDatabase(
           HelpDatabases.CreateHelpDatabase(DBName,TFPDocHTMLHelpDatabase,true));
   Result.DefaultBaseURL:=BaseURL;
-  // FPDoc nodes for units in the LCL
-  FPDocNode:=THelpNode.CreateURL(Result,DBTitle,'file://index.html');
   // register TOC (table of contents)
+  FPDocNode:=THelpNode.CreateURL(Result,DBTitle,'file://index.html');
   Result.TOCNode:=THelpNode.Create(Result,FPDocNode);
   // register fpdoc item
   Result.RegisterItem(THelpDBISourceDirectory.Create(FPDocNode,
