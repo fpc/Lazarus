@@ -1230,6 +1230,10 @@ msgstr "Sarcelle"
 msgid "Text"
 msgstr "Texte"
 
+#: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
+msgid "The built-in URL is read only. Change the BaseURL instead."
+msgstr ""
+
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
 msgstr "Tagged Image File Format"

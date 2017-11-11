@@ -1277,6 +1277,10 @@ msgstr "כחלחל ירקרק"
 msgid "Text"
 msgstr "טקסט"
 
+#: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
+msgid "The built-in URL is read only. Change the BaseURL instead."
+msgstr ""
+
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
 msgstr "פורמט מתוייג של קובץ דמות"

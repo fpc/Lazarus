@@ -1231,6 +1231,10 @@ msgstr "暗青緑色"
 msgid "Text"
 msgstr "テキスト"
 
+#: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
+msgid "The built-in URL is read only. Change the BaseURL instead."
+msgstr ""
+
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
 msgstr "TIFF ファイル"

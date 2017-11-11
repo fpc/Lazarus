@@ -1242,6 +1242,10 @@ msgstr "Blauwachtig groen (teal)"
 msgid "Text"
 msgstr "Tekst"
 
+#: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
+msgid "The built-in URL is read only. Change the BaseURL instead."
+msgstr ""
+
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
 msgstr "Tagged Image File Format"

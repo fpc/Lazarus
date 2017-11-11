@@ -1234,6 +1234,10 @@ msgstr "Ocra"
 msgid "Text"
 msgstr "Testo"
 
+#: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
+msgid "The built-in URL is read only. Change the BaseURL instead."
+msgstr ""
+
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
 msgstr "Formato del file immagine marcato"

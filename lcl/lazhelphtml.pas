@@ -56,6 +56,7 @@ type
     FKeywordPrefixNode: THelpNode;
     function IsBaseURLStored: boolean;
     procedure SetBaseURL(const AValue: string);
+    procedure SetBuiltInBaseURL(const AValue: string);
     procedure SetDefaultBaseURL(const AValue: string);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -73,6 +74,7 @@ type
     procedure Save(Storage: TConfigStorage); override;
     property DefaultBaseURL: string read FDefaultBaseURL write SetDefaultBaseURL;// used, if BaseURL is empty
   published
+    property BuiltInBaseURL: string read FDefaultBaseURL write SetBuiltInBaseURL;// read only, shown in the IDE help options
     property BaseURL: string read FBaseURL write SetBaseURL stored IsBaseURLStored;
     property AutoRegister;
     property KeywordPrefix: string read FKeywordPrefix write FKeywordPrefix;// see above
@@ -130,6 +132,12 @@ begin
     FBaseURL:=''
   else
     FBaseURL:=AValue;
+end;
+
+procedure THTMLHelpDatabase.SetBuiltInBaseURL(const AValue: string);
+begin
+  if AValue=BuiltInBaseURL then exit;
+  raise Exception.Create(rsTheBuiltInURLIsReadOnlyChangeTheBaseURLInstead);
 end;
 
 procedure THTMLHelpDatabase.SetDefaultBaseURL(const AValue: string);

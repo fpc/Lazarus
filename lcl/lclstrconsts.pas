@@ -430,6 +430,8 @@ resourceString
 
   hhsHelpTheHelpDatabaseWasUnableToFindFile = 'The help database "%s" was '
     +'unable to find file "%s".';
+  rsTheBuiltInURLIsReadOnlyChangeTheBaseURLInstead = 'The built-in URL is read'
+    +' only. Change the BaseURL instead.';
   hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
     +'BrowserParams will be replaced by the URL.';
   hhsHelpNoHTMLBrowserFoundPleaseDefineOne = 'No HTML Browser found.'
