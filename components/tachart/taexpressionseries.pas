@@ -584,8 +584,8 @@ end;
 
 procedure TExpressionSeries.SetExpression(const AValue: String);
 begin
-  if FParser.Expression = AValue then
-    exit;
+//  if FParser.Expression = AValue then
+//    exit;
   FExpression := AValue;
   RequestParserUpdate;
   UpdateParentChart;

@@ -1343,7 +1343,7 @@ begin
       SetBounds(FConnectorData);
       Draw(Drawer, FConnectorData.FDrawerBounds);
       EffectiveGUIConnector.Display(FConnectorData);
-  end;
+    end;
   if Assigned(OnAfterPaint) then
     OnAfterPaint(Self);
 end;

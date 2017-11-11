@@ -357,6 +357,9 @@ type
     FStepX: TFuncSeriesStep;
     FStepY: TFuncSeriesStep;
     FUseImage: TUseImage;
+    FAutoScaleColors: Boolean;
+    FColorExtentMin, FColorExtentMax: Double;
+    procedure SetAutoscaleColors(AValue: Boolean);
     procedure SetBrush(AValue: TBrush);
     procedure SetColorSource(AValue: TCustomChartSource);
     procedure SetInterpolate(AValue: Boolean);
@@ -364,7 +367,9 @@ type
     procedure SetStepY(AValue: TFuncSeriesStep);
     procedure SetUseImage(AValue: TUseImage);
   protected
+    FMinZ, FMaxZ: Double;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
+    procedure GetZRange(ARect: TRect; dx, dy: Integer);
 
   public
     procedure Assign(ASource: TPersistent); override;
@@ -377,6 +382,8 @@ type
     procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
   published
+    property AutoScaleColors: Boolean
+      read FAutoScaleColors write SetAutoScaleColors default false;
     property AxisIndexX;
     property AxisIndexY;
     property Brush: TBrush read FBrush write SetBrush;
@@ -1808,8 +1815,19 @@ var
   lb, ub: Integer;
   c1, c2: TColor;
   v1, v2: Double;
+  f: Double;
 begin
   if (ColorSource = nil) or (ColorSource.Count = 0) then exit(clTAColor);
+
+  if FAutoscaleColors then begin
+    // Transform data value to the values assigned to the colorsource
+    if FMinZ <> FMaxZ then begin
+      AValue := (AValue - FMinZ) / (FMaxZ - FMinZ);
+      AValue := AValue * (FColorExtentMax - FColorExtentMin) + FColorExtentMin;
+    end else
+      AValue := FColorExtentMin;
+  end;
+
   ColorSource.FindBounds(AValue, SafeInfinity, lb, ub);
   if Interpolate and InRange(lb, 1, ColorSource.Count - 1) then begin
     with ColorSource[lb - 1]^ do begin
@@ -1861,6 +1879,7 @@ var
   cellColor: TChartColor;
   scaled_stepX: Integer;
   scaled_stepY: Integer;
+  zmin, zmax: Double;
 begin
   if not (csDesigning in ComponentState) and IsEmpty then exit;
 
@@ -1890,6 +1909,8 @@ begin
 
   scaled_stepX := IfThen(StepX > 1, Max(1, ADrawer.Scale(StepX)), 1);
   scaled_stepY := IfThen(StepY > 1, Max(1, ADrawer.Scale(StepY)), 1);
+
+  GetZRange(r, scaled_stepX, scaled_stepY);
 
   try
     pt.Y := (r.Top div scaled_stepY - 1) * scaled_stepY + offset.Y mod scaled_stepY;
@@ -2015,9 +2036,44 @@ begin
   end;
 end;
 
+procedure TCustomColorMapSeries.GetZRange(ARect: TRect; dx, dy: Integer);
+var
+  gp: TDoublePoint;
+  ix, iy: Integer;
+  z: Double;
+begin
+  if IsEmpty then begin
+    FMinZ := 0.0;
+    FMaxZ := 0.0;
+    exit;
+  end;
+
+  FMinZ := 1E308;
+  FMaxZ := -FMinZ;
+  iy := ARect.Top;
+  while (iy <= ARect.Bottom) do begin
+    ix := ARect.Left;
+    while ix <= ARect.Right do begin
+      gp := ParentChart.ImageToGraph(Point(ix, iy));
+      z := FunctionValue(gp.X, gp.Y);
+      FMinZ := Min(FMinZ, z);
+      FMaxZ := Max(FMaxZ, z);
+      inc(ix, dx);
+    end;
+    inc(iy, dy);
+  end;
+end;
+
 function TCustomColorMapSeries.IsEmpty: Boolean;
 begin
   Result := true;
+end;
+
+procedure TCustomColorMapSeries.SetAutoscaleColors(AValue: Boolean);
+begin
+  if FAutoscaleColors = AValue then exit;
+  FAutoscaleColors := AValue;
+  UpdateParentChart;
 end;
 
 procedure TCustomColorMapSeries.SetBrush(AValue: TBrush);
@@ -2028,13 +2084,19 @@ begin
 end;
 
 procedure TCustomColorMapSeries.SetColorSource(AValue: TCustomChartSource);
+var
+  ex: TDoubleRect;
 begin
   if FColorSource = AValue then exit;
   if FColorSourceListener.IsListening then
     ColorSource.Broadcaster.Unsubscribe(FColorSourceListener);
   FColorSource := AValue;
-  if ColorSource <> nil then
+  if ColorSource <> nil then begin
     ColorSource.Broadcaster.Subscribe(FColorSourceListener);
+    ex := ColorSource.Extent;
+    FColorExtentMin := ex.a.x;
+    FColorExtentMax := ex.b.x;
+  end;
   UpdateParentChart;
 end;
 
