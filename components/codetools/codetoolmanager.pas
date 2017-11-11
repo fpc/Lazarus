@@ -754,8 +754,6 @@ type
                        const ClassContext, AncestorClassContext: TFindContext;
                        {%H-}LFMNode: TLFMTreeNode;
                        const IdentName: string; var IsDefined: boolean);
-    function UpdateComponentInit(Code: TCodeBuffer; const aClassName,
-          AccessClass, StartSignature, EndSignature, InitSrc: string): boolean;
 
     // register proc
     function HasInterfaceRegisterProc(Code: TCodeBuffer;
@@ -5382,23 +5380,6 @@ begin
     OnFindDefineProperty(ClassContext.Tool,
                          PersistentClassName,AncestorClassName,IdentName,
                          IsDefined);
-  end;
-end;
-
-function TCodeToolManager.UpdateComponentInit(Code: TCodeBuffer;
-  const aClassName, AccessClass, StartSignature, EndSignature, InitSrc: string
-  ): boolean;
-begin
-  Result:=false;
-  {$IFDEF CTDEBUG}
-  DebugLn(['TCodeToolManager.UpdateComponentInit A ',Code.Filename,' Class="'+aClassName+'" AccessClass="'+AccessClass+'" StartSignature="'+StartSignature+'" EndSignature="'+EndSignature+'" InitSrc={'+InitSrc+'}']);
-  {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
-  try
-    Result:=FCurCodeTool.UpdateComponentInit(aClassName,AccessClass,
-      StartSignature,EndSignature,InitSrc,SourceChangeCache);
-  except
-    on e: Exception do Result:=HandleException(e);
   end;
 end;
 

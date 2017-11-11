@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, typinfo, LazLoggerBase, LazUTF8, LazLogger, CompWriterPas,
   LazPasReadUtil, fpcunit, testregistry, CodeToolManager, LinkScanner,
-  CodeToolsStructs, CodeCache, BasicCodeTools, TestStdCodetools, TestGlobals,
+  CodeToolsStructs, TestStdCodetools,
   variants;
 
 // Tests =======================================================================
@@ -484,8 +484,6 @@ type
     procedure TestDesignInfo;
     procedure TestDefineProperties_ListOfStrings;
     procedure Test_TStrings;
-
-    procedure TestFindComponentInit; // ToDo
   end;
 
 implementation
@@ -2188,45 +2186,6 @@ begin
     FreeAndNil(ARoot.FLines);
     ARoot.Free;
   end;
-end;
-
-procedure TTestCompReaderWriterPas.TestFindComponentInit;
-var
-  Code: TCodeBuffer;
-  Init, IndentedInit, Src: String;
-begin
-  exit;
-
-  Code:=CodeToolBoss.CreateFile('form1.pas');
-  Init:='Name:=''Form1'';'+LineEnding;
-  IndentText(CSPDefaultSignatureBegin+LineEnding
-    +Init
-    +CSPDefaultSignatureEnd+LineEnding,2,8,IndentedInit);
-  Src:=LinesToStr(['unit Unit1;'
-    ,'{$mode objfpc}{$H+}'
-    ,'interface'
-    ,'uses Classes;'
-    ,'type'
-    ,'  TForm1 = class(TComponent)'
-    ,'  public'
-    ,'    constructor Create(TheOwner: TComponent); override;'
-    ,'  end;'
-    ,'implementation'
-    ,'type'
-    ,'  '+CSPDefaultAccessClass+' = class(TComponent);'
-    ,'constructor TForm.Create(TheOwner: TComponent);'
-    ,'begin'+LineEnding
-    ,'  inherited;'])
-    +IndentedInit
-    +LinesToStr(['end;'
-    ,'end.']);
-  Code.Source:=Src;
-  if not CodeToolBoss.UpdateComponentInit(Code,'TForm1',CSPDefaultAccessClass,
-    CSPDefaultSignatureBegin,CSPDefaultSignatureEnd,Init)
-  then begin
-    Fail('CodeToolBoss.UpdateComponentInit failed');
-  end;
-  CheckDiff('TestFindComponentInit',Src,Code.Source);
 end;
 
 initialization
