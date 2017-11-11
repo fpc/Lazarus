@@ -1907,7 +1907,7 @@ begin
           continue;
         end;
         gp := GraphToAxis(ParentChart.ImageToGraph((pt + next) div 2));
-        if not (csDesigning in ComponentState) then
+//        if not (csDesigning in ComponentState) then
           v := FunctionValue(gp.X, gp.Y);
         cell := Rect(
           Max(pt.X, r.Left), Max(pt.Y, r.Top),
@@ -2080,7 +2080,10 @@ end;
 
 function TColorMapSeries.FunctionValue(AX, AY: Double): Double;
 begin
-  OnCalculate(AX, AY, Result);
+  if (csDesigning in ComponentState) or not Assigned(FOnCalculate) then
+    Result := 0
+  else
+    OnCalculate(AX, AY, Result);
 end;
 
 function TColorMapSeries.IsEmpty: Boolean;
@@ -2097,11 +2100,11 @@ end;
 
 
 initialization
-  RegisterSeriesClass(TFuncSeries, @rsFunctionSeries);
   RegisterSeriesClass(TParametricCurveSeries, @rsParametricCurveSeries);
   RegisterSeriesClass(TBSplineSeries, @rsBSplineSeries);
   RegisterSeriesClass(TCubicSplineSeries, @rsCubicSplineSeries);
   RegisterSeriesClass(TFitSeries, @rsLeastSquaresFitSeries);
+  RegisterSeriesClass(TFuncSeries, @rsFunctionSeries);
   RegisterSeriesClass(TColorMapSeries, @rsColorMapSeries);
 
 end.

@@ -46,7 +46,7 @@ type
   TChartExprParams = class(TCollection)
   private
     FParser: TFpExpressionParser;
-    FSeries: TExpressionSeries;
+    FOnChanged: TNotifyEvent;
     function GetP(AIndex: Integer): TChartExprParam;
     function GetValByName(AName: String): Double;
     procedure SetP(AIndex: Integer; AValue: TChartExprParam);
@@ -54,11 +54,12 @@ type
   protected
     procedure Changed;
   public
-    constructor Create(ASeries: TExpressionSeries);
+    constructor Create(AParser: TFpExpressionParser; AOnChanged: TNotifyEvent);
     function AddParam(const AName: String; const AValue: Double): TChartExprParam;
     function FindParamByName(AName: String): TChartExprParam;
     property Params[AIndex: Integer]: TChartExprParam read GetP write SetP; default;
     property ValueByName[AName: String]: Double read GetValByName write SetValByName;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
 
   TDomainParts = array[0..4] of String;
@@ -104,6 +105,7 @@ type
   protected
     function DoCalculate(AX: Double): Double; override;
     procedure GetBounds(var ABounds: TDoubleRect); override;
+    procedure OnChangedHandler(Sender: TObject);
     procedure SetupParser;
   public
     constructor Create(AOwner: TComponent); override;
@@ -118,6 +120,38 @@ type
     property Variable: String read FVariable write SetVariable;
     property Domain: String read FDomain write SetDomain;
     property Expression: String read FExpression write SetExpression;
+  end;
+
+  TExpressionColorMapSeries = class(TCustomColorMapSeries)
+  private
+    FExpression: String;
+    FParams: TChartExprParams;
+    FParser: TFpExpressionParser;
+    FVarX: String;
+    FVarY: String;
+    FX: TFpExprIdentifierDef;
+    FY: TFpExprIdentifierDef;
+    FDirty: Boolean;
+    procedure SetExpression(const AValue: String);
+    procedure SetParams(const AValue: TChartExprParams);
+    procedure SetVarX(const AValue: String);
+    procedure SetVarY(const AValue: String);
+  protected
+    procedure OnChangedHandler(Sender: TObject);
+    procedure SetupParser;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Assign(ASource: TPersistent); override;
+    procedure Draw(ADrawer: IChartDrawer); override;
+    function FunctionValue(AX, AY: Double): Double; override;
+    function IsEmpty: Boolean; override;
+    procedure RequestParserUpdate; inline;
+  published
+    property Expression: String read FExpression write SetExpression;
+    property Params: TChartExprParams read FParams write SetParams;
+    property VariableNameX: String read FVarX write SetVarX;
+    property VariableNameY: String read FVarY write SetVarY;
   end;
 
 procedure ExtendExprBuiltins;
@@ -164,11 +198,12 @@ end;
 
 { TChartExprParams }
 
-constructor TChartExprParams.Create(ASeries: TExpressionSeries);
+constructor TChartExprParams.Create(AParser: TFpExpressionParser;
+  AOnChanged: TNotifyEvent);
 begin
   inherited Create(TChartExprParam);
-  FSeries := ASeries;
-  FParser := ASeries.FParser;
+  FParser := AParser;
+  FOnChanged := AOnChanged;
 end;
 
 function TChartExprParams.AddParam(const AName: String;
@@ -177,13 +212,12 @@ begin
   Result := Add as TChartExprParam;
   Result.FName := AName;
   Result.FValue := AValue;
-  FSeries.RequestParserUpdate;
+  Changed;
 end;
 
 procedure TChartExprParams.Changed;
 begin
-  FSeries.RequestParserUpdate;
-  FSeries.UpdateParentChart;
+  if Assigned(FOnChanged) then FOnChanged(self);
 end;
 
 function TChartExprParams.FindParamByName(AName: String): TChartExprParam;
@@ -468,8 +502,7 @@ begin
   FDomainScanner := TChartDomainScanner.Create(self);
   FDomainEpsilon := DEFAULT_EPSILON;
 
-  FParams := TChartExprParams.Create(self);
-  FParams.FParser := FParser;
+  FParams := TChartExprParams.Create(FParser, @OnChangedHandler);
 end;
 
 destructor TExpressionSeries.Destroy;
@@ -522,7 +555,13 @@ end;
 
 function TExpressionSeries.IsEmpty: Boolean;
 begin
-  Result := FParser.Expression <> '';
+  Result := FParser.Expression = '';
+end;
+
+procedure TExpressionSeries.OnChangedHandler(Sender: TObject);
+begin
+  RequestParserUpdate;
+  UpdateParentChart;
 end;
 
 procedure TExpressionSeries.RequestParserUpdate;
@@ -589,6 +628,138 @@ procedure TExpressionSeries.SetVariable(const AValue: String);
 begin
   if FVariable = AValue then exit;
   FVariable := AValue;
+  RequestParserUpdate;
+  UpdateParentChart;
+end;
+
+
+{ TExpressionColorMapSeries }
+
+constructor TExpressionColorMapSeries.Create(AOwner: TComponent);
+begin
+  inherited;
+  FVarX := 'x';
+  FVarY := 'y';
+  FExpression := 'x^2 + y^2';
+
+  FParser := TFpExpressionParser.Create(self);
+  FParser.BuiltIns := [bcMath];
+  FX := FParser.Identifiers.AddFloatVariable(FVarX, 0.0);
+  FY := FParser.Identifiers.AddFloatVariable(FVarY, 0.0);
+  FParams := TChartExprParams.Create(FParser, @OnChangedHandler);
+  FParser.Expression := FExpression;
+end;
+
+destructor TExpressionColorMapSeries.Destroy;
+begin
+  FX := nil;
+  FY := nil;
+  FParams.Free;
+  inherited;
+end;
+
+procedure TExpressionColorMapSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TExpressionColorMapSeries then begin
+    Self.FExpression := TExpressionColorMapSeries(ASource).Expression;
+    Self.FParams := TExpressionColorMapSeries(ASource).Params;
+    Self.FVarX := TExpressionColorMapSeries(ASource).VariableNameX;
+    Self.FVarY := TExpressionColorMapSeries(ASource).VariableNameY;
+  end;
+  inherited Assign(ASource);
+end;
+
+procedure TExpressionColorMapSeries.Draw(ADrawer: IChartDrawer);
+begin
+  SetupParser;
+  inherited;
+end;
+
+function TExpressionColorMapSeries.FunctionValue(AX, AY: Double): Double;
+var
+  res: TFPExpressionResult;
+begin
+  Result := 0.0;
+  FX.AsFloat := AX;
+  FY.AsFloat := AY;
+  try
+    res := FParser.Evaluate;
+    if res.ResultType=rtFloat then
+      Result := res.ResFloat
+    else
+    if res.ResultType=rtInteger then
+      Result := res.ResInteger;
+  except
+  end;
+end;
+
+function TExpressionColorMapSeries.IsEmpty: Boolean;
+begin
+  Result := FParser.Expression = '';
+end;
+
+procedure TExpressionColorMapSeries.OnChangedHandler(Sender: TObject);
+begin
+  RequestParserUpdate;
+  UpdateParentChart;
+end;
+
+procedure TExpressionColorMapSeries.RequestParserUpdate;
+begin
+  FDirty := true;
+end;
+
+procedure TExpressionColorMapSeries.SetExpression(const AValue: String);
+begin
+  if FParser.Expression = AValue then
+    exit;
+  FExpression := AValue;
+  RequestParserUpdate;
+  UpdateParentChart;
+end;
+
+procedure TExpressionColorMapSeries.SetParams(const AValue: TChartExprParams);
+begin
+  RequestParserUpdate;
+  FParams.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TExpressionColorMapSeries.SetupParser;
+var
+  i: Integer;
+  p: TChartExprParam;
+begin
+  if (not FDirty) then
+    exit;
+
+  FParser.Identifiers.Clear;
+  FX := FParser.Identifiers.AddFloatVariable(FVarX, 0.0);
+  FY := FParser.Identifiers.AddFloatVariable(FVarY, 0.0);
+  for i:=0 to FParams.Count-1 do begin
+    p := FParams[i];
+    FParser.Identifiers.AddFloatVariable(p.Name, p.Value);
+  end;
+
+  FParser.Expression := FExpression;
+  if not (FParser.ResultType in [rtInteger, rtFLoat]) then
+    raise EExprParser.CreateFmt(rsErrInvalidResultType, [ResultTypeName(FParser.ResultType)]);
+
+  FDirty := false;
+end;
+
+procedure TExpressionColorMapSeries.SetVarX(const AValue: String);
+begin
+  if FVarX = AValue then exit;
+  FVarX := AValue;
+  RequestParserUpdate;
+  UpdateParentChart;
+end;
+
+procedure TExpressionColorMapSeries.SetVarY(const AValue: String);
+begin
+  if FVarY = AValue then exit;
+  FVarY := AValue;
   RequestParserUpdate;
   UpdateParentChart;
 end;
@@ -832,6 +1003,7 @@ initialization
   {$ENDIF}
 
   RegisterSeriesClass(TExpressionSeries, @rsExpressionSeries);
+  RegisterSeriesClass(TExpressionColorMapSeries, @rsExpressionColorMapSeries);
 
 end.
 

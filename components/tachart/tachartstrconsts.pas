@@ -25,6 +25,7 @@ resourcestring
   rsPolarSeries = 'Polar series';
   rsUserDrawnSeries = 'User-drawn series';
   rsExpressionSeries = 'Math expression series';
+  rsExpressionColorMapSeries = 'Math expression color map series';
 
   // Series editor
   sesSeriesEditorTitle = 'Edit series';

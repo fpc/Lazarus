@@ -168,6 +168,10 @@ msgstr "Треугольник с вершиной снизу"
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Тип результата выражения должен быть целым либо вещественным, но сейчас является \"%s\"."
 
+#: tachartstrconsts.rsexpressioncolormapseries
+msgid "Math expression color map series"
+msgstr ""
+
 #: tachartstrconsts.rsexpressionseries
 msgid "Math expression series"
 msgstr "Диаграмма по математическому выражению"

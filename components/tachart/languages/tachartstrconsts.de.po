@@ -170,6 +170,10 @@ msgstr "Dreieck abwärts"
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Der Typ des Ausdrucksergebnisses muss integer oder float sein, ist aber \"%s\"."
 
+#: tachartstrconsts.rsexpressioncolormapseries
+msgid "Math expression color map series"
+msgstr "Math. Funktion (farb-kodiert)"
+
 #: tachartstrconsts.rsexpressionseries
 msgid "Math expression series"
 msgstr "Math. Funktion"
@@ -396,4 +400,3 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
-

@@ -168,6 +168,10 @@ msgstr "Triangle en bas"
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr ""
 
+#: tachartstrconsts.rsexpressioncolormapseries
+msgid "Math expression color map series"
+msgstr ""
+
 #: tachartstrconsts.rsexpressionseries
 msgid "Math expression series"
 msgstr ""
