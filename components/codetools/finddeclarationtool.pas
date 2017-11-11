@@ -2971,7 +2971,7 @@ begin
     if CurPos.StartPos>CleanPos then break;
     if CurPos.Flag=cafSemicolon then break;
     ReadNextUsedUnit(UnitNamePos,UnitInFilePos);
-    if CleanPos<CurPos.StartPos then begin
+    if CleanPos<=CurPos.StartPos then begin
       // cursor is on an used unit -> try to locate it
       MoveCursorToCleanPos(UnitNamePos.StartPos);
       ReadNextAtom;
