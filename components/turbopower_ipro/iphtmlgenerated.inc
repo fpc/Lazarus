@@ -108,7 +108,9 @@
   TIpHtmlAttributesSet = (
 htmlAttrACCEPT, htmlAttrACCEPT_CHARSET, htmlAttrACTION, htmlAttrALIGN,
 htmlAttrALINK, htmlAttrALT, htmlAttrARCHIVE, htmlAttrBACKGROUND, htmlAttrBGCOLOR,
-htmlAttrBORDER, htmlAttrCELLPADDING, htmlAttrCELLSPACING, htmlAttrCHECKED, htmlAttrCITE,
+htmlAttrBORDER, htmlAttrCELLPADDING, htmlAttrCELLSPACING,
+htmlAttrCHARSET,
+htmlAttrCHECKED, htmlAttrCITE,
 htmlAttrCLASS, htmlAttrCLASSID, htmlAttrCLEAR, htmlAttrCODE, htmlAttrCODEBASE,
 htmlAttrCODETYPE, htmlAttrCOLOR, htmlAttrCOLS, htmlAttrCOLSPAN, htmlAttrCOMBOBOX,
 htmlAttrCOMPACT, htmlAttrCONTENT, htmlAttrCOORDS, htmlAttrDATA, htmlAttrDATETIME,
@@ -406,7 +408,7 @@ const
   TIpHtmlAttributesNames : array[TIpHtmlAttributesSet] of PAnsiChar = (
 'ACCEPT', 'ACCEPT-CHARSET', 'ACTION', 'ALIGN',
 'ALINK', 'ALT', 'ARCHIVE', 'BACKGROUND', 'BGCOLOR',
-'BORDER', 'CELLPADDING', 'CELLSPACING', 'CHECKED', 'CITE',
+'BORDER', 'CELLPADDING', 'CELLSPACING', 'CHARSET', 'CHECKED', 'CITE',
 'CLASS', 'CLASSID', 'CLEAR', 'CODE', 'CODEBASE',
 'CODETYPE', 'COLOR', 'COLS', 'COLSPAN', 'COMBOBOX',
 'COMPACT', 'CONTENT', 'COORDS', 'DATA', 'DATETIME',

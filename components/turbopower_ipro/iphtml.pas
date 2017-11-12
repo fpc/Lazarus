@@ -5550,7 +5550,8 @@ begin
           inc(j);
         end;
         fDocCharset := copy(content, i, j-i);
-      end;
+      end else
+        fDocCharset := FindAttribute(htmlAttrCHARSET);
     end;
     {$ENDIF}
     Scheme := FindAttribute(htmlAttrSCHEME);
