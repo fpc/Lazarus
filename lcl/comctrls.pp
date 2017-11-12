@@ -3270,6 +3270,7 @@ type
     FMaxRight: integer; // maximum text width of all nodes (needed for horizontal scrolling)
     fMouseDownPos: TPoint;
     FMultiSelectStyle: TMultiSelectStyle;
+    FHotTrackColor: TColor;
     FOnAddition: TTVExpandedEvent;
     FOnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent;
     FOnAdvancedCustomDrawItem: TTVAdvancedCustomDrawItemEvent;
@@ -3490,6 +3491,7 @@ type
     property HideSelection: Boolean
       read GetHideSelection write SetHideSelection default True;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
+    property HotTrackColor: TColor read FHotTrackColor write FHotTrackColor default clNone;
     property Indent: Integer read GetIndent write SetIndent stored IndentIsStored;
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnAddition: TTVExpandedEvent read FOnAddition write FOnAddition;
@@ -3637,6 +3639,7 @@ type
     property Font;
     property HideSelection;
     property HotTrack;
+    property HotTrackColor;
     property Images;
     property Indent;
     property MultiSelect;

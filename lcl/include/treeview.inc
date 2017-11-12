@@ -3269,6 +3269,7 @@ begin
   FTreeLinePenPattern[0] := 1;
   FTreeLinePenPattern[1] := 1;
   FExpandSignColor := clWindowFrame;
+  FHotTrackColor := clNone;
   // Accessibility
   AccessibleDescription := rsTTreeViewAccessibilityDescription;
   AccessibleRole := larTreeView;
@@ -5162,6 +5163,7 @@ var
     Details: TThemedElementDetails;
     NeedUnderline: Boolean;
     PrevFontStyle: TFontStyles;
+    PrevFontColor: TColor;
   begin
     if IsSelected then
     begin
@@ -5193,7 +5195,10 @@ var
     if NeedUnderline then
     begin
       PrevFontStyle := Canvas.Font.Style;
+      PrevFontColor := Canvas.Font.Color;
       Canvas.Font.Style := [fsUnderline];
+      if FHotTrackColor<>clNone then
+        Canvas.Font.Color := FHotTrackColor;
     end;
 
     if (tvoThemedDraw in Options) then
@@ -5202,7 +5207,10 @@ var
       DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
 
     if NeedUnderline then
+    begin
       Canvas.Font.Style := PrevFontStyle;
+      Canvas.Font.Color := PrevFontColor;
+    end;
   end;
 
 
