@@ -22,7 +22,8 @@
 {
   Adding support for new connection types requires implementing a Data Dictionary for your connection type
   see fcl-db/src/datadict for many implementations.
-  When done so, add the unit to the uses clause in the implementation, and register it in RegisterDDEngines
+  When done so, add the unit to the uses clause in the implementation, register it in RegisterDDEngines
+  and likely add a connection callback to RegisterConnectionCallBacks.
 }
 
 { MS-SQL server connection}
