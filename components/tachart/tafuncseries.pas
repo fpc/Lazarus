@@ -342,6 +342,8 @@ type
     property OnGetPointerStyle;
   end;
 
+  TColorMapPalette = (cmpHot);
+
   TFuncCalculate3DEvent =
     procedure (const AX, AY: Double; out AZ: Double) of object;
 
@@ -359,8 +361,13 @@ type
     FUseImage: TUseImage;
     FAutoScaleColors: Boolean;
     FColorExtentMin, FColorExtentMax: Double;
+    FBuiltinColorSource: TCustomChartSource;
+    FBuiltinPalette: TColormapPalette;
+    function GetColorSource: TCustomChartSource;
+    function IsColorSourceStored: boolean;
     procedure SetAutoscaleColors(AValue: Boolean);
     procedure SetBrush(AValue: TBrush);
+    procedure SetBuiltinPalette(AValue: TColorMapPalette);
     procedure SetColorSource(AValue: TCustomChartSource);
     procedure SetInterpolate(AValue: Boolean);
     procedure SetStepX(AValue: TFuncSeriesStep);
@@ -368,6 +375,7 @@ type
     procedure SetUseImage(AValue: TUseImage);
   protected
     FMinZ, FMaxZ: Double;
+    procedure BuildPalette(APalette: TColorMapPalette);
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure GetZRange(ARect: TRect; dx, dy: Integer);
 
@@ -387,8 +395,10 @@ type
     property AxisIndexX;
     property AxisIndexY;
     property Brush: TBrush read FBrush write SetBrush;
+    property BuiltInPalette: TColorMapPalette
+      read FBuiltinPalette write SetBuiltinPalette default cmpHot;
     property ColorSource: TCustomChartSource
-      read FColorSource write SetColorSource;
+      read GetColorSource write SetColorSource stored IsColorSourceStored;
     property Interpolate: Boolean
       read FInterpolate write SetInterpolate default false;
     property StepX: TFuncSeriesStep
@@ -425,7 +435,7 @@ implementation
 
 uses
   ipf, GraphType, IntfGraphics, Math, StrUtils, SysUtils,
-  TAChartStrConsts, TAGeometry, TAGraph, TAMath;
+  TAChartStrConsts, TAGeometry, TAGraph, TAMath, TASources;
 
 const
   DEF_PARAM_MIN = 0.0;
@@ -1801,13 +1811,38 @@ procedure TCustomColorMapSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TCustomColorMapSeries then
     with TCustomColorMapSeries(ASource) do begin
+      Self.AutoscaleColors := FAutoScaleColors;
       Self.Brush := FBrush;
+      Self.BuiltinPalette := FBuiltinPalette;
       Self.ColorSource := FColorSource;
       Self.FInterpolate := FInterpolate;
       Self.FStepX := FStepX;
       Self.FStepY := FStepY;
     end;
   inherited Assign(ASource);
+end;
+
+procedure TCustomColorMapSeries.BuildPalette(APalette: TColorMapPalette);
+begin
+  with FBuiltinColorSource as TListChartSource do begin
+    BeginUpdate;
+    try
+      Clear;
+      case APalette of
+        cmpHot:
+          begin
+            Add(0, 0, '', clBlack);
+            Add(1/3, 0, '', clRed);
+            Add(2/3, 0, '', clYellow);
+            Add(1, 0, '', clWhite);
+          end;
+      else
+        raise Exception.Create('Palette not supported');
+      end;
+    finally
+      EndUpdate;
+    end;
+  end;
 end;
 
 function TCustomColorMapSeries.ColorByValue(AValue: Double): TColor;
@@ -1848,19 +1883,26 @@ begin
 end;
 
 constructor TCustomColorMapSeries.Create(AOwner: TComponent);
+const
+  BUILTIN_SOURCE_NAME = 'BuiltinColors';
 begin
   inherited Create(AOwner);
   FColorSourceListener := TListener.Create(@FColorSource, @StyleChanged);
+  FBuiltinColorSource := TListChartSource.Create(self);
+  FBuiltinColorSource.Name := BUILTIN_SOURCE_NAME;
+  FBuiltinColorSource.Broadcaster.Subscribe(FColorSourceListener);
   FBrush := TBrush.Create;
   FBrush.OnChange := @StyleChanged;
   FStepX := DEF_COLORMAP_STEP;
   FStepY := DEF_COLORMAP_STEP;
+  SetBuiltinPalette(cmpHot);
 end;
 
 destructor TCustomColorMapSeries.Destroy;
 begin
-  FreeAndNil(FColorSourceListener);
   FreeAndNil(FBrush);
+  FreeAndNil(FBuiltinColorSource);
+  FreeAndNil(FColorSourceListener);
   inherited Destroy;
 end;
 
@@ -1961,6 +2003,14 @@ end;
 function TCustomColorMapSeries.FunctionValue(AX, AY: Double): Double;
 begin
   Result := 0.0;
+end;
+
+function TCustomColorMapSeries.GetColorSource: TCustomChartSource;
+begin
+  if Assigned(FColorSource) then
+    Result := FColorSource
+  else
+    Result := FBuiltinColorSource;
 end;
 
 procedure TCustomColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -2069,6 +2119,11 @@ begin
   Result := true;
 end;
 
+function TCustomColorMapSeries.IsColorSourceStored: boolean;
+begin
+  Result := FColorSource <> nil;
+end;
+
 procedure TCustomColorMapSeries.SetAutoscaleColors(AValue: Boolean);
 begin
   if FAutoscaleColors = AValue then exit;
@@ -2083,6 +2138,21 @@ begin
   UpdateParentChart;
 end;
 
+procedure TCustomColorMapSeries.SetBuiltinPalette(AValue: TColorMapPalette);
+var
+  ex: TDoubleRect;
+begin
+//  if FBuiltinPalette = AValue then exit;
+  FBuiltinPalette := AValue;
+  BuildPalette(FBuiltinPalette);
+  if FColorSource = nil then begin
+    ex := FBuiltinColorSource.Extent;
+    FColorExtentMin := ex.a.x;
+    FColorExtentMax := ex.b.x;
+    UpdateParentChart;
+  end;
+end;
+
 procedure TCustomColorMapSeries.SetColorSource(AValue: TCustomChartSource);
 var
   ex: TDoubleRect;
@@ -2091,12 +2161,10 @@ begin
   if FColorSourceListener.IsListening then
     ColorSource.Broadcaster.Unsubscribe(FColorSourceListener);
   FColorSource := AValue;
-  if ColorSource <> nil then begin
-    ColorSource.Broadcaster.Subscribe(FColorSourceListener);
-    ex := ColorSource.Extent;
-    FColorExtentMin := ex.a.x;
-    FColorExtentMax := ex.b.x;
-  end;
+  ColorSource.Broadcaster.Subscribe(FColorSourceListener);
+  ex := ColorSource.Extent;
+  FColorExtentMin := ex.a.x;
+  FColorExtentMax := ex.b.x;
   UpdateParentChart;
 end;
 
