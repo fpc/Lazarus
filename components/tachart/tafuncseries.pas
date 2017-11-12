@@ -359,13 +359,13 @@ type
     FStepX: TFuncSeriesStep;
     FStepY: TFuncSeriesStep;
     FUseImage: TUseImage;
-    FAutoScaleColors: Boolean;
+    FAutoMapColors: Boolean;
     FColorExtentMin, FColorExtentMax: Double;
     FBuiltinColorSource: TCustomChartSource;
     FBuiltinPalette: TColormapPalette;
     function GetColorSource: TCustomChartSource;
     function IsColorSourceStored: boolean;
-    procedure SetAutoscaleColors(AValue: Boolean);
+    procedure SetAutoMapColors(AValue: Boolean);
     procedure SetBrush(AValue: TBrush);
     procedure SetBuiltinPalette(AValue: TColorMapPalette);
     procedure SetColorSource(AValue: TCustomChartSource);
@@ -390,8 +390,8 @@ type
     procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
   published
-    property AutoScaleColors: Boolean
-      read FAutoScaleColors write SetAutoScaleColors default false;
+    property AutoMapColors: Boolean
+      read FAutoMapColors write SetAutoMapColors default false;
     property AxisIndexX;
     property AxisIndexY;
     property Brush: TBrush read FBrush write SetBrush;
@@ -1811,7 +1811,7 @@ procedure TCustomColorMapSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TCustomColorMapSeries then
     with TCustomColorMapSeries(ASource) do begin
-      Self.AutoscaleColors := FAutoScaleColors;
+      Self.AutoMapColors := FAutoMapColors;
       Self.Brush := FBrush;
       Self.BuiltinPalette := FBuiltinPalette;
       Self.ColorSource := FColorSource;
@@ -1854,7 +1854,7 @@ var
 begin
   if (ColorSource = nil) or (ColorSource.Count = 0) then exit(clTAColor);
 
-  if FAutoscaleColors then begin
+  if FAutoMapColors then begin
     // Transform data value to the values assigned to the colorsource
     if FMinZ <> FMaxZ then begin
       AValue := (AValue - FMinZ) / (FMaxZ - FMinZ);
@@ -2091,6 +2091,7 @@ var
   gp: TDoublePoint;
   ix, iy: Integer;
   z: Double;
+  dx2, dy2: Double;
 begin
   if IsEmpty then begin
     FMinZ := 0.0;
@@ -2098,14 +2099,17 @@ begin
     exit;
   end;
 
+  dx2 := dx div 2;
+  dy2 := dy div 2;
+
   FMinZ := 1E308;
   FMaxZ := -FMinZ;
   iy := ARect.Top;
-  while (iy <= ARect.Bottom) do begin
+  while iy <= ARect.Bottom - dy2 do begin
     ix := ARect.Left;
-    while ix <= ARect.Right do begin
+    while ix < ARect.Right - dx2 do begin
       gp := ParentChart.ImageToGraph(Point(ix, iy));
-      z := FunctionValue(gp.X, gp.Y);
+      z := FunctionValue(gp.X + dx2, gp.Y + dy2);
       FMinZ := Min(FMinZ, z);
       FMaxZ := Max(FMaxZ, z);
       inc(ix, dx);
@@ -2124,10 +2128,10 @@ begin
   Result := FColorSource <> nil;
 end;
 
-procedure TCustomColorMapSeries.SetAutoscaleColors(AValue: Boolean);
+procedure TCustomColorMapSeries.SetAutoMapColors(AValue: Boolean);
 begin
-  if FAutoscaleColors = AValue then exit;
-  FAutoscaleColors := AValue;
+  if FAutoMapColors = AValue then exit;
+  FAutoMapColors := AValue;
   UpdateParentChart;
 end;
 
