@@ -5539,7 +5539,7 @@ begin
     Name := FindAttribute(htmlAttrNAME);
     Content := FindAttribute(htmlAttrCONTENT);
     {$IFDEF IP_LAZARUS}
-    if not FHasBOM then begin
+    if SameText(HttpEquiv, 'content-type') and not FHasBOM then begin
       j := pos('charset=', lowercase(Content));
       if j>0 then begin
         j := j+8;
