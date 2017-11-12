@@ -258,6 +258,34 @@ type
   TProjectSessionStorages = set of TProjectSessionStorage;
 
 const
+  ProjectFlagNames : array[TProjectFlag] of string = (
+      'SaveClosedFiles',
+      'SaveOnlyProjectUnits',
+      'MainUnitIsPascalSource',
+      'MainUnitHasUsesSectionForAllUnits',
+      'MainUnitHasCreateFormStatements',
+      'MainUnitHasTitleStatement',
+      'MainUnitHasScaledStatement',
+      'Runnable',
+      'AlwaysBuild',
+      'UseDesignTimePackages',
+      'LRSInOutputDirectory',
+      'UseDefaultCompilerOptions',
+      'SaveJumpHistory',
+      'SaveFoldState'
+    );
+  ProjectSessionStorageNames: array[TProjectSessionStorage] of string = (
+    'InProjectInfo',
+    'InProjectDir',
+    'InIDEConfig',
+    'None'
+    );
+
+  CompilationExecutableTypeNames: array[TCompilationExecutableType] of string =(
+    'Program',
+    'Library'
+    );
+
   pssHasSeparateSession = [pssInProjectDir,pssInIDEConfig];
   DefaultProjectCleanOutputFileMask = '*';
   DefaultProjectCleanSourcesFileMask = '*.ppu;*.ppl;*.o;*.or';
@@ -549,45 +577,17 @@ function ProjectDescriptorCustomProgram: TProjectDescriptor;
 function ProjectDescriptorEmptyProject: TProjectDescriptor;
 
 const
-  DefaultProjectFlags = [pfSaveClosedUnits,
+  DefaultProjectNoApplicationFlags = [pfSaveClosedUnits,
                          pfMainUnitIsPascalSource,
                          pfMainUnitHasUsesSectionForAllUnits,
-                         pfMainUnitHasCreateFormStatements,
-                         pfMainUnitHasTitleStatement,
-                         pfMainUnitHasScaledStatement,
                          pfRunnable,
                          pfLRSFilesInOutputDirectory,
                          pfSaveJumpHistory,
                          pfSaveFoldState];
-  ProjectFlagNames : array[TProjectFlag] of string = (
-      'SaveClosedFiles',
-      'SaveOnlyProjectUnits',
-      'MainUnitIsPascalSource',
-      'MainUnitHasUsesSectionForAllUnits',
-      'MainUnitHasCreateFormStatements',
-      'MainUnitHasTitleStatement',
-      'MainUnitHasScaledStatement',
-      'Runnable',
-      'AlwaysBuild',
-      'UseDesignTimePackages',
-      'LRSInOutputDirectory',
-      'UseDefaultCompilerOptions',
-      'SaveJumpHistory',
-      'SaveFoldState'
-    );
-
-  ProjectSessionStorageNames: array[TProjectSessionStorage] of string = (
-    'InProjectInfo',
-    'InProjectDir',
-    'InIDEConfig',
-    'None'
-    );
-
-  CompilationExecutableTypeNames: array[TCompilationExecutableType] of string =(
-    'Program',
-    'Library'
-    );
-
+  DefaultProjectFlags = DefaultProjectNoApplicationFlags+[
+                         pfMainUnitHasCreateFormStatements,
+                         pfMainUnitHasTitleStatement,
+                         pfMainUnitHasScaledStatement];
 
 function LoadProjectIconIntoImages(const ProjFile: string;
   const Images: TCustomImageList; const Index: TStringList): Integer;

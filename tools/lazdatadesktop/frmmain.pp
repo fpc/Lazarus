@@ -25,8 +25,8 @@
   When done so, add the unit to the uses clause in the implementation, and register it in RegisterDDEngines
 }
 
-{ MS-SQL server connectop}
-{$IFDEF VER3_1_1}
+{ MS-SQL server connection}
+{$IF FPC_FULLVERSION>30001}
 {$DEFINE HAVEMSSQLCONN}
 {$ENDIF}
 
