@@ -6192,11 +6192,6 @@ msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
 msgid "Location"
 msgstr ""
 
-#: lazarusidestrconsts.liscodeexplorer
-msgctxt "lazarusidestrconsts.liscodeexplorer"
-msgid "Code Explorer"
-msgstr "代码管理器"
-
 #: lazarusidestrconsts.liscodegenerationoptions
 msgid "Code generation options"
 msgstr "代码生成选项"
@@ -10763,7 +10758,7 @@ msgid "Invalid Pascal Identifier"
 msgstr "无效的 Pascal 标识符"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
-msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname

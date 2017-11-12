@@ -5961,11 +5961,6 @@ msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
 msgid "Location"
 msgstr "Position"
 
-#: lazarusidestrconsts.liscodeexplorer
-msgctxt "lazarusidestrconsts.liscodeexplorer"
-msgid "Code Explorer"
-msgstr "Code-Explorer"
-
 #: lazarusidestrconsts.liscodegenerationoptions
 msgid "Code generation options"
 msgstr "Einstellungen für Codeerzeugung"
@@ -10448,7 +10443,7 @@ msgid "Invalid Pascal Identifier"
 msgstr "Ungültiger Pascal-Bezeichner"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
-msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname

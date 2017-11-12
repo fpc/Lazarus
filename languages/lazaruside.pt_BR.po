@@ -6099,11 +6099,6 @@ msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
 msgid "Location"
 msgstr "Local"
 
-#: lazarusidestrconsts.liscodeexplorer
-msgctxt "lazarusidestrconsts.liscodeexplorer"
-msgid "Code Explorer"
-msgstr "Explorador de Código"
-
 #: lazarusidestrconsts.liscodegenerationoptions
 msgid "Code generation options"
 msgstr "Opções geração de código"
@@ -10697,7 +10692,7 @@ msgid "Invalid Pascal Identifier"
 msgstr "Identificador Pascal inválido"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
-msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname

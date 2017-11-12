@@ -5966,11 +5966,6 @@ msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
 msgid "Location"
 msgstr "位置"
 
-#: lazarusidestrconsts.liscodeexplorer
-msgctxt "lazarusidestrconsts.liscodeexplorer"
-msgid "Code Explorer"
-msgstr "コードエクスプローラ"
-
 #: lazarusidestrconsts.liscodegenerationoptions
 msgid "Code generation options"
 msgstr "コード生成オプション"
@@ -10444,7 +10439,7 @@ msgid "Invalid Pascal Identifier"
 msgstr "無効なPascal識別子"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
-msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidprocname

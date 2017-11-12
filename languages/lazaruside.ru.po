@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-07 01:21+0300\n"
+"PO-Revision-Date: 2017-11-13 01:28+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5959,11 +5959,6 @@ msgctxt "lazarusidestrconsts.liscodecreationdialoglocation"
 msgid "Location"
 msgstr "Расположение"
 
-#: lazarusidestrconsts.liscodeexplorer
-msgctxt "lazarusidestrconsts.liscodeexplorer"
-msgid "Code Explorer"
-msgstr "Обозреватель кода"
-
 #: lazarusidestrconsts.liscodegenerationoptions
 msgid "Code generation options"
 msgstr "Параметры генерации кода"
@@ -10457,8 +10452,8 @@ msgid "Invalid Pascal Identifier"
 msgstr "Некорректный идентификатор Паскаля"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
-msgid "The name \"%s\" is not a valid Pascal identifier.%sUse an alternative name \"%s\" instead?"
-msgstr "Имя \"%s\" не является корректным идентификатором Паскаля.%sИспользовать вместо него имя \"%s\"?"
+msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
+msgstr "Имя \"%s\" не является корректным идентификатором Паскаля.%sИспользовать его несмотря на это?"
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"
