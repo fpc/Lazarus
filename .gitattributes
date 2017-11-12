@@ -7942,6 +7942,8 @@ lcl/images/btncalendar.png -text svneol=unset#image/png
 lcl/images/btncalendar_150.png -text svneol=unset#image/png
 lcl/images/btncalendar_200.png -text svneol=unset#image/png
 lcl/images/btnfiltercancel.png -text
+lcl/images/btnfiltercancel_150.png -text
+lcl/images/btnfiltercancel_200.png -text
 lcl/images/btnseldir.png -text svneol=unset#image/png
 lcl/images/btnseldir_150.png -text svneol=unset#image/png
 lcl/images/btnseldir_200.png -text svneol=unset#image/png

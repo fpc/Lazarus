@@ -1,4 +1,6 @@
 btnfiltercancel.png
+btnfiltercancel_150.png
+btnfiltercancel_200.png
 btncalculator.png
 btncalculator_150.png
 btncalculator_200.png
