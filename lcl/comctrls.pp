@@ -3318,6 +3318,7 @@ type
     FExpandSignColor : TColor;
     FTreeNodes: TTreeNodes;
     FHintWnd: THintWindow;
+    FNodeUnderCursor: TTreeNode;
     procedure CanvasChanged(Sender: TObject);
     function GetAutoExpand: boolean;
     function GetBackgroundColor: TColor;
@@ -3383,6 +3384,7 @@ type
     procedure SetTopItem(Value: TTreeNode);
     procedure UpdateAllTops;
     procedure UpdateBottomItem;
+    procedure UpdateHotTrack(X, Y: Integer);
     procedure UpdateMaxLvl;
     procedure UpdateMaxRight;
     procedure UpdateTopItem;

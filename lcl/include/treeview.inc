@@ -5160,6 +5160,8 @@ var
   procedure DrawNodeText(IsSelected: Boolean; NodeRect: TRect; AText: String);
   var
     Details: TThemedElementDetails;
+    NeedUnderline: Boolean;
+    PrevFontStyle: TFontStyles;
   begin
     if IsSelected then
     begin
@@ -5187,10 +5189,20 @@ var
     else
       Details := ThemeServices.GetElementDetails(ttItemNormal);
 
+    NeedUnderline := (tvoHotTrack in FOptions) and (Node=FNodeUnderCursor);
+    if NeedUnderline then
+    begin
+      PrevFontStyle := Canvas.Font.Style;
+      Canvas.Font.Style := [fsUnderline];
+    end;
+
     if (tvoThemedDraw in Options) then
       ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0)
     else
       DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
+
+    if NeedUnderline then
+      Canvas.Font.Style := PrevFontStyle;
   end;
 
 
@@ -5576,6 +5588,20 @@ begin
   if (tvoAutoInsertMark in FOptions) then
     UpdateInsertMark(X,Y);
   UpdateTooltip(X, Y);
+  UpdateHotTrack(X, Y);
+end;
+
+procedure TCustomTreeView.UpdateHotTrack(X, Y: Integer);
+begin
+  FNodeUnderCursor := nil;
+  if Cursor = crHandPoint then
+    Cursor := crDefault;
+  if not (tvoHotTrack in FOptions) then Exit;
+
+  FNodeUnderCursor := GetNodeAt(X, Y);
+  if Assigned(FNodeUnderCursor) then
+    Cursor := crHandPoint;
+  Invalidate;
 end;
 
 procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -5708,6 +5734,14 @@ begin
   and ((WidgetSet.GetLCLCapability(lcTransparentWindow) = LCL_CAPABILITY_YES)
        or not PtInRect(ClientRect, ScreenToClient(Mouse.CursorPos))) then
     FHintWnd.Hide;
+
+  if tvoHotTrack in FOptions then
+  begin
+    FNodeUnderCursor:=nil;
+    Cursor:=crDefault;
+    Invalidate;
+  end;
+
   inherited MouseLeave;
 end;
 
