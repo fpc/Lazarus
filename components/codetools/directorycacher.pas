@@ -343,8 +343,7 @@ begin
   Result:=ord(FPUpChars[p1^])-ord(FPUpChars[p2^]);
 end;
 
-function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer;
-  MaxCount: PtrInt): integer;
+function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer; MaxCount: PtrInt): integer;
 var
   p1: PChar absolute Data1;
   p2: PChar absolute Data2;
@@ -532,8 +531,7 @@ begin
   Result:=CompareText(Link1.Unit_Name,Link2.Unit_Name);
 end;
 
-function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
-  NodeData: pointer): integer;
+function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer; NodeData: pointer): integer;
 begin
   Result:=CompareText(String(AUnitName),TUnitFileNameLink(NodeData).Unit_Name);
 end;
@@ -577,8 +575,7 @@ end;
 
 { TCTDirectoryCache }
 
-function TCTDirectoryCache.GetStrings(const AStringType: TCTDirCacheString
-  ): string;
+function TCTDirectoryCache.GetStrings(const AStringType: TCTDirCacheString): string;
 begin
   //if AStringType=ctdcsUnitPath then DebugLn(['TCTDirectoryCache.GetStrings ctdcsUnitPath ',Directory,' ',FStrings[AStringType].ConfigTimeStamp,' ',Pool.ConfigTimeStamp]);
   if FStrings[AStringType].ConfigTimeStamp<>Pool.ConfigTimeStamp then begin
@@ -669,6 +666,7 @@ begin
     TotalLen:=0;
     for i:=0 to WorkingListingCount-1 do
       inc(TotalLen,length(WorkingListing[i].FileName)+1+SizeOf(TCTDirectoryListingHeader));
+    Assert(Assigned(FListing), 'TCTDirectoryCache.UpdateListing: FListing=Nil.');
     GetMem(FListing.Files,TotalLen);
     FListing.Size:=TotalLen;
     FListing.Count:=WorkingListingCount;
@@ -824,8 +822,7 @@ begin
   if FRefCount=0 then Free;
 end;
 
-function TCTDirectoryCache.IndexOfFileCaseInsensitive(
-  ShortFilename: PChar): integer;
+function TCTDirectoryCache.IndexOfFileCaseInsensitive(ShortFilename: PChar): integer;
 var
   Files: PChar;
   l: Integer;
@@ -855,8 +852,7 @@ begin
   Result:=-1;
 end;
 
-function TCTDirectoryCache.IndexOfFileCaseSensitive(ShortFilename: PChar
-  ): integer;
+function TCTDirectoryCache.IndexOfFileCaseSensitive(ShortFilename: PChar): integer;
 var
   Files: PChar;
   l: Integer;
@@ -985,8 +981,7 @@ begin
   end;
 end;
 
-function TCTDirectoryCache.FileAge(const ShortFilename: string
-  ): TCTFileAgeTime;
+function TCTDirectoryCache.FileAge(const ShortFilename: string): TCTFileAgeTime;
 var
   i: Integer;
 begin
@@ -1005,8 +1000,7 @@ begin
     Result:=FListing.GetTime(i);
 end;
 
-function TCTDirectoryCache.FileAttr(const ShortFilename: string
-  ): TCTDirectoryListingAttr;
+function TCTDirectoryCache.FileAttr(const ShortFilename: string): TCTDirectoryListingAttr;
 var
   i: Integer;
 begin
@@ -1025,8 +1019,7 @@ begin
     Result:=FListing.GetAttr(i);
 end;
 
-function TCTDirectoryCache.FileSize(const ShortFilename: string
-  ): TCTDirectoryListingSize;
+function TCTDirectoryCache.FileSize(const ShortFilename: string): TCTDirectoryListingSize;
 var
   i: Integer;
 begin
@@ -1575,8 +1568,7 @@ begin
   Result:=FileStateCache.FileExistsCached(Filename);
 end;
 
-function TCTDirectoryCachePool.FileAge(Filename: string
-  ): TCTFileAgeTime;
+function TCTDirectoryCachePool.FileAge(Filename: string): TCTFileAgeTime;
 var
   Directory: String;
   Cache: TCTDirectoryCache;
@@ -1597,8 +1589,7 @@ begin
   Result:=FileStateCache.FileAgeCached(Filename);
 end;
 
-function TCTDirectoryCachePool.FileAttr(Filename: string
-  ): TCTDirectoryListingAttr;
+function TCTDirectoryCachePool.FileAttr(Filename: string): TCTDirectoryListingAttr;
 var
   Directory: String;
   Cache: TCTDirectoryCache;
@@ -1619,8 +1610,7 @@ begin
   Result:=0;
 end;
 
-function TCTDirectoryCachePool.FileSize(Filename: string
-  ): TCTDirectoryListingSize;
+function TCTDirectoryCachePool.FileSize(Filename: string): TCTDirectoryListingSize;
 var
   Directory: String;
   Cache: TCTDirectoryCache;
@@ -1788,8 +1778,7 @@ begin
 end;
 
 function TCTDirectoryCachePool.FindUnitSourceInCompletePath(
-  const Directory: string; var AUnitName, InFilename: string; AnyCase: boolean
-  ): string;
+  const Directory: string; var AUnitName, InFilename: string; AnyCase: boolean): string;
 var
   Cache: TCTDirectoryCache;
 begin
@@ -1798,8 +1787,7 @@ begin
 end;
 
 function TCTDirectoryCachePool.FindCompiledUnitInCompletePath(
-  const Directory: string; var AnUnitname: string; AnyCase: boolean
-    ): string;
+  const Directory: string; var AnUnitname: string; AnyCase: boolean): string;
 var
   Cache: TCTDirectoryCache;
 begin

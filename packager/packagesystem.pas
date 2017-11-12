@@ -52,9 +52,8 @@ uses
   FileUtil, LazFileCache, LazLogger, LazFileUtils, LazUTF8,
   Laz2_XMLCfg, laz2_XMLRead, AvgLvlTree,
   // codetools
-  FileProcs, DefineTemplates, CodeCache,
+  FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
   BasicCodeTools, NonPascalCodeTools, SourceChanger,
-  CodeToolManager, DirectoryCacher,
   // IDEIntf,
   IDEExternToolIntf, IDEDialogs, IDEMsgIntf, CompOptsIntf, LazIDEIntf, MacroDefIntf,
   ProjectIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf, LazarusPackageIntf,
