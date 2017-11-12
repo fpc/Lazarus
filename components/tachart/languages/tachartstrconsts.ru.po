@@ -170,7 +170,7 @@ msgstr "Тип результата выражения должен быть ц�
 
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
-msgstr ""
+msgstr "Диаграмма с картой цветов по математическому выражению"
 
 #: tachartstrconsts.rsexpressionseries
 msgid "Math expression series"
