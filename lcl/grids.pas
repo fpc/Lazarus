@@ -667,37 +667,37 @@ type
     end;
 
     TGridDataCache=record
-      FixedWidth: Integer;    // Sum( Fixed ColsWidths[i] )
-      FixedHeight: Integer;   // Sum( Fixed RowsHeights[i] )
-      GridWidth: Integer;     // Sum( ColWidths[i] )
-      GridHeight: Integer;    // Sum( RowHeights[i] )
-      ClientWidth: Integer;   // Width-VertScrollbar.Size
-      ClientHeight: Integer;  // Height-HorzScrollbar.Size
-      ClientRect: TRect;      // Cache for ClientRect - GetBorderWidth need for Bidi
-      ScrollWidth: Integer;   // ClientWidth-FixedWidth
-      ScrollHeight: Integer;  // ClientHeight-FixedHeight
-      HScrollBarNetRange: Integer; //ScrollBar Range-Page
-      VisibleGrid: TRect;     // Visible non fixed rectangle of cellcoordinates
-      MaxClientXY: Tpoint;    // VisibleGrid.BottomRight (pixel) coordinates
-      ValidRows: boolean;     // true if there are not fixed columns to show
-      ValidCols: boolean;     // true if there are not fixed rows to show
-      ValidGrid: boolean;     // true if there are not fixed cells to show
-      AccumWidth: TList;      // Accumulated width per column
-      AccumHeight: TList;     // Accumulated Height per row
-      TLColOff,TLRowOff: Integer;   // TopLeft Offset in pixels
-      MaxTopLeft: TPoint;     // Max Top left ( cell coorditates)
-      MaxTLOffset: TPoint;    // Max Top left offset of the last cell
-      HotCell: TPoint;        // currently hot cell
-      HotCellPainted: boolean;// HotCell was already painter?
-      HotGridZone: TGridZone; // GridZone of last MouseMove
-      ClickCell: TPoint;      // Cell coords of the latest mouse click
-      ClickMouse: TPoint;     // mouse coords of the latest mouse click
-      PushedCell: TPoint;     // Cell coords of cell being pushed
-      PushedMouse: TPoint;    // mouse Coords of the cell being pushed
+      FixedWidth: Integer;        // Sum( Fixed ColsWidths[i] )
+      FixedHeight: Integer;       // Sum( Fixed RowsHeights[i] )
+      GridWidth: Integer;         // Sum( ColWidths[i] )
+      GridHeight: Integer;        // Sum( RowHeights[i] )
+      ClientWidth: Integer;       // Width-VertScrollbar.Size
+      ClientHeight: Integer;      // Height-HorzScrollbar.Size
+      ClientRect: TRect;          // Cache for ClientRect - GetBorderWidth need for Bidi
+      ScrollWidth: Integer;       // ClientWidth-FixedWidth
+      ScrollHeight: Integer;      // ClientHeight-FixedHeight
+      HScrollBarNetRange: Integer;//ScrollBar Range-Page
+      VisibleGrid: TRect;         // Visible non fixed rectangle of cellcoordinates
+      MaxClientXY: Tpoint;        // VisibleGrid.BottomRight (pixel) coordinates
+      ValidRows: boolean;         // true if there are not fixed columns to show
+      ValidCols: boolean;         // true if there are not fixed rows to show
+      ValidGrid: boolean;         // true if there are not fixed cells to show
+      AccumWidth: TIntegerList;   // Accumulated width per column
+      AccumHeight: TIntegerList;  // Accumulated Height per row
+      TLColOff,TLRowOff: Integer; // TopLeft Offset in pixels
+      MaxTopLeft: TPoint;         // Max Top left ( cell coorditates)
+      MaxTLOffset: TPoint;        // Max Top left offset of the last cell
+      HotCell: TPoint;            // currently hot cell
+      HotCellPainted: boolean;    // HotCell was already painter?
+      HotGridZone: TGridZone;     // GridZone of last MouseMove
+      ClickCell: TPoint;          // Cell coords of the latest mouse click
+      ClickMouse: TPoint;         // mouse coords of the latest mouse click
+      PushedCell: TPoint;         // Cell coords of cell being pushed
+      PushedMouse: TPoint;        // mouse Coords of the cell being pushed
       ClickCellPushed: boolean;   // Header Cell is currently pushed?
-      FullVisibleGrid: TRect; // visible cells excluding partially visible cells
-      MouseCell: TPoint;      // Cell which contains the mouse
-      OldMaxTopLeft: TPoint;  // previous MaxTopleft (before col sizing)
+      FullVisibleGrid: TRect;     // visible cells excluding partially visible cells
+      MouseCell: TPoint;          // Cell which contains the mouse
+      OldMaxTopLeft: TPoint;      // previous MaxTopleft (before col sizing)
     end;
 
 type
@@ -2499,14 +2499,14 @@ end;
 function TCustomGrid.GetPxTopLeft: TPoint;
 begin
   if (FTopLeft.x >= 0) and (FTopLeft.x < FGCache.AccumWidth.Count) then
-    Result.x := Integer(PtrUInt(FGCache.AccumWidth[FTopLeft.x]))+FGCache.TLColOff-FGCache.FixedWidth
+    Result.x := FGCache.AccumWidth[FTopLeft.x]+FGCache.TLColOff-FGCache.FixedWidth
   else if FTopLeft.x > 0 then
     Result.x := FGCache.GridWidth+FGCache.TLColOff-FGCache.FixedWidth
   else
     Result.x := 0;
 
   if (FTopLeft.y >= 0) and (FTopLeft.y < FGCache.AccumHeight.Count) then
-    Result.y := Integer(PtrUInt(FGCache.AccumHeight[FTopLeft.y]))+FGCache.TLRowOff-FGCache.FixedHeight
+    Result.y := FGCache.AccumHeight[FTopLeft.y]+FGCache.TLRowOff-FGCache.FixedHeight
   else if FTopLeft.y > 0 then
     Result.y := FGCache.GridHeight+FGCache.TLRowOff-FGCache.FixedHeight
   else
@@ -4896,7 +4896,7 @@ begin
   FGCache.GridWidth:=0;
   FGCache.FixedWidth:=0;
   for i:=0 to ColCount-1 do begin
-    FGCache.AccumWidth[i]:=Pointer(PtrInt(FGCache.GridWidth));
+    FGCache.AccumWidth[i]:=FGCache.GridWidth;
     FGCache.GridWidth:=FGCache.GridWidth + GetColWidths(i);
     if i<FixedCols then
       FGCache.FixedWidth:=FGCache.GridWidth;
@@ -4905,7 +4905,7 @@ begin
   FGCache.Gridheight:=0;
   FGCache.FixedHeight:=0;
   for i:=0 to RowCount-1 do begin
-    FGCache.AccumHeight[i]:=Pointer(PtrInt(FGCache.Gridheight));
+    FGCache.AccumHeight[i]:=FGCache.Gridheight;
     FGCache.Gridheight:=FGCache.Gridheight+GetRowHeights(i);
     if i<FixedRows then
       FGCache.FixedHeight:=FGCache.GridHeight;
@@ -5046,7 +5046,7 @@ begin
     if not GetSmoothScroll(SB_Horz) then
     begin
       if (FGCache.MaxTopLeft.x>=0) and (FGCache.MaxTopLeft.x<=ColCount-1) then
-        HsbRange := integer(PtrUInt(FGCache.AccumWidth[FGCache.MaxTopLeft.x]))+ClientWidth-FGCache.FixedWidth
+        HsbRange := FGCache.AccumWidth[FGCache.MaxTopLeft.x]+ClientWidth-FGCache.FixedWidth
     end else
     begin
       HsbRange:=GridWidth - GetBorderWidth;
@@ -5058,7 +5058,7 @@ begin
       end;
     end;
     if (FTopLeft.x>=0) and (FTopLeft.x<=ColCount-1) then
-      HsbPos := integer(PtrUInt(FGCache.AccumWidth[FTopLeft.x]))+FGCache.TLColOff-FGCache.FixedWidth;
+      HsbPos := FGCache.AccumWidth[FTopLeft.x]+FGCache.TLColOff-FGCache.FixedWidth;
   end;
 
   VsbRange := 0;
@@ -5068,7 +5068,7 @@ begin
     if not GetSmoothScroll(SB_Vert) then
     begin
       if (FGCache.MaxTopLeft.y>=0) and (FGCache.MaxTopLeft.y<=RowCount-1)  then
-        VsbRange := integer(PtrUInt(FGCache.AccumHeight[FGCache.MaxTopLeft.y]))+ClientHeight-FGCache.FixedHeight
+        VsbRange := FGCache.AccumHeight[FGCache.MaxTopLeft.y]+ClientHeight-FGCache.FixedHeight
     end else
     begin
       VSbRange:= GridHeight - GetBorderWidth;
@@ -5080,7 +5080,7 @@ begin
       end;
     end;
     if (FTopLeft.y>=0) and (FTopLeft.y<=RowCount-1) then
-      VsbPos := integer(PtrUInt(FGCache.AccumHeight[FTopLeft.y]))+FGCache.TLRowOff-FGCache.FixedHeight;
+      VsbPos := FGCache.AccumHeight[FTopLeft.y]+FGCache.TLRowOff-FGCache.FixedHeight;
   end;
 
   HsbPage := ClientWidth;
@@ -5215,22 +5215,20 @@ var
   W: Integer;
 begin
   OldTopLeft := FTopLeft;
-  Result:= False;
+  Result := False;
 
-  if CheckCols and (FTopleft.X>FixedCols) then begin
-    W := FGCache.ScrollWidth-ColWidths[aCol]-integer(PtrUInt(FGCache.AccumWidth[aCol]));
-    while (FTopleft.x>FixedCols)and(W+integer(PtrUInt(FGCache.AccumWidth[FTopleft.x]))>=ColWidths[FTopleft.x-1]) do
-    begin
+  if CheckCols and (FTopleft.X > FixedCols) then begin
+    W := FGCache.ScrollWidth-ColWidths[aCol]-FGCache.AccumWidth[aCol];
+    while (FTopleft.x > FixedCols)
+    and (W+FGCache.AccumWidth[FTopleft.x] >= ColWidths[FTopleft.x-1]) do
       Dec(FTopleft.x);
-    end;
   end;
 
   if CheckRows and (FTopleft.Y > FixedRows) then begin
-    W := FGCache.ScrollHeight-RowHeights[aRow]-integer(PtrUInt(FGCache.AccumHeight[aRow]));
-    while (FTopleft.y>FixedRows)and(W+integer(PtrUInt(FGCache.AccumHeight[FTopleft.y]))>=RowHeights[FTopleft.y-1]) do
-    begin
+    W := FGCache.ScrollHeight-RowHeights[aRow]-FGCache.AccumHeight[aRow];
+    while (FTopleft.y > FixedRows)
+    and (W+FGCache.AccumHeight[FTopleft.y] >= RowHeights[FTopleft.y-1]) do
       Dec(FTopleft.y);
-    end;
     //DebugLn('TCustomGrid.CheckTopLeft A ',DbgSName(Self),' FTopLeft=',dbgs(FTopLeft));
   end;
 
@@ -5915,7 +5913,7 @@ begin
       if Fisical and (Offset>FixedWidth-1) then begin
         Index := FTopLeft.X;  // In scrolled view, then begin from FTopLeft col
         if (Index>=0) and (Index<ColCount) then begin
-          Offset:=Offset-FixedWidth+integer(PtrUInt(AccumWidth[Index]));
+          Offset:=Offset-FixedWidth+AccumWidth[Index];
           if GetSmoothScroll(SB_Horz) then
             Offset:=Offset+TLColOff;
         end;
@@ -5928,7 +5926,7 @@ begin
         end;
       end;
 
-      while Offset>(integer(PtrUInt(AccumWidth[Index]))+GetColWidths(Index)-1) do begin
+      while Offset > AccumWidth[Index]+GetColWidths(Index)-1 do begin
         Inc(Index);
         if Index>=ColCount then begin
           if AllowOutBoundEvents then
@@ -5941,7 +5939,7 @@ begin
 
       Rest:=Offset;
       if Index<>0 then
-        Rest:=Offset-integer(PtrUInt(AccumWidth[Index]));
+        Rest:=Offset-AccumWidth[Index];
 
     end else begin
 
@@ -5949,7 +5947,7 @@ begin
       if Fisical and (Offset>FixedHeight-1) then begin
         Index:=FTopLeft.Y;
         if (Index>=0) and (Index<RowCount) then
-          Offset:=Offset-FixedHeight+integer(PtrUInt(AccumHeight[Index]))+TLRowOff;
+          Offset:=Offset-FixedHeight+AccumHeight[Index]+TLRowOff;
         if (Index<0) or (Index>=RowCount) or (Offset>GridHeight-1) then begin
           if AllowOutboundEvents then
             Index := RowCount-1
@@ -5959,11 +5957,12 @@ begin
         end;
       end;
 
-      while Offset>(integer(PtrUInt(AccumHeight[Index]))+GetRowHeights(Index)-1) do
+      while Offset > AccumHeight[Index]+GetRowHeights(Index)-1 do
         Inc(Index);
 
       Rest:=Offset;
-      if Index<>0 then Rest:=Offset-integer(PtrUInt(AccumHeight[Index]));
+      if Index<>0 then
+        Rest:=Offset-AccumHeight[Index];
 
     end;
   end;
@@ -5985,12 +5984,12 @@ begin
     if IsCol then begin
       if (index<0) or (index>ColCount-1) then
         exit;
-      StartPos:=integer(PtrUInt(AccumWidth[index]));
+      StartPos:=AccumWidth[index];
       Dim:=GetColWidths(index);
     end else begin
       if (index<0) or (index>RowCount-1) then
         exit;
-      StartPos:=integer(PtrUInt(AccumHeight[index]));
+      StartPos:=AccumHeight[index];
       Dim:= GetRowHeights(index);
     end;
     StartPos := StartPos + GetBorderWidth;
@@ -6000,13 +5999,13 @@ begin
     end;
     if IsCol then begin
       if index>=FFixedCols then begin
-        StartPos:=StartPos-integer(PtrUInt(AccumWidth[FTopLeft.X])) + FixedWidth;
+        StartPos:=StartPos-AccumWidth[FTopLeft.X] + FixedWidth;
         if GetSmoothScroll(SB_Horz) then
           StartPos := StartPos - TLColOff;
       end;
     end else begin
       if index>=FFixedRows then begin
-        StartPos:=StartPos-integer(PtrUInt(AccumHeight[FTopLeft.Y])) + FixedHeight;
+        StartPos:=StartPos-AccumHeight[FTopLeft.Y] + FixedHeight;
         if GetSmoothScroll(SB_Vert) then
           StartPos := StartPos - TLRowOff;
       end;
@@ -6210,11 +6209,11 @@ begin
       exit;
     end else begin
       FCols.Insert(Index, -1);
-      FGCache.AccumWidth.Insert(Index, nil);
+      FGCache.AccumWidth.Insert(Index, -1);
     end;
   end else begin
     Frows.Insert(Index, -1);
-    FGCache.AccumHeight.Insert(Index, nil);
+    FGCache.AccumHeight.Insert(Index, -1);
     if Index<FixedRows then
       inc(FFixedRows);
   end;
@@ -9402,8 +9401,8 @@ begin
   // fGrid needs to be created before that
   FCols:=TIntegerList.Create;
   FRows:=TIntegerList.Create;
-  FGCache.AccumWidth:=TList.Create;
-  FGCache.AccumHeight:=TList.Create;
+  FGCache.AccumWidth:=TIntegerList.Create;
+  FGCache.AccumHeight:=TIntegerList.Create;
   FGCache.ClickCell := point(-1, -1);
   inherited Create(AOwner);
 
