@@ -394,22 +394,22 @@ type
     private
       FColCount: Integer;
       FRowCount: Integer;
-      FCells, FCols, FRows: TArray;
+      FCellArr, FColArr, FRowArr: TArray;
       function  GetCells(Col, Row: Integer): PCellProps;
-      function  Getrows(Row: Integer): PColRowprops;
-      function  Getcols(Col: Integer): PColRowprops;
+      function  GetRows(Row: Integer): PColRowProps;
+      function  GetCols(Col: Integer): PColRowProps;
       procedure SetCells(Col, Row: Integer; const AValue: PCellProps);
-      procedure Setrows(Row: Integer; const Avalue: PColRowprops);
-      procedure Setcolcount(const Avalue: Integer);
-      procedure Setrowcount(const Avalue: Integer);
-      procedure Setcols(Col: Integer; const Avalue: PColRowprops);
+      procedure SetRows(Row: Integer; const Avalue: PColRowProps);
+      procedure SetColCount(const Avalue: Integer);
+      procedure SetRowCount(const Avalue: Integer);
+      procedure SetCols(Col: Integer; const Avalue: PColRowProps);
     protected
-      procedure doDestroyItem(Sender: TObject; Col,Row:Integer; var Item: Pointer);
-      procedure doNewItem(Sender: TObject; Col,Row:Integer; var Item: Pointer);
+      procedure doDestroyItem(Sender: TObject; Col,Row: Integer; var Item: Pointer);
+      procedure doNewItem(Sender: TObject; Col,Row: Integer; var Item: Pointer);
       procedure DeleteColRow(IsColumn: Boolean; index: Integer);
       procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
-      procedure ExchangeColRow(IsColumn:Boolean; index,WithIndex: Integer);
-      procedure InsertColRow(IsColumn:Boolean; Index: Integer);
+      procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
+      procedure InsertColRow(IsColumn: Boolean; Index: Integer);
       procedure DisposeCell(var P: PCellProps); virtual;
       procedure DisposeColRow(var p: PColRowProps); virtual;
     public
@@ -9738,17 +9738,17 @@ begin
   Result:=nil;
   if (Col<0) or (Row<0) or (Col>=ColCount) or (Row>=RowCount) then
     raise EGridException.CreateFmt(rsIndexOutOfRange, [Col, Row]);
-  Result:=FCells[Col,Row];
+  Result:=FCellArr[Col,Row];
 end;
 
-function Tvirtualgrid.Getrows(Row: Integer): PColRowprops;
+function TVirtualGrid.GetRows(Row: Integer): PColRowProps;
 begin
-  Result:= FRows[Row, 0];
+  Result:= FRowArr[Row, 0];
 end;
 
-function Tvirtualgrid.Getcols(Col: Integer): PColRowProps;
+function TVirtualGrid.GetCols(Col: Integer): PColRowProps;
 begin
-  result:=FCols[Col, 0];
+  result:=FColArr[Col, 0];
 end;
 
 procedure TVirtualGrid.SetCells(Col, Row: Integer; const AValue: PCellProps);
@@ -9756,24 +9756,24 @@ var
    Cell: PCellProps;
 begin
   // todo: Check range
-  Cell:=FCells[Col,Row];
+  Cell:=FCellArr[Col,Row];
   if Cell<>nil then
     DisposeCell(Cell);
   Cell:=AValue;
-  FCells[Col,Row]:=Cell;
+  FCellArr[Col,Row]:=Cell;
 end;
 
-procedure Tvirtualgrid.Setrows(Row: Integer; const Avalue: PColRowProps);
+procedure TVirtualGrid.SetRows(Row: Integer; const Avalue: PColRowProps);
 var
    C: PColRowProps;
 begin
   // todo: Check range
-  C:=FRows[Row,0];
+  C:=FRowArr[Row,0];
   if C<>nil then DisposeColRow(C);
-  FRows[Row,0]:=AValue;
+  FRowArr[Row,0]:=AValue;
 end;
 
-procedure Tvirtualgrid.Setcolcount(const Avalue: Integer);
+procedure TVirtualGrid.SetColCount(const Avalue: Integer);
 begin
   if FColCount=Avalue then Exit;
   {$Ifdef dbgMem}
@@ -9783,15 +9783,15 @@ begin
   {$Ifdef dbgMem}
     DBGOut('TVirtualGrid.SetColCount->FCOLS: ');
   {$Endif}
-  FCols.SetLength(FColCount, 1);
+  FColArr.SetLength(FColCount, 1);
   {$Ifdef dbgMem}
     DBGOut('TVirtualGrid.SetColCount->FCELLS(',FColCount,',',FRowCount,'): ');
   {$Endif}
-  FCells.SetLength(FColCount, FRowCount);
+  FCellArr.SetLength(FColCount, FRowCount);
 end;
 
 
-procedure Tvirtualgrid.Setrowcount(const Avalue: Integer);
+procedure TVirtualGrid.SetRowCount(const Avalue: Integer);
 begin
   if FRowCount=AValue then Exit;
   {$Ifdef dbgMem}
@@ -9801,33 +9801,33 @@ begin
   {$Ifdef dbgMem}
     DBGOut('TVirtualGrid.SetRowCount->FROWS: ');
   {$Endif}
-  FRows.SetLength(FRowCount,1);
+  FRowArr.SetLength(FRowCount,1);
   {$Ifdef dbgMem}
     DBGOut('TVirtualGrid.SetRowCount->FCELLS(',FColCount,',',FRowCount,'): ');
   {$Endif}
-  FCells.SetLength(FColCount, FRowCount);
+  FCellArr.SetLength(FColCount, FRowCount);
 end;
 
-procedure Tvirtualgrid.Setcols(Col: Integer; const Avalue: PColRowProps);
+procedure TVirtualGrid.SetCols(Col: Integer; const Avalue: PColRowProps);
 var
    C: PColRowProps;
 begin
   // todo: Check range
-  C:=FCols[Col,0];
+  C:=FColArr[Col,0];
   if C<>nil then DisposeColRow(C);
-  FCols[Col,0]:=AValue;
+  FColArr[Col,0]:=AValue;
 end;
 
-procedure Tvirtualgrid.Clear;
+procedure TVirtualGrid.Clear;
 begin
-  {$Ifdef dbgMem}DBGOut('FROWS: ');{$Endif}FRows.Clear;
-  {$Ifdef dbgMem}DBGOut('FCOLS: ');{$Endif}FCols.Clear;
-  {$Ifdef dbgMem}DBGOut('FCELLS: ');{$Endif}FCells.Clear;
+  {$Ifdef dbgMem}DBGOut('FROWS: ');{$Endif}FRowArr.Clear;
+  {$Ifdef dbgMem}DBGOut('FCOLS: ');{$Endif}FColArr.Clear;
+  {$Ifdef dbgMem}DBGOut('FCELLS: ');{$Endif}FCellArr.Clear;
   FColCount:=0;
   FRowCount:=0;
 end;
 
-procedure Tvirtualgrid.Disposecell(var P: Pcellprops);
+procedure TVirtualGrid.DisposeCell(var P: PCellProps);
 begin
   if P<>nil then begin
     if P^.Text<>nil then StrDispose(P^.Text);
@@ -9859,7 +9859,7 @@ begin
   Result^.Size:=-1;
 end;
 
-procedure Tvirtualgrid.Dodestroyitem (Sender: Tobject; Col,Row: Integer;
+procedure TVirtualGrid.doDestroyItem(Sender: TObject; Col,Row: Integer;
   var Item: Pointer);
 begin
   {$Ifdef dbgMem}
@@ -9867,7 +9867,7 @@ begin
             Row,' Item=',Integer(Item));
   {$endif}
   if Item<>nil then begin
-    if (Sender=FCols)or(Sender=FRows) then begin
+    if (Sender=FColArr)or(Sender=FRowArr) then begin
       DisposeColRow(PColRowProps(Item));
     end else begin
       DisposeCell(PCellProps(Item));
@@ -9876,18 +9876,18 @@ begin
   end;
 end;
 
-procedure Tvirtualgrid.doNewitem(Sender: Tobject; Col,Row:Integer;
+procedure TVirtualGrid.doNewItem(Sender: TObject; Col,Row: Integer;
   var Item: Pointer);
 begin
   {$Ifdef dbgMem}
     DebugLn('TVirtualGrid.doNewItem Col=',Col,' Row= ',
             Row,' Item=',Integer(Item));
   {$endif}
-  if Sender=FCols then begin
+  if Sender=FColArr then begin
     // Procesar Nueva Columna
     Item:=GetDefaultColRow;
   end else
-  if Sender=FRows then begin
+  if Sender=FRowArr then begin
     // Procesar Nuevo Renglon
     Item:=GetDefaultColRow;
   end else begin
@@ -9900,15 +9900,15 @@ constructor TVirtualGrid.Create;
 begin
   Inherited Create;
   {$Ifdef DbgGrid}DebugLn('TVirtualGrid.Create');{$Endif}
-  FCells:=TArray.Create;
-  FCells.OnDestroyItem:=@doDestroyItem;
-  FCells.OnNewItem:=@doNewItem;
-  FCols:= TArray.Create;
-  FCols.OnDestroyItem:=@doDestroyItem;
-  FCols.OnNewItem:=@doNewItem;
-  FRows:=TArray.Create;
-  FRows.OnDestroyItem:=@doDestroyItem;
-  FRows.OnNewItem:=@doNewItem;
+  FCellArr:=TArray.Create;
+  FCellArr.OnDestroyItem:=@doDestroyItem;
+  FCellArr.OnNewItem:=@doNewItem;
+  FColArr:= TArray.Create;
+  FColArr.OnDestroyItem:=@doDestroyItem;
+  FColArr.OnNewItem:=@doNewItem;
+  FRowArr:=TArray.Create;
+  FRowArr.OnDestroyItem:=@doDestroyItem;
+  FRowArr.OnNewItem:=@doNewItem;
   RowCount:=4;
   ColCount:=4;
 end;
@@ -9917,37 +9917,36 @@ destructor TVirtualGrid.Destroy;
 begin
   {$Ifdef DbgGrid}DebugLn('TVirtualGrid.Destroy');{$Endif}
   Clear;
-  FreeThenNil(FRows);
-  FreeThenNil(FCols);
-  FreeThenNil(FCells);
+  FreeThenNil(FRowArr);
+  FreeThenNil(FColArr);
+  FreeThenNil(FCellArr);
   inherited Destroy;
 end;
 
 procedure TVirtualGrid.DeleteColRow(IsColumn: Boolean; index: Integer);
 begin
-  FCells.DeleteColRow(IsColumn, index);
+  FCellArr.DeleteColRow(IsColumn, index);
   if IsColumn then begin
-    FCols.DeleteColRow(True, index);
+    FColArr.DeleteColRow(True, index);
     Dec(FColCount);
   end else begin
-    FRows.DeleteColRow(True, index);
+    FRowArr.DeleteColRow(True, index);
     Dec(fRowCount);
   end;
 end;
 
 procedure TVirtualGrid.MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 begin
-  FCells.MoveColRow(IsColumn, FromIndex, ToIndex);
-  if IsColumn then FCols.MoveColRow(True, FromIndex, ToIndex)
-  else             FRows.MoveColRow(True, FromIndex, ToIndex);
+  FCellArr.MoveColRow(IsColumn, FromIndex, ToIndex);
+  if IsColumn then FColArr.MoveColRow(True, FromIndex, ToIndex)
+  else             FRowArr.MoveColRow(True, FromIndex, ToIndex);
 end;
 
-procedure TVirtualGrid.ExchangeColRow(IsColumn: Boolean; index,
-  WithIndex: Integer);
+procedure TVirtualGrid.ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
 begin
-  FCells.ExchangeColRow(IsColumn, index, WithIndex);
-  if IsColumn then FCols.ExchangeColRow(true, index, WithIndex)
-  else             FRows.ExchangeColRow(True, index, WithIndex);
+  FCellArr.ExchangeColRow(IsColumn, index, WithIndex);
+  if IsColumn then FColArr.ExchangeColRow(true, index, WithIndex)
+  else             FRowArr.ExchangeColRow(True, index, WithIndex);
 end;
 
 procedure TVirtualGrid.InsertColRow(IsColumn: Boolean; Index: Integer);
