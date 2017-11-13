@@ -29,14 +29,7 @@ unit IntList;
   A old concept, and a generic class
   implemented here because I needed it in the LineBreaker
 
-  The internals are a hack, but so what?
-  They are internal & could be replaced if need be by a more
-  readable & less space-efficient implementation without anyone knowing
-  and changing not much code in this unit either.
-
-  anyway it works because a pointer = 4 bytes, an int = 4 bytes
-  Thus a pointer in a TList can actually store an int
-  If these sizes change, this will break
+  * Change by JuMa to use TIntegerList from LazUtils as a base class. *
 
   This class could be extended in mnay ways (e.g. math ops on the list like sum, min, max, avg etc)
   Fns to add without duplicates, Sort, add another int list (and intersection, difference) etc
@@ -48,87 +41,22 @@ unit IntList;
 
 interface
 
-uses Classes, SysUtils;
+uses Classes, SysUtils, IntegerList;
 
 type
 
-  TIntList = class
-  private
-    fcList: TList;
-
-    function GetItem(const piIndex: integer): integer;
-    procedure SetItem(const piIndex, piValue: integer);
-
-  protected
-
+  TIntList = class(TIntegerList)
   public
-    constructor Create;
-    destructor Destroy; override;
-
-    function Count: integer;
-
-    function Add(const piValue: integer): integer;
-    procedure Clear;
-
     procedure ChangeValue(const liIndex, liDelta: integer);
-
     function IndexOfMax: integer;
-
     { to use it as a stack }
     function Top: integer;
     function Pop: integer;
-
-    property Items[const piIndex: integer]: integer Read GetItem Write SetItem;
   end;
 
 implementation
 
-{$ifndef fpc}
-// Delphi is a 32bit compiler only, thus pointer is always uses 4 bytes and can be
-// converted to integer and back. FPC uses PtrInt as a signed integer type wich
-// equal to pointer in length. For 32bit PtrInt = integer
-type
-  PtrInt = Integer;
-{$endif}
-
 { TIntList }
-
-constructor TIntList.Create;
-begin
-  inherited;
-  fcList := TList.Create;
-end;
-
-destructor TIntList.Destroy;
-begin
-  FreeAndNil(fcList);
-  inherited;
-end;
-
-function TIntList.Add(const piValue: integer): integer;
-begin
-  Result := fcList.Add({%H-}Pointer(PtrInt(piValue)));
-end;
-
-procedure TIntList.Clear;
-begin
-  fcList.Clear;
-end;
-
-function TIntList.Count: integer;
-begin
-  Result := fcList.Count;
-end;
-
-function TIntList.GetItem(const piIndex: integer): integer;
-begin
-  Result := integer({%H-}PtrInt(fcList.Items[piIndex]));
-end;
-
-procedure TIntList.SetItem(const piIndex, piValue: integer);
-begin
-  fcList.Items[piIndex] := {%H-}Pointer(PtrInt(piValue));
-end;
 
 procedure TIntList.ChangeValue(const liIndex, liDelta: integer);
 begin
@@ -166,7 +94,7 @@ begin
   if Count > 0 then
   begin
     Result := Items[Count - 1];
-    fcList.Delete(Count - 1);
+    Delete(Count - 1);
   end
   else
     Result := 0;
