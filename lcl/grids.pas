@@ -36,10 +36,11 @@ uses
   // RTL + FCL
   Classes, SysUtils, Types, TypInfo, Math, FPCanvas,
   // LCL
-  LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls, GraphType, Graphics, Forms,
+  LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls, Graphics, Forms,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes, imglist,
   // LazUtils
-  LazFileUtils, DynamicArray, Maps, LazUTF8, LazUtf8Classes, Laz2_XMLCfg, LCSVUtils
+  LazFileUtils, DynamicArray, Maps, LazUTF8, LazUtf8Classes, Laz2_XMLCfg,
+  LCSVUtils, IntegerList
 {$ifdef WINDOWS}
   ,messages
 {$endif}
@@ -751,7 +752,7 @@ type
     FGridLineColor, FFixedGridLineColor: TColor;
     FFixedColor, FFixedHotColor, FFocusColor, FSelectedColor: TColor;
     FFocusRectVisible: boolean;
-    FCols,FRows: TList;
+    FCols,FRows: TIntegerList;
     FsaveOptions: TSaveOptions;
     FScrollBars: TScrollStyle;
     FSelectActive: Boolean;
@@ -2113,10 +2114,11 @@ end;
 function TCustomGrid.GetRowHeights(Arow: Integer): Integer;
 begin
   if (aRow<RowCount) and (aRow>=0) then
-    Result:=integer(PtrUInt(FRows[aRow]))
+    Result:=FRows[aRow]
   else
     Result:=-1;
-  if Result<0 then Result:=DefaultRowHeight;
+  if Result<0 then
+    Result:=DefaultRowHeight;
 end;
 
 function TCustomGrid.GetTopRow: Longint;
@@ -2318,7 +2320,7 @@ begin
     NewSize := DefaultColWidth;
   end;
 
-  OldSize := integer(PtrUInt(FCols[ACol]));
+  OldSize := FCols[ACol];
   if NewSize<>OldSize then begin
 
     if OldSize<0 then
@@ -2528,7 +2530,7 @@ begin
   if not Columns.Enabled or (aCol<FixedCols) then
   begin
     if (aCol<ColCount) and (aCol>=0) then
-      Result:=integer(PtrUInt(FCols[aCol]))
+      Result:=FCols[aCol]
     else
       Result:=-1;
   end else
@@ -2807,7 +2809,7 @@ begin
     NewSize := DefaultRowHeight;
   end;
 
-  OldSize := integer(PtrUInt(FRows[ARow]));
+  OldSize := FRows[ARow];
   if AValue<>OldSize then begin
 
     if OldSize<0 then
@@ -2815,7 +2817,7 @@ begin
 
     bigger := NewSize > OldSize;
 
-    FRows[ARow]:=Pointer(PtrInt(AValue));
+    FRows[ARow]:=AValue;
 
     if not (csLoading in ComponentState) and HandleAllocated then begin
       if FUpdateCount=0 then begin
@@ -2868,17 +2870,17 @@ end;
 procedure TCustomGrid.SetRawColWidths(ACol: Integer; AValue: Integer);
 begin
   if ACol < FCols.Count then      // Prevent a range error in case of a bug.
-    FCols[ACol]:=Pointer(PtrInt(Avalue))
+    FCols[ACol]:=Avalue
   else
     DebugLn(['TCustomGrid.SetRawColWidths with Range Error: ACol=', ACol, ', Cols.Count=', FCols.Count]);
 end;
 
 procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, NewValue: Integer);
 
-  procedure AddDel(Lst: TList; aCount: Integer);
+  procedure AddDel(Lst: TIntegerList; aCount: Integer);
   begin
     while lst.Count<aCount do
-      Lst.Add(Pointer(-1)); // default width/height
+      Lst.Add(-1); // default width/height
     Lst.Count:=aCount;
   end;
 
@@ -3086,7 +3088,7 @@ begin
       ColRowToOffSet(False,True, FRow, OldTop, OldBottom);
 
     for i:=0 to RowCount-1 do
-      FRows[i] := Pointer(-1);
+      FRows[i] := -1;
     VisualChange;
 
     if EditorMode then
@@ -3716,8 +3718,7 @@ procedure TCustomGrid.ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer)
 begin
 end;
 
-procedure TCustomGrid.ColRowExchanged(IsColumn: Boolean; index,
-  WithIndex: Integer);
+procedure TCustomGrid.ColRowExchanged(IsColumn: Boolean; index, WithIndex: Integer);
 begin
 end;
 
@@ -3863,7 +3864,7 @@ var
 begin
   if not AutoFillColumns then begin
     for i:=0 to ColCount-1 do
-      FCols[i] := Pointer(-1);
+      FCols[i] := -1;
     VisualChange;
   end;
 end;
@@ -6208,11 +6209,11 @@ begin
       ColRowInserted(true, index);
       exit;
     end else begin
-      FCols.Insert(Index, pointer(-1));
+      FCols.Insert(Index, -1);
       FGCache.AccumWidth.Insert(Index, nil);
     end;
   end else begin
-    Frows.Insert(Index, pointer(-1));
+    Frows.Insert(Index, -1);
     FGCache.AccumHeight.Insert(Index, nil);
     if Index<FixedRows then
       inc(FFixedRows);
@@ -6807,17 +6808,16 @@ procedure TCustomGrid.DefineProperties(Filer: TFiler);
         end;
   end;
 
-  function SonDefault(IsColumn: Boolean; L1: TList): boolean;
+  function SonDefault(IsColumn: Boolean; L1: TIntegerList): boolean;
   var
     i: Integer;
-    DefValue, Value: Integer;
+    DefValue: Integer;
   begin
     Result := True;
     if IsColumn then DefValue := DefaultColWidth
     else             DefValue := DefaultRowHeight;
     for i:=0 to L1.Count-1 do begin
-      Value := integer(PtrUInt(L1[i]));
-      Result := (Value = DefValue) or (Value<0);
+      Result := (L1[i] = DefValue) or (L1[i] < 0);
       if not Result then
         break;
     end;
@@ -6986,10 +6986,10 @@ begin
       end;
 
       for i := FRows.Count - 1 downto 0 do
-        FRows[i] := {%H-}Pointer(Round({%H-}PtrInt(FRows[i]) * AYProportion));
+        FRows[i] := Round(FRows[i] * AYProportion);
 
       for i := FCols.Count - 1 downto 0 do
-        FCols[i] := {%H-}Pointer(Round({%H-}PtrInt(FCols[i]) * AXProportion));
+        FCols[i] := Round(FCols[i] * AXProportion);
 
       if DefaultColWidthIsStored then
         DefaultColWidth := Round(DefaultColWidth * AXProportion)
@@ -9113,7 +9113,7 @@ begin
     else begin
       j:=0;
       for i:=0 to ColCount-1 do begin
-        k:=integer(PtrUInt(FCols[i]));
+        k:=FCols[i];
         if (k>=0)and(k<>DefaultColWidth) then begin
           inc(j);
           tmpPath := 'grid/design/columns/column'+IntToStr(j);
@@ -9127,7 +9127,7 @@ begin
 
     j:=0;
     for i:=0 to RowCount-1 do begin
-      k:=integer(PtrUInt(FRows[i]));
+      k:=FRows[i];
       if (k>=0)and(k<>DefaultRowHeight) then begin
         inc(j);
         cfg.SetValue('grid/design/rows/rowcount',j);
@@ -9400,8 +9400,8 @@ constructor TCustomGrid.Create(AOwner: TComponent);
 begin
   // Inherited create Calls SetBounds->WM_SIZE->VisualChange so
   // fGrid needs to be created before that
-  FCols:=TList.Create;
-  FRows:=TList.Create;
+  FCols:=TIntegerList.Create;
+  FRows:=TIntegerList.Create;
   FGCache.AccumWidth:=TList.Create;
   FGCache.AccumHeight:=TList.Create;
   FGCache.ClickCell := point(-1, -1);
@@ -9820,9 +9820,9 @@ end;
 
 procedure TVirtualGrid.Clear;
 begin
-  {$Ifdef dbgMem}DBGOut('FROWS: ');{$Endif}FRowArr.Clear;
-  {$Ifdef dbgMem}DBGOut('FCOLS: ');{$Endif}FColArr.Clear;
-  {$Ifdef dbgMem}DBGOut('FCELLS: ');{$Endif}FCellArr.Clear;
+  {$Ifdef dbgMem}DBGOut('FROWARR: ');{$Endif}FRowArr.Clear;
+  {$Ifdef dbgMem}DBGOut('FCOLARR: ');{$Endif}FColArr.Clear;
+  {$Ifdef dbgMem}DBGOut('FCELLARR: ');{$Endif}FCellArr.Clear;
   FColCount:=0;
   FRowCount:=0;
 end;
