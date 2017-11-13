@@ -1661,6 +1661,8 @@ end;
 
 
 procedure TVisualTree.VSTMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+var
+  Data: PData;
 begin
   FHoverColumn := -1;
   FHoverP.X := X;
@@ -1671,6 +1673,12 @@ begin
   begin
     FVST.ReinitNode(FHoverNode, False);
     FVST.RepaintNode(FHoverNode);
+  end
+  else if (FHoverColumn = 4) and (FHoverNode <> nil) then
+  begin
+    Data := VST.GetNodeData(FHoverNode);
+    if (Data^.DataType = 17) or (Data^.DataType = 18) then
+      FVST.Cursor := crHandPoint;
   end;
 end;
 
