@@ -20,8 +20,6 @@ interface
 uses
   fgl;
 
-function CompareInt(const Item1, Item2: Integer): Integer;
-
 type
 
   TIntegerList = class(specialize TFPGList<Integer>)
@@ -29,9 +27,20 @@ type
     procedure Sort; overload;
   end;
 
+  TInt64List = class(specialize TFPGList<Int64>)
+  public
+    procedure Sort; overload;
+  end;
+
+
 implementation
 
-function CompareInt(const Item1, Item2: Integer): Integer;
+function CompareInteger(const Item1, Item2: Integer): Integer;
+begin
+  Result := Item1 - Item2;
+end;
+
+function CompareInt64(const Item1, Item2: Int64): Integer;
 begin
   Result := Item1 - Item2;
 end;
@@ -40,7 +49,14 @@ end;
 
 procedure TIntegerList.Sort;
 begin
-  inherited Sort(@CompareInt);
+  inherited Sort(@CompareInteger);
+end;
+
+{ TInt64List }
+
+procedure TInt64List.Sort;
+begin
+  inherited Sort(@CompareInt64);
 end;
 
 end.
