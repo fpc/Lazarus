@@ -41,14 +41,12 @@ unit IpStrms;
 interface
 
 uses
-  SysUtils,
-  Classes,
+  SysUtils, Classes,
   {$IFDEF IP_LAZARUS}
-  FPCAdds,
+  // LCL
   LCLType,
-  GraphType,
-  LCLIntf,
-  LazFileUtils,
+  // LazUtils
+  FPCAdds, LazFileUtils, IntegerList,
   {$ELSE}
   Windows, // put Windows behind Classes because of THandle
   {$ENDIF}
@@ -190,7 +188,7 @@ type
       FLineCount   : Longint;
       FLineCurrent : Longint;
       FLineCurOfs  : Longint;
-      FLineIndex   : TList;
+      FLineIndex   : TIntegerList;
       FLineInxStep : Longint;
       FLineInxTop  : Integer;
 
@@ -1061,7 +1059,7 @@ procedure TIpAnsiTextStream.atsResetLineIndex;
 begin
   {make sure we have a line index}
   if (FLineIndex = nil) then begin
-    FLineIndex := TList.Create;  {create the index: even elements are}
+    FLineIndex := TIntegerList.Create;  {create the index: even elements are}
     FLineIndex.Count := LineIndexCount * 2; {linenums, odd are offsets}
 
     {if we didn't have a line index, set up some reasonable defaults}
@@ -1069,13 +1067,13 @@ begin
     FLineEndCh := #10;    {not used straight away}
     FLineLen := 80;       {not used straight away}
   end;
-  FLineIndex[0] := pointer(0); {the first line is line 0 and...}
-  FLineIndex[1] := pointer(0); {...it starts at position 0}
-  FLineInxTop := 0;            {the top valid index}
-  FLineInxStep := 1;           {step count before add a line to index}
-  FLineCount := -1;            {number of lines (-1 = don't know)}
-  FLineCurrent := 0;           {current line}
-  FLineCurOfs := 0;            {current line offset}
+  FLineIndex[0] := 0;     {the first line is line 0 and...}
+  FLineIndex[1] := 0;     {...it starts at position 0}
+  FLineInxTop := 0;       {the top valid index}
+  FLineInxStep := 1;      {step count before add a line to index}
+  FLineCount := -1;       {number of lines (-1 = don't know)}
+  FLineCurrent := 0;      {current line}
+  FLineCurOfs := 0;       {current line offset}
 end;
 
 {-----------------------------------------------------------------------------}
@@ -1305,10 +1303,10 @@ begin
   {if the offset requested is greater than the top item in the
    line index, we shall have to build up the index until we get to the
    line we require, or just beyond}
-  if (aOffset > {%H-}Longint(FLineIndex[FLineInxTop+1])) then begin
+  if aOffset > FLineIndex[FLineInxTop+1] then begin
     {position at the last known line offset}
-    CurLine := {%H-}Longint(FLineIndex[FLineInxTop]);
-    CurOfs := {%H-}Longint(FLineIndex[FLineInxTop+1]);
+    CurLine := FLineIndex[FLineInxTop];
+    CurOfs := FLineIndex[FLineInxTop+1];
     Seek(CurOfs, soFromBeginning);
     Done := false;
     {continue reading lines in chunks of FLineInxStep and add an index
@@ -1338,8 +1336,8 @@ begin
           end;
           FLineInxStep := FLineInxStep * 2;
         end;
-        FLineIndex[FLineInxTop] := {%H-}pointer(CurLine);
-        FLineIndex[FLineInxTop+1] := {%H-}pointer(CurOfs);
+        FLineIndex[FLineInxTop] := CurLine;
+        FLineIndex[FLineInxTop+1] := CurOfs;
         if (aOffset <= CurOfs) then
           Done := true;
       end;
@@ -1353,13 +1351,13 @@ begin
     M := (L + R) div 2;
     if not Odd(M) then
       inc(M);
-    if (aOffset < {%H-}Longint(FLineIndex[M])) then
+    if aOffset < FLineIndex[M] then
       R := M - 2
-    else if (aOffset > {%H-}Longint(FLineIndex[M])) then
+    else if aOffset > FLineIndex[M] then
       L := M + 2
     else begin
-      FLineCurrent := {%H-}Longint(FLineIndex[M-1]);
-      FLineCurOfs := {%H-}Longint(FLineIndex[M]);
+      FLineCurrent := FLineIndex[M-1];
+      FLineCurOfs := FLineIndex[M];
       Seek(FLineCurOfs, soFromBeginning);
       Result := FLineCurrent;
       Exit;
@@ -1368,8 +1366,8 @@ begin
   {the item at L-2 will have the nearest smaller offset than the
    one we want, hence the nearest smaller line is at L-3; start here
    and read through the stream forwards}
-  CurLine := {%H-}Longint(FLineIndex[L-3]);
-  Seek({%H-}Longint(FLineIndex[L-2]), soFromBeginning);
+  CurLine := FLineIndex[L-3];
+  Seek(FLineIndex[L-2], soFromBeginning);
   while true do begin
     atsGetLine(CurPos, EndPos, Len);
     inc(CurLine);
@@ -1436,10 +1434,10 @@ begin
   {if the line number requested is greater than the top item in the
    line index, we shall have to build up the index until we get to the
    line we require, or just beyond}
-  if (aLineNum > {%H-}Longint(FLineIndex[FLineInxTop])) then begin
+  if aLineNum > FLineIndex[FLineInxTop] then begin
     {position at the last known line offset}
-    CurLine := {%H-}Longint(FLineIndex[FLineInxTop]);
-    CurOfs := {%H-}Longint(FLineIndex[FLineInxTop+1]);
+    CurLine := FLineIndex[FLineInxTop];
+    CurOfs := FLineIndex[FLineInxTop+1];
     Seek(CurOfs, soFromBeginning);
     Done := false;
     {continue reading lines in chunks of FLineInxStep and add an index
@@ -1469,8 +1467,8 @@ begin
           end;
           FLineInxStep := FLineInxStep * 2;
         end;
-        FLineIndex[FLineInxTop] := {%H-}pointer(CurLine);
-        FLineIndex[FLineInxTop+1] := {%H-}pointer(CurOfs);
+        FLineIndex[FLineInxTop] := CurLine;
+        FLineIndex[FLineInxTop+1] := CurOfs;
         if (aLineNum <= CurLine) then
           Done := true;
       end;
@@ -1484,13 +1482,13 @@ begin
     M := (L + R) div 2;
     if Odd(M) then
       dec(M);
-    if (aLineNum < {%H-}Longint(FLineIndex[M])) then
+    if aLineNum < FLineIndex[M] then
       R := M - 2
-    else if (aLineNum > {%H-}Longint(FLineIndex[M])) then
+    else if aLineNum > FLineIndex[M] then
       L := M + 2
     else begin
-      FLineCurrent := {%H-}Longint(FLineIndex[M]);
-      FLineCurOfs := {%H-}Longint(FLineIndex[M+1]);
+      FLineCurrent := FLineIndex[M];
+      FLineCurOfs := FLineIndex[M+1];
       Seek(FLineCurOfs, soFromBeginning);
       Result := FLineCurrent;
       Exit;
@@ -1498,8 +1496,8 @@ begin
   end;
   {the item at L-2 will have the nearest smaller line number than the
    one we want; start here and read through the stream forwards}
-  CurLine := Longint({%H-}PtrInt(FLineIndex[L-2]));
-  Seek(Longint({%H-}PtrInt(FLineIndex[L-1])), soFromBeginning);
+  CurLine := FLineIndex[L-2];
+  Seek(FLineIndex[L-1], soFromBeginning);
   while true do begin
     atsGetLine(CurPos, EndPos, Len);
     inc(CurLine);
