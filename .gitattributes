@@ -3143,6 +3143,7 @@ components/lazutils/fileutil.pas svneol=native#text/pascal
 components/lazutils/fpcadds.pas svneol=native#text/pascal
 components/lazutils/fpmake.pp svneol=native#text/plain
 components/lazutils/html2textrender.pas svneol=native#text/pascal
+components/lazutils/integerlist.pas svneol=native#text/pascal
 components/lazutils/languages/lazutilsstrconsts.cs.po svneol=native#text/plain
 components/lazutils/languages/lazutilsstrconsts.de.po svneol=native#text/plain
 components/lazutils/languages/lazutilsstrconsts.es.po svneol=native#text/plain
