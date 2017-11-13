@@ -1,7 +1,7 @@
 object CodyIdentifiersDlg: TCodyIdentifiersDlg
-  Left = 250
+  Left = 622
   Height = 404
-  Top = 250
+  Top = 204
   Width = 555
   ActiveControl = FilterEdit
   Caption = 'CodyIdentifiersDlg'
@@ -11,11 +11,11 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 364
+    Height = 36
+    Top = 362
     Width = 543
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -25,14 +25,14 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 4
+    TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object InfoLabel: TLabel
     Left = 8
-    Height = 15
+    Height = 13
     Top = 8
-    Width = 49
+    Width = 51
     Caption = 'InfoLabel'
     ParentColor = False
     WordWrap = True
@@ -41,11 +41,11 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = HideOtherProjectsCheckBox
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = StartsSpeedButton
+    AnchorSideRight.Control = StartsCheckBox
     Left = 6
     Height = 23
-    Top = 58
-    Width = 433
+    Top = 61
+    Width = 373
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 10
@@ -61,8 +61,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = UnitLabel
     Left = 6
-    Height = 223
-    Top = 81
+    Height = 217
+    Top = 84
     Width = 543
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
@@ -72,16 +72,17 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     OnClick = ItemsListBoxClick
     OnSelectionChange = ItemsListBoxSelectionChange
     PopupMenu = PopupMenu1
-    ScrollWidth = 538
-    TabOrder = 2
+    ScrollWidth = 541
+    TabOrder = 4
+    TopIndex = -1
   end
   object UnitLabel: TLabel
     AnchorSideLeft.Control = InfoLabel
     AnchorSideBottom.Control = PackageLabel
     Left = 8
-    Height = 15
-    Top = 305
-    Width = 50
+    Height = 13
+    Top = 302
+    Width = 52
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'UnitLabel'
@@ -91,9 +92,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = InfoLabel
     AnchorSideBottom.Control = AddToImplementationUsesCheckBox
     Left = 8
-    Height = 15
-    Top = 321
-    Width = 72
+    Height = 13
+    Top = 316
+    Width = 74
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'PackageLabel'
@@ -104,9 +105,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideTop.Control = InfoLabel
     AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 19
-    Top = 29
-    Width = 169
+    Height = 24
+    Top = 27
+    Width = 183
     BorderSpacing.Top = 6
     Caption = 'HideOtherProjectsCheckBox'
     OnChange = HideOtherProjectsCheckBoxChange
@@ -116,52 +117,52 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = PackageLabel
     AnchorSideBottom.Control = ButtonPanel1
     Left = 8
-    Height = 19
-    Top = 339
-    Width = 217
+    Height = 24
+    Top = 332
+    Width = 227
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 3
     BorderSpacing.Bottom = 3
     Caption = 'AddToImplementationUsesCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 3
+    TabOrder = 5
   end
-  object StartsSpeedButton: TSpeedButton
+  object StartsCheckBox: TCheckBox
     AnchorSideTop.Control = FilterEdit
-    AnchorSideRight.Control = ContainsSpeedButton
+    AnchorSideRight.Control = ContainsCheckBox
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 439
+    Left = 385
     Height = 23
-    Top = 58
-    Width = 59
+    Top = 61
+    Width = 85
     Anchors = [akTop, akRight, akBottom]
-    AutoSize = True
+    BorderSpacing.Left = 6
     Caption = 'Starts with'
-    GroupIndex = 1
-    OnClick = StartsSpeedButtonClick
-    ShowHint = True
+    OnClick = StartsCheckBoxClick
     ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
   end
-  object ContainsSpeedButton: TSpeedButton
+  object ContainsCheckBox: TCheckBox
     AnchorSideTop.Control = FilterEdit
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 498
+    Left = 476
     Height = 23
-    Top = 58
-    Width = 51
+    Top = 61
+    Width = 73
     Anchors = [akTop, akRight, akBottom]
-    AutoSize = True
+    BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     Caption = 'Contains'
-    GroupIndex = 1
-    OnClick = ContainsSpeedButtonClick
-    ShowHint = True
+    OnClick = ContainsCheckBoxClick
     ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup

@@ -28,7 +28,7 @@
     -use identifier: check package version
     -check for conflict: other unit with same name already in search path
     -check for conflict: other identifier in scope, use unitname.identifier
-    -gzip? lot of cpu, may be faster on first load
+    -use gzip? lot of cpu, may be faster on first load
 }
 unit CodyIdentifiersDlg;
 
@@ -144,7 +144,7 @@ type
   TCodyIdentifiersDlg = class(TForm)
     AddToImplementationUsesCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
-    ContainsSpeedButton: TSpeedButton;
+    ContainsCheckBox: TCheckBox;
     FilterEdit: TEdit;
     HideOtherProjectsCheckBox: TCheckBox;
     InfoLabel: TLabel;
@@ -153,16 +153,16 @@ type
     DeleteSeparatorMenuItem: TMenuItem;
     DeleteUnitMenuItem: TMenuItem;
     DeletePackageMenuItem: TMenuItem;
+    StartsCheckBox: TCheckBox;
     UseMenuItem: TMenuItem;
     PackageLabel: TLabel;
     PopupMenu1: TPopupMenu;
-    StartsSpeedButton: TSpeedButton;
     UnitLabel: TLabel;
     procedure ButtonPanel1HelpButtonClick(Sender: TObject);
     procedure DeletePackageClick(Sender: TObject);
     procedure DeleteUnitClick(Sender: TObject);
     procedure UseIdentifierClick(Sender: TObject);
-    procedure ContainsSpeedButtonClick(Sender: TObject);
+    procedure ContainsCheckBoxClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
@@ -175,7 +175,7 @@ type
     procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure PopupMenu1Popup(Sender: TObject);
-    procedure StartsSpeedButtonClick(Sender: TObject);
+    procedure StartsCheckBoxClick(Sender: TObject);
   private
     FDlgAction: TCodyIdentifierDlgAction;
     FJumpButton: TBitBtn;
@@ -879,7 +879,7 @@ begin
   UpdateItemsList;
 end;
 
-procedure TCodyIdentifiersDlg.ContainsSpeedButtonClick(Sender: TObject);
+procedure TCodyIdentifiersDlg.ContainsCheckBoxClick(Sender: TObject);
 begin
   UpdateItemsList;
 end;
@@ -944,12 +944,12 @@ begin
   FJumpButton.OnClick:=@JumpButtonClick;
   FJumpButton.Caption:= crsJumpTo;
 
-  StartsSpeedButton.Down:=true;
-  StartsSpeedButton.Caption:=crsStarts;
-  StartsSpeedButton.Hint:=crsShowOnlyIdentifiersStartingWithFilterText;
-  ContainsSpeedButton.Down:=false;
-  ContainsSpeedButton.Caption:=crsContains;
-  ContainsSpeedButton.Hint:=crsShowOnlyIdentifiersContainingFilterText;
+  StartsCheckBox.Checked:=true;
+  StartsCheckBox.Caption:=crsStarts;
+  StartsCheckBox.Hint:=crsShowOnlyIdentifiersStartingWithFilterText;
+  ContainsCheckBox.Checked:=false;
+  ContainsCheckBox.Caption:=crsContains;
+  ContainsCheckBox.Hint:=crsShowOnlyIdentifiersContainingFilterText;
 end;
 
 procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
@@ -1010,7 +1010,7 @@ begin
   end;
 end;
 
-procedure TCodyIdentifiersDlg.StartsSpeedButtonClick(Sender: TObject);
+procedure TCodyIdentifiersDlg.StartsCheckBoxClick(Sender: TObject);
 begin
   UpdateItemsList;
 end;
@@ -1646,7 +1646,7 @@ end;
 
 function TCodyIdentifiersDlg.GetFilterType: TCodyIdentifierFilter;
 begin
-  if ContainsSpeedButton.Down then
+  if ContainsCheckBox.Checked then
     exit(cifContains)
   else
     exit(cifStartsWith);
