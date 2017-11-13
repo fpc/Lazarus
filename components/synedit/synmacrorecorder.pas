@@ -837,7 +837,7 @@ end;
 
 procedure TCustomSynMacroRecorder.SetAsString(const Value: string);
 var
-  i, p, Cmd : Integer;
+  i, p, Cmd : Longint;
   S : TStrings;
   cmdStr : string;
   iEvent: TSynMacroEvent;
@@ -853,9 +853,10 @@ begin
     begin
       cmdStr := Trim(S[i]);
       p := Pos(' ', cmdStr);
-      if p = 0 then p := Length(cmdStr)+1;
+      if p = 0 then
+        p := Length(cmdStr)+1;
       Cmd := ecNone;
-      if IdentToEditorCommand(Copy(cmdStr, 1, p-1), Longint(Cmd)) then  // D2 needs type-cast
+      if IdentToEditorCommand(Copy(cmdStr, 1, p-1), Cmd) then
       begin
         Delete(cmdStr, 1, p);
         iEvent := CreateMacroEvent(TSynEditorCommand(Cmd));

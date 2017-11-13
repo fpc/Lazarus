@@ -50,7 +50,7 @@ var
   MsgId: Integer;
 begin
   if (Index < 0) or (Index >= chklistCompMsg.Items.Count) then exit;
-  MsgId:=Integer({%H-}PtrUInt(Pointer(chklistCompMsg.Items.Objects[Index])));
+  MsgId:=Integer({%H-}PtrUInt(chklistCompMsg.Items.Objects[Index]));
   if MsgId<=0 then exit;
   if chklistCompMsg.Checked[Index] then begin
     // show message, this is the default

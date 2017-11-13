@@ -22,6 +22,16 @@ uses
 
 type
 
+  TByteList = class(specialize TFPGList<Byte>)
+  public
+    procedure Sort; overload;
+  end;
+
+  TCardinalList = class(specialize TFPGList<Cardinal>)
+  public
+    procedure Sort; overload;
+  end;
+
   TIntegerList = class(specialize TFPGList<Integer>)
   public
     procedure Sort; overload;
@@ -35,6 +45,16 @@ type
 
 implementation
 
+function CompareByte(const Item1, Item2: Byte): Integer;
+begin
+  Result := Item1 - Item2;
+end;
+
+function CompareCardinal(const Item1, Item2: Cardinal): Integer;
+begin
+  Result := Item1 - Item2;
+end;
+
 function CompareInteger(const Item1, Item2: Integer): Integer;
 begin
   Result := Item1 - Item2;
@@ -43,6 +63,20 @@ end;
 function CompareInt64(const Item1, Item2: Int64): Integer;
 begin
   Result := Item1 - Item2;
+end;
+
+{ TByteList }
+
+procedure TByteList.Sort;
+begin
+  inherited Sort(@CompareByte);
+end;
+
+{ TCardinalList }
+
+procedure TCardinalList.Sort;
+begin
+  inherited Sort(@CompareCardinal);
 end;
 
 { TIntegerList }

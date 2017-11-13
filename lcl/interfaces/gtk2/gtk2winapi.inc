@@ -3324,7 +3324,8 @@ var
   StylesCount: Integer;
   StylesList: TStringList;
   y: Integer;
-  CharsetList: TFPList;
+  CharsetList: TByteList;
+  CS: Byte;
 
   function Gtk2GetFontFamiliesDefault(var AList: TStringList): Integer;
   var
@@ -3507,11 +3508,12 @@ begin
     FontType := TRUETYPE_FONTTYPE;
     FontList := TStringList.Create;
     StylesList := TStringList.Create;
-    CharsetList := TFPList.Create;
+    CharsetList := TByteList.Create;
     for i := 0 to CharsetEncodingList.Count - 1 do
     begin
-      if CharsetList.IndexOf({%H-}Pointer(PtrUInt(TCharSetEncodingRec(CharsetEncodingList.Items[i]^).CharSet))) = -1 then
-        CharsetList.Add({%H-}Pointer(PtrUInt(TCharSetEncodingRec(CharsetEncodingList.Items[i]^).CharSet)));
+      CS := TCharSetEncodingRec(CharsetEncodingList.Items[i]^).CharSet;
+      if CharsetList.IndexOf(CS) = -1 then
+        CharsetList.Add(CS);
     end;
     try
       if Gtk2GetFontFamilies(FontList, lpLogFont^.lfPitchAndFamily,
@@ -3528,7 +3530,7 @@ begin
           EnumLogFont.elfStyle := AStyle;
 
           if CharSetList.Count > 0 then
-            EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[0]);
+            EnumLogFont.elfLogFont.lfCharSet := CharsetList.Items[0];
 
           Result := Callback(EnumLogFont, Metric, FontType, LParam);
           for y := 1 to StylesCount - 1 do
@@ -3539,7 +3541,7 @@ begin
           end;
           for y := 1 to CharSetList.Count - 1 do
           begin
-            EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[y]);
+            EnumLogFont.elfLogFont.lfCharSet := CharsetList.Items[y];
             Result := Callback(EnumLogFont, Metric, FontType, LParam);
           end;
         end;

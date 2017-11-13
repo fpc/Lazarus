@@ -21,7 +21,7 @@ unit gtk3objects;
 interface
 
 uses
-  Classes, SysUtils, Graphics, types, LCLType, LCLProc, LazUTF8,
+  Classes, SysUtils, Graphics, types, LCLType, LCLProc, LazUTF8, IntegerList,
   LazGtk3, LazGdk3, LazGObject2, LazPango1, LazPangoCairo1, LazGdkPixbuf2,
   LazGLib2, LazCairo1, FPCanvas;
 
@@ -2057,7 +2057,7 @@ var
   end;
 
 var
-  LinesList: TFPList;
+  LinesList: TIntegerList;
   LineStart, LineEnd, LineLen: integer;
   ArraySize, TotalSize: integer;
   i: integer;
@@ -2071,15 +2071,15 @@ begin
     exit;
   end;
   InitFont;
-  LinesList:=TFPList.Create;
+  LinesList:=TIntegerList.Create;
   LineStart:=0;
 
   // find all line starts and line ends
   repeat
-    LinesList.Add({%H-}Pointer(PtrInt(LineStart)));
+    LinesList.Add(LineStart);
     // find line end
     LineEnd:=FindLineEnd(LineStart);
-    LinesList.Add({%H-}Pointer(PtrInt(LineEnd)));
+    LinesList.Add(LineEnd);
     // find next line start
     LineStart:=LineEnd;
     if AText[LineStart] in [#10,#13] then
@@ -2106,7 +2106,7 @@ begin
   while i<LinesList.Count do
   begin
     // add  LineEnd - LineStart + 1 for the #0
-    LineLen:={%H-}PtrUInt(LinesList[i+1])-{%H-}PtrUInt(LinesList[i])+1;
+    LineLen:=LinesList[i+1]-LinesList[i]+1;
     inc(TotalSize,LineLen);
     inc(i,2);
   end;
@@ -2122,8 +2122,8 @@ begin
     // set the pointer to the start of the current line
     CurLineEntry[i shr 1]:=CurLineStart;
     // copy the line
-    LineStart:=integer({%H-}PtrUInt(LinesList[i]));
-    LineEnd:=integer({%H-}PtrUInt(LinesList[i+1]));
+    LineStart:=LinesList[i];
+    LineEnd:=LinesList[i+1];
     LineLen:=LineEnd-LineStart;
     if LineLen>0 then
       Move(AText[LineStart],CurLineStart^,LineLen);

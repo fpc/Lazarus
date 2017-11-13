@@ -26,7 +26,7 @@ uses
   {$ENDIF}
   SysUtils, Classes, types,
   // LazUtils
-  LazUTF8, Translations,
+  LazUTF8, Translations, IntegerList,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLStrConsts, LCLType, LMessages,
   Controls, Forms, FPImage, Graphics, GraphUtil, GraphType, IntfGraphics,

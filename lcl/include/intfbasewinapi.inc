@@ -423,40 +423,38 @@ var
     Result := (Flags and DT_NoPrefix) = DT_NoPrefix;
   end;
 
-  function Breakable(Breaks : TList; Index : Integer) : Boolean;
+  function Breakable(Breaks : TIntegerList; Index : Integer) : Boolean;
   begin
     If not Assigned(Breaks) then
       exit(false);
-    Result := Breaks.IndexOf(Pointer(PtrInt(Index))) <> -1;
+    Result := Breaks.IndexOf(Index) <> -1;
   end;
 
-  function NextBreakable(Breaks : TList; Index : Integer) : Integer;
+  function NextBreakable(Breaks : TIntegerList; Index : Integer) : Integer;
   begin
     Result := -1;
-    If (not Assigned(Breaks)) or
-      (not Breakable(Breaks,Index))
-    then
+    If (not Assigned(Breaks)) or (not Breakable(Breaks,Index)) then
       exit;
-    If Breaks.IndexOf(Pointer(PtrInt(Index))) >= Breaks.Count - 1 then
+    If Breaks.IndexOf(Index) >= Breaks.Count - 1 then
       exit;
-    Result := integer(PtrUInt(Breaks[Breaks.IndexOf(Pointer(PtrInt(Index))) + 1]));
+    Result := Breaks[Breaks.IndexOf(Index) + 1];
   end;
 
-  function GetBreakablePoints(const Source : String) : TList;
+  function GetBreakablePoints(const Source : String) : TIntegerList;
   var
     I : Integer;
   begin
-    Result := TList.Create;
-    If Length(Source) < 1 then
+    Result := TIntegerList.Create;
+    If Source = '' then
       exit;
     For I := 1 to Length(Source) do
       If Source[I] = ' ' then
         If not Breakable(Result, I) then
-          Result.Add(Pointer(PtrInt(I)));
+          Result.Add(I);
     If not Breakable(Result, Length(Source)) then
-      Result.Add(Pointer(PtrInt(Length(Source))));
+      Result.Add(Length(Source));
     If not Breakable(Result, 0) then
-      Result.Insert(0,nil);
+      Result.Insert(0,-1);
   end;
 
   function TextExtent(Handle : hDC; const Source : String) : TSize;
@@ -495,7 +493,7 @@ var
   function BreakString(const Source : String) : TStrings;
   var
     I, FromPos, ToPos : Integer;
-    Breaks : TList;
+    Breaks : TIntegerList;
   begin
     Result := TStringList.Create;
     Breaks := GetBreakablePoints(Source);

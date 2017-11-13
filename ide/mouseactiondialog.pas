@@ -215,7 +215,7 @@ var
   i: Integer;
 begin
   OptBox.Items.Clear;
-  ACmd := TSynEditorMouseCommand({%H-}PtrUInt(Pointer(ActionBox.items.Objects[ActionBox.ItemIndex])));
+  ACmd := TSynEditorMouseCommand({%H-}PtrUInt(ActionBox.items.Objects[ActionBox.ItemIndex]));
   if ACmd =  emcSynEditCommand then begin
     OptBox.Enabled := True;
     OptBox.Clear;
@@ -331,7 +331,7 @@ begin
 
   if OptBox.Enabled then begin
     if MAct.Command =  emcSynEditCommand then begin
-      MAct.Option := TSynEditorMouseCommandOpt({%H-}PtrUInt(Pointer(OptBox.Items.Objects[OptBox.ItemIndex])));
+      MAct.Option := TSynEditorMouseCommandOpt({%H-}PtrUInt(OptBox.Items.Objects[OptBox.ItemIndex]));
     end
     else
       MAct.Option := OptBox.ItemIndex;

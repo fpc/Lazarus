@@ -108,17 +108,12 @@ begin
 end;
 
 var
-  i: Integer;
-  Filename1, Filename2: String;
   SL: TStringListUTF8;
-  FromEncoding: String;
-  ToEncoding: String;
+  Filename1, Filename2: String;
+  FromEncoding, ToEncoding: String;
   s: String;
-  UniCode: integer;
-  CharLen: integer;
-  j: Integer;
-  TableIndex: LongInt;
-  k: Integer;
+  UniCode: Cardinal;
+  TableIndex, CharLen, i, j, k: Integer;
 begin
   // single byte to UTF-8
   if ParamCount=0 then
@@ -200,7 +195,7 @@ begin
           ' TableIndex[i]=',TableIndex,
           ' TableIndex[i+j]=',StrToTableIndex(SortedTable[i+j]),
           '');}
-        if integer(UTF8CharacterToUnicode(@SortedTable[i+j][1],CharLen))<>UniCode+j then
+        if UTF8CharacterToUnicode(@SortedTable[i+j][1],CharLen)<>UniCode+j then
           break;
         if StrToTableIndex(SortedTable[i+j])<>TableIndex+j then
           break;

@@ -29,7 +29,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, FPImage,
   // LazUtils
-  LazUTF8,
+  LazUTF8, IntegerList,
   // LCL
   LCLType, LCLProc, LMessages, LCLPlatformDef,
   GraphType, GraphMath, IntfGraphics, Themes;

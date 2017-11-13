@@ -1335,7 +1335,7 @@ begin
   MinOrigLine := MaxInt;
   for i := 0 to aStrings.Count-1 do
   begin
-    OriLine := Integer({%H-}PtrUInt(Pointer(aStrings.Objects[i])));
+    OriLine := Integer({%H-}PtrUInt(aStrings.Objects[i]));
     if (OriLine > -1) and (OriLine < MinOrigLine) then
     begin
       MinOrigLine := OriLine;
