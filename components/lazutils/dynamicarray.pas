@@ -9,7 +9,8 @@
   Author: Jesus Reyes
 
   Abstract:
-    Dynamic array support for TCustomGrid, TDrawGrid and TStringGrid
+    A dynamic 2-dimensional array of Pointers.
+    Used for TCustomGrid, TDrawGrid and TStringGrid.
 }
 
 unit DynamicArray;
@@ -27,7 +28,7 @@ type
   TOnNotifyItem = Procedure(Sender: TObject; Col,Row: integer; Var Item: Pointer) of Object;
   TOnExchangeItem = procedure (Sender: TObject; Index, WithIndex: Integer) of Object;
 
-  TArray=Class
+  TPointerPointerArray=Class
   private
     FCols: TFpList;
     FOnDestroyItem: TOnNotifyItem;
@@ -54,21 +55,21 @@ type
 
 implementation
 
-{ TArray }
+{ TPointerPointerArray }
 
-function TArray.Getarr(Col, Row: Integer): Pointer;
+function TPointerPointerArray.Getarr(Col, Row: Integer): Pointer;
 begin
   // Checar dimensiones
   Result := TFpList(FCols[Col])[Row];
 end;
 
-procedure TArray.Setarr(Col, Row: Integer; const AValue: Pointer);
+procedure TPointerPointerArray.Setarr(Col, Row: Integer; const AValue: Pointer);
 begin
   // Checar dimensiones
   TFpList(FCols[Col])[Row] := AValue;
 end;
 
-procedure TArray.ClearCol(L: TFpList; Col: Integer);
+procedure TPointerPointerArray.ClearCol(L: TFpList; Col: Integer);
 var
    j: Integer;
 begin
@@ -78,7 +79,7 @@ begin
   end;
 end;
 
-procedure TArray.Clear;
+procedure TPointerPointerArray.Clear;
 var
    i: Integer;
 begin
@@ -90,13 +91,13 @@ begin
   FCols.Clear;
 end;
 
-constructor TArray.Create;
+constructor TPointerPointerArray.Create;
 begin
   inherited Create;
   FCols := TFpList.Create;
 end;
 
-destructor TArray.Destroy;
+destructor TPointerPointerArray.Destroy;
 begin
   {$Ifdef dbgMem}DebugLn('TArray.Destroy FCols.Count=',dbgs(FCols.Count));{$endif}
   Clear;
@@ -104,7 +105,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TArray.Aumentar_Rows(col,rows: Integer; L: TFpList);
+procedure TPointerPointerArray.Aumentar_Rows(col,rows: Integer; L: TFpList);
 var
    i,j: Integer;
    P: Pointer;
@@ -121,12 +122,12 @@ begin
   end;
 end;
 
-procedure TArray.DestroyItem(Col, Row: Integer; P: Pointer);
+procedure TPointerPointerArray.DestroyItem(Col, Row: Integer; P: Pointer);
 begin
   if (P<>nil)And Assigned(OnDestroyItem) then OnDestroyItem(Self, Col, Row, P);
 end;
 
-procedure TArray.SetLength(Cols, Rows: Integer);
+procedure TPointerPointerArray.SetLength(Cols, Rows: Integer);
 var
    i,j: integer;
    L: TFpList;
@@ -162,7 +163,7 @@ Begin
   end;
 end;
 
-procedure TArray.DeleteColRow(IsColumn: Boolean; Index: Integer);
+procedure TPointerPointerArray.DeleteColRow(IsColumn: Boolean; Index: Integer);
 var
   i: Integer;
   L: TFpList;
@@ -187,7 +188,7 @@ begin
   end;
 end;
 
-procedure TArray.MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
+procedure TPointerPointerArray.MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 var
   i: Integer;
 begin
@@ -199,7 +200,7 @@ begin
   end;
 end;
 
-procedure TArray.ExchangeColRow(IsColumn: Boolean; Index, WithIndex: Integer);
+procedure TPointerPointerArray.ExchangeColRow(IsColumn: Boolean; Index, WithIndex: Integer);
 var
   i: Integer;
 begin

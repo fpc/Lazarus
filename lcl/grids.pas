@@ -395,7 +395,7 @@ type
     private
       FColCount: Integer;
       FRowCount: Integer;
-      FCellArr, FColArr, FRowArr: TArray;
+      FCellArr, FColArr, FRowArr: TPointerPointerArray;
       function  GetCells(Col, Row: Integer): PCellProps;
       function  GetRows(Row: Integer): PColRowProps;
       function  GetCols(Col: Integer): PColRowProps;
@@ -9899,13 +9899,13 @@ constructor TVirtualGrid.Create;
 begin
   Inherited Create;
   {$Ifdef DbgGrid}DebugLn('TVirtualGrid.Create');{$Endif}
-  FCellArr:=TArray.Create;
+  FCellArr:=TPointerPointerArray.Create;
   FCellArr.OnDestroyItem:=@doDestroyItem;
   FCellArr.OnNewItem:=@doNewItem;
-  FColArr:= TArray.Create;
+  FColArr:= TPointerPointerArray.Create;
   FColArr.OnDestroyItem:=@doDestroyItem;
   FColArr.OnNewItem:=@doNewItem;
-  FRowArr:=TArray.Create;
+  FRowArr:=TPointerPointerArray.Create;
   FRowArr.OnDestroyItem:=@doDestroyItem;
   FRowArr.OnNewItem:=@doNewItem;
   RowCount:=4;
