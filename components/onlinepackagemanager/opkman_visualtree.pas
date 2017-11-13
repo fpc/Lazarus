@@ -1677,7 +1677,8 @@ begin
   else if (FHoverColumn = 4) and (FHoverNode <> nil) then
   begin
     Data := VST.GetNodeData(FHoverNode);
-    if (Data^.DataType = 17) or (Data^.DataType = 18) then
+    if ((Data^.DataType = 17) and (Trim(Data^.HomePageURL) <> '')) or
+       ((Data^.DataType = 18) and (Trim(Data^.DownloadURL) <> '')) then
       FVST.Cursor := crHandPoint;
   end;
 end;
