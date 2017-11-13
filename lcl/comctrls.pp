@@ -1272,6 +1272,7 @@ type
                                   Column: TListColumn) of object;
   TLVColumnRClickEvent = procedure(Sender: TObject; Column: TListColumn;
                                    Point: TPoint) of object;
+  TLVCompare = function(Item1, Item2: TListItem; AOptionalParam: PtrInt): Integer stdcall;
   TLVCompareEvent = procedure(Sender: TObject; Item1, Item2: TListItem;
                                Data: Integer; var Compare: Integer) of object;
   TLVDeletedEvent = procedure(Sender: TObject; Item: TListItem) of object;
@@ -1382,6 +1383,8 @@ type
     FViewStyle: TViewStyle;
     FSortType: TSortType;
     FSortColumn: Integer;
+    FCustomSort_Func: TLVCompare;
+    FCustomSort_Param: PtrInt;
     FScrollBars: TScrollStyle;
     FViewOriginCache: TPoint; // scrolled originwhile handle is not created
     FSelected: TListItem;     // temp copy of the selected item
@@ -1450,6 +1453,7 @@ type
     procedure SetViewOrigin(AValue: TPoint);
     procedure SetViewStyle(const Avalue: TViewStyle);
     procedure QueuedShowEditor(Data: PtrInt);
+    procedure SortWithParams(ACompareFunc: TListSortCompare);
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
     procedure CNDrawItem(var Message: TLMDrawListItem); message CN_DRAWITEM;
@@ -1560,6 +1564,7 @@ type
     procedure AddItem(Item: string; AObject: TObject);
     function AlphaSort: Boolean; // always sorts column 0 in sdAscending order
     procedure Sort;
+    function CustomSort(ASortProc: TLVCompare; AOptionalParam: PtrInt): Boolean;
     procedure BeginUpdate;
     procedure Clear;
     procedure EndUpdate;

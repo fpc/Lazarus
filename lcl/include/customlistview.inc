@@ -889,7 +889,21 @@ begin
   Sort;
 end;
 
-function CompareItems(Item1, Item2: Pointer): Integer;
+function _CompareListViewItems_CustomSort(Item1, Item2: Pointer): Integer;
+var
+  ListView: TCustomListView;
+begin
+  Result := 0;
+  ListView := TListItem(Item1).Owner.Owner;
+
+  if Assigned(ListView.FCustomSort_Func) then
+    Result := ListView.FCustomSort_Func(TListItem(Item1), TListItem(Item2), ListView.FCustomSort_Param)
+  else
+  if Assigned(ListView.FOnCompare) then
+    ListView.FOnCompare(ListView, TListItem(Item1), TListItem(Item2), 0, Result);
+end;
+
+function _CompareListViewItems(Item1, Item2: Pointer): Integer;
 var
   Str1: String;
   Str2: String;
@@ -931,14 +945,30 @@ end;
 {   TCustomListView Sort                                                       }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.Sort;
+begin
+  if FSortType = stNone then exit;
+  if (FSortColumn < 0) or (FSortColumn >= ColumnCount) then exit;
+  SortWithParams(@_CompareListViewItems);
+end;
+
+function TCustomListView.CustomSort(ASortProc: TLVCompare; AOptionalParam: PtrInt): Boolean;
+begin
+  Result := Assigned(ASortProc) or Assigned(FOnCompare);
+  if Result then
+  begin
+    FCustomSort_Func := ASortProc;
+    FCustomSort_Param := AOptionalParam;
+    SortWithParams(@_CompareListViewItems_CustomSort);
+  end;
+end;
+
+procedure TCustomListView.SortWithParams(ACompareFunc: TListSortCompare);
 var
   FSavedSelection: TFPList;
   FSavedFocused: TListItem;
   i: Integer;
   AItemIndex: Integer;
 begin
-  if FSortType = stNone then exit;
-  if (FSortColumn < 0) or (FSortColumn >= ColumnCount) then exit;
   if FListItems.Count < 2 then exit;
   if lffPreparingSorting in FFlags then exit;
 
@@ -963,7 +993,7 @@ begin
       Items.FCacheIndex := -1;
       Items.FCacheItem := nil;
 
-      FListItems.FItems.Sort(@CompareItems);
+      FListItems.FItems.Sort(ACompareFunc);
       TWSCustomListViewClass(WidgetSetClass).SetSort(Self, FSortType,
         FSortColumn, FSortDirection);
 
@@ -988,7 +1018,7 @@ begin
       Exclude(FFlags, lffItemsSorting);
     end;
   end else
-    FListItems.FItems.Sort(@CompareItems);
+    FListItems.FItems.Sort(ACompareFunc);
 end;
 
 {------------------------------------------------------------------------------}
