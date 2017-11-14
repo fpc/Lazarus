@@ -1,17 +1,18 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
+# admin <lxlalexlxl@ukr.net>, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-14 14:27+0300\n"
-"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
-"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"PO-Revision-Date: 2017-11-14 22:43+0200\n"
+"Last-Translator: admin <lxlalexlxl@ukr.net>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -599,11 +600,11 @@ msgstr "Інтерфейс"
 
 #: objinspstrconsts.oisinvalid
 msgid "(Invalid)"
-msgstr ""
+msgstr "(Недопустимо)"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr "Неправильна величина властивості"
+msgstr "Недопустима величина властивості"
 
 #: objinspstrconsts.oisisnotavalidmethodname
 msgid "\"%s\" is not a valid method name."
