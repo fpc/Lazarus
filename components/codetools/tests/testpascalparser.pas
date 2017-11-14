@@ -25,6 +25,7 @@ type
   protected
     procedure SetUp; override;
     procedure TearDown; override;
+    procedure DoParseModule(aCode: TCodeBuffer; out Tool: TCodeTool);
   public
     procedure Add(const s: string);
     procedure Add(Args: array of const);
@@ -54,6 +55,25 @@ end;
 procedure TCustomTestPascalParser.TearDown;
 begin
   inherited TearDown;
+end;
+
+procedure TCustomTestPascalParser.DoParseModule(aCode: TCodeBuffer; out
+  Tool: TCodeTool);
+var
+  i: Integer;
+  Line: String;
+begin
+  if not CodeToolBoss.Explore(aCode,Tool,true) then begin
+    debugln(aCode.Filename+'------------------------------------------');
+    for i:=1 to aCode.LineCount do begin
+      Line:=aCode.GetLine(i-1,false);
+      if i=CodeToolBoss.ErrorLine then
+        System.Insert('|',Line,CodeToolBoss.ErrorColumn);
+      debugln(Format('%:4d: ',[i]),Line);
+    end;
+    debugln('Error: '+CodeToolBoss.ErrorDbgMsg);
+    Fail('PascalParser failed: '+CodeToolBoss.ErrorMessage);
+  end;
 end;
 
 procedure TCustomTestPascalParser.Add(const s: string);
@@ -87,21 +107,9 @@ end;
 procedure TCustomTestPascalParser.ParseModule;
 var
   Tool: TCodeTool;
-  i: Integer;
-  Line: String;
 begin
   Add('end.');
-  if not CodeToolBoss.Explore(Code,Tool,true) then begin
-    debugln(Code.Filename+'------------------------------------------');
-    for i:=1 to Code.LineCount do begin
-      Line:=Code.GetLine(i-1,false);
-      if i=CodeToolBoss.ErrorLine then
-        System.Insert('|',Line,CodeToolBoss.ErrorColumn);
-      debugln(Format('%:4d: ',[i]),Line);
-    end;
-    debugln('Error: '+CodeToolBoss.ErrorDbgMsg);
-    Fail('PascalParser failed: '+CodeToolBoss.ErrorMessage);
-  end;
+  DoParseModule(Code,Tool);
 end;
 
 { TTestPascalParser }

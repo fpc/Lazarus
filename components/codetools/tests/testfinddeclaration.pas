@@ -68,7 +68,8 @@ type
     function IndexOfMarker(const aName: string; Kind: char): integer;
     function FindMarker(const aName: string; Kind: char): TFDMarker;
     procedure CheckReferenceMarkers;
-    procedure FindDeclarations(Filename: string);
+    procedure FindDeclarations(Filename: string; ExpandFile: boolean = true);
+    procedure FindDeclarations(aCode: TCodeBuffer);
     procedure TestFiles(Directory: string);
     procedure WriteSource(CleanPos: integer; Tool: TCodeTool = nil);
     procedure WriteSource(const CursorPos: TCodeXYPosition);
@@ -97,6 +98,7 @@ type
     procedure TestFindDeclaration_CBlocks;
     procedure TestFindDeclaration_Arrays;
     procedure TestFindDeclaration_GuessType;
+    procedure TestFindDeclaration_Attributes;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -148,7 +150,23 @@ begin
   end;
 end;
 
-procedure TCustomTestFindDeclaration.FindDeclarations(Filename: string);
+procedure TCustomTestFindDeclaration.FindDeclarations(Filename: string;
+  ExpandFile: boolean);
+var
+  aCode: TCodeBuffer;
+begin
+  if ExpandFile then
+    Filename:=TrimAndExpandFilename(Filename);
+  {$IFDEF VerboseFindDeclarationTests}
+  debugln(['TTestFindDeclaration.FindDeclarations File=',Filename]);
+  {$ENDIF}
+  aCode:=CodeToolBoss.LoadFile(Filename,true,false);
+  if aCode=nil then
+    raise Exception.Create('unable to load '+Filename);
+  FindDeclarations(aCode);
+end;
+
+procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
 
   procedure PrependPath(Prefix: string; var Path: string);
   begin
@@ -213,17 +231,8 @@ var
   ListOfPFindContext: TFPList;
   NewExprType: TExpressionType;
 begin
-  Filename:=TrimAndExpandFilename(Filename);
-  {$IFDEF VerboseFindDeclarationTests}
-  debugln(['TTestFindDeclaration.FindDeclarations File=',Filename]);
-  {$ENDIF}
-  FMainCode:=CodeToolBoss.LoadFile(Filename,true,false);
-  if MainCode=nil then
-    raise Exception.Create('unable to load '+Filename);
-  if not CodeToolBoss.Explore(MainCode,FMainTool,true) then begin
-    AssertEquals('parse error '+CodeToolBoss.ErrorMessage,false,true);
-    exit;
-  end;
+  FMainCode:=aCode;
+  DoParseModule(MainCode,FMainTool);
   CommentP:=1;
   Src:=MainTool.Src;
   while CommentP<length(Src) do begin
@@ -594,8 +603,8 @@ begin
   '    function GetEnumerator: TEnumerator;',
   '    function GetItem(AIndex: Integer): T;',
   '  end;',
-  '']);
-  ParseModule;
+  'end.']);
+  FindDeclarations(Code);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_ForIn;
@@ -760,6 +769,50 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_GuessType;
 begin
   FindDeclarations('moduletests/fdt_guesstype1.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Attributes;
+begin
+  StartProgram;
+  Add([
+    'type',
+    '  TCustomAttribute = class',
+    '  end;',
+    '  BirdAttribute = class(TCustomAttribute)',
+    '  end;',
+    '  Bird = class(TCustomAttribute)',
+    '  end;',
+    '  [Bird{ declaration:test1.BirdAttribute}]',
+    '  THawk = class',
+    '    [Bird(1)]',
+    '    FField: integer;',
+    '    [Bird(2)]',
+    '    procedure DoSome;',
+    '    [Bird(3)]',
+    '    property  F: integer read FField;',
+    '  end;',
+    '  IMy = interface',
+    '    [''guid'']',
+    '    [Bird]',
+    '    [Bird(12)]',
+    '    function GetSome: integer;',
+    '    [Bird(13)]',
+    '    property  Some: integer read GetSome;',
+    '  end;',
+    '[test1.bird]',
+    '[bird(4)]',
+    'procedure DoIt;',
+    'begin',
+    'end;',
+    'var',
+    '  [bird(1+2,3),bird]',
+    '  Foo: TObject;',
+    'begin',
+    'end.',
+  '']);
+  FindDeclarations(Code);
+  // ToDo: test if attributes are front siblings
+
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;
