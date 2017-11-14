@@ -157,6 +157,9 @@ begin
   DoTest('/a','/b','/a');
   DoTest('~/bin','/','~/bin');
   DoTest('$(HOME)/bin','/','$(HOME)/bin');
+  {$IFDEF MSWindows}
+  DoTest('D:\a\b.pas','D:\c\','..\a\b.pas');
+  {$ENDIF}
 end;
 
 initialization
