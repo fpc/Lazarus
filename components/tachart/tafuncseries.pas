@@ -342,7 +342,7 @@ type
     property OnGetPointerStyle;
   end;
 
-  TColorMapPalette = (cmpHot);
+  TColorMapPalette = (cmpHot, cmpCold, cmpRainbow, cmpMonochrome);
 
   TFuncCalculate3DEvent =
     procedure (const AX, AY: Double; out AZ: Double) of object;
@@ -434,7 +434,7 @@ type
 implementation
 
 uses
-  ipf, GraphType, IntfGraphics, Math, StrUtils, SysUtils,
+  ipf, GraphType, GraphUtil, IntfGraphics, Math, StrUtils, SysUtils,
   TAChartStrConsts, TAGeometry, TAGraph, TAMath, TASources;
 
 const
@@ -1823,6 +1823,9 @@ begin
 end;
 
 procedure TCustomColorMapSeries.BuildPalette(APalette: TColorMapPalette);
+var
+  i: Integer;
+  h,s,l: Byte;
 begin
   with FBuiltinColorSource as TListChartSource do begin
     BeginUpdate;
@@ -1835,6 +1838,34 @@ begin
             Add(1/3, 0, '', clRed);
             Add(2/3, 0, '', clYellow);
             Add(1, 0, '', clWhite);
+          end;
+        cmpCold:
+          begin
+            ColorToHLS(clBlue, h, l, s);
+            i := 0;
+            while i <= 255 do begin
+              Add(i, 0, '', HLSToColor(h, i, s));
+              inc(i, 32);
+            end;
+            Add(255, 0, '', clWhite);
+          end;
+        cmpRainbow:
+          begin
+            i := 0;
+            while i <= 255 do begin      // i is hue
+              Add(i, 0, '', HLSToColor(i, 128, 255));
+              inc(i, 32);
+            end;
+            Add(255, 0, '', HLSToColor(255, 128, 255));
+          end;
+        cmpMonochrome:
+          begin
+            i := 0;
+            while i <= 255 do begin
+              Add(i, 0, '', RgbToColor(i, i, i));
+              inc(i, 32);
+            end;
+            Add(255, 0, '', clWhite);
           end;
       else
         raise Exception.Create('Palette not supported');
@@ -2105,16 +2136,21 @@ begin
   FMinZ := 1E308;
   FMaxZ := -FMinZ;
   iy := ARect.Top;
-  while iy <= ARect.Bottom - dy2 do begin
-    ix := ARect.Left;
-    while ix < ARect.Right - dx2 do begin
-      gp := ParentChart.ImageToGraph(Point(ix, iy));
-      z := FunctionValue(gp.X + dx2, gp.Y + dy2);
-      FMinZ := Min(FMinZ, z);
-      FMaxZ := Max(FMaxZ, z);
-      inc(ix, dx);
+  try
+    while iy <= ARect.Bottom - dy2 do begin
+      ix := ARect.Left;
+      while ix < ARect.Right - dx2 do begin
+        gp := ParentChart.ImageToGraph(Point(ix, iy));
+        z := FunctionValue(gp.X + dx2, gp.Y + dy2);
+        FMinZ := Min(FMinZ, z);
+        FMaxZ := Max(FMaxZ, z);
+        inc(ix, dx);
+      end;
+      inc(iy, dy);
     end;
-    inc(iy, dy);
+  except
+    FActive := false;
+    raise;
   end;
 end;
 
