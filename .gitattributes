@@ -7753,11 +7753,23 @@ lcl/images/btncalcok.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcplus.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcpmin.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalculator.png -text svneol=unset#image/png
+lcl/images/btncalculator_150.png -text
+lcl/images/btncalculator_200.png -text
 lcl/images/btncalendar.png -text svneol=unset#image/png
+lcl/images/btncalendar_150.png -text
+lcl/images/btncalendar_200.png -text
 lcl/images/btnfiltercancel.png -text
+lcl/images/btnfiltercancel_150.png -text
+lcl/images/btnfiltercancel_200.png -text
 lcl/images/btnseldir.png -text svneol=unset#image/png
+lcl/images/btnseldir_150.png -text
+lcl/images/btnseldir_200.png -text
 lcl/images/btnselfile.png -text svneol=unset#image/png
+lcl/images/btnselfile_150.png -text
+lcl/images/btnselfile_200.png -text
 lcl/images/btntime.png -text svneol=unset#image/png
+lcl/images/btntime_150.png -text
+lcl/images/btntime_200.png -text
 lcl/images/buttons/btn_abort.png -text svneol=unset#image/png
 lcl/images/buttons/btn_all.png -text svneol=unset#image/png
 lcl/images/buttons/btn_arrowright.png -text
