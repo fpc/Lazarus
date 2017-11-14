@@ -158,7 +158,7 @@ begin
   DoTest('~/bin','/','~/bin');
   DoTest('$(HOME)/bin','/','$(HOME)/bin');
   {$IFDEF MSWindows}
-  DoTest('D:\a\b.pas','D:\c\','..\a\b.pas');
+  DoTest('D:\a\b\c.pas','D:\a\d\','..\b\c.pas');
   {$ENDIF}
 end;
 
