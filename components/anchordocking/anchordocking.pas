@@ -3148,7 +3148,7 @@ begin
     RaiseGDBException('');
   dec(fUpdateCount);
   if fUpdateCount=0 then
-    QueueSimplify:=True;
+    SimplifyPendingLayouts;
 end;
 
 procedure TAnchorDockMaster.NeedSimplify(AControl: TControl);
