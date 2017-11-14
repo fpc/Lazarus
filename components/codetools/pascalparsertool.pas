@@ -158,12 +158,14 @@ type
     function KeyWordFuncResourceString: boolean;
     function KeyWordFuncExports: boolean;
     function KeyWordFuncLabel: boolean;
-    function KeyWordFuncProperty: boolean;
+    function KeyWordFuncGlobalProperty: boolean;
     procedure ReadConst;
     procedure ReadConstExpr;
     // types
     procedure ReadTypeNameAndDefinition;
     procedure ReadGenericParamList(Must: boolean);
+    procedure ReadAttribute;
+    procedure FixLastAttributes;
     procedure ReadTypeReference;
     procedure ReadClassInterfaceContent;
     function KeyWordFuncTypeClass: boolean;
@@ -235,6 +237,7 @@ type
     procedure ReadSpecialize(CreateChildNodes: boolean; Extract: boolean = false;
       Copying: boolean = false; const Attr: TProcHeadAttributes = []);
     function WordIsPropertyEnd: boolean;
+    function AllowAttributes: boolean; inline;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -384,7 +387,7 @@ begin
     Add('RESOURCESTRING',@KeyWordFuncResourceString);
     Add('EXPORTS',@KeyWordFuncExports);
     Add('LABEL',@KeyWordFuncLabel);
-    Add('PROPERTY',@KeyWordFuncProperty);
+    Add('PROPERTY',@KeyWordFuncGlobalProperty);
 
     Add('GENERIC',@KeyWordFuncProc);
     Add('PROCEDURE',@KeyWordFuncProc);
@@ -473,6 +476,17 @@ begin
   if StartPos>SrcLen then exit(false);
   p:=@Src[StartPos];
   case UpChars[p^] of
+  '[':
+    begin
+    ReadAttribute;
+    exit(true);
+    end;
+  '(':
+    begin
+      ReadTilBracketClose(true);
+      exit(true);
+    end;
+  ';': exit(true);
   'C':
     case UpChars[p[1]] of
     'A': if CompareSrcIdentifiers(p,'CASE') then exit(KeyWordFuncTypeRecordCase);
@@ -527,12 +541,6 @@ begin
     then exit(KeyWordFuncClassSection);
   'V':
     if CompareSrcIdentifiers(p,'VAR') then exit(KeyWordFuncClassVarSection);
-  '(','[':
-    begin
-      ReadTilBracketClose(true);
-      exit(true);
-    end;
-  ';': exit(true);
   end;
   Result:=KeyWordFuncClassIdentifier;
 end;
@@ -3680,6 +3688,8 @@ begin
     ReadNextAtom;  // name
     if UpAtomIs('GENERIC') or AtomIsIdentifier then begin
       ReadTypeNameAndDefinition;
+    end else if (CurPos.Flag=cafEdgedBracketOpen) and AllowAttributes then begin
+      ReadAttribute;
     end else begin
       UndoReadNextAtom;
       break;
@@ -3687,6 +3697,7 @@ begin
   until false;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
+  FixLastAttributes;
   Result:=true;
 end;
 
@@ -3743,6 +3754,8 @@ begin
       end;
       // read type
       ReadVariableType;
+    end else if (CurPos.Flag=cafEdgedBracketOpen) and AllowAttributes then begin
+      ReadAttribute;
     end else begin
       UndoReadNextAtom;
       break;
@@ -3750,6 +3763,7 @@ begin
   until false;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
+  FixLastAttributes;
   Result:=true;
 end;
 
@@ -3922,7 +3936,7 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncProperty: boolean;
+function TPascalParserTool.KeyWordFuncGlobalProperty: boolean;
 { global properties
   examples:
    property
@@ -3953,6 +3967,8 @@ begin
       // close global property
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
+    end else if (CurPos.Flag=cafEdgedBracketOpen) and AllowAttributes then begin
+      ReadAttribute;
     end else begin
       UndoReadNextAtom;
       break;
@@ -3961,6 +3977,7 @@ begin
   // close property section
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
+  FixLastAttributes;
   Result:=true;
 end;
 
@@ -4176,10 +4193,76 @@ begin
   ReadNextAtom;
 end;
 
-procedure TPascalParserTool.ReadTypeReference;
-{ after reading CurPos is on atom behind the identifier
+procedure TPascalParserTool.ReadAttribute;
+{ After reading CurPos is on atom ]
 
-  examples:
+  Examples:
+    [name]
+    [name,name.name(),name(expr,expr),name(name=expr)]
+}
+begin
+  CreateChildNode;
+  CurNode.Desc:=ctnAttribute;
+  ReadNextAtom;
+  repeat
+    if CurPos.Flag=cafEdgedBracketClose then begin
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+      exit;
+    end
+    else if CurPos.Flag=cafWord then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnAttribParam;
+      ReadTypeReference;
+      if CurPos.Flag=cafRoundBracketOpen then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnAttribParam;
+        ReadTilBracketClose(true);
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+        ReadNextAtom;
+      end;
+      CurNode.EndPos:=CurPos.EndPos;
+      EndChildNode;
+    end else if CurPos.Flag=cafComma then begin
+      ReadNextAtom;
+    end else
+      SaveRaiseCharExpectedButAtomFound(20171113155128,']');
+  until false;
+end;
+
+procedure TPascalParserTool.FixLastAttributes;
+{ If CurNode.LastChild.LastChild is ctnAttribute move it to the parent.
+
+For example:
+type
+  T = char;
+[Safe]
+[Weak]
+procedure DoIt;
+}
+var
+  LastSection, Attr, Next: TCodeTreeNode;
+begin
+  LastSection:=CurNode.LastChild;
+  if LastSection=nil then exit;
+  if LastSection.LastChild=nil then exit;
+  Attr:=LastSection.LastChild;
+  if Attr.Desc<>ctnAttribute then exit;
+  while (Attr.PriorBrother<>nil) and (Attr.PriorBrother.Desc=ctnAttribute) do
+    Attr:=Attr.PriorBrother;
+  repeat
+    Next:=Attr.NextBrother;
+    Tree.RemoveNode(Attr);
+    Tree.AddNodeAsLastChild(CurNode,Attr);
+    Attr:=Next;
+  until Attr=nil;
+end;
+
+procedure TPascalParserTool.ReadTypeReference;
+{ After reading CurPos is on atom behind the identifier
+
+  Examples:
     TButton
     controls.TButton
     TGenericClass<TypeReference,TypeReference>
@@ -4227,6 +4310,7 @@ begin
   // read content
   ReadNextAtom;
   if (CurPos.Flag<>cafSemicolon) then begin
+    // definition, not forward
     if CurPos.Flag=cafWord then begin
       if UpAtomIs('EXTERNAL') then begin
         IsJVM:=Scanner.Values.IsDefined('CPUJVM');
@@ -4257,7 +4341,7 @@ begin
       CreateChildNode;
       CurNode.Desc:=ctnClassRequired;
     end else if IntfDesc=ctnClassInterface then begin
-      if  CurPos.Flag=cafEdgedBracketOpen then
+      if CurPos.Flag=cafEdgedBracketOpen then
         ReadGUID;
     end;
     if CurPos.Flag<>cafSemicolon then begin
@@ -4499,8 +4583,6 @@ begin
     else
       CurNode.Desc:=ctnClassPublic;
     CurNode.StartPos:=LastAtoms.GetValueAt(0).EndPos;
-    if CurPos.Flag=cafEdgedBracketOpen then
-      ReadGUID;
     // parse till "end" of class/object
     repeat
       //DebugLn(['TPascalParserTool.KeyWordFuncTypeClass Atom=',GetAtom,' ',CurPos.StartPos>=ClassNode.EndPos]);
@@ -5700,13 +5782,20 @@ procedure TPascalParserTool.ReadGUID;
     SaveRaiseStringExpectedButAtomFound(20170421195909,ctsStringConstant);
   end;
 
+var
+  p: Integer;
 begin
+  p:=CurPos.StartPos;
+  ReadNextAtom;
+  if not AtomIsStringConstant then begin
+    // not a GUID, an attribute
+    UndoReadNextAtom;
+    exit;
+  end;
   CreateChildNode;
+  CurNode.StartPos:=p;
   CurNode.Desc:=ctnClassGUID;
   // read GUID
-  ReadNextAtom;
-  if (not AtomIsStringConstant) and (not AtomIsIdentifier) then
-    RaiseStringConstantExpected;
   ReadNextAtom;
   if CurPos.Flag<>cafEdgedBracketClose then
     SaveRaiseCharExpectedButAtomFound(20170421195911,']');
@@ -5889,6 +5978,11 @@ begin
   'V': if UpAtomIs('VAR') then exit(true);
   end;
   Result:=false;
+end;
+
+function TPascalParserTool.AllowAttributes: boolean;
+begin
+  Result:=Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE,cmOBJFPC];
 end;
 
 procedure TPascalParserTool.ValidateToolDependencies;

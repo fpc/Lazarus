@@ -148,9 +148,6 @@ const
   ctnSpecializeType     = 94; // parent = ctnSpecialize
   ctnSpecializeParams   = 95; // list of ctnSpecializeParam, parent = ctnSpecialize
   ctnSpecializeParam    = 96; // parent = ctnSpecializeParams
-  ctnReferenceTo        = 97; // 1st child = ctnProcedureType
-  ctnConstant           = 98;
-  ctnHintModifier       = 99; // deprecated, platform, unimplemented, library, experimental
 
   ctnBeginBlock         =100;
   ctnAsmBlock           =101;
@@ -160,6 +157,13 @@ const
   ctnOnBlock            =112;// childs: ctnOnIdentifier+ctnOnStatement, or ctnVarDefinition(with child ctnIdentifier)+ctnOnStatement
   ctnOnIdentifier       =113;// e.g. 'on Exception', Note: on E:Exception creates a ctnVarDefinition
   ctnOnStatement        =114;
+  ctnParamsRound        =115;
+
+  ctnReferenceTo        =120; // 1st child = ctnProcedureType
+  ctnConstant           =121;
+  ctnHintModifier       =122; // deprecated, platform, unimplemented, library, experimental
+  ctnAttribute          =123; // children are ctnAttribParam
+  ctnAttribParam        =124; // 1st child: ctnIdentifier, optional 2nd: ctnParamsRound
 
   // combined values
   AllSourceTypes =
@@ -290,6 +294,7 @@ type
   public
     Root: TCodeTreeNode;
     property NodeCount: integer read FNodeCount;
+    procedure RemoveNode(ANode: TCodeTreeNode);
     procedure DeleteNode(ANode: TCodeTreeNode);
     procedure AddNodeAsLastChild(ParentNode, ANode: TCodeTreeNode);
     procedure AddNodeInFrontOf(NextBrotherNode, ANode: TCodeTreeNode);
@@ -464,16 +469,19 @@ begin
   ctnGenericParams: Result:='Generic Type Params';
   ctnGenericParameter: Result:='Generic Type Parameter';
   ctnGenericConstraint: Result:='Generic Type Parameter Constraint';
-  ctnReferenceTo: Result:='Reference To';
-  ctnConstant: Result:='Constant';
-  ctnHintModifier: Result:='Hint Modifier';
 
   ctnWithVariable: Result:='With Variable';
   ctnWithStatement: Result:='With Statement';
   ctnOnBlock: Result:='On Block';
   ctnOnIdentifier: Result:='On Identifier';
   ctnOnStatement: Result:='On Statement';
+  ctnParamsRound: Result:='Params()';
 
+  ctnReferenceTo: Result:='Reference To';
+  ctnConstant: Result:='Constant';
+  ctnHintModifier: Result:='Hint Modifier';
+  ctnAttribute: Result:='Attribute';
+  ctnAttribParam: Result:='Attribute Param';
   else
     Result:='invalid descriptor ('+IntToStr(Desc)+')';
   end;
@@ -941,11 +949,10 @@ begin
     DeleteNode(Root);
 end;
 
-procedure TCodeTree.DeleteNode(ANode: TCodeTreeNode);
+procedure TCodeTree.RemoveNode(ANode: TCodeTreeNode);
 begin
   if ANode=nil then exit;
   if ANode=Root then Root:=ANode.NextBrother;
-  while (ANode.FirstChild<>nil) do DeleteNode(ANode.FirstChild);
   with ANode do begin
     if (Parent<>nil) then begin
       if (Parent.FirstChild=ANode) then
@@ -960,6 +967,12 @@ begin
     PriorBrother:=nil;
   end;
   dec(FNodeCount);
+end;
+
+procedure TCodeTree.DeleteNode(ANode: TCodeTreeNode);
+begin
+  while (ANode.FirstChild<>nil) do DeleteNode(ANode.FirstChild);
+  RemoveNode(ANode);
   ANode.Clear; // clear to spot dangling pointers early
   ANode.Free;
 end;
