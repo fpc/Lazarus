@@ -431,6 +431,7 @@ procedure TPlotAxis.SetAxisColor(const AValue: TColor);
 begin
   if FColor=AValue then exit;
   FColor:=AValue;
+  Changed;
 end;
 
 
@@ -447,6 +448,7 @@ begin
   If FInterval<=0 then
     Raise EPlotPanel.CreateFmt(SerrInvalidInterval,[AValue]);
   FInterval:=AValue;
+  Changed;
 end;
 
 procedure TPlotAxis.SetCaption(const AValue: TPlotCaption);
@@ -554,8 +556,10 @@ begin
   inherited Create;
   FCaption:=TPlotCaption.Create;
   FCaption.FOnChange:=@DoCaptionChange;
+  FCaption.Font.OnChange:= @DoCaptionChange;
   FColor:=DefAxisColor;
   FTickFont:=TFont.Create;
+  FTickFont.OnChange := @DoCaptionChange;
   FLegendInterval:=DefLegendInterval;
   FInterval:=DefInterval;
   FTickColor:=DefTickColor;
@@ -565,6 +569,8 @@ end;
 
 destructor TPlotAxis.Destroy;
 begin
+  FreeAndNil(FTickFont);
+  FreeAndNil(FCaption);
   inherited Destroy;
 end;
 
@@ -923,8 +929,8 @@ begin
       CW:=ACanvas.TextWidth(L);
       Case AVAxis.Caption.Alignment of
         taLeftJustify  : CY:=OY;
-        taRightJustify : CY:=EY-CW;
-        taCenter       : CY:=(EY+OY-CW) div 2;
+        taRightJustify : CY:=EY+CW;
+        taCenter       : CY:=(EY+OY+CW) div 2;
       end;
       TextOut(ACanvas.Handle, 4, CY, PChar(L), Length(L));
       if OldFont <> 0 then
@@ -1023,18 +1029,20 @@ Var
 
 begin
   // X-origin in pixels.
+  // NOTE: this is not the location of "zero" but the left edge of the plot area.
   POX:=FXAxis.LeftMargin;
   // Width in pixels
-  PXW:=ACanvas.Width-FXAxis.RightMargin-POX+1;
+  PXW:= BoundsRect.Width - FXAxis.RightMargin - POX + 1;
   // Y origin in pixels
-  POY:=ACanvas.Height-FYAxis.BottomMargin;
+  // NOTE: this is not the location of "zero" but the bottom edge of the plot area.
+  POY := BoundsRect.Height - FYAxis.BottomMargin;
   // Height in pixels
   PYH:=POY-FYAxis.TopMargin+1;
   // Y top
   YI:=PYH/FYAxis.Interval;
   // Interval in plot units
   XI:=FXAxis.Interval/PXW;
-  // Y plot Origin
+  // Y plot Origin, i.e. bottom edge of the plot area, in world coordinates
   YO:=FYAxis.Origin;
   // Y plot max value
   PEY:=FYAxis.TopMargin;
