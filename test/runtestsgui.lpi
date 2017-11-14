@@ -46,7 +46,7 @@
         <PackageName Value="CodeTools"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="15">
+    <Units Count="14">
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -72,46 +72,42 @@
         <IsPartOfProject Value="True"/>
       </Unit5>
       <Unit6>
-        <Filename Value="bugs\testfileproc.pas"/>
+        <Filename Value="bugtestcase.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit6>
       <Unit7>
-        <Filename Value="bugtestcase.pas"/>
+        <Filename Value="lcltests\testpen.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit7>
       <Unit8>
-        <Filename Value="lcltests\testpen.pas"/>
+        <Filename Value="semiauto\semiautotest.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit8>
       <Unit9>
-        <Filename Value="semiauto\semiautotest.pas"/>
+        <Filename Value="semiauto\idesemiautotests.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit9>
       <Unit10>
-        <Filename Value="semiauto\idesemiautotests.pas"/>
+        <Filename Value="semiauto\lclsemiautotests.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit10>
       <Unit11>
-        <Filename Value="semiauto\lclsemiautotests.pas"/>
+        <Filename Value="lazutils\testlazutils.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit11>
       <Unit12>
-        <Filename Value="lazutils\testlazutils.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit12>
-      <Unit13>
         <Filename Value="lcltests\testpagecontrol.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPageControl"/>
-      </Unit13>
-      <Unit14>
+      </Unit12>
+      <Unit13>
         <Filename Value="ideintf\testmenuintf.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="TestMenuIntfDlg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="TestMenuIntf"/>
-      </Unit14>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

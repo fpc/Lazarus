@@ -28,7 +28,7 @@ interface
 
 uses
   TestLpi, BugTestCase,
-  bug8432, testfileutil, testfileproc,
+  bug8432, testfileutil,
   // lazutils
   TestLazUtils, TestLazUTF8, TestLazUTF16, TestLConvEncoding, TestAvgLvlTree,
   // lcltests
