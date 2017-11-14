@@ -47,22 +47,42 @@ implementation
 
 function CompareByte(const Item1, Item2: Byte): Integer;
 begin
-  Result := Item1 - Item2;
+  if Item1 > Item2 then
+    Result := 1
+  else if Item1 < Item2 then
+    Result := -1
+  else
+    Result := 0;
 end;
 
 function CompareCardinal(const Item1, Item2: Cardinal): Integer;
 begin
-  Result := Item1 - Item2;
+  if Item1 > Item2 then
+    Result := 1
+  else if Item1 < Item2 then
+    Result := -1
+  else
+    Result := 0;
 end;
 
 function CompareInteger(const Item1, Item2: Integer): Integer;
 begin
-  Result := Item1 - Item2;
+  if Item1 > Item2 then
+    Result := 1
+  else if Item1 < Item2 then
+    Result := -1
+  else
+    Result := 0;
 end;
 
 function CompareInt64(const Item1, Item2: Int64): Integer;
 begin
-  Result := Item1 - Item2;
+  if Item1 > Item2 then
+    Result := 1
+  else if Item1 < Item2 then
+    Result := -1
+  else
+    Result := 0;
 end;
 
 { TByteList }
