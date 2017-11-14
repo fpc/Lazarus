@@ -3901,11 +3901,6 @@ begin
   end;
 end;
 
-function TWinControl.GetTabStop: Boolean;
-begin
-  Result := FTabStop;
-end;
-
 {-------------------------------------------------------------------------------
   function TWinControl.ChildClassAllowed(ChildClass: TClass): boolean;
 
@@ -4240,6 +4235,15 @@ begin
     FTabOrder := NewTabOrder
   else
     UpdateTabOrder(NewTabOrder);
+end;
+
+procedure TWinControl.SetTabStop(NewTabStop: Boolean);
+begin
+  if FTabStop = NewTabStop then
+    Exit;
+  FTabStop := NewTabStop;
+  UpdateTabOrder(FTabOrder);
+  Perform(CM_TABSTOPCHANGED, 0, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -4974,15 +4978,6 @@ var
 begin
   for i := 0 to ControlCount - 1 do
     Controls[i].ChangeScale(Multiplier, Divider);
-end;
-
-procedure TWinControl.SetTabStop(NewTabStop: Boolean);
-begin
-  if FTabStop = NewTabStop then
-    Exit;
-  FTabStop := NewTabStop;
-  UpdateTabOrder(FTabOrder);
-  Perform(CM_TABSTOPCHANGED, 0, 0);
 end;
 
 procedure TWinControl.ChangeScale(Multiplier, Divider: Integer);
@@ -8269,11 +8264,7 @@ begin
   begin
     WSSetText(AValue);
     InvalidatePreferredSize;
-    //don't call inherited (=TControl.)RealSetText(AValue) since it can issue a
-    //second OnChange if RealSetText is called from within OnChange (#0032602)
-    //instead just update FCaption.
-    //WSSetText already makes sure an OnChange will be performed
-    FCaption := AValue;
+    inherited RealSetText(AValue);
     AdjustSize;
   end
   else inherited RealSetText(AValue);

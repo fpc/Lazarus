@@ -727,7 +727,7 @@ type
     FOnChange: TNotifyEvent;
     FSelLength: integer;
     FSelStart: integer;
-    FTextChangedByRealSetTextCounter: Integer;
+    FTextChangedByRealSetText: Boolean;
     FTextHint: TTranslateString;
     function GetTextHintFontColor: TColor;       //Remove in 1.9
     function GetTextHintFontStyle: TFontStyles;  //Remove in 1.9

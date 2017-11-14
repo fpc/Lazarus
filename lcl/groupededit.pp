@@ -120,6 +120,7 @@ type
     function GetSelLength: Integer;
     function GetSelStart: Integer;
     function GetSelText: String;
+    function GetTabStop: Boolean;
     function GetTextHint: TTranslateString;
     function GetTextHintFontColor: TColor;      //Remove in 1.9
     function GetTextHintFontStyle: TFontStyles; //Remove in 1.9
@@ -174,6 +175,7 @@ type
     procedure SetSelStart(AValue: Integer);
     procedure SetSelText(AValue: String);
     procedure SetSpacing(const Value: integer);
+    procedure SetTabStop(AValue: Boolean);
     procedure SetTextHint(AValue: TTranslateString);
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
@@ -235,14 +237,12 @@ type
     function  EditCanModify: Boolean; virtual;
     procedure GetSel(out _SelStart: Integer; out _SelStop: Integer);
     function GetSpacing: Integer; virtual;
-    function GetTabStop: Boolean; override;
     procedure SetSel(const _SelStart: Integer; _SelStop: Integer);
     procedure Loaded; override;
     procedure Reset; virtual;
     procedure SetAutoSize(AValue: Boolean); override;
     procedure SetColor(AValue: TColor); reintroduce;
     procedure SetCursor(AValue: TCursor); override;
-    procedure SetTabStop(AValue: Boolean); override;
     procedure ShouldAutoAdjust(var AWidth, AHeight: Boolean); override;
 
     property AutoSelect: Boolean read GetAutoSelect write SetAutoSelect default True;
@@ -413,10 +413,18 @@ implementation
 
 function TGEEdit.PerformTab(ForwardTab: boolean): boolean;
 begin
-  if Assigned(Owner) and (Owner is TCustomAbstractGroupedEdit) then
-    Result :=  TCustomAbstractGroupedEdit(Owner).PerformTab(ForwardTab)
+  //if not Forward then inherited PerFormTab will set focus to the owning
+  //TCustomAbstractGroupedEdit, which immediately transfers the focus back to the TGEEdit
+  //so let TCustomAbstractGroupedEdit do the Performtab in this case
+  if ForwardTab then
+    Result := inherited PerformTab(ForwardTab)
   else
-    Result := False;
+  begin
+    if Assigned(Owner) and (Owner is TCustomAbstractGroupedEdit) then
+      Result :=  TCustomAbstractGroupedEdit(Owner).PerformTab(ForwardTab)
+    else
+      Result := False;
+  end;
 end;
 
 { TCustomAbstractGroupedEdit }
@@ -839,11 +847,6 @@ begin
   FEdit.Cursor := AValue;
 end;
 
-procedure TCustomAbstractGroupedEdit.SetTabStop(AValue: Boolean);
-begin
-  FEdit.TabStop := AValue;
-end;
-
 procedure TCustomAbstractGroupedEdit.ShouldAutoAdjust(var AWidth,
   AHeight: Boolean);
 begin
@@ -1126,6 +1129,11 @@ begin
   if not (csLoading in ComponentState) then UpdateSpacing;
 end;
 
+procedure TCustomAbstractGroupedEdit.SetTabStop(AValue: Boolean);
+begin
+  FEdit.TabStop := AValue;
+end;
+
 procedure TCustomAbstractGroupedEdit.SetTextHint(AValue: TTranslateString);
 begin
   FEdit.TextHint := AValue;
@@ -1183,6 +1191,7 @@ begin
   FDirectInput := True;
   FIsReadOnly := False;
   TabStop := True;
+  inherited TabStop := False;
   FocusOnBuddyClick := False;
   FSpacing := 0;
   SetInitialBounds(0, 0, GetControlClassDefaultSize.CX, GetControlClassDefaultSize.CY);
