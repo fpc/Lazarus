@@ -243,7 +243,7 @@ type
 
   TLabelDirection = (ldLeft, ldTop, ldRight, ldBottom);
 
-  TLinearMarkPositions = (lmpOutside, lmpPositive, lmpNegative, lmpInside);
+  TLinearMarkPositions = (lmpOutside, lmpPositive, lmpNegative, lmpInside, lmpInsideCenter);
 
   TSeriesPointerCustomDrawEvent = procedure (
     ASender: TChartSeries; ADrawer: IChartDrawer; AIndex: Integer;
@@ -1136,7 +1136,8 @@ var
   end;
 
 var
-  g: TDoublePoint;
+  y: Double;
+  g, gl: TDoublePoint;
   i, si: Integer;
   ld: TLabelDirection;
   style: TChartStyle;
@@ -1161,17 +1162,28 @@ begin
           else
             Marks.LabelFont.Assign(lfont);
         end;
-        if si > 0 then
+        if si = 0 then
+          y := Source[i]^.y - GetZeroLevel
+        else begin
+          y := Source[i]^.YList[si-1];
           if IsRotated then
-            g.X += AxisToGraphY(Source[i]^.YList[si - 1])
+            g.X += AxisToGraphY(y)
           else
-            g.Y += AxisToGraphY(Source[i]^.YList[si - 1]);
+            g.Y += AxisToGraphY(y);
+        end;
+        gl := g;
+        if FMarkPositions = lmpInsideCenter then begin
+          if IsRotated then
+            gl.X -= AxisToGraphX(y)/2
+          else
+            gl.Y -= AxisToGraphY(y)/2;
+        end;
         with ParentChart do
           if
             (Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si) and
-            IsPointInViewPort(g)
+            IsPointInViewPort(gl)
           then
-            DrawLabel(FormattedMark(i, '', si), GraphToImage(g), ld);
+            DrawLabel(FormattedMark(i, '', si), GraphToImage(gl), ld);
       end;
     end;
 
@@ -1270,7 +1282,8 @@ begin
     lmpOutside: isNeg := Source[AIndex]^.Y < GetZeroLevel;
     lmpPositive: isNeg := false;
     lmpNegative: isNeg := true;
-    lmpInside: isNeg := Source[AIndex]^.Y >= GetZeroLevel;
+    lmpInside,
+    lmpInsideCenter: isNeg := Source[AIndex]^.Y >= GetZeroLevel;
   end;
   Result := DIR[IsRotated, isNeg];
 end;
