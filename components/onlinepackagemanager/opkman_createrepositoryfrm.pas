@@ -396,6 +396,7 @@ begin
               if FSerializablePackages.AddPackageFromJSON(JSON) then
               begin
                 JSON := '';
+                SerializablePackages.Sort(stName, soAscendent);
                 if FSerializablePackages.PackagesToJSON(JSON) then
                 begin
                   if SaveJSONToFile(ExtractFilePath(FRepository.FPath) + cRemoteJSONFile, JSON) then
@@ -437,6 +438,7 @@ begin
       if FSerializablePackages.AddPackageFromJSON(JSON) then
       begin
         JSON := '';
+        SerializablePackages.Sort(stName, soAscendent);
         if FSerializablePackages.PackagesToJSON(JSON) then
         begin
           if SaveJSONToFile(ExtractFilePath(FRepository.FPath) + cRemoteJSONFile, JSON) then
