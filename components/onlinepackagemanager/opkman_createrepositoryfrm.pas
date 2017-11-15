@@ -561,7 +561,6 @@ begin
   bCreate.Enabled := AEnable;
   bAdd.Enabled := AEnable and FileExists(Trim(FRepository.FPath));
   bCancel.Enabled := AEnable;
-  bDelete.Enabled := False;
   if Assigned(FVSTPackages) then
   begin
     Node := FVSTPackages.GetFirstSelected;
@@ -570,7 +569,11 @@ begin
       Data := FVSTPackages.GetNodeData(Node);
       bDelete.Enabled := AEnable and FileExists(Trim(FRepository.FPath)) and (Data^.FDataType = 1);
     end
-  end;
+    else
+      bDelete.Enabled := False;
+  end
+  else
+    bDelete.Enabled := False;
 end;
 
 procedure TCreateRepositoryFrm.ShowHideControls(const AType: Integer);
