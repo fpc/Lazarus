@@ -776,8 +776,14 @@ begin
     ctnResStrSection:
       Result:='Resourcestring';
 
-    ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
+    ctnVarDefinition,
+    ctnConstDefinition,
+    ctnEnumIdentifier,
+    ctnLabel:
       Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+
+    ctnUseUnit:
+      Result:=ACodeTool.ExtractDottedIdentifier(CodeNode.StartPos);
 
     ctnTypeDefinition:
       begin
@@ -803,9 +809,6 @@ begin
     ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
     ctnClassInterface,ctnCPPClass:
       Result:='('+ACodeTool.ExtractClassInheritance(CodeNode,[])+')';
-
-    ctnEnumIdentifier, ctnLabel:
-      Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
     ctnProcedure:
       Result:=ACodeTool.ExtractProcHead(CodeNode,
@@ -1090,11 +1093,9 @@ begin
       //if NodeText='TCodeExplorerView' then
       //  debugln(['TCodeExplorerView.CreateIdentifierNodes CodeNode=',CodeNode.DescAsString,' NodeText="',NodeText,'" Category=',dbgs(Category),' InFrontViewNode=',InFrontViewNode<>nil,' CurParentViewNode=',CurParentViewNode<>nil]);
       if InFrontViewNode<>nil then
-        ViewNode:=CodeTreeview.Items.InsertObjectBehind(
-                                              InFrontViewNode,NodeText,NodeData)
+        ViewNode:=CodeTreeview.Items.InsertObjectBehind(InFrontViewNode,NodeText,NodeData)
       else if CurParentViewNode<>nil then
-        ViewNode:=CodeTreeview.Items.AddChildObject(
-                                               CurParentViewNode,NodeText,NodeData)
+        ViewNode:=CodeTreeview.Items.AddChildObject(CurParentViewNode,NodeText,NodeData)
       else
         ViewNode:=CodeTreeview.Items.AddObject(nil,NodeText,NodeData);
       ViewNode.ImageIndex:=NodeImageIndex;
@@ -2681,14 +2682,17 @@ begin
       CurName:='';
       case CodeNode.Desc of
 
-      ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
+      ctnTypeDefinition,
+      ctnVarDefinition,
+      ctnConstDefinition,
+      ctnEnumIdentifier:
         CurName:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
+
+      ctnUseUnit:
+        CurName:=ACodeTool.ExtractDottedIdentifier(CodeNode.StartPos);
 
       ctnGenericType:
         CurName:=ACodeTool.ExtractDefinitionName(CodeNode);
-
-      ctnEnumIdentifier:
-        CurName:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
       ctnProcedure:
         CurName:=ACodeTool.ExtractProcName(CodeNode,[]);

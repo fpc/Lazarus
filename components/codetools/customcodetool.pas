@@ -277,6 +277,7 @@ type
       AnIdentifier: PChar): boolean;
     function CompareSrcIdentifiersMethod(Identifier1, Identifier2: Pointer): integer;
     function ExtractIdentifier(CleanStartPos: integer): string;
+    function ExtractDottedIdentifier(CleanStartPos: integer): string;
 
     procedure CreateChildNode;
     procedure EndChildNode; {$IFDEF UseInline}inline;{$ENDIF}
@@ -3038,6 +3039,11 @@ begin
       Move(Src[CleanStartPos],Result[1],len);
   end else
     Result:='';
+end;
+
+function TCustomCodeTool.ExtractDottedIdentifier(CleanStartPos: integer): string;
+begin
+  Result:=GetDottedIdentifier(@Src[CleanStartPos]);
 end;
 
 procedure TCustomCodeTool.DoDeleteNodes(StartNode: TCodeTreeNode);
