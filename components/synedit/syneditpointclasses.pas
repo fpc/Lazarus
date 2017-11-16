@@ -1736,7 +1736,7 @@ begin
       FAltStartBytePos := -1;
     end
     else begin
-      StartLineBytePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
+      StartLineBytePos := FCaret.OldLineBytePos;
       EndLineBytePos := FCaret.LineBytePos;
       if Persistent and IsBackwardSel then
         SortSelectionPoints;
