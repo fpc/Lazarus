@@ -372,7 +372,7 @@ begin
     end;
 
   finally
-    OldActiveControl:=AForm.ActiveControl;
+    OldActiveControl:=AForm.LastActiveControl;
     {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
     if not AForm.IsVisible then
       debugln(['TIDEAnchorDockMaster.ShowForm MakeVisible ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' Floating=',DockMaster.IsFloating(AForm)]);

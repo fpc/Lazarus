@@ -461,6 +461,7 @@ type
     FKeyPreview: Boolean;
     FMenu: TMainMenu;
     FModalResult: TModalResult;
+    FLastActiveControl: TWinControl;
     FLastFocusedControl: TWinControl;
     FOldBorderStyle: TFormBorderStyle;
     FOnActivate: TNotifyEvent;
@@ -701,6 +702,7 @@ type
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write SetModalResult;
     property Monitor: TMonitor read GetMonitor;
+    property LastActiveControl: TWinControl read FLastActiveControl;
     property PopupMode: TPopupMode read FPopupMode write SetPopupMode default pmNone;
     property PopupParent: TCustomForm read FPopupParent write SetPopupParent;
 
