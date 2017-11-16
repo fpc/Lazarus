@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-14 22:43+0200\n"
-"Last-Translator: admin <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2017-11-16 18:23+0200\n"
+"Last-Translator: Олександр Пилипчук <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgstr "Перемістити Вниз"
 #: objinspstrconsts.cactionlisteditormoveupaction
 msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
-msgstr "Перемістити Вверх"
+msgstr "Перемістити вгору"
 
 #: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
@@ -132,7 +132,7 @@ msgstr "Змінити пункт"
 #: objinspstrconsts.clbup
 msgctxt "objinspstrconsts.clbup"
 msgid "Up"
-msgstr "Вверх"
+msgstr "Вгору"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
@@ -345,7 +345,7 @@ msgstr "Редагування"
 #: objinspstrconsts.oicoleditup
 msgctxt "objinspstrconsts.oicoleditup"
 msgid "Up"
-msgstr "Вверх"
+msgstr "Вгору"
 
 #: objinspstrconsts.ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -657,7 +657,7 @@ msgstr "Перемістити вг&ору"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
-msgstr "Перемістити поле вверх"
+msgstr "Перемістити поле вгору"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -1169,7 +1169,7 @@ msgstr "Тестувати діалог ..."
 
 #: objinspstrconsts.oistestinput
 msgid "Test Input"
-msgstr "Тестове Введення"
+msgstr "Тестове введення"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
@@ -1276,7 +1276,7 @@ msgstr "Перемістити вниз"
 
 #: objinspstrconsts.rscdmoveup
 msgid "Move up"
-msgstr "Перемістити вверх"
+msgstr "Перемістити вгору"
 
 #: objinspstrconsts.rscdok
 msgctxt "objinspstrconsts.rscdok"

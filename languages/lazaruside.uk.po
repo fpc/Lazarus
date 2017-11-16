@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-14 22:43+0200\n"
-"Last-Translator: admin <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2017-11-16 19:25+0200\n"
+"Last-Translator: Олександр Пилипчук <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -18211,7 +18211,7 @@ msgstr "Не знайдено"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of \"%s\"%s with \"%s\"?"
-msgstr "Замінити \"%s\"%s на \"%s\" у цьому місті?"
+msgstr "Замінити \"%s\"%s на \"%s\" у цьому місці?"
 
 #: lazarusidestrconsts.lisuesearching
 msgid "Searching: %s"
@@ -19478,7 +19478,7 @@ msgstr "&Другорядна версія:"
 
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
-msgstr "Інша Інформація"
+msgstr "Інша інформація"
 
 #: lazarusidestrconsts.rspooutputdirectory
 msgid "PO Output Directory:"
@@ -19705,7 +19705,7 @@ msgstr "Перемкнути блок"
 
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
-msgstr "Відмінити зсув блока вправо"
+msgstr "Скасувати зсув блока вправо"
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"
