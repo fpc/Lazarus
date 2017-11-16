@@ -22,6 +22,8 @@ type
             source directory, and this lazarus directory can then be shared
             by several users/configs.
 
+    Online: Got through Online Package Manager
+
     User:   These are collected from the user config directory, from the file
             packagelinks.xml.
             These links are maintained by the IDE. Everytime the user opens a
