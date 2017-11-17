@@ -2722,13 +2722,13 @@ type
       pcfDelphiPicture,
       pcfDelphiMetaFilePict,
       pcfDelphiObject,
-      pcfDelphiComponent,
+      pcfDelphiComponent {,
 
       // Kylix definitions (only for compatibility)
       pcfKylixPicture,
       pcfKylixBitmap,
       pcfKylixDrawing,
-      pcfKylixComponent
+      pcfKylixComponent }
     );
 
 const
@@ -2748,13 +2748,13 @@ const
      'Delphi Picture',
      'image/delphi.metafilepict',
      'application/delphi.object',
-     'Delphi Component',
+     'Delphi Component' {,
 
      // Kylix definitons (only for compatibility)
      'image/delphi.picture',
      'image/delphi.bitmap',
      'image/delphi.drawing',
-     'application/delphi.component'
+     'application/delphi.component' }
   );
 
 

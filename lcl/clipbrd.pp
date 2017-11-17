@@ -301,12 +301,12 @@ end;
 
 function CF_Text: TClipboardFormat;
 begin
-  Result:=PredefinedClipboardFormat(pcfDelphiText);
+  Result:=PredefinedClipboardFormat(pcfText);
 end;
 
 function CF_Bitmap: TClipboardFormat;
 begin
-  Result:=PredefinedClipboardFormat(pcfDelphiBitmap);
+  Result:=PredefinedClipboardFormat(pcfBitmap);
 end;
 
 function CF_Picture: TClipboardFormat;
