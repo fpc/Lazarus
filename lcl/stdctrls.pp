@@ -900,7 +900,6 @@ type
   public
     property AutoSelected;
   published
-    property Action;
     property Align;
     property Alignment;
     property Anchors;
