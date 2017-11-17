@@ -62,6 +62,8 @@ type
     UnicodeGrid: TStringGrid;
     pgAnsi: TTabSheet;
     pgUnicode: TTabSheet;
+    procedure GridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
+      aState: TGridDrawState);
     procedure cbCodePageSelect(Sender: TObject);
     procedure cbUniRangeSelect(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -209,7 +211,8 @@ begin
   AnsiGrid.Font.Size := 10;
   UnicodeGrid.Font.Size := 10;
 
-  AnsiGrid.AutoSizeColumns;
+  AnsiGrid.AutoSizeColumn(0);
+  AnsiGrid.AutoFillColumns := true;
 
   FUnicodeBlockIndex:=NOT_SELECTED;
   FillUniRangeList(SortUniRangeListButton.Down);
@@ -284,6 +287,18 @@ begin
   end
   else
     AnsiCharInfoLabel.Caption := '-';
+end;
+
+procedure TCharacterMapDialog.GridPrepareCanvas(sender: TObject; aCol,
+  aRow: Integer; aState: TGridDrawState);
+var
+  ts: TTextStyle;
+begin
+  with (Sender as TStringGrid) do begin
+    ts := Canvas.TextStyle;
+    ts.Alignment := taCenter;
+    Canvas.TextStyle := ts;
+  end;
 end;
 
 procedure TCharacterMapDialog.DoStatusUnicodeGrid(ACol, ARow: integer);
