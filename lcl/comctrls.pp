@@ -3325,6 +3325,10 @@ type
     FTreeNodes: TTreeNodes;
     FHintWnd: THintWindow;
     FNodeUnderCursor: TTreeNode;
+    FPrevToolTips: boolean;
+    FDragScrollMargin: integer;
+    FDragScrollTimer: TTimer;
+    procedure DragScrollTimerTick(Sender: TObject);
     procedure CanvasChanged(Sender: TObject);
     function GetAutoExpand: boolean;
     function GetBackgroundColor: TColor;

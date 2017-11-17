@@ -3274,6 +3274,12 @@ begin
   AccessibleDescription := rsTTreeViewAccessibilityDescription;
   AccessibleRole := larTreeView;
   FAccessibilityOn := WidgetSet.GetLCLCapability(lcAccessibilitySupport) = LCL_CAPABILITY_YES;
+
+  FDragScrollMargin := 20; // Height of 2 areas, on top/bottom of treeview, which auto-scroll treeview up/down
+  FDragScrollTimer := TTimer.Create(Self);
+  FDragScrollTimer.Enabled := false;
+  FDragScrollTimer.Interval := 150;
+  FDragScrollTimer.OnTimer := @DragScrollTimerTick;
 end;
 
 destructor TCustomTreeView.Destroy;
@@ -4659,6 +4665,9 @@ begin
       DebugLn('TCustomTreeView.DoStartDrag DragNode=nil');
     {$ENDIF}
   end;
+  FPrevToolTips := ToolTips;
+  ToolTips := False;
+  FDragScrollTimer.Enabled := true;
 end;
 
 procedure TCustomTreeView.DoEndDrag(Target: TObject; X, Y: Integer);
@@ -4668,6 +4677,8 @@ begin
   {$ENDIF}
   inherited DoEndDrag(Target, X, Y);
   FLastDropTarget := nil;
+  FDragScrollTimer.Enabled := false;
+  ToolTips := FPrevToolTips;
 end;
 
 function TCustomTreeView.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
@@ -6047,6 +6058,23 @@ end;
 procedure TCustomTreeView.CanvasChanged(Sender: TObject);
 begin
   Include(FStates,tvsCanvasChanged);
+end;
+
+procedure TCustomTreeView.DragScrollTimerTick(Sender: TObject);
+const
+  cScrollDelta = 10;
+var
+  Pnt: TPoint;
+begin
+  Pnt := ScreenToClient(Mouse.CursorPos);
+  if (Pnt.X >= 0) and (Pnt.X < ClientWidth) then
+  begin
+    if (Pnt.Y >= 0) and (Pnt.Y < FDragScrollMargin) then
+      ScrolledTop := ScrolledTop - cScrollDelta
+    else
+    if (Pnt.Y >= ClientHeight-FDragScrollMargin) and (Pnt.Y < ClientHeight) then
+      ScrolledTop := ScrolledTop + cScrollDelta;
+  end;
 end;
 
 procedure TCustomTreeView.ClearSelection(KeepPrimary: Boolean);
