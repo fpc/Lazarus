@@ -117,13 +117,15 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLproc, FPCAdds, LCLType, LResources, LCLIntf, GraphType,
-  Graphics;
+  Classes, SysUtils, fasthtmlparser,
+  // LCL
+  LCLproc, LCLType, LCLIntf, LResources, Graphics,
+  // LazUtils
+  FPCAdds, LazUTF8;
 
 { for delphi compatibility:
 
-  In Delphi there are 4 predefined constants, but the LCL has only dynamic
-  values.
+  In Delphi there are 4 predefined constants, but the LCL has only dynamic values.
   
   CF_TEXT = 1;
   CF_BITMAP = 2;
@@ -245,15 +247,10 @@ function RegisterClipboardFormat(const Format: string): TClipboardFormat;
 
 implementation
 
-uses
-  fasthtmlparser, LazUTF8;
-
 var
   FClipboards: array[TClipboardType] of TClipboard;
 
-
 {$I clipbrd.inc}
-
 
 function RegisterClipboardFormat(const Format: string): TClipboardFormat;
 begin
