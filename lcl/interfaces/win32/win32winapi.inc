@@ -407,8 +407,8 @@ begin
   until (DbgFormatID=0);
   Windows.CloseClipboard;
   {$ENDIF}
-  if FormatID=PredefinedClipboardFormat(pcfDelphiBitmap)
-    then FormatID := CF_BITMAP;
+  //if FormatID=PredefinedClipboardFormat(pcfDelphiBitmap)
+  //  then FormatID := CF_BITMAP;
   if (FormatID=0) or (Stream=nil) or
     not Windows.IsClipboardFormatAvailable(FormatID) then exit;
 

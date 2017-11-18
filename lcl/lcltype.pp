@@ -2718,7 +2718,7 @@ type
 
       // Delphi definitions (only for compatibility)
       pcfDelphiText,
-      pcfDelphiBitmap,
+//      pcfDelphiBitmap,
       pcfDelphiPicture,
       pcfDelphiMetaFilePict,
       pcfDelphiObject,
@@ -2744,7 +2744,7 @@ const
 
      // Delphi definitions (only for compatibility)
      'text/plain',
-     'image/delphi.bitmap',
+{    'image/delphi.bitmap', }
      'Delphi Picture',
      'image/delphi.metafilepict',
      'application/delphi.object',
