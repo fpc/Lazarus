@@ -830,7 +830,6 @@ end;
 
 procedure TTreeNode.SetDropTarget(AValue: Boolean);
 begin
-  if AValue=GetDropTarget then exit;
   if AValue then begin
     Include(FStates,nsDropHilited);
     if TreeView<>nil then
