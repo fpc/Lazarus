@@ -261,6 +261,7 @@ begin
     begin
       SetLength(JSON, FMS.Size);
       FMS.Read(Pointer(JSON)^, Length(JSON));
+      SerializablePackages.JSONToPackages(JSON);
       FOnJSONComplete(Self, JSON, FErrTyp, '');
     end
     else

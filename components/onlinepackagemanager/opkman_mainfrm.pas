@@ -178,18 +178,13 @@ implementation
 
 procedure TMainFrm.FormCreate(Sender: TObject);
 begin
-  InitLocalRepository;
-  Options := TOptions.Create(LocalRepositoryConfigFile);
   VisualTree := TVisualTree.Create(pnMain, imTree, pmTree);
   VisualTree.OnChecking := @DoOnChecking;
   VisualTree.OnChecked := @DoOnChecked;
-  SerializablePackages := TSerializablePackages.Create;
   SerializablePackages.OnProcessJSON := @DoOnProcessJSON;
-  PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository[Options.ActiveRepositoryIndex]);
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
   StartUpdates;
-  InstallPackageList := TObjectList.Create(True);
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
  {$IF LCL_FULLVERSION >= 1070000}
@@ -220,12 +215,11 @@ end;
 
 procedure TMainFrm.FormDestroy(Sender: TObject);
 begin
+  SerializablePackages.OnProcessJSON := nil;
+  PackageDownloader.OnJSONProgress := nil;
+  PackageDownloader.OnJSONDownloadCompleted := nil;
   StopUpdates;
-  PackageDownloader.Free;
-  SerializablePackages.Free;
   VisualTree.Free;
-  Options.Free;
-  InstallPackageList.Free;
   Application.HintHidePause := FHintTimeOut;
 end;
 
@@ -255,9 +249,6 @@ begin
   begin
     SetupMessage(rsMainFrm_rsMessageChangingRepository);
     Sleep(1500);
-    StopUpdates;
-    SerializablePackages.Clear;
-    StartUpdates;
   end
   else
     Updates.PauseUpdate;
@@ -365,7 +356,7 @@ begin
     etNone:
       begin
         SetupMessage(rsMainFrm_rsMessageParsingJSON);
-        if (not SerializablePackages.JSONToPackages(AJSON)) or (SerializablePackages.Count = 0) then
+        if (SerializablePackages.Count = 0) then
         begin
           EnableDisableControls(True);
           SetupMessage(rsMainFrm_rsMessageNoPackage);
@@ -398,6 +389,12 @@ begin
       end;
   end;
 end;
+
+procedure TMainFrm.DoOnJSONProgress(Sender: TObject);
+begin
+  Application.ProcessMessages;
+end;
+
 
 procedure TMainFrm.DoOnProcessJSON(Sender: TObject);
 begin
@@ -504,11 +501,6 @@ end;
 procedure TMainFrm.DoOnChecked(Sender: TObject);
 begin
   EnableDisableControls(True);
-end;
-
-procedure TMainFrm.DoOnJSONProgress(Sender: TObject);
-begin
-  Application.ProcessMessages;
 end;
 
 procedure TMainFrm.cbAllClick(Sender: TObject);

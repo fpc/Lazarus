@@ -27,12 +27,16 @@ unit onlinepackagemanagerintf;
 interface
 
 uses
-  Classes, MenuIntf, IDECommands, ToolBarIntf, LCLType;
+  Classes,
+  // LCL
+  LCLType,
+  // IdeIntf
+  MenuIntf, IDECommands, ToolBarIntf, PackageLinkIntf;
 
 procedure Register;
 
 implementation
-uses opkman_const, opkman_mainfrm;
+uses opkman_const, opkman_mainfrm, opkman_intf;
 
 procedure IDEMenuSectionClicked(Sender: TObject);
 begin
@@ -62,5 +66,10 @@ begin
   RegisterIDEMenuCommand(itmPkgGraphSection, 'Online Package Manager', rsLazarusPackageManager, nil, @IDEMenuSectionClicked, IDECommand);
 end;
 
+initialization
+  OPMInterface := TOPMInterface.Create;
+
+finalization
+  OPMInterface.Free;
 end.
 

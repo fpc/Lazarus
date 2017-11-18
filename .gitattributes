@@ -3506,6 +3506,7 @@ components/onlinepackagemanager/opkman_createrepositorypackagefrm.pas svneol=nat
 components/onlinepackagemanager/opkman_downloader.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_fpcdef.inc svneol=native#text/pascal
 components/onlinepackagemanager/opkman_installer.pas svneol=native#text/pascal
+components/onlinepackagemanager/opkman_intf.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_mainfrm.lfm svneol=native#text/plain
 components/onlinepackagemanager/opkman_mainfrm.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_options.pas svneol=native#text/pascal
