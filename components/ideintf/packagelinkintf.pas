@@ -99,8 +99,16 @@ type
     procedure RemoveUserLinks(APackageID: TLazPackageID); virtual; abstract;
   end;
 
+  { TOPMInterface }
+
+  TOPMInterface = class
+  public
+    function InstallPackage(APkgLink: TPackageLink): Boolean; virtual; abstract;
+  end;
+
 var
   PkgLinks: TPackageLinks;
+  OPMInterface: TOPMInterface;
 
 function IsUrl(const AText: string): Boolean;
 
