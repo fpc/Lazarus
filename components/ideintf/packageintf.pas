@@ -97,6 +97,20 @@ type
     property RequiredIDEPackage: TIDEPackage read FRequiredPackage write SetRequiredPackage;
   end;
 
+  TLazPackageType = (
+    lptRunTime, // Cannot register anything in the IDE. Can be used by designtime packages.
+    lptDesignTime, // Can register anything in the IDE but is not compiled into projects.
+                   // The IDE calls the 'register' procedures of each unit.
+    lptRunAndDesignTime, // Can do anything.
+    lptRunTimeOnly // As lptRunTime but cannot be installed in the IDE, not even indirectly.
+    );
+  TLazPackageTypes = set of TLazPackageType;
+
+const
+  LazPackageTypeIdents: array[TLazPackageType] of string = (
+    'RunTime', 'DesignTime', 'RunAndDesignTime', 'RunTimeOnly');
+
+type
   { TLazPackageID }
 
   TLazPackageID = class(TIDEProjPackBase)
@@ -107,6 +121,7 @@ type
     function GetIDAsWord: string;
   protected
     FVersion: TPkgVersion;
+    FPackageType: TLazPackageType;
     procedure SetName(const NewName: TComponentName); override;
     procedure UpdateIDAsString;
     procedure VersionChanged(Sender: TObject); virtual;

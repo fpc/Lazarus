@@ -75,6 +75,7 @@ type
     property LPKUrl: string read FFilename write FFilename;
     property LPLFilename: string read FLPLFilename write FLPLFilename;
     property LPLFileDate: TDateTime read FLPLFileDate write FLPLFileDate;
+    property PackageType: TLazPackageType read FPackageType;
     property Origin: TPkgLinkOrigin read FOrigin write FOrigin;
     property LastUsed: TDateTime read FLastUsed write FLastUsed;
   end;

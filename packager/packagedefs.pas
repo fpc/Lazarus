@@ -419,18 +419,6 @@ type
 
   { TLazPackage }
   
-  TLazPackageType = (
-    lptRunTime,         // RunTime packages can't register anything in the IDE.
-                        // They can be used by designtime packages.
-    lptDesignTime,      // DesignTime packages can register anything in the IDE
-                        // and are not compiled into projects.
-                        // The IDE calls the 'register' procedures of each unit.
-    lptRunAndDesignTime,// RunAndDesignTime packages can do anything.
-    lptRunTimeOnly      // as lptRunTime, but they can not be installed in the
-                        // IDE, not even indirectly
-    );
-  TLazPackageTypes = set of TLazPackageType;
-    
   TLazPackageFlag = (
     lpfAutoIncrementVersionOnBuild, // increment version before
     lpfModified,       // package needs saving
@@ -529,7 +517,6 @@ type
     FModifiedLock: integer;
     FOutputStateFile: string;
     FPackageEditor: TBasePackageEditor;
-    FPackageType: TLazPackageType;
     FPOOutputDirectory: string;
     FProvides: TStrings;
     fPublishOptions: TPublishPackageOptions;
@@ -794,8 +781,6 @@ const
   PkgFileTypeIdents: array[TPkgFileType] of string = (
     'Unit', 'Virtual Unit', 'Main Unit',
     'LFM', 'LRS', 'Include', 'Issues', 'Text', 'Binary');
-  LazPackageTypeIdents: array[TLazPackageType] of string = (
-    'RunTime', 'DesignTime', 'RunAndDesignTime', 'RunTimeOnly');
   AutoUpdateNames: array[TPackageUpdatePolicy] of string = (
     'Manually', 'OnRebuildingAll', 'AsNeeded');
     

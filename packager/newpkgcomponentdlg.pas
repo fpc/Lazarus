@@ -30,8 +30,13 @@ unit NewPkgComponentDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, PackageSystem, PackageDefs, LazarusIDEStrConsts;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, StdCtrls, ButtonPanel,
+  // IdeIntf
+  PackageIntf,
+  // IDE
+  PackageSystem, PackageDefs, LazarusIDEStrConsts;
 
 type
 

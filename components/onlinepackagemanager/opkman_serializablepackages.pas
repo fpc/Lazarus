@@ -119,7 +119,7 @@ type
     FLicense: String;
     FPackageState: TPackageState;
     FPackageStates: TPackageStates;
-    FPackageType: TPackageType;
+    FPackageType: TPackageType;  // ToDo: Replace with TLazPackageType.
     FLazCompatibility: String;
     FFPCCompatibility: String;
     FSupportedWidgetSet: String;
