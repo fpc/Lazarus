@@ -223,7 +223,7 @@ end;
 
 procedure TThreadDownload.DoOnPackageDownloadProgress;
 begin
-  if Assigned(FOnPackageDownloadCompleted) then
+  if Assigned(FOnPackageDownloadProgress) then
     FOnPackageDownloadProgress(Self, FFrom, FTo, FCnt, FTotCnt, FCurPos, FCurSize, FTotPosTmp, FTotSize, FElapsed, FRemaining, FSpeed);
 end;
 
