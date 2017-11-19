@@ -1948,6 +1948,7 @@ type
     FClientWidth: Integer;
     FClientHeight: Integer;
     FDockManager: TDockManager;
+    FFlipped: boolean; // true if flipped - false if native
     FOnAlignInsertBefore: TAlignInsertBeforeEvent;
     FOnAlignPosition: TAlignPositionEvent;
     FOnDockDrop: TDockDropEvent;
@@ -2186,6 +2187,7 @@ type
     property DockSite: Boolean read FDockSite write SetDockSite default False;
     property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default False;
     property Handle: HWND read GetHandle write SetHandle;
+    property IsFlipped: Boolean read FFlipped;
     property IsResizing: Boolean read GetIsResizing;
     property TabOrder: TTabOrder read GetTabOrder write SetTabOrder default -1;
     property TabStop: Boolean read FTabStop write SetTabStop default false;
@@ -2823,16 +2825,35 @@ begin
 end;
 
 function BidiFlipAnchors(Control: TControl; Flip: Boolean): TAnchors;
+var
+  LeftControl,RightControl : TControl;
+  LeftSide,RightSide: TAnchorSideReference;
+  NewAnchors: TAnchors;
 begin
   Result := Control.Anchors;
   if Flip then
   begin
-    if (akLeft in Result) and (Control.AnchorSide[akLeft].Control=nil)
-    and not (akRight in Result) then
-      Result := Result - [akLeft] + [akRight]
-    else if (akRight in Result) and (Control.AnchorSide[akRight].Control=nil)
-    and not (akLeft in Result) then
-      Result := Result - [akRight] + [akLeft];
+    LeftControl := Control.AnchorSide[akLeft].Control;
+    LeftSide := Control.AnchorSide[akLeft].Side;
+    if LeftSide = asrTop then LeftSide := asrBottom
+    else if LeftSide = asrBottom then LeftSide := asrTop;
+
+    RightControl := Control.AnchorSide[akRight].Control;
+    RightSide := Control.AnchorSide[akRight].Side;
+    if RightSide = asrTop then RightSide := asrBottom
+    else if RightSide = asrBottom then RightSide := asrTop;
+
+    Control.AnchorSide[akLeft].Control := RightControl;
+    Control.AnchorSide[akLeft].Side := RightSide;
+    Control.AnchorSide[akRight].Control := LeftControl;
+    Control.AnchorSide[akRight].Side := LeftSide;
+
+    NewAnchors := [];
+    if (akTop in Result) then NewAnchors := NewAnchors + [akTop];
+    if (akBottom in Result) then NewAnchors := NewAnchors + [akBottom];
+    if (akLeft in Result) then NewAnchors := NewAnchors + [akRight];
+    if (akRight in Result) then NewAnchors := NewAnchors + [akLeft];
+    Result := NewAnchors;
   end;
 end;
 

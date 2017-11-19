@@ -23,6 +23,9 @@ type
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
+    Button7: TButton;
+    Button8: TButton;
+    Button9: TButton;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
     CheckListBox1: TCheckListBox;
@@ -37,6 +40,12 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    FlipLabel: TLabel;
+    Label8: TLabel;
     ListBox1: TListBox;
     ListBox2: TListBox;
     MainMenu1: TMainMenu;
@@ -82,6 +91,7 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
+    TabSheet4: TTabSheet;
     TrayIcon1: TTrayIcon;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -146,6 +156,16 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);
 begin
   FlipChildren(True);
+  if IsFlipped then
+  begin
+    FlipLabel.Caption := 'Flipped';
+    FlipLabel.Color := clRed;
+  end
+  else
+  begin
+    FlipLabel.Caption := 'Native';
+    FlipLabel.Color := clNone;
+  end;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

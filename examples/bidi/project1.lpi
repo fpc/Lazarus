@@ -46,7 +46,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <SearchPaths>
-      <UnitOutputDirectory Value="lib\$(TargetOS)-$(TargetCPU)"/>
+      <UnitOutputDirectory Value="lib/$(TargetOS)-$(TargetCPU)"/>
     </SearchPaths>
     <Linking>
       <Options>

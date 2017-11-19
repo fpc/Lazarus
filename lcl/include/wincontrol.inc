@@ -4513,7 +4513,7 @@ begin
     FlipControls.Free;
     EnableAlign;
   end;
-  
+  FFlipped := not FFlipped; // toggle FFlipped status
   // flip recursively
   if AllLevels then begin
     for i := 0 to ControlCount - 1 do begin
@@ -6659,11 +6659,17 @@ var
   i: Integer;
   CurControl: TControl;
   AWidth: Integer;
+  SaveLeft: Integer;
 begin
   AWidth:=GetLogicalClientRect.Right;
   DisableAlign;
   for i:=0 to ControlCount-1 do begin
     CurControl:=Controls[i];
+    // flip BorderSpacing
+    SaveLeft := CurControl.BorderSpacing.Left;
+    CurControl.BorderSpacing.Left := CurControl.BorderSpacing.Right;
+    CurControl.BorderSpacing.Right := SaveLeft;
+    // flip control and anchors
     CurControl.Left:=AWidth-CurControl.Left-CurControl.Width;
     CurControl.Anchors := BidiFlipAnchors(CurControl, True);
   end;
