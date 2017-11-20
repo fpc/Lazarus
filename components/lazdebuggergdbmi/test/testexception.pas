@@ -43,7 +43,9 @@ const
   *)
   BREAK_LINE_EXCEPT_1 = 20;  // first except blog // may be 18 = at "except" keyword
   BREAK_LINE_EXCEPT_2 = 31;  // 2nd except
-  BREAK_LINE_EXCEPT_END = 38; // line for break at end
+  BREAK_LINE_EXCEPT_3 = 45;  // 3rd except not handled
+  BREAK_LINE_EXCEPT_4 = 50;  // 3rd except
+  BREAK_LINE_EXCEPT_END = 54; // line for break at end
 
 implementation
 
@@ -348,6 +350,7 @@ begin
              (FCurLine <= BREAK_LINE_EXCEPT_1) and (FCurLine >= BREAK_LINE_EXCEPT_1 - 2));
     TestEquals(TstName+' (Stepped) Still Got 1 exception', 1, FGotExceptCount);
 
+
     dbg.Run;
     TestEquals(TstName+' Got 2 exception', 2, FGotExceptCount);
 
@@ -356,9 +359,24 @@ begin
              (FCurLine <= BREAK_LINE_EXCEPT_2) and (FCurLine >= BREAK_LINE_EXCEPT_2 - 2));
     TestEquals(TstName+' (Stepped 2) Still Got 2 exception', 2, FGotExceptCount);
 
+
+    dbg.Run;
+    TestEquals(TstName+' Got 3 exception', 3, FGotExceptCount);
+
+    dbg.StepOver;
+    TestTrue(TstName+' (Stepped 2) at break '+IntToStr(FCurLine),
+             (FCurLine <= BREAK_LINE_EXCEPT_3) and (FCurLine >= BREAK_LINE_EXCEPT_3 - 2));
+    TestEquals(TstName+' (Stepped 3) Still Got 3 exception', 3, FGotExceptCount);
+
+    dbg.StepOver;
+    TestTrue(TstName+' (Stepped 4) at break '+IntToStr(FCurLine),
+             (FCurLine <= BREAK_LINE_EXCEPT_4) and (FCurLine >= BREAK_LINE_EXCEPT_4 - 2));
+    TestEquals(TstName+' (Stepped 4) Still Got 3 exception', 3, FGotExceptCount);
+
+
     dbg.Run; // run to break (tmp break cleared)
     TestEquals(TstName+' at break', BREAK_LINE_EXCEPT_END, FCurLine);
-    TestEquals(TstName+' Still Got 2 exception', 2, FGotExceptCount);
+    TestEquals(TstName+' Still Got 3 exception', 3, FGotExceptCount);
 
     dbg.Stop;
   finally
