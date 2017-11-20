@@ -67,7 +67,7 @@ begin
 end;
 
 initialization
-  OPMInterface := TOPMInterface.Create;
+  OPMInterface := TOPMInterfaceEx.Create;
 
 finalization
   OPMInterface.Free;

@@ -37,11 +37,9 @@ uses
 
 type
 
-  { TOPMMain }
+  { TOPMInterfaceEx }
 
-  //just a dummy class for now, it must be inherited from ideintf(packagelinkintf.pas)
-  //it will allow the communication between OPM and the IDE
-  TOPMInterface = class
+  TOPMInterfaceEx = class(TOPMInterface)
   private
     FWaitForIDE: TThreadTimer;
     procedure DoWaitForIDE(Sender: TObject);
@@ -52,16 +50,13 @@ type
   public
   end;
 
-var
-  OPMInterface: TOPMInterface;
-
 implementation
 
 uses opkman_serializablepackages, opkman_common, opkman_options;
 
 { TOPMMain }
 
-constructor TOPMInterface.Create;
+constructor TOPMInterfaceEx.Create;
 begin
   FWaitForIDE := TThreadTimer.Create;
   FWaitForIDE.Interval := 100;
@@ -69,18 +64,17 @@ begin
   FWaitForIDE.StartTimer;
 end;
 
-procedure TOPMInterface.DoWaitForIDE(Sender: TObject);
+procedure TOPMInterfaceEx.DoWaitForIDE(Sender: TObject);
 begin
   if Assigned(LazarusIDE) and Assigned(PackageEditingInterface) then
   begin
     InitOPM;
     FWaitForIDE.StopTimer;
     FWaitForIDE.Terminate;
-    FWaitForIDE := nil;
   end;
 end;
 
-procedure TOPMInterface.InitOPM;
+procedure TOPMInterfaceEx.InitOPM;
 begin
   InitLocalRepository;
   Options := TOptions.Create(LocalRepositoryConfigFile);
@@ -90,13 +84,8 @@ begin
   PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
 end;
 
-destructor TOPMInterface.Destroy;
+destructor TOPMInterfaceEx.Destroy;
 begin
-  if Assigned(FWaitForIDE) then
-  begin
-    FWaitForIDE.StopTimer;
-    FWaitForIDE.Terminate;
-  end;
   PackageDownloader.Free;
   SerializablePackages.Free;
   Options.Free;
