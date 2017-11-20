@@ -60,7 +60,6 @@ begin
   inherited Create(True);
   FreeOnTerminate := True;
   FInterval := 1000;
-  FreeOnTerminate := True;
   FEnabled := False;
 end;
 
