@@ -425,7 +425,7 @@ begin
     Result := WindowProc(Window, Msg, WParam, LParam);
   end
   else
-  if ThemeServices.ThemesEnabled then
+  if Assigned(ThemeServices) and ThemeServices.ThemesEnabled then
   begin
     // Paul: next is a slightly modified code of TThemeManager.StatusBarWindowProc
     // of Mike Lischke Theme manager library (Mike granted us permition to use his code)

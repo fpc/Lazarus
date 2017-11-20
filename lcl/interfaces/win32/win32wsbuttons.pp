@@ -480,7 +480,7 @@ begin
   case Msg of
     WM_DESTROY:
       begin
-        if ThemeServices.ThemesAvailable and
+        if Assigned(ThemeServices) and ThemeServices.ThemesAvailable and
            (Windows.SendMessage(Window, BCM_GETIMAGELIST, 0, Windows.LPARAM(@ButtonImageList)) <> 0) then
         begin
           // delete and destroy button imagelist
