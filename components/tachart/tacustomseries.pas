@@ -1207,7 +1207,7 @@ var
   brushAlreadySet: boolean;
 begin
   Assert(Pointer <> nil, 'Series pointer');
-  if not Pointer.Visible then exit;
+  if (not Pointer.Visible) or (Length(FGraphPoints) = 0) then exit;
   for i := FLoBound to FUpBound do begin
     p := FGraphPoints[i - FLoBound];
     if not ParentChart.IsPointInViewPort(p) then continue;
