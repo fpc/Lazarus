@@ -32,6 +32,8 @@ uses
   // LCL
   Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Buttons, Menus,
+  // IDEIntf
+  PackageIntf,
   // LazUtils
   LazFileUtils, LazUTF8,
   // OpkMan
@@ -137,7 +139,7 @@ type
     FDataType: Integer;
     FName: String;
     FDisplayName: String;
-    FPackageType: TPackageType;
+    FPackageType: TLazPackageType;
     FRepositoryFileName: String;
     FRepositoryFileSize: Int64;
     FRepositoryFileHash: String;
@@ -1060,10 +1062,10 @@ begin
                 CellText := rsCreateRepositoryFrm_VSTText_Packagetype
               else
                 case DetailData^.FPackageType of
-                   ptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
-                   ptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
-                   ptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
-                   ptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
+                   lptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
+                   lptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
+                   lptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
+                   lptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
                 end;
            9: if Column = 0 then
                 CellText := rsCreateRepositoryFrm_VSTText_License

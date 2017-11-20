@@ -31,7 +31,8 @@ uses
   Classes, SysUtils, md5, fpjson,
   // LCL
   Forms, Controls, ExtCtrls, StdCtrls, Dialogs, Graphics, Buttons, EditBtn,
-  LCLIntf,
+  // IDEIntf
+  LCLIntf, PackageIntf,
   // LazUtils
   FileUtil, LazFileUtils, Laz2_XMLCfg,
   // OpkMan
@@ -166,7 +167,7 @@ type
     FDataType: Integer;
     FName: String;
     FDisplayName: String;
-    FPackageType: TPackageType;
+    FPackageType: TLazPackageType;
     FAuthor: String;
     FDescription: String;
     FLicense: String;
@@ -307,12 +308,12 @@ end;
 
 function LoadPackageData(const APath: String; AData: PData): Boolean;
 
-  function PackageTypeIdentToType(const AStr: String): TPackageType;
+  function PackageTypeIdentToType(const AStr: String): TLazPackageType;
   begin
-    for Result := Low(TPackageType) to High(TPackageType) do
+    for Result := Low(TLazPackageType) to High(TLazPackageType) do
       if SysUtils.CompareText(AStr, PackageTypeIdents[Result]) = 0 then
         Exit;
-    Result := ptRunTime;
+    Result := lptRunTime;
   end;
 
   function VersionBound(const AVersion: Integer): Integer;
@@ -347,7 +348,7 @@ begin
   BasePath := 'Package/';
   XMLConfig := TXMLConfig.Create(APath);
   try
-    AData^.FPackageType := PackageTypeIdentToType(XMLConfig.GetValue(BasePath + 'Type/Value', PackageTypeIdents[ptRunTime]));
+    AData^.FPackageType := PackageTypeIdentToType(XMLConfig.GetValue(BasePath + 'Type/Value', PackageTypeIdents[lptRunTime]));
     AData^.FDescription := String(XMLConfig.GetValue(BasePath + 'Description/Value', ''));
     AData^.FAuthor := String(XMLConfig.GetValue(BasePath + 'Author/Value', ''));
     AData^.FLicense := String(XMLConfig.GetValue(BasePath + 'License/Value', ''));
@@ -846,10 +847,10 @@ begin
          3: CellText := Data^.FDescription;
          4: CellText := Data^.FAuthor;
          5: case Data^.FPackageType of
-              ptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
-              ptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
-              ptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
-              ptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
+              lptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
+              lptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
+              lptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
+              lptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
             end;
          6: CellText := Data^.FDependenciesAsString;
          7: CellText := Data^.FLicense;

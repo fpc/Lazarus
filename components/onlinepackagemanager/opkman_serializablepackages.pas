@@ -39,16 +39,8 @@ uses
   // OpkMan
   opkman_common, opkman_const, opkman_options;
 
-
-type
-  TPackageType = (
-    ptRunAndDesignTime,
-    ptDesignTime,
-    ptRunTime,
-    ptRunTimeOnly);
-
 const
-  PackageTypeIdents: array[TPackageType] of string = (
+  PackageTypeIdents: array[TLazPackageType] of string = (
     'RunAndDesignTime',
     'DesignTime',
     'RunTime',
@@ -119,7 +111,7 @@ type
     FLicense: String;
     FPackageState: TPackageState;
     FPackageStates: TPackageStates;
-    FPackageType: TPackageType;  // ToDo: Replace with TLazPackageType.
+    FPackageType: TLazPackageType;
     FLazCompatibility: String;
     FFPCCompatibility: String;
     FSupportedWidgetSet: String;
@@ -174,7 +166,7 @@ type
     property LazCompatibility: String read FLazCompatibility write FLazCompatibility;
     property FPCCompatibility: String read FFPCCompatibility write FFPCCompatibility;
     property SupportedWidgetSet: String read FSupportedWidgetSet write FSupportedWidgetSet;
-    property PackageType: TPackageType read FPackageType write FPackageType;
+    property PackageType: TLazPackageType read FPackageType write FPackageType;
     property License: String read FLicense write FLicense;
     property DependenciesAsString: String read GetDependenciesAsString write SetDependenciesAsString;
   end;
@@ -888,7 +880,7 @@ begin
        LazarusPkg.LazCompatibility := LazarusPkgsObj.Get('LazCompatibility');
        LazarusPkg.FPCCompatibility := LazarusPkgsObj.Get('FPCCompatibility');
        LazarusPkg.SupportedWidgetSet := LazarusPkgsObj.Get('SupportedWidgetSet');
-       LazarusPkg.PackageType := TPackageType(LazarusPkgsObj.Get('PackageType'));
+       LazarusPkg.PackageType := TLazPackageType(LazarusPkgsObj.Get('PackageType'));
        LazarusPkg.DependenciesAsString := LazarusPkgsObj.Get('DependenciesAsString');
       end;
     end;
@@ -1121,7 +1113,7 @@ var
 begin
   Result := False;
   case ALazarusPkg.PackageType of
-    ptRunTime, ptRunTimeOnly:
+    lptRunTime, lptRunTimeOnly:
       begin
         FileName := StringReplace(ALazarusPkg.Name, '.lpk', '.opkman', [rfIgnoreCase]);
         RepoPath := Options.LocalRepositoryPackages + APackageBaseDir + ALazarusPkg.PackageRelativePath;
@@ -1139,7 +1131,7 @@ begin
         else
           Result := CheckIDEPackages
       end;
-    ptDesignTime, ptRunAndDesignTime:
+    lptDesignTime, lptRunAndDesignTime:
       begin
         Result := CheckIDEPackages
       end;
@@ -1352,7 +1344,7 @@ begin
       if (LazarusPkg.Checked) and
          (psInstalled in LazarusPkg.PackageStates) and
            (not (psError in LazarusPkg.PackageStates)) and
-             (LazarusPkg.PackageType in [ptRunTime, ptRunTimeOnly]) then
+             (LazarusPkg.PackageType in [lptRunTime, lptRunTimeOnly]) then
       begin
         FileName := StringReplace(LazarusPkg.Name, '.lpk', '.opkman', [rfIgnoreCase]);
         FileCreate(Options.LocalRepositoryPackages + Items[I].PackageBaseDir + LazarusPkg.PackageRelativePath + FileName);

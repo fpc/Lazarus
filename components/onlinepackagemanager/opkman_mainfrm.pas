@@ -840,14 +840,14 @@ begin
       if (LazarusPackage.Checked) and (LazarusPackage.PackageState = psInstalled) then
       begin
         case LazarusPackage.PackageType of
-          ptRunTime, ptRunTimeOnly:
+          lptRunTime, lptRunTimeOnly:
           begin
             FileName := StringReplace(LazarusPackage.Name, '.lpk', '.opkman', [rfIgnoreCase]);
             if FileExists(Options.LocalRepositoryPackages + SerializablePackages.Items[I].PackageBaseDir + LazarusPackage.PackageRelativePath + FileName) then
               DeleteFile(Options.LocalRepositoryPackages + SerializablePackages.Items[I].PackageBaseDir + LazarusPackage.PackageRelativePath + FileName);
             NeedToRebuild := True;
           end;
-          ptDesignTime, ptRunAndDesignTime:
+          lptDesignTime, lptRunAndDesignTime:
           begin
             IDEPackage := GetIDEPackage(LazarusPackage.PackageAbsolutePath);
             if IDEPackage <> nil then

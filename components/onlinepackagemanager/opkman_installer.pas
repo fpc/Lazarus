@@ -248,7 +248,7 @@ begin
     begin
       Inc(FCnt);
       if not FNeedToRebuild then
-        FNeedToRebuild := LazarusPkg.PackageType in [ptRunAndDesignTime, ptDesigntime];
+        FNeedToRebuild := LazarusPkg.PackageType in [lptRunAndDesignTime, lptDesigntime];
       DoOnPackageInstallProgress(imOpenPackage, LazarusPkg);
       IDEPackage := OpenPackage(LazarusPkg.PackageAbsolutePath);
       if IDEPackage <> nil then
@@ -266,7 +266,7 @@ begin
                     if LazarusPkg.InternalVersion > LazarusPkg.InternalVersionOld then
                       LazarusPkg.InternalVersionOld := LazarusPkg.InternalVersion;
               end;
-              if LazarusPkg.PackageType in [ptRunAndDesignTime, ptDesigntime] then
+              if LazarusPkg.PackageType in [lptRunAndDesignTime, lptDesigntime] then
               begin
                 DoOnPackageInstallProgress(imInstallPackage, LazarusPkg);
                 if InstallPackage then

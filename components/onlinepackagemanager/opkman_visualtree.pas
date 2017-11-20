@@ -32,7 +32,9 @@ interface
 uses
   Classes, SysUtils, contnrs, Math, dateutils,
   // LCL
-  Controls, Graphics, Menus, Dialogs, Forms, LCLType, LCLIntf, Buttons,
+  Controls, Graphics, Menus, Dialogs, Forms, LCLType, Buttons,
+  // IDEIntf
+  LCLIntf, PackageIntf,
   // OpkMan
   opkman_VirtualTrees, opkman_common, opkman_serializablepackages, opkman_const,
   opkman_options, opkman_packagedetailsfrm;
@@ -58,7 +60,7 @@ type
     LazCompatibility: String;
     FPCCompatibility: String;
     SupportedWidgetSet: String;
-    PackageType: TPackageType;
+    PackageType: TLazPackageType;
     Dependencies: String;
     License: String;
     RepositoryFileName: String;
@@ -941,7 +943,7 @@ begin
        begin
          if Data^.DataType = 8 then
          begin
-           if Data^.PackageType = TPackageType(AExtraParam) then
+           if Data^.PackageType = TLazPackageType(AExtraParam) then
              FilterNode(Node, 'PackageType')
            else
              FilterNode(Node, '');
@@ -1509,10 +1511,10 @@ begin
         6: CellText := Data^.FPCCompatibility;
         7: CellText := Data^.SupportedWidgetSet;
         8: case Data^.PackageType of
-             ptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
-             ptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
-             ptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
-             ptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
+             lptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
+             lptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
+             lptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
+             lptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
            end;
         9: CellText := GetDisplayString(Data^.License);
        10: CellText := Data^.Dependencies;
@@ -1784,10 +1786,10 @@ begin
     6: HintText := Data^.FPCCompatibility;
     7: HintText := Data^.SupportedWidgetSet;
     8: case Data^.PackageType of
-         ptRunAndDesignTime: HintText := rsMainFrm_VSTText_PackageType0;
-         ptDesignTime:       HintText := rsMainFrm_VSTText_PackageType1;
-         ptRunTime:          HintText := rsMainFrm_VSTText_PackageType2;
-         ptRunTimeOnly:      HintText := rsMainFrm_VSTText_PackageType3;
+         lptRunAndDesignTime: HintText := rsMainFrm_VSTText_PackageType0;
+         lptDesignTime:       HintText := rsMainFrm_VSTText_PackageType1;
+         lptRunTime:          HintText := rsMainFrm_VSTText_PackageType2;
+         lptRunTimeOnly:      HintText := rsMainFrm_VSTText_PackageType3;
        end;
     9: HintText := GetDisplayString(Data^.License);
     10: HintText := Data^.Dependencies;
