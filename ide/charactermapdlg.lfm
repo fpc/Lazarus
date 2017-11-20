@@ -13,7 +13,7 @@ object CharacterMapDialog: TCharacterMapDialog
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 26
@@ -44,23 +44,23 @@ object CharacterMapDialog: TCharacterMapDialog
     Height = 433
     Top = 6
     Width = 578
-    ActivePage = pgUnicode
+    ActivePage = pgAnsi
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object pgUnicode: TTabSheet
       Caption = 'Unicode'
-      ClientHeight = 407
+      ClientHeight = 405
       ClientWidth = 570
       object UnicodeCharInfoLabel: TLabel
         AnchorSideLeft.Control = Owner
         AnchorSideTop.Control = cbUniRange
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 13
-        Top = 384
-        Width = 106
+        Height = 15
+        Top = 380
+        Width = 118
         BorderSpacing.Around = 6
         Caption = 'UnicodeCharInfoLabel'
         ParentColor = False
@@ -72,10 +72,11 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = cbUniRange
         Left = 0
-        Height = 374
+        Height = 370
         Top = 0
         Width = 570
         Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoFillColumns = True
         ColCount = 16
         DefaultColWidth = 16
         DefaultDrawing = False
@@ -87,7 +88,26 @@ object CharacterMapDialog: TCharacterMapDialog
         OnKeyPress = StringGridKeyPress
         OnMouseDown = StringGridMouseDown
         OnMouseMove = UnicodeGridMouseMove
+        OnPrepareCanvas = GridPrepareCanvas
         OnSelectCell = UnicodeGridSelectCell
+        ColWidths = (
+          35
+          35
+          35
+          35
+          35
+          35
+          35
+          35
+          35
+          35
+          35
+          35
+          35
+          35
+          35
+          41
+        )
       end
       object cbUniRange: TComboBox
         AnchorSideTop.Control = UnicodeGrid
@@ -95,13 +115,13 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Control = pgUnicode
         AnchorSideBottom.Side = asrBottom
         Left = 242
-        Height = 21
-        Top = 380
+        Height = 23
+        Top = 376
         Width = 291
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
         DropDownCount = 25
-        ItemHeight = 13
+        ItemHeight = 15
         OnSelect = cbUniRangeSelect
         Style = csDropDownList
         TabOrder = 1
@@ -110,10 +130,10 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideTop.Control = cbUniRange
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cbUniRange
-        Left = 205
-        Height = 13
-        Top = 384
-        Width = 31
+        Left = 203
+        Height = 15
+        Top = 380
+        Width = 33
         Anchors = [akTop, akRight]
         Caption = 'Range'
         ParentColor = False
@@ -126,7 +146,7 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Control = pgUnicode
         Left = 539
         Height = 25
-        Top = 378
+        Top = 375
         Width = 25
         AllowAllUp = True
         Anchors = [akTop, akRight]
@@ -139,7 +159,7 @@ object CharacterMapDialog: TCharacterMapDialog
     end
     object pgAnsi: TTabSheet
       Caption = 'ANSI'
-      ClientHeight = 407
+      ClientHeight = 405
       ClientWidth = 570
       object AnsiCharInfoLabel: TLabel
         AnchorSideLeft.Control = pgAnsi
@@ -150,9 +170,9 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Control = pgAnsi
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 13
-        Top = 384
-        Width = 88
+        Height = 15
+        Top = 380
+        Width = 97
         BorderSpacing.Around = 6
         Caption = 'AnsiCharInfoLabel'
         ParentColor = False
@@ -164,7 +184,7 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = cbCodePage
         Left = 0
-        Height = 374
+        Height = 370
         Top = 0
         Width = 570
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -177,7 +197,27 @@ object CharacterMapDialog: TCharacterMapDialog
         OnKeyPress = StringGridKeyPress
         OnMouseDown = StringGridMouseDown
         OnMouseMove = AnsiGridMouseMove
+        OnPrepareCanvas = GridPrepareCanvas
         OnSelectCell = AnsiGridSelectCell
+        ColWidths = (
+          16
+          34
+          34
+          34
+          34
+          34
+          34
+          34
+          34
+          34
+          34
+          34
+          34
+          34
+          34
+          34
+          40
+        )
       end
       object cbCodePage: TComboBox
         AnchorSideTop.Control = AnsiGrid
@@ -187,13 +227,13 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Control = pgAnsi
         AnchorSideBottom.Side = asrBottom
         Left = 245
-        Height = 21
-        Top = 380
+        Height = 23
+        Top = 376
         Width = 319
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
         DropDownCount = 25
-        ItemHeight = 13
+        ItemHeight = 15
         Items.Strings = (
           'cp1250 - Central and East European Latin'
           'cp1251 - Cyrillic'
@@ -228,10 +268,10 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideTop.Control = cbCodePage
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cbCodePage
-        Left = 187
-        Height = 13
-        Top = 384
-        Width = 52
+        Left = 182
+        Height = 15
+        Top = 380
+        Width = 57
         Anchors = [akTop, akRight]
         Caption = 'Code page'
         ParentColor = False
