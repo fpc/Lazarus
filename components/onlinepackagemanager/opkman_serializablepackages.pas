@@ -39,13 +39,6 @@ uses
   // OpkMan
   opkman_common, opkman_const, opkman_options;
 
-const
-  PackageTypeIdents: array[TLazPackageType] of string = (
-    'RunAndDesignTime',
-    'DesignTime',
-    'RunTime',
-    'RunTimeOnly');
-
 type
   TPackageState = (
     psRepository,
@@ -882,7 +875,7 @@ begin
        LazarusPkg.LazCompatibility := LazarusPkgsObj.Get('LazCompatibility');
        LazarusPkg.FPCCompatibility := LazarusPkgsObj.Get('FPCCompatibility');
        LazarusPkg.SupportedWidgetSet := LazarusPkgsObj.Get('SupportedWidgetSet');
-       LazarusPkg.PackageType := TLazPackageType(LazarusPkgsObj.Get('PackageType'));
+       LazarusPkg.PackageType := TLazPackageType(LazarusPkgsObj.Get('PackageType')); // JuMa: Typecast was changed, may break things.
        LazarusPkg.DependenciesAsString := LazarusPkgsObj.Get('DependenciesAsString');
       end;
     end;

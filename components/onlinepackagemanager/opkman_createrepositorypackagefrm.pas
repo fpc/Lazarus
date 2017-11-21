@@ -308,14 +308,6 @@ end;
 
 function LoadPackageData(const APath: String; AData: PData): Boolean;
 
-  function PackageTypeIdentToType(const AStr: String): TLazPackageType;
-  begin
-    for Result := Low(TLazPackageType) to High(TLazPackageType) do
-      if SysUtils.CompareText(AStr, PackageTypeIdents[Result]) = 0 then
-        Exit;
-    Result := lptRunTime;
-  end;
-
   function VersionBound(const AVersion: Integer): Integer;
   begin
     if AVersion > 9999 then
@@ -348,7 +340,8 @@ begin
   BasePath := 'Package/';
   XMLConfig := TXMLConfig.Create(APath);
   try
-    AData^.FPackageType := PackageTypeIdentToType(XMLConfig.GetValue(BasePath + 'Type/Value', PackageTypeIdents[lptRunTime]));
+    AData^.FPackageType :=
+      LazPackageTypeIdentToType(XMLConfig.GetValue(BasePath + 'Type/Value', LazPackageTypeIdents[lptRunTime]));
     AData^.FDescription := String(XMLConfig.GetValue(BasePath + 'Description/Value', ''));
     AData^.FAuthor := String(XMLConfig.GetValue(BasePath + 'Author/Value', ''));
     AData^.FLicense := String(XMLConfig.GetValue(BasePath + 'License/Value', ''));
