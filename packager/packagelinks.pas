@@ -335,7 +335,6 @@ end;
 
 constructor TLazPackageLinks.Create;
 begin
-  PkgLinks:=Self;
   UserLinkLoadTimeValid:=false;
   FGlobalLinks:=TAvlTree.Create(@ComparePackageLinks);
   FOnlineLinks:=TAvlTree.Create(@ComparePackageLinks);

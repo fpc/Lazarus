@@ -2919,6 +2919,7 @@ begin
 
   // package links
   LazPackageLinks:=TLazPackageLinks.Create;
+  PkgLinks:=LazPackageLinks;
   LazPackageLinks.UpdateAll;
 
   // package graph
