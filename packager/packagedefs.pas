@@ -778,9 +778,6 @@ type
 const
   LazPkgXMLFileVersion = 4;
   
-  PkgFileTypeIdents: array[TPkgFileType] of string = (
-    'Unit', 'Virtual Unit', 'Main Unit',
-    'LFM', 'LRS', 'Include', 'Issues', 'Text', 'Binary');
   AutoUpdateNames: array[TPackageUpdatePolicy] of string = (
     'Manually', 'OnRebuildingAll', 'AsNeeded');
     
@@ -807,8 +804,6 @@ function ComparePkgFilesAlphabetically(PkgFile1, PkgFile2: TPkgFile): integer;
 
 function GetUsageOptionsList(PackageList: TFPList): TFPList;
 
-function PkgFileTypeIdentToType(const s: string): TPkgFileType;
-function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 function GetPkgFileTypeLocalizedName(FileType: TPkgFileType): string;
 function NameToAutoUpdatePolicy(const s: string): TPackageUpdatePolicy;
 function FileNameToPkgFileType(AFilename: string): TPkgFileType;
@@ -864,20 +859,6 @@ function PackagePathToStr(PathList: TFPList): string;
 
 
 implementation
-
-function PkgFileTypeIdentToType(const s: string): TPkgFileType;
-begin
-  for Result:=Low(TPkgFileType) to High(TPkgFileType) do
-    if SysUtils.CompareText(s,PkgFileTypeIdents[Result])=0 then exit;
-  Result:=pftUnit;
-end;
-
-function LazPackageTypeIdentToType(const s: string): TLazPackageType;
-begin
-  for Result:=Low(TLazPackageType) to High(TLazPackageType) do
-    if SysUtils.CompareText(s,LazPackageTypeIdents[Result])=0 then exit;
-  Result:=lptRunTime;
-end;
 
 function GetPkgFileTypeLocalizedName(FileType: TPkgFileType): string;
 begin

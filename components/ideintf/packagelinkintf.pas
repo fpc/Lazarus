@@ -57,6 +57,7 @@ type
     FFilename: string;         // Filename or URL
     FLPLFileDate: TDateTime;
     FLPLFilename: string;
+    FPackageType: TLazPackageType;
     FOrigin: TPkgLinkOrigin;
     FLastUsed: TDateTime;
   public

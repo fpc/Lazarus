@@ -45,6 +45,9 @@ type
 const
   PkgFileUnitTypes = [pftUnit,pftVirtualUnit,pftMainUnit];
   PkgFileRealUnitTypes = [pftUnit,pftMainUnit];
+  PkgFileTypeIdents: array[TPkgFileType] of string = (
+    'Unit', 'Virtual Unit', 'Main Unit',
+    'LFM', 'LRS', 'Include', 'Issues', 'Text', 'Binary');
 
 type
   TIDEPackage = class;
@@ -97,20 +100,6 @@ type
     property RequiredIDEPackage: TIDEPackage read FRequiredPackage write SetRequiredPackage;
   end;
 
-  TLazPackageType = (
-    lptRunTime, // Cannot register anything in the IDE. Can be used by designtime packages.
-    lptDesignTime, // Can register anything in the IDE but is not compiled into projects.
-                   // The IDE calls the 'register' procedures of each unit.
-    lptRunAndDesignTime, // Can do anything.
-    lptRunTimeOnly // As lptRunTime but cannot be installed in the IDE, not even indirectly.
-    );
-  TLazPackageTypes = set of TLazPackageType;
-
-const
-  LazPackageTypeIdents: array[TLazPackageType] of string = (
-    'RunTime', 'DesignTime', 'RunAndDesignTime', 'RunTimeOnly');
-
-type
   { TLazPackageID }
 
   TLazPackageID = class(TIDEProjPackBase)
@@ -121,7 +110,6 @@ type
     function GetIDAsWord: string;
   protected
     FVersion: TPkgVersion;
-    FPackageType: TLazPackageType;
     procedure SetName(const NewName: TComponentName); override;
     procedure UpdateIDAsString;
     procedure VersionChanged(Sender: TObject); virtual;
@@ -142,6 +130,20 @@ type
 
   TIteratePackagesEvent = procedure(APackage: TLazPackageID) of object;
 
+  TLazPackageType = (
+    lptRunTime, // Cannot register anything in the IDE. Can be used by designtime packages.
+    lptDesignTime, // Can register anything in the IDE but is not compiled into projects.
+                   // The IDE calls the 'register' procedures of each unit.
+    lptRunAndDesignTime, // Can do anything.
+    lptRunTimeOnly // As lptRunTime but cannot be installed in the IDE, not even indirectly.
+    );
+  TLazPackageTypes = set of TLazPackageType;
+
+const
+  LazPackageTypeIdents: array[TLazPackageType] of string = (
+    'RunTime', 'DesignTime', 'RunAndDesignTime', 'RunTimeOnly');
+
+type
   TPackageInstallType = (
     pitNope,
     pitStatic,
@@ -153,9 +155,10 @@ type
   TIDEPackage = class(TLazPackageID)
   protected
     FAutoInstall: TPackageInstallType;
+    FFilename: string;
     FChangeStamp: integer;
     FCustomOptions: TConfigStorage;
-    FFilename: string;
+    FPackageType: TLazPackageType;
     function GetDirectoryExpanded: string; virtual; abstract;
     function GetFileCount: integer; virtual; abstract;
     function GetPkgFiles(Index: integer): TLazPackageFile; virtual; abstract;
@@ -180,6 +183,7 @@ type
     property Filename: string read FFilename write SetFilename;//the .lpk filename
     property ChangeStamp: integer read FChangeStamp;
     property CustomOptions: TConfigStorage read FCustomOptions;
+    property PackageType: TLazPackageType read FPackageType;
     property DirectoryExpanded: string read GetDirectoryExpanded;
     property FileCount: integer read GetFileCount;
     property Files[Index: integer]: TLazPackageFile read GetPkgFiles;
@@ -390,6 +394,8 @@ var
   PackageGraphInterface: TPackageGraphInterface; // must be set along with PackageSystem.PackageGraph
 
 
+function PkgFileTypeIdentToType(const s: string): TPkgFileType;
+function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 function PackageDescriptorStd: TPackageDescriptor;
 function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
 procedure RegisterPackageDescriptor(PkgDesc: TPackageDescriptor);
@@ -397,6 +403,20 @@ procedure RegisterPackageDescriptor(PkgDesc: TPackageDescriptor);
 
 implementation
 
+
+function PkgFileTypeIdentToType(const s: string): TPkgFileType;
+begin
+  for Result:=Low(TPkgFileType) to High(TPkgFileType) do
+    if SysUtils.CompareText(s,PkgFileTypeIdents[Result])=0 then exit;
+  Result:=pftUnit;
+end;
+
+function LazPackageTypeIdentToType(const s: string): TLazPackageType;
+begin
+  for Result:=Low(TLazPackageType) to High(TLazPackageType) do
+    if SysUtils.CompareText(s,LazPackageTypeIdents[Result])=0 then exit;
+  Result:=lptRunTime;
+end;
 
 function PackageDescriptorStd: TPackageDescriptor;
 begin
