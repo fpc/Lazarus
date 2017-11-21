@@ -6347,6 +6347,8 @@ var
         end;
       ectStepOver, ectStepOverInstruction, ectStepOut, ectStepInto:
         begin
+          FTheDebugger.FPopExceptStack.EnableOrSetByAddr(Self, True);
+          FTheDebugger.FCatchesBreak.EnableOrSetByAddr(Self, True);
           Result := FStepBreakPoint > 0;
           if Result then
             exit;
