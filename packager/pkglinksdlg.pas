@@ -300,6 +300,7 @@ begin
     FCountLPKInvalid:=0;
     FCountGlobalLinks:=0;
     FCountUserLinks:=0;
+    FCountOnlineLinks:=0;
     Node:=FLinks.FindLowest;
     FilterCase:=FilterEdit.Text;
     FilterLo:=UTF8LowerCase(FilterCase);
