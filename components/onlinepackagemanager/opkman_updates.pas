@@ -498,11 +498,11 @@ var
   I: Integer;
   JSON: TJSONStringType;
 begin
-  Load;
-  CheckForOpenSSL;
+//  Load;
+//  CheckForOpenSSL;
   while not Terminated do
   begin
-    if Assigned(SerializablePackages) and (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvailable) then
+{    if Assigned(SerializablePackages) and (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvailable) then
     begin
       Options.LastUpdate := Now;
       Options.Changed := True;
@@ -532,7 +532,7 @@ begin
         FBusyUpdating := False;
         FNeedToUpdate := False;
       end;
-    end;
+    end;}
     Sleep(1000);
   end;
 end;
