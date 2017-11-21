@@ -132,7 +132,6 @@ type
     procedure VSTClick(Sender: TObject);
     procedure VSTAfterPaint(Sender: TBaseVirtualTree; {%H-}TargetCanvas: TCanvas);
     procedure VSTEnter(Sender: TObject);
-    function GetDisplayString(const AStr: String): String;
     function IsAllChecked(const AChecking: PVirtualNode): Boolean;
     procedure ButtonClick(Sender: TObject);
     procedure DrawStars(ACanvas: TCanvas; AStartIndex: Integer; P: TPoint; AAvarage: Double);
@@ -1360,7 +1359,7 @@ begin
   end;
 end;
 
-function TVisualTree.GetDisplayString(const AStr: String): String;
+function GetDisplayString(const AStr: String): String;
 var
   SL: TStringList;
   I: Integer;
@@ -1376,6 +1375,16 @@ begin
         Result := Result + ' ' + SL.Strings[I];
   finally
     SL.Free;
+  end;
+end;
+
+function GetPackageTypeString(aPackageType: TLazPackageType): String;
+begin
+  case aPackageType of
+    lptRunAndDesignTime: Result := rsMainFrm_VSTText_PackageType0;
+    lptDesignTime:       Result := rsMainFrm_VSTText_PackageType1;
+    lptRunTime:          Result := rsMainFrm_VSTText_PackageType2;
+    lptRunTimeOnly:      Result := rsMainFrm_VSTText_PackageType3;
   end;
 end;
 
@@ -1510,12 +1519,7 @@ begin
         5: CellText := Data^.LazCompatibility;
         6: CellText := Data^.FPCCompatibility;
         7: CellText := Data^.SupportedWidgetSet;
-        8: case Data^.PackageType of
-             lptRunAndDesignTime: CellText := rsMainFrm_VSTText_PackageType0;
-             lptDesignTime:       CellText := rsMainFrm_VSTText_PackageType1;
-             lptRunTime:          CellText := rsMainFrm_VSTText_PackageType2;
-             lptRunTimeOnly:      CellText := rsMainFrm_VSTText_PackageType3;
-           end;
+        8: CellText := GetPackageTypeString(Data^.PackageType);
         9: CellText := GetDisplayString(Data^.License);
        10: CellText := Data^.Dependencies;
        11: CellText := '';
@@ -1785,12 +1789,7 @@ begin
     5: HintText := Data^.LazCompatibility;
     6: HintText := Data^.FPCCompatibility;
     7: HintText := Data^.SupportedWidgetSet;
-    8: case Data^.PackageType of
-         lptRunAndDesignTime: HintText := rsMainFrm_VSTText_PackageType0;
-         lptDesignTime:       HintText := rsMainFrm_VSTText_PackageType1;
-         lptRunTime:          HintText := rsMainFrm_VSTText_PackageType2;
-         lptRunTimeOnly:      HintText := rsMainFrm_VSTText_PackageType3;
-       end;
+    8: HintText := GetPackageTypeString(Data^.PackageType);
     9: HintText := GetDisplayString(Data^.License);
     10: HintText := Data^.Dependencies;
     11: HintText := '';
