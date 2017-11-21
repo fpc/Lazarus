@@ -8,15 +8,15 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
   ClientHeight = 373
   ClientWidth = 495
   OnClose = FormClose
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object DependPkgNameLabel: TLabel
     AnchorSideTop.Control = DependPkgNameFilter
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = DependPkgNameFilter
-    Left = 61
-    Height = 18
-    Top = 19
-    Width = 138
+    Left = 34
+    Height = 15
+    Top = 20
+    Width = 121
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     BorderSpacing.CellAlignHorizontal = ccaLeftTop
@@ -25,29 +25,32 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     ParentColor = False
   end
   object DependPkgNameFilter: TListFilterEdit
+    AnchorSideLeft.Control = DependPkgNameListBox
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 205
-    Height = 24
+    Left = 161
+    Height = 23
     Top = 16
-    Width = 284
+    Width = 326
     ButtonWidth = 23
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 8
     MaxLength = 0
     TabOrder = 0
     FilteredListbox = DependPkgNameListBox
   end
   object DependPkgNameListBox: TListBox
-    AnchorSideLeft.Control = DependPkgNameFilter
+    AnchorSideLeft.Control = DependMinVersionEdit
     AnchorSideTop.Control = DependPkgNameFilter
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = DependPkgNameFilter
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = DependMinVersionEdit
-    Left = 205
-    Height = 224
-    Top = 46
-    Width = 284
+    Left = 161
+    Height = 227
+    Top = 45
+    Width = 326
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
@@ -55,45 +58,46 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     MultiSelect = True
     ScrollWidth = 282
     TabOrder = 1
-    TopIndex = -1
   end
   object DependMinVersionEdit: TEdit
-    AnchorSideLeft.Control = DependPkgNameListBox
+    AnchorSideLeft.Control = DependMaxVersionEdit
     AnchorSideRight.Control = DependPkgNameListBox
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = DependMaxVersionEdit
-    Left = 205
-    Height = 24
-    Top = 276
-    Width = 284
+    Left = 161
+    Height = 23
+    Top = 278
+    Width = 326
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     TabOrder = 2
     Text = 'DependMinVersionEdit'
   end
   object DependMaxVersionEdit: TEdit
-    AnchorSideLeft.Control = DependMinVersionEdit
+    AnchorSideLeft.Control = DependMaxVersionLabel
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = DependPkgNameListBox
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
-    Left = 205
-    Height = 24
-    Top = 303
-    Width = 284
+    Left = 161
+    Height = 23
+    Top = 304
+    Width = 326
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     TabOrder = 3
     Text = 'DependMaxVersionEdit'
   end
   object DependMinVersionLabel: TLabel
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = DependMinVersionEdit
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = DependMinVersionEdit
-    Left = 52
-    Height = 18
-    Top = 279
-    Width = 147
+    Left = 27
+    Height = 15
+    Top = 282
+    Width = 128
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     BorderSpacing.CellAlignHorizontal = ccaLeftTop
@@ -102,16 +106,16 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     ParentColor = False
   end
   object DependMaxVersionLabel: TLabel
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = DependMaxVersionEdit
     AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = DependMaxVersionEdit
-    Left = 49
-    Height = 18
-    Top = 306
-    Width = 150
-    Anchors = [akTop, akRight]
-    BorderSpacing.Right = 6
+    Left = 24
+    Height = 15
+    Top = 308
+    Width = 129
+    Alignment = taRightJustify
+    BorderSpacing.Left = 24
+    BorderSpacing.Right = 8
     BorderSpacing.CellAlignHorizontal = ccaLeftTop
     BorderSpacing.CellAlignVertical = ccaCenter
     Caption = 'DependMaxVersionLabel'

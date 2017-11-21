@@ -79,7 +79,6 @@ begin
   inherited Create(TheOwner);
   Caption:=lisProjAddNewRequirement;
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
-  IDEDialogLayoutList.ApplyLayout(Self,400,360);
   TIDEImages.AssignImage(DependPkgNameFilter.Glyph, 'btnfiltercancel');
 
   DependPkgNameLabel.Caption:=lisProjAddPackageName;
@@ -87,6 +86,8 @@ begin
   DependMinVersionEdit.Text:='';
   DependMaxVersionLabel.Caption:=lisProjAddMaximumVersionOptional;
   DependMaxVersionEdit.Text:='';
+
+  IDEDialogLayoutList.ApplyLayout(Self,400,360);
 end;
 
 destructor TAddPkgDependencyDialog.Destroy;
