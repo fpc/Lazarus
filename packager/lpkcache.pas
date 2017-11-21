@@ -89,7 +89,7 @@ type
     PkgType: TLazPackageType; // design, runtime
 
     procedure Assign(Source: TObject);
-    constructor Create(TheID: TLazPackageID; CreateNewID: boolean);
+    constructor Create(TheID: TLazPackageID);
     destructor Destroy; override;
   end;
 
@@ -240,7 +240,7 @@ begin
         // new info
         ID:=TLazPackageID.Create;
         ID.Name:=ExtractFileNameOnly(CurFilename);
-        Info:=TLPKInfo.Create(ID,false);
+        Info:=TLPKInfo.Create(ID);
         Info.LPKFilename:=CurFilename;
         Info.InLazSrc:=FileIsInPath(Info.LPKFilename,
                                   EnvironmentOptions.GetParsedLazarusDirectory);
@@ -629,14 +629,9 @@ end;
 
 { TLPKInfo }
 
-constructor TLPKInfo.Create(TheID: TLazPackageID; CreateNewID: boolean);
+constructor TLPKInfo.Create(TheID: TLazPackageID);
 begin
-  if CreateNewID then begin
-    ID:=TLazPackageID.Create;
-    ID.AssignID(TheID);
-  end else begin
-    ID:=TheID;
-  end;
+  ID:=TheID;
 end;
 
 procedure TLPKInfo.Assign(Source: TObject);

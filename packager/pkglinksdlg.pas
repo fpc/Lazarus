@@ -476,7 +476,7 @@ end;
 constructor TPkgLinkInfo.Create;
 begin
   inherited Create;
-  FLPKInfo:=TLPKInfo.Create(TLazPackageID.Create,false);
+  FLPKInfo:=TLPKInfo.Create(TLazPackageID.Create);
 end;
 
 destructor TPkgLinkInfo.Destroy;
