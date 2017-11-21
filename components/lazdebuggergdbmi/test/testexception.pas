@@ -22,6 +22,7 @@ type
     FGotExceptMsg: String;
     FGotExceptType: TDBGExceptionType;
     FGotExceptionLocation: TDBGLocationRec;
+    FContinue: Boolean;
 
     procedure DoDebuggerException(Sender: TObject;
                                   const AExceptionType: TDBGExceptionType;
@@ -34,6 +35,7 @@ type
   published
     procedure TestException;
     procedure TestExceptionStepOut;
+    procedure TestExceptionStepOver;
   end;
 
 
@@ -46,6 +48,16 @@ const
   BREAK_LINE_EXCEPT_3 = 45;  // 3rd except not handled
   BREAK_LINE_EXCEPT_4 = 50;  // 3rd except
   BREAK_LINE_EXCEPT_END = 54; // line for break at end
+
+  STEP_OVER_RAISE_1 = 67;  // first except / step over test
+  STEP_OVER_CATCH_1 = 68;  // first except / step over test
+  STEP_OVER_RAISE_2 = 70;  // first except / step over test
+  STEP_OVER_CATCH_2 = 71;  // first except / step over test
+  STEP_OVER_RAISE_3 = 49;  // first except / step over test
+  STEP_OVER_CATCH_3 = 53;  // first except / step over test
+  STEP_OVER_RAISE_4 = 60;  // first except / step over test
+  STEP_OVER_CATCH_4 = 81;  // first except / step over test
+
 
 implementation
 
@@ -65,7 +77,7 @@ begin
   FGotExceptMsg   := AExceptionText;
   FGotExceptType  := AExceptionType;
   FGotExceptionLocation := AExceptionLocation;
-  AContinue := False;
+  AContinue := FContinue;
 end;
 
 procedure TTestExceptionOne.DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
@@ -83,6 +95,7 @@ begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestException')] then exit;
   ClearTestErrors;
+  FContinue := False;
 
   TstName := 'All';
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_raise_at', '-gt -gh -dTEST_EXCEPTION_AT');
@@ -329,6 +342,7 @@ begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestExceptionStepOut')] then exit;
   ClearTestErrors;
+  FContinue := False;
 
   TestCompile(AppDir + 'ExceptPrgStep.pas', TestExeName, '', '');
   try
@@ -388,9 +402,98 @@ begin
   AssertTestErrors;
 end;
 
+procedure TTestExceptionOne.TestExceptionStepOver;
+var
+  TestExeName, TstName: string;
+  dbg: TGDBMIDebugger;
+begin
+  if SkipTest then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestExceptionStepOver')] then exit;
+  ClearTestErrors;
+  FContinue := True;
+
+  TestCompile(AppDir + 'ExceptPrgStepOver.pas', TestExeName, '', '');
+  try
+    FGotExceptCount := 0; TstName := 'STEPOVER ';
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+    dbg.OnCurrent        := @DoCurrent;
+
+    with dbg.BreakPoints.Add('ExceptPrgStepOver.pas', STEP_OVER_RAISE_1) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+    with dbg.BreakPoints.Add('ExceptPrgStepOver.pas', STEP_OVER_RAISE_2) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+    with dbg.BreakPoints.Add('ExceptPrgStepOver.pas', STEP_OVER_RAISE_3) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+    with dbg.BreakPoints.Add('ExceptPrgStepOver.pas', STEP_OVER_RAISE_4) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+
+    dbg.Run;
+    TestEquals(TstName+' Before 1: Got 0 exceptions: ', 0, FGotExceptCount);
+    TestEquals(TstName+' Before 1: CurLine', STEP_OVER_RAISE_1, FCurLine);
+
+    dbg.StepOver;
+    TestTrue(TstName+' (Stepped 1) at break '+IntToStr(FCurLine),
+             (FCurLine <= STEP_OVER_CATCH_1) and (FCurLine >= STEP_OVER_CATCH_1 - 2));
+    TestEquals(TstName+' (Stepped 1) Got 1 exception', 1, FGotExceptCount);
+
+
+
+    dbg.Run;
+    TestEquals(TstName+' Before 2: Got 1 exceptions: ', 1, FGotExceptCount);
+    TestEquals(TstName+' Before 2: CurLine', STEP_OVER_RAISE_2, FCurLine);
+
+    dbg.StepOver;
+    TestTrue(TstName+' (Stepped 2) at break '+IntToStr(FCurLine),
+             (FCurLine <= STEP_OVER_CATCH_2) and (FCurLine >= STEP_OVER_CATCH_2 - 2));
+    TestEquals(TstName+' (Stepped 2) Got 2 exception', 2, FGotExceptCount);
+
+
+
+    dbg.Run;
+    TestEquals(TstName+' Before 3: Got 2 exceptions: ', 2, FGotExceptCount);
+    TestEquals(TstName+' Before 3: CurLine', STEP_OVER_RAISE_3, FCurLine);
+
+    dbg.StepOver;
+    TestTrue(TstName+' (Stepped 3) at break '+IntToStr(FCurLine),
+             (FCurLine <= STEP_OVER_CATCH_3) and (FCurLine >= STEP_OVER_CATCH_3 - 2));
+    TestEquals(TstName+' (Stepped 3) Got 3 exception', 3, FGotExceptCount);
+
+
+
+    dbg.Run;
+    TestEquals(TstName+' Before 4: Got 3 exceptions: ', 3, FGotExceptCount);
+    TestEquals(TstName+' Before 4: CurLine', STEP_OVER_RAISE_4, FCurLine);
+
+    dbg.StepOver;
+    TestTrue(TstName+' (Stepped 4) at break '+IntToStr(FCurLine),
+             (FCurLine <= STEP_OVER_CATCH_4) and (FCurLine >= STEP_OVER_CATCH_4 - 2));
+    TestEquals(TstName+' (Stepped 4) Got 4 exception', 4, FGotExceptCount);
+
+
+
+    dbg.Stop;
+  finally
+    dbg.Done;
+    CleanGdb;
+    dbg.Free;
+  end;
+
+  AssertTestErrors;
+end;
+
 initialization
   RegisterDbgTest(TTestExceptionOne);
-  RegisterTestSelectors(['TTestExceptionOne', '  TTestException', '  TTestExceptionStepOut'
+  RegisterTestSelectors(['TTestExceptionOne', '  TTestException', '  TTestExceptionStepOut', '  TTestExceptionStepOver'
                         ]);
 
 end.
