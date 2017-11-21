@@ -112,7 +112,6 @@ type
     FPaused: Boolean;
     function GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
     procedure DoOnTimer(Sender: TObject);
-    procedure DoOnUpdate;
     procedure Load;
     procedure Save;
     procedure AssignPackageData(AMetaPackage: TMetaPackage);
@@ -127,8 +126,6 @@ type
     procedure StartUpdate;
     procedure StopUpdate;
     procedure PauseUpdate;
-  published
-    property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
   end;
 
 var
@@ -311,7 +308,6 @@ begin
       MetaPkg.HasUpdate := HasUpdate;
     end;
   end;
-  Synchronize(@DoOnUpdate);
 end;
 
 procedure TUpdates.Save;
@@ -497,12 +493,6 @@ begin
   end;
 end;
 
-procedure TUpdates.DoOnUpdate;
-begin
-  if Assigned(FOnUpdate) then
-    FOnUpdate(Self);
-end;
-
 procedure TUpdates.Execute;
 var
   I: Integer;
@@ -538,8 +528,6 @@ begin
           else
             FHTTPClient.Terminate;
         end;
-        if Assigned(FOnUpdate) and (not FNeedToBreak) and (not FPaused) then
-          Synchronize(@DoOnUpdate);
       finally
         FBusyUpdating := False;
         FNeedToUpdate := False;

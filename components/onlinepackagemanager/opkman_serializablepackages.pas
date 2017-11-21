@@ -241,6 +241,7 @@ type
     FMetaPackages: TCollection;
     FLastError: String;
     FOnProcessJSON: TNotifyEvent;
+    FOnUpdatePackageLinks: TNotifyEvent;
     function GetCount: Integer;
     function GetDownloadCount: Integer;
     function GetExtractCount: Integer;
@@ -291,6 +292,7 @@ type
     property Items[Index: Integer]: TMetaPackage read GetItem write SetItem;
     property LastError: String read FlastError;
     property OnProcessJSON: TNotifyEvent read FOnProcessJSON write FOnProcessJSON;
+    property OnUpdatePackageLinks: TNotifyEvent read FOnUpdatePackageLinks write FOnUpdatePackageLinks;
   end;
 
 var
@@ -939,6 +941,9 @@ begin
   finally
     Parser.Free;
   end;
+  if Result then
+    if Assigned(FOnUpdatePackageLinks) then
+      FOnUpdatePackageLinks(Self);
 end;
 
 function TSerializablePackages.LazarusPackagesToJSON(AMetaPackage: TMetaPackage;

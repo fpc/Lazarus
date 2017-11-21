@@ -33,7 +33,7 @@ uses
   // IdeIntf
   LazIDEIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // OPM
-  opkman_timer, opkman_downloader;
+  opkman_timer, opkman_downloader, opkman_serializablepackages;
 
 type
 
@@ -41,27 +41,44 @@ type
 
   TOPMInterfaceEx = class(TOPMInterface)
   private
+    FOPMPackageLinks: TList;
     FWaitForIDE: TThreadTimer;
     procedure DoWaitForIDE(Sender: TObject);
+    procedure DoUpdatePackageLinks(Sender: TObject);
     procedure InitOPM;
+    procedure SynchronizePackages;
+    function IsInList(const AName, AURL: String): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
   public
+
   end;
 
 implementation
 
-uses opkman_serializablepackages, opkman_common, opkman_options;
+uses opkman_common, opkman_options;
 
-{ TOPMMain }
+{ TOPMInterfaceEx }
 
 constructor TOPMInterfaceEx.Create;
 begin
+  FOPMPackageLinks := TList.Create;
   FWaitForIDE := TThreadTimer.Create;
   FWaitForIDE.Interval := 100;
   FWaitForIDE.OnTimer := @DoWaitForIDE;
   FWaitForIDE.StartTimer;
+end;
+
+destructor TOPMInterfaceEx.Destroy;
+begin
+  FOPMPackageLinks.Clear;
+  FOPMPackageLinks.Free;
+  PackageDownloader.Free;
+  SerializablePackages.Free;
+  Options.Free;
+  InstallPackageList.Free;
+  inherited Destroy;
 end;
 
 procedure TOPMInterfaceEx.DoWaitForIDE(Sender: TObject);
@@ -79,19 +96,65 @@ begin
   InitLocalRepository;
   Options := TOptions.Create(LocalRepositoryConfigFile);
   SerializablePackages := TSerializablePackages.Create;
+  SerializablePackages.OnUpdatePackageLinks := @DoUpdatePackageLinks;
   PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository[Options.ActiveRepositoryIndex]);
   InstallPackageList := TObjectList.Create(True);
   PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
 end;
 
-destructor TOPMInterfaceEx.Destroy;
+procedure TOPMInterfaceEx.DoUpdatePackageLinks(Sender: TObject);
 begin
-  PackageDownloader.Free;
-  SerializablePackages.Free;
-  Options.Free;
-  InstallPackageList.Free;
-  inherited Destroy;
+  SynchronizePackages;
 end;
+
+function TOPMInterfaceEx.IsInList(const AName, AURL: String): Boolean;
+var
+  I: Integer;
+  PackageLink: TPackageLink;
+begin
+  Result := False;
+  for I := 0 to FOPMPackageLinks.Count - 1 do
+  begin
+    PackageLink := TPackageLink(FOPMPackageLinks.Items[I]);
+    if (UpperCase(PackageLink.Name) = UpperCase(AName)) and (UpperCase(PackageLink.LPKUrl) = UpperCase(AURL)) then
+    begin
+      Result := True;
+      Break;
+    end;
+  end;
+end;
+
+procedure TOPMInterfaceEx.SynchronizePackages;
+var
+  I, J: Integer;
+  MetaPackage: TMetaPackage;
+  LazPackage: TLazarusPackage;
+  PackageLink: TPackageLink;
+  URL, Name: String;
+  Version: TPkgVersion;
+begin
+  for I := 0 to SerializablePackages.Count - 1 do
+  begin
+    MetaPackage := SerializablePackages.Items[I];
+    for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
+    begin
+      LazPackage := TLazarusPackage(MetaPackage.LazarusPackages.Items[J]);
+      URL := Options.RemoteRepository[Options.ActiveRepositoryIndex] + MetaPackage.RepositoryFileName;
+      Name := StringReplace(LazPackage.Name, '.lpk', '', [rfReplaceAll, rfIgnoreCase]);
+      Version := Lazpackage.Version;
+      if not IsInList(Name, URL) then
+      begin
+        PackageLink := PkgLinks.AddOnlineLink(Url, Name, Version);
+        PackageLink.Name := Name;
+        PackageLink.LPLFileDate := MetaPackage.RepositoryDate;
+        PackageLink.LPKFilename := Options.LocalRepositoryPackages + MetaPackage.PackageBaseDir + LazPackage.PackageRelativePath + LazPackage.Name;
+        PackageLink.LPKUrl := URL;
+        FOPMPackageLinks.Add(PackageLink);
+      end;
+    end;
+  end;
+end;
+
 
 end.
 

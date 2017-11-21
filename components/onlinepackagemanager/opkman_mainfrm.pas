@@ -154,7 +154,6 @@ type
     procedure DoOnJSONProgress(Sender: TObject);
     procedure DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
     procedure DoOnProcessJSON(Sender: TObject);
-    procedure DoOnUpdate(Sender: TObject);
     function IsSomethingChecked(const AResolveDependencies: Boolean = True): Boolean;
     function Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     function Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean; const AIsUpdate: Boolean = False): TModalResult;
@@ -198,7 +197,6 @@ var
 begin
   FileName := Format(LocalRepositoryUpdatesFile, [MD5Print(MD5String(Options.RemoteRepository[Options.ActiveRepositoryIndex]))]);
   Updates := TUpdates.Create(FileName);
-  Updates.OnUpdate := @DoOnUpdate;
   Updates.StartUpdate;
   Updates.PauseUpdate;
 end;
@@ -399,27 +397,6 @@ end;
 procedure TMainFrm.DoOnProcessJSON(Sender: TObject);
 begin
   Application.ProcessMessages;
-end;
-
-procedure TMainFrm.DoOnUpdate(Sender: TObject);
-var
-  I, J: Integer;
-  MetaPkg: TMetaPackage;
-  LazarusPkg: TLazarusPackage;
-begin
-  VisualTree.UpdatePackageUStatus;
-  // Pass the online package info as package links to IDE.
-  for I := 0 to SerializablePackages.Count - 1 do
-  begin
-    MetaPkg := SerializablePackages.Items[I];
-    for J := 0 to MetaPkg.LazarusPackages.Count - 1 do
-    begin
-      LazarusPkg := TLazarusPackage(MetaPkg.LazarusPackages.Items[J]);
-      //DebugLn(['OPM DoOnUpdate: Package.Name=', MetaPkg.Name,
-      //         ', Package.DisplayName=', MetaPkg.DisplayName]);
-      PkgLinks.AddOnlineLink(MetaPkg.DownloadZipURL, MetaPkg.Name, LazarusPkg.Version);
-    end;
-  end;
 end;
 
 procedure TMainFrm.ShowOptions(const AActivePageIndex: Integer = 0);
