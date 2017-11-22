@@ -392,6 +392,7 @@ type
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); override;
+    function  CheckDisplayMemo(aField: TField): boolean;
     procedure InvalidateSizes;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
@@ -445,7 +446,7 @@ type
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; override;
     procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); override;
-    function GetSmoothScroll(Which: Integer): Boolean; override;
+    function  GetSmoothScroll(Which: Integer): Boolean; override;
     function  GetTruncCellHintText(aCol, aRow: Integer): string; override;
     function  GridCanModify: boolean;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);override;
@@ -1559,6 +1560,9 @@ begin
     exit;
   F := GetFieldFromGridColumn(ACol);
   if (F <> nil) then
+    if CheckDisplayMemo(f) then
+      result := F.AsString
+    else
     if (F.DataType <> ftBlob) then
       Result := F.DisplayText
     else
@@ -2120,7 +2124,7 @@ begin
           {$ifdef dbgGridPaint}
           DbgOut(' Field=%s',[F.FieldName]);
           {$endif}
-          if (F.DataType=ftMemo) and (dgDisplayMemoText in Options) then
+          if CheckDisplayMemo(F) then
             S := F.AsString
           else
             S := F.DisplayText;
@@ -2888,6 +2892,12 @@ begin
   end;
 end;
 
+function TCustomDBGrid.CheckDisplayMemo(aField: TField): boolean;
+begin
+  // note that this assumes that aField is not nil
+  result := (aField.DataType=ftMemo) and (dgDisplayMemoText in Options);
+end;
+
 procedure TCustomDBGrid.EndLayout;
 begin
   dec(FLayoutChangedCount);
@@ -2998,8 +3008,12 @@ begin
   Result := '';
   if FDataLink.Active then begin
     aField := GetFieldFromGridColumn(aCol);
-    if aField<>nil then
-      Result := aField.Text;
+    if aField<>nil then begin
+      if CheckDisplayMemo(aField) then
+        Result := aField.AsString
+      else
+        Result := aField.Text;
+    end;
   end;
 end;
 
@@ -3251,13 +3265,19 @@ procedure TCustomDBGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
  aState: TGridDrawState);
 var
   F: TField;
+  s: String;
 begin
   if GetIsCellTitle(aCol, aRow) then
     inherited DrawColumnText(aCol, aRow, aRect, aState)
   else begin
     F := GetFieldFromGridColumn(aCol);
-    if F<>nil then
-      DrawCellText(aCol, aRow, aRect, aState, F.DisplayText)
+    if F<>nil then begin
+      if CheckDisplayMemo(F) then
+        s := F.AsString
+      else
+        s := F.DisplayText;
+      DrawCellText(aCol, aRow, aRect, aState, s)
+    end;
   end;
 end;
 
@@ -3346,7 +3366,8 @@ begin
     aField := SelectedField;
     if aField<>nil then begin
       Result := IsValidChar(AField, Ch) and not aField.Calculated and
-        (aField.DataType<>ftAutoInc) and (aField.FieldKind<>fkLookup) and not aField.IsBlob;
+        (aField.DataType<>ftAutoInc) and (aField.FieldKind<>fkLookup) and
+        (not aField.IsBlob or CheckDisplayMemo(aField));
     end;
   end;
 end;
@@ -3609,6 +3630,9 @@ begin
 
       else begin
         if F<>nil then begin
+          if CheckDisplayMemo(F) then
+            S := F.AsString
+          else
           if F.dataType <> ftBlob then
             S := F.DisplayText
           else
