@@ -875,7 +875,7 @@ begin
        LazarusPkg.LazCompatibility := LazarusPkgsObj.Get('LazCompatibility');
        LazarusPkg.FPCCompatibility := LazarusPkgsObj.Get('FPCCompatibility');
        LazarusPkg.SupportedWidgetSet := LazarusPkgsObj.Get('SupportedWidgetSet');
-       LazarusPkg.PackageType := TLazPackageType(LazarusPkgsObj.Get('PackageType')); // JuMa: Typecast was changed, may break things.
+       LazarusPkg.PackageType := TLazPackageType(LazarusPkgsObj.Get('PackageType'));
        LazarusPkg.DependenciesAsString := LazarusPkgsObj.Get('DependenciesAsString');
       end;
     end;

@@ -1210,9 +1210,9 @@ begin
 
   cbPackageType.Clear;
   cbPackageType.Items.Add('');
-  cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType0);
-  cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType1);
   cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType2);
+  cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType1);
+  cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType0);
   cbPackageType.Items.Add(rsMainFrm_VSTText_PackageType3);
 
   cbPackageState.Clear;
