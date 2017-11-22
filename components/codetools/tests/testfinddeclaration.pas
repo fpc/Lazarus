@@ -81,6 +81,7 @@ type
 
   TTestFindDeclaration = class(TCustomTestFindDeclaration)
   published
+    procedure TestFindDeclaration_Program;
     procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_Proc_BaseTypes;
     procedure TestFindDeclaration_With;
@@ -190,10 +191,7 @@ procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
       ctnProperty:
         PrependPath(Tool.ExtractPropName(Node,false),Result);
       ctnUseUnit:
-        begin
-          writeln('CCC1 NodeAsPath ',Node.StartPos,' ',Node.FirstChild.StartPos,'-',Node.FirstChild.EndPos);
         PrependPath(Tool.ExtractUsedUnitName(Node),Result);
-        end;
       ctnUseUnitNamespace,ctnUseUnitClearName:
         begin
           PrependPath(GetIdentifier(@Tool.Src[Node.StartPos]),Result);
@@ -291,6 +289,10 @@ begin
         BlockTopLine,BlockBottomLine)
       then begin
         if ExpectedPath<>'' then begin
+          //if (CodeToolBoss.ErrorCode<>nil) then begin
+            //ErrorTool:=CodeToolBoss.GetCodeToolForSource(CodeToolBoss.ErrorCode);
+            //if ErrorTool<>MainTool then
+             // WriteSource(,ErrorTool);
           WriteSource(IdentifierStartPos);
           Fail('find declaration failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage);
         end;
@@ -513,6 +515,19 @@ begin
     Result:=Markers[i];
 end;
 
+procedure TTestFindDeclaration.TestFindDeclaration_Program;
+begin
+  StartProgram;
+  Add([
+  'var Cow: longint;',
+  'begin',
+  '  cow{declaration:Cow}:=3;',
+  '  test1{declaration:Test1}.cow{declaration:Cow}:=3;',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
 procedure TTestFindDeclaration.TestFindDeclaration_Basic;
 begin
   FindDeclarations('moduletests/fdt_basic.pas');
@@ -550,12 +565,16 @@ end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_ObjCClass;
 begin
+  {$IFDEF Darwin}
   FindDeclarations('moduletests/fdt_objcclass.pas');
+  {$ENDIF}
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_ObjCCategory;
 begin
+  {$IFDEF Darwin}
   FindDeclarations('moduletests/fdt_objccategory.pas');
+  {$ENDIF}
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_Generics;
@@ -650,6 +669,7 @@ begin
     AssertEquals('FindFileAtCursor at enabled include directive of empty Found',ord(ffatIncludeFile),ord(Found));
     AssertEquals('FindFileAtCursor at enabled include directive of empty FoundFilename','unit2.pas',FoundFilename);
 
+    // test cursor on enabled include directive of not empty file
     SubUnit2Code.Source:='{$define a}';
     if not CodeToolBoss.FindFileAtCursor(MainCode,1,2,Found,FoundFilename) then
       Fail('CodeToolBoss.FindFileAtCursor at enabled include directive of non-empty inc');
@@ -772,47 +792,76 @@ begin
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_Attributes;
+var
+  Node: TCodeTreeNode;
+  p: Integer;
+  Src: String;
 begin
   StartProgram;
   Add([
-    'type',
-    '  TCustomAttribute = class',
-    '  end;',
-    '  BirdAttribute = class(TCustomAttribute)',
-    '  end;',
-    '  Bird = class(TCustomAttribute)',
-    '  end;',
-    '  [Bird{ declaration:test1.BirdAttribute}]',
-    '  THawk = class',
-    '    [Bird(1)]',
-    '    FField: integer;',
-    '    [Bird(2)]',
-    '    procedure DoSome;',
-    '    [Bird(3)]',
-    '    property  F: integer read FField;',
-    '  end;',
-    '  IMy = interface',
-    '    [''guid'']',
-    '    [Bird]',
-    '    [Bird(12)]',
-    '    function GetSome: integer;',
-    '    [Bird(13)]',
-    '    property  Some: integer read GetSome;',
-    '  end;',
-    '[test1.bird]',
-    '[bird(4)]',
-    'procedure DoIt;',
-    'begin',
-    'end;',
-    'var',
-    '  [bird(1+2,3),bird]',
-    '  Foo: TObject;',
-    'begin',
-    'end.',
+  '{$modeswitch prefixedattributes}',
+  'type',
+  '  TCustomAttribute = class',
+  '  end;',
+  '  BirdAttribute = class(TCustomAttribute)',
+  '  end;',
+  '  Bird = class(TCustomAttribute)',
+  '  end;',
+  '  [Bird{declaration:BirdAttribute}]',
+  '  THawk = class',
+  '    [Bird(1)]',
+  '    FField: integer;',
+  '    [Bird(2)]',
+  '    procedure DoSome;',
+  '    [Bird(3)]',
+  '    property  F: integer read FField;',
+  '  end;',
+  '  IMy = interface',
+  '    [''guid'']',
+  '    [Bird]',
+  '    [Bird(12)]',
+  '    function GetSome: integer;',
+  '    [Bird(13)]',
+  '    property  Some: integer read GetSome;',
+  '  end;',
+  '[test1.bird]',
+  '[bird(4)]',
+  'procedure DoIt; forward;',
+  '[bird(5)]',
+  'procedure DoIt;',
+  'begin',
+  'end;',
+  'var',
+  '  [bird(1+2,3),bird]',
+  '  Foo: TObject;',
+  'begin',
+  'end.',
   '']);
   FindDeclarations(Code);
-  // ToDo: test if attributes are front siblings
-
+  // check if all attributes were parsed
+  Src:=MainTool.Src;
+  for p:=1 to length(Src) do begin
+    if (Src[p]='[') and (IsIdentStartChar[Src[p+1]]) then begin
+      Node:=MainTool.FindDeepestNodeAtPos(p,false);
+      if (Node=nil) then begin
+        WriteSource(p);
+        Fail('missing node at '+MainTool.CleanPosToStr(p));
+      end;
+      if (Node.Desc<>ctnAttribute) then begin
+        WriteSource(p);
+        Fail('missing attribute at '+MainTool.CleanPosToStr(p));
+      end;
+      if Node.NextBrother=nil then begin
+        WriteSource(Node.StartPos);
+        Fail('Attribute without NextBrother');
+      end;
+      if not (Node.NextBrother.Desc in [ctnAttribute,ctnVarDefinition,ctnTypeDefinition,ctnProcedure,ctnProperty])
+      then begin
+        WriteSource(Node.StartPos);
+        Fail('Attribute invalid NextBrother '+Node.NextBrother.DescAsString);
+      end;
+    end;
+  end;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;

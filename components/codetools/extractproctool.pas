@@ -1599,7 +1599,7 @@ var
           RaiseStringExpectedButAtomFound(20170421201946,'end');
       end;
       if AtomIsIdentifier then begin
-        LastPos:=LastAtoms.GetValueAt(0);
+        LastPos:=LastAtoms.GetPriorAtom;
         if not ((LastPos.Flag in [cafPoint]) or LastAtomIs(0,'^')
           or LastUpAtomIs(0,'INHERITED'))
         then begin

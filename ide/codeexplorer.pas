@@ -1627,7 +1627,7 @@ begin
         if (Last1Atom=cafWord)
         and (ObserverState.IgnoreConstLevel<0) then
         begin
-          Atom:=Tool.LastAtoms.GetValueAt(0);
+          Atom:=Tool.LastAtoms.GetPriorAtom;
           FuncName:=copy(Tool.Src,Atom.StartPos,Atom.EndPos-Atom.StartPos);
           if Last2Atom=cafPoint then
             FuncName:='.'+FuncName;

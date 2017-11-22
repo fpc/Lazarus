@@ -5172,7 +5172,7 @@ begin
     if CurPos.StartPos>=SrcLen then begin
       ReadPriorAtom;
       if CurPos.StartPos<1 then begin
-        CurPos.StartPos:=1;
+        MoveCursorToCleanPos(1);
         exit(true);
       end;
     end;
@@ -5188,7 +5188,7 @@ begin
         //debugln(['TStandardCodeTool.FindBlockStart atom ',CleanPosToStr(CurPos.StartPos),' ',GetAtom]);
         if (CurPos.StartPos<0) then begin
           // start of source found -> this is always a block start
-          CurPos.StartPos:=1;
+          MoveCursorToCleanPos(1);
           exit(true);
         end
         else if Src[CurPos.StartPos] in [')',']','}'] then begin
@@ -5220,13 +5220,13 @@ begin
         while (Node<>nil) and (Node.StartPos=CleanCursorPos) do
           Node:=Node.Parent;
         if Node<>nil then
-          CurPos.StartPos:=Node.StartPos
+          MoveCursorToCleanPos(Node.StartPos)
         else
-          CurPos.StartPos:=1;
+          MoveCursorToCleanPos(1);
         exit(true);
       end;
       if CleanCursorPos>=Node.StartPos then begin
-        CurPos.StartPos:=Node.StartPos;
+        MoveCursorToCleanPos(Node.StartPos);
         exit(true);
       end;
     end;
@@ -5308,7 +5308,7 @@ begin
     ReadPriorAtom;
     if (CurPos.StartPos<0) then begin
       // start of source found -> this is always a block start
-      CurPos.StartPos:=1;
+      MoveCursorToCleanPos(1);
       BlockStartFound:=true;
       break;
     end
@@ -5696,7 +5696,7 @@ var
             {$ENDIF}
             exit;
           end;
-          AtomInFrontOfCursor:=LastAtoms.GetValueAt(0);
+          AtomInFrontOfCursor:=LastAtoms.GetPriorAtom;
           {$IFDEF VerboseCompleteBlock}
           DebugLn(['ReadStatements reached cursor: ',CleanPosToStr(CurPos.StartPos),' CursorBlockOuterIndent=',CursorBlockOuterIndent,' CursorBlockInnerIndent=',CursorBlockInnerIndent,' LastAtom=',GetAtom(AtomInFrontOfCursor),' CurAtom=',GetAtom]);
           {$ENDIF}
@@ -6832,7 +6832,7 @@ begin
         if AtomIsChar('.') then begin
           // source end found
           if BlockType in [bkwBegin,bkwNone] then begin
-            CurPos.StartPos:=SrcLen+1;
+            MoveCursorToCleanPos(SrcLen+1);
             exit;
           end else begin
             MoveCursorToCleanPos(BlockStart);
@@ -6867,7 +6867,7 @@ begin
               // or 'of object'
             end else begin
               BlockType:=CurBlockWord;
-              BlockStart:=LastAtoms.GetValueAt(0).StartPos;
+              BlockStart:=LastAtoms.GetPriorAtom.StartPos;
               // read ancestor list  class(...)
               if CurPos.Flag=cafRoundBracketOpen then begin
                 repeat
@@ -7029,12 +7029,12 @@ begin
   OpenBracket:=Src[CurPos.StartPos];
   if OpenBracket='{' then begin
     // read til end of comment
-    CurPos.StartPos:=FindCommentEnd(Src,CurPos.StartPos,Scanner.NestedComments);
+    MoveCursorToCleanPos(FindCommentEnd(Src,CurPos.StartPos,Scanner.NestedComments));
     Result:=CurPos.StartPos<=SrcLen;
   end else if OpenBracket='(' then begin
     if (CurPos.StartPos<SrcLen) and (Src[CurPos.StartPos+1]='*') then begin
       // read til end of comment
-      CurPos.StartPos:=FindCommentEnd(Src,CurPos.StartPos,Scanner.NestedComments);
+      MoveCursorToCleanPos(FindCommentEnd(Src,CurPos.StartPos,Scanner.NestedComments));
       Result:=CurPos.StartPos<=SrcLen;
     end else begin
       // round bracket operator

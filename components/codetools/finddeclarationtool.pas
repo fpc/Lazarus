@@ -2035,7 +2035,6 @@ function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
 var
   CleanCursorPos: integer;
   CursorNode, ClassNode: TCodeTreeNode;
-  Params: TFindDeclarationParams;
   DirectSearch, SkipChecks, SearchForward: boolean;
 
   function CheckIfNodeIsForwardDefinedClass(ANode: TCodeTreeNode;
@@ -2211,7 +2210,7 @@ var
 var
   IdentStartPos: Integer;
 
-  function TrySkipClassForward: Boolean;
+  function TrySkipClassForward(Params: TFindDeclarationParams): Boolean;
   var
     ForwardXY, NewSkipPos: TCodeXYPosition;
     NewSkipExprType: TExpressionType;
@@ -2252,6 +2251,7 @@ var
   CursorAtIdentifier: boolean;
   IdentifierStart: PChar;
   LineRange: TLineRange;
+  Params: TFindDeclarationParams;
 begin
   Result:=false;
   NewExprType:=CleanExpressionType;
@@ -2361,7 +2361,10 @@ begin
       RaiseCursorOutsideCode(CursorPos);
     end;
     {$IFDEF CTDEBUG}
-    DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChildren=',dbgs(CursorNode.FirstChild<>nil));
+    DbgOut(['TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChildren=',dbgs(CursorNode.FirstChild<>nil)]);
+    if CursorNode.Parent<>nil then
+      DbgOut(' Parent="',CursorNode.Parent.DescAsString,'"');
+    Debugln;
     {$ENDIF}
     if (CursorNode.Desc = ctnUseUnitNamespace) then begin
       NewExprType.Desc:=xtContext;
@@ -2431,7 +2434,7 @@ begin
             debugln(['TFindDeclarationTool.FindDeclaration FindDeclarationOfIdentAtParam failed']);
           end;
           {$ENDIF}
-          if Result and TrySkipClassForward then
+          if Result and TrySkipClassForward(Params) then
             Exit(True);
         end else begin
           Include(Params.Flags,fdfIgnoreCurContextNode);
@@ -2441,7 +2444,7 @@ begin
           Result:=FindIdentifierInContext(Params);
           if Result then
           begin
-            if TrySkipClassForward then
+            if TrySkipClassForward(Params) then
               Exit(True);
 
             NewExprType.Desc:=xtContext;
@@ -3824,7 +3827,7 @@ begin
             end;
           until false;
           Col:=p-PChar(Line)+1;
-          //writeln('TFindDeclarationTool.FindFileAtCursor Col=',Col,' CursorCol=',CursorPos.X,' Literal=',copy(Line,StartCol+1,p-StartP));
+          //debugln(['TFindDeclarationTool.FindFileAtCursor Col=',Col,' CursorCol=',CursorPos.X,' Literal=',copy(Line,StartCol+1,p-StartP)]);
           if (p>StartP) and (CursorPos.X>=StartCol) and (CursorPos.X<=Col) then begin
             Literal:=copy(Line,StartCol+1,p-StartP);
             if not FilenameIsAbsolute(Literal) then
@@ -3900,10 +3903,15 @@ begin
   MoveCursorToCleanPos(Params.Identifier);
   ReadNextAtom;
   EndPos:=CurPos.EndPos;
-  ReadNextAtom;
-  if CurPos.Flag=cafRoundBracketOpen then begin
-    ReadTilBracketClose(true);
-    EndPos:=CurPos.EndPos;
+  if (Params.ContextNode.Desc=ctnIdentifier)
+  and (Params.ContextNode.Parent.Desc=ctnAttribParam) then begin
+    // parameters don't matter for the attribute name
+  end else begin
+    ReadNextAtom;
+    if CurPos.Flag=cafRoundBracketOpen then begin
+      ReadTilBracketClose(true);
+      EndPos:=CurPos.EndPos;
+    end;
   end;
   {$IFDEF ShowExprEval}
   debugln(['TFindDeclarationTool.FindDeclarationOfIdentAtParam Term=',dbgstr(Src,StartPos,EndPos-StartPos)]);
@@ -8462,7 +8470,7 @@ begin
     // Searching again in hidden unit
     DebugLn('WARNING: Searching again in hidden unit: "',NewCode.Filename,'" identifier=',GetIdentifier(Params.Identifier));
     NewCodeTool:=Self;
-    CurPos.StartPos:=ErrorPos;
+    MoveCursorToCleanPos(ErrorPos);
     RaiseExceptionFmt(20170421200330,ctsIllegalCircleInUsedUnits,[AnUnitName]);
   end else begin
     // source found -> get codetool for it
@@ -8473,14 +8481,14 @@ begin
     {$ENDIF}
     NewCodeTool:=nil;
     if not Assigned(FOnGetCodeToolForBuffer) then begin
-      CurPos.StartPos:=ErrorPos;
+      MoveCursorToCleanPos(ErrorPos);
       RaiseExceptionFmt(20170421200333,
         'Unable to create codetool for "%s", need OnGetCodeToolForBuffer',
           [NewCode.Filename]);
     end;
     NewCodeTool:=FOnGetCodeToolForBuffer(Self,NewCode,false);
     if NewCodeTool=nil then begin
-      CurPos.StartPos:=ErrorPos;
+      MoveCursorToCleanPos(ErrorPos);
       RaiseExceptionFmt(20170421200346,'Unable to create codetool for "%s"',[NewCode.Filename]);
     end;
     // search the identifier in the interface of the used unit
@@ -8669,7 +8677,7 @@ begin
     end;
     ReadNextAtom;
   until false;
-  if LastAtoms.Count>0 then
+  if LastAtoms.HasPrior then
     UndoReadNextAtom
   else
     MoveCursorToCleanPos(StartPos);
@@ -8908,7 +8916,6 @@ var
       if CurAtom.StartPos>=EndPos then begin
         IsIdentEndOfVar:=iieovYes;
       end else if CurAtom.Flag=cafWord then begin
-        MoveCursorToCleanPos(CurAtom.EndPos);
         ReadNextAtom;
         if AtomIsChar('(') then begin
           ReadTilBracketClose(true);
@@ -9197,7 +9204,7 @@ var
         repeat
           inc(p,GetIdentLen(p));
           if p^='.' then inc(p);
-          //writeln('ResolveUseUnit p=',p,' NextBrother=',Node.NextBrother<>nil);
+          //debugln(['ResolveUseUnit p=',p,' NextBrother=',Node.NextBrother<>nil]);
           if Node.NextBrother=nil then begin
             // fits
             if Level>BestLevel then begin
@@ -9210,7 +9217,7 @@ var
             break;
           end else begin
             Node:=Node.NextBrother;
-            //writeln('ResolveUseUnit p=',p,' node=',GetIdentifier(@Src[Node.StartPos]));
+            //debugln(['ResolveUseUnit p=',p,' node=',GetIdentifier(@Src[Node.StartPos])]);
             if not CompareSrcIdentifiers(Node.StartPos,p) then
               break;
             inc(Level);
@@ -9281,6 +9288,30 @@ var
       //debugln(['ResolveUseUnit Next ',GetAtom(CurAtom)]);
       Result:=Result.NextBrother;
     end;
+  end;
+
+  function ResolveAttribute(const Context: TFindContext): boolean;
+  var
+    Identifier: String;
+    l: Integer;
+  begin
+    Result:=false;
+    if CurAtom.Flag<>cafWord then exit;
+    Identifier:=GetAtom;
+    l:=length(Identifier)-length('attribute');
+    if (l>0) and (CompareIdentifiers(@Identifier[l+1],'attribute')=0) then
+      exit;
+    // auto append 'attribute' to typename
+    Identifier+='Attribute';
+    Params.SetIdentifier(Self,PChar(Identifier),@CheckSrcIdentifier);
+    if Context.Tool.FindIdentifierInContext(Params) then begin
+      ExprType.Desc:=xtContext;
+      ExprType.Context:=CreateFindContext(Params);
+      Params.Load(OldInput,true);
+      exit(true);
+    end;
+    Params.Load(OldInput,false);
+    Result:=false;
   end;
   
   procedure ResolveIdentifier;
@@ -9462,11 +9493,17 @@ var
         then
           Include(Params.Flags,fdfIgnoreOverloadedProcs);
 
+        if IsEnd and (Context.Node.Desc=ctnIdentifier)
+        and (Context.Node.Parent.Desc=ctnAttribParam)
+        and ResolveAttribute(Context) then begin
+          exit;
+        end;
+
         Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
 
         // search ...
         {$IFDEF ShowExprEval}
-        Debugln(['  FindExpressionTypeOfTerm ResolveIdentifier "',GetAtom(CurAtom),'" backward ',BoolToStr(IsStart,'Main','Sub'),'Ident="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
+        Debugln(['  FindExpressionTypeOfTerm ResolveIdentifier "',GetIdentifier(Params.Identifier),'" backward ',BoolToStr(IsStart,'Main','Sub'),'Ident="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
         {$ENDIF}
         ExprType.Desc:=xtNone;
         // first search backwards
@@ -10093,8 +10130,9 @@ begin
   ExprType:=CleanExpressionType;
   repeat
     {$IFDEF ShowExprEval}
-    DebugLn(['  FindExpressionTypeOfTerm ATOM CurAtomType=',
-      VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"',
+    DebugLn(['  FindExpressionTypeOfTerm ATOM',
+      ' CurAtomType=',VariableAtomTypeNames[CurAtomType],
+      ' CurAtom="',GetAtom(CurAtom),'"',
       ' ExprType=',ExprTypeToString(ExprType)]);
     {$ENDIF}
     case CurAtomType of
@@ -11744,7 +11782,7 @@ function TFindDeclarationTool.CheckParameterSyntax(StartPos,
     repeat
       ReadNextAtom;
       if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
-        if (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
+        if (LastAtoms.GetPriorAtom.Flag=cafWord) then begin
           {$IFDEF VerboseCPS}DebugLn('CheckBrackets check word+bracket open');{$ENDIF}
           UndoReadNextAtom;
           if CheckIdentifierAndParameterList() then exit(true);
@@ -11820,7 +11858,7 @@ function TFindDeclarationTool.CheckParameterSyntax(StartPos,
           or (CurPos.Flag in [cafComma,cafSemicolon,cafEnd,
               cafRoundBracketClose,cafEdgedBracketClose])
           or ((CurPos.Flag=cafWord)
-              and (LastAtoms.GetValueAt(0).Flag=cafWord)
+              and (LastAtoms.GetPriorAtom.Flag=cafWord)
               and (not LastUpAtomIs(0,'INHERITED'))) then
           begin
             // end of parameter expression found
@@ -11835,7 +11873,7 @@ function TFindDeclarationTool.CheckParameterSyntax(StartPos,
         until false;
       end;
       if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then begin
-        if (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
+        if (LastAtoms.GetPriorAtom.Flag=cafWord) then begin
           {$IFDEF VerboseCPS}DebugLn('CheckIdentifierAndParameterList check word+bracket open');{$ENDIF}
           UndoReadNextAtom;
           if CheckIdentifierAndParameterList() then exit(true);
@@ -11897,8 +11935,8 @@ begin
     DebugLn('TFindDeclarationTool.CheckParameterSyntax ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos),' ',dbgs(CurPos.EndPos),'<',dbgs(CleanCursorPos));
     {$ENDIF}
     if CurPos.EndPos>CleanCursorPos then begin
-      if LastAtoms.Count=0 then exit;
-      CleanPosInFront:=LastAtoms.GetValueAt(0).EndPos;
+      if not LastAtoms.HasPrior then exit;
+      CleanPosInFront:=LastAtoms.GetPriorAtom.EndPos;
       //debugln(['TFindDeclarationTool.CheckParameterSyntax Cur="',GetAtom,'" Last="',GetAtom(LastAtoms.GetValueAt(0)),'"']);
       if not CleanPosIsInComment(CleanCursorPos,CleanPosInFront,
         CommentStart,CommentEnd,false) then exit;
@@ -11906,7 +11944,7 @@ begin
       // => parse within the comment
       MoveCursorToCleanPos(CommentStart);
     end else if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen])
-    and (LastAtoms.GetValueAt(0).Flag=cafWord) then begin
+    and (LastAtoms.GetPriorAtom.Flag=cafWord) then begin
       UndoReadNextAtom;
       if CheckIdentifierAndParameterList then exit(true);
       if CurPos.EndPos>CleanCursorPos then exit;
@@ -13157,7 +13195,7 @@ begin
       begin
         inc(Lvl);
         if (Lvl=1) and (EdgedBracketsStartPos<1) then begin
-          if (LastAtoms.Count=0)
+          if (not LastAtoms.HasPrior)
           or LastAtomIs(-1,'+') or LastAtomIs(-1,'-') or LastAtomIs(-1,'*')
           then
             EdgedBracketsStartPos:=CurPos.StartPos;

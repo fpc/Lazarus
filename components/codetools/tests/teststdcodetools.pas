@@ -215,7 +215,7 @@ begin
     Fail(Title+'call AddUnitWarnDirective failed: '+CodeToolBoss.ErrorDbgMsg);
   end;
 
-  debugln(['TTestCTStdCodetools.DoTestAddUnitWarn NewSrc=',Code.Source]);
+  //debugln(['TTestCTStdCodetools.DoTestAddUnitWarn NewSrc=',Code.Source]);
   s:='';
   for i:=Low(Expected) to High(Expected) do
     s+=Expected[i]+LineEnding;

@@ -71,7 +71,6 @@ begin
   SrcLen:=length(Src);
   CurPos:=StartAtomPosition;
   LastAtoms.Clear;
-  NextPos.StartPos:=-1;
   CurNode:=nil;
   DoDeleteNodes(Tree.Root);
 end;
@@ -117,10 +116,8 @@ begin
   Result.StartPos:=-1;
   Result.EndPos:=-1;
   SetSource(ResourceCode);
-  if StartPos>=1 then begin
-    CurPos.StartPos:=StartPos;
-    CurPos.EndPos:=StartPos;
-  end;
+  if StartPos>=1 then
+    MoveCursorToCleanPos(StartPos);
 
   // search "LAZARUSRESOURCES.ADD('ResourceName',"
   ResourceNameInPascal:=''''+UpperCaseStr(ResourceName)+'''';

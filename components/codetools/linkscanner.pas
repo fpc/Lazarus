@@ -199,10 +199,13 @@ type
     cmsTypeHelpers,        { allows the declaration of "type helper" (non-Delphi) or "record helper"
                                   (Delphi) for primitive types }
     cmsCBlocks,            { support for http://en.wikipedia.org/wiki/Blocks_(C_language_extension) }
-    cmsISOlike_IO,          { I/O as it required by an ISO compatible compiler }
+    cmsISOlike_IO,         { I/O as it required by an ISO compatible compiler }
     cmsISOLike_Program_Para, { program parameters as it required by an ISO compatible compiler }
-    cmsISOLike_Mod,       { mod operation as it is required by an iso compatible compiler }
-    cmsExternalClass      { pas2js: allow  class external [pkgname] name [symbol] }
+    cmsISOLike_Mod,        { mod operation as it is required by an iso compatible compiler }
+    cmsPrefixedAttributes, { allow Delphi attributes, disable FPC [] proc modifier }
+    cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
+    cmsIgnoreAttributes,   { pas2js: ignore attributes }
+    cmsIgnoreInterfaces    { pas2js: ignore class interfaces }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -216,13 +219,15 @@ const
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
      cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,cmsDefault_ansistring,
      cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
-     cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords],
+     cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
+     cmsPrefixedAttributes],
     // cmDELPHIUNICODE
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
      cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,
      cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
      cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
-     cmsSystemcodepage,cmsDefault_unicodestring],
+     cmsSystemcodepage,cmsDefault_unicodestring,
+     cmsPrefixedAttributes],
     // cmGPC
     [cmsTp_procvar],
     // cmTP
@@ -823,7 +828,10 @@ const
     'ISOIO',
     'ISOPROGRAMPARAS',
     'ISOMOD',
-    'EXTERNALCLASS'
+    'PREFIXEDATTRIBUTES',
+    'EXTERNALCLASS',
+    'IGNOREATTRIBUTES',
+    'IGNOREINTERFACES'
     );
 
   // upper case

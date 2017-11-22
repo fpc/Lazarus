@@ -12,7 +12,7 @@ unit TestPascalParser;
 interface
 
 uses
-  Classes, SysUtils, CodeToolManager, CodeCache,
+  Classes, SysUtils, math, CodeToolManager, CodeCache, CodeAtom,
   LazLogger, fpcunit, testregistry, TestGlobals;
 
 type
@@ -39,6 +39,7 @@ type
 
   TTestPascalParser = class(TCustomTestPascalParser)
   published
+    procedure TestAtomRing;
     procedure TestRecord_ClassOperators;
   end;
 
@@ -113,6 +114,143 @@ begin
 end;
 
 { TTestPascalParser }
+
+procedure TTestPascalParser.TestAtomRing;
+
+  procedure CheckAtom(Msg: String; const Expected, Actual: TAtomPosition);
+  begin
+    AssertEquals(Msg+' StartPos',Expected.StartPos,Actual.StartPos);
+    AssertEquals(Msg+' EndPos',Expected.EndPos,Actual.EndPos);
+    if Expected.Flag<>Actual.Flag then
+      Fail(Msg+' Flag Expected='+CommonAtomFlagNames[Expected.Flag]+' but found '+CommonAtomFlagNames[Actual.Flag]);
+  end;
+
+  procedure CheckIndexOf(Msg: string; R: TAtomRing);
+  var
+    i, Actual: Integer;
+    P: TAtomPosition;
+  begin
+    for i:=1-R.PriorCount to R.NextCount do begin
+      P:=R.GetAtomAt(i);
+      if not R.IndexOf(P.StartPos,Actual) then
+        Fail(Msg+' CheckIndexOf i='+IntToStr(i)+' IndexOf failed');
+      AssertEquals(Msg+' CheckIndexOf',i,Actual);
+    end;
+  end;
+
+var
+  R: TAtomRing;
+  P, P1, P2: TAtomPosition;
+  i: Integer;
+begin
+  R:=TAtomRing.Create;
+  try
+    R.Size:=4;
+    AssertEquals('1-empty count',0,R.PriorCount);
+    AssertEquals('1-empty nextcount',0,R.NextCount);
+
+    P1:=AtomPosition(1,2,cafWord);
+    R.Add(P1);
+    AssertEquals('2-first atom count',1,R.PriorCount);
+    AssertEquals('2-first atom nextcount',0,R.NextCount);
+    P:=R.GetAtomAt(0);
+    CheckAtom('2-first atom',P1,P);
+
+    CheckIndexOf('2-first atom',R);
+
+    R.UndoLastAdd;
+    //R.WriteDebugReport;
+    AssertEquals('3-empty after undo count',0,R.PriorCount);
+    AssertEquals('3-empty after undo nextcount',0,R.NextCount);
+
+    P1:=AtomPosition(1,2,cafWord);
+    R.Add(P1);
+    //R.WriteDebugReport;
+    AssertEquals('4-first atom count',1,R.PriorCount);
+    AssertEquals('4-first atom nextcount',0,R.NextCount);
+    P:=R.GetAtomAt(0);
+    CheckAtom('4-first atom',P1,P);
+    CheckIndexOf('4-first atom',R);
+
+    P2:=AtomPosition(3,4,cafWord);
+    R.Add(P2);
+    //R.WriteDebugReport;
+
+    AssertEquals('5-second atom count',2,R.PriorCount);
+    AssertEquals('5-second atom nextcount',0,R.NextCount);
+    P:=R.GetAtomAt(0);
+    CheckAtom('5-second atom 0',P2,P);
+    P:=R.GetAtomAt(-1);
+    CheckAtom('5-second atom -1',P1,P);
+    CheckIndexOf('5-second atom',R);
+
+    R.UndoLastAdd;
+    //R.WriteDebugReport;
+    AssertEquals('6-undo after add two: count',1,R.PriorCount);
+    AssertEquals('6-undo after add two: nextcount',1,R.NextCount);
+    P:=R.GetAtomAt(0);
+    CheckAtom('6-undo after add two: atom 0',P1,P);
+    P:=R.GetAtomAt(1);
+    CheckAtom('6-undo after add two: atom +1',P2,P);
+    CheckIndexOf('6-undo after add two',R);
+
+    P2:=AtomPosition(5,6,cafWord);
+    R.Add(P2);
+    //R.WriteDebugReport;
+
+    AssertEquals('7-second atom count',2,R.PriorCount);
+    AssertEquals('7-second atom nextcount',0,R.NextCount);
+    P:=R.GetAtomAt(0);
+    CheckAtom('7-second atom 0',P2,P);
+    P:=R.GetAtomAt(-1);
+    CheckAtom('7-second atom -1',P1,P);
+    CheckIndexOf('7-second atom',R);
+
+    R.Clear;
+    //R.WriteDebugReport;
+    for i:=1 to 5 do begin
+      // add first
+      P1:=AtomPosition(i*4,i*4+1,cafWord);
+      R.Add(P1);
+      //R.WriteDebugReport;
+      AssertEquals('8-Added first: '+IntToStr(i)+' count',Min(i,R.Size),R.PriorCount);
+      AssertEquals('8-Added first: '+IntToStr(i)+' nextcount',0,R.NextCount);
+      P:=R.GetAtomAt(0);
+      CheckAtom('8-Added first: atom 0',P1,P);
+      CheckIndexOf('8-Added first',R);
+
+      // add two
+      P2:=AtomPosition(i*4+2,i*4+3,cafWord);
+      R.Add(P2);
+      //R.WriteDebugReport;
+      AssertEquals('9-Added second: '+IntToStr(i)+' count',Min(i+1,R.Size),R.PriorCount);
+      AssertEquals('9-Added second: '+IntToStr(i)+' nextcount',0,R.NextCount);
+      P:=R.GetAtomAt(0);
+      CheckAtom('9-Added second: '+IntToStr(i)+' atom 0',P2,P);
+      P:=R.GetAtomAt(-1);
+      CheckAtom('9-Added second: '+IntToStr(i)+' atom -1',P1,P);
+      CheckIndexOf('9-Added second',R);
+
+      // undo one
+      R.UndoLastAdd;
+      //R.WriteDebugReport;
+      AssertEquals('10-Undo: '+IntToStr(i)+' count',Min(i,R.Size-1),R.PriorCount);
+      AssertEquals('10-Undo: '+IntToStr(i)+' nextcount',1,R.NextCount);
+      P:=R.GetAtomAt(0);
+      CheckAtom('10-Undo: '+IntToStr(i)+' atom 0',P1,P);
+      P:=R.GetAtomAt(1);
+      CheckAtom('10-Undo: '+IntToStr(i)+' atom +1',P2,P);
+      CheckIndexOf('10-Undo',R);
+    end;
+
+    FreeAndNil(R);
+  finally
+    if R<>nil then begin
+      R.WriteDebugReport;
+      R.Free;
+    end;
+  end;
+end;
 
 procedure TTestPascalParser.TestRecord_ClassOperators;
 begin

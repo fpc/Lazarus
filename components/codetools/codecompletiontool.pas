@@ -7137,7 +7137,7 @@ var
         RaiseExceptionFmt(20170421201740,ctsIndexParameterExpectedButAtomFound,[GetAtom]);
       Parts[ppIndex].StartPos:=CurPos.StartPos;
       ReadConstant(true,false,[]);
-      Last:=LastAtoms.GetValueAt(0);
+      Last:=LastAtoms.GetPriorAtom;
       Parts[ppIndex].EndPos:=Last.EndPos;
       PartIsAtom[ppIndex]:=false;
     end;
@@ -7155,7 +7155,7 @@ var
         RaiseExceptionFmt(20170421201744,ctsDispidParameterExpectedButAtomFound,[GetAtom]);
       Parts[ppDispid].StartPos:=CurPos.StartPos;
       ReadConstant(true,false,[]);
-      Parts[ppDispid].EndPos:=LastAtoms.GetValueAt(0).EndPos;
+      Parts[ppDispid].EndPos:=LastAtoms.GetPriorAtom.EndPos;
       PartIsAtom[ppDispid]:=false;
     end;
   end;
@@ -7186,7 +7186,7 @@ var
           RaiseExceptionFmt(20170421201748,ctsDefaultParameterExpectedButAtomFound,[GetAtom]);
         Parts[ppDefault].StartPos:=CurPos.StartPos;
         ReadConstant(true,false,[]);
-        Parts[ppDefault].EndPos:=LastAtoms.GetValueAt(0).EndPos;
+        Parts[ppDefault].EndPos:=LastAtoms.GetPriorAtom.EndPos;
         PartIsAtom[ppDefault]:=false;
       end else if UpAtomIs('NODEFAULT') then begin
         if Parts[ppNoDefaultWord].StartPos>=1 then
@@ -8195,7 +8195,7 @@ begin
       end;
       MoveCursorToFirstProcSpecifier(ANode);
       if (CurPos.Flag<>cafSemicolon) and (CurPos.EndPos<ANode.FirstChild.EndPos)
-      and (LastAtoms.Count>0)
+      and (LastAtoms.HasPrior)
       then begin
         // add missing semicolon in front of proc modifiers
         UndoReadNextAtom;

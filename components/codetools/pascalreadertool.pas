@@ -389,10 +389,10 @@ begin
   repeat
     ReadNextAtom;
     if CurPos.StartPos>CleanPos then begin
-      //DebugLn(['TPascalReaderTool.CleanPosIsInComment ',GetATom,' StartPos=',CurPos.StartPos,' CleanPos=',CleanPos]);
+      //DebugLn(['TPascalReaderTool.CleanPosIsInComment ',GetAtom,' StartPos=',CurPos.StartPos,' CleanPos=',CleanPos]);
       // CleanPos between two atoms -> parse space between for comments
-      if LastAtoms.Count>0 then
-        CommentStart:=LastAtoms.GetValueAt(0).EndPos
+      if LastAtoms.HasPrior then
+        CommentStart:=LastAtoms.GetPriorAtom.EndPos
       else
         CommentStart:=CleanCodePosInFront;
       CurEnd:=CurPos.StartPos;

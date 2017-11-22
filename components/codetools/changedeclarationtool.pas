@@ -331,7 +331,7 @@ begin
     MoveCursorBehindPropName(ParentNode)
   else
     raise EInvalidOperation.Create('TChangeDeclarationTool.ChangeParamListDeclaration kind not supported: '+ParentNode.DescAsString);
-  t.BehindNamePos:=LastAtoms.GetValueAt(0).EndPos;
+  t.BehindNamePos:=LastAtoms.GetPriorAtom.EndPos;
   // read bracket
   if CurPos.Flag=cafRoundBracketOpen then
     CloseBracket:=')'
@@ -382,13 +382,13 @@ begin
         ReadNextAtom;
         CurParam.Typ:=CurPos;
         if not ReadParamType(true,false,[]) then exit;
-        CurParam.Typ.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+        CurParam.Typ.EndPos:=LastAtoms.GetPriorAtom.EndPos;
         if CurPos.Flag=cafEqual then begin
           // read default value
           ReadNextAtom;
           CurParam.DefaultValue:=CurPos;
           ReadConstant(true,false,[]);
-          CurParam.DefaultValue.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+          CurParam.DefaultValue.EndPos:=LastAtoms.GetPriorAtom.EndPos;
         end;
       end;
       // close bracket or semicolon
