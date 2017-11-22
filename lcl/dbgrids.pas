@@ -76,7 +76,8 @@ type
     dgCellEllipsis,                     // show ... if cell text is truncated
     dgRowHighlight,                     // Highlight current row
     dgThumbTracking,
-    dgDblClickAutoSize                  // dblclicking columns borders (on hdrs) resize col.
+    dgDblClickAutoSize,                 // dblclicking columns borders (on hdrs) resize col.
+    dgDisplayMemoText                   // show memo content instead of (memo) for ftMemo fields
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -2119,7 +2120,10 @@ begin
           {$ifdef dbgGridPaint}
           DbgOut(' Field=%s',[F.FieldName]);
           {$endif}
-          S := F.DisplayText;
+          if (F.DataType=ftMemo) and (dgDisplayMemoText in Options) then
+            S := F.AsString
+          else
+            S := F.DisplayText;
         end else
           S := '';
         {$ifdef dbggridpaint}
