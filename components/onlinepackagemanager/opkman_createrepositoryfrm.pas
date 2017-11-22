@@ -143,7 +143,7 @@ type
     FRepositoryFileName: String;
     FRepositoryFileSize: Int64;
     FRepositoryFileHash: String;
-    FRepositoryDate: TDate;
+    FRepositoryDate: TDateTime;
     FAuthor: String;
     FDescription: String;
     FLicense: String;

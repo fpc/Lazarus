@@ -175,7 +175,7 @@ type
     FRepositoryFileSize: Int64;
     FRepositoryFileHash: String;
     FChecked: Boolean;
-    FRepositoryDate: TDate;
+    FRepositoryDate: TDateTime;
     FPackageState: TPackageState;
     FPackageStates: TPackageStates;
     FPackageBaseDir: String;
@@ -217,7 +217,7 @@ type
     property RepositoryFileName: String read FRepositoryFileName write FRepositoryFileName;
     property RepositoryFileSize: int64 read FRepositoryFileSize write FRepositoryFileSize;
     property RepositoryFileHash: String read FRepositoryFileHash write FRepositoryFileHash;
-    property RepositoryDate: TDate read FRepositoryDate write FRepositoryDate;
+    property RepositoryDate: TDateTime read FRepositoryDate write FRepositoryDate;
     property PackageBaseDir: String read FPackageBaseDir write FPackageBaseDir;
     property LazarusPackages: TCollection read FLazarusPackages write FLazarusPackages;
     property HomePageURL: String read FHomePageURL write FHomePageURL;
@@ -1443,7 +1443,7 @@ var
 begin
   Package1 := TMetaPackage(Item1);
   Package2 := TMetaPackage(Item2);
-  Result := CompareDate(Package1.RepositoryDate, Package2.RepositoryDate);
+  Result := CompareDateTime(Package1.RepositoryDate, Package2.RepositoryDate);
 end;
 
 function SortByDateDsc(Item1, Item2: TCollectionItem): Integer;
@@ -1452,7 +1452,7 @@ var
 begin
   Package1 := TMetaPackage(Item1);
   Package2 := TMetaPackage(Item2);
-  Result := CompareDate(Package2.RepositoryDate, Package1.RepositoryDate);
+  Result := CompareDateTime(Package2.RepositoryDate, Package1.RepositoryDate);
 end;
 
 procedure TSerializablePackages.Sort(const ASortType: TSortType;

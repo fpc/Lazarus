@@ -130,8 +130,7 @@ var
   MetaPackage: TMetaPackage;
   LazPackage: TLazarusPackage;
   PackageLink: TPackageLink;
-  URL, Name: String;
-  Version: TPkgVersion;
+  FileName, Name, URL: String;
 begin
   for I := 0 to SerializablePackages.Count - 1 do
   begin
@@ -139,17 +138,18 @@ begin
     for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
     begin
       LazPackage := TLazarusPackage(MetaPackage.LazarusPackages.Items[J]);
-      URL := Options.RemoteRepository[Options.ActiveRepositoryIndex] + MetaPackage.RepositoryFileName;
+      FileName := Options.LocalRepositoryPackages + MetaPackage.PackageBaseDir + LazPackage.PackageRelativePath + LazPackage.Name;
       Name := StringReplace(LazPackage.Name, '.lpk', '', [rfReplaceAll, rfIgnoreCase]);
-      Version := Lazpackage.Version;
+      URL := Options.RemoteRepository[Options.ActiveRepositoryIndex] + MetaPackage.RepositoryFileName;
       if not IsInList(Name, URL) then
       begin
-        PackageLink := PkgLinks.AddOnlineLink(Url, Name, Version);
-        PackageLink.Name := Name;
-        PackageLink.LPLFileDate := MetaPackage.RepositoryDate;
-        PackageLink.LPKFilename := Options.LocalRepositoryPackages + MetaPackage.PackageBaseDir + LazPackage.PackageRelativePath + LazPackage.Name;
-        PackageLink.LPKUrl := URL;
-        FOPMPackageLinks.Add(PackageLink);
+        PackageLink := PkgLinks.AddOnlineLink(FileName, Name, URL);
+        if PackageLink <> nil then
+        begin
+          PackageLink.Version.Assign(LazPackage.Version);
+          PackageLink.LPKFileDate := MetaPackage.RepositoryDate;
+          FOPMPackageLinks.Add(PackageLink);
+        end;
       end;
     end;
   end;

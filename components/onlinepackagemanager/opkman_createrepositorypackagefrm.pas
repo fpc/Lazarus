@@ -1028,7 +1028,7 @@ begin
       MetaPkg.RepositoryFileName := ExtractFileName(FPackageFile);
       MetaPkg.RepositoryFileSize := FileUtil.FileSize(FPackageFile);
       MetaPkg.RepositoryFileHash := MD5Print(MD5File(FPackageFile));
-      MetaPkg.RepositoryDate := Trunc(now);
+      MetaPkg.RepositoryDate := now;
       MetaPkg.PackageBaseDir := RootData^.FPackageBaseDir;
       if Trim(RootData^.FDisplayName) <> '' then
         MetaPkg.DisplayName := RootData^.FDisplayName

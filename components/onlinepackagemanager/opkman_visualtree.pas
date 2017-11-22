@@ -66,7 +66,7 @@ type
     RepositoryFileName: String;
     RepositoryFileSize: Int64;
     RepositoryFileHash: String;
-    RepositoryDate: TDate;
+    RepositoryDate: TDateTime;
     HomePageURL: String;
     DownloadURL: String;
     DownloadZipURL: String;
