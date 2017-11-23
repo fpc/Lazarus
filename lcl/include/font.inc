@@ -766,6 +766,7 @@ begin
          and (Color={$ifdef UseCLDefault}clDefault{$else}clWindowText{$endif})
          and (Height=0)
          and (not IsNameStored)
+         and (Orientation=0)
          and (Pitch=fpDefault)
          and (Size=0)
          and (Quality=fqDefault)

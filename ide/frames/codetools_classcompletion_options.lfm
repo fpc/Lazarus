@@ -82,10 +82,10 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       ClientWidth = 559
       TabOrder = 1
       object PrivateVariablePrefixLabel: TLabel
-        Left = 34
+        Left = 35
         Height = 15
         Top = 4
-        Width = 135
+        Width = 134
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -126,10 +126,10 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
         ParentColor = False
       end
       object SetPropertyVariablenameLabel: TLabel
-        Left = 8
+        Left = 9
         Height = 15
         Top = 96
-        Width = 161
+        Width = 160
         BorderSpacing.Right = 6
         BorderSpacing.CellAlignHorizontal = ccaRightBottom
         BorderSpacing.CellAlignVertical = ccaCenter
@@ -265,6 +265,7 @@ object CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptionsFra
       ShowHint = True
     end
     object ClassPartInsertPolicyComboBox: TComboBox
+      AnchorSideRight.Control = InsertPoliciesPanel
       Left = 159
       Height = 23
       Top = 6
