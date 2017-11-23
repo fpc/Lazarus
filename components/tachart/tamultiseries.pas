@@ -193,7 +193,7 @@ type
       read FCandlestickUpBrush write SetCandlestickUpBrush;
     property DownLinePen: TOHLCDownPen read FDownLinePen write SetDownLinePen;
     property LinePen: TPen read FLinePen write SetLinePen;
-    property Mode: TOHLCMode read FMode write SetOHLCMode;
+    property Mode: TOHLCMode read FMode write SetOHLCMode default mOHLC;
     property TickWidth: integer
       read FTickWidth write SetTickWidth default DEF_OHLC_TICK_WIDTH;
     property ToolTargets default [nptPoint, nptYList, nptCustom];
