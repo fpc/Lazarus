@@ -239,6 +239,9 @@ type
     procedure ReadClassInheritance(CreateChildNodes: boolean);
     procedure ReadSpecialize(CreateChildNodes: boolean; Extract: boolean = false;
       Copying: boolean = false; const Attr: TProcHeadAttributes = []);
+    procedure ReadSpecializeParams(CreateChildNodes: boolean; Extract: boolean = false;
+      Copying: boolean = false; const Attr: TProcHeadAttributes = []);
+    procedure ReadAnsiStringParams;
     function WordIsPropertyEnd: boolean;
     function AllowAttributes: boolean; inline;
   public
@@ -1755,29 +1758,7 @@ begin
     // read function result type
     if CurPos.Flag=cafColon then begin
       ReadNextAtom;
-      if UpAtomIs('SPECIALIZE') then
-        ReadSpecialize(pphCreateNodes in ParseAttr)
-      else begin
-        AtomIsIdentifierSaveE;
-        if (pphCreateNodes in ParseAttr) then begin
-          CreateChildNode;
-          CurNode.Desc:=ctnIdentifier;
-          CurNode.EndPos:=CurPos.EndPos;
-        end;
-        repeat
-          ReadNextAtom;
-          if (Scanner.CompilerMode=cmDELPHI) and AtomIsChar('<') then
-            ReadSpecialize(pphCreateNodes in ParseAttr);
-          if CurPos.Flag<>cafPoint then break;
-          //  unitname.classname<T>.identifier
-          ReadNextAtom;
-          AtomIsIdentifierSaveE;
-          if (pphCreateNodes in ParseAttr) then
-            CurNode.EndPos:=CurPos.EndPos;
-        until false;
-        if (pphCreateNodes in ParseAttr) then
-          EndChildNode;
-      end;
+      ReadTypeReference(pphCreateNodes in ParseAttr);
     end
     else begin
       if (Scanner.CompilerMode<>cmDelphi) then
@@ -4290,11 +4271,11 @@ procedure TPascalParserTool.ReadTypeReference(CreateNodes: boolean);
     TGenericClass<TypeRef,TypeRef>
     TGenericClass<TypeRef,TypeRef>.TNestedClass<TypeRef>
     specialize TGenericClass<TypeRef,TypeRef>
+    atype<char>.subtype
 }
 var
-  SavePos: TAtomPosition;
+  Cnt: Integer;
 begin
-  SavePos := CurPos;
   if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
     ReadSpecialize(CreateNodes);
     exit;
@@ -4304,21 +4285,40 @@ begin
     CurNode.Desc:=ctnIdentifier;
   end;
   ReadNextAtom;
+  Cnt:=1;
   while CurPos.Flag=cafPoint do begin
     ReadNextAtom;
     AtomIsIdentifierSaveE;
     ReadNextAtom;
+    inc(Cnt,2);
   end;
   if AtomIsChar('<') then begin
-    if Scanner.CompilerMode <> cmDELPHI then
-      RaiseException(20170421195124,'Unexpected character "<"');
-    if CreateNodes then begin
-      EndChildNode;
-      Tree.DeleteNode(CurNode.LastChild);
+    if ((Cnt=1) and LastUpAtomIs(-1,'STRING'))
+    or ((Cnt=3) and LastUpAtomIs(-3,'SYSTEM') and LastUpAtomIs(-1,'STRING'))
+    then begin
+      // e.g. string<codepage>
+      ReadAnsiStringParams;
+      ReadNextAtom;
+    end
+    else if (Scanner.CompilerMode=cmDELPHI) then begin
+      // e.g. atype<params>
+      if CreateNodes then begin
+        CurNode.Desc:=ctnSpecialize;
+        CreateChildNode;
+        CurNode.Desc:=ctnSpecializeType;
+        CurNode.StartPos:=CurNode.Parent.StartPos;
+        CurNode.EndPos:=CurPos.StartPos;
+        EndChildNode;
+      end;
+      ReadSpecializeParams(CreateNodes);
+      ReadNextAtom;
+      while CurPos.Flag=cafPoint do begin
+        // e.g. atype<params>.subtype
+        ReadNextAtom;
+        AtomIsIdentifierSaveE;
+        ReadNextAtom;
+      end;
     end;
-    MoveCursorToAtomPos(SavePos);
-    ReadSpecialize(CreateNodes);
-    exit;
   end;
   if CreateNodes then begin
     CurNode.EndPos:=CurPos.StartPos;
@@ -5817,22 +5817,7 @@ begin
   ReadNextAtom;
   if CurPos.Flag<>cafRoundBracketClose then begin
     repeat
-      if UpAtomIs('SPECIALIZE') then begin
-        // specialize Identifier<Identifier>
-        ReadSpecialize(CreateChildNodes);
-      end else begin
-        // read Identifier or Unit.Identifier
-        AtomIsIdentifierSaveE;
-        if CreateChildNodes then begin
-          CreateChildNode;
-          CurNode.Desc:=ctnIdentifier;
-        end;
-        ReadTypeReference(CreateChildNodes);
-        if (CurNode.EndPos < 0) and CreateChildNodes then begin
-          CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-        end;
-      end;
+      ReadTypeReference(CreateChildNodes);
       // read comma or )
       if CurPos.Flag=cafRoundBracketClose then break;
       if CurPos.Flag<>cafComma then
@@ -5866,8 +5851,6 @@ procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean;
       ExtractNextAtom(Copying,Attr);
   end;
 
-var
-  Identifier: String;
 begin
   //debugln(['TPascalParserTool.ReadSpecialize START ',GetAtom]);
   if Scanner.CompilerMode=cmOBJFPC then begin
@@ -5891,7 +5874,6 @@ begin
 
   // read identifier (the name of the generic)
   AtomIsIdentifierSaveE;
-  Identifier:=GetAtom;
   if CreateChildNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnSpecializeType;
@@ -5902,10 +5884,8 @@ begin
   else
     Next;
   while Curpos.Flag=cafPoint do begin
-    // first identifier was unitname, now read the type
     Next;
     AtomIsIdentifierSaveE;
-    Identifier:=Identifier+'.'+GetAtom;
     if CreateChildNodes then
       CurNode.EndPos:=CurPos.EndPos;
     Next;
@@ -5913,75 +5893,94 @@ begin
   if CreateChildNodes then begin
     EndChildNode; // end ctnSpecializeType
   end;
-  // read type list
-  if not AtomIsChar('<') then
-    SaveRaiseCharExpectedButAtomFound(20170421195916,'<');
+
+  ReadSpecializeParams(CreateChildNodes,Extract,Copying,Attr);
   if CreateChildNodes then begin
-    CreateChildNode;
-    CurNode.Desc:=ctnSpecializeParams;
-  end;
-  if (CompareIdentifiers(PChar(Identifier),'string')=0)
-  or (CompareIdentifiers(PChar(Identifier),'system.string')=0) then begin
-    // string<codepage>
-    repeat
-      Next;
-      if AtomIsChar('>') then break;
-      case CurPos.Flag of
-      cafRoundBracketOpen,cafEdgedBracketOpen: ReadTilBracketClose(true);
-      cafNone:
-        if (CurPos.StartPos>SrcLen) then
-          SaveRaiseCharExpectedButAtomFound(20170421195831,'>')
-        else if (((CurPos.EndPos-CurPos.StartPos=1)
-              and (Src[CurPos.StartPos] in ['+','-','*','&','$'])))
-            or AtomIsNumber
-        then begin
-        end else begin
-          SaveRaiseCharExpectedButAtomFound(20170421195834,'>')
-        end;
-      else
-        SaveRaiseCharExpectedButAtomFound(20170421195837,'>');
-      end;
-    until false;
-  end else begin
-    // read list of types
-    repeat
-      // read identifier (a parameter of the generic type)
-      Next;
-      AtomIsIdentifierSaveE;
-      if CreateChildNodes then begin
-        CreateChildNode;
-        CurNode.Desc:=ctnSpecializeParam;
-        CurNode.EndPos:=CurPos.EndPos;
-      end;
-      Next;
-      while Curpos.Flag=cafPoint do begin
-        // first identifier was unitname, now read the type
-        Next;
-        AtomIsIdentifierSaveE;
-        if CreateChildNodes then
-          CurNode.EndPos:=CurPos.EndPos;
-        Next;
-      end;
-      if CreateChildNodes then
-        EndChildNode; // close ctnSpecializeParam
-      if AtomIsChar('>') then
-        break
-      else if CurPos.Flag=cafComma then begin
-        // read next parameter
-      end else
-        SaveRaiseCharExpectedButAtomFound(20170421195918,'>');
-    until false;
-  end;
-  if CreateChildNodes then begin
-    // close list
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode; // end ctnSpecializeParams
     // close specialize
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode; // end ctnSpecialize
   end;
   Next;
   //debugln(['TPascalParserTool.ReadSpecialize END ',GetAtom,' ',CurNode.DescAsString]);
+end;
+
+procedure TPascalParserTool.ReadSpecializeParams(CreateChildNodes: boolean;
+  Extract: boolean; Copying: boolean; const Attr: TProcHeadAttributes);
+// after readig CurPos is at the >
+
+  procedure Next; inline;
+  begin
+    if not Extract then
+      ReadNextAtom
+    else
+      ExtractNextAtom(Copying,Attr);
+  end;
+
+begin
+  // read params
+  if not AtomIsChar('<') then
+    SaveRaiseCharExpectedButAtomFound(20170421195916,'<');
+  if CreateChildNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnSpecializeParams;
+  end;
+  // read list of types
+  repeat
+    // read identifier (a parameter of the generic type)
+    Next;
+    AtomIsIdentifierSaveE;
+    if CreateChildNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnSpecializeParam;
+      CurNode.EndPos:=CurPos.EndPos;
+    end;
+    Next;
+    while Curpos.Flag=cafPoint do begin
+      // first identifier was unitname, now read the type
+      Next;
+      AtomIsIdentifierSaveE;
+      if CreateChildNodes then
+        CurNode.EndPos:=CurPos.EndPos;
+      Next;
+    end;
+    if CreateChildNodes then
+      EndChildNode; // close ctnSpecializeParam
+    if AtomIsChar('>') then
+      break
+    else if CurPos.Flag=cafComma then begin
+      // read next parameter
+    end else
+      SaveRaiseCharExpectedButAtomFound(20170421195918,'>');
+  until false;
+  if CreateChildNodes then begin
+    // close list
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode; // end ctnSpecializeParams
+  end;
+end;
+
+procedure TPascalParserTool.ReadAnsiStringParams;
+begin
+  // string<codepage>
+  repeat
+    ReadNextAtom;
+    if AtomIsChar('>') then break;
+    case CurPos.Flag of
+    cafRoundBracketOpen,cafEdgedBracketOpen: ReadTilBracketClose(true);
+    cafNone:
+      if (CurPos.StartPos>SrcLen) then
+        SaveRaiseCharExpectedButAtomFound(20170421195831,'>')
+      else if (((CurPos.EndPos-CurPos.StartPos=1)
+            and (Src[CurPos.StartPos] in ['+','-','*','&','$'])))
+          or AtomIsNumber
+      then begin
+      end else begin
+        SaveRaiseCharExpectedButAtomFound(20170421195834,'>')
+      end;
+    else
+      SaveRaiseCharExpectedButAtomFound(20170421195837,'>');
+    end;
+  until false;
 end;
 
 function TPascalParserTool.WordIsPropertyEnd: boolean;
