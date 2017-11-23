@@ -143,7 +143,7 @@ begin
       URL := Options.RemoteRepository[Options.ActiveRepositoryIndex] + MetaPackage.RepositoryFileName;
       if not IsInList(Name, URL) then
       begin
-        PackageLink := PkgLinks.AddOnlineLink(FileName, Name, URL);
+  //      PackageLink := PkgLinks.AddOnlineLink(FileName, Name, URL);
         if PackageLink <> nil then
         begin
           PackageLink.Version.Assign(LazPackage.Version);
