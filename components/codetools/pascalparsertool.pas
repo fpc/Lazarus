@@ -795,7 +795,7 @@ begin
         end;
         if ord(Range)<=ord(ScannedRange) then exit;
 
-        //debugln(['TPascalParserTool.BuildTree SOME parts were already parsed Node=',Node.DescAsString]);
+        //debugln(['TPascalParserTool.BuildTree SOME parts were already parsed Node=',Node.DescAsString,' ScanTill=',dbgs(ScanTill),' ScannedRange=',dbgs(ScannedRange)]);
         Node.EndPos:=-1;
         if (Node.LastChild=nil) then begin
           // section was not parsed => reopen it
@@ -2554,7 +2554,7 @@ function TPascalParserTool.DoAtom: boolean;
 var
   c: Char;
 begin
-  //DebugLn('[TPascalParserTool.DoAtom] A ',DbgS(CurKeyWordFuncList));
+  //DebugLn('[TPascalParserTool.DoAtom] A "',GetAtom,'" ',CurKeyWordFuncList.Name);
   if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos>CurPos.StartPos) then begin
     c:=Src[CurPos.StartPos];
     if IsIdentStartChar[c] then
@@ -2613,6 +2613,8 @@ end;
 
 function TPascalParserTool.KeyWordFuncSectionInitFinalization: boolean;
 begin
+  Result:=false;
+  //debugln(['TPascalParserTool.KeyWordFuncSectionInitFinalization ',GetAtom]);
   if UpAtomIs('INITIALIZATION') then begin
     if (not CurSection in [ctnInterface,ctnImplementation,
                           ctnUnit,ctnLibrary,ctnPackage])
@@ -2638,6 +2640,7 @@ begin
     ScannedRange:=lsrFinalizationStart;
   end;
   CurSection:=CurNode.Desc;
+  //debugln(['TPascalParserTool.KeyWordFuncSectionInitFinalization ScanRange ',ScanTill,' ',ScannedRange,' ',GetAtom]);
   if ord(ScanTill)<=ord(ScannedRange) then exit;
 
   repeat
@@ -2663,6 +2666,7 @@ begin
       ReadWithStatement(true,true);
     end;
   until false;
+  //debugln(['TPascalParserTool.KeyWordFuncSectionInitFinalization END ',GetAtom]);
   Result:=true;
 end;
 
