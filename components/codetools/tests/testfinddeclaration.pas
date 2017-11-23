@@ -91,9 +91,10 @@ type
     procedure TestFindDeclaration_TypeHelper;
     procedure TestFindDeclaration_ObjCClass;
     procedure TestFindDeclaration_ObjCCategory;
-    procedure TestFindDeclaration_Generics;
     procedure TestFindDeclaration_GenericFunction;
     procedure TestFindDeclaration_Generics_Enumerator;
+    procedure TestFindDeclaration_Generics;
+    procedure TestFindDeclaration_GenericsDelphi_InterfaceAncestor;
     procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_CBlocks;
@@ -577,11 +578,6 @@ begin
   {$ENDIF}
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_Generics;
-begin
-  FindDeclarations('moduletests/fdt_generics.pas');
-end;
-
 procedure TTestFindDeclaration.TestFindDeclaration_GenericFunction;
 begin
   StartProgram;
@@ -595,7 +591,7 @@ begin
   '  i:=RandomFrom<longint>([1,2,3]);',
   'end.',
   '']);
-  ParseModule;
+  FindDeclarations(Code);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_Generics_Enumerator;
@@ -621,6 +617,28 @@ begin
   '  public',
   '    function GetEnumerator: TEnumerator;',
   '    function GetItem(AIndex: Integer): T;',
+  '  end;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Generics;
+begin
+  FindDeclarations('moduletests/fdt_generics.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GenericsDelphi_InterfaceAncestor;
+begin
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'type',
+  '  IParameters = interface',
+  '  end;',
+  '  IItem = class',
+  '  end;',
+  '  IBirdy = interface (IParameters<IItem>)',
+  '    [''guid'']',
   '  end;',
   'end.']);
   FindDeclarations(Code);
