@@ -5045,7 +5045,7 @@ resourcestring
   lisA2PCreateNewFile = 'Create New File';
   lisA2PCreateNewComp = 'Create New Component';
   lisA2PCreateNewReq = 'Create New Requirement';
-  lisA2PFilename2 = 'Filename';
+  lisA2PFilename2 = 'Filename/URL';
   lisLastOpened = 'Last opened';
   lisFRIFindOrRenameIdentifier = 'Find or Rename Identifier';
   lisHelpSelectorDialog = 'Help selector';

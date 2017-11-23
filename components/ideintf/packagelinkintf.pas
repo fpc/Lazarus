@@ -54,7 +54,8 @@ type
   protected
     FFileDate: TDateTime;
     FFileDateValid: boolean;
-    FFilename: string;         // Filename or URL
+    FFilename: string;
+    FURL: String;
     FLPLFileDate: TDateTime;
     FLPLFilename: string;
     FPackageType: TLazPackageType;
@@ -72,8 +73,7 @@ type
     property LPKFileDate: TDateTime read FFileDate write FFileDate;
     // if relative it is relative to the LazarusDir
     property LPKFilename: string read FFilename write SetFilename;
-    // URL is also stored in FFilename.
-    property LPKUrl: string read FFilename write FFilename;
+    property LPKUrl: string read FURL write FURL;
     property LPLFilename: string read FLPLFilename write FLPLFilename;
     property LPLFileDate: TDateTime read FLPLFileDate write FLPLFileDate;
     property PackageType: TLazPackageType read FPackageType;
@@ -92,8 +92,7 @@ type
     function FindLinkWithFilename(const PkgName, LPKFilename: string): TPackageLink; virtual; abstract;
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent;
       Origins: TPkgLinkOrigins = AllPkgLinkOrigins); virtual; abstract;
-    function AddOnlineLink(const PkgFilename, PkgName: string;
-      PkgVersion: TPkgVersion): TPackageLink; virtual; abstract;
+    function AddOnlineLink(const PkgFilename, PkgName, PkgURL: string): TPackageLink; virtual; abstract;
     function AddUserLink(APackage: TIDEPackage): TPackageLink; virtual; abstract;
     // do not use this if package is open in IDE
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink; virtual; abstract;
@@ -112,21 +111,7 @@ var
   PkgLinks: TPackageLinks;
   OPMInterface: TOPMInterface;
 
-function IsUrl(const AText: string): Boolean;
-
-
 implementation
-
-// This should be in FPC's StrUtils.
-function StartsStr(const ASubText, AText: string): Boolean;
-begin
-  Result := Copy(AText,1,Length(ASubText)) = ASubText;
-end;
-
-function IsUrl(const AText: string): Boolean;
-begin
-  Result := (AText='') or StartsStr('http://', AText) or StartsStr('https://', AText);
-end;
 
 { TPackageLink }
 

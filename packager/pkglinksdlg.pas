@@ -64,6 +64,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Origin;
+    property LPKUrl;
     property LPKInfo: TLPKInfo read FLPKInfo;
     property Visible: boolean read FVisible write FVisible;
     property IsValid: boolean read FIsValid write FIsValid;
@@ -379,19 +380,34 @@ begin
       ploUser  : OriginStr:=lisPLDUser;
     end;
     PkgStringGrid.Cells[3,i]:=OriginStr;
-    if Link.IsValid then
-      s:=lrsPLDValid
-    else if (Info<>nil) and (Info.LPKError<>'') then
-      s:=Info.LPKError
-    else
-      s:=lrsPLDInvalid;
-    PkgStringGrid.Cells[4,i]:=s;
-    PkgStringGrid.Cells[5,i]:=Link.EffectiveFilename;
 
-    if Link.LastUsed=0 then
-      PkgStringGrid.Cells[6,i]:= lisNever
+    if Link.Origin = ploOnline then
+      s:=lrsPLDValid
     else
-      PkgStringGrid.Cells[6,i]:= DateTimeToStr(Link.LastUsed);
+    begin
+      if Link.IsValid then
+        s:=lrsPLDValid
+      else if (Info<>nil) and (Info.LPKError<>'') then
+        s:=Info.LPKError
+      else
+        s:=lrsPLDInvalid;
+    end;
+    PkgStringGrid.Cells[4,i]:=s;
+
+    if Link.Origin = ploOnline then
+      PkgStringGrid.Cells[5,i]:=Link.LPKUrl
+    else
+      PkgStringGrid.Cells[5,i]:=Link.EffectiveFilename;
+
+    if Link.Origin = ploOnline then
+      PkgStringGrid.Cells[6,i]:= FormatDateTime('YYYY/MM/DD  hh:mm:ss', Link.LPKFileDate)
+    else
+    begin
+      if Link.LastUsed=0 then
+        PkgStringGrid.Cells[6,i]:= lisNever
+      else
+        PkgStringGrid.Cells[6,i]:= FormatDateTime('YYYY/MM/DD  hh:mm:ss', Link.LastUsed);
+    end;
 
     inc(i);
   end;
@@ -496,6 +512,7 @@ begin
     if Source is TLazPackageLink then begin
       Link:=TLazPackageLink(Source);
       Origin:=Link.Origin;
+      LPKUrl := Link.LPKUrl;
       LPKFilename:=Link.LPKFilename;
       LPLFilename:=Link.LPLFilename;
       AutoCheckExists:=Link.AutoCheckExists;

@@ -146,8 +146,7 @@ type
     function FindLinkWithFilename(const PkgName, LPKFilename: string): TPackageLink; override;
     procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent;
       Origins: TPkgLinkOrigins = AllPkgLinkOrigins); override;
-    function AddOnlineLink(const PkgFilename, PkgName: string;
-      PkgVersion: TPkgVersion): TPackageLink; override;
+    function AddOnlineLink(const PkgFilename, PkgName, PkgURL: string): TPackageLink; override;
     function AddUserLink(APackage: TIDEPackage): TPackageLink; override;
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink; override;
     procedure RemoveUserLink(Link: TPackageLink); override;
@@ -268,8 +267,8 @@ end;
 function TLazPackageLink.GetEffectiveFilename: string;
 begin
   Result:=LPKFilename;
-  if IsUrl(Result) or FilenameIsAbsolute(Result) then Exit;
-  Result:=TrimFilename(EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+Result);
+  if not FilenameIsAbsolute(Result) then
+    Result:=TrimFilename(EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+Result);
 end;
 
 procedure TLazPackageLink.Reference;
@@ -1061,7 +1060,7 @@ begin
     Result:=TLazPackageLink(CurNode.Data);
     if CompareText(PkgName,Result.Name)<>0 then break;
     // Treat URLs and filenames differently.
-    if IsUrl(LPKFilename) then begin
+    if Result.Origin = ploOnline then begin
       if LPKFilename = Result.LPKFilename then exit;
     end
     else begin
@@ -1175,36 +1174,34 @@ begin
     IteratePackagesInTree(MustExist,FGlobalLinks,Event);
 end;
 
-function TLazPackageLinks.AddOnlineLink(const PkgFilename, PkgName: string;
-  PkgVersion: TPkgVersion): TPackageLink;
+function TLazPackageLinks.AddOnlineLink(const PkgFilename, PkgName,
+  PkgURL: string): TPackageLink;
 begin
-  DebugLn(['TLazPackageLinks.AddOnlineLink: PkgFilename=', PkgFilename,
-           ', PkgName=', PkgName, ', PkgVersion=', PkgVersion.AsString]);
-  // check if link already exists
-  Result:=FindLinkWithFilename(PkgName,PkgFilename);
+  DebugLn(['TLazPackageLinks.AddOnlineLink: PkgFilename=', PkgFilename, ', PkgName=', PkgName]);
+
+  Result := FindLinkWithFilename(PkgName, PkgFilename);
   if Assigned(Result) then
   begin
-    Result.LastUsed:=Now;
-    Assert(Assigned(PkgVersion), 'TLazPackageLinks.AddOnlineLink: PkgVersion=Nil');
-    Result.Version.Assign(PkgVersion);
-    exit;
+    if Result.LPKUrl = PkgURL then
+    begin
+      Result := nil;
+      Exit;
+    end;
   end;
-  // add online link
-  Result:=TLazPackageLink.Create;
+
+  Result := TLazPackageLink.Create;
   Result.Reference;
-  Result.Name:=PkgName;
-  Result.LPKUrl:=PkgFilename;    // Actually an URL
-  Result.Origin:=ploOnline;
-  if IsValidPkgName(Result.Name) {Result.IsMakingSense} then
+  if IsValidPkgName(PkgName) then
   begin
+    Result.Name := PkgName;
+    Result.LPKFilename := PkgFilename;
+    Result.LPKUrl := PkgURL;
+    Result.Origin := ploOnline;
     FOnlineLinks.Add(Result);
-    IncreaseChangeStamp;
-    Result.LastUsed:=Now;
-    Result.Version.Assign(PkgVersion);
   end
   else begin
     Result.Release;
-    Result:=nil;
+    Result := nil;
   end;
 end;
 
