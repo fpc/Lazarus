@@ -28,6 +28,9 @@ type
     procedure DefaultHandler(var message); override;
   end;
 
+var
+  InstanceA: TMyClass2{declaration:fdt_basic.TMyClass2};
+
 implementation
 
 { TMyClass1 }
@@ -56,6 +59,9 @@ procedure TMyClass2.DefaultHandler(var message);
 begin
   inherited DefaultHandler{declaration:fdt_basic.TMyClass1.DefaultHandler}(message);
 end;
+
+initialization
+  InstanceA{declaration:fdt_basic.InstanceA}:=TMyClass2{declaration:fdt_basic.TMyClass2}.Create{declaration:fdt_basic.TMyClass1.Create};
 
 end.
 

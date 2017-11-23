@@ -90,7 +90,6 @@ var
   IncCode: TCodeBuffer;
 begin
   UnitCode:=CodeToolBoss.CreateFile('TestMethodJumpTool1.pas');
-  IncCode:=CodeToolBoss.CreateFile('TestMethodJumpTool2.inc');
   UnitCode.Source:=''
     +'unit TestMethodJumpTool1;'+LineEnding
     +'interface'+LineEnding
@@ -101,6 +100,7 @@ begin
     +'{$DEFINE UseImplementation}'
     +'{$I TestMethodJumpTool2.inc}'+LineEnding
     +'end.'+LineEnding;
+  IncCode:=CodeToolBoss.CreateFile('TestMethodJumpTool2.inc');
   IncCode.Source:=''
     +'{%MainUnit TestMethodJumpTool1.pas}'+LineEnding
     +'{$IFDEF UseInterface}'+LineEnding
