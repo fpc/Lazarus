@@ -803,7 +803,7 @@ begin
   end;
   while FCurIndex < AIndex do begin
     FCurIndex += 1;
-    if XMax <= XMin then begin
+    if (XMax <= XMin) or (Count = 1) then begin
       FCurItem.X := XMin;
       for i := 0 to XCount - 2 do FCurItem.XList[i] := XMin;
     end else begin
