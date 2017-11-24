@@ -82,7 +82,7 @@ begin
   FAutoSelect := True;
   FAutoSelected := False;
   FTextChangedByRealSetText := False;
-  FTextChangingCounter := 0;
+  FTextChangedLock := False;
   AutoSize := True;
   // Accessibility
   AccessibleRole := larTextEditorSingleline;
@@ -578,7 +578,7 @@ var
   SStart, SLen: Integer;
 begin
   //debugln('TCustomEdit.TextChanged ',DbgSName(Self));
-  if FTextChangingCounter > 0 then
+  if FTextChangedLock then
     Exit;
   if FCharCase in [ecUppercase, ecLowercase] then
   begin
@@ -594,11 +594,11 @@ begin
       CPos := CaretPos;
       SStart := SelStart;
       SLen := SelLength;
-      Inc(FTextChangingCounter);
+      FTextChangedLock := True;
       try
         Text := Temp;
       finally
-        Dec(FTextChangingCounter);
+        FTextChangedLock := False;
       end;
       SelStart  := SStart;
       SelLength := SLen;
