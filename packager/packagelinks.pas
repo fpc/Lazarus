@@ -1122,11 +1122,12 @@ end;
 function TLazPackageLinks.FindLinkWithPkgNameWithIgnore(const PkgName: string;
   IgnoreFiles: TFilenameToStringTree): TPackageLink;
 var
-  UserLink, GlobalLink: TLazPackageLink;
+  UserLink, OnlineLink, GlobalLink: TLazPackageLink;
 begin
   UserLink:=FindLinkWithPkgNameInTree(FUserLinksSortID,PkgName,IgnoreFiles);
+  OnlineLink:=FindLinkWithPkgNameInTree(FOnlineLinks,PkgName,IgnoreFiles);
   GlobalLink:=FindLinkWithPkgNameInTree(FGlobalLinks,PkgName,IgnoreFiles);
-  Result:=GetNewerLink(UserLink,GlobalLink);
+  Result:=GetNewestLink(UserLink, OnlineLink, GlobalLink);
 end;
 
 function TLazPackageLinks.FindLinkWithDependency(Dependency: TPkgDependencyID): TPackageLink;
@@ -1137,20 +1138,22 @@ end;
 function TLazPackageLinks.FindLinkWithDependencyWithIgnore(Dependency: TPkgDependencyID;
   IgnoreFiles: TFilenameToStringTree): TPackageLink;
 var
-  UserLink, GlobalLink: TLazPackageLink;
+  UserLink, OnlineLink, GlobalLink: TLazPackageLink;
 begin
   UserLink:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency,IgnoreFiles);
+  OnlineLink:=FindLinkWithDependencyInTree(FOnlineLinks,Dependency,IgnoreFiles);
   GlobalLink:=FindLinkWithDependencyInTree(FGlobalLinks,Dependency,IgnoreFiles);
-  Result:=GetNewerLink(UserLink,GlobalLink);
+  Result:=GetNewestLink(UserLink, OnlineLink, GlobalLink);
 end;
 
 function TLazPackageLinks.FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
 var
-  UserLink, GlobalLink: TLazPackageLink;
+  UserLink, OnlineLink, GlobalLink: TLazPackageLink;
 begin
   UserLink:=FindLinkWithPackageIDInTree(FUserLinksSortID,APackageID);
+  OnlineLink:=FindLinkWithPackageIDInTree(FOnlineLinks,APackageID);
   GlobalLink:=FindLinkWithPackageIDInTree(FGlobalLinks,APackageID);
-  Result:=GetNewerLink(UserLink,GlobalLink);
+  Result:=GetNewestLink(UserLink, OnlineLink, GlobalLink);
 end;
 
 function TLazPackageLinks.FindLinkWithFilename(const PkgName, LPKFilename: string): TPackageLink;
@@ -1168,8 +1171,9 @@ procedure TLazPackageLinks.IteratePackages(MustExist: boolean;
 begin
   if ploUser in Origins then
     IteratePackagesInTree(MustExist,FUserLinksSortID,Event);
+  //online packages are always virtual(meaning: the lpk does not exist localy)==> MustExist is false
   if ploOnline in Origins then
-    IteratePackagesInTree(MustExist,FOnlineLinks,Event);
+    IteratePackagesInTree(False,FOnlineLinks,Event);
   if ploGlobal in Origins then
     IteratePackagesInTree(MustExist,FGlobalLinks,Event);
 end;

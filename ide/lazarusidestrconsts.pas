@@ -2768,6 +2768,9 @@ resourcestring
   lisFRForwardSearch = 'Forwar&d search';
   lisFRBackwardSearch = '&Backward search';
   dlgReplaceAll = 'Replace &All';
+  lisLocalPkg = 'Local packages(%s)';
+  lisOnlinePkg = 'Online packages(%s)';
+  lisPkgInstConf = 'Do you wish to install the following packages from the main repository: ';
   
   // IDEOptionDefs
   dlgGetPosition = 'Get position';
