@@ -306,7 +306,6 @@ begin
   FOwner := AnOwner;
   FSubTreeCount := 1;
   FIndex := -1;
-  if Owner<>nil then inc(Owner.FCount);
 end;
 
 destructor TTreeNode.Destroy;
@@ -339,9 +338,7 @@ begin
   HasChildren := false;
   // unbind all references
   Unbind;
-
   if Assigned(Owner) then begin
-    dec(Owner.FCount);
     if FStates * [nsSelected, nsMultiSelected] <> [] then
       Owner.FSelection.Remove(Self);
   end;
@@ -1280,6 +1277,8 @@ begin
   {$ENDIF}
   if not (nsBound in FStates) then exit;
   Exclude(FStates,nsBound);
+  if Owner<>nil then dec(Owner.FCount);
+
   // remove single select
   Selected:=false;
   // invalidate caches of TreeView and if root item, remove from TreeView.Items
@@ -1396,6 +1395,7 @@ begin
     if Owner<>nil then
       Owner.ClearCache;
     Include(FStates,nsBound);
+    if Owner<>nil then inc(Owner.FCount);
     // set parent
     if AddMode in [taAdd, taAddFirst] then
       FParent:=ANode
