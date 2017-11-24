@@ -11601,7 +11601,7 @@
         <short>
           <var>TNodeState</var> - enumerated type denoting the status of a TreeNode</short>
         <descr>
-          <p>Cut, DropHilited, Focused, Selected, MultiSelected, Expanded, HasChildren, InTree, Deleting, Bound</p>
+          <p>Cut, DropHilited, Focused, Selected, MultiSelected, Expanded, HasChildren, Deleting, Bound</p>
         </descr>
         <seealso/>
       </element>
@@ -12188,12 +12188,6 @@ Const
       </element>
       <!-- variable Visibility: private -->
       <element name="TTreeNode.FHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TTreeNode.FInTree">
         <short/>
         <descr/>
         <seealso/>
@@ -13699,7 +13693,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
           <p>
             <var>StateIndex</var> the index of the state (within an enumerated type)</p>
           <p>Definition of enumerated type NodeState:</p>
-          <p>nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected, nsExpanded, nsHasChildren, nsInTree, nsDeleting, nsBound</p>
+          <p>nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected, nsExpanded, nsHasChildren, nsDeleting, nsBound</p>
         </descr>
         <seealso/>
       </element>

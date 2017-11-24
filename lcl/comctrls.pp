@@ -2767,8 +2767,19 @@ type
   TTreeNode = class;
   TTreeNodeClass = class of TTreeNode;
 
-  TNodeState = (nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected,
-                nsExpanded, nsHasChildren, nsInTree, nsDeleting, nsBound);
+  TNodeState = (
+    nsCut,           // = Node.Cut
+    nsDropHilited,   // = Node.DropTarget
+    nsFocused,       // = Node.Focused
+    nsSelected,      // = Node.Selected
+    nsMultiSelected, // = Node.MultiSelected
+    nsExpanded,      // = Node.Expanded
+    nsHasChildren,   // = Node.HasChildren
+    nsDeleting,      // = Node.Deleting, set on Destroy
+    nsVisible,       // = Node.Visible
+    nsBound          // bound to a tree, e.g. has Parent or is top lvl node
+    );
+
   TNodeStates = set of TNodeState;
   TNodeAttachMode = (
     naAdd,           // add as last sibling of Destination
@@ -2905,7 +2916,6 @@ type
     FSubTreeCount: integer;// total of all child nodes and self
     FText: string;
     FTop: integer;        // top coordinate
-    FVisible: Boolean;
     function AreParentsExpandedAndVisible: Boolean;
     procedure BindToMultiSelected;
     function CompareCount(CompareMe: Integer): Boolean;
@@ -2930,6 +2940,7 @@ type
     function GetTreeNodes: TTreeNodes;
     function GetTreeView: TCustomTreeView;
     function GetTop: integer;
+    function GetVisible: Boolean;
     procedure InternalMove(ANode: TTreeNode; AddMode: TAddMode);
     function IsEqual(Node: TTreeNode): Boolean;
     function IsNodeVisible: Boolean;
@@ -3051,7 +3062,7 @@ type
     property Top: integer read GetTop;
     property TreeNodes: TTreeNodes read GetTreeNodes;
     property TreeView: TCustomTreeView read GetTreeView;
-    property Visible: Boolean read FVisible write SetVisible default True;
+    property Visible: Boolean read GetVisible write SetVisible default True;
   end;
 
   { TTreeNodesEnumerator }
@@ -3252,7 +3263,6 @@ type
   TCustomTreeView = class(TCustomControl)
   private
     FAccessibilityOn: Boolean;
-//    FBackgroundColor: TColor;
     FBottomItem: TTreeNode;
     FCallingOnChange: Boolean;
     FEditingItem: TTreeNode;

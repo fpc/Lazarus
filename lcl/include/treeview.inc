@@ -302,11 +302,10 @@ begin
   FOverlayIndex := -1;
   FSelectedIndex := -1;
   FStateIndex := -1;
-  FStates := [];
+  FStates := [nsVisible];
   FOwner := AnOwner;
   FSubTreeCount := 1;
   FIndex := -1;
-  FVisible := True;
   if Owner<>nil then inc(Owner.FCount);
 end;
 
@@ -320,7 +319,7 @@ begin
   Include(FStates,nsDeleting);
 
   // we must trigger TCustomTreeView.OnDeletion event before
-  // unbinding.See issue #17832.
+  // unbinding. See issue #17832.
   if Assigned(Owner) and Assigned(Owner.Owner) then
     Owner.Owner.Delete(Self);
 
@@ -405,6 +404,11 @@ begin
   Result := FTop;
 end;
 
+function TTreeNode.GetVisible: Boolean;
+begin
+  Result:=nsVisible in FStates;
+end;
+
 function TTreeNode.HasAsParent(AValue: TTreeNode): Boolean;
 begin
   if AValue<>nil then begin
@@ -424,7 +428,7 @@ begin
   if TreeView=nil then exit;
   Include(TreeView.FStates,tvsMaxRightNeedsUpdate);
   if (TreeView.SortType in [stText, stBoth])
-  and (nsInTree in FStates) then begin
+  and (nsBound in FStates) then begin
     if (Parent <> nil) then Parent.AlphaSort
     else TreeView.AlphaSort;
   end;
@@ -443,7 +447,7 @@ begin
   if (TreeView<>nil)
   and (TreeView.SortType in [stData, stBoth]) and Assigned(TreeView.OnCompare)
   and (not Deleting)
-  and (nsInTree in FStates) then
+  and (nsBound in FStates) then
   begin
     if Parent <> nil then
       Parent.AlphaSort
@@ -527,8 +531,11 @@ end;
 
 procedure TTreeNode.SetVisible(const AValue: Boolean);
 begin
-  if FVisible = AValue then exit;
-  FVisible := AValue;
+  if Visible = AValue then exit;
+  if AValue then
+    Include(FStates,nsVisible)
+  else
+    Exclude(FStates,nsVisible);
   Selected := False;
   if TreeView<>nil then
     TreeView.FStates:=TreeView.FStates+[tvsScrollbarChanged,tvsTopsNeedsUpdate,
@@ -839,8 +846,6 @@ begin
     if TreeView<>nil then
       TreeView.FLastDropTarget:=nil;
   end;
-  {if Value then TreeView_SelectDropTarget(Handle, ItemId)
-  else if DropTarget then TreeView_SelectDropTarget(Handle, nil);}
 end;
 
 function TTreeNode.GetHasChildren: Boolean;
@@ -910,7 +915,7 @@ end;
 
 function TTreeNode.GetNextVisible: TTreeNode;
 begin
-  if FVisible and Expanded and (GetFirstVisibleChild<>nil) then
+  if Visible and Expanded and (GetFirstVisibleChild<>nil) then
     Result:=GetFirstVisibleChild
   else begin
     Result:=Self;
@@ -919,7 +924,7 @@ begin
     if Result<>nil then
       Result:=Result.GetNextVisibleSibling;
   end;
-  if (Result<>nil) and ( (not Result.FVisible) or (not AreParentsExpandedAndVisible) ) then
+  if (Result<>nil) and ( (not Result.Visible) or (not AreParentsExpandedAndVisible) ) then
     Result:=nil;
 end;
 
@@ -928,9 +933,9 @@ begin
   Result := Self;
   repeat
     Result := Result.GetNextSibling;
-  until ((Result=nil) or (Result.FVisible));
-  if (Result<>nil) and (not Result.FVisible) then // Result := nil ... will be removed
-    Assert(False,'TTreeNode.GetNextVisibleSibling: (Result<>nil) and (not Result.FVisible)');
+  until ((Result=nil) or (Result.Visible));
+  if (Result<>nil) and (not Result.Visible) then // Result := nil ... will be removed
+    Assert(False,'TTreeNode.GetNextVisibleSibling: (Result<>nil) and (not Result.Visible)');
 end;
 
 function TTreeNode.GetPrevVisible: TTreeNode;
@@ -947,7 +952,7 @@ begin
   end
   else
     Result := Parent;
-  if (Result<>nil) and ( (not Result.FVisible) or (not AreParentsExpandedAndVisible) ) then
+  if (Result<>nil) and ( (not Result.Visible) or (not AreParentsExpandedAndVisible) ) then
     Result:=nil;
 end;
 
@@ -956,9 +961,9 @@ begin
   Result := Self;
   repeat
     Result := Result.GetPrevSibling;
-  until ((Result=nil) or (Result.FVisible));
-  if (Result<>nil) and (not Result.FVisible) then  // Result := nil ... will be removed
-    Assert(False,'TTreeNode.GetPrevVisibleSibling: (Result<>nil) and (not Result.FVisible)');
+  until ((Result=nil) or (Result.Visible));
+  if (Result<>nil) and (not Result.Visible) then  // Result := nil ... will be removed
+    Assert(False,'TTreeNode.GetPrevVisibleSibling: (Result<>nil) and (not Result.Visible)');
 end;
 
 function TTreeNode.GetPrevExpanded: TTreeNode;
@@ -1030,7 +1035,7 @@ end;
 function TTreeNode.GetFirstVisibleChild: TTreeNode;
 begin
   Result := GetFirstChild;
-  if (Result<>nil) and (not Result.FVisible) then
+  if (Result<>nil) and (not Result.Visible) then
     Result := Result.GetNextVisibleSibling;
 end;
 
@@ -2053,8 +2058,6 @@ end;
 function TTreeNodes.GetCount: Integer;
 begin
   Result:=FCount;
-  //if Owner.HandleAllocated then Result := TreeView_GetCount(Handle)
-  //else Result := 0;
 end;
 
 function TTreeNodes.GetOwner: TPersistent;
@@ -2348,7 +2351,6 @@ begin
     Result := FTopLvlItems[0]
   else
     Result := nil;
-  //Result := GetNode(TreeView_GetRoot(Handle));
 end;
 
 function TTreeNodes.GetFirstVisibleNode: TTreeNode;
@@ -3368,7 +3370,7 @@ var
 begin
   //DebugLn(['TCustomTreeView.BeginEditing tvsIsEditing=',tvsIsEditing in FStates,' Selected=',Selected<>nil]);
   if (tvsIsEditing in FStates) or (ANode=nil) then exit;
-  if (not CanEdit(ANode)) or (not ANode.FVisible) then exit;
+  if (not CanEdit(ANode)) or (not ANode.Visible) then exit;
   // if we are asked to edit another node while one is already being edited then
   // stop editing that node
   if FEditingItem <> nil then
@@ -3630,7 +3632,7 @@ var
   procedure CalculateTops(Node: TTreeNode);
   begin
     while Node<>nil do begin
-      if Node.FVisible then begin
+      if Node.Visible then begin
         Node.fTop:=CurTop;
         inc(CurTop, Node.Height);
         if Node.Expanded then
@@ -4590,8 +4592,6 @@ begin
   if HandleAllocated then
     if Value <> nil then
       Value.DropTarget := True;
-    {else
-      TreeView_SelectDropTarget(Handle, nil);}
 end;
 
 procedure TCustomTreeView.SetExpandSignSize(const AExpandSignSize: integer);
