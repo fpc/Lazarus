@@ -4992,7 +4992,6 @@ begin
       end;
     end else begin
       // an enum or syntax error
-      MoveCursorToAtomPos(SavePos);
       if (CurPos.Flag=cafRoundBracketOpen) then begin
         // an enumeration -> read all enums
         CreateChildNode;
