@@ -619,10 +619,7 @@ begin
       if List<>nil then FreeMem(List);
     end;
     if not Result then begin
-      Result:=
-            ((PredefinedClipboardFormat(pcfPicture)=FormatID)
-        or (PredefinedClipboardFormat(pcfDelphiPicture)=FormatID))
-        and (HasPictureFormat);
+      Result := (PredefinedClipboardFormat(pcfPicture)=FormatID) and (HasPictureFormat);
     end;
   end else
     Result:=false;

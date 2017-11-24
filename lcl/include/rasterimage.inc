@@ -488,7 +488,6 @@ begin
   begin
     List.Clear;
     List.Add(PredefinedClipboardMimeTypes[pcfBitmap]);
-    //List.Add(PredefinedClipboardMimeTypes[pcfDelphiBitmap]);
     List.Add(PredefinedClipboardMimeTypes[pcfPixmap]);
   end else
     inherited GetSupportedSourceMimeTypes(List);
@@ -568,7 +567,6 @@ begin
   {$IFDEF VerboseLCLTodos}{$note Make oo}{$ENDIF}
   if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TCustomIcon) then begin
     if (AnsiCompareText(AMimeType,PredefinedClipboardMimeTypes[pcfBitmap])=0)
-    //or (AnsiCompareText(AMimeType,PredefinedClipboardMimeTypes[pcfDelphiBitmap])=0)
     or (AnsiCompareText(AMimeType,PredefinedClipboardMimeTypes[pcfPixmap])=0) then
     begin
       LoadFromStream(AStream);

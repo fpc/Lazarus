@@ -308,22 +308,22 @@ end;
 
 function CF_Picture: TClipboardFormat;
 begin
-  Result:=PredefinedClipboardFormat(pcfDelphiPicture);
+  Result:=PredefinedClipboardFormat(pcfPicture);
 end;
 
 function CF_MetaFilePict: TClipboardFormat;
 begin
-  Result:=PredefinedClipboardFormat(pcfDelphiMetaFilePict);
+  Result:=PredefinedClipboardFormat(pcfMetaFilePict);
 end;
 
 function CF_Object: TClipboardFormat;
 begin
-  Result:=PredefinedClipboardFormat(pcfDelphiObject);
+  Result:=PredefinedClipboardFormat(pcfObject);
 end;
 
 function CF_Component: TClipboardFormat;
 begin
-  Result:=PredefinedClipboardFormat(pcfDelphiComponent);
+  Result:=PredefinedClipboardFormat(pcfComponent);
 end;
 
 procedure FreeAllClipboards;

@@ -244,7 +244,6 @@ const
 begin
   inherited Create;
   Add(PredefinedClipboardFormat(pcfBitmap), TBitmap);
-  //Add(PredefinedClipboardFormat(pcfDelphiBitmap), TBitmap);
   Add(PredefinedClipboardFormat(pcfPixmap), TPixmap);
   //Add(PredefinedClipboardFormat(pcfIcon), TCustomIcon);
   Add(ClipboardRegisterFormat(sMimeTypePng), TPortableNetworkGraphic);

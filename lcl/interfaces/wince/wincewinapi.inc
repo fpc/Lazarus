@@ -388,8 +388,6 @@ var
 begin
   //DebugLn('TWin32WidgetSet.ClipboardGetData - Start');
   Result := false;
-//  if FormatID=PredefinedClipboardFormat(pcfDelphiBitmap)
-//    then FormatID := CF_BITMAP;
   if (FormatID=0) or (Stream=nil) or
     not Windows.IsClipboardFormatAvailable(FormatID) then exit;
 

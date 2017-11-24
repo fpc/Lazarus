@@ -2712,23 +2712,10 @@ type
       pcfPixmap,
       pcfIcon,
       pcfPicture,
+      pcfMetaFilePict,
       pcfObject,
       pcfComponent,
-      pcfCustomData,
-
-      // Delphi definitions (only for compatibility)
-      pcfDelphiText,
-//      pcfDelphiBitmap,
-      pcfDelphiPicture,
-      pcfDelphiMetaFilePict,
-      pcfDelphiObject,
-      pcfDelphiComponent {,
-
-      // Kylix definitions (only for compatibility)
-      pcfKylixPicture,
-      pcfKylixBitmap,
-      pcfKylixDrawing,
-      pcfKylixComponent }
+      pcfCustomData
     );
 
 const
@@ -2738,23 +2725,10 @@ const
      'image/xpm',
      'image/lcl.icon',
      'image/lcl.picture',
+     'image/lcl.metafilepict',
      'application/lcl.object',
      'application/lcl.component',
-     'application/lcl.customdata',
-
-     // Delphi definitions (only for compatibility)
-     'text/plain',
-{    'image/delphi.bitmap', }
-     'Delphi Picture',
-     'image/delphi.metafilepict',
-     'application/delphi.object',
-     'Delphi Component' {,
-
-     // Kylix definitons (only for compatibility)
-     'image/delphi.picture',
-     'image/delphi.bitmap',
-     'image/delphi.drawing',
-     'application/delphi.component' }
+     'application/lcl.customdata'
   );
 
 
