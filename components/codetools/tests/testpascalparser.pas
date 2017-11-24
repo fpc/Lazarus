@@ -41,6 +41,7 @@ type
   published
     procedure TestAtomRing;
     procedure TestRecord_ClassOperators;
+    procedure TestDeprecated;
   end;
 
 implementation
@@ -306,6 +307,29 @@ begin
     '',
     'begin'
     ]);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestDeprecated;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  t = string deprecated ''t'';',
+  '  TBird = class',
+  '    FA: longint deprecated;',
+  '    Deprecated: longint;',
+  '    procedure SetA; deprecated;',
+  '    property A: longint read FA; deprecated;',
+  '    Platform: longint;',
+  '  end deprecated ''tbird'';',
+  'var',
+  '  c: char deprecated;',
+  '  b: boolean deprecated ''b'';',
+  '  deprecated: boolean;',
+  'procedure DoIt; deprecated;',
+  'begin end;',
+  'begin']);
   ParseModule;
 end;
 
