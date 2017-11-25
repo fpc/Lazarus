@@ -2271,7 +2271,6 @@ begin
   CurPos.Flag:=cafNone;
   LastAtoms.Clear;
   NextPos.StartPos:=-1;
-  CurNode:=nil;
 end;
 
 procedure TCustomCodeTool.MoveCursorToCleanPos(ACleanPos: PChar);
