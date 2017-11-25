@@ -687,7 +687,7 @@ begin
 
   // some debuggers (e.g. gdb) sometimes returns linux path delims under windows
   // => fix that
-  Assert(Filename = TrimFilename(Filename), 'TDebugManager.GetFullFilename: Filename needs trimming.');
+  Filename := TrimFilename(Filename);
   SrcFile := MainIDE.FindSourceFile(Filename, Project1.Directory,
                       [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
                        fsfMapTempToVirtualFiles]);
