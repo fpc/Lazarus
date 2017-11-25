@@ -16,7 +16,7 @@ implementation
 
 uses
   SysUtils, htmldefs, LazUTF8,
-  TAChartUtils, TAGeometry;
+  TAChartUtils;
 
 function ReplaceHTMLEntities(const AText: String): String;
 var

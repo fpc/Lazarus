@@ -1883,7 +1883,6 @@ var
   lb, ub: Integer;
   c1, c2: TColor;
   v1, v2: Double;
-  f: Double;
 begin
   if (ColorSource = nil) or (ColorSource.Count = 0) then exit(clTAColor);
 
@@ -1954,7 +1953,6 @@ var
   cellColor: TChartColor;
   scaled_stepX: Integer;
   scaled_stepY: Integer;
-  zmin, zmax: Double;
 begin
   if not (csDesigning in ComponentState) and IsEmpty then exit;
 
@@ -2035,6 +2033,7 @@ end;
 
 function TCustomColorMapSeries.FunctionValue(AX, AY: Double): Double;
 begin
+  Unused(AX, AY);
   Result := 0.0;
 end;
 

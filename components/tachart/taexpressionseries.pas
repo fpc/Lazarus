@@ -960,8 +960,6 @@ begin
 end;
 
 procedure ExtendExprBuiltins;
-var
-  i: Integer;
 begin
   with BuiltinIdentifiers do begin
     // Trigonometric and related
@@ -990,10 +988,6 @@ begin
     AddFunction(bcMath, 'lg', 'F', 'F', @ExprLog10);
     AddFunction(bcMath, 'log10', 'F', 'F', @ExprLog10);
     AddFunction(bcMath, 'log2', 'F', 'F', @ExprLog2);
-
-    // Max/min
-    //AddFunction(bcMath, 'max', 'F', 'FF', @ExprMax);
-    //AddFunction(bcMath, 'min', 'F', 'FF', @ExprMin);
   end;
 end;
 
