@@ -14,6 +14,7 @@ unit TADrawerWMF;
 
 interface
 
+{$IFDEF WINDOWS}
 uses
   Windows, Classes, Graphics,
   TADrawerCanvas, TAGraph;
@@ -102,10 +103,11 @@ type
     procedure CopyToClipboardMetafile;
     procedure SaveToWMF(const AFileName: String);
   end;
-
+{$ENDIF}
 
 implementation
 
+{$IFDEF WINDOWS}
 uses
   SysUtils, clipbrd, TAChartUtils;
 
@@ -472,7 +474,7 @@ procedure TWMFChartHelper.SaveToWMF(const AFileName: String);
 begin
   Draw(TWindowsMetafileDrawer.Create(AFilename), Rect(0, 0, Width, Height));
 end;
-
+{$ENDIF}
 
 end.
 

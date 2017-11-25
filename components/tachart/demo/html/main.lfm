@@ -2,17 +2,17 @@ object MainForm: TMainForm
   Left = 280
   Height = 452
   Top = 130
-  Width = 655
+  Width = 656
   Caption = 'HTML demo'
   ClientHeight = 452
-  ClientWidth = 655
+  ClientWidth = 656
   OnCreate = FormCreate
   LCLVersion = '1.9.0.0'
   object BottomPanel: TPanel
     Left = 8
     Height = 105
     Top = 339
-    Width = 639
+    Width = 640
     Align = alBottom
     AutoSize = True
     BorderSpacing.Left = 8
@@ -20,7 +20,7 @@ object MainForm: TMainForm
     BorderSpacing.Bottom = 8
     BevelOuter = bvNone
     ClientHeight = 105
-    ClientWidth = 639
+    ClientWidth = 640
     TabOrder = 0
     object CgHTML: TCheckGroup
       Left = 0
@@ -62,7 +62,7 @@ object MainForm: TMainForm
       AnchorSideTop.Control = BottomPanel
       AnchorSideRight.Control = BottomPanel
       AnchorSideRight.Side = asrBottom
-      Left = 510
+      Left = 511
       Height = 25
       Top = 8
       Width = 121
@@ -80,7 +80,7 @@ object MainForm: TMainForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnCopyToClipboard
       AnchorSideRight.Side = asrBottom
-      Left = 510
+      Left = 511
       Height = 25
       Top = 37
       Width = 121
@@ -97,7 +97,7 @@ object MainForm: TMainForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnCopyToClipboard
       AnchorSideRight.Side = asrBottom
-      Left = 510
+      Left = 511
       Height = 25
       Top = 66
       Width = 121
@@ -109,15 +109,13 @@ object MainForm: TMainForm
       TabOrder = 3
     end
     object CbRTL: TCheckBox
-      AnchorSideLeft.Control = CgHTML
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = CbRotateXLabels
       AnchorSideTop.Control = CbRotateXLabels
       AnchorSideTop.Side = asrBottom
       Left = 349
       Height = 19
       Top = 38
       Width = 86
-      BorderSpacing.Left = 16
       BorderSpacing.Top = 8
       Caption = 'Right-to-left'
       OnChange = CbRTLChange
@@ -125,12 +123,15 @@ object MainForm: TMainForm
       Visible = False
     end
     object CbRotateXLabels: TCheckBox
+      AnchorSideLeft.Control = CgHTML
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnCopyToClipboard
       AnchorSideTop.Side = asrCenter
       Left = 349
       Height = 19
       Top = 11
       Width = 131
+      BorderSpacing.Left = 16
       Caption = 'Rotate x labels by 45°'
       OnChange = CbRotateXLabelsChange
       TabOrder = 5
@@ -152,7 +153,7 @@ object MainForm: TMainForm
     Left = 8
     Height = 323
     Top = 8
-    Width = 639
+    Width = 640
     AxisList = <    
       item
         Grid.Color = clSilver
