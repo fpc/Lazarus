@@ -1282,8 +1282,8 @@ begin
     lmpOutside: isNeg := Source[AIndex]^.Y < GetZeroLevel;
     lmpPositive: isNeg := false;
     lmpNegative: isNeg := true;
-    lmpInside,
-    lmpInsideCenter: isNeg := Source[AIndex]^.Y >= GetZeroLevel;
+    lmpInside: isNeg := Source[AIndex]^.Y >= GetZeroLevel;
+    lmpInsideCenter: isNeg := Source[AIndex]^.Y < GetZeroLevel;
   end;
   Result := DIR[IsRotated, isNeg];
 end;
@@ -1593,20 +1593,45 @@ var
   labelText: String;
   dir: TLabelDirection;
   m: array [TLabelDirection] of Integer absolute AMargins;
+  zero: Double;
+  gp: TDoublePoint;
+  valueIsPositive: Boolean;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
+  if MarkPositions = lmpInsideCenter then exit;
 
+  zero := GetZeroLevel;
   for i := 0 to Count - 1 do begin
-    if not ParentChart.IsPointInViewPort(GetGraphPoint(i)) then continue;
+    gp := GetGraphPoint(i);
+    if not ParentChart.IsPointInViewPort(gp) then continue;
     labelText := FormattedMark(i);
     if labelText = '' then continue;
 
+    valueIsPositive := TDoublePointBoolArr(gp)[not IsRotated] > zero;
     dir := GetLabelDirection(i);
+
     with Marks.MeasureLabel(ADrawer, labelText) do
       dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
     if Marks.DistanceToCenter then
       dist := dist div 2;
-    m[dir] := Max(m[dir], dist + Marks.Distance);
+
+    if valueIsPositive then begin
+      if Marks.DistanceToCenter then
+        case dir of
+          ldBottom: dir := ldTop;
+          ldLeft: dir := ldRight;
+        end;
+      if dir in [ldTop, ldRight] then
+        m[dir] := Max(m[dir], dist + Marks.Distance);
+    end else begin
+      if Marks.DistanceToCenter then
+        case dir of
+          ldTop: dir := ldBottom;
+          ldRight: dir := ldLeft;
+        end;
+      if dir in [ldBottom, ldLeft] then
+        m[dir] := Max(m[dir], dist + Marks.Distance);
+    end;
   end;
 end;
 
