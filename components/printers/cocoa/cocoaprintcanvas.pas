@@ -1,4 +1,14 @@
-// custom-page in cocoa example: https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Printing/osxp_pagination/osxp_pagination.html
+{
+ *****************************************************************************
+  This file is part of the Printer4Lazarus package
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+
+ custom-page in cocoa example:
+  https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Printing/osxp_pagination/osxp_pagination.html
+}
 unit cocoaprintcanvas;
 
 {$mode objfpc}{$H+}

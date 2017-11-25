@@ -1,6 +1,5 @@
 {%MainUnit ../printersdlgs.pp}
 
-
 const
   SExecute = 'Execute';
 

@@ -2,7 +2,7 @@
   Author: Olivier Guilbaud
 
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of the Printer4Lazarus package
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
