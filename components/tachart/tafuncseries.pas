@@ -569,7 +569,9 @@ var
   ymin, ymax: Double;
 begin
   inherited GetBounds(ABounds);
-  if not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY then
+  if not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY or
+     (csDesigning in ComponentState)
+  then
     exit;
   ymin := SafeInfinity;
   ymax := NegInfinity;
