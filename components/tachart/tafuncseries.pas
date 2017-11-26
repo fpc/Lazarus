@@ -569,9 +569,7 @@ var
   ymin, ymax: Double;
 begin
   inherited GetBounds(ABounds);
-  if not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY or
-     (csDesigning in ComponentState)
-  then
+  if not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY then
     exit;
   ymin := SafeInfinity;
   ymax := NegInfinity;
@@ -669,9 +667,9 @@ end;
 
 procedure TFuncSeries.GetBounds(var ABounds: TDoubleRect);
 begin
-  inherited GetBounds(ABounds);
-  if Assigned(OnCalculate) then
+  if (csDesigning in ComponentState) then
     exit;
+  inherited GetBounds(ABounds);
 end;
 
 function TFuncSeries.GetNearestPoint(
