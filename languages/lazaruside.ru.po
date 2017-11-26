@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-13 01:28+0300\n"
+"PO-Revision-Date: 2017-11-27 00:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3997,8 +3997,8 @@ msgid "File is used"
 msgstr "Файл используется"
 
 #: lazarusidestrconsts.lisa2pfilename2
-msgid "Filename"
-msgstr "Имя файла"
+msgid "Filename/URL"
+msgstr "Имя файла либо адрес"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
 msgid "File not unit"
@@ -11463,6 +11463,10 @@ msgstr "Загрузить макрос"
 msgid "&Local"
 msgstr "Локальная (&L)"
 
+#: lazarusidestrconsts.lislocalpkg
+msgid "Local packages (%s)"
+msgstr "Локальные пакеты (%s)"
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Локальные переменные"
@@ -13961,6 +13965,10 @@ msgstr "? (Вкл.)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "При разрыве строки (то есть при нажатии клавиши 'Ввод')"
 
+#: lazarusidestrconsts.lisonlinepkg
+msgid "Online packages (%s)"
+msgstr "Пакеты из сети (%s)"
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "только 32 бита"
@@ -14903,6 +14911,10 @@ msgstr "Текстовый"
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "Виртуальный модуль"
+
+#: lazarusidestrconsts.lispkginstconf
+msgid "Do you wish to install the following packages from the main repository:"
+msgstr "Вы хотите установить следующие пакеты из главного репозитория:"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""

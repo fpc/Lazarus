@@ -3979,7 +3979,7 @@ msgid "File is used"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilename2
-msgid "Filename"
+msgid "Filename/URL"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilenotunit
@@ -11404,6 +11404,10 @@ msgstr ""
 msgid "&Local"
 msgstr ""
 
+#: lazarusidestrconsts.lislocalpkg
+msgid "Local packages (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr ""
@@ -13875,6 +13879,10 @@ msgstr ""
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
+#: lazarusidestrconsts.lisonlinepkg
+msgid "Online packages (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -14816,6 +14824,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
+msgstr ""
+
+#: lazarusidestrconsts.lispkginstconf
+msgid "Do you wish to install the following packages from the main repository:"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid

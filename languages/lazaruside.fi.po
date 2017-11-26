@@ -3969,7 +3969,9 @@ msgid "File is used"
 msgstr "Tiedosto on käytössä"
 
 #: lazarusidestrconsts.lisa2pfilename2
-msgid "Filename"
+#, fuzzy
+#| msgid "Filename"
+msgid "Filename/URL"
 msgstr "Tiedoston nimi"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
@@ -11373,6 +11375,10 @@ msgstr "Lataa makro:"
 msgid "&Local"
 msgstr "&Paikallinen"
 
+#: lazarusidestrconsts.lislocalpkg
+msgid "Local packages (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Paikalliset"
@@ -13838,6 +13844,10 @@ msgstr "? (Päällä)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Riviä vaihdettaessa (Enter näppäin)"
 
+#: lazarusidestrconsts.lisonlinepkg
+msgid "Online packages (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "vain 32bit"
@@ -14776,6 +14786,10 @@ msgstr "Teksti"
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "Virtuaalinen käännösyksikkö"
+
+#: lazarusidestrconsts.lispkginstconf
+msgid "Do you wish to install the following packages from the main repository:"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""

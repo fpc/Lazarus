@@ -4050,7 +4050,9 @@ msgid "File is used"
 msgstr "El archivo está usado."
 
 #: lazarusidestrconsts.lisa2pfilename2
-msgid "Filename"
+#, fuzzy
+#| msgid "Filename"
+msgid "Filename/URL"
 msgstr "Nombre de archivo"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
@@ -11655,6 +11657,10 @@ msgstr "Cargar macro desde"
 msgid "&Local"
 msgstr "&Local"
 
+#: lazarusidestrconsts.lislocalpkg
+msgid "Local packages (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Locales"
@@ -14190,6 +14196,10 @@ msgstr "¿? (Activado)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Al final de línea (ej. retorno o tecla enter)"
 
+#: lazarusidestrconsts.lisonlinepkg
+msgid "Online packages (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "solo 32bits"
@@ -15138,6 +15148,10 @@ msgstr "Texto"
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "Unidad virtual"
+
+#: lazarusidestrconsts.lispkginstconf
+msgid "Do you wish to install the following packages from the main repository:"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 #, fuzzy

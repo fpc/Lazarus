@@ -4002,7 +4002,9 @@ msgid "File is used"
 msgstr "Failas jau naudojamas"
 
 #: lazarusidestrconsts.lisa2pfilename2
-msgid "Filename"
+#, fuzzy
+#| msgid "Filename"
+msgid "Filename/URL"
 msgstr "Failo pavadinimas"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
@@ -11485,6 +11487,10 @@ msgstr "Makrokomandą įkelti iš"
 msgid "&Local"
 msgstr "&Vietinis"
 
+#: lazarusidestrconsts.lislocalpkg
+msgid "Local packages (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Vietiniai kintamieji"
@@ -13983,6 +13989,10 @@ msgstr "? (Aktyvus)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Laužiant eilutę (pvz. įvedimo klavišas)"
 
+#: lazarusidestrconsts.lisonlinepkg
+msgid "Online packages (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "tik 32 bitų"
@@ -14925,6 +14935,10 @@ msgstr "Teksto"
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "Virtualus modulis"
+
+#: lazarusidestrconsts.lispkginstconf
+msgid "Do you wish to install the following packages from the main repository:"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
