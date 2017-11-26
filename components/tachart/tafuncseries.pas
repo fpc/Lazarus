@@ -28,6 +28,7 @@ const
   DEF_FIT_STEP = 4;
   DEF_FIT_PARAM_COUNT = 3;
   DEF_COLORMAP_STEP = 4;
+  DEF_COLORMAP_LEGENDFORMAT = 'z ≤ %1:g|%g < z ≤ %g|%g < z';
 
 type
   TFuncCalculateEvent = procedure (const AX: Double; out AY: Double) of object;
@@ -2046,10 +2047,8 @@ end;
 procedure TCustomColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
 
   function PrepareFormats: TStrings;
-  const
-    FORMAT_DEF = 'z ≤ %1:g|%g < z ≤ %g|%g < z';
   begin
-    Result := Split(IfThen(Legend.Format = '', FORMAT_DEF, Legend.Format));
+    Result := Split(IfThen(Legend.Format = '', DEF_COLORMAP_LEGENDFORMAT, Legend.Format));
     with Result do
       try
         while Count < 3 do
