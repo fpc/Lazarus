@@ -337,13 +337,25 @@ end;
 procedure TTestPascalParser.TestParseGenericsDelphi;
 begin
   StartProgram;
+  Code.Source:='';
   Add([
+  'program test1;',
   '{$mode delphi}',
   'type',
   '  TRec = record',
   '    procedure Proc<T>;', // generic proc inside normal record
   '  end;',
-  'procedure TRec.Proc<T>;',
+  '  TBird<B> = class(TAnimal<B>)',
+  '    procedure DoIt;', // normal proc inside generic class
+  '    procedure DoSome<T>;', // generic proc inside generic class
+  '  end;',
+  'procedure TRec.Proc<T>;', // generic proc inside normal record
+  'begin',
+  'end;',
+  'procedure TBird<B>.DoIt;', // normal proc inside generic class
+  'begin',
+  'end;',
+  'procedure TBird<B>.DoSome<T>;', // generic proc inside generic class
   'begin',
   'end;',
   'begin']);
