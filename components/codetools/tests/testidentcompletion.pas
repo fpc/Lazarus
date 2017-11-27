@@ -93,7 +93,6 @@ var
   SrcMark: TFDMarker;
   CursorPos: TCodeXYPosition;
   CodeContexts: TCodeContextInfo;
-  i: Integer;
 begin
   StartProgram;
   Add([

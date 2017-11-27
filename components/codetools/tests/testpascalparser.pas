@@ -42,6 +42,7 @@ type
     procedure TestAtomRing;
     procedure TestRecord_ClassOperators;
     procedure TestDeprecated;
+    procedure TestParseGenericsDelphi;
   end;
 
 implementation
@@ -329,6 +330,22 @@ begin
   '  deprecated: boolean;',
   'procedure DoIt; deprecated;',
   'begin end;',
+  'begin']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseGenericsDelphi;
+begin
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'type',
+  '  TRec = record',
+  '    procedure Proc<T>;', // generic proc inside normal record
+  '  end;',
+  'procedure TRec.Proc<T>;',
+  'begin',
+  'end;',
   'begin']);
   ParseModule;
 end;
