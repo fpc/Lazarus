@@ -46,8 +46,8 @@ type
   public
     Name: string;
     Kind: char;
-    CleanPos: integer;
-    NameStartPos, NameEndPos: integer;
+    NameStartPos, NameEndPos: integer; // identifier in front of comment
+    CleanPos: integer; // comment end
   end;
 
   { TCustomTestFindDeclaration }
@@ -66,6 +66,7 @@ type
     function AddMarker(const aName: string; Kind: char; CleanPos: integer;
       NameStartPos, NameEndPos: integer): TFDMarker;
     function IndexOfMarker(const aName: string; Kind: char): integer;
+    procedure ParseSimpleMarkers(aCode: TCodeBuffer);
     function FindMarker(const aName: string; Kind: char): TFDMarker;
     procedure CheckReferenceMarkers;
     procedure FindDeclarations(Filename: string; ExpandFile: boolean = true);
@@ -253,6 +254,7 @@ begin
     inc(p);
     NameStartPos:=p;
     if Src[p] in ['#','@'] then begin
+      {#name}  {@name}
       inc(p);
       if not IsIdentStartChar[Src[p]] then begin
         WriteSource(p);
@@ -265,6 +267,9 @@ begin
       continue;
     end;
 
+    // check for specials:
+    {declaration:path}
+    {guesstype:type}
     if not IsIdentStartChar[Src[p]] then continue;
     while (p<=length(Src)) and (IsIdentChar[Src[p]]) do inc(p);
     Marker:=copy(Src,NameStartPos,p-NameStartPos);
@@ -502,6 +507,48 @@ begin
       exit(i);
   end;
   Result:=-1;
+end;
+
+procedure TCustomTestFindDeclaration.ParseSimpleMarkers(aCode: TCodeBuffer);
+var
+  CommentP, p, IdentifierStartPos, IdentifierEndPos, NameStartPos: Integer;
+  Src, Marker: String;
+begin
+  FMainCode:=aCode;
+  DoParseModule(MainCode,FMainTool);
+  CommentP:=1;
+  Src:=MainTool.Src;
+  while CommentP<length(Src) do begin
+    CommentP:=FindNextComment(Src,CommentP);
+    if CommentP>length(Src) then break;
+    p:=CommentP;
+    CommentP:=FindCommentEnd(Src,CommentP,MainTool.Scanner.NestedComments);
+    if Src[p]<>'{' then continue;
+    if Src[p+1] in ['$','%',' ',#0..#31] then continue;
+
+    IdentifierStartPos:=p;
+    IdentifierEndPos:=p;
+    while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
+      dec(IdentifierStartPos);
+
+    inc(p);
+    NameStartPos:=p;
+    if Src[p] in ['#','@'] then begin
+      {#name}  {@name}
+      inc(p);
+      if not IsIdentStartChar[Src[p]] then begin
+        WriteSource(p);
+        Fail('Expected identifier at '+MainTool.CleanPosToStr(p,true));
+      end;
+      NameStartPos:=p;
+      while IsIdentChar[Src[p]] do inc(p);
+      Marker:=copy(Src,NameStartPos,p-NameStartPos);
+      AddMarker(Marker,Src[NameStartPos-1],CommentP,IdentifierStartPos,IdentifierEndPos);
+    end else begin
+      WriteSource(p);
+      Fail('invalid marker at '+MainTool.CleanPosToStr(p));
+    end;
+  end;
 end;
 
 function TCustomTestFindDeclaration.FindMarker(const aName: string; Kind: char

@@ -28,11 +28,9 @@ unit TestIdentCompletion;
 interface
 
 uses
-  Classes, SysUtils,
-  fpcunit, testregistry,
-  FileProcs, LazFileUtils, LazLogger,
-  CodeToolManager, ExprEval,
-  CustomCodeTool, FindDeclarationTool, KeywordFuncLists,
+  Classes, SysUtils, fpcunit, testregistry, FileProcs, LazFileUtils, LazLogger,
+  CodeToolManager, ExprEval, CustomCodeTool, FindDeclarationTool,
+  KeywordFuncLists, CodeCache, IdentCompletionTool, CodeTree,
   TestFindDeclaration;
 
 type
@@ -42,6 +40,7 @@ type
   TTestIdentCompletion = class(TCustomTestFindDeclaration)
   published
     procedure Test_GetValuesOfCaseVariable_Enum;
+    procedure Test_FindCodeContext_ProcParams;
   end;
 
 implementation
@@ -70,6 +69,61 @@ begin
     AssertEquals('case enum[1]','green',List[1]);
   finally
     List.Free;
+  end;
+end;
+
+procedure TTestIdentCompletion.Test_FindCodeContext_ProcParams;
+
+  procedure CheckCodeContext(Context: TCodeContextInfoItem; MarkerName: string);
+  var
+    Marker: TFDMarker;
+  begin
+    AssertNotNull('CheckCodeContext: missing context for #'+MarkerName,Context);
+    AssertEquals('CheckCodeContext: Context.Expr.Desc for #'+MarkerName,
+      ExpressionTypeDescNames[xtContext],ExpressionTypeDescNames[Context.Expr.Desc]);
+    if MainTool<>Context.Expr.Context.Tool then
+      Fail('CheckCodeContext: Context.Expr.Context.Tool for #'+MarkerName+' expected "'+MainTool.MainFilename+'", but found "'+Context.Expr.Context.Tool.MainFilename+'"');
+    Marker:=FindMarker(MarkerName,'#');
+    AssertNotNull('CheckCodeContext: missing marker #'+MarkerName,Marker);
+    AssertEquals('CheckCodeContext: Context.Expr.Context.Node.StartPos for #'+MarkerName,
+      Marker.CleanPos,Context.Expr.Context.Node.StartPos);
+  end;
+
+var
+  SrcMark: TFDMarker;
+  CursorPos: TCodeXYPosition;
+  CodeContexts: TCodeContextInfo;
+  i: Integer;
+begin
+  StartProgram;
+  Add([
+  '{#a}procedure DoIt(i, j: longint);',
+  'begin',
+  'end;',
+  '{#b}procedure DoIt(s, h: string);',
+  'begin',
+  'end;',
+  'begin',
+  '  DoIt(3,{#c}4);',
+  'end.']);
+  ParseSimpleMarkers(Code);
+  SrcMark:=FindMarker('c','#');
+  AssertNotNull('missing src marker #c',SrcMark);
+  MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+  CodeContexts:=nil;
+  try
+    if not CodeToolBoss.FindCodeContext(Code,CursorPos.X,CursorPos.Y,CodeContexts)
+    then begin
+      WriteSource(CursorPos);
+      Fail('CodeToolBoss.FindCodeContext');
+    end;
+    AssertEquals('CodeContexts.Count',2,CodeContexts.Count);
+    //for i:=0 to CodeContexts.Count-1 do
+    //  debugln(['TTestIdentCompletion.Test_FindCodeContext_ProcParams ',i,' ',CodeContexts[i].AsDebugString(true)]);
+    CheckCodeContext(CodeContexts[0],'b');
+    CheckCodeContext(CodeContexts[1],'a');
+  finally
+    CodeContexts.Free;
   end;
 end;
 
