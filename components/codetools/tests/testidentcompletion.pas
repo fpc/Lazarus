@@ -44,6 +44,7 @@ type
   published
     procedure Test_GetValuesOfCaseVariable_Enum;
     procedure Test_FindCodeContext_ProcParams;
+    procedure Test_FindCodeContext_ProcParams_NoClosingBracket;
     procedure Test_FindCodeContext_ProcTypeParams;
     procedure Test_FindCodeContext_AttributeParams;
   end;
@@ -125,6 +126,40 @@ begin
     //  debugln(['TTestIdentCompletion.Test_FindCodeContext_ProcParams ',i,' ',CodeContexts[i].AsDebugString(true)]);
     CheckCodeContext(CodeContexts[0],'b');
     CheckCodeContext(CodeContexts[1],'a');
+  finally
+    CodeContexts.Free;
+  end;
+end;
+
+procedure TTestIdentCompletion.Test_FindCodeContext_ProcParams_NoClosingBracket;
+var
+  SrcMark: TFDMarker;
+  CursorPos: TCodeXYPosition;
+  CodeContexts: TCodeContextInfo;
+begin
+  StartProgram;
+  Add([
+  '{#a}procedure DoIt(i, j: longint);',
+  'begin',
+  'end;',
+  'begin',
+  '  DoIt({#c}',
+  'end.']);
+  ParseSimpleMarkers(Code);
+  SrcMark:=FindMarker('c','#');
+  AssertNotNull('missing src marker #c',SrcMark);
+  MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+  CodeContexts:=nil;
+  try
+    if not CodeToolBoss.FindCodeContext(Code,CursorPos.X,CursorPos.Y,CodeContexts)
+    then begin
+      WriteSource(CursorPos);
+      Fail('CodeToolBoss.FindCodeContext');
+    end;
+    AssertEquals('CodeContexts.Count',1,CodeContexts.Count);
+    //for i:=0 to CodeContexts.Count-1 do
+    //  debugln(['TTestIdentCompletion.Test_FindCodeContext_ProcParams ',i,' ',CodeContexts[i].AsDebugString(true)]);
+    CheckCodeContext(CodeContexts[0],'a');
   finally
     CodeContexts.Free;
   end;
