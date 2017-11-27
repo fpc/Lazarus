@@ -230,13 +230,40 @@ const
 type
   // Procedure Specifiers
   TProcedureSpecifier = (
-    psSTDCALL, psREGISTER, psPOPSTACK, psVIRTUAL, psABSTRACT, psDYNAMIC,
-    psOVERLOAD, psOVERRIDE, psREINTRODUCE, psCDECL, psINLINE, psMESSAGE,
-    psEXTERNAL, psFORWARD, psPASCAL, psASSEMBLER, psSAVEREGISTERS,
-    psFAR, psNEAR, psFINAL, psSTATIC, psMWPASCAL, psNOSTACKFRAME,
-    psDEPRECATED, psDISPID, psPLATFORM, psSAFECALL, psUNIMPLEMENTED,
-    psEXPERIMENTAL, psLIBRARY, psENUMERATOR, psVARARGS,
-    psEdgedBracket);
+    psStdCall,
+    psRegister,
+    psPopStack,
+    psVirtual,
+    psAbstract,
+    psDynamic,
+    psOverload,
+    psOverride,
+    psReintroduce,
+    psCDecl,
+    psInline,
+    psMessage,
+    psExternal,
+    psForward,
+    psPascal,
+    psAssembler,
+    psSaveRegisters,
+    psFar,
+    psNear,
+    psFinal,
+    psStatic,
+    psMWPascal,
+    psNoStackframe,
+    psDeprecated,
+    psDispID,
+    psPlatform,
+    psSafeCall,
+    psUnimplemented,
+    psExperimental,
+    psLibrary,
+    psEnumerator,
+    psVarargs,
+    psEdgedBracket
+    );
   TAllProcedureSpecifiers = set of TProcedureSpecifier;
 
 const

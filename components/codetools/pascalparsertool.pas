@@ -4210,7 +4210,7 @@ begin
       ReadTypeReference(true);
       if CurPos.Flag=cafRoundBracketOpen then begin
         CreateChildNode;
-        CurNode.Desc:=ctnAttribParam;
+        CurNode.Desc:=ctnParamsRound;
         ReadTilBracketClose(true);
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode;

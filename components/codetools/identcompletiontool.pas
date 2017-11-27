@@ -42,7 +42,7 @@ interface
 { $DEFINE ShowFoundIdents}
 { $DEFINE ShowFilteredIdents}
 { $DEFINE ShowHistory}
-{ $DEFINE VerboseCodeContext}
+{$DEFINE VerboseCodeContext}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -419,6 +419,8 @@ type
       out ExprType: TExpressionType; out ContextExprStartPos: LongInt;
       out StartInSubContext, HasInheritedKeyword: Boolean);
     function CollectAllContexts(Params: TFindDeclarationParams;
+      const FoundContext: TFindContext): TIdentifierFoundResult;
+    function CollectAttributeConstructors({%H-}Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure AddCollectionContext(Tool: TFindDeclarationTool;
       Node: TCodeTreeNode);
@@ -2240,6 +2242,37 @@ begin
   AddCollectionContext(FoundContext.Tool,FoundContext.Node);
 end;
 
+function TIdentCompletionTool.CollectAttributeConstructors(
+  Params: TFindDeclarationParams; const FoundContext: TFindContext
+  ): TIdentifierFoundResult;
+begin
+  Result:=ifrProceedSearch;
+  if FoundContext.Node=nil then exit;
+  {$IFDEF VerboseCodeContext}
+  //DebugLn(['TIdentCompletionTool.CollectAttributeConstructors ',FoundContext.Node.DescAsString]);
+  {$ENDIF}
+  case FoundContext.Node.Desc of
+  ctnProcedure:
+    begin
+      {$IFDEF VerboseCodeContext}
+      //DebugLn('TIdentCompletionTool.CollectAttributeConstructors Found Proc ',FoundContext.Tool.ExtractProcName(FoundContext.Node,[]),' ',FoundContext.Tool.CleanPosToStr(FoundContext.Node.StartPos,true));
+      {$ENDIF}
+      if (CurrentIdentifierContexts.ProcName='') then exit;
+      if FoundContext.Tool.NodeIsConstructor(FoundContext.Node) then begin
+        {$IFDEF VerboseCodeContext}
+        DebugLn('TIdentCompletionTool.CollectAttributeConstructors Found Constructor ',FoundContext.Tool.ExtractProcName(FoundContext.Node,[]),' ',FoundContext.Tool.CleanPosToStr(FoundContext.Node.StartPos,true));
+        {$ENDIF}
+        AddCollectionContext(FoundContext.Tool,FoundContext.Node);
+      end;
+      // ToDo: method without 'overload' hides inherited one
+      //if not FoundContext.Tool.ProcNodeHasSpecifier(FoundContext.Node, psOVERLOAD) then
+      //  Exclude(Params.Flags, fdfSearchInAncestors);
+    end;
+  else
+    exit;
+  end;
+end;
+
 procedure TIdentCompletionTool.AddCollectionContext(Tool: TFindDeclarationTool;
   Node: TCodeTreeNode);
 begin
@@ -3122,20 +3155,29 @@ var
   // returns true, on error or context is parameter
   var
     VarNameAtom, ProcNameAtom: TAtomPosition;
-    ParameterIndex: integer;
+    ParameterIndex, StartPos: integer;
     ContextExprStartPos: LongInt;
-    StartInSubContext, HasInheritedKeyword: Boolean;
+    StartInSubContext, HasInheritedKeyword, IsAttributeParams: Boolean;
     ExprType: TExpressionType;
+    AttribParamNode: TCodeTreeNode;
   begin
     Result:=false;
-    // check if in a begin..end block
-    if CursorNode.GetNodeOfTypes([ctnBeginBlock,ctnInitialization,ctnFinalization])=nil
+    IsAttributeParams:=false;
+    if (CursorNode.Desc=ctnParamsRound)
+    and (CursorNode.Parent.Desc=ctnAttribParam) then begin
+      IsAttributeParams:=true;
+      AttribParamNode:=CursorNode.Parent;
+      StartPos:=AttribParamNode.StartPos;
+    end else if CursorNode.GetNodeOfTypes([ctnBeginBlock,ctnInitialization,ctnFinalization])<>nil
     then begin
-      DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a begin block']);
+      StartPos:=CursorNode.StartPos;
+    end else begin
+      // not in a begin..end block
+      DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a begin block "',CursorNode.DescAsString,'"']);
       exit;
     end;
     // check if cursor is in a parameter list
-    if not CheckParameterSyntax(CursorNode.StartPos, CleanCursorPos,
+    if not CheckParameterSyntax(StartPos, CleanCursorPos,
                                 VarNameAtom, ProcNameAtom, ParameterIndex)
     then begin
       if VarNameAtom.StartPos=0 then ;
@@ -3153,8 +3195,6 @@ var
     CurrentIdentifierContexts.ProcNameAtom:=ProcNameAtom;
     CurrentIdentifierContexts.ProcName:=GetAtom(ProcNameAtom);
 
-    AddPredefinedProcs(CurrentIdentifierContexts,ProcNameAtom);
-
     MoveCursorToAtomPos(ProcNameAtom);
     ReadNextAtom; // read opening bracket
     CurrentIdentifierContexts.StartPos:=CurPos.EndPos;
@@ -3164,39 +3204,62 @@ var
     else
       CurrentIdentifierContexts.EndPos:=SrcLen+1;
 
-    FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
-                          ExprType,ContextExprStartPos,StartInSubContext,
-                          HasInheritedKeyword);
+    if IsAttributeParams then begin
+      debugln(['CheckContextIsParameter AttribParamNode={',ExtractNode(AttribParamNode,[]),'}']);
+      Params.Flags:=fdfDefaultForExpressions+[fdfSkipClassForward];
+      Params.Identifier:=@Src[ProcNameAtom.StartPos];
+      Params.ContextNode:=AttribParamNode.FirstChild;
+      ExprType:=FindExpressionTypeOfTerm(AttribParamNode.StartPos,ProcNameAtom.EndPos,Params,false);
+      {$IFDEF VerboseCodeContext}
+      debugln(['CheckContextIsParameter Attribute: ',ExprTypeToString(ExprType)]);
+      {$ENDIF}
+      if (ExprType.Context.Node = nil) or (ExprType.Context.Tool = nil) then
+        exit;
+      CurrentIdentifierList.Context:=ExprType.Context;
+      Params.ContextNode:=ExprType.Context.Node;
+      Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
+      Params.SetIdentifier(Self,'*',@CollectAttributeConstructors);
+      ExprType.Context.Tool.FindIdentifierInContext(Params);
+    end else begin
+      AddPredefinedProcs(CurrentIdentifierContexts,ProcNameAtom);
+      FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
+                            ExprType,ContextExprStartPos,StartInSubContext,
+                            HasInheritedKeyword);
 
-    if ContextExprStartPos=0 then ;
-    {$IFDEF VerboseCodeContext}
-    DebugLn(['CheckContextIsParameter StartInSubContext=',StartInSubContext,' ',ExprType.Context.Node.DescAsString,' "',copy(ExprType.Context.Tool.Src,GatherContext.Node.StartPos-20,25),'"']);
-    {$ENDIF}
-
-    // gather declarations of all parameter lists
-    if (ExprType.Context.Node = nil) or (ExprType.Context.Tool = nil) then
-    begin
-      if ExprType.Desc in xtAllIdentPredefinedTypes then
+      if ContextExprStartPos=0 then ;
+      {$IFDEF VerboseCodeContext}
+      DebugLn(['CheckContextIsParameter StartInSubContext=',StartInSubContext,' ',ExprTypeToString(ExprType),' "',copy(ExprType.Context.Tool.Src,ExprType.Context.Node.StartPos-20,25),'"']);
+      {$ENDIF}
+      if (ExprType.Context.Node = nil) or (ExprType.Context.Tool = nil) then
       begin
-        ExprType.Context.Node := CursorNode;
-        ExprType.Context.Tool := Self;
-      end else
-        Exit;
+        if ExprType.Desc in xtAllIdentPredefinedTypes then
+        begin
+          ExprType.Context.Node := CursorNode;
+          ExprType.Context.Tool := Self;
+        end else
+          Exit;
+      end;
+
+      Params.ContextNode:=ExprType.Context.Node;
+      if IsAttributeParams then begin
+        Params.SetIdentifier(Self,'*',@CollectAttributeConstructors);
+      end else begin
+        Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],@CollectAllContexts);
+      end;
+      Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
+      if not StartInSubContext then
+        Include(Params.Flags,fdfSearchInParentNodes);
+      CurrentIdentifierList.Context:=ExprType.Context;
+      {$IFDEF VerboseCodeContext}
+      DebugLn('CheckContextIsParameter searching procedures, properties and variables ...');
+      {$ENDIF}
+      if ExprType.Desc in xtAllTypeHelperTypes then
+        ExprType.Context.Tool.FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params)
+      else
+        ExprType.Context.Tool.FindIdentifierInContext(Params);
     end;
 
-    Params.ContextNode:=ExprType.Context.Node;
-    Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],@CollectAllContexts);
-    Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
-    if not StartInSubContext then
-      Include(Params.Flags,fdfSearchInParentNodes);
-    CurrentIdentifierList.Context:=ExprType.Context;
-    {$IFDEF VerboseCodeContext}
-    DebugLn('CheckContextIsParameter searching procedures, properties and variables ...');
-    {$ENDIF}
-    if ExprType.Desc in xtAllTypeHelperTypes then
-      ExprType.Context.Tool.FindIdentifierInBasicTypeHelpers(ExprType.Desc, Params)
-    else
-      ExprType.Context.Tool.FindIdentifierInContext(Params);
+    // gather declarations of all parameter lists
     {$IFDEF VerboseCodeContext}
     DebugLn('CheckContextIsParameter END');
     {$ENDIF}

@@ -9493,6 +9493,7 @@ var
         then
           Include(Params.Flags,fdfIgnoreOverloadedProcs);
 
+        //debugln(['ResolveIdentifier ',IsEnd,' ',GetAtom(CurAtom),' ',Context.Node.DescAsString,' ',Context.Node.Parent.DescAsString,' ']);
         if IsEnd and (Context.Node.Desc=ctnIdentifier)
         and (Context.Node.Parent.Desc=ctnAttribParam)
         and ResolveAttribute(Context) then begin
