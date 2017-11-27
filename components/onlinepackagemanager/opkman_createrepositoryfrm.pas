@@ -82,6 +82,7 @@ type
     FVSTPackages: TVirtualStringTree;
     FVSTDetails: TVirtualStringTree;
     FRepository: TRepository;
+    FSortDirection: TSortDirection;
     FSerializablePackages: TSerializablePackages;
     procedure EnableDisableButtons(const AEnable: Boolean);
     procedure ShowHideControls(const AType: Integer);
@@ -172,6 +173,7 @@ begin
   bCancel.Caption := rsCreateRepositoryFrm_bCancel_Caption;
   bCancel.Hint := rsCreateRepositoryFrm_bCancel_Hint;
   miRepDetails.Caption := rsCreateRepositoryFrm_miRepDetails_Caption;
+  FSortDirection := sdAscending;
   EnableDisableButtons(True);
   ShowHideControls(0);
 
@@ -398,7 +400,7 @@ begin
               if FSerializablePackages.AddPackageFromJSON(JSON) then
               begin
                 JSON := '';
-                SerializablePackages.Sort(stName, soAscendent);
+                FSerializablePackages.Sort(stName, soAscendent);
                 if FSerializablePackages.PackagesToJSON(JSON) then
                 begin
                   if SaveJSONToFile(ExtractFilePath(FRepository.FPath) + cRemoteJSONFile, JSON) then
@@ -440,7 +442,7 @@ begin
       if FSerializablePackages.AddPackageFromJSON(JSON) then
       begin
         JSON := '';
-        SerializablePackages.Sort(stName, soAscendent);
+        FSerializablePackages.Sort(stName, soAscendent);
         if FSerializablePackages.PackagesToJSON(JSON) then
         begin
           if SaveJSONToFile(ExtractFilePath(FRepository.FPath) + cRemoteJSONFile, JSON) then
@@ -472,6 +474,7 @@ begin
         AddNewPackage
       else
         AddExistingPackage(AddRepositoryPackageFrm.JSONFile, AddRepositoryPackageFrm.PackageFile);
+      FVSTPackages.SortTree(0, FSortDirection);
     end;
   finally
     AddRepositoryPackageFrm.Free;
@@ -822,6 +825,7 @@ begin
           SortDirection := opkman_VirtualTrees.sdAscending;
       end;
       SortTree(SortColumn, SortDirection, False);
+      FSortDirection := SortDirection;
     end;
   end;
 end;

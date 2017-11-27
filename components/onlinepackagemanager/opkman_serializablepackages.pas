@@ -876,6 +876,15 @@ begin
        LazarusPkg.FPCCompatibility := LazarusPkgsObj.Get('FPCCompatibility');
        LazarusPkg.SupportedWidgetSet := LazarusPkgsObj.Get('SupportedWidgetSet');
        LazarusPkg.PackageType := TLazPackageType(LazarusPkgsObj.Get('PackageType'));
+       {the package type wasn't changed in the packagelist.json to preserve compatibility with older versions, we need to convert from old to new
+       Old --> TPackageType = (ptRunAndDesignTime, ptDesignTime, ptRunTime, ptRunTimeOnly);
+       New --> TLazPackageType = (lptRunTime, lptDesignTime, lptRunAndDesignTime, lptRunTimeOnly);}
+       case Ord(LazarusPkg.PackageType) of
+         0: LazarusPkg.PackageType := lptRunAndDesignTime;
+         1: LazarusPkg.PackageType := lptDesignTime;
+         2: LazarusPkg.PackageType := lptRunTime;
+         3: LazarusPkg.PackageType := lptRunTimeOnly;
+       end;
        LazarusPkg.DependenciesAsString := LazarusPkgsObj.Get('DependenciesAsString');
       end;
     end;
@@ -970,6 +979,15 @@ begin
       LazarusPkgObj.Add('LazCompatibility', LazarusPkg.LazCompatibility);
       LazarusPkgObj.Add('FPCCompatibility', LazarusPkg.FPCCompatibility);
       LazarusPkgObj.Add('SupportedWidgetSet', LazarusPkg.SupportedWidgetSet);
+      {the package type wasn't changed in the packagelist.json to preserve compatibility with older versions, we need to convert from new to old
+       New --> TLazPackageType = (lptRunTime, lptDesignTime, lptRunAndDesignTime, lptRunTimeOnly);
+       Old --> TPackageType = (ptRunAndDesignTime, ptDesignTime, ptRunTime, ptRunTimeOnly);}
+       case Ord(LazarusPkg.PackageType) of
+         0: LazarusPkg.PackageType := lptRunAndDesignTime;
+         1: LazarusPkg.PackageType := lptDesignTime;
+         2: LazarusPkg.PackageType := lptRunTime;
+         3: LazarusPkg.PackageType := lptRunTimeOnly;
+       end;
       LazarusPkgObj.Add('PackageType', Ord(LazarusPkg.PackageType));
       LazarusPkgObj.Add('DependenciesAsString', LazarusPkg.DependenciesAsString);
       ALazarusPkgsArr.Add(LazarusPkgObj);
