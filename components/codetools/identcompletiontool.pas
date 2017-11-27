@@ -42,7 +42,7 @@ interface
 { $DEFINE ShowFoundIdents}
 { $DEFINE ShowFilteredIdents}
 { $DEFINE ShowHistory}
-{$DEFINE VerboseCodeContext}
+{ $DEFINE VerboseCodeContext}
 
 uses
   {$IFDEF MEM_CHECK}
