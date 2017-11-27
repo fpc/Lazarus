@@ -45,6 +45,7 @@ type
     procedure Test_GetValuesOfCaseVariable_Enum;
     procedure Test_FindCodeContext_ProcParams;
     procedure Test_FindCodeContext_ProcTypeParams;
+    procedure Test_FindCodeContext_AttributeParams;
   end;
 
 implementation
@@ -134,7 +135,6 @@ var
   SrcMark: TFDMarker;
   CursorPos: TCodeXYPosition;
   CodeContexts: TCodeContextInfo;
-  i: Integer;
 begin
   StartProgram;
   Add([
@@ -156,9 +156,49 @@ begin
       Fail('CodeToolBoss.FindCodeContext');
     end;
     AssertEquals('CodeContexts.Count',1,CodeContexts.Count);
-    for i:=0 to CodeContexts.Count-1 do
-      debugln(['TTestIdentCompletion.Test_FindCodeContext_ProcParams ',i,' ',CodeContexts[i].AsDebugString(true)]);
+    //for i:=0 to CodeContexts.Count-1 do
+    //  debugln(['TTestIdentCompletion.Test_FindCodeContext_ProcParams ',i,' ',CodeContexts[i].AsDebugString(true)]);
     CheckCodeContext(CodeContexts[0],'p');
+  finally
+    CodeContexts.Free;
+  end;
+end;
+
+procedure TTestIdentCompletion.Test_FindCodeContext_AttributeParams;
+var
+  SrcMark: TFDMarker;
+  CursorPos: TCodeXYPosition;
+  CodeContexts: TCodeContextInfo;
+begin
+  StartProgram;
+  Add([
+  '{$modeswitch prefixedattributes}',
+  'type',
+  '  BirdAttribute = class',
+  '    {#a}constructor Create; overload;',
+  '    {#b}constructor Create(i,j: longint); overload;',
+  '  end;',
+  '  [Bird({#c})]',
+  '  TColor = 1..3;',
+  'begin',
+  'end.']);
+  ParseSimpleMarkers(Code);
+  SrcMark:=FindMarker('c','#');
+  AssertNotNull('missing src marker #c',SrcMark);
+  MainTool.CleanPosToCaret(SrcMark.CleanPos,CursorPos);
+  CodeContexts:=nil;
+  try
+    if not CodeToolBoss.FindCodeContext(Code,CursorPos.X,CursorPos.Y,CodeContexts)
+    then begin
+      WriteSource(CursorPos);
+      Fail('CodeToolBoss.FindCodeContext');
+    end;
+    //for i:=0 to CodeContexts.Count-1 do
+    //  debugln(['TTestIdentCompletion.Test_FindCodeContext_ProcParams ',i,' ',CodeContexts[i].AsDebugString(true)]);
+    AssertEquals('CodeContexts.Count',3,CodeContexts.Count);
+    CheckCodeContext(CodeContexts[0],'b');
+    CheckCodeContext(CodeContexts[1],'a');
+    // last entry is the default TObject.Create in unit objpas
   finally
     CodeContexts.Free;
   end;
