@@ -62,8 +62,8 @@ type
     UnicodeGrid: TStringGrid;
     pgAnsi: TTabSheet;
     pgUnicode: TTabSheet;
-    procedure GridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
-      aState: TGridDrawState);
+    procedure GridPrepareCanvas(sender: TObject; {%H-}aCol, {%H-}aRow: Integer;
+      {%H-}aState: TGridDrawState);
     procedure cbCodePageSelect(Sender: TObject);
     procedure cbUniRangeSelect(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
