@@ -964,7 +964,8 @@ procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
     Result:='';
   end;
 
-  procedure AddParameters(ASynEdit: TSynEdit; Y, X: integer; AddComma: boolean;
+  procedure AddParameters(ASynEdit: TSynEdit; Y, X: integer;
+    AddComma, AddCLoseBracket: boolean;
     StartIndex: integer);
   var
     NewCode: String;
@@ -1021,6 +1022,8 @@ procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
       LastToken:=copy(DeclCode,TokenStart,TokenEnd-TokenStart);
     until false;
     if NewCode='' then exit;
+    if AddCLoseBracket then
+      NewCode+=')';
     // format insertion
     Indent:=GetLineIndentWithTabs(ASynEdit.Lines[Y-1],X,ASynEdit.TabWidth);
     if Y<>FParamListBracketOpenCodeXYPos.Y then
@@ -1098,14 +1101,7 @@ begin
     ')',']':
       begin
         dec(BracketLevel);
-        if BracketLevel=0 then begin
-          // closing bracket found
-          NeedComma:=(LastToken<>',') and (LastToken<>'(') and (LastToken<>'[');
-          if NeedComma then inc(ParameterIndex);
-          //debugln(['TCodeContextFrm.CompleteParameters y=',LastTokenLine,' x=',LastTokenEnd,' ParameterIndex=',ParameterIndex]);
-          AddParameters(ASynEdit,LastTokenLine,LastTokenEnd,NeedComma,ParameterIndex);
-          break;
-        end;
+        if BracketLevel=0 then break;
       end;
     ',':
       if BracketLevel=1 then inc(ParameterIndex);
@@ -1118,7 +1114,17 @@ begin
       end;
     end;
   until false;
-
+  NeedComma:=(LastToken<>',') and (LastToken<>'(') and (LastToken<>'[');
+  if NeedComma then inc(ParameterIndex);
+  //debugln(['TCodeContextFrm.CompleteParameters BracketLevel=',BracketLevel,' NeedComma=',NeedComma,' ParameterIndex=',ParameterIndex]);
+  if BracketLevel=0 then begin
+    // closing bracket found
+    //debugln(['TCodeContextFrm.CompleteParameters y=',LastTokenLine,' x=',LastTokenEnd,' ParameterIndex=',ParameterIndex]);
+    AddParameters(ASynEdit,LastTokenLine,LastTokenEnd,NeedComma,false,ParameterIndex);
+  end else if BracketLevel=1 then begin
+    // missing closing bracket
+    AddParameters(ASynEdit,LastTokenLine,LastTokenEnd,NeedComma,true,ParameterIndex);
+  end;
 end;
 
 procedure TCodeContextFrm.ClearHints;
