@@ -497,7 +497,7 @@ type
       Allowed: TFindFileAtCursorFlags = DefaultFindFileAtCursorAllowed;
       StartPos: PCodeXYPosition = nil): boolean;
 
-    // get code context
+    // get code context (aka parameter hints)
     function FindCodeContext(Code: TCodeBuffer; X,Y: integer;
           out CodeContexts: TCodeContextInfo): boolean;
     function ExtractProcedureHeader(Code: TCodeBuffer; X,Y: integer;

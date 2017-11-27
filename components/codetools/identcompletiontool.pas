@@ -338,6 +338,7 @@ type
     Params: TStringList;
     ResultType: string;
     destructor Destroy; override;
+    function AsDebugString(WithExpr: boolean): string;
   end;
 
   { TCodeContextInfo }
@@ -4355,6 +4356,22 @@ destructor TCodeContextInfoItem.Destroy;
 begin
   FreeAndNil(Params);
   inherited Destroy;
+end;
+
+function TCodeContextInfoItem.AsDebugString(WithExpr: boolean): string;
+var
+  i: Integer;
+begin
+  Result:=ProcName+'(';
+  if Params<>nil then
+    for i:=0 to Params.Count-1 do begin
+      if i>0 then Result+=',';
+      Result+=Params[i];
+    end;
+  Result+=')';
+  if ResultType<>'' then Result+=':'+ResultType;
+  if WithExpr then
+    Result+=' '+ExprTypeToString(Expr);
 end;
 
 end.
