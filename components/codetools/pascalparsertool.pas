@@ -146,7 +146,7 @@ type
     function GetExtraction(InUpperCase: boolean): string;
     function ExtractStreamEndIsIdentChar: boolean;
     procedure ExtractNextAtom(AddAtom: boolean; Attr: TProcHeadAttributes);
-    procedure CheckOperatorProc(IsOperator: boolean; var IsFunction: boolean); inline;
+    procedure CheckOperatorProc(var ParseAttr: TParseProcHeadAttributes); inline;
   protected
     // parsing
     FLastCompilerMode: TCompilerMode;
@@ -172,7 +172,7 @@ type
     procedure ReadConstExpr;
     // types
     procedure ReadTypeNameAndDefinition;
-    procedure ReadGenericParamList(Must: boolean);
+    procedure ReadGenericParamList(Must, AllowConstraints: boolean);
     procedure ReadAttribute;
     procedure FixLastAttributes;
     procedure ReadTypeReference(CreateNodes: boolean);
@@ -345,13 +345,16 @@ end;
 { TPascalParserTool }
 
 // inline
-procedure TPascalParserTool.CheckOperatorProc(IsOperator: boolean;
-  var IsFunction: boolean);
+procedure TPascalParserTool.CheckOperatorProc(
+  var ParseAttr: TParseProcHeadAttributes);
 begin
-  if IsOperator then begin
+  if pphIsOperator in ParseAttr then begin
     AtomIsCustomOperator(true,true,true);
-    IsFunction:=not (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE')
-                  or UpAtomIs('ADDREF') or UpAtomIs('COPY'));
+    if (UpAtomIs('INITIALIZE') or UpAtomIs('FINALIZE')
+                  or UpAtomIs('ADDREF') or UpAtomIs('COPY')) then
+      Exclude(ParseAttr,pphIsFunction)
+    else
+      Include(ParseAttr,pphIsFunction);
   end else
     AtomIsIdentifierSaveE;
 end;
@@ -1283,9 +1286,9 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    enumerator <id>
    compilerproc[:name]
    }
-var IsFunction, HasForwardModifier: boolean;
+var
+  HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
-  IsOperator: Boolean;
 begin
   if (CurNode.Desc in AllClassSubSections)
   and (CurNode.Parent.Desc in (AllClassBaseSections+AllClassInterfaces)) then begin
@@ -1298,6 +1301,7 @@ begin
   end;
 
   HasForwardModifier:=false;
+  ParseAttr:=[pphIsMethodDecl,pphCreateNodes];
   // create class method node
   CreateChildNode;
   CurNode.Desc:=ctnProcedure;
@@ -1312,21 +1316,21 @@ begin
     end;
   end;
   // read procedure head
-  IsFunction:=UpAtomIs('FUNCTION');
-  IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
+  if UpAtomIs('FUNCTION') then
+    Include(ParseAttr,pphIsFunction)
+  else if UpAtomIs('OPERATOR') then
+    Include(ParseAttr,pphIsOperator);
   // read name
   ReadNextAtom;
-  CheckOperatorProc(IsOperator,IsFunction);
   // create node for procedure head
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
+  CheckOperatorProc(ParseAttr);
   ReadNextAtom;
+  if Scanner.CompilerMode=cmDELPHI then
+    ReadGenericParamList(false,true);
   if (CurPos.Flag<>cafPoint) then begin
     // read rest
-    CurNode.SubDesc:=ctnsNeedJITParsing;
-    ParseAttr:=[pphIsMethodDecl];
-    if IsFunction then Include(ParseAttr,pphIsFunction);
-    if IsOperator then Include(ParseAttr,pphIsOperator);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   end else begin
     // Method resolution clause (e.g. function Intf.Method = Method_Name)
@@ -1741,8 +1745,6 @@ begin
   //'Method=',IsMethod,', Function=',IsFunction,', Type=',IsType);
   Result:=true;
   HasForwardModifier:=false;
-
-  ReadGenericParamList(pphIsGeneric in ParseAttr);
 
   if CurPos.Flag=cafRoundBracketOpen then begin
     Attr:=[];
@@ -2719,17 +2721,15 @@ function TPascalParserTool.KeyWordFuncProc: boolean;
 // class function/procedure
 // generic function/procedure
 var
-  ChildCreated: boolean;
-  IsFunction, HasForwardModifier, IsClassProc, IsOperator, IsMethod,
-    IsGeneric: boolean;
+  HasForwardModifier, IsClassProc: boolean;
   ProcNode: TCodeTreeNode;
   ParseAttr: TParseProcHeadAttributes;
 begin
+  ParseAttr:=[pphCreateNodes];
   if UpAtomIs('GENERIC') then begin
-    IsGeneric:=true;
+    Include(ParseAttr,pphIsGeneric);
     ReadNextAtom;
-  end else
-    IsGeneric:=false;
+  end;
   if UpAtomIs('CLASS') then begin
     if not (CurSection in [ctnImplementation]+AllSourceTypes) then
       SaveRaiseStringExpectedButAtomFound(20170421195603,ctsIdentifier);
@@ -2742,54 +2742,44 @@ begin
         ctsProcedureOrFunctionOrConstructorOrDestructor);
   end else
     IsClassProc:=false;
-  ChildCreated:=true;
-  if ChildCreated then begin
-    // create node for procedure
-    CreateChildNode;
-    if IsClassProc then
-      CurNode.StartPos:=LastAtoms.GetPriorAtom.StartPos;
-    ProcNode:=CurNode;
-    ProcNode.Desc:=ctnProcedure;
-    if CurSection=ctnInterface then
-      ProcNode.SubDesc:=ctnsForwardDeclaration;
-  end;
-  IsFunction:=UpAtomIs('FUNCTION');
-  IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
-  IsMethod:=False;
+  // create node for procedure
+  CreateChildNode;
+  if IsClassProc then
+    CurNode.StartPos:=LastAtoms.GetPriorAtom.StartPos;
+  ProcNode:=CurNode;
+  ProcNode.Desc:=ctnProcedure;
+  if CurSection=ctnInterface then
+    ProcNode.SubDesc:=ctnsForwardDeclaration;
+  if UpAtomIs('FUNCTION') then
+    Include(ParseAttr,pphIsFunction)
+  else if UpAtomIs('OPERATOR') then
+    Include(ParseAttr,pphIsOperator);
   ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
-  CheckOperatorProc(IsOperator,IsFunction);
-  if ChildCreated then begin
-    // create node for procedure head
-    CreateChildNode;
-    CurNode.Desc:=ctnProcedureHead;
-    CurNode.SubDesc:=ctnsNeedJITParsing;
-  end;
+  // create node for procedure head
+  CreateChildNode;
+  CurNode.Desc:=ctnProcedureHead;
+  CheckOperatorProc(ParseAttr);
   ReadNextAtom;
+  ReadGenericParamList(false,true);
   if (CurSection<>ctnInterface) then begin
     while (CurPos.Flag=cafPoint) do begin
       // read procedure name of a class method (the name after the . )
-      IsMethod:=True;
+      Include(ParseAttr,pphIsMethodBody);
       ReadNextAtom;
-      CheckOperatorProc(IsOperator,IsFunction);
+      CheckOperatorProc(ParseAttr);
       ReadNextAtom;
+      ReadGenericParamList(false,true);
     end;
   end;
   // read rest of procedure head
   HasForwardModifier:=false;
-  ParseAttr:=[];
-  if IsFunction then Include(ParseAttr,pphIsFunction);
-  if IsOperator then Include(ParseAttr,pphIsOperator);
-  if IsMethod then Include(ParseAttr,pphIsMethodBody);
-  if IsGeneric then Include(ParseAttr,pphIsGeneric);
   ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
-  if ChildCreated then begin
-    if HasForwardModifier then
-      ProcNode.SubDesc:=ctnsForwardDeclaration;
-    // close head
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
-  end;
-  if ChildCreated and ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then
+  if HasForwardModifier then
+    ProcNode.SubDesc:=ctnsForwardDeclaration;
+  // close head
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+  if ((ProcNode.SubDesc and ctnsForwardDeclaration)>0) then
   begin
     // close method
     CurNode.EndPos:=CurPos.EndPos;
@@ -4081,7 +4071,7 @@ begin
     //debugln(['TPascalParserTool.ReadTypeNameAndDefinition Name="',copy(Src,NamePos.StartPos,NamePos.EndPos-NamePos.StartPos),'"']);
     EndChildNode;
     // read generic parameter list
-    ReadGenericParamList(IsGeneric);
+    ReadGenericParamList(IsGeneric,true);
   end;
   // read =
   if (CurPos.Flag<>cafEqual) then
@@ -4100,7 +4090,7 @@ begin
   EndChildNode;
 end;
 
-procedure TPascalParserTool.ReadGenericParamList(Must: boolean);
+procedure TPascalParserTool.ReadGenericParamList(Must, AllowConstraints: boolean);
 { At start cursor is on <
   At end cursor is on atom after >
 
@@ -4144,7 +4134,7 @@ begin
         ReadNextAtom;
       end else if AtomIsChar('>') then begin
         break;
-      end else if CurPos.Flag=cafColon then begin
+      end else if AllowConstraints and (CurPos.Flag=cafColon) then begin
         // read constraints
         ReadNextAtom;
         if CurPos.Flag<>cafNone then begin
@@ -4183,9 +4173,11 @@ begin
     // close ctnGenericParameter
     EndChildNode;
   end else begin
-    if AtomIs('>=') then
+    if AtomIs('>=') then begin
       // this is the rare case where >= are two separate atoms
       dec(CurPos.EndPos);
+      LastAtoms.SetCurrent(CurPos);
+    end;
     if not AtomIsChar('>') then
       SaveRaiseCharExpectedButAtomFound(20170421195745,'>');
   end;
@@ -6020,9 +6012,8 @@ end;
 
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
 var
-  HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
+  HasForwardModifier, IsFunction: boolean;
   ParseAttr: TParseProcHeadAttributes;
-  IsProcType, IsGeneric: Boolean;
   ProcHeadNode: TCodeTreeNode;
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
@@ -6053,48 +6044,49 @@ begin
       RaiseNodeParserError(ProcHeadNode);
     exit;
   end;
+  ParseAttr:=[pphCreateNodes];
   try
-    IsMethod:=(ProcNode.Parent<>nil) and (ProcNode.Parent.Desc in (AllClasses+AllClassSections));
+    if (ProcNode.Parent<>nil) and (ProcNode.Parent.Desc in (AllClasses+AllClassSections)) then
+      Include(ParseAttr,pphIsMethodDecl);
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
     if (Scanner.CompilerMode in [cmOBJFPC,cmFPC]) and UpAtomIs('GENERIC') then begin
-      IsGeneric:=true;
+      Include(ParseAttr,pphIsGeneric);
       CurNode.Desc:=ctnGenericType;
       ReadNextAtom;
-    end else
-      IsGeneric:=false;
+    end;
     if UpAtomIs('CLASS') then
       ReadNextAtom;
-    IsFunction:=UpAtomIs('FUNCTION');
-    IsOperator:=(not IsFunction) and UpAtomIs('OPERATOR');
-    IsProcType:=ProcNode.Desc=ctnProcedureType;
+    if UpAtomIs('FUNCTION') then begin
+      IsFunction:=true;
+      Include(ParseAttr,pphIsFunction);
+    end else
+      IsFunction:=false;
+    if (not IsFunction) and UpAtomIs('OPERATOR') then
+      Include(ParseAttr,pphIsOperator);
+    if ProcNode.Desc=ctnProcedureType then
+      Include(ParseAttr,pphIsType);
     // read procedure head (= [name[<parameters>]] + parameterlist + resulttype;)
     ReadNextAtom;// read first atom of head
     CurNode:=ProcHeadNode;
     if CurNode=nil then
-      if IsProcType then
+      if pphIsType in ParseAttr then
         SaveRaiseCharExpectedButAtomFound(20170421195925,';')
       else
         SaveRaiseStringExpectedButAtomFound(20170421195928,'identifier');
     ProcHeadNode.SubDesc:=ProcHeadNode.SubDesc and (not ctnsNeedJITParsing);
 
-    if not IsProcType then begin
+    if not (pphIsType in ParseAttr) then begin
       // read procedure name of a class method (the name after the . )
       repeat
-        CheckOperatorProc(IsOperator,IsFunction);
-        ReadNextAtom;
+        CheckOperatorProc(ParseAttr);
+        ReadGenericParamList(false,false);
         if CurPos.Flag<>cafPoint then break;
         ReadNextAtom;
       until false;
     end;
     // read rest of procedure head and build nodes
     HasForwardModifier:=false;
-    ParseAttr:=[pphCreateNodes];
-    if IsMethod then Include(ParseAttr,pphIsMethodDecl);
-    if IsFunction then Include(ParseAttr,pphIsFunction);
-    if IsOperator then Include(ParseAttr,pphIsOperator);
-    if IsProcType then Include(ParseAttr,pphIsType);
-    if IsGeneric then Include(ParseAttr,pphIsGeneric);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   except
     {$IFDEF ShowIgnoreErrorAfter}
