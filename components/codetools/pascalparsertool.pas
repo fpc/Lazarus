@@ -88,8 +88,14 @@ type
     );
   TProcHeadAttributes = set of TProcHeadAttribute;
   
-  TParseProcHeadAttribute = (pphIsMethod, pphIsFunction, pphIsType,
-     pphIsOperator, pphCreateNodes);
+  TParseProcHeadAttribute = (
+     pphIsMethodDecl,
+     pphIsMethodBody,
+     pphIsFunction,
+     pphIsType,
+     pphIsOperator,
+     pphIsGeneric,
+     pphCreateNodes);
   TParseProcHeadAttributes =  set of TParseProcHeadAttribute;
   
   TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList,
@@ -1318,7 +1324,7 @@ begin
   if (CurPos.Flag<>cafPoint) then begin
     // read rest
     CurNode.SubDesc:=ctnsNeedJITParsing;
-    ParseAttr:=[pphIsMethod];
+    ParseAttr:=[pphIsMethodDecl];
     if IsFunction then Include(ParseAttr,pphIsFunction);
     if IsOperator then Include(ParseAttr,pphIsOperator);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
@@ -1735,6 +1741,9 @@ begin
   //'Method=',IsMethod,', Function=',IsFunction,', Type=',IsType);
   Result:=true;
   HasForwardModifier:=false;
+
+  ReadGenericParamList(pphIsGeneric in ParseAttr);
+
   if CurPos.Flag=cafRoundBracketOpen then begin
     Attr:=[];
     if pphCreateNodes in ParseAttr then
@@ -1796,7 +1805,7 @@ begin
     SaveRaiseException(20170421195010,ctsSemicolonNotFound);
   repeat
     if CurPos.StartPos<=SrcLen then begin
-      if pphIsMethod in ParseAttr then
+      if [pphIsMethodDecl,pphIsMethodBody]*ParseAttr<>[] then
         IsSpecifier:=IsKeyWordMethodSpecifier.DoIdentifier(@Src[CurPos.StartPos])
       else if pphIsType in ParseAttr then
         IsSpecifier:=IsKeyWordProcedureTypeSpecifier.DoIdentifier(@Src[CurPos.StartPos])
@@ -2765,13 +2774,13 @@ begin
       ReadNextAtom;
     end;
   end;
-  ReadGenericParamList(IsGeneric);
   // read rest of procedure head
   HasForwardModifier:=false;
   ParseAttr:=[];
   if IsFunction then Include(ParseAttr,pphIsFunction);
   if IsOperator then Include(ParseAttr,pphIsOperator);
-  if IsMethod then Include(ParseAttr,pphIsMethod);
+  if IsMethod then Include(ParseAttr,pphIsMethodBody);
+  if IsGeneric then Include(ParseAttr,pphIsGeneric);
   ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   if ChildCreated then begin
     if HasForwardModifier then
@@ -6074,8 +6083,6 @@ begin
       repeat
         CheckOperatorProc(IsOperator,IsFunction);
         ReadNextAtom;
-        // read generic parameter list
-        ReadGenericParamList(IsGeneric);
         if CurPos.Flag<>cafPoint then break;
         ReadNextAtom;
       until false;
@@ -6083,10 +6090,11 @@ begin
     // read rest of procedure head and build nodes
     HasForwardModifier:=false;
     ParseAttr:=[pphCreateNodes];
-    if IsMethod then Include(ParseAttr,pphIsMethod);
+    if IsMethod then Include(ParseAttr,pphIsMethodDecl);
     if IsFunction then Include(ParseAttr,pphIsFunction);
     if IsOperator then Include(ParseAttr,pphIsOperator);
     if IsProcType then Include(ParseAttr,pphIsType);
+    if IsGeneric then Include(ParseAttr,pphIsGeneric);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   except
     {$IFDEF ShowIgnoreErrorAfter}
