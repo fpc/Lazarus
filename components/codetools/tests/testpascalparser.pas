@@ -32,6 +32,8 @@ type
     procedure StartUnit;
     procedure StartProgram;
     procedure ParseModule;
+    procedure WriteSource(CleanPos: integer; Tool: TCodeTool);
+    procedure WriteSource(const CursorPos: TCodeXYPosition);
     property Code: TCodeBuffer read FCode;
   end;
 
@@ -113,6 +115,37 @@ var
 begin
   Add('end.');
   DoParseModule(Code,Tool);
+end;
+
+procedure TCustomTestPascalParser.WriteSource(CleanPos: integer; Tool: TCodeTool
+  );
+var
+  Caret: TCodeXYPosition;
+begin
+  if Tool=nil then
+    Fail('TCustomTestPascalParser.WriteSource: missing Tool');
+  if not Tool.CleanPosToCaret(CleanPos,Caret) then
+    Fail('TCustomTestPascalParser.WriteSource: invalid cleanpos '+IntToStr(CleanPos)+' Tool='+Tool.MainFilename);
+  WriteSource(Caret);
+end;
+
+procedure TCustomTestPascalParser.WriteSource(const CursorPos: TCodeXYPosition);
+var
+  CurCode: TCodeBuffer;
+  i: Integer;
+  Line: String;
+begin
+  CurCode:=CursorPos.Code;
+  if CurCode=nil then
+    Fail('TCustomTestPascalParser.WriteSource CurCode=nil');
+  for i:=1 to CurCode.LineCount do begin
+    Line:=CurCode.GetLine(i-1,false);
+    if (i=CursorPos.Y) then begin
+      write('*');
+      Line:=LeftStr(Line,CursorPos.X-1)+'|'+copy(Line,CursorPos.X,length(Line));
+    end;
+    writeln(Format('%:4d: ',[i]),Line);
+  end;
 end;
 
 { TTestPascalParser }

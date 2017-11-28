@@ -72,8 +72,6 @@ type
     procedure FindDeclarations(Filename: string; ExpandFile: boolean = true);
     procedure FindDeclarations(aCode: TCodeBuffer);
     procedure TestFiles(Directory: string);
-    procedure WriteSource(CleanPos: integer; Tool: TCodeTool = nil);
-    procedure WriteSource(const CursorPos: TCodeXYPosition);
     property MainCode: TCodeBuffer read FMainCode;
     property MainTool: TCodeTool read FMainTool;
   end;
@@ -248,7 +246,7 @@ begin
     while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
       dec(IdentifierStartPos);
     if IdentifierStartPos=p then begin
-      WriteSource(p);
+      WriteSource(p,MainTool);
       Fail('missing identifier in front of marker at '+MainTool.CleanPosToStr(p));
     end;
     inc(p);
@@ -257,7 +255,7 @@ begin
       {#name}  {@name}
       inc(p);
       if not IsIdentStartChar[Src[p]] then begin
-        WriteSource(p);
+        WriteSource(p,MainTool);
         Fail('Expected identifier at '+MainTool.CleanPosToStr(p,true));
       end;
       NameStartPos:=p;
@@ -274,7 +272,7 @@ begin
     while (p<=length(Src)) and (IsIdentChar[Src[p]]) do inc(p);
     Marker:=copy(Src,NameStartPos,p-NameStartPos);
     if (p>length(Src)) or (Src[p]<>':') then begin
-      WriteSource(p);
+      WriteSource(p,MainTool);
       AssertEquals('Expected : at '+MainTool.CleanPosToStr(p,true),'declaration',Marker);
       continue;
     end;
@@ -299,7 +297,7 @@ begin
             //ErrorTool:=CodeToolBoss.GetCodeToolForSource(CodeToolBoss.ErrorCode);
             //if ErrorTool<>MainTool then
              // WriteSource(,ErrorTool);
-          WriteSource(IdentifierStartPos);
+          WriteSource(IdentifierStartPos,MainTool);
           Fail('find declaration failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage);
         end;
         continue;
@@ -320,7 +318,7 @@ begin
         end;
         //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
         if LowerCase(ExpectedPath)<>LowerCase(FoundPath) then begin
-          WriteSource(IdentifierStartPos);
+          WriteSource(IdentifierStartPos,MainTool);
           AssertEquals('find declaration wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedPath),LowerCase(FoundPath));
         end;
       end;
@@ -330,7 +328,7 @@ begin
         if not CodeToolBoss.GatherIdentifiers(CursorPos.Code,CursorPos.X,CursorPos.Y)
         then begin
           if ExpectedPath<>'' then begin
-            WriteSource(IdentifierStartPos);
+            WriteSource(IdentifierStartPos,MainTool);
             AssertEquals('GatherIdentifiers failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage,false,true);
           end;
           continue;
@@ -346,7 +344,7 @@ begin
             dec(i);
           end;
           if i<0 then begin
-            WriteSource(IdentifierStartPos);
+            WriteSource(IdentifierStartPos,MainTool);
             AssertEquals('GatherIdentifiers misses "'+ExpectedPath+'" at '+MainTool.CleanPosToStr(IdentifierStartPos,true),true,i>=0);
           end;
         end;
@@ -371,7 +369,7 @@ begin
         end else begin
           //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
           if LowerCase(ExpectedType)<>LowerCase(NewType) then begin
-            WriteSource(IdentifierStartPos);
+            WriteSource(IdentifierStartPos,MainTool);
             AssertEquals('GuessTypeOfIdentifier wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedType),LowerCase(NewType));
           end;
         end;
@@ -380,7 +378,7 @@ begin
       end;
 
     end else begin
-      WriteSource(IdentifierStartPos);
+      WriteSource(IdentifierStartPos,MainTool);
       AssertEquals('Unknown marker at '+MainTool.CleanPosToStr(IdentifierStartPos,true),'declaration',Marker);
       continue;
     end;
@@ -422,37 +420,6 @@ begin
         debugln(['TTestFindDeclaration.TestFiles File="',aFilename,'"']);
       FindDeclarations(Directory+aFilename);
     until FindNextUTF8(Info)<>0;
-  end;
-end;
-
-procedure TCustomTestFindDeclaration.WriteSource(CleanPos: integer; Tool: TCodeTool);
-var
-  Caret: TCodeXYPosition;
-begin
-  if Tool=nil then Tool:=MainTool;
-  if Tool=nil then
-    Fail('TTestFindDeclaration.WriteSource: missing Tool');
-  if not Tool.CleanPosToCaret(CleanPos,Caret) then
-    Fail('TTestFindDeclaration.WriteSource: invalid cleanpos '+IntToStr(CleanPos)+' Tool='+Tool.MainFilename);
-  WriteSource(Caret);
-end;
-
-procedure TCustomTestFindDeclaration.WriteSource(const CursorPos: TCodeXYPosition);
-var
-  CurCode: TCodeBuffer;
-  i: Integer;
-  Line: String;
-begin
-  CurCode:=CursorPos.Code;
-  if CurCode=nil then
-    Fail('TTestFindDeclaration.WriteSource CurCode=nil');
-  for i:=1 to CurCode.LineCount do begin
-    Line:=CurCode.GetLine(i-1,false);
-    if (i=CursorPos.Y) then begin
-      write('*');
-      Line:=LeftStr(Line,CursorPos.X-1)+'|'+copy(Line,CursorPos.X,length(Line));
-    end;
-    writeln(Format('%:4d: ',[i]),Line);
   end;
 end;
 
@@ -537,7 +504,7 @@ begin
       {#name}  {@name}
       inc(p);
       if not IsIdentStartChar[Src[p]] then begin
-        WriteSource(p);
+        WriteSource(p,MainTool);
         Fail('Expected identifier at '+MainTool.CleanPosToStr(p,true));
       end;
       NameStartPos:=p;
@@ -545,7 +512,7 @@ begin
       Marker:=copy(Src,NameStartPos,p-NameStartPos);
       AddMarker(Marker,Src[NameStartPos-1],CommentP,IdentifierStartPos,IdentifierEndPos);
     end else begin
-      WriteSource(p);
+      WriteSource(p,MainTool);
       Fail('invalid marker at '+MainTool.CleanPosToStr(p));
     end;
   end;
@@ -914,20 +881,20 @@ begin
     if (Src[p]='[') and (IsIdentStartChar[Src[p+1]]) then begin
       Node:=MainTool.FindDeepestNodeAtPos(p,false);
       if (Node=nil) then begin
-        WriteSource(p);
+        WriteSource(p,MainTool);
         Fail('missing node at '+MainTool.CleanPosToStr(p));
       end;
       if (Node.Desc<>ctnAttribute) then begin
-        WriteSource(p);
+        WriteSource(p,MainTool);
         Fail('missing attribute at '+MainTool.CleanPosToStr(p));
       end;
       if Node.NextBrother=nil then begin
-        WriteSource(Node.StartPos);
+        WriteSource(Node.StartPos,MainTool);
         Fail('Attribute without NextBrother');
       end;
       if not (Node.NextBrother.Desc in [ctnAttribute,ctnVarDefinition,ctnTypeDefinition,ctnProcedure,ctnProperty])
       then begin
-        WriteSource(Node.StartPos);
+        WriteSource(Node.StartPos,MainTool);
         Fail('Attribute invalid NextBrother '+Node.NextBrother.DescAsString);
       end;
     end;

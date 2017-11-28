@@ -1,7 +1,7 @@
 {
  Test with:
-     ./runtests --format=plain --suite=TTestCTMethodJumpTool
-     ./runtests --format=plain --suite=TestCTFindJumpPointIncFilewithIntfAndImpl
+     ./runtests --format=plain --suite=TTestMethodJumpTool
+     ./runtests --format=plain --suite=TestFindJumpPointIncFilewithIntfAndImpl
 }
 unit TestMethodJumpTool;
 
@@ -11,56 +11,58 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testregistry, LazLoggerBase,
-  CodeToolManager, StdCodeTools, CodeCache, LinkScanner;
+  CodeToolManager, StdCodeTools, CodeCache, LinkScanner, TestPascalParser;
 
 type
 
-  { TTestCTMethodJumpTool }
+  { TTestMethodJumpTool }
 
-  TTestCTMethodJumpTool = class(TTestCase)
+  TTestMethodJumpTool = class(TCustomTestPascalParser)
   private
-    function GetCTMarker(Code: TCodeBuffer; Comment: string; out Position: TPoint;
-      LeftOfComment: boolean = true): boolean;
-    function GetInfo(Code: TCodeBuffer; XY: TPoint): string;
+    procedure GetCTMarker(aCode: TCodeBuffer; Comment: string; out Position: TPoint;
+      LeftOfComment: boolean = true);
+    function GetInfo(aCode: TCodeBuffer; XY: TPoint): string;
   published
-    procedure TestCTFindJumpPointIncFilewithIntfAndImpl;
+    procedure TestFindJumpPointIncFilewithIntfAndImpl;
+    procedure TestMethodJump_IntfToImplSingleProc;
   end;
 
 
 implementation
 
-{ TTestCTMethodJumpTool }
+{ TTestMethodJumpTool }
 
-function TTestCTMethodJumpTool.GetCTMarker(Code: TCodeBuffer; Comment: string;
-  out Position: TPoint; LeftOfComment: boolean): boolean;
+procedure TTestMethodJumpTool.GetCTMarker(aCode: TCodeBuffer; Comment: string;
+  out Position: TPoint; LeftOfComment: boolean);
 var
   p: SizeInt;
 begin
-  Result:=false;
   Position:=Point(0,0);
   if Comment[1]<>'{' then
     Comment:='{'+Comment+'}';
-  p:=System.Pos(Comment,Code.Source);
-  if p<1 then
-    AssertEquals('searching marker: '+Comment,true,p>=1);
+  p:=System.Pos(Comment,aCode.Source);
+  if p<1 then begin
+    WriteSource(CodeXYPosition(1,1,Code));
+    Fail('TTestMethodJumpTool.GetCTMarker, missing marker "'+Comment+'" in "'+Code.Filename+'"');
+  end;
   if not LeftOfComment then
     inc(p,length(Comment));
-  Code.AbsoluteToLineCol(p,Position.Y,Position.X);
-  if Position.Y<1 then
-    AssertEquals('Code.AbsoluteToLineCol: '+Comment,true,Position.Y>=1)
-  else
-    Result:=true;
+  aCode.AbsoluteToLineCol(p,Position.Y,Position.X);
+  if Position.Y<1 then begin
+    WriteSource(CodeXYPosition(Position.X,Position.Y,Code));
+    Fail('TTestMethodJumpTool.GetCTMarker, Code.AbsoluteToLineCol: "'+Comment+'" Pos='+dbgs(Position)+' in "'+Code.Filename+'"');
+  end;
 end;
 
-function TTestCTMethodJumpTool.GetInfo(Code: TCodeBuffer; XY: TPoint): string;
+function TTestMethodJumpTool.GetInfo(aCode: TCodeBuffer; XY: TPoint): string;
 var
   Line: String;
 begin
-  Line:=Code.GetLine(XY.Y-1);
+  Line:=aCode.GetLine(XY.Y-1);
   Result:=dbgs(XY)+': '+copy(Line,1,XY.X-1)+'|'+copy(Line,XY.X,length(Line));
 end;
 
-procedure TTestCTMethodJumpTool.TestCTFindJumpPointIncFilewithIntfAndImpl;
+procedure TTestMethodJumpTool.TestFindJumpPointIncFilewithIntfAndImpl;
 
   procedure Test(aTitle: string; Code: TCodeBuffer;
     StartMarker: string; LeftOfStart: boolean;
@@ -74,8 +76,8 @@ procedure TTestCTMethodJumpTool.TestCTFindJumpPointIncFilewithIntfAndImpl;
     NewTopline, BlockTopLine, BlockBottomLine: integer;
     RevertableJump: boolean;
   begin
-    if not GetCTMarker(Code,StartMarker,BlockStart,LeftOfStart) then exit;
-    if not GetCTMarker(Code,EndMarker,BlockEnd,LeftOfEnd) then exit;
+    GetCTMarker(Code,StartMarker,BlockStart,LeftOfStart);
+    GetCTMarker(Code,EndMarker,BlockEnd,LeftOfEnd);
     //debugln(['TTestCTStdCodetools.TestCTStdFindBlockStart BlockStart=',GetInfo(BlockStart),' BlockEnd=',GetInfo(BlockEnd)]);
     if not CodeToolBoss.JumpToMethod(Code,BlockStart.X,BlockStart.Y,
       NewCode,NewX,NewY,NewTopline,BlockTopLine,BlockBottomLine,RevertableJump)
@@ -86,12 +88,10 @@ procedure TTestCTMethodJumpTool.TestCTFindJumpPointIncFilewithIntfAndImpl;
   end;
 
 var
-  UnitCode: TCodeBuffer;
   IncCode: TCodeBuffer;
 begin
-  UnitCode:=CodeToolBoss.CreateFile('TestMethodJumpTool1.pas');
-  UnitCode.Source:=''
-    +'unit TestMethodJumpTool1;'+LineEnding
+  Code.Source:=''
+    +'unit Test1;'+LineEnding
     +'interface'+LineEnding
     +'{$DEFINE UseInterface}'
     +'{$I TestMethodJumpTool2.inc}'+LineEnding
@@ -102,7 +102,7 @@ begin
     +'end.'+LineEnding;
   IncCode:=CodeToolBoss.CreateFile('TestMethodJumpTool2.inc');
   IncCode.Source:=''
-    +'{%MainUnit TestMethodJumpTool1.pas}'+LineEnding
+    +'{%MainUnit test1.pas}'+LineEnding
     +'{$IFDEF UseInterface}'+LineEnding
     +'procedure {ProcHeader}DoSomething;'+LineEnding
     +'{$ENDIF}'+LineEnding
@@ -119,8 +119,48 @@ begin
        IncCode,'ProcBody',false,'ProcHeader',false);
 end;
 
+procedure TTestMethodJumpTool.TestMethodJump_IntfToImplSingleProc;
+
+  procedure TestJumpToMethod(FromMarker: string; LeftFrom: boolean;
+    ToMarker: string; LeftTo: boolean);
+  var
+    FromPos, ToPos: TPoint;
+    NewCode: TCodeBuffer;
+    NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
+    RevertableJump: boolean;
+  begin
+    GetCTMarker(Code,FromMarker,FromPos,LeftFrom);
+    GetCTMarker(Code,ToMarker,ToPos,LeftTo);
+    CodeToolBoss.JumpToMethod(Code,FromPos.X,FromPos.Y,NewCode, NewX, NewY,
+      NewTopLine, BlockTopLine, BlockBottomLine, RevertableJump);
+    if NewCode<>Code then
+      AssertEquals('JumpToMethod jumped to wrong file, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
+        Code.Filename,NewCode.Filename);
+    if NewY<>ToPos.Y then
+      AssertEquals('JumpToMethod jumped to wrong line, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
+        ToPos.Y,NewY);
+    if NewX<>ToPos.X then
+      AssertEquals('JumpToMethod jumped to wrong line, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
+        ToPos.X,NewX);
+  end;
+
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}{$H+}',
+  'interface',
+  'procedure {a}DoIt;',
+  'implementation',
+  'procedure DoIt;',
+  'begin',
+  '  {b}',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'b',true);
+end;
+
 initialization
-  RegisterTest(TTestCTMethodJumpTool);
+  RegisterTest(TTestMethodJumpTool);
 
 end.
 
