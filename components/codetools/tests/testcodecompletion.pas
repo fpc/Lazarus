@@ -19,6 +19,8 @@ type
       Expected: array of string);
   published
     procedure TestIntfProcUpdateArgName;
+    procedure TestCompleteMethodBody_GenericObjFPC;
+    procedure TestCompleteMethodBody_GenericDelphi;
     procedure TestCompleteMethodBody_ParamSpecialize;
     procedure TestCompleteMethodBody_ParamDelphiSpecialize;
   end;
@@ -63,19 +65,83 @@ begin
   Test('TestIntfProcUpdateArgName',
     ['unit test1;'
     ,'interface'
-    ,'procedure DoIt(a: longint);'
+    ,'procedure DoIt(NewName: longint);'
     ,'implementation'
-    ,'procedure DoIt(b: longint);'
+    ,'procedure DoIt(OldName: longint);'
     ,'begin end;'
     ,'end.'],
     3,1,
     ['unit test1;'
     ,'interface'
-    ,'procedure DoIt(a: longint);'
+    ,'procedure DoIt(NewName: longint);'
     ,'implementation'
-    ,'procedure DoIt(a: longint);'
+    ,'procedure DoIt(NewName: longint);'
     ,'begin end;'
     ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodBody_GenericObjFPC;
+begin
+  Test('TestCompleteMethodBody_GenericObjFPC',
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '  generic TBird<T: class> = class',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    'end.'],
+    6,1,
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  generic TBird<T: class> = class',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    '',
+    'procedure TBird.DoIt;',
+    'begin',
+    'end;',
+    '',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodBody_GenericDelphi;
+begin
+  Test('TestCompleteMethodBody_GenericObjFPC',
+    ['unit test1;',
+    '{$mode delphi}',
+    'interface',
+    'type',
+    '  TBird<T: class> = class',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    'end.'],
+    6,1,
+    ['unit test1;',
+    '{$mode delphi}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird<T: class> = class',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    '',
+    'procedure TBird<T>.DoIt;',
+    'begin',
+    'end;',
+    '',
+    'end.']);
 end;
 
 procedure TTestCodeCompletion.TestCompleteMethodBody_ParamSpecialize;
