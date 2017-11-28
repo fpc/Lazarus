@@ -33,7 +33,7 @@ uses
   {$ifdef windows}
   Windows,
   {$endif}
-  Classes, SysUtils;
+  Classes, SysUtils, strutils;
 
 // AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
 // but normally these OS use UTF-8 as system encoding so the widestringmanager
@@ -136,11 +136,12 @@ function UTF8LeftStr(const AText: String; const ACount: Integer): String;
 function UTF8RightStr(const AText: String; const ACount: Integer): String;
 function UTF8QuotedStr(const S, Quote: string): string;
 //Utf8 version of MidStr is just Utf8Copy with same parameters, so it is not implemented here
-function Utf8StartsText(const ASubText, AText: string): Boolean;
-function Utf8EndsText(const ASubText, AText: string): Boolean;
-function Utf8ReverseString(p: PChar; const ByteCount: LongInt): string;
-function Utf8ReverseString(const AText: string): string; inline;
-function Utf8RPos(const Substr, Source: string): integer;
+function UTF8StartsText(const ASubText, AText: string): Boolean;
+function UTF8EndsText(const ASubText, AText: string): Boolean;
+function UTF8ReverseString(p: PChar; const ByteCount: LongInt): string;
+function UTF8ReverseString(const AText: string): string; inline;
+function UTF8RPosByReverse(const Substr, Source: string): PtrInt; deprecated 'Slow.';
+function UTF8RPos(const Substr, Source: string): PtrInt;
 
 function UTF8WrapText(S, BreakStr :string; BreakChars :TSysCharSet; MaxCol: integer): string; overload;
 function UTF8WrapText(S :string; MaxCol :integer) :string; overload;
@@ -2871,7 +2872,7 @@ begin
   end;
 end;
 
-function Utf8StringOfChar(AUtf8Char: String; N: Integer): String;
+function UTF8StringOfChar(AUtf8Char: String; N: Integer): String;
 var
   UCharLen, i: Integer;
   C1, C2, C3: Char;
@@ -2917,7 +2918,7 @@ begin
   end;
 end;
 
-function Utf8AddChar(AUtf8Char: String; const S: String; N: Integer): String;
+function UTF8AddChar(AUtf8Char: String; const S: String; N: Integer): String;
 var
   L : Integer;
 begin
@@ -2928,7 +2929,7 @@ begin
     Result := Utf8StringOfChar(AUtf8Char, N-l) + Result;
 end;
 
-function Utf8AddCharR(AUtf8Char: String; const S: String; N: Integer): String;
+function UTF8AddCharR(AUtf8Char: String; const S: String; N: Integer): String;
 var
   L : Integer;
 begin
@@ -2963,12 +2964,12 @@ begin
     Result := S;
 end;
 
-function Utf8LeftStr(const AText: String; const ACount: Integer): String;
+function UTF8LeftStr(const AText: String; const ACount: Integer): String;
 begin
   Result := Utf8Copy(AText,1,ACount);
 end;
 
-function Utf8RightStr(const AText: String; const ACount: Integer): String;
+function UTF8RightStr(const AText: String; const ACount: Integer): String;
 var
   j,l:integer;
 begin
@@ -3004,7 +3005,7 @@ begin
   Result+=copy(S,CopyPos-PChar(S)+1,p-CopyPos)+Quote;
 end;
 
-function Utf8StartsText(const ASubText, AText: string): Boolean;
+function UTF8StartsText(const ASubText, AText: string): Boolean;
 var
   TextLen, SubTextLen: PtrInt;
 begin
@@ -3018,7 +3019,7 @@ begin
   end;
 end;
 
-function Utf8EndsText(const ASubText, AText: string): Boolean;
+function UTF8EndsText(const ASubText, AText: string): Boolean;
 var
   TextLen, SubTextLen: PtrInt;
 begin
@@ -3032,7 +3033,7 @@ begin
   end;
 end;
 
-function Utf8ReverseString(p: PChar; const ByteCount: LongInt): string;
+function UTF8ReverseString(p: PChar; const ByteCount: LongInt): string;
 var
   CharLen, rBytePos: LongInt;
 begin
@@ -3047,15 +3048,15 @@ begin
   end;
 end;
 
-function Utf8ReverseString(const AText: string): string; inline;
+function UTF8ReverseString(const AText: string): string; inline;
 begin
   Result := UTF8ReverseString(PChar(AText), length(AText));
 end;
 
-function Utf8RPos(const Substr, Source: string): integer;
+function UTF8RPosByReverse(const Substr, Source: string): PtrInt;
 var
   RevSubstr, RevSource: string;
-  pRev: integer;
+  pRev: PtrInt;
 begin
   if (Pos(Substr, Source) = 0) then
     Result := 0
@@ -3066,6 +3067,14 @@ begin
     pRev := UTF8Pos(RevSubstr, RevSource);
     Result := UTF8Length(Source) -pRev -UTF8Length(Substr) +2;
   end;
+end;
+
+function UTF8RPos(const Substr, Source: string): PtrInt;
+var
+  pRev: PtrInt;
+begin
+  pRev := RPos(Substr, Source);              // Scan from the end.
+  Result := UTF8Length(PChar(Source), pRev); // Length of the leading part.
 end;
 
 function UTF8WrapText(S, BreakStr :string; BreakChars :TSysCharSet; MaxCol: integer): string;
