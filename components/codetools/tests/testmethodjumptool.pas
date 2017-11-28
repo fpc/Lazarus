@@ -15,24 +15,34 @@ uses
 
 type
 
-  { TTestMethodJumpTool }
+  { TBaseTestMethodJumpTool }
 
-  TTestMethodJumpTool = class(TCustomTestPascalParser)
-  private
+  TBaseTestMethodJumpTool = class(TCustomTestPascalParser)
+  protected
     procedure GetCTMarker(aCode: TCodeBuffer; Comment: string; out Position: TPoint;
       LeftOfComment: boolean = true);
     function GetInfo(aCode: TCodeBuffer; XY: TPoint): string;
+    procedure TestJumpToMethod(FromMarker: string; LeftFrom: boolean;
+      ToMarker: string; LeftTo: boolean; ToColOffset: integer = 0);
+  end;
+
+  { TTestMethodJumpTool }
+
+  TTestMethodJumpTool = class(TBaseTestMethodJumpTool)
   published
     procedure TestFindJumpPointIncFilewithIntfAndImpl;
     procedure TestMethodJump_IntfToImplSingleProc;
+    procedure TestMethodJump_IntfToImplSingleProcWrongName;
+    procedure TestMethodJump_IntfToImplSingleProcWrongParam;
+    procedure TestMethodJump_SingleMethod;
+    procedure TestMethodJump_MultiMethodWrongName;
   end;
-
 
 implementation
 
-{ TTestMethodJumpTool }
+{ TBaseTestMethodJumpTool }
 
-procedure TTestMethodJumpTool.GetCTMarker(aCode: TCodeBuffer; Comment: string;
+procedure TBaseTestMethodJumpTool.GetCTMarker(aCode: TCodeBuffer; Comment: string;
   out Position: TPoint; LeftOfComment: boolean);
 var
   p: SizeInt;
@@ -54,13 +64,48 @@ begin
   end;
 end;
 
-function TTestMethodJumpTool.GetInfo(aCode: TCodeBuffer; XY: TPoint): string;
+function TBaseTestMethodJumpTool.GetInfo(aCode: TCodeBuffer; XY: TPoint): string;
 var
   Line: String;
 begin
   Line:=aCode.GetLine(XY.Y-1);
   Result:=dbgs(XY)+': '+copy(Line,1,XY.X-1)+'|'+copy(Line,XY.X,length(Line));
 end;
+
+procedure TBaseTestMethodJumpTool.TestJumpToMethod(FromMarker: string;
+  LeftFrom: boolean; ToMarker: string; LeftTo: boolean; ToColOffset: integer);
+var
+  FromPos, ToPos: TPoint;
+  NewCode: TCodeBuffer;
+  NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
+  RevertableJump: boolean;
+begin
+  GetCTMarker(Code,FromMarker,FromPos,LeftFrom);
+  GetCTMarker(Code,ToMarker,ToPos,LeftTo);
+  inc(ToPos.X,ToColOffset);
+  if not CodeToolBoss.JumpToMethod(Code,FromPos.X,FromPos.Y,NewCode, NewX, NewY,
+    NewTopLine, BlockTopLine, BlockBottomLine, RevertableJump) then begin
+    WriteSource(CodeXYPosition(FromPos.X,FromPos.Y,Code));
+    Fail('CodeToolBoss.JumpToMethod failed, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X));
+  end;
+  if NewCode<>Code then begin
+    WriteSource(CodeXYPosition(FromPos.X,FromPos.Y,Code));
+    AssertEquals('JumpToMethod jumped to wrong file, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
+      Code.Filename,NewCode.Filename);
+  end;
+  if NewY<>ToPos.Y then begin
+    WriteSource(CodeXYPosition(ToPos.X,ToPos.Y,Code));
+    AssertEquals('JumpToMethod jumped to wrong line, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
+      ToPos.Y,NewY);
+  end;
+  if NewX<>ToPos.X then begin
+    WriteSource(CodeXYPosition(ToPos.X,ToPos.Y,Code));
+    AssertEquals('JumpToMethod jumped to wrong line, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
+      ToPos.X,NewX);
+  end;
+end;
+
+{ TTestMethodJumpTool }
 
 procedure TTestMethodJumpTool.TestFindJumpPointIncFilewithIntfAndImpl;
 
@@ -120,30 +165,6 @@ begin
 end;
 
 procedure TTestMethodJumpTool.TestMethodJump_IntfToImplSingleProc;
-
-  procedure TestJumpToMethod(FromMarker: string; LeftFrom: boolean;
-    ToMarker: string; LeftTo: boolean);
-  var
-    FromPos, ToPos: TPoint;
-    NewCode: TCodeBuffer;
-    NewX, NewY, NewTopLine, BlockTopLine, BlockBottomLine: integer;
-    RevertableJump: boolean;
-  begin
-    GetCTMarker(Code,FromMarker,FromPos,LeftFrom);
-    GetCTMarker(Code,ToMarker,ToPos,LeftTo);
-    CodeToolBoss.JumpToMethod(Code,FromPos.X,FromPos.Y,NewCode, NewX, NewY,
-      NewTopLine, BlockTopLine, BlockBottomLine, RevertableJump);
-    if NewCode<>Code then
-      AssertEquals('JumpToMethod jumped to wrong file, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
-        Code.Filename,NewCode.Filename);
-    if NewY<>ToPos.Y then
-      AssertEquals('JumpToMethod jumped to wrong line, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
-        ToPos.Y,NewY);
-    if NewX<>ToPos.X then
-      AssertEquals('JumpToMethod jumped to wrong line, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
-        ToPos.X,NewX);
-  end;
-
 begin
   Add([
   'unit Test1;',
@@ -157,6 +178,77 @@ begin
   'end;',
   'end.']);
   TestJumpToMethod('a',false,'b',true);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_IntfToImplSingleProcWrongName;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}{$H+}',
+  'interface',
+  'procedure {a}DoIt;',
+  'implementation',
+  'procedure {b}Do2It;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'b',false,2);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_IntfToImplSingleProcWrongParam;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}{$H+}',
+  'interface',
+  'procedure {a}DoIt(s: string);',
+  'implementation',
+  'procedure DoIt(s: {b}ansistring);',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'b',false);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_SingleMethod;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}{$H+}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    procedure {a}DoIt(s: string);',
+  '  end;',
+  'implementation',
+  'procedure TBird.DoIt(s: string);',
+  'begin',
+  '  {b}',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'b',true);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_MultiMethodWrongName;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}{$H+}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    procedure {a}DoIt(s: string);',
+  '    procedure DoIt;',
+  '  end;',
+  'implementation',
+  'procedure TBird.{b}Do2It(s: string);',
+  'begin',
+  'end;',
+  'procedure TBird.DoIt;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'b',false,2);
 end;
 
 initialization
