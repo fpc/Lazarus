@@ -1050,7 +1050,7 @@ end;
 
 function TFileDescPascalUnitWithResource.GetInterfaceUsesSection: string;
 begin
-  Result := inherited GetInterfaceUsesSection + ', FileUtil';
+  Result := inherited GetInterfaceUsesSection;
   if GetResourceType = rtLRS then
     Result := Result +', LResources';
 end;
@@ -1502,9 +1502,8 @@ end;
 
 function TCustomFormDescriptor.GetInterfaceUsesSection: string;
 begin
-  Result := inherited GetInterfaceUsesSection;
-  Result := Result + ', Controls, Forms,'#13#10 +
-    '  ' + FUnits;
+  Result := inherited GetInterfaceUsesSection
+    + ', Controls, Forms,'#13#10 + '  ' + FUnits;
 end;
 
 { RegisterForm }
