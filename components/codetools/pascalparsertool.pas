@@ -4356,7 +4356,7 @@ begin
       // start the first class section (the one without a keyword)
       CreateChildNode;
       CurNode.Desc:=ctnClassRequired;
-    end else if IntfDesc=ctnClassInterface then begin
+    end else if IntfDesc in [ctnClassInterface,ctnDispinterface] then begin
       if CurPos.Flag=cafEdgedBracketOpen then
         ReadGUID;
     end;

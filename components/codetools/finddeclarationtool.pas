@@ -12870,7 +12870,8 @@ begin
     {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass EnumeratorContext=',FindContextToString(EnumeratorContext)]);
     {$ENDIF}
-    if (EnumeratorContext.Node=nil) or not(EnumeratorContext.Node.Desc in [ctnClass,ctnClassInterface,ctnRecordType])
+    if (EnumeratorContext.Node=nil)
+    or not (EnumeratorContext.Node.Desc in [ctnClass,ctnClassInterface,ctnRecordType])
     then begin
       if ExceptionOnNotFound then begin
         ProcTool.MoveCursorToCleanPos(ProcNode.StartPos);
@@ -12983,7 +12984,7 @@ begin
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator ClassContext=',FindContextToString(ClassContext)]);
     {$ENDIF}
     case ClassContext.Node.Desc of
-    ctnClass,ctnObject,ctnRecordType,ctnClassInterface: ;
+    ctnClass,ctnObject,ctnRecordType,ctnClassInterface,ctnDispinterface: ;
     else
       OperatorTool.MoveCursorToNodeStart(OperatorNode);
       OperatorTool.RaiseException(20170421200650,'operator enumerator result type is not object');
