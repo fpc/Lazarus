@@ -32,6 +32,7 @@ type
     procedure StartUnit;
     procedure StartProgram;
     procedure ParseModule;
+    procedure CheckParseError(const CursorPos: TCodeXYPosition; Msg: string);
     procedure WriteSource(CleanPos: integer; Tool: TCodeTool);
     procedure WriteSource(const CursorPos: TCodeXYPosition);
     property Code: TCodeBuffer read FCode;
@@ -44,6 +45,7 @@ type
     procedure TestAtomRing;
     procedure TestRecord_ClassOperators;
     procedure TestDeprecated;
+    procedure TestMissingGenericKeywordObjFPCFail;
     procedure TestParseGenericsDelphi;
   end;
 
@@ -115,6 +117,29 @@ var
 begin
   Add('end.');
   DoParseModule(Code,Tool);
+end;
+
+procedure TCustomTestPascalParser.CheckParseError(
+  const CursorPos: TCodeXYPosition; Msg: string);
+var
+  Tool: TCodeTool;
+begin
+  if CodeToolBoss.Explore(Code,Tool,true) then begin
+    WriteSource(CursorPos);
+    Fail('missing parser error "'+Msg+'"');
+  end;
+  if Tool=nil then begin
+    WriteSource(CursorPos);
+    Fail('missing Tool, Msg="'+Msg+'"');
+  end;
+  if CursorPos.Code<>CodeToolBoss.ErrorCode then begin
+    WriteSource(CursorPos);
+    Fail('expected parser error "'+Msg+'" in "'+CursorPos.Code.Filename+'", not in "'+CodeToolBoss.ErrorCode.Filename+'"');
+  end;
+  if (CursorPos.Y<>CodeToolBoss.ErrorLine) or (CursorPos.X<>CodeToolBoss.ErrorColumn) then begin
+    WriteSource(CursorPos);
+    Fail('expected parser error "'+Msg+'" at line='+IntToStr(CursorPos.Y)+' col='+IntToStr(CursorPos.X)+', but got line='+IntToStr(CodeToolBoss.ErrorLine)+' col='+IntToStr(CodeToolBoss.ErrorColumn));
+  end;
 end;
 
 procedure TCustomTestPascalParser.WriteSource(CleanPos: integer; Tool: TCodeTool
@@ -367,10 +392,19 @@ begin
   ParseModule;
 end;
 
+procedure TTestPascalParser.TestMissingGenericKeywordObjFPCFail;
+begin
+  Add([
+  'program test1;',
+  '{$mode objfpc}',
+  'type',
+  '  TList<T> = class end;',
+  'begin']);
+  CheckParseError(CodeXYPosition(8,4,Code),'expected =, but got <');
+end;
+
 procedure TTestPascalParser.TestParseGenericsDelphi;
 begin
-  StartProgram;
-  Code.Source:='';
   Add([
   'program test1;',
   '{$mode delphi}',
