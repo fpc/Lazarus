@@ -28,6 +28,8 @@
    nov  04 2003 - First release
    mars 08 2005 - Dynamique link lib by Jesus Reyes (big thanks)
                 - Some modifications for work with Mdk 10.1
+   nov  26 2017 - Moved to directory packages/libcups/ under FPC 3.1.1 sources.
+     Can be removed from Lazarus sources when FPC 3.2.0 is the minimum requirement.
 ------------------------------------------------------------------------------}
 unit cupsdyn;
 
