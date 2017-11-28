@@ -1020,7 +1020,13 @@ begin
   FAddInheritedCodeToOverrideMethod:=true;
   FAdjustTopLineDueToComment:=true;
   FCatchExceptions:=true;
+
   FCompleteProperties:=true;
+  FSetPropertyVariablename:='AValue';
+  FSetPropertyVariableIsPrefix := false;
+  FSetPropertyVariableUseConst := false;
+  FAddInheritedCodeToOverrideMethod := true;
+
   FCursorBeyondEOL:=true;
   FIndentSize:=2;
   FJumpCentered:=true;
