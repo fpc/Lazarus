@@ -24,6 +24,7 @@ type
     procedure TestCompleteMethodBody_GenericDelphi; // ToDo
     procedure TestCompleteMethodBody_ParamSpecialize;
     procedure TestCompleteMethodBody_ParamDelphiSpecialize;
+    procedure TestCompleteProperty_TypeWithUnitname;
     procedure TestCompleteProperty_ObjFPC_SpecializeType;
   end;
 
@@ -254,16 +255,16 @@ begin
     'end.']);
 end;
 
-procedure TTestCodeCompletion.TestCompleteProperty_ObjFPC_SpecializeType;
+procedure TTestCodeCompletion.TestCompleteProperty_TypeWithUnitname;
 begin
-  Test('TestCompleteMethodBody_ParamDelphiSpecialize',
+  Test('TestCompleteProperty_TypeWithUnitname',
     ['unit test1;',
     '{$mode objfpc}{$H+}',
     'interface',
     'type',
-    '  generic TLimb<T> = class end;',
     '  TBird = class',
-    '    property Wing: specialize TLimb<string>;',
+    '  public',
+    '    property Wing: system.string;',
     '  end;',
     'implementation',
     'end.'],
@@ -276,10 +277,57 @@ begin
     '  { TBird }',
     '',
     '  TBird = class',
-    '    property Wing: specialize TLimb<string> read FWing write SetWing;',
+    '  private',
+    '    fWing: system.string;',
+    '    procedure SetWing(AValue: system.string);',
+    '  public',
+    '    property Wing: system.string read fWing write SetWing;',
     '  end;',
     'implementation',
+    'procedure TBird.SetWing(AValue: system.string);',
+    'begin',
+    '  if fWing=AValue then Exit;',
+    '  fWing:=AValue;',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteProperty_ObjFPC_SpecializeType;
+begin
+  Test('TestCompleteProperty_ObjFPC_SpecializeType',
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '  generic TLimb<T> = class end;',
+    '  TBird = class',
+    '  public',
+    '    property Wing: specialize TLimb<string>;',
+    '  end;',
+    'implementation',
+    'end.'],
+    7,1,
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '  generic TLimb<T> = class end;',
     '',
+    '  { TBird }',
+    '',
+    '  TBird = class',
+    '  private',
+    '    fWing: specialize TLimb<string>;',
+    '    procedure SetWing(AValue: specialize TLimb<string>);',
+    '  public',
+    '    property Wing: specialize TLimb<string> read fWing write SetWing;',
+    '  end;',
+    'implementation',
+    'procedure TBird.SetWing(AValue: specialize TLimb<string>);',
+    'begin',
+    '  if fWing=AValue then Exit;',
+    '  fWing:=AValue;',
+    'end;',
     'end.']);
 end;
 
