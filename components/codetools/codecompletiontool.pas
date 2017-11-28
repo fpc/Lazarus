@@ -6982,7 +6982,6 @@ function TCodeCompletionCodeTool.CompleteProperty(
 type
   TPropPart = (ppName,       // property name
                ppParamList,  // param list
-               ppUnitType,   // optional: unit in front of identifier
                ppType,       // type identifier
                ppIndexWord,  // 'index'
                ppIndex,      // index constant
@@ -7096,7 +7095,7 @@ var
       CleanParamList:='';
   end;
   
-  procedure ReadPropertyType;
+  function ReadPropertyType: string;
 
     procedure CheckIdentifier;
     begin
@@ -7108,18 +7107,18 @@ var
       end;
     end;
 
+  var
+    p: Integer;
   begin
     ReadNextAtom; // read type
     CheckIdentifier;
     Parts[ppType]:=CurPos;
-    ReadNextAtom;
-    if CurPos.Flag=cafPoint then begin
-      // unit.identifier
-      Parts[ppUnitType]:=Parts[ppType];
-      ReadNextAtom;
-      CheckIdentifier;
-      Parts[ppType]:=CurPos;
-      ReadNextAtom;
+    Result:=GetAtom;
+    ReadTypeReference(false);
+    p:=LastAtoms.GetPriorAtom.EndPos;
+    if p>Parts[ppType].EndPos then begin
+      Parts[ppType].EndPos:=p;
+      Result:=ExtractCode(Parts[ppType].StartPos,Parts[ppType].EndPos,[]);
     end;
   end;
   
@@ -7643,7 +7642,7 @@ begin
     exit;
   end;
   
-  ReadPropertyType;
+  PropType:=ReadPropertyType;
   // parse specifiers
   if CodeCompleteClassNode.Desc <> ctnDispinterface then begin
     ReadIndexSpecifier;
@@ -7655,12 +7654,7 @@ begin
       ReadNextAtom;
     ReadDispidSpecifier;
   end;
-  PropType:=copy(Src,Parts[ppType].StartPos,
-                 Parts[ppType].EndPos-Parts[ppType].StartPos);
-  if Parts[ppUnitType].StartPos>0 then
-    PropType:=copy(Src,Parts[ppUnitType].StartPos,
-              Parts[ppUnitType].EndPos-Parts[ppUnitType].StartPos)+'.'+PropType;
-               
+
   // complete property
   BeautifyCodeOpts:=FSourceChangeCache.BeautifyCodeOptions;
   if CodeCompleteClassNode.Desc <> ctnDispinterface then begin

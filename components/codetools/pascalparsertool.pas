@@ -4060,7 +4060,9 @@ begin
   ReadNextAtom;
   if (TypeNode.Desc=ctnGenericType) and (not AtomIsChar('<')) then
     SaveRaiseCharExpectedButAtomFound(20170421195732,'<');
-  if AtomIsChar('<') then begin
+  if AtomIsChar('<')
+  and (IsGeneric or (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE])) then
+  begin
     TypeNode.Desc:=ctnGenericType;
     // name
     CreateChildNode;
