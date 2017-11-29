@@ -738,6 +738,10 @@ begin
     AFileName := GetEnvironmentVariableUTF8('FPCDIR');
     if Check(AFilename,Result) then exit;
 
+    // check relative to FPCDIR
+    if AFileName <> '' then
+      if Check(AFilename + '/../fpcsrc', Result) then exit;
+
     // check history
     Dirs:=EnvironmentOptions.FPCSourceDirHistory;
     if Dirs<>nil then
