@@ -1,0 +1,238 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: svnclasses.rsaction
+msgid "Action"
+msgstr "动作"
+
+#: svnclasses.rsadd
+msgid "Add to version control"
+msgstr "添加到版本控制"
+
+#: svnclasses.rsadded
+msgid "Added"
+msgstr "添加"
+
+#: svnclasses.rsauthor
+msgid "Author"
+msgstr "作者"
+
+#: svnclasses.rscommit
+msgid "Commit"
+msgstr ""
+
+#: svnclasses.rscommitmsg
+msgid "Commit Message"
+msgstr ""
+
+#: svnclasses.rscommitmsghistory
+msgid "Commit Message History"
+msgstr ""
+
+#: svnclasses.rscommitrevision
+msgid "Commit revision"
+msgstr ""
+
+#: svnclasses.rsconflict
+msgid "Conflict"
+msgstr ""
+
+#: svnclasses.rscopyfrompath
+msgid "Copy from path"
+msgstr "从路径复制"
+
+#: svnclasses.rscreatepatchfile
+msgid "Create patch file"
+msgstr "创建补丁文件"
+
+#: svnclasses.rsdate
+msgid "Date"
+msgstr "日期"
+
+#: svnclasses.rsdelete
+msgid "Delete"
+msgstr "删除"
+
+#: svnclasses.rsdeleted
+msgid "Deleted"
+msgstr "删除"
+
+#: svnclasses.rsdiffactivefile
+msgid "Diff active file"
+msgstr ""
+
+#: svnclasses.rsedit
+msgid "Edit"
+msgstr "编辑"
+
+#: svnclasses.rsextension
+msgid "Extension"
+msgstr ""
+
+#: svnclasses.rsfilenotinworkingcopyanymore
+msgid "File is not part of local working copy (anymore)"
+msgstr ""
+
+#: svnclasses.rsfilestatus
+msgid "File status"
+msgstr "文件状态"
+
+#: svnclasses.rsindexoutofboundsd
+msgid "Index out of bounds (%d)"
+msgstr ""
+
+#: svnclasses.rslazarussvncommit
+msgid "LazarusSVN Commit"
+msgstr ""
+
+#: svnclasses.rslazarussvndiff
+msgid "%s - LazarusSVN Diff ..."
+msgstr ""
+
+#: svnclasses.rslazarussvnlog
+msgid "%s - LazarusSVN Log ..."
+msgstr ""
+
+#: svnclasses.rslazarussvnupdate
+msgid "%s - LazarusSVN Update ..."
+msgstr ""
+
+#: svnclasses.rsmerged
+msgid "Merged"
+msgstr ""
+
+#: svnclasses.rsmessage
+msgid "Message"
+msgstr "信息"
+
+#: svnclasses.rsnoauthor
+msgid "(no author)"
+msgstr "(无作者)"
+
+#: svnclasses.rsonlymodifieditemscanbediffed
+msgid "Only modified (M) Items can be diffed"
+msgstr ""
+
+#: svnclasses.rsopenfileineditor
+msgid "Open file in editor"
+msgstr "在编辑器中打开文件"
+
+#: svnclasses.rsopenpreviousrevisionineditor
+msgid "Open previous revision in editor"
+msgstr "在编辑器中打开前面的修订本"
+
+#: svnclasses.rsopenthisrevisionineditor
+msgid "Open this revision in editor"
+msgstr "在编辑器中打开这个修订本"
+
+#: svnclasses.rspath
+msgid "Path"
+msgstr "路径"
+
+#: svnclasses.rsprojectfilename
+msgid "Project filename"
+msgstr "工程文件名称"
+
+#: svnclasses.rsprojectisactive
+msgid "Project is active"
+msgstr "工程处于激活状态"
+
+#: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
+msgid "Project is not active in SVN settings, please activate first."
+msgstr "工程在SVN设置中处于非激活状态,请先激活."
+
+#: svnclasses.rsprojectname
+msgid "Project name"
+msgstr "工程名称"
+
+#: svnclasses.rsprojectoptions
+msgid "Project options"
+msgstr "工程选项"
+
+#: svnclasses.rspropertystatus
+msgid "Property status"
+msgstr "属性状态"
+
+#: svnclasses.rsrefresh
+msgid "Refresh"
+msgstr "刷新"
+
+#: svnclasses.rsremove
+msgid "Remove from version control (keep local)"
+msgstr "从版本控制移除(保留本地)"
+
+#: svnclasses.rsrepositorypath
+msgid "Repository path"
+msgstr "存储库路径"
+
+#: svnclasses.rsrevert
+msgid "Revert"
+msgstr ""
+
+#: svnclasses.rsrevision
+msgid "Revision"
+msgstr "修订版本:"
+
+#: svnclasses.rssave
+msgid "Save"
+msgstr "保存"
+
+#: svnclasses.rssettings
+msgid "Settings"
+msgstr "设置"
+
+#: svnclasses.rsshowdiff
+msgid "Show diff"
+msgstr "显示diff"
+
+#: svnclasses.rsshowdiffbase
+msgid "Show Diff of Local Changes"
+msgstr ""
+
+#: svnclasses.rsshowdiffcountrev
+msgid "Show Last X Commits"
+msgstr ""
+
+#: svnclasses.rsshowdiffhead
+msgid "Show Diff Against HEAD"
+msgstr ""
+
+#: svnclasses.rsshowdiffprev
+msgid "Show Diff Against Previous Version"
+msgstr ""
+
+#: svnclasses.rsshowlog
+msgid "Show log"
+msgstr "显示日志"
+
+#: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
+msgid "Source file does not belong to the project. Please add first."
+msgstr "Source文件不属于本工程.请先添加."
+
+#: svnclasses.rssvnsettings
+msgid "SVN settings"
+msgstr "SVN设置"
+
+#: svnclasses.rssvntools
+msgid "SVN tools"
+msgstr "SVN工具"
+
+#: svnclasses.rsupdate
+msgid "Update"
+msgstr "更新"
+
+#: svnclasses.rsupdated
+msgid "Updated"
+msgstr "更新"
+

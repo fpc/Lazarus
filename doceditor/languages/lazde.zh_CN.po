@@ -1,0 +1,740 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: lazdemsg.saboutformcaption
+msgid "About this application"
+msgstr "关于这个应用程序"
+
+#: lazdemsg.sadd
+msgid "&Add"
+msgstr "添加(&A)"
+
+#: lazdemsg.saddall
+msgid "Add All"
+msgstr "添加所有"
+
+#: lazdemsg.sadddescriptionfile
+msgid "Select a new description file"
+msgstr "选择一个新的描述文件"
+
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr "用于fpdoc的附加参数"
+
+#: lazdemsg.sbuild
+msgctxt "lazdemsg.sbuild"
+msgid "&Build"
+msgstr "构建(&B)"
+
+#: lazdemsg.sbuilddocumentation
+msgid "Build documentation"
+msgstr "构建文档"
+
+#: lazdemsg.sbuildok
+msgid "Documentation successfully built."
+msgstr "文档成功地创建"
+
+#: lazdemsg.sbuildoutput
+msgid "Build output"
+msgstr "构建输出"
+
+#: lazdemsg.sclose
+msgctxt "lazdemsg.sclose"
+msgid "&Close"
+msgstr "关闭(&C)"
+
+#: lazdemsg.scodeexample
+msgid "Example code File"
+msgstr "示例代码文件"
+
+#: lazdemsg.scopyright1
+msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
+msgstr "这个应用程序是 (c) 由Michael Van Canneyt和the Lazarus team"
+
+#: lazdemsg.scopyright2
+msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
+msgstr "它是在\"GENERAL PUBLIC LICENSE\"限制下发布"
+
+#: lazdemsg.scpu
+msgid "CPU"
+msgstr "CPU"
+
+#: lazdemsg.screatecontentfile
+msgid "Create cont&ent file"
+msgstr "创建目录文件(&e)"
+
+#: lazdemsg.sdataforelement
+msgid "Documentation for element \"%s\":"
+msgstr "文档对于element \"%s\":"
+
+#: lazdemsg.sdelete
+msgid "&Delete"
+msgstr "删除(&D)"
+
+#: lazdemsg.sdeletemodule
+msgid "Are you sure you want to delete module \"%s\" ?"
+msgstr "你真的想删除模块\"%s\"?"
+
+#: lazdemsg.sdeletepackage
+msgid "Are you sure you want to delete package \"%s\" ?"
+msgstr "你真的想删除包\"%s\"?"
+
+#: lazdemsg.sdeletetopic
+msgid "Are you sure you want to delete topic \"%s\" ?"
+msgstr "你真的想删除topic(主题?)\"%s\"?"
+
+#: lazdemsg.sdescription
+msgid "Description"
+msgstr "描述"
+
+#: lazdemsg.sedit
+msgid "&Edit"
+msgstr "编辑(&E)"
+
+#: lazdemsg.seditdescriptionfile
+msgid "Change description file"
+msgstr "更改描述文件"
+
+#: lazdemsg.serrfpdoc
+msgid "Building failed with exit code %d. Please check log."
+msgstr ""
+
+#: lazdemsg.serrnomoduleforelement
+msgid "No module found to insert element \"%s\""
+msgstr ""
+
+#: lazdemsg.serrnonodeformodule
+msgid "No node found for module \"%s\""
+msgstr ""
+
+#: lazdemsg.serrnonodeforpackage
+msgid "No node found for package \"%s\""
+msgstr ""
+
+#: lazdemsg.serrnonodefortopic
+msgid "No parent node found to insert topic \"%s\""
+msgstr ""
+
+#: lazdemsg.serrnopackageformodule
+msgid "No package found to insert module \"%s\""
+msgstr ""
+
+#: lazdemsg.serrors
+msgid "Errors"
+msgstr "错误"
+
+#: lazdemsg.serrunknowndomelement
+msgid "Unknwon DOM element as parent for selected element: \"%s\""
+msgstr ""
+
+#: lazdemsg.sfilemodified
+msgid "Document \"%s\" was modified, would you like to save it?"
+msgstr ""
+
+#: lazdemsg.sfilestructure
+msgid "Documentation structure"
+msgstr ""
+
+#: lazdemsg.sfiletemplate
+msgid "template.xml"
+msgstr "template.xml"
+
+#: lazdemsg.sforfile
+msgid " in file "
+msgstr ""
+
+#: lazdemsg.sformat
+msgid "&Format"
+msgstr "格式(&F)"
+
+#: lazdemsg.sformodule
+msgid " in module "
+msgstr ""
+
+#: lazdemsg.sforpackage
+msgid " in package "
+msgstr ""
+
+#: lazdemsg.sfortopic
+msgid " in topic "
+msgstr ""
+
+#: lazdemsg.shideprotectedmethods
+msgid "&Hide protected methods"
+msgstr ""
+
+#: lazdemsg.shinteditelementlink
+msgid "Edit element link"
+msgstr "编辑element链接"
+
+#: lazdemsg.shintfileclose
+msgid "Close current file"
+msgstr "关闭当前文件"
+
+#: lazdemsg.shintfileexit
+msgid "Close doc editor"
+msgstr "关闭doc编辑器"
+
+#: lazdemsg.shintfilenew
+msgctxt "lazdemsg.shintfilenew"
+msgid "New file"
+msgstr "新建文件"
+
+#: lazdemsg.shintfileopen
+msgid "Open file"
+msgstr "打开文件"
+
+#: lazdemsg.shintfilesave
+msgid "Save file"
+msgstr "保存文件"
+
+#: lazdemsg.shintfilesaveas
+msgid "Save file as"
+msgstr "文件另存为"
+
+#: lazdemsg.shintformatbold
+msgid "Bold"
+msgstr "粗体"
+
+#: lazdemsg.shintformatcode
+msgid "Code"
+msgstr "代码"
+
+#: lazdemsg.shintformatfile
+msgid "File"
+msgstr "文件"
+
+#: lazdemsg.shintformatitalics
+msgid "Italic"
+msgstr "斜体"
+
+#: lazdemsg.shintformatremark
+msgid "Remark"
+msgstr "备注"
+
+#: lazdemsg.shintformatunderline
+msgid "Underline"
+msgstr "下划线"
+
+#: lazdemsg.shintformatvariable
+msgid "Variable"
+msgstr "变量"
+
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "插入bulleted(项目符号?)列表"
+
+#: lazdemsg.shintinsertelement
+msgctxt "lazdemsg.shintinsertelement"
+msgid "New element"
+msgstr "新建element"
+
+#: lazdemsg.shintinsertlink
+msgctxt "lazdemsg.shintinsertlink"
+msgid "Insert link"
+msgstr "插入链接"
+
+#: lazdemsg.shintinsertmodule
+msgctxt "lazdemsg.shintinsertmodule"
+msgid "New module"
+msgstr "新建模块"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "插入编号列表"
+
+#: lazdemsg.shintinsertpackage
+msgctxt "lazdemsg.shintinsertpackage"
+msgid "New package"
+msgstr "新建package"
+
+#: lazdemsg.shintinsertprintshortlink
+msgid "Insert a short description link"
+msgstr "插入一个简短的描述链接"
+
+#: lazdemsg.shintinserttable
+msgctxt "lazdemsg.shintinserttable"
+msgid "Insert table"
+msgstr "插入table"
+
+#: lazdemsg.shintinserttopic
+msgctxt "lazdemsg.shintinserttopic"
+msgid "New topic"
+msgstr "新建topic(主题?)"
+
+#: lazdemsg.shintmenunewfromfile
+msgid "New from file ..."
+msgstr "通过文件新建..."
+
+#: lazdemsg.shinttoolbaradd
+msgid "Add"
+msgstr "添加"
+
+#: lazdemsg.shinttoolbardelete
+msgctxt "lazdemsg.shinttoolbardelete"
+msgid "Delete"
+msgstr "删除"
+
+#: lazdemsg.shinttoolbaredit
+msgid "Edit"
+msgstr "编辑"
+
+#: lazdemsg.shmenuextraoptions
+msgid "Show options dialog"
+msgstr "显示选项对话框"
+
+#: lazdemsg.shmenuhelpabout
+msgid "About this program"
+msgstr "关于这个程序"
+
+#: lazdemsg.simportcontentfile
+msgid "Import content file"
+msgstr "导入目录文件"
+
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "插入项目符号列表"
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr "插入示例代码"
+
+#: lazdemsg.sinsertlink
+msgctxt "lazdemsg.sinsertlink"
+msgid "Insert link"
+msgstr "插入链接"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "插入编号列表"
+
+#: lazdemsg.sinsertprintshortlink
+msgid "Insert short description link"
+msgstr "插入简短的描述链接"
+
+#: lazdemsg.sinserttable
+msgctxt "lazdemsg.sinserttable"
+msgid "Insert table"
+msgstr "插入table"
+
+#: lazdemsg.sitemscount
+msgid "Items count"
+msgstr "项目计数"
+
+#: lazdemsg.slazdoceditor
+msgid "Lazarus Documentation Editor"
+msgstr "Lazarus文档编辑器"
+
+#: lazdemsg.slinksto
+msgid " links to "
+msgstr "链接到"
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr "连接目标"
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr "Link text"
+
+#: lazdemsg.sload
+msgid "&Load"
+msgstr "载入(&L)"
+
+#: lazdemsg.smakeskelfromsource
+msgid "Make new document from source file"
+msgstr ""
+
+#: lazdemsg.smarkselection
+msgid "Mark selection %s"
+msgstr ""
+
+#: lazdemsg.smenucollapseall
+msgid "Collapse All"
+msgstr ""
+
+#: lazdemsg.smenudelete
+msgctxt "lazdemsg.smenudelete"
+msgid "Delete"
+msgstr "删除"
+
+#: lazdemsg.smenuexpandall
+msgid "Expand All"
+msgstr ""
+
+#: lazdemsg.smenuextra
+msgid "&Extra"
+msgstr ""
+
+#: lazdemsg.smenuextrabuild
+msgctxt "lazdemsg.smenuextrabuild"
+msgid "&Build"
+msgstr "构建(&B)"
+
+#: lazdemsg.smenuextraoptions
+msgid "&Options"
+msgstr "选项(&O)"
+
+#: lazdemsg.smenufile
+msgctxt "lazdemsg.smenufile"
+msgid "&File"
+msgstr "文件(&F)"
+
+#: lazdemsg.smenufileclose
+msgctxt "lazdemsg.smenufileclose"
+msgid "&Close"
+msgstr "关闭(&C)"
+
+#: lazdemsg.smenufilenew
+msgid "&New"
+msgstr "新建(&N)"
+
+#: lazdemsg.smenufilenewfromfile
+msgid "New from fi&le"
+msgstr ""
+
+#: lazdemsg.smenufileopen
+msgid "&Open"
+msgstr "打开(&O)"
+
+#: lazdemsg.smenufilequit
+msgid "&Quit"
+msgstr "退出(&Q)"
+
+#: lazdemsg.smenufilerecent
+msgid "&Recent"
+msgstr ""
+
+#: lazdemsg.smenufilesave
+msgctxt "lazdemsg.smenufilesave"
+msgid "&Save"
+msgstr "保存(&S)"
+
+#: lazdemsg.smenufilesaveas
+msgid "Save &as"
+msgstr "另存为(&a)"
+
+#: lazdemsg.smenuformat
+msgid "Format"
+msgstr "格式"
+
+#: lazdemsg.smenuformatbold
+msgid "&Bold"
+msgstr "粗体(&B)"
+
+#: lazdemsg.smenuformatcode
+msgid "&Code"
+msgstr "代码(&C)"
+
+#: lazdemsg.smenuformatfile
+msgctxt "lazdemsg.smenuformatfile"
+msgid "&File"
+msgstr "文件(&F)"
+
+#: lazdemsg.smenuformatitalics
+msgid "&Italic"
+msgstr "斜体(&I)"
+
+#: lazdemsg.smenuformatparagraph
+msgid "&Paragraph"
+msgstr ""
+
+#: lazdemsg.smenuformatremark
+msgid "&Remark"
+msgstr ""
+
+#: lazdemsg.smenuformatunderline
+msgid "&Underline"
+msgstr ""
+
+#: lazdemsg.smenuformatvariable
+msgid "&Variable"
+msgstr "变量(&V)"
+
+#: lazdemsg.smenuhelp
+msgid "&Help"
+msgstr "帮助(&H)"
+
+#: lazdemsg.smenuhelpabout
+msgid "&About ..."
+msgstr "关于(&A)..."
+
+#: lazdemsg.smenuinsert
+msgid "&Insert"
+msgstr "插入(&I)"
+
+#: lazdemsg.smenuinsertbulletedlist
+msgid "Bulleted list"
+msgstr "bulleted(项目符号?)列表"
+
+#: lazdemsg.smenuinsertelement
+msgid "&Element"
+msgstr "&Element"
+
+#: lazdemsg.smenuinsertlink
+msgid "&Link"
+msgstr "链接(&L)"
+
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr "列表"
+
+#: lazdemsg.smenuinsertmodule
+msgid "&Module"
+msgstr "模块(&M)"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgid "Numbered list"
+msgstr "编号列表"
+
+#: lazdemsg.smenuinsertpackage
+msgctxt "lazdemsg.smenuinsertpackage"
+msgid "&Package"
+msgstr "包(&P)"
+
+#: lazdemsg.smenuinsertprintshort
+msgid "Insert short desc link"
+msgstr "插入简短的描述链接"
+
+#: lazdemsg.smenuinsertquicklink
+msgid "&Quick Link"
+msgstr "快速链接(&Q)"
+
+#: lazdemsg.smenuinsertshortdesclink
+msgid "&Short description link"
+msgstr "简短的描述链接(&S)"
+
+#: lazdemsg.smenuinserttable
+msgid "&Table"
+msgstr "&Table"
+
+#: lazdemsg.smenuinserttopic
+msgid "T&opic"
+msgstr "主题(&o)"
+
+#: lazdemsg.smenurename
+msgid "Rename"
+msgstr "重命名"
+
+#: lazdemsg.smoduleelements
+msgid "Elements for selected node"
+msgstr ""
+
+#: lazdemsg.snew
+msgid "New"
+msgstr "新建"
+
+#: lazdemsg.snewdocument
+msgid "New document"
+msgstr "新建文档"
+
+#: lazdemsg.snewelement
+msgctxt "lazdemsg.snewelement"
+msgid "New element"
+msgstr "新建element"
+
+#: lazdemsg.snewfile
+msgctxt "lazdemsg.snewfile"
+msgid "New file"
+msgstr "新建文件"
+
+#: lazdemsg.snewmodule
+msgctxt "lazdemsg.snewmodule"
+msgid "New module"
+msgstr "新建module"
+
+#: lazdemsg.snewpackage
+msgctxt "lazdemsg.snewpackage"
+msgid "New package"
+msgstr "新建package"
+
+#: lazdemsg.snewtopic
+msgctxt "lazdemsg.snewtopic"
+msgid "New topic"
+msgstr "新建topic(主题?)"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr ""
+
+#: lazdemsg.snoelement
+msgid "No element selected"
+msgstr "没有element被选择"
+
+#: lazdemsg.soptdlgbackupextension
+msgid "Backup extension"
+msgstr ""
+
+#: lazdemsg.soptdlgconfirmdeletes
+msgid "C&onfirm deletes"
+msgstr "确认删除(&o)"
+
+#: lazdemsg.soptdlgcreatebackups
+msgid "Create &backups"
+msgstr ""
+
+#: lazdemsg.soptdlgdefaultextension
+msgid "Default extension"
+msgstr "默认扩展名"
+
+#: lazdemsg.soptdlgdesktop
+msgid "Desktop"
+msgstr "桌面"
+
+#: lazdemsg.soptdlgfpdocprogram
+msgid "fpdoc program"
+msgstr "fpdoc程序"
+
+#: lazdemsg.soptdlggeneral
+msgid "General"
+msgstr "一般"
+
+#: lazdemsg.soptdlgmakeskelprogram
+msgid "makeskel program"
+msgstr "makeskel程序"
+
+#: lazdemsg.soptdlgmaxrecentused
+msgid "Max. recent used"
+msgstr ""
+
+#: lazdemsg.soptdlgoptions
+msgid "Options"
+msgstr "选项"
+
+#: lazdemsg.soptdlgreopenlastfile
+msgid "Reopen last file on startup"
+msgstr ""
+
+#: lazdemsg.soptdlgshowhints
+msgid "Show hints"
+msgstr "显示提示"
+
+#: lazdemsg.soptdlgskipemptynodes
+msgid "&Skip empty nodes when saving"
+msgstr ""
+
+#: lazdemsg.soptdlgstartmaximized
+msgid "Start maximized"
+msgstr ""
+
+#: lazdemsg.sotheroptions
+msgid "Other options"
+msgstr "其他选项"
+
+#: lazdemsg.soutput
+msgid "&Output"
+msgstr "输出(&O)"
+
+#: lazdemsg.spackage
+msgctxt "lazdemsg.spackage"
+msgid "&Package"
+msgstr "Package(&P)"
+
+#: lazdemsg.spackages
+msgid "Packages"
+msgstr "包"
+
+#: lazdemsg.srenameelement
+msgid "Rename element"
+msgstr "重命名element"
+
+#: lazdemsg.srenamemodule
+msgid "Rename module"
+msgstr "重命名模块"
+
+#: lazdemsg.srenamepackage
+msgid "Rename package"
+msgstr "重命名包"
+
+#: lazdemsg.srenametopic
+msgid "Rename topic"
+msgstr "重命名topic(主题?)"
+
+#: lazdemsg.ssave
+msgctxt "lazdemsg.ssave"
+msgid "&Save"
+msgstr "保存(&S)"
+
+#: lazdemsg.ssavebeforebuildquestion
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr ""
+
+#: lazdemsg.sseealso
+msgid "See Also"
+msgstr "请参阅"
+
+#: lazdemsg.sselectoutputdirectory
+msgid "Select output directory"
+msgstr "选择输出目录"
+
+#: lazdemsg.sselectoutputfile
+msgid "Select output file name"
+msgstr "选择输出文件名称"
+
+#: lazdemsg.sselectsometext
+msgid "Select some text."
+msgstr "选择一些text."
+
+#: lazdemsg.sshortdescription
+msgid "Short"
+msgstr ""
+
+#: lazdemsg.sshowprivatemethods
+msgid "Show p&rivate methods"
+msgstr ""
+
+#: lazdemsg.sskelerrorwithfile
+msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
+msgstr ""
+
+#: lazdemsg.sskelerrorwithoutfile
+msgid "makeskel reported an error (%d) and produced no file."
+msgstr ""
+
+#: lazdemsg.ssourcescapt
+msgid "Sources"
+msgstr "Sources"
+
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr ""
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr "列"
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr ""
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr "行"
+
+#: lazdemsg.stargetos
+msgid "Target OS"
+msgstr "目标OS"
+
+#: lazdemsg.susingcommand
+msgid "Building docs using command: "
+msgstr "构建docs使用命令"
+
+#: lazdemsg.swarnifnodocumentationnodefound
+msgid "Warn if no documentation node found"
+msgstr ""
+

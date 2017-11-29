@@ -1,0 +1,216 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: eduoptions.edurseducation
+msgid "Education"
+msgstr "教育"
+
+#: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
+msgid "Add an entry to the %sNew ...%s dialog to create a new program"
+msgstr ""
+
+#: eduoptions.ersaddanidemenuitemtocreateanewprogram
+msgid "Add an IDE menu item to create a new program"
+msgstr ""
+
+#: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
+msgid "Add a speed button to the IDE toolbar to create a new program"
+msgstr ""
+
+#: eduoptions.ersaddicon
+msgid "Add icon"
+msgstr "添加图标"
+
+#: eduoptions.ersaddmenuitem
+msgid "Add menu item"
+msgstr "添加菜单项"
+
+#: eduoptions.ersaddtonewdialog
+msgid "Add to %sNew ...%s dialog"
+msgstr ""
+
+#: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
+msgid "A simple program. Only one file is created and added to the current project."
+msgstr "一个简单的程序.仅一个文件被创建和添加到当前工程. "
+
+#: eduoptions.erseducomppalettetitle
+msgid "Component palette"
+msgstr "组件面板"
+
+#: eduoptions.erseduenvoptsframetitle
+msgid "General"
+msgstr "一般"
+
+#: eduoptions.ersedumenutitle
+msgid "Menus"
+msgstr "菜单"
+
+#: eduoptions.ersedunewprogramtitle
+msgctxt "eduoptions.ersedunewprogramtitle"
+msgid "New program"
+msgstr "新建程序"
+
+#: eduoptions.erseduoipages
+msgid "Object Inspector"
+msgstr ""
+
+#: eduoptions.ersedupropseventstitle
+msgid "Properties and Events"
+msgstr ""
+
+#: eduoptions.ersedusbtitle
+msgid "Speed Buttons"
+msgstr ""
+
+#: eduoptions.ersenableeducheckboxcaption
+msgid "Enable education settings"
+msgstr ""
+
+#: eduoptions.ersgrpboxeventsext
+msgid "Events: Extended Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxeventsfull
+msgid "Events: Full Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxeventsmin
+msgid "Events: Minimal Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxpropsext
+msgid "Properties: Extended Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxpropsfull
+msgid "Properties: Full Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxpropsmin
+msgid "Properties: Minimal Configuration"
+msgstr ""
+
+#: eduoptions.ershideall
+msgid "Hide all"
+msgstr "隐藏所有"
+
+#: eduoptions.ersidemenuitems
+msgid "IDE menu items"
+msgstr "IDE菜单项"
+
+#: eduoptions.ersloaddefaultcode
+msgid "Load default code?"
+msgstr "加载默认代码?"
+
+#: eduoptions.ersloadsourcefromfile
+msgid "Load source from file"
+msgstr "从文件加载代码"
+
+#: eduoptions.ersnewprogram
+msgctxt "eduoptions.ersnewprogram"
+msgid "New program"
+msgstr "新建程序"
+
+#: eduoptions.ersnewsinglefileeducationprogram
+msgid "New single file education program"
+msgstr ""
+
+#: eduoptions.ersnewsinglefileprogram
+msgid "New single file program"
+msgstr ""
+
+#: eduoptions.ersrdbtnfull
+msgid "Show All"
+msgstr "显示所有"
+
+#: eduoptions.ersrdgrpeventscaption
+msgid "Events"
+msgstr ""
+
+#: eduoptions.ersrdgrppropscaption
+msgid "Properties"
+msgstr "属性"
+
+#: eduoptions.ersreplacecurrentsourcewithdefaultsourcecode
+msgid "Replace current source with default source code"
+msgstr ""
+
+#: eduoptions.ersreplacecurrentwithdefaultsourcecode
+msgid "Replace current with default source code?"
+msgstr ""
+
+#: eduoptions.ersshowall
+msgid "Show all"
+msgstr "显示所有"
+
+#: eduoptions.ersshowallchilds
+msgid "Show all children"
+msgstr ""
+
+#: eduoptions.ersshowextended
+msgid "Show Extended"
+msgstr ""
+
+#: eduoptions.ersshowminimal
+msgid "Show Minimal"
+msgstr ""
+
+#: eduoptions.ersshowoipages
+msgid "Show Object Inspector Pages"
+msgstr ""
+
+#: eduoptions.ersshowselection
+msgid "Show Selection"
+msgstr "显示选择"
+
+#: eduoptions.erssinglefileprogram
+msgid "Single file program"
+msgstr "单文件程序"
+
+#: eduoptions.erssource
+msgid "Source"
+msgstr "源代码"
+
+#: eduoptions.erssttexteventsext
+msgid "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+msgstr "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+
+#: eduoptions.erssttexteventsfull
+msgid "All Events available"
+msgstr ""
+
+#: eduoptions.erssttexteventsmin
+msgid "OnClick, OnChange, OnMouseMove"
+msgstr "OnClick, OnChange, OnMouseMov"
+
+#: eduoptions.erssttextpropsext
+msgid "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
+msgstr ""
+
+#: eduoptions.erssttextpropsfull
+msgid "All Properties available"
+msgstr ""
+
+#: eduoptions.erssttextpropsmin
+msgid "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
+msgstr ""
+
+#: eduoptions.ersvisiblecomponents
+msgid "Visible components"
+msgstr "可视化组件"
+
+#: eduoptions.ersvisiblespeedbuttons
+msgid "Visible SpeedButtons"
+msgstr "可视化SpeedButtons"
+

@@ -1,52 +1,52 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9.27 beta\n"
+"Project-Id-Version: X\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-24 19:20+0800\n"
-"Last-Translator: XY.Chen <chenxinyv@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-11-29 10:40+0800\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Chinese\n"
-"X-Poedit-Country: CHINA\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: sqlstringspropertyeditordlg.sloadsqlcodehint
 msgid "Load SQL code ..."
-msgstr ""
+msgstr "加载SQL代码..."
 
 #: sqlstringspropertyeditordlg.smetacolumns
 msgid "Columns"
-msgstr ""
+msgstr "列:"
 
 #: sqlstringspropertyeditordlg.smetapleasespecifyatableintheobjectfield
 msgid "Please specify a table in the object field."
-msgstr ""
+msgstr "请在object field指定一个table"
 
 #: sqlstringspropertyeditordlg.smetaprocedures
 msgid "Procedures"
-msgstr ""
+msgstr "过程"
 
 #: sqlstringspropertyeditordlg.smetasystables
 msgid "SysTables"
-msgstr ""
+msgstr "SysTables"
 
 #: sqlstringspropertyeditordlg.smetatabcaption
 msgid "Metadata"
-msgstr ""
+msgstr "SysTables"
 
 #: sqlstringspropertyeditordlg.smetatables
 msgid "Tables"
-msgstr ""
+msgstr "Tables"
 
 #: sqlstringspropertyeditordlg.sqlsyntaxok
 msgid "No syntax errors in SQL statement found."
-msgstr ""
+msgstr "在SQL声明没有发现语法错误"
 
 #: sqlstringspropertyeditordlg.squickcheckofsqlsyntaxhint
 msgid "Quick check of SQL syntax"
-msgstr ""
+msgstr "快速检查SQL语法"
 
 #: sqlstringspropertyeditordlg.sresulttabcaption
 msgid "Results"
@@ -54,25 +54,27 @@ msgstr "返回值"
 
 #: sqlstringspropertyeditordlg.srunsqlcodehint
 msgid "Run SQL code"
-msgstr ""
+msgstr "运行SQL代码"
 
 #: sqlstringspropertyeditordlg.ssavesqlcodehint
 msgid "Save SQL code ..."
-msgstr ""
+msgstr "保存SQL代码..."
 
 #: sqlstringspropertyeditordlg.ssqlerror
 msgid "Probable SQL error"
-msgstr ""
+msgstr "可能的SQL错误"
 
 #: sqlstringspropertyeditordlg.ssqlok
 msgid "Quick SQL check OK"
-msgstr ""
+msgstr "快速SQL检查OK"
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
 msgid ""
 "Probable syntax error in SQL statement:\n"
 "%s\n"
 msgstr ""
+"可能的语法错误在SQL声明:\n"
+"%s\n"
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"

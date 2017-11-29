@@ -1,0 +1,210 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: ldd_consts.ldd_availablecodegenerators
+msgid "Available code generators"
+msgstr "可用代码生成器"
+
+#: ldd_consts.ldd_cancel
+msgid "&Cancel"
+msgstr "取消(&C)"
+
+#: ldd_consts.ldd_close
+msgid "&Close"
+msgstr "关闭(&C)"
+
+#: ldd_consts.ldd_configuredatadictionary
+msgid "Configure Data Dictionary"
+msgstr "配置数据字典"
+
+#: ldd_consts.ldd_configuregeneratedcode
+msgid "Configure generated code"
+msgstr "配置生产的代码"
+
+#: ldd_consts.ldd_databasedesktopapplication
+msgid "Database desktop application"
+msgstr "Database桌面应用程序"
+
+#: ldd_consts.ldd_datadictionary
+msgid "Data dictionary &file:"
+msgstr "Data目录文件(&f)"
+
+#: ldd_consts.ldd_defaultdatadictdirectory
+msgid "Default data dictionary directory"
+msgstr "默认data字典目录"
+
+#: ldd_consts.ldd_fields
+msgid "Fields"
+msgstr "字段"
+
+#: ldd_consts.ldd_fieldstogeneratecodefor
+msgid "Fields to generate code for"
+msgstr ""
+
+#: ldd_consts.ldd_filenameapplicationsfilter
+msgid "Applications|*.exe|Any file|*.*"
+msgstr "应用|*.exe|任何文件|*.*"
+
+#: ldd_consts.ldd_filenameedit
+msgid "Data dictionary|*.fdd|Any file|*.*"
+msgstr "Data字典|*.fdd|任何文件|*.*"
+
+#: ldd_consts.ldd_generatedcode
+msgid "Generated code"
+msgstr "生产的代码"
+
+#: ldd_consts.ldd_knowndatadictionary
+msgid "Known data dictionary"
+msgstr "已知的data字典"
+
+#: ldd_consts.ldd_ok
+msgid "&OK"
+msgstr "确定(&O)"
+
+#: ldd_consts.ldd_openexistingfile
+msgid "Open existing file"
+msgstr "打开存在的文件"
+
+#: ldd_consts.ldd_options
+msgid "Options"
+msgstr "选项"
+
+#: ldd_consts.ldd_propertiesforselected
+msgid "Properties for selected fields"
+msgstr "所选择字段的属性"
+
+#: ldd_consts.ldd_save
+msgid "&Save"
+msgstr "保存(&S)"
+
+#: ldd_consts.ldd_saveto
+msgid "Save to"
+msgstr "保存到"
+
+#: ldd_consts.ldd_sdcodefilter
+msgid "Pascal files|*.pp;*.pas;*.inc|All files|*.*"
+msgstr "Pascal文件|*.pp;*.pas;*.inc|所有文件|*.*"
+
+#: ldd_consts.ldd_sdcodetitle
+msgid "Save file as"
+msgstr "文件另存为"
+
+#: ldd_consts.ldd_selectcodetobegenerated
+msgid "Select code to be generated"
+msgstr ""
+
+#: ldd_consts.ldd_setprojectdatadictionary
+msgid "Set project Data Dictionary"
+msgstr ""
+
+#: ldd_consts.ldd_showgeneratedcode
+msgid "Show generated code"
+msgstr "显示生产的代码"
+
+#: ldd_consts.ldd_usedatadictionary
+msgid "&Use Data dictionary for this project"
+msgstr ""
+
+#: ldd_consts.sapplicationfilter
+msgid "Applications|*"
+msgstr "应用程序|*"
+
+#: ldd_consts.sapplyingddtodataset
+msgid "Applying data dictionary to dataset %s"
+msgstr ""
+
+#: ldd_consts.sapplyingddtofield
+msgid "Applying data dictionary to field %s"
+msgstr ""
+
+#: ldd_consts.serrnodatadesktopdoselect
+msgid ""
+"Could not locate the database desktop application.\n"
+"Would you like to select it ?\n"
+msgstr ""
+
+#: ldd_consts.serrnodatadictactive
+msgid ""
+"No datadictionary active.\n"
+"Please set a data dictionary for the project\n"
+msgstr ""
+
+#: ldd_consts.serrselectdd
+msgid "Please select a known data dictionary"
+msgstr ""
+
+#: ldd_consts.serrselectdir
+msgid "Please select an existing directory"
+msgstr ""
+
+#: ldd_consts.serrselectexe
+msgid "Please select an existing database desktop application"
+msgstr ""
+
+#: ldd_consts.serrselectfile
+msgid "Please select an existing data dictionary file"
+msgstr ""
+
+#: ldd_consts.sfromfile
+msgid "from file: "
+msgstr ""
+
+#: ldd_consts.sloadingdatadict
+msgid "Loading data dictionary "
+msgstr "加载data字典"
+
+#: ldd_consts.smenuconfdatadict
+msgid "Configuration"
+msgstr "配置"
+
+#: ldd_consts.smenuconfprojdatadict
+msgid "Set ..."
+msgstr "设置..."
+
+#: ldd_consts.smenudatadesktop
+msgid "Database Desktop"
+msgstr ""
+
+#: ldd_consts.smenudatadict
+msgid "Data dictionary"
+msgstr "Data字典"
+
+#: ldd_consts.smenudatadictapply
+msgid "Apply"
+msgstr "应用"
+
+#: ldd_consts.smenudatadictcreatecode
+msgid "Create code from dataset"
+msgstr ""
+
+#: ldd_consts.smenudatadictdesignsql
+msgid "Design SQL"
+msgstr "设计SQL"
+
+#: ldd_consts.smenuopendatadict
+msgid "Open"
+msgstr "打开"
+
+#: ldd_consts.snotyetimplemted
+msgid "Not yet implemented"
+msgstr ""
+
+#: ldd_consts.swarningnoddforfield
+msgid "Warning: No definition in data dictionary for field %s"
+msgstr ""
+
+#: ldd_consts.swrongselection
+msgid "Wrong selection count : %d"
+msgstr ""
+

@@ -1,0 +1,437 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: pocheckerconsts.rspochecker
+#, fuzzy
+#| msgid "PO File Checker"
+msgid "Check PO Files ..."
+msgstr "PO文件检查器"
+
+#: pocheckerconsts.rs_lang_af_za
+msgid "Afrikaans"
+msgstr "南非荷兰语"
+
+#: pocheckerconsts.rs_lang_all
+msgid "All languages"
+msgstr "所有语言"
+
+#: pocheckerconsts.rs_lang_ar
+msgid "Arabic"
+msgstr "阿拉伯语"
+
+#: pocheckerconsts.rs_lang_ca
+msgid "Catalan"
+msgstr "西班牙语"
+
+#: pocheckerconsts.rs_lang_cs
+msgid "Czech"
+msgstr "捷克语"
+
+#: pocheckerconsts.rs_lang_de
+msgid "German"
+msgstr "德语"
+
+#: pocheckerconsts.rs_lang_en
+msgid "English"
+msgstr "英语"
+
+#: pocheckerconsts.rs_lang_es
+msgid "Spanish"
+msgstr "西班牙语"
+
+#: pocheckerconsts.rs_lang_fi
+msgid "Finnish"
+msgstr "芬兰语"
+
+#: pocheckerconsts.rs_lang_fr
+msgid "French"
+msgstr "法语"
+
+#: pocheckerconsts.rs_lang_he
+msgid "Hebrew"
+msgstr "希伯来语"
+
+#: pocheckerconsts.rs_lang_hu
+msgid "Hungarian"
+msgstr "匈牙利语"
+
+#: pocheckerconsts.rs_lang_id
+msgid "Indonesian"
+msgstr "印度尼西亚语"
+
+#: pocheckerconsts.rs_lang_it
+msgid "Italian"
+msgstr "意大利语"
+
+#: pocheckerconsts.rs_lang_ja
+msgid "Japanese"
+msgstr "日语"
+
+#: pocheckerconsts.rs_lang_lt
+msgid "Lithuanian"
+msgstr "立陶宛语"
+
+#: pocheckerconsts.rs_lang_nl
+msgid "Dutch"
+msgstr "荷兰语"
+
+#: pocheckerconsts.rs_lang_pl
+msgid "Polish"
+msgstr "波兰语"
+
+#: pocheckerconsts.rs_lang_pt
+msgid "Portuguese"
+msgstr ""
+
+#: pocheckerconsts.rs_lang_pt_br
+msgid "Brazilian Portuguese"
+msgstr "巴西葡萄牙语"
+
+#: pocheckerconsts.rs_lang_ru
+msgid "Russian"
+msgstr "俄罗斯语"
+
+#: pocheckerconsts.rs_lang_sk
+msgid "Slovak"
+msgstr "斯洛伐克语"
+
+#: pocheckerconsts.rs_lang_tr
+msgid "Turkish"
+msgstr "土耳其语"
+
+#: pocheckerconsts.rs_lang_uk
+msgid "Ukrainian"
+msgstr "乌克兰语"
+
+#: pocheckerconsts.rs_lang_zh_cn
+msgid "Chinese, simplified"
+msgstr "简体中文"
+
+#: pocheckerconsts.salllanguages
+msgid "All Languages"
+msgstr "所有语言"
+
+#: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
+msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
+msgstr ""
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr ""
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr ""
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr ""
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr ""
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr ""
+
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr ""
+
+#: pocheckerconsts.sclearlistbox
+msgid "Clear"
+msgstr "清除"
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "复制到剪切板"
+
+#: pocheckerconsts.screatingiconxofy
+msgid "Creating icon nr. %d of %d"
+msgstr ""
+
+#: pocheckerconsts.scurrenttest
+msgid "Test: %s on %s"
+msgstr ""
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[行: %d]%s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr ""
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr ""
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr ""
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr ""
+
+#: pocheckerconsts.sfilesnotfoundandremoved
+msgid ""
+"The following non-existent files were removed from the list:\n"
+"%s\n"
+msgstr ""
+
+#: pocheckerconsts.sfuzzystringstotal
+msgid "Fuzzy strings (total: %s)"
+msgstr ""
+
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr ""
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr ""
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr ""
+
+#: pocheckerconsts.signorefuzzytranslations
+msgid "Ignore translated strings marked as \"fuzzy\""
+msgstr ""
+
+#: pocheckerconsts.sincompatibleformatargs
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
+msgstr ""
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[行: %d]在%s:"
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[行: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr ""
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "没有错误发现"
+
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
+msgstr ""
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr ""
+
+#: pocheckerconsts.snotetranslationisfuzzy
+msgid "Note: translation is fuzzy"
+msgstr ""
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "发现%d错误."
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr ""
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: %d项目"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr ""
+
+#: pocheckerconsts.sopenfail
+msgid ""
+"Unable to open file:\n"
+"\"%s\"\n"
+msgstr ""
+"不能打开文件:\n"
+"\"%s\"\n"
+
+#: pocheckerconsts.sopenfailexternal
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\"\n"
+msgstr ""
+
+#: pocheckerconsts.sopenfileinexternaleditor
+msgid "Open file in external editor"
+msgstr ""
+
+#: pocheckerconsts.sopenfileinideeditor
+msgid "Open file in IDE editor"
+msgstr ""
+
+#: pocheckerconsts.sopenfileinsystempoeditor
+msgid "Open file in system PO editor"
+msgstr ""
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr ""
+
+#: pocheckerconsts.spercfuzzy
+msgid "%s: %5.1f%% fuzzy strings."
+msgstr ""
+
+#: pocheckerconsts.sperctranslated
+msgid "%s: %5.1f%% translated strings."
+msgstr ""
+
+#: pocheckerconsts.spercuntranslated
+msgid "%s: %5.1f%% untranslated strings."
+msgstr ""
+
+#: pocheckerconsts.sprocessingtranslationfamily
+msgid "Processing translation family..."
+msgstr ""
+
+#: pocheckerconsts.sprocessingtranslationfamilyof
+msgid "Processing translation family %s of %s"
+msgstr ""
+
+#: pocheckerconsts.srefreshalltranslationfamilies
+msgid "Refresh all translation families"
+msgstr ""
+
+#: pocheckerconsts.srefreshcurrenttranslationfamily
+msgid "Refresh current translation family"
+msgstr ""
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr ""
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "运行选择的测试(&R)"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "保存到文件"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+
+#: pocheckerconsts.sscandir
+msgid "Scan a folder"
+msgstr "扫描文件夹"
+
+#: pocheckerconsts.sscanninginprogress
+msgid "Scanning in progress, please wait ..."
+msgstr ""
+
+#: pocheckerconsts.sselectalllistbox
+msgid "Select all files"
+msgstr "选择所有文件"
+
+#: pocheckerconsts.sselectalltests
+msgid "Select &All"
+msgstr "选择所有(&A)"
+
+#: pocheckerconsts.sselectbasictests
+msgid "Select &Basic"
+msgstr ""
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr ""
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr ""
+
+#: pocheckerconsts.sstathint
+msgid ""
+"Translated: %d (%.1f%%)\n"
+"Untranslated: %d (%.1f%%)\n"
+"Fuzzy: %d (%.1f%%)\n"
+"Errors in selected tests: %d\n"
+msgstr ""
+
+#: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
+msgid "The following %s missing master .po file(s) were removed from the list:"
+msgstr ""
+
+#: pocheckerconsts.sthefollowingorphanedpofilesfound
+msgid "The following %s orphaned .po file(s) found:"
+msgstr ""
+
+#: pocheckerconsts.stotalerrors
+msgid "Total errors found: %d"
+msgstr ""
+
+#: pocheckerconsts.stotalfuzzystrings
+msgid "Total fuzzy strings: %s"
+msgstr ""
+
+#: pocheckerconsts.stotaltranslatedstrings
+msgid "Total translated strings: %s (%.1f%%)"
+msgstr ""
+
+#: pocheckerconsts.stotaluntranslatedstrings
+msgid "Total untranslated strings: %s"
+msgstr ""
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr ""
+
+#: pocheckerconsts.stranslatedstringstotal
+msgid "Translated strings (total: %s [%.1f%%])"
+msgstr ""
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "翻译"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics per language:"
+msgstr ""
+
+#: pocheckerconsts.stroublesomefiles
+msgid "Troublesome files"
+msgstr ""
+
+#: pocheckerconsts.sunselectalltests
+msgid "&Unselect All"
+msgstr ""
+
+#: pocheckerconsts.sunselectlistbox
+msgid "Unselect all files"
+msgstr ""
+
+#: pocheckerconsts.suntranslatedstringstotal
+msgid "Untranslated strings (total: %s)"
+msgstr ""
+

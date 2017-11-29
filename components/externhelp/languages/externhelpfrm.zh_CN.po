@@ -1,0 +1,106 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8 (推荐\n"
+
+#: externhelpfrm.ehrsaddnewitem
+msgid "Add new item"
+msgstr "添加新项目"
+
+#: externhelpfrm.ehrsbrowse
+msgid "Browse ..."
+msgstr "浏览..."
+
+#: externhelpfrm.ehrsbrowseforpath
+msgid "Browse for path"
+msgstr "浏览路径"
+
+#: externhelpfrm.ehrschooseapascalunit
+msgid "Choose a pascal unit"
+msgstr "关闭一个pascal unit"
+
+#: externhelpfrm.ehrsdeleteitem
+msgid "Delete item"
+msgstr "删除项"
+
+#: externhelpfrm.ehrsdirectorynotfound
+msgid "Directory not found: %s"
+msgstr "未找到目录: %s"
+
+#: externhelpfrm.ehrseditorfile
+msgid "Editor file ..."
+msgstr "编辑文件..."
+
+#: externhelpfrm.ehrsexternal
+msgid "External"
+msgstr "外部"
+
+#: externhelpfrm.ehrsfilenotfound
+msgid "File not found: %s"
+msgstr "未找到文件: %s"
+
+#: externhelpfrm.ehrsgeneral
+msgid "General"
+msgstr "一般"
+
+#: externhelpfrm.ehrsgrouptitle
+msgid "Extern help"
+msgstr "外部帮助"
+
+#: externhelpfrm.ehrshelp
+msgid "Help"
+msgstr "帮助"
+
+#: externhelpfrm.ehrsincludesubdirectories
+msgid "Include sub directories"
+msgstr "包含子目录"
+
+#: externhelpfrm.ehrsmacrofy
+msgid "Use macros"
+msgstr "使用宏"
+
+#: externhelpfrm.ehrsmysettings
+msgid "My settings (default)"
+msgstr "我的设置(默认)"
+
+#: externhelpfrm.ehrsname
+msgid "Name"
+msgstr "名称"
+
+#: externhelpfrm.ehrsreplacecommondirectorieswithmacros
+msgid "Replace common directories with macros"
+msgstr "使用宏替换公用目录"
+
+#: externhelpfrm.ehrsselectafilefromthesourceeditor
+msgid "Select a file from the source editor"
+msgstr "从代码编辑器中选一个文件"
+
+#: externhelpfrm.ehrsselectfile
+msgid "Select file"
+msgstr "选择文件"
+
+#: externhelpfrm.ehrsstorethisurlin
+msgid "Store this URL in"
+msgstr "存储URL在"
+
+#: externhelpfrm.ehrsunitfileorunitdirectory
+msgid "Unit file or unit directory"
+msgstr "Unit文件或unit目录"
+
+#: externhelpfrm.ehrsurl
+msgid "URL"
+msgstr "URL"
+
+#: externhelpfrm.ehrswarning
+msgid "Warning"
+msgstr "警告"
+

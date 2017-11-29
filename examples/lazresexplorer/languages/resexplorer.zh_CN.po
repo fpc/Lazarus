@@ -1,0 +1,118 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: reconstsunit.sabout
+msgid "About ..."
+msgstr "关于..."
+
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr "所有文件 (*.*)|*.*|可执行文件(*.exe)|*.exe|DLL (*.dll)|*.dll"
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr "所有文件 (*)|*|共享资源库 (*.so)|*.so"
+
+#: reconstsunit.sbuilddate
+msgid "Build date: "
+msgstr "构建日期: "
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Carbon widget系列"
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "退出"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "文件"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version: "
+msgstr "FPC版本:"
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "FpGUI widget系列"
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "GTK 2 widget系列"
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "GTK widget系列"
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "帮助"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "图片"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "LCL版本:"
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "这个应用程序是在GNU GPL 2协议要求下的自由软件, 查看COPYING文件"
+
+#: reconstsunit.sopen
+msgid "Open ..."
+msgstr "打开..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr "其他gui"
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr "QT小部件系列"
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "资源管理器"
+
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr "资源"
+
+#: reconstsunit.ssaveresource
+msgid "Save resource ..."
+msgstr "保存资源..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "字符串"
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU: "
+msgstr "目标CPU:"
+
+#: reconstsunit.stargetos
+msgid "Target OS: "
+msgstr "目标OS:"
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Win32/Win64 widget系列"
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr "WinCE widget系列"
+

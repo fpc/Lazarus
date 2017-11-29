@@ -1,0 +1,82 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: sqlitecompstrings.sadd
+msgid "Add"
+msgstr "添加"
+
+#: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
+msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
+msgstr "Table名为\"%s\"已经存在.你确定想替换这个table?%s所有data存储将丢失"
+
+#: sqlitecompstrings.sclose
+msgid "Close"
+msgstr "关闭"
+
+#: sqlitecompstrings.screateedittable
+msgid "Create/Edit Table"
+msgstr "创建/编辑Table"
+
+#: sqlitecompstrings.screatetable
+msgid "Create Table"
+msgstr "创建Table"
+
+#: sqlitecompstrings.sdelete
+msgid "Delete"
+msgstr "删除"
+
+#: sqlitecompstrings.sfieldname
+msgid "Field Name"
+msgstr "字段名称"
+
+#: sqlitecompstrings.sfieldtype
+msgid "Field Type"
+msgstr "字段类型"
+
+#: sqlitecompstrings.sfilenamenotsetitsnotpossibletocreateeditatable
+msgid "File name not set: it's not possible to create/edit a table."
+msgstr "文件名没有设置:它不能创建/编辑table."
+
+#: sqlitecompstrings.sfilepath
+msgid "File Path: %s"
+msgstr "文件路径: %s"
+
+#: sqlitecompstrings.sitsnotallowedfieldswiththesamename
+msgid "Fields with identical names are not allowed."
+msgstr "带有相同名称的字段不被允许"
+
+#: sqlitecompstrings.sitwasnotpossibletocreatethetable
+msgid "It was not possible to create the table."
+msgstr "不能创建table."
+
+#: sqlitecompstrings.snofieldsaddedtablewillnotbecreated
+msgid "No fields added. Table will not be created."
+msgstr "没有字段天剑.Table will not be created."
+
+#: sqlitecompstrings.stablecreatedsuccessfully
+msgid "Table created successfully."
+msgstr "Table成功地创建"
+
+#: sqlitecompstrings.stableeditorfieldtypenotrecognized
+msgid "Field type not recognized."
+msgstr "字段类型不识别"
+
+#: sqlitecompstrings.stablename
+msgid "Table Name: %s"
+msgstr "Table名称: %s"
+
+#: sqlitecompstrings.stablenamenotsetitsnotpossibletocreateeditatable
+msgid "Table name not set: it's not possible to create/edit a table."
+msgstr "Table名称没有设置: 不能创建/编辑table."
+

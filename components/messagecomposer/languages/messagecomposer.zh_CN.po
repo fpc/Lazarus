@@ -1,102 +1,94 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9.27 beta\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-24 19:20+0800\n"
-"Last-Translator: XY.Chen <chenxinyv@gmail.com>\n"
-"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Chinese\n"
-"X-Poedit-Country: CHINA\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: éƒ‘å»ºå¹³@å¤å®—è aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: messagecomposer.rscancel
 msgid "Cancel"
-msgstr "È¡Ïû"
+msgstr "å–æ¶ˆ"
 
 #: messagecomposer.rsok
-#, fuzzy
-#| msgid "Ok"
 msgid "OK"
-msgstr "È·¶¨"
+msgstr "ç¡®å®š"
 
 #: messagecomposer.rstest
 msgid "Test"
-msgstr "²âÊÔ"
+msgstr "æµ‹è¯•"
 
 #: messagecomposer.sadd
 msgid "Add"
-msgstr ""
+msgstr "æ·»åŠ "
 
 #: messagecomposer.sbuttonsarrayofconst
 msgid "Buttons (array of const)"
-msgstr ""
+msgstr "æŒ‰é’®(array of const)"
 
 #: messagecomposer.sbuttonstmsgdlgbuttons
 msgid "Buttons (TMsgDlgButtons)"
-msgstr ""
+msgstr "æŒ‰é’®(TMsgDlgButtons)"
 
 #: messagecomposer.scaseresult
 msgid "\"Case\" result"
-msgstr ""
+msgstr "\"Case\" result"
 
 #: messagecomposer.sdefault
 msgid "Default"
-msgstr ""
+msgstr "é»˜è®¤"
 
 #: messagecomposer.sdelete
 msgid "Delete"
-msgstr ""
+msgstr "åˆ é™¤"
 
 #: messagecomposer.sdlgcaption
 msgid "Dialog caption"
-msgstr ""
+msgstr "å¯¹è¯æ¡†æ ‡é¢˜"
 
 #: messagecomposer.sdlgtype
 msgid "Dialog type"
-msgstr ""
+msgstr "å¯¹è¯æ¡†ç±»å‹"
 
 #: messagecomposer.shelpcontext
 msgid "Help context"
-msgstr ""
+msgstr "å¸®åŠ©ä¸Šä¸‹æ–‡"
 
 #: messagecomposer.shelpfilename
 msgid "Help filename"
-msgstr ""
+msgstr "å¸®åŠ©æ–‡ä»¶åç§°"
 
 #: messagecomposer.shelpkeyword
 msgid "Help keyword"
-msgstr ""
+msgstr "å¸®åŠ©å…³é”®å­—"
 
 #: messagecomposer.sifresult
 msgid "\"If\" result"
-msgstr ""
+msgstr "\"If\" result"
 
 #: messagecomposer.skindofmessage
-#, fuzzy
-#| msgid "KIND OF MESSAGE"
 msgid "Kind of message"
-msgstr "ĞÅÏ¢ÀàĞÍ"
+msgstr ""
 
 #: messagecomposer.smaskinput
 msgid "Mask input"
 msgstr ""
 
 #: messagecomposer.smessagecomposercaption
-#, fuzzy
-#| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposercaption"
 msgid "Message Composer"
-msgstr "ĞÅÏ¢¿ØÖÆ ..."
+msgstr ""
 
 #: messagecomposer.smessagecomposermenucaption
-#, fuzzy
-#| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
-msgstr "ĞÅÏ¢¿ØÖÆ ..."
+msgstr ""
 
 #: messagecomposer.smodalresult
 msgid "Modal result"
@@ -104,17 +96,15 @@ msgstr ""
 
 #: messagecomposer.smsgcaption
 msgid "The message to be shown"
-msgstr "ÏÔÊ¾ĞÅÏ¢"
+msgstr "æ¶ˆæ¯å°†è¢«æ˜¾ç¤º"
 
 #: messagecomposer.snotimplementedyet
-#, fuzzy
-#| msgid "Not Implemented Yet"
 msgid "Not implemented yet"
-msgstr "Î´ÊµÏÖ"
+msgstr ""
 
 #: messagecomposer.spromptcaption
 msgid "Text asking the user for input"
-msgstr "Ñ¯ÎÊÓÃ»§ÊäÈëÎÄ±¾"
+msgstr ""
 
 #: messagecomposer.ssourcewrapper
 msgid "Source wrapper"
@@ -122,5 +112,5 @@ msgstr ""
 
 #: messagecomposer.svaluevar
 msgid "Value (var)"
-msgstr ""
+msgstr "å€¼(var)"
 

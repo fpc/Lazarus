@@ -1,34 +1,28 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9.27 beta\n"
+"Project-Id-Version: X\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-24 19:20+0800\n"
-"Last-Translator: XY.Chen <chenxinyv@gmail.com>、Liu Sizhuang <chinatslsz@hotmail.com>(2008-06-15)\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-11-29 10:37+0800\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Chinese\n"
-"X-Poedit-Country: CHINA\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy,badformat
-#| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "浏览 %s%s%s 不是可执行程序."
+msgstr "浏览器\"%s\"不是可执行程序."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy,badformat
-#| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "浏览 %s%s%s 未找到."
+msgstr "浏览器\"%s\"未找到."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy,badformat
-#| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "当执行 %s%s%s 时发生错误:%s%s "
+msgstr "当执行\"%s\":%s%s时发生错误"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -50,11 +44,11 @@ msgstr "浏览框里的宏 %s 将被 URL 所替代."
 
 #: lclstrconsts.ifsalt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lclstrconsts.ifsctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: lclstrconsts.ifsvk_accept
 msgid "Accept"
@@ -83,11 +77,11 @@ msgstr "清除"
 
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
-msgstr ""
+msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_control
 msgid "Control"
-msgstr "控件"
+msgstr "Control"
 
 #: lclstrconsts.ifsvk_convert
 msgid "Convert"
@@ -101,16 +95,16 @@ msgstr "删除"
 #: lclstrconsts.ifsvk_down
 msgctxt "lclstrconsts.ifsvk_down"
 msgid "Down"
-msgstr ""
+msgstr "向下"
 
 #: lclstrconsts.ifsvk_end
 msgctxt "lclstrconsts.ifsvk_end"
 msgid "End"
-msgstr ""
+msgstr "结束"
 
 #: lclstrconsts.ifsvk_escape
 msgid "Escape"
-msgstr ""
+msgstr "Esc"
 
 #: lclstrconsts.ifsvk_execute
 msgid "Execute"
@@ -136,7 +130,7 @@ msgstr ""
 #: lclstrconsts.ifsvk_insert
 msgctxt "lclstrconsts.ifsvk_insert"
 msgid "Insert"
-msgstr ""
+msgstr "插入"
 
 #: lclstrconsts.ifsvk_junja
 msgid "Junja"
@@ -179,7 +173,7 @@ msgstr "模式更改"
 #: lclstrconsts.ifsvk_next
 msgctxt "lclstrconsts.ifsvk_next"
 msgid "Next"
-msgstr ""
+msgstr "下一个"
 
 #: lclstrconsts.ifsvk_nonconvert
 msgid "Nonconvert"
@@ -221,7 +215,7 @@ msgstr "右"
 
 #: lclstrconsts.ifsvk_rwin
 msgid "right windows key"
-msgstr "右 Win 键"
+msgstr "右windows键"
 
 #: lclstrconsts.ifsvk_scroll
 msgid "Scroll"
@@ -233,7 +227,7 @@ msgstr "选择"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Shift"
 
 #: lclstrconsts.ifsvk_snapshot
 msgid "Snapshot"
@@ -391,7 +385,7 @@ msgstr ""
 
 #: lclstrconsts.rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
-msgstr "创建 GDB 可以捕捉的错误"
+msgstr ""
 
 #: lclstrconsts.rscursor
 msgid "Cursor"
@@ -432,11 +426,11 @@ msgstr "停靠"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
-msgstr ""
+msgstr "复制"
 
 #: lclstrconsts.rsdopaste
 msgid "Paste"
-msgstr ""
+msgstr "粘贴"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
@@ -461,7 +455,7 @@ msgstr ""
 
 #: lclstrconsts.rserrorinlcl
 msgid "ERROR in LCL: "
-msgstr ""
+msgstr "错误在LCL: "
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
@@ -484,9 +478,8 @@ msgid "The directory \"%s\" does not exist."
 msgstr "目录 \"%s\" 不存在."
 
 #: lclstrconsts.rsfdfilealreadyexists
-#, fuzzy,badformat
 msgid "The file \"%s\" already exists. Overwrite ?"
-msgstr "文件 \"%s\" 已经存在.%s替换吗?"
+msgstr "文件\"%s\"已经存在.覆盖?"
 
 #: lclstrconsts.rsfdfilemustexist
 msgid "File must exist"
@@ -506,11 +499,11 @@ msgstr "文件为只读"
 
 #: lclstrconsts.rsfdfilesaveas
 msgid "Save file as"
-msgstr "另存为"
+msgstr "另存文件为"
 
 #: lclstrconsts.rsfdopenfile
 msgid "Open existing file"
-msgstr "打开文件"
+msgstr "打开存在的文件"
 
 #: lclstrconsts.rsfdoverwritefile
 msgid "Overwrite file ?"
@@ -518,11 +511,11 @@ msgstr "覆盖文件？"
 
 #: lclstrconsts.rsfdpathmustexist
 msgid "Path must exist"
-msgstr "路径不存在"
+msgstr "路径必须存在"
 
 #: lclstrconsts.rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
-msgstr "路径 \"%s\" 不存在."
+msgstr "路径\"%s\"不存在."
 
 #: lclstrconsts.rsfdselectdirectory
 msgid "Select Directory"
@@ -530,7 +523,7 @@ msgstr "选择目录"
 
 #: lclstrconsts.rsfileinfofilenotfound
 msgid "(file not found: \"%s\")"
-msgstr "(未找到文件: \"%s\")"
+msgstr "(未找到文件:\"%s\")"
 
 #: lclstrconsts.rsfileinformation
 msgid "File information"
@@ -539,7 +532,7 @@ msgstr "文件信息"
 #: lclstrconsts.rsfilter
 msgctxt "lclstrconsts.rsfilter"
 msgid "(filter)"
-msgstr ""
+msgstr "(过滤器)"
 
 #: lclstrconsts.rsfind
 msgid "Find"
@@ -691,7 +684,7 @@ msgstr ""
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
-msgstr "%s: 已经注册"
+msgstr "%s:已经注册"
 
 #: lclstrconsts.rshelpcontextnotfound
 #, fuzzy
@@ -740,10 +733,8 @@ msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy,badformat
-#| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
-msgstr "关键字 %s%s%s 未找到帮助."
+msgstr "帮助关键字\"%s\"未找到."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
 #, fuzzy,badformat
@@ -811,10 +802,8 @@ msgid "Hot Light"
 msgstr ""
 
 #: lclstrconsts.rsicns
-#, fuzzy
-#| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
-msgstr "OSX 图标资源"
+msgstr "Mac OS X 图标"
 
 #: lclstrconsts.rsicon
 msgid "Icon"
@@ -962,7 +951,7 @@ msgstr "确定(&O)"
 
 #: lclstrconsts.rsmbopen
 msgid "&Open"
-msgstr ""
+msgstr "打开(&O)"
 
 #: lclstrconsts.rsmbretry
 msgid "&Retry"
@@ -970,7 +959,7 @@ msgstr "重试(&R)"
 
 #: lclstrconsts.rsmbsave
 msgid "&Save"
-msgstr ""
+msgstr "保存(&S)"
 
 #: lclstrconsts.rsmbunlock
 msgid "&Unlock"
@@ -1279,7 +1268,7 @@ msgstr ""
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
-msgstr ""
+msgstr "标记图像文件格式"
 
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
@@ -1310,7 +1299,7 @@ msgstr "未知图形文件后缀"
 
 #: lclstrconsts.rsunknownpictureformat
 msgid "Unknown picture format"
-msgstr ""
+msgstr "未知的图像格式"
 
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
@@ -1430,7 +1419,7 @@ msgstr "子菜单不在菜单中"
 
 #: lclstrconsts.smkcalt
 msgid "Alt+"
-msgstr ""
+msgstr "Alt"
 
 #: lclstrconsts.smkcbksp
 msgid "BkSp"
@@ -1438,29 +1427,31 @@ msgstr ""
 
 #: lclstrconsts.smkcctrl
 msgid "Ctrl+"
-msgstr ""
+msgstr "Ctrl+"
 
 #: lclstrconsts.smkcdel
 msgid "Del"
-msgstr ""
+msgstr "Del"
 
 #: lclstrconsts.smkcdown
+#, fuzzy
 msgctxt "lclstrconsts.smkcdown"
 msgid "Down"
-msgstr ""
+msgstr "向下"
 
 #: lclstrconsts.smkcend
+#, fuzzy
 msgctxt "lclstrconsts.smkcend"
 msgid "End"
-msgstr ""
+msgstr "结束"
 
 #: lclstrconsts.smkcenter
 msgid "Enter"
-msgstr ""
+msgstr "Enter"
 
 #: lclstrconsts.smkcesc
 msgid "Esc"
-msgstr ""
+msgstr "Esc"
 
 #: lclstrconsts.smkchome
 msgctxt "lclstrconsts.smkchome"
@@ -1495,16 +1486,16 @@ msgstr "右"
 
 #: lclstrconsts.smkcshift
 msgid "Shift+"
-msgstr ""
+msgstr "Shift+"
 
 #: lclstrconsts.smkcspace
 msgid "Space"
-msgstr ""
+msgstr "Space"
 
 #: lclstrconsts.smkctab
 msgctxt "lclstrconsts.smkctab"
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: lclstrconsts.smkcup
 msgctxt "lclstrconsts.smkcup"
@@ -1559,7 +1550,7 @@ msgstr "错误的标识符类型：期望 %s 但是找到了 %s"
 
 #: lclstrconsts.sshellctrlsbytes
 msgid "%s bytes"
-msgstr ""
+msgstr "%s字节"
 
 #: lclstrconsts.sshellctrlsinvalidpath
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
@@ -1585,27 +1576,29 @@ msgstr ""
 
 #: lclstrconsts.sshellctrlskb
 msgid "%s kB"
-msgstr ""
+msgstr "%s kB"
 
 #: lclstrconsts.sshellctrlsmb
 msgid "%s MB"
-msgstr ""
+msgstr "%s MB"
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"
-msgstr ""
+msgstr "名称"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
 msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\"\n"
 msgstr ""
+"所选择项目在硬盘中不存在:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlssize
 msgid "Size"
-msgstr ""
+msgstr "大小:"
 
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
-msgstr ""
+msgstr "类型"
 

@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9.16\n"
+"Project-Id-Version: X\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-07-27 11:28+0800\n"
-"Last-Translator: 巫山霏云 <freefcw@gmail.com>\n"
-"Language-Team: freefcw <freefcw@gmail.com>\n"
+"PO-Revision-Date: 2017-11-29 10:41+0800\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: chinese\n"
-"X-Poedit-Country: china\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrassembler
 msgid "Assembler"
-msgstr ""
+msgstr "汇编"
 
 #: syneditstrconst.syns_attrattributename
 msgid "Attribute Name"
@@ -78,7 +78,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"
-msgstr ""
+msgstr "注释"
 
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
@@ -86,7 +86,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrdatatype
 msgid "Data type"
-msgstr ""
+msgstr "Data类型"
 
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
@@ -234,7 +234,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
-msgstr ""
+msgstr "信息"
 
 #: syneditstrconst.syns_attrmiscellaneous
 msgid "Miscellaneous"
@@ -258,7 +258,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrnull
 msgid "Null"
-msgstr ""
+msgstr "Null"
 
 #: syneditstrconst.syns_attrnumber
 msgid "Number"
@@ -402,7 +402,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrtext
 msgid "Text"
-msgstr ""
+msgstr "文本"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
@@ -548,11 +548,11 @@ msgstr ""
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
-msgstr ""
+msgstr "选择"
 
 #: syneditstrconst.syns_emcstartselectlines
 msgid "Selection (lines)"
-msgstr ""
+msgstr "选择 (行)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
@@ -564,7 +564,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
-msgstr ""
+msgstr "IDE命令"
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
 msgid "Wheel scroll down (Horizontal)"
@@ -736,7 +736,7 @@ msgstr "PHP 文件 (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst.syns_filterpo
 msgid "Po Files (*.po)|*.po"
-msgstr ""
+msgstr "Po文件 (*.po)|*.po"
 
 #: syneditstrconst.syns_filterprogress
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
@@ -796,7 +796,7 @@ msgstr "XML 文档 (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.d
 
 #: syneditstrconst.syns_previewscrollinfofmt
 msgid "Page: %d"
-msgstr "页 %d"
+msgstr "页: %d"
 
 #: syneditstrconst.syns_scrollinfofmt
 msgid "%d - %d"
@@ -812,5 +812,5 @@ msgstr "<none>"
 
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
-msgstr ""
+msgstr "无标题"
 
