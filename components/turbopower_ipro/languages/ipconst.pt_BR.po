@@ -6,8 +6,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula\n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
 "Language-Team: \n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: ipconst.cacheadding
 msgid "Caching item (%s = %s)"
@@ -18,9 +20,8 @@ msgid "Checking Freshness (%s)"
 msgstr "Verificando Novidade (%s)"
 
 #: ipconst.cachedirnotexist
-#, fuzzy,badformat
 msgid "Cache directory %s does not exist."
-msgstr "Diretório \"Cache\" não existe."
+msgstr "Diretório \"Cache\" %s não existe."
 
 #: ipconst.cacheretrieving
 msgid "Loading from Cache (%s = %s)"
@@ -221,8 +222,6 @@ msgid "Connect: Loc: %s Rem: %s"
 msgstr "Conectar: Loc: %s Rem: %s"
 
 #: ipconst.seventdisconnect
-#, fuzzy
-#| msgid "Close:   Loc: %s Rem: %s"
 msgid "Close: Loc: %s Rem: %s"
 msgstr "Fechar: Loc: %s Rem: %s"
 
@@ -1545,8 +1544,6 @@ msgid "Logging on with User"
 msgstr "Logando com usuário"
 
 #: ipconst.spterror
-#, fuzzy
-#| msgid "An error occured with the last task."
 msgid "An error occurred with the last task."
 msgstr "Um erro ocorreu com a última tarefa."
 
@@ -2113,16 +2110,12 @@ msgid "Revoked Certificate."
 msgstr "Certificado revogado."
 
 #: ipconst.ssslservernohandshake
-#, fuzzy
-#| msgid "Server cid not return a handshake message."
 msgid "Server did not return a handshake message."
-msgstr "\"CID\" servidor não retornou um mensagem \"handshake\"."
+msgstr "Servidor não retornou uma mensagem \"handshake\"."
 
 #: ipconst.ssslservernoserverhello
-#, fuzzy
-#| msgid "Server cid not return a server hello message."
 msgid "Server did not return a server hello message."
-msgstr "\"CID\" servidor não retornou um mensagem \"hello\"."
+msgstr "Servidor não retornou uma mensagem \"hello\"."
 
 #: ipconst.ssslsessidtolong
 msgid "Session ID is longer than 32 bytes."
@@ -2219,8 +2212,6 @@ msgid "Verifying"
 msgstr "Verificando"
 
 #: ipconst.ssterror
-#, fuzzy
-#| msgid "An error has occured during this task."
 msgid "An error has occurred during this task."
 msgstr "Um erro ocorreu durante esta tarefa."
 
@@ -2415,8 +2406,6 @@ msgid "Directory not empty"
 msgstr "Diretório não vazio"
 
 #: ipconst.swsaenotsock
-#, fuzzy
-#| msgid "Socket operation on nonsocket"
 msgid "Socket operation on non socket"
 msgstr "Operação soquete em não-soquete"
 
@@ -2509,10 +2498,8 @@ msgid "Network subsystem is unavailable"
 msgstr "Susbsistema rede indisponível"
 
 #: ipconst.swsatry_again
-#, fuzzy
-#| msgid "Nonauthoritative host not found"
 msgid "Non-authoritative host not found"
-msgstr "Anfitrião não-autoritário não encontrado"
+msgstr "Servidor não-autorizado não encontrado"
 
 #: ipconst.swsatype_not_found
 msgid "Type not found"
@@ -2536,10 +2523,8 @@ msgid "Error due to lack of resources"
 msgstr "Erro em virtude da falta de recursos"
 
 #: ipconst.swsa_qos_bad_object
-#, fuzzy
-#| msgid "Problem filterspec or providerspecific buffer"
 msgid "Problem filterspec or provider specific buffer"
-msgstr "Problema \"buffer\" específico filtro ou provedor"
+msgstr "Especificação de filtro problemática ou \"buffer\" específico do provedor"
 
 #: ipconst.swsa_qos_bad_style
 msgid "Unknown or conflicting style"

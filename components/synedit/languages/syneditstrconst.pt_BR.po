@@ -6,9 +6,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula\n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.13\n"
+"Language: pt_BR\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
@@ -56,19 +57,19 @@ msgstr "Caractere"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
-msgstr "\"Diff\" Marcador Pedaço"
+msgstr "Marcador fragmento \"Diff\""
 
 #: syneditstrconst.syns_attrchunkmixed
 msgid "Diff Chunk Line Counts"
-msgstr "\"Diff\" Contagem Linhas Pedaço"
+msgstr "Contagem linhas fragmento \"Diff\" "
 
 #: syneditstrconst.syns_attrchunknew
 msgid "Diff Chunk New Line Count"
-msgstr "\"Diff\" Nova contagem linha Pedaço"
+msgstr "Nova contagem linha fragmento \"Diff\" "
 
 #: syneditstrconst.syns_attrchunkorig
 msgid "Diff Chunk Original Line Count"
-msgstr "\"Diff\" Contagem original linha Pedaço"
+msgstr "Contagem original linhas fragmento \"Diff\""
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -200,19 +201,19 @@ msgstr "Rótulo"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
-msgstr "\"Diff\" Linha Adicionada"
+msgstr "Linha Adicionada \"Diff\""
 
 #: syneditstrconst.syns_attrlinechanged
 msgid "Diff Changed Line"
-msgstr "\"Diff\" Linha Modificada"
+msgstr "Linha Modificada \"Diff\""
 
 #: syneditstrconst.syns_attrlinecontext
 msgid "Diff Context Line"
-msgstr "\"Diff\" Linha Contexto"
+msgstr "Linha Contexto \"Diff\""
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
-msgstr "\"Diff\" Linha Removida"
+msgstr "Linha Removida \"Diff\""
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
@@ -228,7 +229,7 @@ msgstr "Modo Aritmético"
 
 #: syneditstrconst.syns_attrmeasurementunitvalue
 msgid "Measurement unit"
-msgstr ""
+msgstr "Unidade de medida"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
@@ -248,7 +249,7 @@ msgstr "Valor Atributo \"Namespace\""
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
-msgstr "\"Diff\" Novo Arquivo"
+msgstr "Novo Arquivo \"Diff\""
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
@@ -272,7 +273,7 @@ msgstr "Operador"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
-msgstr "\"Diff\" Arquivo Original"
+msgstr "Arquivo Original \"Diff\""
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
@@ -344,7 +345,7 @@ msgstr "Seção"
 
 #: syneditstrconst.syns_attrselectorvalue
 msgid "Selector"
-msgstr ""
+msgstr "Seletor"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
@@ -484,11 +485,11 @@ msgstr "Sem Ação"
 
 #: syneditstrconst.syns_emcoverviewguttergotomark
 msgid "Jump to Mark (Overview Gutter)"
-msgstr ""
+msgstr "Saltar para Marca (Medianiz Visão Geral)"
 
 #: syneditstrconst.syns_emcoverviewgutterscrollto
 msgid "Scroll (Overview Gutter)"
-msgstr ""
+msgstr "Rolagem (Medianiz Visão Geral)"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
@@ -496,11 +497,11 @@ msgstr "Colar Seleção Rapidamente"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
-msgstr ""
+msgstr "Configurar cursores texto no EOL das linhas selecionadas"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr ""
+msgstr "Alternar cursor texto extra"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
@@ -532,7 +533,7 @@ msgstr "Arrastar Seleção"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
 msgid "\"Caret on up if not dragged\",yes,no"
-msgstr ""
+msgstr "\"Cursor texto acima se não arrastado\",sim,não"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
@@ -540,7 +541,7 @@ msgstr "Seleção Linha"
 
 #: syneditstrconst.syns_emcstartlineselectionsnoneempty
 msgid "Line Selection (select immediate)"
-msgstr ""
+msgstr "Seleção Linha (selecionar imediato)"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"

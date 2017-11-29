@@ -1,0 +1,53 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
+
+#: emsstrings.emsactive
+msgid "Scripting active."
+msgstr "Scripting ativo."
+
+#: emsstrings.emsbtntestagain
+msgid "Test again"
+msgstr "Testar novamente"
+
+#: emsstrings.emseditormacrotitle
+msgid "Editor Macro Script"
+msgstr "Editor Macro Script"
+
+#: emsstrings.emsnotactive
+msgid "Scripting not active. Selftest failed."
+msgstr "Scripting não ativo.  Autoteste falhou."
+
+#: emsstrings.emsnotsupported
+msgid "Scripting not active. Not supported on this platform or CPU."
+msgstr "Scripting não ativo. Não é suportado nesta plataforma ou CPU."
+
+#: emsstrings.emspending
+msgid "Scripting not active. Selftest will run next time the IDE is started."
+msgstr "Scripting não ativo. Autoteste será executado na próxima vez que a IDE iniciar."
+
+#: emsstrings.emsselftesterrcaption
+msgid "Error in EditorMacroScript"
+msgstr "Error em EditorMacroScript"
+
+#: emsstrings.emsselftestfailed
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
+msgstr "O pacote EditorMacroScript (pascalscript macros) detectou um problema e foi desativado.%0:sO pacote falhou em seu autoteste com a mensagem:%0:s\"%1:s\""
+
+#: emsstrings.emsselftestfailedlasttime
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
+msgstr "O pacote EditorMacroScript (pascalscript macros) detectou um problema e foi desativado.%0:sO autoteste do pacote não foi completado durante a última vez que a IDE foi iniciada."
+
+#: emsstrings.emsstatustitle
+msgid "Status"
+msgstr "Status"
+

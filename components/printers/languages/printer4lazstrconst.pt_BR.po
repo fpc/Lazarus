@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
+
+#: printer4lazstrconst.p4lrsadvanced
+msgid "Advanced"
+msgstr "Avançado"
+
+#: printer4lazstrconst.p4lrsbanners
+msgid "Banners"
+msgstr "Bandas"
+
+#: printer4lazstrconst.p4lrscancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: printer4lazstrconst.p4lrsend
+msgid "End"
+msgstr "Final"
+
+#: printer4lazstrconst.p4lrsgeneral
+msgid "General"
+msgstr "Geral"
+
+#: printer4lazstrconst.p4lrslandscape
+msgid "Landscape"
+msgstr "Paisagem"
+
+#: printer4lazstrconst.p4lrsmargins
+msgid "Margins"
+msgstr "Margens"
+
+#: printer4lazstrconst.p4lrsok
+msgid "Ok"
+msgstr "Ok"
+
+#: printer4lazstrconst.p4lrsorientation
+msgid "Orientation"
+msgstr "Orientação"
+
+#: printer4lazstrconst.p4lrspagespersheet
+msgid "Pages per sheet"
+msgstr "Páginas por folha"
+
+#: printer4lazstrconst.p4lrspapersize
+msgid "Paper size"
+msgstr "Tamanho papel"
+
+#: printer4lazstrconst.p4lrspapersource
+msgid "Paper source"
+msgstr "Origem papel"
+
+#: printer4lazstrconst.p4lrspapertype
+msgid "Paper type"
+msgstr "Tipo papel"
+
+#: printer4lazstrconst.p4lrsportrait
+msgid "Portrait"
+msgstr "Retrato"
+
+#: printer4lazstrconst.p4lrsprinterproperties
+msgid "Printer properties"
+msgstr "Propriedades da impressora"
+
+#: printer4lazstrconst.p4lrsresolution
+msgid "Resolution"
+msgstr "Resolução"
+
+#: printer4lazstrconst.p4lrsreverselandscape
+msgid "Reverse landscape"
+msgstr "Paisagem inversa"
+
+#: printer4lazstrconst.p4lrsreverseportrait
+msgid "Reverse portrait"
+msgstr "Retrato inverso"
+
+#: printer4lazstrconst.p4lrsstart
+msgid "Start"
+msgstr "Iniciar"
+

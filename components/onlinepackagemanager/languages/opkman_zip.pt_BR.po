@@ -1,0 +1,73 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
+
+#: opkman_zip.serrbufsizechange
+msgid "Changing buffer size is not allowed while (un)zipping."
+msgstr "Alterar o tamanho do buffer não é permitido ao (des)compactar."
+
+#: opkman_zip.serrcorruptzip
+msgid "Corrupt ZIP file %s."
+msgstr "Arquivo compactado corrompido %s."
+
+#: opkman_zip.serrencryptionnotsupported
+msgid "Cannot unzip item \"%s\": encryption is not supported."
+msgstr "Impossível descompactar item \"%s\": encriptação não suportada."
+
+#: opkman_zip.serrfilechange
+msgid "Changing output file name is not allowed while (un)zipping."
+msgstr "Alterar o nome de arquivo de saída não é permitido ao (des)compactar."
+
+#: opkman_zip.serrfiledoesnotexist
+msgid "File \"%s\" does not exist."
+msgstr "Arquivo \"%s\" não existe."
+
+#: opkman_zip.serrinvalidcrc
+msgid "Invalid CRC checksum while unzipping %s."
+msgstr "Checksum CRC inválido ao descompactar %s."
+
+#: opkman_zip.serrmaxentries
+msgid "Encountered %d file entries; maximum supported is %d."
+msgstr "Encontrado %d entradas de arquivos; máximo suportado é %d."
+
+#: opkman_zip.serrmissingarchivename
+msgid "Missing archive filename in streamed entry %d."
+msgstr "Nome de arquivo faltando na entrada transmitida %d."
+
+#: opkman_zip.serrmissingfilename
+msgid "Missing filename in entry %d."
+msgstr "Nome de arquivo faltando na entrada %d."
+
+#: opkman_zip.serrnofilename
+msgid "No archive filename for examine operation."
+msgstr "Nenhum nome de arquivo para examinar a operação"
+
+#: opkman_zip.serrnostream
+msgid "No stream is opened."
+msgstr "Nenhum stream está aberto."
+
+#: opkman_zip.serrpatchsetnotsupported
+msgid "Cannot unzip item \"%s\": patch sets are not supported."
+msgstr "Impossível descompactar item \"%s\": \"patch sets\" não suportados."
+
+#: opkman_zip.serrpostoolarge
+msgid "Position/offset %d is larger than maximum supported %d."
+msgstr "Posição/deslocamento %d é maior que o máximo suportado %d."
+
+#: opkman_zip.serrunsupportedcompressionformat
+msgid "Unsupported compression format %d."
+msgstr "Formato de compressão não suportado %d."
+
+#: opkman_zip.serrunsupportedmultiplediskscd
+msgid "A central directory split over multiple disks is unsupported."
+msgstr "Um diretório central dividido em múltiplos discos não é suportado."
+

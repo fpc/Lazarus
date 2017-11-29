@@ -6,8 +6,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
 "Language-Team: \n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: messagecomposer.rscancel
 msgid "Cancel"
@@ -104,10 +106,8 @@ msgid "Text asking the user for input"
 msgstr "Texto solicitando digitação do usuário"
 
 #: messagecomposer.ssourcewrapper
-#, fuzzy
-#| msgid "SOURCE WRAPPER"
 msgid "Source wrapper"
-msgstr "INVÓLUCRO FONTE"
+msgstr "Invólucro do fonte"
 
 #: messagecomposer.svaluevar
 msgid "Value (var)"
