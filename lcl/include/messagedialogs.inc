@@ -384,7 +384,7 @@ var
   FLabels: array of TPanel;
   FButtons: TButtonPanel;
   FForm: TDummyForInput;
-  Len, i: integer;
+  Len, NSpacing, NEditWidth, i: integer;
 begin
   Result:= false;
   if Length(APrompts)<1 then
@@ -398,12 +398,17 @@ begin
   SetLength(FEdits, Len);
 
   FForm:= TDummyForInput.CreateNew(nil);
-  FForm.Width:= 600;
-  FForm.Height:= 400;
+  FForm.Width:= FForm.Scale96ToForm(600);
+  FForm.Height:= FForm.Scale96ToForm(400);
   FForm.BorderStyle:= bsDialog;
   FForm.Position:= poScreenCenter;
   FForm.Caption:= ACaption;
   FForm.FOnCloseEvent:= ACloseEvent;
+
+  NSpacing:= FForm.Scale96ToForm(cInputQuerySpacingSize);
+  NEditWidth:= Max(
+    FForm.Scale96ToForm(cInputQueryEditSizePixels),
+    _InputQueryActiveMonitor.Width * cInputQueryEditSizePercents div 100);
 
   FButtons:= TButtonPanel.Create(FForm);
   FButtons.Parent:= FForm;
@@ -420,7 +425,7 @@ begin
     FPanels[i].BevelInner:= bvNone;
     FPanels[i].BevelOuter:= bvNone;
     FPanels[i].AutoSize:= true;
-    FPanels[i].BorderSpacing.Around:= cInputQuerySpacingSize;
+    FPanels[i].BorderSpacing.Around:= NSpacing;
 
     //fix order of panels
     if i>0 then
@@ -429,9 +434,7 @@ begin
     FEdits[i]:= TEdit.Create(FForm);
     FEdits[i].Parent:= FPanels[i];
     FEdits[i].Align:= alRight;
-    FEdits[i].Width:= Max(
-      cInputQueryEditSizePixels,
-      _InputQueryActiveMonitor.Width * cInputQueryEditSizePercents div 100);
+    FEdits[i].Width:= NEditWidth;
     FEdits[i].Text:= AValues[i];
 
     FLabels[i]:= TPanel.Create(FForm);
@@ -441,7 +444,7 @@ begin
     FLabels[i].BevelOuter:= bvNone;
     if i<Length(APrompts) then
       FLabels[i].Caption:= APrompts[i];
-    FLabels[i].BorderSpacing.Right:= cInputQuerySpacingSize;
+    FLabels[i].BorderSpacing.Right:= NSpacing;
     FLabels[i].Width:= FLabels[i].Canvas.TextWidth(FLabels[i].Caption);
 
     FEdits[i].Left:= FForm.Width; // place edits to right
