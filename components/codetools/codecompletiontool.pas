@@ -7091,7 +7091,7 @@ var
     Parts[ppType]:=CurPos;
     Result:=GetAtom;
     ReadTypeReference(false);
-    p:=LastAtoms.GetPriorAtom.EndPos;
+    p:=LastAtoms.GetValueAt(0).EndPos;
     if p>Parts[ppType].EndPos then begin
       Parts[ppType].EndPos:=p;
       Result:=ExtractCode(Parts[ppType].StartPos,Parts[ppType].EndPos,[]);
