@@ -1,0 +1,31 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: instantfpcregisterlaz.rsinstantfpcpr
+msgid "InstantFPC program"
+msgstr "InstantFPC程序"
+
+#: instantfpcregisterlaz.rsinstantfpcsc
+msgid "InstantFPC script"
+msgstr "InstantFPC script"
+
+#: instantfpcregisterlaz.rssinglefilefr
+msgid "%s%sSingle file Free Pascal program executed by InstantFPC"
+msgstr "%s%s单行Free Pascal program由InstantFPC执行"
+
+#: instantfpcregisterlaz.rssinglefilepr
+msgid "%s%sSingle file program using InstantFPC to compile and execute"
+msgstr "%s%s单行program使用InstantFPC来编译和执行"
+

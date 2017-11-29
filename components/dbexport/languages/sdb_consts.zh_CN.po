@@ -1,0 +1,86 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: sdb_consts.scancelrecordsexported
+msgid "Exported %d before user canceled."
+msgstr "导出%d在用户取消以前"
+
+#: sdb_consts.sdb_availableexportformats
+msgid "Available export formats:"
+msgstr "可用的导出格式:"
+
+#: sdb_consts.sdb_cancel
+msgid "&Cancel"
+msgstr "取消(&C)"
+
+#: sdb_consts.sdb_configuredataexport
+msgid "Configure data export"
+msgstr "配置数据导出"
+
+#: sdb_consts.sdb_exportprogress
+msgid "Export progress"
+msgstr "导出进度"
+
+#: sdb_consts.sdb_fields
+msgid "Fields"
+msgstr "字段"
+
+#: sdb_consts.sdb_filename
+msgid "Filename:"
+msgstr "文件名:"
+
+#: sdb_consts.sdb_formatting
+msgid "Formatting"
+msgstr "格式化..."
+
+#: sdb_consts.sdb_moveselectedfielddown
+msgid "Move selected field down"
+msgstr "下移所选择的字段"
+
+#: sdb_consts.sdb_moveselectedfieldup
+msgid "Move selected field up"
+msgstr "上移所选择的字段"
+
+#: sdb_consts.sdb_propertiesforselectedfield
+msgid "Properties for selected field:"
+msgstr "属性对于所选择字段"
+
+#: sdb_consts.sdb_selectdataexportformat
+msgid "Select data export Format"
+msgstr "选择数据导出格式"
+
+#: sdb_consts.sdb_selectfieldstoexport
+msgid "Select fi&elds to export"
+msgstr "选择字段导出(&e)"
+
+#: sdb_consts.serrnodatasetassigned
+msgid "DataExporter has no Dataset assigned."
+msgstr "DataExporter没有分配的数据集?)."
+
+#: sdb_consts.serropeningdataset
+msgid "Could not open dataset for exporting: %s"
+msgstr "不能打开dataset(数据集)用于导出: %s"
+
+#: sdb_consts.sexecute
+msgid "Execute ..."
+msgstr "执行..."
+
+#: sdb_consts.snrecordsexported
+msgid "Successfully exported %d records."
+msgstr "成功导出%d记录."
+
+#: sdb_consts.sprogress
+msgid "Exporting %d records"
+msgstr "导出%d记录"
+

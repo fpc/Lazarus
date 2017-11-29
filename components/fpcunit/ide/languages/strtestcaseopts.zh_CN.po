@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: strtestcaseopts.sbtncreate
+msgid "Create unit"
+msgstr "创建unit"
+
+#: strtestcaseopts.schksetup
+msgid "Create Setup Method"
+msgstr "创建Setup Method"
+
+#: strtestcaseopts.schktear
+msgid "Create TearDown method"
+msgstr "创建卸载方法"
+
+#: strtestcaseopts.sfrmtest
+msgid "TestCase Options"
+msgstr "TestCase选项"
+
+#: strtestcaseopts.sgrpfixture
+msgid "Fixture"
+msgstr "Fixture(定位？)"
+
+#: strtestcaseopts.sgrpnames
+msgid "Names"
+msgstr "名称"
+
+#: strtestcaseopts.slbldefault
+msgid "Default Test Name"
+msgstr "默认测试名称"
+

@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: tlazconverterform.button1.caption
+msgid "Path"
+msgstr "路径"
+
+#: tlazconverterform.button2.caption
+msgid "Search"
+msgstr "查找"
+
+#: tlazconverterform.button3.caption
+msgid "Convert"
+msgstr "转换"
+
+#: tlazconverterform.caption
+msgctxt "TLAZCONVERTERFORM.CAPTION"
+msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
+msgstr "Codepage LazConverter用于PAS, LFM, LRS, LRT & INC文件v0.0.6"
+
+#: tlazconverterform.label1.caption
+msgid "Path to your project:"
+msgstr "路径到您的项目:"
+
+#: tlazconverterform.label2.caption
+msgid "Convert From:"
+msgstr "转换从:"
+
+#: tlazconverterform.label3.caption
+msgid "Convert To:"
+msgstr "转换到:"
+
+#: tlazconverterform.label6.caption
+msgid "Ready..."
+msgstr "读取..."
+
+#: tlazconverterform.menuitem1.caption
+msgid "Remove from conversion"
+msgstr "从转换中移除"
+
+#: tlazconverterform.selectdirectorydialog1.title
+msgid "Select Directory"
+msgstr "选择目录"
+

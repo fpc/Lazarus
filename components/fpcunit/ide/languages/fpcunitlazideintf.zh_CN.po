@@ -1,0 +1,42 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: fpcunitlazideintf.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "FPCUnit控制台测试应用程序"
+
+#: fpcunitlazideintf.sfpcunconsoletestdesc
+msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgstr "FPCUnit控制台测试应用程序%s一个应用程序在控制台模式中来运行FPCUnit test cases.%s应用程序代码是Lazarus自动维护的."
+
+#: fpcunitlazideintf.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "FPCUnit测试应用程序"
+
+#: fpcunitlazideintf.sfpcuntestappdesc
+msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgstr "FPCUnit测试应用程序%s一个应用程序来运行 FPCUnit test cases.%s应用程序代码是Lazarus自动维护的."
+
+#: fpcunitlazideintf.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "FPCUnit Test Case"
+
+#: fpcunitlazideintf.sfpcuntestcasedesc
+msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgstr "FPCUnit Test Case%s一个unit含有一个FPCUnit Test Case."
+
+#: fpcunitlazideintf.swriteyourowntest
+msgid "Write your own test"
+msgstr "编写你自己的测试"
+

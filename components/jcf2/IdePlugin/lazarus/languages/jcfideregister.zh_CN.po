@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: jcfideregister.format_about_menu
+msgid "&About"
+msgstr "关于(&A)"
+
+#: jcfideregister.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "JEDI代码格式"
+
+#: jcfideregister.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "在当前编辑器窗口格式代码"
+
+#: jcfideregister.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "当前编辑器窗口(&C)"
+
+#: jcfideregister.format_menu
+msgid "JEDI Code &Format"
+msgstr "JEDI代码格式(&F)"
+
+#: jcfideregister.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "所有打开窗口(&O)"
+
+#: jcfideregister.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "工作中的所有文件(&A)"
+
+#: jcfideregister.format_settings_menu
+msgid "&Format Settings"
+msgstr "格式设置(&F)"
+

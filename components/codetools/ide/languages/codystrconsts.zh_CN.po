@@ -1,0 +1,854 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: codystrconsts.crsaddassignmethod
+msgid "Add Assign Method"
+msgstr ""
+
+#: codystrconsts.crsaddassignmethod2
+msgid "Add Assign Method ..."
+msgstr ""
+
+#: codystrconsts.crsaddawithblock
+msgid "Add a \"With\" Block"
+msgstr ""
+
+#: codystrconsts.crsaddunittoimplementationusessection
+msgctxt "codystrconsts.crsaddunittoimplementationusessection"
+msgid "Add unit to implementation uses section"
+msgstr ""
+
+#: codystrconsts.crsaddwithblock
+msgid "Add \"With\" Block"
+msgstr ""
+
+#: codystrconsts.crsalreadydefined
+msgid "Already defined"
+msgstr ""
+
+#: codystrconsts.crsalreadydefinedat
+msgid "Already defined at %s"
+msgstr ""
+
+#: codystrconsts.crsandmoreidentifiers
+msgid "... and %s more identifiers"
+msgstr ""
+
+#: codystrconsts.crsany
+msgid "Any"
+msgstr ""
+
+#: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
+msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
+msgstr ""
+
+#: codystrconsts.crsbtncancel
+msgid "Cancel"
+msgstr "取消"
+
+#: codystrconsts.crsbtnok
+msgid "&OK"
+msgstr "确定(&O)"
+
+#: codystrconsts.crsbyfpccfg
+msgid "by fpc.cfg"
+msgstr "通过fpc.cfg"
+
+#: codystrconsts.crscamaddassignmethodtoclass
+msgid "Add Assign method to class %s"
+msgstr ""
+
+#: codystrconsts.crscamcallinherited
+msgid "Call inherited"
+msgstr ""
+
+#: codystrconsts.crscamcallinheritedonlyifwrongclass
+msgid "Call inherited only if wrong class"
+msgstr ""
+
+#: codystrconsts.crscamcursorisnotinapascalclassdeclaration
+msgid "cursor is not in a pascal class declaration"
+msgstr ""
+
+#: codystrconsts.crscamexistsalready
+msgid "exists already"
+msgstr "已经存在"
+
+#: codystrconsts.crscaminherited
+msgid "Inherited:"
+msgstr ""
+
+#: codystrconsts.crscaminvalididentifier
+msgid "invalid identifier"
+msgstr ""
+
+#: codystrconsts.crscammethod
+msgid "Method:"
+msgstr ""
+
+#: codystrconsts.crscammethodname
+msgid "Method name:"
+msgstr ""
+
+#: codystrconsts.crscamnewmethod
+msgid "New method:"
+msgstr ""
+
+#: codystrconsts.crscamoverride
+msgid "Override"
+msgstr ""
+
+#: codystrconsts.crscamparametername
+msgid "Parameter name:"
+msgstr ""
+
+#: codystrconsts.crscamparametertype
+msgid "Parameter type:"
+msgstr ""
+
+#: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
+msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
+msgstr ""
+
+#: codystrconsts.crscamprivate
+msgid "private"
+msgstr ""
+
+#: codystrconsts.crscamproperty
+msgid "%s property"
+msgstr ""
+
+#: codystrconsts.crscamprotected
+msgid "protected"
+msgstr ""
+
+#: codystrconsts.crscampublic
+msgid "public"
+msgstr ""
+
+#: codystrconsts.crscampublished
+msgid "published"
+msgstr ""
+
+#: codystrconsts.crscamselectmemberstoassign
+msgid "Select members to assign:"
+msgstr ""
+
+#: codystrconsts.crscamthereisnoinheritedmethod
+msgid "There is no inherited method."
+msgstr ""
+
+#: codystrconsts.crscamvar
+msgid "%s var"
+msgstr ""
+
+#: codystrconsts.crscamvisibility
+msgid "?visibility?"
+msgstr ""
+
+#: codystrconsts.crscamwrittenbyproperty
+msgid "%s, written by property %s"
+msgstr ""
+
+#: codystrconsts.crscaretoutsideofcode
+msgid "Caret outside of code"
+msgstr ""
+
+#: codystrconsts.crscheetaheditor
+msgid "Cheetah Editor"
+msgstr ""
+
+#: codystrconsts.crsclose
+msgid "&Close"
+msgstr "关闭(&C)"
+
+#: codystrconsts.crscloseotherpackageandopennew
+msgid "Close other package and open new"
+msgstr ""
+
+#: codystrconsts.crscodebuffers
+msgid "CodeBuffers"
+msgstr ""
+
+#: codystrconsts.crscodenodeinformation
+msgid "Code Node Information"
+msgstr ""
+
+#: codystrconsts.crscodyfindoverloads
+msgid "Cody - Find Overloads"
+msgstr ""
+
+#: codystrconsts.crscodyidentifierdictionary
+msgid "Identifier Dictionary"
+msgstr ""
+
+#: codystrconsts.crscogeneral
+msgctxt "codystrconsts.crscogeneral"
+msgid "General"
+msgstr ""
+
+#: codystrconsts.crscompatibility
+msgid "Compatibility"
+msgstr ""
+
+#: codystrconsts.crscompatible
+msgid "compatible"
+msgstr ""
+
+#: codystrconsts.crsconfigurenewidewindow
+msgid "Configure new IDE window"
+msgstr ""
+
+#: codystrconsts.crscontains
+msgid "Contains"
+msgstr ""
+
+#: codystrconsts.crscontinue
+msgid "Continue"
+msgstr ""
+
+#: codystrconsts.crscopydeclarationtoclipboard
+msgid "Copy declaration to Clipboard"
+msgstr ""
+
+#: codystrconsts.crscount
+msgid "Count"
+msgstr ""
+
+#: codystrconsts.crscousespath
+msgctxt "codystrconsts.crscousespath"
+msgid "Uses path"
+msgstr ""
+
+#: codystrconsts.crscuallfiles
+msgid "%s|All files (%s)|%s"
+msgstr "%s所有文件(%s)|%s"
+
+#: codystrconsts.crscupascalpaspppaspp
+msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
+msgstr "Pascal (*.pas;*.pp)|*.pas;*.pp"
+
+#: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
+msgid "Please place the cursor of the source editor in an implementation of an overridden method."
+msgstr ""
+
+#: codystrconsts.crscuselectfiletoinsertatcursor
+msgid "Select file to insert at cursor"
+msgstr ""
+
+#: codystrconsts.crscutdeclarationtoclipboard
+msgid "Cut declaration to Clipboard"
+msgstr ""
+
+#: codystrconsts.crscuthefileseemstobeabinaryproceed
+msgid "The file seems to be a binary. Proceed?"
+msgstr ""
+
+#: codystrconsts.crscuunabletoloadfile
+msgid "Unable to load file \"%s\"%s%s"
+msgstr "不能加载\"%s\"%s%s"
+
+#: codystrconsts.crscuwarning
+msgid "Warning"
+msgstr "警告"
+
+#: codystrconsts.crscwerror
+msgid "Error"
+msgstr "错误"
+
+#: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
+msgid "Please place the cursor of the source editor on a With variable."
+msgstr ""
+
+#: codystrconsts.crsdeclarevariable
+msgid "Declare Variable"
+msgstr "声明变量"
+
+#: codystrconsts.crsdeclarevariable2
+msgid "Declare Variable ..."
+msgstr "声明变量..."
+
+#: codystrconsts.crsdeclarevariable3
+msgid "Declare variable \"%s\""
+msgstr "声明变量\"%s\""
+
+#: codystrconsts.crsdeletepackage
+msgid "Delete package?"
+msgstr "删除package?"
+
+#: codystrconsts.crsdeleteunit
+msgid "Delete unit?"
+msgstr "删除unit?"
+
+#: codystrconsts.crsdistance
+msgid "Distance"
+msgstr ""
+
+#: codystrconsts.crsdvisakeyword
+msgid "\"%s\" is a keyword."
+msgstr "\"%s\"是一个关键字."
+
+#: codystrconsts.crserror
+msgid "Error: %s"
+msgstr "错误r: %s"
+
+#: codystrconsts.crserrorcursorisnotinaprojectunit
+msgid "Error: cursor is not in a project unit"
+msgstr ""
+
+#: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
+msgid "Error: Need source editor at procedure call or declaration"
+msgstr ""
+
+#: codystrconsts.crsexact
+msgid "exact"
+msgstr ""
+
+#: codystrconsts.crsexplodeawithblock
+msgid "Explode a \"With\" Block"
+msgstr ""
+
+#: codystrconsts.crsexpression
+msgid "Expression"
+msgstr ""
+
+#: codystrconsts.crsextendunitpath
+msgid "Extend unit path"
+msgstr ""
+
+#: codystrconsts.crsfile
+msgid "File"
+msgstr "文件"
+
+#: codystrconsts.crsfiledoesnotexistanymore
+msgid "File \"%s\" does not exist anymore."
+msgstr ""
+
+#: codystrconsts.crsfilenotfound
+msgid "File not found"
+msgstr "文件未找到"
+
+#: codystrconsts.crsfilereaderror
+msgid "File read error"
+msgstr "文件读取错误"
+
+#: codystrconsts.crsfilter
+msgid "(Filter)"
+msgstr ""
+
+#: codystrconsts.crsfilter2
+msgid "Filter"
+msgstr ""
+
+#: codystrconsts.crsfindgdbbacktraceline
+msgid "Find GDB backtrace line"
+msgstr ""
+
+#: codystrconsts.crsfindproceduremethodoverloads
+msgid "Find Procedure/Method Overloads"
+msgstr ""
+
+#: codystrconsts.crsfindsourceofgdbbacktrace
+msgid "Find source of GDB backtrace"
+msgstr ""
+
+#: codystrconsts.crsflags
+msgid "Flags"
+msgstr ""
+
+#: codystrconsts.crsfpcunitwithoutppu
+msgid "FPC unit without ppu"
+msgstr "FPC unit不带有ppu"
+
+#: codystrconsts.crsframeworks
+msgid "Frameworks"
+msgstr ""
+
+#: codystrconsts.crsgbytes
+msgid "Gbytes"
+msgstr ""
+
+#: codystrconsts.crshelp
+msgid "&Help"
+msgstr "帮助(&H)"
+
+#: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
+msgid "Hide abstract methods and methods of class interfaces"
+msgstr ""
+
+#: codystrconsts.crshideunitsofotherprojects
+msgid "Hide units of other projects"
+msgstr ""
+
+#: codystrconsts.crsideintegration
+msgid "IDE Integration"
+msgstr "IDE集成"
+
+#: codystrconsts.crsidentifiernotfound
+msgid "Identifier not found"
+msgstr ""
+
+#: codystrconsts.crsidentifiernotfoundinunit
+msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
+msgstr ""
+
+#: codystrconsts.crsidewindowdockable
+msgid "IDE window, dockable"
+msgstr ""
+
+#: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
+msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
+msgstr ""
+
+#: codystrconsts.crsifuncheckedlistalsoprocedureswithsamenameandincomp
+msgid "If unchecked list also procedures with same name and incompatible parameter lists."
+msgstr ""
+
+#: codystrconsts.crsimpossibledependency
+msgid "Impossible dependency"
+msgstr ""
+
+#: codystrconsts.crsin
+msgid "in \"%s\""
+msgstr "在\"%s\"中"
+
+#: codystrconsts.crsincompatible
+msgid "incompatible"
+msgstr ""
+
+#: codystrconsts.crsinimplementation
+msgid "In implementation"
+msgstr ""
+
+#: codystrconsts.crsininterface
+msgid "In interface"
+msgstr ""
+
+#: codystrconsts.crsinsertcallinherited
+msgid "Insert Call Inherited"
+msgstr ""
+
+#: codystrconsts.crsinsertfileatcursor
+msgid "Insert File Contents at Cursor ..."
+msgstr ""
+
+#: codystrconsts.crsinsertint64idyyyyddmmhhnnss
+msgid "Insert int64 ID YYYYDDMMhhnnss"
+msgstr ""
+
+#: codystrconsts.crsjump
+msgid "Jump"
+msgstr ""
+
+#: codystrconsts.crsjumpto
+msgid "&Jump to"
+msgstr ""
+
+#: codystrconsts.crsjumpto2
+msgid "Jump to"
+msgstr ""
+
+#: codystrconsts.crskbytes
+msgid "kbytes"
+msgstr ""
+
+#: codystrconsts.crslinkedfiles
+msgid "Linked files"
+msgstr ""
+
+#: codystrconsts.crslinks
+msgid "Links"
+msgstr ""
+
+#: codystrconsts.crsloaddictionaryafter
+msgid "Load dictionary after %s"
+msgstr ""
+
+#: codystrconsts.crslocalvariableof
+msgid "Local variable of %s"
+msgstr ""
+
+#: codystrconsts.crsmainsourcefile
+msgid "Main source file: %s"
+msgstr ""
+
+#: codystrconsts.crsmbytes
+msgid "Mbytes"
+msgstr "Mbytes"
+
+#: codystrconsts.crsmemberof
+msgid "%s member of %s %s"
+msgstr ""
+
+#: codystrconsts.crsmenuitemcaption
+msgid "Menu item caption:"
+msgstr ""
+
+#: codystrconsts.crsminutes
+msgid "%s minutes"
+msgstr ""
+
+#: codystrconsts.crsmissing
+msgid "missing ..."
+msgstr "缺少..."
+
+#: codystrconsts.crsname
+msgid "Name"
+msgstr "名称"
+
+#: codystrconsts.crsnoneselected
+msgid "none selected"
+msgstr ""
+
+#: codystrconsts.crsnooverloadsfoundinprojectunits
+msgid "no overloads found in project units"
+msgstr ""
+
+#: codystrconsts.crsnoproject
+msgid "No project"
+msgstr ""
+
+#: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
+msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
+msgstr ""
+
+#: codystrconsts.crsnounitselected
+msgid "No unit selected"
+msgstr ""
+
+#: codystrconsts.crsonclipboard
+msgid "On clipboard"
+msgstr ""
+
+#: codystrconsts.crsonlydescendantsof
+msgid "Only descendants of %s"
+msgstr ""
+
+#: codystrconsts.crsonlymethods
+msgid "Only methods"
+msgstr ""
+
+#: codystrconsts.crsonlynonmethods
+msgid "Only non methods"
+msgstr ""
+
+#: codystrconsts.crsonlyprocedureswithcompatibleparameters
+msgid "Only procedures with compatible parameters"
+msgstr ""
+
+#: codystrconsts.crsoptions
+msgid "Options"
+msgstr "选项"
+
+#: codystrconsts.crsotherobjectfiles
+msgid "Other object files"
+msgstr "其他object文件"
+
+#: codystrconsts.crsothersharedlibraries
+msgid "Other shared libraries"
+msgstr "其他共享库"
+
+#: codystrconsts.crsotherstaticlibraries
+msgid "Other static libraries"
+msgstr "其他静态库"
+
+#: codystrconsts.crspackage
+msgid "Package"
+msgstr "Package"
+
+#: codystrconsts.crspackage2
+msgid "Package: %s"
+msgstr "Package: %s"
+
+#: codystrconsts.crspackagenotfound
+msgid "Package not found"
+msgstr "未找到Package"
+
+#: codystrconsts.crspackagenotfounditshouldbein
+msgid "Package \"%s\" not found. It should be in \"%s\"."
+msgstr ""
+
+#: codystrconsts.crspackagesunitsidentifiersfile
+msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
+msgstr ""
+
+#: codystrconsts.crspackagewithsamename
+msgid "Package with same name"
+msgstr ""
+
+#: codystrconsts.crsparseerror
+msgid "Parse error"
+msgstr ""
+
+#: codystrconsts.crspastelinesofagdbbacktrace
+msgid "Paste lines of a gdb backtrace:"
+msgstr ""
+
+#: codystrconsts.crspleaseopenaprojectfirst
+msgid "Please open a project first."
+msgstr "请先打开一个工程."
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
+msgstr ""
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
+msgid "Please place the cursor of the source editor on an identifier of a declaration."
+msgstr ""
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditor
+msgid "Please select some code in the Source Editor."
+msgstr ""
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
+msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
+msgstr ""
+
+#: codystrconsts.crspleasespecifyalocation
+msgid "Please specify a location"
+msgstr ""
+
+#: codystrconsts.crspleasespecifyatype
+msgid "Please specify a type"
+msgstr ""
+
+#: codystrconsts.crsppu
+msgid "PPU: %s"
+msgstr "PPU: %s"
+
+#: codystrconsts.crsppufilesofproject
+msgid "PPU files of project \"%s\""
+msgstr ""
+
+#: codystrconsts.crsprivate
+msgid "Private"
+msgstr "Private"
+
+#: codystrconsts.crsprojecthasnomainsourcefile
+msgid "Project has no main source file."
+msgstr ""
+
+#: codystrconsts.crsprojectoutput
+msgid "Project Output"
+msgstr ""
+
+#: codystrconsts.crsprotected
+msgid "Protected"
+msgstr ""
+
+#: codystrconsts.crspublic
+msgid "Public"
+msgstr ""
+
+#: codystrconsts.crspublished
+msgid "Published"
+msgstr ""
+
+#: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
+msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
+msgstr ""
+
+#: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
+msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
+msgstr ""
+
+#: codystrconsts.crsrefresh
+msgid "Refresh"
+msgstr ""
+
+#: codystrconsts.crsrelations
+msgid "Relations:"
+msgstr ""
+
+#: codystrconsts.crsreport
+msgid "Report"
+msgstr "报告"
+
+#: codystrconsts.crssavedictionaryevery
+msgid "Save dictionary every %s"
+msgstr ""
+
+#: codystrconsts.crssavedictionarynow
+msgid "Save dictionary now"
+msgstr ""
+
+#: codystrconsts.crssavetofile
+msgid "Save to file %s"
+msgstr "保存到文件%s"
+
+#: codystrconsts.crsscanning
+msgid "Scanning ..."
+msgstr ""
+
+#: codystrconsts.crsscanningsunits
+msgid "Scanning: %s units ..."
+msgstr ""
+
+#: codystrconsts.crssearching
+msgid "searching ..."
+msgstr "搜索..."
+
+#: codystrconsts.crsseconds
+msgid "%s seconds"
+msgstr "%s秒"
+
+#: codystrconsts.crsselectexpression
+msgid "Select expression"
+msgstr ""
+
+#: codystrconsts.crsshowcodetoolsnodeinfo
+msgid "Show CodeTools Node Info ..."
+msgstr ""
+
+#: codystrconsts.crsshowcodydict
+msgid "Show Cody Dictionary for \"%s\""
+msgstr ""
+
+#: codystrconsts.crsshowonlyidentifierscontainingfiltertext
+msgid "Show only identifiers containing filter text"
+msgstr ""
+
+#: codystrconsts.crsshowonlyidentifiersstartingwithfiltertext
+msgid "Show only identifiers starting with filter text"
+msgstr ""
+
+#: codystrconsts.crsshowunitidentifierdictionary
+msgid "Show Unit / Identifier Dictionary ..."
+msgstr ""
+
+#: codystrconsts.crsshowusedppufiles
+msgid "Show Used .ppu Files ..."
+msgstr "显示使用的.ppu文件..."
+
+#: codystrconsts.crssizeofofile
+msgid "Size of .o file"
+msgstr ".o文件的大小"
+
+#: codystrconsts.crssizeofppufile
+msgid "Size of .ppu file"
+msgstr ".ppu文件的大小"
+
+#: codystrconsts.crssource
+msgid "Source: %s"
+msgstr "Source: %s"
+
+#: codystrconsts.crsstarts
+msgid "Starts"
+msgstr ""
+
+#: codystrconsts.crsthedictionaryisloadedondemandorafterthistime
+msgid "The dictionary is loaded on demand or after this time"
+msgstr ""
+
+#: codystrconsts.crsthedictionaryissavedinintervals
+msgid "The dictionary is saved in intervals"
+msgstr ""
+
+#: codystrconsts.crstheidentifierisalreadydefined
+msgid "The identifier \"%s\" is already defined."
+msgstr ""
+
+#: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
+msgstr ""
+
+#: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
+msgstr ""
+
+#: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
+msgstr ""
+
+#: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
+msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
+msgstr ""
+
+#: codystrconsts.crstotal
+msgid "Total"
+msgstr ""
+
+#: codystrconsts.crstype
+msgid "Type"
+msgstr "类型"
+
+#: codystrconsts.crsunabletodelete
+msgid "Unable to delete \"%s\""
+msgstr "不能删除\"%s\""
+
+#: codystrconsts.crsunabletoreadfile
+msgid "Unable to read file \"%s\"."
+msgstr "不能读取文件\"%s\"."
+
+#: codystrconsts.crsunabletorenameto
+msgid "unable to rename \"%s\" to \"%s\""
+msgstr "不能重命名\"%s\"到\"%s\""
+
+#: codystrconsts.crsunit
+msgid "Unit"
+msgstr "Unit"
+
+#: codystrconsts.crsunit2
+msgid "Unit: %s"
+msgstr "Unit: %s"
+
+#: codystrconsts.crsunitidentifierdictionary
+msgid "Unit / Identifier Dictionary"
+msgstr ""
+
+#: codystrconsts.crsunitnameclash
+msgid "Unit name clash"
+msgstr ""
+
+#: codystrconsts.crsunitobjectfiles
+msgid "Unit object files"
+msgstr ""
+
+#: codystrconsts.crsunits
+msgid "Units"
+msgstr "Units"
+
+#: codystrconsts.crsunitsharedlibraries
+msgid "Unit shared libraries"
+msgstr "Unit共享库"
+
+#: codystrconsts.crsunitss
+msgid "Units: %s"
+msgstr "Units: %s"
+
+#: codystrconsts.crsunitstaticlibraries
+msgid "Unit static libraries"
+msgstr "Unit静态库"
+
+#: codystrconsts.crsusedby
+msgid "Used by"
+msgstr ""
+
+#: codystrconsts.crsuseidentifier
+msgid "&Use identifier"
+msgstr ""
+
+#: codystrconsts.crsuses
+msgid "Uses"
+msgstr ""
+
+#: codystrconsts.crsvirtualunit
+msgid "Virtual Unit"
+msgstr ""
+
+#: codystrconsts.crswhere
+msgid "Where"
+msgstr ""
+

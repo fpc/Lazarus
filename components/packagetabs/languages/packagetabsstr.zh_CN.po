@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: packagetabsstr.saddtoproject
+msgid "Add To Project"
+msgstr "添加到Project"
+
+#: packagetabsstr.scloneto
+msgid "Clone To"
+msgstr "克隆到"
+
+#: packagetabsstr.scopyfilepathtoclipboard
+msgid "Copy File Path To Clipboard"
+msgstr "复制文件路径到剪贴板"
+
+#: packagetabsstr.sfindinotherwindow
+msgid "Find In Other Window"
+msgstr "在其他窗口查找"
+
+#: packagetabsstr.smoveto
+msgid "Move To"
+msgstr "移动到"
+
+#: packagetabsstr.snewwindow
+msgid "New Window"
+msgstr "新建窗口"
+
+#: packagetabsstr.sopenpackage
+msgid "Open package"
+msgstr "打开package"
+
+#: packagetabsstr.sother
+msgid "Other"
+msgstr "其他"
+

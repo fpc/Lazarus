@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9.27 beta\n"
+"Project-Id-Version: X\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-24 19:20+0800\n"
-"Last-Translator: XY.Chen <chenxinyv@gmail.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-11-29 10:36+0800\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Chinese\n"
-"X-Poedit-Country: CHINA\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: ipconst.cacheadding
 msgid "Caching item (%s = %s)"
@@ -168,7 +168,7 @@ msgstr "数据头CRC校验失败"
 
 #: ipconst.sbinhexcolonexpected
 msgid "\":\" expected"
-msgstr ""
+msgstr "\":\"被要求"
 
 #: ipconst.sbinhexlengtherr
 msgid "Invalid data length"
@@ -291,11 +291,9 @@ msgstr "字符堆栈溢出"
 
 #: ipconst.shtmldashexp
 msgid "- expected"
-msgstr ""
+msgstr "- 要求"
 
 #: ipconst.shtmldefbrowsecaption
-#, fuzzy
-#| msgid "Browse..."
 msgid "Browse ..."
 msgstr "浏览..."
 
@@ -313,7 +311,7 @@ msgstr " 编码不支持"
 
 #: ipconst.shtmlexp
 msgid " expected"
-msgstr ""
+msgstr "要求"
 
 #: ipconst.shtmlinternal
 msgid "Internal error"
@@ -975,19 +973,19 @@ msgstr ""
 
 #: ipconst.snntpcmddate
 msgid "DATE"
-msgstr ""
+msgstr "日期"
 
 #: ipconst.snntpcmdgroup
 msgid "GROUP"
-msgstr ""
+msgstr "组"
 
 #: ipconst.snntpcmdhead
 msgid "HEAD"
-msgstr ""
+msgstr "头"
 
 #: ipconst.snntpcmdhelp
 msgid "HELP"
-msgstr ""
+msgstr "帮助"
 
 #: ipconst.snntpcmdlast
 msgid "LAST"
@@ -1036,7 +1034,7 @@ msgstr ""
 
 #: ipconst.snntpcmdnext
 msgid "NEXT"
-msgstr ""
+msgstr "下一个"
 
 #: ipconst.snntpcmdpat
 msgid "PAT"
@@ -1456,7 +1454,7 @@ msgstr ""
 
 #: ipconst.spop3cmdtop
 msgid "TOP"
-msgstr ""
+msgstr "上部"
 
 #: ipconst.spop3cmduidl
 msgid "UIDL"
@@ -1464,7 +1462,7 @@ msgstr ""
 
 #: ipconst.spop3cmduser
 msgid "USER"
-msgstr ""
+msgstr "用户"
 
 #: ipconst.spop3errresp
 msgid "-ERR"
@@ -1739,7 +1737,7 @@ msgstr ""
 
 #: ipconst.ssmtpresponse02
 msgid "Success, "
-msgstr ""
+msgstr "成功, "
 
 #: ipconst.ssmtpresponse04
 msgid "Transient, "
@@ -1984,7 +1982,7 @@ msgstr ""
 
 #: ipconst.ssshelp
 msgid "Help"
-msgstr ""
+msgstr "帮助"
 
 #: ipconst.ssslbadcertificate
 msgid "Bad certificate."
@@ -2237,7 +2235,7 @@ msgstr "登陆"
 
 #: ipconst.sstnotask
 msgid "None"
-msgstr ""
+msgstr "无"
 
 #: ipconst.sstreamcreated
 msgid "Successfully created "
@@ -2547,7 +2545,7 @@ msgstr "未知或冲突的样式"
 
 #: ipconst.swsa_qos_generic_error
 msgid "General error"
-msgstr ""
+msgstr "一般性错误"
 
 #: ipconst.swsa_qos_no_receivers
 msgid "There are no receivers"

@@ -1,36 +1,36 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9.27 beta\n"
+"Project-Id-Version: X\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-04-24 19:20+0800\n"
-"Last-Translator: XY.Chen <chenxinyv@gmail.com>、巫山霏云 <freefcw@gmail.com>(2006-07-27)\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2017-11-29 10:32+0800\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Chinese\n"
-"X-Poedit-Country: CHINA\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
-msgstr ""
+msgstr "括号)未找到"
 
 #: codetoolsstrconsts.crsbracketnotfound2
 msgid "bracket ] not found"
-msgstr ""
+msgstr "括号]未找到"
 
 #: codetoolsstrconsts.crsclosingbracketnotfound
 msgid "closing bracket not found"
-msgstr ""
+msgstr "结尾的括号未找到"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
 msgid "%s, found unexpected %s at %s"
-msgstr ""
+msgstr "%s,发现异常%s在%s"
 
 #: codetoolsstrconsts.crsrecordendnotfound
 msgid "record end not found"
-msgstr ""
+msgstr "record end没有发现"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
@@ -46,23 +46,23 @@ msgstr "ancestor of untyped property is not a property"
 
 #: codetoolsstrconsts.ctsanlclproject
 msgid "an LCL project"
-msgstr "一个 LCL 工程"
+msgstr "一个 LCL project"
 
 #: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
-msgstr "不允许匿名 %s 标识符"
+msgstr "匿名%s定义不被允许"
 
 #: codetoolsstrconsts.ctsawithoutb
 msgid "%s without %s"
-msgstr "%s 没有 %s"
+msgstr "%s没有%s"
 
 #: codetoolsstrconsts.ctsbasetypeofnotfound
 msgid "base type of \"%s\" not found"
-msgstr "基本类型 \"%s\" 未找到"
+msgstr "基本类型\"%s\"未发现"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
 msgid "begin at %s without end"
-msgstr ""
+msgstr "begin在%s缺少end"
 
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
@@ -101,10 +101,8 @@ msgid "class node without parent node"
 msgstr "class node without parent node"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy,badformat
-#| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
-msgstr "未找到类 %s%s%s"
+msgstr "类\"%s\"未找到"
 
 #: codetoolsstrconsts.ctsclassnotfound2
 msgid "class not found \"%s\""
@@ -176,23 +174,23 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
-msgstr ""
+msgstr "默认fpc source操作系统 2"
 
 #: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
 msgid "Default fpc source Operating System"
-msgstr ""
+msgstr "默认fpc source操作系统"
 
 #: codetoolsstrconsts.ctsdefaultfpcsymbol
 msgid "Default fpc symbol"
-msgstr ""
+msgstr "默认fpc符号"
 
 #: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
 msgid "Default fpc target Operating System"
-msgstr ""
+msgstr "默认fpc目标操作系统"
 
 #: codetoolsstrconsts.ctsdefaultfpctargetprocessor
 msgid "Default fpc target processor"
-msgstr ""
+msgstr "默认fpc目标处理器"
 
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
@@ -279,10 +277,8 @@ msgid "expected end., but %s found"
 msgstr "本应该出现 end., 但是找到 %s "
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#, fuzzy
-#| msgid "End of source not found"
 msgid "End of source not found."
-msgstr "未找到代码结尾"
+msgstr "source中未找到End"
 
 #: codetoolsstrconsts.ctsenumerationtype
 msgid "enumeration type"
@@ -310,23 +306,23 @@ msgstr "参数列表错误"
 
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
-msgstr ""
+msgstr "\"%s\"被要求"
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
 msgid "expected a method type, but found %s"
-msgstr ""
+msgstr "要求一个method类型,但是找到%s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
-msgstr ""
+msgstr "要求(, 但是找到%s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
 msgid "expected ), but found %s"
-msgstr ""
+msgstr "要求), 但是找到%s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
 msgid "expected :=, but %s found"
-msgstr ""
+msgstr "要求:=, 但是%s被找到 "
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 msgid "expected identifier, but found %s"
@@ -392,7 +388,7 @@ msgstr "通用标识符"
 
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
-msgstr ""
+msgstr "HasError"
 
 #: codetoolsstrconsts.ctshelperisnotallowed
 msgid "Helper after %s is not allowed"
@@ -400,7 +396,7 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
-msgstr "IDE 目录"
+msgstr "IDE目录"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
@@ -432,11 +428,11 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
-msgstr ""
+msgstr "IfDef Linux"
 
 #: codetoolsstrconsts.ctsifdefwindows
 msgid "IfDef Windows"
-msgstr ""
+msgstr "IfDef Windows"
 
 #: codetoolsstrconsts.ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
@@ -597,7 +593,7 @@ msgstr "未找到 methond 类型定义"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
-msgstr ""
+msgstr "缺少:="
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -687,23 +683,23 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
-msgstr "%s 编译器定义"
+msgstr "%sCompiler定义"
 
 #: codetoolsstrconsts.ctspackagedirectories
 msgid "Package directories"
-msgstr "包目录"
+msgstr "Package目录"
 
 #: codetoolsstrconsts.ctspackagerdirectory
 msgid "Packager Directory"
-msgstr "包目录"
+msgstr "Package目录"
 
 #: codetoolsstrconsts.ctspackagerregistrationdirectory
 msgid "Packager Registration Directory"
-msgstr "包注册目录"
+msgstr "Package注册目录"
 
 #: codetoolsstrconsts.ctspackagerunitsdirectory
 msgid "Packager Units Directory"
-msgstr "包单元路径"
+msgstr "Packager Units目录"
 
 #: codetoolsstrconsts.ctspointhintprocstartat
 msgid ".  Hint: proc start at "
@@ -715,7 +711,7 @@ msgstr ". start at "
 
 #: codetoolsstrconsts.ctspositionnotinsource
 msgid "Position not in source"
-msgstr "位置不在源代码中"
+msgstr "位置不在source中"
 
 #: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
 msgid "procedure or function or constructor or destructor"
@@ -723,7 +719,7 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"
-msgstr "指定处理器"
+msgstr ""
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
 msgid "property type expected, but %s found"
@@ -782,20 +778,16 @@ msgid "source is not unit"
 msgstr "代码不是单元"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy
-#| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr "代码未着大: 单元 %s"
+msgstr ""
 
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
-msgstr "SrcPath Initialization"
+msgstr "SrcPath初始化"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy
-#| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
-msgstr "应该是 %s , 但是却出现 %s"
+msgstr "要求%s , 但是%s被找到"
 
 #: codetoolsstrconsts.ctsstringconstant
 msgid "string constant"
@@ -811,7 +803,7 @@ msgstr "Term has no simple type"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 msgid "then expected, but %s found"
-msgstr ""
+msgstr "then被要求,但是%s被找到"
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
@@ -819,7 +811,7 @@ msgstr "工具目录"
 
 #: codetoolsstrconsts.ctstype
 msgid "type"
-msgstr ""
+msgstr "类型"
 
 #: codetoolsstrconsts.ctstypeidentifier
 msgid "type identifier"
@@ -835,11 +827,11 @@ msgstr "未找到类的类型块"
 
 #: codetoolsstrconsts.ctsunabletoapplychanges
 msgid "unable to apply changes"
-msgstr "无法应用改变"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunabletocompleteproperty
 msgid "unable to complete property"
-msgstr "无法完成属性"
+msgstr ""
 
 #: codetoolsstrconsts.ctsundefine
 msgid "Undefine "
@@ -847,11 +839,11 @@ msgstr "未定义"
 
 #: codetoolsstrconsts.ctsunexpectedendofsource
 msgid "unexpected end of source"
-msgstr "末尾 (代码的最后)"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
-msgstr "标识符 \"%s\" 不应该出现"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
@@ -878,17 +870,16 @@ msgid "unexpected subrange operator '..' found"
 msgstr "没有子界符 '..' "
 
 #: codetoolsstrconsts.ctsunitnotfound
-#, fuzzy,badformat
 msgid "unit not found: %s"
-msgstr "单元未找到"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunitpathinitialization
 msgid "UnitPath Initialization"
-msgstr "UnitPath Initialization"
+msgstr "UnitPath初始化"
 
 #: codetoolsstrconsts.ctsunknownfunction
 msgid "Unknown function %s"
-msgstr "未知的函数: %s"
+msgstr "未知的函数%s"
 
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
@@ -896,11 +887,11 @@ msgstr "(未知主文件名)"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"
-msgstr "(未知的子描述符: %s)"
+msgstr ""
 
 #: codetoolsstrconsts.ctsunparsed
 msgid "Unparsed"
-msgstr "未解析"
+msgstr ""
 
 #: codetoolsstrconsts.ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
@@ -908,7 +899,7 @@ msgstr "use的单元不是一个pascal单元"
 
 #: codetoolsstrconsts.ctsutilsdirectories
 msgid "Utils directories"
-msgstr "单元目录"
+msgstr "Utils目录"
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
@@ -916,5 +907,5 @@ msgstr ""
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
-msgstr "\"%s\" 未找到"
+msgstr "\"%s\"未被找到"
 

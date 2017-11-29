@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: heaptrcview.rsdtimes
+msgid " (%d times)"
+msgstr " (%d时间)"
+
+#: heaptrcview.rserrorparse
+msgid "Error while parsing trace file"
+msgstr "错误当分析跟踪文件"
+
+#: heaptrcview.rsleakview
+msgid "Leaks and Traces"
+msgstr "泄露和跟踪"
+
+#: heaptrcview.sbtnclipbrd
+msgid "Paste Clipboard"
+msgstr "粘贴剪切板"
+
+#: heaptrcview.sbtnresolve
+msgid "Resolve"
+msgstr "解决"
+
+#: heaptrcview.sbtnupdate
+msgid "Update"
+msgstr "更新"
+
+#: heaptrcview.schkraw
+msgid "Raw leak data"
+msgstr ""
+
+#: heaptrcview.schktop
+msgid "Stay on top"
+msgstr ""
+
+#: heaptrcview.sfrmcap
+msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
+msgstr ""
+
+#: heaptrcview.sfrmselectfilewithdebuginfo
+msgid "Select file with debug info"
+msgstr "选择调试信息文件"
+
+#: heaptrcview.sfrmselecttrcfile
+msgid "Select file with trace log"
+msgstr "选择跟踪日志文件"
+
+#: heaptrcview.slbltrace
+msgid ".trc file"
+msgstr ".trc文件"
+
+#: heaptrcview.stacklineformat
+msgid "%s"
+msgstr "%s"
+
+#: heaptrcview.stacklineformatwithfile
+msgid "%s file: %s : %d; "
+msgstr "%s文件: %s : %d; "
+
+#: heaptrcview.stacktraceformat
+msgid "Leak: %d bytes x %d times"
+msgstr "泄露:%d字节x%d倍(times)"
+
+#: heaptrcview.stacktraceformatsingle
+msgid "Leak: %d bytes"
+msgstr "泄露:%d字节"
+
+#: heaptrcview.strleakingblockscount
+msgid "Leaking Blocks Count: %d"
+msgstr "泄露块计数:%d"
+
+#: heaptrcview.strleakingmemsize
+msgid "Leaking Mem Size: %d"
+msgstr "溢出?内存大小: %d"
+
+#: heaptrcview.strtotalmemalloc
+msgid "Total Mem allocated: %d"
+msgstr "总内存分配: %d"
+
