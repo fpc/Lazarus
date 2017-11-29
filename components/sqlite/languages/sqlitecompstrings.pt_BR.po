@@ -1,0 +1,81 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
+
+#: sqlitecompstrings.sadd
+msgid "Add"
+msgstr "Adicionar"
+
+#: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
+msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
+msgstr "Uma tabela chamada \"%s\" já existe. Tem certeza que quer substituir esta tabela?%sTodos os dados serão perdidos."
+
+#: sqlitecompstrings.sclose
+msgid "Close"
+msgstr "Fechar"
+
+#: sqlitecompstrings.screateedittable
+msgid "Create/Edit Table"
+msgstr "Criar/Editar Tabela"
+
+#: sqlitecompstrings.screatetable
+msgid "Create Table"
+msgstr "Criar Tabela"
+
+#: sqlitecompstrings.sdelete
+msgid "Delete"
+msgstr "Excluir"
+
+#: sqlitecompstrings.sfieldname
+msgid "Field Name"
+msgstr "Nome campo"
+
+#: sqlitecompstrings.sfieldtype
+msgid "Field Type"
+msgstr "Tipo campo"
+
+#: sqlitecompstrings.sfilenamenotsetitsnotpossibletocreateeditatable
+msgid "File name not set: it's not possible to create/edit a table."
+msgstr "Nome arquivo não configurado: Não é possível criar/editar uma tabela."
+
+#: sqlitecompstrings.sfilepath
+msgid "File Path: %s"
+msgstr "Caminho arquivo: %s"
+
+#: sqlitecompstrings.sitsnotallowedfieldswiththesamename
+msgid "Fields with identical names are not allowed."
+msgstr "Campos com nomes idênticos não são permitidos."
+
+#: sqlitecompstrings.sitwasnotpossibletocreatethetable
+msgid "It was not possible to create the table."
+msgstr "Não foi possível criar a tabela."
+
+#: sqlitecompstrings.snofieldsaddedtablewillnotbecreated
+msgid "No fields added. Table will not be created."
+msgstr "Nenhum campo adicionado.Tabela não será criada."
+
+#: sqlitecompstrings.stablecreatedsuccessfully
+msgid "Table created successfully."
+msgstr "Tabela criada com sucesso."
+
+#: sqlitecompstrings.stableeditorfieldtypenotrecognized
+msgid "Field type not recognized."
+msgstr "Tipo campo não reconhecido."
+
+#: sqlitecompstrings.stablename
+msgid "Table Name: %s"
+msgstr "Nome Tabela: %s"
+
+#: sqlitecompstrings.stablenamenotsetitsnotpossibletocreateeditatable
+msgid "Table name not set: it's not possible to create/edit a table."
+msgstr "Nome tabela não configurada: Não é possível criar/editar uma tabela."
+

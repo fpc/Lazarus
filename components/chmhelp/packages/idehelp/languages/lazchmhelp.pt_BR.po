@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
+
+#: lazchmhelp.help_category_idecmd
+msgid "CHM Help"
+msgstr "Ajuda CHM"
+
+#: lazchmhelp.help_current_idecmd
+msgid "Show help"
+msgstr "Exibir ajuda"
+
+#: lazchmhelp.help_current_menu
+msgid "&Help"
+msgstr "A&juda"
+
+#: lazchmhelp.help_missinglhelp
+msgid "Missing lhelp"
+msgstr "Lhelp perdido"
+
+#: lazchmhelp.help_unabletofindthelhelpviewerpleasecompilethelhelppro
+msgid "Unable to find the lhelp viewer:%s%s%sPlease compile the lhelp project:%s%s"
+msgstr "Incapaz de localizar o visualizador lhelp:%s%s%sFavor compilar o projeto lhelp:%s%s"
+

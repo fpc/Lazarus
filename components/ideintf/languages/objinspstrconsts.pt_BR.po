@@ -6,9 +6,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula\n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.13\n"
+"Language: pt_BR\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -132,31 +133,31 @@ msgstr "Acima"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Adicionar campos"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "Editor Colunas DBGrid"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Excluir tudo"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
-msgstr ""
+msgstr "Obter Rótulos"
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Isto excluirá todas as colunas. Continuar?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
-msgstr ""
+msgstr "Isto substituirá todos os títulos do dataset. Continuar?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
 msgid "Unable to retrieve fields definition from dataset."
-msgstr ""
+msgstr "Incapaz de recuperar as definições de campos do dataset"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -260,7 +261,7 @@ msgstr "Adicionar"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
-msgstr ""
+msgstr "Localizar e substituir"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
@@ -292,7 +293,7 @@ msgstr "Definir valor"
 
 #: objinspstrconsts.lisunabletofindparserfortool
 msgid "Unable to find parser for tool \"%s\""
-msgstr ""
+msgstr "Incapaz de localizar analisador para a ferramenta \"%s\""
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -364,7 +365,6 @@ msgid "ActionList Editor"
 msgstr "Editor Lista Ações"
 
 #: objinspstrconsts.oisadd
-#, fuzzy
 msgctxt "objinspstrconsts.oisadd"
 msgid "Add"
 msgstr "Adicionar"
@@ -382,7 +382,6 @@ msgid "Add fields from FieldDefs"
 msgstr "Adicionar campos de \"FieldDefs\""
 
 #: objinspstrconsts.oisaddpage
-#, fuzzy
 msgctxt "objinspstrconsts.oisaddpage"
 msgid "Add Page"
 msgstr "Adicionar página"
@@ -426,11 +425,11 @@ msgstr "Excluir?"
 
 #: objinspstrconsts.oischangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Alterar Classe ..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "Alterar Pai"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -453,10 +452,8 @@ msgid "Clear picture"
 msgstr "Limpar figura"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy,badformat
-#| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Nome do componente %s%s%s não é um identificador válido"
+msgstr "Nome do componente \"%s\" não é um identificador válido"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
@@ -485,11 +482,11 @@ msgstr "Criar novo campo e adicioná-lo na posição atual"
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
-msgstr ""
+msgstr "Pai atual"
 
 #: objinspstrconsts.oiscurrentparents
 msgid "Current parents"
-msgstr ""
+msgstr "Pais atuais"
 
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
@@ -507,14 +504,12 @@ msgid "&Delete"
 msgstr "&Excluir"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy,badformat
-#| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
-msgstr "Excluir item %s%s%s?"
+msgstr "Excluir item \"%s\"?"
 
 #: objinspstrconsts.oisdeletepagequestion
 msgid "Do you want to delete the page?"
-msgstr ""
+msgstr "Deseja excluir a página?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -541,10 +536,8 @@ msgid "Error loading image"
 msgstr "Erro ao carregar imagem"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy,badformat
-#| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
-msgstr "Erro carregando imagem %s%s%s:%s%s"
+msgstr "Erro carregando imagem \"%s\":%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
@@ -588,7 +581,7 @@ msgstr "Entrar Máscara:"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
-msgstr ""
+msgstr "Inserir Nome Página"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -611,10 +604,8 @@ msgid "Invalid property value"
 msgstr "Valor de propriedade inválido"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy,badformat
-#| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
-msgstr "%s%s%s não é um nome de método válido."
+msgstr "\"%s\" não é um nome de método válido."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -646,7 +637,7 @@ msgstr "Método"
 
 #: objinspstrconsts.oismixed
 msgid "(Mixed)"
-msgstr ""
+msgstr "(Misturado)"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
@@ -715,11 +706,11 @@ msgstr "Mover para Frente"
 
 #: objinspstrconsts.oispages
 msgid "Pages"
-msgstr ""
+msgstr "Páginas"
 
 #: objinspstrconsts.oispageseditordialog
 msgid "Pages Editor"
-msgstr ""
+msgstr "Editor de páginas"
 
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
@@ -740,7 +731,7 @@ msgstr "Salvar imagem como"
 
 #: objinspstrconsts.oispressakey
 msgid "Press a key ..."
-msgstr ""
+msgstr "Pressione uma tecla ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -760,11 +751,11 @@ msgstr "Remover dos Favoritos"
 
 #: objinspstrconsts.oisrename
 msgid "Rename"
-msgstr ""
+msgstr "Renomear"
 
 #: objinspstrconsts.oisrenamepage
 msgid "Rename Page"
-msgstr ""
+msgstr "Renomear Página"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
@@ -772,7 +763,7 @@ msgstr "Restritos"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
-msgstr ""
+msgstr "Reverter para herdado"
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
@@ -804,11 +795,11 @@ msgstr "Selecionar todos campos"
 
 #: objinspstrconsts.oisselectedcontrol
 msgid "Selected control"
-msgstr ""
+msgstr "Controle selecionado"
 
 #: objinspstrconsts.oisselectedcontrols
 msgid "Selected controls"
-msgstr ""
+msgstr "Controles selecionados"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
@@ -848,7 +839,7 @@ msgstr "Definir valor da propriedade para o padrão"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
-msgstr ""
+msgstr "Exibir classes"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -1178,28 +1169,20 @@ msgid "Test Input"
 msgstr "Testar Entrada"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy,badformat
-#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "O identificador %s%s%s não é um método.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
+msgstr "O identificador \"%s\" não é um método.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy,badformat
-#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "O método %s%s%s é incompatível com este evento (%s).%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
+msgstr "O método \"%s\" é incompatível com este evento (%s).%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy,badformat
-#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "O método %s%s%s não é publicado.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
+msgstr "O método \"%s\" não é publicado.%sPressione Cancelar para desfazer,%sIgnorar para forçá-lo."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy,badformat
-#| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr "Impossível mudar pai do controle %s%s%s para novo pai %s%s%s.%s%s"
+msgstr "Impossível mudar pai do controle \"%s\" para novo pai \"%s\".%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1377,7 +1360,7 @@ msgstr "Adicionar Imagens"
 
 #: objinspstrconsts.sccsiledtopendialogn
 msgid "New Image"
-msgstr ""
+msgstr "Nova Imagem"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1385,7 +1368,7 @@ msgstr "Cor Transparente:"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
-msgstr ""
+msgstr "S&ubstituir"
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1609,7 +1592,7 @@ msgstr "Adicionar como simples"
 
 #: objinspstrconsts.s_confirm_clear
 msgid "Are you sure to clear image list?"
-msgstr ""
+msgstr "Tem certeza que quer limpar a lista de imagens?"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"

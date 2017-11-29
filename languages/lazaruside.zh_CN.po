@@ -20389,6 +20389,7 @@ msgstr "配置 构建配置 文件"
 #: lazarusidestrconsts.srkmeccopy
 #, fuzzy
 #| msgid "Copy selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccopy"
 msgid "Copy"
 msgstr "复制选区到剪切板"
 
@@ -20407,6 +20408,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccut
 #, fuzzy
 #| msgid "Cut selection to clipboard"
+msgctxt "lazarusidestrconsts.srkmeccut"
 msgid "Cut"
 msgstr "剪切选择的部分到剪切板"
 
@@ -20854,6 +20856,7 @@ msgstr "上移光标一个页面"
 #: lazarusidestrconsts.srkmecpaste
 #, fuzzy
 #| msgid "Paste clipboard to current position"
+msgctxt "lazarusidestrconsts.srkmecpaste"
 msgid "Paste"
 msgstr "粘贴剪切板到当前位置"
 

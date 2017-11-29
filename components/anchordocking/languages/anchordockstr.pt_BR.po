@@ -4,17 +4,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula\n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.13\n"
+"Language: pt_BR\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-#, fuzzy,badformat
-#| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
-msgstr "Um lado livre de um \"splitter\" não deve ser ancorado: Nó=%s%s%s Tipo=%s Âncoras[%s]=%s%s%s"
+msgstr "Um lado livre de um \"splitter\" não deve estar ancorado: Nó=\"%s\" Tipo=%s Âncoras[%s]=\"%s\""
 
 #: anchordockstr.adrsallfiles
 msgid "All files"
@@ -29,28 +28,20 @@ msgid "Anchor Docking Layout"
 msgstr "Anchor Docking Layout"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-#, fuzzy,badformat
-#| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Âncora não é \"splitter\": Nó=%s%s%s Âncoras[%s]=%s%s%s"
+msgstr "Âncora não é \"splitter\": Nó=\"%s\" Âncoras[%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-#, fuzzy,badformat
-#| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Âncora não encontrada: Nó=%s%s%s Âncoras[%s]=%s%s%s"
+msgstr "Âncora não encontrada: Nó=\"%s\" Âncoras[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-#, fuzzy,badformat
-#| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Âncora no lado errado do \"splitter\": Nó=%s%s%s Âncora[%s]=%s%s%s"
+msgstr "Âncora no lado errado do \"splitter\": Nó=\"%s\" Âncora[%s]=\"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-#, fuzzy,badformat
-#| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
-msgstr "Uma página não deve estar ancorada: Nó=%s%s%s Pai=%s Tipo Pai=%s Âncoras[%s]=%s%s%s"
+msgstr "Uma página não deve estar ancorada: Nó=\"%s\" Pai=%s Tipo Pai=%s Âncoras[%s]=\"%s\""
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -69,10 +60,8 @@ msgid "control is already a docksite"
 msgstr "controle já é um local de ancoragem"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-#, fuzzy,badformat
-#| msgid "Custom dock site %s%s%s can have only one site."
 msgid "Custom dock site \"%s\" can have only one site."
-msgstr "Local de ancoragem customizado %s%s%s só pode ter um local."
+msgstr "Local de ancoragem customizado \"%s\" só pode ter um local."
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
@@ -227,10 +216,8 @@ msgid "No captions for floating sites"
 msgstr "Sem títulos para locais flutuantes"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-#, fuzzy,badformat
-#| msgid "No children allowed for Node=%s%s%s Type=%s"
 msgid "No children allowed for Node=\"%s\" Type=%s"
-msgstr "Nenhum filho permitido para Nó=%s%s%s Tipo=%s"
+msgstr "Nenhum filho permitido para o Nó=\"%s\" Tipo=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
 msgid "Not supported: %s has parent %s"
