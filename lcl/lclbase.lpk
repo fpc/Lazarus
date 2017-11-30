@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="9"/>
-    <Files Count="286">
+    <Files Count="287">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1176,6 +1176,10 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="DBLogDlg"/>
       </Item286>
+      <Item287>
+        <Filename Value="include/comboex.inc"/>
+        <Type Value="Include"/>
+      </Item287>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
