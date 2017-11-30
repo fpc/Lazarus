@@ -16,7 +16,7 @@
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="11">
+    <Files Count="12">
       <Item1>
         <Filename Value="checkboxthemed.pas"/>
         <UnitName Value="CheckBoxThemed"/>
@@ -61,6 +61,10 @@
         <Filename Value="spinex.inc"/>
         <Type Value="Include"/>
       </Item11>
+      <Item12>
+        <Filename Value="smallorderedseteditor.pas"/>
+        <UnitName Value="SmallOrderedSetEditor"/>
+      </Item12>
     </Files>
     <LazDoc Paths="docs"/>
     <RequiredPkgs Count="1">
