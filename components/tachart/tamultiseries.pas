@@ -1136,9 +1136,23 @@ end;
 function TOpenHighLowCloseSeries.AddXOHLC(
   AX, AOpen, AHigh, ALow, AClose: Double;
   ALabel: String; AColor: TColor): Integer;
+var
+  y: Double;
 begin
   if ListSource.YCount < 4 then ListSource.YCount := 4;
-  Result := ListSource.Add(AX, NaN, ALabel, AColor);
+
+  if YIndexOpen = 0 then
+    y := AOpen
+  else if YIndexHigh = 0 then
+    y := AHigh
+  else if YIndexLow = 0 then
+    y := ALow
+  else if YIndexClose = 0 then
+    y := AClose
+  else
+    raise Exception.Create('TOpenHighLowCloseSeries: Ordinary y value missing');
+
+  Result := ListSource.Add(AX, y, ALabel, AColor);
   with ListSource.Item[Result]^ do begin
     SetY(YIndexOpen, AOpen);
     SetY(YIndexHigh, AHigh);
