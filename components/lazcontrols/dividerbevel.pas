@@ -1,4 +1,4 @@
-{ DividerBevel
+{ TDividerBevel
 
   Copyright (C) 2010 Lazarus team
 

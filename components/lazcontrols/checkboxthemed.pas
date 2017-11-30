@@ -1,12 +1,14 @@
-{
- *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+{ TCheckBoxThemed
+
+  Copyright (C) 2017 Lazarus team
+
+  This library is free software; you can redistribute it and/or modify it
+  under the same terms as the Lazarus Component Library (LCL)
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
- *****************************************************************************
-}
 
+}
 unit CheckBoxThemed;
 {$mode objfpc}{$H+}
 
