@@ -4870,9 +4870,17 @@ components/turbopower_ipro/languages/iputils.uk.po svneol=native#text/plain
 components/turbopower_ipro/languages/iputils.zh_CN.po svneol=native#text/plain
 components/turbopower_ipro/make_icons.bat svneol=native#text/plain
 components/turbopower_ipro/tipfiledataprovider.png -text svneol=unset#image/png
+components/turbopower_ipro/tipfiledataprovider_150.png -text
+components/turbopower_ipro/tipfiledataprovider_200.png -text
 components/turbopower_ipro/tiphtmldataprovider.png -text
+components/turbopower_ipro/tiphtmldataprovider_150.png -text
+components/turbopower_ipro/tiphtmldataprovider_200.png -text
 components/turbopower_ipro/tiphtmlpanel.png -text svneol=unset#image/png
+components/turbopower_ipro/tiphtmlpanel_150.png -text
+components/turbopower_ipro/tiphtmlpanel_200.png -text
 components/turbopower_ipro/tiphttpdataprovider.png -text svneol=unset#image/png
+components/turbopower_ipro/tiphttpdataprovider_150.png -text
+components/turbopower_ipro/tiphttpdataprovider_200.png -text
 components/turbopower_ipro/turbopoweripro.lpk svneol=native#text/pascal
 components/turbopower_ipro/turbopoweripro.pas svneol=native#text/plain
 components/vlc/README.txt svneol=native#text/plain

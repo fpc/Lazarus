@@ -1,4 +1,12 @@
 tipfiledataprovider.png
+tipfiledataprovider_150.png
+tipfiledataprovider_200.png
 tiphtmlpanel.png
+tiphtmlpanel_150.png
+tiphtmlpanel_200.png
 tiphttpdataprovider.png
+tiphttpdataprovider_150.png
+tiphttpdataprovider_200.png
 tiphtmldataprovider.png
+tiphtmldataprovider_150.png
+tiphtmldataprovider_200.png
