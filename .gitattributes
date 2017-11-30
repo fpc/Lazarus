@@ -2390,6 +2390,7 @@ components/lazdebuggergdbmi/test/TestApps/ArgVPrg.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/TestApps/EnvPrg.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/TestApps/ExceptPrg.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/TestApps/ExceptPrgStep.pas svneol=native#text/pascal
+components/lazdebuggergdbmi/test/TestApps/ExceptPrgStepOver.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/TestApps/WatchesPrg.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/TestApps/WatchesPrgArray.inc svneol=native#text/pascal
 components/lazdebuggergdbmi/test/TestApps/WatchesPrgEnum.inc svneol=native#text/pascal
