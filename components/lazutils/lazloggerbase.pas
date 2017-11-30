@@ -334,7 +334,8 @@ procedure SetDebugLogger(ALogger: TLazLogger);
 begin
   ReleaseRefAndNil(TheLazLogger);
   TheLazLogger := ALogger;
-  TheLazLogger.AddReference;
+  if TheLazLogger <> nil then
+    TheLazLogger.AddReference;
 end;
 
 procedure RecreateDebugLogger;
