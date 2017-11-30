@@ -2090,11 +2090,10 @@ begin
     EndChildNode;
     if CurPos.Flag=cafSemicolon then break;
     if CurPos.Flag<>cafComma then
-      if ExceptionOnError then begin
-        CTDumpStack;
-        SaveRaiseCharExpectedButAtomFound(20170421195538,';');
-      end
-      else exit;
+      if ExceptionOnError then
+        SaveRaiseCharExpectedButAtomFound(20170421195538,';')
+      else
+        exit;
   until (CurPos.StartPos>SrcLen);
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
