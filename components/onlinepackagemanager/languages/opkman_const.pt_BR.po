@@ -1464,7 +1464,7 @@ msgid "Update package list"
 msgstr "Lista de pacotes atualizados"
 
 #: opkman_const.rspackagesfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "(%s packages found)"
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
 msgstr "(%s pacotes encontrados)"
