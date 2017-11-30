@@ -30,8 +30,10 @@ unit ComboEx;
 interface
 
 uses
-  Classes, SysUtils, ImgList, Controls, StdCtrls, ComCtrls, ExtCtrls, Graphics,
-  GraphUtil, LCLIntf, LCLType, LMessages, LResources, Themes, types;
+  Classes, SysUtils, types,
+  LCLIntf, LCLType, LMessages, LResources, LazLoggerBase,
+  ImgList, Controls, StdCtrls, ComCtrls, ExtCtrls, Graphics, GraphUtil,
+  Themes, Forms;
 
 type
   {$PACKENUM 2}
@@ -253,18 +255,19 @@ type
   end;
 
   { TCheckComboItemState }
-  TCheckComboItemState = record
+  TCheckComboItemState = class
+  public
     State: TCheckBoxState;
     Enabled: Boolean;
     Data: TObject;
   end;
-  PTCheckComboItemState = ^TCheckComboItemState;
 
   { TCustomCheckCombo }
   TCustomCheckCombo = class(TCustomComboBox)
   private
     FAllowGrayed: Boolean;
     FOnItemChange: TCheckItemChange;
+    procedure AsyncCheckItemStates(Data: PtrInt);
     function GetChecked(AIndex: Integer): Boolean;
     function GetCount: Integer;
     function GetItemEnabled(AIndex: Integer): Boolean;
@@ -292,6 +295,8 @@ type
     procedure FontChanged(Sender: TObject); override;
     procedure InitializeWnd; override;
     procedure InitItemStates;
+    procedure CheckItemStates;
+    procedure QueueCheckItemStates;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Loaded; override;
     procedure MouseLeave; override;
