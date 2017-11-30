@@ -496,13 +496,13 @@ begin
 end;
 
 procedure TCustomCheckCombo.AddItem(const AItem: string; AState: TCheckBoxState; AEnabled: Boolean);
-var pItemState: PTCheckComboItemState;
+var pItemState: TCheckComboItemState;
 begin
-  pItemState:=new(PTCheckComboItemState);
-  pItemState^.State:=aState;
-  pItemState^.Enabled:=AEnabled;
-  pItemState^.Data:=nil;
-  inherited AddItem(AItem, TObject(pItemState));
+  pItemState:=TCheckComboItemState.Create;
+  pItemState.State:=aState;
+  pItemState.Enabled:=AEnabled;
+  pItemState.Data:=nil;
+  inherited AddItem(AItem, pItemState);
 end;
 
 procedure TCustomCheckCombo.AssignItems(AItems: TStrings);
@@ -517,10 +517,10 @@ procedure TCustomCheckCombo.CheckAll(AState: TCheckBoxState; AAllowGrayed: Boole
 var i: Integer;
 begin
   for i:=0 to Items.Count-1 do
-    begin
-      if (AAllowGrayed or (State[i]<>cbGrayed)) and (AAllowDisabled or ItemEnabled[i])
-        then State[i]:=AState;
-    end;
+  begin
+    if (AAllowGrayed or (State[i]<>cbGrayed)) and (AAllowDisabled or ItemEnabled[i])
+      then State[i]:=AState;
+  end;
 end;
 
 procedure TCustomCheckCombo.Clear;
@@ -533,19 +533,19 @@ procedure TCustomCheckCombo.ClearItemStates;
 var i: Integer;
 begin
   for i:=0 to Items.Count-1 do
-    begin
-      dispose(PTCheckComboItemState(Items.Objects[i]));
-      Items.Objects[i]:=nil;
-    end;
+  begin
+    Items.Objects[i].Free;
+    Items.Objects[i]:=nil;
+  end;
 end;
 
 procedure TCustomCheckCombo.CloseUp;
 begin
   if FRejectDropDown then
-    begin
-      FRejectDropDown:=False;
-      Update;
-    end else
+  begin
+    FRejectDropDown:=False;
+    Update;
+  end else
     inherited CloseUp;
 end;
 
@@ -560,10 +560,10 @@ end;
 procedure TCustomCheckCombo.DeleteItem(AIndex: Integer);
 begin
   if (AIndex>=0) and (AIndex<Items.Count) then
-    begin
-      dispose(PTCheckComboItemState(Items.Objects[AIndex]));
-      Items.Delete(AIndex);
-    end;
+  begin
+    Items.Objects[AIndex].Free;
+    Items.Delete(AIndex);
+  end;
 end;
 
 procedure TCustomCheckCombo.DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState);
@@ -586,7 +586,11 @@ var aDetail: TThemedElementDetails;
     aGray: Byte;
     anyRect: TRect;
     aState: TCheckBoxState;
+    ItemState: TCheckComboItemState;
 begin  { do not call inherited ! }
+  ItemState:=TCheckComboItemState(Items.Objects[Index]);
+  if not (ItemState is TCheckComboItemState) then
+    QueueCheckItemStates;
   aDropped:=DroppedDown;
   if aDropped and FRejectDropDown then
     begin
@@ -595,7 +599,7 @@ begin  { do not call inherited ! }
     end;
   aEnabled:=IsEnabled;
   if not (csDesigning in ComponentState) then
-    aEnabled:= (aEnabled and PTCheckComboItemState(Items.Objects[Index])^.Enabled);
+    aEnabled:= (aEnabled and TCheckComboItemState(Items.Objects[Index]).Enabled);
   {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
   aFocusedEditableMainItemNoDD := (Focused and (ARect.Left>0) and not aDropped);
   {$ELSE}
@@ -616,7 +620,7 @@ begin  { do not call inherited ! }
       Canvas.FillRect(ARect);
     end;
   if not (csDesigning in ComponentState)
-    then aState:=PTCheckComboItemState(Items.Objects[Index])^.State
+    then aState:=TCheckComboItemState(Items.Objects[Index]).State
     else aState:=cbUnchecked;
   aDetail:=ThemeServices.GetElementDetails(caCheckThemes
     [aEnabled, aState, not aDropped and FCheckHighlight]);
@@ -699,23 +703,46 @@ begin
 end;
 
 procedure TCustomCheckCombo.InitializeWnd;
+var
+  i: Integer;
 begin
+  InitItemStates;
+  for i:=0 to Items.Count-1 do
+    debugln(['TCustomCheckCombo.InitializeWnd START ',i,' ',dbgsname(Items.Objects[i])]);
   inherited InitializeWnd;
+  for i:=0 to Items.Count-1 do
+    debugln(['TCustomCheckCombo.InitializeWnd END ',i,' ',dbgsname(Items.Objects[i])]);
+  CheckItemStates;
   FRightToLeft:=IsRightToLeft;
 end;
 
 procedure TCustomCheckCombo.InitItemStates;
 var i: Integer;
-    pItemState: PTCheckComboItemState;
+    pItemState: TCheckComboItemState;
 begin
   for i:=0 to Items.Count-1 do
-    begin
-      pItemState:=new(PTCheckComboItemState);
-      pItemState^.Enabled:=True;
-      pItemState^.State:=cbUnchecked;
-      pItemState^.Data:=nil;
-      Items.Objects[i]:=TObject(pItemState);
-    end;
+    if Items.Objects[i]=nil then begin
+      pItemState:=TCheckComboItemState.Create;
+      pItemState.Enabled:=True;
+      pItemState.State:=cbUnchecked;
+      pItemState.Data:=nil;
+      Items.Objects[i]:=pItemState;
+    end else if not (Items.Objects[i] is TCheckComboItemState) then
+      raise Exception.Create(DbgSName(Self)+': Item '+IntToStr(i)+' is not a TCheckComboItemState');
+end;
+
+procedure TCustomCheckCombo.CheckItemStates;
+var
+  i: Integer;
+begin
+  for i:=0 to Items.Count-1 do
+    if not (Items.Objects[i] is TCheckComboItemState) then
+      raise Exception.Create(DbgSName(Self)+': Item '+IntToStr(i)+' is not a TCheckComboItemState');
+end;
+
+procedure TCustomCheckCombo.QueueCheckItemStates;
+begin
+  Application.QueueAsyncCall(@AsyncCheckItemStates,0);
 end;
 
 procedure TCustomCheckCombo.KeyDown(var Key: Word; Shift: TShiftState);
@@ -807,7 +834,12 @@ end;
 
 function TCustomCheckCombo.GetChecked(AIndex: Integer): Boolean;
 begin
-  Result:=(PTCheckComboItemState(Items.Objects[AIndex])^.State=cbChecked);
+  Result:=(TCheckComboItemState(Items.Objects[AIndex]).State=cbChecked);
+end;
+
+procedure TCustomCheckCombo.AsyncCheckItemStates(Data: PtrInt);
+begin
+  CheckItemStates;
 end;
 
 function TCustomCheckCombo.GetCount: Integer;
@@ -817,47 +849,52 @@ end;
 
 function TCustomCheckCombo.GetItemEnabled(AIndex: Integer): Boolean;
 begin
-  Result:=PTCheckComboItemState(Items.Objects[AIndex])^.Enabled;
+  Result:=TCheckComboItemState(Items.Objects[AIndex]).Enabled;
 end;
 
 function TCustomCheckCombo.GetObject(AIndex: Integer): TObject;
 begin
-  Result:=PTCheckComboItemState(Items.Objects[AIndex])^.Data;
+  Result:=TCheckComboItemState(Items.Objects[AIndex]).Data;
 end;
 
 function TCustomCheckCombo.GetState(AIndex: Integer): TCheckBoxState;
 begin
-  Result:=PTCheckComboItemState(Items.Objects[AIndex])^.State;
+  Result:=TCheckComboItemState(Items.Objects[AIndex]).State;
 end;
 
 procedure TCustomCheckCombo.SetChecked(AIndex: Integer; AValue: Boolean);
 begin
-  if AValue=(PTCheckComboItemState(Items.Objects[AIndex])^.State=cbChecked) then exit;
+  if AValue=(TCheckComboItemState(Items.Objects[AIndex]).State=cbChecked) then exit;
   if AValue
-    then PTCheckComboItemState(Items.Objects[AIndex])^.State:=cbChecked
-    else PTCheckComboItemState(Items.Objects[AIndex])^.State:=cbUnchecked;
-  if assigned(FOnItemChange) then FOnItemChange(self, AIndex);
-  if AIndex=ItemIndex then Invalidate;
+    then TCheckComboItemState(Items.Objects[AIndex]).State:=cbChecked
+    else TCheckComboItemState(Items.Objects[AIndex]).State:=cbUnchecked;
+  if Assigned(FOnItemChange) then
+    FOnItemChange(Self, AIndex);
+  if AIndex=ItemIndex then
+    Invalidate;
 end;
 
 procedure TCustomCheckCombo.SetItemEnabled(AIndex: Integer; AValue: Boolean);
 begin
-  if PTCheckComboItemState(Items.Objects[AIndex])^.Enabled=AValue then exit;
-  PTCheckComboItemState(Items.Objects[AIndex])^.Enabled:=AValue;
-  if AIndex=ItemIndex then Invalidate;
+  if TCheckComboItemState(Items.Objects[AIndex]).Enabled=AValue then exit;
+  TCheckComboItemState(Items.Objects[AIndex]).Enabled:=AValue;
+  if AIndex=ItemIndex then
+    Invalidate;
 end;
 
 procedure TCustomCheckCombo.SetObject(AIndex: Integer; AValue: TObject);
 begin
-  PTCheckComboItemState(Items.Objects[AIndex])^.Data:=AValue;
+  TCheckComboItemState(Items.Objects[AIndex]).Data:=AValue;
 end;
 
 procedure TCustomCheckCombo.SetState(AIndex: Integer; AValue: TCheckBoxState);
 begin
-  if PTCheckComboItemState(Items.Objects[AIndex])^.State=AValue then exit;
-  PTCheckComboItemState(Items.Objects[AIndex])^.State:=AValue;
-  if assigned(FOnItemChange) then FOnItemChange(self, AIndex);
-  if AIndex=ItemIndex then Invalidate;
+  if TCheckComboItemState(Items.Objects[AIndex]).State=AValue then exit;
+  TCheckComboItemState(Items.Objects[AIndex]).State:=AValue;
+  if Assigned(FOnItemChange) then
+    FOnItemChange(self, AIndex);
+  if AIndex=ItemIndex then
+    Invalidate;
 end;
 
 
