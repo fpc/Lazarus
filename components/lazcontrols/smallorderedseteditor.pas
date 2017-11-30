@@ -72,21 +72,27 @@ type
     property AvailableItems: TStrings read FAvailableItems write SetAvailableItems;
   end;
 
-function ShowListEditor(aCaption: string; Items, AvailableItems: TStrings): TModalResult;
+function CreateOrderedSetEditor(Items, AvailableItems: TStrings): TSmallOrderedSetEditDlg;
+function ShowOrderedSetEditor(aCaption: string; Items, AvailableItems: TStrings): TModalResult;
 
 implementation
 
-function ShowListEditor(aCaption: string; Items, AvailableItems: TStrings
+function CreateOrderedSetEditor(Items, AvailableItems: TStrings): TSmallOrderedSetEditDlg;
+begin
+  Result:=TSmallOrderedSetEditDlg.Create(nil);
+  Result.Items:=Items;
+  Result.AvailableItems:=AvailableItems;
+  Result.Init;
+end;
+
+function ShowOrderedSetEditor(aCaption: string; Items, AvailableItems: TStrings
   ): TModalResult;
 var
   Dlg: TSmallOrderedSetEditDlg;
 begin
-  Dlg:=TSmallOrderedSetEditDlg.Create(nil);
+  Dlg:=CreateOrderedSetEditor(Items,AvailableItems);
   try
     Dlg.Caption:=aCaption;
-    Dlg.Items:=Items;
-    Dlg.AvailableItems:=AvailableItems;
-    Dlg.Init;
     Result:=Dlg.ShowModal;
     if Result=mrOK then
       Items.Assign(Dlg.Items);
