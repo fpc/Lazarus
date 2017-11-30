@@ -599,7 +599,7 @@ begin  { do not call inherited ! }
     end;
   aEnabled:=IsEnabled;
   if not (csDesigning in ComponentState) then
-    aEnabled:= (aEnabled and TCheckComboItemState(Items.Objects[Index]).Enabled);
+    aEnabled:= (aEnabled and ItemState.Enabled);
   {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
   aFocusedEditableMainItemNoDD := (Focused and (ARect.Left>0) and not aDropped);
   {$ELSE}
@@ -620,7 +620,7 @@ begin  { do not call inherited ! }
       Canvas.FillRect(ARect);
     end;
   if not (csDesigning in ComponentState)
-    then aState:=TCheckComboItemState(Items.Objects[Index]).State
+    then aState:=ItemState.State
     else aState:=cbUnchecked;
   aDetail:=ThemeServices.GetElementDetails(caCheckThemes
     [aEnabled, aState, not aDropped and FCheckHighlight]);
