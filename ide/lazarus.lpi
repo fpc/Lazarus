@@ -647,6 +647,7 @@
       <Unit94>
         <Filename Value="etfpcmsgparser.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="etFPCMsgParser"/>
       </Unit94>
       <Unit95>
         <Filename Value="etmakemsgparser.pas"/>
@@ -702,10 +703,12 @@
       <Unit103>
         <Filename Value="compileroptions.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="CompilerOptions"/>
       </Unit103>
       <Unit104>
         <Filename Value="exttools.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ExtTools"/>
       </Unit104>
       <Unit105>
         <Filename Value="compiler.pp"/>
