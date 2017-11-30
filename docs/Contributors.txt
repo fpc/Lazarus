@@ -164,6 +164,7 @@ Mike Thompson
 Nikolay Ermolov
 Nur Cholif Murtadho
 Olivier Guilbaud
+Olexandr Pylypchuk - Ukrainian translation
 Ondrej Pokorny
 Pascal Riekenberg
 Patrick Chevalley
@@ -230,6 +231,7 @@ Zaenal Mutaqin
 Zaher Dirkey
 Zdravko Gabrovski
 Zeljan Rikalo
+Zheng Jian Ping aka "robsean" - Simplified Chinese translation
 Žilvinas Ledas
 
 #and special thanks to the FPC team.
