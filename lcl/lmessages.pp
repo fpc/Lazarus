@@ -215,6 +215,7 @@ const
   LM_XBUTTONUP         = $020C;
   LM_XBUTTONDBLCLK     = $020D;
   LM_MOUSELAST         = $020D;
+  LM_MOUSEHWHEEL       = $020E;
 
   LM_PARENTNOTIFY      = $0210;
   LM_CAPTURECHANGED    = $0215;
@@ -935,6 +936,7 @@ begin
   LM_MBUTTONUP                   : Result := 'LM_MBUTTONUP';
   LM_MBUTTONDBLCLK               : Result := 'LM_MBUTTONDBLCLK';
   LM_MOUSEWHEEL                  : Result := 'LM_MOUSEWHEEL';
+  LM_MOUSEHWHEEL       : Result := 'LM_MOUSEHWHEEL';
   LM_XBUTTONDOWN                 : Result := 'LM_XBUTTONDOWN';
   LM_XBUTTONUP                   : Result := 'LM_XBUTTONUP';
   LM_XBUTTONDBLCLK               : Result := 'LM_XBUTTONDBLCLK';
