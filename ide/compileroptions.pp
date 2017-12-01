@@ -337,19 +337,18 @@ type
     FCommand: string;
     FOnChanged: TNotifyEvent;
     FOwner: TObject;
-    FScanForFPCMessages: boolean;
-    FScanForMakeMessages: boolean;
-    FShowAllMessages: boolean;
+    FParsers: TStrings;
     FParsedCommandStamp: integer;
     FParsedCommand: string;
+    function GetHasParser(aName: string): boolean;
     procedure SetCommand(const AValue: string);
-    procedure SetScanForFPCMessages(const AValue: boolean);
-    procedure SetScanForMakeMessages(const AValue: boolean);
-    procedure SetShowAllMessages(const AValue: boolean);
+    procedure SetHasParser(aName: string; const AValue: boolean);
+    procedure SetParsers(const AValue: TStrings);
   protected
     procedure SubstituteMacros(var s: string); virtual;
   public
     constructor Create(TheOwner: TObject); virtual;
+    destructor Destroy; override;
     procedure Clear; virtual;
     function CreateDiff(CompOpts: TCompilationToolOptions;
                         Tool: TCompilerDiffTool = nil): boolean; virtual;
@@ -368,9 +367,8 @@ type
   public
     property Owner: TObject read FOwner;
     property Command: string read FCommand write SetCommand;
-    property ScanForFPCMessages: boolean read FScanForFPCMessages write SetScanForFPCMessages;
-    property ScanForMakeMessages: boolean read FScanForMakeMessages write SetScanForMakeMessages;
-    property ShowAllMessages: boolean read FShowAllMessages write SetShowAllMessages;
+    property Parsers: TStrings read FParsers write SetParsers;
+    property HasParser[aName: string]: boolean read GetHasParser write SetHasParser;
   end;
   TCompilationToolClass = class of TCompilationToolOptions;
 
@@ -3664,9 +3662,10 @@ procedure TBaseCompilerOptions.SetAlternativeCompile(const Command: string;
 begin
   CompilerPath:='';
   ExecuteBefore.Command:=Command;
-  ExecuteBefore.ScanForFPCMessages:=ScanFPCMsgs;
-  ExecuteBefore.ScanForMakeMessages:=ScanFPCMsgs;
-  ExecuteBefore.ShowAllMessages:=false;
+  if ScanFPCMsgs then
+    ExecuteBefore.Parsers.Text:=SubToolFPC+LineEnding+SubToolMake
+  else
+    ExecuteBefore.Parsers.Clear;
 end;
 
 
@@ -4209,33 +4208,34 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TCompilationToolOptions.SetScanForFPCMessages(const AValue: boolean);
+function TCompilationToolOptions.GetHasParser(aName: string): boolean;
 begin
-  if FScanForFPCMessages=AValue then exit;
-  FScanForFPCMessages:=AValue;
-  {$IFDEF VerboseIDEModified}
-  debugln(['TCompilationToolOptions.SetScanForFPCMessages ',AValue]);
-  {$ENDIF}
+  Result:=FParsers.IndexOf(aName)>=0;
+end;
+
+procedure TCompilationToolOptions.SetHasParser(aName: string;
+  const AValue: boolean);
+var
+  i: Integer;
+begin
+  i:=FParsers.IndexOf(aName);
+  if i>=0 then begin
+    if AValue then exit;
+    FParsers.Delete(i);
+  end else begin
+    if not AValue then exit;
+    FParsers.Add(aName);
+  end;
   IncreaseChangeStamp;
 end;
 
-procedure TCompilationToolOptions.SetScanForMakeMessages(const AValue: boolean);
+procedure TCompilationToolOptions.SetParsers(const AValue: TStrings);
 begin
-  if FScanForMakeMessages=AValue then exit;
-  FScanForMakeMessages:=AValue;
+  if FParsers.Equals(AValue) then Exit;
   {$IFDEF VerboseIDEModified}
-  debugln(['TCompilationToolOptions.SetScanForMakeMessages ',AValue]);
+  debugln(['TCompilationToolOptions.SetParsers ',AValue.Text]);
   {$ENDIF}
-  IncreaseChangeStamp;
-end;
-
-procedure TCompilationToolOptions.SetShowAllMessages(const AValue: boolean);
-begin
-  if FShowAllMessages=AValue then exit;
-  FShowAllMessages:=AValue;
-  {$IFDEF VerboseIDEModified}
-  debugln(['TCompilationToolOptions.SetShowAllMessages ',AValue]);
-  {$ENDIF}
+  FParsers.Assign(AValue);
   IncreaseChangeStamp;
 end;
 
@@ -4247,22 +4247,25 @@ end;
 constructor TCompilationToolOptions.Create(TheOwner: TObject);
 begin
   FOwner:=TheOwner;
+  FParsers:=TStringList.Create;
+end;
+
+destructor TCompilationToolOptions.Destroy;
+begin
+  FreeAndNil(FParsers);
+  inherited Destroy;
 end;
 
 procedure TCompilationToolOptions.Clear;
 begin
   Command:='';
-  ScanForFPCMessages:=false;
-  ScanForMakeMessages:=false;
-  ShowAllMessages:=false;
+  Parsers.Clear;
 end;
 
 procedure TCompilationToolOptions.Assign(Src: TCompilationToolOptions);
 begin
   Command:=Src.Command;
-  ScanForFPCMessages:=Src.ScanForFPCMessages;
-  ScanForMakeMessages:=Src.ScanForMakeMessages;
-  ShowAllMessages:=Src.ShowAllMessages;
+  Parsers.Assign(Src.Parsers);
 end;
 
 procedure TCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -4271,23 +4274,48 @@ begin
   //debugln(['TCompilationToolOptions.LoadFromXMLConfig ',Command,' Path=',Path,' DoSwitchPathDelims=',DoSwitchPathDelims]);
   Command:=SwitchPathDelims(XMLConfig.GetValue(Path+'Command/Value',''),
                             DoSwitchPathDelims);
-  ScanForFPCMessages:=XMLConfig.GetValue(Path+'ScanForFPCMsgs/Value',false);
-  ScanForMakeMessages:=XMLConfig.GetValue(Path+'ScanForMakeMsgs/Value',false);
-  ShowAllMessages:=XMLConfig.GetValue(Path+'ShowAllMessages/Value',false);
+  LoadStringList(XMLConfig,Parsers,Path+'Parsers/');
+  if Parsers.Count=0 then begin
+    // read old format
+    HasParser[SubToolFPC]:=XMLConfig.GetValue(Path+'ScanForFPCMsgs/Value',false);
+    HasParser[SubToolMake]:=XMLConfig.GetValue(Path+'ScanForMakeMsgs/Value',false);
+    HasParser[SubToolDefault]:=XMLConfig.GetValue(Path+'ShowAllMessages/Value',false);
+  end;
 end;
 
 procedure TCompilationToolOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; UsePathDelim: TPathDelimSwitch);
+var
+  i: Integer;
+  s: String;
+  NeedNewFormat: Boolean;
 begin
   //debugln(['TCompilationToolOptions.SaveToXMLConfig ',Command,' Path=',Path]);
   XMLConfig.SetDeleteValue(Path+'Command/Value',
                            SwitchPathDelims(Command,UsePathDelim),'');
-  XMLConfig.SetDeleteValue(Path+'ScanForFPCMsgs/Value',
-                           ScanForFPCMessages,false);
-  XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',
-                           ScanForMakeMessages,false);
-  XMLConfig.SetDeleteValue(Path+'ShowAllMessages/Value',
-                           ShowAllMessages,false);
+
+  // Parsers
+  NeedNewFormat:=false;
+  for i:=0 to Parsers.Count-1 do begin
+    s:=Parsers[i];
+    if (CompareText(s,SubToolFPC)=0)
+    or (CompareText(s,SubToolMake)=0)
+    or (CompareText(s,SubToolDefault)=0)
+    then continue;
+    NeedNewFormat:=true;
+    break;
+  end;
+  if NeedNewFormat then
+    SaveStringList(XMLConfig,Parsers,Path+'Parsers/')
+  else begin
+    // save backward compatible
+    XMLConfig.SetDeleteValue(Path+'ScanForFPCMsgs/Value',
+                             HasParser[SubToolFPC],false);
+    XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',
+                             HasParser[SubToolMake],false);
+    XMLConfig.SetDeleteValue(Path+'ShowAllMessages/Value',
+                             HasParser[SubToolDefault],false);
+  end;
 end;
 
 function TCompilationToolOptions.CreateDiff(CompOpts: TCompilationToolOptions;
@@ -4302,9 +4330,7 @@ function TCompilationToolOptions.CreateDiff(CompOpts: TCompilationToolOptions;
 begin
   Result:=false;
   if Done(Tool.AddDiff('Command',Command,CompOpts.Command)) then exit;
-  if Done(Tool.AddDiff('ScanForFPCMessages',ScanForFPCMessages,CompOpts.ScanForFPCMessages)) then exit;
-  if Done(Tool.AddDiff('ScanForMakeMessages',ScanForMakeMessages,CompOpts.ScanForMakeMessages)) then exit;
-  if Done(Tool.AddDiff('ShowAllMessages',ShowAllMessages,CompOpts.ShowAllMessages)) then exit;
+  if Done(Tool.AddStringsDiff('Parsers',Parsers,CompOpts.Parsers)) then exit;
 end;
 
 function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle,
@@ -4339,6 +4365,8 @@ var
   ProgramFilename: string;
   Params: string;
   Filename: String;
+  ok: Boolean;
+  i: Integer;
 begin
   CurCommand:=GetParsedCommand;
   //debugln(['TCompilationToolOptions.CreateExtTool CurCommand=[',CurCommand,']']);
@@ -4352,16 +4380,21 @@ begin
     if Filename<>'' then ProgramFilename:=Filename;
   end;
   Result:=ExternalToolList.Add(ToolTitle);
-  Result.Hint:=CompileHint;
-  Result.Process.CurrentDirectory:=WorkingDir;
-  Result.Process.Executable:=ProgramFilename;
-  Result.CmdLineParams:=Params;
-  if ScanForFPCMessages then
-    Result.AddParsers(SubToolFPC);
-  if ScanForMakeMessages then
-    Result.AddParsers(SubToolMake);
-  if Result.ParserCount=0 then
-    Result.AddParsers(SubToolDefault);
+  ok:=false;
+  try
+    Result.Hint:=CompileHint;
+    Result.Process.CurrentDirectory:=WorkingDir;
+    Result.Process.Executable:=ProgramFilename;
+    Result.CmdLineParams:=Params;
+    for i:=0 to Parsers.Count-1 do
+      Result.AddParserByName(Parsers[i]);
+    if Result.ParserCount=0 then
+      Result.AddParsers(SubToolDefault);
+    ok:=true;
+  finally
+    if not ok then
+      FreeAndNil(Result);
+  end;
 end;
 
 procedure TCompilationToolOptions.IncreaseChangeStamp;

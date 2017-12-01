@@ -295,6 +295,10 @@ msgstr "Establecer valor"
 msgid "Unable to find parser for tool \"%s\""
 msgstr "No se encontró analizador para la herramienta \"%s\""
 
+#: objinspstrconsts.lisunabletofindparserwithname
+msgid "Unable to find parser with name \"%s\""
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"

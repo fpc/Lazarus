@@ -438,6 +438,7 @@ resourcestring
   oisChangeClass = 'Change Class ...';
   oisChangeParent = 'Change Parent';
   lisUnableToFindParserForTool = 'Unable to find parser for tool "%s"';
+  lisUnableToFindParserWithName = 'Unable to find parser with name "%s"';
 
   // TChangeParentDlg
   oisShowClasses = 'Show classes';

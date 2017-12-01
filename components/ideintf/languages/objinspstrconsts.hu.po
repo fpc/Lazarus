@@ -295,6 +295,10 @@ msgstr "Érték megadása"
 msgid "Unable to find parser for tool \"%s\""
 msgstr "Nem található elemző az eszközhöz: \"%s\""
 
+#: objinspstrconsts.lisunabletofindparserwithname
+msgid "Unable to find parser with name \"%s\""
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"

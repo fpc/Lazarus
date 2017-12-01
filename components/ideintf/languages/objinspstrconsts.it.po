@@ -296,6 +296,10 @@ msgstr "Imposta valore"
 msgid "Unable to find parser for tool \"%s\""
 msgstr "unable to find parser for tool \"%s\""
 
+#: objinspstrconsts.lisunabletofindparserwithname
+msgid "Unable to find parser with name \"%s\""
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"

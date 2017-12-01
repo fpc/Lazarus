@@ -288,6 +288,10 @@ msgstr "Aseta arvo"
 msgid "Unable to find parser for tool \"%s\""
 msgstr "Jäsentäjää työkalulle \"%s\" ei löydy"
 
+#: objinspstrconsts.lisunabletofindparserwithname
+msgid "Unable to find parser with name \"%s\""
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"

@@ -55,8 +55,8 @@ uses
 
 const
   ExternalToolOptionsVersion = 3;
-  // 3: changed ScanOutputForFPCMessages to scanner SubToolFPC
-  //    changed ScanOutputForMakeMessages to scanner SubToolMake
+  // 3: changed ScanOutputForFPCMessages to parser SubToolFPC
+  //    changed ScanOutputForMakeMessages to parser SubToolMake
 type
 
   { TExternalUserTool - the options of an external tool in the IDE menu Tools }
@@ -69,22 +69,22 @@ type
     fFilename: string;
     FHideWindow: boolean;
     FKey: word;
-    FScanners: TStrings;
+    FParsers: TStrings;
     FShift: TShiftState;
     FShowConsole: boolean;
     fTitle: string;
     fWorkingDirectory: string;
     fSavedChangeStamp: integer;
-    function GetHasScanner(aName: string): boolean;
+    function GetHasParser(aName: string): boolean;
     function GetModified: boolean;
     procedure SetChangeStamp(AValue: integer);
     procedure SetCmdLineParams(AValue: string);
     procedure SetEnvironmentOverrides(AValue: TStringList);
     procedure SetFilename(AValue: string);
-    procedure SetHasScanner(aName: string; AValue: boolean);
+    procedure SetHasParser(aName: string; AValue: boolean);
     procedure SetHideWindow(AValue: boolean);
     procedure SetModified(AValue: boolean);
-    procedure SetScanners(AValue: TStrings);
+    procedure SetParsers(AValue: TStrings);
     procedure SetShowConsole(AValue: boolean);
     procedure SetTitle(AValue: string);
     procedure SetWorkingDirectory(AValue: string);
@@ -102,8 +102,8 @@ type
     property Title: string read fTitle write SetTitle;
     property WorkingDirectory: string read fWorkingDirectory write SetWorkingDirectory;
     property EnvironmentOverrides: TStringList read FEnvironmentOverrides write SetEnvironmentOverrides;
-    property Scanners: TStrings read FScanners write SetScanners;
-    property HasScanner[aName: string]: boolean read GetHasScanner write SetHasScanner;
+    property Parsers: TStrings read FParsers write SetParsers;
+    property HasParser[aName: string]: boolean read GetHasParser write SetHasParser;
     property ShowConsole: boolean read FShowConsole write SetShowConsole;
     property HideWindow: boolean read FHideWindow write SetHideWindow;
     property Modified: boolean read GetModified write SetModified;
@@ -240,9 +240,9 @@ begin
   Result:=FChangeStamp=fSavedChangeStamp;
 end;
 
-function TExternalUserTool.GetHasScanner(aName: string): boolean;
+function TExternalUserTool.GetHasParser(aName: string): boolean;
 begin
-  Result:=IndexInStringList(FScanners,cstCaseInsensitive,aName)>=0;
+  Result:=IndexInStringList(FParsers,cstCaseInsensitive,aName)>=0;
 end;
 
 procedure TExternalUserTool.SetChangeStamp(AValue: integer);
@@ -274,17 +274,17 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TExternalUserTool.SetHasScanner(aName: string; AValue: boolean);
+procedure TExternalUserTool.SetHasParser(aName: string; AValue: boolean);
 var
   i: Integer;
 begin
-  i:=IndexInStringList(FScanners,cstCaseInsensitive,aName);
+  i:=IndexInStringList(FParsers,cstCaseInsensitive,aName);
   if i>=0 then begin
     if AValue then exit;
-    FScanners.Delete(i);
+    FParsers.Delete(i);
   end else begin
     if not AValue then exit;
-    FScanners.Add(aName);
+    FParsers.Add(aName);
   end;
   IncreaseChangeStamp;
 end;
@@ -304,10 +304,10 @@ begin
     fSavedChangeStamp:=FChangeStamp;
 end;
 
-procedure TExternalUserTool.SetScanners(AValue: TStrings);
+procedure TExternalUserTool.SetParsers(AValue: TStrings);
 begin
-  if (FScanners=AValue) or FScanners.Equals(AValue) then Exit;
-  FScanners.Assign(AValue);
+  if (FParsers=AValue) or FParsers.Equals(AValue) then Exit;
+  FParsers.Assign(AValue);
   IncreaseChangeStamp;
 end;
 
@@ -338,7 +338,7 @@ constructor TExternalUserTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEnvironmentOverrides:=TStringList.Create;
-  FScanners:=TStringList.Create;
+  FParsers:=TStringList.Create;
   fSavedChangeStamp:=CTInvalidChangeStamp;
   Clear;
 end;
@@ -346,7 +346,7 @@ end;
 destructor TExternalUserTool.Destroy;
 begin
   FreeAndNil(FEnvironmentOverrides);
-  FreeAndNil(FScanners);
+  FreeAndNil(FParsers);
   inherited Destroy;
 end;
 
@@ -359,9 +359,9 @@ begin
     FEnvironmentOverrides.Clear;
   end;
   Filename:='';
-  if FScanners.Count>0 then
+  if FParsers.Count>0 then
   begin
-    FScanners.Clear;
+    FParsers.Clear;
     IncreaseChangeStamp;
   end;
   Title:='';
@@ -379,7 +379,7 @@ begin
     Result:=(CmdLineParams=Src.CmdLineParams)
       and EnvironmentOverrides.Equals(Src.EnvironmentOverrides)
       and (Filename=Src.Filename)
-      and Scanners.Equals(Src.Scanners)
+      and Parsers.Equals(Src.Parsers)
       and (ShowConsole=Src.ShowConsole)
       and (HideWindow=Src.HideWindow)
       and (Title=Src.Title)
@@ -401,7 +401,7 @@ begin
     WorkingDirectory:=Src.WorkingDirectory;
     EnvironmentOverrides:=Src.EnvironmentOverrides;
     Filename:=Src.Filename;
-    Scanners:=Src.Scanners;
+    Parsers:=Src.Parsers;
     ShowConsole:=Src.ShowConsole;
     HideWindow:=Src.HideWindow;
     Title:=Src.Title;
@@ -426,13 +426,13 @@ begin
   if CfgVersion<3 then
   begin
     if Config.GetValue('ScanOutputForFPCMessages/Value',false) then
-      FScanners.Add(SubToolFPC);
+      FParsers.Add(SubToolFPC);
     if Config.GetValue('ScanOutputForMakeMessages/Value',false) then
-      FScanners.Add(SubToolMake);
+      FParsers.Add(SubToolMake);
     if Config.GetValue('ShowAllOutput/Value',false) then
-      FScanners.Add(SubToolDefault);
+      FParsers.Add(SubToolDefault);
   end else
-    Config.GetValue('Scanners/',FScanners);
+    Config.GetValue('Scanners/',FParsers);
 
   Modified:=false;
   Result:=mrOk;
@@ -445,7 +445,7 @@ begin
   Config.SetDeleteValue('CmdLineParams/Value',CmdLineParams,'');
   Config.SetDeleteValue('WorkingDirectory/Value',WorkingDirectory,'');
   Config.SetValue('EnvironmentOverrides/',FEnvironmentOverrides);
-  Config.SetValue('Scanners/',FScanners);
+  Config.SetValue('Scanners/',FParsers);
   Config.SetDeleteValue('ShowConsole/Value',ShowConsole,false);
   Config.SetDeleteValue('HideWindow/Value',HideWindow,true);
   Modified:=false;
@@ -555,7 +555,7 @@ begin
     Tool.WorkingDirectory:=Item.WorkingDirectory;
     Tool.CmdLineParams:=Item.CmdLineParams;
     Tool.EnvironmentOverrides:=Item.EnvironmentOverrides;
-    Tool.Scanners:=Item.Scanners;
+    Tool.Parsers:=Item.Parsers;
     Tool.ShowConsole:=Item.ShowConsole;
     Tool.HideWindow:=Item.HideWindow;
     Tool.ResolveMacros:=true;
@@ -683,11 +683,11 @@ begin
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
   fKeyBox.Key:=fOptions.Key;
   fKeyBox.ShiftState:=fOptions.Shift;
-  ScanOutputForFPCMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolFPC];
-  ScanOutputForMakeMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolMake];
+  ScanOutputForFPCMessagesCheckBox.Checked:=fOptions.HasParser[SubToolFPC];
+  ScanOutputForMakeMessagesCheckBox.Checked:=fOptions.HasParser[SubToolMake];
   ShowConsoleCheckBox.Checked:=FOptions.ShowConsole;
   HideWindowCheckBox.Checked:=FOptions.HideWindow;
-  fScanners.Assign(fOptions.Scanners);
+  fScanners.Assign(fOptions.Parsers);
   UpdateButtons;
 end;
 
@@ -701,8 +701,8 @@ begin
   fOptions.Shift:=fKeyBox.ShiftState;
   FOptions.ShowConsole := ShowConsoleCheckBox.Checked;
   FOptions.HideWindow := HideWindowCheckBox.Checked;
-  fOptions.HasScanner[SubToolFPC]:=ScanOutputForFPCMessagesCheckBox.Checked;
-  fOptions.HasScanner[SubToolMake]:=ScanOutputForMakeMessagesCheckBox.Checked;
+  fOptions.HasParser[SubToolFPC]:=ScanOutputForFPCMessagesCheckBox.Checked;
+  fOptions.HasParser[SubToolMake]:=ScanOutputForMakeMessagesCheckBox.Checked;
 end;
 
 procedure TExternalToolOptionDlg.UpdateButtons;

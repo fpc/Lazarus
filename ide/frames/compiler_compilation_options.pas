@@ -13,7 +13,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
-  IDEOptionsIntf, CompOptsIntf, IDEDialogs, IDEUtils,
+  IDEOptionsIntf, CompOptsIntf, IDEDialogs, IDEUtils, IDEExternToolIntf,
   // IDE
   Project, CompilerOptions, PackageDefs, LazarusIDEStrConsts, EnvironmentOpts,
   LazConf, IDEProcs, DialogProcs, InputHistory, InitialSetupProc;
@@ -152,16 +152,16 @@ begin
   chkCreateMakefile.Hint := lisEnabledOnlyForPackages;
 
   ExecuteBeforeGroupBox.Caption := lisCOExecuteBefore;
+  lblRunIfExecBefore.Caption := lisCOCallOn;
   chkExecBeforeBuild.Caption := lisBuildStage;
   chkExecBeforeCompile.Caption := lisCompileStage;
   chkExecBeforeRun.Caption := lisRunStage;
   ExecuteBeforeCommandComboBox.Text := '';
   ExecuteBeforeCommandLabel.Caption := lisCOCommand;
   ExecuteBeforeScanLabel.Caption := lisCOScanForMessages;
-  ExecuteBeforeScanFPCCheckBox.Caption := 'FPC'; // do not translate name
-  ExecuteBeforeScanMakeCheckBox.Caption := 'make'; // do not translate name
+  ExecuteBeforeScanFPCCheckBox.Caption := SubToolFPC; // do not translate name
+  ExecuteBeforeScanMakeCheckBox.Caption := SubToolMake; // do not translate name
   ExecuteBeforeShowAllCheckBox.Caption := lisA2PShowAll;
-  lblRunIfExecBefore.Caption := lisCOCallOn;
 
   grpCompiler.Caption := lisCompiler;
   lblRunIfCompiler.Caption := lisCOCallOn;
@@ -182,8 +182,8 @@ begin
   ExecuteAfterCommandComboBox.Text := '';
   ExecuteAfterCommandLabel.Caption := lisCOCommand;
   ExecuteAfterScanLabel.Caption := lisCOScanForMessages;
-  ExecuteAfterScanFPCCheckBox.Caption := 'FPC'; // do not translate name
-  ExecuteAfterScanMakeCheckBox.Caption := 'make'; // do not translate name
+  ExecuteAfterScanFPCCheckBox.Caption := SubToolFPC; // do not translate name
+  ExecuteAfterScanMakeCheckBox.Caption := SubToolMake; // do not translate name
   ExecuteAfterShowAllCheckBox.Caption := lisA2PShowAll;
   lblRunIfExecAfter.Caption := lisCOCallOn;
 end;
@@ -195,10 +195,10 @@ begin
   chkCreateMakefile.Checked := Options.CreateMakefileOnBuild;
 
   ExecuteBeforeCommandComboBox.Text := Options.ExecuteBefore.Command;
-  ExecuteBeforeScanFPCCheckBox.Checked := Options.ExecuteBefore.ScanForFPCMessages;
-  ExecuteBeforeScanMakeCheckBox.Checked :=
-    Options.ExecuteBefore.ScanForMakeMessages;
-  ExecuteBeforeShowAllCheckBox.Checked := Options.ExecuteBefore.ShowAllMessages;
+  ExecuteBeforeScanFPCCheckBox.Checked := Options.ExecuteBefore.HasParser[SubToolFPC];
+  ExecuteBeforeScanMakeCheckBox.Checked := Options.ExecuteBefore.HasParser[SubToolMake];
+  ExecuteBeforeShowAllCheckBox.Checked := Options.ExecuteBefore.HasParser[SubToolDefault];
+
   if Options.ExecuteBefore is TProjectCompilationToolOptions then
     with TProjectCompilationToolOptions(Options.ExecuteBefore) do
     begin
@@ -269,9 +269,9 @@ begin
   end;
 
   ExecuteAfterCommandComboBox.Text := Options.ExecuteAfter.Command;
-  ExecuteAfterScanFPCCheckBox.Checked := Options.ExecuteAfter.ScanForFPCMessages;
-  ExecuteAfterScanMakeCheckBox.Checked := Options.ExecuteAfter.ScanForMakeMessages;
-  ExecuteAfterShowAllCheckBox.Checked := Options.ExecuteAfter.ShowAllMessages;
+  ExecuteAfterScanFPCCheckBox.Checked := Options.ExecuteAfter.HasParser[SubToolFPC];
+  ExecuteAfterScanMakeCheckBox.Checked := Options.ExecuteAfter.HasParser[SubToolMake];
+  ExecuteAfterShowAllCheckBox.Checked := Options.ExecuteAfter.HasParser[SubToolDefault];
   if Options.ExecuteAfter is TProjectCompilationToolOptions then
     with TProjectCompilationToolOptions(Options.ExecuteAfter) do
     begin
@@ -308,9 +308,10 @@ begin
   Options.CreateMakefileOnBuild := chkCreateMakefile.Checked;
 
   Options.ExecuteBefore.Command := ExecuteBeforeCommandComboBox.Text;
-  Options.ExecuteBefore.ScanForFPCMessages := ExecuteBeforeScanFPCCheckBox.Checked;
-  Options.ExecuteBefore.ScanForMakeMessages :=ExecuteBeforeScanMakeCheckBox.Checked;
-  Options.ExecuteBefore.ShowAllMessages := ExecuteBeforeShowAllCheckBox.Checked;
+  Options.ExecuteBefore.HasParser[SubToolFPC] := ExecuteBeforeScanFPCCheckBox.Checked;
+  Options.ExecuteBefore.HasParser[SubToolMake] :=ExecuteBeforeScanMakeCheckBox.Checked;
+  Options.ExecuteBefore.HasParser[SubToolDefault] := ExecuteBeforeShowAllCheckBox.Checked;
+
   if Options.ExecuteBefore is TProjectCompilationToolOptions then
   begin
     TProjectCompilationToolOptions(Options.ExecuteBefore).CompileReasons :=
@@ -334,9 +335,9 @@ begin
     TPkgCompilerOptions(Options).SkipCompiler := chkCompilerCompile.Checked;
 
   Options.ExecuteAfter.Command := ExecuteAfterCommandComboBox.Text;
-  Options.ExecuteAfter.ScanForFPCMessages := ExecuteAfterScanFPCCheckBox.Checked;
-  Options.ExecuteAfter.ScanForMakeMessages :=ExecuteAfterScanMakeCheckBox.Checked;
-  Options.ExecuteAfter.ShowAllMessages := ExecuteAfterShowAllCheckBox.Checked;
+  Options.ExecuteAfter.HasParser[SubToolFPC] := ExecuteAfterScanFPCCheckBox.Checked;
+  Options.ExecuteAfter.HasParser[SubToolMake] :=ExecuteAfterScanMakeCheckBox.Checked;
+  Options.ExecuteAfter.HasParser[SubToolDefault] := ExecuteAfterShowAllCheckBox.Checked;
   if Options.ExecuteAfter is TProjectCompilationToolOptions then
   begin
     TProjectCompilationToolOptions(Options.ExecuteAfter).CompileReasons :=

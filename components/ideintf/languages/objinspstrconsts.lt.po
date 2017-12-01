@@ -296,6 +296,10 @@ msgstr "Keisti vertę"
 msgid "Unable to find parser for tool \"%s\""
 msgstr "Įrankiui „%s“ neina rasti nalizatoriaus"
 
+#: objinspstrconsts.lisunabletofindparserwithname
+msgid "Unable to find parser with name \"%s\""
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"

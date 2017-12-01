@@ -284,7 +284,7 @@ type
   { TExtToolParser
     Read the output of a tool, for example the output of the Free Pascal compiler.
     It does not filter. Some parsers can work together, for example make and fpc.
-    Usage: Tool.AddParsers('ParserName');
+    Usage: Tool.AddParsers('SubTool') or Tool.AddParser(ParseClass);
     }
   TExtToolParser = class(TComponent)
   private
@@ -304,7 +304,10 @@ type
     property NeedAfterSync: boolean read FNeedAfterSync write FNeedAfterSync; // set this in ImproveMessages phase etpspSynchronized
     procedure ImproveMessages({%H-}aPhase: TExtToolParserSyncPhase); virtual; // Tool.WorkerMessages, Tool is in Critical section
     procedure ConsistencyCheck; virtual;
-    class function IsSubTool(const SubTool: string): boolean; virtual;
+    class function GetParserName: string; virtual;
+    class function GetLocalizedParserName: string; virtual;
+    class function IsSubTool(const SubTool: string): boolean; deprecated 'use CanParseSubTool';
+    class function CanParseSubTool(const SubTool: string): boolean; virtual;
     class function GetMsgPattern({%H-}SubTool: string; {%H-}MsgID: integer;
       out Urgency: TMessageLineUrgency): string; virtual;
     class function GetMsgHint({%H-}SubTool: string; {%H-}MsgID: integer): string; virtual;
@@ -562,6 +565,7 @@ type
     property Parsers[Index: integer]: TExtToolParser read GetParsers; // sorted for Priority
     function AddParsers(const SubTool: string): TExtToolParser; // will be freed on Destroy
     function AddParser(ParserClass: TExtToolParserClass): TExtToolParser; // will be freed on Destroy
+    function AddParserByName(const ParserName: string): TExtToolParser; // will be freed on Destroy
     procedure DeleteParser(Parser: TExtToolParser); // disconnect and free
     procedure RemoveParser(Parser: TExtToolParser); // disconnect without free
     function IndexOfParser(Parser: TExtToolParser): integer;
@@ -643,7 +647,8 @@ type
     // parsers
     procedure RegisterParser(Parser: TExtToolParserClass); virtual; abstract; // (main thread)
     procedure UnregisterParser(Parser: TExtToolParserClass); virtual; abstract; // (main thread)
-    function FindParser(const SubTool: string): TExtToolParserClass; virtual; abstract; // (main thread)
+    function FindParserForTool(const SubTool: string): TExtToolParserClass; virtual; abstract; // (main thread)
+    function FindParserWithName(const ParserName: string): TExtToolParserClass; virtual; abstract; // (main thread)
     function ParserCount: integer; virtual; abstract; // (main thread)
     property Parsers[Index: integer]: TExtToolParserClass read GetParsers; // (main thread)
     function GetMsgPattern(SubTool: string; MsgID: integer; out Urgency: TMessageLineUrgency): string; virtual; // (main thread)
@@ -669,12 +674,12 @@ type
     FHint: string;
     FQuiet: boolean;
     FResolveMacros: boolean;
-    FScanners: TStrings;
+    FParsers: TStrings;
     FShowConsole: boolean;
     fTitle: string;
     fWorkingDirectory: string;
     procedure SetEnvironmentOverrides(AValue: TStringList);
-    procedure SetScanners(AValue: TStrings);
+    procedure SetParsers(AValue: TStrings);
   public
     constructor Create;
     destructor Destroy; override;
@@ -689,7 +694,8 @@ type
     property CmdLineParams: string read fCmdLineParams write fCmdLineParams;
     property WorkingDirectory: string read fWorkingDirectory write fWorkingDirectory;
     property EnvironmentOverrides: TStringList read FEnvironmentOverrides write SetEnvironmentOverrides;
-    property Scanners: TStrings read FScanners write SetScanners;
+    property Scanners: TStrings read FParsers; deprecated 'use Parsers';
+    property Parsers: TStrings read FParsers write SetParsers;
     property ShowConsole: boolean read FShowConsole write FShowConsole default false; // sets poNoConsole/poNewConsole, works only on MSWindows
     property HideWindow: boolean read FHideWindow write FHideWindow default true; // sets/unsets swoHide/swoShow, works only on MSWindows
     property ResolveMacros: boolean read FResolveMacros write FResolveMacros default true;
@@ -806,24 +812,24 @@ begin
   FEnvironmentOverrides.Assign(AValue);
 end;
 
-procedure TIDEExternalToolOptions.SetScanners(AValue: TStrings);
+procedure TIDEExternalToolOptions.SetParsers(AValue: TStrings);
 begin
-  if FScanners.Equals(AValue) then Exit;
-  FScanners.Assign(AValue);
+  if FParsers.Equals(AValue) then Exit;
+  FParsers.Assign(AValue);
 end;
 
 constructor TIDEExternalToolOptions.Create;
 begin
   ResolveMacros:=true;
   FEnvironmentOverrides:=TStringList.Create;
-  FScanners:=TStringList.Create;
+  FParsers:=TStringList.Create;
   FHideWindow:=true;
 end;
 
 destructor TIDEExternalToolOptions.Destroy;
 begin
   FreeAndNil(FEnvironmentOverrides);
-  FreeAndNil(FScanners);
+  FreeAndNil(FParsers);
   inherited Destroy;
 end;
 
@@ -834,7 +840,7 @@ begin
   CmdLineParams:=Source.CmdLineParams;
   WorkingDirectory:=Source.WorkingDirectory;
   EnvironmentOverrides:=Source.EnvironmentOverrides;
-  Scanners:=Source.Scanners;
+  Parsers:=Source.Parsers;
   ShowConsole:=Source.ShowConsole;
   HideWindow:=Source.HideWindow;
   ResolveMacros:=Source.ResolveMacros;
@@ -854,7 +860,7 @@ begin
       and (CmdLineParams=Source.CmdLineParams)
       and (WorkingDirectory=Source.WorkingDirectory)
       and EnvironmentOverrides.Equals(Source.EnvironmentOverrides)
-      and Scanners.Equals(Source.Scanners)
+      and Parsers.Equals(Source.Parsers)
       and (ShowConsole=Source.ShowConsole)
       and (HideWindow=Source.HideWindow)
       and (ResolveMacros=Source.ResolveMacros)
@@ -873,7 +879,7 @@ begin
   FShowConsole:=false;
   FHideWindow:=true;
   FResolveMacros:=true;
-  FScanners.Clear;
+  FParsers.Clear;
   fTitle:='';
   fWorkingDirectory:='';
   FQuiet:=false;
@@ -1314,10 +1320,10 @@ begin
   Result:=nil;
   for i:=0 to ExternalToolList.ParserCount-1 do begin
     ParserClass:=ExternalToolList.Parsers[i];
-    if not ParserClass.IsSubTool(SubTool) then continue;
+    if not ParserClass.CanParseSubTool(SubTool) then continue;
     Result:=AddParser(ParserClass);
-    exit;
   end;
+  if Result<>nil then exit;
   raise Exception.Create(Format(lisUnableToFindParserForTool, [SubTool]));
 end;
 
@@ -1337,6 +1343,18 @@ begin
     inc(i);
   FParsers.Insert(i,Result);
   Result.FTool:=Self;
+end;
+
+function TAbstractExternalTool.AddParserByName(const ParserName: string
+  ): TExtToolParser;
+var
+  aClass: TExtToolParserClass;
+begin
+  Result:=nil;
+  aClass:=ExternalToolList.FindParserWithName(ParserName);
+  if aClass=nil then
+    raise Exception.Create(Format(lisUnableToFindParserWithName, [ParserName]));
+  Result:=AddParser(aClass);
 end;
 
 procedure TAbstractExternalTool.RemoveParser(Parser: TExtToolParser);
@@ -1385,7 +1403,7 @@ var
 begin
   for i:=0 to ExternalToolList.ParserCount-1 do begin
     ParserClass:=ExternalToolList.Parsers[i];
-    if not ParserClass.IsSubTool(SubTool) then continue;
+    if not ParserClass.CanParseSubTool(SubTool) then continue;
     Result:=FindParser(ParserClass);
     if Result<>nil then exit;
   end;
@@ -1506,7 +1524,22 @@ begin
 
 end;
 
+class function TExtToolParser.GetParserName: string;
+begin
+  Result:=DefaultSubTool;
+end;
+
+class function TExtToolParser.GetLocalizedParserName: string;
+begin
+  Result:=DefaultSubTool;
+end;
+
 class function TExtToolParser.IsSubTool(const SubTool: string): boolean;
+begin
+  Result:=CanParseSubTool(SubTool);
+end;
+
+class function TExtToolParser.CanParseSubTool(const SubTool: string): boolean;
 begin
   Result:=CompareText(DefaultSubTool,SubTool)=0;
 end;

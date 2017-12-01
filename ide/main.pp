@@ -7632,10 +7632,10 @@ begin
       ExtTool.CmdLineParams:=Params;
       ExtTool.Executable:=ProgramFilename;
       if idedbsfFPC in BuildScan then
-        ExtTool.Scanners.Add(SubToolFPC);
+        ExtTool.Parsers.Add(SubToolFPC);
       if idedbsfMake in BuildScan then
-        ExtTool.Scanners.Add(SubToolMake);
-      ExtTool.Scanners.Add(SubToolDefault);
+        ExtTool.Parsers.Add(SubToolMake);
+      ExtTool.Parsers.Add(SubToolDefault);
       if RunExternalTool(ExtTool) then
         Result:=mrOk
       else
@@ -7741,7 +7741,7 @@ begin
       ExtTool.CmdLineParams:=Params;
       ExtTool.Executable:=ProgramFilename;
       if idedrfMessages in RunFlags then
-        ExtTool.Scanners.Add(SubToolDefault);
+        ExtTool.Parsers.Add(SubToolDefault);
       if RunExternalTool(ExtTool) then
         Result:=mrOk
       else

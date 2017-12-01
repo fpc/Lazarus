@@ -235,7 +235,7 @@ type
     function GetFPCMsgIDPattern(MsgID: integer): string; override;
     function IsMsgID(MsgLine: TMessageLine; MsgID: integer;
       var Item: TFPCMsgItem): boolean;
-    class function IsSubTool(const SubTool: string): boolean; override;
+    class function CanParseSubTool(const SubTool: string): boolean; override;
     class function DefaultSubTool: string; override;
     class function GetMsgPattern(SubTool: string; MsgID: integer;
       out Urgency: TMessageLineUrgency): string; override;
@@ -3202,7 +3202,7 @@ begin
   fLastWorkerImprovedMessage[aPhase]:=Tool.WorkerMessages.Count-1;
 end;
 
-class function TIDEFPCParser.IsSubTool(const SubTool: string): boolean;
+class function TIDEFPCParser.CanParseSubTool(const SubTool: string): boolean;
 begin
   Result:=(CompareText(SubTool,SubToolFPC)=0)
        or (CompareText(SubTool,SubToolFPCLinker)=0)

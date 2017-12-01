@@ -207,7 +207,9 @@ type
     function ParserCount: integer; override;
     procedure RegisterParser(Parser: TExtToolParserClass); override;
     procedure UnregisterParser(Parser: TExtToolParserClass); override;
-    function FindParser(const SubTool: string): TExtToolParserClass; override;
+    function FindParserForTool(const SubTool: string): TExtToolParserClass; override;
+    function FindParserWithName(const ParserName: string): TExtToolParserClass;
+      override;
     function GetMsgTool(Msg: TMessageLine): TAbstractExternalTool; override;
   end;
 
@@ -1116,7 +1118,7 @@ begin
   {$ENDIF}
   Result:=false;
 
-  if (ToolOptions.Scanners.Count=0) and (ExtToolConsole=nil) then begin
+  if (ToolOptions.Parsers.Count=0) and (ExtToolConsole=nil) then begin
     // simply run and detach
     Proc:=TProcessUTF8.Create(nil);
     try
@@ -1243,8 +1245,8 @@ begin
       Tool.CmdLineParams:=ToolOptions.CmdLineParams;
       Tool.EnvironmentOverrides:=ToolOptions.EnvironmentOverrides;
       if ExtToolConsole=nil then
-        for i:=0 to ToolOptions.Scanners.Count-1 do
-          Tool.AddParsers(ToolOptions.Scanners[i]);
+        for i:=0 to ToolOptions.Parsers.Count-1 do
+          Tool.AddParsers(ToolOptions.Parsers[i]);
       if ToolOptions.ShowConsole then
         Tool.Process.Options:=Tool.Process.Options+[poNewConsole]-[poNoConsole]
       else
@@ -1489,13 +1491,26 @@ begin
   fParsers.Remove(Parser);
 end;
 
-function TExternalTools.FindParser(const SubTool: string): TExtToolParserClass;
+function TExternalTools.FindParserForTool(const SubTool: string
+  ): TExtToolParserClass;
 var
   i: Integer;
 begin
   for i:=0 to fParsers.Count-1 do begin
     Result:=TExtToolParserClass(fParsers[i]);
-    if Result.IsSubTool(SubTool) then exit;
+    if Result.CanParseSubTool(SubTool) then exit;
+  end;
+  Result:=nil;
+end;
+
+function TExternalTools.FindParserWithName(const ParserName: string
+  ): TExtToolParserClass;
+var
+  i: Integer;
+begin
+  for i:=0 to fParsers.Count-1 do begin
+    Result:=TExtToolParserClass(fParsers[i]);
+    if SameText(Result.GetParserName,ParserName) then exit;
   end;
   Result:=nil;
 end;

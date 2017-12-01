@@ -400,8 +400,8 @@ begin
     Tool.WorkingDirectory:=LHelpProjectDir;
     Tool.Executable:=Lazbuild;
     Tool.CmdLineParams:=QuotedStr(WS)+' '+QuotedStr(PCP)+' '+QuotedStr(LHelpProject);
-    Tool.Scanners.Add(SubToolFPC);
-    Tool.Scanners.Add(SubToolMake);
+    Tool.Parsers.Add(SubToolFPC);
+    Tool.Parsers.Add(SubToolMake);
     if RunExternalTool(Tool) then
     begin
       Result:=mrOk;

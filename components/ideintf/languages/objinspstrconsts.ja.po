@@ -293,6 +293,10 @@ msgstr "値を設定"
 msgid "Unable to find parser for tool \"%s\""
 msgstr ""
 
+#: objinspstrconsts.lisunabletofindparserwithname
+msgid "Unable to find parser with name \"%s\""
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
 msgid "Add Page"
