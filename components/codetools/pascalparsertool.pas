@@ -1327,7 +1327,7 @@ begin
   CurNode.Desc:=ctnProcedureHead;
   CheckOperatorProc(ParseAttr);
   ReadNextAtom;
-  if Scanner.CompilerMode=cmDELPHI then
+  if Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE] then
     ReadGenericParamList(false,true);
   if (CurPos.Flag<>cafPoint) then begin
     // read rest
@@ -1659,7 +1659,7 @@ begin
       if (phpCreateNodes in Attr) then begin
         EndChildNode;
       end;
-      if (Scanner.CompilerMode=cmDELPHI) and AtomIsChar('<') then
+      if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
         ReadSpecialize(phpCreateNodes in Attr,Extract,Copying,Attr);
     end;
     if (phpCreateNodes in Attr) then begin
@@ -1772,7 +1772,7 @@ begin
       ReadTypeReference(pphCreateNodes in ParseAttr);
     end
     else begin
-      if (Scanner.CompilerMode<>cmDelphi) then
+      if not (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) then
         SaveRaiseCharExpectedButAtomFound(20170421195449,':')
       else begin
         // Delphi Mode
@@ -4285,14 +4285,14 @@ begin
     inc(Cnt,2);
   end;
   if AtomIsChar('<') then begin
-    if ((Cnt=1) and LastUpAtomIs(-1,'STRING'))
-    or ((Cnt=3) and LastUpAtomIs(-3,'SYSTEM') and LastUpAtomIs(-1,'STRING'))
+    if ((Cnt=1) and LastUpAtomIs(1,'STRING'))
+    or ((Cnt=3) and LastUpAtomIs(3,'SYSTEM') and LastUpAtomIs(1,'STRING'))
     then begin
       // e.g. string<codepage>
       ReadAnsiStringParams;
       ReadNextAtom;
     end
-    else if (Scanner.CompilerMode=cmDELPHI) then begin
+    else if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) then begin
       // e.g. atype<params>
       if CreateNodes then begin
         CurNode.Desc:=ctnSpecialize;

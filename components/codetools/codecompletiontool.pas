@@ -7202,7 +7202,7 @@ var
             RaiseExceptionFmt(20170421201752,ctsIndexParameterExpectedButAtomFound,[GetAtom]);
           ReadNextAtom;
         end;
-      end else 
+      end else
         RaiseExceptionFmt(20170421201755,ctsStrExpectedButAtomFound,[';',GetAtom]);
     end;
   end;
@@ -7515,7 +7515,7 @@ var
             begin
               ProcBody:=
                 'procedure '
-                +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
+                +ExtractClassName(PropNode.Parent.Parent,false,true,Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE])+'.'+AccessParam
                 +'('+AccessVariableNameParam+':'+PropType+');'
                 +BeautifyCodeOpts.LineEnd
                 +'begin'+BeautifyCodeOpts.LineEnd
@@ -7902,7 +7902,7 @@ begin
         end;
       end;
       CurCode:=ANodeExt.ExtTxt1;
-      CurCode:=Beauty.BeautifyStatement(CurCode,Indent);
+      CurCode:=Beauty.BeautifyStatement(CurCode,Indent,[bcfChangeSymbolToBracketForGenericTypeBrackets]);
       {$IFDEF CTDEBUG}
       DebugLn('TCodeCompletionCodeTool.InsertNewClassParts:');
       DebugLn(CurCode);
@@ -8722,7 +8722,7 @@ begin
   TypeSectionNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
   Result:=GatherProcNodes(TypeSectionNode,
                       [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-                       ExtractClassName(ClassNode,true));
+                       ExtractClassName(ClassNode,true,true,Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]));
 end;
 
 function TCodeCompletionCodeTool.CreateMissingClassProcBodies(
@@ -9008,7 +9008,7 @@ begin
     {$ENDIF}
     exit(true);
   end;
-  
+
   Result:=false;
   Beauty:=FSourceChangeCache.BeautifyCodeOptions;
   MethodInsertPolicy:=Beauty.MethodInsertPolicy;
@@ -9044,7 +9044,7 @@ begin
     {$IF defined(CTDEBUG) or defined(VerboseCreateMissingClassProcBodies)}
     DebugLn('TCodeCompletionCodeTool.CreateMissingClassProcBodies Gather existing method declarations ... ');
     {$ENDIF}
-    TheClassName:=ExtractClassName(CodeCompleteClassNode,false);
+    TheClassName:=ExtractClassName(CodeCompleteClassNode,false,true,Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]);
 
     // check for double defined methods in ClassProcs
     CheckForDoubleDefinedMethods;
@@ -9167,7 +9167,8 @@ begin
         if (ExistingNode=nil) and (not ProcNodeHasSpecifier(ANodeExt.Node,psEXTERNAL))
         then begin
           {$IFDEF VerboseCreateMissingClassProcBodies}
-          DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',TCodeTreeNodeExtension(ExistingNode.Data).Txt]);
+          //generates AV:
+          //DebugLn(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ANodeExt.Txt=',ANodeExt.Txt,' ExistingNode=',TCodeTreeNodeExtension(ExistingNode.Data).Txt]);
           {$ENDIF}
           // MissingNode does not have a body -> insert proc body
           case MethodInsertPolicy of
@@ -9588,7 +9589,7 @@ begin
       begin
         // we have a codetool error, let's try to find the assignment in any case
         LastCodeToolsErrorCleanPos := CurPos.StartPos;
-        LastCodeToolsError := ECodeToolError.Create(E.Sender,20170421201904,E.Message);
+        LastCodeToolsError := ECodeToolError.Create(E.Sender,E.Id,E.Message);
       end else
         raise;
     end;

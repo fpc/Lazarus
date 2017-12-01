@@ -97,7 +97,8 @@ type
   TBeautifyCodeFlag = (
     bcfNoIndentOnBreakLine,
     bcfDoNotIndentFirstLine,
-    bcfIndentExistingLineBreaks
+    bcfIndentExistingLineBreaks,
+    bcfChangeSymbolToBracketForGenericTypeBrackets
     );
   TBeautifyCodeFlags = set of TBeautifyCodeFlag;
 
@@ -1738,7 +1739,7 @@ var
   p, CurAtomStart: PChar;
   Start: String;
 begin
-  Result:=BeautifyStatement(AProcCode,IndentSize);
+  Result:=BeautifyStatement(AProcCode,IndentSize,[bcfChangeSymbolToBracketForGenericTypeBrackets]);
   if AddBeginEnd then begin
     Start:='begin';
     p:=PChar(AProcCode);
@@ -1833,15 +1834,18 @@ begin
         else
           break;
       until false;
+      // in implementation of generic methods 
+      // "<" and ">" have a sense of brackets
+      if (
+        AfterProcedure
+        or (bcfChangeSymbolToBracketForGenericTypeBrackets in BeautifyFlags)
+      ) and (CurAtomType = atSymbol)
+      and (CurAtom[1] in ['<', '>']) then
+          CurAtomType := atBracket;
       if AfterProcedure then
       begin
         if CurAtomType = atSemicolon then
-          AfterProcedure := False
-        else
-        // in implementation of generic methods in DELPHI mode
-        // "<" and ">" have a sense of brackets
-        if (CurAtomType = atSymbol) and (CurAtom[1] in ['<', '>']) then
-          CurAtomType := atBracket;
+          AfterProcedure := False;
       end else
       if (CurAtomType = atKeyword)
         and (SameText(CurAtom, 'procedure') or SameText(CurAtom, 'function'))

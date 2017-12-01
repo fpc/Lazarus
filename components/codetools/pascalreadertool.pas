@@ -639,7 +639,7 @@ begin
 
   // build full class name
   if ([phpAddClassname,phpWithoutClassName]*Attr=[phpAddClassName]) then
-    PrependName(ExtractClassName(ProcNode,phpInUpperCase in Attr,true),TheClassName);
+    PrependName(ExtractClassName(ProcNode,phpInUpperCase in Attr,true,Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]),TheClassName);
 
   // reparse the clean source
   InitExtraction;
@@ -678,7 +678,7 @@ begin
       // read classname and name
       repeat
         ExtractNextAtom(true,Attr);
-        if Scanner.CompilerMode = cmDELPHI then
+        if Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE] then
         begin
           // delphi generics
           if AtomIsChar('<') then
@@ -698,7 +698,7 @@ begin
       // read only part of name
       repeat
         ReadNextAtom;
-        if (Scanner.CompilerMode = cmDELPHI) and AtomIsChar('<') then
+        if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
         begin
           while not AtomIsChar('>') and (CurPos.EndPos < SrcLen) do
             ReadNextAtom;
@@ -887,7 +887,7 @@ begin
           Result:=GetIdentifier(@Src[Node.StartPos])+Result
         else if Node.FirstChild<>nil then
         begin
-          if (Scanner.CompilerMode = cmDELPHI) and (Node.Desc = ctnGenericType) then
+          if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and (Node.Desc = ctnGenericType) then
             Result := Result + ExtractNode(Node.FirstChild.NextBrother, []);
           Result:=GetIdentifier(@Src[Node.FirstChild.StartPos])+Result;
         end;
@@ -953,7 +953,7 @@ begin
     if not AtomIsIdentifier then break;
     Part:=GetAtom;
     ReadNextAtom;
-    if (Scanner.CompilerMode = cmDELPHI) and AtomIsChar('<') then
+    if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
     begin { delphi generics }
       Part := Part + GetAtom;
       repeat
