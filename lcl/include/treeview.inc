@@ -5322,8 +5322,8 @@ begin
             Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
                ImgIndex, Node.FNodeEffect);
           end;
-       end;
-       Inc(x, Images.Width + FDefItemSpace);
+        end;
+        Inc(x, Images.Width + FDefItemSpace);
       end;
     end;
 
