@@ -703,15 +703,9 @@ begin
 end;
 
 procedure TCustomCheckCombo.InitializeWnd;
-var
-  i: Integer;
 begin
   InitItemStates;
-  for i:=0 to Items.Count-1 do
-    debugln(['TCustomCheckCombo.InitializeWnd START ',i,' ',dbgsname(Items.Objects[i])]);
   inherited InitializeWnd;
-  for i:=0 to Items.Count-1 do
-    debugln(['TCustomCheckCombo.InitializeWnd END ',i,' ',dbgsname(Items.Objects[i])]);
   CheckItemStates;
   FRightToLeft:=IsRightToLeft;
 end;
