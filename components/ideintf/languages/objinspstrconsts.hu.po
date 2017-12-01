@@ -841,6 +841,10 @@ msgstr "Beállítás alapértelmezettre: %s"
 msgid "Set property value to Default"
 msgstr "A tulajdonság értéke legyen Alapértelmezett"
 
+#: objinspstrconsts.oisshowalloutputlines
+msgid "Show all output lines"
+msgstr ""
+
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
 msgstr "Osztályok megjelenítése"

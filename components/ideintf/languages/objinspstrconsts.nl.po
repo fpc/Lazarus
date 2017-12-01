@@ -862,6 +862,10 @@ msgstr "Zet naar standaardinstelling: %s"
 msgid "Set property value to Default"
 msgstr "Zet eigenschapwaarde naar standardistelling"
 
+#: objinspstrconsts.oisshowalloutputlines
+msgid "Show all output lines"
+msgstr ""
+
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
 msgstr ""

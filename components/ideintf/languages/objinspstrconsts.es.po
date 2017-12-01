@@ -843,6 +843,10 @@ msgstr "Establecer por defecto: %s"
 msgid "Set property value to Default"
 msgstr "Establecer valor de la propiedad como predeterminado"
 
+#: objinspstrconsts.oisshowalloutputlines
+msgid "Show all output lines"
+msgstr ""
+
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
 msgstr ""

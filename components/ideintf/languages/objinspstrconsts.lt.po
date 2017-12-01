@@ -842,6 +842,10 @@ msgstr "Keisti į numatytą: %s"
 msgid "Set property value to Default"
 msgstr "Savybės vertę atstatyti į numatytą"
 
+#: objinspstrconsts.oisshowalloutputlines
+msgid "Show all output lines"
+msgstr ""
+
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
 msgstr "Rodyti klases"

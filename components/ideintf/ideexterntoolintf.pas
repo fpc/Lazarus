@@ -33,7 +33,7 @@ const
   SubToolMake = 'make';
   SubToolMakePriority = 1000; // higher than FPC
 
-  SubToolDefault = 'External Tool'; // this parser simply writes all output to Messages window
+  SubToolDefault = 'Show all'; // this parser simply writes all output to Messages window
   SubToolDefaultPriority = 0;
 
   AbortedExitCode = 12321;
@@ -361,6 +361,7 @@ type
     procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean
       ); override;
     class function DefaultSubTool: string; override;
+    class function GetLocalizedParserName: string; override;
     class function Priority: integer; override;
   end;
 
@@ -1006,6 +1007,11 @@ end;
 class function TDefaultParser.DefaultSubTool: string;
 begin
   Result:=SubToolDefault;
+end;
+
+class function TDefaultParser.GetLocalizedParserName: string;
+begin
+  Result:=oisShowAllOutputLines;
 end;
 
 class function TDefaultParser.Priority: integer;

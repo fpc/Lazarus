@@ -2377,6 +2377,7 @@ resourcestring
   // Initial setup dialog
   lisScanning = 'Scanning';
   lisCompiler = 'Compiler';
+  lisParsers = 'Parsers:';
   lisDebugger = 'Debugger';
 
   lisToFPCPath = 'Path:';

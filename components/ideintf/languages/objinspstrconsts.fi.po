@@ -836,6 +836,10 @@ msgstr "Aseta oletusarvo: %s"
 msgid "Set property value to Default"
 msgstr "Aseta ominaisuuden arvoksi oletus"
 
+#: objinspstrconsts.oisshowalloutputlines
+msgid "Show all output lines"
+msgstr ""
+
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
 msgstr "Näytä luokat"

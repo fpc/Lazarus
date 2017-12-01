@@ -340,9 +340,9 @@ type
     FParsers: TStrings;
     FParsedCommandStamp: integer;
     FParsedCommand: string;
-    function GetHasParser(aName: string): boolean;
+    function GetHasParser(aParserName: string): boolean;
     procedure SetCommand(const AValue: string);
-    procedure SetHasParser(aName: string; const AValue: boolean);
+    procedure SetHasParser(aParserName: string; const AValue: boolean);
     procedure SetParsers(const AValue: TStrings);
   protected
     procedure SubstituteMacros(var s: string); virtual;
@@ -368,7 +368,7 @@ type
     property Owner: TObject read FOwner;
     property Command: string read FCommand write SetCommand;
     property Parsers: TStrings read FParsers write SetParsers;
-    property HasParser[aName: string]: boolean read GetHasParser write SetHasParser;
+    property HasParser[aParserName: string]: boolean read GetHasParser write SetHasParser;
   end;
   TCompilationToolClass = class of TCompilationToolOptions;
 
@@ -4208,23 +4208,23 @@ begin
   IncreaseChangeStamp;
 end;
 
-function TCompilationToolOptions.GetHasParser(aName: string): boolean;
+function TCompilationToolOptions.GetHasParser(aParserName: string): boolean;
 begin
-  Result:=FParsers.IndexOf(aName)>=0;
+  Result:=FParsers.IndexOf(aParserName)>=0;
 end;
 
-procedure TCompilationToolOptions.SetHasParser(aName: string;
+procedure TCompilationToolOptions.SetHasParser(aParserName: string;
   const AValue: boolean);
 var
   i: Integer;
 begin
-  i:=FParsers.IndexOf(aName);
+  i:=FParsers.IndexOf(aParserName);
   if i>=0 then begin
     if AValue then exit;
     FParsers.Delete(i);
   end else begin
     if not AValue then exit;
-    FParsers.Add(aName);
+    FParsers.Add(aParserName);
   end;
   IncreaseChangeStamp;
 end;

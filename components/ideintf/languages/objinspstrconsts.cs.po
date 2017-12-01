@@ -851,6 +851,10 @@ msgstr "Nastavit na výchozí: %s"
 msgid "Set property value to Default"
 msgstr "Natavit hodnotu vlastnosti jako Výchozí"
 
+#: objinspstrconsts.oisshowalloutputlines
+msgid "Show all output lines"
+msgstr ""
+
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
 msgstr ""
