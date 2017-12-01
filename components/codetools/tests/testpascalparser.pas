@@ -140,6 +140,10 @@ begin
     WriteSource(CursorPos);
     Fail('expected parser error "'+Msg+'" at line='+IntToStr(CursorPos.Y)+' col='+IntToStr(CursorPos.X)+', but got line='+IntToStr(CodeToolBoss.ErrorLine)+' col='+IntToStr(CodeToolBoss.ErrorColumn));
   end;
+  if (Msg<>CodeToolBoss.ErrorMessage) then begin
+    WriteSource(CursorPos);
+    Fail('expected parser error "'+Msg+'" instead of "'+CodeToolBoss.ErrorMessage+'"');
+  end;
 end;
 
 procedure TCustomTestPascalParser.WriteSource(CleanPos: integer; Tool: TCodeTool
@@ -400,7 +404,7 @@ begin
   'type',
   '  TList<T> = class end;',
   'begin']);
-  CheckParseError(CodeXYPosition(8,4,Code),'expected =, but got <');
+  CheckParseError(CodeXYPosition(8,4,Code),'expected =, but < found');
 end;
 
 procedure TTestPascalParser.TestParseGenericsDelphi;

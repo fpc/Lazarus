@@ -21,11 +21,14 @@ type
     procedure TestIntfProcUpdateArgName;
     procedure TestCompleteMethodSignature_GenericObjFPC;
     procedure TestCompleteMethodBody_GenericObjFPC;
-    procedure TestCompleteMethodBody_GenericDelphi; // ToDo
+    procedure TestCompleteMethodBody_GenericDelphi;
     procedure TestCompleteMethodBody_ParamSpecialize;
     procedure TestCompleteMethodBody_ParamDelphiSpecialize;
     procedure TestCompleteProperty_TypeWithUnitname;
     procedure TestCompleteProperty_ObjFPC_SpecializeType;
+    procedure TestCompleteProperty_Delphi_GenericType;
+    procedure TestCompleteProperty_GenericObjFPC;
+    procedure TestCompleteProperty_GenericDelphi;
   end;
 
 implementation
@@ -160,7 +163,6 @@ end;
 
 procedure TTestCodeCompletion.TestCompleteMethodBody_GenericDelphi;
 begin
-  exit; // ToDo
   Test('TestCompleteMethodBody_GenericObjFPC',
     ['unit test1;',
     '{$mode delphi}',
@@ -324,6 +326,119 @@ begin
     '  end;',
     'implementation',
     'procedure TBird.SetWing(AValue: specialize TLimb<string>);',
+    'begin',
+    '  if fWing=AValue then Exit;',
+    '  fWing:=AValue;',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteProperty_Delphi_GenericType;
+begin
+  Test('TestCompleteProperty_Delphi_GenericType',
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '  TLimb<T> = class end;',
+    '  TBird = class',
+    '  public',
+    '    property Wing: TLimb<string>;',
+    '  end;',
+    'implementation',
+    'end.'],
+    7,1,
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '  TLimb<T> = class end;',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird = class',
+    '  private',
+    '    fWing: TLimb<string>;',
+    '    procedure SetWing(AValue: TLimb<string>);',
+    '  public',
+    '    property Wing: TLimb<string> read fWing write SetWing;',
+    '  end;',
+    'implementation',
+    'procedure TBird.SetWing(AValue: TLimb<string>);',
+    'begin',
+    '  if fWing=AValue then Exit;',
+    '  fWing:=AValue;',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteProperty_GenericObjFPC;
+begin
+  Test('TestCompleteProperty_GenericObjFPC',
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '  generic TBird<T> = class',
+    '  public',
+    '    property Wing: string;',
+    '  end;',
+    'implementation',
+    'end.'],
+    7,1,
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  generic TBird<T> = class',
+    '  private',
+    '    fWing: string;',
+    '    procedure SetWing(AValue: string);',
+    '  public',
+    '    property Wing: string read fWing write SetWing;',
+    '  end;',
+    'implementation',
+    'procedure TBird.SetWing(AValue: string);',
+    'begin',
+    '  if fWing=AValue then Exit;',
+    '  fWing:=AValue;',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteProperty_GenericDelphi;
+begin
+  Test('TestCompleteProperty_GenericObjFPC',
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '  TBird<T> = class',
+    '  public',
+    '    property Wing: string;',
+    '  end;',
+    'implementation',
+    'end.'],
+    7,1,
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird<T> = class',
+    '  private',
+    '    fWing: string;',
+    '    procedure SetWing(AValue: string);',
+    '  public',
+    '    property Wing: string read fWing write SetWing;',
+    '  end;',
+    'implementation',
+    'procedure TBird<T>.SetWing(AValue: string);',
     'begin',
     '  if fWing=AValue then Exit;',
     '  fWing:=AValue;',
