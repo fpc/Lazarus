@@ -487,49 +487,49 @@ end;
 // The code uses CPU's native data size. In a 64-bit CPU it means 8 bytes at once.
 function UTF8LengthFast(p: PChar; ByteCount: PtrInt): PtrInt;
 const
-  {$IfDef CPU64}
-  ONEMASK=$0101010101010101;
-  {$Else}
-  ONEMASK=$01010101;
-  {$EndIf}
+{$ifdef CPU32}
+  ONEMASK   =$01010101;
+  EIGHTYMASK=$80808080;
+{$endif}
+{$ifdef CPU64}
+  ONEMASK   =$0101010101010101;
+  EIGHTYMASK=$8080808080808080;
+{$endif}
 var
-  b: Byte;
-  pu: PPtrUInt;
-  pb: PByte absolute pu;
-  ui: PtrUInt absolute pu;
-  u: PtrUInt;
-  i: Integer;
+  pnx: PPtrInt absolute p; // To get contents of text in PtrInt blocks. x refers to 32 or 64 bits
+  pn8: pint8 absolute pnx; // To read text as Int8 in the initial and final loops
+  ix: PtrInt absolute pnx; // To read text as PtrInt in the block loop
+  nx: PtrInt;              // values processed in block loop
+  i,cnt,e: PtrInt;
 begin
-  pu := PPtrUInt(p);
   Result := 0;
+  e := ix+ByteCount; // End marker
   // Handle any initial misaligned bytes.
-  for i := 1 to ui and (sizeof(u) - 1) do
+  cnt := (not (ix-1)) and (sizeof(PtrInt)-1);
+  if cnt>ByteCount then
+    cnt := ByteCount;
+  for i := 1 to cnt do
   begin
-    b := pb^;
     // Is this byte NOT the first byte of a character?
-    Result += (b shr 7) and ((not b) shr 6);
-    inc(pb);
+    Result += (pn8^ shr 7) and ((not pn8^) shr 6);
+    inc(pn8);
   end;
-  // Handle complete blocks.
-  for i := 1 to ByteCount div sizeof(u) do
+  // Handle complete blocks
+  for i := 1 to (ByteCount-cnt) div sizeof(PtrInt) do
   begin
-    u := pu^;
-    // Result bytes which are NOT the first byte of a character.
-    u := ((u and (ONEMASK * $80)) shr 7) and ((not u) shr 6);
-    {$PUSH}{$Q-}  // "u * ONEMASK" causes an arithmetic overflow.
-    Result += (u * ONEMASK) >> ((sizeof(u) - 1) * 8);
-    {$POP}
-    inc(pu);
+    // Count bytes which are NOT the first byte of a character.
+    nx := ((pnx^ and EIGHTYMASK) shr 7) and ((not pnx^) shr 6);
+    {$push}{$overflowchecks off} // "nx * ONEMASK" causes an arithmetic overflow.
+    Result += (nx * ONEMASK) >> ((sizeof(PtrInt) - 1) * 8);
+    {$pop}
+    inc(pnx);
   end;
   // Take care of any left-over bytes.
-  for i := 1 to ({%H-}PtrUInt(p)+ByteCount) and (sizeof(u) - 1) do
+  while ix<e do
   begin
-    b :=  pb^;
-    {if (b = $00) then   // Exit if we hit a zero byte.
-      break;}
     // Is this byte NOT the first byte of a character?
-    Result += (b shr 7) and ((not b) shr 6);
-    inc(pb);
+    Result += (pn8^ shr 7) and ((not pn8^) shr 6);
+    inc(pn8);
   end;
   Result := ByteCount - Result;
 end;
