@@ -118,16 +118,38 @@ components/PascalScript/Samples/TestApp/TestApplication.res -text
 components/PascalScript/Samples/TestApp/fMain.dfm -text
 components/PascalScript/Samples/TestApp/fMain.pas svneol=native#text/pascal
 components/PascalScript/Source/Glyphs/TPSCustomPlugin.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSCustomPlugin_150.png -text
+components/PascalScript/Source/Glyphs/TPSCustomPlugin_200.png -text
 components/PascalScript/Source/Glyphs/TPSDllPlugin.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSDllPlugin_150.png -text
+components/PascalScript/Source/Glyphs/TPSDllPlugin_200.png -text
 components/PascalScript/Source/Glyphs/TPSImport_Classes.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSImport_Classes_150.png -text
+components/PascalScript/Source/Glyphs/TPSImport_Classes_200.png -text
 components/PascalScript/Source/Glyphs/TPSImport_ComObj.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSImport_ComObj_150.png -text
+components/PascalScript/Source/Glyphs/TPSImport_ComObj_200.png -text
 components/PascalScript/Source/Glyphs/TPSImport_Controls.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSImport_Controls_150.png -text
+components/PascalScript/Source/Glyphs/TPSImport_Controls_200.png -text
 components/PascalScript/Source/Glyphs/TPSImport_DB.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSImport_DB_150.png -text
+components/PascalScript/Source/Glyphs/TPSImport_DB_200.png -text
 components/PascalScript/Source/Glyphs/TPSImport_DateUtils.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSImport_DateUtils_150.png -text
+components/PascalScript/Source/Glyphs/TPSImport_DateUtils_200.png -text
 components/PascalScript/Source/Glyphs/TPSImport_Forms.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSImport_Forms_150.png -text
+components/PascalScript/Source/Glyphs/TPSImport_Forms_200.png -text
 components/PascalScript/Source/Glyphs/TPSImport_StdCtrls.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSImport_StdCtrls_150.png -text
+components/PascalScript/Source/Glyphs/TPSImport_StdCtrls_200.png -text
 components/PascalScript/Source/Glyphs/TPSScript.png -text svneol=unset#image/png
 components/PascalScript/Source/Glyphs/TPSScriptDebugger.png -text svneol=unset#image/png
+components/PascalScript/Source/Glyphs/TPSScriptDebugger_150.png -text
+components/PascalScript/Source/Glyphs/TPSScriptDebugger_200.png -text
+components/PascalScript/Source/Glyphs/TPSScript_150.png -text
+components/PascalScript/Source/Glyphs/TPSScript_200.png -text
 components/PascalScript/Source/Makefile svneol=native#text/plain
 components/PascalScript/Source/Makefile.compiled svneol=native#text/plain
 components/PascalScript/Source/Makefile.fpc svneol=native#text/plain
@@ -146,7 +168,7 @@ components/PascalScript/Source/arm.inc svneol=native#text/pascal
 components/PascalScript/Source/changelog.txt svneol=native#text/pascal
 components/PascalScript/Source/eDefines.inc svneol=native#text/pascal
 components/PascalScript/Source/pascalscript.lpk svneol=native#text/pascal
-components/PascalScript/Source/pascalscript.lrs -text svneol=native#text/pascal
+components/PascalScript/Source/pascalscript.lrs svneol=native#text/pascal
 components/PascalScript/Source/pascalscript.pas svneol=native#text/pascal
 components/PascalScript/Source/pascalscriptfcl.lpk svneol=native#text/pascal
 components/PascalScript/Source/powerpc.inc svneol=native#text/pascal
