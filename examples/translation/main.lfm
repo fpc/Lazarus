@@ -31,6 +31,7 @@ inherited MainForm: TMainForm
       'he - Hebrew'
       'hu - magyar'
       'it - Italiano'
+      'lt - Lithuanian'
       'ru - русский'
       'uk - Ukrainian'
       'zh_CN - Chinese'

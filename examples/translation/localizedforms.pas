@@ -134,6 +134,7 @@ begin
    'ru'   : Result := $0419;    // Russian
    'tr'   : Result := $041F;    // Turkish
    'uk'   : Result := $0422;    // Ukrainian
+   'lt'   : Result := $0427;    // Lithuanian
    'zh_cn', 'zh-cn': Result := $0804;    // Chinese (China)
    'zh_tw', 'zh-tw': Result := $0404;    // Chinese (Taiwan)
    // please complete if necessary. Language code and LCIDs can be found at
