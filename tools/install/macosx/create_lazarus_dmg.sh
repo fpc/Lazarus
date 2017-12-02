@@ -106,7 +106,7 @@ COMPILER=$PP
 if [ -z "$COMPILER" ]; then
   COMPILER=$(which fpc)
 fi
-FPCARCH=$($COMPILER -iSP)
+FPCARCH=$($COMPILER -iTP)
 FPCVERSION=$($COMPILER -iV)
 BUILDDIR=~/tmp/buildlaz
 ROOTDIR=$BUILDDIR/Root
