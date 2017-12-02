@@ -19,14 +19,21 @@ type
       Expected: array of string);
   published
     procedure TestIntfProcUpdateArgName;
-    procedure TestCompleteMethodSignature_GenericObjFPC;
+    procedure TestIntfCompleteMethodBody_ResultGenericObjFPC; // todo
+    procedure TestIntfCompleteMethodBody_ResultGenericDelphi; // todo
+    procedure TestMethodUpdateArgName_GenericObjFPC;
+    procedure TestMethodUpdateArgName_GenericDelphi;
+    procedure TestCompleteMethodSignature_Def_GenericObjFPC;
+    procedure TestCompleteMethodSignature_Body_GenericObjFPC;
+    procedure TestCompleteMethodSignature_Def_GenericDelphi;
+    procedure TestCompleteMethodSignature_Body_GenericDelphi; // todo
     procedure TestCompleteMethodBody_GenericObjFPC;
     procedure TestCompleteMethodBody_GenericDelphi;
-    procedure TestCompleteMethodBody_ParamSpecialize;
-    procedure TestCompleteMethodBody_ParamDelphiSpecialize;
+    procedure TestCompleteMethodBody_ParamGenericObjFPC;
+    procedure TestCompleteMethodBody_ParamGenericDelphi;
     procedure TestCompleteProperty_TypeWithUnitname;
-    procedure TestCompleteProperty_ObjFPC_SpecializeType;
-    procedure TestCompleteProperty_Delphi_GenericType;
+    procedure TestCompleteProperty_TypeGenericObjFPC;
+    procedure TestCompleteProperty_TypeGenericDelphi;
     procedure TestCompleteProperty_GenericObjFPC;
     procedure TestCompleteProperty_GenericDelphi;
   end;
@@ -49,7 +56,8 @@ begin
   Code.Source:=s;
 
   if not CodeToolBoss.CompleteCode(Code,Col,Line,Line,NewCode,NewX,NewY,NewTopLine,
-    BlockTopLine,BlockBottomLine,false) then
+    BlockTopLine,BlockBottomLine,false)
+  and (CodeToolBoss.ErrorDbgMsg<>'') then
   begin
     NewCode:=Code;
     NewY:=Line;
@@ -88,9 +96,137 @@ begin
     ,'end.']);
 end;
 
-procedure TTestCodeCompletion.TestCompleteMethodSignature_GenericObjFPC;
+procedure TTestCodeCompletion.TestMethodUpdateArgName_GenericObjFPC;
 begin
-  Test('TestCompleteMethodSignature_GenericObjFPC',
+  Test('TestMethodUpdateArgName_GenericObjFPC',
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  generic TBird<T: class> = class',
+    '    procedure DoIt(NewName: string);',
+    '  end;',
+    'implementation',
+    'procedure TBird.DoIt(OldName: string);',
+    'begin',
+    'end;',
+    'end.'],
+    9,1,
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  generic TBird<T: class> = class',
+    '    procedure DoIt(NewName: string);',
+    '  end;',
+    'implementation',
+    'procedure TBird.DoIt(NewName: string);',
+    'begin',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestMethodUpdateArgName_GenericDelphi;
+begin
+  Test('TestMethodUpdateArgName_GenericDelphi',
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird<T: class> = class',
+    '    procedure DoIt(NewName: string);',
+    '  end;',
+    'implementation',
+    'procedure TBird<T>.DoIt(OldName: string);',
+    'begin',
+    'end;',
+    'end.'],
+    9,1,
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird<T: class> = class',
+    '    procedure DoIt(NewName: string);',
+    '  end;',
+    'implementation',
+    'procedure TBird<T>.DoIt(NewName: string);',
+    'begin',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestIntfCompleteMethodBody_ResultGenericObjFPC;
+begin
+  exit;
+  Test('TestIntfCompleteMethodBody_ResultGenericObjFPC',
+    ['unit test1;'
+    ,'{$mode objfpc}{$H+}'
+    ,'interface'
+    ,'type'
+    ,'generic TBird<T> = class'
+    ,'end;'
+    ,'function DoIt: specialize TBird<T>;'
+    ,'implementation'
+    ,'end.'],
+    7,1,
+    ['unit test1;'
+    ,'{$mode objfpc}{$H+}'
+    ,'interface'
+    ,'type'
+    ,'generic TBird<T> = class'
+    ,'end;'
+    ,'function DoIt: specialize TBird<T>;'
+    ,'implementation'
+    ,'function DoIt: specialize TBird<T>;'
+    ,'begin'
+    ,'end;'
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestIntfCompleteMethodBody_ResultGenericDelphi;
+begin
+  exit;
+  Test('TestIntfCompleteMethodBody_ResultGenericDelphi',
+    ['unit test1;'
+    ,'{$mode delphi}{$H+}'
+    ,'interface'
+    ,'type'
+    ,'TBird<T> = class'
+    ,'end;'
+    ,'function DoIt: TBird<T>;'
+    ,'implementation'
+    ,'end.'],
+    7,1,
+    ['unit test1;'
+    ,'{$mode delphi}{$H+}'
+    ,'interface'
+    ,'type'
+    ,'TBird<T> = class'
+    ,'end;'
+    ,'function DoIt: TBird<T>;'
+    ,'implementation'
+    ,'function DoIt: TBird<T>;'
+    ,'begin'
+    ,'end;'
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodSignature_Def_GenericObjFPC;
+begin
+  Test('TestCompleteMethodSignature_Def_GenericObjFPC',
     ['unit test1;',
     '{$mode objfpc}{$H+}',
     'interface',
@@ -124,6 +260,124 @@ begin
     'begin',
     'end;',
     'procedure TBird.DoIt;',
+    'begin',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodSignature_Body_GenericObjFPC;
+begin
+  Test('TestCompleteMethodSignature_Body_GenericObjFPC',
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '  generic TBird<T: class> = class',
+    '    procedure DoIt(s: string);',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    'procedure TBird.DoIt(s: char);',
+    'begin',
+    'end;',
+    'procedure TBird.DoIt;',
+    'begin',
+    'end;',
+    'end.'],
+    10,1,
+    ['unit test1;',
+    '{$mode objfpc}{$H+}',
+    'interface',
+    'type',
+    '  generic TBird<T: class> = class',
+    '    procedure DoIt(s: char);',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    'procedure TBird.DoIt(s: char);',
+    'begin',
+    'end;',
+    'procedure TBird.DoIt;',
+    'begin',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodSignature_Def_GenericDelphi;
+begin
+  Test('TestCompleteMethodSignature_Def_GenericDelphi',
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '  TBird<T: class> = class',
+    '    procedure DoIt(s: string);',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    'procedure TBird<T>.DoIt(s: char);',
+    'begin',
+    'end;',
+    'procedure TBird<T>.DoIt;',
+    'begin',
+    'end;',
+    'end.'],
+    6,1,
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird<T: class> = class',
+    '    procedure DoIt(s: string);',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    'procedure TBird<T>.DoIt(s: string);',
+    'begin',
+    'end;',
+    'procedure TBird<T>.DoIt;',
+    'begin',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodSignature_Body_GenericDelphi;
+begin
+  exit;
+  Test('TestCompleteMethodSignature_Body_GenericDelphi',
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '  TBird<T: class> = class',
+    '    procedure DoIt(s: string);',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    'procedure TBird<T>.DoIt(s: char);',
+    'begin',
+    'end;',
+    'procedure TBird<T>.DoIt;',
+    'begin',
+    'end;',
+    'end.'],
+    10,1,
+    ['unit test1;',
+    '{$mode delphi}{$H+}',
+    'interface',
+    'type',
+    '  TBird<T: class> = class',
+    '    procedure DoIt(s: char);',
+    '    procedure DoIt;',
+    '  end;',
+    'implementation',
+    'procedure TBird<T>.DoIt(s: char);',
+    'begin',
+    'end;',
+    'procedure TBird<T>.DoIt;',
     'begin',
     'end;',
     'end.']);
@@ -163,7 +417,7 @@ end;
 
 procedure TTestCodeCompletion.TestCompleteMethodBody_GenericDelphi;
 begin
-  Test('TestCompleteMethodBody_GenericObjFPC',
+  Test('TestCompleteMethodBody_GenericDelphi',
     ['unit test1;',
     '{$mode delphi}',
     'interface',
@@ -193,9 +447,9 @@ begin
     'end.']);
 end;
 
-procedure TTestCodeCompletion.TestCompleteMethodBody_ParamSpecialize;
+procedure TTestCodeCompletion.TestCompleteMethodBody_ParamGenericObjFPC;
 begin
-  Test('TestCompleteMethodBody_ParamSpecialize',
+  Test('TestCompleteMethodBody_ParamGenericObjFPC',
     ['unit test1;',
     '{$mode objfpc}{$H+}',
     'interface',
@@ -225,9 +479,9 @@ begin
     'end.']);
 end;
 
-procedure TTestCodeCompletion.TestCompleteMethodBody_ParamDelphiSpecialize;
+procedure TTestCodeCompletion.TestCompleteMethodBody_ParamGenericDelphi;
 begin
-  Test('TestCompleteMethodBody_ParamDelphiSpecialize',
+  Test('TestCompleteMethodBody_ParamGenericDelphi',
     ['unit test1;',
     '{$mode delphi}',
     'interface',
@@ -294,9 +548,9 @@ begin
     'end.']);
 end;
 
-procedure TTestCodeCompletion.TestCompleteProperty_ObjFPC_SpecializeType;
+procedure TTestCodeCompletion.TestCompleteProperty_TypeGenericObjFPC;
 begin
-  Test('TestCompleteProperty_ObjFPC_SpecializeType',
+  Test('TestCompleteProperty_TypeGenericObjFPC',
     ['unit test1;',
     '{$mode objfpc}{$H+}',
     'interface',
@@ -333,9 +587,9 @@ begin
     'end.']);
 end;
 
-procedure TTestCodeCompletion.TestCompleteProperty_Delphi_GenericType;
+procedure TTestCodeCompletion.TestCompleteProperty_TypeGenericDelphi;
 begin
-  Test('TestCompleteProperty_Delphi_GenericType',
+  Test('TestCompleteProperty_TypeGenericDelphi',
     ['unit test1;',
     '{$mode delphi}{$H+}',
     'interface',
@@ -411,7 +665,7 @@ end;
 
 procedure TTestCodeCompletion.TestCompleteProperty_GenericDelphi;
 begin
-  Test('TestCompleteProperty_GenericObjFPC',
+  Test('TestCompleteProperty_GenericDelphi',
     ['unit test1;',
     '{$mode delphi}{$H+}',
     'interface',
