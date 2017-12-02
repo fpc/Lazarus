@@ -3934,13 +3934,10 @@ end;
 
 function TCustomTreeView.GetNodeAt(X, Y: Integer): TTreeNode;
 begin
-  Result := nil;
   if (X >= BorderWidth) and (X < ClientWidth - BorderWidth) then
-  begin
-    Result := GetNodeAtY(Y);
-    if Assigned(Result) and (X < Result.DisplayExpandSignLeft) then
-      Result := nil;
-  end;
+    Result := GetNodeAtY(Y)
+  else
+    Result := nil;
 end;
 
 procedure TCustomTreeView.GetInsertMarkAt(X, Y: Integer;
@@ -4033,7 +4030,9 @@ begin
 end;
 
 function TCustomTreeView.GetHitTestInfoAt(X, Y: Integer): THitTests;
-var Node: TTreeNode;
+// ToDo: Set also flags [htAbove, htBelow, htOnRight, htToLeft, htToRight];
+var
+  Node: TTreeNode;
 begin
   Result := [];
   if (X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight)
