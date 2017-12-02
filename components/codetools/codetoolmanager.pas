@@ -1444,6 +1444,8 @@ begin
   fErrorLine:=-1;
   fErrorTopLine:=0;
   FErrorId:=0;
+  FErrorMsg := '';
+  FErrorDbgMsg := '';
 end;
 
 procedure TCodeToolManager.ClearCurCodeTool;
