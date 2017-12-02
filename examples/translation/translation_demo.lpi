@@ -99,7 +99,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>

@@ -21,6 +21,7 @@ inherited MainForm: TMainForm
     Height = 23
     Top = 13
     Width = 100
+    DropDownCount = 16
     ItemHeight = 15
     Items.Strings = (
       'de - deutsch'
@@ -31,6 +32,8 @@ inherited MainForm: TMainForm
       'hu - magyar'
       'it - Italiano'
       'ru - русский'
+      'uk - Ukrainian'
+      'zh_CN - Chinese'
     )
     OnChange = CbLanguageChange
     Style = csDropDownList

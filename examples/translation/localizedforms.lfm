@@ -4,5 +4,5 @@ object LocalizedForm: TLocalizedForm
   Top = 238
   Width = 320
   Caption = 'LocalizedForm'
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
 end
