@@ -1,0 +1,155 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "Coluna ações"
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "Coluna condições"
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "Coluna arquivo/endereço"
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "Coluna grupo"
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "Coluna linha"
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "Coluna contagem passagens"
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "Coluna indicação parada"
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr "Coluna expressões"
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr "Coluna nome função"
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr "Coluna índice"
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "Coluna linha"
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr "Coluna nome"
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr "Coluna fonte"
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr "Coluna estado"
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr "Coluna valor"
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "Nenhum histórico mantido"
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "Coluna atual"
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "Coluna local"
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr "Coluna hora"
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "Coluna classe dados"
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "Coluna nome dados"
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "Coluna tipo dados"
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "Coluna valor dados"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "Coluna visibilidade dados"
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "Coluna endereço método"
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "Coluna nome método"
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "Coluna retorno método"
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "Coluna tipo método"
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr "Len=%d: "
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr "Usar tipo classe instância"
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "Painel inspeção"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "Adicionar resultados ao final do histórico"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "Inserir resultados no ínicio do histórico"
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "\"Novo valor\" está vazio."
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "O depurador foi incapaz de modificar o valor."
+
