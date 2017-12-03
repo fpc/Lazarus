@@ -14256,6 +14256,10 @@ msgstr ", проаналізовано "
 msgid "parser \"%s\": %s"
 msgstr "парсер \"%s\": %s"
 
+#: lazarusidestrconsts.lisparsers
+msgid "Parsers:"
+msgstr ""
+
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "Кількість Проходів"

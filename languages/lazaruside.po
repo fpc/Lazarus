@@ -14164,6 +14164,10 @@ msgstr ""
 msgid "parser \"%s\": %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisparsers
+msgid "Parsers:"
+msgstr ""
+
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr ""

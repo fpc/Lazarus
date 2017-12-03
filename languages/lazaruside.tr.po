@@ -14441,6 +14441,10 @@ msgstr ", Ayrıştırılmış"
 msgid "parser \"%s\": %s"
 msgstr "Ayrıştırıcı \" %s \\ \": %s"
 
+#: lazarusidestrconsts.lisparsers
+msgid "Parsers:"
+msgstr ""
+
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "Geçiş Kontu"

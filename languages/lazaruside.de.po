@@ -14256,6 +14256,10 @@ msgstr ", analysiert "
 msgid "parser \"%s\": %s"
 msgstr "Parser \"%s\": %s"
 
+#: lazarusidestrconsts.lisparsers
+msgid "Parsers:"
+msgstr ""
+
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "Laufzähler"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-09-26 00:43+0300\n"
+"PO-Revision-Date: 2017-12-04 01:37+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -297,7 +297,7 @@ msgstr "Невозможно найти анализатор для средст
 
 #: objinspstrconsts.lisunabletofindparserwithname
 msgid "Unable to find parser with name \"%s\""
-msgstr ""
+msgstr "Невозможно найти анализатор с именем \"%s\""
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -843,7 +843,7 @@ msgstr "Установить значение свойства по умолча
 
 #: objinspstrconsts.oisshowalloutputlines
 msgid "Show all output lines"
-msgstr ""
+msgstr "Показать все строки вывода"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"

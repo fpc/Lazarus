@@ -14422,6 +14422,10 @@ msgstr ", analizzato"
 msgid "parser \"%s\": %s"
 msgstr "parser \"%s\": %s"
 
+#: lazarusidestrconsts.lisparsers
+msgid "Parsers:"
+msgstr ""
+
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "Conteggio dei passi"

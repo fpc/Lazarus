@@ -14242,6 +14242,10 @@ msgstr ", 構文解析済み"
 msgid "parser \"%s\": %s"
 msgstr "パーサ \"%s\": %s"
 
+#: lazarusidestrconsts.lisparsers
+msgid "Parsers:"
+msgstr ""
+
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "通過カウント"

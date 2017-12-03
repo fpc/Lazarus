@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-27 00:27+0300\n"
+"PO-Revision-Date: 2017-12-04 01:32+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14249,6 +14249,10 @@ msgstr ", проанализировано "
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
 msgstr "анализатор \"%s\": %s"
+
+#: lazarusidestrconsts.lisparsers
+msgid "Parsers:"
+msgstr "Анализаторы:"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"

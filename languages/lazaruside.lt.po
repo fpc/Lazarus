@@ -14274,6 +14274,10 @@ msgstr ", nagrinėtas "
 msgid "parser \"%s\": %s"
 msgstr "analizatorius „%s“: %s"
 
+#: lazarusidestrconsts.lisparsers
+msgid "Parsers:"
+msgstr ""
+
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "Kirsta kartų"

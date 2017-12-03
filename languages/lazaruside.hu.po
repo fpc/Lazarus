@@ -14252,6 +14252,10 @@ msgstr ", elemezve: "
 msgid "parser \"%s\": %s"
 msgstr "\"%s\" elemző: %s"
 
+#: lazarusidestrconsts.lisparsers
+msgid "Parsers:"
+msgstr ""
+
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
 msgstr "Megszakítások száma"
