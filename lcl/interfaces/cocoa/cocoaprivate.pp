@@ -396,8 +396,11 @@ type
   { TCocoaCustomControl }
 
   TCocoaCustomControl = objcclass(NSControl)
+  private
+    fstr : NSString;
   public
     callback: ICommonCallback;
+    procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -425,6 +428,9 @@ type
     // other
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    // value
+    procedure setStringValue(avalue: NSString); override;
+    function stringValue: NSString; override;
   end;
 
   { TCocoaWindowContent }
@@ -2136,6 +2142,27 @@ end;
 function TCocoaCustomControl.lclIsHandle: Boolean;
 begin
   Result := True;
+end;
+
+procedure TCocoaCustomControl.setStringValue(avalue: NSString);
+begin
+  if Assigned(fstr) then fstr.release;
+  if ASsigned(avalue) then
+    fstr:=avalue.copyWithZone(nil)
+  else
+    fstr:=nil;
+  inherited setStringValue(avalue);
+end;
+
+function TCocoaCustomControl.stringValue: NSString;
+begin
+  Result:=fstr;
+end;
+
+procedure TCocoaCustomControl.dealloc;
+begin
+  if Assigned(fstr) then fstr.release;
+  inherited dealloc;
 end;
 
 function TCocoaCustomControl.acceptsFirstResponder: Boolean;
