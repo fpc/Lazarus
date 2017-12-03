@@ -1,4 +1,10 @@
-lazarus (1.8.0) unstable; urgency=low
+lazarus (1.8.1) unstable; urgency=low
+
+  * Development version
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 3 Dec 2017 11:04:22 +0100
+
+lazarus (1.8.0) stable; urgency=low
 
   * Final Release
 
