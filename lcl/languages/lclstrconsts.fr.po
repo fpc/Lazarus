@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Last-Translator: <h.mira@free.fr>\n"
+"Last-Translator: h.mira@free.fr\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"PO-Revision-Date: 2017-05-24 10:06+0200\n"
+"PO-Revision-Date: 2017-12-01 11:55+0100\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "POT-Creation-Date: \n"
 "Project-Id-Version: \n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -1232,7 +1232,7 @@ msgstr "Texte"
 
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
-msgstr ""
+msgstr "L'URL intégrée est en lecture seule. Changez BaseURL à la place."
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
