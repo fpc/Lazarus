@@ -2,10 +2,10 @@ inherited MainForm: TMainForm
   Left = 371
   Height = 280
   Top = 150
-  Width = 247
+  Width = 327
   Caption = 'Translation demo'
   ClientHeight = 280
-  ClientWidth = 247
+  ClientWidth = 327
   OnCreate = FormCreate
   object Label1: TLabel[0]
     Left = 14
@@ -20,7 +20,8 @@ inherited MainForm: TMainForm
     Left = 136
     Height = 23
     Top = 13
-    Width = 100
+    Width = 178
+    Anchors = [akTop, akLeft, akRight]
     DropDownCount = 16
     ItemHeight = 15
     Items.Strings = (
@@ -32,6 +33,7 @@ inherited MainForm: TMainForm
       'hu - magyar'
       'it - Italiano'
       'lt - Lietuviškai'
+      'pt_BR - Português (Brazil)'
       'ru - русский'
       'uk - Ukrainian'
       'zh_CN - Chinese'
@@ -44,7 +46,8 @@ inherited MainForm: TMainForm
     Left = 14
     Height = 25
     Top = 240
-    Width = 222
+    Width = 300
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Open second form'
     OnClick = Button1Click
     TabOrder = 1
@@ -53,7 +56,8 @@ inherited MainForm: TMainForm
     Left = 14
     Height = 97
     Top = 47
-    Width = 218
+    Width = 296
+    Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     Caption = 'Please select a drink'
     ChildSizing.LeftRightSpacing = 6
@@ -64,7 +68,7 @@ inherited MainForm: TMainForm
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 77
-    ClientWidth = 214
+    ClientWidth = 292
     Items.Strings = (
       'beer'
       'wine'
@@ -86,7 +90,8 @@ inherited MainForm: TMainForm
     Left = 9
     Height = 3
     Top = 224
-    Width = 223
+    Width = 301
+    Anchors = [akTop, akLeft, akRight]
     Shape = bsTopLine
   end
   object LblCurrentSelection: TLabel[6]

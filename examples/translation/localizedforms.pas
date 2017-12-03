@@ -131,6 +131,7 @@ begin
    'jp'   : Result := $0411;    // Japanese
    'pl'   : Result := $0415;    // Polish
    'pt'   : Result := $0816;    // Portuguese (Portugal)
+   'pt_br': Result := $0416;    // Portuguese (Brazil)
    'ru'   : Result := $0419;    // Russian
    'tr'   : Result := $041F;    // Turkish
    'uk'   : Result := $0422;    // Ukrainian
