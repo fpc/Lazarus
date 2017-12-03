@@ -97,6 +97,7 @@ type
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
@@ -1342,6 +1343,51 @@ end;
 class procedure TCocoaWSWinControl.SetColor(const AWinControl: TWinControl);
 begin
   invalidate(AWinControl);
+end;
+
+class procedure TCocoaWSWinControl.SetChildZPosition(const AWinControl,
+  AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList
+  );
+var
+  pr : NSView;
+  ch : NSView;
+  ab : NSView;
+  c  : TObject;
+  i  : integer;
+begin
+  if (not AWinControl.HandleAllocated) or (not AChild.HandleAllocated) then Exit;
+
+  pr:=NSView(AWinControl.Handle);
+  ch:=NSView(AChild.Handle);
+
+  // The way of changing the order in an array of views
+  // is to remove a view and then reinstert it at the new spot
+  ch.retain();
+  try
+    ch.removeFromSuperview();
+    if ANewPos=0 then
+    begin
+      pr.addSubview_positioned_relativeTo(ch, NSWindowBelow, nil)
+    end
+    else
+    begin
+      i:=AChildren.Count-ANewPos;
+      c:=TObject(AChildren[i]);
+      if c is TWinControl then
+      begin
+        c:=TObject(AChildren[i]);
+        ab:=NSView(TWinControl(c).Handle);
+      end
+      else
+        ab:=nil;
+      pr.addSubview_positioned_relativeTo(ch, NSWindowAbove, ab);
+    end;
+  finally
+    ch.release();
+  end;
+
+  //NSView(AChild.Handle).moveDown
+  //inherited SetChildZPosition(AWinControl, AChild, AOldPos, ANewPos, AChildren);
 end;
 
 class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);
