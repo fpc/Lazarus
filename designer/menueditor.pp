@@ -1375,7 +1375,7 @@ begin
   if (FSelectedMenuItem <> nil) and (FSelectedMenuItem.Parent.Parent = nil) then
   begin
     HideFakes;
-    newItem:=InsertMenuTemplateDlg;
+    newItem:=InsertMenuTemplateDlg(FMenu);
     if (newItem <> nil) then
     begin
       FMenu.Items.Add(newItem);
