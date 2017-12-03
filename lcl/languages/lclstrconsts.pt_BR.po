@@ -6,26 +6,22 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula\n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
 "Language-Team: \n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy,badformat
-#| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "Navegador %s%s%s não é executável"
+msgstr "Navegador \"%s\" não é executável"
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy,badformat
-#| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "Navegador %s%s%s não encontrado"
+msgstr "Navegador \"%s\" não encontrado"
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy,badformat
-#| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "Erro ao executar %s%s%s:%s%s"
+msgstr "Erro ao executar \"%s\":%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -36,10 +32,8 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Nenhum navegador HTML encontrado.%sFavor definir um em Ferramentas -> Opções -> Ajuda -> Opções de Ajuda"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy,badformat
-#| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
-msgstr "O banco de dados de ajuda %s%s%s não pôde encontrar o arquivo %s%s%s."
+msgstr "O banco de dados de ajuda \"%s\" não pode encontrar o arquivo \"%s\"."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -297,7 +291,7 @@ msgstr "Ciano"
 
 #: lclstrconsts.rsascannothaveasparent
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "Classe %s não pode ter %s como pai."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -370,7 +364,7 @@ msgstr "Controle de classe '%s' não pode ter controle de classe '%s' como filho
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "Controle '%s' não tem formulário pai ou quadro"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -427,11 +421,11 @@ msgstr "Aportar"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
-msgstr ""
+msgstr "Copiar"
 
 #: lclstrconsts.rsdopaste
 msgid "Paste"
-msgstr ""
+msgstr "Colar"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
@@ -548,16 +542,12 @@ msgid "First"
 msgstr "Primeiro"
 
 #: lclstrconsts.rsfixedcolstoobig
-#, fuzzy
-#| msgid "FixedCols can't be >= ColCount"
 msgid "FixedCols can't be > ColCount"
-msgstr "\"FixedCols\" não pode ser >= \"ColCount\""
+msgstr "\"FixedCols\" não pode ser > \"ColCount\""
 
 #: lclstrconsts.rsfixedrowstoobig
-#, fuzzy
-#| msgid "FixedRows can't be >= RowCount"
 msgid "FixedRows can't be > RowCount"
-msgstr "\"FixedRows\" não pode ser >= \"RowCount\""
+msgstr "\"FixedRows\" não pode ser > \"RowCount\""
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
@@ -621,15 +611,15 @@ msgstr "Verde"
 
 #: lclstrconsts.rsgridfiledoesnotexist
 msgid "Grid file doesn't exist"
-msgstr ""
+msgstr "Arquivo da grade não existe"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr ""
+msgstr "Impossível inserir linhas na grade quando não há nenhuma coluna"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr ""
+msgstr "Impossível inserir colunas na grade quando não há nenhuma linha"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
@@ -704,52 +694,36 @@ msgid "Help context %s not found."
 msgstr "Ajuda contextual %s não encontrada."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy,badformat
-#| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
-msgstr "Ajuda contextual %s não encontrada no banco de dados %s%s%s."
+msgstr "Ajuda contextual %s não encontrada no banco de dados \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy,badformat
-#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
-msgstr "Banco de dados Ajuda %s%s%s não encontra visualizador para página de ajuda do tipo %s"
+msgstr "Banco de dados ajuda \"%s\" não encontra visualizador para página de ajuda do tipo %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy,badformat
-#| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
-msgstr "Banco de dados de ajuda %s%s%s não encontrado"
+msgstr "Banco de dados de ajuda \"%s\" não encontrado"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#, fuzzy,badformat
-#| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
-msgstr "Ajuda para diretiva %s%s%s não encontrada."
+msgstr "Ajuda para diretiva \"%s\" não encontrada."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#, fuzzy,badformat
-#| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "Ajuda para diretiva %s%s%s não encontrada no Banco de Dados %s%s%s."
+msgstr "Ajuda para diretiva \"%s\" não encontrada no banco de dados \"%s\"."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy,badformat
-#| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
-msgstr "Palavra-chave Ajuda %s%s%s não encontrada."
+msgstr "Palavra-chave de ajuda \"%s\" não encontrada."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy,badformat
-#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
-msgstr "Palavra-chave Ajuda %s%s%s não encontrada no banco de dados %s%s%s."
+msgstr "Palavra-chave de ajuda \"%s\" não encontrada no banco de dados \"%s\"."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy,badformat
-#| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
-msgstr "Nó ajuda %s%s%s não tem banco de dados ajuda"
+msgstr "Nó de ajuda \"%s\" não tem banco de dados ajuda"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -772,10 +746,8 @@ msgid "Help Selector Error"
 msgstr "Erro no seletor de ajuda"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy,badformat
-#| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
-msgstr "Não ha visualizador para tipo ajuda %s%s%s"
+msgstr "Não há visualizador para tipo ajuda \"%s\""
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
@@ -1078,7 +1050,7 @@ msgstr "Postar"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%sPressione OK para ignorar com risco de corrupção de dados.%sPressione Abortar para encerrar o programa."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1363,7 +1335,7 @@ msgstr "Impossível focar uma janela inativa ou invisível"
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "Impossível definir PPI de tempo de projeto."
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
@@ -1506,7 +1478,7 @@ msgstr "Nenhum temporizador disponível"
 
 #: lclstrconsts.sparentrequired
 msgid "Control \"%s\" has no parent window."
-msgstr ""
+msgstr "Controle \"%s\" não tem janela pai."
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
@@ -1542,7 +1514,7 @@ msgstr "Tipo sílaba incorreto: %s esperado mas %s encontrado"
 
 #: lclstrconsts.sshellctrlsbytes
 msgid "%s bytes"
-msgstr ""
+msgstr "%s bytes"
 
 #: lclstrconsts.sshellctrlsinvalidpath
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
@@ -1550,6 +1522,8 @@ msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"Nome de caminho inválido:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
 msgid ""
@@ -1558,6 +1532,10 @@ msgid ""
 "in relation to rootpath:\n"
 "\"%s\"\n"
 msgstr ""
+"Nome de caminho relativo inválido:\n"
+"\"%s\"\n"
+"em relação ao caminho raiz:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidroot
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
@@ -1565,30 +1543,34 @@ msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"Nome de caminho inválido:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlskb
 msgid "%s kB"
-msgstr ""
+msgstr "%s kB"
 
 #: lclstrconsts.sshellctrlsmb
 msgid "%s MB"
-msgstr ""
+msgstr "%s MB"
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
 msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\"\n"
 msgstr ""
+"O item selecionado não existe no disco:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlssize
 msgid "Size"
-msgstr ""
+msgstr "Tamanho"
 
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
