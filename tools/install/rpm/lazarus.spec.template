@@ -31,7 +31,7 @@ is included in this package.
 
 %build
 cd lazarus
-MAKEOPTS="-Fl/opt/gnome/lib"
+MAKEOPTS="-Fl/opt/gnome/lib -k--build-id"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
 fi
