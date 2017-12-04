@@ -33,7 +33,7 @@ inherited MainForm: TMainForm
       'hu - magyar'
       'it - Italiano'
       'lt - Lietuviškai'
-      'pt_BR - Português (Brazil)'
+      'pt_BR - Português (Brasil)'
       'ru - русский'
       'uk - Ukrainian'
       'zh_CN - Chinese'
