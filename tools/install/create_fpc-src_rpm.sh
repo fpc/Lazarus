@@ -23,7 +23,7 @@ else
   shift
 fi
 
-Arch=$(rpm --eval "%{_arch}")
+Arch=$(rpm --eval "%{_target_cpu}")
 
 # retrieve the version information
 echo -n "getting FPC version from local svn ..."
