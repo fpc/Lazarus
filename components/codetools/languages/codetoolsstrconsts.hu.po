@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
@@ -57,7 +57,7 @@ msgstr "%s %s nélkül"
 
 #: codetoolsstrconsts.ctsbasetypeofnotfound
 msgid "base type of \"%s\" not found"
-msgstr "a(z) \"%s\" alaptípus nem található"
+msgstr "a(z) \"%s\" alaptípusa nem található"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
 msgid "begin at %s without end"
@@ -149,7 +149,7 @@ msgstr "Átalakító könyvtára"
 
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
-msgstr "a kurzor poziciója a kódon kívülre esik"
+msgstr "a kurzor pozíciója a kódon kívülre esik"
 
 #: codetoolsstrconsts.ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
@@ -639,7 +639,7 @@ msgstr "Nincs elérhető elemző ehhez: \"%s\". Ha ez egy beemelt fájl akkor el
 
 #: codetoolsstrconsts.ctsnotenoughgenparams
 msgid "Not enough actual generic parameters"
-msgstr "Nincs elég paraméter az általánosítható típus számára"
+msgstr "Nincs elég paraméter az általánosítható típus (generic) számára"
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
@@ -809,7 +809,7 @@ msgstr "típusazoniosító"
 
 #: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
 msgid "type is only allowed in generics, end of class not found"
-msgstr "a type kulcsszó csak általánosítható típusokban (generics) megengedett, az osztály vége (end) nem található"
+msgstr "a type kulcsszó csak általánosítható típusokban (generic) megengedett, az osztály vége (end) nem található"
 
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
@@ -853,7 +853,7 @@ msgstr "váratlan kulcsszó: \"%s\" a blokkok visszafelé olvasása közben"
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
 msgid "unexpected section keyword %s found"
-msgstr ""
+msgstr "váratlan szakasz kulcsszó: %s"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
@@ -893,7 +893,7 @@ msgstr "Eszközök könyvtárai"
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr "a var kulcsszó csak általánosítható típusokban (generics) megengedett, az osztály vége (end) nem található"
+msgstr "a var kulcsszó csak általánosítható típusokban (generic) megengedett, az osztály vége (end) nem található"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"

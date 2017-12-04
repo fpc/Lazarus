@@ -12380,15 +12380,15 @@ msgstr "Keresés ..."
 
 #: lazarusidestrconsts.lismenufindblockotherendofcodeblock
 msgid "Find Other End of Code Block"
-msgstr "A kód blokk másik végének megkeresése"
+msgstr "Kód blokk másik végének megkeresése"
 
 #: lazarusidestrconsts.lismenufindcodeblockstart
 msgid "Find Start of Code Block"
-msgstr "A kód blokk elejének megkeresése"
+msgstr "Kód blokk elejének megkeresése"
 
 #: lazarusidestrconsts.lismenufinddeclarationatcursor
 msgid "Find Declaration at Cursor"
-msgstr "A kurzornál lévő deklaráció megkeresése"
+msgstr "Kurzornál lévő deklaráció megkeresése"
 
 #: lazarusidestrconsts.lismenufindidentifierrefs
 msgid "Find Identifier References ..."
@@ -12634,7 +12634,7 @@ msgstr "Megnyitás ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
 msgid "Open Filename at Cursor"
-msgstr "A kurzornál lévő fájl megnyitása"
+msgstr "Kurzornál lévő fájl megnyitása"
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open Loaded Package ..."
@@ -13991,7 +13991,7 @@ msgstr "Fájl megnyitása"
 
 #: lazarusidestrconsts.lisopenfileatcursor
 msgid "Open file at cursor"
-msgstr ""
+msgstr "Kurzornál lévő fájl megnyitása"
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -17621,7 +17621,7 @@ msgstr "Építés előtt menteni kell a projektet.%sHa a Teszt könyvtár be van
 
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
 msgid "The project uses FPC resources, which require at least FPC 2.4"
-msgstr ""
+msgstr "A projekt FPC erőforrásokat használ, amihez legalább FPC 2.4 szükséges"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
