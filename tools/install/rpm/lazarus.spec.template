@@ -16,6 +16,7 @@ Requires:       fpc-src = FPCSRCVERSION, fpc = FPCVERSION, gtk2-devel, glibc-dev
 Requires(post): desktop-file-utils
 Requires(postun): desktop-file-utils
 
+%global debug_package %{nil}
 %define _source_filedigest_algorithm 0
 %define _binary_filedigest_algorithm 0
 %define _source_payload w9.bzdio
