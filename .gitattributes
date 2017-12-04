@@ -10848,6 +10848,7 @@ tools/glazres/glazres.lpr svneol=native#text/pascal
 tools/glazres/glazresmain.lfm svneol=native#text/plain
 tools/glazres/glazresmain.lrj svneol=native#text/plain
 tools/glazres/glazresmain.pp svneol=native#text/pascal
+tools/glazres/languages/glazres.de.po svneol=native#text/plain
 tools/glazres/languages/glazres.fr.po svneol=native#text/plain
 tools/glazres/languages/glazres.hu.po svneol=native#text/plain
 tools/glazres/languages/glazres.lt.po svneol=native#text/plain

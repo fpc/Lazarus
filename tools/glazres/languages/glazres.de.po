@@ -1,0 +1,141 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.4\n"
+"Language: de\n"
+
+#: glazresmain.cbtncancel
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: glazresmain.defilter
+msgctxt "glazresmain.defilter"
+msgid "Lazarus Resource Files|*.lrs|All Files|*"
+msgstr "Lazarus-Ressourcen-Dateien|*.lrs|Alle Dateien|*"
+
+#: glazresmain.desaveresourcefileas
+msgctxt "glazresmain.desaveresourcefileas"
+msgid "Save resourcefile as"
+msgstr "Ressourcendatei speichern unter"
+
+#: glazresmain.errconverttotext
+msgid "ERROR: unable to convert Delphi form to text: \"%s\""
+msgstr "FEHLER: Kann Delphi-Formular nicht in Text umwandeln: \"%s\""
+
+#: glazresmain.errcreate
+msgid "ERROR: Cannot create \"%s\""
+msgstr "FEHLER: Kann \"%s\" nicht erzeugen"
+
+#: glazresmain.errfileisresource
+msgid "ERROR: Cannot add resource file to itself (\"%s\")"
+msgstr "FEHLER: Kann Ressourcendatei (\"%s\") nicht zu sich selbst hinzufügen"
+
+#: glazresmain.errfilenotfound
+msgid "ERROR: File not found: \"%s\""
+msgstr "FEHLER: Datei nicht gefunden: \"%s\""
+
+#: glazresmain.errnoresourcename
+msgid "ERROR: No resourcename found for \"%s\""
+msgstr "FEHLER: Kein Ressourcenname gefunden für \"%s\""
+
+#: glazresmain.errread
+msgid "ERROR: Cannot read from \"%s\""
+msgstr "FEHLER: Kann nicht aus \"%s\" lesen"
+
+#: glazresmain.msgcreatinglrs
+msgid "Creating \"%s\""
+msgstr "Erzeuge \"%s\""
+
+#: glazresmain.msgprocessing
+msgid "Processing \"%s\""
+msgstr "Verarbeite \"%s\""
+
+#: glazresmain.msgresourcenametype
+msgid " Resource name = \"%s\", Type = \"%s\""
+msgstr " Ressourcenname = \"%s\", Typ = \"%s\""
+
+#: glazresmain.msgsuccess
+msgid ""
+"Done.\n"
+"Number of resources added: %d.\n"
+msgstr ""
+"Erledigt.\n"
+"Anzahl hinzugefügter Ressourcen: %d.\n"
+
+#: glazresmain.msgwrongext
+msgid "Filename does not have the required extension: fix it?"
+msgstr "Der Dateiname besitzt nicht die benötigte Erweiterung: Korrigieren?"
+
+#: glazresmain.odopenexistingfile
+msgctxt "glazresmain.odopenexistingfile"
+msgid "Open existing file"
+msgstr "Existierende Datei öffnen"
+
+#: glazresmain.opdfilter
+msgctxt "glazresmain.opdfilter"
+msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
+msgstr "Grafik (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animiertes GIF (*.gif)|*.gif|TGA Image Datei (*.tga)|*.tga|"
+
+#: glazresmain.opdfilterall
+msgid "All files"
+msgstr "Alle Dateien"
+
+#: glazresmain.opdopenexistingpicture
+msgctxt "glazresmain.opdopenexistingpicture"
+msgid "Open existing picture"
+msgstr "Existierendes Bild öffnen"
+
+#: tglazresform.addanybtn.hint
+msgid "Add (any kind of) files to the list"
+msgstr "Beliebige Dateien zur Liste hinzufügen"
+
+#: tglazresform.addimgbtn.hint
+msgid "Add images to the list"
+msgstr "Bilder zur Liste hinzufügen"
+
+#: tglazresform.caption
+msgid "LRS Builder"
+msgstr "LRS-Ersteller"
+
+#: tglazresform.clearbtn.caption
+msgid "Clear"
+msgstr "Löschen"
+
+#: tglazresform.clearbtn.hint
+msgid "Cleare the entire list"
+msgstr "Die ganze Liste löschen"
+
+#: tglazresform.closebtn.hint
+msgid "Exit the program"
+msgstr "Das Programm beenden"
+
+#: tglazresform.deletebtn.hint
+msgid "Delete selected files from the list"
+msgstr "Ausgewählte Dateien aus Liste löschen"
+
+#: tglazresform.fileslabel.caption
+msgid "Files to include"
+msgstr "Dateien zum Einschliessen"
+
+#: tglazresform.lrslabel.caption
+msgid "Lazarus Resource Filename"
+msgstr "Lazarus-Ressourcen-Dateiname"
+
+#: tglazresform.messageslabel.caption
+msgid "Messages"
+msgstr "Meldungen"
+
+#: tglazresform.startbtn.caption
+msgid "Create LRS"
+msgstr "LRS erzeugen"
+
+#: tglazresform.startbtn.hint
+msgid "Create the output LRS file"
+msgstr "Die Ausgabe-LRS-Datei erstellen"
