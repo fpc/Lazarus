@@ -8,7 +8,7 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
   ClientHeight = 401
   ClientWidth = 449
   Constraints.MinHeight = 250
-  Constraints.MinWidth = 250
+  Constraints.MinWidth = 300
   OnClose = FormClose
   OnCreate = FormCreate
   LCLVersion = '1.9.0.0'
@@ -47,25 +47,26 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
   end
   object DependPkgNameListBox: TListBox
     AnchorSideLeft.Control = DependMinVersionEdit
-    AnchorSideTop.Control = DependPkgNameFilter
+    AnchorSideTop.Control = pnLocalPkg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = DependPkgNameFilter
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = DependMinVersionEdit
     Left = 161
-    Height = 265
-    Top = 36
+    Height = 239
+    Top = 62
     Width = 280
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
-    ItemHeight = 0
+    ItemHeight = 16
     MultiSelect = True
     OnDrawItem = DependPkgNameListBoxDrawItem
     OnSelectionChange = DependPkgNameListBoxSelectionChange
+    Options = []
     ScrollWidth = 282
-    Style = lbOwnerDrawFixed
-    TabOrder = 1
+    Style = lbOwnerDrawVariable
+    TabOrder = 3
   end
   object DependMinVersionEdit: TEdit
     AnchorSideLeft.Control = DependMaxVersionEdit
@@ -78,7 +79,7 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     Width = 280
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
-    TabOrder = 2
+    TabOrder = 4
     Text = 'DependMinVersionEdit'
   end
   object DependMaxVersionEdit: TEdit
@@ -94,7 +95,7 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     Width = 280
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
-    TabOrder = 3
+    TabOrder = 5
     Text = 'DependMaxVersionEdit'
   end
   object DependMinVersionLabel: TLabel
@@ -143,33 +144,31 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     CloseButton.OnClick = CloseButtonClick
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 4
+    TabOrder = 6
     ShowGlyphs = []
   end
   object pnLocalPkg: TPanel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = DependPkgNameListBox
-    AnchorSideTop.Side = asrCenter
-    AnchorSideRight.Control = DependPkgNameListBox
-    Left = 24
+    AnchorSideLeft.Control = DependPkgNameListBox
+    AnchorSideTop.Control = DependPkgNameFilter
+    AnchorSideTop.Side = asrBottom
+    Left = 161
     Height = 19
-    Top = 159
-    Width = 131
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 24
-    BorderSpacing.Right = 6
+    Top = 37
+    Width = 48
+    AutoSize = True
+    BorderSpacing.Top = 7
     BevelOuter = bvNone
     ClientHeight = 19
-    ClientWidth = 131
+    ClientWidth = 48
     Color = 15138790
     ParentColor = False
-    TabOrder = 5
+    TabOrder = 1
     object cbLocalPkg: TCheckBox
       Left = 0
       Height = 19
       Top = 0
-      Width = 100
-      Caption = 'Local packages'
+      Width = 48
+      Caption = 'Local'
       Checked = True
       Color = clDefault
       OnChange = cbLocalPkgChange
@@ -179,34 +178,48 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     end
   end
   object pnOnlinePkg: TPanel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = pnLocalPkg
+    AnchorSideLeft.Control = pnLocalPkg
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = DependPkgNameFilter
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = DependPkgNameListBox
-    Left = 24
+    Left = 216
     Height = 19
-    Top = 187
-    Width = 131
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 24
-    BorderSpacing.Top = 9
-    BorderSpacing.Right = 6
+    Top = 37
+    Width = 55
+    AutoSize = True
+    BorderSpacing.Left = 7
+    BorderSpacing.Top = 7
     BevelOuter = bvNone
     ClientHeight = 19
-    ClientWidth = 131
+    ClientWidth = 55
     Color = 14017529
     ParentColor = False
-    TabOrder = 6
+    TabOrder = 2
     object cbOnlinePkg: TCheckBox
       Left = 0
       Height = 19
       Top = 0
-      Width = 107
-      Caption = 'Online packages'
+      Width = 55
+      Caption = 'Online'
       Checked = True
       OnChange = cbLocalPkgChange
       State = cbChecked
       TabOrder = 0
     end
+  end
+  object DependPkgTypeLabel: TLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = DependPkgNameFilter
+    Left = 41
+    Height = 15
+    Top = 39
+    Width = 114
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    BorderSpacing.CellAlignHorizontal = ccaLeftTop
+    BorderSpacing.CellAlignVertical = ccaCenter
+    Caption = 'DependPkgTypeLabel'
+    ParentColor = False
   end
 end

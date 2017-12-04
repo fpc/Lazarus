@@ -29,7 +29,7 @@ unit opkman_intf;
 interface
 
 uses
-  Classes, SysUtils, contnrs, fpjson,
+  Classes, SysUtils, Forms, Dialogs, Controls, contnrs, fpjson,
   // IdeIntf
   LazIDEIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // OPM
@@ -52,7 +52,7 @@ type
     constructor Create;
     destructor Destroy; override;
   public
-
+    function InstallPackages(APkgLinks: TList): TModalResult; override;
   end;
 
 implementation
@@ -155,6 +155,11 @@ begin
   end;
 end;
 
+function TOPMInterfaceEx.InstallPackages(APkgLinks: TList): TModalResult;
+begin
+  Result := mrOk;
+  MessageDlg('Not yet implemented!', mtInformation, [mbOk], 0)
+end;
 
 end.
 

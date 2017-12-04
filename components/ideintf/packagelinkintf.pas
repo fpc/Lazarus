@@ -6,6 +6,8 @@ interface
 
 uses
   SysUtils,
+  Classes,
+  Forms,
   // LazUtils
   LazFileUtils,
   // IdeIntf
@@ -104,7 +106,7 @@ type
 
   TOPMInterface = class
   public
-    function InstallPackage(APkgLink: TPackageLink): Boolean; virtual; abstract;
+    function InstallPackages(APkgLinks: TList): TModalResult; virtual; abstract;
   end;
 
 var

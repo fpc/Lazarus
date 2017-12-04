@@ -32,6 +32,7 @@ type
     DependMinVersionLabel: TLabel;
     DependPkgNameFilter: TListFilterEdit;
     DependPkgNameLabel: TLabel;
+    DependPkgTypeLabel: TLabel;
     DependPkgNameListBox: TListBox;
     pnLocalPkg: TPanel;
     pnOnlinePkg: TPanel;
@@ -43,6 +44,8 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
+    function FindPackageLink(const ALazPackageID: TLazPackageID): TPackageLink;
+    function InstallOnlinePackages: TModalResult;
   private
     fUpdating: Boolean;
     fSL: TStringList;
@@ -96,6 +99,9 @@ begin
   TIDEImages.AssignImage(DependPkgNameFilter.Glyph, 'btnfiltercancel');
 
   DependPkgNameLabel.Caption:=lisProjAddPackageName;
+  DependPkgTypeLabel.Caption:=lisProjAddPackageType;
+  cbLocalPkg.Caption:=lisProjAddLocalPkg;
+  cbOnlinePkg.Caption:=lisProjAddOnlinePkg;
   DependMinVersionLabel.Caption:=lisProjAddMinimumVersionOptional;
   DependMinVersionEdit.Text:='';
   DependMaxVersionLabel.Caption:=lisProjAddMaximumVersionOptional;
@@ -113,15 +119,35 @@ end;
 procedure TAddPkgDependencyDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   fSL.Free;
+  fSL := nil;
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TAddPkgDependencyDialog.FormCreate(Sender: TObject);
 begin
   fSL := TStringList.Create;
+  DependPkgTypeLabel.Visible := OPMInterface <> nil;
   pnLocalPkg.Visible := OPMInterface <> nil;
   pnOnlinePkg.Visible := OPMInterface <> nil;
   BP.CloseButton.Visible := False;
+end;
+
+function TAddPkgDependencyDialog.FindPackageLink(const ALazPackageID:
+  TLazPackageID): TPackageLink;
+var
+  I: Integer;
+begin
+  Result := nil;
+  if (fSL = nil) or (fSL.Count = 0) then
+    Exit;
+  for I := 0 to fSL.Count - 1 do
+  begin
+    if TLazPackageID(fSL.Objects[I]) = ALazPackageID then
+    begin
+      Result := TPackageLink(fSL.Objects[I]);
+      Break;
+    end;
+  end;
 end;
 
 procedure TAddPkgDependencyDialog.DependPkgNameListBoxDrawItem(
@@ -139,26 +165,24 @@ begin
     end
     else
     begin
-      Pen.Color := (Control as TListBox).Color;
+      Pen.Color := (Control as TListBox).Font.Color;
+      Brush.Color := (Control as TListBox).Color;
       if Assigned(OPMInterface) then
       begin
-        PackageLink := TPackageLink(fSL.Objects[Index]);
-        if PackageLink.Origin = ploOnline then
-          Brush.Color := pnOnlinePkg.Color
-        else
-          Brush.Color := pnLocalPkg.Color
+        PackageLink := FindPackageLink(TLazPackageID(DependPkgNameListBox.Items.Objects[Index]));
+        if PackageLink <> nil then
+        begin
+          if PackageLink.Origin = ploOnline then
+            Brush.Color := pnOnlinePkg.Color
+          else
+            Brush.Color := pnLocalPkg.Color
+        end;
       end
-      else
-        Brush.Color := (Control as TListBox).Color;
     end;
     FillRect(ARect);
     ItemText := (Control as TListBox).Items[Index];
+    InflateRect(ARect, -1, -1);
     DrawText(Handle, PChar(ItemText), Length(ItemText), ARect, DT_LEFT or DT_VCENTER or DT_SINGLELINE);
-    if odFocused In State then
-    begin
-      Brush.Color := (Control as TListBox).Color;
-      DrawFocusRect(ARect);
-    end;
   end;
 end;
 
@@ -168,14 +192,14 @@ var
   PackageLink: TPackageLink;
 begin
   Result := False;
-  if (OPMInterface = nil) or (fSL.Count = 0) then
+  if (OPMInterface = nil) or (fSL = nil) or (fSL.Count = 0) then
     Exit;
   for I := 0 to DependPkgNameListBox.Count - 1 do
   begin
     if DependPkgNameListBox.Selected[I] then
     begin
-      PackageLink := TPackageLink(fSL.Objects[I]);
-      if PackageLink.Origin = ploOnline then
+      PackageLink := FindPackageLink(TLazPackageID(DependPkgNameListBox.Items.Objects[I]));
+      if (PackageLink <> nil) and (PackageLink.Origin = ploOnline) then
       begin
         Result := True;
         Break;
@@ -195,32 +219,48 @@ begin
   UpdateAvailableDependencyNames;
 end;
 
-procedure TAddPkgDependencyDialog.CloseButtonClick(Sender: TObject);
+function TAddPkgDependencyDialog.InstallOnlinePackages: TModalResult;
 var
-  PkgList: String;
   I: Integer;
+  PackageLink: TPackageLink;
+  PkgList: TList;
+  PkgListStr: String;
 begin
-  ModalResult := mrNone;
-  PkgList := '';
-  for I := 0 to DependPkgNameListBox.Count - 1 do
-  begin
-    if DependPkgNameListBox.Selected[I] then
+  Result := mrOk;
+  PkgList := TList.Create;
+  try
+    PkgListStr := '';
+    for I := 0 to DependPkgNameListBox.Count - 1 do
     begin
-      if TPackageLink(fSL.Objects[I]).Origin = ploOnline then
+      if DependPkgNameListBox.Selected[I] then
       begin
-        if PkgList = '' then
-          PkgList := '"' + DependPkgNameListBox.Items[I] + '"'
-        else
-          PkgList := PkgList + ', "' + DependPkgNameListBox.Items[I] + '"';
+        PackageLink := FindPackageLink(TLazPackageID(DependPkgNameListBox.Items.Objects[I]));
+        if (PackageLink <> nil) and (PackageLink.Origin = ploOnline) then
+        begin
+          PkgList.Add(PackageLink);
+          if PkgListStr = '' then
+            PkgListStr := '"' + PackageLink.Name + '"'
+          else
+            PkgListStr := PkgListStr + ', "' + PackageLink.Name + '"';
+        end;
       end;
     end;
+    if PkgList.Count > 0 then
+    begin
+      if IDEMessageDialog(lisProjAddInstConfCaption, lisProjAddInstConf + ' ' + PkgListStr + ' ?', mtInformation, [mbYes, mbNo]) = mrYes then
+        Result := OPMInterface.InstallPackages(PkgList);
+    end;
+  finally
+    PkgList.Free;
+    PkgList := nil;
   end;
-  if PkgList <> '' then
-  begin
-    if MessageDlg(lisPkgInstConf + sLineBreak + PkgList + ' ?', mtInformation, [mbYes, mbNo], 0) = mrNo then
-      Exit;
-    MessageDlg('Not yet implemented!', mtInformation, [mbOk], 0)
-  end;
+end;
+
+procedure TAddPkgDependencyDialog.CloseButtonClick(Sender: TObject);
+begin
+  ModalResult := mrNone;
+  if InstallOnlinePackages <> mrOk then
+    IDEMessageDialog(lisProjAddInstErrCaption, lisProjAddInstErr, mtError, [mbOk]);
 end;
 
 procedure TAddPkgDependencyDialog.AddUniquePackagesToList(APackageID: TLazPackageID);
@@ -270,8 +310,8 @@ begin
     end;
     if Assigned(OPMInterface) then
     begin
-      cbLocalPkg.Caption := Format(lisLocalPkg, [IntToStr(CntLocalPkg)]);
-      cbOnlinePkg.Caption := Format(lisOnlinePkg, [IntToStr(CntOnlinePkg)]);
+      cbLocalPkg.Caption := Format(lisProjAddLocalPkg, [IntToStr(CntLocalPkg)]);
+      cbOnlinePkg.Caption := Format(lisProjAddOnlinePkg, [IntToStr(CntOnlinePkg)]);
       BP.CloseButton.Visible := IsInstallButtonVisible;
     end;
   finally

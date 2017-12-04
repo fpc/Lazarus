@@ -2769,10 +2769,7 @@ resourcestring
   lisFRForwardSearch = 'Forwar&d search';
   lisFRBackwardSearch = '&Backward search';
   dlgReplaceAll = 'Replace &All';
-  lisLocalPkg = 'Local packages (%s)';
-  lisOnlinePkg = 'Online packages (%s)';
-  lisPkgInstConf = 'Do you wish to install the following packages from the main repository:';
-  
+
   // IDEOptionDefs
   dlgGetPosition = 'Get position';
   dlgLeftPos     = 'Left:';
@@ -3987,8 +3984,15 @@ resourcestring
   lisProjFiles = 'Files:';
   lisProjAddAddFilesToProject = 'Add Files to Project';
   lisProjAddPackageName = 'Package Name:';
+  lisProjAddPackageType = 'Package Type:';
+  lisProjAddLocalPkg = 'Local (%s)';
+  lisProjAddOnlinePkg = 'Online (%s)';
   lisProjAddMinimumVersionOptional = 'Minimum Version (optional):';
   lisProjAddMaximumVersionOptional = 'Maximum Version (optional):';
+  lisProjAddInstConfCaption = 'Install package';
+  lisProjAddInstConf = 'Do you wish to install the following online package:';
+  lisProjAddInstErrCaption = 'Install error';
+  lisProjAddInstErr = 'One or more online package could not be installed!';
   
   // component palette
   lisKMNewPackage = 'New package';
