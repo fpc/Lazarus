@@ -331,7 +331,9 @@ CFG
 set -e
 rm -f /usr/lib/fpc/$FPCVersion/ppc$ppcbin
 # remove fpc-cross include lines
-sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
+if [ -f /usr/lib/fpc/$FPCVersion/fpc-cross.cfg ]; then
+  sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
+fi
 CROSS
     chmod a+rx $DebianRulezDir/prerm
   else
@@ -348,7 +350,9 @@ CROSS
 #! /bin/sh
 set -e
 rm -f /usr/lib/fpc/$FPCVersion/$PPPRE$ppcbin
-sed -i -e "/#include \/usr\/lib\/fpc\/$FPCVersion\/fpc${TARGET_SUFFIX}.cfg/d" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
+if [ -f /usr/lib/fpc/$FPCVersion/fpc-cross.cfg ]; then
+  sed -i -e "/#include \/usr\/lib\/fpc\/$FPCVersion\/fpc${TARGET_SUFFIX}.cfg/d" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
+fi
 CROSS
     chmod a+rx $DebianRulezDir/prerm
   fi
