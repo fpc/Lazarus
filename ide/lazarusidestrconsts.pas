@@ -3989,10 +3989,10 @@ resourcestring
   lisProjAddOnlinePkg = 'Online (%s)';
   lisProjAddMinimumVersionOptional = 'Minimum Version (optional):';
   lisProjAddMaximumVersionOptional = 'Maximum Version (optional):';
-  lisProjAddInstConfCaption = 'Install package';
-  lisProjAddInstConf = 'Do you wish to install the following online package:';
+  lisProjAddInstConfCaption = 'Install packages';
+  lisProjAddInstConf = 'Do you wish to install the following online package(s):';
   lisProjAddInstErrCaption = 'Install error';
-  lisProjAddInstErr = 'One or more online package could not be installed!';
+  lisProjAddInstErr = 'One or more online packages could not be installed!';
   
   // component palette
   lisKMNewPackage = 'New package';
