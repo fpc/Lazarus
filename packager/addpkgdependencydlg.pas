@@ -130,6 +130,7 @@ begin
   pnLocalPkg.Visible := OPMInterface <> nil;
   pnOnlinePkg.Visible := OPMInterface <> nil;
   BP.CloseButton.Visible := False;
+  DependPkgNameListBox.ItemHeight := MulDiv(20, Screen.PixelsPerInch, 96);
 end;
 
 function TAddPkgDependencyDialog.FindPackageLink(const ALazPackageID:
