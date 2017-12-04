@@ -1232,7 +1232,7 @@ msgstr "Szöveg"
 
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
-msgstr ""
+msgstr "A beépített URL csak olvasható. Változtassa meg inkább a BaseURL értékét."
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"

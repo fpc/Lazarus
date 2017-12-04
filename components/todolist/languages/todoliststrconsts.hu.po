@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
@@ -25,7 +25,7 @@ msgstr "Makró beszúrása"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
-msgstr ""
+msgstr "Súgó"
 
 #: todoliststrconsts.lisoptions
 msgid "Options"

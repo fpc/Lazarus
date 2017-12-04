@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: tachartstrconsts.descolor
 msgid "Color"
@@ -166,15 +166,15 @@ msgstr "Háromszög (le)"
 
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
-msgstr ""
+msgstr "A kifejezés típusának egész vagy lebegőpontos számnak kell lennie. Most \"%s\"."
 
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
-msgstr ""
+msgstr "Színtérkép matematikai kifejezés alapján"
 
 #: tachartstrconsts.rsexpressionseries
 msgid "Math expression series"
-msgstr ""
+msgstr "Matematikai kifejezések"
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"

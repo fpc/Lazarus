@@ -297,7 +297,7 @@ msgstr "Nem található elemző az eszközhöz: \"%s\""
 
 #: objinspstrconsts.lisunabletofindparserwithname
 msgid "Unable to find parser with name \"%s\""
-msgstr ""
+msgstr "Nem található \"%s\" nevű elemző"
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -843,7 +843,7 @@ msgstr "A tulajdonság értéke legyen Alapértelmezett"
 
 #: objinspstrconsts.oisshowalloutputlines
 msgid "Show all output lines"
-msgstr ""
+msgstr "A kimenet összes sorának megjelenítése"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"

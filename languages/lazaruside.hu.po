@@ -3996,10 +3996,8 @@ msgid "File is used"
 msgstr "A fájl használatban van"
 
 #: lazarusidestrconsts.lisa2pfilename2
-#, fuzzy
-#| msgid "Filename"
 msgid "Filename/URL"
-msgstr "Fájlnév"
+msgstr "Fájlnév/URL"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
 msgid "File not unit"
@@ -4892,7 +4890,7 @@ msgstr "&Eltávolítás"
 
 #: lazarusidestrconsts.lisbtnrename
 msgid "&Rename"
-msgstr ""
+msgstr "&Átnevezás"
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
@@ -10457,7 +10455,7 @@ msgstr "Érvénytelen Pascal azonosító"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
 msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
-msgstr ""
+msgstr "A(z) \"%s\" név nem egy érvényes Pascal azonosító.%sMindenképpen ezt használja?"
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"
@@ -11468,7 +11466,7 @@ msgstr "&Helyi"
 
 #: lazarusidestrconsts.lislocalpkg
 msgid "Local packages (%s)"
-msgstr ""
+msgstr "Helyi csomagok (%s)"
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
@@ -12417,15 +12415,15 @@ msgstr "Keresés ..."
 
 #: lazarusidestrconsts.lismenufindblockotherendofcodeblock
 msgid "Find Other End of Code Block"
-msgstr "A kód blokk másik végének megkeresése"
+msgstr "Kód blokk másik végének megkeresése"
 
 #: lazarusidestrconsts.lismenufindcodeblockstart
 msgid "Find Start of Code Block"
-msgstr "A kód blokk elejének megkeresése"
+msgstr "Kód blokk elejének megkeresése"
 
 #: lazarusidestrconsts.lismenufinddeclarationatcursor
 msgid "Find Declaration at Cursor"
-msgstr "A kurzornál lévő deklaráció megkeresése"
+msgstr "Kurzornál lévő deklaráció megkeresése"
 
 #: lazarusidestrconsts.lismenufindidentifierrefs
 msgid "Find Identifier References ..."
@@ -12671,7 +12669,7 @@ msgstr "Megnyitás ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
 msgid "Open Filename at Cursor"
-msgstr "A kurzornál lévő fájl megnyitása"
+msgstr "Kurzornál lévő fájl megnyitása"
 
 #: lazarusidestrconsts.lismenuopenfolder
 msgid "Open Folder ..."
@@ -13969,7 +13967,7 @@ msgstr "Sortöréskor (azaz Return vagy Enter billenyű)"
 
 #: lazarusidestrconsts.lisonlinepkg
 msgid "Online packages (%s)"
-msgstr ""
+msgstr "Hálózati csomagok (%s)"
 
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
@@ -14036,7 +14034,7 @@ msgstr "Fájl megnyitása"
 
 #: lazarusidestrconsts.lisopenfileatcursor
 msgid "Open file at cursor"
-msgstr ""
+msgstr "Kurzornál lévő fájl megnyitása"
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -14254,7 +14252,7 @@ msgstr "\"%s\" elemző: %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
-msgstr ""
+msgstr "Elemzők:"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
@@ -14920,7 +14918,7 @@ msgstr "Virtuális unit"
 
 #: lazarusidestrconsts.lispkginstconf
 msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
+msgstr "Szeretné telepíteni a következő csomagokat a fő tárolóból?"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
@@ -17686,7 +17684,7 @@ msgstr "Építés előtt menteni kell a projektet.%sHa a Teszt könyvtár be van
 
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
 msgid "The project uses FPC resources, which require at least FPC 2.4"
-msgstr ""
+msgstr "A projekt FPC erőforrásokat használ, amihez legalább FPC 2.4 szükséges"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
