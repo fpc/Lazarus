@@ -182,6 +182,7 @@ begin
     FillRect(ARect);
     ItemText := (Control as TListBox).Items[Index];
     InflateRect(ARect, -1, -1);
+    inc(ARect.Left,3);
     DrawText(Handle, PChar(ItemText), Length(ItemText), ARect, DT_LEFT or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
