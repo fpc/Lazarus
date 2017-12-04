@@ -11752,10 +11752,6 @@ msgstr ""
 msgid "&Local"
 msgstr ""
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "本地化"
@@ -14321,10 +14317,6 @@ msgstr "? (开启)"
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -15288,10 +15280,6 @@ msgstr "文本"
 msgid "Virtual Unit"
 msgstr "虚单元"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
@@ -16120,6 +16108,22 @@ msgstr "依赖关系已经存在"
 msgid "Add Editor Files"
 msgstr "添加编辑器文件"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "无效的最小-最大版本"
@@ -16131,6 +16135,10 @@ msgstr "无效的pascal单元名称"
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "错误版本号"
+
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -16144,6 +16152,10 @@ msgstr "最小版本号 (可选):"
 msgid "New Requirement"
 msgstr "新的需求"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "包名:"
@@ -16151,6 +16163,10 @@ msgstr "包名:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "未找到包"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 #, fuzzy,badformat

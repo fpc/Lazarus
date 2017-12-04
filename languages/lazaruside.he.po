@@ -12181,10 +12181,6 @@ msgstr ""
 msgid "&Local"
 msgstr ""
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "מקומיים"
@@ -14926,10 +14922,6 @@ msgstr "? (דלוק)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "בסוף השורה (למשל: מקש  return או enter)"
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -15948,10 +15940,6 @@ msgstr "טקסט"
 msgid "Virtual Unit"
 msgstr "יחידה ווירטואלית"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
@@ -16822,6 +16810,22 @@ msgstr "התלות כבר קיימת"
 msgid "Add Editor Files"
 msgstr "הוסף קבצי עורך"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "גירסה מינימלית-מקסימלית לא חוקית"
@@ -16836,6 +16840,10 @@ msgstr "שם לא חוקי של יחידת פסקל "
 msgid "Invalid version"
 msgstr "גירסה לא חוקית"
 
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
 msgstr "גירסה מקסימלית (לא חובה):"
@@ -16848,6 +16856,10 @@ msgstr "גגירסה מינימלית (לא חובה):"
 msgid "New Requirement"
 msgstr "דרישה חדשה"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "שם החבילה:"
@@ -16855,6 +16867,10 @@ msgstr "שם החבילה:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "החבילה לא נמצאה"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 #, fuzzy,badformat

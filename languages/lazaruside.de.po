@@ -11468,10 +11468,6 @@ msgstr "Lade Makro aus"
 msgid "&Local"
 msgstr "&Lokal"
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Lokale Variablen"
@@ -13971,10 +13967,6 @@ msgstr "? (An)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Beim Zeilenumbruch (z.B. Return- oder Enter-Taste)"
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "nur 32 Bit"
@@ -14922,10 +14914,6 @@ msgstr "Text"
 msgid "Virtual Unit"
 msgstr "Virtuelle Unit"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Package-Verzeichnis. Parameter ist die Package-ID"
@@ -15688,6 +15676,22 @@ msgstr "Abhängigkeit ist bereits vorhanden"
 msgid "Add Editor Files"
 msgstr "Dateien hinzufügen"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Ungültige Min-/Max-Version"
@@ -15699,6 +15703,10 @@ msgstr "Ungültiger Pascaldateiname"
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Ungültige Version"
+
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15712,6 +15720,10 @@ msgstr "Niedrigste Versionsnummer (optional):"
 msgid "New Requirement"
 msgstr "Neue Anforderung"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "Package-Name:"
@@ -15719,6 +15731,10 @@ msgstr "Package-Name:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "Package nicht gefunden"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."

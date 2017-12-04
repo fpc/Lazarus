@@ -11792,10 +11792,6 @@ msgstr ""
 msgid "&Local"
 msgstr ""
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr ""
@@ -14462,10 +14458,6 @@ msgstr ""
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -15460,10 +15452,6 @@ msgstr "Tekst"
 msgid "Virtual Unit"
 msgstr "Virtuele Unit"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
@@ -16322,6 +16310,22 @@ msgstr "Afhankelijkheid bestaat al"
 msgid "Add Editor Files"
 msgstr "Bewerker-bestanden toevoegen"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Ongeldige Min-Max versie"
@@ -16336,6 +16340,10 @@ msgstr "Ongeldige Pascal unit naam"
 msgid "Invalid version"
 msgstr "Ongeldige versie"
 
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
 msgstr "Maximum Versie (optioneel):"
@@ -16348,6 +16356,10 @@ msgstr "Minimum Versie (optioneel):"
 msgid "New Requirement"
 msgstr "Nieuwe vereiste"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "Pakketnaam"
@@ -16355,6 +16367,10 @@ msgstr "Pakketnaam"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "Pakket niet gevonden"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 #, fuzzy

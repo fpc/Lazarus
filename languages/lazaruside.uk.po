@@ -11469,10 +11469,6 @@ msgstr "Завантажити макрос з"
 msgid "&Local"
 msgstr "&Локальна"
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Локальні"
@@ -13971,10 +13967,6 @@ msgstr "? (Вкл)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "При розриві рядка (тобто при натисканні клавіші Enter)"
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "лише 32біт"
@@ -14922,10 +14914,6 @@ msgstr "Текст"
 msgid "Virtual Unit"
 msgstr "Віртуальний модуль"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Тека пакунка. Параметром є ID пакунка, наприклад \"Name\" або \"Name 1.0\""
@@ -15688,6 +15676,22 @@ msgstr "Залежність вже існує"
 msgid "Add Editor Files"
 msgstr "Додати файли редактора"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Неправильна версія (Min-Max)"
@@ -15699,6 +15703,10 @@ msgstr "Неправильна назва модуля Pascal"
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Неправильна версія"
+
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15712,6 +15720,10 @@ msgstr "Мінімальна версія (необов'язково)"
 msgid "New Requirement"
 msgstr "Нова вимога"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "Назва пакунка:"
@@ -15719,6 +15731,10 @@ msgstr "Назва пакунка:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "Пакунок не знайдено"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."

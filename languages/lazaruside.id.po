@@ -11885,10 +11885,6 @@ msgstr ""
 msgid "&Local"
 msgstr ""
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr ""
@@ -14573,10 +14569,6 @@ msgstr ""
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -15571,10 +15563,6 @@ msgstr "Teks"
 msgid "Virtual Unit"
 msgstr "Unit Virtual"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
@@ -16435,6 +16423,22 @@ msgstr "Dependensi sudah ada"
 msgid "Add Editor Files"
 msgstr "Tambah file editor"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Versi Min-Max tidak benar"
@@ -16449,6 +16453,10 @@ msgstr "Nama unit pascal tidak benar"
 msgid "Invalid version"
 msgstr "Versi tidak benar"
 
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
 msgstr "Versi Maksimum (opsional):"
@@ -16461,6 +16469,10 @@ msgstr "Versi Minimum (opsional):"
 msgid "New Requirement"
 msgstr "Kebutuhan Baru"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "Nama Paket:"
@@ -16468,6 +16480,10 @@ msgstr "Nama Paket:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "Paket tidak ditemukan"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 #, fuzzy,badformat

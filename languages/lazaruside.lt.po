@@ -11487,10 +11487,6 @@ msgstr "Makrokomandą įkelti iš"
 msgid "&Local"
 msgstr "&Vietinis"
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Vietiniai kintamieji"
@@ -13989,10 +13985,6 @@ msgstr "? (Aktyvus)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Laužiant eilutę (pvz. įvedimo klavišas)"
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "tik 32 bitų"
@@ -14940,10 +14932,6 @@ msgstr "Teksto"
 msgid "Virtual Unit"
 msgstr "Virtualus modulis"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Paketo aplankas. Parametras yra paketo ID, pvz.: „Pavadinimas“ arba „Pavadinimas 1.0“"
@@ -15706,6 +15694,22 @@ msgstr "Priklausomybė jau yra"
 msgid "Add Editor Files"
 msgstr "Pridėti rengyklės failų"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Klaidingos versijos ribos"
@@ -15717,6 +15721,10 @@ msgstr "Klaidingas „Paskalio“ modulio pavadinimas"
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Klaidinga versija"
+
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15730,6 +15738,10 @@ msgstr "Minimali versija (nebūtina):"
 msgid "New Requirement"
 msgstr "Nauja priklausomybė"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "Paketo pavadinimas:"
@@ -15737,6 +15749,10 @@ msgstr "Paketo pavadinimas:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "Paketas nerastas"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."

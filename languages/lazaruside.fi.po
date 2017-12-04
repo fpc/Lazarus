@@ -11375,10 +11375,6 @@ msgstr "Lataa makro:"
 msgid "&Local"
 msgstr "&Paikallinen"
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Paikalliset"
@@ -13844,10 +13840,6 @@ msgstr "? (Päällä)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Riviä vaihdettaessa (Enter näppäin)"
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "vain 32bit"
@@ -14791,10 +14783,6 @@ msgstr "Teksti"
 msgid "Virtual Unit"
 msgstr "Virtuaalinen käännösyksikkö"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Pakettihakemisto. Parametri on paketin ID, e.g. \"Nimi\" or \"Nimi 1.0\""
@@ -15556,6 +15544,22 @@ msgstr "Riippuvuus on jo olemassa"
 msgid "Add Editor Files"
 msgstr "Lisää editorissa avoinna olevia tiedostoja"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Kelvoton Min-Max versio"
@@ -15567,6 +15571,10 @@ msgstr "Kelvoton Pascal -käännösyksikön nimi"
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Kelvoton versio"
+
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15580,6 +15588,10 @@ msgstr "Pienin versio (valinnainen):"
 msgid "New Requirement"
 msgstr "Uusi riippuvuus"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "Paketin nimi:"
@@ -15587,6 +15599,10 @@ msgstr "Paketin nimi:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "Pakettia ei löytynyt"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."

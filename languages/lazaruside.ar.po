@@ -11447,10 +11447,6 @@ msgstr ""
 msgid "&Local"
 msgstr ""
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr ""
@@ -13935,10 +13931,6 @@ msgstr ""
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -14889,10 +14881,6 @@ msgstr "نصّ"
 msgid "Virtual Unit"
 msgstr ""
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr ""
@@ -15653,6 +15641,22 @@ msgstr ""
 msgid "Add Editor Files"
 msgstr "أضف الجذاذات المفتوحة في المحرّر"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr ""
@@ -15663,6 +15667,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
@@ -15677,12 +15685,20 @@ msgstr ""
 msgid "New Requirement"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound

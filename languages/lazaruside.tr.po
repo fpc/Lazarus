@@ -11648,10 +11648,6 @@ msgstr "Makroyu yükle"
 msgid "&Local"
 msgstr ""
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Yerliler"
@@ -14148,10 +14144,6 @@ msgstr "?"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Kesme çizgisinde (örn. Dönüş veya enter tuşu)"
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -15118,10 +15110,6 @@ msgstr "Metin"
 msgid "Virtual Unit"
 msgstr "Sanal Birim"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Paket dizini.Parametresi paket kimliğidir, örneğin \" Adı \\ \"veya \" Adı 1.0 \\ \""
@@ -15922,6 +15910,22 @@ msgstr "Bağımlılık zaten var"
 msgid "Add Editor Files"
 msgstr "Editör Dosyalarını Ekle"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Geçersiz Min-Max sürümü"
@@ -15933,6 +15937,10 @@ msgstr "Geçersiz Pascal birim adı"
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Geçersiz sürüm"
+
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15946,6 +15954,10 @@ msgstr "Minimum Sürüm (isteğe bağlı):"
 msgid "New Requirement"
 msgstr "Yeni Gereksinim"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "Paket ismi:"
@@ -15953,6 +15965,10 @@ msgstr "Paket ismi:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "Paket bulunamadı"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."

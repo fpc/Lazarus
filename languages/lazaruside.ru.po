@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-04 01:32+0300\n"
+"PO-Revision-Date: 2017-12-05 01:04+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -11463,10 +11463,6 @@ msgstr "Загрузить макрос"
 msgid "&Local"
 msgstr "Локальная (&L)"
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr "Локальные пакеты (%s)"
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Локальные переменные"
@@ -13965,10 +13961,6 @@ msgstr "? (Вкл.)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "При разрыве строки (то есть при нажатии клавиши 'Ввод')"
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr "Пакеты из сети (%s)"
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "только 32 бита"
@@ -14916,10 +14908,6 @@ msgstr "Текстовый"
 msgid "Virtual Unit"
 msgstr "Виртуальный модуль"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr "Вы хотите установить следующие пакеты из главного репозитория:"
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Каталог пакета. Параметром является идентификатор пакета, например, \"Имя\" или \"Имя 1.0\""
@@ -15682,6 +15670,22 @@ msgstr "Зависимость уже есть"
 msgid "Add Editor Files"
 msgstr "Добавить файлы редактора"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr "Вы хотите установить следующие пакеты из сети:"
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr "Установка пакетов"
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr "Не удалось установить один или более пакетов из сети!"
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr "Ошибка установки"
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Неверные версии (минимальная/максимальная)"
@@ -15693,6 +15697,10 @@ msgstr "Неверное имя модуля Паскаля"
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Неверная версия"
+
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr "Локальный (%s)"
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15706,6 +15714,10 @@ msgstr "Минимальная версия (необязательна):"
 msgid "New Requirement"
 msgstr "Новая зависимость"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr "Из сети (%s)"
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "Имя пакета:"
@@ -15713,6 +15725,10 @@ msgstr "Имя пакета:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "Пакет не найден"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr "Тип пакета:"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."

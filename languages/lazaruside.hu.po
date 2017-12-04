@@ -11464,10 +11464,6 @@ msgstr "Makró betöltése innen:"
 msgid "&Local"
 msgstr "&Helyi"
 
-#: lazarusidestrconsts.lislocalpkg
-msgid "Local packages (%s)"
-msgstr "Helyi csomagok (%s)"
-
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
 msgstr "Helyi változók"
@@ -13965,10 +13961,6 @@ msgstr "? (Be)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Sortöréskor (azaz Return vagy Enter billenyű)"
 
-#: lazarusidestrconsts.lisonlinepkg
-msgid "Online packages (%s)"
-msgstr "Hálózati csomagok (%s)"
-
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "csak 32bit"
@@ -14916,10 +14908,6 @@ msgstr "Szöveg"
 msgid "Virtual Unit"
 msgstr "Virtuális unit"
 
-#: lazarusidestrconsts.lispkginstconf
-msgid "Do you wish to install the following packages from the main repository:"
-msgstr "Szeretné telepíteni a következő csomagokat a fő tárolóból?"
-
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID, e.g. \"Name\" or \"Name 1.0\""
 msgstr "Csomag könyvtára. Paraméter a csomag azonosítója, pl. \"Név\" vagy \"Név 1.0\""
@@ -15682,6 +15670,22 @@ msgstr "A függőség már létezik"
 msgid "Add Editor Files"
 msgstr "Megnyitott fájl hozzáadása"
 
+#: lazarusidestrconsts.lisprojaddinstconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinstconfcaption
+msgid "Install packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterr
+msgid "One or more online packages could not be installed!"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojaddinsterrcaption
+msgid "Install error"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Érvénytelen legkisebb-legnagyobb változat"
@@ -15693,6 +15697,10 @@ msgstr "Érvénytelen pascal unit-név"
 #: lazarusidestrconsts.lisprojaddinvalidversion
 msgid "Invalid version"
 msgstr "Érvénytelen változat"
+
+#: lazarusidestrconsts.lisprojaddlocalpkg
+msgid "Local (%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15706,6 +15714,10 @@ msgstr "Legkisebb változat (nem kötelező):"
 msgid "New Requirement"
 msgstr "Új követelmény"
 
+#: lazarusidestrconsts.lisprojaddonlinepkg
+msgid "Online (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
 msgstr "Csomagnév:"
@@ -15713,6 +15725,10 @@ msgstr "Csomagnév:"
 #: lazarusidestrconsts.lisprojaddpackagenotfound
 msgid "Package not found"
 msgstr "Csomag nem található"
+
+#: lazarusidestrconsts.lisprojaddpackagetype
+msgid "Package Type:"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
