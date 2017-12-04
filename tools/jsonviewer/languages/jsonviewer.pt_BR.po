@@ -4,10 +4,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula\n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
@@ -38,7 +40,9 @@ msgstr "Documento JSON modificado"
 msgid ""
 "The JSON data was changed but not saved.\n"
 "What do want to do ?\n"
-msgstr "Os dados JSON foram alterados mas não salvos."
+msgstr ""
+"Os dados JSON foram alterados mas não salvos.\n"
+"O que deseja fazer ?\n"
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."
@@ -53,10 +57,8 @@ msgid "Empty document"
 msgstr "Documento vazio"
 
 #: msgjsonviewer.serrcreatingconfigdir
-#, fuzzy,badformat
-#| msgid "Could not create the configuration files directory \"s\""
 msgid "Could not create the configuration files directory \"%s\""
-msgstr "Impossível criar diretório de configurações de arquivo \"s\""
+msgstr "Incapaz de criar diretório de configurações de arquivo \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
 msgid "Invalid value or wrong type: \"%s\""
@@ -243,7 +245,6 @@ msgid "Save JSON document with a new name"
 msgstr "Salvar o documento JSON com um novo nome"
 
 #: tmainform.caption
-#, fuzzy
 msgctxt "tmainform.caption"
 msgid "JSON Viewer"
 msgstr "Visualizador JSON"
@@ -257,7 +258,6 @@ msgid "&File"
 msgstr "&Arquivo"
 
 #: tmainform.miallowcomments.caption
-msgctxt "tmainform.miallowcomments.caption"
 msgid "Allow comments"
 msgstr ""
 
@@ -267,7 +267,7 @@ msgstr ""
 
 #: tmainform.micompact.caption
 msgid "Compact display"
-msgstr ""
+msgstr "Exibição compacta"
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
@@ -295,11 +295,11 @@ msgstr "&Opções"
 
 #: tmainform.odjson.title
 msgid "Select a JSON file"
-msgstr ""
+msgstr "Selecionar um arquivo JSON"
 
 #: tmainform.sdjson.title
 msgid "Save JSON document to file"
-msgstr ""
+msgstr "Salvar documento JSON para arquivo"
 
 #: tmainform.tbjson.caption
 msgid "TBJSON"
@@ -315,43 +315,43 @@ msgstr "ToolButton4"
 
 #: tnewbooleanform.caption
 msgid "New boolean value"
-msgstr ""
+msgstr "Novo valor boleano"
 
 #: tnewbooleanform.cbvalue.caption
 msgid "Set to true"
-msgstr ""
+msgstr "Definir como \"true\""
 
 #: tnewbooleanform.label1.caption
 msgid "&Member name"
-msgstr ""
+msgstr "Nome de &membro"
 
 #: tnewnumberform.caption
 msgid "New number value"
-msgstr ""
+msgstr "Novo valor numérico"
 
 #: tnewnumberform.label1.caption
 msgctxt "tnewnumberform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "&Nome"
 
 #: tnewnumberform.label2.caption
 msgid "Value"
-msgstr ""
+msgstr "Valor"
 
 #: tnewnumberform.rgtype.caption
 msgid "Number Type"
-msgstr ""
+msgstr "Tipo numérico"
 
 #: tnewstringform.caption
 msgid "New String value"
-msgstr ""
+msgstr "Novo valor \"string\""
 
 #: tnewstringform.label1.caption
 msgctxt "tnewstringform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "&Nome"
 
 #: tnewstringform.label2.caption
 msgid "&Value"
-msgstr ""
+msgstr "&Valor"
 
