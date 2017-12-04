@@ -807,14 +807,13 @@ msgid "Install packages"
 msgstr "Csomagok telepítése"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
 msgid "Open"
 msgstr "Megnyitás"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
 msgid "Open local repository"
-msgstr ""
+msgstr "Helyi tároló megnyitása"
 
 #: opkman_const.rsmainfrm_tboptions_caption
 msgctxt "opkman_const.rsmainfrm_tboptions_caption"
@@ -1319,11 +1318,11 @@ msgstr "Csomagfrissítések ellenőrzése"
 
 #: opkman_const.rsoptions_lbcontimeout_caption
 msgid "Connection timeout (seconds):"
-msgstr ""
+msgstr "Kapcsolódás időtúllépése (másodperc):"
 
 #: opkman_const.rsoptions_lbcontimeout_hint
 msgid "The number of seconds after which package manager drops connection"
-msgstr ""
+msgstr "A másodpercek száma, melynek eltelte után a csomagkezelő bontja a kapcsolatot"
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
