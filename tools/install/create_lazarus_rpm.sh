@@ -59,7 +59,7 @@ SrcTGZ=$RPMSrcDir/SOURCES/$Src
 SrcTGZOpts=
 SpecFile=rpm/lazarus-$LazVersion-$LazRelease.spec
 
-Arch=$(rpm --eval "%{_arch}")
+Arch=$(rpm --eval "%{_target_cpu}")
 
 # download lazarus svn if needed
 echo "creating lazarus tgz ..."
