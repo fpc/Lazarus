@@ -45,7 +45,7 @@ msgstr "Escala auto"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
-msgstr "Série barras"
+msgstr "Série Barra"
 
 #: tachartstrconsts.rsbottom
 msgid "Bottom"
@@ -114,7 +114,7 @@ msgstr "Série Mapa de Cor"
 
 #: tachartstrconsts.rsconstantline
 msgid "Constant line"
-msgstr "Linha constante"
+msgstr "Linha Constante"
 
 #: tachartstrconsts.rscrosssymbol
 msgid "Plus"
@@ -166,7 +166,7 @@ msgstr "Triângulo descendente"
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
-msgstr "Série campo de vetor"
+msgstr "Série Campo de Vetor"
 
 #: tachartstrconsts.rsfullstarsymbol
 msgid "Star (full)"
@@ -270,7 +270,7 @@ msgstr "Série Curva Paramétrica"
 
 #: tachartstrconsts.rspieseries
 msgid "Pie series"
-msgstr "Série Torta"
+msgstr "Série Pizza"
 
 #: tachartstrconsts.rspointsymbol
 msgid "Point"
@@ -353,7 +353,7 @@ msgstr "Definido pelo usuário"
 
 #: tachartstrconsts.rsuserdrawnseries
 msgid "User-drawn series"
-msgstr "Série Desenhado pelo usuário"
+msgstr "Série Desenhada pelo usuário"
 
 #: tachartstrconsts.rsvertbarsymbol
 msgid "Vertical bar"
@@ -373,7 +373,7 @@ msgstr "Zoom pela roda do \"mouse\""
 
 #: tachartstrconsts.sesserieseditortitle
 msgid "Edit series"
-msgstr "Série Editar"
+msgstr "Editar série"
 
 #: tachartstrconsts.tasaxistransformseditortitle
 msgid "Edit axis transformations"
