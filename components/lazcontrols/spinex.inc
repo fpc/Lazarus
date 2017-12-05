@@ -19,14 +19,18 @@ const
     'nvbInitialValue'
   );
 
+  Digits = ['0'..'9'];
+  AllowedControlChars = [#8,#9,^C,^X,^V,^Z];
+
 function DbgS(ANvb: TNullValueBehaviour): String;
 begin
   Result := NvbStrings[ANvb];
 end;
 
-procedure TCustomFloatSpinEditEx.UpdateControl;
+
+procedure TSpinEditExBase.UpdateControl;
 var
-  D: Double;
+  ANumber: T;
 begin
   if (MaxValue < MinValue) then FMaxValue := MinValue;
   if (FNullValueBehaviour <> nvbShowTextHint) then
@@ -44,8 +48,8 @@ begin
     begin
       if not FSettingValue then
       begin
-        if TextIsNumber(Text, D) then
-          Text := ValueToStr(GetLimitedValue(D))
+        if TextIsNumber(Text, ANumber) then
+          Text := ValueToStr(GetLimitedValue(ANumber))
         else
           Text := EmptyStr;
       end
@@ -63,14 +67,8 @@ begin
 end;
 
 
-procedure TCustomFloatSpinEditEx.SetDecimalSeparator(AValue: Char);
-begin
-  if (AValue = FFS.DecimalSeparator) then Exit;
-  FFS.DecimalSeparator := AValue;
-  UpdateControl;
-end;
 
-procedure TCustomFloatSpinEditEx.UpDownChangingEx(Sender: TObject;
+procedure TSpinEditExBase.UpDownChangingEx(Sender: TObject;
   var AllowChange: Boolean; NewValue: SmallInt; Direction: TUpDownDirection);
 begin
   if ReadOnly then Exit;
@@ -80,26 +78,26 @@ begin
   end;
 end;
 
-procedure TCustomFloatSpinEditEx.UpDownClick(Sender: TObject; {%H-}Button: TUDBtnType);
+procedure TSpinEditExBase.UpDownClick(Sender: TObject; {%H-}Button: TUDBtnType);
 begin
   BuddyClick;
 end;
 
 
-function TCustomFloatSpinEditEx.GetBuddyClassType: TControlClass;
+function TSpinEditExBase.GetBuddyClassType: TControlClass;
 begin
   Result := TUpDown;
 end;
 
 
 
-procedure TCustomFloatSpinEditEx.DoEnter;
+procedure TSpinEditExBase.DoEnter;
 begin
   inherited DoEnter;
   FInitialValue := GetValue;
 end;
 
-function TCustomFloatSpinEditEx.RealGetText: TCaption;
+function TSpinEditExBase.RealGetText: TCaption;
 begin
   if HandleAllocated then
     Result := inherited RealGetText
@@ -107,7 +105,7 @@ begin
     Result := ValueToStr(FValue);
 end;
 
-procedure TCustomFloatSpinEditEx.Reset;
+procedure TSpinEditExBase.Reset;
 begin
   if IsMasked then
     inherited Reset
@@ -115,22 +113,26 @@ begin
     Value := FInitialValue;
 end;
 
-procedure TCustomFloatSpinEditEx.EditEditingDone;
+procedure TSpinEditExBase.EditEditingDone;
 begin
   inherited EditEditingDone;
   GetValue;
-  //debugln(['TCustomFloatSpinEditEx.EditingDone:']);
-  //debugln(Format('  FValue = %.2f, Text = "%s"',[FValue,Text]));
+  {$ifdef debugspinex}
+  debugln(['TSpinEditExBase.EditingDone:']);
+  debugln(['  FValue = ',FValue,' Text = "',Text,'"']);
+  {$endif}
   UpdateControl;
 end;
 
-procedure TCustomFloatSpinEditEx.EditChange;
+procedure TSpinEditExBase.EditChange;
 begin
-  //debugln('TCustomFloatSpinEditEx.EditChange');
+  {$ifdef debugspinex}
+  debugln('TSpinEditExBase.EditChange');
+  {$endif}
   inherited EditChange;
 end;
 
-procedure TCustomFloatSpinEditEx.EditKeyDown(var Key: word; Shift: TShiftState);
+procedure TSpinEditExBase.EditKeyDown(var Key: word; Shift: TShiftState);
 begin
   inherited EditKeyDown(Key, Shift);
   if (Key = VK_Escape) and (Shift = []) then
@@ -152,14 +154,14 @@ begin
   end
 end;
 
-procedure TCustomFloatSpinEditEx.SetMaxValue(const AValue: Double);
+procedure TSpinEditExBase.SetMaxValue(const AValue: T);
 begin
   if FMaxValue = AValue then Exit;
   FMaxValue := AValue;
   UpdateControl;
 end;
 
-procedure TCustomFloatSpinEditEx.SetMinValue(const AValue: Double);
+procedure TSpinEditExBase.SetMinValue(const AValue: T);
 begin
   if FMinValue = AValue then Exit;
   FMinValue := AValue;
@@ -167,52 +169,28 @@ begin
 end;
 
 
-procedure TCustomFloatSpinEditEx.SetIncrement(const AIncrement: Double);
+procedure TSpinEditExBase.SetIncrement(const AIncrement: T);
 begin
   if AIncrement = FIncrement then Exit;
   FIncrement := AIncrement;
-  //UpdateControl;
 end;
 
-function TCustomFloatSpinEditEx.TextIsNumber(const S: String; out D: Double): Boolean;
-begin
-  //DbgOut(['TextIsNumber, S ="',S,'": Result = ']);
-  try
-    Result := TryStrToFloat(S, D, FFS);
-  except
-    Result := False;
-  end;
-  //debugln([Result]);
-end;
 
-procedure TCustomFloatSpinEditEx.InitializeWnd;
+procedure TSpinEditExBase.InitializeWnd;
 begin
   inherited InitializeWnd;
   UpdateControl;
 end;
 
-procedure TCustomFloatSpinEditEx.Loaded;
+procedure TSpinEditExBase.Loaded;
 begin
   inherited Loaded;
   UpDown.MinRepeatInterval := FMinRepeatValue;
   if FUpdatePending then UpdateControl;
 end;
 
-procedure TCustomFloatSpinEditEx.EditKeyPress(var Key: char);
-{Disallow any key that is not a digit, decimalseparator or -
- For ease of use translate any decimalpoint or comma to DecimalSeparator
- Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
- If FDecimals = 0 (as in TSpinEditEx), disallow decimalseparator also
-}
-begin
-  inherited EditKeyPress(Key);
-  if (Key in ['.',',']) then Key := FFS.Decimalseparator;
-  if not (Key in ['0'..'9', FFS.DecimalSeparator,'-',#8,#9,^C,^X,^V,^Z]) then Key := #0;
-  if (Key = FFS.DecimalSeparator) and (FDecimals = 0) then Key := #0;
-  if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
-end;
 
-procedure TCustomFloatSpinEditEx.EditMouseWheelUp(Shift: TShiftState;
+procedure TSpinEditExBase.EditMouseWheelUp(Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
   inherited EditMouseWheelUp(Shift, MousePos, Handled);
@@ -220,7 +198,7 @@ begin
     SpinUpDown(True);
 end;
 
-procedure TCustomFloatSpinEditEx.EditMouseWheelDown(Shift: TShiftState;
+procedure TSpinEditExBase.EditMouseWheelDown(Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
   inherited EditMouseWheelDown(Shift, MousePos, Handled);
@@ -229,15 +207,17 @@ begin
 end;
 
 
-procedure TCustomFloatSpinEditEx.SetValue(const AValue: Double);
+procedure TSpinEditExBase.SetValue(const AValue: T);
 var
-  ValueFromText: Extended;
+  ValueFromText: T;
 begin
-  //debugln(Format('TCustomFloatSpinEditEx.SetValue: AValue = %.2f, FValue=%.2f, Text="%s"',[AValue,fValue,Text]));
+  {$ifdef debugspinex}
+  debugln(['TSpinEditExBase.SetValue: AValue = ',AValue, ' , FValue=',FValue,' Text="',Text,'"']);
+  {$endif}
   if (FValue = AValue)
     //if you set text by code (or paste it) and text is not a valid float, then FValue will hold the previous value
     //and in that case we should not exit here...
-    and (TryStrToFloat(Text, ValueFromText, FFS) and (ValueFromText = FValue)) then Exit;
+    and ({TryStrToFloat(Text, ValueFromText, FFS)} TextIsNumber(Text, ValueFromText) and (ValueFromText = FValue)) then Exit;
   FSettingValue := True;
   FValue := AValue;
 
@@ -246,7 +226,7 @@ begin
   FSettingValue := False;
 end;
 
-function TCustomFloatSpinEditEx.GetValue: Double;
+function TSpinEditExBase.GetValue: T;
 begin
   if HandleAllocated
     and not (wcfCreatingHandle in FWinControlFlags) then
@@ -256,28 +236,23 @@ begin
   Result := FValue;
 end;
 
-function TCustomFloatSpinEditEx.IsLimited: Boolean;
+function TSpinEditExBase.IsLimited: Boolean;
 begin
   Result := MaxValue > MinValue;
 end;
 
-function TCustomFloatSpinEditEx.IsOutOfLimits(AValue: Double): Boolean;
+function TSpinEditExBase.IsOutOfLimits(AValue: T): Boolean;
 begin
   Result := IsLimited and ((AValue < MinValue) or (AValue > MaxValue));
 end;
 
 
-function TCustomFloatSpinEditEx.GetDecimalSeparator: Char;
-begin
-  Result := FFS.DecimalSeparator;
-end;
-
-function TCustomFloatSpinEditEx.GetEdit: TGEEdit;
+function TSpinEditExBase.GetEdit: TGEEdit;
 begin
   Result := BaseEditor;
 end;
 
-procedure TCustomFloatSpinEditEx.SetMinRepeatValue(AValue: Byte);
+procedure TSpinEditExBase.SetMinRepeatValue(AValue: Byte);
 begin
   if FMinRepeatValue = AValue then Exit;
   FMinRepeatValue := AValue;
@@ -286,9 +261,9 @@ begin
 end;
 
 
-procedure TCustomFloatSpinEditEx.SpinUpDown(Up: Boolean);
+procedure TSpinEditExBase.SpinUpDown(Up: Boolean);
 var
-  OldValue, NewValue: Double;
+  OldValue, NewValue: T;
 begin
   if not TextIsNumber(Text, OldValue) then
     NewValue := MinValue
@@ -307,39 +282,29 @@ begin
   SetValue(NewValue);
 end;
 
-function TCustomFloatSpinEditEx.GetNullValue: Double;
+function TSpinEditExBase.GetNullValue: T;
 begin
   Result := FNullValue;
 end;
 
-function TCustomFloatSpinEditEx.GetUpDown: TUpDown;
+function TSpinEditExBase.GetUpDown: TUpDown;
 begin
   Result := TUpDown(Buddy);
 end;
 
-procedure TCustomFloatSpinEditEx.SetNullValue(AValue: Double);
+procedure TSpinEditExBase.SetNullValue(AValue: T);
 begin
   if (FNullValue = AValue) then Exit;
   FNullValue := AValue;
   UpdateControl;
 end;
 
-procedure TCustomFloatSpinEditEx.SetDecimals(ADecimals: Integer);
-begin
-  if FDecimals = ADecimals then Exit;
-  FDecimals := ADecimals;
-  UpdateControl;
-end;
-
-constructor TCustomFloatSpinEditEx.Create(TheOwner: TComponent);
+constructor TSpinEditExBase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
-  FFS := DefaultFormatSettings;
-  FFS.DecimalSeparator := '.';
   FArrowKeys := True;
   FIncrement := 1;
-  FDecimals := 2;
   FValue := 0;
   FMinValue := 0;
   FMaxValue := 100;
@@ -368,7 +333,7 @@ begin
     SetInitialBounds(0, 0, CX, CY);
 end;
 
-function TCustomFloatSpinEditEx.GetLimitedValue(const AValue: Double): Double;
+function TSpinEditExBase.GetLimitedValue(const AValue: T): T;
 begin
   Result := AValue;
   //Delphi does not constrain when MinValue = MaxValue, and does if MaxValue > MinValue,
@@ -380,6 +345,64 @@ begin
   end;
 end;
 
+procedure TSpinEditExBase.FinalizeWnd;
+begin
+  GetValue;
+  inherited FinalizeWnd;
+end;
+
+
+{ TCustomFloatSpinEditEx }
+
+function TCustomFloatSpinEditEx.GetDecimalSeparator: Char;
+begin
+  Result := FFS.DecimalSeparator;
+end;
+
+procedure TCustomFloatSpinEditEx.SetDecimalSeparator(AValue: Char);
+begin
+  if (AValue = FFS.DecimalSeparator) then Exit;
+  FFS.DecimalSeparator := AValue;
+  UpdateControl;
+end;
+
+procedure TCustomFloatSpinEditEx.EditKeyPress(var Key: char);
+begin
+  inherited EditKeyPress(Key);
+  {Disallow any key that is not a digit, decimalseparator or '-'
+   For ease of use translate any decimalpoint or comma to DecimalSeparator
+   Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
+   If FDecimals = 0, disallow decimalseparator also
+  }
+  if (Key in ['.',',']) then Key := FFS.Decimalseparator;
+  if not (Key in (Digits + AllowedControlChars + [FFS.DecimalSeparator,'-'])) then Key := #0;
+  if (Key = FFS.DecimalSeparator) and (FDecimals = 0) then Key := #0;
+  if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
+end;
+
+function TCustomFloatSpinEditEx.TextIsNumber(const S: String; out ANumber: Double
+  ): Boolean;
+begin
+  {$ifdef debugspinex}
+  DbgOut(['TextIsNumber, S ="',S,'": Result = ']);
+  {$endif}
+  try
+    Result := TryStrToFloat(S, ANumber, FFS);
+  except
+    Result := False;
+  end;
+  {$ifdef debugspinex}
+  debugln([Result]);
+  {$endif}
+end;
+
+procedure TCustomFloatSpinEditEx.SetDecimals(ADecimals: Integer);
+begin
+  if FDecimals = ADecimals then Exit;
+  FDecimals := ADecimals;
+  UpdateControl;
+end;
+
 function TCustomFloatSpinEditEx.ValueToStr(const AValue: Double): String;
 begin
   Result := FloatToStrF(GetLimitedValue(AValue), ffFixed, 20, DecimalPlaces, FFS);
@@ -389,7 +412,9 @@ function TCustomFloatSpinEditEx.StrToValue(const S: String): Double;
 var
   Def, D: Double;
 begin
-  //debugln(['TCustomFloatSpinEditEx.StrToValue: S="',S,'"']);
+  {$ifdef debugspinex}
+  debugln(['TCustomFloatSpinEditEx.StrToValue: S="',S,'"']);
+  {$endif}
   case FNullValueBehaviour of
     nvbShowTextHint: Def := FNullValue;
     nvbLimitedNullValue: Def := GetLimitedValue(FNullValue);
@@ -411,90 +436,95 @@ begin
   except
     Result := Def;
   end;
-  //debugln(['  Result=',(Result)]);
+  {$ifdef debugspinex}
+  debugln(['  Result=',(Result)]);
+  {$endif}
 end;
 
-procedure TCustomFloatSpinEditEx.FinalizeWnd;
+constructor TCustomFloatSpinEditEx.Create(TheOwner: TComponent);
 begin
-  GetValue;
-  inherited FinalizeWnd;
+  inherited Create(TheOwner);
+  FFS := DefaultFormatSettings;
+  FFS.DecimalSeparator := '.';
+  FDecimals := 2;
 end;
+
+
 
 { TCustomSpinEditEx }
 
-function TCustomSpinEditEx.GetIncrement: integer;
+procedure TCustomSpinEditEx.EditKeyPress(var Key: char);
 begin
-  Result:=round(FIncrement);
+  inherited EditKeyPress(Key);
+  {Disallow any key that is not a digit or -
+   Tab, BackSpace, Cut, Paste, Copy, Undo of course should be passed onto inherited KeyPress
+  }
+  inherited EditKeyPress(Key);
+  if not (Key in (Digits + AllowedControlChars + ['-'])) then Key := #0;
+  if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
 end;
 
-function TCustomSpinEditEx.GetMaxValue: integer;
-begin
-  Result:=round(FMaxValue);
-end;
-
-function TCustomSpinEditEx.GetMinValue: integer;
-begin
-  Result:=round(FMinValue);
-end;
-
-function TCustomSpinEditEx.GetNullValue: integer;
-begin
-  Result:=round(inherited GetNullValue);
-end;
-
-function TCustomSpinEditEx.GetValue: integer;
-begin
-  Result:=round(inherited GetValue);
-end;
-
-
-procedure TCustomSpinEditEx.SetIncrement(const AValue: integer);
-begin
-  if Increment = AValue then exit;
-  inherited SetIncrement(AValue);
-end;
-
-procedure TCustomSpinEditEx.SetMaxValue(const AValue: integer);
-begin
-  if MaxValue=AValue then exit;
-  inherited SetMaxValue(AValue);
-end;
-
-procedure TCustomSpinEditEx.SetMinValue(const AValue: integer);
-begin
-  if MinValue=AValue then exit;
-  inherited SetMinValue(AValue);
-end;
-
-procedure TCustomSpinEditEx.SetValue(const AValue: integer);
-begin
-  if Value=AValue then exit;
-  inherited SetValue(AValue);
-end;
-
-function TCustomSpinEditEx.TextIsNumber(const S: String; out D: Double): Boolean;
+function TCustomSpinEditEx.TextIsNumber(const S: String; out ANumber: Int64
+  ): Boolean;
 var
-  N: Integer;
+  N: Int64;
 begin
-  //DbgOut(['TCustomSpinEditEx.TextIsNumber: S = "',S,'" Result = ']);
+  {$ifdef debugspinex}
+  DbgOut(['TCustomSpinEditEx.TextIsNumber: S = "',S,'" Result = ']);
+  {$endif}
+
   try
-    Result := TryStrToInt(S, N);
-    D := N;
+    Result := TryStrToInt64(S, N);
+    ANumber := N;
   except
     Result := False;
   end;
-  //debugln([Result]);
+  {$ifdef debugspinex}
+  debugln([Result]);
+  {$endif}
 end;
 
-procedure TCustomSpinEditEx.SetNullValue(AValue: integer);
+function TCustomSpinEditEx.ValueToStr(const AValue: Int64): String;
 begin
-  if (GetNullValue = AValue) then Exit;
-  inherited SetNullValue(AValue);
+  Result := IntToStr(AValue);
+end;
+
+function TCustomSpinEditEx.StrToValue(const S: String): Int64;
+var
+  Def, N: Int64;
+begin
+  {$ifdef debugspinex}
+  debugln(['TCustomSpinEditEx.StrToValue: S="',S,'"']);
+  {$endif}
+  case FNullValueBehaviour of
+    nvbShowTextHint: Def := FNullValue;
+    nvbLimitedNullValue: Def := GetLimitedValue(FNullValue);
+    nvbMinValue: Def := FMinValue;
+    nvbMaxValue: Def := MaxValue;
+    nvbInitialValue: Def := FInitialValue;
+  end;
+  try
+    if (FNullValueBehaviour = nvbShowTextHint)then
+    begin
+      if TextIsNumber(S, N)
+      then
+        Result := N
+      else
+        Result := Def;
+    end
+    else
+      Result := GetLimitedValue(StrToInt64Def(S, Def));
+  except
+    Result := Def;
+  end;
+  {$ifdef debugspinex}
+  debugln(['  Result=',(Result)]);
+  {$endif}
 end;
 
 constructor TCustomSpinEditEx.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   NumbersOnly := True;
-  FDecimals := 0;
 end;
+

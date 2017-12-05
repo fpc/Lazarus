@@ -33,12 +33,18 @@
   the downside is that it's behaviour may also depend on the widgetset.
   This is especially the case if the text inside the control becomes invalid
   (empty or otherwise not a number).
-  In such a case, when situation querying the control for it's Value, the results
+  In such a case, when querying the control for it's Value, the results
   are not cross-platform consistent.
-
   This difference in behaviour across widgetsets also prevents the implementation
   of a NullValue, especially the possibility to leave the control empty
   or display an informative text inside it in such a case.
+
+  SpinEditEx handles Int64 values, whereas TSpinEdit is limited to LongInt values,
+  this is because TSpinEdit inherites from TCustomFloatSpinEdit and the internal
+  FValue is stored as Double: this has not enough significant digits to handle
+  the total range of Int64.
+
+  FloatSpinEditEx can set DecimalSeparator independent of DefaultFormatSettings.DecimalSeparator.
 
   Note: unlike T(Float)SpinEdit GetValue is always derived from the actual
   text in the control.
@@ -55,11 +61,11 @@
   So, whilst the new implementation of T(Float)SpinEditEx uses a TUpDown
   control, it does not use it's Associate property.
   The 2 controls (an edit and an updown) are embedded in a TCustomControl
-  (like TEditButton is) in oreder to have proper align and anchor behaviour.
+  (like TEditButton is) in order to have proper align- and anchororing behaviour.
 
   ---------------------------------------------------------------------------- }
 
-unit SpinEx;
+unit spinex;
 
 {$mode objfpc}{$H+}
 
@@ -70,8 +76,11 @@ uses
   // LCL
   LCLType, LCLProc, Controls, ClipBrd, ComCtrls, GroupedEdit;
 
+
+{.$define debugspinex}
+
 type
-  { TCustomFloatSpinEdit }
+  { TSpinEditExBase }
 
   TNullValueBehaviour = (
     //This applies when the Text in the control is not a number.
@@ -83,35 +92,31 @@ type
     nvbInitialValue        // Value becomes InitialValue (OnEnter), Text becomes Value
     );
 
-  { TCustomFloatSpinEditEx }
 
-  TCustomFloatSpinEditEx = class(TCustomAbstractGroupedEdit)
+
+  { TSpinEditExBase }
+
+  generic TSpinEditExBase<T> = class(TCustomAbstractGroupedEdit)
   private
     FArrowKeys: Boolean;
-    FIncrement: Double;
-    FDecimals: Integer;
-    FMaxValue: Double;
-    FMinValue: Double;
-    FInitialValue: Double;
+    FIncrement: T;
+    FMaxValue: T;
+    FMinValue: T;
+    FInitialValue: T;
     FMinRepeatValue: Byte;
-    FNullValue: Double;
+    FNullValue: T;
     FNullValueBehaviour: TNullValueBehaviour;
-    //FNullValueText: String;
-    FValue: Double;
+    FValue: T;
     FUpdatePending: Boolean;
     FSettingValue: Boolean;
-    //FValueChanged: Boolean;
-    FFS: TFormatSettings;
-    function GetDecimalSeparator: Char;
     function GetEdit: TGEEdit;
     procedure SetMinRepeatValue(AValue: Byte);
     procedure SpinUpDown(Up: Boolean);
-    function GetNullValue: Double;
+    function GetNullValue: T;
     function GetUpDown: TUpDown;
-    function GetValue: Double;
+    function GetValue: T;
     function IsLimited: Boolean;
-    function IsOutOfLimits(AValue: Double): Boolean;
-    procedure SetDecimalSeparator(AValue: Char);
+    function IsOutOfLimits(AValue: T): Boolean;
     procedure UpdateControl;
     procedure UpDownChangingEx(Sender: TObject; var {%H-}AllowChange: Boolean;
                                {%H-}NewValue: SmallInt; Direction: TUpDownDirection);
@@ -123,41 +128,55 @@ type
     procedure Reset; override;
     procedure EditChange; override;
     procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
-    procedure EditKeyPress(var Key: char); override;
     procedure EditMouseWheelUp(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
-    procedure SetDecimals(ADecimals: Integer); virtual;
-    procedure SetValue(const AValue: Double); virtual;
-    procedure SetNullValue(AValue: Double); virtual;
-    procedure SetMaxValue(const AValue: Double); virtual;
-    procedure SetMinValue(const AValue: Double); virtual;
-    procedure SetIncrement(const AIncrement: Double); virtual;
-    function TextIsNumber(const S: String; out D: Double): Boolean; virtual;
+    procedure SetValue(const AValue: T); virtual;
+    procedure SetNullValue(AValue: T); virtual;
+    procedure SetMaxValue(const AValue: T); virtual;
+    procedure SetMinValue(const AValue: T); virtual;
+    procedure SetIncrement(const AIncrement: T); virtual;
+    function TextIsNumber(const S: String; out ANumber: T): Boolean; virtual; abstract;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     procedure Loaded; override;
 
     property ArrowKeys: Boolean read FArrowKeys write FArrowKeys default True;
-    property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator default '.';
     property Edit: TGEEdit read GetEdit;
     property UpDown: TUpDown read GetUpDown;
     property MinRepeatValue: Byte read FMinRepeatValue write SetMinRepeatValue default 100;
   public
     constructor Create(TheOwner: TComponent); override;
-    function GetLimitedValue(const AValue: Double): Double; virtual;
-    function ValueToStr(const AValue: Double): String; virtual;
-    function StrToValue(const S: String): Double; virtual;
+    function GetLimitedValue(const AValue: T): T; virtual;
+    function ValueToStr(const AValue: T): String; virtual; abstract;
+    function StrToValue(const S: String): T; virtual; abstract;
     procedure EditEditingDone; override;
   public
-    property DecimalPlaces: Integer read FDecimals write SetDecimals default 2;
-    property Increment: Double read FIncrement write SetIncrement;
-    property MinValue: Double read FMinValue write SetMinValue;
-    property MaxValue: Double read FMaxValue write SetMaxValue;
-    property NullValue: Double read GetNullValue write SetNullValue;
+    property Increment: T read FIncrement write SetIncrement;
+    property MinValue: T read FMinValue write SetMinValue;
+    property MaxValue: T read FMaxValue write SetMaxValue;
+    property NullValue: T read GetNullValue write SetNullValue;
     property NullValueBehaviour: TNullValueBehaviour read FNullValueBehaviour write FNullValueBehaviour default nvbMinValue;
-    //property NullValueText: String read FNullValueText write FNullValueText;
-    property Value: Double read GetValue write SetValue;
+    property Value: T read GetValue write SetValue;
   end;
+
+  TCustomFloatSpinEditEx = class(specialize TSpinEditExBase<Double>)
+  private
+    FDecimals: Integer;
+    FFS: TFormatSettings;
+    function GetDecimalSeparator: Char;
+    procedure SetDecimalSeparator(AValue: Char);
+  protected
+    procedure EditKeyPress(var Key: char); override;
+    function TextIsNumber(const S: String; out ANumber: Double): Boolean; override;
+    procedure SetDecimals(ADecimals: Integer); virtual;
+  public
+    function ValueToStr(const AValue: Double): String; override;
+    function StrToValue(const S: String): Double; override;
+    constructor Create(TheOwner: TComponent); override;
+    property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator default '.';
+    property DecimalPlaces: Integer read FDecimals write SetDecimals default 2;
+  end;
+
 
   { TFloatSpinEdit }
 
@@ -193,13 +212,11 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
-    //property PasswordChar;
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
     property TabOrder;
     property TabStop;
-    //property Text;
     property TextHint;
     property Visible;
 
@@ -227,7 +244,7 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
 
-    //From TCustomFloatSpinEdit
+    //From TCustomFloatSpinEditEx
     property ArrowKeys;
     property DecimalSeparator;
     property DecimalPlaces;
@@ -237,38 +254,23 @@ type
     property MinRepeatValue;
     property NullValue;
     property NullValueBehaviour;
-    //property NullValueText;
     property Spacing;
     property Value;
   end;
 
 
-  { TCustomSpinEdit }
+  { TCustomSpinEditEx }
 
-  TCustomSpinEditEx = class(TCustomFloatSpinEditEx)
-  private
-    function GetIncrement: integer;
-    function GetMaxValue: integer;
-    function GetMinValue: integer;
-    function GetNullValue: integer;
-    function GetValue: integer;
+  TCustomSpinEditEx = class(specialize TSpinEditExBase<Int64>)
   protected
-    procedure SetMaxValue(const AValue: integer); overload; virtual;
-    procedure SetMinValue(const AValue: integer); overload; virtual;
-    procedure SetIncrement(const AValue: integer); overload; virtual;
-    procedure SetNullValue(AValue: integer); overload; virtual;
-    procedure SetValue(const AValue: integer); overload; virtual;
-    function TextIsNumber(const S: String; out D: Double): Boolean; override;
+    procedure EditKeyPress(var Key: char); override;
+    function TextIsNumber(const S: String; out ANumber: Int64): Boolean; override;
   public
+    function ValueToStr(const AValue: Int64): String; override;
+    function StrToValue(const S: String): Int64; override;
     constructor Create(TheOwner: TComponent); override;
   public
-    property Value: integer read GetValue write SetValue default 0;
-    property MinValue: integer read GetMinValue write SetMinValue default 0;
-    property MaxValue: integer read GetMaxValue write SetMaxValue default 100;
-    property NullValue: integer read GetNullValue write SetNullValue;
-    property NullValueBehaviour;
-    //property NullValueText;
-    property Increment: integer read GetIncrement write SetIncrement default 1;
+    property Increment default 1;
   end;
 
 
@@ -306,13 +308,11 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
-    //property PasswordChar;
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
     property TabOrder;
     property TabStop;
-    //property Text;
     property TextHint;
     property Visible;
 
@@ -340,7 +340,7 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
 
-    //From TCustomFloatSpinEdit
+    //From TCustomFloatSpinEditEx
     property ArrowKeys;
     property Increment;
     property MaxValue;
@@ -348,12 +348,12 @@ type
     property MinRepeatValue;
     property NullValue;
     property NullValueBehaviour;
-    //property NullValueText;
     property Spacing;
     property Value;
   end;
 
 function DbgS(ANvb: TNullValueBehaviour): String; overload;
+
 
 implementation
 
