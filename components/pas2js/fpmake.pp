@@ -3,7 +3,7 @@
 
    fpmake.pp for Pas2JSDsgn 1.0.1
 
-   This file was generated on 05.12.2017
+   This file was generated on 06.12.2017
 }
 
 {$ifndef ALLPACKAGES} 
