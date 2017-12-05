@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-16 19:25+0200\n"
+"PO-Revision-Date: 2017-12-05 21:43+0200\n"
 "Last-Translator: Олександр Пилипчук <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -3999,10 +3999,8 @@ msgid "File is used"
 msgstr "Файл вже використовується"
 
 #: lazarusidestrconsts.lisa2pfilename2
-#, fuzzy
-#| msgid "Filename"
 msgid "Filename/URL"
-msgstr "Назва файлу"
+msgstr "Назва файлу/URL"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
 msgid "File not unit"
@@ -10460,7 +10458,7 @@ msgstr "Некоректний ідентифікатор паскаля"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
 msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
-msgstr "Назва \"%s\" не є правильним ідентифікатором Паскалю.%sВсе одно використати?"
+msgstr "Назва \"%s\" не є правильним ідентифікатором Паскаля.%sВсе одно використати?"
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"
@@ -14246,11 +14244,11 @@ msgstr ", проаналізовано "
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
-msgstr "парсер \"%s\": %s"
+msgstr "аналізатор \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
-msgstr ""
+msgstr "Аналізатори:"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
@@ -15678,11 +15676,11 @@ msgstr "Додати файли редактора"
 
 #: lazarusidestrconsts.lisprojaddinsterr
 msgid "One or more online packages could not be installed!"
-msgstr ""
+msgstr "Неможливо встановити один або більше онлайнових пакунків!"
 
 #: lazarusidestrconsts.lisprojaddinsterrcaption
 msgid "Install error"
-msgstr ""
+msgstr "Помилка встановлення"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -15698,7 +15696,7 @@ msgstr "Неправильна версія"
 
 #: lazarusidestrconsts.lisprojaddlocalpkg
 msgid "Local (%s)"
-msgstr ""
+msgstr "Локальні (%s)"
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15714,7 +15712,7 @@ msgstr "Нова вимога"
 
 #: lazarusidestrconsts.lisprojaddonlinepkg
 msgid "Online (%s)"
-msgstr ""
+msgstr "Онлайнові (%s)"
 
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
@@ -15726,7 +15724,7 @@ msgstr "Пакунок не знайдено"
 
 #: lazarusidestrconsts.lisprojaddpackagetype
 msgid "Package Type:"
-msgstr ""
+msgstr "Тип пакунка:"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
