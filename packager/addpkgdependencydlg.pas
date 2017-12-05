@@ -226,32 +226,21 @@ var
   I: Integer;
   PackageLink: TPackageLink;
   PkgList: TList;
-  PkgListStr: String;
 begin
   Result := mrOk;
   PkgList := TList.Create;
   try
-    PkgListStr := '';
     for I := 0 to DependPkgNameListBox.Count - 1 do
     begin
       if DependPkgNameListBox.Selected[I] then
       begin
         PackageLink := FindPackageLink(TLazPackageID(DependPkgNameListBox.Items.Objects[I]));
         if (PackageLink <> nil) and (PackageLink.Origin = ploOnline) then
-        begin
           PkgList.Add(PackageLink);
-          if PkgListStr = '' then
-            PkgListStr := '"' + PackageLink.Name + '"'
-          else
-            PkgListStr := PkgListStr + ', "' + PackageLink.Name + '"';
-        end;
       end;
     end;
     if PkgList.Count > 0 then
-    begin
-      if IDEMessageDialog(lisProjAddInstConfCaption, lisProjAddInstConf + ' ' + PkgListStr + ' ?', mtInformation, [mbYes, mbNo]) = mrYes then
-        Result := OPMInterface.InstallPackages(PkgList);
-    end;
+      Result := OPMInterface.InstallPackages(PkgList, Self);
   finally
     PkgList.Free;
     PkgList := nil;
@@ -259,9 +248,12 @@ begin
 end;
 
 procedure TAddPkgDependencyDialog.CloseButtonClick(Sender: TObject);
+var
+  InstallRes: TModalResult;
 begin
   ModalResult := mrNone;
-  if InstallOnlinePackages <> mrOk then
+  InstallRes := InstallOnlinePackages;
+  if (InstallRes <> mrCancel) and (InstallRes <> mrOk) then
     IDEMessageDialog(lisProjAddInstErrCaption, lisProjAddInstErr, mtError, [mbOk]);
 end;
 

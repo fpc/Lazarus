@@ -107,7 +107,9 @@ type
 
   TOPMInterface = class
   public
-    function InstallPackages(APkgLinks: TList): TModalResult; virtual; abstract;
+    {confirmation/install/extract/download dialogs will be displayed in the center of ParentForm}
+    function InstallPackages(APkgLinks: TList; AParentForm: TForm;
+      const AResolveDependencies: Boolean = True): TModalResult; virtual; abstract;
   end;
 
 var
