@@ -210,14 +210,14 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     end
   end
   object DependPkgTypeLabel: TLabel
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = pnLocalPkg
+    AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = DependPkgNameFilter
-    Left = 42
-    Height = 13
-    Top = 39
-    Width = 120
+    Left = 44
+    Height = 14
+    Top = 49
+    Width = 128
     Anchors = [akTop, akRight]
-    BorderSpacing.Top = 3
     BorderSpacing.Right = 6
     BorderSpacing.CellAlignHorizontal = ccaLeftTop
     BorderSpacing.CellAlignVertical = ccaCenter
