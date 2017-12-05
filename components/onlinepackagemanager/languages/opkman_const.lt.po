@@ -1194,6 +1194,10 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Laida"
 
+#: opkman_const.rsopminterfaceconf
+msgid "Do you wish to install the following online package(s):"
+msgstr ""
+
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"

@@ -1172,6 +1172,10 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Версия"
 
+#: opkman_const.rsopminterfaceconf
+msgid "Do you wish to install the following online package(s):"
+msgstr "Вы хотите установить следующие пакеты из сети:"
+
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"
