@@ -1809,7 +1809,7 @@ end;
 constructor TQtBrush.CreateWithRadialGradient(ALogBrush: TLogRadialGradient);
 var
   i: Integer;
-  lColor: PQColor;
+  lColor: TQColor;
   lR, lG, lB, lA: Double;
 begin
   FRadialGradient := QRadialGradient_create(
@@ -1821,8 +1821,8 @@ begin
     lG := ALogBrush.radStops[i].radColorG / $FFFF;
     lB := ALogBrush.radStops[i].radColorB / $FFFF;
     lA := ALogBrush.radStops[i].radColorA / $FFFF;
-    QColor_fromRgbF(lColor, lR, lG, lB, lA); // By Juha: Uninitialized pointer passed.
-    QGradient_setColorAt(FRadialGradient, ALogBrush.radStops[i].radPosition, lColor);
+    QColor_fromRgbF(@lColor, lR, lG, lB, lA);
+    QGradient_setColorAt(FRadialGradient, ALogBrush.radStops[i].radPosition, @lColor);
   end;
 
   FHandle := QBrush_create(FRadialGradient);

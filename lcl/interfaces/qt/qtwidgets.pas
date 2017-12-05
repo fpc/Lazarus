@@ -3021,7 +3021,7 @@ var
   {$IFDEF UNIX}
   ScanCode: LongWord;
   {$ENDIF}
-  AChar: Char;
+  AChar: UnicodeChar;
   AKeyEvent: QKeyEventH;
   GlobalAction: Integer;
   {$IFDEF VerboseQtKeys}
@@ -3063,7 +3063,7 @@ var
       Text := UTF8ToUTF16(Utf8Char)
     else
     if Word(AChar) <> CharMsg.CharCode then
-      Text := Char(CharMsg.CharCode);  // By Juha: should it be UnicodeChar?
+      Text := UnicodeChar(CharMsg.CharCode);
 
     AKeyEvent := QKeyEvent_createExtendedKeyEvent(
       QEvent_type(Event),
@@ -3428,7 +3428,7 @@ begin
     FillChar(CharMsg, SizeOf(CharMsg), 0);
     CharMsg.Msg := CN_CharMsg[IsSysKey];
     CharMsg.KeyData := KeyMsg.KeyData;
-    AChar := Text[1]; // By Juha: This is wrong. AChar is Char, Text[1] is WideChar.
+    AChar := Text[1];
     CharMsg.CharCode := Word(AChar);
 
     //Send message to LCL
