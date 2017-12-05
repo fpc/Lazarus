@@ -1317,13 +1317,12 @@ end;
 procedure TLazPackageLinks.ClearOnlineLinks;
 var
   Link: TPackageLink;
-  I: Integer;
+  Node: TAVLTreeNode;
 begin
   BeginUpdate;
   try
-    for I := FOnlineLinks.Count - 1 downto 0 do
-    begin
-      Link := TPackageLink(FOnlineLinks);
+    for Node in FOnlineLinks do begin
+      Link := TPackageLink(Node.Data);
       Link.Release;
       IncreaseChangeStamp;
     end;
