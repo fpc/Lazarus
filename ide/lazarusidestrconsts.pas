@@ -3989,8 +3989,6 @@ resourcestring
   lisProjAddOnlinePkg = 'Online (%s)';
   lisProjAddMinimumVersionOptional = 'Minimum Version (optional):';
   lisProjAddMaximumVersionOptional = 'Maximum Version (optional):';
-  lisProjAddInstConfCaption = 'Install packages';
-  lisProjAddInstConf = 'Do you wish to install the following online package(s):';
   lisProjAddInstErrCaption = 'Install error';
   lisProjAddInstErr = 'One or more online packages could not be installed!';
   
