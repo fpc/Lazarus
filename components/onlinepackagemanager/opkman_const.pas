@@ -471,6 +471,9 @@ resourcestring
   rsAddRepositoryPackageFrm_bCancel_Caption = 'Cancel';
   rsAddRepositoryPackageFrm_bCancel_Hint = 'Close the dialog';
 
+  //OPMinterface
+  rsOPMInterfaceConf = 'Do you wish to install the following online package(s):';
+
 
 implementation
 

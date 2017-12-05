@@ -59,6 +59,7 @@ type
     FTotCnt: Integer;
     FStarted: Boolean;
     FInstallStatus: TInstallStatus;
+    FPackageList: TList;
     FToInstall: TStringList;
     FFileName: String;
     FUnresolvedFileName: String;
@@ -70,6 +71,8 @@ type
     function HasUnresolvedDependency(AName: String): Boolean;
     function CompilePackage(const AIDEPackage: TIDEPackage; ALazarusPkg: TLazarusPackage): Integer;
     function InstallPackage: Boolean;
+    procedure OrderPackagesByDependecy;
+    procedure PrepareInstallList;
     procedure DoOnPackageInstallProgress(const AInstallMessage: TInstallMessage; ALazarusPkg: TLazarusPackage);
     procedure DoOnPackageInstallError(const AInstallMessage: TInstallMessage; ALazarusPkg: TLazarusPackage);
     procedure Execute;
@@ -95,11 +98,13 @@ implementation
 constructor TPackageInstaller.Create;
 begin
   FToInstall := TStringList.Create;
+  FPackageList := TList.Create;
 end;
 
 destructor TPackageInstaller.Destroy;
 begin
   FToInstall.Free;
+  FPackageList.Free;
   inherited Destroy;
 end;
 
@@ -320,68 +325,136 @@ begin
     FOnPackageInstallCompleted(Self, FNeedToRebuild, FInstallStatus);
 end;
 
-procedure TPackageInstaller.StartInstall;
+procedure TPackageInstaller.OrderPackagesByDependecy;
 var
   I, J, K: Integer;
-  PackageList: TObjectList;
-  LazarusPkg, DependecyPackage: TLazarusPackage;
+  SPos, EPos: Integer;
   PackageDependency: TPackageDependency;
-  DependencyFound: Boolean;
+  PackageDependecyList: TObjectList;
+  LazarusPkg, DependecyPackage: TLazarusPackage;
+  CanGo: Boolean;
 begin
-  if FStarted then
-    Exit;
-  FStarted := True;
-  FTotCnt := 0;
-  PackageList := TObjectList.Create(True);
+  PackageDependecyList := TObjectList.Create(True);
   try
+    FPackageList.Clear;
     for I := 0 to SerializablePackages.Count - 1 do
     begin
       for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
       begin
         LazarusPkg := TLazarusPackage(SerializablePackages.Items[I].LazarusPackages.Items[J]);
         if LazarusPkg.IsInstallable then
+          FPackageList.Add(LazarusPkg);
+      end;
+    end;
+    repeat
+      CanGo := True;
+      for I := FPackageList.Count - 1 downto 1 do
+      begin
+        if not CanGo then
+          Break;
+        for J := I - 1 downto 0 do
         begin
-          SerializablePackages.GetPackageDependencies(LazarusPkg.Name, PackageList, True, True);
-          if PackageList.Count > 0 then
+          LazarusPkg := TLazarusPackage(FPackageList.Items[J]);
+          PackageDependecyList.Clear;
+          SerializablePackages.GetPackageDependencies(LazarusPkg.Name, PackageDependecyList, True, True);
+          if PackageDependecyList.Count > 0 then
           begin
-            DependencyFound := True;
-            for K := 0 to PackageList.Count - 1 do
+            for K := 0 to PackageDependecyList.Count - 1 do
             begin
-              PackageDependency := TPackageDependency(PackageList.Items[K]);
+              PackageDependency := TPackageDependency(PackageDependecyList.Items[K]);
               DependecyPackage := SerializablePackages.FindLazarusPackage(PackageDependency.PkgFileName + '.lpk');
               if DependecyPackage <> nil then
               begin
-                if not ((DependecyPackage.PackageState = psInstalled)
-                and (SerializablePackages.IsInstalledVersionOk(PackageDependency, DependecyPackage.VersionAsString))) then
+                if UpperCase(DependecyPackage.Name) = UpperCase(TLazarusPackage(FPackageList.Items[I]).Name) then
                 begin
-                  if ((DependecyPackage.IsInstallable)
-                  and (SerializablePackages.IsDependencyOk(PackageDependency, DependecyPackage))) then
-                  begin
-                    if not IsPackageInTheList(DependecyPackage.Name) then
-                      FToInstall.Add(DependecyPackage.Name);
-                  end
-                  else
-                  begin
-                    DependencyFound := False;
-                    Break;
-                  end;
+                  CanGo := False;
+                  SPos := I;
+                  EPos := J;
+                  Break;
                 end;
               end;
-           end;
-           if (not DependencyFound) then
-           begin
-             if (not IsPackageInTheList(LazarusPkg.Name)) then
-               FToInstall.Add(LazarusPkg.Name + '  ' + DependecyPackage.Name)
-           end
-         end;
-         if (not IsPackageInTheList(LazarusPkg.Name)) then
-            FToInstall.Add(LazarusPkg.Name);
+            end;
+          end;
         end;
+      end;
+      if CanGo = False then
+      begin
+        LazarusPkg := TLazarusPackage(FPackageList.Items[SPos]);
+        FPackageList.Delete(SPos);
+        FPackageList.Insert(EPos, LazarusPkg);
+      end;
+    until CanGo;
+  finally
+    PackageDependecyList.Free;
+  end;
+end;
+
+procedure TPackageInstaller.PrepareInstallList;
+var
+  I, J: Integer;
+  PackageDependency: TPackageDependency;
+  PackageDependecyList: TObjectList;
+  LazarusPkg, DependecyPackage: TLazarusPackage;
+  DependencyFound: Boolean;
+begin
+  PackageDependecyList := TObjectList.Create(True);
+  try
+    for I := 0 to FPackageList.Count - 1 do
+    begin
+      LazarusPkg := TLazarusPackage(FPackageList.Items[I]);
+      if LazarusPkg.IsInstallable then
+      begin
+        PackageDependecyList.Clear;
+        SerializablePackages.GetPackageDependencies(LazarusPkg.Name, PackageDependecyList, True, True);
+        if PackageDependecyList.Count > 0 then
+        begin
+          DependencyFound := True;
+          for J := 0 to PackageDependecyList.Count - 1 do
+          begin
+            PackageDependency := TPackageDependency(PackageDependecyList.Items[J]);
+            DependecyPackage := SerializablePackages.FindLazarusPackage(PackageDependency.PkgFileName + '.lpk');
+            if DependecyPackage <> nil then
+            begin
+              if not ((DependecyPackage.PackageState = psInstalled)
+              and (SerializablePackages.IsInstalledVersionOk(PackageDependency, DependecyPackage.VersionAsString))) then
+              begin
+                if ((DependecyPackage.IsInstallable)
+                and (SerializablePackages.IsDependencyOk(PackageDependency, DependecyPackage))) then
+                begin
+                  if not IsPackageInTheList(DependecyPackage.Name) then
+                    FToInstall.Add(DependecyPackage.Name);
+                end
+                else
+                begin
+                  DependencyFound := False;
+                  Break;
+                end;
+              end;
+            end;
+         end;
+         if (not DependencyFound) then
+         begin
+           if (not IsPackageInTheList(LazarusPkg.Name)) then
+             FToInstall.Add(LazarusPkg.Name + '  ' + DependecyPackage.Name)
+         end
+       end;
+       if (not IsPackageInTheList(LazarusPkg.Name)) then
+          FToInstall.Add(LazarusPkg.Name);
       end;
     end;
   finally
-    PackageList.Free;
-  end;
+    PackageDependecyList.Free;
+  end
+end;
+
+procedure TPackageInstaller.StartInstall;
+begin
+  if FStarted then
+    Exit;
+  FStarted := True;
+  FTotCnt := 0;
+  OrderPackagesByDependecy;
+  PrepareInstallList;
   FTotCnt := FToInstall.Count;
   Execute;
 end;
