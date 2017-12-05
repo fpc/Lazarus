@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="Pas2JSDsgn"/>
+    <Type Value="DesignTime"/>
+    <Author Value="Mattias Gaertner"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <AllowLabel Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
+      <Other>
+        <CreateMakefileOnBuild Value="True"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Adds a Lazarus project for pas2js browser applications."/>
+    <License Value="Modified LGPL-2"/>
+    <Version Major="1" Release="1"/>
+    <Files Count="1">
+      <Item1>
+        <Filename Value="pjsdsgnregister.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="pjsdsgnregister"/>
+      </Item1>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

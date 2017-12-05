@@ -1,0 +1,19 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: pjsdsgnregister.pjsdnodejsappdescription
+msgid "A pas2js program running in node.js"
+msgstr ""
+
+#: pjsdsgnregister.pjsdnodejsapplication
+msgid "Node.js Application"
+msgstr ""
+
+#: pjsdsgnregister.pjsdwebappdescription
+msgid "A pas2js program running in the browser"
+msgstr ""
+
+#: pjsdsgnregister.pjsdwebapplication
+msgid "Web Application"
+msgstr ""
+

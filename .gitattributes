@@ -3752,6 +3752,15 @@ components/paradox/regparadox.res -text
 components/paradox/tparadox.png -text svneol=unset#image/png
 components/paradox/tparadox_150.png -text
 components/paradox/tparadox_200.png -text
+components/pas2js/Makefile svneol=native#text/plain
+components/pas2js/Makefile.compiled svneol=native#text/plain
+components/pas2js/Makefile.fpc svneol=native#text/plain
+components/pas2js/Pas2JSDsgn.compiled svneol=native#text/plain
+components/pas2js/fpmake.pp svneol=native#text/plain
+components/pas2js/languages/pjsdsgnregister.po svneol=native#text/plain
+components/pas2js/pas2jsdsgn.lpk svneol=native#text/plain
+components/pas2js/pas2jsdsgn.pas svneol=native#text/plain
+components/pas2js/pjsdsgnregister.pas svneol=native#text/plain
 components/plotfunction/demo/event/frmmain.lfm svneol=native#text/plain
 components/plotfunction/demo/event/frmmain.pp svneol=native#text/plain
 components/plotfunction/demo/event/ploteventdemo.ico -text svneol=unset#image/ico
@@ -9935,6 +9944,7 @@ packager/globallinks/multithreadprocslaz-1.2.1.lpl svneol=native#text/plain
 packager/globallinks/notlcldesigner-0.lpl svneol=native#text/plain
 packager/globallinks/onlinepackagemanager-1.0.1.2.lpl svneol=native#text/plain
 packager/globallinks/packagetabs-0.1.1.lpl svneol=native#text/plain
+packager/globallinks/pas2jsdsgn-1.0.1.lpl svneol=native#text/plain
 packager/globallinks/pascalscript-0.0.0.1.lpl svneol=native#text/plain
 packager/globallinks/pascalscriptfcl-0.0.0.1.lpl svneol=native#text/plain
 packager/globallinks/pochecker-1.lpl svneol=native#text/plain
