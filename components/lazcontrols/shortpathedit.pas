@@ -21,8 +21,8 @@ type
     FOnAcceptDir: TAcceptFileNameEvent;
   protected
     function CreateDialog: TCommonDialog; override;
-    procedure RunDialog; override;
   published
+    procedure RunDialog; override;
     property Directory: String read FDirectory write FDirectory;
     property OnAcceptDirectory: TAcceptFileNameEvent read FOnAcceptDir write FonAcceptDir;
   end;
