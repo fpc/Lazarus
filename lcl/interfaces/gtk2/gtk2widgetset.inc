@@ -498,7 +498,8 @@ begin
     LM_LBUTTONDOWN,
     LM_RBUTTONDOWN,
     LM_MBUTTONDOWN,
-    LM_MOUSEWHEEL :
+    LM_MOUSEWHEEL,
+    LM_MOUSEHWHEEL:
     begin
       ConnectSenderSignal(gMouse, 'button-press-event', @gtkMouseBtnPress,
                           GDK_BUTTON_PRESS_MASK);
@@ -841,6 +842,7 @@ begin
   SetCallback(LM_MBUTTONDOWN, AGTKObject, ALCLObject);
   SetCallback(LM_MBUTTONUP, AGTKObject, ALCLObject);
   SetCallback(LM_MOUSEWHEEL, AGTKObject, ALCLObject);
+  SetCallback(LM_MOUSEHWHEEL, AGTKObject, ALCLObject);
   SetCallback(LM_DROPFILES, AGTKObject, ALCLObject);
   SetCallback(LM_CONTEXTMENU, AGtkObject, ALCLObject);
 

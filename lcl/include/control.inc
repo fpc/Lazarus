@@ -2341,6 +2341,27 @@ begin
   end;
 end;
 
+function TControl.DoMouseWheelHorz(Shift: TShiftState; WheelDelta: Integer;
+  MousePos: TPoint): Boolean;
+begin
+  Result := False;
+
+  if Assigned(FOnMouseWheelHorz)
+    then FOnMouseWheelHorz(Self, Shift, WheelDelta, MousePos, Result);
+  if not Result then
+  begin
+    //debugln('TControl.DoMouseWheelHorz calling DoCallMouseWheelEventHandler');
+    DoCallMouseWheelEventHandler(chtOnMouseWheelHorz, Shift, WheelDelta, MousePos, Result);
+  end;
+
+  if not Result
+  then begin
+    if WheelDelta < 0
+    then Result := DoMouseWheelLeft(Shift, MousePos)
+    else Result := DoMouseWheelRight(Shift, MousePos);
+  end;
+end;
+
 {------------------------------------------------------------------------------
        TControl DoMouseWheelDown  "Event Handler"
 ------------------------------------------------------------------------------}
@@ -2359,6 +2380,26 @@ begin
   Result := False;
   if Assigned(FOnMouseWheelUp) then
     FOnMouseWheelUp(Self, Shift, MousePos, Result);
+end;
+
+{------------------------------------------------------------------------------
+       TControl DoMouseWheelLeft  "Event Handler"
+------------------------------------------------------------------------------}
+function TControl.DoMouseWheelLeft(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := False;
+  if Assigned(FOnMouseWheelLeft) then
+    FOnMouseWheelLeft(Self, Shift, MousePos, Result);
+end;
+
+{------------------------------------------------------------------------------
+       TControl DoMouseWheelRight  "Event Handler"
+------------------------------------------------------------------------------}
+function TControl.DoMouseWheelRight(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := False;
+  if Assigned(FOnMouseWheelRight) then
+    FOnMouseWheelRight(Self, Shift, MousePos, Result);
 end;
 
 procedure TControl.SetAnchorSide(Kind: TAnchorKind; AValue: TAnchorSide);
@@ -2836,6 +2877,23 @@ begin
 
   lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
   if DoMouseWheel(lState, Message.WheelDelta, MousePos) then
+    Message.Result := 1 // handled, skip further handling by interface
+  else
+    inherited;
+end;
+
+procedure TControl.WMMouseHWheel(var Message: TLMMouseEvent);
+var
+  MousePos: TPoint;
+  lState: TShiftState;
+  SP: TSmallPoint;
+begin
+  SP.X := Message.X; // cannot use SmallPoint() here due to FPC inconsistency in Classes.TSmallPoint<>Types.TSmallPoint on Linux
+  SP.Y := Message.Y;
+  MousePos := GetMousePosFromMessage(SP);
+
+  lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
+  if DoMouseWheelHorz(lState, Message.WheelDelta, MousePos) then
     Message.Result := 1 // handled, skip further handling by interface
   else
     inherited;

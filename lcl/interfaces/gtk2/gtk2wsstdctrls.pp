@@ -1741,6 +1741,7 @@ begin
   Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONDOWN, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONUP, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEWHEEL, InputObject, AWinControl);
+  Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEHWHEEL, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_PAINT, InputObject, AWinControl);
   Gtk2WidgetSet.SetCallbackDirect(LM_FOCUS, InputObject, AWinControl);
 
@@ -1766,6 +1767,7 @@ begin
     Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONDOWN, AButton, AWinControl);
     Gtk2WidgetSet.SetCallbackDirect(LM_MBUTTONUP, AButton, AWinControl);
     Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEWHEEL, AButton, AWinControl);
+    Gtk2WidgetSet.SetCallbackDirect(LM_MOUSEHWHEEL, AButton, AWinControl);
     Gtk2WidgetSet.SetCallbackDirect(LM_PAINT, AButton, AWinControl);
     Gtk2WidgetSet.SetCallbackDirect(LM_FOCUS, AButton, AWinControl);
   end;

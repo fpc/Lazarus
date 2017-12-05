@@ -244,7 +244,8 @@ begin
   case TLMessage(Message).Msg of
     LM_PAINT:
       CallWin32PaintHandler;
-    LM_MOUSEWHEEL: // provide default wheel scrolling functionality
+    LM_MOUSEWHEEL,
+    LM_MOUSEHWHEEL: // provide default wheel scrolling functionality
       CallMouseWheelHandler;
     LM_ERASEBKGND,
     LM_GETDLGCODE,

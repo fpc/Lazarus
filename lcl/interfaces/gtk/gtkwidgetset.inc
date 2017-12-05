@@ -3597,7 +3597,8 @@ begin
     LM_LBUTTONDOWN,
     LM_RBUTTONDOWN,
     LM_MBUTTONDOWN,
-    LM_MOUSEWHEEL :
+    LM_MOUSEWHEEL,
+    LM_MOUSEHWHEEL:
     begin
       {$IFDEF GTK1}
       if (ALCLObject is TCustomComboBox) then
@@ -3858,6 +3859,7 @@ begin
   SetCallback(LM_MBUTTONDOWN, AGTKObject, ALCLObject);
   SetCallback(LM_MBUTTONUP, AGTKObject, ALCLObject);
   SetCallback(LM_MOUSEWHEEL, AGTKObject, ALCLObject);
+  SetCallback(LM_MOUSEHWHEEL, AGTKObject, ALCLObject);
   SetCallback(LM_DROPFILES, AGTKObject, ALCLObject);
   SetCallback(LM_CONTEXTMENU, AGtkObject, ALCLObject);
 end;

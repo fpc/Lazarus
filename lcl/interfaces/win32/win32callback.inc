@@ -361,7 +361,7 @@ type
     procedure DoMsgMouseMove;
     procedure DoMsgMouseDownUpClick(aButton: Byte; aIsDblClick: Boolean; aMouseDown: Boolean);
     procedure DoMsgContextMenu;
-    function DoMsgMouseWheel(var WinResult: LResult): Boolean;
+    function DoMsgMouseWheel(var WinResult: LResult; AHorz: Boolean): Boolean;
     function DoMsgMove: Boolean;
     procedure DoMsgNCLButtonDown;
     function DoMsgNotify(var WinResult: LResult): Boolean;
@@ -1619,11 +1619,16 @@ begin
   end;
 end;
 
-function TWindowProcHelper.DoMsgMouseWheel(var WinResult: LResult): Boolean;
+function TWindowProcHelper.DoMsgMouseWheel(var WinResult: LResult; AHorz: Boolean): Boolean;
 var
+  NCode: integer;
   TargetWindow: HWND;
   P: TPoint;
 begin
+  if AHorz then
+    NCode := WM_MOUSEHWHEEL
+  else
+    NCode := WM_MOUSEWHEEL;
   NotifyUserInput := True;
   PLMsg := @LMMouseEvent;
   with LMMouseEvent Do
@@ -1650,14 +1655,14 @@ begin
     if not InMouseWheelRedirection and (TargetWindow <> Window) then
     begin
       InMouseWheelRedirection := true;
-      WinResult := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
+      WinResult := SendMessage(TargetWindow, NCode, WParam, LParam);
       InMouseWheelRedirection := false;
       Exit(True);
     end
     else if TargetWindow <> Window then
       Exit(True);
     // the mousewheel message is for us
-    Msg := LM_MOUSEWHEEL;
+    Msg := NCode;
     // important: LM_MOUSEWHEEL needs client coordinates (windows WM_MOUSEWHEEL are screen coordinates)
     Windows.ScreenToClient(TargetWindow, P);
     X := P.X;
@@ -2248,7 +2253,8 @@ begin
       Application.DoBeforeMouseMessage(nil);
     end;
     WM_MOUSEMOVE:  DoMsgMouseMove;
-    WM_MOUSEWHEEL: if DoMsgMouseWheel(Result) then Exit;
+    WM_MOUSEWHEEL: if DoMsgMouseWheel(Result, False) then Exit;
+    WM_MOUSEHWHEEL: if DoMsgMouseWheel(Result, True) then Exit;
     WM_DROPFILES:
       begin
         {$IFDEF EnableWMDropFiles}

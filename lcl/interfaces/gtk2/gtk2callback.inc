@@ -2196,6 +2196,22 @@ begin
     Result:=DeliverMessage(AWinControl, MessE);
   end
   else
+  if event^.Button in [6, 7] then
+  begin
+    // this is a mouse wheel horizontal-scroll event
+    MessE.Msg := LM_MOUSEHWHEEL;
+    MessE.WheelDelta := WHEEL_DELTA[event^.Button = 7];
+    MessE.X := MappedXY.X;
+    MessE.Y := MappedXY.Y;
+    MessE.State := ShiftState;
+    MessE.UserData := AWinControl;
+    MessE.Button := 0;
+
+    // send the message directly to the LCL
+    NotifyApplicationUserInput(AWinControl, MessE.Msg);
+    Result:=DeliverMessage(AWinControl, MessE);
+  end
+  else
   begin
     // a normal mouse button is pressed
     MessI.Keys := 0;
@@ -2533,10 +2549,11 @@ begin
 
   // this is a mouse wheel event
   FillChar(MessE{%H-},SizeOf(MessE),0);
-  MessE.Msg := LM_MOUSEWHEEL;
   case event^.direction of
-    GDK_SCROLL_UP: MessE.WheelDelta := 120;
-    GDK_SCROLL_DOWN: MessE.WheelDelta := -120;
+    GDK_SCROLL_UP: begin MessE.Msg := LM_MOUSEWHEEL; MessE.WheelDelta := 120; end;
+    GDK_SCROLL_DOWN: begin MessE.Msg := LM_MOUSEWHEEL; MessE.WheelDelta := -120; end;
+    GDK_SCROLL_LEFT: begin MessE.Msg := LM_MOUSEHWHEEL; MessE.WheelDelta := -120; end;
+    GDK_SCROLL_RIGHT: begin MessE.Msg := LM_MOUSEHWHEEL; MessE.WheelDelta := 120; end;
   else
     exit;
   end;

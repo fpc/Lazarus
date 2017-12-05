@@ -1538,6 +1538,21 @@ begin
     NotifyApplicationUserInput(AWinControl, MessE.Msg);
     DeliverMessage(AWinControl, MessE);
   end
+  if event^.Button in [6, 7] then
+  begin
+    // this is a mouse wheel horizontal-scroll event
+    MessE.Msg := LM_MOUSEHWHEEL;
+    MessE.WheelDelta := WHEEL_DELTA[event^.Button = 7];
+    MessE.X := MappedXY.X;
+    MessE.Y := MappedXY.Y;
+    MessE.State := ShiftState;
+    MessE.UserData := AWinControl;
+    MessE.Button := 0;
+
+    // send the message directly to the LCL
+    NotifyApplicationUserInput(AWinControl, MessE.Msg);
+    DeliverMessage(AWinControl, MessE);
+  end
   else
   begin
     // a normal mouse button is pressed

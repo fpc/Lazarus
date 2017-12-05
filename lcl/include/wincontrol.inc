@@ -4725,7 +4725,8 @@ begin
       );
       {$ENDIF}
     end;
-    if MouseMessage.Msg = LM_MOUSEWHEEL then
+    if (MouseMessage.Msg = LM_MOUSEWHEEL) or
+      (MouseMessage.Msg = LM_MOUSEHWHEEL) then
     begin
       MouseEventMessage := TLMMouseEvent(TheMessage);
       {$PUSH}

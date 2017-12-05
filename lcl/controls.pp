@@ -926,7 +926,8 @@ type
     chtOnEnabledChanged,
     chtOnKeyDown,
     chtOnBeforeDestruction,
-    chtOnMouseWheel
+    chtOnMouseWheel,
+    chtOnMouseWheelHorz
     );
 
   TLayoutAdjustmentPolicy = (
@@ -1126,6 +1127,9 @@ type
     FOnMouseWheel: TMouseWheelEvent;
     FOnMouseWheelDown: TMouseWheelUpDownEvent;
     FOnMouseWheelUp: TMouseWheelUpDownEvent;
+    FOnMouseWheelHorz: TMouseWheelEvent;
+    FOnMouseWheelLeft: TMouseWheelUpDownEvent;
+    FOnMouseWheelRight: TMouseWheelUpDownEvent;
     FOnQuadClick: TNotifyEvent;
     FOnResize: TNotifyEvent;
     FOnShowHint: TControlShowHintEvent;
@@ -1308,6 +1312,7 @@ type
     procedure WMMButtonUp(var Message: TLMMButtonUp); message LM_MBUTTONUP;
     procedure WMXButtonUp(var Message: TLMXButtonUp); message LM_XBUTTONUP;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
+    procedure WMMouseHWheel(var Message: TLMMouseEvent); message LM_MOUSEHWHEEL;
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
@@ -1405,6 +1410,9 @@ type
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; virtual;
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
+    function DoMouseWheelHorz(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; virtual;
+    function DoMouseWheelLeft(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
+    function DoMouseWheelRight(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
     procedure VisibleChanging; virtual;
     procedure VisibleChanged; virtual;
     procedure EnabledChanging; virtual;
@@ -1461,6 +1469,9 @@ type
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
     property OnMouseWheelDown: TMouseWheelUpDownEvent read FOnMouseWheelDown write FOnMouseWheelDown;
     property OnMouseWheelUp: TMouseWheelUpDownEvent read FOnMouseWheelUp write FOnMouseWheelUp;
+    property OnMouseWheelHorz: TMouseWheelEvent read FOnMouseWheelHorz write FOnMouseWheelHorz;
+    property OnMouseWheelLeft: TMouseWheelUpDownEvent read FOnMouseWheelLeft write FOnMouseWheelLeft;
+    property OnMouseWheelRight: TMouseWheelUpDownEvent read FOnMouseWheelRight write FOnMouseWheelRight;
     property OnStartDock: TStartDockEvent read FOnStartDock write FOnStartDock;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
     property OnEditingDone: TNotifyEvent read FOnEditingDone write FOnEditingDone;
