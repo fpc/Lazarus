@@ -9656,7 +9656,7 @@ begin
   if hasSelectedText then
   begin
     W := getSelectedText;
-    Result := UTF8Length(W);
+    Result := UTF16Length(W);
   end else
   begin
     if (CachedSelectionStart <> -1) and (CachedSelectionLen <> -1) then
@@ -9756,7 +9756,7 @@ begin
   if (QEvent_type(Event) = QEventFocusOut) then
   begin
     CachedSelectionStart := QLineEdit_selectionStart(QLineEditH(Widget));
-    CachedSelectionLen := UTF8Length(getSelectedText);
+    CachedSelectionLen := UTF16Length(getSelectedText);
   end else
   if (QEvent_type(Event) = QEventFocusIn) then
   begin
@@ -11606,7 +11606,7 @@ begin
         if Assigned(FLineEdit) and FLineEdit.getVisible then
         begin
           FLineEdit.CachedSelectionStart := QLineEdit_selectionStart(QLineEditH(FLineEdit.Widget));
-          FLineEdit.CachedSelectionLen := UTF8Length(FLineEdit.getSelectedText);
+          FLineEdit.CachedSelectionLen := UTF16Length(FLineEdit.getSelectedText);
         end;
         Result := inherited EventFilter(Sender, Event);
       end;
@@ -11882,7 +11882,7 @@ begin
   if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
   begin
     QLineEdit_selectedText(LineEdit, @W);
-    Result := UTF8Length(W);
+    Result := UTF16Length(W);
   end
   else
     Result := 0;

@@ -668,7 +668,7 @@ end;
 function CalcColumnFieldWidth(Canvas: TCanvas; hasTitle: boolean;
   aTitle: String; aTitleFont: TFont; Field: TField): Integer;
 var
-  aCharWidth: Integer;
+  aCharWidth, aTitleWidth: Integer;
   aFont: TFont;
   UseTitleFont: boolean;
 begin
@@ -680,10 +680,11 @@ begin
   else begin
 
     aCharWidth := CalcCanvasCharWidth(Canvas);
-    if Field.DisplayWidth>LazUTF8.UTF8Length(aTitle) then
+    aTitleWidth := UTF8Length(aTitle);
+    if Field.DisplayWidth > aTitleWidth then
       result := aCharWidth * Field.DisplayWidth
     else
-      result := aCharWidth * LazUTF8.UTF8Length(aTitle);
+      result := aCharWidth * aTitleWidth;
 
     if HasTitle then begin
       UseTitleFont :=
