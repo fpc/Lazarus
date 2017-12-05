@@ -926,20 +926,11 @@ var
   TargetTVType: TTreeViewInsertMarkType;
 begin
   //debugln(['TPackageEditorForm.ItemsTreeViewDragOver ',DbgSName(Source),' State=',ord(State),' FromSelf=',Source=ItemsTreeView]);
-
-  if not PackageEditors.OnDragOverTreeView(Sender, Source, X, Y,
-    TargetTVNode, TargetTVType)
-  then begin
-    ItemsTreeView.SetInsertMark(nil,tvimNone);
-    Accept:=false;
-    exit;
-  end;
-
-  if State=dsDragLeave then
-    ItemsTreeView.SetInsertMark(nil,tvimNone)
+  Accept:=PackageEditors.OnDragOverTreeView(Sender,Source,X,Y,TargetTVNode,TargetTVType);
+  if Accept and (State<>dsDragLeave) then
+    ItemsTreeView.SetInsertMark(TargetTVNode,TargetTVType)
   else
-    ItemsTreeView.SetInsertMark(TargetTVNode,TargetTVType);
-  Accept:=true;
+    ItemsTreeView.SetInsertMark(nil,tvimNone);
 end;
 
 procedure TPackageEditorForm.MorePopupMenuPopup(Sender: TObject);
