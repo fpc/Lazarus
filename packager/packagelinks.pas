@@ -151,6 +151,7 @@ type
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink; override;
     procedure RemoveUserLink(Link: TPackageLink); override;
     procedure RemoveUserLinks(APackageID: TLazPackageID); override;
+    procedure ClearOnlineLinks; override;
   public
     property Modified: boolean read GetModified write SetModified;
     property ChangeStamp: integer read FChangeStamp;
@@ -1308,6 +1309,25 @@ begin
       Link.Release;
       IncreaseChangeStamp;
     end;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TLazPackageLinks.ClearOnlineLinks;
+var
+  Link: TPackageLink;
+  I: Integer;
+begin
+  BeginUpdate;
+  try
+    for I := FOnlineLinks.Count - 1 downto 0 do
+    begin
+      Link := TPackageLink(FOnlineLinks);
+      Link.Release;
+      IncreaseChangeStamp;
+    end;
+    FOnlineLinks.Clear;
   finally
     EndUpdate;
   end;

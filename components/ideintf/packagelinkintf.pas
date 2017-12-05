@@ -100,6 +100,7 @@ type
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink; virtual; abstract;
     procedure RemoveUserLink(Link: TPackageLink); virtual; abstract;
     procedure RemoveUserLinks(APackageID: TLazPackageID); virtual; abstract;
+    procedure ClearOnlineLinks; virtual; abstract;
   end;
 
   { TOPMInterface }
