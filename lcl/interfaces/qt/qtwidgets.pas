@@ -9744,8 +9744,7 @@ begin
   inherited DetachEvents;
 end;
 
-function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-  cdecl;
+function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -10843,8 +10842,7 @@ begin
       begin
         //behaviour is changed because of issue #21805.
         //we send delayed event so LCL can read clientRect at the right time.
-        ALCLEvent := QLCLMessageEvent_create(LCLQt_DelayLayoutRequest, 0,
-          0, 0, 0);
+        ALCLEvent := QLCLMessageEvent_create(LCLQt_DelayLayoutRequest, 0, 0, 0, 0);
         QCoreApplication_postEvent(Sender, ALCLEvent);
       end;
       QEventKeyPress,
@@ -12722,8 +12720,7 @@ begin
   setScrollBarPolicy(False, QtScrollBarAlwaysOff);
 end;
 
-function TQtListWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-  cdecl;
+function TQtListWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   ev: QEventH;
 begin
@@ -19829,8 +19826,7 @@ begin
   inherited DetachEvents;
 end;
 
-function TQtMessageBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-  cdecl;
+function TQtMessageBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   {we'll need it later. QMessageBox uses it's own eventLoop !}
   Result := False;

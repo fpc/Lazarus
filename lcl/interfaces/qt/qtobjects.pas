@@ -1852,8 +1852,7 @@ begin
   Result := QBrush_Color(FHandle);
 end;
 
-function TQtBrush.GetLBStyle(out AStyle: LongWord; out AHatch: PtrUInt
-  ): Boolean;
+function TQtBrush.GetLBStyle(out AStyle: LongWord; out AHatch: PtrUInt): Boolean;
 begin
   Result := FHandle <> nil;
   if not Result then
@@ -1861,7 +1860,7 @@ begin
 
   AStyle := BS_SOLID;
   if Style in [QtHorPattern, QtVerPattern, QtCrossPattern,
-                    QtBDiagPattern, QtFDiagPattern, QtDiagCrossPattern] then
+               QtBDiagPattern, QtFDiagPattern, QtDiagCrossPattern] then
     AStyle := BS_HATCHED
   else
     AHatch := 0;
