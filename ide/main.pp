@@ -6731,7 +6731,7 @@ begin
                                           Project1.CompilerOptions.ExecuteBefore);
         if (AReason in ToolBefore.CompileReasons) then begin
           Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
-                 Project1.Directory, lisProject2+lisExecutingCommandBefore,
+                 WorkingDir, lisProject2+lisExecutingCommandBefore,
                  aCompileHint);
           if Result<>mrOk then
           begin
@@ -6864,8 +6864,7 @@ begin
         // no need to check for mrOk, we are exit if it wasn't
         if (AReason in ToolAfter.CompileReasons) then begin
           Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
-                              Project1.Directory,
-                              lisProject2+lisExecutingCommandAfter,aCompileHint);
+                  WorkingDir,lisProject2+lisExecutingCommandAfter,aCompileHint);
           if Result<>mrOk then
           begin
             debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteAfter.Execute failed']);
