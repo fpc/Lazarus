@@ -15670,14 +15670,6 @@ msgstr "Зависимость уже есть"
 msgid "Add Editor Files"
 msgstr "Добавить файлы редактора"
 
-#: lazarusidestrconsts.lisprojaddinstconf
-msgid "Do you wish to install the following online package(s):"
-msgstr "Вы хотите установить следующие пакеты из сети:"
-
-#: lazarusidestrconsts.lisprojaddinstconfcaption
-msgid "Install packages"
-msgstr "Установка пакетов"
-
 #: lazarusidestrconsts.lisprojaddinsterr
 msgid "One or more online packages could not be installed!"
 msgstr "Не удалось установить один или более пакетов из сети!"

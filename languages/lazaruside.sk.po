@@ -16526,14 +16526,6 @@ msgstr "Závislosť už existuje"
 msgid "Add Editor Files"
 msgstr "Pridať súbory editora"
 
-#: lazarusidestrconsts.lisprojaddinstconf
-msgid "Do you wish to install the following online package(s):"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinstconfcaption
-msgid "Install packages"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinsterr
 msgid "One or more online packages could not be installed!"
 msgstr ""

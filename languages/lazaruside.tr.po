@@ -15910,14 +15910,6 @@ msgstr "Bağımlılık zaten var"
 msgid "Add Editor Files"
 msgstr "Editör Dosyalarını Ekle"
 
-#: lazarusidestrconsts.lisprojaddinstconf
-msgid "Do you wish to install the following online package(s):"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinstconfcaption
-msgid "Install packages"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinsterr
 msgid "One or more online packages could not be installed!"
 msgstr ""

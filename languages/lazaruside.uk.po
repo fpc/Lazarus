@@ -15676,14 +15676,6 @@ msgstr "Залежність вже існує"
 msgid "Add Editor Files"
 msgstr "Додати файли редактора"
 
-#: lazarusidestrconsts.lisprojaddinstconf
-msgid "Do you wish to install the following online package(s):"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinstconfcaption
-msgid "Install packages"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinsterr
 msgid "One or more online packages could not be installed!"
 msgstr ""

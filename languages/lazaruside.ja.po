@@ -15663,14 +15663,6 @@ msgstr "依存関係が既に存在します"
 msgid "Add Editor Files"
 msgstr "編集ファイルを追加"
 
-#: lazarusidestrconsts.lisprojaddinstconf
-msgid "Do you wish to install the following online package(s):"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinstconfcaption
-msgid "Install packages"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinsterr
 msgid "One or more online packages could not be installed!"
 msgstr ""

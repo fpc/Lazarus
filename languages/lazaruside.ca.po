@@ -16210,14 +16210,6 @@ msgstr "Ja existeix la dependència"
 msgid "Add Editor Files"
 msgstr "Afegeix els fitxers de l'editor"
 
-#: lazarusidestrconsts.lisprojaddinstconf
-msgid "Do you wish to install the following online package(s):"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinstconfcaption
-msgid "Install packages"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinsterr
 msgid "One or more online packages could not be installed!"
 msgstr ""
