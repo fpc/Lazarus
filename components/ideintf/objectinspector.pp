@@ -1304,7 +1304,8 @@ var
   H: Boolean;
 begin
   H := False;
-  OnGridMouseWheel(Self, Shift, WheelDelta, MousePos, H)
+  OnGridMouseWheel(Self, Shift, WheelDelta, MousePos, H);
+  Result:=true;
 end;
 
 procedure TOICustomPropertyGrid.OnGridMouseWheel(Sender: TObject; Shift: TShiftState;
