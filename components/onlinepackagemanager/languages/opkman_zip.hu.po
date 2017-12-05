@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: opkman_zip.serrbufsizechange
 msgid "Changing buffer size is not allowed while (un)zipping."
@@ -21,7 +21,7 @@ msgstr "Sérült ZIP fájl: %s"
 
 #: opkman_zip.serrencryptionnotsupported
 msgid "Cannot unzip item \"%s\": encryption is not supported."
-msgstr ""
+msgstr "A(z) \"%s\" elem nem csomagolható ki: a titkosítás nincs támogatva."
 
 #: opkman_zip.serrfilechange
 msgid "Changing output file name is not allowed while (un)zipping."
@@ -57,7 +57,7 @@ msgstr "Nincs megnyitva adatfolyam."
 
 #: opkman_zip.serrpatchsetnotsupported
 msgid "Cannot unzip item \"%s\": patch sets are not supported."
-msgstr ""
+msgstr "A(z) \"%s\" elem nem csomagolható ki: a foltkészletek nincsenek támogatva."
 
 #: opkman_zip.serrpostoolarge
 msgid "Position/offset %d is larger than maximum supported %d."
