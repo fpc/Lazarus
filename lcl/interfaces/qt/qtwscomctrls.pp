@@ -555,7 +555,7 @@ end;
 class procedure TQtWSStatusBar.RecreatePanels(const AStatusBar: TStatusBar;
   const Widget: TQtStatusBar);
 var
-  Str: WideString;
+  Str: UnicodeString;
   i: Integer;
 begin
   // issues #18683 and #28307
@@ -563,7 +563,7 @@ begin
   ClearPanels(Widget);
   if AStatusBar.SimplePanel then
   begin
-    Str := GetUtf8String(AStatusBar.SimpleText);
+    Str := AStatusBar{%H-}.SimpleText;
     Widget.showMessage(@Str);
   end else
   if AStatusBar.Panels.Count > 0 then
@@ -572,7 +572,7 @@ begin
     SetLength(Widget.Panels, AStatusBar.Panels.Count);
     for i := 0 to AStatusBar.Panels.Count - 1 do
     begin
-      Str := GetUtf8String(AStatusBar.Panels[i].Text);
+      Str := AStatusBar{%H-}.Panels[i].Text;
       Widget.Panels[i] := TQtStatusBarPanel.CreateFrom(AStatusBar,
         QLabel_create(@Str, Widget.Widget));
       Widget.Panels[i].HasPaint := AStatusBar.Panels[i].Style = psOwnerDraw;
@@ -619,13 +619,13 @@ end;
 class procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
 var
   QtStatusBar: TQtStatusBar;
-  Str: Widestring;
+  Str: Unicodestring;
 begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
   if AStatusBar.SimplePanel then
   begin
     ClearPanels(QtStatusBar);
-    Str := GetUtf8String(AStatusBar.SimpleText);
+    Str := AStatusBar{%H-}.SimpleText;
     QtStatusBar.showMessage(@Str);
   end else
   if AStatusBar.Panels.Count > 0 then
@@ -635,7 +635,7 @@ begin
     if (PanelIndex >= Low(QtStatusBar.Panels)) and
       (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
-      Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
+      Str := AStatusBar{%H-}.Panels[PanelIndex].Text;
       QLabel_setText(QLabelH(QtStatusBar.Panels[PanelIndex].Widget), @Str);
       QLabel_setAlignment(QLabelH(QtStatusBar.Panels[PanelIndex].Widget),
         AlignmentToQtAlignmentMap[AStatusBar.Panels[PanelIndex].Alignment]);
@@ -650,19 +650,19 @@ end;
 class procedure TQtWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 var
   QtStatusBar: TQtStatusBar;
-  Str: Widestring;
+  Str: Unicodestring;
 begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
   if AStatusBar.SimplePanel then
   begin
-    Str := GetUtf8String(AStatusBar.SimpleText);
+    Str := AStatusBar{%H-}.SimpleText;
     QtStatusBar.showMessage(@Str);
   end else
   begin
     if (PanelIndex >= Low(QtStatusBar.Panels)) and
       (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
-      Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
+      Str := AStatusBar{%H-}.Panels[PanelIndex].Text;
       QLabel_setText(QLabelH(QtStatusBar.Panels[PanelIndex].Widget), @Str);
     end;
   end;
@@ -783,7 +783,7 @@ var
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
   TWIChild: QTreeWidgetItemH;
-  Str: WideString;
+  Str: UnicodeString;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnInsert') then
     Exit;
@@ -795,7 +795,7 @@ begin
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
 
   if QtTreeWidget.ColCount <> TCustomListViewHack(ALV).Columns.Count then
-   	QtTreeWidget.ColCount := TCustomListViewHack(ALV).Columns.Count;
+    QtTreeWidget.ColCount := TCustomListViewHack(ALV).Columns.Count;
 
   if (QtTreeWidget.ColCount <= 1) and TCustomListViewHack(ALV).ShowColumnHeaders then
     QtTreeWidget.setHeaderVisible(True);
@@ -807,14 +807,14 @@ begin
     TWIChild := QTreeWidgetItem_create(QTreeWidgetItemType);
     QTreeWidgetItem_setFlags(TWIChild, QtItemIsEnabled);
     QTreeWidgetItem_addChild(TWI, TWIChild);
-    Str := GetUtf8String(ALV.Column[AIndex].Caption);
+    Str := ALV{%H-}.Column[AIndex].Caption;
     QTreeWidgetItem_setText(TWI, AIndex, @Str);
   end;
 
   if (csDesigning in ALV.ComponentState) then
     exit;
 
-	QtTreeWidget.Header.Clickable := TCustomListViewHack(ALV).ColumnClick;
+  QtTreeWidget.Header.Clickable := TCustomListViewHack(ALV).ColumnClick;
 end;
 
 {------------------------------------------------------------------------------
@@ -932,7 +932,7 @@ end;
 class procedure TQtWSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
 var
-  Str: WideString;
+  Str: UnicodeString;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
 begin
@@ -947,7 +947,7 @@ begin
   TWI := QtTreeWidget.headerItem;
   if TWI <> NiL then
   begin
-    Str := GetUtf8String(ACaption);
+    Str := {%H-}ACaption;
     QTreeWidgetItem_setText(TWI, AIndex, @Str);
   end;
 end;
@@ -1420,12 +1420,9 @@ var
   QtListWidget: TQtListWidget;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
-  Str: WideString;
+  Str: UnicodeString;
   i: Integer;
   AAlignment: QtAlignment;
-  //AImages: TCustomImageList;
-  //AMetric: Integer;
-  //ASizeHint: TSize;
   //AIconWidth: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
@@ -1440,10 +1437,7 @@ begin
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     TWI := QTreeWidgetItem_create(QTreeWidgetItemType);
-    if AItem.Caption <> '' then
-      Str := GetUtf8String(AItem.Caption)
-    else
-      Str := '';
+    Str := AItem{%H-}.Caption;
 
     if ALV.CheckBoxes then
     begin
@@ -1474,7 +1468,7 @@ begin
         AAlignment := AlignmentToQtAlignmentMap[ALV.Column[i + 1].Alignment] or QtAlignVCenter;
       if AItem.Subitems.Strings[i] <> '' then
       begin
-        Str := GetUtf8String(AItem.Subitems.Strings[i]);
+        Str := AItem{%H-}.Subitems.Strings[i];
         QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
         QtTreeWidget.setItemData(TWI, i + 1, AItem);
       end;
@@ -1496,7 +1490,7 @@ var
   QtListWidget: TQtListWidget;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
-  Str: WideString;
+  Str: UnicodeString;
   AAlignment: QtAlignment;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
@@ -1516,7 +1510,7 @@ begin
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    Str := GetUtf8String(AText);
+    Str := {%H-}AText;
     TWI := QtTreeWidget.topLevelItem(AIndex);
     if TWI <> NiL then
     begin
@@ -1875,10 +1869,9 @@ class procedure TQtWSCustomListView.InternalUpdateItems(
   const AList: TCustomListView);
 var
   QtTreeWidget: TQtTreeWidget;
-  i: Integer;
-  j: Integer;
+  i, j: Integer;
   AItem: TListItem;
-  WStr: WideString;
+  Str: UnicodeString;
   Item: QTreeWidgetItemH;
   AAlignment: QtAlignment;
   ImgList: TImageList;
@@ -1900,9 +1893,9 @@ begin
     for i := 0 to AList.Items.Count - 1 do
     begin
       AItem := AList.Items[i];
-      WStr := GetUTF8String(AItem.Caption);
+      Str := AItem{%H-}.Caption;
       Item := QtTreeWidget.topLevelItem(i);
-      QtTreeWidget.setItemText(Item, 0, WStr, AlignmentToQtAlignmentMap[AList.Column[0].Alignment]);
+      QtTreeWidget.setItemText(Item, 0, Str, AlignmentToQtAlignmentMap[AList.Column[0].Alignment]);
       QtTreeWidget.setItemData(Item, 0, AItem);
       if AList.Checkboxes then
       begin
@@ -1931,8 +1924,8 @@ begin
         AAlignment := QtAlignLeft;
         if (TCustomListViewHack(AList).Columns.Count > 0) and (j + 1 < TCustomListViewHack(AList).Columns.Count) then
           AAlignment := AlignmentToQtAlignmentMap[TCustomListViewHack(AList).Column[j + 1].Alignment];
-        WStr := GetUtf8String(AItem.Subitems.Strings[j]);
-        QtTreeWidget.setItemText(Item, j + 1, WStr, AAlignment);
+        Str := AItem{%H-}.Subitems.Strings[j];
+        QtTreeWidget.setItemText(Item, j + 1, Str, AAlignment);
         QtTreeWidget.setItemData(Item, j + 1, AItem);
       end;
     end;

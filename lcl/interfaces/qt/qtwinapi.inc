@@ -68,7 +68,7 @@ end;
   This function is Called:
   - Once on every OnPaint event
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.BeginPaint(Handle: hWnd; var PS: TPaintStruct): hdc;
+function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS: TPaintStruct): hdc;
 var
   Widget: TQtWidget;
   DC: TQtDeviceContext;
@@ -591,7 +591,7 @@ begin
     if not IsFontNameDefault(FamilyName) then
       QtFont.setFamily(FamilyName)
     else
-      QtFont.setFamily(UTF16ToUTF8(GetDefaultAppFontName));
+      QtFont.setFamily(GetDefaultAppFontName{%H-});
 
     if LogFont.lfQuality <= High(QStyleStategy) then
       QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
@@ -1311,7 +1311,7 @@ end;
 function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var ARect: TRect; Flags: Cardinal): Integer;
 var
-  WideStr: WideString;
+  WStr: UnicodeString;
   R: TRect;
   QtDC: TQtDeviceContext;
   F: Integer;
@@ -1376,9 +1376,9 @@ begin
   QtDC :=TQtDeviceContext(DC);
 
   if Count >= 0 then
-    WideStr := GetUtf8String(Copy(Str, 1, Count))
+    WStr := {%H-}Copy(Str, 1, Count)
   else
-    WideStr := GetUtf8String(Str);
+    WStr := Str;
 
   ClipRect := Rect(0, 0, 0, 0);
   B := QtDC.getClipping;
@@ -1409,7 +1409,7 @@ begin
 
   F := DTFlagsToQtFlags(Flags);
 
-  QtDC.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
+  QtDC.Metrics.BoundingRect(@R, @ARect, F, @WStr);
 
   //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
   Result := R.Bottom - R.Top;
@@ -1490,12 +1490,12 @@ begin
   begin
     // windows are removing trailing spaces in this case
     // and we are doing same thing too.
-    WideStr := TrimLeft(WideStr);
+    WStr := TrimLeft(WStr);
     with ARect do
-      WideStr := QtDC.Metrics.elidedText(WideStr, QtElideRight, Right - Left, 0);
+      WStr := QtDC.Metrics.elidedText(WStr, QtElideRight, Right - Left, 0);
   end;
 
-  QtDC.DrawText(ARect.Left + Pt.X, ARect.Top + Pt.Y, ARect.Right-ARect.Left, ARect.Bottom-ARect.Top, F, @WideStr);
+  QtDC.DrawText(ARect.Left + Pt.X, ARect.Top + Pt.Y, ARect.Right-ARect.Left, ARect.Bottom-ARect.Top, F, @WStr);
 end;
 
 {------------------------------------------------------------------------------
@@ -1754,7 +1754,7 @@ var
     const AWritingSystem: QFontDatabaseWritingSystem = QFontDatabaseAny):integer;
   var
     StrLst: QStringlistH;
-    WStr: WideString;
+    WStr: UnicodeString;
     j: integer;
   begin
     Result := -1;
@@ -1765,7 +1765,7 @@ var
       for j := 0 to Result - 1 do
       begin
         QStringList_at(StrLst, @WStr, j);
-        List.Add(UTF16ToUTF8(WStr));
+        List.Add(WStr{%H-});
       end;
     finally
       QStringList_destroy(StrLst);
@@ -1779,7 +1779,7 @@ var
   var
     StrLst: QStringlistH;
     NewList: QStringListH;
-    WStr: WideString;
+    WStr: UnicodeString;
     j: integer;
   begin
     Result := -1;
@@ -1821,7 +1821,7 @@ var
       for j := 0 to QStringList_size(NewList) - 1 do
       begin
         QStringList_at(NewList, @WStr, j);
-        List.Add(UTF16ToUTF8(WStr));
+        List.Add(WStr{%H-});
       end;
       Result := List.Count;
     finally
@@ -1832,20 +1832,20 @@ var
 
   function GetStyleAt(AIndex: Integer): String;
   var
-    WStr: WideString;
+    WStr: UnicodeString;
   begin
     Result := '';
     if (AIndex >= 0) and (AIndex < QStringList_size(StylesList)) then
     begin
       QStringList_at(StylesList, @WStr, AIndex);
-      Result := UTF16ToUTF8(WStr);
+      Result := {%H-}WStr;
     end;
   end;
 
   function GetWritingSystems(AFontName: String; AList: QStringListH;
     ACharsetList: TFPList): Boolean;
   var
-    WStr: WideString;
+    WStr: UnicodeString;
     Arr: TPtrIntArray;
     j: Integer;
   begin
@@ -1853,7 +1853,7 @@ var
     QStringList_clear(AList);
     if Assigned(CharSetList) then
       CharSetList.Clear;
-    WStr := UTF8ToUTF16(AFontName);
+    WStr := {%H-}AFontName;
     QFontDatabase_writingSystems(FontDB, @Arr, @WStr);
     Result := length(Arr) > 0;
     for j := 0 to High(Arr) do
@@ -1870,9 +1870,9 @@ var
     out AStyle: String): Integer;
   var
     Font: QFontH;
-    WStr: WideString;
+    WStr: UnicodeString;
   begin
-    WStr := UTF8ToUTF16(AFontName);
+    WStr := {%H-}AFontName;
     Font := QFont_create(@WStr);
     ALogFontA.lfItalic := Byte(QFont_italic(Font));
     ALogFontA.lfWeight := QFont_weight(Font);
@@ -2195,7 +2195,7 @@ end;
 function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  WideStr: WideString;
+  WStr: UnicodeString;
   QtDC: TQtDeviceContext absolute DC;
   R, R1: TRect;
   Pt: TPoint;
@@ -2208,7 +2208,7 @@ var
     CurCount: LongInt;
     CurDx: PInteger;
     CurStr: PChar;
-    W: WideString;
+    W: UnicodeString;
   begin
     CurDx := Dx;
     CurStr := Str;
@@ -2217,16 +2217,12 @@ var
     while CurCount > 0 do
     begin
       CharLen := UTF8CharacterLength(CurStr);
+      W := {%H-}Copy(CurStr, 1, CharLen);
       if AClipped then
-      begin
-        W := GetUTF8String(Copy(CurStr, 1, CharLen));
         QtDC.drawText(CurX, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
-          QtTextDontClip, @W);
-      end else
-      begin
-        W := GetUTF8String(Copy(CurStr, 1, CharLen));
+                      QtTextDontClip, @W)
+      else
         QtDC.drawText(CurX, Y, @W);
-      end;
       inc(CurX, CurDx^);
       inc(CurDx);
       inc(CurStr, CharLen);
@@ -2247,12 +2243,12 @@ begin
   if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
   begin
     if Count >= 0 then
-      WideStr := GetUtf8String(Copy(Str, 1, Count))
+      WStr := {%H-}Copy(Str, 1, Count)
     else
-      WideStr := GetUtf8String(Str);
+      WStr := Str;
 
     R := QtDC.getClipRegion.getBoundingRect;
-    QtDC.font.Metrics.boundingRect(@R1, @R, 0, @WideStr);
+    QtDC.font.Metrics.boundingRect(@R1, @R, 0, @WStr);
     B := True;
     Rect := @R1;
   end;
@@ -2278,7 +2274,7 @@ begin
       QPaintEngine_testDirty(QtDC.PaintEngine, QPaintEngineDirtyBrushOrigin) then
     begin
       R := Rect^;
-      QtDC.font.Metrics.boundingRect(@R1, @R, QtTextSingleLine, @WideStr);
+      QtDC.font.Metrics.boundingRect(@R1, @R, QtTextSingleLine, @WStr);
       if Options and ETO_CLIPPED = 0 then
         Pt := Point(Rect^.Left - X, Rect^.Top - Y)
       else
@@ -2294,9 +2290,9 @@ begin
     if Options and ETO_RTLREADING <> 0 then
       QPainter_setLayoutDirection(QtDC.Widget, QtRightToLeft);
     if Count >= 0 then
-      WideStr := GetUtf8String(Copy(Str, 1, Count))
+      WStr := {%H-}Copy(Str, 1, Count)
     else
-      WideStr := GetUtf8String(Str);
+      WStr := Str;
 
     if (Options and ETO_CLIPPED <> 0) then
     begin
@@ -2307,7 +2303,7 @@ begin
           DoDrawCharByChar(True)
         else
           QtDC.drawText(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,
-            QtTextDontClip, @WideStr);
+            QtTextDontClip, @WStr);
       finally
         QtDC.Restore;
       end;
@@ -2316,7 +2312,7 @@ begin
       if Dx <> nil then
         DoDrawCharByChar(False)
       else
-        QtDC.drawText(X, Y, @WideStr);
+        QtDC.drawText(X, Y, @WStr);
     end;
     if Options and ETO_RTLREADING <> 0 then
       QPainter_setLayoutDirection(QtDC.Widget, ALayout);
@@ -3249,7 +3245,7 @@ begin
       else
         ALogFont^.lfQuality := DEFAULT_QUALITY;
       end;
-      ALogFont^.lfFaceName := UTF16ToUTF8(AFont.getFamily);
+      ALogFont^.lfFaceName := AFont.getFamily;
     end;
   end
   {------------------------------------------------------------------------------
@@ -3592,7 +3588,7 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer;
-  var ScrollInfo: TScrollInfo): Boolean;
+  Var ScrollInfo: TScrollInfo): Boolean;
 var
   QtScrollBar: TQtScrollBar;
 begin
@@ -4260,7 +4256,7 @@ function TQtWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
 var
   i: Integer;
   w: Integer;
-  AStr: WideString;
+  AStr: UnicodeString;
   Accu: Integer;
 begin
   Result := False;
@@ -4270,7 +4266,7 @@ begin
     if Str = nil then
       AStr := ''
     else
-      AStr := GetUtf8String(Str);
+      AStr := Str;
     Size.cx := 0;
     Size.cY := Font.Metrics.Height;
     if (AStr = '') then
@@ -4337,7 +4333,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 var
-  WideStr: WideString;
+  WStr: UnicodeString;
   QtDC: TQtDeviceContext absolute DC;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -4353,8 +4349,8 @@ begin
   Size.cy := 0;
   if (Count <= 0) or (Str = nil) or (StrPas(Str) = '') then
     exit;
-  WideStr := GetUtf8String(Str);
-  Size.cx := QtDC.Metrics.width(@WideStr, Count);
+  WStr := Str;
+  Size.cx := QtDC.Metrics.width(@WStr, Count);
   Size.cy := QtDC.Metrics.height;
 
   Result := True;
@@ -4369,7 +4365,7 @@ end;
 function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   QtFontMetrics: TQtFontMetrics;
-  FontFamily: WideString;
+  FontFamily: UnicodeString;
   QtDC: TQtDeviceContext absolute DC;
   FontWeight: Integer;
 begin
@@ -4851,7 +4847,7 @@ var
   Font: TFont absolute AFont;
   AMenu: QMenuH;
   QtFont: QFontH;
-  AName: WideString;
+  AName: UnicodeString;
 begin
   Result := False;
   if AStockFont = sfMenu then
@@ -4861,7 +4857,7 @@ begin
     try
       QtFont := QWidget_font(AMenu);
       QFont_family(QtFont, @AName);
-      Font.Name := UTF16ToUTF8(AName);
+      Font.Name := AName{%H-};
       if QFont_pointSize(QtFont) > 0 then
         Font.Size := QFont_pointSize(QtFont)
       else
@@ -4888,7 +4884,7 @@ begin
       else
         QApplication_font(QtFont);
       QFont_family(QtFont, @AName);
-      Font.Name := UTF16ToUTF8(AName);
+      Font.Name := AName{%H-};
       if QFont_pointSize(QtFont) > 0 then
         Font.Size := QFont_pointSize(QtFont)
       else
@@ -5237,15 +5233,15 @@ const
     end;
   end;
 var
-  Str: WideString;
-  TitleStr: WideString;
-  //OkStr: WideString;
+  Str: UnicodeString;
+  TitleStr: UnicodeString;
+  //OkStr: UnicodeString;
   AParent: QWidgetH;
   DialogType, DefButton, DefIcon : Cardinal;
 begin
   Result := 0;
-  Str := GetUtf8String(lpText);
-  TitleStr := GetUtf8String(lpCaption);
+  Str := lpText;
+  TitleStr := lpCaption;
   //TODO: TRANSLATIONS for buttons text, use TQtMessageBox
   if HWND <> 0 then
     AParent := TQtWidget(Hwnd).Widget
@@ -7018,7 +7014,7 @@ end;
 function TQtWidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: Pchar; Count: Integer
   ): Boolean;
 var
-  WideStr: WideString;
+  WStr: UnicodeString;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI TextOut]');
@@ -7029,11 +7025,11 @@ begin
   if not IsValidDC(DC) then Exit;
 
   if Count >= 0 then
-    WideStr := GetUtf8String(Copy(Str, 1, Count))
+    WStr := {%H-}Copy(Str, 1, Count)
   else
-    WideStr := GetUtf8String(Str);
+    WStr := Str;
 
-  TQtDeviceContext(DC).drawText(X, Y, @WideStr);
+  TQtDeviceContext(DC).drawText(X, Y, @WStr);
 
   Result := True;
 end;

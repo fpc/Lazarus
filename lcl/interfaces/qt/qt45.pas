@@ -13989,14 +13989,14 @@ begin
   Dispose(S);
 end;
 
-// WideString Access from c-code
-procedure CopyUnicodeToPWideString(Unicode: PWideChar; var S: WideString; Len: Integer); cdecl; export;
+// UnicodeString Access from c-code
+procedure CopyUnicodeToPWideString(Unicode: PWideChar; var S: UnicodeString; Len: Integer); cdecl; export;
 begin
   SetString(S, Unicode, Len);
 end;
 
 
-function UnicodeOfPWideString(var S: WideString): PWideChar; cdecl; export;
+function UnicodeOfPWideString(var S: UnicodeString): PWideChar; cdecl; export;
 const
   cEmptyStr = '';
 begin
@@ -14006,7 +14006,7 @@ begin
     Result := PWideChar(Pointer(S));
 end;
 
-function LengthOfPWideString(var S: WideString): Integer; cdecl; export;
+function LengthOfPWideString(var S: UnicodeString): Integer; cdecl; export;
 begin
   if @S <> nil then
     Result := Length(S)

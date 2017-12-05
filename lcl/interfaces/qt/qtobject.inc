@@ -497,9 +497,9 @@ end;
 
 procedure TQtWidgetSet.AppSetTitle(const ATitle: string);
 var
-  W: WideString;
+  W: UnicodeString;
 begin
-  W := GetUtf8String(ATitle);
+  W := {%H-}ATitle;
   QCoreApplication_setApplicationName(@W);
 end;
 
@@ -625,7 +625,7 @@ var
   W: TQtMainWindow;
   LCLEvent: QLCLMessageEventH;
   ASequence: QKeySequenceH;
-  AKey: WideString;
+  AKey: UnicodeString;
   AParent: QWidgetH;
   R: TRect;
   AQtPoint: TQtPoint;
@@ -639,7 +639,7 @@ var
 
   function IsSystemTrayWidget: boolean;
   var
-    AName: WideString;
+    AName: UnicodeString;
     AWidget: QWidgetH;
     RGeom: TRect;
     AFlags: QtWindowFlags;
@@ -650,7 +650,7 @@ var
     begin
       AWidget := QWidgetH(Sender);
       QObject_objectName(Sender, @AName);
-      if UTF8Copy(AName, 1, 16) = 'qtlclsystrayicon' then
+      if Copy(AName, 1, 16) = 'qtlclsystrayicon' then
       begin
         for i := 0 to SysTrayIconsList.Count - 1 do
         begin
@@ -696,7 +696,7 @@ var
               RGeom := TQtSystemTrayIcon(SysTrayIconsList.Items[i]).GetGeometry;
               if (QApplication_widgetAt(RGeom.Left, RGeom.Top) = AWidget) then
               begin
-                AName := 'qtlclsystrayicon_' + dbgHex(PtrUInt(AWidget));
+                AName := 'qtlclsystrayicon_' {%H-}+ dbgHex(PtrUInt(AWidget));
                 QObject_setObjectName(Sender, @AName);
                 TQtSystemTrayIcon(SysTrayIconsList.Items[i]).AttachSysTrayWidget(AWidget);
                 {$IFDEF DEBUGSYSTRAYICON}
@@ -769,8 +769,7 @@ begin
     QEventShortcutOverride: // issue #22827
     begin
       QKeyEvent_text(QKeyEventH(Event), @AKey);
-      if (QKeyEvent_modifiers(QKeyEventH(Event)) = QtAltModifier) and
-       (AKey <> '') then
+      if (QKeyEvent_modifiers(QKeyEventH(Event)) = QtAltModifier) and (AKey <> '') then
       begin
         ASequence := QKeySequence_create(QKeyEvent_modifiers(QKeyEventH(Event))
           or QKeyEvent_Key(QKeyEventH(Event)));
@@ -1566,13 +1565,13 @@ begin
   FGlobalActions.Add(AnAction);
 end;
 
-function TQtWidgetSet.ShortcutInGlobalActions(const AMnemonicText: WideString;
+function TQtWidgetSet.ShortcutInGlobalActions(const AMnemonicText: UnicodeString;
   out AGlobalActionIndex: Integer): Boolean;
 var
   NewKey: QKeySequenceH;
-  NewStr: WideString;
+  NewStr: UnicodeString;
   CurrentKey: QKeySequenceH;
-  CurrentStr: WideString;
+  CurrentStr: UnicodeString;
   Action: QActionH;
   i: Integer;
 begin
@@ -1763,7 +1762,7 @@ begin
   Result := HFONT(QtFont);
 end;
 
-function TQtWidgetSet.GetDefaultAppFontName: WideString;
+function TQtWidgetSet.GetDefaultAppFontName: UnicodeString;
 begin
   Result := FDefaultAppFontName;
 end;
@@ -1896,7 +1895,7 @@ function TQtWidgetSet.GetMenuHeight: Integer;
 var
   AMenuBar: QMenuBarH;
   DummyWindow: QMainWindowH;
-  DummyStr: WideString;
+  DummyStr: UnicodeString;
   Size: TSize;
 begin
   {$IFDEF DARWIN}
@@ -2086,10 +2085,10 @@ end;
 
 function TQtWidgetSet.GetStyleName: String;
 var
-  WStr: WideString;
+  WStr: UnicodeString;
 begin
   QObject_objectName(QApplication_style, @WStr);
-  Result := UTF16ToUTF8(WStr);
+  Result := {%H-}WStr;
 end;
 
 //------------------------------------------------------------------------

@@ -205,12 +205,12 @@ class function TQtWSCustomRadioGroup.CreateHandle(const AWinControl: TWinControl
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtGroupBox: TQtGroupBox;
-  Str: WideString;
+  Str: UnicodeString;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   QtGroupBox.GroupBoxType := tgbtRadioGroup;
 
-  Str := GetUtf8String(AWinControl.Caption);
+  Str := AWinControl{%H-}.Caption;
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
   QtGroupBox.AttachEvents;
@@ -231,12 +231,12 @@ class function TQtWSCustomCheckGroup.CreateHandle(const AWinControl: TWinControl
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtGroupBox: TQtGroupBox;
-  Str: WideString;
+  Str: UnicodeString;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   QtGroupBox.GroupBoxType := tgbtCheckGroup;
 
-  Str := GetUtf8String(AWinControl.Caption);
+  Str := AWinControl{%H-}.Caption;
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 
   QtGroupBox.AttachEvents;
@@ -265,7 +265,7 @@ end;
 
 class function TQtWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  Text: WideString;
+  Text: UnicodeString;
   SystemTrayIcon: TQtSystemTrayIcon;
   IconH: QIconH;
 begin
@@ -281,7 +281,7 @@ begin
 
   ATrayIcon.Handle := HWND(SystemTrayIcon);
 
-  Text := UTF8ToUTF16(ATrayIcon.Hint);
+  Text := ATrayIcon{%H-}.Hint;
   SystemTrayIcon.setToolTip(Text);
 
   if Assigned(ATrayIcon.PopUpMenu) then
@@ -303,7 +303,7 @@ class procedure TQtWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayI
 var
   SystemTrayIcon: TQtSystemTrayIcon;
   AIcon: QIconH;
-  AHint: WideString;
+  AHint: UnicodeString;
 begin
   if (ATrayIcon.Handle = 0) then Exit;
 
@@ -330,13 +330,12 @@ begin
     QIcon_destroy(AIcon);
   end;
 
-
   { PopUpMenu }
   if Assigned(ATrayIcon.PopUpMenu) then
     if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
       SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
 
-  AHint := UTF8ToUTF16(ATrayIcon.Hint);
+  AHint := ATrayIcon{%H-}.Hint;
   SystemTrayIcon.setToolTip(AHint);
 
   SystemTrayIcon.UpdateSystemTrayWidget;

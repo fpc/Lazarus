@@ -292,8 +292,7 @@ begin
   QtTabWidget.setUpdatesEnabled(False);
   QtTabWidget.BeginUpdate;
   try
-    QtTabWidget.insertTab(AIndex, TQtPage(AChild.Handle).Widget,
-      GetUtf8String(AChild.Caption));
+    QtTabWidget.insertTab(AIndex, TQtPage(AChild.Handle).Widget, AChild.Caption{%H-});
   finally
     QtTabWidget.EndUpdate;
     QtTabWidget.setUpdatesEnabled(True);
@@ -481,7 +480,7 @@ begin
   Index := AChild.PageIndex;
   if Index < 0 then
     Index := ATabControl.IndexOf(AChild);
-  TQtTabWidget(ATabControl.Handle).setTabText(Index, GetUtf8String(AText));
+  TQtTabWidget(ATabControl.Handle).setTabText(Index, AText{%H-});
 end;
 
 class procedure TQtWSCustomTabControl.SetTabPosition(
@@ -492,9 +491,11 @@ end;
 
 class procedure TQtWSCustomTabControl.SetTabSize(
   const ATabControl: TCustomTabControl; const ATabWidth, ATabHeight: integer);
+const
+  FmtS = 'QTabBar::tab { height: %dpx; width: %dpx; }';
 var
   ASize, ANewSize: TSize;
-  WS: WideString;
+  WS: UnicodeString;
 begin
   if not WSCheckHandleAllocated(ATabControl, 'SetTabSize') then
     Exit;
@@ -510,9 +511,9 @@ begin
   else
   begin
     if ATabControl.TabPosition in [tpLeft, tpRight] then
-      WS := {%H-}Format('QTabBar::tab { height: %dpx; width: %dpx; }',[ANewSize.cx, ANewSize.cy])
+      WS := {%H-}Format(FmtS, [ANewSize.cx, ANewSize.cy])
     else
-      WS := {%H-}Format('QTabBar::tab { height: %dpx; width: %dpx; }',[ANewSize.cy, ANewSize.cx]);
+      WS := {%H-}Format(FmtS, [ANewSize.cy, ANewSize.cx]);
   end;
   QWidget_setStyleSheet(TQtTabWidget(ATabControl.Handle).Widget, @WS);
 end;

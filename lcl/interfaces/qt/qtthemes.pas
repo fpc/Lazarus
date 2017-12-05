@@ -46,7 +46,7 @@ type
   private
     FStyle: QStyleH;
     function GetStyle: QStyleH;
-    function GetStyleName: WideString;
+    function GetStyleName: UnicodeString;
   protected
     function InitThemes: Boolean; override;
     function UseThemes: Boolean; override;
@@ -56,7 +56,7 @@ type
     function GetControlState(Details: TThemedElementDetails): QStyleState;
     function GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
     property Style: QStyleH read GetStyle;
-    property StyleName: WideString read GetStyleName;
+    property StyleName: UnicodeString read GetStyleName;
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
@@ -81,7 +81,7 @@ begin
   Result := FStyle;
 end;
 
-function TQtThemeServices.GetStyleName: WideString;
+function TQtThemeServices.GetStyleName: UnicodeString;
 begin
   QObject_objectName(Style, @Result);
 end;
@@ -557,7 +557,7 @@ var
   Palette: QPaletteH;
   Context: TQtDeviceContext;
   Widget: QWidgetH;
-  W: WideString;
+  W: UnicodeString;
   TextRect: TRect;
   AOldMode: Integer;
   ATextPalette: Cardinal;
@@ -568,7 +568,7 @@ begin
   case Details.Element of
     teToolTip:
       begin
-        W := GetUTF8String(S);
+        W := {%H-}S;
         Context.save;
         AOldMode := Context.SetBkMode(TRANSPARENT);
         try
@@ -612,7 +612,7 @@ begin
             exit;
           end;
 
-          W := GetUTF8String(S);
+          W := {%H-}S;
           Context.save;
           try
             Context.SetBkMode(TRANSPARENT);
@@ -660,7 +660,7 @@ begin
 
     else
     begin // default text drawing for all !
-      W := GetUTF8String(S);
+      W := {%H-}S;
       Context.save;
       AOldMode := Context.SetBkMode(TRANSPARENT);
       if Context.Parent <> nil then

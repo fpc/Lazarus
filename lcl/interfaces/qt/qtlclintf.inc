@@ -176,23 +176,23 @@ begin
         if (BtnID >= Low(IdButtonToQtStandardButton)) and
            (BtnID <= High(IdButtonToQtStandardButton)) and
            (IdButtonToQtStandardButton[BtnID] <> QMessageBoxNoButton) then
-          QtMessageBox.AddButton(Caption, IdButtonToQtStandardButton[BtnID], ModalResult, Default, Cancel)
+          QtMessageBox.AddButton(Caption{%H-}, IdButtonToQtStandardButton[BtnID], ModalResult, Default, Cancel)
         else
-          QtMessageBox.AddButton(Caption, ModalResult, Default, Cancel);
+          QtMessageBox.AddButton(Caption{%H-}, ModalResult, Default, Cancel);
       end;
     end;
 
     if DialogCaption <> '' then
       QtMessageBox.Title := DialogCaption
-    else
+    {%H-}else
       case DialogType of
-        idDialogWarning: QtMessageBox.Title := rsMtWarning;
-        idDialogError: QtMessageBox.Title := rsMtError;
-        idDialogInfo : QtMessageBox.Title := rsMtInformation;
-        idDialogConfirm : QtMessageBox.Title := rsMtConfirmation;
+        idDialogWarning: QtMessageBox.Title := rsMtWarning{%H-};
+        idDialogError: QtMessageBox.Title := rsMtError{%H-};
+        idDialogInfo : QtMessageBox.Title := rsMtInformation{%H-};
+        idDialogConfirm : QtMessageBox.Title := rsMtConfirmation{%H-};
       end;
 
-    QtMessageBox.MessageStr := DialogMessage;
+    QtMessageBox.MessageStr := DialogMessage{%H-};
 
     case DialogType of
       idDialogWarning: QtMessageBox.MsgBoxType := QMessageBoxWarning;
@@ -396,24 +396,24 @@ begin
       if (BtnID >= Low(IdButtonToQtStandardButton)) and
          (BtnID <= High(IdButtonToQtStandardButton)) and
          (IdButtonToQtStandardButton[BtnID] <> QMessageBoxNoButton) then
-        QtMessageBox.AddButton(GetButtonCaption(BtnID), IdButtonToQtStandardButton[BtnID], BtnID,
+        QtMessageBox.AddButton(GetButtonCaption(BtnID){%H-}, IdButtonToQtStandardButton[BtnID], BtnID,
           BtnIdx = DefaultIndex, (EscapeResult = mrCancel) and (BtnId = EscapeResult))
       else
-        QtMessageBox.AddButton(GetButtonCaption(BtnID), BtnID, BtnIdx = DefaultIndex,
+        QtMessageBox.AddButton(GetButtonCaption(BtnID){%H-}, BtnID, BtnIdx = DefaultIndex,
           (EscapeResult = mrCancel) and (BtnId = EscapeResult));
     end;
 
     if DialogCaption <> '' then
       QtMessageBox.Title := DialogCaption
-    else
+    {%H-}else
       case DialogType of
-        idDialogWarning: QtMessageBox.Title := rsMtWarning;
-        idDialogError: QtMessageBox.Title := rsMtError;
-        idDialogInfo : QtMessageBox.Title := rsMtInformation;
-        idDialogConfirm : QtMessageBox.Title := rsMtConfirmation;
+        idDialogWarning: QtMessageBox.Title := rsMtWarning{%H-};
+        idDialogError: QtMessageBox.Title := rsMtError{%H-};
+        idDialogInfo : QtMessageBox.Title := rsMtInformation{%H-};
+        idDialogConfirm : QtMessageBox.Title := rsMtConfirmation{%H-};
       end;
 
-    QtMessageBox.MessageStr := DialogMessage;
+    QtMessageBox.MessageStr := DialogMessage{%H-};
 
     case DialogType of
       idDialogWarning: QtMessageBox.MsgBoxType := QMessageBoxWarning;

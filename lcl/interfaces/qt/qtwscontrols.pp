@@ -298,7 +298,7 @@ begin
 
   Result := not TQtWidget(AWinControl.Handle).getTextStatic;
   if Result then
-    AText := UTF16ToUTF8(TQtWidget(AWinControl.Handle).getText);
+    AText := TQtWidget(AWinControl.Handle){%H-}.getText;
 end;
 
 class procedure TQtWSWinControl.SetText(const AWinControl: TWinControl;
@@ -307,12 +307,12 @@ begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then
     Exit;
   TQtWidget(AWinControl.Handle).BeginUpdate;
-  TQtWidget(AWinControl.Handle).setText(GetUtf8String(AText));
+  TQtWidget(AWinControl.Handle).setText(AText{%H-});
   TQtWidget(AWinControl.Handle).EndUpdate;
 end;
 
 class procedure TQtWSWinControl.SetChildZPosition(const AWinControl,
-                AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList);
+  AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList);
 var
   n: Integer;
   Child: TWinControl;

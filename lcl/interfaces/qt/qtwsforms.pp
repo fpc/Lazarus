@@ -184,7 +184,7 @@ class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtMainWindow: TQtMainWindow;
-  Str: WideString;
+  Str: UnicodeString;
   APopupParent: TCustomForm;
   AForm: TCustomForm;
 begin
@@ -208,8 +208,7 @@ begin
   QtMainWindow.QtFormBorderStyle := Ord(AForm.BorderStyle);
   QtMainWindow.QtFormStyle := Ord(AForm.FormStyle);
 
-  Str := GetUtf8String(AWinControl.Caption);
-
+  Str := AWinControl{%H-}.Caption;
   QtMainWindow.SetWindowTitle(@Str);
 
   if not (csDesigning in AForm.ComponentState) then

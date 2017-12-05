@@ -119,7 +119,7 @@ type
     FParams: TCreateParams;
     FDefaultCursor: QCursorH;
     FKeysToEat: TByteSet;
-    FText: WideString;
+    FText: UnicodeString;
     FHasCaret: Boolean;
     FLastCaretPos: TQtPoint;
     FHasPaint: Boolean;
@@ -136,18 +136,18 @@ type
     function GetPalette: TQtWidgetPalette;
     function GetProps(const AnIndex: String): pointer;
     function getScrolledOffset: TPoint;
-    function GetStyleSheet: WideString;
+    function GetStyleSheet: UnicodeString;
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
     function QtButtonsToLCLButtons(AButtons: QtMouseButton): PtrInt;
     function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers;
       const AIsKeyEvent: Boolean;
       AEvent: QKeyEventH = nil): PtrInt;
-    function QtKeyToLCLKey(AKey: Integer; AText: WideString;
+    function QtKeyToLCLKey(AKey: Integer; AText: UnicodeString;
       AEvent: QKeyEventH): Word;
     procedure SetLastCaretPos(const AValue: TQtPoint);
     procedure SetProps(const AnIndex: String; const AValue: pointer);
-    procedure SetStyleSheet(const AValue: WideString);
+    procedure SetStyleSheet(const AValue: UnicodeString);
     procedure SetWidget(const AValue: QWidgetH);
     function ShiftStateToQtModifiers(Shift: TShiftState): QtModifier;
   protected
@@ -188,7 +188,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getAcceptDropFiles: Boolean; virtual;
     {precise measure of text with widget''s current font when canvas.handle isn''t available}
-    function measureText(AText: WideString; AFlags: cardinal): TRect;
+    function measureText(AText: UnicodeString; AFlags: cardinal): TRect;
     procedure SetNoMousePropagation(Sender: QWidgetH; const ANoMousePropagation: Boolean); virtual;
     procedure SetLCLFont(AFont: TQtFont);
     procedure SlotShow(vShow: Boolean); cdecl;
@@ -243,7 +243,7 @@ type
     function getPos: TQtPoint;
     function getFrameSize: TSize; virtual;
     function getSize: TSize;
-    function getText: WideString; virtual;
+    function getText: UnicodeString; virtual;
     function getTextStatic: Boolean; virtual;
     function getHeight: Integer;
     function getUpdatesEnabled: Boolean;
@@ -291,7 +291,7 @@ type
     procedure setMask(AMask: QRegionH); overload;
     procedure setMinimumSize(AWidth, AHeight: Integer);
     procedure setParent(parent: QWidgetH); virtual;
-    procedure setText(const W: WideString); virtual;
+    procedure setText(const W: UnicodeString); virtual;
     procedure setTextColor(const Value: PQColor); virtual;
     procedure setVisible(AVisible: Boolean); virtual;
     procedure setWindowFlags(_type: QtWindowFlags);
@@ -317,7 +317,7 @@ type
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
     property LastCaretPos: TQtPoint read FLastCaretPos write SetLastCaretPos;
     property ScrolledOffset: TPoint read getScrolledOffset;
-    property StyleSheet: WideString read GetStyleSheet write SetStyleSheet;
+    property StyleSheet: UnicodeString read GetStyleSheet write SetStyleSheet;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Palette: TQtWidgetPalette read GetPalette;
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
@@ -516,11 +516,11 @@ type
   public
     function CanPaintBackground: Boolean; override;
     function getIconSize: TSize; virtual;
-    function getText: WideString; override;
+    function getText: UnicodeString; override;
     procedure setIcon(AIcon: QIconH); virtual;
     procedure setIconSize(Size: PSize); virtual;
     procedure setShortcut(AShortCutK1, AShortCutK2: TShortcut);
-    procedure setText(const W: WideString); override;
+    procedure setText(const W: UnicodeString); override;
     procedure Toggle;
     function isChecked: Boolean;
     function isDown: Boolean;
@@ -567,10 +567,10 @@ type
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
 
     function getIconSize: TSize; override;
-    function getText: WideString; override;
+    function getText: UnicodeString; override;
     procedure setIcon(AIcon: QIconH); override;
     procedure setIconSize(Size: PSize); override;
-    procedure setText(const W: WideString); override;
+    procedure setText(const W: UnicodeString); override;
 
     property GlyphLayout: Integer read FGlyphLayout write FGlyphLayout;
   end;
@@ -668,7 +668,7 @@ type
 
     function getFrameSize: TSize; override;
     function getFrameGeometry: TRect; override;
-    function getText: WideString; override;
+    function getText: UnicodeString; override;
     function getTextStatic: Boolean; override;
 
     function MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; override;
@@ -678,7 +678,7 @@ type
     procedure Repaint(ARect: PRect = nil); override;
 
     procedure Resize(ANewWidth, ANewHeight: Integer); override;
-    procedure setText(const W: WideString); override;
+    procedure setText(const W: UnicodeString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure MDIChildWindowStateChanged(AOldState: QtWindowStates; ANewState: QtWindowStates); cdecl;
@@ -729,8 +729,8 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function CanPaintBackground: Boolean; override;
-    function getText: WideString; override;
-    procedure setText(const W: WideString); override;
+    function getText: UnicodeString; override;
+    procedure setText(const W: UnicodeString); override;
     procedure setAlignment(const AAlignment: QtAlignment);
     property WordWrap: Boolean read GetWordWrap write SetWordWrap;
   end;
@@ -786,10 +786,10 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getClientBounds: TRect; override;
     function getClientOffset: TPoint; override;
-    function getText: WideString; override;
+    function getText: UnicodeString; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
       {%H-}WithThemeSpace: Boolean); override;
-    procedure setText(const W: WideString); override;
+    procedure setText(const W: UnicodeString); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure Update(ARect: PRect = nil); override;
     procedure UpdateRegion(ARgn: QRegionH); override;
@@ -850,10 +850,10 @@ type
     function getAlignment: QtAlignment;
     function getCursorPosition: TPoint;
     function getMaxLength: Integer;
-    function getSelectedText: WideString;
+    function getSelectedText: UnicodeString;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
-    function getText: WideString; override;
+    function getText: UnicodeString; override;
     function getTextStatic: Boolean; override;
     function isUndoAvailable: Boolean;
     function hasSelectedText: Boolean;
@@ -863,11 +863,11 @@ type
     procedure setCursorPosition(const ACursorPosition: Integer);
     procedure setDefaultColorRoles; override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
-    procedure setInputMask(const AMask: WideString);
+    procedure setInputMask(const AMask: UnicodeString);
     procedure setMaxLength(const ALength: Integer);
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
-    procedure setText(const AText: WideString); override;
+    procedure setText(const AText: UnicodeString); override;
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -900,19 +900,19 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     FList: TStrings;
-    procedure Append(const AStr: WideString);
+    procedure Append(const AStr: UnicodeString);
     procedure ClearText;
     function getAlignment: QtAlignment;
     function getBlockCount: Integer;
     function getCursorPosition: TPoint;
     function getMaxLength: Integer;
-    function getText: WideString; override;
+    function getText: UnicodeString; override;
     function getTextStatic: Boolean; override;
     function getSelectionStart: Integer;
     function getSelectionEnd: Integer;
     function getSelectionLength: Integer;
-    procedure appendLine(AText: WideString);
-    procedure insertLine(const AIndex: integer; AText: WideString);
+    procedure appendLine(AText: UnicodeString);
+    procedure insertLine(const AIndex: integer; AText: UnicodeString);
     function isUndoAvailable: Boolean;
     procedure removeLine(const AIndex: integer);
     procedure setAlignment(const AAlignment: QtAlignment);
@@ -922,8 +922,8 @@ type
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
     procedure setMaxLength(const ALength: Integer);
-    procedure setLineText(const AIndex: integer; AText: WideString);
-    procedure setText(const AText: WideString); override;
+    procedure setLineText(const AIndex: integer; AText: UnicodeString);
+    procedure setText(const AText: UnicodeString); override;
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setTabChangesFocus(const AValue: Boolean);
@@ -988,8 +988,8 @@ type
     procedure SignalCloseRequested(Index: Integer); cdecl;
   public
     function indexOf(const AWidget: QWidgetH): integer;
-    function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
-    function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
+    function insertTab(index: Integer; page: QWidgetH; p2: UnicodeString): Integer; overload;
+    function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: UnicodeString): Integer; overload;
     function getCount: Integer;
     function getClientBounds: TRect; override;
     function getCurrentIndex: Integer;
@@ -1000,7 +1000,7 @@ type
     procedure setCurrentWidget(APage: TQtWidget; const AIsMoved: Boolean);
     procedure setTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabIcon(index: Integer; icon: QIconH);
-    procedure setTabText(index: Integer; p2: WideString);
+    procedure setTabText(index: Integer; p2: UnicodeString);
     procedure setTabsClosable(AValue: Boolean);
     function tabAt(APoint: TPoint): Integer;
 
@@ -1055,12 +1055,12 @@ type
     procedure ClearItems;
     procedure setBorder(const ABorder: Boolean);
     function currentIndex: Integer;
-    function findText(AText: WideString): Integer;
+    function findText(AText: UnicodeString): Integer;
     function getDroppedDown: Boolean;
     function getEditable: Boolean;
-    function getItemText(AIndex: Integer): WideString;
+    function getItemText(AIndex: Integer): UnicodeString;
     function getMaxVisibleItems: Integer;
-    function getText: WideString; override;
+    function getText: UnicodeString; override;
     function getTextStatic: Boolean; override;
     procedure insertItem(AIndex: Integer; AText: String); overload;
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
@@ -1070,7 +1070,7 @@ type
     procedure setMaxVisibleItems(ACount: Integer);
     procedure setEditable(const AValue: Boolean);
     procedure setItemText(AIndex: Integer; AText: String);
-    procedure setText(const W: WideString); override;
+    procedure setText(const W: UnicodeString); override;
     procedure removeItem(AIndex: Integer);
     
     property DropList: TQtListWidget read GetDropList;
@@ -1126,7 +1126,7 @@ type
   public
     function getValue: Double; virtual; abstract;
     function getReadOnly: Boolean;
-    function getText: WideString; override;
+    function getText: UnicodeString; override;
     function getTextStatic: Boolean; override;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
@@ -1137,7 +1137,7 @@ type
     procedure setSingleStep(const v: Double); virtual; abstract;
     procedure setReadOnly(const r: Boolean);
     procedure setValue(const v: Double); virtual; abstract;
-    procedure setText(const W: WideString); override;
+    procedure setText(const W: UnicodeString); override;
 
     property LineEdit: QLineEditH read GetLineEdit;
   public
@@ -1516,7 +1516,7 @@ type
     function getVisibleRowCount(const AFirstVisibleOnly: boolean = false): integer; override;
     procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
     procedure setItemText(AItem: QTreeWidgetItemH; const AColumn: Integer;
-      const AText: WideString; const AAlignment: QtAlignment);
+      const AText: UnicodeString; const AAlignment: QtAlignment);
     procedure setItemData(AItem: QTreeWidgetItemH; const AColumn: Integer;
        Data: Pointer; const ARole: Integer = Ord(QtUserRole));
     function selCount: Integer;
@@ -1617,7 +1617,7 @@ type
     function addMenu(AMenu: QMenuH): QActionH;
     function insertMenu(AIndex: Integer; AMenu: QMenuH; AItem: TMenuItem): QActionH;
     function getHasSubMenu: boolean;
-    function getText: WideString; override;
+    function getText: UnicodeString; override;
     function getVisible: Boolean; override;
     function MenuItemEnabled: boolean;
     procedure PopUp(pos: PQtPoint; at: QActionH = nil);
@@ -1630,7 +1630,7 @@ type
     procedure setImage(AImage: TQtImage);
     procedure setSeparator(AValue: Boolean);
     procedure setShortcut(AShortCutK1, AShortCutK2: TShortcut);
-    procedure setText(const W: WideString); override;
+    procedure setText(const W: UnicodeString); override;
     procedure setVisible(AVisible: Boolean); override;
     property trackButton: QtMouseButton read FTrackButton write FTrackButton;
   end;
@@ -1767,17 +1767,17 @@ type
     procedure DirectoryEnteredEvent(directory: PWideString); cdecl;
   public
     procedure getFilters(const retval: QStringListH);
-    function selectFile: WideString;
+    function selectFile: UnicodeString;
     procedure selectedFiles(retval: QStringListH);
     procedure setAcceptMode(const AMode: QFileDialogAcceptMode);
     procedure setConfirmOverwrite(const AValue: Boolean);
-    procedure setDirectory(const ADirectory: WideString);
+    procedure setDirectory(const ADirectory: UnicodeString);
     procedure setHistory(AList: TStrings);
     procedure setFileMode(const AMode: QFileDialogFileMode);
-    procedure setFilter(const AFilter: WideString);
-    procedure setLabelText(const ALabel: QFileDialogDialogLabel; const AText: WideString);
+    procedure setFilter(const AFilter: UnicodeString);
+    procedure setLabelText(const ALabel: QFileDialogDialogLabel; const AText: UnicodeString);
     procedure setReadOnly(const AReadOnly: Boolean);
-    procedure setSelectedFilter(const ASelFilter: WideString);
+    procedure setSelectedFilter(const ASelFilter: UnicodeString);
     procedure setViewMode(const AMode: QFileDialogViewMode);
     {$ifndef QT_NATIVE_DIALOGS}
     procedure setShortcuts(const AIsOpenDialog: Boolean);
@@ -1808,14 +1808,14 @@ type
   TQtMessageBox = class(TQtWidget)
   private
     FMBEventHook: QObject_hookH;
-    FTitle: WideString;
-    function getDetailText: WideString;
-    function getMessageStr: WideString;
+    FTitle: UnicodeString;
+    function getDetailText: UnicodeString;
+    function getMessageStr: UnicodeString;
     function getMsgBoxType: QMessageBoxIcon;
-    procedure setDetailText(const AValue: WideString);
-    procedure setMessageStr(const AValue: WideString);
+    procedure setDetailText(const AValue: UnicodeString);
+    procedure setMessageStr(const AValue: UnicodeString);
     procedure setMsgBoxType(const AValue: QMessageBoxIcon);
-    procedure setTitle(const AValue: WideString);
+    procedure setTitle(const AValue: UnicodeString);
   protected
     function CreateWidget(AParent: QWidgetH):QWidgetH; overload;
   public
@@ -1824,17 +1824,17 @@ type
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   public
-    function AddButton(ACaption: WideString; ABtnType: QMessageBoxStandardButton; AResult: Int64;
+    function AddButton(ACaption: UnicodeString; ABtnType: QMessageBoxStandardButton; AResult: Int64;
       const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False): QPushButtonH; overload;
-    function AddButton(ACaption: WideString; AResult: Int64;
+    function AddButton(ACaption: UnicodeString; AResult: Int64;
       const ADefaultBtn: Boolean; const AEscapeBtn: Boolean = False): QPushButtonH;
     procedure SetButtonProps(ABtn: QPushButtonH; AResult: Int64; const ADefaultBtn: Boolean;
       const AEscapeBtn: Boolean);
     function exec: Int64;
-    property DetailText: WideString read getDetailText write setDetailText;
-    property MessageStr: WideString read getMessageStr write setMessageStr;
+    property DetailText: UnicodeString read getDetailText write setDetailText;
+    property MessageStr: UnicodeString read getMessageStr write setMessageStr;
     property MsgBoxType:QMessageBoxIcon read getMsgBoxType write setMsgBoxType;
-    property Title: WideString read FTitle write setTitle;
+    property Title: UnicodeString read FTitle write setTitle;
   end;
   
   { TQtCalendar }
@@ -1889,7 +1889,7 @@ type
     function getIndex(const ATextChanging: Boolean = False): Integer;
     function getTabWidget: QTabWidgetH;
     procedure setIcon(const AIcon: QIconH);
-    procedure setText(const W: WideString); override;
+    procedure setText(const W: UnicodeString); override;
   end;
   
   { TQtRubberBand }
@@ -2765,7 +2765,7 @@ begin
     Result := TQtMainWindow(Form.Handle).getAcceptDropFiles;
 end;
 
-function TQtWidget.measureText(AText: WideString; AFlags: cardinal): TRect;
+function TQtWidget.measureText(AText: UnicodeString; AFlags: cardinal): TRect;
 var
   AMetrics: QFontMetricsH;
   AFont: QFontH;
@@ -2885,7 +2885,7 @@ var
   QStrList: QStringListH;
   ByteArr: QByteArrayH;
   i: Integer;
-  WStr: WideString;
+  WStr: UnicodeString;
   GotFiles: Boolean;
   FilesList: TStrings;
   Files: Array of String;
@@ -2918,7 +2918,7 @@ begin
       WStr := QByteArray_constData(ByteArr);
       FilesList := TStringList.Create;
       try
-        FilesList.Text := UTF16ToUTF8(WStr);
+        FilesList.Text := WStr{%H-};
 
         if (FilesList.Count > 0) and
           ( (FilesList[FilesList.Count-1] = #0)
@@ -2929,10 +2929,10 @@ begin
           SetLength(Files, FilesList.Count);
         for i := 0 to High(Files) do
         begin
-          WStr := GetUTF8String(FilesList.Strings[i]);
+          WStr := FilesList{%H-}.Strings[i];
           Url := QUrl_create(@WStr);
           QUrl_toLocalFile(Url, @WStr);
-          Files[i] := UTF16ToUTF8(WStr);
+          Files[i] := {%H-}WStr;
           QUrl_destroy(Url);
         end;
       finally
@@ -3012,7 +3012,7 @@ var
   CharMsg: TLMChar;
   Modifiers: QtKeyboardModifiers;
   IsSysKey: Boolean;
-  Text: WideString;
+  Text: UnicodeString;
   UTF8Text: String; // use to prevent 3 time convertion from WideString to utf8 string
   UTF8Char: TUTF8Char;
   ACharCode: Word;
@@ -3063,7 +3063,7 @@ var
       Text := UTF8ToUTF16(Utf8Char)
     else
     if Word(AChar) <> CharMsg.CharCode then
-      Text := Char(CharMsg.CharCode);
+      Text := Char(CharMsg.CharCode);  // By Juha: should it be UnicodeChar?
 
     AKeyEvent := QKeyEvent_createExtendedKeyEvent(
       QEvent_type(Event),
@@ -3399,7 +3399,7 @@ begin
   { Also sends a utf-8 key event for key down }
   if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
   begin
-    UTF8Text := UTF16ToUTF8(Text);
+    UTF8Text := {%H-}Text;
     UTF8Char := UTF8Text;
     {$ifdef VerboseQt}
     WriteLn('sending char ', UTF8Char);
@@ -3428,7 +3428,7 @@ begin
     FillChar(CharMsg, SizeOf(CharMsg), 0);
     CharMsg.Msg := CN_CharMsg[IsSysKey];
     CharMsg.KeyData := KeyMsg.KeyData;
-    AChar := Text[1];
+    AChar := Text[1]; // By Juha: This is wrong. AChar is Char, Text[1] is WideChar.
     CharMsg.CharCode := Word(AChar);
 
     //Send message to LCL
@@ -3488,7 +3488,7 @@ end;
 function TQtWidget.SlotInputMethod(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   InputEvent: QInputMethodEventH;
-  WStr: WideString;
+  WStr: UnicodeString;
   UnicodeChar: Cardinal;
   UnicodeOutLen: integer;
   KeyEvent: QKeyEventH;
@@ -3508,7 +3508,7 @@ begin
   writeln('   sending QEventKeyPress');
   {$ENDIF}
 
-  KeyEvent := QKeyEvent_create(QEventKeyPress, PtrInt(UnicodeChar), QApplication_keyboardModifiers, @WStr, False, 1);
+  KeyEvent := QKeyEvent_create(QEventKeyPress, Integer(UnicodeChar), QApplication_keyboardModifiers, @WStr, False, 1);
   try
     // do not send it to queue, just pass it to SlotKey
     Result := SlotKey(Sender, KeyEvent);
@@ -4514,7 +4514,7 @@ end;
 
   Changes the color of a widget
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SetColor(const Value: PQColor);
+procedure TQtWidget.setColor(const Value: PQColor);
 begin
   Palette.setColor(Value);
 end;
@@ -4536,12 +4536,12 @@ end;
 
   Changes the text color of a widget
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SetTextColor(const Value: PQColor);
+procedure TQtWidget.setTextColor(const Value: PQColor);
 begin
   Palette.setTextColor(Value);
 end;
 
-procedure TQtWidget.SetCursor(const ACursor: QCursorH);
+procedure TQtWidget.setCursor(const ACursor: QCursorH);
 begin
   {$IFDEF DARWIN}
   if not QWidget_isVisible(Widget) then
@@ -4685,7 +4685,7 @@ begin
   Result := QWidget_layoutDirection(Widget);
 end;
 
-function TQtWidget.getVisible: boolean;
+function TQtWidget.getVisible: Boolean;
 begin
   if Widget = nil then
     exit(False);
@@ -4724,7 +4724,7 @@ begin
   QWidget_size(Widget, @Result);
 end;
 
-function TQtWidget.getText: WideString;
+function TQtWidget.getText: UnicodeString;
 begin
   Result := FText;
 end;
@@ -5144,7 +5144,7 @@ begin
   QWidget_setParent(Widget, parent);
 end;
 
-procedure TQtWidget.setText(const W: WideString);
+procedure TQtWidget.setText(const W: UnicodeString);
 begin
   FText := W;
 end;
@@ -5214,7 +5214,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidget.QtKeyToLCLKey(AKey: Integer; AText: WideString;
+function TQtWidget.QtKeyToLCLKey(AKey: Integer; AText: UnicodeString;
   AEvent: QKeyEventH): Word;
 begin
   // The big problem here with unicode keys
@@ -5646,12 +5646,12 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-function TQtWidget._AddRef: longint; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+function TQtWidget._AddRef: LongInt; cdecl;
 begin
   Result := -1; // no ref counting
 end;
 
-function TQtWidget._Release: longint; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+function TQtWidget._Release: LongInt; cdecl;
 begin
   Result := -1;
 end;
@@ -5677,12 +5677,12 @@ begin
   Result := Point(-FScrollX, -FScrollY);
 end;
 
-function TQtWidget.GetStyleSheet: WideString;
+function TQtWidget.GetStyleSheet: UnicodeString;
 var
-  WStr: WideString;
+  WStr: UnicodeString;
 begin
   QWidget_styleSheet(Widget, @WStr);
-  Result := UTF16ToUTF8(WStr);
+  Result := WStr;
 end;
 
 {------------------------------------------------------------------------------
@@ -5758,11 +5758,11 @@ begin
   Fprops.Objects[i] := TObject(AValue);
 end;
 
-procedure TQtWidget.SetStyleSheet(const AValue: WideString);
+procedure TQtWidget.SetStyleSheet(const AValue: UnicodeString);
 var
-  WStr: WideString;
+  WStr: UnicodeString;
 begin
-  WStr := GetUTF8String(AValue);
+  WStr := AValue;
   QWidget_setStyleSheet(Widget, @WStr);
 end;
 
@@ -5834,7 +5834,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtAbstractButton.SetText(const W: WideString);
+procedure TQtAbstractButton.SetText(const W: UnicodeString);
 begin
   QAbstractButton_setText(QAbstractButtonH(Widget), @W);
 end;
@@ -5861,7 +5861,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtAbstractButton.getText: WideString;
+function TQtAbstractButton.getText: UnicodeString;
 begin
   QAbstractButton_text(QAbstractButtonH(Widget), @Result);
 end;
@@ -5989,7 +5989,7 @@ var
   function AutoSizeButtonFromStyle(const ASize: TSize): TSize;
   var
     AOpt: QStyleOptionButtonH;
-    AText: WideString;
+    AText: UnicodeString;
     AMetrics: QFontMetricsH;
     BtnWidth: Integer;
     BtnHeight: Integer;
@@ -6154,7 +6154,7 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
     IconAlign: QtAlignment;
     CenterOffset, W {, H}: Integer;
     AFontMetrics: QFontMetricsH;
-    AText: WideString;
+    AText: UnicodeString;
     DTFLAGS: DWord;
     ContentSize: TSize;
     IconDistance: Integer;
@@ -6221,8 +6221,7 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
           R3 := Rect(0, 0, 0, 0)
         else
           QFontMetrics_boundingRect(AFontMetrics, PRect(@R3), 0, 0,
-            QWidget_width(Widget), QWidget_height(Widget), QtAlignLeft or $0800,
-            PWideString(@AText));
+            QWidget_width(Widget), QWidget_height(Widget), QtAlignLeft or $0800, @AText);
 
         QFontMetrics_destroy(AFontMetrics);
 
@@ -6330,7 +6329,7 @@ const
   IconDistance = 4; // hardcoded in qt libs
 var
   AOpt: QStyleOptionButtonH;
-  AText: WideString;
+  AText: UnicodeString;
   AMetrics: QFontMetricsH;
   TextSize: TSize;
   {style pixel metrics}
@@ -6390,7 +6389,7 @@ begin
   Result := FIconSize;
 end;
 
-function TQtBitBtn.getText: WideString;
+function TQtBitBtn.getText: UnicodeString;
 begin
   Result := FText;
 end;
@@ -6417,7 +6416,7 @@ begin
     Update(nil);
 end;
 
-procedure TQtBitBtn.setText(const W: WideString);
+procedure TQtBitBtn.setText(const W: UnicodeString);
 begin
   FText := W;
   if getVisible then
@@ -7329,7 +7328,7 @@ begin
   {$ENDIF}
 end;
 
-function TQtMainWindow.getText: WideString;
+function TQtMainWindow.getText: UnicodeString;
 begin
   WindowTitle(@Result);
 end;
@@ -7429,7 +7428,7 @@ begin
     inherited Resize(ANewWidth, ANewHeight);
 end;
 
-procedure TQtMainWindow.setText(const W: WideString);
+procedure TQtMainWindow.setText(const W: UnicodeString);
 begin
   setWindowTitle(@W);
 end;
@@ -8219,10 +8218,10 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtStaticText.SetText(const W: WideString);
+procedure TQtStaticText.SetText(const W: UnicodeString);
 var
   AmpersandPos: Integer;
-  LocalW: WideString;
+  LocalW: UnicodeString;
 begin
   LocalW := W;
   if TCustomStaticText(LCLObject).ShowAccelChar then
@@ -8250,7 +8249,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtStaticText.getText: WideString;
+function TQtStaticText.getText: UnicodeString;
 begin
   QLabel_text(QLabelH(Widget), @Result);
 end;
@@ -8707,7 +8706,7 @@ begin
   {$ENDIF}
 end;
 
-function TQtGroupBox.getText: WideString;
+function TQtGroupBox.getText: UnicodeString;
 begin
   QGroupBox_title(QGroupBoxH(Widget), @Result);
 end;
@@ -8729,7 +8728,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TQtGroupBox.setText(const W: WideString);
+procedure TQtGroupBox.setText(const W: UnicodeString);
 begin
   QGroupBox_setTitle(QGroupBoxH(Widget), @W);
   setLayoutThemeMargins(QWidget_Layout(Widget), Widget);
@@ -9630,7 +9629,7 @@ begin
   Result := QLineEdit_maxLength(QLineEditH(Widget));
 end;
 
-function TQtLineEdit.getSelectedText: WideString;
+function TQtLineEdit.getSelectedText: UnicodeString;
 begin
   Result := '';
   QLineEdit_selectedText(QLineEditH(Widget), @Result);
@@ -9651,7 +9650,7 @@ end;
 
 function TQtLineEdit.getSelectionLength: Integer;
 var
-  W: WideString;
+  W: UnicodeString;
 begin
   if hasSelectedText then
   begin
@@ -9666,7 +9665,7 @@ begin
   end;
 end;
 
-function TQtLineEdit.getText: WideString;
+function TQtLineEdit.getText: UnicodeString;
 begin
   Result := '';
   QLineEdit_text(QLineEditH(Widget), @Result);
@@ -9810,7 +9809,7 @@ begin
   QLineEdit_setEchoMode(QLineEditH(Widget), AMode);
 end;
 
-procedure TQtLineEdit.setInputMask(const AMask: WideString);
+procedure TQtLineEdit.setInputMask(const AMask: UnicodeString);
 begin
   QLineEdit_setInputMask(QLineEditH(Widget), @AMask);
 end;
@@ -9836,7 +9835,7 @@ begin
   end;
 end;
 
-procedure TQtLineEdit.setText(const AText: WideString);
+procedure TQtLineEdit.setText(const AText: UnicodeString);
 begin
   QLineEdit_setText(QLineEditH(Widget), @AText);
 end;
@@ -9924,7 +9923,7 @@ begin
   QWidget_setAcceptDrops(Result, False);
 end;
 
-procedure TQtTextEdit.Append(const AStr: WideString);
+procedure TQtTextEdit.Append(const AStr: UnicodeString);
 begin
   QTextEdit_append(QTextEditH(Widget), @AStr);
 end;
@@ -9966,7 +9965,7 @@ begin
   Result := 0;
 end;
 
-function TQtTextEdit.getText: WideString;
+function TQtTextEdit.getText: UnicodeString;
 begin
   Result := '';
   QTextEdit_toPlainText(QTextEditH(Widget), @Result);
@@ -10022,7 +10021,7 @@ begin
   {$note implement TQtTextEdit.setMaxLength}
 end;
 
-procedure TQtTextEdit.appendLine(AText: WideString);
+procedure TQtTextEdit.appendLine(AText: UnicodeString);
 var
   QtCursor: QTextCursorH;
   WrapMode: QTextEditLineWrapMode;
@@ -10045,7 +10044,7 @@ begin
   end;
 end;
 
-procedure TQtTextEdit.insertLine(const AIndex: integer; AText: WideString);
+procedure TQtTextEdit.insertLine(const AIndex: integer; AText: UnicodeString);
 var
   QtCursor: QTextCursorH;
   WrapMode: QTextEditLineWrapMode;
@@ -10154,7 +10153,7 @@ begin
   end;
 end;
 
-procedure TQtTextEdit.setLineText(const AIndex: integer; AText: WideString);
+procedure TQtTextEdit.setLineText(const AIndex: integer; AText: UnicodeString);
 var
   QtCursor: QTextCursorH;
   WrapMode: QTextEditLineWrapMode;
@@ -10184,7 +10183,7 @@ begin
   end;
 end;
 
-procedure TQtTextEdit.setText(const AText: WideString);
+procedure TQtTextEdit.setText(const AText: UnicodeString);
 begin
   QTextEdit_setPlainText(QTextEditH(Widget), @AText);
 end;
@@ -10235,7 +10234,7 @@ begin
   QTextEdit_undo(QTextEditH(Widget));
 end;
 
-procedure TQtTextEdit.SetAlignment(const AAlignment: QtAlignment);
+procedure TQtTextEdit.setAlignment(const AAlignment: QtAlignment);
 var
   TextCursor: QTextCursorH;
 begin
@@ -10655,7 +10654,7 @@ var
   List: TPtrIntArray;
   Obj: QObjectH;
   i: Integer;
-  WStr: WideString;
+  WStr: UnicodeString;
 begin
   if FStackWidget = nil then
   begin
@@ -10870,7 +10869,7 @@ end;
   Params:  index: Integer; page: QWidgetH; p2: PWideString
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
+function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: UnicodeString): Integer; overload;
 begin
   Result := insertTab(index, page, nil, p2);
 end;
@@ -10880,7 +10879,7 @@ end;
   Params:  index: Integer; page: QWidgetH; icon: QIconH; p2: PWideString
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
+function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: UnicodeString): Integer; overload;
 var
   UseAdd: Boolean;
 begin
@@ -11009,7 +11008,7 @@ begin
   Result := QTabWidget_indexOf(QTabWidgetH(Widget), AWidget);
 end;
 
-procedure TQtTabWidget.setTabText(index: Integer; p2: WideString);
+procedure TQtTabWidget.setTabText(index: Integer; p2: UnicodeString);
 begin
   QTabWidget_setTabText(QTabWidgetH(Widget), index, @p2);
 end;
@@ -11255,7 +11254,7 @@ begin
   Result := QComboBox_currentIndex(QComboBoxH(Widget));
 end;
 
-function TQtComboBox.findText(AText: WideString): Integer;
+function TQtComboBox.findText(AText: UnicodeString): Integer;
 begin
   Result := QComboBox_findText(QComboBoxH(Widget), @AText);
 end;
@@ -11270,7 +11269,7 @@ begin
   Result := QComboBox_isEditable(QComboBoxH(Widget));
 end;
 
-function TQtComboBox.getItemText(AIndex: Integer): WideString;
+function TQtComboBox.getItemText(AIndex: Integer): UnicodeString;
 begin
   Result := '';
   QComboBox_itemText(QComboBoxH(Widget), @Result, AIndex);
@@ -11281,12 +11280,11 @@ begin
   Result := QComboBox_maxVisibleItems(QComboboxH(Widget));
 end;
 
-function TQtComboBox.getText: WideString;
+function TQtComboBox.getText: UnicodeString;
 begin
   Result := '';
   QComboBox_currentText(QComboBoxH(Widget), @Result);
-  if FOwnerDrawn and (FLineEdit = nil) and
-    (Result = '') and (Result <> FText) then
+  if FOwnerDrawn and (FLineEdit = nil) and (Result = '') and (Result <> FText) then
     Result := FText;
 end;
 
@@ -11297,9 +11295,9 @@ end;
 
 procedure TQtComboBox.insertItem(AIndex: Integer; AText: String);
 var
-  Str: WideString;
+  Str: UnicodeString;
 begin
-  Str := GetUtf8String(AText);
+  Str := {%H-}AText;
   insertItem(AIndex, @Str);
 end;
 
@@ -11359,13 +11357,13 @@ end;
 
 procedure TQtComboBox.setItemText(AIndex: Integer; AText: String);
 var
-  Str: WideString;
+  Str: UnicodeString;
   item: QListWidgetItemH;
   R: TRect;
 begin
   if (AIndex >= 0) and (AIndex < QComboBox_count(QComboBoxH(Widget))) then
   begin
-    Str := GetUTF8String(AText);
+    Str := {%H-}AText;
     QComboBox_setItemText(QComboBoxH(Widget), AIndex, @Str);
     {we must update our custom delegate}
     if (FDropList <> nil) and
@@ -11383,7 +11381,7 @@ begin
     insertItem(AIndex, AText);
 end;
 
-procedure TQtComboBox.setText(const W: WideString);
+procedure TQtComboBox.setText(const W: UnicodeString);
 begin
   if FLineEdit = nil then
     FText := W
@@ -11877,7 +11875,7 @@ end;
 
 function TQtAbstractSpinBox.getSelectionLength: Integer;
 var
-  W: WideString;
+  W: UnicodeString;
 begin
   if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
   begin
@@ -11975,7 +11973,7 @@ begin
   Result := QAbstractSpinBox_isReadOnly(QAbstractSpinBoxH(Widget));
 end;
 
-function TQtAbstractSpinBox.getText: WideString;
+function TQtAbstractSpinBox.getText: UnicodeString;
 begin
   if LineEdit <> nil then
     QLineEdit_text(LineEdit, @Result)
@@ -12007,7 +12005,7 @@ begin
   QAbstractSpinBox_setReadOnly(QAbstractSpinBoxH(Widget), r);
 end;
 
-procedure TQtAbstractSpinBox.setText(const W: WideString);
+procedure TQtAbstractSpinBox.setText(const W: UnicodeString);
 begin
   {$ifdef VerboseQt}
   WriteLn('TQtAbstractSpinBox.SetText W=',w);
@@ -12391,7 +12389,7 @@ procedure TQtListWidget.setItemCount(const AValue: Integer);
 var
   i: Integer;
   AList: QStringListH;
-  WStr: WideString;
+  WStr: UnicodeString;
 begin
   if AValue = ItemCount then
     exit;
@@ -12510,8 +12508,7 @@ var
   RowHeight: Integer;
   item: QListWidgetItemH;
   v, v2, v3: QVariantH;
-  WStr: WideString;
-  DataStr: WideString;
+  WStr, DataStr: UnicodeString;
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
@@ -12619,7 +12616,7 @@ begin
           end;
         end;
 
-        WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].Caption);
+        WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].Caption;
 
         // reduce paint overhead by checking text
         v := QVariant_create();
@@ -12634,7 +12631,7 @@ begin
 
         if (DataStr <> WStr) then
         begin
-          v := QVariant_create(PWideString(@WStr));
+          v := QVariant_create(PUnicodeString(@WStr));
           try
             QListWidgetItem_setData(item, Ord(QtDisplayRole), v);
           finally
@@ -13497,9 +13494,9 @@ end;
 
 procedure TQtListWidget.insertItem(AIndex: Integer; AText: String);
 var
-  Str: WideString;
+  Str: UnicodeString;
 begin
-  Str := GetUtf8String(AText);
+  Str := {%H-}AText;
   insertItem(AIndex, @Str);
 end;
 
@@ -13649,10 +13646,10 @@ end;
 procedure TQtListWidget.setItemText(AIndex: Integer; AText: String);
 var
   Item: QListWidgetItemH;
-  Str: WideString;
+  Str: UnicodeString;
   R: TRect;
 begin
-  Str := GetUTF8String(AText);
+  Str := {%H-}AText;
   if (AIndex >= 0) and (AIndex < rowCount) then
   begin
     Item := getItem(AIndex);
@@ -13671,10 +13668,10 @@ procedure TQtListWidget.setItemText(AIndex: Integer; AText: String;
   AAlignment: Integer);
 var
   Item: QListWidgetItemH;
-  Str: WideString;
+  Str: UnicodeString;
   R: TRect;
 begin
-  Str := GetUTF8String(AText);
+  Str := {%H-}AText;
   if (AIndex >= 0) and (AIndex < rowCount) then
   begin
     Item := getItem(AIndex);
@@ -14644,7 +14641,7 @@ var
   item: QTreeWidgetItemH;
   itemChild: QTreeWidgetItemH;
   v,v2,v3: QVariantH;
-  WStr, TempStr: WideString;
+  WStr, TempStr: UnicodeString;
   ASelected: Boolean;
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
@@ -14686,10 +14683,10 @@ begin
         if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
           continue;
 
-        WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].Caption);
+        WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].Caption;
         ASelected := TCustomListViewHack(LCLObject).Items[TopItem].Selected;
 
-        v := QVariant_create(PWideString(@WStr));
+        v := QVariant_create(PUnicodeString(@WStr));
         try
           v2 := QVariant_create;
           try
@@ -14791,8 +14788,8 @@ begin
             itemChild := QTreeWidgetItem_child(item, j);
             if itemChild <> nil then
             begin
-              WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
-              v := QVariant_create(PWideString(@WStr));
+              WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].SubItems[j];
+              v := QVariant_create(PUnicodeString(@WStr));
               v2 := QVariant_create;
               try
                 TempStr := '';
@@ -14811,7 +14808,7 @@ begin
         begin
           for j := 0 to TCustomListViewHack(LCLObject).Items[TopItem].SubItems.Count - 1 do
           begin
-            WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
+            WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].SubItems[j];
             v := QVariant_create(PWideString(@WStr));
             QTreeWidgetItem_setData(item, j + 1, Ord(QtDisplayRole), v);
 
@@ -14852,7 +14849,7 @@ var
 
   function IsItemEmpty: boolean;
   var
-    AText: WideString;
+    AText: UnicodeString;
     AIcon: QIconH;
   begin
     QTreeWidgetItem_text(topLevelItem(ItemIndex), @AText, SubItemIndex);
@@ -15294,8 +15291,7 @@ begin
 end;
 
 procedure TQtTreeWidget.setItemText(AItem: QTreeWidgetItemH;
-  const AColumn: Integer; const AText: WideString; const AAlignment: QtAlignment
-  );
+  const AColumn: Integer; const AText: UnicodeString; const AAlignment: QtAlignment);
 begin
   QTreeWidgetItem_setText(AItem, AColumn, @AText);
   QTreeWidgetItem_setTextAlignment(AItem, AColumn, AAlignment);
@@ -16205,12 +16201,12 @@ begin
   Result := QAction_isVisible(ActionHandle);
 end;
 
-function TQtMenu.getText: WideString;
+function TQtMenu.getText: UnicodeString;
 begin
   QAction_text(ActionHandle, @Result);
 end;
 
-procedure TQtMenu.setText(const W: WideString);
+procedure TQtMenu.setText(const W: UnicodeString);
 begin
   QAction_setText(ActionHandle, @W);
 end;
@@ -16563,7 +16559,7 @@ var
   Action: QActionH;
   i: Integer;
   seq: QKeySequenceH;
-  WStr: WideString;
+  WStr: UnicodeString;
 begin
   if not FVisible then
   begin
@@ -18434,7 +18430,7 @@ begin
   end;
 end;
 
-procedure TQtPage.setText(const W: WideString);
+procedure TQtPage.setText(const W: UnicodeString);
 var
   AParent: QTabWidgetH;
   Index: integer;
@@ -19097,7 +19093,7 @@ begin
 end;
 {$endif}
 
-function TQtFileDialog.selectFile: WideString;
+function TQtFileDialog.selectFile: UnicodeString;
 begin
   QFileDialog_selectFile(QFileDialogH(Widget), @Result);
 end;
@@ -19117,7 +19113,7 @@ begin
   QFileDialog_setConfirmOverwrite(QFileDialogH(Widget), AValue);
 end;
 
-procedure TQtFileDialog.setDirectory(const ADirectory: WideString);
+procedure TQtFileDialog.setDirectory(const ADirectory: UnicodeString);
 begin
   QFileDialog_setDirectory(QFileDialogH(Widget), @ADirectory);
 end;
@@ -19126,13 +19122,13 @@ procedure TQtFileDialog.setHistory(AList: TStrings);
 var
   List: QStringListH;
   i: Integer;
-  WStr: WideString;
+  WStr: UnicodeString;
 begin
   List := QStringList_create();
   try
     for i := 0 to AList.Count - 1 do
     begin
-      WStr := GetUTF8String(AList.Strings[i]);
+      WStr := AList{%H-}.Strings[i];
       QStringList_append(List, @WStr);
     end;
     QFileDialog_setHistory(QFileDialogH(Widget), List);
@@ -19146,13 +19142,13 @@ begin
   QFileDialog_setFileMode(QFileDialogH(Widget), AMode);
 end;
 
-procedure TQtFileDialog.setFilter(const AFilter: WideString);
+procedure TQtFileDialog.setFilter(const AFilter: UnicodeString);
 begin
   QFileDialog_setNameFilter(QFileDialogH(Widget), @AFilter);
 end;
 
 procedure TQtFileDialog.setLabelText(const ALabel: QFileDialogDialogLabel;
-  const AText: WideString);
+  const AText: UnicodeString);
 begin
   QFileDialog_setLabelText(QFileDialogH(Widget), ALabel, @AText);
 end;
@@ -19162,7 +19158,7 @@ begin
   QFileDialog_setReadOnly(QFileDialogH(Widget), AReadOnly);
 end;
 
-procedure TQtFileDialog.setSelectedFilter(const ASelFilter: WideString);
+procedure TQtFileDialog.setSelectedFilter(const ASelFilter: UnicodeString);
 begin
   QFileDialog_selectNameFilter(QFileDialogH(Widget), @ASelFilter);
 end;
@@ -19185,8 +19181,7 @@ var
   AnIter: TQtObjectDump;
   i: Integer;
   Obj: QObjectH;
-  WStr: WideString;
-  ToolTip: WideString;
+  WStr, ToolTip: UnicodeString;
 begin
   // if there's auto recognition enabled then don''t set shortcuts
   // cause we are maybe native dialog and then boomer.
@@ -19349,22 +19344,21 @@ end;
 
 {$ifndef QT_NATIVE_DIALOGS}
 
-procedure TQtFilePreviewDialog.initializePreview(
-  const APreviewControl: TWinControl);
+procedure TQtFilePreviewDialog.initializePreview(const APreviewControl: TWinControl);
 var
   ALayout: QGridLayoutH;
-  ATitle: WideString;
+  ATitle: UnicodeString;
   W, H: Integer;
 begin
   ALayout := QGridLayoutH(QWidget_layout(Widget));
   ATitle := 'No image';
-  FTextWidget := QLabel_create(PWideString(@ATitle), Widget);
+  FTextWidget := QLabel_create(@ATitle, Widget);
   QFrame_setFrameShape(FTextWidget, QFrameStyledPanel);
   QLabel_setWordWrap(FTextWidget, True);
   QLabel_setScaledContents(FTextWidget, True);
   QLabel_setAlignment(FTextWidget, QtAlignCenter);
   ATitle := '';
-  FPreviewWidget := QLabel_create(PWideString(@ATitle), Widget);
+  FPreviewWidget := QLabel_create(@ATitle, Widget);
   QLabel_setAlignment(FPreviewWidget, QtAlignCenter);
 
   W := QWidget_width(Widget) div 5;
@@ -19401,7 +19395,7 @@ end;
 procedure TQtFilePreviewDialog.CurrentChangedEvent(path: PWideString); cdecl;
 var
   APixmap: QPixmapH;
-  ATitle: WideString;
+  ATitle: UnicodeString;
   ASize: TSize;
   ANewPixmap: QPixmapH;
 begin
@@ -19425,11 +19419,11 @@ begin
       else
         ATitle := 'error file';
       if path <> nil then
-        ATitle := Format('%d x %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
+        ATitle := {%H-}Format('%d x %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
       QLabel_setText(FTextWidget, @ATitle);
       ATitle := ExtractFileName(path^);
       QWidget_setToolTip(FTextWidget, @ATitle);
-      ATitle := ATitle + LineEnding + Format('w %d x h %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
+      ATitle := ATitle + LineEnding + {%H-}Format('w %d x h %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
       QWidget_setToolTip(FPreviewWidget, @ATitle);
       ANewPixmap := QPixmap_create;
       // QPixmap_scaled(APixmap, ANewPixmap,
@@ -19747,35 +19741,35 @@ begin
   Result := QMessageBox_icon(QMessageBoxH(Widget));
 end;
 
-procedure TQtMessageBox.setDetailText(const AValue: WideString);
+procedure TQtMessageBox.setDetailText(const AValue: UnicodeString);
 var
-  Str: WideString;
+  Str: UnicodeString;
 begin
-  Str := GetUTF8String(AValue);
+  Str := AValue;
   QMessageBox_setDetailedText(QMessageBoxH(Widget), @Str);
 end;
 
-function TQtMessageBox.getMessageStr: WideString;
+function TQtMessageBox.getMessageStr: UnicodeString;
 var
-  Str: WideString;
+  Str: UnicodeString;
 begin
   QMessageBox_text(QMessageBoxH(Widget), @Str);
-  Result := UTF16ToUTF8(Str);
+  Result := Str;
 end;
 
-function TQtMessageBox.getDetailText: WideString;
+function TQtMessageBox.getDetailText: UnicodeString;
 var
-  Str: WideString;
+  Str: UnicodeString;
 begin
   QMessageBox_detailedText(QMessageBoxH(Widget), @Str);
-  Result := UTF16ToUTF8(Str);
+  Result := Str;
 end;
 
-procedure TQtMessageBox.setMessageStr(const AValue: WideString);
+procedure TQtMessageBox.setMessageStr(const AValue: UnicodeString);
 var
-  Str: WideString;
+  Str: UnicodeString;
 begin
-  Str := GetUTF8String(AValue);
+  Str := AValue;
   QMessageBox_setText(QMessageBoxH(Widget), @Str);
 end;
 
@@ -19784,11 +19778,11 @@ begin
   QMessageBox_setIcon(QMessageBoxH(Widget), AValue);
 end;
 
-procedure TQtMessageBox.setTitle(const AValue: WideString);
+procedure TQtMessageBox.setTitle(const AValue: UnicodeString);
 begin
   if AValue <> FTitle then
   begin
-    FTitle := GetUTF8String(AValue);
+    FTitle := AValue;
     QMessageBox_setWindowTitle(QMessageBoxH(Widget), @FTitle);
   end;
 end;
@@ -19885,23 +19879,23 @@ begin
   end;
 end;
 
-function TQtMessageBox.AddButton(ACaption: WideString; ABtnType: QMessageBoxStandardButton;
+function TQtMessageBox.AddButton(ACaption: UnicodeString; ABtnType: QMessageBoxStandardButton;
    AResult: Int64; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean): QPushButtonH;
 var
-  Str: WideString;
+  Str: UnicodeString;
 begin
   Result := QMessageBox_addButton(QMessageBoxH(Widget), ABtnType);
-  Str := GetUTF8String(ACaption);
+  Str := ACaption;
   QAbstractButton_setText(Result, @Str);
   SetButtonProps(Result, AResult, ADefaultBtn, AEscapeBtn);
 end;
 
-function TQtMessageBox.AddButton(ACaption: WideString; AResult: Int64; const ADefaultBtn: Boolean;
+function TQtMessageBox.AddButton(ACaption: UnicodeString; AResult: Int64; const ADefaultBtn: Boolean;
   const AEscapeBtn: Boolean): QPushButtonH;
 var
-  Str: WideString;
+  Str: UnicodeString;
 begin
-  Str := GetUTF8String(ACaption);
+  Str := ACaption;
   Result := QMessageBox_addButton(QMessageBoxH(Widget), @Str, QMessageBoxActionRole);
   SetButtonProps(Result, AResult, ADefaultBtn, AEscapeBtn);
 end;

@@ -767,11 +767,11 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 var
-  AStr: WideString;
+  AStr: UnicodeString;
 begin
   if not WSCheckHandleAllocated(ACustomMemo, 'AppendText') or (Length(AText) = 0) then
     Exit;
-  AStr := GetUtf8String(AText);
+  AStr := {%H-}AText;
   TQtTextEdit(ACustomMemo.Handle).BeginUpdate;
   TQtTextEdit(ACustomMemo.Handle).Append(AStr);
   TQtTextEdit(ACustomMemo.Handle).EndUpdate;
@@ -1411,7 +1411,7 @@ begin
   Text := TCustomComboBox(AWinControl).Text;
   QtComboBox.FList.Assign(TCustomComboBox(AWinControl).Items);
   QtComboBox.setCurrentIndex(ItemIndex);
-  QtComboBox.setText(GetUTF8String(Text));
+  QtComboBox.setText(Text{%H-});
   QtComboBox.setEditable((AParams.Style and CBS_DROPDOWN <> 0) or
     (AParams.Style and CBS_SIMPLE <> 0));
 
@@ -1444,7 +1444,7 @@ class function TQtWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 var
   QtComboBox: TQtComboBox;
-  WStr, WStr2: WideString;
+  WStr, WStr2: UnicodeString;
   i: Integer;
 begin
   Result := -1;
@@ -1679,7 +1679,7 @@ class function TQtWSCustomComboBox.GetItemHeight(
   const ACustomComboBox: TCustomComboBox): Integer;
 var
   ComboBox: TQtComboBox;
-  AText: WideString;
+  AText: UnicodeString;
   ACombo: QComboBoxH;
   AItems: QStringListH;
 begin
@@ -1701,7 +1701,7 @@ begin
       QWidget_setFont(ACombo, ComboBox.getFont);
       QComboBox_setEditable(ACombo, not ACustomComboBox.ReadOnly);
       AText := 'Mtjx';
-      AItems := QStringList_create(PWideString(@AText));
+      AItems := QStringList_create(@AText);
       QComboBox_addItems(ACombo, AItems);
       QStringList_destroy(AItems);
       Result := QAbstractItemView_sizeHintForRow(QComboBox_view(ACombo), 0);

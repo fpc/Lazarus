@@ -98,7 +98,7 @@ type
     FHasTrailingLineBreak: Boolean; // Indicates whether lines have trailing line break
     FOwner: TWinControl;      // Lazarus Control Owning MemoStrings
     procedure InternalUpdate;
-    procedure ExternalUpdate(var AStr: WideString;
+    procedure ExternalUpdate(var AStr: UnicodeString;
       AClear, ABlockSignals: Boolean);
     function GetInternalText: string;
     procedure SetInternalText(const Value: string);
@@ -135,7 +135,7 @@ implementation
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.InternalUpdate;
 var
-  W: WideString;
+  W: UnicodeString;
   TextEdit: TQtTextEdit;
 begin
   W := '';
@@ -145,7 +145,7 @@ begin
     W := TextEdit.getText;
   end;
   if W <> '' then
-    SetInternalText(UTF16ToUTF8(W))
+    SetInternalText(W{%H-})
   else
     SetInternalText('');
   FTextChanged := False;
@@ -160,10 +160,10 @@ end;
 
   Updates Qt Widget from text - If DelphiOnChange, generates OnChange Event
  ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.ExternalUpdate(var AStr: WideString;
+procedure TQtMemoStrings.ExternalUpdate(var AStr: UnicodeString;
   AClear, ABlockSignals: Boolean);
 var
-  W: WideString;
+  W: UnicodeString;
   TextEdit: TQtTextEdit;
 begin
   if not FOwner.HandleAllocated then
@@ -174,7 +174,7 @@ begin
   TextEdit := TQtTextEdit(FOwner.Handle);
   if ABlockSignals then
     TextEdit.BeginUpdate;
-  W := GetUtf8String(AStr);
+  W := AStr;
   if AClear then
   begin
     // never trigger changed signal when clearing text here.
@@ -272,27 +272,24 @@ begin
 end;
 
 procedure TQtMemoStrings.Put(Index: Integer; const S: string);
-var
-  W: WideString;
 begin
   {$ifdef VerboseQtMemoStrings}
   WriteLn('TQtMemoStrings.Put Index=',Index,' S=',S);
   {$endif}
   if FTextChanged then InternalUpdate;
   FStringList[Index] := S;
-  W := GetUTF8String(S);
-  TQtTextEdit(FOwner.Handle).setLineText(Index, W);
+  TQtTextEdit(FOwner.Handle).setLineText(Index, S{%H-});
 end;
 
 procedure TQtMemoStrings.SetTextStr(const Value: string);
 var
-  W: WideString;
+  W: UnicodeString;
 begin
   {$ifdef VerboseQtMemoStrings}
   WriteLn('TQtMemoStrings.SetTextStr Value=',Value);
   {$endif}
   SetInternalText(Value);
-  W := GetInternalText;
+  W := {%H-}GetInternalText;
   ExternalUpdate(W, True, False);
   FTextChanged := False;
 end;
@@ -339,7 +336,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Assign(Source: TPersistent);
 var
-  W: WideString;
+  W: UnicodeString;
 begin
   if (Source=Self) or (Source=nil) then
     exit;
@@ -353,7 +350,7 @@ begin
     {$endif}
     FStringList.Clear;
     SetInternalText(TStrings(Source).Text);
-    W := GetInternalText;
+    W := {%H-}GetInternalText;
     ExternalUpdate(W, True, False);
     FTextChanged := False;
     exit;
@@ -417,7 +414,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Insert(Index: integer; const S: string);
 var
-  W: WideString;
+  W: UnicodeString;
 begin
   if FTextChanged then InternalUpdate;
   if Index < 0 then Index := 0;
@@ -432,7 +429,7 @@ begin
     Index := FStringList.Add(S)
   else
     FStringList.Insert(Index, S);
-  W := GetUTF8String(S);
+  W := {%H-}S;
   TQtTextEdit(FOwner.Handle).insertLine(Index, W);
   FTextChanged := False; // FStringList is already updated, no need to update from WS.
 end;
@@ -474,7 +471,7 @@ end;
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string);
 var
   FSavedIndex: Integer;
-  FSavedText: WideString;
+  FSavedText: UnicodeString;
 begin
   inherited InsertItem(Index, S);
   FOwner.BeginUpdate;
@@ -493,7 +490,7 @@ end;
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 var
   FSavedIndex: Integer;
-  FSavedText: WideString;
+  FSavedText: UnicodeString;
 begin
   inherited InsertItem(Index, S, O);
   FOwner.BeginUpdate;
@@ -510,8 +507,7 @@ begin
   FOwner.EndUpdate;
 end;
 
-constructor TQtComboStrings.Create(AWinControl: TWinControl;
-    AOwner: TQtComboBox);
+constructor TQtComboStrings.Create(AWinControl: TWinControl; AOwner: TQtComboBox);
 begin
   inherited Create;
   FWinControl := AWinControl;
