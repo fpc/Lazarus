@@ -36,7 +36,7 @@ inherited MainForm: TMainForm
       'pt_BR - Português (Brasil)'
       'ru - русский'
       'uk - Ukrainian'
-      'zh_CN - Chinese'
+      'zh_CN - 简体中文'
     )
     OnChange = CbLanguageChange
     Style = csDropDownList
