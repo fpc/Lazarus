@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-05 21:43+0200\n"
+"PO-Revision-Date: 2017-12-06 23:08+0200\n"
 "Last-Translator: Олександр Пилипчук <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -465,7 +465,7 @@ msgstr "Синхронне редагування"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptemplateedit
 msgid "Template Edit"
-msgstr "Редагування шаблону"
+msgstr "Редагування шаблона"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptext
 msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
@@ -1592,7 +1592,7 @@ msgstr "Всі файли"
 #: lazarusidestrconsts.dlgfiltercodetoolstemplatefile
 msgctxt "lazarusidestrconsts.dlgfiltercodetoolstemplatefile"
 msgid "CodeTools template file"
-msgstr "Файл шаблону CodeTools"
+msgstr "Файл шаблона CodeTools"
 
 #: lazarusidestrconsts.dlgfilterdcifile
 msgid "DCI file"
@@ -10555,7 +10555,7 @@ msgstr "Залишити відкритим"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
-msgstr "Зберігати відносний відступ багаторядкового шаблону"
+msgstr "Зберігати відносний відступ багаторядкового шаблона"
 
 #: lazarusidestrconsts.liskeepsubindentation
 msgid "Keep indentation"
@@ -11869,7 +11869,7 @@ msgstr "Додати підменю під вибраним елементом"
 
 #: lazarusidestrconsts.lismenueditoraddfromtemplate
 msgid "&Add from template ..."
-msgstr "&Додати з шаблону ..."
+msgstr "&Додати з шаблона ..."
 
 #: lazarusidestrconsts.lismenueditoraddiconfroms
 msgid "Add icon from %s"
@@ -12343,7 +12343,7 @@ msgstr "Стандартні шаблони"
 
 #: lazarusidestrconsts.lismenueditortemplatedescription
 msgid "Template description:"
-msgstr "Опис шаблону:"
+msgstr "Опис шаблона:"
 
 #: lazarusidestrconsts.lismenueditortemplates
 msgid "&Templates"
@@ -17364,7 +17364,7 @@ msgstr "Вставляє редаговану комірку. По комірк�
 
 #: lazarusidestrconsts.listemplatefile
 msgid "Template file"
-msgstr "Файл шаблону"
+msgstr "Файл шаблона"
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
