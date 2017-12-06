@@ -3462,6 +3462,8 @@ type
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
                           MousePos: TPoint): Boolean; override;
+    function DoMouseWheelHorz(Shift: TShiftState; WheelDelta: Integer;
+                          MousePos: TPoint): Boolean; override;
     procedure DoPaint; virtual;
     procedure DoPaintNode(Node: TTreeNode); virtual;
     procedure DoStartDrag(var DragObject: TDragObject); override;

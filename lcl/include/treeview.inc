@@ -4698,6 +4698,23 @@ begin
   UpdateTooltip(MousePos.X, MousePos.Y);
 end;
 
+function TCustomTreeView.DoMouseWheelHorz(Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint): Boolean;
+var
+  NDelta: integer;
+const
+  cScrollStep = 50;
+begin
+  Result:=inherited DoMouseWheelHorz(Shift, WheelDelta, MousePos);
+  if not Result then
+  begin
+    NDelta := (WheelDelta * cScrollStep) div 120;
+    ScrolledLeft := ScrolledLeft + NDelta;
+    Result := true;
+  end;
+  UpdateTooltip(MousePos.X, MousePos.Y);
+end;
+
 function TCustomTreeView.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT;
 begin
   Result:=inherited;

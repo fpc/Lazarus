@@ -982,6 +982,8 @@ type
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    function  DoMouseWheelLeft(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    function  DoMouseWheelRight(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
     procedure DoOnChangeBounds; override;
@@ -7148,6 +7150,30 @@ begin
     Result := True; // handled, no further scrolling by the widgetset
   end;
   {$ifdef dbgScroll}DebugLn('doMouseWheelUP END');{$endif}
+end;
+
+function TCustomGrid.DoMouseWheelLeft(Shift: TShiftState; MousePos: TPoint
+  ): Boolean;
+begin
+  {$ifdef dbgScroll}DebugLn('doMouseWheelLEFT INIT');{$endif}
+  Result:=inherited DoMouseWheelLeft(Shift, MousePos);
+  if not Result then begin
+    GridMouseWheel([ssCtrl], -1);
+    Result := True; // handled, no further scrolling by the widgetset
+  end;
+  {$ifdef dbgScroll}DebugLn('doMouseWheelLEFT END');{$endif}
+end;
+
+function TCustomGrid.DoMouseWheelRight(Shift: TShiftState; MousePos: TPoint
+  ): Boolean;
+begin
+  {$ifdef dbgScroll}DebugLn('doMouseWheelRIGHT INIT');{$endif}
+  Result:=inherited DoMouseWheelRight(Shift, MousePos);
+  if not Result then begin
+    GridMouseWheel([ssCtrl], 1);
+    Result := True; // handled, no further scrolling by the widgetset
+  end;
+  {$ifdef dbgScroll}DebugLn('doMouseWheelRIGHT END');{$endif}
 end;
 
 procedure TCustomGrid.DoOnChangeBounds;
