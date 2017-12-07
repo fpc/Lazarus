@@ -2113,8 +2113,7 @@ begin
         else if (c2 = #$84) and (c3 = #$AA) then
         begin
           inc(InStr, 3);
-          if c3 = #$AA then OutStr^ := #$6B
-          else OutStr^ := #$E5;
+          OutStr^ := #$6B;
           inc(OutStr);
           inc(CounterDiff, 2);
           Continue;
@@ -2162,10 +2161,10 @@ begin
         }
         else if (c2 = #$92) and (c3 in [#$B6..#$BF]) then
         begin
-          new_c3 := #$93;
+          new_c2 := #$93;
           new_c3 := chr(ord(c3) - $26);
         end
-        else if (c2 = #$93) and (c3 in [#$80..#$8F]) then new_c3 := chr(ord(c3) + 26)
+        else if (c2 = #$93) and (c3 in [#$80..#$8F]) then new_c3 := chr(ord(c3) + $26)
         {
         $2C00..$2C2E    Result:=u+48;   E2 B0 80..E2 B0 AE
 
