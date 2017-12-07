@@ -14,8 +14,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   LCLVersion = '1.9.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 362
+    Height = 30
+    Top = 368
     Width = 543
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -25,14 +25,14 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 6
+    TabOrder = 4
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object InfoLabel: TLabel
     Left = 8
-    Height = 13
+    Height = 16
     Top = 8
-    Width = 51
+    Width = 58
     Caption = 'InfoLabel'
     ParentColor = False
     WordWrap = True
@@ -41,11 +41,11 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = HideOtherProjectsCheckBox
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = StartsCheckBox
+    AnchorSideRight.Control = StartsRadioButton
     Left = 6
-    Height = 23
-    Top = 61
-    Width = 373
+    Height = 22
+    Top = 58
+    Width = 371
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 10
@@ -61,8 +61,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = UnitLabel
     Left = 6
-    Height = 217
-    Top = 84
+    Height = 227
+    Top = 80
     Width = 543
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
@@ -72,17 +72,15 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     OnClick = ItemsListBoxClick
     OnSelectionChange = ItemsListBoxSelectionChange
     PopupMenu = PopupMenu1
-    ScrollWidth = 541
-    TabOrder = 4
-    TopIndex = -1
+    TabOrder = 2
   end
   object UnitLabel: TLabel
     AnchorSideLeft.Control = InfoLabel
     AnchorSideBottom.Control = PackageLabel
     Left = 8
-    Height = 13
-    Top = 302
-    Width = 52
+    Height = 16
+    Top = 308
+    Width = 59
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'UnitLabel'
@@ -92,9 +90,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = InfoLabel
     AnchorSideBottom.Control = AddToImplementationUsesCheckBox
     Left = 8
-    Height = 13
-    Top = 316
-    Width = 74
+    Height = 16
+    Top = 325
+    Width = 84
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
     Caption = 'PackageLabel'
@@ -105,9 +103,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideTop.Control = InfoLabel
     AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 24
-    Top = 27
-    Width = 183
+    Height = 18
+    Top = 30
+    Width = 193
     BorderSpacing.Top = 6
     Caption = 'HideOtherProjectsCheckBox'
     OnChange = HideOtherProjectsCheckBoxChange
@@ -117,52 +115,52 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideLeft.Control = PackageLabel
     AnchorSideBottom.Control = ButtonPanel1
     Left = 8
-    Height = 24
-    Top = 332
-    Width = 227
+    Height = 18
+    Top = 344
+    Width = 244
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 3
     BorderSpacing.Bottom = 3
     Caption = 'AddToImplementationUsesCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 3
   end
-  object StartsCheckBox: TCheckBox
+  object StartsRadioButton: TRadioButton
     AnchorSideTop.Control = FilterEdit
-    AnchorSideRight.Control = ContainsCheckBox
+    AnchorSideRight.Control = ContainsRadioButton
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 385
-    Height = 23
-    Top = 61
-    Width = 85
+    Left = 383
+    Height = 22
+    Top = 58
+    Width = 86
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Left = 6
     Caption = 'Starts with'
-    OnClick = StartsCheckBoxClick
+    OnClick = StartsRadioButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 2
+    TabOrder = 5
   end
-  object ContainsCheckBox: TCheckBox
+  object ContainsRadioButton: TRadioButton
     AnchorSideTop.Control = FilterEdit
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = FilterEdit
     AnchorSideBottom.Side = asrBottom
-    Left = 476
-    Height = 23
-    Top = 61
-    Width = 73
+    Left = 475
+    Height = 22
+    Top = 58
+    Width = 74
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     Caption = 'Contains'
-    OnClick = ContainsCheckBoxClick
+    OnClick = ContainsRadioButtonClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 3
+    TabOrder = 6
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup

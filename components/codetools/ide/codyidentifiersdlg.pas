@@ -144,7 +144,7 @@ type
   TCodyIdentifiersDlg = class(TForm)
     AddToImplementationUsesCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
-    ContainsCheckBox: TCheckBox;
+    ContainsRadioButton: TRadioButton;
     FilterEdit: TEdit;
     HideOtherProjectsCheckBox: TCheckBox;
     InfoLabel: TLabel;
@@ -153,7 +153,7 @@ type
     DeleteSeparatorMenuItem: TMenuItem;
     DeleteUnitMenuItem: TMenuItem;
     DeletePackageMenuItem: TMenuItem;
-    StartsCheckBox: TCheckBox;
+    StartsRadioButton: TRadioButton;
     UseMenuItem: TMenuItem;
     PackageLabel: TLabel;
     PopupMenu1: TPopupMenu;
@@ -162,7 +162,7 @@ type
     procedure DeletePackageClick(Sender: TObject);
     procedure DeleteUnitClick(Sender: TObject);
     procedure UseIdentifierClick(Sender: TObject);
-    procedure ContainsCheckBoxClick(Sender: TObject);
+    procedure ContainsRadioButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
@@ -175,7 +175,7 @@ type
     procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure PopupMenu1Popup(Sender: TObject);
-    procedure StartsCheckBoxClick(Sender: TObject);
+    procedure StartsRadioButtonClick(Sender: TObject);
   private
     FDlgAction: TCodyIdentifierDlgAction;
     FJumpButton: TBitBtn;
@@ -190,6 +190,7 @@ type
     procedure SetMaxItems(AValue: integer);
     procedure UpdateGeneralInfo;
     procedure UpdateItemsList;
+    procedure UpdateItemsListIfFilterChanged;
     procedure SortItems;
     procedure UpdateIdentifierInfo;
     function GetFilterEditText: string;
@@ -879,9 +880,10 @@ begin
   UpdateItemsList;
 end;
 
-procedure TCodyIdentifiersDlg.ContainsCheckBoxClick(Sender: TObject);
+procedure TCodyIdentifiersDlg.ContainsRadioButtonClick(Sender: TObject);
 begin
-  UpdateItemsList;
+  StartsRadioButton.Checked:=not ContainsRadioButton.Checked;
+  IdleConnected:=true;
 end;
 
 procedure TCodyIdentifiersDlg.FilterEditKeyDown(Sender: TObject; var Key: Word;
@@ -944,12 +946,12 @@ begin
   FJumpButton.OnClick:=@JumpButtonClick;
   FJumpButton.Caption:= crsJumpTo;
 
-  StartsCheckBox.Checked:=true;
-  StartsCheckBox.Caption:=crsStarts;
-  StartsCheckBox.Hint:=crsShowOnlyIdentifiersStartingWithFilterText;
-  ContainsCheckBox.Checked:=false;
-  ContainsCheckBox.Caption:=crsContains;
-  ContainsCheckBox.Hint:=crsShowOnlyIdentifiersContainingFilterText;
+  StartsRadioButton.Checked:=true;
+  StartsRadioButton.Caption:=crsStarts;
+  StartsRadioButton.Hint:=crsShowOnlyIdentifiersStartingWithFilterText;
+  ContainsRadioButton.Checked:=false;
+  ContainsRadioButton.Caption:=crsContains;
+  ContainsRadioButton.Hint:=crsShowOnlyIdentifiersContainingFilterText;
 end;
 
 procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
@@ -978,10 +980,7 @@ begin
     UpdateGeneralInfo;
     UpdateItemsList;
   end;
-  if (FLastFilter<>GetFilterEditText)
-  or (FLastHideOtherProjects<>HideOtherProjectsCheckBox.Checked)
-  or (FLastFilterType<>GetFilterType) then
-    UpdateItemsList;
+  UpdateItemsListIfFilterChanged;
   IdleConnected:=false;
 end;
 
@@ -1010,9 +1009,10 @@ begin
   end;
 end;
 
-procedure TCodyIdentifiersDlg.StartsCheckBoxClick(Sender: TObject);
+procedure TCodyIdentifiersDlg.StartsRadioButtonClick(Sender: TObject);
 begin
-  UpdateItemsList;
+  StartsRadioButton.Checked:=not ContainsRadioButton.Checked;
+  IdleConnected:=true;
 end;
 
 procedure TCodyIdentifiersDlg.SetIdleConnected(AValue: boolean);
@@ -1182,6 +1182,14 @@ begin
   finally
     sl.Free;
   end;
+end;
+
+procedure TCodyIdentifiersDlg.UpdateItemsListIfFilterChanged;
+begin
+  if (FLastFilter<>GetFilterEditText)
+  or (FLastHideOtherProjects<>HideOtherProjectsCheckBox.Checked)
+  or (FLastFilterType<>GetFilterType) then
+    UpdateItemsList;
 end;
 
 procedure TCodyIdentifiersDlg.SortItems;
@@ -1646,7 +1654,7 @@ end;
 
 function TCodyIdentifiersDlg.GetFilterType: TCodyIdentifierFilter;
 begin
-  if ContainsCheckBox.Checked then
+  if ContainsRadioButton.Checked then
     exit(cifContains)
   else
     exit(cifStartsWith);
