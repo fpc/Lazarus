@@ -2164,7 +2164,8 @@ begin
           new_c2 := #$93;
           new_c3 := chr(ord(c3) - $26);
         end
-        else if (c2 = #$93) and (c3 in [#$80..#$8F]) then new_c3 := chr(ord(c3) + $26)
+        // CIRCLED LATIN CAPITAL LETTER K  $24C0 -> $24DA
+        else if (c2 = #$93) and (c3 in [#$80..#$8F]) then new_c3 := chr(ord(c3) + $1A)
         {
         $2C00..$2C2E    Result:=u+48;   E2 B0 80..E2 B0 AE
 
