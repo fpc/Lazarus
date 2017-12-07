@@ -14,9 +14,6 @@
           <AllowLabel Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Other>
-        <CreateMakefileOnBuild Value="True"/>
-      </Other>
     </CompilerOptions>
     <Description Value="Adds a Lazarus project for pas2js browser applications."/>
     <License Value="Modified LGPL-2"/>
