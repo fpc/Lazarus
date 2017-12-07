@@ -1264,14 +1264,16 @@ end;
 class procedure TCocoaWSScrollBar.SetParams(const AScrollBar:TCustomScrollBar);
 var
   lScroller: TCocoaScrollBar;
+  sz : integer;
 begin
   if not Assigned(AScrollBar) then Exit;
   lScroller := TCocoaScrollBar(AScrollBar.Handle);
   if (lScroller = nil) then Exit;
-  if AScrollBar.Max > 0 then
+  sz:=AScrollBar.Max - AScrollBar.PageSize;
+  if sz > 0 then
   begin
     lScroller.setFloatValue_knobProportion(
-      AScrollBar.Position / AScrollBar.Max,
+      AScrollBar.Position / sz,
       AScrollBar.PageSize / AScrollBar.Max);
     //if TCocoaScrollBar(Handle).setKnobProportion( PageSize/Max );
     //if TCocoaScrollBar(Handle).setDoubleValue( Position/Max );
