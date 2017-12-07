@@ -724,12 +724,8 @@ begin
         ExtractFileName(fLazUnitFilename), fOwnerConverter.fSettings.SupportDelphi);
     case Result of
       // mrOK means: Comment out.
-      mrOK: begin
-        if fOwnerConverter is TConvertDelphiProjPack then
-          MoveMissingToComment(fOwnerConverter.fAllCommentedUnits)
-        else
-          MoveMissingToComment(Nil);
-      end;
+      mrOK:
+        MoveMissingToComment(fOwnerConverter.fAllCommentedUnits);
       // mrYes means: Search for unit path.
       mrYes: begin
         UnitDirDialog:=TSelectDirectoryDialog.Create(nil);

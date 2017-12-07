@@ -463,8 +463,9 @@ procedure TUsedUnits.CommentAutomatic(ACommentedUnits: TStringList);
 var
   i, x: Integer;
 begin
+  if ACommentedUnits = Nil then Exit;
   for i:=fMissingUnits.Count-1 downto 0 do begin
-    if Assigned(ACommentedUnits) and ACommentedUnits.Find(fMissingUnits[i], x) then
+    if ACommentedUnits.Find(fMissingUnits[i], x) then
     begin
       fUnitsToComment.Add(fMissingUnits[i]);
       fMissingUnits.Delete(i);
