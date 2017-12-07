@@ -72,7 +72,7 @@ unit spinex;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   // LCL
   LCLType, LCLProc, Controls, ClipBrd, ComCtrls, GroupedEdit;
 
@@ -130,6 +130,8 @@ type
     procedure EditKeyDown(var Key: word; Shift: TShiftState); override;
     procedure EditMouseWheelUp(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
+    function SafeInc(AValue: T): T; virtual; abstract;
+    function SafeDec(AValue: T): T; virtual abstract;
     procedure SetValue(const AValue: T); virtual;
     procedure SetNullValue(AValue: T); virtual;
     procedure SetMaxValue(const AValue: T); virtual;
@@ -159,6 +161,8 @@ type
     property Value: T read GetValue write SetValue;
   end;
 
+  { TCustomFloatSpinEditEx }
+
   TCustomFloatSpinEditEx = class(specialize TSpinEditExBase<Double>)
   private
     FDecimals: Integer;
@@ -168,6 +172,8 @@ type
   protected
     procedure EditKeyPress(var Key: char); override;
     function TextIsNumber(const S: String; out ANumber: Double): Boolean; override;
+    function SafeInc(AValue: Double): Double; override;
+    function SafeDec(AValue: Double): Double; override;
     procedure SetDecimals(ADecimals: Integer); virtual;
   public
     function ValueToStr(const AValue: Double): String; override;
@@ -264,6 +270,8 @@ type
   TCustomSpinEditEx = class(specialize TSpinEditExBase<Int64>)
   protected
     procedure EditKeyPress(var Key: char); override;
+    function SafeInc(AValue: Int64): Int64; override;
+    function SafeDec(AValue: Int64): Int64; override;
     function TextIsNumber(const S: String; out ANumber: Int64): Boolean; override;
   public
     function ValueToStr(const AValue: Int64): String; override;

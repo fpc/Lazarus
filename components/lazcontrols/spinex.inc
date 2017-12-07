@@ -172,7 +172,10 @@ end;
 procedure TSpinEditExBase.SetIncrement(const AIncrement: T);
 begin
   if AIncrement = FIncrement then Exit;
-  FIncrement := AIncrement;
+  if AIncrement > 0 then
+    FIncrement := AIncrement
+  else
+    FIncrement := -AIncrement;
 end;
 
 
@@ -274,9 +277,9 @@ begin
     else
     begin
       if Up then
-        NewValue := GetLimitedValue(OldValue + Increment)
+        NewValue := GetLimitedValue(SafeInc(OldValue))
       else
-        NewValue := GetLimitedValue(OldValue - Increment)
+        NewValue := GetLimitedValue(SafeDec(OldValue));
     end;
   end;
   SetValue(NewValue);
@@ -396,12 +399,29 @@ begin
   {$endif}
 end;
 
+function TCustomFloatSpinEditEx.SafeInc(AValue: Double): Double;
+begin
+  if ((AValue > 0) and (AValue > (MaxDouble-FIncrement))) then
+    Result := MaxDouble
+  else
+    Result := AValue + FIncrement;
+end;
+
+function TCustomFloatSpinEditEx.SafeDec(AValue: Double): Double;
+begin
+  if (AValue < 0) and ((-MaxDouble + FIncrement) > AValue) then
+    Result := -MaxDouble
+  else
+    Result := AValue - FIncrement;
+end;
+
 procedure TCustomFloatSpinEditEx.SetDecimals(ADecimals: Integer);
 begin
   if FDecimals = ADecimals then Exit;
   FDecimals := ADecimals;
   UpdateControl;
 end;
+
 
 function TCustomFloatSpinEditEx.ValueToStr(const AValue: Double): String;
 begin
@@ -464,6 +484,22 @@ begin
   if (Key = '-') and IsLimited and (MinValue >= 0) then Key := #0;
 end;
 
+function TCustomSpinEditEx.SafeInc(AValue: Int64): Int64;
+begin
+  if ((AValue > 0) and (AValue > (High(Int64)-FIncrement))) then
+    Result := High(Int64)
+  else
+    Result := AValue + FIncrement;
+end;
+
+function TCustomSpinEditEx.SafeDec(AValue: Int64): Int64;
+begin
+  if (AValue < 0) and ((Low(Int64) + FIncrement) > AValue) then
+    Result := Low(Int64)
+  else
+    Result := AValue - FIncrement;
+end;
+
 function TCustomSpinEditEx.TextIsNumber(const S: String; out ANumber: Int64
   ): Boolean;
 var
@@ -483,6 +519,7 @@ begin
   debugln([Result]);
   {$endif}
 end;
+
 
 function TCustomSpinEditEx.ValueToStr(const AValue: Int64): String;
 begin
@@ -525,6 +562,5 @@ end;
 constructor TCustomSpinEditEx.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  NumbersOnly := True;
 end;
 
