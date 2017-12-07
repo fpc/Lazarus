@@ -4688,11 +4688,7 @@ begin
   if not Result then
   begin
     NDelta := (WheelDelta * Mouse.WheelScrollLines * DefaultItemHeight) div 120;
-    // Mac widgetset sets ssHyper on horz scrolling
-    if ssHyper in Shift then
-      ScrolledLeft := ScrolledLeft - NDelta
-    else
-      ScrolledTop := ScrolledTop - NDelta;
+    ScrolledTop := ScrolledTop - NDelta;
     Result := true;
   end;
   UpdateTooltip(MousePos.X, MousePos.Y);

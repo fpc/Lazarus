@@ -1067,7 +1067,7 @@ type
     function  GetPxTopLeft: TPoint;
     function  GetTruncCellHintText(ACol, ARow: Integer): string; virtual;
     function  GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
-    procedure GridMouseWheel(shift: TShiftState; Delta: Integer); virtual;
+    procedure GridMouseWheel(Shift: TShiftState; Delta: Integer); virtual;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); virtual;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); virtual;
     procedure HeaderSizing(const IsColumn:boolean; const AIndex,ASize:Integer); virtual;
@@ -8647,11 +8647,10 @@ begin
   {$endif}
 end;
 
-procedure TCustomGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
+procedure TCustomGrid.GridMouseWheel(Shift: TShiftState; Delta: Integer);
 begin
-  // Mac widgetset sets ssHyper on horz scrolling
-  // Ctrl-key is for other OSes
-  if (ssCtrl in Shift) or (ssHyper in Shift) then
+  // Ctrl-key is to support horiz scrolling with basic mouse
+  if ssCtrl in Shift then
     MoveNextSelectable(true, Delta, 0)
   else
     MoveNextSelectable(true, 0, Delta);

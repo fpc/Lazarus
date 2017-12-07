@@ -230,7 +230,7 @@ const
   procedure HandleMouseWheelEvent(var AMsg);
   var
     MousePoint: TPoint;
-    MSg: ^TLMMouseEvent;
+    Msg: ^TLMMouseEvent;
   begin
     {$IFDEF VerboseMouse}
       DebugLn('HandleMouseWheelEvent');
@@ -239,18 +239,15 @@ const
 
     MousePoint := GetMousePoint;
 
-    Msg^.Msg := LM_MOUSEWHEEL;
+    if GetMouseWheelAxisHorz then
+      Msg^.Msg := LM_MOUSEHWHEEL
+    else
+      Msg^.Msg := LM_MOUSEWHEEL;
     Msg^.Button := GetCarbonMouseButton(AEvent);
     Msg^.X := MousePoint.X;
     Msg^.Y := MousePoint.Y;
     Msg^.State := GetCarbonShiftState;
     Msg^.WheelDelta := GetMouseWheelDelta;
-
-    // ssHyper id in TShiftStateEnum is not used in LCL (almost, only n lines in gtk/gtk2, they not needed).
-    // Key "Hyper" was on non usual weird keyboard (for sci-fi film?)
-    // Lets use this id
-    if GetMouseWheelAxisHorz then
-      Include(Msg^.State, ssHyper);
   end;
   
 var

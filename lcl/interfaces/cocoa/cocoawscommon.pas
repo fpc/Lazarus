@@ -880,17 +880,28 @@ begin
 
   FillChar(Msg, SizeOf(Msg), #0);
 
-  Msg.Msg := LM_MOUSEWHEEL;
   Msg.Button := MButton;
   Msg.X := round(MousePos.X);
   Msg.Y := round(MousePos.Y);
   Msg.State :=  TShiftState(integer(CocoaModifiersToKeyState(Event.modifierFlags)));
+
   // Some info on event.deltaY can be found here:
   // https://developer.apple.com/library/mac/releasenotes/AppKit/RN-AppKitOlderNotes/
   // It says that deltaY=1 means 1 line, and in the LCL 1 line is 120
-  Msg.WheelDelta := round(event.deltaY * 120);
-  // Filter out empty events - See bug 28491
-  if Msg.WheelDelta = 0 then Exit;
+  if event.deltaY <> 0 then
+  begin
+    Msg.Msg := LM_MOUSEWHEEL;
+    Msg.WheelDelta := round(event.deltaY * 120);
+  end
+  else
+  if event.deltaX <> 0 then
+  begin
+    Msg.Msg := LM_MOUSEHWHEEL;
+    Msg.WheelDelta := round(event.deltaX * 120);
+  end
+  else
+    // Filter out empty events - See bug 28491
+    Exit;
 
   NotifyApplicationUserInput(Target, Msg.Msg);
   Result := DeliverMessage(Msg) <> 0;
