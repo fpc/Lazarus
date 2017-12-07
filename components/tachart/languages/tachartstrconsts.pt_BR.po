@@ -166,15 +166,15 @@ msgstr "Triângulo descendente"
 
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
-msgstr ""
+msgstr "Tipo de resultado da expressão deve ser inteiro ou flutuante. Obtido \"%s\"."
 
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
-msgstr ""
+msgstr "Série Mapa de cor de expressão matemática"
 
 #: tachartstrconsts.rsexpressionseries
 msgid "Math expression series"
-msgstr ""
+msgstr "Série Expressão matemática"
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"

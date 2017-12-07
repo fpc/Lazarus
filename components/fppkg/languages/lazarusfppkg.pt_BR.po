@@ -45,7 +45,7 @@ msgstr "instalar pacote(s)"
 
 #: fppkg_mainfrm.sactuninstpackages
 msgid "uninstall package(s)"
-msgstr ""
+msgstr "desinstalar pacote(s)"
 
 #: fppkg_mainfrm.sactupdate
 msgid "update repository"
@@ -67,7 +67,7 @@ msgstr "%s bem-sucedido."
 
 #: fppkg_mainfrm.smsgfppkgrunning
 msgid "A prior command is still in progress."
-msgstr ""
+msgstr "Um comando anterior ainda está em progresso."
 
 #: tfppkgform.archivebutton.caption
 msgid "Archive"
@@ -211,7 +211,7 @@ msgstr "Barra de ferramentas"
 
 #: tfppkgform.uninstallbutton.caption
 msgid "Uninstall"
-msgstr ""
+msgstr "Desinstalar"
 
 #: tfppkgform.updatebutton.caption
 msgid "Update"
@@ -223,65 +223,65 @@ msgstr "Atualizar lista de pacotes"
 
 #: tinitializeoptionsform.advancedcheckbox.caption
 msgid "Advanced"
-msgstr ""
+msgstr "Avançado"
 
 #: tinitializeoptionsform.caption
 msgid "Create configuration files"
-msgstr ""
+msgstr "Criar arquivos de configuração"
 
 #: tinitializeoptionsform.compilerlabel.caption
 msgid "Compiler:"
-msgstr ""
+msgstr "Compilador:"
 
 #: tinitializeoptionsform.fpcbuttonpanel.closebutton.caption
 msgctxt "tinitializeoptionsform.fpcbuttonpanel.closebutton.caption"
 msgid "&Close"
-msgstr ""
+msgstr "&Fechar"
 
 #: tinitializeoptionsform.fpcbuttonpanel.okbutton.caption
 msgid "&Write Fppkg configuration files"
-msgstr ""
+msgstr "&Gravar arquivos de configuração fppkg"
 
 #: tinitializeoptionsform.fpcdirectoryedit.texthint
 msgctxt "tinitializeoptionsform.fpcdirectoryedit.texthint"
 msgid "This location normally contains the compiler-executable along with a 'units' and 'fpmkinst' directory."
-msgstr ""
+msgstr "Este local normalmente contém o executável do compilador juntamente com um diretório 'units' e 'fpmkinst'."
 
 #: tinitializeoptionsform.initializefppkglabel.caption
 msgid "Create new configuration files for fppkg."
-msgstr ""
+msgstr "Criar novos arquivos de configuração para fppkg."
 
 #: tinitializeoptionsform.initializelazaruslabel.caption
 msgid "Create new Lazarus configuration file for fppkg."
-msgstr ""
+msgstr "Criar novo arquivo de configuração Lazarus para fppkg."
 
 #: tinitializeoptionsform.label1.caption
 msgid "Please give the location where FPC is installed."
-msgstr ""
+msgstr "Favor informar o local onde o FPC está instalado."
 
 #: tinitializeoptionsform.label2.caption
 msgid "Please give the location where Lazarus is installed."
-msgstr ""
+msgstr "Favor informar o local onde o Lazarus está instalado."
 
 #: tinitializeoptionsform.lazarusbuttonpanel.closebutton.caption
 msgctxt "tinitializeoptionsform.lazarusbuttonpanel.closebutton.caption"
 msgid "&Close"
-msgstr ""
+msgstr "&Fechar"
 
 #: tinitializeoptionsform.lazarusbuttonpanel.okbutton.caption
 msgid "&Write Lazarus configuration file"
-msgstr ""
+msgstr "&Gravar o arquivo de configuração Lazarus"
 
 #: tinitializeoptionsform.lazarusdirectoryedit.texthint
 msgctxt "tinitializeoptionsform.lazarusdirectoryedit.texthint"
 msgid "This location normally contains the compiler-executable along with a 'units' and 'fpmkinst' directory."
-msgstr ""
+msgstr "Este local normalmente contém o executável do compilador juntamente com um diretório 'units' e 'fpmkinst'."
 
 #: tinitializeoptionsform.pathlabel.caption
 msgid "Path:"
-msgstr ""
+msgstr "Caminho:"
 
 #: tinitializeoptionsform.prefixlabel.caption
 msgid "Prefix:"
-msgstr ""
+msgstr "Prefixo:"
 

@@ -601,11 +601,11 @@ msgstr "Incluir código de afirmação"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktop
 msgid "Associated debug desktop"
-msgstr ""
+msgstr "Área de trabalho de depuração associada"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
-msgstr ""
+msgstr "Se você selecionar a área de trabalho, a área de trabalho de depuração associada também será selecionada."
 
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
@@ -675,7 +675,7 @@ msgstr "Estes formulários devem ser criados e liberados no código do programa.
 
 #: lazarusidestrconsts.dlgavoidunnecessaryjumps
 msgid "Avoid unnecessary jumps"
-msgstr ""
+msgstr "Evitar saltos desnecessários"
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -996,23 +996,23 @@ msgstr "Prefixar comentários na quebra de linha"
 
 #: lazarusidestrconsts.dlgcommentcontinuematch
 msgid "Match current line"
-msgstr "Comparar com a linha atual"
+msgstr "Corresponder a linha atual"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchasterisk
 msgid "Match text including \"*\" of token \"(*\""
-msgstr "Comparar texto incluindo \"*\" do símbolo \"(*\""
+msgstr "Corresponder texto incluindo \"*\" do símbolo \"(*\""
 
 #: lazarusidestrconsts.dlgcommentcontinuematchline
 msgid "Match whole line"
-msgstr "Comparar a linha inteira"
+msgstr "Corresponder a linha inteira"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtext
 msgid "Match text after token \"%s\""
-msgstr "Comparar texto após o símbolo \"%s\""
+msgstr "Corresponder texto após o símbolo \"%s\""
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtoken
 msgid "Match text including token \"%s\""
-msgstr "Comparar texto incluindo o símbolo \"%s\""
+msgstr "Corresponder texto incluindo o símbolo \"%s\""
 
 #: lazarusidestrconsts.dlgcommentcontinueprefix
 msgid "Prefix new line"
@@ -1036,19 +1036,19 @@ msgstr "Comentários"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend, if matched or not matched"
-msgstr "Estender, se coincidiu ou não"
+msgstr "Estender, se correspondeu ou não"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
 msgid "Extend, if matched or not matched (not at EOL)"
-msgstr "Estender, se coincidiu ou não (não no final de linha)"
+msgstr "Estender, se correspondeu ou não (não no final de linha)"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatch
 msgid "Extend, if matched"
-msgstr "Estender, se coincidiu"
+msgstr "Estender, se correspondeu"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
-msgstr "Estender, se coincidiu e o cursor texto estiver no meio do texto (não no final de linha)"
+msgstr "Estender, se correspondeu e o cursor texto estiver no meio do texto (não no final de linha)"
 
 #: lazarusidestrconsts.dlgcompilationandlinking
 msgid "Compilation and Linking"
@@ -1950,7 +1950,7 @@ msgstr "Cor dos esticadores"
 
 #: lazarusidestrconsts.dlggrayeddesktopsdocked
 msgid "Grayed desktops are for docked environment."
-msgstr ""
+msgstr "Áreas de trabalho sombreadas são para ambientes ancorados."
 
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
@@ -2199,7 +2199,7 @@ msgstr "Invervalo em segundos"
 
 #: lazarusidestrconsts.dlgjumpcodeblockpos
 msgid "Vertical position for a code block jump in % (0=top, 100=bottom)"
-msgstr ""
+msgstr "Posição vertical para um salto de bloco de código em % (0=superior 100=inferior)"
 
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
@@ -2207,7 +2207,7 @@ msgstr "Saltando (ex. Saltando Métodos)"
 
 #: lazarusidestrconsts.dlgjumpsinglelinepos
 msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
-msgstr ""
+msgstr "Posição vertical para um salto de uma linha em % (0=superior, 100=inferior)"
 
 #: lazarusidestrconsts.dlgjumptomethodbody
 msgid "Jump directly to method body"
@@ -2412,7 +2412,7 @@ msgstr "Definições para termos adicionadas por chave"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
 msgid "Smart match selection bounds"
-msgstr "Seleção de limites pelo comparador inteligente"
+msgstr "Seleção de limites de correspondência inteligente"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewname
 msgid "New list"
@@ -2439,10 +2439,8 @@ msgid "Word Brackets on caret (global)"
 msgstr "Colchetes na palavras na posição cursor texto"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-#, fuzzy
-#| msgid "Match word boundaries for words up to this length:"
 msgid "Match whole words, if length is less or equal to:"
-msgstr "Comparar limite palavra para palavras até este comprimento:"
+msgstr "Corresponder palavras inteiras, se o comprimento é menor ou igual a:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
@@ -2976,7 +2974,7 @@ msgstr "Indicador (no cursor texto)"
 
 #: lazarusidestrconsts.dlgpaskeywordsmatches
 msgid "Matching Keywords"
-msgstr "Palavras chave coincidentes"
+msgstr "Palavras chave correspondentes"
 
 #: lazarusidestrconsts.dlgpaskeywordsoutline
 msgid "Outline"
@@ -3050,7 +3048,7 @@ msgstr "Vista-8: ligado, 8.1+: por monitor"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoldonnewpermonitorv2
 msgid "Vista-8: on, 8.1/10+: per monitor/V2"
-msgstr ""
+msgstr "Vista-8: ligado, 8.1/10+: por monitor/V2"
 
 #: lazarusidestrconsts.dlgpodpiawarenesson
 msgid "on"
@@ -3204,10 +3202,8 @@ msgid "Replace &All"
 msgstr "Substituir &Tudo"
 
 #: lazarusidestrconsts.dlgreplacewith
-#, fuzzy
-#| msgid "&Replace with"
 msgid "Replace wit&h"
-msgstr "&Substituir com"
+msgstr "S&ubstituir com"
 
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
@@ -4000,10 +3996,8 @@ msgid "File is used"
 msgstr "Arquivo está em uso"
 
 #: lazarusidestrconsts.lisa2pfilename2
-#, fuzzy
-#| msgid "Filename"
 msgid "Filename/URL"
-msgstr "Nome do Arquivo"
+msgstr "Nome do Arquivo/URL"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
 msgid "File not unit"
@@ -4287,11 +4281,11 @@ msgstr "Adicionar"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
-msgstr ""
+msgstr "Adicionar um novo separador acima do item selecionado"
 
 #: lazarusidestrconsts.lisaddanewseparatorbelowselecteditem
 msgid "Add a new separator below selected item"
-msgstr ""
+msgstr "Adicionar um novo separador abaixo do item selecionado"
 
 #: lazarusidestrconsts.lisadddelphidefine
 msgid "Add defines simulating Delphi7"
@@ -4896,7 +4890,7 @@ msgstr "&Remover"
 
 #: lazarusidestrconsts.lisbtnrename
 msgid "&Rename"
-msgstr ""
+msgstr "&Renomear"
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
@@ -5780,11 +5774,11 @@ msgstr "Manter todos os arquivos de texto"
 
 #: lazarusidestrconsts.liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
-msgstr "Manter arquivos conforme filtro"
+msgstr "Manter arquivos correspondendo ao filtro"
 
 #: lazarusidestrconsts.liscldirremovefilesmatchingfilter
 msgid "Remove files matching filter"
-msgstr "Remover arquivo conforme filtro"
+msgstr "Remover arquivo correspondendo ao filtro"
 
 #: lazarusidestrconsts.liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
@@ -10459,7 +10453,7 @@ msgstr "Identificador Pascal inválido"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
 msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
-msgstr ""
+msgstr "O nome \"%s\" não é um identificador Pascal válido.%sUsar assim mesmo?"
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"
@@ -10677,10 +10671,8 @@ msgid "Cut selected components"
 msgstr "Recortar componentes selecionados"
 
 #: lazarusidestrconsts.liskmdefaulttoosx
-#, fuzzy
-#| msgid "Default adapted to OS X"
 msgid "Default adapted to macOS"
-msgstr "Padrão adaptado para OS X"
+msgstr "Padrão adaptado para macOS"
 
 #: lazarusidestrconsts.liskmdeletelastchar
 msgid "Delete last char"
@@ -10815,22 +10807,16 @@ msgid "Keymapping Scheme"
 msgstr "Esquema de mapeamento de teclas"
 
 #: lazarusidestrconsts.liskmlazarusdefault
-#, fuzzy
-#| msgid "Lazarus (default)"
 msgid "Lazarus default"
-msgstr "Lazarus (padrão)"
+msgstr "Padrão Lazarus"
 
 #: lazarusidestrconsts.liskmmacosxapple
-#, fuzzy
-#| msgid "Mac OS X (Apple style)"
 msgid "macOS, Apple style"
-msgstr "Mac OS X (estilo Apple)"
+msgstr "macOS, estilo Apple"
 
 #: lazarusidestrconsts.liskmmacosxlaz
-#, fuzzy
-#| msgid "Mac OS X (Lazarus style)"
 msgid "macOS, Lazarus style"
-msgstr "Mac OS X (estilo Lazarus)"
+msgstr "macOS, estilo Lazarus"
 
 #: lazarusidestrconsts.liskmnewpackage
 msgid "New package"
@@ -12681,7 +12667,7 @@ msgstr "Abrir arquivo sob o cursor"
 
 #: lazarusidestrconsts.lismenuopenfolder
 msgid "Open Folder ..."
-msgstr ""
+msgstr "Abrir pasta ..."
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open Loaded Package ..."
@@ -13270,7 +13256,7 @@ msgstr "Aplicar à todos os pacotes e projetos."
 
 #: lazarusidestrconsts.lismmapplytoallpackagesmatching
 msgid "Apply to all packages matching name \"%s\""
-msgstr "Aplicar à todos os pacotes cujo nome coincidir com \"%s\""
+msgstr "Aplicar à todos os pacotes cujo nome corresponder a \"%s\""
 
 #: lazarusidestrconsts.lismmapplytoproject
 msgid "Apply to project."
@@ -13302,7 +13288,7 @@ msgstr "Não sobrepõe OutDir (-FU)"
 
 #: lazarusidestrconsts.lismmexcludeallpackagesmatching
 msgid "Exclude all packages matching name \"%s\""
-msgstr "Excluir todos os pacotes cujos nomes coincidirem com \"%s\""
+msgstr "Excluir todos os pacotes cujos nomes correspondam com \"%s\""
 
 #: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
 msgid "expected \":=\" after macro name, but found \"%s\""
@@ -14039,7 +14025,7 @@ msgstr "Abrir arquivo"
 
 #: lazarusidestrconsts.lisopenfileatcursor
 msgid "Open file at cursor"
-msgstr ""
+msgstr "Abrir arquivo sob o cursor"
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -14144,7 +14130,7 @@ msgstr "Sobrepor idioma. Por exemplo --language=de. Veja os valores possíveis n
 
 #: lazarusidestrconsts.lisoverridestringtypeswithfirstparamtype
 msgid "Override function result string types with the first parameter expression type"
-msgstr ""
+msgstr "Sobrepor tipos \"string\" de resultado de função com o primeiro tipo de expressão do parâmetro"
 
 #: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
 msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
@@ -14257,7 +14243,7 @@ msgstr "analisar \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
-msgstr ""
+msgstr "Analisadores:"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
@@ -14845,7 +14831,7 @@ msgstr "Caminho adicional para fontes compilados"
 
 #: lazarusidestrconsts.lispkgdefsnamespaces
 msgid "Namespaces"
-msgstr ""
+msgstr "Espaços de nome"
 
 #: lazarusidestrconsts.lispkgdefsoutputdirectory
 msgid "Output directory"
@@ -15537,11 +15523,11 @@ msgstr "Copiar nome de método para Área de Transferência"
 
 #: lazarusidestrconsts.lisplistfilterany
 msgid "Filter by matching any part of method"
-msgstr "Filtrar comparando qualquer parte do método"
+msgstr "Filtrar por correspondência com qualquer parte do método"
 
 #: lazarusidestrconsts.lisplistfilterstart
 msgid "Filter by matching with start of method"
-msgstr "Filtrar comparando com início do método"
+msgstr "Filtrar por correpondência com início do método"
 
 #: lazarusidestrconsts.lisplistjumptoselection
 msgid "Jump To Selection"
@@ -15685,11 +15671,11 @@ msgstr "Adicionar arquivos do editor"
 
 #: lazarusidestrconsts.lisprojaddinsterr
 msgid "One or more online packages could not be installed!"
-msgstr ""
+msgstr "Um ou mais pacotes online não puderam ser instalados!"
 
 #: lazarusidestrconsts.lisprojaddinsterrcaption
 msgid "Install error"
-msgstr ""
+msgstr "Erro de instalação"
 
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
@@ -15705,7 +15691,7 @@ msgstr "Versão Inválida"
 
 #: lazarusidestrconsts.lisprojaddlocalpkg
 msgid "Local (%s)"
-msgstr ""
+msgstr "Local (%s)"
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15721,7 +15707,7 @@ msgstr "Novo Requerimento"
 
 #: lazarusidestrconsts.lisprojaddonlinepkg
 msgid "Online (%s)"
-msgstr ""
+msgstr "Online (%s)"
 
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
@@ -15733,7 +15719,7 @@ msgstr "Pacote não encontrado"
 
 #: lazarusidestrconsts.lisprojaddpackagetype
 msgid "Package Type:"
-msgstr ""
+msgstr "Tipo de pacote:"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
@@ -15847,7 +15833,7 @@ msgstr "Propriedades macro do projeto"
 
 #: lazarusidestrconsts.lisprojectnamespaces
 msgid "Project Namespaces"
-msgstr ""
+msgstr "Espaços de nome de projeto"
 
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
@@ -16054,7 +16040,7 @@ msgstr "O nome de unidade é usado quando a IDE estende a cláusula \"uses\"."
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgctxt "lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni"
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
-msgstr "Nome de unidade e Nome de arquivo não coincidem.%sEx: unit1.pas e Unit1"
+msgstr "Nome de unidade e nome de arquivo não correspondem.%sEx: unit1.pas e Unit1"
 
 #: lazarusidestrconsts.lispwconvertproject
 msgid "Convert &Delphi Project"
@@ -17022,7 +17008,7 @@ msgstr "Menor ao invés de mais rápido"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
-msgstr "Resultados"
+msgstr "Correspondência"
 
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
@@ -17705,7 +17691,7 @@ msgstr "O projeto deve ser salvo antes de construir%sSe você definir o diretór
 
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
 msgid "The project uses FPC resources, which require at least FPC 2.4"
-msgstr ""
+msgstr "O projeto usa recursos FPC, que requerem ao menos FPC 2.4"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
@@ -19167,7 +19153,7 @@ msgstr "Você não pode reconstruir o Lazarus enquanto estiver depurando ou comp
 
 #: lazarusidestrconsts.lisyoucannotchangethebuildmodewhilecompiling
 msgid "You cannot change the build mode while compiling."
-msgstr ""
+msgstr "Você não pode alterar o modo de construção enquanto compilando."
 
 #: lazarusidestrconsts.lisyoucanselectitemsbysimplypressingunderscoredletter
 msgid "You can select items by simply pressing underscored letters"

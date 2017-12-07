@@ -297,7 +297,7 @@ msgstr "Incapaz de localizar analisador para a ferramenta \"%s\""
 
 #: objinspstrconsts.lisunabletofindparserwithname
 msgid "Unable to find parser with name \"%s\""
-msgstr ""
+msgstr "Incapaz de encontrar analisador com o nome \"%s\""
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -601,7 +601,7 @@ msgstr "Interface"
 
 #: objinspstrconsts.oisinvalid
 msgid "(Invalid)"
-msgstr ""
+msgstr "(Inválido)"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -843,7 +843,7 @@ msgstr "Definir valor da propriedade para o padrão"
 
 #: objinspstrconsts.oisshowalloutputlines
 msgid "Show all output lines"
-msgstr ""
+msgstr "Exibir todas as linhas de saída"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"

@@ -1565,7 +1565,7 @@ msgstr "Manter razão aspecto"
 
 #: lr_const.skeepchild
 msgid "Keep child together with parent"
-msgstr ""
+msgstr "Manter filhos juntos aos pais"
 
 #: lr_const.slazformfile
 msgid "LazReport form"

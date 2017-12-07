@@ -1232,7 +1232,7 @@ msgstr "Texto"
 
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
-msgstr ""
+msgstr "A URL embutida é apenas leitura. Altere a URL base em vez disso."
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"

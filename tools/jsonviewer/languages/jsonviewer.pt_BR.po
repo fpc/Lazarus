@@ -259,11 +259,11 @@ msgstr "&Arquivo"
 
 #: tmainform.miallowcomments.caption
 msgid "Allow comments"
-msgstr ""
+msgstr "Permitir comentários"
 
 #: tmainform.miallowtrailingcomma.caption
 msgid "Allow trailing comma"
-msgstr ""
+msgstr "Permitir vírgula no final"
 
 #: tmainform.micompact.caption
 msgid "Compact display"
@@ -279,7 +279,7 @@ msgstr "&Valores"
 
 #: tmainform.miquotestrings.caption
 msgid "Quote string values"
-msgstr ""
+msgstr "Citar valores \"string\""
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"

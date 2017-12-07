@@ -4,10 +4,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula\n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
@@ -410,7 +412,7 @@ msgstr "Lista Palavra:"
 
 #: jcfuiconsts.lisfrfileconfirmformat
 msgid "Show confirmation dialog before format"
-msgstr ""
+msgstr "Exibir diálogo de confirmação antes de formatar"
 
 #: jcfuiconsts.lisfrfilesdatefilewritten
 msgid "Date file written: %s"
@@ -434,15 +436,15 @@ msgstr "Arquivo não encontrado"
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"
-msgstr ""
+msgstr "Abrir pasta"
 
 #: jcfuiconsts.lisfrfilessettingsfile
 msgid "Settings File"
-msgstr ""
+msgstr "Arquivo de configurações"
 
 #: jcfuiconsts.lisfrfilessettingsfileis
 msgid "Settings file is:"
-msgstr ""
+msgstr "Arquivo de configurações é:"
 
 #: jcfuiconsts.lisfrfilesversionthatwrotethisfile
 msgid "Version that wrote this file: %s"
@@ -514,15 +516,15 @@ msgstr "Configurações \"JCF\""
 
 #: jcfuiconsts.lisjedicodeformatallopenwindow
 msgid "JEDI Code Format of all open windows?"
-msgstr ""
+msgstr "Formatar código JEDI de todas as janelas abertas?"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
-msgstr "Formatador de código JEDI de %sTem certeza que deseja formatar todos %s arquivos no projeto?"
+msgstr "Formatar código JEDI de %sTem certeza que deseja formatar todos %s arquivos no projeto?"
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
 msgid "JEDI Code Format of %sStart formatting?"
-msgstr "Formatador de código JEDI de %sIniciar formatação?"
+msgstr "Formatar código JEDI de %sIniciar formatação?"
 
 #: jcfuiconsts.lislbbreaklinesthatarelongerthanmaxlinelength
 msgid "&Break lines that are longer than max line length"
