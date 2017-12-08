@@ -639,7 +639,6 @@ end;
 
 constructor TAVLTree.Create(const OnCompareMethod: TListSortCompare);
 begin
-  fNodeMgr:=LazNodeMemManager;
   FOnCompare:=OnCompareMethod;
   Init;
 end;
@@ -647,7 +646,6 @@ end;
 constructor TAVLTree.CreateObjectCompare(
   const OnCompareMethod: TObjectSortCompare);
 begin
-  fNodeMgr:=LazNodeMemManager;
   FOnObjectCompare:=OnCompareMethod;
   Init;
 end;
@@ -1493,7 +1491,7 @@ function TAVLTreeNodeMemManager.NewNode: TAVLTreeNode;
 begin
   {$IFDEF CheckAVLTreeNodeManager}
   if GetCurrentThreadId<>FThreadId then
-    raise Exception.Create('not thread safe!');
+    raise Exception.Create('TAVLTreeNodeMemManager: not thread safe!');
   {$ENDIF}
   if FFirstFree<>nil then begin
     // take from free list
