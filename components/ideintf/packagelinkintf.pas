@@ -109,7 +109,7 @@ type
   public
     {confirmation/install/extract/download dialogs will be displayed in the center of ParentForm}
     function InstallPackages(APkgLinks: TList; AParentForm: TForm;
-      const AResolveDependencies: Boolean = True): TModalResult; virtual; abstract;
+      var ANeedToRebuild: Boolean): TModalResult; virtual; abstract;
   end;
 
 var

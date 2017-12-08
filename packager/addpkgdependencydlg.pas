@@ -12,7 +12,7 @@ uses
   // LazControls
   ListFilterEdit,
   // IDEIntf
-  IDEWindowIntf, PackageDependencyIntf, PackageIntf, IDEDialogs, IDEImagesIntf, PackageLinkIntf,
+  IDEWindowIntf, PackageDependencyIntf, PackageIntf, IDEDialogs, IDEImagesIntf, PackageLinkIntf, MainIntf,
   // IDE
   LazarusIDEStrConsts, PackageDefs, PackageSystem, ProjPackCommon, ProjPackChecks;
 
@@ -45,7 +45,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     function FindPackageLink(const ALazPackageID: TLazPackageID): TPackageLink;
-    function InstallOnlinePackages: TModalResult;
+    function InstallOnlinePackages(out ANeedToRebuild: Boolean): TModalResult;
   private
     fUpdating: Boolean;
     fSL: TStringList;
@@ -214,6 +214,10 @@ procedure TAddPkgDependencyDialog.DependPkgNameListBoxSelectionChange(
   Sender: TObject; User: boolean);
 begin
   BP.CloseButton.Visible := IsInstallButtonVisible;
+  if BP.CloseButton.Visible then
+    BP.OKButton.Enabled := False
+  else
+    BP.OKButton.Enabled := True;
 end;
 
 procedure TAddPkgDependencyDialog.cbLocalPkgChange(Sender: TObject);
@@ -221,7 +225,7 @@ begin
   UpdateAvailableDependencyNames;
 end;
 
-function TAddPkgDependencyDialog.InstallOnlinePackages: TModalResult;
+function TAddPkgDependencyDialog.InstallOnlinePackages(out ANeedToRebuild: Boolean): TModalResult;
 var
   I: Integer;
   PackageLink: TPackageLink;
@@ -240,7 +244,7 @@ begin
       end;
     end;
     if PkgList.Count > 0 then
-      Result := OPMInterface.InstallPackages(PkgList, Self);
+      Result := OPMInterface.InstallPackages(PkgList, Self, ANeedToRebuild);
   finally
     PkgList.Free;
     PkgList := nil;
@@ -249,12 +253,18 @@ end;
 
 procedure TAddPkgDependencyDialog.CloseButtonClick(Sender: TObject);
 var
-  InstallRes: TModalResult;
+  NeedToRebuild: Boolean;
 begin
   ModalResult := mrNone;
-  InstallRes := InstallOnlinePackages;
-  if (InstallRes <> mrCancel) and (InstallRes <> mrOk) then
-    IDEMessageDialog(lisProjAddInstErrCaption, lisProjAddInstErr, mtError, [mbOk]);
+  if InstallOnlinePackages(NeedToRebuild) = mrOK then
+  begin
+    UpdateAvailableDependencyNames;
+    if NeedToRebuild then
+    begin
+      Self.Hide;
+      MainIDEInterface.DoBuildLazarus([]);
+    end;
+  end;
 end;
 
 procedure TAddPkgDependencyDialog.AddUniquePackagesToList(APackageID: TLazPackageID);

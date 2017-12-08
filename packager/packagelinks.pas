@@ -1199,7 +1199,6 @@ begin
   if IsValidPkgName(PkgName) then
   begin
     Result.Name := PkgName;
-    Result.LPKFilename := PkgFilename;
     Result.LPKUrl := PkgURL;
     Result.Origin := ploOnline;
     FOnlineLinks.Add(Result);
