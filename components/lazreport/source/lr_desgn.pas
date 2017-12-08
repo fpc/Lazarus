@@ -43,7 +43,7 @@ type
     SaveAs: Boolean; var Saved: Boolean) of object;
 
   TfrDesignerForm = class;
-  TlrTabEditControl = class(TCustomTabControl);
+  //TlrTabEditControl = class(TCustomTabControl);
 
   { TfrDesigner }
 
@@ -634,7 +634,7 @@ type
     procedure InplaceEditorMenuClick(Sender: TObject);
   private
     FTabMouseDown:boolean;
-    FTabsPage:TlrTabEditControl;
+    //FTabsPage:TlrTabEditControl;
     procedure TabsEditDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure TabsEditDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure TabsEditMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -2934,13 +2934,21 @@ begin
   Panel7.Visible := false;
   {$endif}
 
-  FTabsPage:=TlrTabEditControl((Tab1.Tabs as TTabControlNoteBookStrings).NoteBook);
+{  FTabsPage:=TlrTabEditControl((Tab1.Tabs as TTabControlNoteBookStrings).NoteBook);
   FTabsPage.DragMode:=dmManual;
   FTabsPage.OnDragOver:=@TabsEditDragOver;
   FTabsPage.OnDragDrop:=@TabsEditDragDrop;
   FTabsPage.OnMouseDown:=@TabsEditMouseDown;
   FTabsPage.OnMouseMove:=@TabsEditMouseMove;
-  FTabsPage.OnMouseUp:=@TabsEditMouseUp;
+  FTabsPage.OnMouseUp:=@TabsEditMouseUp;}
+
+  Tab1.DragMode:=dmManual;
+  Tab1.OnDragOver:=@TabsEditDragOver;
+  Tab1.OnDragDrop:=@TabsEditDragDrop;
+  Tab1.OnMouseDown:=@TabsEditMouseDown;
+  Tab1.OnMouseMove:=@TabsEditMouseMove;
+  Tab1.OnMouseUp:=@TabsEditMouseUp;
+
 end;
 
 destructor TfrDesignerForm.Destroy;
@@ -4566,7 +4574,8 @@ end;
 procedure TfrDesignerForm.TabsEditDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  Accept:=(Source = FTabsPage) and (FTabsPage.IndexOfPageAt(X, Y) <> Tab1.TabIndex);
+  //Accept:=(Source = FTabsPage) and (FTabsPage.IndexOfPageAt(X, Y) <> Tab1.TabIndex);
+  Accept:=(Source = Tab1) and (Tab1.IndexOfTabAt(X, Y) <> Tab1.TabIndex);
 end;
 
 procedure TfrDesignerForm.TabsEditDragDrop(Sender, Source: TObject; X,
@@ -4574,7 +4583,8 @@ procedure TfrDesignerForm.TabsEditDragDrop(Sender, Source: TObject; X,
 var
   NewIndex: Integer;
 begin
-  NewIndex:=FTabsPage.IndexOfPageAt(X, Y);
+  //NewIndex:=FTabsPage.IndexOfPageAt(X, Y);
+  NewIndex:=Tab1.IndexOfTabAt(X, Y);
   //ShowMessageFmt('New index = %d', [NewIndex]);
   if (NewIndex>-1) and (NewIndex < CurReport.Pages.Count) then
   begin
@@ -4600,7 +4610,8 @@ procedure TfrDesignerForm.TabsEditMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 begin
   if FTabMouseDown then
-    FTabsPage.BeginDrag(false);
+    //FTabsPage.BeginDrag(false);
+    Tab1.BeginDrag(false);
 end;
 
 procedure TfrDesignerForm.TabsEditMouseUp(Sender: TObject;

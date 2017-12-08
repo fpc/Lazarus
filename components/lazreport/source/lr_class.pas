@@ -91,11 +91,14 @@ type
   TfrFrameBorders = set of TfrFrameBorder;
   TfrFrameStyle = (frsSolid,frsDash, frsDot, frsDashDot, frsDashDotDot,frsDouble);
   TfrPageType = (ptReport, ptDialog);   //todo: - remove this
+
   TfrReportOption = (roIgnoreFieldNotFound, roIgnoreSymbolNotFound, roHideDefaultFilter,
                      roDontUpgradePreparedReport,   // on saving an old prepared report don't update to current version
                      roSaveAndRestoreBookmarks,     // try to save and later restore dataset bookmarks on building report
-                     roPageHeaderBeforeReportTitle  // PageHeader band is printed before ReportTitle band
+                     roPageHeaderBeforeReportTitle, // PageHeader band is printed before ReportTitle band
+                     roDisableCancelBuild           // Disable cancel button in build progress form
                      );
+
   TfrReportOptions = set of TfrReportOption;
   TfrObjectType = (otlReportView, otlUIControl);
 
@@ -1205,6 +1208,7 @@ type
     procedure DoPrintReport(const PageNumbers: String; Copies: Integer);
     procedure SetComments(const AValue: TStringList);
     procedure SetPrinterTo(const PrnName: String);
+    procedure SetReportOptions(AValue: TfrReportOptions);
     procedure SetScript(AValue: TfrScriptStrings);
     procedure SetVars(Value: TStrings);
     procedure ClearAttribs;
@@ -1321,7 +1325,7 @@ type
     property InitialZoom: TfrPreviewZoom read FInitialZoom write FInitialZoom;
     property ModalPreview: Boolean read FModalPreview write FModalPreview default True;
     property ModifyPrepared: Boolean read FModifyPrepared write FModifyPrepared default True;
-    property Options: TfrReportOptions read FReportOptions write FReportOptions;
+    property Options: TfrReportOptions read FReportOptions write SetReportOptions;
     property Preview: TfrPreview read FPreview write FPreview;
     property PreviewButtons: TfrPreviewButtons read FPreviewButtons write FPreviewButtons;
     property RebuildPrinter: boolean read FRebuildPrinter write FRebuildPrinter default False;
@@ -11622,6 +11626,15 @@ begin
   {$ifdef dbgPrinter}
   DebugLnExit('TfrReport.SetPrinterTo DONE CurPrinter="%s"',[Prn.Printer.PrinterName]);
   {$endif}
+end;
+
+procedure TfrReport.SetReportOptions(AValue: TfrReportOptions);
+begin
+  if FReportOptions=AValue then Exit;
+  FReportOptions:=AValue;
+
+  if Assigned(frProgressForm) then
+    frProgressForm.Button1.Enabled:=not (roDisableCancelBuild in FReportOptions);
 end;
 
 procedure TfrReport.SetScript(AValue: TfrScriptStrings);
