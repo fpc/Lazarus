@@ -748,8 +748,8 @@ msgstr "riippuvuus pakkauksesta:"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
 #, fuzzy
-#| msgid "Resolve dependency?"
-msgid "Not resolving dependencies might lead to install failure!"
+#| msgid "Not resolving dependencies might lead to install failure!"
+msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "Ratkaise riippuvuus?"
 
 #: opkman_const.rsmainfrm_rspackagerating
@@ -1199,9 +1199,81 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Versio"
 
-#: opkman_const.rsopminterfaceconf
-msgid "Do you wish to install the following online package(s):"
+#: opkman_const.rsopminterfacerebuildconf
+msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
 msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_caption
+msgid "Install online packages"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_pninfo
+msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
+msgid "Data"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
+msgid "Lazarus Package"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_author
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_author"
+msgid "Author"
+msgstr "Tekijä"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies"
+msgid "Dependencies"
+msgstr "Riippuvuudet"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_description
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_description"
+msgid "Description"
+msgstr "Kuvaus"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility"
+msgid "FPC compatibility"
+msgstr "Free Pascal yhteensopivuus"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility"
+msgid "Lazarus compatibility"
+msgstr "Lazarus yhteensopivuus"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_license
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_license"
+msgid "License"
+msgstr "Lisenssi"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype"
+msgid "Package type"
+msgstr "Paketin tyyppi"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets
+#, fuzzy
+#| msgid "Supported widget sets"
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets"
+msgid "Supported widgetsets"
+msgstr "Tuetut käyttöliittymäkirjastot"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_version
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_version"
+msgid "Version"
+msgstr "Versio"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"

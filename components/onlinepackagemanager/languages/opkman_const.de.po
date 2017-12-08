@@ -726,7 +726,9 @@ msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "Package \"%s\" hängt ab von Package \"%s\". Abhängigkeit auflösen?"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-msgid "Not resolving dependencies might lead to install failure!"
+#, fuzzy
+#| msgid "Not resolving dependencies might lead to install failure!"
+msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "Nicht aufgelöste Abhängigkeiten können zu einem Fehler bei der Installation führen!"
 
 #: opkman_const.rsmainfrm_rspackagerating
@@ -1166,9 +1168,81 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Version"
 
-#: opkman_const.rsopminterfaceconf
-msgid "Do you wish to install the following online package(s):"
+#: opkman_const.rsopminterfacerebuildconf
+msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
 msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_caption
+msgid "Install online packages"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_pninfo
+msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
+msgid "Data"
+msgstr "Daten"
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
+msgid "Lazarus Package"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_author
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_author"
+msgid "Author"
+msgstr "Autor"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies"
+msgid "Dependencies"
+msgstr "Abhängigkeiten"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_description
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_description"
+msgid "Description"
+msgstr "Beschreibung"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility"
+msgid "FPC compatibility"
+msgstr "FPC-Kompatibilität"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility"
+msgid "Lazarus compatibility"
+msgstr "Lazarus-Kompatibilität"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_license
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_license"
+msgid "License"
+msgstr "Lizenz"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype"
+msgid "Package type"
+msgstr "Package-Typ"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets"
+msgid "Supported widgetsets"
+msgstr "Unterstützte Widgetsets"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_version
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_version"
+msgid "Version"
+msgstr "Version"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"

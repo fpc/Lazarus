@@ -704,7 +704,7 @@ msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-msgid "Not resolving dependencies might lead to install failure!"
+msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_rspackagerating
@@ -1144,8 +1144,70 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr ""
 
-#: opkman_const.rsopminterfaceconf
-msgid "Do you wish to install the following online package(s):"
+#: opkman_const.rsopminterfacerebuildconf
+msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_caption
+msgid "Install online packages"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_pninfo
+msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
+msgid "Data"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
+msgid "Lazarus Package"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_author
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_author"
+msgid "Author"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies"
+msgid "Dependencies"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_description
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_description"
+msgid "Description"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility"
+msgid "FPC compatibility"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility"
+msgid "Lazarus compatibility"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_license
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_license"
+msgid "License"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype"
+msgid "Package type"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets"
+msgid "Supported widgetsets"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_version
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_version"
+msgid "Version"
 msgstr ""
 
 #: opkman_const.rsoptions_badd_caption

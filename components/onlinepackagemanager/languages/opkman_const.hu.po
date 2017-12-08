@@ -730,7 +730,9 @@ msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "A(z) \"%s\" csomag függ a(z) \"%s\" csomagtól. Függőség feloldása?"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-msgid "Not resolving dependencies might lead to install failure!"
+#, fuzzy
+#| msgid "Not resolving dependencies might lead to install failure!"
+msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "A feloldatlan függőségek a telepítés sikertelenségét okozhatják!"
 
 #: opkman_const.rsmainfrm_rspackagerating
@@ -1172,9 +1174,81 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Változat"
 
-#: opkman_const.rsopminterfaceconf
-msgid "Do you wish to install the following online package(s):"
+#: opkman_const.rsopminterfacerebuildconf
+msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
 msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_caption
+msgid "Install online packages"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_pninfo
+msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
+msgid "Data"
+msgstr "Adat"
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
+msgid "Lazarus Package"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_author
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_author"
+msgid "Author"
+msgstr "Szerző"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies"
+msgid "Dependencies"
+msgstr "Függőségek"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_description
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_description"
+msgid "Description"
+msgstr "Leírás"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility"
+msgid "FPC compatibility"
+msgstr "FPC kompatibilitás"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility"
+msgid "Lazarus compatibility"
+msgstr "Lazarus kompatibilitás"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_license
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_license"
+msgid "License"
+msgstr "Licenc"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype"
+msgid "Package type"
+msgstr "Csomag típusa"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets"
+msgid "Supported widgetsets"
+msgstr "Támogatott vezérlőkészletek"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_version
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_version"
+msgid "Version"
+msgstr "Változat"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"

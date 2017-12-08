@@ -752,7 +752,9 @@ msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "Paketas „%s“ yra priklausomas nuo paketo „%s“. Išspręsti priklausomybę?"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-msgid "Not resolving dependencies might lead to install failure!"
+#, fuzzy
+#| msgid "Not resolving dependencies might lead to install failure!"
+msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "Neišsprendus priklausomybes gali nepavykti diegimas!"
 
 #: opkman_const.rsmainfrm_rspackagerating
@@ -1194,9 +1196,81 @@ msgctxt "opkman_const.rsmainfrm_vsttext_version"
 msgid "Version"
 msgstr "Laida"
 
-#: opkman_const.rsopminterfaceconf
-msgid "Do you wish to install the following online package(s):"
+#: opkman_const.rsopminterfacerebuildconf
+msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
 msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_caption
+msgid "Install online packages"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_pninfo
+msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
+msgid "Data"
+msgstr "Duomenys"
+
+#: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
+msgid "Lazarus Package"
+msgstr ""
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_author
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_author"
+msgid "Author"
+msgstr "Autorius"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies"
+msgid "Dependencies"
+msgstr "Priklausomybės"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_description
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_description"
+msgid "Description"
+msgstr "Aprašas"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility"
+msgid "FPC compatibility"
+msgstr "„FPC“ suderinamumas"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility"
+msgid "Lazarus compatibility"
+msgstr "„Lazarus“ suderinamumas"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_license
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_license"
+msgid "License"
+msgstr "Licencija"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype"
+msgid "Package type"
+msgstr "Paketo tipas"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets"
+msgid "Supported widgetsets"
+msgstr "Palaikomi valdiklių tipai"
+
+#: opkman_const.rsopmintfpackagelistfrm_vsttext_version
+#, fuzzy
+msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_version"
+msgid "Version"
+msgstr "Laida"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
