@@ -16108,14 +16108,6 @@ msgstr "依赖关系已经存在"
 msgid "Add Editor Files"
 msgstr "添加编辑器文件"
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "无效的最小-最大版本"

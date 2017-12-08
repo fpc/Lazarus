@@ -16810,14 +16810,6 @@ msgstr "התלות כבר קיימת"
 msgid "Add Editor Files"
 msgstr "הוסף קבצי עורך"
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "גירסה מינימלית-מקסימלית לא חוקית"

@@ -15670,14 +15670,6 @@ msgstr "Зависимость уже есть"
 msgid "Add Editor Files"
 msgstr "Добавить файлы редактора"
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr "Не удалось установить один или более пакетов из сети!"
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr "Ошибка установки"
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Неверные версии (минимальная/максимальная)"

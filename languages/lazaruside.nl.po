@@ -16310,14 +16310,6 @@ msgstr "Afhankelijkheid bestaat al"
 msgid "Add Editor Files"
 msgstr "Bewerker-bestanden toevoegen"
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Ongeldige Min-Max versie"

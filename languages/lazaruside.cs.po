@@ -15787,14 +15787,6 @@ msgstr "Závislost již existuje"
 msgid "Add Editor Files"
 msgstr "Přidat editované soubory"
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Neplatná verze Min-Max"

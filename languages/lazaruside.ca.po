@@ -16210,14 +16210,6 @@ msgstr "Ja existeix la dependència"
 msgid "Add Editor Files"
 msgstr "Afegeix els fitxers de l'editor"
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "La versió min/max no és vàlida"

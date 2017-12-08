@@ -16029,14 +16029,6 @@ msgstr "Zależność już istnieje"
 msgid "Add Editor Files"
 msgstr ""
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Błędna wersja Min-Max"

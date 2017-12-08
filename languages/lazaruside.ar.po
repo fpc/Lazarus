@@ -15641,14 +15641,6 @@ msgstr ""
 msgid "Add Editor Files"
 msgstr "أضف الجذاذات المفتوحة في المحرّر"
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr ""

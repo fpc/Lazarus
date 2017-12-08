@@ -15910,14 +15910,6 @@ msgstr "Bağımlılık zaten var"
 msgid "Add Editor Files"
 msgstr "Editör Dosyalarını Ekle"
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr ""
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Geçersiz Min-Max sürümü"

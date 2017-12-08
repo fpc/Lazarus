@@ -15669,14 +15669,6 @@ msgstr "Já existe a dependência"
 msgid "Add Editor Files"
 msgstr "Adicionar arquivos do editor"
 
-#: lazarusidestrconsts.lisprojaddinsterr
-msgid "One or more online packages could not be installed!"
-msgstr "Um ou mais pacotes online não puderam ser instalados!"
-
-#: lazarusidestrconsts.lisprojaddinsterrcaption
-msgid "Install error"
-msgstr "Erro de instalação"
-
 #: lazarusidestrconsts.lisprojaddinvalidminmaxversion
 msgid "Invalid Min-Max version"
 msgstr "Versão Min-Max inválida"
