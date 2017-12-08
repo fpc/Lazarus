@@ -3892,13 +3892,18 @@ begin
   LastMouse.WinControl := LCLObject;
   LastMouse.WinHandle := TLCLIntfHandle(Self);
   LastMouse.MousePos := Point(MousePos.X, MousePos.Y);
-  
-  Msg.Msg := LM_MOUSEWHEEL;
 
   Msg.X := SmallInt(MousePos.X);
   Msg.Y := SmallInt(MousePos.Y);
 
   Msg.WheelDelta := SmallInt(QWheelEvent_delta(QWheelEventH(Event)));
+
+  Msg.Msg := LM_MOUSEWHEEL;
+  if QWheelEvent_orientation(QWheelEventH(Event)) = QtHorizontal then
+  begin
+    Msg.Msg := LM_MOUSEHWHEEL;
+    Msg.WheelDelta := -Msg.WheelDelta;
+  end;
 
   {$IFDEF DARWIN}
   // LCL expects delta +-120, we must fix it. issue #20888
