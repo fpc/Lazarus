@@ -1251,7 +1251,8 @@ begin
                       Msg := Format(rsMainFrm_rsPackageDependency0, [Data^.LazarusPackageName, DataSearch^.LazarusPackageName]);
                       Result := MessageDlgEx(Msg, mtConfirmation, [mbYes, mbYesToAll, mbNo, mbNoToAll, mbCancel], TForm(FVST.Parent.Parent));
                       if Result in [mrNo, mrNoToAll] then
-                        MessageDlgEx(rsMainFrm_rsPackageDependency1, mtInformation, [mbOk], TForm(FVST.Parent.Parent));
+                        if MessageDlgEx(rsMainFrm_rsPackageDependency1, mtInformation, [mbYes, mbNo], TForm(FVST.Parent.Parent)) <> mrYes then
+                          Exit;
                       if (Result = mrNoToAll) or (Result = mrCancel) then
                         Exit;
                     end;
@@ -1375,16 +1376,6 @@ begin
         Result := Result + ' ' + SL.Strings[I];
   finally
     SL.Free;
-  end;
-end;
-
-function GetPackageTypeString(aPackageType: TLazPackageType): String;
-begin
-  case aPackageType of
-    lptRunAndDesignTime: Result := rsMainFrm_VSTText_PackageType0;
-    lptDesignTime:       Result := rsMainFrm_VSTText_PackageType1;
-    lptRunTime:          Result := rsMainFrm_VSTText_PackageType2;
-    lptRunTimeOnly:      Result := rsMainFrm_VSTText_PackageType3;
   end;
 end;
 

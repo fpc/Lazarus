@@ -267,7 +267,8 @@ end;
 procedure TProgressFrm.DoOnPackageDownloadCompleted(Sender: TObject);
 begin
   FCanClose := True;
-  FSuccess := True;
+  if FMdlRes <> mrNo then
+    FSuccess := True;
   Close;
 end;
 
@@ -329,7 +330,8 @@ procedure TProgressFrm.DoOnZipCompleted(Sender: TObject);
 begin
   Application.ProcessMessages;
   FCanClose := True;
-  FSuccess := True;
+  if FMdlRes <> mrNo then
+    FSuccess := True;
   Close;
 end;
 
@@ -432,7 +434,8 @@ end;
 procedure TProgressFrm.DoOnPackageInstallCompleted(Sender: TObject; ANeedToRebuild: Boolean; AInstallStatus: TInstallStatus);
 begin
   FCanClose := True;
-  FSuccess := True;
+  if FMdlRes <> mrNo then
+    FSuccess := True;
   FNeedToRebuild := ANeedToRebuild;
   FInstallStatus := AInstallStatus;
   Application.ProcessMessages;

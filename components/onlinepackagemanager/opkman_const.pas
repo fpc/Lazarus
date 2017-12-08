@@ -201,7 +201,7 @@ resourcestring
   rsMainFrm_rsRepositoryCleanup1 = '%s packages deleted!';
   rsMainFrm_rsPackageDependency0 = 'Package "%s" depends on package "%s". '
     +'Resolve dependency?';
-  rsMainFrm_rsPackageDependency1 = 'Not resolving dependencies might lead to install failure!';
+  rsMainFrm_rsPackageDependency1 = 'Not resolving dependencies might lead to install failure! Continue?';
   rsMainFrm_rsPackageRating = 'Your vote for package "%s" is: %s. Thank you for voting!';
   rsMainFrm_rsUninstall = '%sAre you sure you wish to uninstall the checked packages?' + sLineBreak +
                           'Please note: in order for the changes to take effect you must rebuid the IDE.';
@@ -472,7 +472,22 @@ resourcestring
   rsAddRepositoryPackageFrm_bCancel_Hint = 'Close the dialog';
 
   //OPMinterface
-  rsOPMInterfaceConf = 'Do you wish to install the following online package(s):';
+  rsOPMInterfaceRebuildConf = 'In order for the changes to take effect you must rebuild the IDE. Rebuild now?';
+
+  //OPMIntfPackageList
+  rsOPMIntfPackageListFrm_Caption = 'Install online packages';
+  rsOPMIntfPackageListFrm_pnInfo = 'Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info';
+  rsOPMIntfPackageListFrm_VSTHeaderColumn_LazarusPackage = 'Lazarus Package';
+  rsOPMIntfPackageListFrm_VSTHeaderColumn_Data = 'Data';
+  rsOPMIntfPackageListFrm_VSTText_Description = 'Description';
+  rsOPMIntfPackageListFrm_VSTText_Author = 'Author';
+  rsOPMIntfPackageListFrm_VSTText_LazCompatibility = 'Lazarus compatibility';
+  rsOPMIntfPackageListFrm_VSTText_FPCCompatibility = 'FPC compatibility';
+  rsOPMIntfPackageListFrm_VSTText_SupportedWidgetsets = 'Supported widgetsets';
+  rsOPMIntfPackageListFrm_VSTText_Packagetype = 'Package type';
+  rsOPMIntfPackageListFrm_VSTText_License = 'License';
+  rsOPMIntfPackageListFrm_VSTText_Dependecies = 'Dependencies';
+  rsOPMIntfPackageListFrm_VSTText_Version = 'Version';
 
 
 implementation

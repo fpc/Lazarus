@@ -35,7 +35,7 @@ uses
   // LazUtils
   LazFileUtils,
   // IdeIntf
-  LazIDEIntf,
+  LazIDEIntf, PackageIntf,
   // OpkMan
   opkman_const, opkman_options;
 
@@ -123,6 +123,7 @@ procedure InitLocalRepository;
 function SecToHourAndMin(const ASec: LongInt): String;
 function FormatSize(Size: Int64): String;
 function FormatSpeed(Speed: LongInt): String;
+function GetPackageTypeString(aPackageType: TLazPackageType): String;
 function GetDirSize(const ADirName: String; var AFileCnt, ADirCnt: Integer): Int64;
 procedure FindPackages(const ADirName: String; APackageList: TStrings);
 procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
@@ -203,6 +204,16 @@ begin
     Result := FormatFloat('#,##0.0 MB/s', Speed / MB)
   else
     Result := FormatFloat('#,##0.0 GB/s', Speed / GB);
+end;
+
+function GetPackageTypeString(aPackageType: TLazPackageType): String;
+begin
+  case aPackageType of
+    lptRunAndDesignTime: Result := rsMainFrm_VSTText_PackageType0;
+    lptDesignTime:       Result := rsMainFrm_VSTText_PackageType1;
+    lptRunTime:          Result := rsMainFrm_VSTText_PackageType2;
+    lptRunTimeOnly:      Result := rsMainFrm_VSTText_PackageType3;
+  end;
 end;
 
 function GetDirSize(const ADirName: String; var AFileCnt, ADirCnt: Integer): Int64;

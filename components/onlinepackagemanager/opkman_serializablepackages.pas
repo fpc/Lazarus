@@ -262,6 +262,7 @@ type
     procedure DeletePackage(const AIndex: Integer);
     function AddPackageFromJSON(JSON: TJSONStringType): Boolean;
     function FindMetaPackage(const AValue: String; const AFindPackageBy: TFindPackageBy): TMetaPackage;
+    function FindMetaPackageByLazarusPackage(const ALazarusPackage: TLazarusPackage): TMetaPackage;
     function FindPackageIndex(const AValue: String; const AFindPackageBy: TFindPackageBy): Integer;
     function FindLazarusPackage(const APackageName: String): TLazarusPackage;
     function JSONToPackages(JSON: TJSONStringType): Boolean;
@@ -269,6 +270,7 @@ type
     procedure GetPackageDependencies(const APkgFileName: String; List: TObjectList; Recurse, OnlyUnresolved: Boolean);
     procedure GetPackageStates;
     procedure RemoveErrorState;
+    procedure RemoveCheck;
     procedure MarkRuntimePackages;
     function Cleanup: Integer;
     function IsDependencyOk(PackageDependency: TPackageDependency; DependencyPackage: TLazarusPackage): Boolean;
@@ -769,6 +771,25 @@ begin
     begin
       Result := Items[I];
       Break;
+    end;
+  end;
+end;
+
+function TSerializablePackages.FindMetaPackageByLazarusPackage(
+  const ALazarusPackage: TLazarusPackage): TMetaPackage;
+var
+  I, J: Integer;
+begin
+  Result := nil;
+  for I := 0 to Count - 1 do
+  begin
+    for J := 0 to Items[I].FLazarusPackages.Count - 1 do
+    begin
+      if ALazarusPackage.Equals(TLazarusPackage(Items[I].FLazarusPackages.Items[J])) then
+      begin
+        Result := Items[I];
+        Break;
+      end;
     end;
   end;
 end;
@@ -1340,8 +1361,26 @@ begin
     for J := 0 to Items[I].FLazarusPackages.Count - 1 do
     begin
       LazarusPkg := TLazarusPackage(Items[I].FLazarusPackages.Items[J]);
-      //if psError in LazarusPkg.PackageStates then
+      if psError in LazarusPkg.PackageStates then
         LazarusPkg.PackageStates := LazarusPkg.PackageStates - [psError];
+    end;
+  end;
+end;
+
+procedure TSerializablePackages.RemoveCheck;
+var
+  I, J: Integer;
+  MetaPkg: TMetaPackage;
+  LazarusPkg: TLazarusPackage;
+begin
+  for I := 0 to Count - 1 do
+  begin
+    MetaPkg := TMetaPackage(Items[I]);
+    MetaPkg.Checked := False;
+    for J := 0 to Items[I].FLazarusPackages.Count - 1 do
+    begin
+      LazarusPkg := TLazarusPackage(Items[I].FLazarusPackages.Items[J]);
+      LazarusPkg.Checked := False;
     end;
   end;
 end;
