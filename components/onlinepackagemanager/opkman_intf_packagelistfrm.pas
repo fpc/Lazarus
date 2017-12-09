@@ -164,13 +164,13 @@ begin
        end;
     1: case Data^.DataType of
          0: CellText := '';
-         1: CellText := Data^.Description;
+         1: CellText := StringReplace(Data^.Description, sLineBreak, ' ', [rfReplaceAll]);
          2: CellText := Data^.Author;
          3: CellText := Data^.LazCompatibility;
          4: CellText := Data^.FPCCompatibility;
          5: CellText := Data^.SupportedWidgetSet;
          6: CellText := GetPackageTypeString(Data^.PackageType);
-         7: CellText := Data^.License;
+         7: CellText := StringReplace(Data^.License, sLineBreak, ' ', [rfReplaceAll]);
          8: CellText := Data^.Dependencies;
          9: CellText := Data^.Version;
        end;
