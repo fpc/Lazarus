@@ -710,6 +710,7 @@ Type
     procedure SetReadOnly(const AValue: Boolean);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
+    procedure CloseUp; override;
     procedure DataChange(Sender: TObject); virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Change; override;

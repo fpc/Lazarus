@@ -65,6 +65,14 @@ begin
   Message.Result := PtrUInt(FDataLink);
 end;
 
+procedure TCustomDBComboBox.CloseUp;
+begin
+  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
+  if not ReadOnly then
+    EditingDone;
+ inherited CloseUp;
+end;
+
 procedure TCustomDBComboBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
