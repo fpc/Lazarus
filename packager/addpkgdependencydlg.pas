@@ -102,6 +102,7 @@ begin
   DependPkgTypeLabel.Caption:=lisProjAddPackageType;
   cbLocalPkg.Caption:=lisProjAddLocalPkg;
   cbOnlinePkg.Caption:=lisProjAddOnlinePkg;
+  BP.CloseButton.Caption := lisPckEditInstall;
   DependMinVersionLabel.Caption:=lisProjAddMinimumVersionOptional;
   DependMinVersionEdit.Text:='';
   DependMaxVersionLabel.Caption:=lisProjAddMaximumVersionOptional;
