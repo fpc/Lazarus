@@ -479,15 +479,6 @@ resourcestring
   rsOPMIntfPackageListFrm_pnInfo = 'Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info';
   rsOPMIntfPackageListFrm_VSTHeaderColumn_LazarusPackage = 'Lazarus Package';
   rsOPMIntfPackageListFrm_VSTHeaderColumn_Data = 'Data';
-  rsOPMIntfPackageListFrm_VSTText_Description = 'Description';
-  rsOPMIntfPackageListFrm_VSTText_Author = 'Author';
-  rsOPMIntfPackageListFrm_VSTText_LazCompatibility = 'Lazarus compatibility';
-  rsOPMIntfPackageListFrm_VSTText_FPCCompatibility = 'FPC compatibility';
-  rsOPMIntfPackageListFrm_VSTText_SupportedWidgetsets = 'Supported widgetsets';
-  rsOPMIntfPackageListFrm_VSTText_Packagetype = 'Package type';
-  rsOPMIntfPackageListFrm_VSTText_License = 'License';
-  rsOPMIntfPackageListFrm_VSTText_Dependecies = 'Dependencies';
-  rsOPMIntfPackageListFrm_VSTText_Version = 'Version';
 
 
 implementation

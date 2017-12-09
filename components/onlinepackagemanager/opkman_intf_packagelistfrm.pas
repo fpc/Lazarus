@@ -152,15 +152,15 @@ begin
   case Column of
     0: case Data^.DataType of
          0: CellText := Data^.LazarusPackageName;
-         1: CellText := rsOPMIntfPackageListFrm_VSTText_Description;
-         2: CellText := rsOPMIntfPackageListFrm_VSTText_Author;
-         3: CellText := rsOPMIntfPackageListFrm_VSTText_LazCompatibility;
-         4: CellText := rsOPMIntfPackageListFrm_VSTText_FPCCompatibility;
-         5: CellText := rsOPMIntfPackageListFrm_VSTText_SupportedWidgetsets;
-         6: CellText := rsOPMIntfPackageListFrm_VSTText_Packagetype;
-         7: CellText := rsOPMIntfPackageListFrm_VSTText_License;
-         8: CellText := rsOPMIntfPackageListFrm_VSTText_Dependecies;
-         9: CellText := rsOPMIntfPackageListFrm_VSTText_Version;
+         1: CellText := rsMainFrm_VSTText_Description;
+         2: CellText := rsMainFrm_VSTText_Author;
+         3: CellText := rsMainFrm_VSTText_LazCompatibility;
+         4: CellText := rsMainFrm_VSTText_FPCCompatibility;
+         5: CellText := rsMainFrm_VSTText_SupportedWidgetsets;
+         6: CellText := rsMainFrm_VSTText_Packagetype;
+         7: CellText := rsMainFrm_VSTText_License;
+         8: CellText := rsMainFrm_VSTText_Dependecies;
+         9: CellText := rsMainFrm_VSTText_Version;
        end;
     1: case Data^.DataType of
          0: CellText := '';
