@@ -52,19 +52,16 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="DebuggerIntf"/>
       </Item1>
       <Item2>
-        <PackageName Value="DebuggerIntf"/>
+        <PackageName Value="CodeTools"/>
       </Item2>
       <Item3>
-        <PackageName Value="CodeTools"/>
-      </Item3>
-      <Item4>
         <PackageName Value="IDEIntf"/>
-      </Item4>
+      </Item3>
     </RequiredPackages>
     <Units Count="4">
       <Unit0>

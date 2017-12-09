@@ -65,6 +65,7 @@ type
   end;
 
 const
+  LazFindSearchOptionsDefault: array[Boolean] of TSynSearchOptions = ([], [ssoEntireScope, ssoSelectedOnly]);
   LazFindSearchOptionNames: array[TSynSearchOption] of string = (
     'MatchCase',
     'WholeWord',
