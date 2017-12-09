@@ -1,3 +1,5 @@
+{ Register IDE items
+}
 unit RegProjectGroup;
 
 {$mode objfpc}{$H+}
@@ -44,7 +46,7 @@ begin
   PGEditMenuSectionAddRemove:=MnuSection;
   RegisterMenuCmd(MnuCmdTargetAdd,MnuSection,'TargetAdd',lisTargetAdd);
   RegisterMenuCmd(MnuCmdTargetRemove,MnuSection,'TargetRemove',lisTargetRemove);
-  // ToDo: re-add
+  // ToDo: undo
 
   MnuSection:=RegisterIDEMenuSection(MnuRoot,'Use');
   PGEditMenuSectionUse:=MnuSection;

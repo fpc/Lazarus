@@ -16,7 +16,7 @@
     <Description Value="IDE Add-on for grouping projects, packages and project groups."/>
     <License Value="Same as IDEIntf.
 Modified LGPL-2."/>
-    <Version Minor="2"/>
+    <Version Minor="7"/>
     <Files Count="6">
       <Item1>
         <Filename Value="projectgroupintf.pp"/>
@@ -48,13 +48,10 @@ Modified LGPL-2."/>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="1">
       <Item1>
-        <PackageName Value="CodeTools"/>
-      </Item1>
-      <Item2>
         <PackageName Value="IDEIntf"/>
-      </Item2>
+      </Item1>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

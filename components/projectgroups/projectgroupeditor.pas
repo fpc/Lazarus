@@ -3,6 +3,7 @@
     - activate project when project is opened
     - deactivate project when project is closed
     - show active build mode
+    - auto load last group on IDE start when option enabled
 }
 unit ProjectGroupEditor;
 
