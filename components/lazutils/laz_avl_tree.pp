@@ -1462,7 +1462,7 @@ begin
   if ANode=nil then exit;
   {$IFDEF CheckAVLTreeNodeManager}
   if GetCurrentThreadId<>FThreadId then
-    raise Exception.Create('not thread safe!');
+    raise Exception.Create('TAVLTreeNodeMemManager.DisposeNode not thread safe!');
   {$ENDIF}
   if FCount < 0 then
     raise Exception.CreateFmt(
@@ -1491,7 +1491,7 @@ function TAVLTreeNodeMemManager.NewNode: TAVLTreeNode;
 begin
   {$IFDEF CheckAVLTreeNodeManager}
   if GetCurrentThreadId<>FThreadId then
-    raise Exception.Create('TAVLTreeNodeMemManager: not thread safe!');
+    raise Exception.Create('TAVLTreeNodeMemManager.NewNode: not thread safe!');
   {$ENDIF}
   if FFirstFree<>nil then begin
     // take from free list
@@ -1511,7 +1511,7 @@ var ANode: TAVLTreeNode;
 begin
   {$IFDEF CheckAVLTreeNodeManager}
   if GetCurrentThreadId<>FThreadId then
-    raise Exception.Create('not thread safe!');
+    raise Exception.Create('TAVLTreeNodeMemManager.Clear: not thread safe!');
   {$ENDIF}
   while FFirstFree<>nil do begin
     ANode:=FFirstFree;
