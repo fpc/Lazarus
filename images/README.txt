@@ -52,8 +52,8 @@ ADDING IMAGES TO LAZARUS POLICY
 Images in Lazarus can be under CC, GPL, LGPL, public domain or under the
 LGPL-modified license.
 When you are adding images to Lazarus add information about their origin in SVN
-commit log. If the icons are under CC or need an acknowledgement, be sure to
-update the Help->About Lazarus->Acknowledgements info.
+commit log and in copyright.txt. If the icons are under CC or need an acknowledgement,
+be sure to update the Help->About Lazarus->Acknowledgements info.
 
 Please use Tango icons whenever possible because they are SVG and exist in
 various PNG resolutions - it will make updating icons for high-DPI easy in the
