@@ -143,6 +143,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -244,6 +245,17 @@ begin
   SetCallbacks(Frame, WidgetInfo);
 
   Result := TLCLIntfHandle({%H-}PtrUInt(Frame));
+end;
+
+class function TGtk2WSCustomPanel.GetDefaultColor(const AControl: TControl;
+  const ADefaultColorType: TDefaultColorType): TColor;
+const
+  DefColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clBackground,
+ { dctFont } clBtnText
+  );
+begin
+  Result := DefColors[ADefaultColorType];
 end;
 
 class procedure TGtk2WSCustomPanel.SetColor(const AWinControl: TWinControl);
