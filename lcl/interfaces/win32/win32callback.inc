@@ -1234,7 +1234,11 @@ procedure TWindowProcHelper.DoMsgChar(var WinResult: LResult);
 begin
   OrgCharCode := Word(WParam);
   // Process surrogate pairs later
+  {$IF FPC_FULLVERSION>=30000}
   if TCharacter.IsSurrogate(WideChar(OrgCharCode)) then
+  {$ELSE}
+  if False then
+  {$ENDIF}
     WinProcess := True
   // first send a IntfUTF8KeyPress to the LCL
   // if the key was not handled send a CN_CHAR for AnsiChar<=#127
