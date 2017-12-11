@@ -232,6 +232,7 @@ var
   PackageLink: TPackageLink;
   PkgList: TList;
 begin
+  ANeedToRebuild := False;
   Result := mrOk;
   PkgList := TList.Create;
   try
@@ -245,7 +246,7 @@ begin
       end;
     end;
     if PkgList.Count > 0 then
-      Result := OPMInterface.InstallPackages(PkgList, Self, ANeedToRebuild);
+      Result := OPMInterface.InstallPackages(PkgList, ANeedToRebuild);
   finally
     PkgList.Free;
     PkgList := nil;

@@ -204,6 +204,8 @@ type
     function MoveFiles(TargetFilesEdit, SrcFilesEdit: IFilesEditorInterface;
       IDEFiles: TFPList; TargetDirectory: string): boolean;
     function CopyMoveFiles(Sender: TObject): boolean;
+    function ResolveBrokenDependenciesOnline(ABrokenDependencies: TFPList;
+      var ANeedToRebuild: Boolean): TModalResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -3306,22 +3308,67 @@ begin
   Result:=mrOk;
 end;
 
+function TPkgManager.ResolveBrokenDependenciesOnline(ABrokenDependencies: TFPList;
+  var ANeedToRebuild: Boolean): TModalResult;
+var
+  Dependency: TPkgDependency;
+  I: Integer;
+  PkgLinks: TList;
+  PkgLinksStr: String;
+  PackageLink: TPackageLink;
+begin
+  Result := mrCancel;
+  PkgLinks := TList.Create;
+  try
+    PkgLinksStr := '';
+    for I := 0 to ABrokenDependencies.Count - 1  do begin
+       Dependency := TPkgDependency(ABrokenDependencies[i]);
+       PackageLink := LazPackageLinks.FindLinkWithPkgName(Dependency.AsString);
+       if (PackageLink <> nil) and (PackageLink.Origin = ploOnline) then begin
+         if PkgLinksStr = '' then
+           PkgLinksStr := '"' + PackageLink.Name + '"'
+         else
+           PkgLinksStr := PkgLinksStr + ', ' + '"' + PackageLink.Name + '"';
+         PkgLinks.Add(PackageLink);
+       end;
+    end;
+    if PkgLinks.Count > 0 then begin
+      if IDEMessageDialog(lisInstallPackages, Format(lisInstallPackagesMsg, [PkgLinksStr]), mtConfirmation, [mbYes, mbNo]) = mrYes then
+        Result := OPMInterface.InstallPackages(PkgLinks, ANeedToRebuild);
+    end;
+  finally
+    PkgLinks.Free;
+  end;
+end;
+
 function TPkgManager.OpenProjectDependencies(AProject: TProject;
   ReportMissing: boolean): TModalResult;
 var
   BrokenDependencies: TFPList;
+  NeedToRebuild: Boolean;
 begin
+  NeedToRebuild := False;
   Result:=mrOk;
   PackageGraph.OpenRequiredDependencyList(AProject.FirstRequiredDependency);
   if ReportMissing then begin
     BrokenDependencies:=PackageGraph.FindAllBrokenDependencies(nil,
                                              AProject.FirstRequiredDependency);
     if BrokenDependencies<>nil then begin
-      Result:=ShowBrokenDependenciesReport(BrokenDependencies);
+      if OPMInterface <> nil then begin
+        ResolveBrokenDependenciesOnline(BrokenDependencies, NeedToRebuild);
+        BrokenDependencies := PackageGraph.FindAllBrokenDependencies(nil, AProject.FirstRequiredDependency);
+        if BrokenDependencies <> nil then
+          Result := ShowBrokenDependenciesReport(BrokenDependencies);
+      end
+      else
+        Result:=ShowBrokenDependenciesReport(BrokenDependencies);
       BrokenDependencies.Free;
     end;
   end;
   LazPackageLinks.SaveUserLinks;
+
+  if (OPMInterface <> nil) and (NeedToRebuild) then
+    MainIDEInterface.DoBuildLazarus([])
 end;
 
 function TPkgManager.AddProjectDependency(AProject: TProject;
