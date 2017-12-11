@@ -139,10 +139,15 @@ var
 begin
   MsgFrm := CreateMessageDialog(AMsg, ADlgType, AButtons);
   try
-    MsgFrm.Position := poDefaultSizeOnly;
     MsgFrm.FormStyle := fsSystemStayOnTop;
-    MsgFrm.Left := AParent.Left + (AParent.Width - MsgFrm.Width) div 2;
-    MsgFrm.Top := AParent.Top + (AParent.Height - MsgFrm.Height) div 2;
+    if AParent <> nil then
+    begin
+      MsgFrm.Position := poDefaultSizeOnly;
+      MsgFrm.Left := AParent.Left + (AParent.Width - MsgFrm.Width) div 2;
+      MsgFrm.Top := AParent.Top + (AParent.Height - MsgFrm.Height) div 2;
+    end
+    else
+      MsgFrm.Position := poWorkAreaCenter;
     Result := MsgFrm.ShowModal;
   finally
     MsgFrm.Free

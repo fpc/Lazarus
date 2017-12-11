@@ -9,8 +9,7 @@ object IntfPackageListFrm: TIntfPackageListFrm
   ClientWidth = 688
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PopupMode = pmExplicit
-  Position = poOwnerFormCenter
+  Position = poDefault
   LCLVersion = '1.9.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6

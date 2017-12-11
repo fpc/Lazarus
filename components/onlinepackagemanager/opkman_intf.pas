@@ -50,20 +50,17 @@ type
     procedure InitOPM;
     procedure SynchronizePackages;
     procedure AddToInstallList(const AName, AURL: String);
-    function Download(const ADstDir: String; AParentForm: TForm): TModalResult;
-    function Extract(const ASrcDir, ADstDir: String; AParentForm: TForm;
-      const AIsUpdate: Boolean = False): TModalResult;
-    function Install(AParentForm: TForm; var AInstallStatus: TInstallStatus;
-      var ANeedToRebuild: Boolean): TModalResult;
+    function Download(const ADstDir: String): TModalResult;
+    function Extract(const ASrcDir, ADstDir: String; const AIsUpdate: Boolean = False): TModalResult;
+    function Install(var AInstallStatus: TInstallStatus; var ANeedToRebuild: Boolean): TModalResult;
     function IsInLinkList(const AName, AURL: String): Boolean;
-    function ResolveDependencies(AParentForm: TForm): TModalResult;
-    function CanInstallPackages(AParentForm: TForm): TModalResult;
+    function ResolveDependencies: TModalResult;
+    function CanInstallPackages: TModalResult;
   public
     constructor Create;
     destructor Destroy; override;
   public
-    function InstallPackages(APkgLinks: TList; AParentForm: TForm;
-      var ANeedToRebuild: Boolean): TModalResult; override;
+    function InstallPackages(APkgLinks: TList; var ANeedToRebuild: Boolean): TModalResult; override;
   end;
 
 implementation
@@ -197,7 +194,7 @@ begin
   end;
 end;
 
-function TOPMInterfaceEx.ResolveDependencies(AParentForm: TForm): TModalResult;
+function TOPMInterfaceEx.ResolveDependencies: TModalResult;
 var
   I, J: Integer;
   PackageList: TObjectList;
@@ -227,9 +224,9 @@ begin
             if (Result = mrNone) or (Result = mrYes) then
               begin
                 Msg := Format(rsMainFrm_rsPackageDependency0, [TLazarusPackage(FPackagesToInstall.Items[I]).Name, DependencyPkg.Name]);
-                Result := MessageDlgEx(Msg, mtConfirmation, [mbYes, mbYesToAll, mbNo, mbNoToAll, mbCancel], AParentForm);
+                Result := MessageDlgEx(Msg, mtConfirmation, [mbYes, mbYesToAll, mbNo, mbNoToAll, mbCancel], nil);
                 if Result in [mrNo, mrNoToAll] then
-                  if MessageDlgEx(rsMainFrm_rsPackageDependency1, mtInformation, [mbYes, mbNo], AParentForm) <> mrYes then
+                  if MessageDlgEx(rsMainFrm_rsPackageDependency1, mtInformation, [mbYes, mbNo], nil) <> mrYes then
                     Exit(mrCancel);
                 if (Result = mrNoToAll) or (Result = mrCancel) then
                   Exit(mrCancel);
@@ -252,17 +249,16 @@ begin
   Result := mrOk;
 end;
 
-function TOPMInterfaceEx.CanInstallPackages(AParentForm: TForm): TModalResult;
+function TOPMInterfaceEx.CanInstallPackages: TModalResult;
 var
   I: Integer;
   LazarusPkg: TLazarusPackage;
   MetaPkg: TMetaPackage;
 begin
   Result := mrCancel;
-  IntfPackageListFrm := TIntfPackageListFrm.Create(AParentForm);
+  IntfPackageListFrm := TIntfPackageListFrm.Create(nil);
   try
-    IntfPackageListFrm.PopupMode := pmExplicit;
-    IntfPackageListFrm.PopupParent := AParentForm;
+    IntfPackageListFrm.Position := poWorkAreaCenter;
     IntfPackageListFrm.PopulateTree(FPackagesToInstall);
     IntfPackageListFrm.ShowModal;
     if IntfPackageListFrm.ModalResult = mrOk then
@@ -288,10 +284,11 @@ begin
   end;
 end;
 
-function TOPMInterfaceEx.Download(const ADstDir: String; AParentForm: TForm): TModalResult;
+function TOPMInterfaceEx.Download(const ADstDir: String): TModalResult;
 begin
-  ProgressFrm := TProgressFrm.Create(AParentForm);
+  ProgressFrm := TProgressFrm.Create(nil);
   try
+    ProgressFrm.Position := poWorkAreaCenter;
     ProgressFrm.SetupControls(0);
     PackageDownloader.OnPackageDownloadProgress := @ProgressFrm.DoOnPackageDownloadProgress;
     PackageDownloader.OnPackageDownloadError := @ProgressFrm.DoOnPackageDownloadError;
@@ -305,13 +302,14 @@ end;
 
 
 function TOPMInterfaceEx.Extract(const ASrcDir, ADstDir: String;
-  AParentForm: TForm; const AIsUpdate: Boolean): TModalResult;
+  const AIsUpdate: Boolean): TModalResult;
 begin
-  ProgressFrm := TProgressFrm.Create(AParentForm);
+  ProgressFrm := TProgressFrm.Create(nil);
   try
+    ProgressFrm.Position := poWorkAreaCenter;
+    ProgressFrm.SetupControls(1);
     PackageUnzipper := TPackageUnzipper.Create;
     try
-      ProgressFrm.SetupControls(1);
       PackageUnzipper.OnZipProgress := @ProgressFrm.DoOnZipProgress;
       PackageUnzipper.OnZipError := @ProgressFrm.DoOnZipError;
       PackageUnzipper.OnZipCompleted := @ProgressFrm.DoOnZipCompleted;
@@ -326,11 +324,12 @@ begin
   end;
 end;
 
-function TOPMInterfaceEx.Install(AParentForm: TForm; var AInstallStatus: TInstallStatus;
+function TOPMInterfaceEx.Install(var AInstallStatus: TInstallStatus;
   var ANeedToRebuild: Boolean): TModalResult;
 begin
-  ProgressFrm := TProgressFrm.Create(AParentForm);
+  ProgressFrm := TProgressFrm.Create(nil);
   try
+    ProgressFrm.Position := poWorkAreaCenter;
     ProgressFrm.SetupControls(2);
     Result := ProgressFrm.ShowModal;
     if Result = mrOk then
@@ -344,7 +343,7 @@ begin
 end;
 
 
-function TOPMInterfaceEx.InstallPackages(APkgLinks: TList; AParentForm: TForm;
+function TOPMInterfaceEx.InstallPackages(APkgLinks: TList;
   var ANeedToRebuild: Boolean): TModalResult;
 var
   I: Integer;
@@ -354,11 +353,11 @@ begin
   for I := 0 to APkgLinks.Count - 1 do
     AddToInstallList(TPackageLink(APkgLinks.Items[I]).Name + '.lpk', TPackageLink(APkgLinks.Items[I]).LPKUrl);
 
-  Result := CanInstallPackages(AParentForm);
+  Result := CanInstallPackages;
   if Result = mrCancel then
     Exit;
 
-  Result := ResolveDependencies(AParentForm);
+  Result := ResolveDependencies;
   if Result = mrCancel then
      Exit;
   for I := 0 to FPackageDependecies.Count - 1 do
@@ -368,7 +367,7 @@ begin
   PackageAction := paInstall;
   if SerializablePackages.DownloadCount > 0 then
   begin
-    Result := Download(Options.LocalRepositoryArchive, AParentForm);
+    Result := Download(Options.LocalRepositoryArchive);
     SerializablePackages.GetPackageStates;
   end;
 
@@ -376,7 +375,7 @@ begin
   begin
     if SerializablePackages.ExtractCount > 0 then
     begin
-      Result := Extract(Options.LocalRepositoryArchive, Options.LocalRepositoryPackages, AParentForm);
+      Result := Extract(Options.LocalRepositoryArchive, Options.LocalRepositoryPackages);
       SerializablePackages.GetPackageStates;
     end;
 
@@ -388,13 +387,13 @@ begin
       begin
         InstallStatus := isFailed;
         ANeedToRebuild := False;
-        Result := Install(AParentForm, InstallStatus, ANeedToRebuild);
+        Result := Install(InstallStatus, ANeedToRebuild);
         if Result = mrOk then
         begin
           SerializablePackages.MarkRuntimePackages;
           SerializablePackages.GetPackageStates;
           if (ANeedToRebuild) and ((InstallStatus = isSuccess) or (InstallStatus = isPartiallyFailed)) then
-            ANeedToRebuild :=  MessageDlgEx(rsOPMInterfaceRebuildConf, mtConfirmation, [mbYes, mbNo], AParentForm) = mrYes;
+            ANeedToRebuild :=  MessageDlgEx(rsOPMInterfaceRebuildConf, mtConfirmation, [mbYes, mbNo], nil) = mrYes;
         end;
       end;
     end;
