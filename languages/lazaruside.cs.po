@@ -10376,6 +10376,12 @@ msgstr "nainstalováno"
 msgid "Install it, I like the fat"
 msgstr "Nainstalovat jej, mám to rád tučné"
 
+#: lazarusidestrconsts.lisinstallpackagesmsg
+msgid ""
+"The following packages are not installed, but available in the main repository: %s.\n"
+"Do you wish to install missing packages?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Instalovat výběr"
@@ -13921,6 +13927,10 @@ msgstr "Zatím neimplementováno:%s%s"
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "nenainstalováno"
+
+#: lazarusidestrconsts.lisnotinstalledpackages
+msgid "Not installed packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-05 01:04+0300\n"
+"PO-Revision-Date: 2017-12-12 01:56+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10354,6 +10354,14 @@ msgstr "установлен"
 msgid "Install it, I like the fat"
 msgstr "Установить, я люблю полных"
 
+#: lazarusidestrconsts.lisinstallpackagesmsg
+msgid ""
+"The following packages are not installed, but available in the main repository: %s.\n"
+"Do you wish to install missing packages?\n"
+msgstr ""
+"Следующие пакеты доступны в главном репозитории, но не были установлены: %s.\n"
+"Хотите установить их?\n"
+
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Установить выбранное"
@@ -13814,6 +13822,10 @@ msgstr "Ещё не реализовано:%s%s"
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "не установлен"
+
+#: lazarusidestrconsts.lisnotinstalledpackages
+msgid "Not installed packages"
+msgstr "Неустановленные пакеты"
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"

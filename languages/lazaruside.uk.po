@@ -10359,6 +10359,12 @@ msgstr "Встановлено"
 msgid "Install it, I like the fat"
 msgstr "Встанови його, мені подобається жир"
 
+#: lazarusidestrconsts.lisinstallpackagesmsg
+msgid ""
+"The following packages are not installed, but available in the main repository: %s.\n"
+"Do you wish to install missing packages?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Встановити вибране"
@@ -13818,6 +13824,10 @@ msgstr "Ще не реалізовано:%s%s"
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "не встановлено"
+
+#: lazarusidestrconsts.lisnotinstalledpackages
+msgid "Not installed packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"

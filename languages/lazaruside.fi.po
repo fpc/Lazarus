@@ -10269,6 +10269,12 @@ msgstr "asennettu"
 msgid "Install it, I like the fat"
 msgstr "Asenna, pidän siitä turvonneena"
 
+#: lazarusidestrconsts.lisinstallpackagesmsg
+msgid ""
+"The following packages are not installed, but available in the main repository: %s.\n"
+"Do you wish to install missing packages?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Asenna valinta"
@@ -13694,6 +13700,10 @@ msgstr "Ei toteutettu vielä:%s%s"
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "ei asennettu"
+
+#: lazarusidestrconsts.lisnotinstalledpackages
+msgid "Not installed packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"

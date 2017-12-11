@@ -10354,6 +10354,12 @@ msgstr "instalado"
 msgid "Install it, I like the fat"
 msgstr "Install it, I like the fat"
 
+#: lazarusidestrconsts.lisinstallpackagesmsg
+msgid ""
+"The following packages are not installed, but available in the main repository: %s.\n"
+"Do you wish to install missing packages?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Instalar Seleção"
@@ -13813,6 +13819,10 @@ msgstr "Não implementado ainda:%s%s"
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "não instalado"
+
+#: lazarusidestrconsts.lisnotinstalledpackages
+msgid "Not installed packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"

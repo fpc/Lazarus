@@ -10343,6 +10343,12 @@ msgstr "インストール済み"
 msgid "Install it, I like the fat"
 msgstr "インストールします（注：肥大化します）"
 
+#: lazarusidestrconsts.lisinstallpackagesmsg
+msgid ""
+"The following packages are not installed, but available in the main repository: %s.\n"
+"Do you wish to install missing packages?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "選択対象をインストール"
@@ -13805,6 +13811,10 @@ msgstr "まだ実装されていません:%s%s"
 #: lazarusidestrconsts.lisnotinstalled
 msgid "not installed"
 msgstr "インストールされていません"
+
+#: lazarusidestrconsts.lisnotinstalledpackages
+msgid "Not installed packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
