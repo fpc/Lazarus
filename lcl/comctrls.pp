@@ -1892,6 +1892,8 @@ type
     procedure OnAssociateChangeVisible(Sender: TObject);
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    function DoMouseWheelLeft(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    function DoMouseWheelRight(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure SetEnabled(Value: Boolean); override;
     class function GetControlClassDefaultSize: TSize; override;
@@ -1954,6 +1956,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property Orientation;
     property ParentColor;
     property ParentShowHint;

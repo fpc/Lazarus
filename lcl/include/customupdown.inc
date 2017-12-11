@@ -440,6 +440,22 @@ begin
     TCustomSpeedButton(FMaxBtn).Click;
 end;
 
+function TCustomUpDown.DoMouseWheelLeft(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := inherited DoMouseWheelLeft(Shift, MousePos);
+  if not Result then
+    if Orientation=udHorizontal then
+      TCustomSpeedButton(FMinBtn).Click;
+end;
+
+function TCustomUpDown.DoMouseWheelRight(Shift: TShiftState; MousePos: TPoint): Boolean;
+begin
+  Result := inherited DoMouseWheelRight(Shift, MousePos);
+  if not Result then
+    if Orientation=udHorizontal then
+      TCustomSpeedButton(FMaxBtn).Click;
+end;
+
 procedure TCustomUpDown.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited;
