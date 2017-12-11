@@ -31,15 +31,15 @@ msgstr "Fechar diálogo e criar o pacote"
 
 #: opkman_const.rsaddrepositorypackagefrm_caption
 msgid "Add repository package"
-msgstr "Adicionar pacote de repositório"
+msgstr "Adicionar repositório de pacote"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbaddexisting_caption
 msgid "Add existing repository package from file"
-msgstr "Adicionar pacote de repositório existente do arquivo"
+msgstr "Adicionar repositório de pacote existente do arquivo"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbcreatenew_caption
 msgid "Create a new repository package"
-msgstr "Criar um novo pacote de repositório"
+msgstr "Criar um novo repositório de pacote"
 
 #: opkman_const.rscategoriesfrm_bcancel_caption
 msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
@@ -109,11 +109,11 @@ msgstr "Vincular ao arquivo de pacote compactado"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message0
 msgid "Please check a repository package!"
-msgstr "Favor marcar um pacote de repositório"
+msgstr "Favor marcar um repositório de pacote!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message1
 msgid "Please check only one repository package!"
-msgstr "Favor marcar apenas um pacote de repositório!"
+msgstr "Favor marcar apenas um repositório de pacote!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message2
 msgid "Please enter a valid URL!"
@@ -423,7 +423,7 @@ msgstr "Submeter arquivos ao servidor remoto"
 #: opkman_const.rscreaterepositorypackagefrm_caption
 msgctxt "opkman_const.rscreaterepositorypackagefrm_caption"
 msgid "Create repository package"
-msgstr "Criar pacote de repositório"
+msgstr "Criar repositório de pacote"
 
 #: opkman_const.rscreaterepositorypackagefrm_error0
 msgid "Error reading package"
@@ -514,7 +514,7 @@ msgstr "Criando JSON para atualizações. Aguarde..."
 #: opkman_const.rscreaterepositorypackagefrm_message7
 msgctxt "opkman_const.rscreaterepositorypackagefrm_message7"
 msgid "Repository package successfully created."
-msgstr "Pacote de repositório criado com sucesso."
+msgstr "Repositório de pacote criado com sucesso."
 
 #: opkman_const.rscreaterepositorypackagefrm_message8
 msgid "Sending files (\"%s\"). Please wait..."
@@ -552,7 +552,7 @@ msgstr "Aguarde..."
 
 #: opkman_const.rscreaterepositorypackagefrm_sddtitledst
 msgid "Save repository package to..."
-msgstr "Salvar pacote de repositório para..."
+msgstr "Salvar repositório de pacote para..."
 
 #: opkman_const.rscreaterepositorypackagefrm_sddtitlesrc
 msgid "Select package directory"
@@ -610,7 +610,7 @@ msgstr "Criar repositório privado"
 #: opkman_const.rsmainfrm_micreaterepositorypackage
 msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
 msgid "Create repository package"
-msgstr "Criar pacote de repositório"
+msgstr "Criar repositório de pacote"
 
 #: opkman_const.rsmainfrm_midescendent
 msgid "Descendent"
@@ -646,7 +646,7 @@ msgstr "Salvar para arquivo"
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
 msgid "The following repository packages already exist in the target folder. Continue?"
-msgstr "Os seguintes pacotes de repositório já existem na pasta destino. Continuar?"
+msgstr "Os seguintes repositórios de pacotes já existem na pasta destino. Continuar?"
 
 #: opkman_const.rsmainfrm_packagealreadyinstalled
 msgid "The following packages are already installed. Continue anyway?"
@@ -658,11 +658,11 @@ msgstr "Um pacote com o mesmo nome já existe!"
 
 #: opkman_const.rsmainfrm_packageupdate0
 msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
-msgstr "Os seguintes pacotes de repositório não estão instalados ou não têm um vínculo de descarga externo válido. Os pacotes serão ignorados. Continuar?"
+msgstr "Os seguintes repositórios de pacotes não estão instalados ou não têm um vínculo de descarga externo válido. Os pacotes serão ignorados. Continuar?"
 
 #: opkman_const.rsmainfrm_packageupdate1
 msgid "None of the checked repository packages is installed or has a valid external download link."
-msgstr "Nenhum dos pacotes de repositório marcados estão instalados ou têm um vínculo de descarga externo válido."
+msgstr "Nenhum dos repositórios de pacotes marcados estão instalados ou têm um vínculo de descarga externo válido."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
@@ -1283,7 +1283,7 @@ msgstr "A pasta onde os arquivos compactados são descarregados do repositório 
 
 #: opkman_const.rsoptions_edlocalrepositorypackages_hint
 msgid "The folder where the repository packages are extracted/installed"
-msgstr "A pasta onde os pacotes de repositório são extraídos/instalados"
+msgstr "A pasta onde os repositório de pacote são extraídos/instalados"
 
 #: opkman_const.rsoptions_edlocalrepositoryupdate_hint
 msgid "The folder where the zip files are downloaded from the package maintainer webpage"
@@ -1354,12 +1354,12 @@ msgstr "Exibir ícones diferentes para novos pacotes adicionados para (dias):"
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
 msgid "These files will be excluded from repository packages (see: \"Create repository package\")"
-msgstr "Estes arquivos serão excluídos do pacote de repositório (veja: \"Criar pacote de repositório\")"
+msgstr "Estes arquivos serão excluídos do repositório de pacotes (veja: \"Criar repositório de pacote\")"
 
 #: opkman_const.rsoptions_lbexcludefolders_hint
 msgctxt "opkman_const.rsoptions_lbexcludefolders_hint"
 msgid "These folders will be excluded from repository packages (see: \"Create repository package\")"
-msgstr "Estas pastas serão excluídas do pacote de repositório (veja: \"Criar pacote repositório\")"
+msgstr "Estas pastas serão excluídas do repositório de pacotes (veja: \"Criar repositório de pacote\")"
 
 #: opkman_const.rsoptions_lbfilterdirs_caption
 msgid "Excluded folders (packages)"
@@ -1470,7 +1470,7 @@ msgstr "Lista de pacotes atualizados"
 
 #: opkman_const.rspackagesfound
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
-msgstr "(%s pacotes de repositório encontrados, contendo %s arquivos lpk, tamanho total %s)"
+msgstr "(%s repositórios de pacotes encontrados, contendo %s arquivos lpk, tamanho total %s)"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"

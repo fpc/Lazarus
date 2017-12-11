@@ -879,11 +879,11 @@ msgstr "Classes de Ação Disponíveis:"
 
 #: objinspstrconsts.oisstring
 msgid "String"
-msgstr "Sequência de caracteres"
+msgstr "\"String\""
 
 #: objinspstrconsts.oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "Diálogo Editor Sequência Caracteres"
+msgstr "Diálogo editor de \"strings\""
 
 #: objinspstrconsts.oistdactcolorselect1headline
 msgid "Select &Color ..."

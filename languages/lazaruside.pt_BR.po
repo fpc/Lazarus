@@ -854,7 +854,7 @@ msgstr "Verificar pacotes na criação formulário"
 
 #: lazarusidestrconsts.dlgcheckpackagesonformcreatehint
 msgid "The form may require a package to work. Install such a package automatically."
-msgstr "O formulário pode requer um pacote para funcionar. Instalar tal pacote automaticamente."
+msgstr "O formulário pode requerer um pacote para funcionar. Instalar tal pacote automaticamente."
 
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
@@ -906,7 +906,7 @@ msgstr "Criar Makefile"
 #: lazarusidestrconsts.dlgcodebugging
 msgctxt "lazarusidestrconsts.dlgcodebugging"
 msgid "Debugging"
-msgstr "Depurando"
+msgstr "Depuração"
 
 #: lazarusidestrconsts.dlgcodebugpath
 msgid "Debugger path addition (none):"
@@ -996,23 +996,23 @@ msgstr "Prefixar comentários na quebra de linha"
 
 #: lazarusidestrconsts.dlgcommentcontinuematch
 msgid "Match current line"
-msgstr "Corresponder a linha atual"
+msgstr "Comparar a linha atual"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchasterisk
 msgid "Match text including \"*\" of token \"(*\""
-msgstr "Corresponder texto incluindo \"*\" do símbolo \"(*\""
+msgstr "Comparar texto incluindo \"*\" do símbolo \"(*\""
 
 #: lazarusidestrconsts.dlgcommentcontinuematchline
 msgid "Match whole line"
-msgstr "Corresponder a linha inteira"
+msgstr "Comparar a linha inteira"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtext
 msgid "Match text after token \"%s\""
-msgstr "Corresponder texto após o símbolo \"%s\""
+msgstr "Comparar texto após o símbolo \"%s\""
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtoken
 msgid "Match text including token \"%s\""
-msgstr "Corresponder texto incluindo o símbolo \"%s\""
+msgstr "Comparar texto incluindo o símbolo \"%s\""
 
 #: lazarusidestrconsts.dlgcommentcontinueprefix
 msgid "Prefix new line"
@@ -1036,19 +1036,19 @@ msgstr "Comentários"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend, if matched or not matched"
-msgstr "Estender, se correspondeu ou não"
+msgstr "Estender, se coincidiu ou não"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
 msgid "Extend, if matched or not matched (not at EOL)"
-msgstr "Estender, se correspondeu ou não (não no final de linha)"
+msgstr "Estender, se coincidiu ou não (não no final de linha)"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatch
 msgid "Extend, if matched"
-msgstr "Estender, se correspondeu"
+msgstr "Estender, se coincidiu"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
-msgstr "Estender, se correspondeu e o cursor texto estiver no meio do texto (não no final de linha)"
+msgstr "Estender, se coincidiu e o cursor texto estiver no meio do texto (não no final de linha)"
 
 #: lazarusidestrconsts.dlgcompilationandlinking
 msgid "Compilation and Linking"
@@ -1279,7 +1279,7 @@ msgstr "Desativar \"anti-aliasing\""
 
 #: lazarusidestrconsts.dlgdistancebetweengridpointsissmalleststep
 msgid "Distance between grid points is the smallest step when moving a control."
-msgstr "Distância entre os pontos da grade é o menor passo ao mover um controle."
+msgstr "Distância entre os pontos da grade é o menor espaço ao mover um controle."
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
@@ -1386,15 +1386,15 @@ msgstr "Inverter"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedoldedit
 msgid "Ignore Locks, use longest unused editor"
-msgstr "Ignorar Bloqueios, usar editor em desuso por mais tempo"
+msgstr "Ignorar bloqueios, usar editor em desuso por mais tempo"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactedit
 msgid "Ignore Locks, if editor is current"
-msgstr "Ignorar Bloqueios, se o editor for o atual"
+msgstr "Ignorar bloqueios, se o editor for o atual"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactwin
 msgid "Ignore Locks, if editor in current window"
-msgstr "Ignorar Bloqueios, se o editor estiver na janela atual"
+msgstr "Ignorar bloqueios, se o editor estiver na janela atual"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionlockedinview
 msgid "Locked, if text in view"
@@ -1434,7 +1434,7 @@ msgstr "Esta opção irá verificar se existe um editor para o arquivo alvo na j
 
 #: lazarusidestrconsts.dlgeditaccessdesclockedinview
 msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
-msgstr "Esta opção ira usar um editor bloqueado (e somente um bloqueado), que não precise se deslocar a fim de mostrar o ponto se salto alvo (ponto de salto alvo já está na área visível da tela)."
+msgstr "Esta opção irá usar um editor bloqueado (e somente um bloqueado), que não precise se deslocar a fim de mostrar o ponto se salto alvo (ponto de salto alvo já está na área visível da tela)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlocked
 msgid "This option will use any not locked Editor."
@@ -1528,7 +1528,7 @@ msgstr "Idioma"
 
 #: lazarusidestrconsts.dlgenvlanguagehint
 msgid "Language of all IDE strings. Restart IDE after changing it for best result."
-msgstr "Linguagem de todas as \"strings\" da IDE. Reiniciar após alteração para melhor resultado."
+msgstr "Idioma de todas as \"strings\" da IDE. Reiniciar após alteração para melhor resultado."
 
 #: lazarusidestrconsts.dlgenvlguidelines
 msgid "Guide lines"
@@ -1970,7 +1970,7 @@ msgstr "Tamanho X da Grade"
 
 #: lazarusidestrconsts.dlggridxhint
 msgid "Horizontal grid step size"
-msgstr "Tamanho do passo horizontal da grade"
+msgstr "Espaçamento horizontal da grade"
 
 #: lazarusidestrconsts.dlggridy
 msgid "Grid size Y"
@@ -1978,7 +1978,7 @@ msgstr "Tamanho Y da Grade"
 
 #: lazarusidestrconsts.dlggridyhint
 msgid "Vertical grid step size"
-msgstr "Tamanho do passo vertical da grade"
+msgstr "Espaçamento vertical da grade"
 
 #: lazarusidestrconsts.dlggroupcodeexplorer
 msgctxt "lazarusidestrconsts.dlggroupcodeexplorer"
@@ -2078,11 +2078,11 @@ msgstr "Realçar Cor Fonte"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
-msgstr "Esquerda do Cursor"
+msgstr "Esquerda do cursor"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
-msgstr "Direita do Cursos"
+msgstr "Direita do cursor"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
 msgid "Show hints for parameter \"Sender\" not used"
@@ -2440,7 +2440,7 @@ msgstr "Colchetes na palavras na posição cursor texto"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match whole words, if length is less or equal to:"
-msgstr "Corresponder palavras inteiras, se o comprimento é menor ou igual a:"
+msgstr "Comparar palavras inteiras, se o comprimento é menor ou igual a:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
@@ -3024,7 +3024,7 @@ msgstr "&Limpar ícone"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
 msgid "Create Application Bundle"
-msgstr "Criar Aplicação Encartada"
+msgstr "Criar aplicação inclusa"
 
 #: lazarusidestrconsts.dlgpodefaulticon
 msgid "Load &Default"
@@ -3643,7 +3643,7 @@ msgstr "Estilo de remoção de espaços"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaretmove
 msgid "Caret or Edit"
-msgstr "Marca ou Edita"
+msgstr "Marca ou edição"
 
 #: lazarusidestrconsts.dlgtrimspacetypeeditline
 msgid "Line Edited"
@@ -8699,7 +8699,9 @@ msgstr "Ativar Macros"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
-msgstr "Habilitado = pressionando \"Return\" substitue o identificador inteiro e \"Shift+Return\" o prefixo, Desabilitado = pressionando \"Return\" substitue o prefixo e \"Shift+Return\" o identificador inteiro"
+msgstr ""
+"Habilitado = pressionando \"Return\" substitue o identificador inteiro e \"Shift+Return\" o prefixo,\n"
+"Desabilitado = pressionando \"Return\" substitue o prefixo e \"Shift+Return\" o identificador inteiro\n"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -9114,7 +9116,7 @@ msgstr "Falha ao adicionar %d recurso(s) não únicos"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
-msgstr "Falha ao criar Aplicação Encartada para \"%s\""
+msgstr "Falha ao criar aplicação inclusa para \"%s\""
 
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
@@ -10003,7 +10005,7 @@ msgstr "Se não marcado:"
 
 #: lazarusidestrconsts.lisifonlysessioninfochangedthenask
 msgid "If only the session info changed, ask about saving it."
-msgstr "se apenas alterada a informação de sessão, perguntar sobre salvar."
+msgstr "Se apenas alterada a informação de sessão, perguntar sobre salvar."
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
@@ -13262,7 +13264,7 @@ msgstr "Aplicar à todos os pacotes e projetos."
 
 #: lazarusidestrconsts.lismmapplytoallpackagesmatching
 msgid "Apply to all packages matching name \"%s\""
-msgstr "Aplicar à todos os pacotes cujo nome corresponder a \"%s\""
+msgstr "Aplicar à todos os pacotes cujo nome coincidir a \"%s\""
 
 #: lazarusidestrconsts.lismmapplytoproject
 msgid "Apply to project."
@@ -16809,7 +16811,9 @@ msgstr "Definir padrão"
 
 #: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
 msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
-msgstr "Defina isto para traduzir as mensagens do compilador para outro idioma (isto é, não Inglês). Por exemplo: Alemão: $(FPCSrcDir)/compiler/msg/errordu.msg."
+msgstr ""
+"Defina isto para traduzir as mensagens do compilador para outro idioma (isto é, não Inglês).\n"
+"Por exemplo: Alemão: $(FPCSrcDir)/compiler/msg/errordu.msg.\n"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
@@ -16894,7 +16898,9 @@ msgstr "Exibir apenas modificado"
 
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
-msgstr "Exibir apenas um botão na barra de tarefas para toda a IDE, ao invés de um por janela. Alguns gerenciadores de janela Linux como Cinnamon não suportam isto e sempre exibem um botão por janela."
+msgstr ""
+"Exibir apenas um botão na barra de tarefas para toda a IDE, ao invés de um por janela.\n"
+"Alguns gerenciadores de janela Linux como Cinnamon não suportam isto e sempre exibem um botão por janela.\n"
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"

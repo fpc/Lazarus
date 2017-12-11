@@ -18,12 +18,12 @@ msgstr "Cancelar"
 #: glazresmain.defilter
 msgctxt "glazresmain.defilter"
 msgid "Lazarus Resource Files|*.lrs|All Files|*"
-msgstr "Arquivos de cursos Lazarus|*.lrs|All Files|*"
+msgstr "Arquivos de recursos Lazarus|*.lrs|All Files|*"
 
 #: glazresmain.desaveresourcefileas
 msgctxt "glazresmain.desaveresourcefileas"
 msgid "Save resourcefile as"
-msgstr "Salvar  arquivo recurso como"
+msgstr "Salvar arquivo de recurso como"
 
 #: glazresmain.errconverttotext
 msgid "ERROR: unable to convert Delphi form to text: \"%s\""
