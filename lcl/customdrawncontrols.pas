@@ -1560,10 +1560,10 @@ begin
     lControlText := GetCurrentLine();
 
     // Text left of the selection
-    lTextLeft := LazUTF8.UTF8Copy(lControlText, FEditState.VisibleTextStart.X, lSelLeftPos-FEditState.VisibleTextStart.X+1);
+    lTextLeft := UTF8Copy(lControlText, FEditState.VisibleTextStart.X, lSelLeftPos-FEditState.VisibleTextStart.X+1);
 
     // Text right of the selection
-    lTextRight := LazUTF8.UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
+    lTextRight := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
 
     // Execute the deletion
     SetCurrentLine(lTextLeft + lTextRight);
@@ -1595,7 +1595,7 @@ begin
 
   // Moved to the right and we need to adjust the text start
   lLineText := GetCurrentLine();
-  lVisibleText := LazUTF8.UTF8Copy(lLineText, FEditState.VisibleTextStart.X, Length(lLineText));
+  lVisibleText := UTF8Copy(lLineText, FEditState.VisibleTextStart.X, Length(lLineText));
   lAvailableWidth := Width
    - FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
    - FDrawer.GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
@@ -1609,7 +1609,7 @@ begin
   FEditState.VisibleTextStart.Y := Max(FEditState.CaretPos.Y-FEditState.FullyVisibleLinesCount, FEditState.VisibleTextStart.Y);
 
   // Impose limits in the caret too
-  FEditState.CaretPos.X := Min(FEditState.CaretPos.X, LazUTF8.UTF8Length(lLineText));
+  FEditState.CaretPos.X := Min(FEditState.CaretPos.X, UTF8Length(lLineText));
   FEditState.CaretPos.Y := Min(FEditState.CaretPos.Y, FEditState.Lines.Count-1);
   FEditState.CaretPos.Y := Max(FEditState.CaretPos.Y, 0);
 end;
@@ -1646,9 +1646,9 @@ begin
   // Find the best X position
   Canvas.Font := Font;
   lVisibleStr := FLines.Strings[Result.Y];
-  lVisibleStr := LazUTF8.UTF8Copy(lVisibleStr, FEditState.VisibleTextStart.X, Length(lVisibleStr));
+  lVisibleStr := UTF8Copy(lVisibleStr, FEditState.VisibleTextStart.X, Length(lVisibleStr));
   lVisibleStr := TCDDrawer.VisibleText(lVisibleStr, FEditState.PasswordChar);
-  lStrLen := LazUTF8.UTF8Length(lVisibleStr);
+  lStrLen := UTF8Length(lVisibleStr);
   lPos := FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
   lBestMatch := 0;
   for i := 0 to lStrLen do
@@ -1668,7 +1668,7 @@ begin
 
     if i <> lStrLen then
     begin
-      lCurChar := LazUTF8.UTF8Copy(lVisibleStr, i+1, 1);
+      lCurChar := UTF8Copy(lVisibleStr, i+1, 1);
       lCurCharLen := Canvas.TextWidth(lCurChar);
       lPos := lPos + lCurCharLen;
     end;
@@ -1707,7 +1707,7 @@ begin
   inherited KeyDown(Key, Shift);
 
   lOldText := GetCurrentLine();
-  lOldTextLength := LazUTF8.UTF8Length(lOldText);
+  lOldTextLength := UTF8Length(lOldText);
   FEditState.SelStart.Y := FEditState.CaretPos.Y;//ToDo: Change this when proper multi-line selection is implemented
 
   case Key of
@@ -1720,8 +1720,8 @@ begin
     // Normal backspace
     else if FEditState.CaretPos.X > 0 then
     begin
-      lLeftText := LazUTF8.UTF8Copy(lOldText, 1, FEditState.CaretPos.X-1);
-      lRightText := LazUTF8.UTF8Copy(lOldText, FEditState.CaretPos.X+1, lOldTextLength);
+      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X-1);
+      lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+1, lOldTextLength);
       SetCurrentLine(lLeftText + lRightText);
       Dec(FEditState.CaretPos.X);
       DoManageVisibleTextStart();
@@ -1737,8 +1737,8 @@ begin
     // Normal delete
     else if FEditState.CaretPos.X < lOldTextLength then
     begin
-      lLeftText := LazUTF8.UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
-      lRightText := LazUTF8.UTF8Copy(lOldText, FEditState.CaretPos.X+2, lOldTextLength);
+      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
+      lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+2, lOldTextLength);
       SetCurrentLine(lLeftText + lRightText);
       Invalidate;
     end;
@@ -1915,8 +1915,8 @@ begin
     else
     begin
       // Get the two halves of the text separated by the cursor
-      lLeftText := LazUTF8.UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
-      lRightText := LazUTF8.UTF8Copy(lOldText, FEditState.CaretPos.X+1, lOldTextLength);
+      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
+      lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+1, lOldTextLength);
       // Move the right part to a new line
       SetCurrentLine(lLeftText);
       FLines.Insert(FEditState.CaretPos.Y+1, lRightText);
@@ -1970,8 +1970,8 @@ begin
 
   // Normal characters
   lOldText := GetCurrentLine();
-  lLeftText := LazUTF8.UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
-  lRightText := LazUTF8.UTF8Copy(lOldText, FEditState.CaretPos.X+1, LazUTF8.UTF8Length(lOldText));
+  lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
+  lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+1, UTF8Length(lOldText));
   SetCurrentLine(lLeftText + UTF8Key + lRightText);
   Inc(FEditState.CaretPos.X);
   DoManageVisibleTextStart();

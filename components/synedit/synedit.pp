@@ -4077,7 +4077,7 @@ begin
         if (NX <= 0) and not InclCurrent then NX := LineLen + 1;
         if (NX <= 0) and InclCurrent then NX := 1;
 
-        ULine := LazUTF8.UTF8UpperCase(Line);
+        ULine := UTF8UpperCase(Line);
         CWidth := FTheLinesView.GetPhysicalCharWidths(CY - 1); // for utf 8
         OX := CX;
         i := Length(ULine);
@@ -4093,7 +4093,7 @@ begin
           CX := j;
         end;
         // skip lowercase
-        ULine := LazUTF8.UTF8LowerCase(Line);
+        ULine := UTF8LowerCase(Line);
         While (CX < NX) and (CX <= i) do begin          // check entire next utf-8 char to be equal
           r := (CX = OX) or (CX <= 1) or (Line[CX-1] <> '_') or ((CX <= i) and (Line[CX] = '_'));
           j := CX;
@@ -4177,7 +4177,7 @@ begin
     swbCaseChange: begin
         NX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
 
-        ULine := LazUTF8.UTF8LowerCase(Line);
+        ULine := UTF8LowerCase(Line);
         CWidth := FTheLinesView.GetPhysicalCharWidths(CY - 1); // for utf 8
         OX := CX;
         i := Length(ULine);

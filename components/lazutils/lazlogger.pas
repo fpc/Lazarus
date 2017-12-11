@@ -30,8 +30,6 @@ function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
 procedure DumpExceptionBackTrace;
 
 function ConvertLineEndings(const s: string): string;
-procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
-                           const Insertion: string); inline; deprecated 'use LazUTF8.ReplaceSubstring instead';
 
 type
 
@@ -815,12 +813,6 @@ begin
     end else
       inc(i);
   end;
-end;
-
-procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
-  const Insertion: string);
-begin
-  LazUTF8.ReplaceSubstring(s,StartPos,Count,Insertion);
 end;
 
 initialization

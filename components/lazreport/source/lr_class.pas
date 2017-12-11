@@ -12550,8 +12550,8 @@ begin
         s1 := InputBox('', frParser.Calc(p1), frParser.Calc(p2));
         val := s1;
       end;
-    7:val := UTF8Length(frParser.Calc(p1));                       //Add('LENGTH');            {7}
-    8: val := UTF8LowerCase(frParser.Calc(p1)); //Add('LOWERCASE');         {8}
+    7:val := UTF8Length(frParser.Calc(p1));                   //Add('LENGTH');            {7}
+    8: val := UTF8LowerCase(frParser.Calc(p1));               //Add('LOWERCASE');         {8}
     9: dk := dkMax;                                           //Add('MAX');               {9}
    10:begin                                                   //Add('MAXNUM');            {10}
         v2 := frParser.Calc(p1);
@@ -12590,7 +12590,7 @@ begin
          S1:=frParser.Calc(p1);
          val := Trim(S1);
        end;
-   21: val := LazUTF8.UTF8UpperCase(frParser.Calc(p1)); //Add('UPPERCASE');         {21}
+   21: val := UTF8UpperCase(frParser.Calc(p1));               //Add('UPPERCASE');         {21}
    22: val := YearOf(frParser.Calc(p1));                      //Add('YEAROF');            {22}
   end;
   
@@ -13461,8 +13461,7 @@ begin
   inherited SetValue(UTF8Decode(APath), UTF8Decode(AValue));
 end;
 
-function TLrXMLConfig.GetValue(const APath: string; const ADefault: string
-  ): string;
+function TLrXMLConfig.GetValue(const APath: string; const ADefault: string): string;
 {var
   wValue: widestring;}
 begin
@@ -13470,7 +13469,7 @@ begin
     result := {%H-}inherited GetValue(APath, ADefault{%H-})
   else
   begin
-    result := LazUTF8.UTF16ToUTF8(inherited GetValue(APath, ADefault));
+    result := UTF16ToUTF8(inherited GetValue(APath, ADefault));
 {    WValue := inherited GetValue(UTF8Decode(APath), UTF8Decode(ADefault));
     Result := UTF8Encode(WValue);}
   end;

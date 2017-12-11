@@ -2535,7 +2535,7 @@ begin
   if TranslatedItem<>nil then begin
     if System.Pos('$',TranslatedItem.Pattern)<1 then begin
       TranslatedMsg:=TranslatedItem.Pattern;
-      LazUTF8.UTF8FixBroken(TranslatedMsg);
+      UTF8FixBroken(TranslatedMsg);
     end
     else if MsgItem<>nil then
       TranslatedMsg:=TranslateFPCMsg(p,MsgItem.Pattern,TranslatedItem.Pattern);
@@ -2898,12 +2898,12 @@ var
 begin
   if Line='' then exit;
   if FPC_FullVersion>=20701 then
-    Line:=LazUTF8.ConsoleToUTF8(Line)
+    Line:=ConsoleToUTF8(Line)
   else begin
     {$IFDEF MSWINDOWS}
-    Line:=LazUTF8.WinCPToUTF8(Line);
+    Line:=WinCPToUTF8(Line);
     {$ELSE}
-    Line:=LazUTF8.SysToUTF8(Line);
+    Line:=SysToUTF8(Line);
     {$ENDIF}
   end;
   p:=PChar(Line);

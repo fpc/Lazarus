@@ -1997,7 +1997,7 @@ function TBaseCompilerOptions.CreateTargetFilename: string;
       aSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
       if (CompareText(aSrcOS, 'unix') = 0)
       then begin
-        Result:=PathName+Prefix+LazUTF8.UTF8LowerCase(FileName);
+        Result:=PathName+Prefix+UTF8LowerCase(FileName);
       end else begin
         Result:=PathName+Prefix+FileName;
       end;

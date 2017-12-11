@@ -3682,7 +3682,7 @@ begin
 
   // allow ppcxxx.exe
   if (CompareFilenames(copy(ShortFilename,1,3),'ppc')=0)
-  and ((ExeExt='') or (LazFileUtils.CompareFileExt(AFilename,ExeExt)=0))
+  and ((ExeExt='') or (CompareFileExt(AFilename,ExeExt)=0))
   then
     exit(true);
 
@@ -8887,7 +8887,7 @@ begin
           if Filename='' then continue;
           CfgFileExists:=Filename[1]='+';
           Filename:=copy(Filename,2,length(Filename));
-          FullFilename:=LazFileUtils.ExpandFileNameUTF8(TrimFileName(Filename),BaseDir);
+          FullFilename:=ExpandFileNameUTF8(TrimFileName(Filename),BaseDir);
           if CfgFileExists<>FileExistsCached(FullFilename) then begin
             debugln(['Warning: [TFPCTargetConfigCache.Update] fpc found cfg a file, the IDE did not: "',Filename,'"']);
             CfgFileExists:=not CfgFileExists;

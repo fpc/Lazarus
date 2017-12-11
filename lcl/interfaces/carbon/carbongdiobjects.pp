@@ -1077,7 +1077,7 @@ var
   PValue: ATSUAttributeValuePtr;
 begin
   // keep copy of text
-  FTextBuffer := LazUTF8.UTF8ToUTF16(Text);
+  FTextBuffer := UTF8ToUTF16(Text);
   if FTextBuffer='' then
     FTextBuffer:=#0#0;
   TextStyle := Font.Style;

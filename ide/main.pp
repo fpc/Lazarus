@@ -9587,7 +9587,7 @@ begin
       if (ActiveUnitInfo = nil) and (Project1.IsVirtual) and (jfSearchVirtualFullPath in Flags)
       then begin
         s := AppendPathDelim(GetTestBuildDirectory);
-        if LazUTF8.UTF8LowerCase(copy(NewSource.Filename, 1, length(s))) = LazUTF8.UTF8LowerCase(s)
+        if UTF8LowerCase(copy(NewSource.Filename, 1, length(s))) = UTF8LowerCase(s)
         then ActiveUnitInfo := Project1.UnitInfoWithFilename(copy(NewSource.Filename,
                 1+length(s), length(NewSource.Filename)), [pfsfOnlyVirtualFiles]);
       end;
