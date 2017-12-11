@@ -1165,51 +1165,6 @@ msgstr ""
 msgid "Lazarus Package"
 msgstr ""
 
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_author
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_author"
-msgid "Author"
-msgstr ""
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies"
-msgid "Dependencies"
-msgstr ""
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_description
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_description"
-msgid "Description"
-msgstr ""
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility"
-msgid "FPC compatibility"
-msgstr ""
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility"
-msgid "Lazarus compatibility"
-msgstr ""
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_license
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_license"
-msgid "License"
-msgstr ""
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype"
-msgid "Package type"
-msgstr ""
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets"
-msgid "Supported widgetsets"
-msgstr ""
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_version
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_version"
-msgid "Version"
-msgstr ""
-
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"

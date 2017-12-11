@@ -1196,60 +1196,6 @@ msgstr "Adat"
 msgid "Lazarus Package"
 msgstr ""
 
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_author
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_author"
-msgid "Author"
-msgstr "Szerző"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies"
-msgid "Dependencies"
-msgstr "Függőségek"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_description
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_description"
-msgid "Description"
-msgstr "Leírás"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility"
-msgid "FPC compatibility"
-msgstr "FPC kompatibilitás"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility"
-msgid "Lazarus compatibility"
-msgstr "Lazarus kompatibilitás"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_license
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_license"
-msgid "License"
-msgstr "Licenc"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype"
-msgid "Package type"
-msgstr "Csomag típusa"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets"
-msgid "Supported widgetsets"
-msgstr "Támogatott vezérlőkészletek"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_version
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_version"
-msgid "Version"
-msgstr "Változat"
-
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"

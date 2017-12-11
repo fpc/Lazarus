@@ -1198,60 +1198,6 @@ msgstr "Дані"
 msgid "Lazarus Package"
 msgstr ""
 
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_author
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_author"
-msgid "Author"
-msgstr "Автор"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_dependecies"
-msgid "Dependencies"
-msgstr "Залежності"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_description
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_description"
-msgid "Description"
-msgstr "Опис"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_fpccompatibility"
-msgid "FPC compatibility"
-msgstr "Сумісність з FPC"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_lazcompatibility"
-msgid "Lazarus compatibility"
-msgstr "Сумісність з Lazarus"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_license
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_license"
-msgid "License"
-msgstr "Ліцензія"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_packagetype"
-msgid "Package type"
-msgstr "Тип пакунка"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_supportedwidgetsets"
-msgid "Supported widgetsets"
-msgstr "Підтримувані бібліотеки віджетів"
-
-#: opkman_const.rsopmintfpackagelistfrm_vsttext_version
-#, fuzzy
-msgctxt "opkman_const.rsopmintfpackagelistfrm_vsttext_version"
-msgid "Version"
-msgstr "Версія"
-
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"
