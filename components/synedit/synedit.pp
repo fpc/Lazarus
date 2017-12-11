@@ -8945,7 +8945,7 @@ begin
       while not Highlighter.GetEol do begin
         Start := Highlighter.GetTokenPos + 1;
         Token := Highlighter.GetToken;
-        if (PosX >= Start) and (PosX <= Start + Length(Token)) then begin
+        if (PosX >= Start) and (PosX < Start + Length(Token)) then begin
           Attri := Highlighter.GetTokenAttribute;
           TokenType := Highlighter.GetTokenKind;
           exit(True);
@@ -8990,7 +8990,7 @@ begin
         //TokenType := Highlighter.GetTokenKind;
         Attri := Highlighter.GetTokenAttribute;
         //DebugLn(['  TCustomSynEdit.CaretAtIdentOrString: Start=', Start, ', Token=', Token]);
-        if (PosX >= Start) and (PosX <= Start + Length(Token)) then
+        if (PosX >= Start) and (PosX < Start + Length(Token)) then
         begin
           AtIdent := Attri = Highlighter.IdentifierAttribute;
           NearString := (Attri = Highlighter.StringAttribute)
