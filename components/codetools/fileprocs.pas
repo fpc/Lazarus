@@ -91,7 +91,7 @@ type
 // *** Wrappers for LazUTF8 ***
 function UTF8ToSys(const s: string): string; inline; deprecated 'Use the function in LazUTF8 unit';
 function SysToUTF8(const s: string): string; inline; deprecated 'Use the function in LazUTF8 unit';
-function UTF8CharacterLength(p: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CodepointSize(p: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
 // environment
 function ParamStrUTF8(Param: Integer): string; inline; deprecated 'Use the function in LazUTF8 unit';
 function GetEnvironmentStringUTF8(Index : Integer): String; inline; deprecated 'Use the function in LazUTF8 unit';
@@ -380,9 +380,9 @@ begin
   Result:=LazUTF8.SysToUTF8(s);
 end;
 
-function UTF8CharacterLength(p: PChar): integer;
+function UTF8CodepointSize(p: PChar): integer;
 begin
-  Result:=LazUTF8.UTF8CharacterLength(p);
+  Result:=LazUTF8.UTF8CodepointSize(p);
 end;
 
 function ParamStrUTF8(Param: Integer): string;
@@ -1700,7 +1700,7 @@ function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean
           {$ENDIF}
           if FileP^ in [#0,PathDelim] then exit;
           inc(MaskP);
-          inc(FileP,LazUTF8.UTF8CharacterLength(FileP));
+          inc(FileP,LazUTF8.UTF8CodepointSize(FileP));
         end;
       '*':
         begin
@@ -1808,8 +1808,8 @@ function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean
           while not (MaskP^ in [#0,SpecialChar,PathDelim,'?','*','{',',','}']) do
           begin
             if FileP^ in [#0,PathDelim] then exit;
-            inc(MaskP,LazUTF8.UTF8CharacterLength(MaskP));
-            inc(FileP,LazUTF8.UTF8CharacterLength(FileP));
+            inc(MaskP,LazUTF8.UTF8CodepointSize(MaskP));
+            inc(FileP,LazUTF8.UTF8CodepointSize(FileP));
           end;
           if LazFileUtils.CompareFilenames(MaskStart,MaskP-MaskStart,FileStart,FileP-FileStart)<>0 then
             exit;

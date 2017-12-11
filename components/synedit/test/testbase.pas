@@ -211,7 +211,7 @@ begin
       delete(Input, 1, 1);
       Continue;
     end;
-    l := UTF8CharacterLength(@Input[1]);
+    l := UTF8CodepointSize(@Input[1]);
     if l < 1 then Break;
     CommandProcessor(ecChar, copy(Input, 1, l), nil);
     delete(Input, 1, l);

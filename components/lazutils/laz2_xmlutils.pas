@@ -507,15 +507,15 @@ var
     DstP:=PChar(DstChars);
     Item:=List;
     for i:=1 to Count do begin
-      Item^.SrcLen:=UTF8CharacterLength(SrcP);
+      Item^.SrcLen:=UTF8CodepointSize(SrcP);
       Move(SrcP^,Item^.Src[0],Item^.SrcLen);
       if (DstP^<>#0) or (DstP-PChar(DstChars)<length(DstChars)) then begin
-        Item^.DstLen:=UTF8CharacterLength(DstP);
+        Item^.DstLen:=UTF8CodepointSize(DstP);
         Move(DstP^,Item^.Dst[0],Item^.DstLen);
       end;
       inc(Item);
-      inc(SrcP,UTF8CharacterLength(SrcP));
-      inc(DstP,UTF8CharacterLength(DstP));
+      inc(SrcP,UTF8CodepointSize(SrcP));
+      inc(DstP,UTF8CodepointSize(DstP));
     end;
   end;
 
@@ -565,7 +565,7 @@ var
     while true do begin
       c:=Src^;
       if (c=#0) and (Src-PChar(s)=length(s)) then break;
-      clen:=UTF8CharacterLength(Src);
+      clen:=UTF8CodepointSize(Src);
       NewCharP:=Src;
       NewCharLen:=clen;
       // do a quick test via Pos
@@ -613,7 +613,7 @@ var
       while true do begin
         c:=p^;
         if (c=#0) and (p-PChar(s)=length(s)) then break;
-        clen:=UTF8CharacterLength(p);
+        clen:=UTF8CodepointSize(p);
         // do a quick test via Pos
         i:=Pos(c,SrcChars);
         if i>0 then begin

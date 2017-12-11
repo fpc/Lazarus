@@ -1645,8 +1645,8 @@ begin
         end;
       end;
     end else begin
-      CharLen:=UTF8CharacterLength(PageP);
-      UpCharLen:=UTF8CharacterLength(PageUpP);
+      CharLen:=UTF8CodepointSize(PageP);
+      UpCharLen:=UTF8CodepointSize(PageUpP);
       if (CharLen>1) or (PageP^ in ['a'..'z','A'..'Z']) then begin
         if (CharLen=UpCharLen) and CompareMem(PageP,PageUpP,CharLen) then
           CaseFlags:=CaseFlags+'u'

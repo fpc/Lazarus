@@ -463,7 +463,7 @@ begin
 
   {$IF FPC_FULLVERSION >= 20701}
   if p^ <= #127 then exit;
-  i := UTF8CharacterLength(p);
+  i := UTF8CodepointSize(p);
   SetLength(u, i);
   // wide chars of UTF-16 <= bytes of UTF-8 string
   if ConvertUTF8ToUTF16(PWideChar(u), i + 1, p, i, [toInvalidCharToSymbol], L) = trNoError

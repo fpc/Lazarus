@@ -96,9 +96,9 @@ var
   Res: AnsiString; //intermediate needed for PChar -> String -> ShortString assignement
 begin
   Result := '';
-  p := UTF8CharStart(PChar(S), Length(S), Index - 1); //zero-based call
+  p := UTF8CodepointStart(PChar(S), Length(S), Index - 1); //zero-based call
   //determine the length in bytes of this UTF-8 character
-  PLen := UTF8CharacterLength(p);
+  PLen := UTF8CodepointSize(p);
   Res := p;
   //Set correct length for Result (otherwise it returns all chars up to the end of the original string)
   SetLength(Res,PLen);

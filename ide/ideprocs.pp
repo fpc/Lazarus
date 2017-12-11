@@ -1630,7 +1630,7 @@ function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean): str
             Dest[DestPos]:=Src[SrcPos];
           inc(PhysicalX);
           if UseUTF8 then
-            CharLen:=UTF8CharacterLength(@s[SrcPos])
+            CharLen:=UTF8CodepointSize(@s[SrcPos])
           else
             CharLen:=1;
           for i:=1 to CharLen do begin

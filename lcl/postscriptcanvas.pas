@@ -2352,7 +2352,7 @@ var
           Result := LineStart;
           LineWidth := 0;
           repeat
-            charLen := UTF8CharacterLength(@AText[Result]);
+            charLen := UTF8CodepointSize(@AText[Result]);
             CharWidth := TextWidth(MidStr(AText, Result, charLen));
             Inc(LineWidth, CharWidth);
             if LineWidth > MaxWidthInPixel then
@@ -2364,7 +2364,7 @@ var
           // at least one char
           if Result = LineStart then
           begin
-            charLen := UTF8CharacterLength(@AText[Result]);
+            charLen := UTF8CodepointSize(@AText[Result]);
             Inc(Result, charLen);
           end;
         end;

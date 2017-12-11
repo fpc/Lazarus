@@ -336,10 +336,10 @@ function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): UTF16String;
 
 {$IFDEF EnableWrapperFunctions}
-function UTF8CharacterLength(p: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CodepointSize(p: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8Length(const s: string): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
-function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CodepointToUnicode(p: PChar; out CharLen: integer): Cardinal; inline; deprecated 'Use the function in LazUTF8 unit';
 function UnicodeToUTF8(u: cardinal; Buf: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
 function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
 function UnicodeToUTF8(u: cardinal): shortstring; inline; deprecated 'Use the function in LazUTF8 unit';
@@ -348,11 +348,11 @@ function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt; in
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
                                   BytePos: integer): integer; inline; deprecated 'Use the function in LazUTF8 unit';
 // find the n-th UTF8 character, ignoring BIDI
-function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CodepointStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar; inline; deprecated 'Use the function in LazUTF8 unit';
 // find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
-function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CodepointToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
 procedure UTF8FixBroken(P: PChar); inline; deprecated 'Use the function in LazUTF8 unit';
-function UTF8CharacterStrictLength(P: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
+function UTF8CodepointStrictSize(P: PChar): integer; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8Pos(const SearchForText, SearchInText: string): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string; inline; deprecated 'Use the function in LazUTF8 unit';
@@ -360,7 +360,7 @@ procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt); inline; 
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt); inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8LowerCase(const s: String): String; inline; deprecated 'Use the function in LazUTF8 unit';
 function UTF8UpperCase(const s: String): String; inline; deprecated 'Use the function in LazUTF8 unit';
-function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
+function FindInvalidUTF8Codepoint(p: PChar; Count: PtrInt;
                                   StopOnNonASCII: Boolean = true): PtrInt; inline; deprecated 'Use the function in LazUTF8 unit';
 function ValidUTF8String(const s: String): String; inline; deprecated 'Use the function in LazUTF8 unit';
 
@@ -2744,9 +2744,9 @@ begin
 end;
 
 {$IFDEF EnableWrapperFunctions}
-function UTF8CharacterLength(p: PChar): integer;
+function UTF8CodepointSize(p: PChar): integer;
 begin
-  Result := LazUTF8.UTF8CharacterLength(p);
+  Result := LazUTF8.UTF8CodepointSize(p);
 end;
 
 function UTF8Length(const s: string): PtrInt;
@@ -2759,9 +2759,9 @@ begin
   Result := LazUTF8.UTF8Length(p, ByteCount);
 end;
 
-function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
+function UTF8CodepointToUnicode(p: PChar; out CharLen: integer): Cardinal;
 begin
-  Result := LazUTF8.UTF8CharacterToUnicode(p, CharLen);
+  Result := LazUTF8.UTF8CodepointToUnicode(p, CharLen);
 end;
 
 function UnicodeToUTF8(u: cardinal; Buf: PChar): integer;
@@ -2803,14 +2803,14 @@ end;
 
   This function is similar to UTF8FindNearestCharStart
 }
-function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
+function UTF8CodepointStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
 begin
-  Result := LazUTF8.UTF8CharStart(UTF8Str, Len, CharIndex);
+  Result := LazUTF8.UTF8CodepointStart(UTF8Str, Len, CharIndex);
 end;
 
-function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt;
+function UTF8CodepointToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt;
 begin
-  Result := LazUTF8.UTF8CharToByteIndex(UTF8Str, Len, CharIndex);
+  Result := LazUTF8.UTF8CodepointToByteIndex(UTF8Str, Len, CharIndex);
 end;
 
 { fix any broken UTF8 sequences with spaces }
@@ -2819,9 +2819,9 @@ begin
   LazUTF8.UTF8FixBroken(P);
 end;
 
-function UTF8CharacterStrictLength(P: PChar): integer;
+function UTF8CodepointStrictSize(P: PChar): integer;
 begin
-  Result := LazUTF8.UTF8CharacterStrictLength(P);
+  Result := LazUTF8.UTF8CodepointStrictSize(P);
 end;
 
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
@@ -2859,11 +2859,11 @@ begin
   Result := LazUTF8.UTF8UpperCase(s);
 end;
 
-function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
+function FindInvalidUTF8Codepoint(p: PChar; Count: PtrInt;
   StopOnNonASCII: Boolean): PtrInt;
 // return -1 if ok
 begin
-  Result := LazUTF8.FindInvalidUTF8Character(p, Count, StopOnNonASCII);
+  Result := LazUTF8.FindInvalidUTF8Codepoint(p, Count, StopOnNonASCII);
 end;
 
 function ValidUTF8String(const s: String): String;

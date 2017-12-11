@@ -2182,7 +2182,7 @@ var
     CurX := X;
     while CurCount > 0 do
     begin
-      CharLen := UTF8CharacterLength(CurStr);
+      CharLen := UTF8CodepointSize(CurStr);
       if AClipped then
       begin
         W := GetUTF8String(Copy(CurStr, 1, CharLen));

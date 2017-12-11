@@ -1362,7 +1362,7 @@ var
     // po requires special characters as #number
     p:=1;
     while p<=length(Value) do begin
-      j := UTF8CharacterLength(pchar(@Value[p]));
+      j := UTF8CodepointSize(pchar(@Value[p]));
       if (j=1) and (Value[p] in [#0..#9,#11,#12,#14..#31,#127..#255]) then
         Value := copy(Value,1,p-1)+'#'+IntToStr(ord(Value[p]))+copy(Value,p+1,length(Value))
       else

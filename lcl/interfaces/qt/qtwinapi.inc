@@ -2216,7 +2216,7 @@ var
     CurX := X;
     while CurCount > 0 do
     begin
-      CharLen := UTF8CharacterLength(CurStr);
+      CharLen := UTF8CodepointSize(CurStr);
       W := {%H-}Copy(CurStr, 1, CharLen);
       if AClipped then
         QtDC.drawText(CurX, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top,

@@ -182,7 +182,7 @@ begin
     s:=SortedTable[i];
     if (length(s)=1) and (ord(s[1])<=127) then begin
     end else if s<>'' then begin
-      UniCode:=UTF8CharacterToUnicode(@s[1],CharLen);
+      UniCode:=UTF8CodepointToUnicode(@s[1],CharLen);
       TableIndex:=StrToTableIndex(s);
       j:=1;
       while (i+j<256) do begin
@@ -191,11 +191,11 @@ begin
           ' SortedTable[i]=',ToStringConstant(s),
           ' SortedTable[i+j]=',ToStringConstant(SortedTable[i+j]),
           ' UniCode[i]=',UniCode,
-          ' UniCode[i+j]=',UTF8CharacterToUnicode(@SortedTable[i+j][1],CharLen),
+          ' UniCode[i+j]=',UTF8CodepointToUnicode(@SortedTable[i+j][1],CharLen),
           ' TableIndex[i]=',TableIndex,
           ' TableIndex[i+j]=',StrToTableIndex(SortedTable[i+j]),
           '');}
-        if UTF8CharacterToUnicode(@SortedTable[i+j][1],CharLen)<>UniCode+j then
+        if UTF8CodepointToUnicode(@SortedTable[i+j][1],CharLen)<>UniCode+j then
           break;
         if StrToTableIndex(SortedTable[i+j])<>TableIndex+j then
           break;

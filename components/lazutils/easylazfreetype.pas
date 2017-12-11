@@ -544,8 +544,8 @@ begin
       exit;
     end;
 
-    charlen := UTF8CharacterLength(pstr);
-    glyphCode := UTF8CharacterToUnicode(pstr, charlen);
+    charlen := UTF8CodepointSize(pstr);
+    glyphCode := UTF8CodepointToUnicode(pstr, charlen);
     inc(pstr,charlen);
 
     glyphWidth := CharWidthFromUnicode(glyphCode);
@@ -1487,7 +1487,7 @@ begin
   left := length(AText);
   while left > 0 do
   begin
-    charcode := UTF8CharacterToUnicode(pstr, charlen);
+    charcode := UTF8CodepointToUnicode(pstr, charlen);
     inc(pstr,charlen);
     dec(left,charlen);
     g := Glyph[CharIndex[charcode]];
@@ -1572,7 +1572,7 @@ begin
   left := length(AText);
   while left > 0 do
   begin
-    charcode := UTF8CharacterToUnicode(pstr, charlen);
+    charcode := UTF8CodepointToUnicode(pstr, charlen);
     inc(pstr,charlen);
     dec(left,charlen);
     g := Glyph[CharIndex[charcode]];
@@ -1647,7 +1647,7 @@ begin
   resultIndex := 0;
   while left > 0 do
   begin
-    charcode := UTF8CharacterToUnicode(pstr, charlen);
+    charcode := UTF8CodepointToUnicode(pstr, charlen);
     inc(pstr,charlen);
     dec(left,charlen);
 
@@ -1757,7 +1757,7 @@ begin
         if left <= 0 then break;
       end;
     end;
-    charcode := UTF8CharacterToUnicode(pstr, charlen);
+    charcode := UTF8CodepointToUnicode(pstr, charlen);
     inc(pstr,charlen);
     dec(left,charlen);
     g := Glyph[CharIndex[charcode]];

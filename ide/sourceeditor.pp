@@ -2556,7 +2556,7 @@ begin
   if LogCaret.Y>=Editor.Lines.Count then exit;
   Line:=Editor.Lines[LogCaret.Y-1];
   if LogCaret.X>length(Line) then exit;
-  CharLen:=UTF8CharacterLength(@Line[LogCaret.X]);
+  CharLen:=UTF8CodepointSize(@Line[LogCaret.X]);
   AddPrefix:=copy(Line,LogCaret.X,CharLen);
   NewPrefix:=CurrentString+AddPrefix;
   //debugln('TSourceNotebook.OnSynCompletionNextChar NewPrefix="',NewPrefix,'" LogCaret.X=',dbgs(LogCaret.X));

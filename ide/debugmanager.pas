@@ -993,7 +993,7 @@ begin
     ExceptMsg := AExceptionText;
     // if AExceptionText is not a valid UTF8 string,
     // then assume it has the ansi encoding and convert it
-    if FindInvalidUTF8Character(pchar(ExceptMsg),length(ExceptMsg)) > 0 then
+    if FindInvalidUTF8Codepoint(pchar(ExceptMsg),length(ExceptMsg)) > 0 then
       ExceptMsg := AnsiToUtf8(ExceptMsg);
     msg := Format(lisProjectSRaisedExceptionClassSWithMessageSS,
                   [GetTitle, AExceptionClass, LineEnding, ExceptMsg]);

@@ -17,7 +17,7 @@ begin
   WideCount := Min(WideCount, StrLen);
   while (CharCount < WideCount) do
   begin
-    CharLen := UTF8CharacterLength(P);
+    CharLen := UTF8CodepointSize(P);
     Inc(P, CharLen);
     Inc(Result, CharLen);
     Inc(CharCount);

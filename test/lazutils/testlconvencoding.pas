@@ -44,7 +44,7 @@ procedure TTestLConvEncoding.Test_CP_UTF8_CP;
         AssertEquals('CodePage '+CodePageName+' to UTF8 creates empty string for character #'+IntToStr(ord(c)),true,false);
       Back:=ConvertEncodingFromUTF8(AsUTF8,CodePageName,Encoded);
       if Back<>c then
-        AssertEquals('CodePage '+CodePageName+' ('+IntToStr(ord(c))+') to UTF8 ('+dbgs(UTF8CharacterToUnicode(PChar(AsUTF8),l))+') and back differ for character #'+IntToStr(ord(c)),DbgStr(c),dbgstr(Back));
+        AssertEquals('CodePage '+CodePageName+' ('+IntToStr(ord(c))+') to UTF8 ('+dbgs(UTF8CodepointToUnicode(PChar(AsUTF8),l))+') and back differ for character #'+IntToStr(ord(c)),DbgStr(c),dbgstr(Back));
     end;
   end;
 

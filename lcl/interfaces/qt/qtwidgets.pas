@@ -3500,7 +3500,7 @@ begin
   {$endif}
   InputEvent := QInputMethodEventH(Event);
   QInputMethodEvent_commitString(InputEvent, @WStr);
-  UnicodeChar := UTF8CharacterToUnicode(PChar(WStr), UnicodeOutLen);
+  UnicodeChar := UTF8CodepointToUnicode(PChar(WStr), UnicodeOutLen);
   {$IFDEF VerboseQtKeys}
   writeln('> TQtWidget.SlotInputMethod ',dbgsname(LCLObject),' event=QEventInputMethod:');
   writeln('   commmitString ',WStr,' len ',length(WStr),' UnicodeChar ',UnicodeChar,

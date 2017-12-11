@@ -1031,7 +1031,7 @@ begin
     case s[SrcPos] of
     #192..#240:
       begin
-        OldCode:=UTF8CharacterToUnicode(@s[SrcPos],CharLen);
+        OldCode:=UTF8CodepointToUnicode(@s[SrcPos],CharLen);
         NewCode:=UnicodeLowercase(OldCode);
         if NewCode=OldCode then begin
           inc(DstPos,CharLen);
@@ -1054,7 +1054,7 @@ begin
     case s[SrcPos] of
     #192..#240:
       begin
-        OldCode:=UTF8CharacterToUnicode(@s[SrcPos],CharLen);
+        OldCode:=UTF8CodepointToUnicode(@s[SrcPos],CharLen);
         NewCode:=UnicodeLowercase(OldCode);
         if NewCode=OldCode then begin
           System.Move(s[SrcPos],Result[DstPos],CharLen);
@@ -1107,7 +1107,7 @@ begin
 
     #192..#240: // Now chars with multiple bytes
       begin
-        OldCode:=UTF8CharacterToUnicode(p,CharLen);
+        OldCode:=UTF8CodepointToUnicode(p,CharLen);
         NewCode:=UnicodeLowercase(OldCode);
         if NewCode<>OldCode then begin
           if not Changed then begin

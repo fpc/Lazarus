@@ -212,7 +212,7 @@ end;  { SpaceProc }
 procedure TSynTeXSyn.TextProc;
 begin
   fTokenID:=tkText;
-  inc(Run,UTF8CharacterLength(@fLine[Run]));
+  inc(Run,UTF8CodepointSize(@fLine[Run]));
 end;  { TextProc }
 
 procedure TSynTeXSyn.LFProc;

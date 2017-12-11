@@ -964,7 +964,7 @@ begin
   Result := 0;
   SetLength(Desc, Length(S));
   while i<=Length(s) do begin
-    b := UTF8CharacterStrictLength(@S[i]);
+    b := UTF8CodepointStrictSize(@S[i]);
     inc(i,b);
     inc(Result);
     Desc[Result] := Char(b);
@@ -1096,7 +1096,7 @@ begin
   SpcSize := 0;
   while i<=Length(str) do
   begin
-    b := UTF8CharacterStrictLength(@Str[i]);
+    b := UTF8CodepointStrictSize(@Str[i]);
     spc := (b=1) and (str[i]=' ');
     inc(len);
     j := Length(result)-1;

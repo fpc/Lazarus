@@ -7029,7 +7029,7 @@ begin
       inc(Src);
       dec(len);
     end else begin
-      Unicode:=UTF8CharacterToUnicode(Src,CharLen);
+      Unicode:=UTF8CodepointToUnicode(Src,CharLen);
       inc(Src,CharLen);
       dec(len,CharLen);
       i:=UTF8CharConvFunc(Unicode);
@@ -7068,7 +7068,7 @@ begin
       inc(Src);
       dec(len);
     end else begin
-      Unicode:=UTF8CharacterToUnicode(Src,CharLen);
+      Unicode:=UTF8CodepointToUnicode(Src,CharLen);
       inc(Src,CharLen);
       dec(len,CharLen);
       if Unicode<=$ffff then begin
@@ -7108,7 +7108,7 @@ begin
       inc(Src);
       dec(len);
     end else begin
-      Unicode:=UTF8CharacterToUnicode(Src,CharLen);
+      Unicode:=UTF8CodepointToUnicode(Src,CharLen);
       inc(Src,CharLen);
       dec(len,CharLen);
       if Unicode<=$ffff then begin
@@ -7265,7 +7265,7 @@ begin
       end;
       inc(p);
     end else begin
-      i:=UTF8CharacterStrictLength(p);
+      i:=UTF8CodepointStrictSize(p);
       //DebugLn(['GuessEncoding ',i,' ',DbgStr(s[p])]);
       if i=0 then begin
         {$IFDEF VerboseIDEEncoding}

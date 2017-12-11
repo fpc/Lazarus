@@ -66,7 +66,7 @@ procedure TTestLazUTF8.TestFindInvalidUTF8;
   var
     Actual: PtrInt;
   begin
-    Actual:=FindInvalidUTF8Character(PChar(s),length(s));
+    Actual:=FindInvalidUTF8Codepoint(PChar(s),length(s));
     AssertEquals(Title+': '+dbgMemRange(Pointer(s),length(s)),Expected,Actual);
   end;
 

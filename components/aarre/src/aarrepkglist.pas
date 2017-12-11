@@ -206,7 +206,7 @@ var
 begin
   Result:=s;
   if Result='' then exit;
-  i:=FindInvalidUTF8Character(PChar(Result),length(Result));
+  i:=FindInvalidUTF8Codepoint(PChar(Result),length(Result));
   if i<0 then exit;
   Result:=ISO_8859_1ToUTF8(Result);
 end;

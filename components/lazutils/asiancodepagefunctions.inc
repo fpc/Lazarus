@@ -217,7 +217,7 @@ begin
     end
     else
     begin
-      Unicode := UTF8CharacterToUnicode(Src, CharLen);
+      Unicode := UTF8CodepointToUnicode(Src, CharLen);
       Inc(Src, CharLen);
       i := UTF8CharConvFunc(Unicode);
       //writeln(Format('%X', [i]));

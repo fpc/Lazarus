@@ -189,7 +189,7 @@ begin
   p:=Str;
   if p=nil then exit(0);
   while p^<>#0 do begin
-    l:=UTF8CharacterLength(p);
+    l:=UTF8CodepointSize(p);
     inc(Result);
     inc(p,l);
   end;

@@ -142,7 +142,7 @@ begin
   for i:=0 to $10FFFF do
   begin
     s:=UnicodeToUTF8(i);
-    u:=UTF8CharacterToUnicode(PChar(s), dum);
+    u:=UTF8CodepointToUnicode(PChar(s), dum);
     AssertEquals('got (hexidecimal): ' + InttoHex(u,6), i, u);
   end;
 end;

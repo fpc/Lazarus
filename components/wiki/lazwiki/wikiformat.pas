@@ -542,7 +542,7 @@ begin
         if (p^ in WFCAllowedChars) and (p[1] in WFCAllowedChars)
         and (p[2] in WFCAllowedChars) then
           break; // the next three are normal characters -> stop encoding as base64
-        CharLen:=UTF8CharacterLength(p);
+        CharLen:=UTF8CodepointSize(p);
         {$ifdef VerboseWikiFileCode}
         writeln('UTF8ToWikiFileCode sequence UTF8CharLen=',CharLen);
         {$endif}
@@ -706,7 +706,7 @@ begin
     end else
       raise Exception.Create('invalid wiki file code: invalid character');
   until false;
-  if FindInvalidUTF8Character(PChar(Result),length(Result))>=0 then
+  if FindInvalidUTF8Codepoint(PChar(Result),length(Result))>=0 then
     raise Exception.Create('invalid wiki file code: result is not UTF-8');
 end;
 

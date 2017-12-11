@@ -307,7 +307,7 @@ begin
     if (p = 0) or (p = Length(aText)) then Break;
     if aText[p+1] <> '&' then  // '&&' is reduced to '&' by widgetset GUI.
     begin
-      UTF8Len := UTF8CharacterLength(@aText[p+1]);
+      UTF8Len := UTF8CodepointSize(@aText[p+1]);
       accelStr := UTF8UpperCase(Copy(aText, p+1, UTF8Len)); // force uppercase
       // ToDo: Use the whole UTF-8 character in accelStr. How?
       aShortcut := KeyToShortCut(Ord(accelStr[1]),

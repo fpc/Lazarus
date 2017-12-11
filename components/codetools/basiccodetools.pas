@@ -5341,7 +5341,7 @@ var
     var
       l: LongInt;
     begin
-      l:=UTF8CharacterLength(@Src[APos]);
+      l:=UTF8CodepointSize(@Src[APos]);
       inc(APos);
       dec(l);
       while (l>0) and (APos<ParsedLen) do begin

@@ -187,7 +187,7 @@ begin
   else
     Result := 1
   {$ELSE}
-  Result := UTF8CharacterLengthFast(p);
+  Result := UTF8CodepointSizeFast(p);
   {$ENDIF}
 end;
 

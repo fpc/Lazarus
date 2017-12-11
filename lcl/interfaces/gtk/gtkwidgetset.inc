@@ -5758,7 +5758,7 @@ var
         Result:=LineStart;
         LineWidth:=0;
         repeat
-          charLen:=UTF8CharacterLength(@AText[result]);
+          charLen:=UTF8CodepointSize(@AText[result]);
           CharWidth:=GetLineWidthInPixel(Result,charLen);
           inc(LineWidth,CharWidth);
           if LineWidth>MaxWidthInPixel then break;
@@ -5767,7 +5767,7 @@ var
         until false;
         // at least one char
         if Result=LineStart then begin
-          charLen:=UTF8CharacterLength(@AText[result]);
+          charLen:=UTF8CodepointSize(@AText[result]);
           inc(Result,charLen);
         end;
       end;

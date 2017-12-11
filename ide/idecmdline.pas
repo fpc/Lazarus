@@ -136,7 +136,7 @@ begin
           s := Trim(s);
           {$ifdef windows}
           //cfg file is made by Windows installer and probably is Windows default codepage
-          if FindInvalidUTF8Character(PChar(s), Length(s), True) > 0 then
+          if FindInvalidUTF8Codepoint(PChar(s), Length(s), True) > 0 then
             s := WinCPToUtf8(s);
           {$endif windows}
           ParamsAndCfgFileContent.Add(s)

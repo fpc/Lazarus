@@ -293,7 +293,7 @@ begin
   CondSynEdit.GetWordBoundsAtRowCol(XY,StartX,EndX);
   if EndX<=XY.X then exit;
   Line := CondSynEdit.Lines[XY.Y - 1];
-  inc(XY.X,UTF8CharacterLength(@Line[XY.X-1]));
+  inc(XY.X,UTF8CodepointSize(@Line[XY.X-1]));
   CondSynEdit.LogicalCaretXY:=XY;
 end;
 
