@@ -8990,13 +8990,20 @@ begin
         //TokenType := Highlighter.GetTokenKind;
         Attri := Highlighter.GetTokenAttribute;
         //DebugLn(['  TCustomSynEdit.CaretAtIdentOrString: Start=', Start, ', Token=', Token]);
-        if (PosX >= Start) and (PosX < Start + Length(Token)) then
+        if (PosX = Start) then
         begin
-          AtIdent := Attri = Highlighter.IdentifierAttribute;
+          AtIdent := (Attri = Highlighter.IdentifierAttribute)
+                  or (PrevAttri = Highlighter.IdentifierAttribute);
           NearString := (Attri = Highlighter.StringAttribute)
                  or (PrevAttri = Highlighter.StringAttribute); // If cursor is on end-quote.
           //DebugLn(['   TCustomSynEdit.CaretAtIdentOrString: Success! Attri=', Attri,
           //         ', AtIdent=', AtIdent, ', AtString=', AtString]);
+          exit;
+        end;
+        if (PosX >= Start) and (PosX < Start + Length(Token)) then
+        begin
+          AtIdent := Attri = Highlighter.IdentifierAttribute;
+          NearString := (Attri = Highlighter.StringAttribute);
           exit;
         end;
         PrevAttri := Attri;
