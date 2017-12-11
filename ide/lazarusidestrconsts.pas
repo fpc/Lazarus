@@ -4297,8 +4297,8 @@ resourcestring
   lisPkgMangTheFollowingPackageFailedToLoad = 'The following package failed to load:';
   lisPkgMangTheFollowingPackagesFailedToLoad = 'The following packages failed to load:';
   lisMissingPackages = 'Missing Packages';
-  lisInstallPackages = 'Install Packages';
-  lisInstallPackagesMsg = 'The following package(s) are not installed, but available in the main repository: %s.' +
+  lisNotInstalledPackages = 'Not installed packages';
+  lisInstallPackagesMsg = 'The following packages are not installed, but available in the main repository: %s.' +
     sLineBreak + 'Do you wish to install missing packages?';
   lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA = 'other sources path '
     +'of package "%s" contains directory "%s", which is already in the unit '

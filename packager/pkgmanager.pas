@@ -3333,7 +3333,7 @@ begin
        end;
     end;
     if PkgLinks.Count > 0 then begin
-      if IDEMessageDialog(lisInstallPackages, Format(lisInstallPackagesMsg, [PkgLinksStr]), mtConfirmation, [mbYes, mbNo]) = mrYes then
+      if IDEMessageDialog(lisNotInstalledPackages, Format(lisInstallPackagesMsg, [PkgLinksStr]), mtConfirmation, [mbYes, mbNo]) = mrYes then
         Result := OPMInterface.InstallPackages(PkgLinks, ANeedToRebuild);
     end;
   finally
