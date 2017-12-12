@@ -1,3 +1,5 @@
+{ Dialog to configure Build/Run file
+}
 unit BuildFileDlg;
 
 {$mode objfpc}{$H+}
@@ -37,32 +39,33 @@ type
   { TBuildFileDialog }
 
   TBuildFileDialog = class(TForm)
-    AlwaysCompileFirstCheckbox: TCHECKBOX;
-    BuildBrowseWorkDirButton: TBUTTON;
-    BuildCommandGroupbox: TGROUPBOX;
-    BuildCommandMemo: TMEMO;
-    BuildScanForFPCMsgCheckbox: TCHECKBOX;
-    BuildScanForMakeMsgCheckbox: TCHECKBOX;
-    BuildWorkDirCombobox: TCOMBOBOX;
-    BuildWorkingDirGroupbox: TGROUPBOX;
+    RunBeforeBuildCheckbox: TCheckBox;
+    BuildBrowseWorkDirButton: TButton;
+    BuildCommandGroupbox: TGroupBox;
+    BuildCommandMemo: TMemo;
+    BuildScanForFPCMsgCheckbox: TCheckBox;
+    BuildScanForMakeMsgCheckbox: TCheckBox;
+    BuildWorkDirCombobox: TComboBox;
+    BuildWorkingDirGroupbox: TGroupBox;
     BuildPage: TTabSheet;
     ButtonPanel: TButtonPanel;
     GeneralPage: TTabSheet;
     Notebook1: TPageControl;
-    OverrideBuildProjectCheckbox: TCHECKBOX;
-    OverrideRunProjectCheckbox: TCHECKBOX;
-    RunBrowseWorkDirButton: TBUTTON;
-    RunCommandGroupbox: TGROUPBOX;
-    RunCommandMemo: TMEMO;
+    OverrideBuildProjectCheckbox: TCheckBox;
+    OverrideRunProjectCheckbox: TCheckBox;
+    RunBrowseWorkDirButton: TButton;
+    RunCommandGroupbox: TGroupBox;
+    RunCommandMemo: TMemo;
     RunPage: TTabSheet;
-    RunWorkDirCombobox: TCOMBOBOX;
-    RunWorkDirGroupbox: TGROUPBOX;
-    WhenFileIsActiveGroupbox: TGROUPBOX;
+    RunWorkDirCombobox: TComboBox;
+    RunWorkDirGroupbox: TGroupBox;
+    RunShowOutputCheckBox: TCheckBox;
+    WhenFileIsActiveGroupbox: TGroupBox;
     BuildMacroSelectionBox: TMacroSelectionBox;
     RunMacroSelectionBox: TMacroSelectionBox;
     procedure BuildBrowseWorkDirButtonCLICK(Sender: TObject);
-    procedure BuildFileDialogCREATE(Sender: TObject);
-    procedure BuildFileDialogKEYDOWN(Sender: TObject; var Key: Word;
+    procedure BuildFileDialogCreate(Sender: TObject);
+    procedure BuildFileDialogKeyDown(Sender: TObject; var Key: Word;
                                      {%H-}Shift: TShiftState);
     procedure BuildMacroSelectionBoxAddMacro(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -434,7 +437,7 @@ end;
 
 { TBuildFileDialog }
 
-procedure TBuildFileDialog.BuildFileDialogKEYDOWN(Sender: TObject;
+procedure TBuildFileDialog.BuildFileDialogKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key=VK_ESCAPE then ModalResult:=mrCancel;
@@ -473,7 +476,7 @@ begin
   RunCommandMemo.SelText:=MacroCode;
 end;
 
-procedure TBuildFileDialog.BuildFileDialogCREATE(Sender: TObject);
+procedure TBuildFileDialog.BuildFileDialogCreate(Sender: TObject);
 begin
   Notebook1.PageIndex:=0;
   
@@ -513,7 +516,8 @@ begin
   BuildScanForMakeMsgCheckbox.Caption:=lisCOScanForMakeMessages;
 
   RunPage.Caption:=lisRun;
-  AlwaysCompileFirstCheckbox.Caption:=lisBFAlwaysBuildBeforeRun;
+  RunBeforeBuildCheckbox.Caption:=lisBFAlwaysBuildBeforeRun;
+  RunShowOutputCheckBox.Caption:=lisShowOutput;
   RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath;
   RunCommandGroupbox.Caption:=lisBFRunCommand;
 
@@ -605,7 +609,6 @@ var
   BuildCommand: String;
   BuildScanForFPCMsg: Boolean;
   BuildScanForMakeMsg: Boolean;
-  AlwaysBuildBeforeRun: Boolean;
   RunWorkingDir: String;
   RunCommand: String;
   BuildScanStr: String;
@@ -630,7 +633,6 @@ begin
   RunFlags:=GetIDEDirRunFlagFromString(
                GetIDEStringDirective(DirectiveList,
                                      IDEDirectiveNames[idedRunFlags],''));
-  AlwaysBuildBeforeRun:=idedrfBuildBeforeRun in RunFlags;
   RunWorkingDir:=GetIDEStringDirective(DirectiveList,
                                        IDEDirectiveNames[idedRunWorkingDir],'');
   RunCommand:=GetIDEStringDirective(DirectiveList,
@@ -642,7 +644,8 @@ begin
   BuildCommandMemo.Lines.Text:=BuildCommand;
   BuildScanForFPCMsgCheckbox.Checked:=BuildScanForFPCMsg;
   BuildScanForMakeMsgCheckbox.Checked:=BuildScanForMakeMsg;
-  AlwaysCompileFirstCheckbox.Checked:=AlwaysBuildBeforeRun;
+  RunBeforeBuildCheckbox.Checked:=idedrfBuildBeforeRun in RunFlags;
+  RunShowOutputCheckBox.Checked:=idedrfMessages in RunFlags;
   RunWorkDirCombobox.Text:=RunWorkingDir;
   RunCommandMemo.Lines.Text:=RunCommand;
 end;
@@ -654,7 +657,6 @@ var
   BuildScanForFPCMsg: Boolean;
   BuildScanForMakeMsg: Boolean;
   BuildScan: TIDEDirBuildScanFlags;
-  AlwaysBuildBeforeRun: Boolean;
   RunWorkingDir: String;
   RunCommand: String;
   RunFlags: TIDEDirRunFlags;
@@ -670,9 +672,9 @@ begin
   if BuildScanForMakeMsg then Include(BuildScan,idedbsfMake);
 
   // run
-  AlwaysBuildBeforeRun:=AlwaysCompileFirstCheckbox.Checked;
   RunFlags:=[];
-  if AlwaysBuildBeforeRun then Include(RunFlags,idedrfBuildBeforeRun);
+  if RunBeforeBuildCheckbox.Checked then Include(RunFlags,idedrfBuildBeforeRun);
+  if RunShowOutputCheckBox.Checked then Include(RunFlags,idedrfMessages);
   RunWorkingDir:=SpecialCharsToSpaces(RunWorkDirCombobox.Text,true);
   RunCommand:=SpecialCharsToSpaces(RunCommandMemo.Lines.Text,true);
   
