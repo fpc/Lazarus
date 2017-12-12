@@ -496,6 +496,7 @@ resourcestring
   lisMenuProjectOptions = 'Project Options ...';
 
   lisBFWorkingDirectoryLeaveEmptyForFilePath = 'Working directory (leave empty for file path)';
+  lisShowOutput = 'Show output';
   lisBFBuildCommand = 'Build Command';
   lisMenuQuickCompile = 'Quick Compile';
   lisMenuCleanUpAndBuild = 'Clean up and Build ...';

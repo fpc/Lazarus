@@ -7662,7 +7662,7 @@ var
   DefRunCommand: String;
   RunCommand: String;
   ProgramFilename: string;
-  Params: string;
+  Params, aFilename: string;
   ExtTool: TIDEExternalToolOptions;
   DirectiveList: TStringList;
   Code: TCodeBuffer;
@@ -7732,6 +7732,19 @@ begin
     SourceEditorManager.ClearErrorLines;
 
     SplitCmdLine(RunCommand,ProgramFilename,Params);
+    aFilename:=ProgramFilename;
+    if (aFilename<>'')
+    and (not FilenameIsAbsolute(aFilename))
+    and (Pos(PathDelim,aFilename)<1)
+    then begin
+      aFilename:=FileUtil.FindDefaultExecutablePath(aFilename,RunWorkingDir);
+      if aFilename='' then
+        aFilename:=ProgramFilename;
+    end;
+    if aFilename<>'' then
+      aFilename:=ExpandFileNameUTF8(aFilename,RunWorkingDir);
+    if (aFilename<>'') and FileExistsUTF8(aFilename) then
+      ProgramFilename:=aFilename;
 
     ExtTool:=TIDEExternalToolOptions.Create;
     try

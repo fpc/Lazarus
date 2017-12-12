@@ -1,7 +1,7 @@
 object BuildFileDialog: TBuildFileDialog
-  Left = 317
+  Left = 873
   Height = 417
-  Top = 153
+  Top = 201
   Width = 451
   ActiveControl = Notebook1
   BorderIcons = [biSystemMenu]
@@ -9,39 +9,41 @@ object BuildFileDialog: TBuildFileDialog
   ClientHeight = 417
   ClientWidth = 451
   KeyPreview = True
-  OnCreate = BuildFileDialogCREATE
-  OnKeyDown = BuildFileDialogKEYDOWN
+  OnCreate = BuildFileDialogCreate
+  OnKeyDown = BuildFileDialogKeyDown
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '1.9.0.0'
   object Notebook1: TPageControl
     Left = 0
-    Height = 379
+    Height = 377
     Top = 0
     Width = 451
+    ActivePage = RunPage
     Align = alClient
     BorderSpacing.Bottom = 6
+    TabIndex = 2
     TabOrder = 0
     object GeneralPage: TTabSheet
       Caption = 'Options'
-      ClientWidth = 443
-      ClientHeight = 337
+      ClientHeight = 350
+      ClientWidth = 447
       object WhenFileIsActiveGroupbox: TGroupBox
         Left = 6
         Height = 81
         Top = 6
-        Width = 431
+        Width = 435
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'When this file is active in source editor ...'
-        ClientHeight = 63
-        ClientWidth = 427
+        ClientHeight = 66
+        ClientWidth = 431
         TabOrder = 0
         object OverrideBuildProjectCheckbox: TCheckBox
           Left = 6
-          Height = 22
+          Height = 24
           Top = 6
-          Width = 415
+          Width = 419
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'On build project execute the Build File command instead'
@@ -49,9 +51,9 @@ object BuildFileDialog: TBuildFileDialog
         end
         object OverrideRunProjectCheckbox: TCheckBox
           Left = 6
-          Height = 22
-          Top = 34
-          Width = 415
+          Height = 24
+          Top = 36
+          Width = 419
           Align = alTop
           BorderSpacing.Around = 6
           Caption = 'On run project execute the Run File command instead'
@@ -61,8 +63,8 @@ object BuildFileDialog: TBuildFileDialog
     end
     object BuildPage: TTabSheet
       Caption = 'Build'
-      ClientWidth = 443
-      ClientHeight = 337
+      ClientHeight = 350
+      ClientWidth = 447
       object BuildCommandGroupbox: TGroupBox
         Left = 6
         Height = 80
@@ -71,7 +73,7 @@ object BuildFileDialog: TBuildFileDialog
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Build Command'
-        ClientHeight = 62
+        ClientHeight = 65
         ClientWidth = 427
         TabOrder = 0
         object BuildCommandMemo: TMemo
@@ -116,7 +118,7 @@ object BuildFileDialog: TBuildFileDialog
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Working directory (Leave empty for file path)'
-        ClientHeight = 42
+        ClientHeight = 45
         ClientWidth = 427
         TabOrder = 3
         object BuildWorkDirCombobox: TComboBox
@@ -128,10 +130,8 @@ object BuildFileDialog: TBuildFileDialog
           Top = 6
           Width = 384
           Anchors = [akTop, akLeft, akRight]
-          AutoComplete = False
           BorderSpacing.Around = 6
-          ItemHeight = 13
-          ItemWidth = 0
+          ItemHeight = 0
           TabOrder = 0
           Text = 'BuildWorkDirCombobox'
         end
@@ -153,34 +153,34 @@ object BuildFileDialog: TBuildFileDialog
     end
     object RunPage: TTabSheet
       Caption = 'Run'
-      ClientWidth = 443
-      ClientHeight = 353
-      object AlwaysCompileFirstCheckbox: TCheckBox
+      ClientHeight = 350
+      ClientWidth = 447
+      object RunBeforeBuildCheckbox: TCheckBox
         Left = 6
-        Height = 17
+        Height = 24
         Top = 6
-        Width = 431
+        Width = 435
         Align = alTop
         BorderSpacing.Around = 6
-        Caption = 'Always Build before Run'
+        Caption = 'Run before build'
         TabOrder = 0
       end
       object RunCommandGroupbox: TGroupBox
         Left = 6
         Height = 98
-        Top = 88
-        Width = 431
+        Top = 126
+        Width = 435
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'Run Command'
-        ClientHeight = 80
-        ClientWidth = 427
+        ClientHeight = 83
+        ClientWidth = 431
         TabOrder = 1
         object RunCommandMemo: TMemo
           Left = 6
-          Height = 68
+          Height = 71
           Top = 6
-          Width = 415
+          Width = 419
           Align = alClient
           BorderSpacing.Around = 6
           Lines.Strings = (
@@ -191,36 +191,34 @@ object BuildFileDialog: TBuildFileDialog
       end
       object RunWorkDirGroupbox: TGroupBox
         Left = 6
-        Height = 53
-        Top = 29
-        Width = 431
+        Height = 54
+        Top = 66
+        Width = 435
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'Working Directory (Leave empty for file path)'
-        ClientHeight = 35
-        ClientWidth = 427
+        ClientHeight = 39
+        ClientWidth = 431
         TabOrder = 2
         object RunWorkDirCombobox: TComboBox
           AnchorSideLeft.Control = RunWorkDirGroupbox
           AnchorSideTop.Control = RunWorkDirGroupbox
           AnchorSideRight.Control = RunBrowseWorkDirButton
           Left = 6
-          Height = 21
+          Height = 27
           Top = 6
-          Width = 384
+          Width = 388
           Anchors = [akTop, akLeft, akRight]
-          AutoComplete = False
           BorderSpacing.Around = 6
-          ItemHeight = 13
-          ItemWidth = 0
+          ItemHeight = 0
           TabOrder = 0
           Text = 'RunWorkDirCombobox'
         end
         object RunBrowseWorkDirButton: TButton
           AnchorSideRight.Side = asrBottom
-          Left = 396
-          Height = 23
+          Left = 400
+          Height = 27
           Top = 6
           Width = 25
           HelpType = htKeyword
@@ -231,13 +229,31 @@ object BuildFileDialog: TBuildFileDialog
           TabOrder = 1
         end
       end
+      object RunShowOutputCheckBox: TCheckBox
+        Left = 6
+        Height = 24
+        Top = 36
+        Width = 435
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'Show output in Messages window'
+        TabOrder = 3
+      end
     end
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 385
+    Height = 28
+    Top = 383
     Width = 439
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
