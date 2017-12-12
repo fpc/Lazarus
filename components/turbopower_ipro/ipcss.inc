@@ -768,11 +768,17 @@ begin
     try
       case Command[1] of
       'c': if Command = 'color' then
-             Color := ColorFromString(Args[0]);
+             if Args.Count > 0 then
+               Color := ColorFromString(Args[0])
+             else
+               Color := clDefault;
 
-      'b': if Command = 'background-color' then
-             BGColor := ColorFromString(Args[0])
-           else
+      'b': if Command = 'background-color' then begin
+             if Args.Count > 0 then
+               BGColor := ColorFromString(Args[0])
+             else
+               BGColor := clDefault;
+           end else
            if Command = 'background' then
            begin
              if Args.Count > 0 then BGColor := ColorFromString(Args[0]);
@@ -789,27 +795,29 @@ begin
            end
            else if Command = 'border-width' then
            begin
-             Border.Width := SizePxFromString(Args[0]);
+             if Args.Count > 0 then Border.Width := SizePxFromString(Args[0]);
            end
            else if Command = 'border-color' then
            begin
-             Border.Color := ColorFromString(Args[0]);
+             if Args.Count > 0 then Border.Color := ColorFromString(Args[0]);
            end
            else if Command = 'border-style' then
            begin
-             Border.Style := BorderStyleFromString(Args[0]);
+             if Args.Count > 0 then Border.Style := BorderStyleFromString(Args[0]);
            end;
 
       'm':
-        if Command = 'margin-top' then
-          MarginTop := StrToCssMargin(Args[0])
-        else if Command = 'margin-left' then
-          MarginLeft := StrToCssMargin(Args[0])
-        else if Command = 'margin-bottom' then
-          MarginBottom := StrToCssMargin(Args[0])
-        else if Command = 'margin-right' then
-          MarginRight := StrToCssMargin(Args[0])
-        else if Command = 'margin' then
+        if Command = 'margin-top' then begin
+          if Args.Count > 0 then MarginTop := StrToCssMargin(Args[0]);
+        end
+        else if Command = 'margin-left' then begin
+          if Args.Count > 0 then MarginLeft := StrToCssMargin(Args[0]);
+        end
+        else if Command = 'margin-bottom' then begin
+          if Args.Count > 0 then MarginBottom := StrToCssMargin(Args[0]);
+        end else if Command = 'margin-right' then begin
+          if Args.Count > 0 then MarginRight := StrToCssMargin(Args[0]);
+        end else if Command = 'margin' then begin
           case Args.Count of
           1:begin
               // 1 arg: all four the same
@@ -839,12 +847,15 @@ begin
               MarginLeft := StrToCssMargin(Args[3]);
             end;
           end;
+        end;
 
       't': if (Command = 'text-align') then
-             Alignment := GetAlignmentForStr(Args[0]);
+           begin
+             if Args.Count > 0 then Alignment := GetAlignmentForStr(Args[0]);
+           end;
 
       'f':
-          if Length(Command) > 7 then
+          if (Length(Command) > 7) and (Args.Count > 0) then
             case Command[7] of
               'a': if (Command = 'font-family') then
                      Font.Name := Args[0];
