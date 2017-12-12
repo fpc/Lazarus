@@ -768,19 +768,12 @@ begin
     try
       case Command[1] of
       'c': if Command = 'color' then
-             if Args.Count > 0 then
-               Color := ColorFromString(Args[0])
-             else
-               Color := clDefault;
+             Color := ColorFromString(Args[0]);
 
       'b': if Command = 'background-color' then
-           begin
-             if Args.Count > 0 then
-               BGColor := ColorFromString(Args[0])
-             else
-               BGColor := clDefault
-           end
-           else if Command = 'background' then
+             BGColor := ColorFromString(Args[0])
+           else
+           if Command = 'background' then
            begin
              if Args.Count > 0 then BGColor := ColorFromString(Args[0]);
              if Args.Count > 1 then ; // background image
@@ -809,19 +802,14 @@ begin
 
       'm':
         if Command = 'margin-top' then
-        begin
-          if Args.Count > 0 then MarginTop := StrToCssMargin(Args[0]);
-        end else if Command = 'margin-left' then
-        begin
-          if Args.Count > 0 then MarginLeft := StrToCssMargin(Args[0]);
-        end else if Command = 'margin-bottom' then
-        begin
-          if Args.Count > 0 then MarginBottom := StrToCssMargin(Args[0]);
-        end else if Command = 'margin-right' then
-        begin
-          if Args.Count > 0 then MarginRight := StrToCssMargin(Args[0]);
-        end else if Command = 'margin' then
-        begin
+          MarginTop := StrToCssMargin(Args[0])
+        else if Command = 'margin-left' then
+          MarginLeft := StrToCssMargin(Args[0])
+        else if Command = 'margin-bottom' then
+          MarginBottom := StrToCssMargin(Args[0])
+        else if Command = 'margin-right' then
+          MarginRight := StrToCssMargin(Args[0])
+        else if Command = 'margin' then
           case Args.Count of
           1:begin
               // 1 arg: all four the same
@@ -851,29 +839,22 @@ begin
               MarginLeft := StrToCssMargin(Args[3]);
             end;
           end;
-        end;
 
-      't': if (Command = 'text-align') and (Args.Count = 1) then
-             if Args.Count > 0 then
-               Alignment := GetAlignmentForStr(Args[0])
-             else
-               Alignment := GetAlignmentForStr('');
-
+      't': if (Command = 'text-align') then
+             Alignment := GetAlignmentForStr(Args[0]);
 
       'f':
-          if length(Command) > 7 then
-          begin
+          if Length(Command) > 7 then
             case Command[7] of
-              'a': if (Command = 'font-family')and (Args.Count > 0) then
+              'a': if (Command = 'font-family') then
                      Font.Name := Args[0];
-              'i': if (Command = 'font-size') and (Args.Count > 0) then
+              'i': if (Command = 'font-size') then
                      Font.Size := Args[0];
-              't': if (Command = 'font-style') and (Args.Count > 0) then
+              't': if (Command = 'font-style') then
                      Font.Style := CSSFontStyleFromName(Args[0]);
-              'e': if (Command = 'font-weight') and (Args.Count > 0) then
+              'e': if (Command = 'font-weight') then
                      Font.Weight := FontWeightFromString(Args[0]);
             end;
-          end;
       end;
     finally
       Args.Free;
