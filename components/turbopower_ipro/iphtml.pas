@@ -5552,6 +5552,8 @@ begin
         fDocCharset := copy(content, i, j-i);
       end else
         fDocCharset := FindAttribute(htmlAttrCHARSET);
+      if pos('windows', Lowercase(fDocCharset)) = 1 then
+        fDocCharset := NormalizeEncoding(StringReplace(fDocCharset, 'windows', 'cp', [rfIgnoreCase]));
     end;
     {$ENDIF}
     Scheme := FindAttribute(htmlAttrSCHEME);
