@@ -4065,27 +4065,71 @@ components/rtticontrols/rttigrids.pas svneol=native#text/pascal
 components/rtticontrols/runtimetypeinfocontrols.lpk svneol=native#text/pascal
 components/rtticontrols/runtimetypeinfocontrols.pas svneol=native#text/pascal
 components/rtticontrols/tmultipropertylink.png -text svneol=unset#image/png
+components/rtticontrols/tmultipropertylink_150.png -text
+components/rtticontrols/tmultipropertylink_200.png -text
 components/rtticontrols/ttibutton.png -text svneol=unset#image/png
+components/rtticontrols/ttibutton_150.png -text
+components/rtticontrols/ttibutton_200.png -text
 components/rtticontrols/tticalendar.png -text svneol=unset#image/png
+components/rtticontrols/tticalendar_150.png -text
+components/rtticontrols/tticalendar_200.png -text
 components/rtticontrols/tticheckbox.png -text svneol=unset#image/png
+components/rtticontrols/tticheckbox_150.png -text
+components/rtticontrols/tticheckbox_200.png -text
 components/rtticontrols/tticheckgroup.png -text svneol=unset#image/png
+components/rtticontrols/tticheckgroup_150.png -text
+components/rtticontrols/tticheckgroup_200.png -text
 components/rtticontrols/ttichecklistbox.png -text svneol=unset#image/png
+components/rtticontrols/ttichecklistbox_150.png -text
+components/rtticontrols/ttichecklistbox_200.png -text
 components/rtticontrols/tticolorbutton.png -text svneol=unset#image/png
+components/rtticontrols/tticolorbutton_150.png -text
+components/rtticontrols/tticolorbutton_200.png -text
 components/rtticontrols/tticombobox.png -text svneol=unset#image/png
+components/rtticontrols/tticombobox_150.png -text
+components/rtticontrols/tticombobox_200.png -text
 components/rtticontrols/ttiedit.png -text svneol=unset#image/png
+components/rtticontrols/ttiedit_150.png -text
+components/rtticontrols/ttiedit_200.png -text
 components/rtticontrols/ttifloatspinedit.png -text svneol=unset#image/png
+components/rtticontrols/ttifloatspinedit_150.png -text
+components/rtticontrols/ttifloatspinedit_200.png -text
 components/rtticontrols/ttigrid.png -text svneol=unset#image/png
+components/rtticontrols/ttigrid_150.png -text
+components/rtticontrols/ttigrid_200.png -text
 components/rtticontrols/ttigroupbox.png -text svneol=unset#image/png
+components/rtticontrols/ttigroupbox_150.png -text
+components/rtticontrols/ttigroupbox_200.png -text
 components/rtticontrols/ttiimage.png -text svneol=unset#image/png
+components/rtticontrols/ttiimage_150.png -text
+components/rtticontrols/ttiimage_200.png -text
 components/rtticontrols/ttilabel.png -text svneol=unset#image/png
+components/rtticontrols/ttilabel_150.png -text
+components/rtticontrols/ttilabel_200.png -text
 components/rtticontrols/ttilistbox.png -text svneol=unset#image/png
+components/rtticontrols/ttilistbox_150.png -text
+components/rtticontrols/ttilistbox_200.png -text
 components/rtticontrols/ttimaskedit.png -text svneol=unset#image/png
+components/rtticontrols/ttimaskedit_150.png -text
+components/rtticontrols/ttimaskedit_200.png -text
 components/rtticontrols/ttimemo.png -text svneol=unset#image/png
+components/rtticontrols/ttimemo_150.png -text
+components/rtticontrols/ttimemo_200.png -text
 components/rtticontrols/ttiprogressbar.png -text svneol=unset#image/png
+components/rtticontrols/ttiprogressbar_150.png -text
+components/rtticontrols/ttiprogressbar_200.png -text
 components/rtticontrols/ttipropertygrid.png -text svneol=unset#image/png
+components/rtticontrols/ttipropertygrid_150.png -text
+components/rtticontrols/ttipropertygrid_200.png -text
 components/rtticontrols/ttiradiogroup.png -text svneol=unset#image/png
+components/rtticontrols/ttiradiogroup_150.png -text
+components/rtticontrols/ttiradiogroup_200.png -text
 components/rtticontrols/ttispinedit.png -text svneol=unset#image/png
+components/rtticontrols/ttispinedit_150.png -text
+components/rtticontrols/ttispinedit_200.png -text
 components/rtticontrols/ttitrackbar.png -text svneol=unset#image/png
+components/rtticontrols/ttitrackbar_150.png -text
+components/rtticontrols/ttitrackbar_200.png -text
 components/rx/apputils.pp svneol=native#text/pascal
 components/rx/lib/README.txt svneol=native#text/plain
 components/rx/mrulist.pp svneol=native#text/pascal
