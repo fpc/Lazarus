@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-10-15 23:22+0200\n"
+"PO-Revision-Date: 2017-12-11 22:16+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -145,7 +145,7 @@ msgstr "Aktuelles Wort markieren"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
-msgstr ""
+msgstr "Zoom zurücksetzen"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -378,7 +378,7 @@ msgstr "Scrollen (Seite, weniger eine Zeile)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelzoom
 msgid "Zoom"
-msgstr ""
+msgstr "Zoom"
 
 #: lazarusidestrconsts.dlfnopredefinedscheme
 msgid "< None >"
@@ -2438,10 +2438,8 @@ msgid "Word Brackets on caret (global)"
 msgstr "Wortklammern am Cursor (global)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
-#, fuzzy
-#| msgid "Match word boundaries for words up to this length:"
 msgid "Match whole words, if length is less or equal to:"
-msgstr "Nur wenn Wörter kürzer als:"
+msgstr "Nur ganze Wörter, wenn Länge kleiner oder gleich:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
@@ -3997,10 +3995,8 @@ msgid "File is used"
 msgstr "Datei ist in Gebrauch"
 
 #: lazarusidestrconsts.lisa2pfilename2
-#, fuzzy
-#| msgid "Filename"
 msgid "Filename/URL"
-msgstr "Dateiname"
+msgstr "Dateiname/URL"
 
 #: lazarusidestrconsts.lisa2pfilenotunit
 msgid "File not unit"
@@ -4312,7 +4308,7 @@ msgstr "-FcUTF8 hinzufügen"
 
 #: lazarusidestrconsts.lisaddfcutf8hint
 msgid "May be needed if source files have non-ansistring literals."
-msgstr ""
+msgstr "Könnte benötigt werden, falls Quelldateien Nicht-Ansistring-Symbole enthalten."
 
 #: lazarusidestrconsts.lisaddfilesindirectory
 msgid "Add Files in Directory"
@@ -10347,12 +10343,6 @@ msgstr "installiert"
 msgid "Install it, I like the fat"
 msgstr "Installieren, ich will es so"
 
-#: lazarusidestrconsts.lisinstallpackagesmsg
-msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
-"Do you wish to install missing packages?\n"
-msgstr ""
-
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Auswahl installieren"
@@ -10452,7 +10442,7 @@ msgstr "Ungültiger Pascal-Bezeichner"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiername
 msgid "The name \"%s\" is not a valid Pascal identifier.%sUse it anyway?"
-msgstr ""
+msgstr "Der Name \"%s\" ist kein gültiger Pascal-Bezeichner.%sTrotzdem verwenden?"
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"
@@ -12208,7 +12198,7 @@ msgstr "Keine benutzergespeicherten Vorlagen"
 
 #: lazarusidestrconsts.lismenueditorpickaniconfroms
 msgid "Pick an icon from %s"
-msgstr ""
+msgstr "Ein Icon aus %s auswählen"
 
 #: lazarusidestrconsts.lismenueditorpopupassignmentss
 msgid "Popup assignments: %s"
@@ -13827,10 +13817,6 @@ msgstr "Noch nicht implementiert:%s%s"
 msgid "not installed"
 msgstr "nicht installiert"
 
-#: lazarusidestrconsts.lisnotinstalledpackages
-msgid "Not installed packages"
-msgstr ""
-
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
 msgstr "Nicht jetzt"
@@ -14042,7 +14028,7 @@ msgstr "Datei öffnen"
 
 #: lazarusidestrconsts.lisopenfileatcursor
 msgid "Open file at cursor"
-msgstr ""
+msgstr "Datei beim Cursor öffnen"
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -14139,7 +14125,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisoutputdirectoryofcontainspascalunitsource
 msgid "output directory of %s contains Pascal unit source \"%s\""
-msgstr ""
+msgstr "Das Ausgabeverzeichnis von %s enthält die Pascal-Unit-Quelle \"%s\""
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -14260,7 +14246,7 @@ msgstr "Parser \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
-msgstr ""
+msgstr "Parser:"
 
 #: lazarusidestrconsts.lispasscount
 msgid "Pass Count"
@@ -15491,7 +15477,7 @@ msgstr "Allgemein"
 
 #: lazarusidestrconsts.lispldonline
 msgid "Online"
-msgstr ""
+msgstr "Online"
 
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
@@ -15503,7 +15489,7 @@ msgstr "Zeige globale Links in "
 
 #: lazarusidestrconsts.lispldshowonlinelinks
 msgid "Show online links"
-msgstr ""
+msgstr "Zeige Online-Links"
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
@@ -15700,7 +15686,7 @@ msgstr "Ungültige Version"
 
 #: lazarusidestrconsts.lisprojaddlocalpkg
 msgid "Local (%s)"
-msgstr ""
+msgstr "Lokal (%s)"
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
@@ -15716,7 +15702,7 @@ msgstr "Neue Anforderung"
 
 #: lazarusidestrconsts.lisprojaddonlinepkg
 msgid "Online (%s)"
-msgstr ""
+msgstr "Online (%s)"
 
 #: lazarusidestrconsts.lisprojaddpackagename
 msgid "Package Name:"
@@ -15728,7 +15714,7 @@ msgstr "Package nicht gefunden"
 
 #: lazarusidestrconsts.lisprojaddpackagetype
 msgid "Package Type:"
-msgstr ""
+msgstr "Packagetyp:"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
@@ -16666,15 +16652,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
-msgstr ""
+msgstr "Scanne"
 
 #: lazarusidestrconsts.lisscanning2
 msgid "%s. Scanning ..."
-msgstr ""
+msgstr "%s. Scanne ..."
 
 #: lazarusidestrconsts.lisscanparentdir
 msgid "Scanning parent directory"
-msgstr ""
+msgstr "Scanne Vorgänger-Verzeichnis"
 
 #: lazarusidestrconsts.lissearchpaths2
 msgid "Search paths"
@@ -17691,7 +17677,7 @@ msgstr "Das Projekt muß vor dem Kompilieren gesichert werden.%sWenn Sie das Tes
 
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
 msgid "The project uses FPC resources, which require at least FPC 2.4"
-msgstr ""
+msgstr "Das Projekt benutzt FPC-Ressourcen, die mindestens FPC 2.4 benötigen"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
@@ -20583,12 +20569,12 @@ msgstr "Nächste Zelle (alle ausgewählt)"
 #: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"
 msgid "Next Cell (firsts only)"
-msgstr ""
+msgstr "Nächste Zelle (nur erste)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
 msgid "Next Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Nächste Zelle (alle gewählten / nur erste)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
@@ -20603,12 +20589,12 @@ msgstr "Vorherige Zelle (alle ausgewählt)"
 #: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcell"
 msgid "Previous Cell (firsts only)"
-msgstr ""
+msgstr "Vorherige Zelle (nur erste)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevfirstcellsel"
 msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Vorherige Zelle (alle gewählten / nur erste)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
@@ -20658,20 +20644,20 @@ msgstr "Nächste Zelle (rotiert/alle gewählt)"
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcell"
 msgid "Next Cell (firsts only)"
-msgstr ""
+msgstr "Nächste Zelle (nur erste)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
 msgid "Next Cell (rotate / firsts only)"
-msgstr ""
+msgstr "Nächste Zelle (rotieren / nur erste)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
 msgid "Next Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Nächste Zelle (alle gewählten / nur erste)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
 msgid "Next Cell (rotate / all selected / firsts only)"
-msgstr ""
+msgstr "Nächste Zelle (rotieren / alle gewählten / nur erste)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
@@ -20686,12 +20672,12 @@ msgstr "Vorherige Zelle (alle gewählt)"
 #: lazarusidestrconsts.srkmecsynptmpledprevfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcell"
 msgid "Previous Cell (firsts only)"
-msgstr ""
+msgstr "Vorherige Zelle (nur erste)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevfirstcellsel"
 msgid "Previous Cell (all selected / firsts only)"
-msgstr ""
+msgstr "Vorherige Zelle (alle gewählten / nur erste)"
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax Check"
@@ -21200,4 +21186,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-

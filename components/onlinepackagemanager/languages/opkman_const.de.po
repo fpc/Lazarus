@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
@@ -31,7 +31,7 @@ msgstr "Den Dialog schließen und das Package erzeugen"
 
 #: opkman_const.rsaddrepositorypackagefrm_caption
 msgid "Add repository package"
-msgstr ""
+msgstr "Repository-Package hinzufügen"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbaddexisting_caption
 msgid "Add existing repository package from file"
@@ -39,7 +39,7 @@ msgstr ""
 
 #: opkman_const.rsaddrepositorypackagefrm_rbcreatenew_caption
 msgid "Create a new repository package"
-msgstr ""
+msgstr "Neues Repository-Package erzeugen"
 
 #: opkman_const.rscategoriesfrm_bcancel_caption
 msgctxt "opkman_const.rscategoriesfrm_bcancel_caption"
@@ -265,7 +265,7 @@ msgstr "Daten"
 
 #: opkman_const.rscreaterepositoryfrm_vstpackages_column0
 msgid "Repository/Packages"
-msgstr ""
+msgstr "Repository/Packages"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_author
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_author"
@@ -726,10 +726,8 @@ msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "Package \"%s\" hängt ab von Package \"%s\". Abhängigkeit auflösen?"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-#, fuzzy
-#| msgid "Not resolving dependencies might lead to install failure!"
 msgid "Not resolving dependencies might lead to install failure! Continue?"
-msgstr "Nicht aufgelöste Abhängigkeiten können zu einem Fehler bei der Installation führen!"
+msgstr "Nicht aufgelöste Abhängigkeiten können zu einem Fehler bei der Installation führen! Fortfahren?"
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
@@ -974,7 +972,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory12
 msgid "LazIDEPlugins"
-msgstr ""
+msgstr "Lazarus-IDE-Plugins"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory13
 msgid "List and Combo Boxes"
@@ -1181,14 +1179,13 @@ msgid "Please check before install: Lazarus/FPC compatibility, widgetset support
 msgstr ""
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
-#, fuzzy
 msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
 msgid "Data"
 msgstr "Daten"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package"
-msgstr ""
+msgstr "Lazarus-Package"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
@@ -1295,7 +1292,7 @@ msgstr "Proxy-Einstellungen"
 
 #: opkman_const.rsoptions_inputbox_caption
 msgid "Add new exclusion"
-msgstr ""
+msgstr "Neuen Ausschluss hinzufügen"
 
 #: opkman_const.rsoptions_inputbox_conf0
 msgid "Delete selected extension (\"%s\")?"
@@ -1335,14 +1332,12 @@ msgid "Check for package updates"
 msgstr "Nach Package-Updates suchen"
 
 #: opkman_const.rsoptions_lbcontimeout_caption
-#, fuzzy
-#| msgid "Connection timeout(seconds):"
 msgid "Connection timeout (seconds):"
 msgstr "Abfallzeit (Sekunden):"
 
 #: opkman_const.rsoptions_lbcontimeout_hint
 msgid "The number of seconds after which package manager drops connection"
-msgstr ""
+msgstr "Die Anzahl von Sekunden, nach denen der Package-Manager die Verbindung einstellt"
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
@@ -1360,11 +1355,11 @@ msgstr ""
 
 #: opkman_const.rsoptions_lbfilterdirs_caption
 msgid "Excluded folders (packages)"
-msgstr ""
+msgstr "Ausgenommene Ordner (Packages)"
 
 #: opkman_const.rsoptions_lbfilterfiles_caption
 msgid "Excluded files (packages)"
-msgstr ""
+msgstr "Ausgenommene Dateien (Packages)"
 
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
@@ -1726,4 +1721,3 @@ msgstr "Name"
 msgctxt "opkman_const.rsrepositorydetailsfrm_mdescription_hint"
 msgid "Enter the repository description"
 msgstr "Geben Sie die Repository-Beschreibung ein"
-
