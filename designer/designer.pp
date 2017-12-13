@@ -2956,6 +2956,7 @@ begin
       //debugln(['TDesigner.DoDeleteSelectedComponents A ',dbgsName(APersistent),' ',(APersistent is TComponent) and (TheFormEditor.FindComponent(TComponent(APersistent))<>nil)]);
       RemovePersistentAndChilds(APersistent);
     end;
+    MouseDownComponent := Nil;
   finally
     Modified;
   end;
