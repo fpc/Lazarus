@@ -2252,6 +2252,7 @@ type
     property CurUrl: string read FCurUrl;
     {$IFDEF IP_LAZARUS}
     property TabList: TIpHtmlTabList read FTabList;
+    property DocCharset: String read FDocCharset;  // Encoding of html text
     {$ENDIF}
     property Target: TCanvas read FTarget;
     property TitleNode : TIpHtmlNodeTITLE read FTitleNode;
