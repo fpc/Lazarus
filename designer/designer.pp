@@ -2144,7 +2144,6 @@ procedure TDesigner.MouseDownOnControl(Sender: TControl;
 var
   CompIndex:integer;
   SelectedCompClass: TRegisteredComponent;
-  NonVisualComp: TComponent;
   ParentForm: TCustomForm;
   Shift: TShiftState;
   DesignSender: TControl;
@@ -2177,9 +2176,7 @@ begin
         MouseDownComponent := nil;
         Exit;
       end;
-
-    NonVisualComp := MouseDownComponent;
-    MoveNonVisualComponentIntoForm(NonVisualComp);
+    MoveNonVisualComponentIntoForm(MouseDownComponent);
   end;
 
   MouseDownSender := DesignSender;
