@@ -45,6 +45,8 @@ type
     FPackageDependecies: TObjectList;
     FPackageLinks: TObjectList;
     FWaitForIDE: TThreadTimer;
+    FNeedToInit: Boolean;
+    FBusyUpdating: Boolean;
     procedure DoWaitForIDE(Sender: TObject);
     procedure DoUpdatePackageLinks(Sender: TObject);
     procedure InitOPM;
@@ -75,6 +77,7 @@ begin
   FPackageLinks := TObjectList.Create(False);
   FPackagesToInstall := TObjectList.Create(False);
   FPackageDependecies := TObjectList.Create(False);
+  FNeedToInit := True;
   FWaitForIDE := TThreadTimer.Create;
   FWaitForIDE.Interval := 100;
   FWaitForIDE.OnTimer := @DoWaitForIDE;
@@ -83,6 +86,8 @@ end;
 
 destructor TOPMInterfaceEx.Destroy;
 begin
+  FWaitForIDE.StopTimer;
+  FWaitForIDE.Terminate;
   FPackageLinks.Clear;
   FPackageLinks.Free;
   FPackagesToInstall.Clear;
@@ -100,9 +105,25 @@ procedure TOPMInterfaceEx.DoWaitForIDE(Sender: TObject);
 begin
   if Assigned(LazarusIDE) and Assigned(PackageEditingInterface) then
   begin
-    InitOPM;
-    FWaitForIDE.StopTimer;
-    FWaitForIDE.Terminate;
+    if FNeedToInit then
+    begin
+      InitOPM;
+      FNeedToInit := False;
+      FWaitForIDE.StopTimer;
+      FWaitForIDE.Interval := 5000;
+      FWaitForIDE.StartTimer;
+    end
+    else
+    begin
+      if FPackageLinks.Count = 0 then
+      begin
+        PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
+        Exit;
+      end;
+      if (not FBusyUpdating) then
+        if (Assigned(OnPackageListAvailable)) then
+          OnPackageListAvailable(Self);
+    end;
   end;
 end;
 
@@ -114,7 +135,6 @@ begin
   SerializablePackages.OnUpdatePackageLinks := @DoUpdatePackageLinks;
   PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository[Options.ActiveRepositoryIndex]);
   InstallPackageList := TObjectList.Create(True);
-  PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
 end;
 
 procedure TOPMInterfaceEx.DoUpdatePackageLinks(Sender: TObject);
@@ -147,28 +167,35 @@ var
   PackageLink: TPackageLink;
   FileName, Name, URL: String;
 begin
-  PkgLinks.ClearOnlineLinks;
-  FPackageLinks.Clear;
-  for I := 0 to SerializablePackages.Count - 1 do
-  begin
-    MetaPackage := SerializablePackages.Items[I];
-    for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
+  if FBusyUpdating then
+    Exit;
+  FBusyUpdating := True;
+  try
+    PkgLinks.ClearOnlineLinks;
+    FPackageLinks.Clear;
+    for I := 0 to SerializablePackages.Count - 1 do
     begin
-      LazPackage := TLazarusPackage(MetaPackage.LazarusPackages.Items[J]);
-      FileName := Options.LocalRepositoryPackages + MetaPackage.PackageBaseDir + LazPackage.PackageRelativePath + LazPackage.Name;
-      Name := StringReplace(LazPackage.Name, '.lpk', '', [rfReplaceAll, rfIgnoreCase]);
-      URL := Options.RemoteRepository[Options.ActiveRepositoryIndex] + MetaPackage.RepositoryFileName;
-      if not IsInLinkList(Name, URL) then
+      MetaPackage := SerializablePackages.Items[I];
+      for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
       begin
-        PackageLink := PkgLinks.AddOnlineLink(FileName, Name, URL);
-        if PackageLink <> nil then
+        LazPackage := TLazarusPackage(MetaPackage.LazarusPackages.Items[J]);
+        FileName := Options.LocalRepositoryPackages + MetaPackage.PackageBaseDir + LazPackage.PackageRelativePath + LazPackage.Name;
+        Name := StringReplace(LazPackage.Name, '.lpk', '', [rfReplaceAll, rfIgnoreCase]);
+        URL := Options.RemoteRepository[Options.ActiveRepositoryIndex] + MetaPackage.RepositoryFileName;
+        if not IsInLinkList(Name, URL) then
         begin
-          PackageLink.Version.Assign(LazPackage.Version);
-          PackageLink.LPKFileDate := MetaPackage.RepositoryDate;
-          FPackageLinks.Add(PackageLink);
+          PackageLink := PkgLinks.AddOnlineLink(FileName, Name, URL);
+          if PackageLink <> nil then
+          begin
+            PackageLink.Version.Assign(LazPackage.Version);
+            PackageLink.LPKFileDate := MetaPackage.RepositoryDate;
+            FPackageLinks.Add(PackageLink);
+          end;
         end;
       end;
     end;
+  finally
+    FBusyUpdating := False;
   end;
 end;
 
