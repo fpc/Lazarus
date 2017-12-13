@@ -90,6 +90,7 @@ type
     procedure IpHtmlPanelHotChange(Sender: TObject);
     procedure IpHtmlPanelHotClick(Sender: TObject);
     procedure PopupCopyClick(Sender: TObject);
+    procedure PopupCopySourceClick(Sender: TObject);
     procedure ContentsTreeSelectionChanged(Sender: TObject);
     procedure IndexViewDblClick(Sender: TObject);
     procedure TreeViewStopCollapse(Sender: TObject; {%H-}Node: TTreeNode; var AllowCollapse: Boolean);
@@ -128,7 +129,10 @@ type
 
 implementation
 
-uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap, LCLType, SAX_HTML, Dom, DOM_HTML, HTMWrite;
+uses
+  clipbrd,
+  ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap,
+  LCLType, SAX_HTML, Dom, DOM_HTML, HTMWrite, LConvEncoding;
 
 type
 
@@ -671,6 +675,16 @@ end;
 procedure TChmContentProvider.PopupCopyClick(Sender: TObject);
 begin
   fHtml.CopyToClipboard;
+end;
+
+procedure TChmContentProvider.PopupCopySourceClick(Sender: TObject);
+var
+  rbs: rawbytestring;
+  s: String;
+begin
+  rbs := TIpChmDataProvider(fHtml.DataProvider).GetHtmlText(fHtml.CurUrl);
+  s := ConvertEncoding(rbs, fHtml.MasterFrame.Html.DocCharset, encodingUTF8);
+  Clipboard.SetAsHtml(rbs, s);
 end;
 
 procedure TChmContentProvider.ContentsTreeSelectionChanged(Sender: TObject);
@@ -1388,6 +1402,12 @@ begin
   begin
     Caption := slhelp_Copy;
     OnClick := @PopupCopyClick;
+  end;
+  fPopup.Items.Add(TMenuItem.Create(fPopup));
+  with fPopup.Items.Items[1] do
+  begin
+    Caption := 'Copy source';
+    OnClick := @PopupCopySourceClick;
   end;
   fHtml.PopupMenu := fPopUp;
 

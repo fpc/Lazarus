@@ -61,6 +61,7 @@ type
   public
     constructor Create(AOwner: TComponent; AChm: TChmFileList); reintroduce;
     destructor Destroy; override;
+    function GetHtmlText(AURL: String): RawByteString;
     property Chm: TChmFileList read fChm write fChm;
     property OnHelpPopup: THelpPopupEvent read fOnHelpPopup write fOnHelpPopup;
     property CurrentPage: String read fCurrentPage;
@@ -81,6 +82,34 @@ begin
   i := Pos('#', Result);
   if i > 0 then
     Result := Copy(Result, 1, i-1);
+end;
+
+function TIpChmDataProvider.GetHtmlText(AURL: string): RawByteString;
+var
+  stream: TStream;
+  ms: TMemoryStream;
+begin
+  Result := '';
+  stream := DoGetHtmlStream(AURL, nil);
+  if stream = nil then
+    exit;
+  try
+    if stream.Size > 0 then
+    begin
+      // The stream created by DoGetHtmlStream can be read only once!
+      // --> buffer to memory stream
+      ms := TMemoryStream.Create;
+      try
+        ms.CopyFrom(stream, stream.Size);
+        SetLength(Result, ms.Size);
+        Move(ms.Memory^, Result[1], ms.Size);
+      finally
+        ms.Free;
+      end;
+    end;
+  finally
+    stream.Free;
+  end;
 end;
 
 function TIpChmDataProvider.DoGetHtmlStream(const URL: string;
