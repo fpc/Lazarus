@@ -106,9 +106,12 @@ type
   { TOPMInterface }
 
   TOPMInterface = class
+  private
+    FPackageListAvailable: TNotifyEvent;
   public
     {confirmation/install/extract/download dialogs will be displayed in the center of WorkArea}
     function InstallPackages(APkgLinks: TList; var ANeedToRebuild: Boolean): TModalResult; virtual; abstract;
+    property OnPackageListAvailable: TNotifyEvent read FPackageListAvailable write FPackageListAvailable;
   end;
 
 var

@@ -4299,7 +4299,7 @@ resourcestring
   lisPkgMangTheFollowingPackagesFailedToLoad = 'The following packages failed to load:';
   lisMissingPackages = 'Missing Packages';
   lisNotInstalledPackages = 'Not installed packages';
-  lisInstallPackagesMsg = 'The following packages are not installed, but available in the main repository: %s.' +
+  lisInstallPackagesMsg = 'The following packages are not installed, but available online: %s.' +
     sLineBreak + 'Do you wish to install missing packages?';
   lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA = 'other sources path '
     +'of package "%s" contains directory "%s", which is already in the unit '
@@ -4622,6 +4622,7 @@ resourcestring
   lisPckEditRemovedFiles = 'Removed Files';
   lisPckEditRemovedRequiredPackages = 'Removed required packages';
   lisPckEditDefault = '%s, default: %s';
+  lisPckEditAvailableOnline = '(available online)';
   lisPckEditDependencyProperties = 'Dependency Properties';
   lisFilesHasRegisterProcedureInPackageUsesSection = 'Files: %s, has Register '
     +'procedure: %s, in package uses section: %s';

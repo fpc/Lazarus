@@ -60,11 +60,11 @@ uses
   TreeFilterEdit,
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ProjectIntf,
-  PackageIntf,
+  PackageIntf, PackageLinkIntf, MainIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs, EnvironmentOpts,
   PackageDefs, Project, PackageEditor, AddToProjectDlg, AddPkgDependencyDlg,
-  InputHistory, MainBase, ProjPackChecks;
+  InputHistory, MainBase, ProjPackChecks, PackageLinks;
 
 type
   TOnAddUnitToProject =
@@ -163,6 +163,7 @@ type
     ImageIndexFiles: integer;
     ImageIndexRequired: integer;
     ImageIndexConflict: integer;
+    ImageIndexAvailableOnline: integer;
     ImageIndexRemovedRequired: integer;
     ImageIndexProject: integer;
     ImageIndexUnit: integer;
@@ -188,6 +189,8 @@ type
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
     procedure EnableI18NForSelectedLFM(TheEnable: boolean);
+    procedure DoOnPackageListAvailable(Sender: TObject);
+    function FindOnlinePackageLink(const ADependency: TPkgDependency): TPackageLink;
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var {%H-}Done: Boolean);
@@ -546,6 +549,8 @@ end;
 procedure TProjectInspectorForm.FormCreate(Sender: TObject);
 begin
   TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
+  if OPMInterface <> nil then
+    OPMInterface.OnPackageListAvailable := @DoOnPackageListAvailable;
 end;
 
 procedure TProjectInspectorForm.FormDropFiles(Sender: TObject;
@@ -744,27 +749,50 @@ var
   Item: TObject;
   CurFile: TUnitInfo;
   CurDependency: TPkgDependency;
+  PackageLink: TPackageLink;
+  PkgLinks: TList;
+  NeedToRebuild: Boolean;
 begin
-  BeginUpdate;
+  PkgLinks := TList.Create;
   try
-    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
-      TVNode:=ItemsTreeView.Selections[i];
-      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-      if Item is TUnitInfo then begin
-        CurFile:=TUnitInfo(Item);
-        if LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1,-1,[ofAddToRecent])<>mrOk
-        then exit;
-      end else if Item is TPkgDependency then begin
-        CurDependency:=TPkgDependency(Item);
-        if PackageEditingInterface.DoOpenPackageWithName(
-          CurDependency.PackageName,[],false)<>mrOk
-        then
-          exit;
+    NeedToRebuild := False;
+    BeginUpdate;
+    try
+      for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+        TVNode:=ItemsTreeView.Selections[i];
+        if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+        if Item is TUnitInfo then begin
+          CurFile:=TUnitInfo(Item);
+          if LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1,-1,[ofAddToRecent])<>mrOk then begin
+             PkgLinks.Free;
+             Exit;
+          end;
+        end else if Item is TPkgDependency then begin
+          CurDependency:=TPkgDependency(Item);
+          if CurDependency.LoadPackageResult = lprSuccess then begin
+            if PackageEditingInterface.DoOpenPackageWithName(CurDependency.PackageName,[],false)<>mrOk then begin
+              PkgLinks.Free;
+              Exit;
+            end;
+          end else begin
+            if OPMInterface<>nil then begin
+              PackageLink:=FindOnlinePackageLink(CurDependency);
+              if PackageLink<>nil then
+                PkgLinks.Add(PackageLink);
+            end;
+          end;
+        end;
       end;
+    finally
+      EndUpdate;
     end;
+    if (OPMInterface<>nil) and (PkgLinks.Count>0) then
+      OPMInterface.InstallPackages(PkgLinks, NeedToRebuild);
   finally
-    EndUpdate;
+    PkgLinks.Free;
   end;
+  if (OPMInterface<>nil) and (NeedToRebuild) then
+    MainIDEInterface.DoBuildLazarus([])
 end;
 
 procedure TProjectInspectorForm.OptionsBitBtnClick(Sender: TObject);
@@ -1016,6 +1044,7 @@ begin
   ImageIndexFiles           := IDEImages.LoadImage('pkg_files');
   ImageIndexRequired        := IDEImages.LoadImage('pkg_required');
   ImageIndexConflict        := IDEImages.LoadImage('pkg_conflict');
+  ImageIndexAvailableOnline := IDEImages.LoadImage('pkg_install');
   ImageIndexRemovedRequired := IDEImages.LoadImage('pkg_removedrequired');
   ImageIndexProject         := IDEImages.LoadImage('item_project_source');
   ImageIndexUnit            := IDEImages.LoadImage('item_unit');
@@ -1086,8 +1115,12 @@ begin
       Result:=ImageIndexRemovedRequired
     else if TPkgDependency(Item).LoadPackageResult=lprSuccess then
       Result:=ImageIndexRequired
-    else
+    else begin
       Result:=ImageIndexConflict;
+      if OPMInterface<>nil then
+        if FindOnlinePackageLink(TPkgDependency(Item))<>nil then
+          Result:=ImageIndexAvailableOnline;
+    end;
   end;
 end;
 
@@ -1154,6 +1187,10 @@ begin
           else
             NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
         end;
+        if Dependency.LoadPackageResult<>lprSuccess then
+          if OPMInterface<>nil then
+            if FindOnlinePackageLink(Dependency)<>nil then
+              NodeText:=NodeText+lisPckEditAvailableOnline;
         // Add the required package under the branch
         ANodeData := CreateNodeData(penDependency, Dependency.PackageName, False);
         RequiredBranch.AddNodeData(NodeText, ANodeData);
@@ -1222,6 +1259,55 @@ begin
     if not FilenameIsPascalSource(CurUnitInfo.Filename) then continue;
     CurUnitInfo.DisableI18NForLFM:=not TheEnable;
   end;
+end;
+
+procedure TProjectInspectorForm.DoOnPackageListAvailable(Sender: TObject);
+var
+  CurDependency: TPkgDependency;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
+  NodeText: String;
+  ImageIndex: Integer;
+begin
+  BeginUpdate;
+  try
+    for i:=0 to ItemsTreeView.Items.Count-1 do begin
+      TVNode:=ItemsTreeView.Items[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if not (Item is TPkgDependency) then continue;
+      CurDependency:=TPkgDependency(Item);
+      NodeText:=CurDependency.AsString;
+      ImageIndex:=ImageIndexRequired;
+      if CurDependency.LoadPackageResult<>lprSuccess then begin
+        ImageIndex:=ImageIndexConflict;
+        if OPMInterface<>nil then begin
+          if FindOnlinePackageLink(CurDependency)<>nil then begin
+            NodeText:=NodeText+lisPckEditAvailableOnline;
+            ImageIndex:=ImageIndexAvailableOnline;
+          end;
+        end;
+      end;
+      TVNode.Text:=NodeText;
+      TVNode.ImageIndex:=ImageIndex;
+      TVNode.SelectedIndex:=ImageIndex;
+    end;
+  finally
+    EndUpdate;
+  end;
+end;
+
+function TProjectInspectorForm.FindOnlinePackageLink(
+  const ADependency: TPkgDependency): TPackageLink;
+var
+  PackageLink: TPackageLink;
+begin
+  Result := nil;
+  PackageLink := LazPackageLinks.FindLinkWithPkgName(ADependency.AsString);
+  if (PackageLink <> nil) and (PackageLink.Origin = ploOnline) and
+      (ADependency.IsCompatible(PackageLink.Version)) then
+    Result := PackageLink;
 end;
 
 procedure TProjectInspectorForm.KeyDown(var Key: Word; Shift: TShiftState);

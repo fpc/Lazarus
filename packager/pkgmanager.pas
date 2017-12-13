@@ -3356,6 +3356,7 @@ begin
     if BrokenDependencies<>nil then begin
       if OPMInterface <> nil then begin
         ResolveBrokenDependenciesOnline(BrokenDependencies, NeedToRebuild);
+        FreeAndNil(BrokenDependencies);
         BrokenDependencies := PackageGraph.FindAllBrokenDependencies(nil, AProject.FirstRequiredDependency);
         if BrokenDependencies <> nil then
           Result := ShowBrokenDependenciesReport(BrokenDependencies);
