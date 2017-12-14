@@ -1721,3 +1721,4 @@ msgstr "Name"
 msgctxt "opkman_const.rsrepositorydetailsfrm_mdescription_hint"
 msgid "Enter the repository description"
 msgstr "Geben Sie die Repository-Beschreibung ein"
+
