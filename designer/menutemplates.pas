@@ -142,7 +142,7 @@ type
 
 function SavedTemplatesExist: boolean;
 function GetSavedTemplatesCount: integer;
-function InsertMenuTemplateDlg: TMenuItem;
+function InsertMenuTemplateDlg(ParentMenuForInsert: TMenu): TMenuItem;
 function DeleteMenuTemplateDlg: boolean;
 function GetCfgPath: string;
 procedure InitMenuBaseSizes;
@@ -239,11 +239,11 @@ begin
   end;
 end;
 }
-function InsertMenuTemplateDlg: TMenuItem;
+function InsertMenuTemplateDlg(ParentMenuForInsert: TMenu): TMenuItem;
 var
   dlg: TMenuTemplateDialog;
 begin
-  dlg:=TMenuTemplateDialog.CreateWithMode(nil, dmInsert);
+  dlg:=TMenuTemplateDialog.CreateWithMode(ParentMenuForInsert, dmInsert);
   try
     if (dlg.ShowModal = mrOK) then
       Result:=dlg.MenuToInsert
