@@ -989,6 +989,12 @@ end;
 
 procedure TCocoaBitmap.SetModified;
 begin
+  if FOriginalData <> nil then
+  begin
+    // the original data no longer applies, as imageRep was modified
+    System.FreeMem(FOriginalData);
+    FOriginalData:=nil;
+  end;
   FModified_SinceLastRecreate := True;
 end;
 
@@ -2095,6 +2101,9 @@ begin
   if not Assigned(Bmp) then
     Exit(False);
 
+  // Make sure that bitmap is the most up-to-date
+  Bmp.ReCreateHandle_IfModified(); // Fix for bug 28102
+
   if (Msk <> nil) and (Msk.Image <> nil) then
   begin
     MskImage := Msk.CreateMaskImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight));
@@ -2110,14 +2119,12 @@ begin
 
     CGImageRelease(MskImage);
     CGContextRestoreGState(CGContext);
-    Bmp.ReCreateHandle_IfModified(); // Fix for bug 28102
   end
   else
   begin
     // convert Y coordinate of the source bitmap
     YSrc := Bmp.Height - (SrcHeight + YSrc);
     Result := DrawImageRep(GetNSRect(X, Y, Width, Height),GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight), bmp.ImageRep);
-    Bmp.ReCreateHandle_IfModified(); // Fix for bug 28102
   end;
   AttachedBitmap_SetModified();
 end;
