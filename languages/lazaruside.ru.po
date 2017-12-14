@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-12 01:56+0300\n"
+"PO-Revision-Date: 2017-12-14 17:51+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 1.8.5\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -10356,10 +10356,10 @@ msgstr "Установить, я люблю полных"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
+"The following packages are not installed, but available online: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
-"Следующие пакеты доступны в главном репозитории, но не были установлены: %s.\n"
+"Следующие пакеты доступны в сети, но не были установлены: %s.\n"
 "Хотите установить их?\n"
 
 #: lazarusidestrconsts.lisinstallselection
@@ -14379,6 +14379,10 @@ msgstr "Добавить к проекту"
 msgid "Apply changes"
 msgstr "Применить"
 
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr "(доступен в сети)"
+
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Вызвать процедуру %sRegister%s выбранного модуля"
@@ -16898,6 +16902,10 @@ msgstr "Показывать только изменённые"
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Показывать только одну кнопку в панели задач для всей IDE вместо одной на окно. Некоторые оконные менеджеры (например, Cinnamon) не поддерживают данную возможность и всегда показывают по одной кнопке на окно."
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr "Показывать вывод"
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"

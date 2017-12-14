@@ -10465,7 +10465,7 @@ msgstr "Yükle, yağ seviyorum"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
+"The following packages are not installed, but available online: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14570,6 +14570,10 @@ msgstr "Projeye Ekle"
 msgid "Apply changes"
 msgstr "Değişiklikleri uygula"
 
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Seçilen ünitenin %sRegister %s prosedürünü çağır"
@@ -17147,6 +17151,10 @@ msgstr "Sadece değişiklik göster"
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "\" \"Yalnızca görev çubuğunda pencere başına bir yerine tüm IDE için bir düğme gösterin.\" Bazı Linux Rüzga"
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"

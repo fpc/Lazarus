@@ -10378,7 +10378,7 @@ msgstr "Nainstalovat jej, mám to rád tučné"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
+"The following packages are not installed, but available online: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14486,6 +14486,10 @@ msgstr "Přidat do projektu"
 msgid "Apply changes"
 msgstr "Použít změny"
 
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Volání %sRegister%s procedura vybrané jednotky"
@@ -17007,6 +17011,10 @@ msgstr "Zobrazit pouze změněné"
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Zobrazit pouze jedno tlačítko v liště pro celé IDE, namísto jednoho tlačítka pro každé okno. Někteří Linuxoví Správci Oken jako Cinnamon toto nepodporují a vždy ukazují jedno tlačítko pro každé okno."
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"

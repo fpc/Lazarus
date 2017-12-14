@@ -10271,7 +10271,7 @@ msgstr "Asenna, pidän siitä turvonneena"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
+"The following packages are not installed, but available online: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14254,6 +14254,10 @@ msgstr "Lisää projektiin"
 msgid "Apply changes"
 msgstr "Toteuta muutokset"
 
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Kutsu valitun käännösyksikön %sRegisteröintiä%s"
@@ -16748,6 +16752,10 @@ msgstr "Näytä vain muutetut"
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Näytä vain yksi nappi tehtäväpalkissa koko IDE:lle, ei siis nappi / ikkuna. Jotkin Linux ikkunamanagerit kuten Cinnamon eivät tue tätä ja näyttävät aina napin joka ikkunaa kohti."
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"

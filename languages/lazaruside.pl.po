@@ -10599,7 +10599,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
+"The following packages are not installed, but available online: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14699,6 +14699,10 @@ msgstr "Dodaj do projektu"
 msgid "Apply changes"
 msgstr "Zastosuj zmiany"
 
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Wywołaj procedurę %sRegister%s bieżącego modułu"
@@ -17261,6 +17265,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
+msgstr ""
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter

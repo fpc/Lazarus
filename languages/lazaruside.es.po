@@ -10463,7 +10463,7 @@ msgstr "Instálalo, me gusta lo pesado"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
+"The following packages are not installed, but available online: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14611,6 +14611,10 @@ msgstr "Agregar al Proyecto"
 msgid "Apply changes"
 msgstr "Aplicar cambios"
 
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Llamar %sRegistro%s procedimiento de la unidad seleccionada"
@@ -17134,6 +17138,10 @@ msgstr "Mostrar solo modificados"
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Mostrar solo un botón en la barra de tareas para el IDE completo, en lugar de uno por ventana. Algunos gestores de ventanas de Linux tales como Cinamon no soportan esto y siempre muestran un botón por ventana."
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"

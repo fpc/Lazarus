@@ -10345,7 +10345,7 @@ msgstr "インストールします（注：肥大化します）"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
+"The following packages are not installed, but available online: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14369,6 +14369,10 @@ msgstr "プロジェクトに追加"
 msgid "Apply changes"
 msgstr "変更を適用"
 
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "選択されたユニットの%sRegister%s手続きを呼び出す"
@@ -16894,6 +16898,10 @@ msgstr "修正されたもののみ表示"
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "IDE全体のためのタスクバー内の１つのボタンのみを、ウィンドウ毎に１つの代わりに表示。CinnamonのようないくつかのLinuxウィンドウマネージャはこれをサポートせず、ウィンドウ毎に１つのボタンを表示します。"
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"

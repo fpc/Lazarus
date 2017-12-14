@@ -10361,7 +10361,7 @@ msgstr "Встанови його, мені подобається жир"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
+"The following packages are not installed, but available online: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14381,6 +14381,10 @@ msgstr "Додати до проекту"
 msgid "Apply changes"
 msgstr "Застосувати зміни"
 
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Викликати процедуру %sRegister%s вибраного модуля"
@@ -16900,6 +16904,10 @@ msgstr "Показати лише змінене"
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Показувати лише одну кнопку на панелі завдань для всього ІСР замість однієї на кожне вікно. Деякі віконні менеджери (наприклад, Cinnamon) не підтримують дану можливість і завжди показують по одній кнопці на вікно."
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"

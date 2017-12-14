@@ -10371,7 +10371,7 @@ msgstr "Įdiegti, kuo daugiau tuo geriau"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available in the main repository: %s.\n"
+"The following packages are not installed, but available online: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14401,6 +14401,10 @@ msgstr "Įdėti į projektą"
 msgid "Apply changes"
 msgstr "Pritaikyti keitimus"
 
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Iškviesti pažymėto modulio %sRegister%s procedūrą"
@@ -16922,6 +16926,10 @@ msgstr "Rodyti tik pakeistus"
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Užduočių juostoje rodyti tik vieną IKA mygtuką, o ne mygtukus kiekvienam IKA langui. Kai kurios langų tvarkyklės linuk sistemoje nepalaiko šios funkcijos ir visada rodo mygtukus kiekvienam langui."
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"

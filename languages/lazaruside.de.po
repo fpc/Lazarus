@@ -10343,6 +10343,12 @@ msgstr "installiert"
 msgid "Install it, I like the fat"
 msgstr "Installieren, ich will es so"
 
+#: lazarusidestrconsts.lisinstallpackagesmsg
+msgid ""
+"The following packages are not installed, but available online: %s.\n"
+"Do you wish to install missing packages?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Auswahl installieren"
@@ -13817,6 +13823,10 @@ msgstr "Noch nicht implementiert:%s%s"
 msgid "not installed"
 msgstr "nicht installiert"
 
+#: lazarusidestrconsts.lisnotinstalledpackages
+msgid "Not installed packages"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
 msgstr "Nicht jetzt"
@@ -14368,6 +14378,10 @@ msgstr "Zum Projekt hinzufügen"
 #: lazarusidestrconsts.lispckeditapplychanges
 msgid "Apply changes"
 msgstr "Änderungen übernehmen"
+
+#: lazarusidestrconsts.lispckeditavailableonline
+msgid "(available online)"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
@@ -16879,6 +16893,10 @@ msgstr "Nur geänderte anzeigen"
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Zeigt nur einen Schalter in der Taskbar für die ganze IDE anstatt einen pro Fenster. Einige Linux-Fenstermanager wie Cinnamon unterstützen das nicht und zeigen immer einen Schalter pro Fenster."
+
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
@@ -21186,3 +21204,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+
