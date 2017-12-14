@@ -5,7 +5,8 @@ unit PJSDsgnRegister;
 interface
 
 uses
-  Classes, SysUtils, ProjectIntf, CompOptsIntf, LazIDEIntf, Forms, Controls;
+  Classes, SysUtils, ProjectIntf, CompOptsIntf, LazIDEIntf, IDEOptionsIntf,
+  PJSDsgnOptsFrame, Forms, Controls;
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';
@@ -41,6 +42,8 @@ type
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
   end;
 
+var
+  PJSOptionsFrameID: integer = 1000;
 
 procedure Register;
 
@@ -48,8 +51,14 @@ implementation
 
 procedure Register;
 begin
+  PJSOptions:=TPas2jsOptions.Create;
+  PJSOptions.Load;
+  // register new-project items
   RegisterProjectDescriptor(TProjectPas2JSWebApp.Create);
   RegisterProjectDescriptor(TProjectPas2JSNodeJSApp.Create);
+  // add options frame
+  PJSOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TPas2jsOptionsFrame,
+                                              PJSOptionsFrameID)^.Index;
 end;
 
 { TProjectPas2JSNodeJSApp }

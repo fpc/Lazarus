@@ -1,0 +1,58 @@
+object Pas2jsOptionsFrame: TPas2jsOptionsFrame
+  Left = 0
+  Height = 315
+  Top = 0
+  Width = 425
+  ClientHeight = 315
+  ClientWidth = 425
+  TabOrder = 0
+  DesignLeft = 345
+  DesignTop = 158
+  object Pas2jsPathLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 16
+    Top = 6
+    Width = 100
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Pas2jsPathLabel'
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Pas2jsPathComboBox: TComboBox
+    AnchorSideLeft.Control = Pas2jsPathLabel
+    AnchorSideTop.Control = Pas2jsPathLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Pas2jsPathBrowseButton
+    Left = 6
+    Height = 21
+    Top = 22
+    Width = 343
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    TabOrder = 0
+    Text = 'Pas2jsPathComboBox'
+  end
+  object Pas2jsPathBrowseButton: TButton
+    AnchorSideTop.Control = Pas2jsPathComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Pas2jsPathComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 349
+    Height = 21
+    Top = 22
+    Width = 70
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = Pas2jsPathBrowseButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+end

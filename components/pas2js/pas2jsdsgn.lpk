@@ -18,12 +18,16 @@
     <Description Value="Adds a Lazarus project for pas2js browser applications."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="pjsdsgnregister.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="pjsdsgnregister"/>
       </Item1>
+      <Item2>
+        <Filename Value="pjsdsgnoptsframe.pas"/>
+        <UnitName Value="pjsdsgnoptsframe"/>
+      </Item2>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

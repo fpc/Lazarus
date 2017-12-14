@@ -8,7 +8,7 @@ unit Pas2JSDsgn;
 interface
 
 uses
-  PJSDsgnRegister, LazarusPackageIntf;
+  PJSDsgnRegister, PJSDsgnOptsFrame, LazarusPackageIntf;
 
 implementation
 
