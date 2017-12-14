@@ -2102,7 +2102,7 @@ begin
       CreateChildNode;
       LastUnitNode := CurNode;
       CurNode.Desc:=ctnUseUnitClearName;
-      CurNode.EndPos:=CurNode.Parent.EndPos;
+      CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
       ReadNextAtom;
       if CurPos.Flag<>cafPoint then break;

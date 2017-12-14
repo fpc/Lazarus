@@ -67,6 +67,7 @@ interface
 { $DEFINE DebugAddToolDependency}
 { $DEFINE VerboseCPS}
 { $DEFINE VerboseFindDeclarationAndOverload}
+{ $DEFINE VerboseFindFileAtCursor}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
@@ -3069,12 +3070,14 @@ begin
   DebugLn('TFindDeclarationTool.FindUnitSource Self="',MainFilename,'" AnUnitName="',AnUnitName,'" AnUnitInFilename="',AnUnitInFilename,'"');
   {$ENDIF}
   Result:=nil;
-  if (AnUnitName='') or (Scanner=nil) or (Scanner.MainCode=nil)
-  or (not (TObject(Scanner.MainCode) is TCodeBuffer))
-  or (Scanner.OnLoadSource=nil)
-  then begin
-    RaiseException(20170421200035,'TFindDeclarationTool.FindUnitSource Invalid Data');
-  end;
+  if (AnUnitName='') or (Scanner=nil) then
+    RaiseException(20171214184503,'TFindDeclarationTool.FindUnitSource Invalid Data');
+  if (Scanner.MainCode=nil) then
+    RaiseException(20171214184512,'TFindDeclarationTool.FindUnitSource Invalid Data');
+  if (not (TObject(Scanner.MainCode) is TCodeBuffer)) then
+    RaiseException(20171214184519,'TFindDeclarationTool.FindUnitSource Invalid Data');
+  if (Scanner.OnLoadSource=nil) then
+    RaiseException(20171214184527,'TFindDeclarationTool.FindUnitSource Invalid Data');
 
   NewUnitName:=AnUnitName;
   NewInFilename:=AnUnitInFilename;
@@ -3712,17 +3715,32 @@ var
   NewCode: TCodeBuffer;
   p, StartP: PChar;
 begin
+  {$IFDEF VerboseFindFileAtCursor}
+  debugln(['TFindDeclarationTool.FindFileAtCursor START']);
+  {$ENDIF}
   Result:=false;
   Found:=ffatNone;
   FoundFilename:='';
   if StartPos<>nil then
     StartPos^:=CleanCodeXYPosition;
-  if CursorPos.Code.LineColIsOutside(CursorPos.Y,CursorPos.X) then exit;
-  if CursorPos.Code.LineColIsSpace(CursorPos.Y,CursorPos.X) then exit;
-  if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount) then exit;
-  {$IFDEF VerboseFindFileAtCursor}
-  debugln(['TFindDeclarationTool.FindFileAtCursor START']);
-  {$ENDIF}
+  if CursorPos.Code.LineColIsOutside(CursorPos.Y,CursorPos.X) then begin
+    {$IFDEF VerboseFindFileAtCursor}
+    debugln(['TFindDeclarationTool.FindFileAtCursor LineColIsOutside ',dbgs(CursorPos)]);
+    {$ENDIF}
+    exit;
+  end;
+  if CursorPos.Code.LineColIsSpace(CursorPos.Y,CursorPos.X) then begin
+    {$IFDEF VerboseFindFileAtCursor}
+    debugln(['TFindDeclarationTool.FindFileAtCursor LineColIsSpace ',dbgs(CursorPos)]);
+    {$ENDIF}
+    exit;
+  end;
+  if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount) then begin
+    {$IFDEF VerboseFindFileAtCursor}
+    debugln(['TFindDeclarationTool.FindFileAtCursor outside Line ',dbgs(CursorPos)]);
+    {$ENDIF}
+    exit;
+  end;
   if [ffatUsedUnit,ffatIncludeFile,ffatDisabledIncludeFile]*SearchFor<>[]
   then begin
     try
@@ -3759,7 +3777,7 @@ begin
           end;
         end else begin
           {$IFDEF VerboseFindFileAtCursor}
-          debugln(['TFindDeclarationTool.FindFileAtCursor in parsed code, not in comment']);
+          debugln(['TFindDeclarationTool.FindFileAtCursor in parsed code, not in comment Node=',Node.DescAsString]);
           {$ENDIF}
           if Node.Desc in [ctnUseUnitClearName,ctnUseUnitNamespace] then begin
             Node:=Node.Parent;
