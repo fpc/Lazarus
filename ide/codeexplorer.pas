@@ -1282,7 +1282,8 @@ begin
             begin
               ProcNode:=CodeNode.Parent;
               TVNode:=AddCodeNode(cefcLongProcs,ProcNode);
-              TVNode.Text:=TVNode.Text+' ['+IntToStr(LineCnt)+']';
+              if Assigned(TVNode) then
+                TVNode.Text:=TVNode.Text+' ['+IntToStr(LineCnt)+']';
             end;
           end;
           if (cefcEmptyProcs in ObserverCats)
