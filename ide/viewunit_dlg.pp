@@ -418,6 +418,7 @@ procedure TViewUnitDialog.OnIdle(Sender: TObject; var Done: Boolean);
     i: Integer;
     aFilename: String;
   begin
+    if not FilenameIsAbsolute(aDirectory) then exit;
     aDirectory:=AppendPathDelim(aDirectory);
     //DebugLn(['CheckDirectory ',aDirectory]);
     Files:=nil;
