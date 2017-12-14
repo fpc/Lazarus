@@ -1550,19 +1550,31 @@ var
   BaseDir: String;
   NewFilename,InFilename: string;
   AUnitName: String;
-  SearchPath: String;
+  SearchPath, Line: String;
   Edit: TIDESynEditor;
   FoundType: TFindFileAtCursorFlag;
+  XY: TPoint;
+  Len: Integer;
 begin
   Result:=mrCancel;
+
+  {$IFDEF VerboseFindFileAtCursor}
+  debugln(['TFileOpener.OpenFileAtCursor ',FActiveUnitInfo<>nil]);
+  {$ENDIF}
   if (FActiveSrcEdit=nil) or (FActiveUnitInfo=nil) then exit;
   BaseDir:=ExtractFilePath(FActiveUnitInfo.Filename);
+  {$IFDEF VerboseFindFileAtCursor}
+  debugln(['TFileOpener.OpenFileAtCursor File="',FActiveUnitInfo.Filename,'"']);
+  {$ENDIF}
 
   Found:=false;
 
   // check if a filename is selected
   Edit:=FActiveSrcEdit.EditorComponent;
   if Edit.SelAvail and (Edit.BlockBegin.Y=Edit.BlockBegin.X) then begin
+    {$IFDEF VerboseFindFileAtCursor}
+    debugln(['TFileOpener.OpenFileAtCursor Edit.SelAvail Edit.SelText="',Edit.SelText,'"']);
+    {$ENDIF}
     FFileName:=ResolveDots(Edit.SelText);
     if not FilenameIsAbsolute(FFileName) then
       FFileName:=ResolveDots(BaseDir+FFileName);
@@ -1574,15 +1586,32 @@ begin
     end;
   end;
 
+
+  XY:=Edit.LogicalCaretXY;
+  if (XY.Y >= 1) and (XY.Y <= FActiveSrcEdit.EditorComponent.Lines.Count) then
+  begin
+    Line := FActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
+    Len := Length(Line);
+    if (XY.X>1) and (XY.X-1<=Len) and IsWordChar[Line[XY.X-1]]
+    and ((XY.X>Len) or IsNonWordChar[Line[XY.X]]) then
+      dec(XY.X);
+  end;
+
+
   // in a Pascal file use codetools
   if FilenameIsPascalSource(FActiveUnitInfo.Filename) then begin
-    if CodeToolBoss.FindFileAtCursor(FActiveSrcEdit.CodeBuffer,
-      Edit.LogicalCaretXY.X,Edit.LogicalCaretXY.Y,FoundType,FFileName) then
-      Found:=true
-    else begin
-      FFileName:=FActiveSrcEdit.EditorComponent.GetWordAtRowCol(
-        FActiveSrcEdit.EditorComponent.LogicalCaretXY);
-      exit(ShowNotFound(FFileName));
+    {$IFDEF VerboseFindFileAtCursor}
+    debugln(['TFileOpener.OpenFileAtCursor FilenameIsPascalSource -> using codetools']);
+    {$ENDIF}
+    if MainIDE.BeginCodeTool(FActiveSrcEdit,FActiveUnitInfo,[]) then begin
+      if CodeToolBoss.FindFileAtCursor(FActiveSrcEdit.CodeBuffer,
+        XY.X,XY.Y,FoundType,FFileName) then
+        Found:=true
+      else begin
+        FFileName:=FActiveSrcEdit.EditorComponent.GetWordAtRowCol(
+          FActiveSrcEdit.EditorComponent.LogicalCaretXY);
+        exit(ShowNotFound(FFileName));
+      end;
     end;
   end;
 
