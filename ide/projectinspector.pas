@@ -1190,7 +1190,7 @@ begin
         if Dependency.LoadPackageResult<>lprSuccess then
           if OPMInterface<>nil then
             if FindOnlinePackageLink(Dependency)<>nil then
-              NodeText:=NodeText+lisPckEditAvailableOnline;
+              NodeText:=NodeText+' '+lisPckEditAvailableOnline;
         // Add the required package under the branch
         ANodeData := CreateNodeData(penDependency, Dependency.PackageName, False);
         RequiredBranch.AddNodeData(NodeText, ANodeData);
@@ -1284,7 +1284,7 @@ begin
         ImageIndex:=ImageIndexConflict;
         if OPMInterface<>nil then begin
           if FindOnlinePackageLink(CurDependency)<>nil then begin
-            NodeText:=NodeText+lisPckEditAvailableOnline;
+            NodeText:=NodeText+' '+lisPckEditAvailableOnline;
             ImageIndex:=ImageIndexAvailableOnline;
           end;
         end;
