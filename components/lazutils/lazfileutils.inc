@@ -3,18 +3,39 @@
 function ResolveDots(const AFilename: string): string;
 //trim double path delims and expand special dirs like .. and .
 //on Windows change also '/' to '\' except for filenames starting with '\\?\'
+
+  {$ifdef windows}
+  function IsDriveDelim(const Path: string; p: integer): boolean; inline;
+  begin
+    Result:=(p=2) and (Path[2]=DriveDelim) and (Path[1] in ['a'..'z','A'..'Z']);
+  end;
+  {$endif}
+
+  function IsPathDelim(const Path: string; p: integer): boolean;
+  begin
+    if (p<=0) or (Path[p]=PathDelim) then exit(true);
+    {$ifdef windows}
+    if IsDriveDelim(Path,p) then
+      exit(true);
+    {$endif}
+    Result:=false;
+  end;
+
 var SrcPos, DestPos, Len, DirStart: integer;
   c: char;
   MacroPos: LongInt;
 begin
-  Result:=AFilename;
-  {$ifdef windows}
-  //Special case: everything is literal after this, even dots (this does not apply to '//?/')
-  if (Pos('\\?\', AFilename) = 1) then Exit;
-  {$endif}
-
   Len:=length(AFilename);
   if Len=0 then exit('');
+
+  Result:=AFilename;
+
+  {$ifdef windows}
+  //Special case: everything is literal after this, even dots (this does not apply to '//?/')
+  if (length(AFilename)>=4) and (AFilename[1]='\') and (AFilename[2]='\')
+  and (AFilename[3]='?') and (AFilename[4]='\') then
+    exit;
+  {$endif}
 
   SrcPos:=1;
   DestPos:=1;
@@ -26,7 +47,7 @@ begin
     //change / to \. The WinApi accepts both, but it leads to strange effects in other places
     if (c in AllowDirectorySeparators) then c := PathDelim;
     {$endif}
-    // check for double path delims
+    // check for duplicate path delims
     if (c=PathDelim) then begin
       inc(SrcPos);
       {$IFDEF Windows}
@@ -35,7 +56,7 @@ begin
       if (DestPos>1)
       {$ENDIF}
       and (Result[DestPos-1]=PathDelim) then begin
-        // skip second PathDelim
+        // skip duplicate PathDelim
         continue;
       end;
       Result[DestPos]:=c;
@@ -45,16 +66,16 @@ begin
     // check for special dirs . and ..
     if (c='.') then begin
       if (SrcPos<Len) then begin
-        if (AFilename[SrcPos+1]=PathDelim)
-        and ((DestPos=1) or (Result[DestPos-1]=PathDelim)) then begin
+        if (AFilename[SrcPos+1] in AllowDirectorySeparators)
+        and IsPathDelim(Result,DestPos-1) then begin
           // special dir ./ or */./
           // -> skip
           inc(SrcPos,2);
-          while (SrcPos<=Len) and (AFilename[SrcPos]=PathDelim) do
+          while (SrcPos<=Len) and (AFilename[SrcPos] in AllowDirectorySeparators) do
             inc(SrcPos);
           continue;
         end else if (AFilename[SrcPos+1]='.')
-        and ((SrcPos+1=Len) or (AFilename[SrcPos+2]=PathDelim)) then
+        and ((SrcPos+1=Len) or (AFilename[SrcPos+2] in AllowDirectorySeparators)) then
         begin
           // special dir ..
           //  1. ..      -> copy
@@ -72,11 +93,10 @@ begin
             inc(SrcPos,2);
             continue;
           {$IFDEF Windows}
-          end else if (DestPos=3) and (Result[2]=':')
-          and (Result[1] in ['a'..'z','A'..'Z']) then begin
+          end else if (DestPos=3) and IsDriveDelim(Result,2) then begin
             //  3. C:..    -> copy
-          end else if (DestPos=4) and (Result[2]=':') and (Result[3]=PathDelim)
-          and (Result[1] in ['a'..'z','A'..'Z']) then begin
+          end else if (DestPos=4) and (Result[3]=PathDelim)
+          and IsDriveDelim(Result,2) then begin
             //  4. C:\..   -> skip .., keep C:\
             inc(SrcPos,2);
             continue;
@@ -90,13 +110,17 @@ begin
             // */.
             if (DestPos>3)
             and (Result[DestPos-2]='.') and (Result[DestPos-3]='.')
-            and ((DestPos=4) or (Result[DestPos-4]=PathDelim)) then begin
+            and IsPathDelim(Result,DestPos-4) then begin
               //  6. ../..   -> copy because if the first '..' was not resolved, the next can't neither
             end else begin
               //  7. xxxdir/..  -> trim dir and skip ..
               DirStart:=DestPos-2;
               while (DirStart>1) and (Result[DirStart-1]<>PathDelim) do
                 dec(DirStart);
+              {$ifdef windows}
+              if (DirStart=1) and IsDriveDelim(Result,2) then
+                inc(DirStart,2);
+              {$endif}
               MacroPos:=DirStart;
               while MacroPos<DestPos do begin
                 if (Result[MacroPos]='$')
@@ -113,7 +137,7 @@ begin
                 //writeln('ResolveDots ',DestPos,' SrcPos=',SrcPos,' File="',AFilename,'" Result="',copy(Result,1,DestPos-1),'"');
                 if SrcPos>Len then begin
                   // '..' at end of filename
-                  if (DestPos>1) and (Result[DestPos-1]<>PathDelim) then begin
+                  if (DestPos>1) and (Result[DestPos-1]=PathDelim) then begin
                     // foo/dir/.. -> foo
                     dec(DestPos);
                   end else if (DestPos=1) then begin
@@ -136,10 +160,18 @@ begin
         if DestPos=1 then begin
           Result:='.';
           exit;
-        end else begin
-          // skip
-          break;
         end;
+        if (DestPos>2) and (Result[DestPos-1]=PathDelim)
+        {$ifdef windows}
+        and not IsDriveDelim(Result,DestPos-2)
+        {$endif}
+        then begin
+          // foo/. -> foo
+          // C:foo\. -> C:foo
+          // C:\. -> C:\
+          dec(DestPos);
+        end;
+        break;
       end;
     end;
     // copy directory
