@@ -464,7 +464,8 @@ var
   i, x: Integer;
 begin
   for i:=fMissingUnits.Count-1 downto 0 do begin
-    if ACommentedUnits.Find(fMissingUnits[i], x) then begin
+    if Assigned(ACommentedUnits) and ACommentedUnits.Find(fMissingUnits[i], x) then
+    begin
       fUnitsToComment.Add(fMissingUnits[i]);
       fMissingUnits.Delete(i);
     end;
