@@ -29,7 +29,10 @@ interface
 }
 uses
   Windows, // keep as first
-  Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl, character,
+  Classes, SysUtils, RtlConsts, ActiveX, MultiMon, CommCtrl,
+  {$IF FPC_FULLVERSION>=30000}
+  character,
+  {$ENDIF}
   // LCL
   LCLPlatformDef, InterfaceBase, LCLIntf, LclProc, LCLType, LMessages,
   Controls, Buttons, Forms, Dialogs, GraphMath, GraphType, StdCtrls,
