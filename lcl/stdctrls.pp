@@ -723,6 +723,7 @@ type
     FHideSelection: Boolean;
     FMaxLength: Integer;
     FModified: Boolean;
+    FOnChangeHandler: TMethodList;
     FPasswordChar: Char;
     FReadOnly: Boolean;
     FNumbersOnly: Boolean;
@@ -793,6 +794,7 @@ type
     property ParentColor default False;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Clear;
     procedure SelectAll;
     procedure ClearSelection; virtual;
@@ -800,6 +802,11 @@ type
     procedure CutToClipboard; virtual;
     procedure PasteFromClipboard; virtual;
     procedure Undo; virtual;
+
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
+    procedure AddHandlerOnChange(const AnOnChangeEvent: TNotifyEvent;
+      AsFirst: Boolean = False);
+    procedure RemoveHandlerOnChange(const AnOnChangeEvent: TNotifyEvent);
   public
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize default True;

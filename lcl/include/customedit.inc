@@ -89,6 +89,14 @@ begin
   FTextHint := '';
 end;
 
+procedure TCustomEdit.AddHandlerOnChange(const AnOnChangeEvent: TNotifyEvent;
+  AsFirst: Boolean);
+begin
+  if FOnChangeHandler=nil then
+    FOnChangeHandler := TMethodList.Create;
+  FOnChangeHandler.Add(TMethod(AnOnChangeEvent), not AsFirst);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomEdit.Clear
   Params: ---
@@ -258,6 +266,13 @@ procedure TCustomEdit.CutToClipboard;
 begin
   if HandleAllocated then
     TWSCustomEditClass(WidgetSetClass).Cut(Self);
+end;
+
+destructor TCustomEdit.Destroy;
+begin
+  FOnChangeHandler.Free;
+
+  inherited Destroy;
 end;
 
 procedure TCustomEdit.PasteFromClipboard;
@@ -558,6 +573,21 @@ begin
     ShowEmulatedTextHint;
 end;
 
+procedure TCustomEdit.RemoveAllHandlersOfObject(AnObject: TObject);
+begin
+  inherited RemoveAllHandlersOfObject(AnObject);
+
+  if FOnChangeHandler<>nil then
+    FOnChangeHandler.RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TCustomEdit.RemoveHandlerOnChange(
+  const AnOnChangeEvent: TNotifyEvent);
+begin
+  if FOnChangeHandler<>nil then
+    FOnChangeHandler.Remove(TMethod(AnOnChangeEvent));
+end;
+
 function TCustomEdit.RealGetText: TCaption;
 begin
   if FEmulatedTextHintStatus=thsShowing then
@@ -620,6 +650,8 @@ procedure TCustomEdit.Change;
 begin
   Changed;
   if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChangeHandler) then
+    FOnChangeHandler.CallNotifyEvents(Self);
 end;
 
 procedure TCustomEdit.DoEnter;
