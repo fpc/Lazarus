@@ -63,6 +63,8 @@ type
     FPackageType: TLazPackageType;
     FOrigin: TPkgLinkOrigin;
     FLastUsed: TDateTime;
+    FOPMFileName: String;
+    FOPMFileDate: TDateTime;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -81,6 +83,8 @@ type
     property PackageType: TLazPackageType read FPackageType;
     property Origin: TPkgLinkOrigin read FOrigin write FOrigin;
     property LastUsed: TDateTime read FLastUsed write FLastUsed;
+    property OPMFileName: string read FOPMFileName write FOPMFileName;
+    property OPMFileDate: TDateTime read FOPMFileDate write FOPMFileDate;
   end;
 
   { TPackageLinks }

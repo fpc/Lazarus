@@ -69,6 +69,7 @@ type
     property Visible: boolean read FVisible write FVisible;
     property IsValid: boolean read FIsValid write FIsValid;
     property EffectiveFilename: string read FEffectiveFilename write FEffectiveFilename;
+    property OPMFileDate;
   end;
 
   { TPackageLinksDialog }
@@ -400,7 +401,7 @@ begin
       PkgStringGrid.Cells[5,i]:=Link.EffectiveFilename;
 
     if Link.Origin = ploOnline then
-      PkgStringGrid.Cells[6,i]:= FormatDateTime('YYYY/MM/DD  hh:mm:ss', Link.LPKFileDate)
+      PkgStringGrid.Cells[6,i]:= FormatDateTime('YYYY/MM/DD  hh:mm:ss', Link.OPMFileDate)
     else
     begin
       if Link.LastUsed=0 then
@@ -519,6 +520,7 @@ begin
       LPKFileDateValid:=Link.LPKFileDateValid;
       LPKFileDate:=Link.LPKFileDate;
       LastUsed:=Link.LastUsed;
+      OPMFileDate:=Link.OPMFileDate;
     end;
   end else
     inherited Assign(Source);

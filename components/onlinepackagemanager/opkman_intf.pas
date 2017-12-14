@@ -188,7 +188,7 @@ begin
           if PackageLink <> nil then
           begin
             PackageLink.Version.Assign(LazPackage.Version);
-            PackageLink.LPKFileDate := MetaPackage.RepositoryDate;
+            PackageLink.OPMFileDate := MetaPackage.RepositoryDate;
             FPackageLinks.Add(PackageLink);
           end;
         end;

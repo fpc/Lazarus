@@ -1201,6 +1201,7 @@ begin
     Result.Name := PkgName;
     Result.LPKUrl := PkgURL;
     Result.Origin := ploOnline;
+    Result.OPMFileName := PkgFilename;
     FOnlineLinks.Add(Result);
   end
   else begin
