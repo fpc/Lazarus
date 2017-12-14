@@ -37,8 +37,13 @@ procedure TTestLazFileUtils.TestResolveDots;
     Actual: String;
   begin
     if SetPathDelims then begin
-      ForcePathDelims(AFileName);
       ForcePathDelims(Expected);
+      {$IFDEF Windows}
+      // test once with / and once with \
+      Actual:=ResolveDots(AFilename);
+      AssertEquals('TTestLazFileUtils.TestResolveDots File='''+AFilename+'''',Expected,Actual);
+      {$ENDIF}
+      ForcePathDelims(AFileName);
     end;
     Actual:=ResolveDots(AFilename);
     AssertEquals('TTestLazFileUtils.TestResolveDots File='''+AFilename+'''',Expected,Actual);
@@ -53,6 +58,7 @@ begin
   t('..','..');
   t('bla/..','.');
   t('bla//..','.');
+  t('foo/bla//..','foo');
   t('bla/../','.');
   t('bla//..//','.');
   t('foo/../bar','bar');
@@ -78,6 +84,20 @@ begin
   t('//..','/');
   t('/./..','/');
   t('//.//..','/');
+  {$ENDIF}
+  {$IFDEF Windows}
+  t('C:\.','C:\');
+  t('C:.\.','C:.');
+  t('C:..','C:..');
+  t('C:\..','C:\');
+  t('C:foo\bla\..','C:foo');
+  t('C:foo\bla\\..','C:foo');
+  t('C:\foo\bla\..','C:\foo');
+  t('C:\\foo\\bla\\..','C:\foo');
+  t('\\','\\');
+  t('\\..','\\');
+  t('\\?\','\\?\');
+  t('\\?\\\\','\\?\\\\');
   {$ENDIF}
 end;
 
