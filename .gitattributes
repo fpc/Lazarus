@@ -6260,6 +6260,11 @@ examples/motiongraphics/motiongraphics.ico -text
 examples/motiongraphics/motiongraphics.lpi svneol=native#text/plain
 examples/motiongraphics/motiongraphics.lpr svneol=native#text/pascal
 examples/motiongraphics/motiongraphics.res -text
+examples/mousebuttons/mousetest.lpi svneol=native#text/plain
+examples/mousebuttons/mousetest.lpr svneol=native#text/pascal
+examples/mousebuttons/mousetest.res -text
+examples/mousebuttons/uform.lfm svneol=native#text/plain
+examples/mousebuttons/uform.pas svneol=native#text/pascal
 examples/mssql/README.txt svneol=native#text/plain
 examples/mssql/dbform.lfm svneol=native#text/plain
 examples/mssql/dbform.pas svneol=native#text/plain
