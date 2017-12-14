@@ -8016,7 +8016,6 @@ begin
     FSaveReportEvent:=frDesignerComp.OnSaveReport;
     frDesignerComp.OnSaveReport:=@DoSaveReportEvent;
 
-    //FDetailReport:=TStringStream.Create(Trim(FEditView.DetailReport.Text));
     try
       FDetailRrep.ReportBody.Position:=0;
       if FDetailRrep.ReportBody.Size > 0 then

@@ -2462,7 +2462,7 @@ end;
 constructor TlrDetailReport.Create;
 begin
   inherited Create;
-  FReportBody:=TStringStream.Create('');
+  FReportBody:=TStringStream.CreateRaw('');
 end;
 
 destructor TlrDetailReport.Destroy;
@@ -2476,7 +2476,7 @@ begin
   FReportName:=XML.GetValue(Path+'ReportName/Value', '');
   FReportDescription:=XML.GetValue(Path+'ReportDescription/Value', '');
   FReportBody.Size:=0;
-  TStringStream(FReportBody).WriteString(XML.GetValue(Path+'ReportBody/Value', ''));
+  TStringStream(FReportBody).WriteAnsiString(XML.GetValue(Path+'ReportBody/Value', ''));
 end;
 
 procedure TlrDetailReport.SaveToXML(XML: TLrXMLConfig; const Path: String);
@@ -10064,7 +10064,7 @@ procedure TfrReport.WriteReportXML(Writer: TWriter);
 var
   st: TStringStream;
 begin
-  st := TStringStream.Create('');
+  st := TStringStream.CreateRaw('');
   SaveToXMLStream(st);
   Writer.WriteString(st.DataString);
   st.free;
@@ -11894,7 +11894,7 @@ begin
   inherited Loaded;
   if FXMLReport<>'' then
   begin
-    st := TStringStream.Create(FXMLReport);
+    st := TStringStream.CreateRaw(FXMLReport);
     LoadFromXMLStream(st);
     st.free;
     FXMLReport := '';
