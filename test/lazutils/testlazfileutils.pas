@@ -47,6 +47,11 @@ procedure TTestLazFileUtils.TestResolveDots;
     end;
     Actual:=ResolveDots(AFilename);
     AssertEquals('TTestLazFileUtils.TestResolveDots File='''+AFilename+'''',Expected,Actual);
+
+    // check that a resolved file can no further be resolved
+    Actual:=ResolveDots(Actual);
+    if AFilename<>Expected then
+      AssertEquals('TTestLazFileUtils.TestResolveDots File='''+Actual+'''',Expected,Actual);
   end;
 
 begin
