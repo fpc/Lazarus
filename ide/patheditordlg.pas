@@ -33,6 +33,8 @@ type
     AddTemplateButton: TBitBtn;
     ButtonPanel1: TButtonPanel;
     CopyMenuItem: TMenuItem;
+    MoveDownButton: TSpeedButton;
+    MoveUpButton: TSpeedButton;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
     ExportMenuItem: TMenuItem;
@@ -47,8 +49,6 @@ type
     Splitter1: TSplitter;
     DeleteButton: TBitBtn;
     PathListBox: TListBox;
-    MoveDownButton: TBitBtn;
-    MoveUpButton: TBitBtn;
     TemplatesListBox: TListBox;
     TemplateGroupBox: TGroupBox;
     PathGroupBox: TGroupBox;
