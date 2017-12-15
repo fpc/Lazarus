@@ -26,8 +26,6 @@ type
     FDescription: String;
     FEngine: TFPDDEngine;
     FQueryPanel : TQueryFrame;
-    { private declarations }
-    { public declarations }
     procedure AddPair(LV: TListView; Const AName, AValue: String);
     procedure ClearDisplay;
     function GetCurrentObjectType: TObjectType;
@@ -91,7 +89,7 @@ implementation
 
 {$r *.lfm}
 
-uses typinfo, fradata, lazdatadeskstr, frmgeneratesql;
+uses typinfo, fradata, lazdatadeskstr, frmgeneratesql, sqltypes;
 
   { TConnectionEditor }
 
@@ -315,21 +313,38 @@ begin
   end;
 end;
 
+function CompareSqlIdentifier(Item1, Item2: TCollectionItem): Integer;
+var
+   o1, o2: TSqlObjectIdenfier;
+begin
+     o1:=Item1 as TSqlObjectIdenfier;
+     o2:=Item2 as TSqlObjectIdenfier;
+     Result:=CompareStr(o1.SchemaName, o2.SchemaName);
+
+     if Result=0
+     then
+       Result:=CompareStr(o1.ObjectName, o2.ObjectName);
+end;
+
 procedure TConnectionFrame.ShowTables(ATV : TTreeView;ParentNode : TTreeNode; AddSubNodes : Boolean = False);
 
 Var
-  L : TStringList;
+  L : TSqlObjectIdentifierList;
   I : Integer;
   N : TTreeNode;
+  S : String;
 
 begin
-  L:=TStringList.Create;
+  L:=TSqlObjectIdentifierList.Create(TSqlObjectIdenfier);
   Try
-    FEngine.GetTableList(L);
-    L.Sorted:=True;
+    FEngine.GetObjectList(stTables, L);
+    L.Sort(@CompareSqlIdentifier);
     For I:=0 to L.Count-1 do
       begin
-      N:=NewNode(ATV,ParentNode,L[I],iiTable);
+      S:=L[i].ObjectName;
+      If L[i].SchemaName<>'' then
+        S:=L[i].SchemaName + '.' + S;
+      N:=NewNode(ATV,ParentNode,S,iiTable);
       If AddSubNodes then
         begin
         NewNode(ATV,N,SNodeFields,iiFields);
