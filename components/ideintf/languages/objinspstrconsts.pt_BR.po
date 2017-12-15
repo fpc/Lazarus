@@ -1248,7 +1248,7 @@ msgstr "Nome filtro"
 
 #: objinspstrconsts.pirsunit
 msgid "Pascal unit"
-msgstr "Unidade Pascal"
+msgstr "unidade Pascal"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

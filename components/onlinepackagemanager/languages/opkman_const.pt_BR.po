@@ -729,10 +729,8 @@ msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "Pacote \"%s\" depende do pacote \"%s\". Resolver dependências?"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-#, fuzzy
-#| msgid "Not resolving dependencies might lead to install failure!"
 msgid "Not resolving dependencies might lead to install failure! Continue?"
-msgstr "Não resolver dependências pode levar à falha de instalação!"
+msgstr "Não resolver dependências pode levar à falha de instalação! Continuar?"
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
@@ -1175,25 +1173,24 @@ msgstr "Versão"
 
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
-msgstr ""
+msgstr "Para que as alterações tenham efeito você deve reconstruir a IDE. Reconstruir agora?"
 
 #: opkman_const.rsopmintfpackagelistfrm_caption
 msgid "Install online packages"
-msgstr ""
+msgstr "Instalar pacotes online"
 
 #: opkman_const.rsopmintfpackagelistfrm_pninfo
 msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
-msgstr ""
+msgstr "Verificar antes de instalar: compatibilidade Lazarus/FPC, suporte ao \"widgeset\", licença e informações de versão"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
-#, fuzzy
 msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
 msgid "Data"
 msgstr "Dados"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package"
-msgstr ""
+msgstr "Pacote Lazarus"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
