@@ -16836,6 +16836,10 @@ msgstr "Rodyti tik pakeistus"
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Užduočių juostoje rodyti tik vieną IKA mygtuką, o ne mygtukus kiekvienam IKA langui. Kai kurios langų tvarkyklės linuk sistemoje nepalaiko šios funkcijos ir visada rodo mygtukus kiekvienam langui."
 
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Rodyti apžvalgos paraštę"

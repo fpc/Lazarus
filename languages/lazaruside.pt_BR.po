@@ -16823,6 +16823,10 @@ msgstr "Exibir apenas modificado"
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Exibir apenas um botão na barra de tarefas para toda a IDE, ao invés de um por janela. Alguns gerenciadores de janela Linux como Cinnamon não suportam isto e sempre exibem um botão por janela."
 
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Exibir medianiz de visão global"

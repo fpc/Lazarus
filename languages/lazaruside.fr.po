@@ -16832,6 +16832,10 @@ msgstr "Montrer uniquement si changés"
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Montrer seulement un bouton dans la barre des tâches pour l’EDI au lieu d’un par fenêtre. Certains gestionnaires de fenêtres Linux, tel Cinnamon, ne peuvent pas le faire et montrent toujours un bouton par fenêtre."
 
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Aperçu : montrer la gouttière"

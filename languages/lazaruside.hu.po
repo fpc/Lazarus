@@ -16824,6 +16824,10 @@ msgstr "Csak a megváltoztatott megjelenítése"
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Csak egy gomb jelenjen meg a tálcán az egész IDE számára, az ablakonkénti egy helyett. Néhány Linux ablakkezelő (mint a Cinnamon) nem támogatja ezt és mindig külön gombot jelenít meg az ablakoknak."
 
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Áttekintő hasábköz megjelenítése"

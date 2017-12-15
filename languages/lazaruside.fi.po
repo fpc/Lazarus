@@ -16664,6 +16664,10 @@ msgstr "Näytä vain muutetut"
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Näytä vain yksi nappi tehtäväpalkissa koko IDE:lle, ei siis nappi / ikkuna. Jotkin Linux ikkunamanagerit kuten Cinnamon eivät tue tätä ja näyttävät aina napin joka ikkunaa kohti."
 
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Näytä yleiskuva-reunapalkki "

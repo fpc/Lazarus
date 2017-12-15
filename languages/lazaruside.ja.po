@@ -16808,6 +16808,10 @@ msgstr "修正されたもののみ表示"
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "IDE全体のためのタスクバー内の１つのボタンのみを、ウィンドウ毎に１つの代わりに表示。CinnamonのようないくつかのLinuxウィンドウマネージャはこれをサポートせず、ウィンドウ毎に１つのボタンを表示します。"
 
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "概観ガターを表示"

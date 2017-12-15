@@ -17064,6 +17064,10 @@ msgstr "Sadece değişiklik göster"
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "\" \"Yalnızca görev çubuğunda pencere başına bir yerine tüm IDE için bir düğme gösterin.\" Bazı Linux Rüzga"
 
+#: lazarusidestrconsts.lisshowoutput
+msgid "Show output"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
 msgstr "Genel bakış Cilt Payı"
