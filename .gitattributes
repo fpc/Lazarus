@@ -4187,34 +4187,92 @@ components/synedit/design/syneditlazdsgn.txt svneol=native#text/plain
 components/synedit/design/synpropertyeditobjectlist.lfm svneol=native#text/plain
 components/synedit/design/synpropertyeditobjectlist.pas svneol=native#text/plain
 components/synedit/design/tsynanysyn.png -text svneol=unset#image/png
+components/synedit/design/tsynanysyn_150.png -text
+components/synedit/design/tsynanysyn_200.png -text
 components/synedit/design/tsynautocomplete.png -text svneol=unset#image/png
+components/synedit/design/tsynautocomplete_150.png -text
+components/synedit/design/tsynautocomplete_200.png -text
 components/synedit/design/tsynbatsyn.png -text
+components/synedit/design/tsynbatsyn_150.png -text
+components/synedit/design/tsynbatsyn_200.png -text
 components/synedit/design/tsyncompletion.png -text
+components/synedit/design/tsyncompletion_150.png -text
+components/synedit/design/tsyncompletion_200.png -text
 components/synedit/design/tsyncppsyn.png -text svneol=unset#image/png
+components/synedit/design/tsyncppsyn_150.png -text
+components/synedit/design/tsyncppsyn_200.png -text
 components/synedit/design/tsyncsssyn.png -text svneol=unset#image/png
+components/synedit/design/tsyncsssyn_150.png -text
+components/synedit/design/tsyncsssyn_200.png -text
 components/synedit/design/tsyndiffsyn.png -text
+components/synedit/design/tsyndiffsyn_150.png -text
+components/synedit/design/tsyndiffsyn_200.png -text
 components/synedit/design/tsynedit.png -text svneol=unset#image/png
+components/synedit/design/tsynedit_150.png -text
+components/synedit/design/tsynedit_200.png -text
 components/synedit/design/tsynexporterhtml.png -text svneol=unset#image/png
+components/synedit/design/tsynexporterhtml_150.png -text
+components/synedit/design/tsynexporterhtml_200.png -text
 components/synedit/design/tsynfreepascalsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynfreepascalsyn_150.png -text
+components/synedit/design/tsynfreepascalsyn_200.png -text
 components/synedit/design/tsynhtmlsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynhtmlsyn_150.png -text
+components/synedit/design/tsynhtmlsyn_200.png -text
 components/synedit/design/tsyninisyn.png -text
+components/synedit/design/tsyninisyn_150.png -text
+components/synedit/design/tsyninisyn_200.png -text
 components/synedit/design/tsynjavasyn.png -text svneol=unset#image/png
+components/synedit/design/tsynjavasyn_150.png -text
+components/synedit/design/tsynjavasyn_200.png -text
 components/synedit/design/tsynjscriptsyn.png -text
+components/synedit/design/tsynjscriptsyn_150.png -text
+components/synedit/design/tsynjscriptsyn_200.png -text
 components/synedit/design/tsynlfmsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynlfmsyn_150.png -text
+components/synedit/design/tsynlfmsyn_200.png -text
 components/synedit/design/tsynmacrorecorder.png -text svneol=unset#image/png
+components/synedit/design/tsynmacrorecorder_150.png -text
+components/synedit/design/tsynmacrorecorder_200.png -text
 components/synedit/design/tsynmemo.png -text svneol=unset#image/png
+components/synedit/design/tsynmemo_150.png -text
+components/synedit/design/tsynmemo_200.png -text
 components/synedit/design/tsynmultisyn.png -text svneol=unset#image/png
+components/synedit/design/tsynmultisyn_150.png -text
+components/synedit/design/tsynmultisyn_200.png -text
 components/synedit/design/tsynpassyn.png -text svneol=unset#image/png
+components/synedit/design/tsynpassyn_150.png -text
+components/synedit/design/tsynpassyn_200.png -text
 components/synedit/design/tsynperlsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynperlsyn_150.png -text
+components/synedit/design/tsynperlsyn_200.png -text
 components/synedit/design/tsynphpsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynphpsyn_150.png -text
+components/synedit/design/tsynphpsyn_200.png -text
 components/synedit/design/tsynpluginsyncroedit.png -text
+components/synedit/design/tsynpluginsyncroedit_150.png -text
+components/synedit/design/tsynpluginsyncroedit_200.png -text
 components/synedit/design/tsynposyn.png -text svneol=unset#image/png
+components/synedit/design/tsynposyn_150.png -text
+components/synedit/design/tsynposyn_200.png -text
 components/synedit/design/tsynpythonsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynpythonsyn_150.png -text
+components/synedit/design/tsynpythonsyn_200.png -text
 components/synedit/design/tsynsqlsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynsqlsyn_150.png -text
+components/synedit/design/tsynsqlsyn_200.png -text
 components/synedit/design/tsyntexsyn.png -text svneol=unset#image/png
+components/synedit/design/tsyntexsyn_150.png -text
+components/synedit/design/tsyntexsyn_200.png -text
 components/synedit/design/tsynunixshellscriptsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynunixshellscriptsyn_150.png -text
+components/synedit/design/tsynunixshellscriptsyn_200.png -text
 components/synedit/design/tsynvbsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynvbsyn_150.png -text
+components/synedit/design/tsynvbsyn_200.png -text
 components/synedit/design/tsynxmlsyn.png -text svneol=unset#image/png
+components/synedit/design/tsynxmlsyn_150.png -text
+components/synedit/design/tsynxmlsyn_200.png -text
 components/synedit/docs/xml/synedit.xml svneol=native#text/xml
 components/synedit/docs/xml/synedithighlighter.xml svneol=native#text/xml
 components/synedit/docs/xml/synedittextbase.xml svneol=native#text/xml
