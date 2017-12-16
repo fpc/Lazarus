@@ -418,7 +418,7 @@ begin
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
-  lTabPage.LCLParent := ATabControl;
+  lTabPage.LCLTabCtrl := ATabControl;
 
   lTabControl.insertTabViewItem_atIndex(lTabPage, AIndex);
   {$IFDEF COCOA_DEBUG_TABCONTROL}

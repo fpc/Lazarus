@@ -665,7 +665,7 @@ type
   public
     callback: ICommonCallback;
     LCLPage: TCustomPage;
-    LCLParent: TCustomTabControl;
+    LCLTabCtrl: TCustomTabControl;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclFrame: TRect; override;
@@ -3048,7 +3048,7 @@ var
   svh: CGFloat;
   lParent: TCocoaTabControl;
 begin
-  lParent := TCocoaWSCustomTabControl.GetCocoaTabControlHandle(LCLParent);
+  lParent := TCocoaWSCustomTabControl.GetCocoaTabControlHandle(LCLTabCtrl);
   if lParent <> nil then
   begin
     svh := lParent.contentRect.size.height;
