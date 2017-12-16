@@ -39,6 +39,7 @@ type
 
   IMenuItemCallback = interface(ICommonCallBack)
     procedure ItemSelected;
+    function MenuItemTarget: TMenuItem;
   end;
 
   { TLCLMenuItemCallback }
@@ -49,6 +50,7 @@ type
   public
     constructor Create(AOwner: NSObject; AMenuItemTarget: TMenuItem); reintroduce;
     procedure ItemSelected;
+    function MenuItemTarget: TMenuItem;
   end;
 
   TCocoaMenuItem = objcclass;
@@ -166,6 +168,11 @@ begin
   LCLMessageGlue.DeliverMessage(FMenuItemTarget,Msg);
 end;
 
+function TLCLMenuItemCallback.MenuItemTarget: TMenuItem;
+begin
+  Result:=FMenuItemTarget;
+end;
+
 { TCocoaMenu }
 
 function TCocoaMenu.lclIsHandle: Boolean;
@@ -262,7 +269,7 @@ function TCocoaMenuItem.GetMenuItemHandle(): TMenuItem;
 begin
   Result := nil;
   if menuItemCallback = nil then Exit;
-  Result := TLCLMenuItemCallback(menuItemCallback).FMenuItemTarget;
+  Result := menuItemCallback.MenuItemTarget;
 end;
 
 procedure TCocoaMenuItem.lclItemSelected(sender:id);
@@ -392,12 +399,12 @@ end;
 // used from the MenuMadness example
 class function TCocoaWSMenuItem.NSMenuCheckmark: NSImage;
 begin
-  Result:=NSImage.imageNamed(NSString.alloc.initWithCString('NSMenuCheckmark'));
+  Result:=NSImage.imageNamed(NSStringUtf8('NSMenuCheckmark'));
 end;
 
 class function TCocoaWSMenuItem.NSMenuRadio: NSImage;
 begin
-  Result:=NSImage.imageNamed(NSString.alloc.initWithCString('NSMenuRadio'))
+  Result:=NSImage.imageNamed(NSStringUtf8('NSMenuRadio'))
 end;
 
 class function TCocoaWSMenuItem.isSeparator(const ACaption: AnsiString): Boolean;
