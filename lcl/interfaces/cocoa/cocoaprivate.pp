@@ -250,6 +250,7 @@ type
     // key
     //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
     procedure keyUp(event: NSEvent); override;
+    procedure textDidChange(notification: NSNotification); override;
   end;
 
   { TCocoaSecureTextField }
@@ -610,6 +611,8 @@ type
       message 'tableView:objectValueForTableColumn:row:';
 
     procedure tableViewSelectionDidChange(notification: NSNotification); message 'tableViewSelectionDidChange:';
+
+    procedure drawRow_clipRect(row: NSInteger; clipRect: NSRect); override;
 
     procedure dealloc; override;
     procedure resetCursorRects; override;
@@ -1963,6 +1966,12 @@ begin
   inherited keyUp(event);
 end;
 
+procedure TCocoaTextField.textDidChange(notification: NSNotification);
+begin
+  if callback <> nil then
+    callback.SendOnTextChanged;
+end;
+
 { TCocoaTextView }
 
 function TCocoaTextView.lclIsHandle: Boolean;
@@ -2818,6 +2827,29 @@ begin
       Result := ResultNS;
     end;
   end;
+end;
+
+procedure TCocoaListBox.drawRow_clipRect(row: NSInteger; clipRect: NSRect);
+var
+  DrawStruct: TDrawListItemStruct;
+  ctx: TCocoaContext;
+  LCLObject: TCustomListBox;
+begin
+  inherited;
+  ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  DrawStruct.Area := NSRectToRect(rectOfRow(row));
+  DrawStruct.DC := HDC(ctx);
+  DrawStruct.ItemID :=  row;
+
+  LCLObject := TCustomListBox(callback.GetTarget);
+  DrawStruct.ItemState := [];
+  if isRowSelected(row) then
+    Include(DrawStruct.ItemState, odSelected);
+  if not LCLObject.Enabled then
+    Include(DrawStruct.ItemState, odDisabled);
+  if (LCLObject.Focused) and (LCLObject.ItemIndex = row) then
+    Include(DrawStruct.ItemState, odFocused);
+  LCLSendDrawListItemMsg(TWinControl(callback.GetTarget), @DrawStruct);
 end;
 
 procedure TCocoaListBox.dealloc;
