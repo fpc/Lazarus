@@ -2599,7 +2599,7 @@ var
   svHeight: CGFloat;
 begin
   svHeight := GetNSViewSuperViewHeight(Self);
-  if Assigned(superview)  then
+  if Assigned(superview) and not superview.isFlipped then
   begin
     LCLToNSRect(r, svHeight, ns)
   end
