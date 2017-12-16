@@ -1315,7 +1315,9 @@ var
   box: TCocoaGroupBox;
 begin
   box := TCocoaGroupBox(AWinControl.Handle);
-  AText := NSStringToString(box.title);
+  Result:=Assigned(box);
+  if Result then
+    AText := NSStringToString(box.title);
 end;
 
 class procedure TCocoaWSCustomGroupBox.SetText(const AWinControl: TWinControl; const AText: String);
