@@ -1457,11 +1457,19 @@ end;
 class procedure TCocoaWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
 var
   list: TCocoaListBox;
+  ns  : NSIndexSet;
 begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
   if ASelected then
-    list.selectRow_byExtendingSelection(AIndex, True)
+  begin
+    ns:=NSIndexSet.indexSetWithIndex(AIndex);
+    try
+      list.selectRowIndexes_byExtendingSelection(ns, True)
+    finally
+      ns.release;
+    end;
+  end
   else
     list.deselectRow(AIndex);
 end;
@@ -1469,10 +1477,17 @@ end;
 class procedure TCocoaWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
 var
   list: TCocoaListBox;
+  ns : NSIndexSet;
 begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
-  list.selectRow_byExtendingSelection(AIndex, False);
+
+  ns:=NSIndexSet.indexSetWithIndex(AIndex);
+  try
+    list.selectRowIndexes_byExtendingSelection(ns, True)
+  finally
+    ns.release;
+  end;
 end;
 
 class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
