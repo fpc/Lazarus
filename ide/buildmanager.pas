@@ -53,7 +53,7 @@ uses
   EnvironmentOpts, TransferMacros, CompilerOptions,
   ExtTools, etMakeMsgParser, etFPCMsgParser,
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
-  ModeMatrixOpts, BaseBuildManager, ApplicationBundle;
+  ModeMatrixOpts, BaseBuildManager, ApplicationBundle, RunParamsOpts;
   
 type
   { TBuildManager }
@@ -598,15 +598,18 @@ end;
 function TBuildManager.GetRunCommandLine: string;
 var
   TargetFilename: string;
+  AMode: TRunParamsOptionsMode;
 begin
   Result := '';
   if Project1=nil then exit;
-  if Project1.RunParameterOptions.UseLaunchingApplication then
-    Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams;
+  AMode := Project1.RunParameterOptions.GetActiveMode;
+  if AMode=nil then exit;
+  if AMode.UseLaunchingApplication then
+    Result := AMode.LaunchingApplicationPathPlusParams;
 
   if Result='' then
   begin
-    Result := Project1.RunParameterOptions.CmdLineParams;
+    Result := AMode.CmdLineParams;
     if GlobalMacroList.SubstituteStr(Result) then
     begin
       TargetFilename := GetTargetFilename;
@@ -699,10 +702,14 @@ begin
 end;
 
 function TBuildManager.GetProjectTargetFilename(aProject: TProject): string;
+var
+  AMode: TRunParamsOptionsMode;
 begin
   Result:='';
   if aProject=nil then exit;
-  Result:=aProject.RunParameterOptions.HostApplicationFilename;
+  AMode := aProject.RunParameterOptions.GetActiveMode;
+  if AMode=nil then exit;
+  Result:=AMode.HostApplicationFilename;
   GlobalMacroList.SubstituteStr(Result);
   if (Result='') and (aProject.MainUnitID>=0) then begin
     Result := aProject.CompilerOptions.CreateTargetFilename;
@@ -711,8 +718,8 @@ end;
 
 function TBuildManager.GetProjectUsesAppBundle: Boolean;
 begin
-  Result := (Project1<>nil)
-    and (Project1.RunParameterOptions.HostApplicationFilename = '')
+  Result := (Project1<>nil) and (Project1.RunParameterOptions.GetActiveMode<>nil)
+    and (Project1.RunParameterOptions.GetActiveMode.HostApplicationFilename = '')
     and (GetTargetOS = 'darwin') and Project1.UseAppBundle;
 end;
 
@@ -2148,8 +2155,8 @@ end;
 function TBuildManager.MacroFuncParams(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
-  if Project1<>nil then
-    Result:=Project1.RunParameterOptions.CmdLineParams
+  if (Project1<>nil) and (Project1.RunParameterOptions.GetActiveMode<>nil) then
+    Result:=Project1.RunParameterOptions.GetActiveMode.CmdLineParams
   else
     Result:='';
 end;
@@ -2184,8 +2191,8 @@ end;
 function TBuildManager.MacroFuncTargetCmdLine(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  if Project1<>nil then begin
-    Result:=Project1.RunParameterOptions.CmdLineParams;
+  if (Project1<>nil) and (Project1.RunParameterOptions.GetActiveMode<>nil) then begin
+    Result:=Project1.RunParameterOptions.GetActiveMode.CmdLineParams;
     if Result='' then
       Result:=GetProjectTargetFilename(Project1)
     else

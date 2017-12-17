@@ -71,7 +71,8 @@ uses
   // IDE
   LazConf, LazarusIDEStrConsts, Project, BuildManager, IDEProcs,
   EnvironmentOpts, EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor,
-  FindInFilesDlg, DesktopManager, Splash, MainBar, MainIntf, Designer, Debugger;
+  FindInFilesDlg, DesktopManager, Splash, MainBar, MainIntf, Designer, Debugger,
+  RunParamsOpts;
 
 type
   TResetToolFlag = (
@@ -292,6 +293,22 @@ type
   TNewFormUnitMenuItem = class(TMenuItem)
   public
     TemplateName: string;
+  end;
+
+  TRunOptionItem = class(TMenuItem)
+  public
+    RunOptionName: string;
+  end;
+
+  TRunToolButton = class(TIDEToolButton)
+  private
+    procedure ChangeRunMode(Sender: TObject);
+    procedure MenuOnPopup(Sender: TObject);
+
+    procedure RefreshMenu;
+    procedure RunParametersClick(Sender: TObject);
+  public
+    procedure DoOnAdded; override;
   end;
 
 function  GetMainIde: TMainIDEBase;
@@ -1664,7 +1681,7 @@ begin
     itmRunMenuBuildManyModes.Command:=GetCommand(ecBuildManyModes);
     itmRunMenuAbortBuild.Command:=GetCommand(ecAbortBuild);
     itmRunMenuRunWithoutDebugging.Command:=GetCommand(ecRunWithoutDebugging);
-    itmRunMenuRun.Command:=GetCommand(ecRun);
+    itmRunMenuRun.Command:=GetCommand(ecRun, TRunToolButton);
     itmRunMenuPause.Command:=GetCommand(ecPause);
     itmRunMenuStepInto.Command:=GetCommand(ecStepInto);
     itmRunMenuStepOver.Command:=GetCommand(ecStepOver);
@@ -1993,6 +2010,75 @@ end;
 procedure TMainIDEBase.FindInFiles(AProject: TProject; const FindText: string);
 begin
   FindInFilesDialog.FindInFiles(AProject, FindText);
+end;
+
+{ TRunToolButton }
+
+procedure TRunToolButton.ChangeRunMode(Sender: TObject);
+begin
+  Project1.RunParameterOptions.ActiveModeName := (Sender as TRunOptionItem).RunOptionName;
+  Project1.SessionModified:=true;
+end;
+
+procedure TRunToolButton.DoOnAdded;
+begin
+  inherited DoOnAdded;
+
+  DropdownMenu := TPopupMenu.Create(Self);
+  Style := tbsDropDown;
+  DropdownMenu.OnPopup := @MenuOnPopup;
+  if Assigned(FToolBar) then
+    DropdownMenu.Images := IDEImages.Images_16;
+end;
+
+procedure TRunToolButton.MenuOnPopup(Sender: TObject);
+begin
+  RefreshMenu;
+end;
+
+procedure TRunToolButton.RefreshMenu;
+  procedure _AddMode(const _Mode: TRunParamsOptionsMode; const _Parent: TMenuItem;
+    const _OnClick: TNotifyEvent);
+  var
+    xItem: TRunOptionItem;
+  begin
+    xItem := TRunOptionItem.Create(_Parent.Menu);
+    _Parent.Add(xItem);
+    xItem.Caption := _Mode.Name;
+    xItem.OnClick := _OnClick;
+    xItem.RunOptionName := _Mode.Name;
+    xItem.Checked := (Project1<>nil) and (_Mode.Name = Project1.RunParameterOptions.ActiveModeName);
+  end;
+
+var
+  xPM: TPopupMenu;
+  i: Integer;
+  xMIRunParameters: TMenuItem;
+  xMode: TRunParamsOptionsMode;
+begin
+  xPM := DropdownMenu;
+  xPM.Items.Clear;
+
+  xMIRunParameters := TMenuItem.Create(xPM);
+  xMIRunParameters.Caption := dlgRunParameters+' ...';
+  xMIRunParameters.ImageIndex := IDEImages.LoadImage('menu_run_parameters');
+  xMIRunParameters.OnClick := @RunParametersClick;
+
+  if Project1<>nil then
+  for i:=0 to Project1.RunParameterOptions.Count-1 do
+  begin
+    xMode := Project1.RunParameterOptions[i] as TRunParamsOptionsMode;
+    _AddMode(xMode, xPM.Items, @ChangeRunMode);
+  end;
+
+  if xPM.Items.Count > 0 then
+    xPM.Items.AddSeparator;
+  xPM.Items.Add(xMIRunParameters);
+end;
+
+procedure TRunToolButton.RunParametersClick(Sender: TObject);
+begin
+  ExecuteIDECommand(Sender, ecRunParameters);
 end;
 
 end.

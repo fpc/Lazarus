@@ -2678,6 +2678,13 @@ resourcestring
   dlgCommandLineParams = 'Command line parameters (without application name)';
   dlgUseLaunchingApp = 'Use launching application';
   lisUseLaunchingApplicationGroupBox = 'Launching application';
+  dlgCreateNewRunParametersSettings = 'Create new Run Parameters settings';
+  lisDuplicateModeName = 'Mode "%s" is already present in the list.';
+  lisCannotDeleteLastMode = 'Cannot delete last mode.';
+  dlgMode = 'Mode';
+  dlgSaveIn = 'Save in';
+  dlgAddNewMode = 'Add new mode';
+  dlgDeleteMode = 'Delete mode';
   dlgROWorkingDirectory = 'Working directory';
   dlgRunODisplay = 'Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)';
   dlgRunOUsedisplay = 'Use display';

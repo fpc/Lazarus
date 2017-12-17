@@ -77,6 +77,7 @@ function TProjectInstantFPCDescriptor.InitProject(AProject: TLazProject
 var
   MainFile: TLazProjectFile;
   NewSource: TStringList;
+  RunParams: TAbstractRunParamsOptionsMode;
 begin
   Result:=inherited InitProject(AProject);
 
@@ -90,8 +91,9 @@ begin
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
   AProject.LazCompilerOptions.SetAlternativeCompile(
     'instantfpc --skip-run -B -gl "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
-  AProject.RunParameters.HostApplicationFilename:='$(InstantFPCCache)/$NameOnly($(ProjFile))';
-  AProject.RunParameters.WorkingDirectory:='$(ProjPath)';
+  RunParams := AProject.RunParameters.GetOrCreate('default');
+  RunParams.HostApplicationFilename:='$(InstantFPCCache)/$NameOnly($(ProjFile))';
+  RunParams.WorkingDirectory:='$(ProjPath)';
 
   // create program source
   NewSource:=TStringList.Create;

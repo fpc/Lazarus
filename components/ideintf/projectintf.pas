@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LazFileUtils, Controls, Forms, AvgLvlTree,
   NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts, IDEImagesIntf,
-  LazFileCache, LazMethodList, ImgList, Graphics;
+  LazFileCache, LazMethodList, ImgList, Graphics, Contnrs;
 
 const
   FileDescGroupName = 'File';
@@ -343,8 +343,10 @@ type
     property Descriptor: TProjectDescriptor read FDescriptor write FDescriptor;
   end;
 
-  TAbstractRunParamsOptions = class
-  protected
+  TAbstractRunParamsOptionsMode = class(TPersistent)
+  private
+    fName: string;
+
     // local options
     fHostApplicationFilename: string;
     fCmdLineParams: string;
@@ -357,9 +359,16 @@ type
     // environment options
     fUserOverrides: TStringList;
     fIncludeSystemVariables: boolean;
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
   public
-    procedure Clear; virtual; abstract;
+    constructor Create(const AName: string); virtual;
+    destructor Destroy; override;
+
+    procedure Clear; virtual;
     procedure AssignEnvironmentTo(Strings: TStrings); virtual; abstract;
+
+    property Name: string Read fName;
 
     // local options
     property HostApplicationFilename: string
@@ -379,6 +388,28 @@ type
       Read fIncludeSystemVariables Write fIncludeSystemVariables;
   end;
 
+  TAbstractRunParamsOptions = class(TPersistent)
+  private
+    fModes: TObjectList;
+    function GetCount: Integer;
+    function GetMode(AIndex: Integer): TAbstractRunParamsOptionsMode;
+  protected
+    function CreateMode(const AName: string): TAbstractRunParamsOptionsMode; virtual; abstract;
+    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    procedure AssignEnvironmentTo(Strings: TStrings); virtual; abstract;
+
+    procedure Clear; virtual;
+    procedure Delete(const AIndex: Integer);
+    function Add(const AName: string): TAbstractRunParamsOptionsMode;
+    function Find(const AName: string): TAbstractRunParamsOptionsMode;
+    function GetOrCreate(const AName: string): TAbstractRunParamsOptionsMode;
+    property Modes[AIndex: Integer]: TAbstractRunParamsOptionsMode read GetMode; default;
+    property Count: Integer read GetCount;
+  end;
   { TLazProjectBuildMode }
 
   TLazProjectBuildMode = class(TComponent)
@@ -465,6 +496,7 @@ type
     procedure SetUseAppBundle(AValue: Boolean);
   protected
     FChangeStamp: integer;
+    FSessionChangeStamp: integer;
     FFlags: TProjectFlags;
     FResources: TObject;
     FRunParameters: TAbstractRunParamsOptions;
@@ -493,6 +525,7 @@ type
     destructor Destroy; override;
     procedure Clear; virtual;
     procedure IncreaseChangeStamp; inline;
+    procedure IncreaseSessionChangeStamp; inline;
     function IsVirtual: boolean; virtual; abstract;
     function CreateProjectFile(const Filename: string): TLazProjectFile; virtual; abstract;
     procedure AddFile(ProjectFile: TLazProjectFile;
@@ -516,6 +549,7 @@ type
     property ActiveBuildModeID: string read GetActiveBuildModeID
                                        write SetActiveBuildModeID;
     property ChangeStamp: integer read FChangeStamp;
+    property SessionChangeStamp: integer read FSessionChangeStamp;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
     property FileCount: integer read GetFileCount;
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
@@ -815,6 +849,144 @@ begin
   for Result:=Low(TCompilationExecutableType) to High(TCompilationExecutableType)
   do if CompareText(s,CompilationExecutableTypeNames[Result])=0 then exit;
   Result:=cetProgram;
+end;
+
+{ TAbstractRunParamsOptionsMode }
+
+constructor TAbstractRunParamsOptionsMode.Create(const AName: string);
+begin
+  inherited Create;
+
+  fName := AName;
+  fUserOverrides := TStringList.Create;
+
+  Clear;
+end;
+
+procedure TAbstractRunParamsOptionsMode.AssignTo(Dest: TPersistent);
+var
+  ADest: TAbstractRunParamsOptionsMode;
+begin
+  if Dest is TAbstractRunParamsOptionsMode then
+  begin
+    ADest := TAbstractRunParamsOptionsMode(Dest);
+
+    ADest.HostApplicationFilename := HostApplicationFilename;
+    ADest.CmdLineParams := CmdLineParams;
+    ADest.UseDisplay := UseDisplay;
+    ADest.UseLaunchingApplication := UseLaunchingApplication;
+    ADest.LaunchingApplicationPathPlusParams := LaunchingApplicationPathPlusParams;
+    ADest.WorkingDirectory := WorkingDirectory;
+    ADest.Display := Display;
+
+    ADest.UserOverrides.Assign(UserOverrides);
+    ADest.IncludeSystemVariables := IncludeSystemVariables;
+  end else
+    inherited AssignTo(Dest);
+end;
+
+procedure TAbstractRunParamsOptionsMode.Clear;
+begin
+  // local options
+  fHostApplicationFilename := '';
+  fCmdLineParams := '';
+  fUseLaunchingApplication := False;
+  fLaunchingApplicationPathPlusParams := '';
+  // TODO: guess are we under gnome or kde so query for gnome-terminal or konsole.
+  fWorkingDirectory := '';
+  fUseDisplay := False;
+  fDisplay    := ':0';
+
+  // environment options
+  fUserOverrides.Clear;
+  fIncludeSystemVariables := False;
+end;
+
+destructor TAbstractRunParamsOptionsMode.Destroy;
+begin
+  fUserOverrides.Free;
+
+  inherited Destroy;
+end;
+
+{ TAbstractRunParamsOptions }
+
+constructor TAbstractRunParamsOptions.Create;
+begin
+  inherited Create;
+
+  fModes := TObjectList.Create(True);
+end;
+
+function TAbstractRunParamsOptions.Add(const AName: string
+  ): TAbstractRunParamsOptionsMode;
+begin
+  if Find(AName)<>nil then
+    raise Exception.CreateFmt('RunParams Options: mode "%s" already exists.', [AName]);
+  Result := CreateMode(AName);
+  fModes.Add(Result);
+end;
+
+procedure TAbstractRunParamsOptions.AssignTo(Dest: TPersistent);
+var
+  ADest: TAbstractRunParamsOptions;
+  I: Integer;
+begin
+  if Dest is TAbstractRunParamsOptions then
+  begin
+    ADest := TAbstractRunParamsOptions(Dest);
+    ADest.Clear;
+    for I := 0 to Count-1 do
+      ADest.Add(Modes[I].Name).Assign(Modes[I]);
+  end else
+    inherited AssignTo(Dest);
+end;
+
+procedure TAbstractRunParamsOptions.Clear;
+begin
+  fModes.Clear;
+end;
+
+procedure TAbstractRunParamsOptions.Delete(const AIndex: Integer);
+begin
+  fModes.Delete(aIndex);
+end;
+
+destructor TAbstractRunParamsOptions.Destroy;
+begin
+  fModes.Free;
+
+  inherited Destroy;
+end;
+
+function TAbstractRunParamsOptions.Find(const AName: string
+  ): TAbstractRunParamsOptionsMode;
+var
+  I: Integer;
+begin
+  for I := 0 to Count-1 do
+    if Modes[I].Name = AName then
+      Exit(Modes[I]);
+  Result := nil;
+end;
+
+function TAbstractRunParamsOptions.GetCount: Integer;
+begin
+  Result := fModes.Count;
+end;
+
+function TAbstractRunParamsOptions.GetMode(AIndex: Integer
+  ): TAbstractRunParamsOptionsMode;
+begin
+  Result := TAbstractRunParamsOptionsMode(fModes[AIndex]);
+end;
+
+function TAbstractRunParamsOptions.GetOrCreate(const AName: string
+  ): TAbstractRunParamsOptionsMode;
+begin
+  Result := Find(aName);
+  if Result=nil then
+    Result := Add(AName);
 end;
 
 { TLazProjectBuildModes }
@@ -1396,6 +1568,11 @@ end;
 procedure TLazProject.IncreaseChangeStamp;
 begin
   LUIncreaseChangeStamp(FChangeStamp);
+end;
+
+procedure TLazProject.IncreaseSessionChangeStamp;
+begin
+  LUIncreaseChangeStamp(FSessionChangeStamp);
 end;
 
 { TLazProjectFile }

@@ -1900,7 +1900,7 @@ begin
     if Project1<>nil then
       CanRun:=( (AnUnitInfo<>nil) and (AnUnitInfo.RunFileIfActive) ) or
               ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
-                 (Project1.RunParameterOptions.HostApplicationFilename<>''))
+                 ((Project1.RunParameterOptions.GetActiveMode<>nil) and (Project1.RunParameterOptions.GetActiveMode.HostApplicationFilename<>'')))
                and (pfRunnable in Project1.Flags)
               );
     // Run
@@ -2312,7 +2312,10 @@ begin
 
     if not(difInitForAttach in AFlags) then begin
       Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
-      NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
+      if Project1.RunParameterOptions.GetActiveMode<>nil then
+        NewWorkingDir:=Project1.RunParameterOptions.GetActiveMode.WorkingDirectory
+      else
+        NewWorkingDir:='';
       GlobalMacroList.SubstituteStr(NewWorkingDir);
       if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
          (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))

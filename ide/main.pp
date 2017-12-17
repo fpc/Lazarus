@@ -3811,7 +3811,7 @@ var
   ASrcEdit: TSourceEditor;
   AUnitInfo: TUnitInfo;
   ACmd: TIDECommand;
-  ABuildHint: string;
+  AHint: string;
 begin
   GetCurrentUnit(ASrcEdit,AUnitInfo);
   if not UpdateProjectCommandsStamp.Changed(AUnitInfo) then
@@ -3820,21 +3820,32 @@ begin
   IDECommandList.FindIDECommand(ecAddCurUnitToProj).Enabled:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
   IDECommandList.FindIDECommand(ecBuildManyModes).Enabled:=(Project1<>nil) and (Project1.BuildModes.Count>1);
 
+  // project change build mode
   ACmd := IDECommandList.FindIDECommand(ecProjectChangeBuildMode);
   if Assigned(Project1) then
-    ABuildHint :=
+    AHint :=
       Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '(')) + sLineBreak +
       Format('[%s]', [Project1.ActiveBuildMode.GetCaption])
   else
-    ABuildHint :=
+    AHint :=
       Trim(lisChangeBuildMode + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '('));
-
-  ACmd.Hint := ABuildHint;
+  ACmd.Hint := AHint;
   if ProjInspector<>nil then
   begin
-    ProjInspector.OptionsBitBtn.Hint := ABuildHint;
+    ProjInspector.OptionsBitBtn.Hint := AHint;
     ProjInspector.UpdateTitle;
   end;
+
+  // run
+  ACmd := IDECommandList.FindIDECommand(ecRun);
+  if Assigned(Project1) and Assigned(Project1.RunParameterOptions.GetActiveMode) then
+    AHint :=
+      Trim(lisRun + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '(')) + sLineBreak +
+      Format('[%s]', [Project1.RunParameterOptions.GetActiveMode.Name])
+  else
+    AHint :=
+      Trim(lisRun + ' ' + KeyValuesToCaptionStr(ACmd.ShortcutA, ACmd.ShortcutB, '('));
+  ACmd.Hint := AHint;
 end;
 
 procedure TMainIDE.UpdatePackageCommands(Sender: TObject);
@@ -4353,7 +4364,10 @@ procedure TMainIDE.mnuRunParametersClicked(Sender: TObject);
 begin
   if Project1=nil then exit;
   if ShowRunParamsOptsDlg(Project1.RunParameterOptions)=mrOK then
+  begin
     Project1.Modified:=true;
+    Project1.SessionModified:=true;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -6933,6 +6947,7 @@ function TMainIDE.DoInitProjectRun: TModalResult;
 var
   ProgramFilename: string;
   DebugClass: TDebuggerClass;
+  ARunMode: TRunParamsOptionsMode;
 begin
   if ToolStatus <> itNone
   then begin
@@ -6946,15 +6961,16 @@ begin
   // Check if this project is runnable
   if Project1=nil then exit(mrCancel);
 
+  ARunMode := Project1.RunParameterOptions.GetActiveMode;
   if not ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
-            (Project1.RunParameterOptions.HostApplicationFilename<>''))
+            ((ARunMode<>nil) and (ARunMode.HostApplicationFilename<>'')))
           and (pfRunnable in Project1.Flags) and (Project1.MainUnitID >= 0) )
   then begin
     debugln(['Error: (lazarus) [TMainIDE.DoInitProjectRun] Project can not run:',
       ' pfRunnable=',pfRunnable in Project1.Flags,
       ' MainUnitID=',Project1.MainUnitID,
       ' Launchable=',(Project1.CompilerOptions.ExecutableType=cetProgram) or
-            (Project1.RunParameterOptions.HostApplicationFilename<>'')
+            ((ARunMode<>nil) and (ARunMode.HostApplicationFilename<>''))
       ]);
     Exit;
   end;
@@ -7027,6 +7043,7 @@ var
   ExeCmdLine, ExeWorkingDirectory: string;
   ExeFileEnd, ExeFileStart: Integer;
   RunAppBundle: Boolean;
+  ARunMode: TRunParamsOptionsMode;
 begin
   debugln(['TMainIDE.DoRunProjectWithoutDebug START']);
   if Project1=nil then
@@ -7064,6 +7081,7 @@ begin
 
     Process.Executable := Copy(ExeCmdLine, ExeFileStart, ExeFileEnd-ExeFileStart);
     Process.Parameters.Text := Copy(ExeCmdLine, ExeFileEnd+ExeFileStart, High(Integer));
+    ARunMode := Project1.RunParameterOptions.GetActiveMode;
 
     if RunAppBundle and FileExistsUTF8(Process.Executable)
     and FileExistsUTF8('/usr/bin/open') then
@@ -7072,7 +7090,7 @@ begin
       Process.Executable := '/usr/bin/open';
     end else if not FileIsExecutable(Process.Executable) then
     begin
-      if Project1.RunParameterOptions.UseLaunchingApplication then
+      if (ARunMode<>nil) and ARunMode.UseLaunchingApplication then
         IDEMessageDialog(lisLaunchingApplicationInvalid,
           Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
                  [Process.Executable, LineEnding, LineEnding+LineEnding]),
@@ -7084,7 +7102,10 @@ begin
       Exit(mrNone);
     end;
 
-    ExeWorkingDirectory := Project1.RunParameterOptions.WorkingDirectory;
+    if ARunMode<>nil then
+      ExeWorkingDirectory := ARunMode.WorkingDirectory
+    else
+      ExeWorkingDirectory := '';
     if not GlobalMacroList.SubstituteStr(ExeWorkingDirectory) then
       ExeWorkingDirectory := '';
 

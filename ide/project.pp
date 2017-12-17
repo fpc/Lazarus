@@ -1136,7 +1136,7 @@ function dbgs(Flags: TUnitInfoFlags): string; overload;
 implementation
 
 const
-  ProjectInfoFileVersion = 10;
+  ProjectInfoFileVersion = 11;
   ProjOptionsPath = 'ProjectOptions/';
 
 
@@ -2915,7 +2915,11 @@ begin
   LoadPkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
                         FFirstRequiredDependency,pdlRequires,Self,true,false);
   // load the Run and Build parameter Options
-  RunParameterOptions.Load(FXMLConfig,Path,fPathDelimChanged);
+  RunParameterOptions.Clear;
+  if FFileVersion<11 then
+    RunParameterOptions.LegacyLoad(FXMLConfig,Path,fPathDelimChanged)
+  else
+    RunParameterOptions.Load(FXMLConfig,Path+'RunParams/',fPathDelimChanged,rpsLPI);
   // load the Publish Options
   PublishOptions.LoadFromXMLConfig(FXMLConfig,Path+'PublishOptions/',fPathDelimChanged);
   // load defines used for custom options
@@ -2947,6 +2951,9 @@ begin
   LoadOtherDefines(Path);
   // load session info
   LoadSessionInfo(Path,true);
+
+  if FFileVersion>=11 then
+    RunParameterOptions.Load(FXMLConfig,Path+'RunParams/',fPathDelimChanged,rpsLPS);
 
   // call hooks to read their info (e.g. DebugBoss)
   if Assigned(OnLoadProjectInfo) then
@@ -3229,7 +3236,8 @@ begin
   // save the Publish Options
   PublishOptions.SaveToXMLConfig(FXMLConfig,Path+'PublishOptions/',fCurStorePathDelim);
   // save the Run and Build parameter options
-  RunParameterOptions.Save(FXMLConfig,Path,fCurStorePathDelim);
+  RunParameterOptions.LegacySave(FXMLConfig,Path,fCurStorePathDelim);
+  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPI);
   // save dependencies
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
     FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
@@ -3290,6 +3298,8 @@ begin
   SaveOtherDefines(Path);
   // save session info
   SaveSessionInfo(Path);
+  // save the Run and Build parameter options
+  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPS);
 
   // Notifiy hooks
   if Assigned(OnSaveProjectInfo) then
@@ -3840,11 +3850,12 @@ end;
 
 procedure TProject.SetSessionModified(const AValue: boolean);
 begin
-  if AValue=SessionModified then exit;
   {$IFDEF VerboseIDEModified}
   debugln(['TProject.SetSessionModified new Modified=',AValue]);
   {$ENDIF}
   inherited SetSessionModified(AValue);
+  if AValue then
+    IncreaseSessionChangeStamp;
 end;
 
 procedure TProject.SetExecutableType(const AValue: TProjectExecutableType);

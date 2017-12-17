@@ -75,6 +75,7 @@ type
   private
     FUnitInfo: TUnitInfo;
     FProjectChangeStamp: Int64;
+    FProjectSessionChangeStamp: Int64;
     FCompilerParseStamp: integer;
     FBuildMacroChangeStamp: integer;
   public
@@ -486,15 +487,21 @@ end;
 
 function TProjectCommandsStamp.Changed(AUnitInfo: TUnitInfo): Boolean;
 var
-  CurProjectChangeStamp: Integer;
+  CurProjectChangeStamp, CurProjectSessionChangeStamp: Integer;
 begin
   if Project1=nil then
-    CurProjectChangeStamp := LUInvalidChangeStamp
-  else
+  begin
+    CurProjectChangeStamp := LUInvalidChangeStamp;
+    CurProjectSessionChangeStamp := LUInvalidChangeStamp;
+  end else
+  begin
     CurProjectChangeStamp := Project1.ChangeStamp;
+    CurProjectSessionChangeStamp := Project1.SessionChangeStamp;
+  end;
   Result := not(
         (FUnitInfo = AUnitInfo)
     and (FProjectChangeStamp = CurProjectChangeStamp)
+    and (FProjectSessionChangeStamp = CurProjectSessionChangeStamp)
     and (FCompilerParseStamp = CompilerParseStamp)
     and (FBuildMacroChangeStamp = BuildMacroChangeStamp)
     );
@@ -503,6 +510,7 @@ begin
 
   FUnitInfo := AUnitInfo;
   FProjectChangeStamp := CurProjectChangeStamp;
+  FProjectSessionChangeStamp := CurProjectSessionChangeStamp;
   FCompilerParseStamp := CompilerParseStamp;
   FBuildMacroChangeStamp := BuildMacroChangeStamp;
 end;
