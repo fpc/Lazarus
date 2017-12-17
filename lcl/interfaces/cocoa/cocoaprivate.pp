@@ -1704,7 +1704,7 @@ var
 begin
   // NSTexturedRoundedBezelStyle should be the preferred style, but it has a fixed height!
   // fittingSize is 10.7+
-  if respondsToSelector(objcselector('fittingSize')) then
+ {  if respondsToSelector(objcselector('fittingSize')) then
   begin
     lBtnHeight := r.Bottom - r.Top;
     lRoundBtnSize := fittingSize();
@@ -1716,7 +1716,7 @@ begin
   end
   else
     setBezelStyle(NSTexturedSquareBezelStyle);
-
+  }
   inherited lclSetFrame(r);
 end;
 

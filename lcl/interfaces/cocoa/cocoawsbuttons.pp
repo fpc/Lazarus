@@ -85,7 +85,7 @@ class function TCocoaWSBitBtn.CreateHandle(const AWinControl: TWinControl;
 var
   btn: NSButton;
 begin
-  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
+  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSRegularSquareBezelStyle, NSMomentaryPushInButton);
   Result := TLCLIntfHandle(btn);
 end;
 
