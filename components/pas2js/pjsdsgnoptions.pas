@@ -58,37 +58,6 @@ Type
     property Modified: boolean read GetModified write SetModified;
   end;
 
-(*
-type
-
-  { TPas2jsOptions }
-
-  TPas2jsOptions = class
-  private
-    FChangeStamp: int64;
-    FSavedStamp: int64;
-    FCompilerFilename: string;
-    FCompilerFilenameStamp: int64;
-    FCompilerFilenameParsed: string;
-    function GetModified: boolean;
-    procedure SetModified(AValue: boolean);
-    procedure SetCompilerFilename(AValue: string);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure IncreaseChangeStamp; inline;
-    procedure Load;
-    procedure Save;
-    procedure LoadFromConfig(Cfg: TConfigStorage);
-    procedure SaveToConfig(Cfg: TConfigStorage);
-    function GetParsedCompilerFilename: string;
-  public
-    property CompilerFilename: string read FCompilerFilename write SetCompilerFilename;
-    property ChangeStamp: int64 read FChangeStamp;
-    property Modified: boolean read GetModified write SetModified;
-  end;
-*)
-
 var
   PJSOptions: TPas2jsOptions = nil;
 

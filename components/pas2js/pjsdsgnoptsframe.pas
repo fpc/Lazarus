@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, Dialogs, Spin, IDEOptionsIntf,
-  MacroIntf, BaseIDEIntf, IDEUtils, LazFileCache, LazConfigStorage, PJSDsgnOptions,
+  IDEUtils, LazFileCache, PJSDsgnOptions,
   LazFileUtils;
 
 Type
@@ -137,12 +137,12 @@ procedure TPas2jsOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   ExeName: String;
   ServerName : String;
-  BrowserName : String;
+  //BrowserName : String;
 
 begin
   ExeName:=GetStandardPas2jsExe;
   ServerName:=GetStandardHTTPServer;
-  BrowserName:=GetStandardBrowser;
+  //BrowserName:=GetStandardBrowser;
   Pas2jsPathLabel.Caption:='Path of '+ExeName;
   Pas2jsPathLabel.Hint:='You can use IDE macros like $MakeExe(). Without a full path, '+ExeName+' is searched in PATH.';
   Pas2jsPathBrowseButton.Caption:='...';
