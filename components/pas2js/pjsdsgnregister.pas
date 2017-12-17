@@ -83,7 +83,7 @@ procedure Register;
 
 implementation
 
-uses frmpas2jsnodejsprojectoptions, frmpas2jsbrowserprojectoptions;
+uses frmpas2jsnodejsprojectoptions, frmpas2jsbrowserprojectoptions, pjscontroller;
 
 procedure Register;
 
@@ -247,13 +247,14 @@ begin
     '$MakeExe(pas2js) -Jc -Jminclude -Tnodejs "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
   RunParams:=AProject.RunParameters;
   RunParams.UseLaunchingApplication:=True;
-  RunParams.LaunchingApplicationPathPlusParams:='$MakeExe(IDE,nodejs) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
+  RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSNodeJS) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
 
   // create program source
   NewSource:=CreateProjectSource;
   AProject.MainFile.SetSourceText(NewSource,true);
 
   AProject.AddPackageDependency('pas2js_rtl');
+
 end;
 
 function TProjectPas2JSNodeJSApp.CreateStartFiles(AProject: TLazProject
@@ -274,20 +275,8 @@ end;
 
 function TProjectPas2JSWebApp.GetBrowserCommand(AFileName : string): String;
 
-Var
-  S : String;
-
 begin
-  S:=PJSOptions.BrowserFileName;
-  if S='' then
-    S:=GetStandardBrowser;
-  if (baoStartServer in Options) then
-    S:=S+Format(' http://localhost:%d/%s',[ProjectPort,ProjectURL])
-  else if (baoUseURL in Options) then
-    S:=S+' '+ProjectURL
-  else
-    S:=S+' "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).html"';
-  Result:=S;
+  Result:='$(Pas2JSBrowser) $(Pas2SProjectURL)';
 end;
 
 function TProjectPas2JSWebApp.GetNextPort : Word;
@@ -398,6 +387,7 @@ Var
 begin
   HTMLFile:=AProject.CreateProjectFile('project1.html');
   HTMLFile.IsPartOfProject:=true;
+  AProject.CustomData.Values[PJSProjectHTMLFile]:=HTMLFile.Filename;
   AProject.AddFile(HTMLFile,false);
   Content:='';
   if baoUseBrowserConsole in Options then
@@ -510,7 +500,17 @@ begin
   RunParams.UseLaunchingApplication:=True;
   RunParams.LaunchingApplicationPathPlusParams:=GetBrowserCommand(CompOpts.TargetFileName);
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
-
+  AProject.CustomData.Values[PJSProjectWebBrowser]:='1';
+  if baoUseURL in Options then
+    begin
+    AProject.CustomData.Values[PJSProjectPort]:='';
+    AProject.CustomData.Values[PJSProjectURL]:=ProjectURL;
+    end
+  else
+    begin
+    AProject.CustomData.Values[PJSProjectPort]:=IntToStr(ProjectPort);
+    AProject.CustomData.Values[PJSProjectURL]:='';
+    end;
   // create html source
   if baoCreateHtml in Options then
     CreateHTMLFile(aProject,'project1.js');

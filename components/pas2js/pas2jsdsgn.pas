@@ -9,7 +9,8 @@ interface
 
 uses
   PJSDsgnRegister, PJSDsgnOptsFrame, frmpas2jsbrowserprojectoptions, 
-  PJSDsgnOptions, frmpas2jsnodejsprojectoptions, LazarusPackageIntf;
+  PJSDsgnOptions, frmpas2jsnodejsprojectoptions, pjscontroller, 
+  LazarusPackageIntf;
 
 implementation
 
