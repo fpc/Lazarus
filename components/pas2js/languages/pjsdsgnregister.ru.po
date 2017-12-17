@@ -24,6 +24,8 @@ msgid "A pas2js program running in the browser"
 msgstr "Программа pas2js, запускаемая в браузере"
 
 #: pjsdsgnregister.pjsdwebapplication
-msgid "Web Application"
+#, fuzzy
+#| msgid "Web Application"
+msgid "Web Browser Application"
 msgstr "Веб-приложение"
 

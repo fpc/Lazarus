@@ -1,0 +1,153 @@
+object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
+  Left = 603
+  Height = 344
+  Top = 213
+  Width = 426
+  Caption = 'Pas2JS Browser project options'
+  ClientHeight = 344
+  ClientWidth = 426
+  LCLVersion = '1.9.0.0'
+  object CBCreateHTML: TCheckBox
+    Left = 16
+    Height = 22
+    Top = 8
+    Width = 162
+    Caption = 'Create initial HTML page'
+    OnChange = CBCreateHTMLChange
+    TabOrder = 0
+  end
+  object CBUseBrowserApp: TCheckBox
+    AnchorSideLeft.Control = CBCreateHTML
+    AnchorSideTop.Control = CBRunOnReady
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 22
+    Top = 78
+    Width = 198
+    BorderSpacing.Top = 2
+    Caption = 'Use Browser Application object'
+    TabOrder = 1
+  end
+  object CBUseBrowserConsole: TCheckBox
+    AnchorSideLeft.Control = CBCreateHTML
+    AnchorSideTop.Control = CBUseBrowserApp
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 22
+    Top = 102
+    Width = 312
+    BorderSpacing.Top = 2
+    Caption = 'Use Browser Console unit to display writeln() output'
+    TabOrder = 2
+  end
+  object BPHelpOptions: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 296
+    Width = 414
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object SEPort: TSpinEdit
+    AnchorSideLeft.Control = RBStartServerAt
+    AnchorSideTop.Control = RBStartServerAt
+    AnchorSideTop.Side = asrBottom
+    Left = 80
+    Height = 27
+    Top = 174
+    Width = 75
+    BorderSpacing.Left = 32
+    BorderSpacing.Top = 2
+    MaxValue = 65354
+    MinValue = 1024
+    TabOrder = 4
+    Value = 3000
+  end
+  object CBUseHTTPServer: TCheckBox
+    AnchorSideLeft.Control = CBCreateHTML
+    AnchorSideTop.Control = CBUseBrowserConsole
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 22
+    Top = 126
+    Width = 183
+    BorderSpacing.Top = 2
+    Caption = 'Project needs a HTTP Server'
+    TabOrder = 5
+  end
+  object RBStartServerAt: TRadioButton
+    AnchorSideLeft.Control = CBCreateHTML
+    AnchorSideTop.Control = CBUseHTTPServer
+    AnchorSideTop.Side = asrBottom
+    Left = 48
+    Height = 22
+    Top = 150
+    Width = 167
+    BorderSpacing.Left = 32
+    BorderSpacing.Top = 2
+    Caption = 'Start HTTP Server on port'
+    Checked = True
+    TabOrder = 6
+    TabStop = True
+  end
+  object RBUseURL: TRadioButton
+    AnchorSideLeft.Control = RBStartServerAt
+    AnchorSideTop.Control = SEPort
+    AnchorSideTop.Side = asrBottom
+    Left = 48
+    Height = 22
+    Top = 203
+    Width = 161
+    BorderSpacing.Top = 2
+    Caption = 'Use this URL to start app'
+    TabOrder = 7
+  end
+  object CBServerURL: TComboBox
+    AnchorSideLeft.Control = SEPort
+    AnchorSideTop.Control = RBUseURL
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 80
+    Height = 29
+    Top = 227
+    Width = 334
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 12
+    ItemHeight = 0
+    TabOrder = 8
+    Text = 'CBServerURL'
+  end
+  object CBMaintainPage: TCheckBox
+    AnchorSideLeft.Control = CBCreateHTML
+    AnchorSideTop.Control = CBCreateHTML
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 22
+    Top = 32
+    Width = 140
+    BorderSpacing.Top = 2
+    Caption = 'Maintain HTML Page'
+    TabOrder = 9
+  end
+  object CBRunOnReady: TCheckBox
+    AnchorSideLeft.Control = CBCreateHTML
+    AnchorSideTop.Control = CBMaintainPage
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 22
+    Top = 54
+    Width = 183
+    Caption = 'Run rtl in document.onReady'
+    TabOrder = 10
+  end
+end

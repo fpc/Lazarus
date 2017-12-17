@@ -1,10 +1,11 @@
 object Pas2jsOptionsFrame: TPas2jsOptionsFrame
   Left = 0
-  Height = 315
+  Height = 278
   Top = 0
-  Width = 425
-  ClientHeight = 315
-  ClientWidth = 425
+  Width = 427
+  BorderSpacing.Left = 6
+  ClientHeight = 278
+  ClientWidth = 427
   TabOrder = 0
   DesignLeft = 345
   DesignTop = 158
@@ -12,12 +13,12 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 16
+    Height = 17
     Top = 6
-    Width = 100
+    Width = 160
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    Caption = 'Pas2jsPathLabel'
+    Caption = 'Pas2JS command executable'
     ParentColor = False
     ParentShowHint = False
     ShowHint = True
@@ -28,13 +29,12 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Pas2jsPathBrowseButton
     Left = 6
-    Height = 21
-    Top = 22
-    Width = 343
+    Height = 29
+    Top = 23
+    Width = 396
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
     TabOrder = 0
-    Text = 'Pas2jsPathComboBox'
   end
   object Pas2jsPathBrowseButton: TButton
     AnchorSideTop.Control = Pas2jsPathComboBox
@@ -42,10 +42,10 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Pas2jsPathComboBox
     AnchorSideBottom.Side = asrBottom
-    Left = 349
-    Height = 21
-    Top = 22
-    Width = 70
+    Left = 402
+    Height = 29
+    Top = 23
+    Width = 19
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -54,5 +54,117 @@ object Pas2jsOptionsFrame: TPas2jsOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
+  end
+  object HTTPServerCmdLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Pas2jsPathComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 60
+    Width = 170
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 8
+    Caption = 'Simple HTTP Server command'
+    ParentColor = False
+  end
+  object HTTPServerBrowseButton: TButton
+    AnchorSideTop.Control = HTTPServerCmdLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 402
+    Height = 29
+    Top = 77
+    Width = 19
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = HTTPServerBrowseButtonClick
+    TabOrder = 2
+  end
+  object HTTPServerComboBox: TComboBox
+    AnchorSideLeft.Control = HTTPServerCmdLabel
+    AnchorSideTop.Control = HTTPServerCmdLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = HTTPServerBrowseButton
+    Left = 6
+    Height = 29
+    Top = 77
+    Width = 396
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    TabOrder = 3
+  end
+  object ServerPortSpinEdit: TSpinEdit
+    AnchorSideLeft.Control = ServerPortLabel
+    AnchorSideTop.Control = ServerPortLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 27
+    Top = 131
+    Width = 74
+    MaxValue = 65353
+    MinValue = 1024
+    TabOrder = 4
+    Value = 3000
+  end
+  object ServerPortLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = HTTPServerComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 114
+    Width = 116
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 8
+    Caption = 'Standard server port'
+    ParentColor = False
+  end
+  object BrowserComboBox: TComboBox
+    AnchorSideLeft.Control = BrowserLabel
+    AnchorSideTop.Control = BrowserLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = BBrowserBrowseButton
+    Left = 6
+    Height = 29
+    Top = 187
+    Width = 395
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 1
+    ItemHeight = 0
+    TabOrder = 5
+    Text = 'BrowserComboBox'
+  end
+  object BrowserLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ServerPortSpinEdit
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 164
+    Width = 260
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Browser to launch when opening project HTML'
+    ParentColor = False
+  end
+  object BBrowserBrowseButton: TButton
+    AnchorSideTop.Control = BrowserLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 402
+    Height = 29
+    Top = 187
+    Width = 19
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = BBrowserBrowseButtonClick
+    TabOrder = 6
   end
 end

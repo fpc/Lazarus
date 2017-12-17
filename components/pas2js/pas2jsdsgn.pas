@@ -8,7 +8,8 @@ unit Pas2JSDsgn;
 interface
 
 uses
-  PJSDsgnRegister, PJSDsgnOptsFrame, PJSDsgnOptions, LazarusPackageIntf;
+  PJSDsgnRegister, PJSDsgnOptsFrame, frmpas2jsbrowserprojectoptions, 
+  PJSDsgnOptions, LazarusPackageIntf;
 
 implementation
 
