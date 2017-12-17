@@ -16,27 +16,34 @@
       </Parsing>
     </CompilerOptions>
     <Description Value="Adds a Lazarus project for pas2js browser applications."/>
-    <License Value="Modified LGPL-2"/>
+    <License Value="GPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="2">
+    <Files Count="3">
       <Item1>
         <Filename Value="pjsdsgnregister.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="pjsdsgnregister"/>
+        <UnitName Value="PJSDsgnRegister"/>
       </Item1>
       <Item2>
         <Filename Value="pjsdsgnoptsframe.pas"/>
-        <UnitName Value="pjsdsgnoptsframe"/>
+        <UnitName Value="PJSDsgnOptsFrame"/>
       </Item2>
+      <Item3>
+        <Filename Value="pjsdsgnoptions.pas"/>
+        <UnitName Value="PJSDsgnOptions"/>
+      </Item3>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
