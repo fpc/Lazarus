@@ -19,7 +19,10 @@ Type
 
   TPas2jsOptionsFrame = class(TAbstractIDEOptionsEditor)
     BBrowserBrowseButton: TButton;
+    NodeJSBrowseButton: TButton;
     BrowserComboBox: TComboBox;
+    NodeJSComboBox: TComboBox;
+    BrowserLabel1: TLabel;
     HTTPServerBrowseButton: TButton;
     HTTPServerComboBox: TComboBox;
     HTTPServerCmdLabel: TLabel;
@@ -31,6 +34,7 @@ Type
     ServerPortSpinEdit: TSpinEdit;
     procedure BBrowserBrowseButtonClick(Sender: TObject);
     procedure HTTPServerBrowseButtonClick(Sender: TObject);
+    procedure NodeJSBrowseButtonClick(Sender: TObject);
     procedure Pas2jsPathBrowseButtonClick(Sender: TObject);
   private
     function CheckCompiler(Buttons: TMsgDlgButtons): boolean;
@@ -92,7 +96,29 @@ begin
   end;
 end;
 
+procedure TPas2jsOptionsFrame.NodeJSBrowseButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: String;
+
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    //InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Title:='Select browser executable';
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      SetComboBoxText(NodeJSComboBox,AFilename,cstFilename,30);
+      PJSOptions.NodeJSFileName:=AFileName;
+    end;
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
 procedure TPas2jsOptionsFrame.BBrowserBrowseButtonClick(Sender: TObject);
+
 var
   OpenDialog: TOpenDialog;
   AFilename: String;
@@ -162,6 +188,7 @@ begin
   SetComboBoxText(Pas2jsPathComboBox,PJSOptions.CompilerFilename,cstFilename,30);
   SetComboBoxText(HTTPServerComboBox,PJSOptions.HTTPServerFileName,cstFilename,30);
   SetComboBoxText(BrowserComboBox,PJSOptions.BrowserFileName,cstFilename,30);
+  SetComboBoxText(NodeJSComboBox,PJSOptions.NodejsFileName,cstFilename,30);
   ServerPortSpinEdit.Value:=PJSOptions.StartAtPort;
 end;
 
@@ -170,6 +197,7 @@ begin
   PJSOptions.CompilerFilename:=Pas2jsPathComboBox.Text;
   PJSOptions.HTTPServerFileName:=HTTPServerComboBox.Text;
   PJSOptions.BrowserFileName:=BrowserComboBox.Text;
+  PJSOptions.NodeJSFileName:=NodeJSComboBox.Text;
   PJSOptions.StartAtPort:=ServerPortSpinEdit.Value;
   If PJSOptions.Modified then
     PJSOptions.Save;

@@ -20,6 +20,7 @@ const
   PJSDefaultHTTPServer = '$MakeExe(IDE,simpleserver)';
   PJSDefaultStartAtPort = 3000; // Simpleserver default
   PJSDefaultBrowser = '$MakeExe(IDE,firefox)';
+  PJSDefaultNodeJS = '$MakeExe(IDE,nodejs)';
 
 Type
   { TPas2jsOptions }
@@ -29,6 +30,7 @@ Type
     FBrowserFileName: String;
     FChangeStamp: int64;
     FHTTPServerFileName: string;
+    FNodeJSFileName : String;
     FSavedStamp: int64;
     FCompilerFilename: string;
     FCompilerFilenameStamp: int64;
@@ -39,6 +41,7 @@ Type
     procedure SetHTTPServerFileName(AValue: string);
     procedure SetModified(AValue: boolean);
     procedure SetCompilerFilename(AValue: string);
+    procedure SetNodeJSFileName(AValue: string);
     procedure SetStartAtPort(AValue: Word);
   public
     constructor Create;
@@ -52,6 +55,7 @@ Type
   public
     property CompilerFilename: string read FCompilerFilename write SetCompilerFilename;
     Property HTTPServerFileName : string Read FHTTPServerFileName Write SetHTTPServerFileName;
+    Property NodeJSFileName : string Read FNodeJSFileName Write SetNodeJSFileName;
     Property BrowserFileName : String Read FBrowserFileName Write SetBrowserFileName;
     Property StartAtPort : Word Read FStartAtPort Write SetStartAtPort;
     property ChangeStamp: int64 read FChangeStamp;
@@ -64,6 +68,7 @@ var
 function GetStandardPas2jsExe: string;
 function GetStandardHTTPServer: string;
 function GetStandardBrowser: string;
+function GetStandardNodeJS: string;
 function GetPas2jsQuality(Filename: string; out Msg: string): boolean;
 
 implementation
@@ -73,6 +78,14 @@ begin
   Result:='$MakeExe(IDE,pas2js)';
   if not IDEMacros.SubstituteMacros(Result) then
     Result:='pas2js';
+end;
+
+function GetStandardNodeJS: string;
+
+begin
+  Result:='$MakeExe(IDE,nodejs)';
+  if not IDEMacros.SubstituteMacros(Result) then
+    Result:='nodejs';
 end;
 
 function GetStandardHTTPServer: string;
@@ -159,10 +172,21 @@ begin
   IDEMacros.IncreaseBaseStamp;
 end;
 
+procedure TPas2jsOptions.SetNodeJSFileName(AValue: string);
+begin
+  if FNodeJSFileName=AValue then Exit;
+  FNodeJSFileName:=AValue;
+  Modified;
+end;
+
 constructor TPas2jsOptions.Create;
+
 begin
   FChangeStamp:=LUInvalidChangeStamp64;
   FCompilerFilename:=PJSDefaultCompiler;
+  FHTTPServerFileName:=PJSDefaultHTTPServer;
+  FNodeJSFileName:=PJSDefaultNodeJS;
+  FBrowserFileName:=PJSDefaultBrowser;
 end;
 
 destructor TPas2jsOptions.Destroy;
@@ -199,16 +223,35 @@ begin
   end;
 end;
 
+Const
+  KeyCompiler = 'compiler/value';
+  KeyHTTPServer = 'webserver/value';
+  KeyBrowser = 'webbrowser/value';
+  KeyNodeJS = 'nodejs/value';
+  KeyStartPortAt = 'webserver/startatport/value';
+
 procedure TPas2jsOptions.LoadFromConfig(Cfg: TConfigStorage);
+
 begin
-  CompilerFilename:=Cfg.GetValue('compiler/value',PJSDefaultCompiler);
+  CompilerFilename:=Cfg.GetValue(KeyCompiler ,PJSDefaultCompiler);
+  HTTPServerFileName:=Cfg.GetValue(KeyHTTPServer,PJSDefaultHTTPServer);
+  BrowserFileName:=Cfg.GetValue(KeyBrowser,PJSDefaultBrowser);
+  NodeJSFileName:=Cfg.GetValue(KeyNodeJS,PJSDefaultNodeJS);
+  StartAtPort :=Cfg.GetValue(KeyStartPortAt,PJSDefaultStartAtPort);
   Modified:=false;
 end;
 
 procedure TPas2jsOptions.SaveToConfig(Cfg: TConfigStorage);
+
 begin
-  Cfg.SetDeleteValue('compiler/value',CompilerFilename,PJSDefaultCompiler);
+  Cfg.SetDeleteValue(KeyCompiler,CompilerFilename,PJSDefaultCompiler);
+  Cfg.SetDeleteValue(KeyHTTPServer,HTTPServerFileName,PJSDefaultHTTPServer);
+  Cfg.SetDeleteValue(KeyStartPortAt,StartAtPort,PJSDefaultStartAtPort);
+  Cfg.SetDeleteValue(KeyNodeJS,NodeJSFileName,PJSDefaultNodeJS);
+  Cfg.SetDeleteValue(KeyBrowser,BrowserFileName,PJSDefaultBrowser);
+  Modified:=false;
 end;
+
 
 function TPas2jsOptions.GetParsedCompilerFilename: string;
 begin

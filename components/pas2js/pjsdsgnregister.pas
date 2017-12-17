@@ -57,14 +57,23 @@ type
   end;
 
   { TProjectPas2JSNodeJSApp }
+  TNodeJSApplicationOption = (naoUseNodeJSApp);      // Use NodeJS app object
+  TNodeJSApplicationOptions = set of TNodeJSApplicationOption;
 
   TProjectPas2JSNodeJSApp = class(TProjectDescriptor)
+  private
+    FOptions: TNodeJSApplicationOptions;
+  protected
+    function CreateProjectSource: String; virtual;
+    function ShowOptionsDialog: TModalResult; virtual;
   public
     constructor Create; override;
+    Function DoInitDescriptor : TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    property Options : TNodeJSApplicationOptions Read FOptions Write FOptions;
   end;
 
 var
@@ -74,7 +83,7 @@ procedure Register;
 
 implementation
 
-uses frmpas2jsbrowserprojectoptions;
+uses frmpas2jsnodejsprojectoptions, frmpas2jsbrowserprojectoptions;
 
 procedure Register;
 
@@ -91,11 +100,116 @@ end;
 
 { TProjectPas2JSNodeJSApp }
 
+function TProjectPas2JSNodeJSApp.CreateProjectSource: String;
+Var
+  Src : TStrings;
+  units : string;
+
+  Procedure Add(aLine : String);
+
+  begin
+    Src.Add(aLine);
+  end;
+
+  Procedure AddLn(aLine : String);
+
+  begin
+    if (Aline<>'') then
+      Aline:=Aline+';';
+    Add(Aline);
+  end;
+
+
+begin
+  Units:='';
+  if naoUseNodeJSApp in Options then
+    Units:=Units+' nodejsapp,' ;
+  Units:=Units+' JS, Classes, SysUtils, nodeJS';
+  Src:=TStringList.Create;
+  try
+    // create program source
+    AddLn('program Project1');
+    AddLn('');
+    Add('{$mode objfpc}');
+    Add('');
+    Add('uses');
+    AddLn(units) ;
+    Add('');
+    if naoUseNodeJSApp in Options then
+      begin
+      Add('Type');
+        Add('  TMyApplication = Class(TNodeJSApplication)');
+      AddLn('    procedure doRun; override');
+      AddLn('  end');
+      Add('');
+      AddLn('Procedure TMyApplication.doRun');
+      Add('');
+      Add('begin');
+      Add('  // Your code here');
+      AddLn('  Terminate');
+      AddLn('end');
+      Add('');
+      Add('var');
+      AddLn('  Application : TMyApplication');
+      Add('');
+      end;
+    Add('begin');
+    if Not (naoUseNodeJSApp in Options) then
+       Add('  // Your code here')
+    else
+       begin
+       AddLn('  Application:=TMyApplication.Create(Nil)');
+       AddLn('  Application.Initialize');
+       AddLn('  Application.Run');
+       AddLn('  Application.Free');
+       end;
+    Add('end.');
+    Result:=Src.Text;
+  finally
+    Src.Free;
+  end;
+end;
+
+function TProjectPas2JSNodeJSApp.ShowOptionsDialog: TModalResult;
+
+  Function Co(o : TNodeJSApplicationOption) : boolean;
+
+  begin
+    Result:=O in Options;
+  end;
+
+  Procedure So(Value : Boolean; o : TNodeJSApplicationOption);
+
+  begin
+    if Value then
+      Include(Foptions,O);
+  end;
+
+
+begin
+  With TNodeJSProjectOptionsForm.Create(Nil) do
+    try
+      UseNodeJSApplication:=CO(naoUseNodeJSApp);
+      Result:=ShowModal;
+      if Result=mrOK then
+        begin
+        SO(UseNodeJSApplication,naoUseNodeJSApp);
+        end;
+    finally
+      Free;
+    end;
+end;
+
 constructor TProjectPas2JSNodeJSApp.Create;
 begin
   inherited Create;
   Name:= ProjDescNamePas2JSNodeJSApp;
   Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
+end;
+
+function TProjectPas2JSNodeJSApp.DoInitDescriptor: TModalResult;
+begin
+  Result:=ShowOptionsDialog;
 end;
 
 function TProjectPas2JSNodeJSApp.GetLocalizedName: string;
@@ -132,20 +246,11 @@ begin
   CompOpts.SetAlternativeCompile(
     '$MakeExe(pas2js) -Jc -Jminclude -Tnodejs "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
   RunParams:=AProject.RunParameters;
-  //RunParams.UseLaunchingApplication:=True;
-  //RunParams.LaunchingApplicationPathPlusParams:='$MakeExe(IDE,nodejs) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
+  RunParams.UseLaunchingApplication:=True;
+  RunParams.LaunchingApplicationPathPlusParams:='$MakeExe(IDE,nodejs) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
 
   // create program source
-  NewSource:='program Project1;'+LineEnding
-    +LineEnding
-    +'{$mode objfpc}'+LineEnding
-    +LineEnding
-    +'uses'+LineEnding
-    +'  NodeJS, JS, Classes, SysUtils;'+LineEnding
-    +LineEnding
-    +'begin'+LineEnding
-    +'end.'+LineEnding
-    +LineEnding;
+  NewSource:=CreateProjectSource;
   AProject.MainFile.SetSourceText(NewSource,true);
 
   AProject.AddPackageDependency('pas2js_rtl');
@@ -402,8 +507,8 @@ begin
   CompOpts.SetAlternativeCompile(
     '$MakeExe(pas2js) -Jirtl.js -Jc -Jminclude -Tbrowser "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
   RunParams:=AProject.RunParameters;
-  //RunParams.UseLaunchingApplication:=True;
-  //RunParams.LaunchingApplicationPathPlusParams:=GetBrowserCommand(CompOpts.TargetFileName);
+  RunParams.UseLaunchingApplication:=True;
+  RunParams.LaunchingApplicationPathPlusParams:=GetBrowserCommand(CompOpts.TargetFileName);
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
 
   // create html source

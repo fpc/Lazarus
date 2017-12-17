@@ -1,8 +1,35 @@
-object Form2: TForm2
+object NodeJSProjectOptionsForm: TNodeJSProjectOptionsForm
   Left = 710
   Height = 240
   Top = 270
   Width = 320
-  Caption = 'Form2'
+  Caption = 'NodeJS project options'
+  ClientHeight = 240
+  ClientWidth = 320
+  Position = poScreenCenter
   LCLVersion = '1.9.0.0'
+  object CBUseNodeJSApplication: TCheckBox
+    Left = 16
+    Height = 22
+    Top = 8
+    Width = 188
+    Caption = 'Use NodeJSApplication object'
+    TabOrder = 0
+  end
+  object BPNode: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 192
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
 end
