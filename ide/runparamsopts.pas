@@ -716,6 +716,7 @@ begin
   SaveToOptionsMode(NewMode);
   ReloadModesComboBox;
   SelectMode(NewName);
+  fLastSelectedMode := NewMode;
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;
