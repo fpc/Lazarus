@@ -603,13 +603,13 @@ begin
   Result := '';
   if Project1=nil then exit;
   AMode := Project1.RunParameterOptions.GetActiveMode;
-  if AMode=nil then exit;
-  if AMode.UseLaunchingApplication then
+  if (AMode<>nil) and AMode.UseLaunchingApplication then
     Result := AMode.LaunchingApplicationPathPlusParams;
 
   if Result='' then
   begin
-    Result := AMode.CmdLineParams;
+    if (AMode<>nil) then
+      Result := AMode.CmdLineParams;
     if GlobalMacroList.SubstituteStr(Result) then
     begin
       TargetFilename := GetTargetFilename;
@@ -708,8 +708,8 @@ begin
   Result:='';
   if aProject=nil then exit;
   AMode := aProject.RunParameterOptions.GetActiveMode;
-  if AMode=nil then exit;
-  Result:=AMode.HostApplicationFilename;
+  if AMode<>nil then
+    Result:=AMode.HostApplicationFilename;
   GlobalMacroList.SubstituteStr(Result);
   if (Result='') and (aProject.MainUnitID>=0) then begin
     Result := aProject.CompilerOptions.CreateTargetFilename;
@@ -2191,14 +2191,15 @@ end;
 function TBuildManager.MacroFuncTargetCmdLine(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  if (Project1<>nil) and (Project1.RunParameterOptions.GetActiveMode<>nil) then begin
-    Result:=Project1.RunParameterOptions.GetActiveMode.CmdLineParams;
+  Result:='';
+  if (Project1<>nil) then begin
+    if (Project1.RunParameterOptions.GetActiveMode<>nil) then
+      Result:=Project1.RunParameterOptions.GetActiveMode.CmdLineParams;
     if Result='' then
       Result:=GetProjectTargetFilename(Project1)
     else
       Result:=GetProjectTargetFilename(Project1)+' '+Result;
-  end else
-    Result:='';
+  end;
 end;
 
 function TBuildManager.MacroFuncRunCmdLine(const Param: string;
