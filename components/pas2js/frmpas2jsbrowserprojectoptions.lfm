@@ -1,7 +1,7 @@
 object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
-  Left = 603
+  Left = 952
   Height = 344
-  Top = 213
+  Top = 271
   Width = 426
   Caption = 'Pas2JS Browser project options'
   ClientHeight = 344
