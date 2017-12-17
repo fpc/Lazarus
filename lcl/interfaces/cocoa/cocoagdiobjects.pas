@@ -195,7 +195,7 @@ type
   strict private
     FFont: NSFont;
     FName: AnsiString;
-    FSize: Integer;
+    FSize: CGFloat;
     FStyle: TCocoaFontStyle;
     FAntialiased: Boolean;
     FIsSystemFont: Boolean;
@@ -209,7 +209,7 @@ type
     property Antialiased: Boolean read FAntialiased;
     property Font: NSFont read FFont;
     property Name: String read FName;
-    property Size: Integer read FSize;
+    property Size: CGFloat read FSize;
     property Style: TCocoaFontStyle read FStyle;
   end;
 
@@ -556,6 +556,8 @@ var
   Win32Weight, LoopCount: Integer;
   CocoaWeight: NSInteger;
   FTmpFont: NSFont;
+const
+  DPI = 96; // todo: what about Retina displays and scaled displays?
 begin
   inherited Create(AGlobal);
 
@@ -575,8 +577,14 @@ begin
 
     if ALogFont.lfHeight = 0 then
       FSize := Round(NSFont.systemFontSize)
-    else
-      FSize := Abs(ALogFont.lfHeight);
+    else begin
+      // lfHeight is height in pixels (TFont.ReferenceNeeded), FSize is in points
+      // (TFont has property "Size" - which is size in points, but it's not passed to LOGFONT)
+      // todo: check for the actual DPI
+      // also, negative height and positive height are different hights, thus
+      // abs() is not really accurate
+      FSize := Round(Abs(ALogFont.lfHeight * 72 / DPI)*10)/10;
+    end;
 
     // create font attributes
     Win32Weight := ALogFont.lfWeight;
