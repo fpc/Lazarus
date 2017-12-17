@@ -19,7 +19,7 @@
  ***************************************************************************
 
   Abstract:
-    ToDo...
+    Show a window before the LCL is initialized.
 }
 unit raw_window;
 

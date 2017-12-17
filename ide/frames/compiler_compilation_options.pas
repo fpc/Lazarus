@@ -275,7 +275,7 @@ begin
   chkCompilerRun.Checked := True;
   lblCompiler.Caption := lisCOCommand;
   cobCompiler.Text := '';
-  BrowseCompilerButton.Hint:='Browse and select a compiler (e.g. ppcx64'+ExeExt+')';
+  BrowseCompilerButton.Hint:=lisBrowseAndSelectACompiler+' (e.g. ppcx64'+ExeExt+')';
 
   ExecuteAfterGroupBox.Caption := lisCOExecuteAfter;
   chkExecAfterBuild.Caption := lisBuildStage;

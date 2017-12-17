@@ -2395,6 +2395,7 @@ resourcestring
   lisCOExecuteAfter = 'Execute after';
   lisCOExecuteBefore = 'Execute before';
   lisCOCommand = 'Command:';
+  lisBrowseAndSelectACompiler = 'Browse and select a compiler';
   lisCOScanForMessages = 'Scan for messages:';
   lisCOScanForFPCMessages = 'Scan for FPC messages';
   lisCOScanForMakeMessages = 'Scan for Make messages';
