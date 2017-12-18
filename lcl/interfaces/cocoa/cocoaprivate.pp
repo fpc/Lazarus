@@ -205,6 +205,10 @@ type
   public
     callback: IButtonCallback;
     Glyph: TBitmap;
+
+    smallHeight: integer;
+    miniHeight: integer;
+    adjustFontToControlSize: Boolean;
     procedure dealloc; override;
     function initWithFrame(frameRect: NSRect): id; override;
     function acceptsFirstResponder: Boolean; override;
@@ -892,6 +896,8 @@ type
 procedure SetViewDefaults(AView: NSView);
 function CheckMainThread: Boolean;
 function GetNSViewSuperViewHeight(view: NSView): CGFloat;
+
+procedure SetNSControlSize(ctrl: NSControl; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
 
 implementation
 
@@ -1717,6 +1723,8 @@ begin
   else
     setBezelStyle(NSTexturedSquareBezelStyle);
   }
+  if (miniHeight<>0) or (smallHeight<>0) then
+    SetNSControlSize(Self,r.Bottom-r.Top,miniHeight, smallHeight, adjustFontToControlSize);
   inherited lclSetFrame(r);
 end;
 
@@ -4262,6 +4270,28 @@ begin
 end;
 
 {$ENDIF}
+
+procedure SetNSControlSize(ctrl: NSControl; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
+var
+  sz : NSControlSize;
+begin
+  if (miniHeight>0) and (newHeight<=miniHeight) then
+    sz:=NSMiniControlSize
+  else if (smallHeight>0) and (newHeight<=smallHeight) then
+    sz:=NSSmallControlSize
+  else
+    sz:=NSRegularControlSize;
+
+  //todo: "cell" property (function) has been deprecated since 10.10
+  //      instead NSControl itself has controlSize method
+  if NSCell(ctrl.cell).controlSize<>sz then
+  begin
+    NSCell(ctrl.cell).setControlSize(sz);
+    if AutoChangeFont then
+      ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
+  end;
+end;
+
 
 end.
 

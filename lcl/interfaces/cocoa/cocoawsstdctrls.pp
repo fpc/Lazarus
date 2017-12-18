@@ -263,7 +263,7 @@ type
   end;
 
 function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
-function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
+function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
 function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
 function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
 
@@ -302,7 +302,7 @@ const
  {ssAutoBoth      } true
   );
 
-function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
+function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
 var
   titel:string;
   cap: NSString;
@@ -458,9 +458,15 @@ end;
 class function TCocoaWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  btn: NSButton;
+  btn: TCocoaButton;
 begin
   btn := AllocButton(AWinControl, TLCLButtonCallback, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
+  // btn.regularHeight = 32
+  btn.smallHeight := 28;
+  btn.miniHeight := 16;
+  btn.adjustFontToControlSize:=true;
+  // these heights were received from Xcode builder, where the height cannot be changed for a button control
+  // the actual size of the button (the difference between top pixel and bottom pixel, is less than frame size
   Result := TLCLIntfHandle(btn);
 end;
 
