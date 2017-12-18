@@ -257,7 +257,6 @@ begin
   AProject.AddPackageDependency('pas2js_rtl');
   if naoUseNodeJSApp in Options then
     AProject.AddPackageDependency('fcl_base_pas2js');
-
 end;
 
 function TProjectPas2JSNodeJSApp.CreateStartFiles(AProject: TLazProject

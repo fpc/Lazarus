@@ -87,15 +87,15 @@ Var
 
 begin
   Abort:=LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]<>'1';
-  Writeln('LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]);
+//  Writeln('LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]);
   if Abort then
     exit;
   Result:=LazarusIDE.ActiveProject.CustomData[PJSProjectURL];
-  Writeln('LazarusIDE.ActiveProject.CustomData[PJSProjectURL]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectURL]);
+//  Writeln('LazarusIDE.ActiveProject.CustomData[PJSProjectURL]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectURL]);
   if (Result='') then
     begin
     FN:=LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile];
-    Writeln('LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]);
+//    Writeln('LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]);
     if (FN='') then
       FN:=ChangeFileExt(ExtractFileName(LazarusIDE.ActiveProject.ProjectInfoFile),'.html');
     Result:=LazarusIDE.ActiveProject.CustomData[PJSProjectPort];
@@ -109,7 +109,7 @@ begin
       {$ENDIF}
     end;
   Abort:=(Result='');
-  Writeln('GetProjectURL : ',Result);
+//  Writeln('GetProjectURL : ',Result);
 end;
 
 constructor TPJSController.Create;
