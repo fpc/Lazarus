@@ -6109,6 +6109,8 @@ resourcestring
   lisFPCSources = 'FPC sources';
   lisConfigureLazarusIDE = 'Configure Lazarus IDE';
   lisFileIsNotAnExecutable = 'File is not an executable';
+  lisUnusualPas2jsCompilerFileNameUsuallyItStartsWithPa = 'Unusual pas2js '
+    +'compiler file name. Usually it starts with pas2js.';
   lisThereIsNoFpcExeInTheDirectoryOfUsuallyTheMakeExecu = 'There is no fpc.exe'
     +' in the directory of %s. Usually the make executable is installed '
     +'together with the FPC compiler.';

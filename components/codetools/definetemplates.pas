@@ -1025,7 +1025,9 @@ function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean
 procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
 function GetFPCTargetOS(TargetOS: string): string;
 function GetFPCTargetCPU(TargetCPU: string): string;
+function GetPascalCompilerFromExeName(Filename: string): TPascalCompiler;
 function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
+function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -3644,6 +3646,25 @@ begin
   Result:=LowerCase(TargetCPU);
 end;
 
+function GetPascalCompilerFromExeName(Filename: string): TPascalCompiler;
+var
+  ShortFilename: String;
+begin
+  ShortFilename:=ExtractFileNameOnly(Filename);
+
+  // pas2js*
+  if CompareText(LeftStr(ShortFilename,6),'pas2js')=0 then
+    exit(pcPas2js);
+
+  // dcc*.exe
+  if (CompareFilenames(LeftStr(ShortFilename,3),'dcc')=0)
+  and ((ExeExt='') or (CompareFileExt(Filename,ExeExt)=0))
+  then
+    exit(pcDelphi);
+
+  Result:=pcFPC;
+end;
+
 function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean;
 var
   ShortFilename: String;
@@ -3681,12 +3702,48 @@ begin
     exit(true);
 
   // allow ppcxxx.exe
-  if (CompareFilenames(copy(ShortFilename,1,3),'ppc')=0)
+  if (CompareFilenames(LeftStr(ShortFilename,3),'ppc')=0)
   and ((ExeExt='') or (CompareFileExt(AFilename,ExeExt)=0))
   then
     exit(true);
 
-  ErrorMsg:='unknown file name';
+  ErrorMsg:='fpc executable should start with fpc or ppc';
+end;
+
+function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string): boolean;
+var
+  ShortFilename: String;
+begin
+  Result:=false;
+  AFilename:=ResolveDots(aFilename);
+  if aFilename='' then begin
+    ErrorMsg:='missing file name';
+    exit;
+  end;
+  if not FilenameIsAbsolute(AFilename) then begin
+    ErrorMsg:='file missing path';
+    exit;
+  end;
+  if not FileExistsCached(AFilename) then begin
+    ErrorMsg:='file not found';
+    exit;
+  end;
+  if DirPathExistsCached(AFilename) then begin
+    ErrorMsg:='file is a directory';
+    exit;
+  end;
+  if not FileIsExecutableCached(AFilename) then begin
+    ErrorMsg:='file is not executable';
+    exit;
+  end;
+  ErrorMsg:='';
+
+  // allow scripts like pas2js*
+  ShortFilename:=ExtractFileNameOnly(AFilename);
+  if CompareText(LeftStr(ShortFilename,6),'pas2js')=0 then
+    exit(true);
+
+  ErrorMsg:='pas2js executable should start with pas2js';
 end;
 
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string

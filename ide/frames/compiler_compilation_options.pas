@@ -9,7 +9,7 @@ uses
   Classes, sysutils,
   Controls, StdCtrls, Dialogs, ComboEx,
   // CodeTools
-  FileProcs, DefineTemplates, CodeToolManager,
+  FileProcs, DefineTemplates, CodeToolManager, LinkScanner,
   // LazUtils
   FileUtil, LazFileUtils,
   // IDEIntf
@@ -81,6 +81,20 @@ implementation
 
 procedure TCompilerCompilationOptionsFrame.CompCmdBrowseButtonClick(
   Sender: TObject);
+
+  function ShowQuality(Quality: TSDFilenameQuality;
+    const Filename, Note: string): boolean;
+  begin
+    if Quality<>sddqCompatible then begin
+      if IDEMessageDialog(lisCCOWarningCaption, Format(
+        lisTheCompilerFileDoesNotLookCorrect, [Filename, #13, Note]),
+        mtWarning,[mbIgnore,mbCancel])<>mrIgnore
+      then
+        exit(false);
+    end;
+    Result:=true;
+  end;
+
 var
   OpenDialog: TOpenDialog;
   NewFilename: string;
@@ -90,6 +104,7 @@ var
   OldFilename: string;
   OldParams: string;
   Combo: TComboBox;
+  ok: Boolean;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
@@ -115,31 +130,41 @@ begin
 
     if not OpenDialog.Execute then exit;
     NewFilename:=TrimAndExpandFilename(OpenDialog.Filename);
+    // check, even if new file is old filename, so the user see the warnings again
+    ok:=false;
     if Sender=BrowseCompilerButton then begin
       // check compiler filename
-      if IsFPCExecutable(NewFilename,s) then begin
-        // check compiler
-        Quality:=CheckCompilerQuality(NewFilename,Note,
-                                   CodeToolBoss.FPCDefinesCache.TestFilename);
-        if Quality<>sddqCompatible then begin
-          if IDEMessageDialog(lisCCOWarningCaption, Format(
-            lisTheCompilerFileDoesNotLookCorrect, [NewFilename, #13, Note]),
-            mtWarning,[mbIgnore,mbCancel])<>mrIgnore
-          then
-            exit;
+      case GetPascalCompilerFromExeName(NewFilename) of
+      pcPas2js:
+        if IsPas2JSExecutable(NewFilename,s) then begin
+          // check pas2js
+          Quality:=CheckPas2jsQuality(NewFilename,Note,
+                                     CodeToolBoss.FPCDefinesCache.TestFilename);
+          if not ShowQuality(Quality,NewFilename,Note) then exit;
+          ok:=true;
         end;
-      end else begin
-        // maybe a script
-        if not CheckExecutable(OldFilename,NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
-        then
-          exit;
+      else
+        if IsFPCExecutable(NewFilename,s) then begin
+          // check fpc
+          Quality:=CheckCompilerQuality(NewFilename,Note,
+                                     CodeToolBoss.FPCDefinesCache.TestFilename);
+          if not ShowQuality(Quality,NewFilename,Note) then exit;
+          ok:=true;
+        end;
       end;
+      // maybe a script
+      if (not ok)
+      and not CheckExecutable(OldFilename,NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
+      then
+        exit;
+      ok:=true;
     end else if (Sender=ExecBeforeBrowseButton)
     or (Sender=ExecAfterBrowseButton) then begin
       // check executable
       if not CheckExecutable(OldFilename,NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
       then
         exit;
+      ok:=true;
     end;
     SetComboBoxText(Combo,NewFilename,cstFilename);
   finally
