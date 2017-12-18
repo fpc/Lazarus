@@ -1366,10 +1366,6 @@ begin
     CreateMenuItem(ParentMI,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph+' ...','pkg_graph');
     CreateMenuItem(ParentMI,itmPkgPackageLinks,'itmPkgPackageLinks',lisMenuPackageLinks);
     CreateMenuItem(ParentMI,itmPkgEditInstallPkgs,'itmPkgEditInstallPkgs',lisMenuEditInstallPkgs,'pkg_properties');
-
-    {$IFDEF CustomIDEComps}
-    CreateMenuItem(ParentMI,itmCompsConfigCustomComps,'itmCompsConfigCustomComps',lisMenuConfigCustomComps);
-    {$ENDIF}
   end;
 end;
 
@@ -1706,9 +1702,6 @@ begin
     itmPkgPkgGraph.Command:=GetCommand(ecPackageGraph);
     itmPkgPackageLinks.Command:=GetCommand(ecPackageLinks);
     itmPkgEditInstallPkgs.Command:=GetCommand(ecEditInstallPkgs);
-    {$IFDEF CustomIDEComps}
-    itmCompsConfigCustomComps.Command:=GetCommand(ecConfigCustomComps);
-    {$ENDIF}
 
     // tools menu
     itmEnvGeneralOptions.Command:=GetCommand(ecEnvironmentOptions);

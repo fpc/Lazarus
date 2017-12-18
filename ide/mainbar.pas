@@ -328,9 +328,6 @@ type
         itmPkgPkgGraph: TIDEMenuCommand;
         itmPkgPackageLinks: TIDEMenuCommand;
         itmPkgEditInstallPkgs: TIDEMenuCommand;
-        {$IFDEF CustomIDEComps}
-        itmCompsConfigCustomComps: TIDEMenuCommand;
-        {$ENDIF}
 
     // tools menu
     //mnuTools: TIDEMenuSection;

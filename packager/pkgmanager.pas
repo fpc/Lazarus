@@ -3011,9 +3011,6 @@ begin
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
     itmPkgPackageLinks.OnClick:=@MainIDEitmPackageLinksClicked;
     itmPkgEditInstallPkgs.OnClick:=@MainIDEitmPkgEditInstallPkgsClick;
-    {$IFDEF CustomIDEComps}
-    itmCompsConfigCustomComps.OnClick :=@MainIDEitmConfigCustomCompsClicked;
-    {$ENDIF}
   end;
   
   SetRecentPackagesMenu;

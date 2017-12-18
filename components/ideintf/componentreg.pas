@@ -25,9 +25,6 @@ interface
 
 uses
   Classes, SysUtils, typinfo, Laz_AVL_Tree, fgl,
-  {$IFDEF CustomIDEComps}
-  CustomIDEComps,
-  {$ENDIF}
   Controls, Laz2_XMLCfg, LCLProc;
 
 type
@@ -266,9 +263,6 @@ type
     procedure RemoveHandlerComponentAdded(OnComponentAddedEvent: TComponentAddedEvent);
     procedure AddHandlerSelectionChanged(OnSelectionChangedEvent: TPaletteHandlerEvent);
     procedure RemoveHandlerSelectionChanged(OnSelectionChangedEvent: TPaletteHandlerEvent);
-    {$IFDEF CustomIDEComps}
-    procedure RegisterCustomIDEComponents(RegisterProc: RegisterUnitComponentProc);
-    {$ENDIF}
   public
     property Pages: TBaseComponentPageList read fPages;
     property Comps: TRegisteredComponentList read fComps;
@@ -1151,15 +1145,6 @@ procedure TBaseComponentPalette.RemoveHandlerSelectionChanged(
 begin
   RemoveHandler(cphtSelectionChanged,TMethod(OnSelectionChangedEvent));
 end;
-
-//
-{$IFDEF CustomIDEComps}
-procedure TBaseComponentPalette.RegisterCustomIDEComponents(
-  RegisterProc: RegisterUnitComponentProc);
-begin
-  CustomIDEComps.RegisterCustomComponents(RegisterProc);
-end;
-{$ENDIF}
 
 end.
 

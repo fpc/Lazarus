@@ -26,8 +26,6 @@ components/codetools/examples/units
 components/codetools/languages/*.bak
 components/codetools/languages/units
 components/codetools/units
-components/custom/*.bak
-components/custom/units
 components/customform/*.bak
 components/customform/demo/*.bak
 components/customform/demo/units

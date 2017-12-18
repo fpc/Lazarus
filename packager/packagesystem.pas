@@ -178,7 +178,6 @@ type
     FAbortRegistration: boolean;
     fChanged: boolean;
     FCodeToolsPackage: TLazPackage;
-    FDefaultPackage: TLazPackage;
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
     FIDEIntfPackage: TLazPackage;
@@ -424,8 +423,6 @@ type
     procedure RegisterStaticBasePackages;
     procedure RegisterStaticPackage(APackage: TLazPackage;
                                     RegisterProc: TRegisterProc);
-    procedure RegisterDefaultPackageComponent(const Page, AUnitName: ShortString;
-                                              ComponentClass: TComponentClass);
     procedure CallRegisterProc(RegisterProc: TRegisterProc);
   public
     // dependency handling
@@ -466,7 +463,6 @@ type
     property DebuggerIntfPackage: TLazPackage read FDebuggerIntfPackage;
     property LazDebuggerGdbmiPackage: TLazPackage read FLazDebuggerGdbmiPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
-    property DefaultPackage: TLazPackage read FDefaultPackage;// fall back package for buggy/obsoleted stuff
 
     // events
     property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
@@ -507,12 +503,6 @@ function RemoveFPCVerbosityParams(const CompParams: string): string;
 procedure WarnSuspiciousCompilerOptions(ViewCaption, Target, CompilerParams: string);
 
 implementation
-
-procedure RegisterCustomIDEComponent(const Page, AUnitName: ShortString;
-  ComponentClass: TComponentClass);
-begin
-  PackageGraph.RegisterDefaultPackageComponent(Page,AUnitName,ComponentClass);
-end;
 
 procedure RegisterComponentsGlobalHandler(const Page: string;
   ComponentClasses: array of TComponentClass);
@@ -1089,7 +1079,6 @@ begin
   if OnGetAllRequiredPackages=@GetAllRequiredPackages then
     OnGetAllRequiredPackages:=nil;
   Clear;
-  FreeAndNil(FDefaultPackage);
   FreeAndNil(FLazarusBasePackages);
   FreeAndNil(FItems);
   FreeAndNil(FTree);
@@ -2216,9 +2205,6 @@ begin
   LoadLazarusBasePackage('LazDebuggerGdbmi');
   LoadLazarusBasePackage('LazControls');
   LoadLazarusBasePackage('CodeTools');
-  // the default package will be added on demand
-  if FDefaultPackage=nil then
-    FDefaultPackage:=CreateDefaultPackage;
 
   SortAutoInstallDependencies;
 
@@ -5449,20 +5435,6 @@ begin
   // IDE built-in packages
   if Assigned(OnTranslatePackage) then OnTranslatePackage(CodeToolsPackage);
 
-  // register custom IDE components
-  RegistrationPackage:=DefaultPackage;
-  {$IFDEF CustomIDEComps}
-  if IDEComponentPalette<>nil then
-    IDEComponentPalette.RegisterCustomIDEComponents(@RegisterCustomIDEComponent);
-  {$ENDIF}
-  if DefaultPackage.FileCount=0 then begin
-    FreeThenNil(FDefaultPackage);
-  end else begin
-    DefaultPackage.Name:=CreateUniquePkgName('DefaultPackage',DefaultPackage);
-    AddPackage(DefaultPackage);
-  end;
-  RegistrationPackage:=nil;
-
   EndUpdate;
 end;
 
@@ -5477,22 +5449,6 @@ begin
   CallRegisterProc(RegisterProc);
   APackage.Registered:=true;
   RegistrationPackage:=nil;
-end;
-
-procedure TLazPackageGraph.RegisterDefaultPackageComponent(const Page,
-  AUnitName: ShortString; ComponentClass: TComponentClass);
-var
-  PkgFile: TPkgFile;
-  NewPkgFilename: String;
-begin
-  PkgFile:=FDefaultPackage.FindUnit(AUnitName,true);
-  if PkgFile=nil then begin
-    NewPkgFilename:=AUnitName+'.pas';
-    PkgFile:=FDefaultPackage.AddFile(NewPkgFilename,AUnitName,pftUnit,[],
-                                     cpOptional);
-  end;
-  FRegistrationFile:=PkgFile;
-  RegisterComponentsHandler(Page,[ComponentClass]);
 end;
 
 procedure TLazPackageGraph.CallRegisterProc(RegisterProc: TRegisterProc);
