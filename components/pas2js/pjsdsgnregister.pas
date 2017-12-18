@@ -90,6 +90,7 @@ procedure Register;
 begin
   PJSOptions:=TPas2jsOptions.Create;
   PJSOptions.Load;
+  TPJSController.Instance.Hook;
   // register new-project items
   RegisterProjectDescriptor(TProjectPas2JSWebApp.Create);
   RegisterProjectDescriptor(TProjectPas2JSNodeJSApp.Create);
@@ -246,14 +247,16 @@ begin
   CompOpts.SetAlternativeCompile(
     '$MakeExe(pas2js) -Jc -Jminclude -Tnodejs "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
   RunParams:=AProject.RunParameters;
-  //ToDo RunParams.UseLaunchingApplication:=True;
-  //ToDo RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSNodeJS) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
+  RunParams.UseLaunchingApplication:=True;
+  RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSNodeJS) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
 
   // create program source
   NewSource:=CreateProjectSource;
   AProject.MainFile.SetSourceText(NewSource,true);
 
   AProject.AddPackageDependency('pas2js_rtl');
+  if naoUseNodeJSApp in Options then
+    AProject.AddPackageDependency('fcl_base_pas2js');
 
 end;
 
@@ -497,8 +500,8 @@ begin
   CompOpts.SetAlternativeCompile(
     '$MakeExe(pas2js) -Jirtl.js -Jc -Jminclude -Tbrowser "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
   RunParams:=AProject.RunParameters;
-  //ToDo RunParams.UseLaunchingApplication:=True;
-  //ToDo RunParams.LaunchingApplicationPathPlusParams:=GetBrowserCommand(CompOpts.TargetFileName);
+  RunParams.UseLaunchingApplication:=True;
+  RunParams.LaunchingApplicationPathPlusParams:=GetBrowserCommand(CompOpts.TargetFileName);
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
   AProject.CustomData.Values[PJSProjectWebBrowser]:='1';
   if baoUseURL in Options then
