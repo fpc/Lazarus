@@ -142,6 +142,7 @@ type
     FDownload: TThreadDownload;
     FRemoteRepository: String;
     FLastError: String;
+    FDownloadingJSON: Boolean;
     FOnJSONProgress: TNotifyEvent;
     FOnJSONDownloadCompleted: TOnJSONDownloadCompleted;
     FOnPackageDownloadProgress: TOnPackageDownloadProgress;
@@ -168,6 +169,7 @@ type
   published
     property RemoteRepository: String read FRemoteRepository write FRemoteRepository;
     property LastError: String read FLastError write FLastError;
+    property DownloadingJSON: Boolean read FDownloadingJSON;
     property JSON: TJSONStringType read FJSON;
     property OnJSONProgress: TNotifyEvent read FOnJSONProgress write FOnJSONProgress;
     property OnJSONDownloadCompleted: TOnJSONDownloadCompleted read FOnJSONDownloadCompleted write FOnJSONDownloadCompleted;
@@ -647,6 +649,7 @@ begin
   FJSON := AJSON;
   if Assigned(FOnJSONDownloadCompleted) then
     FOnJSONDownloadCompleted(Self, AJSON, AErrTyp, AErrMsg);
+  FDownloadingJSON := False;
 end;
 
 constructor TPackageDownloader.Create(const ARemoteRepository: String);
@@ -663,6 +666,7 @@ end;
 
 procedure TPackageDownloader.DownloadJSON(const ATimeOut: Integer = -1);
 begin
+  FDownloadingJSON := True;
   FDownload := TThreadDownload.Create;
   FDownload.OnJSONProgress := @DoOnJSONProgress;
   FDownload.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;

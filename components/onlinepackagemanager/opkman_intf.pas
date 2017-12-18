@@ -41,6 +41,7 @@ type
 
   TOPMInterfaceEx = class(TOPMInterface)
   private
+    FPackagesToDownload: TObjectList;
     FPackagesToInstall: TObjectList;
     FPackageDependecies: TObjectList;
     FPackageLinks: TObjectList;
@@ -51,18 +52,21 @@ type
     procedure DoUpdatePackageLinks(Sender: TObject);
     procedure InitOPM;
     procedure SynchronizePackages;
-    procedure AddToInstallList(const AName, AURL: String);
+    procedure AddToDownloadList(const AName: String);
+    procedure AddToInstallList(const AName: String);
     function Download(const ADstDir: String): TModalResult;
     function Extract(const ASrcDir, ADstDir: String; const AIsUpdate: Boolean = False): TModalResult;
     function Install(var AInstallStatus: TInstallStatus; var ANeedToRebuild: Boolean): TModalResult;
-    function IsInLinkList(const AName, AURL: String): Boolean;
     function ResolveDependencies: TModalResult;
     function CanInstallPackages: TModalResult;
   public
     constructor Create;
     destructor Destroy; override;
   public
+    function DownloadPackages(APkgLinks: TList): TModalResult; override;
     function InstallPackages(APkgLinks: TList; var ANeedToRebuild: Boolean): TModalResult; override;
+    function IsPackageAvailable(APkgLink: TPackageLink; AType: Integer): Boolean; override;
+    function FindOnlineLink(const AName: String): TPackageLink; override;
   end;
 
 implementation
@@ -75,6 +79,7 @@ uses opkman_common, opkman_options, opkman_const, opkman_progressfrm, opkman_zip
 constructor TOPMInterfaceEx.Create;
 begin
   FPackageLinks := TObjectList.Create(False);
+  FPackagesToDownload := TObjectList.Create(False);
   FPackagesToInstall := TObjectList.Create(False);
   FPackageDependecies := TObjectList.Create(False);
   FNeedToInit := True;
@@ -90,6 +95,8 @@ begin
   FWaitForIDE.Terminate;
   FPackageLinks.Clear;
   FPackageLinks.Free;
+  FPackagesToDownload.Clear;
+  FPackagesToDownload.Free;
   FPackagesToInstall.Clear;
   FPackagesToInstall.Free;
   FPackageDependecies.Clear;
@@ -115,9 +122,10 @@ begin
     end
     else
     begin
-      if FPackageLinks.Count = 0 then
+      if (FPackageLinks.Count = 0) then
       begin
-        PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
+        if not PackageDownloader.DownloadingJSON then
+          PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
         Exit;
       end;
       if (not FBusyUpdating) then
@@ -135,6 +143,7 @@ begin
   SerializablePackages.OnUpdatePackageLinks := @DoUpdatePackageLinks;
   PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository[Options.ActiveRepositoryIndex]);
   InstallPackageList := TObjectList.Create(True);
+  PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
 end;
 
 procedure TOPMInterfaceEx.DoUpdatePackageLinks(Sender: TObject);
@@ -142,18 +151,18 @@ begin
   SynchronizePackages;
 end;
 
-function TOPMInterfaceEx.IsInLinkList(const AName, AURL: String): Boolean;
+function TOPMInterfaceEx.FindOnlineLink(const AName: String): TPackageLink;
 var
   I: Integer;
   PackageLink: TPackageLink;
 begin
-  Result := False;
+  Result := nil;
   for I := 0 to FPackageLinks.Count - 1 do
   begin
     PackageLink := TPackageLink(FPackageLinks.Items[I]);
-    if (UpperCase(PackageLink.Name) = UpperCase(AName)) and (UpperCase(PackageLink.LPKUrl) = UpperCase(AURL)) then
+    if UpperCase(PackageLink.Name) = UpperCase(AName) then
     begin
-      Result := True;
+      Result := PackageLink;
       Break;
     end;
   end;
@@ -182,13 +191,18 @@ begin
         FileName := Options.LocalRepositoryPackages + MetaPackage.PackageBaseDir + LazPackage.PackageRelativePath + LazPackage.Name;
         Name := StringReplace(LazPackage.Name, '.lpk', '', [rfReplaceAll, rfIgnoreCase]);
         URL := Options.RemoteRepository[Options.ActiveRepositoryIndex] + MetaPackage.RepositoryFileName;
-        if not IsInLinkList(Name, URL) then
+        PackageLink := FindOnlineLink(Name);
+        if PackageLink = nil then
         begin
           PackageLink := PkgLinks.AddOnlineLink(FileName, Name, URL);
           if PackageLink <> nil then
           begin
             PackageLink.Version.Assign(LazPackage.Version);
+            PackageLink.PackageType := LazPackage.PackageType;
             PackageLink.OPMFileDate := MetaPackage.RepositoryDate;
+            PackageLink.Author := LazPackage.Author;
+            PackageLink.Description := LazPackage.Description;
+            PackageLink.License := LazPackage.License;
             FPackageLinks.Add(PackageLink);
           end;
         end;
@@ -199,7 +213,7 @@ begin
   end;
 end;
 
-procedure TOPMInterfaceEx.AddToInstallList(const AName, AURL: String);
+procedure TOPMInterfaceEx.AddToDownloadList(const AName: String);
 var
   I, J: Integer;
   MetaPackage: TMetaPackage;
@@ -211,8 +225,30 @@ begin
     for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
     begin
       LazPackage := TLazarusPackage(MetaPackage.LazarusPackages.Items[J]);
-      if (UpperCase(LazPackage.Name) = UpperCase(AName)) and
-         (UpperCase(Options.RemoteRepository[Options.ActiveRepositoryIndex] + MetaPackage.RepositoryFileName) = UpperCase(AURL)) then
+      if UpperCase(LazPackage.Name) = UpperCase(AName) then
+      begin
+        LazPackage.Checked := True;
+        MetaPackage.Checked := True;
+        FPackagesToInstall.Add(LazPackage);
+        Break;
+      end;
+    end;
+  end;
+end;
+
+procedure TOPMInterfaceEx.AddToInstallList(const AName: String);
+var
+  I, J: Integer;
+  MetaPackage: TMetaPackage;
+  LazPackage: TLazarusPackage;
+begin
+  for I := 0 to SerializablePackages.Count - 1 do
+  begin
+    MetaPackage := SerializablePackages.Items[I];
+    for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
+    begin
+      LazPackage := TLazarusPackage(MetaPackage.LazarusPackages.Items[J]);
+      if UpperCase(LazPackage.Name) = UpperCase(AName) then
       begin
         FPackagesToInstall.Add(LazPackage);
         Break;
@@ -378,7 +414,7 @@ var
 begin
   FPackagesToInstall.Clear;
   for I := 0 to APkgLinks.Count - 1 do
-    AddToInstallList(TPackageLink(APkgLinks.Items[I]).Name + '.lpk', TPackageLink(APkgLinks.Items[I]).LPKUrl);
+    AddToInstallList(TPackageLink(APkgLinks.Items[I]).Name + '.lpk');
 
   Result := CanInstallPackages;
   if Result = mrCancel then
@@ -427,6 +463,75 @@ begin
   end;
   SerializablePackages.RemoveErrorState;
   SerializablePackages.RemoveCheck;
+end;
+
+function TOPMInterfaceEx.DownloadPackages(APkgLinks: TList): TModalResult;
+var
+  I: Integer;
+  Name: String;
+  PkgLink: TPackageLink;
+begin
+  Result := mrCancel;
+
+  FPackagesToDownload.Clear;
+  for I := 0 to APkgLinks.Count - 1 do
+    AddToDownloadList(TPackageLink(APkgLinks.Items[I]).Name + '.lpk');
+
+  Result := ResolveDependencies;
+  if Result = mrCancel then
+     Exit;
+  for I := 0 to FPackageDependecies.Count - 1 do
+    FPackagesToDownload.Insert(0, FPackageDependecies.Items[I]);
+
+  PackageAction := paInstall;
+  if SerializablePackages.DownloadCount > 0 then
+  begin
+    Result := Download(Options.LocalRepositoryArchive);
+    SerializablePackages.GetPackageStates;
+  end;
+
+  if Result = mrOk then
+  begin
+    if SerializablePackages.ExtractCount > 0 then
+    begin
+      Result := Extract(Options.LocalRepositoryArchive, Options.LocalRepositoryPackages);
+      SerializablePackages.GetPackageStates;
+    end;
+
+    if Result = mrOk then
+    begin
+      if Options.DeleteZipAfterInstall then
+        SerializablePackages.DeleteDownloadedZipFiles;
+      for I := 0 to FPackageDependecies.Count - 1 do
+      begin
+        Name := StringReplace(TLazarusPackage(FPackageDependecies.Items[I]).Name, '.lpk', '', [rfReplaceAll, rfIgnoreCase]);
+        PkgLink := FindOnlineLink(Name);
+        if PkgLink <> nil then
+        begin
+          PkgLinks.AddUserLink(TLazarusPackage(FPackageDependecies.Items[I]).PackageAbsolutePath, Name);
+          PkgLinks.SaveUserLinks(True);
+        end;
+      end;
+    end;
+  end;
+  SerializablePackages.RemoveErrorState;
+  SerializablePackages.RemoveCheck;
+end;
+
+function TOPMInterfaceEx.IsPackageAvailable(APkgLink: TPackageLink; AType: Integer): Boolean;
+var
+  LazPackage: TLazarusPackage;
+begin
+  Result := False;
+  LazPackage := SerializablePackages.FindLazarusPackage(APkgLink.Name + '.lpk');
+  if LazPackage <> nil then
+  begin
+    case AType of
+      0: Result := psDownloaded in LazPackage.PackageStates;
+      1: Result := psExtracted in LazPackage.PackageStates;
+      2: Result := psInstalled in LazPackage.PackageStates;
+    end;
+  end;
 end;
 
 end.
