@@ -1387,7 +1387,7 @@ begin
   // check compiler
   if (not ShowSetupDialog)
   and (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
-                       CodeToolBoss.FPCDefinesCache.TestFilename)=sddqInvalid)
+                       CodeToolBoss.CompilerDefinesCache.TestFilename)=sddqInvalid)
   then begin
     debugln(['Warning: (lazarus) invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename]);
     ShowSetupDialog:=true;
@@ -1396,7 +1396,7 @@ begin
   // check FPC source directory
   if (not ShowSetupDialog) then
   begin
-    CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+    CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
       EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
     if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
       CfgCache.GetFPCVer)=sddqInvalid
@@ -9146,7 +9146,7 @@ begin
   OpenEditorsOnCodeToolChange:=false;
 
   // load caches
-  MainBuildBoss.LoadFPCDefinesCaches;
+  MainBuildBoss.LoadCompilerDefinesCaches;
 
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
   CodeToolBoss.SourceCache.OnEncodeSaving:=@CodeBufferEncodeSaving;
@@ -9164,7 +9164,7 @@ begin
   CodeToolsOpts.AssignTo(CodeToolBoss);
 
   // create a test unit needed to get from the compiler all macros and search paths
-  CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
+  CodeToolBoss.CompilerDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
   MainBuildBoss.UpdateEnglishErrorMsgFilename;
 
   // set global macros

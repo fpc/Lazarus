@@ -213,11 +213,12 @@ type
     PPUCache: TPPUTools;
     GlobalValues: TExpressionEvaluator;
     DirectoryCachePool: TCTDirectoryCachePool;
-    FPCDefinesCache: TFPCDefinesCache;
+    CompilerDefinesCache: TCompilerDefinesCache;
     IdentifierList: TIdentifierList;
     IdentifierHistory: TIdentifierHistoryList;
     Positions: TCodeXYPositions;
     Indenter: TFullyAutomaticBeautifier;
+    property FPCDefinesCache: TCompilerDefinesCache read CompilerDefinesCache; deprecated 'use CompilerDefinesCache'; // 1.9
     property Beautifier: TBeautifyCodeOptions read GetBeautifier;
 
     constructor Create;
@@ -1021,7 +1022,7 @@ begin
   OnFileExistsCached:=@DirectoryCachePool.FileExists;
   OnFileAgeCached:=@DirectoryCachePool.FileAge;
   DefineTree.DirectoryCachePool:=DirectoryCachePool;
-  FPCDefinesCache:=TFPCDefinesCache.Create(nil);
+  CompilerDefinesCache:=TCompilerDefinesCache.Create(nil);
   PPUCache:=TPPUTools.Create;
   FAddInheritedCodeToOverrideMethod:=true;
   FAdjustTopLineDueToComment:=true;
@@ -1090,7 +1091,7 @@ begin
   if OnFileAgeCached=@DirectoryCachePool.FileAge then
     OnFileAgeCached:=nil;
   FreeAndNil(DirectoryCachePool);
-  FreeAndNil(FPCDefinesCache);
+  FreeAndNil(CompilerDefinesCache);
   for e:=low(FHandlers) to high(FHandlers) do
     FreeAndNil(FHandlers[e]);
   {$IFDEF CTDEBUG}
@@ -1131,13 +1132,13 @@ begin
     Variables[ExternalMacroStart+'ProjectDir']:=Config.ProjectDir;
   end;
 
-  FPCDefinesCache.ConfigCaches.Assign(Config.ConfigCaches);
-  FPCDefinesCache.SourceCaches.Assign(Config.SourceCaches);
-  FPCDefinesCache.TestFilename:=Config.TestPascalFile;
-  if FPCDefinesCache.TestFilename='' then
-    FPCDefinesCache.TestFilename:=GetTempFilename('fpctest.pas','');
+  CompilerDefinesCache.ConfigCaches.Assign(Config.ConfigCaches);
+  CompilerDefinesCache.SourceCaches.Assign(Config.SourceCaches);
+  CompilerDefinesCache.TestFilename:=Config.TestPascalFile;
+  if CompilerDefinesCache.TestFilename='' then
+    CompilerDefinesCache.TestFilename:=GetTempFilename('fpctest.pas','');
 
-  UnitSetCache:=FPCDefinesCache.FindUnitSet(Config.FPCPath,
+  UnitSetCache:=CompilerDefinesCache.FindUnitSet(Config.FPCPath,
     Config.TargetOS,Config.TargetProcessor,Config.FPCOptions,Config.FPCSrcDir,
     true);
   // parse compiler settings, fpc sources
@@ -1149,8 +1150,8 @@ begin
   //  debugln(['TCodeToolManager.Init TargetCPU=',CfgCache.TargetCPU,' RealTargetCPU=',CfgCache.RealTargetCPU]);
 
   // save
-  Config.ConfigCaches.Assign(FPCDefinesCache.ConfigCaches);
-  Config.SourceCaches.Assign(FPCDefinesCache.SourceCaches);
+  Config.ConfigCaches.Assign(CompilerDefinesCache.ConfigCaches);
+  Config.SourceCaches.Assign(CompilerDefinesCache.SourceCaches);
 
   // create template for FPC settings
   FPCDefines:=CreateFPCTemplate(UnitSetCache,nil);
@@ -1660,7 +1661,7 @@ begin
   ID:=GetUnitSetIDForDirectory(Directory,true);
   if ID='' then exit;
   Changed:=false;
-  Result:=FPCDefinesCache.FindUnitSetWithID(ID,Changed,false);
+  Result:=CompilerDefinesCache.FindUnitSetWithID(ID,Changed,false);
   if Changed then Result:=nil;
 end;
 
@@ -6323,7 +6324,7 @@ var
   UnitSetCache: TFPCUnitSetCache;
 begin
   Result:='';
-  UnitSetCache:=FPCDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
+  UnitSetCache:=CompilerDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
   if UnitSetCache=nil then begin
     debugln(['TCodeToolManager.DirectoryCachePoolGetUnitFromSet invalid UnitSet="',dbgstr(UnitSet),'"']);
     exit;
@@ -6342,7 +6343,7 @@ var
   UnitSetCache: TFPCUnitSetCache;
 begin
   Result:='';
-  UnitSetCache:=FPCDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
+  UnitSetCache:=CompilerDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
   if UnitSetCache=nil then begin
     debugln(['TCodeToolManager.DirectoryCachePoolGetCompiledUnitFromSet invalid UnitSet="',dbgstr(UnitSet),'"']);
     exit;
@@ -6363,7 +6364,7 @@ var
   Node: TAVLTreeNode;
   Item: PStringToStringItem;
 begin
-  UnitSetCache:=FPCDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
+  UnitSetCache:=CompilerDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
   if UnitSetCache=nil then begin
     debugln(['TCodeToolManager.DirectoryCachePoolIterateFPCUnitsFromSet invalid UnitSet="',dbgstr(UnitSet),'"']);
     exit;

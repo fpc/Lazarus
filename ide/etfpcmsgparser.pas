@@ -1010,7 +1010,7 @@ begin
     // => use fpcsrcdir/compiler/msg/errore.msg
     // the fpcsrcdir might depend on the FPC version
     if IsFPCExecutable(CompilerFilename,ErrMsg) then
-      FPCVer:=CodeToolBoss.FPCDefinesCache.GetFPCVersion(CompilerFilename,TargetOS,TargetCPU,false)
+      FPCVer:=CodeToolBoss.CompilerDefinesCache.GetFPCVersion(CompilerFilename,TargetOS,TargetCPU,false)
     else
       FPCVer:='';
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer);

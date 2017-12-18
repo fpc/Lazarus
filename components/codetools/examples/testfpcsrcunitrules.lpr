@@ -120,7 +120,7 @@ begin
 
   CodeToolBoss.Init(Options);
 
-  UnitSet:=CodeToolBoss.FPCDefinesCache.FindUnitSet(CompilerFilename,
+  UnitSet:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(CompilerFilename,
                                           TargetOS,TargetCPU,'',FPCSrcDir,true);
   UnitSet.Init;
 

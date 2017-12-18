@@ -1377,7 +1377,7 @@ var
     UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory(LazDir);
     if UnitSetID='' then exit;
     UnitSetChanged:=false;
-    UnitSet:=CodeToolBoss.FPCDefinesCache.FindUnitSetWithID(UnitSetID,
+    UnitSet:=CodeToolBoss.CompilerDefinesCache.FindUnitSetWithID(UnitSetID,
                                                           UnitSetChanged,false);
     if UnitSet=nil then exit;
     ConfigCache:=UnitSet.GetConfigCache(false);

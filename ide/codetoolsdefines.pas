@@ -608,7 +608,7 @@ begin
     TargetOS:='';
     TargetProcessor:='';
 
-    UnitSetCache:=Boss.FPCDefinesCache.FindUnitSet(CompilerPath,
+    UnitSetCache:=Boss.CompilerDefinesCache.FindUnitSet(CompilerPath,
                                     TargetOS,TargetProcessor,'',FPCSrcDir,true);
 
     // create directory defines
@@ -717,7 +717,7 @@ begin
     if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
     DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
 
-    UnitSetCache:=Boss.FPCDefinesCache.FindUnitSet(CompilerPath,
+    UnitSetCache:=Boss.CompilerDefinesCache.FindUnitSet(CompilerPath,
                                     TargetOS,TargetProcessor,'',FPCSrcDir,true);
     // create FPC Source defines
     FPCSrcTemplate:=CreateFPCSourceTemplate(UnitSetCache,CodeToolsOpts);

@@ -209,8 +209,8 @@ type
     procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches,
                                     WaitTillDone, Quiet: boolean); override;
     function CompilerOnDiskChanged: boolean; override;
-    procedure LoadFPCDefinesCaches;
-    procedure SaveFPCDefinesCaches;
+    procedure LoadCompilerDefinesCaches;
+    procedure SaveCompilerDefinesCaches;
     property UnitSetCache: TFPCUnitSetCache read FUnitSetCache write SetUnitSetCache;
 
     function DoCheckIfProjectNeedsCompilation(AProject: TProject;
@@ -766,7 +766,7 @@ begin
     CodeToolBoss.DefinePool.EnglishErrorMsgFilename:=
       AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+
         GetForcedPathDelims('components/codetools/fpc.errore.msg');
-    CodeToolBoss.FPCDefinesCache.ExtraOptions:=
+    CodeToolBoss.CompilerDefinesCache.ExtraOptions:=
                           '-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename;
   end;
 end;
@@ -850,8 +850,8 @@ begin
     {$IFDEF VerboseFPCSrcScan}
     debugln(['TBuildManager.RescanCompilerDefines clear caches']);
     {$ENDIF}
-    CodeToolBoss.FPCDefinesCache.ConfigCaches.Clear;
-    CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
+    CodeToolBoss.CompilerDefinesCache.ConfigCaches.Clear;
+    CodeToolBoss.CompilerDefinesCache.SourceCaches.Clear;
   end;
   if ResetBuildTarget then
     SetBuildTarget('','','',smsfsSkip,true);
@@ -887,7 +887,7 @@ begin
     {$IFDEF VerboseFPCSrcScan}
     debugln(['TBuildManager.RescanCompilerDefines reading default compiler settings']);
     {$ENDIF}
-    UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
+    UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
       EnvironmentOptions.GetParsedCompilerFilename,'','','',FPCSrcDir,true);
     UnitSetCache.GetConfigCache(true);
   end;
@@ -924,7 +924,7 @@ begin
   {$IFDEF VerboseFPCSrcScan}
   debugln(['TBuildManager.RescanCompilerDefines reading active compiler settings']);
   {$ENDIF}
-  UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
+  UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
     CompilerFilename,TargetOS,TargetCPU,FPCOptions,FPCSrcDir,true);
 
   NeedUpdateFPCSrcCache:=false;
@@ -972,7 +972,7 @@ begin
     debugln(['TBuildManager.RescanCompilerDefines UnitSet changed => save scan results']);
     {$ENDIF}
     // save caches
-    SaveFPCDefinesCaches;
+    SaveCompilerDefinesCaches;
     FUnitSetChangeStamp:=UnitSetCache.ChangeStamp;
   end;
 
@@ -1069,7 +1069,7 @@ begin
   Result:=CfgCache.NeedsUpdate;
 end;
 
-procedure TBuildManager.LoadFPCDefinesCaches;
+procedure TBuildManager.LoadCompilerDefinesCaches;
 var
   aFilename: String;
   XMLConfig: TXMLConfig;
@@ -1080,40 +1080,40 @@ begin
   try
     XMLConfig:=TXMLConfig.Create(aFilename);
     try
-      CodeToolBoss.FPCDefinesCache.LoadFromXMLConfig(XMLConfig,'');
+      CodeToolBoss.CompilerDefinesCache.LoadFromXMLConfig(XMLConfig,'');
     finally
       XMLConfig.Free;
     end;
   except
     on E: Exception do begin
       if ConsoleVerbosity>=0 then
-        debugln(['Error: (lazarus) [LoadFPCDefinesCaches] Error reading file '+aFilename+':'+E.Message]);
+        debugln(['Error: (lazarus) [LoadCompilerDefinesCaches] Error reading file '+aFilename+':'+E.Message]);
     end;
   end;
 end;
 
-procedure TBuildManager.SaveFPCDefinesCaches;
+procedure TBuildManager.SaveCompilerDefinesCaches;
 var
   aFilename: String;
   XMLConfig: TXMLConfig;
 begin
   aFilename:=AppendPathDelim(GetPrimaryConfigPath)+'fpcdefines.xml';
-  //debugln(['TBuildManager.SaveFPCDefinesCaches check if save needed ...']);
+  //debugln(['TBuildManager.SaveCompilerDefinesCaches check if save needed ...']);
   if FileExistsCached(aFilename)
-  and (not CodeToolBoss.FPCDefinesCache.NeedsSave) then
+  and (not CodeToolBoss.CompilerDefinesCache.NeedsSave) then
     exit;
-  //debugln(['TBuildManager.SaveFPCDefinesCaches saving ...']);
+  //debugln(['TBuildManager.SaveCompilerDefinesCaches saving ...']);
   try
     XMLConfig:=TXMLConfig.CreateClean(aFilename);
     try
-      CodeToolBoss.FPCDefinesCache.SaveToXMLConfig(XMLConfig,'');
+      CodeToolBoss.CompilerDefinesCache.SaveToXMLConfig(XMLConfig,'');
     finally
       XMLConfig.Free;
     end;
   except
     on E: Exception do begin
       if ConsoleVerbosity>=0 then
-        debugln(['Error: (lazarus) [SaveFPCDefinesCaches] Error writing file '+aFilename+':'+E.Message]);
+        debugln(['Error: (lazarus) [SaveCompilerDefinesCaches] Error writing file '+aFilename+':'+E.Message]);
     end;
   end;
 end;
@@ -2117,13 +2117,13 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
       if not IsFPCExecutable(CompilerFilename,s) then exit;
       TargetOS:=GetTargetOS;
       TargetCPU:=GetTargetCPU;
-      ConfigCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+      ConfigCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
                                    CompilerFilename,'',TargetOS,TargetCPU,true);
       if ConfigCache=nil then exit;
       if ConfigCache.NeedsUpdate then begin
         // ask compiler
-        if not ConfigCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename,
-                                  CodeToolBoss.FPCDefinesCache.ExtraOptions,nil)
+        if not ConfigCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename,
+                                  CodeToolBoss.CompilerDefinesCache.ExtraOptions,nil)
         then
           exit;
       end;
@@ -2758,7 +2758,7 @@ begin
     else if fTargetOS<>'' then
       CompQueryOptions:='-T'+GetFPCTargetOS(fTargetOS);
     // Note: resolving the comiler filename requires macros
-    CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
+    CodeToolBoss.CompilerDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
       GetFPCompilerFilename,CompQueryOptions,CompilerTargetOS,CompilerTargetCPU);
     if fTargetOS='' then
       fTargetOS:=CompilerTargetOS;

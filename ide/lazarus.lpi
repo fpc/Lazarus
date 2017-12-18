@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
@@ -39,10 +39,18 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
         <CommandLineParams Value="--no-splash-screen"/>
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <CommandLineParams Value="--no-splash-screen"/>
+            <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="7">
       <Item1>
@@ -323,6 +331,7 @@
         <ComponentName Value="CodeBrowserView"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CodeBrowser"/>
       </Unit41>
       <Unit42>
         <Filename Value="project.pp"/>
@@ -460,6 +469,7 @@
       <Unit63>
         <Filename Value="fpcsrcscan.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="FPCSrcScan"/>
       </Unit63>
       <Unit64>
         <Filename Value="idefpcinfo.pas"/>
@@ -467,6 +477,7 @@
         <ComponentName Value="IDEFPCInfoDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEFPCInfo"/>
       </Unit64>
       <Unit65>
         <Filename Value="buildmodediffdlg.pas"/>
@@ -486,12 +497,14 @@
         <ComponentName Value="IDEInfoDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEInfoDlg"/>
       </Unit67>
       <Unit68>
         <Filename Value="inspectchksumchangeddlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="InspectChksumChgDialog"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="InspectChksumChangedDlg"/>
       </Unit68>
       <Unit69>
         <Filename Value="../packager/missingpkgfilesdlg.pas"/>
@@ -736,6 +749,7 @@
         <Filename Value="initialsetupdlgs.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="InitialSetupDlgs"/>
       </Unit110>
       <Unit111>
         <Filename Value="splash.pp"/>
@@ -831,6 +845,7 @@
         <Filename Value="buildlazdialog.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="BuildLazDialog"/>
       </Unit129>
       <Unit130>
         <Filename Value="componentpalette.pas"/>
@@ -1130,6 +1145,7 @@
         <Filename Value="codetoolsdefines.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="CodeToolsDefines"/>
       </Unit191>
       <Unit192>
         <Filename Value="frmcustomapplicationoptions.pas"/>
@@ -1339,6 +1355,7 @@
       <Unit235>
         <Filename Value="initialsetupproc.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="InitialSetupProc"/>
       </Unit235>
       <Unit236>
         <Filename Value="qfinitlocalvardlg.pas"/>

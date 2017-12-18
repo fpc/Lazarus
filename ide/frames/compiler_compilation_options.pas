@@ -139,7 +139,7 @@ begin
         if IsPas2JSExecutable(NewFilename,s) then begin
           // check pas2js
           Quality:=CheckPas2jsQuality(NewFilename,Note,
-                                     CodeToolBoss.FPCDefinesCache.TestFilename);
+                                     CodeToolBoss.CompilerDefinesCache.TestFilename);
           if not ShowQuality(Quality,NewFilename,Note) then exit;
           ok:=true;
         end;
@@ -147,7 +147,7 @@ begin
         if IsFPCExecutable(NewFilename,s) then begin
           // check fpc
           Quality:=CheckCompilerQuality(NewFilename,Note,
-                                     CodeToolBoss.FPCDefinesCache.TestFilename);
+                                     CodeToolBoss.CompilerDefinesCache.TestFilename);
           if not ShowQuality(Quality,NewFilename,Note) then exit;
           ok:=true;
         end;

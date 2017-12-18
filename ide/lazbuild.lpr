@@ -1220,14 +1220,14 @@ end;
 procedure TLazBuildApplication.SetupCodetools;
 begin
   // create a test unit needed to get from the compiler all macros and search paths
-  CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
+  CodeToolBoss.CompilerDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
   CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
   CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
   CodeToolBoss.SourceCache.DefaultEncoding:=EncodingUTF8;
 
-  MainBuildBoss.LoadFPCDefinesCaches;
+  MainBuildBoss.LoadCompilerDefinesCaches;
   // create a test unit needed to get from the compiler all macros and search paths
-  CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
+  CodeToolBoss.CompilerDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
 end;
 
 procedure TLazBuildApplication.SetupPackageSystem;

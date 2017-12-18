@@ -891,11 +891,11 @@ begin
 
     TargetOS:=Options.TargetOS;
     TargetCPU:=Options.TargetCPU;
-    CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(CompilerFilename,
+    CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(CompilerFilename,
                                                     '',TargetOS,TargetCPU,true);
     if CfgCache.NeedsUpdate then
-      CfgCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename,
-                      CodeToolBoss.FPCDefinesCache.ExtraOptions);
+      CfgCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename,
+                      CodeToolBoss.CompilerDefinesCache.ExtraOptions);
 
     // check compiler config
     Result:=CheckCompilerConfig(CfgCache);

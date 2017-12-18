@@ -296,7 +296,7 @@ begin
   // search in fpc unit paths
   UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory('');
   if UnitSetID='' then exit;
-  UnitSet:=CodeToolBoss.FPCDefinesCache.FindUnitSetWithID(UnitSetID,HasChanged,false);
+  UnitSet:=CodeToolBoss.CompilerDefinesCache.FindUnitSetWithID(UnitSetID,HasChanged,false);
   if UnitSet=nil then exit;
   CfgCache:=UnitSet.GetConfigCache(false);
   if CfgCache=nil then exit;

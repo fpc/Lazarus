@@ -293,7 +293,7 @@ begin
   sl.Add('Default CompilerFilename='+EnvironmentOptions.CompilerFilename);
   sl.Add('Real Default CompilerFilename='+EnvironmentOptions.GetParsedCompilerFilename);
   if CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
-                       CodeToolBoss.FPCDefinesCache.TestFilename)<>sddqCompatible
+                       CodeToolBoss.CompilerDefinesCache.TestFilename)<>sddqCompatible
   then
     sl.Add('WARNING: '+Note);
 
@@ -301,7 +301,7 @@ begin
     sl.Add('Project CompilerFilename='+Project1.CompilerOptions.CompilerPath);
     sl.Add('Real Project CompilerFilename='+LazarusIDE.GetFPCompilerFilename);
     if CheckCompilerQuality(LazarusIDE.GetFPCompilerFilename,Note,
-                         CodeToolBoss.FPCDefinesCache.TestFilename)<>sddqCompatible
+                         CodeToolBoss.CompilerDefinesCache.TestFilename)<>sddqCompatible
     then
       sl.Add('WARNING: '+Note);
   end;
@@ -311,7 +311,7 @@ begin
 
   sl.Add('FPC source directory='+EnvironmentOptions.FPCSourceDirectory);
   sl.Add('Real FPC source directory='+EnvironmentOptions.GetParsedFPCSourceDirectory);
-  CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+  CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
     LazarusIDE.GetFPCompilerFilename,'','','',true);
   if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
     CfgCache.GetFPCVer)<>sddqCompatible

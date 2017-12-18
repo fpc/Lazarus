@@ -123,7 +123,7 @@ begin
     TargetCPU:=BuildBoss.GetTargetCPU;
     CompilerFilename:=LazarusIDE.GetFPCompilerFilename;
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
-    UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
+    UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
       CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
     GatherFPCExecutable(UnitSetCache,sl);
 
@@ -167,10 +167,10 @@ begin
     begin
       sl.Add('ERROR: design time event (lihtGetFPCFrontEndParams) failed to extend fpc front end parameters: "'+CompilerOptions+'"');
     end;
-    Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+    Cfg:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
                         CompilerFilename,CompilerOptions,'','',true);
     // fpc -i
-    ExtraOptions:=Cfg.GetFPCInfoCmdLineOptions(CodeToolBoss.FPCDefinesCache.ExtraOptions);
+    ExtraOptions:=Cfg.GetFPCInfoCmdLineOptions(CodeToolBoss.CompilerDefinesCache.ExtraOptions);
     Params:=Trim('-iTOTP '+ExtraOptions);
     WorkDir:=GetCurrentDirUTF8;
     sl.Add(CompilerFilename+' '+Params);
@@ -188,13 +188,13 @@ begin
     // fpc -va
     TargetOS:=BuildBoss.GetTargetOS;
     TargetCPU:=BuildBoss.GetTargetCPU;
-    Cfg:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+    Cfg:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
                         CompilerFilename,CompilerOptions,TargetOS,TargetCPU,true);
-    TestFilename:=CodeToolBoss.FPCDefinesCache.TestFilename;
+    TestFilename:=CodeToolBoss.CompilerDefinesCache.TestFilename;
     Filename:=ExtractFileName(TestFilename);
     WorkDir:=ExtractFilePath(TestFilename);
     sl.Add('The IDE asks the compiler with the following command for paths and macros:');
-    ExtraOptions:=Cfg.GetFPCInfoCmdLineOptions(CodeToolBoss.FPCDefinesCache.ExtraOptions);
+    ExtraOptions:=Cfg.GetFPCInfoCmdLineOptions(CodeToolBoss.CompilerDefinesCache.ExtraOptions);
     Params:=Trim('-va '+ExtraOptions)+' '+Filename;
     sl.Add(CompilerFilename+' '+Params);
     sl.Add('Working directory: '+WorkDir);

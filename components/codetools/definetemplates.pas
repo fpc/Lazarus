@@ -900,7 +900,7 @@ type
                   CreateIfNotExists: boolean): TFPCSourceCache;
   end;
 
-  TFPCDefinesCache = class;
+  TCompilerDefinesCache = class;
 
   TFPCUnitToSrcCacheFlag = (
     fuscfSrcRulesNeedUpdate,
@@ -914,7 +914,7 @@ type
 
   TFPCUnitSetCache = class(TComponent)
   private
-    FCaches: TFPCDefinesCache;
+    FCaches: TCompilerDefinesCache;
     FChangeStamp: integer;
     FCompilerFilename: string;
     FCompilerOptions: string;
@@ -946,7 +946,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Init;
-    property Caches: TFPCDefinesCache read FCaches;
+    property Caches: TCompilerDefinesCache read FCaches;
     property CompilerFilename: string read FCompilerFilename write SetCompilerFilename;
     property CompilerOptions: string read FCompilerOptions write SetCompilerOptions;
     property TargetOS: string read FTargetOS write SetTargetOS; // case insensitive, will be passed lowercase
@@ -968,9 +968,9 @@ type
     function GetFirstFPCCfg: string;
   end;
 
-  { TFPCDefinesCache }
+  { TCompilerDefinesCache }
 
-  TFPCDefinesCache = class(TComponent)
+  TCompilerDefinesCache = class(TComponent)
   private
     FConfigCaches: TFPCTargetConfigCaches;
     FConfigCachesSaveStamp: integer;
@@ -1010,6 +1010,8 @@ type
                              TargetOS, TargetCPU, Options, FPCSrcDir: string;
                              out ChangeStamp: integer);
   end;
+
+  TFPCDefinesCache = TCompilerDefinesCache deprecated 'use TCompilerDefinesCache'; // 1.9
 
 function DefineActionNameToAction(const s: string): TDefineAction;
 function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
@@ -9726,38 +9728,38 @@ begin
   end;
 end;
 
-{ TFPCDefinesCache }
+{ TCompilerDefinesCache }
 
-procedure TFPCDefinesCache.SetConfigCaches(const AValue: TFPCTargetConfigCaches);
+procedure TCompilerDefinesCache.SetConfigCaches(const AValue: TFPCTargetConfigCaches);
 begin
   if FConfigCaches=AValue then exit;
   FConfigCaches:=AValue;
   FConfigCachesSaveStamp:=Low(FConfigCachesSaveStamp);
 end;
 
-function TFPCDefinesCache.GetExtraOptions: string;
+function TCompilerDefinesCache.GetExtraOptions: string;
 begin
   Result:=ConfigCaches.ExtraOptions;
 end;
 
-function TFPCDefinesCache.GetTestFilename: string;
+function TCompilerDefinesCache.GetTestFilename: string;
 begin
   Result:=ConfigCaches.TestFilename;
 end;
 
-procedure TFPCDefinesCache.SetExtraOptions(AValue: string);
+procedure TCompilerDefinesCache.SetExtraOptions(AValue: string);
 begin
   ConfigCaches.ExtraOptions:=AValue;
 end;
 
-procedure TFPCDefinesCache.SetSourceCaches(const AValue: TFPCSourceCaches);
+procedure TCompilerDefinesCache.SetSourceCaches(const AValue: TFPCSourceCaches);
 begin
   if FSourceCaches=AValue then exit;
   FSourceCaches:=AValue;
   FSourceCachesSaveStamp:=low(FSourceCachesSaveStamp);
 end;
 
-procedure TFPCDefinesCache.ClearUnitToSrcCaches;
+procedure TCompilerDefinesCache.ClearUnitToSrcCaches;
 var
   i: Integer;
 begin
@@ -9766,12 +9768,12 @@ begin
   fUnitToSrcCaches.Clear;
 end;
 
-procedure TFPCDefinesCache.SetTestFilename(AValue: string);
+procedure TCompilerDefinesCache.SetTestFilename(AValue: string);
 begin
   ConfigCaches.TestFilename:=AValue;
 end;
 
-constructor TFPCDefinesCache.Create(AOwner: TComponent);
+constructor TCompilerDefinesCache.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ConfigCaches:=TFPCTargetConfigCaches.Create(nil);
@@ -9779,7 +9781,7 @@ begin
   fUnitToSrcCaches:=TFPList.Create;
 end;
 
-destructor TFPCDefinesCache.Destroy;
+destructor TCompilerDefinesCache.Destroy;
 begin
   ClearUnitToSrcCaches;
   FreeAndNil(FConfigCaches);
@@ -9788,14 +9790,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TFPCDefinesCache.Clear;
+procedure TCompilerDefinesCache.Clear;
 begin
   ClearUnitToSrcCaches;
   if ConfigCaches<>nil then ConfigCaches.Clear;
   if SourceCaches<>nil then SourceCaches.Clear;
 end;
 
-procedure TFPCDefinesCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TCompilerDefinesCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   if ConfigCaches<>nil then begin
@@ -9808,10 +9810,10 @@ begin
   end;
 end;
 
-procedure TFPCDefinesCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TCompilerDefinesCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
-  //debugln(['TFPCDefinesCache.SaveToXMLConfig ']);
+  //debugln(['TCompilerDefinesCache.SaveToXMLConfig ']);
   if ConfigCaches<>nil then begin
     ConfigCaches.SaveToXMLConfig(XMLConfig,Path+'FPCConfigs/');
     FConfigCachesSaveStamp:=ConfigCaches.ChangeStamp;
@@ -9822,7 +9824,7 @@ begin
   end;
 end;
 
-procedure TFPCDefinesCache.LoadFromFile(Filename: string);
+procedure TCompilerDefinesCache.LoadFromFile(Filename: string);
 var
   XMLConfig: TXMLConfig;
 begin
@@ -9834,7 +9836,7 @@ begin
   end;
 end;
 
-procedure TFPCDefinesCache.SaveToFile(Filename: string);
+procedure TCompilerDefinesCache.SaveToFile(Filename: string);
 var
   XMLConfig: TXMLConfig;
 begin
@@ -9846,7 +9848,7 @@ begin
   end;
 end;
 
-function TFPCDefinesCache.NeedsSave: boolean;
+function TCompilerDefinesCache.NeedsSave: boolean;
 begin
   Result:=true;
   if (ConfigCaches<>nil) and (ConfigCaches.ChangeStamp<>FConfigCachesSaveStamp)
@@ -9856,7 +9858,7 @@ begin
   Result:=false;
 end;
 
-function TFPCDefinesCache.GetFPCVersion(const CompilerFilename, TargetOS,
+function TCompilerDefinesCache.GetFPCVersion(const CompilerFilename, TargetOS,
   TargetCPU: string; UseCompiledVersionAsDefault: boolean): string;
 var
   CfgCache: TFPCTargetConfigCache;
@@ -9876,7 +9878,7 @@ begin
   Result:=CfgCache.FullVersion;
 end;
 
-function TFPCDefinesCache.FindUnitSet(const CompilerFilename, TargetOS,
+function TCompilerDefinesCache.FindUnitSet(const CompilerFilename, TargetOS,
   TargetCPU, Options, FPCSrcDir: string; CreateIfNotExists: boolean
   ): TFPCUnitSetCache;
 var
@@ -9904,7 +9906,7 @@ begin
     Result:=nil;
 end;
 
-function TFPCDefinesCache.FindUnitSetWithID(const UnitSetID: string; out
+function TCompilerDefinesCache.FindUnitSetWithID(const UnitSetID: string; out
   Changed: boolean; CreateIfNotExists: boolean): TFPCUnitSetCache;
 var
   CompilerFilename, TargetOS, TargetCPU, Options, FPCSrcDir: string;
@@ -9912,7 +9914,7 @@ var
 begin
   ParseUnitSetID(UnitSetID,CompilerFilename, TargetOS, TargetCPU,
                  Options, FPCSrcDir, ChangeStamp);
-  //debugln(['TFPCDefinesCache.FindUnitToSrcCache UnitSetID="',dbgstr(UnitSetID),'" CompilerFilename="',CompilerFilename,'" TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',Options,'" FPCSrcDir="',FPCSrcDir,'" ChangeStamp=',ChangeStamp,' exists=',FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,Options, FPCSrcDir,false)<>nil]);
+  //debugln(['TCompilerDefinesCache.FindUnitToSrcCache UnitSetID="',dbgstr(UnitSetID),'" CompilerFilename="',CompilerFilename,'" TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',Options,'" FPCSrcDir="',FPCSrcDir,'" ChangeStamp=',ChangeStamp,' exists=',FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,Options, FPCSrcDir,false)<>nil]);
   Result:=FindUnitSet(CompilerFilename, TargetOS, TargetCPU,
                              Options, FPCSrcDir, false);
   if Result<>nil then begin
@@ -9925,7 +9927,7 @@ begin
     Changed:=false;
 end;
 
-function TFPCDefinesCache.GetUnitSetID(CompilerFilename, TargetOS, TargetCPU,
+function TCompilerDefinesCache.GetUnitSetID(CompilerFilename, TargetOS, TargetCPU,
   Options, FPCSrcDir: string; ChangeStamp: integer): string;
 begin
   Result:='CompilerFilename='+CompilerFilename+LineEnding
@@ -9936,7 +9938,7 @@ begin
          +'Stamp='+IntToStr(ChangeStamp);
 end;
 
-procedure TFPCDefinesCache.ParseUnitSetID(const ID: string;
+procedure TCompilerDefinesCache.ParseUnitSetID(const ID: string;
   out CompilerFilename, TargetOS, TargetCPU, Options, FPCSrcDir: string;
   out ChangeStamp: integer);
 var
@@ -9977,7 +9979,7 @@ begin
     ValueEndPos:=ValueStartPos;
     while not (ValueEndPos^ in [#10,#13,#0]) do inc(ValueEndPos);
     Value:=copy(ID,ValueStartPos-PChar(ID)+1,ValueEndPos-ValueStartPos);
-    //debugln(['TFPCDefinesCache.ParseUnitSetID Name=',copy(ID,NameStartPos-PChar(ID)+1,ValueStartPos-NameStartPos-1),' Value="',Value,'"']);
+    //debugln(['TCompilerDefinesCache.ParseUnitSetID Name=',copy(ID,NameStartPos-PChar(ID)+1,ValueStartPos-NameStartPos-1),' Value="',Value,'"']);
     case NameStartPos^ of
     'c','C':
       if NameFits('CompilerFilename') then
@@ -10072,7 +10074,7 @@ constructor TFPCUnitSetCache.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   CTIncreaseChangeStamp(FChangeStamp); // set ot not 0
-  FCaches:=TheOwner as TFPCDefinesCache;
+  FCaches:=TheOwner as TCompilerDefinesCache;
   fUnitToSourceTree:=TStringToStringTree.Create(false);
   fSrcDuplicates:=TStringToStringTree.Create(false);
   fSourceRules:=TFPCSourceRules.Create;

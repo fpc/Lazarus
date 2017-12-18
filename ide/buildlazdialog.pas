@@ -626,7 +626,7 @@ begin
 
   fTargetFilename:='';
   fUnitOutDir:='';
-  CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
+  CodeToolBoss.CompilerDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
     EnvironmentOptions.GetParsedCompilerFilename,'',fCompilerTargetOS,fCompilerTargetCPU);
   if fCompilerTargetOS='' then
     fCompilerTargetOS:=GetCompiledTargetOS;

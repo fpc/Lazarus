@@ -84,7 +84,7 @@ begin
   // copy Files to codetools cache
   if CodeToolBoss<>nil then
   begin
-    SrcCache:=CodeToolBoss.FPCDefinesCache.SourceCaches.Find(FPCSrcDir,true);
+    SrcCache:=CodeToolBoss.CompilerDefinesCache.SourceCaches.Find(FPCSrcDir,true);
     debugln(['ApplyFPCSrcFiles SrcCache.Update ...']);
     SrcCache.Update(Files);
 

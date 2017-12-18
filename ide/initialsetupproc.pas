@@ -361,7 +361,7 @@ begin
 
   if TestSrcFilename<>'' then
   begin
-    CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+    CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
                                                        AFilename,'','','',true);
     if CfgCache.NeedsUpdate then
       CfgCache.Update(TestSrcFilename);
@@ -549,7 +549,7 @@ begin
   end else begin
     debugln(' Searching compiler ...');
   end;
-  List:=SearchCompilerCandidates(true, CodeToolBoss.FPCDefinesCache.TestFilename);
+  List:=SearchCompilerCandidates(true, CodeToolBoss.CompilerDefinesCache.TestFilename);
   try
     if (List=nil) or (List.BestDir.Quality=sddqInvalid) then begin
       debugln(['SetupCompilerFilename: no proper compiler found.']);
@@ -621,7 +621,7 @@ begin
 
   if TestSrcFilename<>'' then
   begin
-    CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+    CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
                                                        AFilename,'','','',true);
     if CfgCache.NeedsUpdate then
       CfgCache.Update(TestSrcFilename);

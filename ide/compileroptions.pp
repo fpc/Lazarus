@@ -2888,7 +2888,7 @@ begin
     FPCompilerFilename:=CompilerFilename
   else
     FPCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
-  CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
+  CodeToolBoss.CompilerDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
     FPCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
 
   { ------------------ Target --------------------- }

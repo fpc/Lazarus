@@ -455,7 +455,7 @@ var
   begin
     UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory(BaseDir{%H-});
     if UnitSetID='' then exit;
-    Cache:=CodeToolBoss.FPCDefinesCache.FindUnitSetWithID(UnitSetID,HasChanged,false);
+    Cache:=CodeToolBoss.CompilerDefinesCache.FindUnitSetWithID(UnitSetID,HasChanged,false);
     if Cache=nil then exit;
     CfgCache:=Cache.GetConfigCache(false);
     if CfgCache=nil then exit;

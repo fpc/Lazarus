@@ -465,7 +465,7 @@ var
 begin
   if EnvironmentOptions.FPCSourceDirectory=FOldFPCSourceDir then exit(true);
   Result:=false;
-  CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+  CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
     EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
   FPCVer:=CfgCache.GetFPCVer;
   EnvironmentOptions.FPCSourceDirectory:=FPCSourceDirComboBox.Text;
@@ -494,7 +494,7 @@ begin
   EnvironmentOptions.CompilerFilename:=CompilerPathComboBox.Text;
   NewCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
   Quality:=CheckCompilerQuality(NewCompilerFilename,Note,
-                                CodeToolBoss.FPCDefinesCache.TestFilename);
+                                CodeToolBoss.CompilerDefinesCache.TestFilename);
   if Quality<>sddqCompatible then
   begin
     if IDEMessageDialog(lisCCOWarningCaption,
