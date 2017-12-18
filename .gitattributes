@@ -3722,9 +3722,12 @@ components/opengl/glqtcontext.pas svneol=native#text/plain
 components/opengl/glwin32wglcontext.pas svneol=native#text/plain
 components/opengl/lazopenglcontext.lpk svneol=native#text/plain
 components/opengl/lazopenglcontext.pas svneol=native#text/plain
+components/opengl/makeicon.bat svneol=native#text/plain
 components/opengl/openglcontext.pas svneol=native#text/plain
 components/opengl/openglcontext.res -text
-components/opengl/topenglcontrol.xpm svneol=native#text/plain
+components/opengl/topenglcontrol.png -text svneol=unset#image/png
+components/opengl/topenglcontrol_150.png -text svneol=unset#image/png
+components/opengl/topenglcontrol_200.png -text svneol=unset#image/png
 components/packagetabs/README.txt svneol=native#text/plain
 components/packagetabs/languages/packagetabsstr.de.po svneol=native#text/plain
 components/packagetabs/languages/packagetabsstr.fr.po svneol=native#text/plain
