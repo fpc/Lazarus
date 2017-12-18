@@ -4702,10 +4702,15 @@ components/tachart/Makefile svneol=native#text/plain
 components/tachart/Makefile.compiled svneol=native#text/plain
 components/tachart/Makefile.fpc svneol=native#text/plain
 components/tachart/README.txt svneol=native#text/plain
+components/tachart/aggpas/makeicons.bat svneol=native#text/plain
+components/tachart/aggpas/taaggpas.res -text
 components/tachart/aggpas/tachartaggpas.lpk svneol=native#text/pascal
 components/tachart/aggpas/tachartaggpas.pas svneol=native#text/pascal
 components/tachart/aggpas/tadraweraggpas.pas svneol=native#text/pascal
 components/tachart/aggpas/taguiconnectoraggpas.pas svneol=native#text/pascal
+components/tachart/aggpas/tchartguiconnectoraggpas.png -text
+components/tachart/aggpas/tchartguiconnectoraggpas_150.png -text
+components/tachart/aggpas/tchartguiconnectoraggpas_200.png -text
 components/tachart/demo/3d/main.lfm svneol=native#text/plain
 components/tachart/demo/3d/main.pas svneol=native#text/plain
 components/tachart/demo/3d/zdemo.lpi svneol=native#text/plain
@@ -4928,24 +4933,62 @@ components/tachart/fpvectorial/tachartfpvectorial.pas svneol=native#text/pascal
 components/tachart/fpvectorial/tadrawerfpvectorial.pas svneol=native#text/pascal
 components/tachart/icons/makeicons.bat svneol=native#text/plain
 components/tachart/icons/tcalculatedchartsource.png -text svneol=unset#images/png
+components/tachart/icons/tcalculatedchartsource_150.png -text
+components/tachart/icons/tcalculatedchartsource_200.png -text
 components/tachart/icons/tchart.png -text svneol=unset#images/png
+components/tachart/icons/tchart_150.png -text
+components/tachart/icons/tchart_200.png -text
 components/tachart/icons/tchartaxistransformations.png -text svneol=unset#images/png
+components/tachart/icons/tchartaxistransformations_150.png -text
+components/tachart/icons/tchartaxistransformations_200.png -text
 components/tachart/icons/tchartcombobox.png -text
+components/tachart/icons/tchartcombobox_150.png -text
+components/tachart/icons/tchartcombobox_200.png -text
 components/tachart/icons/tchartextentlink.png -text svneol=unset#images/png
+components/tachart/icons/tchartextentlink_150.png -text
+components/tachart/icons/tchartextentlink_200.png -text
 components/tachart/icons/tchartguiconnectorbgra.png -text svneol=unset#images/png
+components/tachart/icons/tchartguiconnectorbgra_150.png -text
+components/tachart/icons/tchartguiconnectorbgra_200.png -text
 components/tachart/icons/tchartimagelist.png -text svneol=unset#images/png
+components/tachart/icons/tchartimagelist_150.png -text
+components/tachart/icons/tchartimagelist_200.png -text
 components/tachart/icons/tchartlegendpanel.png -text
+components/tachart/icons/tchartlegendpanel_150.png -text
+components/tachart/icons/tchartlegendpanel_200.png -text
 components/tachart/icons/tchartlistbox.png -text svneol=unset#images/png
+components/tachart/icons/tchartlistbox_150.png -text
+components/tachart/icons/tchartlistbox_200.png -text
 components/tachart/icons/tchartnavpanel.png -text svneol=unset#images/png
+components/tachart/icons/tchartnavpanel_150.png -text
+components/tachart/icons/tchartnavpanel_200.png -text
 components/tachart/icons/tchartnavscrollbar.png -text svneol=unset#images/png
+components/tachart/icons/tchartnavscrollbar_150.png -text
+components/tachart/icons/tchartnavscrollbar_200.png -text
 components/tachart/icons/tchartstyles.png -text svneol=unset#images/png
+components/tachart/icons/tchartstyles_150.png -text
+components/tachart/icons/tchartstyles_200.png -text
 components/tachart/icons/tcharttoolset.png -text svneol=unset#images/png
+components/tachart/icons/tcharttoolset_150.png -text
+components/tachart/icons/tcharttoolset_200.png -text
 components/tachart/icons/tdatetimeintervalchartsource.png -text svneol=unset#images/png
+components/tachart/icons/tdatetimeintervalchartsource_150.png -text
+components/tachart/icons/tdatetimeintervalchartsource_200.png -text
 components/tachart/icons/tdbchartsource.png -text svneol=unset#images/png
+components/tachart/icons/tdbchartsource_150.png -text
+components/tachart/icons/tdbchartsource_200.png -text
 components/tachart/icons/tintervalchartsource.png -text svneol=unset#images/png
+components/tachart/icons/tintervalchartsource_150.png -text
+components/tachart/icons/tintervalchartsource_200.png -text
 components/tachart/icons/tlistchartsource.png -text svneol=unset#images/png
+components/tachart/icons/tlistchartsource_150.png -text
+components/tachart/icons/tlistchartsource_200.png -text
 components/tachart/icons/trandomchartsource.png -text svneol=unset#images/png
+components/tachart/icons/trandomchartsource_150.png -text
+components/tachart/icons/trandomchartsource_200.png -text
 components/tachart/icons/tuserdefinedchartsource.png -text svneol=unset#images/png
+components/tachart/icons/tuserdefinedchartsource_150.png -text
+components/tachart/icons/tuserdefinedchartsource_200.png -text
 components/tachart/languages/tachartstrconsts.de.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.fi.po svneol=native#text/plain
 components/tachart/languages/tachartstrconsts.fr.po svneol=native#text/plain
