@@ -1367,7 +1367,7 @@ end;
 
 procedure TMainIDE.SetupInteractive;
 var
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
   OldLazDir: String;
   Note: string;
   OI: TSimpleWindowLayout;

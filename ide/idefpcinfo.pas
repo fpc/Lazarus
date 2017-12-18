@@ -139,7 +139,7 @@ var
   TargetCPU: String;
   CompilerFilename: String;
   CompilerOptions: String;
-  Cfg: TFPCTargetConfigCache;
+  Cfg: TPCTargetConfigCache;
   Params: String;
   ExtraOptions: String;
   sl, List: TStringList;
@@ -296,9 +296,9 @@ end;
 procedure TIDEFPCInfoDialog.GatherFPCExecutable(UnitSetCache: TFPCUnitSetCache;
   sl: TStrings);
 var
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
   i: Integer;
-  CfgFileItem: TFPCConfigFileState;
+  CfgFileItem: TPCConfigFileState;
   HasCfgs: Boolean;
   SrcCache: TFPCSourceCache;
   AFilename: string;

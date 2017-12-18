@@ -1050,7 +1050,7 @@ var
   Found: Integer;
   UnitSet: TFPCUnitSetCache;
   FPCSrcDir: String;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
 
   procedure AddItems(AddExactMatches: boolean);
   var

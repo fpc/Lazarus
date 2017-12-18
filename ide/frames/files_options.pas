@@ -460,7 +460,7 @@ var
   NewFPCSrcDir: string;
   Note: string;
   Quality: TSDFilenameQuality;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
   FPCVer: String;
 begin
   if EnvironmentOptions.FPCSourceDirectory=FOldFPCSourceDir then exit(true);

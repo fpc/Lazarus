@@ -450,7 +450,7 @@ var
     BaseDir: String;
     UnitSetID: String;
     Cache: TFPCUnitSetCache;
-    CfgCache: TFPCTargetConfigCache;
+    CfgCache: TPCTargetConfigCache;
     HasChanged: boolean;
   begin
     UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory(BaseDir{%H-});

@@ -288,7 +288,7 @@ procedure TInspectChksumChgDialog.SearchInFPCFiles(
 var
   UnitSetID: String;
   UnitSet: TFPCUnitSetCache;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
   i: Integer;
   HasChanged: boolean;
   CurDir: String;

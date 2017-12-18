@@ -1113,7 +1113,7 @@ var
   LazarusSrcDefines: TDefineTemplate;
   CurFPCOptions: String;
   UnitSetCache: TFPCUnitSetCache;
-  //CfgCache: TFPCTargetConfigCache;
+  //CfgCache: TPCTargetConfigCache;
 
   procedure AddFPCOption(s: string);
   begin
@@ -6360,7 +6360,7 @@ procedure TCodeToolManager.DirectoryCachePoolIterateFPCUnitsFromSet(
 var
   Changed: boolean;
   UnitSetCache: TFPCUnitSetCache;
-  aConfigCache: TFPCTargetConfigCache;
+  aConfigCache: TPCTargetConfigCache;
   Node: TAVLTreeNode;
   Item: PStringToStringItem;
 begin
@@ -6519,7 +6519,7 @@ end;
 
 function FindIncFileInCfgCache(const Name: string; out ExpFilename: string): boolean;
 var
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
   UnitSet: TFPCUnitSetCache;
 begin
   // search the include file in directories defines in fpc.cfg (by -Fi option)

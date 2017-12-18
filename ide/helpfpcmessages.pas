@@ -954,7 +954,7 @@ var
   Code: TCodeBuffer;
   AltFilename: String;
   UnitSet: TFPCUnitSetCache;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
 begin
   Result:=nil;
   Filename:=EnvironmentOptions.GetParsedCompilerMessagesFilename;

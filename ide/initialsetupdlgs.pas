@@ -970,7 +970,7 @@ var
   Quality: TSDFilenameQuality;
   s: String;
   ImageIndex: Integer;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
 begin
   if csDestroying in ComponentState then exit;
   CurCaption:=CompilerComboBox.Text;

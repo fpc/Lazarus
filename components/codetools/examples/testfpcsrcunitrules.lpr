@@ -50,9 +50,9 @@ type
     destructor Destroy; override;
     procedure WriteHelp; virtual;
     procedure Error(Msg: string; DoWriteHelp: Boolean);
-    procedure WriteCompilerInfo(ConfigCache: TFPCTargetConfigCache);
-    procedure WriteNonExistingPPUPaths(ConfigCache: TFPCTargetConfigCache);
-    procedure WriteDuplicatesInPPUPath(ConfigCache: TFPCTargetConfigCache);
+    procedure WriteCompilerInfo(ConfigCache: TPCTargetConfigCache);
+    procedure WriteNonExistingPPUPaths(ConfigCache: TPCTargetConfigCache);
+    procedure WriteDuplicatesInPPUPath(ConfigCache: TPCTargetConfigCache);
     procedure WriteMissingPPUSources(UnitSet: TFPCUnitSetCache);
     procedure WriteDuplicateSources(UnitSet: TFPCUnitSetCache);
     procedure WriteUnitReport(UnitSet: TFPCUnitSetCache; const AnUnitName: string);
@@ -69,7 +69,7 @@ var
   TargetCPU: String;
   FPCSrcDir: String;
   UnitSet: TFPCUnitSetCache;
-  ConfigCache: TFPCTargetConfigCache;
+  ConfigCache: TPCTargetConfigCache;
   Options: TCodeToolsOptions;
 begin
   // quick check parameters
@@ -187,10 +187,10 @@ begin
 end;
 
 procedure TTestFPCSourceUnitRules.WriteCompilerInfo(
-  ConfigCache: TFPCTargetConfigCache);
+  ConfigCache: TPCTargetConfigCache);
 var
   i: Integer;
-  CfgFile: TFPCConfigFileState;
+  CfgFile: TPCConfigFileState;
 begin
   writeln('Compiler=',ConfigCache.Compiler);
   writeln('TargetOS=',ConfigCache.TargetOS);
@@ -213,7 +213,7 @@ begin
 end;
 
 procedure TTestFPCSourceUnitRules.WriteNonExistingPPUPaths(
-  ConfigCache: TFPCTargetConfigCache);
+  ConfigCache: TPCTargetConfigCache);
 var
   SearchPaths: TStrings;
   i: Integer;
@@ -230,7 +230,7 @@ begin
 end;
 
 procedure TTestFPCSourceUnitRules.WriteDuplicatesInPPUPath(
-  ConfigCache: TFPCTargetConfigCache);
+  ConfigCache: TPCTargetConfigCache);
 var
   i: Integer;
   Directory: String;
@@ -306,7 +306,7 @@ var
   UnitToSrc: TStringToStringTree;
   Node: TAVLTreeNode;
   Item: PStringToStringItem;
-  ConfigCache: TFPCTargetConfigCache;
+  ConfigCache: TPCTargetConfigCache;
   aUnitName: String;
   Cnt: Integer;
   Filename: String;
@@ -405,7 +405,7 @@ end;
 procedure TTestFPCSourceUnitRules.WriteUnitReport(UnitSet: TFPCUnitSetCache;
   const AnUnitName: string);
 var
-  ConfigCache: TFPCTargetConfigCache;
+  ConfigCache: TPCTargetConfigCache;
   PPUFile: String;
   SourceCache: TFPCSourceCache;
   aTree: TStringToStringTree;

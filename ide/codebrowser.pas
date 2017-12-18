@@ -1367,7 +1367,7 @@ var
     UnitSetChanged: Boolean;
     UnitSet: TFPCUnitSetCache;
     Filename: String;
-    ConfigCache: TFPCTargetConfigCache;
+    ConfigCache: TPCTargetConfigCache;
     Node: TAVLTreeNode;
     Item: PStringToStringItem;
   begin

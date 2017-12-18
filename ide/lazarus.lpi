@@ -1103,6 +1103,7 @@
         <Filename Value="helpfpcmessages.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="HelpFPCMessages"/>
       </Unit183>
       <Unit184>
         <Filename Value="genericchecklist.pas"/>

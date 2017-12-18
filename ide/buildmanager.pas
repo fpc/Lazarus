@@ -791,7 +791,7 @@ procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
 
   function FoundSystemPPU: boolean;
   var
-    ConfigCache: TFPCTargetConfigCache;
+    ConfigCache: TPCTargetConfigCache;
     AFilename: string;
   begin
     Result:=false;
@@ -809,7 +809,7 @@ procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
   // for example: a 'make install' installs to /usr/local/lib/fpc
   // while the rpm/deb packages install to /usr/lib
   var
-    Cfg: TFPCTargetConfigCache;
+    Cfg: TPCTargetConfigCache;
     Filename: String;
   begin
     Cfg:=UnitSetCache.GetConfigCache(false);
@@ -1060,7 +1060,7 @@ end;
 
 function TBuildManager.CompilerOnDiskChanged: boolean;
 var
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
 begin
   Result:=false;
   if UnitSetCache=nil then exit;
@@ -2103,7 +2103,7 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
     TargetOS: String;
     TargetCPU: String;
     CompilerFilename: String;
-    ConfigCache: TFPCTargetConfigCache;
+    ConfigCache: TPCTargetConfigCache;
     s: string;
   begin
     FFPC_FULLVERSION:=0;

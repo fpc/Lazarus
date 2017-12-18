@@ -42,7 +42,7 @@ var
   Filename: string;
   Dictionary: TUnitDictionary;
   UnitSet: TFPCUnitSetCache;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
   AVLNode: TAVLTreeNode;
   Item: PStringToStringItem;
   Directory: String;

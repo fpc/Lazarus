@@ -277,7 +277,7 @@ end;
 
 procedure TIDEInfoDialog.GatherGlobalOptions(sl: TStrings);
 var
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
   Note: string;
 begin
   sl.add('Global IDE options:');

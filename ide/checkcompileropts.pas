@@ -92,10 +92,10 @@ type
     function CheckSpecialCharsInPath(const Title, ExpandedPath: string): TModalResult;
     function CheckNonExistingSearchPaths(const Title, ExpandedPath: string): TModalResult;
     function CheckCompilerExecutable(const CompilerFilename: string): TModalResult;
-    function CheckCompilerConfig(CfgCache: TFPCTargetConfigCache): TModalResult;
+    function CheckCompilerConfig(CfgCache: TPCTargetConfigCache): TModalResult;
     function FindAllPPUFiles(const AnUnitPath: string): TStrings;
-    function CheckMissingFPCPPUs(CfgCache: TFPCTargetConfigCache): TModalResult;
-    function CheckCompilerDate(CfgCache: TFPCTargetConfigCache): TModalResult;
+    function CheckMissingFPCPPUs(CfgCache: TPCTargetConfigCache): TModalResult;
+    function CheckCompilerDate(CfgCache: TPCTargetConfigCache): TModalResult;
     function CheckForAmbiguousPPUs(SearchForPPUs: TStrings;
                                    SearchInPPUs: TStrings = nil): TModalResult;
     function CheckFPCUnitPathsContainSources(const FPCCfgUnitPath: string
@@ -413,10 +413,10 @@ begin
 end;
 
 function TCheckCompilerOptsDlg.CheckCompilerConfig(
-  CfgCache: TFPCTargetConfigCache): TModalResult;
+  CfgCache: TPCTargetConfigCache): TModalResult;
 var
   i: Integer;
-  CfgFile: TFPCConfigFileState;
+  CfgFile: TPCConfigFileState;
   CfgCount: Integer;
 begin
   FTest:=cotCheckCompilerConfig;
@@ -483,7 +483,7 @@ begin
 end;
 
 function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(
-  CfgCache: TFPCTargetConfigCache): TModalResult;
+  CfgCache: TPCTargetConfigCache): TModalResult;
   
   function Check(const TheUnitname: string; Severity: TCompilerCheckMsgLvl
     ): Boolean;
@@ -521,7 +521,7 @@ begin
   Result:=mrOk;
 end;
 
-function TCheckCompilerOptsDlg.CheckCompilerDate(CfgCache: TFPCTargetConfigCache
+function TCheckCompilerOptsDlg.CheckCompilerDate(CfgCache: TPCTargetConfigCache
   ): TModalResult;
 var
   MinPPUDate: LongInt;
@@ -850,7 +850,7 @@ var
   cp: TParsedCompilerOptString;
   TargetCPU: String;
   TargetOS: String;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
   FPC_PPUs: TStrings;
 begin
   Result:=mrCancel;

@@ -316,7 +316,7 @@ end;
 function CheckCompilerQuality(AFilename: string; out Note: string;
   TestSrcFilename: string): TSDFilenameQuality;
 var
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
 
   function CheckPPU(const AnUnitName: string): boolean;
   begin
@@ -591,7 +591,7 @@ function CheckPas2jsQuality(AFilename: string; out Note: string;
 var
   i: LongInt;
   ShortFilename: String;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
 begin
   Result:=sddqInvalid;
   AFilename:=TrimFilename(AFilename);

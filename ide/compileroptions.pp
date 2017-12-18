@@ -2164,7 +2164,7 @@ function TBaseCompilerOptions.GetEffectiveTargetOS: string;
 var
   Vars: TCTCfgScriptVariables;
   UnitSet: TFPCUnitSetCache;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
 begin
   Result:='';
   Vars:=GetBuildMacroValues(Self,true);
@@ -2187,7 +2187,7 @@ function TBaseCompilerOptions.GetEffectiveTargetCPU: string;
 var
   Vars: TCTCfgScriptVariables;
   UnitSet: TFPCUnitSetCache;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
 begin
   Result:='';
   Vars:=GetBuildMacroValues(Self,true);

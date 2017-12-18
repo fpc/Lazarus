@@ -2611,7 +2611,7 @@ end;
 function TLazPackageGraph.FindPkgOutputInFPCSearchPath(APackage: TLazPackage;
   FirstDependency: TPkgDependency): TFPList;
 var
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
 
   function CheckPkg(Pkg: TLazPackage; var PathList: TFPList): boolean;
   var
@@ -3280,7 +3280,7 @@ var
   UnitSetID: String;
   HasChanged: boolean;
   Cache: TFPCUnitSetCache;
-  CfgCache: TFPCTargetConfigCache;
+  CfgCache: TPCTargetConfigCache;
   Node: TAVLTreeNode;
   Item: PStringToStringItem;
   Filename: String;
