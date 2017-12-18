@@ -278,7 +278,10 @@ const
   );
 
 type
-  TPascalCompiler = (pcFPC, pcDelphi, pcPas2js);
+  TPascalCompiler = (
+    pcFPC,
+    pcDelphi,
+    pcPas2js);
   
 type
   TLSSkippingDirective = (
@@ -849,6 +852,7 @@ var
   PSourceChangeStepMemManager: TPSourceChangeStepMemManager;
 
 function StrToCompilerMode(const aName: string): TCompilerMode;
+function StrToPascalCompiler(const aName: string): TPascalCompiler;
 
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);
 function IndexOfCodeInUniqueList(ACode: Pointer;
@@ -956,6 +960,14 @@ begin
     if SysUtils.CompareText(aName,CompilerModeNames[Result])=0 then
       exit;
   Result:=cmFPC;
+end;
+
+function StrToPascalCompiler(const aName: string): TPascalCompiler;
+begin
+  for Result:=low(Result) to high(Result) do
+    if SysUtils.CompareText(aName,PascalCompilerNames[Result])=0 then
+      exit;
+  Result:=pcFPC;
 end;
 
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);

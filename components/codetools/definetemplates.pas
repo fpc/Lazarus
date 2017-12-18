@@ -8443,7 +8443,8 @@ begin
     then
       exit;
   end;
-  if (CompilerDate<>Item.CompilerDate)
+  if (Kind<>Item.Kind)
+    or (CompilerDate<>Item.CompilerDate)
     or (RealCompiler<>Item.RealCompiler)
     or (RealCompilerDate<>Item.RealCompilerDate)
     or (RealTargetOS<>Item.RealTargetOS)
@@ -8496,6 +8497,7 @@ begin
     Compiler:=Item.Compiler;
     CompilerOptions:=Item.CompilerOptions;
     // values
+    Kind:=Item.Kind;
     CompilerDate:=Item.CompilerDate;
     RealCompiler:=Item.RealCompiler;
     RealCompilerDate:=Item.RealCompilerDate;
@@ -8598,6 +8600,7 @@ var
 begin
   Clear;
 
+  Kind:=StrToPascalCompiler(XMLConfig.GetValue(Path+'Kind',PascalCompilerNames[pcFPC]));
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS','');
   TargetCPU:=XMLConfig.GetValue(Path+'TargetCPU','');
   Compiler:=XMLConfig.GetValue(Path+'Compiler/File','');
@@ -8729,6 +8732,7 @@ var
   end;
 
 begin
+  XMLConfig.SetDeleteValue(Path+'Kind',PascalCompilerNames[Kind],PascalCompilerNames[pcFPC]);
   XMLConfig.SetDeleteValue(Path+'TargetOS',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU',TargetCPU,'');
   XMLConfig.SetDeleteValue(Path+'Compiler/File',Compiler,'');
