@@ -3287,7 +3287,6 @@ begin
   ecViewProjectUnits:         DoViewUnitsAndForms(false);
   ecViewProjectForms:         DoViewUnitsAndForms(true);
   ecProjectInspector:         DoShowProjectInspector;
-  ecConfigCustomComps:        PkgBoss.ShowConfigureCustomComponents;
   ecExtToolFirst..ecExtToolLast: DoRunExternalTool(Command-ecExtToolFirst,false);
   ecSyntaxCheck:              DoCheckSyntax;
   ecGuessUnclosedBlock:       DoJumpToGuessedUnclosedBlock(true);

@@ -62,7 +62,7 @@ uses
   // IDE
   PkgRegisterBase, IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists,
   DialogProcs, IDECommands, IDEOptionDefs, EnvironmentOpts, MiscOptions,
-  InputHistory, Project, OldCustomCompDlg, PackageEditor, AddToPackageDlg,
+  InputHistory, Project, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   IDETranslations, TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg,
@@ -145,7 +145,6 @@ type
     procedure MainIDEitmPkgAddCurFileToPkgClick(Sender: TObject);
     procedure MainIDEitmPkgNewComponentClick(Sender: TObject);
     procedure MainIDEitmPkgOpenPackageOfCurUnitClicked(Sender: TObject);
-    procedure MainIDEitmConfigCustomCompsClicked(Sender: TObject);
     procedure MainIDEitmOpenRecentPackageClicked(Sender: TObject);
     procedure MainIDEitmPkgOpenLoadedPackageClicked(Sender: TObject);
     procedure MainIDEitmPkgNewPackageClick(Sender: TObject);
@@ -332,7 +331,6 @@ type
     // package installation
     procedure LoadInstalledPackages; override;
     procedure UnloadInstalledPackages;
-    function ShowConfigureCustomComponents: TModalResult; override;
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage;
                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
@@ -1034,11 +1032,6 @@ function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoUninstallPackage(APackage,[],false);
-end;
-
-procedure TPkgManager.MainIDEitmConfigCustomCompsClicked(Sender: TObject);
-begin
-  ShowConfigureCustomComponents;
 end;
 
 procedure TPkgManager.MainIDEitmPkgNewPackageClick(Sender: TObject);
@@ -3507,11 +3500,6 @@ begin
       Result:=mrCancel;    
     MissingUnits.Free;
   end;
-end;
-
-function TPkgManager.ShowConfigureCustomComponents: TModalResult;
-begin
-  Result:=ShowConfigureCustomComponentDlg(EnvironmentOptions.GetParsedLazarusDirectory);
 end;
 
 function TPkgManager.DoNewPackage: TModalResult;

@@ -134,7 +134,6 @@ type
     // package installation
     procedure LoadInstalledPackages; virtual; abstract;
     function DoShowLoadedPkgDlg: TModalResult; virtual; abstract;
-    function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags;
                                           OnlyBase: boolean): TModalResult; virtual; abstract;
     function DoSaveAutoInstallConfig: TModalResult; virtual; abstract;
