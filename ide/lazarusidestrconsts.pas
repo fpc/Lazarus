@@ -3576,6 +3576,9 @@ resourcestring
   lisThePackageIsAlreadyInTheList = 'The package %s is already in the list';
   lisConflict = 'Conflict';
   lisThereIsAlreadyAPackageInTheList = 'There is already a package %s in the list';
+  lisDownload = 'Download';
+  lisDonwloadOnlinePackages = 'The following package(s) are not available locally:  %s .' + sLineBreak +
+    'In order to install it, you must download them first. Download now?';
   lisNotADesigntimePackage = 'Not a designtime package';
   lisThePackageCanNotBeInstalledBecauseItRequiresWhichI = 'The package %s cannot be '
     +'installed, because it requires the package "%s", which is a runtime only package.';
@@ -4307,7 +4310,7 @@ resourcestring
   lisPkgMangTheFollowingPackagesFailedToLoad = 'The following packages failed to load:';
   lisMissingPackages = 'Missing Packages';
   lisNotInstalledPackages = 'Not installed packages';
-  lisInstallPackagesMsg = 'The following packages are not installed, but available online: %s.' +
+  lisInstallPackagesMsg = 'The following packages are not installed, but available in the main repository: %s.' +
     sLineBreak + 'Do you wish to install missing packages?';
   lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA = 'other sources path '
     +'of package "%s" contains directory "%s", which is already in the unit '
@@ -4537,6 +4540,7 @@ resourcestring
   lisSelectedForUninstallation = 'selected for uninstallation';
   lisInstalled = 'installed';
   lisNotInstalled = 'not installed';
+  lisOnlinePackage = 'available in the main repository';
   lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound = '%sThis package is '
     +'installed, but the lpk file was not found';
   lisOIPDescriptionDescription = '%sDescription:  %s';

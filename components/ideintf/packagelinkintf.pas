@@ -63,8 +63,11 @@ type
     FPackageType: TLazPackageType;
     FOrigin: TPkgLinkOrigin;
     FLastUsed: TDateTime;
-    FOPMFileName: String;
+    FOPMFileName: string;
     FOPMFileDate: TDateTime;
+    FAuthor: string;
+    FDescription: string;
+    FLicense: string;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -80,11 +83,14 @@ type
     property LPKUrl: string read FURL write FURL;
     property LPLFilename: string read FLPLFilename write FLPLFilename;
     property LPLFileDate: TDateTime read FLPLFileDate write FLPLFileDate;
-    property PackageType: TLazPackageType read FPackageType;
+    property PackageType: TLazPackageType read FPackageType write FPackageType;
     property Origin: TPkgLinkOrigin read FOrigin write FOrigin;
     property LastUsed: TDateTime read FLastUsed write FLastUsed;
     property OPMFileName: string read FOPMFileName write FOPMFileName;
     property OPMFileDate: TDateTime read FOPMFileDate write FOPMFileDate;
+    property Author: string read FAuthor write FAuthor;
+    property Description: string read FDescription write FDescription;
+    property License: string read FLicense write FLicense;
   end;
 
   { TPackageLinks }
@@ -105,6 +111,7 @@ type
     procedure RemoveUserLink(Link: TPackageLink); virtual; abstract;
     procedure RemoveUserLinks(APackageID: TLazPackageID); virtual; abstract;
     procedure ClearOnlineLinks; virtual; abstract;
+    procedure SaveUserLinks(Immediately: boolean = false); virtual; abstract;
   end;
 
   { TOPMInterface }
@@ -114,7 +121,10 @@ type
     FPackageListAvailable: TNotifyEvent;
   public
     {confirmation/install/extract/download dialogs will be displayed in the center of WorkArea}
+    function DownloadPackages(APkgLinks: TList): TModalResult; virtual; abstract;
     function InstallPackages(APkgLinks: TList; var ANeedToRebuild: Boolean): TModalResult; virtual; abstract;
+    function IsPackageAvailable(APkgLink: TPackageLink; AType: Integer): Boolean; virtual; abstract;
+    function FindOnlineLink(const AName: String): TPackageLink; virtual; abstract;
     property OnPackageListAvailable: TNotifyEvent read FPackageListAvailable write FPackageListAvailable;
   end;
 

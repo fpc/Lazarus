@@ -48,9 +48,9 @@ uses
   // LazUtils
   LazFileUtils, Laz2_XMLCfg,
   // IdeIntf
-  PackageDependencyIntf, PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs, IDEWindowIntf,
+  PackageDependencyIntf, PackageIntf, IDEImagesIntf, IDEHelpIntf, IDEDialogs, IDEWindowIntf, PackageLinkIntf,
   // IDE
-  LazarusIDEStrConsts, InputHistory, LazConf, PackageDefs, PackageSystem, LPKCache;
+  LazarusIDEStrConsts, InputHistory, LazConf, PackageDefs, PackageSystem, LPKCache, PackageLinks;
 
 type
   TOnCheckInstallPackageList =
@@ -120,6 +120,7 @@ type
     ImgIndexUninstallPackage: integer;
     ImgIndexCirclePackage: integer;
     ImgIndexMissingPackage: integer;
+    ImgIndexAvailableOnline: integer;
     ImgIndexOverlayUnknown: integer;
     ImgIndexOverlayBasePackage: integer;
     ImgIndexOverlayFPCPackage: integer;
@@ -130,7 +131,8 @@ type
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
     function PackageInInstallList(PkgName: string): boolean;
-    function GetPkgImgIndex(Installed: TPackageInstallType; InInstallList: boolean): integer;
+    function GetPkgImgIndex(Installed: TPackageInstallType; InInstallList,
+      IsOnline: boolean): integer;
     procedure UpdateAvailablePackages(Immediately: boolean = false);
     procedure UpdateNewInstalledPackages;
     function DependencyToStr(Dependency: TPkgDependency): string;
@@ -148,6 +150,7 @@ type
     procedure AddToUninstall;
     procedure PkgInfosChanged;
     procedure ChangePkgVersion(PkgInfo: TLPKInfo; NewVersion: TPkgVersion);
+    function FindOnlinePackageLink(const AName: String): TPackageLink;
   public
     function GetNewInstalledPackages: TObjectList;
     property OldInstalledPackages: TPkgDependency read FOldInstalledPackages
@@ -203,6 +206,7 @@ begin
   ImgIndexUninstallPackage := IDEImages.LoadImage('pkg_package_uninstall');
   ImgIndexCirclePackage := IDEImages.LoadImage('pkg_package_circle');
   ImgIndexMissingPackage := IDEImages.LoadImage('pkg_conflict');
+  ImgIndexAvailableOnline := IDEImages.LoadImage('pkg_install');
   ImgIndexOverlayUnknown := IDEImages.LoadImage('state_unknown');
   ImgIndexOverlayBasePackage := IDEImages.LoadImage('pkg_core_overlay');
   ImgIndexOverlayFPCPackage := IDEImages.LoadImage('pkg_fpc_overlay');
@@ -381,6 +385,7 @@ var
   PkgName: String;
   ImgIndex: Integer;
   Unknown: Boolean;
+  PackageLink: TPackageLink;
 begin
   Tree:=Sender as TTreeView;
   if Stage=cdPostPaint then begin
@@ -397,6 +402,10 @@ begin
     finally
       LPKInfoCache.LeaveCritSection;
     end;
+    if Sender = InstallTreeView then
+      PackageLink := nil
+    else
+      PackageLink := FindOnlinePackageLink(Info.ID.Name);
     Images:=Tree.Images;
     CurCanvas:=Tree.Canvas;
 
@@ -404,7 +413,7 @@ begin
     x:=Node.DisplayIconLeft+1;
     y:=(NodeRect.Top+NodeRect.Bottom-Images.Height) div 2;
     // draw image
-    ImgIndex:=GetPkgImgIndex(Installed,PackageInInstallList(PkgName));
+    ImgIndex:=GetPkgImgIndex(Installed,PackageInInstallList(PkgName), PackageLink <> nil);
     Images.Draw(CurCanvas,x,y,ImgIndex);
     // draw overlays
     if InLazSrc then
@@ -513,7 +522,7 @@ begin
 end;
 
 function TInstallPkgSetDialog.GetPkgImgIndex(Installed: TPackageInstallType;
-  InInstallList: boolean): integer;
+  InInstallList, IsOnline: boolean): integer;
 begin
   if Installed<>pitNope then begin
     // is not currently installed
@@ -533,10 +542,32 @@ begin
     end
     else begin
       // is not installed and will be not be installed
-      Result:=ImgIndexPackage;
+      if IsOnline then
+        Result := ImgIndexAvailableOnline
+      else
+        Result:=ImgIndexPackage;
     end;
   end;
 end;
+
+function TInstallPkgSetDialog.FindOnlinePackageLink(const AName: String): TPackageLink;
+var
+  PackageLink: TPackageLink;
+  PkgName: String;
+  P: Integer;
+begin
+  Result := nil;
+  if OPMInterface = nil then
+    Exit;
+  PkgName := Trim(AName);
+  P := Pos(' ', PkgName);
+  if P > 0 then
+    PkgName := Copy(PkgName, 1, P - 1);
+  PackageLink := OPMInterface.FindOnlineLink(PkgName);
+  if PackageLink <> nil then
+    Result := PackageLink;
+end;
+
 
 procedure TInstallPkgSetDialog.UpdateAvailablePackages(Immediately: boolean);
 var
@@ -545,6 +576,7 @@ var
   Info: TLPKInfo;
   List: TStringList;
   i: Integer;
+  PackageLink: TPackageLink;
 begin
   if not Immediately then begin
     fAvailablePkgsNeedUpdate:=true;
@@ -561,6 +593,15 @@ begin
       while ANode<>nil do begin
         Info:=TLPKInfo(ANode.Data);
         ANode:=LPKInfoCache.LPKByID.FindSuccessor(ANode);
+        PackageLink := FindOnlinePackageLink(Info.ID.Name);
+        if (PackageLink <> nil) and (PackageLink.PackageType in [lptDesignTime,lptRunAndDesignTime]) then begin
+          if (not PackageInInstallList(Info.ID.Name)) then begin
+            Info.PkgType := PackageLink.PackageType;
+            Info.ID.Version.Assign(PackageLink.Version);
+            List.Add(Info.ID.IDAsString);
+            Continue;
+          end;
+        end;
         if Info.LPKParsed=lpkiParsedError then continue;
         if (Info.LPKParsed in [lpkiNotParsed,lpkiParsing])
         or (Info.PkgType in [lptDesignTime,lptRunAndDesignTime])
@@ -704,13 +745,18 @@ var
 var
   PkgID: String;
   Info: TLPKInfo;
+  PackageLink: TPackageLink;
+  Author, Description, License: String;
 begin
   if Tree = nil then Exit;
   PkgID := '';
   if Tree.Selected <> nil then
     PkgID := Tree.Selected.Text;
   if PkgID = '' then Exit;
-
+  if Tree = InstallTreeView then
+    PackageLink := nil
+  else
+    PackageLink := FindOnlinePackageLink(PkgID);
   LPKInfoCache.EnterCritSection;
   try
     Info:=LPKInfoCache.FindPkgInfoWithIDAsString(PkgID);
@@ -735,13 +781,26 @@ begin
       end;
     end;
 
-    if Info.Author<>'' then
-      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + Info.Author);
-    if Info.Description<>'' then
-      PkgInfoMemo.Lines.Add(lisPckOptsDescriptionAbstract
-                            + ': ' + Info.Description);
-    if Info.License<>'' then
-      PkgInfoMemo.Lines.Add(lisPckOptsLicense + ': ' + Info.License);
+    if PackageLink = nil then
+    begin
+      Author := Info.Author;
+      Description := Info.Description;
+      License := Info.License;
+    end
+    else
+    begin
+      Author := PackageLink.Author;
+      Description := PackageLink.Description;
+      License := PackageLink.License;
+    end;
+
+    if Author<>'' then
+      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + Author);
+    if Description<>'' then
+      PkgInfoMemo.Lines.Add(lisPckOptsDescriptionAbstract + ': ' + Description);
+    if License<>'' then
+      PkgInfoMemo.Lines.Add(lisPckOptsLicense + ': ' + License);
+
     PkgInfoMemo.Lines.Add(Format(lisOIPFilename, [Info.LPKFilename]));
 
     InfoStr:=lisCurrentState;
@@ -756,6 +815,8 @@ begin
       if PackageInInstallList(Info.ID.Name)=true then
         AddState(lisSelectedForInstallation);
       AddState(lisNotInstalled);
+      if PackageLink <> nil then
+        AddState(lisOnlinePackage);
     end;
     if Info.Base then
       AddState(lisPckExplBase);
@@ -954,11 +1015,15 @@ var
   TVNode: TTreeNode;
   PkgName: String;
   FilteredBranch: TTreeFilterBranch;
+  PkgLinks: TList;
+  PkgLinksStr: String;
+  PkgLink: TPackageLink;
 begin
   NewSelectedIndex:=-1;
   LastNonSelectedIndex:=-1;
   Additions:=TObjectList.Create(false);
   AddedPkgNames:=TStringList.Create;
+  PkgLinks := TList.Create;
   NewPackageID:=TLazPackageID.Create;
   FilteredBranch := AvailableFilterEdit.GetExistingBranch(Nil); // All items are top level.
   try
@@ -982,9 +1047,53 @@ begin
         exit;
       end;
       // ok => add to list
-      Additions.Add(NewPackageID);
-      NewPackageID:=TLazPackageID.Create;
-      AddedPkgNames.Add(PkgName);
+      PkgLink := FindOnlinePackageLink(NewPackageID.Name);
+      if PkgLink <> nil then begin
+        if not FileExists(PkgLink.OPMFileName) then
+          PkgLinks.Add(PkgLink)
+        else
+        begin
+          PkgLink := LazPackageLinks.AddUserLink(PkgLink.OPMFileName, PkgLink.Name);
+          if PkgLink <> nil then
+            LazPackageLinks.SaveUserLinks;
+          Additions.Add(NewPackageID);
+          NewPackageID:=TLazPackageID.Create;
+          AddedPkgNames.Add(PkgName);
+        end;
+      end else begin
+        Additions.Add(NewPackageID);
+        NewPackageID:=TLazPackageID.Create;
+        AddedPkgNames.Add(PkgName);
+      end;
+    end;
+    //download online packages
+    if (OPMInterface <> nil) and (PkgLinks.Count > 0) then
+    begin
+      PkgLinksStr := '';
+      for I := 0 to PkgLinks.Count - 1 do begin
+        if PkgLinksStr = '' then
+          PkgLinksStr := '"' + TPackageLink(PkgLinks.Items[I]).Name + '"'
+        else
+          PkgLinksStr := PkgLinksStr + ', ' + '"' + TPackageLink(PkgLinks.Items[I]).Name + '"';
+      end;
+      if IDEMessageDialog(lisDownload, Format(lisDonwloadOnlinePackages, [PkgLinksStr]), mtConfirmation, [mbYes, mbNo]) = mrYes then begin
+        if OPMInterface.DownloadPackages(PkgLinks) = mrOK then begin
+          for I := PkgLinks.Count - 1 downto 0 do begin
+            if OPMInterface.IsPackageAvailable(TPackageLink(PkgLinks.Items[I]), 1) then begin
+              Additions.Add(NewPackageID);
+              NewPackageID:=TLazPackageID.Create;
+              AddedPkgNames.Add(PkgName);
+              PkgLink := LazPackageLinks.AddUserLink(TPackageLink(PkgLinks.Items[I]).OPMFileName, TPackageLink(PkgLinks.Items[I]).Name);
+              if PkgLink <> nil then
+                LazPackageLinks.SaveUserLinks;
+            end;
+          end;
+        end
+        else
+          Dec(NewSelectedIndex);
+      end
+      else
+        Dec(NewSelectedIndex);
     end;
     // all ok => add to installed packages
     for i:=0 to Additions.Count-1 do
@@ -1006,6 +1115,7 @@ begin
     NewPackageID.Free;
     AddedPkgNames.Free;
     Additions.Free;
+    PkgLinks.Free;
   end;
 end;
 

@@ -57,7 +57,7 @@ uses
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazMethodList,
   // IdeIntf
-  PackageDependencyIntf, PackageIntf,
+  PackageDependencyIntf, PackageIntf, PackageLinkIntf,
   // IDE
   EnvironmentOpts, PackageLinks, PackageDefs, PackageSystem;
 
@@ -357,8 +357,13 @@ procedure TLPKInfoCache.OnIterateAvailablePackages(APackage: TLazPackageID);
 begin
   if APackage is TLazPackage then
     fAvailableFiles.Add(TLazPackage(APackage).Filename)
-  else if APackage is TLazPackageLink then
-    fAvailableFiles.Add(TLazPackageLink(APackage).LPKFilename);
+  else if APackage is TLazPackageLink then begin
+    if (OPMInterface<>nil) and (TLazPackageLink(APackage).Origin=ploOnline) and
+        (not OPMInterface.IsPackageAvailable(TLazPackageLink(APackage), 2)) then
+      fAvailableFiles.Add(TLazPackageLink(APackage).OPMFileName)
+    else
+      fAvailableFiles.Add(TLazPackageLink(APackage).LPKFilename);
+  end;
 end;
 
 procedure TLPKInfoCache.QueueEmpty;

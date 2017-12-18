@@ -131,7 +131,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function IsUpdating: boolean;
-    procedure SaveUserLinks(Immediately: boolean = false);
+    procedure SaveUserLinks(Immediately: boolean = false); override;
     function NeedSaveUserLinks(const ConfigFilename: string): boolean;
     procedure WriteLinkTree(LinkTree: TAvlTree);
     procedure IncreaseChangeStamp;
