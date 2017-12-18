@@ -12634,7 +12634,7 @@ begin
 
         if (DataStr <> WStr) then
         begin
-          v := QVariant_create(PUnicodeString(@WStr));
+          v := QVariant_create(PWideString(@WStr));
           try
             QListWidgetItem_setData(item, Ord(QtDisplayRole), v);
           finally
@@ -14688,7 +14688,7 @@ begin
         WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].Caption;
         ASelected := TCustomListViewHack(LCLObject).Items[TopItem].Selected;
 
-        v := QVariant_create(PUnicodeString(@WStr));
+        v := QVariant_create(PWideString(@WStr));
         try
           v2 := QVariant_create;
           try
@@ -14791,7 +14791,7 @@ begin
             if itemChild <> nil then
             begin
               WStr := TCustomListViewHack(LCLObject){%H-}.Items[TopItem].SubItems[j];
-              v := QVariant_create(PUnicodeString(@WStr));
+              v := QVariant_create(PWideString(@WStr));
               v2 := QVariant_create;
               try
                 TempStr := '';
