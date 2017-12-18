@@ -5651,12 +5651,12 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-function TQtWidget._AddRef: LongInt; cdecl;
+function TQtWidget._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1; // no ref counting
 end;
 
-function TQtWidget._Release: LongInt; cdecl;
+function TQtWidget._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
