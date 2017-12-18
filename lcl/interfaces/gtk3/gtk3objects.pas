@@ -1301,7 +1301,7 @@ begin
     //  [dx, dy, x, y, s]));
     // pango_renderer_activate();
     // pango_cairo_show_layout(Widget, Layout);
-    ColorToCairoRGB(CurrentTextColor, R, G , B);
+    ColorToCairoRGB(TColor(CurrentTextColor), R, G , B);
     cairo_set_source_rgb(Widget, R, G, B);
     // writeln('DRAWINGTEXT ',S,' WITH R=',dbgs(R),' G=',dbgs(G),' B=',dbgs(B));
     FCurrentFont.Layout^.set_text(PChar(S), length(S));
