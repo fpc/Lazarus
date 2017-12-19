@@ -566,6 +566,10 @@ msgstr "סוגרי מילה"
 msgid "Visualized Special Chars"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "הוסף נקודה פסיק"
@@ -1244,6 +1248,10 @@ msgstr "קולניות"
 msgid "C++ styled INLINE"
 msgstr "פנימי בסגנון ++C"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "מקש Ctrl+לחצן אמצעי על לשונית סוגר את כל הלשוניות האחרות"
@@ -1297,6 +1305,10 @@ msgstr "גופן ברירת מחדל של העורך"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "ערך ברירת מחדל"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2602,6 +2614,10 @@ msgstr "מספר מקסימלי של קבצי פרוייקט שנפתחו לאח
 msgid "Mix methods and properties"
 msgstr "ערבב מתודות ותכונות"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr ""
@@ -3483,6 +3499,10 @@ msgstr "שמור מידע עורך עבור קבצי הפרוייקט בלבד"
 
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
@@ -5160,6 +5180,10 @@ msgstr "שבור"
 msgid "Breakpoint Properties"
 msgstr "תכונות נקודת עצירה"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5335,6 +5359,10 @@ msgstr "לא יכול להעתיק רכיב של הרמה העליונה."
 #| msgid "Cannot create file %s%s%s"
 msgid "Cannot create file \"%s\""
 msgstr "לא יכול לצור את הקובץ s%s%s%"
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8866,6 +8894,12 @@ msgstr "אל תראה הודעה זאת שוב"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr ""
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8877,6 +8911,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
+msgstr ""
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
 msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
@@ -8948,6 +8986,10 @@ msgstr ""
 #| msgid "Duplicate found of value %s%s%s."
 msgid "Duplicate found of value \"%s\"."
 msgstr "נמצאה כפילות בערך s%s%s%."
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10927,7 +10969,7 @@ msgstr "התקן זאת,אני אוהב אותו שמן"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14932,6 +14974,10 @@ msgstr "? (דלוק)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "בסוף השורה (למשל: מקש  return או enter)"
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -17993,6 +18039,10 @@ msgstr "בחר את הקובץ"
 msgid "Select FPC source directory"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "הבחירה חורגת מגבולות המחרוזת"
@@ -20153,6 +20203,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr ""
 
 #: lazarusidestrconsts.lisup

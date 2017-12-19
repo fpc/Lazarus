@@ -557,6 +557,10 @@ msgstr ""
 msgid "Visualized Special Chars"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "Tambah titik koma"
@@ -1225,6 +1229,10 @@ msgstr ""
 msgid "C++ styled INLINE"
 msgstr "Gaya C++ INLINE"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr ""
@@ -1276,6 +1284,10 @@ msgstr "Font editor default"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Nilai default"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2556,6 +2568,10 @@ msgstr "Maks file proyek terbaru"
 msgid "Mix methods and properties"
 msgstr "Campur metode dan properti"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr ""
@@ -3417,6 +3433,10 @@ msgstr "Simpan info editor hanya untuk file proyek"
 
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
@@ -5078,6 +5098,10 @@ msgstr ""
 msgid "Breakpoint Properties"
 msgstr ""
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5252,6 +5276,10 @@ msgstr "Tidak bisa meng-copy komponen tingkat teratas."
 #| msgid "Cannot create file %s%s%s"
 msgid "Cannot create file \"%s\""
 msgstr "Tidak bisa membuat file %s%s%s"
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8668,6 +8696,12 @@ msgstr ""
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr ""
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8679,6 +8713,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
+msgstr ""
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
 msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
@@ -8747,6 +8785,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
@@ -10681,7 +10723,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14579,6 +14621,10 @@ msgstr ""
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -17571,6 +17617,10 @@ msgstr ""
 msgid "Select FPC source directory"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Pilihan melebih konstan string"
@@ -19633,6 +19683,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr ""
 
 #: lazarusidestrconsts.lisup

@@ -557,6 +557,10 @@ msgstr "Sana-sulut"
 msgid "Visualized Special Chars"
 msgstr "Näytä erikoismerkit"
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "Lisää puolipiste"
@@ -1178,6 +1182,10 @@ msgstr "Monisanaisuus"
 msgid "C++ styled INLINE"
 msgstr "C++ -tyylinen INLINE"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "Ctrl-keskinäppäin-klikkaus välilehdellä sulkee kaikki muut"
@@ -1229,6 +1237,10 @@ msgstr "Editorin oletuskirjasin"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Oletusarvo"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2446,6 +2458,10 @@ msgstr "Projekteja muistetaan"
 msgid "Mix methods and properties"
 msgstr "Sekoita metodeja ja ominaisuuksia"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr "Hiiritoiminto"
@@ -3281,6 +3297,10 @@ msgstr "Tallenna editorin tiedot vain projektin tiedostoista"
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
 msgstr "Vain tähän projektiin kuuluvat tiedostot."
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
+msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4819,6 +4839,10 @@ msgstr "Keskeytä"
 msgid "Breakpoint Properties"
 msgstr "Keskeytyskohdan ominaisuudet"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -4985,6 +5009,10 @@ msgstr "Päätason komponenttia ei voida kopioida"
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Cannot create file \"%s\""
 msgstr "Ei voi luoda tiedostoa \"%s\""
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8307,6 +8335,12 @@ msgstr "Älä näytä tätä viestiä enää"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr "Älä kirjoita päivitettyjä projektin tietoja koonnan jälkeen. Jos ei määritelty, koontanumeroa lisätään asetuksen mukaan."
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgid "Down"
 msgstr "Alas"
@@ -8318,6 +8352,10 @@ msgstr "Palauta aikaisempaan"
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
 msgstr "Palauta asetukset aikaisempaan"
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
+msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8386,6 +8424,10 @@ msgstr "Päällekkäinen tiedostonimi"
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
 msgstr "Päällekkäinen arvo \"%s\"."
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10271,7 +10313,7 @@ msgstr "Asenna, pidän siitä turvonneena"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -13850,6 +13892,10 @@ msgstr "? (Päällä)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Riviä vaihdettaessa (Enter näppäin)"
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "vain 32bit"
@@ -16636,6 +16682,10 @@ msgstr "Valitse tiedosto"
 msgid "Select FPC source directory"
 msgstr "Valitse FPC lähdehakemisto"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Valinta ylittää merkkijonovakion"
@@ -18577,6 +18627,10 @@ msgstr "%s:n käyttämättömät yksiköt"
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr "Epätavallinen kääntäjän nimi. Yleensä se alkaa fpc, ppc tai ppcross."
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

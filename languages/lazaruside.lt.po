@@ -561,6 +561,10 @@ msgstr "Žodžiai-skliausteliai"
 msgid "Visualized Special Chars"
 msgstr "Vizualizuoti specialūs ženklai"
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "Padėti kabliataškį"
@@ -1187,6 +1191,10 @@ msgstr "Pranešimų gausa"
 msgid "C++ styled INLINE"
 msgstr "C++ stiliaus INLINE"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "Ant kortelės spustelėjus Ctrl ir vidurinįjį bus užvertos visos likusios"
@@ -1238,6 +1246,10 @@ msgstr "Numatytas rengyklės šriftas"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Numatyta vertė"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2478,6 +2490,10 @@ msgstr "Maksimalus atvertų projektų sąrašo ilgis"
 msgid "Mix methods and properties"
 msgstr "Maišyti metodus su savybėm"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr "Pelės veiksmas"
@@ -3312,6 +3328,10 @@ msgstr "Įrašyti rengyklės informaciją tik apie projekto failus"
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
 msgstr "Tik failus, kurie priklauso šiam projektui."
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
+msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4857,6 +4877,10 @@ msgstr "Stabdyti"
 msgid "Breakpoint Properties"
 msgstr "Stabdos tašo savybės"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5023,6 +5047,10 @@ msgstr "Aukščiausiame lygyje esančių komponenčių kopijuoti negalima."
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Cannot create file \"%s\""
 msgstr "Nepavyksta sukurti failą „%s“"
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8368,6 +8396,12 @@ msgstr "Daugiau neberodyti šio pranešimo"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr "Po darymo neįrašyti pakitusio projekto informacijos failo. Jei nenurodyta, tai darymo vertė bus padidinta (jei tai konfigūruota)."
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8380,6 +8414,10 @@ msgstr "Keisti senesniu"
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
 msgstr "Keisti senesne sąranka"
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
+msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8448,6 +8486,10 @@ msgstr "Failo pavadinimas dubliuojasi"
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
 msgstr "Rastas vertės „%s“ dublikatas."
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10371,7 +10413,7 @@ msgstr "Įdiegti, kuo daugiau tuo geriau"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -13995,6 +14037,10 @@ msgstr "? (Aktyvus)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Laužiant eilutę (pvz. įvedimo klavišas)"
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "tik 32 bitų"
@@ -16810,6 +16856,10 @@ msgstr "Pažymėti failą"
 msgid "Select FPC source directory"
 msgstr "Nurodykite FPC pirminio kodo aplanką"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Pažymėta daugiau nei eilutės konstanta"
@@ -18755,6 +18805,10 @@ msgstr "„%s“ nenaudojami moduliai"
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr "Neįprastas kompiliatoriaus failo pavadinimas. Įprastai jis prasideda „fpc“, „ppc“ ar „ppcross“."
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

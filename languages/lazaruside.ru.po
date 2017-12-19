@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-14 17:51+0300\n"
+"PO-Revision-Date: 2017-12-19 17:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -559,6 +559,10 @@ msgstr "Операторные скобки"
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
 msgid "Visualized Special Chars"
 msgstr "Видимые специальные символы"
+
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr "Добавить новый режим"
 
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
@@ -1186,6 +1190,10 @@ msgstr "Подробность вывода"
 msgid "C++ styled INLINE"
 msgstr "INLINE в стиле C++"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr "Создать новый набор параметров запуска"
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "По Ctrl-средней кнопке мыши на вкладке закрывать остальные"
@@ -1237,6 +1245,10 @@ msgstr "Шрифт редактора по умолчанию"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Значение по умолчанию"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr "Удалить режим"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2475,6 +2487,10 @@ msgstr "Максимальное количество недавних прое�
 msgid "Mix methods and properties"
 msgstr "Смешивать методы и свойства"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr "Режим"
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr "Реакция на действия мышью"
@@ -3307,6 +3323,10 @@ msgstr "Сохранять сведения только о файлах про�
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
 msgstr "Только файлы, принадлежащие проекту"
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
+msgstr "Сохранить в"
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4846,6 +4866,10 @@ msgstr "Останов"
 msgid "Breakpoint Properties"
 msgstr "Параметры точки останова"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr "Просмотреть и выбрать компилятор (например, ppcx64"
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5012,6 +5036,10 @@ msgstr "Невозможно скопировать компонент верх�
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Cannot create file \"%s\""
 msgstr "Невозможно создать файл \"%s\""
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr "Невозможно удалить последний режим."
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8353,6 +8381,14 @@ msgstr "Больше не показывать это сообщение"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr "Не записывать обновлённый файл сведений о проекте после сборки. Если параметр не указан, номер сборки будет наращиваться (если данная функция была включена)."
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+"Следующие пакеты недоступны локально: %s.\n"
+"Для установки их требуется загрузить. Сделать это сейчас?\n"
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8365,6 +8401,10 @@ msgstr "Понизить версию"
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
 msgstr "Понижение версии каталога настройки"
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
+msgstr "Загрузка"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8433,6 +8473,10 @@ msgstr "Дублирующееся имя файла"
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
 msgstr "Значение \"%s\" уже существует."
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
+msgstr "Режим \"%s\" уже имеется в списке."
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10356,10 +10400,10 @@ msgstr "Установить, я люблю полных"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
-"Следующие пакеты доступны в сети, но не были установлены: %s.\n"
+"Следующие пакеты не установлены, но доступны в главном репозитории: %s.\n"
 "Хотите установить их?\n"
 
 #: lazarusidestrconsts.lisinstallselection
@@ -13973,6 +14017,10 @@ msgstr "? (Вкл.)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "При разрыве строки (то есть при нажатии клавиши 'Ввод')"
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr "доступен в главном репозитории"
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "только 32 бита"
@@ -16786,6 +16834,10 @@ msgstr "Выберите файл"
 msgid "Select FPC source directory"
 msgstr "Выберите каталог исходного кода FPC"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr "Выберите фрейм"
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Выбор превышает строковую константу"
@@ -18729,6 +18781,10 @@ msgstr "Неиспользуемые модули в %s"
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr "Необычное имя файла компилятора. Как правило, оно начинается с fpc, ppc либо ppcross."
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr "Необычное имя файла компилятора pas2js. Как правило, оно начинается с pas2js."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

@@ -559,6 +559,10 @@ msgstr "Szó-zárójelek"
 msgid "Visualized Special Chars"
 msgstr "Megjelenített speciális karakterek"
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "Pontosvessző hozzáadása"
@@ -1185,6 +1189,10 @@ msgstr "Bőbeszédűség"
 msgid "C++ styled INLINE"
 msgstr "C++ stílusú INLINE"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "Ctrl-középső-kattintás a fülön bezárja a többit"
@@ -1236,6 +1244,10 @@ msgstr "Szerkesztő alapértelmezett betűtípusa"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Alapértelmezett érték"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2474,6 +2486,10 @@ msgstr "Legutóbbi projektek maximális száma"
 msgid "Mix methods and properties"
 msgstr "Metódusok és tulajdonságok vegyítése"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr "Egér művelet"
@@ -3306,6 +3322,10 @@ msgstr "Szerkesztő beállításainak mentése csak a projekt fájlokhoz"
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
 msgstr "Csak az e projekthez tartozó fájlok."
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
+msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4845,6 +4865,10 @@ msgstr "Megszakítás"
 msgid "Breakpoint Properties"
 msgstr "Töréspont tulajdonságai"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5011,6 +5035,10 @@ msgstr "Legfelső szintű komponenst nem lehet másolni."
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Cannot create file \"%s\""
 msgstr "A fájl nem hozható létre: \"%s\""
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8355,6 +8383,12 @@ msgstr "Ne mutassa újra ezt az üzenetet"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr "Ne legyen frissítve a projekt információs fájlja építés után. Így az építési szám csak megfelelő beállítás esetén növekszik."
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8367,6 +8401,10 @@ msgstr "Visszafejlesztés"
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
 msgstr "Beállítások visszafejlesztése"
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
+msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8435,6 +8473,10 @@ msgstr "Ismétlődő fájlnév"
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
 msgstr "A(z) \"%s\" érték ismétlődik."
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10358,7 +10400,7 @@ msgstr "Telepítés, nekem tetszik a duciság"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -13971,6 +14013,10 @@ msgstr "? (Be)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Sortöréskor (azaz Return vagy Enter billenyű)"
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "csak 32bit"
@@ -16784,6 +16830,10 @@ msgstr "Válassza ki a fájlt"
 msgid "Select FPC source directory"
 msgstr "A(z) FPC forráskód könyvtárának kiválasztása"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "A kijelölés meghaladja a karakterlánc konstanst"
@@ -18727,6 +18777,10 @@ msgstr "%s nem használt unit-jai"
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr "Szokásos fordító-fájlnév. Általában így kezdődik: fpc, ppc vagy ppcross"
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

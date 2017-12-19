@@ -559,6 +559,10 @@ msgstr "Palabra Inicial-Final"
 msgid "Visualized Special Chars"
 msgstr "Visualizados Caracteres especiales"
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "Añadir punto y coma"
@@ -1187,6 +1191,10 @@ msgstr "Verbosidad"
 msgid "C++ styled INLINE"
 msgstr "INLINE Estilizado C++"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "Ctrl + clic del botón central del ratón en una pestaña cierra todas las demás"
@@ -1238,6 +1246,10 @@ msgstr "Fuente predeterminada del editor"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Valor predeterminado"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2504,6 +2516,10 @@ msgstr "Nº Máximo de archivos de proyecto recientes"
 msgid "Mix methods and properties"
 msgstr "Mezclar métodos y propiedades"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr "Acción de ratón"
@@ -3358,6 +3374,10 @@ msgstr "Guardar información del Editor sólo para archivos del proyecto"
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
 msgstr "Solamente ficheros que pertenecen a este proyecto."
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
+msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4906,6 +4926,10 @@ msgstr "Interrumpir"
 msgid "Breakpoint Properties"
 msgstr "Propiedades del punto de interrupción"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5072,6 +5096,10 @@ msgstr "No puedo copiar un componente de nivel superior."
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Cannot create file \"%s\""
 msgstr "No se puede crear el archivo \"%s\""
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8430,6 +8458,12 @@ msgstr "No volver a mostrar este mensaje"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr "No escriba el archivo de información del proyecto actualizado después de la compilación. Si no se especifica, el número de compilación se incrementará si se configura."
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8442,6 +8476,10 @@ msgstr "Degradar"
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
 msgstr "Degradar configuración"
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
+msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8510,6 +8548,10 @@ msgstr "Nombre de fichero duplicado"
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
 msgstr "Se encontró duplicado del valor \"%s\"."
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10463,7 +10505,7 @@ msgstr "Instálalo, me gusta lo pesado"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14202,6 +14244,10 @@ msgstr "¿? (Activado)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Al final de línea (ej. retorno o tecla enter)"
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "solo 32bits"
@@ -17022,6 +17068,10 @@ msgstr "Seleccionar el archivo"
 msgid "Select FPC source directory"
 msgstr "Selecciona directorio de fuentes de FPC"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "La selección excede la constante de cadena"
@@ -18976,6 +19026,10 @@ msgstr "Unidades no utilizadas de %s"
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr "Inusual nombre de archivo del compilador. Por lo general, comienza con la fpc, ppc o ppcross."
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

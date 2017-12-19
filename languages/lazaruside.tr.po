@@ -561,6 +561,10 @@ msgstr "Kelime-Parantezler"
 msgid "Visualized Special Chars"
 msgstr "Görselleştirilen Özel Kare"
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "Noktalı virgül ekleyin"
@@ -1185,6 +1189,10 @@ msgstr "Ayrıntı"
 msgid "C++ styled INLINE"
 msgstr "C ++ styled INLINE"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "Sekmedeki Ctrl-orta tıklama tüm diğerlerini kapatır"
@@ -1236,6 +1244,10 @@ msgstr "Varsayılan düzenleyici fontu"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Varsayılan değer"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2481,6 +2493,10 @@ msgstr "Maksimum yeni proje dosyaları"
 msgid "Mix methods and properties"
 msgstr "Karışım yöntemleri ve özellikleri"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr "Fare Hareketi"
@@ -3314,6 +3330,10 @@ msgstr "Editör bilgilerini yalnızca proje dosyaları için kaydet"
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
 msgstr "Sadece bu projeye ait dosyalar."
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
+msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4873,6 +4893,10 @@ msgstr "Kırılma"
 msgid "Breakpoint Properties"
 msgstr "Kesme Noktası Özellikleri"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5040,6 +5064,10 @@ msgstr "Üst düzey bileşeni kopyalayamıyorum."
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Cannot create file \"%s\""
 msgstr "Dosya \" %s \\ \"oluşturulamıyor"
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 #, fuzzy,badformat
@@ -8449,6 +8477,12 @@ msgstr "Bu mesajı tekrar gösterme"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr ""
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8461,6 +8495,10 @@ msgstr "Düşürme"
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
 msgstr "Düşen konfigürasyon"
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
+msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8529,6 +8567,10 @@ msgstr "Yinelenen Dosya Adı"
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
 msgstr "Yinelenen değer \" %s \\ \"bulundu."
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10465,7 +10507,7 @@ msgstr "Yükle, yağ seviyorum"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14154,6 +14196,10 @@ msgstr "?"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Kesme çizgisinde (örn. Dönüş veya enter tuşu)"
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -17035,6 +17081,10 @@ msgstr "Dosyayı seçin"
 msgid "Select FPC source directory"
 msgstr "Select FPC kaynak dizini"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Seçim dize sabitini aşıyor"
@@ -19071,6 +19121,10 @@ msgstr "% S kullanılmayan birimleri"
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr "Alışılmadık derleyici dosya adı Genellikle fpc, ppc veya ppcross ile başlar."
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

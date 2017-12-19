@@ -561,6 +561,10 @@ msgstr "Slovní závorky"
 msgid "Visualized Special Chars"
 msgstr "Zobrazit speciální znaky"
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "Přidat středník"
@@ -1187,6 +1191,10 @@ msgstr "Výřečnost"
 msgid "C++ styled INLINE"
 msgstr "INLINE ve stylu C++"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "Ctrl-prostřední-klik na záložku zavře všechny ostatní"
@@ -1238,6 +1246,10 @@ msgstr "Výchozí písmo editoru"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Výchozí hodnota"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2484,6 +2496,10 @@ msgstr "Maximum nedávných souborů projektů"
 msgid "Mix methods and properties"
 msgstr "Slučovat metody a vlastnosti"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr "Akce myši"
@@ -3322,6 +3338,10 @@ msgstr "Ukládat informace editoru pouze pro soubory projektu"
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
 msgstr "Pouze soubory patřící do tohoto projektu."
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
+msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4865,6 +4885,10 @@ msgstr "Přerušit"
 msgid "Breakpoint Properties"
 msgstr "Vlastnosti bodů zastavení"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5031,6 +5055,10 @@ msgstr "Nelze zkopírovat komponentu na nejvyšší úrovni."
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Cannot create file \"%s\""
 msgstr "Nelze vytvořit soubor \"%s\""
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8378,6 +8406,12 @@ msgstr "Neukazovat znova tuto zprávu"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr ""
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8390,6 +8424,10 @@ msgstr "Ponížit"
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
 msgstr "Ponížit konfiguraci"
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
+msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8458,6 +8496,10 @@ msgstr "Duplicitní Soubor"
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
 msgstr "Nalezeno zdvojení hodnoty \"%s\"."
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10378,7 +10420,7 @@ msgstr "Nainstalovat jej, mám to rád tučné"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14078,6 +14120,10 @@ msgstr "? (Zapnuto)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Při zalomení řádku (tj. klávesa Enter)"
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -16895,6 +16941,10 @@ msgstr "Vybrat soubor"
 msgid "Select FPC source directory"
 msgstr "Vybrat zdrojový adresář FPC"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Výběr přesahuje řetězcovou konstantu"
@@ -18844,6 +18894,10 @@ msgstr "Nepoužité jednotky z %s"
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr "Neobvyklé jméno překladače. Obvykle začíná fpc, ppc nebo ppcross."
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

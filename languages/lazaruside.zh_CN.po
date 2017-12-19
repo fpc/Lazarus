@@ -560,6 +560,10 @@ msgstr ""
 msgid "Visualized Special Chars"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "添加分号"
@@ -1208,6 +1212,10 @@ msgstr "冗余"
 msgid "C++ styled INLINE"
 msgstr "C++ 风格的 INLINE"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr ""
@@ -1259,6 +1267,10 @@ msgstr "默认的编辑器字体"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "默认值"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2531,6 +2543,10 @@ msgstr "最大记录最近的工程数"
 msgid "Mix methods and properties"
 msgstr "混合方法和属性"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr "鼠标动作"
@@ -3386,6 +3402,10 @@ msgstr "只为工程文件保存代码编辑器信息"
 
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
+msgstr ""
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
@@ -5013,6 +5033,10 @@ msgstr "中断"
 msgid "Breakpoint Properties"
 msgstr "断点属性"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5179,6 +5203,10 @@ msgstr "不能复制顶层组件."
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Cannot create file \"%s\""
 msgstr "不能创建文件\"%s\""
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8569,6 +8597,12 @@ msgstr "不再显示这个消息"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr ""
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8580,6 +8614,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
+msgstr ""
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
 msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
@@ -8648,6 +8686,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
@@ -10555,7 +10597,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -14327,6 +14369,10 @@ msgstr "? (开启)"
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr ""
@@ -17232,6 +17278,10 @@ msgstr "选择文件"
 msgid "Select FPC source directory"
 msgstr "选择FPC 源代码目录"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "所选的超过了字符串常量"
@@ -19272,6 +19322,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr ""
 
 #: lazarusidestrconsts.lisup

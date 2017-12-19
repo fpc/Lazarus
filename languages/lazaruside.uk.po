@@ -562,6 +562,10 @@ msgstr "Квадратні дужки"
 msgid "Visualized Special Chars"
 msgstr "Візуалізація спеціальних символів"
 
+#: lazarusidestrconsts.dlgaddnewmode
+msgid "Add new mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
 msgstr "Додавати символ 'крапка з комою'"
@@ -1188,6 +1192,10 @@ msgstr "Подробиці виводу"
 msgid "C++ styled INLINE"
 msgstr "INLINE стилю C++"
 
+#: lazarusidestrconsts.dlgcreatenewrunparameterssettings
+msgid "Create new Run Parameters settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
 msgstr "Натискання Ctrl-Середня Кнопка на вкладці закриває інші"
@@ -1239,6 +1247,10 @@ msgstr "Типовий шрифт редактора"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Типове значення"
+
+#: lazarusidestrconsts.dlgdeletemode
+msgid "Delete mode"
+msgstr ""
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2477,6 +2489,10 @@ msgstr "Максимум останніх файлів проектів"
 msgid "Mix methods and properties"
 msgstr "Змішування методів і властивостей"
 
+#: lazarusidestrconsts.dlgmode
+msgid "Mode"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
 msgstr "Дія мишею"
@@ -3309,6 +3325,10 @@ msgstr "Зберігати відомості тільки про файли п�
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
 msgstr "Лише файли, що належать до цього проекту."
+
+#: lazarusidestrconsts.dlgsavein
+msgid "Save in"
+msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4848,6 +4868,10 @@ msgstr "Перервати"
 msgid "Breakpoint Properties"
 msgstr "Властивості точки зупинки"
 
+#: lazarusidestrconsts.lisbrowseandselectacompiler
+msgid "Browse and select a compiler (e.g. ppcx64"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
@@ -5014,6 +5038,10 @@ msgstr "Неможливо скопіювати компонент верхнь�
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Cannot create file \"%s\""
 msgstr "Неможливо створити файл \"%s\""
+
+#: lazarusidestrconsts.liscannotdeletelastmode
+msgid "Cannot delete last mode."
+msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8358,6 +8386,12 @@ msgstr "Не показувати це повідомлення знов"
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
 msgstr "Не записувати оновлений файл інформації про проект після збирання. Якщо параметр не вказано, номер збірки буде нарощуватися (якщо цю функцію увімкнено)."
 
+#: lazarusidestrconsts.lisdonwloadonlinepackages
+msgid ""
+"The following package(s) are not available locally: %s.\n"
+"In order to install it, you must download them first. Download now?\n"
+msgstr ""
+
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
 msgid "Down"
@@ -8370,6 +8404,10 @@ msgstr "Зниження"
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
 msgstr "Понизити конфігурацію"
+
+#: lazarusidestrconsts.lisdownload
+msgid "Download"
+msgstr ""
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8438,6 +8476,10 @@ msgstr "Повторна назва файлу"
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 msgid "Duplicate found of value \"%s\"."
 msgstr "Знайдений дублікат значення \"%s\"."
+
+#: lazarusidestrconsts.lisduplicatemodename
+msgid "Mode \"%s\" is already present in the list."
+msgstr ""
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10361,7 +10403,7 @@ msgstr "Встанови його, мені подобається жир"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
-"The following packages are not installed, but available online: %s.\n"
+"The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
 
@@ -13975,6 +14017,10 @@ msgstr "? (Вкл)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "При розриві рядка (тобто при натисканні клавіші Enter)"
 
+#: lazarusidestrconsts.lisonlinepackage
+msgid "available in the main repository"
+msgstr ""
+
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
 msgstr "лише 32біт"
@@ -16788,6 +16834,10 @@ msgstr "Вибрати файл"
 msgid "Select FPC source directory"
 msgstr "Вибрати теку сирцевих кодів FPC"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Вибір перевищує рядкову константу"
@@ -18731,6 +18781,10 @@ msgstr "Невикористані модулі в %s"
 #: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
 msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
 msgstr "Незвичайна назва компілятора. Зазвичай вона починається на fpc, ppc чи ppcross."
+
+#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
