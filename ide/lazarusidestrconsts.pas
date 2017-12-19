@@ -2395,7 +2395,7 @@ resourcestring
   lisCOExecuteAfter = 'Execute after';
   lisCOExecuteBefore = 'Execute before';
   lisCOCommand = 'Command:';
-  lisBrowseAndSelectACompiler = 'Browse and select a compiler';
+  lisBrowseAndSelectACompiler = 'Browse and select a compiler (e.g. ppcx64';
   lisCOScanForMessages = 'Scan for messages:';
   lisCOScanForFPCMessages = 'Scan for FPC messages';
   lisCOScanForMakeMessages = 'Scan for Make messages';
@@ -3577,7 +3577,7 @@ resourcestring
   lisConflict = 'Conflict';
   lisThereIsAlreadyAPackageInTheList = 'There is already a package %s in the list';
   lisDownload = 'Download';
-  lisDonwloadOnlinePackages = 'The following package(s) are not available locally:  %s .' + sLineBreak +
+  lisDonwloadOnlinePackages = 'The following package(s) are not available locally: %s.' + sLineBreak +
     'In order to install it, you must download them first. Download now?';
   lisNotADesigntimePackage = 'Not a designtime package';
   lisThePackageCanNotBeInstalledBecauseItRequiresWhichI = 'The package %s cannot be '
