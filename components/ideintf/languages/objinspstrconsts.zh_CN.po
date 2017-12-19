@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-29 10:39+0800\n"
+"PO-Revision-Date: 2017-12-14 21:18+0800\n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,12 +51,12 @@ msgstr "帮助"
 #: objinspstrconsts.cactionlisteditormovedownaction
 msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
-msgstr "下移"
+msgstr "向下移动"
 
 #: objinspstrconsts.cactionlisteditormoveupaction
 msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
 msgid "Move Up"
-msgstr "上移"
+msgstr "向上移动"
 
 #: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
@@ -88,7 +88,7 @@ msgstr ""
 
 #: objinspstrconsts.cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr ""
+msgstr "\"%s\"项目已经列出.还要添加它?"
 
 #: objinspstrconsts.cgcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -100,11 +100,11 @@ msgstr "列:"
 
 #: objinspstrconsts.cgdisable
 msgid "Popup to disable/enable items"
-msgstr ""
+msgstr "允许/禁止弹出项目"
 
 #: objinspstrconsts.clbadd
 msgid "Add new Item"
-msgstr "添加新项目"
+msgstr "添加新建项目"
 
 #: objinspstrconsts.clbchecklistboxeditor
 msgid "CheckListBox Editor"
@@ -134,7 +134,7 @@ msgstr "上移"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "添加字段"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
@@ -182,10 +182,8 @@ msgid "&Dataset:"
 msgstr ""
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
-#| msgid "Edit Fields..."
 msgid "Edit Fields ..."
-msgstr "编辑字段"
+msgstr "编辑字段..."
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
@@ -193,22 +191,20 @@ msgstr ""
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"
-msgstr ""
+msgstr "字段属性"
 
 #: objinspstrconsts.fesfieldtype
 msgid "Field Type"
-msgstr ""
+msgstr "字段类型"
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
 msgstr "字段定义"
 
 #: objinspstrconsts.fesformcaption
-#, fuzzy
-#| msgid "New fileld"
 msgctxt "objinspstrconsts.fesformcaption"
 msgid "New field"
-msgstr "对话框"
+msgstr "新建字段"
 
 #: objinspstrconsts.feskeyfield
 msgid "&Key fields:"
@@ -228,7 +224,7 @@ msgstr ""
 
 #: objinspstrconsts.fesname
 msgid "&Name:"
-msgstr ""
+msgstr "名称:(&N)"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -245,7 +241,7 @@ msgstr "确定"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
-msgstr ""
+msgstr "组件名称:(&m)"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
@@ -253,11 +249,11 @@ msgstr ""
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
-msgstr "(&S)大小:"
+msgstr "大小:(&S)"
 
 #: objinspstrconsts.festype
 msgid "&Type:"
-msgstr "(&T)类型"
+msgstr "类型:(&T)"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -355,11 +351,11 @@ msgstr "上移"
 
 #: objinspstrconsts.ois0lines0chars
 msgid "0 lines, 0 chars"
-msgstr "0 行,0 字符"
+msgstr "0行,0字符"
 
 #: objinspstrconsts.ois1linedchars
 msgid "1 line, %d chars"
-msgstr "1 行,%d 字符"
+msgstr "1行,%d字符"
 
 #: objinspstrconsts.oisaction
 msgid "Action"
@@ -367,7 +363,7 @@ msgstr "动作"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor ..."
-msgstr "Action&List Editor ...(&L)"
+msgstr "动作&列表编辑器...(&L)"
 
 #: objinspstrconsts.oisactionlisteditor
 msgid "ActionList Editor"
@@ -385,7 +381,7 @@ msgstr "添加项目(&A)"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr ""
+msgstr "添加字段(&A)"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
@@ -415,7 +411,7 @@ msgstr "布尔"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "组件(&m)"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
@@ -452,11 +448,11 @@ msgstr "空白字符类型"
 
 #: objinspstrconsts.oisclass
 msgid "Class"
-msgstr "Class"
+msgstr "类"
 
 #: objinspstrconsts.oisclear
 msgid "C&lear"
-msgstr "清除(&L)"
+msgstr "清除(&l)"
 
 #: objinspstrconsts.oisclearpicture
 msgid "Clear picture"
@@ -464,11 +460,11 @@ msgstr "清除图片"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "组件\"%s\"不是一个有效的标识符"
+msgstr "组件名\"%s\"不是一个有效的标识符"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr ""
+msgstr "组件限制"
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -489,7 +485,7 @@ msgstr "创建默认的事件"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr ""
+msgstr "创建新字段并添加在当前位置"
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
@@ -502,7 +498,7 @@ msgstr ""
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr "剪切(&T)"
+msgstr "剪切(&t)"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -528,7 +524,7 @@ msgstr "删除选择的字段(s)"
 
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
-msgstr "%d 行, %d 字符"
+msgstr "%d行, %d字符"
 
 #: objinspstrconsts.oisenumeration
 msgid "Enumeration"
@@ -624,7 +620,7 @@ msgstr "%u项目被选择"
 
 #: objinspstrconsts.oisjumptodeclarationof
 msgid "Jump to declaration of %s"
-msgstr ""
+msgstr "跳转到%s声明"
 
 #: objinspstrconsts.oisload
 msgid "&Load"
@@ -639,8 +635,6 @@ msgid "Load picture"
 msgstr "加载图片"
 
 #: objinspstrconsts.oismasks
-#, fuzzy
-#| msgid "Masks..."
 msgid "Masks ..."
 msgstr "掩码..."
 
@@ -650,7 +644,7 @@ msgstr "Method"
 
 #: objinspstrconsts.oismixed
 msgid "(Mixed)"
-msgstr ""
+msgstr "(混合)"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
@@ -658,16 +652,16 @@ msgstr "下移(&D)"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
-msgstr ""
+msgstr "下移字段"
 
 #: objinspstrconsts.oismoveup
 msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
-msgstr "上移N"
+msgstr "向上移动(&U)"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
-msgstr ""
+msgstr "上移字段"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -744,7 +738,7 @@ msgstr "图片保存为"
 
 #: objinspstrconsts.oispressakey
 msgid "Press a key ..."
-msgstr ""
+msgstr "按一个键..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -828,7 +822,7 @@ msgstr "设置"
 
 #: objinspstrconsts.oissetmaxconstraints
 msgid "Set MaxHeight=%d, MaxWidth=%d"
-msgstr ""
+msgstr "设置最大高度=%d,最大宽度=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
@@ -868,7 +862,7 @@ msgstr "显示提示"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "显示信息框"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
@@ -1006,7 +1000,7 @@ msgstr "复制"
 #: objinspstrconsts.oistdacteditcutheadline
 msgctxt "objinspstrconsts.oistdacteditcutheadline"
 msgid "Cu&t"
-msgstr "剪切(&T)"
+msgstr "剪切(&t)"
 
 #: objinspstrconsts.oistdacteditcutshortcut
 msgid "Ctrl+X"
@@ -1219,11 +1213,11 @@ msgstr "未知"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr ""
+msgstr "不选择所有(&U)"
 
 #: objinspstrconsts.oisunselectallhint
 msgid "Unselect All"
-msgstr ""
+msgstr "不选择所有"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1310,7 +1304,7 @@ msgstr "右"
 
 #: objinspstrconsts.rscdvisible
 msgid "Visible"
-msgstr ""
+msgstr "可视"
 
 #: objinspstrconsts.rscdwidth
 msgid "Width"
@@ -1366,13 +1360,12 @@ msgstr "选择的图像"
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
 msgid "Move D&own"
-msgstr ""
+msgstr "向下移动(&o)"
 
 #: objinspstrconsts.sccsiledtmoveup
-#, fuzzy
 msgctxt "objinspstrconsts.sccsiledtmoveup"
 msgid "Move &Up"
-msgstr "上移N"
+msgstr "向下移动(&U)"
 
 #: objinspstrconsts.sccsiledtnone
 msgid "None"
@@ -1416,11 +1409,9 @@ msgid "Edit Columns ..."
 msgstr "编辑列..."
 
 #: objinspstrconsts.sccslvedt
-#, fuzzy
-#| msgid "Edit Items..."
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items ..."
-msgstr "编辑 ListView 标签..."
+msgstr "编辑项目..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1458,12 +1449,12 @@ msgstr "标题:"
 #: objinspstrconsts.sccslvedtlabelimageindex
 msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
-msgstr "图片索引"
+msgstr "图片索引:"
 
 #: objinspstrconsts.sccslvedtlabelstateindex
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr "状态索引"
+msgstr "状态索引:"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1476,10 +1467,8 @@ msgid "New SubItem"
 msgstr "新建子项"
 
 #: objinspstrconsts.sccsmaskeditor
-#, fuzzy
-#| msgid "Edit Mask Editor..."
 msgid "Edit Mask Editor ..."
-msgstr "掩码编辑器"
+msgstr "编辑掩码编辑器..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
@@ -1575,7 +1564,7 @@ msgstr "选择索引:"
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
 msgid "State Index:"
-msgstr "状态索引"
+msgstr "状态索引:"
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
@@ -1632,11 +1621,11 @@ msgstr "想要分割图片吗？"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "新建Button"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
-msgstr ""
+msgstr "新建CheckButton"
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"
@@ -1644,19 +1633,19 @@ msgstr ""
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr ""
+msgstr "新建分隔符"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "添加tab"
 
 #: objinspstrconsts.tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "删除tab"
 
 #: objinspstrconsts.tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "插入tab"
 
 #: objinspstrconsts.tccesmovetableft
 msgid "Move tab left"

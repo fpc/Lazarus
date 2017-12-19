@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-29 10:36+0800\n"
+"PO-Revision-Date: 2017-12-06 20:02+0800\n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -86,7 +86,7 @@ msgstr "下载: (%s), 大小发现异常 %s, 只得到 %s"
 
 #: ipconst.providerunknownformat
 msgid "Don't know how to handle %s"
-msgstr ""
+msgstr "不知道如何处理%s"
 
 #: ipconst.providerunknownpicture
 msgid "Invalid picture format"
@@ -767,7 +767,7 @@ msgstr ""
 
 #: ipconst.slogpop3class
 msgid "[POP3] "
-msgstr ""
+msgstr "[POP3] "
 
 #: ipconst.slogpop3message
 msgid "Generating OnMessage event"
@@ -994,7 +994,7 @@ msgstr ""
 #: ipconst.snntpcmdlist
 msgctxt "ipconst.snntpcmdlist"
 msgid "LIST"
-msgstr ""
+msgstr "列表"
 
 #: ipconst.snntpcmdlistacttimes
 msgid "LIST ACTIVE.TIMES"
@@ -1047,12 +1047,12 @@ msgstr ""
 #: ipconst.snntpcmdquit
 msgctxt "ipconst.snntpcmdquit"
 msgid "QUIT"
-msgstr ""
+msgstr "退出"
 
 #: ipconst.snntpcmdstat
 msgctxt "ipconst.snntpcmdstat"
 msgid "STAT"
-msgstr ""
+msgstr "开始"
 
 #: ipconst.snntpcmdxover
 msgid "XOVER"
@@ -1424,7 +1424,7 @@ msgstr ""
 #: ipconst.spop3cmdlist
 msgctxt "ipconst.spop3cmdlist"
 msgid "LIST"
-msgstr ""
+msgstr "列表"
 
 #: ipconst.spop3cmdnoop
 msgid "NOOP"
@@ -1432,12 +1432,12 @@ msgstr ""
 
 #: ipconst.spop3cmdpass
 msgid "PASS"
-msgstr ""
+msgstr "通过"
 
 #: ipconst.spop3cmdquit
 msgctxt "ipconst.spop3cmdquit"
 msgid "QUIT"
-msgstr ""
+msgstr "退出"
 
 #: ipconst.spop3cmdretr
 msgid "RETR"
@@ -1450,7 +1450,7 @@ msgstr ""
 #: ipconst.spop3cmdstat
 msgctxt "ipconst.spop3cmdstat"
 msgid "STAT"
-msgstr ""
+msgstr "开始"
 
 #: ipconst.spop3cmdtop
 msgid "TOP"
@@ -1508,7 +1508,7 @@ msgstr "没有操作"
 
 #: ipconst.spspass
 msgid "Logging on with Password"
-msgstr ""
+msgstr "用密码登录"
 
 #: ipconst.spsquit
 msgctxt "ipconst.spsquit"
@@ -1546,7 +1546,7 @@ msgstr "位置状态"
 
 #: ipconst.spsuser
 msgid "Logging on with User"
-msgstr ""
+msgstr "用户登录"
 
 #: ipconst.spterror
 #, fuzzy
@@ -1978,7 +1978,7 @@ msgstr ""
 
 #: ipconst.ssshelo
 msgid "Logging on with HELO"
-msgstr ""
+msgstr "用HELO登录"
 
 #: ipconst.ssshelp
 msgid "Help"
@@ -2002,11 +2002,11 @@ msgstr ""
 
 #: ipconst.ssslbadmac
 msgid "MAC did not match."
-msgstr ""
+msgstr "MAC不匹配"
 
 #: ipconst.ssslbadmd5hash
 msgid "MD5 hash did not match."
-msgstr ""
+msgstr "MD5 hash不匹配"
 
 #: ipconst.ssslbadpublicencoding
 msgid "Bad public encoding type."
@@ -2046,7 +2046,7 @@ msgstr "连接时不能改变SSL状态."
 
 #: ipconst.ssslencryptbuf2small
 msgid "Encrypt buffer to small."
-msgstr ""
+msgstr "加密缓冲区太小."
 
 #: ipconst.ssslencryptiontype
 msgid "Encryption type not defined."
@@ -2078,15 +2078,15 @@ msgstr "证书无效."
 
 #: ipconst.ssslnohashtype
 msgid "No hash type selected."
-msgstr ""
+msgstr "没有hash类型类型:"
 
 #: ipconst.ssslnomessageencslected
 msgid "No message encoding type selected."
-msgstr ""
+msgstr "没有消息编码类型选择."
 
 #: ipconst.ssslnoroom
 msgid "Not enough memory available to read SSL record."
-msgstr ""
+msgstr "没有足够可用农村来读取SSL记录"
 
 #: ipconst.ssslnotenoughkeymaterail
 msgid "Not enough key material."
@@ -2220,7 +2220,7 @@ msgstr ""
 
 #: ipconst.sssverify
 msgid "Verifying"
-msgstr ""
+msgstr "确认"
 
 #: ipconst.ssterror
 #, fuzzy
@@ -2255,7 +2255,7 @@ msgstr "编码方法不支持"
 
 #: ipconst.suuencodecounterr
 msgid "Count <> Len or Count > 63"
-msgstr ""
+msgstr "计数<>长度 或 计数>63"
 
 #: ipconst.swebimagecannotload
 msgid "Cannot load %s"
@@ -2275,7 +2275,7 @@ msgstr ""
 
 #: ipconst.swriteafterrename
 msgid "***Write after rename"
-msgstr ""
+msgstr "***重命名后写"
 
 #: ipconst.swrongstateerr
 msgid "Can not comply, wrong state"
@@ -2404,7 +2404,7 @@ msgstr ""
 #: ipconst.swsaenomore
 msgctxt "ipconst.swsaenomore"
 msgid "No more data available"
-msgstr ""
+msgstr "没有更多可以数据"
 
 #: ipconst.swsaenoprotoopt
 msgid "Bad protocol option"
@@ -2529,7 +2529,7 @@ msgstr "查找被取消"
 #: ipconst.swsa_e_no_more
 msgctxt "ipconst.swsa_e_no_more"
 msgid "No more data available"
-msgstr ""
+msgstr "没有更多可以数据"
 
 #: ipconst.swsa_qos_admission_failure
 msgid "Error due to lack of resources"

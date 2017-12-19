@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -50,7 +50,7 @@ msgstr "字段"
 
 #: ldd_consts.ldd_fieldstogeneratecodefor
 msgid "Fields to generate code for"
-msgstr ""
+msgstr "字段来产生代码对于"
 
 #: ldd_consts.ldd_filenameapplicationsfilter
 msgid "Applications|*.exe|Any file|*.*"
@@ -102,11 +102,11 @@ msgstr "文件另存为"
 
 #: ldd_consts.ldd_selectcodetobegenerated
 msgid "Select code to be generated"
-msgstr ""
+msgstr "选择代码将被生成"
 
 #: ldd_consts.ldd_setprojectdatadictionary
 msgid "Set project Data Dictionary"
-msgstr ""
+msgstr "设置工程数据字典"
 
 #: ldd_consts.ldd_showgeneratedcode
 msgid "Show generated code"
@@ -114,7 +114,7 @@ msgstr "显示生产的代码"
 
 #: ldd_consts.ldd_usedatadictionary
 msgid "&Use Data dictionary for this project"
-msgstr ""
+msgstr "这个工程使用数据字典(&U)"
 
 #: ldd_consts.sapplicationfilter
 msgid "Applications|*"
@@ -122,43 +122,47 @@ msgstr "应用程序|*"
 
 #: ldd_consts.sapplyingddtodataset
 msgid "Applying data dictionary to dataset %s"
-msgstr ""
+msgstr "应用数据字典到dataset%s"
 
 #: ldd_consts.sapplyingddtofield
 msgid "Applying data dictionary to field %s"
-msgstr ""
+msgstr "应用数据字典到字段%s"
 
 #: ldd_consts.serrnodatadesktopdoselect
 msgid ""
 "Could not locate the database desktop application.\n"
 "Would you like to select it ?\n"
 msgstr ""
+"不能定位database桌面应用.\n"
+"你想要选择它吗?\n"
 
 #: ldd_consts.serrnodatadictactive
 msgid ""
 "No datadictionary active.\n"
 "Please set a data dictionary for the project\n"
 msgstr ""
+"没有数据字典激活.\n"
+"请为该工程设置数据字典\n"
 
 #: ldd_consts.serrselectdd
 msgid "Please select a known data dictionary"
-msgstr ""
+msgstr "请选择一个已知的数据字典"
 
 #: ldd_consts.serrselectdir
 msgid "Please select an existing directory"
-msgstr ""
+msgstr "请选择一个存在的目录"
 
 #: ldd_consts.serrselectexe
 msgid "Please select an existing database desktop application"
-msgstr ""
+msgstr "请选择一个存在的database桌面应用"
 
 #: ldd_consts.serrselectfile
 msgid "Please select an existing data dictionary file"
-msgstr ""
+msgstr "请选择一个存在的数据字典文件"
 
 #: ldd_consts.sfromfile
 msgid "from file: "
-msgstr ""
+msgstr "从文件:"
 
 #: ldd_consts.sloadingdatadict
 msgid "Loading data dictionary "
@@ -174,7 +178,7 @@ msgstr "设置..."
 
 #: ldd_consts.smenudatadesktop
 msgid "Database Desktop"
-msgstr ""
+msgstr "Database桌面"
 
 #: ldd_consts.smenudatadict
 msgid "Data dictionary"
@@ -186,7 +190,7 @@ msgstr "应用"
 
 #: ldd_consts.smenudatadictcreatecode
 msgid "Create code from dataset"
-msgstr ""
+msgstr "从dataset创建代码"
 
 #: ldd_consts.smenudatadictdesignsql
 msgid "Design SQL"
@@ -198,13 +202,13 @@ msgstr "打开"
 
 #: ldd_consts.snotyetimplemted
 msgid "Not yet implemented"
-msgstr ""
+msgstr "尚未实现"
 
 #: ldd_consts.swarningnoddforfield
 msgid "Warning: No definition in data dictionary for field %s"
-msgstr ""
+msgstr "警告:对于字段%s没有定义在数据字典"
 
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
-msgstr ""
+msgstr "错误的选择计数:%d"
 

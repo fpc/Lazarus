@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
+"Language-Team: http://www.microsystem.studio\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: reglazdaemon.sdaemonappdescr
+msgid "Daemon (service) application is a non-gui application that runs in the background."
+msgstr "守护进程(服务)应用是非GUI应用 它运行在后台"
+
+#: reglazdaemon.sdaemonappname
+msgid "Daemon (service) application"
+msgstr "守护进程(服务器)应用"
+
+#: reglazdaemon.sdaemonapps
+msgid "Daemon (service) applications"
+msgstr "守护进程(服务器)应用"
+
+#: reglazdaemon.sdaemondescr
+msgid "Daemon Module for inclusion in a daemon application"
+msgstr "守护进程模块用于包含在守护进程应用"
+
+#: reglazdaemon.sdaemonmapperdescr
+msgid ""
+"Daemon mapper for inclusion in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application.\n"
+msgstr ""
+"守护进程映射器用于包含在守护进程应用.\n"
+"仅一个守护进程映射器可以存在在守护进程应用.\n"
+"\n"
+
+#: reglazdaemon.sdaemonmappername
+msgid "Daemon mapper"
+msgstr "守护进程映射器"
+
+#: reglazdaemon.sdaemonname
+msgid "Daemon Module"
+msgstr "守护进程模块"
+

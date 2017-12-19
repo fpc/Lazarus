@@ -7,7 +7,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "Language: zh_CN\n"
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -149,7 +149,7 @@ msgstr ""
 #: lr_const.sbandeditorformdatasrc
 msgctxt "lr_const.sbandeditorformdatasrc"
 msgid "Data source"
-msgstr ""
+msgstr "Data源代码"
 
 #: lr_const.sbandeditorformreccount
 msgctxt "lr_const.sbandeditorformreccount"
@@ -174,12 +174,12 @@ msgstr ""
 
 #: lr_const.sbarcodeformcode
 msgid "&Code"
-msgstr ""
+msgstr "代码(&C)"
 
 #: lr_const.sbarcodeformdbfld
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr ""
+msgstr "插入DB field"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
@@ -208,11 +208,11 @@ msgstr ""
 
 #: lr_const.sbarcodezoom
 msgid "Zoom"
-msgstr ""
+msgstr "放大"
 
 #: lr_const.sbmpfile
 msgid "Bitmap file"
-msgstr ""
+msgstr "Bitmap文件"
 
 #: lr_const.sbreaked
 msgid "Breaked"
@@ -220,7 +220,7 @@ msgstr ""
 
 #: lr_const.scancel
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: lr_const.scateg1
 msgctxt "lr_const.scateg1"
@@ -229,7 +229,7 @@ msgstr "文本"
 
 #: lr_const.scateg2
 msgid "Number"
-msgstr ""
+msgstr "数字"
 
 #: lr_const.scateg3
 msgctxt "lr_const.scateg3"
@@ -243,7 +243,7 @@ msgstr "时间"
 
 #: lr_const.scateg5
 msgid "Boolean"
-msgstr ""
+msgstr "布尔"
 
 #: lr_const.scharset
 msgid "0"
@@ -251,15 +251,15 @@ msgstr ""
 
 #: lr_const.sclassobjectnotfound
 msgid "Class Object \"%s\" not found"
-msgstr ""
+msgstr "类对象\"%s\"未找到"
 
 #: lr_const.sconfirm
 msgid "Confirm"
-msgstr ""
+msgstr "确认"
 
 #: lr_const.scsvfile
 msgid "CSV File"
-msgstr ""
+msgstr "CSV文件"
 
 #: lr_const.scurmemo
 msgid "Memo:"
@@ -283,15 +283,15 @@ msgstr ""
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
-msgstr ""
+msgstr "日期和时间"
 
 #: lr_const.sdbfield
 msgid "DB field"
-msgstr ""
+msgstr "DB字段"
 
 #: lr_const.sdefaultprinter
 msgid "Default printer"
-msgstr ""
+msgstr "默认打印机"
 
 #: lr_const.sdescriptionavg
 msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
@@ -431,7 +431,7 @@ msgstr ""
 
 #: lr_const.sdesignreport
 msgid "Design report"
-msgstr ""
+msgstr "设计报告"
 
 #: lr_const.sdesoptionsform18pix
 msgid "&18 pixels (5mm)"
@@ -451,7 +451,7 @@ msgstr "对齐到网格"
 
 #: lr_const.sdesoptionsformcoloredbutton
 msgid "Colored &buttons"
-msgstr ""
+msgstr "有色的按钮(&b)"
 
 #: lr_const.sdesoptionsformcontents
 msgid "&Contents"
@@ -485,7 +485,7 @@ msgstr "MM(&M)"
 
 #: lr_const.sdesoptionsformobj
 msgid "Object moving"
-msgstr ""
+msgstr "对象移动"
 
 #: lr_const.sdesoptionsformopt
 msgctxt "lr_const.sdesoptionsformopt"
@@ -547,7 +547,7 @@ msgstr "注释"
 
 #: lr_const.sdocoptformkeywords
 msgid "Keywords"
-msgstr ""
+msgstr "关键字"
 
 #: lr_const.sdocoptformopt
 msgid "Report options"
@@ -569,7 +569,7 @@ msgstr ""
 
 #: lr_const.sdocoptformsubject
 msgid "Subject"
-msgstr ""
+msgstr "主题"
 
 #: lr_const.sdocoptformtitle
 msgid "Title"
@@ -585,7 +585,7 @@ msgstr "版本"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
-msgstr ""
+msgstr "一个单元命名\"%s\"已经存在"
 
 #: lr_const.seditor
 msgid "Editor"
@@ -601,7 +601,7 @@ msgstr "文本编辑器"
 
 #: lr_const.seditorformfield
 msgid "&DB field"
-msgstr ""
+msgstr "DB字段(&D)"
 
 #: lr_const.seditorformformat
 msgctxt "lr_const.seditorformformat"
@@ -700,7 +700,7 @@ msgstr "复制变量"
 
 #: lr_const.sevformexp
 msgid "&Expression"
-msgstr ""
+msgstr "表达式(&E)"
 
 #: lr_const.sevformpaste
 msgid "Paste variables"
@@ -730,7 +730,7 @@ msgstr ""
 #: lr_const.sfieldsforminsert
 msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
-msgstr ""
+msgstr "插入DB field"
 
 #: lr_const.sfilenotfound
 msgid "File not found"
@@ -886,11 +886,11 @@ msgstr "否;是"
 
 #: lr_const.sformat53
 msgid "_;x"
-msgstr ""
+msgstr "_;x"
 
 #: lr_const.sformat54
 msgid "False;True"
-msgstr ""
+msgstr "假;真"
 
 #: lr_const.sformat55
 msgctxt "lr_const.sformat55"
@@ -899,7 +899,7 @@ msgstr "自定义"
 
 #: lr_const.sformfile
 msgid "FastReport form"
-msgstr ""
+msgstr "FastReport窗体"
 
 #: lr_const.sformnewpage
 msgid "Force new page"
@@ -920,11 +920,11 @@ msgstr "添加页"
 
 #: lr_const.sfrdesignerformalign
 msgid "Alignment"
-msgstr ""
+msgstr "对齐方式"
 
 #: lr_const.sfrdesignerformalignbottoms
 msgid "Align bottoms"
-msgstr ""
+msgstr "对齐底部"
 
 #: lr_const.sfrdesignerformalignetop
 msgid "Align tops"
@@ -936,11 +936,11 @@ msgstr "水平居中对齐"
 
 #: lr_const.sfrdesignerformalignleftedge
 msgid "Align left edges"
-msgstr ""
+msgstr "对齐左边"
 
 #: lr_const.sfrdesignerformalignrightedge
 msgid "Align right edges"
-msgstr ""
+msgstr "对齐右边"
 
 #: lr_const.sfrdesignerformalignvertcenter
 msgid "Align vertical centers"
@@ -1029,11 +1029,11 @@ msgstr "字体大小"
 
 #: lr_const.sfrdesignerformframecolor
 msgid "Frame color"
-msgstr ""
+msgstr "Frame颜色"
 
 #: lr_const.sfrdesignerformframewidth
 msgid "Frame width"
-msgstr ""
+msgstr "Frame宽度"
 
 #: lr_const.sfrdesignerformgrid
 msgctxt "lr_const.sfrdesignerformgrid"
@@ -1047,11 +1047,11 @@ msgstr "网格对齐"
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
-msgstr ""
+msgstr "高亮属性"
 
 #: lr_const.sfrdesignerforminsband
 msgid "Insert band"
-msgstr ""
+msgstr "插入band"
 
 #: lr_const.sfrdesignerforminspict
 msgid "Insert picture"
@@ -1059,11 +1059,11 @@ msgstr "插入图片"
 
 #: lr_const.sfrdesignerforminsrect
 msgid "Insert rectangle object"
-msgstr ""
+msgstr "插入rectangle对象"
 
 #: lr_const.sfrdesignerforminssub
 msgid "Insert subreport"
-msgstr ""
+msgstr "插入子报告"
 
 #: lr_const.sfrdesignerformitalic
 msgid "Italic"
@@ -1148,7 +1148,7 @@ msgstr ""
 
 #: lr_const.sfrdesignerformselobj
 msgid "Select object"
-msgstr ""
+msgstr "选择对象"
 
 #: lr_const.sfrdesignerformspace
 msgid "Space equally, horizontally"
@@ -1181,7 +1181,7 @@ msgstr ""
 
 #: lr_const.sfrdesignerformunabletocreatetemplatedir
 msgid "Unable to create template directory"
-msgstr ""
+msgstr "不能创建模板目录"
 
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
@@ -1197,7 +1197,7 @@ msgstr "竖直居中"
 
 #: lr_const.sfrdesignerformwidthalign
 msgid "Width align"
-msgstr ""
+msgstr "宽度对齐"
 
 #: lr_const.sfrdesignerform_about
 msgid "&About ..."
@@ -1209,7 +1209,7 @@ msgstr "添加页(&A)"
 
 #: lr_const.sfrdesignerform_alignpalette
 msgid "&Alignment palette"
-msgstr ""
+msgstr "对齐面板(&A)"
 
 #: lr_const.sfrdesignerform_back
 msgid "Send to &back"
@@ -1217,7 +1217,7 @@ msgstr ""
 
 #: lr_const.sfrdesignerform_beforeprintscript
 msgid "&Before print script ..."
-msgstr ""
+msgstr "在打印脚本前...(&B)"
 
 #: lr_const.sfrdesignerform_bring
 msgid "Bring to &front"
@@ -1411,7 +1411,7 @@ msgstr "伸展(&S)"
 #: lr_const.sgroupeditorformadddbfield
 msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr ""
+msgstr "插入DB field"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1420,7 +1420,7 @@ msgstr "组"
 #: lr_const.sgroupeditorformcond
 msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
-msgstr ""
+msgstr "状态"
 
 #: lr_const.shidezerovalues
 msgid "Hide zero values"
@@ -1445,7 +1445,7 @@ msgstr "颜色...(&l)"
 #: lr_const.shilightformcond
 msgctxt "lr_const.shilightformcond"
 msgid "Condition"
-msgstr ""
+msgstr "状态"
 
 #: lr_const.shilightformfont
 msgid "Font"
@@ -1454,7 +1454,7 @@ msgstr "字体"
 #: lr_const.shilightformhilitattr
 msgctxt "lr_const.shilightformhilitattr"
 msgid "Highlight attributes"
-msgstr ""
+msgstr "高亮属性"
 
 #: lr_const.shilightformitalic
 msgid "&Italic"
@@ -1486,11 +1486,11 @@ msgstr ""
 
 #: lr_const.sinschart
 msgid "Insert Chart object"
-msgstr ""
+msgstr "插入Chart对象"
 
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
-msgstr ""
+msgstr "插入CheckBox对象"
 
 #: lr_const.sinsert
 msgid "Insert"
@@ -1498,15 +1498,15 @@ msgstr "插入"
 
 #: lr_const.sinsertexpression
 msgid "Insert Expression"
-msgstr ""
+msgstr "插入表达式"
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
-msgstr ""
+msgstr "插入DB fields"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
-msgstr ""
+msgstr "可用的datasets(&A)"
 
 #: lr_const.sinsertfieldsformband
 msgid "Include &bands"
@@ -1514,7 +1514,7 @@ msgstr ""
 
 #: lr_const.sinsertfieldsformcapt
 msgid "Insert fields"
-msgstr ""
+msgstr "插入字段"
 
 #: lr_const.sinsertfieldsformheader
 msgid "&Include headers"
@@ -1522,15 +1522,15 @@ msgstr ""
 
 #: lr_const.sinsertfieldsformhorz
 msgid "&Horizontal"
-msgstr ""
+msgstr "水平(&H)"
 
 #: lr_const.sinsertfieldsformplace
 msgid "Placement"
-msgstr ""
+msgstr "放置"
 
 #: lr_const.sinsertfieldsformvert
 msgid "&Vertical"
-msgstr ""
+msgstr "垂直(&V)"
 
 #: lr_const.sinsroundrect
 msgid "Insert a RoundRect with shadow area"
@@ -1538,23 +1538,23 @@ msgstr ""
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
-msgstr ""
+msgstr "插入Shape对象"
 
 #: lr_const.sinterpretator
 msgid "Interpretator"
-msgstr ""
+msgstr "解释器"
 
 #: lr_const.sinvalidfrfreport
 msgid "Invalid binary report"
-msgstr ""
+msgstr "无效的二进制报告"
 
 #: lr_const.sinvalidfrfversion
 msgid "Invalid report version"
-msgstr ""
+msgstr "无效报告版本"
 
 #: lr_const.sinvalidlrfreport
 msgid "Invalid report format"
-msgstr ""
+msgstr "无效报告格式"
 
 #: lr_const.sinvalidvariablename
 msgid "\"%s\" is not a valid variable name."
@@ -2146,7 +2146,7 @@ msgstr "列"
 
 #: lr_const.spgoptformdontuse
 msgid "&Don't use"
-msgstr ""
+msgstr "不能使用(&D)"
 
 #: lr_const.spgoptformheight
 msgid "&Height, mm"
@@ -2170,7 +2170,7 @@ msgstr "边距"
 
 #: lr_const.spgoptformnumber
 msgid "&Number"
-msgstr ""
+msgstr "数字(&N)"
 
 #: lr_const.spgoptformoptions
 msgctxt "lr_const.spgoptformoptions"
@@ -2183,7 +2183,7 @@ msgstr ""
 
 #: lr_const.spgoptformpaper
 msgid "Paper"
-msgstr ""
+msgstr "纸张"
 
 #: lr_const.spgoptformpgmargins
 msgid "Page margins"
@@ -2195,7 +2195,7 @@ msgstr ""
 
 #: lr_const.spgoptformprint
 msgid "&Print to previous page"
-msgstr ""
+msgstr "打印到上一页(&P)"
 
 #: lr_const.spgoptformright
 msgid "&Right, mm"
@@ -2287,7 +2287,7 @@ msgstr "缩放"
 
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
-msgstr ""
+msgstr "整页(&W)"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
@@ -2316,11 +2316,11 @@ msgstr "当前页(&p)"
 
 #: lr_const.sprintforminfo
 msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
-msgstr ""
+msgstr "输入页数 和/或 页范围,以逗号分割.例如,1,3,5-12"
 
 #: lr_const.sprintformnumber
 msgid "&Numbers:"
-msgstr ""
+msgstr "数字:(&N)"
 
 #: lr_const.sprintformpgrange
 msgid "Page range"
@@ -2349,7 +2349,7 @@ msgstr "移除该页?"
 
 #: lr_const.srepeatheader
 msgid "Show on all pages"
-msgstr ""
+msgstr "显示所有页面"
 
 #: lr_const.srepfile
 msgid "Report file"
@@ -2381,7 +2381,7 @@ msgstr "准备报告"
 
 #: lr_const.sroundrectformbegincolor
 msgid "Begin color"
-msgstr ""
+msgstr "Begin颜色"
 
 #: lr_const.sroundrectformcaption
 msgid "Property editor"
@@ -2397,11 +2397,11 @@ msgstr ""
 
 #: lr_const.sroundrectformdata
 msgid "Data .."
-msgstr ""
+msgstr "数据.."
 
 #: lr_const.sroundrectformendcolor
 msgid "End Color"
-msgstr ""
+msgstr "End颜色"
 
 #: lr_const.sroundrectformframed
 msgid "Framed zone"
@@ -2417,7 +2417,7 @@ msgstr ""
 
 #: lr_const.sroundrectformsample
 msgid "Sample :"
-msgstr ""
+msgstr "样例:"
 
 #: lr_const.sroundrectformshadow
 msgid "Shadow width"
@@ -2511,7 +2511,7 @@ msgstr "空模板"
 
 #: lr_const.stemplfile
 msgid "FastReport template"
-msgstr ""
+msgstr "FastReport模板"
 
 #: lr_const.stemplformdesc
 msgid "Description"
@@ -2568,7 +2568,7 @@ msgstr ""
 
 #: lr_const.susesyntaxhighlight
 msgid "Use syntax highlight"
-msgstr ""
+msgstr "使用语法高亮"
 
 #: lr_const.svar1
 msgid "Page#"
@@ -2576,7 +2576,7 @@ msgstr "页#"
 
 #: lr_const.svar2
 msgid "Expression"
-msgstr ""
+msgstr "表达式"
 
 #: lr_const.svar3
 msgctxt "lr_const.svar3"
@@ -2606,7 +2606,7 @@ msgstr "当前行#"
 
 #: lr_const.svar9
 msgid "TotalPages"
-msgstr ""
+msgstr "TotalPages"
 
 #: lr_const.svaredformcapt
 msgid "Variables list"
@@ -2618,7 +2618,7 @@ msgstr ""
 
 #: lr_const.svarformat
 msgid "Variable format ..."
-msgstr ""
+msgstr "变量格式..."
 
 #: lr_const.svarformcapt
 msgid "Variables"
@@ -2643,7 +2643,7 @@ msgstr ""
 #: lr_const.svbandeditorformdatasource
 msgctxt "lr_const.svbandeditorformdatasource"
 msgid "Data source"
-msgstr ""
+msgstr "Data源代码"
 
 #: lr_const.svbandeditorformrecordcount
 msgctxt "lr_const.svbandeditorformrecordcount"

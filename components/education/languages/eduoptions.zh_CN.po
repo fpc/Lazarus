@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -18,15 +18,15 @@ msgstr "教育"
 
 #: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
 msgid "Add an entry to the %sNew ...%s dialog to create a new program"
-msgstr ""
+msgstr "添加一个入口到%s新建...%s对话框来创建一个新程序"
 
 #: eduoptions.ersaddanidemenuitemtocreateanewprogram
 msgid "Add an IDE menu item to create a new program"
-msgstr ""
+msgstr "添加一个IDE菜单项目到创建的新程序"
 
 #: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
 msgid "Add a speed button to the IDE toolbar to create a new program"
-msgstr ""
+msgstr "添加一个Speed Buttons(进度按钮)到IDE工具栏来创建一个新程序"
 
 #: eduoptions.ersaddicon
 msgid "Add icon"
@@ -38,7 +38,7 @@ msgstr "添加菜单项"
 
 #: eduoptions.ersaddtonewdialog
 msgid "Add to %sNew ...%s dialog"
-msgstr ""
+msgstr "添加到%s新建...%s对话框"
 
 #: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
 msgid "A simple program. Only one file is created and added to the current project."
@@ -50,7 +50,7 @@ msgstr "组件面板"
 
 #: eduoptions.erseduenvoptsframetitle
 msgid "General"
-msgstr "一般"
+msgstr "通常"
 
 #: eduoptions.ersedumenutitle
 msgid "Menus"
@@ -63,43 +63,43 @@ msgstr "新建程序"
 
 #: eduoptions.erseduoipages
 msgid "Object Inspector"
-msgstr ""
+msgstr "对象查看器"
 
 #: eduoptions.ersedupropseventstitle
 msgid "Properties and Events"
-msgstr ""
+msgstr "属性和事件"
 
 #: eduoptions.ersedusbtitle
 msgid "Speed Buttons"
-msgstr ""
+msgstr "Speed Buttons(进度按钮)"
 
 #: eduoptions.ersenableeducheckboxcaption
 msgid "Enable education settings"
-msgstr ""
+msgstr "激活教育版设置"
 
 #: eduoptions.ersgrpboxeventsext
 msgid "Events: Extended Configuration"
-msgstr ""
+msgstr "事件:扩展配置"
 
 #: eduoptions.ersgrpboxeventsfull
 msgid "Events: Full Configuration"
-msgstr ""
+msgstr "事件:完整配置"
 
 #: eduoptions.ersgrpboxeventsmin
 msgid "Events: Minimal Configuration"
-msgstr ""
+msgstr "事件:最小配置"
 
 #: eduoptions.ersgrpboxpropsext
 msgid "Properties: Extended Configuration"
-msgstr ""
+msgstr "属性:扩展配置"
 
 #: eduoptions.ersgrpboxpropsfull
 msgid "Properties: Full Configuration"
-msgstr ""
+msgstr "属性:完整配置"
 
 #: eduoptions.ersgrpboxpropsmin
 msgid "Properties: Minimal Configuration"
-msgstr ""
+msgstr "属性:最小配置"
 
 #: eduoptions.ershideall
 msgid "Hide all"
@@ -124,11 +124,11 @@ msgstr "新建程序"
 
 #: eduoptions.ersnewsinglefileeducationprogram
 msgid "New single file education program"
-msgstr ""
+msgstr "新建单文件教育程序"
 
 #: eduoptions.ersnewsinglefileprogram
 msgid "New single file program"
-msgstr ""
+msgstr "新建单文件程序"
 
 #: eduoptions.ersrdbtnfull
 msgid "Show All"
@@ -136,7 +136,7 @@ msgstr "显示所有"
 
 #: eduoptions.ersrdgrpeventscaption
 msgid "Events"
-msgstr ""
+msgstr "事件"
 
 #: eduoptions.ersrdgrppropscaption
 msgid "Properties"
@@ -144,11 +144,11 @@ msgstr "属性"
 
 #: eduoptions.ersreplacecurrentsourcewithdefaultsourcecode
 msgid "Replace current source with default source code"
-msgstr ""
+msgstr "使用默认源代码替换当前代码"
 
 #: eduoptions.ersreplacecurrentwithdefaultsourcecode
 msgid "Replace current with default source code?"
-msgstr ""
+msgstr "使用默认源代码替换当前代码?"
 
 #: eduoptions.ersshowall
 msgid "Show all"
@@ -156,19 +156,19 @@ msgstr "显示所有"
 
 #: eduoptions.ersshowallchilds
 msgid "Show all children"
-msgstr ""
+msgstr "显示所有孩子"
 
 #: eduoptions.ersshowextended
 msgid "Show Extended"
-msgstr ""
+msgstr "显示扩展"
 
 #: eduoptions.ersshowminimal
 msgid "Show Minimal"
-msgstr ""
+msgstr "显示最小"
 
 #: eduoptions.ersshowoipages
 msgid "Show Object Inspector Pages"
-msgstr ""
+msgstr "显示对象查看器页"
 
 #: eduoptions.ersshowselection
 msgid "Show Selection"
@@ -188,7 +188,7 @@ msgstr "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnForm
 
 #: eduoptions.erssttexteventsfull
 msgid "All Events available"
-msgstr ""
+msgstr "所有事件可用"
 
 #: eduoptions.erssttexteventsmin
 msgid "OnClick, OnChange, OnMouseMove"
@@ -196,15 +196,15 @@ msgstr "OnClick, OnChange, OnMouseMov"
 
 #: eduoptions.erssttextpropsext
 msgid "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
-msgstr ""
+msgstr "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
 
 #: eduoptions.erssttextpropsfull
 msgid "All Properties available"
-msgstr ""
+msgstr "所有属性可用"
 
 #: eduoptions.erssttextpropsmin
 msgid "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
-msgstr ""
+msgstr "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
 
 #: eduoptions.ersvisiblecomponents
 msgid "Visible components"

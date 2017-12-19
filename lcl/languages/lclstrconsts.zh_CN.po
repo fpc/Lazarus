@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: X\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-29 10:37+0800\n"
+"PO-Revision-Date: 2017-12-08 20:29+0800\n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -125,7 +125,7 @@ msgstr "帮助"
 #: lclstrconsts.ifsvk_home
 msgctxt "lclstrconsts.ifsvk_home"
 msgid "Home"
-msgstr ""
+msgstr "用户主目录"
 
 #: lclstrconsts.ifsvk_insert
 msgctxt "lclstrconsts.ifsvk_insert"
@@ -198,7 +198,7 @@ msgstr "打印"
 #: lclstrconsts.ifsvk_prior
 msgctxt "lclstrconsts.ifsvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "前一个"
 
 #: lclstrconsts.ifsvk_rbutton
 msgid "Mouse Button Right"
@@ -244,7 +244,7 @@ msgstr ""
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
@@ -544,13 +544,11 @@ msgstr "查找更多"
 
 #: lclstrconsts.rsfirstrecordhint
 msgid "First"
-msgstr ""
+msgstr "最前(First)"
 
 #: lclstrconsts.rsfixedcolstoobig
-#, fuzzy
-#| msgid "FixedCols can't be >= ColCount"
 msgid "FixedCols can't be > ColCount"
-msgstr "FixedCols 不能 >= ColCount"
+msgstr "FixedCols不能>ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
 #, fuzzy
@@ -620,7 +618,7 @@ msgstr "绿"
 
 #: lclstrconsts.rsgridfiledoesnotexist
 msgid "Grid file doesn't exist"
-msgstr ""
+msgstr "网格文件不存在"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
@@ -1273,7 +1271,7 @@ msgstr "标记图像文件格式"
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
 msgid "Panel"
-msgstr ""
+msgstr "面板"
 
 #: lclstrconsts.rstsplitteraccessibilitydescription
 msgctxt "lclstrconsts.rstsplitteraccessibilitydescription"
@@ -1434,10 +1432,9 @@ msgid "Del"
 msgstr "Del"
 
 #: lclstrconsts.smkcdown
-#, fuzzy
 msgctxt "lclstrconsts.smkcdown"
 msgid "Down"
-msgstr "向下"
+msgstr "下移"
 
 #: lclstrconsts.smkcend
 #, fuzzy
@@ -1456,7 +1453,7 @@ msgstr "Esc"
 #: lclstrconsts.smkchome
 msgctxt "lclstrconsts.smkchome"
 msgid "Home"
-msgstr ""
+msgstr "用户主目录"
 
 #: lclstrconsts.smkcins
 msgid "Ins"
@@ -1473,11 +1470,11 @@ msgstr ""
 
 #: lclstrconsts.smkcpgdn
 msgid "PgDn"
-msgstr ""
+msgstr "下页"
 
 #: lclstrconsts.smkcpgup
 msgid "PgUp"
-msgstr ""
+msgstr "上页"
 
 #: lclstrconsts.smkcright
 msgctxt "lclstrconsts.smkcright"
@@ -1558,6 +1555,8 @@ msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"无效路径名:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
 msgid ""
@@ -1573,6 +1572,8 @@ msgid ""
 "Invalid pathname:\n"
 "\"%s\"\n"
 msgstr ""
+"无效路径名:\n"
+"\"%s\"\n"
 
 #: lclstrconsts.sshellctrlskb
 msgid "%s kB"

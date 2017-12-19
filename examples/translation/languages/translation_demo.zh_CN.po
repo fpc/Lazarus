@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -15,7 +15,7 @@ msgstr ""
 #: stringsunit.rsbeer
 msgctxt "stringsunit.rsbeer"
 msgid "Beer"
-msgstr ""
+msgstr "啤酒"
 
 #: stringsunit.rseight
 msgid "Eight"
@@ -65,12 +65,12 @@ msgstr "二"
 #: stringsunit.rswater
 msgctxt "stringsunit.rswater"
 msgid "Water"
-msgstr ""
+msgstr "水"
 
 #: stringsunit.rswine
 msgctxt "stringsunit.rswine"
 msgid "Wine"
-msgstr ""
+msgstr "葡萄酒"
 
 #: stringsunit.rsyouselected
 msgctxt "stringsunit.rsyouselected"
@@ -80,16 +80,16 @@ msgstr "你选择%s."
 #: stringsunit.rsyouselectedat
 msgctxt "stringsunit.rsyouselectedat"
 msgid "You selected %0:s at %1:s."
-msgstr "你选择的%0:s在%1:s."
+msgstr "你在%1:s选择%0:s."
 
 #: tform2.caption
 msgid "Second Form"
-msgstr "第二个Form"
+msgstr "第二个窗体"
 
 #: tform2.checkgroup.caption
 msgctxt "TFORM2.CHECKGROUP.CAPTION"
 msgid "Several items"
-msgstr ""
+msgstr "数个项目"
 
 #: tform2.groupbox1.caption
 msgid "Please select"
@@ -98,22 +98,22 @@ msgstr "请选择"
 #: tform2.radiogroup.caption
 msgctxt "TFORM2.RADIOGROUP.CAPTION"
 msgid "Single item"
-msgstr ""
+msgstr "单个项目"
 
 #: tmainform.button1.caption
 msgctxt "TMAINFORM.BUTTON1.CAPTION"
 msgid "Open second form"
-msgstr "打开第二个form"
+msgstr "打开第二个窗体"
 
 #: tmainform.button2.caption
 msgctxt "TMAINFORM.BUTTON2.CAPTION"
 msgid "What did you select?"
-msgstr ""
+msgstr "你选择什么?"
 
 #: tmainform.caption
 msgctxt "TMAINFORM.CAPTION"
 msgid "Translation demo"
-msgstr ""
+msgstr "翻译演示"
 
 #: tmainform.label1.caption
 msgctxt "TMAINFORM.LABEL1.CAPTION"
@@ -123,10 +123,10 @@ msgstr "选择语言"
 #: tmainform.lblcurrentselection.caption
 msgctxt "TMAINFORM.LBLCURRENTSELECTION.CAPTION"
 msgid "No drink selected."
-msgstr ""
+msgstr "无饮料选择."
 
 #: tmainform.rgdrinks.caption
 msgctxt "TMAINFORM.RGDRINKS.CAPTION"
 msgid "Please select a drink"
-msgstr ""
+msgstr "请选择一种饮料"
 

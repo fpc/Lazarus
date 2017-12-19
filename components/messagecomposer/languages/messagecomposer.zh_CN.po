@@ -7,7 +7,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "Language: zh_CN\n"
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -38,7 +38,7 @@ msgstr "按钮(TMsgDlgButtons)"
 
 #: messagecomposer.scaseresult
 msgid "\"Case\" result"
-msgstr "\"Case\" result"
+msgstr "\"Case\"结果"
 
 #: messagecomposer.sdefault
 msgid "Default"
@@ -70,29 +70,29 @@ msgstr "帮助关键字"
 
 #: messagecomposer.sifresult
 msgid "\"If\" result"
-msgstr "\"If\" result"
+msgstr "\"If\"结果"
 
 #: messagecomposer.skindofmessage
 msgid "Kind of message"
-msgstr ""
+msgstr "信息的种类"
 
 #: messagecomposer.smaskinput
 msgid "Mask input"
-msgstr ""
+msgstr "掩码输入"
 
 #: messagecomposer.smessagecomposercaption
 msgctxt "messagecomposer.smessagecomposercaption"
 msgid "Message Composer"
-msgstr ""
+msgstr "信息编排器(Composer)"
 
 #: messagecomposer.smessagecomposermenucaption
 msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
-msgstr ""
+msgstr "信息编排器(Composer)..."
 
 #: messagecomposer.smodalresult
 msgid "Modal result"
-msgstr ""
+msgstr "Modal结果"
 
 #: messagecomposer.smsgcaption
 msgid "The message to be shown"
@@ -100,15 +100,15 @@ msgstr "消息将被显示"
 
 #: messagecomposer.snotimplementedyet
 msgid "Not implemented yet"
-msgstr ""
+msgstr "尚未实施"
 
 #: messagecomposer.spromptcaption
 msgid "Text asking the user for input"
-msgstr ""
+msgstr "要求用户输入文本"
 
 #: messagecomposer.ssourcewrapper
 msgid "Source wrapper"
-msgstr ""
+msgstr "源代码包装器(wrapper)"
 
 #: messagecomposer.svaluevar
 msgid "Value (var)"

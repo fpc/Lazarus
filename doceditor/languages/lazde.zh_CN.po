@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -112,15 +112,15 @@ msgstr ""
 
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
-msgstr ""
+msgstr "没有模块找到来插入元素\"%s\""
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
-msgstr ""
+msgstr "没有节点找到对于模块\"%s\""
 
 #: lazdemsg.serrnonodeforpackage
 msgid "No node found for package \"%s\""
-msgstr ""
+msgstr "没有节点找到对于包\"%s\""
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
@@ -128,7 +128,7 @@ msgstr ""
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
-msgstr ""
+msgstr "没有包找到来插入模块\"%s\""
 
 #: lazdemsg.serrors
 msgid "Errors"
@@ -140,11 +140,11 @@ msgstr ""
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr ""
+msgstr "文档\"%s\"已被修改,你想要保存它?"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
-msgstr ""
+msgstr "文档结构"
 
 #: lazdemsg.sfiletemplate
 msgid "template.xml"
@@ -152,7 +152,7 @@ msgstr "template.xml"
 
 #: lazdemsg.sforfile
 msgid " in file "
-msgstr ""
+msgstr "在文件"
 
 #: lazdemsg.sformat
 msgid "&Format"
@@ -160,19 +160,19 @@ msgstr "格式(&F)"
 
 #: lazdemsg.sformodule
 msgid " in module "
-msgstr ""
+msgstr "在模块"
 
 #: lazdemsg.sforpackage
 msgid " in package "
-msgstr ""
+msgstr "在包"
 
 #: lazdemsg.sfortopic
 msgid " in topic "
-msgstr ""
+msgstr "在主题"
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
-msgstr ""
+msgstr "隐藏protected方法(&H)"
 
 #: lazdemsg.shinteditelementlink
 msgid "Edit element link"
@@ -239,7 +239,7 @@ msgstr "插入bulleted(项目符号?)列表"
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
-msgstr "新建element"
+msgstr "新建元素"
 
 #: lazdemsg.shintinsertlink
 msgctxt "lazdemsg.shintinsertlink"
@@ -259,7 +259,7 @@ msgstr "插入编号列表"
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
 msgid "New package"
-msgstr "新建package"
+msgstr "新建包"
 
 #: lazdemsg.shintinsertprintshortlink
 msgid "Insert a short description link"
@@ -346,27 +346,27 @@ msgstr "链接到"
 
 #: lazdemsg.slinktarget
 msgid "Link target"
-msgstr "连接目标"
+msgstr "链接目标"
 
 #: lazdemsg.slinktext
 msgid "Link text"
-msgstr "Link text"
+msgstr "链接文本"
 
 #: lazdemsg.sload
 msgid "&Load"
-msgstr "载入(&L)"
+msgstr "加载(&L)"
 
 #: lazdemsg.smakeskelfromsource
 msgid "Make new document from source file"
-msgstr ""
+msgstr "从源代码文件制作新文档"
 
 #: lazdemsg.smarkselection
 msgid "Mark selection %s"
-msgstr ""
+msgstr "标记选择%s"
 
 #: lazdemsg.smenucollapseall
 msgid "Collapse All"
-msgstr ""
+msgstr "折叠所有"
 
 #: lazdemsg.smenudelete
 msgctxt "lazdemsg.smenudelete"
@@ -375,7 +375,7 @@ msgstr "删除"
 
 #: lazdemsg.smenuexpandall
 msgid "Expand All"
-msgstr ""
+msgstr "展开所有"
 
 #: lazdemsg.smenuextra
 msgid "&Extra"
@@ -406,7 +406,7 @@ msgstr "新建(&N)"
 
 #: lazdemsg.smenufilenewfromfile
 msgid "New from fi&le"
-msgstr ""
+msgstr "通过文件新建(&l)"
 
 #: lazdemsg.smenufileopen
 msgid "&Open"
@@ -418,7 +418,7 @@ msgstr "退出(&Q)"
 
 #: lazdemsg.smenufilerecent
 msgid "&Recent"
-msgstr ""
+msgstr "最近(&R)"
 
 #: lazdemsg.smenufilesave
 msgctxt "lazdemsg.smenufilesave"
@@ -452,15 +452,15 @@ msgstr "斜体(&I)"
 
 #: lazdemsg.smenuformatparagraph
 msgid "&Paragraph"
-msgstr ""
+msgstr "段落(&P)"
 
 #: lazdemsg.smenuformatremark
 msgid "&Remark"
-msgstr ""
+msgstr "备注(&R)"
 
 #: lazdemsg.smenuformatunderline
 msgid "&Underline"
-msgstr ""
+msgstr "下划线(&U)"
 
 #: lazdemsg.smenuformatvariable
 msgid "&Variable"
@@ -533,7 +533,7 @@ msgstr "重命名"
 
 #: lazdemsg.smoduleelements
 msgid "Elements for selected node"
-msgstr ""
+msgstr "选择节点元素"
 
 #: lazdemsg.snew
 msgid "New"
@@ -546,7 +546,7 @@ msgstr "新建文档"
 #: lazdemsg.snewelement
 msgctxt "lazdemsg.snewelement"
 msgid "New element"
-msgstr "新建element"
+msgstr "新建元素"
 
 #: lazdemsg.snewfile
 msgctxt "lazdemsg.snewfile"
@@ -556,12 +556,12 @@ msgstr "新建文件"
 #: lazdemsg.snewmodule
 msgctxt "lazdemsg.snewmodule"
 msgid "New module"
-msgstr "新建module"
+msgstr "新建模块"
 
 #: lazdemsg.snewpackage
 msgctxt "lazdemsg.snewpackage"
 msgid "New package"
-msgstr "新建package"
+msgstr "新建包"
 
 #: lazdemsg.snewtopic
 msgctxt "lazdemsg.snewtopic"
@@ -570,7 +570,7 @@ msgstr "新建topic(主题?)"
 
 #: lazdemsg.snodename
 msgid "Node name"
-msgstr ""
+msgstr "节点名称"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -578,7 +578,7 @@ msgstr "没有element被选择"
 
 #: lazdemsg.soptdlgbackupextension
 msgid "Backup extension"
-msgstr ""
+msgstr "备份扩展名"
 
 #: lazdemsg.soptdlgconfirmdeletes
 msgid "C&onfirm deletes"
@@ -586,7 +586,7 @@ msgstr "确认删除(&o)"
 
 #: lazdemsg.soptdlgcreatebackups
 msgid "Create &backups"
-msgstr ""
+msgstr "创建备份(&b)"
 
 #: lazdemsg.soptdlgdefaultextension
 msgid "Default extension"
@@ -626,7 +626,7 @@ msgstr "显示提示"
 
 #: lazdemsg.soptdlgskipemptynodes
 msgid "&Skip empty nodes when saving"
-msgstr ""
+msgstr "跳过空节点当保存时(&S)"
 
 #: lazdemsg.soptdlgstartmaximized
 msgid "Start maximized"
@@ -643,7 +643,7 @@ msgstr "输出(&O)"
 #: lazdemsg.spackage
 msgctxt "lazdemsg.spackage"
 msgid "&Package"
-msgstr "Package(&P)"
+msgstr "包(&P)"
 
 #: lazdemsg.spackages
 msgid "Packages"
@@ -696,7 +696,7 @@ msgstr ""
 
 #: lazdemsg.sshowprivatemethods
 msgid "Show p&rivate methods"
-msgstr ""
+msgstr "显示私有方法(&r)"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
@@ -708,11 +708,11 @@ msgstr ""
 
 #: lazdemsg.ssourcescapt
 msgid "Sources"
-msgstr "Sources"
+msgstr "源文件"
 
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
-msgstr ""
+msgstr "开始元素\"%s\"不能被找到"
 
 #: lazdemsg.stablecols
 msgid "Columns"
@@ -728,7 +728,7 @@ msgstr "行"
 
 #: lazdemsg.stargetos
 msgid "Target OS"
-msgstr "目标OS"
+msgstr "目标操作系统"
 
 #: lazdemsg.susingcommand
 msgid "Building docs using command: "
@@ -736,5 +736,5 @@ msgstr "构建docs使用命令"
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
-msgstr ""
+msgstr "警告 假如没有找到文档节点"
 

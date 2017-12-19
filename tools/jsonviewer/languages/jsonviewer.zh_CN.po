@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
-msgstr ""
+msgstr "数组(%d元素)"
 
 #: msgjsonviewer.scancelclose
 msgid "Do not close the window"
@@ -22,7 +22,7 @@ msgstr "不要关闭窗口"
 
 #: msgjsonviewer.scancelpaste
 msgid "Do not paste the new data"
-msgstr ""
+msgstr "不要粘贴新数据"
 
 #: msgjsonviewer.scaption
 msgctxt "msgjsonviewer.scaption"
@@ -35,21 +35,23 @@ msgstr "丢弃更改"
 
 #: msgjsonviewer.sdocumentmodified
 msgid "JSON document modified"
-msgstr ""
+msgstr "JSON文件已修改"
 
 #: msgjsonviewer.sdocumentmodifiedaction
 msgid ""
 "The JSON data was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
+"JSON数据被更改 但是没有保存.\n"
+"你想做什么?\n"
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."
-msgstr ""
+msgstr "复制成员名\"%s\"."
 
 #: msgjsonviewer.selement
 msgid "Element nr. %d"
-msgstr ""
+msgstr "Element nr. %d"
 
 #: msgjsonviewer.sempty
 msgid "Empty document"
@@ -57,27 +59,27 @@ msgstr "空文件"
 
 #: msgjsonviewer.serrcreatingconfigdir
 msgid "Could not create the configuration files directory \"%s\""
-msgstr ""
+msgstr "不能创建配置文件目录\"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
 msgid "Invalid value or wrong type: \"%s\""
-msgstr ""
+msgstr "无效值或错误类型:\"%s\""
 
 #: msgjsonviewer.serrnovalidjsonclipboard
 msgid "The clipboard does not contain valid JSON data"
-msgstr ""
+msgstr "剪贴板不包含有效的JSON数据"
 
 #: msgjsonviewer.snewmember
 msgid "New object member"
-msgstr ""
+msgstr "新建对象成员"
 
 #: msgjsonviewer.snewmembername
 msgid "Enter a name for the new member (type: %s)"
-msgstr ""
+msgstr "输入新成员(类型:%s)名称"
 
 #: msgjsonviewer.snomorematches
 msgid "No nodes match the criterium"
-msgstr ""
+msgstr "没有节点匹配criterium"
 
 #: msgjsonviewer.snull
 msgid "null"
@@ -85,7 +87,7 @@ msgstr "null"
 
 #: msgjsonviewer.sobject
 msgid "Object (%d members)"
-msgstr ""
+msgstr "对象(%d members成员"
 
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
@@ -97,7 +99,7 @@ msgstr "复制(&C)"
 
 #: tmainform.acopy.hint
 msgid "Copy selected node to clipboard as JSON"
-msgstr ""
+msgstr "复制选择的节点到剪贴板作为JSON"
 
 #: tmainform.acut.caption
 msgid "C&ut"
@@ -105,7 +107,7 @@ msgstr "剪切(&u)"
 
 #: tmainform.acut.hint
 msgid "Cut selected node to clipboard as JSON"
-msgstr ""
+msgstr "剪切选择的节点到剪贴板作为JSON"
 
 #: tmainform.adeletevalue.caption
 msgid "&Delete value"
@@ -117,19 +119,19 @@ msgstr "删除选中的值"
 
 #: tmainform.aexpandall.caption
 msgid "E&xpand all nodes"
-msgstr ""
+msgstr "展开所有节点(&x)"
 
 #: tmainform.aexpandall.hint
 msgid "Expand all nodes in the document"
-msgstr ""
+msgstr "展开所有节点在文档中"
 
 #: tmainform.aexpandcurrentcontainer.caption
 msgid "Expand &current object/array"
-msgstr ""
+msgstr "展开当前对象/数组(&c)"
 
 #: tmainform.aexpandcurrentcontainer.hint
 msgid "Expand all nodes in the current object/array"
-msgstr ""
+msgstr "展开使用节点在当前对象/数组"
 
 #: tmainform.afind.caption
 msgid "&Find"
@@ -137,7 +139,7 @@ msgstr "查找(&F)"
 
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
-msgstr ""
+msgstr "查找下一个事件(&)"
 
 #: tmainform.anew.caption
 msgid "&New"
@@ -149,51 +151,51 @@ msgstr "创建新JSON文件"
 
 #: tmainform.anewarray.caption
 msgid "New &Array"
-msgstr ""
+msgstr "新建数组(&A)"
 
 #: tmainform.anewarray.hint
 msgid "Add a new JSON array"
-msgstr ""
+msgstr "添加一个新建JSON数组"
 
 #: tmainform.anewbooleanvalue.caption
 msgid "New &boolean value"
-msgstr ""
+msgstr "新建布尔值(&b)"
 
 #: tmainform.anewbooleanvalue.hint
 msgid "Add a new boolean value"
-msgstr ""
+msgstr "添加一个新建布尔值"
 
 #: tmainform.anewnullvalue.caption
 msgid "New N&ull value"
-msgstr ""
+msgstr "新建Null值(&u)"
 
 #: tmainform.anewnullvalue.hint
 msgid "Add a new null value"
-msgstr ""
+msgstr "添加一个新建null值"
 
 #: tmainform.anewnumbervalue.caption
 msgid "&New numerical Value"
-msgstr ""
+msgstr "新建数字值(&N)"
 
 #: tmainform.anewnumbervalue.hint
 msgid "Add a new number value"
-msgstr ""
+msgstr "添加一个新建数字值"
 
 #: tmainform.anewobject.caption
 msgid "New &Object"
-msgstr ""
+msgstr "新建对象(&O)"
 
 #: tmainform.anewobject.hint
 msgid "Add a new JSON object"
-msgstr ""
+msgstr "添加一个新JSON对象"
 
 #: tmainform.anewstringvalue.caption
 msgid "New &string value"
-msgstr ""
+msgstr "新建字符串值(&s)"
 
 #: tmainform.anewstringvalue.hint
 msgid "Add a new string value"
-msgstr ""
+msgstr "添加一个新字符串值"
 
 #: tmainform.aopen.caption
 msgid "&Open"
@@ -201,7 +203,7 @@ msgstr "打开(&O)"
 
 #: tmainform.aopen.hint
 msgid "Open JSON document from file"
-msgstr ""
+msgstr "从文件打开JSON文档"
 
 #: tmainform.apaste.caption
 msgid "&Paste"
@@ -209,15 +211,15 @@ msgstr "粘贴(&P)"
 
 #: tmainform.apaste.hint
 msgid "Paste JSON data in clipboard as new member"
-msgstr ""
+msgstr "粘贴在剪切板中JSON 数据作为新成员"
 
 #: tmainform.apasteasdocument.caption
 msgid "Paste as new document"
-msgstr ""
+msgstr "作为新文档粘贴"
 
 #: tmainform.apasteasdocument.hint
 msgid "Paste JSON data in clipboard as new document"
-msgstr ""
+msgstr "粘贴在剪切板中JSON 数据作为新文档"
 
 #: tmainform.aquit.caption
 msgid "&Quit"
@@ -233,7 +235,7 @@ msgstr "保存(&S)"
 
 #: tmainform.asave.hint
 msgid "Save the JSON document to file"
-msgstr ""
+msgstr "保存JSON文档到文件"
 
 #: tmainform.asaveas.caption
 msgid "Save &as"
@@ -241,7 +243,7 @@ msgstr "另存为(&a)"
 
 #: tmainform.asaveas.hint
 msgid "Save JSON document with a new name"
-msgstr ""
+msgstr "用新名称保存JSON文档"
 
 #: tmainform.caption
 #, fuzzy
@@ -271,7 +273,7 @@ msgstr ""
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
-msgstr ""
+msgstr "新建带对象文档(&N)"
 
 #: tmainform.miinsert.caption
 msgid "&Values"
@@ -283,11 +285,11 @@ msgstr ""
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
-msgstr ""
+msgstr "排序对象成员"
 
 #: tmainform.mistrict.caption
 msgid "&Strict JSON"
-msgstr ""
+msgstr "严格的 JSON(&S)"
 
 #: tmainform.moptions.caption
 msgid "&Options"
@@ -303,15 +305,15 @@ msgstr ""
 
 #: tmainform.tbjson.caption
 msgid "TBJSON"
-msgstr ""
+msgstr "TBJSON"
 
 #: tmainform.toolbutton1.caption
 msgid "ToolButton1"
-msgstr ""
+msgstr "工具按钮1"
 
 #: tmainform.toolbutton4.caption
 msgid "ToolButton4"
-msgstr ""
+msgstr "工具按钮4"
 
 #: tnewbooleanform.caption
 msgid "New boolean value"

@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -38,7 +38,7 @@ msgstr "添加"
 
 #: tachartstrconsts.rsareaseries
 msgid "Area series"
-msgstr ""
+msgstr "面积图系列"
 
 #: tachartstrconsts.rsautoscale
 msgid "Auto scale"
@@ -46,7 +46,7 @@ msgstr "自动缩放"
 
 #: tachartstrconsts.rsbarseries
 msgid "Bar series"
-msgstr ""
+msgstr "条形图系列"
 
 #: tachartstrconsts.rsbottom
 msgid "Bottom"
@@ -54,7 +54,7 @@ msgstr ""
 
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
-msgstr ""
+msgstr "盒须图系列"
 
 #: tachartstrconsts.rsbsbdiagonal
 msgid "backward-diagonal hatch"
@@ -90,7 +90,7 @@ msgstr ""
 
 #: tachartstrconsts.rsbsplineseries
 msgid "B-Spline series"
-msgstr ""
+msgstr "B-样条系列"
 
 #: tachartstrconsts.rsbssolid
 msgid "solid fill"
@@ -102,7 +102,7 @@ msgstr ""
 
 #: tachartstrconsts.rsbubbleseries
 msgid "Bubble series"
-msgstr ""
+msgstr "散点图系列"
 
 #: tachartstrconsts.rscirclesymbol
 msgid "Circle"
@@ -110,11 +110,11 @@ msgstr ""
 
 #: tachartstrconsts.rscolormapseries
 msgid "Color map series"
-msgstr ""
+msgstr "彩色图系列"
 
 #: tachartstrconsts.rsconstantline
 msgid "Constant line"
-msgstr ""
+msgstr "恒线(Constant)"
 
 #: tachartstrconsts.rscrosssymbol
 msgid "Plus"
@@ -122,27 +122,27 @@ msgstr ""
 
 #: tachartstrconsts.rscubicsplineseries
 msgid "Cubic spline series"
-msgstr ""
+msgstr "立体样条系列"
 
 #: tachartstrconsts.rscumulativenormaldistribution
 msgid "Cumulative normal distribution"
-msgstr ""
+msgstr "累积正态分布"
 
 #: tachartstrconsts.rsdatapointclick
 msgid "Data point click"
-msgstr ""
+msgstr "数据点点击"
 
 #: tachartstrconsts.rsdatapointcrosshair
 msgid "Data point crosshair"
-msgstr ""
+msgstr "数据点十字线"
 
 #: tachartstrconsts.rsdatapointdrag
 msgid "Data point drag"
-msgstr ""
+msgstr "数据点拖拽"
 
 #: tachartstrconsts.rsdatapointhint
 msgid "Data point hint"
-msgstr ""
+msgstr "数据点提示"
 
 #: tachartstrconsts.rsdelete
 msgid "Delete"
@@ -158,7 +158,7 @@ msgstr ""
 
 #: tachartstrconsts.rsdistancemeasurement
 msgid "Distance measurement"
-msgstr ""
+msgstr "距离测量"
 
 #: tachartstrconsts.rsdowntrianglesymbol
 msgid "Down triangle"
@@ -186,7 +186,7 @@ msgstr ""
 
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
-msgstr ""
+msgstr "函数系列"
 
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
@@ -206,7 +206,7 @@ msgstr ""
 
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
-msgstr ""
+msgstr "对数技术必须>0和<>1."
 
 #: tachartstrconsts.rsinverted
 msgid "inverted"
@@ -214,7 +214,7 @@ msgstr ""
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
-msgstr ""
+msgstr "最小二乘拟合系列"
 
 #: tachartstrconsts.rsleft
 msgid "Left"
@@ -230,15 +230,15 @@ msgstr ""
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
-msgstr ""
+msgstr "线性的(Linear)"
 
 #: tachartstrconsts.rslineseries
 msgid "Line series"
-msgstr ""
+msgstr "折线图系列"
 
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
-msgstr ""
+msgstr "对数的"
 
 #: tachartstrconsts.rslowbracketsymbol
 msgid "Low bracket"
@@ -246,15 +246,15 @@ msgstr ""
 
 #: tachartstrconsts.rsmanhattanplotseries
 msgid "Manhattan plot series"
-msgstr ""
+msgstr "曼哈顿图系列"
 
 #: tachartstrconsts.rsmovedown
 msgid "Down"
-msgstr ""
+msgstr "下移"
 
 #: tachartstrconsts.rsmoveup
 msgid "Up"
-msgstr ""
+msgstr "上移"
 
 #: tachartstrconsts.rsnosymbol
 msgid "(none)"
@@ -262,27 +262,27 @@ msgstr ""
 
 #: tachartstrconsts.rsopenhighlowcloseseries
 msgid "Open-high-low-close series"
-msgstr ""
+msgstr "股票图系列"
 
 #: tachartstrconsts.rspanningbyclick
 msgid "Panning by click"
-msgstr ""
+msgstr "通过点击平移"
 
 #: tachartstrconsts.rspanningbydrag
 msgid "Panning by drag"
-msgstr ""
+msgstr "通过拖拽平移"
 
 #: tachartstrconsts.rspanningbymousewheel
 msgid "Panning by mouse wheel"
-msgstr ""
+msgstr "通过鼠标滚轮平移"
 
 #: tachartstrconsts.rsparametriccurveseries
 msgid "Parametric curve series"
-msgstr ""
+msgstr "参数曲线"
 
 #: tachartstrconsts.rspieseries
 msgid "Pie series"
-msgstr ""
+msgstr "饼图系列"
 
 #: tachartstrconsts.rspointsymbol
 msgid "Point"
@@ -290,7 +290,7 @@ msgstr ""
 
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
-msgstr ""
+msgstr "极线系列(Polar)"
 
 #: tachartstrconsts.rspsclear
 msgid "no line"
@@ -355,16 +355,16 @@ msgstr ""
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
 msgid "User-defined"
-msgstr ""
+msgstr "用户定义"
 
 #: tachartstrconsts.rsuserdefinedtool
 msgctxt "tachartstrconsts.rsuserdefinedtool"
 msgid "User-defined"
-msgstr ""
+msgstr "用户定义"
 
 #: tachartstrconsts.rsuserdrawnseries
 msgid "User-drawn series"
-msgstr ""
+msgstr "用户绘制系列"
 
 #: tachartstrconsts.rsvertbarsymbol
 msgid "Vertical bar"
@@ -372,27 +372,27 @@ msgstr ""
 
 #: tachartstrconsts.rszoombyclick
 msgid "Zoom by click"
-msgstr ""
+msgstr "通过点击放大"
 
 #: tachartstrconsts.rszoombydrag
 msgid "Zoom by drag"
-msgstr ""
+msgstr "通过拖拽放大"
 
 #: tachartstrconsts.rszoombymousewheel
 msgid "Zoom by mouse-wheel"
-msgstr ""
+msgstr "通过鼠标滚轮拖拽放大"
 
 #: tachartstrconsts.sesserieseditortitle
 msgid "Edit series"
-msgstr ""
+msgstr "编辑系列"
 
 #: tachartstrconsts.tasaxistransformseditortitle
 msgid "Edit axis transformations"
-msgstr ""
+msgstr "编辑轴转换"
 
 #: tachartstrconsts.tasfailedsubcomponentrename
 msgid "Failed to rename components: %s"
-msgstr ""
+msgstr "重命名组件:%s失败"
 
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"

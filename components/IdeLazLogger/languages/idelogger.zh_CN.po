@@ -12,7 +12,15 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: lazcstrconsts.lcgnuprojectcandccompiler
-msgid "GNU project C and C++ compiler"
-msgstr "GNU项目C和C++编译器"
+#: idelogger.ideloggerapply
+msgid "&Apply"
+msgstr "应用(&A)"
+
+#: idelogger.ideloggercaption
+msgid "Logging"
+msgstr "登录"
+
+#: idelogger.ideloggermenucaption
+msgid "Logging ..."
+msgstr "登录..."
 

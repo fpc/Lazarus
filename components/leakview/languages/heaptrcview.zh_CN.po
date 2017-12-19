@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -38,15 +38,15 @@ msgstr "更新"
 
 #: heaptrcview.schkraw
 msgid "Raw leak data"
-msgstr ""
+msgstr "原始泄露数据(Raw)"
 
 #: heaptrcview.schktop
 msgid "Stay on top"
-msgstr ""
+msgstr "留在上部"
 
 #: heaptrcview.sfrmcap
 msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
-msgstr ""
+msgstr "泄露和跟踪 - HeapTrc和GDB回溯输出查看器"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
 msgid "Select file with debug info"

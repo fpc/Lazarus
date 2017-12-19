@@ -7,7 +7,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "Language: zh_CN\n"
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -24,7 +24,7 @@ msgstr "LazReport测试套件"
 #: maincalleditor.cercomposite
 msgctxt "maincalleditor.cercomposite"
 msgid "Composite"
-msgstr ""
+msgstr "复合"
 
 #: maincalleditor.cereditreport
 msgctxt "maincalleditor.cereditreport"
@@ -33,11 +33,11 @@ msgstr "编辑报告"
 
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
-msgstr "应用应用程序"
+msgstr "关闭应用"
 
 #: maincalleditor.cerhintcomposite
 msgid "This Action will Load and Preview a composite Report"
-msgstr ""
+msgstr "这个动作将加载和预览一个复合报表"
 
 #: maincalleditor.cerhinteditreport
 msgid "Edit active report"
@@ -53,7 +53,7 @@ msgstr "打开一个存在的报告"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
-msgstr ""
+msgstr "打印预览当前DbGrid目录"
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"
@@ -61,11 +61,11 @@ msgstr "预览激活报告"
 
 #: maincalleditor.cerhintprnreport
 msgid "Print directly the active report (i.e. without preview)"
-msgstr ""
+msgstr "直接打印激活报告(即无预览)"
 
 #: maincalleditor.cerhintthumbnails
 msgid "This Action will Load and Preview a thumbnails Report"
-msgstr ""
+msgstr "这个动作将加载和预览一个缩略图报告"
 
 #: maincalleditor.cerindex
 msgctxt "maincalleditor.cerindex"
@@ -74,7 +74,7 @@ msgstr "索引"
 
 #: maincalleditor.cerindexfields
 msgid "Index Fields: %s"
-msgstr ""
+msgstr "索引字段:%s"
 
 #: maincalleditor.cernewreport
 msgid "New report"
@@ -82,7 +82,7 @@ msgstr "新建报告"
 
 #: maincalleditor.cernone
 msgid "none"
-msgstr "none"
+msgstr "无"
 
 #: maincalleditor.ceropenreport
 msgid "Open report"
@@ -94,7 +94,7 @@ msgstr "先打开报告"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
-msgstr ""
+msgstr "准备报告失败!"
 
 #: maincalleditor.cerpreviewreport
 msgid "Preview report"
@@ -102,7 +102,7 @@ msgstr "预览报告"
 
 #: maincalleditor.cerprintgrid
 msgid "Print grid"
-msgstr "打印grid"
+msgstr "打印网格"
 
 #: maincalleditor.cerprintreport
 msgid "Print report"
@@ -111,7 +111,7 @@ msgstr "打印预览"
 #: maincalleditor.certhumbnails
 msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
-msgstr "Thumbnails"
+msgstr "缩略图"
 
 #: tfrmmain.accclose.caption
 msgid "Close"
@@ -120,7 +120,7 @@ msgstr "关闭"
 #: tfrmmain.acccomposite.caption
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
-msgstr ""
+msgstr "复合"
 
 #: tfrmmain.acccustompreview.caption
 msgid "Custom Preview"
@@ -145,7 +145,7 @@ msgstr "导出为HTML"
 
 #: tfrmmain.accexporttotext.caption
 msgid "Export to text"
-msgstr "导出为text"
+msgstr "导出为文本"
 
 #: tfrmmain.accnewreport.caption
 msgid "New Report"
@@ -161,7 +161,7 @@ msgstr "预览报告"
 
 #: tfrmmain.accprintgrid.caption
 msgid "Print Grid"
-msgstr "打印Grid"
+msgstr "打印网格"
 
 #: tfrmmain.accprintreport.caption
 msgid "Print Report"
@@ -170,15 +170,15 @@ msgstr "打印报告"
 #: tfrmmain.accthumbnails.caption
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
-msgstr "Thumbnails"
+msgstr "缩略图"
 
 #: tfrmmain.btnexportlast.caption
 msgid "Repeat Export"
-msgstr ""
+msgstr "重复导出"
 
 #: tfrmmain.btnmasterdetail.caption
 msgid "Master-Detail Test"
-msgstr ""
+msgstr "主要-细节测试"
 
 #: tfrmmain.caption
 msgctxt "TFRMMAIN.CAPTION"
@@ -187,7 +187,7 @@ msgstr "LazReport测试套件"
 
 #: tfrmmain.lblexpr.caption
 msgid "Expression"
-msgstr ""
+msgstr "表达式"
 
 #: tfrmmain.lblindex.caption
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"

@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
-msgstr ""
+msgstr "添加终止符"
 
 #: lazdatadeskstr.eoandtermsinbrackets
 msgid "Put brackets around AND Terms"
@@ -124,7 +124,7 @@ msgstr "丢弃更改"
 
 #: lazdatadeskstr.senginetype
 msgid "Engine"
-msgstr ""
+msgstr "引擎"
 
 #: lazdatadeskstr.serrcommitnotsupported
 msgid "COMMIT Not supported yet"
@@ -142,7 +142,7 @@ msgstr ""
 
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
-msgstr ""
+msgstr "无数据库引擎!"
 
 #: lazdatadeskstr.serrorexecutingsql
 msgid "Error executing SQL statement:"
@@ -202,7 +202,7 @@ msgstr ""
 
 #: lazdatadeskstr.shintexecute
 msgid "Execute SQL statement"
-msgstr ""
+msgstr "执行SQL声明"
 
 #: lazdatadeskstr.shintexport
 msgid "Export this data"
@@ -210,23 +210,23 @@ msgstr "导出这个data"
 
 #: lazdatadeskstr.shintload
 msgid "Load SQL statement from file"
-msgstr ""
+msgstr "加载SQL声明从文件"
 
 #: lazdatadeskstr.shintnext
 msgid "Next SQL statement"
-msgstr ""
+msgstr "下一个SQL声明"
 
 #: lazdatadeskstr.shintprevious
 msgid "Previous SQL statement"
-msgstr ""
+msgstr "上一个SQL声明"
 
 #: lazdatadeskstr.shintsave
 msgid "Save SQL statement to file"
-msgstr ""
+msgstr "保存SQL声明到文件"
 
 #: lazdatadeskstr.simportdictinto
 msgid "Import data dictionary"
-msgstr ""
+msgstr "导入data字典"
 
 #: lazdatadeskstr.sindex
 msgid "Index"
@@ -306,7 +306,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_actiondeleteobject
 msgid "Delete &Object"
-msgstr "删除Object(&O)"
+msgstr "删除对象(&O)"
 
 #: lazdatadeskstr.sld_actiondeleteobjecth
 msgid "Delete the currently selected object"
@@ -327,7 +327,7 @@ msgstr "退出这个程序"
 
 #: lazdatadeskstr.sld_actiongeneratesql
 msgid "&Generate SQL"
-msgstr ""
+msgstr "生产SQL 文件(&G)"
 
 #: lazdatadeskstr.sld_actiongeneratesqlh
 msgid "Generate SQL statements for the current table"
@@ -343,7 +343,7 @@ msgstr "新连接(&N)"
 
 #: lazdatadeskstr.sld_actionnewfield
 msgid "New &field"
-msgstr ""
+msgstr "新建字段(&f)"
 
 #: lazdatadeskstr.sld_actionnewfieldh
 msgid "Create a new field in the current table"
@@ -411,11 +411,11 @@ msgstr "另存为 ...(&A)"
 
 #: lazdatadeskstr.sld_actionsaveash
 msgid "Save data dictionary as"
-msgstr ""
+msgstr "保存数据字典为"
 
 #: lazdatadeskstr.sld_actionsaveh
 msgid "Save Data Dictionary"
-msgstr "保存Data字典"
+msgstr "保存数据字典"
 
 #: lazdatadeskstr.sld_cancel
 msgid "&Cancel"
@@ -436,7 +436,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_connectionlv3
 msgid "Last used"
-msgstr ""
+msgstr "输出使用的"
 
 #: lazdatadeskstr.sld_connectionlv4
 msgctxt "lazdatadeskstr.sld_connectionlv4"
@@ -453,8 +453,10 @@ msgid "Connections/Dictionaries"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
+#, fuzzy
+#| msgid "Connect to a database"
 msgid "Connect to a database of type %s"
-msgstr ""
+msgstr "连接到database"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
@@ -476,7 +478,7 @@ msgstr "删除(&D)"
 
 #: lazdatadeskstr.sld_dictionaries
 msgid "Dictionaries"
-msgstr ""
+msgstr "字典"
 
 #: lazdatadeskstr.sld_firststart
 msgid "First start of database desktop"
@@ -488,11 +490,11 @@ msgstr ""
 
 #: lazdatadeskstr.sld_generatesql
 msgid "Generate SQL"
-msgstr ""
+msgstr "生成SQL"
 
 #: lazdatadeskstr.sld_generatesqlstatements
 msgid "Generate SQL statements"
-msgstr ""
+msgstr "生成SQL声明"
 
 #: lazdatadeskstr.sld_host
 msgid "Host"
@@ -500,7 +502,7 @@ msgstr "Host"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
 msgid "Import/Update data dictionary"
-msgstr ""
+msgstr "导入/更新数据字典"
 
 #: lazdatadeskstr.sld_indent
 msgid "I&ndent"
@@ -533,7 +535,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_menudictionary
 msgid "&Dictionary"
-msgstr ""
+msgstr "字典(&D)"
 
 #: lazdatadeskstr.sld_menudictionaryimport
 msgid "&Import"
@@ -601,7 +603,7 @@ msgstr "选择(&S)"
 
 #: lazdatadeskstr.sld_selectaconnectiontype
 msgid "Select a conection type"
-msgstr ""
+msgstr "选择连接类型"
 
 #: lazdatadeskstr.sld_selectall
 msgid "Select &all"
@@ -613,7 +615,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_selectupdateinsertfields
 msgid "Select/Update/Insert fields"
-msgstr ""
+msgstr "选择/更新/插入字段"
 
 #: lazdatadeskstr.sld_separator
 msgid "-"
@@ -661,7 +663,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_username
 msgid "Username"
-msgstr ""
+msgstr "用户名"
 
 #: lazdatadeskstr.sld_view
 msgid "View"
@@ -744,21 +746,19 @@ msgid "Next"
 msgstr "下一个"
 
 #: lazdatadeskstr.snodedatabase
-#, fuzzy
 msgctxt "lazdatadeskstr.snodedatabase"
 msgid "Database"
 msgstr "数据库"
 
 #: lazdatadeskstr.snodedatadictionary
 msgid "Data dictionary"
-msgstr ""
+msgstr "数据字典"
 
 #: lazdatadeskstr.snodedomains
 msgid "Domains"
 msgstr ""
 
 #: lazdatadeskstr.snodefields
-#, fuzzy
 msgctxt "lazdatadeskstr.snodefields"
 msgid "Fields"
 msgstr "字段"
@@ -769,11 +769,11 @@ msgstr ""
 
 #: lazdatadeskstr.snodeindexes
 msgid "Indexes"
-msgstr ""
+msgstr "索引"
 
 #: lazdatadeskstr.snodeindexfields
 msgid "Index fields: "
-msgstr ""
+msgstr "索引字段:"
 
 #: lazdatadeskstr.snodeindexoptions
 msgid "Index options: "
@@ -789,19 +789,19 @@ msgstr ""
 
 #: lazdatadeskstr.snodetables
 msgid "Tables"
-msgstr ""
+msgstr "Tables"
 
 #: lazdatadeskstr.sobject
 msgid "Object"
-msgstr ""
+msgstr "对象"
 
 #: lazdatadeskstr.sparameter
 msgid "Parameter"
-msgstr ""
+msgstr "参数"
 
 #: lazdatadeskstr.sprevious
 msgid "Previous"
-msgstr ""
+msgstr "前一个"
 
 #: lazdatadeskstr.sql_noconnectionsfound
 msgid ""
@@ -859,7 +859,7 @@ msgstr "选择的object"
 
 #: lazdatadeskstr.ssequence
 msgid "Sequence"
-msgstr ""
+msgstr "数列(Sequence)"
 
 #: lazdatadeskstr.ssqlerrorcode
 msgid "SQL Error code: %d"
@@ -891,7 +891,7 @@ msgstr "Table"
 
 #: lazdatadeskstr.sunknownconnection
 msgid "Unknown connection: %s"
-msgstr ""
+msgstr "未知的连接:%s"
 
 #: lazdatadeskstr.sunknowndictionary
 msgid "Unknown data dictionary: %s"
@@ -899,7 +899,7 @@ msgstr "未知的data字典: %s"
 
 #: lazdatadeskstr.susecurrentdict
 msgid "Yes, use the active dictionary"
-msgstr ""
+msgstr "是,使用激活的字典"
 
 #: lazdatadeskstr.susenewdict
 msgid "No, import in a new dictionary"

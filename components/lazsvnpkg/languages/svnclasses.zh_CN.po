@@ -5,7 +5,7 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -30,23 +30,23 @@ msgstr "作者"
 
 #: svnclasses.rscommit
 msgid "Commit"
-msgstr ""
+msgstr "提交"
 
 #: svnclasses.rscommitmsg
 msgid "Commit Message"
-msgstr ""
+msgstr "提交信息"
 
 #: svnclasses.rscommitmsghistory
 msgid "Commit Message History"
-msgstr ""
+msgstr "提交信息历史"
 
 #: svnclasses.rscommitrevision
 msgid "Commit revision"
-msgstr ""
+msgstr "提交修订版本"
 
 #: svnclasses.rsconflict
 msgid "Conflict"
-msgstr ""
+msgstr "冲突"
 
 #: svnclasses.rscopyfrompath
 msgid "Copy from path"
@@ -70,7 +70,7 @@ msgstr "删除"
 
 #: svnclasses.rsdiffactivefile
 msgid "Diff active file"
-msgstr ""
+msgstr "比较活动文件"
 
 #: svnclasses.rsedit
 msgid "Edit"
@@ -78,11 +78,11 @@ msgstr "编辑"
 
 #: svnclasses.rsextension
 msgid "Extension"
-msgstr ""
+msgstr "扩展名"
 
 #: svnclasses.rsfilenotinworkingcopyanymore
 msgid "File is not part of local working copy (anymore)"
-msgstr ""
+msgstr "文件不是本地作业的副本的一部分(现在)"
 
 #: svnclasses.rsfilestatus
 msgid "File status"
@@ -90,27 +90,27 @@ msgstr "文件状态"
 
 #: svnclasses.rsindexoutofboundsd
 msgid "Index out of bounds (%d)"
-msgstr ""
+msgstr "索引超过边界(%d)"
 
 #: svnclasses.rslazarussvncommit
 msgid "LazarusSVN Commit"
-msgstr ""
+msgstr "LazarusSVN提交"
 
 #: svnclasses.rslazarussvndiff
 msgid "%s - LazarusSVN Diff ..."
-msgstr ""
+msgstr "%s - LazarusSVN不同..."
 
 #: svnclasses.rslazarussvnlog
 msgid "%s - LazarusSVN Log ..."
-msgstr ""
+msgstr "%s - LazarusSVN日志..."
 
 #: svnclasses.rslazarussvnupdate
 msgid "%s - LazarusSVN Update ..."
-msgstr ""
+msgstr "%s - LazarusSVN更新..."
 
 #: svnclasses.rsmerged
 msgid "Merged"
-msgstr ""
+msgstr "合并"
 
 #: svnclasses.rsmessage
 msgid "Message"
@@ -122,7 +122,7 @@ msgstr "(无作者)"
 
 #: svnclasses.rsonlymodifieditemscanbediffed
 msgid "Only modified (M) Items can be diffed"
-msgstr ""
+msgstr "仅修改的(M)项目能被比较"
 
 #: svnclasses.rsopenfileineditor
 msgid "Open file in editor"
@@ -178,7 +178,7 @@ msgstr "存储库路径"
 
 #: svnclasses.rsrevert
 msgid "Revert"
-msgstr ""
+msgstr "还原"
 
 #: svnclasses.rsrevision
 msgid "Revision"
@@ -198,19 +198,19 @@ msgstr "显示diff"
 
 #: svnclasses.rsshowdiffbase
 msgid "Show Diff of Local Changes"
-msgstr ""
+msgstr "显示局部变更的不同"
 
 #: svnclasses.rsshowdiffcountrev
 msgid "Show Last X Commits"
-msgstr ""
+msgstr "显示最后的X提交"
 
 #: svnclasses.rsshowdiffhead
 msgid "Show Diff Against HEAD"
-msgstr ""
+msgstr "显示对比HEAD的不同"
 
 #: svnclasses.rsshowdiffprev
 msgid "Show Diff Against Previous Version"
-msgstr ""
+msgstr "显示对比以前的版本的不同"
 
 #: svnclasses.rsshowlog
 msgid "Show log"
