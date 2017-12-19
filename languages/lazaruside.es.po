@@ -16931,6 +16931,10 @@ msgstr "Seleccionar el archivo"
 msgid "Select FPC source directory"
 msgstr "Selecciona directorio de fuentes de FPC"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "La selección excede la constante de cadena"

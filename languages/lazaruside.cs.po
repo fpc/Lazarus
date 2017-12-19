@@ -16806,6 +16806,10 @@ msgstr "Vybrat soubor"
 msgid "Select FPC source directory"
 msgstr "Vybrat zdrojový adresář FPC"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Výběr přesahuje řetězcovou konstantu"

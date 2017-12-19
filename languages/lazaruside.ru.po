@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-16 02:03+0300\n"
+"PO-Revision-Date: 2017-12-20 01:31+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -16706,6 +16706,10 @@ msgstr "Выберите файл"
 #: lazarusidestrconsts.lisselectfpcsourcedirectory
 msgid "Select FPC source directory"
 msgstr "Выберите каталог исходного кода FPC"
+
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr "Выберите фрейм"
 
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"

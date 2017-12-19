@@ -16707,6 +16707,10 @@ msgstr "Válassza ki a fájlt"
 msgid "Select FPC source directory"
 msgstr "A(z) FPC forráskód könyvtárának kiválasztása"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "A kijelölés meghaladja a karakterlánc konstanst"

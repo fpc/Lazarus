@@ -16719,6 +16719,10 @@ msgstr "Pažymėti failą"
 msgid "Select FPC source directory"
 msgstr "Nurodykite FPC pirminio kodo aplanką"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Pažymėta daugiau nei eilutės konstanta"

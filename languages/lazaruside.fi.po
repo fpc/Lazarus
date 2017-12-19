@@ -16547,6 +16547,10 @@ msgstr "Valitse tiedosto"
 msgid "Select FPC source directory"
 msgstr "Valitse FPC lähdehakemisto"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Valinta ylittää merkkijonovakion"

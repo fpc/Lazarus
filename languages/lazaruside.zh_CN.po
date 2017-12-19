@@ -17149,6 +17149,10 @@ msgstr "选择文件"
 msgid "Select FPC source directory"
 msgstr "选择FPC 源代码目录"
 
+#: lazarusidestrconsts.lisselectframe
+msgid "Select Frame"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "所选的超过了字符串常量"
