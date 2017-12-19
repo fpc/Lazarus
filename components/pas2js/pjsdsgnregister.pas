@@ -247,8 +247,8 @@ begin
   CompOpts.SetAlternativeCompile(
     '$MakeExe(pas2js) -Jc -Jminclude -Tnodejs "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
   RunParams:=AProject.RunParameters;
-  RunParams.UseLaunchingApplication:=True;
-  RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSNodeJS) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
+  //RunParams.UseLaunchingApplication:=True;
+  //RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSNodeJS) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
 
   // create program source
   NewSource:=CreateProjectSource;
@@ -499,8 +499,8 @@ begin
   CompOpts.SetAlternativeCompile(
     '$MakeExe(pas2js) -Jirtl.js -Jc -Jminclude -Tbrowser "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
   RunParams:=AProject.RunParameters;
-  RunParams.UseLaunchingApplication:=True;
-  RunParams.LaunchingApplicationPathPlusParams:=GetBrowserCommand(CompOpts.TargetFileName);
+  //RunParams.UseLaunchingApplication:=True;
+  //RunParams.LaunchingApplicationPathPlusParams:=GetBrowserCommand(CompOpts.TargetFileName);
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
   AProject.CustomData.Values[PJSProjectWebBrowser]:='1';
   if baoUseURL in Options then
