@@ -7018,6 +7018,8 @@ begin
 end;
 
 function TMainIDE.DoRunProject: TModalResult;
+var
+  Handled: Boolean;
 begin
   DebugLn('Hint: (lazarus) [TMainIDE.DoRunProject] INIT');
 
@@ -7029,7 +7031,9 @@ begin
   end;
   debugln('Hint: (lazarus) [TMainIDE.DoRunProject] Debugger=',EnvironmentOptions.DebuggerConfig.DebuggerClass);
 
-  Result := mrCancel;
+  Handled:=false;
+  Result:=DoCallRunDebug(Handled);
+  if Handled then exit;
 
   Result := DebugBoss.StartDebugging;
 
@@ -7040,19 +7044,26 @@ function TMainIDE.DoRunProjectWithoutDebug: TModalResult;
 var
   Process: TProcessUTF8;
   ExeCmdLine, ExeWorkingDirectory, ExeFile, Params: string;
-  RunAppBundle: Boolean;
+  RunAppBundle, Handled: Boolean;
   ARunMode: TRunParamsOptionsMode;
 begin
-  debugln(['TMainIDE.DoRunProjectWithoutDebug START']);
+  debugln(['Hint: (lazarus) [TMainIDE.DoRunProjectWithoutDebug] START']);
   if Project1=nil then
     Exit(mrNone);
+
+  Handled:=false;
+  Result:=DoCallRunWithoutDebugBuilding(Handled);
+  if Handled then exit;
 
   Result := DoBuildProject(crRun,[]);
   if Result <> mrOK then
     Exit;
 
+  Result:=DoCallRunWithoutDebugInit(Handled);
+  if Handled then exit;
+
   ExeCmdLine := MainBuildBoss.GetRunCommandLine;
-  debugln(['TMainIDE.DoRunProjectWithoutDebug ExeCmdLine="',ExeCmdLine,'"']);
+  debugln(['Hint: (lazarus) [TMainIDE.DoRunProjectWithoutDebug] ExeCmdLine="',ExeCmdLine,'"']);
   if ExeCmdLine='' then
   begin
     IDEMessageDialog(lisUnableToRun, lisLaunchingApplicationInvalid,
@@ -7066,7 +7077,6 @@ begin
     RunAppBundle:=RunAppBundle and Project1.UseAppBundle;
 
     SplitCmdLine(ExeCmdLine,ExeFile,Params);
-
     Process.Executable := ExeFile;
     Process.Parameters.Text := Params;
     ARunMode := Project1.RunParameterOptions.GetActiveMode;

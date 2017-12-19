@@ -247,6 +247,9 @@ type
     lihtShowDesignerFormOfSource, // called after showing a designer form for code editor (AEditor can be nil!)
     lihtShowSourceOfActiveDesignerForm, // called after showing a code of designer form
     lihtChangeToolStatus, //called when IDEToolStatus has changed (e.g. itNone->itBuilder etc.)
+    lihtRunDebug, // called when Run was clicked, after building, before starting the debugger
+    lihtRunWithoutDebugBuilding, // called when Run a project without debugger was clicked, before building
+    lihtRunWithoutDebugInit, // called when Run a project without debugger was clicked, after building
     lihtRunFinished //called when ran program finishes
     );
     
@@ -378,6 +381,9 @@ type
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
     function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
                                          AProject: TLazProject): TModalResult;
+    function DoCallRunDebug(var Handled: boolean): TModalResult;
+    function DoCallRunWithoutDebugBuilding(var Handled: boolean): TModalResult;
+    function DoCallRunWithoutDebugInit(var Handled: boolean): TModalResult;
     procedure DoCallRunFinishedHandler;
     function DoAddUnitToProject(AEditor: TSourceEditorInterface): TModalResult; virtual; abstract;
 
@@ -531,6 +537,15 @@ type
                            AsLast: boolean = false);
     procedure RemoveHandlerOnChangeToolStatus(
                                const OnChangeToolStatus: TLazToolStatusChangeEvent);
+    procedure AddHandlerOnRunDebug(const Event: TModalHandledFunction;
+                                   AsLast: boolean = false);
+    procedure RemoveHandlerOnRunDebug(const Event: TModalHandledFunction);
+    procedure AddHandlerOnRunWithoutDebugBuilding(const Event: TModalHandledFunction;
+                                      AsLast: boolean = false);
+    procedure RemoveHandlerOnRunWithoutDebugBuilding(const Event: TModalHandledFunction);
+    procedure AddHandlerOnRunWithoutDebugInit(const Event: TModalHandledFunction;
+                                      AsLast: boolean = false);
+    procedure RemoveHandlerOnRunWithoutDebugInit(const Event: TModalHandledFunction);
     procedure AddHandlerOnRunFinished(const OnRunFinishedEvent: TNotifyEvent;
                                       AsLast: boolean = false);
     procedure RemoveHandlerOnRunFinished(const OnRunFinishedEvent: TNotifyEvent);
@@ -769,6 +784,23 @@ begin
   end;
 end;
 
+function TLazIDEInterface.DoCallRunDebug(var Handled: boolean): TModalResult;
+begin
+  Result:=DoCallModalHandledHandler(lihtRunDebug,Handled);
+end;
+
+function TLazIDEInterface.DoCallRunWithoutDebugBuilding(var Handled: boolean
+  ): TModalResult;
+begin
+  Result:=DoCallModalHandledHandler(lihtRunWithoutDebugBuilding,Handled);
+end;
+
+function TLazIDEInterface.DoCallRunWithoutDebugInit(var Handled: boolean
+  ): TModalResult;
+begin
+  Result:=DoCallModalHandledHandler(lihtRunWithoutDebugInit,Handled);
+end;
+
 procedure TLazIDEInterface.DoCallRunFinishedHandler;
 begin
   DoCallNotifyHandler(lihtRunFinished);
@@ -1002,6 +1034,42 @@ procedure TLazIDEInterface.RemoveHandlerOnChangeToolStatus(
   const OnChangeToolStatus: TLazToolStatusChangeEvent);
 begin
   RemoveHandler(lihtChangeToolStatus,TMethod(OnChangeToolStatus));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnRunDebug(
+  const Event: TModalHandledFunction; AsLast: boolean);
+begin
+  AddHandler(lihtRunDebug,TMethod(Event),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnRunDebug(
+  const Event: TModalHandledFunction);
+begin
+  RemoveHandler(lihtRunDebug,TMethod(Event));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnRunWithoutDebugBuilding(
+  const Event: TModalHandledFunction; AsLast: boolean);
+begin
+  AddHandler(lihtRunWithoutDebugBuilding,TMethod(Event),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnRunWithoutDebugBuilding(
+  const Event: TModalHandledFunction);
+begin
+  RemoveHandler(lihtRunWithoutDebugBuilding,TMethod(Event));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnRunWithoutDebugInit(
+  const Event: TModalHandledFunction; AsLast: boolean);
+begin
+  AddHandler(lihtRunWithoutDebugInit,TMethod(Event),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnRunWithoutDebugInit(
+  const Event: TModalHandledFunction);
+begin
+  RemoveHandler(lihtRunWithoutDebugInit,TMethod(Event));
 end;
 
 procedure TLazIDEInterface.AddHandlerOnRunFinished(
