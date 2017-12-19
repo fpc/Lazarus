@@ -7039,8 +7039,7 @@ end;
 function TMainIDE.DoRunProjectWithoutDebug: TModalResult;
 var
   Process: TProcessUTF8;
-  ExeCmdLine, ExeWorkingDirectory: string;
-  ExeFileEnd, ExeFileStart: Integer;
+  ExeCmdLine, ExeWorkingDirectory, ExeFile, Params: string;
   RunAppBundle: Boolean;
   ARunMode: TRunParamsOptionsMode;
 begin
@@ -7066,20 +7065,10 @@ begin
     RunAppBundle:={$IFDEF Darwin}true{$ELSE}false{$ENDIF};
     RunAppBundle:=RunAppBundle and Project1.UseAppBundle;
 
-    if ExeCmdLine[1]='"' then
-    begin
-      ExeFileStart := 2;
-      ExeFileEnd := PosEx('"', ExeCmdLine, ExeFileStart);
-    end else
-    begin
-      ExeFileStart := 1;
-      ExeFileEnd := PosEx(' ', ExeCmdLine, ExeFileStart);
-      if ExeFileEnd<1 then
-        ExeFileEnd := Length(ExeCmdLine)+1;
-    end;
+    SplitCmdLine(ExeCmdLine,ExeFile,Params);
 
-    Process.Executable := Copy(ExeCmdLine, ExeFileStart, ExeFileEnd-ExeFileStart);
-    Process.Parameters.Text := Copy(ExeCmdLine, ExeFileEnd+ExeFileStart, High(Integer));
+    Process.Executable := ExeFile;
+    Process.Parameters.Text := Params;
     ARunMode := Project1.RunParameterOptions.GetActiveMode;
 
     if RunAppBundle and FileExistsUTF8(Process.Executable)

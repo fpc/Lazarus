@@ -1345,6 +1345,7 @@
       <Unit233>
         <Filename Value="basedebugmanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BaseDebugManager"/>
       </Unit233>
       <Unit234>
         <Filename Value="imexportcompileropts.pas"/>
