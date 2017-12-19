@@ -101,6 +101,8 @@ end;
 
 procedure TLCLVLCPlayer.SetParentWindowSize(AWidth, AHeight: Cardinal);
 begin
+  if AWidth=0 then ;
+  if AHeight=0 then ;
 end;
 
 end.
