@@ -37,6 +37,8 @@ procedure Register;
 
 implementation
 
+{$R taaggpas.res}
+
 uses
   Agg_LCL, Graphics, SysUtils, TAChartUtils, TADrawerAggPas, TADrawerCanvas,
   TAGeometry;
