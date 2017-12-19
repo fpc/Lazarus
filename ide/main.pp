@@ -5700,7 +5700,7 @@ begin
   UnitList := TStringList.Create;
   try
     dummy := false;
-    if SourceFileMgr.SelectUnitComponents('Select Frame',piFrame,UnitList, false, dummy) <> mrOk
+    if SourceFileMgr.SelectUnitComponents(lisSelectFrame,piFrame,UnitList, false, dummy) <> mrOk
     then
       exit;
     for i := 0 to UnitList.Count-1 do
