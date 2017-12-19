@@ -95,12 +95,13 @@ type
     procedure Clear; override;
   end;
 
+  { TRunParamsOptions }
+
   TRunParamsOptions = class(TAbstractRunParamsOptions)
-  private
-    fActiveModeName: string;
   protected
-    function CreateMode(const AName: string): TAbstractRunParamsOptionsMode; override;
     procedure AssignTo(Dest: TPersistent); override;
+    function CreateMode(const AName: string): TAbstractRunParamsOptionsMode; override;
+    procedure SetActiveModeName(const AValue: string); override;
   public
     procedure AssignEnvironmentTo(Strings: TStrings); override;
 
@@ -112,17 +113,10 @@ type
       UsePathDelim: TPathDelimSwitch): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string;
       UsePathDelim: TPathDelimSwitch; const ASaveIn: TRunParamsOptionsModeSave): TModalResult;
-    procedure Clear; override;
     function GetActiveMode: TRunParamsOptionsMode;
-
-    property ActiveModeName: string read fActiveModeName write fActiveModeName;
   end;
 
-  {
-    TRunParamsOptsDlg is the form of the run parameters options dialog
-  }
-
-  { TRunParamsOptsDlg }
+  { TRunParamsOptsDlg - the form of the run parameters options dialog }
 
   TRunParamsOptsDlg = class(TForm)
     ButtonPanel: TButtonPanel;
@@ -295,22 +289,33 @@ begin
   end;
 end;
 
-procedure TRunParamsOptions.Clear;
-begin
-  inherited Clear;
-
-  ActiveModeName := '';
-end;
-
 function TRunParamsOptions.CreateMode(const AName: string
   ): TAbstractRunParamsOptionsMode;
 begin
   Result := TRunParamsOptionsMode.Create(AName);
 end;
 
-function TRunParamsOptions.GetActiveMode: TRunParamsOptionsMode;
+procedure TRunParamsOptions.SetActiveModeName(const AValue: string);
+var
+  NewMode: TAbstractRunParamsOptionsMode;
 begin
-  Result := Find(ActiveModeName) as TRunParamsOptionsMode;
+  if AValue=ActiveModeName then exit;
+  NewMode:=Find(AValue);
+  if NewMode<>nil then
+    inherited SetActiveModeName(NewMode.Name)
+  else if AValue<>'' then
+    raise EListError.Create('TRunParamsOptions.SetActiveModeName no such mode "'+AValue+'"')
+  else
+    inherited SetActiveModeName('');
+end;
+
+function TRunParamsOptions.GetActiveMode: TRunParamsOptionsMode;
+var
+  AMode: TAbstractRunParamsOptionsMode;
+begin
+  AMode := Find(ActiveModeName);
+  if AMode=nil then exit(nil);
+  Result := AMode as TRunParamsOptionsMode;
 end;
 
 function TRunParamsOptions.LegacyLoad(XMLConfig: TXMLConfig;
@@ -346,7 +351,7 @@ var
   NewMode: TRunParamsOptionsMode;
   ModePath: string;
 begin
-  //don't clear!
+  //don't clear!  needed for merging lpi and lps
 
   Cnt := XMLConfig.GetValue(Path + 'Modes/Count', 0);
   if ASaveIn=rpsLPS then

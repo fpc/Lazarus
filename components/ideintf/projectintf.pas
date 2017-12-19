@@ -388,14 +388,18 @@ type
       Read fIncludeSystemVariables Write fIncludeSystemVariables;
   end;
 
+  { TAbstractRunParamsOptions }
+
   TAbstractRunParamsOptions = class(TPersistent)
   private
+    fActiveModeName: string;
     fModes: TObjectList;
     function GetCount: Integer;
-    function GetMode(AIndex: Integer): TAbstractRunParamsOptionsMode;
+    function GetMode(AIndex: Integer): TAbstractRunParamsOptionsMode; inline;
   protected
-    function CreateMode(const AName: string): TAbstractRunParamsOptionsMode; virtual; abstract;
     procedure AssignTo(Dest: TPersistent); override;
+    function CreateMode(const AName: string): TAbstractRunParamsOptionsMode; virtual; abstract;
+    procedure SetActiveModeName(const AValue: string); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -409,7 +413,9 @@ type
     function GetOrCreate(const AName: string): TAbstractRunParamsOptionsMode;
     property Modes[AIndex: Integer]: TAbstractRunParamsOptionsMode read GetMode; default;
     property Count: Integer read GetCount;
+    property ActiveModeName: string read fActiveModeName write SetActiveModeName;
   end;
+
   { TLazProjectBuildMode }
 
   TLazProjectBuildMode = class(TComponent)
@@ -911,6 +917,13 @@ end;
 
 { TAbstractRunParamsOptions }
 
+// inline
+function TAbstractRunParamsOptions.GetMode(AIndex: Integer
+  ): TAbstractRunParamsOptionsMode;
+begin
+  Result := TAbstractRunParamsOptionsMode(fModes[AIndex]);
+end;
+
 constructor TAbstractRunParamsOptions.Create;
 begin
   inherited Create;
@@ -942,20 +955,27 @@ begin
     inherited AssignTo(Dest);
 end;
 
+procedure TAbstractRunParamsOptions.SetActiveModeName(const AValue: string);
+begin
+  fActiveModeName:=AValue;
+end;
+
 procedure TAbstractRunParamsOptions.Clear;
 begin
+  ActiveModeName:='';
   fModes.Clear;
 end;
 
 procedure TAbstractRunParamsOptions.Delete(const AIndex: Integer);
 begin
+  if CompareText(Modes[AIndex].Name,ActiveModeName)=0 then
+    ActiveModeName:='';
   fModes.Delete(aIndex);
 end;
 
 destructor TAbstractRunParamsOptions.Destroy;
 begin
-  fModes.Free;
-
+  FreeAndNil(fModes);
   inherited Destroy;
 end;
 
@@ -964,8 +984,9 @@ function TAbstractRunParamsOptions.Find(const AName: string
 var
   I: Integer;
 begin
+  if AName='' then exit(nil);
   for I := 0 to Count-1 do
-    if Modes[I].Name = AName then
+    if CompareText(Modes[I].Name,AName)=0 then
       Exit(Modes[I]);
   Result := nil;
 end;
@@ -973,12 +994,6 @@ end;
 function TAbstractRunParamsOptions.GetCount: Integer;
 begin
   Result := fModes.Count;
-end;
-
-function TAbstractRunParamsOptions.GetMode(AIndex: Integer
-  ): TAbstractRunParamsOptionsMode;
-begin
-  Result := TAbstractRunParamsOptionsMode(fModes[AIndex]);
 end;
 
 function TAbstractRunParamsOptions.GetOrCreate(const AName: string
