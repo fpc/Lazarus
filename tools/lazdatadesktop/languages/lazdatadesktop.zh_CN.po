@@ -453,7 +453,7 @@ msgid "Connections/Dictionaries"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Connect to a database"
 msgid "Connect to a database of type %s"
 msgstr "连接到database"
