@@ -6378,6 +6378,8 @@ resourcestring
   lismpTrimClipboardContents = '&Trim clipboard contents';
   lismpPreview = '&Preview';
   lisUnableToRun2 = 'Unable to run "%s"';
+
+  lisSelectFrame = 'Select Frame';
 implementation
 
 end.
