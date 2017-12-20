@@ -729,7 +729,7 @@ begin
 
   if CanGo then
   begin
-    if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) = mrNo then
+    if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) <> mrYes then
       Exit;
 
     //Updates.PauseUpdate;
