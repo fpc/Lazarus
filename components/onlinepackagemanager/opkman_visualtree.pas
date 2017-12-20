@@ -126,6 +126,7 @@ type
     procedure VSTMouseEnter(Sender: TObject);
     procedure VSTMouseLeave(Sender: TObject);
     procedure VSTMouseDown(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure VSTKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure VSTGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
       var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
     procedure VSTAfterCellPaint(Sender: TBaseVirtualTree;  {%H-}TargetCanvas: TCanvas;
@@ -275,6 +276,7 @@ begin
      OnMouseLeave := @VSTMouseLeave;
      OnMouseEnter := @VSTMouseEnter;
      OnMouseDown := @VSTMouseDown;
+     OnKeyUp := @VSTKeyUp;
      OnDblClick := @VSTDblClick;
      OnClick := @VSTClick;
      OnGetHint := @VSTGetHint;
@@ -1793,6 +1795,14 @@ begin
         MenuItem.Enabled := (DownColumn = 5) and (Data^.Rating <> 0);
     end;
   end
+end;
+
+procedure TVisualTree.VSTKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_SHIFT then
+    if Assigned(FShowHintFrm) and FShowHintFrm.Visible then
+      FShowHintFrm.tmWait.Enabled := True;
 end;
 
 procedure TVisualTree.VSTGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode;

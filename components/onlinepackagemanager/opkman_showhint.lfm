@@ -12,7 +12,7 @@ object ShowHintFrm: TShowHintFrm
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
-  OnKeyPress = FormKeyPress
+  OnKeyUp = FormKeyUp
   LCLVersion = '1.9.0.0'
   object pnBase: TPanel
     Left = 0
@@ -36,5 +36,11 @@ object ShowHintFrm: TShowHintFrm
       BorderStyle = bsNone
       TabOrder = 0
     end
+  end
+  object tmWait: TTimer
+    Enabled = False
+    OnTimer = tmWaitTimer
+    left = 7
+    top = 12
   end
 end

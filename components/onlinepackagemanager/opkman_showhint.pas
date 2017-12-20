@@ -29,7 +29,7 @@ unit opkman_showhint;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, LCLType,
   opkman_virtualtrees, opkman_showhintbase;
 
 type
@@ -39,10 +39,12 @@ type
   TShowHintFrm = class(TForm)
     pnBase: TPanel;
     sbLazPackages: TScrollBox;
+    tmWait: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormKeyPress(Sender: TObject; var Key: char);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure tmWaitTimer(Sender: TObject);
   private
     FFrames: TList;
   public
@@ -94,9 +96,19 @@ begin
   FFrames.Free;
 end;
 
-procedure TShowHintFrm.FormKeyPress(Sender: TObject; var Key: char);
+procedure TShowHintFrm.FormKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
-  if Key = #27 then
+  if Key = VK_ESCAPE then
+    Hide;
+  if Key = VK_SHIFT then
+    tmWait.Enabled := True;
+end;
+
+procedure TShowHintFrm.tmWaitTimer(Sender: TObject);
+begin
+  tmWait.Enabled := False;
+  if not IsMouseOverForm then
     Hide;
 end;
 
