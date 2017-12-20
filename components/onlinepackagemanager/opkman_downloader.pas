@@ -99,6 +99,7 @@ type
     FUTyp: Integer;
     FUErrMsg: String;
     FUSuccess: Boolean;
+    FSilent: Boolean;
     FOnPackageDownloadProgress: TOnPackageDownloadProgress;
     FOnPackageDownloadError: TOnPackageDownloadError;
     FOnPackageDownloadCompleted: TOnPackageDownloadCompleted;
@@ -120,7 +121,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure DownloadJSON(const ATimeOut: Integer = -1);
+    procedure DownloadJSON(const ATimeOut: Integer = -1; const ASilent: Boolean = False);
     procedure DownloadPackages(const ADownloadTo: String);
     procedure UpdatePackages(const ADownloadTo: String);
   published
@@ -161,7 +162,7 @@ type
   public
     constructor Create(const ARemoteRepository: String);
     destructor Destroy; override;
-    procedure DownloadJSON(const ATimeOut: Integer = -1);
+    procedure DownloadJSON(const ATimeOut: Integer = -1; const ASilent: Boolean = False);
     procedure DownloadPackages(const ADownloadTo: String);
     procedure CancelDownloadPackages;
     procedure UpdatePackages(const ADownloadTo: String);
@@ -257,6 +258,8 @@ procedure TThreadDownload.DoOnJSONDownloadCompleted;
 var
   JSON: TJSONStringType;
 begin
+  if FSilent then
+    Exit;
   if Assigned(FOnJSONComplete) then
   begin
     if (FErrTyp = etNone) or (FMS.Size > 0) then
@@ -293,6 +296,8 @@ end;
 
 procedure TThreadDownload.DoOnJSONProgress;
 begin
+  if FSilent then
+    Exit;
   if Assigned(FOnJSONProgress) then
     FOnJSONProgress(Self);
 end;
@@ -502,10 +507,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TThreadDownload.DownloadJSON(const ATimeOut: Integer = -1);
+procedure TThreadDownload.DownloadJSON(const ATimeOut: Integer = -1;
+  const ASilent: Boolean = False);
 begin
   FRemoteJSONFile := Options.RemoteRepository[Options.ActiveRepositoryIndex] + cRemoteJSONFile;
   FDownloadType := dtJSON;
+  FSilent := ASilent;
   FTimer := TThreadTimer.Create;
   FTimer.Interval := ATimeOut;
   FTimer.OnTimer := @DoOnTimer;
@@ -664,13 +671,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TPackageDownloader.DownloadJSON(const ATimeOut: Integer = -1);
+procedure TPackageDownloader.DownloadJSON(const ATimeOut: Integer = -1;
+  const ASilent: Boolean = False);
 begin
   FDownloadingJSON := True;
   FDownload := TThreadDownload.Create;
   FDownload.OnJSONProgress := @DoOnJSONProgress;
   FDownload.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
-  FDownload.DownloadJSON(ATimeOut);
+  FDownload.DownloadJSON(ATimeOut, ASilent);
 end;
 
 procedure TPackageDownloader.DownloadPackages(const ADownloadTo: String);

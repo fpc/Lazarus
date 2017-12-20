@@ -20,7 +20,7 @@
     <Description Value="Online package manger"/>
     <License Value="GPL"/>
     <Version Major="1" Release="1" Build="2"/>
-    <Files Count="26">
+    <Files Count="28">
       <Item1>
         <Filename Value="onlinepackagemanagerintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -131,6 +131,14 @@
         <Filename Value="opkman_intf_packagelistfrm.pas"/>
         <UnitName Value="opkman_intf_packagelistfrm"/>
       </Item26>
+      <Item27>
+        <Filename Value="opkman_showhint.pas"/>
+        <UnitName Value="opkman_showhint"/>
+      </Item27>
+      <Item28>
+        <Filename Value="opkman_showhintbase.pas"/>
+        <UnitName Value="opkman_showhintbase"/>
+      </Item28>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

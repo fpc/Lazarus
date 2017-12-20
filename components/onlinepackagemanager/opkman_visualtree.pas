@@ -37,7 +37,7 @@ uses
   LCLIntf, PackageIntf,
   // OpkMan
   opkman_VirtualTrees, opkman_common, opkman_serializablepackages, opkman_const,
-  opkman_options, opkman_packagedetailsfrm;
+  opkman_options, opkman_packagedetailsfrm, opkman_showhint;
 
 
 type
@@ -90,6 +90,7 @@ type
   private
     FVST: TVirtualStringTree;
     FHoverNode: PVirtualNode;
+    FHoverNodeOld: PVirtualNode;
     FHoverP: TPoint;
     FHoverColumn: Integer;
     FLink: String;
@@ -101,6 +102,7 @@ type
     FOnChecking: TOnChecking;
     FOnChecked: TNotifyEvent;
     FMouseEnter: Boolean;
+    FShowHintFrm: TShowHintFrm;
     procedure VSTBeforeCellPaint(Sender: TBaseVirtualTree;
       TargetCanvas: TCanvas; Node: PVirtualNode; {%H-}Column: TColumnIndex;
       {%H-}CellPaintMode: TVTCellPaintMode; CellRect: TRect; var {%H-}ContentRect: TRect);
@@ -281,11 +283,13 @@ begin
      OnEnter := @VSTEnter;
      OnFreeNode := @VSTFreeNode;
    end;
+  FShowHintFrm := TShowHintFrm.Create(nil);
 end;
 
 destructor TVisualTree.Destroy;
 begin
   FVST.Free;
+  FShowHintFrm.Free;
   inherited Destroy;
 end;
 
@@ -1660,12 +1664,39 @@ end;
 procedure TVisualTree.VSTMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
   Data: PData;
+  ContRect: TRect;
+  P: TPoint;
+  Level: Integer;
 begin
   FHoverColumn := -1;
   FHoverP.X := X;
   FHoverP.Y := Y;
   FHoverNode:= VST.GetNodeAt(X, Y);
   FHoverColumn := GetColumn(X);
+  if ((FHoverColumn = 0) or (FShowHintFrm.Visible)) and (FHoverNode <> nil) then
+  begin
+    P.X := X;
+    P.Y := Y;
+    ContRect := FVST.GetDisplayRect(FHoverNode, FHoverColumn, False);
+    Level := FVST.GetNodeLevel(FHoverNode);
+    if (ssShift in Shift) and PtInRect(ContRect, P) and (Level > 0) then
+    begin
+      P := FVST.ClientToScreen(P);
+      if FShowHintFrm.Visible then
+        FShowHintFrm.MoveFormTo(P.X, P.Y)
+      else
+        FShowHintFrm.ShowFormAt(P.X, P.Y);
+      case Level of
+         2: FHoverNode := FHoverNode^.Parent;
+         3: FHoverNode := FHoverNode^.Parent^.Parent;
+      end;
+      if FHoverNode <> FHoverNodeOld then
+      begin
+        FShowHintFrm.UpdateInfo(FHoverNode);
+        FHoverNodeOld := FHoverNode;
+      end;
+    end
+  end;
   if (FHoverColumn = 5) and (FHoverNode <> nil) then
   begin
     FVST.ReinitNode(FHoverNode, False);

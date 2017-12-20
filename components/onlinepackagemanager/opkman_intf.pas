@@ -125,7 +125,7 @@ begin
       if (FPackageLinks.Count = 0) then
       begin
         if not PackageDownloader.DownloadingJSON then
-          PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
+          PackageDownloader.DownloadJSON(Options.ConTimeOut*1000, True);
         Exit;
       end;
       if (not FBusyUpdating) then
