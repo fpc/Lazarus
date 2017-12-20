@@ -50,7 +50,7 @@ var
   PrnInfo: QPrinterInfoH;
   Prntr: QPrinterInfoH;
   PrnList: TPtrIntArray;
-  PrnName: WideString;
+  PrnName: UnicodeString;
 begin
 
   inherited DoEnumPrinters(Lst);
@@ -66,9 +66,9 @@ begin
       begin
         QPrinterInfo_printerName(Prntr, @PrnName);
         if QPrinterInfo_isDefault(Prntr) then
-          Lst.InsertObject(0, UTF16ToUTF8(PrnName), Prntr)
+          Lst.InsertObject(0, PrnName, Prntr)
         else
-          Lst.AddObject(UTF16ToUTF8(PrnName), Prntr);
+          Lst.AddObject(PrnName, Prntr);
       end;
     end;
   finally
@@ -353,7 +353,7 @@ end;
 
 procedure TQtPrinters.DoEnumPrinters(Lst: TStrings);
 var
-  Str: WideString;
+  Str: UnicodeString;
   i: Integer;
 begin
   {$IFDEF VERBOSE_QT_PRINTING}
@@ -361,7 +361,7 @@ begin
   {$ENDIF}
   Str := QtDefaultPrinter.PrinterName;
   EnumQPrinters(Lst);
-  i := Lst.IndexOf(UTF16ToUTF8(Str));
+  i := Lst.IndexOf(Str);
   if i > 0 then
     Lst.Move(i, 0);
 end;
