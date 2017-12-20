@@ -207,6 +207,7 @@ resourcestring
                           'Please note: in order for the changes to take effect you must rebuid the IDE.';
   rsMainFrm_rsUninstall_Nothing = 'None of the checked packages are installed. Nothing to uninstall.';
   rsMainFrm_rsUninstall_Error = 'Cannot uninstall package "%s"!';
+  rsMainFrm_rsDestDirError = 'Cannot create directory "%s". Operation aborted.';
 
   //progress form
   rsProgressFrm_Caption0 = 'Downloading packages';

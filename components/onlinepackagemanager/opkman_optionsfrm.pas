@@ -199,6 +199,12 @@ begin
   Options.LocalRepositoryPackages := AppendPathDelim(edLocalRepositoryPackages.Text);
   Options.LocalRepositoryArchive := AppendPathDelim(edLocalRepositoryArchive.Text);
   Options.LocalRepositoryUpdate := AppendPathDelim(edLocalRepositoryUpdate.Text);
+  if not DirectoryExists(Options.LocalRepositoryPackages) then
+    ForceDirectories(Options.LocalRepositoryPackages);
+  if not DirectoryExists(Options.LocalRepositoryArchive) then
+    ForceDirectories(Options.LocalRepositoryArchive);
+  if not DirectoryExists(Options.LocalRepositoryUpdate) then
+    ForceDirectories(Options.LocalRepositoryUpdate);
 
   Options.UserProfile := cbSelectProfile.ItemIndex;
   for I := 0 to lbExcludeFiles.Items.Count - 1 do

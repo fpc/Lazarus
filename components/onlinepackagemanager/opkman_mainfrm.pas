@@ -162,6 +162,7 @@ type
     procedure StartUpdates;
     procedure StopUpdates;
     procedure Rebuild;
+    function CheckDstDir(const ADstDir: String): Boolean;
   public
     procedure ShowOptions(const AActivePageIndex: Integer = 0);
   end;
@@ -269,8 +270,27 @@ begin
     MessageDlgEx(rsMainFrm_rsNoPackageToDownload, mtInformation, [mbOk], Self)
 end;
 
+function TMainFrm.CheckDstDir(const ADstDir: String): Boolean;
+begin
+  Result := True;
+  if not DirectoryExists(ADstDir) then
+  begin
+    if not ForceDirectories(ADstDir) then
+    begin
+      MessageDlgEx(Format(rsMainFrm_rsDestDirError, [ADstDir]), mtError, [mbOk], Self);
+      Result := False;
+    end;
+  end;
+end;
+
+
 function TMainFrm.Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
 begin
+  if not CheckDstDir(ADstDir) then
+  begin
+    Result := mrCancel;
+    Exit;
+  end;
   ADoExtract := False;
   ProgressFrm := TProgressFrm.Create(MainFrm);
   try
@@ -290,6 +310,11 @@ end;
 function TMainFrm.Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean;
   const AIsUpdate: Boolean = False): TModalResult;
 begin
+  if not CheckDstDir(ADstDir) then
+  begin
+    Result := mrCancel;
+    Exit;
+  end;
   ProgressFrm := TProgressFrm.Create(MainFrm);
   try
     PackageUnzipper := TPackageUnzipper.Create;
@@ -330,6 +355,11 @@ end;
 
 function TMainFrm.UpdateP(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
 begin
+  if not CheckDstDir(ADstDir) then
+   begin
+     Result := mrCancel;
+     Exit;
+   end;
   ADoExtract := False;
   ProgressFrm := TProgressFrm.Create(MainFrm);
   try
