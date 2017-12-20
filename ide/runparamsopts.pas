@@ -354,8 +354,6 @@ begin
   //don't clear!  needed for merging lpi and lps
 
   Cnt := XMLConfig.GetValue(Path + 'Modes/Count', 0);
-  if ASaveIn=rpsLPS then
-    ActiveModeName := XMLConfig.GetValue(Path + 'Modes/ActiveMode', '');
   Result := mrOK;
 
   for I := 0 to Cnt-1 do
@@ -368,8 +366,12 @@ begin
       Exit;
   end;
 
-  if (GetActiveMode=nil) and (Count>0) and (ASaveIn=rpsLPS) then
-    ActiveModeName := Modes[0].Name;
+  if ASaveIn=rpsLPS then
+  begin
+    ActiveModeName := XMLConfig.GetValue(Path + 'Modes/ActiveMode', '');
+    if (GetActiveMode=nil) and (Count>0) then
+      ActiveModeName := Modes[0].Name;
+  end;
 end;
 
 function TRunParamsOptions.Save(XMLConfig: TXMLConfig; const Path: string;
