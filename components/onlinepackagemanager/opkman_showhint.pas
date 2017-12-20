@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus,
-  opkman_virtualtrees;
+  opkman_virtualtrees, opkman_showhintbase;
 
 type
 
@@ -61,7 +61,7 @@ implementation
 
 { TShowHintFrm }
 
-uses LCLIntf, opkman_visualtree, opkman_showhintbase, opkman_serializablepackages;
+uses LCLIntf, opkman_visualtree, opkman_serializablepackages;
 
 function TShowHintFrm.IsMouseOverForm: Boolean;
 var
@@ -131,13 +131,14 @@ begin
     CurFrame := nil;
   end;
   FFrames.Clear;
-
+  I := -1;
   Node := VisualTree.VST.GetFirstChild(ANode);
   while Assigned(Node) do
   begin
     Data := VisualTree.VST.GetNodeData(Node);
     if Data^.DataType = 2 then
     begin
+      Inc(I);
       LazPackage := SerializablePackages.FindLazarusPackage(Data^.LazarusPackageName);
       CurFrame := TfrShowHint.Create(nil);
       CurFrame.Align := alTop;
@@ -148,6 +149,9 @@ begin
       CurFrame.mLicense.Text := Trim(LazPackage.License);
       CurFrame.Parent := sbLazPackages;
       FFrames.Add(CurFrame);
+      if I >= 1 then
+        TfrShowHint(FFrames.Items[I - 1]).pnBuffer.Visible := True;
+
     end;
     Node := VisualTree.VST.GetNextSibling(Node);
   end;
