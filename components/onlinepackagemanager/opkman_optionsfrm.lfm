@@ -1,11 +1,11 @@
 object OptionsFrm: TOptionsFrm
   Left = 428
-  Height = 484
+  Height = 555
   Top = 141
   Width = 590
   BorderIcons = [biSystemMenu]
   Caption = 'Options'
-  ClientHeight = 484
+  ClientHeight = 555
   ClientWidth = 590
   Constraints.MinHeight = 300
   Constraints.MinWidth = 475
@@ -17,7 +17,7 @@ object OptionsFrm: TOptionsFrm
   object pnBottom: TPanel
     Left = 0
     Height = 31
-    Top = 453
+    Top = 524
     Width = 590
     Align = alBottom
     AutoSize = True
@@ -77,7 +77,7 @@ object OptionsFrm: TOptionsFrm
   end
   object pgOptions: TPageControl
     Left = 6
-    Height = 441
+    Height = 512
     Top = 6
     Width = 578
     ActivePage = tsGeneral
@@ -87,16 +87,16 @@ object OptionsFrm: TOptionsFrm
     TabOrder = 0
     object tsGeneral: TTabSheet
       Caption = 'General'
-      ClientHeight = 413
+      ClientHeight = 484
       ClientWidth = 570
       object pnGeneral: TPanel
         Left = 0
-        Height = 413
+        Height = 484
         Top = 0
         Width = 570
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 413
+        ClientHeight = 484
         ClientWidth = 570
         ParentColor = False
         TabOrder = 0
@@ -262,6 +262,7 @@ object OptionsFrm: TOptionsFrm
           Value = 31
         end
         object cbRegularIcons: TCheckBox
+          AnchorSideLeft.Control = lbDaysToShowNewPackages
           AnchorSideTop.Control = lbDaysToShowNewPackages
           AnchorSideTop.Side = asrBottom
           Left = 6
@@ -273,13 +274,14 @@ object OptionsFrm: TOptionsFrm
           TabOrder = 5
         end
         object cbUseDefaultTheme: TCheckBox
-          AnchorSideTop.Control = Bevel2
+          AnchorSideLeft.Control = lbDaysToShowNewPackages
+          AnchorSideTop.Control = Bevel3
           AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 19
-          Top = 291
+          Top = 419
           Width = 116
-          BorderSpacing.Top = 4
+          BorderSpacing.Top = 7
           Caption = 'Use default theme'
           TabOrder = 6
         end
@@ -331,21 +333,75 @@ object OptionsFrm: TOptionsFrm
           TabOrder = 7
           Value = 10
         end
+        object Bevel3: TBevel
+          AnchorSideTop.Control = rbHintFormOptions
+          AnchorSideTop.Side = asrBottom
+          Left = 4
+          Height = 2
+          Top = 410
+          Width = 566
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 10
+        end
+        object lbHintForm: TLabel
+          AnchorSideLeft.Control = lbDaysToShowNewPackages
+          AnchorSideTop.Control = Bevel2
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 15
+          Top = 292
+          Width = 211
+          BorderSpacing.Top = 5
+          Caption = 'Show quick info for repository packages'
+          ParentColor = False
+        end
+        object rbHintFormOptions: TRadioGroup
+          AnchorSideLeft.Control = lbHintForm
+          AnchorSideTop.Control = lbHintForm
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = pnGeneral
+          AnchorSideRight.Side = asrBottom
+          Left = 6
+          Height = 88
+          Top = 312
+          Width = 554
+          Anchors = [akTop, akLeft, akRight]
+          AutoFill = True
+          BorderSpacing.Top = 5
+          BorderSpacing.Right = 10
+          Caption = 'Options'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 68
+          ClientWidth = 550
+          ItemIndex = 0
+          Items.Strings = (
+            'Behaves like a regular hint window'
+            'It''s triggered by SHIFT, moves with the mouse'
+            'Off'
+          )
+          TabOrder = 8
+        end
       end
     end
     object tsProxy: TTabSheet
       Caption = 'Proxy'
-      ClientHeight = 394
-      ClientWidth = 572
+      ClientHeight = 484
+      ClientWidth = 570
       object pnProxy: TPanel
         Left = 0
-        Height = 337
+        Height = 484
         Top = 0
-        Width = 505
+        Width = 570
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 337
-        ClientWidth = 505
+        ClientHeight = 484
+        ClientWidth = 570
         ParentColor = False
         TabOrder = 0
         object cbProxy: TCheckBox
@@ -471,16 +527,16 @@ object OptionsFrm: TOptionsFrm
     end
     object tsFolders: TTabSheet
       Caption = 'Folders'
-      ClientHeight = 413
+      ClientHeight = 484
       ClientWidth = 570
       object pnFolders: TPanel
         Left = 0
-        Height = 413
+        Height = 484
         Top = 0
         Width = 570
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 413
+        ClientHeight = 484
         ClientWidth = 570
         ParentColor = False
         TabOrder = 0
@@ -588,16 +644,16 @@ object OptionsFrm: TOptionsFrm
     end
     object tsProfiles: TTabSheet
       Caption = 'Profiles'
-      ClientHeight = 413
+      ClientHeight = 484
       ClientWidth = 570
       object pnProfiles: TPanel
         Left = 0
-        Height = 413
+        Height = 484
         Top = 0
         Width = 570
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 413
+        ClientHeight = 484
         ClientWidth = 570
         ParentColor = False
         TabOrder = 0
@@ -646,12 +702,12 @@ object OptionsFrm: TOptionsFrm
         end
         object pnProfilesMain: TPanel
           Left = 0
-          Height = 365
+          Height = 436
           Top = 48
           Width = 570
           Align = alClient
           BevelOuter = bvNone
-          ClientHeight = 365
+          ClientHeight = 436
           ClientWidth = 570
           TabOrder = 1
           OnResize = pnProfilesMainResize
@@ -659,12 +715,12 @@ object OptionsFrm: TOptionsFrm
             AnchorSideLeft.Control = pnProfilesMain
             AnchorSideTop.Control = pnProfilesMain
             Left = 0
-            Height = 365
+            Height = 436
             Top = 0
             Width = 282
             Align = alLeft
             BevelOuter = bvNone
-            ClientHeight = 365
+            ClientHeight = 436
             ClientWidth = 282
             TabOrder = 0
             object lbExcludeFiles: TListBox
@@ -675,7 +731,7 @@ object OptionsFrm: TOptionsFrm
               AnchorSideBottom.Control = pnProfilesLeft
               AnchorSideBottom.Side = asrBottom
               Left = 6
-              Height = 336
+              Height = 407
               Top = 23
               Width = 190
               Anchors = [akTop, akLeft, akRight, akBottom]
@@ -753,13 +809,13 @@ object OptionsFrm: TOptionsFrm
           end
           object pnProfilesRight: TPanel
             Left = 282
-            Height = 365
+            Height = 436
             Top = 0
             Width = 282
             Align = alClient
             BorderSpacing.Right = 6
             BevelOuter = bvNone
-            ClientHeight = 365
+            ClientHeight = 436
             ClientWidth = 282
             TabOrder = 1
             object lbExcludeFolders: TListBox
@@ -770,7 +826,7 @@ object OptionsFrm: TOptionsFrm
               AnchorSideBottom.Control = pnProfilesRight
               AnchorSideBottom.Side = asrBottom
               Left = 6
-              Height = 336
+              Height = 407
               Top = 23
               Width = 190
               Anchors = [akTop, akLeft, akRight, akBottom]

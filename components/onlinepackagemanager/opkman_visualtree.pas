@@ -126,6 +126,7 @@ type
     procedure VSTMouseEnter(Sender: TObject);
     procedure VSTMouseLeave(Sender: TObject);
     procedure VSTMouseDown(Sender: TObject; Button: TMouseButton; {%H-}Shift: TShiftState; X, Y: Integer);
+    procedure VSTKeyDown(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure VSTKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure VSTGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex;
       var LineBreakStyle: TVTTooltipLineBreakStyle; var HintText: String);
@@ -276,6 +277,7 @@ begin
      OnMouseLeave := @VSTMouseLeave;
      OnMouseEnter := @VSTMouseEnter;
      OnMouseDown := @VSTMouseDown;
+     OnKeyDown := @VSTKeyDown;
      OnKeyUp := @VSTKeyUp;
      OnDblClick := @VSTDblClick;
      OnClick := @VSTClick;
@@ -1677,27 +1679,37 @@ begin
   FHoverColumn := GetColumn(X);
   if ((FHoverColumn = 0) or (FShowHintFrm.Visible)) and (FHoverNode <> nil) then
   begin
-    P.X := X;
-    P.Y := Y;
-    ContRect := FVST.GetDisplayRect(FHoverNode, FHoverColumn, False);
-    Level := FVST.GetNodeLevel(FHoverNode);
-    if (ssShift in Shift) and PtInRect(ContRect, P) and (Level > 0) then
-    begin
-      P := FVST.ClientToScreen(P);
-      if FShowHintFrm.Visible then
-        FShowHintFrm.MoveFormTo(P.X, P.Y)
-      else
-        FShowHintFrm.ShowFormAt(P.X, P.Y);
-      case Level of
-         2: FHoverNode := FHoverNode^.Parent;
-         3: FHoverNode := FHoverNode^.Parent^.Parent;
-      end;
-      if FHoverNode <> FHoverNodeOld then
-      begin
-        FShowHintFrm.UpdateInfo(FHoverNode);
-        FHoverNodeOld := FHoverNode;
-      end;
-    end
+    case Options.HintFormOption of
+      0: begin
+           if FShowHintFrm.Visible then
+             FShowHintFrm.SetupTimer(300);
+           Exit;
+         end;
+      1: begin
+            P.X := X;
+            P.Y := Y;
+            ContRect := FVST.GetDisplayRect(FHoverNode, FHoverColumn, False);
+            Level := FVST.GetNodeLevel(FHoverNode);
+            if (ssShift in Shift) and PtInRect(ContRect, P) and (Level > 0) then
+            begin
+              P := FVST.ClientToScreen(P);
+              if FShowHintFrm.Visible then
+                FShowHintFrm.MoveFormTo(P.X, P.Y)
+              else
+                FShowHintFrm.ShowFormAt(P.X, P.Y);
+              case Level of
+                 2: FHoverNode := FHoverNode^.Parent;
+                 3: FHoverNode := FHoverNode^.Parent^.Parent;
+              end;
+              if FHoverNode <> FHoverNodeOld then
+              begin
+                FShowHintFrm.UpdateInfo(FHoverNode);
+                FHoverNodeOld := FHoverNode;
+              end;
+            end
+        end;
+      2: Exit;
+    end;
   end;
   if (FHoverColumn = 5) and (FHoverNode <> nil) then
   begin
@@ -1797,12 +1809,18 @@ begin
   end
 end;
 
+procedure TVisualTree.VSTKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+ //
+end;
+
 procedure TVisualTree.VSTKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_SHIFT then
-    if Assigned(FShowHintFrm) and FShowHintFrm.Visible then
-      FShowHintFrm.tmWait.Enabled := True;
+    if Assigned(FShowHintFrm) and FShowHintFrm.Visible and (Options.HintFormOption = 1) then
+      FShowHintFrm.SetupTimer(300);
 end;
 
 procedure TVisualTree.VSTGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -1810,12 +1828,37 @@ procedure TVisualTree.VSTGetHint(Sender: TBaseVirtualTree; Node: PVirtualNode;
   var HintText: String);
 var
   Data: PData;
+  P1, P2: TPoint;
+  Level: Integer;
 begin
   Data := FVST.GetNodeData(Node);
-  if (Column <> 4) then
+  if (Column <> 4) and (Column <> 0) then
     Exit;
   LineBreakStyle := hlbForceSingleLine;
   case Data^.DataType of
+    1: if Options.HintFormOption = 0 then
+       begin
+         HintText := '';
+         P1.X := 0;
+         P1.Y := 0;
+         GetCursorPos(P1);
+         P2 := FVST.ScreenToClient(P1);
+         Level := FVST.GetNodeLevel(FHoverNode);
+         if PtInRect(FVST.GetDisplayRect(Node, Column, True), P2) and (Level > 0) then
+         begin
+           FShowHintFrm.ShowFormAt(P1.X, P1.Y);
+           FShowHintFrm.SetupTimer(Application.HintHidePause);
+           case Level of
+              2: FHoverNode := FHoverNode^.Parent;
+              3: FHoverNode := FHoverNode^.Parent^.Parent;
+           end;
+           if FHoverNode <> FHoverNodeOld then
+           begin
+             FShowHintFrm.UpdateInfo(FHoverNode);
+             FHoverNodeOld := FHoverNode;
+           end;
+         end;
+       end;
     3: HintText := Data^.Description;
     4: HintText := Data^.Author;
     5: HintText := Data^.LazCompatibility;

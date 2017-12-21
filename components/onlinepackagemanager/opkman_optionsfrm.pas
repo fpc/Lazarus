@@ -32,7 +32,7 @@ interface
 uses
   SysUtils, Math, Graphics,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Spin, ComCtrls, EditBtn,
+  Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Spin, ComCtrls, EditBtn, Menus,
   // LazUtils
   LazFileUtils,
   // OpkMan
@@ -46,6 +46,7 @@ type
     bCancel: TButton;
     Bevel1: TBevel;
     Bevel2: TBevel;
+    Bevel3: TBevel;
     bFilesAdd: TButton;
     bFilesDelete: TButton;
     bFilesEdit: TButton;
@@ -70,6 +71,7 @@ type
     edProxyServer: TEdit;
     edProxyUser: TEdit;
     gbProxySettings: TGroupBox;
+    lbHintForm: TLabel;
     lbConTimeOut: TLabel;
     lbFilterDirs: TLabel;
     lbFilterFiles: TLabel;
@@ -98,6 +100,7 @@ type
     pnBottom: TPanel;
     pnProfilesMain: TPanel;
     pnProfilesLeft: TPanel;
+    rbHintFormOptions: TRadioGroup;
     SDD: TSelectDirectoryDialog;
     seProxyPort: TSpinEdit;
     spDaysToShowNewPackages: TSpinEdit;
@@ -188,6 +191,7 @@ begin
   Options.CheckForUpdates := cbCheckForUpdates.ItemIndex;
   Options.DaysToShowNewPackages := spDaysToShowNewPackages.Value;
   Options.ShowRegularIcons := cbRegularIcons.Checked;
+  Options.HintFormOption := rbHintFormOptions.ItemIndex;
   Options.UseDefaultTheme := cbUseDefaultTheme.Checked;
 
   Options.ProxyEnabled := cbProxy.Checked;
@@ -450,6 +454,12 @@ begin
   spDaysToShowNewPackages.Value := Options.DaysToShowNewPackages;
   cbRegularIcons.Checked := Options.ShowRegularIcons;
   cbRegularIcons.Caption := rsOptions_cbRegular_Caption;
+  lbHintForm.Caption := rsOptions_lbHintFrm;
+  rbHintFormOptions.Items.Clear;
+  rbHintFormOptions.Items.Add(rsOptions_rbHintFormOptions_Item0);
+  rbHintFormOptions.Items.Add(rsOptions_rbHintFormOptions_Item1);
+  rbHintFormOptions.Items.Add(rsOptions_rbHintFormOptions_Item2);
+  rbHintFormOptions.ItemIndex := Options.HintFormOption;
   cbUseDefaultTheme.Checked := Options.UseDefaultTheme;
   cbUseDefaultTheme.Caption := rsOptions_cbUseDefaultTheme_Caption;
   tsProxy.Caption := rsOptions_tsProxy_Caption;

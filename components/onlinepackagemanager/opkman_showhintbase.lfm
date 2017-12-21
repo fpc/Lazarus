@@ -1,34 +1,37 @@
 object frShowHint: TfrShowHint
   Left = 0
-  Height = 334
+  Height = 321
   Top = 0
   Width = 559
   AutoSize = True
-  ClientHeight = 334
+  ClientHeight = 321
   ClientWidth = 559
   TabOrder = 0
   DesignLeft = 388
   DesignTop = 227
   object pnBase: TPanel
-    Left = 5
+    Left = 10
     Height = 306
     Top = 5
-    Width = 549
+    Width = 539
     Align = alClient
-    BorderSpacing.Around = 5
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 10
     BevelInner = bvLowered
     ClientHeight = 306
-    ClientWidth = 549
+    ClientWidth = 539
     TabOrder = 0
     object pnDescription: TPanel
       Left = 2
       Height = 140
       Top = 24
-      Width = 545
+      Width = 535
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 140
-      ClientWidth = 545
+      ClientWidth = 535
       ParentFont = False
       TabOrder = 0
       object mDescription: TMemo
@@ -42,7 +45,7 @@ object frShowHint: TfrShowHint
         Left = 20
         Height = 116
         Top = 17
-        Width = 518
+        Width = 508
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Left = 20
         BorderSpacing.Top = 2
@@ -71,11 +74,11 @@ object frShowHint: TfrShowHint
       Left = 2
       Height = 140
       Top = 164
-      Width = 545
+      Width = 535
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 140
-      ClientWidth = 545
+      ClientWidth = 535
       ParentFont = False
       TabOrder = 1
       object mLicense: TMemo
@@ -89,7 +92,7 @@ object frShowHint: TfrShowHint
         Left = 20
         Height = 116
         Top = 17
-        Width = 518
+        Width = 508
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Left = 20
         BorderSpacing.Top = 2
@@ -118,7 +121,7 @@ object frShowHint: TfrShowHint
       Left = 2
       Height = 22
       Top = 2
-      Width = 545
+      Width = 535
       Align = alTop
       BevelOuter = bvNone
       Caption = 'Package Name'
@@ -126,15 +129,5 @@ object frShowHint: TfrShowHint
       ParentFont = False
       TabOrder = 2
     end
-  end
-  object pnBuffer: TPanel
-    Left = 0
-    Height = 18
-    Top = 316
-    Width = 559
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 1
-    Visible = False
   end
 end

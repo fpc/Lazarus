@@ -16,7 +16,6 @@ type
     lbLicense: TLabel;
     mDescription: TMemo;
     mLicense: TMemo;
-    pnBuffer: TPanel;
     pnPackageName: TPanel;
     pnBase: TPanel;
     pnDescription: TPanel;
@@ -35,6 +34,7 @@ implementation
 
 procedure TfrShowHint.Init;
 begin
+  Self.DoubleBuffered := True;
   pnPackageName.Color := $00D9FFFF;
   pnDescription.Color := $00E6FFE6;
   mDescription.Color := $00E6FFE6;

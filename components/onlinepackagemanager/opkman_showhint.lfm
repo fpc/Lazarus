@@ -1,41 +1,31 @@
 object ShowHintFrm: TShowHintFrm
   Left = 407
-  Height = 320
+  Height = 325
   Top = 233
   Width = 563
   BorderIcons = [biSystemMenu]
   Caption = 'ShowHintFrm'
-  ClientHeight = 320
+  ClientHeight = 325
   ClientWidth = 563
-  FormStyle = fsSystemStayOnTop
+  FormStyle = fsStayOnTop
   KeyPreview = True
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
+  PopupMode = pmExplicit
   LCLVersion = '1.9.0.0'
-  object pnBase: TPanel
+  object sbLazPackages: TScrollBox
     Left = 0
-    Height = 320
+    Height = 325
     Top = 0
     Width = 563
+    HorzScrollBar.Page = 1
+    VertScrollBar.Page = 1
     Align = alClient
-    BevelInner = bvLowered
-    ClientHeight = 320
-    ClientWidth = 563
+    AutoSize = True
+    BorderStyle = bsNone
     TabOrder = 0
-    object sbLazPackages: TScrollBox
-      Left = 2
-      Height = 316
-      Top = 2
-      Width = 559
-      HorzScrollBar.Page = 1
-      VertScrollBar.Page = 1
-      Align = alClient
-      AutoSize = True
-      BorderStyle = bsNone
-      TabOrder = 0
-    end
   end
   object tmWait: TTimer
     Enabled = False

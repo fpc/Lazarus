@@ -29,15 +29,14 @@ unit opkman_showhint;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, LCLType,
-  opkman_virtualtrees, opkman_showhintbase;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, Messages,
+  LCLType, LCLIntf, opkman_virtualtrees;
 
 type
 
   { TShowHintFrm }
 
   TShowHintFrm = class(TForm)
-    pnBase: TPanel;
     sbLazPackages: TScrollBox;
     tmWait: TTimer;
     procedure FormCreate(Sender: TObject);
@@ -47,11 +46,12 @@ type
     procedure tmWaitTimer(Sender: TObject);
   private
     FFrames: TList;
-  public
     function IsMouseOverForm: Boolean;
+  public
     procedure ShowFormAt(const AX, AY: Integer);
     procedure MoveFormTo(const AX, AY: Integer);
     procedure UpdateInfo(ANode: PVirtualNode);
+    procedure SetupTimer(const AInterval: Integer);
   end;
 
 var
@@ -63,26 +63,18 @@ implementation
 
 { TShowHintFrm }
 
-uses LCLIntf, opkman_visualtree, opkman_serializablepackages;
+uses opkman_visualtree, opkman_serializablepackages, opkman_showhintbase;
 
-function TShowHintFrm.IsMouseOverForm: Boolean;
-var
-  P: TPoint;
-begin
-  Result := False;
-  P.X := 0;
-  P.Y := 0;
-  GetCursorPos(P);
-  Result := PtInRect(Self.BoundsRect, P);
-end;
 
 procedure TShowHintFrm.FormCreate(Sender: TObject);
 begin
+  sbLazPackages.DoubleBuffered := True;
   FFrames := TList.Create;
 end;
 
 procedure TShowHintFrm.FormDeactivate(Sender: TObject);
 begin
+  tmWait.Enabled := False;
   Hide;
 end;
 
@@ -102,12 +94,29 @@ begin
   if Key = VK_ESCAPE then
     Hide;
   if Key = VK_SHIFT then
-    tmWait.Enabled := True;
+    SetupTimer(300);
+end;
+
+function TShowHintFrm.IsMouseOverForm: Boolean;
+var
+  R: TRect;
+  P: TPoint;
+  CH: Integer;
+begin
+  Result := False;
+  CH := LCLIntf.GetSystemMetrics(SM_CYCAPTION);
+  R.Left := Left;
+  R.Top := Top;
+  R.Right := Left + Width + 10;
+  R.Bottom := Top + Height + CH + 10;
+  P.X := 0;
+  P.Y := 0;
+  GetCursorPos(P);
+  Result := PtInRect(R, P);
 end;
 
 procedure TShowHintFrm.tmWaitTimer(Sender: TObject);
 begin
-  tmWait.Enabled := False;
   if not IsMouseOverForm then
     Hide;
 end;
@@ -143,31 +152,34 @@ begin
     CurFrame := nil;
   end;
   FFrames.Clear;
-  I := -1;
   Node := VisualTree.VST.GetFirstChild(ANode);
   while Assigned(Node) do
   begin
     Data := VisualTree.VST.GetNodeData(Node);
     if Data^.DataType = 2 then
     begin
-      Inc(I);
       LazPackage := SerializablePackages.FindLazarusPackage(Data^.LazarusPackageName);
       CurFrame := TfrShowHint.Create(nil);
       CurFrame.Align := alTop;
-      CurFrame.Visible := True;
       CurFrame.Init;
       CurFrame.pnPackageName.Caption := ' ' + LazPackage.Name;
       CurFrame.mDescription.Text := Trim(LazPackage.Description);
       CurFrame.mLicense.Text := Trim(LazPackage.License);
-      CurFrame.Parent := sbLazPackages;
       FFrames.Add(CurFrame);
-      if I >= 1 then
-        TfrShowHint(FFrames.Items[I - 1]).pnBuffer.Visible := True;
-
+      CurFrame.Parent := sbLazPackages;
+      CurFrame.Visible := True;
     end;
     Node := VisualTree.VST.GetNextSibling(Node);
   end;
 end;
+
+procedure TShowHintFrm.SetupTimer(const AInterval: Integer);
+begin
+  tmWait.Enabled := False;
+  tmWait.Interval := AInterval;
+  tmWait.Enabled := True;
+end;
+
 
 end.
 
