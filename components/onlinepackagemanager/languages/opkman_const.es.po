@@ -724,6 +724,10 @@ msgstr "%s ¡paquetes cargados correctamente desde archivo!"
 msgid "%s packages successfully saved to file!"
 msgstr "%s ¡paquetes correctamente guardados en archivo!"
 
+#: opkman_const.rsmainfrm_rsdestdirerror
+msgid "Cannot create directory \"%s\". Operation aborted."
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
 msgstr "Cambiando repositorio. Por favor espere..."
@@ -1419,6 +1423,10 @@ msgstr "Carpetas excluidas (paquetes)"
 msgid "Excluded files (packages)"
 msgstr "Archivos excluidos (paquetes)"
 
+#: opkman_const.rsoptions_lbhintfrm
+msgid "Show quick info for repository packages"
+msgstr ""
+
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
 msgstr "Última actualización:"
@@ -1466,6 +1474,18 @@ msgstr "¡Por favor ingresa el puerto proxy del servidor!"
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
 msgstr "¡Por favor ingresa la dirección proxy del servidor!"
+
+#: opkman_const.rsoptions_rbhintformoptions_item0
+msgid "Behaves like a regular hint window"
+msgstr ""
+
+#: opkman_const.rsoptions_rbhintformoptions_item1
+msgid "It's triggered by SHIFT, moves with the mouse"
+msgstr ""
+
+#: opkman_const.rsoptions_rbhintformoptions_item2
+msgid "Off"
+msgstr ""
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"

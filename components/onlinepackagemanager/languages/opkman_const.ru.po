@@ -681,6 +681,10 @@ msgstr "Пакеты (%s шт.) успешно загружены из файл�
 msgid "%s packages successfully saved to file!"
 msgstr "Пакеты (%s шт.) успешно сохранены в файл!"
 
+#: opkman_const.rsmainfrm_rsdestdirerror
+msgid "Cannot create directory \"%s\". Operation aborted."
+msgstr "Невозможно создать каталог \"%s\". Операция прервана."
+
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
 msgstr "Смена репозитория. Подождите..."
@@ -1367,6 +1371,10 @@ msgstr "Исключённые каталоги (пакеты)"
 msgid "Excluded files (packages)"
 msgstr "Исключённые файлы (пакеты)"
 
+#: opkman_const.rsoptions_lbhintfrm
+msgid "Show quick info for repository packages"
+msgstr "Показывать сводку для пакетов из репозитория"
+
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
 msgstr "Последнее обновление: "
@@ -1414,6 +1422,18 @@ msgstr "Введите порт прокси-сервера!"
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
 msgstr "Введите адрес прокси-сервера!"
+
+#: opkman_const.rsoptions_rbhintformoptions_item0
+msgid "Behaves like a regular hint window"
+msgstr "Работает подобно обычной всплывающей подсказке"
+
+#: opkman_const.rsoptions_rbhintformoptions_item1
+msgid "It's triggered by SHIFT, moves with the mouse"
+msgstr "Показывается по SHIFT, перемещается за курсором мыши"
+
+#: opkman_const.rsoptions_rbhintformoptions_item2
+msgid "Off"
+msgstr "Выключена"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"

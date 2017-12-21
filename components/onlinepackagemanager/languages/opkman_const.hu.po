@@ -681,6 +681,10 @@ msgstr "%s csomag sikeresen betöltve fájlból!"
 msgid "%s packages successfully saved to file!"
 msgstr "%s csomag sikeresen fájlba mentve!"
 
+#: opkman_const.rsmainfrm_rsdestdirerror
+msgid "Cannot create directory \"%s\". Operation aborted."
+msgstr ""
+
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
 msgstr "Tároló váltása. Kist türelmet..."
@@ -1370,6 +1374,10 @@ msgstr "Kizárt könyvtárak (csomagok)"
 msgid "Excluded files (packages)"
 msgstr "Kizárt fájlok (csomagok)"
 
+#: opkman_const.rsoptions_lbhintfrm
+msgid "Show quick info for repository packages"
+msgstr ""
+
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
 msgstr "Utolsó frissítés:"
@@ -1417,6 +1425,18 @@ msgstr "Adja meg a proxy kiszolgáló port-ját!"
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
 msgstr "Adja meg a proxy kiszolgáló címét!"
+
+#: opkman_const.rsoptions_rbhintformoptions_item0
+msgid "Behaves like a regular hint window"
+msgstr ""
+
+#: opkman_const.rsoptions_rbhintformoptions_item1
+msgid "It's triggered by SHIFT, moves with the mouse"
+msgstr ""
+
+#: opkman_const.rsoptions_rbhintformoptions_item2
+msgid "Off"
+msgstr ""
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
