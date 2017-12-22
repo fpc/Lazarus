@@ -5472,7 +5472,7 @@ var
   Group: TSynEditUndoGroup;
 begin
   Group := fUndoList.PopItem;
-  if Group <> nil then begin;
+  if Group <> nil then begin
     {$IFDEF SynUndoDebugCalls}
     DebugLnEnter(['>> TCustomSynEdit.Undo ',DbgSName(self), ' ', dbgs(Self), ' Group', dbgs(Group), ' cnt=', Group.Count]);
     {$ENDIF}

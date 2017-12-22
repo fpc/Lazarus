@@ -585,8 +585,7 @@ end;
 
 function TSynEditUndoItem.IsEqual(AnItem: TSynEditUndoItem): Boolean;
 begin
-  Result := (ClassType = AnItem.ClassType);
-  if Result then Result := Result and IsEqualContent(AnItem);
+  Result := (ClassType = AnItem.ClassType) and IsEqualContent(AnItem);
 end;
 
 function TSynEditUndoItem.DebugString: String;
