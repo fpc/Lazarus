@@ -32,7 +32,7 @@ type
     
     procedure CachePapers(OnlySupportedByPrinter:boolean);
     procedure EnumQPrinters(Lst: TStrings);
-    function IndexOfPaper(const Paper: string; RetDefault:boolean=true): Integer;
+    function IndexOfPaper(const Paper: string; RetDefault: boolean=true): Integer;
     function IndexOfPageSize(const PageSize: QtLCLPrinterPageSize): Integer;
     function GetColorMode: QPrinterColorMode;
     function GetFullPage: Boolean;

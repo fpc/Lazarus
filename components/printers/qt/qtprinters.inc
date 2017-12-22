@@ -194,9 +194,9 @@ begin
     Index := PrinterList.IndexOf(UTF8Encode(QtDefaultPrinter.PrinterName));
     if Index>=0 then
     begin
-		  Info := QPrinterInfoH(PrinterList.Objects[Index]);
-		  QPrinterInfo_supportedPaperSizes(Info, @Arr);
-		  for PageSize in Arr do
+      Info := QPrinterInfoH(PrinterList.Objects[Index]);
+      QPrinterInfo_supportedPaperSizes(Info, @Arr);
+      for PageSize in Arr do
         {$IFDEF LCLQt5}
         for Index := QPagedPaintDeviceA4 to QPagedPaintDeviceCustom do
         {$ELSE}
@@ -214,8 +214,7 @@ begin
   end;
 end;
 
-function TQtPrinters.IndexOfPaper(const Paper: string; RetDefault: boolean
-  ): Integer;
+function TQtPrinters.IndexOfPaper(const Paper: string; RetDefault: boolean): Integer;
 var
   i: Integer;
 begin
