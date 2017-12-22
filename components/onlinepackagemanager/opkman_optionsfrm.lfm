@@ -10,6 +10,8 @@ object OptionsFrm: TOptionsFrm
   Constraints.MinHeight = 300
   Constraints.MinWidth = 475
   KeyPreview = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyPress = FormKeyPress
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
@@ -139,7 +141,7 @@ object OptionsFrm: TOptionsFrm
             'Never'
           )
           Style = csDropDownList
-          TabOrder = 3
+          TabOrder = 4
           Text = 'Every few minutes'
         end
         object lbLastUpdate: TLabel
@@ -228,7 +230,7 @@ object OptionsFrm: TOptionsFrm
           Width = 76
           BorderSpacing.Left = 6
           MaxValue = 365
-          TabOrder = 4
+          TabOrder = 5
           Value = 31
         end
         object cbRegularIcons: TCheckBox
@@ -241,7 +243,7 @@ object OptionsFrm: TOptionsFrm
           Width = 232
           BorderSpacing.Top = 10
           Caption = 'Show regular icon for installed packages'
-          TabOrder = 5
+          TabOrder = 6
         end
         object cbUseDefaultTheme: TCheckBox
           AnchorSideLeft.Control = lbDaysToShowNewPackages
@@ -253,7 +255,7 @@ object OptionsFrm: TOptionsFrm
           Width = 116
           BorderSpacing.Top = 7
           Caption = 'Use default theme'
-          TabOrder = 6
+          TabOrder = 8
         end
         object Bevel1: TBevel
           AnchorSideTop.Control = lbConTimeOut
@@ -300,7 +302,7 @@ object OptionsFrm: TOptionsFrm
           Width = 55
           BorderSpacing.Left = 6
           MinValue = 1
-          TabOrder = 7
+          TabOrder = 3
           Value = 10
         end
         object Bevel3: TBevel
@@ -342,7 +344,25 @@ object OptionsFrm: TOptionsFrm
             'It''s triggered by SHIFT, moves with the mouse'
             'Off'
           )
-          TabOrder = 8
+          TabOrder = 7
+          object bColors: TButton
+            AnchorSideTop.Control = rbHintFormOptions
+            AnchorSideRight.Control = rbHintFormOptions
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = rbHintFormOptions
+            AnchorSideBottom.Side = asrBottom
+            Left = 480
+            Height = 26
+            Top = 21
+            Width = 105
+            Anchors = [akTop, akRight, akBottom]
+            BorderSpacing.Top = 21
+            BorderSpacing.Right = 10
+            BorderSpacing.Bottom = 21
+            Caption = 'Colors'
+            OnClick = bColorsClick
+            TabOrder = 3
+          end
         end
       end
     end

@@ -27,7 +27,7 @@ unit opkman_options;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Graphics,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils,
   // IdeIntf
@@ -37,6 +37,7 @@ uses
 
 const
   OpkVersion = 1;
+  HintColCnt = 3;
 
 type
   { TOptions }
@@ -65,6 +66,7 @@ type
     FShowRegularIcons: Boolean;
     FUseDefaultTheme: Boolean;
     FHintFormOption: Integer;
+    FHintFormOptionColors: TStringList;
     FChanged: Boolean;
     FLastDownloadDir: String;
     FLastPackageDirSrc: String;
@@ -81,6 +83,7 @@ type
     FUserProfile: Integer;
     FExcludedFiles: String;
     FExcludedFolders: String;
+    procedure CheckColors;
   public
     constructor Create(const AFileName: String);
     destructor Destroy; override;
@@ -102,6 +105,7 @@ type
     property ShowRegularIcons: Boolean read FShowRegularIcons write FShowRegularIcons;
     property UseDefaultTheme: Boolean read FUseDefaultTheme write FUseDefaultTheme;
     property HintFormOption: Integer read FHintFormOption write FHintFormOption;
+    property HintFormOptionColors: TStringList read FHintFormOptionColors write FHintFormOptionColors;
     property UserProfile: Integer read FUserProfile write FUserProfile;
     property LastDownloadDir: String read FLastDownloadDir write FLastDownloadDir;
     property LastPackagedirSrc: String read FLastPackageDirSrc write FLastPackageDirSrc;
@@ -132,6 +136,7 @@ var
 begin
   FRemoteRepository := TStringList.Create;
   FRemoteRepositoryTmp := TStringList.Create;
+  FHintFormOptionColors := TStringList.Create;
   LocalRepo := AppendPathDelim(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + cLocalRepository);
   FLocalPackagesDefault := LocalRepo + AppendPathDelim(cLocalRepositoryPackages);
   FLocalArchiveDefault := LocalRepo + AppendPathDelim(cLocalRepositoryArchive);
@@ -141,6 +146,7 @@ begin
   if FileExists(AFileName) then
   begin
     Load;
+    CheckColors;
     if FLocalRepositoryPackages = '' then
       FLocalRepositoryPackages := FLocalPackagesDefault;
     if FLocalRepositoryArchive = '' then
@@ -163,6 +169,7 @@ begin
     Save;
   FRemoteRepository.Free;
   FRemoteRepositoryTmp.Free;
+  FHintFormOptionColors.Free;
   FXML.Free;
   inherited Destroy;
 end;
@@ -190,6 +197,7 @@ begin
   FShowRegularIcons := FXML.GetValue('General/ShowRegularIcons/Value', True);
   FUseDefaultTheme := FXML.GetValue('General/UseDefaultTheme/Value', True);
   FHintFormOption := FXML.GetValue('General/HintFormOption/Value', 0);
+  FHintFormOptionColors.Text := FXML.GetValue('General/HintFormOptionColors/Value', '');
 
   FProxySettings.FEnabled := FXML.GetValue('Proxy/Enabled/Value', False);
   FProxySettings.FServer := FXML.GetValue('Proxy/Server/Value', '');
@@ -224,6 +232,7 @@ begin
   FXML.SetDeleteValue('General/ShowRegularIcons/Value', FShowRegularIcons, True);
   FXML.SetDeleteValue('General/UseDefaultTheme/Value', FUseDefaultTheme, True);
   FXML.SetDeleteValue('General/HintFormOption/Value', FHintFormOption, 0);
+  FXML.SetDeleteValue('General/HintFormOptionColors/Value', FHintFormOptionColors.Text, '');
 
   FXML.SetDeleteValue('Proxy/Enabled/Value', FProxySettings.FEnabled, false);
   FXML.SetDeleteValue('Proxy/Server/Value', FProxySettings.FServer, '');
@@ -248,6 +257,8 @@ begin
   FRemoteRepository.Clear;
   FRemoteRepositoryTmp.Clear;
   FRemoteRepository.Add(cRemoteRepository);
+  FHintFormOptionColors.Clear;
+  CheckColors;
   FActiveRepositoryIndex := 0;
   FForceDownloadAndExtract := True;
   FDeleteZipAfterInstall := True;
@@ -284,6 +295,18 @@ begin
   if not DirectoryExists(FLocalRepositoryUpdate) then
     CreateDir(FLocalRepositoryUpdate);
 end;
+
+procedure TOptions.CheckColors;
+begin
+  if FHintFormOptionColors.Count <> HintColCnt then
+  begin
+    FHintFormOptionColors.Clear;
+    FHintFormOptionColors.Add(ColorToString($00D9FFFF));
+    FHintFormOptionColors.Add(ColorToString($00E6FFE6));
+    FHintFormOptionColors.Add(ColorToString($00FEEBD3));
+  end
+end;
+
 
 end.
 

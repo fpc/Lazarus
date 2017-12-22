@@ -28,7 +28,7 @@ unit opkman_showhintbase;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls;
+  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, Graphics;
 
 type
 
@@ -50,7 +50,7 @@ type
   end;
 
 implementation
-uses opkman_const;
+uses opkman_const, opkman_options;
 
 {$R *.lfm}
 
@@ -61,13 +61,16 @@ begin
   lbDescription.Caption := rsMainFrm_VSTText_Description;
   lbLicense.Caption := rsMainFrm_VSTText_License;
   Self.DoubleBuffered := True;
-  pnPackageName.Color := $00D9FFFF;
-  pnDescription.Color := $00E6FFE6;
-  mDescription.Color := $00E6FFE6;
   mDescription.DoubleBuffered := True;
-  pnLicense.Color := $00FEEBD3;
-  mLicense.Color := $00FEEBD3;
   mLicense.DoubleBuffered := True;
+  if Options.HintFormOptionColors.Count = 3 then
+  begin
+    pnPackageName.Color := StringToColor(Options.HintFormOptionColors[0]);
+    pnDescription.Color := StringToColor(Options.HintFormOptionColors[1]);
+    mDescription.Color := StringToColor(Options.HintFormOptionColors[1]);
+    pnLicense.Color := StringToColor(Options.HintFormOptionColors[2]);
+    mLicense.Color := StringToColor(Options.HintFormOptionColors[2]);
+  end;
 end;
 
 end.

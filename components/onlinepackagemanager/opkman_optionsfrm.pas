@@ -37,7 +37,7 @@ uses
   // LazUtils
   LazFileUtils,
   // OpkMan
-  opkman_options, opkman_common, opkman_const, opkman_repositories;
+  opkman_options, opkman_common, opkman_const, opkman_repositories, opkman_colorsfrm;
 
 type
 
@@ -55,6 +55,7 @@ type
     bFoldersEdit: TButton;
     bOpen: TButton;
     bpOptions: TButtonPanel;
+    bColors: TButton;
     cbProxy: TCheckBox;
     cbForceDownloadExtract: TCheckBox;
     cbDeleteZipAfterInstall: TCheckBox;
@@ -107,6 +108,7 @@ type
     tsProfiles: TTabSheet;
     tsGeneral: TTabSheet;
     tsProxy: TTabSheet;
+    procedure bColorsClick(Sender: TObject);
     procedure bFilesAddClick(Sender: TObject);
     procedure bFilesDeleteClick(Sender: TObject);
     procedure bFilesEditClick(Sender: TObject);
@@ -114,12 +116,15 @@ type
     procedure cbProxyChange(Sender: TObject);
     procedure cbSelectProfileChange(Sender: TObject);
     procedure edRemoteRepositoryKeyPress(Sender: TObject; var Key: char);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: char);
     procedure HelpButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure pnProfilesMainResize(Sender: TObject);
     procedure pnProfilesTopResize(Sender: TObject);
   private
+    FHintFormOptionColors: TStringList;
     function GetSelectedText(AListBox: TListBox; var AIndex: Integer): String;
     procedure SetupColors;
   public
@@ -216,6 +221,26 @@ begin
   end;
 end;
 
+procedure TOptionsFrm.bColorsClick(Sender: TObject);
+begin
+  ColorsFrm := TColorsFrm.Create(Self);
+  try
+    if FHintFormOptionColors.Count > 0 then
+      ColorsFrm.LoadColors(FHintFormOptionColors)
+    else
+      ColorsFrm.LoadColors(Options.HintFormOptionColors);
+    if ColorsFrm.ShowModal = mrOK then
+    begin
+      FHintFormOptionColors.Clear;
+      FHintFormOptionColors.Add(ColorToString(ColorsFrm.shName.Brush.Color));
+      FHintFormOptionColors.Add(ColorToString(ColorsFrm.shDescription.Brush.Color));
+      FHintFormOptionColors.Add(ColorToString(ColorsFrm.shLicense.Brush.Color));
+    end;
+  finally
+    ColorsFrm.Free;
+  end;
+end;
+
 procedure TOptionsFrm.bFilesEditClick(Sender: TObject);
 var
   Value: String;
@@ -301,6 +326,16 @@ procedure TOptionsFrm.edRemoteRepositoryKeyPress(Sender: TObject; var Key: char)
 begin
   if Key = #13 then
     OKButtonClick(bpOptions.OKButton);
+end;
+
+procedure TOptionsFrm.FormCreate(Sender: TObject);
+begin
+  FHintFormOptionColors := TStringList.Create;
+end;
+
+procedure TOptionsFrm.FormDestroy(Sender: TObject);
+begin
+  FHintFormOptionColors.Free;
 end;
 
 procedure TOptionsFrm.FormKeyPress(Sender: TObject; var Key: char);
@@ -408,6 +443,11 @@ begin
     else
       Options.ExcludedFolders := Options.ExcludedFolders + ',' + lbExcludeFolders.Items[I];
   end;
+  if FHintFormOptionColors.Count > 0 then
+  begin
+    Options.HintFormOptionColors.Clear;
+    Options.HintFormOptionColors.Text := FHintFormOptionColors.Text;
+  end;
 
   Options.Save;
   ModalResult := mrOk;
@@ -514,6 +554,7 @@ begin
   lbExcludeFolders.Items.StrictDelimiter := True;
   lbExcludeFolders.Items.DelimitedText := Options.ExcludedFolders;
   pnProfilesMain.Visible := Options.UserProfile = 1;
+  bColors.Caption := rsOptions_bColors_Caption;
   bpOptions.HelpButton.Caption := rsOptions_bpOptions_bHelp;
   SetupColors;
 end;

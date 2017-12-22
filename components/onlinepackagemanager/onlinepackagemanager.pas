@@ -17,7 +17,7 @@ uses
   opkman_uploader, opkman_repositories, opkman_createrepositoryfrm, 
   opkman_repositorydetailsfrm, opkman_addrepositorypackagefrm, opkman_intf, 
   opkman_intf_packagelistfrm, opkman_showhint, opkman_showhintbase, 
-  LazarusPackageIntf;
+  opkman_colorsfrm, LazarusPackageIntf;
 
 implementation
 

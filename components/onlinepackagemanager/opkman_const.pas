@@ -298,6 +298,7 @@ resourcestring
   rsOptions_rbHintFormOptions_Item2 = 'Off';
   rsOptions_lbFilterFiles_Caption = 'Excluded files (packages)';
   rsOptions_lbFilterDirs_Caption = 'Excluded folders (packages)';
+  rsOptions_bColors_Caption = 'Colors';
   rsOptions_bpOptions_bHelp = 'Restore defaults';
   rsOptions_bAdd_Caption = 'Add';
   rsOptions_bEdit_Caption = 'Edit';
@@ -486,6 +487,9 @@ resourcestring
   rsOPMIntfPackageListFrm_VSTHeaderColumn_LazarusPackage = 'Lazarus Package';
   rsOPMIntfPackageListFrm_VSTHeaderColumn_Data = 'Data';
 
+  //colors form
+  rsColors_Caption = 'Colors';
+  rsColors_CD_Title = 'Select color';
 
 implementation
 
