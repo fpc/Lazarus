@@ -62,6 +62,15 @@ msgstr "Sąrašas su kategorijomis"
 msgid "Please select (check) one or more categories"
 msgstr "Parinkite (pažymėkite) vieną ar kelias kategorijas"
 
+#: opkman_const.rscolors_caption
+msgctxt "opkman_const.rscolors_caption"
+msgid "Colors"
+msgstr ""
+
+#: opkman_const.rscolors_cd_title
+msgid "Select color"
+msgstr ""
+
 #: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
 msgid "Cancel"
@@ -1227,6 +1236,11 @@ msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"
 msgstr "Pridėti"
 
+#: opkman_const.rsoptions_bcolors_caption
+msgctxt "opkman_const.rsoptions_bcolors_caption"
+msgid "Colors"
+msgstr ""
+
 #: opkman_const.rsoptions_bdelete_caption
 msgctxt "opkman_const.rsoptions_bdelete_caption"
 msgid "Delete"
@@ -1236,6 +1250,10 @@ msgstr "Naikinti"
 msgctxt "opkman_const.rsoptions_bedit_caption"
 msgid "Edit"
 msgstr "Keisti"
+
+#: opkman_const.rsoptions_bpoptions_bhelp
+msgid "Restore defaults"
+msgstr ""
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1396,10 +1414,6 @@ msgstr "Išbraukti aplankai (paketai):"
 msgid "Excluded files (packages)"
 msgstr "Išbraukti failai (paketai):"
 
-#: opkman_const.rsoptions_lbhintfrm
-msgid "Show quick info for repository packages"
-msgstr ""
-
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
 msgstr "Paskutinis naujinimas:"
@@ -1447,6 +1461,10 @@ msgstr "Įveskite įgaliotojo serverio prievadą!"
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
 msgstr "Įveskite įgaliotojo serverio adresą!"
+
+#: opkman_const.rsoptions_rbhintformoptions_caption
+msgid "Quick info for repository packages"
+msgstr ""
 
 #: opkman_const.rsoptions_rbhintformoptions_item0
 msgid "Behaves like a regular hint window"

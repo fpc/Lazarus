@@ -59,6 +59,15 @@ msgstr "Список категорий"
 msgid "Please select (check) one or more categories"
 msgstr "Выберите (отметьте) одну либо несколько категорий"
 
+#: opkman_const.rscolors_caption
+msgctxt "opkman_const.rscolors_caption"
+msgid "Colors"
+msgstr "Цвета"
+
+#: opkman_const.rscolors_cd_title
+msgid "Select color"
+msgstr "Выберите цвет"
+
 #: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
 msgid "Cancel"
@@ -1202,6 +1211,11 @@ msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"
 msgstr "Добавить"
 
+#: opkman_const.rsoptions_bcolors_caption
+msgctxt "opkman_const.rsoptions_bcolors_caption"
+msgid "Colors"
+msgstr "Цвета"
+
 #: opkman_const.rsoptions_bdelete_caption
 msgctxt "opkman_const.rsoptions_bdelete_caption"
 msgid "Delete"
@@ -1211,6 +1225,10 @@ msgstr "Удалить"
 msgctxt "opkman_const.rsoptions_bedit_caption"
 msgid "Edit"
 msgstr "Правка"
+
+#: opkman_const.rsoptions_bpoptions_bhelp
+msgid "Restore defaults"
+msgstr "Сбросить по умолчанию"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1371,10 +1389,6 @@ msgstr "Исключённые каталоги (пакеты)"
 msgid "Excluded files (packages)"
 msgstr "Исключённые файлы (пакеты)"
 
-#: opkman_const.rsoptions_lbhintfrm
-msgid "Show quick info for repository packages"
-msgstr "Показывать сводку для пакетов из репозитория"
-
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
 msgstr "Последнее обновление: "
@@ -1422,6 +1436,10 @@ msgstr "Введите порт прокси-сервера!"
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
 msgstr "Введите адрес прокси-сервера!"
+
+#: opkman_const.rsoptions_rbhintformoptions_caption
+msgid "Quick info for repository packages"
+msgstr "Сводка для пакетов из репозитория"
 
 #: opkman_const.rsoptions_rbhintformoptions_item0
 msgid "Behaves like a regular hint window"

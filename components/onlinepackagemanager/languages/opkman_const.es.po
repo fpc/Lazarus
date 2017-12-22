@@ -64,6 +64,15 @@ msgstr "Lista con categorías"
 msgid "Please select (check) one or more categories"
 msgstr "Por favor selecciona una o mas categorías"
 
+#: opkman_const.rscolors_caption
+msgctxt "opkman_const.rscolors_caption"
+msgid "Colors"
+msgstr ""
+
+#: opkman_const.rscolors_cd_title
+msgid "Select color"
+msgstr ""
+
 #: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
 #, fuzzy
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
@@ -1252,6 +1261,11 @@ msgctxt "opkman_const.rsoptions_badd_caption"
 msgid "Add"
 msgstr "Agregar"
 
+#: opkman_const.rsoptions_bcolors_caption
+msgctxt "opkman_const.rsoptions_bcolors_caption"
+msgid "Colors"
+msgstr ""
+
 #: opkman_const.rsoptions_bdelete_caption
 msgctxt "opkman_const.rsoptions_bdelete_caption"
 msgid "Delete"
@@ -1261,6 +1275,10 @@ msgstr "Eliminar"
 msgctxt "opkman_const.rsoptions_bedit_caption"
 msgid "Edit"
 msgstr "Editar"
+
+#: opkman_const.rsoptions_bpoptions_bhelp
+msgid "Restore defaults"
+msgstr ""
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1423,10 +1441,6 @@ msgstr "Carpetas excluidas (paquetes)"
 msgid "Excluded files (packages)"
 msgstr "Archivos excluidos (paquetes)"
 
-#: opkman_const.rsoptions_lbhintfrm
-msgid "Show quick info for repository packages"
-msgstr ""
-
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
 msgstr "Última actualización:"
@@ -1474,6 +1488,10 @@ msgstr "¡Por favor ingresa el puerto proxy del servidor!"
 #: opkman_const.rsoptions_proxyserver_info
 msgid "Please enter the proxy server address!"
 msgstr "¡Por favor ingresa la dirección proxy del servidor!"
+
+#: opkman_const.rsoptions_rbhintformoptions_caption
+msgid "Quick info for repository packages"
+msgstr ""
 
 #: opkman_const.rsoptions_rbhintformoptions_item0
 msgid "Behaves like a regular hint window"
