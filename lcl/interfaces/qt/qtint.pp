@@ -81,7 +81,7 @@ type
     FAppSaveSessionRequest: QApplication_hookH;
 
     // default application font name (FamilyName for "default" font)
-    FDefaultAppFontName: UnicodeString;
+    FDefaultAppFontName: WideString;
 
     FDockImage: QRubberBandH;
     FDragImageList: QWidgetH;
@@ -186,7 +186,7 @@ type
     // application global actions (mainform mainmenu mnemonics Alt+XX)
     procedure ClearGlobalActions;
     procedure AddGlobalAction(AnAction: QActionH);
-    function ShortcutInGlobalActions(const AMnemonicText: UnicodeString;
+    function ShortcutInGlobalActions(const AMnemonicText: WideString;
       out AGlobalActionIndex: Integer): Boolean;
     procedure TriggerGlobalAction(const ActionIndex: Integer);
 
@@ -211,7 +211,7 @@ type
     function GetWinKeyState(AKeyState: LongInt): SHORT;
     {$ENDIF}
     function CreateDefaultFont: HFONT; virtual;
-    function GetDefaultAppFontName: UnicodeString;
+    function GetDefaultAppFontName: WideString;
     function GetQtDefaultDC: HDC; virtual;
     procedure DeleteDefaultDC; virtual;
     procedure SetQtDefaultDC(Handle: HDC); virtual;

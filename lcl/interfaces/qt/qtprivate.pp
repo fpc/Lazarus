@@ -98,7 +98,7 @@ type
     FHasTrailingLineBreak: Boolean; // Indicates whether lines have trailing line break
     FOwner: TWinControl;      // Lazarus Control Owning MemoStrings
     procedure InternalUpdate;
-    procedure ExternalUpdate(var AStr: UnicodeString;
+    procedure ExternalUpdate(var AStr: WideString;
       AClear, ABlockSignals: Boolean);
     function GetInternalText: string;
     procedure SetInternalText(const Value: string);
@@ -135,7 +135,7 @@ implementation
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.InternalUpdate;
 var
-  W: UnicodeString;
+  W: WideString;
   TextEdit: TQtTextEdit;
 begin
   W := '';
@@ -160,10 +160,10 @@ end;
 
   Updates Qt Widget from text - If DelphiOnChange, generates OnChange Event
  ------------------------------------------------------------------------------}
-procedure TQtMemoStrings.ExternalUpdate(var AStr: UnicodeString;
+procedure TQtMemoStrings.ExternalUpdate(var AStr: WideString;
   AClear, ABlockSignals: Boolean);
 var
-  W: UnicodeString;
+  W: WideString;
   TextEdit: TQtTextEdit;
 begin
   if not FOwner.HandleAllocated then
@@ -283,7 +283,7 @@ end;
 
 procedure TQtMemoStrings.SetTextStr(const Value: string);
 var
-  W: UnicodeString;
+  W: WideString;
 begin
   {$ifdef VerboseQtMemoStrings}
   WriteLn('TQtMemoStrings.SetTextStr Value=',Value);
@@ -336,7 +336,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Assign(Source: TPersistent);
 var
-  W: UnicodeString;
+  W: WideString;
 begin
   if (Source=Self) or (Source=nil) then
     exit;
@@ -414,7 +414,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Insert(Index: integer; const S: string);
 var
-  W: UnicodeString;
+  W: WideString;
 begin
   if FTextChanged then InternalUpdate;
   if Index < 0 then Index := 0;
@@ -471,7 +471,7 @@ end;
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string);
 var
   FSavedIndex: Integer;
-  FSavedText: UnicodeString;
+  FSavedText: WideString;
 begin
   inherited InsertItem(Index, S);
   FOwner.BeginUpdate;
@@ -490,7 +490,7 @@ end;
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 var
   FSavedIndex: Integer;
-  FSavedText: UnicodeString;
+  FSavedText: WideString;
 begin
   inherited InsertItem(Index, S, O);
   FOwner.BeginUpdate;

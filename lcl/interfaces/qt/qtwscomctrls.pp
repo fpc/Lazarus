@@ -555,7 +555,7 @@ end;
 class procedure TQtWSStatusBar.RecreatePanels(const AStatusBar: TStatusBar;
   const Widget: TQtStatusBar);
 var
-  Str: UnicodeString;
+  Str: WideString;
   i: Integer;
 begin
   // issues #18683 and #28307
@@ -619,7 +619,7 @@ end;
 class procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
 var
   QtStatusBar: TQtStatusBar;
-  Str: Unicodestring;
+  Str: Widestring;
 begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
   if AStatusBar.SimplePanel then
@@ -650,7 +650,7 @@ end;
 class procedure TQtWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 var
   QtStatusBar: TQtStatusBar;
-  Str: Unicodestring;
+  Str: Widestring;
 begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
   if AStatusBar.SimplePanel then
@@ -783,7 +783,7 @@ var
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
   TWIChild: QTreeWidgetItemH;
-  Str: UnicodeString;
+  Str: WideString;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnInsert') then
     Exit;
@@ -932,7 +932,7 @@ end;
 class procedure TQtWSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
 var
-  Str: UnicodeString;
+  Str: WideString;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
 begin
@@ -1420,7 +1420,7 @@ var
   QtListWidget: TQtListWidget;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
-  Str: UnicodeString;
+  Str: WideString;
   i: Integer;
   AAlignment: QtAlignment;
   //AIconWidth: Integer;
@@ -1490,7 +1490,7 @@ var
   QtListWidget: TQtListWidget;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
-  Str: UnicodeString;
+  Str: WideString;
   AAlignment: QtAlignment;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText') then
@@ -1871,7 +1871,7 @@ var
   QtTreeWidget: TQtTreeWidget;
   i, j: Integer;
   AItem: TListItem;
-  Str: UnicodeString;
+  Str: WideString;
   Item: QTreeWidgetItemH;
   AAlignment: QtAlignment;
   ImgList: TImageList;

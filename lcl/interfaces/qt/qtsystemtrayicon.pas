@@ -54,7 +54,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure setContextMenu(menu: QMenuH);
     procedure setIcon(icon: QIconH);
-    procedure setToolTip(tip: UnicodeString);
+    procedure setToolTip(tip: WideString);
     procedure signalActivated(AReason: QSystemTrayIconActivationReason); cdecl;
     procedure showBaloonHint(const ATitle, AHint: String;
       const AFlag: QSystemTrayIconMessageIcon; const ATimeOut: Integer);
@@ -73,7 +73,7 @@ implementation
 
 constructor TQtSystemTrayIcon.Create(vIcon: QIconH);
 var
-  AName: UnicodeString; {just to debug}
+  AName: WideString; {just to debug}
 begin
   inherited Create;
   FSysTrayWidget := nil;
@@ -169,13 +169,12 @@ begin
   APaintData.Context := nil;
 end;
 
-function TQtSystemTrayIcon.EventFilter(Sender: QObjectH; Event: QEventH
-  ): Boolean; cdecl;
+function TQtSystemTrayIcon.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   X, Y: Integer;
   R: TRect;
   P: TQtPoint;
-  AHint: UnicodeString;
+  AHint: WideString;
   {$IFDEF HASX11}
   PaintData: TSysTrayIconPaintData;
   {$ENDIF}
@@ -253,7 +252,7 @@ begin
   QSystemTrayIcon_setIcon(QSystemTrayIconH(TheObject), icon);
 end;
 
-procedure TQtSystemTrayIcon.setToolTip(tip: UnicodeString);
+procedure TQtSystemTrayIcon.setToolTip(tip: WideString);
 begin
   QSystemTrayIcon_setToolTip(QSystemTrayIconH(TheObject), @tip)
 end;
@@ -312,7 +311,7 @@ end;
 procedure TQtSystemTrayIcon.showBaloonHint(const ATitle, AHint: String;
   const AFlag: QSystemTrayIconMessageIcon; const ATimeOut: Integer);
 var
-  WHint, WTitle: UnicodeString;
+  WHint, WTitle: WideString;
 begin
   WHint := {%H-}AHint;
   WTitle := {%H-}ATitle;

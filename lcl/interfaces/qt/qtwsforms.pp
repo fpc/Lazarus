@@ -184,7 +184,7 @@ class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtMainWindow: TQtMainWindow;
-  Str: UnicodeString;
+  Str: WideString;
   APopupParent: TCustomForm;
   AForm: TCustomForm;
 begin

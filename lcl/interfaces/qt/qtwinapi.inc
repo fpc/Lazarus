@@ -1311,7 +1311,7 @@ end;
 function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var ARect: TRect; Flags: Cardinal): Integer;
 var
-  WStr: UnicodeString;
+  WStr: WideString;
   R: TRect;
   QtDC: TQtDeviceContext;
   F: Integer;
@@ -1754,7 +1754,7 @@ var
     const AWritingSystem: QFontDatabaseWritingSystem = QFontDatabaseAny):integer;
   var
     StrLst: QStringlistH;
-    WStr: UnicodeString;
+    WStr: WideString;
     j: integer;
   begin
     Result := -1;
@@ -1779,7 +1779,7 @@ var
   var
     StrLst: QStringlistH;
     NewList: QStringListH;
-    WStr: UnicodeString;
+    WStr: WideString;
     j: integer;
   begin
     Result := -1;
@@ -1832,7 +1832,7 @@ var
 
   function GetStyleAt(AIndex: Integer): String;
   var
-    WStr: UnicodeString;
+    WStr: WideString;
   begin
     Result := '';
     if (AIndex >= 0) and (AIndex < QStringList_size(StylesList)) then
@@ -1845,7 +1845,7 @@ var
   function GetWritingSystems(AFontName: String; AList: QStringListH;
     ACharsetList: TFPList): Boolean;
   var
-    WStr: UnicodeString;
+    WStr: WideString;
     Arr: TPtrIntArray;
     j: Integer;
   begin
@@ -1870,7 +1870,7 @@ var
     out AStyle: String): Integer;
   var
     Font: QFontH;
-    WStr: UnicodeString;
+    WStr: WideString;
   begin
     WStr := {%H-}AFontName;
     Font := QFont_create(@WStr);
@@ -2195,7 +2195,7 @@ end;
 function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  WStr: UnicodeString;
+  WStr: WideString;
   QtDC: TQtDeviceContext absolute DC;
   R, R1: TRect;
   Pt: TPoint;
@@ -2208,7 +2208,7 @@ var
     CurCount: LongInt;
     CurDx: PInteger;
     CurStr: PChar;
-    W: UnicodeString;
+    W: WideString;
   begin
     CurDx := Dx;
     CurStr := Str;
@@ -4256,7 +4256,7 @@ function TQtWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
 var
   i: Integer;
   w: Integer;
-  AStr: UnicodeString;
+  AStr: WideString;
   Accu: Integer;
 begin
   Result := False;
@@ -4333,7 +4333,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 var
-  WStr: UnicodeString;
+  WStr: WideString;
   QtDC: TQtDeviceContext absolute DC;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -4365,7 +4365,7 @@ end;
 function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   QtFontMetrics: TQtFontMetrics;
-  FontFamily: UnicodeString;
+  FontFamily: WideString;
   QtDC: TQtDeviceContext absolute DC;
   FontWeight: Integer;
 begin
@@ -4847,7 +4847,7 @@ var
   Font: TFont absolute AFont;
   AMenu: QMenuH;
   QtFont: QFontH;
-  AName: UnicodeString;
+  AName: WideString;
 begin
   Result := False;
   if AStockFont = sfMenu then
@@ -5233,9 +5233,9 @@ const
     end;
   end;
 var
-  Str: UnicodeString;
-  TitleStr: UnicodeString;
-  //OkStr: UnicodeString;
+  Str: WideString;
+  TitleStr: WideString;
+  //OkStr: WideString;
   AParent: QWidgetH;
   DialogType, DefButton, DefIcon : Cardinal;
 begin
@@ -7014,7 +7014,7 @@ end;
 function TQtWidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: Pchar; Count: Integer
   ): Boolean;
 var
-  WStr: UnicodeString;
+  WStr: WideString;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI TextOut]');

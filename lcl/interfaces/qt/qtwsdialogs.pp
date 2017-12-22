@@ -51,7 +51,7 @@ type
   private
   protected
     class function GetQtFilterString(const AFileDialog: TFileDialog;
-      var ASelectedFilter: UnicodeString): UnicodeString;
+      var ASelectedFilter: WideString): WideString;
     class procedure UpdateProperties(const AFileDialog: TFileDialog; QtFileDialog: TQtFileDialog);
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
@@ -190,7 +190,7 @@ end;
 { TQtWSFileDialog }
 
 class function TQtWSFileDialog.GetQtFilterString(const AFileDialog: TFileDialog;
-  var ASelectedFilter: UnicodeString): UnicodeString;
+  var ASelectedFilter: WideString): WideString;
 
   function GetExtensionString(ASource: String; AStart, ALength: Integer): String; inline;
   begin
@@ -310,9 +310,9 @@ end;
 class procedure TQtWSFileDialog.UpdateProperties(
   const AFileDialog: TFileDialog; QtFileDialog: TQtFileDialog);
 var
-  ATitle: UnicodeString;
+  ATitle: WideString;
   {$ifndef QT_NATIVE_DIALOGS}
-  AInitDir: UnicodeString;
+  AInitDir: WideString;
   {$ENDIF}
   S: String;
 begin
@@ -406,14 +406,14 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  ReturnText: UnicodeString;
+  ReturnText: WideString;
   s: string;
   FileDialog: TFileDialog;
   ReturnList: QStringListH;
   i: integer;
   QtFileDialog: TQtFileDialog;
   {$ifdef QT_NATIVE_DIALOGS}
-  selectedFilter, saveFileName, saveFilter, saveTitle: UnicodeString;
+  selectedFilter, saveFileName, saveFilter, saveTitle: WideString;
   sDir: String;
   Flags: Cardinal;
   {$endif}
@@ -681,9 +681,9 @@ end;
 class procedure TQtWSSelectDirectoryDialog.UpdateProperties(
   const AFileDialog: TSelectDirectoryDialog; QtFileDialog: TQtFileDialog);
 var
-  ATitle: UnicodeString;
+  ATitle: WideString;
   {$ifndef QT_NATIVE_DIALOGS}
-  AInitDir: UnicodeString;
+  AInitDir: WideString;
   {$endif}
   S: String;
 begin
@@ -751,10 +751,10 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSSelectDirectoryDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  ReturnText: UnicodeString;
+  ReturnText: WideString;
   {$ifdef QT_NATIVE_DIALOGS}
-  saveFileName: UnicodeString;
-  saveTitle: UnicodeString;
+  saveFileName: WideString;
+  saveTitle: WideString;
   {$endif}
   FileDialog: TSelectDirectoryDialog;
   QtFileDialog: TQtFileDialog;
@@ -941,7 +941,7 @@ class procedure TQtWSFontDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   ReturnFont, CurrentFont: QFontH;
   ReturnBool: Boolean;
-  Str: UnicodeString;
+  Str: WideString;
   {$IFDEF HASX11}
   AWND: HWND;
   {$ENDIF}

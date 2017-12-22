@@ -46,7 +46,7 @@ type
   private
     FStyle: QStyleH;
     function GetStyle: QStyleH;
-    function GetStyleName: UnicodeString;
+    function GetStyleName: WideString;
   protected
     function InitThemes: Boolean; override;
     function UseThemes: Boolean; override;
@@ -56,7 +56,7 @@ type
     function GetControlState(Details: TThemedElementDetails): QStyleState;
     function GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
     property Style: QStyleH read GetStyle;
-    property StyleName: UnicodeString read GetStyleName;
+    property StyleName: WideString read GetStyleName;
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
@@ -81,7 +81,7 @@ begin
   Result := FStyle;
 end;
 
-function TQtThemeServices.GetStyleName: UnicodeString;
+function TQtThemeServices.GetStyleName: WideString;
 begin
   QObject_objectName(Style, @Result);
 end;
@@ -557,7 +557,7 @@ var
   Palette: QPaletteH;
   Context: TQtDeviceContext;
   Widget: QWidgetH;
-  W: UnicodeString;
+  W: WideString;
   TextRect: TRect;
   AOldMode: Integer;
   ATextPalette: Cardinal;

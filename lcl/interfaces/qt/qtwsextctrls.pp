@@ -205,7 +205,7 @@ class function TQtWSCustomRadioGroup.CreateHandle(const AWinControl: TWinControl
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtGroupBox: TQtGroupBox;
-  Str: UnicodeString;
+  Str: WideString;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   QtGroupBox.GroupBoxType := tgbtRadioGroup;
@@ -231,7 +231,7 @@ class function TQtWSCustomCheckGroup.CreateHandle(const AWinControl: TWinControl
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtGroupBox: TQtGroupBox;
-  Str: UnicodeString;
+  Str: WideString;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   QtGroupBox.GroupBoxType := tgbtCheckGroup;
@@ -265,7 +265,7 @@ end;
 
 class function TQtWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  Text: UnicodeString;
+  Text: WideString;
   SystemTrayIcon: TQtSystemTrayIcon;
   IconH: QIconH;
 begin
@@ -303,7 +303,7 @@ class procedure TQtWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayI
 var
   SystemTrayIcon: TQtSystemTrayIcon;
   AIcon: QIconH;
-  AHint: UnicodeString;
+  AHint: WideString;
 begin
   if (ATrayIcon.Handle = 0) then Exit;
 

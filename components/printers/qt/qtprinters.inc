@@ -50,7 +50,7 @@ var
   PrnInfo: QPrinterInfoH;
   Prntr: QPrinterInfoH;
   PrnList: TPtrIntArray;
-  PrnName: UnicodeString;
+  PrnName: WideString;
 begin
 
   inherited DoEnumPrinters(Lst);
@@ -352,7 +352,7 @@ end;
 
 procedure TQtPrinters.DoEnumPrinters(Lst: TStrings);
 var
-  Str: UnicodeString;
+  Str: WideString;
   i: Integer;
 begin
   {$IFDEF VERBOSE_QT_PRINTING}

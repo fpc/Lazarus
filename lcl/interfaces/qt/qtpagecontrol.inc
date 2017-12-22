@@ -495,7 +495,7 @@ const
   FmtS = 'QTabBar::tab { height: %dpx; width: %dpx; }';
 var
   ASize, ANewSize: TSize;
-  WS: UnicodeString;
+  WS: WideString;
 begin
   if not WSCheckHandleAllocated(ATabControl, 'SetTabSize') then
     Exit;

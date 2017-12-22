@@ -497,7 +497,7 @@ end;
 
 procedure TQtWidgetSet.AppSetTitle(const ATitle: string);
 var
-  W: UnicodeString;
+  W: WideString;
 begin
   W := {%H-}ATitle;
   QCoreApplication_setApplicationName(@W);
@@ -625,7 +625,7 @@ var
   W: TQtMainWindow;
   LCLEvent: QLCLMessageEventH;
   ASequence: QKeySequenceH;
-  AKey: UnicodeString;
+  AKey: WideString;
   AParent: QWidgetH;
   R: TRect;
   AQtPoint: TQtPoint;
@@ -639,7 +639,7 @@ var
 
   function IsSystemTrayWidget: boolean;
   var
-    AName: UnicodeString;
+    AName: WideString;
     AWidget: QWidgetH;
     RGeom: TRect;
     AFlags: QtWindowFlags;
@@ -1565,13 +1565,13 @@ begin
   FGlobalActions.Add(AnAction);
 end;
 
-function TQtWidgetSet.ShortcutInGlobalActions(const AMnemonicText: UnicodeString;
+function TQtWidgetSet.ShortcutInGlobalActions(const AMnemonicText: WideString;
   out AGlobalActionIndex: Integer): Boolean;
 var
   NewKey: QKeySequenceH;
-  NewStr: UnicodeString;
+  NewStr: WideString;
   CurrentKey: QKeySequenceH;
-  CurrentStr: UnicodeString;
+  CurrentStr: WideString;
   Action: QActionH;
   i: Integer;
 begin
@@ -1762,7 +1762,7 @@ begin
   Result := HFONT(QtFont);
 end;
 
-function TQtWidgetSet.GetDefaultAppFontName: UnicodeString;
+function TQtWidgetSet.GetDefaultAppFontName: WideString;
 begin
   Result := FDefaultAppFontName;
 end;
@@ -1895,7 +1895,7 @@ function TQtWidgetSet.GetMenuHeight: Integer;
 var
   AMenuBar: QMenuBarH;
   DummyWindow: QMainWindowH;
-  DummyStr: UnicodeString;
+  DummyStr: WideString;
   Size: TSize;
 begin
   {$IFDEF DARWIN}
@@ -2085,7 +2085,7 @@ end;
 
 function TQtWidgetSet.GetStyleName: String;
 var
-  WStr: UnicodeString;
+  WStr: WideString;
 begin
   QObject_objectName(QApplication_style, @WStr);
   Result := {%H-}WStr;

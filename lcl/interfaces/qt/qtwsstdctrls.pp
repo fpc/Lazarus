@@ -767,7 +767,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 var
-  AStr: UnicodeString;
+  AStr: WideString;
 begin
   if not WSCheckHandleAllocated(ACustomMemo, 'AppendText') or (Length(AText) = 0) then
     Exit;
@@ -1444,7 +1444,7 @@ class function TQtWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 var
   QtComboBox: TQtComboBox;
-  WStr, WStr2: UnicodeString;
+  WStr, WStr2: WideString;
   i: Integer;
 begin
   Result := -1;
@@ -1679,7 +1679,7 @@ class function TQtWSCustomComboBox.GetItemHeight(
   const ACustomComboBox: TCustomComboBox): Integer;
 var
   ComboBox: TQtComboBox;
-  AText: UnicodeString;
+  AText: WideString;
   ACombo: QComboBoxH;
   AItems: QStringListH;
 begin

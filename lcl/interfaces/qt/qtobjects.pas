@@ -95,8 +95,8 @@ type
     constructor Create(const AParent: QObjectH = nil);
     destructor Destroy; override;
     function addAction(action: QActionH): QActionH; overload;
-    function addAction(text: UnicodeString): QActionH; overload;
-    function addAction(icon: QIconH; text: UnicodeString): QActionH; overload;
+    function addAction(text: WideString): QActionH; overload;
+    function addAction(icon: QIconH; text: WideString): QActionH; overload;
     procedure removeAction(action: QActionH);
     function actions: TQActions;
     function checkedAction: QActionH;
@@ -186,7 +186,7 @@ type
     function getBold: Boolean;
     function getUnderline: Boolean;
     function getStrikeOut: Boolean;
-    function getFamily: UnicodeString;
+    function getFamily: WideString;
     function getStyleStategy: QFontStyleStrategy;
 
     procedure setPointSize(p1: Integer);
@@ -224,11 +224,11 @@ type
     function leading: Integer;
     function maxWidth: Integer;
     procedure boundingRect(retval: PRect; r: PRect; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil);
-    function charWidth(str: UnicodeString; pos: Integer): Integer;
+    function charWidth(str: WideString; pos: Integer): Integer;
     function averageCharWidth: Integer;
-    function elidedText(const AText: UnicodeString;
+    function elidedText(const AText: WideString;
       const AMode: QtTextElideMode; const AWidth: Integer;
-      const AFlags: Integer = 0): UnicodeString;
+      const AFlags: Integer = 0): WideString;
   end;
 
   { TQtFontInfo }
@@ -237,7 +237,7 @@ type
   private
     function GetBold: Boolean;
     function GetExactMatch: Boolean;
-    function GetFamily: UnicodeString;
+    function GetFamily: WideString;
     function GetFixedPitch: Boolean;
     function GetFontStyle: QFontStyle;
     function GetFontStyleHint: QFontStyleHint;
@@ -258,7 +258,7 @@ type
     property Bold: Boolean read GetBold;
     property Italic: Boolean read GetItalic;
     property ExactMatch: Boolean read GetExactMatch;
-    property Family: UnicodeString read GetFamily;
+    property Family: WideString read GetFamily;
     property FixedPitch: Boolean read GetFixedPitch;
     property Overline: Boolean read GetOverLine;
     property PointSize: Integer read GetPointSize;
@@ -606,37 +606,37 @@ type
     function getPrinterContext: TQtDeviceContext;
     function getCollateCopies: Boolean;
     function getColorMode: QPrinterColorMode;
-    function getCreator: UnicodeString;
+    function getCreator: WideString;
     function getDevType: Integer;
-    function getDocName: UnicodeString;
+    function getDocName: WideString;
     function getDoubleSidedPrinting: Boolean;
     function getFontEmbedding: Boolean;
     function getFullPage: Boolean;
     function getOutputFormat: QPrinterOutputFormat;
     function getPaperSource: QPrinterPaperSource;
-    function getPrintProgram: UnicodeString;
+    function getPrintProgram: WideString;
     function getPrintRange: QPrinterPrintRange;
     procedure setCollateCopies(const AValue: Boolean);
     procedure setColorMode(const AValue: QPrinterColorMode);
-    procedure setCreator(const AValue: UnicodeString);
-    procedure setDocName(const AValue: UnicodeString);
+    procedure setCreator(const AValue: WideString);
+    procedure setDocName(const AValue: WideString);
     procedure setDoubleSidedPrinting(const AValue: Boolean);
     procedure SetDuplexMode(AValue: QPrinterDuplexMode);
     procedure setFontEmbedding(const AValue: Boolean);
     procedure setFullPage(const AValue: Boolean);
     procedure setOutputFormat(const AValue: QPrinterOutputFormat);
     procedure setPaperSource(const AValue: QPrinterPaperSource);
-    procedure setPrinterName(const AValue: UnicodeString);
-    function getPrinterName: UnicodeString;
-    procedure setOutputFileName(const AValue: UnicodeString);
-    function getOutputFileName: UnicodeString;
+    procedure setPrinterName(const AValue: WideString);
+    function getPrinterName: WideString;
+    procedure setOutputFileName(const AValue: WideString);
+    function getOutputFileName: WideString;
     procedure setOrientation(const AValue: QPrinterOrientation);
     function getOrientation: QPrinterOrientation;
     procedure setPageSize(const AValue: QPrinterPageSize);
     function getPageSize: QPrinterPageSize;
     procedure setPageOrder(const AValue: QPrinterPageOrder);
     function getPageOrder: QPrinterPageOrder;
-    procedure setPrintProgram(const AValue: UnicodeString);
+    procedure setPrintProgram(const AValue: WideString);
     procedure setPrintRange(const AValue: QPrinterPrintRange);
     procedure setResolution(const AValue: Integer);
     function getResolution: Integer;
@@ -648,7 +648,7 @@ type
     constructor Create(AMode: QPrinterPrinterMode); virtual; overload;
     destructor Destroy; override;
 
-    function DefaultPrinter: UnicodeString;
+    function DefaultPrinter: WideString;
     function GetAvailablePrinters(Lst: TStrings): Boolean;
     
     procedure beginDoc;
@@ -671,9 +671,9 @@ type
     
     property Collate: Boolean read getCollateCopies write setCollateCopies;
     property ColorMode: QPrinterColorMode read getColorMode write setColorMode;
-    property Creator: UnicodeString read getCreator write setCreator;
+    property Creator: WideString read getCreator write setCreator;
     property DeviceType: Integer read getDevType;
-    property DocName: UnicodeString read getDocName write setDocName;
+    property DocName: WideString read getDocName write setDocName;
     property DoubleSidedPrinting: Boolean read getDoubleSidedPrinting write setDoubleSidedPrinting;
     property Duplex: QPrinterDuplexMode read GetDuplexMode write SetDuplexMode;
     property FontEmbedding: Boolean read getFontEmbedding write setFontEmbedding;
@@ -682,16 +682,16 @@ type
     property NumCopies: Integer read getNumCopies write setNumCopies;
     property Orientation: QPrinterOrientation read getOrientation write setOrientation;
     property OutputFormat: QPrinterOutputFormat read getOutputFormat write setOutputFormat;
-    property OutputFileName: UnicodeString read getOutputFileName write setOutputFileName;
+    property OutputFileName: WideString read getOutputFileName write setOutputFileName;
     property PageOrder: QPrinterPageOrder read getPageOrder write setPageOrder;
     property PageSize: QPrinterPageSize read getPageSize write setPageSize;
     property PaperSource: QPrinterPaperSource read getPaperSource write setPaperSource;
     property PrinterContext: TQtDeviceContext read getPrinterContext;
-    property PrinterName: UnicodeString read getPrinterName write setPrinterName;
+    property PrinterName: WideString read getPrinterName write setPrinterName;
     property PrinterActive: Boolean read FPrinterActive;
     property PrintRange: QPrinterPrintRange read getPrintRange write setPrintRange;
     property PrinterState: QPrinterPrinterState read getPrinterState;
-    property PrintProgram: UnicodeString read getPrintProgram write setPrintProgram;
+    property PrintProgram: WideString read getPrintProgram write setPrintProgram;
     property Resolution: Integer read getResolution write setResolution;
   end;
   
@@ -789,10 +789,10 @@ type
     constructor Create(AnObject: QObjectH);
     destructor Destroy; override;
     procedure DumpObject;
-    function findWidgetByName(const AName: UnicodeString): QWidgetH;
+    function findWidgetByName(const AName: WideString): QWidgetH;
     function IsWidget(AnObject: QObjectH): Boolean;
-    function GetObjectName(AnObject: QObjectH): UnicodeString;
-    function InheritsQtClass(AnObject: QObjectH; AQtClass: UnicodeString): Boolean;
+    function GetObjectName(AnObject: QObjectH): WideString;
+    function InheritsQtClass(AnObject: QObjectH; AQtClass: WideString): Boolean;
     property List: TStrings read FList;
     property ObjList: TFPList read FObjList;
   end;
@@ -932,7 +932,7 @@ end;
 
 procedure AssignQtFont(FromFont: QFontH; ToFont: QFontH);
 var
-  FntFam: UnicodeString;
+  FntFam: WideString;
 begin
   QFont_family(FromFont, @FntFam);
   QFont_setFamily(ToFont, @FntFam);
@@ -983,9 +983,9 @@ begin
   Result := QFontInfo_exactMatch(FHandle);
 end;
 
-function TQtFontInfo.GetFamily: UnicodeString;
+function TQtFontInfo.GetFamily: WideString;
 var
-  WStr: UnicodeString;
+  WStr: WideString;
 begin
   QFontInfo_family(FHandle, @WStr);
   Result := WStr;
@@ -1632,7 +1632,7 @@ begin
     Result := QFont_strikeOut(FHandle);
 end;
 
-function TQtFont.getFamily: UnicodeString;
+function TQtFont.getFamily: WideString;
 begin
   if FHandle = nil then
     QFont_family(getDefaultFont, @Result)
@@ -1675,7 +1675,7 @@ end;
 
 procedure TQtFont.setRawName(p1: string);
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   Str := {%H-}p1;
   QFont_setRawName(FHandle, @Str);
@@ -1683,7 +1683,7 @@ end;
 
 procedure TQtFont.setFamily(p1: string);
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   Str := {%H-}p1;
   QFont_setFamily(FHandle, @Str);
@@ -1765,7 +1765,7 @@ begin
   QFontMetrics_boundingRect(FHandle, retval, r, flags, text, tabstops, tabarray);
 end;
 
-function TQtFontMetrics.charWidth(str: UnicodeString; pos: Integer): Integer;
+function TQtFontMetrics.charWidth(str: WideString; pos: Integer): Integer;
 begin
   Result := QFontMetrics_charWidth(FHandle, @str, pos);
 end;
@@ -1775,9 +1775,9 @@ begin
   Result := QFontMetrics_averageCharWidth(FHandle);
 end;
 
-function TQtFontMetrics.elidedText(const AText: UnicodeString;
+function TQtFontMetrics.elidedText(const AText: WideString;
   const AMode: QtTextElideMode; const AWidth: Integer;
-  const AFlags: Integer = 0): UnicodeString;
+  const AFlags: Integer = 0): WideString;
 begin
   QFontMetrics_elidedText(FHandle, @Result, @AText, AMode, AWidth, AFlags);
 end;
@@ -3844,7 +3844,7 @@ end;
 procedure TQtClipboard.signalSelectionChanged; cdecl;
 var
   TempMimeData: QMimeDataH;
-  WStr: UnicodeString;
+  WStr: WideString;
   Clip: TClipBoard;
 begin
   {$IFDEF VERBOSE_QT_CLIPBOARD}
@@ -3898,7 +3898,7 @@ end;
 function TQtClipboard.IsClipboardChanged: Boolean;
 var
   TempMimeData: QMimeDataH;
-  Str, Str2: UnicodeString;
+  Str, Str2: WideString;
 begin
   Result := not FLockClip;
   if FLockClip then
@@ -3931,7 +3931,7 @@ var
 
   procedure PutSelectionOnClipBoard;
   var
-    MimeType: UnicodeString;
+    MimeType: WideString;
     MimeData: QMimeDataH;
     Data: QByteArrayH;
     DataStream: TMemoryStream;
@@ -4049,7 +4049,7 @@ function TQtClipboard.GetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 var
   QtMimeData: QMimeDataH;
-  MimeType: UnicodeString;
+  MimeType: WideString;
   Data: QByteArrayH;
   p: PAnsiChar;
   s: Integer;
@@ -4073,7 +4073,7 @@ var
   QtMimeData: QMimeDataH;
   QtList: QStringListH;
   i: Integer;
-  Str: UnicodeString;
+  Str: WideString;
 begin
   Result := False;
   Count := 0;
@@ -4107,7 +4107,7 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
 
   procedure PutOnClipBoard;
   var
-    MimeType: UnicodeString;
+    MimeType: WideString;
     MimeData: QMimeDataH;
     Data: QByteArrayH;
     DataStream: TMemoryStream;
@@ -4207,7 +4207,7 @@ begin
 end;
 
 {returns default system printer}
-function TQtPrinter.DefaultPrinter: UnicodeString;
+function TQtPrinter.DefaultPrinter: WideString;
 var
   PrnInfo: QPrinterInfoH;
 begin
@@ -4224,7 +4224,7 @@ end;
  Default sys printer is always 1st in the list.}
 function TQtPrinter.GetAvailablePrinters(Lst: TStrings): Boolean;
 var
-  Str, PrnName: UnicodeString;
+  Str, PrnName: WideString;
   i: Integer;
   PrnInfo: QPrinterInfoH;
   Prntr: QPrinterInfoH;
@@ -4299,9 +4299,9 @@ begin
   Result := QPrinter_colorMode(FHandle);
 end;
 
-function TQtPrinter.getCreator: UnicodeString;
+function TQtPrinter.getCreator: WideString;
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   QPrinter_creator(FHandle, @Str);
   Result := Str;
@@ -4312,9 +4312,9 @@ begin
   Result := QPrinter_devType(FHandle);
 end;
 
-function TQtPrinter.getDocName: UnicodeString;
+function TQtPrinter.getDocName: WideString;
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   QPrinter_docName(FHandle, @Str);
   Result := Str;
@@ -4355,9 +4355,9 @@ begin
   Result := QPrinter_paperSource(FHandle);
 end;
 
-function TQtPrinter.getPrintProgram: UnicodeString;
+function TQtPrinter.getPrintProgram: WideString;
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   QPrinter_printProgram(FHandle, @Str);
   Result := Str;
@@ -4378,17 +4378,17 @@ begin
   QPrinter_setColorMode(FHandle, AValue);
 end;
 
-procedure TQtPrinter.setCreator(const AValue: UnicodeString);
+procedure TQtPrinter.setCreator(const AValue: WideString);
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   Str := AValue;
   QPrinter_setCreator(FHandle, @Str);
 end;
 
-procedure TQtPrinter.setDocName(const AValue: UnicodeString);
+procedure TQtPrinter.setDocName(const AValue: WideString);
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   Str := AValue;
   QPrinter_setDocName(FHandle, @Str);
@@ -4414,33 +4414,33 @@ begin
   QPrinter_setFullPage(FHandle, AValue);
 end;
 
-procedure TQtPrinter.setPrinterName(const AValue: UnicodeString);
+procedure TQtPrinter.setPrinterName(const AValue: WideString);
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   Str := AValue;
   QPrinter_setPrinterName(FHandle, @Str);
 end;
 
-function TQtPrinter.getPrinterName: UnicodeString;
+function TQtPrinter.getPrinterName: WideString;
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   QPrinter_printerName(FHandle, @Str);
   Result := Str;
 end;
 
-procedure TQtPrinter.setOutputFileName(const AValue: UnicodeString);
+procedure TQtPrinter.setOutputFileName(const AValue: WideString);
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   Str := AValue;
   QPrinter_setOutputFileName(FHandle, @Str);
 end;
 
-function TQtPrinter.getOutputFileName: UnicodeString;
+function TQtPrinter.getOutputFileName: WideString;
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   QPrinter_outputFileName(FHandle, @Str);
   Result := Str;
@@ -4476,9 +4476,9 @@ begin
   Result := QPrinter_pageOrder(FHandle);
 end;
 
-procedure TQtPrinter.setPrintProgram(const AValue: UnicodeString);
+procedure TQtPrinter.setPrintProgram(const AValue: WideString);
 var
-  Str: UnicodeString;
+  Str: WideString;
 begin
   Str := AValue;
   QPrinter_setPrintProgram(FHandle, @Str);
@@ -4729,7 +4729,7 @@ end;
 
 function TQtStringList.Get(Index: Integer): string;
 var
-  W: Unicodestring;
+  W: Widestring;
 begin
   QStringList_at(FHandle, @W, Index);
   Result := {%H-}W;
@@ -4771,7 +4771,7 @@ end;
 
 procedure TQtStringList.Insert(Index: Integer; const S: string);
 var
-  W: UnicodeString;
+  W: WideString;
 begin
   W := {%H-}S;
   QStringList_insert(FHandle, Index, @W);
@@ -4964,17 +4964,17 @@ begin
   Result := QActionGroup_addAction(FHandle, action);
 end;
 
-function TQtActionGroup.addAction(text: UnicodeString): QActionH;
+function TQtActionGroup.addAction(text: WideString): QActionH;
 var
-  WStr: UnicodeString;
+  WStr: WideString;
 begin
   WStr := text;
   Result := QActionGroup_addAction(FHandle, @WStr);
 end;
 
-function TQtActionGroup.addAction(icon: QIconH; text: UnicodeString): QActionH;
+function TQtActionGroup.addAction(icon: QIconH; text: WideString): QActionH;
 var
-  WStr: UnicodeString;
+  WStr: WideString;
 begin
   WStr := text;
   Result := QActionGroup_addAction(FHandle, icon, @WStr);
@@ -5022,7 +5022,7 @@ end;
 
 procedure TQtObjectDump.AddToList(AnObject: QObjectH);
 // var
-//  ObjName: UnicodeString;
+//  ObjName: WideString;
 begin
   if AnObject <> nil then
   begin
@@ -5043,10 +5043,10 @@ begin
   Iterator(FRoot);
 end;
 
-function TQtObjectDump.findWidgetByName(const AName: UnicodeString): QWidgetH;
+function TQtObjectDump.findWidgetByName(const AName: WideString): QWidgetH;
 var
   j: Integer;
-  WS: UnicodeString;
+  WS: WideString;
 begin
   Result := nil;
   if AName = '' then
@@ -5070,7 +5070,7 @@ begin
     Result := False;
 end;
 
-function TQtObjectDump.GetObjectName(AnObject: QObjectH): UnicodeString;
+function TQtObjectDump.GetObjectName(AnObject: QObjectH): WideString;
 begin
   Result := '';
   if AnObject = nil then
@@ -5078,8 +5078,7 @@ begin
   QObject_objectName(AnObject, @Result);
 end;
 
-function TQtObjectDump.InheritsQtClass(AnObject: QObjectH;
-  AQtClass: UnicodeString): Boolean;
+function TQtObjectDump.InheritsQtClass(AnObject: QObjectH; AQtClass: WideString): Boolean;
 begin
   if (AnObject = nil) or (AQtClass = '') then
     Result := False
