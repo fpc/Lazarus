@@ -29,8 +29,13 @@ unit opkman_showhint;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, Messages,
-  LCLType, LCLIntf, opkman_virtualtrees;
+  Classes, SysUtils, Forms,
+  //LCL
+  Controls, Graphics, Dialogs, ExtCtrls, Menus, Messages, LCLType,
+  //Interface
+  LCLIntf,
+  //OpkMan
+  opkman_virtualtrees;
 
 type
 
