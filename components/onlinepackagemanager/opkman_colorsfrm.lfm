@@ -1,0 +1,133 @@
+object ColorsFrm: TColorsFrm
+  Left = 549
+  Height = 194
+  Top = 321
+  Width = 366
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Colors'
+  ClientHeight = 194
+  ClientWidth = 366
+  OnCreate = FormCreate
+  Position = poOwnerFormCenter
+  LCLVersion = '1.9.0.0'
+  object lbName: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 50
+    Height = 15
+    Top = 15
+    Width = 32
+    BorderSpacing.Left = 50
+    BorderSpacing.Top = 15
+    Caption = 'Name'
+    ParentColor = False
+  end
+  object lbDescription: TLabel
+    AnchorSideLeft.Control = lbName
+    AnchorSideTop.Control = lbName
+    AnchorSideTop.Side = asrBottom
+    Left = 50
+    Height = 15
+    Top = 50
+    Width = 60
+    BorderSpacing.Top = 20
+    Caption = 'Description'
+    ParentColor = False
+  end
+  object lbLicense: TLabel
+    AnchorSideLeft.Control = lbName
+    AnchorSideTop.Control = lbDescription
+    AnchorSideTop.Side = asrBottom
+    Left = 50
+    Height = 15
+    Top = 85
+    Width = 39
+    BorderSpacing.Top = 20
+    Caption = 'License'
+    ParentColor = False
+  end
+  object shName: TShape
+    AnchorSideLeft.Control = lbName
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbName
+    AnchorSideTop.Side = asrCenter
+    Left = 132
+    Height = 27
+    Top = 9
+    Width = 131
+    BorderSpacing.Left = 50
+    OnMouseUp = shNameMouseUp
+  end
+  object shDescription: TShape
+    Tag = 1
+    AnchorSideLeft.Control = lbName
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbDescription
+    AnchorSideTop.Side = asrCenter
+    Left = 132
+    Height = 27
+    Top = 44
+    Width = 131
+    BorderSpacing.Left = 50
+    OnMouseDown = shNameMouseUp
+  end
+  object shLicense: TShape
+    Tag = 2
+    AnchorSideLeft.Control = lbName
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbLicense
+    AnchorSideTop.Side = asrCenter
+    Left = 132
+    Height = 27
+    Top = 79
+    Width = 131
+    BorderSpacing.Left = 50
+    OnMouseDown = shNameMouseUp
+  end
+  object bp: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 154
+    Width = 354
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Restore defaults'
+    HelpButton.DefaultCaption = False
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object CD: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    left = 8
+    top = 112
+  end
+end
