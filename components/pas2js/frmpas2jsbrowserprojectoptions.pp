@@ -27,6 +27,7 @@ type
     procedure CBCreateHTMLChange(Sender: TObject);
     procedure CBUseHTTPServerChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     function GetB(AIndex: Integer): Boolean;
     function GetServerPort: Word;
@@ -78,7 +79,11 @@ procedure TWebBrowserProjectOptionsForm.CBUseHTTPServerChange(Sender: TObject);
   begin
     C.Enabled:=CBUseHTTPServer.Checked;
     if C is TRadioButton then
-      TRadioButton(C).Checked:=False;
+      if not C.Enabled then
+        begin
+        Writeln('Unchecking ',C.Name);
+        TRadioButton(C).Checked:=False;
+        end;
   end;
 
 begin
@@ -90,6 +95,13 @@ end;
 
 procedure TWebBrowserProjectOptionsForm.FormCreate(Sender: TObject);
 begin
+  CBCreateHTMLChange(self);
+  CBUseHTTPServerChange(Self);
+end;
+
+procedure TWebBrowserProjectOptionsForm.FormShow(Sender: TObject);
+begin
+  // Need to do this again, in case options were set before show
   CBCreateHTMLChange(self);
   CBUseHTTPServerChange(Self);
 end;
@@ -107,6 +119,7 @@ begin
   else
     Result:=False;
   end;
+//  Writeln('Reporting ',AIndex,' : ',Result);
 end;
 
 function TWebBrowserProjectOptionsForm.GetServerPort: Word;
@@ -126,8 +139,18 @@ begin
     1 : CBMaintainPage.Checked:=AValue;
     2 : CBUseBrowserApp.Checked:=AValue;
     3 : CBUseBrowserConsole.Checked:=AValue;
-    4 : RBStartServerAt.Checked:=AValue;
-    5 : RBUseURL.Checked:=AValue;
+    4 :
+      begin
+      RBStartServerAt.Checked:=AValue;
+      if AValue then
+        CBUseHTTPServer.Checked:=true
+      end;
+    5 :
+      begin
+      RBUseURL.Checked:=AValue;
+      if AValue then
+        CBUseHTTPServer.Checked:=true
+      end;
     6 : CBRunOnReady.Checked:=Avalue;
   end;
 end;

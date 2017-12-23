@@ -11,8 +11,7 @@ interface
 
 uses
   Classes, SysUtils, LazFileCache, LazConfigStorage, LazFileUtils, FileUtil,
-  MacroIntf, BaseIDEIntf, IDEUtils,
-  DefineTemplates;
+  MacroIntf, BaseIDEIntf, IDEUtils, DefineTemplates;
 
 const
   PJSDsgnOptsFile = 'pas2jsdsgnoptions.xml';

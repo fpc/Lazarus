@@ -5,7 +5,7 @@ unit pjscontroller;
 interface
 
 uses
-  Classes, SysUtils, MacroIntf, MacroDefIntf, forms, lazideintf, process ;
+  Classes, SysUtils, MacroIntf, MacroDefIntf, forms, lazideintf, lazlogger, process ;
 
 Type
 
@@ -13,8 +13,10 @@ Type
 
   TServerInstance = Class(TCollectionItem)
   private
+    FlastProject: String;
     FPort: Word;
     FProcess: TProcess;
+    FRunError: String;
     FServerName: String;
     FString: String;
     function GetRunning: Boolean;
@@ -28,6 +30,8 @@ Type
     Property BaseDir : String Read FString Write FString;
     Property ServerName : String Read FServerName Write FServerName;
     Property Running : Boolean Read GetRunning;
+    Property RunError : String Read FRunError;
+    Property LastProject : String Read FlastProject Write Flastproject;
   end;
 
   { TServerInstanceList }
@@ -39,12 +43,13 @@ Type
     Function IndexOfPort(APort: Word) : integer;
     Function FindByPort(Aindex : Integer) : TServerInstance;
     Function AddInstance(aPort : Word; Const ABaseURL, aServerName : String) : TServerInstance;
-    Property Instances [AIndex : Integer] : TServerInstance Read GetInstance;
+    Property Instances [AIndex : Integer] : TServerInstance Read GetInstance; default;
   end;
   { TPJSController }
 
   TPJSController = Class
   Private
+    FOnRefresh: TNotifyEvent;
     FServerInstances: TServerInstanceList;
     function GetPasJSBrowser(const s: string; const Data: PtrInt; var Abort: boolean): string;
     function GetPasJSNodeJS(const s: string; const Data: PtrInt; var Abort: boolean): string;
@@ -57,7 +62,9 @@ Type
     Class Function instance :  TPJSController;
     Procedure Hook; virtual;
     Procedure UnHook; virtual;
+    Procedure RefreshView;
     Property ServerInstances : TServerInstanceList Read FServerInstances;
+    Property OnRefresh : TNotifyEvent Read FOnRefresh Write FonRefresh;
   end;
 
 Const
@@ -139,15 +146,25 @@ begin
   {$IFDEF WINDOWS}
   FProcess.Options:=[poNoConsole];
   {$ENDIF}
-//  Writeln('Starting server from Directory : ',BaseDir);
+  DebugLN(['Starting server from Directory : ',BaseDir]);
   FProcess.CurrentDirectory:=BaseDir;
-  FProcess.Execute;
+  try
+    FProcess.Execute;
+  except
+    On E : Exception do
+      begin
+      FRunError:=E.Message;
+      Raise;
+      end;
+  end;
+  TPJSController.Instance.RefreshView;
 end;
 
 procedure TServerInstance.StopServer;
 begin
   if Running then
     FProcess.Terminate(0);
+  TPJSController.Instance.RefreshView;
 end;
 
 class procedure TPJSController.DoneInstance;
@@ -196,17 +213,16 @@ Var
   FN : String;
 
 begin
-
+  DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]]);
   Abort:=LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]<>'1';
-//  Writeln('LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]);
   if Abort then
     exit;
+  DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectURL]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectURL]]);
   Result:=LazarusIDE.ActiveProject.CustomData[PJSProjectURL];
-//  Writeln('LazarusIDE.ActiveProject.CustomData[PJSProjectURL]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectURL]);
   if (Result='') then
     begin
     FN:=LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile];
-//    Writeln('LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]);
+    DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]]);
     if (FN='') then
       FN:=ChangeFileExt(ExtractFileName(LazarusIDE.ActiveProject.ProjectInfoFile),'.html');
     Result:=LazarusIDE.ActiveProject.CustomData[PJSProjectPort];
@@ -220,7 +236,7 @@ begin
       {$ENDIF}
     end;
   Abort:=(Result='');
-//  Writeln('GetProjectURL : ',Result);
+  DebugLN(['GetProjectURL : ',Result]);
 end;
 
 function TPJSController.MaybeStartServer(Sender: TObject; var Handled: boolean): TModalResult;
@@ -234,9 +250,9 @@ Var
 begin
   With LazarusIDE.ActiveProject do
     begin
-//    Writeln('WebProject:=',CustomData[PJSProjectWebBrowser]='1');
-//    Writeln('ServerPort:=',CustomData[PJSProjectPort]);
-//    Writeln('BaseDir:=',ProjectInfoFile);
+    DebugLn(['WebProject:=',CustomData[PJSProjectWebBrowser]]);
+    DebugLn(['ServerPort:=',CustomData[PJSProjectPort]]);
+    DebugLn(['BaseDir:=',ProjectInfoFile]);
     WebProject:=CustomData[PJSProjectWebBrowser]='1';
     ServerPort:=StrToIntDef(CustomData[PJSProjectPort],0);
     BaseDir:=ExtractFilePath(ProjectInfoFile);
@@ -247,10 +263,10 @@ begin
   aInstance:=ServerInstances.FindByPort(ServerPort);
   If Ainstance<>Nil then
     begin
-//    Writeln('Have instance running on port ',ServerPort);
+    Writeln('Have instance running on port ',ServerPort);
     if Not SameFileName(BaseDir,aInstance.BaseDir) then
       begin
-//      Writeln('Instance on port ',ServerPort,' serves different directory: ',aInstance.BaseDir);
+      Writeln('Instance on port ',ServerPort,' serves different directory: ',aInstance.BaseDir);
       // We should ask the user what to do ?
       If aInstance.Running then
         aInstance.StopServer;
@@ -261,6 +277,7 @@ begin
 //    Writeln('No instance running on port ',ServerPort, 'allocating it');
     aInstance:=ServerInstances.AddInstance(ServerPort,BaseDir,PJSOptions.GetParsedHTTPServerFilename);
     end;
+  aInstance.LastProject:=LazarusIDE.ActiveProject.ProjectInfoFile;
   aInstance.StartServer;
   Handled:=False;
 end;
@@ -289,6 +306,12 @@ end;
 procedure TPJSController.UnHook;
 begin
   // Nothing for the moment
+end;
+
+procedure TPJSController.RefreshView;
+begin
+  If Assigned(FOnRefresh) then
+    FOnRefresh(Self);
 end;
 
 finalization

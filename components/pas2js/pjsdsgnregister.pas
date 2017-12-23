@@ -5,9 +5,8 @@ unit PJSDsgnRegister;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls,
-  ProjectIntf, CompOptsIntf, LazIDEIntf, IDEOptionsIntf,
-  PJSDsgnOptions, PJSDsgnOptsFrame;
+  Classes, SysUtils, Forms, Controls, ProjectIntf, CompOptsIntf, LazIDEIntf, IDEOptionsIntf,
+  PJSDsgnOptions, PJSDsgnOptsFrame, LazLogger;
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';
@@ -83,7 +82,17 @@ procedure Register;
 
 implementation
 
-uses frmpas2jsnodejsprojectoptions, frmpas2jsbrowserprojectoptions, pjscontroller;
+uses
+  frmpas2jswebservers,
+  frmpas2jsnodejsprojectoptions,
+  frmpas2jsbrowserprojectoptions,
+  pjscontroller, strpas2jsdesign, MenuIntf;
+
+procedure ShowServerDialog(Sender: TObject);
+begin
+  TPasJSWebserverProcessesForm.Instance.Show;
+  TPasJSWebserverProcessesForm.Instance.BringToFront;
+end;
 
 procedure Register;
 
@@ -97,6 +106,7 @@ begin
   // add options frame
   PJSOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TPas2jsOptionsFrame,
                                               PJSOptionsFrameID)^.Index;
+  RegisterIdeMenuCommand(itmViewDebugWindows,SPasJSWebservers,SPasJSWebserversCaption,nil,@ShowServerDialog);
 end;
 
 { TProjectPas2JSNodeJSApp }
@@ -290,9 +300,8 @@ function TProjectPas2JSWebApp.GetNextPort : Word;
 
 begin
   Result:=PJSOptions.StartAtPort+1;
-  PJSOptions.StartAtPort:=1;
+  PJSOptions.StartAtPort:=Result;
   PJSOptions.Save;
-
 end;
 
 function TProjectPas2JSWebApp.ShowOptionsDialog : TModalResult;
@@ -303,11 +312,13 @@ function TProjectPas2JSWebApp.ShowOptionsDialog : TModalResult;
     Result:=O in Options;
   end;
 
-  Procedure So(Value : Boolean; o : TBrowserApplicationOption);
+  Procedure So(AValue : Boolean; o : TBrowserApplicationOption);
 
   begin
-    if Value then
-      Include(Foptions,O);
+    if AValue then
+      Include(Foptions,O)
+    else
+      Exclude(Foptions,O)
   end;
 
 
@@ -320,14 +331,11 @@ begin
       UseBrowserConsole:=CO(baoUseBrowserConsole);
       StartHTTPServer:=CO(baoStartServer);
       UseRunOnReady:=CO(baoRunOnReady);
-      if CO(baoStartServer) then
-        ServerPort:=GetNextPort
-      else
-        begin
+      // We allocate the new port in all cases.
+      ServerPort:=GetNextPort;
+      URL:='';
+      if Not CO(baoStartServer) then
         UseURL:=CO(baoUseURL);
-        if CO(baoUseURL) then
-          URL:='';
-        end;
       Result:=ShowModal;
       if Result=mrOK then
         begin
@@ -337,11 +345,11 @@ begin
         SO(UseBrowserConsole,baoUseBrowserConsole);
         SO(StartHTTPServer,baoStartServer);
         SO(UseRunOnReady,baoRunOnReady);
-//        Writeln('Start server: ', CO(baoStartServer));
+        DebugLN(['Start server:', CO(baoStartServer)]);
         if CO(baoStartServer) then
           begin
           Self.ProjectPort:=ServerPort;
-//          Writeln('Start server port: ', Self.ProjectPort,'from; ',ServerPort);
+          DebugLN(['Start server port: ', Self.ProjectPort,'from: ',ServerPort]);
           end
         else
           begin
@@ -357,6 +365,10 @@ end;
 
 function TProjectPas2JSWebApp.DoInitDescriptor: TModalResult;
 begin
+  // Reset options
+  FOptions:=[baoCreateHtml,baoMaintainHTML];
+  ProjectPort:=0;
+  ProjectURL:='';
   Result:=ShowOptionsDialog;
 end;
 
@@ -530,12 +542,12 @@ begin
     AProject.CustomData.Values[PJSProjectPort]:=IntToStr(ProjectPort);
     AProject.CustomData.Values[PJSProjectURL]:='';
     end;
-{  With AProject.CustomData do
+  With AProject.CustomData do
      begin
-     Writeln(PJSProjectWebBrowser,Values[PJSProjectWebBrowser]);
-     Writeln(PJSProjectPort,Values[PJSProjectPort]);
-     Writeln(ProjectURL,Values[PJSProjectURL]);
-     end;}
+     DebugLN([PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
+     DebugLN([PJSProjectPort,': ',Values[PJSProjectPort]]);
+     DebugLN([PJSProjectURL,': ',Values[PJSProjectURL]]);
+     end;
   // create html source
   if baoCreateHtml in Options then
     CreateHTMLFile(aProject,'project1.js');
