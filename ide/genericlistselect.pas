@@ -58,8 +58,8 @@ end;
 
 procedure TGenericListSelectForm.ListBoxDblClick(Sender: TObject);
 begin
-  UpdateButtons;
-  ModalResult:=mrOK;
+  if ListBox.ItemIndex > -1 then
+    ModalResult:=mrOK;
 end;
 
 procedure TGenericListSelectForm.UpdateButtons;
