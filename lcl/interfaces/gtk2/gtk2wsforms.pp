@@ -713,6 +713,8 @@ var
       // lcl_nonmodal_over_modal is needed to track nonmodal form
       // created and shown when we have active modal forms
       g_object_set_data(PGObject(AWindow),'lcl_nonmodal_over_modal', AForm);
+      if (AForm.PopupMode <> pmNone) and (AForm.PopupParent <> nil) then
+        gtk_window_set_transient_for(AWindow, PGtkWindow(AForm.Handle));
       Result := True;
     end;
   end;
