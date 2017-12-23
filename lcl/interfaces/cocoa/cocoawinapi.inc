@@ -1318,20 +1318,7 @@ begin
   Result := Handle <> 0;
   if not Result then Exit;
 
-  // Call on a window
-  lView := GetNSObjectView(NSObject(Handle));
-  if lView.isKindOfClass_(TCocoaWindowContent) then
-  begin
-    if TCocoaWindowContent(handle).isembedded then
-      r := TCocoaWindowContent(handle).lclFrame
-    else
-      r:=TCocoaWindowContent(handle).window.lclFrame;
-  end
-  // Call on any other control
-  else
-  begin
-    r := lView.lclFrame;
-  end;
+  r := NSObject(Handle).lclFrame;
   Width := R.Right - R.Left;
   Height := R.Bottom - R.Top;
 end;

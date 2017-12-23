@@ -1251,6 +1251,8 @@ begin
   Result:=(AWinControl.Handle<>0);
   if not Result then Exit;
   ARect:=NSObject(AWinControl.Handle).lclClientFrame;
+  if (ARect.Left<>0) or (ARect.Top<>0) then
+    OffsetRect(ARect, -ARect.Left, -ARect.Top);
 end;
 
 class procedure TCocoaWSWinControl.GetPreferredSize(
@@ -1262,6 +1264,9 @@ var
 begin
   if not AWinControl.HandleAllocated then Exit;
 
+  //todo: GetNSObjectView must be replaced with oop approach
+  //      note that client rect might be smaller than the bounds of TWinControl itself
+  //      thus extra size should be adapted
   lView := CocoaUtils.GetNSObjectView(NSObject(AWinControl.Handle));
   if lView = nil then Exit;
 

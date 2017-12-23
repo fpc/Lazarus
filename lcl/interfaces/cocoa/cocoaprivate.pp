@@ -451,6 +451,7 @@ type
     procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
+    function lclFrame: TRect; override;
     procedure viewDidMoveToSuperview; override;
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: NSWindow); override;
@@ -810,6 +811,7 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    function lclClientFrame: TRect; override;
   end;
 
   { TCocoaProgressIndicator }
@@ -993,6 +995,14 @@ begin
     inherited lclSetFrame(r)
   else
     window.lclSetFrame(r);
+end;
+
+function TCocoaWindowContent.lclFrame: TRect;
+begin
+  if isembedded then
+    Result := inherited lclFrame
+  else
+    Result := window.lclFrame;
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToSuperview;
@@ -1667,6 +1677,17 @@ end;
 function TCocoaGroupBox.lclIsHandle: Boolean;
 begin
   Result := True;
+end;
+
+function TCocoaGroupBox.lclClientFrame: TRect;
+var
+  v : NSView;
+begin
+  v:=contentView;
+  if not Assigned(v) then
+    Result := inherited lclClientFrame
+  else
+    Result := NSRectToRect( v.frame );
 end;
 
 function TCocoaGroupBox.acceptsFirstResponder: Boolean;
