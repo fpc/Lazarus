@@ -73,6 +73,7 @@ begin
   list.setDataSource(list);
   list.setDelegate(list);
   list.AllowMixedState := TCustomCheckListBox(AWinControl).AllowGrayed;
+  ListBoxSetStyle(list, TCustomCheckListBox(AWinControl).Style);
 
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then

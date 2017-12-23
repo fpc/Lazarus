@@ -599,6 +599,7 @@ type
     callback: IListBoxCallback;
     resultNS: NSString;
     list: TCocoaStringList;
+    isCustomDraw: Boolean;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -2844,6 +2845,7 @@ var
   LCLObject: TCustomListBox;
 begin
   inherited;
+  if not isCustomDraw then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   DrawStruct.Area := NSRectToRect(rectOfRow(row));
   DrawStruct.DC := HDC(ctx);

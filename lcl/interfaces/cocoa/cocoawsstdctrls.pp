@@ -109,8 +109,8 @@ type
     //class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
-    {class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
-    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;}
+    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
+    {class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;}
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
 
@@ -268,6 +268,7 @@ function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCo
 function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
 
 function GetListBox(AWinControl: TWinControl): TCocoaListBox;
+procedure ListBoxSetStyle(list: TCocoaListBox; AStyle: TListBoxStyle);
 
 implementation
 
@@ -467,6 +468,7 @@ begin
   btn.adjustFontToControlSize:=true;
   // these heights were received from Xcode builder, where the height cannot be changed for a button control
   // the actual size of the button (the difference between top pixel and bottom pixel, is less than frame size
+  // also, the "mini" button seems to be wider, than
   Result := TLCLIntfHandle(btn);
 end;
 
@@ -1344,6 +1346,12 @@ begin
     Result := TCocoaListBox(TCocoaScrollView(AWinControl.Handle).documentView);
 end;
 
+procedure ListBoxSetStyle(list: TCocoaListBox; AStyle: TListBoxStyle);
+begin
+  if not Assigned(list) then Exit;
+  list.isCustomDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
+end;
+
 class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
   const AParams:TCreateParams):TLCLIntfHandle;
 var
@@ -1364,6 +1372,7 @@ begin
   list.setDataSource(list);
   list.setDelegate(list);
   list.setAllowsMultipleSelection(lclListBox.MultiSelect);
+  ListBoxSetStyle(list, TCustomListBox(AWinControl).Style);
 
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
@@ -1505,6 +1514,15 @@ begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
   list.setAllowsMultipleSelection(AMultiSelect);
+end;
+
+class procedure TCocoaWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+var
+  view: TCocoaListBox;
+begin
+  view := GetListBox(ACustomListBox);
+  ListBoxSetStyle(view, TCustomListBox(ACustomListBox).Style);
+  view.setNeedsDisplay;
 end;
 
 class procedure TCocoaWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
