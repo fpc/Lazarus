@@ -644,9 +644,14 @@ type
   { TCocoaCheckListBox }
 
   TCocoaCheckListBox = objcclass(TCocoaListBox)
+  private
+    chkid : NSString;
+    txtid : NSString;
   public
     // LCL functions
     AllowMixedState: Boolean;
+    function initWithFrame(ns: NSRect): id; override;
+    procedure dealloc; override;
     class function LCLCheckStateToCocoa(ALCLState: TCheckBoxState): NSInteger; message 'LCLCheckStateToCocoa:';
     class function CocoaCheckStateToLCL(ACocoaState: NSInteger): TCheckBoxState; message 'CocoaCheckStateToLCL:';
     function CheckListBoxGetNextState(ACurrent: TCheckBoxState): TCheckBoxState; message 'CheckListBoxGetNextState:';
@@ -2949,6 +2954,35 @@ end;
 
 { TCocoaCheckListBox }
 
+function TCocoaCheckListBox.initWithFrame(ns: NSRect): id;
+var
+  chklist : TCocoaCheckListBox;
+  clm : NSTableColumn;
+begin
+  Result:=inherited initWithFrame(ns);
+
+  chklist := TCocoaCheckListBox(Result);
+  // identifiers for columns
+  chklist.chkid:=NSSTR('chk');
+  chklist.txtid:=NSSTR('txt');
+  // the first column is for the checkbox
+  // the second column is for the title of the button
+  // the separation is needed, so clicking on the text would not trigger
+  // change of the button
+  clm:=NSTableColumn.alloc.initWithIdentifier(chkid);
+  chklist.addTableColumn(clm);
+  // todo: this should be "auto-size" and not hard-coded width to fix the checkbox
+  clm.setWidth(18);
+  chklist.addTableColumn(NSTableColumn.alloc.initWithIdentifier(txtid));
+end;
+
+procedure TCocoaCheckListBox.dealloc;
+begin
+  chkid.release;
+  txtid.release;
+  inherited dealloc;
+end;
+
 class function TCocoaCheckListBox.LCLCheckStateToCocoa(ALCLState: TCheckBoxState): NSInteger;
 begin
   case ALCLState of
@@ -3009,17 +3043,28 @@ function TCocoaCheckListBox.tableView_objectValueForTableColumn_row(tableView: N
   objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
 var
   lInt: NSInteger;
+  lNSString : NSString;
 begin
+  Result:=nil;
+
   //WriteLn('[TCocoaCheckListBox.tableView_objectValueForTableColumn_row] row='+IntToStr(row));
-  if not Assigned(list) then
-    Exit(nil);
+  if not Assigned(list) then Exit;
 
-  if row>=list.count then
-    Exit(nil);
+  if row>=list.count then Exit;
 
-  // Returns if the state is checked or unchecked
-  lInt := GetCocoaState(row);
-  Result := NSNumber.numberWithInteger(lInt);
+  if objectValueForTableColumn.identifier=chkid then
+  begin
+    // Returns if the state is checked or unchecked
+    lInt := GetCocoaState(row);
+    Result := NSNumber.numberWithInteger(lInt)
+  end
+  else if objectValueForTableColumn.identifier=txtid then
+  begin
+    // Returns caption of the checkbox
+    lNSString := NSStringUtf8(list[row]);
+    Result:= lNSString;
+  end;
+
 end;
 
 procedure TCocoaCheckListBox.tableView_setObjectValue_forTableColumn_row(tableView: NSTableView;
@@ -3034,13 +3079,24 @@ function TCocoaCheckListBox.tableView_dataCellForTableColumn_row(tableView: NSTa
 var
   lNSString: NSString;
 begin
-  Result := NSButtonCell.alloc.init.autorelease;
-  Result.setAllowsMixedState(True);
-  NSButtonCell(Result).setButtonType(NSSwitchButton);
+  Result:=nil;
+  if not Assigned(tableColumn) then
+  begin
+    Exit;
+  end;
 
-  lNSString := NSStringUtf8(list[row]);
-  NSButtonCell(Result).setTitle(lNSString);
-  lNSString.release;
+  if tableColumn.identifier = chkid then
+  begin
+    Result := NSButtonCell.alloc.init.autorelease;
+    Result.setAllowsMixedState(True);
+    NSButtonCell(Result).setButtonType(NSSwitchButton);
+    NSButtonCell(Result).setTitle(NSSTR(''));
+  end
+  else
+  if tableColumn.identifier = txtid then
+  begin
+    Result:=NSTextFieldCell.alloc.init.autorelease;
+  end
 end;
 
 { TCocoaTabPage }

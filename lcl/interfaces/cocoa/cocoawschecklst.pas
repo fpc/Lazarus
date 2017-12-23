@@ -68,7 +68,6 @@ begin
   end;
   list.callback := TLCLListBoxCallback.Create(list, AWinControl);
   list.list := TCocoaStringList.Create(list);
-  list.addTableColumn(NSTableColumn.alloc.init);
   list.setHeaderView(nil);
   list.setDataSource(list);
   list.setDelegate(list);
