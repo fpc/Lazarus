@@ -526,6 +526,8 @@ type
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
+    procedure textDidChange(notification: NSNotification); override;
+    procedure textDidEndEditing(notification: NSNotification); override;
     // NSComboBoxDataSourceProtocol
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id; message 'comboBox:objectValueForItemAtIndex:';
     function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger; message 'numberOfItemsInComboBox:';
@@ -3614,6 +3616,26 @@ function TCocoaComboBox.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
   callback.ResignFirstResponder;
+end;
+
+procedure TCocoaComboBox.textDidChange(notification: NSNotification);
+var
+  TheEvent: NSEvent;
+begin
+  inherited textDidChange(notification);
+  TheEvent := nsapp.currentevent;
+  if assigned(callback) and (TheEvent.type_ = NSKeyDown) then
+    callback.KeyEvent(TheEvent)
+end;
+
+procedure TCocoaComboBox.textDidEndEditing(notification: NSNotification);
+var
+  TheEvent: NSEvent;
+begin
+  inherited textDidEndEditing(notification);
+  TheEvent := nsapp.currentevent;
+  if assigned(callback) and (TheEvent.type_ = NSKeyDown) then
+    callback.KeyEvent(TheEvent)
 end;
 
 function TCocoaComboBox.comboBox_objectValueForItemAtIndex_(combo:TCocoaComboBox;
