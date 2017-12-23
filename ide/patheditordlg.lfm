@@ -10,23 +10,21 @@ object PathEditorDialog: TPathEditorDialog
   Constraints.MinHeight = 400
   Constraints.MinWidth = 500
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'
   object PathGroupBox: TGroupBox
+    AnchorSideBottom.Control = AddTemplateButton
     Left = 6
-    Height = 237
+    Height = 366
     Top = 6
     Width = 558
-    Align = alClient
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
     Caption = 'PathGroupBox'
-    ClientHeight = 219
+    ClientHeight = 335
     ClientWidth = 554
     Constraints.MinHeight = 194
     Constraints.MinWidth = 488
@@ -36,10 +34,10 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 191
-      Height = 23
-      Top = 190
-      Width = 89
+      Left = 210
+      Height = 30
+      Top = 299
+      Width = 100
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -56,7 +54,7 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideRight.Control = MoveUpButton
       AnchorSideBottom.Control = DirectoryEdit
       Left = 6
-      Height = 151
+      Height = 248
       Top = 6
       Width = 511
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -69,7 +67,6 @@ object PathEditorDialog: TPathEditorDialog
       OnKeyDown = PathListBoxKeyDown
       OnSelectionChange = PathListBoxSelectionChange
       PopupMenu = PopupMenu1
-      ScrollWidth = 492
       Style = lbOwnerDrawFixed
       TabOrder = 0
     end
@@ -78,9 +75,9 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 190
-      Width = 96
+      Height = 30
+      Top = 299
+      Width = 108
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -96,10 +93,10 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 108
-      Height = 23
-      Top = 190
-      Width = 77
+      Left = 120
+      Height = 30
+      Top = 299
+      Width = 84
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -115,10 +112,10 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Control = PathGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 286
-      Height = 23
-      Top = 190
-      Width = 148
+      Left = 316
+      Height = 30
+      Top = 299
+      Width = 179
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -135,8 +132,8 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ReplaceButton
       Left = 6
-      Height = 21
-      Top = 163
+      Height = 33
+      Top = 260
       Width = 511
       OnAcceptDirectory = DirectoryEditAcceptDirectory
       ShowHidden = False
@@ -155,7 +152,7 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideBottom.Side = asrBottom
       Left = 523
       Height = 25
-      Top = 49
+      Top = 81
       Width = 25
       Anchors = [akRight]
       BorderSpacing.Around = 6
@@ -172,7 +169,7 @@ object PathEditorDialog: TPathEditorDialog
       AnchorSideBottom.Side = asrBottom
       Left = 523
       Height = 25
-      Top = 83
+      Top = 115
       Width = 25
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 9
@@ -181,62 +178,10 @@ object PathEditorDialog: TPathEditorDialog
       ParentShowHint = False
     end
   end
-  object TemplateGroupBox: TGroupBox
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 164
-    Top = 248
-    Width = 558
-    Align = alBottom
-    Anchors = []
-    BorderSpacing.Left = 6
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
-    Caption = 'TemplateGroupBox'
-    ClientHeight = 146
-    ClientWidth = 554
-    TabOrder = 1
-    object TemplatesListBox: TListBox
-      AnchorSideLeft.Control = TemplateGroupBox
-      AnchorSideTop.Control = TemplateGroupBox
-      AnchorSideRight.Control = TemplateGroupBox
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = AddTemplateButton
-      Left = 6
-      Height = 105
-      Top = 6
-      Width = 542
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Around = 6
-      ItemHeight = 0
-      MultiSelect = True
-      OnDblClick = TemplatesListBoxDblClick
-      OnSelectionChange = TemplatesListBoxSelectionChange
-      ScrollWidth = 523
-      TabOrder = 0
-    end
-    object AddTemplateButton: TBitBtn
-      AnchorSideLeft.Control = TemplateGroupBox
-      AnchorSideBottom.Control = TemplateGroupBox
-      AnchorSideBottom.Side = asrBottom
-      Left = 6
-      Height = 23
-      Top = 117
-      Width = 121
-      Anchors = [akLeft, akBottom]
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'AddTemplateButton'
-      OnClick = AddTemplateButtonClick
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 1
-    end
-  end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 418
+    Height = 30
+    Top = 414
     Width = 558
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -246,27 +191,33 @@ object PathEditorDialog: TPathEditorDialog
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 2
+    TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
   end
-  object Splitter1: TSplitter
-    Cursor = crVSplit
-    Left = 0
-    Height = 5
-    Top = 243
-    Width = 570
-    Align = alBottom
-    ResizeAnchor = akBottom
+  object AddTemplateButton: TBitBtn
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 16
+    Height = 30
+    Top = 378
+    Width = 142
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'AddTemplateButton'
+    OnClick = AddTemplateButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
   end
   object BrowseDialog: TSelectDirectoryDialog
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 350
-    top = 50
+    Left = 350
+    Top = 50
   end
   object PopupMenu1: TPopupMenu
-    left = 130
-    top = 100
+    Left = 130
+    Top = 100
     object CopyMenuItem: TMenuItem
       Caption = 'Copy All'
       OnClick = CopyMenuItemClick
@@ -288,11 +239,11 @@ object PathEditorDialog: TPathEditorDialog
     end
   end
   object OpenDialog1: TOpenDialog
-    left = 240
-    top = 100
+    Left = 240
+    Top = 100
   end
   object SaveDialog1: TSaveDialog
-    left = 350
-    top = 100
+    Left = 350
+    Top = 100
   end
 end

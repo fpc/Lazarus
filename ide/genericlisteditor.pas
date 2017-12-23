@@ -5,8 +5,7 @@ unit GenericListEditor;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls;
+  Forms, StdCtrls, ButtonPanel;
 
 type
 

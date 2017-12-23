@@ -1,4 +1,3 @@
-{ ToDo: move to lazcontrols }
 unit GenericCheckList;
 
 {$mode objfpc}{$H+}
@@ -6,8 +5,10 @@ unit GenericCheckList;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  CheckLst, Buttons, IDEImagesIntf, StdCtrls;
+  Classes, SysUtils,
+  Forms, Controls, StdCtrls, Dialogs, ButtonPanel, CheckLst, Buttons,
+  // IdeIntf
+  IDEImagesIntf;
 
 type
 

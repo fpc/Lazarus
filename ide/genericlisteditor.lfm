@@ -7,11 +7,11 @@ object GenericListEditForm: TGenericListEditForm
   ClientHeight = 301
   ClientWidth = 343
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.9.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 33
-    Top = 262
+    Height = 30
+    Top = 265
     Width = 331
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -29,7 +29,7 @@ object GenericListEditForm: TGenericListEditForm
   end
   object Memo1: TMemo
     Left = 0
-    Height = 256
+    Height = 259
     Top = 0
     Width = 343
     Align = alClient
