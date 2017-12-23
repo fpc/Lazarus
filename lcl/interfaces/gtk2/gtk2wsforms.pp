@@ -706,7 +706,6 @@ var
       (AForm.Parent = nil) and
       (AForm.FormStyle <> fsMDIChild) and
       (ModalWindows <> nil) and (ModalWindows.Count > 0) and
-      not (AForm.FormStyle in fsAllStayOnTop) and
       (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable]) and
       (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
     begin
