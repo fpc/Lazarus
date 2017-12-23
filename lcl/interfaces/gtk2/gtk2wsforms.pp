@@ -706,8 +706,7 @@ var
       (AForm.Parent = nil) and
       (AForm.FormStyle <> fsMDIChild) and
       (ModalWindows <> nil) and (ModalWindows.Count > 0) and
-      (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable, bsSizeToolWin, bsToolWindow]) and
-      (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
+      (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable, bsSizeToolWin, bsToolWindow]) then
     begin
       AWindow := {%H-}PGtkWindow(AForm.Handle);
       gtk_window_set_modal(AWindow, True);
