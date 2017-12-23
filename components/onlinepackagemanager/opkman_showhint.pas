@@ -31,7 +31,7 @@ interface
 uses
   Classes, SysUtils, Forms,
   //LCL
-  Controls, Graphics, Dialogs, ExtCtrls, Menus, Messages, LCLType,
+  Controls, Graphics, Dialogs, ExtCtrls, Menus, LCLType,
   //Interface
   LCLIntf,
   //OpkMan
@@ -146,6 +146,7 @@ var
   CurFrame: TfrShowHint;
   I: Integer;
   LazPackage: TLazarusPackage;
+  TotHeight: Integer;
 begin
   Data := VisualTree.VST.GetNodeData(ANode);
   Caption := Data^.PackageDisplayName;
@@ -156,6 +157,7 @@ begin
     CurFrame.Free;
     CurFrame := nil;
   end;
+  TotHeight := 0;
   FFrames.Clear;
   Node := VisualTree.VST.GetFirstChild(ANode);
   while Assigned(Node) do
@@ -171,11 +173,20 @@ begin
       CurFrame.mDescription.Text := Trim(LazPackage.Description);
       CurFrame.mLicense.Text := Trim(LazPackage.License);
       FFrames.Add(CurFrame);
+      if FFrames.Count > 1 then
+        CurFrame.pnBase.BorderSpacing.Bottom := 5;
       CurFrame.Parent := sbLazPackages;
+      CurFrame.CalcHeight(CurFrame.mLicense);
+      CurFrame.CalcHeight(CurFrame.mDescription);
+      CurFrame.Height := CurFrame.pnPackageName.Height + CurFrame.mDescription.Height + CurFrame.mLicense.Height;
+      TotHeight := TotHeight + CurFrame.Height;
       CurFrame.Visible := True;
     end;
     Node := VisualTree.VST.GetNextSibling(Node);
   end;
+  if (TotHeight < 50) or (TotHeight > 325) then
+    TotHeight := 325;
+  Self.Height := TotHeight;
 end;
 
 procedure TShowHintFrm.SetupTimer(const AInterval: Integer);

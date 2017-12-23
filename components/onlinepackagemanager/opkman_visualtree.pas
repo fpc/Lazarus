@@ -1693,10 +1693,6 @@ begin
             if (ssShift in Shift) and PtInRect(ContRect, P) and (Level > 0) then
             begin
               P := FVST.ClientToScreen(P);
-              if FShowHintFrm.Visible then
-                FShowHintFrm.MoveFormTo(P.X, P.Y)
-              else
-                FShowHintFrm.ShowFormAt(P.X, P.Y);
               case Level of
                  2: FHoverNode := FHoverNode^.Parent;
                  3: FHoverNode := FHoverNode^.Parent^.Parent;
@@ -1706,6 +1702,10 @@ begin
                 FShowHintFrm.UpdateInfo(FHoverNode);
                 FHoverNodeOld := FHoverNode;
               end;
+              if FShowHintFrm.Visible then
+                FShowHintFrm.MoveFormTo(P.X, P.Y)
+              else
+                FShowHintFrm.ShowFormAt(P.X, P.Y);
             end
         end;
       2: Exit;

@@ -1,36 +1,37 @@
 object frShowHint: TfrShowHint
   Left = 0
-  Height = 321
+  Height = 156
   Top = 0
   Width = 559
   AutoSize = True
-  ClientHeight = 321
+  ClientHeight = 156
   ClientWidth = 559
   TabOrder = 0
   DesignLeft = 388
   DesignTop = 227
   object pnBase: TPanel
     Left = 10
-    Height = 306
-    Top = 5
+    Height = 136
+    Top = 10
     Width = 539
     Align = alClient
     BorderSpacing.Left = 10
-    BorderSpacing.Top = 5
+    BorderSpacing.Top = 10
     BorderSpacing.Right = 10
     BorderSpacing.Bottom = 10
     BevelInner = bvLowered
-    ClientHeight = 306
+    ClientHeight = 136
     ClientWidth = 539
     TabOrder = 0
     object pnDescription: TPanel
       Left = 2
-      Height = 140
+      Height = 55
       Top = 24
       Width = 535
       Align = alTop
+      AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 140
+      ClientHeight = 55
       ClientWidth = 535
       ParentFont = False
       TabOrder = 0
@@ -40,13 +41,12 @@ object frShowHint: TfrShowHint
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = pnDescription
         AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = pnDescription
         AnchorSideBottom.Side = asrBottom
         Left = 20
-        Height = 116
+        Height = 31
         Top = 17
         Width = 508
-        Anchors = [akTop, akLeft, akRight, akBottom]
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 20
         BorderSpacing.Top = 2
         BorderSpacing.Right = 7
@@ -72,12 +72,13 @@ object frShowHint: TfrShowHint
     end
     object pnLicense: TPanel
       Left = 2
-      Height = 140
-      Top = 164
+      Height = 55
+      Top = 79
       Width = 535
       Align = alTop
+      AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 140
+      ClientHeight = 55
       ClientWidth = 535
       ParentFont = False
       TabOrder = 1
@@ -87,13 +88,12 @@ object frShowHint: TfrShowHint
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = pnLicense
         AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = pnLicense
         AnchorSideBottom.Side = asrBottom
         Left = 20
-        Height = 116
+        Height = 31
         Top = 17
         Width = 508
-        Anchors = [akTop, akLeft, akRight, akBottom]
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 20
         BorderSpacing.Top = 2
         BorderSpacing.Right = 7

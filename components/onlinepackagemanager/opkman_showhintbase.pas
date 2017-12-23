@@ -28,7 +28,8 @@ unit opkman_showhintbase;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, Graphics;
+  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, Graphics,
+  LCLType, LCLIntf;
 
 type
 
@@ -44,9 +45,9 @@ type
     pnDescription: TPanel;
     pnLicense: TPanel;
   private
-
   public
     procedure Init;
+    procedure CalcHeight(AMemo: TMemo);
   end;
 
 implementation
@@ -71,6 +72,31 @@ begin
     pnLicense.Color := StringToColor(Options.HintFormOptionColors[2]);
     mLicense.Color := StringToColor(Options.HintFormOptionColors[2]);
   end;
+end;
+
+procedure TfrShowHint.CalcHeight(AMemo: TMemo);
+var
+  LH: Integer;
+  DC: HDC;
+  SaveFont : HFont;
+  Metrics : TTextMetric;
+  Increase: Integer;
+  LC: Integer;
+begin
+  DC := GetDC(AMemo.Handle);
+  SaveFont := SelectObject(DC, AMemo.Font.Handle);
+  GetTextMetrics(DC, Metrics);
+  SelectObject(DC, SaveFont);
+  ReleaseDC(AMemo.Handle, DC);
+  LH := Metrics.tmHeight;
+  Increase := AMemo.Height;
+  LC := AMemo.Lines.Count;
+  if LC < 2 then
+    LC := 2;
+  if LC > 6 then
+    LC := 6;
+ AMemo.Height := LC * LH + 8;
+ Increase := AMemo.Height - Increase;
 end;
 
 end.
