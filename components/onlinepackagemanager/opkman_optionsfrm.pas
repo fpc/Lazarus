@@ -33,7 +33,7 @@ uses
   SysUtils, Math, Graphics, Classes,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Spin, ComCtrls, EditBtn, Menus,
-  ButtonPanel,
+  ButtonPanel, Buttons,
   // LazUtils
   LazFileUtils,
   // OpkMan
@@ -556,6 +556,8 @@ begin
   pnProfilesMain.Visible := Options.UserProfile = 1;
   bColors.Caption := rsOptions_bColors_Caption;
   bpOptions.HelpButton.Caption := rsOptions_bpOptions_bHelp;
+  bpOptions.HelpButton.Kind := bkCustom;
+  bpOptions.HelpButton.Glyph.Clear;
   SetupColors;
 end;
 

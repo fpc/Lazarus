@@ -2,24 +2,24 @@ object ColorsFrm: TColorsFrm
   Left = 549
   Height = 194
   Top = 321
-  Width = 366
+  Width = 372
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Colors'
   ClientHeight = 194
-  ClientWidth = 366
+  ClientWidth = 372
   OnCreate = FormCreate
   Position = poOwnerFormCenter
   LCLVersion = '1.9.0.0'
   object lbName: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    Left = 50
+    Left = 85
     Height = 15
-    Top = 15
+    Top = 25
     Width = 32
-    BorderSpacing.Left = 50
-    BorderSpacing.Top = 15
+    BorderSpacing.Left = 85
+    BorderSpacing.Top = 25
     Caption = 'Name'
     ParentColor = False
   end
@@ -27,9 +27,9 @@ object ColorsFrm: TColorsFrm
     AnchorSideLeft.Control = lbName
     AnchorSideTop.Control = lbName
     AnchorSideTop.Side = asrBottom
-    Left = 50
+    Left = 85
     Height = 15
-    Top = 50
+    Top = 60
     Width = 60
     BorderSpacing.Top = 20
     Caption = 'Description'
@@ -39,9 +39,9 @@ object ColorsFrm: TColorsFrm
     AnchorSideLeft.Control = lbName
     AnchorSideTop.Control = lbDescription
     AnchorSideTop.Side = asrBottom
-    Left = 50
+    Left = 85
     Height = 15
-    Top = 85
+    Top = 95
     Width = 39
     BorderSpacing.Top = 20
     Caption = 'License'
@@ -52,10 +52,10 @@ object ColorsFrm: TColorsFrm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = lbName
     AnchorSideTop.Side = asrCenter
-    Left = 132
+    Left = 167
     Height = 27
-    Top = 9
-    Width = 131
+    Top = 19
+    Width = 76
     BorderSpacing.Left = 50
     OnMouseUp = shNameMouseUp
   end
@@ -65,10 +65,10 @@ object ColorsFrm: TColorsFrm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = lbDescription
     AnchorSideTop.Side = asrCenter
-    Left = 132
+    Left = 167
     Height = 27
-    Top = 44
-    Width = 131
+    Top = 54
+    Width = 76
     BorderSpacing.Left = 50
     OnMouseDown = shNameMouseUp
   end
@@ -78,10 +78,10 @@ object ColorsFrm: TColorsFrm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = lbLicense
     AnchorSideTop.Side = asrCenter
-    Left = 132
+    Left = 167
     Height = 27
-    Top = 79
-    Width = 131
+    Top = 89
+    Width = 76
     BorderSpacing.Left = 50
     OnMouseDown = shNameMouseUp
   end
@@ -89,7 +89,7 @@ object ColorsFrm: TColorsFrm
     Left = 6
     Height = 34
     Top = 154
-    Width = 354
+    Width = 360
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

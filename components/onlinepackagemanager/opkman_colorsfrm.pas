@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  ButtonPanel;
+  ButtonPanel, Buttons;
 
 type
 
@@ -48,6 +48,8 @@ begin
   lbLicense.Caption := rsMainFrm_VSTText_License;
   CD.Title := rsColors_CD_Title;
   bp.HelpButton.Caption := rsOptions_bpOptions_bHelp;
+  bp.HelpButton.Kind := bkCustom;
+  bp.HelpButton.Glyph.Clear;
 end;
 
 procedure TColorsFrm.HelpButtonClick(Sender: TObject);
