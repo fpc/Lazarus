@@ -2462,7 +2462,11 @@ end;
 constructor TlrDetailReport.Create;
 begin
   inherited Create;
+  {$IF FPC_FULLVERSION >= 30101}
+  FReportBody:=TStringStream.CreateRaw('');
+  {$ELSE}
   FReportBody:=TStringStream.Create('');
+  {$ENDIF}
 end;
 
 destructor TlrDetailReport.Destroy;
@@ -10064,7 +10068,11 @@ procedure TfrReport.WriteReportXML(Writer: TWriter);
 var
   st: TStringStream;
 begin
+  {$IF FPC_FULLVERSION >= 30101}
+  st := TStringStream.CreateRaw('');
+  {$ELSE}
   st := TStringStream.Create('');
+  {$ENDIF}
   SaveToXMLStream(st);
   Writer.WriteString(st.DataString);
   st.free;
@@ -11894,7 +11902,11 @@ begin
   inherited Loaded;
   if FXMLReport<>'' then
   begin
+    {$IF FPC_FULLVERSION >= 30101}
+    st := TStringStream.CreateRaw(FXMLReport);
+    {$ELSE}
     st := TStringStream.Create(FXMLReport);
+    {$ENDIF}
     LoadFromXMLStream(st);
     st.free;
     FXMLReport := '';
