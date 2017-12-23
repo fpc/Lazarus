@@ -223,14 +223,14 @@ begin
   Result:=pjsdNodeJSAppDescription;
 end;
 
-function TProjectPas2JSNodeJSApp.InitProject(AProject: TLazProject
-  ): TModalResult;
-var
-  MainFile: TLazProjectFile;
-  CompOpts: TLazCompilerOptions;
-  RunParams : TAbstractRunParamsOptions;
+function TProjectPas2JSNodeJSApp.InitProject(AProject: TLazProject ): TModalResult;
 
-  NewSource: String;
+var
+  MainFile : TLazProjectFile;
+  CompOpts : TLazCompilerOptions;
+  RunParams : TAbstractRunParamsOptionsMode;
+  Compiler : String;
+
 begin
   Result:=inherited InitProject(AProject);
 
@@ -244,15 +244,20 @@ begin
   CompOpts.Win32GraphicApp:=false;
   CompOpts.UnitOutputDirectory:='js';
   CompOpts.TargetFilename:='project1';
-  CompOpts.SetAlternativeCompile(
-    '$MakeExe(pas2js) -Jc -Jminclude -Tnodejs "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
-  RunParams:=AProject.RunParameters;
-  //RunParams.UseLaunchingApplication:=True;
-  //RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSNodeJS) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
+  if Length(PJSOptions.CompilerFilename)=0 then
+     Compiler:='$MakeExe(pas2js)'
+  else
+     Compiler:=AnsiQuotedStr(PJSOptions.CompilerFilename, '"');
+  CompOpts.SetAlternativeCompile(Compiler+' -Jc -Jminclude -Tnodejs "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
+
+  RunParams:=AProject.RunParameters.Find('Default');
+  if (RunParams=Nil) then
+     RunParams:=AProject.RunParameters.Add('Default');
+  RunParams.UseLaunchingApplication:=True;
+  RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSNodeJS) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
 
   // create program source
-  NewSource:=CreateProjectSource;
-  AProject.MainFile.SetSourceText(NewSource,true);
+  AProject.MainFile.SetSourceText(CreateProjectSource,true);
 
   AProject.AddPackageDependency('pas2js_rtl');
   if naoUseNodeJSApp in Options then
@@ -278,7 +283,7 @@ end;
 function TProjectPas2JSWebApp.GetBrowserCommand(AFileName : string): String;
 
 begin
-  Result:='$(Pas2JSBrowser) $(Pas2SProjectURL)';
+  Result:='$(Pas2JSBrowser) $(Pas2JSProjectURL)';
 end;
 
 function TProjectPas2JSWebApp.GetNextPort : Word;
@@ -332,8 +337,12 @@ begin
         SO(UseBrowserConsole,baoUseBrowserConsole);
         SO(StartHTTPServer,baoStartServer);
         SO(UseRunOnReady,baoRunOnReady);
+//        Writeln('Start server: ', CO(baoStartServer));
         if CO(baoStartServer) then
-          Self.ProjectPort:=ServerPort
+          begin
+          Self.ProjectPort:=ServerPort;
+//          Writeln('Start server port: ', Self.ProjectPort,'from; ',ServerPort);
+          end
         else
           begin
           UseURL:=CO(baoUseURL);
@@ -372,14 +381,16 @@ Const
     +'<head>'+LineEnding
     +'  <meta charset="utf-8">'+LineEnding
     +'  <title>Project1</title>'+LineEnding
-    +'<style>'+LineEnding
-    +'<script src="%s"></script>'+LineEnding
+    +'  <script src="%s"></script>'+LineEnding
     +'</head>'+LineEnding
-    +'<script>'+LineEnding
-    +'%s'+LineEnding
-    +'</script>'+LineEnding
-    +'%s'+LineEnding
-    +'<body>'+LineEnding;
+    +'<body>'+LineEnding
+    +'  <script>'+LineEnding
+    +'  %s'+LineEnding
+    +'  </script>'+LineEnding
+    +'  %s'+LineEnding
+    +'</body>'+LineEnding
+    +'</html>'+LineEnding;
+
 
 Var
   HTMLFile : TLazProjectFile;
@@ -395,7 +406,7 @@ begin
   if baoUseBrowserConsole in Options then
     Content:=ConsoleDiv;
   if baoRunOnReady in Options then
-    RunScript:='document.onReady = rtl.run;'+LineEnding
+    RunScript:='window.addEventListener("load", rtl.run);'+LineEnding
   else
     RunScript:='rtl.run();'+LineEnding;
   HTMLSource:=Format(TemplateHTMLSource,[aFileName,RunScript,Content]);
@@ -481,7 +492,8 @@ function TProjectPas2JSWebApp.InitProject(AProject: TLazProject): TModalResult;
 var
   MainFile : TLazProjectFile;
   CompOpts: TLazCompilerOptions;
-  RunParams : TAbstractRunParamsOptions;
+  RunParams : TAbstractRunParamsOptionsMode;
+  Compiler : String;
 
 begin
   Result:=inherited InitProject(AProject);
@@ -496,11 +508,16 @@ begin
   CompOpts.Win32GraphicApp:=false;
   CompOpts.UnitOutputDirectory:='js';
   CompOpts.TargetFilename:='project1';
-  CompOpts.SetAlternativeCompile(
-    '$MakeExe(pas2js) -Jirtl.js -Jc -Jminclude -Tbrowser "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
-  RunParams:=AProject.RunParameters;
-  //RunParams.UseLaunchingApplication:=True;
-  //RunParams.LaunchingApplicationPathPlusParams:=GetBrowserCommand(CompOpts.TargetFileName);
+  if Length(PJSOptions.CompilerFilename)=0 then
+     Compiler:='$MakeExe(pas2js)'
+  else
+     Compiler:=AnsiQuotedStr(PJSOptions.CompilerFilename, '"');
+  CompOpts.SetAlternativeCompile(Compiler+' -Jirtl.js -Jc -Jminclude -Tbrowser "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
+  RunParams:=AProject.RunParameters.Find('Default');
+  if (RunParams=Nil) then
+     RunParams:=AProject.RunParameters.Add('Default');
+  RunParams.UseLaunchingApplication:=True;
+  RunParams.LaunchingApplicationPathPlusParams:=GetBrowserCommand(CompOpts.TargetFileName);
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
   AProject.CustomData.Values[PJSProjectWebBrowser]:='1';
   if baoUseURL in Options then
@@ -513,6 +530,12 @@ begin
     AProject.CustomData.Values[PJSProjectPort]:=IntToStr(ProjectPort);
     AProject.CustomData.Values[PJSProjectURL]:='';
     end;
+{  With AProject.CustomData do
+     begin
+     Writeln(PJSProjectWebBrowser,Values[PJSProjectWebBrowser]);
+     Writeln(PJSProjectPort,Values[PJSProjectPort]);
+     Writeln(ProjectURL,Values[PJSProjectURL]);
+     end;}
   // create html source
   if baoCreateHtml in Options then
     CreateHTMLFile(aProject,'project1.js');
@@ -527,9 +550,12 @@ function TProjectPas2JSWebApp.CreateStartFiles(AProject: TLazProject
 begin
   Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
-  if Result<>mrOK then exit;
-  Result:=LazarusIDE.DoOpenEditorFile('project1.html',-1,-1,
-                                      [ofProjectLoading,ofRegularFile]);
+  if Result<>mrOK then
+     exit;
+
+  if baoCreateHtml in Options then
+    Result:=LazarusIDE.DoOpenEditorFile('project1.html',-1,-1,
+                                        [ofProjectLoading,ofRegularFile]);
 end;
 
 end.

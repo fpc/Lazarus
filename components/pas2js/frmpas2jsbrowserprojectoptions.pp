@@ -25,6 +25,8 @@ type
     RBStartServerAt: TRadioButton;
     SEPort: TSpinEdit;
     procedure CBCreateHTMLChange(Sender: TObject);
+    procedure CBUseHTTPServerChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     function GetB(AIndex: Integer): Boolean;
     function GetServerPort: Word;
@@ -67,6 +69,29 @@ procedure TWebBrowserProjectOptionsForm.CBCreateHTMLChange(Sender: TObject);
 begin
   DoCB(CBRunOnReady);
   DoCB(CBMaintainPage);
+end;
+
+procedure TWebBrowserProjectOptionsForm.CBUseHTTPServerChange(Sender: TObject);
+
+  procedure disen(C : TControl);
+
+  begin
+    C.Enabled:=CBUseHTTPServer.Checked;
+    if C is TRadioButton then
+      TRadioButton(C).Checked:=False;
+  end;
+
+begin
+  disen(RBStartServerAt);
+  disen(RBUseURL);
+  disen(SEPort);
+  disen(CBServerURL);
+end;
+
+procedure TWebBrowserProjectOptionsForm.FormCreate(Sender: TObject);
+begin
+  CBCreateHTMLChange(self);
+  CBUseHTTPServerChange(Self);
 end;
 
 function TWebBrowserProjectOptionsForm.GetB(AIndex: Integer): Boolean;
@@ -114,7 +139,7 @@ end;
 
 procedure TWebBrowserProjectOptionsForm.SetURL(AValue: String);
 begin
-
+  CBServerURL.Text:=AValue;
 end;
 
 end.

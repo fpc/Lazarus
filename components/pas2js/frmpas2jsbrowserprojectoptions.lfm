@@ -6,6 +6,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
   Caption = 'Pas2JS Browser project options'
   ClientHeight = 344
   ClientWidth = 426
+  OnCreate = FormCreate
   LCLVersion = '1.9.0.0'
   object CBCreateHTML: TCheckBox
     Left = 16
@@ -13,7 +14,9 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Top = 8
     Width = 162
     Caption = 'Create initial HTML page'
+    Checked = True
     OnChange = CBCreateHTMLChange
+    State = cbChecked
     TabOrder = 0
   end
   object CBUseBrowserApp: TCheckBox
@@ -81,6 +84,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Width = 183
     BorderSpacing.Top = 2
     Caption = 'Project needs a HTTP Server'
+    OnChange = CBUseHTTPServerChange
     TabOrder = 5
   end
   object RBStartServerAt: TRadioButton
@@ -125,7 +129,6 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     BorderSpacing.Right = 12
     ItemHeight = 0
     TabOrder = 8
-    Text = 'CBServerURL'
   end
   object CBMaintainPage: TCheckBox
     AnchorSideLeft.Control = CBCreateHTML
@@ -146,8 +149,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 16
     Height = 22
     Top = 54
-    Width = 183
-    Caption = 'Run rtl in document.onReady'
+    Width = 288
+    Caption = 'Run rtl when all page resources are fully loaded'
     TabOrder = 10
   end
 end

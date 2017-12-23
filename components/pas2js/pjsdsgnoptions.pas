@@ -50,6 +50,7 @@ Type
     procedure Load;
     procedure Save;
     function GetParsedCompilerFilename: string;
+    function GetParsedHTTPServerFilename: string;
     procedure LoadFromConfig(Cfg: TConfigStorage);
     procedure SaveToConfig(Cfg: TConfigStorage);
   public
@@ -266,6 +267,14 @@ begin
     end;
   end;
   Result:=FCompilerFilenameParsed;
+end;
+
+function TPas2jsOptions.GetParsedHTTPServerFilename: string;
+begin
+  Result:=HTTPServerFileName;
+  IDEMacros.SubstituteMacros(Result);
+  if not FilenameIsAbsolute(Result) then
+    Result:=FindDefaultExecutablePath(Result);
 end;
 
 procedure TPas2jsOptions.SetBrowserFileName(AValue: String);
