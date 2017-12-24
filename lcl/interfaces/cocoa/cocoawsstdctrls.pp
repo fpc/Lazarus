@@ -917,7 +917,7 @@ begin
   scr := TCocoaScrollView(NSView(TCocoaScrollView.alloc).lclInitWithCreateParams(AParams));
 
   nr.origin.x:=0;
-  nr.origin.x:=0;
+  nr.origin.y:=0;
   nr.size.height:=0;
   nr.size.width:=AParams.Width;
 
