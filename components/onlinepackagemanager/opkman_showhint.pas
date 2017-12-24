@@ -112,8 +112,8 @@ begin
   CH := LCLIntf.GetSystemMetrics(SM_CYCAPTION);
   R.Left := Left;
   R.Top := Top;
-  R.Right := Left + Width + 10;
-  R.Bottom := Top + Height + CH + 10;
+  R.Right := Left + Width + 15;
+  R.Bottom := Top + Height + CH + 15;
   P.X := 0;
   P.Y := 0;
   GetCursorPos(P);
@@ -170,21 +170,20 @@ begin
       CurFrame.Align := alTop;
       CurFrame.Init;
       CurFrame.pnPackageName.Caption := ' ' + LazPackage.Name;
-      CurFrame.mDescription.Text := Trim(LazPackage.Description);
-      CurFrame.mLicense.Text := Trim(LazPackage.License);
       FFrames.Add(CurFrame);
       if FFrames.Count > 1 then
         CurFrame.pnBase.BorderSpacing.Bottom := 5;
       CurFrame.Parent := sbLazPackages;
-      CurFrame.CalcHeight(CurFrame.mLicense);
-      CurFrame.CalcHeight(CurFrame.mDescription);
-      CurFrame.Height := CurFrame.pnPackageName.Height + CurFrame.mDescription.Height + CurFrame.mLicense.Height;
+      CurFrame.CalcHeight(CurFrame.mDescription, Trim(LazPackage.Description));
+      CurFrame.CalcHeight(CurFrame.mLicense, Trim(LazPackage.License));
+      CurFrame.Height := CurFrame.pnPackageName.Height + CurFrame.pnDescription.Height + CurFrame.pnLicense.Height +
+                         CurFrame.BorderSpacing.Top + CurFrame.pnBase.BorderSpacing.Bottom;
       TotHeight := TotHeight + CurFrame.Height;
       CurFrame.Visible := True;
     end;
     Node := VisualTree.VST.GetNextSibling(Node);
   end;
-  if (TotHeight < 50) or (TotHeight > 325) then
+  if (TotHeight < 51) or (TotHeight > 325) then
     TotHeight := 325;
   Self.Height := TotHeight;
 end;

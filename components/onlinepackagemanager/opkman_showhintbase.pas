@@ -47,7 +47,7 @@ type
   private
   public
     procedure Init;
-    procedure CalcHeight(AMemo: TMemo);
+    procedure CalcHeight(AMemo: TMemo; AText: String);
   end;
 
 implementation
@@ -64,7 +64,7 @@ begin
   Self.DoubleBuffered := True;
   mDescription.DoubleBuffered := True;
   mLicense.DoubleBuffered := True;
-  if Options.HintFormOptionColors.Count = 3 then
+  if Options.HintFormOptionColors.Count = HintColCnt then
   begin
     pnPackageName.Color := StringToColor(Options.HintFormOptionColors[0]);
     pnDescription.Color := StringToColor(Options.HintFormOptionColors[1]);
@@ -74,29 +74,26 @@ begin
   end;
 end;
 
-procedure TfrShowHint.CalcHeight(AMemo: TMemo);
+procedure TfrShowHint.CalcHeight(AMemo: TMemo; AText: String);
 var
-  LH: Integer;
-  DC: HDC;
-  SaveFont : HFont;
-  Metrics : TTextMetric;
+  R: TRect;
   Increase: Integer;
-  LC: Integer;
+  MH: Integer;
+  LH: Integer;
 begin
-  DC := GetDC(AMemo.Handle);
-  SaveFont := SelectObject(DC, AMemo.Font.Handle);
-  GetTextMetrics(DC, Metrics);
-  SelectObject(DC, SaveFont);
-  ReleaseDC(AMemo.Handle, DC);
-  LH := Metrics.tmHeight;
+  R := Rect(0, 0, AMemo.Width, 0);
+  TPanel(AMemo.Parent).Font.Assign(AMemo.Font);
+  DrawText(TPanel(AMemo.Parent).Canvas.Handle, PChar(AText), -1, R, DT_CALCRECT or DT_LEFT or DT_WORDBREAK or DT_NOPREFIX);
   Increase := AMemo.Height;
-  LC := AMemo.Lines.Count;
-  if LC < 2 then
-    LC := 2;
-  if LC > 6 then
-    LC := 6;
- AMemo.Height := LC * LH + 8;
- Increase := AMemo.Height - Increase;
+  MH := R.Bottom - R.Top;
+  if MH < 35 then
+    MH := 35;
+  if MH > 100 then
+    MH := 100;
+  Increase := MH - Increase;
+  AMemo.Height := MH;
+  AMemo.Parent.Height := AMemo.Parent.Height + Increase + 2;
+  AMemo.Text := AText;
 end;
 
 end.
