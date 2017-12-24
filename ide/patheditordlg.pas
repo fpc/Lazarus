@@ -32,7 +32,7 @@ uses
   // IdeIntf
   MacroIntf, IDEImagesIntf,
   // IDE
-  TransferMacros, GenericListSelect, LazarusIDEStrConsts;
+  TransferMacros, GenericListSelect, LazarusIDEStrConsts, IDEProcs;
 
 type
 
@@ -89,7 +89,7 @@ type
     FTemplateList: TStringList;
     procedure AddPath(aPath: String; aObject: TObject);
     function GetPath: string;
-    function GetTemplates: string;
+    //function GetTemplates: string;
     function BaseRelative(const APath: string): String;
     function PathAsAbsolute(const APath: string): String;
     function PathMayExist(APath: string): TObject;
@@ -103,7 +103,7 @@ type
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property EffectiveBaseDirectory: string read FEffectiveBaseDirectory;
     property Path: string read GetPath write SetPath;
-    property Templates: string read GetTemplates write SetTemplates;
+    property Templates: string {read GetTemplates} write SetTemplates;
   end;
 
   TOnPathEditorExecuted = function (Context: String; var NewPath: String): Boolean of object;
@@ -189,23 +189,17 @@ begin
   SetLength(Result,j-1);
 end;
 
-function PathToText(const APath: string): string;
-var
-  i: integer;
-begin
-  Result:='';
-  for i:=1 to length(APath) do
-    if APath[i]=';' then
-      Result:=Result+LineEnding
-    else
-      Result:=Result+APath[i];
-end;
-
 procedure SetPathTextAndHint(aPath: String; aEdit: TCustomEdit);
+var
+  sl: TStrings;
 begin
   aEdit.Text := aPath;
-  if Pos(';', aPath) > 0 then        // Zero or one separate paths.
-    aEdit.Hint := PathToText(aPath)
+  if Pos(';', aPath) > 0 then
+  begin
+    sl := SplitString(aPath, ';');
+    aEdit.Hint := sl.Text;
+    sl.Free;
+  end
   else
     aEdit.Hint := lisDelimiterIsSemicolon;
 end;
@@ -258,12 +252,9 @@ begin
 end;
 
 procedure TPathEditorDialog.ReplaceButtonClick(Sender: TObject);
-var
-  RelPath: String;
 begin
   with PathListBox do begin
-    RelPath:=BaseRelative(DirectoryEdit.Text);
-    Items[ItemIndex]:=RelPath;
+    Items[ItemIndex]:=BaseRelative(DirectoryEdit.Text);
     Items.Objects[ItemIndex]:=PathMayExist(DirectoryEdit.Text);
     UpdateButtons;
   end;
@@ -539,19 +530,19 @@ end;
 
 function TPathEditorDialog.GetPath: string;
 begin
+  // ToDo: Join PathListBox.Items directly without Text property.
   Result:=TextToPath(PathListBox.Items.Text);
 end;
 
 procedure TPathEditorDialog.SetPath(const AValue: string);
 var
-  sl: TStringList;
+  sl: TStrings;
   i: Integer;
 begin
   DirectoryEdit.Text:='';
   PathListBox.Items.Clear;
-  sl:=TstringList.Create();
+  sl := SplitString(AValue, ';');
   try
-    sl.Text:=PathToText(AValue);
     for i:=0 to sl.Count-1 do
       PathListBox.Items.AddObject(sl[i], PathMayExist(sl[i]));
     PathListBox.ItemIndex:=-1;
@@ -559,17 +550,16 @@ begin
     sl.Free;
   end;
 end;
-
+{
 function TPathEditorDialog.GetTemplates: string;
 begin
   raise Exception.Create('TPathEditorDialog.GetTemplates is called.');
   //Result := TextToPath(FTemplateList.Text);
 end;
-
+}
 procedure TPathEditorDialog.SetTemplates(const AValue: string);
 begin
-  // ToDo: Split the path directly to StringList without Text property.
-  FTemplateList.Text := PathToText(GetForcedPathDelims(AValue));
+  SplitString(GetForcedPathDelims(AValue), ';', FTemplateList, True);
   AddTemplateButton.Enabled := FTemplateList.Count > 0;
 end;
 

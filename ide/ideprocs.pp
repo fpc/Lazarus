@@ -1659,6 +1659,12 @@ begin
   //DebugLn('TabsToSpaces ',dbgs(length(Result)));
 end;
 
+function SplitString(const s: string; Delimiter: char): TStrings;
+begin
+  Result:=TStringList.Create;
+  SplitString(s,Delimiter,Result,false);
+end;
+
 procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
   ClearList: boolean);
 var
@@ -1666,7 +1672,8 @@ var
   StartPos: Integer;
   EndPos: Integer;
 begin
-  if ClearList then AddTo.Clear;
+  if ClearList then
+    AddTo.Clear;
   SLen:=length(s);
   StartPos:=1;
   EndPos:=1;
@@ -1984,15 +1991,6 @@ begin
   end;
   if NewPos-1<>NewLen then
     RaiseException('ERROR: BinaryStrToText: '+IntToStr(NewLen)+'<>'+IntToStr(NewPos-1));
-end;
-
-{-------------------------------------------------------------------------------
-  function SplitString(const s: string; Delimiter: char): TStrings;
--------------------------------------------------------------------------------}
-function SplitString(const s: string; Delimiter: char): TStrings;
-begin
-  Result:=TStringList.Create;
-  SplitString(s,Delimiter,Result,false);
 end;
 
 {-------------------------------------------------------------------------------
