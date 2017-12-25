@@ -51,6 +51,7 @@ type
     procedure tmWaitTimer(Sender: TObject);
   private
     FFrames: TList;
+    {$IFDEF LclGtk2}FModalShowing: Boolean;{$ENDIF}
     function IsMouseOverForm: Boolean;
   public
     procedure ShowFormAt(const AX, AY: Integer);
@@ -68,8 +69,8 @@ implementation
 
 { TShowHintFrm }
 
-uses opkman_visualtree, opkman_serializablepackages, opkman_showhintbase;
-
+uses opkman_visualtree, opkman_serializablepackages, opkman_showhintbase
+     {$IFDEF LclGtk2}, gtk2 {$ENDIF};
 
 procedure TShowHintFrm.FormCreate(Sender: TObject);
 begin
@@ -121,9 +122,26 @@ begin
 end;
 
 procedure TShowHintFrm.tmWaitTimer(Sender: TObject);
+{$IFDEF LclGtk2}
+var
+  AWindow: PGtkWindow;
+{$ENDIF}
 begin
   if not IsMouseOverForm then
-    Hide;
+    Hide
+  {$IFDEF LclGtk2}
+  else
+  begin
+    if not FModalShowing then
+    begin
+      if not Self.HandleAllocated then
+        Exit;
+      AWindow := {%H-}PGtkWindow(Self.Handle);
+      gtk_window_set_modal(AWindow, True);
+      FModalShowing := True;
+    end;
+  end;
+  {$ENDIF}
 end;
 
 procedure TShowHintFrm.ShowFormAt(const AX, AY: Integer);
@@ -190,6 +208,7 @@ end;
 
 procedure TShowHintFrm.SetupTimer(const AInterval: Integer);
 begin
+  {$IFDEF LclGtk2}FModalShowing := False;{$ENDIF}
   tmWait.Enabled := False;
   tmWait.Interval := AInterval;
   tmWait.Enabled := True;
