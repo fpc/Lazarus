@@ -89,8 +89,10 @@ end;
 procedure TCocoaWidgetSet.AppProcessMessages;
 var
   event: NSEvent;
+  pool:NSAutoReleasePool;
 begin
   repeat
+    pool := NSAutoreleasePool.alloc.init;
     event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
     if event <> nil then
     begin
@@ -100,6 +102,7 @@ begin
         NSApp.sendEvent(event);
       NSApp.updateWindows;
     end;
+    pool.release;
   until event = nil;
 end;
 
