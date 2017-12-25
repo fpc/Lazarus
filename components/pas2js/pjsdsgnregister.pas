@@ -106,7 +106,7 @@ begin
   // add options frame
   PJSOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TPas2jsOptionsFrame,
                                               PJSOptionsFrameID)^.Index;
-  RegisterIdeMenuCommand(itmViewDebugWindows,SPasJSWebservers,SPasJSWebserversCaption,nil,@ShowServerDialog);
+  RegisterIdeMenuCommand(itmViewDebugWindows,'Pas2JSWebservers',SPasJSWebserversCaption,nil,@ShowServerDialog);
 end;
 
 { TProjectPas2JSNodeJSApp }

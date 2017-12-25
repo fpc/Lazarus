@@ -4,12 +4,8 @@ unit strpas2jsdesign;
 
 interface
 
-uses
-  Classes, SysUtils;
-
 Resourcestring
   // menu item
-  SPasJSWebservers = 'Pas2JSWebservers';
   SPasJSWebserversCaption = 'Pas2JS WebServers';
 
   // Static texts webservers form
