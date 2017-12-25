@@ -5,6 +5,12 @@ unit strpas2jsdesign;
 interface
 
 Resourcestring
+  // "Create new" dialog
+  pjsdWebApplication = 'Web Browser Application';
+  pjsdWebAppDescription = 'A pas2js program running in the browser';
+  pjsdNodeJSApplication = 'Node.js Application';
+  pjsdNodeJSAppDescription = 'A pas2js program running in node.js';
+
   // menu item
   SPasJSWebserversCaption = 'Pas2JS WebServers';
 

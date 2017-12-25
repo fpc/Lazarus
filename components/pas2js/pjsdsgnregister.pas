@@ -12,11 +12,6 @@ const
   ProjDescNamePas2JSWebApp = 'Web Application';
   ProjDescNamePas2JSNodeJSApp = 'NodeJS Application';
 
-resourcestring
-  pjsdWebApplication = 'Web Browser Application';
-  pjsdWebAppDescription = 'A pas2js program running in the browser';
-  pjsdNodeJSApplication = 'Node.js Application';
-  pjsdNodeJSAppDescription = 'A pas2js program running in node.js';
 
 type
 

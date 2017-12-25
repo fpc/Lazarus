@@ -1,6 +1,22 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: strpas2jsdesign.pjsdnodejsappdescription
+msgid "A pas2js program running in node.js"
+msgstr ""
+
+#: strpas2jsdesign.pjsdnodejsapplication
+msgid "Node.js Application"
+msgstr ""
+
+#: strpas2jsdesign.pjsdwebappdescription
+msgid "A pas2js program running in the browser"
+msgstr ""
+
+#: strpas2jsdesign.pjsdwebapplication
+msgid "Web Browser Application"
+msgstr ""
+
 #: strpas2jsdesign.spasjswebserverscaption
 msgid "Pas2JS WebServers"
 msgstr ""

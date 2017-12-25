@@ -4,70 +4,79 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"X-Generator: Poedit 1.8.5\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
+#, fuzzy
+msgctxt "strpas2jsdesign.pjsdnodejsappdescription"
 msgid "A pas2js program running in node.js"
-msgstr "Программа pas2js, запускаемая в node.js"
+msgstr "Um programa pas2js executando em node.js"
 
 #: strpas2jsdesign.pjsdnodejsapplication
+#, fuzzy
+msgctxt "strpas2jsdesign.pjsdnodejsapplication"
 msgid "Node.js Application"
-msgstr "Приложение Node.js"
+msgstr "Aplicação Node.js"
 
 #: strpas2jsdesign.pjsdwebappdescription
+#, fuzzy
+msgctxt "strpas2jsdesign.pjsdwebappdescription"
 msgid "A pas2js program running in the browser"
-msgstr "Программа pas2js, запускаемая в браузере"
+msgstr "Um programa pas2js executando no navegador"
 
 #: strpas2jsdesign.pjsdwebapplication
+#, fuzzy
+#| msgid "Web Application"
+msgctxt "strpas2jsdesign.pjsdwebapplication"
 msgid "Web Browser Application"
-msgstr "Приложение для веб-браузера"
+msgstr "Aplicação Web"
 
 #: strpas2jsdesign.spasjswebserverscaption
 msgid "Pas2JS WebServers"
-msgstr "Веб-серверы Pas2JS"
+msgstr ""
 
 #: strpas2jsdesign.sstatuserror
 msgid "Error starting"
-msgstr "Ошибка запуска"
+msgstr ""
 
 #: strpas2jsdesign.sstatusrunning
 msgid "Running"
-msgstr "Запущен"
+msgstr ""
 
 #: strpas2jsdesign.sstatusstopped
 msgid "Stopped"
-msgstr "Остановлен"
+msgstr ""
 
 #: strpas2jsdesign.swebserversbasedir
 msgid "Root directory"
-msgstr "Корневой каталог"
+msgstr ""
 
 #: strpas2jsdesign.swebserverscaption
 msgid "Web server processes"
-msgstr "Процессы веб-серверов"
+msgstr ""
 
 #: strpas2jsdesign.swebserverscount
 msgid "Number of webserver processes:"
-msgstr "Количество процессов веб-серверов:"
+msgstr ""
 
 #: strpas2jsdesign.swebserversextra
 msgid "Additional info"
-msgstr "Дополнительные сведения"
+msgstr ""
 
 #: strpas2jsdesign.swebserversport
 msgid "Port"
-msgstr "Порт"
+msgstr ""
 
 #: strpas2jsdesign.swebserversproject
 msgid "Project"
-msgstr "Проект"
+msgstr ""
 
 #: strpas2jsdesign.swebserversstatus
 msgid "Status"
-msgstr "Состояние"
+msgstr ""
 
