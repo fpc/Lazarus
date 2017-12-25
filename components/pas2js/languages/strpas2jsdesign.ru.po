@@ -1,0 +1,57 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.8.5\n"
+
+#: strpas2jsdesign.spasjswebserverscaption
+msgid "Pas2JS WebServers"
+msgstr "Веб-серверы Pas2JS"
+
+#: strpas2jsdesign.sstatuserror
+msgid "Error starting"
+msgstr "Ошибка запуска"
+
+#: strpas2jsdesign.sstatusrunning
+msgid "Running"
+msgstr "Запущен"
+
+#: strpas2jsdesign.sstatusstopped
+msgid "Stopped"
+msgstr "Остановлен"
+
+#: strpas2jsdesign.swebserversbasedir
+msgid "Root directory"
+msgstr "Корневой каталог"
+
+#: strpas2jsdesign.swebserverscaption
+msgid "Web server processes"
+msgstr "Процессы веб-серверов"
+
+#: strpas2jsdesign.swebserverscount
+msgid "Number of webserver processes:"
+msgstr "Количество процессов веб-серверов:"
+
+#: strpas2jsdesign.swebserversextra
+msgid "Additional info"
+msgstr "Дополнительные сведения"
+
+#: strpas2jsdesign.swebserversport
+msgid "Port"
+msgstr "Порт"
+
+#: strpas2jsdesign.swebserversproject
+msgid "Project"
+msgstr "Проект"
+
+#: strpas2jsdesign.swebserversstatus
+msgid "Status"
+msgstr "Состояние"
+

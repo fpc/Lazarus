@@ -1,0 +1,47 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: strpas2jsdesign.spasjswebserverscaption
+msgid "Pas2JS WebServers"
+msgstr ""
+
+#: strpas2jsdesign.sstatuserror
+msgid "Error starting"
+msgstr ""
+
+#: strpas2jsdesign.sstatusrunning
+msgid "Running"
+msgstr ""
+
+#: strpas2jsdesign.sstatusstopped
+msgid "Stopped"
+msgstr ""
+
+#: strpas2jsdesign.swebserversbasedir
+msgid "Root directory"
+msgstr ""
+
+#: strpas2jsdesign.swebserverscaption
+msgid "Web server processes"
+msgstr ""
+
+#: strpas2jsdesign.swebserverscount
+msgid "Number of webserver processes:"
+msgstr ""
+
+#: strpas2jsdesign.swebserversextra
+msgid "Additional info"
+msgstr ""
+
+#: strpas2jsdesign.swebserversport
+msgid "Port"
+msgstr ""
+
+#: strpas2jsdesign.swebserversproject
+msgid "Project"
+msgstr ""
+
+#: strpas2jsdesign.swebserversstatus
+msgid "Status"
+msgstr ""
+
