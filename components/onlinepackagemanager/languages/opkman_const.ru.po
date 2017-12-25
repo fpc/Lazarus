@@ -1361,7 +1361,7 @@ msgstr "Проверять наличие обновлений пакетов"
 
 #: opkman_const.rsoptions_lbcontimeout_caption
 msgid "Connection timeout (seconds):"
-msgstr "Время ожидания соединения (секунды):"
+msgstr "Время ожидания соединения (секунд):"
 
 #: opkman_const.rsoptions_lbcontimeout_hint
 msgid "The number of seconds after which package manager drops connection"
