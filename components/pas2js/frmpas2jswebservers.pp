@@ -5,7 +5,7 @@ unit frmpas2jswebservers;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Grids,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, Buttons, pjscontroller;
 
 type
