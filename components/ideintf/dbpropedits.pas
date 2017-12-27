@@ -17,9 +17,12 @@ unit DBPropEdits;
 interface
 
 uses
-  Classes, SysUtils, ObjInspStrConsts, Dialogs, PropEdits, PropEditUtils,
-  ComponentEditors, TypInfo, DB, DbCtrls, DBGrids, Forms,
-  DBGridColumnsPropEditForm;
+  Classes, SysUtils, TypInfo, DB,
+  // LCL
+  Dialogs, DbCtrls, DBGrids, Forms, LCLProc,
+  // IdeIntf
+  PropEdits, PropEditUtils, ComponentEditors, DBGridColumnsPropEditForm,
+  ObjInspStrConsts;
 
 type
   TFieldProperty = class(TStringPropertyEditor)
@@ -58,7 +61,7 @@ type
     procedure ExecuteVerb({%H-}Index: Integer); override;
   end;
 
-function GetFieldDefsLookupRoot(APersistent: TPersistent): TPersistent;
+function GetDefCollectionLookupRoot(APersistent: TPersistent): TPersistent;
 procedure ListDataSourceFields(DataSource: TDataSource; List: TStrings);
 procedure EditDBGridColumns(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 
@@ -96,16 +99,13 @@ begin
   end;
 end;
 
-function GetFieldDefsLookupRoot(APersistent: TPersistent): TPersistent;
-var
-  aFieldDefs: TFieldDefs;
+function GetDefCollectionLookupRoot(APersistent: TPersistent): TPersistent;
 begin
-  Result:=nil;
-  if not (APersistent is TFieldDefs) then exit;
-  aFieldDefs:=TFieldDefs(APersistent);
-  Result:=aFieldDefs.Owner;
+  if not (APersistent is TDefCollection) then
+    exit(nil);
+  Result:=TDefCollection(APersistent).Owner;
   if Result=nil then
-    Result:=aFieldDefs.Dataset;
+    Result:=TDefCollection(APersistent).Dataset;
   Result:=GetLookupRootForComponent(Result);
 end;
 
@@ -215,7 +215,7 @@ initialization
   RegisterPropertyEditor(TypeInfo(string), TDBLookupComboBox, 'ListField', TLookupFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TColumn, 'FieldName', TDBGridFieldProperty);
   RegisterComponentEditor(TDBGrid,TDBGridComponentEditor);
-  RegisterGetLookupRoot(@GetFieldDefsLookupRoot);
+  RegisterGetLookupRoot(@GetDefCollectionLookupRoot);
   RegisterPropertyEditor(TypeInfo(TDBGridColumns), nil, '', TDBGridColumnsPropertyEditor);
 end.
 
