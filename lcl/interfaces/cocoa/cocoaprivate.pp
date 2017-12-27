@@ -2461,13 +2461,13 @@ var
 begin
   if not Assigned(view) then Exit;
   b := view.bounds;
-  with r do
-  begin
-    Result.origin.x := Left;
-    Result.origin.y := b.size.height - Bottom;
-    Result.size.width := Right - Left;
-    Result.size.height := Bottom - Top;
-  end;
+  Result.origin.x := r.Left;
+  Result.size.width := r.Right - r.Left;
+  Result.size.height := r.Bottom - r.Top;
+  if view.isFlipped then
+    Result.origin.y := r.Top
+  else
+    Result.origin.y := b.size.height - r.Bottom;
 end;
 
 function LCLControlExtension.lclIsEnabled:Boolean;
