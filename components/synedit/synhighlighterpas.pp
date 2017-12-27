@@ -283,6 +283,7 @@ type
   TSynPasSynRange = class(TSynCustomHighlighterRange)
   private
     FMode: TPascalCompilerMode;
+    FNestedComments: Boolean;
     FBracketNestLevel : Integer;
     FLastLineCodeFoldLevelFix: integer;
     FPasFoldFixLevel: Smallint;
@@ -296,6 +297,7 @@ type
     procedure DecLastLineCodeFoldLevelFix;
     procedure DecLastLinePasFoldFix;
     property Mode: TPascalCompilerMode read FMode write FMode;
+    property NestedComments: Boolean read FNestedComments write FNestedComments;
     property BracketNestLevel: integer read FBracketNestLevel write FBracketNestLevel;
     property LastLineCodeFoldLevelFix: integer
       read FLastLineCodeFoldLevelFix write FLastLineCodeFoldLevelFix;
@@ -354,6 +356,7 @@ type
     function GetPasCodeFoldRange: TSynPasSynRange;
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
+    procedure SetNestedComments(const ANestedComments: boolean);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
     function TextComp(aText: PChar): Boolean;
     function KeyHash: Integer;
@@ -606,7 +609,7 @@ type
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
       write fDirectiveAttri;
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
-    property NestedComments: boolean read FNestedComments write FNestedComments;
+    property NestedComments: boolean read FNestedComments write SetNestedComments;
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
     property ExtendedKeywordsMode: Boolean
              read FExtendedKeywordsMode write SetExtendedKeywordsMode default False;
@@ -886,9 +889,9 @@ end;
 
 procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
 begin
+  NestedComments:=AValue in [pcmFPC,pcmObjFPC]; // NestedComments has to be reset even if CompilerMode doesn't change
   if FCompilerMode=AValue then exit;
   FCompilerMode:=AValue;
-  FNestedComments:=FCompilerMode in [pcmFPC,pcmObjFPC];
   PasCodeFoldRange.Mode:=FCompilerMode;
   //DebugLn(['TSynPasSyn.SetCompilerMode FCompilerMode=',ord(FCompilerMode),' FNestedComments=',FNestedComments]);
 end;
@@ -2457,6 +2460,13 @@ begin
     Next;
 end; { SetLine }
 
+procedure TSynPasSyn.SetNestedComments(const ANestedComments: boolean);
+begin
+  if FNestedComments = ANestedComments then Exit;
+  FNestedComments := ANestedComments;
+  PasCodeFoldRange.NestedComments:=FNestedComments;
+end;
+
 procedure TSynPasSyn.AddressOpProc;
 begin
   fTokenID := tkSymbol;
@@ -2539,6 +2549,23 @@ end;
 procedure TSynPasSyn.DirectiveProc;
 begin
   fTokenID := tkDirective;
+  if TextComp('modeswitch') then begin
+    // modeswitch directive
+    inc(Run,10);
+    // skip space
+    while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
+    if TextComp('nestedcomments') then
+    begin
+      inc(Run,14);
+      // skip space
+      while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
+      if fLine[Run] in ['+', '}'] then
+        NestedComments:=True
+      else
+      if fLine[Run] = '-' then
+        NestedComments:=False;
+    end;
+  end;
   if TextComp('mode') then begin
     // $mode directive
     inc(Run,4);
@@ -3274,6 +3301,7 @@ begin
   //DebugLn(['TSynPasSyn.SetRange START']);
   inherited SetRange(Value);
   CompilerMode := PasCodeFoldRange.Mode;
+  NestedComments := PasCodeFoldRange.NestedComments;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
 end;
@@ -4423,6 +4451,8 @@ begin
 
   Result:=ord(FMode)-ord(TSynPasSynRange(Range).FMode);
   if Result<>0 then exit;
+  Result:=ord(FNestedComments)-ord(TSynPasSynRange(Range).FNestedComments);
+  if Result<>0 then exit;
   Result := FBracketNestLevel - TSynPasSynRange(Range).FBracketNestLevel;
   if Result<>0 then exit;
   Result := FLastLineCodeFoldLevelFix - TSynPasSynRange(Range).FLastLineCodeFoldLevelFix;
@@ -4435,6 +4465,7 @@ begin
   if (Src<>nil) and (Src<>TSynCustomHighlighterRange(NullRange)) then begin
     inherited Assign(Src);
     FMode:=TSynPasSynRange(Src).FMode;
+    FNestedComments:=TSynPasSynRange(Src).FNestedComments;
     FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
     FLastLineCodeFoldLevelFix := TSynPasSynRange(Src).FLastLineCodeFoldLevelFix;
     FPasFoldFixLevel := TSynPasSynRange(Src).FPasFoldFixLevel;
