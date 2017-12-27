@@ -39,7 +39,7 @@ uses
   // RTL + LCL
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  Dialogs,
+  Dialogs, SynEditTypes,
   // LazUtils
   LazFileCache, LazFileUtils, LazUTF8, AvgLvlTree, Laz2_XMLCfg,
   // Codetools
@@ -275,7 +275,7 @@ type
   end;
 
 const
-  LazFindSearchOptionsDefault = [];
+  LazFindSearchOptionsDefault: array[Boolean] of TSynSearchOptions = ([], [ssoEntireScope, ssoSelectedOnly]);
   LazFindInFileSearchOptionsDefault = [fifSearchOpen, fifIncludeSubDirs];
   LazFindInFileSearchOptionNames: array[TLazFindInFileSearchOption] of string =(
     'MatchCase',
