@@ -318,8 +318,13 @@ var
 begin
   chkCreateMakefile.Checked := Options.CreateMakefileOnBuild;
 
-  ExecuteBeforeCommandComboBox.Text := Options.ExecuteBefore.Command;
-
+  // execute before
+  with ExecuteBeforeCommandComboBox do begin
+    Items.BeginUpdate;
+    Items.Assign(InputHistories.HistoryLists.GetList('BuildExecBefore',true,rltFile));
+    SetComboBoxText(ExecuteBeforeCommandComboBox,Options.ExecuteBefore.Command,cstCaseSensitive);
+    Items.EndUpdate;
+  end;
   if Options.ExecuteBefore is TProjectCompilationToolOptions then
     with TProjectCompilationToolOptions(Options.ExecuteBefore) do
     begin
@@ -338,7 +343,10 @@ begin
     chkExecBeforeBuild.Visible := False;
     chkExecBeforeRun.Visible := False;
   end;
+  ReadSettingsParsers(Options.ExecuteBefore,ExecBeforeParsersCheckComboBox,
+    ExecBeforeParsersSumLabel);
 
+  // compiler path
   with cobCompiler do begin
     Items.BeginUpdate;
     Items.Assign(EnvironmentOptions.CompilerFileHistory);
@@ -346,14 +354,6 @@ begin
     SetComboBoxText(cobCompiler,Options.CompilerPath,cstFilename);
     Items.EndUpdate;
   end;
-  ReadSettingsParsers(Options.ExecuteBefore,ExecBeforeParsersCheckComboBox,
-    ExecBeforeParsersSumLabel);
-
-  ExecuteBeforeCommandComboBox.Items.Assign(
-    InputHistories.HistoryLists.GetList('BuildExecBefore',true,rltFile));
-  ExecuteAfterCommandComboBox.Items.Assign(
-    InputHistories.HistoryLists.GetList('BuildExecAfter',true,rltFile));
-
   if Options is TProjectCompilerOptions then
     with TProjectCompilerOptions(Options) do
     begin
@@ -391,7 +391,13 @@ begin
     cobCompiler.AnchorParallel(akTop, 0, lblCompiler.Parent);
   end;
 
-  ExecuteAfterCommandComboBox.Text := Options.ExecuteAfter.Command;
+  // execute after
+  with ExecuteAfterCommandComboBox do begin
+    Items.BeginUpdate;
+    Items.Assign(InputHistories.HistoryLists.GetList('BuildExecAfter',true,rltFile));
+    SetComboBoxText(ExecuteAfterCommandComboBox,Options.ExecuteAfter.Command,cstCaseSensitive);
+    Items.EndUpdate;
+  end;
   if Options.ExecuteAfter is TProjectCompilationToolOptions then
     with TProjectCompilationToolOptions(Options.ExecuteAfter) do
     begin
@@ -429,7 +435,12 @@ var
 begin
   Options.CreateMakefileOnBuild := chkCreateMakefile.Checked;
 
+  // execute before
   Options.ExecuteBefore.Command := ExecuteBeforeCommandComboBox.Text;
+  with InputHistories.HistoryLists.GetList('BuildExecBefore',true,rltCaseSensitive) do begin
+    Assign(ExecuteBeforeCommandComboBox.Items);
+    Push(Options.ExecuteBefore.Command);
+  end;
 
   WriteSettingsParsers(Options.ExecuteBefore,ExecBeforeParsersCheckComboBox);
 
@@ -439,13 +450,10 @@ begin
       MakeCompileReasons(chkExecBeforeCompile, chkExecBeforeBuild, chkExecBeforeRun);
   end;
 
+  // compiler path
   Options.CompilerPath := cobCompiler.Text;
   EnvironmentOptions.CompilerFileHistory.Assign(cobCompiler.Items);
-
-  InputHistories.HistoryLists.GetList('BuildExecBefore',true,rltFile).Assign(
-    ExecuteBeforeCommandComboBox.Items);
-  InputHistories.HistoryLists.GetList('BuildExecAfter',true,rltFile).Assign(
-    ExecuteAfterCommandComboBox.Items);
+  AddToRecentList(Options.CompilerPath,EnvironmentOptions.CompilerFileHistory,30,rltFile);
 
   if Options is TProjectCompilerOptions then
   begin
@@ -455,7 +463,12 @@ begin
   else if Options is TPkgCompilerOptions then
     TPkgCompilerOptions(Options).SkipCompiler := chkCompilerCompile.Checked;
 
+  // execute after
   Options.ExecuteAfter.Command := ExecuteAfterCommandComboBox.Text;
+  with InputHistories.HistoryLists.GetList('BuildExecAfter',true,rltCaseSensitive) do begin
+    Assign(ExecuteAfterCommandComboBox.Items);
+    Push(Options.ExecuteAfter.Command);
+  end;
   WriteSettingsParsers(Options.ExecuteAfter,ExecAfterParsersCheckComboBox);
   if Options.ExecuteAfter is TProjectCompilationToolOptions then
   begin

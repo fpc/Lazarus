@@ -4284,7 +4284,7 @@ begin
   if (not (sfDoNotSaveVirtualFiles in Flags)) then
   begin
     // check that all new units are saved first to get valid filenames
-    // (this can alter the mainunit: e.g. used unit names)
+    // Note: this can alter the mainunit: e.g. used unit names
     for i:=0 to Project1.UnitCount-1 do begin
       AnUnitInfo:=Project1.Units[i];
       if (AnUnitInfo.Loaded) and AnUnitInfo.IsVirtual

@@ -1117,7 +1117,7 @@ var
   i: Integer;
 begin
   for i:=List.Count-1 downto 1 do
-    if CompareRecentListItem(List[i],List[i-1],ListType) then
+    if (List[i]='') or CompareRecentListItem(List[i],List[i-1],ListType) then
       List.Delete(i);
 end;
 

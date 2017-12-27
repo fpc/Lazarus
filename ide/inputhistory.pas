@@ -688,7 +688,8 @@ end;
 
 function THistoryList.Push(const Entry: string): integer;
 begin
-  AddToRecentList(Entry,Self,MaxCount,ListType);
+  if Entry<>'' then
+    AddToRecentList(Entry,Self,MaxCount,ListType);
   Result:=-1;
 end;
 
