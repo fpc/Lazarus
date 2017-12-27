@@ -3175,7 +3175,7 @@ begin
   //N19.Caption :=      sFRDesignerForm_Open;
   //N20.Caption :=      sFRDesignerForm_Save;
   //N17.Caption :=      sFRDesignerForm_SaveAs;
-  FileSaveAs.Caption:=   sFRDesignerForm_Save;
+  FileSave.Caption:=   sFRDesignerForm_Save;
   FileSaveAs.Caption:=   sFRDesignerForm_SaveAs;
   FileBeforePrintScript.Caption := sFRDesignerForm_BeforePrintScript;
   N42.Caption :=      sFRDesignerForm_Var;

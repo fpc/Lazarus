@@ -211,7 +211,7 @@ const
     ftBCD, ftAutoInc, ftLargeint];
 
 implementation
-uses lr_CrossTabEditor, LR_Utils, strutils, variants, Math;
+uses lr_CrossTabEditor, LR_Utils, LR_Const, strutils, variants, Math;
 
 {$R *.res}
 
@@ -485,19 +485,19 @@ begin
 
   FDataCell:=TlrCrossDesignDataView.Create(OwnerPage);
   FDataCell.Name:=Name+'_'+'DataCell';
-  FDataCell.Memo.Text:='Data';
+  FDataCell.Memo.Text:=sCrossTabData;
   FDataCell.dx:=60;
   FDataCell.dY:=18;
 //  DoCreateDesignObjects('DataCell', 'Data', 60, 18);
 
-  FRowTitleCell:=DoCreateDesignObjects('RowTitleCell', 'Row title', 60, 18);
-  FRowTotalCell:=DoCreateDesignObjects('RowTotalCell', 'Row total', 60, 18);
-  FColTitleCell:=DoCreateDesignObjects('ColTitleCell', 'Col title', 60, 18);
-  FColTotalCell:=DoCreateDesignObjects('ColTotalCell', 'Col total', 60, 18);
-  FGrandTotalCell:=DoCreateDesignObjects('GrandTotalCell', 'Grand total', 60, 18);
+  FRowTitleCell:=DoCreateDesignObjects('RowTitleCell', sCrossTabRowTitle, 60, 18);
+  FRowTotalCell:=DoCreateDesignObjects('RowTotalCell', sCrossTabRowTotal, 60, 18);
+  FColTitleCell:=DoCreateDesignObjects('ColTitleCell', sCrossTabColTitle, 60, 18);
+  FColTotalCell:=DoCreateDesignObjects('ColTotalCell', sCrossTabColTotal, 60, 18);
+  FGrandTotalCell:=DoCreateDesignObjects('GrandTotalCell', sCrossTabGranTotal, 60, 18);
 
-  FTotalCHCell:=DoCreateDesignObjects('TotalCHCell', 'Total CH cell', 60, 18);
-  FTotalRHCell:=DoCreateDesignObjects('TotalRHCell', 'Total RH cell', 60, 18);
+  FTotalCHCell:=DoCreateDesignObjects('TotalCHCell', sCrossTabTotalCHCell, 60, 18);
+  FTotalRHCell:=DoCreateDesignObjects('TotalRHCell', sCrossTabTotalRHCell, 60, 18);
 
   FDataCell.Restrictions:=FDataCell.Restrictions - [lrrDontSize];
   FRowTitleCell.Restrictions:=FDataCell.Restrictions - [lrrDontSize];
@@ -1223,13 +1223,18 @@ begin
   FTotalRHCell.SaveToStream(Stream);
 end;
 
+procedure InitializeCrosstAddin;
+begin
+  frSetAddinHint(TlrCrossView, sInsCrossTab);
+end;
+
 procedure InitCrossView;
 begin
   if not assigned(lrBMPCrossView) then
   begin
     lrBMPCrossView := TBitmap.Create;
     lrBMPCrossView.LoadFromResourceName(HInstance, 'lr_crossview');
-    frRegisterObject(TlrCrossView, lrBMPCrossView, TlrCrossView.ClassName, nil, otlReportView, nil, @lrCrossTabEditor);
+    frRegisterObject(TlrCrossView, lrBMPCrossView, '' {TlrCrossView.ClassName}, nil, otlReportView, @InitializeCrosstAddin {nil}, @lrCrossTabEditor);
   end;
 end;
 

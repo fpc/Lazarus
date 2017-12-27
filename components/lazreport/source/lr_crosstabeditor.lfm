@@ -6,8 +6,9 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
   Caption = 'lrCrossTabEditorForm'
   ClientHeight = 549
   ClientWidth = 687
+  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.9.0.0'
   object GroupBox1: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -20,8 +21,8 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Source data'
-    ClientHeight = 242
-    ClientWidth = 329
+    ClientHeight = 244
+    ClientWidth = 327
     TabOrder = 0
     object ComboBox1: TComboBox
       AnchorSideLeft.Control = GroupBox1
@@ -29,9 +30,9 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       AnchorSideRight.Control = GroupBox1
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 31
+      Height = 30
       Top = 6
-      Width = 317
+      Width = 315
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 0
@@ -48,16 +49,16 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 193
-      Top = 43
-      Width = 317
+      Height = 196
+      Top = 42
+      Width = 315
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       DragMode = dmAutomatic
       ItemHeight = 0
       OnDragDrop = ListBox2DragDrop
       OnDragOver = ListBox2DragOver
-      ScrollWidth = 315
+      ScrollWidth = 313
       TabOrder = 1
       TopIndex = -1
     end
@@ -76,8 +77,8 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Cross-tab structure'
-    ClientHeight = 242
-    ClientWidth = 329
+    ClientHeight = 244
+    ClientWidth = 327
     TabOrder = 1
     object ListBox2: TListBox
       AnchorSideLeft.Control = GroupBox2
@@ -86,16 +87,16 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       AnchorSideBottom.Control = GroupBox2
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 109
-      Top = 127
-      Width = 152
+      Height = 110
+      Top = 128
+      Width = 151
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       DragMode = dmAutomatic
       ItemHeight = 0
       OnDragDrop = ListBox2DragDrop
       OnDragOver = ListBox2DragOver
-      ScrollWidth = 150
+      ScrollWidth = 149
       TabOrder = 0
       TopIndex = -1
     end
@@ -107,10 +108,10 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = GroupBox2
       AnchorSideBottom.Side = asrBottom
-      Left = 171
-      Height = 109
-      Top = 127
-      Width = 152
+      Left = 170
+      Height = 110
+      Top = 128
+      Width = 151
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       DragMode = dmAutomatic
@@ -118,7 +119,7 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       OnDragDrop = ListBox2DragDrop
       OnDragOver = ListBox2DragOver
       OnMouseDown = ListBox3MouseDown
-      ScrollWidth = 150
+      ScrollWidth = 149
       TabOrder = 1
       TopIndex = -1
     end
@@ -129,17 +130,17 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       AnchorSideRight.Control = GroupBox2
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Label1
-      Left = 171
-      Height = 109
+      Left = 170
+      Height = 110
       Top = 6
-      Width = 152
+      Width = 151
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       DragMode = dmAutomatic
       ItemHeight = 0
       OnDragDrop = ListBox2DragDrop
       OnDragOver = ListBox2DragOver
-      ScrollWidth = 150
+      ScrollWidth = 149
       TabOrder = 2
       TopIndex = -1
     end
@@ -148,18 +149,18 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = GroupBox2
       AnchorSideTop.Side = asrCenter
-      Left = 164
+      Left = 163
       Height = 1
-      Top = 121
+      Top = 122
       Width = 1
       ParentColor = False
     end
     object SpeedButton1: TSpeedButton
       AnchorSideRight.Control = Label1
       AnchorSideBottom.Control = Label1
-      Left = 123
+      Left = 122
       Height = 27
-      Top = 88
+      Top = 89
       Width = 35
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -274,8 +275,8 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
     Width = 675
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    ClientHeight = 212
-    ClientWidth = 673
+    ClientHeight = 210
+    ClientWidth = 671
     TabOrder = 2
     object CheckGroup1: TCheckGroup
       AnchorSideTop.Control = GroupBox3
@@ -283,10 +284,10 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = GroupBox3
       AnchorSideBottom.Side = asrBottom
-      Left = 508
-      Height = 212
+      Left = 509
+      Height = 210
       Top = 0
-      Width = 165
+      Width = 162
       Anchors = [akTop, akRight, akBottom]
       AutoFill = False
       AutoSize = True
@@ -296,8 +297,8 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 210
-      ClientWidth = 163
+      ClientHeight = 206
+      ClientWidth = 158
       Items.Strings = (
         'Show column header'
         'Show column total'
@@ -321,9 +322,9 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       AnchorSideBottom.Control = GroupBox3
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 200
+      Height = 198
       Top = 6
-      Width = 496
+      Width = 497
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       Color = clWhite
@@ -334,9 +335,9 @@ object lrCrossTabEditorForm: TlrCrossTabEditorForm
       AnchorSideLeft.Control = PaintBox1
       AnchorSideTop.Control = PaintBox1
       Left = 12
-      Height = 23
+      Height = 20
       Top = 12
-      Width = 74
+      Width = 73
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Select style'

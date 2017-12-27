@@ -91,6 +91,7 @@ type
     SpeedButton2: TSpeedButton;
     procedure CheckGroup1ItemClick(Sender: TObject; Index: integer);
     procedure ComboBox1Change(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure ListBox2DragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure ListBox2DragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -120,7 +121,7 @@ type
 
 function lrCrossTabEditor(lrObj: TfrView) : boolean;
 implementation
-uses LR_Utils, LR_DBRel, PropEdits, strutils;
+uses LR_Utils, LR_DBRel, LR_Const, PropEdits, strutils;
 
 const
   CT2Ind : array [TCrossCellType] of integer = (
@@ -274,6 +275,38 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TlrCrossTabEditorForm.FormCreate(Sender: TObject);
+begin
+  GroupBox1.Caption:= sCrossEditorSource;
+  GroupBox2.Caption:= sCrossEditorStructure;
+  SpeedButton2.Caption:= sCrossEditorStyle;
+  //  PopupMenu2
+  MenuItem9.Caption:= sCrossEditorNone;
+  MenuItem8.Caption:= sCrossEditorSum;
+  MenuItem10.Caption:= sCrossEditorMin;
+  MenuItem11.Caption:= sCrossEditorMax;
+  MenuItem12.Caption:= sCrossEditorAverage;
+  MenuItem13.Caption:= sCrossEditorCount;
+  //  PopupMenu1
+  MenuItem1.Caption:= sCrossEditorWhite;
+  MenuItem2.Caption:= sCrossEditorGray;
+  MenuItem3.Caption:= sCrossEditorOrange;
+  MenuItem4.Caption:= sCrossEditorGreen;
+  MenuItem5.Caption:= sCrossEditorGreenOrange;
+  MenuItem6.Caption:= sCrossEditorBlue;
+  MenuItem7.Caption:= sCrossEditorBlueWhite;
+  MenuItem14.Caption:= sCrossEditorCyan;
+  //  Checkgroup1
+  CheckGroup1.Items.Strings[0] := sCrossEditorShowColHeader;
+  CheckGroup1.Items.Strings[1] := sCrossEditorShowColTotal;
+  CheckGroup1.Items.Strings[2] := sCrossEditorShowCorner1;
+  CheckGroup1.Items.Strings[3] := sCrossEditorShowRowHeader;
+  CheckGroup1.Items.Strings[4] := sCrossEditorShowRowTotal;
+  CheckGroup1.Items.Strings[5] := sCrossEditorShowTitle;
+  CheckGroup1.Items.Strings[6] := sCrossEditorShowGranTotal;
+  CheckGroup1.Items.Strings[7] := sCrossEditorShowCorner2;
 end;
 
 procedure TlrCrossTabEditorForm.CheckGroup1ItemClick(Sender: TObject;
@@ -458,7 +491,7 @@ end;
 
 procedure TlrCrossTabEditorForm.Localize;
 begin
-  Caption:='Cross tab editor';
+  Caption:= sCrossEditorCaption;
 end;
 
 procedure TlrCrossTabEditorForm.ShowBackGround;

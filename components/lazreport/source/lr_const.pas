@@ -95,6 +95,7 @@ resourcestring
   sDesOptionsFormOther = 'Other';
   sDesOptionsFormEditing = '&Editing after insert';
   sDesOptionsFormShowBand = 'Show band &titles';
+  sDesOptionsFormInPlace = 'Use inplace editor';
 
 //--- HilightForm resources ---------------------------------------------------
   sHilightFormHilitAttr = 'Highlight attributes';
@@ -242,6 +243,7 @@ resourcestring
   sInsChart = 'Insert Chart object';
   sInsShape = 'Insert Shape object';
   sInsBarcode = 'Insert Barcode object';
+  sInsCrossTab = 'Insert Cross-tab object';
   sInsRoundRect = 'Insert a RoundRect with shadow area';
   sSubReportOnPage = 'SubReport on page';
   sPicture = '[Picture]';
@@ -833,6 +835,52 @@ resourcestring
   sErrExpectedComma            ='Expected "," or ")"';
   sErrNeedDo                   = 'Need "do" here';
   sErrNeedTo                   = 'Need "to" here';
+
+  // --- Cross-Tab resources -------------------------------------------------
+
+    sCrossTabRowTitle     = 'Row title';
+    sCrossTabRowTotal     = 'Row total';
+    sCrossTabColTitle     = 'Col title';
+    sCrossTabColTotal     = 'Col total';
+    sCrossTabGranTotal    = 'Grand total';
+    sCrossTabTotalCHCell  = 'Total CH cell';
+    sCrossTabTotalRHCell  = 'Total RH cell';
+    sCrossTabData         = 'Data';
+
+
+  // --- Cross-Tab editor resources ------------------------------------------
+
+    sCrossEditorCaption   = 'Cross tab editor';
+    sCrossEditorSource    = 'Source data';
+    sCrossEditorStructure = 'Cross-tab structure';
+    sCrossEditorStyle     = 'Select style';
+    sCrossEditorNone      = 'None';
+    sCrossEditorSum       = 'Sum';
+    sCrossEditorMin       = 'Min';
+    sCrossEditorMax       = 'Max';
+    sCrossEditorAverage   = 'Average';
+    sCrossEditorCount     = 'Count';
+    sCrossEditorWhite     = 'White';
+    sCrossEditorGray      = 'Gray';
+    sCrossEditorOrange    = 'Orange';
+    sCrossEditorGreen     = 'Green';
+    sCrossEditorGreenOrange = 'Green and Orange';
+    sCrossEditorBlue      = 'Blue';
+    sCrossEditorBlueWhite = 'Blue and White';
+    sCrossEditorCyan      = 'Cyan';
+    sCrossEditorShowColHeader = 'Show column header';
+    sCrossEditorShowColTotal  = 'Show column total';
+    sCrossEditorShowCorner1   = 'Show corner 1';
+    sCrossEditorShowRowHeader = 'Show row header';
+    sCrossEditorShowRowTotal  = 'Show row total';
+    sCrossEditorShowTitle     = 'Show title';
+    sCrossEditorShowGranTotal = 'Show grand total';
+    sCrossEditorShowCorner2   = 'Show corner 2';
+
+  // --- Data Inspector frame -----------------------------------------------
+
+    sDataInspFields = 'Fields';
+    sDataInspVariables = 'Variables';
 
 const
   frRes = 53000;

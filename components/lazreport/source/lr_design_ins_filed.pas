@@ -160,14 +160,21 @@ var
   Ini:TIniFile;
 begin
   if FileExistsUTF8(IniFileName) then
-  begin
-    Ini:=TIniFile.Create(IniFileName);
-    Left:=Ini.ReadInteger('Position', 'Left', Left);
-    Top:=Ini.ReadInteger('Position', 'Top', Top);
-    Height:=Ini.ReadInteger('Position', 'Height', Height);
-    Width:=Ini.ReadInteger('Position', 'Width', Width);
-    Ini.Free;
-  end;
+    begin
+      Ini:=TIniFile.Create(IniFileName);
+      Left:=Ini.ReadInteger('Position', 'Left', Left);
+      Top:=Ini.ReadInteger('Position', 'Top', Top);
+      Height:=Ini.ReadInteger('Position', 'Height', Height);
+      Width:=Ini.ReadInteger('Position', 'Width', Width);
+      Ini.Free;
+    end
+  else
+    begin
+      Width  :=300;
+      Height :=400;
+      Top    :=120;
+      Left   :=40;
+    end;
 end;
 
 procedure TlrFieldsList.SavePos;
@@ -262,6 +269,9 @@ begin
   RefreshDSList;
   FillValCombo;
   fPanelHeader.Caption:=sFRDesignerDataInsp;
+  //
+  TabSheet1.Caption := sDataInspFields;
+  TabSheet2.Caption := sDataInspVariables;
 end;
 
 destructor TlrFieldsList.Destroy;

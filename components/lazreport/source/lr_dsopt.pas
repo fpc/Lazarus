@@ -123,6 +123,8 @@ begin
   Label3.Caption := sFRDesignerFormFontName;
   Label4.Caption := sFRDesignerFormFontSize;
   CheckBox1.Caption := sUseSyntaxHighlight;
+  //
+  CheckBox2.Caption:= sDesOptionsFormInPlace;
   FillFonts;
   RadioButton1Change(nil);
 end;

@@ -258,6 +258,145 @@ msgstr "Class Object \"%s\" tidak ditemukan"
 msgid "Confirm"
 msgstr "Konfirmasi"
 
+#: lr_const.scrosseditoraverage
+msgid "Average"
+msgstr ""
+
+#: lr_const.scrosseditorblue
+msgid "Blue"
+msgstr ""
+
+#: lr_const.scrosseditorbluewhite
+msgid "Blue and White"
+msgstr ""
+
+#: lr_const.scrosseditorcaption
+msgid "Cross tab editor"
+msgstr ""
+
+#: lr_const.scrosseditorcount
+msgid "Count"
+msgstr ""
+
+#: lr_const.scrosseditorcyan
+msgid "Cyan"
+msgstr ""
+
+#: lr_const.scrosseditorgray
+msgid "Gray"
+msgstr ""
+
+#: lr_const.scrosseditorgreen
+msgid "Green"
+msgstr ""
+
+#: lr_const.scrosseditorgreenorange
+msgid "Green and Orange"
+msgstr ""
+
+#: lr_const.scrosseditormax
+msgid "Max"
+msgstr ""
+
+#: lr_const.scrosseditormin
+msgid "Min"
+msgstr ""
+
+#: lr_const.scrosseditornone
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.scrosseditornone"
+msgid "None"
+msgstr "Tidak ada"
+
+#: lr_const.scrosseditororange
+msgid "Orange"
+msgstr ""
+
+#: lr_const.scrosseditorshowcolheader
+msgid "Show column header"
+msgstr ""
+
+#: lr_const.scrosseditorshowcoltotal
+msgid "Show column total"
+msgstr ""
+
+#: lr_const.scrosseditorshowcorner1
+msgid "Show corner 1"
+msgstr ""
+
+#: lr_const.scrosseditorshowcorner2
+msgid "Show corner 2"
+msgstr ""
+
+#: lr_const.scrosseditorshowgrantotal
+msgid "Show grand total"
+msgstr ""
+
+#: lr_const.scrosseditorshowrowheader
+msgid "Show row header"
+msgstr ""
+
+#: lr_const.scrosseditorshowrowtotal
+msgid "Show row total"
+msgstr ""
+
+#: lr_const.scrosseditorshowtitle
+msgid "Show title"
+msgstr ""
+
+#: lr_const.scrosseditorsource
+msgid "Source data"
+msgstr ""
+
+#: lr_const.scrosseditorstructure
+msgid "Cross-tab structure"
+msgstr ""
+
+#: lr_const.scrosseditorstyle
+msgid "Select style"
+msgstr ""
+
+#: lr_const.scrosseditorsum
+msgid "Sum"
+msgstr ""
+
+#: lr_const.scrosseditorwhite
+msgid "White"
+msgstr ""
+
+#: lr_const.scrosstabcoltitle
+msgid "Col title"
+msgstr ""
+
+#: lr_const.scrosstabcoltotal
+msgid "Col total"
+msgstr ""
+
+#: lr_const.scrosstabdata
+msgid "Data"
+msgstr ""
+
+#: lr_const.scrosstabgrantotal
+msgid "Grand total"
+msgstr ""
+
+#: lr_const.scrosstabrowtitle
+msgid "Row title"
+msgstr ""
+
+#: lr_const.scrosstabrowtotal
+msgid "Row total"
+msgstr ""
+
+#: lr_const.scrosstabtotalchcell
+msgid "Total CH cell"
+msgstr ""
+
+#: lr_const.scrosstabtotalrhcell
+msgid "Total RH cell"
+msgstr ""
+
 #: lr_const.scsvfile
 msgid "CSV File"
 msgstr "File CSV"
@@ -265,6 +404,16 @@ msgstr "File CSV"
 #: lr_const.scurmemo
 msgid "Memo:"
 msgstr ""
+
+#: lr_const.sdatainspfields
+msgid "Fields"
+msgstr ""
+
+#: lr_const.sdatainspvariables
+#, fuzzy
+msgctxt "lr_const.sdatainspvariables"
+msgid "Variables"
+msgstr "Variabel"
 
 #: lr_const.sdateformat1
 msgid "mm.dd.yy"
@@ -483,6 +632,10 @@ msgstr "Grid"
 #: lr_const.sdesoptionsforminch
 msgid "&Inches"
 msgstr "&Inci"
+
+#: lr_const.sdesoptionsforminplace
+msgid "Use inplace editor"
+msgstr ""
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
@@ -1530,6 +1683,10 @@ msgstr "Sisipkan obyek Chart"
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
 msgstr "Sisipkan obyek KotakCentang"
+
+#: lr_const.sinscrosstab
+msgid "Insert Cross-tab object"
+msgstr ""
 
 #: lr_const.sinsert
 msgid "Insert"
@@ -2672,6 +2829,7 @@ msgid "Variable format ..."
 msgstr "Format variabel..."
 
 #: lr_const.svarformcapt
+msgctxt "lr_const.svarformcapt"
 msgid "Variables"
 msgstr "Variabel"
 
