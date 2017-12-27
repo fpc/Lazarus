@@ -1987,7 +1987,7 @@ begin
 
   case Msg of
     WM_MOUSEFIRST..WM_MOUSELAST:
-    if Application.MouseControl<>lWinControl then
+    if (LastMouseTracking<>lWinControl) then
     begin
       // register for WM_MOUSELEAVE
       FillChar(LMouseEvent, SizeOf(TTRACKMOUSEEVENT), 0);
@@ -1996,6 +1996,7 @@ begin
       LMouseEvent.hwndTrack := Window;
       LMouseEvent.dwHoverTime := HOVER_DEFAULT;
       _TrackMouseEvent(@LMouseEvent);
+      LastMouseTracking := lWinControl;
     end;
   end;
 
@@ -2254,7 +2255,11 @@ begin
     begin
       NotifyUserInput := True;
       LMessage.Msg := LM_MOUSELEAVE;
-      Application.DoBeforeMouseMessage(nil);
+      if lWinControl=LastMouseTracking then
+      begin
+        Application.DoBeforeMouseMessage(nil);
+        LastMouseTracking := nil;
+      end;
     end;
     WM_MOUSEMOVE:  DoMsgMouseMove;
     WM_MOUSEWHEEL: if DoMsgMouseWheel(Result, False) then Exit;
