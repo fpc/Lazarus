@@ -5,7 +5,11 @@ unit DBGridColumnsPropEditForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, ComCtrls, StdCtrls, ActnList, LCLType, typinfo, DBGrids;
+  Classes, SysUtils, typinfo, db,
+  // LCL
+  Controls, Dialogs, LCLProc, Forms, ComCtrls, StdCtrls, ActnList, LCLType, DBGrids,
+  // IdeIntf
+  IDEImagesIntf, ObjInspStrConsts, PropEdits, PropEditUtils;
 
 type
   { TDBGridColumnsPropertyEditorForm }
@@ -71,14 +75,8 @@ implementation
 
 {$R *.lfm}
 
-uses
-  Controls, Dialogs, LCLProc, IDEImagesIntf, ObjInspStrConsts, PropEdits,
-  PropEditUtils;
-
 type
-  TPersistentAccess = class(TPersistent)
-
-  end;
+  TPersistentAccess = class(TPersistent);
 
 procedure TDBGridColumnsPropertyEditorForm.FormCreate(Sender: TObject);
 begin
@@ -277,24 +275,27 @@ begin
   UpdateCaption;
 end;
 
-procedure TDBGridColumnsPropertyEditorForm.actFetchLabelsExecute(Sender: TObject
-  );
-var It : TColumn;
-    i : Integer;
+procedure TDBGridColumnsPropertyEditorForm.actFetchLabelsExecute(Sender: TObject);
+var
+  Column: TColumn;
+  DataSet: TDataSet;
+  Field: TField;
+  i: Integer;
 begin
-  //
-  if (Collection.Count > 0) and ( MessageDlg( dceColumnEditor, dceWillReplaceContinue,
-      mtConfirmation, [mbYes, mbNo], 0) = mrYes ) then begin
+  if (FOwnerPersistent as TDBGrid).DataSource=nil then Exit;
+  DataSet:=TDBGrid(FOwnerPersistent).DataSource.DataSet;
+  if DataSet=nil then Exit;
 
-    It := TColumn (Collection.Items[ 0 ]);
-    if Assigned ( It.Grid ) and Assigned (TDBGrid(It.Grid).DataSource) and Assigned (TDBGrid(It.Grid).DataSource.DataSet) then begin
-      for i := 0 to Collection.Count - 1 do
-        TColumn(Collection.Items[ i ]).Title.Caption:=TDBGrid(TColumn(Collection.Items[I]).Grid).DataSource.DataSet.FieldByName( TColumn(Collection.Items[I]).FieldName ).DisplayLabel;
-      end;
+  if MessageDlg(dceColumnEditor, dceWillReplaceContinue, mtConfirmation,
+    [mbYes, mbNo], 0)<>mrYes then Exit;
 
-
-    end;
-
+  for i:=0 to FCollection.Count-1 do
+  begin
+    Column:=FCollection.Items[i] as TColumn;
+    Field:= DataSet.FindField(Column.FieldName);
+    if Field<>nil then
+      Column.Title.Caption:=Field.DisplayLabel;
+  end;
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.actMoveDownExecute(Sender: TObject);
