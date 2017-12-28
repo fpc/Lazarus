@@ -62,11 +62,11 @@ msgstr "Favor selecionar (marcar) uma ou mais categorias"
 #: opkman_const.rscolors_caption
 msgctxt "opkman_const.rscolors_caption"
 msgid "Colors"
-msgstr ""
+msgstr "Cores"
 
 #: opkman_const.rscolors_cd_title
 msgid "Select color"
-msgstr ""
+msgstr "Selecionar cor"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
@@ -573,7 +573,7 @@ msgstr "Gerenciador de Pacotes Online"
 
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
-msgstr "Tudo/Nenhum"
+msgstr "Todos/Nenhum"
 
 #: opkman_const.rsmainfrm_cball_hint
 msgid "Check/Uncheck packages"
@@ -667,11 +667,11 @@ msgstr "Um pacote com o mesmo nome já existe!"
 
 #: opkman_const.rsmainfrm_packageupdate0
 msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
-msgstr "Os seguintes repositórios de pacotes não estão instalados ou não têm um vínculo de descarga externo válido. Os pacotes serão ignorados. Continuar?"
+msgstr "Os seguintes repositórios de pacotes não estão instalados ou não têm um vínculo externo para baixar válido. Os pacotes serão ignorados. Continuar?"
 
 #: opkman_const.rsmainfrm_packageupdate1
 msgid "None of the checked repository packages is installed or has a valid external download link."
-msgstr "Nenhum dos repositórios de pacotes marcados estão instalados ou têm um vínculo de descarga externo válido."
+msgstr "Nenhum dos repositórios de pacotes marcados estão instalados ou têm um vínculo externo para baixar válido."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
@@ -691,7 +691,7 @@ msgstr "%s pacotes salvos para arquivo com sucesso!"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
 msgid "Cannot create directory \"%s\". Operation aborted."
-msgstr ""
+msgstr "Impossível criar diretório \"%s\". Operação abortada."
 
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
@@ -699,11 +699,11 @@ msgstr "Alterando repositório. Aguarde..."
 
 #: opkman_const.rsmainfrm_rsmessagedownload
 msgid "Downloading package list. Please wait..."
-msgstr "Descarregando lista de pacotes. Aguarde..."
+msgstr "Baixando lista de pacotes. Aguarde..."
 
 #: opkman_const.rsmainfrm_rsmessageerror0
 msgid "Cannot download package list. Error message:"
-msgstr "Impossível descarregar lista de pacotes. Mensagem de erro:"
+msgstr "Impossível baixar lista de pacotes. Mensagem de erro:"
 
 #: opkman_const.rsmainfrm_rsmessageerror1
 msgid "Invalid JSON file."
@@ -795,11 +795,11 @@ msgstr "Limpeza repositório local"
 
 #: opkman_const.rsmainfrm_tbdownload_caption
 msgid "Download"
-msgstr "Descarregar"
+msgstr "Baixar"
 
 #: opkman_const.rsmainfrm_tbdownload_hint
 msgid "Download packages"
-msgstr "Descarregar pacotes"
+msgstr "Baixar pacotes"
 
 #: opkman_const.rsmainfrm_tbhelp_caption
 msgctxt "opkman_const.rsmainfrm_tbhelp_caption"
@@ -1095,7 +1095,7 @@ msgstr "Repositório"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate1
 msgid "Downloaded"
-msgstr "Descarregado"
+msgstr "Baixado"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate2
 msgid "Extracted"
@@ -1213,7 +1213,7 @@ msgstr "Adicionar"
 #: opkman_const.rsoptions_bcolors_caption
 msgctxt "opkman_const.rsoptions_bcolors_caption"
 msgid "Colors"
-msgstr ""
+msgstr "Cores"
 
 #: opkman_const.rsoptions_bdelete_caption
 msgctxt "opkman_const.rsoptions_bdelete_caption"
@@ -1227,7 +1227,7 @@ msgstr "Editar"
 
 #: opkman_const.rsoptions_bpoptions_bhelp
 msgid "Restore defaults"
-msgstr ""
+msgstr "Restaurar padrões"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1256,19 +1256,19 @@ msgstr "Nunca"
 
 #: opkman_const.rsoptions_cbdelete_caption
 msgid "Delete downloaded zip files after installation/update"
-msgstr "Excluir arquivos compactados descarregados após instalação/atualização"
+msgstr "Excluir arquivos compactados baixados após instalação/atualização"
 
 #: opkman_const.rsoptions_cbdelete_hint
 msgid "If this option is checked the downloaded zip file is always deleted after installation"
-msgstr "Se esta opção estiver marcada o arquivo compactado descarregado será sempre excluído após a instalação"
+msgstr "Se esta opção estiver marcada o arquivo compactado baixado será sempre excluído após a instalação"
 
 #: opkman_const.rsoptions_cbforcedownloadextract_caption
 msgid "Always force download and extract"
-msgstr "Sempre forçar o descarregamento e extração"
+msgstr "Sempre forçar a baixa e extração"
 
 #: opkman_const.rsoptions_cbforcedownloadextract_hint
 msgid "If this option is checked the packages are always re-downloaded/extracted before install"
-msgstr "Se esta opção estiver marcada os pacotes serão sempre descarregados novamente/extraídos antes da instalação"
+msgstr "Se esta opção estiver marcada os pacotes serão sempre baixados novamente/extraídos antes da instalação"
 
 #: opkman_const.rsoptions_cbproxy_caption
 msgid "Use proxy"
@@ -1298,15 +1298,15 @@ msgstr "Usar o gerenciador de tema padrão"
 
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
-msgstr "A pasta onde os arquivos compactados são descarregados do repositório remoto"
+msgstr "A pasta onde os arquivos compactados são baixados do repositório remoto"
 
 #: opkman_const.rsoptions_edlocalrepositorypackages_hint
 msgid "The folder where the repository packages are extracted/installed"
-msgstr "A pasta onde os repositório de pacote são extraídos/instalados"
+msgstr "A pasta onde os repositórios de pacote são extraídos/instalados"
 
 #: opkman_const.rsoptions_edlocalrepositoryupdate_hint
 msgid "The folder where the zip files are downloaded from the package maintainer webpage"
-msgstr "A pasta onde os arquivos compactados são descarregados da página web do mantenedor do pacote"
+msgstr "A pasta onde os arquivos compactados são baixados da página web do mantenedor do pacote"
 
 #: opkman_const.rsoptions_frmcaption
 msgctxt "opkman_const.rsoptions_frmcaption"
@@ -1390,7 +1390,7 @@ msgstr "Arquivos excluídos (pacotes)"
 
 #: opkman_const.rsoptions_lblastupdate_caption
 msgid "Last update: "
-msgstr "Última atualização:"
+msgstr "Última atualização: "
 
 #: opkman_const.rsoptions_lblocalrepositoryarchive_caption
 msgid "Archive directory"
@@ -1438,19 +1438,19 @@ msgstr "Favor digitar o endereço do servidor proxy"
 
 #: opkman_const.rsoptions_rbhintformoptions_caption
 msgid "Quick info for repository packages"
-msgstr ""
+msgstr "Informações rápidas para o repositório de pacotes"
 
 #: opkman_const.rsoptions_rbhintformoptions_item0
 msgid "Behaves like a regular hint window"
-msgstr ""
+msgstr "Comporta-se como uma janela de dica regular"
 
 #: opkman_const.rsoptions_rbhintformoptions_item1
 msgid "It's triggered by SHIFT, moves with the mouse"
-msgstr ""
+msgstr "É disparado por SHIFT, move-se com o mouse"
 
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
-msgstr ""
+msgstr "Desligado"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
@@ -1497,7 +1497,7 @@ msgstr "Lista de pacotes instalados"
 
 #: opkman_const.rspackagelistfrm_caption1
 msgid "Downloaded package list"
-msgstr "Lista de pacotes descarregados"
+msgstr "Lista de pacotes baixados"
 
 #: opkman_const.rspackagelistfrm_caption2
 msgid "Update package list"
@@ -1509,7 +1509,7 @@ msgstr "(%s repositórios de pacotes encontrados, contendo %s arquivos lpk, tama
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
-msgstr "Descarregando pacotes"
+msgstr "Baixando pacotes"
 
 #: opkman_const.rsprogressfrm_caption1
 msgid "Extracting packages"
@@ -1533,7 +1533,7 @@ msgstr "Desconhecido"
 
 #: opkman_const.rsprogressfrm_cbextractopen_caption0
 msgid "Extract after download"
-msgstr "Extrair após descarregar"
+msgstr "Extrair após baixar"
 
 #: opkman_const.rsprogressfrm_cbextractopen_caption1
 msgid "Open containing folder"
@@ -1545,7 +1545,7 @@ msgstr "Continuar com o próximo?"
 
 #: opkman_const.rsprogressfrm_error0
 msgid "Cannot download package:"
-msgstr "Impossível descarregar pacote:"
+msgstr "Impossível baixar pacote:"
 
 #: opkman_const.rsprogressfrm_error1
 msgid "Error message:"
@@ -1567,11 +1567,11 @@ msgstr "Dependência \"%s\" não encontrada!"
 #: opkman_const.rsprogressfrm_error5
 msgctxt "opkman_const.rsprogressfrm_error5"
 msgid "Cannot contact download site"
-msgstr "Impossível contactar o sítio de descarga"
+msgstr "Impossível contactar o sítio para baixar"
 
 #: opkman_const.rsprogressfrm_error6
 msgid "No valid download link found."
-msgstr "Nenhum vínculo de descarga válido encontrado"
+msgstr "Nenhum vínculo válido para baixa encontrado"
 
 #: opkman_const.rsprogressfrm_error7
 msgid "Cannot open package file."
@@ -1597,11 +1597,11 @@ msgstr "Sucesso."
 
 #: opkman_const.rsprogressfrm_info2
 msgid "Contacting download site for \"%s\" (%s)"
-msgstr "Contactando o sítio de descarga para \"%s\" (%s)"
+msgstr "Contactando o sítio para baixa de \"%s\" (%s)"
 
 #: opkman_const.rsprogressfrm_info3
 msgid "Preparing to download. Please wait..."
-msgstr "Preparando para descarregar. Aguarde..."
+msgstr "Preparando para baixar. Aguarde..."
 
 #: opkman_const.rsprogressfrm_info4
 msgid "Canceling. Please wait..."

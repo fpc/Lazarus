@@ -561,7 +561,7 @@ msgstr "Caracteres especiais visualizados"
 
 #: lazarusidestrconsts.dlgaddnewmode
 msgid "Add new mode"
-msgstr ""
+msgstr "Adicionar novo modo"
 
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
@@ -1191,7 +1191,7 @@ msgstr "INLINE estilo C++"
 
 #: lazarusidestrconsts.dlgcreatenewrunparameterssettings
 msgid "Create new Run Parameters settings"
-msgstr ""
+msgstr "Criar novas configurações dos parâmetros de execução"
 
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
@@ -1247,7 +1247,7 @@ msgstr "Valor padrão"
 
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
-msgstr ""
+msgstr "Excluir modo"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2488,7 +2488,7 @@ msgstr "Mesclar métodos e propriedades"
 
 #: lazarusidestrconsts.dlgmode
 msgid "Mode"
-msgstr ""
+msgstr "Modo"
 
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
@@ -3325,7 +3325,7 @@ msgstr "Apenas arquivos que pertençam a este projeto."
 
 #: lazarusidestrconsts.dlgsavein
 msgid "Save in"
-msgstr ""
+msgstr "Salvar em"
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4894,7 +4894,7 @@ msgstr "Propriedades Pontos de Paradas"
 
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
-msgstr ""
+msgstr "Navegar e selecionar um compilador (ex. ppcx64)"
 
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
@@ -5065,7 +5065,7 @@ msgstr "Impossível criar o arquivo \"%s\""
 
 #: lazarusidestrconsts.liscannotdeletelastmode
 msgid "Cannot delete last mode."
-msgstr ""
+msgstr "Impossível excluir último modo."
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8418,6 +8418,8 @@ msgid ""
 "The following package(s) are not available locally: %s.\n"
 "In order to install it, you must download them first. Download now?\n"
 msgstr ""
+"O(s) pacote(s) seguinte(s) não está(ão) disponível(eis) localmente: %s.\n"
+"Para instalá-lo(s) você deve baixá-lo(s) primeiro. Baixar agora?\n"
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -8434,7 +8436,7 @@ msgstr "Configuração de desatualização"
 
 #: lazarusidestrconsts.lisdownload
 msgid "Download"
-msgstr ""
+msgstr "Baixar"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8506,7 +8508,7 @@ msgstr "Valor duplicado encontrado \"%s\"."
 
 #: lazarusidestrconsts.lisduplicatemodename
 msgid "Mode \"%s\" is already present in the list."
-msgstr ""
+msgstr "Modo \"%s\" já está presente na lista."
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10430,10 +10432,6 @@ msgid "Install it, I like the fat"
 msgstr "Install it, I like the fat"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
-#, fuzzy
-#| msgid ""
-#| "The following packages are not installed, but available online: %s.\n"
-#| "Do you wish to install missing packages?\n"
 msgid ""
 "The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
@@ -14058,7 +14056,7 @@ msgstr "Na quebra linha (ou seja, teclas retorno ou \"enter\")"
 
 #: lazarusidestrconsts.lisonlinepackage
 msgid "available in the main repository"
-msgstr ""
+msgstr "disponível no repositório principal"
 
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
@@ -14468,7 +14466,7 @@ msgstr "Aplicar alterações"
 
 #: lazarusidestrconsts.lispckeditavailableonline
 msgid "(available online)"
-msgstr ""
+msgstr "(disponível online)"
 
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
@@ -16880,7 +16878,7 @@ msgstr "Selecionar diretório dos fontes FPC"
 
 #: lazarusidestrconsts.lisselectframe
 msgid "Select Frame"
-msgstr ""
+msgstr "Selecionar quadro"
 
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
@@ -17005,7 +17003,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowoutput
 msgid "Show output"
-msgstr ""
+msgstr "Exibir saída"
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
@@ -17952,7 +17950,7 @@ msgstr "O nome de arquivo da unidade \"%s\" não está em minúsculas.%sO compil
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
 msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
-msgstr "A unidade %s é parte dos fontes do FPC, mas o arquivo fpdoc xml correspondente não foi encontrado.%sOu você ainda não adicionou o diretório dos fpdocs ao caminhos de busca ou a unidade ainda não foi documentada.%sOs arquivos fpdoc dos fontes FPC poder ser descarregados de: %s%sFavor adicionar o diretório nas opções do editor fpdoc.%sA fim de criar um novo arquivo o diretório deve ter acesso de escrita."
+msgstr "A unidade %s é parte dos fontes do FPC, mas o arquivo fpdoc xml correspondente não foi encontrado.%sOu você ainda não adicionou o diretório dos fpdocs ao caminhos de busca ou a unidade ainda não foi documentada.%sOs arquivos fpdoc dos fontes FPC poder ser baixados de: %s%sFavor adicionar o diretório nas opções do editor fpdoc.%sA fim de criar um novo arquivo o diretório deve ter acesso de escrita."
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -18837,7 +18835,7 @@ msgstr "Nome de arquivo de compilador incomum. Usualmente ele inicia-se por fpc,
 
 #: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr ""
+msgstr "Nome de arquivo incomum do compilador pas2js. Usualmente se inicia com pas2js."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

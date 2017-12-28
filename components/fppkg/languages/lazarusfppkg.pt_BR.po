@@ -29,7 +29,7 @@ msgstr "compilar pacotes"
 
 #: fppkg_mainfrm.sactdownloadpackages
 msgid "download packages"
-msgstr "descarregar pacotes"
+msgstr "baixar pacotes"
 
 #: fppkg_mainfrm.sactfixbroken
 msgid "fix broken packages"
@@ -111,11 +111,11 @@ msgstr "Compilar pacote"
 
 #: tfppkgform.downloadbutton.caption
 msgid "Download"
-msgstr "Descarregar"
+msgstr "Baixar"
 
 #: tfppkgform.downloadbutton.hint
 msgid "Download package"
-msgstr "Descarregar pacote"
+msgstr "Baixar pacote"
 
 #: tfppkgform.fixbrokenbutton.caption
 msgid "Fix broken"
