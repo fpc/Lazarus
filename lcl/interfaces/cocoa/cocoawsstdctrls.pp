@@ -164,8 +164,6 @@ type
     class function GetScrollView(AWinControl: TWinControl): TCocoaScrollView;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    // WSWinControl functions
-    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     // WSEdit functions
     //class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
@@ -269,6 +267,8 @@ function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams
 
 function GetListBox(AWinControl: TWinControl): TCocoaListBox;
 procedure ListBoxSetStyle(list: TCocoaListBox; AStyle: TListBoxStyle);
+
+procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWrap: Boolean);
 
 implementation
 
@@ -881,6 +881,33 @@ end;
 
 { TCocoaWSCustomMemo }
 
+procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWrap: Boolean);
+var
+  layoutSize: NSSize;
+begin
+  if NewWordWrap then
+  begin
+    layoutSize := lScroll.contentSize();
+    layoutSize := GetNSSize(layoutSize.width, CGFloat_Max);
+    txt.textContainer.setContainerSize(layoutSize);
+    txt.textContainer.setWidthTracksTextView(True);
+    txt.setHorizontallyResizable(false);
+    txt.setAutoresizingMask(NSViewWidthSizable);
+    layoutSize.height:=txt.frame.size.height;
+    txt.setFrameSize(layoutSize);
+  end
+  else
+  begin
+    txt.textContainer.setWidthTracksTextView(False);
+    layoutSize := GetNSSize(CGFloat_Max, CGFloat_Max);
+    txt.textContainer.setContainerSize(layoutSize);
+    txt.textContainer.setWidthTracksTextView(False);
+    txt.setHorizontallyResizable(true);
+    txt.setAutoresizingMask(0);
+  end;
+  txt.sizeToFit;
+end;
+
 class function TCocoaWSCustomMemo.GetTextView(AWinControl: TWinControl): TCocoaTextView;
 var
   lScroll: TCocoaScrollView;
@@ -922,6 +949,11 @@ begin
   nr.size.width:=AParams.Width;
 
   txt := TCocoaTextView.alloc.initwithframe(nr);
+  // this is necessary for Ward Wrap disabled, so NSViewText
+  // doesn't have a constraint to resize
+  // Apple default maxsize is InitialWidth, 10000000
+  // (MaxSize is also changed automatically, if NSViewText size is changed)
+  txt.setMaxSize(NSMakeSize(10000000, 10000000));
   scr.setDocumentView(txt);
 
   scr.setHasVerticalScroller(VerticalScrollerVisible[TMemo(AWinControl).ScrollBars]);
@@ -946,23 +978,9 @@ begin
   ns.release;
 
   scr.callback := txt.callback;
+
+  TextViewSetWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
   Result := TLCLIntfHandle(scr);
-end;
-
-class procedure TCocoaWSCustomMemo.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
-var
-  nr: NSRect;
-  txt: TCocoaTextView;
-  lScroll: TCocoaScrollView;
-begin
-  TCocoaWSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
-
-  txt := GetTextView(AWinControl);
-  lScroll := GetScrollView(AWinControl);
-  if (not Assigned(txt)) or (not Assigned(lScroll)) then Exit;
-
-  nr := lScroll.documentVisibleRect;
-  txt.setFrame(nr);
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
@@ -1062,7 +1080,6 @@ end;
 
 class procedure  TCocoaWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
 var
-  layoutSize: NSSize;
   txt: TCocoaTextView;
   lScroll: TCocoaScrollView;
 begin
@@ -1070,19 +1087,7 @@ begin
   lScroll := GetScrollView(ACustomMemo);
   if (not Assigned(txt)) or (not Assigned(lScroll)) then Exit;
 
-  if NewWordWrap then
-  begin
-    layoutSize := lScroll.contentSize();
-    layoutSize := GetNSSize(layoutSize.width, CGFloat_Max);
-    txt.textContainer.setContainerSize(layoutSize);
-    txt.textContainer.setWidthTracksTextView(True);
-  end
-  else
-  begin
-    txt.textContainer.setWidthTracksTextView(False);
-    layoutSize := GetNSSize(CGFloat_Max, CGFloat_Max);
-    txt.textContainer.setContainerSize(layoutSize);
-  end;
+  TextViewSetWordWrap(txt, lScroll, NewWordWrap);
 end;
 
 class procedure TCocoaWSCustomMemo.SetText(const AWinControl:TWinControl;const AText:String);
