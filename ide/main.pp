@@ -800,6 +800,7 @@ type
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags;
                             FinalizeResources: boolean = True): TModalResult; override;
+    function CleanUpTestUnitOutputDir(Dir: string): TModalResult;
     function UpdateProjectPOFile(AProject: TProject): TModalResult;
     function DoAbortBuild(Interactive: boolean): TModalResult;
     procedure DoCompile;
@@ -6762,19 +6763,28 @@ begin
       UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
       if Project1.IsVirtual and (not FilenameIsAbsolute(UnitOutputDirectory)) then
         UnitOutputDirectory:=TrimFilename(WorkingDir+PathDelim+UnitOutputDirectory);
-      if (FilenameIsAbsolute(UnitOutputDirectory))
-      and (not DirPathExistsCached(UnitOutputDirectory)) then begin
-        if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
-          Result:=IDEQuestionDialog(lisCreateDirectory,
-              Format(lisTheOutputDirectoryIsMissing, [UnitOutputDirectory]),
-              mtConfirmation, [mrYes, lisCreateIt,
-                               mrCancel]);
-          if Result<>mrYes then exit;
+      if FilenameIsAbsolute(UnitOutputDirectory) then begin
+        if (not DirPathExistsCached(UnitOutputDirectory)) then begin
+          if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
+            Result:=IDEQuestionDialog(lisCreateDirectory,
+                Format(lisTheOutputDirectoryIsMissing, [UnitOutputDirectory]),
+                mtConfirmation, [mrYes, lisCreateIt,
+                                 mrCancel]);
+            if Result<>mrYes then exit;
+          end;
+          Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);
+          if Result<>mrOk then begin
+            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',UnitOutputDirectory,'" failed']);
+            exit;
+          end;
         end;
-        Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);
-        if Result<>mrOk then begin
-          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',UnitOutputDirectory,'" failed']);
-          exit;
+        if Project1.IsVirtual
+        and (FileIsInPath(UnitOutputDirectory,EnvironmentOptions.GetParsedTestBuildDirectory))
+        then begin
+          // clean up test units
+          Result:=CleanUpTestUnitOutputDir(UnitOutputDirectory);
+          if Result<>mrOk then
+            exit;
         end;
       end;
 
@@ -6903,6 +6913,32 @@ begin
   end;
   IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
   Result:=mrOk;
+end;
+
+function TMainIDE.CleanUpTestUnitOutputDir(Dir: string): TModalResult;
+var
+  Files: TStrings;
+  i: Integer;
+  Filename, Ext: String;
+begin
+  Dir:=AppendPathDelim(Dir);
+  Files:=TStringListUTF8.Create;
+  try
+    CodeToolBoss.DirectoryCachePool.GetListing(Dir,Files,false);
+    for i:=0 to Files.Count-1 do begin
+      Filename:=Files[i];
+      Ext:=ExtractFileExt(Filename);
+      if (SysUtils.CompareText(Ext,'.ppu')=0)
+      or (SysUtils.CompareText(Ext,'.o')=0)
+      then begin
+        Result:=DeleteFileInteractive(Dir+Filename,[]);
+        if Result<>mrOk then exit;
+      end;
+    end;
+    InvalidateFileStateCache(Dir);
+  finally
+    Files.Free;
+  end;
 end;
 
 function TMainIDE.DoAbortBuild(Interactive: boolean): TModalResult;
