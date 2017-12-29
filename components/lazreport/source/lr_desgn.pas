@@ -4788,10 +4788,6 @@ end;
 procedure TfrDesignerForm.SelectionChanged;
 var
   t: TfrView;
-  i, j, L: Integer;
-  B: TfrObject;
-  C: TComponent;
-  M: TMenuItem;
 begin
   {$IFDEF DebugLR}
   debugLnEnter('TfrDesignerForm.SelectionChanged INIT, SelNum=%d',[SelNum]);

@@ -855,6 +855,7 @@ var
   i: integer;
   RtlLen: Integer;
 begin
+  Result := 0;
   FAdjustedLogToPhysOrigin := ABytePos;
   {$IFDEF AssertSynMemIndex}
   if (ABytePos <= 0) then

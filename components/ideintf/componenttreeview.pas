@@ -546,6 +546,7 @@ end;
 
 function TComponentTreeView.GetImageFor(APersistent: TPersistent): integer;
 begin
+  Result := -1;
   if Assigned(APersistent) then
   begin
     if (APersistent is TControl)
@@ -563,10 +564,7 @@ begin
     else
     if (APersistent is TCollectionItem) then
       Result := ImgIndexItem;
-  end
-  else
-    Result := -1;
-
+  end;
   // finally, ask the designer such as TDesignerMediator to override it, if any
   if Assigned(OnComponentGetImageIndex) then
     OnComponentGetImageIndex(APersistent, Result);

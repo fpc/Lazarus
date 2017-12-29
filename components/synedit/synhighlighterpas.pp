@@ -3376,8 +3376,11 @@ var
   r, r2: Pointer;
 begin
   Assert(CurrentRanges <> nil, 'TSynCustomFoldHighlighter.FoldBlockEndLevel requires CurrentRanges');
-
   Result := 0;
+  inf.EndLevelIfDef := 0;
+  inf.MinLevelIfDef := 0;
+  inf.EndLevelRegion := 0;
+  inf.MinLevelRegion := 0;
   if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count - 1) then
     exit;
 
@@ -3426,8 +3429,11 @@ var
   r, r2: Pointer;
 begin
   Assert(CurrentRanges <> nil, 'TSynCustomFoldHighlighter.FoldBlockMinLevel requires CurrentRanges');
-
   Result := 0;
+  inf.EndLevelIfDef := 0;
+  inf.MinLevelIfDef := 0;
+  inf.EndLevelRegion := 0;
+  inf.MinLevelRegion := 0;
   if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count - 1) then
     exit;
 

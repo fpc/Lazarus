@@ -66,9 +66,9 @@ begin
       begin
         QPrinterInfo_printerName(Prntr, @PrnName);
         if QPrinterInfo_isDefault(Prntr) then
-          Lst.InsertObject(0, PrnName, Prntr)
+          Lst.InsertObject(0, PrnName{%H-}, Prntr)
         else
-          Lst.AddObject(PrnName, Prntr);
+          Lst.AddObject(PrnName{%H-}, Prntr);
       end;
     end;
   finally

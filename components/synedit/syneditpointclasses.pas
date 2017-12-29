@@ -1041,7 +1041,9 @@ begin
     CharWidthsArr := FLines.GetPhysicalCharWidths(Pchar(L), length(L), FLinePos-1);
     LogLen        := Length(CharWidthsArr);
     if LogLen > 0 then
-      CharWidths := @CharWidthsArr[0];
+      CharWidths := @CharWidthsArr[0]
+    else
+      CharWidths := Nil;
   end;
 
   ScreenPos := 1;
@@ -1525,15 +1527,14 @@ function TSynEditSelection.GetSelText : string;
       Result := Copy(S, Index, Count)
     else begin
       SetLength(Result, DstLen);
-      P := PChar(Pointer(Result));
+      P := PChar(Result);
       StrPCopy(P, Copy(S, Index, Count));
       Inc(P, SrcLen);
       FillChar(P^, DstLen - Srclen, $20);
     end;
   end;
 
-  procedure CopyAndForward(const S: string; Index, Count: Integer; var P:
-    PChar);
+  procedure CopyAndForward(const S: string; Index, Count: Integer; var P: PChar);
   var
     pSrc: PChar;
     SrcLen: Integer;
@@ -1573,9 +1574,9 @@ var
   Col, Len: array of Integer;
 
 begin
-  if not SelAvail then
-    Result := ''
-  else begin
+  Result := '';
+  if SelAvail then
+  begin
     if IsBackwardSel then begin
       ColFrom := FEndBytePos;
       First := FEndLinePos - 1;

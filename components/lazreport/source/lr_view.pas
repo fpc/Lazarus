@@ -176,7 +176,6 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
   private
-    { Private declarations }
     Doc: Pointer;
     EMFPages: Pointer;
     PBox: TfrPBox;
@@ -217,13 +216,12 @@ type
     procedure CreateExportFilterItems;
     procedure ExportFilterItemExecClick(Sender: TObject);
   public
-    { Public declarations }
     procedure Show_Modal(ADoc: Pointer);
   end;
 
 
 implementation
-uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, strutils, lr_PreviewToolsAbstract;
+uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, lr_PreviewToolsAbstract;
 
 {$R *.lfm}
 

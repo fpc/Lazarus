@@ -888,7 +888,9 @@ begin
         end;
       end;
     end;
-  end;
+  end
+  else
+    p := Point(0,0);
 
   // 2) See, if the current-1 line can be matched
   r := False;

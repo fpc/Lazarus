@@ -645,7 +645,6 @@ var
   i, aWidth, aHeight, BDeltaW, BDeltaH, BIndex,Cw,Ch: Integer;
   PaperRect: TPaperRect;
   ValidSize: Boolean;
-  CurDx, CurDy: Integer;
   {$ifdef DbgPrinter_detail}
   BestDw, BestDh: Integer;
 
