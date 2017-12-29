@@ -4,7 +4,7 @@ object MainForm: TMainForm
   Top = 125
   Width = 695
   Caption = 'JSON Viewer'
-  ClientHeight = 488
+  ClientHeight = 486
   ClientWidth = 695
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -128,18 +128,20 @@ object MainForm: TMainForm
   end
   object TVJSON: TTreeView
     Left = 0
-    Height = 483
+    Height = 460
     Top = 26
     Width = 695
     Align = alClient
     HideSelection = False
     Images = ILJSON
+    PopupMenu = PMTreeView
+    RightClickSelect = True
     TabOrder = 1
     OnEdited = TVJSONEdited
     OnEditing = TVJSONEditing
-    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
-  object ActionList1: TActionList
+  object ALJSON: TActionList
     Images = ILJSON
     left = 88
     top = 128
@@ -1006,5 +1008,40 @@ object MainForm: TMainForm
     OnFind = FDJSONFind
     left = 376
     top = 128
+  end
+  object PMTreeView: TPopupMenu
+    Images = ILJSON
+    left = 123
+    top = 215
+    object MenuItem4: TMenuItem
+      Action = ANewNullValue
+    end
+    object MenuItem5: TMenuItem
+      Action = ANewBooleanValue
+    end
+    object MenuItem6: TMenuItem
+      Action = ANewNumberValue
+    end
+    object MenuItem7: TMenuItem
+      Action = ANewStringValue
+    end
+    object MenuItem9: TMenuItem
+      Action = ANewArray
+    end
+    object MenuItem10: TMenuItem
+      Action = ANewObject
+    end
+    object MenuItem11: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem12: TMenuItem
+      Action = ADeleteValue
+    end
+    object MenuItem13: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem14: TMenuItem
+      Action = AExpandCurrentContainer
+    end
   end
 end

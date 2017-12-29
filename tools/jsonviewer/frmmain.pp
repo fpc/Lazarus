@@ -54,12 +54,22 @@ type
     ASave: TAction;
     AOpen: TAction;
     ANew: TAction;
-    ActionList1: TActionList;
+    ALJSON: TActionList;
     FDJSON: TFindDialog;
     ILJSON: TImageList;
     MEDit: TMenuItem;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
+    MenuItem13: TMenuItem;
+    MenuItem14: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
+    MenuItem9: TMenuItem;
     MIQuoteStrings: TMenuItem;
     MIAllowTrailingComma: TMenuItem;
     MIAllowComments: TMenuItem;
@@ -74,6 +84,7 @@ type
     MISortMembers: TMenuItem;
     MenuItem8: TMenuItem;
     MIDelete: TMenuItem;
+    PMTreeView: TPopupMenu;
     PSMain: TIniPropStorage;
     MenuItem1: TMenuItem;
     MINewNull: TMenuItem;
@@ -750,6 +761,7 @@ begin
     begin
     P.ImageIndex:=ImageTypeMap[D.JSONType];
     P.SelectedIndex:=ImageTypeMap[D.JSONType];
+    P.MakeVisible;
     end;
   ShowJSONData(P,D);
 end;
@@ -779,18 +791,21 @@ Var
   F : TFileStream;
 
 begin
-  F:=TFileStream.Create(AFileName,fmCreate);
-  try
-    If Assigned(FRoot) then
-      S:=FRoot.AsJSON;
-    If length(S)>0 then
-      F.WriteBuffer(S[1],Length(S));
-    FModified:=False;
-  finally
-    F.Free;
+  if (AFileName<>'') then
+  begin
+    F:=TFileStream.Create(AFileName,fmCreate);
+    try
+      If Assigned(FRoot) then
+        S:=FRoot.AsJSON;
+      If length(S)>0 then
+        F.WriteBuffer(S[1],Length(S));
+      FModified:=False;
+    finally
+      F.Free;
+    end;
+    FFileName:=AFileName;
+    SetCaption;
   end;
-  FFileName:=AFileName;
-  SetCaption;
 end;
 
 Function TMainForm.GetSaveFileName(Force : Boolean) : String;

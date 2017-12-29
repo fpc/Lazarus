@@ -117,7 +117,7 @@ msgstr "Den gewählten Wert löschen"
 
 #: tmainform.aexpandall.caption
 msgid "E&xpand all nodes"
-msgstr ""
+msgstr "Alle Knoten erweitern"
 
 #: tmainform.aexpandall.hint
 msgid "Expand all nodes in the document"
@@ -133,7 +133,7 @@ msgstr ""
 
 #: tmainform.afind.caption
 msgid "&Find"
-msgstr ""
+msgstr "Suchen"
 
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
@@ -165,11 +165,11 @@ msgstr "Einen neuen booleschen Wert hinzufügen"
 
 #: tmainform.anewnullvalue.caption
 msgid "New N&ull value"
-msgstr ""
+msgstr "Neuer N&ull Wert"
 
 #: tmainform.anewnullvalue.hint
 msgid "Add a new null value"
-msgstr ""
+msgstr "Neuen Null Wert hinzufügen"
 
 #: tmainform.anewnumbervalue.caption
 msgid "&New numerical Value"
@@ -189,7 +189,7 @@ msgstr "Ein neues JSON-Objekt hinzufügen"
 
 #: tmainform.anewstringvalue.caption
 msgid "New &string value"
-msgstr ""
+msgstr "Neuer &String Wert"
 
 #: tmainform.anewstringvalue.hint
 msgid "Add a new string value"
@@ -197,7 +197,7 @@ msgstr ""
 
 #: tmainform.aopen.caption
 msgid "&Open"
-msgstr ""
+msgstr "Ö&ffnen"
 
 #: tmainform.aopen.hint
 msgid "Open JSON document from file"
@@ -260,15 +260,15 @@ msgstr "Datei"
 #: tmainform.miallowcomments.caption
 msgctxt "tmainform.miallowcomments.caption"
 msgid "Allow comments"
-msgstr ""
+msgstr "Kommentare erlauben"
 
 #: tmainform.miallowtrailingcomma.caption
 msgid "Allow trailing comma"
-msgstr ""
+msgstr "Abschließendes Komma erlauben"
 
 #: tmainform.micompact.caption
 msgid "Compact display"
-msgstr ""
+msgstr "Kompakte Darstellung"
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
@@ -280,15 +280,15 @@ msgstr "Werte"
 
 #: tmainform.miquotestrings.caption
 msgid "Quote string values"
-msgstr ""
+msgstr "Stringwerte in Anführungszeichen"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
-msgstr ""
+msgstr "Objektfelder sortieren "
 
 #: tmainform.mistrict.caption
 msgid "&Strict JSON"
-msgstr ""
+msgstr "&Striktes JSON"
 
 #: tmainform.moptions.caption
 msgid "&Options"
@@ -296,11 +296,11 @@ msgstr "Einstellungen"
 
 #: tmainform.odjson.title
 msgid "Select a JSON file"
-msgstr ""
+msgstr "Wählen Sie eine JSON Datei"
 
 #: tmainform.sdjson.title
 msgid "Save JSON document to file"
-msgstr ""
+msgstr "JSON Dokument in Datei speichern"
 
 #: tmainform.tbjson.caption
 msgid "TBJSON"
