@@ -557,6 +557,7 @@ var
   P: Integer;
 begin
   Result := nil;
+  Exit;
   if OPMInterface = nil then
     Exit;
   PkgName := Trim(AName);
