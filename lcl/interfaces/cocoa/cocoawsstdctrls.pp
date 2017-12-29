@@ -949,6 +949,9 @@ begin
   nr.size.width:=AParams.Width;
 
   txt := TCocoaTextView.alloc.initwithframe(nr);
+  // setting up a default system font (to be consistent with other widgetsets)
+  txt.setFont( NSFont.systemFontOfSize( NSFont.systemFontSizeForControlSize(NSRegularControlSize) ));
+
   // this is necessary for Ward Wrap disabled, so NSViewText
   // doesn't have a constraint to resize
   // Apple default maxsize is InitialWidth, 10000000
