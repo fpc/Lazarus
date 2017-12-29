@@ -28,7 +28,7 @@ uses
   // LCL
   Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue,
   // LazUtils
-  LazUTF8Classes, TextStrings,
+  LazUTF8, LazUTF8Classes, TextStrings,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
@@ -845,14 +845,37 @@ end;
 
 procedure TCocoaMemoStrings.Insert(Index:Integer;const S:string);
 var
-  txt   : AnsiString;
-  ofs   : Integer;
-  t     : Integer;
+  rng   : NSRange;
+  st,ed : NSUInteger;
+  ced   : NSUInteger;
+  ns    : NSString;
+  idx   : integer;
+const
+  LFSTR = #13#10;
 begin
-  txt:=GetTextStr;
-  GetLineStart(txt, Index, ofs, t);
-  System.Insert(s+LineEnding, txt, ofs);
-  SetTextStr(txt)
+  ns:=FTextView.string_;
+  idx:=0;
+  rng:=NSMakeRange(0,0);
+  while (idx<Index) and (rng.location<ns.length) do begin
+    ns.getLineStart_end_contentsEnd_forRange(nil, @st, @ced, rng);
+    inc(idx);
+    rng.location:=st;
+    rng.length:=0;
+  end;
+
+  // using selectedRange in order to be consistent with Windows widgetset
+  if rng.location>ns.length then rng.location:=ns.length;
+  FTextView.setSelectedRange(rng);
+
+  if (rng.location>=ns.length) and (st=ced) and (ns.length>0) then
+    FTextView.insertText( NSString.stringWithUTF8String( LFSTR ));
+
+  if S<>'' then
+  begin
+    FTextView.insertText( NSString.stringWithUTF8String( @S[1] ));
+  end;
+
+  FTextView.insertText( NSString.stringWithUTF8String( LFSTR ));
 end;
 
 procedure TCocoaMemoStrings.LoadFromFile(const FileName: string);
@@ -968,7 +991,6 @@ begin
 
   nr:=scr.documentVisibleRect;
   txt.setFrame(nr);
-  txt.textContainer.setLineFragmentPadding(0);
   txt.lclSetEnabled(True);
 
   // ToDo: This should be made selectable in the LCL
