@@ -2249,6 +2249,7 @@ var
     
     // create node
     NewListCreated:=false;
+    NewList:=Nil;
     if CreateNode then begin
       if ShowPackages then begin
         if DestParentList=nil then
