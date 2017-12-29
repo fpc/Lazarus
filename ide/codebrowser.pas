@@ -2184,20 +2184,11 @@ var
     end;
   end;
   
-  procedure AddUnits(SrcList: TCodeBrowserUnitList;
-    var DestParentList: TCodeBrowserUnitList);
-    
-    procedure RaiseParentNotUnitList;
-    begin
-      raise Exception.Create('TCodeBrowserView.UpdateTreeView.AddUnits.RaiseParentNotUnitList');
-    end;
-    
+  procedure AddUnits(SrcList: TCodeBrowserUnitList; var DestParentList: TCodeBrowserUnitList);
   var
     Node: TAVLTreeNode;
-    CurUnit: TCodeBrowserUnit;
-    NewUnit: TCodeBrowserUnit;
-    List: TCodeBrowserUnitList;
-    OldDestParentList: TObject;
+    CurUnit, NewUnit: TCodeBrowserUnit;
+    List, OldDestParentList: TCodeBrowserUnitList;
   begin
     if SrcList=nil then exit;
     //DebugLn(['AddUnits SrcList.Owner="',SrcList.Owner,'" HasUnits=',SrcList.Units<>nil]);
@@ -2210,11 +2201,9 @@ var
       if (CurUnit.Filename='')
       or IdentifierFitsFilter(cblUnits,ExtractFileNameOnly(CurUnit.Filename))
       then begin
-        if DestParentList=nil then begin
+        if DestParentList=nil then
           DestParentList:=TCodeBrowserUnitList.Create(CodeBrowserHidden,nil);
-        end else if not (DestParentList is TCodeBrowserUnitList) then
-          RaiseParentNotUnitList;
-        List:=TCodeBrowserUnitList(DestParentList);
+        List:=DestParentList;
         if ShowUnits then begin
           // create a unit node
           NewUnit:=List.AddUnit(CurUnit.Filename);
@@ -2247,11 +2236,8 @@ var
     var DestParentList: TCodeBrowserUnitList);
   var
     Node: TAVLTreeNode;
-    SubList: TCodeBrowserUnitList;
-    NewList: TCodeBrowserUnitList;
-    OldDestParentList: TCodeBrowserUnitList;
-    NewListCreated: Boolean;
-    CreateNode: Boolean;
+    SubList, NewList, OldDestParentList: TCodeBrowserUnitList;
+    NewListCreated, CreateNode: Boolean;
   begin
     if SrcList=nil then exit;
     //DebugLn(['AddUnitLists SrcList.Owner="',SrcList.Owner,'"']);
@@ -2265,14 +2251,12 @@ var
     NewListCreated:=false;
     if CreateNode then begin
       if ShowPackages then begin
-        if DestParentList=nil then begin
+        if DestParentList=nil then
           DestParentList:=TCodeBrowserUnitList.Create(CodeBrowserHidden,nil);
-        end;
         NewList:=TCodeBrowserUnitList.Create(SrcList.Owner,DestParentList);
         NewListCreated:=true;
-      end else begin
+      end else
         NewList:=DestParentList;
-      end;
     end;
     // create nodes for unitlists
     if SrcList.UnitLists<>nil then begin
@@ -2291,12 +2275,9 @@ var
         //DebugLn(['AddUnitLists EMPTY ',NewList.Owner,' ',NewList.UnitListCount,' ',NewList.UnitCount]);
         if DestParentList=NewList then
           DestParentList:=nil;
-        NewList.Free;
-        NewList:=nil;
-        if (OldDestParentList=nil) and (DestParentList<>nil)
-        and DestParentList.IsEmpty then begin
+        FreeAndNil(NewList);
+        if (OldDestParentList=nil) and (DestParentList<>nil) and DestParentList.IsEmpty then
           FreeAndNil(DestParentList);
-        end;
       end;
       // update DestParentList
       if (DestParentList=nil) then
