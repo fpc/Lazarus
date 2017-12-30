@@ -914,6 +914,14 @@ function GetNSViewSuperViewHeight(view: NSView): CGFloat;
 
 procedure SetNSControlSize(ctrl: NSControl; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
 
+// these constants are missing from CocoaAll for some reason
+const
+  NSTextAlignmentLeft      = 0;
+  NSTextAlignmentRight     = 1; // it's 2 for iOS and family
+  NSTextAlignmentCenter    = 2; // it's 1 for iOS and family
+  NSTextAlignmentJustified = 3;
+  NSTextAlignmentNatural   = 4;
+
 implementation
 
 uses CocoaWSComCtrls, CocoaInt;

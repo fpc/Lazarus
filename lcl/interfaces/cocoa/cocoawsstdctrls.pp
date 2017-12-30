@@ -164,11 +164,17 @@ type
     class function GetScrollView(AWinControl: TWinControl): TCocoaScrollView;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+
+    // WSControl functions
+    class procedure SetColor(const AWinControl: TWinControl); override;
+
     // WSEdit functions
     //class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const NewAlignment: TAlignment); override;
+
     // WSMemo functions
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
@@ -269,6 +275,8 @@ function GetListBox(AWinControl: TWinControl): TCocoaListBox;
 procedure ListBoxSetStyle(list: TCocoaListBox; AStyle: TListBoxStyle);
 
 procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWrap: Boolean);
+function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
+procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
 
 implementation
 
@@ -935,6 +943,24 @@ begin
   txt.sizeToFit;
 end;
 
+function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
+begin
+  case al of
+    taRightJustify:
+      Result := NSTextAlignmentRight;
+    taCenter:
+      Result := NSTextAlignmentCenter;
+  else
+    Result:= NSTextAlignmentLeft;
+  end;
+end;
+
+procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
+begin
+  //todo: for bidi modes, there's "NSTextAlignmentNatural"
+  txt.setAlignment( AlignmentLCLToCocoa(align) );
+end;
+
 class function TCocoaWSCustomMemo.GetTextView(AWinControl: TWinControl): TCocoaTextView;
 var
   lScroll: TCocoaScrollView;
@@ -1011,7 +1037,17 @@ begin
   scr.callback := txt.callback;
 
   TextViewSetWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
+  TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
   Result := TLCLIntfHandle(scr);
+end;
+
+class procedure TCocoaWSCustomMemo.SetColor(const AWinControl: TWinControl);
+var
+  txt: TCocoaTextView;
+begin
+  txt := GetTextView(AWinControl);
+  if not Assigned(txt) then Exit;
+  txt.setBackgroundColor( ColorToNSColor(AWinControl.Color));
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
@@ -1073,6 +1109,16 @@ begin
   txt := GetTextView(ACustomEdit);
   if not Assigned(txt) then Exit;
   Result := txt.selectedRange.length;
+end;
+
+class procedure TCocoaWSCustomMemo.SetAlignment(const ACustomEdit: TCustomEdit;
+  const NewAlignment: TAlignment);
+var
+  txt: TCocoaTextView;
+begin
+  txt := GetTextView(ACustomEdit);
+  if Assigned(txt) then
+    TextViewSetAllignment(txt, NewAlignment);
 end;
 
 class function TCocoaWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
