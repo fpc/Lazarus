@@ -278,7 +278,7 @@ type
 
   { TCocoaTextView }
 
-  TCocoaTextView = objcclass(NSTextView)
+  TCocoaTextView = objcclass(NSTextView, NSTextDelegateProtocol, NSTextViewDelegateProtocol)
   public
     callback: ICommonCallback;
     FEnabled: Boolean;
@@ -308,6 +308,9 @@ type
     //
     function lclIsEnabled: Boolean; override;
     procedure lclSetEnabled(AEnabled: Boolean); override;
+
+    // delegate methods
+    procedure textDidChange(notification: NSNotification); message 'textDidChange:';
   end;
 
   { TCocoaPanel }
@@ -2084,6 +2087,13 @@ procedure TCocoaTextView.lclSetEnabled(AEnabled: Boolean);
 begin
   FEnabled := AEnabled;
 end;
+
+procedure TCocoaTextView.textDidChange(notification: NSNotification);
+begin
+  if callback <> nil then
+    callback.SendOnTextChanged;
+end;
+
 //
 
 { TCocoaSecureTextField }

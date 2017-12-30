@@ -998,6 +998,8 @@ begin
   txt.setAutomaticTextReplacementEnabled(False);
 
   txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
+  txt.setDelegate(txt);
+
   ns := NSStringUtf8(AParams.Caption);
   txt.setString(ns);
   ns.release;
