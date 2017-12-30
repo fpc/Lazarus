@@ -34,15 +34,7 @@ end;
 
 procedure TCustomDBComboBox.Change;
 begin
-  FDataLink.OnDataChange := nil;
-  try
-  if FDataLink.CanModify then begin
-    FDataLink.Edit;
-    FDataLink.Modified;
-    end;
-  finally
-    FDataLink.OnDataChange := @DataChange;
-  end;
+  FDataLink.Modified;
   inherited Change;
 end;
 
