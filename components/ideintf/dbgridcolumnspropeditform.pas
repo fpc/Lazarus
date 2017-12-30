@@ -51,6 +51,8 @@ type
     FOwnerComponent: TPersistent;
     FOwnerPersistent: TPersistent;
     FPropertyName: String;
+    procedure FillCollectionListBox;
+    procedure SelectInObjectInspector(ForceUpdate, UnselectAll: Boolean);
   protected
     procedure UpdateCaption;
     procedure UpdateButtons;
@@ -59,8 +61,6 @@ type
     procedure PersistentDeleting(APersistent: TPersistent);
     procedure RefreshPropertyValues;
   public
-    procedure FillCollectionListBox;
-    procedure SelectInObjectInspector(ForceUpdate, UnselectAll: Boolean);
     procedure SetCollection(NewCollection: TCollection;
                     NewOwnerPersistent: TPersistent; const NewPropName: String);
     procedure Modified;

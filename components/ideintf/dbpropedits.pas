@@ -37,7 +37,7 @@ type
  TDBGridColumnsPropertyEditor = class (TCollectionPropertyEditor)
  public
    class function ShowCollectionEditor(ACollection: TCollection;
-   OwnerPersistent: TPersistent; const PropName: String): TCustomForm; override;
+     OwnerPersistent: TPersistent; const PropName: String): TCustomForm; override;
  end;
 
   { TLookupFieldProperty }
