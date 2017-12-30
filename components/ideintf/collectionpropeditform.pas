@@ -376,6 +376,7 @@ begin
   end;
 
   FillCollectionListBox;
+  CollectionListBox.ItemIndex := -1;  // Some widgetsets select the last item.
   UpdateCaption;
 end;
 
