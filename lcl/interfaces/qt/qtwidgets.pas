@@ -12906,7 +12906,7 @@ begin
           DC.Free;
         end;
       end else
-      if QEvent_type(Event) = LCLQt_ItemViewAfterMouseRelease then
+      if getEnabled and (QEvent_type(Event) = LCLQt_ItemViewAfterMouseRelease) then
       begin
         ALCLEvent := QLCLMessageEventH(Event);
         Item := QListWidgetItemH(QLCLMessageEvent_getLParam(ALCLEvent));
@@ -12919,7 +12919,7 @@ begin
           HandleCheckChangedEvent(MousePos, Item, Event);
         end;
       end else
-      if QEvent_type(Event) = QEventMouseButtonRelease then
+      if getEnabled and (QEvent_type(Event) = QEventMouseButtonRelease) then
       begin
         if OwnerDrawn and Checkable then
         begin
@@ -12956,7 +12956,7 @@ begin
         end;
       end else
       begin
-        if (QEvent_type(Event) = QEventMouseButtonPress) then
+        if getEnabled and (QEvent_type(Event) = QEventMouseButtonPress) then
         begin
           MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
           Item := itemAt(MousePos.x, MousePos.y);
@@ -13072,7 +13072,7 @@ begin
           end;
         end;
 
-        if Checkable and (QEvent_type(Event) = QEventMouseButtonDblClick) then
+        if getEnabled and Checkable and (QEvent_type(Event) = QEventMouseButtonDblClick) then
         begin
           MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
           Item := itemAt(MousePos.x, MousePos.y);
@@ -13088,7 +13088,7 @@ begin
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick:
       begin
-        if (Checkable) and
+        if getEnabled and Checkable and
           (QEvent_type(Event) <> QEventMouseButtonDblClick) and
           (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
         begin
@@ -14544,7 +14544,7 @@ begin
         DC.Free;
       end;
     end else
-    if (ViewStyle = Ord(vsReport)) and Checkable then
+    if (ViewStyle = Ord(vsReport)) and Checkable and getEnabled then
     begin
       if QEvent_type(Event) = LCLQt_ItemViewAfterMouseRelease then
       begin
