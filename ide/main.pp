@@ -13069,18 +13069,11 @@ end;
 procedure TMainIDE.PropHookDeletePersistent(var APersistent: TPersistent);
 var
   ADesigner: TDesigner;
-  AComponent: TComponent;
 begin
   if APersistent=nil then exit;
-  DebugLn('Hint: (lazarus) TMainIDE.OnPropHookDeletePersistent A ',dbgsName(APersistent));
-  if APersistent is TComponent then begin
-    AComponent:=TComponent(APersistent);
-    ADesigner:=TDesigner(FindRootDesigner(AComponent));
-    if ADesigner=nil then exit;
-    ADesigner.RemovePersistentAndChilds(AComponent);
-  end else begin
-    APersistent.Free;
-  end;
+  ADesigner:=TDesigner(FindRootDesigner(APersistent));
+  if ADesigner=nil then exit;
+  ADesigner.RemovePersistentAndChilds(APersistent);
   APersistent:=nil;
 end;
 
