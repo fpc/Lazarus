@@ -9065,16 +9065,13 @@ begin
   if AnUnitInfo <> nil then
   begin
     AnUnitInfo.Modified := True;
-    if AnUnitInfo.Loaded then
+    if AnUnitInfo.Loaded and (AnUnitInfo.OpenEditorInfoCount > 0) then
     begin
-      if AnUnitInfo.OpenEditorInfoCount > 0 then
-      begin
-        SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
-        SrcEdit.Modified := True;
-        {$IFDEF VerboseDesignerModified}
-        DumpStack;
-        {$ENDIF}
-      end;
+      SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
+      SrcEdit.Modified := True;
+      {$IFDEF VerboseDesignerModified}
+      DumpStack;
+      {$ENDIF}
     end;
   end;
 end;
