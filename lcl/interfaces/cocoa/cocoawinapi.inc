@@ -1557,8 +1557,23 @@ end;
 {----------------------------- WINDOWS SCROLLING ------------------------------}
 
 function TCocoaWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+var
+  sc  : NSScrollView;
+  obj : NSObject;
 begin
-  Result:=0;
+  obj := HandleToNSObject(Handle);
+  Result := 0;
+  if not Assigned(obj) then Exit;
+
+  if obj.isKindOfClass(NSScrollView) then
+  begin
+    if (BarKind = SB_Vert) and Assigned(NSScrollView(obj).verticalScroller) then
+      Result:=round(NSScrollView(obj).verticalScroller.frame.size.width)
+    else if (BarKind = SB_Horz) and Assigned(NSScrollView(obj).horizontalScroller) then
+      Result:=round(NSScrollView(obj).verticalScroller.frame.size.height);
+  end
+  else
+    Result := inherited GetScrollBarSize(Handle, BarKind);
 end;
 
 function TCocoaWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
@@ -1568,8 +1583,18 @@ end;
 
 function TCocoaWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer;
   var ScrollInfo: TScrollInfo): Boolean;
+var
+  sc : NSScrollView;
+  obj : NSObject;
 begin
-  Result:=False;
+  obj := HandleToNSObject(Handle);
+  Result := Assigned(obj);
+  if not Result then Exit;
+
+  if obj.isKindOfClass(NSScrollView) then
+    NSScrollViewGetScrollInfo(NSScrollView(obj), BarFlag, ScrollInfo)
+  else
+    Result := False;
 end;
 
 function TCocoaWidgetSet.GetStockObject(Value: Integer): THandle;
@@ -1694,8 +1719,20 @@ begin
 end;
 
 function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
+var
+  si  : TScrollInfo;
+  obj : NSObject;
 begin
-  Result:=0;
+  obj := HandleToNSObject(Handle);
+  Result := 0;
+  if not Assigned(obj) then Exit;
+
+  if obj.isKindOfClass(NSScrollView) then
+  begin
+    NSScrollViewSetScrollInfo(NSScrollView(obj), SBStyle, ScrollInfo);
+    NSScrollViewGetScrollInfo(NSScrollView(obj), SBStyle, si);
+    Result:=si.nPos;
+  end;
 end;
 
 function TCocoaWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;

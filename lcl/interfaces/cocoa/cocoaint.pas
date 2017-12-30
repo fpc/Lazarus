@@ -179,6 +179,12 @@ type
 var
   CocoaWidgetSet: TCocoaWidgetSet;
 
+procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
+procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
+procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
+procedure NSScrollViewSetScrollInfo(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
+function HandleToNSObject(AHWnd: HWND): id;
+
 implementation
 
 // NSCursor doesn't support any wait cursor, so we need to use a non-native one
@@ -188,6 +194,81 @@ implementation
 uses
   CocoaCaret,
   CocoaThemes;
+
+
+procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
+begin
+  ScrollInfo.cbSize:=sizeof(ScrollInfo);
+  ScrollInfo.fMask:=SIF_ALL;
+  ScrollInfo.nPos:=round(rl.floatValue*(docSz-pageSz));
+  ScrollInfo.nTrackPos:=ScrollInfo.nPos;
+  ScrollInfo.nMin:=0;
+  ScrollInfo.nMax:=round(docSz);
+  ScrollInfo.nPage:=round(rl.knobProportion*docSz);
+end;
+
+procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
+var
+  ns : NSView;
+  vr : NSRect;
+begin
+  ns:=sc.documentView;
+  if not Assigned(ns) then begin
+    FillChar(ScrollInfo, sizeof(ScrollInfo),0);
+    ScrollInfo.cbSize:=sizeof(ScrollInfo);
+    Exit;
+  end;
+  vr:=sc.documentVisibleRect;
+  if BarFlag = SB_Vert then
+    NSScrollerGetScrollInfo(ns.frame.size.height, vr.size.height, sc.verticalScroller, ScrollInfo)
+  else
+    NSScrollerGetScrollInfo(ns.frame.size.width, vr.size.width, sc.horizontalScroller, ScrollInfo);
+end;
+
+procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
+var
+  sz : CGFloat;
+begin
+  if ScrollInfo.fMask and SIF_POS>0 then begin
+    sz:=docSz-pageSz;
+    if sz=0 then rl.setFloatValue(0)
+    else rl.setFloatValue(ScrollInfo.nPos/sz);
+  end;
+  if ScrollInfo.fMask and SIF_PAGE>0 then begin
+    sz:=docSz-pageSz;
+    if sz=0 then rl.setKnobProportion(1)
+    else rl.setKnobProportion(1/sz);
+  end;
+end;
+
+procedure NSScrollViewSetScrollInfo(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
+var
+  ns : NSView;
+  p  : NSPoint;
+begin
+  ns:=sc.documentView;
+  if not Assigned(ns) then Exit;
+
+  p:=sc.documentVisibleRect.origin;
+  if BarFlag = SB_Vert then
+  begin
+    //NSScrollerSetScrollInfo(ns.frame.size.height, sc.verticalScroller, ScrollInfo)
+    p:=NSMakePoint(p.x, ScrollInfo.nPos);
+  end
+  else
+  begin
+    //NSScrollerSetScrollInfo(ns.frame.size.width, sc.horizontalScroller, ScrollInfo);
+    p:=NSMakePoint(ScrollInfo.nPos, p.y);
+  end;
+  ns.scrollPoint(p);
+end;
+
+function HandleToNSObject(AHWnd: HWND): id;
+begin
+  if (AHwnd=0) or not NSObject(AHWnd).lclisHandle then Result:=nil
+  else Result:=NSObject(AHwnd);
+end;
+
 
 // the implementation of the utility methods
 {$I cocoaobject.inc}
