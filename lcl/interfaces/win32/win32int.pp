@@ -207,6 +207,8 @@ type
     property CommonControlsVersion: DWord read FCommonControlsVersion;
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
     property DotsPatternBitmap: HBitmap read GetDotsPatternBitmap;
+    property Metrics: TNonClientMetrics read FMetrics;
+    property MetricsFailed: Boolean read FMetricsFailed;
   end;
 
   {$I win32listslh.inc}

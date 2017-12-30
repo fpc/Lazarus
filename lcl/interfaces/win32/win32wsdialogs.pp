@@ -1198,6 +1198,13 @@ begin
       LFUnderline := byte(fsUnderline in Font.Style);
       LFCharSet := Font.CharSet;
     end;
+    // Duplicate logic in CreateFontIndirect
+    if not Win32WidgetSet.MetricsFailed and SameText(Font.Name, DefFontData.Name) then
+    begin
+      LFW.lfFaceName := UTF8ToUTF16(Win32WidgetSet.Metrics.lfMessageFont.lfFaceName);
+      if LFW.lfHeight = 0 then
+        LFW.lfHeight := Win32WidgetSet.Metrics.lfMessageFont.lfHeight;
+    end;
     with CFW do
     begin
       LStructSize := sizeof(TChooseFont);
@@ -1215,7 +1222,7 @@ begin
         lpfnHook := @FontDialogCallBack;
         lCustData := PtrInt(@ACommonDialog);
       end;
-      RGBColors := DWORD(Font.Color);
+      RGBColors := ColorToRGB(Font.Color);
       if fdLimitSize in Options then
       begin
         nSizeMin := MinFontSize;
