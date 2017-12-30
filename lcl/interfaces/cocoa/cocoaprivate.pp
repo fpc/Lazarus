@@ -282,6 +282,9 @@ type
   public
     callback: ICommonCallback;
     FEnabled: Boolean;
+
+    supressTextChangeEvent: Integer; // if above zero, then don't send text change event
+
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -2090,7 +2093,7 @@ end;
 
 procedure TCocoaTextView.textDidChange(notification: NSNotification);
 begin
-  if callback <> nil then
+  if (callback <> nil) and (supressTextChangeEvent = 0) then
     callback.SendOnTextChanged;
 end;
 

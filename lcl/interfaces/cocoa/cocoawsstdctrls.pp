@@ -138,7 +138,7 @@ type
 
   TCocoaMemoStrings = class(TCustomMemoStrings)
   private
-    FTextView: NSTextView;
+    FTextView: TCocoaTextView;
   public
     class procedure GetLineStart(const s: AnsiString; LineIndex: Integer; var Offset, LinesSkipped: Integer);
     class function GetLinesCount(const s: AnsiString): Integer;
@@ -148,7 +148,7 @@ type
     function GetCount: Integer; override;
     function Get(Index: Integer): string; override;
   public
-    constructor Create(ATextView: NSTextView);
+    constructor Create(ATextView: TCocoaTextView);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: string); override;
@@ -747,7 +747,7 @@ end;
 
 { TCocoaMemoStrings }
 
-constructor TCocoaMemoStrings.Create(ATextView: NSTextView);
+constructor TCocoaMemoStrings.Create(ATextView: TCocoaTextView);
 begin
   inherited Create;
   FTextView := ATextView;
@@ -765,6 +765,8 @@ begin
   ns := NSStringUtf8(Value);
   FTextView.setString(ns);
   ns.release;
+
+  FTextView.textDidChange(nil);
 end;
 
 class procedure TCocoaMemoStrings.GetLineStart(const s: AnsiString; LineIndex: Integer; var Offset, LinesSkipped: Integer);
@@ -865,6 +867,7 @@ begin
 
   // using selectedRange in order to be consistent with Windows widgetset
   if rng.location>ns.length then rng.location:=ns.length;
+  inc(FTextView.supressTextChangeEvent);
   FTextView.setSelectedRange(rng);
 
   if (rng.location>=ns.length) and (st=ced) and (ns.length>0) then
@@ -875,6 +878,7 @@ begin
     FTextView.insertText( NSString.stringWithUTF8String( @S[1] ));
   end;
 
+  dec(FTextView.supressTextChangeEvent);
   FTextView.insertText( NSString.stringWithUTF8String( LFSTR ));
 end;
 
