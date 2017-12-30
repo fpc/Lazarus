@@ -122,8 +122,13 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
+    // WSControl functions
+    class procedure SetColor(const AWinControl: TWinControl); override;
+
+    // WSEdit functions
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const NewAlignment: TAlignment); override;
 
     {class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
@@ -277,6 +282,7 @@ procedure ListBoxSetStyle(list: TCocoaListBox; AStyle: TListBoxStyle);
 procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWrap: Boolean);
 function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
 procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
+procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
 
 implementation
 
@@ -680,7 +686,18 @@ begin
     else field:=NSTextField(AllocSecureTextField(AWinControl, AParams));
   NSCell(field.cell).setWraps(false);
   NSCell(field.cell).setScrollable(true);
+  TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
   Result:=TLCLIntfHandle(field);
+end;
+
+class procedure TCocoaWSCustomEdit.SetColor(const AWinControl: TWinControl);
+var
+  field: TCocoaTextField;
+begin
+  field := GetTextField(AWinControl);
+  if not Assigned(field) then Exit;
+
+  field.setBackgroundColor( ColorToNSColor(AWinControl.Color));
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -709,6 +726,16 @@ begin
   if not Assigned(txt) then Exit;
 
   Result:=txt.selectedRange.length;
+end;
+
+class procedure TCocoaWSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
+  const NewAlignment: TAlignment);
+var
+  field: TCocoaTextField;
+begin
+  field := GetTextField(ACustomEdit);
+  if not Assigned(field) then Exit;
+  TextFieldSetAllignment(field, NewAlignment);
 end;
 
 class procedure TCocoaWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
@@ -956,6 +983,12 @@ begin
 end;
 
 procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
+begin
+  //todo: for bidi modes, there's "NSTextAlignmentNatural"
+  txt.setAlignment( AlignmentLCLToCocoa(align) );
+end;
+
+procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
 begin
   //todo: for bidi modes, there's "NSTextAlignmentNatural"
   txt.setAlignment( AlignmentLCLToCocoa(align) );
