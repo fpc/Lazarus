@@ -6939,6 +6939,7 @@ begin
   finally
     Files.Free;
   end;
+  Result:=mrOk;
 end;
 
 function TMainIDE.DoAbortBuild(Interactive: boolean): TModalResult;
