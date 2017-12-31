@@ -75,6 +75,15 @@ type
     procedure applicationDidChangeScreenParameters(notification: NSNotification);
   end;
 
+  { TCocoaApplication }
+
+  TCocoaApplication = objcclass(NSApplication)
+    aloop : TApplicationMainLoop;
+    isrun : Boolean;
+    function isRunning: Boolean; override;
+    procedure run; override;
+  end;
+
   { TCocoaWidgetSet }
 
   TCocoaWidgetSet = class(TWidgetSet)
@@ -267,6 +276,19 @@ function HandleToNSObject(AHWnd: HWND): id;
 begin
   if (AHwnd=0) or not NSObject(AHWnd).lclisHandle then Result:=nil
   else Result:=NSObject(AHwnd);
+end;
+
+{ TCocoaApplication }
+
+function TCocoaApplication.isRunning: Boolean;
+begin
+  Result:=isrun;
+end;
+
+procedure TCocoaApplication.run;
+begin
+  isrun:=true;
+  aloop();
 end;
 
 

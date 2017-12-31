@@ -35,7 +35,7 @@ begin
   WakeMainThread := @OnWakeMainThread;
 
   { Creates the application NSApp object }
-  FNSApp := NSApplication.sharedApplication;
+  FNSApp := TCocoaApplication.sharedApplication;
   FNSApp_Delegate := TAppDelegate.alloc.init;
   FNSApp.setDelegate(FNSApp_Delegate);
 
@@ -78,7 +78,10 @@ procedure TCocoaWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
   NSApp.finishLaunching;
   if Assigned(ALoop) then
-    ALoop;
+  begin
+    TCocoaApplication(NSApp).aloop:=ALoop;
+    NSApp.run();
+  end;
 end;
 
 {------------------------------------------------------------------------------
