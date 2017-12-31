@@ -130,6 +130,8 @@ function UTF8LowerString(const s: string): string;
 function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
 function UTF8UpperString(const s: string): string;
 function UTF8SwapCase(const AInStr: string; ALanguage: string=''): string;
+// Capitalize the first letters of every word
+function UTF8ProperCase(const AInStr: string; const WordDelims: TSysCharSet): string;
 function FindInvalidUTF8Codepoint(p: PChar; Count: PtrInt; StopOnNonUTF8: Boolean = true): PtrInt;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt; StopOnNonUTF8: Boolean = true): PtrInt; deprecated 'Use FindInvalidUTF8Codepoint instead.';
 function UTF8StringOfChar(AUtf8Char: String; N: Integer): String;
@@ -1227,6 +1229,34 @@ begin
       Result[I] := xUpperCase[I]
     else
       Result[I] := xLowerCase[I];
+end;
+
+function UTF8ProperCase(const AInStr: string; const WordDelims: TSysCharSet): string;
+var
+  P, PE : PChar;
+  CharLen: Integer;
+  Capital: string;
+begin
+  Result := UTF8LowerCase(AInStr);
+  UniqueString(Result);
+  P := PChar(Result);
+  PE := P+Length(Result);
+  while (P<PE) do
+  begin
+    while (P<PE) and (P^ in WordDelims) do
+      inc(P);
+    if (P<PE) then
+    begin
+      CharLen := UTF8CodepointSize(P);
+      SetLength(Capital, CharLen);
+      System.Move(P^, Capital[1], CharLen); // Copy one codepoint to Capital,
+      Capital := UTF8UpperCase(Capital);    // UpperCase it
+      System.Move(Capital[1], P^, CharLen); // and copy it back.
+      Inc(P, CharLen);
+    end;
+    while (P<PE) and not (P^ in WordDelims) do
+      inc(P);
+  end;
 end;
 
 {
