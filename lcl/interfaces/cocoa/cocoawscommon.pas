@@ -215,7 +215,8 @@ begin
   else if lView <> nil then
   begin
     Point := lView.convertPoint_fromView(Point, nil);
-    Point.y := lView.bounds.size.height - Point.y;
+    if not lView.isFlipped then
+      Point.y := lView.bounds.size.height - Point.y;
   end;
 end;
 
