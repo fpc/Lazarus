@@ -383,7 +383,6 @@ var
   docview: TCocoaCustomControl;
 begin
   scrollcon := TCocoaScrollView.alloc.lclInitWithCreateParams(AParams);
-  scrollcon.callback := TLCLCustomControlCallback.Create(scrollcon, AWinControl);
   scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
   scrollcon.setAutohidesScrollers(True);
   scrollcon.setHasHorizontalScroller(True);
@@ -393,9 +392,10 @@ begin
   docview := TCocoaCustomControl.alloc.initWithFrame(scrollcon.contentview.frame);
   docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   docview.callback := TLCLCustomControlCallback.Create(docview, AWinControl);
+  scrollcon.callback := docview.callback;
   scrollcon.setDocumentView(docview);
   scrollcon.setAutoresizesSubviews(True);
-  docview.autorelease;
+
   Result := TLCLIntfHandle(scrollcon);
 end;
 
