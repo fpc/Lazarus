@@ -12735,8 +12735,9 @@ begin
         else
           SetItemLastCheckStateInternal(AItem, QtUnChecked);
 
-        SendMessage(AItem);
+        // if AItem is deleted in mouse event FDelayedCheckItem becomes nil and that's fine. issue #32869
         FDelayedCheckItem := AItem;
+        SendMessage(AItem);
       end;
     end;
   end else
@@ -13668,6 +13669,8 @@ begin
     if (getSelectionMode = QAbstractItemViewSingleSelection) then
       setCurrentRow(-1);
   Item := QListWidget_takeitem(QListWidgetH(Widget), AIndex);
+  if FDelayedCheckItem = Item then
+    FDelayedCheckItem := nil;
   QListWidgetItem_destroy(Item);
 end;
 
@@ -14381,8 +14384,9 @@ begin
         else
           SetItemLastCheckStateInternal(AItem, QtUnChecked);
 
-        SendMessage(AItem);
+        // if AItem is deleted in mouse event FDelayedCheckItem becomes nil and that's fine. issue #32869
         FDelayedCheckItem := AItem;
+        SendMessage(AItem);
       end;
     end;
   end else
@@ -14919,6 +14923,8 @@ begin
     Index := -1;
   if Index <> -1 then
     FSelection.Remove(Item);
+  if FDelayedCheckItem = Item then
+    FDelayedCheckItem := nil;
   Item := takeTopLevelItem(AIndex);
   if Item <> nil then
     QTreeWidgetItem_destroy(Item);
