@@ -364,6 +364,7 @@ type
   TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
   protected
     fieldEditor: TCocoaFieldEditor;
+    firedMouseEvent: Boolean;
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
@@ -1401,6 +1402,7 @@ end;
 
 procedure TCocoaWindow.mouseUp(event: NSEvent);
 begin
+  firedMouseEvent:=true;
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited mouseUp(event);
 end;
@@ -1478,6 +1480,11 @@ var
   LP: LParam;
   ResultCode: NSNumber;
   Obj: NSObject;
+
+  Epos: NSPoint;
+  cr : NSRect;
+  fr : NSRect;
+  trackEvent: Boolean;
 begin
   if event.type_ = NSApplicationDefined then
   begin
@@ -1500,6 +1507,32 @@ begin
         Message.release;
       //ResultCode.release;               // will be auto-released
     end;
+  end
+  else
+  if event.type_ = NSLeftMouseUp then
+  // This code is introduced here for an odd cocoa feature.
+  // mouseUp is not fired, if pressed on Window's title.
+  // (even though mouseDown, mouseMove and mouseDragged are fired)
+  // (there are some information in the internet, that mouseDown is not firing as well)
+  // (however this is not true for macOS 10.12)
+  // The logic below is as following. If mouseUp event arrived
+  // and mouse position is on the title of the form.
+  // then try to process the event. If event was not processed, call mouseUp()
+  // specifically.
+  begin
+    Epos:=event.locationInWindow;
+    fr := frame;
+    fr.origin.x:=0;
+    fr.origin.y:=0;
+    cr := contentRectForFrameRect(fr);
+    if NSPointInRect(Epos, fr) and not NSPointInRect(Epos, cr) then
+    begin
+      firedMouseEvent := false;
+      inherited sendEvent(event);
+      if not firedMouseEvent then mouseUp(event);
+    end
+    else
+      inherited sendEvent(event);
   end
   else
     inherited sendEvent(event);
