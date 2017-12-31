@@ -1396,56 +1396,56 @@ end;
 
 procedure TCocoaWindow.mouseDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited mouseDown(event);
 end;
 
 procedure TCocoaWindow.mouseUp(event: NSEvent);
 begin
-  firedMouseEvent:=true;
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  //firedMouseEvent:=true;
+  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited mouseUp(event);
 end;
 
 procedure TCocoaWindow.rightMouseDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseUp(event);
 end;
 
 procedure TCocoaWindow.rightMouseUp(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseDown(event);
 end;
 
 procedure TCocoaWindow.rightMouseDragged(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited rightMouseDragged(event);
 end;
 
 procedure TCocoaWindow.otherMouseDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseDown(event);
 end;
 
 procedure TCocoaWindow.otherMouseUp(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseUp(event);
 end;
 
 procedure TCocoaWindow.otherMouseDragged(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  //if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
     inherited otherMouseDown(event);
 end;
 
 procedure TCocoaWindow.mouseDragged(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
+  //if not Assigned(callback) or not callback.MouseMove(event) then
     inherited mouseDragged(event);
 end;
 
@@ -1461,7 +1461,7 @@ end;
 
 procedure TCocoaWindow.mouseMoved(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
+  //if not Assigned(callback) or not callback.MouseMove(event) then
     inherited mouseMoved(event);
 end;
 

@@ -817,6 +817,12 @@ begin
   end
   else
   begin
+    rect:=Target.BoundsRect;
+    OffsetRect(rect, -rect.left, -rect.Top);
+    if (event.type_ = NSMouseMoved) and (not Types.PtInRect(rect, mp)) then
+      // do not send negative coordinates (unless dragging mouse)
+      Exit;
+
     if assigned(Target.Parent) and not Types.PtInRect(rect, mp) then
        targetControl:=Target.Parent // outside myself then route to parent
     else
