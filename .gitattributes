@@ -3522,6 +3522,7 @@ components/mouseandkeyinput/winmouseinput.pas svneol=native#text/pascal
 components/mouseandkeyinput/xkeyinput.pas svneol=native#text/pascal
 components/mouseandkeyinput/xmouseinput.pas svneol=native#text/pascal
 components/mpaslex/mpaslex.pp svneol=native#text/pascal
+components/mrumenu/build_res.bat svneol=native#text/plain
 components/mrumenu/demo/frmmain.lfm svneol=native#text/plain
 components/mrumenu/demo/frmmain.pp svneol=native#text/plain
 components/mrumenu/demo/mrudemo.ico -text svneol=unset#image/ico
@@ -3534,6 +3535,8 @@ components/mrumenu/mrumanager.pp svneol=native#text/plain
 components/mrumenu/reglazmru.pp svneol=native#text/plain
 components/mrumenu/regmru.res -text
 components/mrumenu/tmrumenumanager.png -text svneol=unset#image/png
+components/mrumenu/tmrumenumanager_150.png -text svneol=unset#image/png
+components/mrumenu/tmrumenumanager_200.png -text svneol=unset#image/png
 components/multithreadprocs/examples/parallelloop1.lpi svneol=native#text/plain
 components/multithreadprocs/examples/parallelloop1.lpr svneol=native#text/plain
 components/multithreadprocs/examples/parallelloop_nested1.lpi svneol=native#text/plain
