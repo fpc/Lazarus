@@ -1182,8 +1182,7 @@ end;
 function TLazPackageLinks.AddOnlineLink(const PkgFilename, PkgName,
   PkgURL: string): TPackageLink;
 begin
-  DebugLn(['TLazPackageLinks.AddOnlineLink: PkgFilename=', PkgFilename, ', PkgName=', PkgName]);
-
+  //DebugLn(['TLazPackageLinks.AddOnlineLink: PkgFilename=', PkgFilename, ', PkgName=', PkgName]);
   Result := FindLinkWithFilename(PkgName, PkgFilename);
   if Assigned(Result) then
   begin
