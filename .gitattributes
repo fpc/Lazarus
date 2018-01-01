@@ -1118,19 +1118,47 @@ components/customdrawn/paletteimg.res -text
 components/customdrawn/resources/build.bat svneol=native#text/pascal
 components/customdrawn/resources/paletteimg.txt svneol=native#text/pascal
 components/customdrawn/resources/tcdbutton.png -text
+components/customdrawn/resources/tcdbutton_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdbutton_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdcheckbox.png -text
+components/customdrawn/resources/tcdcheckbox_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdcheckbox_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdcombobox.png -text
+components/customdrawn/resources/tcdcombobox_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdcombobox_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdedit.png -text
+components/customdrawn/resources/tcdedit_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdedit_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdgroupbox.png -text
+components/customdrawn/resources/tcdgroupbox_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdgroupbox_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdlistview.png -text
+components/customdrawn/resources/tcdlistview_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdlistview_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdpagecontrol.png -text
+components/customdrawn/resources/tcdpagecontrol_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdpagecontrol_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdprogressbar.png -text
+components/customdrawn/resources/tcdprogressbar_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdprogressbar_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdradiobutton.png -text
+components/customdrawn/resources/tcdradiobutton_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdradiobutton_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdscrollbar.png -text
+components/customdrawn/resources/tcdscrollbar_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdscrollbar_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdspinedit.png -text
+components/customdrawn/resources/tcdspinedit_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdspinedit_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdstatictext.png -text
+components/customdrawn/resources/tcdstatictext_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdstatictext_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdtabcontrol.png -text
+components/customdrawn/resources/tcdtabcontrol_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdtabcontrol_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdtrackbar.png -text
+components/customdrawn/resources/tcdtrackbar_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdtrackbar_200.png -text svneol=unset#image/png
 components/customform/custforms.pp svneol=native#text/plain
 components/customform/demo/appform.pas svneol=native#text/plain
 components/customform/demo/appforms.lpk svneol=native#text/plain
