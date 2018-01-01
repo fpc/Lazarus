@@ -1472,6 +1472,11 @@ begin
   // amount of ALLOC_UNIT number in this structure
   maxRects := ALLOC_UNIT;
   hData := GlobalAlloc(GMEM_MOVEABLE, sizeof(RGNDATAHEADER) + (sizeof(TRECT) * maxRects));
+  if hData = 0 then
+  begin
+    FreeMem(Data);
+    Exit;
+  end;
   pData := GlobalLock(hData);
   pData^.rdh.dwSize := sizeof(RGNDATAHEADER);
   pData^.rdh.iType := RDH_RECTANGLES;
