@@ -216,6 +216,7 @@ begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSFileDialog.ShowModal for ' + ACommonDialog.Name);
   {$ENDIF}
+  lFilter := nil;
 
   LocalPool := NSAutoReleasePool.alloc.init;
 
