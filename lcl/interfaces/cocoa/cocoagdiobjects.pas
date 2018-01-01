@@ -3074,7 +3074,6 @@ var
   AROP2: Integer;
   APatternSpace: CGColorSpaceRef;
   BaseSpace: CGColorSpaceRef;
-  AColor: CGColorRef;
 begin
   if ADC = nil then Exit;
 
@@ -3110,8 +3109,7 @@ begin
   end
   else
   begin
-    AColor := CGColorCreateGenericRGB(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
-    CGContextSetFillColorWithColor(ADC.CGContext, AColor);
+    CGContextSetRGBFillColor(ADC.CGContext, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
   end;
 end;
 
