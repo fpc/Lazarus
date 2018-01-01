@@ -2983,10 +2983,10 @@ begin
   if APersistent=nil then exit;
   try
     //debugln(['TDesigner.DoDeletePersistent A ',dbgsName(APersistent),' FreeIt=',FreeIt]);
-    PopupMenuComponentEditor:=nil;
     // unselect component
     Selection.Remove(APersistent);
     if (APersistent is TComponent) then begin
+      PopupMenuComponentEditor:=nil;
       AComponent:=TComponent(APersistent);
       if csDestroying in AComponent.ComponentState then
         FreeIt:=false;
