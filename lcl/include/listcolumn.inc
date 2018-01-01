@@ -178,7 +178,7 @@ begin
   else
   if (MaxWidth > 0) and (W > MaxWidth) then
     W := MaxWidth;
-  if FWidth = W then Exit;
+  if Width = W then Exit; // compare with Width instead of FWidth - FWidth is not updated from the WS automatically
   FWidth := W;
   Changed(False);
   if not WSUpdateAllowed then Exit;
