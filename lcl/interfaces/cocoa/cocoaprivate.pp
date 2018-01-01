@@ -699,6 +699,7 @@ type
     callback: ICommonCallback;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+    function lclClientFrame: TRect; override;
     // NSTabViewDelegateProtocol
     function tabView_shouldSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem): Boolean; message 'tabView:shouldSelectTabViewItem:';
     procedure tabView_willSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem); message 'tabView:willSelectTabViewItem:';
@@ -3207,6 +3208,14 @@ end;
 procedure TCocoaTabControl.lclClearCallback;
 begin
   callback := nil;
+end;
+
+function TCocoaTabControl.lclClientFrame: TRect;
+begin
+  if isFlipped then
+    Result:=NSRectToRect( contentRect )
+  else
+    NSToLCLRect( contentRect, frame.size.height, Result );
 end;
 
 function TCocoaTabControl.tabView_shouldSelectTabViewItem(tabView: NSTabView;
