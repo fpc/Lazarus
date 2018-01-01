@@ -5795,7 +5795,7 @@ begin
 
   // draw icon
   AImageList := LCLMenuItem.GetImageList;
-  if AImageList = nil then
+  if (AImageList = nil) or (LCLMenuItem.ImageIndex < 0) then
   begin
     AImageList := TImageList.Create(nil);
     // prevent multiple calls to GetBitmap;
