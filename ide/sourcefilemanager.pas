@@ -2017,19 +2017,9 @@ begin
 end;
 
 procedure TLazSourceFileManager.ArrangeSourceEditorAndMessageView(PutOnTop: boolean);
-var
-  SrcNoteBook: TSourceNotebook;
-  Layout: TSimpleWindowLayout;
 begin
   if SourceEditorManager.SourceWindowCount > 0 then
   begin
-    SrcNoteBook := SourceEditorManager.SourceWindows[0];
-
-    Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(SrcNoteBook.Name);
-    if (Layout<>nil) and (Layout.WindowPlacement=iwpDefault)
-    and ((SrcNoteBook.Top + SrcNoteBook.Height) > MessagesView.Top)
-    and (MessagesView.Parent = nil) then
-      SrcNoteBook.Height := Max(50,Min(SrcNoteBook.Height,MessagesView.Top-SrcNoteBook.Top));
     if PutOnTop then
     begin
       IDEWindowCreators.ShowForm(MessagesView,true);
