@@ -1154,6 +1154,7 @@ begin
   FViewOriginCache := TWSCustomListViewClass(WidgetSetClass).GetViewOrigin(Self);
   if not OwnerData then
     FListItems.DoFinalizeWnd;
+  Columns.DoFinalizeWnd;
   inherited FinalizeWnd;
 end;
 

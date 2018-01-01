@@ -1234,6 +1234,7 @@ type
     function GetItem(const AIndex: Integer): TListColumn;
     procedure WSCreateColumns;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
+    procedure DoFinalizeWnd;
   protected
     function GetOwner: TPersistent; override;
   public
