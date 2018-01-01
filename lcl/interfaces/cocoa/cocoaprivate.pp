@@ -1013,11 +1013,16 @@ begin
 end;
 
 function TCocoaWindowContent.lclFrame: TRect;
+var
+  wfrm : TRect;
 begin
-  if isembedded then
-    Result := inherited lclFrame
-  else
-    Result := window.lclFrame;
+  Result := inherited lclFrame;
+  if not isembedded then
+  begin
+    //Window bounds should return "client rect" in screen coordinates
+    wfrm := window.lclFrame;
+    OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
+  end;
 end;
 
 procedure TCocoaWindowContent.viewDidMoveToSuperview;
