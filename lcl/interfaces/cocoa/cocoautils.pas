@@ -135,7 +135,7 @@ var
   x, y: Integer;
 begin
   LocalPool := NSAutoReleasePool.alloc.init;
-  RGBColor := Color.colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+  RGBColor := Color.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
   // if color is a pattern it can't be converted as is to a solid color value
   if RGBColor = nil then
   begin
@@ -177,7 +177,7 @@ end;
 
 function ColorToNSColor(const Color: TColorRef): NSColor; inline;
 begin
-  Result := NSColor.colorWithCalibratedRed_green_blue_alpha(
+  Result := NSColor.colorWithDeviceRed_green_blue_alpha(
     (Color and $FF) / $FF,
     ((Color shr 8) and $FF) / $FF,
     ((Color shr 16) and $FF) / $FF, 1);
