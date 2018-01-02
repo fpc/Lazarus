@@ -1130,7 +1130,11 @@ var
   txt: TCocoaTextView;
 begin
   txt := GetTextView(ACustomEdit);
-  if not Assigned(txt) then Exit;
+  if not Assigned(txt) then
+  begin
+    Result:=0;
+    Exit;
+  end;
   Result := txt.selectedRange.location;
 end;
 
@@ -1140,7 +1144,11 @@ var
   ns: NSArray;
 begin
   txt := GetTextView(ACustomEdit);
-  if not Assigned(txt) then Exit;
+  if not Assigned(txt) then
+  begin
+    Result:=0;
+    Exit;
+  end;
   Result := txt.selectedRange.length;
 end;
 
@@ -1265,7 +1273,10 @@ class function TCocoaWSCustomComboBox.GetItemIndex(const ACustomComboBox:
   TCustomComboBox):integer;
 begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
+  begin
+    Result:=-1;
     Exit;
+  end;
 
   if ACustomComboBox.ReadOnly then
     Result := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
@@ -1304,7 +1315,10 @@ end;
 class function TCocoaWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
 begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
+  begin
+    Result:=nil;
     Exit;
+  end;
 
   if ACustomComboBox.ReadOnly then
     Result:=TCocoaReadOnlyComboBox(ACustomComboBox.Handle).list
@@ -1316,7 +1330,10 @@ class function TCocoaWSCustomComboBox.GetItemHeight(const ACustomComboBox:
   TCustomComboBox):Integer;
 begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
+  begin
+    Result:=0;
     Exit;
+  end;
 
   if ACustomComboBox.ReadOnly then
     Result := 26 // ToDo
@@ -1508,7 +1525,11 @@ var
   lPoint: NSPoint;
 begin
   list := GetListBox(ACustomListBox);
-  if not Assigned(list) then Exit();
+  if not Assigned(list) then
+  begin
+    Result:=-1;
+    Exit();
+  end;
   lPoint := LCLCoordsToCocoa(ACustomListBox, X, Y);
   Result := list.rowAtPoint(lPoint);
 end;
