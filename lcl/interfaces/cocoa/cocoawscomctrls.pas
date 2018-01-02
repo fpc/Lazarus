@@ -630,6 +630,7 @@ begin
   {$IFDEF COCOA_DEBUG_LISTVIEW}
   WriteLn(Format('[TCocoaWSCustomListView.ColumnGetWidth] AIndex=%d', [AIndex]));
   {$ENDIF}
+  Result:=0;
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
   lTableLV := TCocoaListView(ALV.Handle).TableListView;
   if (AIndex < 0) or (AIndex >= lTableLV.tableColumns.count()) then Exit;
@@ -799,7 +800,11 @@ var
   lTableLV: TCocoaTableListView;
   lRowRect, lColRect, lNSRect: NSRect;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then
+  begin
+    Result:=Bounds(0,0,0,0);
+    Exit;
+  end;
   lRowRect := lTableLV.rectOfRow(AIndex);
   lColRect := lTableLV.rectOfColumn(ASubItem);
   lNSRect := NSIntersectionRect(lRowRect, lColRect);
@@ -820,7 +825,11 @@ var
   lTableLV: TCocoaTableListView;
   lNSRect: NSRect;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then
+  begin
+    Result:=Point(0,0);
+    Exit;
+  end;
   lNSRect := lTableLV.rectOfRow(AIndex);
   Result.X := Round(lNSRect.origin.X);
   Result.Y := Round(lCocoaLV.frame.size.height - lNSRect.origin.Y);
@@ -893,7 +902,11 @@ var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then
+  begin
+    Result:=-1;
+    Exit;
+  end;
   Result := lTableLV.selectedRow;
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.GetFocused] Result=%d', [Result]));
@@ -907,7 +920,11 @@ var
   lTableLV: TCocoaTableListView;
   lNSPt: NSPoint;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then
+  begin
+    Result:=-1;
+    Exit;
+  end;
   lNSPt := LCLToNSPoint(Point(X, Y), lTableLV.superview.frame.size.height);
   Result := lTableLV.rowAtPoint(lNSPt);
 end;
@@ -917,7 +934,11 @@ var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then
+  begin
+    Result:=0;
+    Exit;
+  end;
   Result := lTableLV.selectedRowIndexes().count();
 end;
 
@@ -926,7 +947,11 @@ var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then
+  begin
+    Result:=-1;
+    Exit;
+  end;
   Result := lTableLV.selectedRow;
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.GetSelection] Result=%d', [Result]));
@@ -939,7 +964,11 @@ var
   lTableLV: TCocoaTableListView;
   lVisibleRows: NSRange;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then
+  begin
+    Result:=-1;
+    Exit;
+  end;
   lVisibleRows := lTableLV.rowsInRect(lTableLV.visibleRect());
   Result := lVisibleRows.location;
 end;
@@ -951,7 +980,11 @@ var
   lTableLV: TCocoaTableListView;
   lVisibleRows: NSRange;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then
+  begin
+    Result := 0;
+    Exit;
+  end;
   lVisibleRows := lTableLV.rowsInRect(lTableLV.visibleRect());
   Result := lVisibleRows.length;
 end;
@@ -1185,7 +1218,11 @@ class function TCocoaWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar
 var
   lSlider: TCocoaSlider;
 begin
-  if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
+  if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then
+  begin
+    Result := 0;
+    Exit;
+  end;
   lSlider := TCocoaSlider(ATrackBar.Handle);
   Result := lSlider.intValue();
 end;
