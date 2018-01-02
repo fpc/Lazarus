@@ -1199,7 +1199,7 @@ begin
       LFCharSet := Font.CharSet;
     end;
     // Duplicate logic in CreateFontIndirect
-    if not Win32WidgetSet.MetricsFailed and SameText(Font.Name, DefFontData.Name) then
+    if not Win32WidgetSet.MetricsFailed and IsFontNameDefault(Font.Name) then
     begin
       LFW.lfFaceName := UTF8ToUTF16(Win32WidgetSet.Metrics.lfMessageFont.lfFaceName);
       if LFW.lfHeight = 0 then
