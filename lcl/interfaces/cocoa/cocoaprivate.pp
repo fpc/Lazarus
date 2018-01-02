@@ -2519,12 +2519,11 @@ function RectToViewCoord(view: NSView; const r: TRect): NSRect;
 var
   b: NSRect;
 begin
-  if not Assigned(view) then Exit;
   b := view.bounds;
   Result.origin.x := r.Left;
   Result.size.width := r.Right - r.Left;
   Result.size.height := r.Bottom - r.Top;
-  if view.isFlipped then
+  if Assigned(view) and (view.isFlipped) then
     Result.origin.y := r.Top
   else
     Result.origin.y := b.size.height - r.Bottom;
@@ -3527,7 +3526,10 @@ begin
   WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
     [col, row, Items.Count]));
   {$ENDIF}
-  if row > Items.Count-1 then Exit;
+  if row > Items.Count-1 then begin
+    Result := nil;
+    Exit;
+  end;
   if col = 0 then
     StrResult := NSStringUTF8(Items.Strings[row])
   else
