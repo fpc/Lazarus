@@ -1719,8 +1719,8 @@ begin
   if (absDeltaX<=1) and (absDeltaY<=1) then
   begin
     // special case for 1-pixel lines
-    tx := bx + 0.05 * sign(deltaX) * absDeltaX;
-    ty := by + 0.05 * sign(deltay) * absDeltaY;
+    tx := bx + 0.05 * deltaX;
+    ty := by + 0.05 * deltay;
   end
   else
   begin
