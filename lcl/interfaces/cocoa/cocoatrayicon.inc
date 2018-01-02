@@ -52,6 +52,7 @@ var
   StatusItemHandle: TCocoaStatusItemHandle;
   statusitem: NSStatusItem;
 begin
+  Result:=false;
   if ATrayIcon.Handle = 0 then Exit;
   StatusItemHandle := TCocoaStatusItemHandle(ATrayIcon.Handle);
   statusitem := StatusItemHandle.statusitem;
