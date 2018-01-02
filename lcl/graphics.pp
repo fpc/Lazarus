@@ -37,7 +37,6 @@ interface
 {$DEFINE HasFPJoinStyle}
 {$ENDIF}
 
-
 uses
   // RTL + FCL
   SysUtils, Math, Types, Classes, Contnrs, Laz_AVL_Tree,
@@ -45,7 +44,9 @@ uses
   FPWriteBMP,              // bmp support
   FPWritePNG, PNGComn,     // png support
   FPReadPNM, FPWritePNM,   // PNM (Portable aNyMap) support
+  {$IFNDEF DisableLCLJPEG}
   FPReadJpeg, FPWriteJpeg, // jpg support
+  {$ENDIF}
   FPReadTiff, FPTiffCmn,   // tiff support
   FPReadGif,
   // LazUtils
@@ -452,7 +453,9 @@ type
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
   TPortableAnyMapGraphic = class;   // pnm formats: pbm, pgm and ppm
+  {$IFNDEF DisableLCLJPEG}
   TJpegImage = class;               // jpg
+  {$ENDIF}
   TGIFImage = class;                // gif (read only)
 
   { TGraphicsObject
@@ -947,7 +950,9 @@ type
     procedure ForceType(GraphicType: TGraphicClass);
     function GetBitmap: TBitmap;
     function GetIcon: TIcon;
+    {$IFNDEF DisableLCLJPEG}
     function GetJpeg: TJpegImage;
+    {$ENDIF}
     function GetPNG: TPortableNetworkGraphic;
     function GetPNM: TPortableAnyMapGraphic;
     function GetPixmap: TPixmap;
@@ -956,7 +961,9 @@ type
     procedure ReadData(Stream: TStream);
     procedure SetBitmap(Value: TBitmap);
     procedure SetIcon(Value: TIcon);
+    {$IFNDEF DisableLCLJPEG}
     procedure SetJpeg(Value: TJpegImage);
+    {$ENDIF}
     procedure SetPNG(const AValue: TPortableNetworkGraphic);
     procedure SetPNM(const AValue: TPortableAnyMapGraphic);
     procedure SetPixmap(Value: TPixmap);
@@ -1002,7 +1009,9 @@ type
   public
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Icon: TIcon read GetIcon write SetIcon;
+    {$IFNDEF DisableLCLJPEG}
     property Jpeg: TJpegImage read GetJpeg write SetJpeg;
+    {$ENDIF}
     property Pixmap: TPixmap read GetPixmap write SetPixmap;
     property PNG: TPortableNetworkGraphic read GetPNG write SetPNG;
     property PNM: TPortableAnyMapGraphic read GetPNM write SetPNM;
@@ -1823,6 +1832,7 @@ type
   end;
   
 
+  {$IFNDEF DisableLCLJPEG}
   { TSharedJpegImage }
 
   TSharedJpegImage = class(TSharedCustomBitmap)
@@ -1856,6 +1866,7 @@ type
     property ProgressiveEncoding: boolean read FProgressiveEncoding;
     property Performance: TJPEGPerformance read FPerformance write FPerformance;
   end;
+  {$ENDIF}
 
   { TSharedTiffImage }
 
@@ -2375,7 +2386,9 @@ end;
 procedure Register;
 begin
   RegisterClasses([TBitmap,TPixmap,TPortableNetworkGraphic,
-                   TPortableAnyMapGraphic,TJpegImage,TGIFImage,TPicture,
+                   TPortableAnyMapGraphic,
+                   {$IFNDEF DisableLCLJPEG}TJpegImage,{$ENDIF}
+                   TGIFImage,TPicture,
                    TFont,TPen,TBrush,TRegion]);
 end;
 
@@ -2762,7 +2775,9 @@ end;
 {$I pixmap.inc}
 {$I png.inc}
 {$I pnm.inc}
+{$IFNDEF DisableLCLJPEG}
 {$I jpegimage.inc}
+{$ENDIF}
 {$I icon.inc}
 {$I icnsicon.inc}
 {$I cursorimage.inc}

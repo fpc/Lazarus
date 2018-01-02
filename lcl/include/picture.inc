@@ -49,7 +49,9 @@ begin
   Add(TCursorImage.GetFileExtensions, rsCursor, TCursorImage);
   Add(TIcon.GetFileExtensions, rsIcon, TIcon);
   Add(TIcnsIcon.GetFileExtensions, rsIcns, TIcnsIcon);
+  {$IFNDEF DisableLCLJPEG}
   Add(TJpegImage.GetFileExtensions, rsJpeg, TJpegImage);
+  {$ENDIF}
   Add(TTiffImage.GetFileExtensions, rsTiff, TTiffImage);
   Add(TGIFImage.GetFileExtensions, rsGIF, TGIFImage);
   Add(TPortableAnyMapGraphic.GetFileExtensions, rsPortablePixmap, TPortableAnyMapGraphic);
@@ -247,7 +249,9 @@ begin
   Add(PredefinedClipboardFormat(pcfPixmap), TPixmap);
   //Add(PredefinedClipboardFormat(pcfIcon), TCustomIcon);
   Add(ClipboardRegisterFormat(sMimeTypePng), TPortableNetworkGraphic);
+  {$IFNDEF DisableLCLJPEG}
   Add(ClipboardRegisterFormat(sMimeTypeJpg), TJPegImage);
+  {$ENDIF}
 end;
 
 procedure TPicClipboardFormats.Clear;
@@ -436,11 +440,13 @@ begin
   Result := TIcon(Graphic);
 end;
 
+{$IFNDEF DisableLCLJPEG}
 function TPicture.GetJpeg: TJpegImage;
 begin
   ForceType(TJpegImage);
   Result := TJpegImage(Graphic);
 end;
+{$ENDIF}
 
 procedure TPicture.SetBitmap(Value: TBitmap);
 begin
@@ -467,10 +473,12 @@ begin
   SetGraphic(Value);
 end;
 
+{$IFNDEF DisableLCLJPEG}
 procedure TPicture.SetJpeg(Value: TJpegImage);
 begin
   SetGraphic(Value);
 end;
+{$ENDIF}
 
 procedure TPicture.SetGraphic(Value: TGraphic);
 var
