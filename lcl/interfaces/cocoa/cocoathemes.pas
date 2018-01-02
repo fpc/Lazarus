@@ -153,11 +153,11 @@ end;*)
 
   Draws a button element with native look
   Button kinds:
-  {BP_PUSHBUTTON } kThemeRoundedBevelButton,
-  {BP_RADIOBUTTON} kThemeRadioButton,
-  {BP_CHECKBOX   } kThemeCheckBox,
-  {BP_GROUPBOX   } kHIThemeGroupBoxKindPrimary,
-  {BP_USERBUTTON } kThemeRoundedBevelButton
+  BP_PUSHBUTTON  kThemeRoundedBevelButton,
+  BP_RADIOBUTTON kThemeRadioButton,
+  BP_CHECKBOX    kThemeCheckBox,
+  BP_GROUPBOX    kHIThemeGroupBoxKindPrimary,
+  BP_USERBUTTON  kThemeRoundedBevelButton
  ------------------------------------------------------------------------------}
 function TCocoaThemeServices.DrawButtonElement(DC: TCocoaContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
