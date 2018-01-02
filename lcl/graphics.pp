@@ -50,7 +50,9 @@ uses
   {$IFNDEF DisableLCLTIFF}
   FPReadTiff, FPTiffCmn,   // tiff support
   {$ENDIF}
+  {$IFNDEF DisableLCLGIF}
   FPReadGif,
+  {$ENDIF}
   // LazUtils
   FPCAdds, LazUTF8Classes,
   // LCL
@@ -458,7 +460,9 @@ type
   {$IFNDEF DisableLCLJPEG}
   TJpegImage = class;               // jpg
   {$ENDIF}
+  {$IFNDEF DisableLCLGIF}
   TGIFImage = class;                // gif (read only)
+  {$ENDIF}
 
   { TGraphicsObject
     In Delphi VCL this is the ancestor of TFont, TPen and TBrush.
@@ -1929,6 +1933,7 @@ type
   end;
   {$ENDIF}
 
+  {$IFNDEF DisableLCLGIF}
   { TSharedGIFImage }
 
   TSharedGIFImage = class(TSharedCustomBitmap)
@@ -1955,6 +1960,7 @@ type
     property Interlaced: Boolean read FInterlaced;
     property BitsPerPixel: byte read FBitsPerPixel;
   end;
+  {$ENDIF}
 
 function GraphicFilter(GraphicClass: TGraphicClass): string;
 function GraphicExtension(GraphicClass: TGraphicClass): string;
@@ -2392,7 +2398,8 @@ begin
   RegisterClasses([TBitmap,TPixmap,TPortableNetworkGraphic,
                    TPortableAnyMapGraphic,
                    {$IFNDEF DisableLCLJPEG}TJpegImage,{$ENDIF}
-                   TGIFImage,TPicture,
+                   {$IFNDEF DisableLCLGIF}TGIFImage,{$ENDIF}
+                   TPicture,
                    TFont,TPen,TBrush,TRegion]);
 end;
 
@@ -2790,7 +2797,9 @@ end;
 {$IFNDEF DisableLCLTIFF}
 {$I tiffimage.inc}
 {$ENDIF}
+{$IFNDEF DisableLCLGIF}
 {$I gifimage.inc}
+{$ENDIF}
 {$I patternbitmap.inc}
 
 function CreateGraphicFromResourceName(Instance: THandle; const ResName: String): TGraphic;

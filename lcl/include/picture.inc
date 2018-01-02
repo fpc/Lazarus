@@ -55,7 +55,9 @@ begin
   {$IFNDEF DisableLCLTIFF}
   Add(TTiffImage.GetFileExtensions, rsTiff, TTiffImage);
   {$ENDIF}
+  {$IFNDEF DisableLCLGIF}
   Add(TGIFImage.GetFileExtensions, rsGIF, TGIFImage);
+  {$ENDIF}
   Add(TPortableAnyMapGraphic.GetFileExtensions, rsPortablePixmap, TPortableAnyMapGraphic);
 end;
 
