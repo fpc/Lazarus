@@ -480,7 +480,22 @@ var
   key     : string;
   ShiftSt : NSUInteger;
 begin
-  if not Assigned(AMenuItem) then Exit;
+  if not Assigned(AMenuItem) then
+  begin
+    Result:=0;
+    Exit;
+  end;
+
+  // A handle of TMenu.fItems (TMenuItem) could be recreated.
+  // in this case LCL calls TCocoaWSMenuItem.CreateHandle
+  // instead of the proper owner.
+  if AMenuItem.Owner is TMainMenu then begin
+    Result:=TCocoaWSMainMenu.CreateHandle(TMenu(AMenuItem.Owner));
+    Exit;
+  end else if AMenuItem.Owner is TMenu then begin
+    Result:=TCocoaWSMenu.CreateHandle(TMenu(AMenuItem.Owner));
+    Exit;
+  end;
 
   if AMenuItem.Caption = '-' then
   begin
