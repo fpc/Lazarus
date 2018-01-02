@@ -25,8 +25,8 @@ unit window_options;
 interface
 
 uses
-  Classes, SysUtils, types, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
-  LCLProc, Spin, ObjInspStrConsts, ObjectInspector, IDEOptionsIntf,
+  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
+  LCLProc, ObjectInspector, IDEOptionsIntf,
   IDEWindowIntf, DividerBevel, EnvironmentOpts, IDEOptionDefs, InterfaceBase,
   LazarusIDEStrConsts;
 
