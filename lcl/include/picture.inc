@@ -58,7 +58,9 @@ begin
   {$IFNDEF DisableLCLGIF}
   Add(TGIFImage.GetFileExtensions, rsGIF, TGIFImage);
   {$ENDIF}
+  {$IFNDEF DisableLCLPNM}
   Add(TPortableAnyMapGraphic.GetFileExtensions, rsPortablePixmap, TPortableAnyMapGraphic);
+  {$ENDIF}
 end;
 
 procedure TPicFileFormatsList.Clear;
@@ -426,11 +428,13 @@ begin
   Result := TPortableNetworkGraphic(Graphic);
 end;
 
+{$IFNDEF DisableLCLPNM}
 function TPicture.GetPNM: TPortableAnyMapGraphic;
 begin
   ForceType(TPortableAnyMapGraphic);
   Result := TPortableAnyMapGraphic(Graphic);
 end;
+{$ENDIF}
 
 function TPicture.GetPixmap: TPixmap;
 begin
@@ -462,10 +466,12 @@ begin
   SetGraphic(AValue);
 end;
 
+{$IFNDEF DisableLCLPNM}
 procedure TPicture.SetPNM(const AValue: TPortableAnyMapGraphic);
 begin
   SetGraphic(AValue);
 end;
+{$ENDIF}
 
 procedure TPicture.SetPixmap(Value: TPixmap);
 begin

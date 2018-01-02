@@ -37,13 +37,17 @@ interface
 {$DEFINE HasFPJoinStyle}
 {$ENDIF}
 
+{$DEFINE DisableLCLPNM}
+
 uses
   // RTL + FCL
   SysUtils, Math, Types, Classes, Contnrs, Laz_AVL_Tree,
   FPImage, FPCanvas,
   FPWriteBMP,              // bmp support
   FPWritePNG, PNGComn,     // png support
+  {$IFNDEF DisableLCLPNM}
   FPReadPNM, FPWritePNM,   // PNM (Portable aNyMap) support
+  {$ENDIF}
   {$IFNDEF DisableLCLJPEG}
   FPReadJpeg, FPWriteJpeg, // jpg support
   {$ENDIF}
@@ -456,7 +460,9 @@ type
   TPixmap = class;                  // xpm
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
+  {$IFNDEF DisableLCLPNM}
   TPortableAnyMapGraphic = class;   // pnm formats: pbm, pgm and ppm
+  {$ENDIF}
   {$IFNDEF DisableLCLJPEG}
   TJpegImage = class;               // jpg
   {$ENDIF}
@@ -960,7 +966,9 @@ type
     function GetJpeg: TJpegImage;
     {$ENDIF}
     function GetPNG: TPortableNetworkGraphic;
+    {$IFNDEF DisableLCLPNM}
     function GetPNM: TPortableAnyMapGraphic;
+    {$ENDIF}
     function GetPixmap: TPixmap;
     function GetHeight: Integer;
     function GetWidth: Integer;
@@ -971,7 +979,9 @@ type
     procedure SetJpeg(Value: TJpegImage);
     {$ENDIF}
     procedure SetPNG(const AValue: TPortableNetworkGraphic);
+    {$IFNDEF DisableLCLPNM}
     procedure SetPNM(const AValue: TPortableAnyMapGraphic);
+    {$ENDIF}
     procedure SetPixmap(Value: TPixmap);
     procedure SetGraphic(Value: TGraphic);
     procedure WriteData(Stream: TStream);
@@ -1020,7 +1030,9 @@ type
     {$ENDIF}
     property Pixmap: TPixmap read GetPixmap write SetPixmap;
     property PNG: TPortableNetworkGraphic read GetPNG write SetPNG;
+    {$IFNDEF DisableLCLPNM}
     property PNM: TPortableAnyMapGraphic read GetPNM write SetPNM;
+    {$ENDIF}
     property Graphic: TGraphic read FGraphic write SetGraphic;
     //property PictureAdapter: IChangeNotifier read FNotify write FNotify;
     property Height: Integer read GetHeight;
@@ -1579,6 +1591,7 @@ type
   end;
 
 
+  {$IFNDEF DisableLCLPNM}
   { TSharedPortableAnyMapGraphic }
 
   TSharedPortableAnyMapGraphic = class(TSharedCustomBitmap)
@@ -1595,6 +1608,7 @@ type
     class function IsStreamFormatSupported(Stream: TStream): Boolean; override;
     class function GetFileExtensions: string; override;
   end;
+  {$ENDIF}
 
   TIconImage = class;
   TIconImageClass = class of TIconImage;
@@ -2396,7 +2410,7 @@ end;
 procedure Register;
 begin
   RegisterClasses([TBitmap,TPixmap,TPortableNetworkGraphic,
-                   TPortableAnyMapGraphic,
+                   {$IFNDEF DisableLCLPNM}TPortableAnyMapGraphic,{$ENDIF}
                    {$IFNDEF DisableLCLJPEG}TJpegImage,{$ENDIF}
                    {$IFNDEF DisableLCLGIF}TGIFImage,{$ENDIF}
                    TPicture,
@@ -2785,7 +2799,9 @@ end;
 {$I canvas.inc}
 {$I pixmap.inc}
 {$I png.inc}
+{$IFNDEF DisableLCLPNM}
 {$I pnm.inc}
+{$ENDIF}
 {$IFNDEF DisableLCLJPEG}
 {$I jpegimage.inc}
 {$ENDIF}
