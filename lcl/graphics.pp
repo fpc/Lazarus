@@ -37,8 +37,6 @@ interface
 {$DEFINE HasFPJoinStyle}
 {$ENDIF}
 
-{$DEFINE DisableLCLPNM}
-
 uses
   // RTL + FCL
   SysUtils, Math, Types, Classes, Contnrs, Laz_AVL_Tree,
