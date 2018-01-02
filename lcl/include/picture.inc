@@ -52,7 +52,9 @@ begin
   {$IFNDEF DisableLCLJPEG}
   Add(TJpegImage.GetFileExtensions, rsJpeg, TJpegImage);
   {$ENDIF}
+  {$IFNDEF DisableLCLTIFF}
   Add(TTiffImage.GetFileExtensions, rsTiff, TTiffImage);
+  {$ENDIF}
   Add(TGIFImage.GetFileExtensions, rsGIF, TGIFImage);
   Add(TPortableAnyMapGraphic.GetFileExtensions, rsPortablePixmap, TPortableAnyMapGraphic);
 end;

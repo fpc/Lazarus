@@ -47,7 +47,9 @@ uses
   {$IFNDEF DisableLCLJPEG}
   FPReadJpeg, FPWriteJpeg, // jpg support
   {$ENDIF}
+  {$IFNDEF DisableLCLTIFF}
   FPReadTiff, FPTiffCmn,   // tiff support
+  {$ENDIF}
   FPReadGif,
   // LazUtils
   FPCAdds, LazUTF8Classes,
@@ -1868,6 +1870,7 @@ type
   end;
   {$ENDIF}
 
+  {$IFNDEF DisableLCLTIFF}
   { TSharedTiffImage }
 
   TSharedTiffImage = class(TSharedCustomBitmap)
@@ -1924,6 +1927,7 @@ type
     property XResolution: TTiffRational read FXResolution write FXResolution;
     property YResolution: TTiffRational read FYResolution write FYResolution;
   end;
+  {$ENDIF}
 
   { TSharedGIFImage }
 
@@ -2783,7 +2787,9 @@ end;
 {$I cursorimage.inc}
 {$I fpimagebitmap.inc}
 {$I bitmap.inc}
+{$IFNDEF DisableLCLTIFF}
 {$I tiffimage.inc}
+{$ENDIF}
 {$I gifimage.inc}
 {$I patternbitmap.inc}
 
