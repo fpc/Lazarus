@@ -52,7 +52,7 @@ uses
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger,
-  IdeCoolbarData, EditorToolbarStatic;
+  IdeCoolbarData, EditorToolbarStatic, math;
 
 const
   EnvOptsVersion: integer = 110;
@@ -287,6 +287,7 @@ type
   TEnvOptParseTypes = set of TEnvOptParseType;
 
 type
+  TEnvironmentOptions = class;
 
   TLastOpenPackagesList = class(TStringList)
   public
@@ -325,6 +326,30 @@ type
   end;
   TDesktopOptClass = class of TCustomDesktopOpt;
 
+  TDesktopOIOptions = class(TPersistent)
+  private
+    FInfoBoxHeight: integer;
+    FShowInfoBox: boolean;
+    FSplitterX: array[TObjectInspectorPage] of Integer;
+
+    function GetSplitterX(const APage: TObjectInspectorPage): Integer;
+    procedure SetSplitterX(const APage: TObjectInspectorPage;
+      const ASplitterX: Integer);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+  public
+    constructor Create;
+
+    procedure ImportSettingsFromIDE(const AOptions: TEnvironmentOptions);
+    procedure ExportSettingsToIDE(const AOptions: TEnvironmentOptions);
+    procedure Load(XMLConfig: TXMLConfig; Path: String);
+    procedure Save(XMLConfig: TXMLConfig; Path: String);
+
+    property SplitterX[const APage: TObjectInspectorPage]: Integer read GetSplitterX write SetSplitterX;
+    property ShowInfoBox: boolean read FShowInfoBox write FShowInfoBox;
+    property InfoBoxHeight: integer read FInfoBoxHeight write FInfoBoxHeight;
+  end;
+
   { TDesktopOpt }
 
   TDesktopOpt = class(TCustomDesktopOpt)
@@ -332,6 +357,7 @@ type
     // window layout
     FIDEWindowCreatorsLayoutList: TSimpleWindowLayoutList;
     FIDEDialogLayoutList: TIDEDialogLayoutList;
+    FObjectInspectorOptions: TDesktopOIOptions;
     FSingleTaskBarButton: boolean;
     FHideIDEOnRun: boolean;
     FAutoAdjustIDEHeight: boolean;
@@ -366,8 +392,8 @@ type
   public
     procedure Load(Path: String); override;
     procedure Save(Path: String); override;
-    procedure ImportSettingsFromIDE;
-    procedure ExportSettingsToIDE;
+    procedure ImportSettingsFromIDE(const AOptions: TEnvironmentOptions);
+    procedure ExportSettingsToIDE(const AOptions: TEnvironmentOptions);
     procedure RestoreDesktop;
 
     property IDEWindowCreatorsLayoutList: TSimpleWindowLayoutList read FIDEWindowCreatorsLayoutList write FIDEWindowCreatorsLayoutList;
@@ -390,6 +416,7 @@ type
     property IDECoolBarOptions: TIDECoolBarOptions read FIDECoolBarOptions;
     property EditorToolBarOptions: TEditorToolBarOptions read FEditorToolBarOptions;
     property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
+    property ObjectInspectorOptions: TDesktopOIOptions read FObjectInspectorOptions;
   end;
 
   { TUnsupportedDesktopOpt }
@@ -402,8 +429,6 @@ type
     procedure Load(Path: String); override;
     procedure Save(Path: String); override;
   end;
-
-  TEnvironmentOptions = class;
 
   { TDesktopOptList }
 
@@ -1046,6 +1071,98 @@ begin
   WriteStr(Result, u);
 end;
 
+{ TDesktopOIOptions }
+
+constructor TDesktopOIOptions.Create;
+var
+  I: TObjectInspectorPage;
+begin
+  FInfoBoxHeight := -1;
+  FShowInfoBox := True;
+  for I in TObjectInspectorPage do
+    SplitterX[I] := -1;
+end;
+
+procedure TDesktopOIOptions.AssignTo(Dest: TPersistent);
+var
+  DDest: TDesktopOIOptions;
+  I: TObjectInspectorPage;
+begin
+  if Dest is TDesktopOIOptions then
+  begin
+    DDest := TDesktopOIOptions(Dest);
+
+    for I in TObjectInspectorPage do
+      DDest.SplitterX[I] := SplitterX[I];
+    DDest.ShowInfoBox := ShowInfoBox;
+    DDest.InfoBoxHeight := InfoBoxHeight;
+  end else
+    inherited AssignTo(Dest);
+end;
+
+function TDesktopOIOptions.GetSplitterX(const APage: TObjectInspectorPage
+  ): Integer;
+begin
+  Result := FSplitterX[APage];
+end;
+
+procedure TDesktopOIOptions.ImportSettingsFromIDE(
+  const AOptions: TEnvironmentOptions);
+var
+  I: TObjectInspectorPage;
+  o: TOIOptions;
+begin
+  o := AOptions.ObjectInspectorOptions;
+  for I in TObjectInspectorPage do
+    FSplitterX[I] := o.GridSplitterX[I];
+
+  ShowInfoBox := o.ShowInfoBox;
+  InfoBoxHeight := o.InfoBoxHeight;
+end;
+
+procedure TDesktopOIOptions.Load(XMLConfig: TXMLConfig; Path: String);
+var
+  I: TObjectInspectorPage;
+begin
+  Path := Path + 'ObjectInspector';
+  for I in TObjectInspectorPage do
+    FSplitterX[I] := XMLConfig.GetValue(Path+'SplitterX/'+DefaultOIPageNames[I]+'/Value',-1);
+  ShowInfoBox := XMLConfig.GetValue(Path+'ShowInfoBox/Value',True);
+  InfoBoxHeight := XMLConfig.GetValue(Path+'InfoBoxHeight/Value',-1);
+end;
+
+procedure TDesktopOIOptions.Save(XMLConfig: TXMLConfig; Path: String);
+var
+  I: TObjectInspectorPage;
+begin
+  Path := Path + 'ObjectInspector';
+  for I in TObjectInspectorPage do
+    XMLConfig.SetDeleteValue(Path+'SplitterX/'+DefaultOIPageNames[I]+'/Value',FSplitterX[I],-1);
+  XMLConfig.SetDeleteValue(Path+'ShowInfoBox/Value',ShowInfoBox,True);
+  XMLConfig.SetDeleteValue(Path+'InfoBoxHeight/Value',InfoBoxHeight,-1);
+end;
+
+procedure TDesktopOIOptions.SetSplitterX(const APage: TObjectInspectorPage;
+  const ASplitterX: Integer);
+begin
+  FSplitterX[APage] := ASplitterX;
+end;
+
+procedure TDesktopOIOptions.ExportSettingsToIDE(
+  const AOptions: TEnvironmentOptions);
+var
+  I: TObjectInspectorPage;
+  o: TOIOptions;
+begin
+  o := AOptions.ObjectInspectorOptions;
+  for I in TObjectInspectorPage do
+    if FSplitterX[I]>=0 then
+      o.GridSplitterX[I] := Max(10, FSplitterX[I]);
+
+  o.ShowInfoBox := ShowInfoBox;
+  o.InfoBoxHeight := InfoBoxHeight;
+end;
+
 { TUnsupportedDesktopOpt }
 
 destructor TUnsupportedDesktopOpt.Destroy;
@@ -1257,6 +1374,8 @@ begin
   FEditorToolBarOptions:=TEditorToolBarOptions.Create;
   // component palette
   FComponentPaletteOptions:=TCompPaletteOptions.Create;
+  // object inspector
+  FObjectInspectorOptions:=TDesktopOIOptions.Create;
   // Windows layout
   InitLayoutList;
 
@@ -1272,6 +1391,7 @@ begin
   FreeAndNil(FEditorToolBarOptions);
   FreeAndNil(FIDECoolBarOptions);
   FreeAndNil(FDockedOpt);
+  FreeAndNil(FObjectInspectorOptions);
 
   FreeAndNil(FIDEDialogLayoutList);
   FreeAndNil(FIDEWindowCreatorsLayoutList);
@@ -1319,6 +1439,8 @@ begin
   FEditorToolBarOptions.Assign(Source.FEditorToolBarOptions);
   // component palette
   FComponentPaletteOptions.Assign(Source.FComponentPaletteOptions);
+  // object inspector
+  FObjectInspectorOptions.Assign(Source.FObjectInspectorOptions);
 
   if IsCompatible and Assigned(FDockedOpt) then
     FDockedOpt.Assign(Source.FDockedOpt);
@@ -1354,6 +1476,8 @@ begin
   FEditorToolBarOptions.Load(FXMLCfg, Path);
   // component palette
   FComponentPaletteOptions.Load(FXMLCfg, Path);
+  // Object Inspector
+  FObjectInspectorOptions.Load(FXMLCfg, Path);
 
   if Assigned(FDockedOpt) then
     FDockedOpt.Load(Path, FXMLCfg);
@@ -1366,11 +1490,13 @@ begin
     FDockedOpt.RestoreDesktop;
 end;
 
-procedure TDesktopOpt.ImportSettingsFromIDE;
+procedure TDesktopOpt.ImportSettingsFromIDE(const AOptions: TEnvironmentOptions
+  );
 begin
   IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
   FIDEDialogLayoutList.Assign(IDEWindowIntf.IDEDialogLayoutList);
   FIDEWindowCreatorsLayoutList.CopyItemsFrom(IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage);
+  FObjectInspectorOptions.ImportSettingsFromIDE(AOptions);
 
   if Assigned(FDockedOpt) then
     FDockedOpt.ImportSettingsFromIDE;
@@ -1409,18 +1535,21 @@ begin
   FEditorToolBarOptions.Save(FXMLCfg, Path);
   // component palette
   FComponentPaletteOptions.Save(FXMLCfg, Path);
+  // Object Inspector
+  FObjectInspectorOptions.Save(FXMLCfg, Path);
 
   if Assigned(FDockedOpt) then
     FDockedOpt.Save(Path, FXMLCfg);
 end;
 
-procedure TDesktopOpt.ExportSettingsToIDE;
+procedure TDesktopOpt.ExportSettingsToIDE(const AOptions: TEnvironmentOptions);
 begin
   if Assigned(FDockedOpt) then
     FDockedOpt.ExportSettingsToIDE;
 
   IDEWindowIntf.IDEDialogLayoutList.Assign(FIDEDialogLayoutList);
   IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage.CopyItemsFrom(FIDEWindowCreatorsLayoutList);
+  FObjectInspectorOptions.ExportSettingsToIDE(AOptions);
 end;
 
 procedure InitLayoutHelper(const FormID: string);
@@ -1640,7 +1769,7 @@ begin
   try
     if AutoSaveActiveDesktop and Assigned(DebugDesktop) then
     begin
-      Desktop.ImportSettingsFromIDE;
+      Desktop.ImportSettingsFromIDE(Self);
       DebugDesktop.Assign(Desktop);
     end;
 
@@ -1674,7 +1803,7 @@ begin
   begin
     FLastDesktopBeforeDebug := TDesktopOpt.Create(ActiveDesktopName);
     if AutoSaveActiveDesktop then
-      Desktop.ImportSettingsFromIDE;
+      Desktop.ImportSettingsFromIDE(Self);
     FLastDesktopBeforeDebug.Assign(Desktop, False);
     EnvironmentOptions.UseDesktop(DebugDesktop);
   end;
@@ -2096,7 +2225,7 @@ begin
     end;
 
     Desktop.Assign(ActiveDesktop, False);
-    Desktop.ExportSettingsToIDE;
+    Desktop.ExportSettingsToIDE(Self);
 
     FileUpdated;
   except
@@ -2399,7 +2528,7 @@ begin
     and (Application.MainForm<>nil) and Application.MainForm.Visible then
     begin
       //save active desktop
-      Desktop.ImportSettingsFromIDE;
+      Desktop.ImportSettingsFromIDE(Self);
       ActiveDesktop.Assign(Desktop);
 
       if Assigned(FLastDesktopBeforeDebug) then//are we in debug session?
@@ -2890,8 +3019,8 @@ begin
   ActiveDesktopName := ADesktop.Name;
   if ADesktop.AssociatedDebugDesktopName<>'' then
     DebugDesktopName := ADesktop.AssociatedDebugDesktopName;
+  Desktop.ExportSettingsToIDE(Self);
   DoAfterWrite(False);  //this is needed to get the EditorToolBar refreshed!!! - needed only here in UseDesktop()
-  Desktop.ExportSettingsToIDE;
   Desktop.RestoreDesktop;
 
   //set focus back to the previously focused control

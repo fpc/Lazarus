@@ -13,7 +13,7 @@ uses
   // IdeIntf
   IDEImagesIntf, ToolBarIntf, IDEWindowIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory;
+  LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, MainIntf;
 
 type
 
@@ -163,7 +163,9 @@ begin
     else
       Desktops.Insert(dskIndex, dsk);
     debugln(['TDesktopForm.SaveBitBtnClick: Assign from active desktop to ', aDesktopName]);
-    Desktop.ImportSettingsFromIDE;
+    if ObjectInspector1<>nil then
+      EnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
+    Desktop.ImportSettingsFromIDE(EnvironmentOptions);
     dsk.Assign(Desktop);
     ActiveDesktopName := aDesktopName;
     Result := True;

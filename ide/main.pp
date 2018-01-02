@@ -4656,7 +4656,8 @@ procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOption
 begin
   if ConsoleVerbosity>0 then
     DebugLn(['Hint: (lazarus) TMainIDE.SaveDesktopSettings']);
-  EnvironmentOptions.Desktop.ImportSettingsFromIDE;
+
+  EnvironmentOptions.Desktop.ImportSettingsFromIDE(TheEnvironmentOptions);
 
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);

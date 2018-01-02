@@ -872,11 +872,6 @@ function dbgs(States: TOIPropertyGridStates): string; overload;
 function GetChangeParentCandidates(PropertyEditorHook: TPropertyEditorHook;
   Selection: TPersistentSelectionList): TFPList;
 
-implementation
-
-{$R *.lfm}
-{$R images\ideintf_images.res}
-
 const
   DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyPage',
@@ -890,6 +885,11 @@ const
     'FavoriteGrid',
     'RestrictedGrid'
     );
+
+implementation
+
+{$R *.lfm}
+{$R images\ideintf_images.res}
 
 function SortGridRows(Item1, Item2 : pointer) : integer;
 begin

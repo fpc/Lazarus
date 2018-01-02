@@ -1,19 +1,19 @@
 object ObjectInspectorDlg: TObjectInspectorDlg
-  Left = 338
-  Height = 669
-  Top = 162
-  Width = 300
+  Left = -3
+  Height = 702
+  Top = 169
+  Width = 273
   BorderStyle = bsSizeToolWin
   Caption = 'ObjectInspectorDlg'
-  ClientHeight = 669
-  ClientWidth = 300
+  ClientHeight = 702
+  ClientWidth = 273
   KeyPreview = True
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 19
-    Top = 650
-    Width = 300
+    Height = 23
+    Top = 679
+    Width = 273
     Panels = <    
       item
         Width = 100
@@ -24,11 +24,11 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   end
   object AvailPersistentComboBox: TComboBox
     Left = 0
-    Height = 28
+    Height = 23
     Top = 0
-    Width = 300
+    Width = 273
     Align = alTop
-    ItemHeight = 14
+    ItemHeight = 15
     OnCloseUp = AvailComboBoxCloseUp
     Style = csDropDownList
     TabOrder = 0
@@ -36,22 +36,22 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   object ComponentPanel: TPanel
     Left = 0
     Height = 184
-    Top = 28
-    Width = 300
+    Top = 23
+    Width = 273
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 184
-    ClientWidth = 300
+    ClientWidth = 273
     TabOrder = 2
     object CompFilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = CompFilterLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CompFilterLabel
       AnchorSideTop.Side = asrCenter
-      Left = 84
-      Height = 28
-      Top = 0
-      Width = 213
+      Left = 77
+      Height = 23
+      Top = 3
+      Width = 193
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
@@ -61,9 +61,9 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     end
     object CompFilterLabel: TLabel
       Left = 3
-      Height = 14
+      Height = 15
       Top = 7
-      Width = 76
+      Width = 69
       Caption = 'Co&mponents'
       FocusControl = CompFilterEdit
       ParentColor = False
@@ -72,7 +72,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   object MainPopupMenu: TPopupMenu
     OnPopup = MainPopupMenuPopup
     OnClose = MainPopupMenuClose
-    left = 32
-    top = 64
+    Left = 32
+    Top = 64
   end
 end
