@@ -1637,6 +1637,7 @@ begin
         if (Item.PreviousID = '') or (pos(sFuzzyFlag, Item.Flags) = 0) then
           Item.PreviousID:=Item.Original;
         Item.ModifyFlag(sFuzzyFlag, true);
+        Item.ModifyFlag(sBadFormatFlag, not CompareFormatArgs(Original,Item.Translation));
       end;
     end;
     Item.Original:=Original;
