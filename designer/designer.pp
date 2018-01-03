@@ -2977,22 +2977,18 @@ end;
 procedure TDesigner.DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
 var
   Hook: TPropertyEditorHook;
-  AComponent: TComponent;
-  AForm: TCustomForm;
 begin
   if APersistent=nil then exit;
   try
     //debugln(['TDesigner.DoDeletePersistent A ',dbgsName(APersistent),' FreeIt=',FreeIt]);
     // unselect component
     Selection.Remove(APersistent);
-    if (APersistent is TComponent) then begin
+    if APersistent is TComponent then begin
       PopupMenuComponentEditor:=nil;
-      AComponent:=TComponent(APersistent);
-      if csDestroying in AComponent.ComponentState then
+      if csDestroying in TComponent(APersistent).ComponentState then
         FreeIt:=false;
     end;
-    AForm:=GetDesignerForm(APersistent);
-    if AForm=nil then begin
+    if GetDesignerForm(APersistent)=nil then begin
       // has no designer
       // -> do not call handlers and simply get rid of the rubbish
       if FreeIt then begin
