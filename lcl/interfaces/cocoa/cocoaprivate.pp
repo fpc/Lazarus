@@ -106,6 +106,7 @@ type
     function lclGetTarget: TObject; message 'lclGetTarget';
     function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
     function lclIsHandle: Boolean; message 'lclIsHandle';
+    function lclContentView: NSView; message 'lclContentView';
   end;
 
   { LCLViewExtension }
@@ -126,6 +127,7 @@ type
     function lclFrame: TRect; message 'lclFrame'; reintroduce;
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
     function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
+    function lclContentView: NSView; message 'lclContentView'; reintroduce;
   end;
 
   NSViewFix = objccategory external (NSView)
@@ -819,6 +821,7 @@ type
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
     function lclClientFrame: TRect; override;
+    function lclContentView: NSView; override;
   end;
 
   { TCocoaProgressIndicator }
@@ -1728,6 +1731,11 @@ begin
     Result := NSRectToRect( v.frame );
 end;
 
+function TCocoaGroupBox.lclContentView: NSView;
+begin
+  Result := NSView(contentView);
+end;
+
 function TCocoaGroupBox.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -2513,6 +2521,11 @@ begin
 result:=false;
 end;
 
+function LCLObjectExtension.lclContentView: NSView;
+begin
+  Result := nil;
+end;
+
 { LCLControlExtension }
 
 function RectToViewCoord(view: NSView; const r: TRect): NSRect;
@@ -2605,8 +2618,16 @@ begin
 end;
 
 procedure LCLViewExtension.lclInvalidateRect(const r:TRect);
+var
+  view : NSView;
 begin
-  setNeedsDisplayInRect(RectToViewCoord(Self, r));
+  view:=lclContentView;
+  if Assigned(view) then
+    view.setNeedsDisplayInRect(RectToViewCoord(view, r))
+  else
+    self.setNeedsDisplayInRect(RectToViewCoord(Self, r));
+  //todo: it might be necessary to always invalidate self
+  //      just need to get offset of the contentView relative for self
 end;
 
 procedure LCLViewExtension.lclInvalidate;
@@ -2703,6 +2724,11 @@ begin
   Result.Top := 0;
   Result.Right := Round(r.size.width);
   Result.Bottom := Round(r.size.height);
+end;
+
+function LCLViewExtension.lclContentView: NSView;
+begin
+  Result := self;
 end;
 
 { LCLWindowExtension }
