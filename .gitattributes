@@ -4236,17 +4236,7 @@ components/rtticontrols/ttispinedit_200.png -text
 components/rtticontrols/ttitrackbar.png -text svneol=unset#image/png
 components/rtticontrols/ttitrackbar_150.png -text
 components/rtticontrols/ttitrackbar_200.png -text
-components/rx/apputils.pp svneol=native#text/pascal
-components/rx/lib/README.txt svneol=native#text/plain
-components/rx/mrulist.pp svneol=native#text/pascal
-components/rx/mrulist.res -text
-components/rx/placement.pp svneol=native#text/pascal
-components/rx/rx.lpk svneol=native#text/pascal
-components/rx/rx.pas svneol=native#text/pascal
-components/rx/strholder.pp svneol=native#text/pascal
-components/rx/strholder.res -text
-components/rx/tmrumanager.xpm -text svneol=native#image/x-xpixmap
-components/rx/tstrholder.xpm -text svneol=native#image/x-xpixmap
+components/rx/README.txt svneol=native#text/plain
 components/sdf/Makefile svneol=native#text/plain
 components/sdf/Makefile.compiled svneol=native#text/plain
 components/sdf/Makefile.fpc svneol=native#text/plain

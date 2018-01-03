@@ -122,8 +122,6 @@ components/rtticontrols/lib
 components/rtticontrols/units
 components/rx/*.bak
 components/rx/lib
-components/rx/lib/*.bak
-components/rx/lib/units
 components/rx/units
 components/sdf/*.bak
 components/sdf/units
