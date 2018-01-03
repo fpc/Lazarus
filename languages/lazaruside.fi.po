@@ -1916,10 +1916,6 @@ msgstr "&Alusta"
 msgid "&From cursor"
 msgstr "&Kursorin kohdasta"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "Hae sijainti"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Julkinen"
@@ -2232,10 +2228,6 @@ msgstr "Viimeinen (esim. lähdekoodin lopussa)"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazaruksen kansio (oletus kaikille projekteille)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "Vasemmalta:"
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
@@ -3627,10 +3619,6 @@ msgstr "Vaihda debug-työpöydäksi"
 msgid "Current Class/Proc Hint"
 msgstr "Nykyisen luokan/metodin vihje"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "Ylhäältä:"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Välilyöntien siistimistyyli"
@@ -3765,10 +3753,6 @@ msgstr "Windows graafinen ohjelma"
 #: lazarusidestrconsts.dlgwindow
 msgid "Window"
 msgstr "Ikkuna"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "Ikkunoiden sijainnit"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19230,70 +19214,6 @@ msgstr "Versiotieto talletetaan jos ohjelmatiedoston formaatti tukee sitä."
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
 msgstr "Lisää versiotieto suoritettavaan ohjelmaan"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr "Sarakenimet"
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr "Sarakkeiden tallennuksen strategia"
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr "Sarakeleveys"
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr "Mukautetut mitat"
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr "Käyttäjä voi määritellä ikkunan sijainnin ja koon"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr "Kiinteät oletusmitat"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr "Aina sama kiinteä sijainti ja koko"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr "Anna ikkunamanagerin päättää"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr "Järjestelmillä on eri strategiat ikkunoiden sijoittamiseen"
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr "Auki olleet ikkunat. Ne pitää nyt sulkea."
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "Palauta ikkunan mitat"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr "Käytä edellistä sijaintia ja kokoa"
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "Mukautettu koko"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "Oletuskoko"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr "Palauta ikkunan kanssa"
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "Palauta koko"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

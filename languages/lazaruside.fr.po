@@ -1946,10 +1946,6 @@ msgstr "&Depuis le début"
 msgid "&From cursor"
 msgstr "Depuis le &curseur"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "Lire la position"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Global"
@@ -2263,10 +2259,6 @@ msgstr "À la fin du code source"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Répertoire de Lazarus (par défaut pour tous les projets)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "Gauche :"
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
@@ -3655,10 +3647,6 @@ msgstr "Basculer en bureau de débogage"
 msgid "Current Class/Proc Hint"
 msgstr "Conseil sur Classe/Procédure courante"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "Haut :"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Style de suppression des espaces"
@@ -3794,10 +3782,6 @@ msgstr "Application graphique Win32 "
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Fenêtre"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "Positions des fenêtres"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19387,70 +19371,6 @@ msgstr "L'information de version est enregistrée si le format d'exécutable l'a
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
 msgstr "Inclure les informations de version dans l'exécutable"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr "Noms des colonnes"
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr "Stratégie d'enregistrement des colonnes"
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr "Largeur de colonne"
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr "Géométrie personnalisée"
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr "L'utilisateur peut définir la position et la taille de la fenêtre"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr "Géométrie fixe par défaut"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr "Toujours les mêmes positions et tailles"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr "Laisser le gestionnaire de fenêtres décider"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr "Les gestionnaires de fenêtres \"système\" ont diverses stratégies pour positionner les fenêtres"
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr "Les fenêtres qui ont été ouvertes. Elle peuvent être fermées à présent."
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "Restaurer la géométrie de la fenêtre"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr "Utiliser la position et la taille précédentes"
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "Taille personnalisée"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "Taille par défaut"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr "Restaurer avec la fenêtre"
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "Restaurer la taille"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

@@ -1944,10 +1944,6 @@ msgstr "Do &início"
 msgid "&From cursor"
 msgstr "&Do cursor"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "Obter Posição"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Global"
@@ -2261,10 +2257,6 @@ msgstr "Por último (ex. no final do fonte)"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Diretório Lazarus (padrão para todos os projetos)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "Esquerda:"
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
@@ -3653,10 +3645,6 @@ msgstr "Alternar como área de trabalho de depuração"
 msgid "Current Class/Proc Hint"
 msgstr "Dica Classe/Proc atual"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "Topo:"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Estilo de remoção de espaços"
@@ -3792,10 +3780,6 @@ msgstr "Aplicação gráfica win32"
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Janela"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "Posições de janela"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19434,70 +19418,6 @@ msgstr "Informação de versão é armazenada se o formato do executável suport
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
 msgstr "Incluir informações de versão no executável"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr "Nomes de coluna"
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr "Estratégia para salvar colunas"
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr "Largura da coluna"
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr "Geometria customizada"
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr "Usuário pode definir a posição e tamanho da janela"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr "Geometria padrão corrigida"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr "Sempre a mesma posição corrigida e tamanho"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr "Deixe o gerenciador de janela decidir"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr "Os gerenciadores de janela do sistema têm diferentes estratégias para posicionar janelas"
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr "Janelas que foram abertas. Podem ser fechadas agora."
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "Restaurar geometria da janela"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr "Usar posição anterior e tamanho"
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "Tamanho customizado"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "Tamanho padrão"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr "Restaurar com a janela"
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "Restaurar tamanho"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

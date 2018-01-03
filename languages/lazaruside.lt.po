@@ -1946,10 +1946,6 @@ msgstr "Iš p&radžių"
 msgid "&From cursor"
 msgstr "Nuo žy&meklio"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "Sužinoti poziciją"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Globaliai"
@@ -2263,10 +2259,6 @@ msgstr "Pačiame gale"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarus aplankas (numatytas visiems projektams)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "Kairė:"
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
@@ -3659,10 +3651,6 @@ msgstr "Perjungti į derinimo darbalaukį"
 msgid "Current Class/Proc Hint"
 msgstr "Veikiamosios klasės/procedūros užuomina"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "Viršus:"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Tarpų šalinimo būdas"
@@ -3798,10 +3786,6 @@ msgstr "Win32 grafinės sąsajos programa"
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Langas"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "Langų pozicijos"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19407,70 +19391,6 @@ msgstr "Versijos informacija bus įrašyta tik jei vykdomojo failo formatas tai 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
 msgstr "Įrašyti versijos informaciją į vykdomąjį failą"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr "Stulpelių pavadinimai"
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr "Stulpelių įrašymo strategija"
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr "Stulpelių plotis"
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr "Savos kurybos matmenys"
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr "Naudotojas gali nustatyti lango poziciją ir dydį"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr "Fiksuoti numatytieji matmenys"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr "Kiekvieną kart ta pati pozicija ir dydis"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr "Tegul sprendžia langų tvarkyklė"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr "Sistemos langų tvarkyklė turi savo strategiją kaip pozicionuoti langus"
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr "Langai, kurie buvo atverti. Juos dabar galima uždaryti."
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "Atstatyti lango geometriją"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr "Naudoti ankstesnę poziciją ir dydį"
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "Naudotojo dydis"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "Numatytas dydis"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr "Atstatyti kartu su langu"
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "Atstatyti dydį"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

@@ -1945,10 +1945,6 @@ msgstr "フォームの冒頭(&E)"
 msgid "&From cursor"
 msgstr "カーソルから(&F)"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "位置を取得"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "グローバル(&G)"
@@ -2262,10 +2258,6 @@ msgstr "最後（ソースの末尾）"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarusディレクトリ(全てのプロジェクトの既定値)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "左："
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
@@ -3658,10 +3650,6 @@ msgstr "デバッグデスクトップを切り替え"
 msgid "Current Class/Proc Hint"
 msgstr "現在のクラス/手続きヒント"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "上端："
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "空白スタイルをトリム"
@@ -3797,10 +3785,6 @@ msgstr "Win32 gui アプリケーション"
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "ウィンドウ"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "ウィンドウ位置"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19383,70 +19367,6 @@ msgstr "バージョン情報は実行ファイルがそれをサポートして
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
 msgstr "実行ファイルにバージョン情報を含める"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr "列名"
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr "列保存の方針"
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr "列幅"
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr "カスタム形状"
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr "ユーザーはウィンドウの位置とサイズを設定できます"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr "既定の形状を固定"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr "いつも同じ固定された位置とサイズ"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr "ウィンドウマネージャに決定させる"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr "システムウィンドウマネージャはウィンドウの位置づけにそれぞれ異なる方針を持っています"
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr "いくつかのウィンドウが開かれています。それらは今閉じられます。"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "ウィンドウの位置/サイズを復元"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr "前の位置とサイズを使用"
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "カスタムサイズ"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "既定のサイズ"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr "ウィンドウを元に戻す"
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "サイズを元に戻す"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

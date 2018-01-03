@@ -1947,10 +1947,6 @@ msgstr "З по&чатку"
 msgid "&From cursor"
 msgstr "&Від курсору"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "Задіяти позицію"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Глобально"
@@ -2264,10 +2260,6 @@ msgstr "Останній (напр. в кінці коду)"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Тека Lazarus (за замовчуванням для всіх проектів)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "Зліва:"
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
@@ -3656,10 +3648,6 @@ msgstr "Перемкнути як стільницю зневадження"
 msgid "Current Class/Proc Hint"
 msgstr "Підказка поточного класу/процесу"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "Вгорі:"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Стиль обрізання пробілів"
@@ -3795,10 +3783,6 @@ msgstr "Графічний застосунок Win32"
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Вікно"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "Позиції вікна"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19383,70 +19367,6 @@ msgstr "Дані про версію зберігаються лише за ум
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
 msgstr "Включити версію до виконуваного файлу"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr "Назви стовпців"
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr "Стратегія збереження стовпців"
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr "Ширина стовпців"
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr "Користувацька геометрія"
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr "Користувач може задати положення і розмір вікна"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr "Фіксована типова геометрія"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr "Завжди однакові фіксовані положення і розмір"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr "На розсуд віконного менеджера"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr "Системні віконні менеджери мають різні стратегії розташування вікон"
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr "Вікна, що відкривались. Зараз їх можна закрити."
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "Відновити геометрію вікна"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr "Використати попередні положення і розмір"
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "Власний розмір"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "Типовий розмір"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr "Відновити з вікном"
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "Відновити розмір"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

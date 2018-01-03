@@ -1944,10 +1944,6 @@ msgstr "&Elejétől"
 msgid "&From cursor"
 msgstr "Kurzortól"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "Pozíció lekérdezése"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Globális"
@@ -2261,10 +2257,6 @@ msgstr "Utolsó (pl. a forráskód végén)"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarus könyvtára (alapértelmezett minden projekthez)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "Bal:"
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
@@ -3653,10 +3645,6 @@ msgstr "Hibakereső felületként történő használat ki-/bekapcsolása"
 msgid "Current Class/Proc Hint"
 msgstr "Aktuális osztály/eljárás tipp"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "Felső:"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Szóközök levágásának stílusa"
@@ -3792,10 +3780,6 @@ msgstr "Win32 gui alkalmazás"
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Ablak"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "Ablak helyzete"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19379,70 +19363,6 @@ msgstr "A változatinformáció tárolva lesz a programban ha a formátuma támo
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
 msgstr "Változat adatok tárolása a programban"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr "Oszlopok nevei"
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr "Oszlopok mentésének stratégiája"
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr "Oszlop szélessége"
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr "Egyéni elhelyezés"
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr "A felhasználó meghatározhatja az ablakok helyét és méretét"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr "Rögzített alapértelmezett elhelyezés"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr "Mindig ugyanaz a rögzített hely és méret"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr "Az ablakkezelő döntse el"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr "A rendszer ablakkezelői eltérő stratégiával rendelkeznek az ablakok elhelyezésére"
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr "Nyitott ablakok. Most bezárhatók."
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "Az ablak elhelyezésének visszaállítása"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr "Előző helyzet és méret használata"
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "Egyéni Méret"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "Alapértelmezett méret"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr "Visszaállítás ablakkal"
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "Méret visszaállítása"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

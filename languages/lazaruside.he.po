@@ -2034,10 +2034,6 @@ msgstr ""
 msgid "&From cursor"
 msgstr "סמן טפסים"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "השג את המיקום"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "גלובלי"
@@ -2359,10 +2355,6 @@ msgstr "אחרון (כלומר בסוף קוד המקור)"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "תיקיית לזארוס (ברירת מחדל לכל הפרויקטים)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "שמאל:"
 
 #: lazarusidestrconsts.dlglefttopclr
 #, fuzzy
@@ -3850,10 +3842,6 @@ msgstr ""
 msgid "Current Class/Proc Hint"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "פסגה:"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 #, fuzzy
 #| msgid "Trim Spaces Style"
@@ -4008,12 +3996,6 @@ msgstr "יישום גרפי ל Win32"
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "חלון"
-
-#: lazarusidestrconsts.dlgwinpos
-#, fuzzy
-#| msgid "Window Positions"
-msgid "Window positions"
-msgstr "מיקום חלונות"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -20835,70 +20817,6 @@ msgstr ""
 #| msgid "Include Version Info in executable"
 msgid "Include version info in executable"
 msgstr "כלול מידע גירסה בקובץ הריצה"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr ""
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "שחזר את נתוני החלון"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr ""
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

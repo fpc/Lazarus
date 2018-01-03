@@ -1963,10 +1963,6 @@ msgstr ""
 msgid "&From cursor"
 msgstr "从光标处(&F)"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "得到位置"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "全部(&G)"
@@ -2290,10 +2286,6 @@ msgstr "末尾 (也就是代码的的最后)"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarus 目录 (所有工程的默认目录)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "左:"
 
 #: lazarusidestrconsts.dlglefttopclr
 #, fuzzy
@@ -3724,10 +3716,6 @@ msgstr ""
 msgid "Current Class/Proc Hint"
 msgstr "当前Class/Proc提示"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "上部:"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 #, fuzzy
 #| msgid "Trim Spaces Style"
@@ -3875,10 +3863,6 @@ msgstr "Win32 图形界面应用程序"
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "窗口"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "窗口位置"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19870,70 +19854,6 @@ msgstr ""
 #| msgid "Include Version Info in executable"
 msgid "Include version info in executable"
 msgstr "在执行文件中包含版本信息"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr ""
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "恢复窗口排列"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "自定义大小"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "默认大小"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr ""
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "恢复大小"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

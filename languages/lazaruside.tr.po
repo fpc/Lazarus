@@ -1949,10 +1949,6 @@ msgstr "Başlangıçtan itibaren"
 msgid "&From cursor"
 msgstr "& İmleçten"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "Pozisyon alın"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "& Küresel"
@@ -2266,10 +2262,6 @@ msgstr "Son (yani kaynağın sonunda)"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarus dizini (tüm projeler için varsayılan)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "Ayrıldı:"
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
@@ -3661,10 +3653,6 @@ msgstr "Masaüstünde hata ayıklama ayarı olarak değiştir"
 msgid "Current Class/Proc Hint"
 msgstr "Geçerli Sınıf / Proc İpucu"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "Üst:"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Trim spaces style"
@@ -3800,10 +3788,6 @@ msgstr "Win32 gui uygulaması"
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Pencere"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "Pencere pozisyonları"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19731,70 +19715,6 @@ msgstr "Çalıştırılabilir biçim destekliyorsa sürüm bilgisi saklanır."
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
 msgstr "Sürüm bilgilerini çalıştırılabilir dosyaya ekle"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr "Sütun Adları"
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr "Sütunları Tasarruf Stratejisi"
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr "Sütun genişliği"
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr "Özel geometri"
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr "Kullanıcı pencerenin konumunu ve boyutunu tanımlayabilir"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr "Sabit varsayılan geometri"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr "Her zaman aynı sabit konum ve boyut"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr "Pencere yönetici kararlasın"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr "Sistem pencere yöneticilerinin pencere konumlandırma için farklı stratejileri vardır"
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr "Açık olan Windows şimdi kapanmış olabilirler."
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "Pencere geometrisini geri yükle"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr "Önceki konumunu ve boyutunu kullan"
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "Özel boyut"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "Varsayılan Boyut"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr "Pencereyle geri yükle"
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "Boyutunu Geri Yükle"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

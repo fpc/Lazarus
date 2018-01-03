@@ -1946,10 +1946,6 @@ msgstr "Od začátku"
 msgid "&From cursor"
 msgstr "&Od kurzoru"
 
-#: lazarusidestrconsts.dlggetposition
-msgid "Get position"
-msgstr "Získat pozici"
-
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
 msgstr "&Celkový"
@@ -2265,10 +2261,6 @@ msgstr "Poslední (např. na konci zdrojového kódu)"
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
 msgstr "Adresář Lazarusu (výchozí pro všechny projekty)"
-
-#: lazarusidestrconsts.dlgleftpos
-msgid "Left:"
-msgstr "Vlevo:"
 
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
@@ -3669,10 +3661,6 @@ msgstr "Přepnout jako ladící plochu"
 msgid "Current Class/Proc Hint"
 msgstr "Tip aktuální třídy/procedury"
 
-#: lazarusidestrconsts.dlgtoppos
-msgid "Top:"
-msgstr "Nahoře:"
-
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Styl ořezání mezer"
@@ -3808,10 +3796,6 @@ msgstr "Win32 GUI aplikace"
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Okno"
-
-#: lazarusidestrconsts.dlgwinpos
-msgid "Window positions"
-msgstr "Poloha okna"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
@@ -19498,70 +19482,6 @@ msgstr "Informace o verzi je uloženo pokud to formát spustitelného podporuje.
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
 msgstr "Zahrnout informaci o verzi ve spustitelném souboru"
-
-#: lazarusidestrconsts.rsiwpcolumnnameshint
-msgid "Column Names"
-msgstr "Názvy Sloupců"
-
-#: lazarusidestrconsts.rsiwpcolumnstrategyhint
-msgid "Strategy for saving Columns"
-msgstr "Strategie pro ukládání Sloupců"
-
-#: lazarusidestrconsts.rsiwpcolumnwidthhint
-msgid "Column Width"
-msgstr "Šířka Sloupce"
-
-#: lazarusidestrconsts.rsiwpcustomgeometry
-msgid "Custom geometry"
-msgstr "Vlastní geometrie"
-
-#: lazarusidestrconsts.rsiwpcustomgeometryhint
-msgid "User can define window's position and size"
-msgstr "Uživatel může definovat rozměry a pozici okna"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometry
-msgid "Fixed default geometry"
-msgstr "Fixní výchozí geometrie"
-
-#: lazarusidestrconsts.rsiwpfixeddefaultgeometryhint
-msgid "Always the same fixed position and size"
-msgstr "Vždy stejná fixovaná velikost a pozice"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecide
-msgid "Let windowmanager decide"
-msgstr "Nechat správce oken rozhodnout"
-
-#: lazarusidestrconsts.rsiwpletwindowmanagerdecidehint
-msgid "System windowmanagers have different strategies for positioning windows"
-msgstr "Systémoví správci oken mají různé strategie pro pozicování oken"
-
-#: lazarusidestrconsts.rsiwppositionwindowlisthint
-msgid "Windows that have been open. They may be closed now."
-msgstr "Okna, která byla otevřena. Měla by být zavřena teď."
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometry
-msgid "Restore window geometry"
-msgstr "Obnovit rozměry okna"
-
-#: lazarusidestrconsts.rsiwprestorewindowgeometryhint
-msgid "Use previous position and size"
-msgstr "Použít předchozí velikost a pozici"
-
-#: lazarusidestrconsts.rsiwpsplittercustomposition
-msgid "Custom Size"
-msgstr "Vlastní velikost"
-
-#: lazarusidestrconsts.rsiwpsplitterdefault
-msgid "Default Size"
-msgstr "Přednastavená velikost"
-
-#: lazarusidestrconsts.rsiwpsplitterfollowwindow
-msgid "Restore with window"
-msgstr "Obnovit s oknem"
-
-#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
-msgid "Restore Size"
-msgstr "Obnovit velikost"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"

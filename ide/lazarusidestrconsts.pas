@@ -1382,7 +1382,6 @@ resourcestring
   lisAutoAdjustIDEHeightFullComponentPaletteHint = 'If component palette spans over more lines, show them all and not only one.';
   lisWindowMenuWithNameForDesignedForm = 'Window menu shows designed form''s name instead of caption';
   lisWindowMenuWithNameForDesignedFormHint = 'Useful especially if the caption is left empty.';
-  dlgWinPos = 'Window positions';
   lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
     +'shows for example: project1.lpi - Lazarus';
   lisBuildModeInTitleInExample = 'Title in taskbar '
@@ -2780,29 +2779,8 @@ resourcestring
   dlgReplaceAll = 'Replace &All';
 
   // IDEOptionDefs
-  dlgGetPosition = 'Get position';
-  dlgLeftPos     = 'Left:';
   dlgWidthPos    = 'Width:';
-  dlgTopPos      = 'Top:';
   DlgHeightPos   = 'Height:';
-  rsiwpRestoreWindowGeometry  = 'Restore window geometry';
-  rsiwpLetWindowManagerDecide = 'Let windowmanager decide';
-  rsiwpFixedDefaultGeometry   = 'Fixed default geometry';
-  rsiwpCustomGeometry         = 'Custom geometry';
-
-  rsiwpPositionWindowListHint = 'Windows that have been open. They may be closed now.';
-  rsiwpColumnNamesHint    = 'Column Names';
-  rsiwpColumnStrategyHint = 'Strategy for saving Columns';
-  rsiwpColumnWidthHint    = 'Column Width';
-  rsiwpRestoreWindowGeometryHint  = 'Use previous position and size';
-  rsiwpLetWindowManagerDecideHint = 'System windowmanagers have different strategies for positioning windows';
-  rsiwpFixedDefaultGeometryHint   = 'Always the same fixed position and size';
-  rsiwpCustomGeometryHint         = 'User can define window''s position and size';
-
-  rsiwpSplitterFollowWindow          = 'Restore with window';
-  rsiwpSplitterRestoreWindowGeometry = 'Restore Size';
-  rsiwpSplitterDefault               = 'Default Size';
-  rsiwpSplitterCustomPosition        = 'Custom Size';
 
   // Code Explorer
   lisCode = 'Code';
