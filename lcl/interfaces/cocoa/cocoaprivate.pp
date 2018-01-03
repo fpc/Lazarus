@@ -474,6 +474,7 @@ type
   TCocoaScrollView = objcclass(NSScrollView)
   public
     callback: ICommonCallback;
+    isAllowCustomScroll : Boolean;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -1023,7 +1024,10 @@ begin
   if not isembedded then
   begin
     //Window bounds should return "client rect" in screen coordinates
-    wfrm := window.lclFrame;
+    if Assigned(window.screen) then
+      NSToLCLRect(window.frame, window.screen.frame.size.height, wfrm)
+    else
+      wfrm := NSRectToRect(frame);
     OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
 end;
@@ -2826,10 +2830,15 @@ end;
 
 function LCLWindowExtension.lclFrame: TRect;
 begin
-  if Assigned(screen) then
-    NSToLCLRect(frame, screen.frame.size.height, Result)
+  if Assigned(contentView) then
+    Result:=contentView.lclFrame
   else
-    Result := NSRectToRect(frame);
+  begin
+    if Assigned(screen) then
+      NSToLCLRect(frame, screen.frame.size.height, Result)
+    else
+      Result := NSRectToRect(frame);
+  end;
 end;
 
 function LCLWindowExtension.lclGetTopBarHeight:integer;
