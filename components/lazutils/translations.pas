@@ -1633,9 +1633,10 @@ begin
 
     if CompareMultilinedStrings(Item.Original, Original)<>0 then begin
       FModified := True;
-      if Item.Translation<>'' then begin
+      if Item.Translation <> '' then begin
+        if (Item.PreviousID = '') or (pos(sFuzzyFlag, Item.Flags) = 0) then
+          Item.PreviousID:=Item.Original;
         Item.ModifyFlag(sFuzzyFlag, true);
-        Item.PreviousID:=Item.Original;
       end;
     end;
     Item.Original:=Original;
