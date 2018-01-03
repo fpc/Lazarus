@@ -1,11 +1,11 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-06 23:08+0200\n"
-"Last-Translator: Олександр Пилипчук <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2018-01-01 15:24+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -564,7 +564,7 @@ msgstr "Візуалізація спеціальних символів"
 
 #: lazarusidestrconsts.dlgaddnewmode
 msgid "Add new mode"
-msgstr ""
+msgstr "Додати новий режим"
 
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
@@ -1194,7 +1194,7 @@ msgstr "INLINE стилю C++"
 
 #: lazarusidestrconsts.dlgcreatenewrunparameterssettings
 msgid "Create new Run Parameters settings"
-msgstr ""
+msgstr "Створити новий набір параметрів запуску"
 
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
@@ -1250,7 +1250,7 @@ msgstr "Типове значення"
 
 #: lazarusidestrconsts.dlgdeletemode
 msgid "Delete mode"
-msgstr ""
+msgstr "Видалити режим"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2483,7 +2483,7 @@ msgstr "Змішування методів і властивостей"
 
 #: lazarusidestrconsts.dlgmode
 msgid "Mode"
-msgstr ""
+msgstr "Режим"
 
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
@@ -3320,7 +3320,7 @@ msgstr "Лише файли, що належать до цього проект�
 
 #: lazarusidestrconsts.dlgsavein
 msgid "Save in"
-msgstr ""
+msgstr "Зберегти в"
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -4854,7 +4854,7 @@ msgstr "Властивості точки зупинки"
 
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
-msgstr ""
+msgstr "Відшукайте і виберітиь компілятор (наприклад, ppcx64)"
 
 #: lazarusidestrconsts.lisbtnadd
 msgctxt "lazarusidestrconsts.lisbtnadd"
@@ -5025,7 +5025,7 @@ msgstr "Неможливо створити файл \"%s\""
 
 #: lazarusidestrconsts.liscannotdeletelastmode
 msgid "Cannot delete last mode."
-msgstr ""
+msgstr "Неможливо видалити останній режим."
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
@@ -8375,6 +8375,8 @@ msgid ""
 "The following package(s) are not available locally: %s.\n"
 "In order to install it, you must download them first. Download now?\n"
 msgstr ""
+"Такі пакунки недоступні локально: %s.\n"
+"Перед встановленням їх потрібно звантажити. Звантажити зараз?\n"
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -8391,7 +8393,7 @@ msgstr "Понизити конфігурацію"
 
 #: lazarusidestrconsts.lisdownload
 msgid "Download"
-msgstr ""
+msgstr "Звантажити"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -8463,7 +8465,7 @@ msgstr "Знайдений дублікат значення \"%s\"."
 
 #: lazarusidestrconsts.lisduplicatemodename
 msgid "Mode \"%s\" is already present in the list."
-msgstr ""
+msgstr "Режим \"%s\" вже є в списку."
 
 #: lazarusidestrconsts.lisduplicatename
 msgid "Duplicate Name"
@@ -10390,6 +10392,8 @@ msgid ""
 "The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?\n"
 msgstr ""
+"Такі пакунки не встановлені, але є в головному сховищі: %s.\n"
+"Встановити відсутні пакунки?\n"
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -13853,7 +13857,7 @@ msgstr "не встановлено"
 
 #: lazarusidestrconsts.lisnotinstalledpackages
 msgid "Not installed packages"
-msgstr ""
+msgstr "Невстановлені пакунки"
 
 #: lazarusidestrconsts.lisnotnow
 msgid "Not now"
@@ -14003,7 +14007,7 @@ msgstr "При розриві рядка (тобто при натисканні
 
 #: lazarusidestrconsts.lisonlinepackage
 msgid "available in the main repository"
-msgstr ""
+msgstr "доступні в головному сховищі"
 
 #: lazarusidestrconsts.lisonly32bit
 msgid "only 32bit"
@@ -14413,7 +14417,7 @@ msgstr "Застосувати зміни"
 
 #: lazarusidestrconsts.lispckeditavailableonline
 msgid "(available online)"
-msgstr ""
+msgstr "(доступні онлайн)"
 
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
@@ -16820,7 +16824,7 @@ msgstr "Вибрати теку сирцевих кодів FPC"
 
 #: lazarusidestrconsts.lisselectframe
 msgid "Select Frame"
-msgstr ""
+msgstr "Виберіть фрейм"
 
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
@@ -16941,7 +16945,7 @@ msgstr "Показувати лише одну кнопку на панелі з
 
 #: lazarusidestrconsts.lisshowoutput
 msgid "Show output"
-msgstr ""
+msgstr "Показати вивід"
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
@@ -18768,7 +18772,7 @@ msgstr "Незвичайна назва компілятора. Зазвичай
 
 #: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr ""
+msgstr "Незвична назва файлу компілятора pas2js. Зазвичай вона починається з pas2js."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"

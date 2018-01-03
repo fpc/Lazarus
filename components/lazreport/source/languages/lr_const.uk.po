@@ -1,12 +1,12 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
-# Олександр Пилипчук <lxlalexlxl@ukr.net>, 2017.
+# Олександр Пилипчук <lxlalexlxl@ukr.net>, 2017, 2018.
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: Олександр Пилипчук <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2017-12-06 23:08+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2018-01-01 16:21+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -260,141 +260,140 @@ msgstr "Піідтвердити"
 
 #: lr_const.scrosseditoraverage
 msgid "Average"
-msgstr ""
+msgstr "Середнє"
 
 #: lr_const.scrosseditorblue
 msgid "Blue"
-msgstr ""
+msgstr "Синій"
 
 #: lr_const.scrosseditorbluewhite
 msgid "Blue and White"
-msgstr ""
+msgstr "Синій і білий"
 
 #: lr_const.scrosseditorcaption
 msgid "Cross tab editor"
-msgstr ""
+msgstr "Редактор перехресних таблиць"
 
 #: lr_const.scrosseditorcount
 msgid "Count"
-msgstr ""
+msgstr "Кількість"
 
 #: lr_const.scrosseditorcyan
 msgid "Cyan"
-msgstr ""
+msgstr "Блакитний"
 
 #: lr_const.scrosseditorgray
 msgid "Gray"
-msgstr ""
+msgstr "Сірий"
 
 #: lr_const.scrosseditorgreen
 msgid "Green"
-msgstr ""
+msgstr "Зелений"
 
 #: lr_const.scrosseditorgreenorange
 msgid "Green and Orange"
-msgstr ""
+msgstr "Зелений і оранжевий"
 
 #: lr_const.scrosseditormax
 msgid "Max"
-msgstr ""
+msgstr "Макс."
 
 #: lr_const.scrosseditormin
 msgid "Min"
-msgstr ""
+msgstr "Мін."
 
 #: lr_const.scrosseditornone
-#, fuzzy
 msgctxt "lr_const.scrosseditornone"
 msgid "None"
 msgstr "Немає"
 
 #: lr_const.scrosseditororange
 msgid "Orange"
-msgstr ""
+msgstr "Оранжевий"
 
 #: lr_const.scrosseditorshowcolheader
 msgid "Show column header"
-msgstr ""
+msgstr "Показати заголовок стовпця"
 
 #: lr_const.scrosseditorshowcoltotal
 msgid "Show column total"
-msgstr ""
+msgstr "Показати підсумок стовпця"
 
 #: lr_const.scrosseditorshowcorner1
 msgid "Show corner 1"
-msgstr ""
+msgstr "Показати куток 1"
 
 #: lr_const.scrosseditorshowcorner2
 msgid "Show corner 2"
-msgstr ""
+msgstr "Показати куток 2"
 
 #: lr_const.scrosseditorshowgrantotal
 msgid "Show grand total"
-msgstr ""
+msgstr "Показати загальний підсумок"
 
 #: lr_const.scrosseditorshowrowheader
 msgid "Show row header"
-msgstr ""
+msgstr "Показати заголовок рядка"
 
 #: lr_const.scrosseditorshowrowtotal
 msgid "Show row total"
-msgstr ""
+msgstr "Показати підсумок рядка"
 
 #: lr_const.scrosseditorshowtitle
 msgid "Show title"
-msgstr ""
+msgstr "Показати заголовок"
 
 #: lr_const.scrosseditorsource
 msgid "Source data"
-msgstr ""
+msgstr "Початкові дані"
 
 #: lr_const.scrosseditorstructure
 msgid "Cross-tab structure"
-msgstr ""
+msgstr "Структура перехресної таблиці"
 
 #: lr_const.scrosseditorstyle
 msgid "Select style"
-msgstr ""
+msgstr "Виберіть стиль"
 
 #: lr_const.scrosseditorsum
 msgid "Sum"
-msgstr ""
+msgstr "Сума"
 
 #: lr_const.scrosseditorwhite
 msgid "White"
-msgstr ""
+msgstr "Білий"
 
 #: lr_const.scrosstabcoltitle
 msgid "Col title"
-msgstr ""
+msgstr "Заголовок стовпця"
 
 #: lr_const.scrosstabcoltotal
 msgid "Col total"
-msgstr ""
+msgstr "Підсумок стовпця"
 
 #: lr_const.scrosstabdata
 msgid "Data"
-msgstr ""
+msgstr "Дані"
 
 #: lr_const.scrosstabgrantotal
 msgid "Grand total"
-msgstr ""
+msgstr "Загальний підсумок"
 
 #: lr_const.scrosstabrowtitle
 msgid "Row title"
-msgstr ""
+msgstr "Заголовок рядка"
 
 #: lr_const.scrosstabrowtotal
 msgid "Row total"
-msgstr ""
+msgstr "Підсумок рядка"
 
 #: lr_const.scrosstabtotalchcell
 msgid "Total CH cell"
-msgstr ""
+msgstr "Заголовок підсумку стовпця"
 
 #: lr_const.scrosstabtotalrhcell
 msgid "Total RH cell"
-msgstr ""
+msgstr "Заголовок підсумку рядка"
 
 #: lr_const.scsvfile
 msgid "CSV File"
@@ -406,10 +405,9 @@ msgstr "Замітка:"
 
 #: lr_const.sdatainspfields
 msgid "Fields"
-msgstr ""
+msgstr "Поля"
 
 #: lr_const.sdatainspvariables
-#, fuzzy
 msgctxt "lr_const.sdatainspvariables"
 msgid "Variables"
 msgstr "Змінні"
@@ -630,7 +628,7 @@ msgstr "&Дюйми"
 
 #: lr_const.sdesoptionsforminplace
 msgid "Use inplace editor"
-msgstr ""
+msgstr "Редагувати на місці"
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
@@ -1647,7 +1645,7 @@ msgstr "Вставити об'єкт CheckBox"
 
 #: lr_const.sinscrosstab
 msgid "Insert Cross-tab object"
-msgstr ""
+msgstr "Вставити об'єкт \"Перехресна таблиця\""
 
 #: lr_const.sinsert
 msgid "Insert"

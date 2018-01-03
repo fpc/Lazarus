@@ -1,10 +1,9 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
-# Олександр Пилипчук <lxlalexlxl@ukr.net>, 2017.
+# Олександр Пилипчук <lxlalexlxl@ukr.net>, 2017, 2018.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Олександр Пилипчук <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2017-12-06 22:42+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2018-01-01 15:57+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -64,11 +63,11 @@ msgstr "Виберіть (позначте) одну або декілька к�
 #: opkman_const.rscolors_caption
 msgctxt "opkman_const.rscolors_caption"
 msgid "Colors"
-msgstr ""
+msgstr "Кольори"
 
 #: opkman_const.rscolors_cd_title
 msgid "Select color"
-msgstr ""
+msgstr "Виберіть колір"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
@@ -694,7 +693,7 @@ msgstr "Пакунки (%s шт.) успішно записано до файл�
 
 #: opkman_const.rsmainfrm_rsdestdirerror
 msgid "Cannot create directory \"%s\". Operation aborted."
-msgstr ""
+msgstr "Неможливо створити каталог \"%s\". Операцію перервано."
 
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
@@ -745,10 +744,8 @@ msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "Пакунок \"%s\" залежить від пакунка \"%s\". Розв'язати залежність?"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-#, fuzzy
-#| msgid "Not resolving dependencies might lead to install failure!"
 msgid "Not resolving dependencies might lead to install failure! Continue?"
-msgstr "Нерозв'язані залежності можуть спричинити збій встановлення!"
+msgstr "Нерозв'язані залежності можуть спричинити збій встановлення! Продовжити?"
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
@@ -1191,25 +1188,24 @@ msgstr "Версія"
 
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
-msgstr ""
+msgstr "Для того, щоб задіяти зміни, слід перебудувати ІСР. Перебудувати зараз?"
 
 #: opkman_const.rsopmintfpackagelistfrm_caption
 msgid "Install online packages"
-msgstr ""
+msgstr "Встановити онлайнові пакунки"
 
 #: opkman_const.rsopmintfpackagelistfrm_pninfo
 msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
-msgstr ""
+msgstr "Перевірте перд встановленням: сумісність з Lazarus/FPC, підтримку бібліотек віджетів, ліцензію та дані про версію"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
-#, fuzzy
 msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
 msgid "Data"
 msgstr "Дані"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package"
-msgstr ""
+msgstr "Пакунок Lazarus"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
@@ -1219,7 +1215,7 @@ msgstr "Додати"
 #: opkman_const.rsoptions_bcolors_caption
 msgctxt "opkman_const.rsoptions_bcolors_caption"
 msgid "Colors"
-msgstr ""
+msgstr "Кольори"
 
 #: opkman_const.rsoptions_bdelete_caption
 msgctxt "opkman_const.rsoptions_bdelete_caption"
@@ -1233,7 +1229,7 @@ msgstr "Редагувати"
 
 #: opkman_const.rsoptions_bpoptions_bhelp
 msgid "Restore defaults"
-msgstr ""
+msgstr "Скинути до типових"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1444,19 +1440,19 @@ msgstr "Введіть адресу проксі-сервера!"
 
 #: opkman_const.rsoptions_rbhintformoptions_caption
 msgid "Quick info for repository packages"
-msgstr ""
+msgstr "Короткі дані по пакунки в сховищі"
 
 #: opkman_const.rsoptions_rbhintformoptions_item0
 msgid "Behaves like a regular hint window"
-msgstr ""
+msgstr "Поводиться як звичайне вікно підказки"
 
 #: opkman_const.rsoptions_rbhintformoptions_item1
 msgid "It's triggered by SHIFT, moves with the mouse"
-msgstr ""
+msgstr "Перемикається SHIFT, рухається мишею"
 
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
-msgstr ""
+msgstr "Вимкнути"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
