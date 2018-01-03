@@ -3021,7 +3021,7 @@ var
   {$IFDEF UNIX}
   ScanCode: LongWord;
   {$ENDIF}
-  AChar: UnicodeChar;
+  AChar: Char;
   AKeyEvent: QKeyEventH;
   GlobalAction: Integer;
   {$IFDEF VerboseQtKeys}
@@ -3063,7 +3063,7 @@ var
       Text := UTF8ToUTF16(Utf8Char)
     else
     if Word(AChar) <> CharMsg.CharCode then
-      Text := UnicodeChar(CharMsg.CharCode);
+      Text := Char(CharMsg.CharCode);
 
     AKeyEvent := QKeyEvent_createExtendedKeyEvent(
       QEvent_type(Event),
