@@ -5194,8 +5194,7 @@ begin
       Result := PropertyHook.GetComponentName(Component)
     else
       Result := Component.Name;
-  end else
-    Result := inherited GetValue;
+  end;
 end;
 
 { TComponentNamePropertyEditor }
