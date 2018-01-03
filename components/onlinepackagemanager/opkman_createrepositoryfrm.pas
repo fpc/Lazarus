@@ -712,6 +712,9 @@ begin
       end;
     end;
   end;
+  //properly init each node to prevent memory leaks
+  FVSTPackages.FullExpand;
+  FVSTPackages.FullCollapse;
   if RootNode <> nil then
   begin
     FVSTPackages.Selected[RootNode] := True;

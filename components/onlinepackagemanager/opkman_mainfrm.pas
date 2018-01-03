@@ -41,7 +41,7 @@ uses
   opkman_VirtualTrees, opkman_downloader, opkman_installer,
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
   opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
-  opkman_optionsfrm, opkman_createrepositorypackagefrm, {opkman_updates,}
+  opkman_optionsfrm, opkman_createrepositorypackagefrm, opkman_updates,
   opkman_createjsonforupdatesfrm, opkman_createrepositoryfrm;
 
 type
@@ -154,6 +154,7 @@ type
     procedure DoOnJSONProgress(Sender: TObject);
     procedure DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
     procedure DoOnProcessJSON(Sender: TObject);
+    procedure DoOnUpdate(Sender: TObject);
     function IsSomethingChecked(const AResolveDependencies: Boolean = True): Boolean;
     function Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     function Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean; const AIsUpdate: Boolean = False): TModalResult;
@@ -197,19 +198,20 @@ var
   FileName: String;
 begin
   FileName := Format(LocalRepositoryUpdatesFile, [MD5Print(MD5String(Options.RemoteRepository[Options.ActiveRepositoryIndex]))]);
-{  Updates := TUpdates.Create(FileName);
+  Updates := TUpdates.Create(FileName);
+  Updates.OnUpdate := @DoOnUpdate;
   Updates.StartUpdate;
-  Updates.PauseUpdate;}
+  Updates.PauseUpdate;
 end;
 
 procedure TMainFrm.StopUpdates;
 begin
-{  if Assigned(Updates) then
+  if Assigned(Updates) then
   begin
     Updates.StopUpdate;
     Updates.Terminate;
     Updates := nil;
-  end;}
+  end;
 end;
 
 procedure TMainFrm.FormDestroy(Sender: TObject);
@@ -248,9 +250,9 @@ begin
   begin
     SetupMessage(rsMainFrm_rsMessageChangingRepository);
     Sleep(1500);
-  end;
-{  else
-    Updates.PauseUpdate;}
+  end
+  else
+    Updates.PauseUpdate;
   SetupMessage(rsMainFrm_rsMessageDownload);
   PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
 end;
@@ -397,8 +399,8 @@ begin
         mJSON.Text := AJSON;
         cbAll.Checked := False;
         Caption := rsLazarusPackageManager + ' ' + SerializablePackages.QuickStatistics;
-{        if Assigned(Updates) then
-          Updates.StartUpdate;}
+        if Assigned(Updates) then
+          Updates.StartUpdate;
       end;
     etConfig:
       begin
@@ -427,6 +429,11 @@ end;
 procedure TMainFrm.DoOnProcessJSON(Sender: TObject);
 begin
   Application.ProcessMessages;
+end;
+
+procedure TMainFrm.DoOnUpdate(Sender: TObject);
+begin
+  VisualTree.UpdatePackageUStatus;
 end;
 
 procedure TMainFrm.ShowOptions(const AActivePageIndex: Integer = 0);
@@ -668,7 +675,7 @@ begin
 
   if CanGo then
   begin
-//    Updates.PauseUpdate;
+    Updates.PauseUpdate;
     Options.LastDownloadDir := DstDir;
     Options.Changed := True;
     PackageAction := paDownloadTo;
@@ -690,7 +697,7 @@ begin
     end;
   end;
   SerializablePackages.RemoveErrorState;
-  //Updates.StartUpdate;
+  Updates.StartUpdate;
 end;
 
 procedure TMainFrm.Rebuild;
@@ -732,7 +739,7 @@ begin
     if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) <> mrYes then
       Exit;
 
-    //Updates.PauseUpdate;
+    Updates.PauseUpdate;
     PackageAction := paUpdate;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -775,7 +782,7 @@ begin
   if not NeedToRebuild then
   begin
     SerializablePackages.RemoveErrorState;
-    //Updates.StartUpdate;
+    Updates.StartUpdate;
   end;
 end;
 
@@ -838,7 +845,7 @@ begin
    end;
 
   NeedToRebuild := False;
-  //Updates.StopUpdate;
+  Updates.StopUpdate;
   for I := 0 to SerializablePackages.Count - 1 do
   begin
     for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
@@ -863,7 +870,7 @@ begin
               begin
                 NeedToRebuild := False;
                 MessageDlgEx(Format(rsMainFrm_rsUninstall_Error, [LazarusPackage.Name]), mtError, [mbOk], Self);
-                //Updates.StartUpdate;
+                Updates.StartUpdate;
                 Exit;
               end
               else
@@ -904,7 +911,7 @@ begin
 
   if CanGo then
   begin
-    //Updates.PauseUpdate;
+    Updates.PauseUpdate;
     PackageAction := paInstall;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -946,7 +953,7 @@ begin
   if not NeedToRebuild then
   begin
     SerializablePackages.RemoveErrorState;
-    //Updates.StartUpdate;
+    Updates.StartUpdate;
   end;
 end;
 
@@ -1159,7 +1166,7 @@ procedure TMainFrm.miJSONShowClick(Sender: TObject);
 begin
   if not mJSON.Visible then
   begin
-    //StopUpdates;
+    StopUpdates;
     EnableDisableControls(False);
     mJSON.Visible := True;
     mJSON.BringToFront;
@@ -1169,7 +1176,7 @@ begin
     mJSON.SendToBack;
     mJSON.Visible := False;
     EnableDisableControls(True);
-    //StartUpdates;
+    StartUpdates;
   end;
 end;
 

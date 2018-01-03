@@ -112,6 +112,7 @@ type
     FPaused: Boolean;
     function GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
     procedure DoOnTimer(Sender: TObject);
+    procedure DoOnUpdate;
     procedure Load;
     procedure Save;
     procedure AssignPackageData(AMetaPackage: TMetaPackage);
@@ -126,6 +127,8 @@ type
     procedure StartUpdate;
     procedure StopUpdate;
     procedure PauseUpdate;
+  published
+    property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
   end;
 
 var
@@ -248,6 +251,7 @@ end;
 
 destructor TUpdates.Destroy;
 begin
+  FXML.Clear;
   FXML.Free;
   if Assigned(FTimer) then
   begin
@@ -308,6 +312,7 @@ begin
       MetaPkg.HasUpdate := HasUpdate;
     end;
   end;
+  Synchronize(@DoOnUpdate);
 end;
 
 procedure TUpdates.Save;
@@ -493,16 +498,21 @@ begin
   end;
 end;
 
+procedure TUpdates.DoOnUpdate;
+begin
+  if Assigned(FOnUpdate) then
+    FOnUpdate(Self);
+end;
+
 procedure TUpdates.Execute;
 var
   I: Integer;
   JSON: TJSONStringType;
 begin
-//  Load;
-//  CheckForOpenSSL;
+  CheckForOpenSSL;
   while not Terminated do
   begin
-{    if Assigned(SerializablePackages) and (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvailable) then
+    if Assigned(SerializablePackages) and (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvailable) then
     begin
       Options.LastUpdate := Now;
       Options.Changed := True;
@@ -528,11 +538,13 @@ begin
           else
             FHTTPClient.Terminate;
         end;
+        if Assigned(FOnUpdate) and (not FNeedToBreak) and (not FPaused) then
+          Synchronize(@DoOnUpdate);
       finally
         FBusyUpdating := False;
         FNeedToUpdate := False;
       end;
-    end;}
+    end;
     Sleep(1000);
   end;
 end;
