@@ -351,6 +351,8 @@ function Split(
 
 // Accept both locale-specific and default decimal separators.
 function StrToFloatDefSep(const AStr: String): Double;
+// .. or date/time values
+function StrToFloatOrDateTimeDef(const AStr: String): Double;
 
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
@@ -528,6 +530,16 @@ begin
   if
     not TryStrToFloat(AStr, Result, DefSeparatorSettings) and
     not TryStrToFloat(AStr, Result)
+  then
+    Result := 0.0;
+end;
+
+function StrToFloatOrDateTimeDef(const AStr: String): Double;
+begin
+  if
+    not TryStrToFloat(AStr, Result, DefSeparatorSettings) and
+    not TryStrToFloat(AStr, Result) and
+    not TryStrToDateTime(AStr, Result)
   then
     Result := 0.0;
 end;

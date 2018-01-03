@@ -334,17 +334,18 @@ var
 
 var
   i: Integer;
+  s: String;
 begin
   parts := Split(AString);
   try
     if FSource.YCount + 3 < Cardinal(parts.Count) then
       FSource.YCount := parts.Count - 3;
     with ADataItem^ do begin
-      X := StrToFloatDefSep(NextPart);
+      X := StrToFloatOrDateTimeDef(NextPart);
       if FSource.YCount > 0 then begin
-        Y := StrToFloatDefSep(NextPart);
+        Y := StrToFloatOrDateTimeDef(NextPart);
         for i := 0 to High(YList) do
-          YList[i] := StrToFloatDefSep(NextPart);
+          YList[i] := StrToFloatOrDateTimeDef(NextPart);
       end;
       Color := StrToIntDef(NextPart, clTAColor);
       Text := NextPart;
