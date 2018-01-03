@@ -747,6 +747,7 @@ type
     function GetSelections: TPersistentSelectionList; override;
   public
     function AllEqual: Boolean; override;
+    function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: string); override;
     function GetValue: AnsiString; override;
@@ -5086,6 +5087,17 @@ begin
     Result := csDesigning in Component.ComponentState
   else
     Result := True;
+end;
+
+function TInterfacePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect];
+  if Assigned(GetPropInfo^.SetProc) then
+    Result := Result + [paValueList, paSortList, paRevertable, paVolatileSubProperties]
+  else
+    Result := Result + [paReadOnly];
+  if GReferenceExpandable and (GetComponentReference <> nil) and AllEqual then
+    Result := Result + [paSubProperties];
 end;
 
 function TInterfacePropertyEditor.GetComponent(const AInterface: IInterface): TComponent;
