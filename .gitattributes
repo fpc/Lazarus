@@ -1077,19 +1077,47 @@ components/customdrawn/paletteimg.res -text
 components/customdrawn/resources/build.bat svneol=native#text/pascal
 components/customdrawn/resources/paletteimg.txt svneol=native#text/pascal
 components/customdrawn/resources/tcdbutton.png -text
+components/customdrawn/resources/tcdbutton_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdbutton_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdcheckbox.png -text
+components/customdrawn/resources/tcdcheckbox_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdcheckbox_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdcombobox.png -text
+components/customdrawn/resources/tcdcombobox_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdcombobox_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdedit.png -text
+components/customdrawn/resources/tcdedit_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdedit_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdgroupbox.png -text
+components/customdrawn/resources/tcdgroupbox_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdgroupbox_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdlistview.png -text
+components/customdrawn/resources/tcdlistview_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdlistview_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdpagecontrol.png -text
+components/customdrawn/resources/tcdpagecontrol_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdpagecontrol_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdprogressbar.png -text
+components/customdrawn/resources/tcdprogressbar_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdprogressbar_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdradiobutton.png -text
+components/customdrawn/resources/tcdradiobutton_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdradiobutton_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdscrollbar.png -text
+components/customdrawn/resources/tcdscrollbar_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdscrollbar_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdspinedit.png -text
+components/customdrawn/resources/tcdspinedit_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdspinedit_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdstatictext.png -text
+components/customdrawn/resources/tcdstatictext_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdstatictext_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdtabcontrol.png -text
+components/customdrawn/resources/tcdtabcontrol_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdtabcontrol_200.png -text svneol=unset#image/png
 components/customdrawn/resources/tcdtrackbar.png -text
+components/customdrawn/resources/tcdtrackbar_150.png -text svneol=unset#image/png
+components/customdrawn/resources/tcdtrackbar_200.png -text svneol=unset#image/png
 components/customform/custforms.pp svneol=native#text/plain
 components/customform/demo/appform.pas svneol=native#text/plain
 components/customform/demo/appforms.lpk svneol=native#text/plain
@@ -1177,6 +1205,7 @@ components/datetimectrls/pictures/datetimepickereditor.png -text
 components/datetimectrls/pictures/make_datetimectrls_images.bat svneol=native#text/plain
 components/datetimectrls/readme.txt svneol=native#text/plain
 components/dbexport/README.txt svneol=native#text/plain
+components/dbexport/build_res.bat svneol=native#text/plain
 components/dbexport/dbexportimg.res -text
 components/dbexport/dbexportimg.txt svneol=native#text/plain
 components/dbexport/demo/README.txt svneol=native#text/plain
@@ -1220,17 +1249,39 @@ components/dbexport/lazdbexport.lpk svneol=native#text/plain
 components/dbexport/lazdbexport.pas svneol=native#text/plain
 components/dbexport/regdbexport.pp svneol=native#text/plain
 components/dbexport/sdb_consts.pas svneol=native#text/plain
-components/dbexport/tcsvexporter.xpm svneol=native#text/plain
-components/dbexport/tfixedlengthexporter.xpm svneol=native#text/plain
-components/dbexport/tfpdataexporter.xpm svneol=native#text/plain
-components/dbexport/tfpdbfexport.xpm svneol=native#text/plain
-components/dbexport/trtfexporter.xpm svneol=native#text/plain
-components/dbexport/tsimplejsonexporter.xpm svneol=native#text/plain
-components/dbexport/tsimplexmlexporter.xpm svneol=native#text/plain
-components/dbexport/tsqlexporter.xpm svneol=native#text/plain
-components/dbexport/tstandardexportformats.xpm svneol=native#text/plain
-components/dbexport/ttexexporter.xpm svneol=native#text/plain
-components/dbexport/txmlxsdexporter.xpm svneol=native#text/plain
+components/dbexport/tcsvexporter.png -text svneol=unset#image/png
+components/dbexport/tcsvexporter_150.png -text svneol=unset#image/png
+components/dbexport/tcsvexporter_200.png -text svneol=unset#image/png
+components/dbexport/tfixedlengthexporter.png -text svneol=unset#image/png
+components/dbexport/tfixedlengthexporter_150.png -text svneol=unset#image/png
+components/dbexport/tfixedlengthexporter_200.png -text svneol=unset#image/png
+components/dbexport/tfpdataexporter.png -text svneol=unset#image/png
+components/dbexport/tfpdataexporter_150.png -text svneol=unset#image/png
+components/dbexport/tfpdataexporter_200.png -text svneol=unset#image/png
+components/dbexport/tfpdbfexport.png -text svneol=unset#image/png
+components/dbexport/tfpdbfexport_150.png -text svneol=unset#image/png
+components/dbexport/tfpdbfexport_200.png -text svneol=unset#image/png
+components/dbexport/trtfexporter.png -text svneol=unset#image/png
+components/dbexport/trtfexporter_150.png -text svneol=unset#image/png
+components/dbexport/trtfexporter_200.png -text svneol=unset#image/png
+components/dbexport/tsimplejsonexporter.png -text svneol=unset#image/png
+components/dbexport/tsimplejsonexporter_150.png -text svneol=unset#image/png
+components/dbexport/tsimplejsonexporter_200.png -text svneol=unset#image/png
+components/dbexport/tsimplexmlexporter.png -text svneol=unset#image/png
+components/dbexport/tsimplexmlexporter_150.png -text svneol=unset#image/png
+components/dbexport/tsimplexmlexporter_200.png -text svneol=unset#image/png
+components/dbexport/tsqlexporter.png -text svneol=unset#image/png
+components/dbexport/tsqlexporter_150.png -text svneol=unset#image/png
+components/dbexport/tsqlexporter_200.png -text svneol=unset#image/png
+components/dbexport/tstandardexportformats.png -text svneol=unset#image/png
+components/dbexport/tstandardexportformats_150.png -text svneol=unset#image/png
+components/dbexport/tstandardexportformats_200.png -text svneol=unset#image/png
+components/dbexport/ttexexporter.png -text svneol=unset#image/png
+components/dbexport/ttexexporter_150.png -text svneol=unset#image/png
+components/dbexport/ttexexporter_200.png -text svneol=unset#image/png
+components/dbexport/txmlxsdexporter.png -text svneol=unset#image/png
+components/dbexport/txmlxsdexporter_150.png -text svneol=unset#image/png
+components/dbexport/txmlxsdexporter_200.png -text svneol=unset#image/png
 components/debuggerintf/Makefile svneol=native#text/plain
 components/debuggerintf/Makefile.compiled svneol=native#text/plain
 components/debuggerintf/Makefile.fpc svneol=native#text/plain
@@ -3326,6 +3377,7 @@ components/mouseandkeyinput/winmouseinput.pas svneol=native#text/pascal
 components/mouseandkeyinput/xkeyinput.pas svneol=native#text/pascal
 components/mouseandkeyinput/xmouseinput.pas svneol=native#text/pascal
 components/mpaslex/mpaslex.pp svneol=native#text/pascal
+components/mrumenu/build_res.bat svneol=native#text/plain
 components/mrumenu/demo/frmmain.lfm svneol=native#text/plain
 components/mrumenu/demo/frmmain.pp svneol=native#text/plain
 components/mrumenu/demo/mrudemo.ico -text svneol=unset#image/ico
@@ -3338,6 +3390,8 @@ components/mrumenu/mrumanager.pp svneol=native#text/plain
 components/mrumenu/reglazmru.pp svneol=native#text/plain
 components/mrumenu/regmru.res -text
 components/mrumenu/tmrumenumanager.png -text svneol=unset#image/png
+components/mrumenu/tmrumenumanager_150.png -text svneol=unset#image/png
+components/mrumenu/tmrumenumanager_200.png -text svneol=unset#image/png
 components/multithreadprocs/examples/parallelloop1.lpi svneol=native#text/plain
 components/multithreadprocs/examples/parallelloop1.lpr svneol=native#text/plain
 components/multithreadprocs/examples/recursivemtp1.lpi svneol=native#text/plain
