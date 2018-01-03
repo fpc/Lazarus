@@ -328,6 +328,7 @@ type
 
   TDesktopOIOptions = class(TPersistent)
   private
+    FComponentTreeHeight: integer;
     FInfoBoxHeight: integer;
     FShowInfoBox: boolean;
     FSplitterX: array[TObjectInspectorPage] of Integer;
@@ -345,6 +346,7 @@ type
     procedure Load(XMLConfig: TXMLConfig; Path: String);
     procedure Save(XMLConfig: TXMLConfig; Path: String);
 
+    property ComponentTreeHeight: integer read FComponentTreeHeight write FComponentTreeHeight;
     property SplitterX[const APage: TObjectInspectorPage]: Integer read GetSplitterX write SetSplitterX;
     property ShowInfoBox: boolean read FShowInfoBox write FShowInfoBox;
     property InfoBoxHeight: integer read FInfoBoxHeight write FInfoBoxHeight;
@@ -1077,6 +1079,7 @@ constructor TDesktopOIOptions.Create;
 var
   I: TObjectInspectorPage;
 begin
+  FComponentTreeHeight := -1;
   FInfoBoxHeight := -1;
   FShowInfoBox := True;
   for I in TObjectInspectorPage do
@@ -1095,6 +1098,7 @@ begin
     for I in TObjectInspectorPage do
       DDest.SplitterX[I] := SplitterX[I];
     DDest.ShowInfoBox := ShowInfoBox;
+    DDest.ComponentTreeHeight := ComponentTreeHeight;
     DDest.InfoBoxHeight := InfoBoxHeight;
   end else
     inherited AssignTo(Dest);
@@ -1117,6 +1121,7 @@ begin
     FSplitterX[I] := o.GridSplitterX[I];
 
   ShowInfoBox := o.ShowInfoBox;
+  ComponentTreeHeight := o.ComponentTreeHeight;
   InfoBoxHeight := o.InfoBoxHeight;
 end;
 
@@ -1128,6 +1133,7 @@ begin
   for I in TObjectInspectorPage do
     FSplitterX[I] := XMLConfig.GetValue(Path+'SplitterX/'+DefaultOIPageNames[I]+'/Value',-1);
   ShowInfoBox := XMLConfig.GetValue(Path+'ShowInfoBox/Value',True);
+  ComponentTreeHeight := XMLConfig.GetValue(Path+'ComponentTreeHeight/Value',-1);
   InfoBoxHeight := XMLConfig.GetValue(Path+'InfoBoxHeight/Value',-1);
 end;
 
@@ -1139,6 +1145,7 @@ begin
   for I in TObjectInspectorPage do
     XMLConfig.SetDeleteValue(Path+'SplitterX/'+DefaultOIPageNames[I]+'/Value',FSplitterX[I],-1);
   XMLConfig.SetDeleteValue(Path+'ShowInfoBox/Value',ShowInfoBox,True);
+  XMLConfig.SetDeleteValue(Path+'ComponentTreeHeight/Value',ComponentTreeHeight,-1);
   XMLConfig.SetDeleteValue(Path+'InfoBoxHeight/Value',InfoBoxHeight,-1);
 end;
 
@@ -1160,7 +1167,10 @@ begin
       o.GridSplitterX[I] := Max(10, FSplitterX[I]);
 
   o.ShowInfoBox := ShowInfoBox;
-  o.InfoBoxHeight := InfoBoxHeight;
+  if ComponentTreeHeight>=0 then
+    o.ComponentTreeHeight := Max(10, ComponentTreeHeight);
+  if InfoBoxHeight>=0 then
+    o.InfoBoxHeight := Max(10, InfoBoxHeight);
 end;
 
 { TUnsupportedDesktopOpt }
