@@ -2780,7 +2780,7 @@ begin
   if (i2 > 0) and ( (i2 < i) or (i < 1) )
   then begin
     i := i2;
-    j := i + length(BreaKErrMsg);
+    j := i + length(WatchErrMsg);
   end;
 
   if i <= 0 then exit;
