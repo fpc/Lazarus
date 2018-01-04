@@ -439,6 +439,8 @@ type
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     procedure flagsChanged(event: NSEvent); override;
+    // nsview
+    procedure setFrame(aframe: NSRect); override;
     // other
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
@@ -474,7 +476,6 @@ type
   TCocoaScrollView = objcclass(NSScrollView)
   public
     callback: ICommonCallback;
-    isAllowCustomScroll : Boolean;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -482,6 +483,30 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+  end;
+
+  { TCocoaManualScrollView }
+
+  TCocoaManualScrollView = objcclass(NSView)
+  private
+    fdocumentView: NSView;
+    fhscroll : NSScroller;
+    fvscroll : NSScroller;
+  public
+    callback: ICommonCallback;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+    function lclIsHandle: Boolean; override;
+    function lclContentView: NSView; override;
+    function lclClientFrame: TRect; override;
+
+    procedure setDocumentView(AView: NSView); message 'setDocumentView:';
+    function documentView: NSView; message 'documentView';
+
+    procedure setHasVerticalScroller(doshow: Boolean); message 'setHasVerticalScroller:';
+    procedure setHasHorizontalScroller(doshow: Boolean); message 'setHasHorizontalScroller:';
+    function hasVerticalScroller: Boolean; message 'hasVerticalScroller';
+    function hasHorizontalScroller: Boolean; message 'hasHorizontalScroller';
   end;
 
   TStatusItemData = record
@@ -957,6 +982,167 @@ begin
   {$IFDEF COCOA_SUPERVIEW_HEIGHT}
   WriteLn(Format('GetNSViewSuperViewHeight Result=%f', [Result]));
   {$ENDIF}
+end;
+
+{ TCocoaManualScrollView }
+
+function TCocoaManualScrollView.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaManualScrollView.lclClearCallback;
+begin
+  callback := nil;
+end;
+
+function TCocoaManualScrollView.lclIsHandle: Boolean;
+begin
+  Result := true;
+end;
+
+function TCocoaManualScrollView.lclContentView: NSView;
+begin
+  Result:=fdocumentView;
+end;
+
+function TCocoaManualScrollView.lclClientFrame: TRect;
+begin
+  if Assigned(fdocumentView) then
+  begin
+    Result:=fdocumentView.lclClientFrame;
+  end
+  else Result:=inherited lclClientFrame;
+end;
+
+procedure TCocoaManualScrollView.setDocumentView(AView: NSView);
+var
+  f  : NSrect;
+begin
+  if fdocumentView=AView then Exit;
+  if Assigned(fdocumentView) then
+    fdocumentView.removeFromSuperview;
+
+  fdocumentView:=AView;
+  if Assigned(fdocumentView) then
+  begin
+    addSubview(fdocumentView);
+    f:=fdocumentView.frame;
+    f.origin.x:=0;
+    f.origin.y:=0;
+    fdocumentView.setFrame(f);
+    fdocumentView.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
+  end;
+end;
+
+function TCocoaManualScrollView.documentView: NSView;
+begin
+  Result:=fdocumentView;
+end;
+
+procedure allocScroller(parent: NSView; var sc: NSScroller; dst: NSRect);
+begin
+  if Assigned(sc) then Exit;
+  sc:=NSScroller(NSScroller.alloc).initWithFrame(dst);
+  parent.addSubview(sc);
+end;
+
+procedure updateDocSize(parent: NSView; doc: NSView; hrz, vrt: NSScroller);
+var
+  f  : NSRect;
+  hr : NSRect;
+  vr : NSRect;
+begin
+  if not Assigned(parent) or not Assigned(doc) then Exit;
+
+  f := parent.frame;
+  f.origin.x := 0;
+  f.origin.y := 0;
+  hr := f;
+  vr := f;
+  vr.size.width:=vrt.scrollerWidth;
+  vr.origin.x:=f.size.width-vr.size.width;
+  hr.size.height:=hrz.scrollerWidth;
+
+  if Assigned(hrz) and (not hrz.isHidden) then
+  begin
+    f.size.height := f.size.height-hrz.scrollerWidth;
+    f.origin.y := hrz.scrollerWidth;
+
+    vr.origin.y := hrz.scrollerWidth;
+    vr.size.height := vr.size.height - hrz.scrollerWidth;
+    if Assigned(vrt) and (not vrt.isHidden) then
+      hr.size.width:=hr.size.width-vrt.scrollerWidth;
+
+    hrz.setFrame(hr);
+  end;
+
+  if Assigned(vrt) and (not vrt.isHidden) then
+  begin
+    f.size.width := f.size.width-vrt.scrollerWidth;
+    vrt.setFrame(vr);
+  end;
+
+
+  if not NSEqualRects(doc.frame, f) then
+  begin
+    doc.setFrame(f);
+    doc.setNeedsDisplay_(true);
+  end;
+end;
+
+procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
+var
+  r : NSRect;
+  f : NSRect;
+  w : CGFloat;
+begin
+  f:=frame;
+  if doshow then
+  begin
+    w := NSScroller.scrollerWidth;
+    if not Assigned(fvscroll) then
+    begin
+      r:=NSMakeRect(f.size.width-w, 0, w, f.size.height);
+      allocScroller( self, fvscroll, r);
+      fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
+    end;
+    fvscroll.setHidden(false);
+  end
+  else if Assigned(fvscroll) then
+    fvscroll.setHidden(true);
+  updateDocSize(self, fdocumentView, fhscroll, fvscroll);
+end;
+
+procedure TCocoaManualScrollView.setHasHorizontalScroller(doshow: Boolean);
+var
+  r : NSRect;
+  f : NSRect;
+begin
+  f:=frame;
+  if doshow then
+  begin
+    if not Assigned(fhscroll) then
+    begin
+      r:=NSMakeRect(0, 0, f.size.width, NSScroller.scrollerWidth);
+      allocScroller( self, fhscroll, r);
+      fhscroll.setAutoresizingMask(NSViewWidthSizable);
+    end;
+    fhscroll.setHidden(false);
+  end
+  else if Assigned(fhscroll) then
+    fhscroll.setHidden(true);
+  updateDocSize(self, fdocumentView, fhscroll, fvscroll);
+end;
+
+function TCocoaManualScrollView.hasVerticalScroller: Boolean;
+begin
+  Result:=Assigned(fvscroll) and (not fvscroll.isHidden);
+end;
+
+function TCocoaManualScrollView.hasHorizontalScroller: Boolean;
+begin
+  Result:=Assigned(fhscroll) and (not fhscroll.isHidden);
 end;
 
 { TCocoaWindowContent }
@@ -2359,6 +2545,13 @@ procedure TCocoaCustomControl.flagsChanged(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited flagsChanged(event);
+end;
+
+procedure TCocoaCustomControl.setFrame(aframe: NSRect);
+begin
+  inherited setFrame(aframe);
+  // it actually should come from a notifcation
+  if Assigned(callback) then callback.frameDidChange;
 end;
 
 procedure TCocoaCustomControl.mouseUp(event: NSEvent);

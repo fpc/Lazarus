@@ -1577,8 +1577,37 @@ begin
 end;
 
 function TCocoaWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
+var
+  obj : NSObject;
+  sc  : NSScrollView;
+  mn  : TCocoaManualScrollView;
 begin
-  Result:=False;
+  obj := HandleToNSObject(Handle);
+  Result := Assigned(obj);
+  if not Result then Exit;
+
+  if obj.isKindOfClass(NSScrollView) then
+  begin
+    sc := NSScrollView(obj);
+    case SBStyle of
+      SB_Vert: Result := sc.hasVerticalScroller;
+      SB_Horz: Result := sc.hasHorizontalScroller;
+    else
+      Result := sc.hasHorizontalScroller and sc.hasVerticalScroller;
+    end;
+  end
+  else if obj.isKindOfClass(TCocoaManualScrollView) then
+  begin
+    mn := TCocoaManualScrollView(obj);
+    case SBStyle of
+      SB_Vert: Result := mn.hasVerticalScroller;
+      SB_Horz: Result := mn.hasHorizontalScroller;
+    else
+      Result := mn.hasHorizontalScroller and mn.hasVerticalScroller;
+    end;
+  end
+  else
+    Result := False;
 end;
 
 function TCocoaWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer;
@@ -1722,22 +1751,55 @@ function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollI
 var
   si  : TScrollInfo;
   obj : NSObject;
+  sc  : TCocoaScrollView;
 begin
   obj := HandleToNSObject(Handle);
   Result := 0;
   if not Assigned(obj) then Exit;
 
-  if obj.isKindOfClass(NSScrollView) then
-  begin
-    NSScrollViewSetScrollInfo(NSScrollView(obj), SBStyle, ScrollInfo);
-    NSScrollViewGetScrollInfo(NSScrollView(obj), SBStyle, si);
-    Result:=si.nPos;
-  end;
+  if not obj.isKindOfClass(TCocoaScrollView) then Exit;
+
+  sc:=TCocoaScrollView(obj);
+  NSScrollViewSetScrollInfo(NSScrollView(obj), SBStyle, ScrollInfo);
+  FillChar(si, sizeof(si), 0);
+  si.cbSize:=sizeof(si);
+  NSScrollViewGetScrollInfo(NSScrollView(obj), SBStyle, si);
+  Result:=si.nPos;
 end;
 
 function TCocoaWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
+var
+  obj : NSObject;
+  sc  : TCocoaScrollView;
+  mn  : TCocoaManualScrollView;
 begin
-  Result:=False;
+  obj := NSObject(HandleToNSObject(Handle));
+  Result := Assigned(obj);
+  if not Result then Exit;
+
+  if obj.isKindOfClass(TCocoaScrollView)
+  then begin
+    Result := true;
+    sc := TCocoaScrollView(obj);
+    if wBar in [SB_Vert, SB_Both] then
+      sc.setHasVerticalScroller(bShow);
+
+    if wBar in [SB_Horz, SB_Both] then
+      sc.setHasHorizontalScroller(bShow);
+  end
+  else if obj.isKindOfClass(TCocoaManualScrollView)
+  then begin
+    mn := TCocoaManualScrollView(obj);
+
+    if wBar in [SB_Vert, SB_Both] then
+      mn.setHasVerticalScroller(bShow);
+
+    if wBar in [SB_Horz, SB_Both] then
+      mn.setHasHorizontalScroller(bShow);
+
+    Result := true;
+  end else
+    Result := false;
 end;
 
 {----------------------------------- DRAWING ----------------------------------}

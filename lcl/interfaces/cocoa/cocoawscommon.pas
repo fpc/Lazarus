@@ -152,6 +152,27 @@ begin
   SetViewDefaults(Result);
 end;
 
+function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
+var
+  r: TRect;
+  p: NSView;
+begin
+  if not Assigned(AView) then
+  begin
+    Result:=nil;
+    Exit;
+  end;
+  r := AView.lclFrame;
+  p := AView.superview;
+  Result := TCocoaManualScrollView.alloc.initWithFrame(NSNullRect);
+  if Assigned(p) then p.addSubView(Result);
+  Result.lclSetFrame(r);
+  Result.setHidden(p.isHidden);
+  Result.setDocumentView(AView);
+  AView.setHidden(false);
+  SetViewDefaults(Result);
+end;
+
 { TLCLCustomControlCallback }
 
 function TLCLCustomControlCallback.MouseMove(Event: NSEvent): Boolean;
@@ -1463,11 +1484,16 @@ end;
 class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  ctrl: TCocoaCustomControl;
+  ctrl : TCocoaCustomControl;
+  sl   : TCocoaManualScrollView;
 begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   ctrl.callback := TLCLCustomControlCallback.Create(ctrl, AWinControl);
-  Result := TLCLIntfHandle(ctrl);
+
+  sl := EmbedInManualScrollView(ctrl);
+  sl.callback := ctrl.callback;
+
+  Result := TLCLIntfHandle(sl);
 end;
 
 end.
