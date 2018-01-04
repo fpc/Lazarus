@@ -236,7 +236,7 @@ begin
   FFileName := AFileName;
   FHTTPClient := TFPHTTPClient.Create(nil);
   {$IFDEF FPC311}
-  FHTTPClient.IOTimeout := Options.ConTimeOut;
+  FHTTPClient.IOTimeout := Options.ConTimeOut*1000;
   {$ENDIF}
   if Options.ProxyEnabled then
   begin
