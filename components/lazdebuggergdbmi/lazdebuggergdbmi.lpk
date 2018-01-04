@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="LazDebuggerGdbmi"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Lazarus Team / Marc Weustink  / Martin Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -11,10 +12,7 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <CompilerMessages>
-          <MsgFileName Value=""/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Debugger for Lazarus IDE.
@@ -71,7 +69,6 @@ This debugger uses gdb and is based on gdb's mi interface."/>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="IDEIntf"/>
