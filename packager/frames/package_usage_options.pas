@@ -37,6 +37,9 @@ type
     LibraryPathButton: TPathEditorButton;
     FLazPackage: TLazPackage;
     function PathEditBtnExecuted({%H-}Context: String; var NewPath: String): Boolean;
+  protected
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
   public
     function GetTitle: string; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -92,6 +95,17 @@ begin
   Result := lisPckOptsUsage;
 end;
 
+procedure TPackageUsageOptionsFrame.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double);
+begin
+  if AMode = lapAutoAdjustForDPI then begin
+    UnitPathButton.Width := round(UnitPathButton.Height * AXProportion);
+    IncludePathButton.Width := round(IncludePathButton.Height * AXProportion);
+    ObjectPathButton.Width := round(ObjectPathButton.Height * AXProportion);
+    LibraryPathButton.Width := round(LibraryPathButton.Height * AXProportion);
+  end;
+end;
+
 procedure TPackageUsageOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   AddPathsGroupBox.Caption := lisPckOptsAddPathsToDependentPackagesProjects;
@@ -110,7 +124,7 @@ begin
     Parent := AddPathsGroupBox;
     Caption := '...';
     AutoSize := False;
-    Width := 50;
+    Width := Height;
     Anchors := [akRight];
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, UnitPathEdit);
@@ -133,7 +147,7 @@ begin
     Parent := AddPathsGroupBox;
     Caption := '...';
     AutoSize := False;
-    Width := 50;
+    Width := Height;
     Anchors := [akRight];
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, IncludePathEdit);
@@ -151,7 +165,7 @@ begin
     Parent := AddPathsGroupBox;
     Caption := '...';
     AutoSize := False;
-    Width := 50;
+    Width := Height;
     Anchors := [akRight];
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, ObjectPathEdit);
@@ -169,7 +183,7 @@ begin
     Parent := AddPathsGroupBox;
     Caption := '...';
     AutoSize := False;
-    Width := 50;
+    Width := Height;
     Anchors := [akRight];
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, LibraryPathEdit);

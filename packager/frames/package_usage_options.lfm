@@ -14,13 +14,13 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 133
+    Height = 142
     Top = 0
     Width = 535
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'Add paths to dependent packages/projects'
-    ClientHeight = 114
+    ClientHeight = 122
     ClientWidth = 531
     TabOrder = 0
     object UnitPathLabel: TLabel
@@ -29,8 +29,8 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
-      Top = 9
-      Width = 26
+      Top = 10
+      Width = 22
       BorderSpacing.Left = 6
       Caption = 'Unit'
       ParentColor = False
@@ -41,8 +41,8 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
-      Top = 36
-      Width = 45
+      Top = 39
+      Width = 39
       BorderSpacing.Left = 6
       Caption = 'Include'
       ParentColor = False
@@ -53,8 +53,8 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
-      Top = 63
-      Width = 41
+      Top = 68
+      Width = 35
       BorderSpacing.Left = 6
       Caption = 'Object'
       ParentColor = False
@@ -65,8 +65,8 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
-      Top = 90
-      Width = 43
+      Top = 97
+      Width = 36
       BorderSpacing.Left = 6
       Caption = 'Library'
       ParentColor = False
@@ -77,7 +77,7 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideRight.Control = AddPathsGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 80
-      Height = 21
+      Height = 23
       Top = 6
       Width = 401
       Anchors = [akTop, akLeft, akRight]
@@ -94,8 +94,8 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideRight.Control = AddPathsGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 80
-      Height = 21
-      Top = 33
+      Height = 23
+      Top = 35
       Width = 401
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
@@ -111,8 +111,8 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideRight.Control = AddPathsGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 80
-      Height = 21
-      Top = 60
+      Height = 23
+      Top = 64
       Width = 401
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
@@ -128,8 +128,8 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideRight.Control = AddPathsGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 80
-      Height = 21
-      Top = 87
+      Height = 23
+      Top = 93
       Width = 401
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 80
@@ -149,12 +149,12 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 171
-    Top = 139
+    Top = 148
     Width = 535
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'Add options to dependent packages and projects'
-    ClientHeight = 152
+    ClientHeight = 151
     ClientWidth = 531
     TabOrder = 1
     object LinkerOptionsLabel: TLabel
@@ -163,7 +163,7 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       Left = 6
       Height = 15
       Top = 6
-      Width = 38
+      Width = 32
       BorderSpacing.Left = 6
       Caption = 'Linker'
       ParentColor = False
@@ -174,7 +174,7 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       Left = 6
       Height = 15
       Top = 74
-      Width = 46
+      Width = 42
       BorderSpacing.Left = 6
       Caption = 'Custom'
       ParentColor = False
@@ -184,10 +184,10 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideTop.Control = AddOptionsGroupBox
       AnchorSideRight.Control = AddOptionsGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 62
+      Left = 58
       Height = 62
       Top = 6
-      Width = 463
+      Width = 467
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -203,10 +203,10 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = AddOptionsGroupBox
       AnchorSideBottom.Side = asrBottom
-      Left = 62
-      Height = 72
+      Left = 58
+      Height = 71
       Top = 74
-      Width = 463
+      Width = 467
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 10
       BorderSpacing.Top = 6
@@ -223,19 +223,19 @@ object PackageUsageOptionsFrame: TPackageUsageOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 57
-    Top = 316
+    Height = 51
+    Top = 325
     Width = 535
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'ProjectGroupBox'
-    ClientHeight = 38
+    ClientHeight = 31
     ClientWidth = 531
     TabOrder = 2
     object AddPackageUnitToProjectCheckBox: TCheckBox
       Left = 6
-      Height = 20
+      Height = 19
       Top = 6
       Width = 519
       Align = alTop

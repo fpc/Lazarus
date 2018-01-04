@@ -58,6 +58,8 @@ type
     procedure DoImport(Sender: TObject);
     procedure DoExport(Sender: TObject);
   protected
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, {%H-}AYProportion: Double); override;
     procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
     procedure UpdateTargetFileLabel;
   public
@@ -73,9 +75,6 @@ type
 implementation
 
 {$R *.lfm}
-
-const
-  cBrowseBtnSize = 50;
 
 function CheckSearchPath(const Context, ExpandedPath: string; Level: TCheckCompileOptionsMsgLvl; Hint: string = ''): boolean;
 var
@@ -328,6 +327,18 @@ begin
     OnSaveIDEOptions(Self, FCompilerOpts);
 end;
 
+procedure TCompilerPathOptionsFrame.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double);
+begin
+  if AMode = lapAutoAdjustForDPI then begin
+    OtherUnitsPathEditBtn.Width := round(OtherUnitsPathEditBtn.Height * AXProportion);
+    IncludeFilesPathEditBtn.Width := round(IncludeFilesPathEditBtn.Height * AXProportion);
+    OtherSourcesPathEditBtn.Width := round(OtherSourcesPathEditBtn.Height * AXProportion);
+    LibrariesPathEditBtn.Width := round(LibrariesPathEditBtn.Height * AXProportion);
+    DebugPathEditBtn.Width := round(DebugPathEditBtn.Height * AXProportion);
+  end;
+end;
+
 procedure TCompilerPathOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions);
 begin
   if Assigned(OnSaveIDEOptions) then
@@ -506,7 +517,7 @@ begin
     AnchorParallel(akTop, 0, OtherUnitsEdit);
     AnchorParallel(akBottom, 0, OtherUnitsEdit);
     AnchorParallel(akRight, 0, Self);
-    Width := cBrowseBtnSize;
+    Width := Height;
     AssociatedEdit := OtherUnitsEdit;
     ContextCaption := OtherUnitsLabel.Caption;
     Templates:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
@@ -533,7 +544,7 @@ begin
     AnchorParallel(akTop, 0, IncludeFilesEdit);
     AnchorParallel(akBottom, 0, IncludeFilesEdit);
     AnchorParallel(akRight, 0, Self);
-    Width := cBrowseBtnSize;
+    Width := Height;
     AssociatedEdit := IncludeFilesEdit;
     ContextCaption := IncludeFilesLabel.Caption;
     Templates := 'include;inc';
@@ -556,7 +567,7 @@ begin
     AnchorParallel(akTop, 0, OtherSourcesEdit);
     AnchorParallel(akBottom, 0, OtherSourcesEdit);
     AnchorParallel(akRight, 0, Self);
-    Width := cBrowseBtnSize;
+    Width := Height;
     AssociatedEdit := OtherSourcesEdit;
     ContextCaption := OtherSourcesLabel.Caption;
     Templates := '$(LazarusDir)/lcl' +
@@ -582,7 +593,7 @@ begin
     AnchorParallel(akTop, 0, LibrariesEdit);
     AnchorParallel(akBottom, 0, LibrariesEdit);
     AnchorParallel(akRight, 0, Self);
-    Width := cBrowseBtnSize;
+    Width := Height;
     AssociatedEdit := LibrariesEdit;
     ContextCaption := LibrariesLabel.Caption;
     Templates := '/usr/X11R6/lib;/sw/lib';
@@ -605,7 +616,7 @@ begin
     AnchorParallel(akTop, 0, UnitOutputDirEdit);
     AnchorParallel(akBottom, 0, UnitOutputDirEdit);
     AnchorParallel(akRight, 0, Self);
-    Width := cBrowseBtnSize;
+    Width := Height;
     OnClick := @FileBrowseBtnClick;
   end;
   UnitOutputDirEdit.AnchorToNeighbour(akRight, 0, btnUnitOutputDir);
@@ -624,7 +635,7 @@ begin
     AnchorParallel(akTop, 0, DebugPathEdit);
     AnchorParallel(akBottom, 0, DebugPathEdit);
     AnchorParallel(akRight, 0, Self);
-    Width := cBrowseBtnSize;
+    Width := Height;
     AssociatedEdit := DebugPathEdit;
     ContextCaption := DebugPathLabel.Caption;
     Templates := '$(LazarusDir)/lcl/include' +

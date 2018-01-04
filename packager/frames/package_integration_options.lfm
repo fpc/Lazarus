@@ -38,14 +38,14 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
   end
   object DocGroupBox: TGroupBox
     Left = 0
-    Height = 84
+    Height = 96
     Top = 209
     Width = 461
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'FPDoc settings'
-    ClientHeight = 64
+    ClientHeight = 76
     ClientWidth = 457
     TabOrder = 1
     object FPDocSearchPathsEdit: TEdit
@@ -57,9 +57,11 @@ object PackageIntegrationOptionsFrame: TPackageIntegrationOptionsFrame
       Left = 138
       Height = 23
       Top = 6
-      Width = 313
+      Width = 319
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0

@@ -13,15 +13,15 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
   KeyPreview = True
   OnChangeBounds = FormChangeBounds
   OnClose = FormClose
-  LCLVersion = '1.3'
+  LCLVersion = '1.9.0.0'
   object TextToFindLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = TextToFindComboBox
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 20
+    Height = 15
     Top = 16
-    Width = 109
+    Width = 85
     Alignment = taRightJustify
     BorderSpacing.Left = 6
     Caption = 'TextToFindLabel'
@@ -34,10 +34,10 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = TextToFindComboBox
     AnchorSideBottom.Side = asrBottom
-    Left = 456
-    Height = 28
+    Left = 458
+    Height = 23
     Top = 12
-    Width = 25
+    Width = 23
     AllowAllUp = True
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Right = 6
@@ -51,9 +51,9 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Control = ReplaceTextComboBox
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 24
-    Top = 48
-    Width = 172
+    Height = 19
+    Top = 43
+    Width = 138
     BorderSpacing.Left = 6
     Caption = 'ReplaceWithCheckbox'
     OnChange = ReplaceWithCheckboxChange
@@ -63,15 +63,15 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideLeft.Control = TextToFindLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = EnableAutoCompleteSpeedButton
-    Left = 121
-    Height = 28
+    Left = 97
+    Height = 23
     Top = 12
-    Width = 335
+    Width = 361
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
     BorderSpacing.Left = 6
-    ItemHeight = 20
+    ItemHeight = 15
     OnKeyDown = TextToFindComboboxKeyDown
     TabOrder = 0
     Text = 'TextToFindComboBox'
@@ -83,16 +83,16 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 190
-    Height = 28
-    Top = 46
-    Width = 291
+    Left = 156
+    Height = 23
+    Top = 41
+    Width = 325
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
-    ItemHeight = 20
+    ItemHeight = 15
     OnKeyDown = TextToFindComboboxKeyDown
     TabOrder = 2
     Text = 'ReplaceTextComboBox'
@@ -104,21 +104,21 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideBottom.Control = DirectionGroupBox
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 222
-    Top = 80
+    Height = 186
+    Top = 70
     Width = 231
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'OptionsGroupBox'
-    ClientHeight = 200
+    ClientHeight = 166
     ClientWidth = 227
     TabOrder = 3
     OnResize = OptionsGroupBoxResize
     object PromptOnReplaceCheckBox: TCheckBox
       Left = 6
-      Height = 24
-      Top = 144
+      Height = 19
+      Top = 124
       Width = 215
       Align = alTop
       BorderSpacing.Top = 3
@@ -132,8 +132,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object MultiLineCheckBox: TCheckBox
       Left = 6
-      Height = 24
-      Top = 111
+      Height = 19
+      Top = 96
       Width = 215
       Align = alTop
       BorderSpacing.Top = 3
@@ -145,8 +145,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object RegularExpressionsCheckBox: TCheckBox
       Left = 6
-      Height = 24
-      Top = 78
+      Height = 19
+      Top = 68
       Width = 215
       Align = alTop
       BorderSpacing.Top = 3
@@ -158,8 +158,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object WholeWordsOnlyCheckBox: TCheckBox
       Left = 6
-      Height = 24
-      Top = 45
+      Height = 19
+      Top = 40
       Width = 215
       Align = alTop
       BorderSpacing.Top = 3
@@ -171,7 +171,7 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object CaseSensitiveCheckBox: TCheckBox
       Left = 6
-      Height = 24
+      Height = 19
       Top = 12
       Width = 215
       Align = alTop
@@ -191,8 +191,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 243
-    Height = 70
-    Top = 156
+    Height = 58
+    Top = 134
     Width = 238
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -205,12 +205,12 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 48
+    ClientHeight = 38
     ClientWidth = 234
     TabOrder = 5
     object SelectedRadioButton: TRadioButton
       Left = 6
-      Height = 24
+      Height = 19
       Top = 0
       Width = 222
       Caption = 'SelectedRadioButton'
@@ -218,8 +218,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object GlobalRadioButton: TRadioButton
       Left = 6
-      Height = 24
-      Top = 24
+      Height = 19
+      Top = 19
       Width = 222
       Caption = 'GlobalRadioButton'
       Checked = True
@@ -235,8 +235,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 243
-    Height = 70
-    Top = 232
+    Height = 58
+    Top = 198
     Width = 238
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -249,12 +249,12 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 48
+    ClientHeight = 38
     ClientWidth = 234
     TabOrder = 6
     object BackwardRadioButton: TRadioButton
       Left = 6
-      Height = 24
+      Height = 19
       Top = 0
       Width = 222
       Caption = 'BackwardRadioButton'
@@ -262,8 +262,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object ForwardRadioButton: TRadioButton
       Left = 6
-      Height = 24
-      Top = 24
+      Height = 19
+      Top = 19
       Width = 222
       Caption = 'ForwardRadioButton'
       Checked = True
@@ -279,8 +279,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 243
-    Height = 70
-    Top = 80
+    Height = 58
+    Top = 70
     Width = 238
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -293,12 +293,12 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     ChildSizing.ShrinkVertical = crsHomogenousSpaceResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 48
+    ClientHeight = 38
     ClientWidth = 234
     TabOrder = 4
     object FromCursorRadioButton: TRadioButton
       Left = 6
-      Height = 24
+      Height = 19
       Top = 0
       Width = 222
       AutoSize = False
@@ -309,8 +309,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
     end
     object EntireScopeRadioButton: TRadioButton
       Left = 6
-      Height = 24
-      Top = 24
+      Height = 19
+      Top = 19
       Width = 222
       AutoSize = False
       Caption = 'EntireScopeRadioButton'
@@ -319,8 +319,8 @@ object LazFindReplaceDialog: TLazFindReplaceDialog
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 323
+    Height = 34
+    Top = 327
     Width = 475
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

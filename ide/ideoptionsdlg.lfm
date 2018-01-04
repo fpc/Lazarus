@@ -71,7 +71,6 @@ object IDEOptionsDialog: TIDEOptionsDialog
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
-      DefaultItemHeight = 18
       ReadOnly = True
       TabOrder = 0
       OnChange = CategoryTreeChange
@@ -149,7 +148,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       Left = 281
       Height = 23
       Top = 5
-      Width = 50
+      Width = 23
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 1
       Caption = '...'
