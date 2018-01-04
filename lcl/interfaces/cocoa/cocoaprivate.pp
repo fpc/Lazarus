@@ -65,6 +65,7 @@ type
     procedure DidResignKeyNotification;
     procedure SendOnChange;
     procedure SendOnTextChanged;
+    procedure scroll(isVert: Boolean; Pos: Integer);
     // non event methods
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
@@ -507,6 +508,10 @@ type
     procedure setHasHorizontalScroller(doshow: Boolean); message 'setHasHorizontalScroller:';
     function hasVerticalScroller: Boolean; message 'hasVerticalScroller';
     function hasHorizontalScroller: Boolean; message 'hasHorizontalScroller';
+
+    function horizontalScroller: NSScroller; message 'horizontalScroller';
+    function verticalScroller: NSScroller; message 'verticalScroller';
+
   end;
 
   TStatusItemData = record
@@ -605,7 +610,10 @@ type
   TCocoaScrollBar = objcclass(NSScroller)
   public
     callback: ICommonCallback;
-    LCLScrollBar: TCustomScrollBar;
+    // minInt,maxInt are used to calculate POS on callback event
+    minInt  : Integer;
+    maxInt  : Integer;
+    pageInt : Integer;
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
     function acceptsFirstResponder: Boolean; override;
@@ -1040,11 +1048,15 @@ begin
   Result:=fdocumentView;
 end;
 
-procedure allocScroller(parent: NSView; var sc: NSScroller; dst: NSRect);
+procedure allocScroller(parent: TCocoaManualScrollView; var sc: NSScroller; dst: NSRect);
 begin
   if Assigned(sc) then Exit;
-  sc:=NSScroller(NSScroller.alloc).initWithFrame(dst);
+  sc:=TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
   parent.addSubview(sc);
+  TCocoaScrollBar(sc).callback:=parent.callback;
+  sc.setTarget(sc);
+  sc.setAction(objcselector('actionScrolling:'));
+
 end;
 
 procedure updateDocSize(parent: NSView; doc: NSView; hrz, vrt: NSScroller);
@@ -1143,6 +1155,16 @@ end;
 function TCocoaManualScrollView.hasHorizontalScroller: Boolean;
 begin
   Result:=Assigned(fhscroll) and (not fhscroll.isHidden);
+end;
+
+function TCocoaManualScrollView.horizontalScroller: NSScroller;
+begin
+  Result:=fhscroll;
+end;
+
+function TCocoaManualScrollView.verticalScroller: NSScroller;
+begin
+  Result:=fvscroll;
 end;
 
 { TCocoaWindowContent }
@@ -1840,22 +1862,9 @@ end;
 { TCocoaScrollBar }
 
 procedure TCocoaScrollBar.actionScrolling(sender: NSObject);
-var
-  LMScroll: TLMScroll;
-  b: Boolean;
 begin
-  FillChar(LMScroll{%H-}, SizeOf(LMScroll), #0);
-  LMScroll.ScrollBar := PtrUInt(Self);
-
-  if IsHorizontal() then
-    LMScroll.Msg := LM_HSCROLL
-  else
-    LMScroll.Msg := LM_VSCROLL;
-
-  LMScroll.Pos := Round(floatValue * LCLScrollBar.Max);
-  LMScroll.ScrollCode := SIF_POS;
-
-  LCLMessageGlue.DeliverMessage(LCLScrollBar, LMScroll);
+  if Assigned(callback) then
+    callback.scroll( not IsHorizontal(), Round(floatValue * (maxInt-minInt)));
 end;
 
 function TCocoaScrollBar.IsHorizontal: Boolean;

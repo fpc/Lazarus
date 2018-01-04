@@ -188,6 +188,8 @@ type
 var
   CocoaWidgetSet: TCocoaWidgetSet;
 
+function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
+function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
 procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
 procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
 procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
@@ -204,6 +206,66 @@ uses
   CocoaCaret,
   CocoaThemes;
 
+function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
+var
+  pg  : Integer;
+  mn  : Integer;
+  mx  : Integer;
+  dl  : Integer;
+  pos : CGFloat;
+begin
+  if not Assigned(bar) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  if ScrollInfo.fMask and SIF_PAGE>0 then
+  begin
+    pg:=ScrollInfo.nPage;
+    if pg=0 then pg:=1; // zero page is not allowed?
+  end
+  else pg:=bar.pageInt;
+
+  if ScrollInfo.fMask and SIF_RANGE>0 then
+  begin
+    mn:=ScrollInfo.nMin;
+    mx:=ScrollInfo.nMax;
+  end
+  else
+  begin
+    mn:=bar.minInt;
+    mx:=bar.maxInt;
+  end;
+
+  dl:=mx-mn;
+  if ScrollInfo.fMask and SIF_POS > 0 then
+  begin
+    if dl<>0 then
+      bar.setDoubleValue( ScrollInfo.nPos / dl )
+    else
+      bar.setDoubleValue( 0 )
+  end;
+
+  bar.setEnabled(dl<>0);
+
+  // if changed page or range, the knob changes
+  if ScrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then
+  begin
+    if dl<>0 then
+      //bar.setKnobProportion(pg/dl)
+      bar.setKnobProportion(0.5)
+    else
+      bar.setKnobProportion(1);
+    bar.pageInt:=pg;
+    bar.minInt:=mn;
+    bar.maxInt:=mx;
+  end;
+end;
+
+function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
+begin
+end;
 
 procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
 begin

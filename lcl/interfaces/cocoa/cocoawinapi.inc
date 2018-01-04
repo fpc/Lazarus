@@ -1752,19 +1752,47 @@ var
   si  : TScrollInfo;
   obj : NSObject;
   sc  : TCocoaScrollView;
+  bar : TCocoaScrollBar;
 begin
   obj := HandleToNSObject(Handle);
   Result := 0;
   if not Assigned(obj) then Exit;
 
-  if not obj.isKindOfClass(TCocoaScrollView) then Exit;
+  if obj.isKindOfClass(TCocoaScrollView) then
+  begin
+    sc:=TCocoaScrollView(obj);
+    NSScrollViewSetScrollInfo(NSScrollView(obj), SBStyle, ScrollInfo);
+    FillChar(si, sizeof(si), 0);
+    si.cbSize:=sizeof(si);
+    NSScrollViewGetScrollInfo(NSScrollView(obj), SBStyle, si);
+    Result:=si.nPos;
+  end else if obj.isKindOfClass(TCocoaManualScrollView) then
+  begin
+    bar:=nil;
+    if SBStyle=SB_Vert then
+    begin
+      // Win32 forced the scrollbar to show up on SetScrollInfo
+      // TCocoaManualScrollView - also allocates on setting visible
+      TCocoaManualScrollView(obj).setHasVerticalScroller(true);
+      bar:=TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller);
+    end
+    else if SBStyle=SB_Horz then
+    begin
+      TCocoaManualScrollView(obj).setHasHorizontalScroller(true);
+      bar := TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller);
+    end;
 
-  sc:=TCocoaScrollView(obj);
-  NSScrollViewSetScrollInfo(NSScrollView(obj), SBStyle, ScrollInfo);
-  FillChar(si, sizeof(si), 0);
-  si.cbSize:=sizeof(si);
-  NSScrollViewGetScrollInfo(NSScrollView(obj), SBStyle, si);
-  Result:=si.nPos;
+    if Assigned(bar) then
+      Result := CocoaScrollBarSetScrollInfo(bar, ScrollInfo)
+    else
+      Result := 0;
+
+  end else if obj.isKindOfClass(TCocoaScrollBar) then
+  begin
+    Result := CocoaScrollBarSetScrollInfo(TCocoaScrollBar(obj), ScrollInfo);
+  end
+  else
+    Result := 0;
 end;
 
 function TCocoaWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
@@ -2581,6 +2609,26 @@ begin
 
   if Result = 1 then
     NSObject(Handle).lclScreenToLocal(P.X, P.Y);
+end;
+
+function TCocoaWidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
+var
+  obj: NSOBject;
+  b: NSRect;
+  v : NSView;
+begin
+  obj:=NSObject(HandleToNSObject(hWnd));
+  Result:=Assigned(obj) and (obj.isKindOfClass(NSView));
+  if not Result then Exit;
+
+  v:=NSView(obj).lclContentView;
+
+  b:=v.bounds;
+  b.origin.x:=b.origin.x-dx;
+  b.origin.y:=b.origin.y+dy; // reversed
+  v.setBounds(b);
+  // ignore all updates
+  v.setNeedsDisplay_(true);
 end;
 
 function TCocoaWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;

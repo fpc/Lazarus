@@ -1387,9 +1387,12 @@ begin
   scr.callback:=TLCLCommonCallback.Create(scr, AWinControl);
 
   // OnChange (scrolling) event handling
-  scr.LCLScrollBar := TCustomScrollBar(AWinControl);
   scr.setTarget(scr);
   scr.setAction(objcselector('actionScrolling:'));
+
+  scr.minInt:=TCustomScrollBar(AWinControl).Min;
+  scr.maxInt:=TCustomScrollBar(AWinControl).Max;
+  scr.pageInt:=TCustomScrollBar(AWinControl).PageSize;
 
   Result:=TLCLIntfHandle(scr);
 end;

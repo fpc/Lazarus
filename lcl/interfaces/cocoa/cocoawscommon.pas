@@ -63,7 +63,7 @@ type
     procedure DidResignKeyNotification; virtual;
     procedure SendOnChange; virtual;
     procedure SendOnTextChanged; virtual; // text controls (like spin) respond to OnChange for this event, but not for SendOnChange
-
+    procedure scroll(isVert: Boolean; Pos: Integer); virtual;
     function DeliverMessage(var Msg): LRESULT; virtual; overload;
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
@@ -1040,6 +1040,26 @@ end;
 procedure TLCLCommonCallback.SendOnTextChanged;
 begin
   SendSimpleMessage(Target, CM_TEXTCHANGED);
+end;
+
+procedure TLCLCommonCallback.scroll(isVert: Boolean; Pos: Integer);
+var
+  LMScroll: TLMScroll;
+  b: Boolean;
+begin
+  FillChar(LMScroll{%H-}, SizeOf(LMScroll), #0);
+  //todo: this should be a part of a parameter
+  //LMScroll.ScrollBar := Target.Handle;
+
+  if IsVert then
+    LMScroll.Msg := LM_VSCROLL
+  else
+    LMScroll.Msg := LM_HSCROLL;
+
+  LMScroll.Pos := Pos;
+  LMScroll.ScrollCode := SB_THUMBPOSITION; //SIF_POS;
+
+  LCLMessageGlue.DeliverMessage(Target, LMScroll);
 end;
 
 function TLCLCommonCallback.DeliverMessage(var Msg): LRESULT;

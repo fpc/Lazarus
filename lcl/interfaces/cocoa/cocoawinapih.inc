@@ -155,6 +155,7 @@ function RoundRect(DC: HDC; X1, Y1, X2, Y2: Integer; RX, RY : Integer): Boolean;
 
 function SaveDC(DC: HDC): Integer; override;
 function ScreenToClient(Handle: HWND; var P: TPoint): Integer; override;
+function ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean; override;
 function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 function SendMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
