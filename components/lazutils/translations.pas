@@ -1619,6 +1619,8 @@ end;
 procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
 
   function VerifyItemFormatting(var Item: TPOFileItem): boolean;
+  var
+    HasBadFormatFlag: boolean;
   begin
     // this function verifies item formatting and sets its flags if the formatting is bad
     Result := true;
@@ -1627,9 +1629,16 @@ procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
       Result := CompareFormatArgs(Item.Original,Item.Translation);
       if not Result then
         if pos(sFuzzyFlag, Item.Flags) = 0 then
+        begin
           Item.ModifyFlag(sFuzzyFlag, true);
-      Item.ModifyFlag(sBadFormatFlag, not Result);
-      FModified := true;
+          FModified := true;
+        end;
+      HasBadFormatFlag := pos(sBadFormatFlag, Item.Flags) > 0;
+      if HasBadFormatFlag <> not Result then
+      begin
+        Item.ModifyFlag(sBadFormatFlag, not Result);
+        FModified := true;
+      end;
     end;
   end;
 
