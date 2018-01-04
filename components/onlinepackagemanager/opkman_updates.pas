@@ -34,8 +34,7 @@ uses
   // LazUtils
   Laz2_XMLCfg,
   // OpkMan
-  opkman_timer, opkman_serializablepackages,
-  opkman_options, opkman_common, opkman_const,
+  opkman_serializablepackages, opkman_options, opkman_common, opkman_const,
   {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF},
   {$IFDEF FPC311}zipper{$ELSE}opkman_zip{$ENDIF};
 
@@ -98,26 +97,25 @@ type
   { TUpdates }
   TUpdates = class(TThread)
   private
-    FXML: TXMLConfig;
     FHTTPClient: TFPHTTPClient;
-    FTimer: TThreadTimer;
     FUpdatePackage: TUpdatePackage;
-    FStarted: Boolean;
     FVersion: Integer;
     FNeedToBreak: Boolean;
-    FNeedToUpdate: Boolean;
     FBusyUpdating: Boolean;
+    FBusySaving: Boolean;
     FOpenSSLAvailable: Boolean;
     FOnUpdate: TNotifyEvent;
-    FPaused: Boolean;
+    FTime: QWORD;
+    FInterval: Cardinal;
+    FFileName: String;
     function GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
-    procedure DoOnTimer(Sender: TObject);
     procedure DoOnUpdate;
     procedure Load;
     procedure Save;
     procedure AssignPackageData(AMetaPackage: TMetaPackage);
     procedure ResetPackageData(AMetaPackage: TMetaPackage);
     procedure CheckForOpenSSL;
+    procedure CheckForUpdates;
     function IsTimeToUpdate: Boolean;
   protected
     procedure Execute; override;
@@ -126,7 +124,6 @@ type
     destructor Destroy; override;
     procedure StartUpdate;
     procedure StopUpdate;
-    procedure PauseUpdate;
   published
     property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
   end;
@@ -236,8 +233,11 @@ constructor TUpdates.Create(const AFileName: String);
 begin
   inherited Create(True);
   FreeOnTerminate := True;
-  FXML := TXMLConfig.Create(AFileName);
+  FFileName := AFileName;
   FHTTPClient := TFPHTTPClient.Create(nil);
+  {$IFDEF FPC311}
+  FHTTPClient.IOTimeout := Options.ConTimeOut;
+  {$ENDIF}
   if Options.ProxyEnabled then
   begin
     FHTTPClient.Proxy.Host:= Options.ProxyServer;
@@ -246,19 +246,10 @@ begin
     FHTTPClient.Proxy.Password:= Options.ProxyPassword;
   end;
   FUpdatePackage := TUpdatePackage.Create;
-  FTimer := nil;
 end;
 
 destructor TUpdates.Destroy;
 begin
-  FXML.Clear;
-  FXML.Free;
-  if Assigned(FTimer) then
-  begin
-    if FTimer.Enabled then
-      FTimer.StopTimer;
-    FTimer.Terminate;
-  end;
   FHTTPClient.Free;
   FUpdatePackage.Free;
   inherited Destroy;
@@ -275,44 +266,50 @@ var
   MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
   HasUpdate: Boolean;
+  FXML: TXMLConfig;
 begin
   if (not Assigned(SerializablePackages)) or (SerializablePackages.Count = 0) then
     Exit;
-
-  FVersion := FXML.GetValue('Version/Value', 0);
-  PackageCount := FXML.GetValue('Count/Value', 0);
-  for I := 0 to PackageCount - 1 do
-  begin
-    Path := 'Package' + IntToStr(I) + '/';
-    PackageName := FXML.GetValue(Path + 'Name', '');
-    MetaPkg := SerializablePackages.FindMetaPackage(PackageName, fpbPackageName);
-    if MetaPkg <> nil then
+  FXML := TXMLConfig.Create(FFileName);
+  try
+    FVersion := FXML.GetValue('Version/Value', 0);
+    PackageCount := FXML.GetValue('Count/Value', 0);
+    for I := 0 to PackageCount - 1 do
     begin
-      HasUpdate := False;
-      MetaPkg.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
-      MetaPkg.DisableInOPM := FXML.GetValue(Path + 'DisableInOPM', False);
-      MetaPkg.Rating := FXML.GetValue(Path + 'Rating', 0);
-      LazarusPkgCount := FXML.GetValue(Path + 'Count', 0);
-      for J := 0 to LazarusPkgCount - 1 do
+      Path := 'Package' + IntToStr(I) + '/';
+      PackageName := FXML.GetValue(Path + 'Name', '');
+      MetaPkg := SerializablePackages.FindMetaPackage(PackageName, fpbPackageName);
+      if MetaPkg <> nil then
       begin
-        SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
-        LazarusPkgName := FXML.GetValue(SubPath + 'Name', '');
-        LazarusPkg := MetaPkg.FindLazarusPackage(LazarusPkgName);
-        if LazarusPkg <> nil then
+        HasUpdate := False;
+        MetaPkg.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
+        MetaPkg.DisableInOPM := FXML.GetValue(Path + 'DisableInOPM', False);
+        MetaPkg.Rating := FXML.GetValue(Path + 'Rating', 0);
+        LazarusPkgCount := FXML.GetValue(Path + 'Count', 0);
+        for J := 0 to LazarusPkgCount - 1 do
         begin
-          LazarusPkg.UpdateVersion := FXML.GetValue(SubPath + 'UpdateVersion', '');
-          LazarusPkg.ForceNotify := FXML.GetValue(SubPath + 'ForceNotify', False);
-          LazarusPkg.InternalVersion := FXML.GetValue(SubPath + 'InternalVersion', 0);;
-          LazarusPkg.InternalVersionOld := FXML.GetValue(SubPath + 'InternalVersionOld', 0);
-          LazarusPkg.RefreshHasUpdate;
-          if not HasUpdate then
-            HasUpdate := (LazarusPkg.HasUpdate) and (LazarusPkg.InstalledFileVersion < LazarusPkg.UpdateVersion);
+          SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
+          LazarusPkgName := FXML.GetValue(SubPath + 'Name', '');
+          LazarusPkg := MetaPkg.FindLazarusPackage(LazarusPkgName);
+          if LazarusPkg <> nil then
+          begin
+            LazarusPkg.UpdateVersion := FXML.GetValue(SubPath + 'UpdateVersion', '');
+            LazarusPkg.ForceNotify := FXML.GetValue(SubPath + 'ForceNotify', False);
+            LazarusPkg.InternalVersion := FXML.GetValue(SubPath + 'InternalVersion', 0);;
+            LazarusPkg.InternalVersionOld := FXML.GetValue(SubPath + 'InternalVersionOld', 0);
+            LazarusPkg.RefreshHasUpdate;
+            if not HasUpdate then
+              HasUpdate := (LazarusPkg.HasUpdate) and (LazarusPkg.InstalledFileVersion < LazarusPkg.UpdateVersion);
+          end;
         end;
+        MetaPkg.HasUpdate := HasUpdate;
       end;
-      MetaPkg.HasUpdate := HasUpdate;
     end;
+  finally
+    FXML.Free;
   end;
-  Synchronize(@DoOnUpdate);
+  if Assigned(FOnUpdate) and (not FNeedToBreak) then
+    Synchronize(@DoOnUpdate);
 end;
 
 procedure TUpdates.Save;
@@ -321,33 +318,40 @@ var
   Path, SubPath: String;
   MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
+  FXML: TXMLConfig;
 begin
-  if (not Assigned(SerializablePackages)) or (SerializablePackages.Count = 0) then
+  if (not Assigned(SerializablePackages)) or (SerializablePackages.Count = 0) or (FBusySaving) then
     Exit;
-  FXML.Clear;
-  FXML.SetDeleteValue('Version/Value', OpkVersion, 0);
-  FXML.SetDeleteValue('Count/Value', SerializablePackages.Count, 0);
-  for I := 0 to SerializablePackages.Count - 1 do
-  begin
-    MetaPkg := SerializablePackages.Items[I];
-    Path := 'Package' + IntToStr(I) + '/';
-    FXML.SetDeleteValue(Path + 'Name', MetaPkg.Name, '');
-    FXML.SetDeleteValue(Path + 'DownloadZipURL', MetaPkg.DownloadZipURL, '');
-    FXML.SetDeleteValue(Path + 'DisableInOPM', MetaPkg.DisableInOPM, False);
-    FXML.SetDeleteValue(Path + 'Rating', MetaPkg.Rating, 0);
-    FXML.SetDeleteValue(Path + 'Count', SerializablePackages.Items[I].LazarusPackages.Count, 0);
-    for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
+  FBusySaving := True;
+  FXML := TXMLConfig.CreateClean(FFileName);
+  try
+    FXML.SetDeleteValue('Version/Value', OpkVersion, 0);
+    FXML.SetDeleteValue('Count/Value', SerializablePackages.Count, 0);
+    for I := 0 to SerializablePackages.Count - 1 do
     begin
-      SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
-      LazarusPkg := TLazarusPackage(SerializablePackages.Items[I].LazarusPackages.Items[J]);
-      FXML.SetDeleteValue(SubPath + 'Name', LazarusPkg.Name, '');
-      FXML.SetDeleteValue(SubPath + 'UpdateVersion', LazarusPkg.UpdateVersion, '');
-      FXML.SetDeleteValue(SubPath + 'ForceNotify', LazarusPkg.ForceNotify, False);
-      FXML.SetDeleteValue(SubPath + 'InternalVersion', LazarusPkg.InternalVersion, 0);
-      FXML.SetDeleteValue(SubPath + 'InternalVersionOld', LazarusPkg.InternalVersionOld, 0);
+      MetaPkg := SerializablePackages.Items[I];
+      Path := 'Package' + IntToStr(I) + '/';
+      FXML.SetDeleteValue(Path + 'Name', MetaPkg.Name, '');
+      FXML.SetDeleteValue(Path + 'DownloadZipURL', MetaPkg.DownloadZipURL, '');
+      FXML.SetDeleteValue(Path + 'DisableInOPM', MetaPkg.DisableInOPM, False);
+      FXML.SetDeleteValue(Path + 'Rating', MetaPkg.Rating, 0);
+      FXML.SetDeleteValue(Path + 'Count', SerializablePackages.Items[I].LazarusPackages.Count, 0);
+      for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
+      begin
+        SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
+        LazarusPkg := TLazarusPackage(SerializablePackages.Items[I].LazarusPackages.Items[J]);
+        FXML.SetDeleteValue(SubPath + 'Name', LazarusPkg.Name, '');
+        FXML.SetDeleteValue(SubPath + 'UpdateVersion', LazarusPkg.UpdateVersion, '');
+        FXML.SetDeleteValue(SubPath + 'ForceNotify', LazarusPkg.ForceNotify, False);
+        FXML.SetDeleteValue(SubPath + 'InternalVersion', LazarusPkg.InternalVersion, 0);
+        FXML.SetDeleteValue(SubPath + 'InternalVersionOld', LazarusPkg.InternalVersionOld, 0);
+      end;
     end;
+    FXML.Flush;
+  finally
+    FXML.Free;
+    FBusySaving := False;
   end;
-  FXML.Flush;
 end;
 
 procedure TUpdates.AssignPackageData(AMetaPackage: TMetaPackage);
@@ -357,6 +361,8 @@ var
   LazarusPkg: TLazarusPackage;
   UpdLazPkgs: TUpdateLazPackages;
 begin
+  if FBusySaving then
+    Exit;
   HasUpdate := False;
   AMetaPackage.DownloadZipURL := FUpdatePackage.FUpdatePackageData.DownloadZipURL;
   AMetaPackage.DisableInOPM := FUpdatePackage.FUpdatePackageData.DisableInOPM;
@@ -382,6 +388,8 @@ var
   I: Integer;
   LazarusPkg: TLazarusPackage;
 begin
+  if FBusySaving then
+    Exit;
   AMetaPackage.DownloadZipURL := '';
   AMetaPackage.DisableInOPM := False;
   AMetaPackage.HasUpdate := False;
@@ -442,6 +450,8 @@ end;
 
 function TUpdates.IsTimeToUpdate: Boolean;
 begin
+  Result := Assigned(SerializablePackages) and (FOpenSSLAvailable) and
+            (not FBusyUpdating) and (not FNeedToBreak);
   case Options.CheckForUpdates of
     0: Result := MinutesBetween(Now, Options.LastUpdate) >= 2;
     1: Result := HoursBetween(Now, Options.LastUpdate) >= 1;
@@ -450,12 +460,6 @@ begin
     4: Result := MonthsBetween(Now, Options.LastUpdate) >= 1;
     5: Result := False;
   end;
-end;
-
-procedure TUpdates.DoOnTimer(Sender: TObject);
-begin
-  if (FTimer.Enabled) and (not FNeedToBreak) and (IsTimeToUpdate) then
-    FNeedToUpdate := True;
 end;
 
 function TUpdates.GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
@@ -480,7 +484,6 @@ begin
         begin
           MS.Position := 0;
           SetLength(AJSON, MS.Size);
-
           MS.Read(Pointer(AJSON)^, Length(AJSON));
           Result := Length(AJSON) > 0;
           {since the class name has changed form "UpdatePackageFiles" to "UpdateLazPackages",
@@ -504,79 +507,67 @@ begin
     FOnUpdate(Self);
 end;
 
-procedure TUpdates.Execute;
+procedure TUpdates.CheckForUpdates;
 var
   I: Integer;
   JSON: TJSONStringType;
 begin
-  CheckForOpenSSL;
+  FBusyUpdating := True;
+  try
+    Options.LastUpdate := Now;
+    Options.Changed := True;
+    for I := 0 to SerializablePackages.Count - 1  do
+    begin
+      if FNeedToBreak then
+        Break;
+      JSON := '';
+      if GetUpdateInfo(Trim(SerializablePackages.Items[I].DownloadURL), JSON) then
+      begin
+        if FUpdatePackage.LoadFromJSON(JSON) then
+          AssignPackageData(SerializablePackages.Items[I])
+        else
+          ResetPackageData(SerializablePackages.Items[I]);
+      end
+      else
+        ResetPackageData(SerializablePackages.Items[I]);
+    end;
+    if Assigned(FOnUpdate) and (not FNeedToBreak) then
+      Synchronize(@DoOnUpdate);
+  finally
+    FBusyUpdating := False;
+  end;
+end;
+
+procedure TUpdates.Execute;
+begin
   while not Terminated do
   begin
-    if Assigned(SerializablePackages) and (FNeedToUpdate) and (not FBusyUpdating) and (not FPaused) and (FOpenSSLAvailable) then
+    Sleep(1);
+    if (GetTickCount64 - FTime > FInterval) then
     begin
-      Options.LastUpdate := Now;
-      Options.Changed := True;
-      FBusyUpdating := True;
-      try
-        for I := 0 to SerializablePackages.Count - 1  do
-        begin
-          if FPaused then
-            Break;
-          if (not FNeedToBreak) then
-          begin
-            JSON := '';
-            if GetUpdateInfo(Trim(SerializablePackages.Items[I].DownloadURL), JSON) then
-            begin
-              if FUpdatePackage.LoadFromJSON(JSON) then
-                AssignPackageData(SerializablePackages.Items[I])
-              else
-                ResetPackageData(SerializablePackages.Items[I]);
-            end
-            else
-              ResetPackageData(SerializablePackages.Items[I]);
-          end
-          else
-            FHTTPClient.Terminate;
-        end;
-        if Assigned(FOnUpdate) and (not FNeedToBreak) and (not FPaused) then
-          Synchronize(@DoOnUpdate);
-      finally
-        FBusyUpdating := False;
-        FNeedToUpdate := False;
-      end;
+      FTime := GetTickCount64;
+      if IsTimeToUpdate then
+        CheckForUpdates;
     end;
-    Sleep(1000);
+    if FNeedToBreak then
+      Break;
   end;
 end;
 
 procedure TUpdates.StartUpdate;
 begin
   Load;
-  FPaused := False;
-  if FStarted then
-    Exit;
-  FOpenSSLAvailable := False;
-  FStarted := True;
-  FTimer := TThreadTimer.Create;
-  FTimer.Interval := 5000;
-  FTimer.OnTimer := @DoOnTimer;
-  FTimer.StartTimer;
+  CheckForOpenSSL;
+  FTime := GetTickCount64;
+  FInterval := 6000;
   Start;
 end;
 
 procedure TUpdates.StopUpdate;
 begin
-  FNeedToBreak := True;
   Save;
-  FTimer.StopTimer;
-  FStarted := False;
   FHTTPClient.Terminate;
-end;
-
-procedure TUpdates.PauseUpdate;
-begin
-  FPaused := True;
-  Save;
+  FNeedToBreak := True;
 end;
 
 end.

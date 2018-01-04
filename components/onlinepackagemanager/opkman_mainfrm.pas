@@ -185,7 +185,6 @@ begin
   SerializablePackages.OnProcessJSON := @DoOnProcessJSON;
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
-  StartUpdates;
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
  {$IF LCL_FULLVERSION >= 1070000}
@@ -201,7 +200,6 @@ begin
   Updates := TUpdates.Create(FileName);
   Updates.OnUpdate := @DoOnUpdate;
   Updates.StartUpdate;
-  Updates.PauseUpdate;
 end;
 
 procedure TMainFrm.StopUpdates;
@@ -237,7 +235,10 @@ begin
     SetupControls;
     SetupColors;
     GetPackageList;
-  end;
+  end
+  else
+    if not Application.Terminated then
+      StartUpdates;
 end;
 
 procedure TMainFrm.GetPackageList(const ARepositoryHasChanged: Boolean = False);
@@ -250,9 +251,8 @@ begin
   begin
     SetupMessage(rsMainFrm_rsMessageChangingRepository);
     Sleep(1500);
-  end
-  else
-    Updates.PauseUpdate;
+  end;
+  StopUpdates;
   SetupMessage(rsMainFrm_rsMessageDownload);
   PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
 end;
@@ -397,10 +397,9 @@ begin
         EnableDisableControls(True);
         SetupMessage;
         mJSON.Text := AJSON;
+        StartUpdates;
         cbAll.Checked := False;
         Caption := rsLazarusPackageManager + ' ' + SerializablePackages.QuickStatistics;
-        if Assigned(Updates) then
-          Updates.StartUpdate;
       end;
     etConfig:
       begin
@@ -675,7 +674,7 @@ begin
 
   if CanGo then
   begin
-    Updates.PauseUpdate;
+    StopUpdates;
     Options.LastDownloadDir := DstDir;
     Options.Changed := True;
     PackageAction := paDownloadTo;
@@ -697,7 +696,7 @@ begin
     end;
   end;
   SerializablePackages.RemoveErrorState;
-  Updates.StartUpdate;
+  StartUpdates;
 end;
 
 procedure TMainFrm.Rebuild;
@@ -739,7 +738,7 @@ begin
     if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) <> mrYes then
       Exit;
 
-    Updates.PauseUpdate;
+    StopUpdates;
     PackageAction := paUpdate;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -782,7 +781,7 @@ begin
   if not NeedToRebuild then
   begin
     SerializablePackages.RemoveErrorState;
-    Updates.StartUpdate;
+    StartUpdates;
   end;
 end;
 
@@ -845,7 +844,7 @@ begin
    end;
 
   NeedToRebuild := False;
-  Updates.StopUpdate;
+  StopUpdates;
   for I := 0 to SerializablePackages.Count - 1 do
   begin
     for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
@@ -870,7 +869,7 @@ begin
               begin
                 NeedToRebuild := False;
                 MessageDlgEx(Format(rsMainFrm_rsUninstall_Error, [LazarusPackage.Name]), mtError, [mbOk], Self);
-                Updates.StartUpdate;
+                StartUpdates;
                 Exit;
               end
               else
@@ -911,7 +910,7 @@ begin
 
   if CanGo then
   begin
-    Updates.PauseUpdate;
+    StopUpdates;
     PackageAction := paInstall;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -953,7 +952,7 @@ begin
   if not NeedToRebuild then
   begin
     SerializablePackages.RemoveErrorState;
-    Updates.StartUpdate;
+    StartUpdates;
   end;
 end;
 
