@@ -24,23 +24,6 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     ClientHeight = 64
     ClientWidth = 515
     TabOrder = 0
-    object cmdOpenDebuggerPath: TSpeedButton
-      AnchorSideTop.Control = cmbDebuggerPath
-      AnchorSideRight.Control = gbDebuggerType
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = cmbDebuggerPath
-      AnchorSideBottom.Side = asrBottom
-      Left = 496
-      Height = 23
-      Top = 35
-      Width = 13
-      Anchors = [akTop, akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Right = 6
-      Caption = '…'
-      OnClick = cmdOpenDebuggerPathClick
-      OnResize = ResizeSquare
-    end
     object cmbDebuggerType: TComboBox
       AnchorSideLeft.Control = gbDebuggerType
       AnchorSideTop.Control = gbDebuggerType
@@ -66,13 +49,29 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Left = 6
       Height = 23
       Top = 35
-      Width = 490
+      Width = 480
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       ItemHeight = 15
       TabOrder = 1
+    end
+    object cmdOpenDebuggerPath: TButton
+      AnchorSideTop.Control = cmbDebuggerPath
+      AnchorSideRight.Control = gbDebuggerType
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = cmbDebuggerPath
+      AnchorSideBottom.Side = asrBottom
+      Left = 486
+      Height = 23
+      Top = 35
+      Width = 23
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 6
+      Caption = '…'
+      OnClick = cmdOpenDebuggerPathClick
+      TabOrder = 2
     end
   end
   object gbAdditionalSearchPath: TGroupBox
@@ -92,23 +91,6 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
     ClientHeight = 35
     ClientWidth = 515
     TabOrder = 1
-    object cmdOpenAdditionalPath: TSpeedButton
-      AnchorSideTop.Control = txtAdditionalPath
-      AnchorSideRight.Control = gbAdditionalSearchPath
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = txtAdditionalPath
-      AnchorSideBottom.Side = asrBottom
-      Left = 496
-      Height = 23
-      Top = 6
-      Width = 13
-      Anchors = [akTop, akRight, akBottom]
-      AutoSize = True
-      BorderSpacing.Right = 6
-      Caption = '…'
-      OnClick = cmdOpenAdditionalPathClick
-      OnResize = ResizeSquare
-    end
     object txtAdditionalPath: TEdit
       AnchorSideLeft.Control = gbAdditionalSearchPath
       AnchorSideTop.Control = gbAdditionalSearchPath
@@ -116,12 +98,28 @@ object DebuggerGeneralOptionsFrame: TDebuggerGeneralOptionsFrame
       Left = 6
       Height = 23
       Top = 6
-      Width = 490
+      Width = 480
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       TabOrder = 0
+    end
+    object cmdOpenAdditionalPath: TButton
+      AnchorSideTop.Control = txtAdditionalPath
+      AnchorSideRight.Control = gbAdditionalSearchPath
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = txtAdditionalPath
+      AnchorSideBottom.Side = asrBottom
+      Left = 486
+      Height = 23
+      Top = 6
+      Width = 23
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 6
+      Caption = '…'
+      OnClick = cmdOpenAdditionalPathClick
+      TabOrder = 1
     end
   end
   object gcbDebuggerGeneralOptions: TCheckGroup
