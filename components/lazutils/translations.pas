@@ -1617,6 +1617,22 @@ begin
 end;
 
 procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
+
+  function VerifyItemFormatting(var Item: TPOFileItem): boolean;
+  begin
+    // this function verifies item formatting and sets its flags if the formatting is bad
+    Result := true;
+    if Item.Translation <> '' then
+    begin
+      Result := CompareFormatArgs(Item.Original,Item.Translation);
+      if not Result then
+        if pos(sFuzzyFlag, Item.Flags) = 0 then
+          Item.ModifyFlag(sFuzzyFlag, true);
+      Item.ModifyFlag(sBadFormatFlag, not Result);
+      FModified := true;
+    end;
+  end;
+
 var
   Item: TPOFileItem;
   AContext,AComment,ATranslation,AFlags,APrevStr: string;
@@ -1637,11 +1653,11 @@ begin
         if (Item.PreviousID = '') or (pos(sFuzzyFlag, Item.Flags) = 0) then
           Item.PreviousID:=Item.Original;
         Item.ModifyFlag(sFuzzyFlag, true);
-        Item.ModifyFlag(sBadFormatFlag, not CompareFormatArgs(Original,Item.Translation));
       end;
     end;
     Item.Original:=Original;
     Item.Tag:=FTag;
+    VerifyItemFormatting(Item);
     exit;
   end;
 
@@ -1664,6 +1680,9 @@ begin
       // if old item is fuzzy, copy PreviousID too
       if pos(sFuzzyFlag, Item.Flags)<>0 then
         APrevStr := Item.PreviousID;
+      // check if old item's formatting arguments are correct and
+      // set old item's fuzzy and badformat flags if not
+      VerifyItemFormatting(Item);
       // set a flag to mark item fuzzy if it is not already
       SetFuzzy := true;
     end;
