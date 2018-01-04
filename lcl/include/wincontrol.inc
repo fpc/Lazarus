@@ -2554,6 +2554,8 @@ var
     CurControl: TControl;
   begin
     Result := True;
+    if cfAutoSizeNeeded in FControlFlags then
+      Exit;
     for I := ControlCount - 1 downto 0 do
     begin
       CurControl:=Controls[I];
