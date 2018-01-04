@@ -48,6 +48,7 @@ type
     procedure cmbDebuggerTypeEditingDone(Sender: TObject);
     procedure cmdOpenAdditionalPathClick(Sender: TObject);
     procedure cmdOpenDebuggerPathClick(Sender: TObject);
+    procedure ResizeSquare(Sender: TObject);
   private
     PropertyGrid: TOIPropertyGrid;
     FCurDebuggerClass: TDebuggerClass; // currently shown debugger class
@@ -122,6 +123,12 @@ begin
   finally
     OpenDialog.Free;
   end;
+end;
+
+procedure TDebuggerGeneralOptionsFrame.ResizeSquare(Sender: TObject);
+begin
+  with Sender as TControl do
+    Constraints.MinWidth := Height;
 end;
 
 procedure TDebuggerGeneralOptionsFrame.FetchDebuggerClass;
