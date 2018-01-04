@@ -70,6 +70,7 @@ begin
   try
     if FDataLink.Edit then
     begin
+       FDataLink.Modified;
        FDataLink.UpdateData;
        inherited Select;
     end
