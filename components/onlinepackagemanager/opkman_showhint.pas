@@ -35,7 +35,7 @@ uses
   //Interface
   LCLIntf,
   //OpkMan
-  opkman_virtualtrees;
+  virtualtrees;
 
 type
 

@@ -28,7 +28,7 @@ unit opkman_createrepositoryfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, fpjson,
+  Classes, SysUtils, FileUtil, fpjson, VirtualTrees,
   // LCL
   Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Buttons, Menus,
@@ -37,7 +37,7 @@ uses
   // LazUtils
   LazFileUtils, LazUTF8,
   // OpkMan
-  opkman_VirtualTrees, opkman_serializablepackages;
+  opkman_serializablepackages;
 
 type
 
@@ -100,8 +100,7 @@ type
     procedure VSTPackagesGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       {%H-}Kind: TVTImageKind; {%H-}Column: TColumnIndex; var {%H-}Ghosted: Boolean;
       var ImageIndex: Integer);
-    procedure VSTPackagesHeaderClick(Sender: TVTHeader; {%H-}Column: TColumnIndex;
-      Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure VSTPackagesHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure VSTPackagesCompareNodes(Sender: TBaseVirtualTree; Node1,
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure VSTPackagesFocusChanged(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -808,24 +807,23 @@ begin
   ImageIndex := Data^.FDataType;
 end;
 
-procedure TCreateRepositoryFrm.VSTPackagesHeaderClick(Sender: TVTHeader;
-  Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TCreateRepositoryFrm.VSTPackagesHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
 begin
-  if Button = mbLeft then
+  if HitInfo.Button = mbLeft then
   begin
     with Sender, Treeview do
     begin
-      if (SortColumn = NoColumn) or (SortColumn <> Column) then
+      if (SortColumn = NoColumn) or (SortColumn <> HitInfo.Column) then
       begin
-        SortColumn    := Column;
-        SortDirection := opkman_VirtualTrees.sdAscending;
+        SortColumn    := HitInfo.Column;
+        SortDirection := VirtualTrees.sdAscending;
       end
       else
       begin
-        if SortDirection = opkman_VirtualTrees.sdAscending then
-          SortDirection := opkman_VirtualTrees.sdDescending
+        if SortDirection = VirtualTrees.sdAscending then
+          SortDirection := VirtualTrees.sdDescending
         else
-          SortDirection := opkman_VirtualTrees.sdAscending;
+          SortDirection := VirtualTrees.sdAscending;
       end;
       SortTree(SortColumn, SortDirection, False);
       FSortDirection := SortDirection;

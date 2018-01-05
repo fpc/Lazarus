@@ -28,7 +28,7 @@ unit opkman_createrepositorypackagefrm;
 interface
 
 uses
-  Classes, SysUtils, md5, fpjson,
+  Classes, SysUtils, md5, fpjson, VirtualTrees,
   // LCL
   Forms, Controls, ExtCtrls, StdCtrls, Dialogs, Graphics, Buttons, EditBtn,
   // IDEIntf
@@ -36,7 +36,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, Laz2_XMLCfg,
   // OpkMan
-  opkman_VirtualTrees, opkman_serializablepackages, opkman_zipper, opkman_uploader;
+  opkman_serializablepackages, opkman_zipper, opkman_uploader;
 
 type
   TPackageOperation = (poCreate, poSubmit);
@@ -486,7 +486,7 @@ begin
           FVSTPackages.Selected[RootNode] := True;
           CanGo := True;
         end;
-        FVSTPackages.SortTree(0, opkman_VirtualTrees.sdAscending);
+        FVSTPackages.SortTree(0, VirtualTrees.sdAscending);
       end
       else
         MessageDlgEx(rsCreateRepositoryPackageFrm_NoPackage, mtInformation, [mbOk], Self);

@@ -28,11 +28,11 @@ unit opkman_repositories;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, VirtualTrees,
   // LCL
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, ButtonPanel,
   // OpkMan
-  opkman_const, opkman_common, opkman_options, opkman_VirtualTrees;
+  opkman_const, opkman_common, opkman_options;
 
 type
 
@@ -52,7 +52,7 @@ type
   private
     FVST: TVirtualStringTree;
     FSortCol: Integer;
-    FSortDir: opkman_VirtualTrees.TSortDirection;
+    FSortDir: VirtualTrees.TSortDirection;
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; {%H-}TextType: TVSTTextType; var CellText: String);
     procedure VSTGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -63,8 +63,7 @@ type
     procedure VSTFocuseChanged(Sender: TBaseVirtualTree; {%H-}Node: PVirtualNode; {%H-}Column: TColumnIndex);
     procedure VSTPaintText(Sender: TBaseVirtualTree; const TargetCanvas: TCanvas;
       Node: PVirtualNode; {%H-}Column: TColumnIndex; {%H-}TextType: TVSTTextType);
-    procedure VSTHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
-      Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure VSTHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure PopulateTree;
     procedure EnableDisableButtons;
@@ -229,7 +228,7 @@ var
 begin
   Options.RemoteRepositoryTmp.Clear;
   FVST.BeginUpdate;
-  FVST.SortTree(0, opkman_VirtualTrees.sdAscending);
+  FVST.SortTree(0, VirtualTrees.sdAscending);
   Node := FVST.GetFirst;
   while Assigned(Node) do
   begin
@@ -304,26 +303,25 @@ begin
     TargetCanvas.Font.Style := TargetCanvas.Font.Style - [fsBold]
 end;
 
-procedure TRepositoriesFrm.VSTHeaderClick(Sender: TVTHeader;
-  Column: TColumnIndex; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TRepositoriesFrm.VSTHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
 begin
-  if (Column <> 0) and (Column <> 1) and (Column <> 3) then
+  if (HitInfo.Column <> 0) and (HitInfo.Column <> 1) and (HitInfo.Column <> 3) then
     Exit;
-  if Button = mbLeft then
+  if HitInfo.Button = mbLeft then
   begin
     with Sender, Treeview do
     begin
-      if (SortColumn = NoColumn) or (SortColumn <> Column) then
+      if (SortColumn = NoColumn) or (SortColumn <> HitInfo.Column) then
       begin
-        SortColumn    := Column;
-        SortDirection := opkman_VirtualTrees.sdAscending;
+        SortColumn    := HitInfo.Column;
+        SortDirection := VirtualTrees.sdAscending;
       end
       else
       begin
-        if SortDirection = opkman_VirtualTrees.sdAscending then
-          SortDirection := opkman_VirtualTrees.sdDescending
+        if SortDirection = VirtualTrees.sdAscending then
+          SortDirection := VirtualTrees.sdDescending
         else
-          SortDirection := opkman_VirtualTrees.sdAscending;
+          SortDirection := VirtualTrees.sdAscending;
         FSortDir := SortDirection;
       end;
       SortTree(SortColumn, SortDirection, False);
@@ -403,7 +401,7 @@ begin
       Data^.FUniqueID := UniqueID;
     end;
   end;
-  FVST.SortTree(0, opkman_VirtualTrees.sdAscending);
+  FVST.SortTree(0, VirtualTrees.sdAscending);
   Node := FVST.GetFirst;
   if Node <> nil then
   begin

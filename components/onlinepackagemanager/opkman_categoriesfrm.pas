@@ -30,9 +30,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, Graphics, ExtCtrls, StdCtrls, ButtonPanel,
+  Forms, Controls, Graphics, ExtCtrls, StdCtrls, ButtonPanel, VirtualTrees,
   // OpkMan
-  opkman_const, opkman_common, opkman_VirtualTrees, opkman_options;
+  opkman_const, opkman_common, opkman_options;
 
 type
 
@@ -284,7 +284,7 @@ begin
     else
       Data^.FType := 0;
   end;
-  FVST.SortTree(0, opkman_VirtualTrees.sdAscending);
+  FVST.SortTree(0, VirtualTrees.sdAscending);
 
   SL := TStringList.Create;
   try

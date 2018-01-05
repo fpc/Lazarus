@@ -28,9 +28,9 @@ interface
 uses
   SysUtils,
   // LCL
-  Forms, Controls, Graphics, ExtCtrls, StdCtrls,
+  Forms, Controls, Graphics, ExtCtrls, StdCtrls, VirtualTrees,
   // OpkMan
-  opkman_VirtualTrees, opkman_const, opkman_serializablepackages, opkman_options;
+  opkman_const, opkman_serializablepackages, opkman_options;
 
 type
 
@@ -194,7 +194,7 @@ begin
     bOk.Visible := True;
     lbMessage.Caption := rsMainFrm_PackageUpdate1;
   end;
-  FVST.SortTree(0, opkman_VirtualTrees.sdAscending);
+  FVST.SortTree(0, sdAscending);
 end;
 
 procedure TPackageListFrm.FormClose(Sender: TObject;

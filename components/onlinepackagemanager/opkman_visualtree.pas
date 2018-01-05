@@ -30,13 +30,13 @@ unit opkman_visualtree;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Math, dateutils,
+  Classes, SysUtils, contnrs, Math, dateutils, VirtualTrees,
   // LCL
   Controls, Graphics, Menus, Dialogs, Forms, LCLType, Buttons,
   // IDEIntf
   LCLIntf, PackageIntf,
   // OpkMan
-  opkman_VirtualTrees, opkman_common, opkman_serializablepackages, opkman_const,
+  opkman_common, opkman_serializablepackages, opkman_const,
   opkman_options, opkman_packagedetailsfrm, opkman_showhint;
 
 
@@ -96,7 +96,7 @@ type
     FLink: String;
     FLinkClicked: Boolean;
     FSortCol: Integer;
-    FSortDir: opkman_VirtualTrees.TSortDirection;
+    FSortDir: VirtualTrees.TSortDirection;
     FCheckingNodes: Boolean;
     FLeaving: Boolean;
     FOnChecking: TOnChecking;
@@ -116,8 +116,7 @@ type
       var ImageIndex: Integer);
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; {%H-}TextType: TVSTTextType; var CellText: String);
-    procedure VSTHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
-      Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure VSTHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure VSTPaintText(Sender: TBaseVirtualTree;
       const TargetCanvas: TCanvas; Node: PVirtualNode; {%H-}Column: TColumnIndex;
       {%H-}TextType: TVSTTextType);
@@ -475,7 +474,7 @@ begin
      GrandChildData^.SVNURL := SerializablePackages.Items[I].SVNURL;
      GrandChildData^.DataType := 19;}
   end;
-  FVST.SortTree(0, opkman_VirtualTrees.sdAscending);
+  FVST.SortTree(0, VirtualTrees.sdAscending);
   ExpandEx;
   CollapseEx;
   RootNode := VST.GetFirst;
@@ -1539,26 +1538,25 @@ begin
   end;
 end;
 
-procedure TVisualTree.VSTHeaderClick(Sender: TVTHeader; Column: TColumnIndex;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TVisualTree.VSTHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
 begin
-  if (Column <> 0) and (Column <> 1) and (Column <> 3) then
+  if (HitInfo.Column <> 0) and (HitInfo.Column <> 1) and (HitInfo.Column <> 3) then
     Exit;
-  if Button = mbLeft then
+  if HitInfo.Button = mbLeft then
   begin
     with Sender, Treeview do
     begin
-      if (SortColumn = NoColumn) or (SortColumn <> Column) then
+      if (SortColumn = NoColumn) or (SortColumn <> HitInfo.Column) then
       begin
-        SortColumn    := Column;
-        SortDirection := opkman_VirtualTrees.sdAscending;
+        SortColumn    := HitInfo.Column;
+        SortDirection := VirtualTrees.sdAscending;
       end
       else
       begin
-        if SortDirection = opkman_VirtualTrees.sdAscending then
-          SortDirection := opkman_VirtualTrees.sdDescending
+        if SortDirection = VirtualTrees.sdAscending then
+          SortDirection := VirtualTrees.sdDescending
         else
-          SortDirection := opkman_VirtualTrees.sdAscending;
+          SortDirection := VirtualTrees.sdAscending;
         FSortDir := SortDirection;
       end;
       SortTree(SortColumn, SortDirection, False);

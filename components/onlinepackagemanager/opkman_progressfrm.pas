@@ -27,12 +27,12 @@ unit opkman_progressfrm;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, VirtualTrees,
   // LCL
   Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls, ExtCtrls, ButtonPanel,
   // OpkMan
   opkman_installer, opkman_common, opkman_const, opkman_downloader, opkman_zipper,
-  opkman_VirtualTrees, opkman_options;
+  opkman_options;
 
 type
 

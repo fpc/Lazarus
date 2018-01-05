@@ -29,7 +29,7 @@ unit opkman_mainfrm;
 interface
 
 uses
-  Classes, SysUtils, fpjson, md5, Graphics,
+  Classes, SysUtils, fpjson, md5, Graphics, VirtualTrees,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, Clipbrd,
   LCLIntf, LCLVersion, LCLProc,
@@ -38,7 +38,7 @@ uses
   // IdeIntf
   IDECommands, PackageIntf,
   // OpkMan
-  opkman_VirtualTrees, opkman_downloader, opkman_installer,
+  opkman_downloader, opkman_installer,
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
   opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
   opkman_optionsfrm, opkman_createrepositorypackagefrm, opkman_updates,
