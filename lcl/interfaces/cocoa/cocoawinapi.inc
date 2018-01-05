@@ -1620,7 +1620,16 @@ begin
   Result := Assigned(obj);
   if not Result then Exit;
 
-  if obj.isKindOfClass(NSScrollView) then
+  if obj.isKindOfClass(TCocoaScrollBar) then
+    Result := CocoaScrollBarGetScrollInfo(TCocoaScrollBar(obj), ScrollInfo)
+  else
+  if obj.isKindOfClass(TCocoaManualScrollView) then
+  begin
+    if BarFlag = SB_Vert then
+      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller), ScrollInfo)
+    else
+      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller), ScrollInfo);
+  end else if obj.isKindOfClass(NSScrollView) then
     NSScrollViewGetScrollInfo(NSScrollView(obj), BarFlag, ScrollInfo)
   else
     Result := False;
@@ -2614,7 +2623,6 @@ end;
 function TCocoaWidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
 var
   obj: NSOBject;
-  b: NSRect;
   v : NSView;
 begin
   obj:=NSObject(HandleToNSObject(hWnd));
@@ -2622,12 +2630,9 @@ begin
   if not Result then Exit;
 
   v:=NSView(obj).lclContentView;
-
-  b:=v.bounds;
-  b.origin.x:=b.origin.x-dx;
-  b.origin.y:=b.origin.y+dy; // reversed
-  v.setBounds(b);
-  // ignore all updates
+  // todo: parse the passed parameters.
+  //       the content of the window could be already prepared
+  //       thus not entire control should be invalided
   v.setNeedsDisplay_(true);
 end;
 

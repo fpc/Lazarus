@@ -239,14 +239,6 @@ begin
   end;
 
   dl:=mx-mn;
-  if ScrollInfo.fMask and SIF_POS > 0 then
-  begin
-    if dl<>0 then
-      bar.setDoubleValue( ScrollInfo.nPos / dl )
-    else
-      bar.setDoubleValue( 0 )
-  end;
-
   bar.setEnabled(dl<>0);
 
   // if changed page or range, the knob changes
@@ -261,10 +253,29 @@ begin
     bar.minInt:=mn;
     bar.maxInt:=mx;
   end;
+
+  if ScrollInfo.fMask and SIF_POS > 0 then
+    bar.lclSetPos( ScrollInfo.nPos );
+
+  Result:=bar.lclPos;
 end;
 
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
+var
+  l : integer;
 begin
+  Result:=Assigned(bar);
+  if not Result then Exit;
+
+  FillChar(ScrollInfo, sizeof(ScrollInfo), 0);
+  ScrollInfo.cbSize:=sizeof(ScrollInfo);
+  ScrollInfo.fMask:=SIF_ALL;
+  ScrollInfo.nMin:=bar.minInt;
+  ScrollInfo.nMax:=bar.maxInt;
+  ScrollInfo.nPage:=bar.pageInt;
+  ScrollInfo.nPos:=bar.lclPos;
+  ScrollInfo.nTrackPos:=ScrollInfo.nPos;
+  Result:=true;
 end;
 
 procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);

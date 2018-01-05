@@ -610,7 +610,7 @@ type
   TCocoaScrollBar = objcclass(NSScroller)
   public
     callback: ICommonCallback;
-    // minInt,maxInt are used to calculate POS on callback event
+    // minInt,maxInt are used to calculate position for lclPos and lclSetPos
     minInt  : Integer;
     maxInt  : Integer;
     pageInt : Integer;
@@ -623,6 +623,8 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    function lclPos: Integer; message 'lclPos';
+    procedure lclSetPos(aPos: integer); message 'lclSetPos:';
   end;
 
   TCocoaListBox = objcclass;
@@ -1864,7 +1866,9 @@ end;
 procedure TCocoaScrollBar.actionScrolling(sender: NSObject);
 begin
   if Assigned(callback) then
-    callback.scroll( not IsHorizontal(), Round(floatValue * (maxInt-minInt)));
+  begin
+    callback.scroll( not IsHorizontal(), lclPos);
+  end;
 end;
 
 function TCocoaScrollBar.IsHorizontal: Boolean;
@@ -1875,6 +1879,26 @@ end;
 function TCocoaScrollBar.lclIsHandle: Boolean;
 begin
   Result := True;
+end;
+
+function TCocoaScrollBar.lclPos: Integer;
+begin
+  Result:=round( floatValue * (maxint-minInt)) + minInt;
+end;
+
+procedure TCocoaScrollBar.lclSetPos(aPos: integer);
+var
+  d : integer;
+begin
+  d := maxInt - minInt;
+  if d = 0 then
+    setDoubleValue(0)
+  else
+  begin
+    if aPos < minInt then aPos:=minInt
+    else if aPos > maxInt then aPos:=maxInt;
+    setDoubleValue( (aPos - minInt) / d );
+  end;
 end;
 
 function TCocoaScrollBar.acceptsFirstResponder: Boolean;
