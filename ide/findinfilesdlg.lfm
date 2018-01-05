@@ -12,7 +12,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   Constraints.MinWidth = 400
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object OptionsCheckGroupBox: TCheckGroup
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ReplaceTextComboBox
@@ -143,7 +143,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       Left = 71
       Height = 23
       Top = 6
-      Width = 327
+      Width = 337
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -158,12 +158,11 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       AnchorSideTop.Control = DirectoriesComboBox
       AnchorSideRight.Control = DirectoriesOptionsGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 404
+      Left = 414
       Height = 25
       Top = 6
-      Width = 35
+      Width = 25
       Anchors = [akTop, akRight]
-      AutoSize = True
       BorderSpacing.Right = 6
       Caption = '...'
       Layout = blGlyphTop
@@ -180,7 +179,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       Left = 61
       Height = 23
       Top = 37
-      Width = 337
+      Width = 347
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       ItemHeight = 15

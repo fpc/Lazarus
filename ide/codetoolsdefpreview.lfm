@@ -11,31 +11,31 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   OnCreate = CodeToolsDefinesDialogCREATE
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object DirectoryGroupbox: TGroupBox
     AnchorSideLeft.Control = ValuesTabSheet
     AnchorSideTop.Control = ValuesTabSheet
     AnchorSideRight.Control = ValuesTabSheet
     Left = 6
-    Height = 60
+    Height = 55
     Top = 6
     Width = 580
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'DirectoryGroupbox'
-    ClientHeight = 41
+    ClientHeight = 35
     ClientWidth = 576
     TabOrder = 0
     object DirectoryCombobox: TComboBox
       AnchorSideRight.Control = DirectoryBrowseButton
       Left = 6
-      Height = 29
+      Height = 23
       Top = 6
-      Width = 508
+      Width = 534
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
-      ItemHeight = 0
+      ItemHeight = 15
       OnChange = DirectoryComboboxCHANGE
       TabOrder = 0
       Text = 'DirectoryCombobox'
@@ -46,10 +46,10 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = DirectoryCombobox
       AnchorSideBottom.Side = asrBottom
-      Left = 520
-      Height = 29
+      Left = 546
+      Height = 23
       Top = 6
-      Width = 51
+      Width = 25
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 5
       Caption = '...'
@@ -59,8 +59,8 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   end
   object PageControl1: TPageControl
     Left = 6
-    Height = 468
-    Top = 72
+    Height = 476
+    Top = 67
     Width = 580
     ActivePage = ValuesTabSheet
     Align = alClient
@@ -69,11 +69,11 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     TabOrder = 1
     object ValuesTabSheet: TTabSheet
       Caption = 'ValuesTabSheet'
-      ClientHeight = 437
-      ClientWidth = 576
+      ClientHeight = 448
+      ClientWidth = 572
       object ValuesListview: TListView
         Left = 6
-        Height = 285
+        Height = 296
         Top = 6
         Width = 296
         Align = alLeft
@@ -87,21 +87,21 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       object ValueGroupbox: TGroupBox
         Left = 6
         Height = 123
-        Top = 308
-        Width = 564
+        Top = 319
+        Width = 560
         Align = alBottom
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
         Caption = 'Value'
-        ClientHeight = 104
-        ClientWidth = 560
+        ClientHeight = 103
+        ClientWidth = 556
         TabOrder = 4
         inline ValueSynedit: TSynEdit
           Cursor = crDefault
           Left = 6
-          Height = 92
+          Height = 91
           Top = 6
-          Width = 548
+          Width = 544
           Align = alClient
           BorderSpacing.Around = 6
           Font.Height = -15
@@ -113,7 +113,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
           TabOrder = 0
           BookMarkOptions.Xoffset = -18
           Gutter.Visible = False
-          Gutter.Width = 59
+          Gutter.Width = 57
           Gutter.MouseActions = <          
             item
               ClickCount = ccAny
@@ -599,7 +599,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
               MouseActions = <>
             end
             object TSynGutterLineNumber
-              Width = 19
+              Width = 17
               MouseActions = <>
               MarkupInfo.Background = clBtnFace
               MarkupInfo.Foreground = clNone
@@ -676,26 +676,26 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
       end
       object MainSplitter: TSplitter
         Left = 308
-        Height = 297
+        Height = 308
         Top = 0
         Width = 5
       end
       object TemplatesGroupBox: TGroupBox
         Left = 319
-        Height = 285
+        Height = 296
         Top = 6
-        Width = 251
+        Width = 247
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'TemplatesGroupBox'
-        ClientHeight = 266
-        ClientWidth = 247
+        ClientHeight = 276
+        ClientWidth = 243
         TabOrder = 1
         object ParsedTemplatesTreeView: TTreeView
           Left = 6
           Height = 122
           Top = 6
-          Width = 235
+          Width = 231
           Align = alTop
           BorderSpacing.Around = 6
           ReadOnly = True
@@ -708,15 +708,15 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
           Left = 0
           Height = 5
           Top = 134
-          Width = 247
+          Width = 243
           Align = alTop
           ResizeAnchor = akTop
         end
         object TemplatesMemo: TMemo
           Left = 6
-          Height = 115
+          Height = 125
           Top = 145
-          Width = 235
+          Width = 231
           Align = alClient
           BorderSpacing.Around = 6
           ReadOnly = True
@@ -729,8 +729,8 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
         Cursor = crVSplit
         Left = 0
         Height = 5
-        Top = 297
-        Width = 576
+        Top = 308
+        Width = 572
         Align = alBottom
         ResizeAnchor = akBottom
       end
@@ -754,8 +754,8 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 546
+    Height = 26
+    Top = 549
     Width = 580
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

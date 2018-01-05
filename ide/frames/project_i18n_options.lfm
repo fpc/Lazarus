@@ -71,7 +71,7 @@ object ProjectI18NOptionsFrame: TProjectI18NOptionsFrame
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
-      ButtonWidth = 45
+      ButtonWidth = 25
       MaxLength = 0
       NumGlyphs = 1
       OnButtonClick = POOutDirButtonClick

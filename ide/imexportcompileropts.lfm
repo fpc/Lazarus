@@ -13,7 +13,7 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
   OnClose = ImExportCompOptsDlgCLOSE
   OnCreate = ImExportCompOptsDlgCREATE
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
@@ -71,14 +71,14 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     AnchorSideLeft.Control = FileLabel
     AnchorSideTop.Control = FileLabel
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = ButtonBrowse
     Left = 6
     Height = 23
     Top = 25
-    Width = 378
+    Width = 410
+    Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 4
-    BorderSpacing.Right = 6
+    BorderSpacing.Right = 4
     ItemHeight = 15
     OnChange = FileNameEditChange
     ParentShowHint = False
@@ -90,11 +90,11 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     AnchorSideTop.Control = FileNameEdit
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 390
+    Left = 420
     Height = 25
     Top = 25
-    Width = 55
-    Anchors = [akTop, akLeft, akRight]
+    Width = 25
+    Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     Caption = '...'
     OnClick = ButtonBrowseClick
