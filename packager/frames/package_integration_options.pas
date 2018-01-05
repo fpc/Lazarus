@@ -35,9 +35,6 @@ type
     procedure SetSelectedPkgType(PkgType: TLazPackageType);
     function ShowMsgPackageTypeMustBeDesign: boolean;
     function GetFPDocPkgNameEditValue: string;
-  protected
-    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double); override;
   public
     function Check: Boolean; override;
     function GetTitle: string; override;
@@ -135,14 +132,6 @@ end;
 function TPackageIntegrationOptionsFrame.GetTitle: string;
 begin
   Result := lisPckOptsIDEIntegration;
-end;
-
-procedure TPackageIntegrationOptionsFrame.DoAutoAdjustLayout(
-  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double);
-begin
-  if AMode = lapAutoAdjustForDPI then begin
-    FPDocPathButton.Width := round(FPDocPathButton.Height * AXProportion);
-  end;
 end;
 
 procedure TPackageIntegrationOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);

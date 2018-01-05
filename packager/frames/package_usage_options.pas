@@ -37,9 +37,6 @@ type
     LibraryPathButton: TPathEditorButton;
     FLazPackage: TLazPackage;
     function PathEditBtnExecuted({%H-}Context: String; var NewPath: String): Boolean;
-  protected
-    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, AYProportion: Double); override;
   public
     function GetTitle: string; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -93,17 +90,6 @@ end;
 function TPackageUsageOptionsFrame.GetTitle: string;
 begin
   Result := lisPckOptsUsage;
-end;
-
-procedure TPackageUsageOptionsFrame.DoAutoAdjustLayout(
-  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double);
-begin
-  if AMode = lapAutoAdjustForDPI then begin
-    UnitPathButton.Width := round(UnitPathButton.Height * AXProportion);
-    IncludePathButton.Width := round(IncludePathButton.Height * AXProportion);
-    ObjectPathButton.Width := round(ObjectPathButton.Height * AXProportion);
-    LibraryPathButton.Width := round(LibraryPathButton.Height * AXProportion);
-  end;
 end;
 
 procedure TPackageUsageOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);

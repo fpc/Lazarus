@@ -58,8 +58,6 @@ type
     procedure DoImport(Sender: TObject);
     procedure DoExport(Sender: TObject);
   protected
-    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
-      const AXProportion, {%H-}AYProportion: Double); override;
     procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
     procedure UpdateTargetFileLabel;
   public
@@ -325,18 +323,6 @@ begin
   if (ShowExportCompilerOptionsDialog(FCompilerOpts, FDialog) = mrOK)
   and Assigned(OnSaveIDEOptions) then
     OnSaveIDEOptions(Self, FCompilerOpts);
-end;
-
-procedure TCompilerPathOptionsFrame.DoAutoAdjustLayout(
-  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double);
-begin
-  if AMode = lapAutoAdjustForDPI then begin
-    OtherUnitsPathEditBtn.Width := round(OtherUnitsPathEditBtn.Height * AXProportion);
-    IncludeFilesPathEditBtn.Width := round(IncludeFilesPathEditBtn.Height * AXProportion);
-    OtherSourcesPathEditBtn.Width := round(OtherSourcesPathEditBtn.Height * AXProportion);
-    LibrariesPathEditBtn.Width := round(LibrariesPathEditBtn.Height * AXProportion);
-    DebugPathEditBtn.Width := round(DebugPathEditBtn.Height * AXProportion);
-  end;
 end;
 
 procedure TCompilerPathOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions);
