@@ -76,6 +76,10 @@ end;"/>
         <UnitName Value="VTIDEEditors"/>
       </Item8>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="IDEIntf"/>
