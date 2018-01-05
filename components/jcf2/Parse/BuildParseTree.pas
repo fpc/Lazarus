@@ -4908,6 +4908,12 @@ procedure TBuildParseTree.RecogniseMethodName(const pbClassNameCompulsory: boole
 var
   lbMore: boolean;
 begin
+  if IsSymbolOperator(fcTokenList.FirstSolidToken) then begin
+      PushNode(nIdentifier);
+      Recognise(Operators);
+      PopNode;
+      exit;
+  end;
   if not (IdentifierNext(idAllowDirectives)) then
     raise TEParseError.Create('Expected identifier', fcTokenList.FirstSolidToken);
 
@@ -4929,7 +4935,7 @@ begin
     while lbMore do
     begin
       Recognise(ttDot);
-      Recognise(IdentiferTokens);
+      Recognise(IdentiferTokens + Operators);
 
       if fcTokenList.FirstSolidTokenType = ttLessThan then
       begin
