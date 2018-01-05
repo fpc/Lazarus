@@ -2865,7 +2865,7 @@ type
     SelectedIndex: Integer;
     StateIndex: Integer;
     OverlayIndex: Integer;
-    Data: Pointer;
+    Data: Cardinal;  // Always 32-bit, assigned to a Pointer.
     Count: Integer;
     Height: integer;
     Expanded: boolean;
@@ -2892,7 +2892,7 @@ type
     SelectedIndex: Integer;
     StateIndex: Integer;
     OverlayIndex: Integer;
-    Data: Pointer;
+    Data: Cardinal;  // Always 32-bit, assigned to a Pointer.
     Count: Integer;
     Text: string[255];
   end;

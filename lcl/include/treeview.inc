@@ -1824,7 +1824,7 @@ begin
     SelectedIndex := OldInfo.SelectedIndex;
     StateIndex := OldInfo.StateIndex;
     OverlayIndex := OldInfo.OverlayIndex;
-    Data := OldInfo.Data;
+    Data := {%H-}Pointer(OldInfo.Data);
     Height := OldInfo.Height;
     NewExpanded := OldInfo.Expanded;
     ItemCount := OldInfo.Count;
@@ -1875,7 +1875,7 @@ begin
   SelectedIndex := Info^.SelectedIndex;
   StateIndex := Info^.StateIndex;
   OverlayIndex := Info^.OverlayIndex;
-  Data := Info^.Data;
+  Data := {%H-}Pointer(Info^.Data);
   if Owner<>nil then begin
     ItemCount := Info^.Count;
     for I := 0 to ItemCount - 1 do
@@ -1896,7 +1896,7 @@ begin
     OldInfo.OverlayIndex := OverlayIndex;
     OldInfo.StateIndex := StateIndex;
     OldInfo.Height := FHeight;
-    OldInfo.Data := Data;
+    OldInfo.Data := {%H-}Cardinal(Data);
     OldInfo.Count := Count;
     OldInfo.Expanded := Expanded;
     OldInfo.TextLen := Length(Text);
@@ -1932,7 +1932,7 @@ begin
   Info^.SelectedIndex := SelectedIndex;
   Info^.OverlayIndex := OverlayIndex;
   Info^.StateIndex := StateIndex;
-  Info^.Data := Data;
+  Info^.Data := {%H-}Cardinal(Data);
   ItemCount := Count;
   Info^.Count := ItemCount;
   Stream.WriteBuffer(Size, SizeOf(Size));
