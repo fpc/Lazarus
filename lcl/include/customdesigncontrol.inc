@@ -46,46 +46,21 @@ begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.DoAutoAdjustLayout'){$ENDIF};
-    try
-      if not ParentFont or (Parent=nil) then
-        ScaleFontsPPI(AYProportion);
+    NewWidth := Round(Width*AXProportion);
+    NewHeight := Round(Height*AYProportion);
 
-      NewWidth := Round(Width*AXProportion);
-      NewHeight := Round(Height*AYProportion);
+    BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
+    Constraints.AutoAdjustLayout(AXProportion, AYProportion);
 
-      BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
-      Constraints.AutoAdjustLayout(AXProportion, AYProportion);
-
-      SetBounds(Left, Top, NewWidth, NewHeight);
-    finally
-      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.DoAutoAdjustLayout'){$ENDIF};
-    end;
+    SetBounds(Left, Top, NewWidth, NewHeight);
   end;
 end;
 
 procedure TCustomDesignControl.Loaded;
-  procedure FixChildren(const AParent: TWinControl);
-  var
-    I: Integer;
-  begin
-    for I := 0 to AParent.ControlCount-1 do
-    begin
-      AParent.Controls[I].FixDesignFontsPPI(FDesignTimePPI);
-      if AParent.Controls[I] is TWinControl then
-        FixChildren(TWinControl(AParent.Controls[I]));
-    end;
-  end;
 begin
   inherited Loaded;
 
   FPixelsPerInch := FDesignTimePPI;
-
-  if Application.Scaled and Scaled then
-  begin
-    FixDesignFontsPPI(FDesignTimePPI);
-    FixChildren(Self);
-  end;
 end;
 
 procedure TCustomDesignControl.SetDesignTimePPI(const ADesignTimePPI: Integer);

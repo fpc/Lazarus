@@ -272,13 +272,14 @@ type
   protected
     procedure SetScaled(const AScaled: Boolean); virtual;
 
-    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromPPI,
-      AToPPI, AOldFormWidth, ANewFormWidth: Integer); override;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); override;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
+
+    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy; const AFromPPI,
+      AToPPI, AOldFormWidth, ANewFormWidth: Integer); override;
   public
     property DesignTimePPI: Integer read FDesignTimePPI write SetDesignTimePPI default 96;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch stored False;

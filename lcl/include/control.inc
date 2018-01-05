@@ -834,12 +834,13 @@ begin
   Result := MulDiv(ASize, Screen.PixelsPerInch, Font.PixelsPerInch);
 end;
 
-procedure TControl.ScaleFontsPPI(const AProportion: Double);
+procedure TControl.ScaleFontsPPI(const AToPPI: Integer;
+  const AProportion: Double);
 begin
   // Problem: all fonts have to be scaled.
   // Override this function - list all custom fonts in the overriden procedure
 
-  DoScaleFontPPI(Font, AProportion);
+  DoScaleFontPPI(Font, AToPPI, AProportion);
 end;
 
 {------------------------------------------------------------------------------
@@ -940,18 +941,6 @@ end;
 
 procedure TControl.ExecuteDefaultAction;
 begin
-end;
-
-procedure TControl.FixDesignFontsPPI(const ADesignTimePPI: Integer);
-begin
-  // Problem: Font.PixelsPerInch isn't saved in the LFM, therefore the
-  // design-time font PPI is different from the one that is loaded on target
-  // machine, which results in different font scaling.
-  // DoFixDesignFont restores the corrent design-time font PPI so that it can
-  // be used for LCL HighDPI scaling.
-  // Override this function - list all custom fonts in the overriden procedure
-
-  DoFixDesignFontPPI(Font, ADesignTimePPI);
 end;
 
 procedure TControl.ExecuteCancelAction;
@@ -1921,14 +1910,17 @@ begin
     OnShowHint(Self,HintInfo);
 end;
 
-procedure TControl.DoScaleFontPPI(const AFont: TFont;
+procedure TControl.DoScaleFontPPI(const AFont: TFont; const AToPPI: Integer;
   const AProportion: Double);
 begin
   // If AFont.PixelsPerInch is different from "Screen.PixelsPerInch" (=GetDeviceCaps(DC, LOGPIXELSX))
   // then the font doesn't scale -> we have to assign a nonzero height value.
   if (AFont.Height=0) and not (csDesigning in ComponentState) then
     AFont.Height := MulDiv(GetFontData(AFont.Reference.Handle).Height, AFont.PixelsPerInch, Screen.PixelsPerInch);
-  AFont.PixelsPerInch := Round(AFont.PixelsPerInch*AProportion);
+  if AToPPI>0 then
+    AFont.PixelsPerInch := MulDiv(AFont.PixelsPerInch, AToPPI, AFont.PixelsPerInch)
+  else
+    AFont.PixelsPerInch := Round(AFont.PixelsPerInch*AProportion);
 end;
 
 function TControl.IsAParentAligning: boolean;
@@ -3123,100 +3115,95 @@ begin
   // Apply the changes
   if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
   begin
-    DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DoAutoAdjustLayout'){$ENDIF};
-    try
-      if not ParentFont or (Parent=nil) then
-        ScaleFontsPPI(AYProportion);
+    // Dimensions
+    AAWidth := False;
+    AAHeight := False;
+    NewLeft := Left;
+    NewTop := Top;
+    NewWidth := Width;
+    NewHeight := Height;
+    OldWidth := Width;
+    OldHeight := Height;
 
-      // Dimensions
-      AAWidth := False;
-      AAHeight := False;
-      NewLeft := Left;
-      NewTop := Top;
-      NewWidth := Width;
-      NewHeight := Height;
-      OldWidth := Width;
-      OldHeight := Height;
+    ShouldAutoAdjust(AAWidth, AAHeight);
+    AAWidth := AAWidth and (Align in [alNone, alLeft, alRight])
+      and not((akLeft in Anchors) and (akRight in Anchors));
+    AAHeight := AAHeight and (Align in [alNone, alTop, alBottom])
+      and not((akTop in Anchors) and (akBottom in Anchors));
 
-      ShouldAutoAdjust(AAWidth, AAHeight);
-      AAWidth := AAWidth and (Align in [alNone, alLeft, alRight])
-        and not((akLeft in Anchors) and (akRight in Anchors));
-      AAHeight := AAHeight and (Align in [alNone, alTop, alBottom])
-        and not((akTop in Anchors) and (akBottom in Anchors));
-
-      if (Align=alNone) and (akLeft in Anchors) then
-        NewLeft := Round(NewLeft * AXProportion);
-      if (Align=alNone) and (akRight in Anchors) and (Parent<>nil)
-      and (AnchorSideRight.Control=nil) then
+    if (Align=alNone) and (akLeft in Anchors) then
+      NewLeft := Round(NewLeft * AXProportion);
+    if (Align=alNone) and (akRight in Anchors) and (Parent<>nil)
+    and (AnchorSideRight.Control=nil) then
+    begin
+      if not(akLeft in Anchors) then
       begin
-        if not(akLeft in Anchors) then
-        begin
-          NewRight := Round((Parent.ClientWidth-NewLeft-OldWidth) * AXProportion);
-          NewLeft := Parent.ClientWidth-NewRight-OldWidth
-        end else
-        begin
-          NewRight := Round((Parent.ClientWidth-Left-OldWidth) * AXProportion);
-          NewWidth := Parent.ClientWidth-NewLeft-NewRight;
-        end;
-      end;
-
-      if (Align=alNone) and (akTop in Anchors) then
-        NewTop := Round(NewTop * AYProportion);
-      if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil)
-      and (AnchorSideBottom.Control=nil) then
+        NewRight := Round((Parent.ClientWidth-NewLeft-OldWidth) * AXProportion);
+        NewLeft := Parent.ClientWidth-NewRight-OldWidth
+      end else
       begin
-        if not(akTop in Anchors) then
-        begin
-          NewBottom := Round((Parent.ClientHeight-NewTop-OldHeight) * AYProportion);
-          NewTop := Parent.ClientHeight-NewBottom-OldHeight
-        end else
-        begin
-          NewBottom := Round((Parent.ClientHeight-Top-OldHeight) * AYProportion);
-          NewHeight := Parent.ClientHeight-NewTop-NewBottom;
-        end;
+        NewRight := Round((Parent.ClientWidth-Left-OldWidth) * AXProportion);
+        NewWidth := Parent.ClientWidth-NewLeft-NewRight;
       end;
+    end;
 
-      if AAWidth then
-        NewWidth := Round(Width * AXProportion);
-      if AAHeight then
-        NewHeight := Round(Height * AYProportion);
-
-      BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
-      Constraints.AutoAdjustLayout(AXProportion, AYProportion);
-
-      NewBaseLeft := NewLeft;
-      NewBaseTop := NewTop;
-      NewBaseWidth := NewWidth;
-      NewBaseHeight := NewHeight;
-      NewWidth := Constraints.MinMaxWidth(NewWidth);
-      NewHeight := Constraints.MinMaxHeight(NewHeight);
-
-      if AAWidth or (NewBaseWidth<>NewWidth) then
+    if (Align=alNone) and (akTop in Anchors) then
+      NewTop := Round(NewTop * AYProportion);
+    if (Align=alNone) and (akBottom in Anchors) and (Parent<>nil)
+    and (AnchorSideBottom.Control=nil) then
+    begin
+      if not(akTop in Anchors) then
       begin
-        if akRight in Anchors then
-          NewLeft := NewLeft-NewWidth+OldWidth;
-      end;
-      if AAHeight or (NewBaseHeight<>NewHeight) then
+        NewBottom := Round((Parent.ClientHeight-NewTop-OldHeight) * AYProportion);
+        NewTop := Parent.ClientHeight-NewBottom-OldHeight
+      end else
       begin
-        if akBottom in Anchors then
-          NewTop := NewTop-NewHeight+OldHeight;
+        NewBottom := Round((Parent.ClientHeight-Top-OldHeight) * AYProportion);
+        NewHeight := Parent.ClientHeight-NewTop-NewBottom;
       end;
-      if AAWidth and (akRight in Anchors) then
-        NewBaseLeft := NewBaseLeft-NewBaseWidth+OldWidth;
-      if AAHeight and (akBottom in Anchors) then
-        NewBaseTop := NewBaseTop-NewBaseHeight+OldHeight;
+    end;
 
-      FBaseBounds.Left:=NewBaseLeft;
-      FBaseBounds.Top:=NewBaseTop;
-      FBaseBounds.Right:=NewBaseLeft+NewBaseWidth;
-      FBaseBounds.Bottom:=NewBaseTop+NewBaseHeight;
+    if AAWidth then
+      NewWidth := Round(Width * AXProportion);
+    if AAHeight then
+      NewHeight := Round(Height * AYProportion);
+
+    BorderSpacing.AutoAdjustLayout(AXProportion, AYProportion);
+    Constraints.AutoAdjustLayout(AXProportion, AYProportion);
+
+    NewBaseLeft := NewLeft;
+    NewBaseTop := NewTop;
+    NewBaseWidth := NewWidth;
+    NewBaseHeight := NewHeight;
+    NewWidth := Constraints.MinMaxWidth(NewWidth);
+    NewHeight := Constraints.MinMaxHeight(NewHeight);
+
+    if AAWidth or (NewBaseWidth<>NewWidth) then
+    begin
+      if akRight in Anchors then
+        NewLeft := NewLeft-NewWidth+OldWidth;
+    end;
+    if AAHeight or (NewBaseHeight<>NewHeight) then
+    begin
+      if akBottom in Anchors then
+        NewTop := NewTop-NewHeight+OldHeight;
+    end;
+    if AAWidth and (akRight in Anchors) then
+      NewBaseLeft := NewBaseLeft-NewBaseWidth+OldWidth;
+    if AAHeight and (akBottom in Anchors) then
+      NewBaseTop := NewBaseTop-NewBaseHeight+OldHeight;
+
+    FBaseBounds.Left:=NewBaseLeft;
+    FBaseBounds.Top:=NewBaseTop;
+    FBaseBounds.Right:=NewBaseLeft+NewBaseWidth;
+    FBaseBounds.Bottom:=NewBaseTop+NewBaseHeight;
+    if Parent<>nil then
+    begin
       FBaseParentClientSize.cx:=Parent.ClientWidth;
       FBaseParentClientSize.cy:=Parent.ClientHeight;
-
-      SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight);
-    finally
-      EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DoAutoAdjustLayout'){$ENDIF};
     end;
+
+    SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight);
   end;
 end;
 
@@ -4169,7 +4156,15 @@ begin
   if AFromPPI > 0 then lYProportion := AToPPI / AFromPPI
   else lYProportion := 1.0;
 
-  DoAutoAdjustLayout(lMode, lXProportion, lYProportion);
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.AutoAdjustLayout'){$ENDIF};
+  try
+    if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+      ScaleFontsPPI(AToPPI, lYProportion);
+
+    DoAutoAdjustLayout(lMode, lXProportion, lYProportion);
+  finally
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.AutoAdjustLayout'){$ENDIF};
+  end;
 end;
 
 // Auto-adjust the layout of controls.

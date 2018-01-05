@@ -1434,7 +1434,7 @@ type
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); virtual;
     procedure DoFixDesignFontPPI(const AFont: TFont; const ADesignTimePPI: Integer);
-    procedure DoScaleFontPPI(const AFont: TFont; const AProportion: Double);
+    procedure DoScaleFontPPI(const AFont: TFont; const AToPPI: Integer; const AProportion: Double);
   protected
     // actions
     function GetActionLinkClass: TControlActionLinkClass; virtual;
@@ -1564,8 +1564,7 @@ type
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
       const AFromPPI, AToPPI, AOldFormWidth, ANewFormWidth: Integer); virtual;
     procedure ShouldAutoAdjust(var AWidth, AHeight: Boolean); virtual;
-    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); virtual;
-    procedure ScaleFontsPPI(const AProportion: Double); virtual;
+    procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); virtual;
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
