@@ -3657,14 +3657,6 @@ components/onlinepackagemanager/images/Tree_Buttons/StarHalfFull.png -text svneo
 components/onlinepackagemanager/images/Tree_Buttons/magnifier-minus.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/magnifier-plus.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/readme.txt svneol=native#text/plain
-components/onlinepackagemanager/languages/opkman_VirtualTrees.fi.po svneol=native#text/plain
-components/onlinepackagemanager/languages/opkman_VirtualTrees.fr.po svneol=native#text/plain
-components/onlinepackagemanager/languages/opkman_VirtualTrees.hu.po svneol=native#text/plain
-components/onlinepackagemanager/languages/opkman_VirtualTrees.lt.po svneol=native#text/plain
-components/onlinepackagemanager/languages/opkman_VirtualTrees.po svneol=native#text/plain
-components/onlinepackagemanager/languages/opkman_VirtualTrees.pt_BR.po svneol=native#text/plain
-components/onlinepackagemanager/languages/opkman_VirtualTrees.ru.po svneol=native#text/plain
-components/onlinepackagemanager/languages/opkman_VirtualTrees.uk.po svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.de.po svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.es.po svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.fi.po svneol=native#text/plain
