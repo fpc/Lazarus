@@ -80,7 +80,7 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       Directory = 'LazDocPathEdit'
       DialogOptions = [ofPathMustExist, ofEnableSizing, ofViewDetail]
       ShowHidden = False
-      ButtonWidth = 50
+      ButtonWidth = 25
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6

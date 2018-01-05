@@ -158,7 +158,7 @@ object HelpGeneralOptionsFrame: THelpGeneralOptionsFrame
     Top = 23
     Width = 488
     ShowHidden = False
-    ButtonWidth = 50
+    ButtonWidth = 25
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6

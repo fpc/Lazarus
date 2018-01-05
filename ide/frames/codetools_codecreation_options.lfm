@@ -134,7 +134,7 @@ object CodetoolsCodeCreationOptionsFrame: TCodetoolsCodeCreationOptionsFrame
     Width = 453
     FilterIndex = 0
     HideDirectories = False
-    ButtonWidth = 50
+    ButtonWidth = 25
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
