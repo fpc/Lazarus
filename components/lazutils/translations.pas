@@ -1643,7 +1643,7 @@ procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
   end;
 
 var
-  Item: TPOFileItem;
+  Item, ItemTmp: TPOFileItem;
   AContext,AComment,ATranslation,AFlags,APrevStr: string;
   SetFuzzy: boolean;
 begin
@@ -1666,6 +1666,26 @@ begin
     end;
     Item.Original:=Original;
     Item.Tag:=FTag;
+    if Item.Translation = '' then
+    begin
+      ItemTmp := TPOFileItem(FOriginalToItem.Data[Original]);
+      if ItemTmp <> nil then
+      begin
+        // if old item is already translated use translation
+        if ItemTmp.Translation<>'' then
+        begin
+          // if old item doesn't have context, add one
+          if ItemTmp.Context='' then
+            ItemTmp.Context := ItemTmp.IdentifierLow;
+          // if current item doesn't have context, add one
+          if Item.Context='' then
+            Item.Context := Item.IdentifierLow;
+          Item.Translation := ItemTmp.Translation;
+          Item.ModifyFlag(sFuzzyFlag, true);
+          FModified := True;
+        end;
+      end;
+    end;
     VerifyItemFormatting(Item);
     exit;
   end;
