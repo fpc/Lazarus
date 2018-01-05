@@ -8,14 +8,8 @@ unit lclextensions_package;
 interface
 
 uses
-  DelphiCompat, oleutils, LclExt, LazarusPackageIntf;
+  DelphiCompat, oleutils, LclExt;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-initialization
-  RegisterPackage('lclextensions_package', @Register);
 end.
