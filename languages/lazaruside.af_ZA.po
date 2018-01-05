@@ -1824,9 +1824,10 @@ msgid "Procedure"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasprogram
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfoldpasprogram"
 msgid "Program"
-msgstr ""
+msgstr "Program"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
 msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
@@ -2763,9 +2764,10 @@ msgid "Debug"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenterror
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
 msgid "Error"
-msgstr ""
+msgstr "Fout"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentfatal
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentfatal"
@@ -4210,9 +4212,10 @@ msgid "Abort whole loading"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr ""
+msgstr "Aangaande"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
@@ -5115,9 +5118,10 @@ msgid "The dates of the .ppu files of FPC differ by more than one hour.%sThis ca
 msgstr ""
 
 #: lazarusidestrconsts.lisccoerrorcaption
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisccoerrorcaption"
 msgid "Error"
-msgstr ""
+msgstr "Fout"
 
 #: lazarusidestrconsts.lisccoerrormsg
 msgid "ERROR: "
@@ -6005,9 +6009,10 @@ msgid "Description"
 msgstr ""
 
 #: lazarusidestrconsts.liscodehelperrorstag
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodehelperrorstag"
 msgid "Errors"
-msgstr ""
+msgstr "Foute"
 
 #: lazarusidestrconsts.liscodehelpexampletag
 msgid "Example"
@@ -6131,9 +6136,10 @@ msgid "Edit code template"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetemplerror
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodetemplerror"
 msgid "Error"
-msgstr ""
+msgstr "Fout"
 
 #: lazarusidestrconsts.liscodetempltoken
 msgid "Token:"
@@ -12398,9 +12404,10 @@ msgid "&File"
 msgstr "&Lêer"
 
 #: lazarusidestrconsts.lismenufind
+#, fuzzy
 msgctxt "lazarusidestrconsts.lismenufind"
 msgid "Find"
-msgstr ""
+msgstr "Soek"
 
 #: lazarusidestrconsts.lismenufind2
 msgid "&Find ..."
@@ -13146,9 +13153,10 @@ msgid "Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
+#, fuzzy
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
 msgid "Registers"
-msgstr ""
+msgstr "Registers"
 
 #: lazarusidestrconsts.lismenuviewrestrictionbrowser
 msgid "Restriction Browser"
@@ -14413,9 +14421,10 @@ msgid "Add other items"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
+#, fuzzy
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
-msgstr ""
+msgstr "Las by projek"
 
 #: lazarusidestrconsts.lispckeditapplychanges
 msgid "Apply changes"

@@ -4477,9 +4477,10 @@ msgid "Abort whole loading"
 msgstr "בטל את כל הטעינה"
 
 #: lazarusidestrconsts.lisabout
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr ""
+msgstr "אודות"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
@@ -8124,9 +8125,10 @@ msgid "Copy to Clipboard"
 msgstr "העתק ללוח הזמני"
 
 #: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
-msgstr ""
+msgstr "הצג תכונות נקודת עצירה"
 
 #: lazarusidestrconsts.lisdbgemexpression
 msgid "&Expression:"

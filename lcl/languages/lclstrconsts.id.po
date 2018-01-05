@@ -92,9 +92,10 @@ msgid "Convert"
 msgstr "Konversi"
 
 #: lclstrconsts.ifsvk_delete
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_delete"
 msgid "Delete"
-msgstr ""
+msgstr "Delete"
 
 #: lclstrconsts.ifsvk_down
 msgctxt "lclstrconsts.ifsvk_down"
@@ -132,9 +133,10 @@ msgid "Home"
 msgstr "Home"
 
 #: lclstrconsts.ifsvk_insert
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_insert"
 msgid "Insert"
-msgstr ""
+msgstr "Insert"
 
 #: lclstrconsts.ifsvk_junja
 msgid "Junja"
@@ -175,9 +177,10 @@ msgid "Mode Change"
 msgstr "Ubah  Mode"
 
 #: lclstrconsts.ifsvk_next
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Berikutnya"
 
 #: lclstrconsts.ifsvk_nonconvert
 msgid "Nonconvert"

@@ -4215,9 +4215,10 @@ msgid "Abort whole loading"
 msgstr "أوقف التحميل بالكامل"
 
 #: lazarusidestrconsts.lisabout
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr ""
+msgstr "بطاقة التعريف"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
@@ -12759,9 +12760,10 @@ msgid "Project Options ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
-msgstr ""
+msgstr "تشغيل"
 
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."

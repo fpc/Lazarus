@@ -21086,9 +21086,10 @@ msgid "Next Cell"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextcellsel
+#, fuzzy
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
 msgid "Next Cell (all selected)"
-msgstr ""
+msgstr "下一个Cell(使用选择的)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextfirstcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcell"

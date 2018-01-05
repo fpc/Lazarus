@@ -689,9 +689,10 @@ msgid "Move field down"
 msgstr ""
 
 #: objinspstrconsts.oismoveup
+#, fuzzy
 msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
-msgstr ""
+msgstr "Presunúť vyššie"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"

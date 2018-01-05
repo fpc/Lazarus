@@ -4436,9 +4436,10 @@ msgid "Abort whole loading"
 msgstr "Zrušiť celé načítanie"
 
 #: lazarusidestrconsts.lisabout
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr ""
+msgstr "O ..."
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"

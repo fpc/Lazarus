@@ -150,9 +150,10 @@ msgid "Invalid BinHex character"
 msgstr "Karakter BinHex tidak benar"
 
 #: ipconst.sbinhexbaddatacrc
+#, fuzzy
 msgctxt "ipconst.sbinhexbaddatacrc"
 msgid "Bad header CRC"
-msgstr ""
+msgstr "CRC header tidak benar"
 
 #: ipconst.sbinhexbadformat
 msgid "Invalid BinHex format"
@@ -234,9 +235,10 @@ msgid " bytes Transferred"
 msgstr " byte Ditransfer"
 
 #: ipconst.sftpclose
+#, fuzzy
 msgctxt "ipconst.sftpclose"
 msgid "Disconnected"
-msgstr ""
+msgstr "Terputus"
 
 #: ipconst.sftpcomplete
 msgid "Transfer complete. "
@@ -983,9 +985,10 @@ msgid "LAST"
 msgstr "LAST"
 
 #: ipconst.snntpcmdlist
+#, fuzzy
 msgctxt "ipconst.snntpcmdlist"
 msgid "LIST"
-msgstr ""
+msgstr "LIST"
 
 #: ipconst.snntpcmdlistacttimes
 msgid "LIST ACTIVE.TIMES"
@@ -1041,9 +1044,10 @@ msgid "QUIT"
 msgstr ""
 
 #: ipconst.snntpcmdstat
+#, fuzzy
 msgctxt "ipconst.snntpcmdstat"
 msgid "STAT"
-msgstr ""
+msgstr "STAT"
 
 #: ipconst.snntpcmdxover
 msgid "XOVER"
@@ -1106,9 +1110,10 @@ msgid "Retrieving body"
 msgstr "Mengambil badan"
 
 #: ipconst.snsconnect
+#, fuzzy
 msgctxt "ipconst.snsconnect"
 msgid "Connecting"
-msgstr ""
+msgstr "Menyambungkan"
 
 #: ipconst.snsdate
 msgid "Retrieving server date"
@@ -1175,9 +1180,10 @@ msgid "Selecting next article"
 msgstr "Memilih artikel berikutnya"
 
 #: ipconst.snsnoop
+#, fuzzy
 msgctxt "ipconst.snsnoop"
 msgid "No operation"
-msgstr ""
+msgstr "Tidak ada operasi"
 
 #: ipconst.snsover
 msgid "Retrieving overview"
@@ -1197,14 +1203,16 @@ msgid "Preparing to post article"
 msgstr "Menyiapkan untuk menulis artikel"
 
 #: ipconst.snsquit
+#, fuzzy
 msgctxt "ipconst.snsquit"
 msgid "Disconnecting"
-msgstr ""
+msgstr "Memutuskan"
 
 #: ipconst.snsspecial
+#, fuzzy
 msgctxt "ipconst.snsspecial"
 msgid "Sending special command"
-msgstr ""
+msgstr "MEngirimkan perintah spesial"
 
 #: ipconst.snsstat
 msgid "Retrieving status"
@@ -1219,9 +1227,10 @@ msgid "Retrieving new news"
 msgstr "Menerima berita baru"
 
 #: ipconst.sntnotask
+#, fuzzy
 msgctxt "ipconst.sntnotask"
 msgid "No task"
-msgstr ""
+msgstr "Tidak ada tugas"
 
 #: ipconst.sntpostto
 msgctxt "ipconst.sntpostto"
@@ -1493,9 +1502,10 @@ msgid "Retrieving mailbox list"
 msgstr "Mengambil daftar kotak surat"
 
 #: ipconst.spsnoop
+#, fuzzy
 msgctxt "ipconst.spsnoop"
 msgid "No operation"
-msgstr ""
+msgstr "Tidak ada operasi"
 
 #: ipconst.spspass
 msgid "Logging on with Password"
@@ -1551,9 +1561,10 @@ msgid "Retrieving mailbox list"
 msgstr "Mengambil daftar kotak surat"
 
 #: ipconst.sptlogon
+#, fuzzy
 msgctxt "ipconst.sptlogon"
 msgid "Logging on"
-msgstr ""
+msgstr "Masuk"
 
 #: ipconst.sptnone
 msgctxt "ipconst.sptnone"

@@ -250,9 +250,10 @@ msgid "&Type:"
 msgstr ""
 
 #: objinspstrconsts.ilesadd
+#, fuzzy
 msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
-msgstr ""
+msgstr "Toevoegen"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
@@ -483,9 +484,10 @@ msgid "Confirm delete"
 msgstr "Bevestig verwijderen"
 
 #: objinspstrconsts.oiscopycomponents
+#, fuzzy
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr ""
+msgstr "&Kopieer"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -673,9 +675,10 @@ msgid "Move field down"
 msgstr ""
 
 #: objinspstrconsts.oismoveup
+#, fuzzy
 msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
-msgstr ""
+msgstr "Ga naar boven"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
@@ -1097,9 +1100,10 @@ msgid "&Open ..."
 msgstr "&Openen..."
 
 #: objinspstrconsts.oistdactfileopenhint
+#, fuzzy
 msgctxt "objinspstrconsts.oistdactfileopenhint"
 msgid "Open"
-msgstr ""
+msgstr "Open"
 
 #: objinspstrconsts.oistdactfileopenshortcut
 msgid "Ctrl+O"
@@ -1450,9 +1454,10 @@ msgid "Edit Items ..."
 msgstr "Listview onderdelen bewerken..."
 
 #: objinspstrconsts.sccslvedtapply
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Toepassen"
 
 #: objinspstrconsts.sccslvedtcaption
 msgid "ListView Items Editor"
@@ -1469,14 +1474,16 @@ msgid "Items"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtgrprcaption
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
-msgstr ""
+msgstr "Onderdeel properties"
 
 #: objinspstrconsts.sccslvedtitem
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
-msgstr ""
+msgstr "Onderdeel"
 
 #: objinspstrconsts.sccslvedtlabelcaption
 msgid "Caption:"
@@ -1488,9 +1495,10 @@ msgid "Image Index:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtlabelstateindex
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr ""
+msgstr "Status index:"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1498,9 +1506,10 @@ msgid "New Item"
 msgstr "Nieuw item"
 
 #: objinspstrconsts.sccslvedtnewsubitem
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr ""
+msgstr "Nieuw subonderdeel"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
@@ -1544,9 +1553,10 @@ msgid "Move Rows/Cols"
 msgstr "Rijen/kolommen verplaatsen"
 
 #: objinspstrconsts.sccssgedtopendialog
+#, fuzzy
 msgctxt "objinspstrconsts.sccssgedtopendialog"
 msgid "Open"
-msgstr ""
+msgstr "Open"
 
 #: objinspstrconsts.sccssgedtsave
 #, fuzzy

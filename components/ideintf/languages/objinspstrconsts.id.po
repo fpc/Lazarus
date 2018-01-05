@@ -255,9 +255,10 @@ msgid "&Type:"
 msgstr ""
 
 #: objinspstrconsts.ilesadd
+#, fuzzy
 msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
-msgstr ""
+msgstr "Tambah"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
@@ -683,9 +684,10 @@ msgid "Move field down"
 msgstr ""
 
 #: objinspstrconsts.oismoveup
+#, fuzzy
 msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
-msgstr ""
+msgstr "Naikan"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
@@ -1090,9 +1092,10 @@ msgid "Ctrl+Z"
 msgstr "Ctrl+Z"
 
 #: objinspstrconsts.oistdacteditundoshorthint
+#, fuzzy
 msgctxt "objinspstrconsts.oistdacteditundoshorthint"
 msgid "Undo"
-msgstr ""
+msgstr "Undo"
 
 #: objinspstrconsts.oistdactfileexitheadline
 msgid "E&xit"
@@ -1109,9 +1112,10 @@ msgid "&Open ..."
 msgstr "&Buka"
 
 #: objinspstrconsts.oistdactfileopenhint
+#, fuzzy
 msgctxt "objinspstrconsts.oistdactfileopenhint"
 msgid "Open"
-msgstr ""
+msgstr "Buka"
 
 #: objinspstrconsts.oistdactfileopenshortcut
 msgid "Ctrl+O"
@@ -1481,14 +1485,16 @@ msgid "Items"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtgrprcaption
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
-msgstr ""
+msgstr "Properti Item"
 
 #: objinspstrconsts.sccslvedtitem
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
-msgstr ""
+msgstr "Item"
 
 #: objinspstrconsts.sccslvedtlabelcaption
 msgid "Caption:"
@@ -1500,9 +1506,10 @@ msgid "Image Index:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtlabelstateindex
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr ""
+msgstr "Indeks Keadaan:"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1510,9 +1517,10 @@ msgid "New Item"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtnewsubitem
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr ""
+msgstr "Subitem Baru"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
@@ -1556,9 +1564,10 @@ msgid "Move Rows/Cols"
 msgstr "Pindahkan Baris/Kolom"
 
 #: objinspstrconsts.sccssgedtopendialog
+#, fuzzy
 msgctxt "objinspstrconsts.sccssgedtopendialog"
 msgid "Open"
-msgstr ""
+msgstr "Buka"
 
 #: objinspstrconsts.sccssgedtsave
 #, fuzzy
@@ -1568,9 +1577,10 @@ msgid "Save ..."
 msgstr "Simpan..."
 
 #: objinspstrconsts.sccssgedtsavedialog
+#, fuzzy
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Simpan"
 
 #: objinspstrconsts.sccstredt
 #, fuzzy

@@ -3001,9 +3001,10 @@ msgid "Do not split line in front of"
 msgstr "Jangan pisah baris Di depan dari:"
 
 #: lazarusidestrconsts.dlgobjinsp
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
-msgstr ""
+msgstr "Inspektor Obyek"
 
 #: lazarusidestrconsts.dlgoiitemheight
 #, fuzzy
@@ -3533,9 +3534,10 @@ msgid "Show compiled procedures"
 msgstr "Tampilkan procedure yang dikompilasi"
 
 #: lazarusidestrconsts.dlgshowcompilinglinenumbers
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgshowcompilinglinenumbers"
 msgid "Show line numbers"
-msgstr ""
+msgstr "Tampilkan nomor baris"
 
 #: lazarusidestrconsts.dlgshowconditionals
 msgid "Show conditionals"
@@ -3735,9 +3737,10 @@ msgid "Target CPU family"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtargetos
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtargetos"
 msgid "Target OS"
-msgstr ""
+msgstr "Target OS"
 
 #: lazarusidestrconsts.dlgtargetplatform
 #, fuzzy
@@ -4109,9 +4112,10 @@ msgid "Ancestor Type"
 msgstr "Tipe Karuhun"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
 msgid "A Pascal unit must have the extension .pp or .pas"
-msgstr ""
+msgstr "Unit pascal harus mempunyai ekstensi .pp atau .pas"
 
 #: lazarusidestrconsts.lisa2pbrokendependencies
 msgid "Broken Dependencies"
@@ -4305,9 +4309,10 @@ msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr ""
+msgstr "Versi Maksimum lebih rendah daripada Versi Minimum."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
@@ -4403,9 +4408,10 @@ msgid "Abort whole loading"
 msgstr "Batalkan seluruh pengambilan"
 
 #: lazarusidestrconsts.lisabout
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr ""
+msgstr "Tentang"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
@@ -6236,9 +6242,10 @@ msgid "Add path"
 msgstr "Tambah path"
 
 #: lazarusidestrconsts.liscodehelpbrowseexamplebutton
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
 msgid "Browse"
-msgstr ""
+msgstr "Browse"
 
 #: lazarusidestrconsts.liscodehelpconfirmreplace
 msgid "Confirm replace"
@@ -6258,9 +6265,10 @@ msgid "Description"
 msgstr ""
 
 #: lazarusidestrconsts.liscodehelperrorstag
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodehelperrorstag"
 msgid "Errors"
-msgstr ""
+msgstr "Salah"
 
 #: lazarusidestrconsts.liscodehelpexampletag
 msgid "Example"
@@ -15016,9 +15024,10 @@ msgid "Add other items"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
+#, fuzzy
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
-msgstr ""
+msgstr "Tambah ke proyek"
 
 #: lazarusidestrconsts.lispckeditapplychanges
 msgid "Apply changes"

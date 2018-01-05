@@ -2997,9 +2997,10 @@ msgid "Do not split line in front of"
 msgstr "Splits een regel niet voor :"
 
 #: lazarusidestrconsts.dlgobjinsp
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
-msgstr ""
+msgstr "Object Inspecteur"
 
 #: lazarusidestrconsts.dlgoiitemheight
 #, fuzzy
@@ -3525,9 +3526,10 @@ msgid "Show compiled procedures"
 msgstr "Toon gecompileerde procedures"
 
 #: lazarusidestrconsts.dlgshowcompilinglinenumbers
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgshowcompilinglinenumbers"
 msgid "Show line numbers"
-msgstr ""
+msgstr "Toon regelnummers"
 
 #: lazarusidestrconsts.dlgshowconditionals
 msgid "Show conditionals"
@@ -3727,9 +3729,10 @@ msgid "Target CPU family"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtargetos
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtargetos"
 msgid "Target OS"
-msgstr ""
+msgstr "Doel OS"
 
 #: lazarusidestrconsts.dlgtargetplatform
 #, fuzzy
@@ -4101,9 +4104,10 @@ msgid "Ancestor Type"
 msgstr "Ancestor Type"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
 msgid "A Pascal unit must have the extension .pp or .pas"
-msgstr ""
+msgstr "Een Pascal-unit dient op .pp of .pas te eindigen."
 
 #: lazarusidestrconsts.lisa2pbrokendependencies
 msgid "Broken Dependencies"
@@ -4297,9 +4301,10 @@ msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr ""
+msgstr "De maximum versie is lager dan de minimum versie"
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
@@ -4395,9 +4400,10 @@ msgid "Abort whole loading"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr ""
+msgstr "Informatie"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
@@ -6212,9 +6218,10 @@ msgid "Add path"
 msgstr "Pad toevoegen"
 
 #: lazarusidestrconsts.liscodehelpbrowseexamplebutton
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
 msgid "Browse"
-msgstr ""
+msgstr "Blader"
 
 #: lazarusidestrconsts.liscodehelpconfirmreplace
 msgid "Confirm replace"
@@ -6234,9 +6241,10 @@ msgid "Description"
 msgstr ""
 
 #: lazarusidestrconsts.liscodehelperrorstag
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodehelperrorstag"
 msgid "Errors"
-msgstr ""
+msgstr "Fouten"
 
 #: lazarusidestrconsts.liscodehelpexampletag
 msgid "Example"
@@ -11227,14 +11235,16 @@ msgid "Save project as"
 msgstr "Sla project op als"
 
 #: lazarusidestrconsts.liskmselectlineend
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectlineend"
 msgid "Select Line End"
-msgstr ""
+msgstr "Selecteer regel einde"
 
 #: lazarusidestrconsts.liskmselectlinestart
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectlinestart"
 msgid "Select Line Start"
-msgstr ""
+msgstr "Selecteer regel begin"
 
 #: lazarusidestrconsts.liskmselectpagebottom
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
@@ -11242,14 +11252,16 @@ msgid "Select Page Bottom"
 msgstr ""
 
 #: lazarusidestrconsts.liskmselectpagetop
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectpagetop"
 msgid "Select Page Top"
-msgstr ""
+msgstr "Select bovenkant pagina"
 
 #: lazarusidestrconsts.liskmselectwordleft
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"
-msgstr ""
+msgstr "Selecteer linker woord"
 
 #: lazarusidestrconsts.liskmselectwordright
 msgctxt "lazarusidestrconsts.liskmselectwordright"
@@ -14905,9 +14917,10 @@ msgid "Add other items"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
+#, fuzzy
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
-msgstr ""
+msgstr "Voeg toe aan het project"
 
 #: lazarusidestrconsts.lispckeditapplychanges
 msgid "Apply changes"

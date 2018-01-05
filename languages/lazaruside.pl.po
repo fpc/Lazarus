@@ -4108,9 +4108,10 @@ msgid "Time"
 msgstr ""
 
 #: lazarusidestrconsts.histdlgformname
+#, fuzzy
 msgctxt "lazarusidestrconsts.histdlgformname"
 msgid "History"
-msgstr ""
+msgstr "Historia"
 
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
@@ -4147,9 +4148,10 @@ msgid "Ancestor Type"
 msgstr "Typ przodka"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
 msgid "A Pascal unit must have the extension .pp or .pas"
-msgstr ""
+msgstr "Moduł pascala powinien mieć rozszerzenie .pp lub .pas"
 
 #: lazarusidestrconsts.lisa2pbrokendependencies
 msgid "Broken Dependencies"
@@ -4324,9 +4326,10 @@ msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr ""
+msgstr "Maksymalny numer wersji jest mniejszy niż minimalny."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
@@ -4408,9 +4411,10 @@ msgid "Abort whole loading"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr ""
+msgstr "Informacja"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
@@ -11187,14 +11191,16 @@ msgid "Save project as"
 msgstr ""
 
 #: lazarusidestrconsts.liskmselectlineend
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectlineend"
 msgid "Select Line End"
-msgstr ""
+msgstr "Wybierz do końca linii"
 
 #: lazarusidestrconsts.liskmselectlinestart
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectlinestart"
 msgid "Select Line Start"
-msgstr ""
+msgstr "Wybierz do początku linii"
 
 #: lazarusidestrconsts.liskmselectpagebottom
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
@@ -11202,14 +11208,16 @@ msgid "Select Page Bottom"
 msgstr ""
 
 #: lazarusidestrconsts.liskmselectpagetop
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectpagetop"
 msgid "Select Page Top"
-msgstr ""
+msgstr "Wybierz górę strony"
 
 #: lazarusidestrconsts.liskmselectwordleft
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"
-msgstr ""
+msgstr "Wybierz słowo po lewej"
 
 #: lazarusidestrconsts.liskmselectwordright
 msgctxt "lazarusidestrconsts.liskmselectwordright"
@@ -11349,9 +11357,10 @@ msgid "Toggle view Documentation Editor"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
 msgid "View History"
-msgstr ""
+msgstr "Pokaż historię"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
@@ -13426,9 +13435,10 @@ msgid "Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
+#, fuzzy
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
 msgid "Registers"
-msgstr ""
+msgstr "Rejestry"
 
 #: lazarusidestrconsts.lismenuviewrestrictionbrowser
 msgid "Restriction Browser"
@@ -20535,9 +20545,10 @@ msgid "inspect"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecinvertassignment
+#, fuzzy
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
-msgstr ""
+msgstr "Odwróć przyporządkowanie"
 
 #: lazarusidestrconsts.srkmeckeymapleft
 #, fuzzy
@@ -21469,9 +21480,10 @@ msgid "Clone to Other Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemcopytootherwindownew
+#, fuzzy
 msgctxt "lazarusidestrconsts.uemcopytootherwindownew"
 msgid "New Window"
-msgstr ""
+msgstr "Nowe okno"
 
 #: lazarusidestrconsts.uemdebugword
 msgctxt "lazarusidestrconsts.uemdebugword"

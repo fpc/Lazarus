@@ -87,9 +87,10 @@ msgid "Convert"
 msgstr "Konwertuj"
 
 #: lclstrconsts.ifsvk_delete
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_delete"
 msgid "Delete"
-msgstr ""
+msgstr "Usuń"
 
 #: lclstrconsts.ifsvk_down
 msgctxt "lclstrconsts.ifsvk_down"
@@ -170,9 +171,10 @@ msgid "Mode Change"
 msgstr ""
 
 #: lclstrconsts.ifsvk_next
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Następny"
 
 #: lclstrconsts.ifsvk_nonconvert
 msgid "Nonconvert"

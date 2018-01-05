@@ -258,9 +258,10 @@ msgid "&Type:"
 msgstr ""
 
 #: objinspstrconsts.ilesadd
+#, fuzzy
 msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
-msgstr ""
+msgstr "Dodaj"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
@@ -682,9 +683,10 @@ msgid "Move field down"
 msgstr ""
 
 #: objinspstrconsts.oismoveup
+#, fuzzy
 msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
-msgstr ""
+msgstr "Przenieś w górę"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
@@ -1482,14 +1484,16 @@ msgid "Items"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtgrprcaption
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtgrprcaption"
 msgid "Item Properties"
-msgstr ""
+msgstr "Właściwości elementu"
 
 #: objinspstrconsts.sccslvedtitem
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtitem"
 msgid "Item"
-msgstr ""
+msgstr "Element"
 
 #: objinspstrconsts.sccslvedtlabelcaption
 msgid "Caption:"
@@ -1511,9 +1515,10 @@ msgid "New Item"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtnewsubitem
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr ""
+msgstr "Nowy podelement"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."

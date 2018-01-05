@@ -2991,9 +2991,10 @@ msgid "Do not split line in front of"
 msgstr "No separis la línia abans de:"
 
 #: lazarusidestrconsts.dlgobjinsp
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
-msgstr ""
+msgstr "Inspector dels objectes"
 
 #: lazarusidestrconsts.dlgoiitemheight
 #, fuzzy
@@ -3519,9 +3520,10 @@ msgid "Show compiled procedures"
 msgstr "Mostra els procediments compilats"
 
 #: lazarusidestrconsts.dlgshowcompilinglinenumbers
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgshowcompilinglinenumbers"
 msgid "Show line numbers"
-msgstr ""
+msgstr "Mostra els números de línia"
 
 #: lazarusidestrconsts.dlgshowconditionals
 msgid "Show conditionals"
@@ -3721,9 +3723,10 @@ msgid "Target CPU family"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtargetos
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgtargetos"
 msgid "Target OS"
-msgstr ""
+msgstr "SO de destinació"
 
 #: lazarusidestrconsts.dlgtargetplatform
 msgid "Target platform"
@@ -4091,9 +4094,10 @@ msgid "Ancestor Type"
 msgstr "Tipus d'avantpassat"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
 msgid "A Pascal unit must have the extension .pp or .pas"
-msgstr ""
+msgstr "Una unitat Pascal ha de tenir l'extensió .pp o .pas"
 
 #: lazarusidestrconsts.lisa2pbrokendependencies
 msgid "Broken Dependencies"
@@ -4285,9 +4289,10 @@ msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr ""
+msgstr "La versió màxima és menor que la versió mínima"
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
@@ -4381,9 +4386,10 @@ msgid "Abort whole loading"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr ""
+msgstr "Quant a"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
@@ -6188,9 +6194,10 @@ msgid "Add path"
 msgstr "Afegeix trajectòria"
 
 #: lazarusidestrconsts.liscodehelpbrowseexamplebutton
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
 msgid "Browse"
-msgstr ""
+msgstr "Navega"
 
 #: lazarusidestrconsts.liscodehelpconfirmreplace
 msgid "Confirm replace"
@@ -6210,9 +6217,10 @@ msgid "Description"
 msgstr ""
 
 #: lazarusidestrconsts.liscodehelperrorstag
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodehelperrorstag"
 msgid "Errors"
-msgstr ""
+msgstr "Errors"
 
 #: lazarusidestrconsts.liscodehelpexampletag
 msgid "Example"
@@ -11163,14 +11171,16 @@ msgid "Save project as"
 msgstr ""
 
 #: lazarusidestrconsts.liskmselectlineend
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectlineend"
 msgid "Select Line End"
-msgstr ""
+msgstr "Selecciona al final de la línia"
 
 #: lazarusidestrconsts.liskmselectlinestart
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectlinestart"
 msgid "Select Line Start"
-msgstr ""
+msgstr "Selecciona al començament de la línia"
 
 #: lazarusidestrconsts.liskmselectpagebottom
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
@@ -11178,14 +11188,16 @@ msgid "Select Page Bottom"
 msgstr ""
 
 #: lazarusidestrconsts.liskmselectpagetop
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectpagetop"
 msgid "Select Page Top"
-msgstr ""
+msgstr "Selecciona la pàgina superior"
 
 #: lazarusidestrconsts.liskmselectwordleft
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"
-msgstr ""
+msgstr "Selecciona una paraula a l'esquerra"
 
 #: lazarusidestrconsts.liskmselectwordright
 msgctxt "lazarusidestrconsts.liskmselectwordright"
@@ -14815,9 +14827,10 @@ msgid "Add other items"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
+#, fuzzy
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
-msgstr ""
+msgstr "Afegeix al projecte"
 
 #: lazarusidestrconsts.lispckeditapplychanges
 msgid "Apply changes"

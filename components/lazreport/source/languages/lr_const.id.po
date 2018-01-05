@@ -178,9 +178,10 @@ msgid "&Code"
 msgstr "&Kode"
 
 #: lr_const.sbarcodeformdbfld
+#, fuzzy
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr ""
+msgstr "Sisipkan field DB"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
@@ -224,23 +225,26 @@ msgid "Cancel"
 msgstr "Batal"
 
 #: lr_const.scateg1
+#, fuzzy
 msgctxt "lr_const.scateg1"
 msgid "Text"
-msgstr ""
+msgstr "Teks"
 
 #: lr_const.scateg2
 msgid "Number"
 msgstr "Angka"
 
 #: lr_const.scateg3
+#, fuzzy
 msgctxt "lr_const.scateg3"
 msgid "Date"
-msgstr ""
+msgstr "Tanggal"
 
 #: lr_const.scateg4
+#, fuzzy
 msgctxt "lr_const.scateg4"
 msgid "Time"
-msgstr ""
+msgstr "Jam"
 
 #: lr_const.scateg5
 msgid "Boolean"
@@ -918,9 +922,10 @@ msgid "&Case sensitive"
 msgstr "Sensitif &huruf"
 
 #: lr_const.sfindtextcurrentpg
+#, fuzzy
 msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
-msgstr ""
+msgstr "&Halaman saat ini"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
@@ -1244,9 +1249,10 @@ msgid "Left frame line"
 msgstr "Garis bingkai kiri"
 
 #: lr_const.sfrdesignerformnewrp
+#, fuzzy
 msgctxt "lr_const.sfrdesignerformnewrp"
 msgid "New report"
-msgstr ""
+msgstr "Laporan baru"
 
 #: lr_const.sfrdesignerformnoframe
 msgid "No frame"
@@ -1279,9 +1285,10 @@ msgid "Preview report"
 msgstr "Tinjau laporan"
 
 #: lr_const.sfrdesignerformrect
+#, fuzzy
 msgctxt "lr_const.sfrdesignerformrect"
 msgid "Rectangle"
-msgstr ""
+msgstr "Kotak"
 
 #: lr_const.sfrdesignerformredo
 msgid "Redo cancelled action"
@@ -1606,9 +1613,10 @@ msgid "Group"
 msgstr "Grup"
 
 #: lr_const.sgroupeditorformcond
+#, fuzzy
 msgctxt "lr_const.sgroupeditorformcond"
 msgid "Condition"
-msgstr ""
+msgstr "Kondisi"
 
 #: lr_const.shidezerovalues
 msgid "Hide zero values"
