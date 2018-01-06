@@ -884,7 +884,7 @@ var
             Flags := Item.Flags;
           Msg[mstr] := Item.Translation;
           // if old item is fuzzy, copy PreviousID too
-          if pos('fuzzy', Item.Flags)<>0 then
+          if pos(sFuzzyFlag, Item.Flags)<>0 then
             PrevMsgID := Item.PreviousID;
           // mark newly translated item fuzzy
           SetFuzzy:=true;
