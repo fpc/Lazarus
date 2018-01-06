@@ -1754,6 +1754,8 @@ begin
     WidgetInfo^.CoreWidget := PGtkWidget(MainView);
     g_object_set_data(Pointer(MainView), 'widgetinfo', WidgetInfo);
     gtk_widget_show_all(PGtkWidget(MainView));
+    if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
+      gtk_widget_hide(PGtkWidget(ScrollWidget));
     SetListCallbacks(PGtkWidget(ScrollWidget), Widgets, Widgets^.WidgetInfo);
   end;
 end;
