@@ -209,6 +209,8 @@ var
     lFilter.setDialogFilter(lFilter.lastSelectedItemIndex);
     lFilter.sizeToFit;
     lFilter.setAutoresizingMask(NSViewWidthSizable);
+    if FileDialog.FilterIndex>=0 then
+      lFilter.selectItemAtIndex(FileDialog.FilterIndex);
 
     // Trying to put controls into the center of the Acc-view
     //  Label must fit in full. Whatever is left is for filter
