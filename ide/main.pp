@@ -88,7 +88,7 @@ uses
   ExtTools,
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg,
-  PublishProjectDlg, ProjectInspector, PackageDefs,
+  PublishProjectDlg, ProjectInspector, PackageDefs, ProjectDescriptors,
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
   // designer

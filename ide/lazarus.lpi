@@ -76,7 +76,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="241">
+    <Units Count="242">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -1392,6 +1392,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="InputhistoryWithSearchOpt"/>
       </Unit240>
+      <Unit241>
+        <Filename Value="projectdescriptors.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ProjectDescriptors"/>
+      </Unit241>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

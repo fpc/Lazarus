@@ -46,7 +46,7 @@ uses
   // IDE
   IDEProcs, DialogProcs, CompilerOptions,
   ProjPackCommon, Project, ProjectDefs, PackageDefs, PackageSystem, PackageEditor,
-  BasePkgManager, LazarusIDEStrConsts,
+  BasePkgManager, LazarusIDEStrConsts, ProjectDescriptors,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
   UsedUnits;

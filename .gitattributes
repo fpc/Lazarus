@@ -7026,6 +7026,7 @@ ide/progresswnd.lfm svneol=native#text/plain
 ide/progresswnd.pas svneol=native#text/pascal
 ide/project.pp svneol=native#text/pascal
 ide/projectdefs.pas svneol=native#text/pascal
+ide/projectdescriptors.pas svneol=native#text/pascal
 ide/projecticon.pas svneol=native#text/pascal
 ide/projectinspector.lfm svneol=native#text/plain
 ide/projectinspector.pas svneol=native#text/pascal
