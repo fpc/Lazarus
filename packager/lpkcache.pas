@@ -358,10 +358,10 @@ begin
   if APackage is TLazPackage then
     fAvailableFiles.Add(TLazPackage(APackage).Filename)
   else if APackage is TLazPackageLink then begin
-    if (OPMInterface<>nil) and (TLazPackageLink(APackage).Origin=ploOnline) and
+    {if (OPMInterface<>nil) and (TLazPackageLink(APackage).Origin=ploOnline) and
         (not OPMInterface.IsPackageAvailable(TLazPackageLink(APackage), 2)) then
       fAvailableFiles.Add(TLazPackageLink(APackage).OPMFileName)
-    else
+    else}
       fAvailableFiles.Add(TLazPackageLink(APackage).LPKFilename);
   end;
 end;
