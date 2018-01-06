@@ -16,7 +16,7 @@ uses
   CompOptsIntf, ProjectIntf, LazIDEIntf,
   // IDE
   frmCustomApplicationOptions, IDEProcs, LazarusIDEStrConsts,
-  ProjectDefs;
+  Project, ProjectDefs, W32Manifest;
 
 type
 
@@ -133,6 +133,8 @@ begin
   AProject.MainFileID:=0;
   AProject.UseAppBundle:=true;
   AProject.UseManifest:=true;
+  AProject.Scaled:=true;
+  (AProject as TProject).ProjResources.XPManifest.DpiAware := xmdaTrue;
   AProject.LoadDefaultIcon;
 
   // create program source
@@ -150,6 +152,7 @@ begin
     +LineEnding
     +'begin'+LineEnding
     +'  RequireDerivedFormResource:=True;'+LineEnding
+    +'  Application.Scaled:=True;'+LineEnding
     +'  Application.Initialize;'+LineEnding
     +'  Application.Run;'+LineEnding
     +'end.'+LineEnding
