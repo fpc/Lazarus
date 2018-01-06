@@ -3795,6 +3795,7 @@ components/pas2js/frmpas2jsnodejsprojectoptions.lfm svneol=native#text/plain
 components/pas2js/frmpas2jsnodejsprojectoptions.pp svneol=native#text/plain
 components/pas2js/frmpas2jswebservers.lfm svneol=native#text/plain
 components/pas2js/frmpas2jswebservers.pp svneol=native#text/plain
+components/pas2js/languages/strpas2jsdesign.po svneol=native#text/plain
 components/pas2js/languages/strpas2jsdesign.pt_BR.po svneol=native#text/plain
 components/pas2js/languages/strpas2jsdesign.ru.po svneol=native#text/plain
 components/pas2js/languages/strpas2jsdesign.uk.po svneol=native#text/plain
