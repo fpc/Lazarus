@@ -229,6 +229,11 @@ begin
   end;
   aBitmap := CreateBitmapFromRes(ImageName);
   Result := 100;
+  if (aBitmap is TBitmap) and (aBitmap.PixelFormat in [pf1bit..pf24bit]) then
+  begin
+    aBitmap.TransparentColor := aBitmap.Canvas.Pixels[0, aBitmap.Height-1];
+    aBitmap.Transparent := True;
+  end;
 end;
 
 class function TIDEImages.CreateImage(ImageSize: Integer; ImageName: String
@@ -310,8 +315,13 @@ begin
       if Grp=nil then
         raise Exception.CreateFmt('TIDEImages.LoadImage: %s not found.', [ImageName]);
       if Grp is TCustomBitmap then
-        Result := List.Add(TCustomBitmap(Grp), nil)
-      else
+      begin
+        if (Grp is TBitmap) and Grp.Transparent and (TBitmap(Grp).TransparentColor<>clNone)
+        and (TBitmap(Grp).PixelFormat in [pf1bit..pf24bit]) then
+          Result := List.AddMasked(TBitmap(Grp), TBitmap(Grp).TransparentColor)
+        else
+          Result := List.Add(TCustomBitmap(Grp), nil);
+      end else
         Result := List.AddIcon(Grp as TCustomIcon);
     finally
       Grp.Free;
@@ -342,13 +352,24 @@ begin
   try
     Result := Bmp;
     ANewInstance := True;
-    {$IFDEF LCLGtk2}
-    Bmp.PixelFormat := pf24bit;
-    Bmp.Canvas.Brush.Color := clBtnFace;
-    {$ELSE}
-    Bmp.PixelFormat := pf32bit;
-    Bmp.Canvas.Brush.Color := TColor($FFFFFFFF);
-    {$ENDIF}
+    if (AImage is TBitmap) and AImage.Transparent then
+    begin
+      Bmp.PixelFormat := pf24bit;
+      Bmp.Canvas.Brush.Color := TBitmap(AImage).TransparentColor;
+      Bmp.TransparentColor := TBitmap(AImage).TransparentColor;
+      Bmp.Transparent := TBitmap(AImage).Transparent;
+    end else
+    begin
+      {$IFDEF LCLGtk2}
+      Bmp.PixelFormat := pf24bit;
+      Bmp.Canvas.Brush.Color := clBtnFace;
+      Bmp.TransparentColor := clBtnFace;
+      Bmp.Transparent := True;
+      {$ELSE}
+      Bmp.PixelFormat := pf32bit;
+      Bmp.Canvas.Brush.Color := TColor($FFFFFFFF);
+      {$ENDIF}
+    end;
     Bmp.SetSize(TargetWidth, TargetHeight);
     Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
     TargetRect := Rect(0, 0, Round(AImage.Width*AFactor), Round(AImage.Height*AFactor));
