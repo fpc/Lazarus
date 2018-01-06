@@ -2621,6 +2621,7 @@ msgid "Variable format ..."
 msgstr "Formato de variable ..."
 
 #: lr_const.svarformcapt
+msgctxt "lr_const.svarformcapt"
 msgid "Variables"
 msgstr "Variables"
 

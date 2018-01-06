@@ -2621,6 +2621,7 @@ msgid "Variable format ..."
 msgstr "Kintamojo formatas…"
 
 #: lr_const.svarformcapt
+msgctxt "lr_const.svarformcapt"
 msgid "Variables"
 msgstr "Kintamieji"
 

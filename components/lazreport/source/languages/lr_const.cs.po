@@ -2637,6 +2637,7 @@ msgid "Variable format ..."
 msgstr "Formát proměnné ..."
 
 #: lr_const.svarformcapt
+msgctxt "lr_const.svarformcapt"
 msgid "Variables"
 msgstr "Proměnné"
 

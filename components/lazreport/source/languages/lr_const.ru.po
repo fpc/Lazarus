@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-09-16 01:08+0300\n"
+"PO-Revision-Date: 2017-12-27 18:03+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 1.8.5\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -2620,6 +2620,7 @@ msgid "Variable format ..."
 msgstr "Формат переменной ..."
 
 #: lr_const.svarformcapt
+msgctxt "lr_const.svarformcapt"
 msgid "Variables"
 msgstr "Переменные"
 

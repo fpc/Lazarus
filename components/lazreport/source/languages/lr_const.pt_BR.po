@@ -21,7 +21,7 @@ msgstr "Agregado"
 
 #: lr_const.sallfiles
 msgid "All files"
-msgstr "Todos os Arquivos"
+msgstr "Todos os arquivos"
 
 #: lr_const.sargument1
 msgid "Argument 1"
@@ -459,7 +459,7 @@ msgstr "&Conteúdo"
 #: lr_const.sdesoptionsformdes
 msgctxt "lr_const.sdesoptionsformdes"
 msgid "Designer"
-msgstr "Editor"
+msgstr "Desenho"
 
 #: lr_const.sdesoptionsformediting
 msgid "&Editing after insert"
@@ -502,7 +502,7 @@ msgstr "&Pixels"
 
 #: lr_const.sdesoptionsformshape
 msgid "S&hape"
-msgstr "S&hape"
+msgstr "P&olígono"
 
 #: lr_const.sdesoptionsformshowband
 msgid "Show band &titles"
@@ -526,7 +526,7 @@ msgstr "Autor"
 
 #: lr_const.sdocbuild
 msgid "Build"
-msgstr "Contrução"
+msgstr "Construção"
 
 #: lr_const.sdocmajor
 msgid "Major"
@@ -1537,7 +1537,7 @@ msgstr "Inserir retângulo arredondado com área sombreada"
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
-msgstr "Inserir objeto Shape"
+msgstr "Inserir objeto polígono"
 
 #: lr_const.sinterpretator
 msgid "Interpretator"
@@ -1565,7 +1565,7 @@ msgstr "Manter razão aspecto"
 
 #: lr_const.skeepchild
 msgid "Keep child together with parent"
-msgstr ""
+msgstr "Manter filhos juntos aos pais"
 
 #: lr_const.slazformfile
 msgid "LazReport form"
@@ -2477,11 +2477,11 @@ msgstr "Diagonal2"
 
 #: lr_const.sshapeformcaption
 msgid "Shape"
-msgstr "Shape"
+msgstr "Polígono"
 
 #: lr_const.sshapeformkind
 msgid "Shape kind"
-msgstr "Forma Shape"
+msgstr "Tipo do polígono"
 
 #: lr_const.sspecval
 msgctxt "lr_const.sspecval"
@@ -2620,6 +2620,7 @@ msgid "Variable format ..."
 msgstr "Formato variável ..."
 
 #: lr_const.svarformcapt
+msgctxt "lr_const.svarformcapt"
 msgid "Variables"
 msgstr "Variáveis"
 
