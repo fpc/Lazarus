@@ -1952,6 +1952,14 @@ msgstr ""
 msgid "Processing Instruction"
 msgstr ""
 
+#: lazarusidestrconsts.dlgforcedpiscalingindesigntime
+msgid "Force DPI scaling in design-time"
+msgstr ""
+
+#: lazarusidestrconsts.dlgforcedpiscalingindesigntimehint
+msgid "When checked the project scaling settings will be ignored - only the form/frame/datamodule Scaled property will be taken into account."
+msgstr ""
+
 #: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
 msgid "The running Lazarus instance cannot accept any files."
 msgstr ""
@@ -4284,9 +4292,10 @@ msgid "The filename \"%s\" is ambiguous, because the package has no default dire
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
+#, fuzzy,badformat
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr ""
+msgstr "La versió màxima %s%s%s no és vàlida.%sSi us plau, utilitzeu el format major.menor.llançament.muntatje%sPer exemple: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
 #, fuzzy
@@ -4295,9 +4304,10 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "La versió màxima és menor que la versió mínima"
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
+#, fuzzy,badformat
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr ""
+msgstr "La versió mínima %s%s%s no és vàlida.%sSi us plau, utilitzeu el format major.menor.llançament.muntatje%sPer exemple: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
 #, fuzzy,badformat
@@ -6611,9 +6621,10 @@ msgid "Previous node can not contain child nodes."
 msgstr "El node anterior no pot contenir nodes fill"
 
 #: lazarusidestrconsts.liscodetoolsdefsprojectdirectory
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodetoolsdefsprojectdirectory"
 msgid "Project directory"
-msgstr ""
+msgstr "Directori del projecte"
 
 #: lazarusidestrconsts.liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
@@ -11183,9 +11194,10 @@ msgid "Select Line Start"
 msgstr "Selecciona al començament de la línia"
 
 #: lazarusidestrconsts.liskmselectpagebottom
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
 msgid "Select Page Bottom"
-msgstr ""
+msgstr "Selecciona la pàgina inferior"
 
 #: lazarusidestrconsts.liskmselectpagetop
 #, fuzzy

@@ -1900,6 +1900,14 @@ msgstr "Düğüm"
 msgid "Processing Instruction"
 msgstr "İşleme Yönergesi"
 
+#: lazarusidestrconsts.dlgforcedpiscalingindesigntime
+msgid "Force DPI scaling in design-time"
+msgstr ""
+
+#: lazarusidestrconsts.dlgforcedpiscalingindesigntimehint
+msgid "When checked the project scaling settings will be ignored - only the form/frame/datamodule Scaled property will be taken into account."
+msgstr ""
+
 #: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
 msgid "The running Lazarus instance cannot accept any files."
 msgstr "Çalışan Lazarus örneği herhangi bir dosyayı kabul edemez."

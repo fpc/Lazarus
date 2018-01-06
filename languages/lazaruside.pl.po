@@ -1977,6 +1977,14 @@ msgstr ""
 msgid "Processing Instruction"
 msgstr ""
 
+#: lazarusidestrconsts.dlgforcedpiscalingindesigntime
+msgid "Force DPI scaling in design-time"
+msgstr ""
+
+#: lazarusidestrconsts.dlgforcedpiscalingindesigntimehint
+msgid "When checked the project scaling settings will be ignored - only the form/frame/datamodule Scaled property will be taken into account."
+msgstr ""
+
 #: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
 msgid "The running Lazarus instance cannot accept any files."
 msgstr ""
@@ -4321,9 +4329,10 @@ msgid "The filename \"%s\" is ambiguous, because the package has no default dire
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr ""
+msgstr "Maksymalny numer wersji \"%s\" jest nieprawidłowy.%sUżyj formatu: major.minor.release.build%sNp.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
 #, fuzzy
@@ -4332,9 +4341,10 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maksymalny numer wersji jest mniejszy niż minimalny."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr ""
+msgstr "Minimalny numer wersji \"%s\" jest nieprawidłowy.%sUżyj formatu: major.minor.release.build%sNp.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
 msgid "The package already has a dependency on the package \"%s\"."
@@ -11203,9 +11213,10 @@ msgid "Select Line Start"
 msgstr "Wybierz do początku linii"
 
 #: lazarusidestrconsts.liskmselectpagebottom
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
 msgid "Select Page Bottom"
-msgstr ""
+msgstr "Wybierz dół strony"
 
 #: lazarusidestrconsts.liskmselectpagetop
 #, fuzzy
