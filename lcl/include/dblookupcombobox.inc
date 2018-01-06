@@ -66,8 +66,23 @@ end;
 
 procedure TDBLookupComboBox.Select;
 begin
-  FDataLink.Modified;
-  inherited Select;
+  FDataLink.OnDataChange := nil;
+  try
+    if FDataLink.Edit then
+    begin
+       FDataLink.Modified;
+       FDataLink.UpdateData;
+       inherited Select;
+    end
+    else
+    begin
+       // if cannot modify, let it reset
+       FDatalink.Reset;
+       DataChange(Self);
+    end;
+  finally
+    FDataLink.OnDataChange := @DataChange;
+  end;
 end;
 
 procedure TDBLookupComboBox.KeyDown(var Key: Word; Shift: TShiftState);
