@@ -1,0 +1,176 @@
+object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
+  Left = 0
+  Height = 372
+  Top = 0
+  Width = 495
+  ClientHeight = 372
+  ClientWidth = 495
+  TabOrder = 0
+  DesignLeft = 473
+  DesignTop = 400
+  object CBWebProject: TCheckBox
+    Left = 12
+    Height = 22
+    Top = 8
+    Width = 252
+    Caption = 'Project is a Web Browser (pas2js) project'
+    OnChange = CBWebProjectChange
+    TabOrder = 0
+  end
+  object LCBProjectHTMLFile: TLabel
+    AnchorSideTop.Control = CBWebProject
+    AnchorSideTop.Side = asrBottom
+    Left = 18
+    Height = 17
+    Top = 36
+    Width = 98
+    BorderSpacing.Top = 6
+    Caption = 'Project HTML file:'
+    ParentColor = False
+  end
+  object CBHTMLFile: TComboBox
+    AnchorSideTop.Control = LCBProjectHTMLFile
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 16
+    Height = 31
+    Top = 59
+    Width = 463
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 16
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object CBMaintainHTMLFile: TCheckBox
+    AnchorSideTop.Control = CBHTMLFile
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 22
+    Top = 90
+    Width = 131
+    Caption = 'Maintain HTML File'
+    OnChange = CBMaintainHTMLFileChange
+    TabOrder = 2
+  end
+  object CBRunOnReady: TCheckBox
+    AnchorSideLeft.Control = CBUseBrowserConsole
+    AnchorSideTop.Control = CBUseBrowserConsole
+    AnchorSideTop.Side = asrBottom
+    Left = 36
+    Height = 22
+    Top = 146
+    Width = 288
+    BorderSpacing.Top = 6
+    Caption = 'Run rtl when all page resources are fully loaded'
+    TabOrder = 3
+  end
+  object SEPort: TSpinEdit
+    AnchorSideLeft.Control = RBStartServerAt
+    AnchorSideTop.Control = RBStartServerAt
+    AnchorSideTop.Side = asrBottom
+    Left = 76
+    Height = 27
+    Top = 226
+    Width = 82
+    BorderSpacing.Left = 32
+    BorderSpacing.Top = 2
+    MaxValue = 65354
+    MinValue = 1024
+    TabOrder = 4
+    Value = 3000
+  end
+  object RBStartServerAt: TRadioButton
+    AnchorSideLeft.Control = CBUseHTTPServer
+    AnchorSideTop.Control = CBUseHTTPServer
+    AnchorSideTop.Side = asrBottom
+    Left = 44
+    Height = 22
+    Top = 202
+    Width = 167
+    BorderSpacing.Left = 32
+    BorderSpacing.Top = 6
+    Caption = 'Start HTTP Server on port'
+    Checked = True
+    OnChange = RBStartServerAtChange
+    TabOrder = 5
+    TabStop = True
+  end
+  object CBServerURL: TComboBox
+    AnchorSideLeft.Control = SEPort
+    AnchorSideTop.Control = RBUseURL
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 76
+    Height = 29
+    Top = 283
+    Width = 403
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 16
+    ItemHeight = 0
+    TabOrder = 6
+  end
+  object RBUseURL: TRadioButton
+    AnchorSideLeft.Control = RBStartServerAt
+    AnchorSideTop.Control = SEPort
+    AnchorSideTop.Side = asrBottom
+    Left = 44
+    Height = 22
+    Top = 255
+    Width = 161
+    BorderSpacing.Top = 2
+    Caption = 'Use this URL to start app'
+    OnChange = RBUseURLChange
+    TabOrder = 7
+  end
+  object CBUseHTTPServer: TCheckBox
+    AnchorSideLeft.Control = CBMaintainHTMLFile
+    AnchorSideTop.Control = CBRunOnReady
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 22
+    Top = 174
+    Width = 183
+    BorderSpacing.Top = 6
+    Caption = 'Project needs a HTTP Server'
+    OnChange = CBUseHTTPServerChange
+    TabOrder = 8
+  end
+  object CBUseBrowserConsole: TCheckBox
+    AnchorSideLeft.Control = CBMaintainHTMLFile
+    AnchorSideTop.Control = CBMaintainHTMLFile
+    AnchorSideTop.Side = asrBottom
+    Left = 36
+    Height = 22
+    Top = 118
+    Width = 312
+    BorderSpacing.Left = 24
+    BorderSpacing.Top = 6
+    Caption = 'Use Browser Console unit to display writeln() output'
+    TabOrder = 9
+  end
+  object BResetRunCommand: TButton
+    Left = 18
+    Height = 25
+    Top = 339
+    Width = 172
+    Anchors = [akLeft, akBottom]
+    Caption = 'Reset Run Command'
+    OnClick = BResetRunCommandClick
+    TabOrder = 10
+  end
+  object BResetCompileCommand: TButton
+    Left = 204
+    Height = 25
+    Top = 339
+    Width = 172
+    Anchors = [akLeft, akBottom]
+    Caption = 'Reset compile Command'
+    OnClick = BResetCompileCommandClick
+    TabOrder = 11
+  end
+end

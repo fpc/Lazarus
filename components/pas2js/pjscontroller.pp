@@ -70,9 +70,13 @@ Type
 Const
   // Custom settings in .lpi
   PJSProjectWebBrowser =  'PasJSWebBrowserProject';
-  PJSProjectURL = 'PasJSURL';
   PJSProjectHTMLFile = 'PasJSHTMLFile';
+  PJSIsProjectHTMLFile = 'PasJSIsProjectHTMLFile';
+  PJSProjectMaintainHTML = 'MaintainHTML';
+  PJSProjectUseBrowserConsole = 'BrowserConsole';
+  PJSProjectRunAtReady = 'RunAtReady';
   PJSProjectPort = 'PasJSPort';
+  PJSProjectURL = 'PasJSURL';
 
 
 implementation

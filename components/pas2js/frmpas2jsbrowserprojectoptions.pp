@@ -80,10 +80,7 @@ procedure TWebBrowserProjectOptionsForm.CBUseHTTPServerChange(Sender: TObject);
     C.Enabled:=CBUseHTTPServer.Checked;
     if C is TRadioButton then
       if not C.Enabled then
-        begin
-        Writeln('Unchecking ',C.Name);
         TRadioButton(C).Checked:=False;
-        end;
   end;
 
 begin
