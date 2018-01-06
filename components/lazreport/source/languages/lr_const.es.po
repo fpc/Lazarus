@@ -1564,6 +1564,10 @@ msgstr "\"%s\" no es un nombre de variable válido."
 msgid "Keep aspect ratio"
 msgstr "Mantener proporciones"
 
+#: lr_const.skeepchild
+msgid "Keep child together with parent"
+msgstr ""
+
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "Formulario de LazReport"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-04-07 01:24+0300\n"
+"PO-Revision-Date: 2017-09-16 01:08+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -215,7 +215,7 @@ msgstr "Файл изображения"
 
 #: lr_const.sbreaked
 msgid "Breaked"
-msgstr "Разорванный"
+msgstr "Разрывать"
 
 #: lr_const.scancel
 msgid "Cancel"
@@ -1563,6 +1563,10 @@ msgstr "\"%s\" не является корректным именем пере�
 msgid "Keep aspect ratio"
 msgstr "Сохранять соотношение сторон"
 
+#: lr_const.skeepchild
+msgid "Keep child together with parent"
+msgstr "Помещать дочернее поле рядом с родительским"
+
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "Форма LazReport"
@@ -2286,7 +2290,7 @@ msgstr "&Вся страница"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr "Выводить дочерний в случае невидимости"
+msgstr "Выводить дочернее поле в случае невидимости"
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
@@ -2486,7 +2490,7 @@ msgstr "Прочие"
 
 #: lr_const.sstretched
 msgid "Stretched"
-msgstr "Растянутое"
+msgstr "Растягивать"
 
 #: lr_const.sstringcategory
 msgid "String"

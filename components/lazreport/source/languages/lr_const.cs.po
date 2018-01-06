@@ -1572,6 +1572,10 @@ msgstr "\"%s\" není validní název proměnné."
 msgid "Keep aspect ratio"
 msgstr "Dodržet poměr stran"
 
+#: lr_const.skeepchild
+msgid "Keep child together with parent"
+msgstr ""
+
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "LazReport form"

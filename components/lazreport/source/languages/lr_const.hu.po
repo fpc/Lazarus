@@ -1563,6 +1563,10 @@ msgstr "A(z) \"%s\" nem érvényes változónév."
 msgid "Keep aspect ratio"
 msgstr "Méretarány megtartása"
 
+#: lr_const.skeepchild
+msgid "Keep child together with parent"
+msgstr ""
+
 #: lr_const.slazformfile
 msgid "LazReport form"
 msgstr "LazReport űrlap"
