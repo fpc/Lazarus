@@ -226,6 +226,7 @@ resourcestring
   sPrintIfSubsetEmpty = 'Print if detail empty';
   sPrintChildIfNotVisible = 'Print child if not visible';
   sBreaked = 'Breaked';
+  sKeepChild = 'Keep child together with parent';
   sPictureCenter = 'Center picture';
   sKeepAspectRatio = 'Keep aspect ratio';
 
