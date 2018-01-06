@@ -142,14 +142,14 @@ object FormEditorOptionsFrame: TFormEditorOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 205
+    Height = 250
     Top = 238
     Width = 769
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'FormEditMiscGroupBox'
-    ClientHeight = 185
+    ClientHeight = 230
     ClientWidth = 765
     TabOrder = 3
     object ShowComponentCaptionsCheckBox: TCheckBox
@@ -312,17 +312,33 @@ object FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideBottom.Control = FormEditMiscGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 166
-      Width = 247
-      Anchors = [akTop, akLeft, akBottom]
+      Height = 19
+      Top = 182
+      Width = 270
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
-      BorderSpacing.Bottom = 6
+      BorderSpacing.Bottom = 3
       Caption = 'FormTitleBarChangesObjectInspectorCheckBox'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 9
+    end
+    object ForceDPIScalingInDesignTimeCheckBox: TCheckBox
+      AnchorSideLeft.Control = FormEditMiscGroupBox
+      AnchorSideTop.Control = FormTitleBarChangesObjectInspectorCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 204
+      Width = 230
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Bottom = 6
+      Caption = 'ForceDPIScalingInDesignTimeCheckBox'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 10
     end
   end
   object GuideLinesGroupBox: TGroupBox

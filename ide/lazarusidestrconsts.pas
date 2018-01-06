@@ -1482,6 +1482,8 @@ resourcestring
   dlgFormTitleBarChangesObjectInspector = 'Change Object Inspector contents on clicking form title bar';
   dlgFormTitleBarChangesObjectInspectorHint = 'Show a form''s properties in Object Inspector '
     +'by clicking on its title bar.';
+  dlgForceDPIScalingInDesignTime = 'Force DPI scaling in design-time';
+  dlgForceDPIScalingInDesignTimeHint = 'When checked the project scaling settings will be ignored - only the form/frame/datamodule Scaled property will be taken into account.';
 
   dlgEnvGrid = 'Grid';
   dlgEnvLGuideLines = 'Guide lines';

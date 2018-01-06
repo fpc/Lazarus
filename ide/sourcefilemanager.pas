@@ -6508,7 +6508,8 @@ begin
         if NewComponent is TCustomDesignControl then
         begin
           DsgControl := TCustomDesignControl(NewComponent);
-          if Project1.Scaled and DsgControl.Scaled and (DsgControl.DesignTimePPI<>Screen.PixelsPerInch) then
+          if (Project1.Scaled or EnvironmentOptions.ForceDPIScalingInDesignTime)
+          and DsgControl.Scaled and (DsgControl.DesignTimePPI<>Screen.PixelsPerInch) then
           begin
             DsgControl.AutoAdjustLayout(lapAutoAdjustForDPI, DsgControl.DesignTimePPI, Screen.PixelsPerInch, 0, 0);
             DesignerProcs.ScaleNonVisual(DsgControl, DsgControl.DesignTimePPI, Screen.PixelsPerInch);

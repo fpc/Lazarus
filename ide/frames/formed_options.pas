@@ -43,6 +43,7 @@ type
 
   TFormEditorOptionsFrame = class(TAbstractIDEOptionsEditor)
     FormTitleBarChangesObjectInspectorCheckBox: TCheckBox;
+    ForceDPIScalingInDesignTimeCheckBox: TCheckBox;
     SwitchToFavoritesOITabCheckBox:TCheckBox;
     CheckPackagesOnFormCreateCheckBox: TCheckBox;
     OpenDesignerOnOpenUnitCheckBox: TCheckBox;
@@ -139,6 +140,8 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
     CheckPackagesOnFormCreateCheckBox.Hint:=dlgCheckPackagesOnFormCreateHint;
     FormTitleBarChangesObjectInspectorCheckBox.Caption:=dlgFormTitleBarChangesObjectInspector;
     FormTitleBarChangesObjectInspectorCheckBox.Hint:=dlgFormTitleBarChangesObjectInspectorHint;
+    ForceDPIScalingInDesignTimeCheckBox.Caption:=dlgForceDPIScalingInDesignTime;
+    ForceDPIScalingInDesignTimeCheckBox.Hint:=dlgForceDPIScalingInDesignTimeHint;
   end;
 begin
   GridGroupBox.Caption := dlgEnvGrid;
@@ -182,6 +185,7 @@ begin
     SwitchToFavoritesOITabCheckBox.Checked := SwitchToFavoritesOITab;
     SwitchToFavoritesOITabCheckBox.Enabled := CreateCompFocusNameCheckBox.Checked;
     FormTitleBarChangesObjectInspectorCheckBox.Checked := FormTitleBarChangesObjectInspector;
+    ForceDPIScalingInDesignTimeCheckBox.Checked := ForceDPIScalingInDesignTime;
   end;
   FLoaded := True;
 end;
@@ -216,6 +220,7 @@ begin
     CreateComponentFocusNameProperty := CreateCompFocusNameCheckBox.Checked;
     SwitchToFavoritesOITab := SwitchToFavoritesOITabCheckBox.Checked;
     FormTitleBarChangesObjectInspector := FormTitleBarChangesObjectInspectorCheckBox.Checked;
+    ForceDPIScalingInDesignTime := ForceDPIScalingInDesignTimeCheckBox.Checked;
   end;
 end;
 
