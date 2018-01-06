@@ -38,19 +38,8 @@
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <CommandLineParams Value="--no-splash-screen"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
-      </local>
       <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default">
-          <local>
-            <CommandLineParams Value="--no-splash-screen"/>
-            <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
-          </local>
-        </Mode0>
-      </Modes>
+      <Modes Count="0"/>
     </RunParams>
     <RequiredPackages Count="7">
       <Item1>
@@ -88,6 +77,7 @@
         <ComponentName Value="OIOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="OI_options"/>
       </Unit1>
       <Unit2>
         <Filename Value="frames/files_options.pas"/>
@@ -99,18 +89,21 @@
         <Filename Value="frames/desktop_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DesktopOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit3>
       <Unit4>
         <Filename Value="frames/window_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="WindowOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit4>
       <Unit5>
         <Filename Value="frames/formed_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormEditorOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit5>
       <Unit6>
@@ -183,6 +176,7 @@
         <Filename Value="frames/codetools_codecreation_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsCodeCreationOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit16>
       <Unit17>
@@ -245,6 +239,7 @@
       <Unit26>
         <Filename Value="projectresources.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ProjectResources"/>
       </Unit26>
       <Unit27>
         <Filename Value="w32manifest.pas"/>
@@ -253,6 +248,7 @@
       <Unit28>
         <Filename Value="projecticon.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ProjectIcon"/>
       </Unit28>
       <Unit29>
         <Filename Value="w32versioninfo.pas"/>
@@ -320,6 +316,7 @@
       <Unit39>
         <Filename Value="../designer/designer.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Designer"/>
       </Unit39>
       <Unit40>
         <Filename Value="../designer/designerprocs.pas"/>
@@ -341,6 +338,7 @@
       <Unit43>
         <Filename Value="customformeditor.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="CustomFormEditor"/>
       </Unit43>
       <Unit44>
         <Filename Value="aboutfrm.pas"/>
@@ -459,6 +457,7 @@
       <Unit61>
         <Filename Value="debugmanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="DebugManager"/>
       </Unit61>
       <Unit62>
         <Filename Value="progresswnd.pas"/>
@@ -516,7 +515,9 @@
         <Filename Value="../packager/frames/package_usage_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PackageUsageOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Package_Usage_Options"/>
       </Unit70>
       <Unit71>
         <Filename Value="../packager/frames/package_description_options.pas"/>
@@ -633,6 +634,7 @@
         <ComponentName Value="CleanPkgDepsDlg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CleanPkgDeps"/>
       </Unit89>
       <Unit90>
         <Filename Value="modematrixopts.pas"/>
@@ -1093,6 +1095,7 @@
       <Unit181>
         <Filename Value="projectdefs.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ProjectDefs"/>
       </Unit181>
       <Unit182>
         <Filename Value="codemacroprompt.pas"/>
@@ -1114,6 +1117,7 @@
         <Filename Value="patheditordlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="PathEditorDlg"/>
       </Unit185>
       <Unit186>
         <Filename Value="fpdocselectinherited.pas"/>
@@ -1261,7 +1265,9 @@
       <Unit215>
         <Filename Value="runparamsopts.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="RunParamsOptsDlg"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="RunParamsOpts"/>
       </Unit215>
       <Unit216>
