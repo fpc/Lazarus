@@ -160,12 +160,16 @@ var
   procedure CreateAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
   const
     INT_MIN_ACCESSORYVIEW_WIDTH = 300;
+    OFS_HRZ = 10;
   var
     lRect: NSRect;
     lText: NSTextField;
     lTextStr: NSString;
     lDialogView: NSView;
     lAccessoryWidth: Integer = INT_MIN_ACCESSORYVIEW_WIDTH;
+    w: Integer;
+    nw: Integer;
+    fw: Integer;
   begin
     // check if the accessory is necessary
     if FileDialog.Filter = '' then Exit;
@@ -181,18 +185,17 @@ var
     accessoryView := NSView.alloc.initWithFrame(lRect);
 
     // "Format:" label
-    lRect := GetNSRect(Round(lAccessoryWidth*0.2), 4, Round(lAccessoryWidth*0.1), 24);
-    lText := NSTextField.alloc.initWithFrame(lRect);
+    lText := NSTextField.alloc.initWithFrame(NSNullRect);
     lText.setBezeled(False);
     lText.setDrawsBackground(False);
     lText.setEditable(False);
     lText.setSelectable(False);
-    lTextStr := NSStringUTF8('Format: ');
+    lTextStr := NSStringUTF8('Format:');
     lText.setStringValue(lTextStr);
+    lText.sizeToFit;
 
     // Combobox
-    lRect := GetNSRect(Round(lAccessoryWidth*0.3), 4, Round(lAccessoryWidth*0.3), 24);
-    lFilter := TCocoaFilterComboBox.alloc.initWithFrame(lRect);
+    lFilter := TCocoaFilterComboBox.alloc.initWithFrame(NSNullRect);
     lFilter.IsOpenDialog := AOpenOwner <> nil;
     if lFilter.IsOpenDialog then
       lFilter.DialogHandle := AOpenOwner
@@ -204,9 +207,37 @@ var
     lFilter.updateFilterList();
     lFilter.lastSelectedItemIndex := FileDialog.FilterIndex-1;
     lFilter.setDialogFilter(lFilter.lastSelectedItemIndex);
+    lFilter.sizeToFit;
+    lFilter.setAutoresizingMask(NSViewWidthSizable);
+
+    // Trying to put controls into the center of the Acc-view
+    //  Label must fit in full. Whatever is left is for filter
+    w:=lAccessoryWidth - OFS_HRZ - OFS_HRZ;
+    fw:=Round(lFilter.frame.size.width);
+    nw:=Round(lText.frame.size.width + fw + OFS_HRZ);
+    if nw>w then begin
+      dec(fw, nw-w);
+      nw:=w;
+    end;
+
+    lText.setFrame(  NSMakeRect(
+       Round((w-nw) / 2+OFS_HRZ)
+       , 0
+       , lText.frame.size.width
+       , lFilter.frame.size.height
+    ));
+
+    lFilter.setFrame( NSMakeRect(
+       lText.frame.origin.x+lText.frame.size.width+OFS_HRZ
+       ,4
+       ,fw
+       ,lFilter.frame.size.height
+      ));
 
     accessoryView.addSubview(lText.autorelease);
     accessoryView.addSubview(lFilter.autorelease);
+
+    lFilter.setAutoresizingMask(NSViewWidthSizable);
 
     lFilter.DialogHandle.setAccessoryView(accessoryView.autorelease);
     lFilter.DialogHandle.setDelegate(lFilter);
