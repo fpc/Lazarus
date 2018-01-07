@@ -45,9 +45,9 @@ uses
   // LazUtils
   LazFileUtils, LazUTF8, Laz2_XMLCfg,
   // IdeIntf
-  CompOptsIntf, ProjectIntf, LazIDEIntf,
+  ProjectIntf, LazIDEIntf,
   // IDE
-  frmCustomApplicationOptions, PublishModule, IDEProcs, LazarusIDEStrConsts;
+  PublishModule, IDEProcs;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
