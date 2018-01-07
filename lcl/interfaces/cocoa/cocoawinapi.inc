@@ -1276,7 +1276,7 @@ begin
       Result := SizeOf(TLogFont);
       FillChar(ALogFont^, SizeOf(ALogFont^), 0);
       ALogFont^.lfFaceName := AFont.Name;
-      ALogFont^.lfHeight := Round( AFont.Size * DPI / 72);
+      ALogFont^.lfHeight := -Round( AFont.Size * DPI / 72);
       Traits := NSFontManager.sharedFontManager.traitsOfFont(AFont.Font);
       if (Traits and NSFontBoldTrait) <> 0 then
         ALogFont^.lfWeight := FW_BOLD
