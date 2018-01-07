@@ -1066,6 +1066,8 @@ var
   f  : NSRect;
   hr : NSRect;
   vr : NSRect;
+  hw : CGFLoat;
+  vw : CGFLoat;
 begin
   if not Assigned(parent) or not Assigned(doc) then Exit;
 
@@ -1074,26 +1076,28 @@ begin
   f.origin.y := 0;
   hr := f;
   vr := f;
-  vr.size.width:=vrt.scrollerWidth;
+  hw := NSScroller.scrollerWidth;
+  vw := NSScroller.scrollerWidth;
+  vr.size.width:=vw;
   vr.origin.x:=f.size.width-vr.size.width;
-  hr.size.height:=hrz.scrollerWidth;
+  hr.size.height:=hw;
 
   if Assigned(hrz) and (not hrz.isHidden) then
   begin
-    f.size.height := f.size.height-hrz.scrollerWidth;
-    f.origin.y := hrz.scrollerWidth;
+    f.size.height := f.size.height - hw;
+    f.origin.y := hw;
 
-    vr.origin.y := hrz.scrollerWidth;
-    vr.size.height := vr.size.height - hrz.scrollerWidth;
+    vr.origin.y := hw;
+    vr.size.height := vr.size.height - hw;
     if Assigned(vrt) and (not vrt.isHidden) then
-      hr.size.width:=hr.size.width-vrt.scrollerWidth;
+      hr.size.width:=hr.size.width-vw;
 
     hrz.setFrame(hr);
   end;
 
   if Assigned(vrt) and (not vrt.isHidden) then
   begin
-    f.size.width := f.size.width-vrt.scrollerWidth;
+    f.size.width := f.size.width-vw;
     vrt.setFrame(vr);
   end;
 
