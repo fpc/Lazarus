@@ -318,6 +318,52 @@ begin
   end;
 end;
 
+function MacKeyToVK(KeyCode: Word): Word; // according to mackeycodes.inc this is risky
+begin
+  case KeyCode of
+    MK_QWERTY_Q: Result := VK_Q;
+    MK_QWERTY_W: Result := VK_W;
+    MK_QWERTY_E: Result := VK_E;
+    MK_QWERTY_R: Result := VK_R;
+    MK_QWERTY_T: Result := VK_T;
+    MK_QWERTY_Y: Result := VK_Y;
+    MK_QWERTY_U: Result := VK_U;
+    MK_QWERTY_I: Result := VK_I;
+    MK_QWERTY_O: Result := VK_O;
+    MK_QWERTY_P: Result := VK_P;
+    MK_QWERTY_A: Result := VK_A;
+    MK_QWERTY_S: Result := VK_S;
+    MK_QWERTY_D: Result := VK_D;
+    MK_QWERTY_F: Result := VK_F;
+    MK_QWERTY_G: Result := VK_G;
+    MK_QWERTY_H: Result := VK_H;
+    MK_QWERTY_J: Result := VK_J;
+    MK_QWERTY_K: Result := VK_K;
+    MK_QWERTY_L: Result := VK_L;
+    MK_QWERTY_Z: Result := VK_Z;
+    MK_QWERTY_X: Result := VK_X;
+    MK_QWERTY_C: Result := VK_C;
+    MK_QWERTY_V: Result := VK_V;
+    MK_QWERTY_B: Result := VK_B;
+    MK_QWERTY_N: Result := VK_N;
+    MK_QWERTY_M: Result := VK_M;
+    //MK_QWERTY_LEFTBR:  Result := VK_;
+    //MK_QWERTY_RIGHTBR: = 30;
+    MK_QWERTY_BACKSLASH: Result := VK_BACK;
+
+    //MK_QWERTY_SEMICOLON: Result := VK_s
+    //MK_QWERTY_QUOTE: = 39;
+    //MK_QWERTY_ENTER: = 36;
+
+    //MK_QWERTY_COMMA: := 43;
+    //MK_QWERTY_PERIOD: := 47;
+    //MK_QWERTY_FRWSLASH: := 44;
+
+  else
+    Result:=VK_UNKNOWN;
+  end;
+end;
+
 
 function TLCLCommonCallback.KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean): Boolean;
 var
@@ -473,6 +519,8 @@ var
           MK_COMMA:  VKKeyCode := VK_OEM_COMMA;
           MK_PERIOD: VKKeyCode := VK_OEM_PERIOD;
           MK_SLASH:  VKKeyCode := VK_OEM_2;
+        else
+          VKKeyCode := MacKeyToVK(KeyCode); // according to mackeycodes.inc this is risky
         end;
       end;
 
