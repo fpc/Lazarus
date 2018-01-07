@@ -1792,7 +1792,11 @@ begin
     end;
 
     if Assigned(bar) then
-      Result := CocoaScrollBarSetScrollInfo(bar, ScrollInfo)
+    begin
+      Result := CocoaScrollBarSetScrollInfo(bar, ScrollInfo);
+      if bar.pageInt >= bar.maxInt-bar.minInt then
+        ShowScrollBar(Handle, SBStyle, false);
+    end
     else
       Result := 0;
 
