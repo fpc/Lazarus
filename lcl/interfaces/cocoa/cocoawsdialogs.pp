@@ -205,7 +205,10 @@ var
     lFilter.setTarget(lFilter);
     lFilter.setAction(objcselector('comboboxAction:'));
     lFilter.updateFilterList();
-    lFilter.lastSelectedItemIndex := FileDialog.FilterIndex-1;
+    if FileDialog.FilterIndex <= 0 then
+      lFilter.lastSelectedItemIndex := 0
+    else
+      lFilter.lastSelectedItemIndex := FileDialog.FilterIndex-1;
     lFilter.setDialogFilter(lFilter.lastSelectedItemIndex);
     lFilter.sizeToFit;
     lFilter.setAutoresizingMask(NSViewWidthSizable);
@@ -554,6 +557,7 @@ var
   lFilterCounter, m: Integer;
   lFilterName, filterext, lCurExtension: String;
   lExtensions: TStringList;
+  i: Integer;
 begin
   lFilterParser := TParseStringList.Create(AFileDialog.Filter, '|');
   try
@@ -570,18 +574,16 @@ begin
           if Masks[m] = '*.*' then
             continue;
 
-          lExtParser := TParseStringList.Create(Masks[m], '.');
-          try
-            if lExtParser.Count > 0 then
-              lCurExtension := lExtParser[lExtParser.Count - 1]
-            else
-              lCurExtension := Masks[m];
+          i:=Pos('.',Masks[m]);
+          // ignore anything before the first dot (see #32069)
+          // storing the extension with leading '.'
+          // the dot is used later with file name comparison
+          if i>0 then
+            lCurExtension := System.Copy(Masks[m], i, length(Masks[m]))
+          else
+            lCurExtension := '.'+Masks[m];
 
-            lExtensions.Add(lowercase(lCurExtension));
-            //lExtensions.Add(uppercase(lCurExtension));
-          finally
-            lExtParser.Free;
-          end;
+          lExtensions.Add(lowercase(lCurExtension));
         end;
         AOutput.AddObject(lFilterName, lExtensions);
       finally
@@ -739,14 +741,13 @@ var
   lExtStr, lCurExtStr: String;
   i: Integer;
   lIsDirectory: Boolean = True;
+  item: NSMenuItem;
 begin
-  Result := False;
-  lPath := url.path;
-  lExt := lPath.pathExtension;
-  lExtStr := NSStringToString(lExt);
-
   // if there are no filters, accept everything
   if NSFilters.count = 0 then Exit(True);
+
+  Result := False;
+  lPath := url.path;
 
   // always allow selecting dirs, otherwise you can't change the directory
   NSFileManager.defaultManager.fileExistsAtPath_isDirectory(lPath, @lIsDirectory);
@@ -755,11 +756,11 @@ begin
   for i := 0 to NSFilters.count - 1 do
   begin
     lCurExt := NSString(NSFilters.objectAtIndex(i));
-    lCurExtStr := NSStringToString(lExt);
-
     // Match *.* to everything
-    if lCurExtStr = '*' then Exit(True);
+    if lCurExt.compare( NSString.stringWithUTF8String('.*') ) = NSOrderedSame then
+      Exit(True);
 
+    lExt := lPath.substringFromIndex( lPath.length - lCurExt.length );
     if lExt.caseInsensitiveCompare(lCurExt) = NSOrderedSame then Exit(True);
   end;
 end;
