@@ -84,7 +84,7 @@ begin
   CalculateSum;
 
   { There is a complication for the labels LblTodayIs which displays the current
-    date, and with LblMoney with displays some amount of money with the currency
+    date, and with LblMoney which displays some amount of money with the currency
     sign.
     Formatting for these data is extracted from the DefaultFormatSettings.
     The resulting strings are encoded in ansi and do not display locale-specific
