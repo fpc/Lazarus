@@ -1079,6 +1079,7 @@ type
     procedure InvalidateFocused;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; virtual;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
+    function IsEmptyRow(ARow: Integer): Boolean;
     function  IsMouseOverCellButton(X,Y: Integer): boolean;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
@@ -5299,7 +5300,19 @@ begin
       end;
 end;
 
-function TCustomGrid.GetDefColWidth: integer;
+function TCustomGrid.IsEmptyRow(ARow: Integer): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i:=FixedCols to ColCount-1 do
+  if GetCells(i, ARow)<>'' then begin
+    Exit;
+  end;
+  Result := True;
+end;
+
+function TCustomGrid.GetDefColWidth: Integer;
 begin
   if FDefColWidth<0 then
   begin
@@ -5310,7 +5323,7 @@ begin
     Result := FDefColWidth;
 end;
 
-function TCustomGrid.GetDefRowHeight: integer;
+function TCustomGrid.GetDefRowHeight: Integer;
 begin
   if FDefRowHeight<0 then
   begin
@@ -7228,18 +7241,6 @@ var
     end;
   end;
 
-  function IsEmptyRow(ARow: Integer): Boolean;
-  var
-    i: Integer;
-  begin
-    Result := False;
-    for i:=FixedCols to ColCount-1 do
-    if GetCells(i, FRow)<>'' then begin
-      Exit;
-    end;
-    Result := True;
-  end;
-
 const
   cBidiMove: array[Boolean] of Integer = (1, -1);
 begin
@@ -7577,18 +7578,6 @@ var
   CInc,RInc: Integer;
   NCol,NRow: Integer;
   SelOk: Boolean;
-
-  function IsEmptyRow(ARow: Integer): Boolean;
-  var
-    i: Integer;
-  begin
-    Result := False;
-    for i:=FixedCols to ColCount-1 do
-    if GetCells(i, FRow)<>'' then begin
-      Exit;
-    end;
-    Result := True;
-  end;
 
 begin
   // Reference
