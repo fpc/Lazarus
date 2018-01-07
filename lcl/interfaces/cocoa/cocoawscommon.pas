@@ -661,6 +661,7 @@ var
       NSAlternateKeyMask : VKKeyCode := VK_MENU;    //option is alt
       NSCommandKeyMask   : VKKeyCode := VK_LWIN;    //meta... map to left Windows Key?
     end;
+    KeyData := CocoaModifiersToKeyState(CurMod);
 
     //diff is now equal to the mask of the bit that changed, so we can determine
     //if this change is a keydown (PrevKeyModifiers didn't have the bit set) or
