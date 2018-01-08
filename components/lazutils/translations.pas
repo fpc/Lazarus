@@ -1682,6 +1682,9 @@ begin
             Item.Context := Item.IdentifierLow;
           Item.Translation := ItemTmp.Translation;
           Item.ModifyFlag(sFuzzyFlag, true);
+          // if old item is fuzzy, copy PreviousID too
+          if pos(sFuzzyFlag, ItemTmp.Flags)<>0 then
+            Item.PreviousID := ItemTmp.PreviousID;
           FModified := True;
         end;
       end;
@@ -1699,7 +1702,7 @@ begin
   APrevStr := '';
   Item := TPOFileItem(FOriginalToItem.Data[Original]);
   if Item<>nil then begin
-    // old item don't have context, add one
+    // old item doesn't have context, add one
     if Item.Context='' then
       Item.Context := Item.IdentifierLow;
 
