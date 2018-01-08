@@ -1967,6 +1967,8 @@ resourcestring
   lisCompletionLongLineHintTypeRightOnly = 'Extend right only';
   lisCompletionLongLineHintTypeLittleLeft = 'Extend some left';
   lisCompletionLongLineHintTypeFullLeft = 'Extend far left';
+  dlgExtendedFilterinCompletionBox = 'Extended filter';
+  dlgHighlightPrefix = 'Highlight prefix';
   lisAutomaticFeatures = 'Completion and Hints';
   lisAutoMarkup = 'Markup and Matches';
 

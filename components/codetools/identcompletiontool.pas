@@ -244,6 +244,7 @@ type
     FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
     FStartContext: TFindContext;
+    FExtendedFilter: Boolean;
     function CompareIdentListItems({%H-}Tree: TAvlTree; Data1, Data2: Pointer): integer;
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure SetSortForHistory(AValue: boolean);
@@ -289,6 +290,7 @@ type
     property StartContext: TFindContext read FStartContext write FStartContext;
     property StartContextPos: TCodeXYPosition
                                    read FStartContextPos write FStartContextPos;
+    property ExtendedFilter: Boolean read FExtendedFilter write FExtendedFilter;
   end;
   
   //----------------------------------------------------------------------------
@@ -616,6 +618,7 @@ procedure TIdentifierList.UpdateFilteredList;
 var
   AnAVLNode: TAvlTreeNode;
   CurItem: TIdentifierListItem;
+  cPriorityCount: Integer;
 begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
   if FFilteredList=nil then FFilteredList:=TFPList.Create;
@@ -625,20 +628,32 @@ begin
   DebugLn(['TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"']);
   {$ENDIF}
   AnAVLNode:=FItems.FindLowest;
+  cPriorityCount := 0;
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
-    if (CurItem.Identifier<>'')
-    and ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
-    then begin
-      {$IFDEF ShowFilteredIdents}
-      DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
-      {$ENDIF}
-      if (length(Prefix)=length(CurItem.Identifier))
-      and (not (iliAtCursor in CurItem.Flags)) then
-        // put exact matches at the beginning
-        FFilteredList.Insert(0,CurItem)
-      else
+    if not CurItem.Identifier.IsEmpty then
+    begin
+      if ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
+      then begin
+        {$IFDEF ShowFilteredIdents}
+        DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
+        {$ENDIF}
+        if (length(Prefix)=length(CurItem.Identifier))
+        and (not (iliAtCursor in CurItem.Flags)) then
+          // put exact matches at the beginning
+          FFilteredList.Insert(0,CurItem)
+        else
+          FFilteredList.Insert(cPriorityCount, CurItem);
+        Inc(cPriorityCount);
+      end;
+      if FExtendedFilter
+      and (IdentifierPos(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier))) > 0)
+      then begin
+        {$IFDEF ShowFilteredIdents}
+        DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
+        {$ENDIF}
         FFilteredList.Add(CurItem);
+      end;
     end;
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;

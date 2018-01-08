@@ -1388,6 +1388,8 @@ type
     fCodeTemplateFileName: String;
     fCTemplIndentToTokenStart: Boolean;
     fAutoDisplayFuncPrototypes: Boolean;
+    fUseExtendedFilter: Boolean;
+    fHighlightCodeCompletionPrefix: Boolean;
 
     // Code Folding
     FUseCodeFolding: Boolean;
@@ -1579,6 +1581,10 @@ type
       read fAutoToolTipSymbTools write fAutoToolTipSymbTools default True; // declaration hints
     property AutoDisplayFunctionPrototypes: Boolean
       read fAutoDisplayFuncPrototypes write fAutoDisplayFuncPrototypes default True;
+    property ExtendedCompletionFilter: Boolean
+      read fUseExtendedFilter write fUseExtendedFilter default True;
+    property HighlightCodeCompletionPrefix: Boolean
+      read fHighlightCodeCompletionPrefix write fHighlightCodeCompletionPrefix default True;
 
   published
     property DbgHintAutoTypeCastClass: Boolean
@@ -4768,6 +4774,10 @@ begin
     FCompletionLongLineHintType := DefaultCompletionLongLineHintType;
     XMLConfig.ReadObject('EditorOptions/CodeTools/CompletionLongLineHintType',
                          Self, Self, 'CompletionLongLineHintType');
+    fUseExtendedFilter :=
+      XMLConfig.GetValue('EditorOptions/CodeTools/ExtendedCompletionFilter', True);
+    fHighlightCodeCompletionPrefix :=
+      XMLConfig.GetValue('EditorOptions/CodeTools/HighlightCodeCompletionPrefix', True);
 
     // Code Folding
     FUseCodeFolding :=
@@ -4961,6 +4971,10 @@ begin
       FCompletionLongLineHintInMSec, 0);
     XMLConfig.WriteObject('EditorOptions/CodeTools/CompletionLongLineHintType',
                          Self, nil, 'CompletionLongLineHintType');
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/ExtendedCompletionFilter'
+      , fUseExtendedFilter, True);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/HighlightCodeCompletionPrefix'
+      , fHighlightCodeCompletionPrefix, True);
 
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',

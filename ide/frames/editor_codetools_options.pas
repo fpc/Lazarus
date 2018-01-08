@@ -49,6 +49,8 @@ type
     ToolTipBevel: TBevel;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoRemoveEmptyMethodsOnSave: TCheckBox;
+    ExtendedFilterCheckBox: TCheckBox;
+    HighlightPrefixCheckBox: TCheckBox;
     procedure AutoDelayTrackBarChange(Sender: TObject);
   public
     function GetTitle: String; override;
@@ -85,6 +87,8 @@ begin
   DbgToolTipAutoCastClass.Caption := lisDebugHintAutoTypeCastClass;
   AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
   AutoDisplayFuncProtoCheckBox.Caption := dlgAutoDisplayFuncProto;
+  ExtendedFilterCheckBox.Caption := dlgExtendedFilterinCompletionBox;
+  HighlightPrefixCheckBox.Caption := dlgHighlightPrefix;
 
   AutoHintAndCompletionDelayLabel.Caption:=lisDelayForHintsAndCompletionBox;
   CompletionDropDownLabel.Caption := lisDelayForCompletionLongLineHint;
@@ -107,6 +111,8 @@ begin
     AutoDelayTrackBar.Position := AutoDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
     AutoDisplayFuncProtoCheckBox.Checked := AutoDisplayFunctionPrototypes;
+    ExtendedFilterCheckBox.Checked := ExtendedCompletionFilter;
+    HighlightPrefixCheckBox.Checked := HighlightCodeCompletionPrefix;
 
     CompletionDropDownHintTrackBar.Position := CompletionLongLineHintInMSec;
     CompletionDropDownHint.ItemIndex := ord(CompletionLongLineHintType);
@@ -126,9 +132,11 @@ begin
     AutoDelayInMSec := AutoDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
     AutoDisplayFunctionPrototypes := AutoDisplayFuncProtoCheckBox.Checked;
+    ExtendedCompletionFilter := ExtendedFilterCheckBox.Checked;
+    HighlightCodeCompletionPrefix := HighlightPrefixCheckBox.Checked;
 
     CompletionLongLineHintInMSec := CompletionDropDownHintTrackBar.Position;
-    CompletionLongLineHintType :=  TSynCompletionLongHintType(CompletionDropDownHint.ItemIndex);
+    CompletionLongLineHintType := TSynCompletionLongHintType(CompletionDropDownHint.ItemIndex);
 
   end;
 end;

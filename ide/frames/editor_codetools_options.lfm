@@ -223,4 +223,30 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Caption = 'AutoDisplayFuncProtoCheckBox'
     TabOrder = 8
   end
+  object ExtendedFilterCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CompletionDropDownHint
+    AnchorSideTop.Side = asrBottom
+    Left = 9
+    Height = 29
+    Top = 435
+    Width = 217
+    BorderSpacing.Left = 9
+    BorderSpacing.Top = 9
+    Caption = 'ExtendedFilterCheckBox'
+    TabOrder = 9
+  end
+  object HighlightPrefixCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ExtendedFilterCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 9
+    Height = 29
+    Top = 473
+    Width = 222
+    BorderSpacing.Left = 9
+    BorderSpacing.Top = 9
+    Caption = 'HighlightPrefixCheckBox'
+    TabOrder = 10
+  end
 end

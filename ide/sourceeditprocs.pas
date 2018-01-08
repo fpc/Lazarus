@@ -250,6 +250,8 @@ var
   SubNode: TCodeTreeNode;
   IsReadOnly: boolean;
   ImageIndex: longint;
+  Prefix: String;
+  PrefixPosition: Integer;
   HintModifiers: TPascalHintModifiers;
   HintModifier: TPascalHintModifier;
   HelperForNode: TCodeTreeNode;
@@ -382,9 +384,20 @@ begin
     else begin
       //DebugLn(['PaintCompletionItem ',x,',',y,' ',s]);
       ACanvas.TextOut(x+1,y,s);
-      inc(x,ACanvas.TextWidth(s));
+      // highlighting the prefix
+      if (EditorOpts.HighlightCodeCompletionPrefix) and not(aCompletion.CurrentString.IsEmpty) then
+      begin
+        PrefixPosition := Pos(LowerCase(aCompletion.CurrentString), LowerCase(s));
+        Prefix := Copy(s, PrefixPosition, Length(aCompletion.CurrentString));
+        if PrefixPosition > 0 then
+          PrefixPosition := ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1));
+        SetFontColor(RGBToColor(200, 13, 13));
+        ACanvas.TextOut(x+PrefixPosition+1,y,Prefix);
+      end;
+      inc(x,ACanvas.TextWidth(s)+1);
       if x>MaxX then exit;
     end;
+    SetFontColor(ForegroundColor);
     ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
 
     if ImageIndex <= 0 then
