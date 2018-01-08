@@ -1619,6 +1619,10 @@ msgstr "Tipus"
 msgid "Focus messages at compilation"
 msgstr ""
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr ""
@@ -2053,9 +2057,10 @@ msgid "Vertical grid step size"
 msgstr "Tamany vertical del pas de la graella"
 
 #: lazarusidestrconsts.dlggroupcodeexplorer
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlggroupcodeexplorer"
 msgid "Code Explorer"
-msgstr ""
+msgstr "Explorador del codi"
 
 #: lazarusidestrconsts.dlggroupcodetools
 msgid "Codetools"
@@ -2152,6 +2157,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
@@ -3663,9 +3672,10 @@ msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Suggeriments pels botons ràpids principals (obre, guarda, ...)"
 
 #: lazarusidestrconsts.dlgsrcedit
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsrcedit"
 msgid "Source Editor"
-msgstr ""
+msgstr "Editor del codi font"
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
@@ -7433,9 +7443,10 @@ msgid "Single"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbarcodeexplorer
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
 msgid "Code Explorer"
-msgstr ""
+msgstr "Explorador del codi"
 
 #: lazarusidestrconsts.liscoolbarcodetemplates
 #, fuzzy
@@ -7540,9 +7551,10 @@ msgid "Please select a toolbar first!"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbarsourceeditor
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
 msgid "Source Editor"
-msgstr ""
+msgstr "Editor del codi font"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"
@@ -9396,9 +9408,11 @@ msgid "Extract"
 msgstr "Extrau"
 
 #: lazarusidestrconsts.lisextractprocedure
+#, fuzzy
+#| msgid "Extract procedure"
 msgctxt "lazarusidestrconsts.lisextractprocedure"
 msgid "Extract Procedure"
-msgstr ""
+msgstr "Extrau el procediment"
 
 #: lazarusidestrconsts.lisextremelyverbose
 msgid "Extremely Verbose"
@@ -10803,9 +10817,11 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+#, fuzzy
+#| msgid "Jump History ..."
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
-msgstr ""
+msgstr "Mostra la història dels salts ..."
 
 #: lazarusidestrconsts.lisjumptoerror
 msgid "Jump to error"
@@ -11213,9 +11229,10 @@ msgid "Select Word Left"
 msgstr "Selecciona una paraula a l'esquerra"
 
 #: lazarusidestrconsts.liskmselectwordright
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectwordright"
 msgid "Select Word Right"
-msgstr ""
+msgstr "Selecciona una paraula a la dreta"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
@@ -11319,9 +11336,10 @@ msgid "View Breakpoints"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
-msgstr ""
+msgstr "Mostra la pila de les crides"
 
 #: lazarusidestrconsts.liskmtoggleviewcodebrowser
 msgid "Toggle view Code Browser"

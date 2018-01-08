@@ -1573,6 +1573,10 @@ msgstr "Típus"
 msgid "Focus messages at compilation"
 msgstr "Üzenetek előtérbe hozása fordításkor"
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Extra karakterköz"
@@ -2095,6 +2099,10 @@ msgstr "Kijelölés betűszíne"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
 msgstr "A kurzor bal oldalán"
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"

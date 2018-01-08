@@ -1573,6 +1573,10 @@ msgstr "Tipo"
 msgid "Focus messages at compilation"
 msgstr "Mensagem focada na compilação"
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Espaço extra carac."
@@ -2095,6 +2099,10 @@ msgstr "Realçar Cor Fonte"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
 msgstr "Esquerda do cursor"
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"

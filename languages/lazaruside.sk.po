@@ -1628,6 +1628,10 @@ msgstr "Typ"
 msgid "Focus messages at compilation"
 msgstr ""
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Dodatočná medzera medzi znakmi"
@@ -2166,6 +2170,10 @@ msgstr "Font zvýraznenia"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
@@ -10942,9 +10950,11 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+#, fuzzy
+#| msgid "Jump History ..."
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
-msgstr ""
+msgstr "Zobraziť Históriu skokov ..."
 
 #: lazarusidestrconsts.lisjumptoerror
 msgid "Jump to error"

@@ -1575,6 +1575,10 @@ msgstr "Tipas"
 msgid "Focus messages at compilation"
 msgstr "Kompiliuojant fokusą perkelti į pranešimus"
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Papildomas tarpas tarp simbolių"
@@ -2097,6 +2101,10 @@ msgstr "Paryškinto šrifto spalva"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
 msgstr "Žymeklio kairėje"
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"

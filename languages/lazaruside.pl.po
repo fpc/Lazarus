@@ -1643,6 +1643,10 @@ msgstr "Typ"
 msgid "Focus messages at compilation"
 msgstr ""
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgctxt "lazarusidestrconsts.dlgextracharspacing"
 msgid "Extra char spacing"
@@ -2182,6 +2186,10 @@ msgstr "Kolor czcionki podświetlenia"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
 msgstr "Po lewej stronie kursora"
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
@@ -11232,9 +11240,10 @@ msgid "Select Word Left"
 msgstr "Wybierz słowo po lewej"
 
 #: lazarusidestrconsts.liskmselectwordright
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectwordright"
 msgid "Select Word Right"
-msgstr ""
+msgstr "Wybierz słowo po prawej"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
@@ -11331,9 +11340,10 @@ msgid "Toggle bookmark 9"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
 msgid "View Assembler"
-msgstr ""
+msgstr "Pokaż okno assemblera"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
 msgid "View Breakpoints"

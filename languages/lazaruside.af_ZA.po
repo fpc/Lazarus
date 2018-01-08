@@ -1571,6 +1571,10 @@ msgstr "Tipe"
 msgid "Focus messages at compilation"
 msgstr ""
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr ""
@@ -2097,6 +2101,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
@@ -6068,9 +6076,10 @@ msgid "Insert paragraph formatting tag"
 msgstr ""
 
 #: lazarusidestrconsts.liscodehelpmainformcaption
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
 msgid "FPDoc Editor"
-msgstr ""
+msgstr "FPDoc Redigeerder"
 
 #: lazarusidestrconsts.liscodehelpnoinheriteddescriptionfound
 msgid "(no inherited description found)"

@@ -1621,6 +1621,10 @@ msgstr "Type"
 msgid "Focus messages at compilation"
 msgstr ""
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr ""
@@ -2057,9 +2061,10 @@ msgid "Vertical grid step size"
 msgstr "Vertikale stapgrootte van raster"
 
 #: lazarusidestrconsts.dlggroupcodeexplorer
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlggroupcodeexplorer"
 msgid "Code Explorer"
-msgstr ""
+msgstr "Codeverkenner"
 
 #: lazarusidestrconsts.dlggroupcodetools
 msgid "Codetools"
@@ -2156,6 +2161,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
+msgstr ""
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
@@ -3669,9 +3678,10 @@ msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Hints voor snelknoppen in hoofdbalk (openen, opslaan, ...)"
 
 #: lazarusidestrconsts.dlgsrcedit
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgsrcedit"
 msgid "Source Editor"
-msgstr ""
+msgstr "Broncode Bewerker"
 
 #: lazarusidestrconsts.dlgsrorigin
 msgid "Origin"
@@ -7459,9 +7469,10 @@ msgid "Single"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbarcodeexplorer
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
 msgid "Code Explorer"
-msgstr ""
+msgstr "Codeverkenner"
 
 #: lazarusidestrconsts.liscoolbarcodetemplates
 #, fuzzy
@@ -7566,9 +7577,10 @@ msgid "Please select a toolbar first!"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbarsourceeditor
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
 msgid "Source Editor"
-msgstr ""
+msgstr "Broncode Bewerker"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"
@@ -9430,9 +9442,11 @@ msgid "Extract"
 msgstr "Destilleer"
 
 #: lazarusidestrconsts.lisextractprocedure
+#, fuzzy
+#| msgid "Extract procedure"
 msgctxt "lazarusidestrconsts.lisextractprocedure"
 msgid "Extract Procedure"
-msgstr ""
+msgstr "Destilleer procedure"
 
 #: lazarusidestrconsts.lisextremelyverbose
 msgid "Extremely Verbose"
@@ -10839,9 +10853,11 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+#, fuzzy
+#| msgid "Jump History ..."
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
-msgstr ""
+msgstr "Toon Springpunt geschiedenis ..."
 
 #: lazarusidestrconsts.lisjumptoerror
 msgid "Jump to error"
@@ -11277,9 +11293,10 @@ msgid "Select Word Left"
 msgstr "Selecteer linker woord"
 
 #: lazarusidestrconsts.liskmselectwordright
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmselectwordright"
 msgid "Select Word Right"
-msgstr ""
+msgstr "Selecteer rechter woord"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
 msgid "Set free Bookmark"
@@ -11405,9 +11422,10 @@ msgid "View Breakpoints"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
-msgstr ""
+msgstr "Toon Call Stack"
 
 #: lazarusidestrconsts.liskmtoggleviewcodebrowser
 msgid "Toggle view Code Browser"

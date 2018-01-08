@@ -1565,6 +1565,10 @@ msgstr "Tyyppi"
 msgid "Focus messages at compilation"
 msgstr "Fokusoi viesti-ikkuna käännettäessä"
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Merkkien välistys"
@@ -2067,6 +2071,10 @@ msgstr "Korostuksen fontin väri"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
 msgstr "Vasemmalla kursorista"
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"

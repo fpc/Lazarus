@@ -1576,6 +1576,10 @@ msgstr "Тип"
 msgid "Focus messages at compilation"
 msgstr "Фокусувати при компіляції на вікні повідомлень"
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Додат. міжсимвольний інтервал"
@@ -2098,6 +2102,10 @@ msgstr "Підсвічувати Колір Шрифту"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
 msgstr "Зліва від курсору"
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"

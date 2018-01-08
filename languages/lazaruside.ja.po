@@ -1572,6 +1572,10 @@ msgstr "タイプ"
 msgid "Focus messages at compilation"
 msgstr "コンパイル時にメッセージをフォーカス"
 
+#: lazarusidestrconsts.dlgextendedfilterincompletionbox
+msgid "Extended filter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "文字間隔の追加分"
@@ -2096,6 +2100,10 @@ msgstr "強調フォント色"
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Cursor"
 msgstr "カーソルの左"
+
+#: lazarusidestrconsts.dlghighlightprefix
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
