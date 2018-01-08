@@ -357,12 +357,12 @@ end;
 
 procedure TLCLWindowCallback.Resize;
 begin
-  boundsDidChange;
+  boundsDidChange(Owner);
 end;
 
 procedure TLCLWindowCallback.Move;
 begin
-  boundsDidChange;
+  boundsDidChange(Owner);
 end;
 
 function TLCLWindowCallback.GetEnabled: Boolean;
@@ -765,7 +765,7 @@ begin
     pool := NSAutoreleasePool.alloc.init;
     //debugln('TCocoaWSCustomForm.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
-    TCocoaWindowContent(AwinControl.Handle).callback.boundsDidChange;
+    TCocoaWindowContent(AwinControl.Handle).callback.boundsDidChange(NSObject(AWinControl.Handle));
     pool.release;
   end;
 end;

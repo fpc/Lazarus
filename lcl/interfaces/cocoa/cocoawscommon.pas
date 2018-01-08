@@ -42,6 +42,7 @@ type
     procedure ScreenMousePos(var Point: NSPoint);
   public
     Owner: NSObject;
+    Frame: NSObject;
     class constructor Create;
     constructor Create(AOwner: NSObject; ATarget: TWinControl); virtual;
     destructor Destroy; override;
@@ -55,8 +56,8 @@ type
     procedure MouseClick; virtual;
     function MouseMove(Event: NSEvent): Boolean; virtual;
     function scrollWheel(Event: NSEvent): Boolean; virtual;
-    procedure frameDidChange; virtual;
-    procedure boundsDidChange; virtual;
+    procedure frameDidChange(sender: id); virtual;
+    procedure boundsDidChange(sender: id); virtual;
     procedure BecomeFirstResponder; virtual;
     procedure ResignFirstResponder; virtual;
     procedure DidBecomeKeyNotification; virtual;
@@ -264,6 +265,7 @@ constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl);
 begin
   inherited Create;
   Owner := AOwner;
+  Frame := AOwner;
   FTarget := ATarget;
   FContext := nil;
   FHasCaret := False;
@@ -984,19 +986,20 @@ begin
   Result := DeliverMessage(Msg) <> 0;
 end;
 
-procedure TLCLCommonCallback.frameDidChange;
+procedure TLCLCommonCallback.frameDidChange(sender: id);
 begin
-  boundsDidChange;
+  boundsDidChange(sender);
 end;
 
-procedure TLCLCommonCallback.boundsDidChange;
+procedure TLCLCommonCallback.boundsDidChange(sender: id);
 var
   NewBounds, OldBounds: TRect;
   PosMsg: TLMWindowPosChanged;
   Resized, Moved, ClientResized: Boolean;
   SizeType: Integer;
 begin
-  NewBounds := Owner.lclFrame;
+  NewBounds := Frame.lclFrame;
+
   //debugln('Newbounds='+ dbgs(newbounds));
   // send window pos changed
   PosMsg.Msg := LM_WINDOWPOSCHANGED;
@@ -1028,10 +1031,11 @@ begin
     (OldBounds.Left <> NewBounds.Left) or
     (OldBounds.Top <> NewBounds.Top);
 
-  ClientResized := False;
+  ClientResized := (sender <> Frame)
+    and not EqualRect(Target.ClientRect, Frame.lclClientFrame);
 
   // update client rect
-  if Resized or Target.ClientRectNeedsInterfaceUpdate  then
+  if ClientResized or Resized or Target.ClientRectNeedsInterfaceUpdate then
   begin
     Target.InvalidateClientRectCache(false);
     ClientResized := True;
@@ -1555,12 +1559,15 @@ class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl
 var
   ctrl : TCocoaCustomControl;
   sl   : TCocoaManualScrollView;
+  lcl  : TLCLCustomControlCallback;
 begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
-  ctrl.callback := TLCLCustomControlCallback.Create(ctrl, AWinControl);
+  lcl := TLCLCustomControlCallback.Create(ctrl, AWinControl);
+  ctrl.callback := lcl;
 
   sl := EmbedInManualScrollView(ctrl);
   sl.callback := ctrl.callback;
+  lcl.frame:=sl;
 
   Result := TLCLIntfHandle(sl);
 end;

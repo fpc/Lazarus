@@ -53,8 +53,8 @@ type
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean;
     function scrollWheel(Event: NSEvent): Boolean;
     // size, pos events
-    procedure frameDidChange;
-    procedure boundsDidChange;
+    procedure frameDidChange(sender: id);
+    procedure boundsDidChange(sender: id);
     // misc events
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
@@ -413,6 +413,9 @@ type
   TCocoaCustomControl = objcclass(NSControl)
   private
     fstr : NSString;
+
+    isdrawing   : integer;
+    faileddraw  : Boolean;
   public
     callback: ICommonCallback;
     procedure dealloc; override;
@@ -512,6 +515,8 @@ type
     function horizontalScroller: NSScroller; message 'horizontalScroller';
     function verticalScroller: NSScroller; message 'verticalScroller';
 
+    function allocHorizontalScroller(avisible: Boolean): NSScroller; message 'allocHorizontalScroller:';
+    function allocVerticalScroller(avisible: Boolean): NSScroller; message 'allocVerticalScroller:';
   end;
 
   TStatusItemData = record
@@ -1050,11 +1055,12 @@ begin
   Result:=fdocumentView;
 end;
 
-procedure allocScroller(parent: TCocoaManualScrollView; var sc: NSScroller; dst: NSRect);
+procedure allocScroller(parent: TCocoaManualScrollView; var sc: NSScroller; dst: NSRect; aVisible: Boolean);
 begin
-  if Assigned(sc) then Exit;
   sc:=TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
   parent.addSubview(sc);
+  sc.setEnabled(true);
+  sc.setHidden(not AVisible);
   TCocoaScrollBar(sc).callback:=parent.callback;
   sc.setTarget(sc);
   sc.setAction(objcselector('actionScrolling:'));
@@ -1111,46 +1117,61 @@ end;
 
 procedure TCocoaManualScrollView.setHasVerticalScroller(doshow: Boolean);
 var
-  r : NSRect;
-  f : NSRect;
-  w : CGFloat;
+  ch : Boolean;
 begin
-  f:=frame;
+  ch := false;
   if doshow then
   begin
-    w := NSScroller.scrollerWidth;
     if not Assigned(fvscroll) then
     begin
-      r:=NSMakeRect(f.size.width-w, 0, w, f.size.height);
-      allocScroller( self, fvscroll, r);
-      fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
+      fvscroll := allocVerticalScroller(true);
+      ch := true;
     end;
-    fvscroll.setHidden(false);
+
+    if fvscroll.isHidden then
+    begin
+      fvscroll.setHidden(false);
+      ch := true;
+    end;
   end
-  else if Assigned(fvscroll) then
+  else if Assigned(fvscroll) and not fvscroll.isHidden then
+  begin
     fvscroll.setHidden(true);
-  updateDocSize(self, fdocumentView, fhscroll, fvscroll);
+    ch := true;
+  end;
+  if ch then
+    updateDocSize(self, fdocumentView, fhscroll, fvscroll);
 end;
 
 procedure TCocoaManualScrollView.setHasHorizontalScroller(doshow: Boolean);
 var
   r : NSRect;
   f : NSRect;
+  ch : Boolean;
 begin
   f:=frame;
+  ch:=false;
   if doshow then
   begin
     if not Assigned(fhscroll) then
     begin
-      r:=NSMakeRect(0, 0, f.size.width, NSScroller.scrollerWidth);
-      allocScroller( self, fhscroll, r);
-      fhscroll.setAutoresizingMask(NSViewWidthSizable);
+      fhscroll := allocHorizontalScroller(true);
+      ch := true;
     end;
-    fhscroll.setHidden(false);
+    if fhscroll.isHidden then
+    begin
+      fhscroll.setHidden(false);
+      ch := true;
+    end;
   end
-  else if Assigned(fhscroll) then
+  else if Assigned(fhscroll) and (not fhscroll.isHidden) then
+  begin
     fhscroll.setHidden(true);
-  updateDocSize(self, fdocumentView, fhscroll, fvscroll);
+    ch := true;
+  end;
+
+  if ch then
+    updateDocSize(self, fdocumentView, fhscroll, fvscroll);
 end;
 
 function TCocoaManualScrollView.hasVerticalScroller: Boolean;
@@ -1171,6 +1192,44 @@ end;
 function TCocoaManualScrollView.verticalScroller: NSScroller;
 begin
   Result:=fvscroll;
+end;
+
+function TCocoaManualScrollView.allocHorizontalScroller(avisible: Boolean): NSScroller;
+var
+  r : NSRect;
+  f : NSRect;
+  w : CGFloat;
+begin
+  if Assigned(fhscroll) then
+    Result := fhscroll
+  else
+  begin
+    f := frame;
+    w := NSScroller.scrollerWidth;
+    r := NSMakeRect(0, 0, f.size.width, NSScroller.scrollerWidth);
+    allocScroller( self, fhscroll, r, avisible);
+    fhscroll.setAutoresizingMask(NSViewWidthSizable);
+    Result := fhscroll;
+  end;
+end;
+
+function TCocoaManualScrollView.allocVerticalScroller(avisible: Boolean): NSScroller;
+var
+  r : NSRect;
+  f : NSRect;
+  w : CGFloat;
+begin
+  if Assigned(fvscroll) then
+    Result := fvscroll
+  else
+  begin
+    f := frame;
+    w := NSScroller.scrollerWidth;
+    r := NSMakeRect(f.size.width-w, 0, w, f.size.height);
+    allocScroller( self, fvscroll, r, avisible);
+    fvscroll.setAutoresizingMask(NSViewHeightSizable or NSViewMinXMargin);
+    Result := fvscroll;
+  end;
 end;
 
 { TCocoaWindowContent }
@@ -2040,13 +2099,13 @@ end;
 procedure TCocoaButton.boundsDidChange(sender: NSNotification);
 begin
   if Assigned(callback) then
-    callback.boundsDidChange;
+    callback.boundsDidChange(self);
 end;
 
 procedure TCocoaButton.frameDidChange(sender: NSNotification);
 begin
   if Assigned(callback) then
-    callback.frameDidChange;
+    callback.frameDidChange(self);
 end;
 
 procedure TCocoaButton.dealloc;
@@ -2512,6 +2571,8 @@ end;
 
 procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
 begin
+  if isdrawing=0 then faileddraw:=false;
+  inc(isdrawing);
   inherited drawRect(dirtyRect);
 
   // Implement Color property
@@ -2520,6 +2581,26 @@ begin
 
   if CheckMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+  dec(isdrawing);
+
+  if (isdrawing=0) and (faileddraw) then
+  begin
+    // Similar to Carbon. Cocoa doesn't welcome changing a framerects during paint event
+    // If such thing happens, the results are pretty much inpredicatable. #32970
+    // TreeView tries to updatedScrollBars during paint event. That sometimes is causing
+    // the frame to be changed (i.e. scroll bar showed or hidden, resized the client rect)
+    // as a result, the final image is shown up-side-down.
+    //
+    // Below is an attempt to prevent graphical artifacts and to redraw
+    // the control again.
+    inherited drawRect(dirtyRect);
+
+    if Assigned(callback) then
+      callback.DrawBackground(NSGraphicsContext.currentContext, bounds, dirtyRect);
+
+    if CheckMainThread and Assigned(callback) then
+      callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+  end;
 end;
 
 function TCocoaCustomControl.lclGetCallback: ICommonCallback;
@@ -2586,9 +2667,13 @@ end;
 
 procedure TCocoaCustomControl.setFrame(aframe: NSRect);
 begin
+  if NSEqualRects(aframe, frame) then Exit;
+  if isdrawing>0 then
+    faileddraw := true;
+
   inherited setFrame(aframe);
   // it actually should come from a notifcation
-  if Assigned(callback) then callback.frameDidChange;
+  if Assigned(callback) then callback.frameDidChange(self);
 end;
 
 procedure TCocoaCustomControl.mouseUp(event: NSEvent);

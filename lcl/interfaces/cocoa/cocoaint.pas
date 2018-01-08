@@ -245,8 +245,7 @@ begin
   if ScrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then
   begin
     if dl<>0 then
-      //bar.setKnobProportion(pg/dl)
-      bar.setKnobProportion(0.5)
+      bar.setKnobProportion(pg/dl)
     else
       bar.setKnobProportion(1);
     bar.pageInt:=pg;

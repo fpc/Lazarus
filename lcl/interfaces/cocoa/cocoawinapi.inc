@@ -1570,10 +1570,12 @@ begin
     if (BarKind = SB_Vert) and Assigned(NSScrollView(obj).verticalScroller) then
       Result:=round(NSScrollView(obj).verticalScroller.frame.size.width)
     else if (BarKind = SB_Horz) and Assigned(NSScrollView(obj).horizontalScroller) then
-      Result:=round(NSScrollView(obj).verticalScroller.frame.size.height);
+      Result:=round(NSScrollView(obj).verticalScroller.frame.size.height)
+    else
+      Result := Round(NSScroller.scrollerWidth);
   end
   else
-    Result := inherited GetScrollBarSize(Handle, BarKind);
+    Result := Round(NSScroller.scrollerWidth);
 end;
 
 function TCocoaWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
@@ -1779,23 +1781,14 @@ begin
   begin
     bar:=nil;
     if SBStyle=SB_Vert then
-    begin
-      // Win32 forced the scrollbar to show up on SetScrollInfo
-      // TCocoaManualScrollView - also allocates on setting visible
-      TCocoaManualScrollView(obj).setHasVerticalScroller(true);
-      bar:=TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller);
-    end
+      bar:= TCocoaScrollBar(TCocoaManualScrollView(obj).allocVerticalScroller(false))
     else if SBStyle=SB_Horz then
-    begin
-      TCocoaManualScrollView(obj).setHasHorizontalScroller(true);
-      bar := TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller);
-    end;
+      bar:= TCocoaScrollBar(TCocoaManualScrollView(obj).allocHorizontalScroller(false));
 
     if Assigned(bar) then
     begin
       Result := CocoaScrollBarSetScrollInfo(bar, ScrollInfo);
-      if bar.pageInt >= bar.maxInt-bar.minInt then
-        ShowScrollBar(Handle, SBStyle, false);
+      ShowScrollBar(Handle, SBStyle, bar.pageInt < bar.maxInt-bar.minInt);
     end
     else
       Result := 0;
