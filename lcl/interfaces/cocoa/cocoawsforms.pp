@@ -381,21 +381,21 @@ class function  TCocoaWSScrollingWinControl.CreateHandle(const AWinControl: TWin
 var
   scrollcon: TCocoaScrollView;
   docview: TCocoaCustomControl;
+  lcl: TLCLCustomControlCallback;
 begin
-  scrollcon := TCocoaScrollView.alloc.lclInitWithCreateParams(AParams);
+  docview := TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams);
+  scrollcon:=EmbedInScrollView(docView);
   scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
   scrollcon.setAutohidesScrollers(True);
   scrollcon.setHasHorizontalScroller(True);
   scrollcon.setHasVerticalScroller(True);
-  scrollcon.contentView.setCopiesOnScroll(False);
+  scrollcon.isCustomRange := true;
 
-  docview := TCocoaCustomControl.alloc.initWithFrame(scrollcon.contentview.frame);
-  docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
-  docview.callback := TLCLCustomControlCallback.Create(docview, AWinControl);
-  scrollcon.callback := docview.callback;
+  lcl := TLCLCustomControlCallback.Create(docview, AWinControl);
+  docview.callback := lcl;
+  scrollcon.callback := lcl;
+  lcl.Frame:=scrollcon;
   scrollcon.setDocumentView(docview);
-  scrollcon.setAutoresizesSubviews(True);
-
   Result := TLCLIntfHandle(scrollcon);
 end;
 

@@ -1772,6 +1772,13 @@ begin
   if obj.isKindOfClass(TCocoaScrollView) then
   begin
     sc:=TCocoaScrollView(obj);
+    if sc.isCustomRange and (ScrollInfo.fMask and SIF_RANGE>0) then begin
+      if SBStyle=SB_Horz then
+        sc.documentView.setFrameSize( NSMakeSize( ScrollInfo.nMax, sc.documentView.frame.size.height ))
+      else if SBStyle=SB_Vert then
+        sc.documentView.setFrameSize( NSMakeSize( sc.documentView.frame.size.width, ScrollInfo.nMax ));
+    end;
+
     NSScrollViewSetScrollInfo(NSScrollView(obj), SBStyle, ScrollInfo);
     FillChar(si, sizeof(si), 0);
     si.cbSize:=sizeof(si);
