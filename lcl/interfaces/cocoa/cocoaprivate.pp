@@ -480,6 +480,7 @@ type
   TCocoaScrollView = objcclass(NSScrollView)
   public
     callback: ICommonCallback;
+    isCustomRange: Boolean;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -487,6 +488,8 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    function lclClientFrame: TRect; override;
+    function lclContentView: NSView; override;
   end;
 
   { TCocoaManualScrollView }
@@ -1889,6 +1892,16 @@ begin
   Result := True;
 end;
 
+function TCocoaScrollView.lclClientFrame: TRect;
+begin
+  NSToLCLRect(contentView.frame, frame.size.height, Result);
+end;
+
+function TCocoaScrollView.lclContentView: NSView;
+begin
+  Result:=documentView;
+end;
+
 function TCocoaScrollView.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -2913,7 +2926,7 @@ begin
   setHidden(AParams.Style and WS_VISIBLE = 0);
 
   if Assigned(p) then
-    p.addSubview(Result);
+    p.lclContentView.addSubview(Result);
   SetViewDefaults(Result);
 end;
 
