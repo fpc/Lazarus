@@ -1681,6 +1681,8 @@ begin
           if Item.Context='' then
             Item.Context := Item.IdentifierLow;
           Item.Translation := ItemTmp.Translation;
+          if Item.Flags='' then
+            Item.Flags := ItemTmp.Flags;
           Item.ModifyFlag(sFuzzyFlag, true);
           // if old item is fuzzy, copy PreviousID too
           if pos(sFuzzyFlag, ItemTmp.Flags)<>0 then
