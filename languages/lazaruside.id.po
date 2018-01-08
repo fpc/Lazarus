@@ -4121,6 +4121,7 @@ msgstr "Tipe Karuhun"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
 #, fuzzy
+#| msgid "A pascal unit must have the extension .pp or .pas"
 msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
 msgid "A Pascal unit must have the extension .pp or .pas"
 msgstr "Unit pascal harus mempunyai ekstensi .pp atau .pas"
@@ -15036,6 +15037,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 #, fuzzy
+#| msgid "Add to project"
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
 msgstr "Tambah ke proyek"

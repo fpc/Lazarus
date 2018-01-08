@@ -685,6 +685,7 @@ msgstr ""
 
 #: objinspstrconsts.oismoveup
 #, fuzzy
+#| msgid "Move Up"
 msgctxt "objinspstrconsts.oismoveup"
 msgid "Move &Up"
 msgstr "Naikan"

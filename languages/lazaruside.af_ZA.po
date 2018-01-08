@@ -14430,6 +14430,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 #, fuzzy
+#| msgid "Add to project"
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
 msgstr "Las by projek"

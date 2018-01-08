@@ -8134,6 +8134,7 @@ msgstr "העתק ללוח הזמני"
 
 #: lazarusidestrconsts.lisdbgbreakpointpropertieshint
 #, fuzzy
+#| msgid "Breakpoint Properties..."
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "הצג תכונות נקודת עצירה"
