@@ -385,7 +385,8 @@ begin
       //DebugLn(['PaintCompletionItem ',x,',',y,' ',s]);
       ACanvas.TextOut(x+1,y,s);
       // highlighting the prefix
-      if (EditorOpts.HighlightCodeCompletionPrefix) and not(aCompletion.CurrentString.IsEmpty) then
+      if (EditorOpts.HighlightCodeCompletionPrefix)
+      and (aCompletion.CurrentString<>'') then
       begin
         PrefixPosition := Pos(LowerCase(aCompletion.CurrentString), LowerCase(s));
         Prefix := Copy(s, PrefixPosition, Length(aCompletion.CurrentString));
