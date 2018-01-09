@@ -489,10 +489,10 @@ begin
   // A handle of TMenu.fItems (TMenuItem) could be recreated.
   // in this case LCL calls TCocoaWSMenuItem.CreateHandle
   // instead of the proper owner.
-  if AMenuItem.Owner is TMainMenu then begin
+  if (AMenuItem.Owner is TMainMenu) and (TMainMenu(AMenuItem.Owner).Items = AMenuItem) then begin
     Result:=TCocoaWSMainMenu.CreateHandle(TMenu(AMenuItem.Owner));
     Exit;
-  end else if AMenuItem.Owner is TMenu then begin
+  end else if (AMenuItem.Owner is TMenu) and (TMenu(AMenuItem.Owner).Items = AMenuItem) then begin
     Result:=TCocoaWSMenu.CreateHandle(TMenu(AMenuItem.Owner));
     Exit;
   end;
