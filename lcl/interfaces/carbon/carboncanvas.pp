@@ -1533,6 +1533,9 @@ begin
 
   if Image = nil then Exit;
 
+  //apply window offset
+  XSrc := XSrc - SrcDC.WindowOfs.X;
+  YSrc := YSrc - SrcDC.WindowOfs.Y;
   DstRect := CGRectMake(X, Y, Abs(Width), Abs(Height));
 
   SubMask := (Msk <> nil)
