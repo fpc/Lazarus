@@ -8,11 +8,9 @@
 {$ifndef cpu32}
   {$WARNING This code is 32bit specific at the moment!}
 {$endif}
-
 // FPC does not always push a copy of r3 - r10 to the stack (24(r1) - 52(r1)
 // The API states that the space must be reserved, if the regiser contents are not placed there.
 {$define NeedRegCopyOnStack}
-
 const
   rtINT = 0;
   rtINT64 = 1;

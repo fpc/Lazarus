@@ -125,16 +125,19 @@ asm
 
   mov rax, [rbp-32] //registers
 
-  bt [rax+72], 8
-  jnc @g5
-  cvtss2sd xmm1,xmm0
-  movd [rsi],xmm1
+  bt [rax+72], 8                 // if atype.basetype  <> btSingle
+  jnc @g5                        //
+  cvtss2sd xmm1,xmm0             // convert single to double  into xmm1
+  mov rdx,[rbp-24]               // @_xmm0  ;rbp -24
+  movsd qword ptr [rdx], xmm1    // save  xmm1 to param _xmm0
+  jmp @g5e                       // exit if atype.basetype  = btSingle
 
-  @g5:
-    mov rdx,[rbp-24]
-    movsd qword ptr [rdx], xmm0
+  @g5:                           //else "if atype.basetype  = btSingle"
+    mov rdx,[rbp-24]             // @_xmm0  ;rbp -24
+    movsd qword ptr [rdx], xmm0  // save  xmm1 to param _xmm0
 
   @g5e:
+
 
   leave
   ret
@@ -214,7 +217,7 @@ asm
   cvtsd2ss xmm0,[rdx]
   jmp @skipxmm0re
   @skipxmm0:
-  movd xmm0,[rdx]
+  movq xmm0,[rdx]            // move quadword to xmm0 from _XMM0
   @skipxmm0re:
 
   // xmm1
@@ -223,7 +226,7 @@ asm
   cvtsd2ss xmm1,[rax+48]
   jmp @skipxmm1re
   @skipxmm1:
-  movd xmm1,[rax+48]
+  movq xmm1,[rax+48]         // move quadword to xmm1 from Registers._XMM1
   @skipxmm1re:
 
   // xmm2
@@ -232,7 +235,7 @@ asm
   cvtsd2ss xmm2,[rax+56]
   jmp @skipxmm2re
   @skipxmm2:
-  movd xmm2,[rax+56]
+  movq xmm2,[rax+56]         // move quadword to xmm2 from Registers._XMM2
   @skipxmm2re:
 
   // xmm3
@@ -241,7 +244,7 @@ asm
   cvtsd2ss xmm3,[rax+64]
   jmp @skipxmm3re
   @skipxmm3:
-  movd xmm3,[rax+64]
+  movq xmm3,[rax+64]         // move quadword to xmm3 from Registers._XMM3
   @skipxmm3re:
 
   // xmm4
@@ -250,7 +253,7 @@ asm
   cvtsd2ss xmm4,[rax+72]
   jmp @skipxmm4re
   @skipxmm4:
-  movd xmm4,[rax+72]
+  movq xmm4,[rax+72]         // move quadword to xmm4 from Registers._XMM4
   @skipxmm4re:
 
   // xmm5
@@ -259,7 +262,7 @@ asm
   cvtsd2ss xmm5,[rax+80]
   jmp @skipxmm5re
   @skipxmm5:
-  movd xmm5,[rax+80]
+  movq xmm5,[rax+80]         // move quadword to xmm5 from Registers._XMM5
   @skipxmm5re:
 
   // xmm6
@@ -268,15 +271,16 @@ asm
   cvtsd2ss xmm6,[rax+88]
   jmp @skipxmm6re
   @skipxmm6:
-  movd xmm6,[rax+88]
+  movq xmm6,[rax+88]         // move quadword to xmm6 from Registers._XMM6
   @skipxmm6re:
+
 // xmm7
   bt [rax+104], 7
   jnc @skipxmm7
   cvtsd2ss xmm7,[rax+96]
   jmp @skipxmm7re
   @skipxmm7:
-  movd xmm7,[rax+96]
+  movq xmm7,[rax+96]         // move quadword to xmm7 from Registers._XMM7
   @skipxmm7re:
 
 
@@ -298,20 +302,21 @@ asm
   // add RSP, 32 // undo the damage done earlier
 
   // copy result back
-  mov rsi, [rbp-16]
+  mov rsi, [rbp-16]          // _RAX parameter
   mov [rsi], RAX
-  mov rsi, [rbp-24]
+  mov rsi, [rbp-24]          // _XMM0 parameter
 
   // xmm0 res
-  mov rax, [rbp-32]
-  bt [rax+104], 8
-  jnc @skipres
-  cvtss2sd xmm1,xmm0
-  movd [rsi],xmm1
-  jmp @skipresre
+  mov rax, [rbp-32]          // Registers parameter
+  bt [rax+104], 8            // if atype.basetype  <> btSingle
+  jnc @skipres               // then goto skipres else begin
+  cvtss2sd xmm1,xmm0         // convert single to double  into xmm1
+  movq [rsi],xmm1            // move quadword to _XMM0
+  jmp @skipresre             // end
   @skipres:
-  movd [rsi],xmm0
+  movq [rsi],xmm0            // move quadword to _XMM0
   @skipresre:
+
 
   pop rdx
   pop r9   // xmm0
@@ -328,8 +333,11 @@ var
   _RAX: IPointer;
 _XMM0: Double;
   Registers: TRegisters;
-{$IFnDEF WINDOWS}
+{$IFNDEF WINDOWS}
   RegUsageFloat: Byte;
+{$ENDIF}
+{$IFDEF FPC}
+  IsConstructor,IsVirtualCons: Boolean;
 {$ENDIF}
   RegUsage: Byte;
   CallData: TPSList;
@@ -504,9 +512,9 @@ _XMM0: Double;
         btRecord,
         btInterface,
         btClass,
-        {$IFnDEF PS_NOWIDESTRING} btUnicodeString, btWideString, btWideChar, {$ENDIF} btU8, btS8, btU16,
+        {$IFNDEF PS_NOWIDESTRING} btUnicodeString, btWideString, btWideChar, {$ENDIF} btU8, btS8, btU16,
         btS16, btU32, btS32, btSingle, btDouble, btExtended, btString, btPChar, btChar, btCurrency
-        {$IFnDEF PS_NOINT64}, bts64{$ENDIF}:
+        {$IFNDEF PS_NOINT64}, bts64{$ENDIF}:
           begin
             Varptr := fvar.Dta;
           end;
@@ -542,7 +550,11 @@ _XMM0: Double;
               Result := True;
               exit;
             end else begin
+            {$IFDEF FPC}
+              StoreReg(IPointer(FVar.Dta));
+            {$ELSE}
               StoreReg(IPointer(FVar.Dta^));
+            {$ENDIF}
             end;
           end;
         btRecord:
@@ -572,9 +584,7 @@ _XMM0: Double;
         btS8: begin
             StoreReg(IPointer(byte(fVar^.dta^)));
           end;
-        {$IFnDEF PS_NOWIDESTRING}
         btWideChar,
-        {$ENDIF}
         btu16, btS16: begin
             StoreReg(IPointer(word(fVar^.dta^)));
           end;
@@ -592,11 +602,9 @@ _XMM0: Double;
           begin
             StoreReg(IPointer(fvar^.dta^));
           end;
-        {$IFnDEF PS_NOWIDESTRING}
         btWideString: begin
             StoreReg(IPointer(fvar^.dta^));
           end;
-        {$ENDIF}
         btUnicodeString: begin
             StoreReg(IPointer(fvar^.dta^));
           end;
@@ -609,17 +617,28 @@ _XMM0: Double;
             FreeMem(p);
           end;
 
-        {$IFnDEF PS_NOINT64}
         bts64:
           begin
             StoreReg(IPointer(int64(fvar^.dta^)));
         end;
-        {$ENDIF}
       end; {case}
     end;
     Result := True;
   end;
 begin
+  {$IFDEF FPC}
+  if (Integer(CallingConv) and 128) <> 0 then begin
+    IsVirtualCons := true;
+    CAllingConv := TPSCallingConvention(Integer(CallingConv) and not 128);
+  end else
+    IsVirtualCons:= false;
+  if (Integer(CallingConv) and 64) <> 0 then begin
+    IsConstructor := true;
+    CAllingConv := TPSCallingConvention(Integer(CallingConv) and not 64);
+  end else
+    IsConstructor := false;
+  {$ENDIF}
+
   InnerfuseCall := False;
   if Address = nil then
     exit; // need address
@@ -629,7 +648,7 @@ begin
   if res <> nil then
     res.VarParam := true;
   try
-{$IFnDEF WINDOWS}
+{$IFNDEF WINDOWS}
     (*_RSI := 0;
     _RDI := 0;
     _XMM4 := 0;
@@ -638,10 +657,17 @@ begin
     _XMM7 := 0;*)
     RegUsageFloat := 0;
 {$ENDIF}
-    _XMM0 := 0;
+  _XMM0 := 0;
   FillChar(Registers, Sizeof(REgisters), 0);
     _RAX := 0;
     RegUsage := 0;
+    {$IF DEFINED (fpc) and (fpc_version >= 3)} // FIX FOR FPC constructor calls
+    if IsConstructor then begin
+      if not GetPtr(rp(Params[0])) then exit; // this goes first
+      DisposePPSVariantIFC(Params[0]);
+      Params.Delete(0);
+    end;
+    {$ENDIF}
     if assigned(_Self) then begin
       StoreReg(IPointer(_Self));
     end;
@@ -652,10 +678,7 @@ begin
    if assigned(res) then begin
     case res^.aType.BaseType of
       {$IFDEF x64_string_result_as_varparameter}
-      btstring, btUnicodeString,
-      {$IFnDEF PS_NOWIDESTRING}
-      btWideString,
-      {$ENDIF}
+      btstring, btWideString, btUnicodeString,
       {$ENDIF}
       btInterface, btArray, btVariant, btStaticArray:
         GetPtr(res);
@@ -672,13 +695,10 @@ begin
       if not GetPtr(rp(Params[I])) then Exit;
     end;
     if assigned(res) then begin
-{$IFnDEF PS_RESBEFOREPARAMETERS}
+{$IFNDEF PS_RESBEFOREPARAMETERS}
       case res^.aType.BaseType of
         {$IFDEF x64_string_result_as_varparameter}
-        btstring, btUnicodeString,
-        {$IFnDEF PS_NOWIDESTRING}
-        btWideString,
-        {$ENDIF}
+        btstring, btWideString, btUnicodeString,
         {$ENDIF}
         btInterface, btArray, btVariant, btStaticArray:
           GetPtr(res);
@@ -717,31 +737,20 @@ begin
         btDouble:      tbtdouble(res.Dta^) := _XMM0;
         btExtended:    tbtextended(res.Dta^) := _XMM0;
         btchar,btU8, btS8:    tbtu8(res.dta^) := _RAX;
-        {$IFnDEF PS_NOWIDESTRING}
-        btWideChar,
-        {$ENDIF}
-        btu16, bts16:  tbtu16(res.dta^) := _RAX;
+        btWideChar, btu16, bts16:  tbtu16(res.dta^) := _RAX;
         btClass : IPointer(res.dta^) := _RAX;
         btu32,bts32:   tbtu32(res.dta^) := _RAX;
         btPChar:       pansichar(res.dta^) := Pansichar(_RAX);
-        {$IFnDEF PS_NOINT64}
         bts64: tbts64(res.dta^) := Int64(_RAX);
         btCurrency:    tbts64(res.Dta^) := Int64(_RAX);
-        {$ENDIF}
         btInterface,
         btVariant,
         {$IFDEF x64_string_result_as_varparameter}
-        {$IFnDEF PS_NOWIDESTRING}
-        btWidestring,
-        {$ENDIF}
-        btUnicodestring, btstring ,
+        btWidestring,btUnicodestring, btstring ,
         {$ENDIF}
         btStaticArray, btArray:;
-        {$IFnDEF x64_string_result_as_varparameter}
-        {$IFnDEF PS_NOWIDESTRING}
-        btWideString,
-        {$ENDIF}
-        btUnicodeString, btstring:  Int64(res.dta^) := _RAX;
+        {$IFNDEF x64_string_result_as_varparameter}
+        btUnicodeString, btWideString, btstring:  Int64(res.dta^) := _RAX;
         {$ENDIF}
       else
         exit;

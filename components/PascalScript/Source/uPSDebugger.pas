@@ -461,7 +461,6 @@ begin
   LastCol := 0;
   if fi <> nil then begin
     pt := fi^.FPositionTable;
-    LastFn := '';
     for i := 0 to pt.Count -1 do
     begin
       r := pt[I];

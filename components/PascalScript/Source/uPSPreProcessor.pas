@@ -317,7 +317,7 @@ end;
 
 function TPSLineInfo.GetLineOffset(I: Integer): Cardinal;
 begin
-  Result := PtrUInt(FLineOffsets[I]);
+  Result := Longint(FLineOffsets[I]);
 end;
 
 function TPSLineInfo.GetLineOffsetCount: Longint;
@@ -708,7 +708,7 @@ begin
   with FCurrentLineInfo.Items[FCurrentLineInfo.Current] do
   begin
     Pos := Pos + FAddedPosition;
-    FLineOffsets.Add(Pointer(PtrUInt(Pos)));
+    FLineOffsets.Add(Pointer(Pos));
   end;
 end;
 

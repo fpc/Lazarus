@@ -19,7 +19,7 @@ procedure RIRegisterTPicture(CL: TPSRuntimeClassImporter);
 procedure RIRegister_Graphics(Cl: TPSRuntimeClassImporter; Streams: Boolean);
 
 implementation
-{$IFnDEF FPC}
+{$IFNDEF FPC}
 uses
   Classes{$IFDEF CLX}, QGraphics{$ELSE}, Windows, Graphics{$ENDIF};
 {$ELSE}
@@ -27,12 +27,12 @@ uses
   Classes, Graphics,LCLType;
 {$ENDIF}
 
-{$IFnDEF CLX}
+{$IFNDEF CLX}
 procedure TFontHandleR(Self: TFont; var T: Longint); begin T := Self.Handle; end;
 procedure TFontHandleW(Self: TFont; T: Longint); begin Self.Handle := T; end;
 {$ENDIF}
 procedure TFontPixelsPerInchR(Self: TFont; var T: Longint); begin T := Self.PixelsPerInch; end;
-procedure TFontPixelsPerInchW(Self: TFont; T: Longint); begin {$IFnDEF FPC} Self.PixelsPerInch := T;{$ENDIF} end;
+procedure TFontPixelsPerInchW(Self: TFont; T: Longint); begin {$IFNDEF FPC} Self.PixelsPerInch := T;{$ENDIF} end;
 procedure TFontStyleR(Self: TFont; var T: TFontStyles); begin T := Self.Style; end;
 procedure TFontStyleW(Self: TFont; T: TFontStyles); begin Self.Style:= T; end;
 
@@ -40,15 +40,15 @@ procedure RIRegisterTFont(Cl: TPSRuntimeClassImporter);
 begin
   with Cl.Add(TFont) do
   begin
-    RegisterConstructor(@TFont.Create, 'CREATE');
-{$IFnDEF CLX}
-    RegisterPropertyHelper(@TFontHandleR, @TFontHandleW, 'HANDLE');
+    RegisterConstructor(@TFont.Create, 'Create');
+{$IFNDEF CLX}
+    RegisterPropertyHelper(@TFontHandleR, @TFontHandleW, 'Handle');
 {$ENDIF}
-    RegisterPropertyHelper(@TFontPixelsPerInchR, @TFontPixelsPerInchW, 'PIXELSPERINCH');
-    RegisterPropertyHelper(@TFontStyleR, @TFontStyleW, 'STYLE');
+    RegisterPropertyHelper(@TFontPixelsPerInchR, @TFontPixelsPerInchW, 'PixelsPerInch');
+    RegisterPropertyHelper(@TFontStyleR, @TFontStyleW, 'Style');
   end;
 end;
-{$IFnDEF CLX}
+{$IFNDEF CLX}
 procedure TCanvasHandleR(Self: TCanvas; var T: Longint); begin T := Self.Handle; end;
 procedure TCanvasHandleW(Self: TCanvas; T: Longint); begin Self.Handle:= T; end;
 {$ENDIF}
@@ -70,37 +70,37 @@ begin
   with Cl.Add(TCanvas) do
   begin
 {$IFDEF FPC}
-    RegisterMethod(@TCanvasArc, 'ARC');
-    RegisterMethod(@TCanvasChord, 'CHORD');
-    RegisterMethod(@TCanvasRectangle, 'RECTANGLE');
-    RegisterMethod(@TCanvasRoundRect, 'ROUNDRECT');
-    RegisterMethod(@TCanvasEllipse, 'ELLIPSE');
-    RegisterMethod(@TCanvasFillRect, 'FILLRECT');
-    RegisterMethod(@TCanvasFloodFill, 'FLOODFILL');
+    RegisterMethod(@TCanvasArc, 'Arc');
+    RegisterMethod(@TCanvasChord, 'Chord');
+    RegisterMethod(@TCanvasRectangle, 'Rectangle');
+    RegisterMethod(@TCanvasRoundRect, 'RoundRect');
+    RegisterMethod(@TCanvasEllipse, 'Ellipse');
+    RegisterMethod(@TCanvasFillRect, 'FillRect');
+    RegisterMethod(@TCanvasFloodFill, 'FloodFill');
 {$ELSE}  
-    RegisterMethod(@TCanvas{$IFnDEF FPC}.{$ENDIF}Arc, 'ARC');
-    RegisterMethod(@TCanvas{$IFnDEF FPC}.{$ENDIF}Chord, 'CHORD');
-    RegisterMethod(@TCanvas{$IFnDEF FPC}.{$ENDIF}Rectangle, 'RECTANGLE');
-    RegisterMethod(@TCanvas{$IFnDEF FPC}.{$ENDIF}RoundRect, 'ROUNDRECT');
-    RegisterMethod(@TCanvas{$IFnDEF FPC}.{$ENDIF}Ellipse, 'ELLIPSE');
-    RegisterMethod(@TCanvas{$IFnDEF FPC}.{$ENDIF}FillRect, 'FILLRECT');
-{$IFnDEF CLX}
-    RegisterMethod(@TCanvas{$IFnDEF FPC}.{$ENDIF}FloodFill, 'FLOODFILL');
+    RegisterMethod(@TCanvas{$IFNDEF FPC}.{$ENDIF}Arc, 'Arc');
+    RegisterMethod(@TCanvas{$IFNDEF FPC}.{$ENDIF}Chord, 'Chord');
+    RegisterMethod(@TCanvas{$IFNDEF FPC}.{$ENDIF}Rectangle, 'Rectangle');
+    RegisterMethod(@TCanvas{$IFNDEF FPC}.{$ENDIF}RoundRect, 'RoundRect');
+    RegisterMethod(@TCanvas{$IFNDEF FPC}.{$ENDIF}Ellipse, 'Ellipse');
+    RegisterMethod(@TCanvas{$IFNDEF FPC}.{$ENDIF}FillRect, 'FillRect');
+{$IFNDEF CLX}
+    RegisterMethod(@TCanvas{$IFNDEF FPC}.{$ENDIF}FloodFill, 'FloodFill');
 {$ENDIF}
 {$ENDIF}
-    RegisterMethod(@TCanvas.Draw, 'DRAW');
+    RegisterMethod(@TCanvas.Draw, 'Draw');
 
-    RegisterMethod(@TCanvas.Lineto, 'LINETO');
-    RegisterMethod(@TCanvas.Moveto, 'MOVETO');
-    RegisterMethod(@TCanvas.Pie, 'PIE');
-    RegisterMethod(@TCanvas.Refresh, 'REFRESH');
-    RegisterMethod(@TCanvas.TextHeight, 'TEXTHEIGHT');
-    RegisterMethod(@TCanvas.TextOut, 'TEXTOUT');
-    RegisterMethod(@TCanvas.TextWidth, 'TEXTWIDTH');
-{$IFnDEF CLX}
-    RegisterPropertyHelper(@TCanvasHandleR, @TCanvasHandleW, 'HANDLE');
+    RegisterMethod(@TCanvas.Lineto, 'LineTo');
+    RegisterMethod(@TCanvas.Moveto, 'MoveTo');
+    RegisterMethod(@TCanvas.Pie, 'Pie');
+    RegisterMethod(@TCanvas.Refresh, 'Refresh');
+    RegisterMethod(@TCanvas.TextHeight, 'TextHeight');
+    RegisterMethod(@TCanvas.TextOut, 'TextOut');
+    RegisterMethod(@TCanvas.TextWidth, 'TextWidth');
+{$IFNDEF CLX}
+    RegisterPropertyHelper(@TCanvasHandleR, @TCanvasHandleW, 'Handle');
 {$ENDIF}
-    RegisterPropertyHelper(@TCanvasPixelsR, @TCanvasPixelsW, 'PIXELS');
+    RegisterPropertyHelper(@TCanvasPixelsR, @TCanvasPixelsW, 'Pixels');
   end;
 end;
 
@@ -113,7 +113,7 @@ procedure RIRegisterTGRAPHICSOBJECT(Cl: TPSRuntimeClassImporter);
 begin
   with Cl.Add(TGRAPHICSOBJECT) do
   begin
-    RegisterPropertyHelper(@TGRAPHICSOBJECTONCHANGE_R, @TGRAPHICSOBJECTONCHANGE_W, 'ONCHANGE');
+    RegisterPropertyHelper(@TGRAPHICSOBJECTONCHANGE_R, @TGRAPHICSOBJECTONCHANGE_W, 'OnChange');
   end;
 end;
 
@@ -121,7 +121,7 @@ procedure RIRegisterTPEN(Cl: TPSRuntimeClassImporter);
 begin
   with Cl.Add(TPEN) do
   begin
-    RegisterConstructor(@TPEN.CREATE, 'CREATE');
+    RegisterConstructor(@TPEN.CREATE, 'Create');
   end;
 end;
 
@@ -129,7 +129,7 @@ procedure RIRegisterTBRUSH(Cl: TPSRuntimeClassImporter);
 begin
   with Cl.Add(TBRUSH) do
   begin
-    RegisterConstructor(@TBRUSH.CREATE, 'CREATE');
+    RegisterConstructor(@TBRUSH.CREATE, 'Create');
   end;
 end;
 
@@ -155,15 +155,15 @@ begin
     RegisterPropertyHelper(@TGraphicWidth_R,@TGraphicWidth_W,'Width');
     RegisterPropertyHelper(@TGraphicOnChange_R,@TGraphicOnChange_W,'OnChange');
 
-    {$IFnDEF PS_MINIVCL}
+    {$IFNDEF PS_MINIVCL}
     RegisterPropertyHelper(@TGraphicModified_R,@TGraphicModified_W,'Modified');
     {$ENDIF}
   end;
 end;
 
 procedure TBitmapTransparentColor_R(Self: TBitmap; var T: TColor); begin T := Self.TransparentColor; end;
-{$IFnDEF CLX}
-{$IFnDEF FPC}
+{$IFNDEF CLX}
+{$IFNDEF FPC}
 procedure TBitmapIgnorePalette_W(Self: TBitmap; const T: Boolean); begin Self.IgnorePalette := T; end;
 procedure TBitmapIgnorePalette_R(Self: TBitmap; var T: Boolean); begin T := Self.IgnorePalette; end;
 {$ENDIF}
@@ -172,7 +172,7 @@ procedure TBitmapPalette_R(Self: TBitmap; var T: HPALETTE); begin T := Self.Pale
 {$ENDIF}
 procedure TBitmapMonochrome_W(Self: TBitmap; const T: Boolean); begin Self.Monochrome := T; end;
 procedure TBitmapMonochrome_R(Self: TBitmap; var T: Boolean); begin T := Self.Monochrome; end;
-{$IFnDEF CLX}
+{$IFNDEF CLX}
 procedure TBitmapHandle_W(Self: TBitmap; const T: HBITMAP); begin Self.Handle := T; end;
 procedure TBitmapHandle_R(Self: TBitmap; var T: HBITMAP); begin T := Self.Handle; end;
 {$ENDIF}
@@ -187,27 +187,27 @@ begin
       RegisterMethod(@TBitmap.SaveToStream, 'SaveToStream');
     end;
     RegisterPropertyHelper(@TBitmapCanvas_R,nil,'Canvas');
-{$IFnDEF CLX}
+{$IFNDEF CLX}
     RegisterPropertyHelper(@TBitmapHandle_R,@TBitmapHandle_W,'Handle');
 {$ENDIF}
 
-    {$IFnDEF PS_MINIVCL}
-{$IFnDEF FPC}
+    {$IFNDEF PS_MINIVCL}
+{$IFNDEF FPC}
     RegisterMethod(@TBitmap.Dormant, 'Dormant');
 {$ENDIF}
     RegisterMethod(@TBitmap.FreeImage, 'FreeImage');
-{$IFnDEF CLX}
+{$IFNDEF CLX}
     RegisterMethod(@TBitmap.LoadFromClipboardFormat, 'LoadFromClipboardFormat');
 {$ENDIF}
     RegisterMethod(@TBitmap.LoadFromResourceName, 'LoadFromResourceName');
     RegisterMethod(@TBitmap.LoadFromResourceID, 'LoadFromResourceID');
-{$IFnDEF CLX}
+{$IFNDEF CLX}
     RegisterMethod(@TBitmap.ReleaseHandle, 'ReleaseHandle');
     RegisterMethod(@TBitmap.ReleasePalette, 'ReleasePalette');
     RegisterMethod(@TBitmap.SaveToClipboardFormat, 'SaveToClipboardFormat');
     RegisterPropertyHelper(@TBitmapMonochrome_R,@TBitmapMonochrome_W,'Monochrome');
     RegisterPropertyHelper(@TBitmapPalette_R,@TBitmapPalette_W,'Palette');
-{$IFnDEF FPC}
+{$IFNDEF FPC}
     RegisterPropertyHelper(@TBitmapIgnorePalette_R,@TBitmapIgnorePalette_W,'IgnorePalette');
 {$ENDIF}
 {$ENDIF}
