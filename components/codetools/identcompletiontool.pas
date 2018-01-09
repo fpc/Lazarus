@@ -631,7 +631,7 @@ begin
   cPriorityCount := 0;
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
-    if not CurItem.Identifier.IsEmpty then
+    if CurItem.Identifier<>'' then
     begin
       if ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
       then begin
