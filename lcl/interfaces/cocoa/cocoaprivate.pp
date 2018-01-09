@@ -2343,7 +2343,9 @@ begin
     // NSTextField doesn't provide keyDown, so emulate it here
     callback.KeyEvent(event, True);
     // keyUp now
-    callback.KeyEvent(event);
+    // by this time the control might have been released and callback cleared
+    if Assigned(callback) then
+      callback.KeyEvent(event);
   end;
   inherited keyUp(event);
 end;
