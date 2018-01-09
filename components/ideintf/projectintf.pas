@@ -16,9 +16,11 @@ unit ProjectIntf;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts, IDEImagesIntf,
-  LazFileCache, LazMethodList, ImgList, Graphics, Contnrs;
+  Classes, SysUtils, Contnrs,
+  FileUtil, LazFileUtils, LazFileCache, LazMethodList, AvgLvlTree,
+  Controls, Forms, ImgList, Graphics,
+  IDEOptionsIntf, NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts,
+  IDEImagesIntf;
 
 const
   FileDescGroupName = 'File';
@@ -587,6 +589,10 @@ type
 
   TLazProjectClass = class of TLazProject;
 
+  TAbstractIDEProjectOptions = class(TAbstractIDEOptions)
+  public
+    function GetProject: TLazProject; virtual; abstract;
+  end;
 
   { TProjectDescriptors }
 

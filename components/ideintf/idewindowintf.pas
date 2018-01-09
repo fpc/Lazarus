@@ -1150,6 +1150,7 @@ procedure TSimpleWindowLayout.LoadFromConfig(Config: TConfigStorage;
 var
   P: string;
 begin
+  if FileVersion=0 then ;
   // set all values to default
   Clear;
   // read settings

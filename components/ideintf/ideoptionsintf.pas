@@ -121,7 +121,6 @@ type
   TAbstractIDEOptionsClass = class of TAbstractIDEOptions;
 
   TAbstractIDEEnvironmentOptions = class(TAbstractIDEOptions);
-  TAbstractIDEProjectOptions = class(TAbstractIDEOptions);
   TAbstractIDEHelpOptions = class(TAbstractIDEEnvironmentOptions);
 
   TOnAddToRecent = procedure(Sender: TObject; AFileName: string; var AAllow: Boolean) of object;

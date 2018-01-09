@@ -680,6 +680,7 @@ type
   public
     constructor Create(AProject: TProject);
     destructor Destroy; override;
+    function GetProject: TLazProject; override;
     class function GetInstance: TAbstractIDEOptions; override;
     class function GetGroupCaption: string; override;
     property Project: TProject read FProject;
@@ -2637,6 +2638,11 @@ end;
 destructor TProjectIDEOptions.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TProjectIDEOptions.GetProject: TLazProject;
+begin
+  Result:=FProject;
 end;
 
 class function TProjectIDEOptions.GetInstance: TAbstractIDEOptions;

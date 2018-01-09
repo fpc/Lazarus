@@ -38,7 +38,6 @@ type
     procedure CheckServerOptions(aEnabled: Boolean);
     function FillFilesCombo(PRJ: TLazProject): Integer;
     procedure ToggleCB(CB: TCheckBox; aEnabled: Boolean);
-
   public
     function GetTitle: string; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;

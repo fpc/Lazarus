@@ -44,7 +44,7 @@ type
     TestMaskEdit: TMaskEdit;
     OpenDialog1: TOpenDialog;
     TestInputPanel: TPanel;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure LoadSampleMasksButtonClick(Sender: TObject);
     procedure SampleMasksListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
