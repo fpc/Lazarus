@@ -645,8 +645,8 @@ begin
         else
           FFilteredList.Insert(cPriorityCount, CurItem);
         Inc(cPriorityCount);
-      end;
-      if FExtendedFilter
+      end
+      else if FExtendedFilter
       and (IdentifierPos(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier))) > 0)
       then begin
         {$IFDEF ShowFilteredIdents}
