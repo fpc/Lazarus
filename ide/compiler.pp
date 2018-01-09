@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, contnrs, strutils,
-  IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, LazUTF8,
+  IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, MacroIntf, LazUTF8,
   IDECmdLine, LazarusIDEStrConsts, CompilerOptions, Project,
   DefineTemplates, TransferMacros, EnvironmentOpts, LazFileUtils;
 

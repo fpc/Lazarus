@@ -42,6 +42,9 @@ var
   // the global IDE values
   IDEMacros: TIDEMacros = nil; // set by the IDE
 
+var
+  ConsoleVerbosity: integer = 0; // 0=normal, -1=quiet, 1=verbose, 2=very verbose
+
 procedure RenameIDEMacroInString(var s: string; const OldName, NewName: string);
 
 implementation

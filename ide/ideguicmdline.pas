@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, math, lazutf8classes, LazConf, LCLProc,
-  FileProcs, LazFileUtils, IDECmdLine;
+  FileProcs, LazFileUtils, MacroIntf, IDECmdLine;
 
 procedure ParseGuiCmdLineParams(var SkipAutoLoadingLastProject,
                                     StartedByStartLazarus,

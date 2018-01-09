@@ -240,9 +240,6 @@ function TProjectPas2JSNodeJSApp.InitProject(AProject: TLazProject ): TModalResu
 var
   MainFile : TLazProjectFile;
   CompOpts : TLazCompilerOptions;
-  RunParams : TAbstractRunParamsOptionsMode;
-  Compiler : String;
-
 begin
   Result:=inherited InitProject(AProject);
 
@@ -250,6 +247,7 @@ begin
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
+  CompOpts:=AProject.LazBuildModes.BuildModes[0].LazCompilerOptions;
   CompOpts.TargetFilename:='project1';
   SetDefaultNodeJSCompileOptions(AProject.LazCompilerOptions);
 

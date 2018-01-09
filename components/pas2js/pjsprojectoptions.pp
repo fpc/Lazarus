@@ -143,8 +143,6 @@ procedure TPas2JSProjectOptionsFrame.BResetRunCommandClick(Sender: TObject);
 
 Var
   Prj : TLazProject;
-  RP : TAbstractRunParamsOptionsMode;
-
 begin
   PRJ:=LazarusIDE.ActiveProject;
   SetDefaultWebRunParams(Prj.RunParameters.GetOrCreate('Default'));
@@ -205,7 +203,7 @@ end;
 Function TPas2JSProjectOptionsFrame.FillFilesCombo(PRJ : TLazProject) : Integer;
 
 Var
-  I,H : integer;
+  I: integer;
   HPF,PF : TLazProjectFile;
   Ext : String;
   L : TStringList;
@@ -245,6 +243,7 @@ Var
   URL : String;
 
 begin
+  if AOptions=nil then ;
   PRJ:=LazarusIDE.ActiveProject;
   HTMLIdx:=FillFilesCombo(PRJ);
   CBWebProject.Checked:=PRJ.CustomData[PJSProjectWebBrowser]='1';
@@ -277,6 +276,7 @@ Var
   end;
 
 begin
+  if AOptions=nil then ;
   PRJ:=LazarusIDE.ActiveProject;
   // Clear everything
   With PRJ.CustomData do

@@ -60,7 +60,7 @@ uses
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
   TransferMacros, DialogProcs, IDETranslations, CompilerOptions, PackageLinks,
-  PackageDefs, ComponentReg;
+  PackageDefs, ComponentReg, MacroIntf;
   
 const
   MakefileCompileVersion = 2;

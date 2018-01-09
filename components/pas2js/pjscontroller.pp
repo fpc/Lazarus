@@ -5,7 +5,8 @@ unit pjscontroller;
 interface
 
 uses
-  Classes, SysUtils, MacroIntf, MacroDefIntf, forms, lazideintf, lazlogger, process ;
+  Classes, SysUtils, MacroIntf, MacroDefIntf, forms, Controls, lazideintf,
+  lazlogger, process ;
 
 Type
 
@@ -51,9 +52,9 @@ Type
   Private
     FOnRefresh: TNotifyEvent;
     FServerInstances: TServerInstanceList;
-    function GetPasJSBrowser(const s: string; const Data: PtrInt; var Abort: boolean): string;
-    function GetPasJSNodeJS(const s: string; const Data: PtrInt; var Abort: boolean): string;
-    function GetProjectURL(const s: string; const Data: PtrInt; var Abort: boolean): string;
+    function GetPasJSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    function GetPasJSNodeJS(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    function GetProjectURL(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function MaybeStartServer(Sender: TObject; var Handled: boolean): TModalResult;
   Public
     Constructor Create;
@@ -150,7 +151,8 @@ begin
   {$IFDEF WINDOWS}
   FProcess.Options:=[poNoConsole];
   {$ENDIF}
-  DebugLN(['Starting server from Directory : ',BaseDir]);
+  if ConsoleVerbosity>=0 then
+    DebugLN(['Starting server from Directory : ',BaseDir]);
   FProcess.CurrentDirectory:=BaseDir;
   try
     FProcess.Execute;
@@ -197,6 +199,8 @@ begin
   IdeMacros.SubstituteMacros(Result);
   if (Result<>'') and not FilenameIsAbsolute(Result) then
     Result:=FindDefaultExecutablePath(Result);
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TPJSController.GetPasJSBrowser] ignoring macro Pas2JSBrowser parameter "',s,'"']);
 end;
 
 function TPJSController.GetPasJSNodeJS(const s: string; const Data: PtrInt; var Abort: boolean): string;
@@ -209,6 +213,8 @@ begin
   IdeMacros.SubstituteMacros(Result);
   if (Result<>'') and not FilenameIsAbsolute(Result) then
     Result:=FindDefaultExecutablePath(Result);
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TPJSController.GetPasJSNodeJS] ignoring macro Pas2JSNodeJS parameter "',s,'"']);
 end;
 
 function TPJSController.GetProjectURL(const s: string; const Data: PtrInt; var Abort: boolean): string;
@@ -217,16 +223,22 @@ Var
   FN : String;
 
 begin
-  DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]]);
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TPJSController.GetProjectURL] ignoring macro Pas2JSProjectURL parameter "',s,'"']);
+
+  if ConsoleVerbosity>0 then
+    DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]]);
   Abort:=LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]<>'1';
   if Abort then
     exit;
-  DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectURL]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectURL]]);
+  if ConsoleVerbosity>0 then
+    DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectURL]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectURL]]);
   Result:=LazarusIDE.ActiveProject.CustomData[PJSProjectURL];
   if (Result='') then
     begin
     FN:=LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile];
-    DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]]);
+    if ConsoleVerbosity>0 then
+      DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectHTMLFile]]);
     if (FN='') then
       FN:=ChangeFileExt(ExtractFileName(LazarusIDE.ActiveProject.ProjectInfoFile),'.html');
     Result:=LazarusIDE.ActiveProject.CustomData[PJSProjectPort];
@@ -240,7 +252,8 @@ begin
       {$ENDIF}
     end;
   Abort:=(Result='');
-  DebugLN(['GetProjectURL : ',Result]);
+  if ConsoleVerbosity>0 then
+    DebugLN(['GetProjectURL : ',Result]);
 end;
 
 function TPJSController.MaybeStartServer(Sender: TObject; var Handled: boolean): TModalResult;
@@ -252,11 +265,15 @@ Var
   aInstance : TServerInstance;
 
 begin
+  Result:=mrOK;
   With LazarusIDE.ActiveProject do
     begin
-    DebugLn(['WebProject:=',CustomData[PJSProjectWebBrowser]]);
-    DebugLn(['ServerPort:=',CustomData[PJSProjectPort]]);
-    DebugLn(['BaseDir:=',ProjectInfoFile]);
+    if ConsoleVerbosity>=0 then
+      begin
+      DebugLn(['WebProject=',CustomData[PJSProjectWebBrowser]]);
+      DebugLn(['ServerPort=',CustomData[PJSProjectPort]]);
+      DebugLn(['BaseDir=',ProjectInfoFile]);
+      end;
     WebProject:=CustomData[PJSProjectWebBrowser]='1';
     ServerPort:=StrToIntDef(CustomData[PJSProjectPort],0);
     BaseDir:=ExtractFilePath(ProjectInfoFile);
@@ -267,10 +284,12 @@ begin
   aInstance:=ServerInstances.FindByPort(ServerPort);
   If Ainstance<>Nil then
     begin
-    Writeln('Have instance running on port ',ServerPort);
+    if ConsoleVerbosity>=0 then
+      Writeln('Have instance running on port ',ServerPort);
     if Not SameFileName(BaseDir,aInstance.BaseDir) then
       begin
-      Writeln('Instance on port ',ServerPort,' serves different directory: ',aInstance.BaseDir);
+      if ConsoleVerbosity>=0 then
+        Writeln('Instance on port ',ServerPort,' serves different directory: ',aInstance.BaseDir);
       // We should ask the user what to do ?
       If aInstance.Running then
         aInstance.StopServer;

@@ -71,14 +71,15 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   // IDE units
-  IDECmdLine, LazarusIDEStrConsts, IDECommands, EditorOptions, EnvironmentOpts,
-  WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs, IDEHelpManager,
-  MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm, etMessagesWnd,
-  etSrcEditMarks, CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
-  editor_general_options, SortSelectionDlg, EncloseSelectionDlg, EncloseIfDef,
-  InvertAssignTool, SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
-  MultiPasteDlg, EditorMacroListViewer, EditorToolbarStatic, editortoolbar_options,
-  InputhistoryWithSearchOpt, FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger;
+  IDECmdLine, LazarusIDEStrConsts, IDECommands, MacroIntf, EditorOptions,
+  EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
+  IDEHelpManager, MacroPromptDlg, TransferMacros, CodeContextForm,
+  SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, CodeMacroPrompt,
+  CodeTemplatesDlg, CodeToolsOptions, editor_general_options, SortSelectionDlg,
+  EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,
+  SourceMarks, CharacterMapDlg, SearchFrm, MultiPasteDlg, EditorMacroListViewer,
+  EditorToolbarStatic, editortoolbar_options, InputhistoryWithSearchOpt,
+  FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger;
 
 type
   TSourceNotebook = class;
