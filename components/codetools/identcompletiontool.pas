@@ -619,6 +619,7 @@ var
   AnAVLNode: TAvlTreeNode;
   CurItem: TIdentifierListItem;
   cPriorityCount: Integer;
+  i: PtrInt;
 begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
   if FFilteredList=nil then FFilteredList:=TFPList.Create;
@@ -633,8 +634,11 @@ begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
     if CurItem.Identifier<>'' then
     begin
-      if ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
-      then begin
+      if FExtendedFilter then
+        i:=IdentifierPos(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
+      else if ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier))) then
+        i:=0;
+      if i=0 then begin
         {$IFDEF ShowFilteredIdents}
         DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
         {$ENDIF}
@@ -646,9 +650,7 @@ begin
           FFilteredList.Insert(cPriorityCount, CurItem);
         Inc(cPriorityCount);
       end
-      else if FExtendedFilter
-      and (IdentifierPos(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier))) > 0)
-      then begin
+      else if i>0 then begin
         {$IFDEF ShowFilteredIdents}
         DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
         {$ENDIF}
