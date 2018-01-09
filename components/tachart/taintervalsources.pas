@@ -143,7 +143,7 @@ const
   DEFAULT_MONTH_FORMAT = 'mm/yyyy';
   DEFAULT_WEEK_FORMAT = 'dd/mm';
   DEFAULT_DAY_FORMAT = 'dd/mm';
-  DEFAULT_HOUR_FORMAT = 'dd hh:00';
+  DEFAULT_HOUR_FORMAT = 'dd hh:nn';
   DEFAULT_MINUTE_FORMAT = 'hh:nn';
   DEFAULT_SECOND_FORMAT = 'nn:ss';
   DEFAULT_MILLISECOND_FORMAT = 'szzz"ms"';
