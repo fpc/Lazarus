@@ -1689,7 +1689,7 @@ begin
     end;
   end;
   // Normal text
-  if (FTextP = nil) and AClipboard.HasFormat(CF_TEXT) then begin
+  if (FTextP = nil) then begin
     Result := true;
     FText := AClipboard.AsText;
     if FText <> '' then begin
