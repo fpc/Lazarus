@@ -2371,7 +2371,7 @@ begin
         if lView.window <> nil then
         begin
           lView.window.makeKeyWindow;
-          lView.window.makeFirstResponder(lView);
+          lView.window.makeFirstResponder(lView.lclContentView);
         end;
       end;
     end;
