@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-01-01 15:24+0200\n"
+"PO-Revision-Date: 2018-01-09 14:59+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1578,7 +1578,7 @@ msgstr "Фокусувати при компіляції на вікні пов�
 
 #: lazarusidestrconsts.dlgextendedfilterincompletionbox
 msgid "Extended filter"
-msgstr ""
+msgstr "Розширений фільтр"
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
@@ -1905,11 +1905,11 @@ msgstr "Інструкція Обробки"
 
 #: lazarusidestrconsts.dlgforcedpiscalingindesigntime
 msgid "Force DPI scaling in design-time"
-msgstr ""
+msgstr "Примусове масштабування ТНД в режимі розробки"
 
 #: lazarusidestrconsts.dlgforcedpiscalingindesigntimehint
 msgid "When checked the project scaling settings will be ignored - only the form/frame/datamodule Scaled property will be taken into account."
-msgstr ""
+msgstr "Якщо позначено, параметри масштабування проекту будуть знехтувані - братимуться до уваги тільки властивості Scaled форми/рамки/модуля даних"
 
 #: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
 msgid "The running Lazarus instance cannot accept any files."
@@ -2105,7 +2105,7 @@ msgstr "Зліва від курсору"
 
 #: lazarusidestrconsts.dlghighlightprefix
 msgid "Highlight prefix"
-msgstr ""
+msgstr "Підсвітити префікс"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
@@ -18788,7 +18788,7 @@ msgstr "Незвичайна назва компілятора. Зазвичай
 
 #: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr "Незвична назва файлу компілятора pas2js. Зазвичай вона починається з pas2js."
+msgstr "Незвична назва файлу компілятора pas2js. Зазвичай вона починається з pas2js.Незвична назва файлу компілятора pas2js. Зазвичай вона починається з pas2js."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
