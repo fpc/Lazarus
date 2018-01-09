@@ -743,6 +743,11 @@ type
   public
     LCLPageControl: TCustomTabControl;
     callback: ICommonCallback;
+
+    lclEnabled: Boolean;
+    // lcl
+    function lclIsEnabled: Boolean; override;
+    procedure lclSetEnabled(AEnabled: Boolean); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclClientFrame: TRect; override;
@@ -751,7 +756,18 @@ type
     procedure tabView_willSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem); message 'tabView:willSelectTabViewItem:';
     procedure tabView_didSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem); message 'tabView:didSelectTabViewItem:';
     procedure tabViewDidChangeNumberOfTabViewItems(TabView: NSTabView); message 'tabViewDidChangeNumberOfTabViewItems:';
-  end;
+    // mouse events
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+end;
 
   TCocoaTabPageView = objcclass(TCocoaCustomControl)
   public
@@ -1454,7 +1470,7 @@ end;
 
 procedure TCocoaPanel.mouseUp(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  if Assigned(callback) then callback.MouseUpDownEvent(event);
     inherited mouseUp(event);
 end;
 
@@ -3569,6 +3585,16 @@ end;
 
 { TCocoaTabControl }
 
+function TCocoaTabControl.lclIsEnabled: Boolean;
+begin
+  Result:=lclEnabled and ((Assigned(superview) and superview.lclIsEnabled) or not Assigned(superview));
+end;
+
+procedure TCocoaTabControl.lclSetEnabled(AEnabled: Boolean);
+begin
+  lclEnabled := AEnabled;
+end;
+
 function TCocoaTabControl.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -3657,6 +3683,68 @@ procedure TCocoaTabControl.tabViewDidChangeNumberOfTabViewItems(
   TabView: NSTabView);
 begin
 
+end;
+
+procedure TCocoaTabControl.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) then callback.MouseUpDownEvent(event);
+  // do not block?
+  inherited mouseDown(event);
+end;
+
+procedure TCocoaTabControl.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) then callback.MouseUpDownEvent(event);
+  // do not block?
+  inherited mouseUp(event);
+end;
+
+procedure TCocoaTabControl.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaTabControl.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaTabControl.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited rightMouseDragged(event);
+end;
+
+procedure TCocoaTabControl.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaTabControl.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaTabControl.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
+end;
+
+procedure TCocoaTabControl.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaTabControl.mouseMoved(event: NSEvent);
+begin
+  if Assigned(callback) then callback.MouseMove(event);
+  inherited mouseMoved(event);
 end;
 
 { TCocoaTableListView }
