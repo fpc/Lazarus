@@ -637,7 +637,9 @@ begin
       if FExtendedFilter then
         i:=IdentifierPos(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
       else if ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier))) then
-        i:=0;
+        i:=0
+      else
+        i:=-1;
       if i=0 then begin
         {$IFDEF ShowFilteredIdents}
         DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
