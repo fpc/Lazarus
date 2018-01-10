@@ -2008,6 +2008,15 @@ begin
   end;
 end;
 
+procedure TCustomImageList.RegisterResolutions(
+  const AResolutionWidths: array of Integer);
+var
+  R: Integer;
+begin
+  for R in AResolutionWidths do
+    GetResolution(R);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Replace
   Params:  Index: the index of the replaceded image

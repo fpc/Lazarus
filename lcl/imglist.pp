@@ -315,8 +315,8 @@ type
     procedure RegisterChanges(Value: TChangeLink);
     procedure StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean = True);
     procedure UnRegisterChanges(Value: TChangeLink);
-    function Resolutions: TCustomImageListResolutionEnumerator;
-    function ResolutionsDesc: TCustomImageListResolutionEnumerator;
+
+    procedure RegisterResolutions(const AResolutionWidths: array of Integer);
   public
     property AllocBy: Integer read FAllocBy write FAllocBy default 4;
     property BlendColor: TColor read FBlendColor write FBlendColor default clNone;
@@ -334,6 +334,8 @@ type
     property ReferenceForImagePPI[AImageWidth, APPI: Integer]: TWSCustomImageListReference read GetReferenceForImagePPI;
     property Resolution[AImageWidth: Integer]: TCustomImageListResolution read GetResolution;
     property ResolutionForImagePPI[AImageWidth, APPI: Integer]: TCustomImageListResolution read GetResolutionForImagePPI;
+    function Resolutions: TCustomImageListResolutionEnumerator;
+    function ResolutionsDesc: TCustomImageListResolutionEnumerator;
     property ShareImages: Boolean read FShareImages write SetShareImages default False;
     property ImageType: TImageType read FImageType write FImageType default itImage;
     property OnGetWidthForImagePPI: TCustomImageListGetWidthForImagePPI read FOnGetWidthForImagePPI write FOnGetWidthForImagePPI;
