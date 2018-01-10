@@ -1608,6 +1608,26 @@ begin
 end;
 
 procedure TCustomImageList.InsertIcon(AIndex: Integer; AIcon: TCustomIcon);
+  function GetBestIndexForSize(AWidth: Integer): Integer;
+  var
+    MaxWidth, MaxWidthI: Integer;
+  begin
+    MaxWidth := 0;
+    for Result := 0 to AIcon.Count-1 do // first try to find the smallest (but bigger) multiple
+    begin
+      AIcon.Current := Result;
+      if (AIcon.Width mod AWidth = 0) then
+        Exit;
+
+      if AIcon.Width>MaxWidth then
+      begin
+        MaxWidth := AIcon.Width;
+        MaxWidthI := Result;
+      end;
+    end;
+
+    Result := MaxWidthI; // just pickup the biggest image
+  end;
 var
   R: TCustomImageListResolution;
   BmpFree: Boolean;
@@ -1619,7 +1639,7 @@ begin
   R := GetResolution(FWidth); // create default resolution if needed - do not create all icon resolutions
   for R in Resolutions do
   begin
-    AIcon.Current := AIcon.GetBestIndexForSize(Size(R.Width, R.Height));
+    AIcon.Current := GetBestIndexForSize(R.Width);
     if AIcon.Masked then
       msk := AIcon.MaskHandle
     else
