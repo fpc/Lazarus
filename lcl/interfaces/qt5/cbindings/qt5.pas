@@ -78,11 +78,7 @@ type
   QtHandle = LongWord;
   {$ENDIF}
   PQReal = ^QReal;
-  {$ifdef CPUARM}
-    QReal = single;
-  {$else}
-    QReal = double;
-  {$endif}
+  QReal = double;
 
   PQRgb = ^QRgb;
   QRgb = longword;
