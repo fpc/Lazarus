@@ -212,6 +212,7 @@ begin
       mtConfirmation, [mbYes, mbNo], 0) = mrYes ) then begin
         try
           BeginFormUpdate;
+          SelectInObjectInspector(True, True);
           Collection.Clear;
         finally
           RefreshPropertyValues;
