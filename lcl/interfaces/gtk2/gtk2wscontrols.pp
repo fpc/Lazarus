@@ -43,16 +43,16 @@ uses
 
 type
 
-  { TGtk2WSDragImageList }
+  { TGtk2WSDragImageListResolution }
 
-  TGtk2WSDragImageList = class(TWSDragImageList)
+  TGtk2WSDragImageListResolution = class(TWSDragImageListResolution)
   published
-    class function BeginDrag(const ADragImageList: TDragImageList; {%H-}Window: HWND; AIndex, X, Y: Integer): Boolean; override;
-    class function DragMove(const {%H-}ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
-    class procedure EndDrag(const {%H-}ADragImageList: TDragImageList); override;
-    class function HideDragImage(const {%H-}ADragImageList: TDragImageList;
+    class function BeginDrag(const ADragImageList: TDragImageListResolution; {%H-}Window: HWND; AIndex, X, Y: Integer): Boolean; override;
+    class function DragMove(const {%H-}ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean; override;
+    class procedure EndDrag(const {%H-}ADragImageList: TDragImageListResolution); override;
+    class function HideDragImage(const {%H-}ADragImageList: TDragImageListResolution;
       {%H-}ALockedWindow: HWND; {%H-}DoUnLock: Boolean): Boolean; override;
-    class function ShowDragImage(const {%H-}ADragImageList: TDragImageList;
+    class function ShowDragImage(const {%H-}ADragImageList: TDragImageListResolution;
       {%H-}ALockedWindow: HWND; X, Y: Integer; {%H-}DoLock: Boolean): Boolean; override;
   end;
 
@@ -375,10 +375,10 @@ begin
     Result:=nil;
 end;
 
-{ TGtk2WSDragImageList }
+{ TGtk2WSDragImageListResolution }
 
-class function TGtk2WSDragImageList.BeginDrag(
-  const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer
+class function TGtk2WSDragImageListResolution.BeginDrag(
+  const ADragImageList: TDragImageListResolution; Window: HWND; AIndex, X, Y: Integer
   ): Boolean;
 var
   ABitmap: TBitmap;
@@ -431,27 +431,27 @@ begin
   ABitmap.Free;
 end;
 
-class function TGtk2WSDragImageList.DragMove(
-  const ADragImageList: TDragImageList; X, Y: Integer): Boolean;
+class function TGtk2WSDragImageListResolution.DragMove(
+  const ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean;
 begin
   Result := Gtk2Widgetset.DragImageList_DragMove(X, Y);
 end;
 
-class procedure TGtk2WSDragImageList.EndDrag(
-  const ADragImageList: TDragImageList);
+class procedure TGtk2WSDragImageListResolution.EndDrag(
+  const ADragImageList: TDragImageListResolution);
 begin
   Gtk2Widgetset.DragImageList_EndDrag;
 end;
 
-class function TGtk2WSDragImageList.HideDragImage(
-  const ADragImageList: TDragImageList; ALockedWindow: HWND; DoUnLock: Boolean
+class function TGtk2WSDragImageListResolution.HideDragImage(
+  const ADragImageList: TDragImageListResolution; ALockedWindow: HWND; DoUnLock: Boolean
   ): Boolean;
 begin
   Result := Gtk2Widgetset.DragImageList_SetVisible(False);
 end;
 
-class function TGtk2WSDragImageList.ShowDragImage(
-  const ADragImageList: TDragImageList; ALockedWindow: HWND; X, Y: Integer;
+class function TGtk2WSDragImageListResolution.ShowDragImage(
+  const ADragImageList: TDragImageListResolution; ALockedWindow: HWND; X, Y: Integer;
   DoLock: Boolean): Boolean;
 begin
   Result := Gtk2Widgetset.DragImageList_DragMove(X, Y) and Gtk2Widgetset.DragImageList_SetVisible(True);

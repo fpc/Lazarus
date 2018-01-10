@@ -2163,7 +2163,7 @@ begin
 end;
 
 class procedure TGtk2WSCustomListView.SetImageList(const ALV: TCustomListView;
-  const AList: TListViewImageList; const AValue: TCustomImageList);
+  const AList: TListViewImageList; const AValue: TCustomImageListResolution);
 var
   Widgets: PTVWidgets;
   BitImage: TBitmap;

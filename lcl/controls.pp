@@ -336,18 +336,47 @@ type
 
   { TDragImageList }
 
+  TDragImageList = class;
+
+  TDragImageListResolution = class(TCustomImageListResolution)
+  private
+    FDragging: Boolean;
+    FOldCursor: TCursor;
+    FLastDragPos: TPoint;
+    FLockedWindow: HWND;// window where drag started and locked via DragLock, invalid=NoLockedWindow=High(PtrInt)
+
+    function GetImageList: TDragImageList;
+  protected
+    class procedure WSRegisterClass; override;
+
+    property ImageList: TDragImageList read GetImageList;
+  public
+    constructor Create(TheOwner: TComponent); override;
+
+    function BeginDrag(Window: HWND; X, Y: Integer): Boolean;
+    function DragLock(Window: HWND; XPos, YPos: Integer): Boolean;
+    function DragMove(X, Y: Integer): Boolean;
+    procedure DragUnlock;
+    function EndDrag: Boolean;
+    procedure HideDragImage;
+    procedure ShowDragImage;
+
+    property Dragging: Boolean read FDragging;
+  end;
+
   TDragImageList = class(TCustomImageList)
   private
     FDragCursor: TCursor;
-    FDragging: Boolean;
     FDragHotspot: TPoint;
-    FOldCursor: TCursor;
     FImageIndex: Integer;
-    FLastDragPos: TPoint;
-    FLockedWindow: HWND;// window where drag started and locked via DragLock, invalid=NoLockedWindow=High(PtrInt)
     procedure SetDragCursor(const AValue: TCursor);
+    function GetResolution(AImageWidth: Integer): TDragImageListResolution;
+    function GetResolutionForImagePPI(AImageWidth,
+      APPI: Integer): TDragImageListResolution;
+    function GetDragging: Boolean;
+    function GetDraggingResolution: TDragImageListResolution;
   protected
-    class procedure WSRegisterClass; override;
+    function GetResolutionClass: TCustomImageListResolutionClass; override;
     procedure Initialize; override;
   public
     function BeginDrag(Window: HWND; X, Y: Integer): Boolean;
@@ -361,7 +390,10 @@ type
     procedure ShowDragImage;
     property DragCursor: TCursor read FDragCursor write SetDragCursor;
     property DragHotspot: TPoint read FDragHotspot write FDragHotspot;
-    property Dragging: Boolean read FDragging;
+    property Dragging: Boolean read GetDragging;
+    property DraggingResolution: TDragImageListResolution read GetDraggingResolution;
+    property Resolution[AImageWidth: Integer]: TDragImageListResolution read GetResolution;
+    property ResolutionForImagePPI[AImageWidth, APPI: Integer]: TDragImageListResolution read GetResolutionForImagePPI;
   end;
 
   TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift: TShiftState) of Object;

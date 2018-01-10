@@ -26,14 +26,14 @@ interface
   The unit interfaces must be added as one of the first units of the main program.
 
   Example for a linker error:
-    /path/to/lazarus/lcl/units/x86_64-linux/wsimglist.o: In function `REGISTERCUSTOMIMAGELIST':
-    /path/to/lazarus/lcl//widgetset/wsimglist.pp:266: undefined reference to `WSRegisterCustomImageList'
+    /path/to/lazarus/lcl/units/x86_64-linux/wsimglist.o: In function `RegisterCustomImageListResolution':
+    /path/to/lazarus/lcl//widgetset/wsimglist.pp:266: undefined reference to `WSRegisterCustomImageListResolution'
 }
 
 // imglist
-function WSRegisterCustomImageList: Boolean; external name 'WSRegisterCustomImageList';
+function WSRegisterCustomImageListResolution: Boolean; external name 'WSRegisterCustomImageListResolution';
 // controls
-function WSRegisterDragImageList: Boolean;   external name 'WSRegisterDragImageList';
+function WSRegisterDragImageListResolution: Boolean;   external name 'WSRegisterDragImageListResolution';
 function WSRegisterLazAccessibleObject: Boolean; external name 'WSRegisterLazAccessibleObject';
 function WSRegisterControl: Boolean;         external name 'WSRegisterControl';
 function WSRegisterWinControl: Boolean;      external name 'WSRegisterWinControl';

@@ -9,9 +9,9 @@ uses
   WSLCLClasses;
 
 // imglist
-function RegisterCustomImageList: Boolean;
+function RegisterCustomImageListResolution: Boolean;
 // controls
-function RegisterDragImageList: Boolean;
+function RegisterDragImageListResolution: Boolean;
 function RegisterLazAccessibleObject: Boolean;
 function RegisterControl: Boolean;
 function RegisterWinControl: Boolean;
@@ -115,16 +115,16 @@ uses
   Win32WSStdCtrls;
 
 // imglist
-function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
+function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
 begin
-  RegisterWSComponent(TCustomImageList, TWin32WSCustomImageList);
+  RegisterWSComponent(TCustomImageListResolution, TWin32WSCustomImageListResolution);
   Result := True;
 end;
 
 // controls
-function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
+function RegisterDragImageListResolution: Boolean; alias : 'WSRegisterDragImageListResolution';
 begin
-  RegisterWSComponent(TDragImageList, TWin32WSDragImageList);
+  RegisterWSComponent(TDragImageListResolution, TWin32WSDragImageListResolution);
   Result := True;
 end;
 

@@ -545,6 +545,14 @@ begin
   UpdateTabProperties;
 end;
 
+procedure TCustomTabControl.SetImagesWidth(const aImagesWidth: Integer);
+begin
+  if FImagesWidth = aImagesWidth then Exit;
+  FImagesWidth := aImagesWidth;
+  DoImageListChange(Self);
+  UpdateTabProperties;
+end;
+
 procedure TCustomTabControl.SetOptions(const AValue: TCTabControlOptions);
 var
   ChangedOptions: TCTabControlOptions;

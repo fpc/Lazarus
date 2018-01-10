@@ -32,16 +32,16 @@ uses
 
 type
 
-  { TQtWSDragImageList }
+  { TQtWSDragImageListResolution }
 
-  TQtWSDragImageList = class(TWSDragImageList)
+  TQtWSDragImageListResolution = class(TWSDragImageListResolution)
   published
-    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
-    class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
-    class procedure EndDrag(const ADragImageList: TDragImageList); override;
-    class function HideDragImage(const ADragImageList: TDragImageList;
+    class function BeginDrag(const ADragImageList: TDragImageListResolution; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
+    class function DragMove(const ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean; override;
+    class procedure EndDrag(const ADragImageList: TDragImageListResolution); override;
+    class function HideDragImage(const ADragImageList: TDragImageListResolution;
       ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
-    class function ShowDragImage(const ADragImageList: TDragImageList;
+    class function ShowDragImage(const ADragImageList: TDragImageListResolution;
       ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
   end;
 
@@ -789,10 +789,10 @@ begin
     QtEdit.setBorder(ABorderStyle = bsSingle);
 end;
 
-{ TQtWSDragImageList }
+{ TQtWSDragImageListResolution }
 
-class function TQtWSDragImageList.BeginDrag(
-  const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean;
+class function TQtWSDragImageListResolution.BeginDrag(
+  const ADragImageList: TDragImageListResolution; Window: HWND; AIndex, X, Y: Integer): Boolean;
 var
   ABitmap: TBitmap;
 begin
@@ -815,19 +815,19 @@ begin
   end;
 end;
 
-class function TQtWSDragImageList.DragMove(
-  const ADragImageList: TDragImageList; X, Y: Integer): Boolean;
+class function TQtWSDragImageListResolution.DragMove(
+  const ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean;
 begin
   Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y);
 end;
 
-class procedure TQtWSDragImageList.EndDrag(const ADragImageList: TDragImageList);
+class procedure TQtWSDragImageListResolution.EndDrag(const ADragImageList: TDragImageListResolution);
 begin
   TQtWidgetset(Widgetset).DragImageList_EndDrag;
 end;
 
-class function TQtWSDragImageList.HideDragImage(
-  const ADragImageList: TDragImageList; ALockedWindow: HWND; DoUnLock: Boolean
+class function TQtWSDragImageListResolution.HideDragImage(
+  const ADragImageList: TDragImageListResolution; ALockedWindow: HWND; DoUnLock: Boolean
   ): Boolean;
 begin
   Result := True;
@@ -838,8 +838,8 @@ begin
   end;
 end;
 
-class function TQtWSDragImageList.ShowDragImage(
-  const ADragImageList: TDragImageList; ALockedWindow: HWND; X, Y: Integer;
+class function TQtWSDragImageListResolution.ShowDragImage(
+  const ADragImageList: TDragImageListResolution; ALockedWindow: HWND; X, Y: Integer;
   DoLock: Boolean): Boolean;
 begin
   Result := TQtWidgetset(Widgetset).DragImageLock;

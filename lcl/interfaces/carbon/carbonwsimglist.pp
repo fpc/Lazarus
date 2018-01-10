@@ -33,9 +33,9 @@ uses
 
 type
 
-  { TCarbonWSCustomImageList }
+  { TCarbonWSCustomImageListResolution }
 
-  TCarbonWSCustomImageList = class(TWSCustomImageList)
+  TCarbonWSCustomImageListResolution = class(TWSCustomImageListResolution)
   published
   end;
 
@@ -50,6 +50,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomImageList, TCarbonWSCustomImageList);
+//  RegisterWSComponent(TCustomImageListResolution, TCarbonWSCustomImageListResolution);
 ////////////////////////////////////////////////////
 end.

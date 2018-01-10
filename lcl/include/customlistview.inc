@@ -536,7 +536,7 @@ begin
   for lvil := Low(TListViewImageList) to High(TListViewImageList) do
   begin
     if FImages[lvil] <> nil
-    then LVC.SetImageList(Self, lvil, FImages[lvil]);
+    then LVC.SetImageList(Self, lvil, FImages[lvil].ResolutionForImagePPI[FImagesWidth[lvil], Font.PixelsPerInch]);
   end;
   LVC.SetScrollBars(Self, FScrollBars);
   LVC.SetViewOrigin(Self, FViewOriginCache) ;
@@ -1209,6 +1209,11 @@ begin
   Result := FImages[TListViewImageList(ALvilOrd)];
 end;
 
+function TCustomListView.GetImageListWidth(const ALvilOrd: Integer): Integer;
+begin
+  Result := FImagesWidth[TListViewImageList(ALvilOrd)];
+end;
+
 function TCustomListView.GetHoverTime: Integer;
 begin
   if HandleAllocated
@@ -1575,7 +1580,33 @@ begin
   end;
 
   if not HandleAllocated then Exit;
-  TWSCustomListViewClass(WidgetSetClass).SetImageList(Self, lvil, AValue);
+  SetImageListWS(lvil);
+end;
+
+procedure TCustomListView.SetImageListWidth(const ALvilOrd: Integer;
+  const AValue: Integer);
+var
+  lvil: TListViewImageList;
+begin
+  lvil := TListViewImageList(ALvilOrd);
+
+  if FImagesWidth[lvil] = AValue then Exit;
+
+  FImagesWidth[lvil] := AValue;
+
+  if not HandleAllocated then Exit;
+  SetImageListWS(lvil);
+end;
+
+procedure TCustomListView.SetImageListWS(const ALvil: TListViewImageList);
+var
+  R: TCustomImageListResolution;
+begin
+  if FImages[ALvil]<>nil then
+    R := FImages[ALvil].ResolutionForImagePPI[FImagesWidth[ALvil], Font.PixelsPerInch]
+  else
+    R := nil;
+  TWSCustomListViewClass(WidgetSetClass).SetImageList(Self, ALvil, R)
 end;
 
 procedure TCustomListView.SetItemIndex(const AValue: Integer);

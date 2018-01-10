@@ -47,20 +47,20 @@ uses
   InterfaceBase;
 
 type
-  { TGtk3WSDragImageList }
+  { TGtk3WSDragImageListResolution }
 
-  TGtk3WSDragImageList = class(TWSDragImageList)
+  TGtk3WSDragImageListResolution = class(TWSDragImageListResolution)
   published
-    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
-    class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
-    class procedure EndDrag(const ADragImageList: TDragImageList); override;
-    class function HideDragImage(const ADragImageList: TDragImageList;
+    class function BeginDrag(const ADragImageList: TDragImageListResolution; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
+    class function DragMove(const ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean; override;
+    class procedure EndDrag(const ADragImageList: TDragImageListResolution); override;
+    class function HideDragImage(const ADragImageList: TDragImageListResolution;
       ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
-    class function ShowDragImage(const ADragImageList: TDragImageList;
+    class function ShowDragImage(const ADragImageList: TDragImageListResolution;
       ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
   end;
 
-  TGtk3WSDragImageListClass = class of TGtk3WSDragImageList;
+  TGtk3WSDragImageListResolutionClass = class of TGtk3WSDragImageListResolution;
 
 
   { TGtk3WSControl }
@@ -608,31 +608,31 @@ begin
 end;
 
 
-{ TGtk3WSDragImageList }
+{ TGtk3WSDragImageListResolution }
 
-class function TGtk3WSDragImageList.BeginDrag(const ADragImageList: TDragImageList;
+class function TGtk3WSDragImageListResolution.BeginDrag(const ADragImageList: TDragImageListResolution;
   Window: HWND; AIndex, X, Y: Integer): Boolean;
 begin
   Result := False;
 end;
 
-class function TGtk3WSDragImageList.DragMove(const ADragImageList: TDragImageList;
+class function TGtk3WSDragImageListResolution.DragMove(const ADragImageList: TDragImageListResolution;
   X, Y: Integer): Boolean;
 begin
   Result := False;
 end;
 
-class procedure TGtk3WSDragImageList.EndDrag(const ADragImageList: TDragImageList);
+class procedure TGtk3WSDragImageListResolution.EndDrag(const ADragImageList: TDragImageListResolution);
 begin
 end;
 
-class function TGtk3WSDragImageList.HideDragImage(const ADragImageList: TDragImageList;
+class function TGtk3WSDragImageListResolution.HideDragImage(const ADragImageList: TDragImageListResolution;
   ALockedWindow: HWND; DoUnLock: Boolean): Boolean;
 begin
   Result := False;
 end;
 
-class function TGtk3WSDragImageList.ShowDragImage(const ADragImageList: TDragImageList;
+class function TGtk3WSDragImageListResolution.ShowDragImage(const ADragImageList: TDragImageListResolution;
   ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean;
 begin
   Result := False;

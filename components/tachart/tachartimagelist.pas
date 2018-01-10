@@ -44,6 +44,8 @@ type
   public
     procedure ReadData(AStream: TStream); override;
     procedure WriteData(AStream: TStream); override;
+    procedure ReadAdvData(AStream: TStream); override;
+    procedure WriteAdvData(AStream: TStream); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -162,6 +164,11 @@ begin
   end;
 end;
 
+procedure TChartImageList.ReadAdvData(AStream: TStream);
+begin
+  Unused(AStream);
+end;
+
 procedure TChartImageList.ReadData(AStream: TStream);
 begin
   Unused(AStream);
@@ -187,6 +194,11 @@ begin
     FChart.Broadcaster.Subscribe(FListener);
 
   SeriesChanged(Self);
+end;
+
+procedure TChartImageList.WriteAdvData(AStream: TStream);
+begin
+  Unused(AStream);
 end;
 
 procedure TChartImageList.WriteData(AStream: TStream);

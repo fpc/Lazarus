@@ -349,6 +349,13 @@ begin
   UpdateVisibleBar;
 end;
 
+procedure TToolBar.SetImagesWidth(const aImagesWidth: Integer);
+begin
+  if FImagesWidth = aImagesWidth then Exit;
+  FImagesWidth := aImagesWidth;
+  UpdateVisibleBar;
+end;
+
 procedure TToolBar.DisabledImageListChange(Sender: TObject);
 begin
   if (Sender = DisabledImages) then UpdateVisibleBar;

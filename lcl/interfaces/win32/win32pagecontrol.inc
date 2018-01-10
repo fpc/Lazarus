@@ -328,7 +328,9 @@ const
   );
 var
   Params: TCreateWindowExParams;
+  T: TCustomTabControl;
 begin
+  T := TCustomTabControl(AWinControl);
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
@@ -339,10 +341,10 @@ begin
       pClassName := @ClsName[0];
     end
     else begin
-      Flags := Flags or TabPositionFlags[TCustomTabControl(AWinControl).TabPosition];
-      if nboMultiLine in TCustomTabControl(AWinControl).Options then
+      Flags := Flags or TabPositionFlags[T.TabPosition];
+      if nboMultiLine in T.Options then
         Flags := Flags or TCS_MULTILINE;
-      if TCustomTabControl(AWinControl).TabWidth > 0 then
+      if T.TabWidth > 0 then
         Flags := Flags or TCS_FIXEDWIDTH;
       pClassName := WC_TABCONTROL;
     end;
@@ -352,8 +354,8 @@ begin
   Result := Params.Window;
 
   if not (AWinControl is TTabControl) then begin
-    if TCustomTabControl(AWinControl).Images <> nil then
-      SendMessage(Result, TCM_SETIMAGELIST, 0, TCustomTabControl(AWinControl).Images.Reference._Handle);
+    if T.Images <> nil then
+      SendMessage(Result, TCM_SETIMAGELIST, 0, T.Images.ReferenceForImagePPI[T.ImagesWidth, T.Font.PixelsPerInch]._Handle);
 
     // although we may be child of tabpage, cut the paint chain
     // to improve speed and possible paint anomalities
@@ -362,8 +364,8 @@ begin
     Params.WindowInfo^.ClientOffsetProc := @TabControlClientOffset;
 
     SendMessage(Result, TCM_SETITEMSIZE, 0, MakeLParam(
-      TCustomTabControl(AWinControl).TabWidth,
-      TCustomTabControl(AWinControl).TabHeight));
+      T.TabWidth,
+      T.TabHeight));
   end;
 end;
 
@@ -651,7 +653,7 @@ begin
     Exit;
 
   if AImageList <> nil then
-    SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, AImageList.Reference._Handle)
+    SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, AImageList.ReferenceForImagePPI[ATabControl.ImagesWidth, ATabControl.Font.PixelsPerInch]._Handle)
   else
     SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, 0);
   // if you set big images like 32x32 then tabs will be big too => you need to

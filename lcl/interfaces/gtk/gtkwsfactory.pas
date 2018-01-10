@@ -10,9 +10,9 @@ uses
 
 
 // imglist
-function RegisterCustomImageList: Boolean;
+function RegisterCustomImageListResolution: Boolean;
 // controls
-function RegisterDragImageList: Boolean;
+function RegisterDragImageListResolution: Boolean;
 function RegisterLazAccessibleObject: Boolean;
 function RegisterControl: Boolean;
 function RegisterWinControl: Boolean;
@@ -119,17 +119,17 @@ uses
   Gtk1WSPrivate;
 
 // imglist
-function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
+function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
 begin
 //  RegisterWSComponent(TImageList, TGtkWSImageList);
-//  RegisterWSComponent(TCustomImageList, TGtkWSCustomImageList);
+//  RegisterWSComponent(TCustomImageListResolution, TGtkWSCustomImageListResolution);
   Result := False;
 end;
 
 // controls
-function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
+function RegisterDragImageListResolution: Boolean; alias : 'WSRegisterDragImageListResolution';
 begin
-  RegisterWSComponent(TDragImageList, TGtkWSDragImageList);
+  RegisterWSComponent(TDragImageListResolution, TGtkWSDragImageListResolution);
   Result := True;
 end;
 

@@ -236,23 +236,36 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TMenuItem.GetImageList: TCustomImageList;
+procedure TMenuItem.GetImageList(out aImages: TCustomImageList; out
+  aImagesWidth: Integer);
 var
   LItem: TMenuItem;
   LMenu: TMenu;
 begin
-  Result := nil;
+  aImages := nil;
   LItem := Parent;
   while (LItem <> nil) and (LItem.SubMenuImages = nil) do
     LItem := LItem.Parent;
   if LItem <> nil then
-    Result := LItem.SubMenuImages
-  else
+  begin
+    aImages := LItem.SubMenuImages;
+    aImagesWidth := LItem.SubMenuImagesWidth;
+  end else
   begin
     LMenu := GetParentMenu;
     if LMenu <> nil then
-      Result := LMenu.Images;
+    begin
+      aImages := LMenu.Images;
+      aImagesWidth := LMenu.ImagesWidth;
+    end;
   end;
+end;
+
+function TMenuItem.GetImageList: TCustomImageList;
+var
+  x: Integer;
+begin
+  GetImageList(Result, x);
 end;
 
 {------------------------------------------------------------------------------
@@ -464,6 +477,7 @@ end;
 function TMenuItem.GetBitmap: TBitmap;
 var
   iml: TCustomImageList;
+  imw: Integer;
 begin
   if FBitmap = nil then
   begin
@@ -471,9 +485,9 @@ begin
 
     if ImageIndex >= 0 then
     begin
-      iml := GetImageList;
+      GetImageList(iml, imw);
       if (iml <> nil) and (ImageIndex < iml.Count) then
-        iml.GetBitmap(ImageIndex, FBitmap);
+        iml.ResolutionForImagePPI[imw, 96].GetBitmap(ImageIndex, FBitmap);
     end;
     
     FBitmap.OnChange := @BitmapChange;
@@ -722,11 +736,12 @@ function TMenuItem.HasIcon: boolean;
 
 var
   AImageList: TCustomImageList;
+  AImageListWidth: Integer;
 begin
   Result := CanShowIcon;
   if not Result then
     Exit;
-  AImageList := GetImageList;
+  GetImageList(AImageList, AImageListWidth);
   Result := (AImageList <> nil) and (ImageIndex >= 0) and (ImageIndex < AImageList.Count);
   if not Result then
     Result := (FBitmap <> nil) and not FBitmap.Empty;
@@ -979,20 +994,22 @@ end;
 {------------------------------------------------------------------------------
   function TMenuItem.GetIconSize: TPoint;
  ------------------------------------------------------------------------------}
-function TMenuItem.GetIconSize: TPoint;
+function TMenuItem.GetIconSize(ADC: HDC): TPoint;
 var
   AImageList: TCustomImageList;
+  PPI, AImageListWidth: Integer;
 begin
   FillChar(Result, SizeOf(Result), 0);
   if HasIcon then
   begin
-    AImageList := GetImageList;
+    GetImageList(AImageList, AImageListWidth);
     if (AImageList <> nil) and (FImageIndex >= 0) then // using size of ImageList
     begin
       if (FImageIndex >= AImageList.Count) then
         Exit;
-      Result.x := AImageList.Width;
-      Result.y := AImageList.Height;
+      PPI := GetDeviceCaps(ADC, LOGPIXELSX);
+      Result.x := AImageList.WidthForImagePPI[AImageListWidth, PPI];
+      Result.y := AImageList.HeightForImagePPI[AImageListWidth, PPI];
     end
     else // using size of Bitmap
     begin
@@ -1282,6 +1299,13 @@ begin
     FSubMenuImages.RegisterChanges(FImageChangeLink);
     FSubMenuImages.FreeNotification(Self);
   end;
+  UpdateImages;
+end;
+
+procedure TMenuItem.SetSubMenuImagesWidth(const aSubMenuImagesWidth: Integer);
+begin
+  if FSubMenuImagesWidth = aSubMenuImagesWidth then Exit;
+  FSubMenuImagesWidth := aSubMenuImagesWidth;
   UpdateImages;
 end;
 

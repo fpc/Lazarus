@@ -30,12 +30,6 @@ begin
     WidgetSet.SetCursor(Screen.Cursors[DragCursor]);
 end;
 
-class procedure TDragImageList.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterDragImageList;
-end;
-
 {
   TDragImageList.Initialize
   set default values for properties
@@ -43,12 +37,8 @@ end;
 procedure TDragImageList.Initialize;
 begin
   inherited Initialize;
-  FDragging := False;
   FDragCursor := crNone;
   FDragHotspot := Point(0, 0);
-  FLastDragPos := Point(0, 0);
-  FOldCursor := crNone;
-  FLockedWindow := NoLockedWindow;
   FImageIndex := 0;
 end;
 
@@ -58,15 +48,7 @@ end;
 }
 function TDragImageList.BeginDrag(Window: HWND; X, Y: Integer): Boolean;
 begin
-  Result := TWsDragImageListClass(WidgetSetClass).BeginDrag(Self, Window,
-    FImageIndex, FDragHotspot.X, FDragHotspot.Y);
-  FDragging := Result;
-  if Result then
-  begin
-    DragLock(Window, X, Y);
-    FOldCursor := Screen.Cursor;
-    WidgetSet.SetCursor(Screen.Cursors[DragCursor])
-  end;
+  Result := Resolution[Width].BeginDrag(Window, X, Y);
 end;
 
 {
@@ -75,23 +57,7 @@ end;
 }
 function TDragImageList.DragLock(Window: HWND; XPos, YPos: Integer): Boolean;
 begin
-  Result := Dragging;
-  if not Result then
-  begin
-    Result := BeginDrag(Window, XPos, YPos);
-    Exit;
-  end;
-
-  if Window <> FLockedWindow then
-  begin
-    if FLockedWindow <> NoLockedWindow then
-      DragUnlock;
-    FLockedWindow := Window;
-    Result := TWsDragImageListClass(WidgetSetClass).ShowDragImage(Self, Window,
-      XPos, YPos, True);
-    if Result then
-      FLastDragPos := Point(XPos, YPos);
-  end;
+  Result := GetDraggingResolution.DragLock(Window, XPos, YPos);
 end;
 
 {
@@ -100,9 +66,7 @@ end;
 }
 function TDragImageList.DragMove(X, Y: Integer): Boolean;
 begin
-  Result := Dragging and TWsDragImageListClass(WidgetSetClass).DragMove(Self, X, Y);
-  if Result then
-    FLastDragPos := Point(X, Y);
+  Result := GetDraggingResolution.DragMove(X, Y);
 end;
 
 {
@@ -111,12 +75,7 @@ end;
 }
 procedure TDragImageList.DragUnlock;
 begin
-  if Dragging then
-  begin
-    TWsDragImageListClass(WidgetSetClass).HideDragImage(Self, FLockedWindow, True);
-    FLockedWindow := NoLockedWindow;
-    FLastDragPos := Point(0, 0);
-  end;
+  GetDraggingResolution.DragUnlock;
 end;
 
 {
@@ -124,15 +83,25 @@ end;
 }
 function TDragImageList.EndDrag: Boolean;
 begin
-  Result := Dragging;
-  if not Result then
-    Exit;
+  Result := Resolution[Width].EndDrag;
+end;
 
-  DragUnlock;
-  TWsDragImageListClass(WidgetSetClass).EndDrag(Self);
-  FDragging := False;
-  FDragCursor := crNone;
-  WidgetSet.SetCursor(Screen.Cursors[FOldCursor])
+function TDragImageList.GetDragging: Boolean;
+begin
+  Result := GetDraggingResolution<>nil;
+end;
+
+function TDragImageList.GetDraggingResolution: TDragImageListResolution;
+var
+  R: TCustomImageListResolution;
+begin
+  for R in Resolutions do
+  begin
+    Result := TDragImageListResolution(R);
+    if Result.Dragging then
+      Exit;
+  end;
+  Result := nil;
 end;
 
 {
@@ -144,14 +113,30 @@ begin
   Result := FDragHotSpot;
 end;
 
+function TDragImageList.GetResolution(
+  AImageWidth: Integer): TDragImageListResolution;
+begin
+  Result := TDragImageListResolution(inherited GetResolution(AImageWidth));
+end;
+
+function TDragImageList.GetResolutionClass: TCustomImageListResolutionClass;
+begin
+  Result := TDragImageListResolution;
+end;
+
+function TDragImageList.GetResolutionForImagePPI(AImageWidth,
+  APPI: Integer): TDragImageListResolution;
+begin
+  Result := TDragImageListResolution(inherited ResolutionForImagePPI[AImageWidth, APPI]);
+end;
+
 {
   TDragImageList.HideDragImage
   Hide dragging image without unlocking of window
 }
 procedure TDragImageList.HideDragImage;
 begin
-  if Dragging then
-    TWsDragImageListClass(WidgetSetClass).HideDragImage(Self, 0, False);
+  GetDraggingResolution.HideDragImage;
 end;
 
 {
@@ -162,6 +147,7 @@ function TDragImageList.SetDragImage(Index, HotSpotX, HotSpotY: Integer): Boolea
 var
   CurLockedWindow: HWND;
   CurDragPos: TPoint;
+  R: TDragImageListResolution;
 begin
   Result := True;
   if (FImageIndex <> Index) or (FDragHotSpot.X <> HotSpotX) or
@@ -169,13 +155,14 @@ begin
   begin
     FImageIndex := Index;
     FDragHotSpot := Point(HotSpotX, HotSpotY);
-    if Dragging then
+    R := GetDraggingResolution;
+    if R<>nil then
     begin
       // restart dragging with new params
-      CurLockedWindow := FLockedWindow;
-      CurDragPos := FLastDragPos;
-      EndDrag;
-      BeginDrag(CurLockedWindow, CurDragPos.X, CurDragPos.Y);
+      CurLockedWindow := R.FLockedWindow;
+      CurDragPos := R.FLastDragPos;
+      R.EndDrag;
+      R.BeginDrag(CurLockedWindow, CurDragPos.X, CurDragPos.Y);
     end;
   end;
 end;
@@ -186,8 +173,106 @@ end;
 }
 procedure TDragImageList.ShowDragImage;
 begin
+  GetDraggingResolution.ShowDragImage;
+end;
+
+{ TDragImageListResolution }
+
+constructor TDragImageListResolution.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+
+  FLastDragPos := Point(0, 0);
+  FOldCursor := crNone;
+  FLockedWindow := NoLockedWindow;
+end;
+
+function TDragImageListResolution.BeginDrag(Window: HWND; X,
+  Y: Integer): Boolean;
+begin
+  Result := TWSDragImageListResolutionClass(WidgetSetClass).BeginDrag(Self, Window,
+    ImageList.FImageIndex, ImageList.FDragHotspot.X, ImageList.FDragHotspot.Y);
+  FDragging := Result;
+  if Result then
+  begin
+    DragLock(Window, X, Y);
+    FOldCursor := Screen.Cursor;
+    WidgetSet.SetCursor(Screen.Cursors[ImageList.DragCursor])
+  end;
+end;
+
+function TDragImageListResolution.DragLock(Window: HWND; XPos,
+  YPos: Integer): Boolean;
+begin
+  Result := ImageList.Dragging;
+  if not Result then
+  begin
+    Result := BeginDrag(Window, XPos, YPos);
+    Exit;
+  end;
+
+  if Window <> FLockedWindow then
+  begin
+    if FLockedWindow <> NoLockedWindow then
+      DragUnlock;
+    FLockedWindow := Window;
+    Result := TWSDragImageListResolutionClass(WidgetSetClass).ShowDragImage(Self, Window,
+      XPos, YPos, True);
+    if Result then
+      FLastDragPos := Point(XPos, YPos);
+  end;
+end;
+
+function TDragImageListResolution.DragMove(X, Y: Integer): Boolean;
+begin
+  Result := Dragging and TWSDragImageListResolutionClass(WidgetSetClass).DragMove(Self, X, Y);
+  if Result then
+    FLastDragPos := Point(X, Y);
+end;
+
+procedure TDragImageListResolution.DragUnlock;
+begin
   if Dragging then
-    TWsDragImageListClass(WidgetSetClass).ShowDragImage(Self, 0, 0, 0, False);
+  begin
+    TWSDragImageListResolutionClass(WidgetSetClass).HideDragImage(Self, FLockedWindow, True);
+    FLockedWindow := NoLockedWindow;
+    FLastDragPos := Point(0, 0);
+  end;
+end;
+
+function TDragImageListResolution.EndDrag: Boolean;
+begin
+  Result := Dragging;
+  if not Result then
+    Exit;
+
+  DragUnlock;
+  TWSDragImageListResolutionClass(WidgetSetClass).EndDrag(Self);
+  FDragging := False;
+  WidgetSet.SetCursor(Screen.Cursors[FOldCursor])
+end;
+
+function TDragImageListResolution.GetImageList: TDragImageList;
+begin
+  Result := TDragImageList(inherited ImageList);
+end;
+
+procedure TDragImageListResolution.HideDragImage;
+begin
+  if Dragging then
+    TWSDragImageListResolutionClass(WidgetSetClass).HideDragImage(Self, 0, False);
+end;
+
+procedure TDragImageListResolution.ShowDragImage;
+begin
+  if Dragging then
+    TWSDragImageListResolutionClass(WidgetSetClass).ShowDragImage(Self, 0, 0, 0, False);
+end;
+
+class procedure TDragImageListResolution.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterDragImageListResolution;
 end;
 
 // included by controls.pp

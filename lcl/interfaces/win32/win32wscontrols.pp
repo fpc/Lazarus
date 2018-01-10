@@ -35,17 +35,17 @@ uses
   InterfaceBase, LCLType, LCLIntf, LCLProc, LazUTF8, Themes, Forms;
 
 type
-  { TWin32WSDragImageList }
+  { TWin32WSDragImageListResolution }
 
-  TWin32WSDragImageList = class(TWSDragImageList)
+  TWin32WSDragImageListResolution = class(TWSDragImageListResolution)
   published
-    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND;
+    class function BeginDrag(const ADragImageList: TDragImageListResolution; Window: HWND;
       AIndex, X, Y: Integer): Boolean; override;
-    class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
-    class procedure EndDrag(const ADragImageList: TDragImageList); override;
-    class function HideDragImage(const ADragImageList: TDragImageList;
+    class function DragMove(const ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean; override;
+    class procedure EndDrag(const ADragImageList: TDragImageListResolution); override;
+    class function HideDragImage(const ADragImageList: TDragImageListResolution;
       ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
-    class function ShowDragImage(const ADragImageList: TDragImageList;
+    class function ShowDragImage(const ADragImageList: TDragImageListResolution;
       ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
   end;
 
@@ -579,28 +579,29 @@ begin
       SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
 end;
 
-{ TWin32WSDragImageList }
+{ TWin32WSDragImageListResolution }
 
-class function TWin32WSDragImageList.BeginDrag(
-  const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean;
+class function TWin32WSDragImageListResolution.BeginDrag(
+  const ADragImageList: TDragImageListResolution; Window: HWND; AIndex, X,
+  Y: Integer): Boolean;
 begin
   // No check to Handle should be done, because if there is no handle (no needed)
   // we must create it here. This is normal for imagelist (we can never need handle)
   Result := ImageList_BeginDrag(ADragImageList.Reference.Handle, AIndex, X, Y);
 end;
 
-class function TWin32WSDragImageList.DragMove(const ADragImageList: TDragImageList;
+class function TWin32WSDragImageListResolution.DragMove(const ADragImageList: TDragImageListResolution;
   X, Y: Integer): Boolean;
 begin
   Result := ImageList_DragMove(X, Y);
 end;
 
-class procedure TWin32WSDragImageList.EndDrag(const ADragImageList: TDragImageList);
+class procedure TWin32WSDragImageListResolution.EndDrag(const ADragImageList: TDragImageListResolution);
 begin
   ImageList_EndDrag;
 end;
 
-class function TWin32WSDragImageList.HideDragImage(const ADragImageList: TDragImageList;
+class function TWin32WSDragImageListResolution.HideDragImage(const ADragImageList: TDragImageListResolution;
   ALockedWindow: HWND; DoUnLock: Boolean): Boolean;
 begin
   if DoUnLock then
@@ -609,7 +610,7 @@ begin
     Result := ImageList_DragShowNolock(False);
 end;
 
-class function TWin32WSDragImageList.ShowDragImage(const ADragImageList: TDragImageList;
+class function TWin32WSDragImageListResolution.ShowDragImage(const ADragImageList: TDragImageListResolution;
   ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean;
 begin
   if DoLock then

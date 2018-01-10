@@ -1327,6 +1327,7 @@ type
     Alpha: Byte;
   end;
   PRGBAQuad = ^TRGBAQuad;
+  TRGBAQuadArray = array of TRGBAQuad;
 
 
   PBitmapInfo = ^TBitmapInfo;
