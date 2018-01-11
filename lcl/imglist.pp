@@ -316,9 +316,9 @@ type
     procedure Move(ACurIndex, ANewIndex: Integer);
     procedure Overlay(AIndex: Integer; Overlay: TOverlay);
     property HasOverlays: boolean read fHasOverlays;
-    procedure Replace(AIndex: Integer; AImage, AMask: TCustomBitmap; const AAllResolutions: Boolean = True);
+    procedure Replace(AIndex: Integer; AImage, AMask: TCustomBitmap; const AllResolutions: Boolean = False);
     procedure ReplaceIcon(AIndex: Integer; AIcon: TCustomIcon);
-    procedure ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor; const AAllResolutions: Boolean = True);
+    procedure ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor; const AllResolutions: Boolean = False);
     procedure RegisterChanges(Value: TChangeLink);
     procedure StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean = True);
     procedure UnRegisterChanges(Value: TChangeLink);

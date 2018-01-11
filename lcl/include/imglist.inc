@@ -2046,7 +2046,7 @@ end;
   the image has no transparent parts.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Replace(AIndex: Integer; AImage,
-  AMask: TCustomBitmap; const AAllResolutions: Boolean);
+  AMask: TCustomBitmap; const AllResolutions: Boolean);
 var
   msk: THandle;
   R: TCustomImageListResolution;
@@ -2063,7 +2063,7 @@ begin
   if AMask = nil
   then msk := 0
   else msk := AMask.Handle;
-  if AAllResolutions then
+  if AllResolutions then
   begin
     for R in Resolutions do
       _Replace;
@@ -2106,11 +2106,17 @@ end;
   Every occurrence of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.ReplaceMasked(Index: Integer;
-  NewImage: TCustomBitmap; MaskColor: TColor; const AAllResolutions: Boolean);
+  NewImage: TCustomBitmap; MaskColor: TColor; const AllResolutions: Boolean);
 var
   Bmp: TBitmap;
   R: TCustomImageListResolution;
   Data: TRGBAQuadArray;
+
+  procedure _Replace;
+  begin
+    ScaleImage(Bmp, nil, R.Width, R.Height, Data);
+    R.InternalReplace(Index, @Data[0]);
+  end;
 begin
   if NewImage = nil then Exit;
 
@@ -2120,9 +2126,15 @@ begin
     Bmp.TransparentColor := MaskColor;
     Bmp.Transparent := True;
 
-    R := GetResolution(NewImage.Width);
-    ScaleImage(Bmp, nil, R.Width, R.Height, Data);
-    R.InternalReplace(Index, @Data[0]);
+    if AllResolutions then
+    begin
+      for R in Resolutions do
+        _Replace;
+    end else
+    begin
+      R := GetResolution(NewImage.Width);
+      _Replace;
+    end;
   finally
     Bmp.Free;
   end;
