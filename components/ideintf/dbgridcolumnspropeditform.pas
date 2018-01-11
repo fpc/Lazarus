@@ -134,7 +134,8 @@ begin
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.actAddFieldsExecute(Sender: TObject);
-var It : TCollectionItem;
+var
+  It : TCollectionItem;
   flChanged : Boolean;
   flEmpty : Boolean;
   i : Integer;
@@ -153,45 +154,35 @@ begin
 
   if flEmpty or (MessageDlg(dceColumnEditor, dceOkToDelete, mtConfirmation,
                             [mbYes, mbNo], 0) = mrYes) then
-  begin
-
     try
-      if (It is TColumn) and ( Assigned( TDBGrid( TColumn( It ).Grid).DataSource ) ) and
-        Assigned ( TDBGrid( TColumn( It ).Grid).DataSource.DataSet ) then begin
+      if (It is TColumn) and ( Assigned( TDBGrid( TColumn( It ).Grid).DataSource ) )
+      and Assigned ( TDBGrid( TColumn( It ).Grid).DataSource.DataSet ) then
+      begin
         flChanged:=True;
-        BeginFormUpdate;
         Collection.Clear;
         It := Collection.Add;
-        //TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Open;
-        if TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count > 0 then begin
-          for i := 0 to TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count - 1 do begin
+        if TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count > 0 then
+        begin
+          for i := 0 to TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count - 1 do
+          begin
             if i > 0 then
               It := Collection.Add;
             TColumn( It ).Field:=TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields[ i ];
             TColumn( It ).Title.Caption:=TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields[ i ].DisplayLabel;
-            end;
           end;
         end;
-
+      end;
     finally
-      if flChanged then begin
+      if flChanged or flEmpty then
+      begin
+        if not flChanged then
+          Collection.Clear;
         RefreshPropertyValues;
         UpdateButtons;
         UpdateCaption;
         Modified;
-        EndFormUpdate;
-        end
-      else
-        if flEmpty then begin
-          Collection.Clear;
-          RefreshPropertyValues;
-          UpdateButtons;
-          UpdateCaption;
-          Modified;
-          EndFormUpdate;
-          end;
+      end;
     end;
-  end;
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.actDeleteAllExecute(Sender: TObject);
@@ -200,9 +191,7 @@ begin
     Exit;
   if (MessageDlg(dceColumnEditor, dceOkToDelete, mtConfirmation,
                  [mbYes, mbNo], 0) = mrYes) then
-  begin
     try
-      BeginFormUpdate;
       UnSelectInObjectInspector;
       Collection.Clear;
     finally
@@ -210,9 +199,7 @@ begin
       UpdateButtons;
       UpdateCaption;
       Modified;
-      EndFormUpdate;
     end;
-  end;
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.actDelExecute(Sender: TObject);
