@@ -1462,6 +1462,30 @@ begin
   invalidate(AWinControl);
 end;
 
+function indexInList(ctrl: id; l: TFPList): integer;
+var
+ i : integer;
+begin
+  for i:=0 to l.Count-1 do
+    if PtrUInt(TWinControl(l[i]).Handle)=PtrUInt(ctrl) then
+    begin
+      Result:=i;
+      exit;
+    end;
+  Result:=-1;
+end;
+
+function SortHandles(param1: id; param2: id; param3: Pointer): NSComparisonResult; cdecl;
+var
+  i1,i2: integer;
+begin
+  i1:=indexInList(param1, TFPList(param3));
+  i2:=indexInList(param2, TFPList(param3));
+  if i1<i2 then Result:=NSOrderedDescending
+  else if i1>i2 then Result:=NSOrderedAscending
+  else Result:=NSOrderedSame;
+end;
+
 class procedure TCocoaWSWinControl.SetChildZPosition(const AWinControl,
   AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList
   );
@@ -1475,6 +1499,21 @@ begin
   if (not AWinControl.HandleAllocated) or (not AChild.HandleAllocated) then Exit;
 
   pr:=NSView(AWinControl.Handle);
+
+  //todo: sorting might be a better option than removing / adding a view
+  //      (whenever a focused (firstrepsonder view) is moved to front, focus is lost.
+  //      if that's not the case for sorting, then sorting *must* be used
+  //      current problem, is that during sorting a new order needs to be determined
+  //      (the desired order is given in AChildren list).
+  //      however, on every comparison, an index must be searched withing a list.
+  //      and that might be very slow! (if a lot of sibling controls is present)
+  //      instead of a search, it's beter to store the desired sorting order with a view
+  //      itself. However, that requires adding additional methods  lclSetNewOrder and lclGetNewOrder
+  //
+  //pr.sortSubviewsUsingFunction_context(@SortHandles, AChildren);
+  //
+  // if sorting is used, all code below is not needed
+
   ch:=NSView(AChild.Handle);
 
   // The way of changing the order in an array of views
