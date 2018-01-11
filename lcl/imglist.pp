@@ -251,6 +251,7 @@ type
     function GetBestIconIndexForSize(AIcon: TCustomIcon; AWidth: Integer): Integer;
     function GetResolutionByIndex(AIndex: Integer): TCustomImageListResolution;
     function GetResolutionCount: Integer;
+    procedure CreateDefaultResolution;
   protected
     function GetResolution(AImageWidth: Integer): TCustomImageListResolution;
     function GetResolutionClass: TCustomImageListResolutionClass; virtual;
@@ -325,6 +326,7 @@ type
 
     procedure RegisterResolutions(const AResolutionWidths: array of Integer);
     procedure DeleteResolution(const AWidth: Integer);
+    function FindResolution(AImageWidth: Integer; out AResolution: TCustomImageListResolution): Boolean;
   public
     property AllocBy: Integer read FAllocBy write FAllocBy default 4;
     property BlendColor: TColor read FBlendColor write FBlendColor default clNone;

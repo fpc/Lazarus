@@ -1598,6 +1598,12 @@ begin
     FOverlays[I] := -1;
 end;
 
+procedure TCustomImageList.CreateDefaultResolution;
+begin
+  if ResolutionCount=0 then
+    GetResolution(FWidth); // create default resolution if needed
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Insert
   Params:  Index: the index of the inserted image
@@ -1616,7 +1622,7 @@ var
 begin
   if AImage = nil then Exit;
   
-  R := GetResolution(AImage.Width); // create image resolution if needed
+  CreateDefaultResolution;
   for R in Resolutions do
   begin
     ScaleImage(AImage, AMask, R.Width, R.Height, ScBmp);
@@ -1632,7 +1638,7 @@ var
 begin
   if AIcon = nil then Exit;
 
-  R := GetResolution(FWidth); // create default resolution if needed - do not create all icon resolutions
+  CreateDefaultResolution;
   for R in Resolutions do
   begin
     AIcon.Current := GetBestIconIndexForSize(AIcon, R.Width);
@@ -1687,7 +1693,7 @@ begin
       MaskedImage.GetRawImage(RawImg);
       MaskedImage.CreateBitmaps(Bmp, Msk);
       try
-        R := GetResolution(FWidth); // create default resolution if needed - do not create image resolution
+        CreateDefaultResolution;
         for R in Resolutions do
         begin
           ScaleImage(Bmp, Msk, MaskedImage.Width, MaskedImage.Height, R.Width, R.Height, ScBmp);
@@ -1970,6 +1976,18 @@ begin
     {$ENDIF}
 end;
 
+function TCustomImageList.FindResolution(AImageWidth: Integer; out
+  AResolution: TCustomImageListResolution): Boolean;
+var
+  I: Integer;
+begin
+  Result := FData.Find(AImageWidth, I);
+  if Result then
+    AResolution := ResolutionByIndex[I]
+  else
+    AResolution := nil;
+end;
+
 function TCustomImageList.GetBestIconIndexForSize(AIcon: TCustomIcon;
   AWidth: Integer): Integer;
 var
@@ -2069,8 +2087,8 @@ begin
       _Replace;
   end else
   begin
-    R := GetResolution(AImage.Width);
-    _Replace;
+    if FindResolution(AImage.Width, R) then
+      _Replace;
   end;
 end;
 
@@ -2132,8 +2150,8 @@ begin
         _Replace;
     end else
     begin
-      R := GetResolution(NewImage.Width);
-      _Replace;
+      if FindResolution(NewImage.Width, R) then
+        _Replace;
     end;
   finally
     Bmp.Free;
