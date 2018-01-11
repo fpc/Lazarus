@@ -33,9 +33,9 @@ uses
 
 type
 
-  { TQtWSCustomImageList }
+  { TQtWSCustomImageListResolution }
 
-  TQtWSCustomImageList = class(TWSCustomImageList)
+  TQtWSCustomImageListResolution = class(TWSCustomImageListResolution)
   published
   end;
 

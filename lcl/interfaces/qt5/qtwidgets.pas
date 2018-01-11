@@ -14575,6 +14575,7 @@ var
   AOk: Boolean;
   AIcon: QIconH;
   ASize: TSize;
+  ImgListRes: TCustomImageListResolution;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then

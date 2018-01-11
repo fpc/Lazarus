@@ -12559,7 +12559,7 @@ begin
         begin
           ImgListRes := ImgList.ResolutionForImagePPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
           QListWidgetItem_sizeHint(item, @ASize);
-          if (ASize.cx <> ImgListSize.Width) or (ASize.cx <> ImgListSize.Height) then
+          if (ASize.cx <> ImgListRes.Width) or (ASize.cx <> ImgListRes.Height) then
           begin
             ASize.cx := ImgListRes.Width;
             ASize.cy := ImgListRes.Height;
@@ -14661,6 +14661,7 @@ var
   AOk: Boolean;
   AIcon: QIconH;
   ASize: TSize;
+  ImgListRes: TCustomImageListResolution;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then
@@ -14716,7 +14717,7 @@ begin
           ImgList := TCustomListViewHack(LCLObject).SmallImages;
           if Assigned(ImgList) then
           begin
-            ImgListRes := ImgListRes.ResolutionForImagePPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
+            ImgListRes := ImgList.ResolutionForImagePPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
             QTreeWidgetItem_sizeHint(item, @ASize, 0);
             if (ASize.cx <> ImgListRes.Width) or (ASize.cx <> ImgListRes.Height) then
             begin
