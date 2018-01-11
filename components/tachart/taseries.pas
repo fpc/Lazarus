@@ -1408,15 +1408,13 @@ var
             else
               a.Y := b.Y;
         end;
-        // Avoid integer overflow at extreme zoom levels.
-        if LineIntersectsRect(a, b, ext2) then begin
+        if not IsRotated then begin
+          PushPoint(a);
+          PushPoint(b);
+        end else begin
           PushPoint(a);
           PushPoint(b);
         end
-        else begin
-          PushPoint(ProjToRect(a, ext2));
-          PushPoint(ProjToRect(b, ext2));
-        end;
       end;
       a := ProjToRect(FGraphPoints[AEnd], ext2);
       PushPoint(ProjToLine(a, z2));
