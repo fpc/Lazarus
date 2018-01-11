@@ -393,6 +393,7 @@ begin
 
   lcl := TLCLCustomControlCallback.Create(docview, AWinControl);
   docview.callback := lcl;
+  docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   scrollcon.callback := lcl;
   lcl.Frame:=scrollcon;
   scrollcon.setDocumentView(docview);

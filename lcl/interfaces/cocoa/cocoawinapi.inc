@@ -1764,6 +1764,9 @@ var
   obj : NSObject;
   sc  : TCocoaScrollView;
   bar : TCocoaScrollBar;
+  f   : NSSize;
+  sz  : NSSize;
+  flg : NSUInteger;
 begin
   obj := HandleToNSObject(Handle);
   Result := 0;
@@ -1773,10 +1776,29 @@ begin
   begin
     sc:=TCocoaScrollView(obj);
     if sc.isCustomRange and (ScrollInfo.fMask and SIF_RANGE>0) then begin
-      if SBStyle=SB_Horz then
-        sc.documentView.setFrameSize( NSMakeSize( ScrollInfo.nMax, sc.documentView.frame.size.height ))
-      else if SBStyle=SB_Vert then
-        sc.documentView.setFrameSize( NSMakeSize( sc.documentView.frame.size.width, ScrollInfo.nMax ));
+      f:=sc.frame.size;
+      sz:=sc.documentView.frame.size;
+      flg:=sc.documentView.autoresizingMask;
+
+      if SBStyle=SB_Horz then begin
+        if ScrollInfo.nMax>f.width then begin
+          sz.width := ScrollInfo.nMax;
+          flg:=flg and not NSViewWidthSizable;
+        end else begin
+          sz.width := f.width;
+          flg:=flg or NSViewWidthSizable;
+        end;
+      end else if SBStyle=SB_Vert then begin
+        if ScrollInfo.nMax>f.height then begin
+          sz.height := ScrollInfo.nMax;
+          flg:=flg and not NSViewHeightSizable;
+        end else begin
+          sz.height := f.height;
+          flg:=flg or NSViewHeightSizable;
+        end;
+      end;
+      sc.documentView.setAutoresizingMask(flg);
+      sc.documentView.setFrameSize( sz );
     end;
 
     NSScrollViewSetScrollInfo(NSScrollView(obj), SBStyle, ScrollInfo);
