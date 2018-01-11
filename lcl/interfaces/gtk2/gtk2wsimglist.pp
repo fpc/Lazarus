@@ -33,9 +33,9 @@ uses
 
 type
 
-  { TGtk2WSCustomImageList }
+  { TGtk2WSCustomImageListResolution }
 
-  TGtk2WSCustomImageList = class(TWSCustomImageList)
+  TGtk2WSCustomImageListResolution = class(TWSCustomImageListResolution)
   private
   protected
   public

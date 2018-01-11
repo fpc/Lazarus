@@ -196,10 +196,12 @@ procedure Gtk2MenuItemToggleSizeRequest(AMenuItem: PGtkMenuItem; requisition: Pg
 var
   spacing: guint;
   IconWidth: Integer;
+  DC: HDC;
 begin
   if LCLItem.HasIcon then
   begin
-    IconWidth := LCLItem.GetIconSize.X;
+    DC := Widgetset.GetDC(HWND({%H-}PtrUInt(AMenuItem)));
+    IconWidth := LCLItem.GetIconSize(DC).X;
     if IconWidth > 0 then
     begin
       gtk_widget_style_get(PGtkWidget(AMenuItem), 'toggle-spacing', [@spacing, nil]);
@@ -215,9 +217,11 @@ end;
 procedure Gtk2MenuItemSizeRequest(AMenuItem: PGtkMenuItem; requisition: PGtkRequisition; LCLItem: TMenuItem); cdecl;
 var
   IconHeight: Integer;
+  DC: HDC;
 begin
   GTK_WIDGET_GET_CLASS(AMenuItem)^.size_request(PGtkWidget(AMenuItem), requisition);
-  IconHeight := LCLItem.GetIconSize.Y;
+  DC := Widgetset.GetDC(HWND({%H-}PtrUInt(AMenuItem)));
+  IconHeight := LCLItem.GetIconSize(DC).Y;
   if requisition^.height < IconHeight then
     requisition^.height := IconHeight;
 end;
