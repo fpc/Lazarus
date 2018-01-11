@@ -122,7 +122,7 @@ type
     function Add(Image, Mask: TCustomBitmap): Integer;
     procedure InternalInsert(AIndex: Integer; AData: PRGBAQuad); overload;
     procedure InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
-    procedure InternalReplace(AIndex: Integer; AImage, AMask: HBitmap);
+    procedure InternalReplace(AIndex: Integer; AData: PRGBAQuad);
     function  InternalSetData(AIndex: Integer; AData: PRGBAQuad): PRGBAQuad;
     procedure CheckIndex(AIndex: Integer; AForInsert: Boolean = False);
 
@@ -190,6 +190,8 @@ type
     destructor Destroy; override;
   public
     function FindBestToScaleFrom(const ATargetWidth: Integer): Integer;
+    procedure Delete(const AIndex: Integer);
+    procedure Clear;
 
     property ImageLists[const AImageWidth: Integer]: TCustomImageListResolution read GetImageLists;
     property Items[const AIndex: Integer]: TCustomImageListResolution read GetItems; default;
@@ -246,6 +248,9 @@ type
     function GetHeightForImagePPI(AImageWidth, APPI: Integer): Integer;
     function GetCount: Integer;
     function GetSizeForImagePPI(AImageWidth, APPI: Integer): TSize;
+    function GetBestIconIndexForSize(AIcon: TCustomIcon; AWidth: Integer): Integer;
+    function GetResolutionByIndex(AIndex: Integer): TCustomImageListResolution;
+    function GetResolutionCount: Integer;
   protected
     function GetResolution(AImageWidth: Integer): TCustomImageListResolution;
     function GetResolutionClass: TCustomImageListResolutionClass; virtual;
@@ -311,13 +316,15 @@ type
     procedure Move(ACurIndex, ANewIndex: Integer);
     procedure Overlay(AIndex: Integer; Overlay: TOverlay);
     property HasOverlays: boolean read fHasOverlays;
-    procedure Replace(AIndex: Integer; AImage, AMask: TCustomBitmap);
-    procedure ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor);
+    procedure Replace(AIndex: Integer; AImage, AMask: TCustomBitmap; const AAllResolutions: Boolean = True);
+    procedure ReplaceIcon(AIndex: Integer; AIcon: TCustomIcon);
+    procedure ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor; const AAllResolutions: Boolean = True);
     procedure RegisterChanges(Value: TChangeLink);
     procedure StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean = True);
     procedure UnRegisterChanges(Value: TChangeLink);
 
     procedure RegisterResolutions(const AResolutionWidths: array of Integer);
+    procedure DeleteResolution(const AWidth: Integer);
   public
     property AllocBy: Integer read FAllocBy write FAllocBy default 4;
     property BlendColor: TColor read FBlendColor write FBlendColor default clNone;
@@ -334,7 +341,9 @@ type
     property Reference[AImageWidth: Integer]: TWSCustomImageListReference read GetReference;
     property ReferenceForImagePPI[AImageWidth, APPI: Integer]: TWSCustomImageListReference read GetReferenceForImagePPI;
     property Resolution[AImageWidth: Integer]: TCustomImageListResolution read GetResolution;
+    property ResolutionByIndex[AIndex: Integer]: TCustomImageListResolution read GetResolutionByIndex;
     property ResolutionForImagePPI[AImageWidth, APPI: Integer]: TCustomImageListResolution read GetResolutionForImagePPI;
+    property ResolutionCount: Integer read GetResolutionCount;
     function Resolutions: TCustomImageListResolutionEnumerator;
     function ResolutionsDesc: TCustomImageListResolutionEnumerator;
     property ShareImages: Boolean read FShareImages write SetShareImages default False;

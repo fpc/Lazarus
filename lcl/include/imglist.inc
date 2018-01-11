@@ -57,7 +57,7 @@ begin
   FImgList := AImgList;
   FDesc := ADesc;
   if ADesc then
-    FCurrent := FImgList.Count
+    FCurrent := FImgList.FData.Count
   else
     FCurrent := -1;
 end;
@@ -510,7 +510,7 @@ begin
 end;
 
 procedure TCustomImageListResolution.InternalReplace(AIndex: Integer;
-  AImage, AMask: HBitmap);
+  AData: PRGBAQuad);
 var
   RawImage: TRawImage;
   R: TRect;
@@ -522,23 +522,7 @@ begin
   if (AIndex < 0) then AIndex := 0;
   CheckIndex(AIndex);
 
-  R := Rect(0, 0, FWidth, FHeight);
-  RawImage_FromBitmap(RawImage, AImage, AMask, @R);
-  LI := TLazIntfImage.Create(RawImage, True);
-  SetLength(TargetData, FWidth * FHeight * SizeOf(TRGBAQuad));
-  ImgData := @TargetData[0];
-  for Y := 0 to FHeight-1 do
-  for X := 0 to FWidth-1 do
-  begin
-    ImgData^.Alpha := Byte(LI.Colors[x, y].alpha);
-    ImgData^.Red := Byte(LI.Colors[x, y].red);
-    ImgData^.Green := Byte(LI.Colors[x, y].green);
-    ImgData^.Blue := Byte(LI.Colors[x, y].blue);
-    Inc(ImgData);
-  end;
-  LI.Free;
-
-  ImgData := InternalSetData(AIndex, @TargetData[0]);
+  ImgData := InternalSetData(AIndex, AData);
   if HandleAllocated
   then TWSCustomImageListResolutionClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
 end;
@@ -865,6 +849,16 @@ begin
   FList := TObjectList.Create(True);
   FImageList := AImageList;
   FResolutionClass := AResolutionClass;
+end;
+
+procedure TCustomImageListResolutions.Clear;
+begin
+  FList.Clear;
+end;
+
+procedure TCustomImageListResolutions.Delete(const AIndex: Integer);
+begin
+  FList.Delete(AIndex);
 end;
 
 destructor TCustomImageListResolutions.Destroy;
@@ -1213,8 +1207,7 @@ procedure TCustomImageList.Clear;
 var
   R: TCustomImageListResolution;
 begin
-  for R in Resolutions do
-    R.Clear;
+  FData.Clear;
 
   ClearOverlays;
   FChanged := True;
@@ -1298,6 +1291,14 @@ begin
 
   FChanged := true;
   Change;
+end;
+
+procedure TCustomImageList.DeleteResolution(const AWidth: Integer);
+var
+  I: Integer;
+begin
+  if FData.Find(AWidth, I) then
+    FData.Delete(I);
 end;
 
 {------------------------------------------------------------------------------
@@ -1531,9 +1532,20 @@ begin
   Result := FData.ImageLists[AImageWidth];
 end;
 
+function TCustomImageList.GetResolutionByIndex(
+  AIndex: Integer): TCustomImageListResolution;
+begin
+  Result := FData[AIndex];
+end;
+
 function TCustomImageList.GetResolutionClass: TCustomImageListResolutionClass;
 begin
   Result := TCustomImageListResolution;
+end;
+
+function TCustomImageList.GetResolutionCount: Integer;
+begin
+  Result := FData.Count;
 end;
 
 {------------------------------------------------------------------------------
@@ -1613,29 +1625,8 @@ begin
 end;
 
 procedure TCustomImageList.InsertIcon(AIndex: Integer; AIcon: TCustomIcon);
-  function GetBestIndexForSize(AWidth: Integer): Integer;
-  var
-    MaxWidth, MaxWidthI: Integer;
-  begin
-    MaxWidth := 0;
-    for Result := 0 to AIcon.Count-1 do // first try to find the smallest (but bigger) multiple
-    begin
-      AIcon.Current := Result;
-      if (AIcon.Width mod AWidth = 0) then
-        Exit;
-
-      if AIcon.Width>MaxWidth then
-      begin
-        MaxWidth := AIcon.Width;
-        MaxWidthI := Result;
-      end;
-    end;
-
-    Result := MaxWidthI; // just pickup the biggest image
-  end;
 var
   R: TCustomImageListResolution;
-  BmpFree: Boolean;
   ScBmp: TRGBAQuadArray;
   msk: HBITMAP;
 begin
@@ -1644,7 +1635,7 @@ begin
   R := GetResolution(FWidth); // create default resolution if needed - do not create all icon resolutions
   for R in Resolutions do
   begin
-    AIcon.Current := GetBestIndexForSize(R.Width);
+    AIcon.Current := GetBestIconIndexForSize(AIcon, R.Width);
     if AIcon.Masked then
       msk := AIcon.MaskHandle
     else
@@ -1979,6 +1970,28 @@ begin
     {$ENDIF}
 end;
 
+function TCustomImageList.GetBestIconIndexForSize(AIcon: TCustomIcon;
+  AWidth: Integer): Integer;
+var
+  MaxWidth, MaxWidthI: Integer;
+begin
+  MaxWidth := 0;
+  for Result := 0 to AIcon.Count-1 do // first try to find the smallest (but bigger) multiple
+  begin
+    AIcon.Current := Result;
+    if (AIcon.Width mod AWidth = 0) then
+      Exit;
+
+    if AIcon.Width>MaxWidth then
+    begin
+      MaxWidth := AIcon.Width;
+      MaxWidthI := Result;
+    end;
+  end;
+
+  Result := MaxWidthI; // just pickup the biggest image
+end;
+
 procedure TCustomImageList.Overlay(AIndex: Integer; Overlay: TOverlay);
 var
   i: Integer;
@@ -2032,16 +2045,54 @@ end;
   Replaces the index'th image with the image given. If Mask is nil, 
   the image has no transparent parts.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Replace(AIndex: Integer; AImage, AMask: TCustomBitmap);
+procedure TCustomImageList.Replace(AIndex: Integer; AImage,
+  AMask: TCustomBitmap; const AAllResolutions: Boolean);
 var
   msk: THandle;
+  R: TCustomImageListResolution;
+  Data: TRGBAQuadArray;
+
+  procedure _Replace;
+  begin
+    ScaleImage(AImage, AMask, R.Width, R.Height, Data);
+    R.InternalReplace(AIndex, @Data[0]);
+  end;
 begin
   if AImage = nil then Exit;
   
   if AMask = nil
   then msk := 0
   else msk := AMask.Handle;
-  GetResolution(AImage.Width).InternalReplace(AIndex, AImage.BitmapHandle, msk);
+  if AAllResolutions then
+  begin
+    for R in Resolutions do
+      _Replace;
+  end else
+  begin
+    R := GetResolution(AImage.Width);
+    _Replace;
+  end;
+end;
+
+procedure TCustomImageList.ReplaceIcon(AIndex: Integer; AIcon: TCustomIcon);
+var
+  R: TCustomImageListResolution;
+  ScBmp: TRGBAQuadArray;
+  msk: HBITMAP;
+begin
+  if AIcon = nil then Exit;
+
+  for R in Resolutions do
+  begin
+    AIcon.Current := GetBestIconIndexForSize(AIcon, R.Width);
+    if AIcon.Masked then
+      msk := AIcon.MaskHandle
+    else
+      msk := 0;
+    ScaleImage(AIcon.BitmapHandle, msk,
+      AIcon.Width, AIcon.Height, R.Width, R.Height, ScBmp);
+    R.InternalReplace(AIndex, @ScBmp[0]);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2054,26 +2105,27 @@ end;
   Replaces the index'th image with the image given.
   Every occurrence of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor);
+procedure TCustomImageList.ReplaceMasked(Index: Integer;
+  NewImage: TCustomBitmap; MaskColor: TColor; const AAllResolutions: Boolean);
 var
   Bmp: TBitmap;
   R: TCustomImageListResolution;
+  Data: TRGBAQuadArray;
 begin
   if NewImage = nil then Exit;
 
   Bmp := TBitmap.Create;
-  with Bmp do
-  begin
-    Assign(NewImage);
-    TransparentColor := MaskColor;
-    Transparent := True;
-  end;
+  try
+    Bmp.Assign(NewImage);
+    Bmp.TransparentColor := MaskColor;
+    Bmp.Transparent := True;
 
-  R := GetResolution(NewImage.Width);
-  if Bmp.Masked
-  then R.InternalReplace(Index, Bmp.Handle, Bmp.MaskHandle)
-  else R.InternalReplace(Index, Bmp.Handle, 0);
-  Bmp.Free;
+    R := GetResolution(NewImage.Width);
+    ScaleImage(Bmp, nil, R.Width, R.Height, Data);
+    R.InternalReplace(Index, @Data[0]);
+  finally
+    Bmp.Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------
