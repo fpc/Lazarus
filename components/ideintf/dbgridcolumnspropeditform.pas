@@ -137,21 +137,11 @@ var It : TCollectionItem;
   flEmpty : Boolean;
   i : Integer;
 begin
-  //
-    if Collection = nil then Exit;
-    if not ( Collection is TDBGridColumns ) then Exit;
+  if Collection = nil then Exit;
+  if not ( Collection is TDBGridColumns ) then Exit;
 
-    flChanged := False;
-    flEmpty := False;
-  //Collection.Add;
-  //
-  //FillCollectionListBox;
-  //if CollectionListBox.Items.Count > 0 then
-  //  CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
-  //SelectInObjectInspector(True, False);
-  //UpdateButtons;
-  //UpdateCaption;
-  //Modified;
+  flChanged := False;
+  flEmpty := False;
   if Collection.Count > 0 then
     It := Collection.Items[ 0 ]
   else begin
@@ -159,69 +149,68 @@ begin
     flEmpty:=True;
   end;
 
-  if flEmpty or ( MessageDlg( dceColumnEditor, dceOkToDelete,
-      mtConfirmation, [mbYes, mbNo], 0) = mrYes ) then begin
+  if flEmpty or (MessageDlg(dceColumnEditor, dceOkToDelete, mtConfirmation,
+                            [mbYes, mbNo], 0) = mrYes) then
+  begin
 
-      try
-        if (It is TColumn) and ( Assigned( TDBGrid( TColumn( It ).Grid).DataSource ) ) and
-          Assigned ( TDBGrid( TColumn( It ).Grid).DataSource.DataSet ) then begin
-          flChanged:=True;
-          BeginFormUpdate;
-          Collection.Clear;
-          It := Collection.Add;
-//          TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Open;
-          if TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count > 0 then begin
-            for i := 0 to TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count - 1 do begin
-              if i > 0 then begin
-                It := Collection.Add;
-              end;
-              TColumn( It ).Field:=TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields[ i ];
-              TColumn( It ).Title.Caption:=TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields[ i ].DisplayLabel;
-              end;
+    try
+      if (It is TColumn) and ( Assigned( TDBGrid( TColumn( It ).Grid).DataSource ) ) and
+        Assigned ( TDBGrid( TColumn( It ).Grid).DataSource.DataSet ) then begin
+        flChanged:=True;
+        BeginFormUpdate;
+        Collection.Clear;
+        It := Collection.Add;
+        //TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Open;
+        if TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count > 0 then begin
+          for i := 0 to TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count - 1 do begin
+            if i > 0 then
+              It := Collection.Add;
+            TColumn( It ).Field:=TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields[ i ];
+            TColumn( It ).Title.Caption:=TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields[ i ].DisplayLabel;
             end;
           end;
+        end;
 
-
-      finally
-        if flChanged then begin
+    finally
+      if flChanged then begin
+        RefreshPropertyValues;
+        UpdateButtons;
+        UpdateCaption;
+        Modified;
+        EndFormUpdate;
+        end
+      else
+        if flEmpty then begin
+          Collection.Clear;
           RefreshPropertyValues;
           UpdateButtons;
           UpdateCaption;
           Modified;
           EndFormUpdate;
-          end
-        else
-          if flEmpty then begin
-            Collection.Clear;
-            RefreshPropertyValues;
-            UpdateButtons;
-            UpdateCaption;
-            Modified;
-            EndFormUpdate;
-            end;
           end;
-      end;
-
+    end;
+  end;
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.actDeleteAllExecute(Sender: TObject);
 begin
-  //
-    if Collection = nil then Exit;
-      if  ( MessageDlg( dceColumnEditor, dceOkToDelete,
-      mtConfirmation, [mbYes, mbNo], 0) = mrYes ) then begin
-        try
-          BeginFormUpdate;
-          SelectInObjectInspector(True, True);
-          Collection.Clear;
-        finally
-          RefreshPropertyValues;
-          UpdateButtons;
-          UpdateCaption;
-          Modified;
-          EndFormUpdate;
-        end;
-        end;
+  if Collection = nil then
+    Exit;
+  if (MessageDlg(dceColumnEditor, dceOkToDelete, mtConfirmation,
+                 [mbYes, mbNo], 0) = mrYes) then
+  begin
+    try
+      BeginFormUpdate;
+      SelectInObjectInspector(True, True);
+      Collection.Clear;
+    finally
+      RefreshPropertyValues;
+      UpdateButtons;
+      UpdateCaption;
+      Modified;
+      EndFormUpdate;
+    end;
+  end;
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.actDelExecute(Sender: TObject);
@@ -406,8 +395,10 @@ var
 begin
   CollectionListBox.Items.BeginUpdate;
   try
-    if Collection <> nil then Cnt := Collection.Count
-    else Cnt := 0;
+    if Collection <> nil then
+      Cnt := Collection.Count
+    else
+      Cnt := 0;
 
     // add or replace list items
     for I := 0 to Cnt - 1 do
@@ -425,16 +416,10 @@ begin
 
     // delete unneeded list items
     if Cnt > 0 then
-    begin
       while CollectionListBox.Items.Count > Cnt do
-      begin
-        CollectionListBox.Items.Delete(CollectionListBox.Items.Count - 1);
-      end;
-    end
+        CollectionListBox.Items.Delete(CollectionListBox.Items.Count - 1)
     else
-    begin
       CollectionListBox.Items.Clear;
-    end;
   finally
     CollectionListBox.Items.EndUpdate;
     UpdateButtons;
