@@ -205,51 +205,32 @@ end;
 procedure TDBGridColumnsPropertyEditorForm.actDelExecute(Sender: TObject);
 var
   I : Integer;
-  NewItemIndex: Integer;
 begin
   if Collection = nil then Exit;
-
   I := CollectionListBox.ItemIndex;
-  if (I >= 0) and (I < Collection.Count) then
+  if (I < 0) or (I >= Collection.Count) then Exit;
+  if MessageDlg(oisConfirmDelete,
+                Format(oisDeleteItem, [Collection.Items[I].DisplayName]),
+                mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+    Exit;
+
+  CollectionListBox.ItemIndex := -1;
+  // unselect all items in OI (collections can act strange on delete)
+  UnSelectInObjectInspector;
+  // now delete
+  Collection.Items[I].Free;
+  // update listbox after whatever happened
+  FillCollectionListBox;
+  // set new ItemIndex
+  if I >= CollectionListBox.Items.Count then
+    I := CollectionListBox.Items.Count-1;
+  if I >= 0 then
   begin
-    if MessageDlg(oisConfirmDelete,
-      Format(oisDeleteItem, [Collection.Items[I].DisplayName]),
-      mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-    begin
-      // select other item, or unselect
-      NewItemIndex := I + 1;
-      while (NewItemIndex < CollectionListBox.Items.Count)
-      and (CollectionListBox.Selected[NewItemIndex]) do Inc(NewItemIndex);
-
-      if NewItemIndex = CollectionListBox.Items.Count then
-      begin
-        NewItemIndex := 0;
-        while (NewItemIndex < Pred(I))
-        and not (CollectionListBox.Selected[NewItemIndex]) do Inc(NewItemIndex);
-
-        if NewItemIndex = I then NewItemIndex := -1;
-      end;
-
-      CollectionListBox.ItemIndex := -1;
-
-      if NewItemIndex > I then Dec(NewItemIndex);
-      //debugln('TDBGridColumnsPropertyEditorForm.DeleteClick A NewItemIndex=',dbgs(NewItemIndex),' ItemIndex=',dbgs(CollectionListBox.ItemIndex),' CollectionListBox.Items.Count=',dbgs(CollectionListBox.Items.Count),' Collection.Count=',dbgs(Collection.Count));
-      // unselect all items in OI (collections can act strange on delete)
-      UnSelectInObjectInspector;
-      // now delete
-      Collection.Items[I].Free;
-      // update listbox after whatever happened
-      FillCollectionListBox;
-      // set NewItemIndex
-      if NewItemIndex < CollectionListBox.Items.Count then
-      begin
-        CollectionListBox.ItemIndex := NewItemIndex;
-        SelectInObjectInspector;
-      end;
-      //debugln('TDBGridColumnsPropertyEditorForm.DeleteClick B');
-      Modified;
-    end;
+    CollectionListBox.ItemIndex := I;
+    SelectInObjectInspector;
   end;
+  //debugln('TDBGridColumnsPropertyEditorForm.DeleteClick B');
+  Modified;
   UpdateButtons;
   UpdateCaption;
 end;
