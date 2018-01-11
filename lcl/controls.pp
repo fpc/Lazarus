@@ -341,6 +341,7 @@ type
   TDragImageListResolution = class(TCustomImageListResolution)
   private
     FDragging: Boolean;
+    FDragHotspot: TPoint;
     FOldCursor: TCursor;
     FLastDragPos: TPoint;
     FLockedWindow: HWND;// window where drag started and locked via DragLock, invalid=NoLockedWindow=High(PtrInt)
@@ -353,6 +354,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
 
+    function GetHotSpot: TPoint; override;
     function BeginDrag(Window: HWND; X, Y: Integer): Boolean;
     function DragLock(Window: HWND; XPos, YPos: Integer): Boolean;
     function DragMove(X, Y: Integer): Boolean;
@@ -361,13 +363,13 @@ type
     procedure HideDragImage;
     procedure ShowDragImage;
 
+    property DragHotspot: TPoint read FDragHotspot write FDragHotspot;
     property Dragging: Boolean read FDragging;
   end;
 
   TDragImageList = class(TCustomImageList)
   private
     FDragCursor: TCursor;
-    FDragHotspot: TPoint;
     FImageIndex: Integer;
     procedure SetDragCursor(const AValue: TCursor);
     function GetResolution(AImageWidth: Integer): TDragImageListResolution;
@@ -375,6 +377,8 @@ type
       APPI: Integer): TDragImageListResolution;
     function GetDragging: Boolean;
     function GetDraggingResolution: TDragImageListResolution;
+    function GetDragHotspot: TPoint;
+    procedure SetDragHotspot(const aDragHotspot: TPoint);
   protected
     function GetResolutionClass: TCustomImageListResolutionClass; override;
     procedure Initialize; override;
@@ -384,12 +388,11 @@ type
     function DragMove(X, Y: Integer): Boolean;
     procedure DragUnlock;
     function EndDrag: Boolean;
-    function GetHotSpot: TPoint; override;
     procedure HideDragImage;
     function SetDragImage(Index, HotSpotX, HotSpotY: Integer): Boolean;
     procedure ShowDragImage;
     property DragCursor: TCursor read FDragCursor write SetDragCursor;
-    property DragHotspot: TPoint read FDragHotspot write FDragHotspot;
+    property DragHotspot: TPoint read GetDragHotspot write SetDragHotspot;
     property Dragging: Boolean read GetDragging;
     property DraggingResolution: TDragImageListResolution read GetDraggingResolution;
     property Resolution[AImageWidth: Integer]: TDragImageListResolution read GetResolution;

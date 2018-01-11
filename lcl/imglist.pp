@@ -144,6 +144,7 @@ type
   public
     destructor Destroy; override;
   public
+    function GetHotSpot: TPoint; virtual;
     procedure FillDescription(out ADesc: TRawImageDescription);
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap); overload;
     procedure GetBitmap(Index: Integer; Image: TCustomBitmap; AEffect: TGraphicsDrawEffect); overload;
@@ -302,7 +303,7 @@ type
     procedure GetIcon(Index: Integer; Image: TIcon; AEffect: TGraphicsDrawEffect); overload;
     procedure GetIcon(Index: Integer; Image: TIcon); overload;
     procedure GetRawImage(Index: Integer; out Image: TRawImage);
-    function GetHotSpot: TPoint; virtual;
+    function GetHotSpot: TPoint;
 
     procedure Insert(AIndex: Integer; AImage, AMask: TCustomBitmap);
     procedure InsertIcon(AIndex: Integer; AIcon: TCustomIcon);

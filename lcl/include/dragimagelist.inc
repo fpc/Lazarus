@@ -30,6 +30,17 @@ begin
     WidgetSet.SetCursor(Screen.Cursors[DragCursor]);
 end;
 
+procedure TDragImageList.SetDragHotspot(const aDragHotspot: TPoint);
+var
+  R: TCustomImageListResolution;
+begin
+  Resolution[Width]; // create default resolution if needed
+  for R in Resolutions do
+    TDragImageListResolution(R).DragHotspot := Point(
+      MulDiv(aDragHotspot.X, R.Width, Width),
+      MulDiv(aDragHotspot.Y, R.Width, Width));
+end;
+
 {
   TDragImageList.Initialize
   set default values for properties
@@ -38,7 +49,6 @@ procedure TDragImageList.Initialize;
 begin
   inherited Initialize;
   FDragCursor := crNone;
-  FDragHotspot := Point(0, 0);
   FImageIndex := 0;
 end;
 
@@ -104,13 +114,9 @@ begin
   Result := nil;
 end;
 
-{
-  TDragImageList.GetHotSpot
-  Returns HotSpot
-}
-function TDragImageList.GetHotSpot: TPoint;
+function TDragImageList.GetDragHotspot: TPoint;
 begin
-  Result := FDragHotSpot;
+  Result := GetResolution(Width).DragHotspot;
 end;
 
 function TDragImageList.GetResolution(
@@ -150,14 +156,15 @@ var
   R: TDragImageListResolution;
 begin
   Result := True;
-  if (FImageIndex <> Index) or (FDragHotSpot.X <> HotSpotX) or
-     (FDragHotSpot.Y <> HotSpotY) then
+  R := GetDraggingResolution;
+  if R<>nil then
   begin
-    FImageIndex := Index;
-    FDragHotSpot := Point(HotSpotX, HotSpotY);
-    R := GetDraggingResolution;
-    if R<>nil then
+    if (FImageIndex <> Index) or (R.DragHotSpot.X <> HotSpotX) or
+       (R.DragHotSpot.Y <> HotSpotY) then
     begin
+      FImageIndex := Index;
+      R.DragHotSpot := Point(HotSpotX, HotSpotY);
+
       // restart dragging with new params
       CurLockedWindow := R.FLockedWindow;
       CurDragPos := R.FLastDragPos;
@@ -191,7 +198,7 @@ function TDragImageListResolution.BeginDrag(Window: HWND; X,
   Y: Integer): Boolean;
 begin
   Result := TWSDragImageListResolutionClass(WidgetSetClass).BeginDrag(Self, Window,
-    ImageList.FImageIndex, ImageList.FDragHotspot.X, ImageList.FDragHotspot.Y);
+    ImageList.FImageIndex, FDragHotspot.X, FDragHotspot.Y);
   FDragging := Result;
   if Result then
   begin
@@ -250,6 +257,11 @@ begin
   TWSDragImageListResolutionClass(WidgetSetClass).EndDrag(Self);
   FDragging := False;
   WidgetSet.SetCursor(Screen.Cursors[FOldCursor])
+end;
+
+function TDragImageListResolution.GetHotSpot: TPoint;
+begin
+  Result := FDragHotspot;
 end;
 
 function TDragImageListResolution.GetImageList: TDragImageList;

@@ -383,6 +383,11 @@ begin
   Image.Data := PByte(FData);
 end;
 
+function TCustomImageListResolution.GetHotSpot: TPoint;
+begin
+  Result := Point(0, 0);
+end;
+
 procedure TCustomImageListResolution.GetIcon(Index: Integer; Image: TIcon);
 begin
   GetIcon(Index, Image, gdeNormal);
@@ -1540,7 +1545,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomImageList.GetHotSpot: TPoint;
 begin
-  Result := Point(0, 0);
+  Result := GetResolution(FWidth).GetHotSpot;
 end;
 
 {------------------------------------------------------------------------------
