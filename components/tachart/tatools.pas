@@ -321,7 +321,9 @@ type
     FOrigin: TPoint;
     FPrev: TPoint;
   strict protected
+    procedure Activate; override;
     procedure Cancel; override;
+    procedure Deactivate; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
@@ -1446,6 +1448,12 @@ end;
 
 { TPanDragTool }
 
+procedure TPanDragTool.Activate;
+begin
+  inherited;
+  FChart.LockClipRect;
+end;
+
 procedure TPanDragTool.Cancel;
 begin
   if not IsActive then exit;
@@ -1457,6 +1465,12 @@ constructor TPanDragTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDirections := PAN_DIRECTIONS_ALL;
+end;
+
+procedure TPanDragtool.Deactivate;
+begin
+  inherited;
+  FChart.UnlockClipRect;
 end;
 
 procedure TPanDragTool.MouseDown(APoint: TPoint);

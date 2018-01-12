@@ -229,6 +229,8 @@ type
     FReticuleMode: TReticuleMode;
     FReticulePos: TPoint;
     FScale: TDoublePoint;    // Coordinates transformation
+    FSavedClipRect: TRect;
+    FClipRectLock: Integer;
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
     procedure DrawReticule(ADrawer: IChartDrawer);
@@ -351,6 +353,10 @@ type
     function XImageToGraph(AX: Integer): Double; inline;
     function YGraphToImage(AY: Double): Integer; inline;
     function YImageToGraph(AY: Integer): Double; inline;
+
+  public
+    procedure LockClipRect;
+    procedure UnlockClipRect;
 
   public
     property ActiveToolIndex: Integer read FActiveToolIndex;
@@ -872,8 +878,14 @@ begin
     PrepareAxis(ADrawer);
     if Legend.Visible and not Legend.UseSidebar then
       Legend.Prepare(ldd, FClipRect);
+
+    // Avoid jitter of chart area while dragging with PanDragTool.
+    if FClipRectLock > 0 then
+      FClipRect := FSavedClipRect;
+
     if (FPrevLogicalExtent <> FLogicalExtent) and Assigned(OnExtentChanging) then
       OnExtentChanging(Self);
+
     ADrawer.DrawingBegin(ARect);
     ADrawer.SetAntialiasingMode(AntialiasingMode);
     Clear(ADrawer, ARect);
@@ -1254,6 +1266,12 @@ begin
   ts := GetToolset;
   if (ts <> nil) and ts.Dispatch(Self, evidKeyUp, AShift, p) then exit;
   inherited;
+end;
+
+procedure TChart.LockClipRect;
+begin
+  FSavedClipRect := FClipRect;
+  inc(FClipRectLock);
 end;
 
 procedure TChart.MouseDown(
@@ -1745,6 +1763,12 @@ begin
     ZoomFull;
   Invalidate;
   Broadcaster.Broadcast(Sender);
+end;
+
+procedure TChart.UnlockCliprect;
+begin
+  dec(FClipRectLock);
+  if FClipRectLock = 0 then Invalidate;
 end;
 
 procedure TChart.VisitSources(
