@@ -52,6 +52,7 @@ type
     FOwnerPersistent: TPersistent;
     FPropertyName: String;
     procedure FillCollectionListBox;
+    function GetDataSet: TDataSet;
     procedure SelectInObjectInspector;
     procedure UnSelectInObjectInspector;
     procedure UpdDesignHook(aSelection: TPersistentSelectionList);
@@ -135,54 +136,33 @@ end;
 
 procedure TDBGridColumnsPropertyEditorForm.actAddFieldsExecute(Sender: TObject);
 var
-  It : TCollectionItem;
-  flChanged : Boolean;
-  flEmpty : Boolean;
-  i : Integer;
+  DataSet: TDataSet;
+  Item: TColumn;
+  i: Integer;
 begin
-  if Collection = nil then Exit;
-  if not ( Collection is TDBGridColumns ) then Exit;
+  if Collection=nil then Exit;
+  if not (Collection is TDBGridColumns) then Exit;
+  DataSet:=GetDataSet;
+  if DataSet=nil then Exit;
 
-  flChanged := False;
-  flEmpty := False;
-  if Collection.Count > 0 then
-    It := Collection.Items[ 0 ]
-  else begin
-    It := Collection.Add;
-    flEmpty:=True;
-  end;
+  if Collection.Count>0 then
+    if (MessageDlg(dceColumnEditor, dceOkToDelete, mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then
+      Exit;
 
-  if flEmpty or (MessageDlg(dceColumnEditor, dceOkToDelete, mtConfirmation,
-                            [mbYes, mbNo], 0) = mrYes) then
-    try
-      if (It is TColumn) and ( Assigned( TDBGrid( TColumn( It ).Grid).DataSource ) )
-      and Assigned ( TDBGrid( TColumn( It ).Grid).DataSource.DataSet ) then
-      begin
-        flChanged:=True;
-        Collection.Clear;
-        It := Collection.Add;
-        if TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count > 0 then
-        begin
-          for i := 0 to TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields.Count - 1 do
-          begin
-            if i > 0 then
-              It := Collection.Add;
-            TColumn( It ).Field:=TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields[ i ];
-            TColumn( It ).Title.Caption:=TDBGrid( TColumn( It ).Grid).DataSource.DataSet.Fields[ i ].DisplayLabel;
-          end;
-        end;
-      end;
-    finally
-      if flChanged or flEmpty then
-      begin
-        if not flChanged then
-          Collection.Clear;
-        RefreshPropertyValues;
-        UpdateButtons;
-        UpdateCaption;
-        Modified;
-      end;
+  try
+    Collection.Clear;
+    for i:=0 to DataSet.Fields.Count-1 do
+    begin
+      Item:=Collection.Add as TColumn;
+      Item.Field:=DataSet.Fields[i];
+      Item.Title.Caption:=DataSet.Fields[i].DisplayLabel;
     end;
+  finally
+    RefreshPropertyValues;
+    UpdateButtons;
+    UpdateCaption;
+    Modified;
+  end;
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.actDeleteAllExecute(Sender: TObject);
@@ -242,8 +222,7 @@ var
   Field: TField;
   i: Integer;
 begin
-  if (FOwnerPersistent as TDBGrid).DataSource=nil then Exit;
-  DataSet:=TDBGrid(FOwnerPersistent).DataSource.DataSet;
+  DataSet:=GetDataSet;
   if DataSet=nil then Exit;
 
   if MessageDlg(dceColumnEditor, dceWillReplaceContinue, mtConfirmation,
@@ -395,6 +374,12 @@ begin
     UpdateButtons;
     UpdateCaption;
   end;
+end;
+
+function TDBGridColumnsPropertyEditorForm.GetDataSet: TDataSet;
+begin
+  if (FOwnerPersistent as TDBGrid).DataSource=nil then Exit(nil);
+  Result:=TDBGrid(FOwnerPersistent).DataSource.DataSet;
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.SelectInObjectInspector;
