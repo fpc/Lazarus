@@ -77,8 +77,13 @@ begin
     else
     begin
        // if cannot modify, let it reset
-       FDatalink.Reset;
-       DataChange(Self);
+       if ReadOnly then begin
+         FDatalink.Reset;
+         DataChange(Self);
+       end else begin
+         FDataLink.Modified;
+         inherited Select;
+       end;
     end;
   finally
     FDataLink.OnDataChange := @DataChange;
