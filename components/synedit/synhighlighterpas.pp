@@ -3011,21 +3011,22 @@ procedure TSynPasSyn.SemicolonProc;
 var
   tfb: TPascalCodeFoldBlockType;
 begin
-  Inc(Run);
   fTokenID := tkSymbol;
   tfb := TopPascalCodeFoldBlockType;
 
+  fStringLen := 1;
   if tfb = cfbtUses then
     EndPascalCodeFoldBlock;
 
   if (tfb = cfbtClass) and (rsAfterClass in fRange) then
     EndPascalCodeFoldBlock(True);
 
-  fStringLen:=0;
   while (tfb in [cfbtIfThen,cfbtIfElse,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin
     EndPascalCodeFoldBlock(True);
     tfb := TopPascalCodeFoldBlockType;
   end;
+
+  Inc(Run);
 
   if (tfb = cfbtCase) then
     fRange := fRange + [rsAtCaseLabel];
