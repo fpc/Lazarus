@@ -96,7 +96,8 @@ type
     rsAfterClassField,    // after ";" of a field (static needs highlight)
     rsVarTypeInSpecification, // between ":"/"=" and ";" in a var or type section (or class members)
                               // var a: Integer; type b = Int64;
-    rsInTypeBlock
+    rsInTypeBlock,
+    rsSkipAllPasBlocks        // used for: class of ... ;
   );
   TRangeStates = set of TRangeState;
 
@@ -510,7 +511,7 @@ type
     function StartPascalCodeFoldBlock
              (ABlockType: TPascalCodeFoldBlockType; ForceDisabled: Boolean = False
               ): TSynCustomCodeFoldBlock;
-    procedure EndPascalCodeFoldBlock(NoMarkup: Boolean = False);
+    procedure EndPascalCodeFoldBlock(NoMarkup: Boolean = False; UndoInvalidOpen: Boolean = False);
     procedure CloseBeginEndBlocksBeforeProc;
     procedure SmartCloseBeginEndBlocks(SearchFor: TPascalCodeFoldBlockType);
     procedure EndPascalCodeFoldBlockLastLine;
@@ -957,8 +958,9 @@ begin
        (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
       // Accidental start of block // End at next semicolon (usually same line)
-      CodeFoldRange.Pop(false); // avoid minlevel
-      CodeFoldRange.Add(Pointer(PtrInt(cfbtUses)), false);
+      fRange := fRange + [rsSkipAllPasBlocks];
+      //CodeFoldRange.Pop(false); // avoid minlevel // does not work, still minlevel for disabled
+      //CodeFoldRange.Add(Pointer(PtrInt(cfbtUses)), false);
     end
     else
     if (TopPascalCodeFoldBlockType = cfbtCase) then begin
@@ -3010,16 +3012,19 @@ end;
 procedure TSynPasSyn.SemicolonProc;
 var
   tfb: TPascalCodeFoldBlockType;
+  InSkipBlocks: Boolean;
 begin
   fTokenID := tkSymbol;
   tfb := TopPascalCodeFoldBlockType;
+  InSkipBlocks := rsSkipAllPasBlocks in fRange;
+  Exclude(fRange, rsSkipAllPasBlocks);
 
   fStringLen := 1;
   if tfb = cfbtUses then
     EndPascalCodeFoldBlock;
 
-  if (tfb = cfbtClass) and (rsAfterClass in fRange) then
-    EndPascalCodeFoldBlock(True);
+  if (tfb = cfbtClass) and ((rsAfterClass in fRange) or InSkipBlocks) then
+    EndPascalCodeFoldBlock(True, True);
 
   while (tfb in [cfbtIfThen,cfbtIfElse,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin
     EndPascalCodeFoldBlock(True);
@@ -3878,6 +3883,7 @@ var
   act: TSynFoldActions;
   nd: TSynFoldNodeInfo;
 begin
+  if rsSkipAllPasBlocks in fRange then exit(nil);
   BlockEnabled := FFoldConfig[ord(ABlockType)].Enabled;
   if (not BlockEnabled) and (not ForceDisabled) and
      (not FFoldConfig[ord(ABlockType)].IsEssential)
@@ -3901,13 +3907,15 @@ begin
   Result:=TSynCustomCodeFoldBlock(StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), FoldBlock, True));
 end;
 
-procedure TSynPasSyn.EndPascalCodeFoldBlock(NoMarkup: Boolean = False);
+procedure TSynPasSyn.EndPascalCodeFoldBlock(NoMarkup: Boolean;
+  UndoInvalidOpen: Boolean);
 var
   DecreaseLevel, BlockEnabled: Boolean;
   act: TSynFoldActions;
   BlockType: TPascalCodeFoldBlockType;
   nd: TSynFoldNodeInfo;
 begin
+  Exclude(fRange, rsSkipAllPasBlocks);
   BlockType := TopPascalCodeFoldBlockType;
   if BlockType in [cfbtVarType, cfbtLocalVarType] then
     fRange := fRange - [rsInTypeBlock];
@@ -3923,6 +3931,8 @@ begin
       act := act - [sfaFold, sfaFoldFold, sfaFoldHide];
     if NoMarkup then
       exclude(act, sfaMarkup);
+    if UndoInvalidOpen then
+      act := act - [sfaMarkup, sfaFold, sfaOutline];
     DoInitNode(nd{%H-}, True, Pointer(PtrUInt(BlockType)), act, DecreaseLevel);
     CollectingNodeInfoList.Add(nd);
   end;

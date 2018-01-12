@@ -1188,6 +1188,10 @@ begin
     FFoldNodeInfoList.GroupFilter := FFoldGroup;
     c := FFoldNodeInfoList.Count - 1;
     //debugln(['TLazSynEditNestedFoldsList.InitNestInfoForIndex CurLine=',CurLine, '  c=',c, '  EvalIdx=',EvalIdx]);
+    (* if c < 0 then it is possible that a highlighter called
+       CodeFoldRange.Pop(false); // avoid minlevel // << still triggers min level for sfbIncludeDisabled;
+       without generating foldnode info // maybe the HL tries to silently change the fold type
+    *)
     assert(c >= 0, 'InitNestInfoForIndex: FFoldNodeInfoList.Count');
 
     for i := c downto 0 do begin
