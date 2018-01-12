@@ -3932,7 +3932,7 @@ begin
     if NoMarkup then
       exclude(act, sfaMarkup);
     if UndoInvalidOpen then
-      act := act - [sfaMarkup, sfaFold, sfaOutline];
+      act := act - [sfaMarkup, {sfaFold,} sfaFoldFold, sfaFoldHide, sfaOutline]; // sfaFold affects the EndOffset for the fold-lvl
     DoInitNode(nd{%H-}, True, Pointer(PtrUInt(BlockType)), act, DecreaseLevel);
     CollectingNodeInfoList.Add(nd);
   end;
