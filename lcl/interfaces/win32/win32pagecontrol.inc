@@ -644,7 +644,7 @@ begin
 end;
 
 class procedure TWin32WSCustomTabControl.SetImageList(
-  const ATabControl: TCustomTabControl; const AImageList: TCustomImageList);
+  const ATabControl: TCustomTabControl; const AImageList: TCustomImageListResolution);
 begin
   if ATabControl is TTabControl then
     exit;
@@ -653,7 +653,7 @@ begin
     Exit;
 
   if AImageList <> nil then
-    SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, AImageList.ReferenceForPPI[ATabControl.ImagesWidth, ATabControl.Font.PixelsPerInch]._Handle)
+    SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, AImageList.Reference._Handle)
   else
     SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, 0);
   // if you set big images like 32x32 then tabs will be big too => you need to

@@ -766,6 +766,13 @@ begin
   end;
 end;
 
+procedure TCustomImageListResolution.ReferenceDestroying;
+begin
+  inherited ReferenceDestroying;
+
+  FImageList.DoDestroyResolutionReference(FWidth, Reference._Handle);
+end;
+
 procedure TCustomImageListResolution.StretchDraw(Canvas: TCanvas;
   Index: Integer; ARect: TRect; Enabled: Boolean);
 var
@@ -1317,6 +1324,18 @@ begin
   while FChangeLinkList.Count>0 do
     UnregisterChanges(TChangeLink(FChangeLinkList[0]));
   FreeThenNil(FChangeLinkList);
+end;
+
+procedure TCustomImageList.DoDestroyResolutionReference(const AWidth: Integer;
+  AResolutionReference: TLCLHandle);
+var
+  I: Integer;
+begin
+  if FChangeLinkList=nil then
+    Exit;
+  for I := 0 to FChangeLinkList.Count-1 do
+    if TChangeLink(FChangeLinkList[I]).Sender = Self then
+      TChangeLink(FChangeLinkList[I]).DoDestroyResolutionReference(AWidth, AResolutionReference);
 end;
 
 {------------------------------------------------------------------------------
@@ -2277,6 +2296,13 @@ begin
   if Sender <> nil 
   then Sender.UnRegisterChanges(Self);
   inherited Destroy;
+end;
+
+procedure TChangeLink.DoDestroyResolutionReference(const AWidth: Integer;
+  AResolutionReference: TLCLHandle);
+begin
+  if Assigned(FOnDestroyResolutionHandle) then
+    FOnDestroyResolutionHandle(FSender, AWidth, AResolutionReference);
 end;
 
 // included by imglist.pp

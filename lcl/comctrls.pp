@@ -33,9 +33,9 @@ uses
   // LazUtils
   LazUTF8, LazUTF8Classes,
   // LCL
-  LCLStrConsts, LResources, LCLIntf, LCLType, LMessages, WSLCLClasses, LCLProc,
-  GraphType, Graphics, ImgList, ActnList, Themes, Menus, Controls, Forms,
-  StdCtrls, ExtCtrls, ToolWin, Buttons;
+  LCLStrConsts, LResources, LCLIntf, LCLType, LMessages, WSLCLClasses,
+  WSReferences, LCLProc, GraphType, Graphics, ImgList, ActnList, Themes, Menus,
+  Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
@@ -423,6 +423,9 @@ type
     procedure ShowCurrentPage;
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
+    procedure DoImageListDestroyResolutionHandle(Sender: TCustomImageList;
+      AWidth: Integer; AReferenceHandle: TLCLHandle);
+    procedure SetImageListAsync(Data: PtrInt);
   protected
     PageClass: TCustomPageClass;
     function GetPageClass: TCustomPageClass; virtual;
@@ -1468,6 +1471,9 @@ type
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
     procedure CNDrawItem(var Message: TLMDrawListItem); message CN_DRAWITEM;
     procedure InvalidateSelected;
+    procedure ImageResolutionHandleDestroyed(Sender: TCustomImageList;
+      AWidth: Integer; AReferenceHandle: TLCLHandle);
+    procedure SetImageListAsync(Data: PtrInt);
   private
     FOnCreateItemClass: TLVCreateItemClassEvent;
     FOnDrawItem: TLVDrawItemEvent;

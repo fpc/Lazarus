@@ -66,14 +66,20 @@ type
 
   TCustomImageList = class; //forward declaration
 
+  TDestroyResolutionHandleEvent = procedure(Sender: TCustomImageList; AWidth: Integer; AReferenceHandle: TLCLHandle) of object;
+
   TChangeLink = class(TObject)
   private
     FSender: TCustomImageList;
     FOnChange: TNotifyEvent;
+    FOnDestroyResolutionHandle: TDestroyResolutionHandleEvent;
+
+    procedure DoDestroyResolutionReference(const AWidth: Integer; AResolutionReference: TLCLHandle);
   public
     destructor Destroy; override;
     procedure Change; virtual;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnDestroyResolutionHandle: TDestroyResolutionHandleEvent read FOnDestroyResolutionHandle write FOnDestroyResolutionHandle;
     property Sender: TCustomImageList read FSender write FSender;
   end;
 
@@ -137,11 +143,10 @@ type
     procedure WriteData(AStream: TStream);
     procedure ReadData(AStream: TStream);
   protected
-    property ImageList: TCustomImageList read FImageList;
-
     function  GetReferenceHandle: THandle; override;
     function  WSCreateReference(AParams: TCreateParams): PWSReference; override;
     class procedure WSRegisterClass; override;
+    procedure ReferenceDestroying; override;
   public
     destructor Destroy; override;
   public
@@ -167,9 +172,11 @@ type
     procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawingStyle:
       TDrawingStyle; AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect); overload;
 
+    property ImageList: TCustomImageList read FImageList;
     property Width: Integer read FWidth;
     property Height: Integer read FHeight;
     property Count: Integer read FCount;
+
     property AutoCreatedInDesignTime: Boolean read FAutoCreatedInDesignTime write FAutoCreatedInDesignTime;
 
     property Reference: TWSCustomImageListReference read GetReference;
@@ -255,6 +262,7 @@ type
     function GetResolutionByIndex(AIndex: Integer): TCustomImageListResolution;
     function GetResolutionCount: Integer;
     procedure CreateDefaultResolution;
+    procedure DoDestroyResolutionReference(const AWidth: Integer; AResolutionReference: TLCLHandle);
   protected
     function GetResolution(AImageWidth: Integer): TCustomImageListResolution;
     function GetResolutionClass: TCustomImageListResolutionClass; virtual;
