@@ -230,14 +230,18 @@ procedure TLCLCommonCallback.OffsetMousePos(var Point: NSPoint);
 var
   lView: NSView;
 begin
-  lView := GetNSObjectView(Owner);
   if Owner.isKindOfClass(NSWindow) then
     Point.y := NSWindow(Owner).contentView.bounds.size.height - Point.y
-  else if lView <> nil then
+  else
   begin
-    Point := lView.convertPoint_fromView(Point, nil);
-    if not lView.isFlipped then
-      Point.y := lView.bounds.size.height - Point.y;
+    lView := GetNSObjectView(Owner);
+    if lView <> nil then
+    begin
+      lView.lclOffsetMousePos(Point);
+      //Point := lView.convertPoint_fromView(Point, nil);
+      //if not lView.isFlipped then
+        //Point.y := lView.bounds.size.height - Point.y;
+    end;
   end;
 end;
 

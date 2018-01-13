@@ -108,6 +108,7 @@ type
     function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
     function lclIsHandle: Boolean; message 'lclIsHandle';
     function lclContentView: NSView; message 'lclContentView';
+    procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:';
   end;
 
   { LCLViewExtension }
@@ -129,6 +130,7 @@ type
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
     function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
     function lclContentView: NSView; message 'lclContentView'; reintroduce;
+    procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:'; reintroduce;
   end;
 
   NSViewFix = objccategory external (NSView)
@@ -161,6 +163,7 @@ type
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
     function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
     function lclGetTopBarHeight:integer; message 'lclGetTopBarHeight'; reintroduce;
+    procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:'; reintroduce;
   end;
 
   { IButtonCallback }
@@ -2944,6 +2947,11 @@ begin
   Result := nil;
 end;
 
+procedure LCLObjectExtension.lclOffsetMousePos(var Point: NSPoint);
+begin
+
+end;
+
 { LCLControlExtension }
 
 function RectToViewCoord(view: NSView; const r: TRect): NSRect;
@@ -3149,6 +3157,27 @@ begin
   Result := self;
 end;
 
+procedure LCLViewExtension.lclOffsetMousePos(var Point: NSPoint);
+var
+  es : NSScrollView;
+  r  : NSRect;
+begin
+  Point := convertPoint_fromView(Point, nil);
+  es := enclosingScrollView;
+  if not isFlipped then
+    Point.y := bounds.size.height - Point.y;
+
+  if Assigned(es) then
+  begin
+    r := es.documentVisibleRect;
+    if isFlipped then
+      Point.y := Point.y - r.origin.y
+    else
+      Point.y := Point.y - (es.documentView.frame.size.height - r.size.height - r.origin.y);
+    Point.X := Point.X - r.origin.x;
+  end;
+end;
+
 { LCLWindowExtension }
 
 function LCLWindowExtension.lclIsVisible: Boolean;
@@ -3261,6 +3290,11 @@ begin
   nf:= NSMakeRect (0, 0, 100, 100);
   nw:=contentRectForFrameRect(nf);
   result:=round(nf.size.height-nw.size.height);
+end;
+
+procedure LCLWindowExtension.lclOffsetMousePos(var Point: NSPoint);
+begin
+  Point.y := contentView.bounds.size.height - Point.y;
 end;
 
 procedure LCLWindowExtension.lclSetFrame(const r: TRect);
