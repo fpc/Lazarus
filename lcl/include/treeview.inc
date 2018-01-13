@@ -5247,12 +5247,12 @@ var
   DrawState: TCustomDrawState;
   PaintImages: boolean;
   OverlayIndex: Integer;
-  ImageSize, StateImageSize: TSize;
+  ImageRes, StateImageRes: TCustomImageListResolution;
 begin
   if Assigned(FImages) then
-    ImageSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
+    ImageRes := Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch];
   if Assigned(FStateImages) then
-    StateImageSize := StateImages.SizeForPPI[StateImagesWidth, Font.PixelsPerInch];
+    StateImageRes := StateImages.ResolutionForPPI[StateImagesWidth, Font.PixelsPerInch];
   RealExpandSignSize := ExpandSignSize;
   RealIndent := Indent;
   NodeRect := Node.DisplayRect(False);
@@ -5301,9 +5301,9 @@ begin
       if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
       begin
         if PaintImages then
-          StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImageSize.Height) div 2,
+          StateImageRes.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImageRes.Height) div 2,
             Node.StateIndex, True);
-        Inc(x, StateImageSize.Width + FDefItemSpace);
+        Inc(x, StateImageRes.Width + FDefItemSpace);
       end;
     end;
 
@@ -5327,25 +5327,25 @@ begin
       	  if (Node.OverlayIndex >= 0) then begin
             OverlayIndex:=Node.OverlayIndex;
             if Images.HasOverlays then begin
-              Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageSize.Height) div 2,
+              ImageRes.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageRes.Height) div 2,
                  ImgIndex, OverlayIndex, Node.FNodeEffect);
             end else begin
               // draw the Overlay using the image from the list
               // set an Overlay
               Images.OverLay(OverlayIndex,0);
               // draw overlay
-              Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageSize.Height) div 2,
+              ImageRes.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageRes.Height) div 2,
                  ImgIndex, 0, Node.FNodeEffect);
               // reset the Overlay
               Images.OverLay(-1,0);
             end;
           end
           else begin
-            Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageSize.Height) div 2,
+            ImageRes.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageRes.Height) div 2,
                ImgIndex, Node.FNodeEffect);
           end;
         end;
-        Inc(x, ImageSize.Width + FDefItemSpace);
+        Inc(x, ImageRes.Width + FDefItemSpace);
       end;
     end;
 
