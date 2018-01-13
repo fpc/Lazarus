@@ -447,10 +447,12 @@ end;
 procedure TImageListEditorDlg.btnAddNewResolutionClick(Sender: TObject);
 var
   R: Longint;
+  Res: TDragImageListResolution;
 begin
   if TryStrToInt(InputBox(sccsILEdtAddNewResolution, sccsILEdtImageWidthOfNewResolution, ''), R) then
   begin
-    ImageList.RegisterResolutions([R]);
+    Res := ImageList.Resolution[R];
+    Res.AutoCreatedInDesignTime := False;
     RefreshItemHeight;
     ImageListBox.Repaint;
     UpdateImagesGroupBoxWidth;
@@ -651,6 +653,9 @@ begin
   if Assigned(AImageList) then
   begin
     ImageList.Assign(AImageList);
+    for R in ImageList.ResolutionsDesc do
+      if R.AutoCreatedInDesignTime then
+        ImageList.DeleteResolution(R.Width);
 
     ImageListBox.Items.BeginUpdate;
     try

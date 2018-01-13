@@ -923,11 +923,12 @@ end;
 function TCustomImageListResolutions.GetImageLists(
   const AImageWidth: Integer): TCustomImageListResolution;
 begin
-  Result := GetImageLists(AImageWidth, True);
+  Result := GetImageLists(AImageWidth, True, csDesigning in FImageList.ComponentState);
 end;
 
 function TCustomImageListResolutions.GetImageLists(const AImageWidth: Integer;
-  const AScaleFromExisting: Boolean): TCustomImageListResolution;
+  const AScaleFromExisting,
+  AutoCreatedInDesignTime: Boolean): TCustomImageListResolution;
 var
   I, L: Integer;
 begin
@@ -940,6 +941,7 @@ begin
     Result.FImageList := FImageList;
     Result.FWidth := AImageWidth;
     Result.FHeight := FImageList.Height * AImageWidth div FImageList.Width;
+    Result.FAutoCreatedInDesignTime := AutoCreatedInDesignTime and (AImageWidth<>FImageList.Width);
     if AScaleFromExisting then
     begin
       L := FindBestToCopyFrom(AImageWidth, I);
@@ -1121,7 +1123,7 @@ begin
 
       for FromR in ImgSrc.Resolutions do
       begin
-        ToR := FData.GetImageLists(FromR.Width, False);
+        ToR := FData.GetImageLists(FromR.Width, False, FromR.AutoCreatedInDesignTime);
         ToR.FWidth := FromR.FWidth;
         ToR.FCount := FromR.FCount;
         ToR.AllocData(ToR.FCount);
@@ -1775,21 +1777,26 @@ procedure TCustomImageList.WriteAdvData(AStream: TStream);
 var
   Signature: TImageListSignature;
   R: TCustomImageListResolution;
-  I, ResCount: Integer;
+  SaveR: array of TCustomImageListResolution;
+  I: Integer;
 begin
   //Write signature
   Signature:=SIG_LAZ3;
   AStream.Write(Signature,SizeOf(Signature));
 
-  ResCount := FData.Count;
-  if FData.Find(FWidth, I) then
-    Dec(ResCount);
-  //Count of resolutions
-  WriteLRSInteger(AStream, ResCount);
-
+  SetLength(SaveR, 0);
   for R in Resolutions do
-    if R.Width<>FWidth then
-      R.WriteData(AStream);
+    if (R.Width<>FWidth) and not R.AutoCreatedInDesignTime then
+    begin
+      SetLength(SaveR, Length(SaveR)+1);
+      SaveR[High(SaveR)] := R;
+    end;
+
+  //Count of resolutions
+  WriteLRSInteger(AStream, Length(SaveR));
+
+  for R in SaveR do
+    R.WriteData(AStream);
 end;
 
 {------------------------------------------------------------------------------
@@ -1839,11 +1846,8 @@ begin
       ImgWidth := ReadLRSCardinal(AStream);
       ImgHeight := ReadLRSCardinal(AStream);
 
-      R := FData.GetImageLists(ImgWidth, False);
-      if R.Height<>ImgHeight then
-        raise Exception.CreateFmt('Invalid BitmapAdv data for ImageWidth=%d. '+
-          'Expected height=%d, stored height=%d.', [R.Width, R.Height, ImgHeight]);
-
+      R := FData.GetImageLists(ImgWidth, False, False);
+      R.FHeight := ImgHeight;
       R.FCount := ImgCount;
       R.AllocData(R.FCount);
       if ImgCount > 0 then
@@ -2050,7 +2054,9 @@ var
   R: Integer;
 begin
   for R in AResolutionWidths do
-    GetResolution(R);
+  begin
+    GetResolution(R).AutoCreatedInDesignTime := False;
+  end;
 end;
 
 {------------------------------------------------------------------------------

@@ -115,6 +115,7 @@ type
     FAllocCount: Integer;
     FImageList: TCustomImageList;
     FCount: Integer;
+    FAutoCreatedInDesignTime: Boolean;
 
     procedure AllocData(ACount: Integer);
     function  GetReference: TWSCustomImageListReference;
@@ -169,6 +170,7 @@ type
     property Width: Integer read FWidth;
     property Height: Integer read FHeight;
     property Count: Integer read FCount;
+    property AutoCreatedInDesignTime: Boolean read FAutoCreatedInDesignTime write FAutoCreatedInDesignTime;
 
     property Reference: TWSCustomImageListReference read GetReference;
   end;
@@ -181,7 +183,8 @@ type
 
     function Find(const AImageWidth: Integer; out Index: Integer): Boolean;
     function GetImageLists(const AImageWidth: Integer): TCustomImageListResolution;
-    function GetImageLists(const AImageWidth: Integer; const AScaleFromExisting: Boolean): TCustomImageListResolution;
+    function GetImageLists(const AImageWidth: Integer; const AScaleFromExisting,
+      AutoCreatedInDesignTime: Boolean): TCustomImageListResolution;
     function GetItems(const AIndex: Integer): TCustomImageListResolution;
     function GetCount: Integer;
     function FindBestToCopyFrom(const ATargetWidth, AIgnoreIndex: Integer): Integer;
