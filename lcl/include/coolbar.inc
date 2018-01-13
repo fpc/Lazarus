@@ -88,9 +88,9 @@ begin
     inc(Result, FTextWidth+FCoolBar.HorizontalSpacing);
   if Assigned(FCoolBar.Images) then begin
     if not FCoolBar.Vertical then
-      aImageSize := FCoolBar.Images.WidthForImagePPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch]
+      aImageSize := FCoolBar.Images.WidthForPPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch]
     else
-      aImageSize := FCoolBar.Images.HeightForImagePPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch];
+      aImageSize := FCoolBar.Images.HeightForPPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch];
     if ImageIndex >= 0 then
       inc(Result, aImageSize+FCoolBar.HorizontalSpacing);
   end;
@@ -104,12 +104,12 @@ begin
     if Assigned(FControl) then
       Result := max(Result, FControl.Height+2*FCoolBar.VerticalSpacing);
     if Assigned(FCoolBar.Images) and (ImageIndex >= 0) then
-      Result := max(Result, FCoolBar.Images.HeightForImagePPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch]+2*FCoolBar.VerticalSpacing);
+      Result := max(Result, FCoolBar.Images.HeightForPPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch]+2*FCoolBar.VerticalSpacing);
   end else begin
     if Assigned(FControl) then
       Result := max(Result, FControl.Width+2*FCoolBar.VerticalSpacing);
     if Assigned(FCoolBar.Images) and (ImageIndex >= 0) then
-      Result := max(Result, FCoolBar.Images.WidthForImagePPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch]+2*FCoolBar.VerticalSpacing);
+      Result := max(Result, FCoolBar.Images.WidthForPPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch]+2*FCoolBar.VerticalSpacing);
   end;
   if FCoolBar.FShowText then
     Result := max(Result, FCoolBar.FTextHeight+2*FCoolBar.VerticalSpacing);
@@ -1231,7 +1231,7 @@ var k, x, aCountM1, aLeft, aTop: Integer;
 begin
   inherited Paint;
   if Assigned(FImages) then
-    aImageSize := FImages.SizeForImagePPI[ImagesWidth, Font.PixelsPerInch];
+    aImageSize := FImages.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
   //DebugLn('TCoolBar.Paint');
   //draw Bitmap Background
   if FBitmap.Width > 0 then

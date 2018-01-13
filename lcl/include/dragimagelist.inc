@@ -130,10 +130,10 @@ begin
   Result := TDragImageListResolution;
 end;
 
-function TDragImageList.GetResolutionForImagePPI(AImageWidth,
+function TDragImageList.GetResolutionForPPI(AImageWidth,
   APPI: Integer): TDragImageListResolution;
 begin
-  Result := TDragImageListResolution(inherited ResolutionForImagePPI[AImageWidth, APPI]);
+  Result := TDragImageListResolution(inherited ResolutionForPPI[AImageWidth, APPI]);
 end;
 
 {

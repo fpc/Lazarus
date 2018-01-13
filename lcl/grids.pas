@@ -5386,7 +5386,7 @@ begin
     not InRange(c.Title.ImageIndex, 0, TitleImageList.Count - 1)
   then
     exit;
-  aSize := TitleImageList.SizeForImagePPI[TitleImageListWidth, Font.PixelsPerInch];
+  aSize := TitleImageList.SizeForPPI[TitleImageListWidth, Font.PixelsPerInch];
   aWidth := aSize.Width;
   aHeight := aSize.Height;
   imgLayout := c.Title.ImageLayout;

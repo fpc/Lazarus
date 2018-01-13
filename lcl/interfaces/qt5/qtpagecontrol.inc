@@ -108,7 +108,7 @@ begin
 
   if Assigned(ImageList) then
   begin
-    Res := ImageList.ResolutionForImagePPI[TCustomTabControl(ACustomPage.Parent).ImagesWidth, TCustomTabControl(ACustomPage.Parent).Font.PixelsPerInch];
+    Res := ImageList.ResolutionForPPI[TCustomTabControl(ACustomPage.Parent).ImagesWidth, TCustomTabControl(ACustomPage.Parent).Font.PixelsPerInch];
     ImageIndex := TCustomTabControl(ACustomPage.Parent).GetImageIndex(ACustomPage.PageIndex);
     if (ImageIndex >= 0) and (ImageIndex < Res.Count) then
     begin

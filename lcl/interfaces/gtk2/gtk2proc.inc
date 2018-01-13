@@ -4267,7 +4267,7 @@ var
     and (ImageIndex < TheNoteBook.Images.Count) then
     begin
       // page has valid image
-      IconSize := TheNoteBook.Images.SizeForImagePPI[TheNoteBook.ImagesWidth, TheNoteBook.Font.PixelsPerInch];
+      IconSize := TheNoteBook.Images.SizeForPPI[TheNoteBook.ImagesWidth, TheNoteBook.Font.PixelsPerInch];
       HasIcon := (IconSize.Width>0) and (IconSize.Height>0);
     end;
 

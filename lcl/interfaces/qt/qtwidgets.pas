@@ -12557,7 +12557,7 @@ begin
         ImgList := TCustomListViewHack(LCLObject).SmallImages;
         if Assigned(ImgList) then
         begin
-          ImgListRes := ImgList.ResolutionForImagePPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
+          ImgListRes := ImgList.ResolutionForPPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
           QListWidgetItem_sizeHint(item, @ASize);
           if (ASize.cx <> ImgListRes.Width) or (ASize.cx <> ImgListRes.Height) then
           begin
@@ -14717,7 +14717,7 @@ begin
           ImgList := TCustomListViewHack(LCLObject).SmallImages;
           if Assigned(ImgList) then
           begin
-            ImgListRes := ImgList.ResolutionForImagePPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
+            ImgListRes := ImgList.ResolutionForPPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
             QTreeWidgetItem_sizeHint(item, @ASize, 0);
             if (ASize.cx <> ImgListRes.Width) or (ASize.cx <> ImgListRes.Height) then
             begin

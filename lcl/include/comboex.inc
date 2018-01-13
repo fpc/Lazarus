@@ -385,7 +385,7 @@ begin  { do not call inherited ! }
   if assigned(Images) then
     begin
       aItemIndex:=-1;
-      ImagesSize := Images.SizeForImagePPI[ImagesWidth, Font.PixelsPerInch];
+      ImagesSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
       if (aMainItem or (odSelected in State)) and
         ((ItemsEx[Index].SelectedImageIndex>=0) and (ItemsEx[Index].SelectedImageIndex<Images.Count))
         then aItemIndex:=ItemsEx[Index].SelectedImageIndex;

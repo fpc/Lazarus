@@ -211,7 +211,7 @@ type
     property Current: TCustomImageListResolution read GetCurrent;
   end;
 
-  TCustomImageListGetWidthForImagePPI = procedure(Sender: TCustomImageList;
+  TCustomImageListGetWidthForPPI = procedure(Sender: TCustomImageList;
     AImageWidth, APPI: Integer; var AResultWidth: Integer) of object;
 
   TCustomImageList = class(TLCLComponent)
@@ -232,7 +232,7 @@ type
     FUpdateCount: integer;
     FOverlays: array[TOverlay] of Integer;
     fHasOverlays: boolean;
-    FOnGetWidthForImagePPI: TCustomImageListGetWidthForImagePPI;
+    FOnGetWidthForPPI: TCustomImageListGetWidthForPPI;
 
     procedure NotifyChangeLink;
     procedure SetBkColor(const Value: TColor);
@@ -242,12 +242,12 @@ type
     procedure SetShareImages(const AValue: Boolean);
     procedure SetWidth(const Value: Integer);
     function GetReference(AImageWidth: Integer): TWSCustomImageListReference;
-    function GetReferenceForImagePPI(AImageWidth, APPI: Integer): TWSCustomImageListReference;
-    function GetResolutionForImagePPI(AImageWidth, APPI: Integer): TCustomImageListResolution;
-    function GetWidthForImagePPI(AImageWidth, APPI: Integer): Integer;
-    function GetHeightForImagePPI(AImageWidth, APPI: Integer): Integer;
+    function GetReferenceForPPI(AImageWidth, APPI: Integer): TWSCustomImageListReference;
+    function GetResolutionForPPI(AImageWidth, APPI: Integer): TCustomImageListResolution;
+    function GetWidthForPPI(AImageWidth, APPI: Integer): Integer;
+    function GetHeightForPPI(AImageWidth, APPI: Integer): Integer;
     function GetCount: Integer;
-    function GetSizeForImagePPI(AImageWidth, APPI: Integer): TSize;
+    function GetSizeForPPI(AImageWidth, APPI: Integer): TSize;
     function GetBestIconIndexForSize(AIcon: TCustomIcon; AWidth: Integer): Integer;
     function GetResolutionByIndex(AIndex: Integer): TCustomImageListResolution;
     function GetResolutionCount: Integer;
@@ -334,23 +334,23 @@ type
     property Count: Integer read GetCount;
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
     property Height: Integer read FHeight write SetHeight default 16;
-    property HeightForImagePPI[AImageWidth, APPI: Integer]: Integer read GetHeightForImagePPI;
+    property HeightForPPI[AImageWidth, APPI: Integer]: Integer read GetHeightForPPI;
     property Width: Integer read FWidth write SetWidth default 16;
-    property WidthForImagePPI[AImageWidth, APPI: Integer]: Integer read GetWidthForImagePPI;
-    property SizeForImagePPI[AImageWidth, APPI: Integer]: TSize read GetSizeForImagePPI;
+    property WidthForPPI[AImageWidth, APPI: Integer]: Integer read GetWidthForPPI;
+    property SizeForPPI[AImageWidth, APPI: Integer]: TSize read GetSizeForPPI;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Masked: boolean read FMasked write SetMasked default False;
     property Reference[AImageWidth: Integer]: TWSCustomImageListReference read GetReference;
-    property ReferenceForImagePPI[AImageWidth, APPI: Integer]: TWSCustomImageListReference read GetReferenceForImagePPI;
+    property ReferenceForPPI[AImageWidth, APPI: Integer]: TWSCustomImageListReference read GetReferenceForPPI;
     property Resolution[AImageWidth: Integer]: TCustomImageListResolution read GetResolution;
     property ResolutionByIndex[AIndex: Integer]: TCustomImageListResolution read GetResolutionByIndex;
-    property ResolutionForImagePPI[AImageWidth, APPI: Integer]: TCustomImageListResolution read GetResolutionForImagePPI;
+    property ResolutionForPPI[AImageWidth, APPI: Integer]: TCustomImageListResolution read GetResolutionForPPI;
     property ResolutionCount: Integer read GetResolutionCount;
     function Resolutions: TCustomImageListResolutionEnumerator;
     function ResolutionsDesc: TCustomImageListResolutionEnumerator;
     property ShareImages: Boolean read FShareImages write SetShareImages default False;
     property ImageType: TImageType read FImageType write FImageType default itImage;
-    property OnGetWidthForImagePPI: TCustomImageListGetWidthForImagePPI read FOnGetWidthForImagePPI write FOnGetWidthForImagePPI;
+    property OnGetWidthForPPI: TCustomImageListGetWidthForPPI read FOnGetWidthForPPI write FOnGetWidthForPPI;
   end;
 
 implementation

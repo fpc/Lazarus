@@ -1140,7 +1140,7 @@ begin
   if AImageIndex < AImageList.Count then
   begin
     APPI := GetDeviceCaps(AHDC, LOGPIXELSX);
-    TWin32WSCustomImageListResolution.DrawToDC(AImageList.ResolutionForImagePPI[AImagesWidth, APPI],
+    TWin32WSCustomImageListResolution.DrawToDC(AImageList.ResolutionForPPI[AImagesWidth, APPI],
       AImageIndex, AHDC, ImageRect,
       AImageList.BkColor, AImageList.BlendColor,
       AEffect, AImageList.DrawingStyle, AImageList.ImageType);

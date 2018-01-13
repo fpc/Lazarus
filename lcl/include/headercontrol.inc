@@ -414,7 +414,7 @@ begin
   if (Images <> nil) and (Section.ImageIndex <> -1) then
   begin
     inc(ContentRect.Left);
-    ImagesSize := Images.SizeForImagePPI[ImagesWidth, Font.PixelsPerInch];
+    ImagesSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
     ThemeServices.DrawIcon(Canvas, Details,
       Point(ContentRect.Left, (ContentRect.Top + ContentRect.Bottom - ImagesSize.Height) div 2),
       Images, Section.ImageIndex);

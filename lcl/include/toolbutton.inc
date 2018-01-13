@@ -356,7 +356,7 @@ begin
     GetCurrentIcon(ImgList, ImgIndex, ImgEffect);
     if (ImgList<>nil) then
     begin
-      IconSize := ImgList.SizeForImagePPI[FToolBar.ImagesWidth, Font.PixelsPerInch];
+      IconSize := ImgList.SizeForPPI[FToolBar.ImagesWidth, Font.PixelsPerInch];
       if IconSize.Height <= 0 then
         IconSize.Width := 0;
     end;
@@ -438,7 +438,7 @@ begin
 
     // draw icon
     if (ImgList<>nil) then
-      ImgList.ResolutionForImagePPI[FToolBar.ImagesWidth, Font.PixelsPerInch].Draw(Canvas, IconPos.X, IconPos.Y, ImgIndex, ImgEffect);
+      ImgList.ResolutionForPPI[FToolBar.ImagesWidth, Font.PixelsPerInch].Draw(Canvas, IconPos.X, IconPos.Y, ImgIndex, ImgEffect);
 
     // draw text
     if (TextSize.cx > 0) then
@@ -1156,7 +1156,7 @@ begin
       GetCurrentIcon(ImgList, ImgIndex, ImgEffect);
       if Assigned(ImgList) then
       begin
-        IconSize := ImgList.SizeForImagePPI[FToolBar.ImagesWidth, FToolBar.Font.PixelsPerInch];
+        IconSize := ImgList.SizeForPPI[FToolBar.ImagesWidth, FToolBar.Font.PixelsPerInch];
         if IconSize.Height <= 0 then IconSize.Width := 0;
       end;
     end;

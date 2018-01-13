@@ -355,7 +355,7 @@ begin
 
   if not (AWinControl is TTabControl) then begin
     if T.Images <> nil then
-      SendMessage(Result, TCM_SETIMAGELIST, 0, T.Images.ReferenceForImagePPI[T.ImagesWidth, T.Font.PixelsPerInch]._Handle);
+      SendMessage(Result, TCM_SETIMAGELIST, 0, T.Images.ReferenceForPPI[T.ImagesWidth, T.Font.PixelsPerInch]._Handle);
 
     // although we may be child of tabpage, cut the paint chain
     // to improve speed and possible paint anomalities
@@ -653,7 +653,7 @@ begin
     Exit;
 
   if AImageList <> nil then
-    SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, AImageList.ReferenceForImagePPI[ATabControl.ImagesWidth, ATabControl.Font.PixelsPerInch]._Handle)
+    SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, AImageList.ReferenceForPPI[ATabControl.ImagesWidth, ATabControl.Font.PixelsPerInch]._Handle)
   else
     SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, 0);
   // if you set big images like 32x32 then tabs will be big too => you need to

@@ -38,7 +38,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
+  Types, Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
   LResources, LMessages, ActnList, Graphics, ImgList, LCLClasses, Themes;
 
 type

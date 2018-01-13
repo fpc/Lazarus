@@ -487,7 +487,7 @@ begin
     begin
       GetImageList(iml, imw);
       if (iml <> nil) and (ImageIndex < iml.Count) then
-        iml.ResolutionForImagePPI[imw, 96].GetBitmap(ImageIndex, FBitmap);
+        iml.ResolutionForPPI[imw, 96].GetBitmap(ImageIndex, FBitmap);
     end;
     
     FBitmap.OnChange := @BitmapChange;
@@ -998,6 +998,7 @@ function TMenuItem.GetIconSize(ADC: HDC): TPoint;
 var
   AImageList: TCustomImageList;
   PPI, AImageListWidth: Integer;
+  Size: TSize;
 begin
   FillChar(Result, SizeOf(Result), 0);
   if HasIcon then
@@ -1008,8 +1009,9 @@ begin
       if (FImageIndex >= AImageList.Count) then
         Exit;
       PPI := GetDeviceCaps(ADC, LOGPIXELSX);
-      Result.x := AImageList.WidthForImagePPI[AImageListWidth, PPI];
-      Result.y := AImageList.HeightForImagePPI[AImageListWidth, PPI];
+      Size := AImageList.SizeForPPI[AImageListWidth, PPI];
+      Result.x := Size.cx;
+      Result.y := Size.cy;
     end
     else // using size of Bitmap
     begin

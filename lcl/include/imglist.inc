@@ -1449,12 +1449,12 @@ begin
   GetResolution(FWidth).GetFullRawImage(Image);
 end;
 
-function TCustomImageList.GetHeightForImagePPI(AImageWidth,
+function TCustomImageList.GetHeightForPPI(AImageWidth,
   APPI: Integer): Integer;
 var
   I: Integer;
 begin
-  AImageWidth := GetWidthForImagePPI(AImageWidth, APPI);
+  AImageWidth := GetWidthForPPI(AImageWidth, APPI);
   if FData.Find(AImageWidth, I) then
     Result := FData[I].Height
   else
@@ -1482,28 +1482,28 @@ begin
   Result := GetResolution(AImageWidth).Reference;
 end;
 
-function TCustomImageList.GetReferenceForImagePPI(AImageWidth,
+function TCustomImageList.GetReferenceForPPI(AImageWidth,
   APPI: Integer): TWSCustomImageListReference;
 begin
-  Result := GetReference(GetWidthForImagePPI(AImageWidth, APPI));
+  Result := GetReference(GetWidthForPPI(AImageWidth, APPI));
 end;
 
-function TCustomImageList.GetResolutionForImagePPI(AImageWidth,
+function TCustomImageList.GetResolutionForPPI(AImageWidth,
   APPI: Integer): TCustomImageListResolution;
 begin
-  Result := GetResolution(GetWidthForImagePPI(AImageWidth, APPI));
+  Result := GetResolution(GetWidthForPPI(AImageWidth, APPI));
 end;
 
-function TCustomImageList.GetSizeForImagePPI(AImageWidth, APPI: Integer): TSize;
+function TCustomImageList.GetSizeForPPI(AImageWidth, APPI: Integer): TSize;
 var
   Res: TCustomImageListResolution;
 begin
-  Res := GetResolutionForImagePPI(AImageWidth, APPI);
+  Res := GetResolutionForPPI(AImageWidth, APPI);
   Result.Width := Res.Width;
   Result.Height := Res.Height;
 end;
 
-function TCustomImageList.GetWidthForImagePPI(AImageWidth,
+function TCustomImageList.GetWidthForPPI(AImageWidth,
   APPI: Integer): Integer;
 var
   Factor: Integer;
@@ -1520,8 +1520,8 @@ begin
     Factor := Round(ScreenInfo.PixelsPerInchX/96) * 100; // 200, 300, 400, ...
 
   Result := AImageWidth * Factor div 100;
-  if Assigned(FOnGetWidthForImagePPI) then
-    FOnGetWidthForImagePPI(Self, AImageWidth, APPI, Result);
+  if Assigned(FOnGetWidthForPPI) then
+    FOnGetWidthForPPI(Self, AImageWidth, APPI, Result);
 end;
 
 function TCustomImageList.GetResolution(

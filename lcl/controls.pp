@@ -373,7 +373,7 @@ type
     FImageIndex: Integer;
     procedure SetDragCursor(const AValue: TCursor);
     function GetResolution(AImageWidth: Integer): TDragImageListResolution;
-    function GetResolutionForImagePPI(AImageWidth,
+    function GetResolutionForPPI(AImageWidth,
       APPI: Integer): TDragImageListResolution;
     function GetDragging: Boolean;
     function GetDraggingResolution: TDragImageListResolution;
@@ -396,7 +396,7 @@ type
     property Dragging: Boolean read GetDragging;
     property DraggingResolution: TDragImageListResolution read GetDraggingResolution;
     property Resolution[AImageWidth: Integer]: TDragImageListResolution read GetResolution;
-    property ResolutionForImagePPI[AImageWidth, APPI: Integer]: TDragImageListResolution read GetResolutionForImagePPI;
+    property ResolutionForPPI[AImageWidth, APPI: Integer]: TDragImageListResolution read GetResolutionForPPI;
   end;
 
   TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift: TShiftState) of Object;
@@ -2394,6 +2394,7 @@ type
     property ShareImages;
     property Width;
     property OnChange;
+    property OnGetWidthForPPI;
   end;
 
 

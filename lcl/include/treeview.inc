@@ -1716,7 +1716,7 @@ begin
   TV := TreeView;
   if (TV = nil) or (TV.StateImages = nil) then Exit;
   if (StateIndex < 0) or (StateIndex >= TV.StateImages.Count) then Exit;
-  Inc(Result, TV.StateImages.WidthForImagePPI[TV.StateImagesWidth, TV.Font.PixelsPerInch] + TV.FDefItemSpace);
+  Inc(Result, TV.StateImages.WidthForPPI[TV.StateImagesWidth, TV.Font.PixelsPerInch] + TV.FDefItemSpace);
 end;
 
 function TTreeNode.DisplayStateIconLeft: integer;
@@ -1737,7 +1737,7 @@ begin
   else
     ImgIndex:=ImageIndex;
   if (ImgIndex<0) or (ImgIndex>=TV.Images.Count) then Exit;
-  Inc(Result, TV.Images.WidthForImagePPI[TV.StateImagesWidth, TV.Font.PixelsPerInch] + TV.FDefItemSpace);
+  Inc(Result, TV.Images.WidthForPPI[TV.StateImagesWidth, TV.Font.PixelsPerInch] + TV.FDefItemSpace);
 end;
 
 function TTreeNode.DisplayTextRight: integer;
@@ -3613,9 +3613,9 @@ begin
   and HandleAllocated and Canvas.HandleAllocated then begin
     NewDefItemHeight:=Canvas.TextHeight(TVAutoHeightString)+FDefItemSpace;
     if Assigned(FImages) then
-      ImageSize := Images.SizeForImagePPI[ImagesWidth, Font.PixelsPerInch];
+      ImageSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
     if Assigned(FStateImages) then
-      StateImageSize := StateImages.SizeForImagePPI[StateImagesWidth, Font.PixelsPerInch];
+      StateImageSize := StateImages.SizeForPPI[StateImagesWidth, Font.PixelsPerInch];
     if NewDefItemHeight<FDefItemSpace then NewDefItemHeight:=FDefItemSpace;
     if (Images<>nil) and (ImageSize.Height+FDefItemSpace>NewDefItemHeight) then
       NewDefItemHeight:=ImageSize.Height+FDefItemSpace;
@@ -5250,9 +5250,9 @@ var
   ImageSize, StateImageSize: TSize;
 begin
   if Assigned(FImages) then
-    ImageSize := Images.SizeForImagePPI[ImagesWidth, Font.PixelsPerInch];
+    ImageSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
   if Assigned(FStateImages) then
-    StateImageSize := StateImages.SizeForImagePPI[StateImagesWidth, Font.PixelsPerInch];
+    StateImageSize := StateImages.SizeForPPI[StateImagesWidth, Font.PixelsPerInch];
   RealExpandSignSize := ExpandSignSize;
   RealIndent := Indent;
   NodeRect := Node.DisplayRect(False);
@@ -5811,7 +5811,7 @@ begin
   if Images <> nil then begin
     Images.RegisterChanges(FImageChangeLink);
     Images.FreeNotification(Self);
-    AImageHeight := Images.HeightForImagePPI[ImagesWidth, Font.PixelsPerInch];
+    AImageHeight := Images.HeightForPPI[ImagesWidth, Font.PixelsPerInch];
     if DefaultItemHeight<AImageHeight+FDefItemSpace then
       DefaultItemHeight:=AImageHeight+FDefItemSpace;
   end;
@@ -5859,7 +5859,7 @@ begin
   if StateImages <> nil then begin
     StateImages.RegisterChanges(FStateChangeLink);
     StateImages.FreeNotification(Self);
-    AStateImageHeight := StateImages.HeightForImagePPI[StateImagesWidth, Font.PixelsPerInch];
+    AStateImageHeight := StateImages.HeightForPPI[StateImagesWidth, Font.PixelsPerInch];
     if DefaultItemHeight<AStateImageHeight+FDefItemSpace then
       DefaultItemHeight:=AStateImageHeight+FDefItemSpace;
   end;
