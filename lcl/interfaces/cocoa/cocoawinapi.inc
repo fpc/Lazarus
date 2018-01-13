@@ -712,11 +712,33 @@ end;
 function TCocoaWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
 var
   ctx: TCocoaContext;
+  p: Integer;
+  pn: TCocoaPen;
+  opn: TCocoaPen;
 begin
+
   ctx := CheckDC(DC);
   Result := Assigned(ctx);
   if Result then
-    ctx.DrawFocusRect(Rect);
+  begin
+    //ctx.DrawFocusRect(Rect);
+
+    // drawing in Windows compatible XOR style
+
+    p:=ctx.ROP2;
+    opn:=ctx.Pen;
+    pn:=TCocoaPen.Create(clDkGray, psSolid, true, 2, pmCopy, pecFlat, pjsRound, false );
+    try
+      ctx.Pen:=pn;
+      ctx.ROP2:=R2_NOTXORPEN;
+      ctx.Pen.Apply(ctx, true);
+      ctx.Frame(Rect);
+    finally
+      ctx.ROP2:=p;
+      ctx.Pen:=opn;
+      pn.Free;
+    end;
+  end;
 end;
 
 function TCocoaWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
