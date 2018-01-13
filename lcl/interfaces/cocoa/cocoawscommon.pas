@@ -101,7 +101,6 @@ type
     class procedure SetChildZPosition(const AWinControl, AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
-    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
 
@@ -1571,24 +1570,6 @@ class procedure TCocoaWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
   if AWinControl.HandleAllocated then
      NSObject(AWinControl.Handle).lclInvalidate;
-end;
-
-class procedure TCocoaWSWinControl.ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer);
-var
-  obj: NSObject;
-  p: NSPoint;
-  dv, cv: NSRect;
-begin
-  obj := NSObject(AWinControl.Handle);
-  if obj.isKindOfClass_(NSScrollView) and
-    assigned(NSScrollView(obj).documentView) then
-  begin
-    dv := NSRect(NSScrollView(obj).documentView.bounds);
-    cv := NSRect(NSScrollView(obj).contentView.bounds);
-    p.x := cv.origin.x + DeltaX;
-    p.y := cv.origin.y + (dv.size.height + DeltaY) - cv.size.height;
-    NSScrollview(obj).documentView.scrollPoint(p);
-  end;
 end;
 
 { TCocoaWSCustomControl }

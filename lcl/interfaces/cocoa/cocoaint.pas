@@ -325,23 +325,26 @@ end;
 procedure NSScrollViewSetScrollInfo(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
 var
   ns : NSView;
+  vr : NSRect;
   p  : NSPoint;
 begin
   ns:=sc.documentView;
   if not Assigned(ns) then Exit;
 
-  p:=sc.documentVisibleRect.origin;
+  vr:=sc.documentVisibleRect;
   if BarFlag = SB_Vert then
   begin
     //NSScrollerSetScrollInfo(ns.frame.size.height, sc.verticalScroller, ScrollInfo)
-    p:=NSMakePoint(p.x, ScrollInfo.nPos);
+    vr.origin.y := sc.documentView.frame.size.height - ScrollInfo.nPos - vr.size.Height;
+    if vr.origin.y < 0 then vr.origin.y := 0;
   end
   else
   begin
     //NSScrollerSetScrollInfo(ns.frame.size.width, sc.horizontalScroller, ScrollInfo);
-    p:=NSMakePoint(ScrollInfo.nPos, p.y);
+    vr.origin.x:=ScrollInfo.nPos;
   end;
-  ns.scrollPoint(p);
+  ns.scrollRectToVisible(vr);
+  p:=sc.documentVisibleRect.origin;
 end;
 
 function HandleToNSObject(AHWnd: HWND): id;

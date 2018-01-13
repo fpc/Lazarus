@@ -481,6 +481,11 @@ type
   public
     callback: ICommonCallback;
     isCustomRange: Boolean;
+
+    docrect    : NSRect;    // have to remember old
+    holdscroll : Integer; // do not send scroll messages
+    function initWithFrame(ns: NSRect): id; override;
+    procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -490,6 +495,9 @@ type
     function lclIsHandle: Boolean; override;
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
+    procedure setDocumentView(aView: NSView); override;
+    procedure scrollContentViewBoundsChanged(notify: NSNotification); message 'scrollContentViewBoundsChanged:';
+    procedure resetScrollRect; message 'resetScrollRect';
   end;
 
   { TCocoaManualScrollView }
@@ -1916,6 +1924,66 @@ end;
 function TCocoaScrollView.lclContentView: NSView;
 begin
   Result:=documentView;
+end;
+
+procedure TCocoaScrollView.setDocumentView(aView: NSView);
+begin
+  inherited setDocumentView(aView);
+  resetScrollRect;
+end;
+
+procedure TCocoaScrollView.scrollContentViewBoundsChanged(notify: NSNotification
+  );
+var
+  nw    : NSRect;
+  dx,dy : CGFloat;
+begin
+  if not assigned(documentView) then Exit;
+  nw:=documentVisibleRect;
+
+  dx:=nw.origin.x-docrect.origin.x;
+  dy:=docrect.origin.y-nw.origin.y; // cocoa flipped coordinates
+
+  docrect:=nw;
+  if (dx=0) and (dy=0) then Exit;
+
+  if holdscroll>0 then Exit;
+  inc(holdscroll);
+  try
+    if (dx<>0) and assigned(callback) then
+      callback.scroll(false, round(nw.origin.x));
+
+    if (dy<>0) and assigned(callback) then
+      callback.scroll(true, round(self.documentView.frame.size.height - self.documentVisibleRect.origin.y - self.documentVisibleRect.size.height));
+  finally
+    dec(holdscroll);
+  end;
+end;
+
+procedure TCocoaScrollView.resetScrollRect;
+begin
+  docrect:=documentVisibleRect;
+end;
+
+function TCocoaScrollView.initWithFrame(ns: NSRect): id;
+var
+  sc : TCocoaScrollView;
+begin
+  Result:=inherited initWithFrame(ns);
+  sc:=TCocoaScrollView(Result);
+
+  //sc.contentView.setPostsBoundsChangedNotifications(true);
+  NSNotificationCenter.defaultCenter
+    .addObserver_selector_name_object(sc, ObjCSelector('scrollContentViewBoundsChanged:')
+      ,NSViewBoundsDidChangeNotification
+      ,sc.contentView);
+end;
+
+procedure TCocoaScrollView.dealloc;
+begin
+  NSNotificationCenter.defaultCenter
+    .removeObserver(self);
+  inherited dealloc;
 end;
 
 function TCocoaScrollView.acceptsFirstResponder: Boolean;
