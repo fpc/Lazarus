@@ -67,11 +67,6 @@ type
     procedure SetCollection(NewCollection: TCollection;
                     NewOwnerPersistent: TPersistent; const NewPropName: String);
     procedure Modified;
-  public
-    property Collection: TCollection read FCollection;
-    property OwnerComponent: TPersistent read FOwnerComponent;
-    property OwnerPersistent: TPersistent read FOwnerPersistent;
-    property PropertyName: String read FPropertyName;
   end;
 
 implementation
@@ -122,8 +117,8 @@ end;
 
 procedure TDBGridColumnsPropertyEditorForm.actAddExecute(Sender: TObject);
 begin
-  if Collection = nil then Exit;
-  Collection.Add;
+  if FCollection = nil then Exit;
+  FCollection.Add;
 
   FillCollectionListBox;
   if CollectionListBox.Items.Count > 0 then
@@ -140,20 +135,20 @@ var
   Item: TColumn;
   i: Integer;
 begin
-  if Collection=nil then Exit;
-  if not (Collection is TDBGridColumns) then Exit;
+  if FCollection=nil then Exit;
+  if not (FCollection is TDBGridColumns) then Exit;
   DataSet:=GetDataSet;
   if DataSet=nil then Exit;
 
-  if Collection.Count>0 then
+  if FCollection.Count>0 then
     if (MessageDlg(dceColumnEditor, dceOkToDelete, mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then
       Exit;
 
   try
-    Collection.Clear;
+    FCollection.Clear;
     for i:=0 to DataSet.Fields.Count-1 do
     begin
-      Item:=Collection.Add as TColumn;
+      Item:=FCollection.Add as TColumn;
       Item.Field:=DataSet.Fields[i];
       Item.Title.Caption:=DataSet.Fields[i].DisplayLabel;
     end;
@@ -167,13 +162,13 @@ end;
 
 procedure TDBGridColumnsPropertyEditorForm.actDeleteAllExecute(Sender: TObject);
 begin
-  if Collection = nil then
+  if FCollection = nil then
     Exit;
   if (MessageDlg(dceColumnEditor, dceOkToDelete, mtConfirmation,
                  [mbYes, mbNo], 0) = mrYes) then
     try
       UnSelectInObjectInspector;
-      Collection.Clear;
+      FCollection.Clear;
     finally
       RefreshPropertyValues;
       UpdateButtons;
@@ -186,11 +181,11 @@ procedure TDBGridColumnsPropertyEditorForm.actDelExecute(Sender: TObject);
 var
   I : Integer;
 begin
-  if Collection = nil then Exit;
+  if FCollection = nil then Exit;
   I := CollectionListBox.ItemIndex;
-  if (I < 0) or (I >= Collection.Count) then Exit;
+  if (I < 0) or (I >= FCollection.Count) then Exit;
   if MessageDlg(oisConfirmDelete,
-                Format(oisDeleteItem, [Collection.Items[I].DisplayName]),
+                Format(oisDeleteItem, [FCollection.Items[I].DisplayName]),
                 mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
     Exit;
 
@@ -198,7 +193,7 @@ begin
   // unselect all items in OI (collections can act strange on delete)
   UnSelectInObjectInspector;
   // now delete
-  Collection.Items[I].Free;
+  FCollection.Items[I].Free;
   // update listbox after whatever happened
   FillCollectionListBox;
   // set new ItemIndex
@@ -241,12 +236,12 @@ procedure TDBGridColumnsPropertyEditorForm.actMoveDownExecute(Sender: TObject);
 var
   I: Integer;
 begin
-  if Collection = nil then Exit;
+  if FCollection = nil then Exit;
 
   I := CollectionListBox.ItemIndex;
-  if I >= Collection.Count - 1 then Exit;
+  if I >= FCollection.Count - 1 then Exit;
 
-  Collection.Items[I].Index := I + 1;
+  FCollection.Items[I].Index := I + 1;
   CollectionListBox.ItemIndex := I + 1;
 
   FillCollectionListBox;
@@ -258,12 +253,12 @@ procedure TDBGridColumnsPropertyEditorForm.actMoveUpExecute(Sender: TObject);
 var
   I: Integer;
 begin
-  if Collection = nil then Exit;
+  if FCollection = nil then Exit;
 
   I := CollectionListBox.ItemIndex;
   if I < 0 then Exit;
 
-  Collection.Items[I].Index := I - 1;
+  FCollection.Items[I].Index := I - 1;
   CollectionListBox.ItemIndex := I - 1;
 
   FillCollectionListBox;
@@ -277,16 +272,16 @@ var
 begin
   //I think to match Delphi this should be formatted like
   //"Editing ComponentName.PropertyName[Index]"
-  if OwnerPersistent is TComponent then
-    NewCaption := TComponent(OwnerPersistent).Name
+  if FOwnerPersistent is TComponent then
+    NewCaption := TComponent(FOwnerPersistent).Name
   else
-    if OwnerPersistent <> nil then
-      NewCaption := OwnerPersistent.GetNamePath
+    if FOwnerPersistent <> nil then
+      NewCaption := FOwnerPersistent.GetNamePath
     else
       NewCaption := '';
 
   if NewCaption <> '' then NewCaption := NewCaption + '.';
-  NewCaption := oiColEditEditing + ' ' + NewCaption + PropertyName;
+  NewCaption := oiColEditEditing + ' ' + NewCaption + FPropertyName;
 
   if CollectionListBox.ItemIndex > -1 then
     NewCaption := NewCaption + '[' + IntToStr(CollectionListBox.ItemIndex) + ']';
@@ -298,7 +293,7 @@ var
   I: Integer;
 begin
   I := CollectionListBox.ItemIndex;
-  actAdd.Enabled := Collection <> nil;
+  actAdd.Enabled := FCollection <> nil;
   actFetchLabels.Enabled:=actAdd.Enabled and (CollectionListBox.Items.Count > 0);
   actDel.Enabled := I > -1;
   actMoveUp.Enabled := I > 0;
@@ -314,7 +309,7 @@ end;
 procedure TDBGridColumnsPropertyEditorForm.ComponentRenamed(AComponent: TComponent);
 begin
   //DebugLn('*** TDBGridColumnsPropertyEditorForm.ComponentRenamed called ***');
-  if AComponent = OwnerPersistent then
+  if AComponent = FOwnerPersistent then
     UpdateCaption;
 end;
 
@@ -323,7 +318,7 @@ begin
   // For some reason this is called only when the whole collection is deleted,
   // for example when changing to another project. Thus clear the whole collection.
   DebugLn(['TDBGridColumnsPropertyEditorForm.PersistentDeleting: APersistent=', APersistent,
-           ', OwnerPersistent=', OwnerPersistent, ', OwnerComponent=', OwnerComponent]);
+           ', FOwnerPersistent=', FOwnerPersistent, ', FOwnerComponent=', FOwnerComponent]);
   SetCollection(nil, nil, '');
   Hide;
   UpdateButtons;
@@ -344,17 +339,17 @@ var
 begin
   CollectionListBox.Items.BeginUpdate;
   try
-    if Collection <> nil then
-      Cnt := Collection.Count
+    if FCollection <> nil then
+      Cnt := FCollection.Count
     else
       Cnt := 0;
 
     // add or replace list items
     for I := 0 to Cnt - 1 do
     begin
-      CurItem := IntToStr(I) + ' - ' + Collection.Items[I].DisplayName;// +' '+ TDBGrid(TColumn(Collection.Items[I]).Grid).DataSource.DataSet.FieldByName( TColumn(Collection.Items[I]).FieldName ).DisplayLabel ;// + ' - '+Collection.Items[I].ClassName +' - ' + Collection.ClassName;
+      CurItem := IntToStr(I) + ' - ' + FCollection.Items[I].DisplayName;
 
-      DividerToolButton1.Visible := (Collection is TDBGridColumns);
+      DividerToolButton1.Visible := (FCollection is TDBGridColumns);
       btAddFlds.Visible := DividerToolButton1.Visible;
       actAddFields.Enabled := DividerToolButton1.Visible;
       if I >= CollectionListBox.Items.Count then
@@ -387,13 +382,13 @@ var
   I: Integer;
   NewSelection: TPersistentSelectionList;
 begin
-  Assert(Assigned(Collection), 'SelectInObjectInspector: Collection=Nil.');
+  Assert(Assigned(FCollection), 'SelectInObjectInspector: FCollection=Nil.');
   // select in OI
   NewSelection := TPersistentSelectionList.Create;
   try
     for I := 0 to CollectionListBox.Items.Count - 1 do
       if CollectionListBox.Selected[I] then
-        NewSelection.Add(Collection.Items[I]);
+        NewSelection.Add(FCollection.Items[I]);
     UpdDesignHook(NewSelection);
   finally
     NewSelection.Free;
@@ -416,7 +411,7 @@ procedure TDBGridColumnsPropertyEditorForm.UpdDesignHook(aSelection: TPersistent
 begin
   if GlobalDesignHook = nil then Exit;
   GlobalDesignHook.SetSelection(aSelection);
-  GlobalDesignHook.LookupRoot := GetLookupRootForComponent(OwnerPersistent);
+  GlobalDesignHook.LookupRoot := GetLookupRootForComponent(FOwnerPersistent);
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.SetCollection(NewCollection: TCollection;
@@ -436,7 +431,7 @@ begin
       break;
     FOwnerComponent := TPersistentAccess(FOwnerComponent).GetOwner;
   end;
-  //debugln('TDBGridColumnsPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
+  //debugln('TDBGridColumnsPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(FOwnerPersistent),' PropName=',FPropertyName);
   if GlobalDesignHook <> nil then
   begin
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
