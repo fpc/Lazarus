@@ -335,8 +335,10 @@ begin
   if BarFlag = SB_Vert then
   begin
     //NSScrollerSetScrollInfo(ns.frame.size.height, sc.verticalScroller, ScrollInfo)
-    vr.origin.y := sc.documentView.frame.size.height - ScrollInfo.nPos - vr.size.Height;
-    if vr.origin.y < 0 then vr.origin.y := 0;
+    if not sc.documentView.isFlipped then
+      vr.origin.y := sc.documentView.frame.size.height - ScrollInfo.nPos - vr.size.Height
+    else
+      vr.origin.y := ScrollInfo.nPos;
   end
   else
   begin
