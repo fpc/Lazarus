@@ -1388,7 +1388,7 @@ type
     fCodeTemplateFileName: String;
     fCTemplIndentToTokenStart: Boolean;
     fAutoDisplayFuncPrototypes: Boolean;
-    fUseExtendedFilter: Boolean;
+    fUseContainsFilter: Boolean;
     fHighlightCodeCompletionPrefix: Boolean;
 
     // Code Folding
@@ -1581,8 +1581,8 @@ type
       read fAutoToolTipSymbTools write fAutoToolTipSymbTools default True; // declaration hints
     property AutoDisplayFunctionPrototypes: Boolean
       read fAutoDisplayFuncPrototypes write fAutoDisplayFuncPrototypes default True;
-    property ExtendedCompletionFilter: Boolean
-      read fUseExtendedFilter write fUseExtendedFilter default True;
+    property ContainsCompletionFilter: Boolean
+      read fUseContainsFilter write fUseContainsFilter default True;
     property HighlightCodeCompletionPrefix: Boolean
       read fHighlightCodeCompletionPrefix write fHighlightCodeCompletionPrefix default True;
 
@@ -4774,8 +4774,8 @@ begin
     FCompletionLongLineHintType := DefaultCompletionLongLineHintType;
     XMLConfig.ReadObject('EditorOptions/CodeTools/CompletionLongLineHintType',
                          Self, Self, 'CompletionLongLineHintType');
-    fUseExtendedFilter :=
-      XMLConfig.GetValue('EditorOptions/CodeTools/ExtendedCompletionFilter', True);
+    fUseContainsFilter :=
+      XMLConfig.GetValue('EditorOptions/CodeTools/ContainsCompletionFilter', True);
     fHighlightCodeCompletionPrefix :=
       XMLConfig.GetValue('EditorOptions/CodeTools/HighlightCodeCompletionPrefix', True);
 
@@ -4971,8 +4971,8 @@ begin
       FCompletionLongLineHintInMSec, 0);
     XMLConfig.WriteObject('EditorOptions/CodeTools/CompletionLongLineHintType',
                          Self, nil, 'CompletionLongLineHintType');
-    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/ExtendedCompletionFilter'
-      , fUseExtendedFilter, True);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/ContainsCompletionFilter'
+      , fUseContainsFilter, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/HighlightCodeCompletionPrefix'
       , fHighlightCodeCompletionPrefix, True);
 

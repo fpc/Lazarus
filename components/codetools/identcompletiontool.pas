@@ -244,7 +244,7 @@ type
     FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
     FStartContext: TFindContext;
-    FExtendedFilter: Boolean;
+    FContainsFilter: Boolean;
     function CompareIdentListItems({%H-}Tree: TAvlTree; Data1, Data2: Pointer): integer;
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure SetSortForHistory(AValue: boolean);
@@ -274,23 +274,21 @@ type
                                        read FContextFlags write FContextFlags;
     property NewMemberVisibility: TCodeTreeNodeDesc // identifier is a class member, e.g. a variable or a procedure name
                      read FNewMemberVisibility write FNewMemberVisibility;
-    property FilteredItems[Index: integer]: TIdentifierListItem
-                                                          read GetFilteredItems;
+    property FilteredItems[Index: integer]: TIdentifierListItem read GetFilteredItems;
     property History: TIdentifierHistoryList read FHistory write SetHistory;
     property Prefix: string read FPrefix write SetPrefix;
     property SortForHistory: boolean read FSortForHistory write SetSortForHistory;
     property SortForScope: boolean read FSortForScope write SetSortForScope;
     property StartAtom: TAtomPosition read FStartAtom write FStartAtom;
     property StartAtomInFront: TAtomPosition
-                                 read FStartAtomInFront write FStartAtomInFront; // in front of variable, not only of identifier
+      read FStartAtomInFront write FStartAtomInFront; // in front of variable, not only of identifier
     property StartAtomBehind: TAtomPosition
-                                   read FStartAtomBehind write FStartAtomBehind; // directly behind
-    property StartBracketLvl: integer
-                                   read FStartBracketLvl write FStartBracketLvl;
+                  read FStartAtomBehind write FStartAtomBehind; // directly behind
+    property StartBracketLvl: integer read FStartBracketLvl write FStartBracketLvl;
     property StartContext: TFindContext read FStartContext write FStartContext;
     property StartContextPos: TCodeXYPosition
                                    read FStartContextPos write FStartContextPos;
-    property ExtendedFilter: Boolean read FExtendedFilter write FExtendedFilter;
+    property ContainsFilter: Boolean read FContainsFilter write FContainsFilter;
   end;
   
   //----------------------------------------------------------------------------
@@ -634,7 +632,7 @@ begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
     if CurItem.Identifier<>'' then
     begin
-      if FExtendedFilter then
+      if FContainsFilter then
         i:=IdentifierPos(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
       else if ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier))) then
         i:=0
