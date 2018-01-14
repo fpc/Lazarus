@@ -265,6 +265,15 @@ type
     //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
     procedure keyUp(event: NSEvent); override;
     procedure textDidChange(notification: NSNotification); override;
+    // mouse
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
   end;
 
   { TCocoaSecureTextField }
@@ -283,6 +292,15 @@ type
     // key
     //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
     procedure keyUp(event: NSEvent); override;
+    // mouse
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
   end;
 
 
@@ -2500,6 +2518,56 @@ begin
     callback.SendOnTextChanged;
 end;
 
+procedure TCocoaTextField.mouseDown(event: NSEvent);
+begin
+  writeln('text field mouse down');
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
+end;
+
+procedure TCocoaTextField.mouseUp(event: NSEvent);
+begin
+  writeln('text field mouse up');
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaTextField.rightMouseDown(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaTextField.rightMouseUp(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaTextField.otherMouseDown(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaTextField.otherMouseUp(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaTextField.mouseDragged(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaTextField.mouseMoved(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
 { TCocoaTextView }
 
 function TCocoaTextView.lclIsHandle: Boolean;
@@ -2728,6 +2796,54 @@ begin
     callback.KeyEvent(event);
   end;
   inherited keyUp(event);
+end;
+
+procedure TCocoaSecureTextField.mouseDown(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
+end;
+
+procedure TCocoaSecureTextField.mouseUp(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaSecureTextField.rightMouseDown(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaSecureTextField.rightMouseUp(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaSecureTextField.otherMouseDown(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaSecureTextField.otherMouseUp(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaSecureTextField.mouseDragged(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaSecureTextField.mouseMoved(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseMove(event) then
+    inherited mouseMoved(event);
 end;
 
 { TCocoaCustomControl }
