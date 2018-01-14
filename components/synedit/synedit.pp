@@ -6739,10 +6739,10 @@ begin
         end;
       ecDeleteWord, ecDeleteEOL:
         if not ReadOnly then begin
-          Len := LogicalToPhysicalCol(LineText, CaretY-1,Length(LineText)+1)-1;
           Helper := '';
           Caret := CaretXY;
           if Command = ecDeleteWord then begin
+            Len := LogicalToPhysicalCol(LineText, CaretY-1,Length(LineText)+1)-1;
             if CaretX > Len + 1 then begin
               Helper := StringOfChar(' ', CaretX - 1 - Len);
               CaretX := 1 + Len;
@@ -6758,7 +6758,7 @@ begin
               // if we are inside a word, delete to word-end
               WP := NextWordLogicalPos(swbWordEnd, True);
           end else
-            WP := Point(Len + 1, CaretY);
+            WP := Point(Length(LineText) + 1, CaretY);
           if (WP.X <> FCaret.BytePos) or (WP.Y <> FCaret.LinePos) then begin
             FInternalBlockSelection.StartLineBytePos := WP;
             FInternalBlockSelection.EndLineBytePos := LogicalCaretXY;
