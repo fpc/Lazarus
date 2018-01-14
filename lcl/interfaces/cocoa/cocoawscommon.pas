@@ -34,6 +34,7 @@ type
     procedure SetHasCaret(AValue: Boolean);
     function GetIsOpaque: Boolean;
     procedure SetIsOpaque(AValue: Boolean);
+    function GetShouldBeEnabled: Boolean;
   protected
     FTarget: TWinControl;
     class function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt; static;
@@ -1220,6 +1221,11 @@ end;
 procedure TLCLCommonCallback.SetIsOpaque(AValue: Boolean);
 begin
   FIsOpaque:=AValue;
+end;
+
+function TLCLCommonCallback.GetShouldBeEnabled: Boolean;
+begin
+  Result := Assigned(FTarget) and FTarget.Enabled;
 end;
 
 { TCocoaWSWinControl }

@@ -76,6 +76,7 @@ type
     procedure SetHasCaret(AValue: Boolean);
     function GetIsOpaque: Boolean;
     procedure SetIsOpaque(AValue: Boolean);
+    function GetShouldBeEnabled: Boolean;
 
     // properties
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
@@ -115,6 +116,8 @@ type
 
   LCLViewExtension = objccategory(NSView)
     function lclInitWithCreateParams(const AParams: TCreateParams): id; message 'lclInitWithCreateParams:';
+    function lclIsEnabled: Boolean; message 'lclIsEnabled'; reintroduce;
+    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:'; reintroduce;
 
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
     procedure lclSetVisible(AVisible: Boolean); message 'lclSetVisible:'; reintroduce;
@@ -2976,7 +2979,8 @@ end;
 
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
 begin
-  SetEnabled(AEnabled);
+  SetEnabled(AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled)) );
+  inherited lclSetEnabled(AEnabled);
 end;
 
 function LCLViewExtension.lclInitWithCreateParams(const AParams: TCreateParams): id;
@@ -3022,6 +3026,28 @@ begin
   if Assigned(p) then
     p.lclContentView.addSubview(Result);
   SetViewDefaults(Result);
+end;
+
+function LCLViewExtension.lclIsEnabled: Boolean;
+begin
+  Result := true;
+end;
+
+procedure LCLViewExtension.lclSetEnabled(AEnabled: Boolean);
+var
+  ns : NSArray;
+  i  : integer;
+  e  : Boolean;
+  cb : ICommonCallback;
+  obj : NSObject;
+begin
+  ns := subviews;
+  for i := 0 to ns.count - 1 do
+  begin
+    obj := NSObject(ns.objectAtIndex( i ));
+    cb := obj.lclGetCallback;
+    obj.lclSetEnabled(AEnabled and ((not Assigned(cb)) or cb.GetShouldBeEnabled) );
+  end;
 end;
 
 function LCLViewExtension.lclIsVisible: Boolean;
