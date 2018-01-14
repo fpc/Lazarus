@@ -2554,8 +2554,6 @@ var
     CurControl: TControl;
   begin
     Result := True;
-    if cfAutoSizeNeeded in FControlFlags then
-      Exit;
     for I := ControlCount - 1 downto 0 do
     begin
       CurControl:=Controls[I];
@@ -2563,6 +2561,7 @@ var
       or (CurControl.Anchors <> [akLeft, akTop])
       or (CurControl.AnchorSide[akLeft].Control<>nil)
       or (CurControl.AnchorSide[akTop].Control<>nil)
+      or (cfAutoSizeNeeded in CurControl.FControlFlags)
       or (ChildSizing.Layout<>cclNone)
       then Exit;
     end;

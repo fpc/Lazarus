@@ -3017,27 +3017,28 @@ procedure TControl.DoAllAutoSize;
   var
     AWinControl: TWinControl;
     i: Integer;
+    Needed: Boolean;
   begin
     if AControl.AutoSizeDelayed then exit;
+    Needed:=cfAutoSizeNeeded in AControl.FControlFlags;
 
     //DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize,' IsControlVisible=',AControl.IsControlVisible,' cfAutoSizeNeeded=',Needed]);
-    if AControl.IsControlVisible then
-    begin
-      if (cfAutoSizeNeeded in AControl.FControlFlags) and AControl.AutoSize and
-         (not ((AControl.Parent = nil) and (csDesigning in AControl.ComponentState)))
-      then
-        AControl.DoAutoSize;
-      if AControl is TWinControl then
-      begin
-        // recursive
-        AWinControl := TWinControl(AControl);
-        //DebugLn(['AutoSizeControl ',DbgSName(AWinControl)]);
-        AWinControl.AlignControl(nil);
-        for i := 0 to AWinControl.ControlCount - 1 do
-          AutoSizeControl(AWinControl.Controls[i]);
-      end;
-    end;
     Exclude(AControl.FControlFlags, cfAutoSizeNeeded);
+    if not AControl.IsControlVisible then exit;
+
+    if Needed and AControl.AutoSize and
+       (not ((AControl.Parent = nil) and (csDesigning in AControl.ComponentState)))
+    then
+      AControl.DoAutoSize;
+    if AControl is TWinControl then
+    begin
+      // recursive
+      AWinControl := TWinControl(AControl);
+      //DebugLn(['AutoSizeControl ',DbgSName(AWinControl)]);
+      AWinControl.AlignControl(nil);
+      for i := 0 to AWinControl.ControlCount - 1 do
+        AutoSizeControl(AWinControl.Controls[i]);
+    end;
   end;
 
   function CallAllOnResize(AControl: TControl): boolean;
