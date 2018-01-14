@@ -251,7 +251,7 @@ begin
     FIndexOfLongestLine := FIndexOfLongestLine + ACount;
 
   if ACount < 0 then begin
-    if (FIndexOfLongestLine >= AIndex) and (FIndexOfLongestLine < AIndex-ACount) then
+    if (FIndexOfLongestLine >= AIndex+ACount) and (FIndexOfLongestLine < AIndex) then
       FIndexOfLongestLine := -1;
     if (FFirstUnknownLongestLine >= 0) then begin
       if (AIndex < FFirstUnknownLongestLine) then
