@@ -697,7 +697,10 @@ begin
   field := GetTextField(AWinControl);
   if not Assigned(field) then Exit;
 
-  field.setBackgroundColor( ColorToNSColor(AWinControl.Color));
+  if (AWinControl.Color = clDefault) or (AWinControl.Color = clWindow) or (AWinControl.Color = clBackground)  then
+    field.setBackgroundColor( NSColor.textBackgroundColor )
+  else
+    field.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -1080,7 +1083,11 @@ var
 begin
   txt := GetTextView(AWinControl);
   if not Assigned(txt) then Exit;
-  txt.setBackgroundColor( ColorToNSColor(AWinControl.Color));
+
+  if (AWinControl.Color = clDefault) or (AWinControl.Color = clWindow) or (AWinControl.Color = clBackground) then
+    txt.setBackgroundColor( NSColor.textBackgroundColor )
+  else
+    txt.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
