@@ -1565,10 +1565,6 @@ msgstr "Tyyppi"
 msgid "Focus messages at compilation"
 msgstr "Fokusoi viesti-ikkuna käännettäessä"
 
-#: lazarusidestrconsts.dlgextendedfilterincompletionbox
-msgid "Extended filter"
-msgstr ""
-
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Merkkien välistys"
@@ -2139,6 +2135,10 @@ msgid ""
 msgstr ""
 "Samanniminen työpöytä on jo olemassa.\n"
 "Vahvista työpöydän nimi:\n"
+
+#: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
+msgid "Include identifiers containing prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"

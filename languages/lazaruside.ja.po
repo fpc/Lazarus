@@ -1572,10 +1572,6 @@ msgstr "タイプ"
 msgid "Focus messages at compilation"
 msgstr "コンパイル時にメッセージをフォーカス"
 
-#: lazarusidestrconsts.dlgextendedfilterincompletionbox
-msgid "Extended filter"
-msgstr ""
-
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "文字間隔の追加分"
@@ -2169,6 +2165,10 @@ msgid ""
 msgstr ""
 "同じ名前のデスクトップが既に存在しています。\n"
 "デスクトップ名を確認して下さい:\n"
+
+#: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
+msgid "Include identifiers containing prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"

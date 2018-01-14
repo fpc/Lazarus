@@ -1575,10 +1575,6 @@ msgstr "Type"
 msgid "Focus messages at compilation"
 msgstr "Focus sur les messages lors de la compilation"
 
-#: lazarusidestrconsts.dlgextendedfilterincompletionbox
-msgid "Extended filter"
-msgstr ""
-
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Espace entre les caractères"
@@ -2170,6 +2166,10 @@ msgid ""
 msgstr ""
 "Un bureau portant le même nom existe déjà.\n"
 "Veuillez confirmer le nom du bureau :\n"
+
+#: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
+msgid "Include identifiers containing prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"

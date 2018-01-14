@@ -1575,10 +1575,6 @@ msgstr "Tipas"
 msgid "Focus messages at compilation"
 msgstr "Kompiliuojant fokusą perkelti į pranešimus"
 
-#: lazarusidestrconsts.dlgextendedfilterincompletionbox
-msgid "Extended filter"
-msgstr ""
-
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Papildomas tarpas tarp simbolių"
@@ -2170,6 +2166,10 @@ msgid ""
 msgstr ""
 "Egzistuoja darbalaukis tokiu pat pavadinimu.\n"
 "Patvirkinte darbalaukio pavadinimą:\n"
+
+#: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
+msgid "Include identifiers containing prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"

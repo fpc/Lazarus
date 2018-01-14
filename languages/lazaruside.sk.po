@@ -1628,10 +1628,6 @@ msgstr "Typ"
 msgid "Focus messages at compilation"
 msgstr ""
 
-#: lazarusidestrconsts.dlgextendedfilterincompletionbox
-msgid "Extended filter"
-msgstr ""
-
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Dodatočná medzera medzi znakmi"
@@ -2243,6 +2239,10 @@ msgstr ""
 msgid ""
 "A desktop with the same name already exists.\n"
 "Please confirm the desktop name:\n"
+msgstr ""
+
+#: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
+msgid "Include identifiers containing prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables

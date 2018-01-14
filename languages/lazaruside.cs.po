@@ -1575,10 +1575,6 @@ msgstr "Typ"
 msgid "Focus messages at compilation"
 msgstr ""
 
-#: lazarusidestrconsts.dlgextendedfilterincompletionbox
-msgid "Extended filter"
-msgstr ""
-
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
 msgstr "Dodatečné mezery znaku"
@@ -2170,6 +2166,10 @@ msgid ""
 msgstr ""
 "Již existuje plocha se stejným jménem.\n"
 "Prosím potvrďte jméno plochy:\n"
+
+#: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
+msgid "Include identifiers containing prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
