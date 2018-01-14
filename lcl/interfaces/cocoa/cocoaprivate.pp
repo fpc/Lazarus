@@ -2563,14 +2563,17 @@ end;
 
 procedure TCocoaTextView.mouseDown(event: NSEvent);
 begin
-  inherited mouseDown(event);
-  if callback <> nil then
+  if Assigned(callback) then
   begin
-    callback.MouseUpDownEvent(event);
+    if not callback.MouseUpDownEvent(event) then
+      inherited mouseDown(event);
+
     // Cocoa doesn't call mouseUp for NSTextView, so we have to emulate it here :(
     // See bug 29000
-    callback.MouseUpDownEvent(event, True);
-  end;
+    if Assigned(callback) then
+      callback.MouseUpDownEvent(event, True);
+  end else
+    inherited mouseDown(event);
 end;
 
 procedure TCocoaTextView.mouseUp(event: NSEvent);
@@ -3518,9 +3521,8 @@ end;
 
 procedure TCocoaListBox.mouseDown(event: NSEvent);
 begin
-  if Assigned(callback) then callback.MouseUpDownEvent(event);
-  // Always call inherited, otherwise clicking stops working, see bug 30297
-  inherited mouseDown(event);
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited mouseDown(event);
 end;
 
 procedure TCocoaListBox.rightMouseDown(event: NSEvent);
