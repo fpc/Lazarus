@@ -51,6 +51,7 @@ type
     class procedure SetProperties(const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
     //
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TCocoaWSCustomTabControl }
@@ -351,6 +352,21 @@ begin
   // Pages should be fixed into their PageControl owner,
   // allowing the TCocoaWSWinControl.SetBounds function to operate here
   // was causing bug 28489
+end;
+
+class procedure TCocoaWSCustomPage.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  lTitle: String;
+  page  : TCocoaTabPage;
+begin
+  if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
+
+  page := GetCocoaTabPageFromHandle(AWinControl.Handle);
+  if not Assigned(page) then Exit;
+  lTitle := AText;
+  DeleteAmpersands(lTitle);
+  page.setLabel(NSStringUTF8(lTitle));
 end;
 
 { TCocoaWSCustomTabControl }
