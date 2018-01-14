@@ -309,7 +309,7 @@ type
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
-    {procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
     procedure rightMouseUp(event: NSEvent); override;
     procedure otherMouseDown(event: NSEvent); override;
     procedure otherMouseUp(event: NSEvent); override;
@@ -317,8 +317,8 @@ type
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
-    procedure mouseMoved(event: NSEvent); override;}
-    //
+    procedure mouseMoved(event: NSEvent); override;
+
     function lclIsEnabled: Boolean; override;
     procedure lclSetEnabled(AEnabled: Boolean); override;
 
@@ -2578,9 +2578,55 @@ end;
 
 procedure TCocoaTextView.mouseUp(event: NSEvent);
 begin
-  inherited mouseUp(event);
   if callback <> nil then
     callback.MouseUpDownEvent(event);
+  inherited mouseUp(event);
+end;
+
+procedure TCocoaTextView.rightMouseDown(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaTextView.rightMouseUp(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaTextView.otherMouseDown(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaTextView.otherMouseUp(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaTextView.mouseDragged(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaTextView.mouseEntered(event: NSEvent);
+begin
+  inherited mouseEntered(event);
+end;
+
+procedure TCocoaTextView.mouseExited(event: NSEvent);
+begin
+  inherited mouseExited(event);
+end;
+
+procedure TCocoaTextView.mouseMoved(event: NSEvent);
+begin
+  if Assigned(callback) and not callback.MouseMove(event) then
+    inherited mouseMoved(event);
 end;
 
 function TCocoaTextView.lclIsEnabled: Boolean;
