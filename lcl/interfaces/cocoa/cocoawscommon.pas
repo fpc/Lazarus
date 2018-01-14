@@ -771,10 +771,16 @@ var
   //Str: string;
   lEventType: NSEventType;
 begin
-  Result := False; // allow cocoa to handle message
+  if Assigned(Owner) and not Owner.lclIsEnabled then
+  begin
+    Result := True; // Cocoa should not handle the message.
+    Exit;           // LCL should get the notification either.
+  end;
 
-  if Assigned(Target) and (not (csDesigning in Target.ComponentState) and not Owner.lclIsEnabled) then
-    Exit;
+  // If LCL control is provided and it's in designing state.
+  // The default resolution: Notify LCL about event, but don't let Cocoa
+  // do anything with it. (Result=true)
+  Result := Assigned(Target) and (csDesigning in Target.ComponentState);
 
   lCaptureControlCallback := GetCaptureControlCallback();
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [Target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
@@ -822,7 +828,6 @@ begin
 
       NotifyApplicationUserInput(Target, Msg.Msg);
       DeliverMessage(Msg);
-      Result := True;
 
       // TODO: Check if Cocoa has special context menu check event
       if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) then
@@ -835,7 +840,6 @@ begin
         MsgContext.XPos := Round(MousePos.X);
         MsgContext.YPos := Round(MousePos.Y);
         DeliverMessage(MsgContext);
-        Result := True;
       end;
     end;
     NSLeftMouseUp,
@@ -852,7 +856,6 @@ begin
 
       NotifyApplicationUserInput(Target, Msg.Msg);
       DeliverMessage(Msg);
-      Result := True;
     end;
   end;
 
@@ -871,10 +874,16 @@ var
   targetControl: TWinControl;
   childControl:TWinControl;
 begin
-  Result := False; // allow cocoa to handle message
+  if Assigned(Owner) and not Owner.lclIsEnabled then
+  begin
+    Result := True; // Cocoa should not handle the message.
+    Exit;           // LCL should get the notification either.
+  end;
 
-  if Assigned(Target) and (not (csDesigning in Target.ComponentState) and not Owner.lclIsEnabled) then
-    Exit;
+  // If LCL control is provided and it's in designing state.
+  // The default resolution: Notify LCL about event, but don't let Cocoa
+  // do anything with it. (Result=true)
+  Result := Assigned(Target) and (csDesigning in Target.ComponentState);
 
   MousePos := Event.locationInWindow;
   OffsetMousePos(MousePos);
