@@ -247,6 +247,9 @@ procedure TSynEditStringTabExpander.LineCountChanged(Sender: TSynEditStrings; AI
 var
   i: integer;
 begin
+  if (FIndexOfLongestLine >= AIndex) then
+    FIndexOfLongestLine := FIndexOfLongestLine + ACount;
+
   if ACount < 0 then begin
     if (FIndexOfLongestLine >= AIndex) and (FIndexOfLongestLine < AIndex-ACount) then
       FIndexOfLongestLine := -1;
@@ -260,8 +263,6 @@ begin
     exit;
   end;
 
-  if (FIndexOfLongestLine >= AIndex) then
-    FIndexOfLongestLine := FIndexOfLongestLine + ACount;
   if (FFirstUnknownLongestLine < 0) or (AIndex < FFirstUnknownLongestLine) then
     FFirstUnknownLongestLine := AIndex;
   if (AIndex < FLastUnknownLongestLine) or (FLastUnknownLongestLine < 0) then
