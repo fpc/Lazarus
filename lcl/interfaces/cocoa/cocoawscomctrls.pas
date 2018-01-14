@@ -479,7 +479,13 @@ begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
-  lClientPos := LCLToNSPoint(AClientPos, lTabControl.frame.size.height);
+  if lTabControl.isFlipped then
+  begin
+    lClientPos.x := AClientPos.X;
+    lClientPos.y := AClientPos.Y;
+  end
+  else
+    lClientPos := LCLToNSPoint(AClientPos, lTabControl.frame.size.height);
   lTabPage := lTabControl.tabViewItemAtPoint(lClientPos);
   Result := lTabControl.indexOfTabViewItem(lTabPage);
 end;
