@@ -483,7 +483,8 @@ var
   R: NSRect;
   pool:NSAutoReleasePool;
   lDestView: NSView;
- begin
+  ds: TCocoaDesignOverlay;
+begin
   //todo: create TCocoaWindow or TCocoaPanel depending on the border style
   //      if parent is specified neither Window nor Panel needs to be created
   //      the only thing that needs to be created is Content
@@ -537,6 +538,15 @@ var
 
     // support for drag & drop
     win.registerForDraggedTypes(NSArray.arrayWithObjects_count(@NSFilenamesPboardType, 1));
+
+    if IsFormDesign(AWinControl) then begin
+      ds:=(TCocoaDesignOverlay.alloc).initWithFrame(cnt.frame);
+      ds.callback := cnt.callback;
+      ds.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
+      cnt.addSubview_positioned_relativeTo(ds, NSWindowAbove, nil);
+      cnt.overlay := ds;
+    end;
+
   end
   else
   begin

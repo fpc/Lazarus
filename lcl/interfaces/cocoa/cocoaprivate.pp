@@ -58,6 +58,7 @@ type
     // misc events
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    procedure DrawOverlay(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     function ResetCursorRects: Boolean;
     procedure BecomeFirstResponder;
     procedure ResignFirstResponder;
@@ -414,6 +415,17 @@ type
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
   end;
 
+  { TCocoaDesignOverlay }
+
+  TCocoaDesignOverlay = objcclass(NSView)
+    callback  : ICommonCallback;
+    procedure drawRect(r: NSRect); override;
+    function acceptsFirstResponder: Boolean; override;
+    function hitTest(aPoint: NSPoint): NSView; override;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+  end;
+
   { TCocoaCustomControl }
 
   TCocoaCustomControl = objcclass(NSControl)
@@ -469,6 +481,7 @@ type
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
     ownwin: NSWindow;
     popup_parent: HWND; // if not 0, indicates that we should set the popup parent
+    overlay: NSView;
     procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
@@ -479,6 +492,7 @@ type
     procedure dealloc; override;
     procedure setHidden(aisHidden: Boolean); override;
     function lclIsHandle: Boolean; override;
+    procedure didAddSubview(aview: NSView); override;
   end;
 
   { TCocoaScrollView }
@@ -1032,6 +1046,35 @@ begin
   {$ENDIF}
 end;
 
+{ TCocoaDesignOverlay }
+
+procedure TCocoaDesignOverlay.drawRect(r: NSRect);
+begin
+  if Assigned(callback) then
+    callback.DrawOverlay(NSGraphicsContext.currentContext, bounds, r);
+  inherited drawRect(r);
+end;
+
+function TCocoaDesignOverlay.acceptsFirstResponder: Boolean;
+begin
+  Result:=false; // no focus
+end;
+
+function TCocoaDesignOverlay.hitTest(aPoint: NSPoint): NSView;
+begin
+  Result:=nil;  // no mouse
+end;
+
+function TCocoaDesignOverlay.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaDesignOverlay.lclClearCallback;
+begin
+  callback := nil;
+end;
+
 { TCocoaManualScrollView }
 
 function TCocoaManualScrollView.lclGetCallback: ICommonCallback;
@@ -1270,6 +1313,17 @@ end;
 function TCocoaWindowContent.lclIsHandle: Boolean;
 begin
   Result:=true;
+end;
+
+procedure TCocoaWindowContent.didAddSubview(aview: NSView);
+begin
+  if Assigned(aview) and Assigned(overlay) and (overlay<>aview) then
+  begin
+    overlay.retain;
+    overlay.removeFromSuperview;
+    addSubview_positioned_relativeTo(overlay, NSWindowAbove, nil);
+  end;
+  inherited didAddSubview(aview);
 end;
 
 procedure TCocoaWindowContent.didBecomeKeyNotification(sender: NSNotification);

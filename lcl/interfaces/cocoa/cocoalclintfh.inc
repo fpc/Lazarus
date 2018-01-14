@@ -31,9 +31,9 @@ function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState)
 function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetDesignerDC(WindowHandle: HWND): HDC; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
-
+}
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
-
+{
 function PromptUser(const DialogCaption : string;
                     const DialogMessage : string;
                           DialogType    : LongInt;

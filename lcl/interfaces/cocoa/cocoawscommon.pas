@@ -70,6 +70,7 @@ type
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
+    procedure DrawOverlay(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     function ResetCursorRects: Boolean; virtual;
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
@@ -1188,6 +1189,35 @@ begin
   begin
     ColorToNSColor(ColorToRGB(lTarget.Color)).set_();
     NSRectFill(dirtyRect);
+  end;
+end;
+
+procedure TLCLCommonCallback.DrawOverlay(ControlContext: NSGraphicsContext;
+  const bounds, dirty: NSRect);
+var
+  PS  : TPaintStruct;
+  nsr : NSRect;
+begin
+  // todo: think more about draw call while previous draw still active
+  if Assigned(FContext) then
+    Exit;
+  FContext := TCocoaContext.Create(ControlContext);
+  FContext.isControlDC := True;
+  FContext.isDesignDC := True;
+  try
+    // debugln('Draw '+Target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
+    if FContext.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
+    begin
+      nsr:=dirty;
+      nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
+
+      FillChar(PS, SizeOf(TPaintStruct), 0);
+      PS.hdc := HDC(FContext);
+      PS.rcPaint := NSRectToRect(nsr);
+      LCLSendPaintMsg(Target, HDC(FContext), @PS);
+    end;
+  finally
+    FreeAndNil(FContext);
   end;
 end;
 

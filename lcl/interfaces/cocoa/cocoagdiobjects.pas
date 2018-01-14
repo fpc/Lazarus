@@ -400,6 +400,7 @@ type
   public
     ctx: NSGraphicsContext;
     isControlDC: Boolean; // control DCs should never be freed by ReleaseDC as the control will free it by itself
+    isDesignDC: Boolean;  // this is a special Designer Overlay DC
     constructor Create(AGraphicsContext: NSGraphicsContext); virtual;
     destructor Destroy; override;
 
