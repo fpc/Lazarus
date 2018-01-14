@@ -396,8 +396,8 @@ type
     function  CheckHasType(TypeName: String; TypeFlag: TGDBMITargetFlag): TGDBMIExecResult;
     function  PointerTypeCast: string;
     function  FrameToLocation(const AFrame: String = ''): TDBGLocationRec;
-    procedure ProcessFrame(const ALocation: TDBGLocationRec); overload;
-    procedure ProcessFrame(const AFrame: String = ''); overload;
+    procedure ProcessFrame(ALocation: TDBGLocationRec; ASeachStackForSource: Boolean = True); overload;
+    procedure ProcessFrame(const AFrame: String = ''; ASeachStackForSource: Boolean = True); overload;
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
     property  LastExecResult: TGDBMIExecResult read FLastExecResult;
     property  DefaultTimeOut: Integer read FDefaultTimeOut write FDefaultTimeOut;
@@ -6037,21 +6037,21 @@ begin
     if Reason = 'function-finished'
     then begin
       SetDebuggerState(dsPause);
-      ProcessFrame(List.Values['frame']);
+      ProcessFrame(List.Values['frame'], False);
       Exit;
     end;
 
     if Reason = 'end-stepping-range'
     then begin
       SetDebuggerState(dsPause);
-      ProcessFrame(List.Values['frame']);
+      ProcessFrame(List.Values['frame'], False);
       Exit;
     end;
 
     if Reason = 'location-reached'
     then begin
       SetDebuggerState(dsPause);
-      ProcessFrame(List.Values['frame']);
+      ProcessFrame(List.Values['frame'], False);
       Exit;
     end;
 
@@ -11164,18 +11164,23 @@ begin
   Frame.Free;
 end;
 
-procedure TGDBMIDebuggerCommand.ProcessFrame(const ALocation: TDBGLocationRec);
+procedure TGDBMIDebuggerCommand.ProcessFrame(ALocation: TDBGLocationRec;
+  ASeachStackForSource: Boolean);
 begin
+  // TODO: process stack in gdbmi debugger // currently: signal IDE
+  if (not ASeachStackForSource) and (ALocation.SrcLine < 0) then
+    ALocation.SrcLine := -2;
   FTheDebugger.DoCurrent(ALocation); // TODO: only selected callers
   FTheDebugger.FCurrentLocation := ALocation;
 end;
 
-procedure TGDBMIDebuggerCommand.ProcessFrame(const AFrame: String);
+procedure TGDBMIDebuggerCommand.ProcessFrame(const AFrame: String;
+  ASeachStackForSource: Boolean);
 var
   Location: TDBGLocationRec;
 begin
   Location := FrameToLocation(AFrame);
-  ProcessFrame(Location);
+  ProcessFrame(Location, ASeachStackForSource);
 end;
 
 procedure TGDBMIDebuggerCommand.DoDbgEvent(const ACategory: TDBGEventCategory;

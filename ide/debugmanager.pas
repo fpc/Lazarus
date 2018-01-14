@@ -1305,7 +1305,7 @@ begin
   SrcLine := ALocation.SrcLine;
   CurrentSourceUnitInfo := nil;
 
-  if SrcLine < 1
+  if (SrcLine < 1) and (SrcLine <> -2) // TODO: this should move to the debugger
   then begin
     // jump to the deepest stack frame with debugging info
     // TODO: Only below the frame supplied by debugger
