@@ -20,6 +20,7 @@ const
   SIG_LAZ1 = #1#0;
   SIG_LAZ2 = 'li';
   SIG_LAZ3 = 'Li';
+  SIG_LAZ4 = 'Lz';
   SIG_D3   = 'IL';
 
 const
@@ -595,15 +596,47 @@ var
     end;
   end;
 
+  procedure DoReadLaz3Header(BStream: TStream);
+  begin
+    FCount := ReadLRSCardinal(BStream);
+    FWidth := ReadLRSCardinal(BStream);
+    FHeight := ReadLRSCardinal(BStream);
+    AllocData(FCount);
+  end;
+
+  procedure DoReadLaz3Data(BStream: TStream);
+  begin
+    BStream.ReadBuffer(FData[0], FWidth * FHeight * FCount *  SizeOf(FData[0])) ;
+  end;
+
   procedure DoReadLaz3;
   begin
-    FCount := ReadLRSCardinal(AStream);
-    FWidth := ReadLRSCardinal(AStream);
-    FHeight := ReadLRSCardinal(AStream);
-
-    AllocData(FCount);
+    DoReadLaz3Header(AStream);
     if FCount > 0 then
-      AStream.ReadBuffer(FData[0], FWidth * FHeight * FCount *  SizeOf(FData[0])) ;
+      DoReadLaz3Data(AStream);
+  end;
+
+  procedure DoReadLaz4;
+  var
+    CompressedSize: Int64;
+    I: TMemoryStream = nil;
+    D: TDecompressionStream = nil;
+  begin
+    DoReadLaz3Header(AStream);
+    if FCount=0 then
+      Exit;
+    CompressedSize := ReadLRSInt64(AStream);
+
+    try
+      I := TMemoryStream.Create;
+      I.CopyFrom(AStream, CompressedSize);
+      I.Position := 0;
+      D := TDecompressionStream.Create(I);
+      DoReadLaz3Data(D);
+    finally
+      I.Free;
+      D.Free;
+    end;
   end;
 
   procedure CreateImagesFromRawImage(IntfImage: TLazIntfImage;
@@ -707,6 +740,12 @@ begin
   StreamPos := AStream.Position;                // check stream signature
   AStream.Read(Signature, SizeOf(Signature));
 
+  if Signature = SIG_LAZ4
+  then begin
+    DoReadLaz4;
+    Exit;
+  end;
+
   if Signature = SIG_LAZ3
   then begin
     DoReadLaz3;
@@ -801,22 +840,67 @@ begin
   end;
 end;
 
-procedure TCustomImageListResolution.WriteData(AStream: TStream);
+procedure TCustomImageListResolution.WriteData(AStream: TStream;
+  const ACompress: Boolean);
+
+  procedure DoWriteHeader(BStream: TStream);
+  begin
+    //Count of image
+    WriteLRSInteger(BStream,Count);
+    WriteLRSInteger(BStream,Width);
+    WriteLRSInteger(BStream,Height);
+  end;
+
+  procedure DoWriteRawData(BStream: TStream);
+  begin
+    BStream.Write(FData[0], FWidth * FHeight * FCount * SizeOf(FData[0]));
+  end;
+
+  procedure DoWriteCompressedData(BStream: TStream);
+  var
+    I: TMemoryStream = nil;
+    O: TMemoryStream = nil;
+    C: TCompressionStream = nil;
+  begin
+    try
+      I := TMemoryStream.Create;
+      O := TMemoryStream.Create;
+      DoWriteRawData(I);
+      I.Position := 0;
+      C := TCompressionStream.Create(clMax, O);
+      C.CopyFrom(I, I.Size);
+      FreeAndNil(C);
+      O.Position := 0;
+      WriteLRSInt64(AStream, O.Size); // compressed size
+      AStream.CopyFrom(O, O.Size);
+    finally
+      I.Free;
+      O.Free;
+      C.Free;
+    end;
+  end;
 var
   Signature: TImageListSignature;
 begin
-  //Write signature
-  Signature:=SIG_LAZ3;
-  AStream.Write(Signature,SizeOf(Signature));
+  if not ACompress then
+  begin
+    //Write signature
+    Signature:=SIG_LAZ3;
+    AStream.Write(Signature,SizeOf(Signature));
 
-  //Count of image
-  WriteLRSInteger(AStream,Count);
-  WriteLRSInteger(AStream,Width);
-  WriteLRSInteger(AStream,Height);
+    DoWriteHeader(AStream);
+    if Count > 0 then
+      DoWriteRawData(AStream);
+  end else
+  begin
+    //Write signature
+    Signature:=SIG_LAZ4;
+    AStream.Write(Signature,SizeOf(Signature));
 
-  //images
-  if Count > 0 then
-    AStream.Write(FData[0], FWidth * FHeight * FCount * SizeOf(FData[0]));
+    DoWriteHeader(AStream);
+    if Count > 0 then
+      DoWriteCompressedData(AStream);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1789,7 +1873,7 @@ end;
 
 procedure TCustomImageList.WriteData(AStream: TStream);
 begin
-  GetResolution(FWidth).WriteData(AStream);
+  GetResolution(FWidth).WriteData(AStream, False); // Change to ACompress=True after Lazarus 1.10 has been released to retain compatibility with 1.8 that doesn't support imagelist compression
 end;
 
 procedure TCustomImageList.WriteAdvData(AStream: TStream);
@@ -1815,7 +1899,7 @@ begin
   WriteLRSInteger(AStream, Length(SaveR));
 
   for R in SaveR do
-    R.WriteData(AStream);
+    R.WriteData(AStream, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -1843,7 +1927,7 @@ procedure TCustomImageList.ReadAdvData(AStream: TStream);
 var
   Signature: TImageListSignature;
   ResCount, I: Integer;
-  StreamPos: Int64;
+  AStreamPos: Int64;
   ImgCount, ImgWidth, ImgHeight: Cardinal;
   R: TCustomImageListResolution;
 begin
@@ -1857,8 +1941,9 @@ begin
     ResCount := ReadLRSInteger(AStream);
     for I := 0 to ResCount-1 do
     begin
+      AStreamPos := AStream.Position;
       AStream.Read(Signature, SizeOf(Signature));
-      if Signature <> SIG_LAZ3 then
+      if (Signature <> SIG_LAZ3) and (Signature <> SIG_LAZ4) then
         raise Exception.Create('Invalid BitmapAdv signature.');
 
       ImgCount := ReadLRSCardinal(AStream);
@@ -1866,11 +1951,8 @@ begin
       ImgHeight := ReadLRSCardinal(AStream);
 
       R := FData.GetImageLists(ImgWidth, False, False);
-      R.FHeight := ImgHeight;
-      R.FCount := ImgCount;
-      R.AllocData(R.FCount);
-      if ImgCount > 0 then
-        AStream.ReadBuffer(R.FData[0], R.Width * R.Height * R.Count *  SizeOf(R.FData[0])) ;
+      AStream.Position := AStreamPos;
+      R.ReadData(AStream);
     end;
   finally
     EndUpdate;

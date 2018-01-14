@@ -46,7 +46,7 @@ interface
 uses
   // RTL + FCL
   Types, math, SysUtils, Classes, FPReadBMP, FPimage, FPImgCanv, FPCanvas,
-  Contnrs,
+  Contnrs, zstream,
   // LazUtils
   FPCAdds,
   // LCL
@@ -140,7 +140,7 @@ type
 
     procedure AddImages(AValue: TCustomImageListResolution);
 
-    procedure WriteData(AStream: TStream);
+    procedure WriteData(AStream: TStream; const ACompress: Boolean);
     procedure ReadData(AStream: TStream);
   protected
     function  GetReferenceHandle: THandle; override;
