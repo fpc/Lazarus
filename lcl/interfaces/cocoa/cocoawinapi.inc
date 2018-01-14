@@ -1799,7 +1799,7 @@ begin
     sc:=TCocoaScrollView(obj);
     if sc.isCustomRange and (ScrollInfo.fMask and SIF_RANGE>0) then begin
       f:=sc.frame.size;
-      sz:=sc.documentView.frame.size;
+      sz:=NSView(sc.documentView).frame.size; // type casting is here for the compiler. for i386 it messes up types
       flg:=sc.documentView.autoresizingMask;
 
       if SBStyle=SB_Horz then begin
