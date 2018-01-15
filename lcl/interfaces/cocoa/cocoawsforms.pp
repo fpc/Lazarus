@@ -522,6 +522,7 @@ begin
     ns := NSStringUtf8(AWinControl.Caption);
     win.setTitle(ns);
     ns.release;
+    win.setReleasedWhenClosed(False); // do not release automatically
     win.setAcceptsMouseMovedEvents(True);
     if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
       win.setIgnoresMouseEvents(True);
