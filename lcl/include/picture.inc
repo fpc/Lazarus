@@ -850,7 +850,7 @@ procedure TPicture.DefineProperties(Filer: TFiler);
   var
     Ancestor: TPicture;
   begin
-    if Assigned(Filer.Ancestor) and (Filer.Ancestor is TPicture) then
+    if Filer.Ancestor is TPicture then
     begin
       Ancestor := TPicture(Filer.Ancestor);
       if not Assigned(Graphic) then

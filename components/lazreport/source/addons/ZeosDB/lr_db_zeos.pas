@@ -309,7 +309,7 @@ var
 begin
   inherited SetDataSource(AValue);
   D:=frFindComponent(OwnerForm, AValue);
-  if Assigned(D) and (D is TDataSource)then
+  if D is TDataSource then
     TZQuery(DataSet).DataSource:=TDataSource(D);
 end;
 
@@ -321,11 +321,11 @@ var
   Z: TLRZConnection;
 begin
   D:=frFindComponent(OwnerForm, DataSource);
-  if Assigned(D) and (D is TDataSource)then
+  if D is TDataSource then
     TZQuery(DataSet).DataSource:=TDataSource(D);
 
   D:=frFindComponent(DataSet.Owner, FDatabase);
-  if Assigned(D) and (D is TZConnection)then
+  if D is TZConnection then
   begin
     TZQuery(DataSet).Connection:=TZConnection(D);
     DataSet.Active:=FActive;
@@ -356,7 +356,7 @@ begin
 
   DataSet.Active:=false;
   D:=frFindComponent(TZQuery(DataSet).Owner, FDatabase);
-  if Assigned(D) and (D is TZConnection)then
+  if D is TZConnection then
     TZQuery(DataSet).Connection:=TZConnection(D)
 end;
 

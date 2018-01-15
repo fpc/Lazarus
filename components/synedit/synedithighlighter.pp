@@ -835,7 +835,7 @@ procedure TLazSynCustomTextAttributes.Assign(aSource: TPersistent);
 var
   Source : TLazSynCustomTextAttributes;
 begin
-  if Assigned(aSource) and (aSource is TLazSynCustomTextAttributes) then
+  if aSource is TLazSynCustomTextAttributes then
   begin
     BeginUpdate;
     Source := TLazSynCustomTextAttributes(aSource);

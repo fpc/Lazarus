@@ -602,13 +602,13 @@ begin
 
       if FCurView <> V then
       begin
-        if Assigned(FCurView) and (FCurView is TfrMemoView) then
+        if FCurView is TfrMemoView then
         begin
           THackView(FCurView).DoMouseLeave;
 //          THackView(FCurView).Invalidate;
         end;
         FCurView:=V;
-        if Assigned(FCurView) and (FCurView is TfrMemoView) then
+        if FCurView is TfrMemoView then
         begin
           THackView(FCurView).DoMouseEnter;
 //          THackView(FCurView).Invalidate;
@@ -1464,7 +1464,7 @@ begin
     for j:=SK to P^.Page.Objects.Count - 1 do
     begin
       V:=TfrView(P^.Page.Objects[j]);
-      if Assigned(V) and (V is TfrMemoView) then
+      if V is TfrMemoView then
       begin
         S:=TfrMemoView(V).Memo.Text;
         if not SearchCaseSensitive then

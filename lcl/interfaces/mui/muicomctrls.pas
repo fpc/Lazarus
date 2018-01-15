@@ -486,7 +486,7 @@ begin
     FTexts.Free;
     FTexts := nil;
   end;
-  if ShowTabs and Assigned(PasObject) and (PasObject is TCustomTabControl) then
+  if ShowTabs and (PasObject is TCustomTabControl) then
   begin
     Tab := TCustomTabControl(PasObject);
     if Assigned(FTexts) then

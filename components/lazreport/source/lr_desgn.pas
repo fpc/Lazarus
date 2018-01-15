@@ -4561,7 +4561,7 @@ var
   t: TfrView;
 begin
   t := TfrView(Objects[TopSelected]);
-  if Assigned(T) and (T is TfrMemoView) then
+  if T is TfrMemoView then
   begin
     TfrMemoView(T).Memo.Text:='[' + (Sender as TMenuItem).Caption + ']';
     PageView.Invalidate;

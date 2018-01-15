@@ -51,7 +51,7 @@ class procedure TQtWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
 var
   B: Boolean;
 begin
-  B := Assigned(AWinControl.Parent) and (AWinControl.Parent is TPageControl) and
+  B := (AWinControl.Parent is TPageControl) and
     AWinControl.Parent.HandleAllocated;
   if B then
     TQtWidget(AWinControl.Parent.Handle).BeginUpdate;

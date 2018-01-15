@@ -414,7 +414,7 @@ begin
     Result := inherited PerformTab(ForwardTab)
   else
   begin
-    if Assigned(Owner) and (Owner is TCustomAbstractGroupedEdit) then
+    if Owner is TCustomAbstractGroupedEdit then
       Result :=  TCustomAbstractGroupedEdit(Owner).PerformTab(ForwardTab)
     else
       Result := False;

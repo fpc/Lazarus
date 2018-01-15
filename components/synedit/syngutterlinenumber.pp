@@ -93,7 +93,7 @@ procedure TSynGutterLineNumber.Assign(Source : TPersistent);
 var
   Src: TSynGutterLineNumber;
 begin
-  if Assigned(Source) and (Source is TSynGutterLineNumber) then
+  if Source is TSynGutterLineNumber then
   begin
     Src := TSynGutterLineNumber(Source);
     FLeadingZeros := Src.FLeadingZeros;

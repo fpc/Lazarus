@@ -146,7 +146,7 @@ end;
 procedure TVTHeaderPopupMenu.OnMenuItemClick(Sender: TObject);
 
 begin
-  if Assigned(PopupComponent) and (PopupComponent is TBaseVirtualTree) then begin
+  if PopupComponent is TBaseVirtualTree then begin
     if TVTMenuItem(Sender).Name = cResizeToFitMenuItemName then begin
       TVirtualTreeCast(PopupComponent).Header.AutoFitColumns();
     end
@@ -182,7 +182,7 @@ var
   VisibleItem: TVTMenuItem;
 
 begin
-  if Assigned(PopupComponent) and (PopupComponent is TBaseVirtualTree) then
+  if PopupComponent is TBaseVirtualTree then
   begin
     // Delete existing menu items.
     while Items.Count > 0 do

@@ -78,7 +78,7 @@ end;
 destructor TFPReportQuery.Destroy;
 
 begin
-  If Assigned(Database) and (Database is TFPReportConnector) then
+  If Database is TFPReportConnector then
     Dec(TFPReportConnector(Database).FRefCount);
   inherited Destroy;
   TFPReportConnector.CheckDBRelease;

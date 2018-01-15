@@ -695,7 +695,7 @@ var
   PopupMenu: TMenu absolute Data;
 begin
   Result := False;
-  if Assigned(PopupMenu) and (PopupMenu is TPopupMenu) then
+  if PopupMenu is TPopupMenu then
     TPopupMenu(PopupMenu).Close;
 end;
 

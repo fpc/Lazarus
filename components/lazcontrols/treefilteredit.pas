@@ -240,7 +240,7 @@ begin
         s:=fNodeTextToFullFilenameMap[FileN];           // Full file name.
       AObject := TFileNameItem.Create(s, AObject);
     end;
-    If Assigned(AObject) and (AObject is TTFENodeData) then Begin
+    If AObject is TTFENodeData then Begin
       TTFENodeData(AObject).Node := TVNode;
       TTFENodeData(AObject).Branch := Self;
     end;

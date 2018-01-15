@@ -2626,7 +2626,7 @@ begin
   //todo: better code?!
   obj:=TObject(Handle);
   try
-    Result:=Assigned(obj) and (obj is TCarbonWidget);
+    Result:=obj is TCarbonWidget;
   except
     Result:=False;
   end;

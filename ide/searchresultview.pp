@@ -861,7 +861,7 @@ begin
   TV.Canvas.FillRect(ARect);
 
   MatchObj := TLazSearchMatchPos(Node.Data);
-  if assigned(MatchObj) and (MatchObj is TLazSearchMatchPos) then
+  if MatchObj is TLazSearchMatchPos then
     MatchPos:= TLazSearchMatchPos(Node.Data)
   else
     MatchPos:= nil;

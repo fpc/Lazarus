@@ -2039,7 +2039,7 @@ var
   FRDataset: TfrDataset;
 begin
   Result := nil;
-  if Assigned(CurPage) and (CurPage is TfrPageReport) then
+  if CurPage is TfrPageReport then
   begin
     FRDataset := nil;
     if CurBand <> nil then
@@ -2532,7 +2532,7 @@ end;
 
 function TfrControl.OwnerForm: TWinControl;
 begin
-  if Assigned(OwnerPage) and (OwnerPage is TfrPageDialog) then
+  if OwnerPage is TfrPageDialog then
     Result:=TfrPageDialog(OwnerPage).Form
   else
     Result:=nil;
@@ -11820,7 +11820,7 @@ end;
 function TfrReport.DoObjectClick(AObj: TfrView): boolean;
 begin
   Result:=false;
-  if Assigned(AObj) and (AObj is TfrMemoView) then
+  if AObj is TfrMemoView then
     TfrMemoView(AObj).DoOnClick;
 
   Result:=Assigned(OnObjectClick);

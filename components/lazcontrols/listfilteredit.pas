@@ -81,7 +81,7 @@ begin
   fOriginalData:=TStringList.Create;
   fSelectionList:=TStringList.Create;
   fSortedData:=TStringList.Create;
-  if Assigned(fFilteredListbox) and (fFilteredListbox is TCustomCheckListBox) then
+  if fFilteredListbox is TCustomCheckListBox then
     Assert(Assigned(fCheckedItems), 'TListFilterEdit.Create: fCheckedItems=nil');
 end;
 

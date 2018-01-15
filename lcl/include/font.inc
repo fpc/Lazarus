@@ -934,7 +934,7 @@ end;
 function TFont.GetColor: TColor;
 begin
   Result := Color;
-  if (Result = clDefault) and Assigned(Canvas) and (Canvas is TCanvas) then
+  if (Result = clDefault) and (Canvas is TCanvas) then
     Result := TCanvas(Canvas).GetDefaultColor(dctFont);
 end;
 

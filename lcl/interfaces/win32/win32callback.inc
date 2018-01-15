@@ -822,7 +822,7 @@ begin
   then LMScroll.SmallPos := LMScroll.Pos
   else LMScroll.SmallPos := High(LMScroll.SmallPos);
 
-  if Assigned(lWinControl) and (lWinControl is TCustomListbox) and (LMsg = LM_VSCROLL) then
+  if (lWinControl is TCustomListbox) and (LMsg = LM_VSCROLL) then
   begin
     // WM_VSCROLL message carries only 16 bits of scroll box position data.
     // This workaround is needed, to scroll higher than a position value of 65536.

@@ -362,17 +362,17 @@ begin
       S1:=Copy(ComplexName, 1, Pos('.', ComplexName)-1);
       S2:=Copy(ComplexName, Pos('.', ComplexName)+1, Length(ComplexName));
       F:=CurReport.FindObject(S1);
-      if Assigned(F) and (F is TfrPageDialog) then
+      if F is TfrPageDialog then
         F:=TfrPageDialog(F).FindObject(S2);
 
-      if Assigned(F) and (F is TLRDataSetControl) then
+      if F is TLRDataSetControl then
         Component:=TLRDataSetControl(F).DataSet;
 
     end
     else
     begin
       F:=CurReport.FindObject(ComplexName);
-      if Assigned(F) and (F is TLRDataSetControl) then
+      if F is TLRDataSetControl then
         Component:=TLRDataSetControl(F).DataSet;
     end;
   end;
@@ -416,12 +416,12 @@ begin
         Delete(S2, Pos('.', S2), Length(S2));
 
         F:=CurReport.FindObject(S1);
-        if Assigned(F) and (F is TfrPageDialog) then
+        if F is TfrPageDialog then
           frDS:=TfrPageDialog(F).FindObject(S2)
         else
           frDS:=nil;
 
-        if Assigned(frDS) and (frDS is TLRDataSetControl) then
+        if frDS is TLRDataSetControl then
         begin
           RemoveQuotes(s3);
           DataSet:= TfrTDataSet(TLRDataSetControl(frDS).DataSet);
@@ -431,7 +431,7 @@ begin
       else
       begin
         frDS:=CurReport.FindObject(S1);
-        if Assigned(frDS) and (frDS is TLRDataSetControl) then
+        if frDS is TLRDataSetControl then
         begin
           RemoveQuotes(s2);
           DataSet:=TfrTDataSet(TLRDataSetControl(frDS).DataSet);

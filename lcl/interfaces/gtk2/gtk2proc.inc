@@ -2348,7 +2348,7 @@ begin
         SysKey := (ShiftState * [ssShift, ssAltGr] = [ssShift, ssAltGr]);
 
         // This is not true for TCustomControl, issues 22703,25874.
-        if Assigned(LCLObject) and (LCLObject is TCustomControl) then
+        if LCLObject is TCustomControl then
           SysKey := False;
       end;
     end;

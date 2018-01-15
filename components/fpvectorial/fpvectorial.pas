@@ -10348,7 +10348,7 @@ var
   lPage: TvPage;
 begin
   lPage := GetPage(AIndex);
-  if (Assigned(lPage) and (lPage is TvVectorialPage)) then
+  if lPage is TvVectorialPage then
     Result := TvVectorialPage(lPage)
   else
     Result := nil;
@@ -10359,7 +10359,7 @@ var
   lPage: TvPage;
 begin
   lPage := GetPage(AIndex);
-  if (Assigned(lPage) and (lPage is TvTextPageSequence)) then
+  if lPage is TvTextPageSequence then
     Result := TvTextPageSequence(lPage)
   else
     Result := nil;

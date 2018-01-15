@@ -1374,7 +1374,7 @@ end;
 
 procedure TSynCustomBeautifier.Assign(Src: TPersistent);
 begin
-  if assigned(Src) and (src is TSynCustomBeautifier) then begin
+  if Src is TSynCustomBeautifier then begin
     FCurrentEditor := TSynCustomBeautifier(Src).FCurrentEditor;
     FCurrentLines := TSynCustomBeautifier(Src).FCurrentLines;
     FOnGetDesiredIndent := TSynCustomBeautifier(Src).FOnGetDesiredIndent;
@@ -1420,7 +1420,7 @@ end;
 procedure TSynBeautifier.Assign(Src: TPersistent);
 begin
   inherited Assign(Src);
-  if assigned(Src) and (src is TSynBeautifier) then begin
+  if Src is TSynBeautifier then begin
     FIndentType := TSynBeautifier(Src).FIndentType;
     FCurrentEditor := TSynBeautifier(Src).FCurrentEditor;
     FCurrentLines := TSynBeautifier(Src).FCurrentLines;

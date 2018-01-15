@@ -516,7 +516,7 @@ var
   S : String;
   SS:integer;
 begin
-  If Assigned(CurrentEditable) and (CurrentEditable is TCustomEdit) then
+  If CurrentEditable is TCustomEdit then
     with TCustomEdit(CurrentEditable)do
     begin
       S:=SelText;

@@ -358,7 +358,7 @@ begin
     // or we will earn a crash after it gets destroyed or so
     // destroy always make an SetParent(nil)
     Win := GetParentWindow;
-    if Assigned(Win) and (Win is TMUIWindow) then
+    if Win is TMUIWindow then
     begin
       if TMUIWindow(Win).FocusedControl = self then
         TMUIWindow(Win).FocusedControl := nil;

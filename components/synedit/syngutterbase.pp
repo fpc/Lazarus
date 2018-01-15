@@ -260,7 +260,7 @@ end;
 
 procedure TSynGutterBase.Assign(Source: TPersistent);
 begin
-  if Assigned(Source) and (Source is TSynGutterBase) then
+  if Source is TSynGutterBase then
   begin
     IncChangeLock;
     try
@@ -706,7 +706,7 @@ procedure TSynGutterPartBase.Assign(Source : TPersistent);
 var
   Src: TSynGutterPartBase;
 begin
-  if Assigned(Source) and (Source is TSynGutterPartBase) then
+  if Source is TSynGutterPartBase then
   begin
     Src := TSynGutterPartBase(Source);
     FVisible := Src.FVisible;

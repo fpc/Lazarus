@@ -6737,7 +6737,7 @@ begin
                                {must be added, see issue #29159}
                                QEventMouseMove]) then
     begin
-      if Assigned(FOwner) and (FOwner is TQtMainWindow) and not TQtMainWindow(FOwner).IsFrameWindow and
+      if (FOwner is TQtMainWindow) and not TQtMainWindow(FOwner).IsFrameWindow and
         (TCustomForm(LCLObject).FormStyle = fsMDIForm) and
         (TQtMainWindow(FOwner).MDIAreaHandle <> nil) then
         // paint via MDIAreaHandle viewport hook
@@ -19510,7 +19510,7 @@ begin
         pt := Point(p.x, p.y);
         Control := LCLObject.ControlAtPos(pt, [capfRecursive, capfAllowWinControls]);
 
-        if Assigned(Control) and (Control is TWinControl) then
+        if Control is TWinControl then
         begin
           AWidget := TQtWidget(TWinControl(Control).Handle);
           if (Control is TCustomTabControl) and

@@ -276,7 +276,7 @@ begin
 
   DataSet.Active:=false;
   D:=frFindComponent(TSQLQuery(DataSet).Owner, FDatabase);
-  if Assigned(D) and (D is TSQLConnection)then
+  if D is TSQLConnection then
     TSQLQuery(DataSet).DataBase:=TSQLConnection(D);
 end;
 
@@ -386,7 +386,7 @@ var
 begin
   inherited SetDataSource(AValue);
   D:=frFindComponent(OwnerForm, AValue);
-  if Assigned(D) and (D is TDataSource)then
+  if D is TDataSource then
     TSQLQuery(DataSet).DataSource:=TDataSource(D);
 end;
 
@@ -395,11 +395,11 @@ var
   D:TComponent;
 begin
   D:=frFindComponent(OwnerForm, DataSource);
-  if Assigned(D) and (D is TDataSource)then
+  if D is TDataSource then
     TSQLQuery(DataSet).DataSource:=TDataSource(D);
 
   D:=frFindComponent(DataSet.Owner, FDatabase);
-  if Assigned(D) and (D is TSQLConnection)then
+  if D is TSQLConnection then
   begin
     TSQLQuery(DataSet).DataBase:=TSQLConnection(D);
     DataSet.Active:=FActive;

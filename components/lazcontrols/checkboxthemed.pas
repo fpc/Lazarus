@@ -471,7 +471,7 @@ begin
         if not (Assigned(Action) and
           CompareMethods(TMethod(Action.OnExecute), TMethod(OnClick)))
           then OnClick(self);
-      if Assigned(Action) and (Action is TCustomAction) and
+      if (Action is TCustomAction) and
         (TCustomAction(Action).Checked <> (AValue = cbChecked))
         then ActionLink.Execute(self);
     end;

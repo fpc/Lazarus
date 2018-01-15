@@ -264,7 +264,7 @@ end;
 procedure TLRFormStorage.AttachToParent;
 begin
   inherited AttachToParent;
-  if Assigned(OwnerForm) and (OwnerForm is TForm) then
+  if OwnerForm is TForm then
     TForm(OwnerForm).OnClose:=@OnFormClose
 end;
 

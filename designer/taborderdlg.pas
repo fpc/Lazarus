@@ -395,7 +395,7 @@ begin
   try
     ItemTreeview.Items.Clear;
     LookupRoot := GlobalDesignHook.LookupRoot;
-    if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
+    if LookupRoot is TWinControl then begin
       Candidates := TAvlTree.Create;
       try
         CreateCandidates(TComponent(LookupRoot), Candidates);

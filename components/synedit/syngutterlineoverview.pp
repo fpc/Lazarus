@@ -1551,7 +1551,7 @@ end;
 
 procedure TSynGutterLineOverview.Assign(Source : TPersistent);
 begin
-  if Assigned(Source) and (Source is TSynGutterLineOverview) then
+  if Source is TSynGutterLineOverview then
   begin
     inherited;
     // Todo: assign providerlist?
