@@ -1702,8 +1702,10 @@ begin
     COLOR_CAPTIONTEXT,
     COLOR_INACTIVECAPTIONTEXT:
       Result := NSColor.windowFrameTextColor;
+    COLOR_WINDOW:
+      Result := NSColor.textBackgroundColor;
     COLOR_BACKGROUND,
-    COLOR_WINDOW, COLOR_FORM:
+    COLOR_FORM:
       Result := NSColor.windowBackgroundColor;
     COLOR_MENU:
       Result := NSColor.controlBackgroundColor;
