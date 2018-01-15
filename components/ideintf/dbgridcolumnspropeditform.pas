@@ -110,6 +110,8 @@ end;
 
 procedure TDBGridColumnsPropertyEditorForm.CollectionListBoxClick(Sender: TObject);
 begin
+  // Do not use OnSelectionChange because it fires on changing ItemIndex by code
+  // (OnClick does not)
   UpdateButtons;
   UpdateCaption;
   SelectInObjectInspector;
@@ -298,6 +300,9 @@ begin
   actDel.Enabled := I > -1;
   actMoveUp.Enabled := I > 0;
   actMoveDown.Enabled := (I >= 0) and (I < CollectionListBox.Items.Count - 1);
+  DividerToolButton1.Visible := (FCollection is TDBGridColumns);
+  btAddFlds.Visible := DividerToolButton1.Visible;
+  actAddFields.Enabled := DividerToolButton1.Visible;
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.PersistentAdded(APersistent: TPersistent; Select: boolean);
@@ -333,37 +338,20 @@ end;
 
 procedure TDBGridColumnsPropertyEditorForm.FillCollectionListBox;
 var
-  I: Integer;
-  CurItem: String;
-  Cnt: Integer;
+  ItemIndex: Integer;
+  i: Integer;
 begin
   CollectionListBox.Items.BeginUpdate;
   try
-    if FCollection <> nil then
-      Cnt := FCollection.Count
+    ItemIndex:=CollectionListBox.ItemIndex;
+    CollectionListBox.Clear;
+    if FCollection<>nil then
+      for i:=0 to FCollection.Count-1 do
+        CollectionListBox.Items.Add(Format('%d - %s', [i, FCollection.Items[i].DisplayName]));
+    if ItemIndex<CollectionListBox.Count then
+      CollectionListBox.ItemIndex:=ItemIndex  // OnClick not fires
     else
-      Cnt := 0;
-
-    // add or replace list items
-    for I := 0 to Cnt - 1 do
-    begin
-      CurItem := IntToStr(I) + ' - ' + FCollection.Items[I].DisplayName;
-
-      DividerToolButton1.Visible := (FCollection is TDBGridColumns);
-      btAddFlds.Visible := DividerToolButton1.Visible;
-      actAddFields.Enabled := DividerToolButton1.Visible;
-      if I >= CollectionListBox.Items.Count then
-        CollectionListBox.Items.Add(CurItem)
-      else
-        CollectionListBox.Items[I] := CurItem;
-    end;
-
-    // delete unneeded list items
-    if Cnt > 0 then
-      while CollectionListBox.Items.Count > Cnt do
-        CollectionListBox.Items.Delete(CollectionListBox.Items.Count - 1)
-    else
-      CollectionListBox.Items.Clear;
+      CollectionListBox.ItemIndex:=-1;
   finally
     CollectionListBox.Items.EndUpdate;
     UpdateButtons;
