@@ -1908,7 +1908,7 @@ begin
             or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
     // Pause
     itmRunMenuPause.Enabled := CanRun and DebuggerIsValid
-            and (dcPause in FDebugger.Commands);
+            and ((dcPause in FDebugger.Commands) or FAutoContinueTimer.Enabled);
     // Show execution point
     itmRunMenuShowExecutionPoint.Enabled := CanRun and DebuggerIsValid
             and (FDebugger.State = dsPause);
@@ -2410,6 +2410,7 @@ begin
   if (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying
   then Exit;
+  FAutoContinueTimer.Enabled := False;
   FDebugger.Pause;
   Result := mrOk;
 end;
