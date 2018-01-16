@@ -1671,7 +1671,7 @@ begin
           'Inspect...', uemInspect, nil, nil, nil, 'debugger_inspect');
       SrcEditMenuInspect.Enabled:=False;
       SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
-          'Run to cursor', uemRunToCursor, nil, nil, nil, 'menu_run_cursor');
+          'Run to cursor', lisMenuRunToCursor, nil, nil, nil, 'menu_run_cursor');
       SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
           'View Call Stack', uemViewCallStack, nil, @ExecuteIdeMenuClick, nil, 'debugger_call_stack');
   {%endregion}
