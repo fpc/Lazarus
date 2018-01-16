@@ -2834,7 +2834,6 @@ resourcestring
   uemAddWatchAtCursor = 'Add &Watch At Cursor';
   uemAddWatchPointAtCursor = 'Add Watch&Point At Cursor';
   uemInspect = '&Inspect ...';
-  uemRunToCursor='&Run to Cursor';
   uemViewCallStack = 'View Call Stack';
   uemMovePageLeft='Move Page Left';
   uemMovePageRight='Move Page Right';
