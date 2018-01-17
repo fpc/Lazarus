@@ -268,7 +268,7 @@ var
   HintModifier: TPascalHintModifier;
   HelperForNode: TCodeTreeNode;
 begin
-  if (Colors<>nil) or MeasureOnly then
+  if Colors<>nil then
   begin
     if ItemSelected then
     begin
