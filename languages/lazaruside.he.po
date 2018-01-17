@@ -22735,10 +22735,6 @@ msgstr "קריאה בלבד"
 msgid "Refactoring"
 msgstr "סידור מחדש"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "הרץ &עד לסמן"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 #, fuzzy
 #| msgid "Set a free Bookmark"

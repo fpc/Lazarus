@@ -21361,10 +21361,6 @@ msgstr "Sola lettura"
 msgid "Refactoring"
 msgstr "Refactoring"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "Esegui fino al cu&rsore"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

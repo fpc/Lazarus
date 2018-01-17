@@ -21915,10 +21915,6 @@ msgstr "Només lectura"
 msgid "Refactoring"
 msgstr "Torna a factoritzar"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "&Executa al cursor"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 #, fuzzy
 #| msgid "Set a free Bookmark"

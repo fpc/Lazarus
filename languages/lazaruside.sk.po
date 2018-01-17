@@ -22309,10 +22309,6 @@ msgstr "Len na čítanie"
 msgid "Refactoring"
 msgstr "Refactoring"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "&Spustiť po kurzor"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 #, fuzzy
 #| msgid "Set a free Bookmark"

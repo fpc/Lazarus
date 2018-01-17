@@ -21154,10 +21154,6 @@ msgstr "読み取り専用"
 msgid "Refactoring"
 msgstr "リファクタリング"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "カーソルまで実行(&R)"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

@@ -21148,10 +21148,6 @@ msgstr "Csak olvasható"
 msgid "Refactoring"
 msgstr "Átstrukturálás"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "Futtatás a ku&rzorig"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

@@ -21129,10 +21129,6 @@ msgstr ""
 msgid "Refactoring"
 msgstr ""
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "تشغيل حتى بلوغ المؤشرة"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

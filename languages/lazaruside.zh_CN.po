@@ -21681,10 +21681,6 @@ msgstr "只读"
 msgid "Refactoring"
 msgstr "重构"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "运行到光标处(&R)"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

@@ -21010,10 +21010,6 @@ msgstr "Vain luettavissa"
 msgid "Refactoring"
 msgstr "Järjestele uudelleen"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "&Jatka kursorin kohtaan"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

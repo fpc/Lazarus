@@ -21517,10 +21517,6 @@ msgstr "Sadece oku"
 msgid "Refactoring"
 msgstr "Refactoring"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "& İmleç için Çalıştır"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

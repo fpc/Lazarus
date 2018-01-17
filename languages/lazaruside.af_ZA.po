@@ -21213,10 +21213,6 @@ msgstr ""
 msgid "Refactoring"
 msgstr ""
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "&Hardloop tot by Merker"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

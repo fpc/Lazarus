@@ -21621,10 +21621,6 @@ msgstr "Tylko do odczytu"
 msgid "Refactoring"
 msgstr "Refaktoryzacja"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "&Uruchom do kursora"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

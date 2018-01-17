@@ -21176,10 +21176,6 @@ msgstr "Tik skaitymui"
 msgid "Refactoring"
 msgstr "Pertvarkymas"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "S&tartuoti iki žymeklio"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"

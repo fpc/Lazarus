@@ -22047,10 +22047,6 @@ msgstr "Niet wijzigbaar"
 msgid "Refactoring"
 msgstr "Refactoring"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "&Start tot cursor"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 #, fuzzy
 #| msgid "Set a free Bookmark"

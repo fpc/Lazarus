@@ -21152,10 +21152,6 @@ msgstr "Только чтение"
 msgid "Refactoring"
 msgstr "Переработка кода"
 
-#: lazarusidestrconsts.uemruntocursor
-msgid "&Run to Cursor"
-msgstr "За&пустить до курсора"
-
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"
