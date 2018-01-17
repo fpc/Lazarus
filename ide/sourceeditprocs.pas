@@ -97,11 +97,18 @@ type
     icvNone
     );
 
+  TPaintCompletionItemColors = record
+    FontColor: TColor;
+    SelectedFontColor: TColor;
+  end;
+  PPaintCompletionItemColors = ^TPaintCompletionItemColors;
+
 // completion form and functions
 function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
   {%H-}aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
-  Highlighter: TSrcIDEHighlighter; MeasureOnly: Boolean = False): TPoint;
+  Highlighter: TSrcIDEHighlighter; Colors: PPaintCompletionItemColors;
+  MeasureOnly: Boolean = False): TPoint;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
   AddChar: TUTF8Char;
@@ -124,10 +131,11 @@ begin
   FreeAndNil(TextConverterToolClasses);
 end;
 
-function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
-  X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
-  aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
-  Highlighter: TSrcIDEHighlighter; MeasureOnly: Boolean): TPoint;
+function PaintCompletionItem(const AKey: string; ACanvas: TCanvas; X, Y,
+  MaxX: integer; ItemSelected: boolean; Index: integer;
+  aCompletion: TSynCompletion; CurrentCompletionType: TCompletionType;
+  Highlighter: TSrcIDEHighlighter; Colors: PPaintCompletionItemColors;
+  MeasureOnly: Boolean): TPoint;
 
 const
   HintModifierImage: array[TPascalHintModifier] of String = (
@@ -145,6 +153,7 @@ var
   TokenStart: Integer;
   BackgroundColor: TColorRef;
   ForegroundColor: TColorRef;
+  AllowFontColor: Boolean;
 
   procedure SetFontColor(NewColor: TColor);
   
@@ -171,6 +180,9 @@ var
     GreenDiff: integer;
     BlueDiff: integer;
   begin
+    if not AllowFontColor then
+      Exit;
+
     NewColor := TColor(ColorToRGB(NewColor));
     FGRed:=(NewColor shr 16) and $ff;
     FGGreen:=(NewColor shr 8) and $ff;
@@ -216,7 +228,7 @@ var
       Inc(Result.X,ACanvas.TextWidth(s));
       exit;
     end;
-    if (Highlighter<>nil) and (not ItemSelected) then begin
+    if (Highlighter<>nil) and AllowFontColor then begin
       Highlighter.ResetRange;
       Highlighter.SetLine(s,0);
       while not Highlighter.GetEol do begin
@@ -256,7 +268,28 @@ var
   HintModifier: TPascalHintModifier;
   HelperForNode: TCodeTreeNode;
 begin
-  ForegroundColor := ColorToRGB(ACanvas.Font.Color);
+  if (Colors<>nil) or MeasureOnly then
+  begin
+    if ItemSelected then
+    begin
+      ForegroundColor := Colors^.SelectedFontColor;
+      AllowFontColor := ForegroundColor=clNone;
+      if ForegroundColor=clNone then
+        ForegroundColor := Colors^.FontColor;
+    end else
+    begin
+      ForegroundColor := Colors^.FontColor;
+      AllowFontColor := True;
+    end;
+  end else
+  begin
+    ForegroundColor := clBlack;
+    AllowFontColor := True;
+  end;
+
+  ForegroundColor := ColorToRGB(ForegroundColor);
+  ACanvas.Font.Color := ForegroundColor;
+
   Result.X := 0;
   Result.Y := ACanvas.TextHeight('W');
   if CurrentCompletionType=ctIdentCompletion then begin

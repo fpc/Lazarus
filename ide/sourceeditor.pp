@@ -2355,6 +2355,7 @@ var
   MaxX: Integer;
   t: TCompletionType;
   hl: TSynCustomHighlighter;
+  Colors: TPaintCompletionItemColors;
 begin
   with ACanvas do begin
     if (Editor<>nil) then
@@ -2364,11 +2365,9 @@ begin
       Font.Name:=EditorOpts.EditorFont;
     end;
     Font.Style:=[];
-    if not ItemSelected then
-      Font.Color := FActiveEditDefaultFGColor
-    else
-      Font.Color := FActiveEditSelectedFGColor;
   end;
+  Colors.FontColor := FActiveEditDefaultFGColor;
+  Colors.SelectedFontColor := FActiveEditSelectedFGColor;
   MaxX:=TheForm.ClientWidth;
   t:=CurrentCompletionType;
   if Manager.ActiveCompletionPlugin<>nil then
@@ -2383,7 +2382,7 @@ begin
   hl := nil;
   if Editor <> nil then
     hl := Editor.Highlighter;
-  PaintCompletionItem(AKey, ACanvas, X, Y, MaxX, ItemSelected, Index, self, t, hl);
+  PaintCompletionItem(AKey, ACanvas, X, Y, MaxX, ItemSelected, Index, self, t, hl, @Colors);
   Result:=true;
 end;
 
@@ -2418,7 +2417,7 @@ begin
     end;
   end;
   Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,
-                                self,t,nil,True);
+                                self,t,nil,nil,True);
   Result.Y:=FontHeight;
 end;
 
