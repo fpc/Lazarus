@@ -136,6 +136,7 @@ var
   {$ENDIF}
   dx, dy: integer;
   APalette: QPaletteH;
+  W: WideString;
 
   procedure DrawSplitterInternal;
   var
@@ -298,8 +299,9 @@ begin
               HP_HEADERITEMRIGHT: Position := QStyleOptionHeaderEnd;
             end;
 
-            // fix for oxygen weird drawing of header sections. issue #23143
-            if (GetStyleName = 'oxygen') and (Position = QStyleOptionHeaderMiddle) then
+            W := GetStyleName;
+            // fix for oxygen and breeze weird drawing of header sections. issue #23143
+            if ((W = 'oxygen') or (W = 'breeze')) and (Position = QStyleOptionHeaderMiddle) then
             begin
               // see if this is needed (in case of fixedRows in grids)
               // if (ARect.Left > 0) or ((ARect.Left = 0) and (ARect.Top = 0)) then
