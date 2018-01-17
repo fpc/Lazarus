@@ -107,6 +107,7 @@ type
     FDestDir: String;
     FPackageOperation: TPackageOperation;
     FTyp: Integer;
+    FFocusChanging: Boolean;
     procedure VSTPackagesGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; {%H-}TextType: TVSTTextType; var CellText: String);
     procedure VSTPackagesGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -729,8 +730,9 @@ procedure TCreateRepositoryPackagesFrm.VSTPackagesFocusChanging(
   Sender: TBaseVirtualTree; OldNode, NewNode: PVirtualNode; OldColumn,
   NewColumn: TColumnIndex; var Allowed: Boolean);
 begin
-  if (OldNode = nil) or (NewNode = nil) or (OldNode = NewNode) then
+  if (OldNode = nil) or (NewNode = nil) or (OldNode = NewNode) or (FFocusChanging) then
     Exit;
+  FFocusChanging := True;
   SaveExtraInfo(OldNode);
   edCategories.Text := '';
   edLazCompatibility.Text := '';
@@ -751,6 +753,7 @@ var
   PDData: PData;
   Level: Integer;
 begin
+  FFocusChanging := False;
   if Node = nil then
     Exit;
   Level := FVSTPackages.GetNodeLevel(Node);
