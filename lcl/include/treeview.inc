@@ -4276,15 +4276,19 @@ end;
 procedure TCustomTreeView.UpdateScrollbars;
 var
   ScrollInfo: TScrollInfo;
+  MaxScrollLeft, MaxScrollTop: Integer;
 begin
   if not (tvsScrollbarChanged in FStates) then exit;
 
   if not HandleAllocated or (Items.FUpdateCount>0) then
     exit;
 
+  MaxScrollLeft := GetMaxScrollLeft;
+  MaxScrollTop := GetMaxScrollTop;
+
   //DebugLn('* TCustomTreeView.UpdateScrollbars Enter *');
-  if ScrolledLeft>GetMaxScrollLeft then ScrolledLeft:=GetMaxScrollLeft;
-  if ScrolledTop>GetMaxScrollTop then ScrolledTop:=GetMaxScrollTop;
+  if ScrolledLeft>MaxScrollLeft then ScrolledLeft:=MaxScrollLeft;
+  if ScrolledTop>MaxScrollTop then ScrolledTop:=MaxScrollTop;
   Exclude(FStates,tvsScrollbarChanged);
 
   if fScrollBars in [ssBoth, ssHorizontal, ssAutoBoth, ssAutoHorizontal] then
@@ -4296,7 +4300,7 @@ begin
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nMin := 0;
     ScrollInfo.nPage := Max(1,ClientWidth-2*BorderWidth);
-    ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage)-1);
+    ScrollInfo.nMax := Max(1,MaxScrollLeft+integer(ScrollInfo.nPage));
     ScrollInfo.nPos := Max(FScrolledLeft,0);
     if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
     then begin
@@ -4308,7 +4312,7 @@ begin
       end else begin
         //DebugLn(['TCustomTreeView.UpdateScrollbars Show Horizontal: nMin=',ScrollInfo.nMin,
         //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
-        //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollLeft,
+        //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',MaxScrollLeft,
         //' ClientW=',ClientWidth, ' MaxRight=',FMaxRight]);
         FLastHorzScrollInfo:=ScrollInfo;
         SetShowScrollBar(SB_HORZ, true);
@@ -4327,7 +4331,7 @@ begin
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nMin := 0;
     ScrollInfo.nPage := Max(1,ClientHeight-FDefItemHeight);
-    ScrollInfo.nMax := Max(1,GetMaxScrollTop+integer(ScrollInfo.nPage)-1);
+    ScrollInfo.nMax := Max(1,MaxScrollTop+integer(ScrollInfo.nPage));
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nPos := Max(0,FScrolledTop);
     if not CompareMem(@ScrollInfo,@FLastVertScrollInfo,SizeOf(TScrollInfo))
@@ -4340,7 +4344,7 @@ begin
       end else begin
         //DebugLn(['TCustomTreeView.UpdateScrollbars Show Vertical: nMin=',ScrollInfo.nMin,
         //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
-        //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollTop,
+        //' nPos=',ScrollInfo.nPos,' GetMaxScrollTop=',MaxScrollTop,
         //' ClientH=',ClientHeight]);
         FLastVertScrollInfo:=ScrollInfo;
         SetShowScrollBar(SB_VERT, true);
