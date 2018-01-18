@@ -98,22 +98,24 @@ begin
   end;
 end;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 procedure ReadTilCLineEnd(const Source: string; var Position: integer);
 var
   Len: Integer;
   AtomStart: Integer;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   Len:=length(Source);
   if Position>Len then exit;
   AtomStart:=Position;
   while (AtomStart<=Len) and (not (Source[AtomStart] in [#10,#13])) do
     ReadRawNextCAtom(Source,Position,AtomStart);
   Position:=AtomStart;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 function ReadTilCBracketClose(const Source: string; var Position: integer
   ): boolean;
 // Position must start on a bracket
@@ -125,8 +127,6 @@ var
   AtomStart: LongInt;
   StartPos: LongInt;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   Result:=false;
   Len:=length(Source);
   if Position>Len then exit;
@@ -159,14 +159,14 @@ begin
       if Source[AtomStart]=CloseBracket then exit(true);
     end;
   until false;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 procedure ReadNextCAtom(const Source: string; var Position: integer; out
   AtomStart: integer);
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   repeat
     ReadRawNextCAtom(Source,Position,AtomStart);
     if AtomStart>length(Source) then exit;
@@ -181,17 +181,17 @@ begin
       exit;
     end;
   until false;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 procedure ReadRawNextCAtom(const Source: string; var Position: integer;
   out AtomStart: integer);
 var
   Len:integer;
   c1,c2:char;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   Len:=length(Source);
   // read til next atom
   while (Position<=Len) do begin
@@ -375,15 +375,15 @@ begin
       end;
     end;
   end;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 function IsCDecimalNumber(const Source: string; Position: integer): boolean;
 var
   l: Integer;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   Result:=false;
   l:=length(Source);
   if (Position<1) or (Position>l) or (not IsNumberChar[Source[Position]])
@@ -397,8 +397,8 @@ begin
     inc(Position);
   if Source[Position]='.' then exit;
   Result:=true;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
 function IsCHexNumber(const Source: string; Position: integer): boolean;
 begin
@@ -412,6 +412,8 @@ begin
        and (Source[Position]='0') and (Source[Position+1] in ['0'..'7']);
 end;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 function ExtractCCode(const Source: string; StartPos: integer;
   EndPos: integer): string;
 var
@@ -420,8 +422,6 @@ var
   SrcLen: Integer;
   AtomStart: integer;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   Result:=Source;
   DstPos:=1;
   SrcPos:=StartPos;
@@ -453,8 +453,8 @@ begin
     raise Exception.Create('');
   end;
   SetLength(Result,DstPos-1);
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
 function ExtractCodeFromMakefile(const Source: string): string;
 // remove comments, empty lines, double spaces, replace newline chars with #10

@@ -1861,6 +1861,8 @@ begin
   {$ENDIF}
 end;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 function TCCodeParserTool.ReadTilBracketClose(
   ExceptionOnNotFound: boolean): boolean;
 // AtomStart must be on bracket open
@@ -1881,8 +1883,6 @@ begin
     exit;
   end;
   StartPos:=AtomStart;
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   repeat
     ReadRawNextCAtom(Src,SrcPos,AtomStart);
     if AtomStart>SrcLen then begin
@@ -1903,8 +1903,8 @@ begin
       if Src[AtomStart]=CloseBracket then exit(true);
     end;
   until false;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
 function TCCodeParserTool.AtomIs(const s: shortstring): boolean;
 var

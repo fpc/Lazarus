@@ -1012,14 +1012,14 @@ begin
   Result:=true;
 end;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 procedure TCustomCodeTool.ReadNextAtom;
 var
   c1, c2: char;
   CommentLvl: integer;
   p: PChar;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   if LastAtoms.HasNext then begin
     //debugln(['TCustomCodeTool.ReadNextAtom HASNEXT ',LastAtoms.NextCount]);
     LastAtoms.MoveToNext(CurPos);
@@ -1372,9 +1372,9 @@ begin
       until (CurPos.EndPos>SrcLen) or (not IsIdentChar[Src[CurPos.EndPos]]);
     end;
   end;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
   LastAtoms.Add(CurPos);
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
 procedure TCustomCodeTool.ReadPriorAtom;
 var

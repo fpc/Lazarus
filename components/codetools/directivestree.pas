@@ -1748,6 +1748,8 @@ begin
   Parse(Code,NestedComments);
 end;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 procedure TCompilerDirectivesTree.Parse(aCode: TCodeBuffer;
   aNestedComments: boolean);
   
@@ -1760,8 +1762,6 @@ var
   DirectiveName: PChar;
   Node: TCodeTreeNode;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   if (Code=aCode) and (NestedComments=aNestedComments) and (not UpdateNeeded)
   then begin
     if FLastErrorMsg<>'' then
@@ -1797,8 +1797,8 @@ begin
   if CurNode<>Tree.Root then
     RaiseDanglingIFDEF;
   
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
 function TCompilerDirectivesTree.UpdateNeeded: boolean;
 begin

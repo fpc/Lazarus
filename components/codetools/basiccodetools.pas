@@ -1942,6 +1942,8 @@ begin
   Result:=copy(Source,AtomStart,Position-AtomStart);
 end;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 procedure ReadRawNextPascalAtom(const Source: string;
   var Position: integer; out AtomStart: integer; NestedComments: boolean;
   SkipDirectives: boolean);
@@ -1949,8 +1951,6 @@ var
   Len:integer;
   SrcPos, SrcStart, SrcAtomStart: PChar;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   Len:=length(Source);
   if Position>Len then begin
     Position:=Len+1;
@@ -1962,8 +1962,8 @@ begin
   ReadRawNextPascalAtom(SrcPos,SrcAtomStart,SrcStart+len,NestedComments,SkipDirectives);
   Position:=SrcPos-SrcStart+1;
   AtomStart:=SrcAtomStart-SrcStart+1;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
 procedure ReadRawNextPascalAtom(var Position: PChar; out AtomStart: PChar;
   const SrcEnd: PChar; NestedComments: boolean; SkipDirectives: boolean);

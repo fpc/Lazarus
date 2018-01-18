@@ -1798,6 +1798,8 @@ begin
   end;
 end;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 procedure TLinkScanner.ReadNextToken;
 var
   c1: char;
@@ -1806,8 +1808,6 @@ var
   p: PChar;
 begin
   //DebugLn([' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',dbgstr(Src,SrcPos,5),'"']);
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then exit;
   //DebugLn([' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'"']);
   // Skip all spaces and comments
@@ -2012,8 +2012,8 @@ begin
     then inc(p);
     SrcPos:=p-PChar(Src)+1;
   end;
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 
 procedure TLinkScanner.Scan(Range: TLinkScannerRange; CheckFilesOnDisk: boolean);
 var

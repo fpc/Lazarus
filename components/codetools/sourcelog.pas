@@ -668,6 +668,8 @@ begin
     Items[i].AdjustPosition(APosition);
 end;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+{$R-}
 procedure TSourceLog.BuildLineRanges;
 var
   line:integer;
@@ -676,8 +678,6 @@ var
   SrcStart: PChar;
   p: PChar;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
   //DebugLn(['[TSourceLog.BuildLineRanges] A Self=',DbgS(Self),',LineCount=',FLineCount,' Len=',SourceLength]);
   if FLineCount>=0 then exit;
   // build line range list
@@ -718,8 +718,8 @@ begin
     inc(FLineCount);
   ReAllocMem(FLineRanges,FLineCount*SizeOf(TLineRange));
   //DebugLn('[TSourceLog.BuildLineRanges] END ',FLineCount);
-  {$IFDEF RangeChecking}{$R+}{$ENDIF}
 end;
+{$IFDEF RangeChecking}{$R+}{$ENDIF}
 
 procedure TSourceLog.LineColToPosition(Line, Column: integer;
   out Position: integer);

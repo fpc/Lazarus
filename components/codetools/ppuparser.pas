@@ -1260,6 +1260,7 @@ begin
   end;
 end;
 
+{$R-}
 procedure TPPU.ReadHeader;
 var
   cpu: tsystemcpu;
@@ -1292,11 +1293,9 @@ begin
   FEntryPos:=0;
   FillByte(FEntry,SizeOf(FEntry),0);
 
-  {$R-}
   cpu:=tsystemcpu(FHeader.cpu);
   if (cpu<low(tsystemcpu)) or (cpu>high(tsystemcpu)) then
     cpu:=tsystemcpu(FHeader.cpu);
-  {$R+}
   FSizeOfAInt:=CpuAluBitSize[cpu] div 8;
   FSizeOfASizeInt:=CpuAddrBitSize[cpu] div 8;
 
@@ -1304,6 +1303,7 @@ begin
   DumpHeader('');
   {$ENDIF}
 end;
+{$R+}
 
 procedure TPPU.ReadInterfaceHeader;
 var
