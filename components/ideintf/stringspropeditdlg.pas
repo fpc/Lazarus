@@ -36,7 +36,7 @@ type
     TextGroupBox: TGroupBox;
     Memo: TMemo;
     procedure ClearButtonClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MemoChange(Sender: TObject);
     procedure SortButtonClick(Sender: TObject);
