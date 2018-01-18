@@ -41,6 +41,7 @@ type
     CompletionDropDownHintLabel: TLabel;
     CompletionDropDownHint: TComboBox;
     CompletionDropDownDelayLabel: TLabel;
+    UseImagesInCompletionBoxCheckBox: TCheckBox;
     AutoDelayTrackBar: TTrackBar;
     CompletionDropDownLabel: TLabel;
     CompletionDropDownHintTrackBar: TTrackBar;
@@ -89,6 +90,7 @@ begin
   AutoDisplayFuncProtoCheckBox.Caption := dlgAutoDisplayFuncProto;
   ContainsFilterCheckBox.Caption := dlgIncludeIdentifiersContainingPrefix;
   HighlightPrefixCheckBox.Caption := dlgHighlightPrefix;
+  UseImagesInCompletionBoxCheckBox.Caption := dlgUseImagesInCompletionBox;
 
   AutoHintAndCompletionDelayLabel.Caption:=lisDelayForHintsAndCompletionBox;
   CompletionDropDownLabel.Caption := lisDelayForCompletionLongLineHint;
@@ -113,6 +115,7 @@ begin
     AutoDisplayFuncProtoCheckBox.Checked := AutoDisplayFunctionPrototypes;
     ContainsFilterCheckBox.Checked := ContainsCompletionFilter;
     HighlightPrefixCheckBox.Checked := HighlightCodeCompletionPrefix;
+    UseImagesInCompletionBoxCheckBox.Checked := UseImagesInCompletionBox;
 
     CompletionDropDownHintTrackBar.Position := CompletionLongLineHintInMSec;
     CompletionDropDownHint.ItemIndex := ord(CompletionLongLineHintType);
@@ -134,6 +137,7 @@ begin
     AutoDisplayFunctionPrototypes := AutoDisplayFuncProtoCheckBox.Checked;
     ContainsCompletionFilter := ContainsFilterCheckBox.Checked;
     HighlightCodeCompletionPrefix := HighlightPrefixCheckBox.Checked;
+    UseImagesInCompletionBox := UseImagesInCompletionBoxCheckBox.Checked;
 
     CompletionLongLineHintInMSec := CompletionDropDownHintTrackBar.Position;
     CompletionLongLineHintType := TSynCompletionLongHintType(CompletionDropDownHint.ItemIndex);

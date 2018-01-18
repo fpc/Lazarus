@@ -1390,6 +1390,7 @@ type
     fAutoDisplayFuncPrototypes: Boolean;
     fUseContainsFilter: Boolean;
     fHighlightCodeCompletionPrefix: Boolean;
+    fUseImagesInCompletionBox: Boolean;
 
     // Code Folding
     FUseCodeFolding: Boolean;
@@ -1585,6 +1586,8 @@ type
       read fUseContainsFilter write fUseContainsFilter default True;
     property HighlightCodeCompletionPrefix: Boolean
       read fHighlightCodeCompletionPrefix write fHighlightCodeCompletionPrefix default True;
+    property UseImagesInCompletionBox: Boolean
+      read fUseImagesInCompletionBox write fUseImagesInCompletionBox default True;
 
   published
     property DbgHintAutoTypeCastClass: Boolean
@@ -4778,6 +4781,8 @@ begin
       XMLConfig.GetValue('EditorOptions/CodeTools/ContainsCompletionFilter', True);
     fHighlightCodeCompletionPrefix :=
       XMLConfig.GetValue('EditorOptions/CodeTools/HighlightCodeCompletionPrefix', True);
+    fUseImagesInCompletionBox :=
+      XMLConfig.GetValue('EditorOptions/CodeTools/UseImagesInCompletionBox', True);
 
     // Code Folding
     FUseCodeFolding :=
@@ -4975,6 +4980,8 @@ begin
       , fUseContainsFilter, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/HighlightCodeCompletionPrefix'
       , fHighlightCodeCompletionPrefix, True);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/UseImagesInCompletionBox'
+      , fUseImagesInCompletionBox, True);
 
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',

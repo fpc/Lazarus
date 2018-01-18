@@ -565,3 +565,26 @@ menu_quick_compile.png, menu_quick_compile_150.png, menu_quick_compile_200.png
 menu_reset_debugger.png, menu_reset_debugger_150.png, menu_reset_debugger_200.png
 menu_run_file.png, menu_run_file_150.png, menu_run_file_200.png
 menu_uncomment.png, menu_uncomment_150.png, menu_uncomment_200.png
+
+
+
+---
+
+Following images were created by regs:
+
+codecompletion folder:
+cc_class.png, cc_class_150.png, cc_class_200.png
+cc_constant.png, cc_constant_150.png, cc_constant_200.png
+cc_constructor.png, cc_constructor_150.png, cc_constructor_200.png
+cc_destructor.png, cc_destructor_150.png, cc_destructor_200.png
+cc_enum.png, cc_enum_150.png, cc_enum_200.png
+cc_function.png, cc_function_150.png, cc_function_200.png
+cc_label.png, cc_label_150.png, cc_label_200.png
+cc_namespace.png, cc_namespace_150.png, cc_namespace_200.png
+cc_procedure.png, cc_procedure_150.png, cc_procedure_200.png
+cc_property.png, cc_property_150.png, cc_property_200.png
+cc_property_ro.png, cc_property_ro_150.png, cc_property_ro_200.png
+cc_record.png, cc_record_150.png, cc_record_200.png
+cc_type.png, cc_type_150.png, cc_type_200.png
+cc_unit.png, cc_unit_150.png, cc_unit_200.png
+cc_variable.png, cc_variable_150.png, cc_variable_200.png

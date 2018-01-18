@@ -1971,6 +1971,7 @@ resourcestring
   dlgHighlightPrefix = 'Highlight prefix';
   lisAutomaticFeatures = 'Completion and Hints';
   lisAutoMarkup = 'Markup and Matches';
+  dlgUseImagesInCompletionBox = 'Icons in code completion box';
 
   dlgMarkupUserDefined = 'User defined markup';
   dlgMarkupUserDefinedNoLists = 'No lists';

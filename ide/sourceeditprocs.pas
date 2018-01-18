@@ -261,7 +261,8 @@ var
   ItemNode: TCodeTreeNode;
   SubNode: TCodeTreeNode;
   IsReadOnly: boolean;
-  ImageIndex: longint;
+  UseImages: boolean;
+  ImageIndex, ImageIndexCC: longint;
   Prefix: String;
   PrefixPosition: Integer;
   HintModifiers: TPascalHintModifiers;
@@ -301,11 +302,14 @@ begin
       exit;
     end;
     IdentItem.BeautifyIdentifier(CodeToolBoss.IdentifierList);
+    ItemNode:=IdentItem.Node;
     BackgroundColor:=ColorToRGB(ACanvas.Brush.Color);
     BGRed:=(BackgroundColor shr 16) and $ff;
     BGGreen:=(BackgroundColor shr 8) and $ff;
     BGBlue:=BackgroundColor and $ff;
     ImageIndex:=-1;
+    ImageIndexCC := -1;
+    UseImages := EditorOpts.UseImagesInCompletionBox;
 
     // first write the type
     // var, procedure, property, function, type, const
@@ -313,86 +317,160 @@ begin
 
     ctnVarDefinition, ctnRecordCase:
       begin
-        AColor:=clMaroon;
-        s:='var';
+        if UseImages then
+          ImageIndexCC := IDEImages.LoadImage('cc_variable', 16)
+        else begin
+          AColor:=clMaroon;
+          s:='var';
+        end;
       end;
 
     ctnTypeDefinition, ctnEnumerationType:
       begin
-        AColor:=clLime;
-        s:='type';
+        if UseImages then
+        begin
+          if ItemNode <> nil then
+            begin
+              ANode := IdentItem.Tool.FindTypeNodeOfDefinition(ItemNode);
+              case ANode.Desc of
+                ctnClass:
+                  ImageIndexCC := IDEImages.LoadImage('cc_class', 16);
+                ctnRecordType:
+                  ImageIndexCC := IDEImages.LoadImage('cc_record', 16);
+                ctnEnumerationType:
+                  ImageIndexCC := IDEImages.LoadImage('cc_enum', 16);
+                else
+                  ImageIndexCC := IDEImages.LoadImage('cc_type', 16);
+              end;
+            end
+          else
+            ImageIndexCC := IDEImages.LoadImage('cc_type', 16);
+        end
+        else
+        begin
+          AColor:=clLime;
+          s:='type';
+        end;
       end;
 
     ctnConstDefinition,ctnConstant:
       begin
         AColor:=clOlive;
         s:='const';
+        if UseImages then
+          ImageIndexCC := IDEImages.LoadImage('cc_constant', 16);
       end;
       
     ctnProcedure:
       begin
-        if IdentItem.IsFunction then
+        if UseImages then
         begin
-          AColor:=clTeal;
-          s:='function';
+          if IdentItem.IsFunction then
+            ImageIndexCC := IDEImages.LoadImage('cc_function', 16)
+          else if IdentItem.IsConstructor then
+            ImageIndexCC := IDEImages.LoadImage('cc_constructor', 16)
+          else if IdentItem.IsDestructor then
+            ImageIndexCC := IDEImages.LoadImage('cc_destructor', 16)
+          else
+            ImageIndexCC := IDEImages.LoadImage('cc_procedure', 16);
         end
         else
         begin
-          AColor:=clNavy;
-          if IdentItem.IsConstructor then
-            s := 'constructor'
+          if IdentItem.IsFunction then
+            begin
+              AColor:=clTeal;
+              s:='function';
+            end
           else
-          if IdentItem.IsDestructor then
-            s := 'destructor'
-          else
-            s:='procedure';
+            begin
+              AColor:=clNavy;
+              if IdentItem.IsConstructor then
+                s := 'constructor'
+              else if IdentItem.IsDestructor then
+                s := 'destructor'
+              else
+                s:='procedure';
+            end;
+          if IdentItem.TryIsAbstractMethod then
+            AColor:=clRed;
+          if iliHasLowerVisibility in IdentItem.Flags then
+            AColor:=clGray;
         end;
-        if IdentItem.TryIsAbstractMethod then
-          AColor:=clRed;
-        if iliHasLowerVisibility in IdentItem.Flags then
-          AColor:=clGray;
       end;
       
     ctnProperty,ctnGlobalProperty:
       begin
-        AColor:=clPurple;
-        s:='property';
         IsReadOnly:=IdentItem.IsPropertyReadOnly;
-        if IsReadOnly then
-          ImageIndex:=IDEImages.LoadImage('ce_property_readonly');
+        if UseImages then
+          begin
+            if IsReadOnly then
+              ImageIndexCC := IDEImages.LoadImage('cc_property_ro', 16)
+            else
+              ImageIndexCC := IDEImages.LoadImage('cc_property', 16);
+          end
+        else
+          begin
+            AColor:=clPurple;
+            s:='property';
+            if IsReadOnly then
+              ImageIndex:=IDEImages.LoadImage('ce_property_readonly');
+          end;
       end;
 
     ctnEnumIdentifier:
       begin
-        AColor:=clOlive;
-        s:='enum';
+        if UseImages then
+          ImageIndexCC := IDEImages.LoadImage('cc_enum', 16)
+        else
+          begin
+            AColor:=clOlive;
+            s:='enum';
+          end;
       end;
       
     ctnLabel:
       begin
-        AColor:=clOlive;
-        s:='label';
+        if UseImages then
+          ImageIndexCC := IDEImages.LoadImage('cc_label', 16)
+        else
+          begin
+            AColor:=clOlive;
+            s:='label';
+          end;
       end;
 
     ctnUnit, ctnUseUnitClearName:
       begin
-        AColor:=clBlack;
-        s:='unit';
+        if UseImages then
+          ImageIndexCC := IDEImages.LoadImage('cc_unit', 16)
+        else
+          begin
+            AColor:=clBlack;
+            s:='unit';
+          end;
       end;
 
     ctnUseUnitNamespace:
       begin
-        AColor:=clBlack;
-        s:='namespace';
+        if UseImages then
+          ImageIndexCC := IDEImages.LoadImage('cc_namespace', 16)
+        else
+          begin
+            AColor:=clBlack;
+            s:='namespace';
+          end;
       end;
 
     ctnNone:
-      if iliKeyword in IdentItem.Flags then begin
-        AColor:=clBlack;
-        s:='keyword';
-      end else begin
-        AColor:=clGray;
-        s:='';
+      if not UseImages then
+      begin
+        if iliKeyword in IdentItem.Flags then begin
+          AColor:=clBlack;
+          s:='keyword';
+        end else begin
+          AColor:=clGray;
+          s:='';
+        end;
       end;
 
     else
@@ -400,12 +478,28 @@ begin
       s:='';
     end;
 
-    SetFontColor(AColor);
-    if MeasureOnly then
-      Inc(Result.X, ACanvas.TextWidth('constructor '))
+    if UseImages then
+    begin
+     // drawing type image
+      if MeasureOnly then
+        Inc(Result.X, IDEImages.Images_16.Width + round(IDEImages.Images_16.Width / 4))
+      else
+        begin
+          if ImageIndexCC >= 0 then
+            IDEImages.Images_16.Draw(ACanvas, x+1, y+(Result.Y-IDEImages.Images_16.Height) div 2, ImageIndexCC);
+        end;
+      Inc(x,IDEImages.Images_16.Width + round(IDEImages.Images_16.Width / 4));
+    end
     else
-      ACanvas.TextOut(x+1,y,s);
-    inc(x,ACanvas.TextWidth('constructor '));
+    begin
+      SetFontColor(AColor);
+      if MeasureOnly then
+        Inc(Result.X, ACanvas.TextWidth('constructor '))
+      else
+        ACanvas.TextOut(x+1,y,s);
+      inc(x,ACanvas.TextWidth('constructor '));
+    end;
+
     if x>MaxX then exit;
 
     // paint the identifier
@@ -445,19 +539,21 @@ begin
     end;
 
     // paint icon
-    if ImageIndex>=0 then begin
-      if MeasureOnly then
-        Inc(Result.X, 18)
-      else begin
-        IDEImages.Images_16.Draw(ACanvas,x+1,y+(Result.Y-16) div 2,ImageIndex);
-        inc(x,18);
-        if x>MaxX then exit;
+    if not UseImages then
+    begin
+      if ImageIndex>=0 then begin
+        if MeasureOnly then
+          Inc(Result.X, 18)
+        else begin
+          IDEImages.Images_16.Draw(ACanvas,x+1,y+(Result.Y-16) div 2,ImageIndex);
+          inc(x,18);
+          if x>MaxX then exit;
+        end;
       end;
     end;
-    
+
     // finally paint the type/value/parameters
     s:='';
-    ItemNode:=IdentItem.Node;
     if ItemNode<>nil then begin
       case ItemNode.Desc of
 
