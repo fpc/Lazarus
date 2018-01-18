@@ -565,6 +565,7 @@ end;
 
 procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
 var
+  lb: TBrush;
   lp: TPen;
   p: TSeriesPointer;
   i: Integer;
@@ -589,14 +590,16 @@ begin
         AItems.Add(li);
       end;
     lmStyle:
-      if Styles <> nil then
+      if Styles <> nil then begin
+        if Assigned(p) then lb := p.Brush else lb := nil;
         for s in Styles.Styles do
           AItems.Add(TLegendItemLinePointer.CreateWithBrush(
             IfThen((lp <> nil) and s.UsePen, s.Pen, lp) as TPen,
-            IfThen(s.UseBrush, s.Brush, p.Brush) as TBrush,
+            IfThen(s.UseBrush, s.Brush, lb) as TBrush,
             p,
             LegendTextStyle(s)
           ));
+        end;
   end;
 end;
 
