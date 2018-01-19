@@ -37,7 +37,7 @@ unit DiffPatch;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, ComCtrls;
+  Classes, SysUtils, LazLogger;
 
 type
   TTextDiffFlag = (
@@ -97,14 +97,16 @@ type
     procedure GetNextLineExtends(var LineExtends: TLineExtends);
   end;
 
+  TProgressEvent = procedure(aPosition: Integer) of object;
+
   { TDiffOutput }
 
   TDiffOutput = class
   private
     fText1, fText2: string;
     fOutputType: TTextDiffOutputType;
+    fOnProgressPos: TProgressEvent;
     fFlags: TTextDiffFlags;
-    fProgressBar: TProgressBar;
     fDiffStream: TStream;
     fPart1, fPart2: TDiffPart;
     procedure FindNextEqualLine(const Start1, Start2: TLineExtends;
@@ -120,12 +122,13 @@ type
     procedure AddDiff(const Start1, End1, Start2, End2: TLineExtends);
     procedure UpdateProgressBar(const Line: TLineExtends);
   public
-    constructor Create(const aText1, aText2: string;
-      aFlags: TTextDiffFlags; aProgressBar: TProgressBar);
+    constructor Create(const aText1, aText2: string; aFlags: TTextDiffFlags);
     destructor Destroy; override;
+    function GetProgressMax: Integer;
     function CreateTextDiff: string;
   public
     property OutputType: TTextDiffOutputType read fOutputType write fOutputType;
+    property OnProgressPos: TProgressEvent read fOnProgressPos write fOnProgressPos;
   end;
 
 
@@ -171,12 +174,11 @@ end;
 function GotoNextLine(var LineExtends: TLineExtends): boolean;
 begin
   with LineExtends do begin
-    if LineStart<NextLineStart then begin
+    Result:=LineStart<NextLineStart;
+    if Result then begin
       inc(LineNumber);
       LineStart:=NextLineStart;
-      Result:=true;
-    end else
-      Result:=false;
+    end;
   end;
 end;
 
@@ -670,7 +672,7 @@ begin
     until false;
   except
     on E: Exception do begin
-      DebugLn('CreateTextDiff ',E.Message);
+      DebugLogger.DebugLn('CreateTextDiff ',E.Message);
     end;
   end;
   finally
@@ -711,10 +713,8 @@ end;
 
 procedure TDiffOutput.UpdateProgressBar(const Line: TLineExtends);
 begin
-  if Assigned(fProgressBar) then begin
-    fProgressBar.Position := Line.LineStart;
-    Application.ProcessMessages;
-  end;
+  if Assigned(OnProgressPos) then
+    OnProgressPos(Line.LineStart);
 end;
 
 procedure TDiffOutput.FinishOldContextBlock;
@@ -858,21 +858,16 @@ begin
   fPart2.Write2(Start2,End2,Part1HasChangedLines,'+');
 end;
 
-constructor TDiffOutput.Create(const aText1, aText2: string;
-  aFlags: TTextDiffFlags; aProgressBar: TProgressBar);
-var
-  i: Integer;
+function TDiffOutput.GetProgressMax: Integer;
+begin
+  Result := Length(fText1); // + Length(fText2);
+end;
+
+constructor TDiffOutput.Create(const aText1, aText2: string; aFlags: TTextDiffFlags);
 begin
   fText1:=aText1;
   fText2:=aText2;
   fFlags:=aFlags;
-  fProgressBar:=aProgressBar;
-  if Assigned(fProgressBar) then begin
-    i := Length(aText1); // + Length(aText2);
-    fProgressBar.Max := i;
-    fProgressBar.Step := i;
-    fProgressBar.Position := 0;
-  end;
   fOutputType:=tdoContext;          // Default OutputType, can be changed later
   fDiffStream:=TMemoryStream.Create;
   fPart1:=TDiffPart.Create(Self, fText1);
@@ -881,8 +876,8 @@ end;
 
 destructor TDiffOutput.Destroy;
 begin
-  if Assigned(fProgressBar) then
-    fProgressBar.Position := 0;
+  if Assigned(OnProgressPos) then
+    OnProgressPos(0);
   fPart2.Free;
   fPart1.Free;
   fDiffStream.Free;

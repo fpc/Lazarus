@@ -142,6 +142,7 @@ type
     procedure UpdateDiff;
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
+    procedure UpdateProgress(aPosition: Integer);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -379,6 +380,12 @@ begin
   IdleConnected:=True;
 end;
 
+procedure TDiffDlg.UpdateProgress(aPosition: Integer);
+begin
+  ProgressBar1.Position := aPosition;
+  Application.ProcessMessages;
+end;
+
 procedure TDiffDlg.SetIdleConnected(const AValue: boolean);
 begin
   if fIdleConnected=AValue then exit;
@@ -407,9 +414,11 @@ begin
     OpenInEditorButton.Enabled := False;
     //CancelScanningButton.Enabled := True;
 
-    DiffOutput:=TDiffOutput.Create(Text1Src, Text2Src, GetDiffOptions, ProgressBar1);
+    DiffOutput := TDiffOutput.Create(Text1Src, Text2Src, GetDiffOptions);
     try
-      DiffSynEdit.Lines.Text:=DiffOutput.CreateTextDiff;
+      ProgressBar1.Max := DiffOutput.GetProgressMax;
+      DiffOutput.OnProgressPos := @UpdateProgress;
+      DiffSynEdit.Lines.Text := DiffOutput.CreateTextDiff;
     finally
       DiffOutput.Free;
     end;

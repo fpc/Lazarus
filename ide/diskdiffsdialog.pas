@@ -338,7 +338,7 @@ begin
       fs.Read(Result^.TxtOnDisk[1],length(Result^.TxtOnDisk));
     fs.Free;
 
-    DiffOutput:=TDiffOutput.Create(Source,Result^.TxtOnDisk, [], nil);
+    DiffOutput:=TDiffOutput.Create(Source,Result^.TxtOnDisk, []);
     try
       Result^.Diff+=DiffOutput.CreateTextDiff;
     finally
