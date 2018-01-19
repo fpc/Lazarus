@@ -412,6 +412,10 @@ msgstr "Kód összecsukási fa"
 msgid "Default Text"
 msgstr "Alapértelmezett szöveg"
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Letiltott töréspont"
@@ -480,6 +484,11 @@ msgstr "Elrejtett szakasz első sora"
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
 msgstr "Bővített keresés szava"
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
@@ -550,6 +559,10 @@ msgstr "Szöveg blokk"
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
 msgstr "Ismeretlen töréspont"
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -2097,6 +2110,7 @@ msgid "Left Of Cursor"
 msgstr "A kurzor bal oldalán"
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr ""
 
@@ -3731,6 +3745,10 @@ msgstr "Elválasztó rajzolása"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Szabványos fordító beállításfájl használata (fpc.cfg)"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Futtató alkalmazás használata"
@@ -4608,6 +4626,10 @@ msgstr "Felső szél horgonyzása a testvér felső széléhez. A BorderSpacing 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Hiba történt a legutóbbi indításkor a(z) %s betöltése közben!%sÚjra megnyitja a projektet?"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"

@@ -415,6 +415,10 @@ msgstr "Дерево згортань коду"
 msgid "Default Text"
 msgstr "Текст за замовчуванням"
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Вимкнена точка зупинки"
@@ -483,6 +487,12 @@ msgstr "Рядок початку прихованого блока"
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
 msgstr "Інкрементальні інші"
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
+msgstr "Підсвітити префікс"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
@@ -553,6 +563,10 @@ msgstr "Текстовий блок"
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
 msgstr "Невідома точка зупинки"
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -2100,6 +2114,7 @@ msgid "Left Of Cursor"
 msgstr "Зліва від курсору"
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr "Підсвітити префікс"
 
@@ -3734,6 +3749,10 @@ msgstr "Показ роздільника"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Використати стандартний файл налаштувань (fpc.cfg)"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Використовувати застосунок для запуску"
@@ -4611,6 +4630,10 @@ msgstr "Якорити верхній край до верхнього краю 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "При останньому запуску виникла помилка при завантаженні %s!%sЗавантажити цей проект знову?"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"

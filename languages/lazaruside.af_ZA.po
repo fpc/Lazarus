@@ -412,6 +412,10 @@ msgstr ""
 msgid "Default Text"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr ""
@@ -479,6 +483,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
@@ -549,6 +558,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
@@ -2100,6 +2113,7 @@ msgid "Left Of Cursor"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr ""
 
@@ -3731,6 +3745,10 @@ msgstr ""
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr ""
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr ""
@@ -3870,9 +3888,10 @@ msgid "Scale"
 msgstr "Skaal"
 
 #: lazarusidestrconsts.fdmselectall
+#, fuzzy
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
-msgstr ""
+msgstr "Kies alles"
 
 #: lazarusidestrconsts.fdmsizemenu
 msgid "Size ..."
@@ -4610,6 +4629,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
+msgstr ""
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
 msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -10865,9 +10888,10 @@ msgid "New project from file"
 msgstr ""
 
 #: lazarusidestrconsts.liskmnewunit
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
-msgstr ""
+msgstr "Nuwe Eenheid"
 
 #: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechosenscheme
 msgid "Note: All keys will be set to the values of the chosen scheme."

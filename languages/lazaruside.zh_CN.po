@@ -413,6 +413,10 @@ msgstr "源代码折叠树"
 msgid "Default Text"
 msgstr "默认文本"
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr ""
@@ -480,6 +484,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
@@ -551,6 +560,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
 msgstr "未知断点"
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -1162,9 +1175,10 @@ msgid "Type of debug info"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypeauto
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgcosymboltypeauto"
 msgid "Automatic"
-msgstr ""
+msgstr "自动"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2
 msgid "Dwarf2"
@@ -2118,6 +2132,7 @@ msgid "Left Of Cursor"
 msgstr "光标左边"
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr ""
 
@@ -3812,6 +3827,10 @@ msgstr "隔离区绘制"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "使用标准编译器配置文件 (fpc.cfg)"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "使用运行的应用程序"
@@ -4748,6 +4767,10 @@ msgstr ""
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "装载时发生错误 %s!%s%s 重新载入工程?"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
@@ -21097,9 +21120,10 @@ msgid "Escape"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextcell
+#, fuzzy
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
 msgid "Next Cell"
-msgstr ""
+msgstr "下一个Cell"
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextcellsel
 #, fuzzy

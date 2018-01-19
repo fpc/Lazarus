@@ -414,6 +414,10 @@ msgstr "Kod katlama ağacı"
 msgid "Default Text"
 msgstr "Varsayılan Metin"
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Devre dışı bırakılmış kesme noktası"
@@ -482,6 +486,11 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
 msgstr "Artımlı diğerleri"
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
@@ -552,6 +561,10 @@ msgstr "Metin bloğu"
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
 msgstr "Bilinmeyen kesme noktası"
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -2102,6 +2115,7 @@ msgid "Left Of Cursor"
 msgstr "İmlecin Solu"
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr ""
 
@@ -3739,6 +3753,10 @@ msgstr "Bölücü Çizimi"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Standart derleyici yapılandırma dosyasını (fpc.cfg) kullanın"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Başlatma uygulaması kullan"
@@ -4633,6 +4651,10 @@ msgstr "Üst tarafı ile kardeşinin üst tarafına bağlayın.Bir mesafe ayarla
 #, fuzzy,badformat
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "% S yüklenirken son başlatılışta bir hata oluştu!% SBu projeyi tekrar yükle?"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"

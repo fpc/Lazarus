@@ -410,6 +410,10 @@ msgstr "Koodin laskostuspuu"
 msgid "Default Text"
 msgstr "Oletus teksti"
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Estetty keskeytyskohta"
@@ -477,6 +481,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
@@ -548,6 +557,10 @@ msgstr "Tekstilohko"
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
 msgstr "Tuntematon keskeytyskohta"
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -1799,14 +1812,16 @@ msgid "Program"
 msgstr "Ohjelma"
 
 #: lazarusidestrconsts.dlgfoldpasrecord
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfoldpasrecord"
 msgid "Record"
-msgstr ""
+msgstr "Nauhoita"
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfoldpasrepeat"
 msgid "Repeat"
-msgstr ""
+msgstr "Toistoja"
 
 #: lazarusidestrconsts.dlgfoldpasslashcomment
 msgid "Comment //"
@@ -2069,6 +2084,7 @@ msgid "Left Of Cursor"
 msgstr "Vasemmalla kursorista"
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr ""
 
@@ -3705,6 +3721,10 @@ msgstr "Jakajan piirto"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Käytä standardia kääntäjän asetustiedostoa (fpc.cfg)"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Käytä käynnistävää ohjelmaa"
@@ -4582,6 +4602,10 @@ msgstr "Ankkuroi yläreuna sisarusten yläreunaan. Käytä BorderSpacing välima
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Virhe esiintyi, kun avattiin projektia %s!%sAvataanko tämä projekti uudelleen?"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"

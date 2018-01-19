@@ -410,6 +410,10 @@ msgstr "コード折りたたみツリー"
 msgid "Default Text"
 msgstr "既定のテキスト"
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "無効化されたブレークポイント"
@@ -478,6 +482,11 @@ msgstr "開始行を隠す"
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
 msgstr "インクリメンタル その他"
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
@@ -548,6 +557,10 @@ msgstr "テキストブロック"
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
 msgstr "不明なブレークポイント"
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -2098,6 +2111,7 @@ msgid "Left Of Cursor"
 msgstr "カーソルの左"
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr ""
 
@@ -3736,6 +3750,10 @@ msgstr "仕切りの表示"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "標準コンパイラ設定ファイル(fpc.cfg)を使用"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "アプリケーション起動を使用"
@@ -4615,6 +4633,10 @@ msgstr "上端を兄弟の下端にアンカー。距離を設定するにはBor
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "最近の%s!%sの読み込み時に起動時にエラーが起こりました。またこのプロジェクトを読み込みますか？"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"

@@ -414,6 +414,10 @@ msgstr "Strom složení kódu"
 msgid "Default Text"
 msgstr "Přednastavený text"
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Zakázané body přerušení"
@@ -482,6 +486,11 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
 msgstr "Vzestupně další"
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
@@ -552,6 +561,10 @@ msgstr "Textový blok"
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
 msgstr "Neznámý bod přerušení"
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -2099,6 +2112,7 @@ msgid "Left Of Cursor"
 msgstr "Nalevo od kurzoru"
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr ""
 
@@ -3747,6 +3761,10 @@ msgstr "Kreslení oddělovače"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Použít standardní konfigurační soubor překladače (fpc.cfg)"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Použít spouštěcí aplikaci"
@@ -4626,6 +4644,10 @@ msgstr "Ukotvit horní okraj k hornímu okraji sourozence. Použijte BorderSpaci
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Při posledním startu došlo k chybě při načítání %s!%sNačíst znovu tento projekt?"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"

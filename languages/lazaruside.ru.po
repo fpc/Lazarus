@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-01-15 01:01+0300\n"
+"PO-Revision-Date: 2018-01-19 15:56+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 1.8.5\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -413,6 +413,10 @@ msgstr "Дерево сворачиваний кода"
 msgid "Default Text"
 msgstr "Текст по умолчанию"
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr "Текст по умолчанию / окно"
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Отключённая точка останова"
@@ -481,6 +485,11 @@ msgstr "Строка начала скрытого блока"
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
 msgstr "Остальные совпадения при инкрементном поиске"
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
+msgstr "Подсветка префикса"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
@@ -551,6 +560,10 @@ msgstr "Выделение текста"
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
 msgstr "Неизвестная точка останова"
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
+msgstr "Граница окна"
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -2098,6 +2111,7 @@ msgid "Left Of Cursor"
 msgstr "Слева от курсора"
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr "Подсвечивать префикс"
 
@@ -3732,6 +3746,10 @@ msgstr "Отображение разделителя"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Использовать стандартный файл настройки компилятора (fpc.cfg)"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr "Значки в окне автозавершения кода"
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Использовать приложение для запуска"
@@ -4609,6 +4627,10 @@ msgstr "Привязать верх компонента к верху сосе�
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Во время загрузки %s при последнем запуске произошла ошибка!%sЗагрузить проект снова?"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr "Внешний вид"
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"

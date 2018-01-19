@@ -410,6 +410,10 @@ msgstr ""
 msgid "Default Text"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr ""
@@ -477,6 +481,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
@@ -547,6 +556,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
@@ -700,9 +713,10 @@ msgid "Behind methods"
 msgstr "Disamping metode"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
-msgstr ""
+msgstr "Pemilihan"
 
 #: lazarusidestrconsts.dlgblockindent
 #, fuzzy
@@ -2160,6 +2174,7 @@ msgid "Left Of Cursor"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr ""
 
@@ -3870,6 +3885,10 @@ msgstr ""
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Gunakan File Konfig Kompilator standar (fpc.cfg)"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Gunakan aplikasi peluncuran"
@@ -4838,6 +4857,10 @@ msgstr ""
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Kesalahan terjadi saat terakhir startup ketika mengambil %s!%s%sAmbil proyek ini lagi?"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
@@ -11264,9 +11287,10 @@ msgid "New project from file"
 msgstr "Proyek baru dari file"
 
 #: lazarusidestrconsts.liskmnewunit
+#, fuzzy
 msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
-msgstr ""
+msgstr "Unit Baru"
 
 #: lazarusidestrconsts.liskmnoteallkeyswillbesettothevaluesofthechosenscheme
 msgid "Note: All keys will be set to the values of the chosen scheme."

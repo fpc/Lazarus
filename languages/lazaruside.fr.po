@@ -414,6 +414,10 @@ msgstr "Arbre de pliage de code"
 msgid "Default Text"
 msgstr "Texte par défaut"
 
+#: lazarusidestrconsts.dlgaddhiattrdefaultwindow
+msgid "Default Text / Window"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Point d'arrêt désactivé"
@@ -482,6 +486,11 @@ msgstr "Masquer la ligne de départ"
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
 msgstr "Incrémentales (autres)"
+
+#: lazarusidestrconsts.dlgaddhiattrhighlightprefix
+msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
+msgid "Highlight prefix"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
@@ -552,6 +561,10 @@ msgstr "Bloc de texte"
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
 msgstr "Point d'arrêt inconnu"
+
+#: lazarusidestrconsts.dlgaddhiattrwindowborder
+msgid "Window border"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -2099,6 +2112,7 @@ msgid "Left Of Cursor"
 msgstr "Gauche du curseur"
 
 #: lazarusidestrconsts.dlghighlightprefix
+msgctxt "lazarusidestrconsts.dlghighlightprefix"
 msgid "Highlight prefix"
 msgstr ""
 
@@ -3733,6 +3747,10 @@ msgstr "Dessin des séparateurs"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Utiliser le fichier de configuration standard du compilateur (\"fpc.cfg\")"
 
+#: lazarusidestrconsts.dlguseiconsincompletionbox
+msgid "Icons in code completion box"
+msgstr ""
+
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Utiliser une application de démarrage"
@@ -4610,6 +4628,10 @@ msgstr "Ancrer le haut au haut du frère. Utilisez \"BorderSpacing\" pour défin
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
 msgid "An error occurred at last startup while loading %s!%sLoad this project again?"
 msgstr "Une erreur est survenue durant le démarrage précédent pendant le chargement de \"%s\" !%sVoulez-vous charger ce projet à nouveau ?"
+
+#: lazarusidestrconsts.lisappearance
+msgid "Appearance"
+msgstr ""
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
