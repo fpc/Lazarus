@@ -2110,11 +2110,6 @@ msgstr "強調フォント色"
 msgid "Left Of Cursor"
 msgstr "カーソルの左"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "カーソルの右"

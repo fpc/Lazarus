@@ -2113,11 +2113,6 @@ msgstr "Підсвічувати Колір Шрифту"
 msgid "Left Of Cursor"
 msgstr "Зліва від курсору"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr "Підсвітити префікс"
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Справа від курсору"

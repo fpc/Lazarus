@@ -2114,11 +2114,6 @@ msgstr "Yazı tipi rengini vurgula"
 msgid "Left Of Cursor"
 msgstr "İmlecin Solu"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "İmleç Sağ"

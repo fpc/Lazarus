@@ -2135,11 +2135,6 @@ msgstr "Marca il colore del font"
 msgid "Left Of Cursor"
 msgstr "A sinistra del cursore"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Alla destra del cursore"

@@ -2111,11 +2111,6 @@ msgstr "Paryškinto šrifto spalva"
 msgid "Left Of Cursor"
 msgstr "Žymeklio kairėje"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Žymeklio dešinėje"

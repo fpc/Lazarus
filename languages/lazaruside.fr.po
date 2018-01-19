@@ -2111,11 +2111,6 @@ msgstr "Couleur de surlignage de la police"
 msgid "Left Of Cursor"
 msgstr "Gauche du curseur"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Droite du curseur"

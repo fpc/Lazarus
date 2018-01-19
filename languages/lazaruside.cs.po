@@ -2111,11 +2111,6 @@ msgstr "Barva zvýraznění písma"
 msgid "Left Of Cursor"
 msgstr "Nalevo od kurzoru"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Napravo od kurzoru"

@@ -2196,11 +2196,6 @@ msgstr "Kolor czcionki podświetlenia"
 msgid "Left Of Cursor"
 msgstr "Po lewej stronie kursora"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Po prawej stronie kursora"

@@ -2110,11 +2110,6 @@ msgstr "Шрифт выделенного"
 msgid "Left Of Cursor"
 msgstr "Слева от курсора"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr "Подсвечивать префикс"
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Справа от курсора"

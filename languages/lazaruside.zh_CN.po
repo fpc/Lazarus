@@ -2131,11 +2131,6 @@ msgstr "字体高亮颜色"
 msgid "Left Of Cursor"
 msgstr "光标左边"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "光标右边"

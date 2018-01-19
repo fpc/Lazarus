@@ -2131,11 +2131,6 @@ msgstr "Color Resaltado de fuente"
 msgid "Left Of Cursor"
 msgstr "A la izquierda del cursor"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "A la derecha del cursor"

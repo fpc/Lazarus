@@ -2083,11 +2083,6 @@ msgstr "Korostuksen fontin väri"
 msgid "Left Of Cursor"
 msgstr "Vasemmalla kursorista"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Oikealla kursorista"

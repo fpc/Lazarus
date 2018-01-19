@@ -2109,11 +2109,6 @@ msgstr "Kijelölés betűszíne"
 msgid "Left Of Cursor"
 msgstr "A kurzor bal oldalán"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "A kurzor jobb oldalán"

@@ -2109,11 +2109,6 @@ msgstr "Realçar Cor Fonte"
 msgid "Left Of Cursor"
 msgstr "Esquerda do cursor"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Direita do cursor"

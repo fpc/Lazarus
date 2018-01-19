@@ -2108,11 +2108,6 @@ msgstr "Hervorhebungsschriftfarbe"
 msgid "Left Of Cursor"
 msgstr "Links vom Cursor"
 
-#: lazarusidestrconsts.dlghighlightprefix
-msgctxt "lazarusidestrconsts.dlghighlightprefix"
-msgid "Highlight prefix"
-msgstr ""
-
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Cursor"
 msgstr "Rechts vom Cursor"
