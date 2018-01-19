@@ -3205,15 +3205,13 @@ end;
 function GetKeyShiftState: TShiftState;
 begin
   Result := [];
-  if (GetKeyState(VK_CONTROL) and $8000) <> 0 then
+  if GetKeyState(VK_CONTROL) < 0 then
     Include(Result, ssCtrl);
-  if (GetKeyState(VK_SHIFT) and $8000) <> 0 then
+  if GetKeyState(VK_SHIFT) < 0 then
     Include(Result, ssShift);
-  if (GetKeyState(VK_MENU) and $8000) <> 0 then
+  if GetKeyState(VK_MENU) < 0 then
     Include(Result, ssAlt);
-  if ((GetKeyState(VK_LWIN) and $8000) <> 0) or ((GetKeyState(VK_RWIN) and $8000) <> 0) then
-    Include(Result, ssMeta);
-  if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then 
+  if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then
     Include(Result, ssMeta);
 end;
 
