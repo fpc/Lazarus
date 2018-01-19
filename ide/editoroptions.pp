@@ -120,7 +120,8 @@ const
     '',  // ahaSpecialVisibleChars
     '',  // ahaTopInfoHint
     '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive
-     '', '', ''  // ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
+    '', '', '',  // ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
+    '', '', '', '' // ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight
   );
 
   ahaGroupMap: array[TAdditionalHilightAttribute] of TAhaGroupName = (
@@ -162,7 +163,12 @@ const
     { ahaIfDefBlockTmpActive } agnIfDef,
     { ahaIfDefNodeInactive }   agnIfDef,
     { ahaIfDefNodeActive }     agnIfDef,
-    { ahaIfDefNodeTmpActive }  agnIfDef
+    { ahaIfDefNodeTmpActive }  agnIfDef,
+    { ahaIdentComplWindow }           agnIdentComplWindow,
+    { ahaIdentComplWindowBorder }     agnIdentComplWindow,
+    { ahaIdentComplWindowSelection }  agnIdentComplWindow,
+    { ahaIdentComplWindowHighlight }  agnIdentComplWindow
+
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TColorSchemeAttributeFeatures =
   (
@@ -204,7 +210,11 @@ const
     { ahaIfDefBlockTmpActive }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefNodeInactive }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefNodeActive }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
-    { ahaIfDefNodeTmpActive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
+    { ahaIfDefNodeTmpActive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaIdentComplWindow }   [hafBackColor, hafForeColor],
+    { ahaIdentComplWindowBorder }    [hafForeColor],
+    { ahaIdentComplWindowSelection } [hafBackColor, hafForeColor],
+    { ahaIdentComplWindowHighlight } [hafForeColor]
   );
 
 
@@ -2461,6 +2471,12 @@ begin
   AdditionalHighlightAttributes[ahaIfDefNodeActive]     := dlgIfDefNodeActive;
   AdditionalHighlightAttributes[ahaIfDefNodeTmpActive]  := dlgIfDefNodeTmpActive;
   AdditionalHighlightGroupNames[agnIfDef]        := dlgAddHiAttrGroupIfDef;
+
+  AdditionalHighlightAttributes[ahaIdentComplWindow]          := dlgAddHiAttrDefaultWindow;
+  AdditionalHighlightAttributes[ahaIdentComplWindowBorder]    := dlgAddHiAttrWindowBorder;
+  AdditionalHighlightAttributes[ahaIdentComplWindowSelection] := dlgBlockGroupOptions;
+  AdditionalHighlightAttributes[ahaIdentComplWindowHighlight] := dlgAddHiAttrHighlightPrefix;
+  AdditionalHighlightGroupNames[agnIdentComplWindow]          := dlgIdentifierCompletion;
 
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
@@ -6392,9 +6408,16 @@ procedure TColorSchemeLanguage.ApplyTo(ASynEdit: TSynEdit);
     if assigned(ASynEdit.Gutter.Parts.ByClass[aClass, 0]) then
       SetMarkupColor(aha, ASynEdit.Gutter.Parts.ByClass[aClass, 0].MarkupInfo);
   end;
+  function GetUsedAttr(aha: TAdditionalHilightAttribute): TColorSchemeAttribute;
+  begin
+    Result := AttributeByEnum[aha];
+    if Assigned(Result) and Result.IsUsingSchemeGlobals then
+      Result := Result.GetSchemeGlobal;
+  end;
 var
   Attri: TColorSchemeAttribute;
   i: Integer;
+  IDESynEdit: TIDESynEditor;
 begin
   ASynEdit.BeginUpdate;
   try
@@ -6413,19 +6436,13 @@ begin
       aSynEdit.Font.Color := clBlack;
     end;
 
-    Attri := Attribute[AhaToStoredName(ahaGutter)];
-    if Attri <> nil then begin
-      if Attri.IsUsingSchemeGlobals then
-        Attri := Attri.GetSchemeGlobal;
+    Attri := GetUsedAttr(ahaGutter);
+    if Attri <> nil then
       aSynEdit.Gutter.Color := Attri.Background;
-    end;
 
-    Attri := Attribute[AhaToStoredName(ahaRightMargin)];
-    if Attri <> nil then begin
-      if Attri.IsUsingSchemeGlobals then
-        Attri := Attri.GetSchemeGlobal;
+    Attri := GetUsedAttr(ahaRightMargin);
+    if Attri <> nil then
       aSynEdit.RightEdgeColor := Attri.Foreground;
-    end;
 
     SetMarkupColor(ahaTextBlock,         aSynEdit.SelectedColor);
     SetMarkupColor(ahaIncrementalSearch, aSynEdit.IncrementColor);
@@ -6468,6 +6485,44 @@ begin
     SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
     SetGutterColorByClass(ahaGutterSeparator, TSynGutterSeparator);
 
+    if ASynEdit is TIDESynEditor then
+    begin
+      IDESynEdit := TIDESynEditor(ASynEdit);
+
+      Attri := GetUsedAttr(ahaIdentComplWindow);
+      if Attri<>nil then
+      begin
+        IDESynEdit.MarkupIdentComplWindow.TextColor := Attri.Foreground;
+        IDESynEdit.MarkupIdentComplWindow.WindowColor:= Attri.Background;
+      end else
+      begin
+        IDESynEdit.MarkupIdentComplWindow.TextColor := clNone;
+        IDESynEdit.MarkupIdentComplWindow.WindowColor:= clNone;
+      end;
+
+      Attri := GetUsedAttr(ahaIdentComplWindowBorder);
+      if Attri<>nil then
+        IDESynEdit.MarkupIdentComplWindow.BorderColor:= Attri.Foreground
+      else
+        IDESynEdit.MarkupIdentComplWindow.BorderColor:= clNone;
+
+      Attri := GetUsedAttr(ahaIdentComplWindowHighlight);
+      if Attri<>nil then
+        IDESynEdit.MarkupIdentComplWindow.HighlightColor:= Attri.Foreground
+      else
+        IDESynEdit.MarkupIdentComplWindow.HighlightColor:= clNone;
+
+      Attri := GetUsedAttr(ahaIdentComplWindowSelection);
+      if Attri<>nil then
+      begin
+        IDESynEdit.MarkupIdentComplWindow.TextSelectedColor:= Attri.Foreground;
+        IDESynEdit.MarkupIdentComplWindow.BackgroundSelectedColor:= Attri.Background;
+      end else
+      begin
+        IDESynEdit.MarkupIdentComplWindow.TextSelectedColor := clNone;
+        IDESynEdit.MarkupIdentComplWindow.BackgroundSelectedColor:= clNone;
+      end;
+    end;
 
     i := aSynEdit.PluginCount - 1;
     while (i >= 0) and not(aSynEdit.Plugin[i] is TSynPluginTemplateEdit) do

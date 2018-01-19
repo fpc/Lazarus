@@ -63,12 +63,13 @@ type
      ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
      ahaTopInfoHint,
      ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive,
-     ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
+     ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive,
+     ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight
      );
 
   TAhaGroupName = (
     agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode,
-    agnIfDef
+    agnIfDef, agnIdentComplWindow
   );
 
   TSourceEditorBase = class;

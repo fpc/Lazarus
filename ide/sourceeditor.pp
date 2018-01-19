@@ -110,6 +110,13 @@ type
     hcmSoftKeepEOL      // Soft Center (distance to screen edge) Caret, but keep EOL at right border
   );
 
+  TSourceEditCompletionForm = class(TSynCompletionForm)
+  private
+    FTextHighLightColor: TColor;
+  public
+    property TextHighLightColor: TColor read FTextHighLightColor write FTextHighLightColor;
+  end;
+
   { TSourceEditCompletion }
 
   TSourceEditCompletion=class(TSynCompletion)
@@ -117,10 +124,13 @@ type
     FIdentCompletionJumpToError: boolean;
     ccSelection: String;
     // colors for the completion form (popup form, e.g. word completion)
-    FActiveEditDefaultFGColor: TColor;
-    FActiveEditDefaultBGColor: TColor;
-    FActiveEditSelectedFGColor: TColor;
-    FActiveEditSelectedBGColor: TColor;
+
+    FActiveEditBackgroundColor: TColor;
+    FActiveEditBackgroundSelectedColor: TColor;
+    FActiveEditBorderColor: TColor;
+    FActiveEditTextColor: TColor;
+    FActiveEditTextSelectedColor: TColor;
+    FActiveEditTextHighLightColor: TColor;
 
     procedure ccExecute(Sender: TObject);
     procedure ccCancel(Sender: TObject);
@@ -145,6 +155,7 @@ type
   protected
     CurrentCompletionType: TCompletionType;
     function Manager: TSourceEditorManager;
+    function GetCompletionFormClass: TSynBaseCompletionFormClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     property IdentCompletionJumpToError: Boolean
@@ -2098,6 +2109,11 @@ begin
   EnvironmentOptions.Desktop.CompletionWindowHeight := TheForm.NbLinesInWindow;
 end;
 
+function TSourceEditCompletion.GetCompletionFormClass: TSynBaseCompletionFormClass;
+begin
+  Result := TSourceEditCompletionForm;
+end;
+
 procedure TSourceEditCompletion.ccExecute(Sender: TObject);
 // init completion form
 // called by OnExecute just before showing
@@ -2106,15 +2122,19 @@ var
   Prefix: String;
   I: Integer;
   NewStr: String;
+  SynEditor: TIDESynEditor;
 Begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditCompletion.ccExecute START']);
   {$ENDIF}
   TheForm.Font := Editor.Font;
-  FActiveEditDefaultFGColor := Editor.Font.Color;
-  FActiveEditDefaultBGColor := Editor.Color;
-  FActiveEditSelectedFGColor := TSynEdit(Editor).SelectedColor.Foreground;
-  FActiveEditSelectedBGColor := TSynEdit(Editor).SelectedColor.Background;
+
+  FActiveEditTextColor := Editor.Font.Color;
+  FActiveEditBorderColor := RGBToColor(100, 100, 100);
+  FActiveEditBackgroundColor := Editor.Color;
+  FActiveEditTextSelectedColor := TSynEdit(Editor).SelectedColor.Foreground;
+  FActiveEditBackgroundSelectedColor := TSynEdit(Editor).SelectedColor.Background;
+  FActiveEditTextHighLightColor := RGBToColor(200, 13, 13);
 
   if Editor.Highlighter<>nil
   then begin
@@ -2122,11 +2142,28 @@ Begin
       if IdentifierAttribute<>nil
       then begin
         if IdentifierAttribute.ForeGround<>clNone then
-          FActiveEditDefaultFGColor:=IdentifierAttribute.ForeGround;
+          FActiveEditTextColor:=IdentifierAttribute.ForeGround;
         if IdentifierAttribute.BackGround<>clNone then
-          FActiveEditDefaultBGColor:=IdentifierAttribute.BackGround;
+          FActiveEditBackgroundColor:=IdentifierAttribute.BackGround;
       end;
     end;
+  end;
+
+  if Editor is TIDESynEditor then
+  begin
+    SynEditor := TIDESynEditor(Editor);
+    if SynEditor.MarkupIdentComplWindow.TextColor<>clNone then
+      FActiveEditTextColor := SynEditor.MarkupIdentComplWindow.TextColor;
+    if SynEditor.MarkupIdentComplWindow.BorderColor<>clNone then
+      FActiveEditBorderColor := SynEditor.MarkupIdentComplWindow.BorderColor;
+    if SynEditor.MarkupIdentComplWindow.WindowColor<>clNone then
+      FActiveEditBackgroundColor := SynEditor.MarkupIdentComplWindow.WindowColor;
+    if SynEditor.MarkupIdentComplWindow.WindowColor<>clNone then
+      FActiveEditTextSelectedColor := SynEditor.MarkupIdentComplWindow.TextSelectedColor;
+    if SynEditor.MarkupIdentComplWindow.WindowColor<>clNone then
+      FActiveEditBackgroundSelectedColor := SynEditor.MarkupIdentComplWindow.BackgroundSelectedColor;
+    if SynEditor.MarkupIdentComplWindow.HighlightColor<>clNone then
+      FActiveEditTextHighLightColor := SynEditor.MarkupIdentComplWindow.HighlightColor;
   end;
 
   S := TStringList.Create;
@@ -2170,11 +2207,13 @@ Begin
   CurrentString:=Prefix;
   // set colors
   if (Editor<>nil) and (TheForm<>nil) then begin
-    with TheForm do begin
-      BackgroundColor   := FActiveEditDefaultBGColor;
-      clSelect          := FActiveEditSelectedBGColor;
-      TextColor         := FActiveEditDefaultFGColor;
-      TextSelectedColor := FActiveEditSelectedFGColor;
+    with TheForm as TSourceEditCompletionForm do begin
+      DrawBorderColor       := FActiveEditBorderColor;
+      BackgroundColor   := FActiveEditBackgroundColor;
+      clSelect          := FActiveEditBackgroundSelectedColor;
+      TextColor         := FActiveEditTextColor;
+      TextSelectedColor := FActiveEditTextSelectedColor;
+      TextHighLightColor:= FActiveEditTextHighLightColor;
       //debugln('TSourceEditCompletion.ccExecute A Color=',DbgS(Color),
       // ' clSelect=',DbgS(clSelect),
       // ' TextColor=',DbgS(TextColor),
@@ -2366,8 +2405,11 @@ begin
     end;
     Font.Style:=[];
   end;
-  Colors.FontColor := FActiveEditDefaultFGColor;
-  Colors.SelectedFontColor := FActiveEditSelectedFGColor;
+  Colors.BackgroundColor := FActiveEditBackgroundColor;
+  Colors.BackgroundSelectedColor := FActiveEditBackgroundSelectedColor;
+  Colors.TextColor := FActiveEditTextColor;
+  Colors.TextSelectedColor := FActiveEditTextSelectedColor;
+  Colors.TextHighLightColor := FActiveEditTextHighLightColor;
   MaxX:=TheForm.ClientWidth;
   t:=CurrentCompletionType;
   if Manager.ActiveCompletionPlugin<>nil then
@@ -2400,10 +2442,6 @@ begin
       Font.Name:=EditorOpts.EditorFont;
     end;
     Font.Style:=[];
-    if not ItemSelected then
-      Font.Color := FActiveEditDefaultFGColor
-    else
-      Font.Color := FActiveEditSelectedFGColor;
   end;
   MaxX := Screen.Width-20;
   t:=CurrentCompletionType;

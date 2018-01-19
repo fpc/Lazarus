@@ -2102,6 +2102,9 @@ resourcestring
   dlgAddHiAttrSyncroEditOther     = 'Other Cells';
   dlgAddHiAttrSyncroEditArea      = 'Selected Area';
   dlgAddHiAttrGutterSeparator     = 'Gutter Separator';
+  dlgAddHiAttrDefaultWindow       = 'Default Text / Window';
+  dlgAddHiAttrWindowBorder        = 'Window border';
+  dlgAddHiAttrHighlightPrefix     = 'Highlight prefix';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgIfDefBlockInactive           = 'Inactive $IFDEF code';

@@ -98,8 +98,11 @@ type
     );
 
   TPaintCompletionItemColors = record
-    FontColor: TColor;
-    SelectedFontColor: TColor;
+    BackgroundColor: TColor;
+    BackgroundSelectedColor: TColor;
+    TextColor: TColor;
+    TextSelectedColor: TColor;
+    TextHighLightColor: TColor;
   end;
   PPaintCompletionItemColors = ^TPaintCompletionItemColors;
 
@@ -273,13 +276,13 @@ begin
   begin
     if ItemSelected then
     begin
-      ForegroundColor := Colors^.SelectedFontColor;
+      ForegroundColor := Colors^.TextSelectedColor;
       AllowFontColor := ForegroundColor=clNone;
       if ForegroundColor=clNone then
-        ForegroundColor := Colors^.FontColor;
+        ForegroundColor := Colors^.TextColor;
     end else
     begin
-      ForegroundColor := Colors^.FontColor;
+      ForegroundColor := Colors^.TextColor;
       AllowFontColor := True;
     end;
   end else
@@ -519,7 +522,8 @@ begin
         Prefix := Copy(s, PrefixPosition, Length(aCompletion.CurrentString));
         if PrefixPosition > 0 then
           PrefixPosition := ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1));
-        SetFontColor(RGBToColor(200, 13, 13));
+        if Colors<>nil then
+          SetFontColor(ColorToRGB(Colors^.TextHighLightColor));
         ACanvas.TextOut(x+PrefixPosition+1,y,Prefix);
       end;
       inc(x,ACanvas.TextWidth(s)+1);

@@ -30,7 +30,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     TabOrder = 1
     object bvlAttributeSection: TDividerBevel
       Left = 0
-      Height = 17
+      Height = 15
       Top = 0
       Width = 640
       Caption = 'bvlAttributeSection'
@@ -41,7 +41,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     object ToolBar1: TToolBar
       Left = 3
       Height = 24
-      Top = 17
+      Top = 15
       Width = 634
       AutoSize = True
       BorderSpacing.Left = 3
@@ -74,27 +74,27 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         Style = tbsCheck
       end
       object SetAttributeToDefaultButton: TToolButton
-        Left = 249
+        Left = 245
         Top = 0
         OnClick = SetAttributeToDefaultButtonClick
         ShowCaption = False
       end
       object ToolButton3: TToolButton
-        Left = 239
+        Left = 237
+        Height = 22
         Top = 0
-        Width = 10
         Caption = 'ToolButton3'
         Style = tbsSeparator
       end
       object ToolButton1: TToolButton
         Left = 123
+        Height = 22
         Top = 0
-        Width = 10
         Caption = 'ToolButton1'
         Style = tbsSeparator
       end
       object tbnColor: TToolButton
-        Left = 133
+        Left = 131
         Top = 0
         AutoSize = True
         Caption = 'tbnColor'
@@ -104,7 +104,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         Style = tbsCheck
       end
       object tbnPrior: TToolButton
-        Left = 188
+        Left = 186
         Top = 0
         AutoSize = True
         Caption = 'tbnPrior'
@@ -121,73 +121,231 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlElementAttributes
       AnchorSideBottom.Side = asrBottom
-      Height = 151
-      Top = 41
+      Height = 153
+      Top = 39
       Width = 640
       Anchors = [akTop, akLeft, akRight, akBottom]
-      ClientHeight = 151
+      ClientHeight = 153
       ClientWidth = 640
       TabOrder = 1
+      inherited ForeGroundLabel: TLabel
+        Top = 7
+        Width = 91
+      end
+      inherited BackGroundLabel: TLabel
+        Top = 32
+        Width = 93
+      end
       inherited ForeGroundUseDefaultCheckBox: TCheckBox
         AnchorSideLeft.Control = SynColorAttrEditor1
+        Height = 19
+        Width = 192
       end
       inherited ForegroundColorBox: TColorBox
         AnchorSideTop.Control = SynColorAttrEditor1
         AnchorSideRight.Control = SynColorAttrEditor1
+        Left = 204
+        Height = 22
         Width = 200
       end
       inherited BackGroundColorBox: TColorBox
         AnchorSideRight.Control = SynColorAttrEditor1
+        Left = 204
+        Height = 22
+        Top = 28
         Width = 200
       end
       inherited BackGroundUseDefaultCheckBox: TCheckBox
         AnchorSideLeft.Control = SynColorAttrEditor1
+        Height = 19
+        Top = 30
+        Width = 194
       end
       inherited FrameColorBox: TColorBox
         AnchorSideRight.Control = SynColorAttrEditor1
+        Left = 204
+        Height = 22
+        Top = 53
         Width = 200
       end
       inherited FrameColorUseDefaultCheckBox: TCheckBox
         AnchorSideLeft.Control = SynColorAttrEditor1
+        Height = 19
+        Top = 55
+        Width = 191
       end
       inherited pnlUnderline: TPanel
         AnchorSideLeft.Control = SynColorAttrEditor1
+        Height = 40
+        Top = 102
+        Width = 145
+        ClientHeight = 40
+        ClientWidth = 145
+        inherited TextUnderlineRadioPanel: TPanel
+          Height = 21
+          Top = 19
+          Width = 134
+          ClientHeight = 21
+          ClientWidth = 134
+          inherited TextUnderlineRadioOn: TRadioButton
+            Height = 19
+            Width = 36
+          end
+          inherited TextUnderlineRadioOff: TRadioButton
+            Left = 43
+            Height = 19
+            Width = 37
+          end
+          inherited TextUnderlineRadioInvert: TRadioButton
+            Left = 83
+            Height = 19
+            Width = 50
+          end
+        end
+        inherited TextUnderlineCheckBox: TCheckBox
+          Height = 19
+          Width = 145
+        end
+      end
+      inherited pnlBold: TPanel
+        Left = 157
+        Height = 40
+        Top = 102
+        Width = 134
+        ClientHeight = 40
+        ClientWidth = 134
+        inherited TextBoldRadioPanel: TPanel
+          Height = 21
+          Top = 19
+          Width = 134
+          ClientHeight = 21
+          ClientWidth = 134
+          inherited TextBoldRadioInvert: TRadioButton
+            Left = 83
+            Height = 19
+            Width = 50
+          end
+          inherited TextBoldRadioOn: TRadioButton
+            Height = 19
+            Width = 36
+          end
+          inherited TextBoldRadioOff: TRadioButton
+            Left = 43
+            Height = 19
+            Width = 37
+          end
+        end
+        inherited TextBoldCheckBox: TCheckBox
+          Height = 19
+          Width = 118
+        end
+      end
+      inherited pnlItalic: TPanel
+        Left = 297
+        Height = 40
+        Top = 102
+        Width = 134
+        ClientHeight = 40
+        ClientWidth = 134
+        inherited TextItalicRadioPanel: TPanel
+          Height = 21
+          Top = 19
+          Width = 134
+          ClientHeight = 21
+          ClientWidth = 134
+          inherited TextItalicRadioInvert: TRadioButton
+            Left = 83
+            Height = 19
+            Width = 50
+          end
+          inherited TextItalicRadioOn: TRadioButton
+            Height = 19
+            Width = 36
+          end
+          inherited TextItalicRadioOff: TRadioButton
+            Left = 43
+            Height = 19
+            Width = 37
+          end
+        end
+        inherited TextItalicCheckBox: TCheckBox
+          Height = 19
+          Width = 119
+        end
+      end
+      inherited FrameStyleBox: TComboBox
+        Left = 307
+        Height = 21
+        Top = 78
+      end
+      inherited FrameEdgesBox: TComboBox
+        Left = 204
+        Height = 21
+        Top = 78
+      end
+      inherited ColumnPosBevel: TPanel
+        Left = 204
+        Top = 145
       end
       inherited ForeAlphaLabel: TLabel
         Left = 414
+        Top = 7
+        Width = 82
       end
       inherited BackAlphaLabel: TLabel
         Left = 414
+        Top = 32
+        Width = 84
       end
       inherited FrameAlphaLabel: TLabel
         Left = 414
+        Top = 57
+        Width = 92
       end
       inherited ForeAlphaSpin: TSpinEdit
         Left = 502
+        Height = 23
+        Top = 3
       end
       inherited BackAlphaSpin: TSpinEdit
         Left = 504
+        Height = 23
+        Top = 28
       end
       inherited FrameAlphaSpin: TSpinEdit
         Left = 512
+        Height = 23
+        Top = 53
       end
       inherited ForePriorLabel: TLabel
         Left = 567
+        Top = 7
+        Width = 76
       end
       inherited BackPriorLabel: TLabel
         Left = 569
+        Top = 32
+        Width = 78
       end
       inherited FramePriorLabel: TLabel
         Left = 577
+        Top = 57
+        Width = 86
       end
       inherited ForePriorSpin: TSpinEdit
         Left = 649
+        Height = 23
+        Top = 3
       end
       inherited BackPriorSpin: TSpinEdit
         Left = 653
+        Height = 23
+        Top = 28
       end
       inherited FramePriorSpin: TSpinEdit
         Left = 669
+        Height = 23
+        Top = 53
       end
     end
     object PriorityEditor: TPanel
@@ -199,21 +357,21 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       AnchorSideBottom.Control = pnlElementAttributes
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 151
-      Top = 41
+      Height = 153
+      Top = 39
       Width = 640
       Anchors = [akTop, akLeft, akRight, akBottom]
-      ClientHeight = 151
+      ClientHeight = 153
       ClientWidth = 640
       Constraints.MinHeight = 140
       TabOrder = 2
       object ForePriorPanel: TPanel
         Left = 1
-        Height = 149
+        Height = 151
         Top = 1
         Width = 170
         Align = alLeft
-        ClientHeight = 149
+        ClientHeight = 151
         ClientWidth = 170
         TabOrder = 0
         object ForePriorLabel: TLabel
@@ -227,12 +385,11 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object ForePriorList: TTreeView
           Left = 1
-          Height = 108
+          Height = 102
           Top = 16
           Width = 168
           Align = alClient
           AutoExpand = True
-          DefaultItemHeight = 18
           ReadOnly = True
           ScrollBars = ssAutoVertical
           ShowButtons = False
@@ -248,21 +405,21 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object ForePriorValPanel: TPanel
           Left = 1
-          Height = 23
-          Top = 125
+          Height = 31
+          Top = 119
           Width = 168
           Align = alBottom
           AutoSize = True
           BorderSpacing.Top = 1
           BevelOuter = bvNone
-          ClientHeight = 23
+          ClientHeight = 31
           ClientWidth = 168
           TabOrder = 1
           object ForePriorEdit: TEdit
             AnchorSideRight.Control = ForePriorUpDown
             Left = 1
             Height = 23
-            Top = 1
+            Top = 0
             Width = 147
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Right = 3
@@ -278,26 +435,26 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
             AnchorSideBottom.Control = ForePriorValPanel
             AnchorSideBottom.Side = asrBottom
             Left = 151
-            Height = 23
+            Height = 31
             Top = 0
             Width = 17
             Anchors = [akTop, akRight, akBottom]
             Min = 0
+            OnClick = ForePriorUpDownClick
             Position = 0
             TabOrder = 1
             Wrap = False
-            OnClick = ForePriorUpDownClick
           end
         end
       end
       object BackPriorPanel: TPanel
         Left = 177
-        Height = 149
+        Height = 151
         Top = 1
         Width = 170
         Align = alLeft
         BorderSpacing.Left = 6
-        ClientHeight = 149
+        ClientHeight = 151
         ClientWidth = 170
         TabOrder = 1
         object BackPriorLabel: TLabel
@@ -311,12 +468,11 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object BackPriorList: TTreeView
           Left = 1
-          Height = 108
+          Height = 102
           Top = 16
           Width = 168
           Align = alClient
           AutoExpand = True
-          DefaultItemHeight = 18
           ReadOnly = True
           ScrollBars = ssAutoVertical
           ShowButtons = False
@@ -332,14 +488,14 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object BackPriorValPanel: TPanel
           Left = 1
-          Height = 23
-          Top = 125
+          Height = 31
+          Top = 119
           Width = 168
           Align = alBottom
           AutoSize = True
           BorderSpacing.Top = 1
           BevelOuter = bvNone
-          ClientHeight = 23
+          ClientHeight = 31
           ClientWidth = 168
           TabOrder = 1
           object BackPriorEdit: TEdit
@@ -362,26 +518,26 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
             AnchorSideBottom.Control = BackPriorValPanel
             AnchorSideBottom.Side = asrBottom
             Left = 151
-            Height = 23
+            Height = 31
             Top = 0
             Width = 17
             Anchors = [akTop, akRight, akBottom]
             Min = 0
+            OnClick = ForePriorUpDownClick
             Position = 0
             TabOrder = 1
             Wrap = False
-            OnClick = ForePriorUpDownClick
           end
         end
       end
       object FramePriorPanel: TPanel
         Left = 353
-        Height = 149
+        Height = 151
         Top = 1
         Width = 170
         Align = alLeft
         BorderSpacing.Left = 6
-        ClientHeight = 149
+        ClientHeight = 151
         ClientWidth = 170
         TabOrder = 2
         object FramePriorLabel: TLabel
@@ -395,12 +551,11 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object FramePriorList: TTreeView
           Left = 1
-          Height = 108
+          Height = 102
           Top = 16
           Width = 168
           Align = alClient
           AutoExpand = True
-          DefaultItemHeight = 18
           ReadOnly = True
           ScrollBars = ssAutoVertical
           ShowButtons = False
@@ -416,14 +571,14 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         end
         object FramePriorValPanel: TPanel
           Left = 1
-          Height = 23
-          Top = 125
+          Height = 31
+          Top = 119
           Width = 168
           Align = alBottom
           AutoSize = True
           BorderSpacing.Top = 1
           BevelOuter = bvNone
-          ClientHeight = 23
+          ClientHeight = 31
           ClientWidth = 168
           TabOrder = 1
           object FramePriorEdit: TEdit
@@ -446,15 +601,15 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
             AnchorSideBottom.Control = FramePriorValPanel
             AnchorSideBottom.Side = asrBottom
             Left = 151
-            Height = 23
+            Height = 31
             Top = 0
             Width = 17
             Anchors = [akTop, akRight, akBottom]
             Min = 0
+            OnClick = ForePriorUpDownClick
             Position = 0
             TabOrder = 1
             Wrap = False
-            OnClick = ForePriorUpDownClick
           end
         end
       end
@@ -504,7 +659,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Top = 6
       BorderSpacing.Right = 1
       Constraints.MinWidth = 150
-      DefaultItemHeight = 18
       ReadOnly = True
       ScrollBars = ssAutoBoth
       ShowButtons = False
@@ -947,6 +1101,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShiftMask = [ssShift, ssAlt, ssCtrl]
           Command = emcMouseLink
         end>
+      MouseTextActions = <>
       MouseSelActions = <      
         item
           ClickDir = cdDown
@@ -956,7 +1111,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         'ColorPreview'
       )
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
-      SelectedColor.FrameEdges = sfeAround
       SelectedColor.BackPriority = 50
       SelectedColor.ForePriority = 50
       SelectedColor.FramePriority = 50
@@ -964,23 +1118,17 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       SelectedColor.ItalicPriority = 50
       SelectedColor.UnderlinePriority = 50
       SelectedColor.StrikeOutPriority = 50
-      IncrementColor.FrameEdges = sfeAround
-      HighlightAllColor.FrameEdges = sfeAround
       BracketHighlightStyle = sbhsBoth
       BracketMatchColor.Background = clNone
       BracketMatchColor.Foreground = clNone
-      BracketMatchColor.FrameEdges = sfeAround
       BracketMatchColor.Style = [fsBold]
       FoldedCodeColor.Background = clNone
       FoldedCodeColor.Foreground = clGray
       FoldedCodeColor.FrameColor = clGray
-      FoldedCodeColor.FrameEdges = sfeAround
       MouseLinkColor.Background = clNone
       MouseLinkColor.Foreground = clBlue
-      MouseLinkColor.FrameEdges = sfeAround
       LineHighlightColor.Background = clNone
       LineHighlightColor.Foreground = clNone
-      LineHighlightColor.FrameEdges = sfeAround
       inline TSynGutterPartList
         object TSynGutterMarks
           Width = 24
@@ -991,7 +1139,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
-          MarkupInfo.FrameEdges = sfeAround
           DigitCount = 2
           ShowOnlyLineNumbersMultiplesOf = 1
           ZeroStart = False
@@ -1008,7 +1155,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           MouseActions = <>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
-          MarkupInfo.FrameEdges = sfeAround
         end
         object TSynGutterCodeFolding
           MouseActions = <          
@@ -1039,7 +1185,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
             end>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
-          MarkupInfo.FrameEdges = sfeAround
           MouseActionsExpanded = <          
             item
               ClickCount = ccAny
@@ -1092,8 +1237,8 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object ToolButton2: TToolButton
       Left = 24
+      Height = 22
       Top = 0
-      Width = 5
       Caption = 'ToolButton2'
       Style = tbsDivider
     end
@@ -1105,7 +1250,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       Style = tbsButtonDrop
     end
     object ColorSchemeButton: TToolButton
-      Left = 64
+      Left = 62
       Top = 0
       DropdownMenu = ColorSchemeMenu
       OnClick = ColorSchemeButtonClick
@@ -1113,7 +1258,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object FileExtensionsComboBox: TComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 99
+      Left = 95
       Height = 23
       Top = 0
       Width = 139
@@ -1130,20 +1275,20 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabOrder = 0
     end
     object ToolButton5: TToolButton
-      Left = 238
+      Left = 234
+      Height = 22
       Top = 0
-      Width = 5
       Caption = 'ToolButton5'
       Style = tbsDivider
     end
     object btnExport: TToolButton
-      Left = 243
+      Left = 239
       Top = 0
       OnClick = btnExportClick
       ShowCaption = False
     end
     object SetAllAttributesToDefaultButton: TToolButton
-      Left = 266
+      Left = 262
       Top = 0
       OnClick = SetAllAttributesToDefaultButtonClick
       ShowCaption = False

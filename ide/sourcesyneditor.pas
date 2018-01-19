@@ -212,11 +212,29 @@ type
     property IfDefTree;
   end;
 
+  TSynMarkupIdentComplWindow = class // don't inherit from TSynEditMarkup, no regular markup
+  private
+    FBackgroundSelectedColor: TColor;
+    FBorderColor: TColor;
+    FHighlightColor: TColor;
+    FTextColor: TColor;
+    FTextSelectedColor: TColor;
+    FWindowColor: TColor;
+  public
+    property WindowColor: TColor read FWindowColor write FWindowColor;
+    property TextColor: TColor read FTextColor write FTextColor;
+    property BorderColor: TColor read FBorderColor write FBorderColor;
+    property HighlightColor: TColor read FHighlightColor write FHighlightColor;
+    property TextSelectedColor: TColor read FTextSelectedColor write FTextSelectedColor;
+    property BackgroundSelectedColor: TColor read FBackgroundSelectedColor write FBackgroundSelectedColor;
+  end;
+
   { TIDESynEditor }
 
   TIDESynEditor = class(TSynEdit)
   private
     FCaretStamp: Int64;
+    FMarkupIdentComplWindow: TSynMarkupIdentComplWindow;
     FShowTopInfo: boolean;
     FTopInfoNestList: TLazSynEditNestedFoldsList;
     FSyncroEdit: TSynPluginSyncroEdit;
@@ -281,6 +299,7 @@ type
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
     property  OnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest read FOnIfdefNodeStateRequest write FOnIfdefNodeStateRequest;
     property  MarkupIfDef: TSourceSynEditMarkupIfDef read FMarkupIfDef;
+    property  MarkupIdentComplWindow: TSynMarkupIdentComplWindow read FMarkupIdentComplWindow;
     property  IsInMultiCaretMainExecution: Boolean read GetIsInMultiCaretMainExecution;
     property  IsInMultiCaretRepeatExecution: Boolean read GetIsInMultiCaretRepeatExecution;
     property  OnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand read GetOnMultiCaretBeforeCommand write SetOnMultiCaretBeforeCommand;
@@ -1683,6 +1702,8 @@ begin
   //FMarkupIfDef.OnNodeStateRequest := @DoIfDefNodeStateRequest;
   TSynEditMarkupManager(MarkupMgr).AddMarkUp(FMarkupIfDef);
 
+  FMarkupIdentComplWindow := TSynMarkupIdentComplWindow.Create;
+
   FPaintArea := TSourceLazSynSurfaceManager.Create(Self, FPaintArea);
   GetCaretObj.AddChangeHandler(@SrcSynCaretChanged);
 
@@ -1729,6 +1750,7 @@ begin
   FreeAndNil(FExtraMarkupMgr);
   FreeAndNil(FTopInfoMarkup);
   FreeAndNil(FTopInfoNestList);
+  FreeAndNil(FMarkupIdentComplWindow);
   inherited Destroy;
 end;
 
