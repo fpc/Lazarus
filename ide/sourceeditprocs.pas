@@ -515,15 +515,14 @@ begin
       //DebugLn(['PaintCompletionItem ',x,',',y,' ',s]);
       ACanvas.TextOut(x+1,y,s);
       // highlighting the prefix
-      if (CodeToolsOpts.IdentComplHighlightPrefix)
+      if (Colors<>nil) and (Colors^.TextHighLightColor<>clNone)
       and (aCompletion.CurrentString<>'') then
       begin
         PrefixPosition := Pos(LowerCase(aCompletion.CurrentString), LowerCase(s));
         Prefix := Copy(s, PrefixPosition, Length(aCompletion.CurrentString));
         if PrefixPosition > 0 then
           PrefixPosition := ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1));
-        if Colors<>nil then
-          SetFontColor(ColorToRGB(Colors^.TextHighLightColor));
+        SetFontColor(ColorToRGB(Colors^.TextHighLightColor));
         ACanvas.TextOut(x+PrefixPosition+1,y,Prefix);
       end;
       inc(x,ACanvas.TextWidth(s)+1);

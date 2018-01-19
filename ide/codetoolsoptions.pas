@@ -113,7 +113,6 @@ type
     FIdentComplAutoStartAfterPoint: boolean;
     FIdentComplAutoUseSingleIdent: boolean;
     FIdentComplUseContainsFilter: Boolean;
-    FIdentComplHighlightPrefix: Boolean;
     FIdentComplShowIcons: Boolean;
 
     // auto indentation
@@ -245,8 +244,6 @@ type
                                            write FIdentComplAutoUseSingleIdent;
     property IdentComplUseContainsFilter: boolean read FIdentComplUseContainsFilter
                                            write FIdentComplUseContainsFilter;
-    property IdentComplHighlightPrefix: boolean read FIdentComplHighlightPrefix
-                                           write FIdentComplHighlightPrefix;
     property IdentComplShowIcons: boolean read FIdentComplShowIcons
                                            write FIdentComplShowIcons;
     property IdentComplAddParameterBrackets: boolean
@@ -550,8 +547,6 @@ begin
       'CodeToolsOptions/IdentifierCompletion/AutoUseSingleIdent',true);
     FIdentComplUseContainsFilter:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/UseContainsFilter',true);
-    FIdentComplHighlightPrefix:=XMLConfig.GetValue(
-      'CodeToolsOptions/IdentifierCompletion/HighlightPrefix',true);
     FIdentComplShowIcons:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/ShowIcons',true);
     FIdentComplAddParameterBrackets:=XMLConfig.GetValue(
@@ -724,8 +719,6 @@ begin
       FIdentComplAutoUseSingleIdent,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/UseContainsFilter',
       FIdentComplUseContainsFilter,true);
-    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/HighlightPrefix',
-      FIdentComplHighlightPrefix,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/ShowIcons',
       FIdentComplShowIcons,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoAddParameterBrackets',
@@ -877,7 +870,6 @@ begin
     FIdentComplAutoStartAfterPoint:=CodeToolsOpts.FIdentComplAutoStartAfterPoint;
     FIdentComplAutoUseSingleIdent:=CodeToolsOpts.FIdentComplAutoUseSingleIdent;
     FIdentComplUseContainsFilter:=CodeToolsOpts.FIdentComplUseContainsFilter;
-    FIdentComplHighlightPrefix:=CodeToolsOpts.FIdentComplHighlightPrefix;
     FIdentComplShowIcons:=CodeToolsOpts.FIdentComplShowIcons;
     FIdentComplAddParameterBrackets:=CodeToolsOpts.FIdentComplAddParameterBrackets;
     FIdentComplReplaceIdentifier:=CodeToolsOpts.FIdentComplReplaceIdentifier;
@@ -945,7 +937,6 @@ begin
   FIdentComplAutoStartAfterPoint:=true;
   FIdentComplAutoUseSingleIdent:=true;
   FIdentComplUseContainsFilter:=true;
-  FIdentComplHighlightPrefix:=true;
   FIdentComplShowIcons:=true;
   FIdentComplAddParameterBrackets:=true;
   FIdentComplReplaceIdentifier:=true;
@@ -1032,7 +1023,6 @@ begin
     and (FIdentComplAutoStartAfterPoint=CodeToolsOpts.FIdentComplAutoStartAfterPoint)
     and (FIdentComplAutoUseSingleIdent=CodeToolsOpts.FIdentComplAutoUseSingleIdent)
     and (FIdentComplUseContainsFilter=CodeToolsOpts.FIdentComplUseContainsFilter)
-    and (FIdentComplHighlightPrefix=CodeToolsOpts.FIdentComplHighlightPrefix)
     and (FIdentComplShowIcons=CodeToolsOpts.FIdentComplShowIcons)
     and (FIdentComplAddParameterBrackets=CodeToolsOpts.FIdentComplAddParameterBrackets)
     and (FIdentComplReplaceIdentifier=CodeToolsOpts.FIdentComplReplaceIdentifier)

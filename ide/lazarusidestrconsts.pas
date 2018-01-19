@@ -1969,7 +1969,6 @@ resourcestring
   lisCompletionLongLineHintTypeLittleLeft = 'Extend some left';
   lisCompletionLongLineHintTypeFullLeft = 'Extend far left';
   dlgIncludeIdentifiersContainingPrefix = 'Include identifiers containing prefix';
-  dlgHighlightPrefix = 'Highlight prefix';
   lisAutomaticFeatures = 'Completion and Hints';
   lisAutoMarkup = 'Markup and Matches';
   dlgUseIconsInCompletionBox = 'Icons in code completion box';

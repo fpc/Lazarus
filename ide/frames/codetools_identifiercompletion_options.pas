@@ -34,7 +34,6 @@ type
 
   TCodetoolsIndentifierCompletionOptionsFrame = class(TAbstractIDEOptionsEditor)
     ICContainsFilterCheckBox: TCheckBox;
-    ICHighlightPrefixCheckBox: TCheckBox;
     ICAddDoCheckBox: TCheckBox;
     ICAutoAddParameterBracketsCheckBox: TCheckBox;
     ICMiscDividerBevel: TDividerBevel;
@@ -96,7 +95,6 @@ begin
   ICContainsFilterCheckBox.Caption := dlgIncludeIdentifiersContainingPrefix;
 
   ICAppearanceDividerBevel.Caption:=lisAppearance;
-  ICHighlightPrefixCheckBox.Caption := dlgHighlightPrefix;
   ICUseIconsInCompletionBoxCheckBox.Caption := dlgUseIconsInCompletionBox;
 
   ICMiscDividerBevel.Caption:=dlgEnvMisc;
@@ -123,7 +121,6 @@ begin
     ICSortForHistoryCheckBox.Checked:=IdentComplSortForHistory;
     ICSortForScopeCheckBox.Checked:=IdentComplSortForScope;
     ICContainsFilterCheckBox.Checked:=IdentComplUseContainsFilter;
-    ICHighlightPrefixCheckBox.Checked:=IdentComplHighlightPrefix;
     ICUseIconsInCompletionBoxCheckBox.Checked:=IdentComplShowIcons;
   end;
 end;
@@ -145,7 +142,6 @@ begin
     IdentComplSortForHistory:=ICSortForHistoryCheckBox.Checked;
     IdentComplSortForScope:=ICSortForScopeCheckBox.Checked;
     IdentComplUseContainsFilter:=ICContainsFilterCheckBox.Checked;
-    IdentComplHighlightPrefix:=ICHighlightPrefixCheckBox.Checked;
     IdentComplShowIcons:=ICUseIconsInCompletionBoxCheckBox.Checked;
   end;
 end;

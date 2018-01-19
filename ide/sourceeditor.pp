@@ -2134,7 +2134,7 @@ Begin
   FActiveEditBackgroundColor := Editor.Color;
   FActiveEditTextSelectedColor := TSynEdit(Editor).SelectedColor.Foreground;
   FActiveEditBackgroundSelectedColor := TSynEdit(Editor).SelectedColor.Background;
-  FActiveEditTextHighLightColor := RGBToColor(200, 13, 13);
+  FActiveEditTextHighLightColor := clNone;
 
   if Editor.Highlighter<>nil
   then begin
