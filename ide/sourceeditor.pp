@@ -2130,7 +2130,7 @@ Begin
   TheForm.Font := Editor.Font;
 
   FActiveEditTextColor := Editor.Font.Color;
-  FActiveEditBorderColor := RGBToColor(100, 100, 100);
+  FActiveEditBorderColor := RGBToColor(200, 200, 200);
   FActiveEditBackgroundColor := Editor.Color;
   FActiveEditTextSelectedColor := TSynEdit(Editor).SelectedColor.Foreground;
   FActiveEditBackgroundSelectedColor := TSynEdit(Editor).SelectedColor.Background;
