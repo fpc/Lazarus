@@ -33,6 +33,8 @@ type
   { TCodetoolsIndentifierCompletionOptionsFrame }
 
   TCodetoolsIndentifierCompletionOptionsFrame = class(TAbstractIDEOptionsEditor)
+    ICContainsFilterCheckBox: TCheckBox;
+    ICHighlightPrefixCheckBox: TCheckBox;
     ICAddDoCheckBox: TCheckBox;
     ICAutoAddParameterBracketsCheckBox: TCheckBox;
     ICMiscDividerBevel: TDividerBevel;
@@ -46,8 +48,10 @@ type
     ICShowHelpCheckBox: TCheckBox;
     ICAutoUseSingleIdent: TCheckBox;
     ICSortDividerBevel: TDividerBevel;
+    ICAppearanceDividerBevel: TDividerBevel;
     ICSortForHistoryCheckBox: TCheckBox;
     ICSortForScopeCheckBox: TCheckBox;
+    ICUseIconsInCompletionBoxCheckBox: TCheckBox;
   private
   public
     function GetTitle: String; override;
@@ -89,6 +93,11 @@ begin
   ICSortForHistoryCheckBox.Caption:=lisShowRecentlyUsedIdentifiersAtTop;
   ICSortForScopeCheckBox.Caption:=lisSortForScope;
   ICSortForScopeCheckBox.Hint:=lisForExampleShowAtTopTheLocalVariablesThenTheMembers;
+  ICContainsFilterCheckBox.Caption := dlgIncludeIdentifiersContainingPrefix;
+
+  ICAppearanceDividerBevel.Caption:=lisAppearance;
+  ICHighlightPrefixCheckBox.Caption := dlgHighlightPrefix;
+  ICUseIconsInCompletionBoxCheckBox.Caption := dlgUseIconsInCompletionBox;
 
   ICMiscDividerBevel.Caption:=dlgEnvMisc;
   ICReplaceCheckBox.Caption:=lisReplaceWholeIdentifier;
@@ -113,6 +122,9 @@ begin
     ICShowHelpCheckBox.Checked:=IdentComplShowHelp;
     ICSortForHistoryCheckBox.Checked:=IdentComplSortForHistory;
     ICSortForScopeCheckBox.Checked:=IdentComplSortForScope;
+    ICContainsFilterCheckBox.Checked:=IdentComplUseContainsFilter;
+    ICHighlightPrefixCheckBox.Checked:=IdentComplHighlightPrefix;
+    ICUseIconsInCompletionBoxCheckBox.Checked:=IdentComplShowIcons;
   end;
 end;
 
@@ -132,6 +144,9 @@ begin
     IdentComplShowHelp:=ICShowHelpCheckBox.Checked;
     IdentComplSortForHistory:=ICSortForHistoryCheckBox.Checked;
     IdentComplSortForScope:=ICSortForScopeCheckBox.Checked;
+    IdentComplUseContainsFilter:=ICContainsFilterCheckBox.Checked;
+    IdentComplHighlightPrefix:=ICHighlightPrefixCheckBox.Checked;
+    IdentComplShowIcons:=ICUseIconsInCompletionBoxCheckBox.Checked;
   end;
 end;
 

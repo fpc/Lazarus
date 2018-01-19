@@ -1388,9 +1388,6 @@ type
     fCodeTemplateFileName: String;
     fCTemplIndentToTokenStart: Boolean;
     fAutoDisplayFuncPrototypes: Boolean;
-    fUseContainsFilter: Boolean;
-    fHighlightCodeCompletionPrefix: Boolean;
-    fUseImagesInCompletionBox: Boolean;
 
     // Code Folding
     FUseCodeFolding: Boolean;
@@ -1582,12 +1579,6 @@ type
       read fAutoToolTipSymbTools write fAutoToolTipSymbTools default True; // declaration hints
     property AutoDisplayFunctionPrototypes: Boolean
       read fAutoDisplayFuncPrototypes write fAutoDisplayFuncPrototypes default True;
-    property ContainsCompletionFilter: Boolean
-      read fUseContainsFilter write fUseContainsFilter default True;
-    property HighlightCodeCompletionPrefix: Boolean
-      read fHighlightCodeCompletionPrefix write fHighlightCodeCompletionPrefix default True;
-    property UseImagesInCompletionBox: Boolean
-      read fUseImagesInCompletionBox write fUseImagesInCompletionBox default True;
 
   published
     property DbgHintAutoTypeCastClass: Boolean
@@ -4777,12 +4768,6 @@ begin
     FCompletionLongLineHintType := DefaultCompletionLongLineHintType;
     XMLConfig.ReadObject('EditorOptions/CodeTools/CompletionLongLineHintType',
                          Self, Self, 'CompletionLongLineHintType');
-    fUseContainsFilter :=
-      XMLConfig.GetValue('EditorOptions/CodeTools/ContainsCompletionFilter', True);
-    fHighlightCodeCompletionPrefix :=
-      XMLConfig.GetValue('EditorOptions/CodeTools/HighlightCodeCompletionPrefix', True);
-    fUseImagesInCompletionBox :=
-      XMLConfig.GetValue('EditorOptions/CodeTools/UseImagesInCompletionBox', True);
 
     // Code Folding
     FUseCodeFolding :=
@@ -4976,12 +4961,6 @@ begin
       FCompletionLongLineHintInMSec, 0);
     XMLConfig.WriteObject('EditorOptions/CodeTools/CompletionLongLineHintType',
                          Self, nil, 'CompletionLongLineHintType');
-    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/ContainsCompletionFilter'
-      , fUseContainsFilter, True);
-    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/HighlightCodeCompletionPrefix'
-      , fHighlightCodeCompletionPrefix, True);
-    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/UseImagesInCompletionBox'
-      , fUseImagesInCompletionBox, True);
 
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',

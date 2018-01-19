@@ -124,6 +124,7 @@ resourcestring
   lisPause = 'Pause';
   lisStop = 'Stop';
   lisSorting = 'Sorting';
+  lisAppearance = 'Appearance';
   lisBuilding = 'Building';
   lisOptions = 'Options';
   lisLess = 'Less';
@@ -1971,7 +1972,7 @@ resourcestring
   dlgHighlightPrefix = 'Highlight prefix';
   lisAutomaticFeatures = 'Completion and Hints';
   lisAutoMarkup = 'Markup and Matches';
-  dlgUseImagesInCompletionBox = 'Icons in code completion box';
+  dlgUseIconsInCompletionBox = 'Icons in code completion box';
 
   dlgMarkupUserDefined = 'User defined markup';
   dlgMarkupUserDefinedNoLists = 'No lists';

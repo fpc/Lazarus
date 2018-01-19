@@ -2448,7 +2448,7 @@ begin
         // rebuild completion list
         APosition:=0;
         CurStr:=CurrentString;
-        CodeToolBoss.IdentifierList.ContainsFilter := EditorOpts.ContainsCompletionFilter;
+        CodeToolBoss.IdentifierList.ContainsFilter := CodeToolsOpts.IdentComplUseContainsFilter;
         CodeToolBoss.IdentifierList.Prefix:=CurStr;
         ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
         SL:=TStringList.Create;

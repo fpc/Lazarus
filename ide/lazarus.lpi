@@ -975,6 +975,7 @@
       <Unit156>
         <Filename Value="codetoolsoptions.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="CodeToolsOptions"/>
       </Unit156>
       <Unit157>
         <Filename Value="keymapshortcutdlg.pas"/>
@@ -1207,6 +1208,7 @@
       <Unit203>
         <Filename Value="sourceeditprocs.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="SourceEditProcs"/>
       </Unit203>
       <Unit204>
         <Filename Value="helpoptions.pas"/>

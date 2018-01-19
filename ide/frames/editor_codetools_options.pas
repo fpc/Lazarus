@@ -41,7 +41,6 @@ type
     CompletionDropDownHintLabel: TLabel;
     CompletionDropDownHint: TComboBox;
     CompletionDropDownDelayLabel: TLabel;
-    UseImagesInCompletionBoxCheckBox: TCheckBox;
     AutoDelayTrackBar: TTrackBar;
     CompletionDropDownLabel: TLabel;
     CompletionDropDownHintTrackBar: TTrackBar;
@@ -50,8 +49,6 @@ type
     ToolTipBevel: TBevel;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoRemoveEmptyMethodsOnSave: TCheckBox;
-    ContainsFilterCheckBox: TCheckBox;
-    HighlightPrefixCheckBox: TCheckBox;
     procedure AutoDelayTrackBarChange(Sender: TObject);
   public
     function GetTitle: String; override;
@@ -88,9 +85,6 @@ begin
   DbgToolTipAutoCastClass.Caption := lisDebugHintAutoTypeCastClass;
   AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
   AutoDisplayFuncProtoCheckBox.Caption := dlgAutoDisplayFuncProto;
-  ContainsFilterCheckBox.Caption := dlgIncludeIdentifiersContainingPrefix;
-  HighlightPrefixCheckBox.Caption := dlgHighlightPrefix;
-  UseImagesInCompletionBoxCheckBox.Caption := dlgUseImagesInCompletionBox;
 
   AutoHintAndCompletionDelayLabel.Caption:=lisDelayForHintsAndCompletionBox;
   CompletionDropDownLabel.Caption := lisDelayForCompletionLongLineHint;
@@ -113,9 +107,6 @@ begin
     AutoDelayTrackBar.Position := AutoDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
     AutoDisplayFuncProtoCheckBox.Checked := AutoDisplayFunctionPrototypes;
-    ContainsFilterCheckBox.Checked := ContainsCompletionFilter;
-    HighlightPrefixCheckBox.Checked := HighlightCodeCompletionPrefix;
-    UseImagesInCompletionBoxCheckBox.Checked := UseImagesInCompletionBox;
 
     CompletionDropDownHintTrackBar.Position := CompletionLongLineHintInMSec;
     CompletionDropDownHint.ItemIndex := ord(CompletionLongLineHintType);
@@ -135,9 +126,6 @@ begin
     AutoDelayInMSec := AutoDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
     AutoDisplayFunctionPrototypes := AutoDisplayFuncProtoCheckBox.Checked;
-    ContainsCompletionFilter := ContainsFilterCheckBox.Checked;
-    HighlightCodeCompletionPrefix := HighlightPrefixCheckBox.Checked;
-    UseImagesInCompletionBox := UseImagesInCompletionBoxCheckBox.Checked;
 
     CompletionLongLineHintInMSec := CompletionDropDownHintTrackBar.Position;
     CompletionLongLineHintType := TSynCompletionLongHintType(CompletionDropDownHint.ItemIndex);

@@ -309,7 +309,7 @@ begin
     BGBlue:=BackgroundColor and $ff;
     ImageIndex:=-1;
     ImageIndexCC := -1;
-    UseImages := EditorOpts.UseImagesInCompletionBox;
+    UseImages := CodeToolsOpts.IdentComplShowIcons;
 
     // first write the type
     // var, procedure, property, function, type, const
@@ -512,7 +512,7 @@ begin
       //DebugLn(['PaintCompletionItem ',x,',',y,' ',s]);
       ACanvas.TextOut(x+1,y,s);
       // highlighting the prefix
-      if (EditorOpts.HighlightCodeCompletionPrefix)
+      if (CodeToolsOpts.IdentComplHighlightPrefix)
       and (aCompletion.CurrentString<>'') then
       begin
         PrefixPosition := Pos(LowerCase(aCompletion.CurrentString), LowerCase(s));
