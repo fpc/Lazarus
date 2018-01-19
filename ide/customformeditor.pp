@@ -1867,10 +1867,8 @@ begin
       try
         try
           DefinePropertiesReader:=TDefinePropertiesReader.Create;
-          DefinePropertiesPersistent:=
-                                TDefinePropertiesPersistent.Create(APersistent);
-          DefinePropertiesPersistent.PublicDefineProperties(
-                                                        DefinePropertiesReader);
+          DefinePropertiesPersistent:=TDefinePropertiesPersistent.Create(APersistent);
+          DefinePropertiesPersistent.PublicDefineProperties(DefinePropertiesReader);
         except
           on E: Exception do begin
             DbgOut('TCustomFormEditor.FindDefineProperty Error calling DefineProperties for ');
@@ -1897,8 +1895,7 @@ begin
         if (DefinePropertiesReader<>nil)
         and (DefinePropertiesReader.DefinePropertyNames<>nil) then begin
           CacheItem.DefineProperties:=TStringList.Create;
-          CacheItem.DefineProperties.Assign(
-                                    DefinePropertiesReader.DefinePropertyNames);
+          CacheItem.DefineProperties.Assign(DefinePropertiesReader.DefinePropertyNames);
           debugln('TCustomFormEditor.FindDefineProperty Class=',APersistentClassName,
             ' DefineProps="',CacheItem.DefineProperties.Text,'"');
         end;

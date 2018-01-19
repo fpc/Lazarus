@@ -9405,8 +9405,8 @@ begin
         end;
       if Line=0 then
         SrcPosToLineCol(OldSource,length(OldSource),Line,Col);
-      Msg:=Format(lisSavingFileAsLoosesCharactersAtLineColumn, [Filename, Code.
-          DiskEncoding, IntToStr(Line), IntToStr(Col)]);
+      Msg:=Format(lisSavingFileAsLoosesCharactersAtLineColumn,
+                  [Filename, Code.DiskEncoding, IntToStr(Line), IntToStr(Col)]);
       if IDEMessageDialog(lisInsufficientEncoding,Msg,
         mtWarning,[mbIgnore,mbCancel])<>mrIgnore
       then begin

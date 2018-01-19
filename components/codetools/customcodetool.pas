@@ -785,8 +785,7 @@ begin
     RaiseAtomFound;
 end;
 
-function TCustomCodeTool.AtomIsIdentifierE(ExceptionOnNotFound: boolean
-  ): boolean;
+function TCustomCodeTool.AtomIsIdentifierE(ExceptionOnNotFound: boolean): boolean;
 begin
   if InternalAtomIsIdentifier then exit(true);
   Result:=false;

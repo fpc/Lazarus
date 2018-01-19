@@ -2289,7 +2289,8 @@ begin
   FControls.Delete(Index);
   FStates:=FStates+cssSelectionChangeFlags;
 
-  if Count=0 then SetCustomForm;
+  if Count=0 then
+    SetCustomForm;
   UpdateBounds;
   SaveBounds;
   DoChange;

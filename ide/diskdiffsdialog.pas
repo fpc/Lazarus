@@ -32,9 +32,10 @@ unit DiskDiffsDialog;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, LCLProc, Forms, Controls, StdCtrls, ExtCtrls, LCLType,
-  CheckLst,
+  // RTL + FCL
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, Forms, Controls, StdCtrls, ExtCtrls, CheckLst,
   // CodeTools
   FileProcs, CodeCache,
   // LazUtils
@@ -42,8 +43,7 @@ uses
   // SynEdit
   SynEdit, SynHighlighterDiff,
   // IDE
-  Project, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions,
-  PackageDefs;
+  Project, PackageDefs, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions;
 
 type
   PDiffItem = ^TDiffItem;

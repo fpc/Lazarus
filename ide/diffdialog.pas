@@ -39,10 +39,17 @@ unit DiffDialog;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, FileUtil,
-  lazutf8classes, LazarusIDEStrConsts, EditorOptions, LCLType, IDEWindowIntf,
-  IDEHelpIntf, InputHistory, DiffPatch, ExtCtrls, Dialogs, ComCtrls, SynEdit,
-  IDEImagesIntf, SynHighlighterDiff, SourceEditor;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Buttons, StdCtrls, ExtCtrls, Dialogs, ComCtrls, LCLType,
+  // LazUtils
+  FileUtil, lazutf8classes,
+  // SynEdit
+  SynEdit, SynHighlighterDiff,
+  // IdeIntf
+  IDEWindowIntf, IDEHelpIntf, IDEImagesIntf,
+  // IDE
+  LazarusIDEStrConsts, EditorOptions, InputHistory, DiffPatch, SourceEditor;
 
 type
 

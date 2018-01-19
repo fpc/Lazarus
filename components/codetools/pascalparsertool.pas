@@ -1395,8 +1395,7 @@ var CloseBracket: char;
       ReadNextAtom
     else
       ExtractNextAtom([phpWithDefaultValues,phpWithHasDefaultValues]*Attr<>[],Attr);
-    ReadConstant(ExceptionOnError,
-      Extract and (phpWithDefaultValues in Attr),Attr);
+    ReadConstant(ExceptionOnError, Extract and (phpWithDefaultValues in Attr), Attr);
     if (phpCreateNodes in Attr) then begin
       Node:=CurNode;
       Node.SubDesc:=Node.SubDesc+ctnsHasDefaultValue;
@@ -1499,8 +1498,7 @@ begin
             // read default value
             ReadDefaultValue;
           end;
-        end else if (CurPos.Flag in [cafSemicolon,cafRoundBracketClose,
-          cafEdgedBracketClose])
+        end else if (CurPos.Flag in [cafSemicolon,cafRoundBracketClose,cafEdgedBracketClose])
         then begin
           // no type -> variant
           if (phpCreateNodes in Attr) then begin
