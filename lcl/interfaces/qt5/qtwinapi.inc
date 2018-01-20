@@ -5351,7 +5351,7 @@ var
   Event: QLCLMessageEventH;
 begin
   Result := False;
-  if Handle <> 0 then
+  if IsValidHandle(Handle) then
   begin
     Event := QLCLMessageEvent_create(QEventLCLMessage, Msg, wParam, lParam, 0);
     QCoreApplication_postEvent(Widget.Widget, Event, 1 {high priority});
@@ -5808,7 +5808,7 @@ var
   Event: QLCLMessageEventH;
 begin
   Result := 0;
-  if (HandleWnd <> 0) and (Widget.Widget <> nil) then
+  if IsValidHandle(HandleWnd) and (Widget.Widget <> nil) then
   begin
     Event := QLCLMessageEvent_create(QEventLCLMessage, Msg, wParam, lParam, 0);
     try
