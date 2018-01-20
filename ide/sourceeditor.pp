@@ -2158,9 +2158,9 @@ Begin
       FActiveEditBorderColor := SynEditor.MarkupIdentComplWindow.BorderColor;
     if SynEditor.MarkupIdentComplWindow.WindowColor<>clNone then
       FActiveEditBackgroundColor := SynEditor.MarkupIdentComplWindow.WindowColor;
-    if SynEditor.MarkupIdentComplWindow.WindowColor<>clNone then
+    if SynEditor.MarkupIdentComplWindow.TextSelectedColor<>clNone then
       FActiveEditTextSelectedColor := SynEditor.MarkupIdentComplWindow.TextSelectedColor;
-    if SynEditor.MarkupIdentComplWindow.WindowColor<>clNone then
+    if SynEditor.MarkupIdentComplWindow.BackgroundSelectedColor<>clNone then
       FActiveEditBackgroundSelectedColor := SynEditor.MarkupIdentComplWindow.BackgroundSelectedColor;
     if SynEditor.MarkupIdentComplWindow.HighlightColor<>clNone then
       FActiveEditTextHighLightColor := SynEditor.MarkupIdentComplWindow.HighlightColor;
