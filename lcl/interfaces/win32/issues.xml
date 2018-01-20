@@ -29,10 +29,8 @@
 			<descr>If you delete the clicked menu item during OnClose the OnClick will be omitted.</descr>
 		</issue>
 		<issue name="TProgressBar.Height">
-			<short>Progress bar height cannot be smaller then 10 if a Windows Theme is used</short>
-			<descr>Associated bug report: http://bugs.freepascal.org/view.php?id=10626
-
-MSDN Docs: http://msdn2.microsoft.com/en-us/library/bb760816(VS.85).aspx</descr>
+			<short>Progress bar height cannot be smaller then 10 on Windows XP if a Theme is used</short>
+			<descr>Associated bug report: http://bugs.freepascal.org/view.php?id=10626</descr>
 		</issue>
 		<issue name="TProgressBar.Orientation">
 			<short>Windows does not support pbRightToLeft or pbTopDown</short>

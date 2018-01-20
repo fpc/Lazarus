@@ -736,9 +736,9 @@ begin
     MaxWidth := 0;
     MaxHeight := 0;
 
-    // The ProgressBar needs a minimum Height of 10 when themed,
+    // The ProgressBar needs a minimum Height of 10 on Windows XP when themed,
     // as required by Windows, otherwise it's image is corrupted
-    if ThemeServices.ThemesEnabled then
+    if (Win32MajorVersion < 6) and ThemeServices.ThemesEnabled then
       MinHeight := 10;
 
     SizeConstraints.SetInterfaceConstraints(MinWidth, MinHeight, MaxWidth, MaxHeight);
