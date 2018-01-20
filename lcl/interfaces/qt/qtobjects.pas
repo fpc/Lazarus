@@ -3436,6 +3436,8 @@ var
   ScaledMask: QImageH;
   NewRect: TRect;
   ARenderHint: Boolean;
+  ATransformation: QtTransformationMode;
+  ARenderHints: QPainterRenderHints;
 
   function NeedScaling: boolean;
   var
@@ -3570,9 +3572,17 @@ begin
         ScaledImage := QImage_create();
         try
           QImage_copy(Image, ScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
-          // use smooth transformation when scaling image. issue #29883
+          {use smooth transformation when scaling image. issue #29883
+           check if antialiasing is on, if not then don''t call smoothTransform. issue #330011}
+          ARenderHints := QPainter_renderHints(Widget);
+          if (ARenderHints and QPainterAntialiasing <> 0) or (ARenderHints and QPainterSmoothPixmapTransform <> 0) or
+            (ARenderHints and QPainterHighQualityAntialiasing <> 0) then
+              ATransformation := QtSmoothTransformation
+          else
+            ATransformation := QtFastTransformation;
+
           QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
-            LocalRect.Bottom - LocalRect.Top, QtIgnoreAspectRatio, QtSmoothTransformation);
+            LocalRect.Bottom - LocalRect.Top, QtIgnoreAspectRatio, ATransformation);
           NewRect := sourceRect^;
           NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
           NewRect.Bottom := (LocalRect.Bottom - LocalRect.Top) + sourceRect^.Top;
@@ -3582,13 +3592,19 @@ begin
         end;
       end else
       begin
-        // smooth a bit. issue #29883
-        ARenderHint := QPainter_testRenderHint(Widget, QPainterSmoothPixmapTransform);
-        if (QImage_format(image) = QImageFormat_ARGB32) and (flags = QtAutoColor) and
+        {smooth a bit. issue #29883
+         check if antialiasing is on, if not then don''t call smoothTransform. issue #330011}
+
+        ARenderHints := QPainter_renderHints(Widget);
+        ARenderHint := (ARenderHints and QPainterAntialiasing <> 0) or (ARenderHints and QPainterSmoothPixmapTransform <> 0) or
+          (ARenderHints and QPainterHighQualityAntialiasing <> 0);
+
+        if ARenderHint and (QImage_format(image) = QImageFormat_ARGB32) and (flags = QtAutoColor) and
           not EqualRect(LocalRect, sourceRect^) then
             QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, True);
         QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
-        QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, ARenderHint);
+        if ARenderHint then
+          QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, not ARenderHint);
       end;
     end;
   end;
