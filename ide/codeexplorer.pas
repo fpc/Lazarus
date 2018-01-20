@@ -182,6 +182,7 @@ type
     ImgIDClass: Integer;
     ImgIDClassInterface: Integer;
     ImgIDRecord: Integer;
+    ImgIDEnum: Integer;
     ImgIDHelper: Integer;
     ImgIDConst: Integer;
     ImgIDSection: Integer;
@@ -192,6 +193,8 @@ type
     ImgIDInterface: Integer;
     ImgIDProcedure: Integer;
     ImgIDFunction: Integer;
+    ImgIDConstructor: Integer;
+    ImgIDDestructor: Integer;
     ImgIDProgram: Integer;
     ImgIDProperty: Integer;
     ImgIDPropertyReadOnly: Integer;
@@ -199,6 +202,7 @@ type
     ImgIDUnit: Integer;
     ImgIDVariable: Integer;
     ImgIDHint: Integer;
+    ImgIDLabel: Integer;
     procedure AssignAllImages;
     procedure ClearCodeTreeView;
     procedure ClearDirectivesTreeView;
@@ -727,22 +731,26 @@ begin
   Imagelist1.Height := ImageSize;
   ImgIDDefault := TIDEImages.AddImageToImageList(Imagelist1, 'ce_default');
   ImgIDProgram := TIDEImages.AddImageToImageList(Imagelist1, 'ce_program');
-  ImgIDUnit := TIDEImages.AddImageToImageList(Imagelist1, 'ce_unit');
+  ImgIDUnit := TIDEImages.AddImageToImageList(Imagelist1, 'cc_unit');
   ImgIDInterface := TIDEImages.AddImageToImageList(Imagelist1, 'ce_interface');
   ImgIDImplementation := TIDEImages.AddImageToImageList(Imagelist1, 'ce_implementation');
   ImgIDInitialization := TIDEImages.AddImageToImageList(Imagelist1, 'ce_initialization');
   ImgIDFinalization := TIDEImages.AddImageToImageList(Imagelist1, 'ce_finalization');
-  ImgIDType := TIDEImages.AddImageToImageList(Imagelist1, 'ce_type');
-  ImgIDVariable := TIDEImages.AddImageToImageList(Imagelist1, 'ce_variable');
-  ImgIDConst := TIDEImages.AddImageToImageList(Imagelist1, 'ce_const');
-  ImgIDClass := TIDEImages.AddImageToImageList(Imagelist1, 'ce_class');
+  ImgIDType := TIDEImages.AddImageToImageList(Imagelist1, 'cc_type');
+  ImgIDVariable := TIDEImages.AddImageToImageList(Imagelist1, 'cc_variable');
+  ImgIDConst := TIDEImages.AddImageToImageList(Imagelist1, 'cc_constant');
+  ImgIDClass := TIDEImages.AddImageToImageList(Imagelist1, 'cc_class');
   ImgIDClassInterface := TIDEImages.AddImageToImageList(Imagelist1, 'ce_classinterface');
   ImgIDHelper := TIDEImages.AddImageToImageList(Imagelist1, 'ce_helper');
-  ImgIDRecord := TIDEImages.AddImageToImageList(Imagelist1, 'ce_record');
-  ImgIDProcedure := TIDEImages.AddImageToImageList(Imagelist1, 'ce_procedure');
-  ImgIDFunction := TIDEImages.AddImageToImageList(Imagelist1, 'ce_function');
-  ImgIDProperty := TIDEImages.AddImageToImageList(Imagelist1, 'ce_property');
-  ImgIDPropertyReadOnly := TIDEImages.AddImageToImageList(Imagelist1, 'ce_property_readonly');
+  ImgIDRecord := TIDEImages.AddImageToImageList(Imagelist1, 'cc_record');
+  ImgIDEnum := TIDEImages.AddImageToImageList(Imagelist1, 'cc_enum');
+  ImgIDProcedure := TIDEImages.AddImageToImageList(Imagelist1, 'cc_procedure');
+  ImgIDFunction := TIDEImages.AddImageToImageList(Imagelist1, 'cc_function');
+  ImgIDConstructor := TIDEImages.AddImageToImageList(Imagelist1, 'cc_constructor');
+  ImgIDDestructor := TIDEImages.AddImageToImageList(Imagelist1, 'cc_destructor');
+  ImgIDLabel := TIDEImages.AddImageToImageList(Imagelist1, 'cc_label');
+  ImgIDProperty := TIDEImages.AddImageToImageList(Imagelist1, 'cc_property');
+  ImgIDPropertyReadOnly := TIDEImages.AddImageToImageList(Imagelist1, 'cc_property_ro');
   // sections
   ImgIDSection := TIDEImages.AddImageToImageList(Imagelist1, 'ce_section');
   ImgIDHint := TIDEImages.AddImageToImageList(Imagelist1, 'state_hint');
@@ -907,6 +915,8 @@ begin
               Result := ImgIDClass;
             ctnObject,ctnRecordType:
               Result := ImgIDRecord;
+            ctnEnumerationType,ctnEnumIdentifier:
+              Result:=ImgIDEnum;
             ctnClassHelper,ctnRecordHelper,ctnTypeHelper:
               Result := ImgIDHelper;
           else
@@ -925,15 +935,26 @@ begin
     ctnObjCClass,ctnObjCCategory,ctnCPPClass:
                                       Result:=ImgIDClass;
     ctnRecordType:                    Result:=ImgIDRecord;
+    ctnEnumerationType,ctnEnumIdentifier:
+                                      Result:=ImgIDEnum;
     ctnClassHelper,ctnRecordHelper,ctnTypeHelper:
                                       Result:=ImgIDHelper;
-    ctnProcedure:                     if Tool.NodeIsFunction(CodeNode) then
+    ctnProcedure:
+                                      if Tool.NodeIsConstructor(CodeNode) then
+                                        Result:=ImgIDConstructor
+                                      else
+                                      if Tool.NodeIsDestructor(CodeNode) then
+                                        Result:=ImgIDDestructor
+                                      else
+                                      if Tool.NodeIsFunction(CodeNode) then
                                         Result:=ImgIDFunction
                                       else
                                         Result:=ImgIDProcedure;
     ctnProperty:                      Result:=ImgIDProperty;
     ctnUsesSection:                   Result:=ImgIDSection;
     ctnUseUnit:                       Result:=ImgIDUnit;
+    ctnLabelSection:                  Result:=ImgIDSection;
+    ctnLabel:                         Result:=ImgIDLabel;
   else
     Result:=ImgIDDefault;
   end;

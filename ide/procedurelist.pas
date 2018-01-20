@@ -361,8 +361,8 @@ begin
   SG.Columns[SG_COLIDX_TYPE].Width  := 110;
   SG.Columns[SG_COLIDX_LINE].Width  := 60;
 
-  FImageIdxProcedure  := IDEImages.LoadImage('ce_procedure');
-  FImageIdxFunction   := IDEImages.LoadImage('ce_function');;
+  FImageIdxProcedure  := IDEImages.LoadImage('cc_procedure');
+  FImageIdxFunction   := IDEImages.LoadImage('cc_function');;
 
   cbObjects.Style     := csDropDownList;
   cbObjects.Sorted    := True;
