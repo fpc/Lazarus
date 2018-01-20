@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -11,9 +11,6 @@
       <MainUnit Value="0"/>
       <Title Value="Lazarus snapshots monitor"/>
     </General>
-    <VersionInfo>
-      <StringTable ProductVersion=""/>
-    </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
     </BuildModes>
@@ -24,10 +21,18 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
         <CommandLineParams Value="-a -p"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <CommandLineParams Value="-a -p"/>
+            <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
@@ -47,7 +52,6 @@
       <Unit0>
         <Filename Value="checksnapshots.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="checksnapshots"/>
       </Unit0>
       <Unit1>
         <Filename Value="snapshotsuptodate.pas"/>
@@ -57,12 +61,10 @@
       <Unit2>
         <Filename Value="ftplister.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ftplister"/>
       </Unit2>
       <Unit3>
         <Filename Value="ftplistertest.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ftplistertest"/>
       </Unit3>
       <Unit4>
         <Filename Value="monitorcfg.pas"/>
@@ -91,8 +93,5 @@
     <Linking>
       <LinkSmart Value="True"/>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>
