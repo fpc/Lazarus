@@ -42,6 +42,8 @@
           <ahaCodeFoldingTree Foreground="clSilver"/>
           <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
           <ahaGutter Background="clNavy"/>
+          <ahaIdentComplWindowHighlight Foreground="clAqua"/>
+          <ahaIdentComplWindow Background="10420276"/>
         </SchemePascal_Classic>
       </Globals>
       <LangObjectPascal Version="6">

@@ -43,6 +43,8 @@
           <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
           <ahaGutter Background="clNavy"/>
           <ahaRightMargin Foreground="clSilver"/>
+          <ahaIdentComplWindowHighlight Foreground="clAqua"/>
+          <ahaIdentComplWindow Background="8388649"/>
         </SchemeOcean>
       </Globals>
       <LangObjectPascal Version="6">

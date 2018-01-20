@@ -43,6 +43,7 @@
           <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
           <ahaGutter Background="clBtnFace"/>
           <ahaRightMargin Foreground="clSilver"/>
+          <ahaIdentComplWindowHighlight Foreground="191"/>
         </SchemeDelphi>
       </Globals>
       <LangObjectPascal Version="6">

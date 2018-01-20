@@ -43,6 +43,9 @@
           <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
           <ahaGutter Background="clBlack"/>
           <ahaRightMargin Foreground="clSilver"/>
+          <ahaIdentComplWindow Background="3552822"/>
+          <ahaIdentComplWindowBorder Foreground="7039851"/>
+          <ahaIdentComplWindowHighlight Foreground="clLime"/>
         </SchemeTwilight>
       </Globals>
       <LangObjectPascal Version="6">
