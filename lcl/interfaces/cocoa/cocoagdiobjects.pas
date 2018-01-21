@@ -199,6 +199,7 @@ type
     FStyle: TCocoaFontStyle;
     FAntialiased: Boolean;
     FIsSystemFont: Boolean;
+    FRotationDeg: Single;
   public
     constructor CreateDefault(AGlobal: Boolean = False);
     constructor Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean = False); reintroduce; overload;
@@ -211,6 +212,7 @@ type
     property Name: String read FName;
     property Size: CGFloat read FSize;
     property Style: TCocoaFontStyle read FStyle;
+    property RotationDeg: Single read FRotationDeg;
   end;
 
   { TCocoaBitmap }
@@ -663,6 +665,8 @@ begin
     end;
     FFont.retain;
     FAntialiased := ALogFont.lfQuality <> NONANTIALIASED_QUALITY;
+
+    FRotationDeg := ALogFont.lfEscapement / 10;
   finally
     Pool.release;
   end;
@@ -1321,6 +1325,7 @@ var
   Locations: array of NSPoint;
   Indexes: array of NSUInteger;
   I, Count: NSUInteger;
+  transform : NSAffineTransform;
 begin
   if not ctx.isFlipped then
     Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
@@ -1330,6 +1335,18 @@ begin
   NSGraphicsContext.saveGraphicsState;
   NSGraphicsContext.setCurrentContext(Context);
   ctx.setShouldAntialias(FFont.Antialiased);
+  if FFont.RotationDeg<>0 then
+  begin
+    transform := NSAffineTransform.transform;
+    transform.translateXBy_yBy(X, Y);
+    if ctx.isFlipped then
+      transform.rotateByDegrees( FFont.RotationDeg )
+    else
+      transform.rotateByDegrees( -FFont.RotationDeg );
+    transform.translateXBy_yBy(-X, -Y);
+    transform.concat;
+  end;
+
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
   Pt.x := X;
   Pt.y := Y;
