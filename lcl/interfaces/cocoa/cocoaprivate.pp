@@ -462,6 +462,7 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // mouse
+    function acceptsFirstMouse(event: NSEvent): Boolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -2889,6 +2890,16 @@ begin
   Result := inherited resignFirstResponder;
   if Assigned(callback) then
     callback.ResignFirstResponder;
+end;
+
+function TCocoaCustomControl.acceptsFirstMouse(event: NSEvent): Boolean;
+begin
+  // By default, a mouse-down event in a window that isn’t the key window
+  // simply brings the window forward and makes it key; the event isn’t sent
+  // to the NSView object over which the mouse click occurs. The NSView can
+  // claim an initial mouse-down event, however, by overriding acceptsFirstMouse: to return YES.
+  // see bug #33034
+  Result:=true;
 end;
 
 procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
