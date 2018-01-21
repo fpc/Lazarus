@@ -949,7 +949,7 @@ end;
 
 procedure TKeyCommandRelation.GetDefaultKeyForCommand;
 begin
-  {$IFDEF LCLCarbon}
+  {$IFDEF Darwin}
   GetDefaultKeyForMacOSXScheme;
   {$ELSE}
   GetDefaultKeyForWindowsScheme;
