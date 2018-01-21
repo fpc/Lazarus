@@ -155,7 +155,7 @@ type
     destructor Destroy; override;
     procedure ReadPOText(const Txt: string);
     procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments,
-                        Context, Flags, PreviousID: string; SetFuzzy: boolean = false; LineNr: Integer = -1);
+                        Context, Flags, PreviousID: string; SetFuzzy: boolean = false; LineNr: Integer = -1); deprecated 'FillItem method should be used instead';
     function Translate(const Identifier, OriginalValue: String): String;
     Property CharSet: String read FCharSet;
     procedure Report;
