@@ -45,6 +45,7 @@ type
     function DrawTreeviewElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
 (*    function DrawWindowElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
 *)
+    function GetCellForDetails(Details: TThemedElementDetails): NSCell;
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
 (*
@@ -54,7 +55,9 @@ type
 
     function ContentRect({%H-}DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts({%H-}Details: TThemedElementDetails): Boolean; override;
+*)
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
+(*
     function GetOption(AOption: TThemeOption): Integer; override;
 *)
   end;
@@ -159,6 +162,11 @@ end;*)
   BP_GROUPBOX    kHIThemeGroupBoxKindPrimary,
   BP_USERBUTTON  kThemeRoundedBevelButton
  ------------------------------------------------------------------------------}
+
+type
+  TCocoaContextAccess = class(TCocoaContext);
+
+
 function TCocoaThemeServices.DrawButtonElement(DC: TCocoaContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
@@ -168,7 +176,26 @@ var
   lState: TCDControlState = [];
   lDrawer: TCDDrawer;
   lPt: TPoint;
+  cl : NSCell;
+  acc : TCocoaContextAccess;
+  nsr : NSRect;
+  dr  : NSRect;
 begin
+  cl := GetCellForDetails(Details);
+  if Assigned(cl) then
+  begin
+    acc := TCocoaContextAccess(DC);
+    acc.SetCGFillping(acc.CGContext, 0, -acc.Size.cy);
+    try
+      LCLToNSRect( R, acc.size.cy, dr);
+      cl.drawWithFrame_inView (dr, nil );
+    finally
+      acc.SetCGFillping(acc.CGContext, 0, -acc.Size.cy);
+    end;
+    Exit;
+  end;
+
+
   lCDButton := TCDButtonStateEx.Create;
   lCanvas := TCanvas.Create;
   try
@@ -437,6 +464,30 @@ begin
   end;
 end;
 
+function TCocoaThemeServices.GetCellForDetails(Details: TThemedElementDetails): NSCell;
+var
+  btn  : NSButtonCell;
+begin
+  //todo: instead of recreating btn all the time, should it be cached instead?
+  //      typically as soon as a themed drawing stared, it would be ongoing
+  //      (i.e. customly drawn/themed controls)
+  Result := nil;
+  if Details.Element = teButton then
+  begin
+    if Details.Part = BP_CHECKBOX then
+    begin
+      btn := NSButtonCell(NSButtonCell.alloc).initTextCell(NSSTR(''));
+      btn.setButtonType(NSSwitchButton);
+      if IsChecked(Details) then
+        btn.setIntValue(1)
+      else
+        btn.setIntValue(0);
+      btn.autorelease;
+      Result := btn;
+    end;
+  end;
+end;
+
 (*function TCarbonThemeServices.DrawWindowElement(DC: TCarbonDeviceContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
@@ -599,6 +650,24 @@ begin
     end;
   end;
 end;
+
+function TCocoaThemeServices.GetDetailSize(Details: TThemedElementDetails
+  ): TSize;
+var
+  cl : NSCell;
+  sz : NSSize;
+begin
+  cl := GetCellForDetails(Details);
+  if Assigned(cl) then
+  begin
+    sz:=cl.cellSize;
+    Result.cx:=Round(sz.width);
+    Result.cy:=Round(sz.height);
+  end
+  else
+    Result:=inherited GetDetailSize(Details);
+end;
+
 (*
 {------------------------------------------------------------------------------
   Method:  TCarbonThemeServices.DrawIcon
