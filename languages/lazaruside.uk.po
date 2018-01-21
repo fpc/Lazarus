@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-01-09 14:59+0200\n"
+"PO-Revision-Date: 2018-01-21 11:55+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -417,7 +417,7 @@ msgstr "Текст за замовчуванням"
 
 #: lazarusidestrconsts.dlgaddhiattrdefaultwindow
 msgid "Default Text / Window"
-msgstr ""
+msgstr "Типовий текст / вікно"
 
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
@@ -489,7 +489,6 @@ msgid "Incremental others"
 msgstr "Інкрементальні інші"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightprefix
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgaddhiattrhighlightprefix"
 msgid "Highlight prefix"
 msgstr "Підсвітити префікс"
@@ -566,7 +565,7 @@ msgstr "Невідома точка зупинки"
 
 #: lazarusidestrconsts.dlgaddhiattrwindowborder
 msgid "Window border"
-msgstr ""
+msgstr "Межа вікна"
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -1918,8 +1917,9 @@ msgid "Force DPI scaling in design-time"
 msgstr "Примусове масштабування ТНД в режимі розробки"
 
 #: lazarusidestrconsts.dlgforcedpiscalingindesigntimehint
+#, fuzzy
 msgid "When checked the project scaling settings will be ignored - only the form/frame/datamodule Scaled property will be taken into account."
-msgstr "Якщо позначено, параметри масштабування проекту будуть знехтувані - братимуться до уваги тільки властивості Scaled форми/рамки/модуля даних"
+msgstr "Якщо позначено, параметри масштабування проекту будуть знехтувані - братимуться до уваги тільки властивості Scaled форми/рамки/модуля данихЯкщо позначено, параметри масштабування проекту будуть знехтувані - братимуться до уваги тільки властивості Scaled форми/рамки/модуля даних"
 
 #: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
 msgid "The running Lazarus instance cannot accept any files."
@@ -2180,7 +2180,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
-msgstr ""
+msgstr "Включити ідентифікатори, що містять префікс"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -3746,7 +3746,7 @@ msgstr "Використати стандартний файл налаштув�
 
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
-msgstr ""
+msgstr "Піктограми у вікні завершення коду"
 
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
@@ -4628,7 +4628,7 @@ msgstr "При останньому запуску виникла помилка
 
 #: lazarusidestrconsts.lisappearance
 msgid "Appearance"
-msgstr ""
+msgstr "Вигляд"
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
@@ -18806,7 +18806,7 @@ msgstr "Незвичайна назва компілятора. Зазвичай
 
 #: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr "Незвична назва файлу компілятора pas2js. Зазвичай вона починається з pas2js.Незвична назва файлу компілятора pas2js. Зазвичай вона починається з pas2js."
+msgstr "Незвична назва файлу компілятора pas2js. Зазвичай вона починається з pas2js."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
