@@ -35,7 +35,7 @@ inherited MainForm: TMainForm
       'lt - Lietuviškai'
       'pt_BR - Português (Brasil)'
       'ru - русский'
-      'uk - український'
+      'uk - українська'
       'zh_CN - 简体中文'
     )
     OnChange = CbLanguageChange
