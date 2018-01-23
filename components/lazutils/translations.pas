@@ -120,6 +120,8 @@ type
   { TPOFile }
 
   TPOFile = class
+  private
+    FAllowChangeFuzzyFlag: boolean;
   protected
     FItems: TFPList;// list of TPOFileItem
     FIdentifierLowToItem: TStringToPointerTree; // lowercase identifier to TPOFileItem
@@ -138,7 +140,6 @@ type
     FNrUntranslated: Integer;
     FNrFuzzy: Integer;
     FNrErrors: Integer;
-    FFormatChecked: Boolean;
     procedure RemoveTaggedItems(aTag: Integer);
     procedure RemoveUntaggedModules;
     function Remove(Index: Integer): TPOFileItem;
@@ -182,7 +183,6 @@ type
     property Items: TFPList read FItems;
     // used by pochecker /pohelper
   public
-    procedure CheckFormatArguments(AllowChangeFuzzyFlag: boolean=true);
     procedure CleanUp; // removes previous ID from non-fuzzy entries
     property PoName: String read FPoName;
     property PoRename: String write FPoName;
@@ -196,7 +196,6 @@ type
     property PoItems[Index: Integer]: TPoFileItem read GetPoItem;
     property Count: Integer read GetCount;
     property Header: TPOFileItem read FHeader;
-    property FormatChecked: boolean read FFormatChecked;
   end;
 
   EPOFileError = class(Exception)
@@ -234,8 +233,6 @@ const
 
 
 implementation
-
-{$DEFINE CHECK_FORMAT}
 
 function IsKey(Txt, Key: PChar): boolean;
 begin
@@ -780,16 +777,16 @@ begin
   Create;
 
   FAllEntries := Full;
+  //AllowChangeFuzzyFlag allows not to change fuzzy flag for items with bad format arguments,
+  //so there can be arguments with only badformat flag set. This is needed for POChecker.
+  FAllowChangeFuzzyFlag := AllowChangeFuzzyFlag;
+
+  FNrErrors := 0;
 
   ReadPOText(AStream);
 
-  {$IFDEF CHECK_FORMAT}
-  //AllowChangeFuzzyFlag allows not to change fuzzy flag for items with bad format arguments,
-  //so there can be arguments with only badformat flag set. This is needed for POChecker.
-  CheckFormatArguments(AllowChangeFuzzyFlag); // Verify that translation will not generate crashes
   if AllowChangeFuzzyFlag then
     CleanUp; // Removes previous ID from non-fuzzy entries (not needed for POChecker)
-  {$ENDIF}
 end;
 
 destructor TPOFile.Destroy;
@@ -1133,12 +1130,10 @@ begin
   //This matches gettext behaviour and allows to avoid a lot of crashes related
   //to formatting arguments mismatches.
   if (Item<>nil) and (pos(sFuzzyFlag, lowercase(Item.Flags))=0)
-{$IFDEF CHECK_FORMAT}
   //Load translation only if it is not flagged as badformat.
   //This allows to avoid even more crashes related
   //to formatting arguments mismatches.
   and (pos(sBadFormatFlag, lowercase(Item.Flags))=0)
-{$ENDIF}
   then begin
     Result:=Item.Translation;
     if Result='' then
@@ -1634,11 +1629,19 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original, T
     begin
       Result := CompareFormatArgs(Item.Original,Item.Translation);
       if not Result then
+      begin
+        inc(FNrErrors);
         if pos(sFuzzyFlag, Item.Flags) = 0 then
         begin
-          Item.ModifyFlag(sFuzzyFlag, true);
-          FModified := true;
+          if FAllowChangeFuzzyFlag = true then
+          begin
+            inc(FNrFuzzy);
+            dec(FNrTranslated);
+            Item.ModifyFlag(sFuzzyFlag, true);
+            FModified := true;
+          end;
         end;
+      end;
       HasBadFormatFlag := pos(sBadFormatFlag, Item.Flags) <> 0;
       if HasBadFormatFlag <> not Result then
       begin
@@ -1770,50 +1773,6 @@ begin
     Item := TPOFileItem(Items[i]);
     Item.Tag:=0;
   end;
-end;
-
-procedure TPOFile.CheckFormatArguments(AllowChangeFuzzyFlag: boolean=true);
-var
-  I: Integer;
-  aPoItem: TPOFileItem;
-  isFuzzy: boolean;
-  isBadFormat: boolean;
-begin
-  FNrErrors := 0;
-  for I := 0 to FItems.Count -1 do begin
-    aPoItem := TPOFileItem(FItems.Items[I]);
-    if aPoItem.Translation = '' then Continue;
-    isFuzzy     := pos(sFuzzyFlag,aPoItem.Flags) <> 0;
-    isBadFormat := pos(sBadFormatFlag,aPoItem.Flags) <> 0;
-    if (pos('%',aPoItem.Original) <> 0) or (pos('%',aPoItem.Translation) <> 0) then begin
-      if not CompareFormatArgs(aPoItem.Original,aPoItem.Translation) then begin
-        inc(FNrErrors);
-        if (not isFuzzy) and AllowChangeFuzzyFlag then begin
-          aPoItem.ModifyFlag(sFuzzyFlag,true);
-          inc(FNrFuzzy);
-          dec(FNrTranslated);
-          FModified := true;
-        end;
-        if not isBadFormat then begin
-          aPoItem.ModifyFlag(sBadFormatFlag,true);
-          FModified := true;
-        end;
-      end
-      else begin //remove badformat flag (if present) from correct item
-        if isBadFormat then begin
-          aPoItem.ModifyFlag(sBadFormatFlag,False);
-          FModified := true;
-        end;
-      end;
-    end
-    else begin // possibly an offending string has been removed
-      if isBadFormat then begin
-        aPoItem.ModifyFlag(sBadFormatFlag,False);
-        FModified := true;
-      end;
-    end;
-  end;
-  FFormatChecked := true;
 end;
 
 procedure TPOFile.CleanUp;
