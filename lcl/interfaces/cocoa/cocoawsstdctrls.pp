@@ -259,6 +259,7 @@ type
   TCocoaWSRadioButton = class(TWSRadioButton)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
 
   { TCocoaWSCustomStaticText }
@@ -283,6 +284,7 @@ procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWra
 function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
 procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
 procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
+procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 
 implementation
 
@@ -367,6 +369,18 @@ begin
   end;
 end;
 
+procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
+var
+  SubView : NSView;
+begin
+  if not Assigned(checkedRadio) then Exit;
+  for SubView in checkedRadio.superView.subviews do
+    if (SubView <> checkedRadio) and (SubView.lclGetTarget is TRadioButton) then
+    begin
+      NSButton(SubView).setState(NSOffState);
+    end;
+end;
+
 { TLCLRadioButtonCallback }
 
 procedure TLCLRadioButtonCallback.ButtonClick;
@@ -375,11 +389,7 @@ var
 begin
   if not Owner.lclIsEnabled() then Exit;
   if NSButton(Owner).state = NSOnState then
-  begin
-    for SubView in NSButton(Owner).superView.subviews do
-      if (SubView <> Owner) and (SubView.lclGetTarget is TRadioButton) then
-        NSButton(SubView).setState(NSOffState);
-  end;
+    RadioButtonSwitchSiblings(NSButton(Owner));
   inherited ButtonClick;
 end;
 
@@ -595,7 +605,9 @@ const
   buttonState: array [TcheckBoxState] of NSInteger = (NSOffState, NSOnState, NSMixedState);
 begin
   if ACustomCheckBox.HandleAllocated then
+  begin
     NSButton(ACustomCheckBox.Handle).setState(buttonState[NewState]);
+  end;
 end;
 
 class procedure TCocoaWSCustomCheckBox.GetPreferredSize(
@@ -642,6 +654,14 @@ var
 begin
   btn := AllocButton(AWinControl, TLCLRadioButtonCallback, AParams, 0, NSRadioButton);
   Result := TLCLIntfHandle(btn);
+end;
+
+class procedure TCocoaWSRadioButton.SetState(
+  const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+begin
+  if NewState = cbChecked then
+    RadioButtonSwitchSiblings(NSButton(ACustomCheckBox.Handle));
+  TCocoaWSCustomCheckBox.SetState(ACustomCheckBox, NewState);
 end;
 
 { TCocoaWSCustomStaticText }

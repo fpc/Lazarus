@@ -243,6 +243,8 @@ type
     // lcl overrides
     function lclIsHandle: Boolean; override;
     procedure lclSetFrame(const r: TRect); override;
+    // cocoa
+    procedure setState(astate: NSInteger); override;
   end;
 
   TCocoaFieldEditor = objcclass;
@@ -2263,6 +2265,15 @@ begin
   if (miniHeight<>0) or (smallHeight<>0) then
     SetNSControlSize(Self,r.Bottom-r.Top,miniHeight, smallHeight, adjustFontToControlSize);
   inherited lclSetFrame(r);
+end;
+
+procedure TCocoaButton.setState(astate: NSInteger);
+var
+  ch : Boolean;
+begin
+  ch := astate<>state;
+  inherited setState(astate);
+  if Assigned(callback) and ch then callback.SendOnChange;
 end;
 
 procedure TCocoaButton.actionButtonClick(sender: NSObject);
