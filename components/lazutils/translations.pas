@@ -112,6 +112,7 @@ type
     Flags: string;
     PreviousID: string;
     Context: string;
+    Duplicate: boolean;
     constructor Create(const TheIdentifierLow, TheOriginal, TheTranslated: string);
     procedure ModifyFlag(const AFlag: string; Check: boolean);
     property Identifier: string read IdentifierLow; deprecated;
@@ -751,6 +752,8 @@ constructor TPOFile.Create(Full:Boolean=True);
 begin
   inherited Create;
   FAllEntries:=Full;
+  // changing 'fuzzy' flag is allowed by default
+  FAllowChangeFuzzyFlag:=true;
   FItems:=TFPList.Create;
   FIdentifierLowToItem:=TStringToPointerTree.Create(true);
   FIdentLowVarToItem:=TStringHashList.Create(true);
@@ -1697,6 +1700,9 @@ begin
       // if current item doesn't have context, add one
       if CurrentItem.Context='' then
         CurrentItem.Context := CurrentItem.IdentifierLow;
+      // marking items as duplicate (needed only by POChecker)
+      FoundItem.Duplicate := true;
+      CurrentItem.Duplicate := true;
       // if old item is already translated and current item not, use translation
       if (CurrentItem.Translation='') and (FoundItem.Translation<>'') then
       begin
@@ -1814,6 +1820,7 @@ end;
 constructor TPOFileItem.Create(const TheIdentifierLow, TheOriginal,
   TheTranslated: string);
 begin
+  Duplicate:=false;
   IdentifierLow:=TheIdentifierLow;
   Original:=TheOriginal;
   Translation:=TheTranslated;
