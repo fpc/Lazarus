@@ -736,7 +736,7 @@ begin
     if Assigned(PoItem) then
     begin
       CurHash := FMaster.OriginalList.List[i]^.HashValue ;
-      if ((PoItem.Tag and tgHasDup) = tgHasDup) then
+      if PoItem.Duplicate = true then
       begin
         if (WarningCount = 0) then
         begin
