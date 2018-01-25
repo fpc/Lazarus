@@ -438,6 +438,7 @@ function TWindowProcHelper.GetMenuItemObject(ByPosition: Boolean): TObject;
 var
   MenuInfo: MENUITEMINFO;
   PopupMenu: TPopupMenu;
+  Menu: HMENU;
 begin
   // first we have to decide if the command is from a popup menu
   // or from the window main menu
@@ -456,7 +457,11 @@ begin
   MenuInfo.cbSize := MMenuItemInfoSize;
   MenuInfo.fMask := MIIM_DATA;
 
-  if GetMenuItemInfo(GetMenu(Window), LOWORD(Integer(WParam)), ByPosition, @MenuInfo) then
+  if ByPosition then
+    Menu := LParam
+  else
+    Menu := GetMenu(Window);
+  if GetMenuItemInfo(Menu, LOWORD(Integer(WParam)), ByPosition, @MenuInfo) then
     Result := TObject(MenuInfo.dwItemData)
   else
     Result := nil;
