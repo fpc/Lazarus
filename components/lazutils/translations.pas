@@ -228,7 +228,6 @@ function UpdatePoFile(RSTFiles: TStrings; const POFilename: string): boolean;
 procedure UpdatePoFileTranslations(const BasePOFilename: string; BasePOFile: TPOFile = nil);
 
 const
-  tgHasDup = $01;
   sFuzzyFlag = 'fuzzy';
   sBadFormatFlag = 'badformat';
 
