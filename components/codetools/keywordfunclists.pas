@@ -87,7 +87,7 @@ type
     function AllwaysFalse: boolean;
     property Count: integer read FCount;
     function GetItem(Index: integer): TBaseKeyWordFunctionListItem;
-    function IndexOf(const AKeyWord: shortstring): integer;
+    function IndexOf(const AKeyWord: shortstring; UseSort: boolean): integer;
     function CalcMemSize: PtrUInt;
     property HasOnlyIdentifiers: boolean read FHasOnlyIdentifiers;
     property Name: string read FName write FName;
@@ -398,7 +398,7 @@ var
   i: Integer;
 begin
   for i:=0 to List.FCount-1 do begin
-    if IndexOf(List.FItems[i].KeyWord)<0 then begin
+    if IndexOf(List.FItems[i].KeyWord,false)<0 then begin
       AddExtended(List.FItems[i].KeyWord,List.FItems[i].DoIt,
                   List.FItems[i].DoDataFunction);
     end;
@@ -511,23 +511,29 @@ begin
   Result:=FItems[Index];
 end;
 
-function TBaseKeyWordFunctionList.IndexOf(const AKeyWord: shortstring): integer;
+function TBaseKeyWordFunctionList.IndexOf(const AKeyWord: shortstring;
+  UseSort: boolean): integer;
 var
   i: Integer;
 begin
-  if not Sorted then Sort;
+  if UseSort then begin
+    if not Sorted then Sort;
 
-  i:=KeyWordToHashIndex(AKeyWord);
-  if i>=0 then begin
-    i:=FBucketStart[i];
+    i:=KeyWordToHashIndex(AKeyWord);
     if i>=0 then begin
-      repeat
-        if CompareText(FItems[i].KeyWord,AKeyWord)=0 then
-          exit(i);
-        if FItems[i].IsLast then break;
-        inc(i);
-      until false;
+      i:=FBucketStart[i];
+      if i>=0 then begin
+        repeat
+          if CompareText(FItems[i].KeyWord,AKeyWord)=0 then
+            exit(i);
+          if FItems[i].IsLast then break;
+          inc(i);
+        until false;
+      end;
     end;
+  end else begin
+    for i:=0 to FCount-1 do
+      if CompareText(FItems[i].KeyWord,AKeyWord)=0 then exit(i);
   end;
   Result:=-1;
 end;
