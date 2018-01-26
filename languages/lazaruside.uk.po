@@ -19382,9 +19382,9 @@ msgstr "Знайдено, але тут не вказано: "
 msgid "Excluded"
 msgstr "Виключені"
 
-#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
-msgid "Force update PO files on next compile"
-msgstr "Примусово оновити файли PO при наступній компіляції"
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextbuild
+msgid "Force update PO files on next build"
+msgstr ""
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"

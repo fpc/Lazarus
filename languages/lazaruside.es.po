@@ -19626,9 +19626,9 @@ msgstr "Hallado, pero no listado aquí:"
 msgid "Excluded"
 msgstr "Excluído"
 
-#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
-msgid "Force update PO files on next compile"
-msgstr "Forzar actualización de archivos PO en la siguiente compilación"
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextbuild
+msgid "Force update PO files on next build"
+msgstr ""
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"

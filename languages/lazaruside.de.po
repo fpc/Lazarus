@@ -19368,9 +19368,9 @@ msgstr "Gefunden aber hier nicht aufgeführt: "
 msgid "Excluded"
 msgstr "Ausgenommen"
 
-#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
-msgid "Force update PO files on next compile"
-msgstr "Aktualisierung der po-Dateien erzwingen bei nächster Kompilierung"
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextbuild
+msgid "Force update PO files on next build"
+msgstr ""
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"

@@ -19373,9 +19373,9 @@ msgstr "Megtalálható, de itt nincs felsorolva:"
 msgid "Excluded"
 msgstr "Kizárva"
 
-#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
-msgid "Force update PO files on next compile"
-msgstr "PO fájlok frissítésének kényszerítése a következő fordításkor"
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextbuild
+msgid "Force update PO files on next build"
+msgstr ""
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"

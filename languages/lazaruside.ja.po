@@ -19377,9 +19377,9 @@ msgstr "見つかりましたが、ここにはリストされません："
 msgid "Excluded"
 msgstr "除外"
 
-#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
-msgid "Force update PO files on next compile"
-msgstr "次のコンパイル時にPOファイルを更新"
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextbuild
+msgid "Force update PO files on next build"
+msgstr ""
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"

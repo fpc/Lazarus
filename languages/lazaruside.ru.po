@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-01-19 15:56+0300\n"
+"PO-Revision-Date: 2018-01-26 18:14+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -19377,9 +19377,9 @@ msgstr "Найденных, но не отображаемых здесь: "
 msgid "Excluded"
 msgstr "Исключённые"
 
-#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
-msgid "Force update PO files on next compile"
-msgstr "Принудительно обновить файлы PO при следующей компиляции"
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextbuild
+msgid "Force update PO files on next build"
+msgstr "Принудительно обновить файлы PO при следующей сборке"
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"

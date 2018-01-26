@@ -19401,9 +19401,9 @@ msgstr "Rastas, tačiau neįtrauktas į šį sąrašą:"
 msgid "Excluded"
 msgstr "Išbraukta"
 
-#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextcompile
-msgid "Force update PO files on next compile"
-msgstr "Kitą kart kompiliuojat priverstinai naujinti „PO“"
+#: lazarusidestrconsts.rsi18nforceupdatepofilesonnextbuild
+msgid "Force update PO files on next build"
+msgstr ""
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"
