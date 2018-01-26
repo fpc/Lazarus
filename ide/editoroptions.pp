@@ -6832,7 +6832,7 @@ begin
     l := length(s1)
   else
     l := length(s2);
-  while i < l do begin
+  while i <= l do begin
     Result := ord(s1[i]) - ord(s2[i]);
     if Result <> 0 then
       exit;
