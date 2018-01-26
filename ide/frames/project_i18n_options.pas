@@ -104,7 +104,7 @@ begin
   ExcludedGroupBox.Caption := rsI18nExcluded;
   ExcludedIdentifiersLabel.Caption := rsI18nIdentifiers;
   ExcludedOriginalsLabel.Caption := rsI18nOriginals;
-  ForceUpdatePoFilesCheckBox.Caption := rsI18nForceUpdatePoFilesOnNextCompile;
+  ForceUpdatePoFilesCheckBox.Caption := rsI18nForceUpdatePoFilesOnNextBuild;
 end;
 
 procedure TProjectI18NOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
