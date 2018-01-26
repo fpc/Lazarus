@@ -431,6 +431,7 @@ begin
   for i:=0 to FCount-1 do begin
     h:=KeyWordToHashIndex(FItems[i].KeyWord);
     if h>=0 then inc(FBucketStart[h]);
+    FItems[i].IsLast:=false;
   end;
   // change hash-count-index to bucket-end-index
   h:=0;
