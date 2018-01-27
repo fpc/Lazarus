@@ -95,6 +95,8 @@ function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAU
 function GetCurrentEventTime: double;
 function GetMacOSXVersion: Integer;
 
+procedure NSResponderHotKeys(trg: NSResponder; event: NSEvent; var handled: Boolean);
+
 implementation
 
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
@@ -697,6 +699,31 @@ begin
     lParser.Free;
   end;
   Result := lMajor*$10000 + lMinor*$100 + lFix;
+end;
+
+procedure NSResponderHotKeys(trg: NSResponder; event: NSEvent; var handled: Boolean);
+begin
+  // todo: system keys could be overriden. thus need to review the current
+  //       keyboard configuration first. See "Key Bindings" at
+  //       https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html
+
+  handled := false;
+  if (event.type_ = NSKeyDown) then
+  begin
+    if ((event.modifierFlags and NSCommandKeyMask) = 0) then Exit;
+
+    if Assigned(event.charactersIgnoringModifiers.UTF8String) then
+    begin
+      case event.charactersIgnoringModifiers.UTF8String^ of
+        'Z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('redo:'), nil, trg);
+        'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), nil, trg);
+        'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), nil, trg);
+        'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), nil, trg);
+        'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), nil, trg);
+        'z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), nil, trg);
+      end;
+    end;
+  end;
 end;
 
 end.

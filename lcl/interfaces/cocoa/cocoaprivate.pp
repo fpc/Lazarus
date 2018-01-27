@@ -503,6 +503,7 @@ type
     ownwin: NSWindow;
     popup_parent: HWND; // if not 0, indicates that we should set the popup parent
     overlay: NSView;
+    function performKeyEquivalent(event: NSEvent): Boolean; override;
     procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
@@ -1357,6 +1358,16 @@ procedure TCocoaWindowContent.didResignKeyNotification(sender: NSNotification);
 begin
   if Assigned(callback) then
     callback.DidResignKeyNotification;
+end;
+
+function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): Boolean;
+begin
+  // this event servers all TextEdit, ComboBoxes and Memos on a form.
+  // to do short keys for copy, paste, cut, etc...
+  Result := false;
+  NSResponderHotKeys(self, event, Result);
+  if not Result then
+    Result:=inherited performKeyEquivalent(event);
 end;
 
 procedure TCocoaWindowContent.resolvePopupParent();
