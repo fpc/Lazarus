@@ -1208,6 +1208,8 @@ begin
 end;
 
 procedure TCustomForm.SetParent(NewParent: TWinControl);
+var
+  ParentForm: TCustomForm;
 begin
   if Parent = NewParent then exit;
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.SetParent'){$ENDIF};
@@ -1216,6 +1218,14 @@ begin
     inherited SetParent(NewParent);
     if (Parent = nil) and Visible then
       HandleNeeded;
+
+    if Parent <> nil then
+    begin
+      ParentForm := GetParentForm(Self);
+      if Application.Scaled and (ParentForm<>nil) and ParentForm.Scaled
+      and (ParentForm.PixelsPerInch<>PixelsPerInch) then
+        AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, ParentForm.PixelsPerInch, 0, 0);
+    end;
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.SetParent'){$ENDIF};
   end;
@@ -2366,11 +2376,23 @@ begin
 end;
 
 function TCustomForm.GetMonitor: TMonitor;
+var
+  ParentForm: TCustomForm;
 begin
-  if HandleAllocated then
-  Result := Screen.MonitorFromWindow(Handle, mdNearest)
-  else
-  Result :=Screen.MonitorFromPoint(point(Left,Top));
+  if Assigned(Parent) then
+  begin
+    ParentForm := GetParentForm(Self);
+    if Assigned(ParentForm) then
+      Result := ParentForm.Monitor
+    else
+      Result := nil;
+  end else
+  begin
+    if HandleAllocated then
+      Result := Screen.MonitorFromWindow(Handle, mdNearest)
+    else
+      Result := Screen.MonitorFromPoint(point(Left,Top));
+  end;
 end;
 
 {------------------------------------------------------------------------------
