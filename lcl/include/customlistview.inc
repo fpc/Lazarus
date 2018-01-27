@@ -618,6 +618,7 @@ procedure TCustomListView.DoAutoAdjustLayout(
 var
   i: Integer;
   C: TListColumn;
+  L: TListViewImageList;
 begin
   inherited;
 
@@ -630,6 +631,9 @@ begin
       C.MinWidth := Round(C.MinWidth * AXProportion);
       C.Width := Round(C.Width * AXProportion);
     end;
+
+    for L in TListViewImageList do
+      SetImageListWS(L);
   end;
 end;
 
