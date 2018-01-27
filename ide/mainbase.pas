@@ -531,6 +531,7 @@ begin
   DropdownMenu.Images := TCustomImageList.Create(Self);
   DropdownMenu.Images.Width := Scale96ToScreen(16);
   DropdownMenu.Images.Height := Scale96ToScreen(16);
+  DropdownMenu.Images.Scaled := False;
   Style := tbsDropDown;
 end;
 
