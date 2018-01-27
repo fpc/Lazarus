@@ -1,17 +1,17 @@
 object ImageListEditorDlg: TImageListEditorDlg
   Left = 453
-  Height = 379
+  Height = 424
   Top = 144
-  Width = 616
+  Width = 671
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'ImagesList Editor'
-  ClientHeight = 379
-  ClientWidth = 616
+  ClientHeight = 424
+  ClientWidth = 671
   Constraints.MinHeight = 345
   Constraints.MinWidth = 520
   OnClose = FormClose
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
+  OnResize = FormResize
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'
   object GroupBoxR: TGroupBox
@@ -20,50 +20,48 @@ object ImageListEditorDlg: TImageListEditorDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 376
-    Height = 334
+    Height = 380
     Top = 6
-    Width = 234
+    Width = 289
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Selected Image'
-    ClientHeight = 307
-    ClientWidth = 230
+    ClientHeight = 360
+    ClientWidth = 285
     TabOrder = 1
     object LabelTransparent: TLabel
       Left = 110
       Height = 15
-      Top = 200
-      Width = 111
+      Top = 253
+      Width = 97
       Anchors = [akLeft, akBottom]
       BorderSpacing.Around = 6
       Caption = 'Transparent Color:'
       ParentColor = False
     end
-    object LabelSize: TLabel
-      Left = 6
-      Height = 1
-      Top = 6
-      Width = 1
-      ParentColor = False
-    end
     object Preview: TScrollBox
       Left = 6
-      Height = 159
-      Top = 32
-      Width = 217
+      Height = 238
+      Top = 6
+      Width = 272
+      HorzScrollBar.Increment = 1
       HorzScrollBar.Page = 1
+      HorzScrollBar.Smooth = True
+      HorzScrollBar.Tracking = True
+      VertScrollBar.Increment = 1
       VertScrollBar.Page = 1
+      VertScrollBar.Smooth = True
+      VertScrollBar.Tracking = True
       Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Around = 6
-      Color = clGrayText
+      BorderSpacing.Around = 4
+      Color = clDefault
       ParentColor = False
       TabOrder = 0
-      OnPaint = PreviewPaint
     end
     object RadioGroup: TRadioGroup
       Left = 7
       Height = 105
-      Top = 197
+      Top = 250
       Width = 96
       Anchors = [akLeft, akBottom]
       AutoFill = True
@@ -77,7 +75,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 78
+      ClientHeight = 85
       ClientWidth = 92
       Enabled = False
       ItemIndex = 0
@@ -94,8 +92,8 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideTop.Control = LabelTransparent
       AnchorSideTop.Side = asrBottom
       Left = 110
-      Height = 29
-      Top = 221
+      Height = 22
+      Top = 274
       Width = 96
       Selected = clFuchsia
       Style = [cbStandardColors, cbExtendedColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
@@ -110,180 +108,233 @@ object ImageListEditorDlg: TImageListEditorDlg
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 334
+    Height = 380
     Top = 6
     Width = 364
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Images'
-    ClientHeight = 307
+    ClientHeight = 360
     ClientWidth = 360
     TabOrder = 0
-    object TreeView: TTreeView
-      AnchorSideLeft.Control = GroupBoxL
-      AnchorSideTop.Control = GroupBoxL
-      Left = 6
-      Height = 296
-      Top = 6
-      Width = 186
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Around = 6
-      HideSelection = False
-      Images = ImageList
-      ReadOnly = True
-      RowSelect = True
-      ShowButtons = False
-      ShowLines = False
-      ShowRoot = False
-      TabOrder = 0
-      OnDeletion = TreeViewDeletion
-      OnSelectionChanged = TreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips]
-    end
     object BtnAdd: TButton
       Tag = 1
-      AnchorSideLeft.Control = TreeView
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = GroupBoxL
       AnchorSideRight.Control = GroupBoxL
       AnchorSideRight.Side = asrBottom
-      Left = 198
-      Height = 25
-      Top = 6
+      Left = 200
+      Height = 23
+      Top = 4
       Width = 156
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      Anchors = [akTop, akRight]
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 4
       Caption = 'Add...'
       OnClick = BtnAddClick
-      TabOrder = 1
+      TabOrder = 0
     end
     object BtnClear: TButton
-      AnchorSideLeft.Control = TreeView
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = BtnAdd
       AnchorSideTop.Control = BtnDelete
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = GroupBoxL
+      AnchorSideRight.Control = BtnAdd
       AnchorSideRight.Side = asrBottom
-      Left = 198
-      Height = 25
-      Top = 99
+      Left = 200
+      Height = 23
+      Top = 139
       Width = 156
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 4
       Caption = 'Clear'
       OnClick = BtnClearClick
-      TabOrder = 4
+      TabOrder = 3
     end
     object BtnDelete: TButton
-      AnchorSideLeft.Control = TreeView
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BtnReplace
+      AnchorSideLeft.Control = BtnAdd
+      AnchorSideTop.Control = BtnReplaceAll
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = GroupBoxL
+      AnchorSideRight.Control = BtnAdd
       AnchorSideRight.Side = asrBottom
-      Left = 198
-      Height = 25
-      Top = 68
+      Left = 200
+      Height = 23
+      Top = 112
       Width = 156
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 4
       Caption = '&Delete'
       OnClick = BtnDeleteClick
-      TabOrder = 3
+      TabOrder = 2
     end
     object BtnMoveUp: TButton
       Tag = -1
-      AnchorSideLeft.Control = TreeView
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = BtnAdd
       AnchorSideTop.Control = BtnClear
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = GroupBoxL
+      AnchorSideRight.Control = BtnAdd
       AnchorSideRight.Side = asrBottom
-      Left = 198
-      Height = 25
-      Top = 130
+      Left = 200
+      Height = 23
+      Top = 166
       Width = 156
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 4
       Caption = 'Move Up'
       OnClick = BtnMoveUpClick
-      TabOrder = 5
+      TabOrder = 4
     end
     object BtnMoveDown: TButton
       Tag = 1
-      AnchorSideLeft.Control = TreeView
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = BtnAdd
       AnchorSideTop.Control = BtnMoveUp
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = GroupBoxL
+      AnchorSideRight.Control = BtnAdd
       AnchorSideRight.Side = asrBottom
-      Left = 198
-      Height = 25
-      Top = 161
+      Left = 200
+      Height = 23
+      Top = 193
       Width = 156
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 4
       Caption = 'Move Down'
       OnClick = BtnMoveUpClick
-      TabOrder = 6
+      TabOrder = 5
     end
     object BtnSave: TButton
-      AnchorSideLeft.Control = TreeView
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = BtnAdd
       AnchorSideTop.Control = BtnMoveDown
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = GroupBoxL
+      AnchorSideRight.Control = BtnAdd
       AnchorSideRight.Side = asrBottom
-      Left = 198
-      Height = 25
-      Top = 192
+      Left = 200
+      Height = 23
+      Top = 220
       Width = 156
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 4
       Caption = 'Save...'
       OnClick = BtnSaveClick
-      TabOrder = 7
+      TabOrder = 6
     end
     object btnSaveAll: TButton
-      AnchorSideLeft.Control = TreeView
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = BtnAdd
       AnchorSideTop.Control = BtnSave
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = GroupBoxL
+      AnchorSideRight.Control = BtnAdd
       AnchorSideRight.Side = asrBottom
-      Left = 198
-      Height = 25
-      Top = 223
+      Left = 200
+      Height = 23
+      Top = 247
       Width = 156
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 4
       Caption = 'Save All...'
       OnClick = btnSaveAllClick
-      TabOrder = 8
+      TabOrder = 7
     end
     object BtnReplace: TButton
-      AnchorSideLeft.Control = TreeView
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BtnAdd
+      AnchorSideLeft.Control = BtnAdd
+      AnchorSideTop.Control = BtnAddMoreResolutions
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = GroupBoxL
+      AnchorSideRight.Control = BtnAdd
       AnchorSideRight.Side = asrBottom
-      Left = 198
-      Height = 25
-      Top = 37
+      Left = 200
+      Height = 23
+      Top = 58
       Width = 156
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Top = 4
       Caption = '&Replace...'
       OnClick = BtnReplaceClick
-      TabOrder = 2
+      TabOrder = 1
+    end
+    object ImageListBox: TListBox
+      AnchorSideLeft.Control = GroupBoxL
+      AnchorSideTop.Control = GroupBoxL
+      Left = 4
+      Height = 351
+      Top = 4
+      Width = 188
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 4
+      ItemHeight = 0
+      OnDrawItem = ImageListBoxDrawItem
+      OnSelectionChange = ImageListBoxSelectionChange
+      Options = []
+      Style = lbOwnerDrawFixed
+      TabOrder = 8
+    end
+    object btnAddNewResolution: TButton
+      AnchorSideLeft.Control = BtnAdd
+      AnchorSideTop.Control = btnSaveAll
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BtnAdd
+      AnchorSideRight.Side = asrBottom
+      Left = 200
+      Height = 23
+      Top = 274
+      Width = 156
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 4
+      Caption = 'Add new resolution...'
+      OnClick = btnAddNewResolutionClick
+      TabOrder = 9
+    end
+    object BtnReplaceAll: TButton
+      AnchorSideLeft.Control = BtnAdd
+      AnchorSideTop.Control = BtnReplace
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BtnAdd
+      AnchorSideRight.Side = asrBottom
+      Left = 200
+      Height = 23
+      Top = 85
+      Width = 156
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 4
+      Caption = '&Replace all resolutions...'
+      OnClick = BtnReplaceClick
+      TabOrder = 10
+    end
+    object BtnAddMoreResolutions: TButton
+      Tag = 1
+      AnchorSideLeft.Control = BtnAdd
+      AnchorSideTop.Control = BtnAdd
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BtnAdd
+      AnchorSideRight.Side = asrBottom
+      Left = 200
+      Height = 23
+      Top = 31
+      Width = 156
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 4
+      Caption = 'Add more resolutions...'
+      OnClick = BtnAddClick
+      TabOrder = 11
+    end
+    object btnDeleteResolution: TButton
+      AnchorSideLeft.Control = BtnAdd
+      AnchorSideTop.Control = btnAddNewResolution
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = BtnAdd
+      AnchorSideRight.Side = asrBottom
+      Left = 200
+      Height = 23
+      Top = 301
+      Width = 156
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 4
+      Caption = 'Delete resolution ...'
+      OnClick = btnDeleteResolutionClick
+      TabOrder = 12
     end
   end
   object BtnPanel: TButtonPanel
     Left = 6
-    Height = 27
-    Top = 346
-    Width = 604
+    Height = 26
+    Top = 392
+    Width = 659
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -296,19 +347,19 @@ object ImageListEditorDlg: TImageListEditorDlg
     ShowBevel = False
   end
   object ImageList: TImageList
-    left = 216
-    top = 246
+    Left = 216
+    Top = 246
   end
   object OpenDialog: TOpenPictureDialog
     FilterIndex = 0
     Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail, ofAutoPreview]
-    left = 216
-    top = 209
+    Left = 216
+    Top = 209
   end
   object SaveDialog: TSavePictureDialog
     FilterIndex = 0
     Options = [ofEnableSizing, ofViewDetail, ofAutoPreview]
-    left = 252
-    top = 209
+    Left = 252
+    Top = 209
   end
 end

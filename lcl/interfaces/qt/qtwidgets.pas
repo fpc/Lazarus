@@ -12518,6 +12518,7 @@ var
   AIcon: QIconH;
   AOk: Boolean;
   ASize: TSize;
+  ImgListRes: TCustomImageListResolution;
 begin
 
   {do not set items during design time}
@@ -12556,20 +12557,21 @@ begin
         ImgList := TCustomListViewHack(LCLObject).SmallImages;
         if Assigned(ImgList) then
         begin
+          ImgListRes := ImgList.ResolutionForPPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
           QListWidgetItem_sizeHint(item, @ASize);
-          if (ASize.cx <> ImgList.Width) or (ASize.cx <> ImgList.Height) then
+          if (ASize.cx <> ImgListRes.Width) or (ASize.cx <> ImgListRes.Height) then
           begin
-            ASize.cx := ImgList.Width;
-            ASize.cy := ImgList.Height;
+            ASize.cx := ImgListRes.Width;
+            ASize.cy := ImgListRes.Height;
             QListWidgetItem_setSizeHint(item, @ASize);
           end;
           AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
-          if (ImgList.Count > 0) and
-            ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
+          if (ImgListRes.Count > 0) and
+            ((AImageIndex >= 0) and (AImageIndex < ImgListRes.Count)) then
           begin
             Bmp := TBitmap.Create;
             try
-              ImgList.GetBitmap(AImageIndex, Bmp);
+              ImgListRes.GetBitmap(AImageIndex, Bmp);
               v2 := QVariant_create;
               QListWidgetItem_data(item, v2, QtListViewOwnerDataRole);
               if not QVariant_isNull(v2) then
@@ -14659,6 +14661,7 @@ var
   AOk: Boolean;
   AIcon: QIconH;
   ASize: TSize;
+  ImgListRes: TCustomImageListResolution;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then
@@ -14714,20 +14717,21 @@ begin
           ImgList := TCustomListViewHack(LCLObject).SmallImages;
           if Assigned(ImgList) then
           begin
+            ImgListRes := ImgList.ResolutionForPPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
             QTreeWidgetItem_sizeHint(item, @ASize, 0);
-            if (ASize.cx <> ImgList.Width) or (ASize.cx <> ImgList.Height) then
+            if (ASize.cx <> ImgListRes.Width) or (ASize.cx <> ImgListRes.Height) then
             begin
-              ASize.cx := ImgList.Width;
-              ASize.cy := ImgList.Height;
+              ASize.cx := ImgListRes.Width;
+              ASize.cy := ImgListRes.Height;
               QTreeWidgetItem_setSizeHint(item, 0, @ASize);
             end;
             AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
-            if (ImgList.Count > 0) and
-              ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
+            if (ImgListRes.Count > 0) and
+              ((AImageIndex >= 0) and (AImageIndex < ImgListRes.Count)) then
             begin
               Bmp := TBitmap.Create;
               try
-                ImgList.GetBitmap(AImageIndex, Bmp);
+                ImgListRes.GetBitmap(AImageIndex, Bmp);
                 v2 := QVariant_create;
                 QTreeWidgetItem_data(item, v2, 0, QtListViewOwnerDataRole);
                 if not QVariant_isNull(v2) then

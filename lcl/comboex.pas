@@ -140,7 +140,9 @@ type
     FItemsEx: TComboExItems;
     FStyle: TComboBoxExStyle;
     FStyleEx: TComboBoxExStyles;
+    FImagesWidth: Integer;
     procedure SetImages(AValue: TCustomImageList);
+    procedure SetImagesWidth(const aImagesWidth: Integer);
     procedure SetStyle(AValue: TComboBoxExStyle); reintroduce;
     procedure SetStyleEx(AValue: TComboBoxExStyles);
   protected const
@@ -174,6 +176,7 @@ type
     property AutoCompleteOptions: TAutoCompleteOptions read FAutoCompleteOptions
              write FAutoCompleteOptions default cDefAutoCompOpts;
     property Images: TCustomImageList read FImages write SetImages;
+    property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property ItemsEx: TComboExItems read FItemsEx write FItemsEx;
     property Style: TComboBoxExStyle read FStyle write SetStyle default cDefStyle;
     property StyleEx: TComboBoxExStyles read FStyleEx write SetStyleEx default [];
@@ -204,6 +207,7 @@ type
     property Enabled;
     property Font;
     property Images;
+    property ImagesWidth;
     property ItemHeight;
     property ItemsEx;  { do not change order; ItemsEx must be before ItemIndex }
     property ItemIndex;

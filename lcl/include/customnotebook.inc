@@ -270,6 +270,7 @@ begin
 
   FImageListChangeLink := TChangeLink.Create;
   FImageListChangeLink.OnChange := @DoImageListChange;
+  FImageListChangeLink.OnDestroyResolutionHandle := @DoImageListDestroyResolutionHandle;
 
   FPageIndex := -1;
 
@@ -353,6 +354,7 @@ begin
   FImageListChangeLink.Free;
   Pages.Clear;
   FreeAndNil(FAccess);
+  Application.RemoveAsyncCalls(Self);
   inherited Destroy;
 end;
 
@@ -527,6 +529,11 @@ begin
   PageIndex := IndexOf(AValue); // -1 for unpaged
 end;
 
+procedure TCustomTabControl.SetImageListAsync(Data: PtrInt);
+begin
+  DoImageListChange(Self);
+end;
+
 procedure TCustomTabControl.SetImages(const AValue: TCustomImageList);
 begin
   if FImages = AValue then Exit;
@@ -541,6 +548,14 @@ begin
     FImages.FreeNotification(Self);
     FImages.RegisterChanges(FImageListChangeLink);
   end;
+  DoImageListChange(Self);
+  UpdateTabProperties;
+end;
+
+procedure TCustomTabControl.SetImagesWidth(const aImagesWidth: Integer);
+begin
+  if FImagesWidth = aImagesWidth then Exit;
+  FImagesWidth := aImagesWidth;
   DoImageListChange(Self);
   UpdateTabProperties;
 end;
@@ -1042,6 +1057,19 @@ begin
     Result := destPage.DialogChar(Message);
 end;
 
+procedure TCustomTabControl.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion,
+  AYProportion: Double);
+begin
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion);
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    if Assigned(Images) then
+      DoImageListChange(Self);
+  end;
+end;
+
 procedure TCustomTabControl.InternalSetPageIndex(AValue: Integer);
 begin
   FPageIndex := AValue;
@@ -1176,7 +1204,13 @@ end;
 procedure TCustomTabControl.DoImageListChange(Sender: TObject);
 begin
   if HandleAllocated then
-    TWSCustomTabControlClass(WidgetSetClass).SetImageList(Self, Images);
+    TWSCustomTabControlClass(WidgetSetClass).SetImageList(Self, Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch]);
 end;
 
+procedure TCustomTabControl.DoImageListDestroyResolutionHandle(
+  Sender: TCustomImageList; AWidth: Integer; AReferenceHandle: TLCLHandle);
+begin
+  TWSCustomTabControlClass(WidgetSetClass).SetImageList(Self, nil);
+  Application.QueueAsyncCall(@SetImageListAsync, 0);
+end;
 

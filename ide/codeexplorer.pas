@@ -729,6 +729,7 @@ begin
   ImageSize := TIDEImages.ScaledSize;
   Imagelist1.Width := ImageSize;
   Imagelist1.Height := ImageSize;
+  Imagelist1.Scaled := False;
   ImgIDDefault := TIDEImages.AddImageToImageList(Imagelist1, 'ce_default');
   ImgIDProgram := TIDEImages.AddImageToImageList(Imagelist1, 'ce_program');
   ImgIDUnit := TIDEImages.AddImageToImageList(Imagelist1, 'cc_unit');

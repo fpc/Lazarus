@@ -39,25 +39,25 @@ type
 
   { TWin32WSCustomImageList }
 
-  TWin32WSCustomImageList = class(TWSCustomImageList)
+  TWin32WSCustomImageListResolution = class(TWSCustomImageListResolution)
   protected
     class procedure AddData(AListHandle: TLCLIntfHandle;
       ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
   published
-    class procedure Clear(AList: TCustomImageList); override;
-    class function CreateReference(AList: TCustomImageList; ACount, AGrow, AWidth,
+    class procedure Clear(AList: TCustomImageListResolution); override;
+    class function CreateReference(AList: TCustomImageListResolution; ACount, AGrow, AWidth,
       AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference; override;
-    class procedure Delete(AList: TCustomImageList; AIndex: Integer); override;
+    class procedure Delete(AList: TCustomImageListResolution; AIndex: Integer); override;
     class procedure DestroyReference(AComponent: TComponent); override;
-    class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
+    class procedure Draw(AList: TCustomImageListResolution; AIndex: Integer; ACanvas: TCanvas;
       ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect;
       AStyle: TDrawingStyle; AImageType: TImageType); override;
-    class procedure DrawToDC(AList: TCustomImageList; AIndex: Integer; ADC: HDC;
+    class procedure DrawToDC(AList: TCustomImageListResolution; AIndex: Integer; ADC: HDC;
       ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect;
       AStyle: TDrawingStyle; AImageType: TImageType);
-    class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
-    class procedure Move(AList: TCustomImageList; ACurIndex, ANewIndex: Integer); override;
-    class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
+    class procedure Insert(AList: TCustomImageListResolution; AIndex: Integer; AData: PRGBAQuad); override;
+    class procedure Move(AList: TCustomImageListResolution; ACurIndex, ANewIndex: Integer); override;
+    class procedure Replace(AList: TCustomImageListResolution; AIndex: Integer; AData: PRGBAQuad); override;
   end;
 
 
@@ -103,7 +103,7 @@ begin
   ReleaseDC(0, DC);
 end;
 
-class procedure TWin32WSCustomImageList.AddData(AListHandle: TLCLIntfHandle;
+class procedure TWin32WSCustomImageListResolution.AddData(AListHandle: TLCLIntfHandle;
   ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
 
   procedure DoAddAlpha;
@@ -224,15 +224,17 @@ begin
   else DoAdd;
 end;
 
-class procedure TWin32WSCustomImageList.Clear(AList: TCustomImageList);
+class procedure TWin32WSCustomImageListResolution.Clear(
+  AList: TCustomImageListResolution);
 begin
   if not WSCheckReferenceAllocated(AList, 'Clear')
   then Exit;
   ImageList_SetImageCount(AList.Reference._Handle, 0);
 end;
 
-class function TWin32WSCustomImageList.CreateReference(AList: TCustomImageList;
-  ACount, AGrow, AWidth, AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference;
+class function TWin32WSCustomImageListResolution.CreateReference(
+  AList: TCustomImageListResolution; ACount, AGrow, AWidth, AHeight: Integer;
+  AData: PRGBAQuad): TWSCustomImageListReference;
 var
   Flags: DWord;
 begin
@@ -258,34 +260,35 @@ begin
   {$WARNINGS ON}
 end;
 
-class procedure TWin32WSCustomImageList.Delete(AList: TCustomImageList;
-  AIndex: Integer);
+class procedure TWin32WSCustomImageListResolution.Delete(
+  AList: TCustomImageListResolution; AIndex: Integer);
 begin
   if not WSCheckReferenceAllocated(AList, 'Delete')
   then Exit;
   ImageList_Remove(AList.Reference._Handle, AIndex);
 end;
 
-class procedure TWin32WSCustomImageList.DestroyReference(AComponent: TComponent);
+class procedure TWin32WSCustomImageListResolution.DestroyReference(AComponent: TComponent);
 begin
-  if not WSCheckReferenceAllocated(TCustomImageList(AComponent), 'DestroyReference')
+  if not WSCheckReferenceAllocated(TCustomImageListResolution(AComponent), 'DestroyReference')
   then Exit;
-  ImageList_Destroy(TCustomImageList(AComponent).Reference._Handle);
+  ImageList_Destroy(TCustomImageListResolution(AComponent).Reference._Handle);
 end;
 
-class procedure TWin32WSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
-  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor;
-  ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
+class procedure TWin32WSCustomImageListResolution.Draw(AList: TCustomImageListResolution;
+  AIndex: Integer; ACanvas: TCanvas; ABounds: TRect; ABkColor,
+  ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle;
+  AImageType: TImageType);
 begin
   if not WSCheckReferenceAllocated(AList, 'Draw')
   then Exit;
   DrawToDC(AList, AIndex, ACanvas.Handle, ABounds, ABkColor, ABlendColor, ADrawEffect, AStyle, AImageType);
 end;
 
-class procedure TWin32WSCustomImageList.DrawToDC(AList: TCustomImageList;
-  AIndex: Integer; ADC: HDC; ABounds: TRect; ABkColor, ABlendColor: TColor;
-  ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle;
-  AImageType: TImageType);
+class procedure TWin32WSCustomImageListResolution.DrawToDC(
+  AList: TCustomImageListResolution; AIndex: Integer; ADC: HDC; ABounds: TRect;
+  ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect;
+  AStyle: TDrawingStyle; AImageType: TImageType);
 var
   DrawParams: TImageListDrawParams;
   RawImg: TRawImage;
@@ -362,8 +365,8 @@ begin
   end;
 end;
 
-class procedure TWin32WSCustomImageList.Insert(AList: TCustomImageList;
-  AIndex: Integer; AData: PRGBAQuad);
+class procedure TWin32WSCustomImageListResolution.Insert(
+  AList: TCustomImageListResolution; AIndex: Integer; AData: PRGBAQuad);
 var
   ImageList: HImageList;
   Count: Integer;
@@ -382,7 +385,7 @@ begin
   end;
 end;
 
-class procedure TWin32WSCustomImageList.Move(AList: TCustomImageList;
+class procedure TWin32WSCustomImageListResolution.Move(AList: TCustomImageListResolution;
   ACurIndex, ANewIndex: Integer);
 var
   n: integer;
@@ -406,8 +409,8 @@ begin
   end;
 end;
 
-class procedure TWin32WSCustomImageList.Replace(AList: TCustomImageList;
-  AIndex: Integer; AData: PRGBAQuad);
+class procedure TWin32WSCustomImageListResolution.Replace(
+  AList: TCustomImageListResolution; AIndex: Integer; AData: PRGBAQuad);
 var
   ImageList: HImageList;
   Count: Integer;

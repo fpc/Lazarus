@@ -440,7 +440,7 @@ begin
     Exit;
 
   if AImageList <> nil then
-    SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, AImageList.Reference._Handle)
+    SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, AImageList.Reference[ATabControl.ImagesWidth]._Handle)
   else
     SendMessage(ATabControl.Handle, TCM_SETIMAGELIST, 0, 0);
 end;

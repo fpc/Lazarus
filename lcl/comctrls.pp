@@ -33,9 +33,9 @@ uses
   // LazUtils
   LazUTF8, LazUTF8Classes,
   // LCL
-  LCLStrConsts, LResources, LCLIntf, LCLType, LMessages, WSLCLClasses, LCLProc,
-  GraphType, Graphics, ImgList, ActnList, Themes, Menus, Controls, Forms,
-  StdCtrls, ExtCtrls, ToolWin, Buttons;
+  LCLStrConsts, LResources, LCLIntf, LCLType, LMessages, WSLCLClasses,
+  WSReferences, LCLProc, GraphType, Graphics, ImgList, ActnList, Themes, Menus,
+  Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
@@ -376,6 +376,7 @@ type
     FAddingPages: boolean;
     FHotTrack: Boolean;
     FImages: TCustomImageList;
+    FImagesWidth: Integer;
     FImageListChangeLink: TChangeLink;
     FMultiSelect: Boolean;
     FOnChanging: TTabChangingEvent;
@@ -412,6 +413,7 @@ type
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
     procedure SetImages(const AValue: TCustomImageList);
+    procedure SetImagesWidth(const aImagesWidth: Integer);
     procedure SetPageIndex(AValue: Integer);
     procedure SetPages(AValue: TStrings);
     procedure SetShowTabs(AValue: Boolean);
@@ -421,8 +423,13 @@ type
     procedure ShowCurrentPage;
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
+    procedure DoImageListDestroyResolutionHandle(Sender: TCustomImageList;
+      AWidth: Integer; AReferenceHandle: TLCLHandle);
+    procedure SetImageListAsync(Data: PtrInt);
   protected
     PageClass: TCustomPageClass;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
     function GetPageClass: TCustomPageClass; virtual;
     function GetListClass: TNBBasePagesClass; virtual;
     procedure SetOptions(const AValue: TCTabControlOptions); virtual;
@@ -483,6 +490,7 @@ type
   public
     procedure DoCloseTabClicked(APage: TCustomPage); virtual;
     property Images: TCustomImageList read FImages write SetImages;
+    property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
     property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
     property OnCloseTabClicked: TNotifyEvent read FOnCloseTabClicked
@@ -610,6 +618,7 @@ type
     property Font;
     //property HotTrack;
     property Images;
+    property ImagesWidth;
     property MultiLine;
     //property OwnerDraw;
     property ParentBiDiMode;
@@ -848,6 +857,7 @@ type
   published
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
     property Images;
+    property ImagesWidth;
     property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
     property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -1376,6 +1386,7 @@ type
     FListItems: TListItems;
     FColumns: TListColumns;
     FImages: array[TListViewImageList] of TCustomImageList;
+    FImagesWidth: array[TListViewImageList] of Integer;
     FImageChangeLinks: array[TListViewImageList] of TChangeLink;
     FFlags: TListViewFlags;
     FShowEditorQueued: boolean;
@@ -1420,6 +1431,7 @@ type
     function GetDropTarget: TListItem;
     function GetFocused: TListItem;
     function GetImageList(const ALvilOrd: Integer): TCustomImageList;
+    function GetImageListWidth(const ALvilOrd: Integer): Integer;
     function GetHoverTime: Integer;
     function GetItemIndex: Integer;
     function GetProperty(const ALvpOrd: Integer): Boolean;
@@ -1440,6 +1452,8 @@ type
     procedure SetHoverTime(const AValue: Integer);
     procedure SetIconOptions(const AValue: TIconOptions);
     procedure SetImageList(const ALvilOrd: Integer; const AValue: TCustomImageList);
+    procedure SetImageListWidth(const ALvilOrd: Integer; const AValue: Integer);
+    procedure SetImageListWS(const ALvil: TListViewImageList);
     procedure SetItemIndex(const AValue: Integer);
     procedure SetItems(const AValue : TListItems);
     procedure SetItemVisible(const AValue: TListItem; const APartialOK: Boolean);
@@ -1459,6 +1473,9 @@ type
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
     procedure CNDrawItem(var Message: TLMDrawListItem); message CN_DRAWITEM;
     procedure InvalidateSelected;
+    procedure ImageResolutionHandleDestroyed(Sender: TCustomImageList;
+      AWidth: Integer; AReferenceHandle: TLCLHandle);
+    procedure SetImageListAsync(Data: PtrInt);
   private
     FOnCreateItemClass: TLVCreateItemClassEvent;
     FOnDrawItem: TLVDrawItemEvent;
@@ -1527,15 +1544,18 @@ type
     property HideSelection: Boolean index Ord(lvpHideSelection) read GetProperty write SetProperty default True;
     property HoverTime: Integer read GetHoverTime write SetHoverTime default -1;
     property LargeImages: TCustomImageList index Ord(lvilLarge) read GetImageList write SetImageList;
+    property LargeImagesWidth: Integer index Ord(lvilLarge) read GetImageListWidth write SetImageListWidth default 0;
     property OwnerDraw: Boolean index Ord(lvpOwnerDraw) read GetProperty write SetProperty default False;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property ShowColumnHeaders: Boolean index Ord(lvpShowColumnHeaders) read GetProperty write SetProperty default True;
     property ShowWorkAreas: Boolean index Ord(lvpShowWorkAreas) read GetProperty write SetProperty default False;
     property SmallImages: TCustomImageList index Ord(lvilSmall) read GetImageList write SetImageList;
+    property SmallImagesWidth: Integer index Ord(lvilSmall) read GetImageListWidth write SetImageListWidth default 0;
     property SortType: TSortType read FSortType write SetSortType default stNone;
     property SortColumn: Integer read FSortColumn write SetSortColumn default -1;
     property SortDirection: TSortDirection read FSortDirection write SetSortDirection default sdAscending;
     property StateImages: TCustomImageList index Ord(lvilState) read GetImageList write SetImageList;
+    property StateImagesWidth: Integer index Ord(lvilState) read GetImageListWidth write SetImageListWidth default 0;
     property ToolTips: Boolean index Ord(lvpToolTips) read GetProperty write SetProperty default True;
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
     property OnChange: TLVChangeEvent read FOnChange write FOnChange;
@@ -1656,6 +1676,7 @@ type
 
     property Items;
     property LargeImages;
+    property LargeImagesWidth;
     property MultiSelect;
     property OwnerData;
     property OwnerDraw;
@@ -1669,10 +1690,12 @@ type
     property ShowColumnHeaders;
     property ShowHint;
     property SmallImages;
+    property SmallImagesWidth;
     property SortColumn;
     property SortDirection;
     property SortType;
     property StateImages;
+    property StateImagesWidth;
     property TabStop;
     property TabOrder;
     property ToolTips;
@@ -2206,6 +2229,7 @@ type
     FSrcMenuItem: TMenuItem;
     FToolBarFlags: TToolBarFlags;
     FWrapable: Boolean;
+    FImagesWidth: Integer;
     procedure ApplyFontForButtons;
     procedure CloseCurrentMenu;
     function GetButton(Index: Integer): TToolButton;
@@ -2222,6 +2246,7 @@ type
     procedure SetFlat(const AValue: Boolean);
     procedure SetHotImages(const AValue: TCustomImageList);
     procedure SetImages(const AValue: TCustomImageList);
+    procedure SetImagesWidth(const aImagesWidth: Integer);
     procedure SetIndent(const AValue: Integer);
     procedure SetList(const AValue: Boolean);
     procedure SetShowCaptions(const AValue: Boolean);
@@ -2307,6 +2332,7 @@ type
     property Height default 32;
     property HotImages: TCustomImageList read FHotImages write SetHotImages;
     property Images: TCustomImageList read FImages write SetImages;
+    property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property Indent: Integer read FIndent write SetIndent default 1;
     property List: Boolean read FList write SetList default False;
     property ParentColor;
@@ -2483,6 +2509,7 @@ type
     FThemed: Boolean;
     FVertical: Boolean;
     FVerticalSpacing: Integer;
+    FImagesWidth: Integer;
     function GetAlign: TAlign;
     function RowEndHelper(ALeft, AVisibleIdx: Integer): Boolean;
     procedure SetBandBorderStyle(AValue: TBorderStyle);
@@ -2492,6 +2519,7 @@ type
     procedure SetGrabWidth(AValue: Integer);
     procedure SetHorizontalSpacing(AValue: Integer);
     procedure SetImages(AValue: TCustomImageList);
+    procedure SetImagesWidth(const aImagesWidth: Integer);
     procedure SetShowText(AValue: Boolean);
     procedure SetThemed(AValue: Boolean);
     procedure SetVertical(AValue: Boolean);
@@ -2559,6 +2587,7 @@ type
     property GrabWidth: Integer read FGrabWidth write SetGrabWidth default cDefGrabWidth;
     property HorizontalSpacing: Integer read FHorizontalSpacing write SetHorizontalSpacing default cDefHorSpacing;
     property Images: TCustomImageList read FImages write SetImages;
+    property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property ShowText: Boolean read FShowText write SetShowText default True;
     property Themed: Boolean read FThemed write SetThemed default True;
     property Vertical: Boolean read FVertical write SetVertical default False;
@@ -2595,6 +2624,7 @@ type
     property GrabWidth;
     property HorizontalSpacing;
     property Images;
+    property ImagesWidth;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -3282,6 +3312,7 @@ type
     FIndent: integer;
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
+    FImagesWidth: Integer;
     FInsertMarkNode: TTreeNode;
     FInsertMarkType: TTreeViewInsertMarkType;
     FLastDropTarget: TTreeNode;
@@ -3332,6 +3363,7 @@ type
     FSortType: TSortType;
     FStateChangeLink: TChangeLink;
     FStateImages: TCustomImageList;
+    FStateImagesWidth: Integer;
     FStates: TTreeViewStates;
     FTopItem: TTreeNode;
     FTreeLineColor: TColor;
@@ -3382,6 +3414,7 @@ type
     procedure SetHotTrack(Value: Boolean);
     procedure SetIndent(Value: Integer);
     procedure SetImages(Value: TCustomImageList);
+    procedure SetImagesWidth(const aImagesWidth: Integer);
     procedure SetInsertMarkNode(const AValue: TTreeNode);
     procedure SetInsertMarkType(const AValue: TTreeViewInsertMarkType);
     procedure SetKeepCollapsedNodes(Value: Boolean);
@@ -3404,6 +3437,7 @@ type
     procedure SetShowSeparators(Value: Boolean);
     procedure SetSortType(Value: TSortType);
     procedure SetStateImages(Value: TCustomImageList);
+    procedure SetStateImagesWidth(const aStateImagesWidth: Integer);
     procedure SetToolTips(Value: Boolean);
     procedure SetTreeLineColor(Value: TColor);
     procedure SetTreeNodes(Value: TTreeNodes);
@@ -3618,6 +3652,7 @@ type
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType default tvestTheme;
     property Images: TCustomImageList read FImages write SetImages;
+    property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property InsertMarkNode: TTreeNode read FInsertMarkNode write SetInsertMarkNode;
     property InsertMarkType: TTreeViewInsertMarkType read FInsertMarkType write SetInsertMarkType;
     property Items: TTreeNodes read FTreeNodes write SetTreeNodes;
@@ -3634,6 +3669,7 @@ type
     property Selections[AIndex: Integer]: TTreeNode read GetSelections;
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
     property StateImages: TCustomImageList read FStateImages write SetStateImages;
+    property StateImagesWidth: Integer read FStateImagesWidth write SetStateImagesWidth default 0;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
     property TreeLinePenStyle: TPenStyle read FTreeLinePenStyle write FTreeLinePenStyle default psPattern;
@@ -3668,6 +3704,7 @@ type
     property HotTrack;
     property HotTrackColor;
     property Images;
+    property ImagesWidth;
     property Indent;
     property MultiSelect;
     property MultiSelectStyle;
@@ -3689,6 +3726,7 @@ type
     property ShowRoot;
     property SortType;
     property StateImages;
+    property StateImagesWidth;
     property TabOrder;
     property TabStop default True;
     property Tag;
@@ -3873,6 +3911,7 @@ type
     FDragReorder: boolean;
     FSections: THeaderSections;
     FImages: TCustomImageList;
+    FImagesWidth: Integer;
     FPaintRect: TRect;
     FDown: Boolean;
     FDownPoint: TPoint;
@@ -3891,6 +3930,7 @@ type
     FOnCreateSectionClass: TCustomHCCreateSectionClassEvent;
     function GetSectionFromOriginalIndex(OriginalIndex: Integer): THeaderSection;
     procedure SetImages(const AValue: TCustomImageList);
+    procedure SetImagesWidth(const aImagesWidth: Integer);
     procedure SetSections(const AValue: THeaderSections);
     procedure UpdateSection(Index: Integer);
     procedure UpdateSections;
@@ -3931,6 +3971,7 @@ type
   published
     property DragReorder: boolean read FDragReorder write FDragReorder;
     property Images: TCustomImageList read FImages write SetImages;
+    property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property Sections: THeaderSections read FSections write SetSections;
 
     property OnSectionDrag: TSectionDragEvent read FOnSectionDrag
@@ -3964,6 +4005,7 @@ type
     property Enabled;
     property Font;
     property Images;
+    property ImagesWidth;
     property Constraints;
     property Sections;
     property ShowHint;

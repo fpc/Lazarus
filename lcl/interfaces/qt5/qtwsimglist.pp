@@ -34,7 +34,7 @@ type
 
   { TQtWSCustomImageList }
 
-  TQtWSCustomImageList = class(TWSCustomImageList)
+  TQtWSCustomImageListResolution = class(TWSCustomImageListResolution)
   published
   end;
 

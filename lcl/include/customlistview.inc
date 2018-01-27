@@ -127,6 +127,7 @@ begin
   begin
     FImageChangeLinks[lvil] := TChangeLink.Create;
     FImageChangeLinks[lvil].OnChange := @ImageChanged;
+    FImageChangeLinks[lvil].OnDestroyResolutionHandle := @ImageResolutionHandleDestroyed;
   end;
   FHoverTime := -1;
   TabStop := true;
@@ -536,7 +537,7 @@ begin
   for lvil := Low(TListViewImageList) to High(TListViewImageList) do
   begin
     if FImages[lvil] <> nil
-    then LVC.SetImageList(Self, lvil, FImages[lvil]);
+    then LVC.SetImageList(Self, lvil, FImages[lvil].ResolutionForPPI[FImagesWidth[lvil], Font.PixelsPerInch]); // xxx
   end;
   LVC.SetScrollBars(Self, FScrollBars);
   LVC.SetViewOrigin(Self, FViewOriginCache) ;
@@ -617,6 +618,7 @@ procedure TCustomListView.DoAutoAdjustLayout(
 var
   i: Integer;
   C: TListColumn;
+  L: TListViewImageList;
 begin
   inherited;
 
@@ -629,6 +631,9 @@ begin
       C.MinWidth := Round(C.MinWidth * AXProportion);
       C.Width := Round(C.Width * AXProportion);
     end;
+
+    for L in TListViewImageList do
+      SetImageListWS(L);
   end;
 end;
 
@@ -800,8 +805,11 @@ end;
 
 procedure TCustomListView.QueuedShowEditor(Data: PtrInt);
 begin
-  fShowEditorQueued:=false;
-  ShowEditor;
+  if fShowEditorQueued then
+  begin
+    fShowEditorQueued:=false;
+    ShowEditor;
+  end;
 end;
 
 procedure TCustomListView.DblClick;
@@ -1028,6 +1036,7 @@ destructor TCustomListView.Destroy;
 var
   lvil: TListViewImageList;
 begin
+  Application.RemoveAsyncCalls(Self);
   // Better destroy the wincontrol (=widget) first. So wo don't have to delete
   // all items/columns and we won't get notifications for each.
   FreeAndNil(FCanvas);
@@ -1149,7 +1158,7 @@ end;
 
 procedure TCustomListView.FinalizeWnd;
 begin
-  ShowEditorQueued:=false;
+  FShowEditorQueued:=false;
   // store origin
   FViewOriginCache := TWSCustomListViewClass(WidgetSetClass).GetViewOrigin(Self);
   if not OwnerData then
@@ -1207,6 +1216,11 @@ end;
 function TCustomListView.GetImageList(const ALvilOrd: Integer): TCustomImageList;
 begin
   Result := FImages[TListViewImageList(ALvilOrd)];
+end;
+
+function TCustomListView.GetImageListWidth(const ALvilOrd: Integer): Integer;
+begin
+  Result := FImagesWidth[TListViewImageList(ALvilOrd)];
 end;
 
 function TCustomListView.GetHoverTime: Integer;
@@ -1575,7 +1589,38 @@ begin
   end;
 
   if not HandleAllocated then Exit;
-  TWSCustomListViewClass(WidgetSetClass).SetImageList(Self, lvil, AValue);
+  SetImageListWS(lvil);
+end;
+
+procedure TCustomListView.SetImageListAsync(Data: PtrInt);
+begin
+  SetImageListWS(TListViewImageList(Data));
+end;
+
+procedure TCustomListView.SetImageListWidth(const ALvilOrd: Integer;
+  const AValue: Integer);
+var
+  lvil: TListViewImageList;
+begin
+  lvil := TListViewImageList(ALvilOrd);
+
+  if FImagesWidth[lvil] = AValue then Exit;
+
+  FImagesWidth[lvil] := AValue;
+
+  if not HandleAllocated then Exit;
+  SetImageListWS(lvil);
+end;
+
+procedure TCustomListView.SetImageListWS(const ALvil: TListViewImageList);
+var
+  R: TCustomImageListResolution;
+begin
+  if FImages[ALvil]<>nil then
+    R := FImages[ALvil].ResolutionForPPI[FImagesWidth[ALvil], Font.PixelsPerInch]
+  else
+    R := nil;
+  TWSCustomListViewClass(WidgetSetClass).SetImageList(Self, ALvil, R)
 end;
 
 procedure TCustomListView.SetItemIndex(const AValue: Integer);
@@ -1641,10 +1686,8 @@ procedure TCustomListView.SetShowEditorQueued(AValue: boolean);
 begin
   if FShowEditorQueued=AValue then Exit;
   FShowEditorQueued:=AValue;
-  if ShowEditorQueued then
-    Application.QueueAsyncCall(@QueuedShowEditor,0)
-  else
-    Application.RemoveAsyncCalls(Self);
+  if FShowEditorQueued then
+    Application.QueueAsyncCall(@QueuedShowEditor,0);
 end;
 
 procedure TCustomListView.SetOwnerData(const AValue: Boolean);
@@ -1692,6 +1735,19 @@ begin
 //    //image changed so redraw it all....
 //    UpdateProperties;
 //  end;
+end;
+
+procedure TCustomListView.ImageResolutionHandleDestroyed(
+  Sender: TCustomImageList; AWidth: Integer; AReferenceHandle: TLCLHandle);
+var
+  lvil: TListViewImageList;
+begin
+  for lvil in TListViewImageList do
+    if Sender = FImages[lvil] then
+    begin
+      TWSCustomListViewClass(WidgetSetClass).SetImageList(Self, lvil, nil);
+      Application.QueueAsyncCall(@SetImageListAsync, Ord(lvil));
+    end;
 end;
 
 procedure TCustomListView.Loaded;

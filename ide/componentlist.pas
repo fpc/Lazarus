@@ -139,8 +139,10 @@ begin
 
   imListPalette.Width  := MulDiv(ComponentPaletteImageWidth, TIDEImages.GetScalePercent, 100);
   imListPalette.Height := MulDiv(ComponentPaletteImageHeight, TIDEImages.GetScalePercent, 100);
+  imListPalette.Scaled := False;
   imInheritance.Width  := MulDiv(ComponentPaletteImageWidth, TIDEImages.GetScalePercent, 100);
   imInheritance.Height := MulDiv(ComponentPaletteImageHeight, TIDEImages.GetScalePercent, 100);
+  imInheritance.Scaled := False;
 
   ListTree.Images := imListPalette;
   PalletteTree.Images := imListPalette;

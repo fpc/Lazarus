@@ -733,6 +733,7 @@ type
     FSortColumn: Integer;
     FTabAdvance: TAutoAdvance;
     FTitleImageList: TImageList;
+    FTitleImageListWidth: Integer;
     FTitleStyle: TTitleStyle;
     FAscImgInd: TImageIndex;
     FDescImgInd: TImageIndex;
@@ -824,6 +825,7 @@ type
     procedure SetFlat(const AValue: Boolean);
     procedure SetFocusRectVisible(const AValue: Boolean);
     procedure SetTitleImageList(const AValue: TImageList);
+    procedure SetTitleImageListWidth(const aTitleImageListWidth: Integer);
     procedure SetTitleFont(const AValue: TFont);
     procedure SetTitleStyle(const AValue: TTitleStyle);
     procedure SetUseXorFeatures(const AValue: boolean);
@@ -1203,6 +1205,7 @@ type
     property ImageIndexSortDesc: TImageIndex read FDescImgInd write FDescImgInd default -1;
     property TabAdvance: TAutoAdvance read FTabAdvance write FTabAdvance default aaRightDown;
     property TitleImageList: TImageList read FTitleImageList write SetTitleImageList;
+    property TitleImageListWidth: Integer read FTitleImageListWidth write SetTitleImageListWidth default 0;
     property InplaceEditor: TWinControl read FEditor;
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
@@ -1564,6 +1567,7 @@ type
     property TabStop;
     property TitleFont;
     property TitleImageList;
+    property TitleImageListWidth;
     property TitleStyle;
     property UseXORFeatures;
     property Visible;
@@ -5372,6 +5376,7 @@ function TCustomGrid.GetTitleImageInfo(aColumnIndex: Integer; out aWidth,
   aHeight: Integer; out ImgLayout: TButtonLayout): Integer;
 var
   c: TGridColumn;
+  aSize: TSize;
 begin
   result := -1;
   if TitleImageList = nil then exit;
@@ -5381,8 +5386,9 @@ begin
     not InRange(c.Title.ImageIndex, 0, TitleImageList.Count - 1)
   then
     exit;
-  aWidth := TitleImageList.Width;
-  aHeight := TitleImageList.Height;
+  aSize := TitleImageList.SizeForPPI[TitleImageListWidth, Font.PixelsPerInch];
+  aWidth := aSize.Width;
+  aHeight := aSize.Height;
   imgLayout := c.Title.ImageLayout;
   result := c.Title.ImageIndex;
 end;
@@ -5542,6 +5548,14 @@ procedure TCustomGrid.SetTitleImageList(const AValue: TImageList);
 begin
   if FTitleImageList = AValue then exit;
   FTitleImageList := AValue;
+  VisualChange;
+end;
+
+procedure TCustomGrid.SetTitleImageListWidth(
+  const aTitleImageListWidth: Integer);
+begin
+  if FTitleImageListWidth = aTitleImageListWidth then Exit;
+  FTitleImageListWidth := aTitleImageListWidth;
   VisualChange;
 end;
 

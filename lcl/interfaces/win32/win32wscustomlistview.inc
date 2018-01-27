@@ -1133,7 +1133,8 @@ begin
   UpdateStyle(ALV.Handle, LVS_ALIGNMASK, ArrangementMap[AValue]);
 end;
 
-class procedure TWin32WSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);
+class procedure TWin32WSCustomListView.SetImageList(const ALV: TCustomListView;
+  const AList: TListViewImageList; const AValue: TCustomImageListResolution);
 const
   LIST_MAP: array[TListViewImageList] of WPARAM = (
    {lvilSmall} LVSIL_SMALL,

@@ -285,7 +285,7 @@ begin
     Result.cx := (sz.cx div 26 + 1) div 2;
 end;
 
-function MenuIconWidth(const AMenuItem: TMenuItem): integer;
+function MenuIconWidth(const AMenuItem: TMenuItem; DC: HDC): integer;
 var
   SiblingMenuItem : TMenuItem;
   i, RequiredWidth: integer;
@@ -294,7 +294,7 @@ begin
 
   if AMenuItem.IsInMenuBar then
   begin
-    Result := AMenuItem.GetIconSize.x;
+    Result := AMenuItem.GetIconSize(DC).x;
   end
   else
   begin
@@ -303,7 +303,7 @@ begin
       SiblingMenuItem := AMenuItem.Parent.Items[i];
       if SiblingMenuItem.HasIcon then
       begin
-        RequiredWidth := SiblingMenuItem.GetIconSize.x;
+        RequiredWidth := SiblingMenuItem.GetIconSize(DC).x;
         if RequiredWidth > Result then
           Result := RequiredWidth;
       end;
@@ -311,7 +311,7 @@ begin
   end;
 end;
 
-procedure GetNonTextSpace(const AMenuItem: TMenuItem;
+procedure GetNonTextSpace(const AMenuItem: TMenuItem; DC: HDC;
                           AvgCharWidth: Integer;
                           out LeftSpace, RightSpace: Integer);
 var
@@ -323,7 +323,7 @@ begin
   // Items not in menu bar always have enough space for a check mark.
 
   CheckMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
-  LeftSpace := MenuIconWidth(AMenuItem);
+  LeftSpace := MenuIconWidth(AMenuItem, DC);
 
   if LeftSpace > 0 then
   begin
@@ -472,7 +472,7 @@ begin
   Result.cx := 0; //Metrics.ItemMargins.cxLeftWidth + Metrics.ItemMargins.cxRightWidth;
   Result.cy := 0; //Metrics.ItemMargins.cyTopHeight + Metrics.ItemMargins.cyBottomHeight;
   // + text size / icon size
-  IconSize := AMenuItem.GetIconSize;
+  IconSize := AMenuItem.GetIconSize(ADC);
   Result.cx := Result.cx + Metrics.TextSize.cx + IconSize.x;
   if IconSize.x > 0 then
     inc(Result.cx, Metrics.ItemMargins.cxLeftWidth);
@@ -498,11 +498,11 @@ begin
     Result.cy := Max(Metrics.TextSize.cy + 1, Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight);
     if AMenuItem.HasIcon then
     begin
-      IconSize := AMenuItem.GetIconSize;
+      IconSize := AMenuItem.GetIconSize(ADC);
       Result.cy := Max(Result.cy, IconSize.y);
       Result.cx := Max(Result.cx, IconSize.x);
     end;
-    IconWidth := MenuIconWidth(AMenuItem);
+    IconWidth := MenuIconWidth(AMenuItem, ADC);
     Result.cx := Max(Result.cx, IconWidth);
     Result.cy := Max(Result.cy, IconWidth);
   end;
@@ -534,7 +534,7 @@ begin
   if AMenuItem.ShortCut <> scNone then
     inc(Result.cx, AvgCharSize.cx);
 
-  GetNonTextSpace(AMenuItem, AvgCharSize.cx, LeftSpace, RightSpace);
+  GetNonTextSpace(AMenuItem, ADC, AvgCharSize.cx, LeftSpace, RightSpace);
   inc(Result.cx, LeftSpace + RightSpace);
 
   // Windows adds additional space to value returned from WM_MEASUREITEM
@@ -552,13 +552,13 @@ begin
     begin
       Result.cy := Max(Result.cy, GetSystemMetrics(SM_CYMENUSIZE));
       if AMenuItem.hasIcon then
-        Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y);
+        Result.cy := Max(Result.cy, aMenuItem.GetIconSize(ADC).y);
     end
     else
     begin
       Result.cy := Max(Result.cy + 2, AvgCharSize.cy + 4);
       if AMenuItem.hasIcon then
-        Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y + 2);
+        Result.cy := Max(Result.cy, aMenuItem.GetIconSize(ADC).y + 2);
     end;
   end;
 
@@ -684,7 +684,7 @@ begin
   // draw check/image
   if AMenuItem.HasIcon then
   begin
-    IconSize := AMenuItem.GetIconSize;
+    IconSize := AMenuItem.GetIconSize(AHDC);
     if IsRightToLeft then
       ImageRect.Left := TextRect.Right - IconSize.x
     else
@@ -745,10 +745,10 @@ begin
   CheckRect.Bottom := CheckRect.Top + Metrics.CheckSize.cy + Metrics.CheckMargins.cyTopHeight + Metrics.CheckMargins.cyBottomHeight;
   if AMenuItem.HasIcon then
   begin
-    IconSize := AMenuItem.GetIconSize;
+    IconSize := AMenuItem.GetIconSize(AHDC);
     CheckRect.Bottom := Max(CheckRect.Bottom, CheckRect.Top+IconSize.y);
   end;
-  IconWidth := MenuIconWidth(AMenuItem);
+  IconWidth := MenuIconWidth(AMenuItem, AHDC);
   CheckRect.Right := Max(CheckRect.Right, CheckRect.Left+IconWidth);
   CheckRect.Bottom := Max(CheckRect.Bottom, CheckRect.Top+IconWidth);
   OffsetRect(CheckRect, 0, (ARect.Bottom-ARect.Top-CheckRect.Bottom+CheckRect.Top) div 2);
@@ -1065,7 +1065,7 @@ begin
       DrawEdge(AHDC, ARect, BDR_RAISEDINNER, BF_RECT);
   end;
 
-  GetNonTextSpace(AMenuItem, AvgCharWidth, LeftSpace, RightSpace);
+  GetNonTextSpace(AMenuItem, AHDC, AvgCharWidth, LeftSpace, RightSpace);
 
   if IsRightToLeft then
   begin
@@ -1111,9 +1111,10 @@ var
   AEffect: TGraphicsDrawEffect;
   AImageList: TCustomImageList;
   FreeImageList: Boolean;
-  AImageIndex: Integer;
+  AImageIndex, AImagesWidth: Integer;
+  APPI: longint;
 begin
-  AImageList := AMenuItem.GetImageList;
+  AMenuItem.GetImageList(AImageList, AImagesWidth);
   if (AImageList = nil) or (AMenuItem.ImageIndex < 0) then // using icon from Bitmap
   begin
     AImageList := TImageList.Create(nil);
@@ -1137,9 +1138,13 @@ begin
     AEffect := gdeNormal;
 
   if AImageIndex < AImageList.Count then
-    TWin32WSCustomImageList.DrawToDC(AImageList, AImageIndex, AHDC,
-      ImageRect, AImageList.BkColor, AImageList.BlendColor,
+  begin
+    APPI := GetDeviceCaps(AHDC, LOGPIXELSX);
+    TWin32WSCustomImageListResolution.DrawToDC(AImageList.ResolutionForPPI[AImagesWidth, APPI],
+      AImageIndex, AHDC, ImageRect,
+      AImageList.BkColor, AImageList.BlendColor,
       AEffect, AImageList.DrawingStyle, AImageList.ImageType);
+  end;
   if FreeImageList then
     AImageList.Free;
 end;
@@ -1180,7 +1185,7 @@ var
   IconSize: TPoint;
   checkMarkWidth: integer;
 begin
-  IconSize := AMenuItem.GetIconSize;
+  IconSize := AMenuItem.GetIconSize(AHDC);
   checkMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
   if not AMenuItem.IsInMenuBar then
   begin

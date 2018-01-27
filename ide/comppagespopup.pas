@@ -113,6 +113,7 @@ begin
 
   ImageList1.Width := TIDEImages.ScaledSize;
   ImageList1.Height := TIDEImages.ScaledSize;
+  ImageList1.Scaled := False;
   TIDEImages.AddImageToImageList(ImageList1, 'item_package');
   TIDEImages.AddImageToImageList(ImageList1, 'pkg_open');
 end;

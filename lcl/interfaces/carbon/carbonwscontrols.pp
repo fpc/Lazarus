@@ -34,9 +34,9 @@ uses
 
 type
 
-  { TCarbonWSDragImageList }
+  { TCarbonWSDragImageListResolution }
 
-  TCarbonWSDragImageList = class(TWSDragImageList)
+  TCarbonWSDragImageListResolution = class(TWSDragImageListResolution)
   published
   end;
 

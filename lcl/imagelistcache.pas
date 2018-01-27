@@ -124,6 +124,7 @@ begin
   begin
     Width := AWidth;
     Height := AHeight;
+    Scaled := False;
 {$IFDEF VerboseImageListCache}
     debugln('Creating new imagelist in cache for Width=',Width,' Height=', Height, ' Count = ', FImages.Count);
     if (Width <> 16) and (Width <> 24) then

@@ -66,7 +66,7 @@ type
     class function GetTabRect(const ATabControl: TCustomTabControl; const AIndex: Integer): TRect; virtual;
     class function GetCapabilities: TCTabControlCapabilities; virtual;
     class procedure SetTabSize(const ATabControl: TCustomTabControl; const ATabWidth, ATabHeight: integer); virtual;
-    class procedure SetImageList(const ATabControl: TCustomTabControl; const AImageList: TCustomImageList); virtual;
+    class procedure SetImageList(const ATabControl: TCustomTabControl; const AImageList: TCustomImageListResolution); virtual;
     class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); virtual;
     class procedure SetTabCaption(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AText: string); virtual;
     class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); virtual;
@@ -161,7 +161,7 @@ type
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); virtual;
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetIconArrangement(const ALV: TCustomListView; const AValue: TIconArrangement); virtual;
-    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); virtual;
+    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageListResolution); virtual;
     class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); virtual;
     class procedure SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); virtual;
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); virtual;
@@ -367,7 +367,7 @@ begin
 end;
 
 class procedure TWSCustomTabControl.SetImageList(
-  const ATabControl: TCustomTabControl; const AImageList: TCustomImageList);
+  const ATabControl: TCustomTabControl; const AImageList: TCustomImageListResolution);
 begin
 end;
 
@@ -658,7 +658,8 @@ class procedure TWSCustomListView.SetIconArrangement(
 begin
 end;
 
-class procedure TWSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);
+class procedure TWSCustomListView.SetImageList(const ALV: TCustomListView;
+  const AList: TListViewImageList; const AValue: TCustomImageListResolution);
 begin
 end;
 

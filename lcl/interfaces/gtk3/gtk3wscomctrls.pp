@@ -163,7 +163,7 @@ type
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const {%H-}AValue: TListHotTrackStyles); override;
     class procedure SetHoverTime(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
     //    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); override;
-    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
+    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageListResolution); override;
     class procedure SetItemsCount(const ALV: TCustomListView; const {%H-}Avalue: Integer); override;
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
@@ -880,7 +880,7 @@ begin
 end;
 
 class procedure TGtk3WSCustomListView.SetImageList(const ALV: TCustomListView;
-  const AList: TListViewImageList; const AValue: TCustomImageList);
+  const AList: TListViewImageList; const AValue: TCustomImageListResolution);
 var
   AView: TGtk3ListView;
   i: Integer;

@@ -133,7 +133,9 @@ resourcestring
   sccsILEdtGrpLCaption = 'Images';
   sccsILEdtGrpRCaption = 'Selected Image';
   sccsILEdtAdd         = '&Add ...';
+  sccsILEdtAddMoreResolutions = 'Add more resolutions ...';
   sccsILEdtReplace     = '&Replace ...';
+  sccsILEdtReplaceAllResolutions = 'Replace all resolutions ...';
   sccsILEdtDelete      = '&Delete';
   sccsILEdtApply       = '&Apply';
   sccsILEdtClear       = '&Clear';
@@ -141,6 +143,11 @@ resourcestring
   sccsILEdtMoveDown    = 'Move D&own';
   sccsILEdtSave        = '&Save ...';
   sccsILEdtSaveAll     = 'Save All ...';
+  sccsILEdtAddNewResolution = 'New resolution ...';
+  sccsILEdtDeleteResolution = 'Delete resolution ...';
+  sccsILEdtDeleteResolutionConfirmation = 'Select the resolution to delete.';
+  sccsILEdtCannotDeleteResolution = 'Cannot delete default resolution.';
+  sccsILEdtImageWidthOfNewResolution = 'Image width of the new resolution:';
   sccsILEdtransparentColor = 'Transparent Color:';
   sccsILEdtAdjustment  = 'Adjustment';
   sccsILEdtNone        = 'None';

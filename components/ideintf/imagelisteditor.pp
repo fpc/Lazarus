@@ -30,21 +30,26 @@ uses
   Classes, SysUtils, Math,
   // LCL
   LCLProc, Forms, Controls, Graphics, GraphType, Dialogs, ComCtrls, StdCtrls,
-  ExtCtrls, ExtDlgs, ColorBox, Buttons, ButtonPanel,
+  ExtCtrls, ExtDlgs, ColorBox, Buttons, ButtonPanel, ImgList, LCLTaskDialog,
+  LCLIntf, LCLType,
   // IdeIntf
-  IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
+  IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf, Types;
 
 type
   TGlyphAdjustment = (gaNone, gaStretch, gaCrop, gaCenter);
 
-  PGlyphInfo = ^TGlyphInfo;
-  TGlyphInfo = record
+  TGlyphInfo = class
+  public
     Bitmap: TBitmap;
     Adjustment: TGlyphAdjustment;
     TransparentColor: TColor;
+  public
+    destructor Destroy; override;
   end;
   
   { TImageListEditorDlg }
+
+  TAddType = (atAdd, atInsert, atReplace, atReplaceAllResolutions);
 
   TImageListEditorDlg = class(TForm)
     BtnAdd: TButton;
@@ -60,13 +65,16 @@ type
     GroupBoxL: TGroupBox;
     GroupBoxR: TGroupBox;
     ImageList: TImageList;
-    LabelSize: TLabel;
     LabelTransparent: TLabel;
     OpenDialog: TOpenPictureDialog;
     RadioGroup: TRadioGroup;
     Preview: TScrollBox;
     SaveDialog: TSavePictureDialog;
-    TreeView: TTreeView;
+    ImageListBox: TListBox;
+    btnAddNewResolution: TButton;
+    BtnReplaceAll: TButton;
+    BtnAddMoreResolutions: TButton;
+    btnDeleteResolution: TButton;
     procedure BtnAddClick(Sender: TObject);
     procedure BtnClearClick(Sender: TObject);
     procedure BtnDeleteClick(Sender: TObject);
@@ -77,21 +85,36 @@ type
     procedure ColorBoxTransparentClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-    procedure PreviewPaint(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
-    procedure TreeViewDeletion(Sender: TObject; Node: TTreeNode);
-    procedure TreeViewSelectionChanged(Sender: TObject);
+    procedure ImageListBoxDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
+    procedure btnAddNewResolutionClick(Sender: TObject);
+    procedure btnDeleteResolutionClick(Sender: TObject);
+    procedure ImageListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure FormResize(Sender: TObject);
   private
     FImageList: TImageList;
     FModified: Boolean;
-    FPreviewBmp: TBitmap;
+    FImagesGroupBoxMaxWidth: Integer;
+    FPreviewImages: array of TImage;
+    FPreviewLabels: array of TLabel;
     procedure SavePicture(Picture: TPicture);
+    function GetSelGlyphInfo: TGlyphInfo;
+    function GetGlyphInfo(const aItemIndex: Integer): TGlyphInfo;
+    procedure RefreshItemHeight;
+    procedure FreeGlyphInfos;
+    procedure RecreatePreviewImages(const aForce: Boolean = False);
+    procedure UpdatePreviewImage;
+    procedure UpdateImagesGroupBoxWidth;
+    procedure UpdateImagesGroupBoxWidthQueue(Data: PtrInt);
+    class function ResolutionToString(const ARes: TCustomImageListResolution): string;
+  protected
+    procedure DoDestroy; override;
   public
     procedure LoadFromImageList(AImageList: TImageList);
     procedure SaveToImageList;
 
-    procedure AddImageToList(const FileName: String; Insert : Boolean);
+    procedure AddImageToList(const FileName: String; AddType: TAddType);
   end;
 
   //Editor call by Lazarus with 1 verbe only
@@ -184,6 +207,14 @@ begin
   Result.LoadFromRawImage(DstRawImage, True);
 end;
 
+{ TGlyphInfo }
+
+destructor TGlyphInfo.Destroy;
+begin
+  Bitmap.Free;
+  inherited Destroy;
+end;
+
 { TImageListEditorDlg }
 
 procedure TImageListEditorDlg.FormCreate(Sender: TObject);
@@ -194,13 +225,16 @@ begin
   GroupBoxR.Caption := sccsILEdtGrpRCaption;
 
   BtnAdd.Caption := sccsILEdtAdd;
+  BtnAddMoreResolutions.Caption := sccsILEdtAddMoreResolutions;
   BtnDelete.Caption := sccsILEdtDelete;
   BtnReplace.Caption := sccsILEdtReplace;
+  BtnReplaceAll.Caption := sccsILEdtReplaceAllResolutions;
   BtnClear.Caption := sccsILEdtClear;
   BtnMoveUp.Caption := sccsILEdtMoveUp;
   BtnMoveDown.Caption := sccsILEdtMoveDown;
   BtnSave.Caption := sccsILEdtSave;
   BtnSaveAll.Caption := sccsILEdtSaveAll;
+  BtnAddNewResolution.Caption := sccsILEdtAddNewResolution;
 
   BtnPanel.HelpButton.Caption := oisHelp;
   BtnPanel.OKButton.Caption := oisOK;
@@ -225,15 +259,73 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
+procedure TImageListEditorDlg.FormResize(Sender: TObject);
+begin
+  UpdateImagesGroupBoxWidth;
+end;
+
 procedure TImageListEditorDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TImageListEditorDlg.FormDestroy(Sender: TObject);
+procedure TImageListEditorDlg.FreeGlyphInfos;
+var
+  I: Integer;
 begin
-  FreeAndNil(FPreviewBmp);
+  for I := 0 to ImageListBox.Items.Count-1 do
+    ImageListBox.Items.Objects[I].Free;
+end;
+
+function TImageListEditorDlg.GetGlyphInfo(
+  const aItemIndex: Integer): TGlyphInfo;
+begin
+  if (aItemIndex<0) or (aItemIndex>=ImageListBox.Count) then
+    Exit(nil);
+  Result := TGlyphInfo(ImageListBox.Items.Objects[aItemIndex]);
+end;
+
+function TImageListEditorDlg.GetSelGlyphInfo: TGlyphInfo;
+begin
+  Result := GetGlyphInfo(ImageListBox.ItemIndex);
+end;
+
+procedure TImageListEditorDlg.ImageListBoxDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var
+  C: TCanvas;
+  X, Y, NewImagesGroupBoxMaxWidth: Integer;
+  R: TCustomImageListResolution;
+begin
+  C := (Control as TListBox).Canvas;
+  C.FillRect(ARect);
+
+  X := ARect.Left+Control.Scale96ToFont(2);
+  Y := ARect.Top+Control.Scale96ToFont(2);
+  C.TextOut(X, Y, IntToStr(Index));
+  Inc(X, C.TextWidth('0')*4);
+  InflateRect(ARect, Control.Scale96ToFont(2), Control.Scale96ToFont(2));
+  C.ClipRect := ARect;
+  C.Clipping := True;
+
+  for R in ImageList.Resolutions do
+  begin
+    if X<ARect.Right then
+      R.Draw(C, X, Y, Index);
+    Inc(X, R.Width+Control.Scale96ToFont(5));
+  end;
+  NewImagesGroupBoxMaxWidth := X + GetSystemMetrics(SM_CXVSCROLL) + GetSystemMetrics(SM_SWSCROLLBARSPACING) + Control.Scale96ToFont(6);
+  if FImagesGroupBoxMaxWidth<>NewImagesGroupBoxMaxWidth then
+    Application.QueueAsyncCall(@UpdateImagesGroupBoxWidthQueue, 0);
+  FImagesGroupBoxMaxWidth := NewImagesGroupBoxMaxWidth;
+  C.Clipping := False;
+end;
+
+procedure TImageListEditorDlg.ImageListBoxSelectionChange(Sender: TObject;
+  User: boolean);
+begin
+  UpdatePreviewImage;
 end;
 
 procedure TImageListEditorDlg.BtnAddClick(Sender: TObject);
@@ -245,114 +337,147 @@ begin
   if OpenDialog.Execute then
   begin
     ImageList.BeginUpdate;
-    TreeView.BeginUpdate;
+    ImageListBox.Items.BeginUpdate;
     try
       for I := 0 to OpenDialog.Files.Count - 1 do
-        AddImageToList(TrimRight(OpenDialog.Files[I]),False);
+      begin
+        if (I = 0) or (Sender<>BtnAddMoreResolutions) then
+          AddImageToList(TrimRight(OpenDialog.Files[I]), atAdd)
+        else
+          AddImageToList(TrimRight(OpenDialog.Files[I]), atReplace);
+      end;
     finally
-      TreeView.EndUpdate;
+      ImageListBox.Items.EndUpdate;
       ImageList.EndUpdate;
     end;
-    TreeView.SetFocus;
+    ImageListBox.SetFocus;
+  end;
+end;
+
+procedure TImageListEditorDlg.btnDeleteResolutionClick(Sender: TObject);
+var
+  TD: LCLTaskDialog.TTaskDialog;
+  R: TCustomImageListResolution;
+  TDRes: Integer;
+  RA: array of Integer;
+  ResItem: string;
+begin
+  FillChar(TD, SizeOf(LCLTaskDialog.TTaskDialog), 0);
+  SetLength(RA, 0);
+  for R in ImageList.Resolutions do
+  begin
+    if R.Width=ImageList.Width then // cannot delete default resolution
+      continue;
+
+    if TD.Selection<>'' then
+      TD.Selection += sLineBreak;
+    ResItem := ResolutionToString(R);
+    TD.Selection += ResItem;
+    if TD.Query='' then
+      TD.Query := ResItem;
+    SetLength(RA, Length(RA)+1);
+    RA[High(RA)] := R.Width;
+  end;
+
+  if TD.Selection='' then
+  begin
+    MessageDlg(sccsILEdtCannotDeleteResolution, mtError, [mbOK], 0);
+    Exit;
+  end;
+
+  TD.Inst := sccsILEdtDeleteResolutionConfirmation;
+  if TD.Execute([cbOK, cbCancel]) = mrOK then
+  begin
+    ImageList.DeleteResolution(RA[TD.SelectionRes]);
+    ImageListBox.Repaint;
+    UpdatePreviewImage;
+    UpdateImagesGroupBoxWidth;
   end;
 end;
 
 procedure TImageListEditorDlg.BtnClearClick(Sender: TObject);
 begin
-  if TreeView.Items.Count=0 then exit;
+  if ImageListBox.Items.Count=0 then exit;
   if (IDEQuestionDialog(Caption,
               s_Confirm_Clear, mtConfirmation,
               [mrYes, mrNo]) = mrYes) then
   begin
+    FreeGlyphInfos;
     ImageList.Clear;
-    TreeView.Items.Clear;
+    ImageListBox.Items.Clear;
   end;
 end;
 
 procedure TImageListEditorDlg.BtnDeleteClick(Sender: TObject);
 var
-  Node: TTreeNode;
-  I, S: Integer;
+  S: Integer;
 begin
-  if Assigned(TreeView.Selected) then
+  if ImageListBox.ItemIndex>=0 then
   begin
-    Node := TreeView.Selected.GetNext;
-    if Node = nil then Node := TreeView.Selected.GetPrev;
+    S := ImageListBox.ItemIndex;
 
-    S := TreeView.Selected.ImageIndex;
     ImageList.Delete(S);
-    TreeView.BeginUpdate;
-    try
-      TreeView.Selected.Delete;
-      
-      for I := S to TreeView.Items.Count -1 do
-      begin
-        TreeView.Items[I].Text := IntToStr(I);
-        TreeView.Items[I].ImageIndex := I;
-        TreeView.Items[I].SelectedIndex := I;
-      end;
-    finally
-      TreeView.EndUpdate;
-    end;
-    TreeView.Selected := Node;
+    ImageListBox.Items.Objects[S].Free;
+    ImageListBox.Items.Delete(S);
+    ImageListBox.ItemIndex := Min(S, ImageListBox.Count-1);
   end;
-  TreeView.SetFocus;
+  ImageListBox.SetFocus;
 end;
 
 procedure TImageListEditorDlg.BtnReplaceClick(Sender: TObject);
 var
-  S,N: Integer; Node: TTreeNode;
+  AT: TAddType;
 begin
-  if Assigned(TreeView.Selected) then
+  if ImageListBox.ItemIndex>=0 then
   begin
-    Node := TreeView.Selected;
     OpenDialog.Title := sccsILEdtOpenDialogN;
     OpenDialog.Options:=OpenDialog.Options-[ofAllowMultiSelect];
     if OpenDialog.Execute then
     begin
-      ImageList.BeginUpdate;
-      TreeView.BeginUpdate;
-      try
-        AddImageToList(TrimRight(OpenDialog.FileName),True);
-        S:=TreeView.Selected.ImageIndex-1;
-        ImageList.Delete(S);
-        TreeView.Selected.ImageIndex:=S+1;
-        TreeView.Selected.Delete;
-        for N := S to TreeView.Items.Count-1 do
-        begin
-          TreeView.Items[N].Text := IntToStr(N);
-          TreeView.Items[N].ImageIndex := N;
-          TreeView.Items[N].SelectedIndex := N;
-        end;
-        TreeView.Selected:=Node;
-      finally
-        TreeView.EndUpdate;
-        ImageList.EndUpdate;
-      end;
-      TreeView.SetFocus;
+      if Sender=BtnReplaceAll then
+        AT := atReplaceAllResolutions
+      else
+        AT := atReplace;
+      AddImageToList(TrimRight(OpenDialog.FileName), AT);
+      ImageListBox.SetFocus;
     end;
+  end;
+end;
+
+procedure TImageListEditorDlg.btnAddNewResolutionClick(Sender: TObject);
+var
+  R: Longint;
+  Res: TDragImageListResolution;
+begin
+  if TryStrToInt(InputBox(sccsILEdtAddNewResolution, sccsILEdtImageWidthOfNewResolution, ''), R) then
+  begin
+    Res := ImageList.Resolution[R];
+    Res.AutoCreatedInDesignTime := False;
+    RefreshItemHeight;
+    ImageListBox.Repaint;
+    UpdateImagesGroupBoxWidth;
   end;
 end;
 
 procedure TImageListEditorDlg.BtnMoveUpClick(Sender: TObject);
 var
   S, D: Integer;
-  P: PGlyphInfo;
+  P: TObject;
 begin
-  if Assigned(TreeView.Selected) and (TreeView.Items.Count > 1) then
+  if ImageListBox.ItemIndex > 0 then
   begin
-    S := TreeView.Selected.ImageIndex;
+    S := ImageListBox.ItemIndex;
     D := (Sender as TControl).Tag;
-    if (S + D >= 0) and (S + D < TreeView.Items.Count) then
+    if (S + D >= 0) and (S + D < ImageListBox.Items.Count) then
     begin
       ImageList.Move(S, S + D);
       
-      P := TreeView.Items[S + D].Data;
-      TreeView.Items[S + D].Data := TreeView.Items[S].Data;
-      TreeView.Items[S].Data := P;
+      P := ImageListBox.Items.Objects[S + D];
+      ImageListBox.Items.Objects[S + D] := ImageListBox.Items.Objects[S];
+      ImageListBox.Items.Objects[S] := P;
       
-      TreeView.Selected := TreeView.Items[S + D];
-      TreeView.SetFocus;
+      ImageListBox.ItemIndex := S + D;
+      ImageListBox.SetFocus;
     end;
   end;
 end;
@@ -396,11 +521,11 @@ procedure TImageListEditorDlg.BtnSaveClick(Sender: TObject);
 var
   Picture: TPicture;
 begin
-  if Assigned(TreeView.Selected) then
+  if ImageListBox.ItemIndex>=0 then
   begin
     Picture := TPicture.Create;
     try
-      ImageList.GetBitmap(TreeView.Selected.ImageIndex, Picture.Bitmap);
+      ImageList.GetBitmap(ImageListBox.ItemIndex, Picture.Bitmap);
       SavePicture(Picture);
     finally
       Picture.Free;
@@ -410,40 +535,52 @@ end;
 
 procedure TImageListEditorDlg.ColorBoxTransparentClick(Sender: TObject);
 var
-  P: PGlyphInfo;
+  P: TGlyphInfo;
   T: TBitmap;
 begin
-  if Assigned(TreeView.Selected) then
+  P := GetSelGlyphInfo;
+  if Assigned(P) then
   begin
-    if Assigned(TreeView.Selected.Data) then
-    begin
-      P := PGlyphInfo(TreeView.Selected.Data);
-      P^.Adjustment := TGlyphAdjustment(RadioGroup.ItemIndex);
-      P^.TransparentColor := ColorBoxTransparent.Selected;
-      
-      T := CreateGlyph(P^.Bitmap, ImageList.Width, ImageList.Height, P^.Adjustment,
-        P^.TransparentColor);
-      ImageList.BeginUpdate;
-      try
-        ImageList.Delete(TreeView.Selected.ImageIndex);
-        ImageList.Insert(TreeView.Selected.ImageIndex, T, nil);
-      finally
-        ImageList.EndUpdate;
-        T.Free;
-      end;
-      
-      TreeView.Invalidate;
-      TreeViewSelectionChanged(nil);
-    end
+    P.Adjustment := TGlyphAdjustment(RadioGroup.ItemIndex);
+    P.TransparentColor := ColorBoxTransparent.Selected;
+
+    T := CreateGlyph(P.Bitmap, ImageList.Width, ImageList.Height, P.Adjustment,
+      P.TransparentColor);
+    ImageList.BeginUpdate;
+    try
+      ImageList.Delete(ImageListBox.ItemIndex);
+      ImageList.Insert(ImageListBox.ItemIndex, T, nil);
+    finally
+      ImageList.EndUpdate;
+      T.Free;
+    end;
+
+    ImageListBox.Invalidate;
+
+  end
+end;
+
+procedure TImageListEditorDlg.DoDestroy;
+begin
+  FreeGlyphInfos;
+  inherited DoDestroy;
+end;
+
+procedure TImageListEditorDlg.RefreshItemHeight;
+var
+  R: TCustomImageListResolution;
+begin
+  for R in ImageList.ResolutionsDesc do // get highest resolution
+  begin
+    ImageListBox.ItemHeight := Min(R.Height, Scale96ToFont(32)) + Scale96ToFont(4);
+    break;
   end;
 end;
 
-procedure TImageListEditorDlg.PreviewPaint(Sender: TObject);
+class function TImageListEditorDlg.ResolutionToString(
+  const ARes: TCustomImageListResolution): string;
 begin
-  if Assigned(FPreviewBmp) then
-  begin
-    Preview.Canvas.Draw(0, 0, FPreviewBmp);
-  end;
+  Result := Format('%d x %d', [ARes.Width, ARes.Height]);
 end;
 
 procedure TImageListEditorDlg.btnApplyClick(Sender: TObject);
@@ -451,69 +588,9 @@ begin
   SaveToImageList;
 end;
 
-procedure TImageListEditorDlg.TreeViewDeletion(Sender: TObject; Node: TTreeNode);
-var
-  P: PGlyphInfo;
-begin
-  if Assigned(Node) then
+procedure TImageListEditorDlg.UpdatePreviewImage;
+  procedure DisablePreview;
   begin
-    if Node.Data <> nil then
-    begin
-      P := PGlyphInfo(Node.Data);
-      P^.Bitmap.Free;
-      Dispose(P);
-    end;
-  end;
-end;
-
-procedure TImageListEditorDlg.TreeViewSelectionChanged(Sender: TObject);
-var
-  P: PGlyphInfo;
-begin
-  if Assigned(TreeView.Selected) then
-  begin
-    if Assigned(FPreviewBmp) then FPreviewBmp.Free;
-    FPreviewBmp := TBitmap.Create;
-    ImageList.GetBitmap(TreeView.Selected.ImageIndex, FPreviewBmp);
-
-    if Assigned(TreeView.Selected.Data) then
-    begin
-      P := PGlyphInfo(TreeView.Selected.Data);
-      
-      RadioGroup.Enabled := True;
-      RadioGroup.OnClick := nil;
-      RadioGroup.ItemIndex := Integer(P^.Adjustment);
-      RadioGroup.OnClick := @ColorBoxTransparentClick;
-      
-      ColorBoxTransparent.Enabled := True;
-      ColorBoxTransparent.OnChange := nil;
-      ColorBoxTransparent.Selected := P^.TransparentColor;
-      ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
-    end
-    else
-    begin
-      RadioGroup.Enabled := False;
-      RadioGroup.OnClick := nil;
-      RadioGroup.ItemIndex := 0;
-      RadioGroup.OnClick := @ColorBoxTransparentClick;
-
-      ColorBoxTransparent.Enabled := False;
-      ColorBoxTransparent.OnChange := nil;
-      ColorBoxTransparent.Selected := clFuchsia;
-      ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
-    end;
-    
-    LabelSize.Caption := Format('%d x %d', [FPreviewBmp.Width, FPreviewBmp.Height]);
-
-    Preview.HorzScrollBar.Range := FPreviewBmp.Width;
-    Preview.VertScrollBar.Range := FPreviewBmp.Height;
-    Preview.Invalidate;
-  end
-  else
-  begin
-    if Assigned(FPreviewBmp) then FreeThenNil(FPreviewBmp);
-    LabelSize.Caption := '';
-    
     RadioGroup.Enabled := False;
     RadioGroup.OnClick := nil;
     RadioGroup.ItemIndex := 0;
@@ -523,42 +600,121 @@ begin
     ColorBoxTransparent.OnChange := nil;
     ColorBoxTransparent.Selected := clFuchsia;
     ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
-      
-    Preview.HorzScrollBar.Range := ImageList.Width;
-    Preview.VertScrollBar.Range := ImageList.Height;
-    Preview.Invalidate;
   end;
+var
+  Img: TImage;
+  R, I: Integer;
+  Res: TCustomImageListResolution;
+  P: TGlyphInfo;
+begin
+  RecreatePreviewImages;
+  I := ImageListBox.ItemIndex;
+  if I<0 then
+  begin
+    for R := 0 to High(FPreviewImages) do
+      FPreviewImages[R].Picture.Clear;
+
+    DisablePreview;
+    Exit;
+  end;
+
+  for R := 0 to ImageList.ResolutionCount-1 do
+  begin
+    Img := FPreviewImages[R];
+    Res := ImageList.ResolutionByIndex[R];
+    Res.GetBitmap(I, Img.Picture.Bitmap);
+  end;
+
+  P := GetSelGlyphInfo;
+  if Assigned(P) then
+  begin
+    RadioGroup.Enabled := True;
+    RadioGroup.OnClick := nil;
+    RadioGroup.ItemIndex := Integer(P.Adjustment);
+    RadioGroup.OnClick := @ColorBoxTransparentClick;
+
+    ColorBoxTransparent.Enabled := True;
+    ColorBoxTransparent.OnChange := nil;
+    ColorBoxTransparent.Selected := P.TransparentColor;
+    ColorBoxTransparent.OnChange := @ColorBoxTransparentClick;
+  end else
+    DisablePreview;
 end;
 
 procedure TImageListEditorDlg.LoadFromImageList(AImageList: TImageList);
 var
-  I, C: Integer;
+  I: Integer;
+  R: TCustomImageListResolution;
 begin
   ImageList.Clear;
   FImageList := AImageList;
   FModified := False;
-    
+
   if Assigned(AImageList) then
   begin
     ImageList.Assign(AImageList);
+    for R in ImageList.ResolutionsDesc do
+      if R.AutoCreatedInDesignTime then
+        ImageList.DeleteResolution(R.Width);
 
-    C := ImageList.Count;
-
-    TreeView.BeginUpdate;
+    ImageListBox.Items.BeginUpdate;
     try
-      TreeView.Items.Clear;
-      for I := 0 to Pred(C) do
-      begin
-        with TreeView.Items.Add(nil, IntToStr(I)) do
-        begin
-          ImageIndex := I;
-          SelectedIndex := I;
-          Data := nil;
-        end;
-      end;
+      FreeGlyphInfos;
+      ImageListBox.Items.Clear;
+      for I := 0 to ImageList.Count-1 do
+        ImageListBox.Items.AddObject('', nil);
+
+      RefreshItemHeight;
+      if ImageListBox.Items.Count>0 then
+        ImageListBox.ItemIndex := 0;
+      RecreatePreviewImages(True);
+      UpdatePreviewImage;
+      UpdateImagesGroupBoxWidth;
     finally
-      TreeView.EndUpdate;
+      ImageListBox.Items.EndUpdate;
     end;
+  end;
+end;
+
+procedure TImageListEditorDlg.RecreatePreviewImages(const aForce: Boolean);
+var
+  I, X, Y: Integer;
+  Img: TImage;
+  R: TCustomImageListResolution;
+  Lbl: TLabel;
+begin
+  if not aForce and (Length(FPreviewImages)=ImageList.ResolutionCount) then
+    Exit;
+
+  for Img in FPreviewImages do
+    Img.Free;
+  for Lbl in FPreviewLabels do
+    Lbl.Free;
+
+  SetLength(FPreviewImages, ImageList.ResolutionCount);
+  SetLength(FPreviewLabels, ImageList.ResolutionCount);
+
+  X := Scale96ToFont(4);
+  Y := Scale96ToFont(4);
+
+  for I := 0 to ImageList.ResolutionCount-1 do
+  begin
+    R := ImageList.ResolutionByIndex[I];
+    Img := TImage.Create(Self);
+    FPreviewImages[I] := Img;
+    Lbl := TLabel.Create(Self);
+    FPreviewLabels[I] := Lbl;
+
+    Img.Parent := Preview;
+    Img.SetBounds(X, Y, R.Width, R.Height);
+    Img.Stretch := False;
+
+    Lbl.Parent := Preview;
+    Lbl.AnchorParallel(akTop, 0, Img);
+    Lbl.AnchorToNeighbour(akLeft, Scale96ToFont(6), Img);
+    Lbl.Caption := ResolutionToString(R);
+
+    Inc(Y, Img.Height + X);
   end;
 end;
 
@@ -568,13 +724,29 @@ begin
   FModified := True;
 end;
 
-procedure TImageListEditorDlg.AddImageToList(const FileName: String;Insert:boolean);
+procedure TImageListEditorDlg.UpdateImagesGroupBoxWidth;
 var
-  SrcBmp: TBitmap;
+  NewWidth: Integer;
+begin
+  NewWidth := (ClientWidth + BtnAdd.Width) div 2;
+  if (FImagesGroupBoxMaxWidth>0) then
+    NewWidth := Min(NewWidth, FImagesGroupBoxMaxWidth + BtnAdd.Width + 5*BtnAdd.BorderSpacing.Right);
+  GroupBoxL.Width := NewWidth;
+  GroupBoxR.Left := GroupBoxL.BoundsRect.Right + Scale96ToFont(4);
+end;
+
+procedure TImageListEditorDlg.UpdateImagesGroupBoxWidthQueue(Data: PtrInt);
+begin
+  UpdateImagesGroupBoxWidth;
+end;
+
+procedure TImageListEditorDlg.AddImageToList(const FileName: String;
+  AddType: TAddType);
+var
+  SrcBmp, DestBmp: TBitmap;
   Picture: TPicture;
   Node: TTreeNode;
-  P: PGlyphInfo;
-  I: Integer;
+  P: TGlyphInfo;
   ImagesPerColumn: Integer;
   ImagesPerRow: Integer;
   iRow: Integer;
@@ -583,69 +755,56 @@ begin
   SaveDialog.InitialDir := ExtractFileDir(FileName);
   SrcBmp := nil;
   
+  ImageList.BeginUpdate;
   Picture := TPicture.Create;
   try
     Picture.LoadFromFile(FileName);
-    SrcBmp := TBitmap.Create;
-    SrcBmp.Assign(Picture.Graphic);
+    if Picture.Graphic is TCustomIcon then
+    begin
+      ImageListBox.Items.Add('');
+      case AddType of
+        atAdd: ImageList.AddIcon(TCustomIcon(Picture.Graphic));
+        atInsert: ImageList.InsertIcon(ImageListBox.ItemIndex+1, TCustomIcon(Picture.Graphic));
+        atReplace, atReplaceAllResolutions: ImageList.ReplaceIcon(ImageListBox.ItemIndex, TCustomIcon(Picture.Graphic));
+      end;
+    end else
+    begin
+      SrcBmp := TBitmap.Create;
+      if (AddType in [atReplace, atReplaceAllResolutions]) and (GetSelGlyphInfo<>nil) then
+      begin
+        P := GetSelGlyphInfo;
+        P.Bitmap.Free;
+        P.Bitmap := SrcBmp;
+      end else
+      begin
+        P := TGlyphInfo.Create;
+        P.Bitmap := SrcBmp;
+      end;
+      P.TransparentColor := clDefault;
+      P.Adjustment := gaNone;
+      if not (AddType in [atReplace, atReplaceAllResolutions]) then
+        ImageListBox.Items.AddObject('', P);
+
+      SrcBmp.Assign(Picture.Graphic);
+      DestBmp := CreateGlyph(SrcBmp, SrcBmp.Width, SrcBmp.Height, P.Adjustment, P.TransparentColor);
+      try
+        case AddType of
+          atAdd: ImageList.Add(DestBmp, nil);
+          atInsert: ImageList.Insert(ImageListBox.ItemIndex+1, DestBmp, nil);
+          atReplace, atReplaceAllResolutions: ImageList.Replace(ImageListBox.ItemIndex, DestBmp, nil, AddType=atReplaceAllResolutions);
+        end;
+      finally
+        DestBmp.Free;
+      end;
+    end;
+
+    case AddType of
+      atAdd: ImageListBox.ItemIndex := ImageListBox.Count-1;
+      atInsert: ImageListBox.ItemIndex := ImageListBox.ItemIndex+1;
+    end;
   finally
     Picture.Free;
-  end;
-
-  if Assigned(SrcBmp) then
-  begin
-    if not SrcBmp.Empty then
-    begin
-      //If the height and with of SrcBmp is an exact factor of ImageList height and width
-      //the image can be split into smaller images
-      if (SrcBmp.Height mod ImageList.Height = 0)
-        and (SrcBmp.Width mod ImageList.Width = 0) then
-      begin
-        ImagesPerColumn := SrcBmp.Height div ImageList.Height;
-        ImagesPerRow := SrcBmp.Width div ImageList.Width;
-      end
-      else
-      begin
-        ImagesPerColumn := 1;
-        ImagesPerRow := 1;
-      end;
-      //Ask the user if wants to split the source image
-      if ((ImagesPerRow > 1) or (ImagesPerColumn > 1))
-        and (IDEQuestionDialog(Caption,
-              s_SuggestSplitImage, mtConfirmation,
-              [mrNo, s_AddAsSingle, mrYes, s_SplitImage]) <> mrYes) then
-      begin
-        //"Add as single" was choosen
-        ImagesPerColumn := 1;
-        ImagesPerRow := 1;
-      end;
-      //Split image or copy the first image list width/height image data if the file
-      //is bigger than image list width/height but the user choosen "add as single"
-      for iRow := 0 to ImagesPerColumn - 1 do
-        for iCol := 0 to ImagesPerRow - 1 do
-        begin
-          New(P);
-          P^.Bitmap := CreateGlyphSplit(SrcBmp, ImageList.Width, ImageList.Height,
-            iRow, iCol);
-          P^.Adjustment := gaNone;
-          P^.TransparentColor := clDefault;
-
-          if Insert then
-          begin
-            I := TreeView.Selected.ImageIndex+1;
-            ImageList.Insert(I,P^.Bitmap, nil);
-            Node := TreeView.Items.InsertObjectBehind(TreeView.Selected, IntToStr(I), P);
-          end else
-          begin
-            I := ImageList.Add(P^.Bitmap, nil);
-            Node := TreeView.Items.AddObject(nil, IntToStr(I), P);
-          end;
-          Node.ImageIndex := I;
-          Node.SelectedIndex := I;
-          TreeView.Selected := Node;
-        end;
-      SrcBmp.Free;
-    end;
+    ImageList.EndUpdate;
   end;
 end;
 

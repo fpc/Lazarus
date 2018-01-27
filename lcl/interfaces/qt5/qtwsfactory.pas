@@ -9,9 +9,9 @@ uses
   WSLCLClasses;
 
 // imglist
-function RegisterCustomImageList: Boolean;
+function RegisterCustomImageListResolution: Boolean;
 // controls
-function RegisterDragImageList: Boolean;
+function RegisterDragImageListResolution: Boolean;
 function RegisterLazAccessibleObject: Boolean;
 function RegisterControl: Boolean;
 function RegisterWinControl: Boolean;
@@ -115,15 +115,15 @@ uses
  QtWSDesigner;
 
 // imglist
-function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
+function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
 begin
   Result := False;
 end;
 
 // controls
-function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
+function RegisterDragImageListResolution: Boolean; alias : 'WSRegisterDragImageListResolution';
 begin
-  RegisterWSComponent(TDragImageList, TQtWSDragImageList);
+  RegisterWSComponent(TDragImageListResolution, TQtWSDragImageListResolution);
   Result := True;
 end;
 

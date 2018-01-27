@@ -591,6 +591,7 @@ begin
   FImageList := TImageList.Create(nil);
   FImageList.Width := TIDEImages.ScaledSize;
   FImageList.Height := TIDEImages.ScaledSize;
+  FImageList.Scaled := False;
   ImgIndexForm := TIDEImages.AddImageToImageList(FImageList, 'oi_form');
   ImgIndexComponent := TIDEImages.AddImageToImageList(FImageList, 'oi_comp');
   ImgIndexControl := TIDEImages.AddImageToImageList(FImageList, 'oi_control');

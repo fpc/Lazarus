@@ -88,9 +88,9 @@ begin
     inc(Result, FTextWidth+FCoolBar.HorizontalSpacing);
   if Assigned(FCoolBar.Images) then begin
     if not FCoolBar.Vertical then
-      aImageSize := FCoolBar.Images.Width
+      aImageSize := FCoolBar.Images.WidthForPPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch]
     else
-      aImageSize := FCoolBar.Images.Height;
+      aImageSize := FCoolBar.Images.HeightForPPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch];
     if ImageIndex >= 0 then
       inc(Result, aImageSize+FCoolBar.HorizontalSpacing);
   end;
@@ -104,12 +104,12 @@ begin
     if Assigned(FControl) then
       Result := max(Result, FControl.Height+2*FCoolBar.VerticalSpacing);
     if Assigned(FCoolBar.Images) and (ImageIndex >= 0) then
-      Result := max(Result, FCoolBar.Images.Height+2*FCoolBar.VerticalSpacing);
+      Result := max(Result, FCoolBar.Images.HeightForPPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch]+2*FCoolBar.VerticalSpacing);
   end else begin
     if Assigned(FControl) then
       Result := max(Result, FControl.Width+2*FCoolBar.VerticalSpacing);
     if Assigned(FCoolBar.Images) and (ImageIndex >= 0) then
-      Result := max(Result, FCoolBar.Images.Width+2*FCoolBar.VerticalSpacing);
+      Result := max(Result, FCoolBar.Images.WidthForPPI[FCoolBar.ImagesWidth, FCoolBar.Font.PixelsPerInch]+2*FCoolBar.VerticalSpacing);
   end;
   if FCoolBar.FShowText then
     Result := max(Result, FCoolBar.FTextHeight+2*FCoolBar.VerticalSpacing);
@@ -461,6 +461,14 @@ begin
     AValue.RegisterChanges(FImageChangeLink);
     AValue.FreeNotification(Self);
   end;
+  CalculateAndAlign;
+  Invalidate;
+end;
+
+procedure TCustomCoolBar.SetImagesWidth(const aImagesWidth: Integer);
+begin
+  if FImagesWidth = aImagesWidth then Exit;
+  FImagesWidth := aImagesWidth;
   CalculateAndAlign;
   Invalidate;
 end;
@@ -1219,8 +1227,11 @@ var k, x, aCountM1, aLeft, aTop: Integer;
     aColor: TColor;
     aDetails: TThemedElementDetails;
     aFlags: Cardinal;
+    aImageSize: TSize;
 begin
   inherited Paint;
+  if Assigned(FImages) then
+    aImageSize := FImages.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
   //DebugLn('TCoolBar.Paint');
   //draw Bitmap Background
   if FBitmap.Width > 0 then
@@ -1297,17 +1308,17 @@ begin
         x := x-HorizontalSpacing;
       //paint Image
       if Assigned(FImages) and (FVisiBands[i].ImageIndex >= 0) then begin
-        if FRightToLeft and not Vertical then dec(x, FImages.Width);
+        if FRightToLeft and not Vertical then dec(x, aImageSize.Width);
         if not Vertical then
           ThemeServices.DrawIcon(Canvas, aDetails,
-            Point(x, aTop+(FVisiBands[i].FHeight-FImages.Height) div 2),
+            Point(x, aTop+(FVisiBands[i].FHeight-aImageSize.Height) div 2),
             FImages, FVisiBands[i].ImageIndex)
         else
           ThemeServices.DrawIcon(Canvas, aDetails,
-            Point(aTop+(FVisiBands[i].FHeight-FImages.Width) div 2, x),
+            Point(aTop+(FVisiBands[i].FHeight-aImageSize.Width) div 2, x),
             FImages, FVisiBands[i].ImageIndex);
         if not FRightToLeft or Vertical then
-          inc(x, FImages.Width+HorizontalSpacing)
+          inc(x, aImageSize.Width+HorizontalSpacing)
         else
           dec(x, HorizontalSpacing);
       end;

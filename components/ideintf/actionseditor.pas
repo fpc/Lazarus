@@ -416,6 +416,7 @@ begin
   ImageSize := TIDEImages.ScaledSize;
   ImageList1.Width := ImageSize;
   ImageList1.Height := ImageSize;
+  ImageList1.Scaled := False;
   TIDEImages.AddImageToImageList(ImageList1, 'laz_add'); //imageindex 0
   TIDEImages.AddImageToImageList(ImageList1, 'laz_delete'); //imageindex 1
   TIDEImages.AddImageToImageList(ImageList1, 'arrow_up'); //imadeindex 2

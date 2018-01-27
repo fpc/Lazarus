@@ -27,6 +27,7 @@ uses
   qtwidgets, qtobjects, qtproc, QtWsControls,
   // LCL
   SysUtils, Classes, Types, LCLType, LCLProc, Graphics, Controls, Forms, Menus,
+  ImgList,
   // Widgetset
   WSMenus, WSLCLClasses;
 
@@ -100,7 +101,7 @@ end;
 
 class function TQtWSMenuItem.CreateMenuFromMenuItem(const AMenuItem: TMenuItem): TQtMenu;
 var
-  ImgList: TImageList;
+  ImgList: TCustomImageList;
 begin
   Result := TQtMenu.Create(AMenuItem);
   Result.FDeleteLater := False;
@@ -117,13 +118,13 @@ begin
     Result.setShortcut(AMenuItem.ShortCut, AMenuItem.ShortCutKey2);
     if AMenuItem.HasIcon then
     begin
-      ImgList := TImageList(AMenuItem.GetImageList);
+      ImgList := AMenuItem.GetImageList;
       // we must check so because AMenuItem.HasIcon can return true
       // if Bitmap is setted up but not ImgList.
       if (ImgList <> nil) and (AMenuItem.ImageIndex >= 0) and
         (AMenuItem.ImageIndex < ImgList.Count) then
       begin
-        ImgList.GetBitmap(AMenuItem.ImageIndex, AMenuItem.Bitmap);
+        ImgList.ResolutionForPPI[16, ScreenInfo.PixelsPerInchX].GetBitmap(AMenuItem.ImageIndex, AMenuItem.Bitmap); // Qt bindings support only 16px icons for menu items
         Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
       end else
       if Assigned(AMenuItem.Bitmap) then

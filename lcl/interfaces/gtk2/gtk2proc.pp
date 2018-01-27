@@ -43,6 +43,7 @@ uses
     {$endif}
   // Other units
   Math, // Math after gtk to get the correct Float type
+  Types,
   // LCL
   LMessages, LCLProc, LCLIntf, LCLType, GraphType, Graphics,
   LResources, Controls, Forms, Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls,

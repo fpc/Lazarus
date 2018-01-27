@@ -820,6 +820,7 @@ begin
   ImageSize := TIDEImages.ScaledSize;
   ImageList1.Width := ImageSize;
   ImageList1.Height := ImageSize;
+  ImageList1.Scaled := False;
   ImgIDDefault := TIDEImages.AddImageToImageList(Imagelist1, 'ce_default');
   ImgIDProgramCode := TIDEImages.AddImageToImageList(Imagelist1, 'ce_program');
   ImgIDUnitCode := TIDEImages.AddImageToImageList(Imagelist1, 'cc_unit');

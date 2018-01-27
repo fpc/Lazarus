@@ -69,10 +69,10 @@ type
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
     class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; override;
     class function GetTabRect(const ATabControl: TCustomTabControl; const AIndex: Integer): TRect; override;
-    class function GetCapabilities: TCTabControlCapabilities;override;
+    class function GetCapabilities: TCTabControlCapabilities; override;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class procedure SetTabSize(const ATabControl: TCustomTabControl; const ATabWidth, ATabHeight: integer); override;
-    class procedure SetImageList(const ATabControl: TCustomTabControl; const AImageList: TCustomImageList); override;
+    class procedure SetImageList(const ATabControl: TCustomTabControl; const AImageList: TCustomImageListResolution); override;
     class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); override;
     class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); override;
@@ -182,7 +182,7 @@ type
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetIconArrangement(const ALV: TCustomListView; const AValue: TIconArrangement); override;
-    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
+    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageListResolution); override;
     class procedure SetItemsCount(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); override;
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;

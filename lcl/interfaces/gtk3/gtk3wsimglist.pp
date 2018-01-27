@@ -39,36 +39,36 @@ uses
 type
   { TGtk3WSCustomImageList }
 
-  TGtk3WSCustomImageList = class(TWSCustomImageList)
+  TGtk3WSCustomImageListResolution = class(TWSCustomImageListResolution)
   published
-    class procedure Clear(AList: TCustomImageList); override;
-    class function  CreateReference(AList: TCustomImageList; ACount, AGrow, AWidth,
+    class procedure Clear(AList: TCustomImageListResolution); override;
+    class function  CreateReference(AList: TCustomImageListResolution; ACount, AGrow, AWidth,
       AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference; override;
 
-    class procedure Delete(AList: TCustomImageList; AIndex: Integer); override;
+    class procedure Delete(AList: TCustomImageListResolution; AIndex: Integer); override;
     class procedure DestroyReference(AComponent: TComponent); override;
-    class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
+    class procedure Draw(AList: TCustomImageListResolution; AIndex: Integer; ACanvas: TCanvas;
       ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); override;
 
-    class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
+    class procedure Insert(AList: TCustomImageListResolution; AIndex: Integer; AData: PRGBAQuad); override;
 
-    class procedure Move(AList: TCustomImageList; ACurIndex, ANewIndex: Integer); override;
+    class procedure Move(AList: TCustomImageListResolution; ACurIndex, ANewIndex: Integer); override;
 
-    class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
+    class procedure Replace(AList: TCustomImageListResolution; AIndex: Integer; AData: PRGBAQuad); override;
   end;
-  TGtk3WSCustomImageListClass = class of TGtk3WSCustomImageList;
+  TGtk3WSCustomImageListResolutionClass = class of TGtk3WSCustomImageListResolution;
 
 
 implementation
 
 { TGtk3WSCustomImageList }
 
-class procedure TGtk3WSCustomImageList.Clear(AList: TCustomImageList);
+class procedure TGtk3WSCustomImageList.Clear(AList: TCustomImageListResolution);
 begin
   inherited Clear(AList);
 end;
 
-class function TGtk3WSCustomImageList.CreateReference(AList: TCustomImageList;
+class function TGtk3WSCustomImageList.CreateReference(AList: TCustomImageListResolution;
   ACount, AGrow, AWidth, AHeight: Integer; AData: PRGBAQuad
   ): TWSCustomImageListReference;
 begin
@@ -76,7 +76,7 @@ begin
     );
 end;
 
-class procedure TGtk3WSCustomImageList.Delete(AList: TCustomImageList;
+class procedure TGtk3WSCustomImageList.Delete(AList: TCustomImageListResolution;
   AIndex: Integer);
 begin
   inherited Delete(AList, AIndex);
@@ -87,7 +87,7 @@ begin
   inherited DestroyReference(AComponent);
 end;
 
-class procedure TGtk3WSCustomImageList.Draw(AList: TCustomImageList;
+class procedure TGtk3WSCustomImageList.Draw(AList: TCustomImageListResolution;
   AIndex: Integer; ACanvas: TCanvas; ABounds: TRect; ABkColor,
   ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle;
   AImageType: TImageType);
@@ -96,19 +96,19 @@ begin
     ADrawEffect, AStyle, AImageType);
 end;
 
-class procedure TGtk3WSCustomImageList.Insert(AList: TCustomImageList;
+class procedure TGtk3WSCustomImageList.Insert(AList: TCustomImageListResolution;
   AIndex: Integer; AData: PRGBAQuad);
 begin
   inherited Insert(AList, AIndex, AData);
 end;
 
-class procedure TGtk3WSCustomImageList.Move(AList: TCustomImageList; ACurIndex,
+class procedure TGtk3WSCustomImageList.Move(AList: TCustomImageListResolution; ACurIndex,
   ANewIndex: Integer);
 begin
   inherited Move(AList, ACurIndex, ANewIndex);
 end;
 
-class procedure TGtk3WSCustomImageList.Replace(AList: TCustomImageList;
+class procedure TGtk3WSCustomImageList.Replace(AList: TCustomImageListResolution;
   AIndex: Integer; AData: PRGBAQuad);
 begin
   inherited Replace(AList, AIndex, AData);

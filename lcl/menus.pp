@@ -38,7 +38,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
+  Types, Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
   LResources, LMessages, ActnList, Graphics, ImgList, LCLClasses, Themes;
 
 type
@@ -133,6 +133,7 @@ type
     FParent: TMenuItem;
     FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
     FSubMenuImages: TCustomImageList;
+    FSubMenuImagesWidth: Integer;
     FShortCut: TShortCut;
     FShortCutKey2: TShortCut;
     FGroupIndex: Byte;
@@ -173,6 +174,7 @@ type
     procedure SetRightJustify(const AValue: boolean);
     procedure SetShowAlwaysCheckable(const AValue: boolean);
     procedure SetSubMenuImages(const AValue: TCustomImageList);
+    procedure SetSubMenuImagesWidth(const aSubMenuImagesWidth: Integer);
     procedure ShortcutChanged;
     procedure SubItemChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean);
     procedure TurnSiblingsOff;
@@ -217,7 +219,8 @@ type
     destructor Destroy; override;
     function Find(const ACaption: string): TMenuItem;
     function GetEnumerator: TMenuItemEnumerator;
-    function GetImageList: TCustomImageList; virtual;
+    procedure GetImageList(out aImages: TCustomImageList; out aImagesWidth: Integer); virtual;
+    function GetImageList: TCustomImageList;
     function GetParentComponent: TComponent; override;
     function GetParentMenu: TMenu; virtual;
     function GetIsRightToLeft:Boolean; virtual;
@@ -243,7 +246,7 @@ type
     function IsInMenuBar: boolean; virtual;
     procedure Clear;
     function HasBitmap: boolean;
-    function GetIconSize: TPoint; virtual;
+    function GetIconSize(ADC: HDC): TPoint; virtual;
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerOnDestroy(const OnDestroyEvent: TNotifyEvent;
@@ -289,6 +292,7 @@ type
     property ShowAlwaysCheckable: boolean read FShowAlwaysCheckable
                                  write SetShowAlwaysCheckable default False;
     property SubMenuImages: TCustomImageList read FSubMenuImages write SetSubMenuImages;
+    property SubMenuImagesWidth: Integer read FSubMenuImagesWidth write SetSubMenuImagesWidth default 0;
     property Visible: Boolean read FVisible write SetVisible
                               stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
@@ -307,6 +311,7 @@ type
     FBiDiMode: TBiDiMode;
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
+    FImagesWidth: Integer;
     FItems: TMenuItem;
     FOnDrawItem: TMenuDrawItemEvent;
     FOnChange: TMenuChangeEvent;
@@ -322,6 +327,7 @@ type
     procedure ImageListChange(Sender: TObject);
     procedure SetBiDiMode(const AValue: TBiDiMode);
     procedure SetImages(const AValue: TCustomImageList);
+    procedure SetImagesWidth(const aImagesWidth: Integer);
     procedure SetParent(const AValue: TComponent);
     procedure SetParentBiDiMode(const AValue: Boolean);
   protected
@@ -364,6 +370,7 @@ type
     property ParentBidiMode:Boolean read FParentBidiMode write SetParentBidiMode default True;
     property Items: TMenuItem read FItems;
     property Images: TCustomImageList read FImages write SetImages;
+    property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw default False;
     property OnDrawItem: TMenuDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnMeasureItem: TMenuMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;

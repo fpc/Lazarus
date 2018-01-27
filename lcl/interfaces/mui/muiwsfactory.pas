@@ -12,9 +12,9 @@ uses
   WSLCLClasses;
 
 // imglist
-function RegisterCustomImageList: Boolean;
+function RegisterCustomImageListResolution: Boolean;
 // controls
-function RegisterDragImageList: Boolean;
+function RegisterDragImageListResolution: Boolean;
 function RegisterLazAccessibleObject: Boolean;
 function RegisterControl: Boolean;
 function RegisterWinControl: Boolean;
@@ -103,13 +103,13 @@ function RegisterCustomRubberBand: Boolean;
 implementation
 
 // imglist
-function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
+function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
 begin
   Result := False;
 end;
 
 // controls
-function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
+function RegisterDragImageListResolution: Boolean; alias : 'WSRegisterDragImageListResolution';
 begin
   Result := False;
 end;

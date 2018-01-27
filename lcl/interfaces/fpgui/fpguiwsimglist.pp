@@ -35,7 +35,7 @@ type
 
   { TFpGuiWSCustomImageList }
 
-  TFpGuiWSCustomImageList = class(TWSCustomImageList)
+  TFpGuiWSCustomImageListResolution = class(TWSCustomImageListResolution)
   private
   protected
   public
@@ -52,6 +52,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomImageList, TFpGuiWSCustomImageList);
+//  RegisterWSComponent(TCustomImageListResolution, TFpGuiWSCustomImageListResolution);
 ////////////////////////////////////////////////////
 end.

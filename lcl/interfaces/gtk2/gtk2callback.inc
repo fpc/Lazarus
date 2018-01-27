@@ -3993,7 +3993,8 @@ begin
                                         PageWidget);
   if TabWidget = nil then exit;
   {$IFDEF VerboseGtkToDos}{$note reimplement}{$ENDIF}
-  DrawImageListIconOnWidget(NoteBook.Images, ImageIndex, Widget);
+  DrawImageListIconOnWidget(NoteBook.Images.ResolutionForPPI[NoteBook.ImagesWidth, NoteBook.Font.PixelsPerInch],
+    ImageIndex, Widget);
 end;
 
 function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;

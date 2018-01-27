@@ -28,6 +28,12 @@ begin
     FImages.FreeNotification(Self);
 end;
 
+procedure TCustomHeaderControl.SetImagesWidth(const aImagesWidth: Integer);
+begin
+  if FImagesWidth = aImagesWidth then Exit;
+  FImagesWidth := aImagesWidth;
+end;
+
 function TCustomHeaderControl.GetSectionFromOriginalIndex(OriginalIndex: Integer): THeaderSection;
 var
   i: Longint;
@@ -389,6 +395,7 @@ var
   ARect, ContentRect: TRect;
   Details: TThemedElementDetails;
   Section: THeaderSection;
+  ImagesSize: TSize;
 begin
   Section := Sections[Index];
   if not Section.Visible then Exit;
@@ -407,10 +414,11 @@ begin
   if (Images <> nil) and (Section.ImageIndex <> -1) then
   begin
     inc(ContentRect.Left);
+    ImagesSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
     ThemeServices.DrawIcon(Canvas, Details,
-      Point(ContentRect.Left, (ContentRect.Top + ContentRect.Bottom - Images.Height) div 2),
+      Point(ContentRect.Left, (ContentRect.Top + ContentRect.Bottom - ImagesSize.Height) div 2),
       Images, Section.ImageIndex);
-    inc(ContentRect.Left, Images.Width + 2);
+    inc(ContentRect.Left, ImagesSize.Width + 2);
   end;
 
   if Section.Text <> '' then

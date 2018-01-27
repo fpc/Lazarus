@@ -1716,7 +1716,7 @@ begin
   TV := TreeView;
   if (TV = nil) or (TV.StateImages = nil) then Exit;
   if (StateIndex < 0) or (StateIndex >= TV.StateImages.Count) then Exit;
-  Inc(Result, TV.StateImages.Width + TV.FDefItemSpace);
+  Inc(Result, TV.StateImages.WidthForPPI[TV.StateImagesWidth, TV.Font.PixelsPerInch] + TV.FDefItemSpace);
 end;
 
 function TTreeNode.DisplayStateIconLeft: integer;
@@ -1737,7 +1737,7 @@ begin
   else
     ImgIndex:=ImageIndex;
   if (ImgIndex<0) or (ImgIndex>=TV.Images.Count) then Exit;
-  Inc(Result, TV.Images.Width + TV.FDefItemSpace);
+  Inc(Result, TV.Images.WidthForPPI[TV.StateImagesWidth, TV.Font.PixelsPerInch] + TV.FDefItemSpace);
 end;
 
 function TTreeNode.DisplayTextRight: integer;
@@ -3607,15 +3607,20 @@ end;
 procedure TCustomTreeView.UpdateDefaultItemHeight;
 var
   NewDefItemHeight: Integer;
+  ImageSize, StateImageSize: TSize;
 begin
   if (tvoAutoItemHeight in FOptions)
   and HandleAllocated and Canvas.HandleAllocated then begin
     NewDefItemHeight:=Canvas.TextHeight(TVAutoHeightString)+FDefItemSpace;
+    if Assigned(FImages) then
+      ImageSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
+    if Assigned(FStateImages) then
+      StateImageSize := StateImages.SizeForPPI[StateImagesWidth, Font.PixelsPerInch];
     if NewDefItemHeight<FDefItemSpace then NewDefItemHeight:=FDefItemSpace;
-    if (Images<>nil) and (Images.Height+FDefItemSpace>NewDefItemHeight) then
-      NewDefItemHeight:=Images.Height+FDefItemSpace;
-    if (StateImages<>nil) and (StateImages.Height+FDefItemSpace>NewDefItemHeight) then
-      NewDefItemHeight:=StateImages.Height+FDefItemSpace;
+    if (Images<>nil) and (ImageSize.Height+FDefItemSpace>NewDefItemHeight) then
+      NewDefItemHeight:=ImageSize.Height+FDefItemSpace;
+    if (StateImages<>nil) and (StateImageSize.Height+FDefItemSpace>NewDefItemHeight) then
+      NewDefItemHeight:=StateImageSize.Height+FDefItemSpace;
     if Odd(NewDefItemHeight) then Inc(NewDefItemHeight);
     if NewDefItemHeight<>FDefItemHeight then begin
       FDefItemHeight:=NewDefItemHeight;
@@ -5246,7 +5251,12 @@ var
   DrawState: TCustomDrawState;
   PaintImages: boolean;
   OverlayIndex: Integer;
+  ImageRes, StateImageRes: TCustomImageListResolution;
 begin
+  if Assigned(FImages) then
+    ImageRes := Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch];
+  if Assigned(FStateImages) then
+    StateImageRes := StateImages.ResolutionForPPI[StateImagesWidth, Font.PixelsPerInch];
   RealExpandSignSize := ExpandSignSize;
   RealIndent := Indent;
   NodeRect := Node.DisplayRect(False);
@@ -5295,9 +5305,9 @@ begin
       if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
       begin
         if PaintImages then
-          StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height) div 2,
+          StateImageRes.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImageRes.Height) div 2,
             Node.StateIndex, True);
-        Inc(x, StateImages.Width + FDefItemSpace);
+        Inc(x, StateImageRes.Width + FDefItemSpace);
       end;
     end;
 
@@ -5321,25 +5331,25 @@ begin
       	  if (Node.OverlayIndex >= 0) then begin
             OverlayIndex:=Node.OverlayIndex;
             if Images.HasOverlays then begin
-              Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+              ImageRes.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageRes.Height) div 2,
                  ImgIndex, OverlayIndex, Node.FNodeEffect);
             end else begin
               // draw the Overlay using the image from the list
               // set an Overlay
               Images.OverLay(OverlayIndex,0);
               // draw overlay
-              Images.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+              ImageRes.DrawOverlay(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageRes.Height) div 2,
                  ImgIndex, 0, Node.FNodeEffect);
               // reset the Overlay
               Images.OverLay(-1,0);
             end;
           end
           else begin
-            Images.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
+            ImageRes.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - ImageRes.Height) div 2,
                ImgIndex, Node.FNodeEffect);
           end;
         end;
-        Inc(x, Images.Width + FDefItemSpace);
+        Inc(x, ImageRes.Width + FDefItemSpace);
       end;
     end;
 
@@ -5795,6 +5805,8 @@ begin
 end;
 
 procedure TCustomTreeView.SetImages(Value: TCustomImageList);
+var
+  AImageHeight: Integer;
 begin
   if Images = Value then exit;
   if Images <> nil then
@@ -5803,9 +5815,17 @@ begin
   if Images <> nil then begin
     Images.RegisterChanges(FImageChangeLink);
     Images.FreeNotification(Self);
-    if DefaultItemHeight<Images.Height+FDefItemSpace then
-      DefaultItemHeight:=Images.Height+FDefItemSpace;
+    AImageHeight := Images.HeightForPPI[ImagesWidth, Font.PixelsPerInch];
+    if DefaultItemHeight<AImageHeight+FDefItemSpace then
+      DefaultItemHeight:=AImageHeight+FDefItemSpace;
   end;
+  Invalidate;
+end;
+
+procedure TCustomTreeView.SetImagesWidth(const aImagesWidth: Integer);
+begin
+  if FImagesWidth = aImagesWidth then Exit;
+  FImagesWidth := aImagesWidth;
   Invalidate;
 end;
 
@@ -5833,6 +5853,8 @@ begin
 end;
 
 procedure TCustomTreeView.SetStateImages(Value: TCustomImageList);
+var
+  AStateImageHeight: Integer;
 begin
   if FStateImages=Value then exit;
   if StateImages <> nil then
@@ -5841,9 +5863,17 @@ begin
   if StateImages <> nil then begin
     StateImages.RegisterChanges(FStateChangeLink);
     StateImages.FreeNotification(Self);
-    if DefaultItemHeight<StateImages.Height+FDefItemSpace then
-      DefaultItemHeight:=StateImages.Height+FDefItemSpace;
+    AStateImageHeight := StateImages.HeightForPPI[StateImagesWidth, Font.PixelsPerInch];
+    if DefaultItemHeight<AStateImageHeight+FDefItemSpace then
+      DefaultItemHeight:=AStateImageHeight+FDefItemSpace;
   end;
+  Invalidate;
+end;
+
+procedure TCustomTreeView.SetStateImagesWidth(const aStateImagesWidth: Integer);
+begin
+  if FStateImagesWidth = aStateImagesWidth then Exit;
+  FStateImagesWidth := aStateImagesWidth;
   Invalidate;
 end;
 

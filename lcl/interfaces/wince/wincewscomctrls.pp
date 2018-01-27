@@ -171,7 +171,7 @@ type
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetIconArrangement(const ALV: TCustomListView; const AValue: TIconArrangement); override;
-    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
+    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageListResolution); override;
     class procedure SetItemsCount(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); override;
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;

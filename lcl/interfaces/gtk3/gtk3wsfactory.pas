@@ -25,9 +25,9 @@ uses
 
 
 // imglist
-function RegisterCustomImageList: Boolean;
+function RegisterCustomImageListResolution: Boolean;
 // controls
-function RegisterDragImageList: Boolean;
+function RegisterDragImageListResolution: Boolean;
 function RegisterLazAccessibleObject: Boolean;
 function RegisterControl: Boolean;
 function RegisterWinControl: Boolean;
@@ -140,17 +140,17 @@ uses
   Gtk3WSDialogs, Gtk3WSCheckLst, Gtk3WSExtDlgs;
 
 // imglist
-function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
+function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
 begin
   //  RegisterWSComponent(TImageList, TGtk3WSImageList);
-  RegisterWSComponent(TCustomImageList, TGtk3WSCustomImageList);
+  RegisterWSComponent(TCustomImageListResolution, TGtk3WSCustomImageListResolution);
   Result := True;
 end;
 
 // controls
-function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
+function RegisterDragImageListResolution: Boolean; alias : 'WSRegisterDragImageListResolution';
 begin
-  // RegisterWSComponent(TDragImageList, TGtk3WSDragImageList);
+  // RegisterWSComponent(TDragImageListResolution, TGtk3WSDragImageListResolution);
   Result := False;
 end;
 

@@ -1275,7 +1275,7 @@ begin
 end;
 
 class procedure TGtkWSCustomListView.SetImageList(const ALV: TCustomListView;
-  const AList: TListViewImageList; const AValue: TCustomImageList);
+  const AList: TListViewImageList; const AValue: TCustomImageListResolution);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;

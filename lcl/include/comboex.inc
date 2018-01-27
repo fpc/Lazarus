@@ -355,6 +355,7 @@ var aDetail: TThemedElementDetails;
     aItemIndex: SmallInt;
     aMainItem: Boolean;
     anyRect: TRect;
+    ImagesSize: TSize;
 begin  { do not call inherited ! }
   aDropped:=DroppedDown;
   aEnabled:=IsEnabled;
@@ -384,6 +385,7 @@ begin  { do not call inherited ! }
   if assigned(Images) then
     begin
       aItemIndex:=-1;
+      ImagesSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
       if (aMainItem or (odSelected in State)) and
         ((ItemsEx[Index].SelectedImageIndex>=0) and (ItemsEx[Index].SelectedImageIndex<Images.Count))
         then aItemIndex:=ItemsEx[Index].SelectedImageIndex;
@@ -392,11 +394,11 @@ begin  { do not call inherited ! }
         begin
           if not FRightToLeft
             then aImgPoint.X:=ARect.Left+aIndent
-            else aImgPoint.X:=ARect.Right-aIndent-Images.Width;
-          aImgPoint.Y:=(ARect.Bottom+ARect.Top-Images.Height) div 2;
+            else aImgPoint.X:=ARect.Right-aIndent-ImagesSize.Width;
+          aImgPoint.Y:=(ARect.Bottom+ARect.Top-ImagesSize.Height) div 2;
           ThemeServices.DrawIcon(Canvas, aDetail, aImgPoint, Images, aItemIndex);
         end;
-      inc(aIndent, Images.Width+2*cItemIndent);
+      inc(aIndent, ImagesSize.Width+2*cItemIndent);
     end;
   Canvas.Brush.Style:=bsClear;
   if (not (odSelected in State) or not aDropped) and not aFocusedEditableMainItemNoDD
@@ -462,6 +464,13 @@ procedure TCustomComboBoxEx.SetImages(AValue: TCustomImageList);
 begin
   if FImages=AValue then exit;
   FImages:=AValue;
+  Invalidate;
+end;
+
+procedure TCustomComboBoxEx.SetImagesWidth(const aImagesWidth: Integer);
+begin
+  if FImagesWidth = aImagesWidth then Exit;
+  FImagesWidth := aImagesWidth;
   Invalidate;
 end;
 

@@ -53,6 +53,13 @@ begin
   FItems.UpdateImages;
 end;
 
+procedure TMenu.SetImagesWidth(const aImagesWidth: Integer);
+begin
+  if FImagesWidth = aImagesWidth then Exit;
+  FImagesWidth := aImagesWidth;
+  FItems.UpdateImages;
+end;
+
 procedure TMenu.SetBiDiMode(const AValue: TBiDiMode);
 begin
   if FBidiMode=AValue then exit;

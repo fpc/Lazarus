@@ -20,6 +20,7 @@ const
   SIG_LAZ1 = #1#0;
   SIG_LAZ2 = 'li';
   SIG_LAZ3 = 'Li';
+  SIG_LAZ4 = 'Lz';
   SIG_D3   = 'IL';
 
 const
@@ -45,6 +46,1006 @@ begin
     Source,
     SourceRect
   );
+end;
+
+{ TCustomImageListResolutionEnumerator }
+
+constructor TCustomImageListResolutionEnumerator.Create(
+  AImgList: TCustomImageList; ADesc: Boolean);
+begin
+  inherited Create;
+
+  FImgList := AImgList;
+  FDesc := ADesc;
+  if ADesc then
+    FCurrent := FImgList.FData.Count
+  else
+    FCurrent := -1;
+end;
+
+function TCustomImageListResolutionEnumerator.GetCurrent: TCustomImageListResolution;
+begin
+  Result := FImgList.FData[FCurrent];
+end;
+
+function TCustomImageListResolutionEnumerator.GetEnumerator: TCustomImageListResolutionEnumerator;
+begin
+  Result := Self;
+end;
+
+function TCustomImageListResolutionEnumerator.MoveNext: Boolean;
+begin
+  if FDesc then
+  begin
+    Dec(FCurrent);
+    Result := FCurrent>=0;
+  end else
+  begin
+    Inc(FCurrent);
+    Result := FCurrent<FImgList.FData.Count;
+  end;
+end;
+
+{ TCustomImageListResolution }
+
+function TCustomImageListResolution.Add(Image, Mask: TCustomBitmap): Integer;
+var
+  msk: THandle;
+  ScBmp: TRGBAQuadArray;
+begin
+  if Image = nil then Exit(-1);
+
+  Result := Count;
+  TCustomImageList.ScaleImage(Image, Mask, Width, Height, ScBmp);
+  InternalInsert(Result, @ScBmp[0]);
+end;
+
+procedure TCustomImageListResolution.AddImages(
+  AValue: TCustomImageListResolution);
+var
+  n: Integer;
+  p: PRGBAQuad;
+  DataSize: Integer;
+  OldCount: Integer;
+  Bmp: TBitmap;
+  ScBmp: TRGBAQuadArray;
+begin
+  if (AValue = nil) or (AValue=Self) or (AValue.FCount = 0) then exit;
+
+  if (AValue.Width = Width) and (AValue.Height = Height)
+  then begin
+    AllocData(FCount + AValue.FCount);
+    DataSize := FWidth * FHeight * SizeOf(FData[0]);
+    System.Move(AVAlue.FData[0], FData[FCount], AValue.FCount * DataSize);
+    OldCount := FCount;
+    Inc(FCount, AValue.FCount);
+    if HandleAllocated
+    then begin
+      p := @FData[OldCount];
+      for n := OldCount to FCount - 1 do
+      begin
+        TWSCustomImageListResolutionClass(WidgetSetClass).Insert(Self, n, p);
+        Inc(PByte(p), DataSize);
+      end;
+    end;
+  end else
+  begin
+    for n := 0 to AValue.Count-1 do
+    begin
+      Bmp := TBitmap.Create;
+      try
+        AValue.GetBitmap(n, Bmp);
+        TCustomImageList.ScaleImage(Bmp, nil, FWidth, FHeight, ScBmp);
+        InternalInsert(n, @ScBmp[0]);
+      finally
+        Bmp.Free;
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomImageListResolution.AllocData
+  Params:  ACount: the amount of images
+  Returns: Nothing
+
+  Allocates data for ACount images
+ ------------------------------------------------------------------------------}
+procedure TCustomImageListResolution.AllocData(ACount: Integer);
+var
+  n: Integer;
+begin
+  if FAllocCount >= ACount
+  then Exit;
+
+  // calculate number of blocks, add an extra block for the remainder.
+  n := ACount mod FImageList.FAllocBy;
+  if n <> 0
+  then Inc(ACount, FImageList.FAllocBy - n);
+
+  SetLength(FData, ACount * FWidth * FHeight * SizeOf(FData[0]));
+
+  Inc(FAllocCount, ACount);
+end;
+
+procedure TCustomImageListResolution.CheckIndex(AIndex: Integer;
+  AForInsert: Boolean);
+  // aviod exceptionframe generation
+  procedure Error;
+  begin
+    raise EInvalidOperation.Create(SInvalidIndex);
+  end;
+begin
+  if AForInsert
+  then begin
+    if AIndex > FCount then Error;
+  end
+  else begin
+    if AIndex >= FCount then Error;
+  end;
+end;
+
+procedure TCustomImageListResolution.Clear;
+begin
+  if FCount = 0 then Exit;
+  if HandleAllocated
+  then TWSCustomImageListResolutionClass(WidgetSetClass).Clear(Self);
+  {$ifdef windows}
+  DestroyReference; //Issue #0029905: images added after clear aren't shown if width or height changed
+  {$endif}
+  SetLength(FData, 0);
+  FAllocCount := 0;
+end;
+
+procedure TCustomImageListResolution.Delete(AIndex: Integer);
+begin
+  if AIndex = -1
+  then begin
+    Clear;
+    Exit;
+  end;
+
+  CheckIndex(AIndex);
+
+  InternalMove(AIndex, FCount - 1, True);
+  Dec(FCount);
+  if HandleAllocated
+  then TWSCustomImageListResolutionClass(WidgetSetClass).Delete(Self, AIndex);
+  // TODO: adjust allocated data
+end;
+
+destructor TCustomImageListResolution.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCustomImageListResolution.Draw(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; AEnabled: Boolean);
+begin
+  Draw(ACanvas, AX, AY, AIndex, EffectMap[AEnabled]);
+end;
+
+procedure TCustomImageListResolution.Draw(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+  AEnabled: Boolean);
+begin
+  Draw(ACanvas, AX, AY, AIndex, ADrawingStyle, AImageType, EffectMap[AEnabled]);
+end;
+
+procedure TCustomImageListResolution.Draw(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+  ADrawEffect: TGraphicsDrawEffect);
+begin
+  if (AIndex < 0) or (AIndex >= FCount) then Exit;
+
+  ReferenceNeeded;
+  TWSCustomImageListResolutionClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
+                          FImageList.BkColor, FImageList.BlendColor, ADrawEffect, ADrawingStyle, AImageType);
+end;
+
+procedure TCustomImageListResolution.Draw(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; ADrawEffect: TGraphicsDrawEffect);
+begin
+  Draw(ACanvas, AX, AY, AIndex, FImageList.DrawingStyle, FImageList.ImageType, ADrawEffect);
+end;
+
+procedure TCustomImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; AOverlay: TOverlay; AEnabled: Boolean);
+begin
+  DrawOverlay(ACanvas, AX, AY, AIndex, AOverlay, EffectMap[AEnabled]);
+end;
+
+procedure TCustomImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; AOverlay: TOverlay; ADrawingStyle: TDrawingStyle;
+  AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect);
+var
+  OverlayIndex: Integer;
+begin
+  if (AIndex < 0) or (AIndex >= FCount) then Exit;
+
+  ReferenceNeeded;
+  TWSCustomImageListResolutionClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
+                          FImageList.BkColor, FImageList.BlendColor, ADrawEffect, ADrawingStyle, AImageType);
+
+  OverlayIndex := FImageList.FOverlays[AOverlay];
+  if (OverlayIndex < 0) or (OverlayIndex >= FCount) then Exit;
+
+  TWSCustomImageListResolutionClass(WidgetSetClass).Draw(Self, OverlayIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
+                          clNone, FImageList.BlendColor, ADrawEffect, ADrawingStyle, AImageType);
+end;
+
+procedure TCustomImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; AOverlay: TOverlay; ADrawEffect: TGraphicsDrawEffect);
+begin
+  DrawOverlay(ACanvas, AX, AY, AIndex, AOverlay, FImageList.DrawingStyle, FImageList.ImageType, ADrawEffect);
+end;
+
+procedure TCustomImageListResolution.FillDescription(out
+  ADesc: TRawImageDescription);
+begin
+  ADesc.Init;
+  ADesc.Format := ricfRGBA;
+  ADesc.PaletteColorCount := 0;
+  ADesc.MaskBitsPerPixel := 0;
+  ADesc.Depth := 32;
+  ADesc.Width := FWidth;
+  ADesc.Height := FHeight;
+  ADesc.BitOrder := riboBitsInOrder;
+  ADesc.ByteOrder := riboMSBFirst;
+  ADesc.LineOrder := riloTopToBottom;
+  ADesc.BitsPerPixel := 32;
+  ADesc.LineEnd := rileDWordBoundary;
+  ADesc.RedPrec := 8; // red precision. bits for red
+  ADesc.RedShift := 8;
+  ADesc.GreenPrec := 8;
+  ADesc.GreenShift := 16;
+  ADesc.BluePrec := 8;
+  ADesc.BlueShift := 24;
+  ADesc.AlphaPrec := 8;
+  ADesc.AlphaShift := 0;
+end;
+
+procedure TCustomImageListResolution.GetBitmap(Index: Integer;
+  Image: TCustomBitmap);
+begin
+  GetBitmap(Index, Image, gdeNormal);
+end;
+
+procedure TCustomImageListResolution.GetBitmap(Index: Integer;
+  Image: TCustomBitmap; AEffect: TGraphicsDrawEffect);
+var
+  RawImg: TRawImage;
+  ListImg, DeviceImg: TLazIntfImage;
+  ImgHandle, MskHandle: HBitmap;
+begin
+  if (FCount = 0) or (Image = nil) then Exit;
+
+  GetRawImage(Index, RawImg);
+
+  RawImg.PerformEffect(AEffect, True);
+
+  MskHandle := 0;
+  if not CreateCompatibleBitmaps(RawImg, ImgHandle, MskHandle, True)
+  then begin
+    // bummer, the widgetset doesn't support our 32bit format, try device
+    ListImg := TLazIntfImage.Create(RawImg, False);
+    DeviceImg := TLazIntfImage.Create(0,0,[]);
+    DeviceImg.DataDescription := GetDescriptionFromDevice(0, FWidth, FHeight);
+    DeviceImg.CopyPixels(ListImg);
+    DeviceImg.GetRawImage(RawImg);
+    RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle);
+    DeviceImg.Free;
+    ListImg.Free;
+  end;
+  Image.SetHandles(ImgHandle, MskHandle);
+
+  RawImg.FreeData;
+end;
+
+procedure TCustomImageListResolution.GetFullBitmap(Image: TCustomBitmap;
+  AEffect: TGraphicsDrawEffect);
+var
+  RawImg: TRawImage;
+  ListImg, DeviceImg: TLazIntfImage;
+  ImgHandle, MskHandle: HBitmap;
+begin
+  if (Count = 0) or (Image = nil) then Exit;
+
+  GetFullRawImage(RawImg);
+
+  RawImg.PerformEffect(AEffect, True);
+
+  MskHandle := 0;
+  if not CreateCompatibleBitmaps(RawImg, ImgHandle, MskHandle, True)
+  then begin
+    // bummer, the widgetset doesn't support our 32bit format, try device
+    ListImg := TLazIntfImage.Create(RawImg, False);
+    DeviceImg := TLazIntfImage.Create(0,0,[]);
+    DeviceImg.DataDescription := GetDescriptionFromDevice(0, Width, Height * Count);
+    DeviceImg.CopyPixels(ListImg);
+    DeviceImg.GetRawImage(RawImg);
+    RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle);
+    DeviceImg.Free;
+    ListImg.Free;
+  end;
+  Image.SetHandles(ImgHandle, MskHandle);
+
+  RawImg.FreeData;
+end;
+
+procedure TCustomImageListResolution.GetFullRawImage(out Image: TRawImage);
+begin
+  Image.Init;
+
+  if (FCount = 0) then Exit;
+  FillDescription(Image.Description);
+  Image.Description.Height := Height * Count;
+  Image.DataSize := Width * Height * Count * SizeOf(FData[0]);
+  Image.Data := PByte(FData);
+end;
+
+function TCustomImageListResolution.GetHotSpot: TPoint;
+begin
+  Result := Point(0, 0);
+end;
+
+procedure TCustomImageListResolution.GetIcon(Index: Integer; Image: TIcon);
+begin
+  GetIcon(Index, Image, gdeNormal);
+end;
+
+procedure TCustomImageListResolution.GetIcon(Index: Integer; Image: TIcon;
+  AEffect: TGraphicsDrawEffect);
+var
+  RawImg: TRawImage;
+  ListImg, DeviceImg: TLazIntfImage;
+  IconInfo: TIconInfo;
+begin
+  if (Count = 0) or (Image = nil) then Exit;
+
+  GetRawImage(Index, RawImg);
+  RawImg.PerformEffect(AEffect, True);
+
+  IconInfo.fIcon := True;
+  IconInfo.hbmMask := 0;
+  if not CreateCompatibleBitmaps(RawImg, IconInfo.hbmColor, IconInfo.hbmMask, True)
+  then begin
+    // bummer, the widgetset doesn't support our 32bit format, try device
+    ListImg := TLazIntfImage.Create(RawImg, False);
+    DeviceImg := TLazIntfImage.Create(0,0,[]);
+    DeviceImg.DataDescription := GetDescriptionFromDevice(0, FWidth, FHeight);
+    DeviceImg.CopyPixels(ListImg);
+    DeviceImg.GetRawImage(RawImg);
+    RawImage_CreateBitmaps(RawImg, IconInfo.hbmColor, IconInfo.hbmMask);
+    DeviceImg.Free;
+    ListImg.Free;
+  end;
+  Image.Handle := CreateIconIndirect(@IconInfo);
+
+  RawImg.FreeData;
+end;
+
+procedure TCustomImageListResolution.GetRawImage(Index: Integer; out
+  Image: TRawImage);
+begin
+  Image.Init;
+
+  if (FCount = 0) then Exit;
+  CheckIndex(Index);
+  FillDescription(Image.Description);
+  if Index >= 0 then
+  begin
+    Image.DataSize := FWidth * FHeight * SizeOf(FData[0]);
+    Image.Data := @FData[Index * FWidth * FHeight];
+  end;
+end;
+
+function TCustomImageListResolution.GetReference: TWSCustomImageListReference;
+begin
+  if not FReference.Allocated then ReferenceNeeded;
+  Result := FReference;
+end;
+
+function TCustomImageListResolution.GetReferenceHandle: THandle;
+begin
+  Result := FReference.Handle;
+end;
+
+procedure TCustomImageListResolution.InternalInsert(AIndex: Integer;
+  AData: PRGBAQuad);
+var
+  RawImg: TRawImage;
+  R: TRect;
+  ImgData: PRGBAQuad;
+begin
+  CheckIndex(AIndex, True);
+  if (AIndex < 0) then
+    AIndex := 0;
+
+  Inc(FCount, 1);
+  AllocData(FCount);
+  if AIndex < FCount - 1 then
+    InternalMove(FCount - 1, AIndex, True);
+
+  ImgData := InternalSetData(AIndex, AData);
+  if HandleAllocated
+  then TWSCustomImageListResolutionClass(WidgetSetClass).Insert(Self, AIndex, ImgData);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomImageListResolution.InternalMove
+  Params:  CurIndex: the index of the image to be moved
+           NewIndex: the new index of the image
+  Returns: Nothing
+
+  Moves an image from the CurIndex'th location to NewIndex'th location
+  without notifying the widgetset
+ ------------------------------------------------------------------------------}
+procedure TCustomImageListResolution.InternalMove(ACurIndex,
+  ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
+var
+  ImgSize, DataSize: Cardinal;
+  p: Pointer;
+begin
+  ImgSize := FWidth * FHeight;
+  DataSize := ImgSize * SizeOf(FData[0]);
+
+  if not AIgnoreCurrent
+  then begin
+    // store current
+    p := GetMem(DataSize);
+    System.Move(FData[ACurIndex * ImgSize], p^, DataSize);
+  end;
+
+  // move all one up
+  if ACurIndex < ANewIndex
+  then System.Move(FData[(ACurIndex + 1) * ImgSize], FData[ACurIndex * ImgSize], DataSize * Cardinal(ANewIndex - ACurIndex))
+  else System.Move(FData[ANewIndex * ImgSize], FData[(ANewIndex + 1) * ImgSize], DataSize * Cardinal(ACurIndex - ANewIndex));
+
+  if not AIgnoreCurrent
+  then begin
+    // restore current
+    System.Move(p^, FData[ANewIndex * ImgSize], DataSize);
+    FreeMem(p);
+  end;
+end;
+
+procedure TCustomImageListResolution.InternalReplace(AIndex: Integer;
+  AData: PRGBAQuad);
+var
+  RawImage: TRawImage;
+  R: TRect;
+  ImgData: PRGBAQuad;
+  TargetData: array of TRGBAQuad;
+  LI: TLazIntfImage;
+  X, Y: Integer;
+begin
+  if (AIndex < 0) then AIndex := 0;
+  CheckIndex(AIndex);
+
+  ImgData := InternalSetData(AIndex, AData);
+  if HandleAllocated
+  then TWSCustomImageListResolutionClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
+end;
+
+function TCustomImageListResolution.InternalSetData(AIndex: Integer;
+  AData: PRGBAQuad): PRGBAQuad;
+begin
+  Result := @FData[AIndex * FWidth * FHeight];
+  Move(AData^, Result^, FWidth * FHeight * SizeOf(FData[0]));
+end;
+
+procedure TCustomImageListResolution.ReadData(AStream: TStream);
+var
+  Signature: TImageListSignature;
+  StreamPos: TStreamSeekType;
+
+  procedure DoReadLaz1;
+  var
+    i, NewCount, Size: Integer;
+    bmp: TBitmap;
+  begin
+    // provided for compatability for earlier lazarus streams
+    NewCount := AStream.ReadWord;
+    for i := 0 to NewCount - 1 do
+    begin
+      bmp := TBitMap.Create;
+      Size:=ReadLRSInteger(AStream);
+      bmp.LoadFromStream(AStream, Size);
+      bmp.Transparent := True;
+      Add(bmp, nil);
+      bmp.Free;
+    end;
+  end;
+
+  procedure DoReadLaz2;
+  var
+    i, NewCount, Size: cardinal;
+    bmp: TCustomBitmap;
+    Sig: array[0..1] of char;
+  begin
+    NewCount := ReadLRSCardinal(AStream);
+    FWidth := ReadLRSCardinal(AStream);
+    FHeight := ReadLRSCardinal(AStream);
+    FImageList.FWidth := FWidth;
+    FImageList.FHeight := FHeight;
+    for i := 0 to NewCount - 1 do
+    begin
+      Size := ReadLRSCardinal(AStream);
+      bmp := nil;
+      // Before our TBitmap can have bpm, xpm, png or other content
+      // We need to look at signature before loading
+      if Size > 2 then
+      begin
+        AStream.Read(Sig[0], 2);
+        if Sig = 'BM' then
+          bmp := TBitmap.Create
+        else
+        if Sig = '/*' then
+          bmp := TPixmap.Create
+        else
+        if Sig = '%P' then
+          bmp := TPortableNetworkGraphic.Create
+        else
+          raise EInvalidGraphicOperation.Create(rsInvalidStreamFormat);
+        AStream.Position := AStream.Position - 2;
+      end;
+      bmp.LoadFromStream(AStream, Size);
+      Add(bmp, nil);
+      bmp.Free;
+    end;
+  end;
+
+  procedure DoReadLaz3Header(BStream: TStream);
+  begin
+    FCount := ReadLRSCardinal(BStream);
+    FWidth := ReadLRSCardinal(BStream);
+    FHeight := ReadLRSCardinal(BStream);
+    AllocData(FCount);
+  end;
+
+  procedure DoReadLaz3Data(BStream: TStream);
+  begin
+    BStream.ReadBuffer(FData[0], FWidth * FHeight * FCount *  SizeOf(FData[0])) ;
+  end;
+
+  procedure DoReadLaz3;
+  begin
+    DoReadLaz3Header(AStream);
+    if FCount > 0 then
+      DoReadLaz3Data(AStream);
+  end;
+
+  procedure DoReadLaz4;
+  var
+    CompressedSize: Int64;
+    I: TMemoryStream = nil;
+    D: TDecompressionStream = nil;
+  begin
+    DoReadLaz3Header(AStream);
+    if FCount=0 then
+      Exit;
+    CompressedSize := ReadLRSInt64(AStream);
+
+    try
+      I := TMemoryStream.Create;
+      I.CopyFrom(AStream, CompressedSize);
+      I.Position := 0;
+      D := TDecompressionStream.Create(I);
+      DoReadLaz3Data(D);
+    finally
+      I.Free;
+      D.Free;
+    end;
+  end;
+
+  procedure CreateImagesFromRawImage(IntfImage: TLazIntfImage;
+    NewCount: integer);
+  var
+    RawImage, SubRawImage: TRawImage;
+    ImgHandle, MaskHandle: HBitmap;
+    Row: Integer;
+    Col: Integer;
+    ImgRect: TRect;
+    Res: Boolean;
+    ImgData: TRGBAQuadArray;
+  begin
+    IntfImage.GetRawImage(RawImage);
+    SubRawImage.Init;
+
+    for Row := 0 to (IntfImage.Height div Height) - 1 do
+    begin
+      if NewCount <= 0 then Break;
+      for Col := 0 to (IntfImage.Width div Width) - 1 do
+      begin
+        if NewCount <= 0 then Break;
+
+        ImgRect := Bounds(Col*Width,Row*Height,Width,Height);
+        RawImage.ExtractRect(ImgRect, SubRawImage);
+        Res := RawImage_CreateBitmaps(SubRawImage, ImgHandle, MaskHandle);
+        SubRawImage.FreeData;
+        if not Res
+        then raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
+
+        TCustomImageList.ScaleImage(ImgHandle, MaskHandle, Width, Height, Width, Height, ImgData);
+        InternalInsert(Count, @ImgData[0]);
+        DeleteObject(ImgHandle);
+        DeleteObject(MaskHandle);
+        //DebugLn('CreateImagesFromRawImage B ',Img.Width,',',Img.Height,' ',Count);
+        Dec(NewCount);
+      end;
+    end;
+  end;
+
+  procedure ReadDelphiImageAndMask(HasMask: boolean; NewCount: integer);
+  var
+    IntfImage: TLazIntfImage;
+    ImgReader: TFPReaderBMP;
+    MaskIntfImage: TLazIntfImageMask;
+  begin
+    IntfImage:=nil;
+    MaskIntfImage:=nil;
+    ImgReader:=nil;
+    try
+      IntfImage:=TLazIntfImage.Create(0,0,[]);
+      IntfImage.DataDescription := GetDescriptionFromDevice(0, 0, 0);
+      // read the image bmp stream into the IntfImage
+      ImgReader:=TFPReaderBMP.Create;
+      IntfImage.LoadFromStream(AStream,ImgReader);
+      if HasMask then begin
+        // create the mask bmp directly into the RawImage
+        MaskIntfImage:=TLazIntfImageMask.CreateWithImage(IntfImage);
+        MaskIntfImage.LoadFromStream(AStream,ImgReader);
+      end;
+
+      CreateImagesFromRawImage(IntfImage,NewCount);
+    finally
+      // clean up
+      ImgReader.Free;
+      IntfImage.Free;
+      MaskIntfImage.Free;
+    end;
+  end;
+
+  {$IFDEF SaveDelphiImgListStream}
+  procedure SaveImgListStreamToFile;
+  var
+    CurStreamPos: TStreamSeekType;
+    fs: TFileStream;
+    i: Integer;
+    Filename: string;
+  begin
+    i:=0;
+    repeat
+      inc(i);
+      Filename:='TCustomImageList'+IntToStr(i)+'.stream';
+    until not FileExistsUTF8(Filename);
+    CurStreamPos := AStream.Position;
+    DebugLn('TCustomImageList.ReadData Saving stream to ',Filename);
+    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
+    AStream.Position:=StreamPos;
+    fs.CopyFrom(AStream,AStream.Size-AStream.Position);
+    fs.Free;
+    AStream.Position:=CurStreamPos;
+  end;
+  {$ENDIF}
+
+var
+  HasMask: Boolean;
+  NewCount: Integer;
+  Size: integer;
+begin
+  Clear;
+
+  StreamPos := AStream.Position;                // check stream signature
+  AStream.Read(Signature, SizeOf(Signature));
+
+  if Signature = SIG_LAZ4
+  then begin
+    DoReadLaz4;
+    Exit;
+  end;
+
+  if Signature = SIG_LAZ3
+  then begin
+    DoReadLaz3;
+    Exit;
+  end;
+
+  if Signature = SIG_LAZ2
+  then begin
+    DoReadLaz2;
+    Exit;
+  end;
+
+  if Signature = SIG_LAZ1
+  then begin
+    DoReadLaz1;
+    Exit;
+  end;
+
+  // Delphi streams
+
+  {$IFDEF SaveDelphiImgListStream}
+  SaveImgListStreamToFile;
+  {$ENDIF}
+
+  if Signature = SIG_D3
+  then begin
+    AStream.ReadWord; //Skip ?
+    NewCount := ReadLRSWord(AStream);
+    //DebugLn('NewCount=',NewCount);
+    AStream.ReadWord; //Skip Capacity
+    AStream.ReadWord; //Skip Grow
+    FWidth := ReadLRSWord(AStream);
+    //DebugLn('NewWidth=',FWidth);
+    FHeight := ReadLRSWord(AStream);
+    //DebugLn('NewHeight=',FHeight);
+    FImageList.FBKColor := TColor(ReadLRSInteger(AStream));
+    // corrent colors - they are stored in windows values
+    if TColorRef(FImageList.FBKColor) = CLR_NONE then
+      FImageList.FBKColor := clNone
+    else
+    if TColorRef(FImageList.FBKColor) = CLR_DEFAULT then
+      FImageList.FBKColor := clDefault;
+    HasMask := (ReadLRSWord(AStream) and 1) = 1;
+    AStream.ReadDWord; //Skip ?
+    AStream.ReadDWord; //Skip ?
+
+    ReadDelphiImageAndMask(HasMask,NewCount);
+  end
+  else begin
+    // D2 has no signature, so restore original position
+    AStream.Position := StreamPos;
+    Size:=ReadLRSInteger(AStream);
+    NewCount:=ReadLRSInteger(AStream);
+
+    ReadDelphiImageAndMask(false,NewCount);
+    AStream.Position := StreamPos+Size;
+  end;
+end;
+
+procedure TCustomImageListResolution.ReferenceDestroying;
+begin
+  inherited ReferenceDestroying;
+
+  FImageList.DoDestroyResolutionReference(FWidth, Reference._Handle);
+end;
+
+procedure TCustomImageListResolution.StretchDraw(Canvas: TCanvas;
+  Index: Integer; ARect: TRect; Enabled: Boolean);
+var
+  FI: TFPCompactImgRGBA8Bit;
+  Px: PRGBAQuad;
+  X, Y: Integer;
+begin
+  if ((ARect.Right-ARect.Left)=FWidth) and ((ARect.Bottom-ARect.Top)=FHeight) then
+    Draw(Canvas, ARect.Left, ARect.Top, Index, Enabled)
+  else
+  begin
+    FI := TFPCompactImgRGBA8Bit.Create(FWidth, FHeight);
+    try
+      Px := @FData[Index * FWidth * FHeight];
+      for Y := 0 to FHeight-1 do
+      for X := 0 to FWidth-1 do
+      begin
+        FI.Colors[X, Y] := FPColor(Px^.Red, Px^.Green, Px^.Blue, Px^.Alpha);
+        Inc(Px);
+      end;
+
+      TFPCustomCanvas(Canvas).StretchDraw(ARect.Left, ARect.Top, ARect.Right-ARect.Left, ARect.Bottom-ARect.Top, FI);
+    finally
+      FI.Free;
+    end;
+  end;
+end;
+
+procedure TCustomImageListResolution.WriteData(AStream: TStream;
+  const ACompress: Boolean);
+
+  procedure DoWriteHeader(BStream: TStream);
+  begin
+    //Count of image
+    WriteLRSInteger(BStream,Count);
+    WriteLRSInteger(BStream,Width);
+    WriteLRSInteger(BStream,Height);
+  end;
+
+  procedure DoWriteRawData(BStream: TStream);
+  begin
+    BStream.Write(FData[0], FWidth * FHeight * FCount * SizeOf(FData[0]));
+  end;
+
+  procedure DoWriteCompressedData(BStream: TStream);
+  var
+    I: TMemoryStream = nil;
+    O: TMemoryStream = nil;
+    C: TCompressionStream = nil;
+  begin
+    try
+      I := TMemoryStream.Create;
+      O := TMemoryStream.Create;
+      DoWriteRawData(I);
+      I.Position := 0;
+      C := TCompressionStream.Create(clMax, O);
+      C.CopyFrom(I, I.Size);
+      FreeAndNil(C);
+      O.Position := 0;
+      WriteLRSInt64(AStream, O.Size); // compressed size
+      AStream.CopyFrom(O, O.Size);
+    finally
+      I.Free;
+      O.Free;
+      C.Free;
+    end;
+  end;
+var
+  Signature: TImageListSignature;
+begin
+  if not ACompress then
+  begin
+    //Write signature
+    Signature:=SIG_LAZ3;
+    AStream.Write(Signature,SizeOf(Signature));
+
+    DoWriteHeader(AStream);
+    if Count > 0 then
+      DoWriteRawData(AStream);
+  end else
+  begin
+    //Write signature
+    Signature:=SIG_LAZ4;
+    AStream.Write(Signature,SizeOf(Signature));
+
+    DoWriteHeader(AStream);
+    if Count > 0 then
+      DoWriteCompressedData(AStream);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomImageListResolution.WSCreateHandle
+  Params:  AParams: ignored
+  Returns: Handle to created imagelist
+
+  Instructs the widgtset to create an imagelist
+ ------------------------------------------------------------------------------}
+function TCustomImageListResolution.WSCreateReference(AParams: TCreateParams): PWSReference;
+var
+  ilc: TWSCustomImageListResolutionClass;
+  dt: PRGBAQuad;
+begin
+  ilc := TWSCustomImageListResolutionClass(WidgetSetClass);
+  if FCount = 0 then
+    dt := nil
+  else
+    dt := @FData[0];
+  FReference := ilc.CreateReference(Self, FCount, FImageList.FAllocBy, FWidth, FHeight, dt);
+  Result := @FReference;
+end;
+
+class procedure TCustomImageListResolution.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomImageListResolution;
+end;
+
+{ TCustomImageListResolutions }
+
+constructor TCustomImageListResolutions.Create(
+  const AImageList: TCustomImageList;
+  const AResolutionClass: TCustomImageListResolutionClass);
+begin
+  inherited Create;
+  FList := TObjectList.Create(True);
+  FImageList := AImageList;
+  FResolutionClass := AResolutionClass;
+end;
+
+procedure TCustomImageListResolutions.Clear;
+begin
+  FList.Clear;
+end;
+
+procedure TCustomImageListResolutions.Delete(const AIndex: Integer);
+begin
+  FList.Delete(AIndex);
+end;
+
+destructor TCustomImageListResolutions.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TCustomImageListResolutions.Find(const AImageWidth: Integer; out
+  Index: Integer): Boolean;
+var
+  L, R, I: Integer;
+  CompareRes: PtrInt;
+begin
+  Result := false;
+  Index := -1;
+  L := 0;
+  R := Count - 1;
+  while (L<=R) do
+  begin
+    I := L + (R - L) div 2;
+    CompareRes := CompareValue(AImageWidth, Items[I].Width);
+    if (CompareRes>0) then
+      L := I+1
+    else begin
+      R := I-1;
+      if (CompareRes=0) then begin
+         Result := true;
+         L := I; // forces end of while loop
+      end;
+    end;
+  end;
+  Index := L;
+end;
+
+function TCustomImageListResolutions.FindBestToCopyFrom(const ATargetWidth,
+  AIgnoreIndex: Integer): Integer;
+begin
+  for Result := 0 to Count-1 do // first try to find the smallest (but bigger) multiple
+    if (Result<>AIgnoreIndex) and (Items[Result].Width mod ATargetWidth = 0) then
+      Exit;
+
+  Result := Count-1; // just pickup the biggest image
+  if Result=AIgnoreIndex then
+    Dec(Result);
+end;
+
+function TCustomImageListResolutions.FindBestToScaleFrom(
+  const ATargetWidth: Integer): Integer;
+begin
+  if Find(ATargetWidth, Result) then
+    Exit;
+
+  Result := FindBestToCopyFrom(ATargetWidth, -1);
+end;
+
+function TCustomImageListResolutions.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TCustomImageListResolutions.GetImageLists(
+  const AImageWidth: Integer): TCustomImageListResolution;
+begin
+  Result := GetImageLists(AImageWidth, True, csDesigning in FImageList.ComponentState);
+end;
+
+function TCustomImageListResolutions.GetImageLists(const AImageWidth: Integer;
+  const AScaleFromExisting,
+  AutoCreatedInDesignTime: Boolean): TCustomImageListResolution;
+var
+  I, L: Integer;
+begin
+  if Find(AImageWidth, I) then
+    Result := Items[I]
+  else
+  begin
+    Result := FResolutionClass.Create(nil);
+    FList.Insert(I, Result);
+    Result.FImageList := FImageList;
+    Result.FWidth := AImageWidth;
+    Result.FHeight := FImageList.Height * AImageWidth div FImageList.Width;
+    Result.FAutoCreatedInDesignTime := AutoCreatedInDesignTime and (AImageWidth<>FImageList.Width);
+    if AScaleFromExisting then
+    begin
+      L := FindBestToCopyFrom(AImageWidth, I);
+      if L>=0 then
+        Result.AddImages(Items[L]);
+    end;
+  end;
+end;
+
+function TCustomImageListResolutions.GetItems(
+  const AIndex: Integer): TCustomImageListResolution;
+begin
+  Result := TCustomImageListResolution(FList[AIndex]);
 end;
 
 { TCustomImageList }
@@ -89,33 +1090,40 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.AddImages(AValue: TCustomImageList);
 var
-  n: Integer;
-  p: PRGBAQuad;
   DataSize: Integer;
-  OldCount: Integer;
+  OldCount, I, R: Integer;
+  FromR: TCustomImageListResolution;
+  First: Boolean;
+  Bmp: TBitmap;
 begin
-  if (AValue = nil) or (AValue=Self) or (AValue.FCount = 0) then exit;
+  if (AValue = nil) or (AValue=Self) or (AValue.Count = 0) then exit;
 
-  AllocData(FCount + AValue.FCount);
-  if (AValue.FWidth = FWidth) and (AValue.FHeight = FHeight)
-  then begin
-    DataSize := FWidth * FHeight * SizeOf(FData[0]);
-    System.Move(AVAlue.FData[0], FData[FCount], AValue.FCount * DataSize);
-    OldCount := FCount;
-    Inc(FCount, AValue.FCount);
-    if HandleAllocated
-    then begin
-      p := @FData[OldCount];
-      for n := OldCount to FCount - 1 do
+  OldCount := Count;
+  First := True;
+  Bmp := TBitmap.Create;
+  try
+    for FromR in AValue.ResolutionsDesc do
+    begin
+      if First then
+      begin // first we assign the biggest images
+        for I := 0 to AValue.Count-1 do
+        begin
+          FromR.GetBitmap(I, Bmp);
+          Add(Bmp, nil);
+        end;
+        First := False;
+      end else // then we assign compatible images
+      if FData.Find(FromR.Width, R) and (FData[R].Height=FromR.Height) then
       begin
-        TWSCustomImageListClass(WidgetSetClass).Insert(Self, n, p);
-        Inc(PByte(p), DataSize);
+        for I := 0 to AValue.Count-1 do
+        begin
+          FromR.GetBitmap(I, Bmp);
+          Replace(OldCount+I, Bmp, nil);
+        end;
       end;
     end;
-  end
-  else begin
-    // ToDo:
-    raise Exception.Create('TCustomImageList.AddImages not implemented yet for other Width/Height');
+  finally
+    Bmp.Free;
   end;
 end;
 
@@ -183,115 +1191,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomImageList.AllocData
-  Params:  ACount: the amount of images
-  Returns: Nothing
-
-  Allocates data for ACount images
- ------------------------------------------------------------------------------}
-procedure TCustomImageList.AllocData(ACount: Integer);
-var
-  n: Integer;
-begin
-  if FAllocCount >= ACount
-  then Exit;
-
-  // calculate number of blocks, add an extra block for the remainder.
-  n := ACount mod FAllocBy;
-  if n <> 0
-  then Inc(ACount, FAllocBy - n);
-
-  SetLength(FData, ACount * FWidth * FHeight * SizeOf(FData[0]));
-
-  Inc(FAllocCount, ACount);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCustomImageList.InternalInsert
-  Params:  AIndex: Index to insert images
-           AImage, AMask: handles of Image and Mask
-           AWidth, AHeight: Width and Height of AImage and AMask
-  Returns: Nothing
-
-  Insert bitmap (with split if necessary) into position AIndex with shifting other
-  images
- ------------------------------------------------------------------------------}
-procedure TCustomImageList.InternalInsert(AIndex: Integer; AImage, AMask: HBitmap;
-  AWidth, AHeight: Integer);
-var
-  RawImg: TRawImage;
-  R: TRect;
-  ImgData: PRGBAQuad;
-  i, ACount: Integer;
-begin
-  CheckIndex(AIndex, True);
-  if (AIndex < 0) then
-    AIndex := 0;
-
-  ACount := AWidth div Width;
-  if ACount = 0 then
-    ACount := 1;
-  Inc(FCount, ACount);
-  AllocData(FCount);
-  if AIndex < FCount - ACount then
-  begin
-    for i := 0 to ACount - 1 do
-      InternalMove(FCount - i - 1, AIndex + i, True);
-  end;
-
-  R := Rect(0, 0, FWidth, FHeight);
-  for i := 0 to ACount - 1 do
-  begin
-    RawImage_FromBitmap(RawImg, AImage, AMask, @R);
-    ImgData := InternalSetImage(AIndex + i, RawImg);
-    if HandleAllocated
-    then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex + i, ImgData);
-    inc(R.Left, FWidth);
-    inc(R.Right, FWidth);
-  end;
-
-  FChanged := true;
-  Change;
-end;
-
-procedure TCustomImageList.InternalInsert(AIndex: Integer; ARawImage: TRawImage);
-var
-  RawImg: TRawImage;
-  R: TRect;
-  ImgData: PRGBAQuad;
-  i, ACount: Integer;
-begin
-  CheckIndex(AIndex, True);
-  if (AIndex < 0) then
-    AIndex := 0;
-
-  ACount := ARawImage.Description.Width div Width;
-  if ACount = 0 then
-    ACount := 1;
-  Inc(FCount, ACount);
-  AllocData(FCount);
-  if AIndex < FCount - ACount then
-  begin
-    for i := 0 to ACount - 1 do
-      InternalMove(FCount - i - 1, AIndex + i, True);
-  end;
-
-  R := Rect(0, 0, FWidth, FHeight);
-  for i := 0 to ACount - 1 do
-  begin
-    ARawImage.ExtractRect(R, RawImg);
-    ImgData := InternalSetImage(AIndex + i, RawImg);
-    if HandleAllocated
-    then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex + i, ImgData);
-    inc(R.Left, FWidth);
-    inc(R.Right, FWidth);
-  end;
-
-  FChanged := true;
-  Change;
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCustomImageList.Assign
   Params:  Source: Source data
   Returns: Nothing
@@ -301,6 +1200,8 @@ end;
 procedure TCustomImageList.Assign(Source: TPersistent);
 Var
   ImgSrc : TCustomImageList;
+  FromR, ToR: TCustomImageListResolution;
+  DataSize: Integer;
 begin
   if (Source=Self) then exit;
   if Source is TCustomImageList then
@@ -310,7 +1211,19 @@ begin
     try
       SetWidthHeight(ImgSrc.Width,ImgSrc.Height);
       Clear;
-      AddImages(ImgSrc);
+
+      for FromR in ImgSrc.Resolutions do
+      begin
+        ToR := FData.GetImageLists(FromR.Width, False, FromR.AutoCreatedInDesignTime);
+        ToR.FWidth := FromR.FWidth;
+        ToR.FCount := FromR.FCount;
+        ToR.AllocData(ToR.FCount);
+        if ToR.FCount>0 then
+        begin
+          DataSize := ToR.FWidth * ToR.FHeight * SizeOf(FData[0]);
+          System.Move(FromR.FData[0], ToR.FData[0], ToR.FCount * DataSize);
+        end;
+      end;
     finally
       EndUpdate;
     end;
@@ -369,10 +1282,10 @@ procedure TCustomImageList.CheckIndex(AIndex: Integer; AForInsert: Boolean);
 begin
   if AForInsert
   then begin
-    if AIndex > FCount then Error;
+    if AIndex > Count then Error;
   end
   else begin
-    if AIndex >= FCount then Error;
+    if AIndex >= Count then Error;
   end;
 end;
 
@@ -384,19 +1297,13 @@ end;
   Clears the list.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Clear;
+var
+  R: TCustomImageListResolution;
 begin
-  if FCount = 0 then Exit;
-  if HandleAllocated
-  then TWSCustomImageListClass(WidgetSetClass).Clear(Self);
-  {$ifdef windows}
-  DestroyReference; //Issue #0029905: images added after clear aren't shown if width or height changed
-  {$endif}
-  SetLength(FData, 0);
-  FAllocCount := 0;
-  ClearOverlays;
+  FData.Clear;
 
+  ClearOverlays;
   FChanged := True;
-  FCount := 0;
   Change;
 end;
 
@@ -452,9 +1359,13 @@ procedure TCustomImageList.DefineProperties(Filer: TFiler);
       Result := Count > 0;
   end;
 
+var
+  ADoWrite: Boolean;
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('Bitmap', @ReadData, @WriteData, DoWrite);
+  ADoWrite := DoWrite;
+  Filer.DefineBinaryProperty('Bitmap', @ReadData, @WriteData, ADoWrite);
+  Filer.DefineBinaryProperty('BitmapAdv', @ReadAdvData, @WriteAdvData, ADoWrite);
 end;
 
 {------------------------------------------------------------------------------
@@ -465,22 +1376,22 @@ end;
   Deletes the image identified by Index. An index of -1 deletes all
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Delete(AIndex: Integer);
+var
+  R: TCustomImageListResolution;
 begin
-  if AIndex = -1
-  then begin
-    Clear;
-    Exit;
-  end;
-  
-  CheckIndex(AIndex);
+  for R in Resolutions do
+    R.Delete(AIndex);
 
-  InternalMove(AIndex, FCount - 1, True);
-  Dec(FCount);
-  if HandleAllocated
-  then TWSCustomImageListClass(WidgetSetClass).Delete(Self, AIndex);
-  // TODO: adjust allocated data
   FChanged := true;
   Change;
+end;
+
+procedure TCustomImageList.DeleteResolution(const AWidth: Integer);
+var
+  I: Integer;
+begin
+  if FData.Find(AWidth, I) then
+    FData.Delete(I);
 end;
 
 {------------------------------------------------------------------------------
@@ -492,10 +1403,23 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomImageList.Destroy;
 begin
+  FData.Free;
   inherited Destroy;
   while FChangeLinkList.Count>0 do
     UnregisterChanges(TChangeLink(FChangeLinkList[0]));
   FreeThenNil(FChangeLinkList);
+end;
+
+procedure TCustomImageList.DoDestroyResolutionReference(const AWidth: Integer;
+  AResolutionReference: TLCLHandle);
+var
+  I: Integer;
+begin
+  if FChangeLinkList=nil then
+    Exit;
+  for I := 0 to FChangeLinkList.Count-1 do
+    if TChangeLink(FChangeLinkList[I]).Sender = Self then
+      TChangeLink(FChangeLinkList[I]).DoDestroyResolutionReference(AWidth, AResolutionReference);
 end;
 
 {------------------------------------------------------------------------------
@@ -531,11 +1455,7 @@ procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   ADrawingStyle: TDrawingStyle; AImageType: TImageType;
   ADrawEffect: TGraphicsDrawEffect);
 begin
-  if (AIndex < 0) or (AIndex >= FCount) then Exit;
-
-  ReferenceNeeded;
-  TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
-                          BkColor, BlendColor, ADrawEffect, ADrawingStyle, AImageType);
+  GetResolution(FWidth).Draw(ACanvas, AX, AY, AIndex, ADrawingStyle, AImageType, ADrawEffect);
 end;
 
 procedure TCustomImageList.DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer;
@@ -553,20 +1473,8 @@ end;
 procedure TCustomImageList.DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   AOverlay: TOverlay; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
   ADrawEffect: TGraphicsDrawEffect);
-var
-  OverlayIndex: Integer;
 begin
-  if (AIndex < 0) or (AIndex >= FCount) then Exit;
-
-  ReferenceNeeded;
-  TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
-                          BkColor, BlendColor, ADrawEffect, ADrawingStyle, AImageType);
-
-  OverlayIndex := FOverlays[AOverlay];
-  if (OverlayIndex < 0) or (OverlayIndex >= FCount) then Exit;
-
-  TWSCustomImageListClass(WidgetSetClass).Draw(Self, OverlayIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
-                          clNone, BlendColor, ADrawEffect, ADrawingStyle, AImageType);
+  GetResolution(FWidth).DrawOverlay(ACanvas, AX, AY, AIndex, AOverlay, ADrawingStyle, AImageType, ADrawEffect);
 end;
 
 
@@ -586,37 +1494,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomImageList.FillDescription
-  Params:  Desc: the description to fill
-  Returns: Nothing
-
-  Fills the description with the default info of the imagedata
- ------------------------------------------------------------------------------}
-procedure TCustomImageList.FillDescription(out ADesc: TRawImageDescription);
-begin
-  ADesc.Init;
-  ADesc.Format := ricfRGBA;
-  ADesc.PaletteColorCount := 0;
-  ADesc.MaskBitsPerPixel := 0;
-  ADesc.Depth := 32;
-  ADesc.Width := FWidth;
-  ADesc.Height := FHeight;
-  ADesc.BitOrder := riboBitsInOrder;
-  ADesc.ByteOrder := riboMSBFirst;
-  ADesc.LineOrder := riloTopToBottom;
-  ADesc.BitsPerPixel := 32;
-  ADesc.LineEnd := rileDWordBoundary;
-  ADesc.RedPrec := 8; // red precision. bits for red
-  ADesc.RedShift := 8;
-  ADesc.GreenPrec := 8;
-  ADesc.GreenShift := 16;
-  ADesc.BluePrec := 8;
-  ADesc.BlueShift := 24;
-  ADesc.AlphaPrec := 8;
-  ADesc.AlphaShift := 0;
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCustomImageList.GetBitmap
   Params:  Index: the index of the requested image
            Image: a bitmap as a container for the bitmap
@@ -630,33 +1507,8 @@ begin
 end;
 
 procedure TCustomImageList.GetFullBitmap(Image: TCustomBitmap; AEffect: TGraphicsDrawEffect = gdeNormal);
-var
-  RawImg: TRawImage;
-  ListImg, DeviceImg: TLazIntfImage;
-  ImgHandle, MskHandle: HBitmap;
 begin
-  if (FCount = 0) or (Image = nil) then Exit;
-
-  GetFullRawImage(RawImg);
-
-  RawImg.PerformEffect(AEffect, True);
-
-  MskHandle := 0;
-  if not CreateCompatibleBitmaps(RawImg, ImgHandle, MskHandle, True)
-  then begin
-    // bummer, the widgetset doesn't support our 32bit format, try device
-    ListImg := TLazIntfImage.Create(RawImg, False);
-    DeviceImg := TLazIntfImage.Create(0,0,[]);
-    DeviceImg.DataDescription := GetDescriptionFromDevice(0, Width, Height * Count);
-    DeviceImg.CopyPixels(ListImg);
-    DeviceImg.GetRawImage(RawImg);
-    RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle);
-    DeviceImg.Free;
-    ListImg.Free;
-  end;
-  Image.SetHandles(ImgHandle, MskHandle);
-
-  RawImg.FreeData;
+  GetResolution(FWidth).GetFullBitmap(Image, AEffect);
 end;
 
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TCustomBitmap;
@@ -666,7 +1518,7 @@ var
   ListImg, DeviceImg: TLazIntfImage;
   ImgHandle, MskHandle: HBitmap;
 begin
-  if (FCount = 0) or (Image = nil) then Exit;
+  if (Count = 0) or (Image = nil) then Exit;
 
   GetRawImage(Index, RawImg);
   
@@ -690,45 +1542,33 @@ begin
   RawImg.FreeData;
 end;
 
+function TCustomImageList.GetCount: Integer;
+begin
+  if FData.Count=0 then
+    Exit(0);
+  Result := GetResolution(FWidth).Count;
+end;
+
 procedure TCustomImageList.GetFullRawImage(out Image: TRawImage);
 begin
-  Image.Init;
+  GetResolution(FWidth).GetFullRawImage(Image);
+end;
 
-  if (FCount = 0) then Exit;
-  FillDescription(Image.Description);
-  Image.Description.Height := Height * Count;
-  Image.DataSize := Width * Height * Count * SizeOf(FData[0]);
-  Image.Data := PByte(FData);
+function TCustomImageList.GetHeightForPPI(AImageWidth,
+  APPI: Integer): Integer;
+var
+  I: Integer;
+begin
+  AImageWidth := GetWidthForPPI(AImageWidth, APPI);
+  if FData.Find(AImageWidth, I) then
+    Result := FData[I].Height
+  else
+    Result := AImageWidth * FHeight div FWidth;
 end;
 
 procedure TCustomImageList.GetIcon(Index: Integer; Image: TIcon; AEffect: TGraphicsDrawEffect);
-var
-  RawImg: TRawImage;
-  ListImg, DeviceImg: TLazIntfImage;
-  IconInfo: TIconInfo;
 begin
-  if (FCount = 0) or (Image = nil) then Exit;
-
-  GetRawImage(Index, RawImg);
-  RawImg.PerformEffect(AEffect, True);
-
-  IconInfo.fIcon := True;
-  IconInfo.hbmMask := 0;
-  if not CreateCompatibleBitmaps(RawImg, IconInfo.hbmColor, IconInfo.hbmMask, True)
-  then begin
-    // bummer, the widgetset doesn't support our 32bit format, try device
-    ListImg := TLazIntfImage.Create(RawImg, False);
-    DeviceImg := TLazIntfImage.Create(0,0,[]);
-    DeviceImg.DataDescription := GetDescriptionFromDevice(0, FWidth, FHeight);
-    DeviceImg.CopyPixels(ListImg);
-    DeviceImg.GetRawImage(RawImg);
-    RawImage_CreateBitmaps(RawImg, IconInfo.hbmColor, IconInfo.hbmMask);
-    DeviceImg.Free;
-    ListImg.Free;
-  end;
-  Image.Handle := CreateIconIndirect(@IconInfo);
-
-  RawImg.FreeData;
+  GetResolution(FWidth).GetIcon(Index, Image, AEffect);
 end;
 
 procedure TCustomImageList.GetIcon(Index: Integer; Image: TIcon);
@@ -738,27 +1578,82 @@ end;
 
 procedure TCustomImageList.GetRawImage(Index: Integer; out Image: TRawImage);
 begin
-  Image.Init;
-
-  if (FCount = 0) then Exit;
-  CheckIndex(Index);
-  FillDescription(Image.Description);
-  if Index >= 0 then
-  begin
-    Image.DataSize := FWidth * FHeight * SizeOf(FData[0]);
-    Image.Data := @FData[Index * FWidth * FHeight];
-  end;
+  GetResolution(FWidth).GetRawImage(Index, Image);
 end;
 
-function TCustomImageList.GetReference: TWSCustomImageListReference;
+function TCustomImageList.GetReference(
+  AImageWidth: Integer): TWSCustomImageListReference;
 begin
-  if not FReference.Allocated then ReferenceNeeded;
-  Result := FReference;
+  Result := GetResolution(AImageWidth).Reference;
 end;
 
-function TCustomImageList.GetReferenceHandle: THandle;
+function TCustomImageList.GetReferenceForPPI(AImageWidth,
+  APPI: Integer): TWSCustomImageListReference;
 begin
-  Result := FReference.Handle;
+  Result := GetReference(GetWidthForPPI(AImageWidth, APPI));
+end;
+
+function TCustomImageList.GetResolutionForPPI(AImageWidth,
+  APPI: Integer): TCustomImageListResolution;
+begin
+  Result := GetResolution(GetWidthForPPI(AImageWidth, APPI));
+end;
+
+function TCustomImageList.GetSizeForPPI(AImageWidth, APPI: Integer): TSize;
+var
+  Res: TCustomImageListResolution;
+begin
+  Res := GetResolutionForPPI(AImageWidth, APPI);
+  Result.Width := Res.Width;
+  Result.Height := Res.Height;
+end;
+
+function TCustomImageList.GetWidthForPPI(AImageWidth,
+  APPI: Integer): Integer;
+var
+  Factor: Integer;
+begin
+  if AImageWidth<=0 then
+    AImageWidth := FWidth;
+
+  if not FScaled then
+    Factor := 100
+  else
+  if APPI <= 120 then
+    Factor := 100 // 100-125% (96-120 DPI): no scaling
+  else
+  if APPI <= 168 then
+    Factor := 150 // 126%-175% (144-168 DPI): 150% scaling
+  else
+    Factor := Round(ScreenInfo.PixelsPerInchX/96) * 100; // 200, 300, 400, ...
+
+  Result := AImageWidth * Factor div 100;
+  if Assigned(FOnGetWidthForPPI) then
+    FOnGetWidthForPPI(Self, AImageWidth, APPI, Result);
+end;
+
+function TCustomImageList.GetResolution(
+  AImageWidth: Integer): TCustomImageListResolution;
+begin
+  if AImageWidth<=0 then
+    AImageWidth := FWidth;
+  Result := FData.ImageLists[AImageWidth];
+end;
+
+function TCustomImageList.GetResolutionByIndex(
+  AIndex: Integer): TCustomImageListResolution;
+begin
+  Result := FData[AIndex];
+end;
+
+function TCustomImageList.GetResolutionClass: TCustomImageListResolutionClass;
+begin
+  Result := TCustomImageListResolution;
+end;
+
+function TCustomImageList.GetResolutionCount: Integer;
+begin
+  Result := FData.Count;
 end;
 
 {------------------------------------------------------------------------------
@@ -770,7 +1665,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomImageList.GetHotSpot: TPoint;
 begin
-  Result := Point(0, 0);
+  Result := GetResolution(FWidth).GetHotSpot;
 end;
 
 {------------------------------------------------------------------------------
@@ -783,15 +1678,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Initialize;
 begin
+  FData := TCustomImageListResolutions.Create(Self, GetResolutionClass);
   FChangeLinkList := TList.Create;
   FAllocBy := 4;
-  FAllocCount := 0;
   FBlendColor := clNone;
   FBkColor := clNone;
   FDrawingStyle := dsNormal;
   ClearOverlays;
 
-  if (Height < 1) or (Height > 32768) or (Width < 1) 
+  if (Height < 1) or (Height > 32768) or (Width < 1)
   then raise EInvalidOperation.Create(SInvalidImageSize);
 end;
 
@@ -811,10 +1706,10 @@ begin
     FOverlays[I] := -1;
 end;
 
-class procedure TCustomImageList.WSRegisterClass;
+procedure TCustomImageList.CreateDefaultResolution;
 begin
-  inherited WSRegisterClass;
-  RegisterCustomImageList;
+  if ResolutionCount=0 then
+    GetResolution(FWidth); // create default resolution if needed
 end;
 
 {------------------------------------------------------------------------------
@@ -830,33 +1725,39 @@ end;
 procedure TCustomImageList.Insert(AIndex: Integer; AImage, AMask: TCustomBitmap);
 var
   msk: THandle;
+  R: TCustomImageListResolution;
+  ScBmp: TRGBAQuadArray;
 begin
   if AImage = nil then Exit;
   
-  if AMask = nil
-  then begin
-    if AImage.Masked
-    then msk := AImage.MaskHandle
-    else msk := 0;
-  end
-  else msk := AMask.Handle;
-  
-  InternalInsert(AIndex, AImage.Handle, msk, AImage.Width, AImage.Height);
+  CreateDefaultResolution;
+  for R in Resolutions do
+  begin
+    ScaleImage(AImage, AMask, R.Width, R.Height, ScBmp);
+    R.InternalInsert(AIndex, @ScBmp[0]);
+  end;
 end;
 
 procedure TCustomImageList.InsertIcon(AIndex: Integer; AIcon: TCustomIcon);
 var
-  IconIndex: Integer;
-  Image: TIconImage;
+  R: TCustomImageListResolution;
+  ScBmp: TRGBAQuadArray;
+  msk: HBITMAP;
 begin
   if AIcon = nil then Exit;
-  IconIndex := AIcon.GetBestIndexForSize(Size(Width, Height));
-  if IconIndex = -1 then Exit;
-  Image := TSharedIcon(TCustomIconAccess(AIcon).FSharedImage).Images[IconIndex];
-  if Image.Handle = 0 then
-    InternalInsert(AIndex, Image.RawImage)
-  else
-    InternalInsert(AIndex, Image.Handle, Image.MaskHandle, Image.Width, Image.Height);
+
+  CreateDefaultResolution;
+  for R in Resolutions do
+  begin
+    AIcon.Current := GetBestIconIndexForSize(AIcon, R.Width);
+    if AIcon.Masked then
+      msk := AIcon.MaskHandle
+    else
+      msk := 0;
+    ScaleImage(AIcon.BitmapHandle, msk,
+      AIcon.Width, AIcon.Height, R.Width, R.Height, ScBmp);
+    R.InternalInsert(AIndex, @ScBmp[0]);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -875,6 +1776,9 @@ var
   RawImg: TRawImage;
   SourceImage, MaskedImage: TLazIntfImage;
   MaskedDescription, DeviceDescription: TRawImageDescription;
+  Bmp, Msk: HBitmap;
+  ScBmp: TRGBAQuadArray;
+  R: TCustomImageListResolution;
 begin
   if AImage = nil then Exit;
   SourceImage := TLazIntfImage.Create(AImage.RawImage, False);
@@ -895,149 +1799,24 @@ begin
       MaskedImage.CopyPixels(SourceImage);
       MaskedImage.Mask(TColorToFPColor(ColorToRGB(MaskColor)));
       MaskedImage.GetRawImage(RawImg);
-      InternalInsert(Index, RawImg);
+      MaskedImage.CreateBitmaps(Bmp, Msk);
+      try
+        CreateDefaultResolution;
+        for R in Resolutions do
+        begin
+          ScaleImage(Bmp, Msk, MaskedImage.Width, MaskedImage.Height, R.Width, R.Height, ScBmp);
+          R.InternalInsert(Index, @ScBmp[0]);
+        end;
+      finally
+        DeleteObject(Bmp);
+        DeleteObject(Msk);
+      end;
     finally
       MaskedImage.Free;
     end;
   finally
     SourceImage.Free;
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCustomImageList.InternalMove
-  Params:  CurIndex: the index of the image to be moved
-           NewIndex: the new index of the image
-  Returns: Nothing
-
-  Moves an image from the CurIndex'th location to NewIndex'th location
-  without notifying the widgetset
- ------------------------------------------------------------------------------}
-procedure TCustomImageList.InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
-var
-  ImgSize, DataSize: Cardinal;
-  p: Pointer;
-begin
-  ImgSize := FWidth * FHeight;
-  DataSize := ImgSize * SizeOf(FData[0]);
-
-  if not AIgnoreCurrent
-  then begin
-    // store current
-    p := GetMem(DataSize);
-    System.Move(FData[ACurIndex * ImgSize], p^, DataSize);
-  end;
-  
-  // move all one up
-  if ACurIndex < ANewIndex
-  then System.Move(FData[(ACurIndex + 1) * ImgSize], FData[ACurIndex * ImgSize], DataSize * Cardinal(ANewIndex - ACurIndex))
-  else System.Move(FData[ANewIndex * ImgSize], FData[(ANewIndex + 1) * ImgSize], DataSize * Cardinal(ACurIndex - ANewIndex));
-
-  if not AIgnoreCurrent
-  then begin
-    // restore current
-    System.Move(p^, FData[ANewIndex * ImgSize], DataSize);
-    FreeMem(p);
-  end;
-end;
-
-procedure TCustomImageList.InternalReplace(AIndex: Integer; AImage,
-  AMask: HBitmap);
-var
-  RawImage: TRawImage;
-  R: TRect;
-  ImgData: PRGBAQuad;
-begin
-  if (AIndex < 0) then AIndex := 0;
-  CheckIndex(AIndex);
-
-  R := Rect(0, 0, FWidth, FHeight);
-  RawImage_FromBitmap(RawImage, AImage, AMask, @R);
-  ImgData := InternalSetImage(AIndex, RawImage);
-  if HandleAllocated
-  then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
-
-  FChanged := true;
-  Change;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCustomImageList.InternalSetImage
-  Params:  AIndex: the index of the location where the image should be set
-           AImage: the new image
-  Returns: Pointer to the updated image data
-
-  Copies the imagedata into the FData array and then frees the image.
- ------------------------------------------------------------------------------}
-function TCustomImageList.InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
-var
-  Desc: TRawImageDescription absolute AImage.Description;
-  
-  RawImg: TRawImage;
-  SrcImg, DstImg: TLazIntfImage;
-  SrcHasAlpha, KeepAlpha: Boolean;
-  
-begin
-  SrcHasAlpha := AImage.Description.AlphaPrec > 0;
-  KeepAlpha := SrcHasAlpha;
-  if not SrcHasAlpha and (Desc.BitsPerPixel = 32) and (Desc.Depth = 24) and
-    (AImage.Mask <> nil) and (Desc.MaskBitsPerPixel > 0)
-  then begin
-    // Try to squeeze Aplha channel in some unused bits
-    if  (Desc.RedShift >= 8)
-    and (Desc.GreenShift >= 8)
-    and (Desc.BlueShift >= 8)
-    then begin
-      // there is room at the lsb side
-      Desc.AlphaPrec := 8;
-      Desc.AlphaShift := 0;
-      Desc.Depth := 32;
-      SrcHasAlpha := True;
-    end
-    else if (Desc.RedShift < 24)
-        and (Desc.GreenShift < 24)
-        and (Desc.BlueShift < 24)
-    then begin
-      // there is room at the msb side
-      Desc.AlphaPrec := 8;
-      Desc.AlphaShift := 24;
-      Desc.Depth := 32;
-      SrcHasAlpha := True;
-    end;
-  end;
-
-  SrcImg := TLazIntfImage.Create(AImage, True);
-  if SrcHasAlpha
-  then SrcImg.AlphaFromMask(KeepAlpha);
-
-  RawImg.Init;
-  FillDescription(RawImg.Description);
-  Result := @FData[AIndex * FWidth * FHeight];
-  RawImg.DataSize := FWidth * FHeight * SizeOf(FData[0]);
-  RawImg.Data := PByte(Result);
-  if not SrcHasAlpha
-  then begin
-    // Add maskdata to store copied mask, so an alpha can be created
-    RawImg.Description.MaskBitsPerPixel := 1;
-    RawImg.Description.MaskBitOrder := riboReversedBits;
-    RawImg.Description.MaskLineEnd := rileByteBoundary;
-    RawImg.Description.MaskShift := 0;
-    RawImg.MaskSize := RawImg.Description.MaskBytesPerLine * PtrUInt(FHeight);
-    RawImg.Mask := GetMem(RawImg.MaskSize);
-  end;
-
-  DstImg := TLazIntfImage.Create(RawImg, False);
-  DstImg.CopyPixels(SrcImg);
-  if not SrcHasAlpha
-  then begin
-    DstImg.AlphaFromMask;
-    FreeMem(RawImg.Mask);
-    RawImg.Mask := nil;
-    RawImg.MaskSize := 0;
-  end;
-
-  DstImg.Free;
-  SrcImg.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -1049,6 +1828,8 @@ end;
   Moves an image from the CurIndex'th location to NewIndex'th location
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Move(ACurIndex, ANewIndex: Integer);
+var
+  R: TCustomImageListResolution;
 begin
   if ACurIndex = ANewIndex then Exit;
   CheckIndex(ACurIndex);
@@ -1057,9 +1838,12 @@ begin
   if ACurIndex < 0 then ACurIndex := 0;
   if ANewIndex < 0 then ANewIndex := 0;
 
-  InternalMove(ACurIndex, ANewIndex, False);
-  if HandleAllocated
-  then TWSCustomImageListClass(WidgetSetClass).Move(Self, ACurIndex, ANewIndex);
+  for R in Resolutions do
+  begin
+    R.InternalMove(ACurIndex, ANewIndex, False);
+    if R.HandleAllocated
+    then TWSCustomImageListResolutionClass(R.WidgetSetClass).Move(R, ACurIndex, ANewIndex);
+  end;
 
   FChanged := true;
   Change;
@@ -1083,277 +1867,190 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomImageList.WriteData
+  Method:  TCustomImageList.WriteDefData
   Params:  AStream: The stream to write the data to
   Returns: Nothing
 
   Writes the imagelist data to stream
  ------------------------------------------------------------------------------}
+
 procedure TCustomImageList.WriteData(AStream: TStream);
+begin
+  GetResolution(FWidth).WriteData(AStream, False); // Change to ACompress=True after Lazarus 1.10 has been released to retain compatibility with 1.8 that doesn't support imagelist compression
+end;
+
+procedure TCustomImageList.WriteAdvData(AStream: TStream);
 var
   Signature: TImageListSignature;
+  R: TCustomImageListResolution;
+  SaveR: array of TCustomImageListResolution;
+  I: Integer;
 begin
   //Write signature
   Signature:=SIG_LAZ3;
   AStream.Write(Signature,SizeOf(Signature));
 
-  //Count of image
-  WriteLRSInteger(AStream,Count);
-  WriteLRSInteger(AStream,Width);
-  WriteLRSInteger(AStream,Height);
+  SetLength(SaveR, 0);
+  for R in Resolutions do
+    if (R.Width<>FWidth) and not R.AutoCreatedInDesignTime then
+    begin
+      SetLength(SaveR, Length(SaveR)+1);
+      SaveR[High(SaveR)] := R;
+    end;
 
-  //images
-  if Count > 0 then
-    AStream.Write(FData[0], FWidth * FHeight * FCount * SizeOf(FData[0]));
+  //Count of resolutions
+  WriteLRSInteger(AStream, Length(SaveR));
+
+  for R in SaveR do
+    R.WriteData(AStream, True);
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomImageList.ReadData
+  Method:  TCustomImageList.ReadDefData
   Params:  AStream: The stream to read the data from
   Returns: Nothing
 
   Reads the imagelist data from stream
  ------------------------------------------------------------------------------}
+
 procedure TCustomImageList.ReadData(AStream: TStream);
-var
-  Signature: TImageListSignature;
-  StreamPos: TStreamSeekType;
-
-  procedure DoReadLaz1;
-  var
-    i, NewCount, Size: Integer;
-    bmp: TBitmap;
-  begin
-    // provided for compatability for earlier lazarus streams
-    NewCount := AStream.ReadWord;
-    for i := 0 to NewCount - 1 do
-    begin
-      bmp := TBitMap.Create;
-      Size:=ReadLRSInteger(AStream);
-      bmp.LoadFromStream(AStream, Size);
-      bmp.Transparent := True;
-      Add(bmp, nil);
-      bmp.Free;
-    end;
-  end;
-
-  procedure DoReadLaz2;
-  var
-    i, NewCount, Size: cardinal;
-    bmp: TCustomBitmap;
-    Sig: array[0..1] of char;
-  begin
-    NewCount := ReadLRSCardinal(AStream);
-    Width := ReadLRSCardinal(AStream);
-    Height := ReadLRSCardinal(AStream);
-    for i := 0 to NewCount - 1 do
-    begin
-      Size := ReadLRSCardinal(AStream);
-      bmp := nil;
-      // Before our TBitmap can have bpm, xpm, png or other content
-      // We need to look at signature before loading
-      if Size > 2 then
-      begin
-        AStream.Read(Sig[0], 2);
-        if Sig = 'BM' then
-          bmp := TBitmap.Create
-        else
-        if Sig = '/*' then
-          bmp := TPixmap.Create
-        else
-        if Sig = '%P' then
-          bmp := TPortableNetworkGraphic.Create
-        else
-          raise EInvalidGraphicOperation.Create(rsInvalidStreamFormat);
-        AStream.Position := AStream.Position - 2;
-      end;
-      bmp.LoadFromStream(AStream, Size);
-      Add(bmp, nil);
-      bmp.Free;
-    end;
-  end;
-  
-  procedure DoReadLaz3;
-  begin
-    FCount := ReadLRSCardinal(AStream);
-    FWidth := ReadLRSCardinal(AStream);
-    FHeight := ReadLRSCardinal(AStream);
-    
-    AllocData(FCount);
-    if FCount > 0 then
-      AStream.ReadBuffer(FData[0], FWidth * FHeight * FCount *  SizeOf(FData[0])) ;
-
-    FChanged := true;
-    Change;
-  end;
-
-  procedure CreateImagesFromRawImage(IntfImage: TLazIntfImage;
-    NewCount: integer);
-  var
-    RawImage, SubRawImage: TRawImage;
-    ImgHandle, MaskHandle: HBitmap;
-    Row: Integer;
-    Col: Integer;
-    ImgRect: TRect;
-    Res: Boolean;
-  begin
-    BeginUpdate;
-    try
-      IntfImage.GetRawImage(RawImage);
-      SubRawImage.Init;
-
-      for Row := 0 to (IntfImage.Height div Height) - 1 do
-      begin
-        if NewCount <= 0 then Break;
-        for Col := 0 to (IntfImage.Width div Width) - 1 do
-        begin
-          if NewCount <= 0 then Break;
-
-          ImgRect := Bounds(Col*Width,Row*Height,Width,Height);
-          RawImage.ExtractRect(ImgRect, SubRawImage);
-          Res := RawImage_CreateBitmaps(SubRawImage, ImgHandle, MaskHandle);
-          SubRawImage.FreeData;
-          if not Res
-          then raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
-          
-          InternalInsert(Count, ImgHandle, MaskHandle, Width, Height);
-          DeleteObject(ImgHandle);
-          DeleteObject(MaskHandle);
-          //DebugLn('CreateImagesFromRawImage B ',Img.Width,',',Img.Height,' ',Count);
-          Dec(NewCount);
-        end;
-      end;
-    finally
-      EndUpdate;
-    end;
-  end;
-  
-  procedure ReadDelphiImageAndMask(HasMask: boolean; NewCount: integer);
-  var
-    IntfImage: TLazIntfImage;
-    ImgReader: TFPReaderBMP;
-    MaskIntfImage: TLazIntfImageMask;
-  begin
-    IntfImage:=nil;
-    MaskIntfImage:=nil;
-    ImgReader:=nil;
-    try
-      IntfImage:=TLazIntfImage.Create(0,0,[]);
-      IntfImage.DataDescription := GetDescriptionFromDevice(0, 0, 0);
-      // read the image bmp stream into the IntfImage
-      ImgReader:=TFPReaderBMP.Create;
-      IntfImage.LoadFromStream(AStream,ImgReader);
-      if HasMask then begin
-        // create the mask bmp directly into the RawImage
-        MaskIntfImage:=TLazIntfImageMask.CreateWithImage(IntfImage);
-        MaskIntfImage.LoadFromStream(AStream,ImgReader);
-      end;
-
-      CreateImagesFromRawImage(IntfImage,NewCount);
-    finally
-      // clean up
-      ImgReader.Free;
-      IntfImage.Free;
-      MaskIntfImage.Free;
-    end;
-  end;
-  
-  {$IFDEF SaveDelphiImgListStream}
-  procedure SaveImgListStreamToFile;
-  var
-    CurStreamPos: TStreamSeekType;
-    fs: TFileStream;
-    i: Integer;
-    Filename: string;
-  begin
-    i:=0;
-    repeat
-      inc(i);
-      Filename:='TCustomImageList'+IntToStr(i)+'.stream';
-    until not FileExistsUTF8(Filename);
-    CurStreamPos := AStream.Position;
-    DebugLn('TCustomImageList.ReadData Saving stream to ',Filename);
-    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
-    AStream.Position:=StreamPos;
-    fs.CopyFrom(AStream,AStream.Size-AStream.Position);
-    fs.Free;
-    AStream.Position:=CurStreamPos;
-  end;
-  {$ENDIF}
-  
-var
-  HasMask: Boolean;
-  NewCount: Integer;
-  Size: integer;
 begin
-  BeginUpdate; // avoid multiple changed calls
+  BeginUpdate;
   try
-    Clear;
-
-    StreamPos := AStream.Position;                // check stream signature
-    AStream.Read(Signature, SizeOf(Signature));
-
-    if Signature = SIG_LAZ3
-    then begin
-      DoReadLaz3;
-      Exit;
-    end;
-
-    if Signature = SIG_LAZ2
-    then begin
-      DoReadLaz2;
-      Exit;
-    end;
-
-    if Signature = SIG_LAZ1
-    then begin
-      DoReadLaz1;
-      Exit;
-    end;
-
-    // Delphi streams
-
-    {$IFDEF SaveDelphiImgListStream}
-    SaveImgListStreamToFile;
-    {$ENDIF}
-
-    if Signature = SIG_D3
-    then begin
-      AStream.ReadWord; //Skip ?
-      NewCount := ReadLRSWord(AStream);
-      //DebugLn('NewCount=',NewCount);
-      AStream.ReadWord; //Skip Capacity
-      AStream.ReadWord; //Skip Grow
-      FWidth := ReadLRSWord(AStream);
-      //DebugLn('NewWidth=',FWidth);
-      FHeight := ReadLRSWord(AStream);
-      //DebugLn('NewHeight=',FHeight);
-      FBKColor := TColor(ReadLRSInteger(AStream));
-      // corrent colors - they are stored in windows values
-      if TColorRef(FBKColor) = CLR_NONE then
-        FBKColor := clNone
-      else
-      if TColorRef(FBKColor) = CLR_DEFAULT then
-        FBKColor := clDefault;
-      HasMask := (ReadLRSWord(AStream) and 1) = 1;
-      AStream.ReadDWord; //Skip ?
-      AStream.ReadDWord; //Skip ?
-
-      ReadDelphiImageAndMask(HasMask,NewCount);
-    end
-    else begin
-      // D2 has no signature, so restore original position
-      AStream.Position := StreamPos;
-      Size:=ReadLRSInteger(AStream);
-      NewCount:=ReadLRSInteger(AStream);
-
-      ReadDelphiImageAndMask(false,NewCount);
-      AStream.Position := StreamPos+Size;
-    end;
-    
+    GetResolution(FWidth).ReadData(AStream);
   finally
     EndUpdate;
   end;
+
+  FChanged := true;
+  Change;
+end;
+
+procedure TCustomImageList.ReadAdvData(AStream: TStream);
+var
+  Signature: TImageListSignature;
+  ResCount, I: Integer;
+  AStreamPos: Int64;
+  ImgCount, ImgWidth, ImgHeight: Cardinal;
+  R: TCustomImageListResolution;
+begin
+  BeginUpdate;
+  try
+    AStream.Read(Signature, SizeOf(Signature));
+
+    if Signature <> SIG_LAZ3 then
+      raise Exception.Create('Invalid BitmapAdv signature.');
+
+    ResCount := ReadLRSInteger(AStream);
+    for I := 0 to ResCount-1 do
+    begin
+      AStreamPos := AStream.Position;
+      AStream.Read(Signature, SizeOf(Signature));
+      if (Signature <> SIG_LAZ3) and (Signature <> SIG_LAZ4) then
+        raise Exception.Create('Invalid BitmapAdv signature.');
+
+      ImgCount := ReadLRSCardinal(AStream);
+      ImgWidth := ReadLRSCardinal(AStream);
+      ImgHeight := ReadLRSCardinal(AStream);
+
+      R := FData.GetImageLists(ImgWidth, False, False);
+      AStream.Position := AStreamPos;
+      R.ReadData(AStream);
+    end;
+  finally
+    EndUpdate;
+  end;
+
+  FChanged := true;
+  Change;
+end;
+
+function TCustomImageList.Resolutions: TCustomImageListResolutionEnumerator;
+begin
+  Result := TCustomImageListResolutionEnumerator.Create(Self, False);
+end;
+
+function TCustomImageList.ResolutionsDesc: TCustomImageListResolutionEnumerator;
+begin
+  Result := TCustomImageListResolutionEnumerator.Create(Self, True);
+end;
+
+class procedure TCustomImageList.ScaleImage(const ABitmap, AMask: HBITMAP;
+  BitmapWidth, BitmapHeight, TargetWidth, TargetHeight: Integer;
+  var AData: TRGBAQuadArray);
+var
+  Size, X, Y: Integer;
+  II: TLazIntfImage;
+  FI, ScFI: TFPCompactImgRGBA8Bit;
+  ScCanvas: TFPImageCanvas;
+  Px: PRGBAQuad;
+  C: TFPColor;
+begin
+  Size := TargetHeight * TargetWidth;
+  SetLength(AData, Size);
+  FillChar(AData[0], Size * SizeOf(TRGBAQuad), 1);
+
+  FI := nil;
+  ScFI := nil;
+  ScCanvas := nil;
+  II := TLazIntfImage.Create(BitmapWidth, BitmapHeight);
+  try
+    II.LoadFromBitmap(ABitmap, AMask, BitmapWidth, BitmapHeight);
+    if AMask<>0 then
+      II.AlphaFromMask(True);
+
+    FI := TFPCompactImgRGBA8Bit.Create(II.Width, II.Height);
+
+    for X := 0 to II.Width-1 do
+    for Y := 0 to II.Height-1 do
+      FI.Colors[X, Y] := II.Colors[X, Y];
+
+    if BitmapWidth=TargetWidth then
+      ScFI := FI
+    else
+    begin
+      ScFI := TFPCompactImgRGBA8Bit.Create(TargetWidth, TargetHeight);
+
+      ScCanvas := TFPImageCanvas.create(ScFI);
+      ScCanvas.StretchDraw(0,0,TargetWidth,TargetHeight, FI);
+    end;
+
+    Px := @AData[0];
+    for Y := 0 to TargetHeight-1 do
+    for X := 0 to TargetWidth-1 do
+    begin
+      C := ScFI.Colors[X, Y];
+      Px^.Red := Byte(C.Red);
+      Px^.Green := Byte(C.Green);
+      Px^.Blue := Byte(C.Blue);
+      Px^.Alpha := Byte(C.Alpha);
+      Inc(Px);
+    end;
+  finally
+    II.Free;
+    FI.Free;
+    if FI<>ScFI then
+    begin
+      ScFI.Free;
+      ScCanvas.Free;
+    end;
+  end;
+end;
+
+class procedure TCustomImageList.ScaleImage(const ABitmap,
+  AMask: TCustomBitmap; TargetWidth, TargetHeight: Integer;
+  var AData: TRGBAQuadArray);
+var
+  msk: HBITMAP;
+begin
+  if AMask<>nil then
+    msk := AMask.BitmapHandle
+  else
+  if ABitmap.Masked then
+    msk := ABitmap.MaskHandle
+  else
+    msk := 0;
+  ScaleImage(ABitmap.Handle, msk, ABitmap.Width, ABitmap.Height, TargetWidth, TargetHeight, AData);
 end;
 
 function TCustomImageList.Equals(Obj: TObject): boolean;
@@ -1371,7 +2068,9 @@ begin
     SrcStream:=TMemoryStream.Create;
     try
       WriteData(CurStream);
+      WriteAdvData(CurStream);
       SrcList.WriteData(SrcStream);
+      SrcList.WriteAdvData(SrcStream);
       Result:=CompareMemStreams(CurStream,SrcStream);
     finally
       SrcStream.Free;
@@ -1383,6 +2082,40 @@ begin
     {$ELSE}
     Result:=false;
     {$ENDIF}
+end;
+
+function TCustomImageList.FindResolution(AImageWidth: Integer; out
+  AResolution: TCustomImageListResolution): Boolean;
+var
+  I: Integer;
+begin
+  Result := FData.Find(AImageWidth, I);
+  if Result then
+    AResolution := ResolutionByIndex[I]
+  else
+    AResolution := nil;
+end;
+
+function TCustomImageList.GetBestIconIndexForSize(AIcon: TCustomIcon;
+  AWidth: Integer): Integer;
+var
+  MaxWidth, MaxWidthI: Integer;
+begin
+  MaxWidth := 0;
+  for Result := 0 to AIcon.Count-1 do // first try to find the smallest (but bigger) multiple
+  begin
+    AIcon.Current := Result;
+    if (AIcon.Width mod AWidth = 0) then
+      Exit;
+
+    if AIcon.Width>MaxWidth then
+    begin
+      MaxWidth := AIcon.Width;
+      MaxWidthI := Result;
+    end;
+  end;
+
+  Result := MaxWidthI; // just pickup the biggest image
 end;
 
 procedure TCustomImageList.Overlay(AIndex: Integer; Overlay: TOverlay);
@@ -1419,6 +2152,17 @@ begin
   end;
 end;
 
+procedure TCustomImageList.RegisterResolutions(
+  const AResolutionWidths: array of Integer);
+var
+  R: Integer;
+begin
+  for R in AResolutionWidths do
+  begin
+    GetResolution(R).AutoCreatedInDesignTime := False;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Replace
   Params:  Index: the index of the replaceded image
@@ -1429,16 +2173,54 @@ end;
   Replaces the index'th image with the image given. If Mask is nil, 
   the image has no transparent parts.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Replace(AIndex: Integer; AImage, AMask: TCustomBitmap);
+procedure TCustomImageList.Replace(AIndex: Integer; AImage,
+  AMask: TCustomBitmap; const AllResolutions: Boolean);
 var
   msk: THandle;
+  R: TCustomImageListResolution;
+  Data: TRGBAQuadArray;
+
+  procedure _Replace;
+  begin
+    ScaleImage(AImage, AMask, R.Width, R.Height, Data);
+    R.InternalReplace(AIndex, @Data[0]);
+  end;
 begin
   if AImage = nil then Exit;
   
   if AMask = nil
   then msk := 0
   else msk := AMask.Handle;
-  InternalReplace(AIndex, AImage.Handle, msk);
+  if AllResolutions then
+  begin
+    for R in Resolutions do
+      _Replace;
+  end else
+  begin
+    if FindResolution(AImage.Width, R) then
+      _Replace;
+  end;
+end;
+
+procedure TCustomImageList.ReplaceIcon(AIndex: Integer; AIcon: TCustomIcon);
+var
+  R: TCustomImageListResolution;
+  ScBmp: TRGBAQuadArray;
+  msk: HBITMAP;
+begin
+  if AIcon = nil then Exit;
+
+  for R in Resolutions do
+  begin
+    AIcon.Current := GetBestIconIndexForSize(AIcon, R.Width);
+    if AIcon.Masked then
+      msk := AIcon.MaskHandle
+    else
+      msk := 0;
+    ScaleImage(AIcon.BitmapHandle, msk,
+      AIcon.Width, AIcon.Height, R.Width, R.Height, ScBmp);
+    R.InternalReplace(AIndex, @ScBmp[0]);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1451,24 +2233,39 @@ end;
   Replaces the index'th image with the image given.
   Every occurrence of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor);
+procedure TCustomImageList.ReplaceMasked(Index: Integer;
+  NewImage: TCustomBitmap; MaskColor: TColor; const AllResolutions: Boolean);
 var
   Bmp: TBitmap;
+  R: TCustomImageListResolution;
+  Data: TRGBAQuadArray;
+
+  procedure _Replace;
+  begin
+    ScaleImage(Bmp, nil, R.Width, R.Height, Data);
+    R.InternalReplace(Index, @Data[0]);
+  end;
 begin
   if NewImage = nil then Exit;
 
   Bmp := TBitmap.Create;
-  with Bmp do
-  begin
-    Assign(NewImage);
-    TransparentColor := MaskColor;
-    Transparent := True;
-  end;
+  try
+    Bmp.Assign(NewImage);
+    Bmp.TransparentColor := MaskColor;
+    Bmp.Transparent := True;
 
-  if Bmp.Masked
-  then InternalReplace(Index, Bmp.Handle, Bmp.MaskHandle)
-  else InternalReplace(Index, Bmp.Handle, 0);
-  Bmp.Free;
+    if AllResolutions then
+    begin
+      for R in Resolutions do
+        _Replace;
+    end else
+    begin
+      if FindResolution(NewImage.Width, R) then
+        _Replace;
+    end;
+  finally
+    Bmp.Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1535,16 +2332,11 @@ end;
 procedure TCustomImageList.StretchDraw(Canvas: TCanvas; Index: Integer;
   ARect: TRect; Enabled: Boolean);
 var
-  bmp: TBitmap;
+  I: Integer;
 begin
-  if (FCount = 0) or (Index >= FCount) then Exit;
-
-  // ToDo: accelerate
-  // temp workaround
-  bmp := TBitmap.Create;
-  GetBitmap(Index, bmp);
-  Canvas.StretchDraw(ARect,  bmp);
-  bmp.Free;
+  I := FData.FindBestToScaleFrom(ARect.Right-ARect.Left);
+  if I>=0 then
+    FData[I].StretchDraw(Canvas, Index, ARect, Enabled);
 end;
 
 {------------------------------------------------------------------------------
@@ -1559,27 +2351,6 @@ begin
   if (FChangeLinkList<>nil) and (Value.Sender=Self) then
     FChangeLinkList.Remove(Value);
   Value.Sender:=nil;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCustomImageList.WSCreateHandle
-  Params:  AParams: ignored
-  Returns: Handle to created imagelist
-
-  Instructs the widgtset to create an imagelist
- ------------------------------------------------------------------------------}
-function TCustomImageList.WSCreateReference(AParams: TCreateParams): PWSReference;
-var
-  ilc: TWSCustomImageListClass;
-  dt: PRGBAQuad;
-begin
-  ilc := TWSCustomImageListClass(WidgetSetClass);
-  if FCount = 0 then
-    dt := nil
-  else
-    dt := @FData[0];
-  FReference := ilc.CreateReference(Self, FCount, FAllocBy, FWidth, FHeight, dt);
-  Result := @FReference;
 end;
 
 {******************************************************************************
@@ -1610,6 +2381,13 @@ begin
   if Sender <> nil 
   then Sender.UnRegisterChanges(Self);
   inherited Destroy;
+end;
+
+procedure TChangeLink.DoDestroyResolutionReference(const AWidth: Integer;
+  AResolutionReference: TLCLHandle);
+begin
+  if Assigned(FOnDestroyResolutionHandle) then
+    FOnDestroyResolutionHandle(FSender, AWidth, AResolutionReference);
 end;
 
 // included by imglist.pp

@@ -1183,7 +1183,7 @@ begin
 end;
 
 {$IFDEF VerboseGtkToDos}{$note remove when gtk native imagelist will be ready}{$ENDIF}
-procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
+procedure DrawImageListIconOnWidget(ImgList: TCustomImageListResolution;
   Index: integer; AEffect: TGraphicsDrawEffect; Checked: boolean; DestWidget: PGTKWidget;
   CenterHorizontally, CenterVertically: boolean;
   DestLeft, DestTop: integer);
@@ -1240,7 +1240,7 @@ begin
   Bitmap.Free;
 end;
 
-procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
+procedure DrawImageListIconOnWidget(ImgList: TCustomImageListResolution;
   Index: integer; DestWidget: PGTKWidget);
 begin
   DrawImageListIconOnWidget(ImgList, Index, gdeNormal, false, DestWidget, true, true, 0, 0);
@@ -4256,19 +4256,19 @@ var
   procedure UpdateTabImage;
   var
     HasIcon: Boolean;
-    IconSize: TPoint;
+    IconSize: Types.TSize;
     ImageIndex: Integer;
   begin
     HasIcon:=false;
-    IconSize:=Point(0,0);
+    IconSize:=Size(0,0);
     ImageIndex := TheNoteBook.GetImageIndex(ThePage.PageIndex);
     if (TheNoteBook.Images<>nil)
     and (ImageIndex >= 0)
     and (ImageIndex < TheNoteBook.Images.Count) then
     begin
       // page has valid image
-      IconSize := Point(TheNoteBook.Images.Width, TheNoteBook.Images.Height);
-      HasIcon := (IconSize.X>0) and (IconSize.Y>0);
+      IconSize := TheNoteBook.Images.SizeForPPI[TheNoteBook.ImagesWidth, TheNoteBook.Font.PixelsPerInch];
+      HasIcon := (IconSize.Width>0) and (IconSize.Height>0);
     end;
 
     if HasIcon then
@@ -4278,7 +4278,7 @@ var
       begin
         // there is already an icon widget for the image in the tab
         // -> resize the icon widget
-        gtk_widget_set_usize(TabImageWidget,IconSize.X,IconSize.Y);
+        gtk_widget_set_usize(TabImageWidget,IconSize.Width,IconSize.Height);
       end else
       begin
         // there is no pixmap for the image in the tab
@@ -4287,7 +4287,7 @@ var
         g_signal_connect(PgtkObject(TabImageWidget), 'expose_event',
                            TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
         g_object_set_data(PGObject(TabWidget), 'TabImage', TabImageWidget);
-        gtk_widget_set_usize(TabImageWidget, IconSize.X, IconSize.Y);
+        gtk_widget_set_usize(TabImageWidget, IconSize.Width, IconSize.Height);
         gtk_widget_show(TabImageWidget);
         gtk_box_pack_start_defaults(PGtkBox(TabWidget), TabImageWidget);
         gtk_box_reorder_child(PGtkBox(TabWidget), TabImageWidget, 0);
@@ -4296,7 +4296,7 @@ var
       begin
         // there is already an icon widget for the image in the menu
         // -> resize the icon widget
-        gtk_widget_set_usize(MenuImageWidget, IconSize.X, IconSize.Y);
+        gtk_widget_set_usize(MenuImageWidget, IconSize.Width, IconSize.Height);
       end else
       begin
         // there is no icon widget for the image in the menu
@@ -4304,7 +4304,7 @@ var
         MenuImageWidget:=gtk_label_new(#0);
         g_signal_connect_after(PgtkObject(MenuImageWidget), 'expose_event',
                           TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
-        gtk_widget_set_usize(MenuImageWidget,IconSize.X,IconSize.Y);
+        gtk_widget_set_usize(MenuImageWidget,IconSize.Width,IconSize.Height);
         g_object_set_data(PGObject(MenuWidget),'TabImage',MenuImageWidget);
         gtk_widget_show(MenuImageWidget);
         gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuImageWidget);
@@ -5747,6 +5747,7 @@ var
   FreeImageList: Boolean;
   AImageIndex: Integer;
   ItemBmp: TBitmap;
+  DC: HDC;
 begin
   if (MenuItem=nil) then
     exit;
@@ -5766,15 +5767,17 @@ begin
     OldCheckMenuItemDrawProc(MenuItem,Area);
     exit;
   end;
-  IconSize:=LCLMenuItem.GetIconSize;
-  IconWidth:=IconSize.X;
-  IconHeight:=IconSize.Y;
-
   // calculate left and top
   Widget := PGtkWidget(MenuItem);
   AWindow:=GetControlWindow(Widget);
   if AWindow = nil then
     exit;
+
+  DC := Widgetset.GetDC(HWND({%H-}PtrUInt(Widget)));
+  IconSize:=LCLMenuItem.GetIconSize(DC);
+  IconWidth:=IconSize.X;
+  IconHeight:=IconSize.Y;
+
   Container := GTK_CONTAINER (MenuItem);
   BorderWidth := Container^.flag0 and bm_TGtkContainer_border_width;
 
@@ -5820,7 +5823,7 @@ begin
 
   if AImageIndex < AImageList.Count then
     {$IFDEF VerboseGtkToDos}{$note reimplement}{$ENDIF}
-    DrawImageListIconOnWidget(AImageList, AImageIndex, AEffect,
+    DrawImageListIconOnWidget(AImageList.Resolution[IconWidth], AImageIndex, AEffect,
         LCLMenuItem.Checked, Widget, false, false, ALeft, ATop);
 
   if FreeImageList then
@@ -5842,6 +5845,7 @@ var
   CheckMenuItem: PGtkMenuItem;
   LCLMenuItem: TMenuItem;
   IconSize: TPoint;
+  DC: HDC;
 begin
   MaxToggleSize:=0;
   MenuShell:=GTK_MENU_SHELL(widget);
@@ -5854,8 +5858,9 @@ begin
       CurToggleSize:=OldCheckMenuItemToggleSize;
       LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
       if LCLMenuItem<>nil then begin
-        IconSize:=LCLMenuItem.GetIconSize;
-        {if IconSize.X>100 then
+        DC := Widgetset.GetDC(HWND({%H-}PtrUInt(widget)));
+        IconSize:=LCLMenuItem.GetIconSize(DC);
+        {if IconSize.Width>100 then
           debugln('MenuSizeRequest LCLMenuItem=',LCLMenuItem.Name,' ',LCLMenuItem.Caption,
             ' ');}
         if CurToggleSize<IconSize.X then

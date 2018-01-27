@@ -100,6 +100,7 @@ var
   Icon: QIconH;
   B: Boolean;
   Size: TSize;
+  Res: TCustomImageListResolution;
 begin
   ImageList := TCustomTabControl(ACustomPage.Parent).Images;
 
@@ -107,17 +108,18 @@ begin
 
   if Assigned(ImageList) then
   begin
+    Res := ImageList.ResolutionForPPI[TCustomTabControl(ACustomPage.Parent).ImagesWidth, TCustomTabControl(ACustomPage.Parent).Font.PixelsPerInch];
     ImageIndex := TCustomTabControl(ACustomPage.Parent).GetImageIndex(ACustomPage.PageIndex);
-    if (ImageIndex >= 0) and (ImageIndex < ImageList.Count) then
+    if (ImageIndex >= 0) and (ImageIndex < Res.Count) then
     begin
       Bmp := TBitmap.Create;
       try
-        ImageList.GetBitmap(ACustomPage.ImageIndex, Bmp);
+        Res.GetBitmap(ACustomPage.ImageIndex, Bmp);
         if (TQtPage(ACustomPage.Handle).ChildOfComplexWidget = ccwTabWidget) and
           (TQtPage(ACustomPage.Handle).getTabWidget <> nil) then
         begin
-          Size.cx := ImageList.Width;
-          Size.cy := ImageList.Height;
+          Size.cx := Res.Width;
+          Size.cy := Res.Height;
           QTabWidget_setIconSize(TQtPage(ACustomPage.Handle).getTabWidget, @Size);
         end;
         TQtPage(ACustomPage.Handle).setIcon(TQtImage(Bmp.Handle).AsIcon);
