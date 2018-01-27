@@ -16,6 +16,7 @@ unit CocoaPrivate;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$modeswitch objectivec2}
 {$interfaces corba}
 
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
@@ -3285,16 +3286,10 @@ end;
 
 procedure LCLViewExtension.lclSetEnabled(AEnabled: Boolean);
 var
-  ns : NSArray;
-  i  : integer;
-  e  : Boolean;
   cb : ICommonCallback;
   obj : NSObject;
 begin
-  ns := subviews;
-  for i := 0 to ns.count - 1 do
-  begin
-    obj := NSObject(ns.objectAtIndex( i ));
+  for obj in subviews do begin
     cb := obj.lclGetCallback;
     obj.lclSetEnabled(AEnabled and ((not Assigned(cb)) or cb.GetShouldBeEnabled) );
   end;

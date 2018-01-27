@@ -17,6 +17,7 @@ unit CocoaWSDialogs;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$modeswitch objectivec2}
 
 interface
 
@@ -600,12 +601,10 @@ end;
 class function TCocoaFilterComboBox.locateNSPanelBrowser(AView: NSView; AClass: Pobjc_class): NSView;
 var
   lSubview: NSView;
-  i: Integer;
 begin
   Result := nil;
-  for i := 0 to AView.subviews.count-1 do
+  for lSubView in AView.subviews do
   begin
-    lSubview := AView.subviews.objectAtIndex(i);
     //lCurClass := lCurClass + '/' + NSStringToString(lSubview.className);
     if lSubview.isKindOfClass_(AClass) then
     begin
