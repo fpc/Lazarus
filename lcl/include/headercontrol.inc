@@ -416,9 +416,9 @@ begin
     inc(ContentRect.Left);
     ImagesSize := Images.SizeForPPI[ImagesWidth, Font.PixelsPerInch];
     ThemeServices.DrawIcon(Canvas, Details,
-      Point(ContentRect.Left, (ContentRect.Top + ContentRect.Bottom - ImagesSize.Height) div 2),
+      Point(ContentRect.Left, (ContentRect.Top + ContentRect.Bottom - ImagesSize.cy) div 2),
       Images, Section.ImageIndex);
-    inc(ContentRect.Left, ImagesSize.Width + 2);
+    inc(ContentRect.Left, ImagesSize.cx + 2);
   end;
 
   if Section.Text <> '' then

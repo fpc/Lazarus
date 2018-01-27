@@ -3617,10 +3617,10 @@ begin
     if Assigned(FStateImages) then
       StateImageSize := StateImages.SizeForPPI[StateImagesWidth, Font.PixelsPerInch];
     if NewDefItemHeight<FDefItemSpace then NewDefItemHeight:=FDefItemSpace;
-    if (Images<>nil) and (ImageSize.Height+FDefItemSpace>NewDefItemHeight) then
-      NewDefItemHeight:=ImageSize.Height+FDefItemSpace;
-    if (StateImages<>nil) and (StateImageSize.Height+FDefItemSpace>NewDefItemHeight) then
-      NewDefItemHeight:=StateImageSize.Height+FDefItemSpace;
+    if (Images<>nil) and (ImageSize.cy+FDefItemSpace>NewDefItemHeight) then
+      NewDefItemHeight:=ImageSize.cy+FDefItemSpace;
+    if (StateImages<>nil) and (StateImageSize.cy+FDefItemSpace>NewDefItemHeight) then
+      NewDefItemHeight:=StateImageSize.cy+FDefItemSpace;
     if Odd(NewDefItemHeight) then Inc(NewDefItemHeight);
     if NewDefItemHeight<>FDefItemHeight then begin
       FDefItemHeight:=NewDefItemHeight;

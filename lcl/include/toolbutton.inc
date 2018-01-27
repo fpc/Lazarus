@@ -357,8 +357,8 @@ begin
     if (ImgList<>nil) then
     begin
       IconSize := ImgList.SizeForPPI[FToolBar.ImagesWidth, Font.PixelsPerInch];
-      if IconSize.Height <= 0 then
-        IconSize.Width := 0;
+      if IconSize.cy <= 0 then
+        IconSize.cx := 0;
     end;
 
     // calculate text and icon position
@@ -366,22 +366,22 @@ begin
     IconPos:=Point(0,0);
     if TextSize.cx > 0 then
     begin
-      if IconSize.Width > 0 then
+      if IconSize.cx > 0 then
       begin
         if FToolBar.List then
         begin
           // icon left of text
-          IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.Width-TextSize.cx-2) div 2;
-          IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.Height) div 2;
-          TextPos.X:=IconPos.X+IconSize.Width+2;
+          IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.cx-TextSize.cx-2) div 2;
+          IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.cy) div 2;
+          TextPos.X:=IconPos.X+IconSize.cx+2;
           TextPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-TextSize.cy) div 2;
         end else
         begin
           // icon above text
-          IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.Width) div 2;
-          IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.Height-TextSize.cy-2) div 2;
+          IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.cx) div 2;
+          IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.cy-TextSize.cy-2) div 2;
           TextPos.X:=(MainBtnRect.Left+MainBtnRect.Right-TextSize.cx) div 2;
-          TextPos.Y:=IconPos.Y+IconSize.Height+2;
+          TextPos.Y:=IconPos.Y+IconSize.cy+2;
         end;
       end else
       begin
@@ -390,11 +390,11 @@ begin
         TextPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-TextSize.cy) div 2;
       end;
     end else
-    if IconSize.Width>0 then
+    if IconSize.cx>0 then
     begin
       // only icon
-      IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.Width) div 2;
-      IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.Height) div 2;
+      IconPos.X:=(MainBtnRect.Left+MainBtnRect.Right-IconSize.cx) div 2;
+      IconPos.Y:=(MainBtnRect.Top+MainBtnRect.Bottom-IconSize.cy) div 2;
     end;
 
     // draw button
@@ -1157,7 +1157,7 @@ begin
       if Assigned(ImgList) then
       begin
         IconSize := ImgList.SizeForPPI[FToolBar.ImagesWidth, FToolBar.Font.PixelsPerInch];
-        if IconSize.Height <= 0 then IconSize.Width := 0;
+        if IconSize.cy <= 0 then IconSize.cx := 0;
       end;
     end;
     // calculate text and icon position
@@ -1165,17 +1165,17 @@ begin
     IconPos := Point(0, 0);
     if TextSize.cx > 0 then
     begin
-      if IconSize.Width > 0 then
+      if IconSize.cx > 0 then
       begin
         if FToolBar.List then
         begin
           // icon left of text
-          TextPos.X := IconPos.X + IconSize.Width + 2;
+          TextPos.X := IconPos.X + IconSize.cx + 2;
         end
         else
         begin
           // icon above text
-          TextPos.Y := IconPos.Y + IconSize.Height + 2;
+          TextPos.Y := IconPos.Y + IconSize.cy + 2;
         end;
       end
       else
@@ -1184,13 +1184,13 @@ begin
       end;
     end
     else
-    if IconSize.Width > 0 then
+    if IconSize.cx > 0 then
     begin
       // only icon
     end;
     
-    PreferredWidth := Max(IconPos.X + IconSize.Width, TextPos.X + TextSize.cx);
-    PreferredHeight := Max(IconPos.Y + IconSize.Height, TextPos.Y + TextSize.cy);
+    PreferredWidth := Max(IconPos.X + IconSize.cx, TextPos.X + TextSize.cx);
+    PreferredHeight := Max(IconPos.Y + IconSize.cy, TextPos.Y + TextSize.cy);
     //DebugLn(['TToolButton.CalculatePreferredSize Preferred=',PreferredWidth,',',PreferredHeight,' Icon=',IconPos.X,'+',IconSize.Width,' Text=',TextPos.X,'+',TextSize.cx]);
     //DebugLn(['TToolButton.CalculatePreferredSize Preferred=',PreferredWidth,',',PreferredHeight,' Icon=',IconPos.Y,'+',IconSize.Height,' Text=',TextPos.Y,'+',TextSize.cy]);
 

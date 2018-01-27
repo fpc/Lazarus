@@ -1308,17 +1308,17 @@ begin
         x := x-HorizontalSpacing;
       //paint Image
       if Assigned(FImages) and (FVisiBands[i].ImageIndex >= 0) then begin
-        if FRightToLeft and not Vertical then dec(x, aImageSize.Width);
+        if FRightToLeft and not Vertical then dec(x, aImageSize.cx);
         if not Vertical then
           ThemeServices.DrawIcon(Canvas, aDetails,
-            Point(x, aTop+(FVisiBands[i].FHeight-aImageSize.Height) div 2),
+            Point(x, aTop+(FVisiBands[i].FHeight-aImageSize.cy) div 2),
             FImages, FVisiBands[i].ImageIndex)
         else
           ThemeServices.DrawIcon(Canvas, aDetails,
-            Point(aTop+(FVisiBands[i].FHeight-aImageSize.Width) div 2, x),
+            Point(aTop+(FVisiBands[i].FHeight-aImageSize.cx) div 2, x),
             FImages, FVisiBands[i].ImageIndex);
         if not FRightToLeft or Vertical then
-          inc(x, aImageSize.Width+HorizontalSpacing)
+          inc(x, aImageSize.cx+HorizontalSpacing)
         else
           dec(x, HorizontalSpacing);
       end;

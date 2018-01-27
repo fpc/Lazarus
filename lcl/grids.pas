@@ -5387,8 +5387,8 @@ begin
   then
     exit;
   aSize := TitleImageList.SizeForPPI[TitleImageListWidth, Font.PixelsPerInch];
-  aWidth := aSize.Width;
-  aHeight := aSize.Height;
+  aWidth := aSize.cx;
+  aHeight := aSize.cy;
   imgLayout := c.Title.ImageLayout;
   result := c.Title.ImageIndex;
 end;

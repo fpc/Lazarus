@@ -394,11 +394,11 @@ begin  { do not call inherited ! }
         begin
           if not FRightToLeft
             then aImgPoint.X:=ARect.Left+aIndent
-            else aImgPoint.X:=ARect.Right-aIndent-ImagesSize.Width;
-          aImgPoint.Y:=(ARect.Bottom+ARect.Top-ImagesSize.Height) div 2;
+            else aImgPoint.X:=ARect.Right-aIndent-ImagesSize.cx;
+          aImgPoint.Y:=(ARect.Bottom+ARect.Top-ImagesSize.cy) div 2;
           ThemeServices.DrawIcon(Canvas, aDetail, aImgPoint, Images, aItemIndex);
         end;
-      inc(aIndent, ImagesSize.Width+2*cItemIndent);
+      inc(aIndent, ImagesSize.cx+2*cItemIndent);
     end;
   Canvas.Brush.Style:=bsClear;
   if (not (odSelected in State) or not aDropped) and not aFocusedEditableMainItemNoDD

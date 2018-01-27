@@ -1604,8 +1604,8 @@ var
   Res: TCustomImageListResolution;
 begin
   Res := GetResolutionForPPI(AImageWidth, APPI);
-  Result.Width := Res.Width;
-  Result.Height := Res.Height;
+  Result.cx := Res.Width;
+  Result.cy := Res.Height;
 end;
 
 function TCustomImageList.GetWidthForPPI(AImageWidth,
