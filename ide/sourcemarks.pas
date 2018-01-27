@@ -550,6 +550,7 @@ begin
   ImgListSize := TIDEImages.ScaledSize(11);
   ImgList.Width := ImgListSize;
   ImgList.Height := ImgListSize;
+  ImgList.Scaled := False;
 
   // synedit expects the first 10 icons for the bookmarks
   for i := 0 to 9 do
@@ -810,7 +811,7 @@ end;
 
 function TSourceMarks.AddImage(const ResName: string): integer;
 begin
-  Result := TIDEImages.AddImageToImageList(ImgList, Resname, 11);
+  Result := TIDEImages.AddImageToImageList(ImgList, Resname);
 end;
 
 initialization

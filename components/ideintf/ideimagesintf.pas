@@ -59,7 +59,7 @@ type
     class procedure AssignImage(const ABitmap: TCustomBitmap; ImageName: String;
       ImageSize: Integer = 16);
     class function AddImageToImageList(const AImageList: TImageList;
-      ImageName: String; ImageSize: Integer = 16): Integer;
+      ImageName: String): Integer;
     class function ScaledSize(ImageSize: Integer = 16): Integer;
 
     function LoadImage(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
@@ -88,6 +88,7 @@ begin
     FImages_12 := TImageList.Create(nil);
     FImages_12.Width := MulDiv(12, GetScalePercent, 100);
     FImages_12.Height := FImages_12.Width;
+    FImages_12.Scaled := False;
   end;
   Result := FImages_12;
 end;
@@ -99,6 +100,7 @@ begin
     FImages_16 := TImageList.Create(nil);
     FImages_16.Width := MulDiv(16, GetScalePercent, 100);
     FImages_16.Height := FImages_16.Width;
+    FImages_16.Scaled := False;
   end;
   Result := FImages_16;
 end;
@@ -110,6 +112,7 @@ begin
     FImages_24 := TImageList.Create(nil);
     FImages_24.Width := MulDiv(24, GetScalePercent, 100);
     FImages_24.Height := FImages_24.Width;
+    FImages_24.Scaled := False;
   end;
   Result := FImages_24;
 end;
@@ -132,28 +135,8 @@ end;
 
 class function TIDEImages.CreateImage(ImageName: String; ImageSize: Integer
   ): TCustomBitmap;
-var
-  Grp: TCustomBitmap;
-  GrpScaledNewInstance: Boolean;
-  ScalePercent, GrpScale: Integer;
 begin
-  ScalePercent := GetScalePercent;
-
-  Grp := nil;
-  try
-    GrpScale := CreateBestBitmapForScalingFromRes(ImageName, ScalePercent, Grp);
-    if Grp<>nil then
-    begin
-      Result := ScaleImage(Grp, GrpScaledNewInstance,
-        MulDiv(ImageSize, ScalePercent, GrpScale), MulDiv(ImageSize, ScalePercent, GrpScale), ScalePercent / GrpScale);
-      if not GrpScaledNewInstance then
-        Grp := nil;
-      Exit; // found
-    end;
-  finally
-    Grp.Free;
-  end;
-  Result := nil; // not found
+  CreateBestBitmapForScalingFromRes(ImageName, GetScalePercent, Result);
 end;
 
 class procedure TIDEImages.AssignImage(const ABitmap: TCustomBitmap;
@@ -170,12 +153,12 @@ begin
 end;
 
 class function TIDEImages.AddImageToImageList(const AImageList: TImageList;
-  ImageName: String; ImageSize: Integer): Integer;
+  ImageName: String): Integer;
 var
   xBmp: TCustomBitmap;
 begin
   Result := -1;
-  xBmp := TIDEImages.CreateImage(ImageName, ImageSize);
+  xBmp := TIDEImages.CreateImage(ImageName, AImageList.Width);
   try
     Result := AImageList.Add(xBmp, nil);
   finally
