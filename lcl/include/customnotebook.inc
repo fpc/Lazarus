@@ -1057,6 +1057,19 @@ begin
     Result := destPage.DialogChar(Message);
 end;
 
+procedure TCustomTabControl.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion,
+  AYProportion: Double);
+begin
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion);
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    if Assigned(Images) then
+      DoImageListChange(Self);
+  end;
+end;
+
 procedure TCustomTabControl.InternalSetPageIndex(AValue: Integer);
 begin
   FPageIndex := AValue;

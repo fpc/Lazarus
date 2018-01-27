@@ -428,6 +428,8 @@ type
     procedure SetImageListAsync(Data: PtrInt);
   protected
     PageClass: TCustomPageClass;
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
     function GetPageClass: TCustomPageClass; virtual;
     function GetListClass: TNBBasePagesClass; virtual;
     procedure SetOptions(const AValue: TCTabControlOptions); virtual;
