@@ -37,11 +37,11 @@ type
 
   { TMuiWSDragImageList }
 
-  TMuiWSDragImageList = class(TWSDragImageList)
-  private
-  protected
-  public
-  end;
+  //TMuiWSDragImageList = class(TWSDragImageList)
+  //private
+  //protected
+  //public
+  //end;
 
   { TMuiWSControl }
 
