@@ -2391,6 +2391,7 @@ type
     property Height;
     property ImageType;
     property Masked;
+    property Scaled;
     property ShareImages;
     property Width;
     property OnChange;

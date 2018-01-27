@@ -243,6 +243,7 @@ type
     FOverlays: array[TOverlay] of Integer;
     fHasOverlays: boolean;
     FOnGetWidthForPPI: TCustomImageListGetWidthForPPI;
+    FScaled: Boolean;
 
     procedure NotifyChangeLink;
     procedure SetBkColor(const Value: TColor);
@@ -359,6 +360,7 @@ type
     property ResolutionCount: Integer read GetResolutionCount;
     function Resolutions: TCustomImageListResolutionEnumerator;
     function ResolutionsDesc: TCustomImageListResolutionEnumerator;
+    property Scaled: Boolean read FScaled write FScaled default True;
     property ShareImages: Boolean read FShareImages write SetShareImages default False;
     property ImageType: TImageType read FImageType write FImageType default itImage;
     property OnGetWidthForPPI: TCustomImageListGetWidthForPPI read FOnGetWidthForPPI write FOnGetWidthForPPI;

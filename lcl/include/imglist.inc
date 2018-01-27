@@ -1319,6 +1319,7 @@ begin
   inherited Create(AOwner);
   FHeight := 16;
   FWidth := 16;
+  FScaled := True;
 
   Initialize;
 end;
@@ -1616,6 +1617,9 @@ begin
   if AImageWidth<=0 then
     AImageWidth := FWidth;
 
+  if not FScaled then
+    Factor := 100
+  else
   if APPI <= 120 then
     Factor := 100 // 100-125% (96-120 DPI): no scaling
   else
