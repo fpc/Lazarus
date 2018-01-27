@@ -360,7 +360,7 @@ type
     property ResolutionCount: Integer read GetResolutionCount;
     function Resolutions: TCustomImageListResolutionEnumerator;
     function ResolutionsDesc: TCustomImageListResolutionEnumerator;
-    property Scaled: Boolean read FScaled write FScaled default True;
+    property Scaled: Boolean read FScaled write FScaled default False;
     property ShareImages: Boolean read FShareImages write SetShareImages default False;
     property ImageType: TImageType read FImageType write FImageType default itImage;
     property OnGetWidthForPPI: TCustomImageListGetWidthForPPI read FOnGetWidthForPPI write FOnGetWidthForPPI;

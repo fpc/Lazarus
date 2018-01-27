@@ -1319,7 +1319,6 @@ begin
   inherited Create(AOwner);
   FHeight := 16;
   FWidth := 16;
-  FScaled := True;
 
   Initialize;
 end;
