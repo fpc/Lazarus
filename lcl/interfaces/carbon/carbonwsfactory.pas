@@ -105,7 +105,7 @@ function RegisterLazDeviceAPIs: Boolean;
 implementation
 
 // imglist
-function RegisterCustomImageListReesolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
+function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
 begin
   Result := False;
 end;

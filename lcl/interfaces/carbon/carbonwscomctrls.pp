@@ -135,7 +135,8 @@ type
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); override;
     //class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
     //class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
-    class procedure SetImageList(const ALV: TCustomListView; const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageList); override;
+    class procedure SetImageList(const ALV: TCustomListView;
+      const AList: TListViewImageList; const AValue: TCustomImageListResolution); override;
     class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
     class procedure SetOwnerData(const ALV: TCustomListView; const {%H-}AValue: Boolean); override;
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
@@ -729,8 +730,9 @@ begin
   TCarbonListView(ALV.Handle).SetItemsHeight(AValue);
 end;
 
-class procedure TCarbonWSCustomListView.SetImageList(const ALV: TCustomListView;
-  const AList: TListViewImageList; const AValue: TCustomImageList);
+class procedure TCarbonWSCustomListView.SetImageList(
+  const ALV: TCustomListView; const AList: TListViewImageList;
+  const AValue: TCustomImageListResolution);
 begin
   if not CheckHandle(ALV, Self, 'SetImageList') then Exit;
 
