@@ -458,9 +458,18 @@ begin
 end;
 
 procedure TLCLComboboxCallback.ComboBoxSelectionDidChange;
+var
+  txt : NSString;
 begin
-  // todo: send correct messages here. LM_CHANGED must be sent on editbox change
+  // Cocoa changes text only after selectionDidChange notification
+  // LCL expectes it to happen before. (Windows order of events is Changed -> SelChanged)
+  // Must set text manually here.
+  // Maybe Text-changing code should be moved under TCocoaComboBox class instead.
+  txt := TCocoaComboBox( Owner ).comboBox_objectValueForItemAtIndex_( TCocoaComboBox( Owner ),
+    TCocoaComboBox( Owner ).indexOfSelectedItem);
+  if Assigned(txt) then TCocoaComboBox( Owner ).setStringValue( txt );
   SendSimpleMessage(Target, LM_CHANGED);
+
   SendSimpleMessage(Target, LM_SELCHANGE);
 end;
 
