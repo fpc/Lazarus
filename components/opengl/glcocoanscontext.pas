@@ -436,44 +436,51 @@ end;
 
 procedure TCocoaOpenGLView.mouseDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseDown(event);
+  if Assigned(callback)
+    then callback.MouseUpDownEvent(event)
+    else inherited mouseDown(event);
 end;
 
 procedure TCocoaOpenGLView.mouseUp(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseUp(event);
+  if Assigned(callback)
+    then callback.MouseUpDownEvent(event)
+    else inherited mouseUp(event);
 end;
 
 procedure TCocoaOpenGLView.rightMouseDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDown(event);
+  if Assigned(callback)
+    then callback.MouseUpDownEvent(event)
+    else inherited rightMouseDown(event);
 end;
 
 procedure TCocoaOpenGLView.rightMouseUp(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseUp(event);
+  if Assigned(callback)
+    then callback.MouseUpDownEvent(event)
+    else inherited rightMouseUp(event);
 end;
 
 procedure TCocoaOpenGLView.otherMouseDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
+  if Assigned(callback)
+    then callback.MouseUpDownEvent(event)
+    else inherited otherMouseDown(event);
 end;
 
 procedure TCocoaOpenGLView.otherMouseUp(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseUp(event);
+  if Assigned(callback)
+    then callback.MouseUpDownEvent(event)
+    else inherited otherMouseUp(event);
 end;
 
 procedure TCocoaOpenGLView.mouseDragged(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseDragged(event);
+  if Assigned(callback)
+    then callback.MouseMove(event)
+    else inherited mouseDragged(event);
 end;
 
 procedure TCocoaOpenGLView.mouseEntered(event: NSEvent);
@@ -488,14 +495,16 @@ end;
 
 procedure TCocoaOpenGLView.mouseMoved(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseMoved(event);
+  if Assigned(callback)
+    then callback.MouseMove(event)
+    else inherited mouseMoved(event);
 end;
 
 procedure TCocoaOpenGLView.scrollWheel(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.scrollWheel(event) then
-    inherited scrollWheel(event);
+  if not Assigned(callback)
+    then callback.scrollWheel(event)
+    else inherited scrollWheel(event);
 end;
 
 procedure TCocoaOpenGLView.keyDown(event: NSEvent);
