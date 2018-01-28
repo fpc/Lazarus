@@ -98,7 +98,8 @@ begin
   Result := Handle <> 0;
 
   if Result then
-    NSObject(Handle).lclLocalToScreen(P.X, P.Y);
+    // must use lclContentView! - it's client view
+    NSObject(Handle).lclContentView.lclLocalToScreen(P.X, P.Y);
 end;
 
 {------------------------------------------------------------------------------

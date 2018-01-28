@@ -3350,7 +3350,11 @@ var
 begin
   // 1. convert to window base
   P.x := X;
-  P.y := frame.size.height-y;   // convert to Cocoa system
+  if isFlipped then
+    p.y := Y
+  else
+    P.y := frame.size.height-y;   // convert to Cocoa system
+
   P := convertPoint_ToView(P, nil);
 
   X := Round(P.X);
