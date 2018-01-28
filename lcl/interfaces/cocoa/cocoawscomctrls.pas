@@ -52,6 +52,7 @@ type
     //
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
   end;
 
   { TCocoaWSCustomTabControl }
@@ -367,6 +368,22 @@ begin
   lTitle := AText;
   DeleteAmpersands(lTitle);
   page.setLabel(NSStringUTF8(lTitle));
+end;
+
+class function TCocoaWSCustomPage.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+var
+  page  : TCocoaTabPage;
+begin
+  if not Assigned(AWinControl) or not AWinControl.HandleAllocated then
+  begin
+    Result := false;
+    Exit;
+  end;
+
+  page := GetCocoaTabPageFromHandle(AWinControl.Handle);
+  AText := NSStringToString( page.label_ );
+  Result := true;
 end;
 
 { TCocoaWSCustomTabControl }
