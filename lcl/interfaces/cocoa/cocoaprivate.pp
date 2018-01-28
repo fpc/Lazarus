@@ -642,6 +642,7 @@ type
     procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
     //
     function lclIsHandle: Boolean; override;
+    procedure setStringValue(avalue: NSString); override;
   end;
 
   { TCocoaReadOnlyComboBox }
@@ -662,6 +663,7 @@ type
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
     procedure comboboxAction(sender: id); message 'comboboxAction:';
+    function stringValue: NSString; override;
   end;
 
   { TCocoaScrollBar }
@@ -4562,6 +4564,22 @@ begin
   Result:=true;
 end;
 
+procedure TCocoaComboBox.setStringValue(avalue: NSString);
+var
+  ch : Boolean;
+  s  : NSString;
+begin
+  s := stringValue;
+  ch := (Assigned(s)
+        and Assigned(avalue)
+        and (s.compare(avalue) <> NSOrderedSame));
+
+  inherited setStringValue(avalue);
+
+  if ch and Assigned(callback) then
+    callback.SendOnChange;
+end;
+
 function TCocoaComboBox.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -4650,8 +4668,12 @@ begin
   callback.ComboBoxWillDismiss;
 end;
 
-procedure TCocoaComboBox.comboboxSelectionDidChange(notification: NSNotification);
+procedure TCocoaComboBox.comboBoxSelectionDidChange(notification: NSNotification);
+var
+  txt : NSString;
 begin
+  txt := comboBox_objectValueForItemAtIndex_(self, indexOfSelectedItem);
+  if Assigned(txt) then setStringValue( txt );
   callback.ComboBoxSelectionDidChange;
 end;
 
@@ -4712,12 +4734,22 @@ begin
   Result:=true;
 end;
 
-procedure TCocoaReadOnlyComboBox.comboBoxAction(sender: id);
+procedure TCocoaReadOnlyComboBox.comboboxAction(sender: id);
 begin
   //setTitle(NSSTR(PChar(Format('%d=%d', [indexOfSelectedItem, lastSelectedItemIndex])))); // <= for debugging
+  if Assigned(callback) then
+    callback.SendOnChange;
   if (indexOfSelectedItem <> lastSelectedItemIndex) and (callback <> nil) then
     callback.ComboBoxSelectionDidChange;
   lastSelectedItemIndex := indexOfSelectedItem;
+end;
+
+function TCocoaReadOnlyComboBox.stringValue: NSString;
+begin
+  if Assigned(selectedItem) then
+    Result:=selectedItem.title
+  else
+    Result:=inherited stringValue;
 end;
 
 { TCocoaProgressIndicator }

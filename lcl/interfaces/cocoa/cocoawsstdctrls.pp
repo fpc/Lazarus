@@ -458,18 +458,7 @@ begin
 end;
 
 procedure TLCLComboboxCallback.ComboBoxSelectionDidChange;
-var
-  txt : NSString;
 begin
-  // Cocoa changes text only after selectionDidChange notification
-  // LCL expectes it to happen before. (Windows order of events is Changed -> SelChanged)
-  // Must set text manually here.
-  // Maybe Text-changing code should be moved under TCocoaComboBox class instead.
-  txt := TCocoaComboBox( Owner ).comboBox_objectValueForItemAtIndex_( TCocoaComboBox( Owner ),
-    TCocoaComboBox( Owner ).indexOfSelectedItem);
-  if Assigned(txt) then TCocoaComboBox( Owner ).setStringValue( txt );
-  SendSimpleMessage(Target, LM_CHANGED);
-
   SendSimpleMessage(Target, LM_SELCHANGE);
 end;
 
@@ -1275,31 +1264,30 @@ var
   rocmb: TCocoaReadOnlyComboBox;
 begin
   Result:=0;
-
   if TCustomComboBox(AWinControl).ReadOnly then
   begin
     rocmb := NSView(TCocoaReadOnlyComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(rocmb) then Exit;
     rocmb.Owner := TCustomComboBox(AWinControl);
-    rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
     rocmb.list:=TCocoaComboBoxList.Create(nil, rocmb);
     rocmb.setTarget(rocmb);
     rocmb.setAction(objcselector('comboboxAction:'));
     rocmb.selectItemAtIndex(rocmb.lastSelectedItemIndex);
+    rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
     Result:=TLCLIntfHandle(rocmb);
   end
   else
   begin
     cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(cmb) then Exit;
-    cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
     cmb.list:=TCocoaComboBoxList.Create(cmb, nil);
     cmb.setUsesDataSource(true);
     cmb.setDataSource(cmb);
     cmb.setDelegate(cmb);
+    cmb.setStringValue(NSStringUtf8(AParams.Caption));
+    cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
     Result:=TLCLIntfHandle(cmb);
   end;
-
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints
   AWinControl.Constraints.SetInterfaceConstraints(0,26,0,26);
