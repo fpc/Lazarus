@@ -305,7 +305,6 @@ begin
   Y := ARect.Top+Control.Scale96ToFont(2);
   C.TextOut(X, Y, IntToStr(Index));
   Inc(X, C.TextWidth('0')*4);
-  InflateRect(ARect, Control.Scale96ToFont(2), Control.Scale96ToFont(2));
   C.ClipRect := ARect;
   C.Clipping := True;
 
@@ -569,12 +568,19 @@ end;
 procedure TImageListEditorDlg.RefreshItemHeight;
 var
   R: TCustomImageListResolution;
+  ItemHeight, MaxHeight: Integer;
 begin
-  for R in ImageList.ResolutionsDesc do // get highest resolution
+  ItemHeight := ImageListBox.Canvas.TextHeight('Hg');
+  MaxHeight := Scale96ToFont(32);
+  for R in ImageList.Resolutions do
   begin
-    ImageListBox.ItemHeight := Min(R.Height, Scale96ToFont(32)) + Scale96ToFont(4);
-    break;
+    if R.Height <= MaxHeight then
+      ItemHeight := Max(ItemHeight, R.Height)
+    else
+      break;
   end;
+
+  ImageListBox.ItemHeight := ItemHeight + Scale96ToFont(4);
 end;
 
 class function TImageListEditorDlg.ResolutionToString(
