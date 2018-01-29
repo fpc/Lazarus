@@ -1629,6 +1629,7 @@ type
     function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
     class function GetImagesClass: TIconImageClass; virtual;
     procedure Add(AIconImage: TIconImage);
+    procedure Sort;
     function Count: Integer;
     property Images[AIndex: Integer]: TIconImage read GetImage;
   end;
@@ -1740,6 +1741,7 @@ type
     function MaskHandleAllocated: boolean; override;
     function PaletteAllocated: boolean; override;
     procedure SetHandles(ABitmap, AMask: HBITMAP); override;
+    procedure Sort;
     function GetBestIndexForSize(ASize: TSize): Integer;
 
     property Current: Integer read FCurrent write SetCurrent;

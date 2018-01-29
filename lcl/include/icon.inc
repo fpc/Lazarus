@@ -12,6 +12,16 @@
  *****************************************************************************
 }
 
+function IconCompare(Item1, Item2: Pointer): Integer;
+var
+  Icon1: TIconImage absolute Item1;
+  Icon2: TIconImage absolute Item2;
+begin
+  Result := CompareValue(Icon1.Width, Icon2.Width);
+  if Result=0 then
+    Result := -CompareValue(Ord(Icon1.PixelFormat), Ord(Icon2.PixelFormat));
+end;
+
 const
   IconSignature: array [0..3] of Byte = (0, 0, 1, 0);
 
@@ -119,6 +129,11 @@ end;
 function TSharedIcon.IsEmpty: boolean;
 begin
   Result := inherited IsEmpty and (Count = 0);
+end;
+
+procedure TSharedIcon.Sort;
+begin
+  FImages.Sort(@IconCompare);
 end;
 
 function TSharedIcon.GetImage(const AIndex: Integer): TIconImage;
@@ -998,6 +1013,19 @@ end;
 procedure TCustomIcon.SetTransparent(Value: Boolean);
 begin
   // nothing
+end;
+
+procedure TCustomIcon.Sort;
+var
+  ACurrent: Pointer;
+begin
+  if FCurrent>=0 then
+    ACurrent := TSharedIcon(FSharedImage).FImages[FCurrent]
+  else
+    ACurrent := nil;
+  TSharedIcon(FSharedImage).Sort;
+  if ACurrent<>nil then
+    FCurrent := TSharedIcon(FSharedImage).FImages.IndexOf(ACurrent);
 end;
 
 procedure TCustomIcon.SetSize(AWidth, AHeight: integer);
