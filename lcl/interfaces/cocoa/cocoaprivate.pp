@@ -388,6 +388,7 @@ type
   public
     lastEditBox: NSTextField;
     function resignFirstResponder: Boolean; override;
+    procedure keyDown(event: NSEvent); override;
   end;
 
   { TCocoaWindow }
@@ -1691,6 +1692,28 @@ begin
   Result := inherited resignFirstResponder;
 end;
 
+procedure TCocoaFieldEditor.keyDown(event: NSEvent);
+var
+  cb : ICommonCallback;
+const
+  NSKeyCodeTab  = 48;
+begin
+  if Assigned(lastEditBox) then
+  begin
+    cb := lastEditBox.lclGetCallback;
+    if Assigned(cb) then
+    begin
+      cb.KeyEvent(event);
+      // LCL has already handled tab (by switching focus)
+      // do not let Cocoa to switch the focus again!
+      if event.keyCode = NSKeyCodeTab then Exit;
+    end;
+    inherited keyDown(event);
+  end
+  else
+    inherited keyDown(event);
+end;
+
 { TCocoaWindow }
 
 function TCocoaWindow.lclIsHandle: Boolean;
@@ -2529,11 +2552,10 @@ begin
   if Assigned(callback) then
   begin
     // NSTextField doesn't provide keyDown, so emulate it here
-    callback.KeyEvent(event, True);
+    //callback.KeyEvent(event, True);
     // keyUp now
     // by this time the control might have been released and callback cleared
-    if Assigned(callback) then
-      callback.KeyEvent(event);
+    callback.KeyEvent(event);
   end;
   inherited keyUp(event);
 end;
@@ -2815,7 +2837,7 @@ begin
   if Assigned(callback) then
   begin
     // NSTextField doesn't provide keyDown, so emulate it here
-    callback.KeyEvent(event, True);
+    //callback.KeyEvent(event, True);
     // keyUp now
     callback.KeyEvent(event);
   end;
