@@ -121,7 +121,8 @@ const
     '',  // ahaTopInfoHint
     '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive
     '', '', '',  // ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
-    '', '', '', '' // ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight
+    '', '', '', '', // ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight
+    '', '', '', '', '', '', '', '', '', '' // ahaOutlineLevel1Color..ahaOutlineLevel10Color
   );
 
   ahaGroupMap: array[TAdditionalHilightAttribute] of TAhaGroupName = (
@@ -167,7 +168,17 @@ const
     { ahaIdentComplWindow }           agnIdentComplWindow,
     { ahaIdentComplWindowBorder }     agnIdentComplWindow,
     { ahaIdentComplWindowSelection }  agnIdentComplWindow,
-    { ahaIdentComplWindowHighlight }  agnIdentComplWindow
+    { ahaIdentComplWindowHighlight }  agnIdentComplWindow,
+    { ahaOutlineLevel1Color }  agnOutlineColors,
+    { ahaOutlineLevel2Color }  agnOutlineColors,
+    { ahaOutlineLevel3Color }  agnOutlineColors,
+    { ahaOutlineLevel4Color }  agnOutlineColors,
+    { ahaOutlineLevel5Color }  agnOutlineColors,
+    { ahaOutlineLevel6Color }  agnOutlineColors,
+    { ahaOutlineLevel7Color }  agnOutlineColors,
+    { ahaOutlineLevel8Color }  agnOutlineColors,
+    { ahaOutlineLevel9Color }  agnOutlineColors,
+    { ahaOutlineLevel10Color } agnOutlineColors
 
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TColorSchemeAttributeFeatures =
@@ -214,7 +225,17 @@ const
     { ahaIdentComplWindow }   [hafBackColor, hafForeColor],
     { ahaIdentComplWindowBorder }    [hafForeColor],
     { ahaIdentComplWindowSelection } [hafBackColor, hafForeColor],
-    { ahaIdentComplWindowHighlight } [hafForeColor]
+    { ahaIdentComplWindowHighlight } [hafForeColor],
+    { ahaFoldLevel1Color }    [hafForeColor],
+    { ahaFoldLevel2Color }    [hafForeColor],
+    { ahaFoldLevel3Color }    [hafForeColor],
+    { ahaFoldLevel4Color }    [hafForeColor],
+    { ahaFoldLevel5Color }    [hafForeColor],
+    { ahaFoldLevel6Color }    [hafForeColor],
+    { ahaFoldLevel7Color }    [hafForeColor],
+    { ahaFoldLevel8Color }    [hafForeColor],
+    { ahaFoldLevel9Color }    [hafForeColor],
+    { ahaFoldLevel10Color }   [hafForeColor]
   );
 
 
@@ -2477,6 +2498,18 @@ begin
   AdditionalHighlightAttributes[ahaIdentComplWindowSelection] := dlgBlockGroupOptions;
   AdditionalHighlightAttributes[ahaIdentComplWindowHighlight] := dlgAddHiAttrHighlightPrefix;
   AdditionalHighlightGroupNames[agnIdentComplWindow]          := dlgIdentifierCompletion;
+
+  AdditionalHighlightAttributes[ahaOutlineLevel1Color]  := dlgAddHiAttrOutlineLevel1Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel2Color]  := dlgAddHiAttrOutlineLevel2Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel3Color]  := dlgAddHiAttrOutlineLevel3Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel4Color]  := dlgAddHiAttrOutlineLevel4Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel5Color]  := dlgAddHiAttrOutlineLevel5Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel6Color]  := dlgAddHiAttrOutlineLevel6Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel7Color]  := dlgAddHiAttrOutlineLevel7Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel8Color]  := dlgAddHiAttrOutlineLevel8Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel9Color]  := dlgAddHiAttrOutlineLevel9Color;
+  AdditionalHighlightAttributes[ahaOutlineLevel10Color] := dlgAddHiAttrOutlineLevel10Color;
+  AdditionalHighlightGroupNames[agnOutlineColors]  := dlgAddHiAttrGroupOutlineColors;
 
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
@@ -6540,6 +6573,21 @@ begin
       SetMarkupColor(ahaSyncroEditCur,   TSynPluginSyncroEdit(aSynEdit.Plugin[i]).MarkupInfoCurrent);
       SetMarkupColor(ahaSyncroEditSync,  TSynPluginSyncroEdit(aSynEdit.Plugin[i]).MarkupInfoSync);
       SetMarkupColor(ahaSyncroEditArea,  TSynPluginSyncroEdit(aSynEdit.Plugin[i]).MarkupInfoArea);
+    end;
+    i := aSynEdit.MarkupCount - 1;
+    while (i >= 0) and not(aSynEdit.Markup[i] is TSynEditMarkupFoldColors) do
+      dec(i);
+    if i >= 0 then begin
+      SetMarkupColor(ahaOutlineLevel1Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[0]);
+      SetMarkupColor(ahaOutlineLevel2Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[1]);
+      SetMarkupColor(ahaOutlineLevel3Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[2]);
+      SetMarkupColor(ahaOutlineLevel4Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[3]);
+      SetMarkupColor(ahaOutlineLevel5Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[4]);
+      SetMarkupColor(ahaOutlineLevel6Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[5]);
+      SetMarkupColor(ahaOutlineLevel7Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[6]);
+      SetMarkupColor(ahaOutlineLevel8Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[7]);
+      SetMarkupColor(ahaOutlineLevel9Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[8]);
+      SetMarkupColor(ahaOutlineLevel10Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[9]);
     end;
   finally
     ASynEdit.EndUpdate;

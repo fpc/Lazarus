@@ -45,6 +45,12 @@
           <ahaRightMargin Foreground="clSilver"/>
           <ahaIdentComplWindowHighlight Foreground="clAqua"/>
           <ahaIdentComplWindow Background="8388649"/>
+          <ahaOutlineLevel1Color Foreground="clRed"/>
+          <ahaOutlineLevel2Color Foreground="39159"/>
+          <ahaOutlineLevel3Color Foreground="2280512"/>
+          <ahaOutlineLevel4Color Foreground="13421568"/>
+          <ahaOutlineLevel5Color Foreground="16738346"/>
+          <ahaOutlineLevel6Color Foreground="13566148"/>
         </SchemeOcean>
       </Globals>
       <LangObjectPascal Version="6">

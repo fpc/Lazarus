@@ -46,6 +46,12 @@
           <ahaIdentComplWindow Background="3552822"/>
           <ahaIdentComplWindowBorder Foreground="7039851"/>
           <ahaIdentComplWindowHighlight Foreground="clLime"/>
+          <ahaOutlineLevel1Color Foreground="clRed"/>
+          <ahaOutlineLevel2Color Foreground="39159"/>
+          <ahaOutlineLevel3Color Foreground="2280512"/>
+          <ahaOutlineLevel4Color Foreground="13421568"/>
+          <ahaOutlineLevel5Color Foreground="16738346"/>
+          <ahaOutlineLevel6Color Foreground="13566148"/>
         </SchemeTwilight>
       </Globals>
       <LangObjectPascal Version="6">
