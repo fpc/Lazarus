@@ -4268,7 +4268,7 @@ var
     begin
       // page has valid image
       IconSize := TheNoteBook.Images.SizeForPPI[TheNoteBook.ImagesWidth, TheNoteBook.Font.PixelsPerInch];
-      HasIcon := (IconSize.Width>0) and (IconSize.Height>0);
+      HasIcon := (IconSize.cx>0) and (IconSize.cy>0);
     end;
 
     if HasIcon then
@@ -4278,7 +4278,7 @@ var
       begin
         // there is already an icon widget for the image in the tab
         // -> resize the icon widget
-        gtk_widget_set_usize(TabImageWidget,IconSize.Width,IconSize.Height);
+        gtk_widget_set_usize(TabImageWidget,IconSize.cx,IconSize.cy);
       end else
       begin
         // there is no pixmap for the image in the tab
@@ -4287,7 +4287,7 @@ var
         g_signal_connect(PgtkObject(TabImageWidget), 'expose_event',
                            TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
         g_object_set_data(PGObject(TabWidget), 'TabImage', TabImageWidget);
-        gtk_widget_set_usize(TabImageWidget, IconSize.Width, IconSize.Height);
+        gtk_widget_set_usize(TabImageWidget, IconSize.cx, IconSize.cy);
         gtk_widget_show(TabImageWidget);
         gtk_box_pack_start_defaults(PGtkBox(TabWidget), TabImageWidget);
         gtk_box_reorder_child(PGtkBox(TabWidget), TabImageWidget, 0);
@@ -4296,7 +4296,7 @@ var
       begin
         // there is already an icon widget for the image in the menu
         // -> resize the icon widget
-        gtk_widget_set_usize(MenuImageWidget, IconSize.Width, IconSize.Height);
+        gtk_widget_set_usize(MenuImageWidget, IconSize.cx, IconSize.cy);
       end else
       begin
         // there is no icon widget for the image in the menu
@@ -4304,7 +4304,7 @@ var
         MenuImageWidget:=gtk_label_new(#0);
         g_signal_connect_after(PgtkObject(MenuImageWidget), 'expose_event',
                           TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
-        gtk_widget_set_usize(MenuImageWidget,IconSize.Width,IconSize.Height);
+        gtk_widget_set_usize(MenuImageWidget,IconSize.cx,IconSize.cy);
         g_object_set_data(PGObject(MenuWidget),'TabImage',MenuImageWidget);
         gtk_widget_show(MenuImageWidget);
         gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuImageWidget);
