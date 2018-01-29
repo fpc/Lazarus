@@ -235,6 +235,7 @@ begin
   BtnSave.Caption := sccsILEdtSave;
   BtnSaveAll.Caption := sccsILEdtSaveAll;
   BtnAddNewResolution.Caption := sccsILEdtAddNewResolution;
+  btnDeleteResolution.Caption := sccsILEdtDeleteResolution;
 
   BtnPanel.HelpButton.Caption := oisHelp;
   BtnPanel.OKButton.Caption := oisOK;
