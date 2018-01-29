@@ -90,7 +90,6 @@ end;
 
 function TCustomImageListResolution.Add(Image, Mask: TCustomBitmap): Integer;
 var
-  msk: THandle;
   ScBmp: TRGBAQuadArray;
 begin
   if Image = nil then Exit(-1);
@@ -1724,7 +1723,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Insert(AIndex: Integer; AImage, AMask: TCustomBitmap);
 var
-  msk: THandle;
   R: TCustomImageListResolution;
   ScBmp: TRGBAQuadArray;
 begin
@@ -2004,14 +2002,17 @@ begin
   II := TLazIntfImage.Create(BitmapWidth, BitmapHeight);
   try
     II.LoadFromBitmap(ABitmap, AMask, BitmapWidth, BitmapHeight);
-    if AMask<>0 then
-      II.AlphaFromMask(True);
 
     FI := TFPCompactImgRGBA8Bit.Create(II.Width, II.Height);
 
     for X := 0 to II.Width-1 do
     for Y := 0 to II.Height-1 do
-      FI.Colors[X, Y] := II.Colors[X, Y];
+    begin
+      C := II.Colors[X, Y];
+      if (AMask<>0) and II.Masked[X, Y] then
+        C.Alpha := 0;
+      FI.Colors[X, Y] := C;
+    end;
 
     if BitmapWidth=TargetWidth then
       ScFI := FI
@@ -2184,7 +2185,6 @@ end;
 procedure TCustomImageList.Replace(AIndex: Integer; AImage,
   AMask: TCustomBitmap; const AllResolutions: Boolean);
 var
-  msk: THandle;
   R: TCustomImageListResolution;
   Data: TRGBAQuadArray;
 
@@ -2196,9 +2196,6 @@ var
 begin
   if AImage = nil then Exit;
   
-  if AMask = nil
-  then msk := 0
-  else msk := AMask.Handle;
   if AllResolutions then
   begin
     for R in Resolutions do
