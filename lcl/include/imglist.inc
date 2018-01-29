@@ -1743,20 +1743,28 @@ var
   R: TCustomImageListResolution;
   ScBmp: TRGBAQuadArray;
   msk: HBITMAP;
+  SortedIcon: TIcon;
 begin
   if AIcon = nil then Exit;
 
   CreateDefaultResolution;
-  for R in Resolutions do
-  begin
-    AIcon.Current := GetBestIconIndexForSize(AIcon, R.Width);
-    if AIcon.Masked then
-      msk := AIcon.MaskHandle
-    else
-      msk := 0;
-    ScaleImage(AIcon.BitmapHandle, msk,
-      AIcon.Width, AIcon.Height, R.Width, R.Height, ScBmp);
-    R.InternalInsert(AIndex, @ScBmp[0]);
+  SortedIcon := TIcon.Create;
+  try
+    SortedIcon.Assign(AIcon);
+    SortedIcon.Sort;
+    for R in Resolutions do
+    begin
+      SortedIcon.Current := GetBestIconIndexForSize(SortedIcon, R.Width);
+      if SortedIcon.Masked then
+        msk := SortedIcon.MaskHandle
+      else
+        msk := 0;
+      ScaleImage(SortedIcon.BitmapHandle, msk,
+        SortedIcon.Width, SortedIcon.Height, R.Width, R.Height, ScBmp);
+      R.InternalInsert(AIndex, @ScBmp[0]);
+    end;
+  finally
+    SortedIcon.Free;
   end;
 end;
 
@@ -2207,19 +2215,27 @@ var
   R: TCustomImageListResolution;
   ScBmp: TRGBAQuadArray;
   msk: HBITMAP;
+  SortedIcon: TIcon;
 begin
   if AIcon = nil then Exit;
 
-  for R in Resolutions do
-  begin
-    AIcon.Current := GetBestIconIndexForSize(AIcon, R.Width);
-    if AIcon.Masked then
-      msk := AIcon.MaskHandle
-    else
-      msk := 0;
-    ScaleImage(AIcon.BitmapHandle, msk,
-      AIcon.Width, AIcon.Height, R.Width, R.Height, ScBmp);
-    R.InternalReplace(AIndex, @ScBmp[0]);
+  SortedIcon := TIcon.Create;
+  try
+    SortedIcon.Assign(AIcon);
+    SortedIcon.Sort;
+    for R in Resolutions do
+    begin
+      SortedIcon.Current := GetBestIconIndexForSize(SortedIcon, R.Width);
+      if SortedIcon.Masked then
+        msk := SortedIcon.MaskHandle
+      else
+        msk := 0;
+      ScaleImage(SortedIcon.BitmapHandle, msk,
+        SortedIcon.Width, SortedIcon.Height, R.Width, R.Height, ScBmp);
+      R.InternalReplace(AIndex, @ScBmp[0]);
+    end;
+  finally
+    SortedIcon.Free;
   end;
 end;
 

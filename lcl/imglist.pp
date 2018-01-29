@@ -259,7 +259,7 @@ type
     function GetHeightForPPI(AImageWidth, APPI: Integer): Integer;
     function GetCount: Integer;
     function GetSizeForPPI(AImageWidth, APPI: Integer): TSize;
-    function GetBestIconIndexForSize(AIcon: TCustomIcon; AWidth: Integer): Integer;
+    function GetBestIconIndexForSize(AIcon: TCustomIcon; AWidth: Integer): Integer; // the icon must be sorted
     function GetResolutionByIndex(AIndex: Integer): TCustomImageListResolution;
     function GetResolutionCount: Integer;
     procedure CreateDefaultResolution;
