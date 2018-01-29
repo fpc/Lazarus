@@ -1302,6 +1302,14 @@ msgstr ""
 msgid "&Add ..."
 msgstr ""
 
+#: objinspstrconsts.sccsiledtaddmoreresolutions
+msgid "Add more resolutions ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddnewresolution
+msgid "New resolution ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr ""
@@ -1309,6 +1317,10 @@ msgstr ""
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
+msgstr ""
+
+#: objinspstrconsts.sccsiledtcannotdeleteresolution
+msgid "Cannot delete default resolution."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1333,12 +1345,24 @@ msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr ""
 
+#: objinspstrconsts.sccsiledtdeleteresolution
+msgid "Delete resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
+msgid "Select the resolution to delete."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
+msgstr ""
+
+#: objinspstrconsts.sccsiledtimagewidthofnewresolution
+msgid "Image width of the new resolution:"
 msgstr ""
 
 #: objinspstrconsts.sccsiledtmovedown
@@ -1369,6 +1393,10 @@ msgstr ""
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtreplaceallresolutions
+msgid "Replace all resolutions ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsave

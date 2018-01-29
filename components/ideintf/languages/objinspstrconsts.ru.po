@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-04 01:37+0300\n"
+"PO-Revision-Date: 2018-01-30 01:02+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1309,6 +1309,14 @@ msgstr "Редактор секций..."
 msgid "&Add ..."
 msgstr "&Добавить ..."
 
+#: objinspstrconsts.sccsiledtaddmoreresolutions
+msgid "Add more resolutions ..."
+msgstr "Добавить других разрешений ..."
+
+#: objinspstrconsts.sccsiledtaddnewresolution
+msgid "New resolution ..."
+msgstr "Новое разрешение ..."
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Выравнивание"
@@ -1317,6 +1325,10 @@ msgstr "Выравнивание"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
 msgstr "&Применить"
+
+#: objinspstrconsts.sccsiledtcannotdeleteresolution
+msgid "Cannot delete default resolution."
+msgstr "Невозможно удалить разрешение по умолчанию."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1340,6 +1352,14 @@ msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr "&Удалить"
 
+#: objinspstrconsts.sccsiledtdeleteresolution
+msgid "Delete resolution ..."
+msgstr "Удалить разрешение ..."
+
+#: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
+msgid "Select the resolution to delete."
+msgstr "Выберите разрешение для удаления."
+
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
 msgstr "Изображения"
@@ -1347,6 +1367,10 @@ msgstr "Изображения"
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "Выбранное изображение"
+
+#: objinspstrconsts.sccsiledtimagewidthofnewresolution
+msgid "Image width of the new resolution:"
+msgstr "Ширина изображения в новом разрешении:"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1377,6 +1401,10 @@ msgstr "Прозрачный цвет:"
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
 msgstr "&Заменить ..."
+
+#: objinspstrconsts.sccsiledtreplaceallresolutions
+msgid "Replace all resolutions ..."
+msgstr "Заменить все разрешения ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"

@@ -1372,6 +1372,14 @@ msgstr "Editor sekcií .."
 msgid "&Add ..."
 msgstr "Pridať..."
 
+#: objinspstrconsts.sccsiledtaddmoreresolutions
+msgid "Add more resolutions ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddnewresolution
+msgid "New resolution ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Doladenie"
@@ -1382,6 +1390,10 @@ msgstr "Doladenie"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
 msgstr "Použiť"
+
+#: objinspstrconsts.sccsiledtcannotdeleteresolution
+msgid "Cannot delete default resolution."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1409,6 +1421,14 @@ msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr "Zmazať"
 
+#: objinspstrconsts.sccsiledtdeleteresolution
+msgid "Delete resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
+msgid "Select the resolution to delete."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
 msgstr "Obrázky"
@@ -1416,6 +1436,10 @@ msgstr "Obrázky"
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "Vybraný obrázok"
+
+#: objinspstrconsts.sccsiledtimagewidthofnewresolution
+msgid "Image width of the new resolution:"
+msgstr ""
 
 #: objinspstrconsts.sccsiledtmovedown
 #, fuzzy
@@ -1449,6 +1473,10 @@ msgstr "Transparentná farba:"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtreplaceallresolutions
+msgid "Replace all resolutions ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsave

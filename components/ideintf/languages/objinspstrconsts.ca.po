@@ -18,9 +18,10 @@ msgid "Database"
 msgstr "Base de dades"
 
 #: objinspstrconsts.cactionlisteditordeleteaction
+#, fuzzy
 msgctxt "objinspstrconsts.cactionlisteditordeleteaction"
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: objinspstrconsts.cactionlisteditordeleteactionhint
 msgid "Delete Action"
@@ -343,9 +344,10 @@ msgid "Add"
 msgstr "Afegeix"
 
 #: objinspstrconsts.oicoleditdelete
+#, fuzzy
 msgctxt "objinspstrconsts.oicoleditdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: objinspstrconsts.oicoleditdown
 msgctxt "objinspstrconsts.oicoleditdown"
@@ -1355,6 +1357,14 @@ msgstr ""
 msgid "&Add ..."
 msgstr "Afegeix..."
 
+#: objinspstrconsts.sccsiledtaddmoreresolutions
+msgid "Add more resolutions ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddnewresolution
+msgid "New resolution ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Ajustament"
@@ -1362,6 +1372,10 @@ msgstr "Ajustament"
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
+msgstr ""
+
+#: objinspstrconsts.sccsiledtcannotdeleteresolution
+msgid "Cannot delete default resolution."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1390,6 +1404,14 @@ msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr "Elimina"
 
+#: objinspstrconsts.sccsiledtdeleteresolution
+msgid "Delete resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
+msgid "Select the resolution to delete."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
 msgstr "Imatges"
@@ -1397,6 +1419,10 @@ msgstr "Imatges"
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "Imatge Sel·leccionada"
+
+#: objinspstrconsts.sccsiledtimagewidthofnewresolution
+msgid "Image width of the new resolution:"
+msgstr ""
 
 #: objinspstrconsts.sccsiledtmovedown
 #, fuzzy
@@ -1432,6 +1458,10 @@ msgstr "Color Transparent:"
 msgid "&Replace ..."
 msgstr ""
 
+#: objinspstrconsts.sccsiledtreplaceallresolutions
+msgid "Replace all resolutions ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtsave
 #, fuzzy
 #| msgid "Save ..."
@@ -1461,9 +1491,10 @@ msgid "Edit Items ..."
 msgstr ""
 
 #: objinspstrconsts.sccslvedtapply
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #: objinspstrconsts.sccslvedtcaption
 msgid "ListView Items Editor"
@@ -1475,9 +1506,10 @@ msgid "Delete"
 msgstr "Elimina"
 
 #: objinspstrconsts.sccslvedtgrplcaption
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtgrplcaption"
 msgid "Items"
-msgstr ""
+msgstr "Elements"
 
 #: objinspstrconsts.sccslvedtgrprcaption
 #, fuzzy
@@ -1506,9 +1538,10 @@ msgid "State Index:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtnewitem
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
-msgstr ""
+msgstr "Nou Element"
 
 #: objinspstrconsts.sccslvedtnewsubitem
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
@@ -1528,9 +1561,10 @@ msgid "Edit StringGrid ..."
 msgstr ""
 
 #: objinspstrconsts.sccssgedtapply
+#, fuzzy
 msgctxt "objinspstrconsts.sccssgedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"

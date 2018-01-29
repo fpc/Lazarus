@@ -742,9 +742,10 @@ msgid "Pages Editor"
 msgstr ""
 
 #: objinspstrconsts.oispastecomponents
+#, fuzzy
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
-msgstr ""
+msgstr "&Plakken"
 
 #: objinspstrconsts.oispeopenimagefile
 msgid "Open image file"
@@ -1347,6 +1348,14 @@ msgstr ""
 msgid "&Add ..."
 msgstr "Toevoegen..."
 
+#: objinspstrconsts.sccsiledtaddmoreresolutions
+msgid "Add more resolutions ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddnewresolution
+msgid "New resolution ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Aanpassing"
@@ -1354,6 +1363,10 @@ msgstr "Aanpassing"
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
+msgstr ""
+
+#: objinspstrconsts.sccsiledtcannotdeleteresolution
+msgid "Cannot delete default resolution."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
@@ -1382,6 +1395,14 @@ msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr "Verwijderen"
 
+#: objinspstrconsts.sccsiledtdeleteresolution
+msgid "Delete resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
+msgid "Select the resolution to delete."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
 msgstr "Afbeeldingen"
@@ -1389,6 +1410,10 @@ msgstr "Afbeeldingen"
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "Geselecteerde afbeelding"
+
+#: objinspstrconsts.sccsiledtimagewidthofnewresolution
+msgid "Image width of the new resolution:"
+msgstr ""
 
 #: objinspstrconsts.sccsiledtmovedown
 #, fuzzy
@@ -1422,6 +1447,10 @@ msgstr "Tansparantie kleur"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtreplaceallresolutions
+msgid "Replace all resolutions ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
@@ -1470,9 +1499,10 @@ msgid "Delete"
 msgstr "Verwijderen"
 
 #: objinspstrconsts.sccslvedtgrplcaption
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtgrplcaption"
 msgid "Items"
-msgstr ""
+msgstr "Onderdelen"
 
 #: objinspstrconsts.sccslvedtgrprcaption
 #, fuzzy

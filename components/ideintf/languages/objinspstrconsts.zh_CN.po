@@ -1318,6 +1318,14 @@ msgstr ""
 msgid "&Add ..."
 msgstr "添加...(&A)"
 
+#: objinspstrconsts.sccsiledtaddmoreresolutions
+msgid "Add more resolutions ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddnewresolution
+msgid "New resolution ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "调整"
@@ -1326,6 +1334,10 @@ msgstr "调整"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
 msgstr "应用(&A)"
+
+#: objinspstrconsts.sccsiledtcannotdeleteresolution
+msgid "Cannot delete default resolution."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1349,6 +1361,14 @@ msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr "删除(&D)"
 
+#: objinspstrconsts.sccsiledtdeleteresolution
+msgid "Delete resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
+msgid "Select the resolution to delete."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
 msgstr "图片"
@@ -1356,6 +1376,10 @@ msgstr "图片"
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "选择的图像"
+
+#: objinspstrconsts.sccsiledtimagewidthofnewresolution
+msgid "Image width of the new resolution:"
+msgstr ""
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1385,6 +1409,10 @@ msgstr "透明的颜色"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtreplaceallresolutions
+msgid "Replace all resolutions ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsave

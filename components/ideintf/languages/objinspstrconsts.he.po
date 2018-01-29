@@ -1368,6 +1368,14 @@ msgstr "עורך מקטעים"
 msgid "&Add ..."
 msgstr "הוסף ..."
 
+#: objinspstrconsts.sccsiledtaddmoreresolutions
+msgid "Add more resolutions ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddnewresolution
+msgid "New resolution ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "התאמות"
@@ -1378,6 +1386,10 @@ msgstr "התאמות"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
 msgstr "יישם"
+
+#: objinspstrconsts.sccsiledtcannotdeleteresolution
+msgid "Cannot delete default resolution."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1405,6 +1417,14 @@ msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr "מחק"
 
+#: objinspstrconsts.sccsiledtdeleteresolution
+msgid "Delete resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
+msgid "Select the resolution to delete."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
 msgstr "דמויות"
@@ -1412,6 +1432,10 @@ msgstr "דמויות"
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "דמות שנבחרה"
+
+#: objinspstrconsts.sccsiledtimagewidthofnewresolution
+msgid "Image width of the new resolution:"
+msgstr ""
 
 #: objinspstrconsts.sccsiledtmovedown
 #, fuzzy
@@ -1445,6 +1469,10 @@ msgstr "צבע שקוף:"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtreplaceallresolutions
+msgid "Replace all resolutions ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtsave

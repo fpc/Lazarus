@@ -1310,6 +1310,14 @@ msgstr "Antraščių rengyklė..."
 msgid "&Add ..."
 msgstr "&Pridėti…"
 
+#: objinspstrconsts.sccsiledtaddmoreresolutions
+msgid "Add more resolutions ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddnewresolution
+msgid "New resolution ..."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Korekcija"
@@ -1318,6 +1326,10 @@ msgstr "Korekcija"
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "&Apply"
 msgstr "Pri&taikyti"
+
+#: objinspstrconsts.sccsiledtcannotdeleteresolution
+msgid "Cannot delete default resolution."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1341,6 +1353,14 @@ msgctxt "objinspstrconsts.sccsiledtdelete"
 msgid "&Delete"
 msgstr "Paša&linti"
 
+#: objinspstrconsts.sccsiledtdeleteresolution
+msgid "Delete resolution ..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
+msgid "Select the resolution to delete."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
 msgstr "Paveikslai"
@@ -1348,6 +1368,10 @@ msgstr "Paveikslai"
 #: objinspstrconsts.sccsiledtgrprcaption
 msgid "Selected Image"
 msgstr "Pažymėtas paveikslas"
+
+#: objinspstrconsts.sccsiledtimagewidthofnewresolution
+msgid "Image width of the new resolution:"
+msgstr ""
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1378,6 +1402,10 @@ msgstr "Permatoma spalva:"
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
 msgstr "Pa&keisti…"
+
+#: objinspstrconsts.sccsiledtreplaceallresolutions
+msgid "Replace all resolutions ..."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
