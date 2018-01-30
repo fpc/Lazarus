@@ -43,6 +43,11 @@ type
 
 implementation
 
+procedure UpdateControlLCLToCocoa(src: TCustomFloatSpinEdit; dst: TCocoaSpinEdit);
+begin
+  dst.UpdateControl(src.MinValue, src.MaxValue, src.Increment, src.Value, src.DecimalPlaces);
+end;
+
 { TCocoaWSCustomFloatSpinEdit }
 
 {------------------------------------------------------------------------------
@@ -63,8 +68,8 @@ begin
   if Result = 0 then Exit;
 
   lSpin.callback := TLCLCommonCallback.Create(lSpin, AWinControl);
-  lSpin.CreateSubcontrols(TCustomFloatSpinEdit(AWinControl), AParams);
-  lSpin.UpdateControl(TCustomFloatSpinEdit(AWinControl));
+  lSpin.CreateSubcontrols(AParams);
+  UpdateControlLCLToCocoa(TCustomFloatSpinEdit(AWinControl), lSpin);
 end;
 
 {------------------------------------------------------------------------------
@@ -98,8 +103,7 @@ begin
   if ACustomFloatSpinEdit = nil then Exit;
   if not ACustomFloatSpinEdit.HandleAllocated then Exit;
   lSpin := TCocoaSpinEdit(ACustomFloatSpinEdit.Handle);
-
-  lSpin.UpdateControl(ACustomFloatSpinEdit);
+  UpdateControlLCLToCocoa(ACustomFloatSpinEdit, lSpin);
 end;
 
 class procedure TCocoaWSCustomFloatSpinEdit.SetBounds(

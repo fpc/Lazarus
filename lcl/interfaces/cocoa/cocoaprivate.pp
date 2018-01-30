@@ -35,7 +35,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
   LMessages, LCLMessageGlue, ExtCtrls, Graphics, Forms,
-  LCLType, LCLProc, Controls, ComCtrls, Spin, StdCtrls;
+  LCLType, LCLProc, Controls, ComCtrls, StdCtrls;
 
 const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
@@ -1000,11 +1000,12 @@ end;
     callback: ICommonCallback;
     Stepper: NSStepper;
     NumberFormatter: NSNumberFormatter;
-    Spin: TCustomFloatSpinEdit;
+    decimalPlaces: Integer;
+    //Spin: TCustomFloatSpinEdit;
     procedure dealloc; override;
-    procedure UpdateValueFromCocoa(); message 'UpdateValueFromCocoa';
-    procedure UpdateControl(ASpinEdit: TCustomFloatSpinEdit); message 'UpdateControl:';
-    procedure CreateSubcontrols(ASpinEdit: TCustomFloatSpinEdit; const AParams: TCreateParams); message 'CreateSubControls:AParams:';
+    function updateStepper: boolean; message 'updateStepper';
+    procedure UpdateControl(min, max, inc, avalue: double; ADecimalPlaces: Integer); message 'UpdateControl:::::';
+    procedure CreateSubcontrols(const AParams: TCreateParams); message 'CreateSubControls:';
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
     function GetFieldEditor: TCocoaFieldEditor; message 'GetFieldEditor';
@@ -5091,38 +5092,42 @@ begin
   inherited dealloc;
 end;
 
-procedure TCocoaSpinEdit.UpdateValueFromCocoa();
+function TCocoaSpinEdit.updateStepper: boolean;
 var
   lValid: Boolean = False;
   lValue: String;
   lFloat: Double;
+  iv    : Double;
 begin
   lValue := CocoaUtils.NSStringToString(stringValue());
   lValid := SysUtils.TryStrToFloat(lValue, lFloat);
   if lValid then
-     Spin.Value := lFloat;
+  begin
+    Stepper.setDoubleValue(lFloat);
+    Result := true;
+  end else
+    Result := false;
 end;
 
-procedure TCocoaSpinEdit.UpdateControl(ASpinEdit: TCustomFloatSpinEdit);
+procedure TCocoaSpinEdit.UpdateControl(min, max, inc, avalue: double; ADecimalPlaces: Integer);
 begin
-  Stepper.setMaxValue(ASpinEdit.MaxValue);
-  Stepper.setMinValue(ASpinEdit.MinValue);
-  Stepper.setIncrement(ASpinEdit.Increment);
-  Stepper.setDoubleValue(ASpinEdit.Value);
+  decimalPlaces := ADecimalPlaces;
+  Stepper.setMinValue(min);
+  Stepper.setMaxValue(max);
+  Stepper.setIncrement(inc);
+  Stepper.setDoubleValue(avalue);
 
   // update the UI too
   StepperChanged(Self);
 end;
 
-procedure TCocoaSpinEdit.CreateSubcontrols(ASpinEdit: TCustomFloatSpinEdit; const AParams: TCreateParams);
+procedure TCocoaSpinEdit.CreateSubcontrols(const AParams: TCreateParams);
 var
   lParams: TCreateParams;
 begin
   {$IFDEF COCOA_SPIN_DEBUG}
   WriteLn('[TCocoaSpinEdit.CreateSubcontrols]');
   {$ENDIF}
-
-  Spin := ASpinEdit;
 
   // Now creates the subcontrols
   lParams := AParams;
@@ -5173,7 +5178,7 @@ var
   lNSStr: NSString;
   lStr: string;
 begin
-  lStr := Format('%.*f', [Spin.DecimalPlaces, Stepper.doubleValue()]);
+  lStr := Format('%.*f', [DecimalPlaces, Stepper.doubleValue()]);
   lNSStr := CocoaUtils.NSStringUtf8(lStr);
   setStringValue(lNSStr);
   lNSStr.release;
@@ -5197,14 +5202,16 @@ end;
 
 procedure TCocoaSpinEdit.textDidEndEditing(notification: NSNotification);
 begin
-  UpdateValueFromCocoa();
+  updateStepper;
+  StepperChanged(nil); // and refresh self
   inherited textDidEndEditing(notification);
+  //if Assigned(callback) then callback.SendOnTextChanged;
 end;
 
 procedure TCocoaSpinEdit.controlTextDidChange(obj: NSNotification);
 begin
-  // This was causing bug 31192
-  //UpdateValueFromCocoa();
+  updateStepper;
+  if Assigned(callback) then callback.SendOnTextChanged;
 end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: Boolean;
