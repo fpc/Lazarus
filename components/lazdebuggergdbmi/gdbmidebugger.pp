@@ -7663,7 +7663,7 @@ var
   t: TThreadEntry;
 begin
   EventText := GetPart(['='], [','], Line, False, False);
-  case StringCase(EventText, [
+  x := StringCase(EventText, [
     'thread-created', 'thread-exited',
     'shlibs-added',
     'library-loaded',
@@ -7674,7 +7674,8 @@ begin
     'thread-created',
     'thread-exited',
     'breakpoint-modified'
-    ], False, False) of
+    ], False, False);
+    case x of
     0,1: begin
         i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
         if (i > 0) and (Threads.CurrentThreads <> nil)
