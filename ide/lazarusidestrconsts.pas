@@ -5425,6 +5425,7 @@ resourcestring
   lisDisabled = 'Disabled';
   lisInvalidOff = 'Invalid (Off)';
   lisInvalidOn = 'Invalid (On)';
+  lisPendingOn = 'Pending (On)';
   lisOff = '? (Off)';
   lisOn = '? (On)';
   lisTakeSnapshot = 'Take a Snapshot';

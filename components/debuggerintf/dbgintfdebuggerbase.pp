@@ -158,7 +158,7 @@ type
                        );
 
   (* TValidState: State for breakpoints *)
-  TValidState = (vsUnknown, vsValid, vsInvalid);
+  TValidState = (vsUnknown, vsValid, vsInvalid, vsPending);
 
 const
   DebuggerDataStateStr : array[TDebuggerDataState] of string = (
@@ -352,6 +352,7 @@ type
     property Kind: TDBGBreakPointKind read GetKind write SetKind;
     property Valid: TValidState read GetValid;
   public
+    procedure SetPendingToValid(const AValue: TValidState);
     procedure SetLocation(const ASource: String; const ALine: Integer); virtual;
     procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
                        const AKind: TDBGWatchPointKind); virtual;
@@ -3518,6 +3519,12 @@ begin
   FKind := bpkSource;
   inherited Create(ACollection);
   AddReference;
+end;
+
+procedure TBaseBreakPoint.SetPendingToValid(const AValue: TValidState);
+begin
+  assert(Valid = vsPending, 'Can only change state if pending');
+  SetValid(AValue);
 end;
 
 procedure TBaseBreakPoint.DoBreakHitCountChange;

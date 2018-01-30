@@ -196,6 +196,7 @@ type
     FCurrentLineImg: Integer;
     FCurrentLineDisabledBreakPointImg: Integer;
     FExtToolsMarks: TETMarks;
+    fPendingBreakPointImg: Integer;
     FSourceLineImg: Integer;
     FImgList: TImageList;
     fInactiveBreakPointImg: Integer;
@@ -242,6 +243,7 @@ type
     property InactiveBreakPointImg: Integer read fInactiveBreakPointImg;
     property InvalidBreakPointImg: Integer read fInvalidBreakPointImg;
     property InvalidDisabledBreakPointImg: Integer read fInvalidDisabledBreakPointImg;
+    property PendingBreakPointImg: Integer read fPendingBreakPointImg;
     property MultiBreakPointImg: Integer read fMultiBreakPointImg;
     property UnknownBreakPointImg: Integer read fUnknownBreakPointImg;
     property UnknownDisabledBreakPointImg: Integer read fUnknownDisabledBreakPointImg;
@@ -566,6 +568,8 @@ begin
   fInvalidBreakPointImg:=AddImage('InvalidBreakPoint');
   // load invalid disabled breakpoint image
   fInvalidDisabledBreakPointImg := AddImage('InvalidDisabledBreakPoint');
+  // load pending active breakpoint image
+  fPendingBreakPointImg := AddImage('PendingBreakPoint');
   // load unknown breakpoint image
   fUnknownBreakPointImg:=AddImage('UnknownBreakPoint');
   // load unknown disabled breakpoint image

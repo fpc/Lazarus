@@ -44,3 +44,4 @@ sourceeditor/state11x11_warning.png
 sourceeditor/tsynsyncroedit.png
 sourceeditor/UnknownBreakPoint.png
 sourceeditor/UnknownDisabledBreakPoint.png
+sourceeditor/PendingBreakPoint.png

@@ -514,6 +514,11 @@ begin
         Img := SourceEditorMarks.InvalidBreakPointImg
       else
         Img := SourceEditorMarks.InvalidDisabledBreakPointImg;
+    vsPending:
+      if Enabled then
+        Img := SourceEditorMarks.PendingBreakPointImg
+      else
+        Img := SourceEditorMarks.InactiveBreakPointImg;
     else
       if Enabled then
         Img := SourceEditorMarks.UnknownBreakPointImg

@@ -201,9 +201,9 @@ function GetBreakPointStateDescription(ABreakpoint: TBaseBreakpoint): string;
 const
   //                 enabled  valid
   DEBUG_STATE: array[Boolean, TValidState] of ShortString = (
-                {vsUnknown,     vsValid,   vsInvalid}
-    {Disabled} (lisOff, lisDisabled, lisInvalidOff),
-    {Endabled} (lisOn, lisEnabled, lisInvalidOn));
+                {vsUnknown,     vsValid,   vsInvalid, vsPending}
+    {Disabled} (lisOff, lisDisabled, lisInvalidOff, lisInvalidOff),
+    {Endabled} (lisOn, lisEnabled, lisInvalidOn, lisPendingOn));
 begin
   Result:=DEBUG_STATE[ABreakpoint.Enabled,ABreakpoint.Valid];
 end;

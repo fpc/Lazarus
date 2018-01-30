@@ -1086,12 +1086,13 @@ type
     FAddr: TDBGPtr;
     FBreakID: Integer;
     FHitCnt: Integer;
-    FValid: Boolean;
+    FValid: TValidState;
     FWatchData: String;
     FWatchKind: TDBGWatchPointKind;
     FWatchScope: TDBGWatchPointScope;
   protected
-    function ExecBreakInsert(out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
+    function ExecBreakInsert(out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr;
+                             out APending: Boolean): Boolean;
     function DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger; ASource: string; ALine: Integer;
@@ -1115,7 +1116,7 @@ type
     property Addr: TDBGPtr read FAddr;
     property BreakID: Integer read FBreakID;
     property HitCnt: Integer read FHitCnt;
-    property Valid: Boolean read FValid;
+    property Valid: TValidState read FValid;
   end;
 
   { TGDBMIDebuggerCommandBreakRemove }
@@ -5709,6 +5710,8 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     if ABreakId >= 0 then
       BreakPoint := TGDBMIBreakPoint(FTheDebugger.FindBreakpoint(ABreakID));
 
+    if (BreakPoint <> nil) and (BreakPoint.Valid = vsPending) then
+      BreakPoint.SetPendingToValid(vsValid);
     if (BreakPoint <> nil) and (BreakPoint.Kind <> bpkData) and
        (AReason in [gbrWatchScope, gbrWatchTrigger])
     then BreakPoint := nil;
@@ -7661,6 +7664,8 @@ var
   i, x: Integer;
   ct: TThreads;
   t: TThreadEntry;
+  List: TGDBMINameValueList;
+  BreakPoint: TGDBMIBreakPoint;
 begin
   EventText := GetPart(['='], [','], Line, False, False);
   x := StringCase(EventText, [
@@ -7711,6 +7716,19 @@ begin
     7: RemoveThreadGroup(Line);
     8: DoDbgEvent(ecThread, etThreadStart, ParseThread(Line, EventText));
     9: DoDbgEvent(ecThread, etThreadExit, ParseThread(Line, EventText));
+    10: begin //breakpoint-modified
+        List := TGDBMINameValueList.Create(Line);
+        List.SetPath('bkpt');
+        i := StrToIntDef(List.Values['number'], -1);
+        BreakPoint := nil;
+        if i >= 0 then
+          BreakPoint := TGDBMIBreakPoint(FindBreakpoint(i));
+        if (BreakPoint <> nil) and (BreakPoint.Valid = vsPending) and
+           (List.IndexOf('pending') < 0) and
+           (pos('pend', lowercase(List.Values['addr'])) <= 0)
+        then
+          BreakPoint.SetPendingToValid(vsValid);
+      end;
   else
     DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
   end;
@@ -8932,8 +8950,8 @@ end;
 
 { TGDBMIDebuggerCommandBreakInsert }
 
-function TGDBMIDebuggerCommandBreakInsert.ExecBreakInsert(out ABreakId, AHitCnt: Integer; out
-  AnAddr: TDBGPtr): Boolean;
+function TGDBMIDebuggerCommandBreakInsert.ExecBreakInsert(out ABreakId,
+  AHitCnt: Integer; out AnAddr: TDBGPtr; out APending: Boolean): Boolean;
 var
   R: TGDBMIExecResult;
   ResultList: TGDBMINameValueList;
@@ -8944,6 +8962,7 @@ begin
   ABreakId := 0;
   AHitCnt := 0;
   AnAddr := 0;
+  APending := False;
   case FKind of
     bpkSource:
       begin
@@ -9000,9 +9019,9 @@ begin
            (DebuggerProperties.WarnOnSetBreakpointError in [gdbwAll, gdbwUserBreakPoint])
         then
           Include(FTheDebugger.FDebuggerFlags, dfSetBreakFailed);
-        if ((ResultList.IndexOf('pending') >= 0) or
-            (pos('pend', lowercase(ResultList.Values['addr'])) > 0)) and
-           (DebuggerProperties.WarnOnSetBreakpointError in [gdbwAll, gdbwUserBreakPoint])
+        APending := (ResultList.IndexOf('pending') >= 0) or
+          (pos('pend', lowercase(ResultList.Values['addr'])) > 0);
+        if APending and (DebuggerProperties.WarnOnSetBreakpointError in [gdbwAll, gdbwUserBreakPoint])
         then
           Include(FTheDebugger.FDebuggerFlags, dfSetBreakPending);
       end;
@@ -9042,19 +9061,24 @@ begin
 end;
 
 function TGDBMIDebuggerCommandBreakInsert.DoExecute: Boolean;
+var
+  Pending: Boolean;
 begin
   Result := True;
   FContext.ThreadContext := ccNotRequired;
   FContext.StackContext := ccNotRequired;
 
-  FValid := False;
+  FValid := vsInvalid;
   DefaultTimeOut := DebuggerProperties.TimeoutForEval;
   try
     if FReplaceId <> 0
     then ExecBreakDelete(FReplaceId);
 
-    FValid := ExecBreakInsert(FBreakID, FHitCnt, FAddr);
-    if not FValid then Exit;
+    if ExecBreakInsert(FBreakID, FHitCnt, FAddr, Pending) then
+      FValid := vsValid;
+    if FValid = vsInvalid then Exit;
+    if Pending then
+      FValid := vsPending;
 
     if (FExpression <> '') and not (dcsCanceled in SeenStates)
     then ExecBreakCondition(FBreakID, FExpression);
@@ -9066,7 +9090,7 @@ begin
     then begin
       ExecBreakDelete(FBreakID);
       FBreakID := 0;
-      FValid := False;
+      FValid := vsInvalid;
       FAddr := 0;
       FHitCnt := 0;
     end;
@@ -9417,8 +9441,9 @@ begin
     // Check Insert Result
     BeginUpdate;
 
-    if TGDBMIDebuggerCommandBreakInsert(Sender).Valid
-    then SetValid(vsValid)
+    case TGDBMIDebuggerCommandBreakInsert(Sender).Valid of
+      vsValid: SetValid(vsValid);
+      vsPending: SetValid(vsPending);
       else begin
         if (TGDBMIDebuggerCommandBreakInsert(Sender).Kind = bpkData) and
            (TGDBMIDebugger(Debugger).State = dsInit)
@@ -9428,6 +9453,7 @@ begin
           SetEnabled(False);
         end
         else SetValid(vsInvalid);
+      end;
     end;
 
     FBreakID := TGDBMIDebuggerCommandBreakInsert(Sender).BreakID;
