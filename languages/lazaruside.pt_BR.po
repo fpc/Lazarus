@@ -4944,6 +4944,18 @@ msgstr ""
 msgid "Bottom space equally"
 msgstr "Justificar espaço inferior"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Desativado"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Ativo"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8303,6 +8315,7 @@ msgid "Disable Breakpoint"
 msgstr "Desativar Ponto de Parada"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Desativado"
 
@@ -14926,6 +14939,10 @@ msgstr "Nome de unidade inválido"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "Arquivos faltando no pacote %s"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

@@ -4945,6 +4945,18 @@ msgstr "Bu, alt tarafın sabitlendiği kardeş kontrolüdür, ebeveyn için boş
 msgid "Bottom space equally"
 msgstr "Alt alan eşit"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Engelli"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Etkin"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8365,6 +8377,7 @@ msgid "Disable Breakpoint"
 msgstr "Kesme Noktasını Devre Dışı Bırak"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Engelli"
 
@@ -15084,6 +15097,10 @@ msgstr "Geçersiz ünite adı"
 #, fuzzy,badformat
 msgid "Missing files of package %s"
 msgstr "% S paketinin eksik dosyaları"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-01-30 00:43+0300\n"
+"PO-Revision-Date: 2018-01-31 01:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4918,6 +4918,16 @@ msgstr "Это сосед, к которому привязывается ниж
 msgid "Bottom space equally"
 msgstr "Равномерно по нижним краям"
 
+#: lazarusidestrconsts.lisbpsdisabled
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Отключённая"
+
+#: lazarusidestrconsts.lisbpsenabled
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Включённая"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8271,8 +8281,9 @@ msgid "Disable Breakpoint"
 msgstr "Отключить точку останова"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
-msgstr "Отключено"
+msgstr "Отключить"
 
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
@@ -14889,6 +14900,10 @@ msgstr "Неверное имя модуля"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "Отсутствующие файлы пакета %s"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr "Отложенная (Вкл.)"
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

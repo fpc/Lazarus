@@ -5120,6 +5120,16 @@ msgstr ""
 msgid "Bottom space equally"
 msgstr "Iguala els espais inferiors"
 
+#: lazarusidestrconsts.lisbpsdisabled
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr ""
+
+#: lazarusidestrconsts.lisbpsenabled
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr ""
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8543,6 +8553,7 @@ msgid "Disable Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr ""
 
@@ -15365,6 +15376,10 @@ msgstr "Nom d'unitat no vàlida"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
 msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath

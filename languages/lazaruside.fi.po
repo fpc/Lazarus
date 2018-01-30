@@ -4893,6 +4893,18 @@ msgstr "Tämä on naapurikontrolli, mihin alareuna on ankkuroitu. Tyhjä tarkoit
 msgid "Bottom space equally"
 msgstr "Tasaa välit alhaalla"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Estetty"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Sallittu"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8233,6 +8245,7 @@ msgid "Disable Breakpoint"
 msgstr "Estä keskeytyskohta"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Estetty"
 
@@ -14763,6 +14776,10 @@ msgstr "Kelvoton käännösyksikön nimi"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "Paketin %s puuttuvat tiedostot"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

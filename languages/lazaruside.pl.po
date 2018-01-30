@@ -5138,6 +5138,17 @@ msgstr ""
 msgid "Bottom space equally"
 msgstr ""
 
+#: lazarusidestrconsts.lisbpsdisabled
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr ""
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Włącz"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8537,6 +8548,7 @@ msgid "Disable Breakpoint"
 msgstr "Wyłącz punkt kontrolny"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr ""
 
@@ -15247,6 +15259,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
 msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath

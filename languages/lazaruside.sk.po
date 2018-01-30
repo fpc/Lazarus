@@ -5186,6 +5186,18 @@ msgstr "Toto je súrodenec prvku, ku ktorého spodnej strane je ukotvený. Ponec
 msgid "Bottom space equally"
 msgstr "Rovnaká spodná medzera"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Zakázané"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Povolené"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8640,6 +8652,7 @@ msgid "Disable Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Zakázané"
 
@@ -15640,6 +15653,10 @@ msgstr "Neplatné meno jednotky"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
 msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath

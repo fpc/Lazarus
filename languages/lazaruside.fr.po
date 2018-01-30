@@ -4919,6 +4919,18 @@ msgstr "Il s'agit du contrôle frère auquel le côté inférieur est ancré. Le
 msgid "Bottom space equally"
 msgstr "Espacement égal en bas"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Permis "
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8275,6 +8287,7 @@ msgid "Disable Breakpoint"
 msgstr "Désactiver le point d'arrêt"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Désactivé"
 
@@ -14893,6 +14906,10 @@ msgstr "Nom d'unité incorrect"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "Fichiers manquants du paquet %s"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

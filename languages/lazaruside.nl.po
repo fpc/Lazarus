@@ -5144,6 +5144,17 @@ msgstr "Dit is het verwante control waaraan de bodemzijde is verankerd. Laat het
 msgid "Bottom space equally"
 msgstr "Bodem gelijk gespaceerd"
 
+#: lazarusidestrconsts.lisbpsdisabled
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr ""
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Ingeschakeld"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8573,6 +8584,7 @@ msgid "Disable Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr ""
 
@@ -15455,6 +15467,10 @@ msgstr "Ongeldige unit naam"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
 msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath

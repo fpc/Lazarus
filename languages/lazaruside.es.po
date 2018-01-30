@@ -4978,6 +4978,18 @@ msgstr "Este es el control hermano al cual el lado inferior está anclado. Déje
 msgid "Bottom space equally"
 msgstr "Igualar espaciado inferior"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Desactivado"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Activo"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8347,6 +8359,7 @@ msgid "Disable Breakpoint"
 msgstr "Desactivar Punto de Interrupción"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Desactivado"
 
@@ -15121,6 +15134,10 @@ msgstr "Nombre de unidad no válido"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "Archivos perdidos del paquete %s"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

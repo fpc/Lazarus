@@ -4970,6 +4970,18 @@ msgstr "Questo è il controllo compagno a cui il bordo inferiore è ancorato. La
 msgid "Bottom space equally"
 msgstr "Stessa spaziature al fondo"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Disabilitato"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Abilitato"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8338,6 +8350,7 @@ msgid "Disable Breakpoint"
 msgstr "Disabilita i breakpoint"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Disabilitato"
 
@@ -15061,6 +15074,10 @@ msgstr "Nome della unit non valido"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "File mancanti del pacchetto %s"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

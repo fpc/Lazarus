@@ -5232,6 +5232,18 @@ msgstr "זהו פקד \"אח\" אליו מוצמד הצד התחתון. השאר
 msgid "Bottom space equally"
 msgstr "רווח שווה בתחתית"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "מבוטל"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "מאופשר"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8771,6 +8783,7 @@ msgid "Disable Breakpoint"
 msgstr "נטרל נקודת עצירה"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "מבוטל"
 
@@ -15907,6 +15920,10 @@ msgstr "שם יחידה לא חוקי"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "חסרים קבצים של של החבילה %s"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

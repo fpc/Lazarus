@@ -4929,6 +4929,18 @@ msgstr "Tai kaimyninė komponentė, prie kurios bus pririštas apatinis kraštas
 msgid "Bottom space equally"
 msgstr "Tolygiai rikiuoti pagal apatinius kraštus"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Pasyvus"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Veiksnus"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8286,6 +8298,7 @@ msgid "Disable Breakpoint"
 msgstr "Išjungti stabdos tašką"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Pasyvus"
 
@@ -14909,6 +14922,10 @@ msgstr "Klaidingas modulio pavadinimas"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "Paketui „%s“ trūkstami failai"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

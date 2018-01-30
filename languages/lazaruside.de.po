@@ -4918,6 +4918,18 @@ msgstr "Das ist das Geschwistercontrol, an das die Unterseite verankert wurde. F
 msgid "Bottom space equally"
 msgstr "Gleichmäßig am unteren Rand aufteilen"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Ausgeschaltet"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Eingeschaltet"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8274,6 +8286,7 @@ msgid "Disable Breakpoint"
 msgstr "Haltepunkt deaktivieren"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Ausgeschaltet"
 
@@ -14887,6 +14900,10 @@ msgstr "Ungültiger Unit-Name"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "Fehlende Dateien von Package %s"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

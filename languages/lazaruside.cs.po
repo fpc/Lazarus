@@ -4937,6 +4937,18 @@ msgstr "Toto je sourozenec prvku, k jehož spodní straně je ukotvený. Nechte 
 msgid "Bottom space equally"
 msgstr "Dolní prostor stejnoměrně"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Zakázáno"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Povoleno"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8296,6 +8308,7 @@ msgid "Disable Breakpoint"
 msgstr "Zakázat Bod přerušení"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Zakázáno"
 
@@ -14994,6 +15007,10 @@ msgstr "Neplatné jméno jednotky"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "Chybějící soubory balíčku %s"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

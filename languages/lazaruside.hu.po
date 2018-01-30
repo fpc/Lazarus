@@ -4917,6 +4917,18 @@ msgstr "Ez az a társvezérlő, amelyikhez az alsó oldal horgonyzása történi
 msgid "Bottom space equally"
 msgstr "Alsó oldali távolságok egyenlően"
 
+#: lazarusidestrconsts.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Letiltva"
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Engedélyezve"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8273,6 +8285,7 @@ msgid "Disable Breakpoint"
 msgstr "Töréspont letiltása"
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Letiltva"
 
@@ -14885,6 +14898,10 @@ msgstr "Érvénytelen unit-név"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
 msgstr "A(z) %s csomag hiányzó fájljai"
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
+msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"

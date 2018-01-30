@@ -5160,6 +5160,17 @@ msgstr "Ini adalah kontrol terdekat dimana sisi bawah dianchor. Biarkan kosong u
 msgid "Bottom space equally"
 msgstr "Bawah spasi secara sama"
 
+#: lazarusidestrconsts.lisbpsdisabled
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr ""
+
+#: lazarusidestrconsts.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Hidupkan"
+
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
@@ -8597,6 +8608,7 @@ msgid "Disable Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr ""
 
@@ -15559,6 +15571,10 @@ msgstr "Nama unit tidak benar"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lispendingon
+msgid "Pending (On)"
 msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
