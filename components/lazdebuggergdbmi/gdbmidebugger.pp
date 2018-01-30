@@ -2061,45 +2061,12 @@ function TGDBMIDebuggerInstruction.ProcessInputFromGdb(const AData: String): Boo
   procedure DoMsgAsync(Line: String);
   var
     S: String;
-    i, x: Integer;
-    ct: TThreads;
-    t: TThreadEntry;
   begin
     S := GetPart('=', ',', Line, False, False);
-    x := StringCase(S, ['thread-created', 'thread-exited', 'thread-group-started']);
-    case x of // thread-group-exited // thread-group-added,id="i1"
-      0,1: begin
-          i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
-          if (i > 0) and (FCmd.FTheDebugger.Threads.CurrentThreads <> nil)
-          then begin
-            ct := FCmd.FTheDebugger.Threads.CurrentThreads;
-            t := ct.EntryById[i];
-            case x of
-              0: begin
-                  if t = nil then begin
-                    t := ct.CreateEntry(0, nil, '', '', '', 0, i, '', 'unknown');
-                    ct.Add(t);
-                    t.Free;
-                  end
-                  else
-                    debugln(DBG_WARNINGS, 'GDBMI: Duplicate thread');
-                end;
-              1: begin
-                  if t <> nil then begin
-                    ct.Remove(t);
-                  end
-                  else
-                    debugln(DBG_WARNINGS, 'GDBMI: Missing thread');
-                end;
-            end;
-            FCmd.FTheDebugger.Threads.Changed;
-          end;
-        end;
-      2: begin  // thread-group-started // needed in RunToMain
-          // Todo, store in seperate field
-          if FCmd is TGDBMIDebuggerCommandStartDebugging then
-            FLogWarnings := FLogWarnings + Line + LineEnding;
-        end;
+    if s = 'thread-group-started' then begin  // thread-group-started // needed in RunToMain
+      // Todo, store in seperate field
+      if FCmd is TGDBMIDebuggerCommandStartDebugging then
+        FLogWarnings := FLogWarnings + Line + LineEnding;
     end;
 
      FCmd.FTheDebugger.DoNotifyAsync(Line);
@@ -2525,44 +2492,7 @@ var
   end;
 
   procedure DoMsgAsync(var Line: String);
-  var
-    S: String;
-    i, x: Integer;
-    ct: TThreads;
-    t: TThreadEntry;
   begin
-    S := GetPart('=', ',', Line, False, False);
-    x := StringCase(S, ['thread-created', 'thread-exited']);
-    case x of // thread-group-exited // thread-group-added,id="i1"
-      0,1: begin
-          i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
-          if (i > 0) and (FTheDebugger.Threads.CurrentThreads <> nil)
-          then begin
-            ct := FTheDebugger.Threads.CurrentThreads;
-            t := ct.EntryById[i];
-            case x of
-              0: begin
-                  if t = nil then begin
-                    t := FTheDebugger.Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, i, '', 'unknown');
-                    ct.Add(t);
-                    t.Free;
-                  end
-                  else
-                    debugln(DBG_WARNINGS, 'GDBMI: Duplicate thread');
-                end;
-              1: begin
-                  if t <> nil then begin
-                    ct.Remove(t);
-                  end
-                  else
-                    debugln(DBG_WARNINGS, 'GDBMI: Missing thread');
-                end;
-            end;
-            FTheDebugger.Threads.Changed;
-          end;
-        end;
-    end;
-
      FTheDebugger.DoNotifyAsync(Line);
   end;
 
@@ -7728,9 +7658,13 @@ end;
 procedure TGDBMIDebugger.DoNotifyAsync(Line: String);
 var
   EventText: String;
+  i, x: Integer;
+  ct: TThreads;
+  t: TThreadEntry;
 begin
   EventText := GetPart(['='], [','], Line, False, False);
   case StringCase(EventText, [
+    'thread-created', 'thread-exited',
     'shlibs-added',
     'library-loaded',
     'library-unloaded',
@@ -7738,15 +7672,44 @@ begin
     'thread-group-started',
     'thread-group-exited',
     'thread-created',
-    'thread-exited'], False, False) of
-    0: DoDbgEvent(ecModule, etModuleLoad, Line);
-    1: DoDbgEvent(ecModule, etModuleLoad, ParseLibraryLoaded(Line));
-    2: DoDbgEvent(ecModule, etModuleUnload, ParseLibraryUnloaded(Line));
-    3: DoDbgEvent(ecModule, etDefault, Line);
-    4: AddThreadGroup(Line);
-    5: RemoveThreadGroup(Line);
-    6: DoDbgEvent(ecThread, etThreadStart, ParseThread(Line, EventText));
-    7: DoDbgEvent(ecThread, etThreadExit, ParseThread(Line, EventText));
+    'thread-exited',
+    'breakpoint-modified'
+    ], False, False) of
+    0,1: begin
+        i := StrToIntDef(GetPart(',id="', '"', Line, False, False), -1);
+        if (i > 0) and (Threads.CurrentThreads <> nil)
+        then begin
+          ct := Threads.CurrentThreads;
+          t := ct.EntryById[i];
+          case x of
+            0: begin
+                if t = nil then begin
+                  t := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, i, '', 'unknown');
+                  ct.Add(t);
+                  t.Free;
+                end
+                else
+                  debugln(DBG_WARNINGS, 'GDBMI: Duplicate thread');
+              end;
+            1: begin
+                if t <> nil then begin
+                  ct.Remove(t);
+                end
+                else
+                  debugln(DBG_WARNINGS, 'GDBMI: Missing thread');
+              end;
+          end;
+          Threads.Changed;
+        end;
+      end;
+    2: DoDbgEvent(ecModule, etModuleLoad, Line);
+    3: DoDbgEvent(ecModule, etModuleLoad, ParseLibraryLoaded(Line));
+    4: DoDbgEvent(ecModule, etModuleUnload, ParseLibraryUnloaded(Line));
+    5: DoDbgEvent(ecModule, etDefault, Line);
+    6: AddThreadGroup(Line);
+    7: RemoveThreadGroup(Line);
+    8: DoDbgEvent(ecThread, etThreadStart, ParseThread(Line, EventText));
+    9: DoDbgEvent(ecThread, etThreadExit, ParseThread(Line, EventText));
   else
     DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
   end;
@@ -9455,15 +9418,15 @@ begin
 
     if TGDBMIDebuggerCommandBreakInsert(Sender).Valid
     then SetValid(vsValid)
-    else begin
-      if (TGDBMIDebuggerCommandBreakInsert(Sender).Kind = bpkData) and
-         (TGDBMIDebugger(Debugger).State = dsInit)
-      then begin
-        // disable data breakpoint, if unable to set (only at startup)
-        SetValid(vsValid);
-        SetEnabled(False);
-      end
-      else SetValid(vsInvalid);
+      else begin
+        if (TGDBMIDebuggerCommandBreakInsert(Sender).Kind = bpkData) and
+           (TGDBMIDebugger(Debugger).State = dsInit)
+        then begin
+          // disable data breakpoint, if unable to set (only at startup)
+          SetValid(vsValid);
+          SetEnabled(False);
+        end
+        else SetValid(vsInvalid);
     end;
 
     FBreakID := TGDBMIDebuggerCommandBreakInsert(Sender).BreakID;
