@@ -269,9 +269,10 @@ begin
   FileDialog.UserChoice := mrCancel;
 
   //todo: Options
-
   if (FileDialog.FCompStyle = csOpenFileDialog) or
-    (FileDialog is TSelectDirectoryDialog) then
+     (FileDialog.FCompStyle = csPreviewFileDialog) or
+    (FileDialog is TSelectDirectoryDialog)
+    then
   begin
     openDlg := NSOpenPanel.openPanel;
     openDlg.setAllowsMultipleSelection(ofAllowMultiSelect in
