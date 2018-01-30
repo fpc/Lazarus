@@ -202,8 +202,8 @@ const
   //                 enabled  valid
   DEBUG_STATE: array[Boolean, TValidState] of ShortString = (
                 {vsUnknown,     vsValid,   vsInvalid, vsPending}
-    {Disabled} (lisOff, lisDisabled, lisInvalidOff, lisInvalidOff),
-    {Endabled} (lisOn, lisEnabled, lisInvalidOn, lisPendingOn));
+    {Disabled} (lisOff, lisBPSDisabled, lisInvalidOff, lisInvalidOff),
+    {Endabled} (lisOn, lisBPSEnabled, lisInvalidOn, lisPendingOn));
 begin
   Result:=DEBUG_STATE[ABreakpoint.Enabled,ABreakpoint.Valid];
 end;

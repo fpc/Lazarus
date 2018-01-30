@@ -5423,6 +5423,8 @@ resourcestring
   lisLogCallStack = 'Log Call Stack';
   lisLogCallStackLimit = '(frames limit. 0 - no limits)';
   lisDisabled = 'Disabled';
+  lisBPSEnabled = 'Enabled';
+  lisBPSDisabled = 'Disabled';
   lisInvalidOff = 'Invalid (Off)';
   lisInvalidOn = 'Invalid (On)';
   lisPendingOn = 'Pending (On)';
