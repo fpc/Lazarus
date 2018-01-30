@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="DebuggerIntf"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Lazarus Team"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -18,6 +19,7 @@
         <CompilerMessages>
           <IgnoredMessages idx4046="True"/>
         </CompilerMessages>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
     <Description Value="DebuggerIntf
@@ -39,7 +41,6 @@ Provides an interface to add debuggers to the IDE"/>
         <UnitName Value="DbgIntfMiscClasses"/>
       </Item3>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LCLBase"/>
