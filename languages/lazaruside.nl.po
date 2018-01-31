@@ -5107,6 +5107,12 @@ msgstr ""
 msgid "Working directory (leave empty for file path)"
 msgstr ""
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Binair"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr ""

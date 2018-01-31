@@ -4891,6 +4891,12 @@ msgstr "このファイルがソースエディタでアクティブなとき"
 msgid "Working directory (leave empty for file path)"
 msgstr "作業ディレクトリ （ファイルパスは空欄にしておいてください）"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "バイナリ"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "デフォルトでない値を太字に"

@@ -4894,6 +4894,12 @@ msgstr "Kai šis failas pirminio kodo rengyklėje aktyvus"
 msgid "Working directory (leave empty for file path)"
 msgstr "Darbinis aplankas (palikite tuščią failo keliui)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Dvejetainis"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Numatytąsias vertes pastorinti"

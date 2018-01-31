@@ -4886,6 +4886,12 @@ msgstr "Quand ce fichier est en cours d'utilisation dans l'éditeur de source"
 msgid "Working directory (leave empty for file path)"
 msgstr "Répertoire de travail (laisser vide pour le chemin de fichier)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Binaire"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Valeurs modifiées en gras"

@@ -4902,6 +4902,12 @@ msgstr "Když je tento soubor aktivní v editoru"
 msgid "Working directory (leave empty for file path)"
 msgstr "Pracovní adresář (nechejte prázdné pro cestu souboru)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Binární"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Tlustě nevýchozí hodnoty"

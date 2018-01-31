@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-01-31 01:50+0300\n"
+"PO-Revision-Date: 2018-02-01 02:07+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4884,6 +4884,11 @@ msgstr "Когда этот файл является текущим в реда
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
 msgstr "Рабочий каталог (оставить пустым для пути к файлу)"
+
+#: lazarusidestrconsts.lisbinary
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Двоичное"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"

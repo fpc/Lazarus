@@ -4934,6 +4934,12 @@ msgstr "Quando questo file è attivo nell'editor dei sorgenti"
 msgid "Working directory (leave empty for file path)"
 msgstr "Cartella di lavoro (lasciare vuoto per il percorso)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Binario"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Grassetto per valori non predefiniti"

@@ -4910,6 +4910,12 @@ msgstr "Bu dosya kaynak düzenleyicide etkin olduğunda"
 msgid "Working directory (leave empty for file path)"
 msgstr "Çalışma dizini (dosya yolu için boş bırakın)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "İkili"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Varsayılan olmayan kalın değerler"

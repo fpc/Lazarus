@@ -5027,6 +5027,12 @@ msgstr "当文件在源码编辑器中是活动时 ..."
 msgid "Working directory (leave empty for file path)"
 msgstr "工作目录"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "二进制"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "加粗非默认值"

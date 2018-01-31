@@ -5194,6 +5194,12 @@ msgstr "כאשר קובץ זה פעיל בעורך הקוד ..."
 msgid "Working directory (leave empty for file path)"
 msgstr "ספריית עבודה (השאר ריק לנתיב הקובץ)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "בינארי"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "הדגש (bold) ערכים שאינם ברירת מחדל"

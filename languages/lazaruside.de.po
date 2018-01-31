@@ -4883,6 +4883,12 @@ msgstr "Wenn diese Datei im Quelltexteditor aktiv ist ..."
 msgid "Working directory (leave empty for file path)"
 msgstr "Arbeitsverzeichnis (keine Angabe heißt Dateipfad)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Binär"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Nicht voreingestellte Werte fett hervorheben"

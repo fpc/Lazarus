@@ -4888,6 +4888,12 @@ msgstr "Коли цей файл активний в редакторі коду
 msgid "Working directory (leave empty for file path)"
 msgstr "Робоча тека (залишити порожньою для файлового шляху)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Двійковий"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Нестандартні значення жирним"

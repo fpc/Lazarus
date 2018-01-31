@@ -5123,6 +5123,12 @@ msgstr "Ketika file ini aktif dalam editor sumber ..."
 msgid "Working directory (leave empty for file path)"
 msgstr "Direktori kerja (biarkan kosong untuk path file)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Biner"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr ""

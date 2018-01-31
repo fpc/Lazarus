@@ -4942,6 +4942,12 @@ msgstr "Cuando este archivo está activo en el editor de código"
 msgid "Working directory (leave empty for file path)"
 msgstr "Directorio de trabajo (deje en blanco para usar la ruta de archivo)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Binario"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Poner en negritas valores no predeterminados"

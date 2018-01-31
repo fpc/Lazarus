@@ -4860,6 +4860,12 @@ msgstr "Kun tämä tiedosto on aktiivinen editorissa"
 msgid "Working directory (leave empty for file path)"
 msgstr "Työhakemisto (tyhjä = tiedoston polku)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Binaari"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Lihavoi muutetut arvot"

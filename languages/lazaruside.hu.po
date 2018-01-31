@@ -4884,6 +4884,12 @@ msgstr "Amikor ez a fájl aktív a forráskódszerkesztőben"
 msgid "Working directory (leave empty for file path)"
 msgstr "Munkakönyvtár (maradjon üres a fájl útvonalához)"
 
+#: lazarusidestrconsts.lisbinary
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbinary"
+msgid "Binary"
+msgstr "Bináris"
+
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Nem alapértelmezett értékek félkövérré tétele"
