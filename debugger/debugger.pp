@@ -556,7 +556,7 @@ const
      'wdfChar', 'wdfString',
      'wdfDecimal', 'wdfUnsigned', 'wdfFloat', 'wdfHex',
      'wdfPointer',
-     'wdfMemDump'
+     'wdfMemDump', 'wdfBinary'
     );
 
 type

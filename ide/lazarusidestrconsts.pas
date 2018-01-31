@@ -5484,6 +5484,7 @@ resourcestring
   lisPointer = 'Pointer';
   lisRecordStruct = 'Record/Structure';
   lisMemoryDump = 'Memory Dump';
+  lisBinary = 'Binary';
 
   // Callstack
   lisCallStackNotEvaluated = 'Stack not evaluated';

@@ -12737,6 +12737,16 @@ var
           FTextValue := MemDump.AsText(0, MemDump.Count, TargetInfo^.TargetPtrSize*2);
           MemDump.Free;
         end;
+      wdfBinary:
+        begin
+          Result := PrepareExpr(AnExpression, True);
+          if not Result
+          then exit;
+          FValidity := ddsValid;
+          FTextValue := Concat('0b' + BinStr(GetPtrValue(AnExpression, [], True), TargetInfo^.TargetPtrSize*2));
+          if LastExecResult.State = dsError
+          then ParseLastError;
+        end;
       else // wdfDefault
         begin
           Result := False;

@@ -76,10 +76,10 @@ implementation
 
 procedure TWatchPropertyDlg.btnOKClick(Sender: TObject);
 const
-  StyleToDispFormat: Array [0..8] of TWatchDisplayFormat =
+  StyleToDispFormat: Array [0..9] of TWatchDisplayFormat =
     (wdfChar, wdfString, wdfDecimal,
      wdfHex, wdfUnsigned, wdfPointer,
-     wdfStructure, wdfDefault, wdfMemDump
+     wdfStructure, wdfDefault, wdfMemDump, wdfBinary
     );
 begin
   if FWatch = nil
@@ -116,7 +116,8 @@ const
      0, 1, //wdfChar, wdfString,
      2, 4, //wdfDecimal, wdfUnsigned, (TODO unsigned)
      7, 3, //wdfFloat, wdfHex,
-     5, 8   //wdfPointer, wdfMemDump
+     5, 8, //wdfPointer, wdfMemDump
+     9     //wdfBinary
     );
 begin
   FWatch := AWatch;
@@ -158,7 +159,8 @@ begin
   rgStyle.Items[6]:= lisRecordStruct;
   rgStyle.Items[7]:= lisDefault;
   rgStyle.Items[8]:= lisMemoryDump;
-  //rgStyle.Items[9]:= lisFloatingPoin;
+  rgStyle.Items[9]:= lisBinary;
+  //rgStyle.Items[10]:= lisFloatingPoin;
 
   ButtonPanel.OKButton.Caption:=lisMenuOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
