@@ -1933,6 +1933,7 @@ type
   end;
 
 procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
+function MinDbgPtr(a, b: TDBGPtr): TDBGPtr;inline; overload;
 
 function dbgs(AState: TDBGState): String; overload;
 function dbgs(ADataState: TDebuggerDataState): String; overload;
@@ -1981,6 +1982,14 @@ var
 procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
 begin
   MDebuggerClasses.AddObject(ADebuggerClass.ClassName, TObject(Pointer(ADebuggerClass)));
+end;
+
+function MinDbgPtr(a, b: TDBGPtr): TDBGPtr;
+begin
+  if a < b then
+    Result := a
+  else
+    Result := b;
 end;
 
 procedure DoFinalization;
@@ -2190,7 +2199,7 @@ begin
   TryStartAt.GuessedValue := TmpAddr;
   AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
   // check max size
-  if (TryStartAt.Value < AStartAddr - Min(AStartAddr, DAssMaxRangeSize))
+  if (TryStartAt.Value < AStartAddr - MinDbgPtr(AStartAddr, DAssMaxRangeSize))
   then begin
     DebugLn(DBG_DISASSEMBLER, ['INFO: Limit Range for Disass: FStartAddr=', AStartAddr, '  TryStartAt.Value=', TryStartAt.Value  ]);
     TryStartAt := InitAddress(TmpAddr, avGuessed);
@@ -2308,7 +2317,7 @@ begin
     then RngBefore := nil;
     {$POP}
     AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
-    if (TryStartAt.Value < TryEndAt.Value - Min(TryEndAt.Value, DAssMaxRangeSize))
+    if (TryStartAt.Value < TryEndAt.Value - MinDbgPtr(TryEndAt.Value, DAssMaxRangeSize))
     then begin
       DebugLn(DBG_DISASSEMBLER, ['INFO: Limit Range for Disass: TryEndAt.Value=', TryEndAt.Value, '  TryStartAt.Value=', TryStartAt.Value  ]);
       TryStartAt := InitAddress(TmpAddr, avGuessed);
