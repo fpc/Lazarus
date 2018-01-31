@@ -458,7 +458,7 @@ begin
   MenuInfo.fMask := MIIM_DATA;
 
   if ByPosition then
-    Menu := LParam
+    Menu := HMENU(LParam)
   else
     Menu := GetMenu(Window);
   if GetMenuItemInfo(Menu, LOWORD(Integer(WParam)), ByPosition, @MenuInfo) then
