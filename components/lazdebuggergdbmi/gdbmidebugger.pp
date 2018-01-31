@@ -7728,6 +7728,7 @@ begin
            (pos('pend', lowercase(List.Values['addr'])) <= 0)
         then
           BreakPoint.SetPendingToValid(vsValid);
+        List.Free;
       end;
   else
     DebugLn(DBG_WARNINGS, '[WARNING] Debugger: Unexpected async-record: ', Line);
