@@ -100,6 +100,7 @@ type
     procedure TestFindDeclaration_Arrays;
     procedure TestFindDeclaration_GuessType;
     procedure TestFindDeclaration_Attributes;
+    procedure TestFindDeclaration_BracketOpen;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -899,6 +900,29 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_BracketOpen;
+begin
+  StartProgram;
+  Add([
+  'var c: integer;',
+  'procedure DoIt(i: integer);',
+  '  procedure WriteStr(s: string);',
+  '  begin',
+  '  end;',
+  'begin',
+  '  begin',
+  '    DoIt(c{declaration:c}',
+  '  end;',
+  '  begin',
+  '    WriteStr(c{declaration:c}',
+  '  end;',
+  'end;',
+  'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;
