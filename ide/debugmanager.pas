@@ -1331,7 +1331,7 @@ begin
   SrcLine := ALocation.SrcLine;
   CurrentSourceUnitInfo := nil;
 
-  if SrcLine < 1
+  if (SrcLine < 1) and (SrcLine <> -2) // TODO: this should move to the debugger
   then begin
     // jump to the deepest stack frame with debugging info
     // TODO: Only below the frame supplied by debugger
@@ -1942,7 +1942,7 @@ begin
             or (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle));
     // Pause
     itmRunMenuPause.Enabled := CanRun and DebuggerIsValid
-            and (dcPause in FDebugger.Commands);
+            and ((dcPause in FDebugger.Commands) or FAutoContinueTimer.Enabled);
     // Show execution point
     itmRunMenuShowExecutionPoint.Enabled := CanRun and DebuggerIsValid
             and (FDebugger.State = dsPause);
@@ -2442,6 +2442,7 @@ begin
   if (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying
   then Exit;
+  FAutoContinueTimer.Enabled := False;
   FDebugger.Pause;
   Result := mrOk;
 end;
