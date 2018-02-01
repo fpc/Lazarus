@@ -210,7 +210,7 @@ begin
       Item^.FListener := AListener;
     end;
 
-    AStart := Item^.FImageList.Add(ABitmap, nil);
+    AStart := Item^.FImageList.AddSliced(ABitmap, ABitmapCount, 1);
     AListener.CacheSetImageList(Item^.FImageList);
     OldLen := Length(Item^.FImageIndexes);
     SetLength(Item^.FImageIndexes, OldLen + Item^.FImageList.Count - AStart);
