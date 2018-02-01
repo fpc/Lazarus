@@ -666,7 +666,7 @@ var
         if not Res
         then raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
 
-        TCustomImageList.ScaleImage(ImgHandle, MaskHandle, Width, Height, Width, Height, ImgData);
+        TCustomImageList.ScaleImage(ImgHandle, MaskHandle, Rect(0, 0, Width-1, Height-1), Width, Height, ImgData);
         InternalInsert(Count, @ImgData[0]);
         DeleteObject(ImgHandle);
         DeleteObject(MaskHandle);
@@ -1178,6 +1178,36 @@ begin
   else
     Result := AddIcon(Grp as TCustomIcon);
   Grp.Free;
+end;
+
+function TCustomImageList.AddSliced(Image: TCustomBitmap; AHorizontalCount,
+  AVerticalCount: Integer): Integer;
+var
+  R: TCustomImageListResolution;
+  ScBmp: TRGBAQuadArray;
+  W, H, I, L, C: Integer;
+  Rc: TRect;
+begin
+  if Image = nil then Exit(-1);
+
+  W := Image.Width div AHorizontalCount;
+  H := Image.Height div AVerticalCount;
+
+  C := Count;
+  Result := Count;
+
+  CreateDefaultResolution;
+  for L := 0 to AVerticalCount-1 do
+    for I := 0 to AHorizontalCount-1 do
+    begin
+      Rc := Rect(I*W, L*H, (I+1)*W-1, (L+1)*H-1);
+      for R in Resolutions do
+      begin
+        ScaleImage(Image, nil, Rc, R.Width, R.Height, ScBmp);
+        R.InternalInsert(C, @ScBmp[0]);
+      end;
+      Inc(C);
+    end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1749,7 +1779,7 @@ begin
       else
         msk := 0;
       ScaleImage(SortedIcon.BitmapHandle, msk,
-        SortedIcon.Width, SortedIcon.Height, R.Width, R.Height, ScBmp);
+        Rect(0, 0, SortedIcon.Width-1, SortedIcon.Height-1), R.Width, R.Height, ScBmp);
       R.InternalInsert(AIndex, @ScBmp[0]);
     end;
   finally
@@ -1801,7 +1831,7 @@ begin
         CreateDefaultResolution;
         for R in Resolutions do
         begin
-          ScaleImage(Bmp, Msk, MaskedImage.Width, MaskedImage.Height, R.Width, R.Height, ScBmp);
+          ScaleImage(Bmp, Msk, Rect(0, 0, MaskedImage.Width-1, MaskedImage.Height-1), R.Width, R.Height, ScBmp);
           R.InternalInsert(Index, @ScBmp[0]);
         end;
       finally
@@ -1814,6 +1844,13 @@ begin
   finally
     SourceImage.Free;
   end;
+end;
+
+class procedure TCustomImageList.ScaleImage(const ABitmap,
+  AMask: TCustomBitmap; TargetWidth, TargetHeight: Integer;
+  var AData: TRGBAQuadArray);
+begin
+  ScaleImage(ABitmap, AMask, Rect(0, 0, ABitmap.Width-1, ABitmap.Height-1), TargetWidth, TargetHeight, AData);
 end;
 
 {------------------------------------------------------------------------------
@@ -1973,7 +2010,7 @@ begin
 end;
 
 class procedure TCustomImageList.ScaleImage(const ABitmap, AMask: HBITMAP;
-  BitmapWidth, BitmapHeight, TargetWidth, TargetHeight: Integer;
+  SourceRect: TRect; TargetWidth, TargetHeight: Integer;
   var AData: TRGBAQuadArray);
 var
   Size, X, Y: Integer;
@@ -1990,22 +2027,22 @@ begin
   FI := nil;
   ScFI := nil;
   ScCanvas := nil;
-  II := TLazIntfImage.Create(BitmapWidth, BitmapHeight);
+  II := TLazIntfImage.Create(0, 0);
   try
-    II.LoadFromBitmap(ABitmap, AMask, BitmapWidth, BitmapHeight);
+    II.LoadFromBitmap(ABitmap, AMask);
 
-    FI := TFPCompactImgRGBA8Bit.Create(II.Width, II.Height);
+    FI := TFPCompactImgRGBA8Bit.Create(SourceRect.Right-SourceRect.Left+1, SourceRect.Bottom-SourceRect.Top+1);
 
-    for X := 0 to II.Width-1 do
-    for Y := 0 to II.Height-1 do
+    for X := SourceRect.Left to SourceRect.Right do
+    for Y := SourceRect.Top to SourceRect.Bottom do
     begin
       C := II.Colors[X, Y];
       if (AMask<>0) and II.Masked[X, Y] then
         C.Alpha := 0;
-      FI.Colors[X, Y] := C;
+      FI.Colors[X-SourceRect.Left, Y-SourceRect.Top] := C;
     end;
 
-    if BitmapWidth=TargetWidth then
+    if SourceRect.Right-SourceRect.Left+1=TargetWidth then
       ScFI := FI
     else
     begin
@@ -2038,7 +2075,7 @@ begin
 end;
 
 class procedure TCustomImageList.ScaleImage(const ABitmap,
-  AMask: TCustomBitmap; TargetWidth, TargetHeight: Integer;
+  AMask: TCustomBitmap; SourceRect: TRect; TargetWidth, TargetHeight: Integer;
   var AData: TRGBAQuadArray);
 var
   msk: HBITMAP;
@@ -2050,7 +2087,7 @@ begin
     msk := ABitmap.MaskHandle
   else
     msk := 0;
-  ScaleImage(ABitmap.Handle, msk, ABitmap.Width, ABitmap.Height, TargetWidth, TargetHeight, AData);
+  ScaleImage(ABitmap.Handle, msk, SourceRect, TargetWidth, TargetHeight, AData);
 end;
 
 function TCustomImageList.Equals(Obj: TObject): boolean;
@@ -2219,7 +2256,7 @@ begin
       else
         msk := 0;
       ScaleImage(SortedIcon.BitmapHandle, msk,
-        SortedIcon.Width, SortedIcon.Height, R.Width, R.Height, ScBmp);
+        Rect(0, 0, SortedIcon.Width-1, SortedIcon.Height-1), R.Width, R.Height, ScBmp);
       R.InternalReplace(AIndex, @ScBmp[0]);
     end;
   finally

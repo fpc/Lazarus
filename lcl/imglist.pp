@@ -278,8 +278,10 @@ type
 
     class procedure ScaleImage(const ABitmap, AMask: TCustomBitmap;
       TargetWidth, TargetHeight: Integer; var AData: TRGBAQuadArray);
+    class procedure ScaleImage(const ABitmap, AMask: TCustomBitmap;
+      SourceRect: TRect; TargetWidth, TargetHeight: Integer; var AData: TRGBAQuadArray);
     class procedure ScaleImage(const ABitmap, AMask: HBITMAP;
-      BitmapWidth, BitmapHeight, TargetWidth, TargetHeight: Integer; var AData: TRGBAQuadArray);
+      SourceRect: TRect; TargetWidth, TargetHeight: Integer; var AData: TRGBAQuadArray);
 
     procedure AssignTo(Dest: TPersistent); override;
     procedure Assign(Source: TPersistent); override;
@@ -293,6 +295,7 @@ type
     procedure EndUpdate;
 
     function Add(Image, Mask: TCustomBitmap): Integer;
+    function AddSliced(Image: TCustomBitmap; AHorizontalCount, AVerticalCount: Integer): Integer;
     function AddIcon(Image: TCustomIcon): Integer;
     procedure AddImages(AValue: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
