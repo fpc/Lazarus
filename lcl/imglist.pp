@@ -112,11 +112,10 @@ type
   TOverlay = 0..14; // windows limitation
 
   TCustomImageListResolution = class(TLCLReferenceComponent)
-  public
-    FData: array of TRGBAQuad;
   private
     FWidth: Integer;
     FHeight: Integer;
+    FData: array of TRGBAQuad;
     FReference: TWSCustomImageListReference;
     FAllocCount: Integer;
     FImageList: TCustomImageList;
