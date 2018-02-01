@@ -59,7 +59,7 @@ type
     class procedure AssignImage(const ABitmap: TCustomBitmap; ImageName: String;
       ImageSize: Integer = 16);
     class function AddImageToImageList(const AImageList: TImageList;
-      ImageName: String): Integer;
+      ImageName: String; ImageSize: Integer = 16): Integer;
     class function ScaledSize(ImageSize: Integer = 16): Integer;
 
     function LoadImage(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
@@ -135,8 +135,28 @@ end;
 
 class function TIDEImages.CreateImage(ImageName: String; ImageSize: Integer
   ): TCustomBitmap;
+var
+  Grp: TCustomBitmap;
+  GrpScaledNewInstance: Boolean;
+  ScalePercent, GrpScale: Integer;
 begin
-  CreateBestBitmapForScalingFromRes(ImageName, GetScalePercent, Result);
+  ScalePercent := GetScalePercent;
+
+  Grp := nil;
+  try
+    GrpScale := CreateBestBitmapForScalingFromRes(ImageName, ScalePercent, Grp);
+    if Grp<>nil then
+    begin
+      Result := ScaleImage(Grp, GrpScaledNewInstance,
+        MulDiv(ImageSize, ScalePercent, GrpScale), MulDiv(ImageSize, ScalePercent, GrpScale), ScalePercent / GrpScale);
+      if not GrpScaledNewInstance then
+        Grp := nil;
+      Exit; // found
+    end;
+  finally
+    Grp.Free;
+  end;
+  Result := nil; // not found
 end;
 
 class procedure TIDEImages.AssignImage(const ABitmap: TCustomBitmap;
@@ -153,12 +173,12 @@ begin
 end;
 
 class function TIDEImages.AddImageToImageList(const AImageList: TImageList;
-  ImageName: String): Integer;
+  ImageName: String; ImageSize: Integer): Integer;
 var
   xBmp: TCustomBitmap;
 begin
   Result := -1;
-  xBmp := TIDEImages.CreateImage(ImageName, AImageList.Width);
+  xBmp := TIDEImages.CreateImage(ImageName, ImageSize);
   try
     Result := AImageList.Add(xBmp, nil);
   finally
@@ -269,6 +289,7 @@ var
   List: TCustomImageList;
   Names: TStringList;
   Grp: TGraphic;
+  Rc: TRect;
 begin
   Result := GetImageIndex(ImageName, ImageSize);
   if Result <> -1 then Exit;
@@ -299,11 +320,9 @@ begin
         raise Exception.CreateFmt('TIDEImages.LoadImage: %s not found.', [ImageName]);
       if Grp is TCustomBitmap then
       begin
-        if (Grp is TBitmap) and Grp.Transparent and (TBitmap(Grp).TransparentColor<>clNone)
-        and (TBitmap(Grp).PixelFormat in [pf1bit..pf24bit]) then
-          Result := List.AddMasked(TBitmap(Grp), TBitmap(Grp).TransparentColor)
-        else
-          Result := List.Add(TCustomBitmap(Grp), nil);
+        Rc := Rect(0, 0, List.Width-1, List.Height-1);
+        OffsetRect(Rc, (Grp.Width-List.Width) div 2, (Grp.Height-List.Height) div 2);
+        Result := List.AddSlice(TCustomBitmap(Grp), Rc);
       end else
         Result := List.AddIcon(Grp as TCustomIcon);
     finally
