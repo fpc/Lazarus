@@ -814,27 +814,18 @@ end;
 procedure TCustomImageListResolution.StretchDraw(Canvas: TCanvas;
   Index: Integer; ARect: TRect; Enabled: Boolean);
 var
-  FI: TFPCompactImgRGBA8Bit;
-  Px: PRGBAQuad;
-  X, Y: Integer;
+  Bmp: TBitmap;
 begin
   if ((ARect.Right-ARect.Left)=FWidth) and ((ARect.Bottom-ARect.Top)=FHeight) then
     Draw(Canvas, ARect.Left, ARect.Top, Index, Enabled)
   else
   begin
-    FI := TFPCompactImgRGBA8Bit.Create(FWidth, FHeight);
+    Bmp := TBitmap.Create;
     try
-      Px := @FData[Index * FWidth * FHeight];
-      for Y := 0 to FHeight-1 do
-      for X := 0 to FWidth-1 do
-      begin
-        FI.Colors[X, Y] := FPColor(Px^.Red, Px^.Green, Px^.Blue, Px^.Alpha);
-        Inc(Px);
-      end;
-
-      TFPCustomCanvas(Canvas).StretchDraw(ARect.Left, ARect.Top, ARect.Right-ARect.Left, ARect.Bottom-ARect.Top, FI);
+      GetBitmap(Index, Bmp, EffectMap[Enabled]);
+      Canvas.StretchDraw(ARect, Bmp);
     finally
-      FI.Free;
+      Bmp.Free;
     end;
   end;
 end;
