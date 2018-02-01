@@ -1180,6 +1180,24 @@ begin
   Grp.Free;
 end;
 
+function TCustomImageList.AddSlice(Image: TCustomBitmap; AImageRect: TRect
+  ): Integer;
+var
+  R: TCustomImageListResolution;
+  ScBmp: TRGBAQuadArray;
+begin
+  if Image = nil then Exit(-1);
+
+  Result := Count;
+
+  CreateDefaultResolution;
+  for R in Resolutions do
+  begin
+    ScaleImage(Image, nil, AImageRect, R.Width, R.Height, ScBmp);
+    R.InternalInsert(Result, @ScBmp[0]);
+  end;
+end;
+
 function TCustomImageList.AddSliced(Image: TCustomBitmap; AHorizontalCount,
   AVerticalCount: Integer): Integer;
 var
@@ -2036,9 +2054,13 @@ begin
     for X := SourceRect.Left to SourceRect.Right do
     for Y := SourceRect.Top to SourceRect.Bottom do
     begin
-      C := II.Colors[X, Y];
-      if (AMask<>0) and II.Masked[X, Y] then
-        C.Alpha := 0;
+      if (X>=0) and (X<II.Width) and (Y>=0) and (Y<II.Height) then
+      begin
+        C := II.Colors[X, Y];
+        if (AMask<>0) and II.Masked[X, Y] then
+          C.Alpha := 0;
+      end else
+        C := colTransparent;
       FI.Colors[X-SourceRect.Left, Y-SourceRect.Top] := C;
     end;
 

@@ -296,6 +296,7 @@ type
 
     function Add(Image, Mask: TCustomBitmap): Integer;
     function AddSliced(Image: TCustomBitmap; AHorizontalCount, AVerticalCount: Integer): Integer;
+    function AddSlice(Image: TCustomBitmap; AImageRect: TRect): Integer;
     function AddIcon(Image: TCustomIcon): Integer;
     procedure AddImages(AValue: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
