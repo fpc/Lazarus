@@ -502,7 +502,7 @@ end;
 
 procedure TCocoaOpenGLView.scrollWheel(event: NSEvent);
 begin
-  if not Assigned(callback)
+  if Assigned(callback)
     then callback.scrollWheel(event)
     else inherited scrollWheel(event);
 end;
