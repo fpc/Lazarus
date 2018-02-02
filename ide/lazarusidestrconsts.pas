@@ -2089,6 +2089,16 @@ resourcestring
   dlgAddHiAttrSyncroEditOther     = 'Other Cells';
   dlgAddHiAttrSyncroEditArea      = 'Selected Area';
   dlgAddHiAttrGutterSeparator     = 'Gutter Separator';
+  dlgAddHiAttrOutlineLevel1Color  = 'Level  1';
+  dlgAddHiAttrOutlineLevel2Color  = 'Level  2';
+  dlgAddHiAttrOutlineLevel3Color  = 'Level  3';
+  dlgAddHiAttrOutlineLevel4Color  = 'Level  4';
+  dlgAddHiAttrOutlineLevel5Color  = 'Level  5';
+  dlgAddHiAttrOutlineLevel6Color  = 'Level  6';
+  dlgAddHiAttrOutlineLevel7Color  = 'Level  7';
+  dlgAddHiAttrOutlineLevel8Color  = 'Level  8';
+  dlgAddHiAttrOutlineLevel9Color  = 'Level  9';
+  dlgAddHiAttrOutlineLevel10Color = 'Level 10';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgIfDefBlockInactive           = 'Inactive $IFDEF code';
@@ -2105,6 +2115,7 @@ resourcestring
   dlgAddHiAttrGroupSyncroEdit    = 'Syncron Edit';
   dlgAddHiAttrGroupTemplateEdit  = 'Template Edit';
   dlgAddHiAttrGroupIfDef    = 'IfDef';
+  dlgAddHiAttrGroupOutlineColors = 'Outline Colors';
 
   dlgEditAccessCaptionLockedInView            = 'Locked, if text in view';
   dlgEditAccessCaptionUnLockedInSoftView      = 'Unlocked, if text in centered view';

@@ -276,6 +276,19 @@ begin
     exit;
   end;
 
+  // Special draw oultine color
+  if Attri.Group = agnOutlineColors then begin
+    c := Attri.Foreground;
+    if c <> clNone then begin
+      TheTree.Canvas.Pen.Color := c;
+      TheTree.Canvas.MoveTo(NodeRect.Left+(FullAbcWidth div 2), NodeRect.Top+2);
+      TheTree.Canvas.LineTo(NodeRect.Left+(FullAbcWidth div 2), NodeRect.Bottom-2);
+      TheTree.Canvas.MoveTo(NodeRect.Left+(FullAbcWidth div 2)+1, NodeRect.Top+2);
+      TheTree.Canvas.LineTo(NodeRect.Left+(FullAbcWidth div 2)+1, NodeRect.Bottom-2);
+    end;
+    exit;
+  end;
+
   // Draw preview Frame
   TheTree.Canvas.Pen.Color := Attri.FrameColor;
   if (hafFrameColor in Attri.Features) and (AttriIdx <> ord(ahaCodeFoldingTree)) and

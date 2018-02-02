@@ -71,10 +71,12 @@ type
 
   TSynEditMarkupFoldColors = class(TSynEditMarkup)
   private
+    fUpdateColors: Boolean;
     function GetFirstCharacterColumn(index: Integer): Byte;
     procedure TextBufferChanged(Sender: TObject);
   private
     FHighlighter: TSynCustomFoldHighlighter;
+    FMarkupColors: array of TSynSelectedColor;
     FNestList: TLazSynEditNestedFoldsList;
 
     // cache
@@ -88,18 +90,20 @@ type
     FDefaultGroup: integer;
     FFoldColorInfos: TMarkupFoldColorInfos;
 
-    Colors : array of TColor;
+    FColors : array of TColor;
     FPreparedRow: integer;
     FLastNode: TSynFoldNodeInfo;
     FLastEnabled: Boolean;
 
     procedure DoMarkupParentFoldAtRow(aRow: Integer);
     procedure DoMarkupParentCloseFoldAtRow(aRow: Integer);
+    function GetColor(pIndex: Integer): TSynSelectedColor;
     procedure SetDefaultGroup(AValue: integer);
     procedure SetCacheCount(pNewCount: Integer);
     procedure SetFoldColorInfosCount(pNewCount: Integer);
     procedure InitCache;
     procedure ClearCache;
+    procedure UpdateColors;
     property FirstCharacterColumn[index: Integer]: Byte read GetFirstCharacterColumn;
   protected
     // Notifications about Changes to the text
@@ -108,6 +112,7 @@ type
     procedure LinesChanged(Sender: TSynEditStrings; aIndex, aCount: Integer);
     procedure HighlightChanged(Sender: TSynEditStrings; aIndex, aCount: Integer);
     procedure DoEnabledChanged(Sender: TObject); override;
+    procedure ColorChanged(AMarkup: TObject);
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
@@ -122,6 +127,7 @@ type
 
     procedure PrepareMarkupForRow(aRow : Integer); override;
     property DefaultGroup : integer read FDefaultGroup write SetDefaultGroup;
+    property Color[pIndex: Integer]: TSynSelectedColor read GetColor;
   end;
 
 implementation
@@ -147,6 +153,8 @@ end;
 { TSynEditMarkupFoldColors }
 
 constructor TSynEditMarkupFoldColors.Create(ASynEdit: TSynEditBase);
+var
+  i: Integer;
 begin
   inherited Create(ASynEdit);
 
@@ -169,23 +177,38 @@ begin
   FNestList.FoldFlags := [sfbIncludeDisabled];
   FNestList.IncludeOpeningOnLine := True;
 
+  SetLength(FMarkupColors, 10);
+  for i := 0 to length(FMarkupColors) - 1 do begin
+    FMarkupColors[i] := TSynSelectedColor.Create;
+    FMarkupColors[i].OnChange := @ColorChanged;
+  end;
+
   MarkupInfo.Foreground := clGreen;
   MarkupInfo.Background := clNone;
   MarkupInfo.Style := [];
   MarkupInfo.StyleMask := [];
   MarkupInfo.FrameEdges:= sfeLeft;
 
-  SetLength(Colors, 6);
-  Colors[0] := clRed;
-  Colors[1] := $000098F7; //orange
-  Colors[2] := $0022CC40; //green
-  Colors[3] := $00CCCC00;   //cyan
-  Colors[4] := $00FF682A; //blue
-  Colors[5] := $00CF00C4; //purple
+  SetLength(FColors, 6);
+  FMarkupColors[0].Foreground  := clRed;
+  FMarkupColors[1].Foreground  := $000098F7; //orange
+  FMarkupColors[2].Foreground  := $0022CC40; //green
+  FMarkupColors[3].Foreground  := $00CCCC00;   //cyan
+  FMarkupColors[4].Foreground  := $00FF682A; //blue
+  FMarkupColors[5].Foreground  := $00CF00C4; //purple
+  FMarkupColors[6].Foreground  := clNone;
+  FMarkupColors[7].Foreground  := clNone;
+  FMarkupColors[8].Foreground  := clNone;
+  FMarkupColors[9].Foreground := clNone;
+
 end;
 
 destructor TSynEditMarkupFoldColors.Destroy;
+var
+  i: Integer;
 begin
+  for i := 0 to Length(FMarkupColors) - 1 do
+    FMarkupColors[i].Free;
   if Assigned(Lines) then begin
     Lines.RemoveChangeHandler(senrLineCount, @LinesChanged);
     Lines.RemoveChangeHandler(senrHighlightChanged, @HighlightChanged);
@@ -204,6 +227,8 @@ begin
   if not Assigned(FHighlighter) then
     exit;
   FNestList.Clear; // for next markup start
+  if fUpdateColors then
+    UpdateColors;
 end;
 
 function TSynEditMarkupFoldColors.GetMarkupAttributeAtRowCol(
@@ -242,12 +267,12 @@ begin
           x2both := max(x2both, x2);
           MarkupInfo.SetFrameBoundsLog(x, x2both);
           if Border then begin
-            MarkupInfo.FrameColor:= Colors[ColorIdx];
+            MarkupInfo.FrameColor:= FColors[ColorIdx];
             MarkupInfo.FrameEdges:= sfeLeft;
           end else begin
             MarkupInfo.FrameColor:= clNone;
             MarkupInfo.FrameEdges:= sfeNone;
-            MarkupInfo.Foreground := Colors[ColorIdx];
+            MarkupInfo.Foreground := FColors[ColorIdx];
           end;
         end;
   end;
@@ -343,7 +368,7 @@ var
       if not Border and (sfaOutlineNoColor in ANode.FoldAction) then
         Ignore := True;
       Level := lvl;
-      ColorIdx := Max(0, lvl) mod (length(Colors));
+      ColorIdx := Max(0, lvl) mod (length(FColors));
     end;
   end;
 
@@ -391,7 +416,7 @@ begin
           if sfaOutlineKeepLevel in FFoldColorInfos[FFoldColorInfosCount - 2].SrcNode.FoldAction then begin
             lvl := FFoldColorInfos[FFoldColorInfosCount - 2].Level;
             FFoldColorInfos[FFoldColorInfosCount - 1].Level := lvl;
-            FFoldColorInfos[FFoldColorInfosCount - 1].ColorIdx := Max(0, lvl) mod (length(Colors));
+            FFoldColorInfos[FFoldColorInfosCount - 1].ColorIdx := Max(0, lvl) mod (length(FColors));
           end;
         end;
 
@@ -451,7 +476,7 @@ var
         X2 := ANode.LogXEnd + 1;
         Level := lvl;
         if not (sfaOutlineNocolor in ANode.FoldAction) then
-           ColorIdx := Max(0, lvl) mod (length(Colors))
+           ColorIdx := Max(0, lvl) mod (length(FColors))
         else
            ColorIdx := -1;
       end;
@@ -510,7 +535,7 @@ begin
             or (sfaOutlineKeepLevel in FFoldColorInfos[FFoldColorInfosCount - 2].SrcNode.FoldAction) then begin
               lvl := FFoldColorInfos[FFoldColorInfosCount - 2].Level;
               FFoldColorInfos[FFoldColorInfosCount - 1].Level := lvl;
-              FFoldColorInfos[FFoldColorInfosCount - 1].ColorIdx := Max(0, lvl) mod (length(Colors));
+              FFoldColorInfos[FFoldColorInfosCount - 1].ColorIdx := Max(0, lvl) mod (length(FColors));
             end;
           end;
 
@@ -566,6 +591,12 @@ begin
   finally
     NodeList.ReleaseReference;
   end;
+end;
+
+function TSynEditMarkupFoldColors.GetColor(pIndex: Integer): TSynSelectedColor;
+begin
+  Assert((pIndex >= 0) and (pIndex < Length(FMarkupColors)), 'Index out of range');
+  Result := FMarkupColors[pIndex];
 end;
 
 procedure TSynEditMarkupFoldColors.PrepareMarkupForRow(aRow: Integer);
@@ -662,6 +693,30 @@ begin
     FFirstCharacterColumnCache[i] := 0;
     FEndLineCache[i] := 0;
   end;
+end;
+
+procedure TSynEditMarkupFoldColors.UpdateColors;
+var
+  c, i: Integer;
+
+  procedure AddColor(pColor: TSynSelectedColor);
+  begin
+    if pColor.Foreground = clNone then exit;
+    fColors[c] := pColor.Foreground;
+    inc(c);
+  end;
+
+begin
+  SetLength(fColors, Length(FMarkupColors));
+  c := 0;
+  for i := 0 to length(FMarkupColors) -1 do
+    AddColor(FMarkupColors[i]);
+  if c = 0 then begin
+    fColors[c] := $0000FF; // default red
+    inc(c);
+  end;
+  SetLength(fColors, c);
+  fUpdateColors := False;
 end;
 
 procedure TSynEditMarkupFoldColors.DoTextChanged(StartLine, EndLine,
@@ -948,6 +1003,13 @@ begin
       ClearCache;
     end;
   end;
+  if Assigned(Lines) then
+    InvalidateSynLines(1, Lines.Count);
+end;
+
+procedure TSynEditMarkupFoldColors.ColorChanged(AMarkup: TObject);
+begin
+  fUpdateColors := True;
   if Assigned(Lines) then
     InvalidateSynLines(1, Lines.Count);
 end;

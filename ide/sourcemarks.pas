@@ -63,12 +63,13 @@ type
      ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars,
      ahaTopInfoHint,
      ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive,
-     ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
+     ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive,
+     ahaOutlineLevel1Color, ahaOutlineLevel2Color, ahaOutlineLevel3Color, ahaOutlineLevel4Color, ahaOutlineLevel5Color, ahaOutlineLevel6Color, ahaOutlineLevel7Color, ahaOutlineLevel8Color, ahaOutlineLevel9Color, ahaOutlineLevel10Color
      );
 
   TAhaGroupName = (
     agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode,
-    agnIfDef
+    agnIfDef, agnOutlineColors
   );
 
   TSourceEditorBase = class;

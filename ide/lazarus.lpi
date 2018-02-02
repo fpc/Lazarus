@@ -449,6 +449,7 @@
       <Unit61>
         <Filename Value="debugmanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="DebugManager"/>
       </Unit61>
       <Unit62>
         <Filename Value="progresswnd.pas"/>
@@ -758,6 +759,7 @@
       <Unit115>
         <Filename Value="sourcemarks.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="SourceMarks"/>
       </Unit115>
       <Unit116>
         <Filename Value="checklfmdlg.pas"/>
