@@ -250,18 +250,20 @@ end;
 class procedure TCocoaWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
   PanelIndex: integer);
 begin
-
+  // todo: can make more effecient
+  Update(AStatusBar);
 end;
 
 class procedure TCocoaWSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
   PanelIndex: integer);
 begin
-
+  Update(AStatusBar);
 end;
 
 class procedure TCocoaWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
-
+  if not Assigned(AStatusBar) or not (AStatusBar.HandleAllocated) then Exit;
+  TCocoaStatusBar(AStatusBar.Handle).setNeedsDisplay_(true);
 end;
 
 class procedure TCocoaWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;

@@ -4491,7 +4491,7 @@ begin
   FillChar(nr, sizeof(nr), 0);
 
   r := lclClientFrame();
-  nr.size.height := StatusBar.Height+5; // it gets closer to filling the whole area with +5 no idea why
+  nr.size.height := StatusBar.Height;
 
   if StatusBar.SimplePanel then
   begin
