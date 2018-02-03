@@ -1183,7 +1183,7 @@ begin
 end;
 
 {$IFDEF VerboseGtkToDos}{$note remove when gtk native imagelist will be ready}{$ENDIF}
-procedure DrawImageListIconOnWidget(ImgList: TCustomImageListResolution;
+procedure DrawImageListIconOnWidget(ImgList: TScaledImageListResolution;
   Index: integer; AEffect: TGraphicsDrawEffect; Checked: boolean; DestWidget: PGTKWidget;
   CenterHorizontally, CenterVertically: boolean;
   DestLeft, DestTop: integer);
@@ -1198,7 +1198,6 @@ var
   FixedWidget: PGtkWidget;
   r:TRect;
 begin
-  if ImgList=nil then exit;
   if (Index<0) or (Index>=ImgList.Count) then exit;
   if (DestWidget=nil) then exit;
   ImageWidth:=ImgList.Width;
@@ -1240,7 +1239,7 @@ begin
   Bitmap.Free;
 end;
 
-procedure DrawImageListIconOnWidget(ImgList: TCustomImageListResolution;
+procedure DrawImageListIconOnWidget(ImgList: TScaledImageListResolution;
   Index: integer; DestWidget: PGTKWidget);
 begin
   DrawImageListIconOnWidget(ImgList, Index, gdeNormal, false, DestWidget, true, true, 0, 0);
@@ -5825,7 +5824,7 @@ begin
 
   if AImageIndex < AImageList.Count then
     {$IFDEF VerboseGtkToDos}{$note reimplement}{$ENDIF}
-    DrawImageListIconOnWidget(AImageList.Resolution[IconWidth], AImageIndex, AEffect,
+    DrawImageListIconOnWidget(AImageList.ResolutionForPPI[IconWidth, 96, 1], AImageIndex, AEffect,
         LCLMenuItem.Checked, Widget, false, false, ALeft, ATop);
 
   if FreeImageList then

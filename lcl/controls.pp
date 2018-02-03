@@ -373,8 +373,6 @@ type
     FImageIndex: Integer;
     procedure SetDragCursor(const AValue: TCursor);
     function GetResolution(AImageWidth: Integer): TDragImageListResolution;
-    function GetResolutionForPPI(AImageWidth,
-      APPI: Integer): TDragImageListResolution;
     function GetDragging: Boolean;
     function GetDraggingResolution: TDragImageListResolution;
     function GetDragHotspot: TPoint;
@@ -396,7 +394,6 @@ type
     property Dragging: Boolean read GetDragging;
     property DraggingResolution: TDragImageListResolution read GetDraggingResolution;
     property Resolution[AImageWidth: Integer]: TDragImageListResolution read GetResolution;
-    property ResolutionForPPI[AImageWidth, APPI: Integer]: TDragImageListResolution read GetResolutionForPPI;
   end;
 
   TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift: TShiftState) of Object;
@@ -1572,6 +1569,7 @@ type
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); virtual;
+    function GetCanvasScaleFactor: Double;
     function GetDefaultWidth: integer;
     function GetDefaultHeight: integer;
     function GetDefaultColor(const DefaultColorType: TDefaultColorType): TColor; virtual;

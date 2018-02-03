@@ -202,7 +202,7 @@ var
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
         TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, AIndex, AEffect);
-        TWin32WSCustomImageListResolution.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images.ResolutionForPPI[0, 96], AIndex,
+        TWin32WSCustomImageListResolution.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images.ResolutionForPPI[0, 96, 1].Resolution, AIndex,
           TmpDC, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,
@@ -229,7 +229,7 @@ var
         if (AEffect = gdeDisabled) and not AlphaDraw then
           AEffect := gde1Bit;
 
-        TWin32WSCustomImageListResolution.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images.ResolutionForPPI[0, 96], AIndex,
+        TWin32WSCustomImageListResolution.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images.ResolutionForPPI[0, 96, 1].Resolution, AIndex,
           TmpDC, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
           TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,

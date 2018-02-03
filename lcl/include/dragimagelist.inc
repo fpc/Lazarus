@@ -130,12 +130,6 @@ begin
   Result := TDragImageListResolution;
 end;
 
-function TDragImageList.GetResolutionForPPI(AImageWidth,
-  APPI: Integer): TDragImageListResolution;
-begin
-  Result := TDragImageListResolution(inherited ResolutionForPPI[AImageWidth, APPI]);
-end;
-
 {
   TDragImageList.HideDragImage
   Hide dragging image without unlocking of window

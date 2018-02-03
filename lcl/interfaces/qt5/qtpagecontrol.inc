@@ -100,7 +100,7 @@ var
   Icon: QIconH;
   B: Boolean;
   Size: TSize;
-  Res: TCustomImageListResolution;
+  Res: TScaledImageListResolution;
 begin
   ImageList := TCustomTabControl(ACustomPage.Parent).Images;
 
@@ -108,7 +108,10 @@ begin
 
   if Assigned(ImageList) then
   begin
-    Res := ImageList.ResolutionForPPI[TCustomTabControl(ACustomPage.Parent).ImagesWidth, TCustomTabControl(ACustomPage.Parent).Font.PixelsPerInch];
+    Res := ImageList.ResolutionForPPI[
+      TCustomTabControl(ACustomPage.Parent).ImagesWidth,
+      TCustomTabControl(ACustomPage.Parent).Font.PixelsPerInch,
+      TCustomTabControl(ACustomPage.Parent).GetCanvasScaleFactor];
     ImageIndex := TCustomTabControl(ACustomPage.Parent).GetImageIndex(ACustomPage.PageIndex);
     if (ImageIndex >= 0) and (ImageIndex < Res.Count) then
     begin

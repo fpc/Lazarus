@@ -960,7 +960,7 @@ begin
   if (NSObject(hWnd).isKindOfClass(TCocoaWindowContent)) and (not TCocoaWindowContent(hWnd).isembedded) then
   begin
     lWinContent := TCocoaWindowContent(hWnd);
-    win := lWinContent.window;
+    win := NSWindow(lWinContent.window);
     if win.isKindOfClass(TCocoaWindow) then
       lCocoaWin := TCocoaWindow(win);
 
@@ -1507,7 +1507,7 @@ begin
     p.x:=Point.X;
     p.y:=window.screen.frame.size.height-Point.Y;
     winnr:=NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
-    windowbelowpoint:=NSApp.windowWithWindowNumber(winnr);
+    windowbelowpoint:=NSWindow(NSApp.windowWithWindowNumber(winnr));
     if windowbelowpoint=window then
     begin
       Result:=RecurseSubviews(window.contentView, Point);
@@ -2439,7 +2439,7 @@ begin
     pool := NSAutoreleasePool.alloc.init;
     NSApp.activateIgnoringOtherApps(True);
     Obj := NSObject(HWnd);
-    lWin := GetNSObjectWindow(Obj);
+    lWin := NSWindow(GetNSObjectWindow(Obj));
     if lWin <> nil then
       lWin.makeKeyAndOrderFront(NSApp)
     else
@@ -2453,7 +2453,7 @@ var
   lWin: NSWindow;
 begin
   Result := False;
-  lWin := GetNSObjectWindow(NSObject(AWindowHandle));
+  lWin := NSWindow(GetNSObjectWindow(NSObject(AWindowHandle)));
   if (lWin <> nil) and lWin.isKindOfClass(TCocoaWindow) and
      (TCocoaWindow(lWin).LCLForm.Menu.Handle = AMenuHandle) then
   begin

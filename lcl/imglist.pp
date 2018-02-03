@@ -36,6 +36,7 @@ History
 unit ImgList;
 
 {$mode objfpc}{$H+}
+{$modeswitch advancedrecords}
 
 interface
 
@@ -180,6 +181,42 @@ type
 
     property Reference: TWSCustomImageListReference read GetReference;
   end;
+
+  { TScaledImageListResolution }
+
+  TScaledImageListResolution = record
+  private
+    FResolution: TCustomImageListResolution;
+    FScaleFactor: Double;
+    FWidth: Integer;
+    FHeight: Integer;
+    function GetCount: Integer;
+  public
+    class function Create(AResolution: TCustomImageListResolution;
+      const AScaleFactor: Double): TScaledImageListResolution; static; // FPC record constructor bug
+
+    procedure GetBitmap(Index: Integer; Image: TCustomBitmap); overload;
+    procedure GetBitmap(Index: Integer; Image: TCustomBitmap; AEffect: TGraphicsDrawEffect); overload;
+
+    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; AEnabled: Boolean = True); overload;
+    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect); overload;
+    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+      AEnabled: Boolean = True); overload;
+    procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+      ADrawEffect: TGraphicsDrawEffect); overload;
+    procedure StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean = True);
+
+    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; AEnabled: Boolean = True); overload;
+    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawEffect: TGraphicsDrawEffect); overload;
+    procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawingStyle:
+      TDrawingStyle; AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect); overload;
+
+    property Width: Integer read FWidth;
+    property Height: Integer read FHeight;
+    property Resolution: TCustomImageListResolution read FResolution;
+    property Count: Integer read GetCount;
+  end;
+
   TCustomImageListResolutionClass = class of TCustomImageListResolution;
   TCustomImageListResolutions = class(TObject)
   private
@@ -253,7 +290,8 @@ type
     procedure SetWidth(const Value: Integer);
     function GetReference(AImageWidth: Integer): TWSCustomImageListReference;
     function GetReferenceForPPI(AImageWidth, APPI: Integer): TWSCustomImageListReference;
-    function GetResolutionForPPI(AImageWidth, APPI: Integer): TCustomImageListResolution;
+    function GetResolutionForPPI(AImageWidth, APPI: Integer;
+      const ACanvasScaleFactor: Double): TScaledImageListResolution;
     function GetWidthForPPI(AImageWidth, APPI: Integer): Integer;
     function GetHeightForPPI(AImageWidth, APPI: Integer): Integer;
     function GetCount: Integer;
@@ -312,6 +350,10 @@ type
       AEnabled: Boolean = True); overload;
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
       ADrawEffect: TGraphicsDrawEffect); overload;
+    procedure DrawForPPI(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+      AImageWidthAt96PPI, ATargetPPI: Integer; ACanvasFactor: Double; AEnabled: Boolean = True); overload;
+    procedure DrawForPPI(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+      AImageWidthAt96PPI, ATargetPPI: Integer; ACanvasFactor: Double; ADrawEffect: TGraphicsDrawEffect); overload;
     procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; AEnabled: Boolean = True); overload;
     procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawEffect: TGraphicsDrawEffect); overload;
     procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; ADrawingStyle:
@@ -360,7 +402,7 @@ type
     property ReferenceForPPI[AImageWidth, APPI: Integer]: TWSCustomImageListReference read GetReferenceForPPI;
     property Resolution[AImageWidth: Integer]: TCustomImageListResolution read GetResolution;
     property ResolutionByIndex[AIndex: Integer]: TCustomImageListResolution read GetResolutionByIndex;
-    property ResolutionForPPI[AImageWidth, APPI: Integer]: TCustomImageListResolution read GetResolutionForPPI;
+    property ResolutionForPPI[AImageWidth, APPI: Integer; const ACanvasScaleFactor: Double]: TScaledImageListResolution read GetResolutionForPPI;
     property ResolutionCount: Integer read GetResolutionCount;
     function Resolutions: TCustomImageListResolutionEnumerator;
     function ResolutionsDesc: TCustomImageListResolutionEnumerator;

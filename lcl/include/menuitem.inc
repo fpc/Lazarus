@@ -487,7 +487,7 @@ begin
     begin
       GetImageList(iml, imw);
       if (iml <> nil) and (ImageIndex < iml.Count) then
-        iml.ResolutionForPPI[imw, 96].GetBitmap(ImageIndex, FBitmap);
+        iml.ResolutionForPPI[imw, 96, 1].Resolution.GetBitmap(ImageIndex, FBitmap);
     end;
     
     FBitmap.OnChange := @BitmapChange;

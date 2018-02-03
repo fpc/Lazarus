@@ -3993,7 +3993,7 @@ begin
                                         PageWidget);
   if TabWidget = nil then exit;
   {$IFDEF VerboseGtkToDos}{$note reimplement}{$ENDIF}
-  DrawImageListIconOnWidget(NoteBook.Images.ResolutionForPPI[NoteBook.ImagesWidth, NoteBook.Font.PixelsPerInch],
+  DrawImageListIconOnWidget(NoteBook.Images.ResolutionForPPI[NoteBook.ImagesWidth, NoteBook.Font.PixelsPerInch, NoteBook.GetCanvasScaleFactor],
     ImageIndex, Widget);
 end;
 

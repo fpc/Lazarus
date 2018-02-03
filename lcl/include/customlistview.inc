@@ -537,7 +537,7 @@ begin
   for lvil := Low(TListViewImageList) to High(TListViewImageList) do
   begin
     if FImages[lvil] <> nil
-    then LVC.SetImageList(Self, lvil, FImages[lvil].ResolutionForPPI[FImagesWidth[lvil], Font.PixelsPerInch]); // xxx
+    then LVC.SetImageList(Self, lvil, FImages[lvil].ResolutionForPPI[FImagesWidth[lvil], Font.PixelsPerInch, 1].Resolution); // to-do: support scaling factor
   end;
   LVC.SetScrollBars(Self, FScrollBars);
   LVC.SetViewOrigin(Self, FViewOriginCache) ;
@@ -1617,7 +1617,7 @@ var
   R: TCustomImageListResolution;
 begin
   if FImages[ALvil]<>nil then
-    R := FImages[ALvil].ResolutionForPPI[FImagesWidth[ALvil], Font.PixelsPerInch]
+    R := FImages[ALvil].ResolutionForPPI[FImagesWidth[ALvil], Font.PixelsPerInch, 1].Resolution // to-do: support scaling factor
   else
     R := nil;
   TWSCustomListViewClass(WidgetSetClass).SetImageList(Self, ALvil, R)

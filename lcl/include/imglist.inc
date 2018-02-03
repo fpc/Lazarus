@@ -48,6 +48,113 @@ begin
   );
 end;
 
+{ TScaledImageListResolution }
+
+class function TScaledImageListResolution.Create(
+  AResolution: TCustomImageListResolution; const AScaleFactor: Double
+  ): TScaledImageListResolution;
+begin
+  Result := Default(TScaledImageListResolution);
+  Result.FResolution := AResolution;
+  Result.FScaleFactor := AScaleFactor;
+  Result.FWidth := Round(AResolution.Width / AScaleFactor);
+  Result.FHeight := Round(AResolution.Height / AScaleFactor);
+end;
+
+procedure TScaledImageListResolution.Draw(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; AEnabled: Boolean);
+begin
+  Draw(ACanvas, AX, AY, AIndex, EffectMap[AEnabled]);
+end;
+
+procedure TScaledImageListResolution.Draw(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; ADrawEffect: TGraphicsDrawEffect);
+begin
+  Draw(ACanvas, AX, AY, AIndex, Resolution.FImageList.DrawingStyle, Resolution.FImageList.ImageType, ADrawEffect);
+end;
+
+procedure TScaledImageListResolution.Draw(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+  AEnabled: Boolean);
+begin
+  Draw(ACanvas, AX, AY, AIndex, ADrawingStyle, AImageType, EffectMap[AEnabled]);
+end;
+
+procedure TScaledImageListResolution.Draw(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+  ADrawEffect: TGraphicsDrawEffect);
+begin
+  if SameValue(FScaleFactor, 1) then
+  begin
+    Resolution.Draw(ACanvas, AX, AY, AIndex, ADrawingStyle, AImageType, ADrawEffect);
+  end else
+  begin
+    Resolution.StretchDraw(ACanvas, AIndex,
+      Rect(AX, AY, AX + Width, AY + Height),
+      ADrawEffect<>gdeDisabled);
+  end;
+end;
+
+procedure TScaledImageListResolution.StretchDraw(Canvas: TCanvas;
+  Index: Integer; ARect: TRect; Enabled: Boolean);
+begin
+  Resolution.StretchDraw(Canvas, Index, ARect, Enabled);
+end;
+
+procedure TScaledImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; AOverlay: TOverlay; AEnabled: Boolean);
+begin
+  DrawOverlay(ACanvas, AX, AY, AIndex, AOverlay, EffectMap[AEnabled]);
+end;
+
+procedure TScaledImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; AOverlay: TOverlay; ADrawEffect: TGraphicsDrawEffect);
+begin
+  DrawOverlay(ACanvas, AX, AY, AIndex, AOverlay, Resolution.FImageList.DrawingStyle, Resolution.FImageList.ImageType, ADrawEffect);
+end;
+
+procedure TScaledImageListResolution.GetBitmap(Index: Integer;
+  Image: TCustomBitmap);
+begin
+  GetBitmap(Index, Image, gdeNormal);
+end;
+
+procedure TScaledImageListResolution.GetBitmap(Index: Integer;
+  Image: TCustomBitmap; AEffect: TGraphicsDrawEffect);
+begin
+  Resolution.GetBitmap(Index, Image, AEffect);
+end;
+
+function TScaledImageListResolution.GetCount: Integer;
+begin
+  Result := FResolution.Count;
+end;
+
+procedure TScaledImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
+  AIndex: Integer; AOverlay: TOverlay; ADrawingStyle: TDrawingStyle;
+  AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect);
+var
+  OverlayIndex: Integer;
+begin
+  OverlayIndex := Resolution.FImageList.FOverlays[AOverlay];
+
+  if SameValue(FScaleFactor, 1) then
+  begin
+    Resolution.Draw(ACanvas, AX, AY, AIndex, ADrawingStyle, AImageType, ADrawEffect);
+    if (OverlayIndex >= 0) and (OverlayIndex < Resolution.Count) then
+      Resolution.Draw(ACanvas, AX, AY, OverlayIndex, ADrawingStyle, AImageType, ADrawEffect);
+  end else
+  begin
+    Resolution.StretchDraw(ACanvas, AIndex,
+      Rect(AX, AY, AX + Width, AY + Height),
+      ADrawEffect<>gdeDisabled);
+    if (OverlayIndex >= 0) and (OverlayIndex < Resolution.Count) then
+      Resolution.StretchDraw(ACanvas, OverlayIndex,
+        Rect(AX, AY, AX + Width, AY + Height),
+        ADrawEffect<>gdeDisabled);
+  end;
+end;
+
 { TCustomImageListResolutionEnumerator }
 
 constructor TCustomImageListResolutionEnumerator.Create(
@@ -1528,6 +1635,23 @@ begin
   GetResolution(FWidth).Draw(ACanvas, AX, AY, AIndex, ADrawingStyle, AImageType, ADrawEffect);
 end;
 
+procedure TCustomImageList.DrawForPPI(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+  AImageWidthAt96PPI, ATargetPPI: Integer; ACanvasFactor: Double;
+  AEnabled: Boolean);
+begin
+  DrawForPPI(ACanvas, AX, AY, AIndex, AImageWidthAt96PPI, ATargetPPI, ACanvasFactor, EffectMap[AEnabled]);
+end;
+
+procedure TCustomImageList.DrawForPPI(ACanvas: TCanvas; AX, AY, AIndex: Integer;
+  AImageWidthAt96PPI, ATargetPPI: Integer; ACanvasFactor: Double;
+  ADrawEffect: TGraphicsDrawEffect);
+var
+  R: TScaledImageListResolution;
+begin
+  R := GetResolutionForPPI(AImageWidthAt96PPI, ATargetPPI, ACanvasFactor);
+  R.Draw(ACanvas, AX, AY, AIndex, ADrawEffect);
+end;
+
 procedure TCustomImageList.DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   AOverlay: TOverlay; AEnabled: Boolean = True);
 begin
@@ -1663,17 +1787,23 @@ begin
   Result := GetReference(GetWidthForPPI(AImageWidth, APPI));
 end;
 
-function TCustomImageList.GetResolutionForPPI(AImageWidth,
-  APPI: Integer): TCustomImageListResolution;
+function TCustomImageList.GetResolutionForPPI(AImageWidth, APPI: Integer;
+  const ACanvasScaleFactor: Double): TScaledImageListResolution;
 begin
-  Result := GetResolution(GetWidthForPPI(AImageWidth, APPI));
+  if Scaled then
+    Result := TScaledImageListResolution.Create(
+      GetResolution(GetWidthForPPI(AImageWidth, Round(APPI*ACanvasScaleFactor))),
+      ACanvasScaleFactor)
+  else
+    Result := TScaledImageListResolution.Create(
+      GetResolution(GetWidthForPPI(AImageWidth, APPI)), 1);
 end;
 
 function TCustomImageList.GetSizeForPPI(AImageWidth, APPI: Integer): TSize;
 var
   Res: TCustomImageListResolution;
 begin
-  Res := GetResolutionForPPI(AImageWidth, APPI);
+  Res := GetResolution(GetWidthForPPI(AImageWidth, APPI));
   Result.cx := Res.Width;
   Result.cy := Res.Height;
 end;
@@ -1695,7 +1825,7 @@ begin
   if APPI <= 168 then
     Factor := 150 // 126%-175% (144-168 DPI): 150% scaling
   else
-    Factor := Round(ScreenInfo.PixelsPerInchX/96) * 100; // 200, 300, 400, ...
+    Factor := Round(APPI/96) * 100; // 200, 300, 400, ...
 
   Result := AImageWidth * Factor div 100;
   if Assigned(FOnGetWidthForPPI) then

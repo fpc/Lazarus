@@ -365,9 +365,9 @@ begin
   if Obj.isKindOfClass(NSWindow) then
     Win := NSWindow(Obj)
   else if Obj.isKindOfClass(NSView) then
-    Win := NSView(Handle).window
+    Win := NSWindow(NSView(Handle).window)
   else if GetNSObjectView(Obj) <> nil then
-    Win := GetNSObjectView(Obj).window
+    Win := NSWindow(GetNSObjectView(Obj).window)
   else
     Exit(nil);
   Result := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
@@ -520,7 +520,7 @@ begin
   Result := False;
   {$ifndef COCOA_USE_NATIVE_MODAL}
   if CurModalForm = nil then Exit;
-  lNSObj := AControl.window();
+  lNSObj := NSWindow(AControl.window());
   if lNSObj = nil then Exit;
   if not lNSObj.isKindOfClass_(TCocoaWindow) then Exit;
   if lNSWin.LCLForm = CurModalForm then Exit;

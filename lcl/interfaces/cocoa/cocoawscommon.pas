@@ -82,6 +82,15 @@ type
 
   { TCocoaWSWinControl }
 
+  { TCocoaWSControl }
+
+  TCocoaWSControl = class(TWSControl)
+  published
+    class function GetCanvasScaleFactor(const AControl: TControl): Double; override;
+  end;
+
+  { TCocoaWSWinControl }
+
   TCocoaWSWinControl = class(TWSWinControl)
   private
     class procedure ArrangeTabOrder(const AWinControl: TWinControl);
@@ -252,7 +261,7 @@ var
   f: NSRect;
   lWindow: NSWindow;
 begin
-  lWindow := GetNSObjectWindow(Owner);
+  lWindow := NSWindow(GetNSObjectWindow(Owner));
   if lWindow <> nil then
   begin
     f := lWindow.frame;
@@ -1265,6 +1274,20 @@ end;
 function TLCLCommonCallback.GetShouldBeEnabled: Boolean;
 begin
   Result := Assigned(FTarget) and FTarget.Enabled;
+end;
+
+{ TCocoaWSControl }
+
+class function TCocoaWSControl.GetCanvasScaleFactor(const AControl: TControl
+  ): Double;
+var
+  Form: TCustomForm;
+begin
+  Form := GetParentForm(AControl);
+  if Form=nil then
+    Result := 1
+  else
+    Result := TCocoaWindow(Form.Handle).backingScaleFactor; // ToDo: use userSpaceScaleFactor for Mac OSX 10.6
 end;
 
 { TCocoaWSWinControl }

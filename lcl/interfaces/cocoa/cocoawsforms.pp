@@ -701,7 +701,7 @@ var
 begin
   if AForm.HandleAllocated then
   begin
-    win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
+    win := NSWindow(TCocoaWindowContent(AForm.Handle).lclOwnWindow);
     if Assigned(win) then
       UpdateWindowMask(win, GetDesigningBorderStyle(AForm), ABorderIcons);
   end;
@@ -714,7 +714,7 @@ var
 begin
   if AForm.HandleAllocated then
   begin
-    win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
+    win := NSWindow(TCocoaWindowContent(AForm.Handle).lclOwnWindow);
     if Assigned(win) then
       UpdateWindowMask(win, AFormBorderStyle, AForm.BorderIcons);
   end;

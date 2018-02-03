@@ -9,6 +9,7 @@ uses
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
   WSLCLClasses,
   CocoaWSCommon,
+  CocoaWSControls,
   CocoaWSButtons,
   CocoaWSExtCtrls,
   CocoaWSForms,
@@ -133,7 +134,8 @@ end;
 
 function RegisterControl: Boolean; alias : 'WSRegisterControl';
 begin
-  Result := False;
+  RegisterWSComponent(TControl, TCocoaWSControl);
+  Result := True;
 end;
 
 function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';

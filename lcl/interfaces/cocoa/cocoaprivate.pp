@@ -391,6 +391,10 @@ type
     procedure keyDown(event: NSEvent); override;
   end;
 
+  NSWindow = objcclass external(CocoaAll.NSWindow)
+    function backingScaleFactor: CGFloat; message 'backingScaleFactor';
+  end;
+
   { TCocoaWindow }
 
   TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
@@ -512,7 +516,7 @@ type
     function lclFrame: TRect; override;
     procedure viewDidMoveToSuperview; override;
     procedure viewDidMoveToWindow; override;
-    procedure viewWillMoveToWindow(newWindow: NSWindow); override;
+    procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
     procedure dealloc; override;
     procedure setHidden(aisHidden: Boolean); override;
     function lclIsHandle: Boolean; override;
@@ -1385,7 +1389,7 @@ begin
     if (NSObject(popup_parent).isKindOfClass(TCocoaWindowContent)) then
     begin
       if (not TCocoaWindowContent(popup_parent).isembedded) then
-        lWindow := TCocoaWindowContent(popup_parent).window;
+        lWindow := NSWindow(TCocoaWindowContent(popup_parent).window);
     end
     else
     begin
@@ -1400,7 +1404,7 @@ end;
 function TCocoaWindowContent.lclOwnWindow: NSWindow;
 begin
   if not isembedded then
-    Result := window
+    Result := NSWindow(window)
   else
     Result := nil;
 end;
@@ -1445,12 +1449,12 @@ begin
   end
   else
   begin
-    ownwin := window;
+    ownwin := NSWindow(window);
   end;
   inherited viewDidMoveToWindow;
 end;
 
-procedure TCocoaWindowContent.viewWillMoveToWindow(newWindow: NSWindow);
+procedure TCocoaWindowContent.viewWillMoveToWindow(newWindow: CocoaAll.NSWindow);
 begin
   if newWindow<>nil then
      newWindow.setAcceptsMouseMovedEvents(True);

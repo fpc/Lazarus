@@ -5251,12 +5251,12 @@ var
   DrawState: TCustomDrawState;
   PaintImages: boolean;
   OverlayIndex: Integer;
-  ImageRes, StateImageRes: TCustomImageListResolution;
+  ImageRes, StateImageRes: TScaledImageListResolution;
 begin
   if Assigned(FImages) then
-    ImageRes := Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch];
+    ImageRes := Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
   if Assigned(FStateImages) then
-    StateImageRes := StateImages.ResolutionForPPI[StateImagesWidth, Font.PixelsPerInch];
+    StateImageRes := StateImages.ResolutionForPPI[StateImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
   RealExpandSignSize := ExpandSignSize;
   RealIndent := Indent;
   NodeRect := Node.DisplayRect(False);

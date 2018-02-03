@@ -12518,7 +12518,7 @@ var
   AIcon: QIconH;
   AOk: Boolean;
   ASize: TSize;
-  ImgListRes: TCustomImageListResolution;
+  ImgListRes: TScaledImageListResolution;
 begin
 
   {do not set items during design time}
@@ -12557,7 +12557,10 @@ begin
         ImgList := TCustomListViewHack(LCLObject).SmallImages;
         if Assigned(ImgList) then
         begin
-          ImgListRes := ImgList.ResolutionForPPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
+          ImgListRes := ImgList.ResolutionForPPI[
+            TCustomListViewHack(LCLObject).SmallImagesWidth,
+            TCustomListViewHack(LCLObject).Font.PixelsPerInch,
+            TCustomListViewHack(LCLObject).GetCanvasScaleFactor];
           QListWidgetItem_sizeHint(item, @ASize);
           if (ASize.cx <> ImgListRes.Width) or (ASize.cx <> ImgListRes.Height) then
           begin
@@ -14661,7 +14664,7 @@ var
   AOk: Boolean;
   AIcon: QIconH;
   ASize: TSize;
-  ImgListRes: TCustomImageListResolution;
+  ImgListRes: TScaledImageListResolution;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then
@@ -14717,7 +14720,10 @@ begin
           ImgList := TCustomListViewHack(LCLObject).SmallImages;
           if Assigned(ImgList) then
           begin
-            ImgListRes := ImgList.ResolutionForPPI[TCustomListViewHack(LCLObject).SmallImagesWidth, TCustomListViewHack(LCLObject).Font.PixelsPerInch];
+            ImgListRes := ImgList.ResolutionForPPI[
+              TCustomListViewHack(LCLObject).SmallImagesWidth,
+              TCustomListViewHack(LCLObject).Font.PixelsPerInch,
+              TCustomListViewHack(LCLObject).GetCanvasScaleFactor];
             QTreeWidgetItem_sizeHint(item, @ASize, 0);
             if (ASize.cx <> ImgListRes.Width) or (ASize.cx <> ImgListRes.Height) then
             begin

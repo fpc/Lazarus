@@ -438,7 +438,8 @@ begin
 
     // draw icon
     if (ImgList<>nil) then
-      ImgList.ResolutionForPPI[FToolBar.ImagesWidth, Font.PixelsPerInch].Draw(Canvas, IconPos.X, IconPos.Y, ImgIndex, ImgEffect);
+      ImgList.ResolutionForPPI[FToolBar.ImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor]
+        .Draw(Canvas, IconPos.X, IconPos.Y, ImgIndex, ImgEffect);
 
     // draw text
     if (TextSize.cx > 0) then

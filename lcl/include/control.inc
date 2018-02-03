@@ -5539,6 +5539,11 @@ begin
   end;
 end;
 
+function TControl.GetCanvasScaleFactor: Double;
+begin
+  Result := TWSControlClass(WidgetSetClass).GetCanvasScaleFactor(Self);
+end;
+
 {------------------------------------------------------------------------------
   function TControl.GetDefaultWidth: integer;
 

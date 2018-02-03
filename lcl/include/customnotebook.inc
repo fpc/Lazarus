@@ -1204,7 +1204,7 @@ end;
 procedure TCustomTabControl.DoImageListChange(Sender: TObject);
 begin
   if HandleAllocated then
-    TWSCustomTabControlClass(WidgetSetClass).SetImageList(Self, Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch]);
+    TWSCustomTabControlClass(WidgetSetClass).SetImageList(Self, Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch, 1].Resolution); // to-do: support scaling factor
 end;
 
 procedure TCustomTabControl.DoImageListDestroyResolutionHandle(

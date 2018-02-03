@@ -1448,7 +1448,7 @@ begin
 
       if Assigned(ImgList) and (ImgList.Count > 0) and (AImageIndex >= 0) then
       begin
-        ImgListRes := ImgList.ResolutionForPPI[ImgListWidth, ALV.Font.PixelsPerInch];
+        ImgListRes := ImgList.ResolutionForPPI[ImgListWidth, ALV.Font.PixelsPerInch, ALV.GetCanvasScaleFactor].Resolution;
         if (ImgList.Count <> Widgets^.Images.Count) then
         begin
           if (TListView(ALV).ViewStyle in [vsSmallIcon, vsReport, vsList]) then
