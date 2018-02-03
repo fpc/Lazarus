@@ -1140,6 +1140,38 @@ begin
   end;
 end;
 
+function TCustomImageList.AddMultipleResolutions(
+  Images: array of TCustomBitmap): Integer;
+
+  function FindImage(const ImageWidth: Integer): TCustomBitmap;
+  var
+    Biggest: TCustomBitmap;
+  begin
+    Biggest := nil;
+    for Result in Images do
+    begin
+      if Result.Width = ImageWidth then
+        Exit;
+      if not Assigned(Biggest) or (Biggest.Width < Result.Width) then
+        Biggest := Result;
+    end;
+    Result := Biggest;
+  end;
+var
+  R: TCustomImageListResolution;
+  ScBmp: TRGBAQuadArray;
+  Image: TCustomBitmap;
+begin
+  Result := Count;
+  CreateDefaultResolution;
+  for R in Resolutions do
+  begin
+    Image := FindImage(R.Width);
+    ScaleImage(Image, nil, R.Width, R.Height, ScBmp);
+    R.InternalInsert(Result, @ScBmp[0]);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomImageList.AddLazarusResource(const ResourceName: string
     ): integer;
