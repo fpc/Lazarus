@@ -6385,6 +6385,14 @@ examples/imagelist/project1.lpr svneol=native#text/plain
 examples/imagelist/project1.res -text
 examples/imagelist/unit1.lfm svneol=native#text/plain
 examples/imagelist/unit1.pas svneol=native#text/pascal
+examples/imagelist_highdpi_designtime/imglistdesign.lpi svneol=native#text/xml
+examples/imagelist_highdpi_designtime/imglistdesign.lpr svneol=native#text/pascal
+examples/imagelist_highdpi_designtime/unit1.lfm svneol=native#text/lfm
+examples/imagelist_highdpi_designtime/unit1.pas svneol=native#text/pascal
+examples/imagelist_highdpi_runtime/dpiimagelist.lpi svneol=native#text/xml
+examples/imagelist_highdpi_runtime/dpiimagelist.lpr svneol=native#text/pascal
+examples/imagelist_highdpi_runtime/unit1.lfm svneol=native#text/lfm
+examples/imagelist_highdpi_runtime/unit1.pas svneol=native#text/pascal
 examples/imgviewer/file.bmp -text svneol=native#image/bmp
 examples/imgviewer/file.xpm -text svneol=native#image/x-xpixmap
 examples/imgviewer/frmmain.lfm svneol=native#text/plain
