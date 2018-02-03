@@ -202,6 +202,7 @@ begin
   begin
     DC := Widgetset.GetDC(HWND({%H-}PtrUInt(AMenuItem)));
     IconWidth := LCLItem.GetIconSize(DC).X;
+    WidgetSet.ReleaseDC(HWND({%H-}PtrUInt(AMenuItem)), DC);
     if IconWidth > 0 then
     begin
       gtk_widget_style_get(PGtkWidget(AMenuItem), 'toggle-spacing', [@spacing, nil]);
@@ -222,6 +223,7 @@ begin
   GTK_WIDGET_GET_CLASS(AMenuItem)^.size_request(PGtkWidget(AMenuItem), requisition);
   DC := Widgetset.GetDC(HWND({%H-}PtrUInt(AMenuItem)));
   IconHeight := LCLItem.GetIconSize(DC).Y;
+  Widgetset.ReleaseDC(HWND({%H-}PtrUInt(AMenuItem)), DC);
   if requisition^.height < IconHeight then
     requisition^.height := IconHeight;
 end;
