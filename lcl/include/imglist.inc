@@ -1850,49 +1850,27 @@ end;
 procedure TCustomImageList.InsertMasked(Index: Integer; AImage: TCustomBitmap;
   MaskColor: TColor);
 var
-  RawImg: TRawImage;
-  SourceImage, MaskedImage: TLazIntfImage;
-  MaskedDescription, DeviceDescription: TRawImageDescription;
-  Bmp, Msk: HBitmap;
+  MaskedImage: TBitmap;
   ScBmp: TRGBAQuadArray;
   R: TCustomImageListResolution;
 begin
   if AImage = nil then Exit;
-  SourceImage := TLazIntfImage.Create(AImage.RawImage, False);
+
+  MaskedImage := TBitmap.Create;
   try
-    MaskedImage := TLazIntfImage.Create(0,0,[]);
-    try
-      MaskedImage.DataDescription := SourceImage.DataDescription;
-      if MaskedImage.DataDescription.MaskBitsPerPixel = 0 then
-      begin
-        MaskedDescription := MaskedImage.DataDescription;
-        DeviceDescription := GetDescriptionFromDevice(0, 0, 0);
-        MaskedDescription.MaskBitsPerPixel := DeviceDescription.MaskBitsPerPixel;
-        MaskedDescription.MaskBitOrder := DeviceDescription.MaskBitOrder;
-        MaskedDescription.MaskLineEnd := DeviceDescription.MaskLineEnd;
-        MaskedDescription.MaskShift := DeviceDescription.MaskShift;
-        MaskedImage.DataDescription := MaskedDescription;
-      end;
-      MaskedImage.CopyPixels(SourceImage);
-      MaskedImage.Mask(TColorToFPColor(ColorToRGB(MaskColor)));
-      MaskedImage.GetRawImage(RawImg);
-      MaskedImage.CreateBitmaps(Bmp, Msk);
-      try
-        CreateDefaultResolution;
-        for R in Resolutions do
-        begin
-          ScaleImage(Bmp, Msk, Rect(0, 0, MaskedImage.Width-1, MaskedImage.Height-1), R.Width, R.Height, ScBmp);
-          R.InternalInsert(Index, @ScBmp[0]);
-        end;
-      finally
-        DeleteObject(Bmp);
-        DeleteObject(Msk);
-      end;
-    finally
-      MaskedImage.Free;
+    MaskedImage.Assign(AImage);
+    MaskedImage.TransparentColor := MaskColor;
+    MaskedImage.TransparentMode := tmFixed;
+    MaskedImage.Transparent := True;
+
+    CreateDefaultResolution;
+    for R in Resolutions do
+    begin
+      ScaleImage(MaskedImage.BitmapHandle, MaskedImage.MaskHandle, Rect(0, 0, MaskedImage.Width-1, MaskedImage.Height-1), R.Width, R.Height, ScBmp);
+      R.InternalInsert(Index, @ScBmp[0]);
     end;
   finally
-    SourceImage.Free;
+    MaskedImage.Free;
   end;
 end;
 
