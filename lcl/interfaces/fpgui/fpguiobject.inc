@@ -81,7 +81,7 @@ end;
 function TFpGuiWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
   uState: Cardinal): Boolean;
 var
-  ADC: TFPGUIDeviceContext absolute DC;
+  ADC: TFPGUIDeviceContext;
   ControlType: Cardinal;
   ControlStyle: Cardinal;
   fpgRect: TfpgRect;
@@ -103,11 +103,11 @@ const
                 or DFCS_BUTTONRADIO or DFCS_BUTTON3STATE or DFCS_BUTTONPUSH;
 begin
   Result:=false;
+  ADC:=TFPGUIDeviceContext(DC);
   if Assigned(ADC.fpgCanvas) then begin
     ControlType:=uType;
     ControlStyle:=uState and DFCS_ALLSTATES;
-    TRectTofpgRect(Rect,fpgRect);
-    AdjustRectToOrg(fpgRect,ADC.FOrg);
+    fpgRect:=ADC.PrepareRectOffsets(Rect);
     Case ControlType of
       DFC_BUTTON:
         begin
@@ -164,6 +164,11 @@ begin
   Result := True;
 end;
 
+function TFpGuiWidgetSet.CreateThemeServices: TThemeServices;
+begin
+  Result:=TFPGUIThemeServices.Create;
+end;
+
 {------------------------------------------------------------------------------
   Method: TFpGuiWidgetSet.AppInit
   Params:  None
@@ -179,6 +184,11 @@ begin
 //  Display := GetEnvironmentVariableUTF8('DISPLAY');
   fpgApplication.Initialize;
   //GFApplication.QuitWhenLastWindowCloses := False;
+
+  //if fpgStyleManager.SetStyle('win8') then begin
+  //  fpgStyle:=fpgStyleManager.Style;
+  //end;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -200,7 +210,20 @@ begin
       vMainForm.Show;
   end;
   // GFApplication.EventFilter can maybe be used on X11 for aloop but it is X only
-  fpgApplication.Run;
+//  fpgApplication.Run;
+  if Assigned(ALoop) then begin
+    ALoop
+  end else begin
+    repeat
+      try
+        fpgApplication.ProcessMessages;
+        if not fpgApplication.Terminated then Application.Idle(true);
+      except
+        Application.HandleException(Self);
+      end;
+    until fpgApplication.Terminated;
+  end;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -278,8 +301,14 @@ begin
 end;
 
 procedure TFpGuiWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
+var
+  DC: TFPGUIDeviceContext;
+  p: TPoint;
 begin
-
+  DC:=TFPGUIDeviceContext(CanvasHandle);
+  p:=Point(X,Y);
+  p:=DC.PreparePointOffsets(p);
+  DC.FPrivateWidget.Widget.Canvas.Pixels[p.x,p.y]:=TColorToTfpgColor(AColor);
 end;
 
 procedure TFpGuiWidgetSet.DCRedraw(CanvasHandle: HDC);
@@ -319,8 +348,95 @@ begin
   Result:=true;
 end;
 
-function TFpGuiWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out
-  ADesc: TRawImageDescription): Boolean;
+procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
+begin
+  case ADesc.BitsPerPixel of
+    1,4,8:
+      begin
+        // palette mode, no offsets
+        ADesc.Format := ricfGray;
+        ADesc.RedPrec := ADesc.BitsPerPixel;
+        ADesc.GreenPrec := 0;
+        ADesc.BluePrec := 0;
+        ADesc.RedShift := 0;
+        ADesc.GreenShift := 0;
+        ADesc.BlueShift := 0;
+      end;
+    16:
+      begin
+        // 5-5-5 mode
+        ADesc.RedPrec := 5;
+        ADesc.GreenPrec := 5;
+        ADesc.BluePrec := 5;
+        ADesc.RedShift := 10;
+        ADesc.GreenShift := 5;
+        ADesc.BlueShift := 0;
+        ADesc.Depth := 15;
+      end;
+    24:
+      begin
+        // 8-8-8 mode
+        ADesc.RedPrec := 8;
+        ADesc.GreenPrec := 8;
+        ADesc.BluePrec := 8;
+        ADesc.RedShift := 16;
+        ADesc.GreenShift := 8;
+        ADesc.BlueShift := 0;
+      end;
+  else    //  32:
+    // 8-8-8-8 mode, high byte can be native alpha or custom 1bit maskalpha
+    ADesc.AlphaPrec := 8;
+    ADesc.RedPrec := 8;
+    ADesc.GreenPrec := 8;
+    ADesc.BluePrec := 8;
+    ADesc.AlphaShift := 24;
+    ADesc.RedShift := 16;
+    ADesc.GreenShift := 8;
+    ADesc.BlueShift := 0;
+    ADesc.Depth := 32;
+  end;
+end;
+
+procedure FillRawImageDescription(const ABitmapInfo: TfpgImage; out ADesc: TRawImageDescription);
+begin
+  ADesc.Format := ricfRGBA;
+
+  ADesc.Depth := 32;             // used bits per pixel
+  ADesc.Width := ABitmapInfo.Width;
+  ADesc.Height := ABitmapInfo.Height;
+  ADesc.BitOrder := riboReversedBits;
+  ADesc.ByteOrder := riboLSBFirst;
+  ADesc.LineOrder := riloTopToBottom;
+  ADesc.BitsPerPixel := 32;      // bits per pixel. can be greater than Depth.
+  ADesc.LineEnd := rileDWordBoundary;
+
+  if ADesc.BitsPerPixel <= 8
+  then begin
+    // each pixel is an index in the palette
+    // TODO, ColorCount
+    ADesc.PaletteColorCount := 0;
+  end
+  else ADesc.PaletteColorCount := 0;
+
+
+  FillRawImageDescriptionColors(ADesc);
+
+  ADesc.MaskBitsPerPixel := 8;
+  ADesc.MaskShift := 0;
+  ADesc.MaskLineEnd := rileWordBoundary; // CreateBitmap requires word boundary
+  ADesc.MaskBitOrder := riboReversedBits;
+end;
+
+function TFpGuiWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
+var
+  o: TFPGUIWinAPIBitmap;
+begin
+  o:=TFPGUIWinAPIBitmap(ABitmap);
+  FillRawImageDescription(o.Image,ADesc);
+  Result:=true;
+end;
+
+function TFpGuiWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
 var
   DC: TFPGUIDeviceContext;
   r: TfpgRect;
@@ -337,7 +453,7 @@ begin
       Width:=     0;
       Height:=    0;
     end;
-    Depth:=       24; // used bits per pixel
+    Depth:=       32; // used bits per pixel
     BitOrder:=    riboBitsInOrder;
     ByteOrder:=   riboMSBFirst;
     LineOrder:=   riloTopToBottom;
@@ -349,10 +465,58 @@ begin
     GreenShift:=  16;
     BluePrec:=    8;
     BlueShift:=   24;
-    AlphaPrec:=   0;
+    AlphaPrec:=   8;
     AlphaShift:=  0;
+    // Test
+
+    // The next values are only valid, if there is a mask (MaskBitsPerPixel > 0)
+    // Masks are always separate with a depth of 1 bpp. One pixel can occupy
+    // one byte at most
+    // a value of 1 means that pixel is masked
+    // a value of 0 means the pixel value is shown
+    MaskBitsPerPixel:= 8;
+    MaskShift:=        0;
+    MaskLineEnd:=      rileWordBoundary;
+    MaskBitOrder:=     riboReversedBits;
   end;
   Result:=true;
+end;
+
+procedure TFpGuiWidgetSet.InitializeCriticalSection(
+  var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  New(ACritSec);
+  System.InitCriticalSection(ACritSec^);
+  CritSection:=TCriticalSection(ACritSec);
+end;
+
+procedure TFpGuiWidgetSet.DeleteCriticalSection(
+  var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.DoneCriticalsection(ACritSec^);
+  Dispose(ACritSec);
+  CritSection:=0;
+end;
+
+procedure TFpGuiWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.EnterCriticalsection(ACritSec^);
+end;
+
+procedure TFpGuiWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
+var
+  ACritSec: System.PRTLCriticalSection;
+begin
+  ACritSec:=System.PRTLCriticalSection(CritSection);
+  System.LeaveCriticalsection(ACritSec^);
 end;
 
 {------------------------------------------------------------------------------
@@ -392,6 +556,44 @@ begin
     //Eat exceptions. If Exception happends it is not a TObject after all and
     //of course it is not a fpgui GDI object.
   end;
+end;
+
+{ Unable to make it work properly
+function TFpGuiWidgetSet.CreateRubberBand(const ARect: TRect;
+  const ABrush: HBrush): HWND;
+var
+  FakeParams: TCreateParams;
+  fpgForm: TfpgForm;
+begin
+  FillByte(FakeParams,sizeof(FakeParams),0);
+  FakeParams.Style:=FakeParams.Style or WS_VISIBLE;
+  FakeParams.X:=ARect.Left;
+  FakeParams.Y:=ARect.Top;
+  FakeParams.Width:=aRect.Width;
+  FakeParams.Height:=aRect.Height;
+  Result:=HWND(TFPGUIPrivateWindow.Create(nil,FakeParams));
+  fpgForm:=TFPGUIPrivateWindow(Result).Form;
+  TFPGUIPrivateWindow(Result).SetFormBorderStyle(TFormBorderStyle.bsNone);
+  fpgForm.Show;
+end;
+
+procedure TFpGuiWidgetSet.DestroyRubberBand(ARubberBand: HWND);
+begin
+  TFPGUIPrivateWindow(ARubberBand).Free;
+end;
+}
+
+function TFpGuiWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap,
+  AMask: HBITMAP; ARect: PRect): Boolean;
+var
+  img: TFPGUIWinAPIBitmap;
+begin
+  ARawImage.Init;
+  img:=TFPGUIWinAPIBitmap(ABitmap);
+  FillRawImageDescription(img.Image, ARawImage.Description);
+  ARawImage.DataSize:=ARawImage.Description.Width*ARawImage.Description.Height*4;
+  ARawImage.Data:=GetMem(ARawImage.DataSize);
+  move(img.Image.ImageData^,ARawImage.Data^,img.Image.ImageDataSize);
 end;
 
 //------------------------------------------------------------------------

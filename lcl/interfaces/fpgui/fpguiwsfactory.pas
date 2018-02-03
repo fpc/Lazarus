@@ -5,8 +5,8 @@ unit FpGuiWSFactory;
 interface
 
 uses
-  Classes, Controls, StdCtrls, Forms, Menus, ExtCtrls, Dialogs, ComCtrls,
-  Buttons, WSLCLClasses;
+  Classes, Controls, StdCtrls, Forms, Menus, ExtCtrls, Dialogs, ComCtrls, Grids,
+  Buttons, PairSplitter, WSLCLClasses;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
@@ -106,7 +106,9 @@ uses
  FpGuiWSComCtrls,
  FpGuiWSForms,
  FpGuiWSMenus,
+ FpGuiWSGrids,
  FpGuiWSStdCtrls,
+ FpGuiWSPairSplitter,
  FpGuiWSDialogs;
 
 // imglist
@@ -142,7 +144,8 @@ end;
 
 function RegisterGraphicControl: Boolean; alias : 'WSRegisterGraphicControl';
 begin
-  Result := False;
+  RegisterWSComponent(TGraphicControl, TFpGuiWSGraphicControl);
+  Result := true;
 end;
 
 function RegisterCustomControl: Boolean; alias : 'WSRegisterCustomControl';
@@ -240,7 +243,8 @@ end;
 
 function RegisterColorDialog: Boolean; alias : 'WSRegisterColorDialog';
 begin
-  Result := False;
+  RegisterWSComponent(TColorDialog, TFpGuiWSColorDialog);
+  Result := true;
 end;
 
 function RegisterColorButton: Boolean; alias : 'WSRegisterColorButton';
@@ -257,7 +261,8 @@ end;
 // StdCtrls
 function RegisterCustomScrollBar: Boolean; alias : 'WSRegisterCustomScrollBar';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomScrollBar, TFpGuiWSScrollBar);
+  Result := True;
 end;
 
 function RegisterCustomGroupBox: Boolean; alias : 'WSRegisterCustomGroupBox';
@@ -320,7 +325,8 @@ end;
 
 function RegisterCustomStaticText: Boolean; alias : 'WSRegisterCustomStaticText';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomStaticText, TFpGuiWSCustomStaticText);
+  Result := false;
 end;
 
 function RegisterCustomLabel: Boolean; alias : 'WSRegisterCustomLabel';
@@ -336,8 +342,8 @@ end;
 
 function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
 begin
-  RegisterWSComponent(TCustomTabControl, TFpGuiWSCustomNotebook);
-  Result := True;
+//  RegisterWSComponent(TCustomTabControl, TFpGuiWSCustomNotebook);
+  Result := false;
 end;
 
 function RegisterShape: Boolean; alias : 'WSRegisterShape';
@@ -347,7 +353,8 @@ end;
 
 function RegisterCustomSplitter: Boolean; alias : 'WSRegisterCustomSplitter';
 begin
-  Result := False;
+  //RegisterWSComponent(TCustomSplitter, TFpGuiWSCustomSplitter);
+  Result := false;
 end;
 
 function RegisterPaintBox: Boolean; alias : 'WSRegisterPaintBox';
@@ -454,7 +461,8 @@ end;
 // Forms
 function RegisterScrollingWinControl: Boolean; alias : 'WSRegisterScrollingWinControl';
 begin
-  Result := False;
+  RegisterWSComponent(TScrollingWinControl, TFpGuiWSScrollingWinControl);
+  Result := true;
 end;
 
 function RegisterScrollBox: Boolean; alias : 'WSRegisterScrollBox';
@@ -475,13 +483,14 @@ end;
 
 function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';
 begin
-  Result := False;
+  Result := false;
 end;
 
 // Grids
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomGrid, TFpGuiWSCustomGrid);
+  Result := True;
 end;
 
 // Menus
@@ -510,12 +519,14 @@ end;
 
 function RegisterPairSplitterSide: Boolean; alias : 'WSRegisterPairSplitterSide';
 begin
-  Result := False;
+  RegisterWSComponent(TPairSplitterSide, TFpGuiWSPairSplitterSide);
+  Result := true;
 end;
 
 function RegisterCustomPairSplitter: Boolean; alias : 'WSRegisterCustomPairSplitter';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomPairSplitter, TFpGuiWSCustomPairSplitter);
+  Result := true;
 end;
 
 // Spin

@@ -2,7 +2,9 @@
 unit AllLCLIntfUnits;
 interface
 uses
+  fpguicrosshelpers{%H-},
   fpguiint{%H-},
+  fpguithemes{%H-},
   fpguiobjects{%H-},
   fpguiproc{%H-},
   fpguiwsbuttons{%H-},

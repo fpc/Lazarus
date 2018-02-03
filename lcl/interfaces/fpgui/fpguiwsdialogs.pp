@@ -87,6 +87,8 @@ type
   private
   protected
   public
+  published
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
   { TFpGuiWSColorButton }
@@ -108,6 +110,14 @@ type
 
 
 implementation
+
+{ TFpGuiWSColorDialog }
+
+class function TFpGuiWSColorDialog.CreateHandle(
+  const ACommonDialog: TCommonDialog): THandle;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateColorDialog.Create(ACommonDialog));
+end;
 
 { TFpGuiWSCommonDialog }
 

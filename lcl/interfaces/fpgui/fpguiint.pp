@@ -27,11 +27,12 @@ uses
   Classes, Types, SysUtils, Math,
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LMessages,
-  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType,
+  Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, GraphType, Graph, Themes,
   // Bindings
-  fpg_main, fpg_form, fpguiproc, fpg_base, fpg_dialogs,
+  fpg_main, fpg_form, fpguiproc, fpg_base, fpg_dialogs,// fpg_stylemanager, fpg_style_win8,
   // Widgetset
-  FPGUIWSPrivate, fpguiobjects;
+  fpguicrosshelpers,
+  FPGUIWSPrivate, fpguiobjects, fpguithemes;
 
 type
 
@@ -39,6 +40,8 @@ type
 
   TFpGuiWidgetSet = Class(TWidgetSet)
   private
+  protected
+    function CreateThemeServices: TThemeServices; override;
   public
     // Application
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
@@ -64,19 +67,11 @@ type
 
     procedure SetDesigning(AComponent: TComponent); override;
 
-    //Raw image support
-    function  RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap,
-      AMask: HBitmap; ASkipMask: Boolean=False): Boolean; override;
-    function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription
-      ): Boolean; override;
-
     //Critical sections... Are really needed ?
-    {*
     procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
     procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
     procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
     procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
-    *}
 
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
@@ -85,6 +80,7 @@ type
     // device contexts
     function IsValidDC(const DC: HDC): Boolean; virtual;
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean; virtual;
+
   public
     {$I fpguiwinapih.inc}
     {$I fpguilclintfh.inc}

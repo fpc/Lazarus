@@ -24,7 +24,7 @@ uses
   // FCL
   Classes, sysutils,
   // Bindings
-  fpguiwsprivate, fpguiobjects,
+  fpguiwsprivate, fpguiobjects, fpg_panel,
   // LCL
   Controls, LCLType,  Graphics,
   // Widgetset
@@ -34,7 +34,7 @@ type
 
   { TFpGuiWSDragImageList }
 
-  TFpGuiWSDragImageList = class(TWSDragImageList)
+  TFpGuiWSDragImageList = class(TWSDragImageListResolution)
   private
   protected
   public
@@ -74,6 +74,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
 
 {    class procedure AddControl(const AControl: TControl); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;}
@@ -81,6 +82,7 @@ type
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
 
 {    class procedure ConstraintsChange(const AWinControl: TWinControl); override;}
+    class function CanFocus(const AWincontrol: TWinControl): Boolean; override;
   end;
 
   { TFpGuiWSGraphicControl }
@@ -89,6 +91,7 @@ type
   private
   protected
   public
+  published
   end;
 
   { TFpGuiWSCustomControl }
@@ -178,9 +181,7 @@ class procedure TFpGuiWSWinControl.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
-  //fpgui widgets does not have a default size (maybe later).
-  PreferredHeight:=0;
-  PreferredWidth:=0;
+  TFPGUIPrivateWidget(AWinControl.Handle).GetPreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
 end;
 
 class procedure TFpGuiWSWinControl.PaintTo(const AWinControl: TWinControl;
@@ -244,18 +245,18 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.ShowHide(const AWinControl: TWinControl);
 var
-  FPWidget: TfpgWidget;
+  FPPrivate: TFPGUIPrivateWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
-  FPWidget.Visible := AWinControl.Visible;
+  FPPrivate := TFPGUIPrivateWidget(AWinControl.Handle);
+  FPPrivate.Visible := AWinControl.Visible;
 end;
 
 class procedure TFpGuiWSWinControl.SetColor(const AWinControl: TWinControl);
 var
-  FPWidget: TfpgWidget;
+  FPPrivate: TFPGUIPrivateWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
-  FPWidget.BackgroundColor := TColorToTfpgColor(AWinControl.Color);
+  FPPrivate := TFPGUIPrivateWidget(AWinControl.Handle);
+  FPPrivate.Widget.BackgroundColor:=TColorToTfpgColor(AWinControl.Color)
 end;
 
 class function TFpGuiWSWinControl.GetText(const AWinControl: TWinControl;
@@ -277,6 +278,15 @@ begin
   FPPrivateWidget.SetText(AText);
 end;
 
+class procedure TFpGuiWSWinControl.SetCursor(const AWinControl: TWinControl;
+  const ACursor: HCursor);
+var
+  FPPrivateWidget: TFPGUIPrivateWindow;
+begin
+  FPPrivateWidget := TFPGUIPrivateWindow(AWinControl.Handle);
+  FPPrivateWidget.SetCursor(integer(ACursor));
+end;
+
 class procedure TFpGuiWSWinControl.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 var
@@ -284,6 +294,15 @@ var
 begin
   FPPrivateWidget := TFPGUIPrivateWindow(AWinControl.Handle);
   FPPrivateWidget.Font:=AFont;
+end;
+
+class function TFpGuiWSWinControl.CanFocus(const AWincontrol: TWinControl
+  ): Boolean;
+var
+  FPPrivateWidget: TFPGUIPrivateWindow;
+begin
+  FPPrivateWidget := TFPGUIPrivateWindow(AWinControl.Handle);
+  Result:=FPPrivateWidget.Widget.Focusable;
 end;
 
 end.

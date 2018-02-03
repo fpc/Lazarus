@@ -24,7 +24,7 @@ uses
   // Bindings
   fpguiwsprivate,
   // LCL
-  Classes, StdCtrls, Controls, LCLType, sysutils,
+  Classes, StdCtrls, Controls, LCLType, sysutils, Forms,
   // Widgetset
   WSStdCtrls, WSLCLClasses;
 
@@ -35,7 +35,14 @@ type
   TFpGuiWSScrollBar = class(TWSScrollBar)
   private
   protected
+    class procedure intfSetParams(APrivate: TFPGUIPrivateScrollBar; AScrollBar: TCustomScrollBar);
   public
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
+    class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); override;
   end;
 
   { TFpGuiWSCustomGroupBox }
@@ -107,6 +114,8 @@ type
                             ): TStrings; override;
     class procedure FreeStrings(var AStrings: TStrings); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
   { TFpGuiWSListBox }
@@ -194,9 +203,6 @@ type
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-    class procedure GetPreferredSize(const AWinControl: TWinControl;
-                             var PreferredWidth, PreferredHeight: integer;
-                             WithThemeSpace: Boolean); override;
   end;
 
   { TFpGuiWSCheckBox }
@@ -241,6 +247,11 @@ type
   private
   protected
   public
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
   { TFpGuiWSStaticText }
@@ -256,11 +267,99 @@ implementation
 
 uses
   fpg_combobox,
-  fpg_edit,
+  fpg_editcombo,
   fpg_checkbox,
   fpg_radiobutton,
-  fpg_listbox,
-  fpg_panel;
+  fpg_listbox;
+
+{ TFpGuiWSCustomStaticText }
+
+class function TFpGuiWSCustomStaticText.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  PrivateWidget: TFPGUIPrivateStaticText;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateStaticText.Create(AWinControl, AParams));
+  PrivateWidget:=TFPGUIPrivateStaticText(Result);
+  case TCustomStaticText(AWinControl).Alignment of
+    taLeftJustify: PrivateWidget.StaticText.Alignment:=taLeftJustify ;
+    taRightJustify: PrivateWidget.StaticText.Alignment:=taRightJustify ;
+    taCenter: PrivateWidget.StaticText.Alignment:=taCenter ;
+  end;
+end;
+
+class procedure TFpGuiWSCustomStaticText.DestroyHandle(
+  const AWinControl: TWinControl);
+begin
+  TFPGUIPrivateStaticText(AWinControl.Handle).Free;
+  AWinControl.Handle:=0;
+end;
+
+class procedure TFpGuiWSCustomStaticText.SetAlignment(
+  const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
+var
+  PrivateWidget: TFPGUIPrivateStaticText;
+begin
+  PrivateWidget:=TFPGUIPrivateStaticText(ACustomStaticText.Handle);
+  case NewAlignment of
+    taLeftJustify: PrivateWidget.StaticText.Alignment:=taLeftJustify ;
+    taRightJustify: PrivateWidget.StaticText.Alignment:=taRightJustify ;
+    taCenter: PrivateWidget.StaticText.Alignment:=taCenter ;
+  end;
+end;
+
+{ TFpGuiWSScrollBar }
+
+class procedure TFpGuiWSScrollBar.intfSetParams(APrivate: TFPGUIPrivateScrollBar;
+  AScrollBar: TCustomScrollBar);
+var
+  lSteps: integer;
+begin
+  APrivate.Min:=AScrollBar.Min;
+  APrivate.Max:=AScrollBar.Max;
+  APrivate.Position:=AScrollBar.Position;
+  if AScrollBar.Kind=sbHorizontal then begin
+    APrivate.Horizontal:=true;
+  end else begin
+    APrivate.Horizontal:=false;
+  end;
+  APrivate.ScrollBar.PageSize:=AScrollBar.LargeChange;
+  APrivate.ScrollBar.ScrollStep:=AScrollBar.SmallChange;
+  if AScrollBar.PageSize<>0 then begin
+    lSteps:=(APrivate.Max - APrivate.Min);
+    if lSteps>0 then begin
+      APrivate.ScrollBar.SliderSize:=AScrollBar.PageSize/lSteps;
+    end else begin
+      APrivate.ScrollBar.SliderSize:=0;
+    end;
+  end else begin
+    APrivate.ScrollBar.SliderSize:=0;
+  end;
+end;
+
+class function TFpGuiWSScrollBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateScrollBar.Create(AWinControl, AParams));
+  intfSetParams(TFPGUIPrivateScrollBar(Result),TScrollBar(AWinControl));
+end;
+
+class procedure TFpGuiWSScrollBar.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TFPGUIPrivateScrollBar(AWinControl.Handle).Free;
+  AWinControl.Handle:=0;
+end;
+
+class procedure TFpGuiWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
+begin
+  intfSetParams(TFPGUIPrivateScrollBar(AScrollBar.Handle),AScrollBar);
+end;
+
+class procedure TFpGuiWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar;
+  const AIsHorizontal: Boolean);
+begin
+  inherited SetKind(AScrollBar, AIsHorizontal);
+end;
 
 { TFpGuiWSCustomComboBox }
 
@@ -299,7 +398,7 @@ end;
 class function TFpGuiWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 var
-  vComboBox: TfpgComboBox;
+  vComboBox: TfpgEditCombo;
 begin
   vComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
 
@@ -314,11 +413,16 @@ end;
 class procedure TFpGuiWSCustomComboBox.SetItemIndex(
   const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 var
-  vComboBox: TfpgComboBox;
+  vComboBox: TfpgEditCombo;
 begin
   vComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
 
   vComboBox.FocusItem := NewIndex;
+  if NewIndex<>-1 then begin
+    vComboBox.Text:=vComboBox.Items[NewIndex];
+  end else begin
+    vComboBox.Text:='';
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -329,7 +433,7 @@ end;
 class function TFpGuiWSCustomComboBox.GetItems(
   const ACustomComboBox: TCustomComboBox): TStrings;
 var
-  FComboBox: TfpgComboBox;
+  FComboBox: TfpgEditCombo;
 begin
   FComboBox := TFPGUIPrivateComboBox(ACustomComboBox.Handle).ComboBox;
 
@@ -451,13 +555,6 @@ var
 begin
   vCheckBox := TFPGUIPrivateCheckBox(AWinControl.Handle).CheckBox;
   vCheckBox.Text := AText;
-end;
-
-class procedure TFpGuiWSCustomCheckBox.GetPreferredSize(
-  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
-  WithThemeSpace: Boolean);
-begin
-  TFPGUIPrivateCheckBox(AWinControl.Handle).GetPreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
 end;
 
 class function TFpGuiWSCustomCheckBox.CreateHandle(
@@ -593,6 +690,27 @@ var
 begin
   PrivateListBox:=TFPGUIPrivateListBox(ACustomListBox.Handle);
   PrivateListBox.ItemIndex:=AIndex;
+end;
+
+class function TFpGuiWSCustomListBox.GetItemIndex(
+  const ACustomListBox: TCustomListBox): integer;
+var
+  PrivateListBox: TFPGUIPrivateListBox;
+begin
+  PrivateListBox:=TFPGUIPrivateListBox(ACustomListBox.Handle);
+  Result:=PrivateListBox.ItemIndex;
+end;
+
+class procedure TFpGuiWSCustomListBox.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  PrivateListBox: TFPGUIPrivateListBox;
+begin
+  PrivateListBox:=TFPGUIPrivateListBox(AWinControl.Handle);
+  case ABorderStyle of
+    TBorderStyle.bsNone: PrivateListBox.ListBox.PopupFrame:=true;
+    TBorderStyle.bsSingle: PrivateListBox.ListBox.PopupFrame:=false;
+  end;
 end;
 
 { TFpGuiWSCustomGroupBox }

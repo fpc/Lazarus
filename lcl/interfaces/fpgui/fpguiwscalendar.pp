@@ -35,7 +35,7 @@ type
 
   { TFpGuiWSCalendar }
 
-  TFpGuiWSCalendar = class(TWSCalendar)
+  TFpGuiWSCalendar = class(TWSCustomCalendar)
   private
   protected
   public

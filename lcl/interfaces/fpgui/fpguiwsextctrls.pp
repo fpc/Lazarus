@@ -61,6 +61,10 @@ type
   private
   protected
   public
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSSplitter }
@@ -185,6 +189,20 @@ implementation
 uses
   fpg_panel;
 
+{ TFpGuiWSCustomSplitter }
+
+class function TFpGuiWSCustomSplitter.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateSplitter.Create(AWinControl, AParams));
+end;
+
+class procedure TFpGuiWSCustomSplitter.DestroyHandle(
+  const AWinControl: TWinControl);
+begin
+  inherited DestroyHandle(AWinControl);
+end;
+
 { TFpGuiWSCustomTrayIcon }
 
 class function TFpGuiWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
@@ -224,13 +242,20 @@ begin
   Result := TLCLIntfHandle(TFPGUIPrivateCustomPanel.Create(AWinControl, AParams));
 
   lPanel := TFPGUIPrivateCustomPanel(Result).Panel;
+  lPanel.Style := bsFlat;
+
+  (*
   case TCustomPanel(AWinControl).BevelOuter of
-    bvLowered:  lPanel.Style := bsLowered;
-    bvRaised:   lPanel.Style := bsRaised;
+    bvLowered:  begin
+      lPanel.Style := bsLowered;
+    end;
+    bvRaised:   begin
+      lPanel.Style := bsRaised;
+    end;
     bvNone,
     bvSpace:    lPanel.Style := bsFlat;
-  end
-
+  end;
+  *)
 end;
 
 class procedure TFpGuiWSCustomPanel.DestroyHandle(const AWinControl: TWinControl);

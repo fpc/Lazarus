@@ -20,6 +20,10 @@
 }
 
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
+{ Unable to make it work properly
+function CreateRubberBand(const ARect: TRect; const ABrush: HBrush=0): HWND; override;
+procedure DestroyRubberBand(ARubberBand: HWND); override;
+}
 
 {function Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean; override;
 function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;}
@@ -67,7 +71,8 @@ function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
 {function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;}
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: Cardinal): Integer; override;
 
-{function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
+function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
+{
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;}
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;
@@ -85,21 +90,22 @@ function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
 function GetActiveWindow : HWND; override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
+}
 function GetCapture: HWND; override;
-function GetCaretPos(var lpPoint: TPoint): Boolean; override;
+{function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
 function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;}
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
-{function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;}
+function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetDC(hWnd: HWND): HDC; override;
 {function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;}
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 {function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
-function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
+function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;}
 function GetFocus: HWND; override;
-function GetKeyState(nVirtKey: Integer): Smallint; override;
+{function GetKeyState(nVirtKey: Integer): Smallint; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetParent(Handle : HWND): HWND; override;}
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
@@ -111,7 +117,7 @@ function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollIn
 function GetStockObject(Value: Integer): THandle; override;}
 function GetSysColor(nIndex: Integer): DWORD; override;
 function GetSystemMetrics(nIndex: Integer): Integer; override;
-{function GetTextColor(DC: HDC) : TColorRef; Override;}
+function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 {function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;}
@@ -131,21 +137,23 @@ function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
-function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 }
+function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
+function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
 {
-function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
+}
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
-function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean; override;}
+function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean; override;
 
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 {function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
-function ReleaseCapture : Boolean; override;}
+}
+function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 {function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; override;}
@@ -154,12 +162,13 @@ function SaveDC(DC: HDC): Integer; override;
 {function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;}
 function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
-{function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
-function SetActiveWindow(Handle: HWND): HWND; override;
+function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
+{function SetActiveWindow(Handle: HWND): HWND; override;
 function SetBKColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
+}
 function SetCapture(AHandle: HWND): HWND; override;
-function SetCaretPos(X, Y: Integer): Boolean; override;
+{function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
 function SetCursor(ACursor: HCURSOR): HCURSOR; override;
@@ -168,7 +177,8 @@ function SetFocus(hWnd: HWND): HWND; override;
 {function SetForegroundWindow(HWnd: HWND): boolean; override;}
 function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;
 {function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
-function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;}
+}
+function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 {function ShowCaret(hWnd: HWND): Boolean; override;
@@ -180,11 +190,14 @@ function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
   XMask, YMask: Integer; Rop: DWORD): Boolean; override;
-{function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;
-
+function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;
+{
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 function UpdateWindow(Handle: HWND): Boolean; override;}
 function WindowFromPoint(Point: TPoint): HWND; override;
+
+{function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush;
+  dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;}
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

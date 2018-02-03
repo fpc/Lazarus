@@ -41,6 +41,7 @@ begin
     WriteLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
   {$endif}
   {$WARNING TFpGuiWidgetSet.BeginPaint Temporary Fix to prevent Crashing}
+  (*
   try
   if PrivateWidget <> nil then
     DC := TFpGuiDeviceContext.Create(PrivateWidget)
@@ -54,8 +55,10 @@ begin
     DC := TFpGuiDeviceContext.Create(nil);
   end;
   PS.hdc := HDC(DC);
-
   Result := PS.hdc;
+  *)
+
+  ps.hdc:=GetDC(Handle);
 
   {$ifdef VerboseFPGUIWinAPI}
     WriteLn('Trace:< [WinAPI BeginPaint] Result=', dbghex(Result));
@@ -64,18 +67,9 @@ end;
 
 function TFpGuiWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
 var
-  O: TFPGUIPrivateWidget;
+  O: TFPGUIPrivateWidget absolute Handle;
 begin
-  O:=GlobalMouseCursorPosWidget;
-  while O<>nil do begin
-    P.X:=P.X+O.Widget.Left;
-    P.Y:=P.Y+O.Widget.Top;
-    if O.LCLObject.Parent<>nil then begin
-      O:=TFPGUIPrivateWidget(O.LCLObject.Parent.Handle);
-    end else begin
-      O:=nil;
-    end;
-  end;
+  p:=TfpgWindowBase(o.Widget).WindowToScreen(TfpgWindowBase(o.Widget),p);
   Result:=true;
 end;
 
@@ -204,28 +198,53 @@ function TFpGuiWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
 var
   ADC: TFpGuiDeviceContext absolute DC;
 begin
+  ADC.fpgCanvas.Font:=ADC.FFont.fpguiFont;
   Result:=inherited DrawText(DC, Str, Count, ARect, Flags);
   if (Flags and DT_CALCRECT)=0 then begin
+    ADC.fpgCanvas.TextColor:=ADC.FTextColor;
     ADC.fpgCanvas.DrawText(ADC.PrepareRectOffsets(ARect),Str,[],0);
   end;
   Result:=ARect.Bottom-ARect.Top; //The height of the text.
+end;
+
+function TFpGuiWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+var
+  ADC: TFpGuiDeviceContext;// absolute DC;
+  j: integer;
+  OldColor: TfpgColor;
+  r: TfpgRect;
+  RR: TRect;
+begin
+  ADC:=TFPGUIDeviceContext(DC);
+  r:=ADC.PrepareRectOffsets(Rect(x1,y1,x2,y2));
+  TfpgRectToRect(r,RR);
+  if not ADC.UseBrush then begin
+    if ADC.UsePen then begin
+      ADC.fpgCanvas.DrawArc(rr.Left,rr.Top,x2-x1,y2-y1,0,360);
+    end;
+  end else begin
+    ADC.fpgCanvas.FillArc(rr.Left,rr.Top,x2-x1,y2-y1,0,360);
+    if ADC.UsePen then begin
+      ADC.fpgCanvas.DrawArc(rr.Left,rr.Top,x2-x1,y2-y1,0,360);
+    end;
+  end;
+  Result:=true;
 end;
 
 function TFpGuiWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 var
   Widget: TFPGUIPrivateWidget absolute hWnd;
 begin
-  Result:=true;
+  Result:=not Widget.Enabled;
   Widget.Enabled:=bEnable;
-  Result:=true;
 end;
 
 function TFpGuiWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
 var
   DC: TFpGuiDeviceContext;
 begin
-  DC := TFpGuiDeviceContext(PS.hdc);
-  DC.Free;
+//  DC := TFpGuiDeviceContext(PS.hdc);
+  ReleaseDC(Handle,PS.hdc);
   Result:=1; //Any non zero value.
 end;
 
@@ -254,6 +273,8 @@ begin
     end;
   end;
 
+  ADC.fpgCanvas.TextColor:=ADC.FTextColor;
+  ADC.fpgCanvas.Font:=ADC.FFont.fpguiFont;
   ADC.fpgCanvas.DrawText(r.Left, r.Top, AStr);
 
   if RestoreClip then begin
@@ -265,18 +286,21 @@ end;
 function TFpGuiWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH
   ): Boolean;
 var
-  ADC: TFpGuiDeviceContext absolute DC;
-  NewBrush: TFPGUIWinAPIBrush absolute Brush;
-  OldColor: TfpgColor;
+  ADC: TFpGuiDeviceContext;
+  NewBrush: TFPGUIWinAPIBrush;
   TheRect: TfpgRect;
 begin
-  OldColor:=ADC.fpgCanvas.Color;
+  ADC:=TFPGUIDeviceContext(DC);
+  NewBrush:=TFPGUIWinAPIBrush(Brush);
+  TheRect:=ADC.PrepareRectOffsets(Rect);
   ADC.fpgCanvas.Color:=NewBrush.Color;
-  TRectTofpgRect(Rect,TheRect);
-  AdjustRectToOrg(TheRect,ADC.FOrg);
   ADC.fpgCanvas.FillRectangle(TheRect);
-  ADC.fpgCanvas.Color:=OldColor;
   Result:=true;
+end;
+
+function TFpGuiWidgetSet.GetCapture: HWND;
+begin
+  Result:=HWND(GlobalMouseCapturedPrivateWidget);
 end;
 
 function TFpGuiWidgetSet.GetClientRect(handle: HWND; var ARect: TRect
@@ -286,6 +310,16 @@ var
 begin
   fpguiPrivate.GetClientRect(ARect);
   Result:=true;
+end;
+
+function TFpGuiWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
+var
+  ADC: TFpGuiDeviceContext absolute DC;
+  Clip: TfpgRect;
+begin
+  ADC.fpgCanvas.GetWinRect(Clip); { TODO : Should be a clip region, but use this by now }
+  Result:=SimpleRegion;
+  TfpgRectToRect(Clip,lpRect^);
 end;
 
 function TFpGuiWidgetSet.GetClipRGN(DC: hDC; RGN: hRGN): Longint;
@@ -310,33 +344,23 @@ end;
 function TFpGuiWidgetSet.GetCursorPos(var lpPoint: TPoint): Boolean;
 var
   O: TFPGUIPrivateWidget;
+  alPoint: TPoint;
 begin
-  O:=GlobalMouseCursorPosWidget;
-  lpPoint:=GlobalMouseCursorPos;
-  while O<>nil do begin
-    lpPoint.X:=lpPoint.X+O.Widget.Left;
-    lpPoint.Y:=lpPoint.Y+O.Widget.Top;
-    if O.LCLObject.Parent<>nil then begin
-      O:=TFPGUIPrivateWidget(O.LCLObject.Parent.Handle);
-    end else begin
-      O:=nil;
-    end;
-  end;
-  Result:=true;
+  // TODO: Fix it cross platform style
+  Result:=fpguicrosshelpers.GetCursorPos(lpPoint);
 end;
 
 function TFpGuiWidgetSet.GetDC(hWnd: HWND): HDC;
 var
-  PrivateWidget: TFPGUIPrivateWidget absolute hWnd;
+  PrivateWidget: TFPGUIPrivateWidget;
 begin
   //Create a new DC
+  PrivateWidget:=TFPGUIPrivateWidget(hWnd);
   if Assigned(PrivateWidget) then begin
-    if PrivateWidget.DC<>0 then begin
-      Result:=PrivateWidget.DC;
-    end else begin
-      Result:=HDC(TFpGuiDeviceContext.Create(PrivateWidget));
-    end;
-  end else Result:=HDC(FPGUIGetDesktopDC());
+    Result:=HDC(TFpGuiDeviceContext.Create(PrivateWidget));
+  end else begin
+    Result:=HDC(FPGUIGetDesktopDC());
+  end;
 end;
 
 function TFpGuiWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
@@ -363,11 +387,16 @@ begin
   end;
 end;
 
+function TFpGuiWidgetSet.GetFocus: HWND;
+begin
+  Result:=HWND(GlobalFocusedPrivateWidget);
+end;
+
 function TFpGuiWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
 var
   PrivateWidget: TFPGUIPrivateWidget absolute Handle;
 begin
-  if Str='WinControl' then begin
+  if Assigned(PrivateWidget) and (Str='WinControl') then begin
     Result:=PrivateWidget.LCLObject;
   end else begin
     {$ifdef VerboseFPGUIWinAPI}
@@ -394,12 +423,19 @@ function TFpGuiWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 begin
   case nIndex of
     //Current screen size
-    SM_CXSCREEN: Result:=1400; //Hardcoded by now
-    SM_CYSCREEN: Result:=400;
+    SM_CXSCREEN: Result:=fpgApplication.ScreenWidth;
+    SM_CYSCREEN: Result:=fpgApplication.ScreenHeight;
     //Desktop size
-    SM_CXVIRTUALSCREEN: Result:=1400;
-    SM_CYVIRTUALSCREEN: Result:=400;
+    SM_CXVIRTUALSCREEN: Result:=fpgApplication.ScreenWidth;
+    SM_CYVIRTUALSCREEN: Result:=fpgApplication.ScreenHeight;
   end;
+end;
+
+function TFpGuiWidgetSet.GetTextColor(DC: HDC): TColorRef;
+var
+  ADC: TFpGuiDeviceContext absolute DC;
+begin
+  Result:=ADC.GetTextColor;
 end;
 
 function TFpGuiWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar;
@@ -407,8 +443,8 @@ function TFpGuiWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar;
 var
   ADC: TFpGuiDeviceContext absolute DC;
 begin
-  Size.cx:=ADC.fpgCanvas.Font.TextWidth(Str);
-  Size.cy:=ADC.fpgCanvas.Font.Height;
+  Size.cx:=ADC.FFont.fpguiFont.TextWidth(Str);
+  Size.cy:=ADC.FFont.fpguiFont.Height;
   Result:=true;
 end;
 
@@ -421,7 +457,7 @@ begin
   TM.tmDescent:=ADC.FFont.fpguiFont.Descent;
   //Defined usually in MSDN as the average of 'x' char.
   TM.tmAveCharWidth:=ADC.FFont.fpguiFont.TextWidth('x');
-  TM.tmHeight:=ADC.FFont.Height;
+  TM.tmHeight:=ADC.FFont.fpguiFont.Height;
   Result:=true;
 end;
 
@@ -436,17 +472,18 @@ end;
 function TFpGuiWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect
   ): Integer;
 var
-  PrivateWidget: TFPGUIPrivateBin absolute Handle;
+  PrivateWidget: TFPGUIPrivateWidget absolute Handle;
 begin
-  ARect:=fpgRectToRect(PrivateWidget.Widget.GetBoundsRect);
+  PrivateWidget.GetWindowRect(ARect);
   Result:=1;
 end;
 
 function TFpGuiWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer
   ): boolean;
 var
-  PrivateWidget: TFPGUIPrivateBin absolute Handle;
+  PrivateWidget: TFPGUIPrivateBin;
 begin
+  PrivateWidget:=TFPGUIPrivateBin(Handle);
   Width:=PrivateWidget.Widget.Width;
   Height:=PrivateWidget.Widget.Height;
   Result:=true;
@@ -457,9 +494,34 @@ function TFpGuiWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect;
 var
   PrivateWidget: TFPGUIPrivateWidget absolute aHandle;
 begin
-  PrivateWidget.Widget.Canvas.BeginDraw(false);
-  PrivateWidget.Paint;
-  PrivateWidget.Widget.Canvas.EndDraw;
+//  PrivateWidget.Widget.Canvas.BeginDraw(true);
+  PrivateWidget.Invalidate;
+//  PrivateWidget.Widget.Canvas.EndDraw;
+  Result:=true;
+end;
+
+function TFpGuiWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+var
+  ADC: TFpGuiDeviceContext;// absolute DC;
+  r: TPoint;
+begin
+  ADC:=TFPGUIDeviceContext(DC);
+  r:=ADC.PreparePointOffsets(Point(x,y));
+  if OldPoint<>nil then OldPoint^:=ADC.UnPreparePointOffsets(ADC.FDrawXY);
+  ADC.FDrawXY:=r;
+end;
+
+function TFpGuiWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+var
+  ADC: TFpGuiDeviceContext;// absolute DC;
+  p: TPoint;
+begin
+  ADC:=TFPGUIDeviceContext(DC);
+  p:=ADC.PreparePointOffsets(Point(X,Y));
+  if ADC.UsePen then begin
+    ADC.fpgCanvas.DrawLine(ADC.FDrawXY.x,ADC.FDrawXY.y,p.x,p.y);
+  end;
+  ADC.FDrawXY:=p;
   Result:=true;
 end;
 
@@ -522,25 +584,142 @@ begin
     TfpgMessageDialog.Information(TitleStr, Str, Buttons);
 end;
 
+function TFpGuiWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
+  Winding: boolean): boolean;
+var
+  ADC: TFpGuiDeviceContext;// absolute DC;
+  lPoints: array of TPoint;
+  j: integer;
+begin
+  ADC:=TFPGUIDeviceContext(DC);
+  SetLength(lPoints,NumPts+1);
+  for j := 0 to Pred(NumPts) do
+  begin
+    lPoints[j]:=ADC.PreparePointOffsets(Points[j]);
+  end;
+  lPoints[NumPts]:=lPoints[0];
+  if not ADC.UseBrush then begin
+    if ADC.UsePen then begin
+      ADC.fpgCanvas.DrawPolyLine(lPoints);
+    end;
+  end else begin
+    ADC.fpgCanvas.DrawPolygon(@lPoints[0],NumPts,Winding);
+    if ADC.UsePen then begin
+      ADC.fpgCanvas.DrawPolyLine(lPoints);
+    end;
+  end;
+  Result:=true;
+end;
+
+function TFpGuiWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer
+  ): boolean;
+var
+  ADC: TFpGuiDeviceContext;// absolute DC;
+  lPoints: array of TPoint;
+  j: integer;
+begin
+  ADC:=TFPGUIDeviceContext(DC);
+  SetLength(lPoints,NumPts);
+  for j := 0 to Pred(NumPts) do
+  begin
+    lPoints[j]:=ADC.PreparePointOffsets(Points[j]);
+  end;
+  if ADC.UsePen then begin
+    ADC.fpgCanvas.DrawPolyLine(lPoints);
+  end;
+  Result:=true;
+end;
+
+function TFpGuiWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
+  WParam: WParam; LParam: LParam): LResult;
+var
+  lMessageParams: TfpgMessageParams;
+  lNewMsg: integer;
+begin
+  FillByte(lMessageParams,Sizeof(lMessageParams),0);
+  case msg of
+    LM_USER..LM_USER+$7FFF: begin
+      lNewMsg:=FPGM_USER;
+      lMessageParams.user.Param1:=(msg-LM_USER);
+      lMessageParams.user.Param2:=wParam;
+      lMessageParams.user.Param3:=lParam;
+    end;
+  otherwise
+    // This needs a lot of conversion between Windows messages and fpGUI messages.
+    Result:=0;
+    exit;
+  end;
+  fpgSendMessage(nil,TFPGUIPrivateWidget(HandleWnd),lNewMsg,lMessageParams);
+  Result:=0;
+end;
+
+
+function TFpGuiWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
+  wParam: WParam; lParam: LParam): Boolean;
+var
+  lMessageParams: TfpgMessageParams;
+  lNewMsg: integer;
+begin
+  FillByte(lMessageParams,Sizeof(lMessageParams),0);
+  case msg of
+    LM_USER..LM_USER+$7FFF: begin
+      lNewMsg:=FPGM_USER;
+      lMessageParams.user.Param1:=(msg-LM_USER);
+      lMessageParams.user.Param2:=wParam;
+      lMessageParams.user.Param3:=lParam;
+    end;
+  otherwise
+    // This needs a lot of conversion between Windows messages and fpGUI messages.
+    Result:=false;
+    exit;
+  end;
+  fpgPostMessage(nil,TFPGUIPrivateWidget(Handle),lNewMsg,lMessageParams);
+  fpgDeliverMessages; // Force message loop to deliver messages as
+                      // the post message seems to not wakeup the queue.
+  Result:=true;
+end;
+
 function TFpGuiWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
-  ADC: TFpGuiDeviceContext absolute DC;
+  ADC: TFpGuiDeviceContext;// absolute DC;
   r: TfpgRect;
 begin
+  ADC:=TFPGUIDeviceContext(DC);
   r:=ADC.PrepareRectOffsets(Rect(X1,Y1,X2,Y2));
-  ADC.fpgCanvas.BeginDraw(true);
-  ADC.ClearRectangle(r);
-  ADC.fpgCanvas.DrawRectangle(r);
-  ADC.fpgCanvas.EndDraw;
+
+  if not ADC.UseBrush then begin
+    if ADC.UsePen then begin
+      ADC.fpgCanvas.DrawRectangle(r);
+    end;
+  end else begin
+    ADC.fpgCanvas.FillRectangle(r);
+    if ADC.UsePen then begin
+      ADC.fpgCanvas.DrawRectangle(r);
+    end;
+  end;
   Result:=true;
+end;
+
+function TFpGuiWidgetSet.ReleaseCapture: Boolean;
+begin
+  if Assigned(GlobalMouseCapturedPrivateWidget) then begin
+    GlobalMouseCapturedPrivateWidget.Widget.ReleaseMouse;
+    GlobalMouseCapturedPrivateWidget:=nil;
+    Result:=true;
+  end else begin
+    Result:=false;
+  end;
 end;
 
 function TFpGuiWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
-  MyDC: TFpGuiDeviceContext absolute DC;
+  MyDC: TFpGuiDeviceContext;
+  MyPrivateWidget: TFPGUIPrivateWidget;
 begin
+  MyDC:=TFPGUIDeviceContext(DC);
   if MyDC<>FPGUIGetDesktopDC then begin //DesktopDC can not be freed
-    MyDC.Free;
+    MyPrivateWidget:=TFPGUIPrivateWidget(hWnd);
+    FreeAndNil(MyDC);
   end;
   Result:=1;
 end;
@@ -579,12 +758,26 @@ begin
   Result:=MyDC.SelectObject(GDIObj);
 end;
 
+function TFpGuiWidgetSet.SetCapture(AHandle: HWND): HWND;
+var
+  PrivateWidget: TFPGUIPrivateWidget absolute AHandle;
+begin
+  Result:=HWND(GlobalMouseCapturedPrivateWidget);
+  if Assigned(GlobalMouseCapturedPrivateWidget) then begin
+    ReleaseCapture;
+  end;
+  if Assigned(PrivateWidget) then begin
+    PrivateWidget.Widget.CaptureMouse;
+  end;
+  GlobalMouseCapturedPrivateWidget:=PrivateWidget;
+end;
+
 function TFpGuiWidgetSet.SetFocus(hWnd: HWND): HWND;
 var
-  Widget: TFPGUIPrivateWidget absolute hWnd;
+  PrivateWidget: TFPGUIPrivateWidget absolute hWnd;
 begin
-  Result:=LCLType.HWND(Widget.Widget.ActiveWidget);
-  Widget.SetFocus;
+  Result:=LCLType.HWND(PrivateWidget.Widget.ActiveWidget);
+  PrivateWidget.SetFocus;
 end;
 
 function TFpGuiWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
@@ -592,14 +785,37 @@ var
   PrivateWidgetParent: TFPGUIPrivateWidget absolute hWndParent;
   PrivateWidgetChild: TFPGUIPrivateWidget absolute hWndChild;
 begin
+  Result:=HWND(PrivateWidgetChild.Widget.Parent);
   PrivateWidgetChild.Widget.Parent:=PrivateWidgetParent.Widget;
-  Result:=0; //???
+end;
+
+function TFpGuiWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
+  ScrollInfo: TScrollInfo; bRedraw: Boolean): Integer;
+var
+  PrivateWidget: TFPGUIPrivateWidget absolute Handle;
+  ScrollWin: TFPGUIPrivateScrollingWinControl;
+begin
+  Result:=0;
+  if PrivateWidget is TFPGUIPrivateScrollingWinControl then begin
+    ScrollWin:=TFPGUIPrivateScrollingWinControl(PrivateWidget);
+    if ScrollInfo.fMask and SIF_RANGE = SIF_RANGE then begin
+      if SBStyle=1 then begin
+        ScrollWin.ScrollFrame.ContentFrame.Height:=ScrollInfo.nMax-ScrollInfo.nMin;
+        Result:=-ScrollWin.ScrollFrame.ContentFrame.Left;
+      end;
+      if SBStyle=0 then begin
+        ScrollWin.ScrollFrame.ContentFrame.Width:=ScrollInfo.nMax-ScrollInfo.nMin;
+        Result:=-ScrollWin.ScrollFrame.ContentFrame.Top;
+      end;
+    end;
+  end;
 end;
 
 function TFpGuiWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 var
-  ADC: TFpGuiDeviceContext absolute DC;
+  ADC: TFpGuiDeviceContext;// absolute DC;
 begin
+  ADC:=Tfpguidevicecontext(DC);
   Result:=ADC.SetTextColor(Color);
 end;
 
@@ -608,6 +824,7 @@ function TFpGuiWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
 var
   ADC: TFpGuiDeviceContext absolute DC;
 begin
+  OldPoint^:=ADC.FOrg;
   ADC.SetOrigin(NewX,NewY);
   Result:=true;
 end;
@@ -636,28 +853,81 @@ function TFpGuiWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width,
 var
   SDC: TFPGUIDeviceContext;
   TDC: TFPGUIDeviceContext;
-  R: TRect;
-  ClientRect: TfpgRect;
-  P: TPoint;
+  pTarget: TPoint;
 begin
+  // Incomplete, partial source, masks and ROP not implemented.
   SDC:=TFPGUIDeviceContext(SrcDC);
   TDC:=TFPGUIDeviceContext(DestDC);
-  r.Left:=X; r.Right:=Width; R.Top:=Y; r.Bottom:=Height;
-  AdjustRectToOrg(r,TDC.FOrg);
-  ClientRect:=TDC.FPrivateWidget.Widget.GetClientRect;
-  P.x:=-ClientRect.Left;
-  P.y:=-ClientRect.Top;
-  AdjustRectToOrg(r,P);
+  pTarget:=Point(x,y);
+  pTarget:=TDC.PreparePointOffsets(pTarget);
   TDC.ClearDC;
-  TDC.fpgCanvas.DrawImage(r.Left,r.Top,SDC.FBitmap.Image);
+  if Assigned(SDC.FBitmap) then begin
+    TDC.fpgCanvas.StretchDraw(pTarget.x,pTarget.y,Width,Height,SDC.FBitmap.Image);
+  end;
   Result:=true;
+end;
+
+function TFpGuiWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
+  pvParam: Pointer; fWinIni: DWord): LongBool;
+begin
+  case uiAction of
+    SPI_GETWORKAREA: begin
+      PRect(pvPAram)^.Left:=0;
+      PRect(pvPAram)^.Top:=0;
+      PRect(pvPAram)^.Right:=fpgApplication.ScreenWidth;
+      PRect(pvPAram)^.Bottom:=fpgApplication.ScreenHeight;
+      Result := True;
+    end;
+  otherwise
+    Result:=inherited SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
+  end;
 end;
 
 function TFpGuiWidgetSet.WindowFromPoint(Point: TPoint): HWND;
 begin
   { TODO : Temporal hack while not real WindowFromPoint implementation }
-  Result:=HWND(GlobalMouseCursorPosWidget);
+  Result:=HWND(GlobalMouseCursorPosPrivateWidget);
 end;
 
+function TFpGuiWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
+var
+  CursorValue: Integer;
+begin
+  Result := 0;
+  if ACursor < crLow then Exit;
+  if ACursor > crHigh then Exit;
+
+  case TCursor(ACursor) of
+    crDefault:  CursorValue := integer(mcDefault);
+    crArrow:    CursorValue := integer(mcArrow);
+    crCross:    CursorValue := integer(mcCross);
+    crIBeam:    CursorValue := integer(mcIBeam);
+    crSizeNESW: CursorValue := integer(mcSizeNESW);
+    crSizeNS:   CursorValue := integer(mcSizeNS);
+    crSizeNWSE: CursorValue := integer(mcSizeNWSE);
+    crSizeWE:   CursorValue := integer(mcSizeEW);
+    crSizeNW:   CursorValue := integer(mcSizeNWSE);
+    crSizeN:    CursorValue := integer(mcSizeNS);
+    crSizeNE:   CursorValue := integer(mcSizeNESW);
+    crSizeW:    CursorValue := integer(mcSizeEW);
+    crSizeE:    CursorValue := integer(mcSizeEW);
+    crSizeSW:   CursorValue := integer(mcSizeSWNE);
+    crSizeS:    CursorValue := integer(mcSizeNS);
+    crSizeSE:   CursorValue := integer(mcSizeSENW);
+    crUpArrow:  CursorValue := integer(mcArrow);
+    crHourGlass:CursorValue := integer(mcHourGlass);
+    crHSplit:   CursorValue := integer(mcSizeEW);
+    crVSplit:   CursorValue := integer(mcSizeNS);
+//    crAppStart: CursorValue := integer(mcAppStart);
+//    crHelp:     CursorValue := integer(mcHelp);
+    crHandPoint:CursorValue := integer(mcHand);
+    crSizeAll:  CursorValue := integer(mcSizeNESW);
+  otherwise
+    CursorValue:=-1;
+  end;
+  if CursorValue<>-1 then begin
+    Result := hCursor(CursorValue);
+  end;
+end;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

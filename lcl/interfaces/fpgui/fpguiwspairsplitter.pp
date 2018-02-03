@@ -29,6 +29,8 @@ uses
 ////////////////////////////////////////////////////
 //  PairSplitter,
 ////////////////////////////////////////////////////
+  fpguiwsprivate, fpg_panel,
+  Controls, LCLType,
   WSPairSplitter, WSLCLClasses;
 
 type
@@ -39,6 +41,9 @@ type
   private
   protected
   public
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TFpGuiWSCustomPairSplitter }
@@ -50,6 +55,22 @@ type
   end;
 
 implementation
+
+{ TFpGuiWSPairSplitterSide }
+
+class function TFpGuiWSPairSplitterSide.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lCustomPanel: TFPGUIPrivateCustomPanel;
+begin
+  {$ifdef VerboseFPGUIIntf}
+    WriteLn(Self.ClassName,'.CreateHandle ',AWinControl.Name);
+  {$endif}
+
+  lCustomPanel := TFPGUIPrivateCustomPanel.Create(AWinControl, AParams);
+  lCustomPanel.Panel.Style:=bsFlat;
+  Result := TLCLIntfHandle(lCustomPanel);
+end;
 
 initialization
 

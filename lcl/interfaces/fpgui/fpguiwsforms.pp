@@ -22,7 +22,7 @@ interface
 
 uses
   // Bindings
-  fpg_base, fpg_main, fpg_form, fpguiwsprivate,
+  fpg_base, fpg_main, fpg_form, fpguiwsprivate, fpguiproc,
   // LCL
   Classes, Forms, LCLType, Controls, Graphics,
   // Widgetset
@@ -35,7 +35,10 @@ type
   TFpGuiWSScrollingWinControl = class(TWSScrollingWinControl)
   private
   protected
-  public
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSScrollBox }
@@ -79,6 +82,11 @@ type
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFont(const AWinControl: TWinControl;
                            const AFont: TFont); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure Repaint(const AWinControl: TWinControl); override;
+    class procedure ShowModal(const ACustomForm: TCustomForm); override;
+    class procedure SetModalResult(const ACustomForm: TCustomForm; ANewValue: TModalResult); override;
   end;
 
   { TFpGuiWSForm }
@@ -116,6 +124,31 @@ type
 
 implementation
 
+{ TFpGuiWSScrollingWinControl }
+
+class function TFpGuiWSScrollingWinControl.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  FPForm: TFPGUIPrivateScrollingWinControl;
+begin
+  {$ifdef VerboseFPGUIIntf}
+    WriteLn(Self.ClassName,'.CreateHandle ',AWinControl.Name);
+  {$endif}
+
+  FPForm := TFPGUIPrivateScrollingWinControl.Create(AWinControl, AParams);
+  Result := TLCLIntfHandle(FPForm);
+end;
+
+class procedure TFpGuiWSScrollingWinControl.SetColor(
+  const AWinControl: TWinControl);
+var
+  FPForm: TFPGUIPrivateScrollingWinControl;
+begin
+  FPForm := TFPGUIPrivateScrollingWinControl(AWinControl.Handle);
+  FPForm.ScrollFrame.ContentFrame.BackgroundColor:=TColorToTfpgColor(AWinControl.Color);
+  Inherited;
+end;
+
 { TFpGuiWSCustomForm }
 
 {------------------------------------------------------------------------------
@@ -136,9 +169,9 @@ begin
 
   FPForm := TFPGUIPrivateWindow.Create(AWinControl, AParams);
   FPForm.SetFormBorderStyle(TForm(AWinControl).BorderStyle);
-  if AWinControl.Visible then begin
-    TfpgForm(FPForm.Widget).Show;
-  end;
+  //if (AParams.Style and WS_VISIBLE)=0 then begin
+    TfpgForm(FPForm.Widget).Visible:=false;
+  //end;
   Result := TLCLIntfHandle(FPForm);
 end;
 
@@ -193,6 +226,78 @@ var
 begin
   FPForm := TFPGUIPrivateWindow(AWinControl.Handle);
   FPForm.Font:=AFont;
+end;
+
+class procedure TFpGuiWSCustomForm.ShowHide(const AWinControl: TWinControl);
+var
+  FPForm: TfpgForm;
+  AForm: TCustomForm;
+begin
+  FPForm := TFPGUIPrivateWindow(AWincontrol.Handle).Form;
+  AForm:=TCustomForm(AWinControl);
+  if AWinControl.Visible then begin
+    if not FPForm.Visible then begin
+      if (fsModal in AForm.FormState) and AForm.HandleObjectShouldBeVisible then begin
+        FPForm.ShowModal;
+      end else begin
+        FPForm.Show;
+      end;
+    end;
+  end else begin
+    if FPForm.Visible then begin
+      FPForm.Hide;
+    end;
+  end;
+  if AWinControl.Visible then begin
+    Invalidate(AWinControl);
+  end;
+end;
+
+class procedure TFpGuiWSCustomForm.SetColor(const AWinControl: TWinControl);
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  FPForm := TFPGUIPrivateWindow(AWinControl.Handle);
+  FPForm.Widget.BackgroundColor:=TColorToTfpgColor(AWinControl.Color);
+end;
+
+class procedure TFpGuiWSCustomForm.Repaint(const AWinControl: TWinControl);
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  FPForm := TFPGUIPrivateWindow(AWinControl.Handle);
+  FPForm.Paint;
+end;
+
+class procedure TFpGuiWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+begin
+  // Modal is handled in ShowHide to avoid double show (flicker).
+  (*
+  FPForm := TFPGUIPrivateWindow(ACustomForm.Handle);
+  TfpgForm(FPForm.Widget).ShowModal;
+  *)
+end;
+
+class procedure TFpGuiWSCustomForm.SetModalResult(
+  const ACustomForm: TCustomForm; ANewValue: TModalResult);
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  FPForm := TFPGUIPrivateWindow(ACustomForm.Handle);
+  case ANewValue of
+    Controls.mrOK     : TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrOK;
+    Controls.mrCancel : TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrCancel;
+    Controls.mrAbort: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrAbort;
+    Controls.mrRetry: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrRetry;
+    Controls.mrIgnore: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrIgnore;
+    Controls.mrYes: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrYes;
+    Controls.mrNo: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrNo;
+    Controls.mrAll: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrAll;
+    Controls.mrNoToAll: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrNoToAll;
+    Controls.mrYesToAll: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrYesToAll;
+    Controls.mrClose: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrCancel;
+    Controls.mrNone: TfpgForm(FPForm.Widget).ModalResult:=TfpgModalResult.mrNone;
+  end;
 end;
 
 {------------------------------------------------------------------------------

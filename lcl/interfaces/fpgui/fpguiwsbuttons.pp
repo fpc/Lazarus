@@ -22,9 +22,9 @@ interface
 
 uses
   // Bindings
-  fpguiwsprivate,
+  fpguiwsprivate, fpg_main, fpg_button,
   // LCL
-  Buttons, LCLType, Controls,
+  Buttons, LCLType, Controls, Graphics, GraphType, sysutils,
   // Widgetset
   WSButtons, WSLCLClasses;
 
@@ -35,10 +35,14 @@ type
   TFpGuiWSBitBtn = class(TWSBitBtn)
   private
   protected
+    FButImageName: string;
   public
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
+    class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout);
+      override;
   end;
 
   { TFpGuiWSSpeedButton }
@@ -47,6 +51,7 @@ type
   private
   protected
   public
+  published
   end;
 
 
@@ -64,6 +69,54 @@ class procedure TFpGuiWSBitBtn.DestroyHandle(const AWinControl: TWinControl);
 begin
   TFPGUIPrivateButton(AWinControl.Handle).Free;
   AWinControl.Handle := 0;
+end;
+
+class procedure TFpGuiWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
+  const AValue: TButtonGlyph);
+var
+  lButton: TFPGUIPrivateButton;
+  lBitmap: TBitmap=nil;
+  fpgImage: TfpgImage;
+  lButImageName: string;
+  lButtonState: TButtonState;
+  lIndex: integer;
+  lEffect: TGraphicsDrawEffect;
+begin
+  if not Assigned(AValue.Images) then exit;
+  lButton := TFPGUIPrivateButton(ABitBtn.Handle);
+  lButtonState:=bsUp;
+  AValue.GetImageIndexAndEffect(lButtonState,lIndex,lEffect);
+  lBitmap:=TBitmap.Create;
+  AValue.Images.GetBitmap(lIndex,lBitmap);
+  fpgImage:=TfpgImage.Create;
+
+  fpgImage.AllocateImage(32,lBitmap.Width,lBitmap.Height);
+  move(lBitmap.RawImage.Data^,fpgImage.ImageData^,fpgImage.ImageDataSize);
+
+  fpgImage.CreateMaskFromSample(0,0);
+  fpgImage.UpdateImage;
+  lBitmap.Free;
+  if lButton.Button.ImageName<>'' then begin
+    fpgImages.DeleteImage(lButton.Button.ImageName,true);
+  end;
+  lButImageName:='lcl.bitbtn.'+IntToStr(PtrInt(ABitBtn.Handle));
+  fpgImages.AddImage(lButImageName,fpgImage);
+  lButton.Button.ImageName:=lButImageName;
+  lButton.Button.ShowImage:=true;
+end;
+
+class procedure TFpGuiWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
+  const AValue: TButtonLayout);
+var
+  lButton: TFPGUIPrivateButton;
+begin
+  lButton := TFPGUIPrivateButton(ABitBtn.Handle);
+  case AValue of
+    blGlyphLeft: lButton.Button.ImageLayout:=ilImageLeft;
+    blGlyphRight: lButton.Button.ImageLayout:=ilImageRight;
+    blGlyphTop: lButton.Button.ImageLayout:=ilImageTop;
+    blGlyphBottom: lButton.Button.ImageLayout:=ilImageBottom;
+  end;
 end;
 
 

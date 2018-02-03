@@ -22,7 +22,7 @@ interface
 
 uses
   // LCL
-  SysUtils, Menus, Forms,
+  SysUtils, Menus, Forms, Controls,
   // widgetset
   WSMenus, WSLCLClasses, LCLType, fpguiobjects, fpguiwsprivate,
   // interface
@@ -169,6 +169,7 @@ begin
   begin
     Menu.MenuItem.SubMenu := TfpgPopupMenu.Create(Menu.MenuItem);
   end;
+  Menu.MenuItem.Checked:=AMenuItem.Checked;
 
   {$ifdef VerboseFPGUIIntf}
     WriteLn(' Result: ', IntToStr(Result));
@@ -184,25 +185,80 @@ end;
 class procedure TFpGuiWSMenuItem.SetCaption(const AMenuItem: TMenuItem;
   const ACaption: string);
 var
-  APrivate: TfpgMenuItem;
+  lPrivateMenuItem: TFPGUIPrivateMenuItem;
 begin
-  APrivate:=TfpgMenuItem(AMenuItem.Handle);
-  APrivate.Text:=ACaption;
+  lPrivateMenuItem:=TFPGUIPrivateMenuItem(AMenuItem.Handle);
+  lPrivateMenuItem.MenuItem.Text:=ACaption;
 end;
 
 class procedure TFpGuiWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
   const Visible: boolean);
 var
-  APrivate: TfpgMenuItem;
+  lPrivateMenuItem: TFPGUIPrivateMenuItem;
+  lMenuBar: TfpgMenuBar;
+  lMainMenu: TMainMenu;
+  lTestMenuItem: TMenuItem;
+  lOneVisible: Boolean;
+  j: Integer;
+  procedure InvalidateCache(const aHeightVariance: integer);
+  var
+    LCLForm: TCustomForm;
+    j: integer;
+    c: TControl;
+    pW: TFPGUIPrivateWindow;
+    w: TFPGUIPrivateWidget;
+  begin
+    if Assigned(lMainMenu.Parent) then begin
+      if lMainMenu.Parent is TCustomForm then begin
+        LCLForm:=TCustomForm(TFPGUIPrivateWindow(TCustomForm(lMainMenu.Parent).Handle).LCLObject);
+        LCLForm.InvalidateClientRectCache(false);
+        (*
+        LCLForm.DoAdjustClientRectChange(true);
+        pw:=TFPGUIPrivateWindow(LCLForm.Handle);
+        for j := 0 to Pred(LCLForm.ControlCount) do
+        begin
+          c:=LCLForm.Controls[j];
+          if c is TWinControl then begin
+            w:=TFPGUIPrivateWidget(TWinControl(c).Handle);
+            pw.SetWidgetPosition(w.Widget,c.Left,c.Top);
+          end;
+        end;
+        *)
+      end;
+    end;
+  end;
 begin
-  APrivate:=TfpgMenuItem(AMenuItem.Handle);
-  APrivate.Visible:=Visible;
+  lPrivateMenuItem:=TFPGUIPrivateMenuItem(AMenuItem.Handle);
+  lPrivateMenuItem.MenuItem.Visible:=Visible;
+  if AMenuItem.GetParentMenu is TMainMenu then begin
+    lMenuBar:=TfpgMenuBar(AMenuItem.GetParentMenu.Handle);
+    lMainMenu:=TMainMenu(AMenuItem.GetParentMenu);
+    lOneVisible:=false;
+    for j := 0 to Pred(lMainMenu.Items.Count) do begin
+      lTestMenuItem:=lMainMenu.Items[j];
+      if TFPGUIPrivateMenuItem(lTestMenuItem.Handle).MenuItem.Visible then begin
+        lOneVisible:=true;
+        break;
+      end;
+    end;
+    if lOneVisible and not(lMenuBar.Visible) then begin
+      lMenuBar.Visible:=true;
+      InvalidateCache(lMenuBar.Height);
+    end else if not lOneVisible and lMenuBar.Visible then begin
+      lMenuBar.Visible:=false;
+      InvalidateCache(lMenuBar.Height*-1);
+    end;
+  end;
 end;
 
 class function TFpGuiWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
+var
+  lPrivateMenuItem: TFPGUIPrivateMenuItem;
 begin
-  Result:=false; //Default by now
+  lPrivateMenuItem:=TFPGUIPrivateMenuItem(AMenuItem.Handle);
+  lPrivateMenuItem.MenuItem.Checked:=Checked;
+  Result:=true;
 end;
 
 class function TFpGuiWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
@@ -217,22 +273,21 @@ class function TFpGuiWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 var
   MenuBar: TfpgMenuBar;
   Menu: TFPGUIPrivatePopUpMenu;
-  msg: TfpgMessageParams;
 begin
   {------------------------------------------------------------------------------
     If the menu is a main menu, there is no need to create a handle for it.
     It's already created on the window
    ------------------------------------------------------------------------------}
-  if (AMenu is TMainMenu) and (AMenu.Owner is TCustomForm) then
+  if (AMenu is TMainMenu) and (AMenu.Parent is TCustomForm) then
   begin
-    MenuBar := TFPGUIPrivateWindow(TCustomForm(AMenu.Owner).Handle).MenuBar;
-    MenuBar.Visible := True;
+    MenuBar := TFPGUIPrivateWindow(TCustomForm(AMenu.Parent).Handle).MenuBar;
+    MenuBar.Visible := true;
     MenuBar.Align := alTop;
     
     Result := HMENU(MenuBar);
-    //Notify LCL to repaint because MainMenu changes NCBorders
-    msg.rect:=MenuBar.Parent.GetBoundsRect;
-    fpgSendMessage(MenuBar,MenuBar.Parent,FPGM_RESIZE,msg);
+
+    // Invalidate the ClientRectCache in the LCL side.
+    TCustomForm(AMenu.Parent).InvalidateClientRectCache(true);
   end
   {------------------------------------------------------------------------------
     The menu is a popup menu
