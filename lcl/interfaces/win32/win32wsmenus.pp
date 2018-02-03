@@ -1120,7 +1120,10 @@ begin
     AImageList := TImageList.Create(nil);
     AImageList.Width := AMenuItem.Bitmap.Width; // maybe height to prevent too wide bitmaps?
     AImageList.Height := AMenuItem.Bitmap.Height;
-    AImageIndex := AImageList.Add(AMenuItem.Bitmap, nil);
+    if not AMenuItem.Bitmap.Transparent then
+      AImageIndex := AImageList.AddMasked(AMenuItem.Bitmap, AMenuItem.Bitmap.Canvas.Pixels[0, AImageList.Height-1])
+    else
+      AImageIndex := AImageList.Add(AMenuItem.Bitmap, nil);
     FreeImageList := True;
   end
   else  // using icon from ImageList
