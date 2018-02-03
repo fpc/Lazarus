@@ -5775,6 +5775,7 @@ begin
 
   DC := Widgetset.GetDC(HWND({%H-}PtrUInt(Widget)));
   IconSize:=LCLMenuItem.GetIconSize(DC);
+  WidgetSet.ReleaseDC(HWND({%H-}PtrUInt(Widget)), DC);
   IconWidth:=IconSize.X;
   IconHeight:=IconSize.Y;
 
@@ -5861,6 +5862,7 @@ begin
       if LCLMenuItem<>nil then begin
         DC := Widgetset.GetDC(HWND({%H-}PtrUInt(widget)));
         IconSize:=LCLMenuItem.GetIconSize(DC);
+        WidgetSet.ReleaseDC(HWND({%H-}PtrUInt(Widget)), DC);
         {if IconSize.Width>100 then
           debugln('MenuSizeRequest LCLMenuItem=',LCLMenuItem.Name,' ',LCLMenuItem.Caption,
             ' ');}
