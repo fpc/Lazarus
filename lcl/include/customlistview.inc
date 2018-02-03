@@ -1742,6 +1742,9 @@ procedure TCustomListView.ImageResolutionHandleDestroyed(
 var
   lvil: TListViewImageList;
 begin
+  if not HandleAllocated then
+    Exit;
+
   for lvil in TListViewImageList do
     if Sender = FImages[lvil] then
     begin
