@@ -5805,9 +5805,10 @@ begin
     ItemBmp := LCLMenuItem.Bitmap;
     AImageList.Width := ItemBmp.Width; // maybe height to prevent too wide bitmaps?
     AImageList.Height := ItemBmp.Height;
-    if ItemBmp.Masked
-    then AImageIndex := AImageList.AddMasked(ItemBmp, ItemBmp.TransparentColor)
-    else AImageIndex := AImageList.Add(ItemBmp, nil);
+    if not ItemBmp.Transparent then
+      AImageIndex := AImageList.AddMasked(ItemBmp, ItemBmp.Canvas.Pixels[0, AImageList.Height-1])
+    else
+      AImageIndex := AImageList.Add(ItemBmp, nil);
     FreeImageList := True;
   end
   else
