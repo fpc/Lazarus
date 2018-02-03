@@ -804,6 +804,9 @@ begin
         ctnImplementation: ScannedRange:=lsrImplementationStart;
         ctnInitialization: ScannedRange:=lsrInitializationStart;
         ctnFinalization: ScannedRange:=lsrFinalizationStart;
+        else
+          debugln(['TPascalParserTool.BuildTree SOME parts were already parsed Node=',Node.DescAsString,' ScanTill=',dbgs(ScanTill),' ScannedRange=',dbgs(ScannedRange)]);
+          RaiseCatchableException('');
         end;
         if ord(Range)<=ord(ScannedRange) then exit;
 
@@ -851,12 +854,12 @@ begin
             // Note: the half parsed section was behind this one and was deleted
             if Node.LastChild<>nil then begin
               {$IFDEF VerboseUpdateNeeded}
-              debugln(['TPascalParserTool.BuildTree scan after ',Node.LastChild.DescAsString]);
+              debugln(['TPascalParserTool.BuildTree scan after ',Node.LastChild.DescAsString,' ScannedRange=',dbgs(ScannedRange)]);
               {$ENDIF}
               MoveCursorToCleanPos(Node.LastChild.EndPos);
             end else begin
               {$IFDEF VerboseUpdateNeeded}
-              debugln(['TPascalParserTool.BuildTree scan at start of ',Node.DescAsString]);
+              debugln(['TPascalParserTool.BuildTree scan at start of ',Node.DescAsString,' ScannedRange=',dbgs(ScannedRange)]);
               {$ENDIF}
               MoveCursorToCleanPos(Node.StartPos);
               ReadNextAtom;
@@ -879,30 +882,33 @@ begin
         debugln(['TPascalParserTool.BuildTree ScannedRange=',dbgs(ScannedRange),' CurNode=',CurNode.DescAsString,' first atom=',GetAtom,' Range=',dbgs(Range)]);
       {$ENDIF}
 
-      if (CurNode.Desc in (AllSourceTypes+[ctnInterface]))
-      or ((CurNode.Desc=ctnUsesSection) and (CurNode.Parent.Desc<>ctnImplementation))
-      then begin
-        // read main uses section
-        if UpAtomIs('USES') then
-          ReadUsesSection(true);
-        //debugln(['TPascalParserTool.BuildTree AFTER reading main uses section Atom="',GetAtom,'"']);
-        if ord(Range)<=ord(ScannedRange) then exit;
-        ScannedRange:=lsrMainUsesSectionEnd;
-        if ord(Range)<=ord(ScannedRange) then exit;
+      if ScannedRange<lsrMainUsesSectionEnd then begin
+        if (CurNode.Desc in (AllSourceTypes+[ctnInterface]))
+        or ((CurNode.Desc=ctnUsesSection) and (CurNode.Parent.Desc<>ctnImplementation))
+        then begin
+          // read main uses section
+          if UpAtomIs('USES') then
+            ReadUsesSection(true);
+          //debugln(['TPascalParserTool.BuildTree AFTER reading main uses section Atom="',GetAtom,'"']);
+          if ord(Range)<=ord(ScannedRange) then exit;
+          ScannedRange:=lsrMainUsesSectionEnd;
+          if ord(Range)<=ord(ScannedRange) then exit;
+        end;
+
+        if (CurNode.Desc=ctnPackage)
+        and ((CurNode.FirstChild=nil) or (CurNode.LastChild.Desc=ctnUsesSection))
+        then begin
+          // read package requires and contains section
+          if UpAtomIs('REQUIRES') then
+            ReadRequiresSection(true);
+          if UpAtomIs('CONTAINS') then
+            ReadContainsSection(true);
+          //debugln(['TPascalParserTool.BuildTree AFTER reading package requires+contains sections Atom="',GetAtom,'"']);
+        end;
       end;
 
-      if (CurNode.Desc=ctnPackage)
-      and ((CurNode.FirstChild=nil) or (CurNode.LastChild.Desc=ctnUsesSection))
-      then begin
-        // read package requires and contains section
-        if UpAtomIs('REQUIRES') then
-          ReadRequiresSection(true);
-        if UpAtomIs('CONTAINS') then
-          ReadContainsSection(true);
-        //debugln(['TPascalParserTool.BuildTree AFTER reading package requires+contains sections Atom="',GetAtom,'"']);
-      end;
-
-      if CurNode.GetNodeOfType(ctnImplementation)<>nil then begin
+      if (ScannedRange<lsrImplementationUsesSectionEnd)
+      and (CurNode.GetNodeOfType(ctnImplementation)<>nil) then begin
         {$IFDEF VerboseUpdateNeeded}
         debugln(['TPascalParserTool.BuildTree CONTINUE implementation ...']);
         {$ENDIF}
@@ -922,6 +928,9 @@ begin
         if ord(Range)<=ord(ScannedRange) then exit;
       end;
 
+      {$IFDEF VerboseUpdateNeeded}
+      debugln(['TPascalParserTool.BuildTree BEFORE LOOP CurNode=',CurNode.DescAsString,' CurSection=',NodeDescriptionAsString(CurSection)]);
+      {$ENDIF}
       repeat
         //if MainFilename='test1.pas' then
         //  DebugLn('[TPascalParserTool.BuildTree] ALL ',GetAtom);
@@ -931,8 +940,15 @@ begin
         ReadNextAtom;
       until (CurPos.StartPos>SrcLen);
 
-      if (Range=lsrEnd) and (CurSection<>ctnNone) then
+      if (Range=lsrEnd) and (CurSection<>ctnNone) then begin
+        {$IFDEF VerboseUpdateNeeded}
+        debugln(['TPascalParserTool.BuildTree AFTER LOOP CurSection=',NodeDescriptionAsString(CurSection)]);
+        if CurNode<>nil then
+          debugln(['TPascalParserTool.BuildTree CurNode=',CurNode.DescAsString,' StartPos=',CleanPosToStr(CurNode.StartPos,true)]);
+        debugln(['TPascalParserTool.BuildTree Src="',RightStr(Src,200),'"']);
+        {$ENDIF}
         SaveRaiseException(20170421194946,ctsEndOfSourceNotFound);
+      end;
 
       ok:=true;
     finally
