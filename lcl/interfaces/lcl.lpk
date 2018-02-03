@@ -56,7 +56,7 @@ end else if LCLWidgetType='wince' then begin
   CustomOptions := '-dDisableChecks';
 end else if LCLWidgetType='fpgui' then begin
   if undefined(fpGUIPlatform) then begin
-    if SrcOS='win32' then
+    if TargetOS='win32' then
       fpGUIPlatform := 'gdi'
     else
       fpGUIPlatform := 'x11';
