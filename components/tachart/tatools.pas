@@ -875,6 +875,9 @@ procedure TChartTool.PrepareDrawingModePen(
 begin
   ADrawer.SetXor(EffectiveDrawingMode = tdmXor);
   ADrawer.Pen := APen;
+  if (APen is TChartPen) then
+    if not TChartPen(APen).EffVisible then
+      ADrawer.SetPenParams(psClear, TChartPen(APen).Color);
 end;
 
 procedure TChartTool.ReadState(Reader: TReader);
