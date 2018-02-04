@@ -561,7 +561,8 @@ begin
   else Result :=
      FBitmapIsValid and
      (FBitmap <> nil) and (not FBitmap.Empty) and
-     (FBitmap.Width > 0) and (FBitmap.Height > 0);
+     (FBitmap.Width > 0) and (FBitmap.Height > 0) and
+     (ImageIndex < 0);
 end;
 
 {------------------------------------------------------------------------------
