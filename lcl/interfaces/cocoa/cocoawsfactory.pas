@@ -9,7 +9,6 @@ uses
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
   WSLCLClasses,
   CocoaWSCommon,
-  CocoaWSControls,
   CocoaWSButtons,
   CocoaWSExtCtrls,
   CocoaWSForms,
