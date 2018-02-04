@@ -800,7 +800,7 @@ begin
         CurSection:=CurNode.Desc;
         Node:=CurNode;
         case Node.Desc of
-        ctnUnit, ctnProgram, ctnLibrary, ctnPackage: ScannedRange:=lsrSourceName;
+        ctnUnit, ctnProgram, ctnLibrary, ctnPackage: ;
         ctnInterface: ScannedRange:=lsrInterfaceStart;
         ctnImplementation: ScannedRange:=lsrImplementationStart;
         ctnInitialization: ScannedRange:=lsrInitializationStart;
@@ -957,7 +957,7 @@ begin
       if not ok then begin
         if ord(Range)<=ord(ScannedRange) then
           ok:=true;
-        // range reached or t here is an error in the next scan range
+        // range reached or there is an error in the next scan range
       end;
       Node:=Tree.GetLastNode;
       {$IFDEF VerboseUpdateNeeded}
