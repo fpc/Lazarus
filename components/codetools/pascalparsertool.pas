@@ -800,6 +800,7 @@ begin
         CurSection:=CurNode.Desc;
         Node:=CurNode;
         case Node.Desc of
+        ctnUnit, ctnProgram, ctnLibrary, ctnPackage: ScannedRange:=lsrSourceName;
         ctnInterface: ScannedRange:=lsrInterfaceStart;
         ctnImplementation: ScannedRange:=lsrImplementationStart;
         ctnInitialization: ScannedRange:=lsrInitializationStart;
