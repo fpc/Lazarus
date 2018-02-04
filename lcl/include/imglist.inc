@@ -1084,23 +1084,10 @@ end;
 
 function TCustomImageListResolutions.FindBestToCopyFrom(const ATargetWidth,
   AIgnoreIndex: Integer): Integer;
-var
-  SmallestToDownscale: Integer;
 begin
-  SmallestToDownscale := -1;
-  for Result := 0 to Count-1 do // first try to find the smallest (but bigger) multiple
-  begin
-    if (Result<>AIgnoreIndex) then
-    begin
-      if (Items[Result].Width mod ATargetWidth = 0) then
-        Exit
-      else
-      if (SmallestToDownscale < 0) and (Items[Result].Width>ATargetWidth) then
-        SmallestToDownscale := Result;
-    end;
-  end;
-  if SmallestToDownscale>=0 then
-    Exit(SmallestToDownscale);
+  for Result := 0 to Count-1 do // find the smallest (but bigger) image
+    if (Result<>AIgnoreIndex) and (Items[Result].Width>=ATargetWidth) then
+      Exit;
 
   Result := Count-1; // just pickup the biggest image to scale up
   if Result=AIgnoreIndex then
@@ -1264,20 +1251,12 @@ function TCustomImageList.AddMultipleResolutions(
   Images: array of TCustomBitmap): Integer;
 
   function FindImage(const ATargetWidth: Integer): TCustomBitmap;
-  var
-    SmallestToDownscale: TCustomBitmap;
   begin
-    SmallestToDownscale := nil;
-    for Result in Images do // first try to find the smallest (but bigger) multiple
+    for Result in Images do // find the smallest (but bigger) image
     begin
-      if (Result.Width mod ATargetWidth = 0) then
-        Exit
-      else
-      if (SmallestToDownscale = nil) and (Result.Width>ATargetWidth) then
-        SmallestToDownscale := Result;
+      if (Result.Width>=ATargetWidth) then
+        Exit;
     end;
-    if SmallestToDownscale<>nil then
-      Exit(SmallestToDownscale);
 
     Result := Images[High(Images)]; // just pickup the biggest image to scale up
   end;
