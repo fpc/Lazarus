@@ -98,6 +98,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class function GetCanvasScaleFactor(const AControl: TControl): Double; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
@@ -1280,14 +1281,11 @@ end;
 
 class function TCocoaWSControl.GetCanvasScaleFactor(const AControl: TControl
   ): Double;
-var
-  Form: TCustomForm;
 begin
-  Form := GetParentForm(AControl);
-  if Form=nil then
-    Result := 1
+  if Assigned(AControl.Parent) then
+    Result := TWSControlClass(AControl.Parent.WidgetSetClass).GetCanvasScaleFactor(AControl.Parent)
   else
-    Result := TCocoaWindow(Form.Handle).backingScaleFactor; // ToDo: use userSpaceScaleFactor for Mac OSX 10.6
+    Result := 1;
 end;
 
 { TCocoaWSWinControl }
@@ -1362,6 +1360,15 @@ begin
     CallbackObject.Free;
   end;
   obj.release;
+end;
+
+class function TCocoaWSWinControl.GetCanvasScaleFactor(const AControl: TControl
+  ): Double;
+begin
+  if TWinControl(AControl).HandleAllocated then
+    Result := TCocoaWindow(TWinControl(AControl).Handle).backingScaleFactor // ToDo: use userSpaceScaleFactor for Mac OSX 10.6
+  else
+    Result := 1;
 end;
 
 class procedure TCocoaWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
