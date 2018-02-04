@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-01-01 15:52+0200\n"
+"PO-Revision-Date: 2018-02-03 10:36+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1314,11 +1314,11 @@ msgstr "&Додати ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 msgid "Add more resolutions ..."
-msgstr ""
+msgstr "Додати більше роздільностей ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
 msgid "New resolution ..."
-msgstr ""
+msgstr "Нова роздільність ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1331,7 +1331,7 @@ msgstr "&Застосувати"
 
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
-msgstr ""
+msgstr "Неможливо видалити типову роздільність."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1357,11 +1357,11 @@ msgstr "Ви&далити"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
 msgid "Delete resolution ..."
-msgstr ""
+msgstr "Видалити роздільність ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
 msgid "Select the resolution to delete."
-msgstr ""
+msgstr "Виберіть роздільність для видалення."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1373,7 +1373,7 @@ msgstr "Вибране зображення"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
 msgid "Image width of the new resolution:"
-msgstr ""
+msgstr "Ширина зображення з новою роздільністю:"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1407,7 +1407,7 @@ msgstr "За&мінити ..."
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 msgid "Replace all resolutions ..."
-msgstr ""
+msgstr "Замінити всі роздільності ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"

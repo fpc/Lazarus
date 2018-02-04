@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-01-21 11:55+0200\n"
+"PO-Revision-Date: 2018-02-03 10:32+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -465,7 +465,7 @@ msgstr "Рядок"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupoutlinecolors
 msgid "Outline Colors"
-msgstr ""
+msgstr "Кольори структури"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupsyncroedit
 msgid "Syncron Edit"
@@ -527,43 +527,43 @@ msgstr "Посилання при наведенні мишки"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel10color
 msgid "Level 10"
-msgstr ""
+msgstr "Рівень 10"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel1color
 msgid "Level  1"
-msgstr ""
+msgstr "Рівень 1"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel2color
 msgid "Level  2"
-msgstr ""
+msgstr "Рівень 2"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel3color
 msgid "Level  3"
-msgstr ""
+msgstr "Рівень 3"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel4color
 msgid "Level  4"
-msgstr ""
+msgstr "Рівень 4"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel5color
 msgid "Level  5"
-msgstr ""
+msgstr "Рівень  5"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel6color
 msgid "Level  6"
-msgstr ""
+msgstr "Рівень  6"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel7color
 msgid "Level  7"
-msgstr ""
+msgstr "Рівень  7"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel8color
 msgid "Level  8"
-msgstr ""
+msgstr "Рівень  8"
 
 #: lazarusidestrconsts.dlgaddhiattroutlinelevel9color
 msgid "Level  9"
-msgstr ""
+msgstr "Рівень 9"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
 msgid "Selected Area"
@@ -1961,9 +1961,8 @@ msgid "Force DPI scaling in design-time"
 msgstr "Примусове масштабування ТНД в режимі розробки"
 
 #: lazarusidestrconsts.dlgforcedpiscalingindesigntimehint
-#, fuzzy
 msgid "When checked the project scaling settings will be ignored - only the form/frame/datamodule Scaled property will be taken into account."
-msgstr "Якщо позначено, параметри масштабування проекту будуть знехтувані - братимуться до уваги тільки властивості Scaled форми/рамки/модуля данихЯкщо позначено, параметри масштабування проекту будуть знехтувані - братимуться до уваги тільки властивості Scaled форми/рамки/модуля даних"
+msgstr "Якщо позначено, параметри масштабування проекту будуть знехтувані - братимуться до уваги тільки властивості Scaled форми/рамки/модуля даних"
 
 #: lazarusidestrconsts.dlgforceuniqueinstancemodalerror
 msgid "The running Lazarus instance cannot accept any files."
@@ -4889,7 +4888,6 @@ msgid "Working directory (leave empty for file path)"
 msgstr "Робоча тека (залишити порожньою для файлового шляху)"
 
 #: lazarusidestrconsts.lisbinary
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisbinary"
 msgid "Binary"
 msgstr "Двійковий"
@@ -4928,16 +4926,14 @@ msgid "Bottom space equally"
 msgstr "Рівномірно нижні краї"
 
 #: lazarusidestrconsts.lisbpsdisabled
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisbpsdisabled"
 msgid "Disabled"
 msgstr "Вимкнено"
 
 #: lazarusidestrconsts.lisbpsenabled
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisbpsenabled"
 msgid "Enabled"
-msgstr "Доступний"
+msgstr "Увімкнено"
 
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
@@ -14933,7 +14929,7 @@ msgstr "Загублені файли пакунка %s"
 
 #: lazarusidestrconsts.lispendingon
 msgid "Pending (On)"
-msgstr ""
+msgstr "Очікування (Увімкн.)"
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
@@ -19471,7 +19467,7 @@ msgstr "Виключені"
 
 #: lazarusidestrconsts.rsi18nforceupdatepofilesonnextbuild
 msgid "Force update PO files on next build"
-msgstr ""
+msgstr "При наступному збиранні примусово оновити PO-файли"
 
 #: lazarusidestrconsts.rsi18nidentifiers
 msgid "Identifiers:"
