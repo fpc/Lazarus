@@ -5,8 +5,8 @@ unit PseudoTerminalDlg;
 interface
 
 uses
-  IDEWindowIntf,
-  Forms, StdCtrls, DebuggerDlg, BaseDebugManager, LCLType;
+  IDEWindowIntf, Classes,
+  Forms, StdCtrls, DebuggerDlg, BaseDebugManager, LazarusIDEStrConsts, LCLType;
 
 type
 
@@ -21,6 +21,7 @@ type
     procedure DoClose(var CloseAction: TCloseAction); override;
   public
     { public declarations }
+    constructor Create(TheOwner: TComponent); override;
     procedure AddOutput(const AText: String);
     procedure Clear;
   end;
@@ -46,6 +47,12 @@ procedure TPseudoConsoleDlg.DoClose(var CloseAction: TCloseAction);
 begin
   inherited DoClose(CloseAction);
   CloseAction := caHide;
+end;
+
+constructor TPseudoConsoleDlg.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  Caption:= lisDbgTerminal;
 end;
 
 procedure TPseudoConsoleDlg.AddOutput(const AText: String);

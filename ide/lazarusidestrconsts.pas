@@ -462,7 +462,7 @@ resourcestring
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';
   lisMenuViewLocalVariables = 'Local Variables';
-  lisMenuViewPseudoTerminal = 'Terminal Output';
+  lisMenuViewPseudoTerminal = 'Console In/Output';
   lisMenuViewRegisters = 'Registers';
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewThreads = 'Threads';
@@ -3194,7 +3194,7 @@ resourcestring
   srkmecToggleLocals              = 'View local variables';
   srkmecViewThreads               = 'View Threads';
   srkmecViewHistory               = 'View History';
-  srkmecViewPseudoTerminal        = 'View Terminal Output';
+  srkmecViewPseudoTerminal        = 'View console in/output';
   srkmecTogglecallStack           = 'View call stack';
   srkmecToggleRegisters           = 'View registers';
   srkmecToggleAssembler           = 'View assembler';
@@ -3367,7 +3367,7 @@ resourcestring
   lisKMToggleViewLocalVariables = 'View Local Variables';
   lisKMToggleViewThreads = 'View Threads';
   lisKMToggleViewHistory = 'View History';
-  lisKMToggleViewPseudoTerminal = 'View Terminal Output';
+  lisKMToggleViewPseudoTerminal = 'View Console In/Output';
   lisKMToggleViewCallStack = 'View Call Stack';
   lisKMToggleViewRegisters = 'View Registers';
   lisKMToggleViewAssembler = 'View Assembler';
@@ -5281,7 +5281,7 @@ resourcestring
   lisInheritedParameters = 'Inherited parameters';
   lisShowRelativePaths = 'Show relative paths';
   lisCommandLineParameters = 'Command line parameters';
-  liswlWatchList = 'Watch List';
+  liswlWatchList = 'Watches';
   liswlExpression = 'Expression';
   lisKMChooseKeymappingScheme = 'Choose Keymapping scheme';
   lisKMNoteAllKeysWillBeSetToTheValuesOfTheChosenScheme = 'Note: All keys '
@@ -5486,11 +5486,14 @@ resourcestring
   lisMemoryDump = 'Memory Dump';
   lisBinary = 'Binary';
 
+  // Terminal Output
+  lisDbgTerminal = 'Console In/Output';
+
   // Callstack
   lisCallStackNotEvaluated = 'Stack not evaluated';
 
   // Locals Dialog
-  lisLocals = 'Locals';
+  lisLocals = 'Local Variables';
   lisLocalsNotEvaluated = 'Locals not evaluated';
   lisEvaluateModify = '&Evaluate/Modify';
   lisLocalsDlgCopyName = '&Copy Name';
