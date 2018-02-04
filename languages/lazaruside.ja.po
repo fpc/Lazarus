@@ -7872,6 +7872,11 @@ msgstr "とにかくブレークポイントを作成する"
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "指定されたデバッガがありません。%sブレークポイントの設置は、メニューのデバッガオプションダイアログでデバッガを設定するまで効力を持ちません。"
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "On/Off"
@@ -7990,7 +7995,9 @@ msgid "Module"
 msgstr "モジュール"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "Lazarus例外を通知"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11190,8 +11197,10 @@ msgid "Toggle view Object Inspector"
 msgstr "オブジェクトインスペクタの表示の切り替え"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr "ターミナル出力を表示"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11588,7 +11597,10 @@ msgid "&Local"
 msgstr "ローカル(&L)"
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "ローカル"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13183,6 +13195,7 @@ msgid "Jump History"
 msgstr "移動履歴"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "ローカル変数"
 
@@ -13201,7 +13214,10 @@ msgid "&View Project Source"
 msgstr "プロジェクトソースを表示(&V)"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+#, fuzzy
+#| msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr "ターミナル出力"
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13249,6 +13265,7 @@ msgid "Units ..."
 msgstr "ユニット ..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "監視"
 
@@ -19246,7 +19263,10 @@ msgid "&Properties"
 msgstr "プロパティ(&P)"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "監視リスト"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -20918,8 +20938,10 @@ msgid "View History"
 msgstr "履歴を表示"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr "ターミナル出力を表示"
 
 #: lazarusidestrconsts.srkmecviewtaborder

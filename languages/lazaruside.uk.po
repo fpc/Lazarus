@@ -7866,6 +7866,11 @@ msgstr "Встановити точку зупину за будь-яких об
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Не вказаний зневаджувач.%sВстановлені точки зупинки не діятимуть до тих пір, поки не буде встановлено Зневаджувач у діалозі параметрів зневаджувача у меню."
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "Увімк/Вимк"
@@ -7984,7 +7989,9 @@ msgid "Module"
 msgstr "Модуль"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "Повідомляти про винятки Lazarus"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11203,8 +11210,10 @@ msgid "Toggle view Object Inspector"
 msgstr "Перемкнути до перегляду Інспектора об'єктів"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr "Показати вивід терміналу"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11601,7 +11610,10 @@ msgid "&Local"
 msgstr "&Локальна"
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "Локальні"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13196,6 +13208,7 @@ msgid "Jump History"
 msgstr "Історії переходів"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "Локальні змінні"
 
@@ -13214,7 +13227,10 @@ msgid "&View Project Source"
 msgstr "&Показати код проекту"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+#, fuzzy
+#| msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr "Вивід терміналу"
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13262,6 +13278,7 @@ msgid "Units ..."
 msgstr "Модулі..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "Вікно спостережень"
 
@@ -19254,7 +19271,10 @@ msgid "&Properties"
 msgstr "&Властивості"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "Список спостережень"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -20921,8 +20941,10 @@ msgid "View History"
 msgstr "Переглянути історію"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr "Дивитись вивід терміналу"
 
 #: lazarusidestrconsts.srkmecviewtaborder

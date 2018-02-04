@@ -8044,6 +8044,11 @@ msgstr "强制设置断点"
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "没有详细的调试器.%s设置断点没有任何作用,除非你在调试器选项中设置了一个调试器."
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "开/关"
@@ -8165,7 +8170,9 @@ msgid "Module"
 msgstr "模块"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "在Lazarus异常时通知"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11459,8 +11466,10 @@ msgid "Toggle view Object Inspector"
 msgstr "切换到对象查看器视图"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr "查看终端输出"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11852,7 +11861,10 @@ msgid "&Local"
 msgstr ""
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "本地化"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13512,6 +13524,7 @@ msgid "Jump History"
 msgstr "跳转历史"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "局部变量"
 
@@ -13530,7 +13543,10 @@ msgid "&View Project Source"
 msgstr "查看工程源代码(&V)"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+#, fuzzy
+#| msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr "终端输出"
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13578,6 +13594,7 @@ msgid "Units ..."
 msgstr "单元..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "查看"
 
@@ -19733,7 +19750,10 @@ msgid "&Properties"
 msgstr "属性(&P)"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "查看列表"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -21446,8 +21466,10 @@ msgid "View History"
 msgstr "查看历史"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr "查看终端输出"
 
 #: lazarusidestrconsts.srkmecviewtaborder

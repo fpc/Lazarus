@@ -7875,6 +7875,11 @@ msgstr ""
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr ""
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr ""
@@ -7993,7 +7998,7 @@ msgid "Module"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11185,7 +11190,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11573,7 +11578,8 @@ msgid "&Local"
 msgstr ""
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr ""
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13172,6 +13178,7 @@ msgid "Jump History"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr ""
 
@@ -13190,7 +13197,8 @@ msgid "&View Project Source"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13238,6 +13246,7 @@ msgid "Units ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr ""
 
@@ -19206,7 +19215,8 @@ msgid "&Properties"
 msgstr "خصائص"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr ""
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -20888,7 +20898,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtaborder

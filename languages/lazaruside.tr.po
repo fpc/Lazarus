@@ -7946,6 +7946,11 @@ msgstr "Kesme noktasını yine de ayarla"
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Belirtilen herhangi bir hata ayıklayıcısı yok.% SYanlıır noktaları ayarlamanız, bir hata ayıklayıcıyı ayarlayıncaya kadar geçerli değildir"
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "Açık kapalı"
@@ -8066,7 +8071,9 @@ msgid "Module"
 msgstr "Modül"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "Lazarus İstisnalarına Haber Verin"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11383,8 +11390,10 @@ msgid "Toggle view Object Inspector"
 msgstr "Görüntü Nesnesi Müfettişini Aç / Kapat"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr "Terminal Çıkışını Görüntüle"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11777,7 +11786,10 @@ msgid "&Local"
 msgstr ""
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "Yerliler"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13375,6 +13387,7 @@ msgid "Jump History"
 msgstr "Geçiş Geçmişi"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "Yerel Değişkenler"
 
@@ -13393,7 +13406,10 @@ msgid "&View Project Source"
 msgstr "& Proje Kaynaklarını Görüntüle"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+#, fuzzy
+#| msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr "Terminal çıkışı"
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13441,6 +13457,7 @@ msgid "Units ..."
 msgstr "Birimler ..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "Saatler"
 
@@ -19594,7 +19611,10 @@ msgid "&Properties"
 msgstr "&Özellikleri"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "İzleme Listesi"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -21281,8 +21301,10 @@ msgid "View History"
 msgstr "Geçmişi Görüntüle"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr "Terminal Çıkışını Görüntüle"
 
 #: lazarusidestrconsts.srkmecviewtaborder

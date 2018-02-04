@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-02-01 02:07+0300\n"
+"PO-Revision-Date: 2018-02-05 01:33+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7857,6 +7857,11 @@ msgstr "Установить точку останова всё равно"
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Не указан отладчик.%sТочки останова не будут иметь эффекта, пока вы не настроите отладчик в диалоге его параметров."
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr "Ввод/вывод в консоли"
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "Вкл./выкл."
@@ -7975,8 +7980,8 @@ msgid "Module"
 msgstr "Модуль"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
-msgstr "Уведомлять об исключениях Lazarus"
+msgid "Notify on Exceptions"
+msgstr "Уведомлять об исключениях"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -11196,8 +11201,8 @@ msgstr "Показать инспектор объектов"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
-msgstr "Показать вывод в терминал"
+msgid "View Console In/Output"
+msgstr "Показать ввод/вывод в консоли"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "View Registers"
@@ -11593,7 +11598,8 @@ msgid "&Local"
 msgstr "Локальная (&L)"
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "Локальные переменные"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13188,6 +13194,7 @@ msgid "Jump History"
 msgstr "История переходов"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "Локальные переменные"
 
@@ -13206,8 +13213,9 @@ msgid "&View Project Source"
 msgstr "&Просмотреть исходный код проекта"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
-msgstr "Вывод в терминал"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
+msgstr "Ввод/вывод в консоли"
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -13254,6 +13262,7 @@ msgid "Units ..."
 msgstr "Модули ..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "Окно наблюдений"
 
@@ -19246,8 +19255,9 @@ msgid "&Properties"
 msgstr "&Свойства"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
-msgstr "Список наблюдений"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
+msgstr "Наблюдения"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -20914,8 +20924,8 @@ msgstr "Показать историю"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
-msgstr "Показать вывод в терминал"
+msgid "View console in/output"
+msgstr "Показать ввод/вывод в консоли"
 
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"

@@ -8121,6 +8121,11 @@ msgstr ""
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "No s'hi ha especificat cap depurador.%sEstablir punts de parada no tindrà cap efecte fins que configures un depurador al dialeg d'opcións del depurador en el menú."
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr ""
@@ -8240,7 +8245,7 @@ msgid "Module"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11468,7 +11473,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11858,8 +11863,10 @@ msgid "&Local"
 msgstr ""
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
+msgstr "Variables Locals"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -13623,6 +13630,7 @@ msgid "Jump History"
 msgstr "Mostra la història dels salts ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "Variables Locals"
 
@@ -13641,7 +13649,8 @@ msgid "&View Project Source"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13697,6 +13706,7 @@ msgid "Units ..."
 msgstr "Unitats..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "Controls"
 
@@ -19933,8 +19943,10 @@ msgid "&Properties"
 msgstr "&Propietats"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
-msgstr ""
+#, fuzzy
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
+msgstr "Controls"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -21670,7 +21682,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtaborder

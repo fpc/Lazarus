@@ -8120,6 +8120,11 @@ msgstr ""
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr ""
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr ""
@@ -8241,7 +8246,9 @@ msgid "Module"
 msgstr "Moduł"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "Informuj o wyjątkach Lazarusa"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11483,7 +11490,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11877,7 +11884,10 @@ msgid "&Local"
 msgstr ""
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "Lokalne"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13516,6 +13526,7 @@ msgid "Jump History"
 msgstr "Historia skoków"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "Zmienne lokalne"
 
@@ -13534,7 +13545,8 @@ msgid "&View Project Source"
 msgstr "Pokaż źródło projektu"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13583,6 +13595,7 @@ msgid "Units ..."
 msgstr "Moduły projektu"
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "Zmienne"
 
@@ -19642,7 +19655,8 @@ msgstr "&Właściwości"
 #: lazarusidestrconsts.liswlwatchlist
 #, fuzzy
 #| msgid "Watch list"
-msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "Lista zmiennych"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -21375,7 +21389,7 @@ msgstr "Pokaż historię"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtaborder

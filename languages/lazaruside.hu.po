@@ -7862,6 +7862,11 @@ msgstr "Mindenképp állítsa be a töréspontot"
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Nincs megadva hibakereső.%sA töréspontok elhelyezése hatástalan amíg nincs megadva a hibakereső a hibakereső beállításai párbeszédben a menüben."
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "Be/Ki"
@@ -7980,7 +7985,9 @@ msgid "Module"
 msgstr "Modul"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "Értesítsen Lazarus kivételek esetén"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11195,8 +11202,10 @@ msgid "Toggle view Object Inspector"
 msgstr "Objektum felügyelő megjelenítése"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr "Terminál kimenetének megjelenítése"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11593,7 +11602,10 @@ msgid "&Local"
 msgstr "&Helyi"
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "Helyi változók"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13188,6 +13200,7 @@ msgid "Jump History"
 msgstr "Ugrási előzmények"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "Helyi változók"
 
@@ -13206,7 +13219,10 @@ msgid "&View Project Source"
 msgstr "Projekt forráskódjának megjelenítése"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+#, fuzzy
+#| msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr "Terminálkimenet"
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13254,6 +13270,7 @@ msgid "Units ..."
 msgstr "Unit-ok ..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "Figyelt elemek"
 
@@ -19245,7 +19262,10 @@ msgid "&Properties"
 msgstr "Tulajdonságok"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "Figyelt elemek listája"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -20912,8 +20932,10 @@ msgid "View History"
 msgstr "Előzmények megjelenítése"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr "Terminál kimenetének megjelenítése"
 
 #: lazarusidestrconsts.srkmecviewtaborder

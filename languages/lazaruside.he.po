@@ -8338,6 +8338,11 @@ msgstr "הגדר את נקודת העצירה בכל זאת"
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "לא צוין מנפה שגיאות. אין השפעה להגדרת נקודות עצירה עד שתגדיר מנפה שגיאות בדיאלוג מנפי השגיאות שבתפריט."
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "מופעל/מופסק"
@@ -8461,7 +8466,9 @@ msgid "Module"
 msgstr "מודול"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "הודע על חריגות לזארוס"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11893,7 +11900,7 @@ msgstr "החלף (הצג/הסתר) צופה העצמים"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -12312,7 +12319,10 @@ msgid "&Local"
 msgstr ""
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "מקומיים"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -14122,6 +14132,7 @@ msgid "Jump History"
 msgstr "היסטורית הקפיצות ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "משתנים מקומיים"
 
@@ -14140,7 +14151,8 @@ msgid "&View Project Source"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -14196,6 +14208,7 @@ msgid "Units ..."
 msgstr "יחידות..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "משגיחים"
 
@@ -20696,7 +20709,8 @@ msgstr "תכונות&"
 #: lazarusidestrconsts.liswlwatchlist
 #, fuzzy
 #| msgid "Watch list"
-msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "רשימת המשגיחים"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -22466,7 +22480,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtaborder

@@ -7823,6 +7823,11 @@ msgstr "Merkitse tämä kuitenkin keskeyskohdaksi"
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Virheenjäljitintä ei ole valittu.%sKeskeytyskohdalla ei ole vaikutusta ennenkuin 'Käyttöliittymä'-valikon 'Virheenjäljittimen asetus' on asetettu."
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "Päällä/Pois"
@@ -7940,7 +7945,9 @@ msgid "Module"
 msgstr "Moduuli"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "Ilmoita Lazaruksen keskeytyksistä"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11121,8 +11128,10 @@ msgid "Toggle view Object Inspector"
 msgstr "Vaihda komponenttimuokkain näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr "Näytä komentorivituloste"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11506,7 +11515,10 @@ msgid "&Local"
 msgstr "&Paikallinen"
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "Paikalliset"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13090,6 +13102,7 @@ msgid "Jump History"
 msgstr "Hyppyhistoria"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "Paikalliset muuttujat"
 
@@ -13108,7 +13121,10 @@ msgid "&View Project Source"
 msgstr "&Näytä projektin lähdekoodi"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+#, fuzzy
+#| msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr "Komentorivin tuloste"
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13156,6 +13172,7 @@ msgid "Units ..."
 msgstr "Käännösyksiköt ..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "Vahdit"
 
@@ -19098,7 +19115,10 @@ msgid "&Properties"
 msgstr "&Ominaisuudet"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "Vahtiluettelo"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -20776,8 +20796,10 @@ msgid "View History"
 msgstr "Näytä historia"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr "Näytä komentorivin tuloste"
 
 #: lazarusidestrconsts.srkmecviewtaborder

@@ -7875,6 +7875,11 @@ msgstr "Vistiek padėti stabdos tašką"
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Nenurodyta derintuvė.%sStabdos taškai neveiks iki kol nebus nurodyta derintuvė. Ji nurodoma menių esančiame derintuvės parinkčių dialoge."
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "Įj./išj."
@@ -7993,7 +7998,9 @@ msgid "Module"
 msgstr "Modulis"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "Pranešti kai įvyks Lazarus išimtinė situacija"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11216,8 +11223,10 @@ msgid "Toggle view Object Inspector"
 msgstr "Keisti „Objektų inspektorius“ matomumą"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr "Rodyti pulto išvestį"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11616,7 +11625,10 @@ msgid "&Local"
 msgstr "&Vietinis"
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "Vietiniai kintamieji"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13211,6 +13223,7 @@ msgid "Jump History"
 msgstr "Peršokimų praeitis"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "Vietiniai kintamieji"
 
@@ -13229,7 +13242,10 @@ msgid "&View Project Source"
 msgstr "&Rodyti projekto pirminį kodą"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+#, fuzzy
+#| msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr "Pulto išvestis"
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13277,6 +13293,7 @@ msgid "Units ..."
 msgstr "Moduliai…"
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "Stebimieji"
 
@@ -19273,7 +19290,10 @@ msgid "&Properties"
 msgstr "&Savybės"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "Stebimų sąrašas"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -20940,8 +20960,10 @@ msgid "View History"
 msgstr "Rodyti praeitį"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr "Rodyti pulto išvestį"
 
 #: lazarusidestrconsts.srkmecviewtaborder

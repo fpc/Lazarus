@@ -7864,6 +7864,11 @@ msgstr "Placer le point d'arrêt de toute façon"
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Aucun débogueur n'a été spécifié.%sPlacer des points d'arrêt n'aura aucun effet jusqu'à ce qu'un débogueur soit configuré dans le dialogue des options du débogueur dans le menu."
 
+#: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
 msgstr "Activé/Désactivé"
@@ -7982,7 +7987,9 @@ msgid "Module"
 msgstr "Module"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-msgid "Notify on Lazarus Exceptions"
+#, fuzzy
+#| msgid "Notify on Lazarus Exceptions"
+msgid "Notify on Exceptions"
 msgstr "Avertir lors des exceptions de Lazarus"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
@@ -11198,8 +11205,10 @@ msgid "Toggle view Object Inspector"
 msgstr "Commuter la vue de l'inspecteur d'objets"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View Console In/Output"
 msgstr "Afficher la sortie terminal"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -11597,7 +11606,10 @@ msgid "&Local"
 msgstr "&Local"
 
 #: lazarusidestrconsts.lislocals
-msgid "Locals"
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
 msgstr "Variables locales"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
@@ -13192,6 +13204,7 @@ msgid "Jump History"
 msgstr "Historique des déplacements"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
+msgctxt "lazarusidestrconsts.lismenuviewlocalvariables"
 msgid "Local Variables"
 msgstr "Variables locales"
 
@@ -13210,7 +13223,10 @@ msgid "&View Project Source"
 msgstr "&Voir le code source du projet"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-msgid "Terminal Output"
+#, fuzzy
+#| msgid "Terminal Output"
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
+msgid "Console In/Output"
 msgstr "Sortie vers terminal"
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -13258,6 +13274,7 @@ msgid "Units ..."
 msgstr "Unités..."
 
 #: lazarusidestrconsts.lismenuviewwatches
+msgctxt "lazarusidestrconsts.lismenuviewwatches"
 msgid "Watches"
 msgstr "Points de suivi"
 
@@ -19253,7 +19270,10 @@ msgid "&Properties"
 msgstr "&Propriétés"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch List"
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
 msgstr "Liste de suivi"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -20920,8 +20940,10 @@ msgid "View History"
 msgstr "Afficher l'historique"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
+#, fuzzy
+#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
-msgid "View Terminal Output"
+msgid "View console in/output"
 msgstr "Afficher la sortie terminal"
 
 #: lazarusidestrconsts.srkmecviewtaborder
