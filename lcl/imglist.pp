@@ -333,7 +333,7 @@ type
     procedure EndUpdate;
 
     function Add(Image, Mask: TCustomBitmap): Integer;
-    function AddMultipleResolutions(Images: array of TCustomBitmap): Integer;
+    function AddMultipleResolutions(Images: array of TCustomBitmap): Integer; // always pass sorted array from smallest to biggest
     function AddSliced(Image: TCustomBitmap; AHorizontalCount, AVerticalCount: Integer): Integer;
     function AddSlice(Image: TCustomBitmap; AImageRect: TRect): Integer;
     function AddIcon(Image: TCustomIcon): Integer;
