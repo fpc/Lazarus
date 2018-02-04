@@ -1283,7 +1283,7 @@ class function TCocoaWSControl.GetCanvasScaleFactor(const AControl: TControl
   ): Double;
 begin
   if Assigned(AControl.Parent) then
-    Result := TWSControlClass(AControl.Parent.WidgetSetClass).GetCanvasScaleFactor(AControl.Parent)
+    Result := AControl.Parent.GetCanvasScaleFactor
   else
     Result := 1;
 end;
