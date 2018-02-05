@@ -2553,6 +2553,7 @@ var
       or (CurControl.Anchors <> [akLeft, akTop])
       or (CurControl.AnchorSide[akLeft].Control<>nil)
       or (CurControl.AnchorSide[akTop].Control<>nil)
+      or (cfAutoSizeNeeded in CurControl.FControlFlags)
       or (ChildSizing.Layout<>cclNone)
       then Exit;
     end;

@@ -62,6 +62,14 @@ begin
   EndUpdate;
 end;
 
+procedure TListColumns.DoFinalizeWnd;
+var
+  I: Integer;
+begin
+  for I := 0 to Count-1 do
+    Items[I].GetWidth; // store real width from WS into FWidth
+end;
+
 procedure TListColumns.Update(Item: TCollectionItem);
 begin
   if (Item = nil) and FNeedsUpdate then
