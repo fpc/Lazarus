@@ -63,8 +63,12 @@ type
   end;
 
   TClearBrush = class(TBrush)
+  public
+    constructor Create; override;
   published
-    property Style default bsClear;
+   // property Style default bsClear;
+  { wp: Removed because bsClear would no longer work - TBrush.SetColor switches
+        Style to clSolid if Style is bsClear }
   end;
 
   TFPCanvasHelperClass = class of TFPCanvasHelper;
@@ -294,6 +298,14 @@ procedure TChartPen.SetVisible(AValue: Boolean);
 begin
   FVisible := AValue;
   if Assigned(OnChange) then OnChange(Self);
+end;
+
+{ TClearBrush }
+
+constructor TClearBrush.Create;
+begin
+  inherited;
+  Style := bsClear;
 end;
 
 { TChartElement }
