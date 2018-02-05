@@ -300,7 +300,7 @@ begin
     end;
 
     ResolveIDEItem(CurOwner,CurProject,CurPkg);
-    Assert(Assigned(CurOwner), 'TIDETodoWindow.UpdateTodos: CurOwner=Nil');
+    if CurOwner=nil then Exit;
 
     Flags:=[];
     if chkListed.Checked then
