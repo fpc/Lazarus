@@ -171,7 +171,7 @@ begin
         FUnZipper.Examine;
         FUnZipper.UnZipAllFiles;
         SerializablePackages.Items[I].ChangePackageStates(ctAdd, psExtracted);
-        if (SerializablePackages.Items[I].IsDirZipped ) and (SerializablePackages.Items[I].PackageBaseDir <> SerializablePackages.Items[I].ZippedBaseDir) then
+        if (SerializablePackages.Items[I].IsDirZipped ) and (UpperCase(SerializablePackages.Items[I].PackageBaseDir) <> UpperCase(SerializablePackages.Items[I].ZippedBaseDir)) then
         begin
           CopyDirTree(FUnZipper.OutputPath + SerializablePackages.Items[I].ZippedBaseDir, DelDir, [cffOverwriteFile]);
           DeleteDirectory(FUnZipper.OutputPath + SerializablePackages.Items[I].ZippedBaseDir, False);
