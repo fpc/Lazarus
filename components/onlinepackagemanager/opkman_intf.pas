@@ -29,7 +29,7 @@ unit opkman_intf;
 interface
 
 uses
-  Classes, SysUtils, Forms, Dialogs, Controls, contnrs, fpjson, ExtCtrls,
+  Classes, SysUtils, Forms, Dialogs, Controls, contnrs, fpjson,
   // IdeIntf
   LazIDEIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf, IDECommands,
   // OPM
@@ -45,7 +45,7 @@ type
     FPackagesToInstall: TObjectList;
     FPackageDependecies: TObjectList;
     FPackageLinks: TObjectList;
-    FWaitForIDE: TTimer;
+    FWaitForIDE: TThreadTimer;
     FNeedToInit: Boolean;
     FBusyUpdating: Boolean;
     procedure DoWaitForIDE(Sender: TObject);
@@ -83,15 +83,17 @@ begin
   FPackagesToInstall := TObjectList.Create(False);
   FPackageDependecies := TObjectList.Create(False);
   FNeedToInit := True;
-  FWaitForIDE := TTimer.Create(nil);
+  FWaitForIDE := TThreadTimer.Create;
   FWaitForIDE.Interval := 100;
   FWaitForIDE.OnTimer := @DoWaitForIDE;
+  FWaitForIDE.StartTimer;
 end;
 
 destructor TOPMInterfaceEx.Destroy;
 begin
-  FWaitForIDE.OnTimer := nil;
-  FWaitForIDE.Free;
+  FWaitForIDE.StopTimer;
+  FWaitForIDE.Terminate;
+  FWaitForIDE.WaitFor;
   FPackageLinks.Clear;
   FPackageLinks.Free;
   FPackagesToDownload.Clear;
@@ -115,9 +117,9 @@ begin
     begin
       InitOPM;
       FNeedToInit := False;
-      FWaitForIDE.Enabled := False;
-      FWaitForIDE.Interval := 10000;
-      FWaitForIDE.Enabled := True;
+      FWaitForIDE.StopTimer;
+      FWaitForIDE.Interval := 5000;
+      FWaitForIDE.StartTimer;
     end
     else
     begin
