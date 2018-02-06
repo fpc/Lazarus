@@ -1532,13 +1532,23 @@ procedure TCustomImageList.DefineProperties(Filer: TFiler);
       Result := Count > 0;
   end;
 
+  function NeedsBitmapAdv: Boolean;
+  var
+    R: TCustomImageListResolution;
+  begin
+    for R in Resolutions do
+      if not R.AutoCreatedInDesignTime and (R.Width<>Width) then
+        Exit(True);
+    Result := False;
+  end;
+
 var
   ADoWrite: Boolean;
 begin
   inherited DefineProperties(Filer);
   ADoWrite := DoWrite;
   Filer.DefineBinaryProperty('Bitmap', @ReadData, @WriteData, ADoWrite);
-  Filer.DefineBinaryProperty('BitmapAdv', @ReadAdvData, @WriteAdvData, ADoWrite);
+  Filer.DefineBinaryProperty('BitmapAdv', @ReadAdvData, @WriteAdvData, ADoWrite and NeedsBitmapAdv);
 end;
 
 {------------------------------------------------------------------------------
