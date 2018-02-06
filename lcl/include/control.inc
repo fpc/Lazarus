@@ -943,6 +943,19 @@ procedure TControl.ExecuteDefaultAction;
 begin
 end;
 
+procedure TControl.FixDesignFontsPPI(const ADesignTimePPI: Integer);
+begin
+  // Problem: Font.PixelsPerInch isn't saved in the LFM, therefore the
+  // design-time font PPI is different from the one that is loaded on target
+  // machine, which results in different font scaling.
+  // DoFixDesignFont restores the corrent design-time font PPI so that it can
+  // be used for LCL HighDPI scaling.
+  // Override this function - list all custom fonts in the overriden procedure
+  // To-Do: maybe save Font.PixelsPerInch in the LFM and remove this?
+
+  DoFixDesignFontPPI(Font, ADesignTimePPI);
+end;
+
 procedure TControl.ExecuteCancelAction;
 begin
 end;
@@ -1918,7 +1931,7 @@ begin
   if (AFont.Height=0) and not (csDesigning in ComponentState) then
     AFont.Height := MulDiv(GetFontData(AFont.Reference.Handle).Height, AFont.PixelsPerInch, Screen.PixelsPerInch);
   if AToPPI>0 then
-    AFont.PixelsPerInch := MulDiv(AFont.PixelsPerInch, AToPPI, AFont.PixelsPerInch)
+    AFont.PixelsPerInch := AToPPI
   else
     AFont.PixelsPerInch := Round(AFont.PixelsPerInch*AProportion);
 end;

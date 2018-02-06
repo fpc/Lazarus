@@ -57,10 +57,27 @@ begin
 end;
 
 procedure TCustomDesignControl.Loaded;
+  procedure FixChildren(const AParent: TWinControl);
+  var
+    I: Integer;
+  begin
+    for I := 0 to AParent.ControlCount-1 do
+    begin
+      AParent.Controls[I].FixDesignFontsPPI(FDesignTimePPI);
+      if AParent.Controls[I] is TWinControl then
+        FixChildren(TWinControl(AParent.Controls[I]));
+    end;
+  end;
 begin
   inherited Loaded;
 
   FPixelsPerInch := FDesignTimePPI;
+
+  if Application.Scaled and Scaled then
+  begin
+    FixDesignFontsPPI(FDesignTimePPI);
+    FixChildren(Self);
+  end;
 end;
 
 procedure TCustomDesignControl.SetDesignTimePPI(const ADesignTimePPI: Integer);

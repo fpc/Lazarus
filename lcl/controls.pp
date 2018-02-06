@@ -1597,6 +1597,7 @@ type
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
       const AFromPPI, AToPPI, AOldFormWidth, ANewFormWidth: Integer); virtual;
     procedure ShouldAutoAdjust(var AWidth, AHeight: Boolean); virtual;
+    procedure FixDesignFontsPPI(const ADesignTimePPI: Integer); virtual;
     procedure ScaleFontsPPI(const AToPPI: Integer; const AProportion: Double); virtual;
   public
     constructor Create(TheOwner: TComponent);override;
