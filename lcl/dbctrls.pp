@@ -208,6 +208,7 @@ Type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSelect;
     property AutoSize;
