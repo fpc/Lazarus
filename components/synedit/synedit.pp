@@ -2103,10 +2103,6 @@ begin
 
   RecreateMarkList;
 
-  {$IFNDEF EnableDoubleBuf}
-  DoubleBuffered := True;
-  {$ENDIF}
-
   fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
   {$IFDEF WithSynExperimentalCharWidth}
   FSysCharWidthLinesView.TextDrawer := fTextDrawer;
