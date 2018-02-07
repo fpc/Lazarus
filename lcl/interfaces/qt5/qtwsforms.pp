@@ -207,13 +207,13 @@ begin
 
   QtMainWindow.SetWindowTitle(@Str);
 
-  if not (csDesigning in AForm.ComponentState) then
+  if not IsFormDesign(AWinControl) then
   begin
     UpdateWindowFlags(QtMainWindow, AForm.BorderStyle,
       AForm.BorderIcons, AForm.FormStyle);
   end;
 
-  if (not (AForm.FormStyle in [fsMDIChild]) or (csDesigning in AForm.ComponentState)) and
+  if (not (AForm.FormStyle in [fsMDIChild]) or IsFormDesign(AForm)) and
      (Application <> nil) and
      (Application.MainForm <> nil) and
      (Application.MainForm.HandleAllocated) and
@@ -223,7 +223,7 @@ begin
        {$ifdef HASX11}
        {QtTool have not minimize button !}
        and (not (AForm.BorderStyle in [bsSizeToolWin, bsToolWindow]) and
-          not (csDesigning in AForm.ComponentState))
+          not IsFormDesign(AForm))
        {$endif} then
       QtMainWindow.setShowInTaskBar(False);
     APopupParent := AForm.GetRealPopupParent;
@@ -244,7 +244,7 @@ begin
   {$ENDIF}
   QtMainWindow.MenuBar.AttachEvents;
   
-  if not (csDesigning in AForm.ComponentState) and
+  if not IsFormDesign(AForm) and
     (AForm.FormStyle in [fsMDIChild]) and
     (Application.MainForm.FormStyle = fsMdiForm) then
   begin
@@ -375,7 +375,8 @@ begin
     PopupParent := TQtWidget(APopupParent.Handle).Widget
   else
     PopupParent := nil;
-  TQtMainWindow(ACustomForm.Handle).setRealPopupParent(PopupParent);
+  if not TQtMainWindow(ACustomForm.Handle).IsMdiChild then
+    TQtMainWindow(ACustomForm.Handle).setRealPopupParent(PopupParent);
 end;
 
 {------------------------------------------------------------------------------
@@ -399,7 +400,7 @@ begin
      (Application.MainForm <> AForm) then
     Enable := false;
   {$IFDEF HASX11}
-  if (AForm.FormStyle <> fsMDIChild) then
+  if not TQtMainWindow(AForm.Handle).IsMdiChild then
     SetSkipX11Taskbar(TQtMainWindow(AForm.Handle).Widget, not Enable);
   {$ENDIF}
   TQtMainWindow(AForm.Handle).setShowInTaskBar(Enable);
@@ -516,26 +517,21 @@ begin
       Widget.setWindowModality(QtApplicationModal);
     end;
 
-    if TForm(AWinControl).FormStyle = fsMDIChild then
+    if Widget.IsMdiChild and not Widget.isMaximized then
     begin
       {MDI windows have to be resized , since titlebar is included into widget geometry !}
-      if not (csDesigning in AWinControl.ComponentState)
-        and not Widget.isMaximized then
-      begin
-        QWidget_contentsRect(Widget.Widget, @R);
-        R.Right := TForm(AWinControl).Width + R.Left;
-        R.Bottom := TForm(AWinControl).Height + R.Top;
-        R.Left := Widget.MdiChildCount * 10;
-        R.Top := Widget.MdiChildCount * 10;
-        Widget.move(R.Left, R.Top);
-        Widget.resize(R.Right, R.Bottom);
-      end;
+      QWidget_contentsRect(Widget.Widget, @R);
+      R.Right := TForm(AWinControl).Width + R.Left;
+      R.Bottom := TForm(AWinControl).Height + R.Top;
+      R.Left := Widget.MdiChildCount * 10;
+      R.Top := Widget.MdiChildCount * 10;
+      Widget.move(R.Left, R.Top);
+      Widget.resize(R.Right, R.Bottom);
     end;
 
-    if (TForm(AWinControl).FormStyle <> fsMDIChild) or
-      (csDesigning in AWinControl.ComponentState) then
+    if not Widget.IsMdiChild then
     begin
-      if (csDesigning in AWinControl.ComponentState) and
+      if IsFormDesign(AWinControl) and
         (TCustomForm(AWinControl).WindowState = wsMaximized) then
         Widget.setWindowState(LCLToQtWindowState[wsNormal])
       else
@@ -544,7 +540,7 @@ begin
   end;
 
   Widget.BeginUpdate;
-  if not (csDesigning in AWinControl.ComponentState) then
+  if not IsFormDesign(AWinControl) then
   begin
     if ShowNonModalOverModal then
     // issue #12459
@@ -560,7 +556,7 @@ begin
       end;
       if not Assigned(AWinControl.Parent) and
         not (fsModal in TForm(AWinControl).FormState) and
-        (TForm(AWinControl).FormStyle <> fsMDIChild) and
+        not Widget.IsMdiChild and
         (QApplication_activeModalWidget() <> nil) then
       begin
         TQtMainWindow(Widget).setRealPopupParent(
@@ -582,7 +578,7 @@ begin
       if AWinControl.HandleObjectShouldBeVisible and
         not (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) and
         not (fsModal in TCustomForm(AWinControl).FormState) and
-        (TCustomForm(AWinControl).FormStyle <> fsMDIChild) then
+        not Widget.IsMdiChild then
       begin
         APopupParent := TCustomForm(AWinControl).GetRealPopupParent;
         if (APopupParent <> nil) then
@@ -609,7 +605,7 @@ begin
 
   if AWinControl.HandleObjectShouldBeVisible and
     not (csDesigning in TForm(AWinControl).ComponentState) and
-        (TForm(AWinControl).FormStyle <> fsMDIChild) then
+      not Widget.IsMdiChild then
   begin
     if (fsModal in TForm(AWinControl).FormState) then
     begin
