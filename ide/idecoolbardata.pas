@@ -473,7 +473,6 @@ begin
   FCoolBar.HorizontalSpacing := 1;
   FCoolBar.VerticalSpacing := 3;
   FCoolBar.FixedSize := True;
-  FCoolBar.DoubleBuffered := True;
   FCoolBar.EdgeInner := esNone;
   FCoolBar.EdgeOuter := esNone;
 

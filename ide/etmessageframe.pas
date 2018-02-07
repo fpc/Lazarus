@@ -2416,7 +2416,6 @@ begin
   for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     fUrgencyStyles[u]:=TMsgCtrlUrgencyStyle.Create(Self,u);
   ShowHint:=true;
-  DoubleBuffered:=true;
 end;
 
 destructor TMessagesCtrl.Destroy;
