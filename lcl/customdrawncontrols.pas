@@ -11,10 +11,6 @@ unit CustomDrawnControls;
 
 {$mode objfpc}{$H+}
 
-{$if defined(Windows)} // LCL defines like LCLWin32 don't reach the LCL
-  {$define CDControlsDoDoubleBuffer}
-{$endif}
-
 interface
 
 uses
@@ -955,9 +951,6 @@ begin
   inherited Create(AOwner);
   CreateControlStateEx;
   PrepareCurrentDrawer();
-  {$ifdef CDControlsDoDoubleBuffer}
-  DoubleBuffered := True;
-  {$endif}
 end;
 
 destructor TCDControl.Destroy;
