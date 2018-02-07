@@ -1983,8 +1983,11 @@ end;
 procedure TDataPointCrosshairTool.DoDraw;
 var
   p: TPoint;
+  ps: TFPPenStyle;
 begin
-  FChart.Drawer.Pen := CrosshairPen;
+  if not CrosshairPen.Visible then
+    ps := CrosshairPen.Style;
+  PrepareDrawingModePen(FChart.Drawer, CrosshairPen);
   p := FChart.GraphToImage(Position);
   if Shape in [ccsVertical, ccsCross] then
     if Size < 0 then
@@ -1996,6 +1999,8 @@ begin
       FChart.DrawLineHoriz(FChart.Drawer, p.Y)
     else
       FChart.Drawer.Line(p - Point(Size, 0), p + Point(Size, 0));
+  if not CrosshairPen.Visible then
+    FChart.Drawer.SetPenParams(ps, CrosshairPen.Color);
   inherited;
 end;
 
