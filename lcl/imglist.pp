@@ -164,7 +164,7 @@ type
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
       AEnabled: Boolean = True); overload;
     procedure Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer; ADrawingStyle: TDrawingStyle; AImageType: TImageType;
-      ADrawEffect: TGraphicsDrawEffect); overload;
+      ADrawEffect: TGraphicsDrawEffect); overload; virtual;
     procedure StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean = True);
 
     procedure DrawOverlay(ACanvas: TCanvas; AX, AY, AIndex: Integer; AOverlay: TOverlay; AEnabled: Boolean = True); overload;
