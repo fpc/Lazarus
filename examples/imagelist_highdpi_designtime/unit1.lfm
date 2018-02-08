@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 92
+  Left = 367
   Height = 384
-  Top = 274
+  Top = 275
   Width = 958
   Caption = 'Form1'
   ClientHeight = 364
@@ -89,11 +89,36 @@ object Form1: TForm1
       ImageIndex = 0
     end
   end
+  object RadioGroup1: TRadioGroup
+    Left = 324
+    Height = 47
+    Top = 297
+    Width = 304
+    AutoFill = True
+    Caption = 'View style'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 27
+    ClientWidth = 300
+    Columns = 2
+    ItemIndex = 0
+    Items.Strings = (
+      'vsIcon'
+      'vsSmallIcon'
+    )
+    OnClick = RadioGroup1Click
+    TabOrder = 4
+  end
   object ImageList1: TImageList
     Scaled = True
     OnGetWidthForPPI = ImageList1GetWidthForPPI
-    Left = 24
-    Top = 296
+    left = 24
+    top = 296
     Bitmap = {
       4C69050000001000000010000000000000000000000078483671784836FE7848
       36FD784836FD784836FD784836FC784836FC794937E55EACB1084FE9FC2F53E9
@@ -1313,8 +1338,8 @@ object Form1: TForm1
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
-    Left = 64
-    Top = 296
+    left = 64
+    top = 296
     object MenuItem1: TMenuItem
       Caption = 'MenuItem1'
       SubMenuImages = ImageList1
