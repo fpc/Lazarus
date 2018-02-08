@@ -46,10 +46,9 @@ unit Themes;
 interface
 
 uses
-  // no Graphics or Controls can be used here to prevent circular references
-  //
-  SysUtils, Types, GraphType, Math, Classes, LCLProc, LCLType, Graphics,
-  TmSchema;
+  Classes, SysUtils, Types, Math,
+  // LCL  -  Controls cannot be used here to prevent circular references
+  LCLProc, LCLType, GraphType, Graphics, TmSchema;
   
 type
   // These are all elements which can be themed.
