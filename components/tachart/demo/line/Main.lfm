@@ -8,15 +8,15 @@ object Form1: TForm1
   ClientWidth = 691
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 494
     Top = 0
     Width = 691
-    ActivePage = tsGetPointerStyle
+    ActivePage = tsFast
     Align = alClient
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 0
     OnChange = PageControl1Change
     object tsFast: TTabSheet
@@ -30,12 +30,16 @@ object Form1: TForm1
         Width = 683
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -163,12 +167,16 @@ object Form1: TForm1
         Width = 513
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         AxisVisible = False
         Foot.Brush.Color = clBtnFace
@@ -221,12 +229,16 @@ object Form1: TForm1
         Width = 683
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -335,12 +347,16 @@ object Form1: TForm1
         Width = 683
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -370,17 +386,21 @@ object Form1: TForm1
         AxisList = <        
           item
             Grid.Color = clMedGray
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Range.Max = 2
             Range.Min = -2
             Range.UseMax = True
             Range.UseMin = True
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Color = clMedGray
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
             Transformations = catOscillator
           end>
         BackColor = clBlack
@@ -400,6 +420,85 @@ object Form1: TForm1
           LinePen.Width = 2
           LineType = ltStepXY
           Source = lcsOscillator
+        end
+      end
+    end
+    object tsColorEach: TTabSheet
+      Caption = 'Color each data point'
+      ClientHeight = 466
+      ClientWidth = 683
+      object pnlColorEach: TPanel
+        Left = 0
+        Height = 39
+        Top = 0
+        Width = 683
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 39
+        ClientWidth = 683
+        TabOrder = 0
+        object cbColorEach: TComboBox
+          AnchorSideLeft.Control = pnlColorEach
+          AnchorSideTop.Control = pnlColorEach
+          Left = 8
+          Height = 23
+          Top = 8
+          Width = 272
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
+          BorderSpacing.Bottom = 8
+          ItemHeight = 15
+          ItemIndex = 1
+          Items.Strings = (
+            'no'
+            'data point only'
+            'line segment before data point'
+            'line segment after data point'
+            'data point and preceding line segment'
+            'data point and following line segment'
+          )
+          OnChange = cbColorEachChange
+          Style = csDropDownList
+          TabOrder = 0
+          Text = 'data point only'
+        end
+      end
+      object Chart_ColorEach: TChart
+        Left = 0
+        Height = 427
+        Top = 39
+        Width = 683
+        AxisList = <        
+          item
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelBrush.Style = bsClear
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWindow
+        object lsColorEach: TLineSeries
+          ColorEach = cePointAndLineAfter
+          LinePen.Width = 2
+          Pointer.HorizSize = 6
+          Pointer.Style = psCircle
+          Pointer.VertSize = 6
+          ShowPoints = True
         end
       end
     end
@@ -423,6 +522,7 @@ object Form1: TForm1
     end
     object ChartToolset1ZoomDragTool1: TZoomDragTool
       Shift = [ssShift, ssLeft]
+      Brush.Style = bsClear
       RatioLimit = zrlFixedY
     end
     object ChartToolset1PanDragTool1: TPanDragTool
