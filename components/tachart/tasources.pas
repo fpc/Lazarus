@@ -334,7 +334,6 @@ var
 
 var
   i: Integer;
-  s: String;
 begin
   parts := Split(AString);
   try

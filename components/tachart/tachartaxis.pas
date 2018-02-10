@@ -266,7 +266,7 @@ type
 implementation
 
 uses
-  LResources, Math, PropEdits, TAChartStrConsts, TAGeometry, TAMath;
+  LResources, Math, PropEdits, TAChartStrConsts, TAMath;
 
 var
   VIdentityTransform: TChartAxisTransformations;

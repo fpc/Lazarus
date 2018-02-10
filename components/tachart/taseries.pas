@@ -185,6 +185,9 @@ type
 
   TLineType = (ltNone, ltFromPrevious, ltFromOrigin, ltStepXY, ltStepYX);
 
+  TColorEachMode = (ceNone, cePoint, ceLineBefore, ceLineAfter,
+    cePointAndLineBefore, cePointAndLineAfter);
+
   { TLineSeries }
 
   TLineSeries = class(TBasicPointSeries)
@@ -193,9 +196,11 @@ type
     FLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
     FShowPoints: Boolean;
+    FColorEach: TColorEachMode;
 
     procedure DrawSingleLineInStack(ADrawer: IChartDrawer; AIndex: Integer);
     function GetShowLines: Boolean;
+    procedure SetColorEach(AValue: TColorEachMode);
     procedure SetLinePen(AValue: TPen);
     procedure SetLineType(AValue: TLineType);
     procedure SetSeriesColor(AValue: TColor);
@@ -214,6 +219,8 @@ type
   published
     property AxisIndexX;
     property AxisIndexY;
+    property ColorEach: TColorEachMode
+      read FColorEach write SetColorEach default cePoint;
     property Depth;
     property LinePen: TPen read FLinePen write SetLinePen;
     property LineType: TLineType
@@ -374,6 +381,7 @@ begin
       Self.FLineType := FLineType;
       Self.FOnDrawPointer := FOnDrawPointer;
       Self.FShowPoints := FShowPoints;
+      Self.FColorEach := FColorEach;
     end;
   inherited Assign(ASource);
 end;
@@ -382,6 +390,7 @@ constructor TLineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  FColorEach := cePoint;
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
@@ -494,7 +503,7 @@ var
     CacheLine(m, AP2);
   end;
 
-  procedure DrawLines;
+  procedure DrawDefaultLines;
   var
     i, j: Integer;
     p, pPrev: TDoublePoint;
@@ -556,11 +565,102 @@ var
     end;
   end;
 
+  function GetPtColor(AIndex: Integer): TColor;
+  begin
+    Result := Source[AIndex]^.Color;
+    if Result = clTAColor then Result := SeriesColor;
+  end;
+
+  procedure DrawColoredLines;
+  var
+    i, n: Integer;
+    gp: TDoublepoint;
+    col, col1, col2: TColor;
+    imgPt1, imgPt2: TPoint;
+    pt, origin: TPoint;
+    hasBreak: Boolean;
+  begin
+    if LineType = ltNone then exit;
+
+    n := Length(FGraphPoints);
+
+    // Find first point
+    i := 0;
+    while (i < n) do begin
+      gp := FGraphPoints[i];
+      if not IsNaN(gp) then break;
+      inc(i);
+    end;
+    if i = n then
+      exit;
+
+    ADrawer.Pen := LinePen;
+    imgPt1 := ParentChart.GraphToImage(gp);
+    col1 := GetPtColor(i);
+
+    // First line for line type ltFromOrigin
+    if LineType = ltFromOrigin then begin
+      origin := ParentChart.GraphToImage(AxisToGraph(ZeroDoublePoint));
+      ADrawer.SetPenParams(FLinePen.Style, col1);
+      ADrawer.Line(origin, imgPt1);
+    end;
+
+    // iterate through all other points
+    hasBreak := false;
+    while (i < n) do begin
+      gp := FGraphPoints[i];
+      if IsNaN(gp) then begin
+        hasBreak := true;
+      end else begin
+        if hasBreak then begin
+          imgPt1 := ParentChart.GraphToImage(gp);
+          hasBreak := false;
+        end;
+        imgPt2 := ParentChart.GraphToImage(gp);
+        col2 := GetPtColor(i);
+        if imgPt1 <> imgPt2 then begin
+          case FColorEach of
+            ceLineBefore, cePointAndLineBefore: col := col2;
+            ceLineAfter, cePointAndLineAfter: col := col1;
+            else raise Exception.Create('TLineSeries: ColorEach error');
+          end;
+          ADrawer.SetPenParams(FLinePen.Style, col);
+          case LineType of
+            ltFromPrevious:
+              ADrawer.Line(imgPt1, imgPt2);
+            ltStepXY:
+              begin
+                pt := Point(imgPt2.x, imgPt1.Y);
+                ADrawer.Line(imgPt1, pt);
+                ADrawer.Line(pt, imgPt2);
+              end;
+            ltStepYX:
+              begin
+                pt := Point(imgPt1.x, imgPt2.Y);
+                ADrawer.Line(imgPt1, pt);
+                ADrawer.Line(pt, imgPt2);
+              end;
+            ltFromOrigin:
+              ADrawer.Line(origin, imgPt2);
+          end;
+        end;
+        imgPt1 := imgPt2;
+        col1 := col2;
+      end;
+      inc(i);
+    end;
+  end;
+
 begin
-  DrawLines;
+  case FColorEach of
+    ceNone, cePoint:
+      DrawDefaultLines;
+    else
+      DrawColoredLines;
+  end;
   DrawLabels(ADrawer);
   if ShowPoints then
-    DrawPointers(ADrawer, AIndex);
+    DrawPointers(ADrawer, AIndex, FColorEach in [cePoint, cePointAndLineBefore, cePointAndLineAfter]);
 end;
 
 procedure TLineSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -611,6 +711,13 @@ end;
 function TLineSeries.GetShowLines: Boolean;
 begin
   Result := FLineType <> ltNone;
+end;
+
+procedure TLineSeries.SetColorEach(AValue: TColorEachMode);
+begin
+  if FColorEach = AValue then exit;
+  FColorEach := AValue;
+  UpdateParentChart;
 end;
 
 procedure TLineSeries.SetLinePen(AValue: TPen);
