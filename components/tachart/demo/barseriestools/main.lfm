@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 506
   ClientWidth = 1035
   OnCreate = FormCreate
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object LogSplitter: TSplitter
     Left = 717
     Height = 506
@@ -140,17 +140,21 @@ object MainForm: TMainForm
       AxisList = <      
         item
           Grid.Color = clSilver
+          Marks.LabelBrush.Style = bsClear
           Minors = <>
           Title.LabelFont.Orientation = 900
+          Title.LabelBrush.Style = bsClear
         end      
         item
           Grid.Visible = False
           Alignment = calBottom
           AxisPen.Visible = True
           Marks.Format = '%2:s'
+          Marks.LabelBrush.Style = bsClear
           Marks.Source = ListChartSourceLABELS
           Marks.Style = smsLabel
           Minors = <>
+          Title.LabelBrush.Style = bsClear
           ZPosition = 1
         end>
       BackColor = clWhite

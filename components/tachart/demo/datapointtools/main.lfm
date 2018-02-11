@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 488
   ClientWidth = 637
   OnCreate = FormCreate
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object TabControl: TTabControl
     Left = 0
     Height = 347
@@ -41,17 +41,21 @@ object MainForm: TMainForm
       AutoFocus = True
       AxisList = <      
         item
+          Marks.LabelBrush.Style = bsClear
           Minors = <>
           Range.Max = 10
           Range.UseMax = True
           Range.UseMin = True
           Title.LabelFont.Orientation = 900
+          Title.LabelBrush.Style = bsClear
         end      
         item
           Intervals.MaxLength = 80
           Intervals.MinLength = 30
           Alignment = calBottom
+          Marks.LabelBrush.Style = bsClear
           Minors = <>
+          Title.LabelBrush.Style = bsClear
         end>
       Foot.Brush.Color = clBtnFace
       Foot.Font.Color = clBlue
@@ -133,7 +137,6 @@ object MainForm: TMainForm
         DownLinePen.Width = 2
         LinePen.Color = clGreen
         LinePen.Width = 2
-        Mode = mOHLC
       end
       object BoxWhiskerSeries: TBoxAndWhiskerSeries
         Active = False
@@ -158,8 +161,8 @@ object MainForm: TMainForm
         Extent.UseXMin = True
         Extent.XMax = 10
         Title = 'Function series'
-        OnCalculate = FuncSeriesCalculate
         Pen.Color = clBlue
+        OnCalculate = FuncSeriesCalculate
       end
       object FieldSeries: TFieldSeries
         Active = False
@@ -179,6 +182,7 @@ object MainForm: TMainForm
         Pointer.HorizSize = 5
         Pointer.Style = psCircle
         Pointer.VertSize = 5
+        Pointer.Visible = False
       end
     end
   end

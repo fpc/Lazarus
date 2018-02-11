@@ -7,20 +7,22 @@ object MainForm: TMainForm
   ClientHeight = 466
   ClientWidth = 891
   OnCreate = FormCreate
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object FinancialChart: TChart
     Left = 0
-    Height = 382
-    Top = 42
+    Height = 385
+    Top = 39
     Width = 891
     AxisList = <    
       item
         Grid.Color = clSilver
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
         Title.LabelFont.Style = [fsBold]
         Title.Visible = True
         Title.Caption = 'Stock price'
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Grid.Visible = False
@@ -28,8 +30,10 @@ object MainForm: TMainForm
         Alignment = calBottom
         Marks.LabelFont.Orientation = 900
         Marks.Format = '%2:s'
+        Marks.LabelBrush.Style = bsClear
         Marks.Style = smsLabel
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     BackColor = clWhite
     Foot.Brush.Color = clBtnFace
@@ -53,7 +57,6 @@ object MainForm: TMainForm
       DownLinePen.Width = 2
       LinePen.Color = clLime
       LinePen.Width = 2
-      Mode = mOHLC
     end
   end
   object BottomPanel: TPanel
@@ -80,19 +83,25 @@ object MainForm: TMainForm
   end
   object TopPanel: TPanel
     Left = 0
-    Height = 42
+    Height = 39
     Top = 0
     Width = 891
     Align = alTop
+    AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 42
+    ClientHeight = 39
     ClientWidth = 891
     TabOrder = 2
     object cbSeriesType: TComboBox
+      AnchorSideLeft.Control = TopPanel
+      AnchorSideTop.Control = TopPanel
       Left = 8
       Height = 23
       Top = 8
       Width = 242
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
       ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
@@ -105,10 +114,15 @@ object MainForm: TMainForm
       Text = 'OHLC series'
     end
     object cbCandleStickSameColor: TCheckBox
-      Left = 600
+      AnchorSideLeft.Control = cbDownColor
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbSeriesType
+      AnchorSideTop.Side = asrCenter
+      Left = 584
       Height = 19
       Top = 10
       Width = 173
+      BorderSpacing.Left = 24
       Caption = 'same color for tails and body'
       Checked = True
       OnChange = cbCandleStickSameColorChange
@@ -117,41 +131,61 @@ object MainForm: TMainForm
       Visible = False
     end
     object cbUpColor: TColorBox
-      Left = 296
+      AnchorSideLeft.Control = LblUp
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbSeriesType
+      AnchorSideTop.Side = asrCenter
+      Left = 297
       Height = 26
-      Top = 10
+      Top = 6
       Width = 100
       Selected = clLime
       Style = [cbStandardColors, cbExtendedColors, cbIncludeNone, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
+      BorderSpacing.Left = 8
       ItemHeight = 20
       OnChange = cbColorChange
       TabOrder = 2
     end
     object cbDownColor: TColorBox
-      Left = 464
+      AnchorSideLeft.Control = LblDown
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbSeriesType
+      AnchorSideTop.Side = asrCenter
+      Left = 460
       Height = 26
-      Top = 8
+      Top = 6
       Width = 100
       Selected = clRed
       Style = [cbStandardColors, cbExtendedColors, cbIncludeNone, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
+      BorderSpacing.Left = 8
       ItemHeight = 20
       OnChange = cbColorChange
       TabOrder = 3
     end
     object LblUp: TLabel
-      Left = 264
+      AnchorSideLeft.Control = cbSeriesType
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbSeriesType
+      AnchorSideTop.Side = asrCenter
+      Left = 274
       Height = 15
       Top = 12
       Width = 15
+      BorderSpacing.Left = 24
       Caption = 'Up'
       FocusControl = cbUpColor
       ParentColor = False
     end
     object LblDown: TLabel
-      Left = 413
+      AnchorSideLeft.Control = cbUpColor
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbSeriesType
+      AnchorSideTop.Side = asrCenter
+      Left = 421
       Height = 15
       Top = 12
       Width = 31
+      BorderSpacing.Left = 24
       Caption = 'Down'
       FocusControl = cbDownColor
       ParentColor = False

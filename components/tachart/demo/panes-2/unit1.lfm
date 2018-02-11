@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 492
   ClientWidth = 881
   OnCreate = FormCreate
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 492
@@ -166,9 +166,9 @@ object Form1: TForm1
     Height = 492
     Top = 0
     Width = 721
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 1
     OnChange = PageControl1Change
     OnChanging = PageControl1Changing
@@ -187,9 +187,11 @@ object Form1: TForm1
             Grid.Visible = False
             Alignment = calBottom
             AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.Visible = True
             Title.Caption = 'x axis'
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Color = clGray
@@ -201,6 +203,7 @@ object Form1: TForm1
             AxisPen.Visible = True
             Marks.LabelFont.Color = clBlue
             Marks.AtDataOnly = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Range.Max = 5
             Range.Min = -5
@@ -208,6 +211,7 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'y1 axis'
+            Title.LabelBrush.Style = bsClear
             Title.PositionOnMarks = True
             Transformations = ChartAxisTransformations1
           end        
@@ -220,12 +224,14 @@ object Form1: TForm1
             AxisPen.Visible = True
             Marks.LabelFont.Color = clRed
             Marks.AtDataOnly = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Range.Max = 20
             Title.LabelFont.Color = clRed
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'y2 axis'
+            Title.LabelBrush.Style = bsClear
             Title.PositionOnMarks = True
             Transformations = ChartAxisTransformations2
           end        
@@ -237,6 +243,7 @@ object Form1: TForm1
             AxisPen.Visible = True
             Marks.LabelFont.Color = clFuchsia
             Marks.AtDataOnly = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Range.Max = 100
             Range.Min = -100
@@ -244,6 +251,7 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'y3 axis'
+            Title.LabelBrush.Style = bsClear
             Title.PositionOnMarks = True
             Transformations = ChartAxisTransformations3
           end>
@@ -261,7 +269,6 @@ object Form1: TForm1
         Toolset = ChartToolset1
         Align = alClient
         Color = clNone
-        ParentColor = False
         object Chart1LineSeries1: TLineSeries
           AxisIndexX = 0
           AxisIndexY = 1
@@ -315,10 +322,10 @@ object Form1: TForm1
           Extent.YMin = -1
           AxisIndexX = 0
           AxisIndexY = 2
-          OnCalculate = Chart1FuncSeries2Calculate
           ExtentAutoY = True
           Pen.Color = clRed
           Step = 1
+          OnCalculate = Chart1FuncSeries2Calculate
         end
       end
     end
@@ -336,10 +343,12 @@ object Form1: TForm1
             Grid.Color = clGray
             Grid.Visible = False
             AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'y axis'
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Color = clGray
@@ -351,12 +360,14 @@ object Form1: TForm1
             AxisPen.Visible = True
             Marks.LabelFont.Color = clBlue
             Marks.AtDataOnly = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Range.Max = 5
             Range.Min = -5
             Title.LabelFont.Color = clBlue
             Title.Visible = True
             Title.Caption = 'x1 axis'
+            Title.LabelBrush.Style = bsClear
             Title.PositionOnMarks = True
             Transformations = ChartAxisTransformations1
           end        
@@ -370,11 +381,13 @@ object Form1: TForm1
             AxisPen.Visible = True
             Marks.LabelFont.Color = clRed
             Marks.AtDataOnly = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Range.Max = 20
             Title.LabelFont.Color = clRed
             Title.Visible = True
             Title.Caption = 'x2 axis'
+            Title.LabelBrush.Style = bsClear
             Title.PositionOnMarks = True
             Transformations = ChartAxisTransformations2
           end        
@@ -387,12 +400,14 @@ object Form1: TForm1
             AxisPen.Visible = True
             Marks.LabelFont.Color = clFuchsia
             Marks.AtDataOnly = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Range.Max = 100
             Range.Min = -100
             Title.LabelFont.Color = clFuchsia
             Title.Visible = True
             Title.Caption = 'x3 axis'
+            Title.LabelBrush.Style = bsClear
             Title.PositionOnMarks = True
             Transformations = ChartAxisTransformations3
           end>
@@ -410,7 +425,6 @@ object Form1: TForm1
         Toolset = ChartToolset2
         Align = alClient
         Color = clNone
-        ParentColor = False
         object Chart2LineSeries1: TLineSeries
           AxisIndexX = 1
           AxisIndexY = 0
@@ -470,9 +484,9 @@ object Form1: TForm1
           Extent.YMax = 1
           AxisIndexX = 2
           AxisIndexY = 0
-          OnCalculate = Chart2FuncSeries2Calculate
           Pen.Color = clRed
           Step = 1
+          OnCalculate = Chart2FuncSeries2Calculate
         end
       end
     end

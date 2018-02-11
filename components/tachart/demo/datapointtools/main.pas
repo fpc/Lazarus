@@ -146,6 +146,8 @@ var
   i: Integer;
   x, x2, y1, y2, y3,yO, yH, yL, yC: Double;
 begin
+  Chart.DoubleBuffered := true;
+
   ListChartSource.YCount := 2;
   ListChartSource.Sorted := true;
   for i:=0 to N-1 do begin

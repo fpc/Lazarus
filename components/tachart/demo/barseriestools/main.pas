@@ -195,6 +195,7 @@ const
 var
   i: Integer;
 begin
+  Chart.DoubleBuffered := true;
   for i:=0 to 5 do begin
     ListChartSourceRedYellow.AddXYList(i, [random*50, random*60]);
     ListChartSourceBlue.Add(i, Random*80);
