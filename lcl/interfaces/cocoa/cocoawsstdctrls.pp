@@ -908,6 +908,7 @@ var
   ced   : NSUInteger;
   ns    : NSString;
   idx   : integer;
+  ro    : Boolean;
 const
   LFSTR = #13#10;
 begin
@@ -924,6 +925,10 @@ begin
   // using selectedRange in order to be consistent with Windows widgetset
   if rng.location>ns.length then rng.location:=ns.length;
   inc(FTextView.supressTextChangeEvent);
+
+  ro := FTextView.isEditable; // checking for read-only flag;
+  if not ro then FTextView.setEditable(true);
+
   FTextView.setSelectedRange(rng);
 
   if (rng.location>=ns.length) and (st=ced) and (ns.length>0) then
@@ -936,6 +941,8 @@ begin
 
   dec(FTextView.supressTextChangeEvent);
   FTextView.insertText( NSString.stringWithUTF8String( LFSTR ));
+
+  if not ro then FTextView.setEditable(ro);
 end;
 
 procedure TCocoaMemoStrings.LoadFromFile(const FileName: string);
