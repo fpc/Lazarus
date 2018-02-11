@@ -1066,7 +1066,7 @@ begin
     begin
       dx := 0;
       dy := 0;
-      NSObject(Handle).lclLocalToScreen(dx, dx);
+      NSObject(Handle).lclLocalToScreen(dx, dy);
       MoveRect(ARect, dx, dy);
     end;
     Result := 1;
