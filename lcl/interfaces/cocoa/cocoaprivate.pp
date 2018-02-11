@@ -1700,6 +1700,7 @@ end;
 procedure TCocoaFieldEditor.keyDown(event: NSEvent);
 var
   cb : ICommonCallback;
+  res : Boolean;
 const
   NSKeyCodeTab  = 48;
 begin
@@ -1708,12 +1709,13 @@ begin
     cb := lastEditBox.lclGetCallback;
     if Assigned(cb) then
     begin
-      cb.KeyEvent(event);
+      res := cb.KeyEvent(event);
       // LCL has already handled tab (by switching focus)
       // do not let Cocoa to switch the focus again!
       if event.keyCode = NSKeyCodeTab then Exit;
-    end;
-    inherited keyDown(event);
+    end else
+      res := false;
+    if not res then inherited keyDown(event);
   end
   else
     inherited keyDown(event);
@@ -2628,9 +2630,9 @@ end;
 
 procedure TCocoaTextView.keyDown(event: NSEvent);
 begin
-  if Assigned(callback) then callback.KeyEvent(event);
-  // don't skip inherited or else key input won't work
-  inherited keyDown(event);
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    // don't skip inherited or else key input won't work
+    inherited keyDown(event);
 end;
 
 procedure TCocoaTextView.keyUp(event: NSEvent);

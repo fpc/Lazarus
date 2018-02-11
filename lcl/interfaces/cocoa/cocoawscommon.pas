@@ -613,6 +613,8 @@ var
       end;
     end;
 
+    if KeyMsg.CharCode = 0 then Exit;
+
     //We should send a character
     if SendChar then
     begin
@@ -643,6 +645,8 @@ var
         Exit;
       end;
 
+      if CharMsg.CharCode = 0 then Exit;
+
       if CharMsg.CharCode <> ord(KeyChar) then
         LCLCharToMacEvent(Char(CharMsg.CharCode));
 
@@ -653,11 +657,10 @@ var
         CharMsg.Msg := LM_CHAR;
 
       if DeliverMessage(CharMsg) <> 0 then
-      begin
-        // the LCL handled the key
+        // "LN_CHAR" should be delivivered only after Cocoa processed the key
+        // todo: in the current code, Cocoa has not processed the key yet
+        // it must be rewritten.
         NotifyApplicationUserInput(Target, CharMsg.Msg);
-        Exit;
-      end;
     end;
     Result := False;
   end;
@@ -748,13 +751,13 @@ begin
     NSKeyDown:
       begin
         if not TranslateMacKeyCode then
-          Exit(True);
+          Exit(False);
         Result := HandleKeyDown;
       end;
     NSKeyUp:
       begin
         if not TranslateMacKeyCode then
-          Exit(True);
+          Exit(False);
         Result := HandleKeyUp;
       end;
     NSFlagsChanged:
