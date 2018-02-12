@@ -32,7 +32,7 @@ type
     procedure actDelExecute(Sender: TObject);
     procedure actMoveUpDownExecute(Sender: TObject);
     procedure CollectionListBoxClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private

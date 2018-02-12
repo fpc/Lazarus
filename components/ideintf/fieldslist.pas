@@ -25,7 +25,7 @@
 
 }
 
-unit fieldslist;
+unit FieldsList;
 
 {$mode objfpc}{$H+}
 
@@ -47,7 +47,7 @@ type
     BitBtnCancel: TBitBtn;
     ListBox1: TListBox;
     procedure BitBtnOkClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
     FDesigner: TComponentEditorDesigner;

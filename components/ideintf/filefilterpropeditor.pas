@@ -20,7 +20,7 @@ type
     MoveDownBtn: TSpeedButton;
     MoveUpBtn: TSpeedButton;
     StringGrid1: TStringGrid;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);

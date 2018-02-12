@@ -44,7 +44,7 @@ type
     procedure BtnCleanClick(Sender: TObject);
     procedure BtnLoadClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure StringGridPrepareCanvas({%H-}sender: TObject; Col, Row: Integer;
       {%H-}aState: TGridDrawState);

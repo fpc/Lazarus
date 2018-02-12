@@ -54,7 +54,7 @@ type
     procedure DataSetsComboChange(Sender: TObject);
     procedure EditCompNameChange(Sender: TObject);
     procedure EditNameChange(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure OKBtnClick(Sender: TObject);
     procedure RadioGroup1Click(Sender: TObject);
     procedure SelectKeyFieldsChange(Sender: TObject);

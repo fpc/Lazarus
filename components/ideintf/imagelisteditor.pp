@@ -83,14 +83,14 @@ type
     procedure btnSaveAllClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure ColorBoxTransparentClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure ImageListBoxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure btnAddNewResolutionClick(Sender: TObject);
     procedure btnDeleteResolutionClick(Sender: TObject);
-    procedure ImageListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure ImageListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure FormResize(Sender: TObject);
   private
     FImageList: TImageList;
@@ -106,7 +106,7 @@ type
     procedure RecreatePreviewImages(const aForce: Boolean = False);
     procedure UpdatePreviewImage;
     procedure UpdateImagesGroupBoxWidth;
-    procedure UpdateImagesGroupBoxWidthQueue(Data: PtrInt);
+    procedure UpdateImagesGroupBoxWidthQueue({%H-}Data: PtrInt);
     class function ResolutionToString(const ARes: TCustomImageListResolution): string;
   protected
     procedure DoDestroy; override;
@@ -358,11 +358,10 @@ procedure TImageListEditorDlg.btnDeleteResolutionClick(Sender: TObject);
 var
   TD: LCLTaskDialog.TTaskDialog;
   R: TCustomImageListResolution;
-  TDRes: Integer;
   RA: array of Integer;
   ResItem: string;
 begin
-  FillChar(TD, SizeOf(LCLTaskDialog.TTaskDialog), 0);
+  FillChar(TD{%H-}, SizeOf(LCLTaskDialog.TTaskDialog), 0);
   SetLength(RA, 0);
   for R in ImageList.Resolutions do
   begin
@@ -752,12 +751,7 @@ procedure TImageListEditorDlg.AddImageToList(const FileName: String;
 var
   SrcBmp, DestBmp: TBitmap;
   Picture: TPicture;
-  Node: TTreeNode;
   P: TGlyphInfo;
-  ImagesPerColumn: Integer;
-  ImagesPerRow: Integer;
-  iRow: Integer;
-  iCol: Integer;
 begin
   SaveDialog.InitialDir := ExtractFileDir(FileName);
   SrcBmp := nil;

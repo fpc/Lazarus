@@ -44,7 +44,7 @@ type
     procedure ColumnsEditChange(Sender: TObject);
     procedure CreateItems(Sender: TObject);
     procedure DeleteItem(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure ItemClick(Sender: TObject; Index: integer);
     procedure ModifyItem(Sender: TObject);

@@ -55,7 +55,7 @@ type
     TreeView1: TTreeView;
     procedure BtnNewItemClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);

@@ -30,7 +30,7 @@ type
     StatusLabel: TLabel;
     SortButton: TButton;
     TextGroupBox: TGroupBox;
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure SortButtonClick(Sender: TObject);
   public

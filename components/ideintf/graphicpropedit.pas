@@ -49,7 +49,7 @@ type
     ScrollBox: TScrollBox;
     procedure CopyActionExecute(Sender: TObject);
     procedure CopyActionUpdate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure ImagePreviewPaintBackground({%H-}ASender: TObject; ACanvas: TCanvas;
       ARect: TRect);
     procedure PasteActionExecute(Sender: TObject);
