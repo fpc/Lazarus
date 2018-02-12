@@ -262,6 +262,7 @@ type
     psLibrary,
     psEnumerator,
     psVarargs,
+    psVectorCall,
     psEdgedBracket
     );
   TAllProcedureSpecifiers = set of TProcedureSpecifier;
@@ -273,7 +274,7 @@ const
       'EXTERNAL', 'FORWARD', 'PASCAL', 'ASSEMBLER', 'SAVEREGISTERS',
       'FAR', 'NEAR', 'FINAL', 'STATIC', 'MWPASCAL', 'NOSTACKFRAME',
       'DEPRECATED', 'DISPID', 'PLATFORM', 'SAFECALL', 'UNIMPLEMENTED',
-      'EXPERIMENTAL', 'LIBRARY', 'ENUMERATOR', 'VARARGS',
+      'EXPERIMENTAL', 'LIBRARY', 'ENUMERATOR', 'VARARGS', 'VECTORCALL',
       '['
     );
 

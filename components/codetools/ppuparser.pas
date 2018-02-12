@@ -279,7 +279,9 @@ type
     pocall_softfloat,
     { Metrowerks Pascal. Special case on Mac OS (X): passes all }
     { constant records by reference.                            }
-    pocall_mwpascal
+    pocall_mwpascal,
+    { for x86-64: Microsoft's "vectorcall" ABI }
+    pocall_vectorcall
   );
   tproccalloptions = set of tproccalloption;
 
@@ -414,7 +416,8 @@ const
      'SafeCall',
      'StdCall',
      'SoftFloat',
-     'MWPascal'
+     'MWPascal',
+     'VectorCall'
    );
   proctypeoptionNames : array[tproctypeoption] of string[20]=(
      'none',
