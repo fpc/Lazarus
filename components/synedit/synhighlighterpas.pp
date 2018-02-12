@@ -425,8 +425,9 @@ type
     function Func103: TtkTokenKind;
     function Func105: TtkTokenKind;
     function Func106: TtkTokenKind;
-    function Func108: TtkTokenKind;  // "operator"
-    function Func112: TtkTokenKind;  // "requires"
+    function Func108: TtkTokenKind; // "operator"
+    function Func111: TtkTokenKind; // "vectorcall"
+    function Func112: TtkTokenKind; // "requires"
     function Func117: TtkTokenKind;
     function Func122: TtkTokenKind; // "otherwise"
     function Func124: TtkTokenKind;
@@ -787,6 +788,7 @@ begin
   fIdentFuncTable[105] := @Func105;
   fIdentFuncTable[106] := @Func106;
   fIdentFuncTable[108] := @Func108; // "operator"
+  fIdentFuncTable[111] := @Func111; // "vectorcall"
   fIdentFuncTable[112] := @Func112; // "requires"
   fIdentFuncTable[117] := @Func117;
   fIdentFuncTable[122] := @Func122;
@@ -2325,9 +2327,17 @@ begin
     Result := tkKey else Result := tkIdentifier;
 end;
 
+function TSynPasSyn.Func111: TtkTokenKind;
+begin
+  if KeyComp('vectorcall') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynPasSyn.AltFunc: TtkTokenKind;
 begin
-  Result := tkIdentifier
+  Result := tkIdentifier;
 end;
 
 function TSynPasSyn.IdentKind(p: integer): TtkTokenKind;
@@ -2336,7 +2346,7 @@ var
 begin
   fToIdent := p;
   HashKey := KeyHash;
-  if HashKey < 192 then
+  if HashKey <= High(fIdentFuncTable) then
     Result := fIdentFuncTable[HashKey]()
   else
     Result := tkIdentifier;
