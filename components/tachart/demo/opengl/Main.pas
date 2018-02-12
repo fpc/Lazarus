@@ -43,8 +43,9 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   // If the text engine does not find the fonts needed for the OpenGL output
   // copy the fonts to the exe folder and uncomment the next line
+  // Requires TAFonts in "uses"
 
-  // InitFonts(ExtractFilePath(ParamStr(0)));
+  //  InitFonts(ExtractFilePath(ParamStr(0)));
 end;
 
 procedure TForm1.OpenGLControl1Paint(Sender: TObject);

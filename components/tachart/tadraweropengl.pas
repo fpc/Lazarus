@@ -362,6 +362,8 @@ constructor TOpenGLDrawer.Create;
 begin
   inherited;
   InitFonts;
+  if GLFreeTypeHelper = nil then
+    GLFreeTypeHelper := TGLFreeTypeHelper.Create;
 end;
 {$ELSE}
 var
