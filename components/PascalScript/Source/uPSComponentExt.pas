@@ -23,6 +23,8 @@ const
   {alias to @link(ifps3.cdStdcall)}
   CdStdCall = uPSRuntime.CdStdCall;
 
+  cdVectorCall = uPSRuntime.cdVectorCall;
+
 type
   {Alias to @link(ifps3.TPSCallingConvention)}
   TDelphiCallingConvention = uPSRuntime.TPSCallingConvention;
