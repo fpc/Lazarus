@@ -117,8 +117,8 @@ object Form1: TForm1
   object ImageList1: TImageList
     Scaled = True
     OnGetWidthForPPI = ImageList1GetWidthForPPI
-    left = 24
-    top = 296
+    Left = 24
+    Top = 296
     Bitmap = {
       4C69050000001000000010000000000000000000000078483671784836FE7848
       36FD784836FD784836FD784836FC784836FC794937E55EACB1084FE9FC2F53E9
@@ -1338,8 +1338,8 @@ object Form1: TForm1
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
-    left = 64
-    top = 296
+    Left = 64
+    Top = 296
     object MenuItem1: TMenuItem
       Caption = 'MenuItem1'
       SubMenuImages = ImageList1

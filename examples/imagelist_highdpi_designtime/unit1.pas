@@ -45,21 +45,22 @@ implementation
 
 { TForm1 }
 
-// Sharing the same ImageList for SmallImages and LargeImages of a ListView
 procedure TForm1.ImageList1GetWidthForPPI(Sender: TCustomImageList;
   AImageWidth, APPI: Integer; var AResultWidth: Integer);
 begin
+  // make sure that the originally available resolutions (22px and 32px)
+  // are used if 20-24px or 30-36px are needed
   case AResultWidth of
-    20..24: AResultWidth:=22;
-    30..36: AResultWidth:=32;
+    20..24: AResultWidth := 22;
+    30..36: AResultWidth := 32;
   end;
 end;
 
 procedure TForm1.RadioGroup1Click(Sender: TObject);
 begin
   case Radiogroup1.ItemIndex of
-    0: Listview1.ViewStyle := vsIcon;
-    1: Listview1.ViewStyle := vsSmallIcon;
+    0: ListView1.ViewStyle := vsIcon;
+    1: ListView1.ViewStyle := vsSmallIcon;
   end;
 end;
 
