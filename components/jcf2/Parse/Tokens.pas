@@ -192,6 +192,7 @@ type
     ttCVar,
     ttNostackframe,
     ttNested,
+    ttVectorcall,
     // used in asm
     ttOffset,
     ttPtr,
@@ -365,7 +366,7 @@ const
     ttOverload, ttReintroduce,
     ttDeprecated, ttLibrary, ttPlatform, ttExperimental, ttUnimplemented,
     ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator, ttNostackframe, ttInterrupt,
-    ttPublic];
+    ttPublic, ttVectorcall];
 
   ClassDirectives: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
@@ -381,7 +382,7 @@ const
     ttNear, ttReadOnly, ttDynamic, ttNoDefault, ttRegister,
     ttExport, ttOverride, ttOverload, ttResident, ttLocal,
     ttImplements, ttReintroduce,
-    ttLibrary, ttPlatform, ttStatic, ttFinal, ttVarArgs, ttCVar];    
+    ttLibrary, ttPlatform, ttStatic, ttFinal, ttVarArgs, ttCVar, ttVectorcall];    
 
   ProcedureWords: TTokenTypeSet = [ttProcedure, ttFunction, ttConstructor, ttDestructor, ttOperator];
 
@@ -683,6 +684,7 @@ begin
   AddKeyword('resident', wtReservedWordDirective, ttResident);
   AddKeyword('local', wtReservedWordDirective, ttLocal);
   AddKeyword('generic', wtReservedWordDirective, ttGeneric);
+  AddKeyword('vectorcall', wtReservedWordDirective, ttVectorcall);
 
   AddKeyword('implements', wtReservedWordDirective, ttImplements);
   AddKeyword('reintroduce', wtReservedWordDirective, ttReintroduce);
