@@ -392,7 +392,17 @@ type
   public
     lastEditBox: NSTextField;
     function resignFirstResponder: Boolean; override;
+    // keyboard
     procedure keyDown(event: NSEvent); override;
+    // mouse
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
   end;
 
   NSWindow = objcclass external(CocoaAll.NSWindow)
@@ -1723,6 +1733,93 @@ begin
   end
   else
     inherited keyDown(event);
+end;
+
+procedure TCocoaFieldEditor.mouseDown(event: NSEvent);
+begin
+  if Assigned(lastEditBox) then
+  begin
+    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+    begin
+      inherited mouseDown(event);
+      // NSTextView runs internal mouse-tracking loop in it's mouseDown implemenation.
+      // Thus "inherited mouseDown" only returns after the mouse has been released.
+      // why is TCocoaTextView not affected?
+      if Assigned(lastEditBox) and Assigned(lastEditBox.lclGetCallback) then
+        lastEditBox.lclGetCallback.MouseUpDownEvent(event, true);
+    end;
+  end else
+    inherited mouseDown(event);
+end;
+
+procedure TCocoaFieldEditor.mouseUp(event: NSEvent);
+begin
+  if Assigned(lastEditBox) then
+  begin
+    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+      inherited mouseUp(event);
+  end else
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaFieldEditor.rightMouseDown(event: NSEvent);
+begin
+  if Assigned(lastEditBox) then
+  begin
+    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+      inherited rightMouseDown(event);
+  end else
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaFieldEditor.rightMouseUp(event: NSEvent);
+begin
+  if Assigned(lastEditBox) then
+  begin
+    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+      inherited rightMouseUp(event);
+  end else
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaFieldEditor.otherMouseDown(event: NSEvent);
+begin
+  if Assigned(lastEditBox) then
+  begin
+    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+      inherited otherMouseDown(event);
+  end else
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaFieldEditor.otherMouseUp(event: NSEvent);
+begin
+  if Assigned(lastEditBox) then
+  begin
+    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+      inherited otherMouseUp(event);
+  end else
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaFieldEditor.mouseDragged(event: NSEvent);
+begin
+  if Assigned(lastEditBox) then
+  begin
+    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseMove(event) then
+      inherited mouseDragged(event);
+  end else
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaFieldEditor.mouseMoved(event: NSEvent);
+begin
+  if Assigned(lastEditBox) then
+  begin
+    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseMove(event) then
+      inherited mouseMoved(event);
+  end else
+    inherited mouseMoved(event);
 end;
 
 { TCocoaWindow }

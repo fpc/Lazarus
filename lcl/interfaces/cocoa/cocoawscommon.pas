@@ -787,7 +787,7 @@ begin
   if Assigned(Owner) and not Owner.lclIsEnabled then
   begin
     Result := True; // Cocoa should not handle the message.
-    Exit;           // LCL should get the notification either.
+    Exit;           // LCL should not get the notification either, as the control is disabled.
   end;
 
   // If LCL control is provided and it's in designing state.
