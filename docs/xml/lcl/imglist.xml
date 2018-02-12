@@ -800,7 +800,7 @@
           True when this image list is shared. Unused!</short>
         <descr>This property exists only for Delphi compatibility.
           True means that the imagelist <b>widget</b> is freed together with the ImageList
-        </descr>
+</descr>
         <seealso/>
       <notes><note>?</note>
         </notes>
@@ -809,7 +809,8 @@
       <element name="TCustomImageList.ImageType">
         <short>
           Unused!</short>
-        <descr>This property exists only for Delphi compatibility</descr>
+        <descr>This property exists only for Delphi compatibility
+</descr>
         <seealso/>
       <notes><note>?</note>
         </notes>
@@ -928,6 +929,9 @@
       </element>
       <element name="TCustomImageList.Equals.Obj">
         <short>The object (ImageList) to compare with.</short>
+      </element>
+    <element name="TCustomImageList.OnGetWidthForPPI"><short>Override automatically scaled width for a PPI value</short>
+      </element><element name="TCustomImageList.Scaled"><short>Set to True to enable automatic PPI scaling</short>
       </element>
     </module>
     <!-- ImgList -->
