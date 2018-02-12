@@ -228,6 +228,10 @@ type
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+    // keyboard
+    procedure keyDown(event: NSEvent); override;
+    procedure keyUp(event: NSEvent); override;
+
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -2397,6 +2401,18 @@ end;
 procedure TCocoaButton.lclClearCallback;
 begin
   callback := nil;
+end;
+
+procedure TCocoaButton.keyDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyDown(event);
+end;
+
+procedure TCocoaButton.keyUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyUp(event);
 end;
 
 procedure TCocoaButton.mouseUp(event: NSEvent);
