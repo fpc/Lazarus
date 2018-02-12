@@ -106,7 +106,7 @@ type
     tkShl, tkShr, tkSlash, tkSlashesComment, tkSquareClose, tkSquareOpen,
     tkSpace, tkStar, tkStdcall, tkStored, tkString, tkStringresource, tkSymbol,
     tkThen, tkThreadvar, tkTo, tkTry, tkType, tkUnit, tkUnknown, tkUntil, tkUses,
-    tkVar, tkVirtual, tkWhile, tkWith, tkWrite, tkWriteonly, tkXor);
+    tkVar, tkVectorcall, tkVirtual, tkWhile, tkWith, tkWrite, tkWriteonly, tkXor);
 
   TCommentState=(csAnsi, csBor, csNo);
 
@@ -191,6 +191,7 @@ type
     function Func103: TTokenKind;
     function Func105: TTokenKind;
     function Func106: TTokenKind;
+    function Func111: TTokenKind;
     function Func117: TTokenKind;
     function Func126: TTokenKind;
     function Func129: TTokenKind;
@@ -293,7 +294,7 @@ procedure TmwPasLex.InitIdent;
 var
   I: Integer;
 begin
-  for I:=0 to 191 do
+  for I:=0 to High(fIdentFuncTable) do
     Case I of
       15: fIdentFuncTable[I]:={$IFDEF FPC}@{$ENDIF}Func15;
       19: fIdentFuncTable[I]:={$IFDEF FPC}@{$ENDIF}Func19;
@@ -353,6 +354,7 @@ begin
       103: fIdentFuncTable[I]:={$IFDEF FPC}@{$ENDIF}Func103;
       105: fIdentFuncTable[I]:={$IFDEF FPC}@{$ENDIF}Func105;
       106: fIdentFuncTable[I]:={$IFDEF FPC}@{$ENDIF}Func106;
+      111: fIdentFuncTable[I]:={$IFDEF FPC}@{$ENDIF}Func111;
       117: fIdentFuncTable[I]:={$IFDEF FPC}@{$ENDIF}Func117;
       126: fIdentFuncTable[I]:={$IFDEF FPC}@{$ENDIF}Func126;
       129: fIdentFuncTable[I]:={$IFDEF FPC}@{$ENDIF}Func129;
@@ -777,6 +779,11 @@ begin
   end else Result:=tkIdentifier;
 end;
 
+function TmwPasLex.Func111: TTokenKind;
+begin
+  if KeyComp('Vectorcall') then Result:=tkVectorcall else Result:=tkIdentifier;
+end;
+
 function TmwPasLex.Func117: TTokenKind;
 begin
   if KeyComp('Exports')then Result:=tkExports else Result:=tkIdentifier;
@@ -851,7 +858,7 @@ var
 begin
   fToIdent:=MayBe;
   HashKey:=KeyHash(MayBe);
-  if HashKey<192 then
+  if HashKey<=High(fIdentFuncTable) then
     Result:=fIdentFuncTable[HashKey]()
   else
      Result:=tkIdentifier;
