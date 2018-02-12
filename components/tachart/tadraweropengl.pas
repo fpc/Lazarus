@@ -726,5 +726,12 @@ begin
 end;
 {$ENDIF}
 
+initialization
+
+finalization
+ {$IFDEF CHARTGL_USE_LAZFREETYPE}
+  FreeAndNil(GLFreeTypeHelper);
+ {$ENDIF}
+
 end.
 
