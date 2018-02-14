@@ -276,7 +276,8 @@ begin
     FErrMsg := rsMainFrm_rsMessageError2;
     FErrTyp := etTimeOut;
     FTimer.StopTimer;
-    Synchronize(@DoOnJSONDownloadCompleted);
+    TThreadTimer(Sender).Synchronize(@DoOnJSONDownloadCompleted);
+    //Synchronize(@DoOnJSONDownloadCompleted);
     FOnJSONComplete := nil;
   end
   else if (FDownloadType = dtPackage) or (FDownloadType = dtUpdate) then

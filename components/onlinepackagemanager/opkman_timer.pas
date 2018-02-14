@@ -80,7 +80,7 @@ procedure TThreadTimer.Execute;
 begin
   while not Terminated do
   begin
-    Sleep(1);
+    Sleep(100);
     if (GetTickCount64 - FTime > FInterval) and (FEnabled) then
     begin
       FTime := GetTickCount64;
