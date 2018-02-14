@@ -65,12 +65,15 @@ type
     FNote: String; //dummy
     FRemoteGDBExe: String;
     FSSHStartupOptions: String;
+    FSSH_TimeOut: Integer;
+    procedure SetSSH_TimeOut(AValue: Integer);
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
   published
     property Note: String read FNote write FNote;
     property SSH_Startup_Options: String read FSSHStartupOptions write FSSHStartupOptions;
+    property SSH_TimeOut: Integer read FSSH_TimeOut write SetSSH_TimeOut default 30;
     property Remote_GDB_Exe: String read FRemoteGDBExe write FRemoteGDBExe;
     property Append_GDB_to_SSH_opt: Boolean read FAppendGDBtoSSHopt write FAppendGDBtoSSHopt;
   published
@@ -113,11 +116,19 @@ type
 
 { TSSHGDBMIDebuggerProperties }
 
+procedure TSSHGDBMIDebuggerProperties.SetSSH_TimeOut(AValue: Integer);
+begin
+  if FSSH_TimeOut = AValue then Exit;
+  If AValue < 0 then AValue := 0;
+  FSSH_TimeOut := AValue;
+end;
+
 constructor TSSHGDBMIDebuggerProperties.Create;
 begin
   inherited Create;
   FRemoteGDBExe := 'gdb';
   FSSHStartupOptions := '';
+  SSH_TimeOut := 30;
   FAppendGDBtoSSHopt := False;
   UseAsyncCommandMode := True;
 end;
@@ -128,6 +139,7 @@ begin
   if Source is TSSHGDBMIDebuggerProperties then begin
     FRemoteGDBExe := TSSHGDBMIDebuggerProperties(Source).FRemoteGDBExe;
     FSSHStartupOptions := TSSHGDBMIDebuggerProperties(Source).FSSHStartupOptions;
+    FSSH_TimeOut := TSSHGDBMIDebuggerProperties(Source).FSSH_TimeOut;
     FAppendGDBtoSSHopt := TSSHGDBMIDebuggerProperties(Source).FAppendGDBtoSSHopt;
     UseAsyncCommandMode := True;
   end;
@@ -206,22 +218,45 @@ function TSSHGDBMIDebugger.ParseInitialization: Boolean;
   // returns False if it is the gdb prompt
   begin
     ALine := ReadLine(True, 250);
-    Result := Pos('(gdb)', ALine) = 0;
-    if Result
+    Result := (Pos('(gdb) ', ALine) <> 1) and
+      (pos('=thread-group-added', ALine) <> 1);
+    if Result and (ALine <> '')
     then ALine := StripLN(ReadLine);
   end;
+
+var
+  t, maxT: QWord;
+
+  function IsTimeOut: Boolean;
+  var
+    t2, t3: QWord;
+  begin
+    if maxT = 0 then exit(False);
+    t2 := GetTickCount64;
+    if t2 < t
+    then t3 := t2 + (High(t) - t)
+    else t3 := t2 - t;
+    Result := (t3 div 1000) > maxT;
+  end;
+
 var
   Line, ExtraText: String;
+  NotGDB, WasTimeOut: Boolean;
 begin
   Result := False;
+  t := GetTickCount64;
+  maxT := TSSHGDBMIDebuggerProperties(GetProperties).SSH_TimeOut;
   
   // strip leading empty lines
-  while CheckReadLine(Line) and (Line = '') and
-        (State <> dsError) and (not ReadLineTimedOut) and DebugProcessRunning
-  do ;
+  NotGDB := CheckReadLine(Line);
+  while (not IsTimeOut) and NotGDB and (Line = '') and
+        (State <> dsError) and DebugProcessRunning
+  do
+    NotGDB := CheckReadLine(Line);;
 
   // succesfull login ?
-  while Pos('try again', Line) > 0 do CheckReadLine(Line);
+  while (not IsTimeOut) and NotGDB and (Pos('try again', Line) > 0) do
+    NotGDB := CheckReadLine(Line);
 
 (*
   if Pos('authenticity', Line) > 0
@@ -241,30 +276,38 @@ begin
 *)
 
   ExtraText := '';
-  while CheckReadLine(Line) and (State <> dsError) and (not ReadLineTimedOut) and DebugProcessRunning
-  do
-  begin
+  while (not IsTimeOut) and NotGDB and (State <> dsError) and DebugProcessRunning
+  do begin
     // No prompt yet
-    if ExtraText = ''
-    then ExtraText := Line
-    else ExtraText := ExtraText + ' ' + Line;
+    // skip known warnings
+    if (Line <> '') and
+      (pos('Pseudo-terminal will not be allocated because stdin is not a terminal', Line) <> 1)
+    then
+      ExtraText := ExtraText + LineEnding + Line;
+    NotGDB := CheckReadLine(Line);
   end;
-  
+
+  WasTimeOut := IsTimeOut;
+
   if  (ExtraText <> '')
   and (MessageDlg(dlgGroupDebugger,
-        Format(lisResponseContinue, [LineEnding + ExtraText + LineEnding]),
+        Format(lisResponseContinue, [ExtraText + LineEnding]),
         mtConfirmation, [mbYes, mbNo], 0) <> mrYes)
   then begin
 //    DebugProcess.Terminate(0);
     Exit;
   end;
 
-  if Pos('(gdb)', Line) > 0
+  if not NotGDB and (not WasTimeOut)
   then Result := inherited ParseInitialization
   else begin
     // We got an unexpected result
+    if ExtraText = '' then
+      ExtraText := LineEnding + Line;
+    if WasTimeOut then
+      ExtraText := LineEnding + lisSSHDebuggerTimeout + LineEnding + ExtraText;
     MessageDlg(dlgGroupDebugger,
-      Format(lisUnexpectedResultTheDebuggerWillTerminate, [LineEnding + Line +
+      Format(lisUnexpectedResultTheDebuggerWillTerminate, [ExtraText +
         LineEnding]),
       mtInformation, [mbOK], 0);
     Exit;

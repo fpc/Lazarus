@@ -76,6 +76,7 @@ resourcestring
     +'Use Remote_GDB_Exe for the filename of GDB on the remote computer.';
   lisUnexpectedResultTheDebuggerWillTerminate = 'Unexpected result:%sThe '
     +'debugger will terminate';
+  lisSSHDebuggerTimeout = 'A Timeout occured:';
   lisResponseContinue = 'Response: %sContinue ?';
   dlgGroupDebugger = 'Debugger';
   synfFailedToLoadApplicationExecutable = 'Failed to load application executable';
