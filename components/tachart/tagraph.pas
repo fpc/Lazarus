@@ -153,6 +153,12 @@ type
     property List: TIndexedComponentList read FList;
   end;
 
+  TChartAfterCustomDrawEvent = procedure (
+    ASender: TChart; ADrawer: IChartDrawer; const ARect: TRect) of object;
+  TChartBeforeCustomDrawEvent = procedure (
+    ASender: TChart; ADrawer: IChartDrawer; const ARect: TRect;
+    var ADoDefaultDrawing: Boolean) of object;
+
   TChartAfterDrawEvent = procedure (
     ASender: TChart; ACanvas: TCanvas; const ARect: TRect) of object;
   TChartBeforeDrawEvent = procedure (
@@ -164,7 +170,6 @@ type
     var ADoDefaultDrawing: Boolean) of object;
   TChartDrawEvent = procedure (
     ASender: TChart; ADrawer: IChartDrawer) of object;
-
 
   TChartRenderingParams = record
     FClipRect: TRect;
@@ -196,9 +201,13 @@ type
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
     FMarginsExternal: TChartMargins;
+    FOnAfterCustomDrawBackground: TChartAfterCustomDrawEvent;
+    FOnAfterCustomDrawBackWall: TChartAfterCustomDrawEvent;
     FOnAfterDraw: TChartDrawEvent;
     FOnAfterDrawBackground: TChartAfterDrawEvent;
     FOnAfterDrawBackWall: TChartAfterDrawEvent;
+    FOnBeforeCustomDrawBackground: TChartBeforeCustomDrawEvent;
+    FOnBeforeCustomDrawBackWall: TChartBeforeCustomDrawEvent;
     FOnBeforeDrawBackground: TChartBeforeDrawEvent;
     FOnBeforeDrawBackWall: TChartBeforeDrawEvent;
     FOnChartPaint: TChartPaintEvent;
@@ -259,9 +268,13 @@ type
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
     procedure SetMarginsExternal(AValue: TChartMargins);
+    procedure SetOnAfterCustomDrawBackground(AValue: TChartAfterCustomDrawEvent);
+    procedure SetOnAfterCustomDrawBackWall(AValue: TChartAfterCustomDrawEvent);
     procedure SetOnAfterDraw(AValue: TChartDrawEvent);
     procedure SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
     procedure SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
+    procedure SetOnBeforeCustomDrawBackground(AValue: TChartBeforeCustomDrawEvent);
+    procedure SetOnBeforeCustomDrawBackWall(AValue: TChartBeforeCustomDrawEvent);
     procedure SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
     procedure SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
     procedure SetOnChartPaint(AValue: TChartPaintEvent);
@@ -373,7 +386,7 @@ type
     property PrevLogicalExtent: TDoubleRect read FPrevLogicalExtent;
     property RenderingParams: TChartRenderingParams
       read GetRenderingParams write SetRenderingParams;
-    property ReticulePos: TPoint read FReticulePos write SetReticulePos;
+    property ReticulePos: TPoint read FReticulePos write SetReticulePos; deprecated;
     property SeriesCount: Integer read GetSeriesCount;
     property XGraphMax: Double read FCurrentExtent.b.X;
     property XGraphMin: Double read FCurrentExtent.a.X;
@@ -406,26 +419,40 @@ type
     property Proportional: Boolean
       read FProportional write SetProportional default false;
     property ReticuleMode: TReticuleMode
-      read FReticuleMode write SetReticuleMode default rmNone;
+      read FReticuleMode write SetReticuleMode default rmNone; deprecated 'Use DatapointCrosshairTool instead';
     property Series: TChartSeriesList read FSeries;
     property Title: TChartTitle read FTitle write SetTitle;
     property Toolset: TBasicChartToolset read FToolset write SetToolset;
 
   published
+    property OnAfterCustomDrawBackground: TChartAfterCustomDrawEvent
+      read FOnAfterCustomDrawBackground write SetOnAfterCustomDrawBackground;
+    property OnAfterCustomDrawBackWall: TChartAfterCustomDrawEvent
+      read FOnAfterCustomDrawBackWall write SetOnAfterCustomDrawBackWall;
     property OnAfterDraw: TChartDrawEvent read FOnAfterDraw write SetOnAfterDraw;
+      deprecated 'Use OnAfterCustomDraw instead';
     property OnAfterDrawBackground: TChartAfterDrawEvent
       read FOnAfterDrawBackground write SetOnAfterDrawBackground;
+      deprecated 'Use OnAfterCustomDrawBackground instead';
     property OnAfterDrawBackWall: TChartAfterDrawEvent
       read FOnAfterDrawBackWall write SetOnAfterDrawBackWall;
+      deprecated 'Use OnAfterCustomDrawBackWall instead';
     property OnAfterPaint: TChartEvent read FOnAfterPaint write FOnAfterPaint;
+    property OnBeforeCustomDrawBackground: TChartBeforeCustomDrawEvent
+      read FOnBeforeCustomDrawBackground write SetOnBeforeCustomDrawBackground;
     property OnBeforeDrawBackground: TChartBeforeDrawEvent
       read FOnBeforeDrawBackground write SetOnBeforeDrawBackground;
+      deprecated 'Use OnBeforeCustomDrawBackground instead';
+    property OnBeforeCustomDrawBackWall: TChartBeforeCustomDrawEvent
+      read FOnBeforeCustomDrawBackWall write SetOnBeforeCustomDrawBackwall;
     property OnBeforeDrawBackWall: TChartBeforeDrawEvent
       read FOnBeforeDrawBackWall write SetOnBeforeDrawBackWall;
+      deprecated 'Use OnBeforeCustomDrawBackWall instead';
     property OnDrawLegend: TChartDrawLegendEvent
       read FOnDrawLegend write SetOnDrawLegend;
     property OnDrawReticule: TDrawReticuleEvent
       read FOnDrawReticule write SetOnDrawReticule;
+      deprecated 'Use DatapointCrosshairTool instead';
     property OnExtentChanged: TChartEvent
       read FOnExtentChanged write FOnExtentChanged;
     property OnExtentChanging: TChartEvent
@@ -577,11 +604,19 @@ var
 begin
   ADrawer.PrepareSimplePen(Color);
   ADrawer.SetBrushParams(bsSolid, Color);
+
+  if Assigned(FOnBeforeCustomDrawBackground) then
+    OnBeforeCustomDrawBackground(Self, ADrawer, ARect, defaultDrawing)
+  else
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBackground) then
     OnBeforeDrawBackground(Self, ic.Canvas, ARect, defaultDrawing);
+
   if defaultDrawing then
     ADrawer.FillRect(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
 //    ADrawer.Rectangle(ARect);
+
+  if Assigned(OnAfterCustomDrawBackground) then
+    OnAfterCustomDrawBackground(Self, ADrawer, ARect);
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnAfterDrawBackground) then
     OnAfterDrawBackground(Self, ic.Canvas, ARect);
 end;
@@ -938,8 +973,12 @@ var
   ic: IChartTCanvasDrawer;
   scaled_depth: Integer;
 begin
+  if Assigned(OnBeforeCustomDrawBackWall) then
+    OnBeforeCustomDrawBackWall(self, ADrawer, FClipRect, defaultDrawing)
+  else
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBackWall) then
     OnBeforeDrawBackWall(Self, ic.Canvas, FClipRect, defaultDrawing);
+
   if defaultDrawing then
     with ADrawer do begin
       if FFrame.Visible then
@@ -950,6 +989,9 @@ begin
       with FClipRect do
         Rectangle(Left, Top, Right + 1, Bottom + 1);
     end;
+
+  if Assigned(OnAfterCustomDrawBackWall) then
+    OnAfterCustomDrawBackwall(Self, Drawer, FClipRect);
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnAfterDrawBackWall) then
     OnAfterDrawBackWall(Self, ic.Canvas, FClipRect);
 
@@ -1658,9 +1700,23 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChart.SetOnAfterCustomDrawBackground(AValue: TChartAfterCustomDrawEvent);
+begin
+  if TMethod(FOnAfterCustomDrawBackground) = TMethod(AValue) then exit;
+  FOnAfterCustomDrawBackground := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChart.SetOnAfterCustomDrawBackWall(AValue: TChartAfterCustomDrawEvent);
+begin
+  if TMethod(FOnAfterCustomDrawBackWall) = TMethod(AValue) then exit;
+  FOnAfterCustomDrawBackWall := AValue;
+  StyleChanged(Self);
+end;
+
 procedure TChart.SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
 begin
-  if TMethod(FOnAfterDrawBackground) = TMEthod(AValue) then exit;
+  if TMethod(FOnAfterDrawBackground) = TMethod(AValue) then exit;
   FOnAfterDrawBackground := AValue;
   StyleChanged(Self);
 end;
@@ -1669,6 +1725,20 @@ procedure TChart.SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
 begin
   if TMethod(FOnAfterDrawBackWall) = TMethod(AValue) then exit;
   FOnAfterDrawBackWall := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChart.SetOnBeforeCustomDrawBackground(AValue: TChartBeforeCustomDrawEvent);
+begin
+  if TMethod(FOnBeforeCustomDrawBackground) = TMethod(AValue) then exit;
+  FOnBeforeCustomDrawBackground := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChart.SetOnBeforeCustomDrawBackWall(AValue: TChartBeforeCustomDrawEvent);
+begin
+  if TMethod(FOnBeforeCustomDrawBackWall) = TMethod(AValue) then exit;
+  FOnBeforeCustomDrawBackWall := AValue;
   StyleChanged(Self);
 end;
 
