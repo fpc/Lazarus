@@ -1705,15 +1705,14 @@ begin
     begin
       AControl := TWinControl(Sender);
       //debugln('TApplication.ControlKeyUp A ',DbgSName(AControl),' Key=',dbgs(Key),' Shift=',dbgs(Shift));
-      if FLastKeyDownKey = VK_UNKNOWN then
+
+      // Michl: Don't check, if FLastKeyDownKey = Key. If you type fast, it is
+      // possible the first letter isn't released before Enter is pressed down.
+      // So two times LM_KEYUP is called without a LM_KEYDOWN between. For
+      // second LM_KEYUP FLastKeyDownKey is then VK_UNKNOWN. See issue #33049
+
+      if (Shift <> FLastKeyDownShift) or (AControl <> FLastKeyDownSender) then
       begin
-        // key was already handled in key down
-        //debugln('TApplication.ControlKeyUp key was handled in key down');
-        Exit;
-      end;
-      if (Key <> FLastKeyDownKey) or (Shift <> FLastKeyDownShift) or (AControl <> FLastKeyDownSender) then
-      begin
-        // a key up, without key down
         //debugln('TApplication.ControlKeyUp key was handled in key down or in key up');
         Exit;
       end;
