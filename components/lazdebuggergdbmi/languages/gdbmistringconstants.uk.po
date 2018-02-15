@@ -165,11 +165,19 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "Зневаджувач GNU через SSH дозволяє проводити віддалене зневадження через з’єднання SSH. Детальніше дивіться у файлі docs/RemoteDebugging.txt. Клієнт SSH має міститися в шляху. Використайте SSH_Startup_Options для задання назви віддаленої машини і, за потреби, назви користувача. Параметром Remote_GDB_Exe задається назва файлу GDB на віддаленій машині."
 
 #: gdbmistringconstants.lisresponsecontinue
-msgid "Response: %sContinue ?"
+#, fuzzy
+#| msgid "Response: %sContinue ?"
+msgid "Response: %sContinue?"
 msgstr "Відповідь: %sПродовжити ?"
 
+#: gdbmistringconstants.lissshdebuggertimeout
+msgid "Timeout has occurred:"
+msgstr ""
+
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
+#, fuzzy
+#| msgid "Unexpected result:%sThe debugger will terminate"
+msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Неочікуваний результат:%sЗневаджувач завершить роботу"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger

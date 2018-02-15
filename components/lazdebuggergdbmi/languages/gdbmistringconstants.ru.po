@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: gdbmistringconstants.dlggroupdebugger
 msgid "Debugger"
@@ -162,11 +164,15 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "Отладчик GNU через SSH позволяет проводить удалённую отладку через соединение SSH. Обратитесь к файлу docs/RemoteDebugging.txt за подробностями. Клиент SSH должен присутствовать в пути. Используйте SSH_Startup_Options для задания имени удалённой машины и, при необходимости, имени пользователя. Параметром Remote_GDB_Exe задаётся имя файла GDB на удалённой машине."
 
 #: gdbmistringconstants.lisresponsecontinue
-msgid "Response: %sContinue ?"
+msgid "Response: %sContinue?"
 msgstr "Ответ: %sПродолжить?"
 
+#: gdbmistringconstants.lissshdebuggertimeout
+msgid "Timeout has occurred:"
+msgstr "Время ожидания истекло:"
+
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
+msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Неожиданный результат:%sОтладчик прервёт работу."
 
 #: gdbmistringconstants.synffailedtoinitializedebugger

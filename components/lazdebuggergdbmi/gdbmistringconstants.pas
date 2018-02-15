@@ -75,9 +75,9 @@ resourcestring
     +'Use SSH_Startup_Options for the hostname and optional username. '
     +'Use Remote_GDB_Exe for the filename of GDB on the remote computer.';
   lisUnexpectedResultTheDebuggerWillTerminate = 'Unexpected result:%sThe '
-    +'debugger will terminate';
-  lisSSHDebuggerTimeout = 'A Timeout occured:';
-  lisResponseContinue = 'Response: %sContinue ?';
+    +'debugger will terminate.';
+  lisSSHDebuggerTimeout = 'Timeout has occurred:';
+  lisResponseContinue = 'Response: %sContinue?';
   dlgGroupDebugger = 'Debugger';
   synfFailedToLoadApplicationExecutable = 'Failed to load application executable';
   synfFailedToInitializeTheDebuggerSetPascalFailed = 'Failed to initialize the debugger (set '

@@ -136,11 +136,19 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "A GNU hibakereső SSH-n keresztül lehetővé teszi a távoli hibakeresést. Részletek a docs/RemoteDebugging.txt fájlban. Az elsődleges elérési útvonalak (path) egyikének tartalmaznia kell az SSH klienst. Az SSH_Startup_Options használatával kell megadni a gazdagép és felhasználó nevét, a Remote_GDB_Exe használatával pedig a távoli gépen található GDB fájlnevét."
 
 #: gdbmistringconstants.lisresponsecontinue
-msgid "Response: %sContinue ?"
+#, fuzzy
+#| msgid "Response: %sContinue ?"
+msgid "Response: %sContinue?"
 msgstr "Válasz: %sFolytatás?"
 
+#: gdbmistringconstants.lissshdebuggertimeout
+msgid "Timeout has occurred:"
+msgstr ""
+
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-msgid "Unexpected result:%sThe debugger will terminate"
+#, fuzzy
+#| msgid "Unexpected result:%sThe debugger will terminate"
+msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Váratlan eredmény:%sA hibakereső leállni"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
