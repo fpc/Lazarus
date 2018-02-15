@@ -7843,6 +7843,7 @@ msgid "There is no debugger specified.%sSetting breakpoints have no effect until
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
 msgid "Console In/Output"
 msgstr ""
 
@@ -13142,6 +13143,7 @@ msgid "&View Project Source"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
+msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
 msgid "Console In/Output"
 msgstr ""
 
