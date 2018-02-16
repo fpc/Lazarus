@@ -109,6 +109,7 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
     class function  GetDefaultClientRect(const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect): boolean; virtual;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; virtual;
+    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; virtual;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
 
@@ -331,6 +332,12 @@ class function TWSWinControl.GetDesignInteractive(
   const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
 begin
   Result := False;
+end;
+
+class function TWSWinControl.GetDoubleBuffered(
+  const AWinControl: TWinControl): Boolean;
+begin
+  Result := AWinControl.DoubleBuffered;
 end;
 
 class procedure TWSWinControl.Invalidate(const AWinControl: TWinControl);
