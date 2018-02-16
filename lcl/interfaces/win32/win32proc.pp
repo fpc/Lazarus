@@ -786,10 +786,10 @@ end;
 
 function GetWin32ThemedDoubleBuffered(Sender: TWinControl): boolean;
 begin
-  // force double buffering when themes are enabled for vista and older and there is no remote session
+  // force double buffering when themes are enabled and there is no remote session
   Result :=
        Sender.DoubleBuffered
-    or ((WindowsVersion <= wvVista) and ThemeServices.ThemesEnabled and (GetSystemMetrics(SM_REMOTESESSION)=0));
+    or (ThemeServices.ThemesEnabled and (GetSystemMetrics(SM_REMOTESESSION)=0));
 end;
 
 {
