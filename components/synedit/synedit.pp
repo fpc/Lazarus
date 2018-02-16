@@ -2111,7 +2111,7 @@ begin
 
   {$IF NOT DEFINED(EnableDoubleBuf) AND DEFINED(LCLWin32)}
   if not (csDesigning in ComponentState) then
-    DoubleBuffered := GetWin32ThemedDoubleBuffered(Self);
+    DoubleBuffered := ((WindowsVersion <= wvVista) and (GetSystemMetrics(SM_REMOTESESSION)=0));
   {$ENDIF}
 
   fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
