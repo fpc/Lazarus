@@ -1612,7 +1612,6 @@ begin
       end;
     end;
     Item.Original:=Original;
-    Item.Tag:=FTag;
   end
   else // in this case new item will be added
     FModified := true;
@@ -1684,10 +1683,11 @@ begin
     CurrentItem.Context := Context;
     CurrentItem.Flags := Flags;
     CurrentItem.PreviousID := PreviousID;
-    CurrentItem.Tag := FTag;
     CurrentItem.LineNr := LineNr;
     NewItem := true;
   end;
+
+  CurrentItem.Tag := FTag;
 
   if FoundItem <> nil then
   begin
