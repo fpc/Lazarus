@@ -289,8 +289,6 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  Chart1.DoubleBuffered := true;
-  Chart1.DoubleBuffered := true;
   PageControl1.ActivePageIndex := 0;
 end;
 
