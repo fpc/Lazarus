@@ -98,7 +98,13 @@ uses
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
   SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview,
   SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer, SynEditTextBidiChars,
-  LResources, Clipbrd, StdActns;
+  LResources, Clipbrd, StdActns
+
+  {$IF DEFINED(LCLWin32)}
+  , win32proc
+  {$ENDIF}
+
+  ;
 
 const
   ScrollBarWidth=0;
@@ -2102,6 +2108,11 @@ begin
   FWordBreaker := TSynWordBreaker.Create;
 
   RecreateMarkList;
+
+  {$IF NOT DEFINED(EnableDoubleBuf) AND DEFINED(LCLWin32)}
+  if not (csDesigning in ComponentState) then
+    DoubleBuffered := GetWin32ThemedDoubleBuffered(Self);
+  {$ENDIF}
 
   fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
   {$IFDEF WithSynExperimentalCharWidth}
