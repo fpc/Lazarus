@@ -22,7 +22,7 @@ unit TAGraph;
 interface
 
 uses
-  Graphics, Classes, Controls, LCLType, SysUtils,
+  Graphics, Classes, Controls, LCLIntf, LCLType, SysUtils,
   TAChartAxis, TAChartAxisUtils, TAChartUtils, TADrawUtils, TAGUIConnector,
   TALegend, TATextElements, TATypes;
 
@@ -312,6 +312,7 @@ type
     {$IFDEF LCLGtk2}
     procedure DoOnResize; override;
     {$ENDIF}
+    procedure Loaded; override;
     procedure Notification(
       AComponent: TComponent; AOperation: TOperation); override;
     procedure PrepareAxis(ADrawer: IChartDrawer);
@@ -1308,6 +1309,13 @@ begin
   ts := GetToolset;
   if (ts <> nil) and ts.Dispatch(Self, evidKeyUp, AShift, p) then exit;
   inherited;
+end;
+
+procedure TChart.Loaded;
+begin
+  inherited;
+  if not (csDesigning in ComponentState) then
+    DoubleBuffered := DoubleBuffered or (GetSystemMetrics(SM_REMOTESESSION)=0); // force DoubleBuffered if not used in remote session
 end;
 
 procedure TChart.LockClipRect;
