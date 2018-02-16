@@ -98,13 +98,7 @@ uses
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
   SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview,
   SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer, SynEditTextBidiChars,
-  LResources, Clipbrd, StdActns
-
-  {$IF DEFINED(LCLWin32)}
-  , win32proc
-  {$ENDIF}
-
-  ;
+  LResources, Clipbrd, StdActns;
 
 const
   ScrollBarWidth=0;
@@ -2109,11 +2103,6 @@ begin
 
   RecreateMarkList;
 
-  {$IF NOT DEFINED(EnableDoubleBuf) AND DEFINED(LCLWin32)}
-  if not (csDesigning in ComponentState) then
-    DoubleBuffered := ((WindowsVersion <= wvVista) and (GetSystemMetrics(SM_REMOTESESSION)=0));
-  {$ENDIF}
-
   fTextDrawer := TheTextDrawer.Create([fsBold], fFontDummy);
   {$IFDEF WithSynExperimentalCharWidth}
   FSysCharWidthLinesView.TextDrawer := fTextDrawer;
@@ -2978,6 +2967,9 @@ procedure TCustomSynEdit.Loaded;
 begin
   inherited Loaded;
   UpdateCaret;
+
+  if not (csDesigning in ComponentState) then
+    DoubleBuffered := DoubleBuffered or (GetSystemMetrics(SM_REMOTESESSION)=0); // force DoubleBuffered if not used in remote session
 end;
 
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
