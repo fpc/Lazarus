@@ -1945,6 +1945,8 @@ const
 
   SM_LCLHasFormAlphaBlend = 123;
 
+  SM_REMOTESESSION = $1000;
+
 //==============================================
 // SystemParametersInfo constants
 //==============================================
