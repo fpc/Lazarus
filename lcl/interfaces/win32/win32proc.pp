@@ -24,7 +24,7 @@ interface
 uses
   Windows, Win32Extra, Classes, SysUtils,
   LMessages, LCLType, LCLProc, LCLMessageGlue, LazUTF8, Controls, Forms, Menus,
-  GraphType, IntfGraphics;
+  GraphType, IntfGraphics, Themes;
 
 const
   LV_DISP_INFO_COUNT = 2;  
@@ -87,6 +87,7 @@ function GetLCLClientBoundsOffset(Handle: HWnd; out Rect: TRect): boolean;
 procedure LCLBoundsToWin32Bounds(Sender: TObject; var Left, Top, Width, Height: Integer);
 procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
+function GetWin32ThemedDoubleBuffered(Sender: TWinControl): boolean;
 
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 
@@ -781,6 +782,14 @@ begin
   Windows.GetWindowRect(Parent, parRect);
   Left := winRect.Left - parRect.Left;
   Top := winRect.Top - parRect.Top;
+end;
+
+function GetWin32ThemedDoubleBuffered(Sender: TWinControl): boolean;
+begin
+  // force double buffering when themes are enabled for vista and older and there is no remote session
+  Result :=
+       Sender.DoubleBuffered
+    or ((WindowsVersion <= wvVista) and ThemeServices.ThemesEnabled and (GetSystemMetrics(SM_REMOTESESSION)=0));
 end;
 
 {

@@ -261,6 +261,7 @@ type
 
   TWin32WSCustomTreeView = class(TWSCustomTreeView)
   published
+    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
   end;
 
   { TWin32WSTreeView }
@@ -278,6 +279,7 @@ const
   DefMarqueeTime = 50; // ms
 
 {$I win32pagecontrol.inc}
+{$I win32treeview.inc}
 
 type
   TStatusPanelAccess = class(TStatusPanel);

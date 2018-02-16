@@ -129,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="9"/>
-    <Files Count="477">
+    <Files Count="478">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2362,6 +2362,10 @@ end;"/>
         <Filename Value="qt5/qtx11.inc"/>
         <Type Value="Include"/>
       </Item477>
+      <Item478>
+        <Filename Value="win32/win32treeview.inc"/>
+        <Type Value="Include"/>
+      </Item478>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
