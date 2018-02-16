@@ -627,13 +627,13 @@ begin
       if useDoubleBuffer then
       begin
         RTLLayout := (GetWindowLong(Window, GWL_EXSTYLE) and WS_EX_LAYOUTRTL) = WS_EX_LAYOUTRTL;
-{$ifdef DEBUG_DOUBLEBUFFER}
+
         ORect.Left := 0;
         ORect.Top := 0;
         ORect.Right := CurDoubleBuffer.BitmapWidth;
         ORect.Bottom := CurDoubleBuffer.BitmapHeight;
-        Windows.FillRect(CurDoubleBuffer.DC, ORect, GetSysColorBrush(COLOR_DESKTOP));
-{$endif}
+        Windows.FillRect(CurDoubleBuffer.DC, ORect, GetSysColorBrush(COLOR_BTNFACE));
+
         PaintRegion := CreateRectRgn(0, 0, 1, 1);
         if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then
           CalcClipRgn(PaintRegion);
