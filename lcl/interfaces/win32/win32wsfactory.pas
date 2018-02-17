@@ -209,7 +209,8 @@ end;
 
 function RegisterCustomTreeView: Boolean; alias : 'WSRegisterCustomTreeView';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomTreeView, TWin32WSCustomTreeView);
+  Result := True;
 end;
 
 // calendar
