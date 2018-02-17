@@ -168,7 +168,8 @@ type
     procedure SaveToStrings(OutLst: TStrings);
     procedure SaveToFile(const AFilename: string);
     procedure UpdateItem(const Identifier: string; Original: string);
-    procedure FillItem(var CurrentItem: TPOFileItem; Identifier, Original, Translation, Comments, Context, Flags, PreviousID: string; LineNr: Integer = -1);
+    procedure FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
+      Translation, Comments, Context, Flags, PreviousID: string; LineNr: Integer = -1);
     procedure UpdateTranslation(BasePOFile: TPOFile);
     procedure ClearModuleList;
     procedure AddToModuleList(Identifier: string);
@@ -652,16 +653,17 @@ begin
 end;
 
 function TranslateResourceStrings(const AFilename: string): boolean;
-var po: TPOFile;
+var
+  po: TPOFile;
 begin
-  //debugln('TranslateResourceStrings) ResUnitName,'" AFilename="',AFilename,'"');
+  //debugln('TranslateResourceStrings) AFilename="',AFilename,'"');
   if (AFilename='') or (not FileExistsUTF8(AFilename)) then
     exit;
-  result:=false;
+  Result:=false;
   po:=nil;
   try
     po:=TPOFile.Create(AFilename);
-    result:=TranslateResourceStrings(po);
+    Result:=TranslateResourceStrings(po);
   finally
     po.free;
   end;
@@ -823,7 +825,7 @@ type
   TMsg = (
     mid,
     mstr,
-    mctx
+    mctxt
     );
 var
   l: Integer;
@@ -852,7 +854,7 @@ var
     CurMsg:=mid;
     Msg[mid]:='';
     Msg[mstr]:='';
-    Msg[mctx]:='';
+    Msg[mctxt]:='';
     Identifier := '';
     Comments := '';
     Flags := '';
@@ -866,14 +868,14 @@ var
   begin
     Item := nil;
     if Identifier<>'' then begin
-      FillItem(Item,Identifier,Msg[mid],Msg[mstr],Comments,Msg[mctx],Flags,PrevMsgID,LineNr);
+      FillItem(Item,Identifier,Msg[mid],Msg[mstr],Comments,Msg[mctxt],Flags,PrevMsgID,LineNr);
       ResetVars;
-    end else
-      if (Msg[CurMsg]<>'') and (FHeader=nil) then begin
-        FHeader := TPOFileItem.Create('',Msg[mid],Msg[CurMsg]);
-        FHeader.Comments:=Comments;
-        ResetVars;
-      end;
+    end
+    else if (Msg[CurMsg]<>'') and (FHeader=nil) then begin
+      FHeader := TPOFileItem.Create('',Msg[mid],Msg[CurMsg]);
+      FHeader.Comments:=Comments;
+      ResetVars;
+    end;
   end;
 
 begin
@@ -960,7 +962,7 @@ begin
             end;
           'c':
             if IsKey(LineStart, 'msgctxt "') then begin
-              CurMsg:=mctx;
+              CurMsg:=mctxt;
               Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+length('msgctxt "'), LineEnd-1);
               Handled:=true;
             end;
@@ -1618,7 +1620,8 @@ begin
   FillItem(Item, Identifier, Original, '', '', '', '', '');
 end;
 
-procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original, Translation, Comments, Context, Flags, PreviousID: string; LineNr: Integer = -1);
+procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
+  Translation, Comments, Context, Flags, PreviousID: string; LineNr: Integer = -1);
 
   function VerifyItemFormatting(var Item: TPOFileItem): boolean;
   var
