@@ -555,7 +555,7 @@ begin
 
   //DebugLn('FindCarbonFontID ' + FontName);
 
-  if SameText(FontName, 'default')
+  if IsFontNameDefault(FontName)
     then fn:=CarbonDefaultFont
     else fn:=FontName;
   if (fn <> '') then
@@ -597,7 +597,7 @@ const
 var
   FamilyName: string;
 begin
-  if SameText(FontName, 'default') then
+  if IsFontNameDefault(FontName) then
     if MonoSpace then
       FontName := CarbonDefaultMonoFont
     else
