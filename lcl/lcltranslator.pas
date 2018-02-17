@@ -114,7 +114,7 @@ var
       if Dir<>'' then
       begin
         Dir := AppendPathDelim(Dir);
-        absoluteDir := FilenameIsWinAbsolute(Dir) or FilenameIsUnixAbsolute(Dir);
+        absoluteDir := FilenameIsAbsolute(Dir);
         if absoluteDir then
           Result := Dir + LangID + DirectorySeparator + LCFileName
         else
