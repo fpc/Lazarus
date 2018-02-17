@@ -307,7 +307,7 @@ begin
       Result := Instance.ClassName + '.' + PropInfo^.Name;
   end else if (Sender is TUpdateTranslator) then
     Result := TUpdateTranslator(Sender).FStackPath + '.' + PropInfo^.Name;
-  Result := UpperCase(Result);
+  Result := LowerCase(Result); // GetText requires same case as in .po file, which is lowercase
 end;
 
 var
