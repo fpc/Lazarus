@@ -1728,7 +1728,7 @@ begin
 
     FItems.Add(CurrentItem);
 
-    //debugln(['TPOFile.Add Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
+    //debugln(['TPOFile.FillItem Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
     FIdentifierLowToItem[CurrentItem.IdentifierLow]:=CurrentItem;
     P := Pos('.', Identifier);
     if P>0 then
