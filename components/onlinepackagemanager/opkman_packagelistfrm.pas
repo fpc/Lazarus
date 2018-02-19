@@ -114,7 +114,7 @@ begin
   case ATyp of
     0: Caption := rsPackageListFrm_Caption0;
     1: Caption := rsPackageListFrm_Caption1;
-    2: Caption := rsPackageListFrm_Caption2;
+    2: Caption := rsPackageListFrm_Caption0;
   end;
   bYes.Caption := rsPackageListFrm_bYes_Caption;
   bNo.Caption := rsPackageListFrm_bNo_Caption;

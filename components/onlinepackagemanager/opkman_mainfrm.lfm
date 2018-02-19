@@ -374,7 +374,7 @@ object MainFrm: TMainFrm
       TabOrder = 0
       Transparent = True
       object tbOptions: TToolButton
-        Left = 573
+        Left = 585
         Top = 0
         AutoSize = True
         Caption = 'Options'
@@ -394,7 +394,7 @@ object MainFrm: TMainFrm
         ShowHint = True
       end
       object tbCleanUp: TToolButton
-        Left = 421
+        Left = 433
         Top = 0
         AutoSize = True
         Caption = 'Clean up'
@@ -418,13 +418,15 @@ object MainFrm: TMainFrm
         Top = 0
         AutoSize = True
         Caption = 'Install'
+        DropdownMenu = pmInstall
         ImageIndex = 2
         OnClick = tbInstallClick
         ParentShowHint = False
         ShowHint = True
+        Style = tbsDropDown
       end
       object tbCreate: TToolButton
-        Left = 491
+        Left = 503
         Top = 0
         AutoSize = True
         Caption = 'Create'
@@ -435,7 +437,7 @@ object MainFrm: TMainFrm
         Style = tbsDropDown
       end
       object tbUpdate: TToolButton
-        Left = 211
+        Left = 223
         Top = 0
         AutoSize = True
         Caption = 'Update'
@@ -443,9 +445,10 @@ object MainFrm: TMainFrm
         OnClick = tbUpdateClick
         ParentShowHint = False
         ShowHint = True
+        Visible = False
       end
       object tbHelp: TToolButton
-        Left = 643
+        Left = 655
         Top = 0
         AutoSize = True
         Caption = 'Help'
@@ -455,7 +458,7 @@ object MainFrm: TMainFrm
         ShowHint = True
       end
       object tbUninstall: TToolButton
-        Left = 281
+        Left = 293
         Top = 0
         AutoSize = True
         Caption = 'Uninstall'
@@ -465,7 +468,7 @@ object MainFrm: TMainFrm
         ShowHint = True
       end
       object tbOpenRepo: TToolButton
-        Left = 351
+        Left = 363
         Top = 0
         AutoSize = True
         Caption = 'Open'
@@ -568,7 +571,7 @@ object MainFrm: TMainFrm
   end
   object pmCreate: TPopupMenu
     left = 144
-    top = 224
+    top = 288
     object miCreateRepositoryPackage: TMenuItem
       Caption = 'Create repository package'
       OnClick = miCreateRepositoryPackageClick
@@ -4017,5 +4020,17 @@ object MainFrm: TMainFrm
     Filter = '*.opm|*.opm'
     left = 312
     top = 288
+  end
+  object pmInstall: TPopupMenu
+    left = 144
+    top = 232
+    object miFromRepository: TMenuItem
+      Caption = 'From repository'
+      OnClick = miFromRepositoryClick
+    end
+    object miFromExteranlSource: TMenuItem
+      Caption = 'From external source'
+      OnClick = miFromExteranlSourceClick
+    end
   end
 end

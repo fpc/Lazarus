@@ -54,6 +54,8 @@ type
     cbPackageState: TComboBox;
     cbPackageType: TComboBox;
     imTBDis: TImageList;
+    miFromExteranlSource: TMenuItem;
+    miFromRepository: TMenuItem;
     miSep2: TMenuItem;
     miSep3: TMenuItem;
     miSep1: TMenuItem;
@@ -73,6 +75,7 @@ type
     miCreateJSONForUpdates: TMenuItem;
     miCreateRepositoryPackage: TMenuItem;
     OD: TOpenDialog;
+    pmInstall: TPopupMenu;
     SD: TSaveDialog;
     tbCleanUp1: TToolButton;
     tbInstall1: TToolButton;
@@ -111,6 +114,8 @@ type
     procedure miCreateJSONForUpdatesClick(Sender: TObject);
     procedure miCreateRepositoryClick(Sender: TObject);
     procedure miCreateRepositoryPackageClick(Sender: TObject);
+    procedure miFromExteranlSourceClick(Sender: TObject);
+    procedure miFromRepositoryClick(Sender: TObject);
     procedure miLoadChecksClick(Sender: TObject);
     procedure miNameAscClick(Sender: TObject);
     procedure miResetRatingClick(Sender: TObject);
@@ -188,6 +193,7 @@ begin
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
  {$IF LCL_FULLVERSION >= 1070000}
+  tbInstall.Style := tbsButtonDrop;
   tbCreate.Style := tbsButtonDrop;
  {$ENDIF}
 end;
@@ -956,6 +962,17 @@ begin
   end;
 end;
 
+procedure TMainFrm.miFromRepositoryClick(Sender: TObject);
+begin
+  tbInstallClick(tbInstall);
+end;
+
+procedure TMainFrm.miFromExteranlSourceClick(Sender: TObject);
+begin
+  tbUpdateClick(tbUpdate);
+end;
+
+
 procedure TMainFrm.tbOpenRepoClick(Sender: TObject);
 begin
   OpenDocument(Options.LocalRepositoryPackages);
@@ -1284,6 +1301,8 @@ begin
   tbHelp.Caption := rsMainFrm_TBHelp_Caption;
   tbHelp.Hint := rsMainFrm_TBHelp_Hint;
 
+  miFromRepository.Caption := rsMainFrm_miFromRepository;
+  miFromExteranlSource.Caption := rsMainFrm_miFromExternalSource;
   miCreateRepositoryPackage.Caption := rsMainFrm_miCreateRepositoryPackage;
   miCreateJSONForUpdates.Caption := rsMainFrm_miCreateJSONForUpdates;
   miCreateRepository.Caption := rsMainFrm_miCreateRepository;

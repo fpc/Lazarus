@@ -79,7 +79,6 @@ var
   R: TRect;
   Increase: Integer;
   MH: Integer;
-  LH: Integer;
 begin
   R := Rect(0, 0, AMemo.Width, 0);
   TPanel(AMemo.Parent).Font.Assign(AMemo.Font);

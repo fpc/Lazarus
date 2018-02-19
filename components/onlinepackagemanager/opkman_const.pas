@@ -68,7 +68,7 @@ resourcestring
   rsMainFrm_VSTHeaderColumn_LazarusPackage = 'Lazarus Package (.lpk)';
   rsMainFrm_VSTHeaderColumn_Repository = 'Repository';
   rsMainFrm_VSTHeaderColumn_Installed = 'Installed';
-  rsMainFrm_VSTHeaderColumn_Update = 'Update';
+  rsMainFrm_VSTHeaderColumn_Update = 'External';
   rsMainFrm_VSTHeaderColumn_Data = 'Status/Data';
   rsMainFrm_VSTHeaderColumn_Button = '';
   rsMainFrm_VSTHeaderColumn_Rating = 'Rating';
@@ -90,7 +90,7 @@ resourcestring
   rsMainFrm_VSTText_RepositoryFileHash = 'Repository filehash';
   rsMainFrm_VSTText_RepositoryFileDate = 'Available since';
   rsMainFrm_VSTText_HomePageURL = 'Home page';
-  rsMainFrm_VSTText_DownloadURL = 'Update link (JSON)';
+  rsMainFrm_VSTText_DownloadURL = 'External link (JSON)';
   rsMainFrm_VSTText_SVNURL = 'SVN';
   rsMainFrm_VSTText_Install0 = 'No';
   rsMainFrm_VSTText_Install1 = 'Yes';
@@ -164,6 +164,8 @@ resourcestring
   rsMainFrm_TBOptions_Hint = 'Show options dialog';
   rsMainFrm_TBHelp_Caption = 'Help';
   rsMainFrm_TBHelp_Hint = 'Help (' + cHelpPage + ')';
+  rsMainFrm_miFromRepository = 'From repository';
+  rsMainFrm_miFromExternalSource = 'From external source';
   rsMainFrm_miCreateRepositoryPackage = 'Create repository package';
   rsMainFrm_miCreateJSONForUpdates = 'Create JSON for updates';
   rsMainFrm_miCreateRepository = 'Create private repository';
@@ -182,9 +184,9 @@ resourcestring
   rsMainFrm_PackagenameAlreadyExists = 'A package with the same name already exists!';
   rsMainFrm_PackageAlreadyInstalled = 'The following packages are already installed. Continue anyway?';
   rsMainFrm_PackageAlreadyDownloaded = 'The following repository packages already exist in the target folder. Continue?';
-  rsMainFrm_PackageUpdateWarning = 'Updating packages from external link is not without a risk!' + sLineBreak + 'Only update if you trust the package maintainer. Continue?';
-  rsMainFrm_PackageUpdate0 = 'The following repository packages are not installed or don''t have a valid external download link. The packages will be skipped. Continue?';
-  rsMainFrm_PackageUpdate1 = 'None of the checked repository packages is installed or has a valid external download link.';
+  rsMainFrm_PackageUpdateWarning = 'Installing packages from external link is not without a risk!' + sLineBreak + 'Only install if you trust the package maintainer. Continue?';
+  rsMainFrm_PackageUpdate0 = 'The following repository packages are not available externally. The packages will be skipped. Continue?';
+  rsMainFrm_PackageUpdate1 = 'None of the checked repository packages are available externally.';
   rsMainFrm_rsMessageNoPackage = 'No packages to show.';
   rsMainFrm_rsMessageParsingJSON = 'Parsing JSON. Please wait...';
   rsMainFrm_rsMessageDownload = 'Downloading package list. Please wait...';
