@@ -2204,7 +2204,10 @@ begin
   if (not (paSubProperties in Row.Editor.GetAttributes)) then exit;
   // check if circling
   if (Row.Editor is TPersistentPropertyEditor) then begin
-    AnObject:=TPersistent(Row.Editor.GetObjectValue);
+    if (Row.Editor is TInterfacePropertyEditor) then
+      AnObject:=TPersistent(Row.Editor.GetIntfValue)
+    else
+      AnObject:=TPersistent(Row.Editor.GetObjectValue);
     if FSelection.IndexOf(AnObject)>=0 then exit;
     ParentRow:=Row.Parent;
     while ParentRow<>nil do begin

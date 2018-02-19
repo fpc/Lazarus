@@ -747,6 +747,7 @@ type
     function GetSelections: TPersistentSelectionList; override;
   public
     function AllEqual: Boolean; override;
+    procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: string); override;
@@ -5089,9 +5090,28 @@ begin
     Result := True;
 end;
 
+procedure TInterfacePropertyEditor.Edit;
+var
+  Temp: TPersistent;
+  Designer: TIDesigner;
+  AComponent: TComponent;
+begin
+  Temp := GetComponentReference;
+  if Temp is TComponent then begin
+    AComponent:=TComponent(Temp);
+    Designer:=FindRootDesigner(AComponent);
+    if (Designer<>nil)
+    and (Designer.GetShiftState * [ssCtrl, ssLeft] = [ssCtrl, ssLeft]) then
+      Designer.SelectOnlyThisComponent(AComponent)
+    else
+      inherited Edit;
+  end else
+    inherited Edit;
+end;
+
 function TInterfacePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect];
+ Result := [paMultiSelect];
   if Assigned(GetPropInfo^.SetProc) then
     Result := Result + [paValueList, paSortList, paRevertable, paVolatileSubProperties]
   else
