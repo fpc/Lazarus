@@ -104,7 +104,6 @@ resourcestring
   rsMainFrm_VSTText_PackageState2 = 'Extracted';
   rsMainFrm_VSTText_PackageState3 = 'Installed';
   rsMainFrm_VSTText_PackageState4 = 'Up to date';
-  rsMainFrm_VSTText_PackageState5 = 'New version available (repository)';
   rsMainFrm_VSTText_PackageState6 = 'New version available';
   rsMainFrm_VSTText_PackageState7 = 'Ahead of OPM';
   rsMainFrm_VSTText_PackageCategory0  = 'Charts and Graphs';

@@ -604,6 +604,14 @@ msgstr ""
 msgid "Descendent"
 msgstr ""
 
+#: opkman_const.rsmainfrm_mifromexternalsource
+msgid "From external source"
+msgstr ""
+
+#: opkman_const.rsmainfrm_mifromrepository
+msgid "From repository"
+msgstr ""
+
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
 msgstr ""
@@ -645,17 +653,17 @@ msgid "A package with the same name already exists!"
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdate0
-msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
+msgid "The following repository packages are not available externally. The packages will be skipped. Continue?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository packages is installed or has a valid external download link."
+msgid "None of the checked repository packages are available externally."
 msgstr ""
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
-"Updating packages from external link is not without a risk!\n"
-"Only update if you trust the package maintainer. Continue?\n"
+"Installing packages from external link is not without a risk!\n"
+"Only install if you trust the package maintainer. Continue?\n"
 msgstr ""
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
@@ -871,7 +879,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
-msgid "Update"
+msgid "External"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_author
@@ -900,7 +908,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
 msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
-msgid "Update link (JSON)"
+msgid "External link (JSON)"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
@@ -1083,14 +1091,13 @@ msgstr ""
 msgid "Up to date"
 msgstr ""
 
-#: opkman_const.rsmainfrm_vsttext_packagestate5
-msgctxt "opkman_const.rsmainfrm_vsttext_packagestate5"
-msgid "New version available (repository)"
-msgstr ""
-
 #: opkman_const.rsmainfrm_vsttext_packagestate6
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
-msgid "New updates available"
+msgid "New version available"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_packagestate7
+msgid "Ahead of OPM"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus

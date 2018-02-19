@@ -624,6 +624,14 @@ msgstr "Erzeuge Repository-Package"
 msgid "Descendent"
 msgstr "Absteigend"
 
+#: opkman_const.rsmainfrm_mifromexternalsource
+msgid "From external source"
+msgstr ""
+
+#: opkman_const.rsmainfrm_mifromrepository
+msgid "From repository"
+msgstr ""
+
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
 msgstr "JSON verbergen"
@@ -665,17 +673,25 @@ msgid "A package with the same name already exists!"
 msgstr "Ein Package mit dem selben Namen existiert bereits!"
 
 #: opkman_const.rsmainfrm_packageupdate0
-msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
+#, fuzzy
+#| msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
+msgid "The following repository packages are not available externally. The packages will be skipped. Continue?"
 msgstr "Die folgenden Repository-Packages sind nicht installiert oder haben keinen gültigen Download-Link. Die Packages werden übersprungen. Fortfahren?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-msgid "None of the checked repository packages is installed or has a valid external download link."
+#, fuzzy
+#| msgid "None of the checked repository packages is installed or has a valid external download link."
+msgid "None of the checked repository packages are available externally."
 msgstr "Keines der ausgewählten Repository-Packages ist installiert oder hat einen gültigen Download-Link."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
+#, fuzzy
+#| msgid ""
+#| "Updating packages from external link is not without a risk!\n"
+#| "Only update if you trust the package maintainer. Continue?\n"
 msgid ""
-"Updating packages from external link is not without a risk!\n"
-"Only update if you trust the package maintainer. Continue?\n"
+"Installing packages from external link is not without a risk!\n"
+"Only install if you trust the package maintainer. Continue?\n"
 msgstr ""
 "Das Aktualisieren eines Packages über einen externen Link ist nicht ohne Risiko!\n"
 "Machen Sie das nur, wenn Sie dem Package-Betreuer vertrauen. Fortfahren?\n"
@@ -892,8 +908,10 @@ msgid "Repository"
 msgstr "Repository"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
+#, fuzzy
+#| msgid "Update"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
-msgid "Update"
+msgid "External"
 msgstr "Aktualisierung"
 
 #: opkman_const.rsmainfrm_vsttext_author
@@ -921,8 +939,10 @@ msgid "Description"
 msgstr "Beschreibung"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
+#, fuzzy
+#| msgid "Update link (JSON)"
 msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
-msgid "Update link (JSON)"
+msgid "External link (JSON)"
 msgstr "Update-Link (JSON)"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
@@ -1105,15 +1125,16 @@ msgstr "Installiert"
 msgid "Up to date"
 msgstr "Aktuell"
 
-#: opkman_const.rsmainfrm_vsttext_packagestate5
-msgctxt "opkman_const.rsmainfrm_vsttext_packagestate5"
-msgid "New version available (repository)"
-msgstr "Neue Version verfügbar (Repository)"
-
 #: opkman_const.rsmainfrm_vsttext_packagestate6
+#, fuzzy
+#| msgid "New updates available"
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
-msgid "New updates available"
+msgid "New version available"
 msgstr "Neue Aktualisierungen verfügbar"
+
+#: opkman_const.rsmainfrm_vsttext_packagestate7
+msgid "Ahead of OPM"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
