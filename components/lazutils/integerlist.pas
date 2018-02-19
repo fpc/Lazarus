@@ -27,6 +27,11 @@ type
     procedure Sort; overload;
   end;
 
+  TWordList = class(specialize TFPGList<Word>)
+  public
+    procedure Sort; overload;
+  end;
+
   TCardinalList = class(specialize TFPGList<Cardinal>)
   public
     procedure Sort; overload;
@@ -46,6 +51,16 @@ type
 implementation
 
 function CompareByte(const Item1, Item2: Byte): Integer;
+begin
+  if Item1 > Item2 then
+    Result := 1
+  else if Item1 < Item2 then
+    Result := -1
+  else
+    Result := 0;
+end;
+
+function CompareWord(const Item1, Item2: Word): Integer;
 begin
   if Item1 > Item2 then
     Result := 1
@@ -90,6 +105,13 @@ end;
 procedure TByteList.Sort;
 begin
   inherited Sort(@CompareByte);
+end;
+
+{ TWordList }
+
+procedure TWordList.Sort;
+begin
+  inherited Sort(@CompareWord);
 end;
 
 { TCardinalList }

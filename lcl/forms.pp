@@ -39,7 +39,7 @@ uses
   LResources, GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList,
   ClipBrd, HelpIntfs, Controls, ImgList, Themes,
   // LazUtils
-  LazFileUtils, LazUTF8, Maps
+  LazFileUtils, LazUTF8, Maps, IntegerList
   {$ifndef wince},gettext{$endif}// remove ifdefs when gettext is fixed and a new fpc is released
   ;
 
@@ -1368,7 +1368,7 @@ type
     FSmallIconHandle: HICON;
     FIdleLockCount: Integer;
     FLastKeyDownSender: TWinControl;
-    FLastKeyDownKey: Word;
+    FLastKeyDownKeys: TWordList;
     FLastKeyDownShift: TShiftState;
     FMainForm : TForm;
     FMouseControl: TControl;

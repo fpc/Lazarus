@@ -104,6 +104,7 @@ begin
   FOnIdle := nil;
   FIcon := TIcon.Create;
   FIcon.OnChange := @IconChanged;
+  FLastKeyDownKeys := TWordList.Create;
   FNavigation := [anoTabToSelectNext,anoReturnForDefaultControl,
                   anoEscapeForCancelControl,anoF1ForHelp,anoArrowToSelectNextInParent];
   FUpdateFormatSettings := True;
@@ -155,6 +156,7 @@ begin
   ApplicationActionComponent:=nil;
   FreeThenNil(FIcon);
   FreeIconHandles;
+  FreeThenNil(FLastKeyDownKeys);
   FreeThenNil(FRestoreStayOnTop);
 
   for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType) do
@@ -1680,6 +1682,8 @@ begin
   begin
     AControl := TWinControl(Sender);
     //debugln('TApplication.ControlKeyDown A ',DbgSName(AControl));
+    if FLastKeyDownSender <> AControl then
+      FLastKeyDownKeys.Clear;
     FLastKeyDownSender := AControl;
 
     // handle navigation key
@@ -1687,16 +1691,23 @@ begin
     DoArrowKey(AControl, Key, Shift);
   end
   else
+  begin
+    if FLastKeyDownSender <> nil then
+      FLastKeyDownKeys.Clear;
     FLastKeyDownSender := nil;
+  end;
   //DebugLn(['TApplication.ControlKeyDown Sender=',DbgSName(Sender),' Key=',Key,' Shift=',dbgs(Shift)]);
-  FLastKeyDownKey := Key;
   FLastKeyDownShift := Shift;
+  if FLastKeyDownShift <> Shift then
+    FLastKeyDownKeys.Clear;
+  FLastKeyDownKeys.Add(Key);
 end;
 
 procedure TApplication.ControlKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   AControl: TWinControl;
+  AIndex: Integer;
 begin
   if Key = VK_UNKNOWN then exit;
 
@@ -1706,13 +1717,20 @@ begin
       AControl := TWinControl(Sender);
       //debugln('TApplication.ControlKeyUp A ',DbgSName(AControl),' Key=',dbgs(Key),' Shift=',dbgs(Shift));
 
-      // Michl: Don't check, if FLastKeyDownKey = Key. If you type fast, it is
-      // possible the first letter isn't released before Enter is pressed down.
-      // So two times LM_KEYUP is called without a LM_KEYDOWN between. For
-      // second LM_KEYUP FLastKeyDownKey is then VK_UNKNOWN. See issue #33049
+      AIndex := FLastKeyDownKeys.IndexOf(Key);
+      if (AIndex = -1) and (FLastKeyDownKeys.Count > 0) then
+        FLastKeyDownKeys.Clear;
+
+      if FLastKeyDownKeys.Count = 0 then
+      begin
+        // key was already handled in key down
+        //debugln('TApplication.ControlKeyUp key was handled in key down');
+        Exit;
+      end;
 
       if (Shift <> FLastKeyDownShift) or (AControl <> FLastKeyDownSender) then
       begin
+        FLastKeyDownKeys.Clear;
         //debugln('TApplication.ControlKeyUp key was handled in key down or in key up');
         Exit;
       end;
@@ -1722,7 +1740,9 @@ begin
       DoEscapeKey(AControl, Key, Shift);
     end;
   finally
-    FLastKeyDownKey := VK_UNKNOWN;
+    AIndex := FLastKeyDownKeys.IndexOf(Key);
+    if AIndex <> -1 then
+      FLastKeyDownKeys.Delete(AIndex);
   end;
 end;
 
