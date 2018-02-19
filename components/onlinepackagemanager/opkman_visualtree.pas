@@ -1489,25 +1489,31 @@ begin
                   begin
                     if (Data^.UpdateVersion = '') then
                     begin
-                      if Data^.InstalledVersion >= Data^.Version then
+                      if Data^.InstalledVersion < Data^.Version then
+                        CellText := rsMainFrm_VSTText_PackageState6
+                      else if Data^.InstalledVersion = Data^.Version then
                         CellText := rsMainFrm_VSTText_PackageState4
-                      else
-                        CellText := rsMainFrm_VSTText_PackageState5
+                      else if Data^.InstalledVersion > Data^.Version then
+                        CellText := rsMainFrm_VSTText_PackageState7
                     end
                     else
                     begin
-                      if (Data^.InstalledVersion >= Data^.UpdateVersion) then
-                        CellText := rsMainFrm_VSTText_PackageState4
-                      else
+                      if Data^.InstalledVersion < Data^.UpdateVersion then
                         CellText := rsMainFrm_VSTText_PackageState6
+                      else if (Data^.InstalledVersion = Data^.UpdateVersion) then
+                        CellText := rsMainFrm_VSTText_PackageState4
+                      else if (Data^.InstalledVersion > Data^.UpdateVersion) then
+                        CellText := rsMainFrm_VSTText_PackageState7
                     end;
                   end
                   else
                   begin
-                    if (Data^.InstalledVersion >= Data^.UpdateVersion) then
-                      CellText := rsMainFrm_VSTText_PackageState4
-                    else
+                    if Data^.InstalledVersion < Data^.UpdateVersion then
                       CellText := rsMainFrm_VSTText_PackageState6
+                    else if Data^.InstalledVersion = Data^.UpdateVersion then
+                      CellText := rsMainFrm_VSTText_PackageState4
+                    else if Data^.InstalledVersion > Data^.UpdateVersion then
+                      CellText := rsMainFrm_VSTText_PackageState7
                   end;
                   Data^.IsUpdated := CellText = rsMainFrm_VSTText_PackageState4;
                 end;
