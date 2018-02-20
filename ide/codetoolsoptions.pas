@@ -548,7 +548,7 @@ begin
     FIdentComplUseContainsFilter:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/UseContainsFilter',true);
     FIdentComplShowIcons:=XMLConfig.GetValue(
-      'CodeToolsOptions/IdentifierCompletion/ShowIcons',true);
+      'CodeToolsOptions/IdentifierCompletion/ShowIcons',false);
     FIdentComplAddParameterBrackets:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/AutoAddParameterBrackets',true);
     FIdentComplReplaceIdentifier:=XMLConfig.GetValue(
@@ -720,7 +720,7 @@ begin
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/UseContainsFilter',
       FIdentComplUseContainsFilter,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/ShowIcons',
-      FIdentComplShowIcons,true);
+      FIdentComplShowIcons,false);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/AutoAddParameterBrackets',
       FIdentComplAddParameterBrackets,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/ReplaceIdentifier',
@@ -937,7 +937,7 @@ begin
   FIdentComplAutoStartAfterPoint:=true;
   FIdentComplAutoUseSingleIdent:=true;
   FIdentComplUseContainsFilter:=true;
-  FIdentComplShowIcons:=true;
+  FIdentComplShowIcons:=false;
   FIdentComplAddParameterBrackets:=true;
   FIdentComplReplaceIdentifier:=true;
   FIdentComplJumpToError:=true;
