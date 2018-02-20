@@ -1737,6 +1737,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    external;
    external <id>;
    external name <id> delayed;
+   external name concat('','');
    external <id or number> name <id>;
    external <id or number> index <id>;
    [alias: <string constant>]
@@ -2017,10 +2018,12 @@ begin
       end;
       if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
       begin
-        // type cast or constant array
+        // type cast or constant array or built-in function
         BracketType:=CurPos.Flag;
-        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-        if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
+        repeat
+          if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+          if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
+        until CurPos.Flag<>cafComma;
         if (BracketType=cafRoundBracketOpen)
         and (CurPos.Flag<>cafRoundBracketClose) then
           if ExceptionOnError then

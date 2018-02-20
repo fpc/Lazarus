@@ -47,6 +47,7 @@ type
     procedure TestDeprecated;
     procedure TestMissingGenericKeywordObjFPCFail;
     procedure TestParseGenericsDelphi;
+    procedure TestParseExternalConcat;
   end;
 
 implementation
@@ -429,6 +430,16 @@ begin
   'procedure TBird<B>.DoSome<T>;', // generic proc inside generic class
   'begin',
   'end;',
+  'begin']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseExternalConcat;
+begin
+  Add([
+  'program test1;',
+  '{$mode objfpc}',
+  'procedure foo; cdecl; external name concat(''foo'', ''bar'');',
   'begin']);
   ParseModule;
 end;
