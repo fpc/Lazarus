@@ -180,7 +180,7 @@ begin
   PicOutsidePartial := (PicWidth>ImgWidth) or (PicHeight>ImgHeight);
 
   if Stretch or (Proportional and PicOutsidePartial) then
-    if (FStretchOutEnabled or PicOutside) and
+    if (FStretchOutEnabled or PicOutsidePartial) and
        (FStretchInEnabled or PicInside) then
       if Proportional then begin
         w:=ImgWidth;
