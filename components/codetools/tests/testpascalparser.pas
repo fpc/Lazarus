@@ -34,6 +34,7 @@ type
     property Code: TCodeBuffer read FCode;
   published
     procedure TestRecord_ClassOperators;
+    procedure TestParseExternalConcat;
   end;
 
 implementation
@@ -152,6 +153,16 @@ begin
     '',
     'begin'
     ]);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseExternalConcat;
+begin
+  Add([
+  'program test1;',
+  '{$mode objfpc}',
+  'procedure foo; cdecl; external name concat(''foo'', ''bar'');',
+  'begin']);
   ParseModule;
 end;
 
