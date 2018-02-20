@@ -637,9 +637,15 @@ public class LCLActivity extends Activity implements SensorEventListener, Locati
     LocationManager mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
     switch (lclkind)
     {
-      case 1: mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-      case 2: mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-      default: Log.i("lclapp", "[LCLDoRequestPositionInfo] Wrong lclkind parameter");
+      case 1:
+        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        break;
+      case 2:
+        mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+        break;
+      default:
+        Log.i("lclapp", "[LCLDoRequestPositionInfo] Wrong lclkind parameter");
+        break;
     }
   }
 
