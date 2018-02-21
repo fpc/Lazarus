@@ -1528,9 +1528,10 @@ msgid "Caption:"
 msgstr ""
 
 #: objinspstrconsts.sccslvedtlabelimageindex
+#, fuzzy
 msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
-msgstr ""
+msgstr "Index de l'Imatge:"
 
 #: objinspstrconsts.sccslvedtlabelstateindex
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"

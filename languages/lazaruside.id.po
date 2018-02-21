@@ -956,9 +956,10 @@ msgid "Assembler style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgcocfgcmpmessages"
 msgid "Messages"
-msgstr ""
+msgstr "Pesan"
 
 #: lazarusidestrconsts.dlgcochecksandassertion
 msgid "Checks and assertion"
@@ -2906,9 +2907,10 @@ msgid "Priority"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmsgs
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
-msgstr ""
+msgstr "Pesan"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentdebug
 #, fuzzy
@@ -7643,9 +7645,10 @@ msgid "IDE Main Menu"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbarmessages
+#, fuzzy
 msgctxt "lazarusidestrconsts.liscoolbarmessages"
 msgid "Messages"
-msgstr ""
+msgstr "Pesan"
 
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"

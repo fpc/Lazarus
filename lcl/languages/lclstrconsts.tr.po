@@ -66,9 +66,10 @@ msgid "Backspace"
 msgstr "Silme"
 
 #: lclstrconsts.ifsvk_cancel
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_cancel"
 msgid "Cancel"
-msgstr ""
+msgstr "İptal"
 
 #: lclstrconsts.ifsvk_capital
 msgid "Capital"
@@ -202,9 +203,10 @@ msgid "Print"
 msgstr "Yazdır"
 
 #: lclstrconsts.ifsvk_prior
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "Önceki"
 
 #: lclstrconsts.ifsvk_rbutton
 msgid "Mouse Button Right"
@@ -349,9 +351,10 @@ msgid "Calculator"
 msgstr "Hesap makinesi"
 
 #: lclstrconsts.rscancelrecordhint
+#, fuzzy
 msgctxt "lclstrconsts.rscancelrecordhint"
 msgid "Cancel"
-msgstr ""
+msgstr "İptal"
 
 #: lclstrconsts.rscannotfocus
 msgid "Can not focus"
@@ -451,9 +454,10 @@ msgid "Search entire file"
 msgstr ""
 
 #: lclstrconsts.rserror
+#, fuzzy
 msgctxt "lclstrconsts.rserror"
 msgid "Error"
-msgstr ""
+msgstr "Hata"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"

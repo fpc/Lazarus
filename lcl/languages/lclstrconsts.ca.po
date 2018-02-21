@@ -66,9 +66,10 @@ msgid "Backspace"
 msgstr "Espai enrere"
 
 #: lclstrconsts.ifsvk_cancel
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_cancel"
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel·la"
 
 #: lclstrconsts.ifsvk_capital
 msgid "Capital"
@@ -346,9 +347,10 @@ msgid "Calculator"
 msgstr "Calculadora"
 
 #: lclstrconsts.rscancelrecordhint
+#, fuzzy
 msgctxt "lclstrconsts.rscancelrecordhint"
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel·la"
 
 #: lclstrconsts.rscannotfocus
 msgid "Can not focus"
@@ -448,9 +450,10 @@ msgid "Search entire file"
 msgstr ""
 
 #: lclstrconsts.rserror
+#, fuzzy
 msgctxt "lclstrconsts.rserror"
 msgid "Error"
-msgstr ""
+msgstr "Error"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"

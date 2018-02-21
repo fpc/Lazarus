@@ -1039,9 +1039,10 @@ msgid "POST"
 msgstr "POST"
 
 #: ipconst.snntpcmdquit
+#, fuzzy
 msgctxt "ipconst.snntpcmdquit"
 msgid "QUIT"
-msgstr ""
+msgstr "QUIT"
 
 #: ipconst.snntpcmdstat
 #, fuzzy

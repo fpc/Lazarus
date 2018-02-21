@@ -67,9 +67,10 @@ msgid "Backspace"
 msgstr "Backspace"
 
 #: lclstrconsts.ifsvk_cancel
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_cancel"
 msgid "Cancel"
-msgstr ""
+msgstr "Batal"
 
 #: lclstrconsts.ifsvk_capital
 msgid "Capital"
@@ -203,9 +204,10 @@ msgid "Print"
 msgstr "Cetak"
 
 #: lclstrconsts.ifsvk_prior
+#, fuzzy
 msgctxt "lclstrconsts.ifsvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "Sebelumnya"
 
 #: lclstrconsts.ifsvk_rbutton
 msgid "Mouse Button Right"
@@ -350,9 +352,10 @@ msgid "Calculator"
 msgstr "Kalkulator"
 
 #: lclstrconsts.rscancelrecordhint
+#, fuzzy
 msgctxt "lclstrconsts.rscancelrecordhint"
 msgid "Cancel"
-msgstr ""
+msgstr "Batal"
 
 #: lclstrconsts.rscannotfocus
 msgid "Can not focus"
@@ -452,9 +455,10 @@ msgid "Search entire file"
 msgstr ""
 
 #: lclstrconsts.rserror
+#, fuzzy
 msgctxt "lclstrconsts.rserror"
 msgid "Error"
-msgstr ""
+msgstr "Salah"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
