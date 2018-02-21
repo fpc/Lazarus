@@ -91,8 +91,8 @@ end;
 
 destructor TOPMInterfaceEx.Destroy;
 begin
-{  if PackageDownloader.DownloadingJSON then
-    PackageDownloader.Cancel;}
+  if PackageDownloader.DownloadingJSON then
+    PackageDownloader.Cancel;
   FWaitForIDE.StopTimer;
   FWaitForIDE.Terminate;
   FWaitForIDE.WaitFor;
