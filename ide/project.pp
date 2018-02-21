@@ -4661,7 +4661,7 @@ procedure TProject.UpdateUnitComponentDependencies;
     PropInfo: PPropInfo;
     PropList: PPropList;
     CurCount,i: integer;
-    ReferenceComponent: TComponent;
+    ReferenceComp: TObject;
     OwnerComponent: TComponent;
     ReferenceUnit: TUnitInfo;
     Dependency: TUnitComponentDependency;
@@ -4694,11 +4694,11 @@ procedure TProject.UpdateUnitComponentDependencies;
           PropInfo:=PropList^[i];
           if (PropInfo^.PropType^.Kind=tkClass) then begin
             // property of kind TObject
-            ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
-            //debugln('TProject.UpdateUnitComponentDependencies Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
-            if ReferenceComponent is TComponent then begin
+            ReferenceComp:=GetObjectProp(AComponent,PropInfo);
+            //debugln('TProject.UpdateUnitComponentDependencies Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComp),' TypeInfo=',TypeInfo^.Name);
+            if ReferenceComp is TComponent then begin
               // reference is a TComponent
-              OwnerComponent:=ReferenceComponent;
+              OwnerComponent:=TComponent(ReferenceComp);
               while OwnerComponent.Owner<>nil do
                 OwnerComponent:=OwnerComponent.Owner;
               if OwnerComponent<>AnUnitInfo.Component then begin
@@ -4717,7 +4717,7 @@ procedure TProject.UpdateUnitComponentDependencies;
                                          ReferenceUnit,[ucdtOldProperty]);
                     Dependency.SetUsedByPropPath(
                       Dependency.CreatePropPath(AComponent,PropInfo^.Name),
-                      Dependency.CreatePropPath(ReferenceComponent));
+                      Dependency.CreatePropPath(TComponent(ReferenceComp)));
                   end;
                 end;
               end;
