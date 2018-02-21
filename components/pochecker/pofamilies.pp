@@ -11,7 +11,7 @@ uses
   // LCL
   LCLProc, Masks,
   // LazUtils
-  FileUtil, LazFileUtils, Translations,
+  FileUtil, LazFileUtils, Translations, StringHashList,
   // PoChecker
   PoCheckerConsts;
 
@@ -721,42 +721,47 @@ procedure TPoFamily.CheckDuplicateOriginals(out WarningCount: Integer;
 var
   i: Integer;
   PoItem: TPOFileItem;
+  DupItemsList: TStringHashList;
   LastHash, CurHash: Cardinal;
 begin
   //debugln('TPoFamily.CheckMismatchedOriginals');
   DoTestStart(PoTestTypeNames[pttCheckDuplicateOriginals], ShortMasterName);
   WarningCount := 0;
 
+  DupItemsList := TStringHashList.Create(true);
+  for i := 0 to FMaster.Items.Count - 1 do begin
+    PoItem := TPOFileItem(FMaster.Items[i]);
+    if PoItem.Duplicate = true then
+      DupItemsList.Add(PoItem.Original, PoItem);
+  end;
+
   //debugln('TPoFamily.CehckDuplicateOriginals');
-  //debugln('FMaster.OriginalList.Count = ',DbgS(FMaster.OriginalList.Count));
+  //debugln('DupItemsList.Count = ',DbgS(DupItemsList.Count));
   LastHash := 0;
-  for i := 0 to FMaster.OriginalList.Count - 1 do
+  for i := 0 to DupItemsList.Count - 1 do
   begin
-    PoItem := TPoFileItem(FMaster.OriginalList.List[i]^.Data);
+    PoItem := TPoFileItem(DupItemsList.List[i]^.Data);
     if Assigned(PoItem) then
     begin
-      CurHash := FMaster.OriginalList.List[i]^.HashValue ;
-      if PoItem.Duplicate = true then
+      CurHash := DupItemsList.List[i]^.HashValue;
+      if (WarningCount = 0) then
       begin
-        if (WarningCount = 0) then
-        begin
-          ErrorLog.Add(Divider);
-          ErrorLog.Add(Format(sErrorsByTest,[sShortCheckDuplicateOriginals]));
-          ErrorLog.Add(ShortMasterName);
-          ErrorLog.Add(Divider);
-          ErrorLog.Add('');
-        end;
-        if (CurHash <> LastHash) then
-        begin//new value for PoItem.Original
-          LastHash := CurHash;
-          Inc(WarningCount);
-          if (WarningCount > 1) then ErrorLog.Add('');
-          ErrorLog.Add(Format(sDuplicateOriginals,[PoItem.Original]));
-          //debugln(format('The (untranslated) value "%s" is used for more than 1 entry:',[PoItem.Original]));
-        end;
-        ErrorLog.Add(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.IdentifierLow]));
-        //debugln(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.IdentifierLow]));
+        ErrorLog.Add(Divider);
+        ErrorLog.Add(Format(sErrorsByTest,[sShortCheckDuplicateOriginals]));
+        ErrorLog.Add(ShortMasterName);
+        ErrorLog.Add(Divider);
+        ErrorLog.Add('');
       end;
+      if (CurHash <> LastHash) then
+      begin//new value for PoItem.Original
+        LastHash := CurHash;
+        Inc(WarningCount);
+        if (WarningCount > 1) then ErrorLog.Add('');
+        ErrorLog.Add(Format(sDuplicateOriginals,[PoItem.Original]));
+        //debugln(format('The (untranslated) value "%s" is used for more than 1 entry:',[PoItem.Original]));
+      end;
+      ErrorLog.Add(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.IdentifierLow]));
+      //debugln(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.IdentifierLow]));
     end;
   end;
 
@@ -768,6 +773,8 @@ begin
     ErrorLog.Add('');
     ErrorLog.Add('');
   end;
+
+  DupItemsList.Free;
 
   DoTestEnd(PoTestTypeNames[pttCheckDuplicateOriginals], WarningCount);
   //debugln('TPoFamily.CheckDuplicateOriginals: ',Dbgs(WarningCount),' Errors');
