@@ -164,9 +164,8 @@ type
     destructor Destroy; override;
     procedure DownloadJSON(const ATimeOut: Integer = -1; const ASilent: Boolean = False);
     procedure DownloadPackages(const ADownloadTo: String);
-    procedure CancelDownloadPackages;
     procedure UpdatePackages(const ADownloadTo: String);
-    procedure CancelUpdatePackages;
+    procedure Cancel;
   published
     property RemoteRepository: String read FRemoteRepository write FRemoteRepository;
     property LastError: String read FLastError write FLastError;
@@ -691,16 +690,6 @@ begin
   FDownload.DownloadPackages(ADownloadTo);
 end;
 
-procedure TPackageDownloader.CancelDownloadPackages;
-begin
-  if Assigned(FDownload) then
-  begin
-    FDownload.FHTTPClient.Terminate;
-    FDownload.FTimer.StopTimer;
-    FDownload.NeedToBreak := True;
-  end;
-end;
-
 procedure TPackageDownloader.UpdatePackages(const ADownloadTo: String);
 begin
   FDownload := TThreadDownload.Create;
@@ -712,7 +701,7 @@ begin
   FDownload.UpdatePackages(ADownloadTo);
 end;
 
-procedure TPackageDownloader.CancelUpdatePackages;
+procedure TPackageDownloader.Cancel;
 begin
   if Assigned(FDownload) then
   begin

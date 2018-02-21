@@ -259,7 +259,7 @@ begin
     FSuccess := False;
     PackageDownloader.OnPackageDownloadProgress := nil;
     PackageDownloader.OnPackageDownloadError := nil;
-    PackageDownloader.CancelDownloadPackages;
+    PackageDownloader.Cancel;
     Close;
   end;
 end;
@@ -509,7 +509,7 @@ begin
          FSuccess := False;
          PackageDownloader.OnPackageDownloadProgress := nil;
          PackageDownloader.OnPackageDownloadError := nil;
-         PackageDownloader.CancelDownloadPackages;
+         PackageDownloader.Cancel;
        end;
     1: begin
          FSuccess := False;
@@ -527,7 +527,7 @@ begin
          FSuccess := False;
          PackageDownloader.OnPackageUpdateProgress := nil;
          PackageDownloader.OnPackageDownloadError := nil;
-         PackageDownloader.CancelUpdatePackages;
+         PackageDownloader.Cancel;
        end;
    end;
   Close;
