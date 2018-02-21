@@ -194,7 +194,6 @@ type
     property NrErrors: Integer read FNrErrors;
     function FindPoItem(const Identifier: String): TPoFileItem;
     function OriginalToItem(const Data: String): TPoFileItem;
-    property OriginalList: TStringHashList read FOriginalToItem;
     property PoItems[Index: Integer]: TPoFileItem read GetPoItem;
     property Count: Integer read GetCount;
     property Header: TPOFileItem read FHeader;
@@ -1706,15 +1705,13 @@ begin
       FoundItem.Duplicate := true;
       CurrentItem.Duplicate := true;
       // if old item is already translated and current item not, use translation
-      if (CurrentItem.Translation='') and (FoundItem.Translation<>'') then
+      // note, that we do not copy fuzzy translations in order not to potentially mislead translators
+      if (CurrentItem.Translation='') and (FoundItem.Translation<>'') and (pos(sFuzzyFlag, FoundItem.Flags) = 0) then
       begin
         CurrentItem.Translation := FoundItem.Translation;
         if CurrentItem.Flags='' then
           CurrentItem.Flags := FoundItem.Flags;
         CurrentItem.ModifyFlag(sFuzzyFlag, true);
-        // if old item is fuzzy, copy PreviousID too
-        if pos(sFuzzyFlag, FoundItem.Flags)<>0 then
-          CurrentItem.PreviousID := FoundItem.PreviousID;
         FModified := True;
       end;
     end;
@@ -1733,10 +1730,20 @@ begin
     P := Pos('.', Identifier);
     if P>0 then
       FIdentLowVarToItem.Add(copy(CurrentItem.IdentifierLow, P+1, Length(CurrentItem.IdentifierLow)), CurrentItem);
-
-    if Original <> '' then
-      FOriginalToItem.Add(Original,CurrentItem);
   end;
+
+  if Original <> '' then
+  begin
+    if (FoundItem = nil) or ((FoundItem.Translation = '') and (CurrentItem.Translation <> '')) or
+     ((FoundItem.Translation <> '') and (CurrentItem.Translation <> '') and
+      (pos(sFuzzyFlag, FoundItem.Flags) <> 0) and (pos(sFuzzyFlag, CurrentItem.Flags) = 0)) then
+    begin
+      if FoundItem <> nil then
+        FOriginalToItem.Remove(Original);
+      FOriginalToItem.Add(Original,CurrentItem);
+    end;
+  end;
+
 end;
 
 procedure TPOFile.UpdateTranslation(BasePOFile: TPOFile);
