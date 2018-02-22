@@ -5088,7 +5088,7 @@ begin
     exit;
 
   FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
-  if not FHighlighter.IdleScanRanges then
+  if not FHighlighter.IdleScanRanges{%H-} then
     exit;
 
   // Move to the end; give others a change too

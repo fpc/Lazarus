@@ -401,7 +401,12 @@ type
     procedure ContinueNextLine; // To be called at EOL; does not read the range
 
     procedure ScanRanges;
-    function  IdleScanRanges: Boolean; // Scan little by little during OnIdle; Return True, if more work avail
+    (* IdleScanRanges
+       Scan in small chunks during OnIdle; Return True, if more work avail
+       This method is still under development. It may be changed, removed, un-virtualized, or anything.
+       In future SynEdit & HL may have other IDLE tasks, and if and when that happens, there will be new ways to control this
+    *)
+    function  IdleScanRanges: Boolean; virtual; experimental;
     function NeedScan: Boolean;
     procedure ScanAllRanges;
     procedure SetRange(Value: Pointer); virtual;
