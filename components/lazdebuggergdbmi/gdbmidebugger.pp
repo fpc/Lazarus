@@ -141,11 +141,15 @@ type
   TGDBMIWarnOnSetBreakpointError = (
     gdbwNone, gdbwAll, gdbwUserBreakPoint, gdbwExceptionsAndRunError
   );
+  TGDBMIDebuggerCaseSensitivity = (
+    gdcsSmartOff, gdcsAlwaysOff, gdcsAlwaysOn, gdcsGdbDefault
+  );
 
   { TGDBMIDebuggerPropertiesBase }
 
   TGDBMIDebuggerPropertiesBase = class(TDebuggerProperties)
   private
+    FCaseSensitivity: TGDBMIDebuggerCaseSensitivity;
     FDisableForcedBreakpoint: Boolean;
     FDisableLoadSymbolsForLibraries: Boolean;
     FEncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding;
@@ -186,6 +190,8 @@ type
     property UseAsyncCommandMode: Boolean read FUseAsyncCommandMode write FUseAsyncCommandMode;
     property UseNoneMiRunCommands: TGDBMIUseNoneMiRunCmdsState
              read FUseNoneMiRunCommands write FUseNoneMiRunCommands default gdnmFallback;
+    property CaseSensitivity: TGDBMIDebuggerCaseSensitivity
+             read FCaseSensitivity write FCaseSensitivity default gdcsSmartOff;
     property DisableLoadSymbolsForLibraries: Boolean read FDisableLoadSymbolsForLibraries
              write FDisableLoadSymbolsForLibraries default False;
     property DisableForcedBreakpoint: Boolean read FDisableForcedBreakpoint
@@ -212,6 +218,7 @@ type
     property DisableLoadSymbolsForLibraries;
     property DisableForcedBreakpoint;
     //property WarnOnSetBreakpointError;
+    property CaseSensitivity;
   end;
 
   TGDBMIDebugger = class;
@@ -476,6 +483,7 @@ type
     FErrorMsg: String;
     function DoChangeFilename: Boolean;
     function DoSetPascal: Boolean;
+    function DoSetCaseSensitivity: Boolean;
   end;
 
   { TGDBMIDebuggerCommandChangeFilename }
@@ -1825,6 +1833,7 @@ begin
   // Setting extensions dumps GDB (bug #508)
   Result := ExecuteCommand('-gdb-set language pascal', [], [cfCheckError]);
   Result := Result and (DebuggerState <> dsError);
+  DoSetCaseSensitivity();
 (*
     ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
     if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
@@ -1834,6 +1843,19 @@ begin
     ExecuteCommand('-gdb-set extension-language .pp pascal', False);
     ExecuteCommand('-gdb-set extension-language .inc pascal', False);
 *)
+end;
+
+function TGDBMIDebuggerChangeFilenameBase.DoSetCaseSensitivity: Boolean;
+begin
+  case TGDBMIDebuggerProperties(FTheDebugger.GetProperties).CaseSensitivity of
+  	gdcsSmartOff:  if (FTheDebugger.FGDBVersionMajor > 7) or
+      ( (FTheDebugger.FGDBVersionMajor = 7) and (FTheDebugger.FGDBVersionMinor >= 4) )
+      then
+        ExecuteCommand('-gdb-set case-sensitive off', [], []);
+    gdcsAlwaysOff: ExecuteCommand('-gdb-set case-sensitive off', [], []);
+    gdcsAlwaysOn:  ExecuteCommand('-gdb-set case-sensitive on', [], []);
+    gdcsGdbDefault: ; // do nothing
+  end;
 end;
 
 { TGDBMIDbgInstructionQueue }
@@ -5029,6 +5051,7 @@ begin
     {$ENDIF}
 
     ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
+    DoSetCaseSensitivity();
 
     CheckAvailableTypes;
     CommonInit;
@@ -5240,6 +5263,7 @@ begin
   // Tnit (StartDebugging)
   TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
   ExecuteCommand('-gdb-set language pascal', [cfCheckError]); // TODO: Maybe remove, must be done after attach
+  DoSetCaseSensitivity();
 
   //{$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
   //InitConsole;
@@ -7187,6 +7211,7 @@ begin
   FUseNoneMiRunCommands := gdnmFallback;
   FDisableForcedBreakpoint := False;
   FWarnOnSetBreakpointError := gdbwAll;
+  FCaseSensitivity := gdcsSmartOff;
   inherited;
 end;
 
@@ -7208,6 +7233,7 @@ begin
   FUseNoneMiRunCommands := TGDBMIDebuggerPropertiesBase(Source).FUseNoneMiRunCommands;
   FDisableForcedBreakpoint := TGDBMIDebuggerPropertiesBase(Source).FDisableForcedBreakpoint;
   FWarnOnSetBreakpointError := TGDBMIDebuggerPropertiesBase(Source).FWarnOnSetBreakpointError;
+  FCaseSensitivity := TGDBMIDebuggerPropertiesBase(Source).FCaseSensitivity;
 end;
 
 

@@ -77,6 +77,7 @@ type
     property UseNoneMiRunCommands;
     property DisableLoadSymbolsForLibraries;
     //property WarnOnSetBreakpointError;
+    property CaseSensitivity;
   end;
 
 procedure Register;
