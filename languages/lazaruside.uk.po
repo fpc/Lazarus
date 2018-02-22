@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-02-03 10:32+0200\n"
+"PO-Revision-Date: 2018-02-21 19:49+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -7865,7 +7865,7 @@ msgstr "Не вказаний зневаджувач.%sВстановлені т
 #: lazarusidestrconsts.lisdbgterminal
 msgctxt "lazarusidestrconsts.lisdbgterminal"
 msgid "Console In/Output"
-msgstr ""
+msgstr "Консольний ввід/вивід"
 
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
@@ -7985,10 +7985,8 @@ msgid "Module"
 msgstr "Модуль"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmnotifyonlazarusexceptions
-#, fuzzy
-#| msgid "Notify on Lazarus Exceptions"
 msgid "Notify on Exceptions"
-msgstr "Повідомляти про винятки Lazarus"
+msgstr "Повідомляти про винятки"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmosexceptions
 msgid "OS Exceptions"
@@ -11206,11 +11204,9 @@ msgid "Toggle view Object Inspector"
 msgstr "Перемкнути до перегляду Інспектора об'єктів"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
-#, fuzzy
-#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
 msgid "View Console In/Output"
-msgstr "Показати вивід терміналу"
+msgstr "Показати консольний ввід/вивід"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "View Registers"
@@ -11606,11 +11602,9 @@ msgid "&Local"
 msgstr "&Локальна"
 
 #: lazarusidestrconsts.lislocals
-#, fuzzy
-#| msgid "Locals"
 msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
-msgstr "Локальні"
+msgstr "Локальні змінні"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -13223,11 +13217,9 @@ msgid "&View Project Source"
 msgstr "&Показати код проекту"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
-#, fuzzy
-#| msgid "Terminal Output"
 msgctxt "lazarusidestrconsts.lismenuviewpseudoterminal"
 msgid "Console In/Output"
-msgstr "Вивід терміналу"
+msgstr "Консольний ввід/вивід"
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -19267,11 +19259,9 @@ msgid "&Properties"
 msgstr "&Властивості"
 
 #: lazarusidestrconsts.liswlwatchlist
-#, fuzzy
-#| msgid "Watch List"
 msgctxt "lazarusidestrconsts.liswlwatchlist"
 msgid "Watches"
-msgstr "Список спостережень"
+msgstr "Спостереження"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -20937,11 +20927,9 @@ msgid "View History"
 msgstr "Переглянути історію"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
-#, fuzzy
-#| msgid "View Terminal Output"
 msgctxt "lazarusidestrconsts.srkmecviewpseudoterminal"
 msgid "View console in/output"
-msgstr "Дивитись вивід терміналу"
+msgstr "Показати консольний ввід/вивід"
 
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"

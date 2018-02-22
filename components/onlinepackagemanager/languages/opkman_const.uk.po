@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2018-01-01 15:57+0200\n"
+"PO-Revision-Date: 2018-02-21 20:39+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -629,11 +629,11 @@ msgstr "За спаданням"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
 msgid "From external source"
-msgstr ""
+msgstr "З зовнішнього джерела"
 
 #: opkman_const.rsmainfrm_mifromrepository
 msgid "From repository"
-msgstr ""
+msgstr "Зі сховища"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
@@ -676,28 +676,20 @@ msgid "A package with the same name already exists!"
 msgstr "Пакунок з такою назвою вже є!"
 
 #: opkman_const.rsmainfrm_packageupdate0
-#, fuzzy
-#| msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
 msgid "The following repository packages are not available externally. The packages will be skipped. Continue?"
-msgstr "Такі пакунки зі сховища не встановлені або не мають коректного посилання для звантаження. Вони будуть пропущені. Продовжити?"
+msgstr "Такі пакунки зі сховища не доступні в зовнішніх джерелах. Вони будуть пропущені. Продовжити?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-#, fuzzy
-#| msgid "None of the checked repository packages is installed or has a valid external download link."
 msgid "None of the checked repository packages are available externally."
-msgstr "Жоден з позначених пакунків зі сховища не встановлений і не має коректного посилання для звантаження."
+msgstr "Жоден з позначених пакунків зі сховища не доступний у зовнішніх джерелах."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
-#, fuzzy
-#| msgid ""
-#| "Updating packages from external link is not without a risk!\n"
-#| "Only update if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
 "Only install if you trust the package maintainer. Continue?\n"
 msgstr ""
-"Оновлення пакунків з зовнішнього джерела ризиковане!\n"
-"Здійснюйте оновлення лише коли довіряєте постачальнику пакунка. Продовжити?\n"
+"Встановлення пакунків з зовнішнього джерела ризиковане!\n"
+"Встановлюйте лише коли довіряєте постачальнику пакунка. Продовжити?\n"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 msgid "%s packages successfully loaded from file!"
@@ -915,11 +907,9 @@ msgid "Repository"
 msgstr "Сховище"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
-#, fuzzy
-#| msgid "Update"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
 msgid "External"
-msgstr "Оновити"
+msgstr "Зовнішній"
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgctxt "opkman_const.rsmainfrm_vsttext_author"
@@ -946,11 +936,9 @@ msgid "Description"
 msgstr "Опис"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
-#, fuzzy
-#| msgid "Update link (JSON)"
 msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
 msgid "External link (JSON)"
-msgstr "Адреса оновлення (JSON)"
+msgstr "Зовнішнє посилання (JSON)"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
@@ -1133,15 +1121,13 @@ msgid "Up to date"
 msgstr "Оновлень немає"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate6
-#, fuzzy
-#| msgid "New updates available"
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
 msgid "New version available"
-msgstr "Доступні оновлення"
+msgstr "Доступна нова версія"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate7
 msgid "Ahead of OPM"
-msgstr ""
+msgstr "Випереджає OPM"
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"

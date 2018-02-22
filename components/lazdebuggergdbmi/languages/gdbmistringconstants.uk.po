@@ -1,15 +1,15 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-07-28 01:26+0300\n"
-"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"PO-Revision-Date: 2018-02-21 19:54+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "Project-Id-Version: \n"
-"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 
 #: gdbmistringconstants.dlggroupdebugger
@@ -165,20 +165,16 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "Зневаджувач GNU через SSH дозволяє проводити віддалене зневадження через з’єднання SSH. Детальніше дивіться у файлі docs/RemoteDebugging.txt. Клієнт SSH має міститися в шляху. Використайте SSH_Startup_Options для задання назви віддаленої машини і, за потреби, назви користувача. Параметром Remote_GDB_Exe задається назва файлу GDB на віддаленій машині."
 
 #: gdbmistringconstants.lisresponsecontinue
-#, fuzzy
-#| msgid "Response: %sContinue ?"
 msgid "Response: %sContinue?"
-msgstr "Відповідь: %sПродовжити ?"
+msgstr "Відповідь: %sПродовжити?"
 
 #: gdbmistringconstants.lissshdebuggertimeout
 msgid "Timeout has occurred:"
-msgstr ""
+msgstr "Час вийшов:"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-#, fuzzy
-#| msgid "Unexpected result:%sThe debugger will terminate"
 msgid "Unexpected result:%sThe debugger will terminate."
-msgstr "Неочікуваний результат:%sЗневаджувач завершить роботу"
+msgstr "Неочікуваний результат:%sЗневаджувач завершить роботу."
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
