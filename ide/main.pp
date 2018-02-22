@@ -11183,7 +11183,7 @@ begin
                 (StringCase(Lowercase(DBGTypeDerefer.TypeName), ['char', 'character', 'ansistring']) in [0..2])
               )
             then
-              DebugEval := DebugEval + ' = ' + DebugEvalDerefer;
+              DebugEval := DebugEval + LineEnding + LineEnding + '(' + Expression + ')^ = ' + DebugEvalDerefer;
           end;
         end;
       end else
