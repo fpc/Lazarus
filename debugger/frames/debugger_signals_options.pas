@@ -120,6 +120,6 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsEditor(GroupDebugger, TDebuggerSignalsOptions, DbgOptionsSignals);
+  //RegisterIDEOptionsEditor(GroupDebugger, TDebuggerSignalsOptions, DbgOptionsSignals);
 end.
 
