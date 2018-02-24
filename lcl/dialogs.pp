@@ -679,7 +679,9 @@ function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
 function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
             const HelpFileName: string): TModalResult; overload;
-function CreateMessageDialog(const Msg: string; DlgType: TMsgDlgType;
+function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
+            Buttons: TMsgDlgButtons): TForm; overload;
+function CreateMessageDialog(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons): TForm; overload;
 function DefaultPromptDialog(const DialogCaption,
   DialogMessage: String;
