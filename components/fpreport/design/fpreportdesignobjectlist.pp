@@ -937,7 +937,7 @@ Var
     Y:=Y+DY+ABand.Layout.Height;
     L.Remove(Aband);
     // Recurse
-    AddBandToList(TMyBand(Aband).ChildBand);
+    AddBandToList(TFPReportCustomBand(TMyBand(Aband).ChildBand));
   end;
 
   // Find a band of given type, if it exists add it (remove it from the list)
