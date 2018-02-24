@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Janusz Tomczak\n"
-"PO-Revision-Date: 2018-02-21 10:03+0100\n"
+"PO-Revision-Date: 2018-02-23 15:27+0100\n"
 "Project-Id-Version: lclstrconsts\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1494,9 +1494,8 @@ msgid "Invalid integer number: %s"
 msgstr "Nieprawidłowa liczba całkowita:%s"
 
 #: lclstrconsts.sparlocinfo
-#, fuzzy,badformat
 msgid " (at %d,%d, stream offset %d)"
-msgstr " (w %d,%d, przesunięcie strumienia% d)"
+msgstr " (w %d,%d, przesunięcie strumienia %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"
