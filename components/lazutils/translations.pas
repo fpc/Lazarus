@@ -1132,11 +1132,11 @@ begin
   //Load translation only if it exists and is NOT fuzzy.
   //This matches gettext behaviour and allows to avoid a lot of crashes related
   //to formatting arguments mismatches.
-  if (Item<>nil) and (pos(sFuzzyFlag, lowercase(Item.Flags))=0)
+  if (Item<>nil) and (pos(sFuzzyFlag, Item.Flags)=0)
   //Load translation only if it is not flagged as badformat.
   //This allows to avoid even more crashes related
   //to formatting arguments mismatches.
-  and (pos(sBadFormatFlag, lowercase(Item.Flags))=0)
+  and (pos(sBadFormatFlag, Item.Flags)=0)
   then begin
     Result:=Item.Translation;
     if Result='' then
@@ -1683,7 +1683,7 @@ begin
     CurrentItem:=TPOFileItem.Create(lowercase(Identifier), Original, Translation);
     CurrentItem.Comments := Comments;
     CurrentItem.Context := Context;
-    CurrentItem.Flags := Flags;
+    CurrentItem.Flags := lowercase(Flags);
     CurrentItem.PreviousID := PreviousID;
     CurrentItem.LineNr := LineNr;
     NewItem := true;
