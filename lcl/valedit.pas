@@ -308,7 +308,7 @@ const
   rsVLEDuplicateKey = 'Duplicate Key:'+LineEnding+'A key with name "%s" already exists at column %d';
   //ToDo: Make this a resourcestring in lclstrconsts unit, once we are satisfied with ShowColumnTitles
   rsVLEKey = 'Key';
-  rsVLEName = 'Name';
+  rsVLEValue = 'Value';
   rsVLEInvalidRowColOperation = 'The operation %s is not allowed on a TValueListEditor%s.';
 
 procedure Register;
@@ -1069,7 +1069,7 @@ begin
   if (doColumnTitles in DisplayOptions) then
   begin
     KeyCap := rsVLEKey;
-    ValCap := rsVLEName;
+    ValCap := rsVLEValue;
     if (TitleCaptions.Count > 0) then KeyCap := TitleCaptions[0];
     if (TitleCaptions.Count > 1) then ValCap := TitleCaptions[1];
     //Columns[0].Title.Caption := KeyCap;
