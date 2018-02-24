@@ -263,6 +263,7 @@ begin
   F:=TFPReportDesigner.Create(Application);
   try
     F.Report:=Self.Report;
+    F.Options:=AllReportDesignOptions-[rdoManageData];
     F.ModalWindow:=True;
     F.Execute;
     Designer.Modified;
