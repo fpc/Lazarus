@@ -21,7 +21,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Menus, ActnList, ComCtrls, ExtCtrls, IniPropStorage, Types, fpreport, fpreportdesignctrl,
-  fraReportObjectInspector, fpreportdesignreportdata, frafpreportdata, fpreportdb;
+  fraReportObjectInspector, fpreportdesignreportdata, frafpreportdata, fpreportdb, mrumanager;
 
 type
   // If you add something here, do not forget to add to AllReportDesignOptions.
@@ -74,6 +74,7 @@ type
     AAlignVCenter: TAction;
     AAlignBottom: TAction;
     AAlign: TAction;
+    ARecent: TAction;
     AReportData: TAction;
     APreview: TAction;
     AReportVariables: TAction;
@@ -98,7 +99,9 @@ type
     ILReport: TImageList;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
+    MIRecent: TMenuItem;
     MIAddPage: TMenuItem;
+    PMRecent: TPopupMenu;
     PSDesign: TIniPropStorage;
     MIAlign: TMenuItem;
     MIAddColumnHeader: TMenuItem;
@@ -248,6 +251,7 @@ type
     procedure VAlignExecute(Sender: TObject);
     procedure VResizeExecute(Sender: TObject);
   private
+    MRUMenuManager1: TMRUMenuManager;
     FAutoSaveOnClose: Boolean;
     FDesignOptions: TFPReportDesignOptions;
     FFileName: String;
@@ -278,6 +282,7 @@ type
     procedure SetFileCaption(const AFileName: String);
     procedure SetModified(AValue: Boolean);
   Protected
+    procedure MRUMenuManager1RecentFile(Sender: TObject; const AFileName: String);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ApplyDesignOptions; virtual;
     function AddPageDesign(aPageNo: Integer; APage: TFPReportCustomPage): TTabSheet;
@@ -409,11 +414,23 @@ begin
   SetFileCaption('');
   FOI.OnSelectElement:=@DoSelectComponent;
   FOI.OnModified:=@DoSelectionModifiedByOI;
+  MRUMenuManager1 := TMRUMenuManager.Create(self);
+  with MRUMenuManager1 do begin
+    maxRecent := 5;
+    IniFileName := ChangeFileExt(ParamStr(0), '.ini');
+    MenuItem := MIRecent;
+    PopupMenu := PMRecent;
+    MaxItemLength := 80;
+    MenuCaptionMask := '(%d) %s';
+    OnRecentFile := @MRUMenuManager1RecentFile;
+    LoadRecentFilesFromIni;
+  end;
 end;
 
 procedure TFPReportDesignerForm.FormCloseQuery(Sender: TObject;
   var CanClose: boolean);
 begin
+  MRUMenuManager1.SaveRecentFilesToIni;
   if FAutoSaveOnClose then
     begin
     SaveReport;
@@ -608,6 +625,23 @@ begin
   if not Avalue then
     For I:=0 to DesignerCount-1 do
        PageDesigner(i).Objects.Modified:=False;
+end;
+
+procedure TFPReportDesignerForm.MRUMenuManager1RecentFile(Sender: TObject;
+  const AFileName: String);
+begin
+  if Assigned(OnOpenReport) then
+    begin
+    StopDesigning;
+    OnOpenReport(Self)
+    end
+  else
+    begin
+      StopDesigning;
+      LoadDesignFromFile(AFileName);
+      SetFileCaption(AFileName);
+    end;
+  DesignReport;
 end;
 
 procedure TFPReportDesignerForm.Notification(AComponent: TComponent;
@@ -823,8 +857,11 @@ begin
         FileName:=SDReport.FileName;
         Result:=(FileName<>'');
         end;
-    if Result then
+    if Result then begin
       SaveDesignToFile(FileName);
+      if Assigned(MRUMenuManager1) then
+        MRUMenuManager1.AddToRecent(FileName);
+      end;
     end;
 end;
 
@@ -1150,6 +1187,8 @@ begin
       StopDesigning;
       LoadDesignFromFile(ODReport.FileName);
       SetFileCaption(ODReport.FileName);
+      if Assigned(MRUMenuManager1) then
+        MRUMenuManager1.AddToRecent(ODReport.FileName);
       end;
     end;
   If Result then

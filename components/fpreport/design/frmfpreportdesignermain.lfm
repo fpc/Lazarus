@@ -366,6 +366,9 @@ object FPReportDesignerForm: TFPReportDesignerForm
       object MISaveReport: TMenuItem
         Action = AFileSave
       end
+      object MIRecent: TMenuItem
+        Caption = 'Recent'
+      end
       object MISep: TMenuItem
         Caption = '-'
       end
@@ -805,6 +808,10 @@ object FPReportDesignerForm: TFPReportDesignerForm
       ImageIndex = 35
       OnExecute = AReportDataExecute
       OnUpdate = AReportDataUpdate
+    end
+    object ARecent: TAction
+      Category = 'File'
+      Caption = 'Recent'
     end
   end
   object SDReport: TSaveDialog
@@ -2067,5 +2074,9 @@ object FPReportDesignerForm: TFPReportDesignerForm
     StoredValues = <>
     left = 279
     top = 348
+  end
+  object PMRecent: TPopupMenu
+    Left = 467
+    Top = 209
   end
 end
