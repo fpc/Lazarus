@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-02-21 19:49+0200\n"
+"PO-Revision-Date: 2018-02-23 19:40+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -131,19 +131,19 @@ msgstr "Встановити вільну закладку"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
 msgid "Select current Line (Full)"
-msgstr "Вибрати поточний Рядок (Увесь)"
+msgstr "Вибрати поточний Рядок (увесь)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinesmart
 msgid "Select current Line (Text)"
-msgstr "Вибрати поточний Рядок (Текст)"
+msgstr "Вибрати поточний Рядок (текст)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetpara
 msgid "Select current Paragraph"
-msgstr "Вибрати поточний Абзац"
+msgstr "Вибрати поточний абзац"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetword
 msgid "Select current Word"
-msgstr "Вибрати поточне Слово"
+msgstr "Вибрати поточне слово"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
@@ -151,7 +151,7 @@ msgstr "Скинути масштаб"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
-msgstr "Ця сторінка не показує ваші поточні налаштування. Див. сторінку з додатковими параметрами. Використовуйте цю сторінку для скидання будь-яких їх змін"
+msgstr "Ця сторінка не показує ваші поточні налаштування. Див. сторінку з додатковими параметрами. Використовуйте цю сторінку для скидання будь-яких змін"
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
 msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
@@ -160,11 +160,11 @@ msgstr "Загальне"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on mouse down"
-msgstr "Стандартне, Всі дії (точка зупинки, згортання) при натисканні кнопки Миші"
+msgstr "Стандартне, всі дії (точка зупинки, згортання) при натисканні кнопки миші"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
-msgstr "Розширене, Дії - при відпуск. кнопки миші. Вибирання - при натиск. і переміщ."
+msgstr "Розширене, дії - при відпуск. кнопки миші. Вибирання - при натиск. і переміщ."
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftupright
 msgid "Extended, Actions, right gutter half only"
@@ -693,7 +693,7 @@ msgstr "Автоматично показувати прототипи функ�
 
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
-msgstr "Сховати мишку при наборі тексту"
+msgstr "Сховати мишу при наборі тексту"
 
 #: lazarusidestrconsts.dlgautoindent
 msgctxt "lazarusidestrconsts.dlgautoindent"
@@ -838,31 +838,31 @@ msgstr "Тест"
 
 #: lazarusidestrconsts.dlgccotestcheckingcompiler
 msgid "Test: Checking compiler ..."
-msgstr "Тест: Перевіряю компілятор ..."
+msgstr "Тест: перевіряю компілятор ..."
 
 #: lazarusidestrconsts.dlgccotestcheckingcompilerconfig
 msgid "Test: Checking compiler configuration ..."
-msgstr "Тест: Перевіряю конфігурацію компілятора ..."
+msgstr "Тест: перевіряю конфігурацію компілятора ..."
 
 #: lazarusidestrconsts.dlgccotestcompilerdate
 msgid "Test: Checking compiler date ..."
-msgstr "Тест: Перевіряю дату компілятора ..."
+msgstr "Тест: перевіряю дату компілятора ..."
 
 #: lazarusidestrconsts.dlgccotestcompilingemptyfile
 msgid "Test: Compiling an empty file ..."
-msgstr "Тест: Компілюю порожній файл ..."
+msgstr "Тест: компілюю порожній файл ..."
 
 #: lazarusidestrconsts.dlgccotestmissingppu
 msgid "Test: Checking missing fpc ppu ..."
-msgstr "Тест: Перевіряю відсутній fpc ppu ..."
+msgstr "Тест: перевіряю відсутній fpc ppu ..."
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
 msgid "Test: Checking sources in fpc ppu search paths ..."
-msgstr "Тест: Перевіряю поч. код за шляхами пошуку fpc ppu ..."
+msgstr "Тест: перевіряю сирці за шляхами пошуку fpc ppu ..."
 
 #: lazarusidestrconsts.dlgccotesttoolcompilingemptyfile
 msgid "Test: Compiling an empty file"
-msgstr "Тест: Компілюю порожній файл"
+msgstr "Тест: компілюю порожній файл"
 
 #: lazarusidestrconsts.dlgccousingconfigfile
 msgid "using config file %s"
@@ -1108,7 +1108,7 @@ msgstr "Розширювати, якщо курсор не в кінці ряд�
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatch
 msgid "Extend, if matched"
-msgstr "Розширювати при відповідності"
+msgstr "Розширювати за відповідності"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
 msgid "Extend, if matched and caret in the middle of text (not at EOL)"
@@ -1255,7 +1255,7 @@ msgstr "Створити новий набір параметрів запуск
 
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
 msgid "Ctrl-middle-click on tab closes all others"
-msgstr "Натискання Ctrl-Середня Кнопка на вкладці закриває інші"
+msgstr "Натискання Ctrl-Середня кнопка на вкладці закриває інші"
 
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
@@ -1291,7 +1291,7 @@ msgstr "зневадити"
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
-msgstr "Редактор Шляху"
+msgstr "Редактор шляху"
 
 #: lazarusidestrconsts.dlgdebugtype
 msgid "Debugger type and path"
@@ -1425,7 +1425,7 @@ msgstr "Підтека"
 #: lazarusidestrconsts.dlgedcodetempl
 msgctxt "lazarusidestrconsts.dlgedcodetempl"
 msgid "Code Templates"
-msgstr "Кодові Шаблони"
+msgstr "Кодові шаблони"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for Pascal blocks"
@@ -1470,7 +1470,7 @@ msgstr "Знехтувати фіксуванням якщо редактор у
 
 #: lazarusidestrconsts.dlgeditaccesscaptionlockedinview
 msgid "Locked, if text in view"
-msgstr "Фіксовано якщо тест в області перегляду"
+msgstr "Заблоковано, якщо тест в області перегляду"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlocked
 msgid "Unlocked"
@@ -1478,7 +1478,7 @@ msgstr "Розблоковано"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedinsoftview
 msgid "Unlocked, if text in centered view"
-msgstr "Незафіксований якщо текст в центрі області перегляду"
+msgstr "Розблоковано, якщо текст в центрі області перегляду"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinanywin
 msgid "New tab, existing or new window"
@@ -1494,39 +1494,39 @@ msgstr "Нова вкладка в наявному вікні"
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
 msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. The determination of the longest unused editor does not look at the order in which the windows were focused, even if this is set by the setting for \"same criteria order\". This option will always succeed, further options are never tested."
-msgstr "Опція вибирає найдовше не використовуваний редактор для файлу, навіть якщо він зафіксований і/або потребує прокрутки. При цьому не враховується порядок переведення фокусу у вікна, навіть якщо вибраний параметр \"той самий порядок критеріїв\". Ця опція завжди працює, наступні за нею не аналізуються."
+msgstr "Опція вибирає найдовше не використовуваний редактор для файлу, навіть якщо він заблокований і/або потребує прокрутки. При цьому не враховується порядок переведення фокусу у вікна, навіть якщо вибрано параметр \"той самий порядок критеріїв\". Ця опція завжди працює, наступні за нею не аналізуються."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
 msgid "This option will check if the current active editor has the target file and if it is, it will use the current editor, even if it is locked and/or needs scrolling."
-msgstr "Опція перевіряє чи поточний активний редактор має цільовий файл. Якщо так то він використає поточний редактор, навіть якщо той зафіксований і/або потребує прокрутки."
+msgstr "Опція перевіряє чи поточний активний редактор має цільовий файл. Якщо так то він використає поточний редактор, навіть якщо той заблокований і/або потребує прокрутки."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactwin
 msgid "This option will check if there is an editor for the target file in the current window and if there is, it will use this editor, even if it is locked and/or needs scrolling."
-msgstr "Опція перевіряє чи існує редактор для цільового файлу в поточному вікні. Якщо так то він використає цей редактор, навіть якщо той зафіксований і/або потребує прокрутки."
+msgstr "Опція перевіряє чи існує редактор для цільового файлу в поточному вікні. Якщо так то він використає цей редактор, навіть якщо той заблокований і/або потребує прокрутки."
 
 #: lazarusidestrconsts.dlgeditaccessdesclockedinview
 msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
-msgstr "Опція вибирає зафіксований (і лише зафіксований) Редактор, який не потребує прокрутки для показу цільової точки переходу (вона вже знаходиться в видимій області)."
+msgstr "Опція вибирає заблокований (і лише заблокований) редактор, який не потребує прокрутки для показу цільової точки переходу (вона вже знаходиться в видимій області)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlocked
 msgid "This option will use any not locked Editor."
-msgstr "Опція вибирає будь-який не зафіксований Редактор."
+msgstr "Опція вибирає будь-який не заблокований редактор."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
 msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
-msgstr "Опція вибирає незафіксований редактор, якому не потрібна прокрутка для показу цільової точки переходу (вона вже знаходиться в центрі області перегляду, виключаючи 2-5 рядків зверху і знизу)."
+msgstr "Опція вибирає незаблокований редактор, якому не потрібна прокрутка для показу цільової точки переходу (вона вже знаходиться в центрі області перегляду, виключаючи 2-5 рядків зверху і знизу)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
 msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
-msgstr "Опція відкриває нову Вкладку в наявному або новому Вікні, якщо не знайдено незафіксованої вкладки. Опція завжди спрацює, наступні за нею не перевіряються."
+msgstr "Опція відкриває нову вкладку в наявному або новому вікні, якщо не знайдено незаблокованої вкладки. Опція завжди спрацює, наступні за нею не перевіряються."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
 msgid "If no unlocked tab is found, then this option will open a new Tab in a new Window (even if other existing windows could be used for the new tab). This option will always succeed, further options are never tested."
-msgstr "Якщо не знайдено незафіксованої вкладки, використання цієї опції призводить до відкриття нової Вкладки в новому Вікні (навіть якщо для цього можуть бути використані наявні вікна).  Опція завжди спрацює, наступні за нею не перевіряються."
+msgstr "Якщо не знайдено незаблокованої вкладки, використання цієї опції призводить до відкриття нової вкладки в новому вікні (навіть якщо для цього можуть бути використані наявні вікна).  Опція завжди спрацює, наступні за нею не перевіряються."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
 msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
-msgstr "Якщо не знайдено незафіксованої вкладки, використання цієї опції призводить до відкриття нової Вкладки в наявному (і лише в наявному) Вікні. Вкладка відкривається лише при наявності вікна, що не має редактора для цільового файлу."
+msgstr "Якщо не знайдено незаблокованої вкладки, використання цієї опції призводить до відкриття нової вкладки в наявному (і лише в наявному) вікні. Вкладка відкривається лише за наявності вікна, що не має редактора для цільового файлу."
 
 #: lazarusidestrconsts.dlgedital
 msgid "Italic"
@@ -2536,7 +2536,7 @@ msgstr "Максимум лічильника"
 
 #: lazarusidestrconsts.dlgmaxlinelength
 msgid "Max line length:"
-msgstr "Максимальна довжина рядка"
+msgstr "Найбільша довжина рядка:"
 
 #: lazarusidestrconsts.dlgmaxrecentfiles
 msgid "Max recent files"
@@ -3507,7 +3507,7 @@ msgstr "Показувати підказки дизайнера"
 
 #: lazarusidestrconsts.dlgshowdesignerhintshint
 msgid "Hint shows control's position or size while moving or resizing it."
-msgstr "Підказка, при переміщенні чи зміненні розмірів елемента керування, показує його позицію або розміри."
+msgstr "Підказка показує позицію або розміри елемента керування при його переміщенні чи зміненні розмірів."
 
 #: lazarusidestrconsts.dlgshoweverything
 msgid "Show everything"
@@ -4200,17 +4200,17 @@ msgstr "Файл \"%s\" виглядає невизначеним, тому що
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "Максимальна версія \"%s\" некоректна.%sВикористовуйте формат основна.другорядна.реліз.збірка%sНаприклад: 1.0.20.10"
+msgstr "Найвища версія \"%s\" некоректна.%sВикористовуйте формат основна.другорядна.реліз.збірка%sНаприклад: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr "Максимальна Версія є меншою за Мінімальну Версію."
+msgstr "Найвища версія є меншою за найнижчу версію."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "Мінімальна версія \"%s\" некоректна.%sВикористовуйте формат основна.другорядна.реліз.збірка%sНаприклад: 1.0.20.10"
+msgstr "Найнижча версія \"%s\" некоректна.%sВикористовуйте формат основна.другорядна.реліз.збірка%sНаприклад: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
 msgid "The package already has a dependency on the package \"%s\"."
@@ -14105,7 +14105,7 @@ msgstr "? (Вкл)"
 
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
-msgstr "При розриві рядка (тобто при натисканні клавіші Enter)"
+msgstr "При розриванні рядка (тобто при натисканні клавіші Enter)"
 
 #: lazarusidestrconsts.lisonlinepackage
 msgid "available in the main repository"
@@ -14576,19 +14576,19 @@ msgstr "Встановити"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
-msgstr "Неправильна максимальна версія"
+msgstr "Неправильна найвища версія"
 
 #: lazarusidestrconsts.lispckeditinvalidminimumversion
 msgid "Invalid minimum version"
-msgstr "Неправильна мінімальна версія"
+msgstr "Неправильна найнижча версія"
 
 #: lazarusidestrconsts.lispckeditmaximumversion
 msgid "Maximum Version:"
-msgstr "Максимальна версія"
+msgstr "Найвища версія"
 
 #: lazarusidestrconsts.lispckeditminimumversion
 msgid "Minimum Version:"
-msgstr "Мінімальна версія"
+msgstr "Найнижча версія"
 
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
@@ -14705,11 +14705,11 @@ msgstr "Зберегти назву файлу як бажану для цієї
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
-msgstr "Максимальна версія \"%s\" не є правильною версією пакунка.%s(гарний приклад 1.2.3.4)"
+msgstr "Найвища версія \"%s\" не є правильною версією пакунка.%s(гарний приклад 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
 msgid "The minimum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
-msgstr "Мінімальна версія \"%s\" не є правильною версією пакунка.%s(гарний приклад 1.2.3.4)"
+msgstr "Найнижча версія \"%s\" не є правильною версією пакунка.%s(гарний приклад 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedituninstall
 msgid "Uninstall"
@@ -15583,11 +15583,11 @@ msgstr "Пакунок \"%s\" встановлено, але не знайден
 
 #: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
 msgid "This is the default package. Used only for components without a package. These components are outdated."
-msgstr "Це пакунок за замовчуванням. Використовується тільки для компонентів без пакунка. Такі компоненти є застарілими."
+msgstr "Це типовий пакунок. Використовується тільки для компонентів без пакунка. Такі компоненти є застарілими."
 
 #: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
-msgstr "Цей пакунок встановлений але lpk-файл не був знайдений. Всі компоненти дезактивовані. Будь-ласка, виправте проблему."
+msgstr "Цей пакунок встановлено, але lpk-файл не знайдено. Всі компоненти деактивовано. Будь-ласка, виправте проблему."
 
 #: lazarusidestrconsts.lispkgsysunitname
 msgid "%s%sUnit Name: \"%s\""
@@ -15674,7 +15674,7 @@ msgstr "<Всі>"
 
 #: lazarusidestrconsts.lisplistchangefont
 msgid "Change Font"
-msgstr "Змінити Шрифт"
+msgstr "Змінити шрифт"
 
 #: lazarusidestrconsts.lisplistcopymethodtoclipboard
 msgid "Copy method name to the clipboard"
@@ -15846,11 +15846,11 @@ msgstr "Локальні (%s)"
 
 #: lazarusidestrconsts.lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
-msgstr "Максимальна версія (необов'язково)"
+msgstr "Найвища версія (не обов'язково)"
 
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
-msgstr "Мінімальна версія (необов'язково)"
+msgstr "Найнижча версія (не обов'язково)"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"
@@ -15879,17 +15879,17 @@ msgstr "Залежності \"%s\" не знайдено.%sВиберіть н�
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "Максимальна версія \"%s\" некоректна.%sВикористовуйте формат головний.вторинний.реліз.збірка%sНаприклад: 1.0.20.10"
+msgstr "Найвища версія \"%s\" некоректна.%sВикористовуйте формат головний.вторинний.реліз.збірка%sНаприклад: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
-msgstr "Максимальна версія менше за мінімальну."
+msgstr "Найвища версія менша за найнижчу."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
-msgstr "Мінімальна версія \"%s\" є некоректною.%sВикористовуйте формат головний.вторинний.реліз.збірка%sНаприклад: 1.0.20.10"
+msgstr "Найнижча версія \"%s\" є некоректною.%sВикористовуйте формат головний.вторинний.реліз.збірка%sНаприклад: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
 msgid "The project has already a dependency for the package \"%s\"."
