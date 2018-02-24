@@ -1437,13 +1437,19 @@ procedure TSynBaseCompletion.Execute(s: string; TokenRect: TRect);
 var
   SpaceBelow, SpaceAbove: Integer;
   Mon: TMonitor;
+  MRect: TRect;
 begin
   Mon := Screen.MonitorFromPoint(TokenRect.TopLeft);
-  if Mon <> nil then
-    TokenRect.Left := Min(TokenRect.Left, Mon.Left + Mon.Width - Form.Width);
+  if Mon = nil then begin
+    Execute(s, TokenRect.Left, TokenRect.Bottom);
+    exit;
+  end;
 
-  SpaceBelow := Mon.Height - TokenRect.Bottom;
-  SpaceAbove := TokenRect.Top - Mon.Top;
+  MRect := Mon.WorkareaRect; // BoundsRect on Windows, if overlap with Taskbar is desired
+  TokenRect.Left := Max(MRect.Left, Min(TokenRect.Left, MRect.Right - Form.Width));
+
+  SpaceBelow := MRect.Bottom - TokenRect.Bottom;
+  SpaceAbove := TokenRect.Top - MRect.Top;
   if Form.Height < SpaceBelow then
     Execute(s, TokenRect.Left, TokenRect.Bottom)
   else
@@ -1457,7 +1463,7 @@ begin
     end else begin
       Form.NbLinesInWindow := Max(SpaceAbove div Form.FontHeight, 3); // temporary height
       Execute(s, TokenRect.Left, TokenRect.Top - Form.Height);
-    end;;
+    end;
   end;
 end;
 
