@@ -1192,7 +1192,8 @@ begin
     //debugln(['TLazBuildApplication.LoadEnvironmentOptions LazarusDirectory="',LazarusDirectory,'"']);
     if LazarusDirOverride<>'' then
       LazarusDirectory:=CleanAndExpandDirectory(LazarusDirOverride);
-    if MaxProcessCount>=0 then;
+    if MaxProcessCount>=0 then
+      // set command line override
       MaxExtToolsInParallel:=MaxProcessCount;
   end;
   if not FileExistsUTF8(EnvironmentOptions.GetParsedLazarusDirectory
