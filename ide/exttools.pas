@@ -583,6 +583,7 @@ procedure TExternalTool.SetThread(AValue: TExternalToolThread);
 var
   CallAutoFree: Boolean;
 begin
+  // Note: in lazbuild ProcessStopped sets FThread:=nil, so SetThread is not called.
   EnterCriticalSection;
   try
     if FThread=AValue then Exit;
@@ -598,7 +599,6 @@ begin
       Application.QueueAsyncCall(@SyncAutoFree,0)
     else
     begin
-      // Note: lazbuild has Application=nil and frees threads via the main thread
       debugln(['WARNING: (lazarus) TExternalTool.SetThread can not call AutoFree from other thread']);
     end;
   end;
