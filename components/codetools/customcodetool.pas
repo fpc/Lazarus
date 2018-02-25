@@ -2598,6 +2598,14 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
       LastPos:=Node.StartPos;
     if p>LastPos then begin
       Msg:='Behind code (last token at '+CleanPosToStr(LastPos)+')';
+      {$IFDEF VerboseNoNodeAtCursor}
+      debugln(['RaiseNoNodeFoundAtCursor CleanSrcEnd=',CleanPosToStr(SrcLen),' ...',dbgstr(RightStr(Src,50))]);
+      debugln(['   Scanner.ScannedRange=',dbgs(Scanner.ScannedRange)]);
+      debugln(['   Scanner.CleanedSrc=',dbgstr(RightStr(Scanner.CleanedSrc,50))]);
+      debugln(['   Node.StartPos=',CleanPosToStr(Node.StartPos),' EndPos=',CleanPosToStr(Node.EndPos)]);
+      Node:=Node.GetLastNode;
+      debugln(['   LastNode=',Node.DescAsString,' StartPos=',CleanPosToStr(Node.StartPos),' EndPos=',CleanPosToStr(Node.EndPos)]);
+      {$ENDIF}
       RaiseException(20170421194838,Msg);
     end;
 
