@@ -595,7 +595,12 @@ begin
     if MainThreadID=GetCurrentThreadId then
       AutoFree
     else if (Application<>nil) then
-      Application.QueueAsyncCall(@SyncAutoFree,0);
+      Application.QueueAsyncCall(@SyncAutoFree,0)
+    else
+    begin
+      // Note: lazbuild has Application=nil and frees threads via the main thread
+      debugln(['WARNING: (lazarus) TExternalTool.SetThread can not call AutoFree from other thread']);
+    end;
   end;
 end;
 
