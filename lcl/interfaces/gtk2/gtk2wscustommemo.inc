@@ -349,7 +349,7 @@ begin
       Dec(SelStart, CutLen)
   end;
   MemoStrings.QueueCursorMove(SelStart);
-  gtk_text_buffer_insert(TextBuf, @StartIter, PChar(NewSelText), Utf8Len);
+  gtk_text_buffer_insert(TextBuf, @StartIter, PChar(NewSelText), -1);
 end;
 
 class procedure TGtk2WSCustomMemo.SetText(const AWinControl: TWinControl;
