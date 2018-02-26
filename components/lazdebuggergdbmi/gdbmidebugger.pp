@@ -164,6 +164,7 @@ type
     FConsoleTty: String;
     {$ENDIF}
     FGDBOptions: String;
+    FGdbValueMemLimit: Integer;
     FInternalStartBreak: TGDBMIDebuggerStartBreak;
     FMaxDisplayLengthForString: Integer;
     FTimeoutForEval: Integer;
@@ -205,6 +206,7 @@ type
              write FDisableForcedBreakpoint default False;
     property WarnOnSetBreakpointError: TGDBMIWarnOnSetBreakpointError read FWarnOnSetBreakpointError
              write FWarnOnSetBreakpointError default gdbwAll;
+    property GdbValueMemLimit: Integer read FGdbValueMemLimit write FGdbValueMemLimit default $60000000;
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -226,6 +228,7 @@ type
     property DisableForcedBreakpoint;
     //property WarnOnSetBreakpointError;
     property CaseSensitivity;
+    property GdbValueMemLimit;
   end;
 
   TGDBMIDebugger = class;
@@ -492,6 +495,7 @@ type
     function DoSetPascal: Boolean;
     function DoSetCaseSensitivity: Boolean;
     function DoSetInternalError: Boolean;
+    function DoSetMaxValueMemLimit: Boolean;
   end;
 
   { TGDBMIDebuggerCommandChangeFilename }
@@ -1843,6 +1847,7 @@ begin
   Result := Result and (DebuggerState <> dsError);
   DoSetInternalError();
   DoSetCaseSensitivity();
+  DoSetMaxValueMemLimit();
 (*
     ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
     if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
@@ -1881,6 +1886,22 @@ begin
   ExecuteCommand('maint set demangler-warning quit no', [], []);
   ExecuteCommand('maint set demangler-warning corefile no', [], []);
 end;
+
+function TGDBMIDebuggerChangeFilenameBase.DoSetMaxValueMemLimit: Boolean;
+var
+  i: Integer;
+begin
+  if (FTheDebugger.FGDBVersionMajor < 7) then
+    exit;
+  // available from GDB 7.11
+  i := TGDBMIDebuggerProperties(FTheDebugger.GetProperties).GdbValueMemLimit;
+  if i > 0 then
+    ExecuteCommand('set max-value-size %d', [i], [])
+  else
+  if i = 0 then
+    ExecuteCommand('set max-value-size unlimited', [], []);
+end;
+
 
 { TGDBMIDbgInstructionQueue }
 
@@ -5081,6 +5102,7 @@ begin
     ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
     DoSetInternalError();
     DoSetCaseSensitivity();
+    DoSetMaxValueMemLimit();
 
     CheckAvailableTypes;
     CommonInit;
@@ -5294,6 +5316,7 @@ begin
   ExecuteCommand('-gdb-set language pascal', [cfCheckError]); // TODO: Maybe remove, must be done after attach
   DoSetInternalError();
   DoSetCaseSensitivity();
+  DoSetMaxValueMemLimit();
 
   //{$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
   //InitConsole;
@@ -7242,6 +7265,7 @@ begin
   FDisableForcedBreakpoint := False;
   FWarnOnSetBreakpointError := gdbwAll;
   FCaseSensitivity := gdcsSmartOff;
+  FGdbValueMemLimit := $60000000;
   inherited;
 end;
 
@@ -7265,6 +7289,7 @@ begin
   FDisableForcedBreakpoint := TGDBMIDebuggerPropertiesBase(Source).FDisableForcedBreakpoint;
   FWarnOnSetBreakpointError := TGDBMIDebuggerPropertiesBase(Source).FWarnOnSetBreakpointError;
   FCaseSensitivity := TGDBMIDebuggerPropertiesBase(Source).FCaseSensitivity;
+  FGdbValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbValueMemLimit;
 end;
 
 
