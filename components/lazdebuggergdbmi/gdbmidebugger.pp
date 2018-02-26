@@ -484,6 +484,7 @@ type
     function DoChangeFilename: Boolean;
     function DoSetPascal: Boolean;
     function DoSetCaseSensitivity: Boolean;
+    function DoSetInternalError: Boolean;
   end;
 
   { TGDBMIDebuggerCommandChangeFilename }
@@ -1833,6 +1834,7 @@ begin
   // Setting extensions dumps GDB (bug #508)
   Result := ExecuteCommand('-gdb-set language pascal', [], [cfCheckError]);
   Result := Result and (DebuggerState <> dsError);
+  DoSetInternalError();
   DoSetCaseSensitivity();
 (*
     ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
@@ -1856,6 +1858,21 @@ begin
     gdcsAlwaysOn:  ExecuteCommand('-gdb-set case-sensitive on', [], []);
     gdcsGdbDefault: ; // do nothing
   end;
+end;
+
+function TGDBMIDebuggerChangeFilenameBase.DoSetInternalError: Boolean;
+begin
+  if (FTheDebugger.FGDBVersionMajor < 7) then
+    exit;
+  // available from GDB 7.0
+  // On w32, it has no effect until GDB 7.7
+  ExecuteCommand('maint set internal-error quit no', [], []);
+  ExecuteCommand('maint set internal-error corefile no', [], []);
+  ExecuteCommand('maint set internal-warning quit no', [], []);
+  ExecuteCommand('maint set internal-warning corefile no', [], []);
+  // available from GDB 7.9
+  ExecuteCommand('maint set demangler-warning quit no', [], []);
+  ExecuteCommand('maint set demangler-warning corefile no', [], []);
 end;
 
 { TGDBMIDbgInstructionQueue }
@@ -1888,6 +1905,7 @@ procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: St
        (Pos('internal to gdb has been detected', LowerCase(Line)) > 0) or
        (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0)
     then begin
+      Debugger.FNeedReset := True;
       Debugger.DoDbgEvent(ecDebugger, etDefault,
         Format(gdbmiEventLogGDBInternalError, [AData]));
       if TGDBMIDebuggerProperties(Debugger.GetProperties).WarnOnInternalError
@@ -1901,7 +1919,6 @@ procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: St
           try
             Debugger.CancelAllQueued;
           finally
-            Debugger.FNeedReset := True;
             Debugger.Stop;
           end;
         end;
@@ -5051,6 +5068,7 @@ begin
     {$ENDIF}
 
     ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
+    DoSetInternalError();
     DoSetCaseSensitivity();
 
     CheckAvailableTypes;
@@ -5263,6 +5281,7 @@ begin
   // Tnit (StartDebugging)
   TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
   ExecuteCommand('-gdb-set language pascal', [cfCheckError]); // TODO: Maybe remove, must be done after attach
+  DoSetInternalError();
   DoSetCaseSensitivity();
 
   //{$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
