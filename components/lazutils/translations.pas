@@ -1602,7 +1602,6 @@ begin
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item<>nil then begin
     // found, update item value
-    AddToModuleList(Identifier);
 
     if CompareMultilinedStrings(Item.Original, Original)<>0 then begin
       FModified := True;
@@ -1673,6 +1672,8 @@ var
   P: SizeInt;
 begin
   NewItem := false;
+
+  AddToModuleList(Identifier);
 
   FoundItem := TPOFileItem(FOriginalToItem.Data[Original]);
 
