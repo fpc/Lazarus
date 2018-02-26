@@ -330,7 +330,7 @@ type
     FState : TGDBMIDebuggerCommandState;
     FSeenStates: TGDBMIDebuggerCommandStates;
     FLastExecCommand: String;
-    FLastExecResult: TGDBMIExecResult;
+    FLastExecResult: TGDBMIExecResult; // deprecated;
     FLogWarnings, FFullCmdReply: String;
     FGotStopped: Boolean; // used in ProcessRunning
     function GetDebuggerProperties: TGDBMIDebuggerPropertiesBase;
@@ -10986,6 +10986,9 @@ begin
         CReq := FTheDebugger.FTypeRequestCache.Request[i];
         AReq^.Result := CReq.Result;
         AReq^.Error := CReq.Error;
+        //TODO: get rid of FLastExecResult
+        FLastExecResult.State := dsError;
+        FLastExecResult.Values := CReq.Result.GdbDescription;
       end
       else begin
         f :=  ExecuteCommand(AReq^.Request, R);
