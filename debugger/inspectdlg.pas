@@ -863,7 +863,7 @@ begin
     begin
       FreeAndNil(FDBGInfo);
       Clear;
-      StatusBar1.SimpleText:=Format(lisInspectUnavailable, [ShortenedExpression]);
+      StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
       Exit;
     end;
     case FDBGInfo.Kind of
