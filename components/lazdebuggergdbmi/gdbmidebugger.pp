@@ -145,6 +145,12 @@ type
     gdcsSmartOff, gdcsAlwaysOff, gdcsAlwaysOn, gdcsGdbDefault
   );
 
+  {$scopedenums on}
+  TGDBMIDebuggerShowWarning = ( // need true/false to read old config
+    True, False, OncePerRun
+  );
+  {$scopedenums off}
+
   { TGDBMIDebuggerPropertiesBase }
 
   TGDBMIDebuggerPropertiesBase = class(TDebuggerProperties)
@@ -164,7 +170,7 @@ type
     FUseAsyncCommandMode: Boolean;
     FUseNoneMiRunCommands: TGDBMIUseNoneMiRunCmdsState;
     FWarnOnSetBreakpointError: TGDBMIWarnOnSetBreakpointError;
-    FWarnOnInternalError: Boolean;
+    FWarnOnInternalError: TGDBMIDebuggerShowWarning;
     FWarnOnTimeOut: Boolean;
     procedure SetMaxDisplayLengthForString(AValue: Integer);
     procedure SetTimeoutForEval(const AValue: Integer);
@@ -180,7 +186,8 @@ type
     property MaxDisplayLengthForString: Integer read FMaxDisplayLengthForString write SetMaxDisplayLengthForString;
     property TimeoutForEval: Integer read FTimeoutForEval write SetTimeoutForEval;
     property WarnOnTimeOut: Boolean  read FWarnOnTimeOut write SetWarnOnTimeOut;
-    property WarnOnInternalError: Boolean  read FWarnOnInternalError write FWarnOnInternalError;
+    property WarnOnInternalError: TGDBMIDebuggerShowWarning
+             read FWarnOnInternalError write FWarnOnInternalError default TGDBMIDebuggerShowWarning.OncePerRun;
     property EncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding
              read FEncodeCurrentDirPath write FEncodeCurrentDirPath default gdfeDefault;
     property EncodeExeFileName: TGDBMIDebuggerFilenameEncoding
@@ -816,7 +823,7 @@ type
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand = nil): Boolean;
     procedure TerminateGDB;
   protected
-    FNeedStateToIdle, FNeedReset: Boolean;
+    FNeedStateToIdle, FNeedReset, FWarnedOnInternal: Boolean;
     {$IFDEF MSWindows}
     FPauseRequestInThreadID: Cardinal;
     {$ENDIF}
@@ -1903,13 +1910,17 @@ procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: St
     // check internal error
     if (Pos('internal-error:', LowerCase(Line)) > 0) or
        (Pos('internal to gdb has been detected', LowerCase(Line)) > 0) or
-       (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0)
+       (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0) or
+       (Pos('command aborted.', LowerCase(Line)) > 0)
     then begin
       Debugger.FNeedReset := True;
       Debugger.DoDbgEvent(ecDebugger, etDefault,
         Format(gdbmiEventLogGDBInternalError, [AData]));
-      if TGDBMIDebuggerProperties(Debugger.GetProperties).WarnOnInternalError
+      if (TGDBMIDebuggerProperties(Debugger.GetProperties).WarnOnInternalError = TGDBMIDebuggerShowWarning.True) or
+         ( (TGDBMIDebuggerProperties(Debugger.GetProperties).WarnOnInternalError = TGDBMIDebuggerShowWarning.OncePerRun)
+           and not (Debugger.FWarnedOnInternal))
       then begin
+        Debugger.FWarnedOnInternal := True;
         if Debugger.OnFeedback(Debugger,
             Format(gdbmiGDBInternalError, [LineEnding]),
             Format(gdbmiGDBInternalErrorInfo, [LineEnding, Line, TheInstruction.DebugText]),
@@ -7221,7 +7232,7 @@ begin
   FTimeoutForEval := -1;
   {$ENDIF}
   FWarnOnTimeOut := True;
-  FWarnOnInternalError := True;
+  FWarnOnInternalError := TGDBMIDebuggerShowWarning.OncePerRun;
   FEncodeCurrentDirPath := gdfeDefault;
   FEncodeExeFileName := gdfeDefault;
   FInternalStartBreak := gdsbDefault;
@@ -7244,6 +7255,7 @@ begin
   FMaxDisplayLengthForString := TGDBMIDebuggerPropertiesBase(Source).FMaxDisplayLengthForString;
   FTimeoutForEval := TGDBMIDebuggerPropertiesBase(Source).FTimeoutForEval;
   FWarnOnTimeOut  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnTimeOut;
+  FWarnOnInternalError  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnInternalError;
   FEncodeCurrentDirPath := TGDBMIDebuggerPropertiesBase(Source).FEncodeCurrentDirPath;
   FEncodeExeFileName := TGDBMIDebuggerPropertiesBase(Source).FEncodeExeFileName;
   FInternalStartBreak := TGDBMIDebuggerPropertiesBase(Source).FInternalStartBreak;
@@ -7332,6 +7344,7 @@ begin
   FInProcessStopped := False;
   FNeedStateToIdle := False;
   FNeedReset := False;
+  FWarnedOnInternal := False;
 
 
 {$IFdef MSWindows}
