@@ -10405,7 +10405,7 @@ msgid "&Inspect"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectclassinherit
-msgid "%s : Class %s inherits from %s"
+msgid "%s: class %s inherits from %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectdata
@@ -10441,8 +10441,8 @@ msgstr ""
 msgid "Show visibility column"
 msgstr ""
 
-#: lazarusidestrconsts.lisinspectunavailable
-msgid "%s : unavailable"
+#: lazarusidestrconsts.lisinspectunavailableerror
+msgid "%s: unavailable (error: %s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance

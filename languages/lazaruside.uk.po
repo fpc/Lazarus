@@ -10425,7 +10425,9 @@ msgid "&Inspect"
 msgstr "&Перевірити"
 
 #: lazarusidestrconsts.lisinspectclassinherit
-msgid "%s : Class %s inherits from %s"
+#, fuzzy
+#| msgid "%s : Class %s inherits from %s"
+msgid "%s: class %s inherits from %s"
 msgstr "%s : Клас %s успадковує від %s"
 
 #: lazarusidestrconsts.lisinspectdata
@@ -10461,9 +10463,9 @@ msgstr "Показати стовпець типу"
 msgid "Show visibility column"
 msgstr "Показати стовпець видимості"
 
-#: lazarusidestrconsts.lisinspectunavailable
-msgid "%s : unavailable"
-msgstr "%s : недоступне"
+#: lazarusidestrconsts.lisinspectunavailableerror
+msgid "%s: unavailable (error: %s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance
 msgid "Instance"

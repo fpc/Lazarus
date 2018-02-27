@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-02-05 01:33+0300\n"
+"PO-Revision-Date: 2018-02-28 01:41+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10420,8 +10420,8 @@ msgid "&Inspect"
 msgstr "&Просмотреть"
 
 #: lazarusidestrconsts.lisinspectclassinherit
-msgid "%s : Class %s inherits from %s"
-msgstr "%s : класс %s наследуется от %s"
+msgid "%s: class %s inherits from %s"
+msgstr "%s: класс %s наследуется от %s"
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
@@ -10456,9 +10456,9 @@ msgstr "Показывать столбец типа"
 msgid "Show visibility column"
 msgstr "Показывать столбец видимости"
 
-#: lazarusidestrconsts.lisinspectunavailable
-msgid "%s : unavailable"
-msgstr "%s : недоступно"
+#: lazarusidestrconsts.lisinspectunavailableerror
+msgid "%s: unavailable (error: %s)"
+msgstr "%s: недоступно (ошибка: %s)"
 
 #: lazarusidestrconsts.lisinspectuseinstance
 msgid "Instance"

@@ -10438,7 +10438,9 @@ msgid "&Inspect"
 msgstr "&Inspektuoti"
 
 #: lazarusidestrconsts.lisinspectclassinherit
-msgid "%s : Class %s inherits from %s"
+#, fuzzy
+#| msgid "%s : Class %s inherits from %s"
+msgid "%s: class %s inherits from %s"
 msgstr "%s : klasė „%s“ paveldima iš „%s“"
 
 #: lazarusidestrconsts.lisinspectdata
@@ -10474,9 +10476,9 @@ msgstr "Rodyti tipo stulpelį"
 msgid "Show visibility column"
 msgstr "Rodyti matomumo stulpelį"
 
-#: lazarusidestrconsts.lisinspectunavailable
-msgid "%s : unavailable"
-msgstr "%s : negalimas"
+#: lazarusidestrconsts.lisinspectunavailableerror
+msgid "%s: unavailable (error: %s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance
 msgid "Instance"

@@ -10530,7 +10530,8 @@ msgstr "& Inceleyin"
 
 #: lazarusidestrconsts.lisinspectclassinherit
 #, fuzzy,badformat
-msgid "%s : Class %s inherits from %s"
+#| msgid "%s : Class %s inherits from %s"
+msgid "%s: class %s inherits from %s"
 msgstr "% S: %s sınıfı %s kaynağından devralındı."
 
 #: lazarusidestrconsts.lisinspectdata
@@ -10567,10 +10568,9 @@ msgstr "Tip sütununu göster"
 msgid "Show visibility column"
 msgstr "Görünürlük sütununu göster"
 
-#: lazarusidestrconsts.lisinspectunavailable
-#, fuzzy,badformat
-msgid "%s : unavailable"
-msgstr "% S: kullanılamıyor"
+#: lazarusidestrconsts.lisinspectunavailableerror
+msgid "%s: unavailable (error: %s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance
 msgid "Instance"

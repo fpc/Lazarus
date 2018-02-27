@@ -10425,7 +10425,9 @@ msgid "&Inspect"
 msgstr "V&izsgálat"
 
 #: lazarusidestrconsts.lisinspectclassinherit
-msgid "%s : Class %s inherits from %s"
+#, fuzzy
+#| msgid "%s : Class %s inherits from %s"
+msgid "%s: class %s inherits from %s"
 msgstr "%s : A(z) %s osztály ettől örököl: %s"
 
 #: lazarusidestrconsts.lisinspectdata
@@ -10461,9 +10463,9 @@ msgstr "Típus oszlop megjelenítése"
 msgid "Show visibility column"
 msgstr "Láthatóság oszlop megjelenítése"
 
-#: lazarusidestrconsts.lisinspectunavailable
-msgid "%s : unavailable"
-msgstr "%s : nem érhető el"
+#: lazarusidestrconsts.lisinspectunavailableerror
+msgid "%s: unavailable (error: %s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisinspectuseinstance
 msgid "Instance"
