@@ -167,7 +167,9 @@ Var
 begin
   S:=TFPReportConnector.TestConnection(FConnectionData);
   if (S<>'') then
-    MessageDlg(SErrConnectionNotOK,S,mtError,[mbOK],0);
+    MessageDlg(SErrConnectionNotOK,S,mtError,[mbOK],0)
+  else
+    MessageDlg(SSuccess,SConnectionSuccesful,mtInfo,[mbOK],0)
 end;
 
 constructor TSQLReportDataConfigFrame.Create(AOwner: TComponent);

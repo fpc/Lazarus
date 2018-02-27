@@ -61,8 +61,10 @@ var
   ReportConnectionEditorForm: TReportConnectionEditorForm;
 
 Resourcestring
-  SConnectionSuccesful = 'Connection was succesfully made';
+  SConnectionSuccesful = 'Connection to the database was succesfully made.';
   SErrConnectionNotOK = 'Error connecting to the database';
+  SSucces = 'Succesfully connected.';
+
 
 implementation
 
@@ -110,8 +112,9 @@ begin
   FormToParams;
   S:=TFPReportConnector.TestConnection(FParams);
   if (S<>'') then
-    MessageDlg(SErrConnectionNotOK,S,mtError,[mbOK],0);
-
+    MessageDlg(SErrConnectionNotOK,S,mtError,[mbOK],0)
+  else
+    MessageDlg(SSucces,SConnectionSuccesful,mtInfo,[mbOK],0);
 end;
 
 procedure TReportConnectionEditorForm.Setparams(AValue: TJSONObject);
