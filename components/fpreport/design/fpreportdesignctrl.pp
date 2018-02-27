@@ -190,6 +190,8 @@ begin
   Parent:= AOwner as TWinControl;
   Color:=clWhite;
   FSnapResolution := 8;
+  FMinControlHeight:=FSnapResolution*2;
+  FMinControlWidth:=FSnapResolution*2;
   FCanvasExport:=CreateExportCanvas;
   FCanvasExport.Canvas:=Self.Canvas;
   FCanvasExport.HDPI:=CurrentDPI;
@@ -579,9 +581,17 @@ end;
 
 function TFPReportDesignerControl.DoAddControl(ABand: TFPReportCustomBand; AElement : TFPReportElement;  ARect: TRect; IsMulti: Boolean) : TReportObject;
 
+  Function MinSize (aSize : Integer) : Integer;
+
+  begin
+    Result:=ASize; // Should be handled in calling routine, actually
+  end;
+
+
 Var
   ERect,BRect : TRect;
   RRect : TFPReportRect;
+  W,H : Integer;
 
 begin
   AElement.Parent:=ABand;
@@ -590,10 +600,12 @@ begin
   ERect.Top:=ARect.Top-BRect.Top;
   ERect.Right:=ARect.Right-BRect.Left;
   ERect.Bottom:=ARect.Bottom-BRect.Top;
+  W:=MinSize(ERect.Right-ERect.Left);
+  H:=MinSize(ERect.Bottom-ERect.Top);
   RRect.SetRect(PixelsToMM(ERect.Left,CurrentDPI),
                 PixelsToMM(ERect.Top,CurrentDPI),
-                PixelsToMM(ERect.Right-ERect.Left,CurrentDPI),
-                PixelsToMM(ERect.Bottom-ERect.Top,CurrentDPI));
+                PixelsToMM(W,CurrentDPI),
+                PixelsToMM(W,CurrentDPI));
 {$IFDEF DEBUGRD}  Writeln('Adding,',AElement.ClassName,' at absolute rect:',RectToStr(ARect),', band rect: ',RectToStr(BRect),' -> Relative rect ',RectToStr(ERect),' natural units: ',RRect.AsString);{$ENDIF}
   AElement.Layout.SetPosition(RRect);
   Result:=FObjects.AddElement(AElement);
@@ -1194,11 +1206,17 @@ end;
 
 function TFPReportDesignerControl.AddBand(ABandClass: TFPReportBandClass
   ): TFPReportCustomBand;
+
+Var
+  O : TReportObject;
+
 begin
   Result:=ABandClass.Create(Page);
   Result.Layout.Height:=2;
-  FObjects.AddBand(Result);
-
+  O:=FObjects.AddBand(Result);
+  If  Assigned(FOnElementCreated) then
+    FOnElementCreated(Self,Result);
+  O.Selected:=True;
 end;
 
 procedure TFPReportDesignerControl.AddElement(

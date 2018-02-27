@@ -1363,7 +1363,9 @@ begin
     TFPReportMemo(AElement).Font.Name := 'LiberationSans';
     if TFPReportMemo(AElement).Text='' then
       TFPReportMemo(AElement).Text:='New memo';
+
     end;
+  FOI.RefreshReportTree;
 end;
 
 {$IFDEF USEDEMOREPORT}
