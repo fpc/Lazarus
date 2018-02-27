@@ -598,17 +598,21 @@ function TFPReportDesignerForm.AddPageDesign(aPageNo: Integer;
 
 Var
   TS : TPageTabSheet;
+  SB : TScrollBox;
   D : TFPReportDesignerControl;
 
 begin
   TS:=TPageTabSheet.Create(Self);
   TS.FPage:=APage;
   TS.Parent:=PCReport;
-  //    TS.AutoScroll:=True;
   TS.Caption:=Format('Page %d',[aPageNo]);
+
   D:=TFPReportDesignerControl.Create(Self);
+  SB:=TScrollBox.Create(TS);
+  SB.Parent:=TS;
+  SB.Align:=alClient;
   TS.FDesigner:=D;
-  D.Parent:=TS;
+  D.Parent:=SB;
   //  FDesign.Align:=alClient;
   //  fdesign.SetBounds(0,0,ClientWidth,ClientHeight);
   D.Top:=0;

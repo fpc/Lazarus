@@ -80,6 +80,7 @@ Type
     procedure DoneMoveSelection;
     procedure DoneResizeSelection;
     procedure DoneSelectRectangle(Extend: Boolean);
+    procedure DoPagesizeChange(Sender: TObject);
     procedure DoReportChanged(Sender: TObject);
     procedure ExtendAddRectangle;
     procedure ExtendSelectRectangle;
@@ -319,6 +320,7 @@ procedure TFPReportDesignerControl.SetPage(AValue: TFPReportCustomPage);
 begin
   If AValue=FPage then exit;
   FPage:=AValue;
+  FPage.OnPageSizeChange:=@DoPagesizeChange;
   UpdatePageParams;
   FObjects.LoadFromPage(AValue);
   FObjects.OrderBands(Canvas,CurrentDPI);
@@ -1017,6 +1019,12 @@ begin
   if SelectObjectsInRectangle(R,Extend)<>srNone then
     Invalidate;
   SetDesignerState(dsNeutral);
+end;
+
+procedure TFPReportDesignerControl.DoPagesizeChange(Sender: TObject);
+begin
+  UpdatePageParams;
+  Invalidate;
 end;
 
 procedure TFPReportDesignerControl.DoReportChanged(Sender: TObject);
