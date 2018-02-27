@@ -91,6 +91,7 @@ type
     FFonts : TFPObjectHashTable;
     FPageIndex : Integer;
     FPages : TFPList;
+    FShowBandTypeNames: Boolean;
     FVDPI: integer;
     FVertOffset: Integer;
     FZoom: Double;
@@ -164,6 +165,8 @@ type
     Property    HyperLinks : THyperLinkList Read FHyperLinks;
     // Design mode or not
     Property    DrawMode : TReportDrawMode Read FDrawMode Write FDrawMode;
+    // ShowBandTypeNames
+    Property ShowBandTypeNames : Boolean Read FShowBandTypeNames Write FShowBandTypeNames;
   end;
 
 const
@@ -843,6 +846,7 @@ begin
   FImageHeight := 0;
   // store the original DPI, we will restore it later
   FFonts:=TFPObjectHashTable.Create(True);
+  FShowBandTypeNames:=True;
 end;
 
 destructor TFPReportExportCanvas.Destroy;
@@ -958,7 +962,9 @@ begin
   TopLeft.Top:=L.Top;
   N:=ABand.Name;
   if N='' then
-    N:='Unnamed '+DefaultBandNames[ABand.ReportBandType]+' band';
+    N:='Unnamed '+DefaultBandNames[ABand.ReportBandType]+' band'
+  else if ShowBandTypeNames then
+    N:=N+' ('+DefaultBandNames[ABand.ReportBandType]+')';
   TH:=GetBandHandleHeight;
   X:=FHorzOffset+HmmToPixels(TopLeft.Left);
   Y:=FVertOffset+VmmToPixels(TopLeft.Top)-TH-2*BandTitleMargin;
