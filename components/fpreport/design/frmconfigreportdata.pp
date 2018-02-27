@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ButtonPanel, ActnList, ComCtrls, ExtCtrls,
-  EditBtn, fpreportdesignreportdata, fpjson, db, reportdesignbaseforms;
+  EditBtn, fpreportdesignreportdata, fpjson, reportdesignbaseforms;
 
 type
   TForm = TBaseReportDataForm;
@@ -241,12 +241,10 @@ procedure TReportDataConfigForm.APreviewExecute(Sender: TObject);
 
 Var
   C : TJSONObject;
-  DS : TDataset;
   S : String;
   F : TBaseReportDataPreviewForm;
 
 begin
-  DS:=Nil;
   S:=FCurrentFrame.SaveNotOKMessage;
   if (S<>'') then
     begin

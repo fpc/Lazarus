@@ -61,6 +61,7 @@ Type
   { TFPReportQuery }
 
   TFPReportQuery = class(TSQLQuery)
+  Public
     Constructor Create(AOwner : TComponent); override;
     Destructor Destroy; override;
   end;

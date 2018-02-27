@@ -105,7 +105,6 @@ end;
 procedure TReportConnectionEditorForm.SBTestClick(Sender: TObject);
 
 Var
-  C : TFPReportConnector;
   S : String;
 
 begin

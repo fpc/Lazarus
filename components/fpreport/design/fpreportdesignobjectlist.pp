@@ -21,7 +21,7 @@ unit fpreportdesignobjectlist;
 interface
 
 uses
-  Classes, SysUtils, graphics, lclintf, fpreportlclexport, fpreport, fgl, controls;
+  Classes, SysUtils, graphics, lclintf, fpreportlclexport, fpreport, controls;
 
 Const
   clResizeHandleSingle = clBlack;  // Pen color to draw selection resize handle
@@ -719,10 +719,10 @@ function TReportObjectList.GetBandObjectAt(P: TPoint; AOptions : TGetObjectOptio
 Var
   I : Integer;
   R : TRect;
-  N : String;
+  {$IFDEF DEBUGROL}  N : String;{$ENDIF}
 
 begin
-  {$IFDEF DEBUGROL}Writeln('GetBandObjectAt(',P.X,',',P.Y,')');{$ENDIF}
+{$IFDEF DEBUGROL}Writeln('GetBandObjectAt(',P.X,',',P.Y,')');{$ENDIF}
   Result:=Nil;
   I:=0;
   While (Result=Nil) and (I<COunt) do
@@ -730,7 +730,7 @@ begin
     Result:=Objects[i];
     if Result.IsBand then
       begin
-      N:=Result.Element.ClassName;
+{$IFDEF DEBUGROL}        N:=Result.Element.ClassName;{$endif}
       R:=FCanvasExport.GetBandRect(Result.AsBand,goBandHandle in Aoptions);
       if Not PtInRect(R,P) then
         Result:=Nil;

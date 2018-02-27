@@ -26,7 +26,7 @@ Type
   { TPaperNamePropertyEditor }
 
   TPaperNamePropertyEditor = class(TStringPropertyEditor)
-  Protected
+  Public
     procedure GetValues(Proc: TGetStrProc); override;
     Function GetAttributes: TPropertyAttributes; override;
   end;

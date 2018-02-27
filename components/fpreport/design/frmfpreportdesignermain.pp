@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Menus, ActnList, ComCtrls, ExtCtrls, IniPropStorage, Types, fpreport, fpreportdesignctrl,
+  Menus, ActnList, ComCtrls, ExtCtrls, IniPropStorage, fpreport, fpreportdesignctrl,
   fraReportObjectInspector, fpreportdesignreportdata, frafpreportdata, fpreportdb, mrumanager;
 
 type
@@ -1000,7 +1000,6 @@ procedure TFPReportDesignerForm.CreateReportDataSets;
 
 Var
   I : Integer;
-  ReportD : TFPReportDataItem;
   DesignD : TDesignReportData;
   DatasetD : TFPReportDatasetData;
 
@@ -1017,7 +1016,7 @@ begin
     DatasetD.InitFieldDefs;
     DatasetD.Name:=DesignD.Name;
     DatasetD.Dataset.Name:=DesignD.Name;
-    ReportD:=FReport.ReportData.AddReportData(DatasetD);
+    FReport.ReportData.AddReportData(DatasetD);
     end;
   FReport.RestoreDataFromNames;
   FReportData.RefreshData;
@@ -1049,14 +1048,12 @@ procedure TFPReportDesignerForm.AReportVariablesExecute(Sender: TObject);
 
 Var
   F : TBaseReportVariablesForm;
-  S : String;
+
 
 begin
   if ReportVariablesFormClass=nil then
     exit;
-  S:=ReportVariablesFormClass.ClassName;
   F:=ReportVariablesFormClass.Create(Self);
-
   try
     F.Report:=Self.Report;
     F.Variables:=FReport.Variables;

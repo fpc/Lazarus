@@ -607,7 +607,7 @@ begin
   RRect.SetRect(PixelsToMM(ERect.Left,CurrentDPI),
                 PixelsToMM(ERect.Top,CurrentDPI),
                 PixelsToMM(W,CurrentDPI),
-                PixelsToMM(W,CurrentDPI));
+                PixelsToMM(H,CurrentDPI));
 {$IFDEF DEBUGRD}  Writeln('Adding,',AElement.ClassName,' at absolute rect:',RectToStr(ARect),', band rect: ',RectToStr(BRect),' -> Relative rect ',RectToStr(ERect),' natural units: ',RRect.AsString);{$ENDIF}
   AElement.Layout.SetPosition(RRect);
   Result:=FObjects.AddElement(AElement);
@@ -937,7 +937,6 @@ procedure TFPReportDesignerControl.DoneAddControl(IsMulti : Boolean);
 Var
   CR : TRect;
   O : TReportObject;
-  B : TFPReportCustomBand;
 
 begin
   {$IFDEF DEBUGRD}  Writeln('DoneAddControl: ',isMulti);{$ENDIF}

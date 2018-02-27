@@ -219,7 +219,7 @@ end;
 
 procedure TDrawRuler.DrawVTicks(tkStep: single);
 var
-  w,h,tkCount,tkLen,tkPos,x1,x2: Integer;
+  tkCount,tkLen,tkPos,x1,x2: Integer;
   tkUnits : Single;
   s : String;
   E : TSize;

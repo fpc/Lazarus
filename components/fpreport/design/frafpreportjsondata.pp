@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, EditBtn, Buttons, ActnList, ValEdit, fpjson, fpreportdesignreportdata, db,
-  dialogs, fpjsondataset, Grids;
+  dialogs, fpjsondataset;
 
 type
   TFrame = TReportDataConfigFrame ;

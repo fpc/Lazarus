@@ -33,7 +33,7 @@ type
     NPreview: TDBNavigator;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
-  private
+  protected
     procedure SetDataSet(AValue: TDataset); override;
   end;
 

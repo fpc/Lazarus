@@ -129,7 +129,7 @@ end;
 
 function TBaseReportVariablesForm.CreateVariables: TFPReportVariables;
 begin
-  TFPReportVariables.Create(Nil,TFPReportVariable);
+  Result:=TFPReportVariables.Create(Nil,TFPReportVariable);
 end;
 
 constructor TBaseReportVariablesForm.Create(AOwner: TComponent);
