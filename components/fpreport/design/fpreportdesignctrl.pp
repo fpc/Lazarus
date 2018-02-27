@@ -1212,11 +1212,12 @@ Var
 
 begin
   Result:=ABandClass.Create(Page);
-  Result.Layout.Height:=2;
+  Result.Layout.Height:=PixelsToMM(FMinControlHeight,CurrentDPI);
   O:=FObjects.AddBand(Result);
+  FObjects.OrderBands(Canvas,CurrentDPI);
   If  Assigned(FOnElementCreated) then
     FOnElementCreated(Self,Result);
-  O.Selected:=True;
+  FObjects.SelectElement(O.AsBand);
 end;
 
 procedure TFPReportDesignerControl.AddElement(
