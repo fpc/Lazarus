@@ -23,6 +23,15 @@ uses
 
 Type
 
+  { TPaperNamePropertyEditor }
+
+  TPaperNamePropertyEditor = class(TStringPropertyEditor)
+  Protected
+    procedure GetValues(Proc: TGetStrProc); override;
+    Function GetAttributes: TPropertyAttributes; override;
+  end;
+
+
   { TReportComponentPropertyEditor }
 
   TReportComponentPropertyEditor = class(TComponentPropertyEditor)
@@ -105,6 +114,24 @@ begin
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataBand), TFPReportCustomBand, 'MasterBand', TDataBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupHeaderBand),TFPReportCustomGroupHeaderBand, 'ParentGroupHeader', TGroupHeaderBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupFooterBand),TFPReportCustomGroupHeaderBand, 'GroupFooter', TGroupFooterBandPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(String),TFPReportPageSize,'PaperName',TPaperNamePropertyEditor);
+end;
+
+{ TPaperNamePropertyEditor }
+
+procedure TPaperNamePropertyEditor.GetValues(Proc: TGetStrProc);
+
+Var
+  I : integer;
+
+begin
+  for I:=0 to PaperManager.PaperCount-1 do
+    Proc(PaperManager.PaperNames[i]);
+end;
+
+function TPaperNamePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=[paValueList, paPickList, paAutoUpdate, paSortList];
 end;
 
 { TGroupFooterBandPropertyEditor }
