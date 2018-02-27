@@ -92,7 +92,8 @@ begin
     FormToParams;
     S:=TFPReportConnector.TestConnection(FParams);
     if (S<>'') then
-      MessageDlg(SErrConnectionNotOK,S,mtError,[mbOK],0);
+      if MessageDlg(SErrConnectionNotOK,S,mtError,[mbIgnore,mbCancel],0)=mrIgnore then
+        S:='';
     end;
   CanClose:=(S='');
 end;
