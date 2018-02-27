@@ -217,6 +217,7 @@ type
     procedure AAddPageExecute(Sender: TObject);
     procedure AAddBandExecute(Sender: TObject);
     procedure AAddBandUpdate(Sender: TObject);
+    procedure AAddPageUpdate(Sender: TObject);
     procedure AAddShapeExecute(Sender: TObject);
     procedure AAlignExecute(Sender: TObject);
     procedure AAlignUpdate(Sender: TObject);
@@ -736,6 +737,11 @@ begin
   TOK:=Not ((T<0) or (T>Ord(High(TFPReportBandType))));
   // need to improve this to check that the type of band is actually allowed.
   (Sender as TAction).Enabled:=(rdoAllowBands in DesignOptions) and TOK;
+end;
+
+procedure TFPReportDesignerForm.AAddPageUpdate(Sender: TObject);
+begin
+  (Sender as Taction).Enabled:=Assigned(FReport);
 end;
 
 procedure TFPReportDesignerForm.AAddCheckBoxExecute(Sender: TObject);

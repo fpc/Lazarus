@@ -634,6 +634,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Caption = 'Add Page'
       ImageIndex = 13
       OnExecute = AAddPageExecute
+      OnUpdate = AAddPageUpdate
     end
     object AAlignleft: TAction
       Tag = 1
@@ -2076,7 +2077,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     top = 348
   end
   object PMRecent: TPopupMenu
-    Left = 467
-    Top = 209
+    left = 467
+    top = 209
   end
 end
