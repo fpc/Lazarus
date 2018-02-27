@@ -427,7 +427,8 @@ begin
   FOI.OnSelectElement:=@DoSelectComponent;
   FOI.OnModified:=@DoSelectionModifiedByOI;
   MRUMenuManager1 := TMRUMenuManager.Create(self);
-  with MRUMenuManager1 do begin
+  with MRUMenuManager1 do
+    begin
     maxRecent := 5;
     IniFileName := ChangeFileExt(ParamStr(0), '.ini');
     MenuItem := MIRecent;
@@ -436,7 +437,7 @@ begin
     MenuCaptionMask := '(%d) %s';
     OnRecentFile := @MRUMenuManager1RecentFile;
     LoadRecentFilesFromIni;
-  end;
+    end;
 end;
 
 procedure TFPReportDesignerForm.FormCloseQuery(Sender: TObject;
@@ -477,10 +478,12 @@ Var
   I : Integer;
 
 begin
+  Report.StartDesigning;
   For I:=0 to Report.PageCount-1 do
     AddPageDesign(I+1,Report.Pages[I]);
   ShowReportData;
   ResetObjectInspector;
+
 end;
 
 procedure TFPReportDesignerForm.CreateReportData;
@@ -934,6 +937,7 @@ begin
     p.Margins.Right := 20;
     p.Margins.Bottom := 20;
     FReport.AddPage(P);
+    Report.StartDesigning;
     FOI.RefreshReportTree;
     Result:=True
     end;
@@ -1236,6 +1240,8 @@ Var
   I : integer;
 
 begin
+  if Assigned(FReport) then
+    Report.EndDesigning;
   For I:=ComponentCount-1 downto 0 do
     if Components[I] is TFPReportDesignerControl then
        Components[I].Free;
@@ -1358,6 +1364,9 @@ end;
 procedure TFPReportDesignerForm.DoElementCreated(Sender: TObject;
   AElement: TFPReportElement);
 begin
+  AElement.StartDesigning;
+  if AElement.Name='' then
+    AElement.Name:=AElement.AllocateName;
   If AElement is TFPReportCustomMemo then
     begin
     TFPReportMemo(AElement).Font.Name := 'LiberationSans';
