@@ -63,7 +63,7 @@ var
 Resourcestring
   SConnectionSuccesful = 'Connection to the database was succesfully made.';
   SErrConnectionNotOK = 'Error connecting to the database';
-  SSucces = 'Succesfully connected.';
+  SSuccess = 'Succesfully connected.';
 
 
 implementation
@@ -114,7 +114,7 @@ begin
   if (S<>'') then
     MessageDlg(SErrConnectionNotOK,S,mtError,[mbOK],0)
   else
-    MessageDlg(SSucces,SConnectionSuccesful,mtInfo,[mbOK],0);
+    MessageDlg(SSuccess,SConnectionSuccesful,mtInformation,[mbOK],0);
 end;
 
 procedure TReportConnectionEditorForm.Setparams(AValue: TJSONObject);
