@@ -467,6 +467,9 @@ begin
   if IsValid and HasTpInfo then begin
     if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
     f2 := TestEquals(Name + ' Kind',  s2, s, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    if ((s2='skClass') and (s = 'skRecord')) or ((s='skClass') and (s2 = 'skRecord')) then begin
+      TotalClassVsRecord := TotalClassVsRecord + 1;
+    end;
   end else begin
     f2 := TestTrue(Name + ' Kind is "'+s2+'", failed: STATE was <'+dbgs(WV.Validity)+'>, HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
   end;
@@ -519,7 +522,7 @@ begin
       end;
     end
     else
-      TestTrue(Name + ' no typeinfo for members' , False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+      TestTrue(Name + ' no typeinfo for members' , False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
   end;
 
 end;

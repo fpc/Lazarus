@@ -346,13 +346,14 @@ type
     FTestErrors, FIgnoredErrors, FUnexpectedSuccess: String;
     FTestCnt, FTestErrorCnt, FIgnoredErrorCnt, FUnexpectedSuccessCnt, FSucessCnt: Integer;
     FTotalErrorCnt, FTotalIgnoredErrorCnt, FTotalUnexpectedSuccessCnt: Integer;
+    FTotalGDBInternalErrorCnt: Integer;
+    FTotalClassVsRecord: Integer;
     FCurrentPrgName, FCurrentExename: String;
     FLogFile: TextFile;
     FLogFileCreated: Boolean;
     FLogFileName, FFinalLogFileName, FLogBufferText: String;
     FLogDebuglnCount: Integer;
     function GetCompilerInfo: TCompilerInfo;
-    function GetDebuggerInfo: TDebuggerInfo;
     function GetSymbolType: TSymbolType;
     procedure DoDbgOut(Sender: TObject; S: string; var Handled: Boolean);
     procedure DoDebugln(Sender: TObject; S: string; var Handled: Boolean);
@@ -366,10 +367,15 @@ type
     procedure InternalDbgOutPut(Sender: TObject; const AText: String);
     function InternalFeedBack(Sender: TObject; const AText, AInfo: String;
       AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
+    procedure InternalDbgEvent(Sender: TObject;
+      const ACategory: TDBGEventCategory; const AEventType: TDBGEventType;
+      const AText: String);
     function GdbClass: TGDBMIDebuggerClass; virtual;
     function StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
     procedure CleanGdb;
     procedure ClearTestErrors;
+
+    function GetDebuggerInfo: TDebuggerInfo;
 
     procedure AddTestError(s: string; MinGdbVers: Integer = 0; AIgnoreReason: String = '');
     procedure AddTestError(s: string; MinGdbVers: Integer; MinFpcVers: Integer;AIgnoreReason: String = '');
@@ -395,6 +401,7 @@ type
 
     procedure AssertTestErrors;
     property TestErrors: string read FTestErrors;
+    property TotalClassVsRecord: Integer read FTotalClassVsRecord write FTotalClassVsRecord;
   public
     Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String=''); overload;
     Procedure TestCompile(const PrgName: string; out ExeName: string; UsesDirs: array of TUsesDir;
@@ -819,6 +826,31 @@ function TGDBTestCase.InternalFeedBack(Sender: TObject; const AText, AInfo: Stri
   AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
 begin
   Result := frOk;
+  DebugLn(['**** Feedback requested ****: ', AText]);
+  DebugLn(['**** ', AInfo]);
+end;
+
+procedure TGDBTestCase.InternalDbgEvent(Sender: TObject;
+  const ACategory: TDBGEventCategory; const AEventType: TDBGEventType;
+  const AText: String);
+begin
+  case ACategory of
+  	ecBreakpoint: ;
+    ecProcess: ;
+    ecThread: ;
+    ecModule: ;
+    ecOutput: ;
+    ecWindows: ;
+    ecDebugger: begin
+      case AEventType of
+      	etDefault: begin
+          // maybe crash / internal error? Text from IDE not GDB (po file)
+          if (Pos('internal error:', LowerCase(AText)) > 0) then
+            inc(FTotalGDBInternalErrorCnt);
+        end;
+      end;
+    end;
+  end;
 end;
 
 function TGDBTestCase.GetCompilerInfo: TCompilerInfo;
@@ -890,6 +922,8 @@ begin
   FTotalErrorCnt := 0;
   FTotalIgnoredErrorCnt := 0;
   FTotalUnexpectedSuccessCnt := 0;
+  FTotalGDBInternalErrorCnt := 0;
+  FTotalClassVsRecord := 0;
   DebugLogger.OnDbgOut  := @DoDbgOut;
   DebugLogger.OnDebugLn  := @DoDebugln;
   inherited SetUp;
@@ -912,6 +946,10 @@ begin
     then FFinalLogFileName := FFinalLogFileName + '.unexpected_'+IntToStr(FTotalUnexpectedSuccessCnt);
     if (FTotalErrorCnt > 0)
     then FFinalLogFileName := FFinalLogFileName + '.failed_'+IntToStr(FTotalErrorCnt);
+    if FTotalGDBInternalErrorCnt > 0
+    then FFinalLogFileName := FFinalLogFileName + '.gdb_intern_'+IntToStr(FTotalGDBInternalErrorCnt);
+    if FTotalClassVsRecord > 0
+    then FFinalLogFileName := FFinalLogFileName + '.class_record_'+IntToStr(FTotalClassVsRecord);
 
     FFinalLogFileName := FFinalLogFileName + '.log';
     RenameFileUTF8(FLogFileName, FFinalLogFileName);
@@ -938,6 +976,7 @@ begin
   Result := GdbClass.Create(DebuggerInfo.ExeName);
   Result.OnDbgOutput  := @InternalDbgOutPut;
   Result.OnFeedback := @InternalFeedBack;
+  Result.OnDbgEvent:=@InternalDbgEvent;
 
   //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
   FWatches.Supplier := Result.Watches;
