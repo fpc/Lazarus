@@ -555,8 +555,8 @@ resourcestring
   lisInspectShowColClass = 'Show class column';
   lisInspectShowColType = 'Show type column';
   lisInspectShowColVisibility = 'Show visibility column';
-  lisInspectClassInherit = '%s : Class %s inherits from %s';
-  lisInspectUnavailableError = '%s : unavailable (Error: %s)';
+  lisInspectClassInherit = '%s: class %s inherits from %s';
+  lisInspectUnavailableError = '%s: unavailable (error: %s)';
   lisInspectPointerTo = 'Pointer to %s';
   lisColClass = 'Class';
   lisColVisibility = 'Visibility';
