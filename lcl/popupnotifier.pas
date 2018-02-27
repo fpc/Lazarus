@@ -158,6 +158,8 @@ begin
 end;
 
 procedure TNotifierXButton.Paint;
+var
+  L: Integer;
 begin
   Canvas.Pen.Color := cl3DDKShadow;
   Canvas.Pen.Width := 1;
@@ -167,19 +169,23 @@ begin
 
   if FState = nbsUp then
     Canvas.Brush.Color := clBtnFace
-  else
-    Canvas.Brush.Color := clHotLight;
+  else begin
+    Canvas.Brush.Color := clHighlight;
+    Canvas.Pen.Color := clHighlightText;
+  end;
 
-  Canvas.RoundRect(0, 0, Width, Height, 4, 4);
+  L := Scale96ToForm(4);
+  Canvas.RoundRect(0, 0, Width, Height, L, L);
 
   Canvas.Pen.EndCap:=pecSquare;
   Canvas.Pen.Width := 2;
 
-  Canvas.MoveTo(7, 7);
-  Canvas.LineTo(Width - 7, Height - 7);
+  L := Scale96ToForm(7);
+  Canvas.MoveTo(L, L);
+  Canvas.LineTo(Width - L, Height - L);
 
-  Canvas.MoveTo(Width - 7, 7);
-  Canvas.LineTo(7, Height - 7);
+  Canvas.MoveTo(Width - L, L);
+  Canvas.LineTo(L, Height - L);
 
   inherited Paint;
 end;
@@ -192,18 +198,21 @@ end;
 *  Creates the notifier form
 *******************************************************************}
 constructor TNotifierForm.Create(AOwner: TComponent);
+var
+  spc: Integer;
 begin
   inherited Create(AOwner);
 
   BorderStyle := bsNone;
 
-  Width := INT_NOTIFIER_FORM_WIDTH;
-  Height := INT_NOTIFIER_FORM_HEIGHT;
+  Width := Scale96ToForm(INT_NOTIFIER_FORM_WIDTH);
+  Height := Scale96ToForm(INT_NOTIFIER_FORM_HEIGHT);
 
   // Check for small screens. An extra spacing is necessary
   // in the Windows Mobile 5 emulator
-  if Screen.Width - INT_NOTIFIER_SCREEN_SPACING < Width then
-    Width := Screen.Width - INT_NOTIFIER_SCREEN_SPACING;
+  spc := Scale96ToForm(INT_NOTIFIER_SCREEN_SPACING);
+  if Screen.Width - spc < Width then
+    Width := Screen.Width - spc;
 
   ImgIcon := TPicture.Create;
 
@@ -285,34 +294,39 @@ end;
 procedure TNotifierForm.HandleResize(Sender: TObject);
 var
   IconAdjust: Integer;
+  spc: Integer;
+  btnsize: Integer;
 begin
+  spc := Scale96ToForm(INT_NOTIFIER_SPACING);
+  btnsize := Scale96ToForm(INT_NOTIFIER_BUTTON_SIZE);
+
   if (ImgIcon.Bitmap <> nil) then
-    IconAdjust := INT_NOTIFIER_SPACING + imgIcon.Bitmap.Width
+    IconAdjust := spc + imgIcon.Bitmap.Width
   else
     IconAdjust := 0;
 
   if (lblTitle <> nil) then
   begin
-    lblTitle.Left := IconAdjust + INT_NOTIFIER_SPACING;
-    lblTitle.Top := INT_NOTIFIER_SPACING;
-    lblTitle.Width := Width - (lblTitle.Left + INT_NOTIFIER_SPACING);
-    lblTitle.Height := 20;
+    lblTitle.Left := IconAdjust + spc;
+    lblTitle.Top := spc;
+    lblTitle.Width := Width - (lblTitle.Left + spc);
+    lblTitle.Height := Scale96ToForm(20);
   end;
 
   if (lblText <> nil) then
   begin
-    lblText.Left := IconAdjust + 20;
-    lblText.Top := LblTitle.Top + LblTitle.Height + INT_NOTIFIER_SPACING;
-    lblText.Width := Width - (lblText.Left + INT_NOTIFIER_SPACING);
-    lblText.Height := Height - (lblText.Top + INT_NOTIFIER_SPACING);
+    lblText.Left := IconAdjust + Scale96ToForm(20);
+    lblText.Top := LblTitle.Top + LblTitle.Height + spc;
+    lblText.Width := Width - (lblText.Left + spc);
+    lblText.Height := Height - (lblText.Top + spc);
   end;
 
   if (BtnX <> nil) then
   begin
-    BtnX.Left := Width - (INT_NOTIFIER_BUTTON_SIZE + 5);
-    BtnX.Top := INT_NOTIFIER_SPACING;
-    BtnX.Width := INT_NOTIFIER_BUTTON_SIZE;
-    BtnX.Height := INT_NOTIFIER_BUTTON_SIZE;
+    BtnX.Left := Width - (btnSize + Scale96ToForm(5));
+    BtnX.Top := spc;
+    BtnX.Width := btnSize;
+    BtnX.Height := btnSize;
   end;
 end;
 
