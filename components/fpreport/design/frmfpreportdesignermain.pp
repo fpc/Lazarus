@@ -746,7 +746,7 @@ begin
 
   T:=(sender as Taction).Tag;
   // Check valid tag
-  TOK:=Assigned(CurrentDesigner) and Not ((T<0) or (T>Ord(High(TFPReportBandType))));
+  TOK:=Assigned(CurrentDesigner) and Not ((T<0) or (T>Ord(High(TFPReportBandType)))) ;
   // need to improve this to check that the type of band is actually allowed.
   (Sender as TAction).Enabled:=(rdoAllowBands in DesignOptions) and TOK;
 end;
@@ -880,7 +880,8 @@ begin
         FileName:=SDReport.FileName;
         Result:=(FileName<>'');
         end;
-    if Result then begin
+    if Result then
+      begin
       SaveDesignToFile(FileName);
       if Assigned(MRUMenuManager1) then
         MRUMenuManager1.AddToRecent(FileName);
@@ -923,6 +924,7 @@ begin
     OnNewReport(Self)
   else
     begin
+    StopDesigning;
     FreeAndNil(FReport);
     Report:=TFPReport.Create(Self);
     p:=gBandFactory.PageClass.Create(FReport);
@@ -1165,7 +1167,7 @@ begin
     fs.WriteBuffer(S[1],Length(S));
     // Housekeeping
     SetFileCaption(AFileName);
-    FModified:=False;
+    Modified:=False;
   finally
     FreeAndNil(fs);
     FreeAndNil(ws);
@@ -1277,7 +1279,7 @@ begin
   finally
     FreeAndNil(fs);
   end;
-
+  StopDesigning;
   FreeAndNil(FReport);
   FReport := TFPReport.Create(Self);
 
@@ -1290,6 +1292,7 @@ begin
     // We must do this before the report is loaded, so the pages/bands can find their data
     CreateReportDataSets;
     FReport.ReadElement(rs);
+    FFilename:=AFileName;
   finally
     FreeAndNil(rs);
   end;
