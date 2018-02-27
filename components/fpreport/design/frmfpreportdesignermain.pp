@@ -378,7 +378,7 @@ begin
   S(AAddReportSummary,btReportSummary);
   S(AAddColumnHeader,btColumnHeader);
   S(AAddColumnFooter,btColumnFooter);
-  S(AAddChildBand,btColumnFooter);
+  S(AAddChildBand,btChild);
   S(AAddDataHeader,btDataHeader);
   S(AAddDataFooter,btDataFooter);
   S(AAddDataBand,btDataband);
