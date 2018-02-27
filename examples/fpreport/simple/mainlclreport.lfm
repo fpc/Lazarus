@@ -1,0 +1,111 @@
+object FrmSimpleReportLCL: TFrmSimpleReportLCL
+  Left = 350
+  Height = 431
+  Top = 250
+  Width = 958
+  Caption = 'FrmSimpleReportLCL'
+  ClientHeight = 431
+  ClientWidth = 958
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.9.0.0'
+  object panelMain: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 50
+    Top = 0
+    Width = 958
+    Anchors = [akTop, akLeft, akRight]
+    ClientHeight = 50
+    ClientWidth = 958
+    TabOrder = 0
+    object BuRenderCanvas: TButton
+      AnchorSideLeft.Control = panelMain
+      AnchorSideTop.Control = panelMain
+      Left = 6
+      Height = 25
+      Top = 6
+      Width = 114
+      BorderSpacing.Around = 5
+      Caption = 'Render Canvas'
+      OnClick = BuRenderCanvasClick
+      TabOrder = 0
+    end
+    object BuRenderPrerview: TButton
+      AnchorSideLeft.Control = BuRenderCanvas
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = panelMain
+      Left = 125
+      Height = 25
+      Top = 6
+      Width = 114
+      BorderSpacing.Around = 5
+      Caption = 'Render Preview'
+      OnClick = BuRenderPrerviewClick
+      TabOrder = 1
+    end
+    object BuRenderPdf: TButton
+      AnchorSideLeft.Control = BuRenderPrerview
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = panelMain
+      Left = 244
+      Height = 25
+      Top = 6
+      Width = 114
+      BorderSpacing.Around = 5
+      Caption = 'Render PDF'
+      OnClick = BuRenderPdfClick
+      TabOrder = 2
+    end
+  end
+  object PanelRender: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = panelMain
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 381
+    Top = 50
+    Width = 958
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ClientHeight = 381
+    ClientWidth = 958
+    TabOrder = 1
+    object UpDown1: TUpDown
+      AnchorSideTop.Control = PanelRender
+      AnchorSideRight.Control = PanelRender
+      AnchorSideRight.Side = asrBottom
+      Left = 923
+      Height = 31
+      Top = 6
+      Width = 29
+      Anchors = [akTop, akRight]
+      BorderSpacing.Around = 5
+      Min = 0
+      OnChanging = UpDown1Changing
+      Position = 1
+      TabOrder = 0
+      Wrap = False
+    end
+    object lblPage: TLabel
+      AnchorSideRight.Control = UpDown1
+      AnchorSideBottom.Control = UpDown1
+      AnchorSideBottom.Side = asrCenter
+      Left = 882
+      Height = 17
+      Top = 12
+      Width = 36
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 5
+      Caption = 'Page ?'
+      ParentColor = False
+    end
+  end
+end

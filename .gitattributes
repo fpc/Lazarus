@@ -6305,6 +6305,14 @@ examples/fontenum/fontenumeration.lpi svneol=native#text/plain
 examples/fontenum/fontenumeration.lpr svneol=native#text/pascal
 examples/fontenum/mainunit.lfm svneol=native#text/plain
 examples/fontenum/mainunit.pas svneol=native#text/pascal
+examples/fpreport/common/Bandtest1.json svneol=native#text/plain
+examples/fpreport/simple/ReadMe.txt svneol=native#text/plain
+examples/fpreport/simple/SimpleReportLCL.lpi svneol=native#text/plain
+examples/fpreport/simple/SimpleReportLCL.lpr svneol=native#text/plain
+examples/fpreport/simple/SimpleReportLCL.res -text
+examples/fpreport/simple/mainlclreport.lfm svneol=native#text/plain
+examples/fpreport/simple/mainlclreport.pas svneol=native#text/plain
+examples/fpreport/simple/powered_by.png -text svneol=unset#image/png
 examples/gridexamples/cell_overflow/celloverflow_demo.lpi svneol=native#text/plain
 examples/gridexamples/cell_overflow/celloverflow_demo.lpr svneol=native#text/plain
 examples/gridexamples/cell_overflow/comain.lfm svneol=native#text/plain
