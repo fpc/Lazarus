@@ -99,6 +99,14 @@ type
     ILReport: TImageList;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
+    MIPreview: TMenuItem;
+    MIframeBottom: TMenuItem;
+    MIFrameTop: TMenuItem;
+    MIFrameRight: TMenuItem;
+    MIFrameLeft: TMenuItem;
+    MIFrameClear: TMenuItem;
+    MIFrameAll: TMenuItem;
+    MFrames: TMenuItem;
     MIRecent: TMenuItem;
     MIAddPage: TMenuItem;
     PMRecent: TPopupMenu;
@@ -212,6 +220,7 @@ type
     TBResizeHLargest: TToolButton;
     TSDesign: TTabSheet;
     procedure AAddCheckBoxExecute(Sender: TObject);
+    procedure AAddElementUpdate(Sender: TObject);
     procedure AAddImageExecute(Sender: TObject);
     procedure AAddMemoExecute(Sender: TObject);
     procedure AAddPageExecute(Sender: TObject);
@@ -231,7 +240,9 @@ type
     procedure AReportDataExecute(Sender: TObject);
     procedure AReportDataUpdate(Sender: TObject);
     procedure AReportPropertiesExecute(Sender: TObject);
+    procedure AReportPropertiesUpdate(Sender: TObject);
     procedure AReportVariablesExecute(Sender: TObject);
+    procedure AReportVariablesUpdate(Sender: TObject);
     procedure AResizeExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormDestroy(Sender: TObject);
@@ -732,9 +743,10 @@ Var
   T : Integer;
   TOK : Boolean;
 begin
+
   T:=(sender as Taction).Tag;
   // Check valid tag
-  TOK:=Not ((T<0) or (T>Ord(High(TFPReportBandType))));
+  TOK:=Assigned(CurrentDesigner) and Not ((T<0) or (T>Ord(High(TFPReportBandType))));
   // need to improve this to check that the type of band is actually allowed.
   (Sender as TAction).Enabled:=(rdoAllowBands in DesignOptions) and TOK;
 end;
@@ -747,6 +759,11 @@ end;
 procedure TFPReportDesignerForm.AAddCheckBoxExecute(Sender: TObject);
 begin
   CurrentDesigner.AddElement(TFPReportCheckbox);
+end;
+
+procedure TFPReportDesignerForm.AAddElementUpdate(Sender: TObject);
+begin
+  (Sender as Taction).Enabled:=Assigned(Freport) and Assigned(CurrentDesigner)
 end;
 
 procedure TFPReportDesignerForm.AAddImageExecute(Sender: TObject);
@@ -1013,6 +1030,11 @@ begin
   end;
 end;
 
+procedure TFPReportDesignerForm.AReportPropertiesUpdate(Sender: TObject);
+begin
+  (Sender as Taction).Enabled:=Assigned(Report) and (rdoAllowProperties in DesignOptions);
+end;
+
 procedure TFPReportDesignerForm.AReportVariablesExecute(Sender: TObject);
 
 Var
@@ -1037,6 +1059,11 @@ begin
   finally
      F.Free;
   end;
+end;
+
+procedure TFPReportDesignerForm.AReportVariablesUpdate(Sender: TObject);
+begin
+  (Sender as Taction).Enabled:=Assigned(Report) and (rdoManageVariables in DesignOptions);
 end;
 
 procedure TFPReportDesignerForm.AResizeExecute(Sender: TObject);

@@ -1,7 +1,7 @@
 object FPReportDesignerForm: TFPReportDesignerForm
-  Left = 662
+  Left = 623
   Height = 725
-  Top = 27
+  Top = 139
   Width = 890
   HorzScrollBar.Page = 599
   HorzScrollBar.Range = 599
@@ -19,6 +19,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   SessionProperties = 'FOI.Width;Width;Top;Left;Height'
+  ShowHint = True
   LCLVersion = '1.9.0.0'
   object PCReport: TPageControl
     Left = 240
@@ -42,6 +43,8 @@ object FPReportDesignerForm: TFPReportDesignerForm
     BorderSpacing.InnerBorder = 1
     EdgeBorders = []
     Images = ILReport
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
     object TBNEwReport: TToolButton
       Left = 32
@@ -52,36 +55,38 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Left = 55
       Top = 0
       Action = AFileOpen
+      DropdownMenu = PMRecent
+      Style = tbsDropDown
     end
     object TBSaveReport: TToolButton
-      Left = 86
+      Left = 98
       Top = 0
       Action = AFileSave
     end
     object ToolButton4: TToolButton
-      Left = 155
+      Left = 167
       Height = 22
       Top = 0
       Caption = 'ToolButton4'
       Style = tbsDivider
     end
     object TBAddMemo: TToolButton
-      Left = 238
+      Left = 250
       Top = 0
       Action = AAddMemo
     end
     object TBAddCheckbox: TToolButton
-      Left = 261
+      Left = 273
       Top = 0
       Action = AAddCheckBox
     end
     object TBAddShape: TToolButton
-      Left = 284
+      Left = 296
       Top = 0
       Action = AAddShape
     end
     object TBAddImage: TToolButton
-      Left = 307
+      Left = 319
       Top = 0
       Action = AAddImage
     end
@@ -98,7 +103,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Style = tbsSeparator
     end
     object TBAdd: TToolButton
-      Left = 203
+      Left = 215
       Top = 0
       Caption = 'Elements'
       DropdownMenu = PMAdd
@@ -106,7 +111,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Style = tbsDropDown
     end
     object TBAddBand: TToolButton
-      Left = 160
+      Left = 172
       Top = 0
       Caption = 'TBAddBand'
       DropdownMenu = PMAddBand
@@ -114,138 +119,138 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Style = tbsDropDown
     end
     object ToolButton11: TToolButton
-      Left = 330
+      Left = 342
       Height = 22
       Top = 0
       Caption = 'ToolButton11'
       Style = tbsSeparator
     end
     object ToolButton12: TToolButton
-      Left = 195
+      Left = 207
       Height = 22
       Top = 0
       Caption = 'ToolButton12'
       Style = tbsSeparator
     end
     object TBAlignLeft: TToolButton
-      Left = 338
+      Left = 350
       Top = 0
       Action = AAlignleft
       AutoSize = True
     end
     object TBAlignHCenter: TToolButton
-      Left = 361
+      Left = 373
       Top = 0
       Action = AAlignHCenter
     end
     object TBAlignRight: TToolButton
-      Left = 384
+      Left = 396
       Top = 0
       Action = AAlignRight
     end
     object ToolButton16: TToolButton
-      Left = 78
+      Left = 90
       Height = 22
       Top = 0
       Caption = 'ToolButton16'
       Style = tbsSeparator
     end
     object TBAlignTop: TToolButton
-      Left = 430
+      Left = 442
       Top = 0
       Action = AAlignTop
     end
     object TBAlignVCenter: TToolButton
-      Left = 453
+      Left = 465
       Top = 0
       Action = AAlignVCenter
     end
     object TBAlignBottoms: TToolButton
-      Left = 476
+      Left = 488
       Top = 0
       Action = AAlignBottom
     end
     object TBAlign: TToolButton
-      Left = 407
+      Left = 419
       Top = 0
       Action = AAlign
     end
     object TBAddPage: TToolButton
-      Left = 132
+      Left = 144
       Top = 0
       Action = AAddPage
     end
     object TBResize: TToolButton
-      Left = 553
+      Left = 565
       Top = 0
       Action = AResize
     end
     object ToolButton3: TToolButton
-      Left = 499
+      Left = 511
       Height = 22
       Top = 0
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object TBResizeHLargest: TToolButton
-      Left = 507
+      Left = 519
       Top = 0
       Action = AResizeHLargest
     end
     object TBResizeHSmallest: TToolButton
-      Left = 530
+      Left = 542
       Top = 0
       Action = AResizeHSmallest
     end
     object TBResizeVLargest: TToolButton
-      Left = 576
+      Left = 588
       Top = 0
       Action = AResizeVLargest
     end
     object TBResizeVSmallest: TToolButton
-      Left = 599
+      Left = 611
       Top = 0
       Action = AResizeVSmallest
     end
     object ToolButton24: TToolButton
-      Left = 622
+      Left = 634
       Height = 22
       Top = 0
       Caption = 'ToolButton24'
       Style = tbsSeparator
     end
     object TBFrameAll: TToolButton
-      Left = 630
+      Left = 642
       Top = 0
       Action = AFrameAll
     end
     object TBFrameNone: TToolButton
-      Left = 653
+      Left = 665
       Top = 0
       Action = AFrameClear
     end
     object TBFrameLeft: TToolButton
-      Left = 676
+      Left = 688
       Top = 0
       Action = AFrameLeft
     end
     object TBFrameRight: TToolButton
-      Left = 699
+      Left = 711
       Top = 0
       Action = AFrameRight
     end
     object TBFrameTop: TToolButton
-      Left = 722
+      Left = 734
       Top = 0
       Action = AFrameTop
     end
     object TBFrameBottom: TToolButton
-      Left = 745
+      Left = 757
       Top = 0
       Action = AFrameBottom
     end
     object TBPReview: TToolButton
-      Left = 109
+      Left = 121
       Top = 0
       Action = APreview
     end
@@ -384,6 +389,9 @@ object FPReportDesignerForm: TFPReportDesignerForm
     end
     object MReport: TMenuItem
       Caption = 'Report'
+      object MIPreview: TMenuItem
+        Action = APreview
+      end
       object MIAddPage: TMenuItem
         Action = AAddPage
       end
@@ -493,6 +501,27 @@ object FPReportDesignerForm: TFPReportDesignerForm
         Action = AResizeVSmallest
       end
     end
+    object MFrames: TMenuItem
+      Caption = 'Frames'
+      object MIFrameAll: TMenuItem
+        Action = AFrameAll
+      end
+      object MIFrameClear: TMenuItem
+        Action = AFrameClear
+      end
+      object MIFrameLeft: TMenuItem
+        Action = AFrameLeft
+      end
+      object MIFrameRight: TMenuItem
+        Action = AFrameRight
+      end
+      object MIFrameTop: TMenuItem
+        Action = AFrameTop
+      end
+      object MIframeBottom: TMenuItem
+        Action = AFrameBottom
+      end
+    end
   end
   object ODReport: TOpenDialog
     Title = 'Open Report Design...'
@@ -511,28 +540,36 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Hint = 'Add memo to the report'
       ImageIndex = 7
       OnExecute = AAddMemoExecute
+      OnUpdate = AAddElementUpdate
     end
     object AAddShape: TAction
       Category = 'AddElement'
       Caption = 'S&hape'
+      Hint = 'Add a shape to the report'
       ImageIndex = 12
       OnExecute = AAddShapeExecute
+      OnUpdate = AAddElementUpdate
     end
     object AAddCheckBox: TAction
       Category = 'AddElement'
       Caption = '&CheckBox'
+      Hint = 'Add a checkbox to the report'
       ImageIndex = 8
       OnExecute = AAddCheckBoxExecute
+      OnUpdate = AAddElementUpdate
     end
     object AAddImage: TAction
       Category = 'AddElement'
       Caption = '&Image'
+      Hint = 'Add an image to the report'
       ImageIndex = 11
       OnExecute = AAddImageExecute
+      OnUpdate = AAddElementUpdate
     end
     object AFileSave: TAction
       Category = 'File'
       Caption = 'Save report...'
+      Hint = 'Save the report'
       ImageIndex = 3
       OnExecute = AFileSaveExecute
       ShortCut = 16467
@@ -540,6 +577,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object AFileOpen: TAction
       Category = 'File'
       Caption = 'Open Report...'
+      Hint = 'Load a report from file'
       ImageIndex = 2
       OnExecute = AFileOpenExecute
       ShortCut = 16463
@@ -547,6 +585,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object AQuit: TAction
       Category = 'File'
       Caption = 'Quit...'
+      Hint = 'Close the designer'
       ImageIndex = 0
       OnExecute = AQuitExecute
       ShortCut = 16465
@@ -554,84 +593,98 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object ANew: TAction
       Category = 'File'
       Caption = 'New report'
+      Hint = 'Start a new, empty report'
       ImageIndex = 1
       OnExecute = ANewExecute
     end
     object AAddPageHeader: TAction
       Category = 'AddBand'
       Caption = 'Page header'
+      Hint = 'Add a page header band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddReportTitle: TAction
       Category = 'AddBand'
       Caption = 'Report Title'
+      Hint = 'Add a report title band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddColumnHeader: TAction
       Category = 'AddBand'
       Caption = 'Column header'
+      Hint = 'Add a column header band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddGroupHeader: TAction
       Category = 'AddBand'
       Caption = 'Group Header'
+      Hint = 'Add a group header band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddGroupFooter: TAction
       Category = 'AddBand'
       Caption = 'Group Footer'
+      Hint = 'Add a group footer band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddReportSummary: TAction
       Category = 'AddBand'
       Caption = 'Report Summary'
+      Hint = 'Add a report summary band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddColumnFooter: TAction
       Category = 'AddBand'
       Caption = 'Column footer'
+      Hint = 'Add a column footer band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddPageFooter: TAction
       Category = 'AddBand'
       Caption = 'Page Footer'
+      Hint = 'Add a page footer band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddChildBand: TAction
       Category = 'AddBand'
       Caption = 'Child Band'
+      Hint = 'Add a child band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddDataHeader: TAction
       Category = 'AddBand'
       Caption = 'Data header'
+      Hint = 'Add a data header band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddDataFooter: TAction
       Category = 'AddBand'
       Caption = 'Data footer'
+      Hint = 'Add a data footer band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddDataBand: TAction
       Category = 'AddBand'
       Caption = 'Data Band'
+      Hint = 'Add a data band to the page'
       OnExecute = AAddBandExecute
       OnUpdate = AAddBandUpdate
     end
     object AAddPage: TAction
       Category = 'Report'
       Caption = 'Add Page'
+      Hint = 'Add a new page to the report'
       ImageIndex = 13
       OnExecute = AAddPageExecute
       OnUpdate = AAddPageUpdate
@@ -640,6 +693,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 1
       Category = 'Align'
       Caption = 'Align left edges'
+      Hint = 'Align elements horizontally using their left edges'
       ImageIndex = 17
       OnExecute = HAlignExecute
       OnUpdate = HAlignUpdate
@@ -648,6 +702,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 2
       Category = 'Align'
       Caption = 'Align horizontally centered'
+      Hint = 'Align elements horizontally using their centers'
       ImageIndex = 15
       OnExecute = HAlignExecute
       OnUpdate = HAlignUpdate
@@ -656,6 +711,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 3
       Category = 'Align'
       Caption = 'Align right edges'
+      Hint = 'Align elements horizontally using their right sides'
       ImageIndex = 18
       OnExecute = HAlignExecute
       OnUpdate = HAlignUpdate
@@ -664,6 +720,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 1
       Category = 'Align'
       Caption = 'Align top edges'
+      Hint = 'Align elements vertically using their top edges'
       ImageIndex = 19
       OnExecute = VAlignExecute
       OnUpdate = VAlignUpdate
@@ -672,6 +729,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 2
       Category = 'Align'
       Caption = 'Align vertically centered'
+      Hint = 'Align elements vertically using their centers'
       ImageIndex = 16
       OnExecute = VAlignExecute
       OnUpdate = VAlignUpdate
@@ -680,6 +738,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 3
       Category = 'Align'
       Caption = 'Align bottom edges'
+      Hint = 'Align elements vertically using their bottom edges'
       ImageIndex = 14
       OnExecute = VAlignExecute
       OnUpdate = VAlignUpdate
@@ -687,6 +746,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object AAlign: TAction
       Category = 'Align'
       Caption = 'Align...'
+      Hint = 'Show the align dialog'
       ImageIndex = 20
       OnExecute = AAlignExecute
       OnUpdate = AAlignUpdate
@@ -695,6 +755,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 2
       Category = 'Resize'
       Caption = 'Resize horizontally to smallest'
+      Hint = 'Resize elements horizontally to the smallest size'
       ImageIndex = 23
       OnExecute = HResizeExecute
       OnUpdate = HResizeAllow
@@ -703,6 +764,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 1
       Category = 'Resize'
       Caption = 'Resize horizontally to largest'
+      Hint = 'Resize elements horizontally to the largest size'
       ImageIndex = 26
       OnExecute = HResizeExecute
       OnUpdate = HResizeAllow
@@ -711,6 +773,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 2
       Category = 'Resize'
       Caption = 'Resize vertical to smallest'
+      Hint = 'Resize elements vertically to the smallest size'
       ImageIndex = 24
       OnExecute = VResizeExecute
       OnUpdate = VResizeAllow
@@ -719,6 +782,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 1
       Category = 'Resize'
       Caption = 'Resize vertically to largest'
+      Hint = 'Resize elements vertically to the largest size'
       ImageIndex = 25
       OnExecute = VResizeExecute
       OnUpdate = VResizeAllow
@@ -726,6 +790,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object AResize: TAction
       Category = 'Resize'
       Caption = 'Resize Dialog'
+      Hint = 'Show the resize elements dialog '
       ImageIndex = 22
       OnExecute = AResizeExecute
       OnUpdate = AResizeUpdate
@@ -734,6 +799,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 3
       Category = 'Frame'
       Caption = 'Frame bottom'
+      Hint = 'Enable the frame edge at the bottom of the elements'
       ImageIndex = 28
       OnExecute = AFrameExecute
       OnUpdate = AFrameUpdate
@@ -742,6 +808,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 2
       Category = 'Frame'
       Caption = 'Frame Top'
+      Hint = 'Enable the frame edge at the top of the elements'
       ImageIndex = 32
       OnExecute = AFrameExecute
       OnUpdate = AFrameUpdate
@@ -750,6 +817,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 4
       Category = 'Frame'
       Caption = 'Frame Left'
+      Hint = 'Enable the frame edge at the left of the elements'
       ImageIndex = 29
       OnExecute = AFrameExecute
       OnUpdate = AFrameUpdate
@@ -758,6 +826,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 5
       Category = 'Frame'
       Caption = 'AFrameRight'
+      Hint = 'Enable the frame edge at the right of the elements'
       ImageIndex = 31
       OnExecute = AFrameExecute
       OnUpdate = AFrameUpdate
@@ -765,6 +834,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object AFrameClear: TAction
       Category = 'Frame'
       Caption = 'Clear frame'
+      Hint = 'Clear all frame edges for the elements'
       ImageIndex = 30
       OnExecute = AFrameExecute
       OnUpdate = AFrameUpdate
@@ -773,6 +843,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Tag = 1
       Category = 'Frame'
       Caption = 'Frame around'
+      Hint = 'Enable all frame edges for the elements'
       ImageIndex = 27
       OnExecute = AFrameExecute
       OnUpdate = AFrameUpdate
@@ -780,6 +851,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object ADelete: TAction
       Category = 'Edit'
       Caption = 'Delete selection'
+      Hint = 'Delete the selection'
       ImageIndex = 6
       OnExecute = ADeleteExecute
       OnUpdate = ADeleteUpdate
@@ -787,18 +859,23 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object AReportProperties: TAction
       Category = 'Report'
       Caption = 'Properties...'
+      Hint = 'Show the report properties dialog'
       ImageIndex = 33
       OnExecute = AReportPropertiesExecute
+      OnUpdate = AReportPropertiesUpdate
     end
     object AReportVariables: TAction
       Category = 'Report'
       Caption = 'Variables...'
+      Hint = 'Show the report variables dialog'
       ImageIndex = 36
       OnExecute = AReportVariablesExecute
+      OnUpdate = AReportVariablesUpdate
     end
     object APreview: TAction
       Category = 'Report'
       Caption = 'Preview'
+      Hint = 'Show the report preview'
       ImageIndex = 34
       OnExecute = APreviewExecute
       OnUpdate = APreviewUpdate
@@ -806,6 +883,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object AReportData: TAction
       Category = 'Report'
       Caption = 'Report Data'
+      Hint = 'Show the report data dialog'
       ImageIndex = 35
       OnExecute = AReportDataExecute
       OnUpdate = AReportDataUpdate
@@ -813,6 +891,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     object ARecent: TAction
       Category = 'File'
       Caption = 'Recent'
+      Hint = 'Recently used reports'
     end
   end
   object SDReport: TSaveDialog
