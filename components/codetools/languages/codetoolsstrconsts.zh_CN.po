@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-29 10:32+0800\n"
+"PO-Revision-Date: 2018-02-09 21:59+0800\n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -34,7 +34,7 @@ msgstr "record end没有发现"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
-msgstr "添加 %s 到包含目录"
+msgstr "添加%s到IncPath"
 
 #: codetoolsstrconsts.ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -46,7 +46,7 @@ msgstr "ancestor of untyped property is not a property"
 
 #: codetoolsstrconsts.ctsanlclproject
 msgid "an LCL project"
-msgstr "一个 LCL project"
+msgstr "一个LCL工程"
 
 #: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
@@ -86,7 +86,7 @@ msgstr ""
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
-msgstr ""
+msgstr "字符常数超出范围"
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
@@ -162,7 +162,7 @@ msgstr "调试器目录"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
 msgid "default ancestor %s not found"
-msgstr ""
+msgstr "默认原型%s未找到(ancestor)"
 
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
@@ -198,7 +198,7 @@ msgstr "默认接口IInterface的父类未找到"
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
-msgstr ""
+msgstr "默认java类原型未找到"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
@@ -234,7 +234,7 @@ msgstr "定义处理器类型"
 
 #: codetoolsstrconsts.ctsdefsforlazarussources
 msgid "Definitions for the Lazarus Sources"
-msgstr "Definitions for the Lazarus Sources"
+msgstr ""
 
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
@@ -258,7 +258,7 @@ msgstr "重复的标识符: %s"
 
 #: codetoolsstrconsts.ctselse
 msgid "else"
-msgstr "Else"
+msgstr ""
 
 #: codetoolsstrconsts.ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
@@ -270,7 +270,7 @@ msgstr "未找到记录结尾"
 
 #: codetoolsstrconsts.ctsendoffile
 msgid "end of file"
-msgstr ""
+msgstr "文件末尾"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
@@ -326,11 +326,11 @@ msgstr "要求:=, 但是%s被找到 "
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 msgid "expected identifier, but found %s"
-msgstr ""
+msgstr "要求标识符,但是找到%s"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
 msgid "expected ; of statement, but found %s"
-msgstr ""
+msgstr "要求;of statement,但是找到%s"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
@@ -358,29 +358,29 @@ msgstr "enable FPDocSystem"
 
 #: codetoolsstrconsts.ctsfreepascalcompilerinitialmacros
 msgid "Free Pascal Compiler initial macros"
-msgstr "Free Pascal Compiler initial macros"
+msgstr "Free Pascal Compiler初始的宏"
 
 #: codetoolsstrconsts.ctsfreepascalcomponentlibrary
 msgid "Free Pascal Component Library"
-msgstr "Free Pascal 组件目录."
+msgstr "Free Pascal组件目录."
 
 #: codetoolsstrconsts.ctsfreepascalsourcedir
 msgid "Free Pascal Source Directory"
-msgstr "Free Pascal 源代码目录"
+msgstr "Free Pascal源代码目录"
 
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
 msgid "Free Pascal Sources, %s"
-msgstr "Free Pascal 源代码,%s"
+msgstr "Free Pascal源代码,%s"
 
 #: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
 msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
 msgid "function GetEnumerator not found in this class"
-msgstr ""
+msgstr "函数GetEnumerator未找到 在这个类中"
 
 #: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
 msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
 msgid "function GetEnumerator not found in this class"
-msgstr ""
+msgstr "函数GetEnumerator未找到 在这个类中"
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
@@ -424,7 +424,7 @@ msgstr "标识符未找到: %s"
 
 #: codetoolsstrconsts.ctsifdefdarwin
 msgid "IfDef Darwin"
-msgstr ""
+msgstr "IfDef Darwin"
 
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
@@ -503,33 +503,28 @@ msgid "interface section not found"
 msgstr "接口节未找到"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy,badformat
-#| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
-msgstr "无效类名=%s%s%s"
+msgstr "无效类名=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy,badformat
-#| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
-msgstr "无效类名 %s%s%s"
+msgstr "无效类名\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr "invalid flag value \"%s\" for directive %s"
 
 #: codetoolsstrconsts.ctsinvalidmode
-#, fuzzy,badformat
 msgid "invalid mode \"%s\""
-msgstr "无效模式"
+msgstr "无效模式\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidmodeswitch
 msgid "invalid mode switch \"%s\""
-msgstr ""
+msgstr "无效模式开关\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
 msgid "invalid operator %s"
-msgstr ""
+msgstr "无效运算符%s"
 
 #: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
 msgid "invalid position for insertion of statements"
@@ -544,16 +539,12 @@ msgid "invalid type"
 msgstr "无效类型"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy,badformat
-#| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
-msgstr "无效变量名 %s%s%s"
+msgstr "无效变量名\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy,badformat
-#| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
-msgstr "无效变量类型 %s%s%s"
+msgstr "无效变量类型\"%s\""
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -573,7 +564,7 @@ msgstr "Lazarus 主目录."
 
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
-msgstr "Lazarus 源代码"
+msgstr "Lazarus源代码"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
 msgid "method \"%s\" has no declaration"
@@ -581,7 +572,7 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"
-msgstr "method 名称"
+msgstr "方法名称"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
 msgid "Method signature %s not found in class"
@@ -601,7 +592,7 @@ msgstr "缺少枚举列表"
 
 #: codetoolsstrconsts.ctsmissingpointafterend
 msgid "missing . after end"
-msgstr "结尾缺少 ."
+msgstr "缺少 .在end后"
 
 #: codetoolsstrconsts.ctsmissingtypeidentifier
 msgid "missing type identifier"
@@ -609,15 +600,15 @@ msgstr "缺少类型标识符"
 
 #: codetoolsstrconsts.ctsnameddirectory
 msgid "%s Directory"
-msgstr "%s 目录"
+msgstr "%s目录"
 
 #: codetoolsstrconsts.ctsnamedproject
 msgid "%s Project"
-msgstr "%s 工程"
+msgstr "%s工程"
 
 #: codetoolsstrconsts.ctsneededbymode
 msgid " (needed by mode \"%s\")"
-msgstr ""
+msgstr " (需要的模式\"%s\")"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
@@ -666,7 +657,7 @@ msgstr ""
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "要求运算符,但是%s找到 "
 
 #: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
 msgid "unexpected end of file (operator expected)"
@@ -674,12 +665,12 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
-msgstr ""
+msgstr "要求运算符 但是%s找到 "
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
 msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "要求运算符,但是%s找到 "
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -687,19 +678,19 @@ msgstr "%sCompiler定义"
 
 #: codetoolsstrconsts.ctspackagedirectories
 msgid "Package directories"
-msgstr "Package目录"
+msgstr "包目录"
 
 #: codetoolsstrconsts.ctspackagerdirectory
 msgid "Packager Directory"
-msgstr "Package目录"
+msgstr "包目录"
 
 #: codetoolsstrconsts.ctspackagerregistrationdirectory
 msgid "Packager Registration Directory"
-msgstr "Package注册目录"
+msgstr "包注册目录"
 
 #: codetoolsstrconsts.ctspackagerunitsdirectory
 msgid "Packager Units Directory"
-msgstr "Packager Units目录"
+msgstr "包单元路径"
 
 #: codetoolsstrconsts.ctspointhintprocstartat
 msgid ".  Hint: proc start at "
@@ -719,7 +710,7 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"
-msgstr ""
+msgstr "指定处理器"
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
 msgid "property type expected, but %s found"
@@ -727,7 +718,7 @@ msgstr "本应出现属性类型, 但 %s 出现"
 
 #: codetoolsstrconsts.ctspropertycurrentnotfound
 msgid "property Current not found"
-msgstr ""
+msgstr "属性当前未找到"
 
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
@@ -735,7 +726,7 @@ msgstr "属性说明已经说明: %s"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
 msgid "qualifier expected but %s found"
-msgstr "本应出现限制符但是 %s 出现了"
+msgstr ""
 
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
@@ -743,7 +734,7 @@ msgstr "重置所有定义"
 
 #: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
 msgid "result type of function GetEnumerator not found"
-msgstr ""
+msgstr "函数GetEnumerator结果类型未找到"
 
 #: codetoolsstrconsts.ctsruntimelibrary
 msgid "Runtime library"
@@ -751,11 +742,11 @@ msgstr "Runtime库"
 
 #: codetoolsstrconsts.ctsscannedfiles
 msgid "Scanned files: %s"
-msgstr ""
+msgstr "扫描文件:%s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr "; expected after \"%s\" property specifier, but %s found"
+msgstr ""
 
 #: codetoolsstrconsts.ctssemicolonnotfound
 msgid "semicolon not found"
@@ -779,7 +770,7 @@ msgstr "代码不是单元"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr ""
+msgstr "源代码未找到:单元%s.检查你的FPC源代码目录."
 
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
@@ -827,11 +818,11 @@ msgstr "未找到类的类型块"
 
 #: codetoolsstrconsts.ctsunabletoapplychanges
 msgid "unable to apply changes"
-msgstr ""
+msgstr "不能应用改变"
 
 #: codetoolsstrconsts.ctsunabletocompleteproperty
 msgid "unable to complete property"
-msgstr ""
+msgstr "不能完成属性(complete)"
 
 #: codetoolsstrconsts.ctsundefine
 msgid "Undefine "
@@ -839,15 +830,15 @@ msgstr "未定义"
 
 #: codetoolsstrconsts.ctsunexpectedendofsource
 msgid "unexpected end of source"
-msgstr ""
+msgstr "意外的源代码end"
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
-msgstr ""
+msgstr "意外关键字\"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
-msgstr ""
+msgstr "意外关键字%s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
@@ -871,7 +862,7 @@ msgstr "没有子界符 '..' "
 
 #: codetoolsstrconsts.ctsunitnotfound
 msgid "unit not found: %s"
-msgstr ""
+msgstr "单元未找到: %s"
 
 #: codetoolsstrconsts.ctsunitpathinitialization
 msgid "UnitPath Initialization"
@@ -891,7 +882,7 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsunparsed
 msgid "Unparsed"
-msgstr ""
+msgstr "未解析"
 
 #: codetoolsstrconsts.ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"

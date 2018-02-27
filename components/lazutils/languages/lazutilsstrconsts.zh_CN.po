@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -15,22 +15,22 @@ msgstr ""
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
+msgstr "一个目录组件在%s不存在 或 是一个悬空符号链接"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
+msgstr "一个目录组件在%s不存在 或 是一个悬空符号链接"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
 msgid "a directory component in %s is not a directory"
-msgstr ""
+msgstr "一个目录组件在%s不是一个目录"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
 msgid "a directory component in %s is not a directory"
-msgstr ""
+msgstr "一个目录组件在%s不是一个目录"
 
 #: lazutilsstrconsts.lrsboolean
 msgid "boolean"
@@ -42,36 +42,36 @@ msgstr "不能执行%s"
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
-msgstr ""
+msgstr "无效的函数参数数量(number)"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
 msgid "Unknown function: \"%s\""
-msgstr "未知的函数: \"%s\""
+msgstr "未知的函数:\"%s\""
 
 #: lazutilsstrconsts.lrsevalunknownvariable
 msgid "Unknown variable: \"%s\""
-msgstr "未知的变量: \"%s\""
+msgstr "未知的变量:\"%s\""
 
 #: lazutilsstrconsts.lrsfiledoesnotexist
 msgid "file \"%s\" does not exist"
-msgstr "文件\"%s\"不存在."
+msgstr "文件\"%s\"不存在"
 
 #: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
 msgid "file \"%s\" is a directory and not an executable"
-msgstr ""
+msgstr "文件\"%s\"是一个目录 不是一个可执行文件"
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
 msgid "%s has a circular symbolic link"
-msgstr ""
+msgstr "%s有一个循环符号链接(circular)"
 
 #: lazutilsstrconsts.lrsinsufficientmemory
 msgid "insufficient memory"
-msgstr ""
+msgstr "内存不足"
 
 #: lazutilsstrconsts.lrsinvalidcharset
 msgctxt "lazutilsstrconsts.lrsinvalidcharset"
 msgid "The char set in mask \"%s\" is not valid!"
-msgstr ""
+msgstr "字符集在掩码\"%s\"不是有效的!"
 
 #: lazutilsstrconsts.lrsisnotasymboliclink
 msgid "%s is not a symbolic link"
@@ -92,11 +92,11 @@ msgstr ""
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
 msgid "  modified "
-msgstr ""
+msgstr "  已修改"
 
 #: lazutilsstrconsts.lrsnodeset
 msgid "node set"
-msgstr ""
+msgstr "节点设置"
 
 #: lazutilsstrconsts.lrsnumber
 msgid "number"
@@ -104,11 +104,11 @@ msgstr "数字"
 
 #: lazutilsstrconsts.lrsparserbadaxisname
 msgid "Invalid axis name"
-msgstr ""
+msgstr "无效的轴名称(axis)"
 
 #: lazutilsstrconsts.lrsparserbadnodetype
 msgid "Invalid node type"
-msgstr ""
+msgstr "无效节点类型"
 
 #: lazutilsstrconsts.lrsparserexpectedleftbracket
 msgid "Expected \"(\""
@@ -120,48 +120,48 @@ msgstr "要求\")\""
 
 #: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
 msgid "Expected \"]\" after predicate"
-msgstr ""
+msgstr "要求\"]\"在谓语后"
 
 #: lazutilsstrconsts.lrsparsergarbageafterexpression
 msgid "Unrecognized input after expression"
-msgstr ""
+msgstr "不被认可的输入在表达式后"
 
 #: lazutilsstrconsts.lrsparserinvalidnodetest
 msgid "Invalid node test (syntax error)"
-msgstr ""
+msgstr "无效的节点测试(语法错误)"
 
 #: lazutilsstrconsts.lrsparserinvalidprimexpr
 msgid "Invalid primary expression"
-msgstr ""
+msgstr "无效的基本表达式"
 
 #: lazutilsstrconsts.lrsprogramfilenotfound
 msgid "program file not found %s"
-msgstr ""
+msgstr "程序文件未找到%s"
 
 #: lazutilsstrconsts.lrsreadaccessdeniedfor
 msgid "read access denied for %s"
-msgstr ""
+msgstr "读访问被拒绝对于%s"
 
 #: lazutilsstrconsts.lrsscannerexpectedvarname
 msgid "Expected variable name after \"$\""
-msgstr ""
+msgstr "在\"$\"后要求变量名"
 
 #: lazutilsstrconsts.lrsscannerinvalidchar
 msgid "Invalid character"
-msgstr ""
+msgstr "无效字符"
 
 #: lazutilsstrconsts.lrsscannermalformedqname
 msgid "Expected \"*\" or local part after colon"
-msgstr ""
+msgstr "要求\"*\" 或 冒号后本地部分"
 
 #: lazutilsstrconsts.lrsscannerunclosedstring
 msgid "String literal was not closed"
-msgstr ""
+msgstr "字符串文字没有关闭"
 
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
 msgid "  size "
-msgstr "大小"
+msgstr "  大小"
 
 #: lazutilsstrconsts.lrsstring
 msgid "string"

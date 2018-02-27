@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-13 16:16+0800\n"
+"PO-Revision-Date: 2018-02-09 22:00+0800\n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
 "Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
-msgstr ""
+msgstr "注释"
 
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
@@ -34,7 +34,7 @@ msgstr "属性值"
 
 #: syneditstrconst.syns_attrblock
 msgid "Block"
-msgstr ""
+msgstr "语句块"
 
 #: syneditstrconst.syns_attrbrackets
 msgid "Brackets"
@@ -46,19 +46,19 @@ msgstr ""
 
 #: syneditstrconst.syns_attrcdata
 msgid "CDATA"
-msgstr ""
+msgstr "CDATA"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
-msgstr ""
+msgstr "CDATA部分"
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
-msgstr ""
+msgstr "字符"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
-msgstr ""
+msgstr "比较Chunk标记"
 
 #: syneditstrconst.syns_attrchunkmixed
 msgid "Diff Chunk Line Counts"
@@ -94,19 +94,19 @@ msgstr "默认包"
 
 #: syneditstrconst.syns_attrdir
 msgid "Direction"
-msgstr ""
+msgstr "方向"
 
 #: syneditstrconst.syns_attrdirective
 msgid "Directive"
-msgstr ""
+msgstr "指令"
 
 #: syneditstrconst.syns_attrdoctype
 msgid "DOCTYPE"
-msgstr ""
+msgstr "DOCTYPE"
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
-msgstr ""
+msgstr "DOCTYPE部分"
 
 #: syneditstrconst.syns_attrdocumentation
 msgid "Documentation"
@@ -114,19 +114,19 @@ msgstr "文档"
 
 #: syneditstrconst.syns_attrelementname
 msgid "Element Name"
-msgstr ""
+msgstr "元素名称"
 
 #: syneditstrconst.syns_attrembedsql
 msgid "Embedded SQL"
-msgstr ""
+msgstr "嵌入SQL"
 
 #: syneditstrconst.syns_attrembedtext
 msgid "Embedded text"
-msgstr ""
+msgstr "嵌入文本"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
-msgstr ""
+msgstr "实体参考"
 
 #: syneditstrconst.syns_attrescapeampersand
 msgid "Escape ampersand"
@@ -158,19 +158,19 @@ msgstr "函数"
 
 #: syneditstrconst.syns_attrhexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "十六进制"
 
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
-msgstr ""
+msgstr "Icon参考"
 
 #: syneditstrconst.syns_attridedirective
 msgid "IDE Directive"
-msgstr ""
+msgstr "IDE指令"
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
-msgstr ""
+msgstr "标识符"
 
 #: syneditstrconst.syns_attrillegalchar
 msgid "Illegal char"
@@ -194,7 +194,7 @@ msgstr "无效的符号"
 
 #: syneditstrconst.syns_attrkey
 msgid "Key"
-msgstr ""
+msgstr "Key"
 
 #: syneditstrconst.syns_attrlabel
 msgid "Label"
@@ -274,7 +274,7 @@ msgstr "操作符"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
-msgstr ""
+msgstr "比较原始文件"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
@@ -294,7 +294,7 @@ msgstr "前一个值"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
-msgstr ""
+msgstr "处理指令"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
@@ -302,7 +302,7 @@ msgstr "限定词"
 
 #: syneditstrconst.syns_attrregister
 msgid "Register"
-msgstr ""
+msgstr "注册"
 
 #: syneditstrconst.syns_attrreservedword
 msgid "Reserved word"
@@ -310,15 +310,15 @@ msgstr "保留字"
 
 #: syneditstrconst.syns_attrroundbracket
 msgid "Round Bracket"
-msgstr ""
+msgstr "圆括号"
 
 #: syneditstrconst.syns_attrrpl
 msgid "Rpl"
-msgstr ""
+msgstr "Rpl"
 
 #: syneditstrconst.syns_attrrplcomment
 msgid "Rpl comment"
-msgstr ""
+msgstr "Rpl注释"
 
 #: syneditstrconst.syns_attrrplkey
 msgid "Rpl key"
@@ -334,7 +334,7 @@ msgstr "SASM注释"
 
 #: syneditstrconst.syns_attrsasmkey
 msgid "SASM Key"
-msgstr ""
+msgstr "SASM"
 
 #: syneditstrconst.syns_attrsecondreservedword
 msgid "Second reserved word"
@@ -342,11 +342,11 @@ msgstr "等二个保留字"
 
 #: syneditstrconst.syns_attrsection
 msgid "Section"
-msgstr ""
+msgstr "插入新建方法到章节"
 
 #: syneditstrconst.syns_attrselectorvalue
 msgid "Selector"
-msgstr ""
+msgstr "选择器"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
@@ -354,7 +354,7 @@ msgstr "空格"
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
-msgstr ""
+msgstr "特殊变量"
 
 #: syneditstrconst.syns_attrsqlkey
 msgid "SQL keyword"
@@ -394,11 +394,11 @@ msgstr "Table名称"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
-msgstr ""
+msgstr "终止符"
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
-msgstr ""
+msgstr "TeX命令"
 
 #: syneditstrconst.syns_attrtext
 msgid "Text"
@@ -406,7 +406,7 @@ msgstr "文本"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
-msgstr ""
+msgstr "文本在数学模式"
 
 #: syneditstrconst.syns_attrunknownword
 msgid "Unknown word"
@@ -442,7 +442,7 @@ msgstr "快捷方式已存在"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
 msgid "Toggle Breakpoint"
-msgstr ""
+msgstr "切换断点"
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
@@ -474,7 +474,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
-msgstr ""
+msgstr "源文件链接"
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"
@@ -514,7 +514,7 @@ msgstr "选择行"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr ""
+msgstr "\"包含空格\",否,是"
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
@@ -538,11 +538,11 @@ msgstr ""
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
-msgstr ""
+msgstr "行选择"
 
 #: syneditstrconst.syns_emcstartlineselectionsnoneempty
 msgid "Line Selection (select immediate)"
-msgstr ""
+msgstr "选择行(选择当前的)"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
@@ -554,11 +554,11 @@ msgstr "选择 (行)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
-msgstr ""
+msgstr "选择(标记)"
 
 #: syneditstrconst.syns_emcstartselectwords
 msgid "Selection (words)"
-msgstr ""
+msgstr "选择(单词)"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
@@ -582,7 +582,7 @@ msgstr "滚轮上滚"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr ""
+msgstr "速度,\"系统设置\",行,页,\"页(不足一行)\"(less)"
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"

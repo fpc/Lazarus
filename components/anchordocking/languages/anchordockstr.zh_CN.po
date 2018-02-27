@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 #: anchordockstr.adrsanchordockinglayout
 msgid "Anchor Docking Layout"
-msgstr ""
+msgstr "锚停靠布局(Anchor"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -50,7 +50,7 @@ msgstr ""
 
 #: anchordockstr.adrsbottom
 msgid "bottom"
-msgstr ""
+msgstr "底部"
 
 #: anchordockstr.adrsclose
 msgid "Close"
@@ -70,11 +70,11 @@ msgstr ""
 
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
-msgstr ""
+msgstr "停靠选项"
 
 #: anchordockstr.adrsdraganddockc
 msgid "Use the mouse to drag and dock window \"%s\""
-msgstr ""
+msgstr "使用鼠标拖拽和停靠窗体\"%s\""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"
@@ -82,7 +82,7 @@ msgstr ""
 
 #: anchordockstr.adrsduplicatename
 msgid "Duplicate name: "
-msgstr ""
+msgstr "复制名称:"
 
 #: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
 msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
@@ -90,7 +90,7 @@ msgstr ""
 
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
-msgstr ""
+msgstr "空名称:"
 
 #: anchordockstr.adrsenlarge
 msgid "Enlarge"
@@ -106,15 +106,15 @@ msgstr "错误"
 
 #: anchordockstr.adrserrorloadingwindowlayoutfromfile
 msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr ""
+msgstr "错误加载窗体布局从文件\"%s\"%s%s"
 
 #: anchordockstr.adrserrorwritingwindowlayouttofile
 msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr ""
+msgstr "错误写入窗体布局到文件\"%s\"%s%s"
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
-msgstr ""
+msgstr "填充headers"
 
 #: anchordockstr.adrsfilledheadershint
 msgid "Fill headers of docked controls"
@@ -130,23 +130,23 @@ msgstr ""
 
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
-msgstr ""
+msgstr "一般停靠选项"
 
 #: anchordockstr.adrsheaderalignleft
 msgid "Header align left"
-msgstr ""
+msgstr "Header左对齐"
 
 #: anchordockstr.adrsheaderaligntop
 msgid "Header align top"
-msgstr ""
+msgstr "Header顶端对齐"
 
 #: anchordockstr.adrsheaderposition
 msgid "Header position"
-msgstr ""
+msgstr "Header位置"
 
 #: anchordockstr.adrsheaderstyle
 msgid "Header Style:"
-msgstr ""
+msgstr "Header样式"
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
@@ -162,27 +162,27 @@ msgstr ""
 
 #: anchordockstr.adrsleft
 msgid "left"
-msgstr ""
+msgstr "左"
 
 #: anchordockstr.adrsloadwindowlayoutfromfile
 msgid "Load window layout from file ..."
-msgstr ""
+msgstr "加载window布局从文件..."
 
 #: anchordockstr.adrsloadwindowlayoutfromfilexml
 msgid "Load window layout from file (*.xml)"
-msgstr ""
+msgstr "加载window布局从文件(*.xml)"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
-msgstr ""
+msgstr "锁定"
 
 #: anchordockstr.adrsmerge
 msgid "Merge"
-msgstr ""
+msgstr "合并"
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"
-msgstr ""
+msgstr "缺少控制名称"
 
 #: anchordockstr.adrsmodalformscannotbemadedockable
 msgid "modal forms can not be made dockable"
@@ -190,11 +190,11 @@ msgstr ""
 
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
-msgstr ""
+msgstr "移动header到左侧部 当(宽/高)*100>=HeaderAlignLeft"
 
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
-msgstr ""
+msgstr "移动header到顶部 当(宽/高)*100<=HeaderAlignTop"
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -230,31 +230,31 @@ msgstr "退出%s"
 
 #: anchordockstr.adrsrequestedbutcreated
 msgid "%s requested, but %s created"
-msgstr ""
+msgstr "%s请求,但是%s被创建"
 
 #: anchordockstr.adrsrestoredefaultlayout
 msgid "Restore default layout"
-msgstr ""
+msgstr "恢复默认布局"
 
 #: anchordockstr.adrsright
 msgid "right"
-msgstr ""
+msgstr "右"
 
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
-msgstr ""
+msgstr "保存窗体布局为默认"
 
 #: anchordockstr.adrssavewindowlayouttofile
 msgid "Save window layout to file ..."
-msgstr ""
+msgstr "保存窗体布局到文件..."
 
 #: anchordockstr.adrssavewindowlayouttofilexml
 msgid "Save window layout to file (*.xml)"
-msgstr ""
+msgstr "保存window布局到文件(*.xml)"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"
-msgstr ""
+msgstr "缩放调整大小"
 
 #: anchordockstr.adrsscalesubsiteswhenasiteisresized
 msgid "Scale sub sites when a site is resized"
@@ -266,7 +266,7 @@ msgstr ""
 
 #: anchordockstr.adrsshowheadercaptions
 msgid "Show header captions"
-msgstr ""
+msgstr "显示header标题"
 
 #: anchordockstr.adrsshowheaders
 msgid "Show headers"
@@ -274,15 +274,15 @@ msgstr "显示headers"
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
-msgstr ""
+msgstr "分配器厚度(Splitter)"
 
 #: anchordockstr.adrssplitterwidth
 msgid "Splitter width"
-msgstr ""
+msgstr "分配器宽度(Splitter)"
 
 #: anchordockstr.adrstabposition
 msgid "Tab position"
-msgstr ""
+msgstr "Tab位置"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
 msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
@@ -290,13 +290,13 @@ msgstr ""
 
 #: anchordockstr.adrstop
 msgid "top"
-msgstr ""
+msgstr "上部"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
 msgid "To use anchordocking you must first uninstall %s"
-msgstr ""
+msgstr "为使用锚停靠(anchordocking)你必须首先卸载%s"
 
 #: anchordockstr.adrsundock
 msgid "Undock"
-msgstr ""
+msgstr "取消停靠"
 

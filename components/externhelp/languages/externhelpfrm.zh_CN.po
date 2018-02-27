@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -26,7 +26,7 @@ msgstr "浏览路径"
 
 #: externhelpfrm.ehrschooseapascalunit
 msgid "Choose a pascal unit"
-msgstr "关闭一个pascal unit"
+msgstr "关闭一个pascal单元"
 
 #: externhelpfrm.ehrsdeleteitem
 msgid "Delete item"
@@ -94,7 +94,7 @@ msgstr "存储URL在"
 
 #: externhelpfrm.ehrsunitfileorunitdirectory
 msgid "Unit file or unit directory"
-msgstr "Unit文件或unit目录"
+msgstr "单元文件或单元目录"
 
 #: externhelpfrm.ehrsurl
 msgid "URL"

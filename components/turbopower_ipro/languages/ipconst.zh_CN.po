@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-06 20:02+0800\n"
+"PO-Revision-Date: 2018-02-09 21:59+0800\n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
 "Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
@@ -862,10 +862,8 @@ msgid " (ssRcptTo)"
 msgstr ""
 
 #: ipconst.slogresponse
-#, fuzzy
-#| msgid "Generating OnTop event, Code = "
 msgid "Generating OnResponse event, Code = "
-msgstr "生成 OnTop 事件, Code = "
+msgstr "生成OnResponse事件, Code = "
 
 #: ipconst.slogrset
 msgid " (ssRSet)"
@@ -1042,7 +1040,7 @@ msgstr ""
 
 #: ipconst.snntpcmdpost
 msgid "POST"
-msgstr ""
+msgstr "提交"
 
 #: ipconst.snntpcmdquit
 msgctxt "ipconst.snntpcmdquit"
@@ -1974,7 +1972,7 @@ msgstr ""
 
 #: ipconst.sssexpand
 msgid "Expanding"
-msgstr ""
+msgstr "展开"
 
 #: ipconst.ssshelo
 msgid "Logging on with HELO"
@@ -2094,11 +2092,11 @@ msgstr ""
 
 #: ipconst.ssslpaddingerror
 msgid "Padding error."
-msgstr ""
+msgstr ".填充错误"
 
 #: ipconst.ssslparsererror
 msgid "Parsing error."
-msgstr ""
+msgstr "解析错误."
 
 #: ipconst.ssslpointernotassigned
 msgid "Pointer not assigned."
@@ -2117,16 +2115,12 @@ msgid "Revoked Certificate."
 msgstr "证书作废."
 
 #: ipconst.ssslservernohandshake
-#, fuzzy
-#| msgid "Server cid not return a handshake message."
 msgid "Server did not return a handshake message."
-msgstr "服务器 cid 没有返回握手信息."
+msgstr "服务器未曾返回握手消息"
 
 #: ipconst.ssslservernoserverhello
-#, fuzzy
-#| msgid "Server cid not return a server hello message."
 msgid "Server did not return a server hello message."
-msgstr "服务器 cid 没有返回服务器hello信息."
+msgstr "服务器未曾返回服务器hello握手消息."
 
 #: ipconst.ssslsessidtolong
 msgid "Session ID is longer than 32 bytes."
@@ -2134,7 +2128,7 @@ msgstr "会话ID长过32字节."
 
 #: ipconst.ssslshabuf2small
 msgid "SHA1 buffer to small."
-msgstr ""
+msgstr "SHA1缓冲区太小."
 
 #: ipconst.ssslunexpectedmessage
 msgid "Server received an unexpected message."
@@ -2146,7 +2140,7 @@ msgstr "未知证书."
 
 #: ipconst.ssslunprocesseddata
 msgid "SSL data processing error."
-msgstr ""
+msgstr "SSL数据处理cw."
 
 #: ipconst.ssslunsupportedcertificate
 msgid "Unsupported Certificate."
@@ -2154,7 +2148,7 @@ msgstr "不支持的证书."
 
 #: ipconst.ssslunsupportedchiper
 msgid "Unsupported cipher chosen."
-msgstr ""
+msgstr "不支持密码选择."
 
 #: ipconst.ssslunsupportedencoding
 msgid "Unsupported public encoding."
@@ -2271,7 +2265,7 @@ msgstr "不能从流中载入图片"
 
 #: ipconst.swinsockerr
 msgid "WinSock Error (%d): %s, on API '%s'"
-msgstr ""
+msgstr "WinSock错误(%d): %s,关于API '%s'"
 
 #: ipconst.swriteafterrename
 msgid "***Write after rename"
@@ -2279,7 +2273,7 @@ msgstr "***重命名后写"
 
 #: ipconst.swrongstateerr
 msgid "Can not comply, wrong state"
-msgstr ""
+msgstr "不能应允,错误状态"
 
 #: ipconst.swsaeacces
 msgid "Permission denied"
@@ -2363,7 +2357,7 @@ msgstr ""
 
 #: ipconst.swsaeinvalidprovider
 msgid "Invalid service provider version number"
-msgstr ""
+msgstr "无效的服务器提供版本数"
 
 #: ipconst.swsaeisconn
 msgid "Socket is already connected"
@@ -2399,7 +2393,7 @@ msgstr "网络不能到达"
 
 #: ipconst.swsaenobufs
 msgid "No buffer space available"
-msgstr ""
+msgstr "没有缓冲空间未可用"
 
 #: ipconst.swsaenomore
 msgctxt "ipconst.swsaenomore"
@@ -2472,7 +2466,7 @@ msgstr "连接超时"
 
 #: ipconst.swsaetoomanyrefs
 msgid "Too many references; cannot splice"
-msgstr ""
+msgstr "过多应用;不能绞接"
 
 #: ipconst.swsaeusers
 msgid "Too many users"

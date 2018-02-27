@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -18,31 +18,31 @@ msgstr "调试器"
 
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr ""
+msgstr "调试器遇到一个错误 在尝试运行/停止应用程序时:%0:s%0:s%1:s%0:s%0:s按\"Ok\"移除断点并继续调试(暂停),改正错误,或选择一个其他的运行命令.%0:s按\"Stop\"结束调试会话."
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
-msgstr ""
+msgstr "调试器不能设置一个断点在该应用的入口点.%0:s这可能是缺少调试信息导致的."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
-msgstr ""
+msgstr "调试器不能运行应用.%0:s这可能是缺少调试信息导致的."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
-msgstr ""
+msgstr "调试器不能获取应用程序的PID.%0:s这可能是缺少调试信息造成的."
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
-msgstr ""
+msgstr "调试器不能自我初始化.%0:s应用不能运行(终止)在调试器能设置任何断点前.%0:s这可能是缺少调试信息导致的."
 
 #: gdbmistringconstants.gdbmierroronruncommand
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr ""
+msgstr "调试器遇到一个错误 在尝试运行/停止应用程序时:%0:s%0:s%1:s%0:s%0:s按\"Ok\"继续调试(暂停),改正错误,或选择一个其他的运行命令.%0:s按\"Stop\"结束调试会话."
 
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
-msgstr ""
+msgstr "%0:s%0:s除了错误之外 遇到下面的警告:%0:s%0:s%1:s"
 
 #: gdbmistringconstants.gdbmierrorstategenericinfo
 msgid "Error in: %1:s %0:s"
@@ -54,19 +54,19 @@ msgstr "%0:sGDB命令:%0:s\"%1:s\"%0:s返回错误:%0:s\"%2:s\"%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
-msgstr ""
+msgstr "%0:sGDB命令:%0:s\"%1:s\"%0:s没有返回任何结果.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedread
 msgid "%0:sCould not read output from GDB.%0:s"
-msgstr ""
+msgstr "%0:s不能读取输出从GDB.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedwrite
 msgid "%0:sCould not send a command to GDB.%0:s"
-msgstr ""
+msgstr "%0:s不能发送一个命令到GDB.%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfogdbgone
 msgid "%0:sThe GDB process is no longer running.%0:s"
-msgstr ""
+msgstr "%0:s该GDB进程不再运行.%0:s"
 
 #: gdbmistringconstants.gdbmieventlogdebugoutput
 msgid "Debug Output: %s"
@@ -74,7 +74,7 @@ msgstr "调试器输出: %s"
 
 #: gdbmistringconstants.gdbmieventloggdbinternalerror
 msgid "GDB has encountered an internal error: %s"
-msgstr ""
+msgstr "GDB遇到一个内部错误:%s"
 
 #: gdbmistringconstants.gdbmieventlognosymbols
 msgid "File '%s' has no debug symbols"
@@ -98,55 +98,60 @@ msgstr "GDB创建进程失败"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
-msgstr ""
+msgstr "IDE不能终止GDB进程.该进程可能离开运行在IDE的控制之外.%0:s确保进程不影响你的系统,你自己能定位并终止它."
 
 #: gdbmistringconstants.gdbmifailedtoterminategdbtitle
 msgid "GDB did not terminate"
-msgstr ""
+msgstr "GDB不能终止"
 
 #: gdbmistringconstants.gdbmifatalerroroccurred
 msgid "Unrecoverable error: \"%s\""
-msgstr "不可恢复的错误: \"%s\""
+msgstr "不可恢复的错误:\"%s\""
 
 #: gdbmistringconstants.gdbmigdbinternalerror
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
-msgstr ""
+msgstr "GDB遇到一个内部错误:%0:s按\"Ok\"继续调试.这可能不安全.%0:s按\"Stop\"结束调试会话."
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
-msgstr ""
+msgstr "当执行命令: %0:s\"%2:s\"%0:sgdb报告:%0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+#, fuzzy,badformat
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
-msgstr ""
+msgstr "按\"Ignore\"继续调试.这可能不安全.按\"Abort\"结束调试.%0:异常: %1:s带有信息\"%2:s\"%0:s上下文: %4:s.状态: %5:s %0:s%0:s%3:s"
 
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgid "The debugger experienced an unknown condition"
-msgstr ""
+msgstr "调试器发现一个未知条件"
 
 #: gdbmistringconstants.gdbmitimeoutforcmd
 msgid "Time-out for command: \"%s\""
-msgstr ""
+msgstr "Time-out对于命令:\"%s\""
 
 #: gdbmistringconstants.gdbmiwarningunknowbreakpoint
 msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
-msgstr ""
+msgstr "调试器碰到一个异常%1:s%0:s%0:s按\"Ok\"继续调试(暂停).%0:s按\"Stop\"结束调试会话."
 
 #: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
-msgstr ""
+msgstr "GNU调试器通过SSH允许remote调试经由SSH连接.查看docs/RemoteDebugging.txt详情.路径必须包含SSH客户端.使用SSH_Startup_Options对于hostname和可选择的username.使用Remote_GDB_Exe 对于GDB是文件名在remote计算机上."
 
 #: gdbmistringconstants.lisresponsecontinue
+#, fuzzy
+#| msgid "Response: %sContinue ?"
 msgid "Response: %sContinue?"
-msgstr ""
+msgstr "响应:%s继续?"
 
 #: gdbmistringconstants.lissshdebuggertimeout
 msgid "Timeout has occurred:"
 msgstr ""
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
+#, fuzzy
+#| msgid "Unexpected result:%sThe debugger will terminate"
 msgid "Unexpected result:%sThe debugger will terminate."
-msgstr ""
+msgstr "意外结果:%s调试器将终止"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
@@ -162,5 +167,5 @@ msgstr "加载可执行应用失败"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
-msgstr ""
+msgstr "调试器不能设置所有的断点 在初始化.%0:s你可能想要检查 是否所有源代码编译带调试信息.%0:s按确认来忽略并继续."
 

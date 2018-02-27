@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -26,7 +26,7 @@ msgstr "输入你的类/样式定义"
 
 #: fpwebstrconsts.sdocumentlocation
 msgid "&Location"
-msgstr ""
+msgstr "位置(&L)"
 
 #: fpwebstrconsts.sdocumentroot
 msgid "&Directory"
@@ -42,7 +42,7 @@ msgstr "Html &作者- <meta name=\"作者\">"
 
 #: fpwebstrconsts.shtmlcharset
 msgid "HTML chars&et"
-msgstr ""
+msgstr "HTML字符集(&e)"
 
 #: fpwebstrconsts.shtmlcopyright
 msgid "Html cop&yright - meta name=\"copyright\">"
@@ -66,11 +66,11 @@ msgstr "创建新HTML文件..."
 
 #: fpwebstrconsts.shtmlinputformaccesskey
 msgid "Access key"
-msgstr ""
+msgstr "存取关键字"
 
 #: fpwebstrconsts.shtmlinputformalign
 msgid "Align"
-msgstr "Align"
+msgstr "对齐"
 
 #: fpwebstrconsts.shtmlinputformalt
 msgid "Alt"
@@ -110,7 +110,7 @@ msgstr "值"
 
 #: fpwebstrconsts.shtmljsfile
 msgid "&Javascript file"
-msgstr "Javascript 文件(&J)"
+msgstr "Javascript文件(&J)"
 
 #: fpwebstrconsts.shtmltableformborderwidth
 msgid "Border width"
@@ -134,7 +134,7 @@ msgstr "列统计"
 
 #: fpwebstrconsts.shtmltableformheaderbgcolor
 msgid "Header bg color"
-msgstr ""
+msgstr "Header bg颜色"
 
 #: fpwebstrconsts.shtmltableformrowcount
 msgid "Row count"
@@ -142,7 +142,7 @@ msgstr "行统计"
 
 #: fpwebstrconsts.shtmltableformuseheader
 msgid "Use header row"
-msgstr ""
+msgstr "使用header行"
 
 #: fpwebstrconsts.shtmltableformwidth
 msgid "Width"
@@ -166,7 +166,7 @@ msgstr "Html &标题-<title>"
 
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
-msgstr ""
+msgstr "端口监听请求(&P)"
 
 #: fpwebstrconsts.sjsfile
 msgid "Javascript file"
@@ -178,7 +178,7 @@ msgstr "创建新javascript文件..."
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
-msgstr ""
+msgstr "在这儿输入你的javascript代码"
 
 #: fpwebstrconsts.smihtmleditor
 msgid "HTML Editor"
@@ -390,9 +390,9 @@ msgstr "新建HTTP应用"
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
-msgstr ""
+msgstr "注册位置以服务文件从(&R)"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"
-msgstr ""
+msgstr "使用线程来服务要求在(&t)"
 

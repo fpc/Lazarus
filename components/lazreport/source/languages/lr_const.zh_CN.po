@@ -3,7 +3,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -26,19 +26,19 @@ msgstr "所有文件"
 
 #: lr_const.sargument1
 msgid "Argument 1"
-msgstr ""
+msgstr "参数1"
 
 #: lr_const.sargument2
 msgid "Argument 2"
-msgstr ""
+msgstr "参数2"
 
 #: lr_const.sargument3
 msgid "Argument 3"
-msgstr ""
+msgstr "参数3"
 
 #: lr_const.sarguments
 msgid "Arguments"
-msgstr ""
+msgstr "参数"
 
 #: lr_const.sautosize
 msgid "Auto size"
@@ -74,19 +74,19 @@ msgstr ""
 
 #: lr_const.sband15
 msgid "Column header"
-msgstr ""
+msgstr "列header"
 
 #: lr_const.sband16
 msgid "Column footer"
-msgstr ""
+msgstr "列footer"
 
 #: lr_const.sband17
 msgid "Group header"
-msgstr ""
+msgstr "组header"
 
 #: lr_const.sband18
 msgid "Group footer"
-msgstr ""
+msgstr "组footer"
 
 #: lr_const.sband19
 msgid "Cross header"
@@ -94,7 +94,7 @@ msgstr ""
 
 #: lr_const.sband2
 msgid "Report summary"
-msgstr ""
+msgstr "报告摘要"
 
 #: lr_const.sband20
 msgid "Cross data"
@@ -116,11 +116,11 @@ msgstr "无"
 
 #: lr_const.sband3
 msgid "Page header"
-msgstr ""
+msgstr "页header"
 
 #: lr_const.sband4
 msgid "Page footer"
-msgstr ""
+msgstr "页footer"
 
 #: lr_const.sband5
 msgid "Master header"
@@ -192,11 +192,11 @@ msgstr ""
 
 #: lr_const.sbarcodeformrotate
 msgid "Rotation"
-msgstr ""
+msgstr "旋转"
 
 #: lr_const.sbarcodeformtitle
 msgid "Barcode editor"
-msgstr ""
+msgstr "条形码编辑器"
 
 #: lr_const.sbarcodeformtype
 msgid "&Type of barcode"
@@ -204,7 +204,7 @@ msgstr ""
 
 #: lr_const.sbarcodeformvar
 msgid "Insert variable"
-msgstr ""
+msgstr "插入变量"
 
 #: lr_const.sbarcodezoom
 msgid "Zoom"
@@ -247,7 +247,7 @@ msgstr "布尔"
 
 #: lr_const.scharset
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: lr_const.sclassobjectnotfound
 msgid "Class Object \"%s\" not found"
@@ -415,19 +415,19 @@ msgstr "变量"
 
 #: lr_const.sdateformat1
 msgid "mm.dd.yy"
-msgstr ""
+msgstr "mm.dd.yy"
 
 #: lr_const.sdateformat2
 msgid "mm.dd.yyyy"
-msgstr ""
+msgstr "mm.dd.yyyy"
 
 #: lr_const.sdateformat3
 msgid "d mmm yyyy"
-msgstr ""
+msgstr "d mmm yyyy"
 
 #: lr_const.sdateformat4
 msgid "d mmmm yyyy"
-msgstr ""
+msgstr "d mmmm yyyy"
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
@@ -491,7 +491,7 @@ msgstr ""
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr ""
+msgstr "LENGTH(<String>)/返回长度对于 <String>."
 
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
@@ -555,11 +555,11 @@ msgstr ""
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
-msgstr ""
+msgstr "STRTODATE(<String>)/转换<String>为日期."
 
 #: lr_const.sdescriptionstrtotime
 msgid "STRTOTIME(<String>)/Converts <String> to time."
-msgstr ""
+msgstr "STRTOTIME(<String>)/转换<String>为时间."
 
 #: lr_const.sdescriptionsum
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
@@ -767,7 +767,7 @@ msgstr "函数"
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
 msgid "&Memo"
-msgstr ""
+msgstr "Memo(&M)"
 
 #: lr_const.seditorformscr
 msgid "S&cript"
@@ -1554,7 +1554,7 @@ msgstr "加载...(&L)"
 #: lr_const.sgeditorformmemo
 msgctxt "lr_const.sgeditorformmemo"
 msgid "&Memo"
-msgstr ""
+msgstr "Memo(&M)"
 
 #: lr_const.sgeditorformstretch
 msgid "&Stretch"
@@ -1738,7 +1738,7 @@ msgstr ""
 
 #: lr_const.smemoeditor
 msgid "Memo editor"
-msgstr ""
+msgstr "Memo编辑器"
 
 #: lr_const.smm
 msgid "MM"
@@ -1779,11 +1779,11 @@ msgstr "确定"
 
 #: lr_const.sonfirstpage
 msgid "On first page"
-msgstr ""
+msgstr "在第一页"
 
 #: lr_const.sonlastpage
 msgid "On last page"
-msgstr ""
+msgstr "在最后一页"
 
 #: lr_const.sother
 msgid "Other ..."
@@ -1796,7 +1796,7 @@ msgstr "其他"
 
 #: lr_const.spagepreparing
 msgid "Processing page:"
-msgstr ""
+msgstr "处理页面:"
 
 #: lr_const.spageprinting
 msgid "Printing page:"
@@ -1804,7 +1804,7 @@ msgstr "打印页:"
 
 #: lr_const.spaper1
 msgid "Letter, 8 1/2 x 11\""
-msgstr ""
+msgstr "信纸, 8 1/2 x 11\""
 
 #: lr_const.spaper10
 msgid "A4 small sheet, 210 x 297 mm"
@@ -1852,7 +1852,7 @@ msgstr ""
 
 #: lr_const.spaper11
 msgid "A5 148 x 210 mm"
-msgstr ""
+msgstr "A5 148 x 210mm"
 
 #: lr_const.spaper110
 msgid "DMPAPER_PENV_2_ROTATED 176X102"
@@ -2145,7 +2145,7 @@ msgstr ""
 
 #: lr_const.spaper70
 msgid "A6 105x148 mm"
-msgstr ""
+msgstr "A6 105x148mm"
 
 #: lr_const.spaper71
 msgid "DMPAPER_JENV_KAKU2 240X132"
@@ -2614,7 +2614,7 @@ msgstr "矩形"
 
 #: lr_const.sshape2
 msgid "Rounded rectangle"
-msgstr ""
+msgstr "圆角矩形"
 
 #: lr_const.sshape3
 msgid "Ellipse"
@@ -2651,7 +2651,7 @@ msgstr ""
 
 #: lr_const.sstringcategory
 msgid "String"
-msgstr ""
+msgstr "字符串"
 
 #: lr_const.ssubreportonpage
 msgid "SubReport on page"
@@ -2680,23 +2680,23 @@ msgstr "新建报告"
 
 #: lr_const.stextfile
 msgid "ASCII Text file"
-msgstr ""
+msgstr "ASCII文本文件"
 
 #: lr_const.stimeformat1
 msgid "hh:nn:ss"
-msgstr ""
+msgstr "hh:nn:ss"
 
 #: lr_const.stimeformat2
 msgid "h:nn:ss"
-msgstr ""
+msgstr "h:nn:ss"
 
 #: lr_const.stimeformat3
 msgid "hh:nn"
-msgstr ""
+msgstr "hh:nn"
 
 #: lr_const.stimeformat4
 msgid "h:nn"
-msgstr ""
+msgstr "h:nn"
 
 #: lr_const.sto
 msgid "to"
@@ -2809,7 +2809,7 @@ msgstr ""
 
 #: lr_const.svirtualdataset
 msgid "Virtual Dataset"
-msgstr ""
+msgstr "虚拟Dataset"
 
 #: lr_const.swordbreak
 msgid "Word break"

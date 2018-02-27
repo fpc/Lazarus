@@ -2957,6 +2957,7 @@ components/lazreport/source/addons/addfunction/languages/lr_add_function_const.p
 components/lazreport/source/addons/addfunction/languages/lr_add_function_const.pt_BR.po svneol=native#text/plain
 components/lazreport/source/addons/addfunction/languages/lr_add_function_const.ru.po svneol=native#text/plain
 components/lazreport/source/addons/addfunction/languages/lr_add_function_const.uk.po svneol=native#text/plain
+components/lazreport/source/addons/addfunction/languages/lr_add_function_const.zh_CN.po svneol=native#text/plain
 components/lazreport/source/addons/addfunction/lrAddFunctionLibrary.pas svneol=native#text/pascal
 components/lazreport/source/addons/addfunction/lr_add_function.lpk svneol=native#text/plain
 components/lazreport/source/addons/addfunction/lr_add_function.pas svneol=native#text/pascal
@@ -8279,6 +8280,7 @@ languages/debuggerstrconst.po svneol=native#text/plain
 languages/debuggerstrconst.pt_BR.po svneol=native#text/plain
 languages/debuggerstrconst.ru.po svneol=native#text/plain
 languages/debuggerstrconst.uk.po svneol=native#text/plain
+languages/debuggerstrconst.zh_CN.po svneol=native#text/plain
 languages/lazaruside.af_ZA.po svneol=native#text/plain
 languages/lazaruside.ar.po svneol=native#text/plain
 languages/lazaruside.ca.po svneol=native#text/plain

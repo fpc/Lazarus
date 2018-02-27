@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -18,7 +18,7 @@ msgstr "转换相关的typelibs"
 
 #: activexstrconsts.axcreatepackage
 msgid "Create package"
-msgstr "创建package"
+msgstr "创建包"
 
 #: activexstrconsts.axcreatevisualcomponenttactivexcontainerdescendant
 msgid "Create visual component (TActiveXContainer descendant)"

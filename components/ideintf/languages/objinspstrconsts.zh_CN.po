@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-14 21:18+0800\n"
+"PO-Revision-Date: 2018-02-09 21:59+0800\n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
 "Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
@@ -60,11 +60,11 @@ msgstr "向上移动"
 
 #: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
-msgstr "新建动作"
+msgstr "新动作"
 
 #: objinspstrconsts.cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr "新建标准动作"
+msgstr "新标准动作"
 
 #: objinspstrconsts.cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
@@ -116,7 +116,7 @@ msgstr "删除项目"
 
 #: objinspstrconsts.clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
-msgstr "删除项目 %d \"%s\"?"
+msgstr "删除项目%d \"%s\"?"
 
 #: objinspstrconsts.clbdown
 msgctxt "objinspstrconsts.clbdown"
@@ -138,7 +138,7 @@ msgstr "添加字段"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "DBGrid列编辑器"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
@@ -187,7 +187,7 @@ msgstr "编辑字段..."
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
-msgstr ""
+msgstr "字段%s不能被创建"
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"
@@ -204,11 +204,11 @@ msgstr "字段定义"
 #: objinspstrconsts.fesformcaption
 msgctxt "objinspstrconsts.fesformcaption"
 msgid "New field"
-msgstr "新建字段"
+msgstr "新字段"
 
 #: objinspstrconsts.feskeyfield
 msgid "&Key fields:"
-msgstr ""
+msgstr "Key字段:(&K)"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
@@ -232,7 +232,7 @@ msgstr "不能获得数据集字段列表"
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr "字段列表无效，不能检查重复项"
+msgstr "字段列表无效,不能检查重复项"
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -245,7 +245,7 @@ msgstr "组件名称:(&m)"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
-msgstr ""
+msgstr "&结果字段:"
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
@@ -294,7 +294,7 @@ msgstr "设置值"
 
 #: objinspstrconsts.lisunabletofindparserfortool
 msgid "Unable to find parser for tool \"%s\""
-msgstr ""
+msgstr "不能找到剖析器对于工具\"%s\""
 
 #: objinspstrconsts.lisunabletofindparserwithname
 msgid "Unable to find parser with name \"%s\""
@@ -385,7 +385,7 @@ msgstr "添加字段(&A)"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
-msgstr ""
+msgstr "添加字段从字段定义"
 
 #: objinspstrconsts.oisaddpage
 #, fuzzy
@@ -436,7 +436,7 @@ msgstr "更改Class..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "更改Parent"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -677,7 +677,7 @@ msgstr "对象"
 
 #: objinspstrconsts.oisobjectinspector
 msgid "Object Inspector"
-msgstr "对象观察器"
+msgstr "对象查看器"
 
 #: objinspstrconsts.oisok
 msgid "&OK"
@@ -697,19 +697,19 @@ msgstr "选项"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "向后一个"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "向前一个"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "移动到后面"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "移动到前面"
 
 #: objinspstrconsts.oispages
 msgid "Pages"
@@ -826,15 +826,15 @@ msgstr "设置最大高度=%d,最大宽度=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "使用当前尺寸为最大限制"
 
 #: objinspstrconsts.oissetminconstraints
 msgid "Set MinHeight=%d, MinWidth=%d"
-msgstr ""
+msgstr "设置最小高度=%d,最小宽度=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "使用当前尺寸为最小限制"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
@@ -842,7 +842,7 @@ msgstr "设为默认: %s"
 
 #: objinspstrconsts.oissettodefaulthint
 msgid "Set property value to Default"
-msgstr ""
+msgstr "默认属性值为默认"
 
 #: objinspstrconsts.oisshowalloutputlines
 msgid "Show all output lines"
@@ -1085,11 +1085,11 @@ msgstr "Ctrl+O"
 
 #: objinspstrconsts.oistdactfileopenwithheadline
 msgid "Open with ..."
-msgstr ""
+msgstr "打开带有..."
 
 #: objinspstrconsts.oistdactfileopenwithhint
 msgid "Open with"
-msgstr ""
+msgstr "打开带有"
 
 #: objinspstrconsts.oistdactfilesaveasheadline
 msgid "Save &As ..."
@@ -1180,22 +1180,16 @@ msgid "Test Input"
 msgstr "测试输入"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy
-#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "标识符  %s%s%s 不是一个方法，按取消按钮撤销或按忽略按钮强制执行。"
+msgstr "该标识符\"%s\"不是一个方法.%s按取消撤销,%s按忽略强制执行."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy
-#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "方法 %s%s%s 与此事件(%s)不兼容，按取消按钮撤销或按忽略按钮强制执行。"
+msgstr "该方法\"%s\"与此事件(%s)不兼容.%s按取消撤销,%s按忽略强制执行."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy
-#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "方法 %s%s%s 不属于published，按取消按钮撤销或按忽略按钮强制执行。"
+msgstr "该方法\"%s\"没有published.%s按取消撤销,%s按忽略强制执行."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
@@ -1257,7 +1251,7 @@ msgstr "过滤器名"
 
 #: objinspstrconsts.pirsunit
 msgid "Pascal unit"
-msgstr "Pascal unit"
+msgstr "Pascal单元"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
@@ -1312,7 +1306,7 @@ msgstr "宽度"
 
 #: objinspstrconsts.sccshceditsections
 msgid "Sections Editor ..."
-msgstr ""
+msgstr "节编辑器"
 
 #: objinspstrconsts.sccsiledtadd
 msgid "&Add ..."
@@ -1487,12 +1481,12 @@ msgstr "状态索引:"
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
-msgstr "新建项目"
+msgstr "新项目"
 
 #: objinspstrconsts.sccslvedtnewsubitem
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr "新建子项"
+msgstr "新子项"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
@@ -1605,12 +1599,12 @@ msgstr "加载"
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
-msgstr "新建项目"
+msgstr "新项目"
 
 #: objinspstrconsts.sccstredtnewsubitem
 msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
-msgstr "新建子项"
+msgstr "新子项"
 
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
@@ -1649,11 +1643,11 @@ msgstr "想要分割图片吗？"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr "新建Button"
+msgstr "新Button"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
-msgstr "新建CheckButton"
+msgstr "新CheckButton"
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"
@@ -1677,7 +1671,7 @@ msgstr "插入tab"
 
 #: objinspstrconsts.tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "左移tab"
 
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"

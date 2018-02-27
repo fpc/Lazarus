@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -14,15 +14,15 @@ msgstr ""
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
-msgstr ""
+msgstr "添加Assign方法"
 
 #: codystrconsts.crsaddassignmethod2
 msgid "Add Assign Method ..."
-msgstr ""
+msgstr "添加Assign方法..."
 
 #: codystrconsts.crsaddawithblock
 msgid "Add a \"With\" Block"
-msgstr ""
+msgstr "添加一个\"With\"语句块"
 
 #: codystrconsts.crsaddunittoimplementationusessection
 msgctxt "codystrconsts.crsaddunittoimplementationusessection"
@@ -31,7 +31,7 @@ msgstr ""
 
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
-msgstr ""
+msgstr "添加\"With\"语句块"
 
 #: codystrconsts.crsalreadydefined
 msgid "Already defined"
@@ -43,11 +43,11 @@ msgstr "已经定义在 %s"
 
 #: codystrconsts.crsandmoreidentifiers
 msgid "... and %s more identifiers"
-msgstr ""
+msgstr "...和%s更多的标识符"
 
 #: codystrconsts.crsany
 msgid "Any"
-msgstr ""
+msgstr "任何"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
 msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
@@ -67,7 +67,7 @@ msgstr "通过fpc.cfg"
 
 #: codystrconsts.crscamaddassignmethodtoclass
 msgid "Add Assign method to class %s"
-msgstr ""
+msgstr "添加Assign方法到类%s"
 
 #: codystrconsts.crscamcallinherited
 msgid "Call inherited"
@@ -87,11 +87,11 @@ msgstr "已经存在"
 
 #: codystrconsts.crscaminherited
 msgid "Inherited:"
-msgstr ""
+msgstr "继承的:"
 
 #: codystrconsts.crscaminvalididentifier
 msgid "invalid identifier"
-msgstr ""
+msgstr "无效的标识符"
 
 #: codystrconsts.crscammethod
 msgid "Method:"
@@ -143,23 +143,23 @@ msgstr "公布"
 
 #: codystrconsts.crscamselectmemberstoassign
 msgid "Select members to assign:"
-msgstr ""
+msgstr "选择成员来assign:"
 
 #: codystrconsts.crscamthereisnoinheritedmethod
 msgid "There is no inherited method."
-msgstr ""
+msgstr "这里没有继承的方法."
 
 #: codystrconsts.crscamvar
 msgid "%s var"
-msgstr ""
+msgstr "%s var"
 
 #: codystrconsts.crscamvisibility
 msgid "?visibility?"
-msgstr ""
+msgstr "?可视性?"
 
 #: codystrconsts.crscamwrittenbyproperty
 msgid "%s, written by property %s"
-msgstr ""
+msgstr "%s,属性书写%s"
 
 #: codystrconsts.crscaretoutsideofcode
 msgid "Caret outside of code"
@@ -167,7 +167,7 @@ msgstr ""
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
-msgstr ""
+msgstr "Cheetah编辑器"
 
 #: codystrconsts.crsclose
 msgid "&Close"
@@ -175,15 +175,15 @@ msgstr "关闭(&C)"
 
 #: codystrconsts.crscloseotherpackageandopennew
 msgid "Close other package and open new"
-msgstr ""
+msgstr "关闭其他包和打开新的"
 
 #: codystrconsts.crscodebuffers
 msgid "CodeBuffers"
-msgstr ""
+msgstr "CodeBuffers"
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
-msgstr ""
+msgstr "代码节点信息"
 
 #: codystrconsts.crscodyfindoverloads
 msgid "Cody - Find Overloads"
@@ -191,7 +191,7 @@ msgstr ""
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Identifier Dictionary"
-msgstr ""
+msgstr "标识符字典"
 
 #: codystrconsts.crscogeneral
 msgctxt "codystrconsts.crscogeneral"
@@ -305,7 +305,7 @@ msgstr "错误r: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr ""
+msgstr "错误:光标不在工程单元"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
@@ -321,11 +321,11 @@ msgstr ""
 
 #: codystrconsts.crsexpression
 msgid "Expression"
-msgstr ""
+msgstr "表达式"
 
 #: codystrconsts.crsextendunitpath
 msgid "Extend unit path"
-msgstr ""
+msgstr "展开单元路径"
 
 #: codystrconsts.crsfile
 msgid "File"
@@ -353,7 +353,7 @@ msgstr "过滤器"
 
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
-msgstr ""
+msgstr "找到GDB回溯线(backtrace line)"
 
 #: codystrconsts.crsfindproceduremethodoverloads
 msgid "Find Procedure/Method Overloads"
@@ -361,7 +361,7 @@ msgstr ""
 
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
-msgstr ""
+msgstr "找到GDB回溯源(source)"
 
 #: codystrconsts.crsflags
 msgid "Flags"
@@ -385,7 +385,7 @@ msgstr "帮助(&H)"
 
 #: codystrconsts.crshideabstractmethodsandmethodsofclassinterfaces
 msgid "Hide abstract methods and methods of class interfaces"
-msgstr ""
+msgstr "隐藏抽象方法和类接口方法"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
@@ -401,7 +401,7 @@ msgstr "标识符未找到"
 
 #: codystrconsts.crsidentifiernotfoundinunit
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
-msgstr ""
+msgstr "标识符\"%s\"未找到在单元\"%s\".可能该标识符不存在对于这个平台或者可能标识符被删除/重命名."
 
 #: codystrconsts.crsidewindowdockable
 msgid "IDE window, dockable"
@@ -418,7 +418,7 @@ msgstr ""
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
-msgstr ""
+msgstr "不可能的依赖"
 
 #: codystrconsts.crsin
 msgid "in \"%s\""
@@ -430,7 +430,7 @@ msgstr "不兼容"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
-msgstr ""
+msgstr "在implementation"
 
 #: codystrconsts.crsininterface
 msgid "In interface"
@@ -438,11 +438,11 @@ msgstr "在接口"
 
 #: codystrconsts.crsinsertcallinherited
 msgid "Insert Call Inherited"
-msgstr ""
+msgstr "插入Call Inherited"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert File Contents at Cursor ..."
-msgstr ""
+msgstr "插入文件内容在光标..."
 
 #: codystrconsts.crsinsertint64idyyyyddmmhhnnss
 msgid "Insert int64 ID YYYYDDMMhhnnss"
@@ -450,15 +450,15 @@ msgstr ""
 
 #: codystrconsts.crsjump
 msgid "Jump"
-msgstr "跳到"
+msgstr "跳转到"
 
 #: codystrconsts.crsjumpto
 msgid "&Jump to"
-msgstr "跳到(&J)"
+msgstr "跳转到(&J)"
 
 #: codystrconsts.crsjumpto2
 msgid "Jump to"
-msgstr "跳到"
+msgstr "跳转到"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -474,11 +474,11 @@ msgstr "链接"
 
 #: codystrconsts.crsloaddictionaryafter
 msgid "Load dictionary after %s"
-msgstr ""
+msgstr "加载字典在%s后"
 
 #: codystrconsts.crslocalvariableof
 msgid "Local variable of %s"
-msgstr ""
+msgstr "局部变量关于%s"
 
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
@@ -542,7 +542,7 @@ msgstr "仅方法"
 
 #: codystrconsts.crsonlynonmethods
 msgid "Only non methods"
-msgstr ""
+msgstr "仅非方法"
 
 #: codystrconsts.crsonlyprocedureswithcompatibleparameters
 msgid "Only procedures with compatible parameters"
@@ -582,15 +582,15 @@ msgstr "包\"%s\"未找到.它应该在\"%s\"."
 
 #: codystrconsts.crspackagesunitsidentifiersfile
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
-msgstr ""
+msgstr "包:%s,单元:%s,标识符:%s%s数据库:%s"
 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
-msgstr ""
+msgstr "包带有相同名称"
 
 #: codystrconsts.crsparseerror
 msgid "Parse error"
-msgstr ""
+msgstr "解析错误"
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
@@ -610,7 +610,7 @@ msgstr ""
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditor
 msgid "Please select some code in the Source Editor."
-msgstr ""
+msgstr "请选择一些代码在源代码编辑器"
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
 msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
@@ -618,11 +618,11 @@ msgstr ""
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
-msgstr ""
+msgstr "请指定一个位置"
 
 #: codystrconsts.crspleasespecifyatype
 msgid "Please specify a type"
-msgstr ""
+msgstr "请指定一种类型"
 
 #: codystrconsts.crsppu
 msgid "PPU: %s"
@@ -646,11 +646,11 @@ msgstr "工程输出"
 
 #: codystrconsts.crsprotected
 msgid "Protected"
-msgstr ""
+msgstr "Protected"
 
 #: codystrconsts.crspublic
 msgid "Public"
-msgstr ""
+msgstr "public"
 
 #: codystrconsts.crspublished
 msgid "Published"
@@ -682,7 +682,7 @@ msgstr ""
 
 #: codystrconsts.crssavedictionarynow
 msgid "Save dictionary now"
-msgstr ""
+msgstr "现在保存数据"
 
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
@@ -706,11 +706,11 @@ msgstr "%s秒"
 
 #: codystrconsts.crsselectexpression
 msgid "Select expression"
-msgstr ""
+msgstr "选择表达式"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools Node Info ..."
-msgstr ""
+msgstr "显示CodeTools节点信息..."
 
 #: codystrconsts.crsshowcodydict
 msgid "Show Cody Dictionary for \"%s\""
@@ -726,7 +726,7 @@ msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
-msgstr ""
+msgstr "显示单元/标识符字典..."
 
 #: codystrconsts.crsshowusedppufiles
 msgid "Show Used .ppu Files ..."
@@ -758,7 +758,7 @@ msgstr ""
 
 #: codystrconsts.crstheidentifierisalreadydefined
 msgid "The identifier \"%s\" is already defined."
-msgstr ""
+msgstr "标识符\"%s\" 已经定义"
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
@@ -778,7 +778,7 @@ msgstr ""
 
 #: codystrconsts.crstotal
 msgid "Total"
-msgstr ""
+msgstr "全部"
 
 #: codystrconsts.crstype
 msgid "Type"
@@ -806,7 +806,7 @@ msgstr "单元: %s"
 
 #: codystrconsts.crsunitidentifierdictionary
 msgid "Unit / Identifier Dictionary"
-msgstr ""
+msgstr "单元/标识符字典"
 
 #: codystrconsts.crsunitnameclash
 msgid "Unit name clash"
@@ -814,7 +814,7 @@ msgstr ""
 
 #: codystrconsts.crsunitobjectfiles
 msgid "Unit object files"
-msgstr ""
+msgstr "单元对象文件"
 
 #: codystrconsts.crsunits
 msgid "Units"
@@ -834,15 +834,15 @@ msgstr "Unit静态库"
 
 #: codystrconsts.crsusedby
 msgid "Used by"
-msgstr ""
+msgstr "被使用通过"
 
 #: codystrconsts.crsuseidentifier
 msgid "&Use identifier"
-msgstr ""
+msgstr "使用标识符(&U)"
 
 #: codystrconsts.crsuses
 msgid "Uses"
-msgstr ""
+msgstr "使用"
 
 #: codystrconsts.crsvirtualunit
 msgid "Virtual Unit"
@@ -850,5 +850,5 @@ msgstr "虚拟单元"
 
 #: codystrconsts.crswhere
 msgid "Where"
-msgstr ""
+msgstr "哪里"
 

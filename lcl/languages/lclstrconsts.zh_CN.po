@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-08 20:29+0800\n"
+"PO-Revision-Date: 2018-02-09 21:59+0800\n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
 "Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,11 @@ msgstr "当执行\"%s\":%s%s时发生错误"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
-msgstr "无法找到 HTML 浏览器"
+msgstr "不能找到 HTML 浏览器"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr ""
+msgstr "没有HTML浏览器找到.%s请定义一个在  工具->选项->帮助->帮助选项"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 #, fuzzy,badformat
@@ -56,7 +56,7 @@ msgstr "接受"
 
 #: lclstrconsts.ifsvk_apps
 msgid "application key"
-msgstr "应用程序快捷键"
+msgstr "应用key"
 
 #: lclstrconsts.ifsvk_back
 msgid "Backspace"
@@ -81,7 +81,7 @@ msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_control
 msgid "Control"
-msgstr "Control"
+msgstr "控件(Control)"
 
 #: lclstrconsts.ifsvk_convert
 msgid "Convert"
@@ -353,7 +353,7 @@ msgstr "无法聚焦"
 
 #: lclstrconsts.rscanvasdoesnotallowdrawing
 msgid "Canvas does not allow drawing"
-msgstr "Canvas 不允许画图"
+msgstr "Canvas不允许画图"
 
 #: lclstrconsts.rscaptiontextcolorcaption
 msgid "Caption Text"
@@ -385,7 +385,7 @@ msgstr ""
 
 #: lclstrconsts.rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
-msgstr ""
+msgstr "创建gdb可捕捉的错误:"
 
 #: lclstrconsts.rscursor
 msgid "Cursor"
@@ -459,11 +459,11 @@ msgstr "错误在LCL: "
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
-msgstr "在 %s %s地址 %s%s 框架 %s"
+msgstr ""
 
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr "保存位图时出错。"
+msgstr "保存位图时出错."
 
 #: lclstrconsts.rsexception
 msgid "Exception"
@@ -758,10 +758,8 @@ msgid "No help entries available for this topic"
 msgstr "没有有效的帮助节点"
 
 #: lclstrconsts.rshelpnotfound
-#, fuzzy
-#| msgid "Help not found"
 msgid "No help found for this topic"
-msgstr "未找到帮助"
+msgstr "没有找到关于这个主题的帮助"
 
 #: lclstrconsts.rshelpnotregistered
 msgid "%s: Not registered"
@@ -1141,7 +1139,7 @@ msgstr ""
 
 #: lclstrconsts.rsqtoptionx11btncolor
 msgid "-btn or -button color, sets the default button color."
-msgstr ""
+msgstr "-btn 或 -button color,设置默认button颜色."
 
 #: lclstrconsts.rsqtoptionx11cmap
 msgid "-cmap, causes the application to install a private color map on an 8-bit display."
@@ -1153,7 +1151,7 @@ msgstr ""
 
 #: lclstrconsts.rsqtoptionx11fgcolor
 msgid "-fg or -foreground color, sets the default foreground color."
-msgstr ""
+msgstr "-fg 或 -foreground color,设置默认foreground颜色."
 
 #: lclstrconsts.rsqtoptionx11font
 msgid "-fn or -font font, defines the application font. The font should be specified using an X logical font description."
@@ -1173,7 +1171,7 @@ msgstr ""
 
 #: lclstrconsts.rsqtoptionx11name
 msgid "-name name, sets the application name."
-msgstr ""
+msgstr "-name 名称,设置应用名称."
 
 #: lclstrconsts.rsqtoptionx11ncols
 msgid "-ncols count, limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used."
@@ -1181,7 +1179,7 @@ msgstr ""
 
 #: lclstrconsts.rsqtoptionx11title
 msgid "-title title, sets the application title."
-msgstr ""
+msgstr "-title 标题,设置应用标题."
 
 #: lclstrconsts.rsqtoptionx11visual
 msgid "-visual TrueColor, forces the application to use a TrueColor visual on an 8-bit display."

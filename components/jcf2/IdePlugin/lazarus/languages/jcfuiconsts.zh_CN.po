@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -38,11 +38,11 @@ msgstr "对齐"
 
 #: jcfuiconsts.lisalignassign
 msgid "Assign"
-msgstr ""
+msgstr "Assign"
 
 #: jcfuiconsts.lisalignclassandrecordfields
 msgid "Class and record fields"
-msgstr ""
+msgstr "类和记录字段"
 
 #: jcfuiconsts.lisaligncomments
 msgid "Comments"
@@ -50,15 +50,15 @@ msgstr "注释"
 
 #: jcfuiconsts.lisalignconst
 msgid "Const"
-msgstr ""
+msgstr "常量"
 
 #: jcfuiconsts.lisaligninterfaceonly
 msgid "Interface Only"
-msgstr ""
+msgstr "仅接口"
 
 #: jcfuiconsts.lisalignmaxcolumn
 msgid "Max Column"
-msgstr ""
+msgstr "最大列"
 
 #: jcfuiconsts.lisalignmaxunaligned
 msgid "Max unaligned"
@@ -74,7 +74,7 @@ msgstr ""
 
 #: jcfuiconsts.lisalignmincolumn
 msgid "Min Column"
-msgstr ""
+msgstr "最小列"
 
 #: jcfuiconsts.lisaligntypedefs
 msgid "Type defs"
@@ -82,7 +82,7 @@ msgstr ""
 
 #: jcfuiconsts.lisalignvardeclarations
 msgid "Var declarations"
-msgstr ""
+msgstr "Var声明"
 
 #: jcfuiconsts.lisalignwhattoalign
 msgid "What to Align"
@@ -134,7 +134,7 @@ msgstr ""
 
 #: jcfuiconsts.lisblatstartandendofbeginendblock
 msgid "At start and end of Begin...End block"
-msgstr ""
+msgstr "在Begin...End语句块的开始和结尾"
 
 #: jcfuiconsts.lisblblanklines
 msgid "Blank Lines"
@@ -170,23 +170,23 @@ msgstr "在end和else之间"
 
 #: jcfuiconsts.lisblocksblocks
 msgid "Blocks"
-msgstr ""
+msgstr "语句块"
 
 #: jcfuiconsts.lisblocksblockwithbegin
 msgid "Block with begin"
-msgstr "Block带有begin"
+msgstr "语句块带有begin"
 
 #: jcfuiconsts.lisblocksblockwithoutbegin
 msgid "Block without begin"
-msgstr "Block不带有begin"
+msgstr "语句块不带有begin"
 
 #: jcfuiconsts.lisblockselsebegin
 msgid "Else begin"
-msgstr ""
+msgstr "Else begin"
 
 #: jcfuiconsts.lisblocksuseanewlineinblocksat
 msgid "Use a new line in blocks at:"
-msgstr ""
+msgstr "使用一个新行在语句块在:"
 
 #: jcfuiconsts.lisblremoveblanklines
 msgid "Remove blank lines"
@@ -198,7 +198,7 @@ msgstr ""
 
 #: jcfuiconsts.liscapsanywordanyword
 msgid "Any Word"
-msgstr ""
+msgstr "任意字"
 
 #: jcfuiconsts.liscapsanywordenable
 msgid "Enable"
@@ -218,7 +218,7 @@ msgstr "常量"
 
 #: jcfuiconsts.liscapsdirectives
 msgid "Directives"
-msgstr ""
+msgstr "指令"
 
 #: jcfuiconsts.liscapsenablecapitalisationfixing
 msgid "Enable capitalisation fixing"
@@ -234,7 +234,7 @@ msgstr ""
 
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
-msgstr ""
+msgstr "非标识符"
 
 #: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
 msgid "Set capitalisation on these non-identifiers:"
@@ -242,7 +242,7 @@ msgstr ""
 
 #: jcfuiconsts.liscapsoperators
 msgid "Operators"
-msgstr ""
+msgstr "操作符"
 
 #: jcfuiconsts.liscapsreservedwords
 msgid "Reserved words"
@@ -267,7 +267,7 @@ msgstr "总是"
 
 #: jcfuiconsts.liscaseblockscaseblocks
 msgid "Case Blocks"
-msgstr ""
+msgstr "Case语句块"
 
 #: jcfuiconsts.liscaseblockscasewithbegin
 msgid "Case with begin"
@@ -305,7 +305,7 @@ msgstr "从不"
 
 #: jcfuiconsts.liscaseblocksuseanewlineincaseblocksat
 msgid "Use a new line in Case blocks at:"
-msgstr ""
+msgstr "使用一个新行在Case语句块在:"
 
 #: jcfuiconsts.liscdcompilerdirectives
 msgid "Compiler Directives"
@@ -313,7 +313,7 @@ msgstr "编译器指令"
 
 #: jcfuiconsts.liscdotherplaces
 msgid "Other places"
-msgstr ""
+msgstr "其他地方"
 
 #: jcfuiconsts.liscdstatements
 msgid "Statements"
@@ -381,11 +381,11 @@ msgstr "%s在%s"
 
 #: jcfuiconsts.lisedjcfparseerror
 msgid "JCF Parse error"
-msgstr ""
+msgstr "JCF解析错误"
 
 #: jcfuiconsts.lisednear
 msgid "%s near %s"
-msgstr ""
+msgstr "%s靠近%s"
 
 #: jcfuiconsts.lisedtype
 msgid "Type: %s%s"
@@ -393,15 +393,15 @@ msgstr "类型:%s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsexception
 msgid "Error writing settings file %s:%s%s"
-msgstr ""
+msgstr "错误写入设置文件%s:%s%s"
 
 #: jcfuiconsts.liserrorwritingsettingsfilereadonly
 msgid "Error writing settings file: %s is read only"
-msgstr ""
+msgstr "错误写入设置文件:%s是只读的"
 
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
-msgstr ""
+msgstr "不能查找和替换"
 
 #: jcfuiconsts.lisfindreplacefindandreplace
 msgid "Find and Replace"
@@ -646,15 +646,15 @@ msgstr ""
 
 #: jcfuiconsts.lisreturnsinproperties
 msgid "In properties"
-msgstr ""
+msgstr "在属性"
 
 #: jcfuiconsts.lisreturnsinsertreturns
 msgid "Insert returns"
-msgstr ""
+msgstr "插入返回"
 
 #: jcfuiconsts.lisreturnsinvariabledeclarations
 msgid "In variable declarations"
-msgstr ""
+msgstr "在变量声明"
 
 #: jcfuiconsts.lisreturnsleaveasis
 msgctxt "jcfuiconsts.lisreturnsleaveasis"
@@ -667,15 +667,15 @@ msgstr ""
 
 #: jcfuiconsts.lisreturnsremovereturns
 msgid "Remove returns"
-msgstr ""
+msgstr "移除返回"
 
 #: jcfuiconsts.lisreturnsreturnchars
 msgid "Return chars"
-msgstr ""
+msgstr "返回chars"
 
 #: jcfuiconsts.lisreturnsreturns
 msgid "Returns"
-msgstr ""
+msgstr "返回"
 
 #: jcfuiconsts.lisspacesafteropen
 msgid "After open"
@@ -692,7 +692,7 @@ msgstr "在end前"
 
 #: jcfuiconsts.lisspacesbeforeinexpression
 msgid "Before [ in expression"
-msgstr ""
+msgstr "在[之前 在表达式"
 
 #: jcfuiconsts.lisspacescaselabel
 msgid "Case l&abel"
@@ -704,7 +704,7 @@ msgstr ""
 
 #: jcfuiconsts.lisspacesconstdeclarations
 msgid "C&onst declarations"
-msgstr ""
+msgstr "常量声明(&o)"
 
 #: jcfuiconsts.lisspacesfixspacing
 msgid "Fix &spacing"
@@ -712,7 +712,7 @@ msgstr ""
 
 #: jcfuiconsts.lisspacesfunctionreturntypes
 msgid "&Function return types"
-msgstr ""
+msgstr "函数返回类型(&F)"
 
 #: jcfuiconsts.lisspacesinfunctioncall
 msgid "In function &call"
@@ -762,7 +762,7 @@ msgstr ""
 
 #: jcfuiconsts.lisspacesrecordfields
 msgid "&Record fields"
-msgstr ""
+msgstr "记录字段(&R)"
 
 #: jcfuiconsts.lisspacesspacebeforeclassheritage
 msgid "Space before class &heritage"
@@ -770,7 +770,7 @@ msgstr ""
 
 #: jcfuiconsts.lisspacesspaces
 msgid "Spaces"
-msgstr ""
+msgstr "空格"
 
 #: jcfuiconsts.lisspacesspacesaroundoperators
 msgid "Spaces around &operators"
@@ -814,11 +814,11 @@ msgstr ""
 
 #: jcfuiconsts.listransformaddorremovebeginandendfromsinglestatements
 msgid "Add or Remove &begin and end from single statements"
-msgstr ""
+msgstr "添加或移除&begin和end从单个语句"
 
 #: jcfuiconsts.listransformalphabetic
 msgid "Alphabetic"
-msgstr ""
+msgstr "照字母次序的"
 
 #: jcfuiconsts.listransformbreakoncomment
 msgid "Break on &comment"
@@ -882,7 +882,7 @@ msgstr ""
 
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
-msgstr ""
+msgstr "插入到Implementation"
 
 #: jcfuiconsts.lisusesinsertintointerface
 msgid "Insert into Interface"
@@ -898,7 +898,7 @@ msgstr "替换"
 
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
-msgstr ""
+msgstr "使用"
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"

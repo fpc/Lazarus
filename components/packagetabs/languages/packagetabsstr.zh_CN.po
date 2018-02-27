@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -15,7 +15,7 @@ msgstr ""
 
 #: packagetabsstr.saddtoproject
 msgid "Add To Project"
-msgstr "添加到Project"
+msgstr "添加到工程"
 
 #: packagetabsstr.scloneto
 msgid "Clone To"
@@ -39,7 +39,7 @@ msgstr "新建窗口"
 
 #: packagetabsstr.sopenpackage
 msgid "Open package"
-msgstr "打开package"
+msgstr "打开包"
 
 #: packagetabsstr.sother
 msgid "Other"

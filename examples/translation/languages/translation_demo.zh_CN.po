@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -19,31 +19,31 @@ msgstr "啤酒"
 
 #: stringsunit.rseight
 msgid "Eight"
-msgstr "八"
+msgstr "8"
 
 #: stringsunit.rsfive
 msgid "Five"
-msgstr "五"
+msgstr "5"
 
 #: stringsunit.rsfour
 msgid "Four"
-msgstr "四"
+msgstr "4"
 
 #: stringsunit.rsnine
 msgid "Nine"
-msgstr "九"
+msgstr "9"
 
 #: stringsunit.rsone
 msgid "One"
-msgstr "一"
+msgstr "1"
 
 #: stringsunit.rsseven
 msgid "Seven"
-msgstr "七"
+msgstr "7"
 
 #: stringsunit.rssix
 msgid "Six"
-msgstr "六"
+msgstr "6"
 
 #: stringsunit.rssumofselectednumbers
 msgid "Sum of selected numbers: %s"
@@ -51,7 +51,7 @@ msgstr "所选数字之和是: %s"
 
 #: stringsunit.rsthree
 msgid "Three"
-msgstr "三"
+msgstr "3"
 
 #: stringsunit.rstodayis
 msgctxt "stringsunit.rstodayis"
@@ -60,7 +60,7 @@ msgstr "今天是%s"
 
 #: stringsunit.rstwo
 msgid "Two"
-msgstr "二"
+msgstr "2"
 
 #: stringsunit.rswater
 msgctxt "stringsunit.rswater"

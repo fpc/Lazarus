@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -178,7 +178,7 @@ msgstr "存储库路径"
 
 #: svnclasses.rsrevert
 msgid "Revert"
-msgstr "还原"
+msgstr "重新打开"
 
 #: svnclasses.rsrevision
 msgid "Revision"
@@ -194,7 +194,7 @@ msgstr "设置"
 
 #: svnclasses.rsshowdiff
 msgid "Show diff"
-msgstr "显示diff"
+msgstr "显示不同"
 
 #: svnclasses.rsshowdiffbase
 msgid "Show Diff of Local Changes"

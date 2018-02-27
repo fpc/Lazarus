@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -18,27 +18,27 @@ msgstr "添加终止符"
 
 #: lazdatadeskstr.eoandtermsinbrackets
 msgid "Put brackets around AND Terms"
-msgstr ""
+msgstr "放置括号在AND术语周围"
 
 #: lazdatadeskstr.eolinefeedafterandterm
 msgid "Linefeed after AND terms"
-msgstr ""
+msgstr "换号在AND术语后"
 
 #: lazdatadeskstr.eolinefeedafterfield
 msgid "Linefeed after each field"
-msgstr ""
+msgstr "换号在每个字段后"
 
 #: lazdatadeskstr.eoquotefieldnames
 msgid "Quote field names"
-msgstr ""
+msgstr "引用字段名称"
 
 #: lazdatadeskstr.eoskipforeignkeys
 msgid "Skip foreign keys"
-msgstr ""
+msgstr "跳过foreign keys"
 
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
-msgstr ""
+msgstr "使用OLD前缀在参数位置"
 
 #: lazdatadeskstr.sabortscript
 msgid "Abort the script"
@@ -46,7 +46,7 @@ msgstr ""
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
-msgstr ""
+msgstr "关闭结果"
 
 #: lazdatadeskstr.scolfields
 msgctxt "lazdatadeskstr.scolfields"
@@ -77,13 +77,15 @@ msgstr "确认关闭"
 
 #: lazdatadeskstr.sconnectiondescription
 msgid "Enter a descriptive name for the connection"
-msgstr ""
+msgstr "输入一个描述名称用于该连接"
 
 #: lazdatadeskstr.sconnectionnameexists
 msgid ""
 "There is already a connection named \"%s\"\n"
 "Would you like to override the connection data ?\n"
 msgstr ""
+"这里已经有一个连接命名\"%s\"\n"
+"你想覆盖该连接的数据?\n"
 
 #: lazdatadeskstr.screatecode
 msgid "Create code"
@@ -150,11 +152,11 @@ msgstr ""
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
-msgstr ""
+msgstr "没有字段选择.请选择一些字段"
 
 #: lazdatadeskstr.serrselecttable
 msgid "No table selected. Please select a table"
-msgstr ""
+msgstr "没有table选择.请选择一个table"
 
 #: lazdatadeskstr.serrunknowndirective
 msgid "Unknown directive: %s (args: %s)"
@@ -186,19 +188,19 @@ msgstr "导出data"
 
 #: lazdatadeskstr.sfield
 msgid "Field"
-msgstr ""
+msgstr "字段"
 
 #: lazdatadeskstr.sforeignkey
 msgid "Foreign key"
-msgstr ""
+msgstr "Foreign key"
 
 #: lazdatadeskstr.shintclose
 msgid "Close query result data panel"
-msgstr ""
+msgstr "关闭查询结果数据面板"
 
 #: lazdatadeskstr.shintcreatecode
 msgid "Create pascal code for this data"
-msgstr ""
+msgstr "创建pascal代码用于这个数据"
 
 #: lazdatadeskstr.shintexecute
 msgid "Execute SQL statement"
@@ -234,27 +236,27 @@ msgstr "索引"
 
 #: lazdatadeskstr.sld_actionadddomain
 msgid "New domain"
-msgstr ""
+msgstr "新domain"
 
 #: lazdatadeskstr.sld_actionadddomainh
 msgid "Add a domain to the data dictionary"
-msgstr ""
+msgstr "添加一个domain到数据字典"
 
 #: lazdatadeskstr.sld_actionaddforeignkey
 msgid "New Foreign Key"
-msgstr ""
+msgstr "新Foreign Key"
 
 #: lazdatadeskstr.sld_actionaddforeignkeyh
 msgid "Add a foreign key to the table"
-msgstr ""
+msgstr "添加一个foreign key到table"
 
 #: lazdatadeskstr.sld_actionaddsequence
 msgid "New sequence"
-msgstr ""
+msgstr "新数列"
 
 #: lazdatadeskstr.sld_actionaddsequenceh
 msgid "Add a sequence"
-msgstr ""
+msgstr "添加一个数列"
 
 #: lazdatadeskstr.sld_actionclose
 msgid "&Close"
@@ -278,7 +280,7 @@ msgstr "(&C)复制"
 
 #: lazdatadeskstr.sld_actioncopyconnection
 msgid "&Copy connection"
-msgstr ""
+msgstr "复制连接(&C)"
 
 #: lazdatadeskstr.sld_actioncopyh
 msgid "Copy"
@@ -302,7 +304,7 @@ msgstr "剪切"
 
 #: lazdatadeskstr.sld_actiondeleteconnection
 msgid "&Delete connection"
-msgstr ""
+msgstr "删除连接(&D)"
 
 #: lazdatadeskstr.sld_actiondeleteobject
 msgid "Delete &Object"
@@ -310,7 +312,7 @@ msgstr "删除对象(&O)"
 
 #: lazdatadeskstr.sld_actiondeleteobjecth
 msgid "Delete the currently selected object"
-msgstr ""
+msgstr "删除当前选择对象"
 
 #: lazdatadeskstr.sld_actiondeleterecentdatadict
 msgctxt "lazdatadeskstr.sld_actiondeleterecentdatadict"
@@ -331,7 +333,7 @@ msgstr "生产SQL 文件(&G)"
 
 #: lazdatadeskstr.sld_actiongeneratesqlh
 msgid "Generate SQL statements for the current table"
-msgstr ""
+msgstr "生成SQL声明用于当前table"
 
 #: lazdatadeskstr.sld_actionnew
 msgid "&New"
@@ -347,7 +349,7 @@ msgstr "新建字段(&f)"
 
 #: lazdatadeskstr.sld_actionnewfieldh
 msgid "Create a new field in the current table"
-msgstr ""
+msgstr "创建一个新字段在当前table"
 
 #: lazdatadeskstr.sld_actionnewh
 msgid "Create a new Data Dictionary"
@@ -359,7 +361,7 @@ msgstr "新建索引"
 
 #: lazdatadeskstr.sld_actionnewindexh
 msgid "Add new index to current table"
-msgstr ""
+msgstr "创建新索引到当前table"
 
 #: lazdatadeskstr.sld_actionnewtable
 msgid "New &table"
@@ -379,7 +381,7 @@ msgstr "打开连接(&O)"
 
 #: lazdatadeskstr.sld_actionopenconnectionh
 msgid "Open selected recent connection"
-msgstr ""
+msgstr "打开选择的当前连接"
 
 #: lazdatadeskstr.sld_actionopenh
 msgid "Open a new Data Dictionary"
@@ -423,7 +425,7 @@ msgstr "取消(&C)"
 
 #: lazdatadeskstr.sld_charset
 msgid "Charset"
-msgstr ""
+msgstr "字符集"
 
 #: lazdatadeskstr.sld_connectionlv1
 msgctxt "lazdatadeskstr.sld_connectionlv1"
@@ -432,7 +434,7 @@ msgstr "名称"
 
 #: lazdatadeskstr.sld_connectionlv2
 msgid "Driver"
-msgstr ""
+msgstr "驱动"
 
 #: lazdatadeskstr.sld_connectionlv3
 msgid "Last used"
@@ -446,7 +448,7 @@ msgstr "描述"
 #: lazdatadeskstr.sld_connections
 msgctxt "lazdatadeskstr.sld_connections"
 msgid "Connections"
-msgstr ""
+msgstr "连接"
 
 #: lazdatadeskstr.sld_connectionsdictionaries
 msgid "Connections/Dictionaries"
@@ -460,7 +462,7 @@ msgstr "连接到database"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
-msgstr ""
+msgstr "创建完整table表创建SQL "
 
 #: lazdatadeskstr.sld_createtable
 msgid "Create table"
@@ -486,7 +488,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
-msgstr ""
+msgstr "从连接"
 
 #: lazdatadeskstr.sld_generatesql
 msgid "Generate SQL"
@@ -506,7 +508,7 @@ msgstr "导入/更新数据字典"
 
 #: lazdatadeskstr.sld_indent
 msgid "I&ndent"
-msgstr ""
+msgstr "缩进(&n)"
 
 #: lazdatadeskstr.sld_insert
 msgid "&Insert"
@@ -514,11 +516,11 @@ msgstr "插入(&I)"
 
 #: lazdatadeskstr.sld_keyfields
 msgid "&Key fields"
-msgstr ""
+msgstr "Key字段(&K)"
 
 #: lazdatadeskstr.sld_lazarusdatabasedesktop
 msgid "Lazarus Database Desktop"
-msgstr ""
+msgstr "Lazarus Database桌面"
 
 #: lazdatadeskstr.sld_legacyview
 msgid "Legacy List View"
@@ -531,7 +533,7 @@ msgstr "行长度"
 #: lazdatadeskstr.sld_menuconnections
 msgctxt "lazdatadeskstr.sld_menuconnections"
 msgid "Connections"
-msgstr ""
+msgstr "连接"
 
 #: lazdatadeskstr.sld_menudictionary
 msgid "&Dictionary"
@@ -584,7 +586,7 @@ msgstr "文件名"
 
 #: lazdatadeskstr.sld_recentlv3
 msgid "Last used on"
-msgstr ""
+msgstr "上次使用在"
 
 #: lazdatadeskstr.sld_savefileasfilter
 #, fuzzy
@@ -611,7 +613,7 @@ msgstr "选择所有(&A)"
 
 #: lazdatadeskstr.sld_selectnone
 msgid "Select &none"
-msgstr ""
+msgstr "全部不选(&n)"
 
 #: lazdatadeskstr.sld_selectupdateinsertfields
 msgid "Select/Update/Insert fields"
@@ -639,11 +641,11 @@ msgstr ""
 
 #: lazdatadeskstr.sld_table
 msgid "Ta&ble"
-msgstr ""
+msgstr "Table(&b)"
 
 #: lazdatadeskstr.sld_tableandfields
 msgid "Tables and &Fields"
-msgstr ""
+msgstr "Tables和字段(&F)"
 
 #: lazdatadeskstr.sld_testconnection
 msgid "Test connection"
@@ -659,7 +661,7 @@ msgstr "更新(&U)"
 
 #: lazdatadeskstr.sld_updateexistingtables
 msgid "Update existing tables"
-msgstr ""
+msgstr "更新存在的tables"
 
 #: lazdatadeskstr.sld_username
 msgid "Username"
@@ -675,7 +677,7 @@ msgstr "加载SQL"
 
 #: lazdatadeskstr.snamefor
 msgid "Enter a name for the new %s"
-msgstr ""
+msgstr "输入一个名称用于新%s"
 
 #: lazdatadeskstr.snew
 msgid "New %s"
@@ -691,35 +693,35 @@ msgstr "新建数据字典"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
-msgstr ""
+msgstr "创建新domain"
 
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
-msgstr ""
+msgstr "输入一个名称用于新domain:"
 
 #: lazdatadeskstr.snewfield
 msgid "Create new field in table %s"
-msgstr ""
+msgstr "创建新字段在table%s"
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
-msgstr ""
+msgstr "输入一个名称用于新字段:"
 
 #: lazdatadeskstr.snewforeignkey
 msgid "Create new foreign key in table %s"
-msgstr ""
+msgstr "创建新foreign key在table%s"
 
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
-msgstr ""
+msgstr "输入一个名称用于新foreign key:"
 
 #: lazdatadeskstr.snewindex
 msgid "Create new index on table %s"
-msgstr ""
+msgstr "创建新索引关于table%s"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
-msgstr ""
+msgstr "输入一个名称用于新索引:"
 
 #: lazdatadeskstr.snewobject
 msgid "Create new %s"
@@ -727,11 +729,11 @@ msgstr "创建新的%s"
 
 #: lazdatadeskstr.snewsequence
 msgid "Create new sequence"
-msgstr ""
+msgstr "创建新数列"
 
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
-msgstr ""
+msgstr "输入一个名称用于新数列:"
 
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
@@ -739,7 +741,7 @@ msgstr "创建一个新的table"
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"
-msgstr ""
+msgstr "输入一个名称用于新table:"
 
 #: lazdatadeskstr.snext
 msgid "Next"
@@ -756,7 +758,7 @@ msgstr "数据字典"
 
 #: lazdatadeskstr.snodedomains
 msgid "Domains"
-msgstr ""
+msgstr "Domains"
 
 #: lazdatadeskstr.snodefields
 msgctxt "lazdatadeskstr.snodefields"
@@ -765,7 +767,7 @@ msgstr "字段"
 
 #: lazdatadeskstr.snodeforeignkeys
 msgid "Foreign keys"
-msgstr ""
+msgstr "Foreign keys"
 
 #: lazdatadeskstr.snodeindexes
 msgid "Indexes"
@@ -777,15 +779,15 @@ msgstr "索引字段:"
 
 #: lazdatadeskstr.snodeindexoptions
 msgid "Index options: "
-msgstr ""
+msgstr "索引选项:"
 
 #: lazdatadeskstr.snodesequences
 msgid "Sequences"
-msgstr ""
+msgstr "数列"
 
 #: lazdatadeskstr.snodetabledata
 msgid "Table Data"
-msgstr ""
+msgstr "Table数据"
 
 #: lazdatadeskstr.snodetables
 msgid "Tables"
@@ -811,7 +813,7 @@ msgstr ""
 
 #: lazdatadeskstr.squery
 msgid "Run query"
-msgstr ""
+msgstr "运行查询"
 
 #: lazdatadeskstr.sreadyforsql
 msgid "Ready to execute SQL statements"
@@ -826,8 +828,9 @@ msgid "Retry the statement"
 msgstr ""
 
 #: lazdatadeskstr.srowsaffected
+#, fuzzy,badformat
 msgid "Query executed successfully: %d rows affected."
-msgstr ""
+msgstr "查询成功地执行:％d行受到影响."
 
 #: lazdatadeskstr.ssave
 msgid "Save SQL"
@@ -851,7 +854,7 @@ msgstr ""
 
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
-msgstr ""
+msgstr "选择一个目录带有DBF文件"
 
 #: lazdatadeskstr.sselectedobject
 msgid "Selected object"
@@ -911,5 +914,5 @@ msgstr "值"
 
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
-msgstr ""
+msgstr "一个数据字典是激活的.你想导入到这个数据字典吗?"
 

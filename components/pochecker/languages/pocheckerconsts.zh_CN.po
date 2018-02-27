@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: www.microsystem.studio\n"
+"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -128,27 +128,27 @@ msgstr ""
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
-msgstr ""
+msgstr "检查完全一样的未翻译的值"
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
 msgid "Check for incompatible format arguments"
-msgstr ""
+msgstr "检查不兼容格式参数"
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
 msgid "Check for mismatches in untranslated strings"
-msgstr ""
+msgstr "检查不匹配在未翻译的字符串"
 
 #: pocheckerconsts.scheckmissingidentifiers
 msgid "Check missing identifiers"
-msgstr ""
+msgstr "检查缺少标识符"
 
 #: pocheckerconsts.schecknumberofitems
 msgid "Check number of items"
-msgstr ""
+msgstr "检查项目数量"
 
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr ""
+msgstr "检查翻译/未翻译和模糊字符串的比例"
 
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
@@ -159,12 +159,13 @@ msgid "Copy to clipboard"
 msgstr "复制到剪切板"
 
 #: pocheckerconsts.screatingiconxofy
+#, fuzzy,badformat
 msgid "Creating icon nr. %d of %d"
-msgstr ""
+msgstr "创建icon nr. %d关于%"
 
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
-msgstr ""
+msgstr "测试:%s对%s"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
@@ -172,7 +173,7 @@ msgstr "[行: %d]%s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr ""
+msgstr "该(未翻译)值\"%s\" 被用于超过1个记录:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -180,22 +181,29 @@ msgid ""
 "%s\n"
 "Please close the program\n"
 msgstr ""
+"一个无法恢复的错误发送\n"
+"%s\n"
+"请关闭该程序\n"
 
 #: pocheckerconsts.serroroncreate
 msgid ""
 "Error creating an instance of TPoFamily:\n"
 "%s\n"
 msgstr ""
+"错误创建一个实例关于TPoFamily:\n"
+"%s\n"
 
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
-msgstr ""
+msgstr "错误/警告被报告由%s关于:"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s\n"
 msgstr ""
+"下面不存在文件被移除从列表:\n"
+"%s\n"
 
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
@@ -203,23 +211,23 @@ msgstr ""
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
-msgstr ""
+msgstr "图形化概要"
 
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
-msgstr ""
+msgstr "GUI Po-文件检查工具"
 
 #: pocheckerconsts.sidentifiernotfoundin
 msgid "Identifier [%s] not found in %s"
-msgstr ""
+msgstr "标识符[%s]未找到在%s"
 
 #: pocheckerconsts.signorefuzzytranslations
 msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr ""
+msgstr "忽略翻译的被标记为“模糊不清”字符串"
 
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
-msgstr ""
+msgstr "[行: %d]不兼容 和/或 无效format()参数对于:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -231,7 +239,7 @@ msgstr "[行: %d]"
 
 #: pocheckerconsts.smissingmasteridentifier
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
-msgstr ""
+msgstr "标识符[%s]找到在%s,但是它在%s中不存在"
 
 #: pocheckerconsts.snoerrorsfound
 msgid "No errors found"
@@ -239,15 +247,15 @@ msgstr "没有错误发现"
 
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
-msgstr ""
+msgstr "哪里没有剩余文件来检查."
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
-msgstr ""
+msgstr "这里没有测试选择"
 
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
-msgstr ""
+msgstr "注意:翻译是模糊不清的"
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -255,7 +263,7 @@ msgstr "发现%d错误."
 
 #: pocheckerconsts.snrofitemsmismatch
 msgid "Mismatch in number of items for master and child"
-msgstr ""
+msgstr "不匹配在主项和子项目的数字"
 
 #: pocheckerconsts.snrofitemsmismatchd
 msgid "%s: %d items"
@@ -263,7 +271,7 @@ msgstr "%s: %d项目"
 
 #: pocheckerconsts.snrwarningsfound
 msgid "Found %d warnings."
-msgstr ""
+msgstr "找到%d警告."
 
 #: pocheckerconsts.sopenfail
 msgid ""
@@ -280,6 +288,10 @@ msgid ""
 "in external editor\n"
 "\"%s\"\n"
 msgstr ""
+"不能打开文件:\n"
+"\"%s\"\n"
+"在外部编辑器:\n"
+"\"%s\"?\n"
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
@@ -295,19 +307,25 @@ msgstr ""
 
 #: pocheckerconsts.soriginal
 msgid "Original"
-msgstr ""
+msgstr "原始"
 
 #: pocheckerconsts.spercfuzzy
+#, fuzzy
+#| msgid "%s: %4.1f%% fuzzy strings."
 msgid "%s: %5.1f%% fuzzy strings."
-msgstr ""
+msgstr "%s:%4.1f%%模糊不清的字符串."
 
 #: pocheckerconsts.sperctranslated
+#, fuzzy
+#| msgid "%s: %4.1f%% translated strings."
 msgid "%s: %5.1f%% translated strings."
-msgstr ""
+msgstr "%s:%4.1f%%已翻译的字符串."
 
 #: pocheckerconsts.spercuntranslated
+#, fuzzy
+#| msgid "%s: %4.1f%% untranslated strings."
 msgid "%s: %5.1f%% untranslated strings."
-msgstr ""
+msgstr "%s: %4.1f%%未翻译的字符串."
 
 #: pocheckerconsts.sprocessingtranslationfamily
 msgid "Processing translation family..."
@@ -327,7 +345,7 @@ msgstr ""
 
 #: pocheckerconsts.sresults
 msgid "Results"
-msgstr ""
+msgstr "结果"
 
 #: pocheckerconsts.srunselectedtests
 msgid "&Run Selected Tests"
@@ -342,6 +360,8 @@ msgid ""
 "Error saving file:\n"
 "%s\n"
 msgstr ""
+"保存文件错误:\n"
+"%s\n"
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
@@ -349,7 +369,7 @@ msgstr "扫描文件夹"
 
 #: pocheckerconsts.sscanninginprogress
 msgid "Scanning in progress, please wait ..."
-msgstr ""
+msgstr "扫描在进行中,请等候..."
 
 #: pocheckerconsts.sselectalllistbox
 msgid "Select all files"
@@ -361,23 +381,33 @@ msgstr "选择所有(&A)"
 
 #: pocheckerconsts.sselectbasictests
 msgid "Select &Basic"
-msgstr ""
+msgstr "选择基本的(&B)"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
-msgstr ""
+msgstr "选择测试类型"
 
 #: pocheckerconsts.sshowstatgraph
 msgid "Show statistics graph"
-msgstr ""
+msgstr "显示统计图"
 
 #: pocheckerconsts.sstathint
+#, fuzzy
+#| msgid ""
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
+#| "%d Error(s) in Selected Tests\n"
 msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
 "Fuzzy: %d (%.1f%%)\n"
 "Errors in selected tests: %d\n"
 msgstr ""
+"%3d已翻译的(%3.1f%%)\n"
+"%3d未翻译的(%3.1f%%)\n"
+"%3d模糊不清的(%3.1f%%)\n"
+"%d错误在选项的测试\n"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 msgid "The following %s missing master .po file(s) were removed from the list:"
@@ -389,7 +419,7 @@ msgstr ""
 
 #: pocheckerconsts.stotalerrors
 msgid "Total errors found: %d"
-msgstr ""
+msgstr "全部错误找到:%d"
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
@@ -405,7 +435,7 @@ msgstr ""
 
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
-msgstr ""
+msgstr "全部警告找到:%d"
 
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
@@ -417,7 +447,7 @@ msgstr "翻译"
 
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics per language:"
-msgstr ""
+msgstr "翻译统计每种语言"
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"
@@ -425,11 +455,11 @@ msgstr ""
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
-msgstr ""
+msgstr "不选择所有(&U)"
 
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
-msgstr ""
+msgstr "不选择所有文件"
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"

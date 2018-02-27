@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.6\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
@@ -108,7 +108,7 @@ msgstr "更改描述文件"
 
 #: lazdemsg.serrfpdoc
 msgid "Building failed with exit code %d. Please check log."
-msgstr ""
+msgstr "构建失败 出口代码%d.请检查日志."
 
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
@@ -124,7 +124,7 @@ msgstr "没有节点找到对于包\"%s\""
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr ""
+msgstr "没有父节点找到来插入主题\"%s\""
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
@@ -136,7 +136,7 @@ msgstr "错误"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr ""
+msgstr "未知DOM元素作为父类用于选择元素\"%s\""
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
@@ -379,7 +379,7 @@ msgstr "展开所有"
 
 #: lazdemsg.smenuextra
 msgid "&Extra"
-msgstr ""
+msgstr "附加(&E)"
 
 #: lazdemsg.smenuextrabuild
 msgctxt "lazdemsg.smenuextrabuild"
@@ -610,7 +610,7 @@ msgstr "makeskel程序"
 
 #: lazdemsg.soptdlgmaxrecentused
 msgid "Max. recent used"
-msgstr ""
+msgstr "最大当前使用的"
 
 #: lazdemsg.soptdlgoptions
 msgid "Options"
@@ -618,7 +618,7 @@ msgstr "选项"
 
 #: lazdemsg.soptdlgreopenlastfile
 msgid "Reopen last file on startup"
-msgstr ""
+msgstr "在启动时重新打开上次文件"
 
 #: lazdemsg.soptdlgshowhints
 msgid "Show hints"
@@ -630,7 +630,7 @@ msgstr "跳过空节点当保存时(&S)"
 
 #: lazdemsg.soptdlgstartmaximized
 msgid "Start maximized"
-msgstr ""
+msgstr "开始最大化的"
 
 #: lazdemsg.sotheroptions
 msgid "Other options"
@@ -672,7 +672,7 @@ msgstr "保存(&S)"
 
 #: lazdemsg.ssavebeforebuildquestion
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr ""
+msgstr "你没有保存变更在\"%s\".%s它们应该被保存 以便于可见于构建文件.保存它们?"
 
 #: lazdemsg.sseealso
 msgid "See Also"
@@ -692,7 +692,7 @@ msgstr "选择一些text."
 
 #: lazdemsg.sshortdescription
 msgid "Short"
-msgstr ""
+msgstr "短"
 
 #: lazdemsg.sshowprivatemethods
 msgid "Show p&rivate methods"
@@ -700,11 +700,11 @@ msgstr "显示私有方法(&r)"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr ""
+msgstr "makeskel报告一个错误(%d).无论如何都尝试加载产生的文件?"
 
 #: lazdemsg.sskelerrorwithoutfile
 msgid "makeskel reported an error (%d) and produced no file."
-msgstr ""
+msgstr "makeskel报告一个错误(%d)并且无产生文件."
 
 #: lazdemsg.ssourcescapt
 msgid "Sources"
@@ -720,7 +720,7 @@ msgstr "列"
 
 #: lazdemsg.stableheader
 msgid "Use header row"
-msgstr ""
+msgstr "使用header行"
 
 #: lazdemsg.stablerows
 msgid "Rows"
