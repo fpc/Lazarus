@@ -1246,7 +1246,7 @@ begin
   end;
 
   FreeAndNil(FReport);
-  FReport := TFPReport.Create(nil);
+  FReport := TFPReport.Create(Self);
 
   rs := TFPReportJSONStreamer.Create(nil);
   rs.JSON := lJSON; // rs takes ownership of lJSON
