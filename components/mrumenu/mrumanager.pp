@@ -477,7 +477,10 @@ begin
   With (Sender as TRecentMenuItem) do
     FN:=FileName;
   if (FN<>'') and (OnRecentFile<>Nil) then
+    begin
     OnRecentFile(Self,FN);
+    AddToRecent(FN); // Gets moved to the top
+    end;
 end;
 
 end.
