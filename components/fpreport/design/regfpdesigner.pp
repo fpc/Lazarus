@@ -193,7 +193,7 @@ Var
   Function BandAllowed(B : TFPReportCustomBand) : Boolean;
 
   begin
-    Result:=(B.Name<>'');
+    Result:=(B.Name<>'') and (B<>GetComponent(0));
     if Result and (BT<>[]) then
       Result:=B.ReportBandType in BT;
   end;
