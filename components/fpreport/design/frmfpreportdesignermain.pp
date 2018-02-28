@@ -1016,6 +1016,7 @@ begin
     DatasetD.InitFieldDefs;
     DatasetD.Name:=DesignD.Name;
     DatasetD.Dataset.Name:=DesignD.Name;
+    DatasetD.StartDesigning;    // set designing flag, or OI will not show reference to it.
     FReport.ReportData.AddReportData(DatasetD);
     end;
   FReport.RestoreDataFromNames;

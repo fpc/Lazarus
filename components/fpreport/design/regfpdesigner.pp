@@ -108,7 +108,7 @@ Procedure RegisterFPReportPropEditors;
 
 begin
   RegisterPropertyEditor(TypeInfo(TFPReportData), TFPreportElement, 'Data', TDataComponentPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TFPReportCustomBand), TFPReportCustomBand, 'Child', TChildBandPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFPReportCustomChildBand), TFPReportCustomBand, 'ChildBand', TChildBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataFooterBand), TFPReportCustomBand, 'FooterBand', TDataFooterBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataHeaderBand), TFPReportCustomBand, 'HeaderBand', TDataHeaderBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataBand), TFPReportCustomBand, 'MasterBand', TDataBandPropertyEditor);
