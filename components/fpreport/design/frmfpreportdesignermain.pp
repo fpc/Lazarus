@@ -483,7 +483,7 @@ begin
     AddPageDesign(I+1,Report.Pages[I]);
   ShowReportData;
   ResetObjectInspector;
-
+  Modified:=False;
 end;
 
 procedure TFPReportDesignerForm.CreateReportData;
@@ -627,11 +627,17 @@ end;
 
 procedure TFPReportDesignerForm.SetFileCaption(const AFileName: String);
 
+Var
+  S : String;
+
 begin
   if AFileName='' then
-    Caption:=SCaption+' [new file]'
+    S:=SCaption+' [new file]'
   else
-    Caption:=SCaption+' ['+AFileName+']'
+    S:=SCaption+' ['+AFileName+']';
+  if Modified then
+    S:='*'+S;
+  Caption:=S;
 end;
 
 procedure TFPReportDesignerForm.SetModified(AValue: Boolean);
@@ -644,6 +650,7 @@ begin
   if not Avalue then
     For I:=0 to DesignerCount-1 do
        PageDesigner(i).Objects.Modified:=False;
+  SetFileCaption(FileName);
 end;
 
 procedure TFPReportDesignerForm.MRUMenuManager1RecentFile(Sender: TObject;
@@ -729,6 +736,7 @@ begin
   FReport.AddPage(P);
   FOI.RefreshReportTree;
   PCReport.ActivePage:=AddPageDesign(FReport.PageCount,P);
+  Modified:=True;
 end;
 
 procedure TFPReportDesignerForm.AAddBandExecute(Sender: TObject);
@@ -984,7 +992,7 @@ begin
       begin
       FReportDesignData.Assign(F.Data);
       CreateReportDataSets;
-      FModified:=True;
+      Modified:=True;
       end;
   finally
      F.Free;
@@ -1034,7 +1042,7 @@ begin
   try
     F.Report:=FReport;
     If (F.ShowModal=mrOK) then
-      FModified:=True;
+      Modified:=True;
   finally
      F.Free;
   end;
@@ -1060,7 +1068,7 @@ begin
     F.Variables:=FReport.Variables;
     if (F.ShowModal=mrOK) then
       begin
-      FModified:=True;
+      Modified:=True;
       FReport.Variables:=F.Variables;
       FReportData.RefreshVariables;
       end;
