@@ -156,8 +156,6 @@ type
     constructor Create(AStream: TStream; Full: boolean=false; AllowChangeFuzzyFlag: boolean=true);
     destructor Destroy; override;
     procedure ReadPOText(const Txt: string);
-    procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments,
-                        Context, Flags, PreviousID: string; SetFuzzy: boolean = false; LineNr: Integer = -1); deprecated 'FillItem method should be used instead';
     function Translate(const Identifier, OriginalValue: String): String;
     Property CharSet: String read FCharSet;
     procedure Report;
@@ -1072,37 +1070,6 @@ begin
     FIdentLowVarToItem.Remove(Copy(Result.IdentifierLow, P+1, Length(Result.IdentifierLow)));
   FItems.Delete(Index);
   UpdateCounters(Result, True);
-end;
-
-procedure TPOFile.Add(const Identifier, OriginalValue, TranslatedValue,
-  Comments, Context, Flags, PreviousID: string; SetFuzzy: boolean = false; LineNr: Integer = -1);
-var
-  Item: TPOFileItem;
-  p: Integer;
-begin
-  if (not FAllEntries) and (TranslatedValue='') then exit;
-  Item:=TPOFileItem.Create(lowercase(Identifier),OriginalValue,TranslatedValue);
-  Item.Comments:=Comments;
-  Item.Context:=Context;
-  Item.Flags:=Flags;
-  if SetFuzzy = true then
-    Item.ModifyFlag(sFuzzyFlag, true);
-  Item.PreviousID:=PreviousID;
-  Item.Tag:=FTag;
-  Item.LineNr := LineNr;
-
-  UpdateCounters(Item, False);
-
-  FItems.Add(Item);
-
-  //debugln(['TPOFile.Add Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
-  FIdentifierLowToItem[Item.IdentifierLow]:=Item;
-  P := Pos('.', Identifier);
-  if P>0 then
-    FIdentLowVarToItem.Add(copy(Item.IdentifierLow, P+1, Length(Item.IdentifierLow)), Item);
-
-  if OriginalValue<>'' then
-    FOriginalToItem.Add(OriginalValue,Item);
 end;
 
 procedure TPOFile.UpdateCounters(Item: TPOFileItem; Removed: Boolean);
