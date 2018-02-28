@@ -679,6 +679,8 @@ end;
 procedure TFPReportDesignerForm.MRUMenuManager1RecentFile(Sender: TObject;
   const AFileName: String);
 begin
+  if Not CheckSaved(SOpenReport) then
+    Exit;
   if Assigned(OnOpenReport) then
     begin
     StopDesigning;
