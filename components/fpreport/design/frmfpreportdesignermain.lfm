@@ -371,6 +371,9 @@ object FPReportDesignerForm: TFPReportDesignerForm
       object MISaveReport: TMenuItem
         Action = AFileSave
       end
+      object MISaveAs: TMenuItem
+        Action = AFileSaveAs
+      end
       object MIRecent: TMenuItem
         Caption = 'Recent'
       end
@@ -572,6 +575,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Hint = 'Save the report'
       ImageIndex = 3
       OnExecute = AFileSaveExecute
+      OnUpdate = AFileSaveUpdate
       ShortCut = 16467
     end
     object AFileOpen: TAction
@@ -892,6 +896,12 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Category = 'File'
       Caption = 'Recent'
       Hint = 'Recently used reports'
+    end
+    object AFileSaveAs: TAction
+      Category = 'File'
+      Caption = 'Save as...'
+      OnExecute = AFileSaveAsExecute
+      OnUpdate = AFileSaveAsUpdate
     end
   end
   object SDReport: TSaveDialog

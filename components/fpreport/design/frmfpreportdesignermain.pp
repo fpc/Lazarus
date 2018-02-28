@@ -74,6 +74,7 @@ type
     AAlignVCenter: TAction;
     AAlignBottom: TAction;
     AAlign: TAction;
+    AFileSaveAs: TAction;
     ARecent: TAction;
     AReportData: TAction;
     APreview: TAction;
@@ -99,6 +100,7 @@ type
     ILReport: TImageList;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
+    MISaveAs: TMenuItem;
     MIPreview: TMenuItem;
     MIframeBottom: TMenuItem;
     MIFrameTop: TMenuItem;
@@ -232,6 +234,9 @@ type
     procedure AAlignUpdate(Sender: TObject);
     procedure ADeleteExecute(Sender: TObject);
     procedure ADeleteUpdate(Sender: TObject);
+    procedure AFileSaveAsExecute(Sender: TObject);
+    procedure AFileSaveAsUpdate(Sender: TObject);
+    procedure AFileSaveUpdate(Sender: TObject);
     procedure AFrameExecute(Sender: TObject);
     procedure AFrameUpdate(Sender: TObject);
     procedure ANewExecute(Sender: TObject);
@@ -831,6 +836,28 @@ end;
 procedure TFPReportDesignerForm.ADeleteUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and (CurrentDesigner.Objects.SelectionCount>0);
+end;
+
+procedure TFPReportDesignerForm.AFileSaveAsExecute(Sender: TObject);
+
+Var
+  FN : String;
+
+begin
+  FN:=FileName;
+  FileName:='';
+  if Not SaveReport then
+    FileName:=FN;
+end;
+
+procedure TFPReportDesignerForm.AFileSaveAsUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=Assigned(Report);
+end;
+
+procedure TFPReportDesignerForm.AFileSaveUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=Assigned(Report);
 end;
 
 procedure TFPReportDesignerForm.AFrameExecute(Sender: TObject);
