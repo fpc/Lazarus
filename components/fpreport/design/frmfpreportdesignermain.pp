@@ -951,8 +951,10 @@ begin
     FReport.AddPage(P);
     Report.StartDesigning;
     FOI.RefreshReportTree;
-    Result:=True
+    Result:=True;
     end;
+  if Result then
+    FFileName:='';
 end;
 
 procedure TFPReportDesignerForm.APreviewExecute(Sender: TObject);
