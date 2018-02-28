@@ -1,31 +1,31 @@
 object ReportDataDisplay: TReportDataDisplay
   Left = 0
-  Height = 240
+  Height = 277
   Top = 0
-  Width = 320
-  ClientHeight = 240
-  ClientWidth = 320
+  Width = 327
+  ClientHeight = 277
+  ClientWidth = 327
   TabOrder = 0
   DesignLeft = 658
   DesignTop = 245
   object PCData: TPageControl
     Left = 0
-    Height = 240
+    Height = 277
     Top = 0
-    Width = 320
-    ActivePage = TabSheet1
+    Width = 327
+    ActivePage = TSData
     Align = alClient
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     object TSData: TTabSheet
       Caption = 'Data'
-      ClientHeight = 205
-      ClientWidth = 314
+      ClientHeight = 242
+      ClientWidth = 321
       object TVData: TTreeView
         Left = 0
-        Height = 205
+        Height = 242
         Top = 0
-        Width = 314
+        Width = 321
         Align = alClient
         DragMode = dmAutomatic
         HideSelection = False
@@ -40,8 +40,8 @@ object ReportDataDisplay: TReportDataDisplay
     end
     object TSVariables: TTabSheet
       Caption = 'Variables'
-      ClientHeight = 205
-      ClientWidth = 314
+      ClientHeight = 242
+      ClientWidth = 321
       object LBVariables: TListBox
         Left = 0
         Height = 205
@@ -58,8 +58,8 @@ object ReportDataDisplay: TReportDataDisplay
     end
     object TabSheet1: TTabSheet
       Caption = 'Functions'
-      ClientHeight = 205
-      ClientWidth = 314
+      ClientHeight = 242
+      ClientWidth = 321
       object TVFunctions: TTreeView
         Left = 0
         Height = 205

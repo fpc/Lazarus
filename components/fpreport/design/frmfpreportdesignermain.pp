@@ -1024,6 +1024,7 @@ begin
   FReport.RunReport;
   F:=TFPreportPreviewExport.Create(Self);
   FReport.RenderReport(F);
+  FReport.ClearPreparedReport;
 end;
 
 procedure TFPReportDesignerForm.APreviewUpdate(Sender: TObject);
