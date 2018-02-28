@@ -140,6 +140,7 @@ Type
     procedure UpdatePageParams; virtual;
     procedure Reset;
     procedure CancelOperation;
+    function ShowEditorForElement(aElement: TFPReportElement): Boolean;
     Function AddBand(ABandClass : TFPReportBandClass) : TFPReportCustomBand;
     Procedure AddElement(AElementClass : TFPReportElementClass; Multi : Boolean = False);
     Function SelectObjectsInRectangle(ARect : TRect; ExtendSelection : Boolean) : TSelectResult;
@@ -371,8 +372,10 @@ Var
   C : String;
   R : TRect;
   S : TSize;
+  Opts : TMemoDragDropOptions;
 
 begin
+  Opts:=[];
   O:=FObjects.GetBandObjectAt(Point(X,Y),[goBandHandle]);
   if O=Nil then
     exit;
@@ -389,9 +392,12 @@ begin
     S:=Canvas.TextExtent(C);
     R.Width:=Round(S.Width*1.2);
     R.Height:=Round(S.Height*1.2);
+    Opts:=TMemoDragDrop(Source).Options;
     end;
   DoAddControl(ABand,E,R,False);
   FObjects.SelectElement(E);
+  if mddShowEditor in Opts then
+    ShowEditorForElement(E)
 end;
 
 procedure TFPReportDesignerControl.DDDragOver(Sender, Source: TObject; X,
@@ -1162,33 +1168,41 @@ begin
   Screen.Cursor:=DefaultCursors[aHandlePos];
 end;
 
-procedure TFPReportDesignerControl.DClick(Sender: TObject);
+
+Function TFPReportDesignerControl.ShowEditorForElement(aElement : TFPReportElement) : Boolean;
 
 Var
-  O : TReportObject;
   C : TFPReportElementEditorClass;
   E : TFPReportElementEditor;
 
 begin
+  C:=gElementFactory.FindEditorClassForInstance(AElement);
+  if Assigned(C) then
+    begin
+    E:=C.Create(Self);
+    try
+      E.Element:=AElement;
+      Result:=E.Execute;
+      if Result then
+        begin
+        Objects.ReportChanged;
+        Invalidate;
+        end;
+    finally
+      E.Free;
+    end;
+    end;
+end;
+
+procedure TFPReportDesignerControl.DClick(Sender: TObject);
+
+Var
+  O : TReportObject;
+
+begin
   O:=GetObjectAt(FLastMouseDown,[]);
   if Assigned(O) and O.IsPlainElement then
-    begin
-    C:=gElementFactory.FindEditorClassForInstance(O.Element);
-    if Assigned(C) then
-      begin
-      E:=C.Create(Self);
-      try
-        E.Element:=O.Element;
-        if E.Execute then
-          begin
-          Objects.ReportChanged;
-          Invalidate;
-          end;
-      finally
-        E.Free;
-      end;
-      end;
-    end;
+    ShowEditorForElement(O.Element);
 end;
 
 procedure TFPReportDesignerControl.CancelOperation;

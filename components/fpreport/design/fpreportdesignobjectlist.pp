@@ -150,12 +150,17 @@ Type
   TReportDragDrop = Class(TDragObjectEx);
 
   { TMemoDragDrop }
+  TMemoDragDropOption = (mddShowEditor,mddShowFormatting);
+  TMemoDragDropOptions = Set of TMemoDragDropOption;
 
   TMemoDragDrop = Class(TReportDragDrop)
   private
     FContent: String;
+    FOptions: TMemoDragDropOptions;
   Public
+    Constructor Create(AControl : TControl; AContent : String; AOptions : TMemoDragDropOptions = []);
     Property Content : String Read FContent Write FContent;
+    Property Options : TMemoDragDropOptions Read FOptions Write FOptions;
   end;
 
 Function FindBandType(L :  TFPList; AClass : TClass; Var StartAt : Integer; ExtractResult : Boolean = False) : TFPReportCustomBand;
@@ -216,6 +221,15 @@ begin
     if ExtractResult then
       L.Delete(I);
     end;
+end;
+
+{ TMemoDragDrop }
+
+constructor TMemoDragDrop.Create(AControl: TControl; AContent: String; AOptions: TMemoDragDropOptions);
+begin
+  Inherited Create(AControl);
+  FContent:=AContent;
+  FOptions:=AOptions;
 end;
 
 { TReportObject }
