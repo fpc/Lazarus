@@ -19,7 +19,7 @@ unit regfpdesigner;
 interface
 
 uses
-  fpttf, GraphPropEdits, Classes, SysUtils, dialogs, fpreport, ideintf, propedits, ObjInspStrConsts, frmfpreportmemoedit;
+  fpttf, Graphics, GraphPropEdits, Classes, SysUtils, dialogs, fpreport, ideintf, propedits, ObjInspStrConsts, frmfpreportmemoedit;
 
 Type
 
@@ -31,6 +31,13 @@ Type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
+  { TFPreportColorPropertyEditor }
+
+  TFPreportColorPropertyEditor = Class(TColorPropertyEditor)
+  public
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
   { TReportFontNamePropertyEditor }
 
   TReportFontNamePropertyEditor = class(TFontNamePropertyEditor)
@@ -131,6 +138,11 @@ begin
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataBand), TFPReportCustomBand, 'MasterBand', TDataBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupHeaderBand),TFPReportCustomGroupHeaderBand, 'ParentGroupHeader', TGroupHeaderBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupFooterBand),TFPReportCustomGroupHeaderBand, 'GroupFooter', TGroupFooterBandPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFPReportColor),TFPReportComponent,'Color',TFPreportColorPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFPReportColor),TFPReportComponent,'BackgroundColor',TFPreportColorPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFPReportColor),TFPReportFrame,'Color',TFPreportColorPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFPReportColor),TFPReportFrame,'BackgroundColor',TFPreportColorPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFPReportColor),TFPReportFont,'Color',TFPreportColorPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TFPReportFont), nil,'',TReportFontPropertyEditor);
   RegisterPropertyEditor(TypeInfo(String),TFPReportFont,'Name',TReportFontNamePropertyEditor);
 end;
@@ -148,6 +160,30 @@ begin
   if Assigned(F) then
     N:=F.PostScriptName;
   Result:=N;
+end;
+
+{ TFPreportColorPropertyEditor }
+
+function TFPreportColorPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
+
+Var
+  lclColor : TColor;
+
+begin
+  lclColor:=TFPReportExportCanvas.RGBtoBGR(OrdValue);
+  Result:=inherited OrdValueToVisualValue(lclColor);
+end;
+
+procedure TFPreportColorPropertyEditor.SetValue(const NewValue: ansistring);
+
+var
+  CValue: Longint;
+
+begin
+  if IdentToColor(NewValue, CValue) then
+    SetOrdValue(TFPReportExportCanvas.RGBtoBGR(CValue))
+  else
+    inherited SetValue(NewValue);
 end;
 
 { TReportFontNamePropertyEditor }
