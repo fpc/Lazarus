@@ -953,7 +953,7 @@ type
     procedure ColRowInserted(IsColumn: boolean; index: integer); virtual;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); virtual;
     function  ColRowToOffset(IsCol, Relative: Boolean; Index:Integer;
-                             var StartPos, EndPos: Integer): Boolean;
+                             out StartPos, EndPos: Integer): Boolean;
     function  ColumnIndexFromGridColumn(Column: Integer): Integer;
     function  ColumnFromGridColumn(Column: Integer): TGridColumn;
     procedure ColumnsChanged(aColumn: TGridColumn);
@@ -1265,7 +1265,6 @@ type
     procedure AutoAdjustColumns; virtual;
     procedure BeginUpdate;
     function  CellRect(ACol, ARow: Integer): TRect;
-    function  CellRectValid(ACol, ARow: Integer; out ARect: TRect): Boolean;
     function  CellToGridZone(aCol,aRow: Integer): TGridZone;
     procedure CheckPosition;
     function ClearCols: Boolean;
@@ -3431,18 +3430,13 @@ begin
   end;
 end;
 
-{ Returns a reactagle corresponding to a physical cell[aCol,aRow] }
+// Returns a rectagle corresponding to a physical cell[aCol,aRow]
 function TCustomGrid.CellRect(ACol, ARow: Integer): TRect;
 begin
-  Assert( (ACol<ColCount) and (ARow<RowCount),
-    Format('TCustomGrid.CellRect: ACol (%d) or ARow (%d) out of range.',[ACol,ARow]) );
-  CellRectValid(ACol, ARow, Result);
-end;
-
-function TCustomGrid.CellRectValid(ACol, ARow: Integer; out ARect: TRect): Boolean;
-begin
-  Result := ColRowToOffset(True, True, ACol, ARect.Left, ARect.Right)
-        and ColRowToOffSet(False,True, ARow, ARect.Top, ARect.Bottom);
+  if not (ColRowToOffset(True, True, ACol, Result.Left, Result.Right)
+      and ColRowToOffSet(False,True, ARow, Result.Top, Result.Bottom))
+  then
+    Result:=Rect(0,0,0,0);
 end;
 
 // The visible grid Depends on  TopLeft and ClientWidht,ClientHeight,
@@ -6003,8 +5997,8 @@ end;
   IsCol=true, Index:=100, TopLeft.x:=98, FixedCols:=1, all ColWidths:=20
   Relative => StartPos := WidthfixedCols+WidthCol98+WidthCol99
   not Relative = Absolute => StartPos := WidthCols(0..99) }
-function TCustomGrid.ColRowToOffset(IsCol, Relative: Boolean; Index:Integer;
-  var StartPos, EndPos: Integer): Boolean;
+function TCustomGrid.ColRowToOffset(IsCol, Relative: Boolean; Index: Integer;
+  out StartPos, EndPos: Integer): Boolean;
 var
   Dim: Integer;
 begin
@@ -8255,7 +8249,8 @@ begin
     FEditor.Dispatch(Msg);
 
     // send editor bounds
-    PosValid := CellRectValid(FCol, FRow, CellR);
+    PosValid := ColRowToOffset(True, True, FCol, CellR.Left, CellR.Right)
+            and ColRowToOffSet(False,True, FRow, CellR.Top, CellR.Bottom);
     if not PosValid then // Can't position editor; ensure sane values
       CellR := Rect(0,0,FEditor.Width, FEditor.Height);
 
