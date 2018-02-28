@@ -922,6 +922,8 @@ end;
 
 function TFPReportDesignerForm.SaveReport: Boolean;
 begin
+  if Assigned(FReport) and FReport.Prepared then
+    FReport.ClearPreparedReport;
   Result:=Assigned(OnSaveReport);
   if result then
     OnSaveReport(Self)
