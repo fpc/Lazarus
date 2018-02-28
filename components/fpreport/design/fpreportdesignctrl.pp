@@ -1181,7 +1181,7 @@ begin
         E.Element:=O.Element;
         if E.Execute then
           begin
-          Objects.Modified:=True;
+          Objects.ReportChanged;
           Invalidate;
           end;
       finally

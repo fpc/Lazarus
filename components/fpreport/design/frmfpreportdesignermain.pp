@@ -299,6 +299,7 @@ type
     procedure SetDesignOptions(AValue: TFPReportDesignOptions);
     procedure SetFileCaption(const AFileName: String);
     procedure SetModified(AValue: Boolean);
+    procedure SetModifiedStatus;
   Protected
     procedure MRUMenuManager1RecentFile(Sender: TObject; const AFileName: String);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -368,6 +369,7 @@ ResourceString
   SOpenReport = 'open other report';
   SCloseDesigner = 'close designer';
   SNoSelection = 'No selection';
+  SStatusModified = 'Modified';
   SErrAccessingData = 'Error accessing data for report';
   SErrAccessingDataDetails = 'One or more report data sources failed to open:'+
                              sLineBreak+'%s'+sLineBreak+
@@ -660,8 +662,18 @@ begin
   FModified:=AVAlue;
   if not Avalue then
     For I:=0 to DesignerCount-1 do
-       PageDesigner(i).Objects.Modified:=False;
+       PageDesigner(i).Objects.ResetModified;
+  SetModifiedStatus;
+end;
+
+procedure TFPReportDesignerForm.SetModifiedStatus;
+
+begin
   SetFileCaption(FileName);
+  if GetModified then
+    SBReport.Panels[0].Text:=SStatusModified
+  else
+    SBReport.Panels[0].Text:='';
 end;
 
 procedure TFPReportDesignerForm.MRUMenuManager1RecentFile(Sender: TObject;

@@ -98,10 +98,10 @@ Type
     function  GetSelectionArray(SelSort: TSelectionSort): TReportObjectArray;
     procedure SelectRectInvalid;
     Procedure SelectionChanged; virtual;
-    Procedure ReportChanged; virtual;
   Public
     // Do things
     Procedure LoadFromPage(APage : TFPReportCustomPage); virtual;
+    Procedure ReportChanged; virtual;
     Procedure BeginSelectionUpdate;
     Procedure EndSelectionUpdate;
     Procedure ClearSelection;
@@ -140,7 +140,7 @@ Type
     Property CanvasExport : TFPReportExportCanvas Read FCanvasExport Write FCanvasExport;
     Property OnSelectionChange : TNotifyEvent Read FOnSelectionChange Write FOnSelectionChange;
     Property OnReportChange : TNotifyEvent Read FOnReportChange Write FOnReportChange;
-    Property Modified : Boolean Read FModified Write SetModified;
+    Property Modified : Boolean Read FModified;
     Property Objects[Aindex : Integer] : TReportObject Read GetObject; default;
     Property Elements[AIndex : Integer] : TFPReportElement Read GetElement;
     Property Page : TFPReportCustomPage Read FPage;
@@ -305,7 +305,7 @@ end;
 
 procedure TReportObjectList.ReportChanged;
 begin
-  FModified:=True;
+  SetModified(True);
 end;
 
 procedure TReportObjectList.BeginSelectionUpdate;

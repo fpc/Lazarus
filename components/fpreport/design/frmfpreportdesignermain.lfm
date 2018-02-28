@@ -301,7 +301,6 @@ object FPReportDesignerForm: TFPReportDesignerForm
     Width = 890
     Panels = <    
       item
-        Text = 'Modified'
         Width = 80
       end    
       item
