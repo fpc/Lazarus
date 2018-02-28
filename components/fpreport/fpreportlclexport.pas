@@ -149,6 +149,7 @@ type
     Function    GetElementRect(BandLayout,ElementLayout : TFPReportLayout) : TRect;
     Function    GetElementRect(ABand : TFPReportCustomBand; AElement : TFPReportElement) : TRect;
     Class function RGBtoBGR(const AColor: UInt32): TColor;
+    Class function BGRToRGB(const AColor: TColor): TFPReportColor;
     // Properties
     property    HDPI: integer read FHDPI write FHDPI;
     property    VDPI: integer read FVDPI write FVDPI;
@@ -209,6 +210,16 @@ begin
   R:= GetColorComponent(C);
 //    Alpha := GetColorComponent(C);
   Result:=RGBToColor(R,G,B);
+end;
+
+class function TFPReportExportCanvas.BGRToRGB(const AColor: TColor): TFPReportColor;
+
+var
+  R,G,B : Byte;
+
+begin
+  RedGreenBlue(ColorToRGB(AColor),R,G,B);
+  Result:=RGBToReportColor(R,G,B);
 end;
 
 { THyperLinkList }
@@ -433,7 +444,7 @@ procedure TFPReportExportCanvas.RenderFrame(const ABand: TFPReportCustomBand; co
   const APos: TFPReportPoint; const AWidth, AHeight: TFPReportUnits);
 
 begin
-  RenderFrame(AFrame,CoordToRect(APos,AWidth,AHeight),ABand.Frame.BackgroundColor);
+  RenderFrame(AFrame,CoordToRect(APos,AWidth,AHeight), RGBtoBGR(ABand.Frame.BackgroundColor));
 end;
 
 Type

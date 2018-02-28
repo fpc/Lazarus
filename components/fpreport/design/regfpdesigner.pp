@@ -19,9 +19,24 @@ unit regfpdesigner;
 interface
 
 uses
-  Classes, SysUtils, fpreport, ideintf, propedits, ObjInspStrConsts, frmfpreportmemoedit;
+  fpttf, GraphPropEdits, Classes, SysUtils, dialogs, fpreport, ideintf, propedits, ObjInspStrConsts, frmfpreportmemoedit;
 
 Type
+
+  { TReportFontPropertyEditor }
+
+  TReportFontPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
+  { TReportFontNamePropertyEditor }
+
+  TReportFontNamePropertyEditor = class(TFontNamePropertyEditor)
+  public
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
 
   { TPaperNamePropertyEditor }
 
@@ -104,6 +119,8 @@ Procedure RegisterFPReportPropEditors;
 
 implementation
 
+uses fpreportlclexport;
+
 Procedure RegisterFPReportPropEditors;
 
 begin
@@ -114,8 +131,64 @@ begin
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataBand), TFPReportCustomBand, 'MasterBand', TDataBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupHeaderBand),TFPReportCustomGroupHeaderBand, 'ParentGroupHeader', TGroupHeaderBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupFooterBand),TFPReportCustomGroupHeaderBand, 'GroupFooter', TGroupFooterBandPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(String),TFPReportPageSize,'PaperName',TPaperNamePropertyEditor);
+  RegisterPropertyEditor(ClassTypeInfo(TFPReportFont), nil,'',TReportFontPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(String),TFPReportFont,'Name',TReportFontNamePropertyEditor);
 end;
+
+{ TReportFontPropertyEditor }
+Function FontNameToPostScriptName(N : String) : String;
+
+Var
+  F : TFPFontCacheItem;
+
+begin
+  if (N='default') then
+    N:=ReportDefaultFont;
+  F:=gTTFontCache.Find(N,False,False);
+  if Assigned(F) then
+    N:=F.PostScriptName;
+  Result:=N;
+end;
+
+{ TReportFontNamePropertyEditor }
+
+
+procedure TReportFontNamePropertyEditor.SetValue(const NewValue: ansistring);
+begin
+  inherited SetValue(FontNameToPostScriptName(NewValue));
+end;
+
+procedure TReportFontPropertyEditor.Edit;
+
+var
+  FontDialog: TFontDialog;
+  R : TFPReportFont;
+
+begin
+  FontDialog := TFontDialog.Create(nil);
+  try
+    R:=TFPReportFont(GetObjectValue(TFPReportFont));
+    FontDialog.Font.Name := R.Name;
+    FontDialog.Font.Size:=R.Size;
+    FontDialog.Font.Color:=TFPReportExportCanvas.RGBtoBGR(R.Color);
+    FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
+    if FontDialog.Execute then
+      begin
+      FontDialog.Font.Name := FontNameToPostScriptName(R.Name);
+      FontDialog.Font.Size:=R.Size;
+      FontDialog.Font.Color:=TFPReportExportCanvas.RGBtoBGR(R.Color);
+      end;
+  finally
+    FontDialog.Free;
+  end;
+end;
+
+function TReportFontPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paSubProperties, paDialog, paReadOnly];
+end;
+
+
 
 { TPaperNamePropertyEditor }
 
@@ -133,6 +206,7 @@ function TPaperNamePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result:=[paValueList, paPickList, paAutoUpdate, paSortList];
 end;
+
 
 { TGroupFooterBandPropertyEditor }
 
