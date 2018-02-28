@@ -126,7 +126,6 @@ type
   protected
     FItems: TFPList;// list of TPOFileItem
     FIdentifierLowToItem: TStringToPointerTree; // lowercase identifier to TPOFileItem
-    FIdentLowVarToItem: TStringHashList; // of TPOFileItem
     FOriginalToItem: TStringHashList; // of TPOFileItem
     FCharSet: String;
     FHeader: TPOFileItem;
@@ -134,7 +133,6 @@ type
     FTag: Integer;
     FModified: boolean;
     FHelperList: TStringList;
-    FModuleList: TStringList;
     // New fields
     FPoName: string;
     FNrTranslated: Integer;
@@ -142,7 +140,6 @@ type
     FNrFuzzy: Integer;
     FNrErrors: Integer;
     procedure RemoveTaggedItems(aTag: Integer);
-    procedure RemoveUntaggedModules;
     function Remove(Index: Integer): TPOFileItem;
     procedure UpdateCounters(Item: TPOFileItem; Removed: Boolean);
     // used by pochecker
@@ -169,8 +166,6 @@ type
     procedure FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
       Translation, Comments, Context, Flags, PreviousID: string; LineNr: Integer = -1);
     procedure UpdateTranslation(BasePOFile: TPOFile);
-    procedure ClearModuleList;
-    procedure AddToModuleList(Identifier: string);
     procedure UntagAll;
 
     procedure RemoveIdentifier(const AIdentifier: string);
@@ -679,44 +674,6 @@ end;
 
 { TPOFile }
 
-procedure TPOFile.RemoveUntaggedModules;
-var
-  Module: string;
-  Item,VItem: TPOFileItem;
-  i, p: Integer;
-  VarName: String;
-begin
-  if FModuleList=nil then
-    exit;
-
-  // remove all module references that were not tagged
-  for i:=FItems.Count-1 downto 0 do begin
-    Item := TPOFileItem(FItems[i]);
-    p := pos('.',Item.IdentifierLow);
-    if P=0 then
-      continue; // module not found (?)
-
-    Module :=LeftStr(Item.IdentifierLow, p-1);
-    if (FModuleList.IndexOf(Module)<0) then
-      continue; // module was not modified this time
-
-    if Item.Tag=FTag then
-      continue; // PO item was updated
-
-    // this item is not more in updated modules, delete it
-    FIdentifierLowToItem.Remove(Item.IdentifierLow);
-    // delete it also from VarToItem
-    VarName := RightStr(Item.IdentifierLow, Length(Item.IdentifierLow)-P);
-    VItem := TPoFileItem(FIdentLowVarToItem.Data[VarName]);
-    if (VItem=Item) then
-      FIdentLowVarToItem.Remove(VarName);
-
-    FOriginalToItem.Remove(Item.Original, Item);
-    FItems.Delete(i);
-    Item.Free;
-  end;
-end;
-
 function TPOFile.GetCount: Integer;
 begin
   Result := FItems.Count;
@@ -754,7 +711,6 @@ begin
   FAllowChangeFuzzyFlag:=true;
   FItems:=TFPList.Create;
   FIdentifierLowToItem:=TStringToPointerTree.Create(true);
-  FIdentLowVarToItem:=TStringHashList.Create(true);
   FOriginalToItem:=TStringHashList.Create(true);
 end;
 
@@ -794,8 +750,6 @@ destructor TPOFile.Destroy;
 var
   i: Integer;
 begin
-  if FModuleList<>nil then
-    FModuleList.Free;
   if FHelperList<>nil then
     FHelperList.Free;
   if FHeader<>nil then
@@ -803,7 +757,6 @@ begin
   for i:=0 to FItems.Count-1 do
     TObject(FItems[i]).Free;
   FItems.Free;
-  FIdentLowVarToItem.Free;
   FIdentifierLowToItem.Free;
   FOriginalToItem.Free;
   inherited Destroy;
@@ -1059,15 +1012,10 @@ begin
 end;
 
 function TPOFile.Remove(Index: Integer): TPOFileItem;
-var
-  P: Integer;
 begin
   Result := TPOFileItem(FItems[Index]);
   FOriginalToItem.Remove(Result.Original, Result);
   FIdentifierLowToItem.Remove(Result.IdentifierLow);
-  P := Pos('.', Result.IdentifierLow);
-  if P>0 then
-    FIdentLowVarToItem.Remove(Copy(Result.IdentifierLow, P+1, Length(Result.IdentifierLow)));
   FItems.Delete(Index);
   UpdateCounters(Result, True);
 end;
@@ -1364,7 +1312,6 @@ var
   end;
 
 begin
-  ClearModuleList;
   UntagAll;
   if (SType = stLrj) or (SType = stRsj) then
     // .lrj/.rsj file
@@ -1450,7 +1397,7 @@ begin
     end;
   end;
 
-  RemoveUntaggedModules;
+  RemoveTaggedItems(0);
 end;
 
 procedure TPOFile.SaveToStrings(OutLst: TStrings);
@@ -1636,11 +1583,8 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
 var
   FoundItem: TPOFileItem;
   NewItem: boolean;
-  P: SizeInt;
 begin
   NewItem := false;
-
-  AddToModuleList(Identifier);
 
   FoundItem := TPOFileItem(FOriginalToItem.Data[Original]);
 
@@ -1695,9 +1639,6 @@ begin
 
     //debugln(['TPOFile.FillItem Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
     FIdentifierLowToItem[CurrentItem.IdentifierLow]:=CurrentItem;
-    P := Pos('.', Identifier);
-    if P>0 then
-      FIdentLowVarToItem.Add(copy(CurrentItem.IdentifierLow, P+1, Length(CurrentItem.IdentifierLow)), CurrentItem);
   end;
 
   if Original <> '' then
@@ -1720,31 +1661,11 @@ var
   i: Integer;
 begin
   UntagAll;
-  ClearModuleList;
   for i:=0 to BasePOFile.Items.Count-1 do begin
     Item := TPOFileItem(BasePOFile.Items[i]);
     UpdateItem(Item.IdentifierLow, Item.Original);
   end;
   RemoveTaggedItems(0); // get rid of any item not existing in BasePOFile
-end;
-
-procedure TPOFile.ClearModuleList;
-begin
-  if FModuleList<>nil then
-    FModuleList.Clear;
-end;
-
-procedure TPOFile.AddToModuleList(Identifier: string);
-var
-  p: Integer;
-begin
-  if FModuleList=nil then begin
-    FModuleList := TStringList.Create;
-    FModuleList.Duplicates:=dupIgnore;
-  end;
-  p := pos('.', Identifier);
-  if p>0 then
-    FModuleList.Add(LeftStr(Identifier, P-1));
 end;
 
 procedure TPOFile.UntagAll;
