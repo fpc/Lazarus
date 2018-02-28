@@ -314,7 +314,7 @@ type
     procedure LoadDesignFromFile(const AFilename: string); virtual;
     procedure SaveDesignToFile(AFileName: string); virtual;
     procedure CreateReportData; virtual;
-    procedure CreateReportDataSets; virtual;
+    procedure CreateReportDataSets(Errors : TStrings); virtual;
     procedure SetReport(AValue: TFPReport); virtual;
     procedure ShowReportData; virtual;
     Function DesignerCount : Integer;
@@ -368,6 +368,10 @@ ResourceString
   SOpenReport = 'open other report';
   SCloseDesigner = 'close designer';
   SNoSelection = 'No selection';
+  SErrAccessingData = 'Error accessing data for report';
+  SErrAccessingDataDetails = 'One or more report data sources failed to open:'+
+                             sLineBreak+'%s'+sLineBreak+
+                             'You will need to fix these errors before proceeding.';
 
 Const
   StateNames : Array[TDesignerState] of string = ('','Resetting',
@@ -1028,7 +1032,7 @@ begin
     if F.ShowModal=mrOK then
       begin
       FReportDesignData.Assign(F.Data);
-      CreateReportDataSets;
+      CreateReportDataSets(Nil);
       Modified:=True;
       end;
   finally
@@ -1041,7 +1045,7 @@ begin
   (Sender as TAction).Enabled:=Assigned(FReport);
 end;
 
-procedure TFPReportDesignerForm.CreateReportDataSets;
+procedure TFPReportDesignerForm.CreateReportDataSets(Errors: TStrings);
 
 Var
   I : Integer;
@@ -1058,7 +1062,15 @@ begin
     DesignD:=FReportDesignData[i];
     DatasetD:=TFPReportDatasetData.Create(FDataParent);
     DatasetD.Dataset:=DesignD.CreateDataSet(DatasetD);
-    DatasetD.InitFieldDefs;
+    Try
+      DatasetD.InitFieldDefs;
+    except
+      On E : Exception do
+        If Assigned(Errors) then
+          Errors.Add(Format('Error opening data "%s" : Exception %s with message %s',[DesignD.Name,E.ClassName,E.Message]))
+        else
+          Raise;
+    end;
     DatasetD.Name:=DesignD.Name;
     DatasetD.Dataset.Name:=DesignD.Name;
     DatasetD.StartDesigning;    // set designing flag, or OI will not show reference to it.
@@ -1320,6 +1332,8 @@ var
   rs: TFPReportJSONStreamer;
   fs: TFileStream;
   DD,lJSON: TJSONObject;
+  Errs : TStrings;
+
 begin
   if AFilename = '' then
     Exit;
@@ -1335,7 +1349,7 @@ begin
   StopDesigning;
   FreeAndNil(FReport);
   FReport := TFPReport.Create(Self);
-
+  errs:=nil;
   rs := TFPReportJSONStreamer.Create(nil);
   rs.JSON := lJSON; // rs takes ownership of lJSON
   try
@@ -1343,11 +1357,15 @@ begin
     if Assigned(DD) then
       FReportDesignData.LoadFromJSON(DD);
     // We must do this before the report is loaded, so the pages/bands can find their data
-    CreateReportDataSets;
+    Errs:=TstringList.Create;
+    CreateReportDataSets(Errs);
     FReport.ReadElement(rs);
     FFilename:=AFileName;
+    if Errs.Count>0 then
+      MessageDlg(SErrAccessingData,Format(SErrAccessingDataDetails,[Errs.Text]),mtWarning,[mbOK],'');
   finally
     FreeAndNil(rs);
+    FreeAndNil(Errs);
   end;
 end;
 
