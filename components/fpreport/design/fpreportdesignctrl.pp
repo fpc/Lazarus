@@ -52,6 +52,7 @@ Type
     FMinControlWidth: Integer;
     FObjects: TReportObjectList;
     FOnElementCreated: TOnElementCreatedEvent;
+    FOnReportChanged: TNotifyEvent;
     FOnSelectionChanged: TNotifyEvent;
     FOnStateChange: TNotifyEvent;
     FPage: TFPReportCustomPage;
@@ -160,6 +161,7 @@ Type
     Property Zoom : Single Read FZoom Write SetZoom;
     Property OnElementCreated : TOnElementCreatedEvent Read FOnElementCreated Write FOnElementCreated;
     Property OnSelectionChanged : TNotifyEvent Read FOnSelectionChanged Write FOnSelectionChanged;
+    Property OnReportChanged : TNotifyEvent Read FOnReportChanged Write FOnReportChanged;
     Property OnStateChange : TNotifyEvent Read FOnStateChange Write FOnStateChange;
   end;
 
@@ -1029,6 +1031,8 @@ end;
 procedure TFPReportDesignerControl.DoReportChanged(Sender: TObject);
 begin
   Invalidate;
+  If Assigned(OnReportChanged) then
+    OnReportChanged(Sender);
 end;
 
 procedure TFPReportDesignerControl.DrawCurrentFocusRect(IsClear : Boolean);
@@ -1176,7 +1180,10 @@ begin
       try
         E.Element:=O.Element;
         if E.Execute then
+          begin
+          Objects.Modified:=True;
           Invalidate;
+          end;
       finally
         E.Free;
       end;

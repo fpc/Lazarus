@@ -286,6 +286,7 @@ type
     procedure GetReportDataNames(Sender: TObject; List: TStrings);
     procedure InitialiseData;
 {$ENDIF}
+    procedure DoReportChangedByDesigner(Sender: TObject);
     procedure DoSelectionModifiedByOI(Sender: TObject);
     function GetModified: boolean;
     procedure ActivateDesignerForElement(AElement: TFPReportElement);
@@ -621,6 +622,7 @@ begin
   D.OnElementCreated:=@DoElementCreated;
   D.OnSelectionChanged:=@DoSelectionChanged;
   D.OnStateChange:=@DoStateChange;
+  D.OnReportChanged:=@DoReportChangedByDesigner;
   D.Objects[0].Selected:=True;
   Result:=TS;
 end;
@@ -879,6 +881,12 @@ begin
     else
       CurrentDesigner.Invalidate;
     end;
+  Modified:=True;
+end;
+
+procedure TFPReportDesignerForm.DoReportChangedByDesigner(Sender: TObject);
+begin
+  Modified:=True;
 end;
 
 function TFPReportDesignerForm.SaveReport: Boolean;

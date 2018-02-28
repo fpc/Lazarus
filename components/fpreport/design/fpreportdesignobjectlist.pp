@@ -92,6 +92,7 @@ Type
     function FindNextBand(ABand: TFPReportCustomBand): TFPReportCustomBand;
     function GetElement(AIndex : Integer): TFPReportElement;
     function GetObject(Aindex : Integer): TReportObject;
+    procedure SetModified(AValue: Boolean);
   protected
     procedure MoveResizeRect(Var R: TRect; AOffset: TPoint; ApplyToPos: TResizeHandlePosition);
     function  GetSelectionArray(SelSort: TSelectionSort): TReportObjectArray;
@@ -139,7 +140,7 @@ Type
     Property CanvasExport : TFPReportExportCanvas Read FCanvasExport Write FCanvasExport;
     Property OnSelectionChange : TNotifyEvent Read FOnSelectionChange Write FOnSelectionChange;
     Property OnReportChange : TNotifyEvent Read FOnReportChange Write FOnReportChange;
-    Property Modified : Boolean Read FModified Write FModified;
+    Property Modified : Boolean Read FModified Write SetModified;
     Property Objects[Aindex : Integer] : TReportObject Read GetObject; default;
     Property Elements[AIndex : Integer] : TFPReportElement Read GetElement;
     Property Page : TFPReportCustomPage Read FPage;
@@ -288,6 +289,14 @@ begin
   Result:=Items[Aindex] as TReportObject;
 end;
 
+procedure TReportObjectList.SetModified(AValue: Boolean);
+begin
+  if FModified=AValue then Exit;
+  FModified:=AValue;
+  if AValue and Assigned(OnReportChange) then
+    OnReportChange(Self);
+end;
+
 procedure TReportObjectList.SelectionChanged;
 begin
   BeginSelectionUpdate;
@@ -297,9 +306,6 @@ end;
 procedure TReportObjectList.ReportChanged;
 begin
   FModified:=True;
-  if Assigned(OnReportChange) then
-    OnReportChange(Self);
-
 end;
 
 procedure TReportObjectList.BeginSelectionUpdate;
