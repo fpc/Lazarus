@@ -1,7 +1,7 @@
 object FPReportDesignerForm: TFPReportDesignerForm
-  Left = 623
+  Left = 577
   Height = 725
-  Top = 139
+  Top = 169
   Width = 890
   HorzScrollBar.Page = 599
   HorzScrollBar.Range = 599
@@ -25,7 +25,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
     Left = 240
     Height = 655
     Top = 22
-    Width = 395
+    Width = 384
     ActivePage = TSDesign
     Align = alClient
     TabIndex = 0
@@ -314,40 +314,47 @@ object FPReportDesignerForm: TFPReportDesignerForm
     SimplePanel = False
   end
   inline FReportData: TReportDataDisplay
-    Left = 640
+    Left = 629
     Height = 655
     Top = 22
-    Width = 250
+    Width = 261
     Align = alRight
     ClientHeight = 655
-    ClientWidth = 250
+    ClientWidth = 261
     TabOrder = 5
     inherited PCData: TPageControl
       Height = 655
-      Width = 250
+      Width = 261
       ActivePage = FReportData.TSData
       TabIndex = 0
       inherited TSData: TTabSheet
         ClientHeight = 620
-        ClientWidth = 244
+        ClientWidth = 255
         inherited TVData: TTreeView
           Height = 620
-          Width = 244
+          Width = 255
         end
       end
       inherited TSVariables: TTabSheet
         ClientHeight = 620
-        ClientWidth = 244
-        inherited LBVariables: TListBox
-          Height = 643
+        ClientWidth = 255
+        inherited TVVariables: TTreeView
+          Height = 620
           Width = 244
-          ScrollWidth = 242
+        end
+      end
+      inherited TabSheet1: TTabSheet
+        ClientHeight = 620
+        ClientWidth = 255
+        inherited TVFunctions: TTreeView
+          Height = 620
+          Width = 244
         end
       end
     end
   end
   object Splitter1: TSplitter
-    Left = 635
+    Left = 624
     Height = 655
     Top = 22
     Width = 5

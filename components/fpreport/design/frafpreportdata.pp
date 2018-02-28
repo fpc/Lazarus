@@ -19,7 +19,7 @@ unit frafpreportdata;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, ComCtrls, StdCtrls, fpreport,
+  Classes, SysUtils, FileUtil, Forms, Controls, ComCtrls, StdCtrls, fpreport, fpexprpars,
   fpreportdesignobjectlist;
 
 type
@@ -27,9 +27,9 @@ type
   { TReportDataDisplay }
 
   TReportDataDisplay = class(TFrame)
-    LBVariables: TListBox;
     PCData: TPageControl;
     TabSheet1: TTabSheet;
+    TVVariables: TTreeView;
     TSVariables: TTabSheet;
     TVData: TTreeView;
     TSData: TTabSheet;
@@ -39,9 +39,13 @@ type
     procedure TVDataStartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure TVFunctionsStartDrag(Sender: TObject; var DragObject: TDragObject);
   private
+    FIdentifiers: TFPExprIdentifierDefs;
+    FUserVariables : TTreeNode;
+    FBuiltinVariables : TTreeNode;
     FDataLastDown : TPoint;
     FReport: TFPReport;
     FReportData: TFPReportDataCollection;
+    procedure AddBuiltInVariables(aParent: TTreeNode);
     procedure SetReport(AValue: TFPReport);
   public
     Constructor Create(AOwner : TComponent); override;
@@ -55,12 +59,12 @@ type
 
 implementation
 
-uses fpexprpars;
-
 {$R *.lfm}
 
 resourcestring
   SUnNamedData = 'Unnamed data %d';
+  SBuiltIn = 'Built in';
+  SUserDefined = 'User-defined';
 
 { TReportDataDisplay }
 
@@ -141,14 +145,23 @@ procedure TReportDataDisplay.LBVariablesStartDrag(Sender: TObject;
 Var
   S : String;
   M : TMemoDragDrop;
+  O : TObject;
 
 begin
-  if (LBVariables.ItemIndex<>-1) then
+  if (TVVariables.Selected<>Nil) then
     begin
-    S:=LBVariables.Items[LBVariables.Itemindex];
-    S:='['+S+']';
-    M:=TMemoDragDrop.Create(LBVariables,S,[]);
-    DragObject:=M;
+    O:=TObject(TVVariables.Selected.Data);
+    if Assigned(o) then
+      if (O.InheritsFrom(TFPReportVariable)) then
+        S:=TFPReportVariable(O).Name
+      else if (O).InheritsFrom(TFPExprIdentifierDef) then
+        S:=TFPExprIdentifierDef(O).Name;
+    if (S<>'') then
+      begin
+      S:='['+S+']';
+      M:=TMemoDragDrop.Create(TVVariables,S,[]);
+      DragObject:=M;
+      end;
     end;
 end;
 
@@ -227,10 +240,12 @@ constructor TReportDataDisplay.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FReportData:=TFPReportDataCollection.Create(TFPReportDataItem);
+  FIdentifiers:=TFPExprIdentifierDefs.Create(TFPExprIdentifierDef);
 end;
 
 destructor TReportDataDisplay.Destroy;
 begin
+  FreeAndNil(FIdentifiers);
   FreeAndNil(FReportData);
   inherited Destroy;
 end;
@@ -275,26 +290,54 @@ begin
     end;
 end;
 
+procedure TReportDataDisplay.AddBuiltInVariables(aParent : TTreeNode);
+
+Var
+  V : TFPExprIdentifierDef;
+  I : Integer;
+  N : TTreeNode;
+
+begin
+  if Assigned(Fidentifiers) then
+    FIdentifiers.Clear
+  else
+    FIdentifiers:=TFPExprIdentifierDefs.Create(TFPExprIdentifierDef);
+  if Assigned(FReport) then
+    FReport.AddBuiltinsToExpressionIdentifiers(FIdentifiers);
+  For I:=0 to Fidentifiers.Count-1 do
+    begin
+    V:=FIdentifiers[i];
+    N:=TVVariables.Items.AddChild(aParent,V.Name);
+    N.Data:=V;
+    end;
+end;
+
 procedure TReportDataDisplay.RefreshVariables;
 
 Var
   V : TFPReportVariable;
   I : Integer;
+  N : TTreeNode;
+
 
 begin
-  With LBVariables.Items do
+  With TVVariables.Items do
     try
       BeginUpdate;
       Clear;
       If Not Assigned(FReport) then
         Exit;
+      FUserVariables:=AddChild(Nil,SUserDefined);
+      FBuiltinVariables:=AddChild(Nil,SBuiltIn);
+      AddBuiltInVariables(FBuiltinVariables);
       For I:=0 to FReport.Variables.Count-1 do
         begin
         V:=FReport.Variables[I];
-        AddObject(V.Name,V);
+        N:=AddChild(FUserVariables,V.Name);
+        N.Data:=V;
         end;
     finally
-      BeginUpdate;
+      EndUpdate;
     end;
 
 end;

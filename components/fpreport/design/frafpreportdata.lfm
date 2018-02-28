@@ -42,18 +42,15 @@ object ReportDataDisplay: TReportDataDisplay
       Caption = 'Variables'
       ClientHeight = 242
       ClientWidth = 321
-      object LBVariables: TListBox
+      object TVVariables: TTreeView
         Left = 0
-        Height = 205
+        Height = 242
         Top = 0
-        Width = 314
+        Width = 321
         Align = alClient
         DragMode = dmAutomatic
-        ItemHeight = 0
-        OnStartDrag = LBVariablesStartDrag
-        ScrollWidth = 312
         TabOrder = 0
-        TopIndex = -1
+        OnStartDrag = LBVariablesStartDrag
       end
     end
     object TabSheet1: TTabSheet
