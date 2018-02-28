@@ -179,14 +179,14 @@ Var
   C : TBuiltInCategory;
 
 begin
-  With TVData.Items do
+  With TVFunctions.Items do
     try
       BeginUpdate;
       Clear;
       if not Assigned(Report) then
         exit;
       For C in TBuiltInCategory do
-        CatNodes[C]:=TVFunctions.Items.AddChild(Nil,CatNames[C]);
+        CatNodes[C]:=AddChild(Nil,CatNames[C]);
       For I:=0 to BuiltinIdentifiers.IdentifierCount-1 do
         begin
         ID:=BuiltinIdentifiers.Identifiers[i];
@@ -201,7 +201,7 @@ begin
         If (A<>'') then
           S:=S+'('+A+')';
         S:=S+':'+TypeName(ID.ResultType);
-        N:=TVFunctions.Items.AddChild(CatNodes[ID.Category],S);
+        N:=AddChild(CatNodes[ID.Category],S);
         N.Data:=ID;
         end;
       For C in TBuiltInCategory do
