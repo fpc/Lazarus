@@ -767,9 +767,12 @@ begin
     UpdateActive
   else begin
     c := GetGridColumnFromField(Field);
-    if c>0 then
-      InvalidateCell(C, Row)
-    else
+    if c>0 then begin
+      if EditorMode then
+        RestoreEditor
+      else
+        InvalidateCell(C, Row)
+    end else
       UpdateActive;
   end;
 end;
