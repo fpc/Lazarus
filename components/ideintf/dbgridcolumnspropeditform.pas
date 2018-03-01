@@ -361,8 +361,8 @@ end;
 
 function TDBGridColumnsPropertyEditorForm.GetDataSet: TDataSet;
 begin
-  if (FOwnerPersistent as TDBGrid).DataSource=nil then Exit(nil);
-  Result:=TDBGrid(FOwnerPersistent).DataSource.DataSet;
+  if (FOwnerPersistent as TCustomDBGrid).DataSource=nil then Exit(nil);
+  Result:=TCustomDBGrid(FOwnerPersistent).DataSource.DataSet;
 end;
 
 procedure TDBGridColumnsPropertyEditorForm.SelectInObjectInspector;

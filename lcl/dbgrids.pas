@@ -485,7 +485,6 @@ type
     property Columns: TDBGridColumns read GetColumns write SetColumns;
     property GridStatus: TDBGridStatus read FGridStatus write FGridStatus;
     property Datalink: TComponentDataLink read FDatalink;
-    property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Options: TDBGridOptions read FOptions write SetOptions default
               [dgColumnResize, dgColumnMove, dgTitles, dgIndicator, dgRowLines,
                dgColLines, dgConfirmDelete, dgCancelOnExit, dgTabs, dgEditing,
@@ -534,6 +533,7 @@ type
     property SelectedFieldRect: TRect read GetSelectedFieldRect;
     property LastColumn: TColumn read GetLastColumn;
     property FirstColumn: TColumn read GetFirstColumn;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
   end;
 
   TDBGrid=class(TCustomDBGrid)
