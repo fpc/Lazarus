@@ -5378,11 +5378,9 @@ var
   i: Integer;
   c: Word;
 begin
-  if s='' then begin
-    Result:=s;
-    exit;
-  end;
   len:=length(s) div 2;
+  if len=0 then
+    exit('');
   SetLength(Result,len*3);// UTF-8 is at most 3/2 times the size
   Src:=PWord(Pointer(s));
   Dest:=PChar(Result);
@@ -5410,11 +5408,9 @@ var
   i: Integer;
   c: Word;
 begin
-  if s='' then begin
-    Result:=s;
-    exit;
-  end;
   len:=length(s) div 2;
+  if len=0 then
+    exit('');
   SetLength(Result,len*3);// UTF-8 is at most three times the size
   Src:=PWord(Pointer(s));
   Dest:=PChar(Result);
