@@ -291,10 +291,12 @@ type
     procedure GetReportDataNames(Sender: TObject; List: TStrings);
     procedure InitialiseData;
 {$ENDIF}
+    function CreateNewPage: TFPReportCustomPage;
     procedure DoReportChangedByDesigner(Sender: TObject);
     procedure DoSelectionModifiedByOI(Sender: TObject);
     function GetModified: boolean;
     procedure ActivateDesignerForElement(AElement: TFPReportElement);
+    procedure MaybeAddFirstPage;
     procedure ResetReport;
     procedure SetBandActionTags;
     procedure SetDesignOptions(AValue: TFPReportDesignOptions);
@@ -480,7 +482,10 @@ end;
 procedure TFPReportDesignerForm.FormShow(Sender: TObject);
 begin
   if Assigned(Report) then
+    begin
+    MaybeAddFirstPage;
     DesignReport;
+    end;
   SBReport.Visible:=False;
   SBReport.Visible:=True;
 end;
@@ -746,19 +751,26 @@ begin
   CurrentDesigner.AddElement(TFPReportMemo);
 end;
 
+Function TFPReportDesignerForm.CreateNewPage: TFPReportCustomPage;
+
+begin
+  Result:=gBandFactory.PageClass.Create(FReport);
+  Result.PageSize.PaperName := 'A4';
+  { page margins }
+  Result.Margins.Left := 30;
+  Result.Margins.Top := 20;
+  Result.Margins.Right := 30;
+  Result.Margins.Bottom := 20;
+  Result.StartDesigning;
+end;
+
 procedure TFPReportDesignerForm.AAddPageExecute(Sender: TObject);
 
 Var
   P : TFPReportCustomPage;
 
 begin
-  P:=gBandFactory.PageClass.Create(FReport);
-  P.PageSize.PaperName := 'A4';
-  { page margins }
-  P.Margins.Left := 30;
-  P.Margins.Top := 20;
-  P.Margins.Right := 30;
-  P.Margins.Bottom := 20;
+  P:=CreateNewPage;
   FReport.AddPage(P);
   FOI.RefreshReportTree;
   PCReport.ActivePage:=AddPageDesign(FReport.PageCount,P);
@@ -984,10 +996,21 @@ begin
     DesignReport;
 end;
 
-function TFPReportDesignerForm.NewReport: Boolean;
+Procedure TFPReportDesignerForm.MaybeAddFirstPage;
 
 Var
   P : TFPReportCustomPage;
+
+begin
+  if (FReport.PageCount=0) then
+    begin
+    p:=CreateNewPage;
+    FReport.AddPage(P);
+    end;
+end;
+
+function TFPReportDesignerForm.NewReport: Boolean;
+
 
 begin
   result:=Assigned(OnNewReport);
@@ -997,13 +1020,7 @@ begin
     begin
     StopDesigning;
     ResetReport;
-    p:=gBandFactory.PageClass.Create(FReport);
-    p.PageSize.PaperName := 'A4';
-    p.Margins.Left := 20;
-    p.Margins.Top := 20;
-    p.Margins.Right := 20;
-    p.Margins.Bottom := 20;
-    FReport.AddPage(P);
+    MaybeAddFirstPage;
     Report.StartDesigning;
     FOI.RefreshReportTree;
     Result:=True;
