@@ -6,13 +6,14 @@ interface
 
 uses
   Classes, OpenGLContext, SysUtils, FileUtil, Forms, Controls, Graphics,
-  Dialogs, TAGraph, TASeries, TASources, GL, GLU;
+  Dialogs, ExtCtrls, TAGraph, TASeries, TASources, GL, GLU;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    Bevel1: TBevel;
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
