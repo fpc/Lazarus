@@ -295,6 +295,7 @@ type
     procedure DoSelectionModifiedByOI(Sender: TObject);
     function GetModified: boolean;
     procedure ActivateDesignerForElement(AElement: TFPReportElement);
+    procedure ResetReport;
     procedure SetBandActionTags;
     procedure SetDesignOptions(AValue: TFPReportDesignOptions);
     procedure SetFileCaption(const AFileName: String);
