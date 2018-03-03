@@ -6213,6 +6213,7 @@ resourcestring
   lisRecordedMacros = 'Recorded';
   lisNewMacroName = 'Macro %d';
   lisEditorMacros = 'Editor macros';
+  lisMakeCurrent = 'Current';
   lisPlay = 'Play';
   lisRecord = 'Record';
   lisRepeat = 'Repeat';

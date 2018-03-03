@@ -1414,7 +1414,7 @@ begin
   tbMoveIDE.Caption := lisIDE;
   lbMoveTo.Caption := lisMoveTo + '  '; // Anchors do not work here. Use spaces.
 
-  btnSelect.Caption := lisMenuSelect;
+  btnSelect.Caption := lisMakeCurrent;
   btnRename.Caption := lisRename2;
   btnSetKeys.Caption := lisEditKey;
   btnEdit.Caption   := lisEdit;
