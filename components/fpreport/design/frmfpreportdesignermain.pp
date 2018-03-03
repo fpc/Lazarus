@@ -995,8 +995,7 @@ begin
   else
     begin
     StopDesigning;
-    FreeAndNil(FReport);
-    Report:=TFPReport.Create(Self);
+    ResetReport;
     p:=gBandFactory.PageClass.Create(FReport);
     p.PageSize.PaperName := 'A4';
     p.Margins.Left := 20;
@@ -1344,6 +1343,18 @@ begin
   CurrentDesigner.Objects.ResizeSelection(saNone,0.0,TSizeAdjust((Sender as TACtion).Tag),0.0);
 end;
 
+procedure TFPReportDesignerForm.ResetReport;
+
+begin
+  if Assigned(FReport) and (FReport.Owner=Self) then
+    begin
+    FreeAndNil(FReport);
+    FReport := TFPReport.Create(Self);
+    end
+  else
+    FReport.Clear;
+end;
+
 procedure TFPReportDesignerForm.LoadDesignFromFile(const AFilename: string);
 var
   rs: TFPReportJSONStreamer;
@@ -1364,8 +1375,7 @@ begin
     FreeAndNil(fs);
   end;
   StopDesigning;
-  FreeAndNil(FReport);
-  FReport := TFPReport.Create(Self);
+  ResetReport;
   errs:=nil;
   rs := TFPReportJSONStreamer.Create(nil);
   rs.JSON := lJSON; // rs takes ownership of lJSON
