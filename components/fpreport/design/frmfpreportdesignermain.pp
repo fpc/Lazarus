@@ -888,7 +888,7 @@ end;
 
 procedure TFPReportDesignerForm.AFileSaveUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=Assigned(Report);
+  (Sender as TAction).Enabled:=Assigned(Report) and Modified;
 end;
 
 procedure TFPReportDesignerForm.AFrameExecute(Sender: TObject);
