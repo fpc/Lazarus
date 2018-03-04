@@ -768,8 +768,8 @@ begin
   else begin
     c := GetGridColumnFromField(Field);
     if c>0 then begin
-      if EditorMode then
-        RestoreEditor
+      if EditorMode and (Field=SelectedField) then
+        EditorDoSetValue
       else
         InvalidateCell(C, Row)
     end else
