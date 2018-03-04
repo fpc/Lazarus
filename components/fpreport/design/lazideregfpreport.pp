@@ -85,12 +85,13 @@ procedure Register;
 
 implementation
 
-Uses LResources, frmideselectreportdata;
+Uses regfpdesigner, LResources, frmideselectreportdata;
 
 
 procedure Register;
 
 begin
+  RegisterFPReportPropEditors;
   RegisterComponentEditor(TFPCustomReport,TFPReportComponentEditor);
   RegisterComponentEditor(TFPReportExporter,TFPReportExportComponentEditor);
   RegisterComponentEditor(TFPReportDesigner,TFPReportDesignerComponentEditor);
