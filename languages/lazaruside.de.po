@@ -11699,6 +11699,12 @@ msgstr "Hauptunit ist ein Pascal-Quelltext"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Nehme Pascal an auch ohne .pas/.pp Dateierweiterung"
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "Aktuell"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Erzeuge ausführbare Datei"

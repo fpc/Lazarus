@@ -11987,6 +11987,12 @@ msgstr "Główny moduł jest Źródłem Pascala"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr ""
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "Bieżący"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Utwórz plik wykonywalny"

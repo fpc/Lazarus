@@ -11964,6 +11964,11 @@ msgstr ""
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr ""
 
+#: lazarusidestrconsts.lismakecurrent
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr ""
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Fes executable"

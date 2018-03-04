@@ -11697,6 +11697,12 @@ msgstr "Головний модуль у сирцях Паскаля"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Вважати, що файл містить код на Pascal, навіть якщо він не має розширення .pas/.pp"
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "Поточний"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Створити виконуваний"

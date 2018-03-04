@@ -11694,6 +11694,12 @@ msgstr "メインユニットは Pascal ソース"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "たとえそれが.pas/.pp接尾辞で終わっていなくともPascalと仮定"
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "現在"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "実行ファイルを作成"

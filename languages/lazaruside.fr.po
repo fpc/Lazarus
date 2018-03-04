@@ -11703,6 +11703,12 @@ msgstr "L'unité principale est un code source Pascal"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Supposer du Pascal même s'il ne finit pas par \".pas\" ou \".pp\"."
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "En cours"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Créer un exécutable"

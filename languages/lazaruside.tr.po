@@ -11883,6 +11883,12 @@ msgstr "Ana ünite Pascal kaynağı"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Pascal'ı .pas / .pp son ekiyle bitmese bile varsayın."
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "Geçerli"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Yürütülebilir Dosyayı Yap"

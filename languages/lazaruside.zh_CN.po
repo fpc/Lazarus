@@ -11873,6 +11873,12 @@ msgstr "主单元式Pascal源代码"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr ""
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "当前"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "生成可执行的"

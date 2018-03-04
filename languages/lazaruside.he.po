@@ -12426,6 +12426,12 @@ msgstr "היחידה הראשית היא קוד של פסקל"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr ""
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "נוכחי"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "קובץ ריצה של Make"

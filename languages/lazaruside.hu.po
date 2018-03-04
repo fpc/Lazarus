@@ -11699,6 +11699,12 @@ msgstr "A fő unit pascal forráskód"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Pascal feltételezése még akkor is ha nem .pas/.pp az utótag. "
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "Aktuális"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Futtatható fájl készítése"

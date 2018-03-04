@@ -11612,6 +11612,12 @@ msgstr "Päätiedosto on Pascal-koodia"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Oleta Pascal vaikkei pääte olisi .pas/.pp."
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "Nykyinen"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Make-ohjelma"

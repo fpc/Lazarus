@@ -11722,6 +11722,12 @@ msgstr "Pagrindinis modulis yra Paskalio pirminis kodas"
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Laikyti, kad tai Paskalis, nors jis ir nesibaigia „.pas“ ar „.pp“ galūne."
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "Veikiamasis"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Daryti vykdomąjį failą"

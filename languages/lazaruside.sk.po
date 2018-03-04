@@ -12201,6 +12201,12 @@ msgstr ""
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr ""
 
+#: lazarusidestrconsts.lismakecurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lismakecurrent"
+msgid "Current"
+msgstr "Aktuálny"
+
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Urobiť spustiteľné"
