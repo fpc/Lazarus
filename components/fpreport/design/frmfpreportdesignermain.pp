@@ -1364,13 +1364,18 @@ end;
 procedure TFPReportDesignerForm.ResetReport;
 
 begin
-  if Assigned(FReport) and (FReport.Owner=Self) then
+  if Assigned(FReport) then
     begin
-    FreeAndNil(FReport);
-    FReport := TFPReport.Create(Self);
+    if (FReport.Owner=Self) then
+      begin
+      FreeAndNil(FReport);
+      FReport := TFPReport.Create(Self);
+      end
+    else
+      FReport.Clear;
     end
   else
-    FReport.Clear;
+    FReport := TFPReport.Create(Self);
 end;
 
 procedure TFPReportDesignerForm.LoadDesignFromFile(const AFilename: string);
