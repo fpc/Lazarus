@@ -1379,11 +1379,13 @@ begin
 end;
 
 procedure TFPReportDesignerForm.LoadDesignFromFile(const AFilename: string);
+
 var
   rs: TFPReportJSONStreamer;
   fs: TFileStream;
   DD,lJSON: TJSONObject;
   Errs : TStrings;
+  OldName : TComponentName;
 
 begin
   if AFilename = '' then
@@ -1399,6 +1401,7 @@ begin
   end;
   StopDesigning;
   ResetReport;
+  OldName:=FReport.Name;
   errs:=nil;
   rs := TFPReportJSONStreamer.Create(nil);
   rs.JSON := lJSON; // rs takes ownership of lJSON
@@ -1407,9 +1410,11 @@ begin
     if Assigned(DD) then
       FReportDesignData.LoadFromJSON(DD);
     // We must do this before the report is loaded, so the pages/bands can find their data
-    Errs:=TstringList.Create;
+    Errs:=TStringList.Create;
     CreateReportDataSets(Errs);
     FReport.ReadElement(rs);
+    if (FReport.Owner<>Self) and (OldName<>'') then
+      FReport.Name:=OldName;
     FFilename:=AFileName;
     if Errs.Count>0 then
       MessageDlg(SErrAccessingData,Format(SErrAccessingDataDetails,[Errs.Text]),mtWarning,[mbOK],'');
