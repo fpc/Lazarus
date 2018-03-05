@@ -32,6 +32,8 @@ type
 
   TFPReportPreviewForm = class(TForm)
     AClose: TAction;
+    ALast: TAction;
+    AFirst: TAction;
     APrint: TAction;
     AExportPDF: TAction;
     AZoomReset: TAction;
@@ -49,13 +51,17 @@ type
     PBottom: TPanel;
     PMExport: TPopupMenu;
     SBPrevious: TSpeedButton;
+    SBPrevious1: TSpeedButton;
     ScrollBox1: TScrollBox;
     SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
     TBPreview: TToolBar;
     TBClose: TToolButton;
     TBExport: TToolButton;
     TBPDF: TToolButton;
     TBPrint: TToolButton;
+    TBFirst: TToolButton;
+    TBLast: TToolButton;
     ToolButton3: TToolButton;
     TBPrevious: TToolButton;
     TBNext: TToolButton;
@@ -67,6 +73,10 @@ type
     procedure AExportExecute(Sender: TObject);
     procedure AExportPDFExecute(Sender: TObject);
     procedure AExportPDFUpdate(Sender: TObject);
+    procedure AFirstExecute(Sender: TObject);
+    procedure AFirstUpdate(Sender: TObject);
+    procedure ALastExecute(Sender: TObject);
+    procedure ALastUpdate(Sender: TObject);
     procedure ANextExecute(Sender: TObject);
     procedure ANextUpdate(Sender: TObject);
     procedure APreviousExecute(Sender: TObject);
@@ -176,6 +186,26 @@ end;
 procedure TFPReportPreviewForm.AExportPDFUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=ReportExportManager.FindExporter(PDFExport)<>Nil;
+end;
+
+procedure TFPReportPreviewForm.AFirstExecute(Sender: TObject);
+begin
+  PageIndex:=0;
+end;
+
+procedure TFPReportPreviewForm.AFirstUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=PageIndex>0;
+end;
+
+procedure TFPReportPreviewForm.ALastExecute(Sender: TObject);
+begin
+  PageIndex:=ReportPages.Count-1;
+end;
+
+procedure TFPReportPreviewForm.ALastUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=PageIndex<ReportPages.Count-1;
 end;
 
 procedure TFPReportPreviewForm.ANextExecute(Sender: TObject);
