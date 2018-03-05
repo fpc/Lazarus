@@ -73,6 +73,8 @@ Type
   { TReportBandPropertyEditor }
 
   TReportBandPropertyEditor = class(TReportComponentPropertyEditor)
+  protected
+    function BandAllowed(B: TFPReportCustomBand): Boolean; virtual;
   Public
     Function BandTypes : TFPReportBandTypes; virtual;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -83,6 +85,7 @@ Type
 
   TChildBandPropertyEditor = Class(TReportBandPropertyEditor)
   Public
+    function BandAllowed(B: TFPReportCustomBand): Boolean; override;
     Function BandTypes : TFPReportBandTypes; override;
   end;
 
@@ -281,6 +284,29 @@ end;
 
 { TChildBandPropertyEditor }
 
+function TChildBandPropertyEditor.BandAllowed(B: TFPReportCustomBand): Boolean;
+
+Var
+  P : TFPReportCustomPage;
+  CB : TFPReportCustomBand;
+  I : Integer;
+
+begin
+  Result:=inherited BandAllowed(B);
+  CB:=TFPReportCustomBand(GetComponent(0));
+  If Result then
+    begin
+    P:=GetPage;
+    I:=P.BandCount-1;
+    While Result and (I>=0) do
+      begin
+      Result:=(P.Bands[i]=CB) or (P.Bands[i].ChildBand<>B);
+      Dec(I)
+      end;
+
+    end;
+end;
+
 function TChildBandPropertyEditor.BandTypes: TFPReportBandTypes;
 begin
   Result:=[btChild];
@@ -293,24 +319,27 @@ begin
   Result:=[]
 end;
 
+Function TReportBandPropertyEditor.BandAllowed(B : TFPReportCustomBand) : Boolean;
+
+Var
+  BT : TFPReportBandTypes;
+
+begin
+  BT:=BandTypes;
+  Result:=(B.Name<>'') and (B<>GetComponent(0));
+  if Result and (BT<>[]) then
+    Result:=B.ReportBandType in BT;
+end;
+
 procedure TReportBandPropertyEditor.GetValues(Proc: TGetStrProc);
 
 Var
   P : TFPReportCustomPage;
   I : Integer;
-  BT : TFPReportBandTypes;
 
-  Function BandAllowed(B : TFPReportCustomBand) : Boolean;
-
-  begin
-    Result:=(B.Name<>'') and (B<>GetComponent(0));
-    if Result and (BT<>[]) then
-      Result:=B.ReportBandType in BT;
-  end;
 
 begin
   P:=GetPage;
-  BT:=BandTypes;
   proc(oisNone);
   if Assigned(P) then
     For I:=0 to P.BandCount-1 do
