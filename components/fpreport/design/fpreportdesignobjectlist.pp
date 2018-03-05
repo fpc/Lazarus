@@ -307,8 +307,6 @@ procedure TReportObjectList.SetModified(AValue: Boolean);
 begin
   if FModified=AValue then Exit;
   FModified:=AValue;
-  if AValue and Assigned(OnReportChange) then
-    OnReportChange(Self);
 end;
 
 procedure TReportObjectList.SelectionChanged;
@@ -320,6 +318,8 @@ end;
 procedure TReportObjectList.ReportChanged;
 begin
   SetModified(True);
+  if Assigned(OnReportChange) then
+    OnReportChange(Self);
 end;
 
 procedure TReportObjectList.BeginSelectionUpdate;

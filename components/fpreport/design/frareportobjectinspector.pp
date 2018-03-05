@@ -55,6 +55,7 @@ type
   public
     Procedure UpdateSelection;
     procedure RefreshReportTree;
+    Procedure RefreshOI;
     Procedure SelectControls(AList : TReportObjectList);
     Property Objectlist : TReportObjectList Read FList;
     Property ShowReportTree : Boolean Read GetSRT Write SetSRT;
@@ -223,6 +224,11 @@ begin
       EndUpdate;
       IgnoreSelectionChange:=False;
     end;
+end;
+
+procedure TObjectInspectorFrame.RefreshOI;
+begin
+  PGReport.RefreshPropertyValues;
 end;
 
 procedure TObjectInspectorFrame.SetReport(AValue: TFPReport);

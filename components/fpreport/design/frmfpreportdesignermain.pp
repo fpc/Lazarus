@@ -944,6 +944,7 @@ end;
 
 procedure TFPReportDesignerForm.DoReportChangedByDesigner(Sender: TObject);
 begin
+  FOI.RefreshOI;
   Modified:=True;
 end;
 
