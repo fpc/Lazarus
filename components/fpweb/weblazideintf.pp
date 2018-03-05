@@ -620,7 +620,7 @@ begin
     +'{$ifdef unix}'+le
     +'  cthreads,'+le
     +'{$endif}'+le
-    +'  httpd,fpApache;'+le
+    +'  httpd, custapache, fpApache;'+le
     +le
     +'Const'+le
     +le
