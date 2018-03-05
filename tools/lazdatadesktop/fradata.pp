@@ -25,6 +25,8 @@ type
     { private declarations }
     FTableName : String;
     FDataset : TDataset;
+    function GetDisplayMemoText: Boolean;
+    procedure SetDisplayMemoText(AValue: Boolean);
   public
     { public declarations }
     procedure Checkbuttons;
@@ -42,6 +44,7 @@ type
     Procedure ExportData;
     Procedure CreateCode;
     Property ShowExtraButtons : Boolean Read GetExtra Write SetExtra;
+    Property DisplayMemoText : Boolean Read GetDisplayMemoText Write SetDisplayMemoText;
   end;
 
 implementation
@@ -65,6 +68,22 @@ procedure TDataFrame.DoCode(Sender : TObject);
 
 begin
   CreateCode;
+end;
+
+function TDataFrame.GetDisplayMemoText: Boolean;
+begin
+  result := (dgDisplayMemoText in FDBGrid.Options);
+end;
+
+procedure TDataFrame.SetDisplayMemoText(AValue: Boolean);
+begin
+  If AValue <> DisplayMemoText then
+    begin
+    If AValue then
+      FDBGrid.Options := FDBGrid.Options + [dgDisplayMemoText]
+    else
+      FDBGrid.Options := FDBGrid.Options - [dgDisplayMemoText];
+    end;
 end;
 
 function TDataFrame.GetExtra: Boolean;

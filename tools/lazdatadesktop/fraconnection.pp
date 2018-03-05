@@ -404,6 +404,7 @@ Var
 begin
   ClearDisplay;
   P:=TDataFrame.Create(Self);
+  P.DisplayMemoText := true; // TODO: implement a global option?
   P.TableName:=ATableName;
   P.Parent:=FDisplay;
   P.Align:=alClient;
