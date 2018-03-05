@@ -244,6 +244,7 @@ begin
     F.AutoRun:=True;
     F.Report:=Report;
     F.Execute;
+    F.Report.ClearPreparedReport;
   finally
     F.Free;
   end;
@@ -267,6 +268,7 @@ begin
     F.Options:=AllReportDesignOptions-[rdoManageData];
     F.ModalWindow:=True;
     F.Execute;
+    F.Report.ClearPreparedReport;
     Designer.Modified;
   finally
     F.Free;
