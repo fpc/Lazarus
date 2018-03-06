@@ -704,6 +704,7 @@ begin
     if I>=Count then
       I:=Count-1;
     end;
+  ReportChanged;
   if (Result<>odrPage) then
     SelectionChanged;
 end;
