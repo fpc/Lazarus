@@ -325,8 +325,6 @@ object FPReportDesignerForm: TFPReportDesignerForm
     inherited PCData: TPageControl
       Height = 655
       Width = 261
-      ActivePage = FReportData.TSData
-      TabIndex = 0
       inherited TSData: TTabSheet
         ClientHeight = 620
         ClientWidth = 255

@@ -481,13 +481,7 @@ end;
 
 procedure TFPReportDesignerForm.FormShow(Sender: TObject);
 begin
-  if Assigned(Report) then
-    begin
-    MaybeAddFirstPage;
-    DesignReport;
-    end;
-  SBReport.Visible:=False;
-  SBReport.Visible:=True;
+  SBReport.Refresh;
 end;
 
 procedure TFPReportDesignerForm.DesignReport;
@@ -496,6 +490,7 @@ Var
   I : Integer;
 
 begin
+  MaybeAddFirstPage;
   Report.StartDesigning;
   For I:=0 to Report.PageCount-1 do
     AddPageDesign(I+1,Report.Pages[I]);
