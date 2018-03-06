@@ -102,6 +102,7 @@ begin
   J:=report as TFPJSONReport;
   J.DesignTimeJSON.Clear;
   J.SavetoJSON(J.DesignTimeJSON);
+  (Sender as TFPReportDesignerForm).ResetModified;
 end;
 
 procedure TFPReportDesigner.ConfigDesigner(F : TFPReportDesignerForm);

@@ -325,6 +325,7 @@ type
     function PageDesigner(Aindex : Integer) : TFPReportDesignerControl;
     Property Modified : Boolean Read GetModified Write SetModified;
   public
+    procedure ResetModified; virtual;
     procedure DesignReport; virtual;
     procedure StopDesigning; virtual;
     procedure PreviewReport; virtual;
@@ -336,7 +337,7 @@ type
     Property FileName : String Read FFileName Write FFileName;
     Property ReportDesignData : TDesignReportDataCollection Read FReportDesignData;
     Property DesignOptions : TFPReportDesignOptions Read FDesignOptions Write SetDesignOptions;
-    // If these are set, they override the default handling.
+    // If these are set, they override the default handling. You must set the modified
     Property OnSaveReport : TNotifyEvent Read FOnSaveReport Write FOnSaveReport;
     Property OnNewReport : TNotifyEvent Read FOnNewReport Write FOnNewReport;
     Property OnOpenReport : TNotifyEvent Read FOnOpenReport Write FOnOpenReport;
@@ -739,6 +740,11 @@ begin
     Result:=(PCReport.Pages[AIndex] as TPageTabSheet).Designer
   else
     Result:=Nil;
+end;
+
+procedure TFPReportDesignerForm.ResetModified;
+begin
+  Modified:=False;
 end;
 
 procedure TFPReportDesignerForm.AAddMemoExecute(Sender: TObject);
