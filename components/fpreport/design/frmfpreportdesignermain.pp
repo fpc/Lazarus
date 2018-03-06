@@ -332,6 +332,7 @@ type
     function NewReport: Boolean; virtual;
     Function SaveReport : Boolean; virtual;
     function OpenReport: Boolean; virtual;
+    function ValidateReport: Boolean;
     procedure DoElementCreated(Sender: TObject; AElement: TFPReportElement);
     Property Report : TFPReport Read FReport Write SetReport;
     Property FileName : String Read FFileName Write FFileName;
@@ -378,6 +379,9 @@ ResourceString
   SErrAccessingDataDetails = 'One or more report data sources failed to open:'+
                              sLineBreak+'%s'+sLineBreak+
                              'You will need to fix these errors before proceeding.';
+  SErrInvalidReport = 'Invalid report design';
+  SErrFixErrors = 'The report design contains %d errors:'+sLineBreak+'%s'+sLineBreak+
+                  'You will need to fix these errors before proceeding.';
 
 Const
   StateNames : Array[TDesignerState] of string = ('','Resetting',
@@ -1036,12 +1040,31 @@ begin
   PreviewReport;
 end;
 
+Function TFPReportDesignerForm.ValidateReport : Boolean;
+
+Var
+  errs : TStrings;
+
+begin
+  errs:=TStringList.Create;
+  try
+    Report.Validate(errs);
+    Result:=Errs.Count=0;
+    if Not Result then
+      MessageDlg(SErrInvalidReport,Format(SErrFixErrors,[Errs.Count,Errs.Text]),mtError,[mbOK],'');
+  finally
+    errs.Free;
+  end;
+end;
+
 procedure TFPReportDesignerForm.PreviewReport;
 
 Var
   F : TFPreportPreviewExport;
 
 begin
+  if not ValidateReport then
+    exit;
   FReport.RunReport;
   F:=TFPreportPreviewExport.Create(Self);
   FReport.RenderReport(F);
@@ -1087,11 +1110,12 @@ Var
   I : Integer;
   DesignD : TDesignReportData;
   DatasetD : TFPReportDatasetData;
+  L : TFPList;
 
 begin
+  FReport.SaveDataToNames;
   While FDataParent.ComponentCount>0 do
     FDataParent.Components[FDataParent.ComponentCount-1].Free;
-  FReport.SaveDataToNames;
   FReport.ReportData.Clear;
   For I:=0 to FReportDesignData.Count-1 do
     begin
