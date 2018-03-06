@@ -4449,7 +4449,7 @@ var
   OldNode: TTreeNode;
 begin
   if FSelectedNode = Value then Exit;
-  if not CanChange(FSelectedNode) then
+  if not CanChange(Value) then
     exit;
   {$IFDEF TREEVIEW_DEBUG}
   DebugLn('TCustomTreeView.SetSelection: Changing selection for Node: ', Text);
