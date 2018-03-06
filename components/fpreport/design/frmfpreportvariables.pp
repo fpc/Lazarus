@@ -40,10 +40,18 @@ type
     BPVariables: TButtonPanel;
     CBType: TComboBox;
     CBBoolean: TCheckBox;
+    CBAggregate: TCheckBox;
+    CBResetExpression: TComboBox;
+    CBResetType: TComboBox;
     DEDateTime: TDateEdit;
     EString: TEdit;
     EName: TEdit;
+    EExpression: TEdit;
     ILVariables: TImageList;
+    LCBExpression: TLabel;
+    LCBType1: TLabel;
+    LValue1: TLabel;
+    LCBResetExpression: TLabel;
     SEFloat: TFloatSpinEdit;
     LEName: TLabel;
     LCBType: TLabel;
@@ -55,6 +63,8 @@ type
     SEinteger: TSpinEdit;
     procedure ADeleteVariableExecute(Sender: TObject);
     procedure ADeleteVariableUpdate(Sender: TObject);
+    procedure CBAggregateChange(Sender: TObject);
+    procedure CBResetTypeChange(Sender: TObject);
     procedure CBTypeSelect(Sender: TObject);
     procedure DoAddVariable(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -63,10 +73,18 @@ type
   private
     FCurrentVariable: TFPReportVariable;
     FValueControls : Array[TResultType] of TControl;
+    procedure CheckExpression;
+    procedure CheckResetType;
+    procedure FillExpressionsList;
+    function GetCurrentIsExpression: Boolean;
+    function GetCurrentResetType: TFPReportResetType;
     function GetType: TResultType;
+    procedure SetCurrentIsExpression(AValue: Boolean);
+    procedure SetCurrentResetType(AValue: TFPReportResetType);
     procedure SetCurrentVariable(AValue: TFPReportVariable);
     procedure SetType(AValue: TResultType);
   Protected
+    procedure SetReport(AValue: TFPCustomReport); override;
     procedure SetVariables(AValue: TFPReportVariables); override;
     procedure ShowCurrentTypeEditor; virtual;
     procedure SetCurrentVariableFromList; virtual;
@@ -75,6 +93,8 @@ type
     procedure VariablesToForm; virtual;
     Property CurrentVariable : TFPReportVariable Read FCurrentVariable Write SetCurrentVariable;
     Property CurrentType : TResultType Read GetType Write SetType;
+    property CurrentIsExpression : Boolean Read GetCurrentIsExpression Write SetCurrentIsExpression;
+    Property CurrentResetType : TFPReportResetType Read GetCurrentResetType Write SetCurrentResetType;
   end;
 
 implementation
@@ -178,6 +198,16 @@ begin
   (Sender as TAction).Enabled:=(FCurrentVariable<>Nil);
 end;
 
+procedure TReportVariablesForm.CBAggregateChange(Sender: TObject);
+begin
+  CheckExpression;
+end;
+
+procedure TReportVariablesForm.CBResetTypeChange(Sender: TObject);
+begin
+  CheckResetType;
+end;
+
 procedure TReportVariablesForm.CBTypeSelect(Sender: TObject);
 begin
   ShowCurrentTypeEditor;
@@ -222,11 +252,84 @@ begin
      Result:=TResultType(CBType.ItemIndex);
 end;
 
+function TReportVariablesForm.GetCurrentIsExpression: Boolean;
+begin
+  Result:=CBAggregate.Checked;
+end;
+
+function TReportVariablesForm.GetCurrentResetType: TFPReportResetType;
+begin
+  if CBResetType.ItemIndex=-1 then
+    Result:=rtNone
+  else
+    Result:=TFPReportResetType(CBResetType.ItemIndex)
+end;
+
+procedure TReportVariablesForm.SetCurrentIsExpression(AValue: Boolean);
+begin
+  CBAggregate.Checked:=AValue;
+  CheckExpression;
+end;
+
+procedure TReportVariablesForm.SetCurrentResetType(AValue: TFPReportResetType);
+begin
+  CBResetType.ItemIndex:=Ord(AValue);
+  CheckResetType;
+end;
+
+procedure TReportVariablesForm.CheckResetType;
+
+begin
+  CBResetType.Enabled:=CBAggregate.Checked;
+  CBResetExpression.Enabled:=CBAggregate.Checked and (CurrentResetType in [rtGroup]);
+  Case CurrentResetType of
+    rtPage:   CBResetExpression.Text:='PageNo';
+    rtColumn: CBResetExpression.Text:='ColNo';
+    rtGroup,
+    rtNone : if not CBResetExpression.Enabled then
+              CBResetExpression.Text:=''
+  end;
+end;
+
+procedure TReportVariablesForm.CheckExpression;
+
+begin
+  EExpression.Enabled:=CBAggregate.Checked;
+  if not EExpression.Enabled then
+    EExpression.Text:='';
+  CheckResetType;
+end;
+
 procedure TReportVariablesForm.SetType(AValue: TResultType);
 
 begin
   CBType.ItemIndex:=Ord(Avalue);
   ShowCurrentTypeEditor;
+end;
+
+procedure TReportVariablesForm.SetReport(AValue: TFPCustomReport);
+begin
+  inherited SetReport(AValue);
+  FillExpressionsList;
+end;
+
+procedure TReportVariablesForm.FillExpressionsList;
+
+Var
+  R : TFPReport;
+  S : String;
+  I,J :  Integer;
+
+begin
+  R:=TFPReport(Report);
+  For I:=0 to R.PageCount-1 do
+    For J:=0 to R.Pages[I].BandCount-1 do
+      If R.Pages[I].Bands[J] is TFPReportCustomGroupHeaderBand then
+        begin
+        S:=TFPReportGroupHeaderBand(R.Pages[I].Bands[J]).GroupCondition;
+        if (S<>'') then
+          CBResetExpression.Items.Add(S);
+        end;
 end;
 
 procedure TReportVariablesForm.ShowCurrentTypeEditor;
@@ -255,6 +358,7 @@ begin
   end;
   FCurrentVariable.DataType:=CurrentType;
   With FCurrentVariable do
+    begin
     Case DataType of
       rtBoolean : AsBoolean:=CBBoolean.Checked;
       rtInteger : AsInteger:=SEinteger.Value;
@@ -263,7 +367,20 @@ begin
       rtString : AsString := EString.Text;
     else
       Raise Exception.Create('Unknown datatype !');
-    end
+    end;
+    If CurrentIsExpression then
+      begin
+      FCurrentVariable.Expression:=EExpression.Text;
+      FCurrentVariable.ResetType:=CurrentResetType;
+      FCurrentVariable.ResetValueExpression:=CBResetExpression.Text;
+      end
+    else
+      begin
+      FCurrentVariable.Expression:='';
+      FCurrentVariable.ResetType:=rtNone;
+      FCurrentVariable.ResetValueExpression:='';
+      end
+    end;
 end;
 
 procedure TReportVariablesForm.ShowCurrentVariable;
@@ -275,6 +392,8 @@ begin
   HV:=Assigned(FCurrentVariable);
   EName.Enabled:=HV;
   CBType.Enabled:=HV;
+  CurrentIsExpression:=HV and (FCurrentVariable.Expression<>'');
+  CBAggregate.Enabled:=HV;
   if not HV then
     begin
     EName.Text:='';
@@ -295,7 +414,14 @@ begin
       rtString : EString.Text:=AsString;
     else
       Raise Exception.Create('Unknown datatype !');
-    end
+    end;
+    CurrentIsExpression:=FCurrentVariable.Expression<>'';
+    If CurrentIsExpression then
+      begin
+      EExpression.Text:=FCurrentVariable.Expression;
+      CurrentResetType:=FCurrentVariable.ResetType;
+      CBResetExpression.Text:=FCurrentVariable.ResetValueExpression;
+      end;
     end;
 end;
 

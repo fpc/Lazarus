@@ -1,24 +1,23 @@
 object ReportVariablesForm: TReportVariablesForm
   Left = 656
-  Height = 365
+  Height = 390
   Top = 245
-  Width = 445
+  Width = 616
   Caption = 'Report variables'
-  ClientHeight = 365
-  ClientWidth = 445
+  ClientHeight = 390
+  ClientWidth = 616
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   LCLVersion = '1.9.0.0'
   object LBVariables: TListBox
     Left = 16
-    Height = 277
+    Height = 302
     Top = 32
-    Width = 216
+    Width = 208
     Anchors = [akTop, akLeft, akRight, akBottom]
     ItemHeight = 0
     OnSelectionChange = LBVariablesSelectionChange
-    Options = [lboDrawFocusRect]
-    ScrollWidth = 214
+    ScrollWidth = 206
     TabOrder = 0
     TopIndex = -1
   end
@@ -33,8 +32,8 @@ object ReportVariablesForm: TReportVariablesForm
   object BPVariables: TButtonPanel
     Left = 6
     Height = 42
-    Top = 317
-    Width = 433
+    Top = 342
+    Width = 604
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -49,7 +48,7 @@ object ReportVariablesForm: TReportVariablesForm
   object SBDelete: TSpeedButton
     AnchorSideRight.Control = LBVariables
     AnchorSideRight.Side = asrBottom
-    Left = 209
+    Left = 201
     Height = 22
     Top = 5
     Width = 23
@@ -59,7 +58,7 @@ object ReportVariablesForm: TReportVariablesForm
   end
   object SBAdd: TSpeedButton
     AnchorSideRight.Control = SBDelete
-    Left = 186
+    Left = 178
     Height = 22
     Top = 5
     Width = 23
@@ -68,18 +67,18 @@ object ReportVariablesForm: TReportVariablesForm
     ShowCaption = False
   end
   object EName: TEdit
-    Left = 302
+    Left = 305
     Height = 27
-    Top = 40
-    Width = 120
+    Top = 32
+    Width = 288
     Anchors = [akTop, akRight]
     TabOrder = 2
     Text = 'EName'
   end
   object CBType: TComboBox
-    Left = 302
-    Height = 31
-    Top = 72
+    Left = 305
+    Height = 27
+    Top = 64
     Width = 120
     Anchors = [akTop, akRight]
     ItemHeight = 0
@@ -95,9 +94,9 @@ object ReportVariablesForm: TReportVariablesForm
     TabOrder = 3
   end
   object LEName: TLabel
-    Left = 238
+    Left = 241
     Height = 27
-    Top = 40
+    Top = 32
     Width = 58
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
@@ -107,21 +106,21 @@ object ReportVariablesForm: TReportVariablesForm
     ParentColor = False
   end
   object LCBType: TLabel
-    Left = 237
+    Left = 240
     Height = 29
-    Top = 72
+    Top = 64
     Width = 59
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
     AutoSize = False
-    Caption = 'Type'
+    Caption = 'Data Type'
     Layout = tlCenter
     ParentColor = False
   end
   object LValue: TLabel
-    Left = 238
+    Left = 241
     Height = 27
-    Top = 104
+    Top = 96
     Width = 58
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
@@ -131,34 +130,34 @@ object ReportVariablesForm: TReportVariablesForm
     ParentColor = False
   end
   object CBBoolean: TCheckBox
-    Left = 302
+    Left = 576
     Height = 22
-    Top = 256
+    Top = 69
     Width = 22
     Anchors = [akTop, akRight]
     TabOrder = 4
   end
   object EString: TEdit
-    Left = 302
+    Left = 305
     Height = 27
-    Top = 106
-    Width = 120
+    Top = 98
+    Width = 288
     Anchors = [akTop, akRight]
     TabOrder = 5
     Text = 'EString'
   end
   object SEinteger: TSpinEdit
-    Left = 302
+    Left = 400
     Height = 27
-    Top = 184
+    Top = 112
     Width = 86
     Anchors = [akTop, akRight]
     TabOrder = 6
   end
   object SEFloat: TFloatSpinEdit
-    Left = 302
+    Left = 496
     Height = 27
-    Top = 152
+    Top = 112
     Width = 88
     Anchors = [akTop, akRight]
     Increment = 1
@@ -168,9 +167,9 @@ object ReportVariablesForm: TReportVariablesForm
     Value = 0
   end
   object DEDateTime: TDateEdit
-    Left = 302
+    Left = 448
     Height = 27
-    Top = 216
+    Top = 66
     Width = 120
     CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
     DateOrder = doNone
@@ -180,6 +179,106 @@ object ReportVariablesForm: TReportVariablesForm
     MaxLength = 0
     TabOrder = 8
     Text = 'DEDateTime'
+  end
+  object CBAggregate: TCheckBox
+    Left = 305
+    Height = 22
+    Top = 136
+    Width = 22
+    Anchors = [akTop, akRight]
+    OnChange = CBAggregateChange
+    TabOrder = 9
+  end
+  object LCBExpression: TLabel
+    Left = 225
+    Height = 23
+    Top = 136
+    Width = 74
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
+    AutoSize = False
+    Caption = 'Aggregate'
+    FocusControl = CBAggregate
+    ParentColor = False
+  end
+  object LValue1: TLabel
+    Left = 225
+    Height = 27
+    Top = 168
+    Width = 74
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
+    AutoSize = False
+    Caption = 'Expression'
+    FocusControl = EExpression
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object EExpression: TEdit
+    Left = 305
+    Height = 27
+    Top = 168
+    Width = 288
+    Anchors = [akTop, akRight]
+    TabOrder = 10
+    Text = 'EExpression'
+  end
+  object LCBResetExpression: TLabel
+    Left = 225
+    Height = 27
+    Top = 232
+    Width = 74
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
+    AutoSize = False
+    Caption = 'Reset'
+    FocusControl = CBResetExpression
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object CBResetExpression: TComboBox
+    Left = 306
+    Height = 29
+    Top = 232
+    Width = 288
+    Anchors = [akTop, akRight]
+    ItemHeight = 0
+    Items.Strings = (
+      'PageNo'
+      'ColNo'
+    )
+    OnSelect = CBTypeSelect
+    TabOrder = 11
+  end
+  object CBResetType: TComboBox
+    Left = 305
+    Height = 27
+    Top = 200
+    Width = 120
+    Anchors = [akTop, akRight]
+    ItemHeight = 0
+    Items.Strings = (
+      'None'
+      'Group'
+      'Page'
+      'Column'
+    )
+    OnChange = CBResetTypeChange
+    OnSelect = CBTypeSelect
+    Style = csDropDownList
+    TabOrder = 12
+  end
+  object LCBType1: TLabel
+    Left = 232
+    Height = 29
+    Top = 198
+    Width = 67
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
+    AutoSize = False
+    Caption = 'Reset Type'
+    Layout = tlCenter
+    ParentColor = False
   end
   object ALVariables: TActionList
     Images = ILVariables
