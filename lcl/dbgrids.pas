@@ -2381,6 +2381,8 @@ var
   end;
 
   procedure MoveSel(AReset: boolean);
+  var
+    ACol: Integer;
   begin
     if (DeltaCol<>0) or (DeltaRow<>0) then begin
       if DeltaRow > 0 then begin
@@ -2398,7 +2400,16 @@ var
         else if Col + DeltaCol >= ColCount then
           Col := ColCount - 1
         else
-          Col := Col + DeltaCol;
+        begin
+          ACol := Col + DeltaCol;
+          if ColWidths[ACol] > 0 then
+            Col := ACol
+          else
+            if DeltaCol < 0 then
+              Col := GetFirstVisibleColumn
+            else
+              Col := GetLastVisibleColumn;
+        end;
       GridFlags := GridFlags - [gfEditingDone];
     end else
     if AReset then
