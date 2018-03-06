@@ -140,7 +140,8 @@ begin
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataHeaderBand), TFPReportCustomBand, 'HeaderBand', TDataHeaderBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataBand), TFPReportCustomBand, 'MasterBand', TDataBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupHeaderBand),TFPReportCustomGroupHeaderBand, 'ParentGroupHeader', TGroupHeaderBandPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupFooterBand),TFPReportCustomGroupHeaderBand, 'GroupFooter', TGroupFooterBandPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupHeaderBand),TFPReportCustomGroupFooterBand, 'GroupHeader', TGroupHeaderBandPropertyEditor);
+
   RegisterPropertyEditor(TypeInfo(TFPReportColor),TFPReportComponent,'Color',TFPreportColorPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportColor),TFPReportComponent,'BackgroundColor',TFPreportColorPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportColor),TFPReportFrame,'Color',TFPreportColorPropertyEditor);
