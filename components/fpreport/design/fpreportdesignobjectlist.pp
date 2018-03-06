@@ -1052,8 +1052,8 @@ begin
           I:=-1; // Reset loop
       Inc(I);
       end;
-    MaybeAddBand(TFPReportCustomSummaryBand);
     MaybeAddBand(TFPReportCustomColumnFooterBand);
+    MaybeAddBand(TFPReportCustomSummaryBand);
     // Extract
     I:=0;
     F:=FindBandType(L,TFPReportCustomPageFooterBand,I,True);
