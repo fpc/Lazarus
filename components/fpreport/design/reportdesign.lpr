@@ -20,6 +20,8 @@ uses
   frafpreportsqldbdata,
   frmideselectreportdata,
   // Various forms
+  frmfprdresizeelements,
+  frmfpreportalignelements,
   frmfpreportdataconnectioneditor,
   frmconfigreportdata,
   frmfpreportvariables,
@@ -28,6 +30,7 @@ uses
   cfgfpreportpdfexport,
   cfgfpreportimageexport,
   cfgfpreporthtmlexport,
+
   //
   fpreporthtmlexport,
   fpreportpreview,

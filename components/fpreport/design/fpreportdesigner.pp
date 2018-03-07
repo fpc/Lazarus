@@ -75,7 +75,8 @@ type
 
 implementation
 
-uses fpjsonreport;
+uses
+  fpjsonreport;
 
 Resourcestring
   SErrNoReport = 'No report assigned.';

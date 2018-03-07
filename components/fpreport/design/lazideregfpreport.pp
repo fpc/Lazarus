@@ -85,7 +85,13 @@ procedure Register;
 
 implementation
 
-Uses regfpdesigner, LResources, frmideselectreportdata;
+Uses
+  // Make sure these are included
+  frmfprdresizeelements,
+  frmfpreportalignelements,
+  regfpdesigner,
+  LResources,
+  frmideselectreportdata;
 
 
 procedure Register;
