@@ -854,7 +854,9 @@ end;
 procedure TFPReportDesignerForm.AAlignUpdate(Sender: TObject);
 
 begin
-  (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and CurrentDesigner.Objects.IsMultiSelect;
+  (Sender as TAction).Enabled:=Assigned(ReportAlignFormClass)
+                               and Assigned(CurrentDesigner)
+                               and CurrentDesigner.Objects.IsMultiSelect;
 end;
 
 procedure TFPReportDesignerForm.ADeleteExecute(Sender: TObject);
