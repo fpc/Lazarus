@@ -302,6 +302,7 @@ begin
           end;
         end;
     finally
+      L.Free;
       EndUpdate;
     end;
 end;
