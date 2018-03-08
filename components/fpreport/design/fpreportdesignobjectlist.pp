@@ -953,6 +953,8 @@ Var
     Result:=Assigned(ABand);
     If not Result then
       exit;
+    if L.IndexOf(aBand)=-1 then
+      exit;
 {$IFDEF DEBUGROL}Writeln('Placing band ',ABand.ClassName,'(',ABAnd.Name,') at ',Y);{$ENDIF}
     ABand.Layout.Top:=Y;
     Y:=Y+DY+ABand.Layout.Height;
@@ -979,16 +981,31 @@ Var
 
   var
     i : integer;
+    B : TFPReportCustomBandWithData;
+    P : TFPReportGroupHeaderBand;
+
   begin
     I:=0;
     While (I<L.Count) do
       begin
       if TObject(L[i]) is AClass then
-        if (TFPReportCustomDataBand(L[i]).Data=ADetail.Data) then
+        begin
+        B:=TFPReportCustomBandWithData(L[i]);
+        if (B.Data=ADetail.Data) then
           begin
-          AddBandToList(TFPReportCustomDataBand(L[i]));
+          if B is TFPReportCustomGroupHeaderBand then
+            begin
+            P:=TFPReportGroupHeaderBand(B);
+            While P.ParentGroupHeader<>Nil do
+              begin
+              AddBandToList(P.ParentGroupHeader);
+              P:=TFPReportGroupHeaderBand(P.ParentGroupHeader);
+              end;
+            end;
+          AddBandToList(B);
           I:=-1;
           end;
+        end;
       Inc(I);
       end;
   end;
