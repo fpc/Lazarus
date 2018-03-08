@@ -418,6 +418,9 @@ end;
 
 procedure TFPReportDesignerForm.FormCreate(Sender: TObject);
 
+var
+  F : Text;
+  i : Integer;
 
 begin
   DesignOptions:=AllReportDesignOptions;
@@ -434,6 +437,11 @@ begin
     end;
   if (gTTFontCache.Count=0) then
     gTTFontCache.ReadStandardFonts;
+  AssignFile(F,'/tmp/fonts.txt');
+  Rewrite(F);
+  For I:=0 to gTTFontCache.Count-1 do
+     Writeln(F,I,' ',gTTFontCache.Items[i].PostScriptName,' : ',gTTFontCache.Items[i].FamilyName,' : ',gTTFontCache.Items[i].HumanFriendlyName);
+  CloseFile(F);
   FDataParent:=TComponent.Create(nil);
   FreeAndNil(TSDesign); // Remove design-time added page
   FReportDesignData:=TDesignReportDataCollection.Create(TDesignReportData);
@@ -1526,8 +1534,6 @@ begin
     AElement.Name:=AElement.AllocateName;
   If AElement is TFPReportCustomMemo then
     begin
-    if not TFPReportMemo(AElement).UseParentFont then
-      TFPReportMemo(AElement).Font.Name := ReportDefaultFont;
     if TFPReportMemo(AElement).Text='' then
       TFPReportMemo(AElement).Text:='New memo';
     end;

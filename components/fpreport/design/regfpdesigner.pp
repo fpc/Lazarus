@@ -152,7 +152,7 @@ begin
 end;
 
 { TReportFontPropertyEditor }
-Function FontNameToPostScriptName(N : String) : String;
+Function FontNameToPostScriptName(N : String; ABold,AItalic : Boolean) : String;
 
 Var
   F : TFPFontCacheItem;
@@ -160,7 +160,7 @@ Var
 begin
   if (N='default') then
     N:=ReportDefaultFont;
-  F:=gTTFontCache.Find(N,False,False);
+  F:=gTTFontCache.Find(N,aBold,aItalic);
   if Assigned(F) then
     N:=F.PostScriptName;
   Result:=N;
@@ -195,7 +195,7 @@ end;
 
 procedure TReportFontNamePropertyEditor.SetValue(const NewValue: ansistring);
 begin
-  inherited SetValue(FontNameToPostScriptName(NewValue));
+  inherited SetValue(FontNameToPostScriptName(NewValue,False,False));
 end;
 
 procedure TReportFontPropertyEditor.Edit;
@@ -214,7 +214,7 @@ begin
     FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
     if FontDialog.Execute then
       begin
-      R.Name:=FontNameToPostScriptName(FontDialog.Font.Name);
+      R.Name:=FontNameToPostScriptName(FontDialog.Font.Name,FontDialog.Font.Bold,FontDialog.Font.Italic);
       R.Size:=FontDialog.Font.Size;
       R.Color:=TFPReportExportCanvas.BGRToRGB(FontDialog.Font.Color);
       end;
