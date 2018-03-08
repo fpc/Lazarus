@@ -1255,7 +1255,7 @@ end;
 procedure TFPReportDesignerForm.AResizeUpdate(Sender: TObject);
 
 begin
-  (Sender as TAction).Enabled:=Assigned(ReportResizeFormClass) and Assigned(CurrentDesigner) and CurrentDesigner.Objects.IsMultiSelect;
+  (Sender as TAction).Enabled:=Assigned(ReportResizeFormClass) and Assigned(CurrentDesigner);
 end;
 
 procedure TFPReportDesignerForm.HResizeAllow(Sender: TObject);

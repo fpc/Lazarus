@@ -33,8 +33,10 @@ type
     FSEVertical: TFloatSpinEdit;
     GBHorizontal: TGroupBox;
     GBVertical: TGroupBox;
+    RBHParentSize: TRadioButton;
     RBHNone: TRadioButton;
     RBHFixed: TRadioButton;
+    RBVParentSize: TRadioButton;
     RBVNone: TRadioButton;
     RBVFixed: TRadioButton;
     RBVLargest: TRadioButton;
@@ -84,6 +86,8 @@ begin
     Result:=saLargest
   else if RBHFixed.Checked then
     Result:=saValue
+  else if RBHParentSize.Checked then
+    Result:=saParent
   else
     Result:=saNone;
 end;
@@ -101,6 +105,8 @@ begin
     Result:=saLargest
   else if RBVFixed.Checked then
     Result:=saValue
+  else if RBVParentSize.Checked then
+    Result:=saParent
   else
     Result:=saNone;
 end;
@@ -116,6 +122,7 @@ begin
     saLargest  : RBHLargest.Checked:=True;
     saSmallest : RBHSmallest.Checked:=True;
     saValue    : RBHFixed.Checked:=True;
+    saParent   : RBHParentSize.Checked:=True;
   else
     RBHNone.Checked:=True;
   end;
@@ -132,6 +139,7 @@ begin
     saLargest  : RBVLargest.Checked:=True;
     saSmallest : RBVSmallest.Checked:=True;
     saValue    : RBVFixed.Checked:=True;
+    saParent   : RBVParentSize.Checked:=True;
   else
     RBVNone.Checked:=True;
   end;

@@ -1,17 +1,17 @@
 object ResizeElementsForm: TResizeElementsForm
   Left = 728
-  Height = 280
+  Height = 328
   Top = 319
   Width = 455
   Caption = 'Resize selected elements'
-  ClientHeight = 280
+  ClientHeight = 328
   ClientWidth = 455
   Position = poOwnerFormCenter
   LCLVersion = '1.9.0.0'
   object BPResize: TButtonPanel
     Left = 6
     Height = 42
-    Top = 232
+    Top = 280
     Width = 443
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -26,11 +26,11 @@ object ResizeElementsForm: TResizeElementsForm
   end
   object GBHorizontal: TGroupBox
     Left = 8
-    Height = 219
+    Height = 256
     Top = 8
     Width = 184
     Caption = 'Horizontal'
-    ClientHeight = 201
+    ClientHeight = 238
     ClientWidth = 182
     TabOrder = 1
     object RBHNone: TRadioButton
@@ -39,10 +39,8 @@ object ResizeElementsForm: TResizeElementsForm
       Top = 12
       Width = 54
       Caption = 'None'
-      Checked = True
       OnClick = RBHFixedClick
       TabOrder = 0
-      TabStop = True
     end
     object RBHSmallest: TRadioButton
       Left = 18
@@ -82,14 +80,25 @@ object ResizeElementsForm: TResizeElementsForm
       TabOrder = 4
       Value = 1
     end
+    object RBHParentSize: TRadioButton
+      Left = 18
+      Height = 22
+      Top = 208
+      Width = 86
+      Caption = 'Parent size'
+      Checked = True
+      OnClick = RBHFixedClick
+      TabOrder = 5
+      TabStop = True
+    end
   end
   object GBVertical: TGroupBox
     Left = 208
-    Height = 219
+    Height = 248
     Top = 8
     Width = 176
     Caption = 'Vertical'
-    ClientHeight = 201
+    ClientHeight = 230
     ClientWidth = 174
     TabOrder = 2
     object RBVNone: TRadioButton
@@ -98,10 +107,8 @@ object ResizeElementsForm: TResizeElementsForm
       Top = 12
       Width = 54
       Caption = 'None'
-      Checked = True
       OnClick = RBVNoneClick
       TabOrder = 0
-      TabStop = True
     end
     object RBVSmallest: TRadioButton
       Left = 18
@@ -140,6 +147,17 @@ object ResizeElementsForm: TResizeElementsForm
       MinValue = 0
       TabOrder = 4
       Value = 1
+    end
+    object RBVParentSize: TRadioButton
+      Left = 18
+      Height = 22
+      Top = 208
+      Width = 86
+      Caption = 'Parent size'
+      Checked = True
+      OnClick = RBHFixedClick
+      TabOrder = 5
+      TabStop = True
     end
   end
 end

@@ -31,7 +31,7 @@ Type
   TSelectionSort = (ssNone,ssHorz,ssvert);
   THAlignAction  = (haNone,haLeft,haCenter,haRight,haSpace,haCentB);
   TVAlignAction  = (vaNone,vaTop,vaCenter,vaBottom,vaSpace,vaCentB);
-  TSizeAdjust    = (saNone,saLargest,saSmallest,saValue);
+  TSizeAdjust    = (saNone,saLargest,saSmallest,saValue,saParent);
   TFrameAction   = (faNone,faAll,faTop,faBottom,faLeft,faRight);
   TResizeHandlePosition = (rhNone,rhTopLeft,rhTop,rhTopRight,rhLeft,rhRight,rhBottomLeft, rhBottom,rhBottomRight);
   TResizeHandlePositions = set of TResizeHandlePosition;
@@ -515,6 +515,24 @@ begin
   For I:=0 to Length(Arr)-1 do
     With Arr[i].Element.Layout do
       begin
+      // For saParent, we determine the actual height/width here
+      // The parent can be different..
+      if AHeight=saParent then
+        begin
+        Top:=0.0;
+        if Assigned(Arr[i].Element.Parent) then
+          HSize:=Arr[i].Element.Parent.Layout.Height
+        else
+          HSize:=Arr[i].Element.Layout.Height
+        end;
+      if AWidth=saParent then
+        begin
+        Left:=0.0;
+        if Assigned(Arr[i].Element.Parent) then
+          WSize:=Arr[i].Element.Parent.Layout.Width
+        else
+          WSize:=Arr[i].Element.Layout.Width
+        end;
       If (aHeight<>saNone) then
         Height:=HSize;
       If aWidth<>saNone then
