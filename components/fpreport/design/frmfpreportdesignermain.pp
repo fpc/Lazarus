@@ -1517,10 +1517,10 @@ begin
     AElement.Name:=AElement.AllocateName;
   If AElement is TFPReportCustomMemo then
     begin
-    TFPReportMemo(AElement).Font.Name := 'LiberationSans';
+    if not TFPReportMemo(AElement).UseParentFont then
+      TFPReportMemo(AElement).Font.Name := ReportDefaultFont;
     if TFPReportMemo(AElement).Text='' then
       TFPReportMemo(AElement).Text:='New memo';
-
     end;
   FOI.RefreshReportTree;
 end;

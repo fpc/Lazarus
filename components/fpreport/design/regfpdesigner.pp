@@ -214,9 +214,9 @@ begin
     FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
     if FontDialog.Execute then
       begin
-      FontDialog.Font.Name := FontNameToPostScriptName(R.Name);
-      FontDialog.Font.Size:=R.Size;
-      FontDialog.Font.Color:=TFPReportExportCanvas.RGBtoBGR(R.Color);
+      R.Name:=FontNameToPostScriptName(FontDialog.Font.Name);
+      R.Size:=FontDialog.Font.Size;
+      R.Color:=TFPReportExportCanvas.BGRToRGB(FontDialog.Font.Color);
       end;
   finally
     FontDialog.Free;

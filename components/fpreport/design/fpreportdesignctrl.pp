@@ -629,7 +629,8 @@ function TFPReportDesignerControl.DoAddControl(ABand: TFPReportCustomBand;
   ARect: TRect; IsMulti: Boolean): TFPReportElement;
 
 begin
-  Result:=FAddClass.Create(ABand);
+  Result:=FAddClass.Create(Page.Report);
+  Result.Parent:=ABand;
   DoAddControl(ABand,Result,ARect,isMulti);
 end;
 
