@@ -1220,7 +1220,7 @@ begin
   try
     F.Report:=Self.Report;
     if F.ShowModal=mrOK then
-      CurrentDesigner.Objects.ResizeSelection(F.Horizontal,F.HorizontalSize,F.Vertical,F.VerticalSize);
+      CurrentDesigner.Objects.ResizeSelection(F.Vertical,F.VerticalSize,F.Horizontal,F.HorizontalSize);
   finally
     F.Free;
   end;
