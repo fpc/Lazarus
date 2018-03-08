@@ -2500,30 +2500,19 @@ procedure TOICustomPropertyGrid.HandleStandardKeys(var Key: Word; Shift: TShiftS
 var
   Handled: Boolean;
 
-  procedure FindPropertyByFirstLetter;
-  var
-    i: Integer;
-  begin
-    if Column = oipgcName then
-      for i := 0 to RowCount - 1 do
-        if (Rows[i].Lvl = Rows[ItemIndex].Lvl) and
-          (Ord(upCase(Rows[i].Name[1])) = Key) then
-        begin
-          SetItemIndexAndFocus(i);
-          exit;
-        end;
-    Handled := false;
-  end;
-
   procedure FindPropertyBySearchText;
   var
-    i: Integer;
+    i, IIndex: Integer;
   begin
     if Column = oipgcName then
     begin
       FKeySearchText := FKeySearchText + UpCase(Chr(Key));
+      if ItemIndex = -1 then
+        IIndex := 0
+      else
+        IIndex := ItemIndex;
       for i := 0 to RowCount - 1 do
-        if (Rows[i].Lvl = Rows[ItemIndex].Lvl) and
+        if (Rows[i].Lvl = Rows[IIndex].Lvl) and
           (UpperCase(LeftStr(Rows[i].Name, Length(FKeySearchText))) = FKeySearchText) then
         begin
           // Set item index. To go to Value user must hit either Tab or Enter.
