@@ -3,6 +3,7 @@ object fpReportMemoEditForm: TfpReportMemoEditForm
   Height = 222
   Top = 322
   Width = 380
+  ActiveControl = MMemo
   Caption = 'Memo Element'
   ClientHeight = 222
   ClientWidth = 380
