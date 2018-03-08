@@ -268,6 +268,7 @@ type
     procedure VAlignExecute(Sender: TObject);
     procedure VResizeExecute(Sender: TObject);
   private
+    FLoadModified : Boolean;
     MRUMenuManager1: TMRUMenuManager;
     FAutoSaveOnClose: Boolean;
     FDesignOptions: TFPReportDesignOptions;
@@ -501,7 +502,13 @@ begin
     AddPageDesign(I+1,Report.Pages[I]);
   ShowReportData;
   ResetObjectInspector;
-  Modified:=False;
+  if FLoadModified then
+    begin
+    Modified:=True;
+    FLoadModified:=false;
+    end
+  else
+    Modified:=False;
 end;
 
 procedure TFPReportDesignerForm.CreateReportData;
@@ -1331,6 +1338,7 @@ end;
 function TFPReportDesignerForm.OpenReport: Boolean;
 
 begin
+  FLoadModified:=False;
   Result:=Assigned(OnOpenReport);
   if Result then
     begin
@@ -1446,6 +1454,7 @@ begin
     FFilename:=AFileName;
     if Errs.Count>0 then
       MessageDlg(SErrAccessingData,Format(SErrAccessingDataDetails,[Errs.Text]),mtWarning,[mbOK],'');
+    FLoadModified:=rs.IsModified;
   finally
     FreeAndNil(rs);
     FreeAndNil(Errs);
