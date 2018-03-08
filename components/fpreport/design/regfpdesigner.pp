@@ -152,6 +152,21 @@ begin
 end;
 
 { TReportFontPropertyEditor }
+
+Function PostScriptNameToFontName(N : String) : String;
+
+Var
+  F : TFPFontCacheItem;
+
+begin
+  if (N='default') then
+    N:=ReportDefaultFont;
+  F:=gTTFontCache.Find(N);
+  if Assigned(F) then
+    N:=F.FamilyName;
+  Result:=N;
+end;
+
 Function FontNameToPostScriptName(N : String; ABold,AItalic : Boolean) : String;
 
 Var
@@ -208,7 +223,7 @@ begin
   FontDialog := TFontDialog.Create(nil);
   try
     R:=TFPReportFont(GetObjectValue(TFPReportFont));
-    FontDialog.Font.Name := R.Name;
+    FontDialog.Font.Name := PostScriptNameToFontName(R.Name);
     FontDialog.Font.Size:=R.Size;
     FontDialog.Font.Color:=TFPReportExportCanvas.RGBtoBGR(R.Color);
     FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
