@@ -1242,6 +1242,7 @@ Var
 begin
   Result:=ABandClass.Create(Page);
   Result.Layout.Height:=PixelsToMM(FMinControlHeight,CurrentDPI);
+  Result.Parent:=Page;
   O:=FObjects.AddBand(Result);
   FObjects.OrderBands(Canvas,CurrentDPI);
   If  Assigned(FOnElementCreated) then
