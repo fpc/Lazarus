@@ -39,13 +39,16 @@ type
     procedure TVDataStartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure TVFunctionsStartDrag(Sender: TObject; var DragObject: TDragObject);
   private
+    FPageCount : TFPExprIdentifierDef;
     FIdentifiers: TFPExprIdentifierDefs;
     FUserVariables : TTreeNode;
     FBuiltinVariables : TTreeNode;
     FDataLastDown : TPoint;
     FReport: TFPReport;
     FReportData: TFPReportDataCollection;
+
     procedure AddBuiltInVariables(aParent: TTreeNode);
+    procedure AddUserVariables(aParent: TTreeNode; Vars: TFPReportVariables);
     procedure SetReport(AValue: TFPReport);
   public
     Constructor Create(AOwner : TComponent); override;
@@ -190,19 +193,25 @@ Var
   ID : TFPBuiltInExprIdentifierDef;
   CatNodes : Array[TBuiltInCategory] of TTreeNode;
   C : TBuiltInCategory;
+  L : TStringList;
 
 begin
+  L:=Nil;
   With TVFunctions.Items do
     try
       BeginUpdate;
       Clear;
       if not Assigned(Report) then
         exit;
+      L:=TStringList.Create;
+      For I:=0 to BuiltinIdentifiers.IdentifierCount-1 do
+        L.AddObject(BuiltinIdentifiers.Identifiers[i].Name,BuiltinIdentifiers.Identifiers[i]);
+      L.Sort;
       For C in TBuiltInCategory do
         CatNodes[C]:=AddChild(Nil,CatNames[C]);
-      For I:=0 to BuiltinIdentifiers.IdentifierCount-1 do
+      For I:=0 to L.Count-1 do
         begin
-        ID:=BuiltinIdentifiers.Identifiers[i];
+        ID:=TFPBuiltInExprIdentifierDef(L.Objects[i]);
         S:=ID.Name;
         A:='';
         For J:=1 to ID.ArgumentCount do
@@ -224,6 +233,7 @@ begin
           CatNodes[C].Expand(True);
     finally
       EndUpdate;
+      FreeAndNil(L);
     end;
 end;
 
@@ -257,13 +267,15 @@ Var
   D : TFPReportData;
   FN,RDN : String;
   I,J : integer;
-
+  L : TStringList;
 
 begin
+  L:=Nil;
   With TVData.Items do
     try
       BeginUpdate;
       Clear;
+      L:=TStringList.Create;
       if not Assigned(Report) then
         exit;
       For I:=0 to Report.ReportData.Count-1 do
@@ -276,9 +288,13 @@ begin
             RDN:=Format(SUnNamedData,[i+1]);
           DN:=AddChild(Nil,RDN);
           DN.Data:=D;
+          L.Clear;
           For J:=0 to D.FieldCount-1 do
+            L.Add(D.FieldNames[J]);
+          L.Sort;
+          For J:=0 to L.Count-1 do
             begin
-            FN:=D.FieldNames[J];
+            FN:=L[J];
             N:=AddChild(DN,FN);
             N.Data:=D;
             end;
@@ -290,34 +306,68 @@ begin
     end;
 end;
 
+procedure TReportDataDisplay.AddUserVariables(aParent : TTreeNode; Vars : TFPReportVariables);
+
+Var
+  V : TFPReportVariable;
+  I : Integer;
+  N : TTreeNode;
+  L : TStringList;
+
+begin
+  L:=TStringList.Create;
+  try
+    For I:=0 to Vars.Count-1 do
+      L.AddObject(Vars[i].Name,Vars[i]);
+    L.Sort;
+    For I:=0 to FReport.Variables.Count-1 do
+      begin
+      V:=TFPReportVariable(L.Objects[i]);
+      N:=TVVariables.Items.AddChild(aParent,V.Name);
+      N.Data:=V;
+      end;
+  finally
+    L.Free;
+  end;
+  AParent.Expand(false);
+end;
+
 procedure TReportDataDisplay.AddBuiltInVariables(aParent : TTreeNode);
 
 Var
   V : TFPExprIdentifierDef;
   I : Integer;
   N : TTreeNode;
+  L : TStringList;
 
 begin
+
   if Assigned(Fidentifiers) then
     FIdentifiers.Clear
   else
     FIdentifiers:=TFPExprIdentifierDefs.Create(TFPExprIdentifierDef);
   if Assigned(FReport) then
     FReport.AddBuiltinsToExpressionIdentifiers(FIdentifiers);
-  For I:=0 to Fidentifiers.Count-1 do
-    begin
-    V:=FIdentifiers[i];
-    N:=TVVariables.Items.AddChild(aParent,V.Name);
-    N.Data:=V;
-    end;
+  if FIdentifiers.FindIdentifier('PageCount')=Nil then
+    FIdentifiers.AddIntegerVariable('PageCount',-1);
+  L:=TStringList.Create;
+  try
+    For I:=0 to Fidentifiers.Count-1 do
+      L.AddObject(Fidentifiers[i].Name,Fidentifiers[i]);
+    L.Sort;
+    For I:=0 to L.Count-1 do
+      begin
+      V:=TFPExprIdentifierDef(L.Objects[i]);
+      N:=TVVariables.Items.AddChild(aParent,V.Name);
+      N.Data:=V;
+      end;
+  finally
+    L.Free;
+  end;
+  AParent.Expand(false);
 end;
 
 procedure TReportDataDisplay.RefreshVariables;
-
-Var
-  V : TFPReportVariable;
-  I : Integer;
-  N : TTreeNode;
 
 
 begin
@@ -330,12 +380,7 @@ begin
       FUserVariables:=AddChild(Nil,SUserDefined);
       FBuiltinVariables:=AddChild(Nil,SBuiltIn);
       AddBuiltInVariables(FBuiltinVariables);
-      For I:=0 to FReport.Variables.Count-1 do
-        begin
-        V:=FReport.Variables[I];
-        N:=AddChild(FUserVariables,V.Name);
-        N.Data:=V;
-        end;
+      AddUservariables(FUserVariables,FReport.Variables);
     finally
       EndUpdate;
     end;
