@@ -39,8 +39,10 @@ object ResizeElementsForm: TResizeElementsForm
       Top = 12
       Width = 54
       Caption = 'None'
+      Checked = True
       OnClick = RBHFixedClick
       TabOrder = 0
+      TabStop = True
     end
     object RBHSmallest: TRadioButton
       Left = 18
@@ -67,7 +69,7 @@ object ResizeElementsForm: TResizeElementsForm
       Width = 78
       Caption = 'Fixed size'
       OnClick = RBHFixedClick
-      TabOrder = 3
+      TabOrder = 4
     end
     object FSEHorizontal: TFloatSpinEdit
       Left = 48
@@ -77,7 +79,7 @@ object ResizeElementsForm: TResizeElementsForm
       Increment = 1
       MaxValue = 100
       MinValue = 0
-      TabOrder = 4
+      TabOrder = 5
       Value = 1
     end
     object RBHParentSize: TRadioButton
@@ -86,10 +88,8 @@ object ResizeElementsForm: TResizeElementsForm
       Top = 208
       Width = 86
       Caption = 'Parent size'
-      Checked = True
       OnClick = RBHFixedClick
-      TabOrder = 5
-      TabStop = True
+      TabOrder = 3
     end
   end
   object GBVertical: TGroupBox
@@ -107,8 +107,10 @@ object ResizeElementsForm: TResizeElementsForm
       Top = 12
       Width = 54
       Caption = 'None'
+      Checked = True
       OnClick = RBVNoneClick
       TabOrder = 0
+      TabStop = True
     end
     object RBVSmallest: TRadioButton
       Left = 18
@@ -154,10 +156,8 @@ object ResizeElementsForm: TResizeElementsForm
       Top = 208
       Width = 86
       Caption = 'Parent size'
-      Checked = True
       OnClick = RBHFixedClick
       TabOrder = 5
-      TabStop = True
     end
   end
 end
