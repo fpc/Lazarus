@@ -1249,7 +1249,7 @@ end;
 
 procedure TFPReportDesignerForm.HResizeExecute(Sender: TObject);
 begin
-  CurrentDesigner.Objects.ResizeSelection(TSizeAdjust((Sender as TACtion).Tag),0.0,saNone,0.0);
+  CurrentDesigner.Objects.ResizeSelection(saNone,0.0,TSizeAdjust((Sender as TACtion).Tag),0.0);
 end;
 
 procedure TFPReportDesignerForm.AResizeUpdate(Sender: TObject);
@@ -1402,7 +1402,7 @@ end;
 
 procedure TFPReportDesignerForm.VResizeExecute(Sender: TObject);
 begin
-  CurrentDesigner.Objects.ResizeSelection(saNone,0.0,TSizeAdjust((Sender as TACtion).Tag),0.0);
+  CurrentDesigner.Objects.ResizeSelection(TSizeAdjust((Sender as TACtion).Tag),0.0,saNone,0.0);
 end;
 
 procedure TFPReportDesignerForm.ResetReport;
