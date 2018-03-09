@@ -1001,13 +1001,13 @@ Var
   DY,Y : TFPReportUnits;
 
   // Position band and remove it from the list. Recurses to add child bands.
-  Function AddBandToList(ABand : TFPReportCustomBand) : Boolean;
+  Function AddBandToList(ABand : TFPReportCustomBand; Force : Boolean = False) : Boolean;
 
   begin
     Result:=Assigned(ABand);
     If not Result then
       exit;
-    if L.IndexOf(aBand)=-1 then
+    if (L.IndexOf(aBand)=-1) and not Force then
       exit;
 {$IFDEF DEBUGROL}Writeln('Placing band ',ABand.ClassName,'(',ABAnd.Name,') at ',Y);{$ENDIF}
     ABand.Layout.Top:=Y;
@@ -1146,7 +1146,7 @@ begin
     F:=FindBandType(L,TFPReportCustomPageFooterBand,I,True);
     While L.Count>0 do
       AddBandToList(TFPReportCustomBand(L[0]));
-    AddBandToList(F);
+    AddBandToList(F,True);
   finally
     L.Free;
   end;
