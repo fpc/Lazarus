@@ -124,6 +124,12 @@ Type
     Function BandTypes : TFPReportBandTypes; override;
   end;
 
+  { TParentGroupHeaderBandPropertyEditor }
+
+  TParentGroupHeaderBandPropertyEditor = Class(TGroupHeaderBandPropertyEditor)
+  Public
+    function BandAllowed(B: TFPReportCustomBand): Boolean; override;
+  end;
 
 Procedure RegisterFPReportPropEditors;
 
@@ -139,7 +145,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataFooterBand), TFPReportCustomBand, 'FooterBand', TDataFooterBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataHeaderBand), TFPReportCustomBand, 'HeaderBand', TDataHeaderBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomDataBand), TFPReportCustomBand, 'MasterBand', TDataBandPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupHeaderBand),TFPReportCustomGroupHeaderBand, 'ParentGroupHeader', TGroupHeaderBandPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupHeaderBand),TFPReportCustomGroupHeaderBand, 'ParentGroupHeader', TParentGroupHeaderBandPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFPReportCustomGroupHeaderBand),TFPReportCustomGroupFooterBand, 'GroupHeader', TGroupHeaderBandPropertyEditor);
 
   RegisterPropertyEditor(TypeInfo(TFPReportColor),TFPReportComponent,'Color',TFPreportColorPropertyEditor);
@@ -180,6 +186,28 @@ begin
     N:=F.PostScriptName;
   Result:=N;
 end;
+
+{ TParentGroupHeaderBandPropertyEditor }
+
+function TParentGroupHeaderBandPropertyEditor.BandAllowed(B: TFPReportCustomBand): Boolean;
+
+Var
+  G,P : TFPReportCustomGroupHeaderBand;
+
+begin
+  Result:=inherited BandAllowed(B);
+  if Result then
+    begin
+    P:=B as TFPReportCustomGroupHeaderBand;
+    G:=GetComponent(0) as TFPReportCustomGroupHeaderBand;
+    While Result and (P<>Nil) do
+      begin
+      Result:=P<>G;
+      P:=TFPReportGroupHeaderBand(P).ParentGroupHeader;
+      end;
+    end;
+end;
+
 
 { TFPreportColorPropertyEditor }
 
