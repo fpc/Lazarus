@@ -882,6 +882,7 @@ Var
   O : TReportObject;
 
 begin
+  D:=Default(TRect);
   Result:=TFPList.Create;
   try
     For I:=0 to Count-1 do
@@ -911,6 +912,7 @@ Var
 
 begin
   BL:=Nil;
+  D:=Default(TRect);
   Result:=TFPList.Create;
   try
     try

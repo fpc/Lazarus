@@ -344,6 +344,7 @@ Var
 begin
   With TSaveDialog.Create(Application) do
     try
+      DefaultExt:='.json';
       Filter:='Report files|*.json|All files'+AllFilesMask;
       Options:=[ofPathMustExist];
       If Execute then
@@ -363,20 +364,24 @@ procedure TFPReportComponentEditor.LoadReport;
 
 Var
   J : TFPJSONReport;
+  N : String;
 
 begin
   With TOpenDialog.Create(Application) do
     try
+      DefaultExt:='.json';
       Filter:='Report files|*.json|All files'+AllFilesMask;
       Options:=[ofFileMustExist];
       If Execute then
          If Component is TFPJSONReport then
            begin
+           N:=J.Name;
            J:=Component as TFPJSONReport;
            J.LoadFromFile(FileName);
            J.DesignTimeJSON.Clear;
            J.SavetoJSON(J.DesignTimeJSON);
-           end;;
+           J.Name:=N;
+           end;
     finally
       Free;
     end;
