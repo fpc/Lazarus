@@ -1011,6 +1011,7 @@ Var
         B:=TFPReportCustomBandWithData(L[i]);
         if (B.Data=ADetail.Data) then
           begin
+          // Recursively add parent groups
           if B is TFPReportCustomGroupHeaderBand then
             begin
             P:=TFPReportGroupHeaderBand(B);
@@ -1018,6 +1019,21 @@ Var
               begin
               AddBandToList(P.ParentGroupHeader);
               P:=TFPReportGroupHeaderBand(P.ParentGroupHeader);
+              end;
+            end;
+          // Recursively add child group footers...
+          if B is TFPReportCustomGroupFooterBand then
+            begin
+            P:=TFPReportGroupHeaderBand(TFPReportGroupFooterBand(B).GroupHeader);
+            if Assigned(P) then
+              begin
+              P:=TFPReportGroupHeaderBand(P.ChildGroupHeader);
+              While P<>Nil do
+                begin
+                if Assigned(P.GroupFooter) then
+                  AddBandToList(P.GroupFooter);
+                P:=TFPReportGroupHeaderBand(P.ChildGroupHeader);
+                end;
               end;
             end;
           AddBandToList(B);
