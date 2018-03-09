@@ -377,6 +377,8 @@ begin
     if POBuf<>nil then
       BasePOFile.ReadPOText(POBuf.Source);
     BasePOFile.Tag:=1;
+    // untagging is done only once for BasePoFile
+    BasePOFile.UntagAll;
 
     // Update po file with lrj or/and rst/rsj files
     for i:=0 to SrcFiles.Count-1 do begin
@@ -394,6 +396,9 @@ begin
       SrcLines.Text:=SrcBuf.Source;
       BasePOFile.UpdateStrings(SrcLines,FileType);
     end;
+    // once all rst/rsj/lrj files are processed, remove all unneeded (missing in them) items
+    BasePOFile.RemoveTaggedItems(0);
+
     SrcLines.Clear;
     if Assigned(ExcludedIdentifiers) then
       BasePOFile.RemoveIdentifiers(ExcludedIdentifiers);
