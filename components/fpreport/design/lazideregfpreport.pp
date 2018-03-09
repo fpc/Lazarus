@@ -50,8 +50,10 @@ Type
   private
     procedure AssignLocalData;
     procedure DesignReport;
+    procedure LoadReport;
     procedure PreviewReport;
     procedure RunReport;
+    procedure SaveReport;
   Public
     Procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -87,6 +89,7 @@ implementation
 
 Uses
   // Make sure these are included
+  dialogs,
   frmfprdresizeelements,
   frmfpreportalignelements,
   regfpdesigner,
@@ -127,6 +130,8 @@ Resourcestring
   SVerbPreview = 'Preview report';
   SVerbExportReport = 'Export report';
   SVerbRunReport = 'Run report';
+  SVerbSave = 'Save design to file';
+  SVerbLoad = 'Load design from file';
   SVerbOpenDesigner = 'Open designer';
   SVerbExportConfigure = 'Configuration...';
 
@@ -194,8 +199,8 @@ procedure TFPReportExportComponentEditor.PrepareItem(Index: Integer;
   const AnItem: TMenuItem);
 
 Var
-  I : Integer;
   B : Boolean;
+
 begin
   inherited PrepareItem(Index, AnItem);
   Case Index of
@@ -331,6 +336,44 @@ begin
   end;
 end;
 
+procedure TFPReportComponentEditor.SaveReport;
+
+begin
+  With TSaveDialog.Create(Application) do
+    try
+      Filter:='Report files|*.json|All files'+AllFilesMask;
+      Options:=[ofPathMustExist];
+      If Execute then
+         If Component is TFPJSONReport then
+           TFPJSONReport(Component).SaveToFile(FileName);
+    finally
+      Free;
+    end;
+end;
+
+procedure TFPReportComponentEditor.LoadReport;
+
+Var
+  J : TFPJSONReport;
+
+begin
+  With TOpenDialog.Create(Application) do
+    try
+      Filter:='Report files|*.json|All files'+AllFilesMask;
+      Options:=[ofFileMustExist];
+      If Execute then
+         If Component is TFPJSONReport then
+           begin
+           J:=Component as TFPJSONReport;
+           J.LoadFromFile(FileName);
+           J.DesignTimeJSON.Clear;
+           J.SavetoJSON(J.DesignTimeJSON);
+           end;;
+    finally
+      Free;
+    end;
+end;
+
 procedure TFPReportComponentEditor.ExecuteVerb(Index: Integer);
 begin
   if Report=Nil then
@@ -340,6 +383,8 @@ begin
     1 : AssignLocalData;
     2 : PreviewReport;
     3 : RunReport;
+    4 : SaveReport;
+    5 : LoadReport;
   end;
 end;
 
@@ -350,6 +395,8 @@ begin
     1 : Result:=SVerbAssignLocalData;
     2 : Result:=SVerbPreview;
     3 : Result:=SVerbRunReport;
+    4 : Result:=SVerbSave;
+    5 : Result:=SVerbLoad;
   else
     Result:='';
   end
@@ -357,7 +404,10 @@ end;
 
 function TFPReportComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=4;
+  if Component is TFPJSONReport then
+    Result:=6
+  else
+    Result:=4;
 end;
 
 function TFPReportComponentEditor.Report: TFPCustomReport;
