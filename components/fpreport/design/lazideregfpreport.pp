@@ -338,6 +338,9 @@ end;
 
 procedure TFPReportComponentEditor.SaveReport;
 
+Var
+  J : TFPJSONReport;
+
 begin
   With TSaveDialog.Create(Application) do
     try
@@ -345,7 +348,12 @@ begin
       Options:=[ofPathMustExist];
       If Execute then
          If Component is TFPJSONReport then
+           begin
+           J:=Component as TFPJSONReport;
+           if J.PageCount=0 then
+             J.LoadFromJSON(J.DesignTimeJSON);
            TFPJSONReport(Component).SaveToFile(FileName);
+           end;
     finally
       Free;
     end;
