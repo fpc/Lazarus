@@ -976,6 +976,10 @@ begin
     N:='Unnamed '+DefaultBandNames[ABand.ReportBandType]+' band'
   else if ShowBandTypeNames then
     N:=N+' ('+DefaultBandNames[ABand.ReportBandType]+')';
+  Canvas.Font.Name:='default';
+  Canvas.Font.Size:=10;
+  Canvas.Font.Style:=[];
+  Canvas.Font.Color:=clBlack;
   TH:=GetBandHandleHeight;
   X:=FHorzOffset+HmmToPixels(TopLeft.Left);
   Y:=FVertOffset+VmmToPixels(TopLeft.Top)-TH-2*BandTitleMargin;
