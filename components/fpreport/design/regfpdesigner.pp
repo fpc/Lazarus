@@ -217,7 +217,7 @@ Var
   lclColor : TColor;
 
 begin
-  lclColor:=TFPReportExportCanvas.RGBtoBGR(OrdValue);
+  lclColor:=TFPReportExportCanvas.RGBtoBGR(UInt32(OrdValue));
   Result:=inherited OrdValueToVisualValue(lclColor);
 end;
 
@@ -228,7 +228,7 @@ var
 
 begin
   if IdentToColor(NewValue, CValue) then
-    SetOrdValue(TFPReportExportCanvas.RGBtoBGR(CValue))
+    SetOrdValue(Longint(TFPReportExportCanvas.BGRToRGB(TColor(CValue))))
   else
     inherited SetValue(NewValue);
 end;
