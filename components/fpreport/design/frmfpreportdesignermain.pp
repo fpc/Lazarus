@@ -612,7 +612,7 @@ begin
     FOI.UpdateSelection
   else
     FOI.SelectControls(D.Objects);
-  if D.Objects.SelectionCount>0 then
+  if D.Objects.HaveSelection then
     S:=D.Objects.GetSelectionRect.AsString
   else
     S:=SNoSelection;
@@ -871,7 +871,7 @@ procedure TFPReportDesignerForm.AAlignUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=Assigned(ReportAlignFormClass)
                                and Assigned(CurrentDesigner)
-                               and CurrentDesigner.Objects.IsMultiSelect;
+                               and CurrentDesigner.Objects.HaveSelection
 end;
 
 procedure TFPReportDesignerForm.ADeleteExecute(Sender: TObject);
@@ -888,7 +888,7 @@ end;
 
 procedure TFPReportDesignerForm.ADeleteUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and (CurrentDesigner.Objects.SelectionCount>0);
+  (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and CurrentDesigner.Objects.HaveSelection;
 end;
 
 procedure TFPReportDesignerForm.AFileSaveAsExecute(Sender: TObject);
@@ -925,7 +925,7 @@ end;
 
 procedure TFPReportDesignerForm.AFrameUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and (CurrentDesigner.Objects.SelectionCount>0);
+  (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and CurrentDesigner.Objects.HaveSelection;
 end;
 
 function TFPReportDesignerForm.GetModified: boolean;
@@ -1255,7 +1255,7 @@ end;
 procedure TFPReportDesignerForm.AResizeUpdate(Sender: TObject);
 
 begin
-  (Sender as TAction).Enabled:=Assigned(ReportResizeFormClass) and Assigned(CurrentDesigner);
+  (Sender as TAction).Enabled:=Assigned(ReportResizeFormClass) and Assigned(CurrentDesigner) and (CurrentDesigner.Objects.Haveselection) ;
 end;
 
 procedure TFPReportDesignerForm.HResizeAllow(Sender: TObject);

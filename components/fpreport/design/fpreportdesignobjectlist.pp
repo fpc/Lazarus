@@ -29,8 +29,8 @@ Const
 
 Type
   TSelectionSort = (ssNone,ssHorz,ssvert);
-  THAlignAction  = (haNone,haLeft,haCenter,haRight,haSpace,haCentB);
-  TVAlignAction  = (vaNone,vaTop,vaCenter,vaBottom,vaSpace,vaCentB);
+  THAlignAction  = (haNone,haLeft,haCenter,haRight,haSpace,haCentB,haLeftB,haRightB);
+  TVAlignAction  = (vaNone,vaTop,vaCenter,vaBottom,vaSpace,vaCentB,vaTopB,vaBottomB);
   TSizeAdjust    = (saNone,saLargest,saSmallest,saValue,saParent);
   TFrameAction   = (faNone,faAll,faTop,faBottom,faLeft,faRight);
   TResizeHandlePosition = (rhNone,rhTopLeft,rhTop,rhTopRight,rhLeft,rhRight,rhBottomLeft, rhBottom,rhBottomRight);
@@ -1435,42 +1435,50 @@ Var
   Procedure AlignControl (El : TFPReportElement; Hor : THAlignAction; Ver : TValignAction; IsBorder : Boolean);
 
   Var
-    NewRect : TFPReportRect;
-    BHCenter,BVCenter : TFPReportUnits;
+    ElRect : TFPReportRect;
+    BW,BH,BHCenter,BVCenter : TFPReportUnits;
     HOffset,VOffset : TFPReportUnits;
 
   begin
+    BW:=0;
+    BH:=0;
     BHCenter:=0;
     BVCenter:=0;
-    El.Layout.GetBoundsRect(NewRect);
+    El.Layout.GetBoundsRect(ElRect);
     if Assigned(EL.Parent) then
       With EL.Parent.Layout Do
         begin
-        BHCenter:=Width / 2;
-        BVCenter:=Height / 2;
+        BW:=Width;
+        BH:=Height;
+        BHCenter:=BW / 2;
+        BVCenter:=BH / 2;
         end;
     HOffset:=0;
     VOffset:=0;
     Case hor of
-      haleft   : HOffset:=OutLineRect.Left-NewRect.Left;
-      haRight  : HOffset:=OutLineRect.Right-NewRect.Right;
-      haCenter : HOffset:=HCenter-(Newrect.Right+NewRect.Left) / 2;
-      haCentB  : HOffset:=BHCenter-(NewRect.Right+NewRect.Left) / 2;
+      haleft   : HOffset:=OutLineRect.Left-ElRect.Left;
+      haRight  : HOffset:=OutLineRect.Right-ElRect.Right;
+      haCenter : HOffset:=HCenter-(ElRect.Right+ElRect.Left) / 2;
+      haCentB  : HOffset:=BHCenter-(ElRect.Right+ElRect.Left) / 2;
+      haLeftB  : HOffset:=-ElRect.Left;
+      haRightB : HOffset:=BW-EL.Layout.Width-ElRect.Left;
       haSpace  : If Not IsBorder Then
-                   HOffset:=HSCenter-(Newrect.Right+NewRect.Left) / 2;
+                   HOffset:=HSCenter-(ElRect.Right+ElRect.Left) / 2;
     end;
     Case Ver of
-      vaTop    : VOffset:=OutLineRect.Top-NewRect.Top;
-      vaBottom : VOffset:=OutLineRect.Bottom-NewRect.Bottom;
-      vaCenter : VOffset:=VCenter-(Newrect.Bottom+NewRect.Top) / 2;
-      vaCentB  : VOffSet:=BVCenter-(NewRect.Bottom+NewRect.Top) / 2;
+      vaTop    : VOffset:=OutLineRect.Top-ElRect.Top;
+      vaBottom : VOffset:=OutLineRect.Bottom-ElRect.Bottom;
+      vaCenter : VOffset:=VCenter-(ElRect.Bottom+ElRect.Top) / 2;
+      vaCentB  : VOffSet:=BVCenter-(ElRect.Bottom+ElRect.Top) / 2;
+      vatopB   : VOffset:=-ElRect.Top;
+      vaBottomB : VOffset:=BH-EL.Layout.Height-ElRect.Top;
       vaSpace  : If Not IsBorder Then
-                   VOffset:=VSCenter-(Newrect.Bottom+NewRect.Top) / 2;
+                   VOffset:=VSCenter-(ElRect.Bottom+ElRect.Top) / 2;
     end;
     // Go back Relative to the band..
-    NewRect.OffsetRect(HOffset,VOffset);
-    EL.Layout.Left:=NewRect.Left;
-    EL.Layout.Top:=NewRect.Top;
+    ElRect.OffsetRect(HOffset,VOffset);
+    EL.Layout.Left:=ElRect.Left;
+    EL.Layout.Top:=ElRect.Top;
   end;
 
 
@@ -1548,6 +1556,7 @@ begin
         end;
       end;
     end;
+  SelectRectInvalid;
   ReportChanged;
 end;
 

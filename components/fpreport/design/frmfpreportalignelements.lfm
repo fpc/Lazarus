@@ -1,18 +1,18 @@
 object AlignForm: TAlignForm
   Left = 575
-  Height = 255
+  Height = 328
   Top = 168
   Width = 437
   BorderStyle = bsDialog
   Caption = 'Align selected elements'
-  ClientHeight = 255
+  ClientHeight = 328
   ClientWidth = 437
   Position = poOwnerFormCenter
   LCLVersion = '1.9.0.0'
   object BPAlign: TButtonPanel
     Left = 6
     Height = 42
-    Top = 207
+    Top = 280
     Width = 425
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -27,7 +27,7 @@ object AlignForm: TAlignForm
   end
   object RGHorizontal: TRadioGroup
     Left = 16
-    Height = 168
+    Height = 232
     Top = 16
     Width = 185
     AutoFill = True
@@ -39,7 +39,7 @@ object AlignForm: TAlignForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 150
+    ClientHeight = 214
     ClientWidth = 183
     Items.Strings = (
       'No action'
@@ -48,12 +48,14 @@ object AlignForm: TAlignForm
       'Align right edges'
       'Space equally'
       'Center on parent band'
+      'Flush left on parent band'
+      'Flush right on parent band'
     )
     TabOrder = 1
   end
   object RGVertical: TRadioGroup
     Left = 224
-    Height = 168
+    Height = 232
     Top = 16
     Width = 193
     AutoFill = True
@@ -65,7 +67,7 @@ object AlignForm: TAlignForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 150
+    ClientHeight = 214
     ClientWidth = 191
     Items.Strings = (
       'No action'
@@ -74,7 +76,10 @@ object AlignForm: TAlignForm
       'Align bottom edges'
       'Space equally'
       'Center on parent band'
+      'Flush top on parent band'
+      'Flush bottom on parent band'
     )
+    OnClick = RGVerticalClick
     TabOrder = 2
   end
 end

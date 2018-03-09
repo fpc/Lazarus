@@ -30,6 +30,7 @@ type
     BPAlign: TButtonPanel;
     RGHorizontal: TRadioGroup;
     RGVertical: TRadioGroup;
+    procedure RGVerticalClick(Sender: TObject);
   protected
     function GetH: THAlignAction; override;
     function GetV: TVAlignAction; override;
@@ -48,6 +49,11 @@ implementation
 {$R *.lfm}
 
 { TAlignForm }
+
+procedure TAlignForm.RGVerticalClick(Sender: TObject);
+begin
+
+end;
 
 function TAlignForm.GetH: THAlignAction;
 begin
