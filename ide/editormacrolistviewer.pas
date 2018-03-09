@@ -868,7 +868,7 @@ begin
         SkipNum(i);
         SetLength(FParams, c + 1);
         FParams[c].ParamType := ptInteger;
-        FParams[c].Num := StrToInt(copy(FText, i, j-i));
+        FParams[c].Num := StrToInt(copy(FText, j, i-j));
         inc(c);
       end
       else
@@ -877,10 +877,17 @@ begin
         s := '';
         repeat
           case FText[i] of
+            ' ',#9,#10,#13: inc(i);
+            '+': begin
+                inc(i);
+                if not (FText[i] in ['''', '#']) then exit(AddError('Expected string or char after +'));
+              end;
             '#': begin
+                inc(i);
                 j := i;
                 SkipNum(i);
-                k := StrToInt(copy(FText, i, j-i));
+                if i = j then exit(AddError('Expected number in string after #'));
+                k := StrToInt(copy(FText, j, i-j));
                 if k > 255 then exit(AddError('Argument to long'));
                 s := s + chr(k);
               end;
