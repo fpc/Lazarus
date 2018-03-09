@@ -117,6 +117,8 @@ Type
     procedure ResizeSelection(aHeight: TSizeAdjust; HSize: TFPReportUnits; aWidth: TSizeAdjust; WSize: TFPReportUnits);virtual;
     Procedure ResizeSelection(Delta : TPoint; ADPI : integer; ApplyToPos : TResizeHandlePosition);virtual;
     Procedure FrameSelection(aFrameAction : TFrameActions; doClearFirst : Boolean);
+    Procedure AdjustSelectedBandToContent(B : TFPReportCustomBand);
+    Procedure AdjustSelectedBandsToContent;
     Procedure ResetModified;
     Procedure SelectElement(E : TFPReportElement);
     // Will call selectionchanged, except when result=odrPage
@@ -634,6 +636,38 @@ begin
       Objects[i].Element.Frame.Lines:=CS;
       end;
   ReportChanged;
+end;
+
+procedure TReportObjectList.AdjustSelectedBandToContent(B: TFPReportCustomBand);
+
+Var
+  I : Integer;
+  H,P : TFPReportUnits;
+
+begin
+  if B.ChildCount=0 then
+    exit;
+  H:=B.Child[0].Layout.Height+B.Child[0].Layout.Top;
+  For I:=1 to B.ChildCount-1 do
+    begin
+    P:=B.Child[i].Layout.Height+B.Child[i].Layout.Top;
+    If P>H then
+      H:=P;
+    end;
+  B.Layout.Height:=H;
+  SelectRectInvalid;
+  ReportChanged;
+end;
+
+procedure TReportObjectList.AdjustSelectedBandsToContent;
+
+Var
+  I : integer;
+
+begin
+  For I:=0 to Count-1 do
+    If Objects[i].Selected and Objects[i].IsBand then
+      AdjustSelectedBandToContent(Objects[i].AsBand);
 end;
 
 procedure TReportObjectList.ResetModified;

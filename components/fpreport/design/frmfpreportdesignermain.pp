@@ -74,6 +74,7 @@ type
     AAlignVCenter: TAction;
     AAlignBottom: TAction;
     AAlign: TAction;
+    AResizeBandToFit: TAction;
     AFileSaveAs: TAction;
     ARecent: TAction;
     AReportData: TAction;
@@ -100,6 +101,7 @@ type
     ILReport: TImageList;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
     MISaveAs: TMenuItem;
     MIPreview: TMenuItem;
     MIframeBottom: TMenuItem;
@@ -248,6 +250,8 @@ type
     procedure AReportPropertiesUpdate(Sender: TObject);
     procedure AReportVariablesExecute(Sender: TObject);
     procedure AReportVariablesUpdate(Sender: TObject);
+    procedure AResizeBandToFitExecute(Sender: TObject);
+    procedure AResizeBandToFitUpdate(Sender: TObject);
     procedure AResizeExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormDestroy(Sender: TObject);
@@ -1206,6 +1210,17 @@ end;
 procedure TFPReportDesignerForm.AReportVariablesUpdate(Sender: TObject);
 begin
   (Sender as Taction).Enabled:=Assigned(Report) and (rdoManageVariables in DesignOptions);
+end;
+
+procedure TFPReportDesignerForm.AResizeBandToFitExecute(Sender: TObject);
+begin
+  If Assigned(CurrentDesigner) then
+   CurrentDesigner.Objects.AdjustSelectedBandsToContent;
+end;
+
+procedure TFPReportDesignerForm.AResizeBandToFitUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and (CurrentDesigner.Objects.HaveSelection);
 end;
 
 procedure TFPReportDesignerForm.AResizeExecute(Sender: TObject);

@@ -507,6 +507,9 @@ object FPReportDesignerForm: TFPReportDesignerForm
       object MIResizeVSmallest: TMenuItem
         Action = AResizeVSmallest
       end
+      object MenuItem3: TMenuItem
+        Action = AResizeBandToFit
+      end
     end
     object MFrames: TMenuItem
       Caption = 'Frames'
@@ -906,6 +909,11 @@ object FPReportDesignerForm: TFPReportDesignerForm
       Caption = 'Save as...'
       OnExecute = AFileSaveAsExecute
       OnUpdate = AFileSaveAsUpdate
+    end
+    object AResizeBandToFit: TAction
+      Caption = 'Adjust Band height to content'
+      OnExecute = AResizeBandToFitExecute
+      OnUpdate = AResizeBandToFitUpdate
     end
   end
   object SDReport: TSaveDialog
