@@ -81,6 +81,7 @@ Type
     FModified: Boolean;
     FOnReportChange: TNotifyEvent;
     FOnSelectionChange: TNotifyEvent;
+    FOnStructureChange: TNotifyEvent;
     FPage: TFPReportCustomPage;
     FPageOffSet: TPoint;
     FSelChangeCount : Integer;
@@ -102,6 +103,7 @@ Type
     // Do things
     Procedure LoadFromPage(APage : TFPReportCustomPage); virtual;
     Procedure ReportChanged; virtual;
+    Procedure StructureChanged; virtual;
     Procedure BeginSelectionUpdate;
     Procedure EndSelectionUpdate;
     Procedure ClearSelection;
@@ -142,6 +144,7 @@ Type
     Property CanvasExport : TFPReportExportCanvas Read FCanvasExport Write FCanvasExport;
     Property OnSelectionChange : TNotifyEvent Read FOnSelectionChange Write FOnSelectionChange;
     Property OnReportChange : TNotifyEvent Read FOnReportChange Write FOnReportChange;
+    Property OnStructureChange : TNotifyEvent Read FOnStructureChange Write FOnStructureChange;
     Property Modified : Boolean Read FModified;
     Property Objects[Aindex : Integer] : TReportObject Read GetObject; default;
     Property Elements[AIndex : Integer] : TFPReportElement Read GetElement;
@@ -324,6 +327,12 @@ begin
     OnReportChange(Self);
 end;
 
+procedure TReportObjectList.StructureChanged;
+begin
+  if Assigned(OnStructureChange) then
+    OnStructureChange(Self);
+end;
+
 procedure TReportObjectList.BeginSelectionUpdate;
 begin
   Inc(FSelChangeCount);
@@ -444,8 +453,10 @@ Var
   APrevBand,ANextBand : TFPReportCustomBand;
   RO : TReportObject;
   P : TPoint;
+  lStructureChanged : Boolean;
 
 begin
+  lStructureChanged:=False;
   For I:=0 to Count-1 do
     begin
     IT:=GetObject(i);
@@ -469,6 +480,7 @@ begin
           // Correct Atop.
           ATop:=ATop-(ANextBand.Layout.Top-APrevBand.Layout.Top);
           IT.Element.Layout.Top:=ATop;
+          lStructureChanged:=True;
           end
         else
           IT.Element.Layout.Top:=ATop;
@@ -476,6 +488,8 @@ begin
      end;
   SelectRectInvalid;
   ReportChanged;
+  if lStructureChanged then
+    StructureChanged;
 end;
 
 procedure TReportObjectList.ResizeSelection(aHeight: TSizeAdjust;

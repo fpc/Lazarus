@@ -299,6 +299,7 @@ type
     function CreateNewPage: TFPReportCustomPage;
     procedure DoReportChangedByDesigner(Sender: TObject);
     procedure DoSelectionModifiedByOI(Sender: TObject);
+    procedure DoStructureChange(Sender: TObject);
     function GetModified: boolean;
     procedure ActivateDesignerForElement(AElement: TFPReportElement);
     procedure MaybeAddFirstPage;
@@ -659,6 +660,7 @@ begin
   D.OnSelectionChanged:=@DoSelectionChanged;
   D.OnStateChange:=@DoStateChange;
   D.OnReportChanged:=@DoReportChangedByDesigner;
+  D.Objects.OnStructureChange:=@DoStructureChange;
   D.Objects[0].Selected:=True;
   Result:=TS;
 end;
@@ -966,6 +968,11 @@ begin
       CurrentDesigner.Invalidate;
     end;
   Modified:=True;
+end;
+
+procedure TFPReportDesignerForm.DoStructureChange(Sender: TObject);
+begin
+  FOI.RefreshReportTree;
 end;
 
 procedure TFPReportDesignerForm.DoReportChangedByDesigner(Sender: TObject);
