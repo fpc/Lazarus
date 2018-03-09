@@ -4134,8 +4134,6 @@ var
   POFilename: String;
   AnUnitInfo: TUnitInfo;
   CurFilename: String;
-  POFileAge: LongInt;
-  POFileAgeValid: Boolean;
   POOutDir: String;
   LRJFilename: String;
   UnitOutputDir: String;
@@ -4167,13 +4165,6 @@ begin
     end;
   end;
 
-  POFileAgeValid:=false;
-  if not AProject.ForceUpdatePoFiles then
-    if FileExistsCached(POFilename) then begin
-      POFileAge:=FileAgeCached(POFilename);
-      POFileAgeValid:=true;
-    end;
-
   //DebugLn(['TMainIDE.UpdateProjectPOFile Updating POFilename="',POFilename,'"']);
 
   Files := TFilenameToPointerTree.Create(false);
@@ -4189,8 +4180,7 @@ begin
         continue;
       // check .lrj file
       LRJFilename:=ChangeFileExt(CurFilename,'.lrj');
-      if FileExistsCached(LRJFilename)
-      and ((not POFileAgeValid) or (FileAgeCached(LRJFilename)>POFileAge)) then
+      if FileExistsCached(LRJFilename) then
         Files[LRJFilename]:=nil;
       // check .rst/.rsj file
       RSTFilename:=ChangeFileExt(CurFilename,'.rst');
@@ -4206,9 +4196,9 @@ begin
         end;
       end;
       //DebugLn(['TMainIDE.UpdateProjectPOFile Looking for .rst file ="',RSTFilename,'"']);
-      if FileExistsCached(RSTFilename) and ((not POFileAgeValid) or (FileAgeCached(RSTFilename)>POFileAge)) then
+      if FileExistsCached(RSTFilename) then
         Files[RSTFilename]:=nil;
-      if FileExistsCached(RSJFilename) and ((not POFileAgeValid) or (FileAgeCached(RSJFilename)>POFileAge)) then
+      if FileExistsCached(RSJFilename) then
         Files[RSJFilename]:=nil;
     end;
 
