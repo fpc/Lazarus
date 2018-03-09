@@ -463,7 +463,7 @@ begin
   MRUMenuManager1 := TMRUMenuManager.Create(self);
   with MRUMenuManager1 do
     begin
-    maxRecent := 5;
+    maxRecent := 15;
     IniFileName := ChangeFileExt(ParamStr(0), '.ini');
     MenuItem := MIRecent;
     PopupMenu := PMRecent;
