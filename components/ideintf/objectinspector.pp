@@ -4407,13 +4407,16 @@ begin
     ButtonWidth := Scale96ToForm(23);
     Anchors := [akTop, akLeft, akRight];
     BorderSpacing.Left := 5;
-    TabOrder := 0;
     OnAfterFilter := @PropFilterEditAfterFilter;
     OnResize := @PropFilterEditResize;
   end;
   TIDEImages.AssignImage(PropFilterEdit.Glyph, 'btnfiltercancel');
 
   CreateNoteBook;
+  // TabOrder has no effect. TAB key is handled by TObjectInspectorDlg.KeyDown().
+  CompFilterEdit.TabOrder := 0;
+  ComponentTree.TabOrder := 1;
+  PropFilterEdit.TabOrder := 2;
 end;
 
 destructor TObjectInspectorDlg.Destroy;
@@ -4964,38 +4967,31 @@ begin
   Handled := false;
 
   //CTRL-[Shift]-TAB will select next or previous notebook tab
-  if Key=VK_TAB then
+  if (Key=VK_TAB) and (ssCtrl in Shift) then
   begin
-    if Shift = [ssCtrl] then
-    begin
-      Handled := true;
+    Handled := true;
+    if ssShift in Shift then
+      ShowNextPage(-1)
+    else
       ShowNextPage(1);
-    end else if Shift = [ssCtrl, ssShift] then
-    begin
-      Handled := true;
-      ShowNextPage(-1);
-    end;
   end;
 
   //Allow combobox navigation while it has focus
-  if not Handled
-  then Handled := AvailPersistentComboBox.Focused;
-
   if not Handled then
+    Handled := AvailPersistentComboBox.Focused;
+
+  //CTRL-ArrowDown will dropdown the component combobox
+  if (not Handled) and (Key=VK_DOWN) and (ssCtrl in Shift) then
   begin
-    //CTRL-ArrowDown will dropdown the component combobox
-    if (Key=VK_DOWN) and (ssCtrl in Shift) then
-    begin
-      Handled := true;
-      if AvailPersistentComboBox.Canfocus
-      then AvailPersistentComboBox.SetFocus;
-      AvailPersistentComboBox.DroppedDown := true;
-    end;
+    Handled := true;
+    if AvailPersistentComboBox.Canfocus then
+      AvailPersistentComboBox.SetFocus;
+    AvailPersistentComboBox.DroppedDown := true;
   end;
 
   if not Handled then
   begin
-    if Assigned(OnOIKeyDown) then 
+    if Assigned(OnOIKeyDown) then
       OnOIKeyDown(Self,Key,Shift);
     if (Key<>VK_UNKNOWN) and Assigned(OnRemainingKeyDown) then
       OnRemainingKeyDown(Self,Key,Shift);
@@ -5544,9 +5540,12 @@ procedure TObjectInspectorDlg.KeyDown(var Key: Word; Shift: TShiftState);
 var
   CurGrid: TOICustomPropertyGrid;
 begin
-  CurGrid:=GetActivePropertyGrid;
+  // ToDo: Allow TAB key to FilterEdit, TreeView and Grid. Now the Grid gets seleted always.
+  DebugLn(['TObjectInspectorDlg.KeyDown: Key=', Key, ', ActiveControl=', ActiveControl]);
+
   //Do not disturb the combobox navigation while it has focus
   if not AvailPersistentComboBox.DroppedDown then begin
+    CurGrid:=GetActivePropertyGrid;
     if CurGrid<>nil then begin
       CurGrid.HandleStandardKeys(Key,Shift);
       if Key=VK_UNKNOWN then exit;
