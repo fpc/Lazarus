@@ -95,7 +95,7 @@ begin
     and (TLMessage(AMessage).Msg <>LM_PAINT)
     and (TLMessage(AMessage).Msg <>LM_KEYDOWN)
     and (TLMessage(AMessage).Msg <>LM_KEYUP)
-    and (TLMessage(AMessage).Msg < CN_KEYDOWN ) then
+    and (TLMessage(AMessage).Msg <> CN_KEYDOWN ) then
     DebugLn('DeliverMessage ',DbgS(Target),
     ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
