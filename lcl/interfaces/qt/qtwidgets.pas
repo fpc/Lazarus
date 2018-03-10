@@ -16913,6 +16913,8 @@ begin
   FHasPaint := False;
   FDialog := ADialog;
   Widget := CreateWidget(parent, f);
+  setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
+  QtWidgetSet.AddHandle(Self);
 end;
 
 procedure TQtDialog.AttachEvents;
@@ -19833,6 +19835,8 @@ begin
     AParent := QApplication_activeWindow;
   {$ENDIF}
   Widget := CreateWidget(AParent);
+  setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
+  QtWidgetSet.AddHandle(Self);
 end;
 
 procedure TQtMessageBox.AttachEvents;
