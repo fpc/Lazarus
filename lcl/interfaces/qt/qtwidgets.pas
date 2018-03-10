@@ -2090,7 +2090,7 @@ begin
   // Sets it's initial properties
 
   // set focus policy
-  if (LCLObject <> nil) then
+  if Assigned(LCLObject) then
   begin
     if (Self is TQtMainWindow) and
       (
@@ -2129,20 +2129,21 @@ begin
     end;
     if LCLObject.Perform(LM_NCHITTEST, 0, 0)=HTTRANSPARENT then
       setAttribute(QtWA_TransparentForMouseEvents);
-  end;
 
-  if (csDesigning in LCLObject.ComponentState) and not
-     (Self is TQtMainWindow) and
-     HasPaint and
-     getAutoFillBackground or
-     ((csDesigning in LCLObject.ComponentState) and
-      (ClassType = TQtTabWidget)) then
-    setAutoFillBackground(False);
+
+    if (csDesigning in LCLObject.ComponentState) and not
+       (Self is TQtMainWindow) and
+       HasPaint and
+       getAutoFillBackground or
+       ((csDesigning in LCLObject.ComponentState) and
+        (ClassType = TQtTabWidget)) then
+      setAutoFillBackground(False);
+  end;
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
 
-  if FWidgetNeedFontColorInitialization then
+  if Assigned(LCLObject) and FWidgetNeedFontColorInitialization then
     setInitialFontColor(LCLObject);
   if (FParams.Style and WS_VISIBLE) = 0 then
     QWidget_hide(Widget)
