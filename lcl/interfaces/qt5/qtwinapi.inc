@@ -2445,12 +2445,17 @@ var
 begin
   Result := 0;
   Widget := QApplication_activeWindow;
+  {return modal if activeWindow is nil issue #33409}
+  if Widget = nil then
+    Widget := QApplication_activeModalWidget;
+  if Widget = nil then
+    Widget := QApplication_activePopupWidget;
   if Widget <> nil then
   begin
     W := QtObjectFromWidgetH(Widget);
-    if W <> nil then
+    if Assigned(W) and IsValidHandle(HWND(W)) then
     begin
-      if TQtMainWindow(W).MDIAreaHandle <> nil then
+      if (TQtWidget(W) is TQtMainWindow) and Assigned(TQtMainWindow(W).MDIAreaHandle) then
       begin
         Area := QMdiAreaH(TQtMainWindow(W).MDIAreaHandle.Widget);
         SubW := QtObjectFromWidgetH(QMdiArea_activeSubWindow(Area));
@@ -6007,6 +6012,8 @@ var
   W: QWidgetH;
 begin
   {$IFDEF HASX11}
+  {$note this should return current system active window, not
+    application one, if our app isn''t active.}
   if WindowManagerName = 'metacity' then
     W := X11GetActivewindow
   else

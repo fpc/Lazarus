@@ -2498,12 +2498,17 @@ var
 begin
   Result := 0;
   Widget := QApplication_activeWindow;
-  if Widget <> nil then
+  {return modal if activeWindow is nil issue #33409}
+  if Widget = nil then
+    Widget := QApplication_activeModalWidget;
+  if Widget = nil then
+    Widget := QApplication_activePopupWidget;
+  if Assigned(Widget) then
   begin
     W := QtObjectFromWidgetH(Widget);
-    if W <> nil then
+    if Assigned(W) and IsValidHandle(HWND(W)) then
     begin
-      if TQtMainWindow(W).MDIAreaHandle <> nil then
+      if (TQtWidget(W) is TQtMainWindow) and (TQtMainWindow(W).MDIAreaHandle <> nil) then
       begin
         Area := QMdiAreaH(TQtMainWindow(W).MDIAreaHandle.Widget);
         SubW := QtObjectFromWidgetH(QMdiArea_activeSubWindow(Area));

@@ -574,7 +574,7 @@ end;
 function TQtWidgetSet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   AObject: TQtObject;
-  W: TQtMainWindow;
+  W: TQtWidget;
   LCLEvent: QLCLMessageEventH;
   ASequence: QKeySequenceH;
   AKey: WideString;
@@ -764,7 +764,7 @@ begin
         // eat next appdeactivate & appactivate since we are changing form
         // flags !
         if (StayOnTopList <> nil) then
-          W := TQtMainWindow(HWNDFromWidgetH(QApplication_activeWindow()))
+          W := TQtWidget(GetActiveWindow)
         else
           W := nil;
         Application.IntfAppActivate;
