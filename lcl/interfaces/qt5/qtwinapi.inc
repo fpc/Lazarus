@@ -6008,20 +6008,18 @@ begin
 end;
 
 function TQtWidgetSet.GetForegroundWindow: HWND;
-var
-  W: QWidgetH;
 begin
   {$IFDEF HASX11}
   {$note this should return current system active window, not
-    application one, if our app isn''t active.}
+    application one, if our app isn''t active.
+    This is per MSDN and pretty win32 specific}
   if WindowManagerName = 'metacity' then
-    W := X11GetActivewindow
+    Result := HwndFromWidgetH(X11GetActivewindow)
   else
-    W := QApplication_activeWindow();
+    Result := GetActiveWindow;
   {$ELSE}
-  W := QApplication_activeWindow();
+  Result := GetActiveWindow;
   {$ENDIF}
-  Result := HwndFromWidgetH(W);
 end;
 
 function TQtWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
