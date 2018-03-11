@@ -105,7 +105,7 @@ type
     FEventName: String;
     FHasError: Boolean;
     FText, FOrigText: String;
-    FPos: Integer;
+    FPos, FPosCompensate: Integer;
     FEventCommand: TSynEditorCommand;
     FParams: Array of record
         ParamType: TSynEventParamType;
@@ -800,11 +800,32 @@ begin
 end;
 
 constructor TIdeMacroEventReader.Create(const Atext: String);
+var
+  i: Integer;
+  s: String;
 begin
   FText := Atext;
   FOrigText := Atext;
   FHasError := False;
   FErrorText := '';
+
+  FText := TrimRight(FText);
+  FPosCompensate := Length(FOrigText) - Length(FText);
+
+  FText := TrimLeft(FText);
+  i := length(FText);
+  if (i > 11) and
+     (lowercase(copy(FText, 1, 5)) = 'begin') and
+     (FText[6] in [#9,#10,#13,' ']) and
+     (lowercase(copy(FText, i-3, 4)) = 'end.') and
+     (FText[i-4] in [#9,#10,#13,' '])
+  then begin
+    FText := copy(FText, 7, i-11);
+    FPosCompensate := FPosCompensate + 4;
+    s := TrimRight(FText);
+    FPosCompensate := FPosCompensate + Length(FText) - Length(s);
+    FText := Trim(FText);
+  end;
 end;
 
 function TIdeMacroEventReader.EventCommand: TSynEditorCommand;
@@ -831,11 +852,12 @@ var
   s: String;
 begin
   FEventName := '';
-  FText := Trim(FText);
+  FText := TrimLeft(FText);
+
   Result := (FText <> '') and (not FHasError);
   if not Result then exit;
   Result := False;
-  FPos := Length(FOrigText) - Length(FText);
+  FPos := Length(FOrigText) - Length(FText) - FPosCompensate;
 
   FHasError := True; // Assume the worst
 
@@ -849,7 +871,7 @@ begin
   FEventCommand := j;
   FEventName := s;
 
-  FPos := Length(FOrigText) - Length(FText);
+  FPos := Length(FOrigText) - Length(FText) - FPosCompensate;
   while (i <= Length(FText)) and (FText[i] in [' ', #9]) do inc (i);
   if (i > Length(FText)) then exit(AddError('Expected "(" or ";" bot got end of file'));
 
