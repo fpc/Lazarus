@@ -176,7 +176,7 @@ type
     ButtonPanel1: TButtonPanel;
     chkRepeat: TCheckBox;
     lbMoveTo: TLabel;
-    lbRecordedView: TListView;
+    lbMacroView: TListView;
     mnExport: TMenuItem;
     mnImport: TMenuItem;
     OpenDialog1: TOpenDialog;
@@ -205,7 +205,7 @@ type
     procedure btnSetKeysClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
-    procedure lbRecordedViewSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
+    procedure lbMacroViewSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure mnExportClick(Sender: TObject);
     procedure mnImportClick(Sender: TObject);
     procedure tbIDEClick(Sender: TObject);
@@ -1019,8 +1019,8 @@ var
   s: String;
   M: TEditorMacro;
 begin
-  if lbRecordedView.ItemIndex < 0 then exit;
-  M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
+  if lbMacroView.ItemIndex < 0 then exit;
+  M := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
   s := M.MacroName;
   if InputQuery(lisNewMacroname2, Format(lisEnterNewNameForMacroS, [m.MacroName]), s)
   then begin
@@ -1048,7 +1048,7 @@ var
   se: TSourceEditorInterface;
 begin
   if ActiveEditorMacro <> nil then exit;
-  if lbRecordedView.ItemIndex < 0 then exit;
+  if lbMacroView.ItemIndex < 0 then exit;
   se := SourceEditorManagerIntf.ActiveEditor;
   if se = nil then Exit;
 
@@ -1057,7 +1057,7 @@ begin
   FIsPlaying := True;
   UpdateButtons;
 
-  M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
+  M := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
   try
     while i > 0 do begin
       M.PlaybackMacro(TCustomSynEdit(se.EditorControl));
@@ -1076,15 +1076,15 @@ procedure TMacroListView.btnDeleteClick(Sender: TObject);
 var
   m: TEditorMacro;
 begin
-  if lbRecordedView.ItemIndex < 0 then exit;
+  if lbMacroView.ItemIndex < 0 then exit;
   if IDEMessageDialog(lisReallyDelete, lisDeleteSelectedMacro, mtConfirmation, [
     mbYes, mbNo]) = mrYes
   then begin
-    if SelectedEditorMacro = CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex] then begin
+    if SelectedEditorMacro = CurrentEditorMacroList.Macros[lbMacroView.ItemIndex] then begin
       SelectedEditorMacro := nil;
     end;
-    m := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
-    CurrentEditorMacroList.Delete(lbRecordedView.ItemIndex);
+    m := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
+    CurrentEditorMacroList.Delete(lbMacroView.ItemIndex);
     m.Free;
     if CurrentEditorMacroList = EditorMacroListProj then Project1.Modified := True;
     if CurrentEditorMacroList = EditorMacroListGlob then MainIDEInterface.SaveEnvironment(False);
@@ -1096,8 +1096,8 @@ procedure TMacroListView.btnEditClick(Sender: TObject);
 var
   M: TEditorMacro;
 begin
-  if lbRecordedView.ItemIndex < 0 then exit;
-  M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
+  if lbMacroView.ItemIndex < 0 then exit;
+  M := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
   if M = nil then exit;
   LazarusIDE.DoOpenEditorFile(
     EditorMacroVirtualDrive+MacroListToName(CurrentEditorMacroList)+'|'+M.MacroName,
@@ -1130,8 +1130,8 @@ end;
 procedure TMacroListView.btnSelectClick(Sender: TObject);
 begin
   if ActiveEditorMacro <> nil then exit;
-  if lbRecordedView.ItemIndex >= 0 then
-    SelectedEditorMacro := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex]
+  if lbMacroView.ItemIndex >= 0 then
+    SelectedEditorMacro := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex]
   else
     SelectedEditorMacro:= nil;
   UpdateDisplay;
@@ -1142,8 +1142,8 @@ var
   i: integer;
   M: TEditorMacro;
 begin
-  if lbRecordedView.ItemIndex < 0 then exit;
-  M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
+  if lbMacroView.ItemIndex < 0 then exit;
+  M := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
 
   if (M.KeyBinding = nil) or (M.KeyBinding.IdeCmd = nil) or
      not(M.KeyBinding.IdeCmd is TKeyCommandRelation)
@@ -1168,7 +1168,7 @@ end;
 
 procedure TMacroListView.FormActivate(Sender: TObject);
 begin
-  lbRecordedView.HideSelection := Active;
+  lbMacroView.HideSelection := Active;
 end;
 
 procedure TMacroListView.HelpButtonClick(Sender: TObject);
@@ -1176,7 +1176,7 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TMacroListView.lbRecordedViewSelectItem(Sender: TObject; Item: TListItem;
+procedure TMacroListView.lbMacroViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 begin
   UpdateButtons;
@@ -1186,14 +1186,14 @@ procedure TMacroListView.mnExportClick(Sender: TObject);
 var
   Conf: TXMLConfig;
 begin
-  if lbRecordedView.ItemIndex < 0 then exit;
+  if lbMacroView.ItemIndex < 0 then exit;
 
   if SaveDialog1.Execute then begin
     Conf := TXMLConfig.Create(SaveDialog1.FileName);
     try
       Conf.Clear;
       Conf.SetValue('EditorMacros/Count', 1);
-      CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex].WriteToXmlConf(Conf, 'EditorMacros/Macro1/');
+      CurrentEditorMacroList.Macros[lbMacroView.ItemIndex].WriteToXmlConf(Conf, 'EditorMacros/Macro1/');
     finally
       Conf.Free;
     end;
@@ -1235,8 +1235,8 @@ procedure TMacroListView.tbMoveIDEClick(Sender: TObject);
 var
   i: Integer;
 begin
-  if (lbRecordedView.ItemIndex < 0) or (CurrentEditorMacroList = EditorMacroListGlob) then exit;
-  i := lbRecordedView.ItemIndex;
+  if (lbMacroView.ItemIndex < 0) or (CurrentEditorMacroList = EditorMacroListGlob) then exit;
+  i := lbMacroView.ItemIndex;
   EditorMacroListGlob.Add(CurrentEditorMacroList.Macros[i]);
   CurrentEditorMacroList.Delete(i);
   if CurrentEditorMacroList = EditorMacroListProj then Project1.Modified := True;
@@ -1248,8 +1248,8 @@ procedure TMacroListView.tbMoveProjectClick(Sender: TObject);
 var
   i: Integer;
 begin
-  if (lbRecordedView.ItemIndex < 0) or (CurrentEditorMacroList = EditorMacroListProj) then exit;
-  i := lbRecordedView.ItemIndex;
+  if (lbMacroView.ItemIndex < 0) or (CurrentEditorMacroList = EditorMacroListProj) then exit;
+  i := lbMacroView.ItemIndex;
   EditorMacroListProj.Add(CurrentEditorMacroList.Macros[i]);
   CurrentEditorMacroList.Delete(i);
   Project1.Modified := True;
@@ -1293,12 +1293,12 @@ var
   i, idx: Integer;
   M: TEditorMacro;
 begin
-  idx := lbRecordedView.ItemIndex;
-  lbRecordedView.Items.Clear;
+  idx := lbMacroView.ItemIndex;
+  lbMacroView.Items.Clear;
 
   for i := 0 to CurrentEditorMacroList.Count - 1 do begin
     M := CurrentEditorMacroList.Macros[i];
-    NewItem := lbRecordedView.Items.Add;
+    NewItem := lbMacroView.Items.Add;
 
     if m.KeyBinding <> nil then
       NewItem.Caption := M.MacroName + M.KeyBinding.ShortCutAsText
@@ -1320,12 +1320,12 @@ begin
         NewItem.ImageIndex := FImageSel;
     end;
   end;
-  if idx < lbRecordedView.Items.Count then
-    lbRecordedView.ItemIndex := idx
+  if idx < lbMacroView.Items.Count then
+    lbMacroView.ItemIndex := idx
   else
-    lbRecordedView.ItemIndex := -1;
+    lbMacroView.ItemIndex := -1;
 
-  lbRecordedViewSelectItem(nil, nil, False);
+  lbMacroViewSelectItem(nil, nil, False);
   UpdateButtons;
 end;
 
@@ -1335,10 +1335,10 @@ var
   M: TEditorMacro;
   RecState: TEditorMacroState;
 begin
-  IsSel := (lbRecordedView.ItemIndex >= 0);
+  IsSel := (lbMacroView.ItemIndex >= 0);
   IsStopped := (ActiveEditorMacro = nil);
   if IsSel then
-    M := CurrentEditorMacroList.Macros[lbRecordedView.ItemIndex];
+    M := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
   IsErr := IsSel and M.IsInvalid;
   RecState := emStopped;
   if EditorMacroForRecording <> nil then
@@ -1436,7 +1436,7 @@ begin
   mnImport.Caption := lisDlgImport;
   mnExport.Caption := lisDlgExport;
 
-  lbRecordedView.SmallImages := IDEImages.Images_16;
+  lbMacroView.SmallImages := IDEImages.Images_16;
   FImageRec := IDEImages.LoadImage('Record');  // red dot
   FImagePlay := IDEImages.LoadImage('menu_run');  // green triangle
   FImageSel := IDEImages.LoadImage('arrow_right');
