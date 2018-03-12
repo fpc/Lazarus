@@ -1697,11 +1697,6 @@ begin
         aPoItem.PreviousID := '';
         FModified := true;
       end;
-    // is Context of some use ?
-    {if aPoItem.Context = '' then begin
-      aPoItem.Context := aPoItem.IdentifierLow;
-      FModified := True;
-      end;}
   end;
 end;
 
