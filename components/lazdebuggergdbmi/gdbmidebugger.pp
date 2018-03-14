@@ -481,6 +481,7 @@ type
   TGDBMIDebuggerCommandInitDebugger = class(TGDBMIDebuggerCommand)
   protected
     FSuccess: Boolean;
+    function DoSetInternalError: Boolean;
     function  DoExecute: Boolean; override;
   public
     property Success: Boolean read FSuccess;
@@ -494,7 +495,6 @@ type
     function DoChangeFilename: Boolean;
     function DoSetPascal: Boolean;
     function DoSetCaseSensitivity: Boolean;
-    function DoSetInternalError: Boolean;
     function DoSetMaxValueMemLimit: Boolean;
   end;
 
@@ -1845,9 +1845,6 @@ begin
   // Setting extensions dumps GDB (bug #508)
   Result := ExecuteCommand('-gdb-set language pascal', [], [cfCheckError]);
   Result := Result and (DebuggerState <> dsError);
-  DoSetInternalError();
-  DoSetCaseSensitivity();
-  DoSetMaxValueMemLimit();
 (*
     ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
     if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
@@ -1870,21 +1867,6 @@ begin
     gdcsAlwaysOn:  ExecuteCommand('-gdb-set case-sensitive on', [], []);
     gdcsGdbDefault: ; // do nothing
   end;
-end;
-
-function TGDBMIDebuggerChangeFilenameBase.DoSetInternalError: Boolean;
-begin
-  if (FTheDebugger.FGDBVersionMajor < 7) then
-    exit;
-  // available from GDB 7.0
-  // On w32, it has no effect until GDB 7.7
-  ExecuteCommand('maint set internal-error quit no', [], []);
-  ExecuteCommand('maint set internal-error corefile no', [], []);
-  ExecuteCommand('maint set internal-warning quit no', [], []);
-  ExecuteCommand('maint set internal-warning corefile no', [], []);
-  // available from GDB 7.9
-  ExecuteCommand('maint set demangler-warning quit no', [], []);
-  ExecuteCommand('maint set demangler-warning corefile no', [], []);
 end;
 
 function TGDBMIDebuggerChangeFilenameBase.DoSetMaxValueMemLimit: Boolean;
@@ -2923,6 +2905,21 @@ end;
 
 { TGDBMIDebuggerCommandInitDebugger }
 
+function TGDBMIDebuggerCommandInitDebugger.DoSetInternalError: Boolean;
+begin
+  if (FTheDebugger.FGDBVersionMajor < 7) then
+    exit;
+  // available from GDB 7.0
+  // On w32, it has no effect until GDB 7.7
+  ExecuteCommand('maint set internal-error quit no', [], []);
+  ExecuteCommand('maint set internal-error corefile no', [], []);
+  ExecuteCommand('maint set internal-warning quit no', [], []);
+  ExecuteCommand('maint set internal-warning corefile no', [], []);
+  // available from GDB 7.9
+  ExecuteCommand('maint set demangler-warning quit no', [], []);
+  ExecuteCommand('maint set demangler-warning corefile no', [], []);
+end;
+
 function TGDBMIDebuggerCommandInitDebugger.DoExecute: Boolean;
   function StoreGdbVersionAsNumber: Boolean;
   var
@@ -3030,6 +3027,9 @@ begin
   // new lines like in large functions or procedures
   ExecuteCommand('set width 50000', []);
 
+  ParseGDBVersionMI;
+  DoSetInternalError;
+
   FTheDebugger.FAsyncModeEnabled := False;
   if TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).UseAsyncCommandMode then begin
     if ExecuteCommand('set target-async on', R, []) and (R.State <> dsError) then begin
@@ -3041,7 +3041,6 @@ begin
       ExecuteCommand('set target-async off', R, []);
   end;
 
-  ParseGDBVersionMI;
 end;
 
 procedure TGDBMIDebuggerCommandStack.DoCallstackFreed(Sender: TObject);
@@ -5100,7 +5099,6 @@ begin
     {$ENDIF}
 
     ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
-    DoSetInternalError();
     DoSetCaseSensitivity();
     DoSetMaxValueMemLimit();
 
@@ -5314,9 +5312,6 @@ begin
   // Tnit (StartDebugging)
   TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
   ExecuteCommand('-gdb-set language pascal', [cfCheckError]); // TODO: Maybe remove, must be done after attach
-  DoSetInternalError();
-  DoSetCaseSensitivity();
-  DoSetMaxValueMemLimit();
 
   //{$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
   //InitConsole;
@@ -5395,6 +5390,8 @@ begin
   TargetInfo^.TargetPID := NewPID;
 
   DoSetPascal;
+  DoSetCaseSensitivity();
+  DoSetMaxValueMemLimit();
 
   if (FTheDebugger.FileName <> '') and (pos('READING SYMBOLS FROM', UpperCase(CmdResp)) < 1) then begin
     ExecuteCommand('ptype TObject', [], R);
@@ -5402,6 +5399,8 @@ begin
       ExecuteCommand('-file-exec-and-symbols %s',
                      [FTheDebugger.ConvertToGDBPath(FTheDebugger.FileName, cgptExeName)], R);
       DoSetPascal;
+      DoSetCaseSensitivity();
+      DoSetMaxValueMemLimit();
     end;
   end;
 
