@@ -31,16 +31,19 @@ unit LCLVersion;
 
 interface
 
+uses
+  LazVersion;
+
 type
   TStringFunc = function: String;
 
 const
-  lcl_major = 1;
-  lcl_minor = 9;
-  lcl_release = 0;
-  lcl_patch = 0;
-  lcl_fullversion = ((lcl_major *  100 + lcl_minor) * 100 + lcl_release) * 100 + lcl_patch;
-  lcl_version = '1.9.0.0';
+  lcl_major = laz_major;
+  lcl_minor = laz_minor;
+  lcl_release = laz_release;
+  lcl_patch = laz_patch;
+  lcl_fullversion = laz_fullversion;
+  lcl_version = laz_version;
 
 var
   lcl_revision_func: TStringFunc;
