@@ -6826,7 +6826,7 @@ begin
       ecMatchBracket:
         FindMatchingBracket;
       ecChar:
-        if not ReadOnly and (AChar >= #32) and (AChar <> #127) then begin
+        if not ReadOnly and ((AChar = #9) or (AChar >= #32)) and (AChar <> #127) then begin
           if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then begin
             SetSelTextExternal(AChar);
           end else begin
