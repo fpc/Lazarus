@@ -257,6 +257,7 @@ begin
   Markup.EndMarkup;
 
   PushBaseName('edit');
+    SetSynEditHeight(40);
     ClearInvalidatedLines;
     DoKeyPressAtPos(1, 13, [VK_SPACE, VK_SPACE]); // if b then
 //    TestInvalidate('after edit', 14, 15); // what about 13, ok it is already invalidated....

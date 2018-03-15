@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, math, fpcunit,
-  Forms, LCLType, LCLProc, Clipbrd, LazUTF8,
+  Forms, LCLType, LCLProc, Clipbrd, Controls, LazUTF8,
   SynEdit, SynEditTypes, SynEditPointClasses, SynEditKeyCmds, LazSynTextArea, SynEditMarkup;
 
 type
@@ -53,6 +53,7 @@ type
     FBaseTestNames: Array of String;
     FFixedBaseTestNames: Integer;
     FForm : TForm;
+    FScroll: TScrollBox;
     FUseFullText: Boolean;
     function GetClipBoardText: String;
     procedure SetBaseTestName(const AValue: String);
@@ -71,6 +72,7 @@ type
     function  LinesReplaceText(Lines: Array of String; Repl: Array of const): String;
   protected
     procedure ReCreateEdit;
+    procedure SetSynEditHeight(Lines: Integer; PartLinePixel: Integer = 3);
     procedure SetLines(Lines: Array of String);
     (* Setting selection, with one X/Y pair having negative values, will set caret to other X/Y pair and clear selection *)
     // Locical Caret
@@ -266,6 +268,9 @@ begin
   Clipboard.Open;
 
   FForm := TForm.Create(nil);
+  FScroll := TScrollBox.Create(FForm);
+  FScroll.Parent := FForm;
+  FScroll.Align := alClient;
   ReCreateEdit;
   FForm.Show;
   FFixedBaseTestNames := 0;
@@ -558,12 +563,18 @@ end;
 procedure TTestBase.ReCreateEdit;
 begin
   FreeAndNil(FSynEdit);
-  FSynEdit := TTestSynEdit.Create(FForm);
+  FSynEdit := TTestSynEdit.Create(FScroll);
   FSynEdit.Parent := FForm;
   FSynEdit.Top := 0;
   FSynEdit.Left := 0;
   FSynEdit.Width:= 500;
   FSynEdit.Height := 250; // FSynEdit.Font.Height * 20 + 2;
+end;
+
+procedure TTestBase.SetSynEditHeight(Lines: Integer; PartLinePixel: Integer);
+begin
+  FSynEdit.Height := FSynEdit.LineHeight * Lines + PartLinePixel +
+    (FSynEdit.Height - FSynEdit.ClientHeight);
 end;
 
 procedure TTestBase.SetLines(Lines: array of String);
