@@ -128,6 +128,7 @@ begin
   FValueControls[rtBoolean]:=CBBoolean;
   FValueControls[rtInteger]:=SEinteger;
   FValueControls[rtFloat]:=SEFloat;
+  FValueControls[rtCurrency]:=SEFloat;
   FValueControls[rtDateTime]:=DEDateTime;
   FValueControls[rtString]:=EString;
   For T in TResultType do
@@ -363,6 +364,7 @@ begin
       rtBoolean : AsBoolean:=CBBoolean.Checked;
       rtInteger : AsInteger:=SEinteger.Value;
       rtFloat   : AsFloat:=SEFloat.Value;
+      rtCurrency : AsCurrency:=SEFloat.Value;
       rtDateTime : AsDateTime:=DEDateTime.Date;
       rtString : AsString := EString.Text;
     else
@@ -410,6 +412,7 @@ begin
       rtBoolean : CBBoolean.Checked:=AsBoolean;
       rtInteger : SEinteger.Value:=AsInteger;
       rtFloat   : SEFloat.Value:=AsFloat;
+      rtCurrency  : SEFloat.Value:=AsCurrency;
       rtDateTime : DEDateTime.Date:=AsDateTime;
       rtString : EString.Text:=AsString;
     else
