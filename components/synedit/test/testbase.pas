@@ -36,6 +36,7 @@ type
                              AFlags: TTestSetSelFlags = []
                             );
     procedure SimulatePaintText;
+    procedure InvalidateLines(FirstLine, LastLine: integer); reintroduce;
     property ViewedTextBuffer;
     property TextBuffer;
     property TextView; // foldedview
@@ -85,7 +86,9 @@ type
     procedure SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer;
       DoLock: Boolean = False; AMode: TSynSelectionMode = smCurrent);
     procedure DoKeyPress(Key: Word; Shift: TShiftState = []);
+    procedure DoKeyPress(Key: Array of Word; Shift: TShiftState = []);
     procedure DoKeyPressAtPos(X, Y: Integer; Key: Word; Shift: TShiftState = []);
+    procedure DoKeyPressAtPos(X, Y: Integer; Key: array of Word; Shift: TShiftState = []);
 
     procedure TestFail(Name, Func, Expect, Got: String; Result: Boolean = False);
     procedure PushBaseName(Add: String);
@@ -166,6 +169,7 @@ begin
       VK_RETURN:   c := #13;
       VK_TAB:      c := #9;
       VK_ESCAPE:   c := #27;
+      VK_SPACE:    c := #32;
     end
   else
   if Shift = [ssShift] then
@@ -247,6 +251,11 @@ begin
   Canvas.ClipRect := Rect(0,0,1000,1000);
   Paint;
   //PaintTextLines(Rect(0,0,1000,1000), 0, Lines.Count - 1, 1, 100);
+end;
+
+procedure TTestSynEdit.InvalidateLines(FirstLine, LastLine: integer);
+begin
+  inherited;
 end;
 
 { TTestBase }
@@ -675,7 +684,22 @@ begin
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
+procedure TTestBase.DoKeyPress(Key: array of Word; Shift: TShiftState);
+var
+  i: Integer;
+begin
+  for i := 0 to Length(Key) - 1 do
+    DoKeyPress(Key[i], Shift);
+end;
+
 procedure TTestBase.DoKeyPressAtPos(X, Y: Integer; Key: Word; Shift: TShiftState = []);
+begin
+  SetCaret(X, Y);
+  DoKeyPress(Key, Shift);
+end;
+
+procedure TTestBase.DoKeyPressAtPos(X, Y: Integer; Key: array of Word;
+  Shift: TShiftState);
 begin
   SetCaret(X, Y);
   DoKeyPress(Key, Shift);

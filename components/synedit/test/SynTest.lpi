@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InIDEConfig"/>
@@ -11,7 +11,6 @@
     <VersionInfo>
       <Language Value=""/>
       <CharSet Value=""/>
-      <StringTable ProductVersion=""/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -24,9 +23,16 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="5">
       <Item1>
@@ -45,11 +51,10 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="22">
       <Unit0>
         <Filename Value="SynTest.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SynTest"/>
       </Unit0>
       <Unit1>
         <Filename Value="testsynselection.pas"/>
@@ -151,6 +156,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPaintColorMerging"/>
       </Unit20>
+      <Unit21>
+        <Filename Value="testmarkupfoldcoloring.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestMarkupFoldColoring"/>
+      </Unit21>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -181,7 +191,6 @@
     <Other>
       <CustomOptions Value="-gt
 -dWithSynBiDi"/>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
   <Debugging>
