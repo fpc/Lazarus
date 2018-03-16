@@ -44,15 +44,33 @@ unit SynEditMarkupFoldColoring;
 
 {$mode objfpc}{$H+}
 { $define SynEditMarkupFoldColoringDebug}
+{ $define WithSynMarkupFoldColorDebugGutter}
 
 interface
 
 uses
-  Classes, SysUtils,Graphics, SynEditMarkup, SynEditMiscClasses, Controls,
-  LCLProc, SynEditFoldedView, SynEditHighlighter, SynEditHighlighterFoldBase,
-  LazSynEditText;
+  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls,
+  LCLProc, LCLType, SynEditFoldedView, SynEditHighlighter,
+  SynEditHighlighterFoldBase, LazSynEditText
+  {$IFDEF WithSynMarkupFoldColorDebugGutter}, SynGutterBase, SynTextDrawer{$ENDIF}
+  ;
 
 type
+
+  {$IFDEF WithSynMarkupFoldColorDebugGutter}
+  TSynEditMarkupFoldColors = class;
+
+  { TIDESynMarkupFoldColorDebugGutter }
+
+  TIDESynMarkupFoldColorDebugGutter = class(TSynGutterPartBase)
+  protected
+    FOwner: TSynEditMarkupFoldColors;
+    function  PreferedWidth: Integer; override;
+  public
+    procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
+      override;
+  end;
+  {$ENDIF}
 
   PMarkupFoldColorInfo = ^TMarkupFoldColorInfo;
   TMarkupFoldColorInfo = record
@@ -71,6 +89,9 @@ type
 
   TSynEditMarkupFoldColors = class(TSynEditMarkup)
   private
+    {$IFDEF WithSynMarkupFoldColorDebugGutter}
+    FDebugGutter: TIDESynMarkupFoldColorDebugGutter;
+    {$ENDIF}
     fUpdateColors: Boolean;
     function GetFirstCharacterColumn(pIndex: Integer): Byte;
     procedure TextBufferChanged(pSender: TObject);
@@ -148,6 +169,72 @@ uses
   {$endif}
   Dialogs;
 
+{$IFDEF WithSynMarkupFoldColorDebugGutter}
+{ TIDESynMarkupFoldColorDebugGutter }
+
+function TIDESynMarkupFoldColorDebugGutter.PreferedWidth: Integer;
+begin
+  Result := 600;
+end;
+
+procedure TIDESynMarkupFoldColorDebugGutter.Paint(Canvas: TCanvas;
+  AClip: TRect; FirstLine, LastLine: integer);
+var
+  TextDrawer: TheTextDrawer;
+  dc: HDC;
+  rcLine: TRect;
+  LineHeight, c, i, j: Integer;
+  iLine: LongInt;
+  s, fc: string;
+begin
+  TextDrawer := Gutter.TextDrawer;
+  dc := Canvas.Handle;
+  TextDrawer.BeginDrawing(dc);
+  try
+    TextDrawer.SetBackColor(Gutter.Color);
+    TextDrawer.SetForeColor(TCustomSynEdit(SynEdit).Font.Color);
+    TextDrawer.SetFrameColor(clNone);
+    with AClip do
+      TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
+
+    rcLine := AClip;
+    rcLine.Bottom := AClip.Top;
+    LineHeight := TCustomSynEdit(SynEdit).LineHeight;
+    c := TCustomSynEdit(SynEdit).Lines.Count;
+    for i := FirstLine to LastLine do
+    begin
+      iLine := FoldView.DisplayNumber[i];
+      if (iLine < 0) or (iLine >= c) then break;
+      // next line rect
+      rcLine.Top := rcLine.Bottom;
+      rcLine.Bottom := rcLine.Bottom + LineHeight;
+
+      FOwner.PrepareMarkupForRow(iLine);
+      s := '';
+      for j := 0 to FOwner.fFoldColorInfosCount - 1 do begin
+        with FOwner.fFoldColorInfos[j] do
+          s := s + '('
+           + IntToStr(PhysX) + ',' + IntToStr(PhysX2) + ',' + IntToStr(PhysCol) + '/'
+           + IntToStr(ColorIdx) + '/'
+           + BoolToStr(Border, True)[1] + BoolToStr(Ignore, True)[1] + '/'
+           + IntToStr(Level) + ',' + IntToStr(LevelBefore) + ',' + IntToStr(LevelAfter)
+           + ') ';
+      while length(s) < 21 * (j+1) do s := s + ' ';
+      end;
+      s := IntToStr(FOwner.fFoldColorInfosCount) + s;
+      if iLine < length(FOwner.fFirstCharacterPhysColCache) then
+        s := s + ', '+IntToStr(FOwner.fFirstCharacterPhysColCache[iLine]);
+
+      TextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE or ETO_CLIPPED, rcLine,
+        PChar(Pointer(S)),Length(S));
+    end;
+
+  finally
+    TextDrawer.EndDrawing;
+  end;
+end;
+{$ENDIF}
+
 
 {$IFDEF SynEditMarkupFoldColoringDebug}
 function FoldTypeToStr(p_FoldType: Pointer): String;
@@ -165,6 +252,11 @@ var
   i: Integer;
 begin
   inherited Create(pSynEdit);
+
+  {$IFDEF WithSynMarkupFoldColorDebugGutter}
+  FDebugGutter := TIDESynMarkupFoldColorDebugGutter.Create(TSynEdit(pSynEdit).RightGutter.Parts);
+  FDebugGutter.FOwner := Self;
+  {$ENDIF}
 
   fCacheCapacity := 0;
   SetCacheCount(100);
