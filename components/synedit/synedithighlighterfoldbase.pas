@@ -1365,7 +1365,7 @@ begin
   if (FEvaluationIndex = FCount) then begin
     FPreviousMergeLine := -1;
     i := FPreviousCount; // + 1 - 1
-    if i > 0 then begin
+    if (i > 0) and (FPreviousEvaluationIndex < i) then begin
       if i >= Length(FPreviousNestInfo) then
         exit;
       if (i > FPreviousEvaluationIndex) and
