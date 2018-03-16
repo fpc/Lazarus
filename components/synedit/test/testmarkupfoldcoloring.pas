@@ -248,7 +248,7 @@ begin
   TestRowColumns('Line 14', 14,  [1, 2], [2, 4]); //
   TestRowColumns('Line 15', 15,  [1, 2], [2, 4],   [4,1], [4]); // ;
   TestRowColumns('Line 16', 16,  [1, 3], [2, 3]); //writeln 3
-//  TestRowColumns('Line 17', 17,  [1],    [2]);    // //writeln 4
+  TestRowColumns('Line 17', 17,  [], []);    // //writeln 4
   TestRowColumns('Line 18', 18,  [1, 3], [2, 3]); //writeln 5
   Markup.EndMarkup;
 
@@ -260,7 +260,7 @@ begin
     SetSynEditHeight(40);
     ClearInvalidatedLines;
     DoKeyPressAtPos(1, 13, [VK_SPACE, VK_SPACE]); // if b then
-//    TestInvalidate('after edit', 14, 15); // what about 13, ok it is already invalidated....
+    TestInvalidate('after edit', 14, 21); // what about 13, ok it is already invalidated....
   PopBaseName;
 
   PopBaseName;
