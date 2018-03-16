@@ -112,25 +112,55 @@ begin
 end;
 
 
-{ TPrintDialog }
+{ TPageSetupDialog }
 
 function TPageSetupDialog.DoExecute: Boolean;
 var
   Dlg: TDlgPageSetup;
+  NDigits: integer;
 begin
-  Dlg:=TdlgPageSetup.Create(nil);
-  if Title<>'' then
-    Dlg.Caption:=Title
-  else
-    Dlg.Caption:=DefaultTitle;
+  Dlg:= TDlgPageSetup.Create(nil);
   try
-    Result:=(Dlg.ShowModal=mrOk);
-    if Result then begin
+    if Title<>'' then
+      Dlg.Caption:= Title
+    else
+      Dlg.Caption:= DefaultTitle;
+
+    if FUnits=pmInches then
+    begin
+      with Dlg.frmPageSetup.gpMargins do
+        Caption:= Caption+' (inches)';
+      NDigits:= 3;
+    end
+    else
+    begin
+      with Dlg.frmPageSetup.gpMargins do
+        Caption:= Caption+' (mm)';
+      NDigits:= 0;
+    end;
+
+    Dlg.frmPageSetup.txtLeft.DecimalPlaces:= NDigits;
+    Dlg.frmPageSetup.txtTop.DecimalPlaces:= NDigits;
+    Dlg.frmPageSetup.txtRight.DecimalPlaces:= NDigits;
+    Dlg.frmPageSetup.txtBottom.DecimalPlaces:= NDigits;
+
+    // Delphi wiki: MarginNNN holds value in 1/1000 parts of current Unit
+    Dlg.frmPageSetup.txtLeft.Value:= FMarginLeft/1000;
+    Dlg.frmPageSetup.txtTop.Value:= FMarginTop/1000;
+    Dlg.frmPageSetup.txtRight.Value:= FMarginRight/1000;
+    Dlg.frmPageSetup.txtBottom.Value:= FMarginBottom/1000;
+
+    Result:= Dlg.ShowModal=mrOk;
+    if Result then
+    begin
+      FMarginLeft:= Round(Dlg.frmPageSetup.txtLeft.Value*1000);
+      FMarginTop:= Round(Dlg.frmPageSetup.txtTop.Value*1000);
+      FMarginRight:= Round(Dlg.frmPageSetup.txtRight.Value*1000);
+      FMarginBottom:= Round(Dlg.frmPageSetup.txtBottom.Value*1000);
     end;
   finally
     Dlg.Free;
   end;
 end;
-
 
 

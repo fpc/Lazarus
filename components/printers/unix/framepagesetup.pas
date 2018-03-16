@@ -13,8 +13,12 @@ unit framePageSetup;
 interface
 
 uses
-  Classes, SysUtils, Graphics, FileUtil, LResources, Forms, ExtCtrls, StdCtrls,
-  Printers, OsPrinters, LCLIntf, LCLProc, Controls, CupsLCL;
+  Classes, SysUtils,
+  // LCL
+  LCLIntf, LCLProc, LResources, Controls, Graphics, Forms, ExtCtrls, StdCtrls,
+  Spin, Printers,
+  // Printers
+  OsPrinters, CupsLCL;
 
 type
   TPageSetupMode = (psmFull, psmPapers, psmMargins);
@@ -31,10 +35,10 @@ type
     cbPaper: TComboBox;
     cbSource: TComboBox;
     panMargins: TPanel;
-    txtLeft: TEdit;
-    txtRight: TEdit;
-    txtTop: TEdit;
-    txtBottom: TEdit;
+    txtLeft: TFloatSpinEdit;
+    txtTop: TFloatSpinEdit;
+    txtRight: TFloatSpinEdit;
+    txtBottom: TFloatSpinEdit;
     gpPaper: TGroupBox;
     gpOrientation: TGroupBox;
     gpMargins: TGroupBox;
@@ -60,13 +64,11 @@ type
     procedure pbPreviewPaint(Sender: TObject);
     procedure radPortraitClick(Sender: TObject);
   private
-    { private declarations }
     FHeightTallest: Integer;
     FHardMargins: TRect;
     FKw,FKh,FZoom: Double;
     FOptions: TPageSetupOptions;
   public
-    { public declarations }
     procedure Initialize(AMode: TPageSetupMode);
     procedure UpdatePageSize;
   end;

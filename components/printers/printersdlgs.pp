@@ -30,22 +30,58 @@ uses
   Classes, SysUtils, Forms, Controls, Dialogs, LResources, Printers, OsPrinters;
 
 type
+  TPageMeasureUnits = (
+    pmDefault,
+    pmMillimeters,
+    pmInches
+    );
 
-  TMeasureUnits = (unMM,unInch);
-  { Type for compatibility with delphi }
-  
+type
+  TPageSetupDialogOption = (
+    psoDefaultMinMargins,
+    psoDisableMargins,
+    psoDisableOrientation,
+    psoDisablePagePainting,
+    psoDisablePaper,
+    psoDisablePrinter,
+    psoMargins,
+    psoMinMargins,
+    psoShowHelp,
+    psoWarning,
+    psoNoNetworkButton
+    );
+
+  TPageSetupDialogOptions = set of TPageSetupDialogOption;
+
+const
+  cDefaultPageSetupDialogOptions = [psoMargins];
+
+type
   { TPageSetupDialog }
   
   TPageSetupDialog = class(TCustomPrinterSetupDialog)
   private
-   fMargins : TRect;
-   fUnits : TMeasureUnits;
+    FPageWidth: integer;
+    FPageHeight: integer;
+    FMarginLeft: integer;
+    FMarginTop: integer;
+    FMarginRight: integer;
+    FMarginBottom: integer;
+    FUnits: TPageMeasureUnits;
+    FOptions: TPageSetupDialogOptions;
   protected
     function DoExecute: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    property Margins : TRect read fMargins write fMargins;
-    property Units : TMeasureUnits read fUnits;
+  published
+    property PageWidth: integer read FPageWidth write FPageWidth default 0;
+    property PageHeight: integer read FPageHeight write FPageHeight default 0;
+    property MarginLeft: integer read FMarginLeft write FMarginLeft default 0;
+    property MarginTop: integer read FMarginTop write FMarginTop default 0;
+    property MarginRight: integer read FMarginRight write FMarginRight default 0;
+    property MarginBottom: integer read FMarginBottom write FMarginBottom default 0;
+    property Options: TPageSetupDialogOptions read FOptions write FOptions default cDefaultPageSetupDialogOptions;
+    property Units: TPageMeasureUnits read FUnits write FUnits default pmDefault;
   end;
 
   { TPrinterDialog }
@@ -143,11 +179,15 @@ implementation
 
 constructor TPageSetupDialog.Create(TheOwner: TComponent);
 begin
- inherited Create(TheOwner);
- fMargins.Bottom := 0;
- fMargins.Left := 0;
- fMargins.Right := 0;
- fMargins.Top := 0;
+  inherited Create(TheOwner);
+  FPageWidth:= 0;
+  FPageHeight:= 0;
+  FMarginLeft:= 0;
+  FMarginTop:= 0;
+  FMarginRight:= 0;
+  FMarginBottom:= 0;
+  FOptions:= cDefaultPageSetupDialogOptions;
+  FUnits:= pmDefault;
 end;
 
 procedure Register;

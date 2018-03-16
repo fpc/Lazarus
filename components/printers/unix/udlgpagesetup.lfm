@@ -1,126 +1,84 @@
 object dlgPageSetup: TdlgPageSetup
-  Left = 275
+  Left = 411
   Height = 449
-  Top = 125
-  Width = 408
+  Top = 113
+  Width = 446
   ActiveControl = frmPageSetup.panPreview
   Caption = 'dlgPageSetup'
   ClientHeight = 449
-  ClientWidth = 408
+  ClientWidth = 446
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'
   inline frmPageSetup: TframePageSetup
     Height = 408
-    Width = 408
+    Width = 446
     Align = alClient
     ClientHeight = 408
-    ClientWidth = 408
+    ClientWidth = 446
+    DesignLeft = 388
+    DesignTop = 96
     inherited panSetup: TPanel
       Top = 197
-      Width = 408
-      ClientWidth = 408
+      Width = 446
+      ClientWidth = 446
       TabOrder = 1
       inherited gpPaper: TGroupBox
-        Width = 396
-        ClientWidth = 392
-        inherited lblPaper: TLabel
-          Height = 14
-          Width = 37
-        end
-        inherited lblSource: TLabel
-          Height = 14
-        end
+        Width = 434
+        ClientWidth = 430
         inherited cbPaper: TComboBox
-          Height = 28
-          Width = 307
+          Width = 345
         end
         inherited cbSource: TComboBox
-          Height = 28
-          Width = 307
-        end
-      end
-      inherited gpOrientation: TGroupBox
-        inherited radPortrait: TRadioButton
-          Height = 24
-          Width = 70
-        end
-        inherited radLandscape: TRadioButton
-          Height = 24
-          Width = 91
+          Width = 345
         end
       end
       inherited gpMargins: TGroupBox
-        Width = 270
-        ClientWidth = 266
+        Width = 308
+        ClientWidth = 304
         inherited panMargins: TPanel
-          Left = 9
-          inherited lblBottom: TLabel
-            Height = 14
-            Width = 48
+          Width = 304
+          ClientWidth = 304
+          inherited txtRight: TFloatSpinEdit
+            Left = 225
           end
-          inherited lblTop: TLabel
-            Height = 14
-            Width = 24
-          end
-          inherited lblRight: TLabel
-            Height = 14
-            Width = 36
-          end
-          inherited lblLeft: TLabel
-            Height = 14
-            Width = 27
-          end
-          inherited txtBottom: TEdit
-            Height = 24
-            TabOrder = 3
-          end
-          inherited txtTop: TEdit
-            Height = 24
-            TabOrder = 2
-          end
-          inherited txtRight: TEdit
-            Height = 24
-            TabOrder = 1
-          end
-          inherited txtLeft: TEdit
-            Height = 24
-            TabOrder = 0
+          inherited txtBottom: TFloatSpinEdit
+            Left = 225
           end
         end
       end
     end
     inherited panPreview: TPanel
       Height = 197
-      Width = 408
+      Width = 446
       ClientHeight = 197
-      ClientWidth = 408
+      ClientWidth = 446
       Constraints.MinHeight = 0
       TabOrder = 0
       inherited pbPreview: TPaintBox
-        Left = 154
+        Left = 173
         Top = 33
       end
     end
   end
-  object Panel1: TPanel
+  object PanelButtons: TPanel
     Left = 0
     Height = 41
     Top = 408
-    Width = 408
+    Width = 446
     Align = alBottom
     Anchors = [akLeft, akBottom]
     BevelOuter = bvNone
     ClientHeight = 41
-    ClientWidth = 408
+    ClientWidth = 446
     FullRepaint = False
     TabOrder = 1
     TabStop = True
-    object btnCancel1: TButton
+    object btnCancel: TButton
       AnchorSideTop.Control = btnPrinter
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = btnPrinter
-      Left = 216
+      Left = 254
       Height = 26
       Top = 7
       Width = 90
@@ -135,8 +93,8 @@ object dlgPageSetup: TdlgPageSetup
     object btnOk: TButton
       AnchorSideTop.Control = btnPrinter
       AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = btnCancel1
-      Left = 120
+      AnchorSideRight.Control = btnCancel
+      Left = 158
       Height = 26
       Top = 7
       Width = 90
@@ -150,11 +108,11 @@ object dlgPageSetup: TdlgPageSetup
       TabOrder = 0
     end
     object btnPrinter: TButton
-      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Control = PanelButtons
       AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Control = PanelButtons
       AnchorSideRight.Side = asrBottom
-      Left = 312
+      Left = 350
       Height = 26
       Top = 7
       Width = 90
@@ -163,7 +121,6 @@ object dlgPageSetup: TdlgPageSetup
       BorderSpacing.Right = 6
       Caption = 'Printer...'
       Constraints.MinWidth = 90
-      ModalResult = 2
       TabOrder = 2
     end
   end

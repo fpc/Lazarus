@@ -13,36 +13,38 @@ unit udlgpagesetup;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  framepagesetup, ExtCtrls, StdCtrls;
+  // LCL
+  Forms, ExtCtrls, StdCtrls,
+  // Printers
+  framePageSetup;
 
 type
 
-  { TdlgPageSetup }
+  { TDlgPageSetup }
 
-  TdlgPageSetup = class(TForm)
-    btnCancel1: TButton;
+  TDlgPageSetup = class(TForm)
+    btnCancel: TButton;
     btnPrinter: TButton;
     btnOk: TButton;
     frmPageSetup: TframePageSetup;
-    Panel1: TPanel;
+    PanelButtons: TPanel;
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var
-  dlgPageSetup: TdlgPageSetup;
+  dlgPageSetup: TDlgPageSetup;
 
 implementation
 
 {$R udlgpagesetup.lfm}
 
-{ TdlgPageSetup }
+{ TDlgPageSetup }
 
-procedure TdlgPageSetup.FormCreate(Sender: TObject);
+procedure TDlgPageSetup.FormCreate(Sender: TObject);
 begin
   frmPageSetup.Initialize(psmFull);
 end;
