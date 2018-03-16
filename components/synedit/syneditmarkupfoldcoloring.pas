@@ -930,7 +930,7 @@ begin
 
   if (fFirstInvalidCacheLine < 0) or (pFrom < fFirstInvalidCacheLine) then
     fFirstInvalidCacheLine := pFrom;
-  if pTo < fLastInvalidCacheLine then
+  if pTo > fLastInvalidCacheLine then
     fLastInvalidCacheLine := pTo;
   fUpdateCache := True;
 end;
