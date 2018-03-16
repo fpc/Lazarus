@@ -95,7 +95,11 @@ begin
         lCustData := 0;
       Flags := PSD_MARGINS or PSD_ENABLEPAGESETUPHOOK;
       hWndOwner := GetOwnerHandle(Self);
-      rtMargin := fMargins;
+      // TODO: check that no need to div by 1000 values below
+      rtMargin.Left := MarginLeft;
+      rtMargin.Top := MarginTop;
+      rtMargin.Right := MarginRight;
+      rtMargin.Bottom := MarginBottom;
       PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
       // Pdev.DevMode has the required size, just copy to the global memory
       DeviceMode := GLobalAlloc(GHND, PDev.DevModeSize);
@@ -125,10 +129,14 @@ begin
           
           Result:=True;
           if (Flags and PSD_INHUNDREDTHSOFMILLIMETERS)>0 then
-            fUnits := unMM
+            fUnits := pmMillimeters
           else
-            fUnits := unInch;
-          fMargins := rtMargin;
+            fUnits := pmInches;
+
+          MarginLeft := rtMargin.Left;
+          MarginTop := rtMargin.Top;
+          MarginRight := rtMargin.Right;
+          MarginBottom := rtMargin.Bottom;
 
           if lpp.hDevMode <> 0 then
           begin

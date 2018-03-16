@@ -20,38 +20,6 @@ begin
   end;
 end;
 
-function GetNumber(FromLeft: boolean; s:ansistring; aDefault: Integer): Integer;
-var
-  i: Integer;
-  res: string;
-begin
-
-  if FromLeft then
-    i := 1
-  else
-    i := Length(s);
-  
-  Res := '';
-  while (i>0)and(i<=Length(s)) do
-  begin
-    if s[i] in ['0'..'9'] then begin
-      if Fromleft then
-        Res:=Res+S[i]
-      else
-        Res:=S[i]+Res;
-    end else begin
-      if Res<>'' then
-        break;
-    end;
-    if FromLeft then
-      Inc(i)
-    else
-      Dec(i);
-  end;
-
-  Result := StrToIntDef(Res, aDefault);
-end;
-
 { TPrintDialog }
 
 function TPrintDialog.DoExecute: Boolean;
@@ -94,15 +62,15 @@ begin
       //             simple rules.
       i := pos('-', Dlg.edRange.Text);
       if i<>0 then begin
-        FromPage := GetNumber(False, copy(Dlg.edRange.Text, 1, i-1), FromPage);
-        ToPage   := GetNumber(True,  copy(Dlg.edRange.Text, i+1, 255), ToPage);
+        FromPage := StrToIntDef(Trim(Copy(Dlg.edRange.Text, 1, i-1)), FromPage);
+        ToPage   := StrToIntDef(Trim(Copy(Dlg.edRange.Text, i+1, MaxInt)), ToPage);
         if ToPage<FromPage then begin
           i := ToPage;
           ToPage := FromPage;
           FromPage := i;
         end;
       end else begin
-        Self.FromPage := GetNumber(True,  copy(Dlg.edRange.Text, i+1, 255), Self.FromPage);
+        Self.FromPage := StrToIntDef(Trim(Dlg.edRange.Text), Self.FromPage);
         Self.ToPage   := Self.FromPage;
       end;
     end;
