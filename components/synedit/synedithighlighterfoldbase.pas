@@ -223,6 +223,7 @@ type
     FGroupMinLevels: Array of Integer;
     //OpenCount: Integer;
     LineIdx: TLineIdx;
+    EndLineIdx: TLineIdx;
     HNode: TSynFoldNodeInfo;    // Highlighter Node
     //FNode: TSynTextFoldAVLNode; // AvlFoldNode
     PrevNodeAtSameLevel: array of TLazSynEditNestedFoldsListEntry; // Only for same NodeGroup
@@ -231,6 +232,7 @@ type
 //  TSynGetHighLighter = function(): TSynCustomFoldHighlighter of object;
 
   TLazSynEditNestedFoldsList = class
+  {$Define DebugTLazSynEditNestedFoldsList}
   // TODO: in all methods: get "FoldNodeInfo" from FoldProvider, instead of Highlighter
   private
     FLines : TSynEditStrings;
@@ -941,6 +943,9 @@ end;
 procedure TLazSynEditNestedFoldsList.SetLine(AValue: TLineIdx);
 begin
   if FLine = AValue then Exit;
+  {$IfDef DebugTLazSynEditNestedFoldsList}
+  debugln(['TLazSynEditNestedFoldsList.SetLine ', AValue, ' from previous ', FLine]);
+  {$EndIf}
 
   // might be able to re-use old data
   FPreviousCount := FCount;
@@ -959,6 +964,10 @@ end;
 
 procedure TLazSynEditNestedFoldsList.Clear;
 begin
+  {$IfDef DebugTLazSynEditNestedFoldsList}
+  debugln(['TLazSynEditNestedFoldsList.Clear ']);
+  {$EndIf}
+
   FGroupCount := -1;
   SetLength(FGroupEndLevelsAtEval, 0);
   FCount := -1;
@@ -1027,18 +1036,72 @@ end;
 function TLazSynEditNestedFoldsList.GetNodeEndLine(Index: Integer): Integer;
 var
   nd: TSynFoldNodeInfo;
-  lvl, i: Integer;
+  lvl, i, CurIdx, minlvl, grp, cnt: Integer;
 begin
-  // TODO: Optimize: use known lines from other nodes // keep results
-  nd := HLNode[Index];
-  if sfbIncludeDisabled in FoldFlags then
-    lvl := nd.NestLvlStart
+  if (Index < 0) or (Index >= Count) then
+    exit(-1);
+
+  nd := HLNode[Index]; // make sure the list/array is initialzied
+  grp := nd.FoldGroup;
+  CurIdx := Index;
+  cnt := Count;
+  while CurIdx < cnt do begin
+    nd := HLNode[CurIdx];
+    if nd.FoldGroup = grp then begin
+      if CurIdx >= FCount then
+        Result := FOnLineNestInfo[CurIdx - FCount].EndLineIdx
+      else
+        Result := FNestInfo[CurIdx].EndLineIdx;
+      if Result > 0 then
+        break;
+    end;
+    inc(CurIdx);
+  end;
+  {$IfDef DebugTLazSynEditNestedFoldsList}
+  debugln(['TLazSynEditNestedFoldsList.GetNodeEndLine  for ', Index, '    from curidx ',CurIdx, '   of cnt ', Count, '  / ', FCount ]);
+  {$EndIf}
+
+  if CurIdx = Index then
+    exit;
+
+  minlvl:= MaxInt;
+  if CurIdx < cnt then begin
+    i := Result;
+    minlvl := HighLighter.FoldBlockMinLevel(Result, nd.FoldGroup, FoldFlags);
+  end
+  else if CurIdx - 1 >= FCount then
+    i := FLine + 1
   else
-    lvl := nd.FoldLvlStart;
-  i := FLine;
-  if Index >= FCount then
-    i := i + 1;
-  Result := HighLighter.FindNextLineWithMinFoldLevel(i, lvl, nd.FoldGroup, FoldFlags);
+    i := FLine;
+
+  while CurIdx > Index do begin
+    dec(CurIdx);
+    nd := HLNode[CurIdx];
+    if nd.FoldGroup <> grp then
+      continue;
+
+    if sfbIncludeDisabled in FoldFlags then
+      lvl := nd.NestLvlStart
+    else
+      lvl := nd.FoldLvlStart;
+
+    if minlvl > lvl then begin
+      Result := HighLighter.FindNextLineWithMinFoldLevel(i, lvl, nd.FoldGroup, FoldFlags);
+      minlvl := HighLighter.FoldBlockMinLevel(Result, nd.FoldGroup, FoldFlags);
+    end;
+
+    if CurIdx >= FCount then
+      FOnLineNestInfo[CurIdx - FCount].EndLineIdx := Result
+    else
+      FNestInfo[CurIdx].EndLineIdx := Result;
+
+    if minlvl >= lvl then begin
+      i := Result + 1;
+      minlvl:= MaxInt;
+    end
+    else if CurIdx = FCount then
+      minlvl:= MaxInt;
+  end;
 end;
 
 function TLazSynEditNestedFoldsList.GetNodeFoldGroup(Index: Integer): Integer;
@@ -1187,7 +1250,9 @@ begin
     FFoldNodeInfoList.ActionFilter := NFilter;
     FFoldNodeInfoList.GroupFilter := FFoldGroup;
     c := FFoldNodeInfoList.Count - 1;
-    //debugln(['TLazSynEditNestedFoldsList.InitNestInfoForIndex CurLine=',CurLine, '  c=',c, '  EvalIdx=',EvalIdx]);
+    {$IfDef DebugTLazSynEditNestedFoldsList}
+    debugln(['TLazSynEditNestedFoldsList.InitNestInfoForIndex CurLine=',CurLine, '  c=',c, '  EvalIdx=',EvalIdx]);
+    {$EndIf}
     (* if c < 0 then it is possible that a highlighter called
        CodeFoldRange.Pop(false); // avoid minlevel // << still triggers min level for sfbIncludeDisabled;
        without generating foldnode info // maybe the HL tries to silently change the fold type
@@ -1237,7 +1302,9 @@ var
     pcnt, c, l, c1: integer;
   begin
     pcnt := FPreviousCount - 1;
-    //Debugln(['re using (',pcnt, ' ',FPreviousEvaluationIndex ,') ', FPreviousNestInfo[pcnt].LineIdx,' to ', FPreviousNestInfo[FPreviousEvaluationIndex].LineIdx, ' FEvaluationIndex:',FEvaluationIndex, ' CurLine=',CurLine ]);
+    {$IfDef DebugTLazSynEditNestedFoldsList}
+    debugln(['TLazSynEditNestedFoldsList.InitLineInfoForIndex() DoMergePrev (',pcnt, ' ',FPreviousEvaluationIndex ,') ', FPreviousNestInfo[pcnt].LineIdx,' to ', FPreviousNestInfo[FPreviousEvaluationIndex].LineIdx, ' FEvaluationIndex:',FEvaluationIndex, ' CurLine=',CurLine ]);
+    {$EndIf}
     assert(FPreviousNestInfo[pcnt].LineIdx = CurLine, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex.DoMergePrevious LineIdx = CurLine');
     while  pcnt >= FPreviousEvaluationIndex do begin
       while (pcnt > 0) and (pcnt > FPreviousEvaluationIndex) and
@@ -1276,6 +1343,7 @@ var
       while c > 0 do begin
         dec(FEvaluationIndex);
         FNestInfo[FEvaluationIndex].LineIdx := FPreviousNestInfo[pcnt].LineIdx;
+        FNestInfo[FEvaluationIndex].EndLineIdx := FPreviousNestInfo[pcnt].EndLineIdx;
         FNestInfo[FEvaluationIndex].FFLags:= [];
         FNestInfo[FEvaluationIndex].FGroupMinLevels := FPreviousNestInfo[pcnt].FGroupMinLevels;
         dec(c);
@@ -1374,8 +1442,10 @@ begin
   finally
     ReleaseFoldNodeInfoList;
   end;
-  //debugln(['TLazSynEditNestedFoldsList.InitLineInfoForIndex FEvaluationIndex=', FEvaluationIndex, '  AnIndex=',AnIndex]);
-  //for i := FCount-1 downto 0 do begin DbgOut([', ',FNestInfo[i].LineIdx]); if length(FNestInfo[i].FGroupMinLevels) > 0 then begin DbgOut(' ('); for c := 0 to length(FNestInfo[i].FGroupMinLevels)-1 do DbgOut([',',FNestInfo[i].FGroupMinLevels[c]]);  DbgOut(') '); end; end; DebugLn();
+  {$IfDef DebugTLazSynEditNestedFoldsList}
+  debugln(['TLazSynEditNestedFoldsList.InitLineInfoForIndex FEvaluationIndex=', FEvaluationIndex, '  AnIndex=',AnIndex]);
+  for i := FCount-1 downto 0 do begin DbgOut([', ',FNestInfo[i].LineIdx]); if length(FNestInfo[i].FGroupMinLevels) > 0 then begin DbgOut(' ('); for c := 0 to length(FNestInfo[i].FGroupMinLevels)-1 do DbgOut([',',FNestInfo[i].FGroupMinLevels[c]]);  DbgOut(') '); end; end; DebugLn();
+  {$EndIf}
   assert(CurLine >= 0, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex Curline < 0');
   assert(AnIndex >= FEvaluationIndex, 'TLazSynEditNestedFoldsList.InitLineInfoForIndex Index not found');
 end;
