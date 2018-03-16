@@ -232,7 +232,7 @@ type
 //  TSynGetHighLighter = function(): TSynCustomFoldHighlighter of object;
 
   TLazSynEditNestedFoldsList = class
-  {$Define DebugTLazSynEditNestedFoldsList}
+  { $Define DebugTLazSynEditNestedFoldsList}
   // TODO: in all methods: get "FoldNodeInfo" from FoldProvider, instead of Highlighter
   private
     FLines : TSynEditStrings;
