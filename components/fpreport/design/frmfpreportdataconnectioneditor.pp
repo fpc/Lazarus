@@ -68,7 +68,7 @@ Resourcestring
 
 implementation
 
-uses strutils, reportdesigndatasql;
+uses strutils, fpreportdatasqldb;
 
 
 {$R *.lfm}

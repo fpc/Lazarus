@@ -19,7 +19,7 @@ unit frafpreportcsvdata;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, EditBtn, StdCtrls, fpjson, db, fpreportdesignreportdata;
+  Classes, SysUtils, FileUtil, Forms, Controls, EditBtn, StdCtrls, fpjson, db, fpreportdata, fpreportdesignreportdata;
 
 type
   TFrame = TReportDataConfigFrame;
@@ -45,124 +45,17 @@ type
     Function SaveNotOKMessage: String; override;
   end;
 
-  { TCSVReportDataHandler }
-
-  TCSVReportDataHandler = Class(TDesignReportDataHandler)
-    Function CreateDataset(AOwner : TComponent; AConfig : TJSONObject) : TDataset; override;
-    Function CreateConfigFrame(AOwner : TComponent) : TReportDataConfigFrame; override;
-    Class Function CheckConfig(AConfig: TJSONObject): String; override;
-    Class Function DataType : String; override;
-    Class Function DataTypeDescription : String; override;
-  end;
 
 implementation
 
-uses bufdataset, csvdataset;
+uses fpreportdatacsv;
 
 {$R *.lfm}
 
 Resourcestring
-  SErrNeedFileName = 'Need a CSV file name';
   SErrNeedFieldNames = 'Need at least one field name';
   SErrInvalidFieldName = 'Invalid field name: "%s"';
-  SFileNameDoesNotExist = 'Filename does not exist: "%s"';
 
-{ TCSVReportDataHandler }
-
-Const
-  keyFileName = 'filename';
-  keyFirstLineHasFieldNames = 'firstLineHasFieldNames';
-  keyCustomFieldNames = 'customFieldNames';
-  keyDelimiter = 'delimiter';
-  keyQuoteChar = 'quoteChar';
-
-  DefFirstLineFieldNames = True;
-  DefDelimiter = ',';
-  DefQuoteChar = '"';
-
-Type
-
-  { TMyCSVDataset }
-
-  TMyCSVDataset = Class(TCSVDataset)
-  private
-    FCSVFileName: String;
-  Protected
-    function GetPacketReader(const Format: TDataPacketFormat; const AStream: TStream): TDataPacketReader; override;
-    Procedure InternalOpen; override;
-  Public
-    Property CSVFileName : String Read FCSVFileName Write FCSVFileName;
-  end;
-
-{ TMyCSVDataset }
-
-function TMyCSVDataset.GetPacketReader(const Format: TDataPacketFormat; const AStream: TStream): TDataPacketReader;
-begin
-  Result:=inherited GetPacketReader(Format, AStream);
-  if (Result is TCSVDataPacketReader) and (FieldDefs.Count>0) then
-     TCSVDataPacketReader(Result).CreateFieldDefs:=FieldDefs;
-end;
-
-procedure TMyCSVDataset.InternalOpen;
-
-begin
-  FileName:=CSVFileName;
-  Inherited;
-  FileName:='';
-end;
-
-function TCSVReportDataHandler.CreateDataset(AOwner: TComponent; AConfig: TJSONObject): TDataset;
-
-Var
-  C : TMyCSVDataset;
-  A : TJSONArray;
-  I : Integer;
-
-begin
-  C:=TMyCSVDataset.Create(AOWner);
-  C.CSVOptions.FirstLineAsFieldNames:=AConfig.Get(keyFirstLineHasFieldNames,DefFirstLineFieldNames);
-  C.CSVOptions.Delimiter:=AConfig.Get(KeyDelimiter,defDelimiter)[1];
-  C.CSVOptions.quoteChar:=AConfig.Get(KeyQuoteChar,defQuoteChar)[1];
-  if not C.CSVOptions.FirstLineAsFieldNames then
-    begin
-    A:=AConfig.Get(keyCustomFieldNames,TJSONArray(Nil));
-    If Assigned(A) then
-      For I:=0 to A.Count-1 do
-        C.FieldDefs.Add(A.Strings[i],ftString,255);
-    end;
-  C.ReadOnly:=True;
-  C.CSVFileName:=AConfig.Get(KeyFileName,'');
-  Result:=C;
-end;
-
-function TCSVReportDataHandler.CreateConfigFrame(AOwner: TComponent): TReportDataConfigFrame;
-begin
-  Result:=TTCSVReportDataFrame.Create(AOWner);
-end;
-
-class function TCSVReportDataHandler.CheckConfig(AConfig: TJSONObject): String;
-
-Var
-  FN : UTF8String;
-
-begin
-  Result:='';
-  FN:=AConfig.Get(KeyFileName,'');
-  if FN='' then
-    Result:=SErrNeedFileName
-  else if not FileExists(FN) then
-    Result:=Format(SFileNameDoesNotExist,[FN]);
-end;
-
-class function TCSVReportDataHandler.DataType: String;
-begin
-  Result:='CSV'
-end;
-
-class function TCSVReportDataHandler.DataTypeDescription: String;
-begin
-  Result:='Comma-separated values text file';
-end;
 
 { TTCSVReportDataFrame }
 
@@ -244,6 +137,6 @@ begin
 end;
 
 initialization
-  TCSVReportDataHandler.RegisterHandler;
+  TCSVReportDataHandler.RegisterConfigClass(TTCSVReportDataFrame);
 end.
 

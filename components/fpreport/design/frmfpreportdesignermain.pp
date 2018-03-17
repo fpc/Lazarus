@@ -19,9 +19,9 @@ unit frmfpreportdesignermain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, fpreportdata,
   Menus, ActnList, ComCtrls, ExtCtrls, IniPropStorage, fpreport, fpreportdesignctrl,
-  fraReportObjectInspector, fpreportdesignreportdata, frafpreportdata, fpreportdb, mrumanager;
+  fraReportObjectInspector, fpreportdesignreportdata, frafpreportdata, mrumanager;
 
 type
   // If you add something here, do not forget to add to AllReportDesignOptions.
@@ -281,7 +281,7 @@ type
     FOnNewReport: TNotifyEvent;
     FOnOpenReport: TNotifyEvent;
     FOnSaveReport: TNotifyEvent;
-    FReportDesignData : TDesignReportDataCollection;
+    FReportDesignData : TDesignReportDataManager;
 {$IFDEF USEDEMOREPORT}
     lReportData : TFPReportUserData;
     sl: TStringList;
@@ -342,7 +342,7 @@ type
     procedure DoElementCreated(Sender: TObject; AElement: TFPReportElement);
     Property Report : TFPReport Read FReport Write SetReport;
     Property FileName : String Read FFileName Write FFileName;
-    Property ReportDesignData : TDesignReportDataCollection Read FReportDesignData;
+    Property ReportDesignData : TDesignReportDataManager Read FReportDesignData;
     Property DesignOptions : TFPReportDesignOptions Read FDesignOptions Write SetDesignOptions;
     // If these are set, they override the default handling. You must set the modified
     Property OnSaveReport : TNotifyEvent Read FOnSaveReport Write FOnSaveReport;
@@ -449,7 +449,7 @@ begin
   CloseFile(F);
   FDataParent:=TComponent.Create(nil);
   FreeAndNil(TSDesign); // Remove design-time added page
-  FReportDesignData:=TDesignReportDataCollection.Create(TDesignReportData);
+  FReportDesignData:=TDesignReportDataManager.Create(Self);
   SetBandActionTags;
   // DEMO
 {$IFDEF USEDEMOREPORT}
@@ -1115,10 +1115,10 @@ begin
   F:=ReportDataFormClass.Create(Self);
   try
     F.Report:=Self.Report;
-    F.Data:=FReportDesignData;
+    F.Data:=FReportDesignData.DataDefinitions;
     if F.ShowModal=mrOK then
       begin
-      FReportDesignData.Assign(F.Data);
+      FReportDesignData.DataDefinitions:=F.Data;
       CreateReportDataSets(Nil);
       Modified:=True;
       end;
@@ -1134,36 +1134,9 @@ end;
 
 procedure TFPReportDesignerForm.CreateReportDataSets(Errors: TStrings);
 
-Var
-  I : Integer;
-  DesignD : TDesignReportData;
-  DatasetD : TFPReportDatasetData;
-  L : TFPList;
 
 begin
-  FReport.SaveDataToNames;
-  While FDataParent.ComponentCount>0 do
-    FDataParent.Components[FDataParent.ComponentCount-1].Free;
-  FReport.ReportData.Clear;
-  For I:=0 to FReportDesignData.Count-1 do
-    begin
-    DesignD:=FReportDesignData[i];
-    DatasetD:=TFPReportDatasetData.Create(FDataParent);
-    DatasetD.Dataset:=DesignD.CreateDataSet(DatasetD);
-    Try
-      DatasetD.InitFieldDefs;
-    except
-      On E : Exception do
-        If Assigned(Errors) then
-          Errors.Add(Format('Error opening data "%s" : Exception %s with message %s',[DesignD.Name,E.ClassName,E.Message]))
-        else
-          Raise;
-    end;
-    DatasetD.Name:=DesignD.Name;
-    DatasetD.Dataset.Name:=DesignD.Name;
-    DatasetD.StartDesigning;    // set designing flag, or OI will not show reference to it.
-    FReport.ReportData.AddReportData(DatasetD);
-    end;
+  FReportDesignData.ApplyToReport(FReport,Errors);
   FReport.RestoreDataFromNames;
   FReportData.RefreshData;
 end;
@@ -1409,7 +1382,7 @@ begin
   // Give LCL time to clean up.
   Application.ProcessMessages;
   FReportData.Report:=Nil;
-  FReportDesignData.Clear;
+  FReportDesignData.DataDefinitions.Clear;
   FOI.Report:=Nil;
   FOI.SelectControls(Nil);
 end;
@@ -1474,7 +1447,7 @@ begin
   try
     DD:=lJSON.Get('DesignData',TJSONObject(Nil));
     if Assigned(DD) then
-      FReportDesignData.LoadFromJSON(DD);
+      FReportDesignData.DataDefinitions.LoadFromJSON(DD);
     // We must do this before the report is loaded, so the pages/bands can find their data
     Errs:=TStringList.Create;
     CreateReportDataSets(Errs);

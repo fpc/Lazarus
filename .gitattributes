@@ -1663,7 +1663,6 @@ components/fpreport/design/reportdesign.lpi svneol=native#text/plain
 components/fpreport/design/reportdesign.lpr svneol=native#text/plain
 components/fpreport/design/reportdesign.res -text
 components/fpreport/design/reportdesignbaseforms.pp svneol=native#text/plain
-components/fpreport/design/reportdesigndatasql.pp svneol=native#text/plain
 components/fpreport/design/testimage.png -text svneol=unset#image/png
 components/fpreport/dlginputcombo.pp svneol=native#text/plain
 components/fpreport/fpreportformexport.pas svneol=native#text/plain

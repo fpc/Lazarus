@@ -38,25 +38,15 @@ type
 
   { TDBFReportDataHandler }
 
-  TDBFReportDataHandler = Class(TDesignReportDataHandler)
-    Function CreateDataset(AOwner : TComponent; AConfig : TJSONObject) : TDataset; override;
-    Function CreateConfigFrame(AOwner : TComponent) : TReportDataConfigFrame; override;
-    Class Function CheckConfig(AConfig: TJSONObject): String; override;
-    Class Function DataType : String; override;
-    Class Function DataTypeDescription : String; override;
-  end;
 
 implementation
 
+uses fpreportdatadbf;
+
 {$R *.lfm}
-Resourcestring
-  SErrNeedFileName = 'Need a DBF file name';
-  SFileNameDoesNotExist = 'Filename does not exist: "%s"';
+
 
 { TDBFReportDataFrame }
-
-Const
-  keyFileName = 'filename';
 
 procedure TDBFReportDataFrame.GetConfig(aConfig: TJSONObject);
 begin
@@ -77,50 +67,7 @@ begin
     Result:=Format(SFileNameDoesNotExist,[FEData.FileName]);
 end;
 
-{ TMyDBFDataset }
-
-function TDBFReportDataHandler.CreateDataset(AOwner: TComponent; AConfig: TJSONObject): TDataset;
-
-Var
-  C : TDBF;
-
-begin
-  C:=TDBF.Create(AOWner);
-  C.TableName:=AConfig.Get(KeyFileName,'');
-  C.ReadOnly:=True;
-  Result:=C;
-end;
-
-function TDBFReportDataHandler.CreateConfigFrame(AOwner: TComponent): TReportDataConfigFrame;
-begin
-  Result:=TDBFReportDataFrame.Create(AOWner);
-end;
-
-class function TDBFReportDataHandler.CheckConfig(AConfig: TJSONObject): String;
-
-Var
-  FN : UTF8String;
-
-begin
-  Result:='';
-  FN:=AConfig.Get(KeyFileName,'');
-  if FN='' then
-    Result:=SErrNeedFileName
-  else if not FileExists(FN) then
-    Result:=Format(SFileNameDoesNotExist,[FN]);
-end;
-
-class function TDBFReportDataHandler.DataType: String;
-begin
-  Result:='DBF'
-end;
-
-class function TDBFReportDataHandler.DataTypeDescription: String;
-begin
-  Result:='DBase data file';
-end;
-
 initialization
-  TDBFReportDataHandler.RegisterHandler;
+  TDBFReportDataHandler.RegisterConfigClass(TDBFReportDataFrame);
 end.
 
