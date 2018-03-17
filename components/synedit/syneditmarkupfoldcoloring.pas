@@ -204,7 +204,7 @@ begin
     for i := FirstLine to LastLine do
     begin
       iLine := FoldView.DisplayNumber[i];
-      if (iLine < 0) or (iLine >= c) then break;
+      if (iLine <= 0) or (iLine > c) then break;
       // next line rect
       rcLine.Top := rcLine.Bottom;
       rcLine.Bottom := rcLine.Bottom + LineHeight;
@@ -223,7 +223,7 @@ begin
       end;
       s := IntToStr(FOwner.fFoldColorInfosCount) + s;
       if iLine < length(FOwner.fFirstCharacterPhysColCache) then
-        s := s + ', '+IntToStr(FOwner.fFirstCharacterPhysColCache[iLine]);
+        s := s + ', '+IntToStr(FOwner.fFirstCharacterPhysColCache[ToIdx(iLine)]);
 
       TextDrawer.ExtTextOut(rcLine.Left, rcLine.Top, ETO_OPAQUE or ETO_CLIPPED, rcLine,
         PChar(Pointer(S)),Length(S));
