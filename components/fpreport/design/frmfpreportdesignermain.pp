@@ -1292,10 +1292,13 @@ begin
     // Write report
     WS.JSON:=TJSONObject.Create;
     FReport.WriteElement(WS);
+    if rdoManageData in DesignOptions then
+      begin
     // Add design data
-    DD:=TJSONObject.Create;
-    WS.JSon.Add('DesignData',DD);
-    FReportDesignData.SaveToJSON(DD);
+      DD:=TJSONObject.Create;
+      WS.JSon.Add('DesignData',DD);
+      FReportDesignData.SaveToJSON(DD);
+      end;
     // Now save to file
     fs:=TFileStream.Create(AFilename, fmCreate);
     S:=WS.JSON.FormatJSON();
@@ -1445,12 +1448,15 @@ begin
   rs := TFPReportJSONStreamer.Create(nil);
   rs.JSON := lJSON; // rs takes ownership of lJSON
   try
-    DD:=lJSON.Get('DesignData',TJSONObject(Nil));
-    if Assigned(DD) then
-      FReportDesignData.DataDefinitions.LoadFromJSON(DD);
-    // We must do this before the report is loaded, so the pages/bands can find their data
-    Errs:=TStringList.Create;
-    CreateReportDataSets(Errs);
+    if rdoManageData in DesignOptions then
+      begin
+      DD:=lJSON.Get('DesignData',TJSONObject(Nil));
+      if Assigned(DD) then
+        FReportDesignData.DataDefinitions.LoadFromJSON(DD);
+      // We must do this before the report is loaded, so the pages/bands can find their data
+      Errs:=TStringList.Create;
+      CreateReportDataSets(Errs);
+      end;
     FReport.ReadElement(rs);
     if (FReport.Owner<>Self) and (OldName<>'') then
       FReport.Name:=OldName;
