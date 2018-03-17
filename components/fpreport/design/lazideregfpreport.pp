@@ -377,6 +377,7 @@ begin
            begin
            N:=J.Name;
            J:=Component as TFPJSONReport;
+           J.Clear;
            J.LoadFromFile(FileName);
            J.DesignTimeJSON.Clear;
            J.SavetoJSON(J.DesignTimeJSON);
