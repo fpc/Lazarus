@@ -96,6 +96,7 @@ begin
 
     if FUnits=pmInches then
     begin
+      Dlg.frmPageSetup.UnitInches:= true;
       with Dlg.frmPageSetup.gpMargins do
         Caption:= Caption+' (inches)';
       NDigits:= 3;
@@ -106,6 +107,7 @@ begin
     end
     else
     begin
+      Dlg.frmPageSetup.UnitInches:= false;
       with Dlg.frmPageSetup.gpMargins do
         Caption:= Caption+' (mm)';
       NDigits:= 0;

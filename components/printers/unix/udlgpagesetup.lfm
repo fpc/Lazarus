@@ -121,6 +121,7 @@ object dlgPageSetup: TdlgPageSetup
       BorderSpacing.Right = 6
       Caption = 'Printer...'
       Constraints.MinWidth = 90
+      Enabled = False
       TabOrder = 2
     end
   end

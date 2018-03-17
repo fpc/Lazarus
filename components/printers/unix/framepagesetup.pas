@@ -63,12 +63,14 @@ type
       {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure pbPreviewPaint(Sender: TObject);
     procedure radPortraitClick(Sender: TObject);
+    procedure txtLeftChange(Sender: TObject);
   private
     FHeightTallest: Integer;
     FHardMargins: TRect;
-    FKw,FKh,FZoom: Double;
+    FFactorX, FFactorY, FZoom: Double;
     FOptions: TPageSetupOptions;
   public
+    UnitInches: boolean;
     procedure Initialize(AMode: TPageSetupMode);
     procedure UpdatePageSize;
   end;
@@ -80,8 +82,6 @@ implementation
 { TframePageSetup }
 
 procedure TframePageSetup.pbPreviewPaint(Sender: TObject);
-var
-  R: TRect;
   procedure DrawMargin(AIndex: Integer; ASize: Integer);
   begin
     with pbPreview do
@@ -108,12 +108,20 @@ var
         end;
     end;
   end;
+var
+  R: TRect;
+  NToInches: double;
 begin
 
   if Sender=nil then ;
 
   if not (psoMargins in FOptions) then
     exit;
+
+  if UnitInches then
+    NToInches:= 1
+  else
+    NToInches:= 1/10/2.54;
 
   with pbPreview do
   begin
@@ -125,11 +133,11 @@ begin
     Canvas.Rectangle(R);
 
     // hard margins
-    Canvas.Pen.Color := RGBToColor(255,204,204);
-    DrawMargin(0, FHardMargins.Left  );
-    DrawMargin(1, FHardMargins.Top   );
-    DrawMargin(2, FHardMargins.Right );
-    DrawMargin(3, FHardMargins.Bottom);
+    Canvas.Pen.Color := clHighlight;
+    DrawMargin(0, Round(txtLeft.Value * NToInches * Printer.XDPI * FFactorX * FZoom) ); //FHardMargins.Left
+    DrawMargin(1, Round(txtTop.Value * NToInches * Printer.YDPI * FFactorY * FZoom) );
+    DrawMargin(2, Round(txtRight.Value * NToInches * Printer.XDPI * FFactorX * FZoom) );
+    DrawMargin(3, Round(txtBottom.Value * NToInches * Printer.YDPI * FFactorY * FZoom) );
   end;
 end;
 
@@ -142,6 +150,11 @@ begin
   else
     Printer.Orientation := poLandsCape;
   UpdatePageSize;
+end;
+
+procedure TframePageSetup.txtLeftChange(Sender: TObject);
+begin
+  pbPreview.Update;
 end;
 
 procedure TframePageSetup.cbPaperChange(Sender: TObject);
@@ -162,7 +175,7 @@ begin
   if not (psoMargins in FOptions) then
     exit;
 
-  TallH := Round(FheightTallest * FKh);
+  TallH := Round(FheightTallest * FFactorY);
 
   with PanPreview do
   if (Height<>C_BOTHSPACES) and (TallH>(Height-C_BOTHSPACES)) then
@@ -206,16 +219,16 @@ begin
 
   with Printer.PaperSize.PaperRect.PhysicalRect do
   begin
-    PbPreview.Width := Round(Fkw * (Right - Left) * FZoom) + 2;
-    PbPreview.Height := Round(FKh * (Bottom - Top) * FZoom) + 2;
+    PbPreview.Width := Round(FFactorX * (Right - Left) * FZoom) + 2;
+    PbPreview.Height := Round(FFactorY * (Bottom - Top) * FZoom) + 2;
   end;
 
   with Printer.PaperSize.PaperRect do
   begin
-    FHardMargins.Left := Round(Fkw * (WorkRect.Left-PhysicalRect.Left) * FZoom);
-    FHardMargins.Right := Round(Fkw * (Physicalrect.Right-WorkRect.Right) * FZoom);
-    FHardMargins.Top := Round(FkH * (WorkRect.Top-PhysicalRect.Top) * FZoom);
-    FHardMargins.Bottom := Round(FkH * (PhysicalRect.Bottom-WorkRect.Bottom) * FZoom);
+    FHardMargins.Left := Round(FFactorX * (WorkRect.Left-PhysicalRect.Left) * FZoom);
+    FHardMargins.Right := Round(FFactorX * (Physicalrect.Right-WorkRect.Right) * FZoom);
+    FHardMargins.Top := Round(FFactorY * (WorkRect.Top-PhysicalRect.Top) * FZoom);
+    FHardMargins.Bottom := Round(FFactorY * (PhysicalRect.Bottom-WorkRect.Bottom) * FZoom);
   end;
 
   {$IFDEF DebugCUPS}
@@ -273,8 +286,8 @@ begin
     // assume 100 pix = 8.5 inch (IOW, letter size width = 100 pixels)
     with ScreenInfo do
     begin
-      FKw := (100/8.5)/Printer.XDPI;
-      FKh := (100/8.5)*(PixelsPerInchY/PixelsPerInchX)/Printer.YDPI;
+      FFactorX := (100/8.5)/Printer.XDPI;
+      FFactorY := (100/8.5)*(PixelsPerInchY/PixelsPerInchX)/Printer.YDPI;
     end;
 
     // find the tallest paper

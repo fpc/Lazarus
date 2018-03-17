@@ -175,6 +175,7 @@ object framePageSetup: TframePageSetup
           Increment = 1
           MaxValue = 100
           MinValue = 0
+          OnChange = txtLeftChange
           TabOrder = 0
           Value = 0
         end
@@ -192,6 +193,7 @@ object framePageSetup: TframePageSetup
           Increment = 1
           MaxValue = 100
           MinValue = 0
+          OnChange = txtLeftChange
           TabOrder = 1
           Value = 0
         end
@@ -210,6 +212,7 @@ object framePageSetup: TframePageSetup
           Increment = 1
           MaxValue = 100
           MinValue = 0
+          OnChange = txtLeftChange
           TabOrder = 2
           Value = 0
         end
@@ -227,6 +230,7 @@ object framePageSetup: TframePageSetup
           Increment = 1
           MaxValue = 100
           MinValue = 0
+          OnChange = txtLeftChange
           TabOrder = 3
           Value = 0
         end
