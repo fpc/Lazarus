@@ -85,7 +85,7 @@ end;
 function TPageSetupDialog.DoExecute: Boolean;
 var
   Dlg: TDlgPageSetup;
-  NDigits: integer;
+  NDigits, NScale: integer;
 begin
   Dlg:= TDlgPageSetup.Create(nil);
   try
@@ -99,12 +99,17 @@ begin
       with Dlg.frmPageSetup.gpMargins do
         Caption:= Caption+' (inches)';
       NDigits:= 3;
+      // according to MSDN, WinAPI margin rect needs values in 1/1000 of inches,
+      // or in 1/100 on mm.
+      // https://msdn.microsoft.com/en-us/library/windows/desktop/ms646842(v=vs.85).aspx
+      NScale:= 1000;
     end
     else
     begin
       with Dlg.frmPageSetup.gpMargins do
         Caption:= Caption+' (mm)';
       NDigits:= 0;
+      NScale:= 100;
     end;
 
     Dlg.frmPageSetup.txtLeft.DecimalPlaces:= NDigits;
@@ -113,18 +118,18 @@ begin
     Dlg.frmPageSetup.txtBottom.DecimalPlaces:= NDigits;
 
     // Delphi wiki: MarginNNN holds value in 1/1000 parts of current Unit
-    Dlg.frmPageSetup.txtLeft.Value:= FMarginLeft/1000;
-    Dlg.frmPageSetup.txtTop.Value:= FMarginTop/1000;
-    Dlg.frmPageSetup.txtRight.Value:= FMarginRight/1000;
-    Dlg.frmPageSetup.txtBottom.Value:= FMarginBottom/1000;
+    Dlg.frmPageSetup.txtLeft.Value:= FMarginLeft/NScale;
+    Dlg.frmPageSetup.txtTop.Value:= FMarginTop/NScale;
+    Dlg.frmPageSetup.txtRight.Value:= FMarginRight/NScale;
+    Dlg.frmPageSetup.txtBottom.Value:= FMarginBottom/NScale;
 
     Result:= Dlg.ShowModal=mrOk;
     if Result then
     begin
-      FMarginLeft:= Round(Dlg.frmPageSetup.txtLeft.Value*1000);
-      FMarginTop:= Round(Dlg.frmPageSetup.txtTop.Value*1000);
-      FMarginRight:= Round(Dlg.frmPageSetup.txtRight.Value*1000);
-      FMarginBottom:= Round(Dlg.frmPageSetup.txtBottom.Value*1000);
+      FMarginLeft:= Round(Dlg.frmPageSetup.txtLeft.Value*NScale);
+      FMarginTop:= Round(Dlg.frmPageSetup.txtTop.Value*NScale);
+      FMarginRight:= Round(Dlg.frmPageSetup.txtRight.Value*NScale);
+      FMarginBottom:= Round(Dlg.frmPageSetup.txtBottom.Value*NScale);
     end;
   finally
     Dlg.Free;
