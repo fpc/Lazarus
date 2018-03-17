@@ -7939,7 +7939,9 @@ begin
   RegisterPropertyEditor(TypeInfo(TTabOrder), TControl, 'TabOrder', TTabOrderPropertyEditor);
   RegisterPropertyEditor(TypeInfo(ShortString), nil, '', TCaptionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), nil, '', TStringsPropertyEditor);
+  {$IF FPC_FULLVERSION > 30101}
   RegisterPropertyEditor(TypeInfo(TFileName), nil, '', TFileNamePropertyEditor);
+  {$ENDIF}
   RegisterPropertyEditor(TypeInfo(AnsiString), nil, 'SessionProperties', TSessionPropertiesPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TModalResult), nil, 'ModalResult', TModalResultPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TShortCut), nil, '', TShortCutPropertyEditor);
