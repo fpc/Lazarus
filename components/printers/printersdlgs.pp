@@ -55,6 +55,8 @@ type
 
 const
   cDefaultPageSetupDialogOptions = [psoMargins];
+  cDefaultPageSetupMargin = 0;
+  cDefaultPageSetupMinMargin = 400; //400: in mm it's 4mm, in inches it's ~10mm
 
 type
   { TPageSetupDialog }
@@ -67,6 +69,10 @@ type
     FMarginTop: integer;
     FMarginRight: integer;
     FMarginBottom: integer;
+    FMinMarginLeft: integer;
+    FMinMarginTop: integer;
+    FMinMarginRight: integer;
+    FMinMarginBottom: integer;
     FUnits: TPageMeasureUnits;
     FOptions: TPageSetupDialogOptions;
   protected
@@ -76,10 +82,14 @@ type
   published
     property PageWidth: integer read FPageWidth write FPageWidth default 0;
     property PageHeight: integer read FPageHeight write FPageHeight default 0;
-    property MarginLeft: integer read FMarginLeft write FMarginLeft default 0;
-    property MarginTop: integer read FMarginTop write FMarginTop default 0;
-    property MarginRight: integer read FMarginRight write FMarginRight default 0;
-    property MarginBottom: integer read FMarginBottom write FMarginBottom default 0;
+    property MarginLeft: integer read FMarginLeft write FMarginLeft default cDefaultPageSetupMargin;
+    property MarginTop: integer read FMarginTop write FMarginTop default cDefaultPageSetupMargin;
+    property MarginRight: integer read FMarginRight write FMarginRight default cDefaultPageSetupMargin;
+    property MarginBottom: integer read FMarginBottom write FMarginBottom default cDefaultPageSetupMargin;
+    property MinMarginLeft: integer read FMinMarginLeft write FMinMarginLeft default cDefaultPageSetupMinMargin;
+    property MinMarginTop: integer read FMinMarginTop write FMinMarginTop default cDefaultPageSetupMinMargin;
+    property MinMarginRight: integer read FMinMarginRight write FMinMarginRight default cDefaultPageSetupMinMargin;
+    property MinMarginBottom: integer read FMinMarginBottom write FMinMarginBottom default cDefaultPageSetupMinMargin;
     property Options: TPageSetupDialogOptions read FOptions write FOptions default cDefaultPageSetupDialogOptions;
     property Units: TPageMeasureUnits read FUnits write FUnits default pmDefault;
   end;
@@ -182,10 +192,14 @@ begin
   inherited Create(TheOwner);
   FPageWidth:= 0;
   FPageHeight:= 0;
-  FMarginLeft:= 0;
-  FMarginTop:= 0;
-  FMarginRight:= 0;
-  FMarginBottom:= 0;
+  FMarginLeft:= cDefaultPageSetupMargin;
+  FMarginTop:= cDefaultPageSetupMargin;
+  FMarginRight:= cDefaultPageSetupMargin;
+  FMarginBottom:= cDefaultPageSetupMargin;
+  FMinMarginLeft:= cDefaultPageSetupMinMargin;
+  FMinMarginTop:= cDefaultPageSetupMinMargin;
+  FMinMarginRight:= cDefaultPageSetupMinMargin;
+  FMinMarginBottom:= cDefaultPageSetupMinMargin;
   FOptions:= cDefaultPageSetupDialogOptions;
   FUnits:= pmDefault;
 end;

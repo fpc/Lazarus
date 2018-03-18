@@ -89,6 +89,13 @@ var
 begin
   Dlg:= TDlgPageSetup.Create(nil);
   try
+    Dlg.SetControls(
+      not (psoDisablePagePainting in Options),
+      not (psoDisableMargins in Options),
+      not (psoDisablePaper in Options),
+      not (psoDisableOrientation in Options)
+      );
+
     if Title<>'' then
       Dlg.Caption:= Title
     else
@@ -99,7 +106,7 @@ begin
       Dlg.frmPageSetup.UnitInches:= true;
       with Dlg.frmPageSetup.gpMargins do
         Caption:= Caption+' (inches)';
-      NDigits:= 3;
+      NDigits:= 2;
       // according to MSDN, WinAPI margin rect needs values in 1/1000 of inches,
       // or in 1/100 on mm.
       // https://msdn.microsoft.com/en-us/library/windows/desktop/ms646842(v=vs.85).aspx
@@ -124,6 +131,11 @@ begin
     Dlg.frmPageSetup.txtTop.Value:= FMarginTop/NScale;
     Dlg.frmPageSetup.txtRight.Value:= FMarginRight/NScale;
     Dlg.frmPageSetup.txtBottom.Value:= FMarginBottom/NScale;
+
+    Dlg.frmPageSetup.txtLeft.MinValue:= FMinMarginLeft/NScale;
+    Dlg.frmPageSetup.txtTop.MinValue:= FMinMarginTop/NScale;
+    Dlg.frmPageSetup.txtRight.MinValue:= FMinMarginRight/NScale;
+    Dlg.frmPageSetup.txtBottom.MinValue:= FMinMarginBottom/NScale;
 
     Result:= Dlg.ShowModal=mrOk;
     if Result then

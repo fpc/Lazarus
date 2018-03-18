@@ -7,7 +7,6 @@ object dlgPageSetup: TdlgPageSetup
   Caption = 'dlgPageSetup'
   ClientHeight = 449
   ClientWidth = 446
-  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'
   inline frmPageSetup: TframePageSetup
@@ -49,6 +48,7 @@ object dlgPageSetup: TdlgPageSetup
       end
     end
     inherited panPreview: TPanel
+      AnchorSideTop.Control = nil
       Height = 197
       Width = 446
       ClientHeight = 197

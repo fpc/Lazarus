@@ -5,6 +5,7 @@ object framePageSetup: TframePageSetup
   Width = 448
   ClientHeight = 435
   ClientWidth = 448
+  LCLVersion = '1.9.0.0'
   TabOrder = 0
   DesignLeft = 350
   DesignTop = 92

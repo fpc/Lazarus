@@ -28,11 +28,11 @@ type
     btnOk: TButton;
     frmPageSetup: TframePageSetup;
     PanelButtons: TPanel;
-    procedure FormCreate(Sender: TObject);
   private
 
   public
-
+    procedure SetControls(AEnablePreview, AEnableMargins, AEnablePapers,
+      AEnableOrientation: boolean);
   end; 
 
 var
@@ -44,9 +44,10 @@ implementation
 
 { TDlgPageSetup }
 
-procedure TDlgPageSetup.FormCreate(Sender: TObject);
+procedure TDlgPageSetup.SetControls(AEnablePreview, AEnableMargins, AEnablePapers,
+  AEnableOrientation: boolean);
 begin
-  frmPageSetup.Initialize(psmFull);
+  frmPageSetup.Initialize(AEnablePreview, AEnableMargins, AEnablePapers, AEnableOrientation);
 end;
 
 end.

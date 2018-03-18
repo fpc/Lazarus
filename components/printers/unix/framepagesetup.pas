@@ -21,14 +21,6 @@ uses
   OsPrinters, CupsLCL;
 
 type
-  TPageSetupMode = (psmFull, psmPapers, psmMargins);
-  TPageSetupOption = (
-    psoMargins,         // margins and preview are visible
-    psoPapers,          // papers group visible
-    psoOrientation      // orientation group visible
-  );
-  TPageSetupOptions = set of TPageSetupOption;
-
   { TframePageSetup }
 
   TframePageSetup = class(TFrame)
@@ -68,10 +60,14 @@ type
     FHeightTallest: Integer;
     FHardMargins: TRect;
     FFactorX, FFactorY, FZoom: Double;
-    FOptions: TPageSetupOptions;
+    EnablePreview: boolean;
+    EnableMargins: boolean;
+    EnablePapers: boolean;
+    EnableOrientation: boolean;
   public
     UnitInches: boolean;
-    procedure Initialize(AMode: TPageSetupMode);
+    procedure Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
+      AEnableOrientation: boolean);
     procedure UpdatePageSize;
   end;
 
@@ -109,13 +105,9 @@ procedure TframePageSetup.pbPreviewPaint(Sender: TObject);
     end;
   end;
 var
-  R: TRect;
   NToInches: double;
 begin
-
-  if Sender=nil then ;
-
-  if not (psoMargins in FOptions) then
+  if not EnablePreview then
     exit;
 
   if UnitInches then
@@ -125,19 +117,18 @@ begin
 
   with pbPreview do
   begin
-
-    // page frame
-    R := Rect(0,0,Width,Height);
     Canvas.Pen.Color := clBlack;
-    Canvas.Brush.Color:=clWhite;
-    Canvas.Rectangle(R);
+    Canvas.Brush.Color := clWhite;
+    Canvas.Rectangle(0, 0, Width, Height);
 
-    // hard margins
-    Canvas.Pen.Color := clHighlight;
-    DrawMargin(0, Round(txtLeft.Value * NToInches * Printer.XDPI * FFactorX * FZoom) ); //FHardMargins.Left
-    DrawMargin(1, Round(txtTop.Value * NToInches * Printer.YDPI * FFactorY * FZoom) );
-    DrawMargin(2, Round(txtRight.Value * NToInches * Printer.XDPI * FFactorX * FZoom) );
-    DrawMargin(3, Round(txtBottom.Value * NToInches * Printer.YDPI * FFactorY * FZoom) );
+    if EnableMargins then
+    begin
+      Canvas.Pen.Color := clHighlight;
+      DrawMargin(0, Round(txtLeft.Value * NToInches * Printer.XDPI * FFactorX * FZoom) ); //FHardMargins.Left
+      DrawMargin(1, Round(txtTop.Value * NToInches * Printer.YDPI * FFactorY * FZoom) );
+      DrawMargin(2, Round(txtRight.Value * NToInches * Printer.XDPI * FFactorX * FZoom) );
+      DrawMargin(3, Round(txtBottom.Value * NToInches * Printer.YDPI * FFactorY * FZoom) );
+    end;
   end;
 end;
 
@@ -172,7 +163,7 @@ procedure TframePageSetup.panPreviewResize(Sender: TObject);
 var
   TallH: Integer;
 begin
-  if not (psoMargins in FOptions) then
+  if not EnablePreview then
     exit;
 
   TallH := Round(FheightTallest * FFactorY);
@@ -214,7 +205,7 @@ end;
 
 procedure TframePageSetup.UpdatePageSize;
 begin
-  if not (psoMargins in FOptions) then
+  if not EnablePreview then
     exit;
 
   with Printer.PaperSize.PaperRect.PhysicalRect do
@@ -241,22 +232,21 @@ begin
   {$ENDIF}
 end;
 
-procedure TframePageSetup.Initialize(AMode: TPageSetupMode);
+procedure TframePageSetup.Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
+  AEnableOrientation: boolean);
 var
   i,j:Integer;
   R: TPaperRect;
 begin
-  case AMode of
-    psmMargins:
-      FOptions := [psoMargins];
-    psmPapers:
-      FOptions := [psoPapers,psoOrientation];
-    else
-      FOptions := [psoMargins,psoPapers,psoOrientation];
-  end;
+  EnablePreview:= AEnablePreview;
+  EnableMargins:= AEnableMargins;
+  EnablePapers:= AEnablePapers;
+  EnableOrientation:= AEnableOrientation;
 
-  if [psoMargins,psoPapers]*FOptions<>[] then
+  gpPaper.Enabled := EnablePapers;
+  if EnablePapers then
   begin
+    SetupCupsCombo(cbSource, nil, 'InputSlot');
     SetupCupsCombo(cbPaper, nil, 'PageSize');
     if (cbPaper.Items.Count=0) then
     begin
@@ -267,13 +257,8 @@ begin
     end;
   end;
 
-  if psoPapers in FOptions then
-    SetupCupsCOmbo(cbSource, nil, 'InputSlot')
-  else
-    gpPaper.Visible := false;
-
   //TODO: support reverse variants too?
-  gpOrientation.Visible := (psoOrientation in FOptions);
+  gpOrientation.Enabled := EnableOrientation;
   case Printer.Orientation of
     poPortrait,poReversePortrait:
       radPortrait.Checked := true;
@@ -281,7 +266,10 @@ begin
       radLandscape.Checked := true;
   end;
 
-  if psoMargins in FOptions then
+  gpMargins.Enabled := EnableMargins;
+  panPreview.Visible:= EnablePreview;
+
+  if EnablePreview then
   begin
     // assume 100 pix = 8.5 inch (IOW, letter size width = 100 pixels)
     with ScreenInfo do
@@ -319,24 +307,7 @@ begin
     // zoom factor
     FZoom := 1.0;
     UpdatePageSize;
-
-  end else
-  begin
-    panPreview.Visible:=false;
-    gpMargins.Visible:=false;
   end;
-
-  if AMode=psmPapers then
-  begin
-    gpOrientation.Anchors:=[akTop,akRight,akBottom];
-    gpOrientation.Align:=alRight;
-    gpPaper.Anchors:=[akTop,akLeft];
-    gpPaper.Align:=alClient;
-    PanSetup.Align:=alClient;
-  end else
-  if AMode=psmMargins then
-    PanSetup.Height:=gpMargins.Height+C_BOTHSPACES;
-
 end;
 
 end.
