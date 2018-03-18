@@ -162,19 +162,13 @@ begin
   if (FVariablesLastDown.Y<>0) then
     begin
     N:=TVData.GetNodeAt(FVariablesLastDown.X,FVariablesLastDown.Y);
-    if Assigned(N) then
-      Writeln('Checking ',N.Text)
-    else
-      Writeln('Not on node');
     if (N<>Nil) and (TVVariables.Selected<>N) then
       begin
-      Writeln('Correcting ',N.Text);
       TVVariables.Selected:=N;
       end;
     end;
   if (TVVariables.Selected<>Nil) then
     begin
-    Writeln('Actual ',TVVariables.Selected.Text);
     O:=TObject(TVVariables.Selected.Data);
     if Assigned(o) then
       if (O.InheritsFrom(TFPReportVariable)) then
