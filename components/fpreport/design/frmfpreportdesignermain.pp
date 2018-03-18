@@ -463,7 +463,6 @@ begin
   MRUMenuManager1 := TMRUMenuManager.Create(self);
   with MRUMenuManager1 do
     begin
-    maxRecent := 15;
     IniFileName := ChangeFileExt(ParamStr(0), '.ini');
     MenuItem := MIRecent;
     PopupMenu := PMRecent;
@@ -471,6 +470,7 @@ begin
     MenuCaptionMask := '(%d) %s';
     OnRecentFile := @MRUMenuManager1RecentFile;
     LoadRecentFilesFromIni;
+    maxRecent := 15;
     end;
 end;
 
@@ -1001,7 +1001,10 @@ begin
       begin
       SaveDesignToFile(FileName);
       if Assigned(MRUMenuManager1) then
+        begin
         MRUMenuManager1.AddToRecent(FileName);
+        MRUMenuManager1.SaveRecentFilesToIni;
+        end;
       end;
     end;
 end;
@@ -1362,7 +1365,11 @@ begin
       LoadDesignFromFile(ODReport.FileName);
       SetFileCaption(ODReport.FileName);
       if Assigned(MRUMenuManager1) then
+        begin
         MRUMenuManager1.AddToRecent(ODReport.FileName);
+        MRUMenuManager1.SaveRecentFilesToIni;
+        end;
+
       end;
     end;
   If Result then
@@ -1385,6 +1392,7 @@ begin
   // Give LCL time to clean up.
   Application.ProcessMessages;
   FReportData.Report:=Nil;
+  FReportDesignData.RemoveFromReport(FReport);
   FReportDesignData.DataDefinitions.Clear;
   FOI.Report:=Nil;
   FOI.SelectControls(Nil);
