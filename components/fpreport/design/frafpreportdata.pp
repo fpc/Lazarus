@@ -38,12 +38,14 @@ type
     procedure TVDataMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure TVDataStartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure TVFunctionsStartDrag(Sender: TObject; var DragObject: TDragObject);
+    procedure TVVariablesMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
     FPageCount : TFPExprIdentifierDef;
     FIdentifiers: TFPExprIdentifierDefs;
     FUserVariables : TTreeNode;
     FBuiltinVariables : TTreeNode;
     FDataLastDown : TPoint;
+    FVariablesLastDown : TPoint;
     FReport: TFPReport;
     FReportData: TFPReportDataCollection;
 
@@ -81,10 +83,10 @@ Var
 
 begin
   DragObject:=Nil;
-  if (TVData.Selected=Nil) and (FDataLastDown.Y<>0) then
+  if (FDataLastDown.Y<>0) then
     begin
     N:=TVData.GetNodeAt(FDataLastDown.X,FDataLastDown.Y);
-    if N<>Nil then
+    if (N<>Nil) and (TVData.Selected<>N) then
       TVData.Selected:=N;
     end;
   if (TVData.Selected<>Nil) then
@@ -142,6 +144,11 @@ begin
     end;
 end;
 
+procedure TReportDataDisplay.TVVariablesMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  FVariablesLastDown:=Point(X,Y);
+end;
+
 procedure TReportDataDisplay.LBVariablesStartDrag(Sender: TObject;
   var DragObject: TDragObject);
 
@@ -149,10 +156,25 @@ Var
   S : String;
   M : TMemoDragDrop;
   O : TObject;
+  N : TTreeNode;
 
 begin
+  if (FVariablesLastDown.Y<>0) then
+    begin
+    N:=TVData.GetNodeAt(FVariablesLastDown.X,FVariablesLastDown.Y);
+    if Assigned(N) then
+      Writeln('Checking ',N.Text)
+    else
+      Writeln('Not on node');
+    if (N<>Nil) and (TVVariables.Selected<>N) then
+      begin
+      Writeln('Correcting ',N.Text);
+      TVVariables.Selected:=N;
+      end;
+    end;
   if (TVVariables.Selected<>Nil) then
     begin
+    Writeln('Actual ',TVVariables.Selected.Text);
     O:=TObject(TVVariables.Selected.Data);
     if Assigned(o) then
       if (O.InheritsFrom(TFPReportVariable)) then
@@ -166,6 +188,8 @@ begin
       DragObject:=M;
       end;
     end;
+  FVariablesLastDown.X:=0;
+  FVariablesLastDown.Y:=0;
 end;
 
 procedure TReportDataDisplay.TVDataMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
