@@ -65,6 +65,8 @@ type
     EnablePapers: boolean;
     EnableOrientation: boolean;
     function NToInches: double;
+    procedure RotateMargins(AOrder: boolean);
+    procedure UpdateMaxValues;
   public
     UnitInches: boolean;
     CurPageWidth: double;
@@ -86,6 +88,31 @@ begin
     Result:= 1
   else
     Result:= 1/25.4;
+end;
+
+procedure TframePageSetup.RotateMargins(AOrder: boolean);
+var
+  m_l, m_t, m_r, m_b: double;
+begin
+  m_l:= txtLeft.Value;
+  m_t:= txtTop.Value;
+  m_r:= txtRight.Value;
+  m_b:= txtBottom.Value;
+
+  if AOrder then
+  begin
+    txtLeft.Value:= m_b;
+    txtTop.Value:= m_l;
+    txtRight.Value:= m_t;
+    txtBottom.Value:= m_r;
+  end
+  else
+  begin
+    txtLeft.Value:= m_t;
+    txtTop.Value:= m_r;
+    txtRight.Value:= m_b;
+    txtBottom.Value:= m_l;
+  end;
 end;
 
 procedure TframePageSetup.pbPreviewPaint(Sender: TObject);
@@ -138,8 +165,7 @@ end;
 
 procedure TframePageSetup.radPortraitClick(Sender: TObject);
 begin
-  if sender=nil then ;
-
+  RotateMargins(radPortrait.Checked);
   if radPortrait.Checked then
     Printer.Orientation := poPortrait
   else
@@ -237,6 +263,16 @@ begin
     DebugLn('OrgMargins L=%d T=%d R=%d B=%d',[Left,Top,Right,Bottom]);
   end;
   {$ENDIF}
+
+  UpdateMaxValues;
+end;
+
+procedure TframePageSetup.UpdateMaxValues;
+begin
+  txtLeft.MaxValue := CurPageWidth/2;
+  txtRight.MaxValue := CurPageWidth/2;
+  txtTop.MaxValue := CurPageHeight/2;
+  txtBottom.MaxValue := CurPageHeight/2;
 end;
 
 procedure TframePageSetup.Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
