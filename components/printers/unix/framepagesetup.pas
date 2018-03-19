@@ -64,8 +64,11 @@ type
     EnableMargins: boolean;
     EnablePapers: boolean;
     EnableOrientation: boolean;
+    function NToInches: double;
   public
     UnitInches: boolean;
+    CurPageWidth: double;
+    CurPageHeight: double;
     procedure Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
       AEnableOrientation: boolean);
     procedure UpdatePageSize;
@@ -76,6 +79,14 @@ implementation
 {$R framepagesetup.lfm}
 
 { TframePageSetup }
+
+function TframePageSetup.NToInches: double;
+begin
+  if UnitInches then
+    Result:= 1
+  else
+    Result:= 1/25.4;
+end;
 
 procedure TframePageSetup.pbPreviewPaint(Sender: TObject);
   procedure DrawMargin(AIndex: Integer; ASize: Integer);
@@ -104,16 +115,9 @@ procedure TframePageSetup.pbPreviewPaint(Sender: TObject);
         end;
     end;
   end;
-var
-  NToInches: double;
 begin
   if not EnablePreview then
     exit;
-
-  if UnitInches then
-    NToInches:= 1
-  else
-    NToInches:= 1/10/2.54;
 
   with pbPreview do
   begin
@@ -220,6 +224,9 @@ begin
     FHardMargins.Right := Round(FFactorX * (Physicalrect.Right-WorkRect.Right) * FZoom);
     FHardMargins.Top := Round(FFactorY * (WorkRect.Top-PhysicalRect.Top) * FZoom);
     FHardMargins.Bottom := Round(FFactorY * (PhysicalRect.Bottom-WorkRect.Bottom) * FZoom);
+
+    CurPageWidth := (PhysicalRect.Right-PhysicalRect.Left)/Printer.XDPI/NToInches;
+    CurPageHeight := (PhysicalRect.Bottom-PhysicalRect.Top)/Printer.YDPI/NToInches;
   end;
 
   {$IFDEF DebugCUPS}

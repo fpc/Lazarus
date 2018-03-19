@@ -86,16 +86,10 @@ function TPageSetupDialog.DoExecute: Boolean;
 var
   Dlg: TDlgPageSetup;
   NDigits, NScale: integer;
+  NInc: double;
 begin
   Dlg:= TDlgPageSetup.Create(nil);
   try
-    Dlg.SetControls(
-      not (psoDisablePagePainting in Options),
-      not (psoDisableMargins in Options),
-      not (psoDisablePaper in Options),
-      not (psoDisableOrientation in Options)
-      );
-
     if Title<>'' then
       Dlg.Caption:= Title
     else
@@ -107,6 +101,7 @@ begin
       with Dlg.frmPageSetup.gpMargins do
         Caption:= Caption+' (inches)';
       NDigits:= 2;
+      NInc:= 0.01;
       // according to MSDN, WinAPI margin rect needs values in 1/1000 of inches,
       // or in 1/100 on mm.
       // https://msdn.microsoft.com/en-us/library/windows/desktop/ms646842(v=vs.85).aspx
@@ -118,8 +113,17 @@ begin
       with Dlg.frmPageSetup.gpMargins do
         Caption:= Caption+' (mm)';
       NDigits:= 0;
+      NInc:= 1.0;
       NScale:= 100;
     end;
+
+    //must be after setting UnitInches
+    Dlg.SetControls(
+      not (psoDisablePagePainting in Options),
+      not (psoDisableMargins in Options),
+      not (psoDisablePaper in Options),
+      not (psoDisableOrientation in Options)
+      );
 
     Dlg.frmPageSetup.txtLeft.DecimalPlaces:= NDigits;
     Dlg.frmPageSetup.txtTop.DecimalPlaces:= NDigits;
@@ -137,6 +141,11 @@ begin
     Dlg.frmPageSetup.txtRight.MinValue:= FMinMarginRight/NScale;
     Dlg.frmPageSetup.txtBottom.MinValue:= FMinMarginBottom/NScale;
 
+    Dlg.frmPageSetup.txtLeft.Increment:= NInc;
+    Dlg.frmPageSetup.txtTop.Increment:= NInc;
+    Dlg.frmPageSetup.txtRight.Increment:= NInc;
+    Dlg.frmPageSetup.txtBottom.Increment:= NInc;
+
     Result:= Dlg.ShowModal=mrOk;
     if Result then
     begin
@@ -144,6 +153,9 @@ begin
       FMarginTop:= Round(Dlg.frmPageSetup.txtTop.Value*NScale);
       FMarginRight:= Round(Dlg.frmPageSetup.txtRight.Value*NScale);
       FMarginBottom:= Round(Dlg.frmPageSetup.txtBottom.Value*NScale);
+
+      FPageWidth:= Round(Dlg.frmPageSetup.CurPageWidth*NScale);
+      FPageHeight:= Round(Dlg.frmPageSetup.CurPageHeight*NScale);
     end;
   finally
     Dlg.Free;
