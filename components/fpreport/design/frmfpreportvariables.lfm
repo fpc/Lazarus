@@ -153,6 +153,7 @@ object ReportVariablesForm: TReportVariablesForm
     Top = 112
     Width = 86
     Anchors = [akTop, akRight]
+    MaxValue = 0
     TabOrder = 6
   end
   object SEFloat: TFloatSpinEdit
@@ -161,8 +162,9 @@ object ReportVariablesForm: TReportVariablesForm
     Top = 112
     Width = 88
     Anchors = [akTop, akRight]
+    DecimalPlaces = 4
     Increment = 1
-    MaxValue = 100
+    MaxValue = 0
     MinValue = 0
     TabOrder = 7
     Value = 0
