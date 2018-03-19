@@ -71,6 +71,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure LBVariablesSelectionChange(Sender: TObject; User: boolean);
   private
+    FCurrentIndex : integer;
     FCurrentVariable: TFPReportVariable;
     FValueControls : Array[TResultType] of TControl;
     procedure CheckExpression;
@@ -142,7 +143,8 @@ end;
 procedure TReportVariablesForm.LBVariablesSelectionChange(Sender: TObject;
   User: boolean);
 begin
-  SetCurrentVariableFromList;
+  if User then
+    SetCurrentVariableFromList;
 end;
 
 procedure TReportVariablesForm.DoAddVariable(Sender: TObject);
@@ -179,10 +181,12 @@ begin
   Until VOK or not DOK;
   if DOK and VOK then
     begin
+    SaveCurrentVariable;
     V:=Variables.AddVariable(N);
     I:=LBVariables.Items.AddObject(N,V);
     LBVariables.ItemIndex:=I;
     FCurrentVariable:=V;
+    FCurrentIndex:=I;
     ShowCurrentVariable;
     end;
 end;
@@ -222,7 +226,11 @@ Var
 begin
   I:=LBVariables.ItemIndex;
   if I<>-1 then
-    CurrentVariable:=LBVariables.Items.Objects[i] as TFPReportvariable
+    begin
+    CurrentVariable:=LBVariables.Items.Objects[i] as TFPReportvariable;
+    // Only after the variable is set, because Save needs the current one
+    FCurrentIndex:=I;
+    end
   else
     CurrentVariable:=Nil;
 end;
@@ -356,6 +364,7 @@ begin
   // This can raise an exception. Catch it, and restore old name
   try
     FCurrentVariable.Name:=EName.Text;
+    LBVariables.Items[FCurrentIndex]:=FCurrentVariable.Name;
   except
     On E : Exception do
       begin
