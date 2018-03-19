@@ -59,14 +59,6 @@ type
     MWSetDefaultColorsButton: TButton;
     MWSetEditorColorsButton: TButton;
     MWSpeedSetColorsGroupBox: TGroupBox;
-    Notebook1: TNotebook;
-    PageHeader: TPage;
-    PageMsg: TPage;
-    ToolBar1: TToolBar;
-    BtnHeaderColor: TToolButton;
-    BtnMsgColor: TToolButton;
-    procedure BtnHeaderColorClick(Sender: TObject);
-    procedure BtnMsgColorClick(Sender: TObject);
     procedure MsgColorBoxChange(Sender: TObject);
     procedure MsgColorListBoxGetColors(Sender: TCustomColorListBox; Items: TStrings);
     procedure MsgColorListBoxSelectionChange(Sender: TObject; User: boolean);
@@ -118,16 +110,6 @@ begin
   if not fReady or (i < 0) then
     exit;
   MWColorListBox.Colors[i]:=MWColorBox.Selected;
-end;
-
-procedure TMsgWndOptionsFrame.BtnHeaderColorClick(Sender: TObject);
-begin
-  Notebook1.PageIndex := 0;
-end;
-
-procedure TMsgWndOptionsFrame.BtnMsgColorClick(Sender: TObject);
-begin
-  Notebook1.PageIndex := 1;
 end;
 
 procedure TMsgWndOptionsFrame.MsgColorBoxChange(Sender: TObject);
@@ -236,10 +218,8 @@ begin
   inherited Create(AOwner);
 
   MWOptionsLabel.Caption:=lisOptions;
-  BtnHeaderColor.Caption := lisHeaderColors;
-  BtnMsgColor.Caption := lisMsgColors;
-  MWColorsGroupBox.Caption:=dlgColors;
-  MsgColorGroupBox.Caption:=dlgColors;
+  MWColorsGroupBox.Caption:= lisHeaderColors;
+  MsgColorGroupBox.Caption:= lisMsgColors;
   MWSpeedSetColorsGroupBox.Caption:=lisSetAllColors;
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
   MWSetPastelColorsButton.Caption:=lisPastelColors;
@@ -254,7 +234,6 @@ begin
   MWShowFPCMsgLinesCompiledCheckBox.Caption:=lisShowFPCMessageLinesCompiled;
   MWShowFPCMsgLinesCompiledCheckBox.Hint:=
     lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt;
-  Notebook1.PageIndex := 0;
 end;
 
 function TMsgWndOptionsFrame.GetTitle: String;
