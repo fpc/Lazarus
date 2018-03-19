@@ -88,7 +88,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Left = 6
       Height = 23
       Top = 25
-      Width = 50
+      Width = 65
       TabOrder = 4
     end
     object JumpCodeBlockPosEdit: TSpinEdit
@@ -98,7 +98,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
       Left = 6
       Height = 23
       Top = 51
-      Width = 50
+      Width = 65
       BorderSpacing.Top = 3
       TabOrder = 5
     end
@@ -143,6 +143,7 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     TabOrder = 1
     object IndentFileLabel: TLabel
       AnchorSideLeft.Control = IndentationGroupBox
+      AnchorSideTop.Control = IndentFileEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 15
@@ -204,7 +205,8 @@ object CodetoolsGeneralOptionsFrame: TCodetoolsGeneralOptionsFrame
     object IndentFileEdit: TFileNameEdit
       AnchorSideLeft.Control = IndentFileLabel
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Side = asrCenter
+      AnchorSideTop.Control = IndentContextSensitiveCheckBox
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = IndentationGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 92
