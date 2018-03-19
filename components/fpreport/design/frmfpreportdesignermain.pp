@@ -1121,6 +1121,7 @@ begin
     F.Data:=FReportDesignData.DataDefinitions;
     if F.ShowModal=mrOK then
       begin
+      FReportDesignData.RemoveFromReport(FReport);
       FReportDesignData.DataDefinitions:=F.Data;
       CreateReportDataSets(Nil);
       Modified:=True;
