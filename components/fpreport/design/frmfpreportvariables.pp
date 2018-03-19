@@ -250,7 +250,9 @@ end;
 function TReportVariablesForm.GetType: TResultType;
 begin
   if (CBType.ItemIndex in [ord(Low(TResultType))..ord(High(TResultType))]) then
-     Result:=TResultType(CBType.ItemIndex);
+    Result:=TResultType(CBType.ItemIndex)
+  else
+    Result:=rtString;
 end;
 
 function TReportVariablesForm.GetCurrentIsExpression: Boolean;
@@ -339,8 +341,12 @@ Var
   T : TResultType;
 
 begin
+  // First hide all
   For T in TResultType do
-    FValueControls[T].Visible:=(CBType.Itemindex=Ord(T));
+    FValueControls[T].Visible:=False;
+  // Show correct one.
+  // Need to do it like this, because float is used for different types...
+  FValueControls[GetType].Visible:=True;
 end;
 
 procedure TReportVariablesForm.SaveCurrentVariable;
