@@ -27,6 +27,7 @@ type
     cbPaper: TComboBox;
     cbSource: TComboBox;
     panMargins: TPanel;
+    boxShadow: TShape;
     txtLeft: TFloatSpinEdit;
     txtTop: TFloatSpinEdit;
     txtRight: TFloatSpinEdit;
@@ -242,6 +243,9 @@ begin
   begin
     PbPreview.Width := Round(FFactorX * (Right - Left) * FZoom) + 2;
     PbPreview.Height := Round(FFactorY * (Bottom - Top) * FZoom) + 2;
+
+    boxShadow.Width := pbPreview.Width;
+    boxShadow.Height := pbPreview.Height;
   end;
 
   with Printer.PaperSize.PaperRect do

@@ -130,16 +130,29 @@ begin
     Dlg.frmPageSetup.txtRight.DecimalPlaces:= NDigits;
     Dlg.frmPageSetup.txtBottom.DecimalPlaces:= NDigits;
 
-    // Delphi wiki: MarginNNN holds value in 1/1000 parts of current Unit
-    Dlg.frmPageSetup.txtLeft.Value:= FMarginLeft/NScale;
-    Dlg.frmPageSetup.txtTop.Value:= FMarginTop/NScale;
-    Dlg.frmPageSetup.txtRight.Value:= FMarginRight/NScale;
-    Dlg.frmPageSetup.txtBottom.Value:= FMarginBottom/NScale;
+    if psoMargins in Options then
+    begin
+      Dlg.frmPageSetup.txtLeft.Value:= FMarginLeft/NScale;
+      Dlg.frmPageSetup.txtTop.Value:= FMarginTop/NScale;
+      Dlg.frmPageSetup.txtRight.Value:= FMarginRight/NScale;
+      Dlg.frmPageSetup.txtBottom.Value:= FMarginBottom/NScale;
+    end
+    else
+    begin
+      //if no psoMargins, set margins 1 inch or 10 mm
+      Dlg.frmPageSetup.txtLeft.Value:= 1000/NScale;
+      Dlg.frmPageSetup.txtTop.Value:= 1000/NScale;
+      Dlg.frmPageSetup.txtRight.Value:= 1000/NScale;
+      Dlg.frmPageSetup.txtBottom.Value:= 1000/NScale;
+    end;
 
-    Dlg.frmPageSetup.txtLeft.MinValue:= FMinMarginLeft/NScale;
-    Dlg.frmPageSetup.txtTop.MinValue:= FMinMarginTop/NScale;
-    Dlg.frmPageSetup.txtRight.MinValue:= FMinMarginRight/NScale;
-    Dlg.frmPageSetup.txtBottom.MinValue:= FMinMarginBottom/NScale;
+    if psoMinMargins in Options then
+    begin
+      Dlg.frmPageSetup.txtLeft.MinValue:= FMinMarginLeft/NScale;
+      Dlg.frmPageSetup.txtTop.MinValue:= FMinMarginTop/NScale;
+      Dlg.frmPageSetup.txtRight.MinValue:= FMinMarginRight/NScale;
+      Dlg.frmPageSetup.txtBottom.MinValue:= FMinMarginBottom/NScale;
+    end;
 
     Dlg.frmPageSetup.txtLeft.Increment:= NInc;
     Dlg.frmPageSetup.txtTop.Increment:= NInc;
