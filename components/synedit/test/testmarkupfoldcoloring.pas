@@ -39,9 +39,11 @@ type
     procedure TearDown; override;
     procedure ReCreateEdit; reintroduce;
     function TestText1: TStringArray;
+    function TestTextInval1: TStringArray;
     procedure EnableOutlines(AEnbledTypes: TPascalCodeFoldBlockTypes);
   published
     procedure TestColors;
+    procedure TestInvalidateIfElseChain;
   end;
 
 implementation
@@ -216,6 +218,31 @@ begin
   Result[25] := '';
 end;
 
+function TTestMarkupFoldColoring.TestTextInval1: TStringArray;
+begin
+  SetLength(Result, 20);
+  Result[0] := 'procedure';
+  Result[1] := 'begin';
+  Result[2] := '';
+  Result[3] := '';
+  Result[4] := '    if x then';
+  Result[5] := '      code';
+  Result[6] := '';
+  Result[7] := '';
+  Result[8] := '    else if y then';
+  Result[9] := '      code';
+  Result[10] := '';
+  Result[11] := '';
+  Result[12] := '    else';
+  Result[13] := '      code';
+  Result[14] := '';
+  Result[15] := '';
+  Result[16] := '      ;';
+  Result[17] := '';
+  Result[18] := 'end';
+  Result[19] := '';
+end;
+
 procedure TTestMarkupFoldColoring.EnableOutlines(AEnbledTypes: TPascalCodeFoldBlockTypes);
 var
   i: TPascalCodeFoldBlockType;
@@ -263,6 +290,64 @@ begin
     TestInvalidate('after edit', 14, 21); // what about 13, ok it is already invalidated....
   PopBaseName;
 
+  PopBaseName;
+end;
+
+procedure TTestMarkupFoldColoring.TestInvalidateIfElseChain;
+var
+  i: Integer;
+begin
+  ReCreateEdit;
+  PushBaseName('Invalidate, if else if else ...');
+    SetLines(TestTextInval1);
+    EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
+    EnableOutlines([cfbtIfThen.. cfbtNone]);
+    SetSynEditHeight(40);
+
+    PushBaseName('before edit');
+    TestBeginMarkup('');
+    for i := 1 to 19 do
+    case i of
+      1..4, 18..19:
+        TestRowColumns('Line '+IntToStr(i),  i, [], []);
+      5:
+        TestRowColumns('Line '+IntToStr(i),  i, [], [], [5,2, 10,4], [1, 1]);
+      9:
+        TestRowColumns('Line '+IntToStr(i),  i, [], [], [5,4, 10,2, 15,4], [1, 1, 1]);
+      13:
+        TestRowColumns('Line '+IntToStr(i),  i, [], [], [5,4], [1]);
+      17:
+        TestRowColumns('Line '+IntToStr(i),  i, [5], [1], [7,1], [1]);
+      else
+        TestRowColumns('Line '+IntToStr(i),  i, [5], [1]);
+    end;
+    Markup.EndMarkup;
+
+    ClearInvalidatedLines;
+    DoKeyPressAtPos(2, 5, [VK_DELETE]); // if b then
+
+    PopPushBaseName('after edit');
+    TestInvalidate('after edit', 6, 17);
+
+    TestBeginMarkup('');
+    for i := 1 to 19 do
+    case i of
+      1..4, 18..19:
+        TestRowColumns('Line '+IntToStr(i),  i, [], []);
+      5:
+        TestRowColumns('Line '+IntToStr(i),  i, [], [], [4,2, 9,4], [1, 1]);
+      9:
+        TestRowColumns('Line '+IntToStr(i),  i, [4], [1], [5,4, 10,2, 15,4], [1, 1, 1]);
+      13:
+        TestRowColumns('Line '+IntToStr(i),  i, [4], [1], [5,4], [1]);
+      17:
+        TestRowColumns('Line '+IntToStr(i),  i, [4], [1], [7,1], [1]);
+      else
+        TestRowColumns('Line '+IntToStr(i),  i, [4], [1]);
+    end;
+    Markup.EndMarkup;
+
+    PopBaseName;
   PopBaseName;
 end;
 

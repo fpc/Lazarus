@@ -1003,8 +1003,7 @@ begin
     // pEndLine seems to be the first line after the change
     pEndLine := pEndLine - 1;
   lEndLine := pEndLine;
-  if fFirstCharacterPhysColCache[ToIdx(lEndLine)] = 0 then
-    fFirstCharacterPhysColCache[ToIdx(lEndLine)] := FirstCharacterColumn[ToIdx(lEndLine)];
+  fFirstCharacterPhysColCache[ToIdx(lEndLine)] := FirstCharacterColumn[ToIdx(lEndLine)];
   x := fFirstCharacterPhysColCache[ToIdx(lEndLine)];
   lBottomLine := TCustomSynEdit(SynEdit).TopLine + TCustomSynEdit(SynEdit).LinesInWindow;
 
