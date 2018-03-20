@@ -117,49 +117,35 @@ begin
 end;
 
 procedure TframePageSetup.pbPreviewPaint(Sender: TObject);
-  procedure DrawMargin(AIndex: Integer; ASize: Integer);
-  begin
-    with pbPreview do
-    case AIndex of
-      0: // Left
-        begin
-          Canvas.MoveTo(ASize, 1);
-          Canvas.LineTo(ASize, Height-1);
-        end;
-      1: //Top
-        begin
-          Canvas.MoveTo(1,ASize);
-          Canvas.LineTo(Width-1, ASize);
-        end;
-      2: // Right
-        begin
-          Canvas.MoveTo(Width-1-ASize, 1);
-          Canvas.LineTo(Width-1-ASize,Height-1);
-        end;
-      3: // Bottom
-        begin
-          Canvas.MoveTo(1,Height-1-Asize);
-          Canvas.LineTo(Width-1, Height-1-ASize);
-        end;
-    end;
-  end;
+var
+  R: TRect;
+  NLeft, NTop, NRight, NBottom: integer;
 begin
   if not EnablePreview then
     exit;
 
   with pbPreview do
   begin
+    Canvas.Pen.Style := psSolid;
     Canvas.Pen.Color := clBlack;
     Canvas.Brush.Color := clWhite;
     Canvas.Rectangle(0, 0, Width, Height);
 
     if EnableMargins then
     begin
-      Canvas.Pen.Color := clHighlight;
-      DrawMargin(0, Round(txtLeft.Value * NToInches * Printer.XDPI * FFactorX * FZoom) ); //FHardMargins.Left
-      DrawMargin(1, Round(txtTop.Value * NToInches * Printer.YDPI * FFactorY * FZoom) );
-      DrawMargin(2, Round(txtRight.Value * NToInches * Printer.XDPI * FFactorX * FZoom) );
-      DrawMargin(3, Round(txtBottom.Value * NToInches * Printer.YDPI * FFactorY * FZoom) );
+      NLeft := Round(txtLeft.Value * NToInches * Printer.XDPI * FFactorX * FZoom);
+      NTop := Round(txtTop.Value * NToInches * Printer.YDPI * FFactorY * FZoom);
+      NRight := Round(txtRight.Value * NToInches * Printer.XDPI * FFactorX * FZoom);
+      NBottom := Round(txtBottom.Value * NToInches * Printer.YDPI * FFactorY * FZoom);
+
+      R.Left := NLeft;
+      R.Top := NTop;
+      R.Right := Width-1-NRight;
+      R.Bottom := Height-1-NBottom;
+
+      Canvas.Pen.Color := clMedGray;
+      //Canvas.Pen.Style := psDash; // AT: setting line style don't work, line is solid
+      Canvas.Rectangle(R);
     end;
   end;
 end;
@@ -272,11 +258,13 @@ begin
 end;
 
 procedure TframePageSetup.UpdateMaxValues;
+const
+  cMul = 0.45; // max margin is almost 1/2 of page size
 begin
-  txtLeft.MaxValue := CurPageWidth/2;
-  txtRight.MaxValue := CurPageWidth/2;
-  txtTop.MaxValue := CurPageHeight/2;
-  txtBottom.MaxValue := CurPageHeight/2;
+  txtLeft.MaxValue := CurPageWidth * cMul;
+  txtRight.MaxValue := CurPageWidth * cMul;
+  txtTop.MaxValue := CurPageHeight * cMul;
+  txtBottom.MaxValue := CurPageHeight * cMul;
 end;
 
 procedure TframePageSetup.Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
