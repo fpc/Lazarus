@@ -59,7 +59,6 @@ type
     procedure txtLeftChange(Sender: TObject);
   private
     FHeightTallest: Integer;
-    FHardMargins: TRect;
     FFactorX, FFactorY, FZoom: Double;
     EnablePreview: boolean;
     EnableMargins: boolean;
@@ -68,13 +67,14 @@ type
     function NToInches: double;
     procedure RotateMargins(AOrder: boolean);
     procedure UpdateMaxValues;
+    procedure UpdatePageSize;
   public
     UnitInches: boolean;
     CurPageWidth: double;
     CurPageHeight: double;
     procedure Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
       AEnableOrientation: boolean);
-    procedure UpdatePageSize;
+    procedure SetDefaultMinMargins;
   end;
 
 implementation
@@ -114,6 +114,27 @@ begin
     txtRight.Value:= m_b;
     txtBottom.Value:= m_l;
   end;
+
+  // same way must change MinValues
+  m_l:= txtLeft.MinValue;
+  m_t:= txtTop.MinValue;
+  m_r:= txtRight.MinValue;
+  m_b:= txtBottom.MinValue;
+
+  if AOrder then
+  begin
+    txtLeft.MinValue:= m_b;
+    txtTop.MinValue:= m_l;
+    txtRight.MinValue:= m_t;
+    txtBottom.MinValue:= m_r;
+  end
+  else
+  begin
+    txtLeft.MinValue:= m_t;
+    txtTop.MinValue:= m_r;
+    txtRight.MinValue:= m_b;
+    txtBottom.MinValue:= m_l;
+  end;
 end;
 
 procedure TframePageSetup.pbPreviewPaint(Sender: TObject);
@@ -131,7 +152,7 @@ begin
     Canvas.Brush.Color := clWhite;
     Canvas.Rectangle(0, 0, Width, Height);
 
-    if EnableMargins then
+    //if EnableMargins then // EnableMargins is for SpinEdits only
     begin
       NLeft := Round(txtLeft.Value * NToInches * Printer.XDPI * FFactorX * FZoom);
       NTop := Round(txtTop.Value * NToInches * Printer.YDPI * FFactorY * FZoom);
@@ -236,23 +257,9 @@ begin
 
   with Printer.PaperSize.PaperRect do
   begin
-    FHardMargins.Left := Round(FFactorX * (WorkRect.Left-PhysicalRect.Left) * FZoom);
-    FHardMargins.Right := Round(FFactorX * (Physicalrect.Right-WorkRect.Right) * FZoom);
-    FHardMargins.Top := Round(FFactorY * (WorkRect.Top-PhysicalRect.Top) * FZoom);
-    FHardMargins.Bottom := Round(FFactorY * (PhysicalRect.Bottom-WorkRect.Bottom) * FZoom);
-
     CurPageWidth := (PhysicalRect.Right-PhysicalRect.Left)/Printer.XDPI/NToInches;
     CurPageHeight := (PhysicalRect.Bottom-PhysicalRect.Top)/Printer.YDPI/NToInches;
   end;
-
-  {$IFDEF DebugCUPS}
-  with FHardMargins do
-  begin
-    DebugLn(' Kh=%.2f Kw=%.2f',[FKh,FKw]);
-    DebugLn(' BoxLimits L=0 T=0 R=%d B=%d',[PbPreview.Width-1,PbPreview.Height-1]);
-    DebugLn('OrgMargins L=%d T=%d R=%d B=%d',[Left,Top,Right,Bottom]);
-  end;
-  {$ENDIF}
 
   UpdateMaxValues;
 end;
@@ -342,6 +349,17 @@ begin
     // zoom factor
     FZoom := 1.0;
     UpdatePageSize;
+  end;
+end;
+
+procedure TframePageSetup.SetDefaultMinMargins;
+begin
+  with Printer.PaperSize.PaperRect do
+  begin
+    txtLeft.MinValue := (WorkRect.Left-PhysicalRect.Left)/Printer.XDPI/NToInches;
+    txtTop.MinValue := (WorkRect.Top-PhysicalRect.Top)/Printer.YDPI/NToInches;
+    txtRight.MinValue := (PhysicalRect.Right-WorkRect.Right)/Printer.XDPI/NToInches;
+    txtBottom.MinValue := (PhysicalRect.Bottom-WorkRect.Bottom)/Printer.YDPI/NToInches;
   end;
 end;
 

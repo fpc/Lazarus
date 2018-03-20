@@ -54,7 +54,7 @@ type
   TPageSetupDialogOptions = set of TPageSetupDialogOption;
 
 const
-  cDefaultPageSetupDialogOptions = [psoMargins, psoMinMargins];
+  cDefaultPageSetupDialogOptions = [psoDefaultMinMargins];
   cDefaultPageSetupMargin = 0;
   cDefaultPageSetupMinMargin = 400; //400: in mm it's 4mm, in inches it's ~10mm
 

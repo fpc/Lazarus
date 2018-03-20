@@ -117,7 +117,7 @@ begin
       NScale:= 100;
     end;
 
-    //must be after setting UnitInches
+    // after setting UnitInches
     Dlg.SetControls(
       not (psoDisablePagePainting in Options),
       not (psoDisableMargins in Options),
@@ -139,11 +139,16 @@ begin
     end
     else
     begin
-      //if no psoMargins, set margins 1 inch or 10 mm
+      // set margins 1 inch or 10 mm
       Dlg.frmPageSetup.txtLeft.Value:= 1000/NScale;
       Dlg.frmPageSetup.txtTop.Value:= 1000/NScale;
       Dlg.frmPageSetup.txtRight.Value:= 1000/NScale;
       Dlg.frmPageSetup.txtBottom.Value:= 1000/NScale;
+    end;
+
+    if psoDefaultMinMargins in Options then
+    begin
+      Dlg.frmPageSetup.SetDefaultMinMargins;
     end;
 
     if psoMinMargins in Options then
