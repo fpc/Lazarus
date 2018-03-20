@@ -85,11 +85,7 @@ type
     lbSlashAlignMax: TLabel;
     edSlashAlignMax: TSpinEdit;
 
-    Notebook1: TNotebook;
-    AnsiPage: TPage;
-    CurlyPage: TPage;
-    StringPage: TPage;
-    SlashPage: TPage;
+    CommentsPageControl: TPageControl;
     TabsGroupDivider: TDividerBevel;
     AutoIndentLink: TLabel;
     CenterLabel:TLabel;
@@ -97,14 +93,13 @@ type
     lblBlockIndentKeys: TLabel;
     TabIndentBlocksCheckBox: TCheckBox;
     SmartTabsCheckBox: TCheckBox;
+    tbAnsi: TTabSheet;
+    tbCurly: TTabSheet;
+    tbShlash: TTabSheet;
+    tbString: TTabSheet;
     TabsToSpacesCheckBox: TCheckBox;
     TabWidthsComboBox: TComboBox;
     TabWidthsLabel: TLabel;
-    ToolBar1: TToolBar;
-    tbAnsi: TToolButton;
-    tbCurly: TToolButton;
-    tbShlash: TToolButton;
-    tbString: TToolButton;
     procedure AutoIndentCheckBoxChange(Sender: TObject);
     procedure AutoIndentLinkClick(Sender: TObject);
     procedure AutoIndentLinkMouseEnter(Sender: TObject);
@@ -124,7 +119,6 @@ type
     procedure SmartTabsCheckBoxChange(Sender: TObject);
     procedure TabIndentBlocksCheckBoxChange(Sender: TObject);
     procedure TabsToSpacesCheckBoxChange(Sender: TObject);
-    procedure tbAnsiClick(Sender: TObject);
   private
     FDefaultBookmarkImages: TImageList;
     FDialog: TAbstractOptionsEditorDialog;
@@ -199,8 +193,6 @@ begin
   tbCurly.Caption := dlgCurlyCommentTab;
   tbShlash.Caption := dlgSlashCommentTab;
   tbString.Caption := dlgStringBreakIndentTab;
-
-  Notebook1.AutoSize := True;
 
   cbAnsiEnableAutoContinue.Caption := dlgCommentContinue;
   lbAnsiMatch.Caption := dlgCommentContinueMatch;
@@ -652,11 +644,6 @@ end;
 procedure TEditorIndentOptionsFrame.TabsToSpacesCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
-end;
-
-procedure TEditorIndentOptionsFrame.tbAnsiClick(Sender: TObject);
-begin
-  Notebook1.PageIndex := TComponent(Sender).Tag;
 end;
 
 function TEditorIndentOptionsFrame.DefaultBookmarkImages: TImageList;
