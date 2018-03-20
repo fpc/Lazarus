@@ -562,9 +562,8 @@ begin
         CurControl.AnchorSide[Kind].Side,
         ReferenceControl,ReferenceSide,CheckPosition))
       then begin
-        if IDEMessageDialog(lisCCOWarningCaption,
-          lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel])<>
-            mrIgnore
+        if IDEMessageDialog(lisCCOWarningCaption, lisThisWillCreateACircularDependency,
+                            mtWarning, [mbIgnore, mbCancel]) <> mrIgnore
         then begin
           Refresh;
           exit;
@@ -581,7 +580,7 @@ begin
       else
         CurControl.Anchors:=CurControl.Anchors-[Kind];
     end;
-    GlobalDesignHook.Modified(Self);
+    GlobalDesignHook.Modified(Self, 'Anchors');
     GlobalDesignHook.RefreshPropertyValues;
   end;
 end;
@@ -628,7 +627,7 @@ begin
       else
         CurControl.BorderSpacing.Space[Kind]:=NewValue;
     end;
-    GlobalDesignHook.Modified(Self);
+    GlobalDesignHook.Modified(Self, 'Anchors');
     GlobalDesignHook.RefreshPropertyValues;
   end;
 end;
@@ -813,9 +812,10 @@ begin
       end;
     end;
 
-    GlobalDesignHook.Modified(Self);
+    GlobalDesignHook.Modified(Self, 'Anchors');
     GlobalDesignHook.RefreshPropertyValues;
-    if UseNeighbours then TComboBox(Sender).Caption:=NewValue;
+    if UseNeighbours then
+      TComboBox(Sender).Caption:=NewValue;
   end;
 end;
 
@@ -911,7 +911,7 @@ begin
       CurControl:=TControl(SelectedControls[i]);
       CurControl.AnchorSide[Kind].Side:=SideRef;
     end;
-    GlobalDesignHook.Modified(Self);
+    GlobalDesignHook.Modified(Self, 'Anchors');
     GlobalDesignHook.RefreshPropertyValues;
 end;
 
