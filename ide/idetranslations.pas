@@ -445,7 +445,8 @@ begin
     for Filename in Files do begin
       if CompareFilenames(Filename,Name)=0 then continue;
       if CompareFileExt(Filename,'.po',false)<>0 then continue;
-      if (CompareFilenames(LeftStr(Filename,length(NameOnly)),NameOnly)<>0)
+      //skip files which names don't have form 'nameonly.foo.po', e.g. 'nameonlyfoo.po'
+      if (CompareFilenames(LeftStr(Filename,length(NameOnly)+1),NameOnly+'.')<>0)
       then
         continue;
       Result.Add(Path+Filename);
