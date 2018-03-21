@@ -541,39 +541,27 @@ begin
     PoFamilyList.RunTests(ErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, SL);
     //debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
     //debugln('                  ', Format(sTotalWarnings, [WarningCount]));
-    if (ErrorCount > 0) or (WarningCount > 0) or
-      (pttCheckStatistics in TestTypes) then
-    begin
-      TotalPercTranslated := 100 * TotalTranslatedCount / (TotalTranslatedCount + TotalUntranslatedCount + TotalFuzzyCount);
-      SL.Add(Format(sTotalErrors, [ErrorCount]));
-      SL.Add(Format(sTotalWarnings, [WarningCount]));
-      SL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
-      SL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
-      SL.Add('');
-      SL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
-      ResultDlg := TResultDlgForm.Create(nil);
-      try
-        ResultDlg.FTotalTranslated := TotalTranslatedCount;
-        ResultDlg.FTotalUntranslated := TotalUntranslatedCount;
-        ResultDlg.FTotalFuzzy := TotalFuzzyCount;
-        ResultDlg.FTotalPercTranslated := TotalPercTranslated;
-        ResultDlg.Log.Assign(SL);
-        FreeAndNil(SL);                 //No need to keep 2 copies of this data
-        if (pttCheckStatistics in TestTypes) then
-        begin
-          ResultDlg.PoFamilyList := PoFamilyList;
-          ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats;
-        end
-        else
-        begin
-          ResultDlg.PoFamilyList := nil;
-          ResultDlg.PoFamilyStats := nil;
-        end;
-        ResultDlg.Settings := FPoCheckerSettings;
-        mr := ResultDlg.ShowModal;
-      finally
-        ResultDlg.Free;
-      end;
+    TotalPercTranslated := 100 * TotalTranslatedCount / (TotalTranslatedCount + TotalUntranslatedCount + TotalFuzzyCount);
+    SL.Add(Format(sTotalErrors, [ErrorCount]));
+    SL.Add(Format(sTotalWarnings, [WarningCount]));
+    SL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
+    SL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
+    SL.Add('');
+    SL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
+    ResultDlg := TResultDlgForm.Create(nil);
+    try
+      ResultDlg.FTotalTranslated := TotalTranslatedCount;
+      ResultDlg.FTotalUntranslated := TotalUntranslatedCount;
+      ResultDlg.FTotalFuzzy := TotalFuzzyCount;
+      ResultDlg.FTotalPercTranslated := TotalPercTranslated;
+      ResultDlg.Log.Assign(SL);
+      FreeAndNil(SL);                 //No need to keep 2 copies of this data
+      ResultDlg.PoFamilyList := PoFamilyList;
+      ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats;
+      ResultDlg.Settings := FPoCheckerSettings;
+      mr := ResultDlg.ShowModal;
+    finally
+      ResultDlg.Free;
     end;
     NoErrLabel.Visible := (ErrorCount = 0);
   finally

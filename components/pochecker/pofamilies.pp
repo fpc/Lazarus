@@ -938,10 +938,7 @@ begin
       TranslatedCount := FChild.NrTranslated;
       UntranslatedCount := FChild.NrUntranslated;
       FuzzyCount := FChild.NrFuzzy;
-      if (pttCheckStatistics in FTestTypes) then
-      begin
-        CheckStatistics(ThisErrCnt);
-      end;
+      CheckStatistics(ThisErrCnt);
        {
         if (ptt in FTestTypes) then
         begin
