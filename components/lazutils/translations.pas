@@ -447,7 +447,8 @@ begin
       or (CompareFilenames(FileInfo.Name,Name)=0) then continue;
       CurExt:=ExtractFileExt(FileInfo.Name);
       if (CompareFilenames(CurExt,'.po')<>0)
-      or (CompareFilenames(LeftStr(FileInfo.Name,length(NameOnly)),NameOnly)<>0)
+      //skip files which names don't have form 'nameonly.foo.po', e.g. 'nameonlyfoo.po'
+      or (CompareFilenames(LeftStr(FileInfo.Name,length(NameOnly)+1),NameOnly+'.')<>0)
       then
         continue;
       Result.Add(Path+FileInfo.Name);
