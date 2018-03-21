@@ -60,20 +60,20 @@ type
   private
     FHeightTallest: Integer;
     FFactorX, FFactorY, FZoom: Double;
+    function NToInches: double;
+    procedure RotateMargins(AOrder: boolean);
+    procedure UpdateMaxValues;
+  public
+    UnitInches: boolean;
     EnablePreview: boolean;
     EnableMargins: boolean;
     EnablePapers: boolean;
     EnableOrientation: boolean;
-    function NToInches: double;
-    procedure RotateMargins(AOrder: boolean);
-    procedure UpdateMaxValues;
-    procedure UpdatePageSize;
-  public
-    UnitInches: boolean;
     CurPageWidth: double;
     CurPageHeight: double;
     procedure Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
       AEnableOrientation: boolean);
+    procedure UpdatePageSize;
     procedure SetDefaultMinMargins;
   end;
 
@@ -285,7 +285,11 @@ begin
   EnablePapers:= AEnablePapers;
   EnableOrientation:= AEnableOrientation;
 
-  gpPaper.Enabled := EnablePapers;
+  cbPaper.Items.Clear;
+  cbSource.Items.Clear;
+  cbPaper.ItemIndex := -1;
+  cbSource.ItemIndex := -1;
+
   if EnablePapers then
   begin
     SetupCupsCombo(cbSource, nil, 'InputSlot');
@@ -295,9 +299,11 @@ begin
       // no cups printer papers, use default ones
       cbPaper.Items := Printer.PaperSize.SupportedPapers;
       cbPaper.ItemIndex:= cbPaper.Items.IndexOf(Printer.PaperSize.PaperName);
-      cbPaper.Enabled:=true;
     end;
   end;
+
+  cbPaper.Enabled := cbPaper.Items.Count>0;
+  cbSource.Enabled := cbSource.Items.Count>0;
 
   //TODO: support reverse variants too?
   gpOrientation.Enabled := EnableOrientation;

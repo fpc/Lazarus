@@ -125,6 +125,8 @@ begin
       not (psoDisableOrientation in Options)
       );
 
+    Dlg.btnPrinter.Enabled:= not (psoDisablePrinter in Options);
+
     Dlg.frmPageSetup.txtLeft.DecimalPlaces:= NDigits;
     Dlg.frmPageSetup.txtTop.DecimalPlaces:= NDigits;
     Dlg.frmPageSetup.txtRight.DecimalPlaces:= NDigits;

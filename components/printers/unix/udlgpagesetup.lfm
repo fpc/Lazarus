@@ -55,6 +55,10 @@ object dlgPageSetup: TdlgPageSetup
       ClientWidth = 446
       Constraints.MinHeight = 0
       TabOrder = 0
+      inherited boxShadow: TShape
+        Left = 179
+        Top = 39
+      end
       inherited pbPreview: TPaintBox
         Left = 173
         Top = 33
@@ -121,7 +125,7 @@ object dlgPageSetup: TdlgPageSetup
       BorderSpacing.Right = 6
       Caption = 'Printer...'
       Constraints.MinWidth = 90
-      Enabled = False
+      OnClick = btnPrinterClick
       TabOrder = 2
     end
   end
