@@ -1247,6 +1247,7 @@ function TLCLCommonCallback.ResetCursorRects: Boolean;
 var
   ACursor: TCursor;
   View: NSView;
+  cr:TCocoaCursor;
 begin
   Result := False;
   View := CocoaUtils.GetNSObjectView(Owner);
@@ -1261,7 +1262,11 @@ begin
     end;
     Result := ACursor <> crDefault;
     if Result then
-      View.addCursorRect_cursor(View.visibleRect, TCocoaCursor(Screen.Cursors[ACursor]).Cursor);
+    begin
+      cr:=TCocoaCursor(Screen.Cursors[ACursor]);
+      if assigned(cr) then
+      View.addCursorRect_cursor(View.visibleRect, cr.Cursor);
+    end;
   end;
 end;
 
