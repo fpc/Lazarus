@@ -221,6 +221,8 @@ type
     FTextSelectedColor: TColor;
     FWindowColor: TColor;
   public
+    constructor Create;
+  public
     property WindowColor: TColor read FWindowColor write FWindowColor;
     property TextColor: TColor read FTextColor write FTextColor;
     property BorderColor: TColor read FBorderColor write FBorderColor;
@@ -491,6 +493,20 @@ type
 implementation
 
 uses SourceMarks;
+
+{ TSynMarkupIdentComplWindow }
+
+constructor TSynMarkupIdentComplWindow.Create;
+begin
+  inherited Create;
+
+  FBackgroundSelectedColor := clNone;
+  FBorderColor := clNone;
+  FHighlightColor := clNone;
+  FTextColor := clNone;
+  FTextSelectedColor := clNone;
+  FWindowColor := clNone;
+end;
 
 { TSourceSynSearchTermDict }
 
