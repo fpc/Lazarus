@@ -268,8 +268,10 @@ procedure TframePageSetup.UpdateMaxValues;
 
   procedure DoSetMax(Ctl: TFloatSpinEdit; Value: double);
   begin
-    if Ctl.MinValue > Value then
-      Ctl.MinValue := Value;
+    // because of TCustomFloatSpinEdit.GetLimitedValue
+    // we cannot set MinValue=MaxValue, all validation will break
+    if Ctl.MinValue > Value-0.2 then
+      Ctl.MinValue := Value-0.2;
     Ctl.MaxValue := Value;
   end;
 
