@@ -2405,11 +2405,11 @@ begin
     end;
     Font.Style:=[];
   end;
-  Colors.BackgroundColor := FActiveEditBackgroundColor;
-  Colors.BackgroundSelectedColor := FActiveEditBackgroundSelectedColor;
-  Colors.TextColor := FActiveEditTextColor;
-  Colors.TextSelectedColor := FActiveEditTextSelectedColor;
-  Colors.TextHighLightColor := FActiveEditTextHighLightColor;
+  Colors.BackgroundColor := ColorToRGB(FActiveEditBackgroundColor);
+  Colors.BackgroundSelectedColor := ColorToRGB(FActiveEditBackgroundSelectedColor);
+  Colors.TextColor := ColorToRGB(FActiveEditTextColor);
+  Colors.TextSelectedColor := ColorToRGB(FActiveEditTextSelectedColor);
+  Colors.TextHighLightColor := ColorToRGB(FActiveEditTextHighLightColor);
   MaxX:=TheForm.ClientWidth;
   t:=CurrentCompletionType;
   if Manager.ActiveCompletionPlugin<>nil then
