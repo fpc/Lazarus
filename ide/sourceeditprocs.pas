@@ -158,7 +158,7 @@ var
   ForegroundColor: TColorRef;
   AllowFontColor: Boolean;
 
-  procedure SetFontColor(NewColor: TColor);
+  procedure SetFontColor(NewColor: TColor; Force: boolean = false);
   
     {procedure IncreaseDiff(var Value: integer; BaseValue: integer);
     begin
@@ -183,7 +183,7 @@ var
     GreenDiff: integer;
     BlueDiff: integer;
   begin
-    if not AllowFontColor then
+    if (not AllowFontColor) and (not Force) then
       Exit;
 
     NewColor := TColor(ColorToRGB(NewColor));
@@ -192,7 +192,11 @@ var
     FGBlue:=NewColor and $ff;
     RedDiff:=Abs(FGRed-BGRed);
     GreenDiff:=Abs(FGGreen-BGGreen);
-    BlueDiff:=Abs(FGBlue -BGBlue);
+    BlueDiff:=Abs(FGBlue-BGBlue);
+    {if ItemSelected then
+      writeln('SetFontColor ',RedDiff,'=',FGRed,'-',BGRed,' ',
+         GreenDiff,'=',FGGreen,'-',BGGreen,' ',
+         BlueDiff,'=',FGBlue,'-',BGBlue);}
     if RedDiff*RedDiff + GreenDiff*GreenDiff + BlueDiff*BlueDiff<30000 then
     begin
       NewColor:=InvertColor(NewColor);
@@ -202,6 +206,7 @@ var
       NewColor:=(FGRed shl 16) or (FGGreen shl 8) or FGBlue;}
     end;
     ACanvas.Font.Color:=NewColor;
+    //debugln(['SetFontColor ',NewColor,' ',ACanvas.Font.Color]);
   end;
   
   procedure WriteToken(var TokenStart, TokenEnd: integer);
@@ -212,8 +217,10 @@ var
       CurToken:=copy(AKey,TokenStart,TokenEnd-TokenStart);
       if MeasureOnly then
         Inc(Result.X, ACanvas.TextWidth(CurToken))
-      else
+      else begin
+        //debugln(['WriteToken ',CurToken,' ',ACanvas.Font.Color]);
         ACanvas.TextOut(x+1, y, CurToken);
+      end;
       x := x + ACanvas.TextWidth(CurToken);
       //debugln('Paint A Text="',CurToken,'" x=',dbgs(x),' y=',dbgs(y),' "',ACanvas.Font.Name,'" ',dbgs(ACanvas.Font.Height),' ',dbgs(ACanvas.TextWidth(CurToken)));
       TokenStart:=0;
@@ -280,23 +287,25 @@ begin
       AllowFontColor := ForegroundColor=clNone;
       if ForegroundColor=clNone then
         ForegroundColor := Colors^.TextColor;
+      BackgroundColor:=ColorToRGB(Colors^.BackgroundSelectedColor);
     end else
     begin
       ForegroundColor := Colors^.TextColor;
       AllowFontColor := True;
+      BackgroundColor:=ColorToRGB(Colors^.BackgroundColor);
     end;
   end else
   begin
     ForegroundColor := clBlack;
     AllowFontColor := True;
+    BackgroundColor:=ColorToRGB(ACanvas.Brush.Color);
   end;
 
-  BackgroundColor:=ColorToRGB(ACanvas.Brush.Color);
   BGRed:=(BackgroundColor shr 16) and $ff;
   BGGreen:=(BackgroundColor shr 8) and $ff;
   BGBlue:=BackgroundColor and $ff;
   ForegroundColor := ColorToRGB(ForegroundColor);
-  SetFontColor(ForegroundColor);
+  SetFontColor(ForegroundColor,true);
 
   Result.X := 0;
   Result.Y := ACanvas.TextHeight('W');
@@ -671,6 +680,7 @@ begin
 
   end else begin
     // parse AKey for text and style
+    //debugln(['PaintCompletionItem WordCompletion:']);
     i := 1;
     TokenStart:=0;
     while i <= Length(AKey) do begin
@@ -706,6 +716,7 @@ begin
     end;
     WriteToken(TokenStart,i);
   end;
+  //debugln(['PaintCompletionItem END']);
 end;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
