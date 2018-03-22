@@ -291,8 +291,12 @@ begin
     AllowFontColor := True;
   end;
 
+  BackgroundColor:=ColorToRGB(ACanvas.Brush.Color);
+  BGRed:=(BackgroundColor shr 16) and $ff;
+  BGGreen:=(BackgroundColor shr 8) and $ff;
+  BGBlue:=BackgroundColor and $ff;
   ForegroundColor := ColorToRGB(ForegroundColor);
-  ACanvas.Font.Color := ForegroundColor;
+  SetFontColor(ForegroundColor);
 
   Result.X := 0;
   Result.Y := ACanvas.TextHeight('W');
@@ -306,10 +310,6 @@ begin
     end;
     IdentItem.BeautifyIdentifier(CodeToolBoss.IdentifierList);
     ItemNode:=IdentItem.Node;
-    BackgroundColor:=ColorToRGB(ACanvas.Brush.Color);
-    BGRed:=(BackgroundColor shr 16) and $ff;
-    BGGreen:=(BackgroundColor shr 8) and $ff;
-    BGBlue:=BackgroundColor and $ff;
     ImageIndex:=-1;
     ImageIndexCC := -1;
     UseImages := CodeToolsOpts.IdentComplShowIcons;
@@ -679,9 +679,10 @@ begin
         begin
           WriteToken(TokenStart,i);
           // set color
-          ACanvas.Font.Color := (Ord(AKey[i + 3]) shl 8
-                        + Ord(AKey[i + 2])) shl 8
-                        + Ord(AKey[i + 1]);
+          ForegroundColor:=(Ord(AKey[i + 3]) shl 8
+                          + Ord(AKey[i + 2])) shl 8
+                          + Ord(AKey[i + 1]);
+          SetFontColor(ForegroundColor);
           inc(i, 4);
         end;
       #3:
