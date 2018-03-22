@@ -1157,12 +1157,18 @@ end;
 procedure TBuildParseTree.RecogniseTypeHelper;
 begin
   PushNode(nClassType);
-  Recognise(ttType);
+  Recognise([ttType,ttRecord]);
   Recognise(ttHelper);
+  if fcTokenList.FirstSolidTokenType = ttOpenBracket then begin
+    Recognise(ttOpenBracket);
+    RecogniseIdentifier(False, idStrict);
+    Recognise(ttCloseBracket);
+  end;
   Recognise(ttFor);
   RecogniseIdentifier(False, idStrict);
   RecogniseClassBody;
   Recognise(ttEnd);
+  RecogniseHintDirectives;
   PopNode;
 end;
 
@@ -1198,7 +1204,7 @@ begin
   Recognise(ttEquals);
 
   //Recognise type helper (for fpc)
-  if (fcTokenList.FirstSolidTokenType = ttType) and
+  if (fcTokenList.FirstSolidTokenType in [ttType,ttRecord]) and
     (fcTokenList.SolidToken(2).TokenType=ttHelper) then
   begin
      RecogniseTypeHelper;
