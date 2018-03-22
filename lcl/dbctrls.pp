@@ -22,7 +22,7 @@
 @created(Sun Sep 14 2003)
 @lastmod($Date$)
 }
-unit DbCtrls;
+unit DBCtrls;
 
 {$mode objfpc}
 {$H+}

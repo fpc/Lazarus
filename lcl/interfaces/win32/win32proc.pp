@@ -14,7 +14,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit win32proc;
+unit Win32Proc;
 
 {$mode objfpc}{$H+}
 {$I win32defines.inc}
