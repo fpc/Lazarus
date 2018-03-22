@@ -88,6 +88,11 @@ var
   NDigits, NScale: integer;
   NInc: double;
 begin
+  // w/o SetPrinter, list of paper names is different
+  // (Letter / US Letter, EnvMonarch / Envelope Monarch),
+  // and list of sources is empty
+  Printer.SetPrinter(Printer.Printers[Printer.PrinterIndex]);
+
   Dlg:= TDlgPageSetup.Create(nil);
   try
     if Title<>'' then
@@ -165,6 +170,8 @@ begin
     Dlg.frmPageSetup.txtTop.Increment:= NInc;
     Dlg.frmPageSetup.txtRight.Increment:= NInc;
     Dlg.frmPageSetup.txtBottom.Increment:= NInc;
+
+    Dlg.frmPageSetup.UpdatePageSize;
 
     Result:= Dlg.ShowModal=mrOk;
     if Result then

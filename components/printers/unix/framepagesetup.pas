@@ -62,7 +62,6 @@ type
     FFactorX, FFactorY, FZoom: Double;
     function NToInches: double;
     procedure RotateMargins(AOrder: boolean);
-    procedure UpdateMaxValues;
   public
     UnitInches: boolean;
     EnablePreview: boolean;
@@ -74,6 +73,7 @@ type
     procedure Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
       AEnableOrientation: boolean);
     procedure UpdatePageSize;
+    procedure UpdateMaxValues;
     procedure SetDefaultMinMargins;
   end;
 
@@ -265,13 +265,21 @@ begin
 end;
 
 procedure TframePageSetup.UpdateMaxValues;
+
+  procedure DoSetMax(Ctl: TFloatSpinEdit; Value: double);
+  begin
+    if Ctl.MinValue > Value then
+      Ctl.MinValue := Value;
+    Ctl.MaxValue := Value;
+  end;
+
 const
   cMul = 0.45; // max margin is almost 1/2 of page size
 begin
-  txtLeft.MaxValue := CurPageWidth * cMul;
-  txtRight.MaxValue := CurPageWidth * cMul;
-  txtTop.MaxValue := CurPageHeight * cMul;
-  txtBottom.MaxValue := CurPageHeight * cMul;
+  DoSetMax(txtLeft, CurPageWidth * cMul);
+  DoSetMax(txtRight, CurPageWidth * cMul);
+  DoSetMax(txtTop, CurPageHeight * cMul);
+  DoSetMax(txtBottom, CurPageHeight * cMul);
 end;
 
 procedure TframePageSetup.Initialize(AEnablePreview, AEnableMargins, AEnablePapers,
