@@ -310,6 +310,7 @@ type
     procedure SetFileCaption(const AFileName: String);
     procedure SetModified(AValue: Boolean);
     procedure SetModifiedStatus;
+    procedure SetPageCaption(ASheet: TTabSheet);
   Protected
     procedure MRUMenuManager1RecentFile(Sender: TObject; const AFileName: String);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -632,6 +633,24 @@ begin
   SBreport.Panels[2].text:=StateNames[CurrentDesigner.DesignerState];
 end;
 
+Procedure TFPReportDesignerForm.SetPageCaption(ASheet : TTabSheet);
+
+Var
+  TS : TPageTabSheet;
+  PageNo : Integer;
+
+begin
+  if Not (Asheet is TPageTabSheet) then
+    exit;
+  TS:=ASheet as TPageTabSheet;
+  PageNo:=TS.TabIndex+1;
+  if (TS.Page.Name<>'') then
+    TS.Caption:=Format('Page %d (%s)',[PageNo,TS.Page.Name])
+  else
+    TS.Caption:=Format('Page %d',[PageNo]);
+end;
+
+
 function TFPReportDesignerForm.AddPageDesign(aPageNo: Integer;
   APage: TFPReportCustomPage): TTabSheet;
 
@@ -644,8 +663,7 @@ begin
   TS:=TPageTabSheet.Create(Self);
   TS.FPage:=APage;
   TS.Parent:=PCReport;
-  TS.Caption:=Format('Page %d',[aPageNo]);
-
+  SetPageCaption(TS);
   D:=TFPReportDesignerControl.Create(Self);
   SB:=TScrollBox.Create(TS);
   SB.Parent:=TS;
@@ -799,6 +817,7 @@ Var
 begin
   P:=CreateNewPage;
   FReport.AddPage(P);
+  P.Name:='Page'+IntToStr(FReport.PageCount);
   FOI.RefreshReportTree;
   PCReport.ActivePage:=AddPageDesign(FReport.PageCount,P);
   Modified:=True;
@@ -963,7 +982,8 @@ begin
       begin
       CurrentDesigner.UpdatePageParams;
       CurrentDesigner.Reset;
-      CurrentDesigner.Objects.SelectElement(CurrentDesigner.Page)
+      CurrentDesigner.Objects.SelectElement(CurrentDesigner.Page);
+      SetPageCaption(PCReport.ActivePage);
       end
     else
       CurrentDesigner.Invalidate;
@@ -1044,6 +1064,7 @@ begin
     begin
     p:=CreateNewPage;
     FReport.AddPage(P);
+    P.Name:='Page'+IntToStr(FReport.PageCount);
     end;
 end;
 

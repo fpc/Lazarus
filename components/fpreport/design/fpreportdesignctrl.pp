@@ -384,7 +384,7 @@ begin
     exit;
   if Source is TMemoDragDrop then
     begin
-    E:=TFPReportMemo.Create(ABand);
+    E:=TFPReportMemo.Create(ABand.Report);
     C:=(Source as TMemoDragDrop).Content;
     TFPReportMemo(E).Text:=C;
     R:=Default(TRect);
