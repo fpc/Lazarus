@@ -273,6 +273,7 @@ type
     procedure VResizeExecute(Sender: TObject);
   private
     FLoadModified : Boolean;
+    FStopDesigning: Boolean;
     MRUMenuManager1: TMRUMenuManager;
     FAutoSaveOnClose: Boolean;
     FDesignOptions: TFPReportDesignOptions;
@@ -1228,7 +1229,8 @@ end;
 
 procedure TFPReportDesignerForm.PCReportChange(Sender: TObject);
 begin
-  ResetObjectInspector;
+  if not FStopDesigning then
+    ResetObjectInspector;
 end;
 
 procedure TFPReportDesignerForm.ResetObjectInspector;
@@ -1383,20 +1385,26 @@ Var
   I : integer;
 
 begin
-  if Assigned(FReport) then
-    Report.EndDesigning;
-  For I:=ComponentCount-1 downto 0 do
-    if Components[I] is TFPReportDesignerControl then
-       Components[I].Free;
-  While PCReport.ControlCount>0 do
-    PCReport.Controls[PCReport.ControlCount-1].Free;
-  // Give LCL time to clean up.
-  Application.ProcessMessages;
-  FReportData.Report:=Nil;
-  FReportDesignData.RemoveFromReport(FReport);
-  FReportDesignData.DataDefinitions.Clear;
-  FOI.Report:=Nil;
-  FOI.SelectControls(Nil);
+  FStopDesigning:=True;
+  try
+    if Assigned(FReport) then
+      Report.EndDesigning;
+    For I:=ComponentCount-1 downto 0 do
+      if Components[I] is TFPReportDesignerControl then
+         Components[I].Free;
+
+    While PCReport.ControlCount>0 do
+      PCReport.Controls[PCReport.ControlCount-1].Free;
+    // Give LCL time to clean up.
+    Application.ProcessMessages;
+    FReportData.Report:=Nil;
+    FReportDesignData.RemoveFromReport(FReport);
+    FReportDesignData.DataDefinitions.Clear;
+    FOI.Report:=Nil;
+    FOI.SelectControls(Nil);
+  Finally
+    FStopDesigning:=False;
+  end;
 end;
 
 procedure TFPReportDesignerForm.VAlignExecute(Sender: TObject);
