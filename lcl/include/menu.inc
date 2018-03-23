@@ -314,6 +314,14 @@ begin
     DoChange(Source, Rebuild);
 end;
 
+procedure TMenu.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TMenu then
+    Menu_Copy(Self, Dest as TMenu)
+  else
+    inherited AssignTo(Dest);
+end;
+
 procedure TMenu.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);

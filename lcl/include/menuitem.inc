@@ -1580,7 +1580,11 @@ begin
       ImageIndex := Self.ImageIndex;
       Visible := Self.Visible;
     end
-  end else
+  end
+  else
+  if Dest is TMenuItem then
+    MenuItem_Copy(Self, Dest as TMenuItem)
+  else
     inherited AssignTo(Dest);
 end;
 

@@ -339,6 +339,7 @@ type
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure MenuChanged(Sender: TObject; Source: TMenuItem;
                           Rebuild: Boolean); virtual;
+    procedure AssignTo(Dest: TPersistent); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure ParentBidiModeChanged;
@@ -475,6 +476,60 @@ implementation
 uses
   WSMenus,
   Forms {KeyDataToShiftState};
+
+{ Helpers for Assign() }
+
+procedure MenuItem_Copy(ASrc, ADest: TMenuItem);
+var
+  mi: TMenuItem;
+  i: integer;
+begin
+  ADest.Clear;
+  ADest.Action:= ASrc.Action;
+  ADest.AutoCheck:= ASrc.AutoCheck;
+  ADest.Caption:= ASrc.Caption;
+  ADest.Checked:= ASrc.Checked;
+  ADest.Default:= ASrc.Default;
+  ADest.Enabled:= ASrc.Enabled;
+  ADest.Bitmap:= ASrc.Bitmap;
+  ADest.GroupIndex:= ASrc.GroupIndex;
+  ADest.GlyphShowMode:= ASrc.GlyphShowMode;
+  ADest.HelpContext:= ASrc.HelpContext;
+  ADest.Hint:= ASrc.Hint;
+  ADest.ImageIndex:= ASrc.ImageIndex;
+  ADest.RadioItem:= ASrc.RadioItem;
+  ADest.RightJustify:= ASrc.RightJustify;
+  ADest.ShortCut:= ASrc.ShortCut;
+  ADest.ShortCutKey2:= ASrc.ShortCutKey2;
+  ADest.ShowAlwaysCheckable:= ASrc.ShowAlwaysCheckable;
+  ADest.SubMenuImages:= ASrc.SubMenuImages;
+  ADest.SubMenuImagesWidth:= ASrc.SubMenuImagesWidth;
+  ADest.Visible:= ASrc.Visible;
+  ADest.OnClick:= ASrc.OnClick;
+  ADest.OnDrawItem:= ASrc.OnDrawItem;
+  ADest.OnMeasureItem:= ASrc.OnMeasureItem;
+  ADest.Tag:= ASrc.Tag;
+
+  for i:= 0 to ASrc.Count-1 do
+  begin
+    mi:= TMenuItem.Create(ASrc.Owner);
+    MenuItem_Copy(ASrc.Items[i], mi);
+    ADest.Add(mi);
+  end;
+end;
+
+procedure Menu_Copy(ASrc, ADest: TMenu);
+begin
+  ADest.BidiMode:= ASrc.BidiMode;
+  ADest.ParentBidiMode:= ASrc.ParentBidiMode;
+  ADest.Images:= ASrc.Images;
+  ADest.ImagesWidth:= ASrc.ImagesWidth;
+  ADest.OwnerDraw:= ASrc.OwnerDraw;
+  ADest.OnDrawItem:= ASrc.OnDrawItem;
+  ADest.OnMeasureItem:= ASrc.OnMeasureItem;
+
+  MenuItem_Copy(ASrc.Items, ADest.Items);
+end;
 
 { Easy Menu building }
 
