@@ -1106,7 +1106,7 @@ Var
      if not Result then
        exit;
      // Add band header
-     AddBandToList(M.HeaderBand);
+     AddSameDataLoopBands(M,TFPReportCustomDataHeaderBand);
      // Add group headers
      AddSameDataLoopBands(M,TFPReportCustomGroupHeaderBand);
      // Add band
@@ -1123,7 +1123,7 @@ Var
      // Add group footers
      AddSameDataLoopBands(M,TFPReportCustomGroupFooterBand);
      // Add footer band
-     AddBandTOList(M.FooterBand);
+     AddSameDataLoopBands(M,TFPReportCustomDataFooterBand);
   end;
 
 Var
