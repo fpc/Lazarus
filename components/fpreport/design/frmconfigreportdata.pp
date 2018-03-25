@@ -369,6 +369,7 @@ begin
     begin
     if not Assigned(FCurrentFrame) then
       Raise Exception.Create('Internal error : No config frame');
+    FCurrentData.Config.Clear;
     FCurrentFrame.GetConfig(FCurrentData.Config);
     end;
   S:='';
