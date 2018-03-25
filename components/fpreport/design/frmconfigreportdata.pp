@@ -35,8 +35,10 @@ type
     ALReportData: TActionList;
     BPVariables: TButtonPanel;
     CBType: TComboBox;
+    CBMaster: TComboBox;
     EName: TEdit;
     ILReportdata: TImageList;
+    Label4: TLabel;
     LBReportData: TListBox;
     LENAme: TLabel;
     Label3: TLabel;
@@ -55,6 +57,7 @@ type
     procedure ADuplicateUpdate(Sender: TObject);
     procedure APreviewExecute(Sender: TObject);
     procedure APreviewUpdate(Sender: TObject);
+    procedure CBMasterChange(Sender: TObject);
     procedure CBTypeChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
@@ -85,6 +88,7 @@ Resourcestring
   SAllowedChars2   = 'The first character must be a letter or underscore';
   SErrIllegalDataName = 'The data source name %s is not a legal data source name.';
   SWarnDuplicateDataName = 'The data set name %s already exists.';
+  SNone = '(none)';
 
 { TReportDataConfigForm }
 
@@ -96,10 +100,14 @@ end;
 
 procedure TReportDataConfigForm.CBTypeChange(Sender: TObject);
 begin
+
   ShowDataFrame;
 end;
 
 procedure TReportDataConfigForm.ShowDataFrame;
+
+Var
+  M : String;
 
 begin
   FreeAndNil(FCurrentHandler);
@@ -112,6 +120,14 @@ begin
   FCurrentFrame.Align:=alClient;
   if Assigned(FCurrentData) then
     FCurrentFrame.SetConfig(FCurrentData.Config);
+  CBMaster.Enabled:=FCurrentHandler.AllowMasterDetail;
+  M:=FCurrentData.Master;
+  if (M<>'') and CBMaster.Enabled then
+    begin
+    CBMaster.ItemIndex:=CBMaster.Items.IndexOf(M);
+    end
+  else
+    CBMaster.ItemIndex:=0;
 end;
 
 procedure TReportDataConfigForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -275,6 +291,19 @@ begin
   (Sender as TAction).Enabled:=Assigned(ReportDataPreviewClass) and (FCurrentData<>Nil) and (FCurrentFrame<>Nil) and (FCurrentHandler<>Nil);
 end;
 
+procedure TReportDataConfigForm.CBMasterChange(Sender: TObject);
+
+Var
+  D : String;
+
+begin
+  if CBMaster.ItemIndex<0 then
+    exit;
+  D:=CBMaster.Text;
+  if (D<>'') and (D<>SNone) then
+    Data.CheckCircularReference(D,FCurrentData);
+end;
+
 procedure TReportDataConfigForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FCurrentHandler);
@@ -342,6 +371,13 @@ begin
       Raise Exception.Create('Internal error : No config frame');
     FCurrentFrame.GetConfig(FCurrentData.Config);
     end;
+  S:='';
+  if CBMaster.Enabled then
+    S:=CBMaster.Text;
+  if (S='') or (S=SNone) then
+    FCurrentData.Master:=''
+  else
+    FCurrentData.Master:=S;
 end;
 
 procedure TReportDataConfigForm.ShowSelectedItem;
@@ -375,12 +411,15 @@ Var
 
 begin
   LBReportData.Items.Clear;
+  CBMaster.Items.Clear;
+  CBMaster.Items.AddObject(SNone,nil);
   if Not Assigned(Data) then
     exit;
   For I:=0 to Data.Count-1 do
     begin
     S:=Data[i];
     LBReportData.Items.AddObject(S.Name,S);
+    CBMaster.Items.AddObject(S.Name,S);
     end;
   if Data.Count>0 then
     LBReportData.ItemIndex:=0

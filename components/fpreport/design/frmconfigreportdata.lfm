@@ -1,11 +1,11 @@
 object ReportDataConfigForm: TReportDataConfigForm
   Left = 500
-  Height = 498
+  Height = 575
   Top = 282
-  Width = 612
+  Width = 639
   Caption = 'Report Data'
-  ClientHeight = 498
-  ClientWidth = 612
+  ClientHeight = 575
+  ClientWidth = 639
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -14,8 +14,8 @@ object ReportDataConfigForm: TReportDataConfigForm
   object BPVariables: TButtonPanel
     Left = 6
     Height = 42
-    Top = 450
-    Width = 600
+    Top = 527
+    Width = 627
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -39,7 +39,7 @@ object ReportDataConfigForm: TReportDataConfigForm
     Left = 299
     Height = 27
     Top = 32
-    Width = 304
+    Width = 334
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 1
   end
@@ -55,7 +55,7 @@ object ReportDataConfigForm: TReportDataConfigForm
     Left = 299
     Height = 31
     Top = 64
-    Width = 307
+    Width = 334
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
     OnChange = CBTypeChange
@@ -64,13 +64,13 @@ object ReportDataConfigForm: TReportDataConfigForm
   end
   object PSources: TPanel
     Left = 0
-    Height = 444
+    Height = 521
     Top = 0
     Width = 226
     Align = alLeft
     BevelOuter = bvNone
     Caption = 'PLeft'
-    ClientHeight = 444
+    ClientHeight = 521
     ClientWidth = 226
     TabOrder = 3
     object LLBReportData: TLabel
@@ -108,13 +108,12 @@ object ReportDataConfigForm: TReportDataConfigForm
     end
     object LBReportData: TListBox
       Left = 16
-      Height = 401
+      Height = 478
       Top = 40
       Width = 192
       Anchors = [akTop, akLeft, akRight, akBottom]
       ItemHeight = 0
       OnSelectionChange = LBReportDataSelectionChange
-      Options = [lboDrawFocusRect]
       ScrollWidth = 190
       TabOrder = 0
       TopIndex = -1
@@ -134,22 +133,22 @@ object ReportDataConfigForm: TReportDataConfigForm
   end
   object Splitter1: TSplitter
     Left = 226
-    Height = 444
+    Height = 521
     Top = 0
     Width = 5
   end
   object PData: TPanel
     Left = 256
-    Height = 323
-    Top = 117
-    Width = 345
+    Height = 365
+    Top = 152
+    Width = 372
     Anchors = [akTop, akLeft, akRight, akBottom]
     BevelOuter = bvLowered
     Caption = 'Create or select a data source'
     TabOrder = 5
   end
   object SBPreview: TSpeedButton
-    Left = 578
+    Left = 605
     Height = 22
     Top = 8
     Width = 23
@@ -158,6 +157,25 @@ object ReportDataConfigForm: TReportDataConfigForm
     ShowCaption = False
     ShowHint = True
     ParentShowHint = False
+  end
+  object CBMaster: TComboBox
+    Left = 299
+    Height = 31
+    Top = 104
+    Width = 334
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    OnChange = CBMasterChange
+    Style = csDropDownList
+    TabOrder = 6
+  end
+  object Label4: TLabel
+    Left = 248
+    Height = 17
+    Top = 112
+    Width = 40
+    Caption = 'Master'
+    ParentColor = False
   end
   object ILReportdata: TImageList
     left = 272
@@ -296,8 +314,8 @@ object ReportDataConfigForm: TReportDataConfigForm
   end
   object ALReportData: TActionList
     Images = ILReportdata
-    left = 244
-    top = 100
+    left = 224
+    top = 160
     object AAddData: TAction
       Category = 'Data'
       Caption = 'Add'

@@ -1137,8 +1137,10 @@ Var
 begin
   if not Assigned(ReportDataFormClass) then
     exit;
+  Self.Report.SaveDataToNames;
   F:=ReportDataFormClass.Create(Self);
   try
+
     F.Report:=Self.Report;
     F.Data:=FReportDesignData.DataDefinitions;
     if F.ShowModal=mrOK then
@@ -1419,7 +1421,8 @@ begin
     // Give LCL time to clean up.
     Application.ProcessMessages;
     FReportData.Report:=Nil;
-    FReportDesignData.RemoveFromReport(FReport);
+    if Assigned(FReport) then
+      FReportDesignData.RemoveFromReport(FReport);
     FReportDesignData.DataDefinitions.Clear;
     FOI.Report:=Nil;
     FOI.SelectControls(Nil);
