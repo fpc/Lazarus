@@ -123,6 +123,7 @@ Type
     Procedure AdjustSelectedBandsToContent;
     Procedure ResetModified;
     Procedure SelectElement(E : TFPReportElement);
+    Function GetSelection : TReportObjectArray;
     // Will call selectionchanged, except when result=odrPage
     Function DeleteSelection : TObjectDeleteResult;
     // Various ways to get information
@@ -701,6 +702,11 @@ begin
     O:=Objects[i];
     O.Selected:=(O.Element=E);
     end;
+end;
+
+function TReportObjectList.GetSelection: TReportObjectArray;
+begin
+  Result:=GetSelectionArray(ssNone);
 end;
 
 function TReportObjectList.DeleteElement(O: TReportObject): TObjectDeleteResult;

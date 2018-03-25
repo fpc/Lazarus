@@ -974,19 +974,26 @@ begin
 end;
 
 procedure TFPReportDesignerForm.DoSelectionModifiedByOI(Sender: TObject);
+
+Var
+  Sel : TReportObjectArray;
+
 begin
   if Assigned(CurrentDesigner) then
     begin
-    if (FOI.ObjectList.Count=1) and
-       (FOI.ObjectList.Elements[0]=CurrentDesigner.Page) then
+    if (FOI.ObjectList.SelectionCount=1) then
       begin
-      CurrentDesigner.UpdatePageParams;
-      CurrentDesigner.Reset;
-      CurrentDesigner.Objects.SelectElement(CurrentDesigner.Page);
-      SetPageCaption(PCReport.ActivePage);
-      end
-    else
-      CurrentDesigner.Invalidate;
+      Sel:=FOI.ObjectList.GetSelection;
+      if (Sel[0].IsPage) and (Sel[0].AsPage=CurrentDesigner.Page) then
+        begin
+        CurrentDesigner.UpdatePageParams;
+        CurrentDesigner.Reset;
+        CurrentDesigner.Objects.SelectElement(CurrentDesigner.Page);
+        SetPageCaption(PCReport.ActivePage);
+        end
+      else
+        CurrentDesigner.Invalidate;
+      end;
     end;
   Modified:=True;
 end;
