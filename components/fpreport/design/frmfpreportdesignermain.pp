@@ -1509,7 +1509,7 @@ begin
     if (FReport.Owner<>Self) and (OldName<>'') then
       FReport.Name:=OldName;
     FFilename:=AFileName;
-    if Errs.Count>0 then
+    if Assigned(errs) and Errs.Count>0 then
       MessageDlg(SErrAccessingData,Format(SErrAccessingDataDetails,[Errs.Text]),mtWarning,[mbOK],'');
     FLoadModified:=rs.IsModified;
   finally
