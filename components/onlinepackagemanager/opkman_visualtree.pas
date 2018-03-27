@@ -132,6 +132,7 @@ type
     procedure VSTAfterCellPaint(Sender: TBaseVirtualTree;  {%H-}TargetCanvas: TCanvas;
       Node: PVirtualNode; Column: TColumnIndex; const {%H-}CellRect: TRect);
     procedure VSTDblClick(Sender: TObject);
+    procedure VSTScroll(Sender: TBaseVirtualTree; {%H-}DeltaX, {%H-}DeltaY: Integer);
     procedure VSTClick(Sender: TObject);
     procedure VSTAfterPaint(Sender: TBaseVirtualTree; {%H-}TargetCanvas: TCanvas);
     procedure VSTEnter(Sender: TObject);
@@ -164,6 +165,7 @@ type
     property OnChecking: TOnChecking read FOnChecking write FOnChecking;
     property OnChecked: TNotifyEvent read FOnChecked write FOnChecked;
     property VST: TVirtualStringTree read FVST;
+    property ShowHintFrm: TShowHintFrm read FShowHintFrm;
   end;
 
 var
@@ -285,6 +287,7 @@ begin
      OnAfterPaint := @VSTAfterPaint;
      OnEnter := @VSTEnter;
      OnFreeNode := @VSTFreeNode;
+     OnScroll := @VSTScroll;
    end;
   FShowHintFrm := TShowHintFrm.Create(nil);
 end;
@@ -1894,6 +1897,12 @@ begin
     FHoverNode := nil;
     OpenURL(FLink);
   end;}
+end;
+
+procedure TVisualTree.VSTScroll(Sender: TBaseVirtualTree; DeltaX, DeltaY: Integer);
+begin
+  if FShowHintFrm.Visible then
+    FShowHintFrm.Hide;
 end;
 
 procedure TVisualTree.VSTClick(Sender: TObject);
