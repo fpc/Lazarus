@@ -444,11 +444,13 @@ begin
     end;
   if (gTTFontCache.Count=0) then
     gTTFontCache.ReadStandardFonts;
+  {$IFNDEF WINDOWS}
   AssignFile(F,'/tmp/fonts.txt');
   Rewrite(F);
   For I:=0 to gTTFontCache.Count-1 do
      Writeln(F,I,' ',gTTFontCache.Items[i].PostScriptName,' : ',gTTFontCache.Items[i].FamilyName,' : ',gTTFontCache.Items[i].HumanFriendlyName);
   CloseFile(F);
+  {$ENDIF}
   FDataParent:=TComponent.Create(nil);
   FreeAndNil(TSDesign); // Remove design-time added page
   FReportDesignData:=TDesignReportDataManager.Create(Self);
