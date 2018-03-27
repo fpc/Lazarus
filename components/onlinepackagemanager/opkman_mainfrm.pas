@@ -160,6 +160,7 @@ type
     procedure DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
     procedure DoOnProcessJSON(Sender: TObject);
     procedure DoOnUpdate(Sender: TObject);
+    procedure DoDeactivate(Sender: TObject);
     function IsSomethingChecked(const AResolveDependencies: Boolean = True): Boolean;
     function Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     function Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean; const AIsUpdate: Boolean = False): TModalResult;
@@ -192,6 +193,7 @@ begin
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
+  Application.AddOnDeactivateHandler(@DoDeactivate, False);
  {$IF LCL_FULLVERSION >= 1070000}
   tbInstall.Style := tbsButtonDrop;
   tbCreate.Style := tbsButtonDrop;
@@ -439,6 +441,13 @@ end;
 procedure TMainFrm.DoOnUpdate(Sender: TObject);
 begin
   VisualTree.UpdatePackageUStatus;
+end;
+
+procedure TMainFrm.DoDeactivate(Sender: TObject);
+begin
+  if Assigned(VisualTree.ShowHintFrm) then
+    if VisualTree.ShowHintFrm.Visible then
+       VisualTree.ShowHintFrm.Hide;
 end;
 
 procedure TMainFrm.ShowOptions(const AActivePageIndex: Integer = 0);
