@@ -96,6 +96,7 @@ type
     constructor CreateWithBoxAndItem(aSMenu: TShadowMenu; aParentBox: TShadowBox;
       aRealItem: TMenuItem);
     function GetWidth: integer; override;
+    procedure Invalidate; override;
   public
     property BottomFake: TFake read GetBottomFake write FBottomFake;
     property IsInMenuBar: boolean read GetIsInMenuBar;
@@ -2106,6 +2107,20 @@ begin
     Result:=w + Double_MenuBar_Text_Offset + FShadowMenu.GetMenuBarIconWidth(FRealItem)
   else
     Result:=w + Double_DropDown_Text_Offset + GetShortcutWidth + Add_Icon_Width;
+end;
+
+procedure TShadowItem.Invalidate;
+var
+  OldHeight, NewHeight: Integer;
+begin
+  OldHeight := Height;
+  NewHeight := GetHeight;
+  if OldHeight <> NewHeight then
+  begin
+    Height := NewHeight;
+    FParentBox.LocateShadows;
+  end;
+  inherited Invalidate;
 end;
 
 function TShadowItem.HasChildBox(out aChildBox: TShadowBoxBase): boolean;
