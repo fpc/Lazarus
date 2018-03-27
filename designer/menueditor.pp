@@ -1523,7 +1523,6 @@ begin
          (mi.ShortCut <> 0) or (mi.ShortCutKey2 <> 0) then
            FDesigner.Shortcuts.UpdateShortcutList(True);
       if (FSelectedMenuItem <> nil) then begin
-        RefreshFakes;
         SelectedShadowItem.Invalidate;
       end;
       FDesigner.FGui.UpdateStatistics;
