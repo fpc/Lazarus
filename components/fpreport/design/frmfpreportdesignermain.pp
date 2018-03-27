@@ -1125,10 +1125,15 @@ Var
 begin
   if not ValidateReport then
     exit;
-  FReport.RunReport;
-  F:=TFPreportPreviewExport.Create(Self);
-  FReport.RenderReport(F);
-  FReport.ClearPreparedReport;
+  FReportDesignData.StartRender;
+  try
+    FReport.RunReport;
+    F:=TFPreportPreviewExport.Create(Self);
+    FReport.RenderReport(F);
+    FReport.ClearPreparedReport;
+  finally
+    FReportDesignData.EndRender;
+  end;
 end;
 
 procedure TFPReportDesignerForm.APreviewUpdate(Sender: TObject);
