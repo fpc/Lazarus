@@ -273,6 +273,7 @@ begin
   Result := False;
   if not FShowAccelChar then exit;
   if FFocusControl = nil then exit;
+  if KeyDataToShiftState(Message.KeyData) * [ssCtrl, ssAlt, ssShift] <> [ssAlt] then exit;
 
   if IsAccel(Message.CharCode, GetLabelText) and FFocusControl.CanFocus then
   begin
