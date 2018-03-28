@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-02-23 19:40+0200\n"
+"PO-Revision-Date: 2018-03-28 15:07+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -10425,10 +10425,8 @@ msgid "&Inspect"
 msgstr "&Перевірити"
 
 #: lazarusidestrconsts.lisinspectclassinherit
-#, fuzzy
-#| msgid "%s : Class %s inherits from %s"
 msgid "%s: class %s inherits from %s"
-msgstr "%s : Клас %s успадковує від %s"
+msgstr "%s : клас %s успадковує від %s"
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
@@ -10465,7 +10463,7 @@ msgstr "Показати стовпець видимості"
 
 #: lazarusidestrconsts.lisinspectunavailableerror
 msgid "%s: unavailable (error: %s)"
-msgstr ""
+msgstr "%s: недоступно (помилка: %s)"
 
 #: lazarusidestrconsts.lisinspectuseinstance
 msgid "Instance"
@@ -11698,7 +11696,6 @@ msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Вважати, що файл містить код на Pascal, навіть якщо він не має розширення .pas/.pp"
 
 #: lazarusidestrconsts.lismakecurrent
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Поточний"
