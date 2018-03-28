@@ -2505,7 +2505,7 @@ begin
       begin
         FillChar(Msg, SizeOf(Msg), 0);
 
-        Msg.KeyData := CommonKeyData;
+        Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001;
         Msg.Msg := CHAR_MAP[SysKey, ABeforeEvent];
 
         // send the (Sys)Char message directly (not queued) to the LCL
