@@ -252,6 +252,8 @@ end;
 
 procedure TMainFrm.GetPackageList(const ARepositoryHasChanged: Boolean = False);
 begin
+  cbFilterBy.ItemIndex := 0;
+  cbFilterByChange(cbFilterBy);
   Caption := rsLazarusPackageManager;
   EnableDisableControls(False);
   VisualTree.VST.Clear;
