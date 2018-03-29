@@ -273,7 +273,10 @@ begin
   begin
     if AResolveDependencies then
       if VisualTree.ResolveDependencies = mrCancel then
+      begin
+        Result := False;
         Exit;
+      end;
     VisualTree.GetPackageList;
     VisualTree.UpdatePackageStates;
   end

@@ -1288,9 +1288,9 @@ begin
                       Result := MessageDlgEx(Msg, mtConfirmation, [mbYes, mbYesToAll, mbNo, mbNoToAll, mbCancel], TForm(FVST.Parent.Parent));
                       if Result in [mrNo, mrNoToAll] then
                         if MessageDlgEx(rsMainFrm_rsPackageDependency1, mtInformation, [mbYes, mbNo], TForm(FVST.Parent.Parent)) <> mrYes then
-                          Exit;
+                          Exit(mrCancel);
                       if (Result = mrNoToAll) or (Result = mrCancel) then
-                        Exit;
+                        Exit(mrCancel);
                     end;
                     if Result in [mrYes, mrYesToAll] then
                     begin
