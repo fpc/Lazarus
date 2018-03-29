@@ -30,7 +30,7 @@ uses
   // LCL
   Forms, Controls, Graphics, ExtCtrls, StdCtrls, VirtualTrees,
   // OpkMan
-  opkman_const, opkman_serializablepackages, opkman_options;
+  opkman_const, opkman_serializablepackages, opkman_options, opkman_visualtree;
 
 type
 
@@ -63,6 +63,7 @@ type
     procedure VSTCompareNodes(Sender: TBaseVirtualTree; Node1,
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
     procedure VSTFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    function IsNodeVisible(const APackageName: String): Boolean;
   public
     procedure PopulateList(const ATyp: Integer; const AExtra: String = '');
     property Count: Integer read GetCount;
@@ -138,6 +139,8 @@ begin
   InvCnt := 0;
   for I := 0 to SerializablePackages.Count - 1 do
   begin
+    if not IsNodeVisible(SerializablePackages.Items[I].DisplayName) then
+      Continue;
     if ATyp = 0 then
     begin
       for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1  do
@@ -294,6 +297,25 @@ var
 begin
   Data := FVST.GetNodeData(Node);
   Finalize(Data^);
+end;
+
+function TPackageListFrm.IsNodeVisible(const APackageName: String): Boolean;
+var
+  Node: PVirtualNode;
+  Data: opkman_visualtree.PData;
+begin
+  Result := False;
+  Node := VisualTree.VST.GetFirst;
+  while Assigned(Node) do
+  begin
+    Data := VisualTree.VST.GetNodeData(Node);
+    if (Data^.DataType = 1) and (Data^.PackageDisplayName = APackageName) then
+    begin
+      Result := VisualTree.VST.IsVisible[Node];
+      Break;
+    end;
+    Node := VisualTree.VST.GetNext(Node);
+  end;
 end;
 
 end.
