@@ -78,6 +78,7 @@ type
     ButtonID: Integer;
     Button: TSpeedButton;
     Rating: Integer;
+    IsDependencyNode: Boolean;
   end;
 
   TFilterBy = (fbPackageName, fbLazarusPackageName, fbPackageCategory, fbPackageState,
@@ -144,6 +145,7 @@ type
     procedure SetButtonVisibility(Node: PVirtualNode; Column: TColumnIndex);
     procedure CallBack(Sender: TBaseVirtualTree; Node: PVirtualNode; {%H-}Data: Pointer; var {%H-}Abort: Boolean);
     procedure ShowDetails(const AButtonID: Integer);
+    procedure ResetDependencyNodes;
   public
     constructor Create(const AParent: TWinControl; const AImgList: TImageList;
       APopupMenu: TPopupMenu);
@@ -546,7 +548,6 @@ begin
     FreeAndNil(PackageDetailsFrm);
   end;
 end;
-
 
 procedure TVisualTree.ButtonClick(Sender: TObject);
 begin
@@ -1043,7 +1044,12 @@ begin
       if MetaPkg <> nil then
       begin
         if (FVST.CheckState[Node] = csCheckedNormal) or (FVST.CheckState[Node] = csMixedNormal) then
-          MetaPkg.Checked := True
+        begin
+          if (FVST.IsVisible[Node]) or (Data^.IsDependencyNode) then
+            MetaPkg.Checked := True
+          else
+            MetaPkg.Checked := False;
+        end
         else if FVST.CheckState[Node] = csUncheckedNormal then
           MetaPkg.Checked := False
       end;
@@ -1054,7 +1060,12 @@ begin
       if LazarusPkg <> nil then
       begin
         if FVST.CheckState[Node] = csCheckedNormal then
-          LazarusPkg.Checked := True
+        begin
+          if (FVST.IsVisible[Node]) or (Data^.IsDependencyNode) then
+            LazarusPkg.Checked := True
+          else
+            LazarusPkg.Checked := False;
+        end
         else if FVST.CheckState[Node] = csUncheckedNormal then
           LazarusPkg.Checked := False
       end;
@@ -1217,10 +1228,24 @@ begin
     FOnChecked(Self);
 end;
 
+procedure TVisualTree.ResetDependencyNodes;
+var
+  Node: PVirtualNode;
+  Data: PData;
+begin
+  Node := FVST.GetFirst;
+  while Assigned(Node) do
+  begin
+    Data := FVST.GetNodeData(Node);
+    Data^.IsDependencyNode := False;
+    Node := FVST.GetNext(Node);
+  end;
+end;
+
 function TVisualTree.ResolveDependencies: TModalResult;
 var
-  Node, NodeSearch: PVirtualNode;
-  Data, DataSearch: PData;
+  Parent, Node, NodeSearch: PVirtualNode;
+  ParentData, Data, DataSearch: PData;
   Msg: String;
   PackageList: TObjectList;
   PkgFileName: String;
@@ -1228,6 +1253,7 @@ var
   I: Integer;
 begin
   Result := mrNone;
+  ResetDependencyNodes;
   Node := FVST.GetFirst;
   while Assigned(Node) do
   begin
@@ -1271,6 +1297,13 @@ begin
                       FVST.CheckState[NodeSearch] := csCheckedNormal;
                       FVST.ReinitNode(NodeSearch, False);
                       FVST.RepaintNode(NodeSearch);
+                      DataSearch^.IsDependencyNode := True;
+                      Parent := NodeSearch^.Parent;
+                      if Parent <> nil then
+                      begin
+                        ParentData := FVST.GetNodeData(Parent);
+                        ParentData^.IsDependencyNode := True;
+                      end;
                     end;
                   end;
                 end;
@@ -1670,7 +1703,6 @@ begin
     end;
   end;
 end;
-
 
 procedure TVisualTree.VSTMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
