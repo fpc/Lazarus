@@ -154,7 +154,7 @@ resourcestring
   rsMainFrm_TBUpdate_Hint = 'Update packages from external URL';
   rsMainFrm_TBUnInstall_Caption = 'Uninstall';
   rsMainFrm_TBUnInstall_Hint = 'Uninstall packages';
-  rsMainFrm_TBOpenRepo_Caption = 'Open';
+  rsMainFrm_TBOpenRepo_Caption = 'Local repo';
   rsMainFrm_TBOpenRepo_Hint = 'Open local repository';
   rsMainFrm_TBCleanUp_Caption = 'Cleanup';
   rsMainFrm_TBCleanUp_Hint = 'Cleanup local repository';

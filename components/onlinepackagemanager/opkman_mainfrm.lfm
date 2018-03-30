@@ -471,7 +471,7 @@ object MainFrm: TMainFrm
         Left = 363
         Top = 0
         AutoSize = True
-        Caption = 'Open'
+        Caption = 'Local repo'
         ImageIndex = 5
         OnClick = tbOpenRepoClick
         ParentShowHint = False
