@@ -276,7 +276,7 @@ begin
   F:=TFPReportDesigner.Create(Application);
   try
     F.Report:=Self.Report;
-    F.Options:=AllReportDesignOptions-[rdoManageData];
+    F.Options:=AllReportDesignOptions-[rdoManageData,rdoAllowFileDrop];
     F.ModalWindow:=True;
     F.Execute;
     F.Report.ClearPreparedReport;

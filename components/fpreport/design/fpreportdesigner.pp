@@ -33,6 +33,8 @@ Const
   rdoAllowNew        = frmfpreportdesignermain.rdoAllowNew;        // Allow user to start new report
   rdoAllowPreview    = frmfpreportdesignermain.rdoAllowPreview;    // Allow user to ask report preview
   rdoAllowBands      = frmfpreportdesignermain.rdoAllowBands;      // Allow user to add/remove bands
+  rdoAllowFileDrop   = frmfpreportdesignermain.rdoAllowFileDrop;   // Allow files to be dropped on designer
+
 
 type
   TFPReportDesignOption = frmfpreportdesignermain.TFPReportDesignOption;

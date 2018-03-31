@@ -33,7 +33,8 @@ type
                            rdoAllowPageAdd,    // Allow user to add pages
                            rdoAllowNew,        // Allow user to start new report
                            rdoAllowPreview,    // Allow user to ask report preview
-                           rdoAllowBands      // Allow user to add/remove bands
+                           rdoAllowBands,      // Allow user to add/remove bands
+                           rdoAllowFileDrop    // Allow user to drop files on designer, so they will be loaded.
                            );
   TFPReportDesignOptions = set of TFPReportDesignOption;
 
@@ -275,6 +276,7 @@ type
     procedure AResizeExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormDestroy(Sender: TObject);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure FormShow(Sender: TObject);
     procedure PCReportChange(Sender: TObject);
     procedure VResizeAllow(Sender: TObject);
@@ -390,7 +392,7 @@ type
 
 Const
   AllReportDesignOptions = [rdoManageData,rdoManageVariables,rdoAllowLoad,rdoAllowSave,rdoAllowProperties,
-                            rdoAllowPageAdd,rdoAllowNew, rdoAllowPreview, rdoAllowBands];
+                            rdoAllowPageAdd,rdoAllowNew, rdoAllowPreview, rdoAllowBands,rdoAllowFileDrop];
 
 
 implementation
@@ -558,10 +560,39 @@ begin
   FreeAndNil(FReportDesignData);
 end;
 
+procedure TFPReportDesignerForm.FormDropFiles(Sender: TObject; const FileNames: array of String);
+
+Type
+  TFPReportDesignerFormClass = Class of TFPReportDesignerForm;
+
+Var
+  C : TFPReportDesignerFormClass;
+  F : TFPReportDesignerForm;
+  I : Integer;
+
+begin
+  if not (rdoAllowFileDrop in DesignOptions) then exit;
+  if Length(FileNames)<1 then exit;
+  if not CheckSaved(SOpenReport) then
+    exit;
+  StopDesigning;
+  LoadReportFromFile(FileNames[0]);
+  DesignReport;
+  C:=TFPReportDesignerFormClass(Self.Classtype);
+  For I:=1 to Length(FileNames)-1 do
+    begin
+    F:=C.Create(Application);
+    F.InitialFileName:=Filenames[i];
+    F.Show;
+    end;
+end;
+
 procedure TFPReportDesignerForm.FormShow(Sender: TObject);
 
 
 begin
+  if rdoAllowFileDrop in DesignOptions then
+    AllowDropFiles:=True;
   CheckLoadInitialFile;
   SBReport.Refresh;
 end;

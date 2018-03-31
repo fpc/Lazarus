@@ -16,6 +16,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnDropFiles = FormDropFiles
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   SessionProperties = 'FOI.Width;Width;Top;Left;Height'
