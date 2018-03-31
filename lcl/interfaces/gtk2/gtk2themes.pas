@@ -375,7 +375,7 @@ begin
                 TS_PRESSED, TS_CHECKED, TS_HOTCHECKED:
                   Result.Shadow := GTK_SHADOW_IN;
                 TS_HOT:
-                  Result.Shadow := GTK_SHADOW_ETCHED_OUT;
+                  Result.Shadow := GTK_SHADOW_OUT;
               else
                 Result.Shadow := GTK_SHADOW_NONE;
               end;
@@ -383,7 +383,6 @@ begin
               begin
                 case Details.State of
                   TS_DISABLED: Result.State := GTK_STATE_INSENSITIVE;
-                  //TS_HOT: Result.State := GTK_STATE_ACTIVE; // << painting bug in Laz+Gtk2
                 else
                   Result.State := GTK_STATE_NORMAL;
                 end;
@@ -391,8 +390,7 @@ begin
                 Result.State := GtkButtonMap[Details.State];
 
               Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
-              if Result.Style = nil then
-                Result.Style := GetStyle(lgsToolButton);
+              Result.Style := GetStyle(lgsButton);
               if (Details.Part = TP_SPLITBUTTONDROPDOWN) then
               begin
                 Result.Detail := 'arrow';
