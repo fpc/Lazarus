@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, fpreportdata,
-  Menus, ActnList, ComCtrls, ExtCtrls, IniPropStorage, fpreport, fpreportdesignctrl,
+  Menus, ActnList, ComCtrls, ExtCtrls, IniPropStorage, fpreport, fpreportdesignctrl, contnrs,
   fraReportObjectInspector, fpreportdesignreportdata, frafpreportdata, mrumanager;
 
 type
@@ -36,6 +36,14 @@ type
                            rdoAllowBands      // Allow user to add/remove bands
                            );
   TFPReportDesignOptions = set of TFPReportDesignOption;
+
+  // What to do when selection contains a report page
+  TPageCopyAction = (pcaNone,pcaAbort,pcaReplace,pcaAdd);
+  TPageCopyActions = set of TPageCopyAction;
+
+  // What to do when selection contains a band that cannot be correctly added to the current page.
+  TBandCopyAction = (bcaNone,bcaAbort,bcaConvertToChild);
+  TBandCopyActions = Set of TBandCopyAction;
 
   { TPageTabSheet }
 
@@ -74,6 +82,9 @@ type
     AAlignVCenter: TAction;
     AAlignBottom: TAction;
     AAlign: TAction;
+    ACopy: TAction;
+    ACut: TAction;
+    APaste: TAction;
     AResizeBandToFit: TAction;
     AFileSaveAs: TAction;
     ARecent: TAction;
@@ -102,6 +113,9 @@ type
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MICopy: TMenuItem;
+    MICut: TMenuItem;
+    MIPaste: TMenuItem;
     MISaveAs: TMenuItem;
     MIPreview: TMenuItem;
     MIframeBottom: TMenuItem;
@@ -234,6 +248,10 @@ type
     procedure AAddShapeExecute(Sender: TObject);
     procedure AAlignExecute(Sender: TObject);
     procedure AAlignUpdate(Sender: TObject);
+    procedure ACopyExecute(Sender: TObject);
+    procedure ACopyUpdate(Sender: TObject);
+    procedure ACutExecute(Sender: TObject);
+    procedure ACutUpdate(Sender: TObject);
     procedure ADeleteExecute(Sender: TObject);
     procedure ADeleteUpdate(Sender: TObject);
     procedure AFileSaveAsExecute(Sender: TObject);
@@ -242,6 +260,8 @@ type
     procedure AFrameExecute(Sender: TObject);
     procedure AFrameUpdate(Sender: TObject);
     procedure ANewExecute(Sender: TObject);
+    procedure APasteExecute(Sender: TObject);
+    procedure APasteUpdate(Sender: TObject);
     procedure APreviewExecute(Sender: TObject);
     procedure APreviewUpdate(Sender: TObject);
     procedure AReportDataExecute(Sender: TObject);
@@ -298,12 +318,22 @@ type
     procedure InitialiseData;
 {$ENDIF}
     function CreateNewPage: TFPReportCustomPage;
+    procedure DoPaste(Sender: TObject);
     procedure DoReportChangedByDesigner(Sender: TObject);
     procedure DoSelectionModifiedByOI(Sender: TObject);
     procedure DoStructureChange(Sender: TObject);
+    procedure ExecutePaste(aControl: TFPReportDesignerControl);
+    procedure GetCopyActions(aControl: TFPReportDesignerControl; L: TFPObjectList; out PCA: TPageCopyAction; out
+      BCA: TBandCopyAction);
     function GetModified: boolean;
     procedure ActivateDesignerForElement(AElement: TFPReportElement);
+    function GetPageCopyAction(aCount: Integer): TPageCopyAction;
+    function GetBandCopyAction(aCount: Integer): TBandCopyAction;
     procedure MaybeAddFirstPage;
+    procedure PasteBand(aControl: TFPReportDesignerControl; aAction: TBandCopyAction; var aBand: TFPReportCustomBand);
+    procedure PasteElement(aControl: TFPReportDesignerControl; aBand: TFPReportCustomBand; aElement: TFPReportElement);
+    procedure PasteList(aControl: TFPReportDesignerControl; L: TFPObjectList);
+    function PastePage(aAction: TPageCopyAction; aPage: TFPReportCustomPage): TFPReportDesignerControl;
     procedure ResetReport;
     procedure SetBandActionTags;
     procedure SetDesignOptions(AValue: TFPReportDesignOptions);
@@ -315,7 +345,7 @@ type
     procedure MRUMenuManager1RecentFile(Sender: TObject; const AFileName: String);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ApplyDesignOptions; virtual;
-    function AddPageDesign(aPageNo: Integer; APage: TFPReportCustomPage): TTabSheet;
+    function AddPageDesign(APage: TFPReportCustomPage): TTabSheet;
     Function FindTabForReportPage(APage : TFPReportCustomPage) : TPageTabSheet;
     procedure DoSelectComponent(Sender: TObject; Selected: TComponent); virtual;
     procedure DoSelectionChanged(Sender: TObject); virtual;
@@ -367,6 +397,7 @@ uses
   fpttf,
   fpreportstreamer,
   fpjson,
+  Clipbrd,
   jsonparser;
 
 {$R *.lfm}
@@ -390,6 +421,26 @@ ResourceString
   SErrInvalidReport = 'Invalid report design';
   SErrFixErrors = 'The report design contains %d errors:'+sLineBreak+'%s'+sLineBreak+
                   'You will need to fix these errors before proceeding.';
+  SErrCannotCopyClipboardFormat = 'Clipboard contents cannot be pasted into report.';
+  SCopyingPage = 'Pasting report page';
+  SCopyingPageWhat = 'The selection contains a complete report page.'+sLineBreak+
+                     'What do you want to do with this page?';
+  SCopyingPages = 'Pasting multiple report pages';
+  SCopyingPagesWhat = 'The selection contains multiple complete report pages.'+sLineBreak+
+                     'What do you want to do with these pages?';
+  SCopyingBand = 'Pasting conflicting band';
+  SCopyingBandWhat = 'The selection contains a band which cannot be logically placed on the current page.'+sLineBreak+
+                     'What do you want to do with this band?';
+  SCopyingBands = 'Pasting multiple conflicting bands';
+  SCopyingBandsWhat = 'The selection contains multiple bands which cannot be logically placed on the current page.'+sLineBreak+
+                      'What do you want to do with these bands?';
+  SNoCopy = 'Do not copy';
+  SPageAdd = 'Add as new page';
+  SPageReplace = 'Replace current page';
+  SAbortCopy = 'Abort copy';
+  sBandConvert = 'Convert to child band';
+  sBandConverts = 'Convert to child bands';
+  SErrNoBandToPaste = 'No band to paste elements on';
 
 Const
   StateNames : Array[TDesignerState] of string = ('','Resetting',
@@ -516,7 +567,7 @@ begin
   MaybeAddFirstPage;
   Report.StartDesigning;
   For I:=0 to Report.PageCount-1 do
-    AddPageDesign(I+1,Report.Pages[I]);
+    AddPageDesign(Report.Pages[I]);
   ShowReportData;
   ResetObjectInspector;
   if FLoadModified then
@@ -653,8 +704,7 @@ begin
 end;
 
 
-function TFPReportDesignerForm.AddPageDesign(aPageNo: Integer;
-  APage: TFPReportCustomPage): TTabSheet;
+function TFPReportDesignerForm.AddPageDesign(APage: TFPReportCustomPage): TTabSheet;
 
 Var
   TS : TPageTabSheet;
@@ -682,6 +732,7 @@ begin
   D.OnStateChange:=@DoStateChange;
   D.OnReportChanged:=@DoReportChangedByDesigner;
   D.Objects.OnStructureChange:=@DoStructureChange;
+  D.OnPaste:=@DoPaste;
   D.Objects[0].Selected:=True;
   Result:=TS;
 end;
@@ -811,6 +862,272 @@ begin
   Result.StartDesigning;
 end;
 
+Function TFPReportDesignerForm.GetPageCopyAction(aCount : Integer) : TPageCopyAction;
+
+Var
+  MR : TModalResult;
+
+begin
+  if aCount=1 then
+    MR:=QuestionDlg(SCopyingPage,SCopyingPageWhat,mtWarning,[
+         mrIgnore,SNoCopy,
+         mrYes,SPageAdd,
+         mrRetry,sPageReplace,
+         mrAbort,sAbortCopy],'')
+  else
+    MR:=QuestionDlg(SCopyingPages,SCopyingPagesWhat,mtWarning,[
+         mrIgnore,SNoCopy,
+         mrYes,SPageAdd,
+         mrAbort,sAbortCopy],'');
+  case MR of
+     mrIgnore : Result:=pcaNone;
+     mrYes: Result:=pcaAdd;
+     mrRetry : Result:=pcaReplace;
+     mrAbort :Result:=pcaAbort;
+   else
+     Result := pcaAbort
+   end;
+end;
+
+function TFPReportDesignerForm.GetBandCopyAction(aCount: Integer): TBandCopyAction;
+
+Var
+  MR : TModalResult;
+  BC,C,M : String;
+
+begin
+  if aCount=1 then
+    begin
+    C:=SCopyingBand;
+    M:=SCopyingBandWhat;
+    BC:=sBandConvert;
+    end
+  else
+    begin
+    C:=SCopyingBands;
+    M:=SCopyingBandsWhat;
+    BC:=sBandConverts;
+    end;
+  MR:=QuestionDlg(C,M,mtWarning,[
+       mrIgnore,SNoCopy,
+       mrYes,BC,
+       mrAbort,sAbortCopy],'');
+  case MR of
+     mrIgnore : Result:=bcaNone;
+     mrYes: Result:=bcaConvertToChild;
+     mrAbort :Result:=bcaAbort;
+   else
+     Result := bcaAbort
+   end;
+end;
+
+
+
+procedure TFPReportDesignerForm.ExecutePaste(aControl : TFPReportDesignerControl);
+
+Var
+  L : TFPObjectList;
+  S : TMemoryStream;
+
+begin
+  aControl.CheckClipBoardFormat;
+  if Not ClipBoard.HasFormat(ClipBoardFormat) then
+     Raise EReportError.Create(SErrCannotCopyClipboardFormat);
+  L:=Nil;
+  S:=Nil;
+  try
+    S:=TMemoryStream.Create;
+    ClipBoard.GetFormat(ClipBoardFormat,S);
+    S.Position:=0;
+    L:=FReport.StreamToReportElements(S);
+    PasteList(aControl,L);
+  finally
+    FreeAndNil(L);
+    FreeAndNil(S);
+  end;
+end;
+
+procedure TFPReportDesignerForm.GetCopyActions(aControl : TFPReportDesignerControl; L : TFPObjectList;
+                                               Out PCA : TPageCopyAction;
+                                               out  BCA : TBandCopyAction);
+
+Var
+  i,pCount : Integer;
+
+begin
+  PCA:=pcaNone;
+  bca:=bcaNone;
+  pCount:=0;
+  for I:=0 to L.Count-1 do
+    if L[i] is TFPReportCustomPage then
+      inc(pCount);
+  if pCount>0 then
+    PCA:=GetPageCopyAction(pCount);
+  if (PCA=pcaAbort) then
+    exit;
+  pCount:=0;
+  for I:=0 to L.Count-1 do
+    if L[i] is TFPReportCustomBand then
+      if Not aControl.Page.CheckBandMultiplicity(TFPReportCustomBand(L[i])) then
+        Inc(pCount);
+  if pCount>0 then
+    BCA:=GetBandCopyAction(pCount)
+end;
+
+procedure TFPReportDesignerForm.PasteList(aControl : TFPReportDesignerControl; L : TFPObjectList);
+
+Var
+  L2 : TFPList;
+  i : Integer;
+  PCA : TPageCopyAction;
+  BCA : TBandCopyAction;
+  E : TFPReportElement;
+  B : TFPReportCustomBand;
+  cControl : TFPReportDesignerControl;
+  NeedReorder : Boolean;
+
+begin
+  GetCopyActions(aControl,l,PCA,BCA);
+  if (PCA=pcaAbort) or (BCA=bcaAbort) then
+    exit;
+  cControl:=aControl;
+  // First the pages (current page may be changed by this)
+  For I:=0 to L.Count-1 do
+    if L[I] is TFPReportCustomPage then
+      begin
+      E:=TFPReportCustomPage(L.Extract(L[i]));
+      cControl:=PastePage(PCA,(E as TFPReportCustomPage));
+      end;
+  if L.Count=0 then
+    exit;
+  // .. and paste the rest.
+  NeedReorder:=False;
+  L2:=TFPList.Create; // List to contain pasted elements
+  try
+    B:=aControl.GetBandForPaste;
+    While (L.Count>0) do
+      begin
+      E:=TFPReportElement(L.Extract(L[0]));
+      if E is TFPReportCustomBand then
+        begin
+        PasteBand(cControl,BCA,TFPReportCustomBand(E));
+        NeedReorder:=NeedReorder or Assigned(E);
+        // If there was not a band, use the just pasted one, if there is one.
+        if B=Nil then
+          B:=aControl.GetBandForPaste;
+        end
+      else if (E is TFPReportElement) then
+        PasteElement(cControl,B,E)
+      else
+        FreeAndNil(E);
+      if Assigned(E) then
+        L2.Add(E);
+      end;
+    // Set selection to pasted objects. Pages will not be selected by this
+    cControl.Objects.ClearSelection;
+    For I:=0 to L2.Count-1 do
+      cControl.Objects.SelectElement(TFPReportElement(L2[i]));
+    if NeedReorder then
+      cControl.Objects.OrderBands(cControl.Canvas,CurrentDesigner.CurrentDPI);
+    DoStructureChange(Self);
+  finally
+    FreeAndNil(L2);
+  end;
+end;
+
+
+Function TFPReportDesignerForm.PastePage(aAction : TPageCopyAction; aPage : TFPReportCustomPage) : TFPReportDesignerControl;
+
+Var
+  Idx : Integer;
+  oldPage : TFPReportCustomPage;
+
+begin
+  Idx:=CurrentDesigner.Page.PageIndex;
+  FReport.AddPage(aPage);
+  Case aAction of
+  pcaAdd:
+    begin
+    Result:=TPageTabSheet(AddPageDesign(aPage)).Designer;
+    end;
+  pcaReplace:
+    begin
+    oldPage:=CurrentDesigner.Page;
+    idx:=OldPage.PageIndex;
+    CurrentDesigner.Page:=aPage;
+    FReport.RemovePage(oldPage);
+    aPage.PageIndex:=idx;
+    end;
+  end;
+end;
+
+Procedure TFPReportDesignerForm.PasteBand(aControl : TFPReportDesignerControl; aAction : TBandCopyAction; var aBand : TFPReportCustomBand);
+
+Var
+  C : TFPReportCustomChildBand;
+  I : Integer;
+  N : String;
+
+begin
+  if Not aControl.Page.CheckBandMultiplicity(aBand) then
+    Case aAction of
+      bcaNone : FreeAndNil(aBand);
+      bcaConvertToChild :
+        begin
+        C:=TFPReportCustomChildBand(gElementFactory.CreateInstance('ChildBand',aControl.Page.Report));
+        N:=aBand.Name;
+        // Copy properties
+        aBand.ChildBand:=Nil;
+        C.Assign(aBand);
+        // Copy elements
+        For I:=aBand.ChildCount-1 downto 0 do
+          aBand.Child[i].Parent:=C;
+        // Replace
+        FreeAndNil(aBand);
+        aBand:=C;
+        aBand.Name:=N;
+        end;
+    end;
+  // Paste into page.
+  if Assigned(aBand) then
+    begin
+    aBand.Parent:=aControl.Page;
+    aControl.Objects.AddBand(aBand);
+    end;
+end;
+
+Procedure TFPReportDesignerForm.PasteElement(aControl : TFPReportDesignerControl; aBand : TFPReportCustomBand; aElement : TFPReportElement);
+
+Const
+  xShift = 2.0;
+  yShift = 2.0;
+
+begin
+  if (ABand=Nil) then
+    Raise EReportError.Create(SErrNoBandToPaste);
+  aElement.Parent:=aBand;
+  aElement.Layout.Left:=aElement.Layout.Left+xShift;
+  if aElement.Layout.Left>aBand.Layout.Width then
+    begin
+    aElement.Layout.Left:=aBand.Layout.Width-aElement.Layout.Width;
+    if aElement.Layout.Left<0 then
+      aElement.Layout.Left:=0;
+    end;
+  aElement.Layout.Top:=aElement.Layout.Top+yShift;
+  if aElement.Layout.top>aBand.Layout.Height then
+    begin
+    aElement.Layout.top:=aBand.Layout.Height-aElement.Layout.Height;
+    if aElement.Layout.top<0 then
+      aElement.Layout.top:=0;
+    end;
+  aControl.Objects.AddElement(aElement);
+end;
+
+procedure TFPReportDesignerForm.DoPaste(Sender: TObject);
+begin
+  ExecutePaste(Sender as TFPReportDesignerControl);
+end;
+
 procedure TFPReportDesignerForm.AAddPageExecute(Sender: TObject);
 
 Var
@@ -821,7 +1138,7 @@ begin
   FReport.AddPage(P);
   P.Name:='Page'+IntToStr(FReport.PageCount);
   FOI.RefreshReportTree;
-  PCReport.ActivePage:=AddPageDesign(FReport.PageCount,P);
+  PCReport.ActivePage:=AddPageDesign(P);
   Modified:=True;
 end;
 
@@ -900,6 +1217,31 @@ begin
   (Sender as TAction).Enabled:=Assigned(ReportAlignFormClass)
                                and Assigned(CurrentDesigner)
                                and CurrentDesigner.Objects.HaveSelection
+end;
+
+procedure TFPReportDesignerForm.ACopyExecute(Sender: TObject);
+begin
+  if Assigned(CurrentDesigner) then
+    CurrentDesigner.CopySelectionToClipBoard;
+end;
+
+procedure TFPReportDesignerForm.ACopyUpdate(Sender: TObject);
+begin
+  (Sender As Taction).Enabled:=Assigned(CurrentDesigner) and CurrentDesigner.Objects.HaveSelection;
+end;
+
+procedure TFPReportDesignerForm.ACutExecute(Sender: TObject);
+begin
+  if Assigned(CurrentDesigner) then
+    begin
+    CurrentDesigner.CopySelectionToClipBoard;
+    CurrentDesigner.Objects.DeleteSelection;
+    end;
+end;
+
+procedure TFPReportDesignerForm.ACutUpdate(Sender: TObject);
+begin
+  (Sender As Taction).Enabled:=Assigned(CurrentDesigner) and CurrentDesigner.Objects.HaveSelection;
 end;
 
 procedure TFPReportDesignerForm.ADeleteExecute(Sender: TObject);
@@ -1061,6 +1403,17 @@ begin
     exit;
   if NewReport then
     DesignReport;
+end;
+
+procedure TFPReportDesignerForm.APasteExecute(Sender: TObject);
+begin
+  DoPaste(CurrentDesigner);
+end;
+
+procedure TFPReportDesignerForm.APasteUpdate(Sender: TObject);
+begin
+  TFPReportDesignerControl.CheckClipBoardFormat;
+  (Sender as TAction).Enabled:=ClipBoard.HasFormat(ClipBoardFormat);
 end;
 
 Procedure TFPReportDesignerForm.MaybeAddFirstPage;

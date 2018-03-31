@@ -40,7 +40,6 @@ type
     procedure TVFunctionsStartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure TVVariablesMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
-    FPageCount : TFPExprIdentifierDef;
     FIdentifiers: TFPExprIdentifierDefs;
     FUserVariables : TTreeNode;
     FBuiltinVariables : TTreeNode;

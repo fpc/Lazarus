@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, controls, fpreport, graphics, lmessages, fpreportlclexport, lcltype, menus,
-  fpreportdesignobjectlist, fpreportdrawruler, graphutil, types;
+  fpreportdesignobjectlist, fpreportdrawruler, graphutil, ClipBrd, types;
 
 Const
   clGrid  = TColor($E0E0E0);      // Default color for guide grid
@@ -52,6 +52,7 @@ Type
     FMinControlWidth: Integer;
     FObjects: TReportObjectList;
     FOnElementCreated: TOnElementCreatedEvent;
+    FOnPaste: TNotifyEvent;
     FOnReportChanged: TNotifyEvent;
     FOnSelectionChanged: TNotifyEvent;
     FOnStateChange: TNotifyEvent;
@@ -132,6 +133,7 @@ Type
     procedure PaintSelection;virtual;
     Procedure PaintRulers; virtual;
     procedure Paint; override;
+    Procedure Paste; virtual;
     Property VRuler : TDrawRuler Read FVRuler;
     Property HRuler : TDrawRuler Read FHRuler;
   public
@@ -140,6 +142,9 @@ Type
     procedure UpdatePageParams; virtual;
     procedure Reset;
     procedure CancelOperation;
+    Procedure CopySelectionToClipBoard;
+    Class Procedure CheckClipBoardFormat;
+    Function GetBandForPaste : TFPReportCustomBand;
     function ShowEditorForElement(aElement: TFPReportElement): Boolean;
     Function AddBand(ABandClass : TFPReportBandClass) : TFPReportCustomBand;
     Procedure AddElement(AElementClass : TFPReportElementClass; Multi : Boolean = False);
@@ -164,10 +169,14 @@ Type
     Property OnSelectionChanged : TNotifyEvent Read FOnSelectionChanged Write FOnSelectionChanged;
     Property OnReportChanged : TNotifyEvent Read FOnReportChanged Write FOnReportChanged;
     Property OnStateChange : TNotifyEvent Read FOnStateChange Write FOnStateChange;
+    Property OnPaste : TNotifyEvent Read FOnPaste Write FOnPaste;
   end;
 
 Const
   DefaultDesignerOptions  = [doGuideGrid,doShowRuler]; // Default for designer options
+
+Var
+  ClipBoardFormat : TClipboardFormat;
 
 implementation
 
@@ -175,9 +184,14 @@ uses
   lclintf,
   forms;
 
+Resourcestring
+  SErrFailedToCopyToClipboard = 'Failed to copy selection to clipboard.';
+
 const
   cMoveStepSmall = 1;
   cMoveStepLarge = 8;
+  ReportClipBoardFormatName = 'text/fpReport.Elements';
+
 
 { ---------------------------------------------------------------------
   TFPReportDesignerControl
@@ -509,6 +523,52 @@ begin
   DoDrawCurrentFocusRect(FDrawFocusRect);
 end;
 
+procedure TFPReportDesignerControl.Paste;
+begin
+  If Assigned(FOnPaste) then
+    FOnPaste(Self);
+end;
+
+Class procedure TFPReportDesignerControl.CheckClipBoardFormat;
+begin
+  If ClipBoardFormat=0 then
+    ClipBoardFormat:=RegisterClipboardFormat(ReportClipBoardFormatName);
+end;
+
+function TFPReportDesignerControl.GetBandForPaste: TFPReportCustomBand;
+
+Var
+  I : Integer;
+  A : TReportObjectArray;
+  O : TReportObject;
+  B : TFPReportCustomBand;
+  P : TPoint;
+
+begin
+  Result:=nil;
+  // First, check selection;
+  A:=Objects.GetSelection;
+  I:=0;
+  While (Result=Nil) and (I<Length(A)) do
+    begin
+    if A[i].IsBand then
+      Result:=A[i].AsBand;
+    Inc(I);
+    end;
+  If Assigned(Result) then
+    exit;
+  // Then, check band under cursor position
+  P:=ScreenToControl(Mouse.CursorPos);
+  O:=Objects.GetBandObjectAt(P,[goBandHandle]);
+  if Assigned(O) then
+    Result:=O.AsBand;
+  If Assigned(Result) then
+    Exit;
+  // Lastly, first band...
+  if Page.BandCount>0 then
+    Result:=Page.Bands[0];
+end;
+
 procedure TFPReportDesignerControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
   //do nothing to avoid flicker
@@ -710,10 +770,28 @@ begin
 end;
 
 procedure TFPReportDesignerControl.KKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+
+Const
+{$IFDEF DARWIN}
+  CtrlKey = ssMeta;
+{$ELSE}
+  CtrlKey = ssCtrl;
+{$ENDIF}
+
+
 begin
   {$IFDEF DEBUGRD}    Writeln('Key up: ',Key,', Shifted: ',Shift<>[]);{$ENDIF}
   if (Key=VK_DELETE) then
-    FObjects.DeleteSelection;
+    begin
+    Key:=0;
+    if FObjects.DeleteSelection = odrBand then
+      FObjects.OrderBands(Self.Canvas,CurrentDPI);
+    end
+  else if (Key=VK_C) and (Shift=[Ctrlkey]) then
+    begin
+    Key:=0;
+    CopySelectionToClipBoard;
+    end;
 end;
 
 procedure TFPReportDesignerControl.SetDesignerOptions(AValue: TDesignerOptions);
@@ -1233,6 +1311,32 @@ begin
     end;
 end;
 
+procedure TFPReportDesignerControl.CopySelectionToClipBoard;
+
+Var
+  S : TMemoryStream;
+
+begin
+  CheckClipBoardFormat;
+  S:=TStringStream.Create;
+  try
+    FObjects.SaveSelectionToStream(S);
+    With TFileStream.Create('/tmp/clipbrd.json',fmCreate) do
+      try
+        CopyFrom(S,0);
+      finally
+        Free;
+      end;
+    S.Position:=0;
+    if not ClipBrd.Clipboard.AddFormat(ClipBoardFormat,S) then
+      Raise EReportError.Create(SErrFailedToCopyToClipboard);
+  finally
+    S.Free;
+  end;
+end;
+
+
+
 function TFPReportDesignerControl.AddBand(ABandClass: TFPReportBandClass
   ): TFPReportCustomBand;
 
@@ -1240,7 +1344,7 @@ Var
   O : TReportObject;
 
 begin
-  Result:=ABandClass.Create(Page);
+  Result:=ABandClass.Create(Page.Report);
   Result.Layout.Height:=PixelsToMM(FMinControlHeight,CurrentDPI);
   Result.Parent:=Page;
   O:=FObjects.AddBand(Result);
