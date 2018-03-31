@@ -292,6 +292,7 @@ type
     procedure VAlignExecute(Sender: TObject);
     procedure VResizeExecute(Sender: TObject);
   private
+    FInitialFileName: String;
     FLoadModified : Boolean;
     FStopDesigning: Boolean;
     MRUMenuManager1: TMRUMenuManager;
@@ -317,6 +318,7 @@ type
     procedure GetReportDataNames(Sender: TObject; List: TStrings);
     procedure InitialiseData;
 {$ENDIF}
+    procedure CheckLoadInitialFile;
     function CreateNewPage: TFPReportCustomPage;
     procedure DoPaste(Sender: TObject);
     procedure DoReportChangedByDesigner(Sender: TObject);
@@ -363,10 +365,12 @@ type
     function PageDesigner(Aindex : Integer) : TFPReportDesignerControl;
     Property Modified : Boolean Read GetModified Write SetModified;
   public
+  Public
     procedure ResetModified; virtual;
     procedure DesignReport; virtual;
     procedure StopDesigning; virtual;
     procedure PreviewReport; virtual;
+    procedure LoadReportFromFile(const AFileName: String);
     function NewReport: Boolean; virtual;
     Function SaveReport : Boolean; virtual;
     function OpenReport: Boolean; virtual;
@@ -381,6 +385,7 @@ type
     Property OnNewReport : TNotifyEvent Read FOnNewReport Write FOnNewReport;
     Property OnOpenReport : TNotifyEvent Read FOnOpenReport Write FOnOpenReport;
     Property AutoSaveOnClose : Boolean Read FAutoSaveOnClose Write FAutoSaveOnClose;
+    Property InitialFileName : String Read FInitialFileName Write FInitialFileName;
   end;
 
 Const
@@ -554,8 +559,29 @@ begin
 end;
 
 procedure TFPReportDesignerForm.FormShow(Sender: TObject);
+
+
 begin
+  CheckLoadInitialFile;
   SBReport.Refresh;
+end;
+
+procedure TFPReportDesignerForm.CheckLoadInitialFile;
+
+Var
+  FN : String;
+
+begin
+  if (InitialFileName<>'') then
+    begin
+    FN:=InitialFileName;
+    InitialFileName:='';
+    if FileExists(FN) then
+      begin
+      LoadReportFromFile(FN);
+      DesignReport;
+      end;
+    end;
 end;
 
 procedure TFPReportDesignerForm.DesignReport;
@@ -1753,20 +1779,23 @@ begin
       ODReport.FileName:=Self.FileName;
     Result:=ODReport.Execute;
     if Result then
-      begin
-      StopDesigning;
-      LoadDesignFromFile(ODReport.FileName);
-      SetFileCaption(ODReport.FileName);
-      if Assigned(MRUMenuManager1) then
-        begin
-        MRUMenuManager1.AddToRecent(ODReport.FileName);
-        MRUMenuManager1.SaveRecentFilesToIni;
-        end;
-
-      end;
+      LoadReportFromFile(ODReport.FileName);
     end;
   If Result then
     DesignReport;
+end;
+
+Procedure TFPReportDesignerForm.LoadReportFromFile(Const AFileName : String);
+
+begin
+  StopDesigning;
+  LoadDesignFromFile(AFileName);
+  SetFileCaption(AFileName);
+  if Assigned(MRUMenuManager1) then
+    begin
+    MRUMenuManager1.AddToRecent(AFileName);
+    MRUMenuManager1.SaveRecentFilesToIni;
+    end;
 end;
 
 procedure TFPReportDesignerForm.StopDesigning;

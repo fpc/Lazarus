@@ -116,6 +116,9 @@ begin
   Application.Initialize;
   Application.CreateForm(TFPReportDesignerForm,FPReportDesignerForm);
   Application.Scaled:=False;
+  if (ParamCount>0) then
+    FPReportDesignerForm.InitialFileName:=ParamStr(1);
+  // Improve this to check for options ?
   Application.Run;
 end.
 
