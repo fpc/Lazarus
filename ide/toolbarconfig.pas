@@ -83,7 +83,6 @@ type
   private
     Image: TBitMap;
     defImageIndex: integer;
-    divImageIndex: Integer;
     procedure AddCommand;
     procedure AddDivider;
     procedure AddTailItem;
@@ -178,7 +177,7 @@ begin
   TIDEImages.AssignImage(btnRemove.Glyph, 'arrow__darkred_left');
   TIDEImages.AssignImage(btnMoveUp.Glyph, 'arrow__darkgreen_up');
   TIDEImages.AssignImage(btnMoveDown.Glyph, 'arrow__darkgreen_down');
-  TIDEImages.AssignImage(btnAddDivider.Glyph, 'menu_divider16');
+  //TIDEImages.AssignImage(btnAddDivider.Glyph, 'menu_divider16');  // uncomment if 'menu_divider16' exists (currently not)
   TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 
   btnAddDivider.Caption := '---';
@@ -192,8 +191,6 @@ begin
   lvToolbar.SmallImages := IDEImages.Images_16;
   // default image to be used when none is available
   defImageIndex := IDEImages.LoadImage('execute');
-  // Image for divider
-  divImageIndex := IDEImages.Images_16.Add(btnAddDivider.Glyph,nil);
 
   Image := TBitmap.Create;
   SetupCaptions;
@@ -330,7 +327,7 @@ var
   lvItem: TListItem;
 begin
   lvItem := NewLvItem(cIDEToolbarDivider);
-  lvItem.ImageIndex := divImageIndex;
+  lvItem.ImageIndex := -1;
   InsertItem(lvItem);
   UpdateButtonsState;
 end;
@@ -509,7 +506,7 @@ var
 begin
   lvItem := lvToolbar.Items.Add;
   lvItem.Caption := cIDEToolbarDivider;
-  lvItem.ImageIndex := divImageIndex;
+  lvItem.ImageIndex := -1;
 end;
 
 procedure TToolBarConfig.AddTailItem;
