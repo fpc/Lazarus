@@ -4718,21 +4718,21 @@ begin
   GtkWindow:=gtk_widget_get_toplevel(Widget);
   if GtkWidgetIsA(GtkWindow,GTK_TYPE_WINDOW)
   and (GetNearestLCLObject(PGtkWindow(GtkWindow)^.Focus_Widget)=Sender)
-  then begin
+  then
     gtk_window_set_focus(PGtkWindow(GtkWindow),nil);
-  end;
 
-  if Sender is TCommonDialog then begin
+  if Sender is TCommonDialog then
     DestroyCommonDialogAddOns(TCommonDialog(Sender));
-  end;
+
+  if GTK_IS_ENTRY(Widget) then
+    g_idle_remove_by_data(Widget);
 
   // destroy widget and properties
   DestroyConnectedWidget(Widget,false);
 
   // clean up unneeded containers
-  if Sender is TMenuItem then begin
+  if Sender is TMenuItem then
     DestroyEmptySubmenu(TMenuItem(Sender));
-  end;
 
   // mouse click messages
   if LastMouse.WinControl=Sender then
