@@ -24,7 +24,7 @@ uses
   // RTL
   glib2, gtk2, SysUtils, Classes, Math,
   // LCL
-  Controls, LCLType, LCLProc, Spin, StdCtrls,
+  Controls, LCLType, LCLProc, LMessages, LazUTF8, Spin, StdCtrls,
   // Widgetset
   Gtk2Extra, Gtk2Def, Gtk2WSStdCtrls,
   Gtk2Proc, WSLCLClasses, WSProc, WSSpin;
@@ -93,24 +93,21 @@ end;
 class function TGtk2WSCustomFloatSpinEdit.GetValue(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
 var
-  S: String;
-  FL: Double;
+  StrValue: String;
+  DecSeparator: Char;
 begin
   if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'GetValue') then
     Exit(0);
 
-  Result := gtk_spin_button_get_value({%H-}PGtkSpinButton(ACustomFloatSpinEdit.Handle));
-
   // gtk2 have different meaning of value vs text in GtkSpinBox when
   // we are dealing with real FloatSpinEdit. #18679.
-  // We need this because of validator in gtk2callback.inc -> gtkchanged_spinbox()
-  if ACustomFloatSpinEdit.DecimalPlaces > 0  then
-  begin
-    S := StrPas(gtk_entry_get_text({%H-}PGtkEntry(ACustomFloatSpinEdit.Handle)));
-    FL := 0;
-    if TryStrToFloat(S, FL) then
-      Result := FL;
-  end;
+  StrValue := StrPas(gtk_entry_get_text({%H-}PGtkEntry(ACustomFloatSpinEdit.Handle)));
+  DecSeparator := DefaultFormatSettings.DecimalSeparator;
+  if DecSeparator <> '.' then
+    StrValue := UTF8StringReplace(StrValue, '.', DecSeparator, [rfReplaceAll]);
+  if DecSeparator <> ',' then
+    StrValue := UTF8StringReplace(StrValue, ',', DecSeparator, [rfReplaceAll]);
+  Result := ACustomFloatSpinEdit.StrToValue(StrValue);
 end;
 
 class procedure TGtk2WSCustomFloatSpinEdit.SetSelStart(const ACustomEdit: TCustomEdit;
@@ -166,7 +163,13 @@ begin
       AnAdjustment^.upper := MaxDouble;
     end;
   end;
-  gtk_spin_button_update(GTK_SPIN_BUTTON(Widget));
+
+  LockOnChange(PgtkObject(Widget), +1);
+  try
+    gtk_spin_button_update(GTK_SPIN_BUTTON(Widget));
+  finally
+    LockOnChange(PgtkObject(Widget), -1);
+  end;
 end;
 
 class procedure TGtk2WSCustomFloatSpinEdit.UpdateControl(
@@ -176,6 +179,7 @@ var
   wHandle: HWND;
   SpinWidget: PGtkSpinButton;
   AMin, AMax: Double;
+  Mess: TLMessage;
 begin
   //DebugLn(['TGtkWSCustomFloatSpinEdit.UpdateControl ',dbgsName(ACustomFloatSpinEdit)]);
   if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'UpdateControl') then
@@ -202,11 +206,20 @@ begin
     gtk_adjustment_changed(AnAdjustment);
   end;
 
-  gtk_spin_button_set_digits(SpinWidget, ACustomFloatSpinEdit.DecimalPlaces);
-  gtk_spin_button_set_value(SpinWidget,ACustomFloatSpinEdit.Value);
-  AnAdjustment^.step_increment := ACustomFloatSpinEdit.Increment;
+  LockOnChange(PgtkObject(SpinWidget), +1);
+  try
+    gtk_spin_button_set_digits(SpinWidget, ACustomFloatSpinEdit.DecimalPlaces);
+    gtk_spin_button_set_value(SpinWidget,ACustomFloatSpinEdit.Value);
+    AnAdjustment^.step_increment := ACustomFloatSpinEdit.Increment;
+  finally
+    LockOnChange(PgtkObject(SpinWidget), -1);
+  end;
 
   SetReadOnly(TCustomEdit(ACustomFloatSpinEdit), ACustomFloatSpinEdit.ReadOnly);
+
+  FillByte(Mess{%H-},SizeOf(Mess),0);
+  Mess.Msg := CM_TEXTCHANGED;
+  DeliverMessage(ACustomFloatSpinEdit, Mess);
 end;
 
 class function TGtk2WSCustomFloatSpinEdit.CreateHandle(

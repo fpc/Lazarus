@@ -432,19 +432,12 @@ begin
        else if ALCLObject is TCustomCheckbox then
        begin
          ConnectSenderSignal(gObject, 'toggled', @gtktoggledCB)
-       // in gtk2 callback signal of SpinEdit is 'value-changed' (in gtk1- 'changed')
-       end else
-       if ALCLObject is TCustomFloatSpinEdit then
-       begin
-         ConnectSenderSignalAfter(gObject, 'changed', @gtkchanged_spinbox);
-         ConnectSenderSignal(gObject, 'value-changed', @gtkchanged_editbox);
        end else
        begin
          if GTK_IS_ENTRY(gObject) then
          begin
            ConnectSenderSignal(gObject,'delete-text', @gtkchanged_editbox_delete_text);
            ConnectSenderSignal(gObject,'insert-text', @gtkchanged_editbox_insert_text);
-           ConnectSenderSignal(gObject,'backspace', @gtkchanged_editbox_backspace);
            ConnectSenderSignal(gObject,'delete-from-cursor', @gtkchanged_editbox_delete);
          end;
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);

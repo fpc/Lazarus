@@ -449,9 +449,7 @@ function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cde
 var
   Mess : TLMessage;
   GStart, GEnd: gint;
-  Info: PWidgetInfo;
   EntryText: PgChar;
-  NeedCursorCheck: Boolean;
 begin
   //debugln('gtkchanged_editbox');
   Result := CallBackDefaultReturn;
@@ -467,234 +465,36 @@ begin
   {$IFDEF EventTrace}
   EventTrace('changed_editbox', data);
   {$ENDIF}
-  NeedCursorCheck := False;
   if GTK_IS_ENTRY(Widget) then
   begin
-    // lcl-do-not-change-selection comes from gtkKeyPress.
-    // Only floatspinedit sets that data, so default is nil. issue #18679
-    if g_object_get_data(PGObject(Widget),'lcl-do-not-change-selection') = nil then
-    begin
-      {cheat GtkEditable to update cursor pos in gtkEntry. issue #7243}
-      gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
-      EntryText := gtk_entry_get_text(PGtkEntry(Widget));
-      if (GStart = GEnd) and
-        (UTF8Length(EntryText) >= PGtkEntry(Widget)^.text_length) then
-      begin
-        Info := GetWidgetInfo(Widget, False);
-        {do not update position if backspace or delete pressed}
-        if wwiInvalidEvent in Info^.Flags then
-        begin
-          Exclude(Info^.Flags, wwiInvalidEvent);
-
-          {take care of pasted data since it does not return proper cursor pos.}
-          // issue #7243
-          if g_object_get_data(PGObject(Widget),'lcl-delay-cm_textchanged') <> nil then
-          begin
-            g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchanged',nil);
-            g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
-            g_idle_add(@GtkEntryDelayCursorPos, Widget);
-            exit;
-          end;
-        end else
-        begin
-          // if we change selstart in OnChange event new cursor pos need to
-          // be postponed in TGtk2WSCustomEdit.SetSelStart
-          if g_object_get_data(PGObject(Widget),'lcl-gtkentry-pasted-data') <> nil then
-          begin
-            g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',nil);
-            gtk_editable_set_position(PGtkEditable(Widget), GStart);
-          end else
-          begin
-            NeedCursorCheck := True;
-            g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
-            g_idle_add(@GtkEntryDelayCursorPos, Widget);
-            exit;
-          end;
-        end;
-      end;
-    end else
-      g_object_set_data(PGObject(Widget),'lcl-do-not-change-selection', nil);
-  end;
-
-  if NeedCursorCheck then
-    LockOnChange(PgtkObject(Widget), +1);
-  // 'lcl-suppress-cm_textchanged' is set by gtkchanged_spinbox when it changes
-  // the text in the widget or when it sends a CM_TEXTCHANGED message (via DeliverMessage)
-  // Issue #0031618
-  if g_object_get_data(PGObject(Widget),'lcl-suppress-cm_textchanged') = nil then
-  begin
-    FillByte(Mess{%H-},SizeOf(Mess),0);
-    Mess.Msg := CM_TEXTCHANGED;
-    //debugln('gtkchanged_editbox B: DeliverMessage(CM_TextChanged)');
-    DeliverMessage(Data, Mess);
-  end
-  else
-  begin
-    //debugln('gtkchanged_editbox C: Found: "lcl-suppress-cm_textchanged"');
-    g_object_set_data(PGObject(Widget),'lcl-suppress-cm_textchanged', nil);
-  end;
-  if NeedCursorCheck then
-    LockOnChange(PgtkObject(Widget), -1);
-end;
-
-function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-var
-  SValue: String;
-  SNewValue: String;
-  AValue, AMin, AMax: Double;
-  NumDigits, TextDigits: Integer;
-  Mess : TLMessage;
-  ADecimalSeparator: Char;
-begin
-  //debugln('gtkchanged_spinbox A');
-  Result := CallBackDefaultReturn;
-  if LockOnChange(PgtkObject(Widget),0) > 0 then exit;
-
-  // prior to gtk2-2.12 there's bug with signalling of spin button
-  // which leads to crash.See issue #18554
-  // we are passing this code only for gtk2 >= 2.12
-  if GTK_IS_SPIN_BUTTON(Widget) and (gtk_minor_version >= 12) then
-  begin
-    NumDigits := gtk_spin_button_get_digits(PGtkSpinButton(Widget));
-    if NumDigits > 0 then
-    begin
-      {$IF FPC_FULLVERSION<20600}
-      ADecimalSeparator := DecimalSeparator;
-      {$ELSE}
-      ADecimalSeparator := DefaultFormatSettings.DecimalSeparator;
-      {$ENDIF}
-      SValue := gtk_entry_get_text(PGtkEntry(Widget));
-
-      //debugln('gtkchanged_spinbox B');
-      //debugln('  SValue = ',SValue);
-
-      {do not try to parse SValue if it's empty, eg started typing on
-       selected value. issue #23190}
-      if (SValue = '') or (SValue = ',') or
-        (SValue = '.') or (SValue = '+') or
-        (SValue = '-') or (SValue = ADecimalSeparator) then
-      begin
-        debugln('  SValue in [<empty>,#32, +, -, comma, period, ADecimalSeparator]');
-        FillByte(Mess{%H-},SizeOf(Mess),0);
-        Mess.Msg := CM_TEXTCHANGED;
-        DeliverMessage(Data, Mess);
-        exit;
-      end;
-
-      SNewValue := SValue;
-      AValue := StrToFloatDef(SValue, 0);
-      //debugln('gtkchanged_spinbox C');
-      //debugln('  SValue = ',SValue);
-      //debugln(format('  AValue = %.4f',[AValue]));
-
-      {do not freeze (below) if clocale isn't used. issue #23190}
-      if (ADecimalSeparator <> '.') and (Pos('.', SValue) <> 0) then
-      begin
-        SValue := StringReplace(SValue, '.', ADecimalSeparator, [rfReplaceAll]);
-        if (SValue[1] = ADecimalSeparator) then
-          SValue := '0' + SValue;
-        SNewValue := SValue;
-        AValue := StrToFloatDef(SValue, 0);
-      end else
-      if (ADecimalSeparator <> ',') and (Pos(',', SValue) <> 0) then
-      begin
-        SValue := StringReplace(SValue, ',', ADecimalSeparator, [rfReplaceAll]);
-        if (SValue[1] = ADecimalSeparator) then
-          SValue := '0' + SValue;
-        SNewValue := SValue;
-        AValue := StrToFloatDef(SValue, 0);
-      end;
-      //debugln('gtkchanged_spinbox D');
-      //debugln('  SValue = ',SValue);
-      //debugln('  SNewValue = ',SNewValue);
-      //debugln(format('  AValue = %.4f',[AValue]));
-
-      gtk_spin_button_get_range(PGtkSpinButton(Widget), @AMin, @AMax);
-      // woohoo
-      // gtk2 have different meaning how validator should work and trigger
-      // so we change it. #18679
-      // do not use while loop, but assign to minimum or maximum allowed. #23190
-      if (AValue < AMin) or (AValue > AMax) then
-      begin
-        if AValue < AMin then
-          SValue := FloatToStr(AMin);
-        if AValue > AMax then
-          SValue := FloatToStr(AMax);
-        AValue := StrToFloatDef(SValue, 0);
-      end;
-      if (Pos(ADecimalSeparator, SValue) > 0) and (length(SValue) > 1) then
-      begin
-        //debugln('gtkchanged_spinbox E');
-        //debugln('  ADecimalSeparator = ',ADecimalSeparator);
-        //debugln('  SValue = ',SValue);
-        //debugln('  SNewValue = ',SNewValue);
-        //debugln(format('  AValue = %.4f',[AValue]));
-
-        //The widget allows to type in more digits than we set in DecimalPlaces, so we may need to trim those
-        TextDigits := Length(Copy(SValue,Pos(ADecimalSeparator, SValue) + 1, length(SValue)));
-        if (TextDigits > NumDigits) then
-        begin
-          //debugln('gtkchanged_spinbox E1');
-          //DbgOut('  SValue = ',SValue,' -> ');
-          Delete(SValue, length(SValue) - (TextDigits-NumDigits-1), (TextDigits-NumDigits));
-          //debugln(SValue);
-        end;
-      end;
-      if SNewValue <> SValue then
-      begin
-        //debugln('gtkchanged_spinbox F');
-        //debugln('  SValue = ',SValue);
-        //debugln('  SNewValue = ',SNewValue);
-        //debugln(format('  AValue = %.4f',[AValue]));
-        //debugln(format('  SValue: "%s" <> SNewValue: "%s"  call: gtk_entry_set_text',[SValue,SnewValue]));
-
-        //Suppress CM_TEXTXHANGED message in gtkchanged_editbox, which will lead
-        //to double OnChange events. Issue #0031618
-        g_object_set_data(PGObject(Widget),'lcl-suppress-cm_textchanged',Widget);
-        gtk_entry_set_text(PGtkEntry(Widget), PChar(SValue));
-      end;
-      //Suppress CM_TEXTXHANGED message in gtkchanged_editbox, which will lead
-      //to double OnChange events. Issue #0031618
-      g_object_set_data(PGObject(Widget),'lcl-suppress-cm_textchanged',Widget);
-      // inform LCL about our changes to entry
-      FillByte(Mess{%H-},SizeOf(Mess),0);
-      Mess.Msg := CM_TEXTCHANGED;
-      //debugln('gtkchanged_spinbox H: DeliverMessage(CM_TextChanged)');
-      DeliverMessage(Data, Mess);
-    end else
-      // always signal update to pure TSpinEdit
-      gtk_spin_button_update(PGtkSpinButton(Widget));
-  end;
-end;
-
-function gtkchanged_editbox_backspace(widget: PGtkWidget;
-  data: gPointer): GBoolean; cdecl;
-var
-  GStart, GEnd: gint;
-  Info: PWidgetInfo;
-  EntryText: PgChar;
-begin
-  Result := CallBackDefaultReturn;
-  if GTK_IS_ENTRY(Widget) then
-  begin
+    {cheat GtkEditable to update cursor pos in gtkEntry. issue #7243}
     gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
     EntryText := gtk_entry_get_text(PGtkEntry(Widget));
-    if (GStart = GEnd) and (GStart > 0) and
-      (UTF8Length(EntryText) = PGtkEntry(Widget)^.text_length) then
+    if (GStart = GEnd) and
+      (UTF8Length(EntryText) >= PGtkEntry(Widget)^.text_length) then
     begin
-      {mark as invalid event for gtkchanged_editbox, so
-       it doesn't update cursor pos or we have a mess.}
-      Info := GetWidgetInfo(Widget, False);
-      include(Info^.Flags, wwiInvalidEvent);
-      PGtkEntry(Widget)^.current_pos := GStart - 1;
+      if g_object_get_data(PGObject(Widget),'lcl-gtkentry-pasted-data') <> nil then
+      begin
+        g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',nil);
+        gtk_editable_set_position(PGtkEditable(Widget), GStart);
+      end else
+      begin
+        g_object_set_data(PGObject(Widget),'lcl-gtkentry-pasted-data',Widget);
+        g_idle_add(@GtkEntryDelayCursorPos, Widget);
+        exit;
+      end;
     end;
   end;
+
+  FillByte(Mess{%H-},SizeOf(Mess),0);
+  Mess.Msg := CM_TEXTCHANGED;
+  //debugln('gtkchanged_editbox B: DeliverMessage(CM_TextChanged)');
+  DeliverMessage(Data, Mess);
 end;
 
 function gtkchanged_editbox_delete(widget: PGtkWidget;
   AType: TGtkDeleteType; APos: gint; data: gPointer): GBoolean; cdecl;
 var
-  Info: PWidgetInfo;
   EntryText: PgChar;
 begin
   Result := CallBackDefaultReturn;
@@ -708,8 +508,6 @@ begin
       Exit;
     end;
   end;
-  Info := GetWidgetInfo(Widget, False);
-  include(Info^.Flags, wwiInvalidEvent);
 end;
 
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -2833,14 +2631,8 @@ end;
 function gtkCutToClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  Info: PWidgetInfo;
 begin
   EventTrace('Cut to clip', data);
-  if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
-  begin
-    Info := GetWidgetInfo(Widget, False);
-    include(Info^.Flags, wwiInvalidEvent);
-  end;
   Mess.msg := LM_CUT;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2857,18 +2649,8 @@ end;
 function gtkPasteFromClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  //Info: PWidgetInfo;
 begin
   EventTrace('Paste from clip', data);
-
-  // we must update cursor pos with delay otherwise selStart is wrong.issue #7243
-  if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
-  begin
-    //Info := GetWidgetInfo(Widget, False);
-    //Include(Info^.Flags, wwiInvalidEvent);
-    // happy end is inside gtkchanged_editbox() above.
-    g_object_set_data(PGObject(Widget),'lcl-delay-cm_textchanged', data);
-  end;
   Mess.msg := LM_PASTE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
