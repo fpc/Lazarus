@@ -84,6 +84,8 @@ type
     AAlignBottom: TAction;
     AAlign: TAction;
     ACopy: TAction;
+    AFileOpenNewWindow: TAction;
+    ANewNewWindow: TAction;
     ACut: TAction;
     APaste: TAction;
     AResizeBandToFit: TAction;
@@ -114,6 +116,8 @@ type
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MINewNewWindow: TMenuItem;
+    MIFileOpenNewWindow: TMenuItem;
     MICopy: TMenuItem;
     MICut: TMenuItem;
     MIPaste: TMenuItem;
@@ -255,12 +259,14 @@ type
     procedure ACutUpdate(Sender: TObject);
     procedure ADeleteExecute(Sender: TObject);
     procedure ADeleteUpdate(Sender: TObject);
+    procedure AFileOpenNewWindowExecute(Sender: TObject);
     procedure AFileSaveAsExecute(Sender: TObject);
     procedure AFileSaveAsUpdate(Sender: TObject);
     procedure AFileSaveUpdate(Sender: TObject);
     procedure AFrameExecute(Sender: TObject);
     procedure AFrameUpdate(Sender: TObject);
     procedure ANewExecute(Sender: TObject);
+    procedure ANewNewWindowExecute(Sender: TObject);
     procedure APasteExecute(Sender: TObject);
     procedure APasteUpdate(Sender: TObject);
     procedure APreviewExecute(Sender: TObject);
@@ -334,6 +340,7 @@ type
     function GetPageCopyAction(aCount: Integer): TPageCopyAction;
     function GetBandCopyAction(aCount: Integer): TBandCopyAction;
     procedure MaybeAddFirstPage;
+    procedure OpenInNewWindow(aFileName: string);
     procedure PasteBand(aControl: TFPReportDesignerControl; aAction: TBandCopyAction; var aBand: TFPReportCustomBand);
     procedure PasteElement(aControl: TFPReportDesignerControl; aBand: TFPReportCustomBand; aElement: TFPReportElement);
     procedure PasteList(aControl: TFPReportDesignerControl; L: TFPObjectList);
@@ -389,6 +396,7 @@ type
     Property AutoSaveOnClose : Boolean Read FAutoSaveOnClose Write FAutoSaveOnClose;
     Property InitialFileName : String Read FInitialFileName Write FInitialFileName;
   end;
+  TFPReportDesignerFormClass = Class of TFPReportDesignerForm;
 
 Const
   AllReportDesignOptions = [rdoManageData,rdoManageVariables,rdoAllowLoad,rdoAllowSave,rdoAllowProperties,
@@ -562,12 +570,7 @@ end;
 
 procedure TFPReportDesignerForm.FormDropFiles(Sender: TObject; const FileNames: array of String);
 
-Type
-  TFPReportDesignerFormClass = Class of TFPReportDesignerForm;
-
 Var
-  C : TFPReportDesignerFormClass;
-  F : TFPReportDesignerForm;
   I : Integer;
 
 begin
@@ -578,17 +581,25 @@ begin
   StopDesigning;
   LoadReportFromFile(FileNames[0]);
   DesignReport;
-  C:=TFPReportDesignerFormClass(Self.Classtype);
+
   For I:=1 to Length(FileNames)-1 do
-    begin
-    F:=C.Create(Application);
-    F.InitialFileName:=Filenames[i];
-    F.Show;
-    end;
+    OpenInNewWindow(Filenames[i]);
+end;
+
+procedure TFPReportDesignerForm.OpenInNewWindow(aFileName : string);
+
+Var
+  C : TFPReportDesignerFormClass;
+  F : TFPReportDesignerForm;
+
+begin
+  C:=TFPReportDesignerFormClass(Self.Classtype);
+  F:=C.Create(Application);
+  F.InitialFileName:=aFileName;
+  F.Show;
 end;
 
 procedure TFPReportDesignerForm.FormShow(Sender: TObject);
-
 
 begin
   if rdoAllowFileDrop in DesignOptions then
@@ -1318,6 +1329,27 @@ begin
   (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and CurrentDesigner.Objects.HaveSelection;
 end;
 
+procedure TFPReportDesignerForm.AFileOpenNewWindowExecute(Sender: TObject);
+
+Var
+  O : TOpenOptions;
+  I : integer;
+
+begin
+  With ODReport do
+    try
+      O:=Options;
+      Include(O,ofAllowMultiSelect);
+      Options:=O;
+      If Execute then
+        For I:=0 to ODReport.Files.Count-1 do
+          OpenInNewWindow(ODReport.Files[i]);
+    finally
+      Exclude(O,ofAllowMultiSelect);
+      Options:=O;
+    end;
+end;
+
 procedure TFPReportDesignerForm.AFileSaveAsExecute(Sender: TObject);
 
 Var
@@ -1460,6 +1492,22 @@ begin
     exit;
   if NewReport then
     DesignReport;
+end;
+
+procedure TFPReportDesignerForm.ANewNewWindowExecute(Sender: TObject);
+
+Var
+  C : TFPReportDesignerFormClass;
+  F : TFPReportDesignerForm;
+
+begin
+  C:=TFPReportDesignerFormClass(Self.Classtype);
+  F:=C.Create(Application);
+  if F.NewReport then
+    begin
+    F.DesignReport;
+    F.Show;
+    end;
 end;
 
 procedure TFPReportDesignerForm.APasteExecute(Sender: TObject);
@@ -1974,10 +2022,12 @@ begin
   EnableAction(AReportData,rdoManageData);
   EnableAction(AReportVariables,rdoManageVariables);
   EnableAction(AFileOpen,rdoAllowLoad);
+  EnableAction(AFileOpenNewWindow,rdoAllowLoad);
   EnableAction(AFileSave,rdoAllowSave);
   EnableAction(AReportProperties,rdoAllowProperties);
   EnableAction(AAddPage,rdoAllowPageAdd);
   EnableAction(ANew,rdoAllowNew);
+  EnableAction(ANewNewWindow,rdoAllowNew);
   EnableAction(APreview,rdoAllowPreview);
   EnableActions([AAddChildBand,AAddGroupHeader,AAddGroupFooter,AAddPageHeader,
                  AAddPageFooter,AAddReportTitle,AAddReportSummary,AAddColumnHeader,
