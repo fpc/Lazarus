@@ -829,8 +829,10 @@ msgid "Install packages"
 msgstr "Встановити пакунки"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
+#, fuzzy
+#| msgid "Open"
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
-msgid "Open"
+msgid "Local repo"
 msgstr "Відкрити"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint

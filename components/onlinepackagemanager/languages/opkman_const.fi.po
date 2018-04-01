@@ -850,7 +850,7 @@ msgstr "Asenna pakkaukset"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
-msgid "Open"
+msgid "Local repo"
 msgstr ""
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
