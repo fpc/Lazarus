@@ -17,6 +17,7 @@ type
   private
     Markup: TSynEditMarkupFoldColors;
     FFirstInvalidatedLine,FLastInvalidatedLine: integer;
+    FOnlyTestVisibleRows: Boolean;
     procedure ClearInvalidatedLines;
     procedure CaptureTestInvalidateLines(FirstLine, LastLine: integer);
 
@@ -37,13 +38,17 @@ type
   protected
     procedure SetUp; override;
     procedure TearDown; override;
-    procedure ReCreateEdit; reintroduce;
+    procedure ReCreateEdit(AText: TStringArray = nil; AHeight: integer = 30; ATopLine: Integer = 1); reintroduce;
     function TestText1: TStringArray;
+    function TestText2: TStringArray;
     function TestTextInval1: TStringArray;
+    function TestTextScroll1: TStringArray;
     procedure EnableOutlines(AEnbledTypes: TPascalCodeFoldBlockTypes);
   published
     procedure TestColors;
+    procedure TestCaseLabelIndent; // issue https://bugs.freepascal.org/view.php?id=33154
     procedure TestInvalidateIfElseChain;
+    procedure TestInvalidateScroll;
   end;
 
 implementation
@@ -96,11 +101,19 @@ procedure TTestMarkupFoldColoring.TestRowColumns(aName: string; aRow: Integer;
   aExpColumns, aExpColors, aExpWords, aExpWordsColor: array of Integer;
   aScrollOffs: Integer);
 var
-  i, nextP, nextL: Integer;
+  i, nextP, nextL, srow: Integer;
   rtl: TLazSynDisplayRtlInfo;
   startCol: TLazSynDisplayTokenBound;
   gotColor: TSynSelectedColor;
 begin
+  if FOnlyTestVisibleRows then begin
+    srow := SynEdit.RowToScreenRow(aRow);
+    if (srow < 0) or (srow > SynEdit.LinesInWindow) then
+      exit;
+// TODO: verify next 2 lines
+//    if (aRow > 1) and (srow = SynEdit.RowToScreenRow(aRow-1)) then // in fold
+//      exit;
+  end;
   PushBaseName(aName);
   ClearInvalidatedLines;
   rtl.IsRtl := False;
@@ -163,6 +176,7 @@ procedure TTestMarkupFoldColoring.SetUp;
 begin
   Markup := nil;
   inherited SetUp;
+  FOnlyTestVisibleRows := False;
 end;
 
 procedure TTestMarkupFoldColoring.TearDown;
@@ -171,9 +185,13 @@ begin
 //  FreeAndNil(Markup); // done by synedit
 end;
 
-procedure TTestMarkupFoldColoring.ReCreateEdit;
+procedure TTestMarkupFoldColoring.ReCreateEdit(AText: TStringArray;
+  AHeight: integer; ATopLine: Integer);
 begin
   inherited ReCreateEdit;
+  SetSynEditHeight(AHeight);
+  SetLines(AText);
+  SynEdit.TopLine := ATopLine;
   Markup := TSynEditMarkupFoldColors.Create(SynEdit);
   SynEdit.MarkupMgr.AddMarkUp(Markup);
   Markup.Lines := SynEdit.TextBuffer;
@@ -218,6 +236,30 @@ begin
   Result[25] := '';
 end;
 
+function TTestMarkupFoldColoring.TestText2: TStringArray;
+begin
+  SetLength(Result, 20);
+  Result[0] := 'program a;';
+  Result[1] := 'procedure TEditorFrame.NotifChanged(Sender: TObject);';
+  Result[2] := 'begin';
+  Result[3] := '  //silent reload if: not modified, and undo empty';
+  Result[4] := '  if (not Modified) and (Ed1.UndoCount<=1) then';
+  Result[5] := '  begin';
+  Result[6] := '    DoFileReload;';
+  Result[7] := '    exit';
+  Result[8] := '  end;';
+  Result[9] := '';
+  Result[10] := '  case MsgBox(msgConfirmFileChangedOutside+0000010+FileName+';
+  Result[11] := '         0000010#10+msgConfirmReloadIt+0000010+msgConfirmReloadItHotkeys,';
+  Result[12] := '         MB_YESNOCANCEL or MB_ICONQUESTION) of';
+  Result[13] := '    ID_YES:';
+  Result[14] := '      DoFileReload;';
+  Result[15] := '    ID_CANCEL:';
+  Result[16] := '      NotifEnabled:= false;';
+  Result[17] := '  end;';
+  Result[18] := 'end;';
+end;
+
 function TTestMarkupFoldColoring.TestTextInval1: TStringArray;
 begin
   SetLength(Result, 20);
@@ -241,6 +283,58 @@ begin
   Result[17] := '';
   Result[18] := 'end';
   Result[19] := '';
+end;
+
+function TTestMarkupFoldColoring.TestTextScroll1: TStringArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, 112);
+  Result[0] := 'unit TestUnit;';
+  Result[1] := '';
+  Result[2] := '{$mode objfpc}{$H+}';
+  Result[3] := '';
+  Result[4] := 'interface';
+  Result[5] := '';
+  Result[6] := 'uses';
+  Result[7] := '  Classes, SysUtils;';
+  Result[8] := '';
+  Result[9] := 'implementation';
+  Result[10] := '';
+  Result[11] := 'procedure Test;';
+  Result[12] := 'begin';
+  Result[13] := '  if condition then';
+  Result[14] := '      begin';
+  Result[15] := '        code;';
+  Result[16] := '      end';
+  Result[17] := '    else';
+  Result[18] := '      begin';
+  Result[19] := '        code;';
+  Result[20] := '      end;';
+  Result[21] := '';
+  Result[22] := '  if condition1 or';
+  Result[23] := '     condition2 then';
+  Result[24] := '    begin';
+  Result[25] := '      code;';
+  Result[26] := '    end';
+  Result[27] := '  else';
+  Result[28] := '    begin';
+  Result[29] := '      code;';
+  Result[30] := '    end;';
+  for i := 31 to 99 do
+    Result[i] := '';
+  Result[100] := '  if condition1 or';
+  Result[101] := '     condition2 then';
+  Result[102] := '    begin';
+  Result[103] := '      code;';
+  Result[104] := '    end';
+  Result[105] := '  else';
+  Result[106] := '    begin';
+  Result[107] := '      code;';
+  Result[108] := '    end;';
+  Result[109] := 'end;';
+  Result[110] := '';
+  Result[111] := 'end.';
 end;
 
 procedure TTestMarkupFoldColoring.EnableOutlines(AEnbledTypes: TPascalCodeFoldBlockTypes);
@@ -289,6 +383,38 @@ begin
     DoKeyPressAtPos(1, 13, [VK_SPACE, VK_SPACE]); // if b then
     TestInvalidate('after edit', 14, 21); // what about 13, ok it is already invalidated....
   PopBaseName;
+
+  PopBaseName;
+end;
+
+procedure TTestMarkupFoldColoring.TestCaseLabelIndent;
+begin
+  ReCreateEdit(TestText2);
+  EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
+  EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+  PushBaseName('case label indent');
+
+  TestBeginMarkup('');
+  TestRowColumns('Line  1',  1, [],     []);
+  TestRowColumns('Line  2',  2, [],     []);
+  TestRowColumns('Line  3',  3, [],     [],      [1,5], [1]);
+  TestRowColumns('Line  4',  4, [1],    [1]);
+  TestRowColumns('Line  5',  5, [1],    [1],     [3,2,  44,4], [2, 2]);
+  TestRowColumns('Line  6',  6, [1],    [1],     [3,5], [2]);
+  TestRowColumns('Line  7',  7, [1, 3], [1, 2]);
+  TestRowColumns('Line  8',  8, [1, 3], [1, 2]);
+  TestRowColumns('Line  9',  9, [1],    [1],     [3,3, 6,1], [2, 2]); // or merged [3,4]
+  TestRowColumns('Line 10', 10, [1],    [1]);
+  TestRowColumns('Line 11', 11, [1],    [1],     [3,4], [2]);  // case
+  TestRowColumns('Line 12', 12, [1, 3], [1, 2]);
+  TestRowColumns('Line 13', 13, [1, 3], [1, 2],  [45,2], [2]); // of
+  TestRowColumns('Line 14', 14, [1, 3], [1, 2]);
+  TestRowColumns('Line 15', 15, [1, 3], [1, 2]);
+  TestRowColumns('Line 16', 16, [1, 3], [1, 2]);
+  TestRowColumns('Line 17', 17, [1, 3], [1, 2]);
+  TestRowColumns('Line 18', 18, [1],    [1],     [3,3], [2]); // end
+  TestRowColumns('Line 19', 19, [],     [],      [1,3], [1]);
+  Markup.EndMarkup;
 
   PopBaseName;
 end;
@@ -348,6 +474,81 @@ begin
     Markup.EndMarkup;
 
     PopBaseName;
+  PopBaseName;
+end;
+
+procedure TTestMarkupFoldColoring.TestInvalidateScroll;
+  procedure SubTestScroll1;
+  var
+    i: Integer;
+  begin
+    FOnlyTestVisibleRows := True;
+    TestBeginMarkup('');
+    for i := 1 to 112 do
+    case i of
+      1..6, 9..12:
+          TestRowColumns('Line '+IntToStr(i),  i, [],     []);
+      7:  TestRowColumns('Line '+IntToStr(i),  i, [],     [],      [1,4], [1]);
+      8:  TestRowColumns('Line '+IntToStr(i),  i, [1],    [1],     [20,1], [1]);  // ";"
+
+      13: TestRowColumns('Line '+IntToStr(i),  i, [],     [],      [1,5], [1]);
+      14: TestRowColumns('Line '+IntToStr(i),  i, [1],    [1],     [3,2,  16,4], [2, 2]); // if then
+      15: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [7,5], [2]);
+      16: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2]);
+      17: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [7,3], [2]);
+      18: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [5,4], [2]);  // else
+      19: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [7,5], [2]);
+      20: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2]);
+      21: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [7,3], [2]); // should the ";" be marked too?
+
+      23: TestRowColumns('Line '+IntToStr(i),  i, [1],    [1],     [3,2], [2]); // if  or
+      24: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [17,4], [2]); //   then
+      25: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [5,5], [2]);
+      26: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2]);
+      27: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [5,3], [2]);
+      28: TestRowColumns('Line '+IntToStr(i),  i, [1],    [1],     [3,4], [2]);  // else
+      29: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [5,5], [2]);
+      30: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2]);
+      31: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [5,3], [2]); // should the ";" be marked too?
+
+      101: TestRowColumns('Line '+IntToStr(i),  i, [1],    [1],     [3,2], [2]); // if  or
+      102: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [17,4], [2]); //   then
+      103: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [5,5], [2]);
+      104: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2]);
+      105: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [5,3], [2]);
+      106: TestRowColumns('Line '+IntToStr(i),  i, [1],    [1],     [3,4], [2]);  // else
+      107: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [5,5], [2]);
+      108: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2]);
+      109: TestRowColumns('Line '+IntToStr(i),  i, [1, 3], [1, 2],  [5,3], [2]); // should the ";" be marked too?
+      110: TestRowColumns('Line '+IntToStr(i),  i, [],     [],      [1,3], [1]);
+      111..112:
+           TestRowColumns('Line '+IntToStr(i),  i, [],     []);
+      else
+           TestRowColumns('Line '+IntToStr(i),  i, [1],    [1]); // only 1 line for outer "begin"
+    end;
+    Markup.EndMarkup;
+  end;
+var
+  i: Integer;
+begin
+  PushBaseName('scroll');
+
+    ReCreateEdit(TestTextScroll1, 35, 90);
+    EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
+    EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+
+    PushBaseName('before scroll');
+    SubTestScroll1;
+
+    for i := 89 downto 1 do begin
+      SynEdit.TopLine := i;
+      ClearInvalidatedLines;
+      PopPushBaseName('after scroll '+IntToStr(i));
+      SubTestScroll1;
+    end;
+
+    PopBaseName;
+
   PopBaseName;
 end;
 
