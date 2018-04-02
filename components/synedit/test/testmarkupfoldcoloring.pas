@@ -40,13 +40,15 @@ type
     procedure TearDown; override;
     procedure ReCreateEdit(AText: TStringArray = nil; AHeight: integer = 30; ATopLine: Integer = 1); reintroduce;
     function TestText1: TStringArray;
-    function TestText2: TStringArray;
+    function TestText2: TStringArray; // case indent
+    function TestTextMultiLineIfIndent: TStringArray;
     function TestTextInval1: TStringArray;
     function TestTextScroll1: TStringArray;
     procedure EnableOutlines(AEnbledTypes: TPascalCodeFoldBlockTypes);
   published
     procedure TestColors;
     procedure TestCaseLabelIndent; // issue https://bugs.freepascal.org/view.php?id=33154
+    procedure TestMultiLineIfIndent; // issue https://bugs.freepascal.org/view.php?id=32852
     procedure TestInvalidateIfElseChain;
     procedure TestInvalidateScroll;
   end;
@@ -260,6 +262,40 @@ begin
   Result[18] := 'end;';
 end;
 
+function TTestMarkupFoldColoring.TestTextMultiLineIfIndent: TStringArray;
+begin
+  SetLength(Result, 29);
+  Result[ 0] := 'program a;';
+  Result[ 1] := 'procedure foo;';
+  Result[ 2] := 'begin';
+  Result[ 3] := '  if condition1 or';
+  Result[ 4] := '     condition2 then';
+  Result[ 5] := '    Exit;';
+  Result[ 6] := '';
+  Result[ 7] := '  if condition1 or';
+  Result[ 8] := '     condition2 then';
+  Result[ 9] := '  begin';
+  Result[10] := '';
+  Result[11] := '  end;';
+  Result[12] := '';
+  Result[13] := '  if condition1 or';
+  Result[14] := '     condition2 then';
+  Result[15] := '     begin';
+  Result[16] := '';
+  Result[17] := '     end;';
+  Result[18] := '';
+  Result[19] := '  if condition then'; // comment 104823 // issue 32852
+  Result[20] := '    begin';
+  Result[21] := '      code;';
+  Result[22] := '    end';
+  Result[23] := '  else';
+  Result[24] := '    begin';
+  Result[25] := '      code;';
+  Result[26] := '    end;';
+  Result[27] := '';
+  Result[28] := 'end;';
+end;
+
 function TTestMarkupFoldColoring.TestTextInval1: TStringArray;
 begin
   SetLength(Result, 20);
@@ -414,6 +450,52 @@ begin
   TestRowColumns('Line 17', 17, [1, 3], [1, 2]);
   TestRowColumns('Line 18', 18, [1],    [1],     [3,3], [2]); // end
   TestRowColumns('Line 19', 19, [],     [],      [1,3], [1]);
+  Markup.EndMarkup;
+
+  PopBaseName;
+end;
+
+procedure TTestMarkupFoldColoring.TestMultiLineIfIndent;
+begin
+  ReCreateEdit(TestTextMultiLineIfIndent);
+  EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
+  EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+  PushBaseName('if indent');
+
+  TestBeginMarkup('');
+  TestRowColumns('Line  1',  1, [],     []);
+  TestRowColumns('Line  2',  2, [],     []);
+  TestRowColumns('Line  3',  3, [],     [],      [1,5], [1]);
+  TestRowColumns('Line  4',  4, [1],    [1],     [3,2], [2]); // if
+  TestRowColumns('Line  5',  5, [1, 3], [1, 2],  [17,4], [2]); // then
+  TestRowColumns('Line  6',  6, [1, 3], [1, 2],  [9,1], [2]);
+  TestRowColumns('Line  7',  7, [1],    [1]);
+
+  TestRowColumns('Line  8',  8, [1],    [1],     [3,2], [2]); // if
+  TestRowColumns('Line  9',  9, [1, 3], [1, 2],  [17,4], [2]); // then
+  TestRowColumns('Line 10', 10, [1],    [1],     [3,5], [2]); // begin
+  TestRowColumns('Line 11', 11, [1, 3], [1, 2]);
+  TestRowColumns('Line 12', 12, [1],    [1],     [3,3, 6,1], [2, 2]); // end;
+  TestRowColumns('Line 13', 13, [1],    [1]);
+
+  TestRowColumns('Line 14', 14, [1],    [1],     [3,2], [2]); // if
+  TestRowColumns('Line 15', 15, [1, 3], [1, 2],  [17,4], [2]); // then
+  TestRowColumns('Line 16', 16, [1, 3], [1, 2],  [6,5], [2]); // begin
+  TestRowColumns('Line 17', 17, [1, 3], [1, 2]);
+  TestRowColumns('Line 18', 18, [1, 3], [1, 2],  [6,3, 9,1], [2, 2]); // end
+  TestRowColumns('Line 19', 19, [1],    [1]);
+
+  TestRowColumns('Line 20', 20, [1],    [1],     [3,2, 16,4], [2, 2]); // if then
+  TestRowColumns('Line 21', 21, [1, 3], [1, 2],  [5,5], [2]); // begin
+  TestRowColumns('Line 22', 22, [1, 3], [1, 2]);
+  TestRowColumns('Line 23', 23, [1, 3], [1, 2],  [5,3], [2]); // end
+  TestRowColumns('Line 24', 24, [1],    [1],     [3,4], [2]); // else
+  TestRowColumns('Line 25', 25, [1, 3], [1, 2],  [5,5], [2]); // begin
+  TestRowColumns('Line 26', 26, [1, 3], [1, 2]);
+  TestRowColumns('Line 27', 27, [1, 3], [1, 2],  [5,3], [2]); // end // what about ";"
+  TestRowColumns('Line 28', 28, [1],    [1]);
+
+  TestRowColumns('Line 29', 29, [],     [],      [1,3], [1]);
   Markup.EndMarkup;
 
   PopBaseName;
