@@ -476,6 +476,10 @@ msgstr "FORMATTEXT(<Maszk>, <Karakterlánc>)/Alkalmazza a <Maszk>-ot az adott <K
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Érték>)/A lebegőpontos <Érték> tört részét adja vissza."
 
+#: lr_const.sdescriptionif
+msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
+msgstr ""
+
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
 msgstr "INC(<Érték>)/Növeli az <Érték>-et."

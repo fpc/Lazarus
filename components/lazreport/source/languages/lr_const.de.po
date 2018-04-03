@@ -484,6 +484,10 @@ msgstr "FORMATTEXT(<Maske>, <String>)/Wendet <Maske>auf den angegebenen <String>
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Wert>)/Ergibt den Bruchanteil der Gleitkommazahl <Wert>."
 
+#: lr_const.sdescriptionif
+msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
+msgstr ""
+
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
 msgstr "INC(<Wert>)/Verringert <Wert>."

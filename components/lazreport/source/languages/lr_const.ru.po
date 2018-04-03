@@ -474,6 +474,10 @@ msgstr "FORMATTEXT(<Mask>, <String>)/Применяет маску <Mask> к з�
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Value>)/Возвращает дробную часть вещественного значения <Value>."
 
+#: lr_const.sdescriptionif
+msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
+msgstr ""
+
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
 msgstr "INC(<Value>)/Увеличивает <Value>."

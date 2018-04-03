@@ -483,6 +483,10 @@ msgstr "FORMATTEXT(<Maska>, <Textový řetězec>)/Aplikuje <Maska> na zadaný <T
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Hodnota>)/Vrací desetinnou část destinného čísla <Hodnota>."
 
+#: lr_const.sdescriptionif
+msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
+msgstr ""
+
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
 msgstr "INC(<Hodnota>)/Zvýší <Hodnota>."

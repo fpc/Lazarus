@@ -477,6 +477,10 @@ msgstr "FORMATTEXT(<Kaukė>, <Tekstas>)/Grąžina pagal duotą <Kaukė> kaukę f
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
 msgstr "FRAC(<Verė>)/Grąžiną slankaus kablelio skaičiaus <Vertė> trupmeninę dalį."
 
+#: lr_const.sdescriptionif
+msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
+msgstr ""
+
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
 msgstr "INC(<Value>)/<Value> padidina vienetu."

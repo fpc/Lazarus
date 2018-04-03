@@ -795,7 +795,10 @@ resourcestring
   SDescriptionDEC = 'DEC(<Value>)/'+
     'Decrement <Value>.';
 
-  //Date and time display format
+  SDescriptionIF = 'IF(<expression>, <Value1>, <Value2>)/' +
+  'Returns <Value1>, if <expression> is true; otherwise returns <Value2>.';
+
+ //Date and time display format
   sDateFormat1 = 'mm.dd.yy';
   sDateFormat2 = 'mm.dd.yyyy';
   sDateFormat3 = 'd mmm yyyy';

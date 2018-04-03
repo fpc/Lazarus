@@ -12511,6 +12511,7 @@ begin
   Add('SHOWBAND', true);
   Add('INC', true);
   Add('DEC', true);
+  Add('IF', true);
 end;
 
 procedure TfrStdFunctionLibrary.UpdateDescriptions;
@@ -12541,6 +12542,7 @@ begin
 
   AddFunctionDesc('INPUT', SOtherCategory, SDescriptionINPUT);
   AddFunctionDesc('MESSAGEBOX', SOtherCategory, SDescriptionMESSAGEBOX);
+  AddFunctionDesc('IF', SOtherCategory, SDescriptionIF);
 
   AddFunctionDesc('MAXNUM', SMathCategory, SDescriptionMAXNUM);
   AddFunctionDesc('MINNUM', SMathCategory, SDescriptionMINNUM);
