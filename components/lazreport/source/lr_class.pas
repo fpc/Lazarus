@@ -304,8 +304,8 @@ type
     procedure BeginDraw(ACanvas: TCanvas);
     procedure GetBlob(b: TfrTField); virtual;
     procedure OnHook(View: TfrView); virtual;
-    procedure BeforeChange;
-    procedure AfterChange;
+    procedure BeforeChange; virtual;
+    procedure AfterChange; virtual;
     procedure ResetLastValue; virtual;
     function GetFrames: TfrFrameBorders; virtual;
     procedure ModifyFlag(aFlag: Word; aValue:Boolean);
