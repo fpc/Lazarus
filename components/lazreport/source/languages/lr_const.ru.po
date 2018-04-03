@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-27 18:03+0300\n"
+"PO-Revision-Date: 2018-04-04 01:22+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -476,7 +476,7 @@ msgstr "FRAC(<Value>)/Возвращает дробную часть вещес�
 
 #: lr_const.sdescriptionif
 msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
-msgstr ""
+msgstr "IF(<expression>, <Value1>, <Value2>)/Возвращает <Value1>, если <expression> истинно; в противном случае возвращает <Value2>."
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
