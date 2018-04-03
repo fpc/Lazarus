@@ -134,6 +134,8 @@ var
   s1, s2, s3, s4: String;
   nm: Array[1..32] of Variant;
   v: Double;
+  vCalc: Variant;
+  vBool: boolean;
 begin
   {$IFDEF DebugLRCalcs}
   DebugLnEnter('TfrParser.CalcOPZ INIT s=%s',[dbgstr(s)]);
@@ -275,7 +277,15 @@ begin
               end
               else if s1 = 'IF' then
               begin
-                if Int(StrToFloat(Calc(s2))) <> 0 then
+                vCalc := Calc(S2);
+                if VarIsEmpty(vCalc) or varIsNull(vCalc) then
+                  vBool := false
+                else
+                if VarIsBool(vCalc) then
+                  vBool := vCalc
+                else
+                  vBool := Int(StrToFloat(vCalc)) <> 0;
+                if vBool then
                   s1 := s3 else
                   s1 := s4;
                 {$IFDEF DebugLRCalcs}
