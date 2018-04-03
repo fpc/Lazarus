@@ -5,9 +5,10 @@ unit ResultDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, ClipBrd, LCLType, LCLProc, SynEdit, SynHighlighterPo,
-  PoFamilies, PoFamilyLists, GraphStat, PoCheckerConsts, PoCheckerSettings;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  Buttons, ClipBrd, LCLType, LCLProc, ComCtrls, Menus, SynEdit,
+  SynHighlighterPo, PoFamilies, PoFamilyLists, GraphStat, PoCheckerConsts,
+  PoCheckerSettings, Types;
 
 type
 
@@ -15,27 +16,33 @@ type
 
   TResultDlgForm = class(TForm)
     GraphStatBtn: TBitBtn;
-    CopyBtn: TBitBtn;
-    SaveBtn: TBitBtn;
+    CopyMenuItem: TMenuItem;
+    SaveAsMenuItem: TMenuItem;
+    MemoPopupMenu: TPopupMenu;
+    StatMemo: TSynEdit;
+    ResultPageControl: TPageControl;
     CloseBtn: TBitBtn;
     Panel1: TPanel;
     SaveDialog: TSaveDialog;
     FLog: TStringList;
+    FStatLog: TStringList;
     LogMemo: TSynEdit;
-    procedure CopyBtnClick(Sender: TObject);
+    GeneralTabSheet: TTabSheet;
+    StatisticsTabSheet: TTabSheet;
+    procedure CopyMenuItemClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure GraphStatBtnClick(Sender: TObject);
-    procedure SaveBtnClick(Sender: TObject);
+    procedure SaveAsMenuItemClick(Sender: TObject);
   private
     PoHL: TSynPoSyn;
     FPoFamilyList: TPoFamilyList;
     FPoFamilyStats: TPoFamilyStats;
     FSettings: TPoCheckerSettings;
-    procedure SaveToFile;
+    procedure GetCurrentMemo(var CurrentMemo: TSynEdit);
     procedure LoadConfig;
     procedure SaveConfig;
   public
@@ -46,6 +53,7 @@ type
     FTotalFuzzy: Integer;
     FTotalPercTranslated: Double;
     property Log: TStringList read FLog write FLog;
+    property StatLog: TStringList read FStatLog write FStatLog;
     property PoFamilyList: TPoFamilyList read FPoFamilyList write FPoFamilyList;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
@@ -60,13 +68,17 @@ implementation
 procedure TResultDlgForm.FormCreate(Sender: TObject);
 begin
   Caption := sResults;
+  GeneralTabSheet.Caption := sGeneralInfo;
+  StatisticsTabSheet.Caption := sTranslationStatistics;
+  CopyMenuItem.Caption := sCopy;
+  SaveAsMenuItem.Caption := sSaveAs;
+
   LogMemo.Lines.Clear;
-  LogMemo.Align := alClient;
+  StatMemo.Lines.Clear;
   FLog := TStringList.Create;
+  FStatLog := TStringList.Create;
   PoHL := TSynPoSyn.Create(Self);
   LogMemo.Highlighter := PoHL;
-  SaveBtn.Caption := sSaveCaption;
-  CopyBtn.Caption := sCopyCaption;
   GraphStatBtn.Caption := sShowStatGraph;
   FTotalTranslated := 0;
   FTotalUntranslated := 0;
@@ -77,26 +89,35 @@ procedure TResultDlgForm.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   FLog.Clear;
+  FStatLog.Clear;
 end;
 
-procedure TResultDlgForm.CopyBtnClick(Sender: TObject);
+procedure TResultDlgForm.CopyMenuItemClick(Sender: TObject);
+var
+  CurMemo: TSynEdit;
 begin
-  ClipBoard.AsText := LogMemo.Text;
+  GetCurrentMemo(CurMemo);
+  if CurMemo <> nil then
+    ClipBoard.AsText := CurMemo.Text;
 end;
 
 procedure TResultDlgForm.FormDestroy(Sender: TObject);
 begin
   FLog.Free;
+  FStatLog.Free;
   SaveConfig;
 end;
 
 procedure TResultDlgForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  CurMemo: TSynEdit;
 begin
-  if (Key = VK_Tab) and (Shift = []) and LogMemo.Focused then
+  GetCurrentMemo(CurMemo);
+  if (Key = VK_Tab) and (Shift = []) and (Assigned(CurMemo) and CurMemo.Focused) then
   begin
-    //Workaroud: cannot tab out of LogMemo
-    CopyBtn.SetFocus;
+    //Workaroud: cannot tab out of LogMemo/StatMemo
+    GraphStatBtn.SetFocus;
     //debugln('Tab');
     Key := 0;
   end;
@@ -105,6 +126,7 @@ end;
 procedure TResultDlgForm.FormShow(Sender: TObject);
 begin
   LogMemo.Lines.Assign(FLog);
+  StatMemo.Lines.Assign(FStatLog);
   GraphStatBtn.Visible := (PoFamilyStats <> nil) and (PoFamilyStats.Count > 0);
   LoadConfig;
   WindowState := Settings.ResultsFormWindowState;
@@ -134,27 +156,28 @@ begin
   end;
 end;
 
-procedure TResultDlgForm.SaveBtnClick(Sender: TObject);
+procedure TResultDlgForm.SaveAsMenuItemClick(Sender: TObject);
+var
+  CurMemo: TSynEdit;
 begin
-  if SaveDialog.Execute then
+  GetCurrentMemo(CurMemo);
+  if (CurMemo <> nil) and (SaveDialog.Execute) then
   begin
     try
-      LogMemo.Lines.SaveToFile(SaveDialog.FileName);
+      CurMemo.Lines.SaveToFile(SaveDialog.FileName);
     except
       on E: EStreamError do MessageDlg('POChecker',Format(sSaveError,[SaveDialog.FileName]),mtError, [mbOk],0);
     end;
   end;
 end;
 
-procedure TResultDlgForm.SaveToFile;
+procedure TResultDlgForm.GetCurrentMemo(var CurrentMemo: TSynEdit);
 begin
-  if SaveDialog.Execute then
-  begin
-    try
-      LogMemo.Lines.SaveToFile(SaveDialog.FileName);
-    except
-      MessageDlg('POChecker',Format(sSaveError,[SaveDialog.FileName]), mtError, [mbOk], 0);
-    end;
+  case ResultPageControl.PageIndex of
+    0: CurrentMemo := LogMemo;
+    1: CurrentMemo := StatMemo;
+  else
+    CurrentMemo := nil;
   end;
 end;
 
@@ -171,9 +194,15 @@ begin
     BoundsRect := ARect;
   end;
   if Settings.DisableAntialiasing then
-    LogMemo.Font.Quality := fqNonAntialiased
+  begin
+    LogMemo.Font.Quality := fqNonAntialiased;
+    StatMemo.Font.Quality := fqNonAntialiased;
+  end
   else
+  begin
     LogMemo.Font.Quality := fqDefault;
+    StatMemo.Font.Quality := fqDefault;
+  end;
 end;
 
 procedure TResultDlgForm.SaveConfig;

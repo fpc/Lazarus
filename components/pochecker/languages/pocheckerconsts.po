@@ -133,16 +133,12 @@ msgstr ""
 msgid "Check number of items"
 msgstr ""
 
-#: pocheckerconsts.scheckstatistics
-msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr ""
-
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
 msgstr ""
 
-#: pocheckerconsts.scopycaption
-msgid "Copy to clipboard"
+#: pocheckerconsts.scopy
+msgid "&Copy"
 msgstr ""
 
 #: pocheckerconsts.screatingiconxofy
@@ -188,6 +184,10 @@ msgstr ""
 msgid "Fuzzy strings (total: %s)"
 msgstr ""
 
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr ""
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr ""
@@ -206,6 +206,14 @@ msgstr ""
 
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
+msgstr ""
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr ""
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
 msgstr ""
 
 #: pocheckerconsts.slineinfilename
@@ -318,8 +326,8 @@ msgstr ""
 msgid "&Run Selected Tests"
 msgstr ""
 
-#: pocheckerconsts.ssavecaption
-msgid "Save to file"
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
 msgstr ""
 
 #: pocheckerconsts.ssaveerror
@@ -401,7 +409,7 @@ msgid "Translation"
 msgstr ""
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics per language:"
+msgid "Translation Statistics"
 msgstr ""
 
 #: pocheckerconsts.stroublesomefiles

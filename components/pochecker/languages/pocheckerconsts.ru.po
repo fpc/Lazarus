@@ -125,7 +125,7 @@ msgstr "Невозможно записать файл%s%s%s%sВы можете 
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
 msgid "Check for duplicate untranslated values"
-msgstr "Поиск дублирующихся непереведённых строк"
+msgstr "Поиск дублирующихся исходных строк"
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
 msgid "Check for incompatible format arguments"
@@ -133,7 +133,7 @@ msgstr "Поиск несовместимых аргументов формат�
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
 msgid "Check for mismatches in untranslated strings"
-msgstr "Поиск несоответствий непереведённых строк"
+msgstr "Поиск несоответствий исходных строк"
 
 #: pocheckerconsts.scheckmissingidentifiers
 msgid "Check missing identifiers"
@@ -143,17 +143,13 @@ msgstr "Поиск отсутствующих идентификаторов"
 msgid "Check number of items"
 msgstr "Проверка числа строк"
 
-#: pocheckerconsts.scheckstatistics
-msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr "Вывод статистики по (не)переведённым и неточным строкам"
-
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
 msgstr "Очистить"
 
-#: pocheckerconsts.scopycaption
-msgid "Copy to clipboard"
-msgstr "Копировать в буфер обмена"
+#: pocheckerconsts.scopy
+msgid "&Copy"
+msgstr "&Копировать"
 
 #: pocheckerconsts.screatingiconxofy
 msgid "Creating icon nr. %d of %d"
@@ -205,6 +201,10 @@ msgstr ""
 msgid "Fuzzy strings (total: %s)"
 msgstr "Неточные переводы (всего: %s)"
 
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr "Общие сведения"
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr "Сводка в графическом виде"
@@ -224,6 +224,14 @@ msgstr "Не учитывать \"неточные\" строки перевод
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Строка: %d] Несовместимые и/или неверные аргументы для Format() в:"
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr "Язык:"
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
+msgstr "Последний путь поиска:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -341,9 +349,9 @@ msgstr "Результаты"
 msgid "&Run Selected Tests"
 msgstr "&Запустить выбранные тесты"
 
-#: pocheckerconsts.ssavecaption
-msgid "Save to file"
-msgstr "Сохранить в файл"
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
+msgstr "Сохранить &как ..."
 
 #: pocheckerconsts.ssaveerror
 msgid ""
@@ -430,8 +438,8 @@ msgid "Translation"
 msgstr "Перевод"
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics per language:"
-msgstr "Статистика переводов по языкам:"
+msgid "Translation Statistics"
+msgstr "Статистика переводов"
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"

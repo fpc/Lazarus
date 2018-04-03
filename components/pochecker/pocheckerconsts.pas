@@ -26,6 +26,9 @@ resourcestring
   sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
   sErrorOnCleanup = 'An unrecoverable error occurred' + LineEnding + '%s' + LineEnding + 'Please close the program';
 
+  sLastSearchPath = 'Last search path:';
+  sLanguage = 'Language:';
+
   sTotalErrors = 'Total errors found: %d';
   sTotalWarnings = 'Total warnings found: %d';
   sTotalUntranslatedStrings = 'Total untranslated strings: %s';
@@ -38,10 +41,12 @@ resourcestring
 
   //Result form
   sSaveError = 'Error saving file:' + LineEnding + '%s';
-  sSaveCaption = 'Save to file';
   sResults = 'Results';
-  sCopyCaption = 'Copy to clipboard';
   sShowStatGraph = 'Show statistics graph';
+  sGeneralInfo = 'General Info';
+  sTranslationStatistics = 'Translation Statistics';
+  sCopy = '&Copy';
+  sSaveAs ='Save &As ...';
 
   //Graphical summary form
   sGrapStatFormCaption = 'Graphical summary';
@@ -71,7 +76,6 @@ resourcestring
   sOriginal = 'Original';
   sTranslation = 'Translation';
   sErrorsByTest = 'Errors / warnings reported by %s for:';
-  sTranslationStatistics = 'Translation statistics per language:';
   sCheckNumberOfItems = 'Check number of items';
   sCheckForIncompatibleFormatArguments = 'Check for incompatible format '
     +'arguments';
@@ -80,8 +84,6 @@ resourcestring
     +'untranslated strings';
   sCheckForDuplicateUntranslatedValues = 'Check for duplicate untranslated '
     +'values';
-  sCheckStatistics = 'Check percentage of (un)translated and fuzzy strings';
-  //sFindAllTranslatedPoFiles = 'Find all translated po-files';
   sIgnoreFuzzyTranslations = 'Ignore translated strings marked as "fuzzy"';
   sIncompatibleFormatArgs = '[Line: %d] Incompatible and/or invalid format() arguments for:' ;
 

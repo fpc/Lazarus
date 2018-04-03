@@ -153,8 +153,7 @@ const
     'CheckForIncompatibleFormatArguments',
     'CheckMissingIdentifiers',
     'CheckForMismatchesInUntranslatedStrings',
-    'CheckForDuplicateUntranslatedValues',
-    'CheckStatistics'
+    'CheckForDuplicateUntranslatedValues'
     );
   TestoptionNames: array[TPoTestOption] of String = (
     'FindAllChildren',

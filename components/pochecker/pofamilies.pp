@@ -18,7 +18,7 @@ uses
 Type
 
   TPoTestType = (pttCheckNrOfItems, pttCheckFormatArgs, pttCheckMissingIdentifiers,
-                 pttCheckMismatchedOriginals, pttCheckDuplicateOriginals, pttCheckStatistics);
+                 pttCheckMismatchedOriginals, pttCheckDuplicateOriginals);
   TPoTestTypes = Set of TPoTestType;
 
   TPoTestOption = (ptoFindAllChildren, ptoIgnoreFuzzyStrings);
@@ -32,8 +32,7 @@ const
       sCheckForIncompatibleFormatArguments,
       sCheckMissingIdentifiers,
       sCheckForMismatchesInUntranslatedStrings,
-      sCheckForDuplicateUntranslatedValues,
-      sCheckStatistics
+      sCheckForDuplicateUntranslatedValues
     );
 
 Type
@@ -77,7 +76,8 @@ Type
     procedure CheckStatistics(ErrorCnt: Integer);
 
   public
-    procedure RunTests(out ErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog: TStrings);
+    procedure RunTests(out ErrorCount, WarningCount, TranslatedCount,
+      UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog: TStrings);
 
     property Master: TPOFile read FMaster;
     property Child: TPOFile read FChild;
@@ -272,7 +272,6 @@ begin
   PoTestTypeNames[pttCheckMissingIdentifiers] := sCheckMissingIdentifiers;
   PoTestTypeNames[pttCheckMismatchedOriginals] := sCheckForMismatchesInUntranslatedStrings;
   PoTestTypeNames[pttCheckDuplicateOriginals] := sCheckForDuplicateUntranslatedValues;
-  PoTestTypeNames[pttCheckStatistics] := sCheckStatistics;
 end;
 
 
@@ -429,9 +428,6 @@ var
   end;
 begin
   if (FList.Count = 0) then Exit;
-  ALog.Add(Divider);
-  ALog.Add(sTranslationStatistics);
-  ALog.Add('');
   for i := 0 to FList.Count - 1 do
   begin
     Stat := TStat(FList.Items[i]);
@@ -442,7 +438,6 @@ begin
     ALog.Add('');
     ALog.Add('');
   end;
-  ALog.Add(Divider);
 end;
 
 { TPoFamily }
@@ -785,7 +780,6 @@ var
   NrTranslated, NrUntranslated, NrFuzzy, NrTotal: Integer;
 begin
   //debugln('TPoFamily.CheckStatistics');
-  DoTestStart(sCheckStatistics, ShortChildName);
   NrTranslated := FChild.NrTranslated;
   NrUntranslated := FChild.NrUntranslated;
   NrFuzzy := FChild.NrFuzzy;
@@ -794,7 +788,6 @@ begin
   begin
     FPoFamilyStats.Add(ChildName, NrTotal, NrTranslated, NrUntranslated, NrFuzzy, ErrorCnt);
   end;
-  DoTestEnd(PoTestTypeNames[pttCheckFormatArgs], 0);
   //debugln('TPoFamily.CheckIncompatibleFormatArgs: ',Dbgs(ErrorCount),' Errors');
 end;
 
@@ -804,7 +797,7 @@ Pre conditions:
   * Master and a matching Child must be assigned at start ot testing
   * If a Child is assigned it must be child of Master
 }
-procedure TPoFamily.RunTests(out ErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog: TStrings);
+procedure TPoFamily.RunTests(out ErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog: TStrings);
 var
   SL: TStringList;
   CurrErrCnt, CurrWarnCnt, ThisErrCnt: Integer;
@@ -947,11 +940,9 @@ begin
         end;
         }
     end;
-    //Add statistics at the end of the log
-    if (pttCheckStatistics in FTestTypes) and (FPoFamilyStats.Count > 0) then
-    begin
-      FPoFamilyStats.AddStatisticsToLog(ErrorLog);
-    end;
+    //Generate statistics
+    if FPoFamilyStats.Count > 0 then
+      FPoFamilyStats.AddStatisticsToLog(StatLog);
   finally
     SL.Free;
   end;

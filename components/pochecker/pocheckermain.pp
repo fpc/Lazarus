@@ -168,7 +168,7 @@ var
   i: integer;
 begin
   // Set / reset "basic" CheckListBox items.
-  for i := 0 to TestListBox.Count - 3 do
+  for i := 0 to TestListBox.Count - 2 do
     TestListBox.Checked[i] := True;
 end;
 
@@ -521,6 +521,7 @@ var
   TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
   TotalPercTranslated: Double;
   SL: TStrings;
+  StatL: TStrings;
   ResultDlg: TResultDlgForm;
   mr: TModalResult;
 begin
@@ -534,20 +535,36 @@ begin
   NoErrLabel.Visible := False;
   Application.ProcessMessages;
   SL := TStringList.Create;
+  StatL := TStringList.Create;
   mr := mrNone;
   try
     PoFamilyList.TestTypes := TestTypes;
     PoFamilyList.TestOptions := TestOptions;
-    PoFamilyList.RunTests(ErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, SL);
+
+    PoFamilyList.RunTests(ErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, SL, StatL);
     //debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
     //debugln('                  ', Format(sTotalWarnings, [WarningCount]));
     TotalPercTranslated := 100 * TotalTranslatedCount / (TotalTranslatedCount + TotalUntranslatedCount + TotalFuzzyCount);
+
+    SL.Insert(0, sLastSearchPath);
+    SL.Insert(1, SelectDirectoryDialog.FileName);
+    SL.Insert(2, '');
+    SL.Insert(3, sLanguage);
+    SL.Insert(4, LangFilter.Text);
+    SL.Insert(5, '');
+
     SL.Add(Format(sTotalErrors, [ErrorCount]));
     SL.Add(Format(sTotalWarnings, [WarningCount]));
     SL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
     SL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
     SL.Add('');
     SL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
+
+    StatL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
+    StatL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
+    StatL.Add('');
+    StatL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
+
     ResultDlg := TResultDlgForm.Create(nil);
     try
       ResultDlg.FTotalTranslated := TotalTranslatedCount;
@@ -555,7 +572,9 @@ begin
       ResultDlg.FTotalFuzzy := TotalFuzzyCount;
       ResultDlg.FTotalPercTranslated := TotalPercTranslated;
       ResultDlg.Log.Assign(SL);
-      FreeAndNil(SL);                 //No need to keep 2 copies of this data
+      FreeAndNil(SL);
+      ResultDlg.StatLog.Assign(StatL);
+      FreeAndNil(StatL);
       ResultDlg.PoFamilyList := PoFamilyList;
       ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats;
       ResultDlg.Settings := FPoCheckerSettings;
@@ -567,6 +586,8 @@ begin
   finally
     if Assigned(SL) then
       SL.Free;
+    if Assigned(StatL) then
+      StatL.Free;
     ClearStatusBar;
   end;
   if mr = mrOpenEditorFile then WindowState:= wsMinimized;

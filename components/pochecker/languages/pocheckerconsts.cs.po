@@ -147,17 +147,13 @@ msgstr "Kontrola chybějících identifikátorů"
 msgid "Check number of items"
 msgstr "Zkontrolovat počet položek"
 
-#: pocheckerconsts.scheckstatistics
-msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr "Spočítat procentuální zastoupení (ne)přeložených a nepřesných řetězců"
-
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
 msgstr ""
 
-#: pocheckerconsts.scopycaption
-msgid "Copy to clipboard"
-msgstr "Kopírovat do schránky"
+#: pocheckerconsts.scopy
+msgid "&Copy"
+msgstr ""
 
 #: pocheckerconsts.screatingiconxofy
 msgid "Creating icon nr. %d of %d"
@@ -207,6 +203,10 @@ msgstr ""
 msgid "Fuzzy strings (total: %s)"
 msgstr ""
 
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr ""
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr ""
@@ -226,6 +226,14 @@ msgstr ""
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Řádek %d] Nekompatibilní/vadné argumenty funkce format():"
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr ""
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
+msgstr ""
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -343,9 +351,9 @@ msgstr "Výsledky"
 msgid "&Run Selected Tests"
 msgstr "&Spustit vybrané testy"
 
-#: pocheckerconsts.ssavecaption
-msgid "Save to file"
-msgstr "Uložit do souboru"
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
+msgstr ""
 
 #: pocheckerconsts.ssaveerror
 msgid ""
@@ -432,10 +440,8 @@ msgid "Translation"
 msgstr "Překlad"
 
 #: pocheckerconsts.stranslationstatistics
-#, fuzzy
-#| msgid "Translation statistics for:"
-msgid "Translation statistics per language:"
-msgstr "Statistiky překladu pro:"
+msgid "Translation Statistics"
+msgstr ""
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"

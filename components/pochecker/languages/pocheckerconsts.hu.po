@@ -143,17 +143,13 @@ msgstr "Hiányzó azonosítók elenőrzése"
 msgid "Check number of items"
 msgstr "Elemek számának ellenőrzése"
 
-#: pocheckerconsts.scheckstatistics
-msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr "A lefordított és bizonytalan szövegek százalékának ellenőrzése"
-
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
 msgstr "Kiürítés"
 
-#: pocheckerconsts.scopycaption
-msgid "Copy to clipboard"
-msgstr "Másolás vágólapra"
+#: pocheckerconsts.scopy
+msgid "&Copy"
+msgstr ""
 
 #: pocheckerconsts.screatingiconxofy
 msgid "Creating icon nr. %d of %d"
@@ -205,6 +201,10 @@ msgstr ""
 msgid "Fuzzy strings (total: %s)"
 msgstr "Bizonytalan szövegek (összesen: %s)"
 
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr ""
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr "Grafikus összefoglalás"
@@ -224,6 +224,14 @@ msgstr "A \"bizonytalan\"-nak jelölt fordítások kihagyása"
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Sor: %d] Nem megfelelő és/vagy érvénytelen format() paraméterek a következőben:"
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr ""
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
+msgstr ""
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -341,9 +349,9 @@ msgstr "Eredmények"
 msgid "&Run Selected Tests"
 msgstr "Kijelölt tesztek futtatása"
 
-#: pocheckerconsts.ssavecaption
-msgid "Save to file"
-msgstr "Mentés fájlba"
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
+msgstr ""
 
 #: pocheckerconsts.ssaveerror
 msgid ""
@@ -430,8 +438,8 @@ msgid "Translation"
 msgstr "Fordítás"
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics per language:"
-msgstr "Fordítási statisztika nyelvenként:"
+msgid "Translation Statistics"
+msgstr ""
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"

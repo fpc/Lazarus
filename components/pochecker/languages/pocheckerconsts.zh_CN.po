@@ -146,17 +146,13 @@ msgstr "检查缺少标识符"
 msgid "Check number of items"
 msgstr "检查项目数量"
 
-#: pocheckerconsts.scheckstatistics
-msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr "检查翻译/未翻译和模糊字符串的比例"
-
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
 msgstr "清除"
 
-#: pocheckerconsts.scopycaption
-msgid "Copy to clipboard"
-msgstr "复制到剪切板"
+#: pocheckerconsts.scopy
+msgid "&Copy"
+msgstr ""
 
 #: pocheckerconsts.screatingiconxofy
 #, fuzzy,badformat
@@ -209,6 +205,10 @@ msgstr ""
 msgid "Fuzzy strings (total: %s)"
 msgstr ""
 
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr ""
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr "图形化概要"
@@ -228,6 +228,14 @@ msgstr "忽略翻译的被标记为“模糊不清”字符串"
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[行: %d]不兼容 和/或 无效format()参数对于:"
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr ""
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
+msgstr ""
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -351,9 +359,9 @@ msgstr "结果"
 msgid "&Run Selected Tests"
 msgstr "运行选择的测试(&R)"
 
-#: pocheckerconsts.ssavecaption
-msgid "Save to file"
-msgstr "保存到文件"
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
+msgstr ""
 
 #: pocheckerconsts.ssaveerror
 msgid ""
@@ -446,8 +454,8 @@ msgid "Translation"
 msgstr "翻译"
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics per language:"
-msgstr "翻译统计每种语言"
+msgid "Translation Statistics"
+msgstr ""
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"

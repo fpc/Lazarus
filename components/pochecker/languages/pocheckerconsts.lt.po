@@ -144,17 +144,13 @@ msgstr "Tikrinti ar netrūksta identifikatorių"
 msgid "Check number of items"
 msgstr "Tikrinti ar tinkamas elementų kiekis"
 
-#: pocheckerconsts.scheckstatistics
-msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr "Tikrinti kiek procentų yra (ne-)verstų ir neaiškių vertimų"
-
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
 msgstr "Valyti"
 
-#: pocheckerconsts.scopycaption
-msgid "Copy to clipboard"
-msgstr "Kopijuoti į iškarpinę"
+#: pocheckerconsts.scopy
+msgid "&Copy"
+msgstr ""
 
 #: pocheckerconsts.screatingiconxofy
 msgid "Creating icon nr. %d of %d"
@@ -206,6 +202,10 @@ msgstr ""
 msgid "Fuzzy strings (total: %s)"
 msgstr "Neaiškūs vertimai (viso: %s)"
 
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr ""
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr "Grafinis apibendrinimas"
@@ -225,6 +225,14 @@ msgstr "Įgnoruoti vertimus, kurie pažymėti „fuzzy“ žyme"
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Eilutė: %d] Nesuderinamų ir/arba klaidingų „format()“ argumentų turi:"
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr ""
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
+msgstr ""
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -342,9 +350,9 @@ msgstr "Rezultatai"
 msgid "&Run Selected Tests"
 msgstr "&Vykdyti parinktus testavimus"
 
-#: pocheckerconsts.ssavecaption
-msgid "Save to file"
-msgstr "Įrašyti faile"
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
+msgstr ""
 
 #: pocheckerconsts.ssaveerror
 msgid ""
@@ -431,8 +439,8 @@ msgid "Translation"
 msgstr "Vertimas"
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics per language:"
-msgstr "Vertimo statistika kiekvienai kalbai:"
+msgid "Translation Statistics"
+msgstr ""
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"

@@ -143,17 +143,13 @@ msgstr "Compruebe identificadores faltantes"
 msgid "Check number of items"
 msgstr "Compruebe el número de elementos"
 
-#: pocheckerconsts.scheckstatistics
-msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr "Comprobar porcentaje de cadenas traducidas/no traducidas y confusas (fuzzy)"
-
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
 msgstr "Limpiar"
 
-#: pocheckerconsts.scopycaption
-msgid "Copy to clipboard"
-msgstr "Copiar en el portapapeles"
+#: pocheckerconsts.scopy
+msgid "&Copy"
+msgstr ""
 
 #: pocheckerconsts.screatingiconxofy
 msgid "Creating icon nr. %d of %d"
@@ -205,6 +201,10 @@ msgstr ""
 msgid "Fuzzy strings (total: %s)"
 msgstr ""
 
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr ""
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr "Resumen gráfico"
@@ -224,6 +224,14 @@ msgstr "Ignorar cadenas traducidas que están marcadas como \"fuzzy\" (confusas)
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Línea: %d] Formato de argumentos format() Incompatible y/o no válidos para:"
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr ""
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
+msgstr ""
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -347,9 +355,9 @@ msgstr "Resultados"
 msgid "&Run Selected Tests"
 msgstr "&Ejecutar las Pruebas Seleccionadas"
 
-#: pocheckerconsts.ssavecaption
-msgid "Save to file"
-msgstr "Guardar en archivo"
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
+msgstr ""
 
 #: pocheckerconsts.ssaveerror
 msgid ""
@@ -442,8 +450,8 @@ msgid "Translation"
 msgstr "Traducción"
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics per language:"
-msgstr "Estadísticas de traducción por lenguaje"
+msgid "Translation Statistics"
+msgstr ""
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"

@@ -144,17 +144,13 @@ msgstr "Перевірити відсутні ідентифікатори"
 msgid "Check number of items"
 msgstr "Перевірити кількість елементів"
 
-#: pocheckerconsts.scheckstatistics
-msgid "Check percentage of (un)translated and fuzzy strings"
-msgstr "Перевірити відсоток (не)перекладених і неточних рядків"
-
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
 msgstr "Очистити"
 
-#: pocheckerconsts.scopycaption
-msgid "Copy to clipboard"
-msgstr "Копіювати в буфер"
+#: pocheckerconsts.scopy
+msgid "&Copy"
+msgstr ""
 
 #: pocheckerconsts.screatingiconxofy
 msgid "Creating icon nr. %d of %d"
@@ -206,6 +202,10 @@ msgstr ""
 msgid "Fuzzy strings (total: %s)"
 msgstr "Неповні рядки (всього: %s)"
 
+#: pocheckerconsts.sgeneralinfo
+msgid "General Info"
+msgstr ""
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr "Графічний підсумок"
@@ -225,6 +225,14 @@ msgstr "Знехтувати перекладені рядки, позначен
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Рядок: %d] Несумісні і/або неправильні аргументи format() для:"
+
+#: pocheckerconsts.slanguage
+msgid "Language:"
+msgstr ""
+
+#: pocheckerconsts.slastsearchpath
+msgid "Last search path:"
+msgstr ""
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -342,9 +350,9 @@ msgstr "Результати"
 msgid "&Run Selected Tests"
 msgstr "&Запустити вибрані тести"
 
-#: pocheckerconsts.ssavecaption
-msgid "Save to file"
-msgstr "Зберегти в файл"
+#: pocheckerconsts.ssaveas
+msgid "Save &As ..."
+msgstr ""
 
 #: pocheckerconsts.ssaveerror
 msgid ""
@@ -431,8 +439,8 @@ msgid "Translation"
 msgstr "Переклад"
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics per language:"
-msgstr "Статистика перекладу для мови:"
+msgid "Translation Statistics"
+msgstr ""
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"
