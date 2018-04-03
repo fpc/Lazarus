@@ -1676,9 +1676,17 @@ begin
   WriteStr(Result, typ);
 end;
 
+function DbgDset(ds: TfrDataset): string;
+begin
+  if ds=nil then
+    result := 'nil'
+  else
+    result := dbgsName(ds);
+end;
+
 function BandInfo(Band: TfrBand): string;
 begin
-  result := format('"%s":%s typ=%s',[Band.Name, dbgsname(band), BandTyp2str(Band.typ)]);
+  result := format('"%s":%s typ=%s ds=%s',[Band.Name, dbgsname(band), BandTyp2str(Band.typ), dbgDset(Band.DataSet)]);
 end;
 
 function ViewInfo(View: TfrView): string;
@@ -4315,7 +4323,7 @@ begin
   BeginDraw(aCanvas);
   {$IFDEF DebugLR}
     DebugLn('');
-    DebuglnEnter('TfrMemoView.Draw: Name=%s Printing=%s Canvas.Font.PPI=%d',
+    DebuglnEnter('TfrMemoView.Draw: INIT Name=%s Printing=%s Canvas.Font.PPI=%d',
       [Name,dbgs(IsPrinting),Canvas.Font.PixelsPerInch]);
   NewDx := 0;
   {$ENDIF}
@@ -4533,7 +4541,7 @@ begin
     WrapMemo;
     Result := VHeight;
     {$IFDEF DebugLR}
-    DebugLn('Memo1.Count<>0: VHeight=%d',[VHeight]);
+    DebugLn('Memo1.Count!=0: VHeight=%d',[VHeight]);
     {$ENDIF}
   end;
   Font.Assign(OldFont);
@@ -7639,6 +7647,9 @@ var
   BArr: Array[0..lrMaxBandsInReport - 1] of TfrBand;
   s: String;
 begin
+  {$IFDEF DebugLR}
+  DebugLnEnter('TfrPage.TossObjects INIT ', []);
+  {$ENDIF}
   for i := 0 to Objects.Count - 1 do
   begin
     bt :=TfrView(Objects[i]);
@@ -7697,6 +7708,9 @@ begin
            t.x := t.x - Bnd.x;
            t.Parent := Bnd;
            Bnd.Objects.Add(t);
+           {$IFDEF DebugLR}
+           DebugLn('A - Placed %s over %s',[ViewInfo(t), BandInfo(Bnd)]);
+           {$ENDIF}
          end;
       end;
     end;
@@ -7760,6 +7774,9 @@ begin
               t.y := t.y - Bnd.y;
               t.Selected := False;
               Bnd.Objects.Add(t);
+              {$IFDEF DebugLR}
+              DebugLn('B - Placed %s over %s',[ViewInfo(t), BandInfo(Bnd)]);
+              {$ENDIF}
             end;
         end;
         for j := 0 to RTObjects.Count - 1 do // placing ColumnXXX objects over band
@@ -7772,6 +7789,9 @@ begin
               t.y := t.y - Bnd.y;
               t.Selected := False;
               Bnd.Objects.Add(t);
+              {$IFDEF DebugLR}
+              DebugLn('C - Placed %s over %s',[ViewInfo(t), BandInfo(Bnd)]);
+              {$ENDIF}
             end;
         end;
         for j := 0 to RTObjects.Count - 1 do // placing subreports over band
@@ -7785,6 +7805,9 @@ begin
               t.y := t.y - Bnd.y;
               t.Selected := False;
               Bnd.Objects.Add(t);
+              {$IFDEF DebugLR}
+              DebugLn('D - Placed %s over %s',[ViewInfo(t), BandInfo(Bnd)]);
+              {$ENDIF}
             end;
         end;
       end;
@@ -7820,6 +7843,9 @@ begin
       t.Parent := Bands[btNone];
       Bands[btNone].y := 0;
       Bands[btNone].Objects.Add(t);
+      {$IFDEF DebugLR}
+      DebugLn('E - Placed %s over %s',[ViewInfo(t), BandInfo(Bands[btNone])]);
+      {$ENDIF}
     end;
   end;
 
@@ -7917,6 +7943,9 @@ begin
 
   if ColCount = 0 then ColCount := 1;
   ColWidth := (RightMargin - LeftMargin - (ColCount-1)*ColGap) div ColCount;
+  {$IFDEF DebugLR}
+  DebugLnExit('TfrPage.TossObjects DONE ', []);
+  {$ENDIF}
 end;
 
 procedure TfrPage.PrepareObjects;
@@ -8125,7 +8154,7 @@ begin
     end;
   PageNo := MasterReport.EMFPages.Count;
   {$IFDEF DebugLR}
-  DebugLn('TFrPage.DrawPageFootersPage FIN PageNo=%d XAdjust=%d CurColumn=%d',
+  DebugLn('TFrPage.DrawPageFootersPage END PageNo=%d XAdjust=%d CurColumn=%d',
     [PageNo, XAdjust, CurColumn]);
   {$ENDIF}
 end;
@@ -8301,6 +8330,9 @@ var
     if b <> nil then
     begin
       Inc(BndStackTop);
+      {$IFDEF DebugLR}
+      DebugLn('AddToStack b=%s',[BandInfo(b)]);
+      {$ENDIF}
       BndStack[BndStackTop] := b;
     end;
   end;
@@ -8369,7 +8401,7 @@ var
     i: Integer;
   begin
     {$IFDEF DebugLR}
-    DebugLnEnter('ShowStack INI');
+    DebugLnEnter('ShowStack INI BndStackTop=%d',[BndStackTop]);
     {$ENDIF}
     for i := 1 to BndStackTop do
       if BandExists(BndStack[i]) then
@@ -10986,7 +11018,7 @@ begin
   if DoublePass then
   begin
     {$IFDEF DebugLR}
-    DebugLnEnter('DoPrepareReport FirstPass Begin');
+    DebugLnEnter('DoPrepareReport FirstPass INIT');
     {$ENDIF}
 
     DisableDrawing := True;
@@ -11005,14 +11037,13 @@ begin
         OnBeforeModal := @BuildBeforeModal;
         Show_Modal(Self);
       end;
-      
-      {$IFDEF DebugLR}
-      DebugLnExit('DoPrepareReport FirstPass End');
-      {$ENDIF}
     end
     else BuildBeforeModal(nil);
     {$IFDEF DebugLR}
-    DebugLnExit('DoPrepareReport DONE');
+    DebugLnExit('DoPrepareReport FirstPass DONE');
+    {$ENDIF}
+    {$IFDEF DebugLR}
+    DebugLnExit('DoPrepareReport EXIT: FirstPass');
     {$ENDIF}
     Exit;
   end;
@@ -11020,7 +11051,7 @@ begin
   if not Assigned(FOnProgress) and FShowProgress then
   begin
     {$IFDEF DebugLR}
-    DebugLnEnter('DoPrepareReport SecondPass begin');
+    DebugLnEnter('DoPrepareReport SecondPass INIT');
     {$ENDIF}
 
     with frProgressForm do
@@ -11065,7 +11096,7 @@ begin
       end;
       
       {$IFDEF DebugLR}
-      DebugLnExit('DoPrepareReport SecondPass End');
+      DebugLnExit('DoPrepareReport SecondPass DONE');
       {$ENDIF}
     end;
   end
@@ -12547,7 +12578,7 @@ var
   {$ENDIF}
 begin
   {$IFDEF DebugLR}
-  DebugLnEnter('TfrStdFunctionLibrary.DoFunction FNo=%d (%s) p1=%s p2=%s p3=%s val=%s',[FNo,FNoStr,p1,p2,p3,val]);
+  DebugLnEnter('TfrStdFunctionLibrary.DoFunction INIT FNo=%d (%s) p1=%s p2=%s p3=%s val=%s',[FNo,FNoStr,p1,p2,p3,val]);
   {$ENDIF}
   dk := dkNone;
   val := '0';
