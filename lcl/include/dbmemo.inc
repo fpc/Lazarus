@@ -100,7 +100,7 @@ procedure TDBMemo.UpdateData(Sender: TObject);
 begin
   if not FDBMemoLoaded then exit;
   if not FDataLink.CanModify then exit;
-  FDataLink.Field.Text := Text;
+  FDataLink.Field.AsString := Text;
 end;
 
 constructor TDBMemo.Create(TheOwner: TComponent);
@@ -236,7 +236,7 @@ begin
   if not FDBMemoLoaded and (FDataLink.Field<>nil)
   and FDataLink.Field.IsBlob then begin
     try
-      Lines.Text := FDataLink.Field.Text;
+      Lines.Text := FDataLink.Field.AsString;
       FDBMemoLoaded:=True;
     except
       on E:EInvalidOperation do
