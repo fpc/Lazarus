@@ -6024,10 +6024,19 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       <element name="TCustomIdleTimer.AutoStartEvent">
         <short>
           <var>AutoStartEvent</var> - the event that triggers autostart (either idle time-out or user input)</short>
+      <descr>AutoStartEvent defines, when Enabled is automatically set to true. This
+is one of the following events:
+<ul><li>on application becomes idle</li><li>on application stops being idle (e.g. user input or some timer fired)</li><li>user input, e.g. key press, mouse move</li>
+          </ul>
+        </descr>
       </element>
       <element name="TCustomIdleTimer.AutoEndEvent">
-        <short>
-          <var>AutoEndEvent</var> - the event that causes the automatic end of the timer</short>
+        <short><var>AutoEndEvent</var> - the event that stops the timer by setting Enabled to false</short>
+      <descr>AutoEndEvent defines, when Enabled is automatically set to false. This
+is one of the following events:
+<ul><li>on application becomes idle</li><li>on application stops being idle (e.g. user input or some timer fired)</li><li>user input, e.g. key press, mouse move</li>
+          </ul>
+        </descr>
       </element>
       <element name="TCustomIdleTimer.FireOnIdle">
         <short>
