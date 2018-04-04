@@ -1,4 +1,0 @@
-Program test;
-begin
-  writeln('test');
-end.
