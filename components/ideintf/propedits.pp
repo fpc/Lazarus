@@ -398,8 +398,7 @@ type
                             {%H-}AState: TPropEditDrawState); virtual;
     procedure UpdateSubProperties; virtual;
     function SubPropertiesNeedsUpdate: boolean; virtual;
-    function IsDefaultValue: boolean; virtual;
-    function IsNotDefaultValue: boolean;
+    function ValueIsStreamed: boolean; virtual;
     function IsRevertableToInherited: boolean; virtual;
     // These are used for the popup menu in OI
     function GetVerbCount: Integer; virtual;
@@ -515,6 +514,8 @@ type
   TFloatPropertyEditor = class(TPropertyEditor)
   public
     function AllEqual: Boolean; override;
+    function FormatValue(const AValue: Extended): ansistring;
+    function GetDefaultValue: ansistring; override;
     function GetValue: ansistring; override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
@@ -604,7 +605,7 @@ type
     function GetVisualValue: ansistring; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
-    function IsDefaultValue: boolean; override;
+    function ValueIsStreamed: boolean; override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
                             AState: TPropEditDrawState); override;
    end;
@@ -643,7 +644,7 @@ type
     constructor Create(Hook: TPropertyEditorHook; APropCount: Integer); override;
     destructor Destroy; override;
 
-    function IsDefaultValue: boolean; override;
+    function ValueIsStreamed: boolean; override;
     function AllEqual: Boolean; override;
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
@@ -3409,20 +3410,14 @@ begin
   Result:=false;
 end;
 
-function TPropertyEditor.IsDefaultValue: boolean;
+function TPropertyEditor.ValueIsStreamed: boolean;
 begin
-  if HasDefaultValue then
-    Result := (GetDefaultValue=GetVisualValue)
-  else
   if HasStoredFunction then
-    Result := not CallStoredFunction
+    Result := CallStoredFunction
   else
-    Result := False;
-end;
-
-function TPropertyEditor.IsNotDefaultValue: boolean;
-begin
-  Result := not IsDefaultValue;
+    Result := True;
+  if Result and HasDefaultValue then
+    Result := GetDefaultValue<>GetVisualValue;
 end;
 
 function TPropertyEditor.IsRevertableToInherited: boolean;
@@ -3790,7 +3785,7 @@ begin
   Result := True;
 end;
 
-function TFloatPropertyEditor.GetValue: ansistring;
+function TFloatPropertyEditor.FormatValue(const AValue: Extended): ansistring;
 const
   Precisions: array[TFloatType] of Integer = (7, 15, 19, 19, 19);
 var
@@ -3798,8 +3793,20 @@ var
 begin
   FS := DefaultFormatSettings;
   FS.DecimalSeparator := '.'; //It's Pascal sourcecode representation of a float, not a textual (i18n) one
-  Result := FloatToStrF(GetFloatValue, ffGeneral,
+  Result := FloatToStrF(AValue, ffGeneral,
     Precisions[GetTypeData(GetPropType)^.FloatType], 0, FS);
+end;
+
+function TFloatPropertyEditor.GetDefaultValue: ansistring;
+begin
+  if not HasDefaultValue then
+    raise EPropertyError.Create('No property default available');
+  Result:=FormatValue(0);
+end;
+
+function TFloatPropertyEditor.GetValue: ansistring;
+begin
+  Result := FormatValue(GetFloatValue);
 end;
 
 procedure TFloatPropertyEditor.SetValue(const NewValue: ansistring);
@@ -4031,20 +4038,20 @@ begin
   SetOrdValue(Integer(S));
 end;
 
-function TSetElementPropertyEditor.IsDefaultValue: boolean;
+function TSetElementPropertyEditor.ValueIsStreamed: boolean;
 var
   S1, S2: TIntegerSet;
 begin
-  if HasDefaultValue then
+  if HasStoredFunction then
+    Result := CallStoredFunction
+  else
+    Result := True;
+  if Result and HasDefaultValue then
   begin
     Integer(S1) := GetOrdValue;
     Integer(S2) := GetDefaultOrdValue;
-    Result := (FElement in S1) = (FElement in S2);
-  end else
-  if HasStoredFunction then
-    Result := not CallStoredFunction
-  else
-    Result := False;
+    Result := (FElement in S1) <> (FElement in S2);
+  end;
 end;
 
 procedure TSetElementPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
@@ -4536,12 +4543,12 @@ begin
     Result:='(' + GetPropType^.Name + ')';
 end;
 
-function TClassPropertyEditor.IsDefaultValue: boolean;
+function TClassPropertyEditor.ValueIsStreamed: boolean;
 var
   I: Integer;
 begin
-  Result := inherited IsDefaultValue;
-  if Result then
+  Result := inherited ValueIsStreamed;
+  if not Result then
     Exit;
 
   if FSubProps=nil then
@@ -4551,9 +4558,9 @@ begin
   end;
 
   for I := 0 to FSubProps.Count-1 do
-    if not TPropertyEditor(FSubProps[I]).IsDefaultValue then
-      Exit(False);
-  Result := True;
+    if TPropertyEditor(FSubProps[I]).ValueIsStreamed then
+      Exit(True);
+  Result := False;
 end;
 
 procedure TClassPropertyEditor.ListSubProps(Prop: TPropertyEditor);

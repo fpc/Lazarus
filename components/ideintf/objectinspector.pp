@@ -1908,7 +1908,7 @@ begin
         else
           FCurrentEdit.Color:=FValueDifferBackgrndColor;
       end;
-      if NewRow.Editor.IsNotDefaultValue then
+      if NewRow.Editor.ValueIsStreamed then
         FCurrentEdit.Font:=FValueFont
       else
         FCurrentEdit.Font:=FDefaultValueFont;
@@ -2410,7 +2410,7 @@ var
     if HintType<>pehValue then
       HintFont := Screen.HintFont
     else
-    if fPropRow.Editor.IsNotDefaultValue then
+    if fPropRow.Editor.ValueIsStreamed then
       HintFont:=FValueFont
     else
       HintFont:=FDefaultValueFont;
@@ -2997,7 +2997,7 @@ var
     if ARow<>ItemIndex then
     begin
       OldFont:=Canvas.Font;
-      if CurRow.Editor.IsNotDefaultValue then
+      if CurRow.Editor.ValueIsStreamed then
         Canvas.Font:=FValueFont
       else
         Canvas.Font:=FDefaultValueFont;
@@ -3326,7 +3326,7 @@ begin
 
   if (FItemIndex>=0) and (FItemIndex<RowCount) and Assigned(FCurrentEdit) then
   begin
-    if Rows[FItemIndex].Editor.IsNotDefaultValue then
+    if Rows[FItemIndex].Editor.ValueIsStreamed then
       FCurrentEdit.Font:=FValueFont
     else
       FCurrentEdit.Font:=FDefaultValueFont;
