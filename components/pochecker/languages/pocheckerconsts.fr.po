@@ -245,10 +245,6 @@ msgstr "[Ligne : %d]"
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "Identificateur [%s] trouvé dans %s, mais inexistant dans %s"
 
-#: pocheckerconsts.snoerrorsfound
-msgid "No errors found"
-msgstr "Aucune erreur trouvée"
-
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
 msgstr "Il ne reste aucun fichier à vérifier."

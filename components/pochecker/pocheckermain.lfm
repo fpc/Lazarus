@@ -56,22 +56,6 @@ object PoCheckerForm: TPoCheckerForm
     ParentColor = False
     ParentFont = False
   end
-  object NoErrLabel: TLabel
-    AnchorSideLeft.Control = ClearMasterFilesBtn
-    AnchorSideBottom.Control = StatusBar
-    Left = 6
-    Height = 25
-    Top = 459
-    Width = 146
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Bottom = 6
-    Caption = 'No errors found'
-    Font.Color = clGreen
-    Font.Height = -19
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-  end
   object SelectBasicTestsBtn: TButton
     AnchorSideLeft.Control = TestListBox
     AnchorSideTop.Control = TestListBox
@@ -144,7 +128,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = LangFilter
     Left = 6
-    Height = 115
+    Height = 146
     Top = 278
     Width = 632
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -170,7 +154,7 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideBottom.Control = ClearMasterFilesBtn
     Left = 6
     Height = 23
-    Top = 399
+    Top = 430
     Width = 632
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
@@ -210,10 +194,10 @@ object PoCheckerForm: TPoCheckerForm
   object ClearMasterFilesBtn: TButton
     AnchorSideLeft.Control = MasterPoListBox
     AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = NoErrLabel
+    AnchorSideBottom.Control = StatusBar
     Left = 6
     Height = 25
-    Top = 428
+    Top = 459
     Width = 53
     Anchors = [akLeft, akBottom]
     AutoSize = True
@@ -225,10 +209,10 @@ object PoCheckerForm: TPoCheckerForm
   object UnselectAllMasterFilesBtn: TButton
     AnchorSideLeft.Control = SelectAllMasterFilesBtn
     AnchorSideLeft.Side = asrBottom
-    AnchorSideBottom.Control = NoErrLabel
+    AnchorSideBottom.Control = StatusBar
     Left = 167
     Height = 25
-    Top = 428
+    Top = 459
     Width = 110
     Anchors = [akLeft, akBottom]
     AutoSize = True
@@ -242,10 +226,10 @@ object PoCheckerForm: TPoCheckerForm
   object SelectAllMasterFilesBtn: TButton
     AnchorSideLeft.Control = ClearMasterFilesBtn
     AnchorSideLeft.Side = asrBottom
-    AnchorSideBottom.Control = NoErrLabel
+    AnchorSideBottom.Control = StatusBar
     Left = 65
     Height = 25
-    Top = 428
+    Top = 459
     Width = 96
     Anchors = [akLeft, akBottom]
     AutoSize = True

@@ -245,10 +245,6 @@ msgstr "[行：%d]"
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "識別子 [%s] が %s 内で見つかりましたが、%s 内には存在しません"
 
-#: pocheckerconsts.snoerrorsfound
-msgid "No errors found"
-msgstr "エラーはありません"
-
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
 msgstr ""

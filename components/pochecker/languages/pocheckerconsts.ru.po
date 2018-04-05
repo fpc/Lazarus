@@ -245,10 +245,6 @@ msgstr "[Строка: %d]"
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "Идентификатор [%s] найден в %s, но отсутствует в %s"
 
-#: pocheckerconsts.snoerrorsfound
-msgid "No errors found"
-msgstr "Ошибок не найдено"
-
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
 msgstr "Подлежащих проверке файлов больше не осталось."

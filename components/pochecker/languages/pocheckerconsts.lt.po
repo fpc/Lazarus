@@ -246,10 +246,6 @@ msgstr "[Eilutė: %d]"
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "Identifikatorių [%s] turi „%s“, tačiau jo neturi „%s“"
 
-#: pocheckerconsts.snoerrorsfound
-msgid "No errors found"
-msgstr "Klaidų nerasta"
-
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
 msgstr "Nebeliko failų, kuriuos būtų galima tikrinti."

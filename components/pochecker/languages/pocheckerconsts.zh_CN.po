@@ -249,10 +249,6 @@ msgstr "[行: %d]"
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "标识符[%s]找到在%s,但是它在%s中不存在"
 
-#: pocheckerconsts.snoerrorsfound
-msgid "No errors found"
-msgstr "没有错误发现"
-
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
 msgstr "哪里没有剩余文件来检查."

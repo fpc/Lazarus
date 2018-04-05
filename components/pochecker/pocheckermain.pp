@@ -99,7 +99,6 @@ type
     UnselectAllTestsBtn: TButton;
     SelectAllTestsBtn: TButton;
     SelectBasicTestsBtn: TButton;
-    NoErrLabel: TLabel;
     Button3: TButton;
     SelectTestLabel: TLabel;
     TestListBox: TCheckListBox;
@@ -142,7 +141,6 @@ begin
   ApplyTranslations;
   FillTestListBox;
   ClearStatusBar;
-  NoErrLabel.Visible := False;
   PopulateLangFilter;
   ApplyConfig;
   LangFilter.Invalidate; //Items[0] may have been changed
@@ -532,7 +530,6 @@ begin
     Exit;
   end;
   TestOptions := GetTestOptions;
-  NoErrLabel.Visible := False;
   Application.ProcessMessages;
   SL := TStringList.Create;
   StatL := TStringList.Create;
@@ -582,7 +579,6 @@ begin
     finally
       ResultDlg.Free;
     end;
-    NoErrLabel.Visible := (ErrorCount = 0);
   finally
     if Assigned(SL) then
       SL.Free;
@@ -601,7 +597,6 @@ end;
 
 procedure TPoCheckerForm.UpdateGUI(HasSelection: Boolean);
 begin
-  NoErrLabel.Visible := False;
   RunToolButton.Enabled := HasSelection;
   TestListBox.Enabled := HasSelection;
   SelectAllTestsBtn.Enabled := HasSelection;
@@ -919,7 +914,6 @@ begin
   LocalizeLanguageNames;
   Caption := sGUIPoFileCheckingTool;
   SelectTestLabel.Caption := sSelectTestTypes;
-  //FindAllPOsCheckBox.Caption := sFindAllTranslatedPoFiles;
   IgnoreFuzzyCheckBox.Caption := sIgnoreFuzzyTranslations;
   ScanDirToolButton.Caption := sScanDir;
   RunToolButton.Caption := sRunSelectedTests;
@@ -927,7 +921,6 @@ begin
   UnselectAllMasterFilesBtn.Caption := sUnselectListBox;
   SelectAllMasterFilesBtn.Caption := sSelectAllListBox;
   LangFilter.Items[0] := sAllLanguages;
-  NoErrLabel.Caption := sNoErrorsFound;
   SelectAllTestsBtn.Caption := sSelectAllTests;
   SelectBasicTestsBtn.Caption := sSelectBasicTests;
   UnselectAllTestsBtn.Caption := sUnselectAllTests;

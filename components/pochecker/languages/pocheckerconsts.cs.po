@@ -247,10 +247,6 @@ msgstr "[Řádek: %d]"
 msgid "Identifier [%s] found in %s, but it does not exist in %s"
 msgstr "Identifikátor [%s] nalezen v %s, ale neexistuje v %s"
 
-#: pocheckerconsts.snoerrorsfound
-msgid "No errors found"
-msgstr "Žádné chyby nenalezeny"
-
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
 msgstr ""

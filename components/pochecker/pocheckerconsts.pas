@@ -20,7 +20,6 @@ resourcestring
   sUnselectListBox = 'Unselect all files';
   sSelectAllListBox = 'Select all files';
   sAllLanguages = 'All Languages';
-  //sNotAProperFileName = 'Selected filename' + LineEnding + '%s' + LineEnding + 'does not seem to be a proper name for a po-file';
   sFilesNotFoundAndRemoved = 'The following non-existent files were removed from the list:' + LineEnding + '%s';
   sNoFilesLeftToCheck = 'There are no files left to check.';
   sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
@@ -34,7 +33,6 @@ resourcestring
   sTotalUntranslatedStrings = 'Total untranslated strings: %s';
   sTotalFuzzyStrings = 'Total fuzzy strings: %s';
   sTotalTranslatedStrings = 'Total translated strings: %s (%.1f%%)';
-  sNoErrorsFound = 'No errors found';
   sCurrentTest = 'Test: %s on %s';
   sNoTestSelected = 'There are no tests selected.';
   sScanningInProgress = 'Scanning in progress, please wait ...';
