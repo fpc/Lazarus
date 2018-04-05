@@ -101,6 +101,11 @@ begin
   if FUpdatePending then UpdateControl;
 end;
 
+function TCustomFloatSpinEdit.MaxValueStored: Boolean;
+begin
+  Result := not SameValue(FMaxValue, DefMaxValue);
+end;
+
 procedure TCustomFloatSpinEdit.KeyPress(var Key: char);
 {Disallow any key that is not a digit, decimalseparator, + or -
  For ease of use translate any decimalpoint or comma to DecimalSeparator
@@ -149,6 +154,11 @@ begin
   Result := FValue;
 end;
 
+function TCustomFloatSpinEdit.IncrementStored: Boolean;
+begin
+  Result := not SameValue(FIncrement, DefIncrement);
+end;
+
 procedure TCustomFloatSpinEdit.SetDecimals(ADecimals: Integer);
 begin
   if FDecimals = ADecimals then Exit;
@@ -161,11 +171,9 @@ begin
   inherited Create(TheOwner);
   FCompStyle := csSpinEdit;
   
-  FIncrement := 1;
-  FDecimals := 2;
-  FValue := 0;
-  FMinValue := 0;
-  FMaxValue := 100;
+  FIncrement := DefIncrement;
+  FDecimals := DefDecimals;
+  FMaxValue := DefMaxValue;
   FUpdatePending := True;
   FValueChanged := True;
 

@@ -192,6 +192,11 @@ begin
   if FUpdatePending then UpdateControl;
 end;
 
+function TSpinEditExBase.MaxValueStored: Boolean;
+begin
+  Result := not SameValue(FMaxValue, DefMaxValue);
+end;
+
 
 procedure TSpinEditExBase.EditMouseWheelUp(Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
@@ -237,6 +242,11 @@ begin
     FValue := StrToValue(Text);
   end;
   Result := FValue;
+end;
+
+function TSpinEditExBase.IncrementStored: Boolean;
+begin
+  Result := not SameValue(FIncrement, DefIncrement);
 end;
 
 function TSpinEditExBase.IsLimited: Boolean;
@@ -307,14 +317,12 @@ begin
   inherited Create(TheOwner);
 
   FArrowKeys := True;
-  FIncrement := 1;
-  FValue := 0;
-  FMinValue := 0;
-  FMaxValue := 100;
+  FIncrement := DefIncrement;
+  FMaxValue := DefMaxValue;
   FUpdatePending := True;
   FSettingValue := False;
   FNullValueBehaviour := nvbMinValue;
-  FMinRepeatValue := 100;
+  FMinRepeatValue := DefMinRepeatValue;
 
   Edit.Alignment := taRightJustify;
 
@@ -465,8 +473,8 @@ constructor TCustomFloatSpinEditEx.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FFS := DefaultFormatSettings;
-  FFS.DecimalSeparator := '.';
-  FDecimals := 2;
+  FFS.DecimalSeparator := DefDecimalSeparator;
+  FDecimals := DefDecimals;
 end;
 
 
