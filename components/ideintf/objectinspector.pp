@@ -2292,7 +2292,7 @@ begin
       or (FPropertyEditorHook = nil)
       or (FPropertyEditorHook.LookupRoot = FCurrentEditorLookupRoot));
   if Result and CheckFocus then begin
-    FocusedControl:=FindControl(GetFocus);
+    FocusedControl:=FindOwnerControl(GetFocus);
     if (FocusedControl<>nil) and (FocusedControl<>Self)
     and (not IsParentOf(FocusedControl)) then
       Result:=false;
