@@ -761,7 +761,7 @@ var
   NewTitle: String;
 begin
   Item := fContentsTree.Items.GetFirstNode;
-  NewTitle:=fActiveChmTitle +' [';
+  NewTitle := '';
   while Item <> nil do
   begin
     if ITem.Text <> fActiveChmTitle then
@@ -774,7 +774,11 @@ begin
     end;
     Item := Item.GetNextSibling;
   end;
-  NewTitle:=NewTitle+']';
+  if NewTitle <> '' then
+    NewTitle := FActiveChmTitle + ' [' + NewTitle + ']'
+  else
+    NewTitle := FActiveChmTitle;
+  if NewTitle = '' then NewTitle := '[unknown]';
   Title := NewTitle;
 end;
 
