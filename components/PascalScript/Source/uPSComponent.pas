@@ -16,8 +16,6 @@ const
 
   CdStdCall = uPSRuntime.CdStdCall;
 
-  cdVectorCall = uPSRuntime.cdVectorCall;
-
 type
   TPSScript = class;
   

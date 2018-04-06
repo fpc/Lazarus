@@ -1080,8 +1080,6 @@ const
 
   cdStdCall = uPSUtils.cdStdCall;
 
-  cdVectorCall = uPSUtils.cdVectorCall;
-
   InvalidVal = Cardinal(-1);
 
 function  PSDynArrayGetLength(arr: Pointer; aType: TPSTypeRec): Longint;
@@ -11998,10 +11996,6 @@ function DelphiFunctionProc_Safecall(Caller: TPSExec; p: TPSExternalProcRec; Glo
 begin
   Result := DelphiFunctionProc(Caller, p, Global, Stack, cdSafeCall);
 end;
-function DelphiFunctionProc_Vectorcall(Caller: TPSExec; p: TPSExternalProcRec; Global, Stack: TPSStack): Boolean;
-begin
-  Result := DelphiFunctionProc(Caller, p, Global, Stack, cdVectorCall);
-end;
 
 procedure TPSExec.RegisterDelphiFunction(ProcPtr: Pointer;
   const Name: tbtString; CC: TPSCallingConvention);
@@ -12018,7 +12012,6 @@ begin
     cdStdCall: RegisterFunctionName(FastUppercase(Name), DelphiFunctionProc_Stdcall, ProcPtr, Slf);
     cdSafeCall: RegisterFunctionName(FastUppercase(Name), DelphiFunctionProc_Safecall, ProcPtr, Slf);
     cdCdecl: RegisterFunctionName(FastUppercase(Name), DelphiFunctionProc_CDECL, ProcPtr, Slf);
-    cdVectorCall: RegisterFunctionName(FastUppercase(Name), DelphiFunctionProc_Vectorcall, ProcPtr, Slf);
   end;
 end;
 

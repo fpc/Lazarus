@@ -30,7 +30,6 @@ type
   , clPascal
   , ClCdecl
   , ClStdCall
-  , clVectorCall
   );
 
 var
@@ -126,7 +125,6 @@ begin
     if FuncCC = 'CDECL' then cc := ClCdecl else
     if FuncCC = 'REGISTER' then cc := clRegister else
     if FuncCC = 'PASCAL' then cc := clPascal else
-    if FuncCC = 'VECTORCALL' then cc := clVectorCall else
     begin
       Sender.MakeError('', ecCustomError, tbtstring(RPS_InvalidCallingConvention));
       Result := nil;
