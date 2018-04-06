@@ -126,11 +126,18 @@ end;
 
 procedure TDBCheckBox.DataChange(Sender: TObject);
 begin
+  // avoid DoOnChange circle #33573
+  FDataLink.OnDataChange := nil;
   State:=GetFieldCheckState;
+  FDataLink.OnDataChange := @DataChange;
 end;
 
 procedure TDBCheckBox.DoOnChange;
 begin
+  // avoid DoOnChange circle #33573
+  if FDataLink.OnDataChange = nil then
+    Exit;
+
   //avoid reseting value when state changes
   FDataLink.OnDataChange := nil;
   if FDatalink.Edit then begin
