@@ -280,7 +280,9 @@ begin
     if OpenDialog1.Execute then
     begin
       if OpenURL('file://'+OpenDialog1.FileName) = Ord(srSuccess) then
-        AddRecentFile('file://'+OpenDialog1.FileName);
+        AddRecentFile('file://'+OpenDialog1.FileName)
+      else
+        MessageDlg(Format(slhelp_NotFound, [OpenDialog1.FileName]), mtError, [mbOK], 0);
       RefreshState;
     end;
   finally
@@ -571,9 +573,13 @@ end;
 procedure THelpForm.OpenRecentItemClick(Sender: TObject);
 var
   Item: TRecentMenuItem absolute Sender;
+  res: DWord;
 begin
-  OpenURL(Item.URL);
-  AddRecentFile(Item.URL);
+  res := OpenURL(Item.URL);
+  if res = Ord(srSuccess) then
+    AddRecentFile(Item.URL)
+  else
+    MessageDlg(Format(slhelp_NotFound, [Item.URL]), mtError, [mbOK], 0);
 end;
 
 procedure THelpForm.SendResponse(Response: DWord);
@@ -860,6 +866,7 @@ var
  fRealContentProvider: TBaseContentProviderClass;
  fPage: TContentTab = nil;
  I: Integer;
+ fIsNewPage: Boolean = false;
 begin
  Result := Ord(srInvalidURL);
  fURLPrefix := GetURLPrefix;
@@ -900,6 +907,7 @@ begin
  if fPage = nil then
  begin
    // no existing page that can handle this content, so create one
+   fIsNewPage := true;
    fPage := TContentTab.Create(PageControl);
    fPage.ContentProvider := fRealContentProvider.Create(fPage, ImageList1);
    fPage.ContentProvider.OnTitleChange := @ContentTitleChange;
@@ -919,8 +927,11 @@ begin
    RefreshState;
    Result := Ord(srSuccess);
  end
- else
+ else begin
    Result := Ord(srInvalidURL);
+   if fIsNewPage then
+     fPage.Free;
+ end;
 
  if not fHide then
    ShowOnTop;
