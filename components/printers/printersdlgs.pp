@@ -27,7 +27,10 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, LResources, Printers, OsPrinters;
+  Classes, SysUtils, Forms, Controls, Dialogs,
+  LResources,
+  Printer4LazStrConst,
+  Printers, OsPrinters;
 
 type
   TPageMeasureUnits = (

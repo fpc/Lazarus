@@ -88,6 +88,13 @@ var
   NDigits, NScale: integer;
   NInc: double;
 begin
+  if Printer.PrinterIndex<0 then
+  begin
+    if psoWarning in Options then
+      MessageDlg(Title, p4lrsNoDefaultPrinter, mtWarning, [mbOk], 0);
+    exit(false);
+  end;
+
   // w/o SetPrinter, list of paper names is different
   // (Letter / US Letter, EnvMonarch / Envelope Monarch),
   // and list of sources is empty
