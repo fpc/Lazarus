@@ -951,49 +951,55 @@ var
   win: NSWindow;
   lCocoaWin: TCocoaWindow = nil;
   lWinContent: TCocoaWindowContent = nil;
+  disableFS : Boolean;
+const
+  NSFullScreenWindowMask = 1 shl 14;
+
 begin
+  Result:=true;
   {$ifdef VerboseCocoaWinAPI}
     DebugLn('TCocoaWidgetSet.ShowWindow');
   {$endif}
 
-  //todo: should a call to lclShowWindow (to be added) be made instead?
-  if (NSObject(hWnd).isKindOfClass(TCocoaWindowContent)) and (not TCocoaWindowContent(hWnd).isembedded) then
+  // for regular controls (non-window or embedded window, acting as a control)
+  if (not NSObject(hWnd).isKindOfClass(TCocoaWindowContent)) or (TCocoaWindowContent(hWnd).isembedded) then
   begin
-    lWinContent := TCocoaWindowContent(hWnd);
-    win := NSWindow(lWinContent.window);
-    if win.isKindOfClass(TCocoaWindow) then
-      lCocoaWin := TCocoaWindow(win);
-
-    case nCmdShow of
-      SW_SHOW, SW_SHOWNORMAL:
-        win.orderFront(nil);
-      SW_HIDE:
-        win.orderOut(nil);
-      SW_MINIMIZE:
-        win.miniaturize(nil);
-      SW_MAXIMIZE:
-        win.zoom(nil);
-    end;
-
-    // Fullscreen status change
-    if (nCmdShow <> SW_MINIMIZE) and (nCmdShow <> SW_HIDE) then
-    begin
-      // getting out of fullscreen
-      if (nCmdShow <> SW_SHOWFULLSCREEN) and lWinContent.isInFullScreenMode() then
-      begin
-        // lWinContent.exitFullScreenModeWithOptions(nil); <-- THIS CAUSES A CRASH!!!
-      end
-      // getting into fullscreen mode
-      else if (nCmdShow = SW_SHOWFULLSCREEN) and not lWinContent.isInFullScreenMode() then
-      begin
-        lWinContent.enterFullScreenMode_withOptions(NSScreen.mainScreen, nil);
-      end;
-    end;
-  end
-  else
     NSObject(hWnd).lclSetVisible(nCmdSHow <> SW_HIDE);
+    Exit;
+  end;
 
-  Result:=true;
+  // for windows
+  lWinContent := TCocoaWindowContent(hWnd);
+
+  //todo: should it be lclOwnWindow?
+  if Assigned(lWinContent.fswin) then
+    win := lWinContent.fswin
+  else
+    win := NSWindow(lWinContent.window);
+
+  disableFS := false;
+  if win.isKindOfClass(TCocoaWindow) then
+  begin
+    lCocoaWin := TCocoaWindow(win);
+    disableFS := Assigned(lCocoaWin) and (lCocoaWin.lclIsFullScreen) and (nCmdShow <> SW_SHOWFULLSCREEN);
+  end;
+
+  if disableFS and Assigned(lCocoaWin) then
+    lCocoaWin.lclSwitchFullScreen(false);
+
+  case nCmdShow of
+    SW_SHOW, SW_SHOWNORMAL:
+      win.orderFront(nil);
+    SW_HIDE:
+      win.orderOut(nil);
+    SW_MINIMIZE:
+      win.miniaturize(nil);
+    SW_MAXIMIZE:
+      win.zoom(nil);
+    SW_SHOWFULLSCREEN:
+      if Assigned(lCocoaWin) then
+        lCocoaWin.lclSwitchFullScreen(true);
+  end;
 end;
 
 function TCocoaWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;

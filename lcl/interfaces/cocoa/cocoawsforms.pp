@@ -94,8 +94,8 @@ type
   private
     class function GetStyleMaskFor(ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons): NSUInteger;
     class procedure UpdateWindowIcons(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
-    class procedure UpdateWindowMask(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
   public
+    class procedure UpdateWindowMask(AWindow: NSWindow; ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons);
     class function GetWindowFromHandle(const ACustomForm: TCustomForm): TCocoaWindow;
     class function GetWindowContentFromHandle(const ACustomForm: TCustomForm): TCocoaWindowContent;
   published

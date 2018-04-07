@@ -33,6 +33,7 @@ uses
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
+  cocoa_extra,
   // LCL
   LMessages, LCLMessageGlue, ExtCtrls, Graphics, Forms,
   LCLType, LCLProc, Controls, ComCtrls, StdCtrls;
@@ -411,10 +412,14 @@ type
 
   { TCocoaWindow }
 
+  TCocoaWindowContent = objcclass;
+
   TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
   protected
     fieldEditor: TCocoaFieldEditor;
     firedMouseEvent: Boolean;
+    isInFullScreen: Boolean;
+    fsview: TCocoaWindowContent;
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
@@ -453,6 +458,9 @@ type
     function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
     // menu support
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+
+    procedure lclSwitchFullScreen(AEnabled: Boolean); message 'lclSwitchFullScreen:';
+    function lclIsFullScreen: Boolean; message 'lclIsFullScreen';
   end;
 
   { TCocoaDesignOverlay }
@@ -521,6 +529,7 @@ type
   public
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
     ownwin: NSWindow;
+    fswin: NSWindow; // window that was used as a content prior to switching to old-school fullscreen
     popup_parent: HWND; // if not 0, indicates that we should set the popup parent
     overlay: NSView;
     function performKeyEquivalent(event: NSEvent): Boolean; override;
@@ -2133,6 +2142,38 @@ end;
 procedure TCocoaWindow.lclItemSelected(sender: id);
 begin
 
+end;
+
+procedure TCocoaWindow.lclSwitchFullScreen(AEnabled: Boolean);
+begin
+  if isInFullScreen = AEnabled then Exit; // nothing to do
+
+  //todo: there are two flavours of full-screen
+  //      (soft) macOS 10.7+ toggleFullScreen()
+  //      (hard) macOS 10.5+ enterFullScreenMode_withOptions()
+  //      the function should be smart enough to figure out the available mode
+
+  isInFullScreen := AEnabled;
+  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 then
+    Self.toggleFullScreen(nil)
+  else
+  begin
+    if AEnabled then
+    begin
+      fsview := TCocoaWindowContent(contentView);
+      fsview.fswin := self;
+      fsview.enterFullScreenMode_withOptions(self.screen, nil);
+    end else begin
+      fsview.exitFullScreenModeWithOptions(nil);
+      self.setContentView(fsview);
+      fsview := nil;
+    end;
+  end;
+end;
+
+function TCocoaWindow.lclIsFullScreen: Boolean;
+begin
+  Result := isInFullScreen;
 end;
 
 { TCocoaScrollView }
