@@ -35,6 +35,8 @@ resourcestring
   p4lrsMargins = 'Margins';
   p4lrsAdvanced = 'Advanced';
   p4lrsNoDefaultPrinter = 'No default printer found';
+  p4lrsShortUnitsMm = '(mm)';
+  p4lrsShortUnitsInches = '(inches)';
 
 implementation
 

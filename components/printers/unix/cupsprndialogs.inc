@@ -111,7 +111,7 @@ begin
     begin
       Dlg.frmPageSetup.UnitInches:= true;
       with Dlg.frmPageSetup.gpMargins do
-        Caption:= Caption+' (inches)';
+        Caption:= Caption+' '+p4lrsShortUnitsInches;
       NDigits:= 2;
       NInc:= 0.01;
       // according to MSDN, WinAPI margin rect needs values in 1/1000 of inches,
@@ -123,7 +123,7 @@ begin
     begin
       Dlg.frmPageSetup.UnitInches:= false;
       with Dlg.frmPageSetup.gpMargins do
-        Caption:= Caption+' (mm)';
+        Caption:= Caption+' '+p4lrsShortUnitsMm;
       NDigits:= 0;
       NInc:= 1.0;
       NScale:= 100;
