@@ -175,12 +175,14 @@ type
     btnRename: TButton;
     ButtonPanel1: TButtonPanel;
     chkRepeat: TCheckBox;
+    GroupBox1: TGroupBox;
     lbMoveTo: TLabel;
     lbMacroView: TListView;
     mnExport: TMenuItem;
     mnImport: TMenuItem;
     OpenDialog1: TOpenDialog;
     Panel1: TPanel;
+    PanelRepeat: TPanel;
     pnlButtons: TPanel;
     PopupMenu1: TPopupMenu;
     RenameButton: TPanelBitBtn;
@@ -1075,7 +1077,7 @@ begin
   if se = nil then Exit;
 
   i := 1;
-  if chkRepeat.Enabled then i := edRepeat.Value;
+  if chkRepeat.Checked then i := edRepeat.Value;
   FIsPlaying := True;
   UpdateButtons;
 
