@@ -1482,13 +1482,7 @@ begin
     writeln(Format('TCocoaWSWinControl.SetBounds: %s Bounds=%s',
       [AWinControl.Name, dbgs(Bounds(ALeft, ATop, AWidth, AHeight))]));
     {$ENDIF}
-    r := NSObject(AWinControl.Handle).lclFrame;
-    if not EqualRect(r, bounds(Aleft, ATop, AWidth, AHeight)) then
-    begin
-      NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
-      cb := NSObject(AWinControl.Handle).lclGetCallback;
-      if Assigned(cb) then cb.boundsDidChange(nil);
-    end;
+    NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
   end;
 end;
 
