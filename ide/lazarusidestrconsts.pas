@@ -6212,7 +6212,7 @@ resourcestring
   lisDirectives = 'Directives';
   lisRecordedMacros = 'Recorded';
   lisNewMacroName = 'Macro %d';
-  lisEditorMacros = 'Editor macros';
+  lisEditorMacros = 'Editor Macros';
   lisMakeCurrent = 'Current';
   lisPlay = 'Play';
   lisRecord = 'Record';
