@@ -82,6 +82,7 @@ type
     isrun : Boolean;
     function isRunning: Boolean; override;
     procedure run; override;
+    procedure sendEvent(theEvent: NSEvent); override;
   end;
 
   { TCocoaWidgetSet }
@@ -368,6 +369,15 @@ begin
   aloop();
 end;
 
+procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
+begin
+  // https://stackoverflow.com/questions/4001565/missing-keyup-events-on-meaningful-key-combinations-e-g-select-till-beginning
+  if (theEvent.type_ = NSKeyUp) and
+     ((theEvent.modifierFlags and NSCommandKeyMask) = NSCommandKeyMask)
+  then
+    self.keyWindow.sendEvent(theEvent);
+  inherited sendEvent(theEvent);
+end;
 
 // the implementation of the utility methods
 {$I cocoaobject.inc}
