@@ -403,9 +403,10 @@ begin
       end;
     end else
     begin
+      Data.GradientColor := clNone;
       Data.ShapeType := frstRoundRect;
-      Data.FillColor := ColorToRGB(View.ShadowColor);
-      Data.FrameColor := Data.FillColor; //ColorToRGB(View.FrameColor);
+      Data.FillColor := View.ShadowColor;
+      Data.FrameColor := clNone;
       Data.FrameWidth := 0;
       Data.FrameStyle := frsSolid;
       SWidth := trunc(View.ShadowWidth * PDFEscx + 0.5);
