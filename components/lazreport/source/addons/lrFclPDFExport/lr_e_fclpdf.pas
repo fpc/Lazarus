@@ -345,7 +345,12 @@ procedure TlrPdfExportFilter.SetupFonts;
 function DefFontName:string;
 const
   DefFontNames : array [1..3] of string =
+  // TODO: Check if Arial is better default choice in windows/linux/mac
+  {$IFDEF MSWINDOWS}
+     ('Arial', 'Liberation Sans', 'FreeSans');
+  {$ELSE}
      ('Liberation Sans', 'Arial', 'FreeSans');
+  {$ENDIF}
 var
   i: Integer;
 begin
