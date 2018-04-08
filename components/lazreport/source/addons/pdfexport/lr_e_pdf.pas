@@ -420,9 +420,9 @@ begin
     else
       Data.FillColor := ColorToRGB(View.FillColor);
     if View.Frames=[] then
-      Data.FrameColor := Data.FillColor
+      Data.FrameColor := clNone
     else
-      Data.FrameColor := ColorToRGB(View.FrameColor);
+      Data.FrameColor := View.FrameColor;
     Data.FrameWidth := View.FrameWidth;
     Data.FrameStyle := View.FrameStyle;
     AddShape(Data, x, y, h - SWidth, w - SWidth);
