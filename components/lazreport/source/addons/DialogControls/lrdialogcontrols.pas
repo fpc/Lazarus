@@ -510,9 +510,11 @@ begin
   AY:=DRect.Top + 3;
   aH:=Canvas.TextHeight('Wg');
 
-  Canvas.TextRect(DRect, DRect.Left + 3, AY, Text);
-  inc(AY, aH + 3);
-
+  if Text<>'' then
+  begin
+    Canvas.TextRect(DRect, DRect.Left + 3, AY, Text);
+    inc(AY, aH + 3);
+  end;
   i:=0;
 
   Details := ThemeServices.GetElementDetails(tbRadioButtonUncheckedNormal);

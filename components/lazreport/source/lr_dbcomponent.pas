@@ -115,6 +115,7 @@ begin
   FDS.Name:=Name;
   FlrDBDataSet.Name:='_'+Name;
   FlrDataSource.Name:='ds'+Name;
+  AfterChange;
 end;
 
 procedure TLRDataSetControl.AfterLoad;

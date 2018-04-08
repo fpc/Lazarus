@@ -553,6 +553,7 @@ type
     procedure DuplicateSelection;
     procedure ObjInspSelect(Obj:TObject);
     procedure ObjInspRefresh;
+    procedure DataInspectorRefresh;
 
     procedure GetFontList;
     procedure SetMenuBitmaps;
@@ -5312,6 +5313,12 @@ begin
   {$ENDIF}
 end;
 
+procedure TfrDesignerForm.DataInspectorRefresh;
+begin
+  if Assigned(lrFieldsList) then
+    lrFieldsList.RefreshDSList;
+end;
+
 procedure TfrDesignerForm.ClB1Click(Sender: TObject);
 var p  : TPoint;
     t  : TfrView;
@@ -5809,6 +5816,7 @@ begin
   PageView.NPDrawSelection;
   PageView.NPDrawLayerObjects(0, TopSelected);
   ObjInspRefresh;
+  DataInspectorRefresh;
 end;
 
 //Move selected object from front
@@ -7967,9 +7975,6 @@ var
   FSaveGetPValue:TGetPValueEvent;
   FSaveFunEvent:TFunctionEvent;
   FSaveReportEvent: TSaveReportEvent;
-
-  ///***DocMode: (dmDesigning, dmPrinting);             // current mode
-
 begin
   if (GetComponent(0) is TfrCustomMemoView) and Assigned(CurReport) then
   begin
@@ -7987,7 +7992,7 @@ begin
     FSaveView:=CurView;
     FSaveBand:=CurBand;
     FSavePage:=CurPage;
-  // DocMode: (dmDesigning, dmPrinting);             // current mode
+
     frDesigner:=nil;
 
     CurReport:=TfrReport.Create(nil);
@@ -8012,7 +8017,6 @@ begin
     FSaveReportEvent:=frDesignerComp.OnSaveReport;
     frDesignerComp.OnSaveReport:=@DoSaveReportEvent;
 
-    //FDetailReport:=TStringStream.Create(Trim(FEditView.DetailReport.Text));
     try
       FDetailRrep.ReportBody.Position:=0;
       if FDetailRrep.ReportBody.Size > 0 then

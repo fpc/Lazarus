@@ -4168,7 +4168,7 @@ var
       Ts: TTextStyle;
     begin
       SetLength(str, Length(str) - 2);
-      if str[Length(str)] = #1 then
+      if (str<>'') and (str[Length(str)] = #1) then
         SetLength(str, Length(str) - 1);
       cury := 0;
 
