@@ -427,6 +427,10 @@ type
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
     procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
     procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
+    // fullscreen notifications are only reported for 10.7 fullscreen
+    procedure windowWillEnterFullScreen(notification: NSNotification); message 'windowWillEnterFullScreen:';
+    procedure windowDidEnterFullScreen(notification: NSNotification); message 'windowDidEnterFullScreen:';
+    procedure windowDidExitFullScreen(notification: NSNotification); message 'windowDidExitFullScreen:';
   public
     callback: IWindowCallback;
     LCLForm: TCustomForm;
@@ -1893,6 +1897,25 @@ procedure TCocoaWindow.windowDidMove(notification: NSNotification);
 begin
   if Assigned(callback) then
     callback.Move;
+end;
+
+procedure TCocoaWindow.windowWillEnterFullScreen(notification: NSNotification);
+begin
+  if not isInFullScreen then isInFullScreen := true;
+  // setting fullscreen flag, prior to the "Fullscreen" has actually been enabled.
+  // MacOS does 10.7 fullscreen switch with an animation (that's about 1 second long)
+  // if during that animation there's another call toggleFullScreen() is made
+  // then macOS produces an output "not in fullscreen state" and ignores the call.
+end;
+
+procedure TCocoaWindow.windowDidEnterFullScreen(notification: NSNotification);
+begin
+  if not isInFullScreen then isInFullScreen := true;
+end;
+
+procedure TCocoaWindow.windowDidExitFullScreen(notification: NSNotification);
+begin
+  if isInFullScreen then isInFullScreen := false;
 end;
 
 procedure TCocoaWindow.dealloc;
