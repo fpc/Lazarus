@@ -16,7 +16,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, LMessages, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, StdCtrls, Menus, GraphType, LCLType, LCLIntf, LazUTF8,
+  ExtCtrls, Buttons, StdCtrls, Menus, GraphType, LCLType, LCLProc, LCLIntf, LazUTF8,
   LR_Const, PrintersDlgs;
 
 type
