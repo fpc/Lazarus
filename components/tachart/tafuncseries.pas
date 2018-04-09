@@ -435,7 +435,8 @@ type
 implementation
 
 uses
-  ipf, GraphType, GraphUtil, IntfGraphics, Math, StrUtils, SysUtils,
+  {$IF FPC_FullVersion >= 30101}ipf{$ELSE}ipf_fix{$ENDIF},
+  GraphType, GraphUtil, IntfGraphics, Math, StrUtils, SysUtils,
   TAChartStrConsts, TAGeometry, TAGraph, TAMath, TASources;
 
 const
