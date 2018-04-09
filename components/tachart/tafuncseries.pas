@@ -1296,6 +1296,7 @@ var
   r: Integer = 0;
   minv, maxv: ArbFloat;
   extY: TDoubleInterval = (FStart: Infinity; FEnd: NegInfinity);
+  extChg: Boolean = false;
   s: TSpline;
 begin
   Result := inherited Extent;
@@ -1309,9 +1310,12 @@ begin
     ipfsmm(High(s.FCoeff), s.FX[0], s.FY[0], s.FCoeff[0], minv, maxv, r);
     extY.FStart := Min(minv, extY.FStart);
     extY.FEnd := Max(maxv, extY.FEnd);
+    extChg := true;
   end;
-  Result.a.Y := extY.FStart;
-  Result.b.Y := extY.FEnd;
+  if extChg then begin
+    Result.a.Y := extY.FStart;
+    Result.b.Y := extY.FEnd;
+  end;
 end;
 
 procedure TCubicSplineSeries.FreeSplines;
