@@ -34,7 +34,7 @@ resourcestring
   p4lrsPagesPerSheet = 'Pages per sheet';
   p4lrsMargins = 'Margins';
   p4lrsAdvanced = 'Advanced';
-  p4lrsNoDefaultPrinter = 'No default printer found';
+  p4lrsNoDefaultPrinter = 'No default printer found.';
   p4lrsShortUnitsMm = '(mm)';
   p4lrsShortUnitsInches = '(inches)';
 
