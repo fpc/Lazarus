@@ -426,7 +426,7 @@ begin
   if AIsCurLine
   then begin
     if ABreakPoint = nil
-    then Result := ImgBreakPoints[7]
+    then Result := ImgBreakPoints[8]
     else if ABreakPoint.Enabled
     then Result := ImgBreakPoints[9]
     else Result := ImgBreakPoints[10];
