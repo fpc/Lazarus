@@ -1042,7 +1042,9 @@ msgid "Command line parameters (without application name)"
 msgstr "コマンドライン引数（アプリケーション名なしで）"
 
 #: lazarusidestrconsts.dlgcommentalignmaxdefault
-msgid "Make default indent for new line if comment opens at column:"
+#, fuzzy
+#| msgid "Make default indent for new line if comment opens at column:"
+msgid "Max indent for new line if prefix is based on start of comment on first comment line:"
 msgstr "コメントが次の列で開かれた場合に既定のインデントを挿入："
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
@@ -8629,7 +8631,9 @@ msgid "Editor Colors"
 msgstr "色を編集"
 
 #: lazarusidestrconsts.liseditormacros
-msgid "Editor macros"
+#, fuzzy
+#| msgid "Editor macros"
+msgid "Editor Macros"
 msgstr "マクロエディタ"
 
 #: lazarusidestrconsts.liseditortoolbar

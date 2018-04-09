@@ -1044,7 +1044,9 @@ msgid "Command line parameters (without application name)"
 msgstr "Komut satırı parametreleri (uygulama adı olmadan)"
 
 #: lazarusidestrconsts.dlgcommentalignmaxdefault
-msgid "Make default indent for new line if comment opens at column:"
+#, fuzzy
+#| msgid "Make default indent for new line if comment opens at column:"
+msgid "Max indent for new line if prefix is based on start of comment on first comment line:"
 msgstr "Yorum, sütunda açılırsa yeni satıra varsayılan girinti yapın:"
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
@@ -8714,7 +8716,9 @@ msgid "Editor Colors"
 msgstr "Editör Renkleri"
 
 #: lazarusidestrconsts.liseditormacros
-msgid "Editor macros"
+#, fuzzy
+#| msgid "Editor macros"
+msgid "Editor Macros"
 msgstr "Editör makroları"
 
 #: lazarusidestrconsts.liseditortoolbar

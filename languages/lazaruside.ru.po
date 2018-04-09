@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-03-04 17:35+0300\n"
+"PO-Revision-Date: 2018-04-10 01:36+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1045,8 +1045,8 @@ msgid "Command line parameters (without application name)"
 msgstr "Параметры командной строки (без имени приложения)"
 
 #: lazarusidestrconsts.dlgcommentalignmaxdefault
-msgid "Make default indent for new line if comment opens at column:"
-msgstr "Сделать отступ на новой строке по умолчанию, если комментарий открывается на столбце:"
+msgid "Max indent for new line if prefix is based on start of comment on first comment line:"
+msgstr "Максимальный отступ новой строки при префиксе, привязанном к началу комментария на первой строке:"
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
 msgid "Limit indent to"
@@ -8614,7 +8614,7 @@ msgid "Editor Colors"
 msgstr "Цвета редактора"
 
 #: lazarusidestrconsts.liseditormacros
-msgid "Editor macros"
+msgid "Editor Macros"
 msgstr "Макросы редактора"
 
 #: lazarusidestrconsts.liseditortoolbar

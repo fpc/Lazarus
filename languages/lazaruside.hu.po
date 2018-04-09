@@ -1044,7 +1044,9 @@ msgid "Command line parameters (without application name)"
 msgstr "Parancssori paraméterek (alkalmazás név nélkül)"
 
 #: lazarusidestrconsts.dlgcommentalignmaxdefault
-msgid "Make default indent for new line if comment opens at column:"
+#, fuzzy
+#| msgid "Make default indent for new line if comment opens at column:"
+msgid "Max indent for new line if prefix is based on start of comment on first comment line:"
 msgstr "Alapértelmezett behúzás a sor számára ha a megjegyzés a következő oszlopban kezdődik:"
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
@@ -8619,7 +8621,9 @@ msgid "Editor Colors"
 msgstr "Szerkesztő színei"
 
 #: lazarusidestrconsts.liseditormacros
-msgid "Editor macros"
+#, fuzzy
+#| msgid "Editor macros"
+msgid "Editor Macros"
 msgstr "Szerkesztő makrók"
 
 #: lazarusidestrconsts.liseditortoolbar
