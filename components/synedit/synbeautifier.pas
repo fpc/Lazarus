@@ -203,11 +203,20 @@ type
 
   TSynCommentIndentFlag = (
     // * For Matching lines (FCommentMode)
-      // By default indent is the same as for none comment lines (none overrides sciAlignOpen)
+      //
+      // * [], sciNone, sciAlignOpen
+      // [] (neither sciNone nor sciAlignOpen)
+                    // indent is the same as for none comment lines
+                    // that is indent from previous line
       sciNone,      // Does not Indent comment lines (Prefix may contain a fixed indent)
+                    // sciNone overrides sciAlignOpen
       sciAlignOpen, // Indent to real opening pos on first line, if comment does not start at BOL "Foo(); (*"
                     // Will force every new line back to Align.
-                    // To align only once, use IndentFirstLineExtra=MaxInt
+      // add-ons (combine with above)
+      sciAlignOpenOnce, // Force AlignOpen once for first line
+                        // Can be combined sciNone or used without any of the above
+      sciAlignOpenSkipBOL, // Combine with any sciAlignOpen...,
+                           // only align if the comment starts behind other text (is not at BOL)
 
       // sciAdd...: if (only if) previous line had started with the opening token "(*" or "{".
       //            or if sciAlignOpen is set
@@ -221,8 +230,10 @@ type
 
       sciMatchOnlyTokenLen,        // Apply the Above only if first line matches. (Only if sciAddTokenLen is specified)
       sciMatchOnlyPastTokenIndent,
-      sciAlignOnlyTokenLen,        // Apply the Above only if sciAlignOpen was used (include via max)
+      sciAlignOnlyTokenLen,        // Apply the Above only if sciAlignOpen/sciAlignOpenOnce was used
       sciAlignOnlyPastTokenIndent,
+
+      // TODO: sciAlignOpenOnce followed by [] (neither = default indent) should keep the extra align, if it still is on the correct column
 
       // flag to ignore spaces, that are matched.
       // flag to be smart, if not matched
@@ -338,18 +349,13 @@ type
     // *** coments with (* *)
 
     (* AnsiIndentFirstLineMax:
-       * For comments that do NOT start at the BOL in their opening line "  Foo; ( * comment":
-         if AnsiIndentFirstLineMax is is set:
-         - If the comment starts before or at the "Max-Column, then sciAlignOpen is always used.
-         - If the comment starts after max column, then the specified mode is used.
-           If the specified mode is sciAlignOpen it will be cut at Max
-       * For comments that start at BOL in their opening line "  ( * comment":
-         This is ignored
-
+       * For comments that use any sciAlignOpen...
+         if AnsiIndentFirstLineMax is is set (none zero):
+           The indent will be limited to this value
 
        AnsiIndentFirstLineExtra:
          For comments that do NOT start at the BOL, an extra indent is added
-         on the 2nd line (except if sciAlignOpen is used (in Flags, or via A.I.FirstLineMax))
+         on the 2nd line (except if sciAlignOpen is used (in Flags))
     *)
     property AnsiIndentMode: TSynCommentIndentFlags read FIndentMode[sctAnsi]
                                                    write FIndentMode[sctAnsi];
@@ -999,7 +1005,7 @@ var
   FoldTyp: TSynCommentType;
   AnyEnabled: Boolean;
   ExtendSlash, BeSmart, Matching: Boolean;
-  PreviousIsFirst, IsAtBOL, DidAlignOpen: Boolean;
+  PreviousIsFirst, CommentStartsAtBOL, DidAlignOpen: Boolean;
 
   IndentTypeBackup: TSynBeautifierIndentType;
 
@@ -1089,9 +1095,9 @@ begin
   Matching := CheckMatch(FoldTyp);
   PreviousIsFirst := (GetFirstCommentLine = WorkLine -1);
   DidAlignOpen := False;
-  IsAtBOL := True;
+  CommentStartsAtBOL := True;
   if PreviousIsFirst then
-    IsAtBOL := GetCommentStartCol = 1 + GetIndentForLine(nil, FCurrentLines[ToIdx(GetFirstCommentLine)], False);
+    CommentStartsAtBOL := GetCommentStartCol = 1 + GetIndentForLine(nil, FCurrentLines[ToIdx(GetFirstCommentLine)], False);
 
 
   // Aply indent before prefix
@@ -1104,32 +1110,31 @@ begin
       if IndentType = sbitConvertToTabOnly then
         IndentType := sbitConvertToTabSpace;
 
-      if PreviousIsFirst and not IsAtBOL and
-         (FIndentFirstLineMax[FoldTyp] > 0) and
-         ( (FIndentFirstLineMax[FoldTyp] + 1 >= GetCommentStartCol) or
-           (FIndentMode[FoldTyp] * [sciNone, sciAlignOpen] = [sciAlignOpen])
-         )
+      // Align with open
+      if ( (FIndentMode[FoldTyp] * [sciNone, sciAlignOpen] = [sciAlignOpen]) or
+           ( (sciAlignOpenOnce in FIndentMode[FoldTyp]) and PreviousIsFirst )
+         ) and
+         ( (not (sciAlignOpenSkipBOL in FIndentMode[FoldTyp])) or (not CommentStartsAtBOL) )
       then begin
-        // Use sciAlignOpen
-        Indent := Min(
-          FCurrentLines.LogicalToPhysicalCol(FCurrentLines[ToIdx(GetFirstCommentLine)], ToIdx(GetFirstCommentLine), GetCommentStartCol-1),
-          FIndentFirstLineMax[FoldTyp]);
-        s := GetCharMix(WorkLine, Indent, dummy);
-        FLogicalIndentLen := length(s);
-        FCurrentLines.EditInsert(1, WorkLine, s);
-        DidAlignOpen := True;
-      end
-      else
-      if (FIndentMode[FoldTyp] * [sciNone, sciAlignOpen] = [sciAlignOpen]) and
-         (GetCommentStartCol > 0)
-      then begin
-        Indent := FCurrentLines.LogicalToPhysicalCol(FCurrentLines[ToIdx(GetFirstCommentLine)], ToIdx(GetFirstCommentLine), GetCommentStartCol-1);
+        Indent := FCurrentLines.LogicalToPhysicalCol(FCurrentLines[ToIdx(GetFirstCommentLine)],
+                                                     ToIdx(GetFirstCommentLine),
+                                                     GetCommentStartCol-1);
         if FIndentFirstLineMax[FoldTyp] > 0
         then Indent := Min(Indent, FIndentFirstLineMax[FoldTyp]);
         s := GetCharMix(WorkLine, Indent, dummy);
         FLogicalIndentLen := length(s);
         FCurrentLines.EditInsert(1, WorkLine, s);
         DidAlignOpen := True;
+      end
+      else
+      // Do not align with open, but check MaxIndent
+      if PreviousIsFirst and (FIndentFirstLineMax[FoldTyp] > 0) and
+         (FIndentMode[FoldTyp] * [sciNone] = []) then begin
+        Indent := GetIndentForLine(nil, FCurrentLines[ToIdx(WorkLine-1)], False);
+        Indent := Min(Indent, FIndentFirstLineMax[FoldTyp]);
+        s := GetCharMix(WorkLine, Indent, dummy);
+        FLogicalIndentLen := length(s);
+        FCurrentLines.EditInsert(1, WorkLine, s);
       end
       else
       if (sciNone in FIndentMode[FoldTyp]) then begin
@@ -1144,7 +1149,7 @@ begin
     end;
 
     // AnsiIndentFirstLineExtra
-    if PreviousIsFirst and (not IsAtBOL) and (not DidAlignOpen) then begin
+    if PreviousIsFirst and (not CommentStartsAtBOL) and (not DidAlignOpen) then begin
       FCurrentLines.EditInsert(1 + FLogicalIndentLen, WorkLine, FIndentFirstLineExtra[FoldTyp]);
       FLogicalIndentLen := FLogicalIndentLen + length(FIndentFirstLineExtra[FoldTyp]);
     end;
@@ -1176,7 +1181,7 @@ begin
     end;
   end;
 
-  // sciAddPastTokenIndent -- Spaces from after (* or { (to go befare prefix e.g " {  * foo")
+  // sciAddPastTokenIndent -- Spaces from after (* or { (to go before prefix e.g " {  * foo")
   if BeSmart and
      ( (sciAddPastTokenIndent in FIndentMode[FoldTyp]) and
        ( (not(sciMatchOnlyPastTokenIndent in FIndentMode[FoldTyp])) or CheckMatch(FoldTyp, False, True) ) and

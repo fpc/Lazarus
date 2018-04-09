@@ -1115,6 +1115,8 @@ begin
                 // AnsiIndentFirstLineMax, indent is >= 2, so it is not affeceted by 1 or 2
                 for LoopIndentMax := 0 to 2 do
                 begin
+                  if LoopIndentMax = 1 then Continue; // TODO: add tests // MaxIndent was extended to act on default indent to (first line only)
+
                   PushBaseName('Max='+IntToStr(LoopIndentMax));
                   ConfigBeautifier(sctBor, [] + ExtraIndentFlags, LoopIndentMax, '',
                                    sccPrefixMatch, scmMatchAfterOpening, MatchLine,
@@ -1140,7 +1142,9 @@ begin
                     end;
 
                     // Indent tabs / matching
-                    if ParentIndentType in [sbitCopySpaceTab] then begin
+                    if (ParentIndentType in [sbitCopySpaceTab])
+                    and (LoopIndentMax = 0)
+                    then begin
                       DoSetText('tabs matching',  [2, #9' {*'#9' abc']);
                       DoNewLine('after 1st',   8, 2,   6, 3,  [2, #9' {*'#9' a', #9' *'#9' bc']);  // 2:"_ {*_ a|bc"
                       DoNewLine('any line',    7, 3,   6, 4,  [3, #9' *'#9' b', #9' *'#9' c']);    // 3:"  * b|c"
@@ -1176,7 +1180,9 @@ begin
                     end;
 
                     // Indent tabs / matching
-                    if ParentIndentType in [sbitCopySpaceTab] then begin
+                    if (ParentIndentType in [sbitCopySpaceTab])
+                    and (LoopIndentMax = 0)
+                    then begin
                       DoSetText('tabs matching',  [2, #9' {*'#9' abc']);
                       DoNewLine('after 1st',   8, 2,   7, 3,  [2, #9' {*'#9' a', #9'  *'#9' bc']);  // 2:"_  {*_ a|bc"
                       DoNewLine('any line',    8, 3,   7, 4,  [3, #9'  *'#9' b', #9'  *'#9' c']);   // 3:"   * b|c"
@@ -1204,7 +1210,7 @@ begin
                 end; // LoopIndentMax;
 
                 PushBaseName('Max='+IntToStr(10));
-                ConfigBeautifier(sctBor, [] + ExtraIndentFlags, 10, '',
+                ConfigBeautifier(sctBor, [sciAlignOpenOnce, sciAlignOpenSkipBOL] + ExtraIndentFlags, 0, '',
                                  sccPrefixMatch, scmMatchAfterOpening, MatchLine,
                                  sbitSpace,
                                  '^\s*\*', '*');
@@ -1214,13 +1220,13 @@ begin
                   DoNewLine('after 1st',   7, 2,   5, 3,  [2, '  {* a', '  * bc']);  // 2:"  {* a|bc"
                   DoNewLine('any line',    6, 3,   5, 4,  [3, '  * b', '  * c']);    // 3:"  * b|c"
 
-                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  // Indent, not BOL / matching // sciAlignOpenOnce applied
                   DoSetText('not BOL matching',  [2, '  ;;;{* abc']);
                   DoNewLine('after 1st',  10, 2,   8, 3,  [2, '  ;;;{* a', '     * bc']);  // 2:"  ;{* a|bc"
                   DoNewLine('any line',    9, 3,   8, 4,  [3, '     * b', '     * c']);    // 3:"  * b|c"
 
                   // Check_that_Indent_is_NOT_restored // SEE Check_that_Indent_is_restored
-                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  // Indent, not BOL / matching // sciAlignOpenOnce applied
                   DoSetText('NOT restore Align',  [2, '  ;;;{* abc', '  *']);
                   if ParentIndentType = sbitPositionCaret
                   then DoNewLine('after 2nd',   4, 3,   5, 4,  [3, '  *', '  *'])   // NOT added post indent of 1
@@ -1232,13 +1238,13 @@ begin
                   DoNewLine('after 1st',   7, 2,   6, 3,  [2, '  {* a', '   * bc']);  // 2:"  {* a|bc"
                   DoNewLine('any line',    7, 3,   6, 4,  [3, '   * b', '   * c']);   // 3:"   * b|c"
 
-                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  // Indent, not BOL / matching // sciAlignOpenOnce applied
                   DoSetText('not BOL matching',  [2, '  ;;;{* abc']);
                   DoNewLine('after 1st',  10, 2,   9, 3,  [2, '  ;;;{* a', '      * bc']);  // 2:"  ;{* a|bc"
                   DoNewLine('any line',   10, 3,   9, 4,  [3, '      * b', '      * c']);    // 3:"  * b|c"
 
                   // Check_that_Indent_is_NOT_restored // SEE Check_that_Indent_is_restored
-                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  // Indent, not BOL / matching // sciAlignOpenOnce applied
                   DoSetText('NOT restore Align',  [2, '  ;;;{* abc', '  *']);
                   if ParentIndentType = sbitPositionCaret
                   then DoNewLine('after 2nd',   4, 3,   5, 4,  [3, '  *', '  *'])
@@ -1248,7 +1254,7 @@ begin
 
 
                 PushBaseName('Etra="     " + Max=10');
-                ConfigBeautifier(sctBor, [] + ExtraIndentFlags, 10, '     ',
+                ConfigBeautifier(sctBor, [sciAlignOpenOnce, sciAlignOpenSkipBOL] + ExtraIndentFlags, 0, '     ',
                                  sccPrefixMatch, scmMatchAfterOpening, MatchLine,
                                  sbitSpace,
                                  '^\s*\*', '*');
@@ -1258,7 +1264,7 @@ begin
                   DoNewLine('after 1st',   7, 2,   5, 3,  [2, '  {* a', '  * bc']);  // 2:"  {* a|bc"
                   DoNewLine('any line',    6, 3,   5, 4,  [3, '  * b', '  * c']);    // 3:"  * b|c"
 
-                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  // Indent, not BOL / matching // sciAlignOpenOnce applied
                   DoSetText('not BOL matching',  [2, '  ;;;{* abc']);
                   DoNewLine('after 1st',  10, 2,   8, 3,  [2, '  ;;;{* a', '     * bc']);  // 2:"  ;{* a|bc"
                   DoNewLine('any line',    9, 3,   8, 4,  [3, '     * b', '     * c']);    // 3:"  * b|c"
@@ -1269,7 +1275,7 @@ begin
                   DoNewLine('after 1st',   7, 2,   6, 3,  [2, '  {* a', '   * bc']);  // 2:"  {* a|bc"
                   DoNewLine('any line',    7, 3,   6, 4,  [3, '   * b', '   * c']);   // 3:"   * b|c"
 
-                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  // Indent, not BOL / matching // sciAlignOpenOnce applied
                   DoSetText('not BOL matching',  [2, '  ;;;{* abc']);
                   DoNewLine('after 1st',  10, 2,   9, 3,  [2, '  ;;;{* a', '      * bc']);  // 2:"  ;{* a|bc"
                   DoNewLine('any line',   10, 3,   9, 4,  [3, '      * b', '      * c']);    // 3:"  * b|c"
@@ -1410,7 +1416,7 @@ begin
                 end; // LoopIndentMax;
 
                 PushBaseName('Max='+IntToStr(10));
-                ConfigBeautifier(sctBor, [sciNone] + ExtraIndentFlags, 10, '',
+                ConfigBeautifier(sctBor, [sciNone, sciAlignOpenOnce, sciAlignOpenSkipBOL] + ExtraIndentFlags, 0, '',
                                  sccPrefixMatch, scmMatchAfterOpening, MatchLine,
                                  sbitSpace,
                                  '^\s*\*', '*');
@@ -1421,7 +1427,7 @@ begin
                   DoNewLine('after 1st',   7, 2,   3, 3,  [2, '  {* a', '* bc']);  // 2:"  {* a|bc"
                   DoNewLine('any line',    4, 3,   3, 4,  [3, '* b', '* c']);      // 3:"* b|c"
 
-                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  // Indent, not BOL / matching // sciAlignOpenOnce applied
                   DoSetText('not BOL matching',  [2, '  ;;;{* abc']);
                   DoNewLine('after 1st',  10, 2,   8, 3,  [2, '  ;;;{* a', '     * bc']);  // 2:"  ;{* a|bc"
                   DoNewLine('any line',    9, 3,   3, 4,  [3, '     * b', '* c']);    // 3:"  * b|c"
@@ -1432,7 +1438,7 @@ begin
                   DoNewLine('after 1st',   7, 2,   4, 3,  [2, '  {* a', ' * bc']);  // 2:"  {* a|bc"
                   DoNewLine('any line',    5, 3,   3, 4,  [3, ' * b', '* c']);   // 3:" * b|c"
 
-                  // Indent, not BOL / matching // AnsiIndentFirstLineMax applied
+                  // Indent, not BOL / matching // sciAlignOpenOnce applied
                   DoSetText('not BOL matching',  [2, '  ;;;{* abc']);
                   DoNewLine('after 1st',  10, 2,   9, 3,  [2, '  ;;;{* a', '      * bc']);  // 2:"  ;{* a|bc"
                   DoNewLine('any line',   10, 3,   3, 4,  [3, '      * b', '* c']);    // 3:"  * b|c"

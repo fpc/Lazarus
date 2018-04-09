@@ -1662,7 +1662,7 @@ resourcestring
   dlgCommentContinue = 'Prefix comments on linebreak';
   dlgCommentContinueMatch  = 'Match current line';
   dlgCommentContinuePrefix = 'Prefix new line';
-  dlgCommentAlignMaxDefault = 'Make default indent for new line if comment opens at column:';
+  dlgCommentAlignMaxDefault = 'Max indent for new line if prefix is based on start of comment on first comment line:';
   dlgCommentAlignMaxToken   = 'Limit indent to';
   dlgCommentContinueMatchText = 'Match text after token "%s"';
   dlgCommentContinueMatchToken = 'Match text including token "%s"';
