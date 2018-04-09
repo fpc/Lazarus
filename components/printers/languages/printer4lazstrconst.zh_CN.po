@@ -40,6 +40,10 @@ msgstr "横向格式"
 msgid "Margins"
 msgstr "边距"
 
+#: printer4lazstrconst.p4lrsnodefaultprinter
+msgid "No default printer found."
+msgstr ""
+
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"
 msgstr "确定"
@@ -83,6 +87,14 @@ msgstr "横向翻转"
 #: printer4lazstrconst.p4lrsreverseportrait
 msgid "Reverse portrait"
 msgstr "纵向翻转"
+
+#: printer4lazstrconst.p4lrsshortunitsinches
+msgid "(inches)"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsshortunitsmm
+msgid "(mm)"
+msgstr ""
 
 #: printer4lazstrconst.p4lrsstart
 msgid "Start"

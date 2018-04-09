@@ -40,6 +40,10 @@ msgstr "Gulsčias"
 msgid "Margins"
 msgstr "Ribos"
 
+#: printer4lazstrconst.p4lrsnodefaultprinter
+msgid "No default printer found."
+msgstr ""
+
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"
 msgstr "Tvarka"
@@ -83,6 +87,14 @@ msgstr "Apsuktas gulščias"
 #: printer4lazstrconst.p4lrsreverseportrait
 msgid "Reverse portrait"
 msgstr "Apsuktas stačias"
+
+#: printer4lazstrconst.p4lrsshortunitsinches
+msgid "(inches)"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsshortunitsmm
+msgid "(mm)"
+msgstr ""
 
 #: printer4lazstrconst.p4lrsstart
 msgid "Start"

@@ -29,6 +29,10 @@ msgstr ""
 msgid "Margins"
 msgstr ""
 
+#: printer4lazstrconst.p4lrsnodefaultprinter
+msgid "No default printer found."
+msgstr ""
+
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"
 msgstr ""
@@ -71,6 +75,14 @@ msgstr ""
 
 #: printer4lazstrconst.p4lrsreverseportrait
 msgid "Reverse portrait"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsshortunitsinches
+msgid "(inches)"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsshortunitsmm
+msgid "(mm)"
 msgstr ""
 
 #: printer4lazstrconst.p4lrsstart
