@@ -613,6 +613,89 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           end
         end
       end
+      object StylePriorPanel: TPanel
+        Left = 529
+        Height = 151
+        Top = 1
+        Width = 170
+        Align = alLeft
+        BorderSpacing.Left = 6
+        ClientHeight = 151
+        ClientWidth = 170
+        TabOrder = 3
+        object StylePriorLabel: TLabel
+          Left = 1
+          Height = 15
+          Top = 1
+          Width = 168
+          Align = alTop
+          Caption = 'StylePriorLabel'
+          ParentColor = False
+        end
+        object StylePriorList: TTreeView
+          Left = 1
+          Height = 102
+          Top = 16
+          Width = 168
+          Align = alClient
+          AutoExpand = True
+          ReadOnly = True
+          ScrollBars = ssAutoVertical
+          ShowButtons = False
+          ShowLines = False
+          ShowRoot = False
+          SortType = stData
+          TabOrder = 0
+          OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
+          OnClick = ForePriorListClick
+          OnCompare = ForePriorListCompare
+          Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
+          TreeLinePenStyle = psClear
+        end
+        object StylePriorValPanel: TPanel
+          Left = 1
+          Height = 31
+          Top = 119
+          Width = 168
+          Align = alBottom
+          AutoSize = True
+          BorderSpacing.Top = 1
+          BevelOuter = bvNone
+          ClientHeight = 31
+          ClientWidth = 168
+          TabOrder = 1
+          object StylePriorEdit: TEdit
+            AnchorSideRight.Control = StylePriorUpDown
+            Left = 0
+            Height = 23
+            Top = 0
+            Width = 148
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Right = 3
+            OnEditingDone = ForePriorEditChange
+            OnKeyPress = ForePriorEditKeyPress
+            TabOrder = 0
+            Text = '0'
+          end
+          object StylePriorUpDown: TUpDown
+            AnchorSideTop.Control = StylePriorValPanel
+            AnchorSideRight.Control = StylePriorValPanel
+            AnchorSideRight.Side = asrBottom
+            AnchorSideBottom.Control = StylePriorValPanel
+            AnchorSideBottom.Side = asrBottom
+            Left = 151
+            Height = 31
+            Top = 0
+            Width = 17
+            Anchors = [akTop, akRight, akBottom]
+            Min = 0
+            OnClick = ForePriorUpDownClick
+            Position = 0
+            TabOrder = 1
+            Wrap = False
+          end
+        end
+      end
     end
   end
   object pnlTop: TPanel
@@ -1298,15 +1381,15 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     DefaultExt = '.xml'
     Filter = 'xml|*.xml'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
-    Left = 568
-    Top = 56
+    left = 568
+    top = 56
   end
   object LanguageMenu: TPopupMenu
-    Left = 568
-    Top = 104
+    left = 568
+    top = 104
   end
   object ColorSchemeMenu: TPopupMenu
-    Left = 568
-    Top = 160
+    left = 568
+    top = 160
   end
 end

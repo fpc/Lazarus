@@ -36,13 +36,19 @@ uses
 type
 
   // for priority
-  TMarkupField = (mfForeGround, mfBackGround, mfFrame, mfUnknown);
+  TMarkupField = (mfForeGround, mfBackGround, mfFrame, mfStyle, mfUnknown);
 
   { TEditorColorOptionsFrame }
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
+    StylePriorEdit: TEdit;
+    StylePriorLabel: TLabel;
     BackPriorList: TTreeView;
+    StylePriorList: TTreeView;
+    StylePriorPanel: TPanel;
+    StylePriorUpDown: TUpDown;
     BackPriorValPanel: TPanel;
+    StylePriorValPanel: TPanel;
     bvlAttributeSection: TDividerBevel;
     BackPriorEdit: TEdit;
     FramePriorEdit: TEdit;
@@ -868,6 +874,8 @@ procedure TEditorColorOptionsFrame.FillPriorEditor;
         mfFrame:     Result := (hafFrameColor in AnAttr.Features) and
                      (AnAttr.FrameColor <> clNone) and
                      (AnAttr.FrameColor <> clDefault);
+        mfStyle:     Result := (hafStyle in AnAttr.Features) and
+                     ( (AnAttr.Style <> []) or (AnAttr.StyleMask <> []) );
     end
   end;
 
@@ -898,6 +906,7 @@ begin
   FillList(ForePriorList, mfForeGround);
   FillList(BackPriorList, mfBackGround);
   FillList(FramePriorList, mfFrame);
+  FillList(StylePriorList, mfStyle);
 
   SelectCurInPriorEditor;
 
@@ -944,6 +953,18 @@ begin
   if n = nil then
     FramePriorList.Selected := nil;
   SetPriorEditVal(FramePriorEdit, GetAttrPriorVal(FCurHighlightElement, mfFrame));
+
+  n := StylePriorList.Items.FindNodeWithData(FCurHighlightElement);
+  StylePriorValPanel.Enabled := n <> nil;
+  if (n <> nil) and not(n.Selected) then begin
+    n.Selected := True;
+    i := Max(0, n.Index - Max(0, (StylePriorList.Height div n.Height div 2) - 1));
+    StylePriorList.TopItem := StylePriorList.Items[i];
+  end
+  else
+  if n = nil then
+    StylePriorList.Selected := nil;
+  SetPriorEditVal(StylePriorEdit, GetAttrPriorVal(FCurHighlightElement, mfStyle));
 end;
 
 function TEditorColorOptionsFrame.AttrForNode(ANode: TTreeNode): TColorSchemeAttribute;
@@ -966,6 +987,9 @@ begin
   If ASender = FramePriorEdit then
     Result := mfFrame
   else
+  If ASender = StylePriorEdit then
+    Result := mfStyle
+  else
   if ASender = ForePriorUpDown then
     Result := mfForeGround
   else
@@ -975,6 +999,9 @@ begin
   if ASender = FramePriorUpDown then
     Result := mfFrame
   else
+  if ASender = StylePriorUpDown then
+    Result := mfStyle
+  else
   if ASender = ForePriorList then
     Result := mfForeGround
   else
@@ -983,6 +1010,9 @@ begin
   else
   if ASender = FramePriorList then
     Result := mfFrame
+  else
+  if ASender = StylePriorList then
+    Result := mfStyle
   else
     Result := mfUnknown;
 end;
@@ -994,6 +1024,7 @@ begin
     mfForeGround: Result := ForePriorEdit;
     mfBackGround: Result := BackPriorEdit;
     mfFrame:      Result := FramePriorEdit;
+    mfStyle:      Result := StylePriorEdit;
   end;
 end;
 
@@ -1004,6 +1035,7 @@ begin
     mfForeGround: Result := ForePriorList;
     mfBackGround: Result := BackPriorList;
     mfFrame:      Result := FramePriorList;
+    mfStyle:      Result := StylePriorList;
   end;
 end;
 
@@ -1015,7 +1047,12 @@ begin
   case AField of
     mfForeGround: AnAttr.ForePriority := AValue;
     mfBackGround: AnAttr.BackPriority := AValue;
-    mfFrame:      AnAttr.FramePriority := AValue
+    mfFrame:      AnAttr.FramePriority := AValue;
+    mfStyle:      begin
+        AnAttr.StylePriority[fsBold] := AValue;
+        AnAttr.StylePriority[fsItalic] := AValue;
+        AnAttr.StylePriority[fsUnderline] := AValue;
+      end;
   end;
 end;
 
@@ -1029,7 +1066,8 @@ begin
   case AField of
     mfForeGround: Result := AnAttr.ForePriority;
     mfBackGround: Result := AnAttr.BackPriority;
-    mfFrame:      Result := AnAttr.FramePriority
+    mfFrame:      Result := AnAttr.FramePriority;
+    mfStyle:      Result := AnAttr.StylePriority[fsBold];
   end;
 end;
 
@@ -1429,6 +1467,7 @@ begin
   ForePriorLabel.Caption := dlgForecolor;
   BackPriorLabel.Caption := dlgBackColor;
   FramePriorLabel.Caption := dlgFrameColor;
+  StylePriorLabel.Caption := dlgTextStyle;
 
   bvlAttributeSection.Caption := dlgElementAttributes;
   SynColorAttrEditor1.Setup;
