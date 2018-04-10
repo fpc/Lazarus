@@ -3747,6 +3747,10 @@ msgstr "Opzioni specifiche della Destinazione"
 msgid "Directory for building test projects"
 msgstr "Cartella per costruire progetti di test"
 
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtexttofind
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"

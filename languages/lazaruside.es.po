@@ -3756,6 +3756,10 @@ msgstr "Opciones de objetivo específicas"
 msgid "Directory for building test projects"
 msgstr "Directorio para construir proyectos de prueba"
 
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtexttofind
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"

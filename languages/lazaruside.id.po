@@ -3834,6 +3834,10 @@ msgstr ""
 msgid "Directory for building test projects"
 msgstr "Direktori untuk pembangunan proyek tes"
 
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtexttofind
 #, fuzzy
 #| msgid "&Text to Find"

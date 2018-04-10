@@ -3896,6 +3896,10 @@ msgstr ""
 msgid "Directory for building test projects"
 msgstr "תיקייה לבניית פרוייקטים לנסיון"
 
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtexttofind
 #, fuzzy
 #| msgid "&Text to Find"

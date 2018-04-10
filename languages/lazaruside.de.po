@@ -3699,6 +3699,10 @@ msgstr "Zielbetriebssytemspezifische Einstellungen"
 msgid "Directory for building test projects"
 msgstr "Verzeichnis für das Anlegen von Testprojekten"
 
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtexttofind
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"

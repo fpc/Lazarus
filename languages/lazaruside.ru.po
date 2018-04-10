@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-04-10 01:36+0300\n"
+"PO-Revision-Date: 2018-04-11 01:52+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3700,6 +3700,10 @@ msgstr "Частные параметры цели"
 #: lazarusidestrconsts.dlgtestprjdir
 msgid "Directory for building test projects"
 msgstr "Каталог для сборки пробных проектов"
+
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr "Начертание"
 
 #: lazarusidestrconsts.dlgtexttofind
 msgctxt "lazarusidestrconsts.dlgtexttofind"

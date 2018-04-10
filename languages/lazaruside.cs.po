@@ -3718,6 +3718,10 @@ msgstr "Volby specifické pro Cíl"
 msgid "Directory for building test projects"
 msgstr "Adresář pro sestavení pokusných projektů"
 
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtexttofind
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"

@@ -3705,6 +3705,10 @@ msgstr "Параметри для цілі"
 msgid "Directory for building test projects"
 msgstr "Тека для збирання пробних проектів"
 
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtexttofind
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"

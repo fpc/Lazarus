@@ -3679,6 +3679,10 @@ msgstr "Kohderiippuvaiset asetukset"
 msgid "Directory for building test projects"
 msgstr "Kansio testiprojektien kokoamiseen"
 
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtexttofind
 msgid "&Text to find"
 msgstr "&Etsittävä"

@@ -3702,6 +3702,10 @@ msgstr "Cél-függő beállítások"
 msgid "Directory for building test projects"
 msgstr "Könyvtár a teszt projektek építéséhez"
 
+#: lazarusidestrconsts.dlgtextstyle
+msgid "Text-Style"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtexttofind
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
