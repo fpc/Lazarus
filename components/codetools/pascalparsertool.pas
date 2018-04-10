@@ -203,6 +203,7 @@ type
     function KeyWordFuncClassClass: boolean;
     function KeyWordFuncClassFinal: boolean;
     function KeyWordFuncClassMethod: boolean;
+    function KeyWordFuncClassGenericMember: boolean;
     function KeyWordFuncClassProperty: boolean;
     function KeyWordFuncClassIdentifier: boolean;
     // keyword lists
@@ -519,6 +520,8 @@ begin
     'I': if CompareSrcIdentifiers(p,'FINAL') and Scanner.Values.IsDefined('CPUJVM')
          then exit(KeyWordFuncClassFinal);
     end;
+  'G':
+    if CompareSrcIdentifiers(p,'GENERIC') then exit(KeyWordFuncClassGenericMember);
   'P':
     case UpChars[p[1]] of
     'R':
@@ -1372,6 +1375,21 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   Result:=true;
+end;
+
+function TPascalParserTool.KeyWordFuncClassGenericMember: boolean;
+var
+  p: PChar;
+begin
+  ReadNextAtom;
+  if CurPos.Flag=cafNone then
+    SaveRaiseStringExpectedButAtomFound(20180410195348,'class');
+  p:=@Src[CurPos.StartPos];
+  case UpChars[p^] of
+  'C':
+    if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassClass);
+  end;
+  SaveRaiseStringExpectedButAtomFound(20180410195349,'class');
 end;
 
 function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
