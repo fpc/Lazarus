@@ -29,6 +29,7 @@ type
     procedure TestCompleteMethodSignature_Body_GenericDelphi; // todo
     procedure TestCompleteMethodBody_GenericObjFPC;
     procedure TestCompleteMethodBody_GenericDelphi;
+    procedure TestCompleteMethodBody_GenericMethod;
     procedure TestCompleteMethodBody_ParamGenericObjFPC;
     procedure TestCompleteMethodBody_ParamGenericDelphi;
     procedure TestCompleteProperty_TypeWithUnitname;
@@ -442,6 +443,40 @@ begin
     '',
     'procedure TBird<T>.DoIt;',
     'begin',
+    '',
+    'end;',
+    '',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodBody_GenericMethod;
+begin
+  Test('TestCompleteMethodBody_GenericMethod',
+    ['unit test1;',
+    '{$mode delphi}',
+    'interface',
+    'type',
+    '  TBird<T: class> = class',
+    '    generic class procedure DoIt<P>(i: P);',
+    '  end;',
+    'implementation',
+    'end.'],
+    6,1,
+    ['unit test1;',
+    '{$mode delphi}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird<T: class> = class',
+    '    generic class procedure DoIt<P>(i: P);',
+    '  end;',
+    'implementation',
+    '',
+    'generic class procedure TBird<T>.DoIt<P>(i: P);',
+    'begin',
+    '',
     'end;',
     '',
     'end.']);
