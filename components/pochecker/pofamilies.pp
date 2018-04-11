@@ -21,7 +21,7 @@ Type
                  pttCheckMismatchedOriginals, pttCheckDuplicateOriginals);
   TPoTestTypes = Set of TPoTestType;
 
-  TPoTestOption = (ptoFindAllChildren, ptoIgnoreFuzzyStrings);
+  TPoTestOption = (ptoFindAllChildren);
   TPoTestOptions = set of TPoTestOption;
 
 const
@@ -69,15 +69,16 @@ Type
 
   protected
     procedure CheckNrOfItems(out ErrorCount: Integer; ErrorLog: TStrings);
-    procedure CheckFormatArgs(out ErrorCount: Integer; ErrorLog: TStrings; IgnoreFuzzyStrings: Boolean);
+    procedure CheckFormatArgs(out ErrorCount, NonFuzzyErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckMissingIdentifiers(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckMismatchedOriginals(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckDuplicateOriginals(out WarningCount: Integer; ErrorLog: TStrings);
     procedure CheckStatistics(ErrorCnt: Integer);
 
   public
-    procedure RunTests(out ErrorCount, WarningCount, TranslatedCount,
-      UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog: TStrings);
+    procedure RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount,
+      TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog
+  : TStrings);
 
     property Master: TPOFile read FMaster;
     property Child: TPOFile read FChild;
@@ -542,7 +543,8 @@ begin
   //debugln('TPoFamily.CheckNrOfItemsMismatch: ',Dbgs(ErrorCount),' Errors');
 end;
 
-procedure TPoFamily.CheckFormatArgs(out ErrorCount: Integer; ErrorLog: TStrings; IgnoreFuzzyStrings: Boolean);
+procedure TPoFamily.CheckFormatArgs(out ErrorCount, NonFuzzyErrorCount: Integer
+  ; ErrorLog: TStrings);
 var
   i: Integer;
   CPoItem: TPOFileItem;
@@ -552,7 +554,7 @@ begin
   //debugln('TPoFamily.CheckFormatArgs');
   DoTestStart(PoTestTypeNames[pttCheckFormatArgs], ShortChildName);
   ErrorCount := NoError;
-  //for i := 0 to FMaster.Count - 1 do
+  NonFuzzyErrorCount := NoError;
   for i := 0 to FChild.Count - 1 do
   begin
     //debugln('  i = ',DbgS(i));
@@ -561,10 +563,10 @@ begin
     //CPoItem := FChild.FindPoItem(MPoItem.IdentifierLow);
     if Assigned(CPoItem) then
     begin
-      IsFuzzy := (Pos('fuzzy', CPoItem.Flags) > 0);
-      IsBadFormat := (Pos('badformat', CPoItem.Flags) > 0);
+      IsFuzzy := (Pos(sFuzzyFlag, CPoItem.Flags) > 0);
+      IsBadFormat := (Pos(sBadFormatFlag, CPoItem.Flags) > 0);
       //if (IgnoreFuzzyStrings and IsFuzzy) then debugln('Skipping fuzzy translation: ',CPoItem.Translation);
-      if (Length(CPoItem.Translation) > 0) and (not (IgnoreFuzzyStrings and IsFuzzy)) and IsBadFormat then
+      if (Length(CPoItem.Translation) > 0) and IsBadFormat then
       begin
         if (ErrorCount = 0) then
         begin
@@ -575,6 +577,8 @@ begin
           ErrorLog.Add('');
         end;
         Inc(ErrorCount);
+        if not IsFuzzy then
+          Inc(NonFuzzyErrorCount);
         ErrorLog.Add(Format(sIncompatibleFormatArgs,[CPoItem.LineNr]));
         ErrorLog.Add(Format(sFormatArgsID,[sCommentIdentifier, CPoItem.IdentifierLow]));
         ErrorLog.Add(Format(sFormatArgsValues,[sMsgID,CPoItem.Original,sOriginal]));
@@ -797,10 +801,10 @@ Pre conditions:
   * Master and a matching Child must be assigned at start ot testing
   * If a Child is assigned it must be child of Master
 }
-procedure TPoFamily.RunTests(out ErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog: TStrings);
+procedure TPoFamily.RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog: TStrings);
 var
   SL: TStringList;
-  CurrErrCnt, CurrWarnCnt, ThisErrCnt: Integer;
+  CurrErrCnt, CurrNonFuzzyErrCnt, CurrWarnCnt, ThisErrCnt: Integer;
   i: Integer;
   CurrChildName: String;
   S: String;
@@ -808,6 +812,7 @@ begin
   SL := nil;
   FPoFamilyStats.Clear;
   ErrorCount := NoError;
+  NonFuzzyErrorCount := NoError;
   WarningCount := NoError;
   TranslatedCount := 0;
   UntranslatedCount := 0;
@@ -907,9 +912,10 @@ begin
 
       if (pttCheckFormatArgs in FTestTypes) then
       begin
-        CheckFormatArgs(CurrErrCnt, ErrorLog, (ptoIgnoreFuzzyStrings in FTestOptions));
+        CheckFormatArgs(CurrErrCnt, CurrNonFuzzyErrCnt, ErrorLog);
         ErrorCount := CurrErrCnt + ErrorCount;
         ThisErrCnt := ThisErrCnt + CurrErrCnt;
+        NonFuzzyErrorCount := CurrNonFuzzyErrCnt + NonFuzzyErrorCount;
       end;
 
 

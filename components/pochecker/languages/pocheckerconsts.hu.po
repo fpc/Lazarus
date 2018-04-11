@@ -217,10 +217,6 @@ msgstr "GUI PO-fájl ellenőrző eszköz"
 msgid "Identifier [%s] not found in %s"
 msgstr "A(z) %s azonosító nem található ebben: %s"
 
-#: pocheckerconsts.signorefuzzytranslations
-msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr "A \"bizonytalan\"-nak jelölt fordítások kihagyása"
-
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Sor: %d] Nem megfelelő és/vagy érvénytelen format() paraméterek a következőben:"
@@ -406,8 +402,14 @@ msgid "The following %s orphaned .po file(s) found:"
 msgstr "A következő %s elárvult .po fájl található:"
 
 #: pocheckerconsts.stotalerrors
-msgid "Total errors found: %d"
+#, fuzzy
+#| msgid "Total errors found: %d"
+msgid "Total errors: %d"
 msgstr "Összes megtalált hiba: %d"
+
+#: pocheckerconsts.stotalerrorsnonfuzzy
+msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
+msgstr ""
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
@@ -422,7 +424,9 @@ msgid "Total untranslated strings: %s"
 msgstr "Összes lefordítatlan szöveg: %s"
 
 #: pocheckerconsts.stotalwarnings
-msgid "Total warnings found: %d"
+#, fuzzy
+#| msgid "Total warnings found: %d"
+msgid "Total warnings: %d"
 msgstr "Összes figyelmeztetés: %d"
 
 #: pocheckerconsts.stranslatedstringstotal

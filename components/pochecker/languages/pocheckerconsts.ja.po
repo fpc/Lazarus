@@ -217,10 +217,6 @@ msgstr "GUI po ファイル検査ツール"
 msgid "Identifier [%s] not found in %s"
 msgstr "識別子 [%s] が %s 内にありません"
 
-#: pocheckerconsts.signorefuzzytranslations
-msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr ""
-
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[行：%d] 互換性のないもしくは無効な format() の引数："
@@ -406,8 +402,12 @@ msgstr ""
 #: pocheckerconsts.stotalerrors
 #, fuzzy
 #| msgid "Total errors / warnings found: %d"
-msgid "Total errors found: %d"
+msgid "Total errors: %d"
 msgstr "エラー／警告の総数：%d"
+
+#: pocheckerconsts.stotalerrorsnonfuzzy
+msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
+msgstr ""
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
@@ -422,7 +422,9 @@ msgid "Total untranslated strings: %s"
 msgstr ""
 
 #: pocheckerconsts.stotalwarnings
-msgid "Total warnings found: %d"
+#, fuzzy
+#| msgid "Total warnings found: %d"
+msgid "Total warnings: %d"
 msgstr "警告の総数：%d"
 
 #: pocheckerconsts.stranslatedstringstotal

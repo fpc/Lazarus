@@ -217,10 +217,6 @@ msgstr "GUI de herramienta de comprobación de archivos PO"
 msgid "Identifier [%s] not found in %s"
 msgstr "Identificador [%s] no se encuentra en %s"
 
-#: pocheckerconsts.signorefuzzytranslations
-msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr "Ignorar cadenas traducidas que están marcadas como \"fuzzy\" (confusas)"
-
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Línea: %d] Formato de argumentos format() Incompatible y/o no válidos para:"
@@ -418,8 +414,14 @@ msgid "The following %s orphaned .po file(s) found:"
 msgstr ""
 
 #: pocheckerconsts.stotalerrors
-msgid "Total errors found: %d"
+#, fuzzy
+#| msgid "Total errors found: %d"
+msgid "Total errors: %d"
 msgstr "Total de errores encontrados: %d"
+
+#: pocheckerconsts.stotalerrorsnonfuzzy
+msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
+msgstr ""
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
@@ -434,7 +436,9 @@ msgid "Total untranslated strings: %s"
 msgstr ""
 
 #: pocheckerconsts.stotalwarnings
-msgid "Total warnings found: %d"
+#, fuzzy
+#| msgid "Total warnings found: %d"
+msgid "Total warnings: %d"
 msgstr "Total de avisos encontrados: %d"
 
 #: pocheckerconsts.stranslatedstringstotal

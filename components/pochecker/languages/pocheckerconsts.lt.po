@@ -218,10 +218,6 @@ msgstr "Įrankio PO failų tikrinimui grafinė sąsaja"
 msgid "Identifier [%s] not found in %s"
 msgstr "Ieškota identifikatoriaus [%s], tačiau %s jo neturi"
 
-#: pocheckerconsts.signorefuzzytranslations
-msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr "Įgnoruoti vertimus, kurie pažymėti „fuzzy“ žyme"
-
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Eilutė: %d] Nesuderinamų ir/arba klaidingų „format()“ argumentų turi:"
@@ -407,8 +403,14 @@ msgid "The following %s orphaned .po file(s) found:"
 msgstr "Rasti šie %s „.po“ failai-našlaičiai:"
 
 #: pocheckerconsts.stotalerrors
-msgid "Total errors found: %d"
+#, fuzzy
+#| msgid "Total errors found: %d"
+msgid "Total errors: %d"
 msgstr "Viso rasta klaidų: %d"
+
+#: pocheckerconsts.stotalerrorsnonfuzzy
+msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
+msgstr ""
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
@@ -423,7 +425,9 @@ msgid "Total untranslated strings: %s"
 msgstr "Viso neišversta: %s"
 
 #: pocheckerconsts.stotalwarnings
-msgid "Total warnings found: %d"
+#, fuzzy
+#| msgid "Total warnings found: %d"
+msgid "Total warnings: %d"
 msgstr "Viso rasta perspėjimų: %d"
 
 #: pocheckerconsts.stranslatedstringstotal

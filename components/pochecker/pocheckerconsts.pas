@@ -28,8 +28,9 @@ resourcestring
   sLastSearchPath = 'Last search path:';
   sLanguage = 'Language:';
 
-  sTotalErrors = 'Total errors found: %d';
-  sTotalWarnings = 'Total warnings found: %d';
+  sTotalErrors = 'Total errors: %d';
+  sTotalErrorsNonFuzzy = 'Total errors: %d (formatting errors in non-fuzzy strings: %d)';
+  sTotalWarnings = 'Total warnings: %d';
   sTotalUntranslatedStrings = 'Total untranslated strings: %s';
   sTotalFuzzyStrings = 'Total fuzzy strings: %s';
   sTotalTranslatedStrings = 'Total translated strings: %s (%.1f%%)';
@@ -82,7 +83,6 @@ resourcestring
     +'untranslated strings';
   sCheckForDuplicateUntranslatedValues = 'Check for duplicate untranslated '
     +'values';
-  sIgnoreFuzzyTranslations = 'Ignore translated strings marked as "fuzzy"';
   sIncompatibleFormatArgs = '[Line: %d] Incompatible and/or invalid format() arguments for:' ;
 
   sNrErrorsFound = 'Found %d errors.';

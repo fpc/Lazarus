@@ -218,10 +218,6 @@ msgstr "Інструмент з ГІК для перевірки po-файлів
 msgid "Identifier [%s] not found in %s"
 msgstr "Ідентифікатор [%s] не знайдено в %s"
 
-#: pocheckerconsts.signorefuzzytranslations
-msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr "Знехтувати перекладені рядки, позначені як неточні"
-
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
 msgstr "[Рядок: %d] Несумісні і/або неправильні аргументи format() для:"
@@ -407,8 +403,14 @@ msgid "The following %s orphaned .po file(s) found:"
 msgstr "Знайдено такі %s загублених файлів .po:"
 
 #: pocheckerconsts.stotalerrors
-msgid "Total errors found: %d"
+#, fuzzy
+#| msgid "Total errors found: %d"
+msgid "Total errors: %d"
 msgstr "Знайдено помилок: %d"
+
+#: pocheckerconsts.stotalerrorsnonfuzzy
+msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
+msgstr ""
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
@@ -423,7 +425,9 @@ msgid "Total untranslated strings: %s"
 msgstr "Всього неперекладених рядків: %s"
 
 #: pocheckerconsts.stotalwarnings
-msgid "Total warnings found: %d"
+#, fuzzy
+#| msgid "Total warnings found: %d"
+msgid "Total warnings: %d"
 msgstr "Знайдено всього попереджень: %d"
 
 #: pocheckerconsts.stranslatedstringstotal

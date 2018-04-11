@@ -72,7 +72,6 @@ type
     function GetTestTypesFromListBox: TPoTestTypes;
     function GetTestOptions: TPoTestOptions;
     procedure SetTestTypeCheckBoxes(TestTypes: TPoTestTypes);
-    procedure SetTestOptionCheckBoxes(TestOptions: TPoTestOptions);
     procedure ShowError(const Msg: string);
     procedure ScanDirectory(ADir: String);
     function TryCreatepoFamilyList(MasterList: TStrings; const LangID: TLangID): Boolean;
@@ -95,7 +94,6 @@ type
     {$ENDIF}
     procedure ApplyTranslations;
   published
-    IgnoreFuzzyCheckBox: TCheckBox;
     UnselectAllTestsBtn: TButton;
     SelectAllTestsBtn: TButton;
     SelectBasicTestsBtn: TButton;
@@ -334,10 +332,6 @@ end;
 function TPoCheckerForm.GetTestOptions: TPoTestOptions;
 begin
   Result := [];
-  //if FindAllPOsCheckBox.Checked then
-  //  Result := Result + [ptoFindAllChildren];
-  if IgnoreFuzzyCheckBox.Checked then
-    Result := Result + [ptoIgnoreFuzzyStrings];
 end;
 
 procedure TPoCheckerForm.SetTestTypeCheckBoxes(TestTypes: TPoTestTypes);
@@ -353,12 +347,6 @@ begin
       TestListBox.Checked[Index] := (Typ in TestTypes)
     end;
   end;
-end;
-
-procedure TPoCheckerForm.SetTestOptionCheckBoxes(TestOptions: TPoTestOptions);
-begin
-  //FindAllPOsCheckBox.Checked := (ptoFindAllChildren in TestOptions);
-  IgnoreFuzzyCheckBox.Checked := (ptoIgnoreFuzzyStrings in TestOptions);
 end;
 
 procedure TPoCheckerForm.ShowError(const Msg: string);
@@ -515,7 +503,7 @@ procedure TPoCheckerForm.RunSelectedTests;
 var
   TestTypes: TPoTestTypes;
   TestOptions: TPoTestOptions;
-  ErrorCount, WarningCount: integer;
+  ErrorCount, NonFuzzyErrorCount, WarningCount: integer;
   TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
   TotalPercTranslated: Double;
   SL: TStrings;
@@ -538,7 +526,7 @@ begin
     PoFamilyList.TestTypes := TestTypes;
     PoFamilyList.TestOptions := TestOptions;
 
-    PoFamilyList.RunTests(ErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, SL, StatL);
+    PoFamilyList.RunTests(ErrorCount, NonFuzzyErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, SL, StatL);
     //debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
     //debugln('                  ', Format(sTotalWarnings, [WarningCount]));
     TotalPercTranslated := 100 * TotalTranslatedCount / (TotalTranslatedCount + TotalUntranslatedCount + TotalFuzzyCount);
@@ -550,7 +538,10 @@ begin
     SL.Insert(4, LangFilter.Text);
     SL.Insert(5, '');
 
-    SL.Add(Format(sTotalErrors, [ErrorCount]));
+    if NonFuzzyErrorCount > 0 then
+      SL.Add(Format(sTotalErrorsNonFuzzy, [ErrorCount, NonFuzzyErrorCount]))
+    else
+      SL.Add(Format(sTotalErrors, [ErrorCount]));
     SL.Add(Format(sTotalWarnings, [WarningCount]));
     SL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
     SL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
@@ -603,7 +594,6 @@ begin
   SelectBasicTestsBtn.Enabled := HasSelection;
   UnselectAllTestsBtn.Enabled := HasSelection;
   UnselectAllMasterFilesBtn.Enabled := HasSelection;
-  IgnoreFuzzyCheckBox.Enabled := HasSelection;
   ClearMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
   SelectAllMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
 end;
@@ -707,7 +697,6 @@ begin
     BoundsRect := ARect;
   end;
   SetTestTypeCheckBoxes(FPoCheckerSettings.TestTypes);
-  SetTestOptionCheckBoxes(FPoCheckerSettings.TestOptions);
   SelectDirectoryDialog.Filename := FPoCheckerSettings.SelectDirectoryFilename;
   Abbr := FPoCheckerSettings.LangFilterLanguageAbbr;
   ID := LangAbbrToLangId(Abbr);
@@ -914,7 +903,6 @@ begin
   LocalizeLanguageNames;
   Caption := sGUIPoFileCheckingTool;
   SelectTestLabel.Caption := sSelectTestTypes;
-  IgnoreFuzzyCheckBox.Caption := sIgnoreFuzzyTranslations;
   ScanDirToolButton.Caption := sScanDir;
   RunToolButton.Caption := sRunSelectedTests;
   ClearMasterFilesBtn.Caption := sClearListBox;

@@ -156,8 +156,7 @@ const
     'CheckForDuplicateUntranslatedValues'
     );
   TestoptionNames: array[TPoTestOption] of String = (
-    'FindAllChildren',
-    'IgnoreFuzzyStrings'
+    'FindAllChildren'
     );
 
   pSelectDirectoryFilename = 'SelectDirectoryFilename/';
