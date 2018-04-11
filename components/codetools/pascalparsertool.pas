@@ -203,7 +203,6 @@ type
     function KeyWordFuncClassClass: boolean;
     function KeyWordFuncClassFinal: boolean;
     function KeyWordFuncClassMethod: boolean;
-    function KeyWordFuncClassGenericMember: boolean;
     function KeyWordFuncClassProperty: boolean;
     function KeyWordFuncClassIdentifier: boolean;
     // keyword lists
@@ -357,7 +356,7 @@ begin
     else
       Include(ParseAttr,pphIsFunction);
   end else
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411193952);
 end;
 
 constructor TPascalParserTool.Create;
@@ -521,7 +520,8 @@ begin
          then exit(KeyWordFuncClassFinal);
     end;
   'G':
-    if CompareSrcIdentifiers(p,'GENERIC') then exit(KeyWordFuncClassGenericMember);
+    if CompareSrcIdentifiers(p,'GENERIC') and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC]) then
+      exit(KeyWordFuncClassMethod);
   'P':
     case UpChars[p[1]] of
     'R':
@@ -724,7 +724,7 @@ begin
             // program and library can use keywords
             if (CurPos.Flag<>cafWord)
             or (CurSection in [ctnUnit,ctnPackage]) then
-              AtomIsIdentifierSaveE;
+              AtomIsIdentifierSaveE(20180411193958);
             if aNameSpace='' then begin
               CreateChildNode;
               CurNode.Desc:=ctnSrcName;
@@ -757,7 +757,7 @@ begin
             repeat
               ReadNextAtom;
               if CurPos.Flag<>cafWord then
-                AtomIsIdentifierSaveE;
+                AtomIsIdentifierSaveE(20180411194004);
               ReadNextAtom; // should be ',' or ')'
               if not (CurPos.Flag in [cafComma,cafRoundBracketClose]) then
                 RaiseCharExpectedButAtomFound(20170421195352,')');
@@ -1120,7 +1120,7 @@ begin
       EndChildNode;
       // read next variable name
       ReadNextAtom;
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194010);
       // create variable definition node
       CreateChildNode;
       CurNode.Desc:=ctnVarDefinition;
@@ -1307,7 +1307,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    compilerproc[:name]
    }
 var
-  HasForwardModifier: boolean;
+  HasForwardModifier, IsGeneric: boolean;
   ParseAttr: TParseProcHeadAttributes;
 begin
   if (CurNode.Desc in AllClassSubSections)
@@ -1325,6 +1325,11 @@ begin
   // create class method node
   CreateChildNode;
   CurNode.Desc:=ctnProcedure;
+  if UpAtomIs('GENERIC') then begin
+    IsGeneric:=true;
+    ReadNextAtom;
+  end else
+    IsGeneric:=false;
   // read method keyword
   if UpAtomIs('CLASS') or (UpAtomIs('STATIC')) then begin
     ReadNextAtom;
@@ -1348,7 +1353,7 @@ begin
   CheckOperatorProc(ParseAttr);
   ReadNextAtom;
   if Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE] then
-    ReadGenericParamList(false,true);
+    ReadGenericParamList(IsGeneric,true);
   if (CurPos.Flag<>cafPoint) then begin
     // read rest
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
@@ -1357,13 +1362,13 @@ begin
     CurNode.Parent.Desc:=ctnMethodMap;
     // read Method name of interface
     ReadNextAtom;
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411194015);
     //DebugLn(['TPascalParserTool.KeyWordFuncClassMethod ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos,true)]);
     // read '='
     ReadNextAtomIsChar('=');
     // read implementing method name
     ReadNextAtom;
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411194021);
     ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then
       UndoReadNextAtom;
@@ -1375,21 +1380,6 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   Result:=true;
-end;
-
-function TPascalParserTool.KeyWordFuncClassGenericMember: boolean;
-var
-  p: PChar;
-begin
-  ReadNextAtom;
-  if CurPos.Flag=cafNone then
-    SaveRaiseStringExpectedButAtomFound(20180410195348,'class');
-  p:=@Src[CurPos.StartPos];
-  case UpChars[p^] of
-  'C':
-    if CompareSrcIdentifiers(p,'CLASS') then exit(KeyWordFuncClassClass);
-  end;
-  SaveRaiseStringExpectedButAtomFound(20180410195349,'class');
 end;
 
 function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
@@ -1494,7 +1484,7 @@ begin
         repeat
           if not AtomIsIdentifier then begin
             if ExceptionOnError then
-              AtomIsIdentifierSaveE;
+              AtomIsIdentifierSaveE(20180411194026);
             exit;
           end;
           if (phpCreateNodes in Attr) then begin
@@ -1669,7 +1659,7 @@ begin
     if NeedIdentifier then begin
       if not AtomIsIdentifier then begin
         if ExceptionOnError then
-          AtomIsIdentifierSaveE;
+          AtomIsIdentifierSaveE(20180411194035);
         exit;
       end;
       if (phpCreateNodes in Attr) then begin
@@ -1682,7 +1672,7 @@ begin
         Next;
         if not AtomIsIdentifier then begin
           if ExceptionOnError then
-            AtomIsIdentifierSaveE;
+            AtomIsIdentifierSaveE(20180411194038);
           exit;
         end;
         if (phpCreateNodes in Attr) then
@@ -1791,7 +1781,7 @@ begin
     if (pphIsOperator in ParseAttr) and (CurPos.Flag=cafWord) then begin
       // read operator result identifier
       // example: operator =()IsEqual:boolean;
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194044);
       if (pphCreateNodes in ParseAttr) then begin
         CreateChildNode;
         CurNode.Desc:=ctnVarDefinition;
@@ -1813,7 +1803,7 @@ begin
         if CurPos.Flag=cafEqual then begin
           // read interface alias
           ReadNextAtom;
-          AtomIsIdentifierSaveE;
+          AtomIsIdentifierSaveE(20180411194050);
           ReadNextAtom;
         end;
       end;
@@ -1889,7 +1879,7 @@ begin
       ReadNextAtom;
     end else if UpAtomIs('SYSCALL') then begin
       ReadNextAtom;
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194054);
       ReadNextAtom;
     end else if CurPos.Flag=cafEdgedBracketOpen then begin
       if [cmsPrefixedAttributes,cmsIgnoreAttributes]*Scanner.CompilerModeSwitches<>[]
@@ -1915,7 +1905,7 @@ begin
             ReadNextAtom;
             if AtomIsChar(':') then begin
               ReadNextAtom;
-              AtomIsIdentifierSaveE;
+              AtomIsIdentifierSaveE(20180411194100);
               ReadNextAtom;
             end;
           end else if UpAtomIs('EXTERNAL') then begin
@@ -1955,7 +1945,7 @@ begin
       if CurPos.Flag=cafColon then begin
         // e.g. compilerproc:fpc_in_delete_x_y_z;
         ReadNextAtom;
-        AtomIsIdentifierSaveE;
+        AtomIsIdentifierSaveE(20180411194104);
         ReadNextAtom;
       end;
     end else begin
@@ -2130,7 +2120,7 @@ begin
   repeat
     ReadNextAtom;  // read name
     if CurPos.Flag=cafSemicolon then break;
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411194109);
     CreateChildNode;
     CurNode.Desc:=ctnUseUnit;
     repeat
@@ -2144,7 +2134,7 @@ begin
       if CurPos.Flag<>cafPoint then break;
       LastUnitNode.Desc:=ctnUseUnitNamespace;
       ReadNextAtom;
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194112);
     until false;
     if UpAtomIs('IN') then begin
       ReadNextAtom;
@@ -2191,7 +2181,7 @@ begin
   repeat
     ReadNextAtom;  // read name
     if CurPos.Flag=cafSemicolon then break;
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411194121);
     ReadNextAtom;
     if CurPos.Flag=cafSemicolon then break;
     if CurPos.Flag<>cafComma then
@@ -2533,7 +2523,7 @@ begin
       SaveRaiseStringExpectedButAtomFound(20170421195547,'property');
   end;
   ReadNextAtom;
-  AtomIsIdentifierSaveE;
+  AtomIsIdentifierSaveE(20180411194128);
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin
     // read parameter list
@@ -2561,7 +2551,7 @@ begin
         RaiseSemicolonAfterPropSpecMissing('nodefault');
     end else if UpAtomIs('ENUMERATOR') then begin
       ReadNextAtom;
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194135);
       ReadNextAtom;
       if CurPos.Flag<>cafSemicolon then
         RaiseSemicolonAfterPropSpecMissing('enumerator');
@@ -3325,7 +3315,7 @@ begin
   // read variable name
   ReadNextAtom;
   if ExceptionOnError then
-    AtomIsIdentifierSaveE
+    AtomIsIdentifierSaveE(20180411194139)
   else if not AtomIsIdentifier then
     exit;
   if CreateNodes then begin
@@ -3341,7 +3331,7 @@ begin
       CurNode.Desc:=ctnVarDefinition;
     ReadNextAtom;
     if ExceptionOnError then
-      AtomIsIdentifierSaveE
+      AtomIsIdentifierSaveE(20180411194142)
     else if not AtomIsIdentifier then
       exit;
     if CreateNodes then begin
@@ -3357,7 +3347,7 @@ begin
     // or: on E:Unit.Exception do ;
     ReadNextAtom;
     if ExceptionOnError then
-      AtomIsIdentifierSaveE
+      AtomIsIdentifierSaveE(20180411194146)
     else if not AtomIsIdentifier then
       exit;
     if CreateNodes then begin
@@ -3770,7 +3760,7 @@ begin
         CurNode.EndPos:=LastIdentifierEnd;
         EndChildNode; // close variable definition
         ReadNextAtom;
-        AtomIsIdentifierSaveE;
+        AtomIsIdentifierSaveE(20180411194149);
         CreateChildNode;
         CurNode.Desc:=ctnVarDefinition;
         LastIdentifierEnd:=CurPos.EndPos;
@@ -3906,11 +3896,11 @@ begin
   CurNode.Desc:=ctnExportsSection;
   repeat
     ReadNextAtom;
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411194152);
     ReadNextAtom;
     if CurPos.Flag=cafPoint then begin
       ReadNextAtom;
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194155);
       ReadNextAtom;
     end;
     if UpAtomIs('INDEX') then begin
@@ -4091,7 +4081,7 @@ begin
     CurNode.Desc:=ctnTypeDefinition;
   end;
   // read name
-  AtomIsIdentifierSaveE;
+  AtomIsIdentifierSaveE(20180411194158);
   ReadNextAtom;
   if (TypeNode.Desc=ctnGenericType) and (not AtomIsChar('<')) then
     SaveRaiseCharExpectedButAtomFound(20170421195732,'<');
@@ -4164,7 +4154,7 @@ begin
         // read next name
         EndChildNode;
         ReadNextAtom;
-        AtomIsIdentifierSaveE;
+        AtomIsIdentifierSaveE(20180411194201);
         CreateChildNode;
         CurNode.Desc:=ctnGenericParameter;
         CurNode.EndPos:=CurPos.EndPos;
@@ -4187,7 +4177,7 @@ begin
             ReadNextAtom;
           end else begin
             // a type
-            AtomIsIdentifierSaveE;
+            AtomIsIdentifierSaveE(20180411194204);
             ReadNextAtom;
           end;
           if AtomIs('>=') then begin
@@ -4316,7 +4306,7 @@ begin
   Cnt:=1;
   while CurPos.Flag=cafPoint do begin
     ReadNextAtom;
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411194207);
     ReadNextAtom;
     inc(Cnt,2);
   end;
@@ -4343,7 +4333,7 @@ begin
       while CurPos.Flag=cafPoint do begin
         // e.g. atype<params>.subtype
         ReadNextAtom;
-        AtomIsIdentifierSaveE;
+        AtomIsIdentifierSaveE(20180411194209);
         ReadNextAtom;
       end;
     end;
@@ -4525,7 +4515,7 @@ begin
     IsForward:=false;
     CurNode.Desc:=ctnClassOfType;
     ReadNextAtom;
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411194212);
     CreateChildNode;
     CurNode.Desc:=ctnIdentifier;
     CurNode.EndPos:=CurPos.EndPos;
@@ -4604,7 +4594,7 @@ begin
         ReadNextAtom;
         if CurNode.StartPos = HelperForNode.StartPos then
           CurNode.StartPos:=CurPos.StartPos;
-        AtomIsIdentifierSaveE;
+        AtomIsIdentifierSaveE(20180411194215);
         CurNode.EndPos:=CurPos.EndPos;
         HelperForNode.EndPos:=CurPos.EndPos;
         ReadNextAtom;
@@ -4792,11 +4782,11 @@ begin
   if IsFunction then begin
     if (CurPos.Flag=cafColon) then begin
       ReadNextAtom;
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194218);
       ReadNextAtom;
       if CurPos.Flag=cafPoint then begin
         ReadNextAtom;
-        AtomIsIdentifierSaveE;
+        AtomIsIdentifierSaveE(20180411194221);
         ReadNextAtom;
       end;
     end else begin
@@ -5010,7 +5000,7 @@ begin
   end else begin
     MoveCursorToAtomPos(SavePos);
     if CurPos.Flag in AllCommonAtomWords then begin
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194224);
       ReadTypeReference(true);
       if CurNode.LastChild.Desc=ctnIdentifier then begin
         while (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) do begin
@@ -5029,7 +5019,7 @@ begin
         repeat
           ReadNextAtom; // read enum name
           if (CurPos.Flag=cafRoundBracketClose) then break;
-          AtomIsIdentifierSaveE;
+          AtomIsIdentifierSaveE(20180411194228);
           CreateChildNode;
           CurNode.Desc:=ctnEnumIdentifier;
           CurNode.EndPos:=CurPos.EndPos;
@@ -5108,7 +5098,7 @@ begin
     case a:b.c of
     case a:(b,c) of
   }
-  AtomIsIdentifierSaveE;
+  AtomIsIdentifierSaveE(20180411194230);
   CreateChildNode;
   CurNode.Desc:=ctnIdentifier;
   {$IFDEF VerboseRecordCase}
@@ -5126,7 +5116,7 @@ begin
       if CurPos.Flag<>cafRoundBracketClose then begin
         repeat
           // read enum
-          AtomIsIdentifierSaveE;
+          AtomIsIdentifierSaveE(20180411194233);
           CreateChildNode;
           CurNode.Desc:=ctnEnumIdentifier;
           CurNode.EndPos:=CurPos.EndPos;
@@ -5143,14 +5133,14 @@ begin
       ReadNextAtom;
     end else begin
       // identifier
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194236);
       CreateChildNode;
       CurNode.Desc:=ctnIdentifier;
       CurNode.EndPos:=CurPos.EndPos;
       ReadNextAtom;
       if CurPos.Flag=cafPoint then begin
         ReadNextAtom; // unit.type
-        AtomIsIdentifierSaveE;
+        AtomIsIdentifierSaveE(20180411194238);
         CurNode.EndPos:=CurPos.EndPos;
         ReadNextAtom;
       end;
@@ -5160,7 +5150,7 @@ begin
   if (CurPos.Flag=cafPoint) then // unit.type
     while CurPos.Flag=cafPoint do begin
       ReadNextAtom;
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194241);
       ReadNextAtom;
     end;
   // close ctnIdentifier/ctnVarDefinition
@@ -5205,7 +5195,7 @@ begin
       end else begin
         // sub identifier
         repeat
-          AtomIsIdentifierSaveE;
+          AtomIsIdentifierSaveE(20180411194245);
           CreateChildNode;
           CurNode.Desc:=ctnVarDefinition;
           CurNode.EndPos:=CurPos.EndPos;
@@ -5763,7 +5753,7 @@ begin
   ReadNextAtom; // read keyword 'property'
   if UpAtomIs('CLASS') then ReadNextAtom;
   ReadNextAtom; // read property name
-  AtomIsIdentifierSaveE;
+  AtomIsIdentifierSaveE(20180411194251);
   ReadNextAtom;
   if (CurPos.Flag=cafEdgedBracketOpen) then begin
     // read parameter list
@@ -5775,7 +5765,7 @@ begin
     exit;
   end;
   ReadNextAtom; // read type
-  AtomIsIdentifierSaveE;
+  AtomIsIdentifierSaveE(20180411194254);
   Result:=true;
 end;
 
@@ -5903,7 +5893,7 @@ begin
     SaveRaiseIllegalQualifier(20171106145928);
 
   // read identifier (the name of the generic)
-  AtomIsIdentifierSaveE;
+  AtomIsIdentifierSaveE(20180411194257);
   if CreateChildNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnSpecializeType;
@@ -5915,7 +5905,7 @@ begin
     Next;
   while Curpos.Flag=cafPoint do begin
     Next;
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411194300);
     if CreateChildNodes then
       CurNode.EndPos:=CurPos.EndPos;
     Next;
@@ -5958,7 +5948,7 @@ begin
   repeat
     // read identifier (a parameter of the generic type)
     Next;
-    AtomIsIdentifierSaveE;
+    AtomIsIdentifierSaveE(20180411194303);
     if CreateChildNodes then begin
       CreateChildNode;
       CurNode.Desc:=ctnSpecializeParam;
@@ -5968,7 +5958,7 @@ begin
     while Curpos.Flag=cafPoint do begin
       // first identifier was unitname, now read the type
       Next;
-      AtomIsIdentifierSaveE;
+      AtomIsIdentifierSaveE(20180411194305);
       if CreateChildNodes then
         CurNode.EndPos:=CurPos.EndPos;
       Next;

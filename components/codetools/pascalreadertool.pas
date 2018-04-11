@@ -589,10 +589,7 @@ function TPascalReaderTool.ExtractProcHead(ProcNode: TCodeTreeNode;
   Attr: TProcHeadAttributes): string;
 var
   TheClassName, s: string;
-  IsClassName, IsProcType: boolean;
-  IsProcedure: Boolean;
-  IsFunction: Boolean;
-  IsOperator: Boolean;
+  IsClassName, IsProcType, IsProcedure, IsFunction, IsOperator: Boolean;
   EndPos: Integer;
   ParentNode: TCodeTreeNode;
 const
@@ -647,6 +644,9 @@ begin
   // parse procedure head = start + name + parameterlist + result type ;
   ExtractNextAtom(false,Attr);
   // read procedure start keyword
+  if UpAtomIs('GENERIC') then
+    ExtractNextAtom((phpWithStart in Attr)
+                    and not (phpWithoutClassKeyword in Attr),Attr);
   if (UpAtomIs('CLASS') or UpAtomIs('STATIC')) then
     ExtractNextAtom((phpWithStart in Attr)
                     and not (phpWithoutClassKeyword in Attr),Attr);
@@ -1201,16 +1201,15 @@ begin
       +' TPascalParserTool.MoveCursorFirstProcSpecifier: '
       +' (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)');
   end;
+  //DebugLn(['TPascalReaderTool.MoveCursorToFirstProcSpecifier ',ProcNode.DescAsString,' StartPos=',CleanPosToStr(ProcNode.StartPos)]);
   if (ProcNode.LastChild<>nil) and (ProcNode.LastChild.Desc=ctnIdentifier) then
   begin
     // jump behind function result type
     MoveCursorToCleanPos(ProcNode.LastChild.EndPos);
     ReadNextAtom;
-  end else if (ProcNode.FirstChild<>nil)
-    and (ProcNode.FirstChild.Desc=ctnParameterList)
-  then begin
+  end else if GetProcParamList(ProcNode)<>nil then begin
     // jump behind parameter list
-    MoveCursorToCleanPos(ProcNode.FirstChild.EndPos);
+    MoveCursorToCleanPos(GetProcParamList(ProcNode).EndPos);
     ReadNextAtom;
   end else begin
     MoveCursorToNodeStart(ProcNode);
@@ -3346,8 +3345,10 @@ begin
   if Parse then
     BuildSubTreeForProcHead(Result);
   Result:=Result.FirstChild;
-  if Result=nil then exit;
-  if Result.Desc<>ctnParameterList then exit(nil);
+  while Result<>nil do begin
+    if Result.Desc=ctnParameterList then exit;
+    Result:=Result.NextBrother;
+  end;
 end;
 
 function TPascalReaderTool.GetProcResultNode(ProcNode: TCodeTreeNode

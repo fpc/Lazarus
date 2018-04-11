@@ -1914,6 +1914,14 @@ begin
   {$ENDIF}
   if KeyWordPos>ProcLen then
     raise Exception.Create('TBeautifyCodeOptions.AddClassAndNameToProc missing keyword');
+  if CompareIdentifiers('GENERIC',@AProcCode[KeyWordPos])=0 then begin
+    ReadRawNextPascalAtom(AProcCode,p,KeyWordPos);
+    {$IFDEF VerboseAddClassAndNameToProc}
+    debugln(['TBeautifyCodeOptions.AddClassAndNameToProc after generic keyword="',copy(AProcCode,KeyWordPos,p-KeyWordPos),'"']);
+    {$ENDIF}
+    if KeyWordPos>ProcLen then
+      raise Exception.Create('TBeautifyCodeOptions.AddClassAndNameToProc missing keyword');
+  end;
   if CompareIdentifiers('CLASS',@AProcCode[KeyWordPos])=0 then begin
     ReadRawNextPascalAtom(AProcCode,p,KeyWordPos);
     {$IFDEF VerboseAddClassAndNameToProc}
