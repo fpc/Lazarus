@@ -454,7 +454,7 @@ begin
   Add([
   'program test1;',
   '{$mode tp}',
-  '{ {} end;  }',
+  '{ {}',
   'begin']);
   ParseModule;
 end;
