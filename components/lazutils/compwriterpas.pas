@@ -619,11 +619,17 @@ begin
                   WriteAssign(PropName,Ident)
                 else begin
                   // Integer has to be written just as number
-                  aTypeData:=GetTypeData(PropInfo^.PropType);
-                  if aTypeData^.MinValue>=0 then
-                    WriteAssign(PropName,IntToStr(longword(Int32Value)))
+                  case PropType^.Name of
+                  'ByteBool': WriteAssign(PropName,GetBoolLiteral(ByteBool(Int32Value)));
+                  'WordBool': WriteAssign(PropName,GetBoolLiteral(WordBool(Int32Value)));
+                  'LongBool': WriteAssign(PropName,GetBoolLiteral(LongBool(Int32Value)));
                   else
-                    WriteAssign(PropName,IntToStr(Int32Value));
+                    aTypeData:=GetTypeData(PropInfo^.PropType);
+                    if aTypeData^.MinValue>=0 then
+                      WriteAssign(PropName,IntToStr(longword(Int32Value)))
+                    else
+                      WriteAssign(PropName,IntToStr(Int32Value));
+                  end;
                 end;
               end;
             tkChar:
