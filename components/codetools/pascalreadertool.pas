@@ -592,6 +592,7 @@ var
   IsClassName, IsProcType, IsProcedure, IsFunction, IsOperator: Boolean;
   EndPos: Integer;
   ParentNode: TCodeTreeNode;
+  OldPos: TAtomPosition;
 const
   SemiColon : char = ';';
 
@@ -683,8 +684,10 @@ begin
           // delphi generics
           if AtomIsChar('<') then
           begin
+            //writeln('TPascalReaderTool.ExtractProcHead B ',GetAtom);
             while not AtomIsChar('>') and (CurPos.EndPos < SrcLen) do
               ExtractNextAtom(not (phpWithoutGenericParams in Attr),Attr);
+            //swriteln('TPascalReaderTool.ExtractProcHead C ',GetAtom);
             ExtractNextAtom(not (phpWithoutGenericParams in Attr),Attr);
           end;
         end;
@@ -697,6 +700,7 @@ begin
     end else begin
       // read only part of name
       repeat
+        OldPos:=CurPos;
         ReadNextAtom;
         if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
         begin
@@ -705,7 +709,7 @@ begin
           ReadNextAtom;
         end;
         IsClassName:=(CurPos.Flag=cafPoint);
-        UndoReadNextAtom;
+        MoveCursorToAtomPos(OldPos);
         if IsClassName then begin
           // read class name
           ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);

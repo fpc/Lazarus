@@ -1347,6 +1347,8 @@ begin
     Include(ParseAttr,pphIsOperator);
   // read name
   ReadNextAtom;
+  if CurPos.Flag<>cafWord then
+    AtomIsIdentifierE;
   // create node for procedure head
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
