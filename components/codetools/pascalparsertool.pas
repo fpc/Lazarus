@@ -1347,7 +1347,7 @@ begin
     Include(ParseAttr,pphIsOperator);
   // read name
   ReadNextAtom;
-  if CurPos.Flag<>cafWord then
+  if (CurPos.Flag<>cafWord) and not (pphIsOperator in ParseAttr) then
     AtomIsIdentifierE;
   // create node for procedure head
   CreateChildNode;
