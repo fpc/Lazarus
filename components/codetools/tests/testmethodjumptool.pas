@@ -36,6 +36,7 @@ type
     procedure TestMethodJump_IntfToImplSingleProcWrongParam;
     procedure TestMethodJump_SingleMethod;
     procedure TestMethodJump_MultiMethodWrongName;
+    procedure TestMethodJump_DelphiGenericMethod;
   end;
 
 implementation
@@ -242,6 +243,28 @@ begin
   '  end;',
   'implementation',
   'procedure TBird.{b}Do2It(s: string);',
+  'begin',
+  'end;',
+  'procedure TBird.DoIt;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'b',false,2);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_DelphiGenericMethod;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode delphi}{$H+}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    generic class procedure {a}DoIt<T>(s: T);',
+  '    procedure DoIt;',
+  '  end;',
+  'implementation',
+  'generic class procedure TBird.{b}Do2It<T>(s: T);',
   'begin',
   'end;',
   'procedure TBird.DoIt;',
