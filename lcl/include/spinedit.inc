@@ -129,13 +129,12 @@ end;
 
 procedure TCustomFloatSpinEdit.SetValue(const AValue: Double);
 var
-  ValueFromText: Extended;
-  OldValue: Double;
+  ValueFromText, OldValue: Double;
 begin
-  if (FValue = AValue)
+  if SameValue(FValue, AValue)
     //if you set text by code (or paste it) and text is not a valid float, then FValue will hold the previous value
     //and in that case we should not exit here...
-    and (TryStrToFloat(Text, ValueFromText) and (ValueFromText = FValue)) then Exit;
+    and (TryStrToFloat(Text, ValueFromText) and SameValue(ValueFromText, FValue)) then Exit;
   OldValue := FValue;
   FValue := AValue;
   
