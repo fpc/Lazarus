@@ -130,17 +130,24 @@ end;
 procedure TCustomFloatSpinEdit.SetValue(const AValue: Double);
 var
   ValueFromText: Extended;
+  OldValue: Double;
 begin
   if (FValue = AValue)
     //if you set text by code (or paste it) and text is not a valid float, then FValue will hold the previous value
     //and in that case we should not exit here...
     and (TryStrToFloat(Text, ValueFromText) and (ValueFromText = FValue)) then Exit;
+  OldValue := FValue;
   FValue := AValue;
   
   // clear FValueChanged to prevent getting the old value from the widget
   FValueChanged := False;
   FUpdatePending := True;
   UpdateControl;
+
+  if not HandleAllocated
+  and ([csLoading, csDestroying] * ComponentState = [])
+  and not SameValue(OldValue, FValue) then
+    Change;
 end;
 
 function TCustomFloatSpinEdit.GetValue: Double;
