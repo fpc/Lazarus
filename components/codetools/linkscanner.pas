@@ -237,8 +237,8 @@ const
      cmsRepeat_forward,cmsCvar_support,cmsInitfinal,cmsOut,cmsDefault_para,
      cmsHintdirective,cmsProperty,cmsDefault_inline,cmsExcept],
     // cmMacPas
-    [cmsCvar_support,cmsMac_procvar,cmsNestedProcVars,cmsNonLocalGoto,
-     cmsISOLike_unary_minus,cmsDefault_inline],
+    [cmsCvar_support,cmsMac_procvar,cmsNestedProcVars,
+     cmsNonLocalGoto,cmsISOLike_unary_minus,cmsDefault_inline],
     // cmISO
     [cmsTp_procvar,cmsDuplicate_names,cmsNestedProcVars,cmsNonLocalGoto,
      cmsISOLike_unary_minus],

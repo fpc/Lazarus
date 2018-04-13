@@ -9577,6 +9577,7 @@ var
           then begin
             // 'alloc' returns the class itself
             ExprType.Context:=Context;
+            //debugln(['ResolveIdentifier ',ExprTypeToString(ExprType)]);
             Params.Load(OldInput,true);
             exit;
           end;
@@ -9657,6 +9658,12 @@ var
     ResolveBaseTypeOfIdentifier;
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveChildren ExprType=',ExprTypeToString(ExprType)]);
+    //debugln(['ResolveChildren xtContext=',(ExprType.Desc=xtContext),
+    //  ' ctnPointerType=',(ExprType.Context.Node.Desc=ctnPointerType),
+    //  ' Node=',(ExprType.Context.Node<>StartNode),
+    //  ' cmsAutoderef=',(cmsAutoderef in Scanner.CompilerModeSwitches),
+    //  ' ',CompilerModeNames[Scanner.CompilerMode]
+    //  ]);
     {$ENDIF}
     NewNode:=ExprType.Context.Node;
     if (NewNode=nil) then exit;
@@ -9728,6 +9735,7 @@ var
       // ok, allowed
     end else begin
       // not allowed
+      //debugln(['ResolvePoint ',ExprTypeToString(ExprType)]);
       MoveCursorToCleanPos(CurAtom.StartPos);
       ReadNextAtom;
       RaiseIllegalQualifierFound;
