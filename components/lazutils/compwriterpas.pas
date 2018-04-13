@@ -94,7 +94,7 @@ type
     FAssignOp: String;
     FCurIndent: integer;
     FCurrentPos: Integer;
-    FDefaultDefineProperties: Pointer; //CodePointer;
+    FDefaultDefineProperties: CodePointer;
     FExecCustomProc: string;
     FExecCustomProcUnit: string;
     FIgnoreChildren: Boolean;
