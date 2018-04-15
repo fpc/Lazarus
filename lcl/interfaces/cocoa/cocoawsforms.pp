@@ -39,7 +39,10 @@ type
   private
     IsActivating: boolean;
   public
+    window : TCocoaWindow;
     constructor Create(AOwner: NSObject; ATarget: TWinControl); override;
+    destructor Destroy; override;
+
     function CanActivate: Boolean; virtual;
     procedure Activate; virtual;
     procedure Deactivate; virtual;
@@ -278,6 +281,12 @@ begin
   IsActivating:=false;
 end;
 
+destructor TLCLWindowCallback.Destroy;
+begin
+  if Assigned(window) then window.lclClearCallback;
+  inherited Destroy;
+end;
+
 procedure TLCLWindowCallback.Activate;
 var
   ACustForm: TCustomForm;
@@ -367,12 +376,12 @@ end;
 
 function TLCLWindowCallback.GetEnabled: Boolean;
 begin
-  Result := NSWindow(Owner).contentView.lclIsEnabled;
+  Result := Owner.lclIsEnabled;
 end;
 
 procedure TLCLWindowCallback.SetEnabled(AValue: Boolean);
 begin
-  NSWindow(Owner).contentView.lclSetEnabled(AValue);
+  Owner.lclSetEnabled(AValue);
 end;
 
 { TCocoaWSScrollingWinControl}
@@ -484,6 +493,7 @@ var
   pool:NSAutoReleasePool;
   lDestView: NSView;
   ds: TCocoaDesignOverlay;
+  cb: TLCLWindowCallback;
 begin
   //todo: create TCocoaWindow or TCocoaPanel depending on the border style
   //      if parent is specified neither Window nor Panel needs to be created
@@ -492,6 +502,8 @@ begin
   pool := NSAutoreleasePool.alloc.init;
   R := CreateParamsToNSRect(AParams);
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
+  cb := TLCLWindowCallback.Create(cnt, AWinControl);
+  cnt.callback := cb;
 
   if (AParams.Style and WS_CHILD) = 0 then
   begin
@@ -517,7 +529,10 @@ begin
       win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[Form.FormStyle]);
     end;
     win.enableCursorRects;
-    TCocoaWindow(win).callback := TLCLWindowCallback.Create(win, AWinControl);
+
+    TCocoaWindow(win).callback := cb;
+    cb.window := win;
+
     win.setDelegate(win);
     ns := NSStringUtf8(AWinControl.Caption);
     win.setTitle(ns);
