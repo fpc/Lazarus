@@ -48,7 +48,7 @@ void QBackingStore_size(QBackingStoreH handle, PSize retval)
 
 bool QBackingStore_scroll(QBackingStoreH handle, const QRegionH area, int dx, int dy)
 {
-  ((QBackingStore *)handle)->scroll(*(const QRegion*)area, dx, dy);
+  return ((QBackingStore *)handle)->scroll(*(const QRegion*)area, dx, dy);
 }
 
 void QBackingStore_beginPaint(QBackingStoreH handle, const QRegionH AnonParam1)

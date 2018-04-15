@@ -391,12 +391,12 @@ void QWindow_setScreen(QWindowH handle, QScreenH screen)
 
 bool QWindow_setKeyboardGrabEnabled(QWindowH handle, bool grab)
 {
-  ((QWindow *)handle)->setKeyboardGrabEnabled(grab);
+  return ((QWindow *)handle)->setKeyboardGrabEnabled(grab);
 }
 
 bool QWindow_setMouseGrabEnabled(QWindowH handle, bool grab)
 {
-  ((QWindow *)handle)->setMouseGrabEnabled(grab);
+  return ((QWindow *)handle)->setMouseGrabEnabled(grab);
 }
 
 void QWindow_mapToGlobal(QWindowH handle, PQtPoint retval, const QPointH AnonParam1)
