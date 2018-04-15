@@ -39,7 +39,7 @@ type
   private
     IsActivating: boolean;
   public
-    window : TCocoaWindow;
+    window : CocoaAll.NSWindow;
     constructor Create(AOwner: NSObject; ATarget: TWinControl); override;
     destructor Destroy; override;
 
@@ -210,6 +210,7 @@ var
   cnt: TCocoaWindowContent;
   R: NSRect;
   Form: TCustomForm absolute AWinControl;
+  cb: TLCLWindowCallback;
 const
   WinMask = NSBorderlessWindowMask or NSUtilityWindowMask;
 begin
@@ -225,7 +226,6 @@ begin
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
   win.setLevel(HintWindowLevel);
-  TCocoaPanel(win).callback := TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
     win.setIgnoresMouseEvents(True)
@@ -235,7 +235,11 @@ begin
   R.origin.x := 0;
   R.origin.y := 0;
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cnt.callback := TCocoaPanel(win).callback;
+  cb := TLCLWindowCallback.Create(cnt, AWinControl);
+  cb.window := win;
+  cnt.callback := cb;
+  TCocoaPanel(win).callback := cb;
+
   win.setContentView(cnt);
 
   Result := TLCLIntfHandle(cnt);
