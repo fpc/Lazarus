@@ -757,11 +757,16 @@ end;
 
 class procedure TCocoaWSCustomForm.SetRealPopupParent(
   const ACustomForm: TCustomForm; const APopupParent: TCustomForm);
+var
+  win : NSWindow;
 begin
-  if Assigned(NSWindow(ACustomForm.Handle).parentWindow) then
-    NSWindow(ACustomForm.Handle).parentWindow.removeChildWindow(NSWindow(ACustomForm.Handle));
+  if not ACustomForm.HandleAllocated then Exit;
+
+  win := TCocoaWindowContent(ACustomForm.Handle).lclOwnWindow;
+  if Assigned(win.parentWindow) then
+    win.parentWindow.removeChildWindow(win);
   if Assigned(APopupParent) then
-    NSWindow(APopupParent.Handle).addChildWindow_ordered(NSWindow(ACustomForm.Handle), NSWindowAbove);
+    NSWindow( NSView(APopupParent.Handle).window).addChildWindow_ordered(win, NSWindowAbove);
 end;
 
 class function TCocoaWSCustomForm.GetClientBounds(
