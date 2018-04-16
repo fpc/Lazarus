@@ -38,7 +38,7 @@ type
     function Count: Integer;
     procedure RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount,
       TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
-  ErrorLog, StatLog: TStrings);
+  ErrorLog, StatLog: TStringList);
     property Items[Index: Integer]: TPoFamily read GetItem; // write SetItem;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats;
     property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
@@ -93,10 +93,10 @@ begin
         Add(APoFamily);
       end
       else
-        Msg := Msg + LineEnding +  Format('"%s"',[ChildName]);
+        Msg := Format('"%s"',[ChildName]) + LineEnding + Msg;
     end
     else
-      Msg := Msg + LineEnding +  Format('"%s"',[MasterName]);
+      Msg := Format('"%s"',[MasterName]) + LineEnding + Msg;
   end;
 end;
 
@@ -119,7 +119,7 @@ begin
 end;
 
 procedure TPoFamilyList.RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
-  ErrorLog, StatLog: TStrings);
+  ErrorLog, StatLog: TStringList);
 var
   Index, ThisErrorCount, ThisNonFuzzyErrorCount, ThisWarningCount: Integer;
   ThisTranslatedCount, ThisUntranslatedCount, ThisFuzzyCount: Integer;
@@ -129,8 +129,6 @@ begin
     Include(FTestOptions,ptoFindAllChildren)
   else
     Exclude(FTestOptions,ptoFindAllChildren);
-  ErrorLog.Clear;
-  StatLog.Clear;
   ErrorCount := NoError;
   NonFuzzyErrorCount := NoError;
   WarningCount := NoError;

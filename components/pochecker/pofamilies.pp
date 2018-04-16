@@ -78,7 +78,7 @@ Type
   public
     procedure RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount,
       TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog
-  : TStrings);
+  : TStringList);
 
     property Master: TPOFile read FMaster;
     property Child: TPOFile read FChild;
@@ -801,7 +801,7 @@ Pre conditions:
   * Master and a matching Child must be assigned at start ot testing
   * If a Child is assigned it must be child of Master
 }
-procedure TPoFamily.RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog: TStrings);
+procedure TPoFamily.RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog: TStringList);
 var
   SL: TStringList;
   CurrErrCnt, CurrNonFuzzyErrCnt, CurrWarnCnt, ThisErrCnt: Integer;

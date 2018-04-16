@@ -74,8 +74,8 @@ type
     procedure SetTestTypeCheckBoxes(TestTypes: TPoTestTypes);
     procedure ShowError(const Msg: string);
     procedure ScanDirectory(ADir: String);
-    function TryCreatepoFamilyList(MasterList: TStrings; const LangID: TLangID): Boolean;
-    procedure RunSelectedTests;
+    function TryCreatepoFamilyList(var MasterList, SL: TStringList; const LangID: TLangID): Boolean;
+    procedure RunSelectedTests(var SL, StatL: TStringList);
     procedure ClearStatusBar;
     procedure UpdateGUI(HasSelection: Boolean);
     function GetSelectedMasterFiles: TStringList;
@@ -245,21 +245,25 @@ end;
 
 procedure TPoCheckerForm.RunToolButtonClick(Sender: TObject);
 var
-  AMasterList: TStringList;
+  AMasterList, SL, StatL: TStringList;
   LangIdx: Integer;
   ALangID: TLangID;
 begin
   LangIdx := LangFilter.ItemIndex;
   ALangID := LangFilterIndexToLangID(LangIdx);
+  SL := TStringList.Create;
+  StatL := TStringList.Create;
   AMasterList := GetSelectedMasterFiles;
   try
-    if TryCreatePoFamilyList(AMasterList, ALangID) then
-      RunSelectedTests
+    if TryCreatePoFamilyList(AMasterList, SL, ALangID) then
+      RunSelectedTests(SL, StatL)
     else
     begin
       if Assigned(PoFamilyList) then FreeAndNil(PoFamilyList);
     end;
   finally
+    SL.Free;
+    StatL.Free;
     AMasterList.Free;
   end;
 end;
@@ -427,9 +431,10 @@ begin
 end;
 
 
-function TPoCheckerForm.TryCreatepoFamilyList(MasterList: TStrings; const LangID: TLangID): Boolean;
+function TPoCheckerForm.TryCreatepoFamilyList(var MasterList, SL: TStringList;
+  const LangID: TLangID): Boolean;
 var
-  Fn, Msg: String;
+  Fn, Msg, FamilyMsg: String;
   i, Cnt: Integer;
 begin
   Result := False;
@@ -444,31 +449,38 @@ begin
       Msg := Format('"%s"',[Fn]) + LineEnding + Msg;
     end;
   end;
-  if (Msg <> '') then
+  if Msg <> '' then
     //MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
     Msg := Format(sFilesNotFoundAndRemoved,[Msg]);
   Cnt := MasterList.Count;
-  if (Cnt = 0) then
+  if Cnt = 0 then
     Msg := Msg + LineEnding + LineEnding + LineEnding + sNoFilesLeftToCheck;
-  if (Msg <> '') then
-    MemoDlg('PoChecker',Msg);
-  if (Cnt = 0) then
+  if Msg <> '' then
+  begin
+    SL.AddText(Msg);
+    SL.Add('');
+  end;
+  if Cnt = 0 then
   begin
     //MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
     Exit;
   end;
   try
     if Assigned(PoFamilyList) then PoFamilyList.Free;
-    PoFamilyList := TPoFamilyList.Create(MasterList, LangID, Msg);
-    if (Msg <> '') then
+    PoFamilyList := TPoFamilyList.Create(MasterList, LangID, FamilyMsg);
+    if FamilyMsg <> '' then
     begin
-      //MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
-      Msg := Format(sFilesNotFoundAndRemoved,[Msg]);
-      if (PoFamilyList.Count = 0) then
-        Msg := Msg + LineEnding + LineEnding + LineEnding + sNoFilesLeftToCheck;
-      if (Msg <> '') then
-        MemoDlg('PoChecker',Msg);
-      if (PoFamilyList.Count = 0) then
+      //MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[FamilyMsg]), mtInformation, [mbOk], 0);
+      if Msg = '' then
+        FamilyMsg := Format(sFilesNotFoundAndRemoved,[FamilyMsg]);
+      if PoFamilyList.Count = 0 then
+        FamilyMsg := FamilyMsg + LineEnding + LineEnding + LineEnding + sNoFilesLeftToCheck;
+      if FamilyMsg <> '' then
+      begin
+        SL.AddText(FamilyMsg);
+        SL.Add('');
+      end;
+      if PoFamilyList.Count = 0 then
       begin
         //MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
         FreeAndNil(PoFamilyList);
@@ -499,15 +511,13 @@ begin
 end;
 
 
-procedure TPoCheckerForm.RunSelectedTests;
+procedure TPoCheckerForm.RunSelectedTests(var SL, StatL: TStringList);
 var
   TestTypes: TPoTestTypes;
   TestOptions: TPoTestOptions;
   ErrorCount, NonFuzzyErrorCount, WarningCount: integer;
   TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
   TotalPercTranslated: Double;
-  SL: TStrings;
-  StatL: TStrings;
   ResultDlg: TResultDlgForm;
   mr: TModalResult;
 begin
@@ -519,8 +529,6 @@ begin
   end;
   TestOptions := GetTestOptions;
   Application.ProcessMessages;
-  SL := TStringList.Create;
-  StatL := TStringList.Create;
   mr := mrNone;
   try
     PoFamilyList.TestTypes := TestTypes;
@@ -560,9 +568,7 @@ begin
       ResultDlg.FTotalFuzzy := TotalFuzzyCount;
       ResultDlg.FTotalPercTranslated := TotalPercTranslated;
       ResultDlg.Log.Assign(SL);
-      FreeAndNil(SL);
       ResultDlg.StatLog.Assign(StatL);
-      FreeAndNil(StatL);
       ResultDlg.PoFamilyList := PoFamilyList;
       ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats;
       ResultDlg.Settings := FPoCheckerSettings;
@@ -571,10 +577,6 @@ begin
       ResultDlg.Free;
     end;
   finally
-    if Assigned(SL) then
-      SL.Free;
-    if Assigned(StatL) then
-      StatL.Free;
     ClearStatusBar;
   end;
   if mr = mrOpenEditorFile then WindowState:= wsMinimized;
