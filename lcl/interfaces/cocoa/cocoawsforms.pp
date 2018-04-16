@@ -104,6 +104,7 @@ type
   published
     class function AllocWindowHandle: TCocoaWindow; virtual;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
@@ -142,7 +143,6 @@ type
   public
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TCocoaWSScreen }
@@ -243,33 +243,6 @@ begin
   win.setContentView(cnt);
 
   Result := TLCLIntfHandle(cnt);
-end;
-
-
-class procedure TCocoaWSHintWindow.DestroyHandle(const AWinControl: TWinControl);
-var
-  cnt: TCocoaWindowContent;
-  Callback: ICommonCallback;
-  CallbackObject: TObject;
-begin
-  if not AWinControl.HandleAllocated then
-    Exit;
-
-  cnt:= TCocoaWindowContent(AWinControl.Handle);
-  cnt.removeFromSuperview;
-
-  cnt.ownwin.close;
-
-  Callback := cnt.lclGetCallback;
-  if Assigned(Callback) then
-  begin
-    CallbackObject := Callback.GetCallbackObject;
-    Callback := nil;
-    cnt.lclClearCallback;
-    CallbackObject.Free;
-  end;
-
-  cnt.release;
 end;
 
 { TLCLWindowCallback }
@@ -586,6 +559,21 @@ begin
 
   pool.release;
   Result := TLCLIntfHandle(cnt);
+end;
+
+class procedure TCocoaWSCustomForm.DestroyHandle(const AWinControl: TWinControl
+  );
+var
+  win : NSWindow;
+begin
+  if not AWinControl.HandleAllocated then
+    Exit;
+
+  win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
+  if Assigned(win) then win.close;
+
+  TCocoaWSWinControl.DestroyHandle(AWinControl);
+  //inherited DestroyHandle(AWinControl);
 end;
 
 
