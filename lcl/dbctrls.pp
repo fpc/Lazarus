@@ -736,6 +736,7 @@ Type
 
   TDBComboBox = class(TCustomDBComboBox)
   protected
+    procedure Change; override;
     procedure DataChange(Sender: TObject); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;

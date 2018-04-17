@@ -17,6 +17,22 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
+procedure TDBComboBox.Change;
+begin
+  try
+    if FDataLink.CanModify then begin
+      FDataLink.OnDataChange := nil;
+      if FDataLink.Edit then begin
+        FDataLink.Field.AsString := Text;
+        FDatalink.Modified;
+      end;
+      FDataLink.OnDataChange := @Datachange;
+    end;
+  finally
+    inherited Change;
+  end;
+end;
+
 procedure TDBComboBox.DataChange(Sender: TObject);
 var
   DataLinkField: TField;
