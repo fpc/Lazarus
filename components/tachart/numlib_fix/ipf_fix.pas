@@ -27,6 +27,12 @@ interface
 
 uses typ, mdt, dsl, sle, spe;
 
+type
+  THermiteSplineType = (
+    hstMonotone // preserves monotonicity of the interpolated function by using
+                // a Fritsch-Carlson algorithm
+  );
+
 { Determine natural cubic spline "s" for data set (x,y), output to (a,d2a)
  term=1 success,
      =2 failure calculating "s"
@@ -46,6 +52,35 @@ function  ipfspn(n: ArbInt; var x, y, d2s: ArbFloat; t: ArbFloat;
 Does NOT take source points into account.}
 procedure ipfsmm(
   n: ArbInt; var x, y, d2s, minv, maxv: ArbFloat; var term: ArbInt);
+
+{Calculates tangents for each data point (d1s), for a given array of input data
+ points (x,y), by using a selected variant of a Hermite cubic spline interpolation.
+ Inputs:
+   hst - algorithm selection
+   n - highest array index
+   x[0..n] - array of X values (one value for each data point)
+   y[0..n] - array of Y values (one value for each data point)
+ Outputs:
+   d1s[0..n] - array of tangent values (one value for each data point)
+   term - status: 1 if function succeeded, 3 if less than two data points given
+}
+procedure ipfish(hst: THermiteSplineType; n: ArbInt; var x, y, d1s: ArbFloat; var term: ArbInt);
+
+{Calculates interpolated function value for a given array of input data points
+ (x,y) and tangents for each data point (d1s), for input value t, by using a
+ Hermite cubic spline interpolation; d1s array can be obtained by calling the
+ ipfish procedure.
+ Inputs:
+   n - highest array index
+   x[0..n] - array of X values (one value for each data point)
+   y[0..n] - array of Y values (one value for each data point)
+   d1s[0..n] - array of tangent values (one value for each data point)
+   t - input value X
+ Outputs:
+   term - status: 1 if function succeeded, 3 if less than two data points given
+   result - interpolated function value Y
+}
+function ipfsph(n: ArbInt; var x, y, d1s: ArbFloat; t: ArbFloat; var term: ArbInt): ArbFloat;
 
 {Calculate n-degree polynomal b for dataset (x,y) with n elements
  using the least squares method.}
@@ -555,19 +590,22 @@ end; {ipfpol}
 procedure ipfisn(n: ArbInt; var x, y, d2s: ArbFloat; var term: ArbInt);
 
 var
-                   s, i : ArbInt;
+                s, i, L : ArbInt;
                    p, q : ArbFloat;
         px, py, h, b, t : ^arfloat0;
                    pd2s : ^arfloat1;
                      ca : Arbfloat = 0.0;
 begin
-  px:=@x; py:=@y; pd2s:=@d2s;
   term:=1;
-  if n < 2
+  if n < 1
   then
     begin
       term:=3; exit
-    end; {n<2}
+    end; {n<1}
+  if n = 1 then
+    exit;
+
+  px:=@x; py:=@y; pd2s:=@d2s;
   s:=sizeof(ArbFloat);
   getmem(h, n*s);
   getmem(b, (n-1)*s);
@@ -585,7 +623,8 @@ begin
     begin
       q:=1/h^[i-1]; b^[i-2]:=py^[i]*q-py^[i-1]*(p+q)+py^[i-2]*p; p:=q
     end;
-  slegpb(n-1, 1, {2,} t^[1], b^[0], pd2s^[1], ca, term);
+  if n > 2 then L := 1 else L := 0;
+  slegpb(n-1, L, {2,} t^[1], b^[0], pd2s^[1], ca, term);
   freemem(h, n*s);
   freemem(b, (n-1)*s);
   freemem(t, 2*(n-1)*s);
@@ -600,13 +639,21 @@ var
    i, j, m      : ArbInt;
    d, s3, h, dy : ArbFloat;
 begin
-  i:=1; term:=1;
-  if n<2
+  term:=1;
+  if n<1
   then
     begin
       term:=3; exit
-    end; {n<2}
+    end; {n<1}
   px:=@x; py:=@y; pd2s:=@d2s;
+  if n = 1
+  then
+    begin
+      h:=px^[1]-px^[0];
+      dy:=(py^[1]-py^[0])/h;
+      ipfspn:=py^[0]+(t-px^[0])*dy
+    end { n = 1 }
+  else
   if t <= px^[0]
   then
     begin
@@ -716,7 +763,7 @@ var
 
 begin
   term:=1;
-  if n<2 then begin
+  if n<1 then begin
     term:=3;
     exit;
   end;
@@ -724,6 +771,112 @@ begin
   for i:=0 to n-1 do
     MinMaxOnSegment;
 end;
+
+procedure ipfish(hst: THermiteSplineType; n: ArbInt; var x, y, d1s: ArbFloat; var term: ArbInt);
+var
+  px, py, pd1s : ^arfloat0;
+  i : ArbInt;
+  dks : array of ArbFloat;
+begin
+  px:=@x;
+  py:=@y;
+  pd1s:=@d1s;
+  term:=1;
+  if n < 1 then
+  begin
+    term:=3;
+    exit;
+  end;
+
+  {Monotone cubic Hermite interpolation}
+  {See: https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
+   and: https://en.wikipedia.org/wiki/Cubic_Hermite_spline}
+
+  {For each two adjacent data points, calculate tangent of the segment between them}
+  SetLength(dks,n);
+  for i:=0 to n-1 do
+    dks[i]:=(py^[i+1]-py^[i])/(px^[i+1]-px^[i]);
+
+  {As proposed by Fritsch and Carlson: For each data point - except the first and
+   the last one - assign point's tangent (stored in a "d1s" array) as an average
+   of tangents of the two adjacent segments (this is called 3PD, three-point
+   difference) - but only if both tangents are either positive (segments are
+   raising) or negative (segments are falling); in all other cases there is a local
+   extremum at the data point, or a non-monotonic range begins/continues/ends there,
+   so spline at this point must be flat to preserve monotonicity - so assign point's
+   tangent as zero}
+  for i:=0 to n-2 do
+  if ((dks[i] > 0) and (dks[i+1] > 0)) or ((dks[i] < 0) and (dks[i+1] < 0)) then
+    pd1s^[i+1]:=0.5*(dks[i]+dks[i+1])
+  else
+    pd1s^[i+1]:=0;
+
+  {For the first and the last data point, assign point's tangent as a tangent of
+   the adjacent segment (this is called one-sided difference)}
+  pd1s^[0]:=dks[0];
+  pd1s^[n]:=dks[n-1];
+
+  {As proposed by Fritsch and Carlson: Reduce point's tangent if needed, to prevent
+   overshoot}
+  for i:=0 to n-1 do
+  if dks[i] <> 0 then
+  try
+    if pd1s^[i]/dks[i] > 3 then
+      pd1s^[i]:=3*dks[i];
+    if pd1s^[i+1]/dks[i] > 3 then
+      pd1s^[i+1]:=3*dks[i];
+  except
+    {There may be an exception for dks[i] values that are very close to zero}
+    pd1s^[i]:=0;
+    pd1s^[i+1]:=0;
+  end;
+
+  {Addition to the original algorithm: For the first and the last data point,
+   modify point's tangent in such a way that the cubic Hermite interpolation
+   polynomial has its inflection point exactly at the data point - so there
+   will be a smooth transition to the extrapolated part of the graph}
+  pd1s^[0]:=1.5*dks[0]-0.5*pd1s^[1];
+  pd1s^[n]:=1.5*dks[n-1]-0.5*pd1s^[n-1];
+end; {ipfish}
+
+function ipfsph(n: ArbInt; var x, y, d1s: ArbFloat; t: ArbFloat; var term: ArbInt): ArbFloat;
+var
+   px, py, pd1s : ^arfloat0;
+   i, j, m : ArbInt;
+   h : ArbFloat;
+begin
+  i:=1;
+  term:=1;
+  if n < 1 then
+  begin
+    term:=3;
+    exit;
+  end;
+  px:=@x;
+  py:=@y;
+  pd1s:=@d1s;
+  if t <= px^[0] then
+    ipfsph:=py^[0]+(t-px^[0])*pd1s^[0]
+  else
+  if t >= px^[n] then
+    ipfsph:=py^[n]+(t-px^[n])*pd1s^[n]
+  else
+  begin
+    i:=0;
+    j:=n;
+    while j <> i+1 do
+    begin
+      m:=(i+j) div 2;
+      if t>=px^[m] then
+        i:=m
+      else
+        j:=m;
+    end; {j}
+    h:=px^[i+1]-px^[i];
+    t:=(t-px^[i])/h;
+    ipfsph:= py^[i]*(1+2*t)*Sqr(1-t) + h*pd1s^[i]*t*Sqr(1-t) + py^[i+1]*Sqr(t)*(3-2*t) + h*pd1s^[i+1]*Sqr(t)*(t-1);
+  end;
+end; {ipfsph}
 
 function p(x, a, z:complex): ArbFloat;
 begin
