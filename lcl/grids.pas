@@ -10398,7 +10398,7 @@ begin
     if FUseXORFeatures then begin
       Canvas.SaveHandleState;
       OldFocusColor := FFocusColor;
-      FFocusColor:= clBlack;//White not visible on White background
+      FFocusColor:= clWhite;
       OldPenMode:=Canvas.Pen.Mode;
       Canvas.Pen.Mode := pmXOR;
     end;
