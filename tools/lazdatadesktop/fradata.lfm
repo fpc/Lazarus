@@ -152,6 +152,7 @@ object DataFrame: TDataFrame
     Color = clWindow
     Columns = <>
     DataSource = FDataSource
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgThumbTracking]
     TabOrder = 1
   end
   object FDataSource: TDataSource
