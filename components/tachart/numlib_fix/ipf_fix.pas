@@ -50,8 +50,8 @@ function  ipfspn(n: ArbInt; var x, y, d2s: ArbFloat; t: ArbFloat;
 
 {Calculate minimum and maximum values for the n.c. spline d2s.
 Does NOT take source points into account.}
-procedure ipfsmm(
-  n: ArbInt; var x, y, d2s, minv, maxv: ArbFloat; var term: ArbInt);
+procedure ipfsmm(n: ArbInt; var x, y, d2s, minv, maxv: ArbFloat; 
+        var term: ArbInt);
 
 {Calculates tangents for each data point (d1s), for a given array of input data
  points (x,y), by using a selected variant of a Hermite cubic spline interpolation.
@@ -594,7 +594,7 @@ var
                    p, q : ArbFloat;
         px, py, h, b, t : ^arfloat0;
                    pd2s : ^arfloat1;
-                     ca : Arbfloat = 0.0;
+                     ca : ArbFloat = 0.0;
 begin
   term:=1;
   if n < 1
@@ -704,7 +704,7 @@ begin
           dy:=(py^[i+1]-py^[i])/h-h*(2*pd2s^[i]+pd2s^[i+1])/6;
           ipfspn:=py^[i]+d*(dy+d*(pd2s^[i]/2+d*s3/6))
         end
-   end  { x[0] < t < x[n] }
+    end { x[0] < t < x[n] }
 end; {ipfspn}
 
 procedure ipfsmm(
@@ -767,6 +767,8 @@ begin
     term:=3;
     exit;
   end;
+  if n = 1 then
+    exit;
   px:=@x; py:=@y; pd2s:=@d2s;
   for i:=0 to n-1 do
     MinMaxOnSegment;
@@ -778,15 +780,15 @@ var
   i : ArbInt;
   dks : array of ArbFloat;
 begin
-  px:=@x;
-  py:=@y;
-  pd1s:=@d1s;
   term:=1;
   if n < 1 then
   begin
     term:=3;
     exit;
   end;
+  px:=@x;
+  py:=@y;
+  pd1s:=@d1s;
 
   {Monotone cubic Hermite interpolation}
   {See: https://en.wikipedia.org/wiki/Monotone_cubic_interpolation
@@ -845,7 +847,6 @@ var
    i, j, m : ArbInt;
    h : ArbFloat;
 begin
-  i:=1;
   term:=1;
   if n < 1 then
   begin
