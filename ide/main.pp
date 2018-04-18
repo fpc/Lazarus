@@ -7148,6 +7148,7 @@ begin
       Exit(mrNone);
     end;
 
+    Project1.RunParameterOptions.AssignEnvironmentTo(Process.Environment);
     TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
   except
     Process.Free;
