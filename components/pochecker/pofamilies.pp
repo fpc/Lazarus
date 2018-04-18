@@ -735,7 +735,7 @@ begin
   //debugln('TPoFamily.CehckDuplicateOriginals');
   //debugln('DupItemsList.Count = ',DbgS(DupItemsList.Count));
   LastHash := 0;
-  for i := 0 to DupItemsList.Count - 1 do
+  for i := DupItemsList.Count - 1 downto 0 do
   begin
     PoItem := TPoFileItem(DupItemsList.List[i]^.Data);
     if Assigned(PoItem) then
