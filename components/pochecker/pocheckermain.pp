@@ -75,7 +75,7 @@ type
     procedure ShowError(const Msg: string);
     procedure ScanDirectory(ADir: String);
     function TryCreatepoFamilyList(var MasterList, SL: TStringList; const LangID: TLangID): Boolean;
-    procedure RunSelectedTests(var SL, StatL: TStringList);
+    procedure RunSelectedTests(var SL, StatL, DupL: TStringList);
     procedure ClearStatusBar;
     procedure UpdateGUI(HasSelection: Boolean);
     function GetSelectedMasterFiles: TStringList;
@@ -245,7 +245,7 @@ end;
 
 procedure TPoCheckerForm.RunToolButtonClick(Sender: TObject);
 var
-  AMasterList, SL, StatL: TStringList;
+  AMasterList, SL, StatL, DupL: TStringList;
   LangIdx: Integer;
   ALangID: TLangID;
 begin
@@ -253,10 +253,11 @@ begin
   ALangID := LangFilterIndexToLangID(LangIdx);
   SL := TStringList.Create;
   StatL := TStringList.Create;
+  DupL := TStringList.Create;
   AMasterList := GetSelectedMasterFiles;
   try
     if TryCreatePoFamilyList(AMasterList, SL, ALangID) then
-      RunSelectedTests(SL, StatL)
+      RunSelectedTests(SL, StatL, DupL)
     else
     begin
       if Assigned(PoFamilyList) then FreeAndNil(PoFamilyList);
@@ -264,6 +265,7 @@ begin
   finally
     SL.Free;
     StatL.Free;
+    DupL.Free;
     AMasterList.Free;
   end;
 end;
@@ -511,7 +513,7 @@ begin
 end;
 
 
-procedure TPoCheckerForm.RunSelectedTests(var SL, StatL: TStringList);
+procedure TPoCheckerForm.RunSelectedTests(var SL, StatL, DupL: TStringList);
 var
   TestTypes: TPoTestTypes;
   TestOptions: TPoTestOptions;
@@ -534,7 +536,7 @@ begin
     PoFamilyList.TestTypes := TestTypes;
     PoFamilyList.TestOptions := TestOptions;
 
-    PoFamilyList.RunTests(ErrorCount, NonFuzzyErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, SL, StatL);
+    PoFamilyList.RunTests(ErrorCount, NonFuzzyErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount, SL, StatL, DupL);
     //debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
     //debugln('                  ', Format(sTotalWarnings, [WarningCount]));
     TotalPercTranslated := 100 * TotalTranslatedCount / (TotalTranslatedCount + TotalUntranslatedCount + TotalFuzzyCount);
@@ -550,7 +552,6 @@ begin
       SL.Add(Format(sTotalErrorsNonFuzzy, [ErrorCount, NonFuzzyErrorCount]))
     else
       SL.Add(Format(sTotalErrors, [ErrorCount]));
-    SL.Add(Format(sTotalWarnings, [WarningCount]));
     SL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
     SL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
     SL.Add('');
@@ -561,6 +562,8 @@ begin
     StatL.Add('');
     StatL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
 
+    DupL.Add(Format(sTotalWarnings, [WarningCount]));
+
     ResultDlg := TResultDlgForm.Create(nil);
     try
       ResultDlg.FTotalTranslated := TotalTranslatedCount;
@@ -569,6 +572,10 @@ begin
       ResultDlg.FTotalPercTranslated := TotalPercTranslated;
       ResultDlg.Log.Assign(SL);
       ResultDlg.StatLog.Assign(StatL);
+
+      ResultDlg.ResultPageControl.Pages[2].TabVisible := pttCheckDuplicateOriginals in TestTypes;
+      ResultDlg.DupLog.Assign(DupL);
+
       ResultDlg.PoFamilyList := PoFamilyList;
       ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats;
       ResultDlg.Settings := FPoCheckerSettings;

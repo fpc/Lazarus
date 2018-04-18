@@ -124,7 +124,7 @@ msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translat
 msgstr "Невозможно записать файл%s%s%s%sВы можете нажать \"Повтор\", чтобы снова попытаться обновить это семейство переводов и продолжить далее."
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
-msgid "Check for duplicate untranslated values"
+msgid "Check for duplicate originals"
 msgstr "Поиск дублирующихся исходных строк"
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
@@ -132,7 +132,7 @@ msgid "Check for incompatible format arguments"
 msgstr "Поиск несовместимых аргументов форматирования"
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
-msgid "Check for mismatches in untranslated strings"
+msgid "Check for mismatches of originals"
 msgstr "Поиск несоответствий исходных строк"
 
 #: pocheckerconsts.scheckmissingidentifiers
@@ -164,8 +164,12 @@ msgid "[Line %d] %s"
 msgstr "[Строка %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
-msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "Исходное значение \"%s\" имеется в нескольких элементах:"
+
+#: pocheckerconsts.sduplicateoriginalstab
+msgid "Duplicate Originals"
+msgstr "Дублирующиеся исходные строки"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -188,6 +192,10 @@ msgstr ""
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
 msgstr "Ошибки и предупреждения, найденные %s для:"
+
+#: pocheckerconsts.sfile
+msgid "File %s"
+msgstr "Файл %s"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""

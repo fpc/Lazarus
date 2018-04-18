@@ -38,7 +38,7 @@ type
     function Count: Integer;
     procedure RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount,
       TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
-  ErrorLog, StatLog: TStringList);
+  ErrorLog, StatLog, DupLog: TStringList);
     property Items[Index: Integer]: TPoFamily read GetItem; // write SetItem;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats;
     property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
@@ -119,7 +119,7 @@ begin
 end;
 
 procedure TPoFamilyList.RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount, TotalTranslatedCount, TotalUntranslatedCount, TotalFuzzyCount: Integer;
-  ErrorLog, StatLog: TStringList);
+  ErrorLog, StatLog, DupLog: TStringList);
 var
   Index, ThisErrorCount, ThisNonFuzzyErrorCount, ThisWarningCount: Integer;
   ThisTranslatedCount, ThisUntranslatedCount, ThisFuzzyCount: Integer;
@@ -143,7 +143,7 @@ begin
     PoFamily.OnTestEnd := FOnTestEnd;
     PoFamily.TestTypes := FTesttypes;
     PoFamily.TestOptions := FTestOptions;
-    PoFamily.RunTests(ThisErrorCount, ThisNonFuzzyErrorCount, ThisWarningCount, ThisTranslatedCount, ThisUntranslatedCount, ThisFuzzyCount, ErrorLog, StatLog);
+    PoFamily.RunTests(ThisErrorCount, ThisNonFuzzyErrorCount, ThisWarningCount, ThisTranslatedCount, ThisUntranslatedCount, ThisFuzzyCount, ErrorLog, StatLog, DupLog);
     PoFamily.PoFamilyStats.AddItemsTo(FPoFamilyStats);
     ErrorCount := ErrorCount + ThisErrorCount;
     NonFuzzyErrorCount := NonFuzzyErrorCount + ThisNonFuzzyErrorCount;

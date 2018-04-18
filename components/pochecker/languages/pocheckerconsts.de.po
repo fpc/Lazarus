@@ -124,7 +124,9 @@ msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translat
 msgstr "Kann Datei%s%s%s%snicht schreiben. Sie können auf \"Wiederholen\" klicken, um diese Übersetzungsfamilie erneut zu aktualisieren und fortzusetzen."
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
-msgid "Check for duplicate untranslated values"
+#, fuzzy
+#| msgid "Check for duplicate untranslated values"
+msgid "Check for duplicate originals"
 msgstr "Prüfung auf mehrfache, nicht übersetzte Werte"
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
@@ -132,7 +134,9 @@ msgid "Check for incompatible format arguments"
 msgstr "Prüfung auf inkompatible Format-Argumente"
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
-msgid "Check for mismatches in untranslated strings"
+#, fuzzy
+#| msgid "Check for mismatches in untranslated strings"
+msgid "Check for mismatches of originals"
 msgstr "Prüfung auf Diskrepanzen in nicht übersetzten Werten"
 
 #: pocheckerconsts.scheckmissingidentifiers
@@ -164,8 +168,14 @@ msgid "[Line %d] %s"
 msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
-msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+#, fuzzy
+#| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
+
+#: pocheckerconsts.sduplicateoriginalstab
+msgid "Duplicate Originals"
+msgstr ""
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -188,6 +198,10 @@ msgstr ""
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
 msgstr "Fehler / Warnungen gemeldet von %s für:"
+
+#: pocheckerconsts.sfile
+msgid "File %s"
+msgstr ""
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""

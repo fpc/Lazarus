@@ -127,7 +127,9 @@ msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translat
 msgstr ""
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
-msgid "Check for duplicate untranslated values"
+#, fuzzy
+#| msgid "Check for duplicate untranslated values"
+msgid "Check for duplicate originals"
 msgstr "检查完全一样的未翻译的值"
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
@@ -135,7 +137,9 @@ msgid "Check for incompatible format arguments"
 msgstr "检查不兼容格式参数"
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
-msgid "Check for mismatches in untranslated strings"
+#, fuzzy
+#| msgid "Check for mismatches in untranslated strings"
+msgid "Check for mismatches of originals"
 msgstr "检查不匹配在未翻译的字符串"
 
 #: pocheckerconsts.scheckmissingidentifiers
@@ -168,8 +172,14 @@ msgid "[Line %d] %s"
 msgstr "[行: %d]%s"
 
 #: pocheckerconsts.sduplicateoriginals
-msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+#, fuzzy
+#| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "该(未翻译)值\"%s\" 被用于超过1个记录:"
+
+#: pocheckerconsts.sduplicateoriginalstab
+msgid "Duplicate Originals"
+msgstr ""
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -192,6 +202,10 @@ msgstr ""
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
 msgstr "错误/警告被报告由%s关于:"
+
+#: pocheckerconsts.sfile
+msgid "File %s"
+msgstr ""
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""

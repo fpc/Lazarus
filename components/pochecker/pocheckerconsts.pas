@@ -44,6 +44,7 @@ resourcestring
   sShowStatGraph = 'Show statistics graph';
   sGeneralInfo = 'General Info';
   sTranslationStatistics = 'Translation Statistics';
+  sDuplicateOriginalsTab = 'Duplicate Originals';
   sCopy = '&Copy';
   sSaveAs ='Save &As ...';
 
@@ -75,14 +76,13 @@ resourcestring
   sOriginal = 'Original';
   sTranslation = 'Translation';
   sErrorsByTest = 'Errors / warnings reported by %s for:';
+  sFile = 'File %s';
   sCheckNumberOfItems = 'Check number of items';
   sCheckForIncompatibleFormatArguments = 'Check for incompatible format '
     +'arguments';
   sCheckMissingIdentifiers = 'Check missing identifiers';
-  sCheckForMismatchesInUntranslatedStrings = 'Check for mismatches in '
-    +'untranslated strings';
-  sCheckForDuplicateUntranslatedValues = 'Check for duplicate untranslated '
-    +'values';
+  sCheckForMismatchesInUntranslatedStrings = 'Check for mismatches of originals';
+  sCheckForDuplicateUntranslatedValues = 'Check for duplicate originals';
   sIncompatibleFormatArgs = '[Line: %d] Incompatible and/or invalid format() arguments for:' ;
 
   sNrErrorsFound = 'Found %d errors.';
@@ -97,7 +97,7 @@ resourcestring
   sNrOfItemsMisMatch = 'Mismatch in number of items for master and child';
   sNrOfItemsMismatchD = '%s: %d items';
 
-  sDuplicateOriginals = 'The (untranslated) value "%s" is used for more than 1 entry:';
+  sDuplicateOriginals = 'Original value "%s" is used for more than 1 entry:';
 
   sDuplicateLineNrWithValue = '[Line %d] %s';
   sPercTranslated = '%s: %5.1f%% translated strings.';

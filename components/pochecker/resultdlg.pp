@@ -26,9 +26,12 @@ type
     SaveDialog: TSaveDialog;
     FLog: TStringList;
     FStatLog: TStringList;
+    FDupLog: TStringList;
     LogMemo: TSynEdit;
     GeneralTabSheet: TTabSheet;
     StatisticsTabSheet: TTabSheet;
+    DuplicatesTabSheet: TTabSheet;
+    DupMemo: TSynEdit;
     procedure CopyMenuItemClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -54,6 +57,7 @@ type
     FTotalPercTranslated: Double;
     property Log: TStringList read FLog write FLog;
     property StatLog: TStringList read FStatLog write FStatLog;
+    property DupLog: TStringList read FDupLog write FDupLog;
     property PoFamilyList: TPoFamilyList read FPoFamilyList write FPoFamilyList;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
     property Settings: TPoCheckerSettings read FSettings write FSettings;
@@ -70,6 +74,7 @@ begin
   Caption := sResults;
   GeneralTabSheet.Caption := sGeneralInfo;
   StatisticsTabSheet.Caption := sTranslationStatistics;
+  DuplicatesTabSheet.Caption := sDuplicateOriginalsTab;
   CopyMenuItem.Caption := sCopy;
   SaveAsMenuItem.Caption := sSaveAs;
 
@@ -77,6 +82,7 @@ begin
   StatMemo.Lines.Clear;
   FLog := TStringList.Create;
   FStatLog := TStringList.Create;
+  FDupLog := TStringList.Create;
   PoHL := TSynPoSyn.Create(Self);
   LogMemo.Highlighter := PoHL;
   GraphStatBtn.Caption := sShowStatGraph;
@@ -90,6 +96,7 @@ procedure TResultDlgForm.FormClose(Sender: TObject;
 begin
   FLog.Clear;
   FStatLog.Clear;
+  FDupLog.Clear;
 end;
 
 procedure TResultDlgForm.CopyMenuItemClick(Sender: TObject);
@@ -105,6 +112,7 @@ procedure TResultDlgForm.FormDestroy(Sender: TObject);
 begin
   FLog.Free;
   FStatLog.Free;
+  FDupLog.Free;
   SaveConfig;
 end;
 
@@ -127,6 +135,7 @@ procedure TResultDlgForm.FormShow(Sender: TObject);
 begin
   LogMemo.Lines.Assign(FLog);
   StatMemo.Lines.Assign(FStatLog);
+  DupMemo.Lines.Assign(FDupLog);
   GraphStatBtn.Visible := (PoFamilyStats <> nil) and (PoFamilyStats.Count > 0);
   LoadConfig;
   WindowState := Settings.ResultsFormWindowState;
@@ -176,6 +185,7 @@ begin
   case ResultPageControl.PageIndex of
     0: CurrentMemo := LogMemo;
     1: CurrentMemo := StatMemo;
+    2: CurrentMemo := DupMemo;
   else
     CurrentMemo := nil;
   end;
@@ -197,11 +207,13 @@ begin
   begin
     LogMemo.Font.Quality := fqNonAntialiased;
     StatMemo.Font.Quality := fqNonAntialiased;
+    DupMemo.Font.Quality := fqNonAntialiased;
   end
   else
   begin
     LogMemo.Font.Quality := fqDefault;
     StatMemo.Font.Quality := fqDefault;
+    DupMemo.Font.Quality := fqDefault;
   end;
 end;
 

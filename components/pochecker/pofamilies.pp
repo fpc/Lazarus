@@ -77,8 +77,7 @@ Type
 
   public
     procedure RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount,
-      TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog
-  : TStringList);
+      TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog, DupLog: TStringList);
 
     property Master: TPOFile read FMaster;
     property Child: TPOFile read FChild;
@@ -173,7 +172,6 @@ const
   sShortCheckNrOfItems =  'CheckNrOfItems';
   sShortCheckMissingIdentifiers = 'CheckMissingIdentifiers';
   sShortCheckMismatchedOriginals = 'CheckMismatchedOriginals';
-  sShortCheckDuplicateOriginals = 'CheckDuplicateOriginals';
 
 //Helper functions
 
@@ -745,10 +743,7 @@ begin
       CurHash := DupItemsList.List[i]^.HashValue;
       if (WarningCount = 0) then
       begin
-        ErrorLog.Add(Divider);
-        ErrorLog.Add(Format(sErrorsByTest,[sShortCheckDuplicateOriginals]));
-        ErrorLog.Add(ShortMasterName);
-        ErrorLog.Add(Divider);
+        ErrorLog.Add(Format(sFile, [ShortMasterName]));
         ErrorLog.Add('');
       end;
       if (CurHash <> LastHash) then
@@ -769,7 +764,6 @@ begin
     ErrorLog.Add('');
     ErrorLog.Add(Format(sNrWarningsFound,[WarningCount]));
     ErrorLog.Add(Divider);
-    ErrorLog.Add('');
     ErrorLog.Add('');
   end;
 
@@ -801,7 +795,9 @@ Pre conditions:
   * Master and a matching Child must be assigned at start ot testing
   * If a Child is assigned it must be child of Master
 }
-procedure TPoFamily.RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount, TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog: TStringList);
+procedure TPoFamily.RunTests(out ErrorCount, NonFuzzyErrorCount, WarningCount,
+  TranslatedCount, UntranslatedCount, FuzzyCount: Integer; ErrorLog, StatLog,
+  DupLog: TStringList);
 var
   SL: TStringList;
   CurrErrCnt, CurrNonFuzzyErrCnt, CurrWarnCnt, ThisErrCnt: Integer;
@@ -876,7 +872,7 @@ begin
     //First run checks that are Master-only
     if (pttCheckDuplicateOriginals in FTestTypes) then
     begin
-      CheckDuplicateOriginals(CurrWarnCnt, ErrorLog);
+      CheckDuplicateOriginals(CurrWarnCnt, DupLog);
       WarningCount := CurrWarnCnt + WarningCount;
     end;
 

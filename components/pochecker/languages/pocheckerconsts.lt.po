@@ -125,7 +125,9 @@ msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translat
 msgstr "Nepavyksta rašyti į failą%s%s%s%sPaspaudus „Kartoti“ bus naujintas ši vertimų šeima ir tęsiama toliau."
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
-msgid "Check for duplicate untranslated values"
+#, fuzzy
+#| msgid "Check for duplicate untranslated values"
+msgid "Check for duplicate originals"
 msgstr "Ieškoti neverstų besidubliuojančių verčių"
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
@@ -133,7 +135,9 @@ msgid "Check for incompatible format arguments"
 msgstr "Ieškoti nesuderinamų formato argumentų"
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
-msgid "Check for mismatches in untranslated strings"
+#, fuzzy
+#| msgid "Check for mismatches in untranslated strings"
+msgid "Check for mismatches of originals"
 msgstr "Ieškoti neatitikčių neišverstose eilutėse"
 
 #: pocheckerconsts.scheckmissingidentifiers
@@ -165,8 +169,14 @@ msgid "[Line %d] %s"
 msgstr "[Eilutė %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
-msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+#, fuzzy
+#| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "Vertė (neversta) „%s“ panaudota daugiau nei viename įraše:"
+
+#: pocheckerconsts.sduplicateoriginalstab
+msgid "Duplicate Originals"
+msgstr ""
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -189,6 +199,10 @@ msgstr ""
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
 msgstr "%s praneštos klaidos/perspėjimai apie:"
+
+#: pocheckerconsts.sfile
+msgid "File %s"
+msgstr ""
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""

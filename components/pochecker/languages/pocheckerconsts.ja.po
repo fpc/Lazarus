@@ -126,7 +126,9 @@ msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translat
 msgstr ""
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
-msgid "Check for duplicate untranslated values"
+#, fuzzy
+#| msgid "Check for duplicate untranslated values"
+msgid "Check for duplicate originals"
 msgstr "原文のままで翻訳されていない項目の検査"
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
@@ -134,7 +136,9 @@ msgid "Check for incompatible format arguments"
 msgstr "互換性のない書式引数の検査"
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
-msgid "Check for mismatches in untranslated strings"
+#, fuzzy
+#| msgid "Check for mismatches in untranslated strings"
+msgid "Check for mismatches of originals"
 msgstr "原文の不一致検査"
 
 #: pocheckerconsts.scheckmissingidentifiers
@@ -166,8 +170,14 @@ msgid "[Line %d] %s"
 msgstr "[行 %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
-msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+#, fuzzy
+#| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgid "Original value \"%s\" is used for more than 1 entry:"
 msgstr "原文のままで翻訳されていない項目 \"%s\" が1ヶ所以上存在します："
+
+#: pocheckerconsts.sduplicateoriginalstab
+msgid "Duplicate Originals"
+msgstr ""
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -190,6 +200,10 @@ msgstr ""
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
 msgstr "以下のファイルに対する %s によるエラー／警告の結果："
+
+#: pocheckerconsts.sfile
+msgid "File %s"
+msgstr ""
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""
