@@ -46,13 +46,13 @@ uses
   FileProcs, SourceChanger, CodeCompletionTool,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
-  ComponentReg, IDEExternToolIntf, MacroDefIntf,
+  ComponentReg, IDEExternToolIntf, MacroDefIntf, SrcEditorIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger,
-  IdeCoolbarData, EditorToolbarStatic, math;
+  IdeCoolbarData, EditorToolbarStatic, math, SynCompletion;
 
 const
   EnvOptsVersion: integer = 110;
@@ -1556,6 +1556,8 @@ begin
 end;
 
 procedure TDesktopOpt.ExportSettingsToIDE(const AOptions: TEnvironmentOptions);
+var
+  ComplForm: TCustomForm;
 begin
   if Assigned(FDockedOpt) then
     FDockedOpt.ExportSettingsToIDE;
@@ -1563,6 +1565,15 @@ begin
   IDEWindowIntf.IDEDialogLayoutList.Assign(FIDEDialogLayoutList);
   IDEWindowIntf.IDEWindowCreators.SimpleLayoutStorage.CopyItemsFrom(FIDEWindowCreatorsLayoutList);
   FObjectInspectorOptions.ExportSettingsToIDE(AOptions);
+  if Assigned(SourceEditorManagerIntf) then
+  begin
+    ComplForm := SourceEditorManagerIntf.DefaultSynCompletionForm;
+    if Assigned(ComplForm) then
+    begin
+      ComplForm.Width := Max(50, CompletionWindowWidth);
+      (ComplForm as TSynBaseCompletionForm).NbLinesInWindow := Max(3, CompletionWindowHeight);
+    end;
+  end;
 end;
 
 procedure InitLayoutHelper(const FormID: string);

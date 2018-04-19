@@ -320,11 +320,13 @@ type
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;
     function GetCompletionBoxPosition: integer; virtual; abstract;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; virtual; abstract;
+    function GetDefaultSynCompletionForm: TCustomForm; virtual; abstract;
   public
     // Completion Plugins
     function CompletionPluginCount: integer; virtual; abstract;
     property CompletionPlugins[Index: integer]: TSourceEditorCompletionPlugin
                  read GetCompletionPlugins;
+    property DefaultSynCompletionForm: TCustomForm read GetDefaultSynCompletionForm;
     procedure DeactivateCompletionForm; virtual; abstract;
     property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
     property CompletionBoxPosition: integer read GetCompletionBoxPosition;

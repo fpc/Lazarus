@@ -973,6 +973,7 @@ type
     function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function  GetCompletionBoxPosition: integer; override;
     function  GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
+    function GetDefaultSynCompletionForm: TCustomForm; override;
     function  FindIdentCompletionPlugin(SrcEdit: TSourceEditor; JumpToError: boolean;
                                var s: string; var BoxX, BoxY: integer;
                                var UseWordCompletion: boolean): boolean;
@@ -9266,6 +9267,14 @@ begin
   Result := FDefaultCompletionForm;
   for i:=0 to SourceEditorCount - 1 do
     FDefaultCompletionForm.AddEditor(TSourceEditor(SourceEditors[i]).EditorComponent);
+end;
+
+function TSourceEditorManagerBase.GetDefaultSynCompletionForm: TCustomForm;
+begin
+  if Assigned(GetDefaultCompletionForm) then
+    Result := GetDefaultCompletionForm.TheForm
+  else
+    Result := nil;
 end;
 
 procedure TSourceEditorManagerBase.FreeCompletionPlugins;
