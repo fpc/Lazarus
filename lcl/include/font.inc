@@ -689,28 +689,22 @@ var
 begin
   BeginUpdate;
   try
-    with ALogFont do
-    begin
-      Height := ALogFont.lfHeight;
-      Charset := TFontCharset(ALogFont.lfCharSet);
-      AStyle := [];
-      with ALogFont do
-      begin
-        if lfWeight >= FW_SEMIBOLD then Include(AStyle, fsBold);
-        if lfItalic <> 0 then Include(AStyle, fsItalic);
-        if lfUnderline <> 0 then Include(AStyle, fsUnderline);
-        if lfStrikeOut <> 0 then Include(AStyle, fsStrikeOut);
-      end;
-      if (FIXED_PITCH and lfPitchAndFamily) <> 0 then
-        Pitch := fpFixed
-      else if (VARIABLE_PITCH and lfPitchAndFamily) <> 0 then
-        Pitch := fpVariable
-      else
-        Pitch := fpDefault;
-      Style := AStyle;
-      Quality := TFontQuality(ALogFont.lfQuality);
-      Name := ALogFont.lfFaceName;
-    end;
+    Height := ALogFont.lfHeight;
+    Charset := TFontCharset(ALogFont.lfCharSet);
+    AStyle := [];
+    if ALogFont.lfWeight >= FW_SEMIBOLD then Include(AStyle, fsBold);
+    if ALogFont.lfItalic <> 0 then Include(AStyle, fsItalic);
+    if ALogFont.lfUnderline <> 0 then Include(AStyle, fsUnderline);
+    if ALogFont.lfStrikeOut <> 0 then Include(AStyle, fsStrikeOut);
+    if (FIXED_PITCH and ALogFont.lfPitchAndFamily) <> 0 then
+      Pitch := fpFixed
+    else if (VARIABLE_PITCH and ALogFont.lfPitchAndFamily) <> 0 then
+      Pitch := fpVariable
+    else
+      Pitch := fpDefault;
+    Style := AStyle;
+    Quality := TFontQuality(ALogFont.lfQuality);
+    Name := ALogFont.lfFaceName;
   finally
     EndUpdate;
   end;
