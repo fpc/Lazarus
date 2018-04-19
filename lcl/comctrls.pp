@@ -2278,7 +2278,7 @@ type
     function CheckMenuDropdown(Button: TToolButton): Boolean; virtual;
     procedure ClickButton(Button: TToolButton); virtual;
     procedure CreateWnd; override;
-    procedure ControlsAligned; override;
+    procedure AlignControls(AControl: TControl; var RemainingClientRect: TRect); override;
     function FindButtonFromAccel(Accel: Word): TToolButton;
     procedure FontChanged(Sender: TObject); override;
     procedure Loaded; override;
