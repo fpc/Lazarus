@@ -1174,8 +1174,6 @@ var
   AExtLogPen: PExtLogPen absolute Buf;
   AFont: TCocoaFont absolute AObject;
   ALogFont: PLogFont absolute Buf;
-const
-  DPI = 96;
 begin
   Result := 0;
 
@@ -1305,7 +1303,7 @@ begin
       Result := SizeOf(TLogFont);
       FillChar(ALogFont^, SizeOf(ALogFont^), 0);
       ALogFont^.lfFaceName := AFont.Name;
-      ALogFont^.lfHeight := -Round( AFont.Size * DPI / 72);
+      ALogFont^.lfHeight := AFont.Size;
       Traits := NSFontManager.sharedFontManager.traitsOfFont(AFont.Font);
       if (Traits and NSFontBoldTrait) <> 0 then
         ALogFont^.lfWeight := FW_BOLD
