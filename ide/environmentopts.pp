@@ -1375,7 +1375,7 @@ begin
   // window menu
   FIDENameForDesignedFormList:=false;
   // CompletionWindow
-  FCompletionWindowWidth := 320;
+  FCompletionWindowWidth := 320 * Screen.PixelsPerInch div 96;
   FCompletionWindowHeight := 6;
   // title
   FIDETitleStartsWithProject:=false;
@@ -1478,7 +1478,7 @@ begin
   FIDETitleIncludesBuildMode:=FXMLCfg.GetValue(Path+'IDETitleIncludesBuildMode/Value',false);
   FIDEProjectDirectoryInIdeTitle:=FXMLCfg.GetValue(Path+'IDEProjectDirectoryInIdeTitle/Value',false);
   // CompletionWindow
-  FCompletionWindowWidth:=FXMLCfg.GetValue(Path+'CompletionWindowWidth/Value', 320);
+  FCompletionWindowWidth:=FXMLCfg.GetValue(Path+'CompletionWindowWidth/Value', FCompletionWindowWidth);
   FCompletionWindowHeight:=FXMLCfg.GetValue(Path+'CompletionWindowHeight/Value', 6);
 
   if not FXMLCfg.HasPath(Path+'IDECoolBarOptions/', True) then
@@ -1540,7 +1540,7 @@ begin
   FXMLCfg.SetDeleteValue(Path+'IDETitleIncludesBuildMode/Value',FIDETitleIncludesBuildMode,false);
   FXMLCfg.SetDeleteValue(Path+'IDEProjectDirectoryInIdeTitle/Value',FIDEProjectDirectoryInIdeTitle,false);
   // CompletionWindow
-  FXMLCfg.SetDeleteValue(Path+'CompletionWindowWidth/Value',FCompletionWindowWidth, 320);
+  FXMLCfg.SetValue(Path+'CompletionWindowWidth/Value',FCompletionWindowWidth);
   FXMLCfg.SetDeleteValue(Path+'CompletionWindowHeight/Value',FCompletionWindowHeight, 6);
   // IDE Coolbar
   FIDECoolBarOptions.Save(FXMLCfg, Path);
