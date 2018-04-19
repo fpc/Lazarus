@@ -1380,7 +1380,7 @@ begin
       CFRelease(CTFontName);
       end;
     CTFontSize := CTFontGetSize(CTFont);
-    Font.Size := Round(CTFontSize);
+    Font.Height := -Round(CTFontSize);
     finally
     CFRelease(CTFont);
     end;
