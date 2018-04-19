@@ -93,10 +93,10 @@ begin
         Add(APoFamily);
       end
       else
-        Msg := Format('"%s"',[ChildName]) + LineEnding + Msg;
+        Msg := Msg + Format('"%s"',[ChildName]) + LineEnding;
     end
     else
-      Msg := Format('"%s"',[MasterName]) + LineEnding + Msg;
+      Msg := Msg + Format('"%s"',[MasterName]) + LineEnding;
   end;
 end;
 
