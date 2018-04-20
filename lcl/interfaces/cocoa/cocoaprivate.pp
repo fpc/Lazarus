@@ -406,10 +406,6 @@ type
     procedure mouseMoved(event: NSEvent); override;
   end;
 
-  NSWindow = objcclass external(CocoaAll.NSWindow)
-    function backingScaleFactor: CGFloat; message 'backingScaleFactor';
-  end;
-
   { TCocoaWindow }
 
   TCocoaWindowContent = objcclass;

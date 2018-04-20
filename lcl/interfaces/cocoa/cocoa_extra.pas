@@ -60,8 +60,11 @@ type
   end;
 
   NSWindowFix = objccategory external (NSWindow)
+    // 10.4-10.7
+    function userSpaceScaleFactor: CGFloat; message 'userSpaceScaleFactor'; //deprecated
     // 10.7+
     procedure toggleFullScreen(sender: id); message 'toggleFullScreen:';
+    function backingScaleFactor: CGFloat; message 'backingScaleFactor';
   end;
 
   {// private since 10.5, doesn't seam to do anything in 10.10

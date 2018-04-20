@@ -8,7 +8,7 @@ interface
 
 uses
   Types,
-  CGGeometry, CocoaAll,
+  CGGeometry, CocoaAll, cocoa_extra,
   Classes, Controls, SysUtils,
   //
   WSControls, LCLType, LMessages, LCLProc, Graphics, Forms,
@@ -1372,11 +1372,29 @@ end;
 
 class function TCocoaWSWinControl.GetCanvasScaleFactor(const AControl: TControl
   ): Double;
+var
+  obj: NSObject;
+  win: NSWindow;
 begin
+  win := nil;
+  Result := 1;
+
   if TWinControl(AControl).HandleAllocated then
-    Result := TCocoaWindow(TWinControl(AControl).Handle).backingScaleFactor // ToDo: use userSpaceScaleFactor for Mac OSX 10.6
-  else
-    Result := 1;
+  begin
+    obj := NSObject(TWinControl(AControl).Handle);
+    if obj.isKindOfClass_(NSView) then
+      win := NSView(obj).window
+    else if obj.isKindOfClass_(NSWindow) then
+      win := NSWindow(obj);
+  end;
+
+  if Assigned(win) then
+  begin
+    if win.respondsToSelector( NSSelectorFromString(NSSTR('backingScaleFactor'))) then
+      Result := win.backingScaleFactor
+    else if win.respondsToSelector( NSSelectorFromString(NSSTR('userSpaceScaleFactor'))) then // for older OSX
+      Result := win.userSpaceScaleFactor;
+  end;
 end;
 
 class procedure TCocoaWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
