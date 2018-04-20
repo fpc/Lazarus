@@ -31,8 +31,9 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
-
   WakeMainThread := @OnWakeMainThread;
+  ScreenInfo.PixelsPerInchX := CocoaBasePPI;
+  ScreenInfo.PixelsPerInchY := CocoaBasePPI;
 
   { Creates the application NSApp object }
   FNSApp := TCocoaApplication.sharedApplication;
