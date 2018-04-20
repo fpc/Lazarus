@@ -542,8 +542,8 @@ begin
   // fill the screen info
   ScreenDC := GetDC(0);
   try
-    ScreenInfo.PixelsPerInchX := GetDeviceCaps(ScreenDC, LOGPIXELSX);
-    ScreenInfo.PixelsPerInchY := GetDeviceCaps(ScreenDC, LOGPIXELSY);
+    ScreenInfo.PixelsPerInchX := 96; //GetDeviceCaps(ScreenDC, LOGPIXELSX);
+    ScreenInfo.PixelsPerInchY := 96; //GetDeviceCaps(ScreenDC, LOGPIXELSY);
     ScreenInfo.ColorDepth := GetDeviceCaps(ScreenDC, BITSPIXEL);
   finally
     ReleaseDC(0, ScreenDC);
