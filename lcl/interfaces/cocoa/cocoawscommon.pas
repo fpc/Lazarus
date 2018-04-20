@@ -1390,9 +1390,9 @@ begin
 
   if Assigned(win) then
   begin
-    if win.respondsToSelector( NSSelectorFromString(NSSTR('backingScaleFactor'))) then
+    if win.respondsToSelector( ObjCSelector('backingScaleFactor')) then
       Result := win.backingScaleFactor
-    else if win.respondsToSelector( NSSelectorFromString(NSSTR('userSpaceScaleFactor'))) then // for older OSX
+    else if win.respondsToSelector( ObjCSelector('userSpaceScaleFactor')) then // for older OSX
       Result := win.userSpaceScaleFactor;
   end;
 end;
