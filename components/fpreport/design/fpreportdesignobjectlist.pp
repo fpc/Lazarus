@@ -108,6 +108,8 @@ Type
     Procedure EndSelectionUpdate;
     Procedure ClearSelection;
     Procedure ClearPreviousSelection;
+    Procedure BringToFront;
+    Procedure SendToBack;
     procedure OrderBands(aBandTextheight, ADPI: Integer); virtual;
     procedure OrderBands(ACanvas: TCanvas; ADPI: Integer);
     Procedure DrawSelectionHandles;virtual;
@@ -426,6 +428,45 @@ Var
 begin
   For I:=0 to Count-1 do
     GetObject(i).FPreviousSelected:=False;
+end;
+
+procedure TReportObjectList.BringToFront;
+
+Var
+  Sel : TReportObjectArray;
+  O : TReportObject;
+  B : TFPReportCustomBand;
+
+begin
+  Sel:=GetSelection;
+  For O in Sel do
+    If O.IsPlainElement then
+      begin
+      B:=O.Element.Band;
+      if Assigned(B) then
+        B.BringToFront(O.Element);
+      O.Index:=Count-1;
+      end;
+  SelectionChanged;
+end;
+
+procedure TReportObjectList.SendToBack;
+Var
+  Sel : TReportObjectArray;
+  O : TReportObject;
+  B : TFPReportCustomBand;
+
+begin
+  Sel:=GetSelection;
+  For O in Sel do
+    If O.IsPlainElement then
+      begin
+      B:=O.Element.Band;
+      if Assigned(B) then
+        B.SendToBack(O.Element);
+      O.Index:=0;
+      end;
+  SelectionChanged;
 end;
 
 function TReportObjectList.FindNextBand(ABand: TFPReportCustomBand

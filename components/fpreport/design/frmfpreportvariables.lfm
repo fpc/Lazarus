@@ -257,7 +257,7 @@ object ReportVariablesForm: TReportVariablesForm
     Left = 305
     Height = 27
     Top = 200
-    Width = 120
+    Width = 191
     Anchors = [akTop, akRight]
     ItemHeight = 0
     Items.Strings = (

@@ -84,6 +84,9 @@ type
     AAlignBottom: TAction;
     AAlign: TAction;
     ACopy: TAction;
+    ABringToFront: TAction;
+    ASendToBack: TAction;
+    AEditElement: TAction;
     AFileOpenNewWindow: TAction;
     ANewNewWindow: TAction;
     ACut: TAction;
@@ -116,6 +119,11 @@ type
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MIBringToFront: TMenuItem;
+    MISendToBack: TMenuItem;
+    MIEditElement: TMenuItem;
+    MenuItem5: TMenuItem;
     MINewNewWindow: TMenuItem;
     MIFileOpenNewWindow: TMenuItem;
     MICopy: TMenuItem;
@@ -253,12 +261,15 @@ type
     procedure AAddShapeExecute(Sender: TObject);
     procedure AAlignExecute(Sender: TObject);
     procedure AAlignUpdate(Sender: TObject);
+    procedure ABringToFrontExecute(Sender: TObject);
     procedure ACopyExecute(Sender: TObject);
     procedure ACopyUpdate(Sender: TObject);
     procedure ACutExecute(Sender: TObject);
     procedure ACutUpdate(Sender: TObject);
     procedure ADeleteExecute(Sender: TObject);
     procedure ADeleteUpdate(Sender: TObject);
+    procedure AEditElementExecute(Sender: TObject);
+    procedure AEditElementUpdate(Sender: TObject);
     procedure AFileOpenNewWindowExecute(Sender: TObject);
     procedure AFileSaveAsExecute(Sender: TObject);
     procedure AFileSaveAsUpdate(Sender: TObject);
@@ -280,6 +291,8 @@ type
     procedure AResizeBandToFitExecute(Sender: TObject);
     procedure AResizeBandToFitUpdate(Sender: TObject);
     procedure AResizeExecute(Sender: TObject);
+    procedure ASendToBackExecute(Sender: TObject);
+    procedure ASendToBackFrontUpdate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
@@ -327,6 +340,7 @@ type
     procedure InitialiseData;
 {$ENDIF}
     procedure CheckLoadInitialFile;
+    function CreateDesignPopupMenu(aOWner: TComponent): TPopupMenu;
     function CreateNewPage: TFPReportCustomPage;
     procedure DoPaste(Sender: TObject);
     procedure DoReportChangedByDesigner(Sender: TObject);
@@ -802,7 +816,45 @@ begin
   D.Objects.OnStructureChange:=@DoStructureChange;
   D.OnPaste:=@DoPaste;
   D.Objects[0].Selected:=True;
+  D.PopupMenu:=CreateDesignPopupMenu(D);
   Result:=TS;
+end;
+
+Function TFPReportDesignerForm.CreateDesignPopupMenu(aOWner : TComponent) : TPopupMenu;
+
+Var
+  PM : TPopupMenu;
+
+  Function AddAction(A : TAction) : TMenuItem;
+
+  begin
+    Result:=TMenuItem.Create(PM);
+    Result.Action:=A;
+    PM.Items.Add(Result);
+  end;
+
+  Function AddSep : TMenuItem;
+
+  begin
+    Result:=TMenuItem.Create(PM);
+    Result.Caption:='-';
+    PM.Items.Add(Result);
+  end;
+
+begin
+  PM:=TPopupMenu.Create(aOwner);
+  AddAction(AEditElement);
+  AddSep;
+  AddAction(ACopy);
+  AddAction(ACut);
+  AddAction(APaste);
+  AddSep;
+  AddAction(ABringToFront);
+  AddAction(ASendToBack);
+  AddSep;
+  AddAction(AResize);
+  AddAction(AAlign);
+  Result:=PM;
 end;
 
 procedure TFPReportDesignerForm.SetFileCaption(const AFileName: String);
@@ -1287,6 +1339,11 @@ begin
                                and CurrentDesigner.Objects.HaveSelection
 end;
 
+procedure TFPReportDesignerForm.ABringToFrontExecute(Sender: TObject);
+begin
+  CurrentDesigner.Objects.BringToFront;
+end;
+
 procedure TFPReportDesignerForm.ACopyExecute(Sender: TObject);
 begin
   if Assigned(CurrentDesigner) then
@@ -1327,6 +1384,18 @@ end;
 procedure TFPReportDesignerForm.ADeleteUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and CurrentDesigner.Objects.HaveSelection;
+end;
+
+procedure TFPReportDesignerForm.AEditElementExecute(Sender: TObject);
+begin
+  CurrentDesigner.ShowEditorForElement(CurrentDesigner.Objects.GetSelection[0].Element);
+end;
+
+procedure TFPReportDesignerForm.AEditElementUpdate(Sender: TObject);
+begin
+  (Sender as Taction).Enabled:=Assigned(CurrentDesigner)
+                               and (CurrentDesigner.Objects.SelectionCount=1)
+                               and (CurrentDesigner.Objects.GetSelection[0].IsPlainElement);
 end;
 
 procedure TFPReportDesignerForm.AFileOpenNewWindowExecute(Sender: TObject);
@@ -1719,6 +1788,18 @@ begin
   finally
     F.Free;
   end;
+end;
+
+procedure TFPReportDesignerForm.ASendToBackExecute(Sender: TObject);
+begin
+  CurrentDesigner.Objects.SendToBack;
+end;
+
+procedure TFPReportDesignerForm.ASendToBackFrontUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=Assigned(CurrentDesigner)
+                               and (CurrentDesigner.Objects.SelectionCount=1)
+                               and (CurrentDesigner.Objects.GetSelection[0].IsPlainElement);
 end;
 
 

@@ -969,6 +969,8 @@ Var
   RH : TResizeHandlePosition;
 
 begin
+  if (Button<>mbLeft) then
+    exit;
   SetFocus;
   FLastMouseDown:=Point(X,Y);
   Case DesignerState of
@@ -996,6 +998,8 @@ procedure TFPReportDesignerControl.MUp(Sender: TObject; Button: TMouseButton; Sh
   X, Y: Integer);
 
 begin
+  if (Button<>mbLeft) then
+    Exit;
   FLastMouseUp:=Point(X,Y);
 {$IFDEF DEBUGRD}  Writeln('Mouse up, desigerstate : ',DesignerState);{$ENDIF}
   Case DesignerState of

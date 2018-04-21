@@ -73,10 +73,11 @@ uses
   {$IFDEF HASSQLITE3CONNECTION}
     sqlite3conn,
   {$ENDIF}
+  fpreport,
+  fpreportdb,
   Interfaces, // this includes the LCL widgetset
   Forms,
   runtimetypeinfocontrols,
-  fpreportdb,
   // These configure various designer factories
   regfpdesigner,
   frmfpreportdesignermain,
@@ -99,18 +100,41 @@ uses
   cfgfpreportpdfexport,
   cfgfpreportimageexport,
   cfgfpreporthtmlexport,
-
   //
+  sqldb,
   fpreporthtmlexport,
   fpreportpreview,
   fpreportformexport;
 
 {$R *.res}
 
+TYpe
+
+  { Tlogger }
+
+  Tlogger = Class(TObject)
+    Constructor Create;
+  private
+    procedure DoLog(Sender: TSQLConnection; EventType: TDBEventType; const Msg: String);
+  end;
+
 var
   FPReportDesignerForm: TFPReportDesignerForm;
 
+{ Tlogger }
+
+constructor Tlogger.Create;
 begin
+  GlobalDBLogHook:=@DoLog;
+end;
+
+procedure Tlogger.DoLog(Sender: TSQLConnection; EventType: TDBEventType; const Msg: String);
+begin
+  Writeln(Eventtype:10,': ',Msg);
+end;
+
+begin
+//  Tlogger.Create;
   RequireDerivedFormResource:=True;
   RegisterFPReportPropEditors;
   Application.Initialize;
