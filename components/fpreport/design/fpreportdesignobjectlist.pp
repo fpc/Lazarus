@@ -913,8 +913,9 @@ begin
   Result:=B;
   RB:=B.AsBand;
   O:=Nil;
-  I:=0;
-  While (O=Nil) and (I<COunt) do
+  // We must search backwards
+  I:=Count-1;
+  While (O=Nil) and (I>=0) do
     begin
     O:=Objects[i];
     {$IFDEF DEBUGROL}
@@ -930,7 +931,7 @@ begin
       if not PtInRect(R,P) then
         O:=Nil;
       end;
-    Inc(I);
+    Dec(I);
     end;
   if O<>Nil then
     Result:=O;
