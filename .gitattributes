@@ -1567,6 +1567,7 @@ components/fpreport/design/lazidefpreport.lpk svneol=native#text/plain
 components/fpreport/design/lazidefpreport.pas svneol=native#text/plain
 components/fpreport/design/lazideregfpreport.pp svneol=native#text/plain
 components/fpreport/design/regfpdesigner.pp svneol=native#text/plain
+components/fpreport/design/reportconns.pp svneol=native#text/plain
 components/fpreport/design/reportdesign.ico -text
 components/fpreport/design/reportdesign.lpi svneol=native#text/plain
 components/fpreport/design/reportdesign.lpr svneol=native#text/plain
