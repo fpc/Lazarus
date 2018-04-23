@@ -802,32 +802,8 @@ type
 
   { TGraphic }
 
-  { The TGraphic class is an abstract base class for dealing with graphic images
-    such as bitmaps, pixmaps, icons, and other image formats.
-      LoadFromFile - Read the graphic from the file system.  The old contents of
-        the graphic are lost.  If the file is not of the right format, an
-        exception will be generated.
-      SaveToFile - Writes the graphic to disk in the file provided.
-      LoadFromStream - Like LoadFromFile except source is a stream (e.g.
-        TBlobStream).
-      SaveToStream - stream analogue of SaveToFile.
-      LoadFromClipboardFormat - Replaces the current image with the data
-        provided.  If the TGraphic does not support that format it will generate
-        an exception.
-      SaveToClipboardFormats - Converts the image to a clipboard format.  If the
-        image does not support being translated into a clipboard format it
-        will generate an exception.
-      Height - The native, unstretched, height of the graphic.
-      Palette - Color palette of image.  Zero if graphic doesn't need/use palettes.
-      Transparent - Some parts of the image are not opaque. aka the background
-        can be seen through.
-      Width - The native, unstretched, width of the graphic.
-      OnChange - Called whenever the graphic changes
-      PaletteModified - Indicates in OnChange whether color palette has changed.
-        Stays true until whoever's responsible for realizing this new palette
-        (ex: TImage) sets it to False.
-      OnProgress - Generic progress indicator event. Propagates out to TPicture
-        and TImage OnProgress events.}
+  { TGraphic is an abstract base class for images like TRasterImage,
+    TCustomBitmap, TBitmap, etc. }
 
   TGraphic = class(TPersistent)
   private
