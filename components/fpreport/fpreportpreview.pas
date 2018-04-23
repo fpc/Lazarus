@@ -251,7 +251,7 @@ end;
 
 procedure TFPReportPreviewForm.AZoomOutExecute(Sender: TObject);
 begin
-  if FCurrentZoom<MaxZoomIndex then
+  if FCurrentZoom>-MaxZoomIndex then
     CurrentZoom:=CurrentZoom-1;
 end;
 
