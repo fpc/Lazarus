@@ -879,54 +879,6 @@ type
 
   { TPicture }
 
-  { TPicture is a TGraphic container.  It is used in place of a TGraphic if the
-    graphic can be of any TGraphic class.  LoadFromFile and SaveToFile are
-    polymorphic. For example, if the TPicture is holding an Icon, you can
-    LoadFromFile a bitmap file, where if the class is TIcon you could only read
-    .ICO files.
-
-      LoadFromFile - Reads a picture from disk. The TGraphic class created
-        determined by the file extension of the file. If the file extension is
-        not recognized an exception is generated.
-      SaveToFile - Writes the picture to disk.
-      LoadFromClipboardFormat - ToDo: Reads the picture from the handle provided in
-        the given clipboard format.  If the format is not supported, an
-        exception is generated.
-      SaveToClipboardFormats - ToDo: Allocates a global handle and writes the picture
-        in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE
-        for metafiles, etc.).  Formats will contain the formats written.
-        Returns the number of clipboard items written to the array pointed to
-        by Formats and Datas or would be written if either Formats or Datas are
-        nil.
-      SupportsClipboardFormat - Returns true if the given clipboard format
-        is supported by LoadFromClipboardFormat.
-      Assign - Copys the contents of the given TPicture.  Used most often in
-        the implementation of TPicture properties.
-      RegisterFileFormat - Register a new TGraphic class for use in
-        LoadFromFile.
-      RegisterClipboardFormat - Registers a new TGraphic class for use in
-        LoadFromClipboardFormat.
-      UnRegisterGraphicClass - Removes all references to the specified TGraphic
-        class and all its descendents from the file format and clipboard format
-        internal lists.
-      Height - The native, unstretched, height of the picture.
-      Width - The native, unstretched, width of the picture.
-      Graphic - The TGraphic object contained by the TPicture
-      Bitmap - Returns a bitmap.  If the contents is not already a bitmap, the
-        contents are thrown away and a blank bitmap is returned.
-      Pixmap - Returns a pixmap.  If the contents is not already a pixmap, the
-        contents are thrown away and a blank pixmap is returned.
-      PNG - Returns a png.  If the contents is not already a png, the
-        contents are thrown away and a blank png (TPortableNetworkGraphic) is
-        returned.
-      PNM - Returns a pnm.  If the contents is not already a pnm, the
-        contents are thrown away and a blank pnm (TPortableAnyMapGraphic) is
-        returned.
-      Jpeg - Returns a jpeg. If the contents is not already a jpeg, the
-        contents are thrown away and a blank jpeg (TJPegImage) is
-        returned.
-      }
-
   TPicture = class(TPersistent)
   private
     FGraphic: TGraphic;
