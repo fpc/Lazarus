@@ -211,6 +211,10 @@ msgstr ""
 "A következő nem létező fájlok el lettek távolítva a listából:\n"
 "%s\n"
 
+#: pocheckerconsts.sfuzzystrings
+msgid "Fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr "Bizonytalan szövegek (összesen: %s)"
@@ -443,6 +447,10 @@ msgstr "Összes lefordítatlan szöveg: %s"
 msgid "Total warnings: %d"
 msgstr "Összes figyelmeztetés: %d"
 
+#: pocheckerconsts.stranslatedstrings
+msgid "Translated strings"
+msgstr ""
+
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
 msgstr "Lefordított szövegek (összesen: %s [%.1f%%])"
@@ -466,6 +474,10 @@ msgstr "Kijelölések törlése"
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
 msgstr "Kijelölés megszüntetése"
+
+#: pocheckerconsts.suntranslatedstrings
+msgid "Untranslated strings"
+msgstr ""
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"

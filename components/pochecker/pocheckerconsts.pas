@@ -53,6 +53,9 @@ resourcestring
   sTranslatedStringsTotal = 'Translated strings (total: %s [%.1f%%])';
   sUntranslatedStringsTotal = 'Untranslated strings (total: %s)';
   sFuzzyStringsTotal = 'Fuzzy strings (total: %s)';
+  sTranslatedStrings = 'Translated strings';
+  sUntranslatedStrings = 'Untranslated strings';
+  sFuzzyStrings = 'Fuzzy strings';
   sStatHint = 'Translated: %d (%.1f%%)' + LineEnding +
               'Untranslated: %d (%.1f%%)' + LineEnding +
               'Fuzzy: %d (%.1f%%)' + LineEnding +

@@ -212,6 +212,10 @@ msgstr ""
 "Iš sąrašo pašalintį šie neegzistuojantys failai:\n"
 "%s\n"
 
+#: pocheckerconsts.sfuzzystrings
+msgid "Fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr "Neaiškūs vertimai (viso: %s)"
@@ -444,6 +448,10 @@ msgstr "Viso neišversta: %s"
 msgid "Total warnings: %d"
 msgstr "Viso rasta perspėjimų: %d"
 
+#: pocheckerconsts.stranslatedstrings
+msgid "Translated strings"
+msgstr ""
+
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
 msgstr "Išversta (viso: %s [%.1f%%])"
@@ -467,6 +475,10 @@ msgstr "&Nužymėti viską"
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
 msgstr "Nužymėti visus failus"
+
+#: pocheckerconsts.suntranslatedstrings
+msgid "Untranslated strings"
+msgstr ""
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"

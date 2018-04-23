@@ -211,6 +211,10 @@ msgstr ""
 "Os seguintes arquivos inexistentes foram removidos da lista:\n"
 "%s\n"
 
+#: pocheckerconsts.sfuzzystrings
+msgid "Fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr "Strings incertas (total: %s)"
@@ -443,6 +447,10 @@ msgstr "Total de strings não traduzidas: %s"
 msgid "Total warnings: %d"
 msgstr "Total de avisos encontrados: %d"
 
+#: pocheckerconsts.stranslatedstrings
+msgid "Translated strings"
+msgstr ""
+
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
 msgstr "Strings traduzidas (total: %s [%.1f%%])"
@@ -466,6 +474,10 @@ msgstr "&Desselecionar Tudo"
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
 msgstr "Desselecionar todos arquivos"
+
+#: pocheckerconsts.suntranslatedstrings
+msgid "Untranslated strings"
+msgstr ""
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"

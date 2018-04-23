@@ -55,6 +55,7 @@ type
     FTotalUntranslated: Integer;
     FTotalFuzzy: Integer;
     FTotalPercTranslated: Double;
+    FTestOptions: TPoTestOptions;
     property Log: TStringList read FLog write FLog;
     property StatLog: TStringList read FStatLog write FStatLog;
     property DupLog: TStringList read FDupLog write FDupLog;
@@ -151,13 +152,21 @@ begin
     GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
     GraphStatForm.Settings := Self.Settings;
 
-    GraphStatForm.TranslatedLabel.Caption := Format(sTranslatedStringsTotal, [
-      IntToStr(FTotalTranslated), FTotalPercTranslated]);
-    GraphStatForm.UnTranslatedLabel.Caption := Format(sUntranslatedStringsTotal
-      , [IntToStr(FTotalUntranslated)]);
-    GraphStatForm.FuzzyLabel.Caption := Format(sFuzzyStringsTotal, [IntToStr(
-      FTotalFuzzy)]);
-
+    if not (ptoFindAllChildren in FTestOptions) then
+    begin
+      GraphStatForm.TranslatedLabel.Caption := Format(sTranslatedStringsTotal, [
+        IntToStr(FTotalTranslated), FTotalPercTranslated]);
+      GraphStatForm.UnTranslatedLabel.Caption := Format(sUntranslatedStringsTotal
+        , [IntToStr(FTotalUntranslated)]);
+      GraphStatForm.FuzzyLabel.Caption := Format(sFuzzyStringsTotal, [IntToStr(
+        FTotalFuzzy)]);
+    end
+    else
+    begin
+      GraphStatForm.TranslatedLabel.Caption := sTranslatedStrings;
+      GraphStatForm.UnTranslatedLabel.Caption := sUntranslatedStrings;
+      GraphStatForm.FuzzyLabel.Caption := sFuzzyStrings;
+    end;
     mr := GraphStatForm.ShowModal;
     if mr = mrOpenEditorFile then ModalResult := mr; // To inform pocheckermain
   finally

@@ -215,6 +215,10 @@ msgstr ""
 "下面不存在文件被移除从列表:\n"
 "%s\n"
 
+#: pocheckerconsts.sfuzzystrings
+msgid "Fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr ""
@@ -459,6 +463,10 @@ msgstr ""
 msgid "Total warnings: %d"
 msgstr "全部警告找到:%d"
 
+#: pocheckerconsts.stranslatedstrings
+msgid "Translated strings"
+msgstr ""
+
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
 msgstr ""
@@ -482,6 +490,10 @@ msgstr "不选择所有(&U)"
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
 msgstr "不选择所有文件"
+
+#: pocheckerconsts.suntranslatedstrings
+msgid "Untranslated strings"
+msgstr ""
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"

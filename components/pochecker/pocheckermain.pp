@@ -336,8 +336,13 @@ begin
 end;
 
 function TPoCheckerForm.GetTestOptions: TPoTestOptions;
+var
+  ALangID: TLangID;
 begin
   Result := [];
+  ALangID := LangFilterIndexToLangID(LangFilter.ItemIndex);
+  if ALangID = lang_all then
+    Include(Result,ptoFindAllChildren);
 end;
 
 procedure TPoCheckerForm.SetTestTypeCheckBoxes(TestTypes: TPoTestTypes);
@@ -552,20 +557,25 @@ begin
       SL.Add(Format(sTotalErrorsNonFuzzy, [ErrorCount, NonFuzzyErrorCount]))
     else
       SL.Add(Format(sTotalErrors, [ErrorCount]));
-    SL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
-    SL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
-    SL.Add('');
-    SL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
 
-    StatL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
-    StatL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
-    StatL.Add('');
-    StatL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
+    if not (ptoFindAllChildren in TestOptions) then
+    begin
+      SL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
+      SL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
+      SL.Add('');
+      SL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
+
+      StatL.Add(Format(sTotalUntranslatedStrings, [IntToStr(TotalUntranslatedCount)]));
+      StatL.Add(Format(sTotalFuzzyStrings, [IntToStr(TotalFuzzyCount)]));
+      StatL.Add('');
+      StatL.Add(Format(sTotalTranslatedStrings, [IntToStr(TotalTranslatedCount), TotalPercTranslated]));
+    end;
 
     DupL.Add(Format(sTotalWarnings, [WarningCount]));
 
     ResultDlg := TResultDlgForm.Create(nil);
     try
+      ResultDlg.FTestOptions := TestOptions;
       ResultDlg.FTotalTranslated := TotalTranslatedCount;
       ResultDlg.FTotalUntranslated := TotalUntranslatedCount;
       ResultDlg.FTotalFuzzy := TotalFuzzyCount;

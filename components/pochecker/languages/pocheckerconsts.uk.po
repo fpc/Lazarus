@@ -212,6 +212,10 @@ msgstr ""
 "Такі відсутні файли були вилучені зі списку:\n"
 "%s\n"
 
+#: pocheckerconsts.sfuzzystrings
+msgid "Fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr "Неповні рядки (всього: %s)"
@@ -444,6 +448,10 @@ msgstr "Всього неперекладених рядків: %s"
 msgid "Total warnings: %d"
 msgstr "Знайдено всього попереджень: %d"
 
+#: pocheckerconsts.stranslatedstrings
+msgid "Translated strings"
+msgstr ""
+
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
 msgstr "Перекладених рядків (всього: %s [%.1f%%])"
@@ -467,6 +475,10 @@ msgstr "&Зняти вибір"
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
 msgstr "Зняти вибір зі всіх файлів"
+
+#: pocheckerconsts.suntranslatedstrings
+msgid "Untranslated strings"
+msgstr ""
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"

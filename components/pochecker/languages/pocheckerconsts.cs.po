@@ -213,6 +213,10 @@ msgid ""
 "%s\n"
 msgstr ""
 
+#: pocheckerconsts.sfuzzystrings
+msgid "Fuzzy strings"
+msgstr ""
+
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
 msgstr ""
@@ -443,6 +447,10 @@ msgstr ""
 msgid "Total warnings: %d"
 msgstr "Celkem nalezeno varování: %d"
 
+#: pocheckerconsts.stranslatedstrings
+msgid "Translated strings"
+msgstr ""
+
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
 msgstr ""
@@ -465,6 +473,10 @@ msgstr ""
 
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect all files"
+msgstr ""
+
+#: pocheckerconsts.suntranslatedstrings
+msgid "Untranslated strings"
 msgstr ""
 
 #: pocheckerconsts.suntranslatedstringstotal
