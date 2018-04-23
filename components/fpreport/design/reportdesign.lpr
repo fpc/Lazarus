@@ -18,6 +18,7 @@ uses
   fpreportpdfexport,
   fpreporthtmlexport,
   fpreportpreview,
+  fpreportprinterexport,
   fpreportformexport,
   Interfaces, // this includes the LCL widgetset
   Forms,
