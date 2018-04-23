@@ -313,6 +313,7 @@ type
     procedure VAlignExecute(Sender: TObject);
     procedure VResizeExecute(Sender: TObject);
   private
+    FCustomStartIndex : Integer;
     FInitialFileName: String;
     FLoadModified : Boolean;
     FStopDesigning: Boolean;
@@ -339,6 +340,8 @@ type
     procedure GetReportDataNames(Sender: TObject; List: TStrings);
     procedure InitialiseData;
 {$ENDIF}
+    procedure AddCustomElementExecute(Sender: TObject);
+    procedure AddCustomElements;
     procedure CheckLoadInitialFile;
     function CreateDesignPopupMenu(aOWner: TComponent): TPopupMenu;
     function CreateNewPage: TFPReportCustomPage;
@@ -535,6 +538,8 @@ begin
   FreeAndNil(TSDesign); // Remove design-time added page
   FReportDesignData:=TDesignReportDataManager.Create(Self);
   SetBandActionTags;
+  FCustomStartIndex:=Madd.Count;
+  AddCustomElements;
   // DEMO
 {$IFDEF USEDEMOREPORT}
   CreateDemoReport;
@@ -556,6 +561,77 @@ begin
     LoadRecentFilesFromIni;
     maxRecent := 15;
     end;
+end;
+
+Type
+  { TAddElementAction }
+
+  TAddElementAction  = Class(TAction)
+  private
+    FClass: TFPReportElementClass;
+  published
+    Property AClass : TFPReportElementClass Read FClass Write FClass;
+  end;
+
+procedure TFPReportDesignerForm.AddCustomElements;
+
+  Function AllowClass(M : TFPReportClassMapping) : Boolean;
+
+  begin
+    Result:= not M.ReportElementClass.InheritsFrom(TFPReportCustomBand)
+             and not M.ReportElementClass.InheritsFrom(TFPReportCustomPage);
+    if Result then
+      Result:=Not M.Standard;
+  end;
+
+Var
+  I : Integer;
+  M : TFPReportClassMapping;
+  MI : TMenuItem;
+  A : TAddElementAction;
+  Img : TPortableNetworkGraphic;
+  S : TMemoryStream;
+
+begin
+  for I:=0 to gElementFactory.MappingCount-1 do
+    begin
+    M:=gElementFactory.Mappings[i];
+    if AllowClass(M) then
+      begin
+      A:=TAddElementAction.Create(Self);
+      A.Caption:=M.MappingName;
+      A.AClass:=M.ReportElementClass;
+      A.OnUpdate:=@AAddElementUpdate;
+      A.OnExecute:=@AddCustomElementExecute;
+      A.Category:='Add';
+      A.ActionList:=ALReport;
+      if (Length(M.IconData)>0) then
+        begin
+        Img:=Nil;
+        S:=TMemoryStream.Create;
+        try
+          S.WriteBuffer(M.IconData[0],Length(M.IConData));
+          S.Position:=0;
+          Img:=TPortableNetworkGraphic.Create;
+          Img.LoadFromStream(S);
+          A.ImageIndex:=ILReport.Add(Img,Nil);
+        Finally
+          S.Free;
+          Img.Free;
+        end;
+        end;
+      MI:=TMenuItem.Create(Self);
+      MI.Action:=A;
+      MAdd.Add(MI);
+      end;
+    end;
+end;
+
+procedure TFPReportDesignerForm.AddCustomElementExecute(Sender: TObject);
+
+begin
+  if (Sender is TAddElementAction) then
+    CurrentDesigner.AddElement((Sender as TAddElementAction).AClass);
 end;
 
 procedure TFPReportDesignerForm.FormCloseQuery(Sender: TObject;

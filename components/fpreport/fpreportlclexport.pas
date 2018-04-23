@@ -892,6 +892,7 @@ procedure TFPReportExportCanvas.RenderElement(ABand : TFPReportCustomBand; Eleme
 
 Var
   C : TFPReportPoint;
+  LB,LE : TFPReportLayout;
 
 begin
   {$IFDEF DEBUGRD}
@@ -909,11 +910,13 @@ begin
     RenderCheckbox(ABand,TFPReportCustomCheckbox(Element))
   else if not (Element is TFPReportCustomBand) then
     begin
-    C.Left := ABand.RTLayout.Left + Element.RTLayout.Left;
-    C.Top := ABand.RTLayout.Top + Element.RTLayout.Top ; // + Element.RTLayout.Height;
-    RenderFrame(ABand, Element.Frame, C, Element.RTLayout.Width, Element.RTLayout.Height);
-    C.Left:=aband.RTLayout.Left;
-    C.Top:=aband.RTLayout.Top;
+    LB:=GetLayout(ABand);
+    LE:=GetLayout(Element);
+    C.Left := LB.Left + LE.Left;
+    C.Top := LB.Top + LE.Top ; // + Element.RTLayout.Height;
+    RenderFrame(ABand, Element.Frame, C, LE.Width, LE.Height);
+    C.Left:=LB.Left;
+    C.Top:=LB.Top;
     RenderUnknownElement(C,Element,Self.VDPI);
     end;
 end;
