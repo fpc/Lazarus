@@ -997,7 +997,8 @@ begin
     CurParentViewNode:=ParentViewNode;
 
     // don't show statements
-    if (CodeNode.Desc in AllPascalStatements+[ctnParameterList]) then begin
+    if (CodeNode.Desc in AllPascalStatements+[ctnParameterList]-
+        [ctnInitialization,ctnFinalization]) then begin
       ShowNode:=false;
       ShowChilds:=false;
     end;
