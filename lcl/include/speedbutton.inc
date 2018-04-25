@@ -229,11 +229,15 @@ begin
     FGlyph.ExternalImages.FreeNotification(Self);
     FGlyph.ExternalImages.RegisterChanges(FImageChangeLink);
   end;
+  InvalidatePreferredSize;
+  AdjustSize;
 end;
 
 procedure TCustomSpeedButton.SetImageWidth(const aImageWidth: Integer);
 begin
   FGlyph.ExternalImageWidth := aImageWidth;
+  InvalidatePreferredSize;
+  AdjustSize;
 end;
 
 {------------------------------------------------------------------------------

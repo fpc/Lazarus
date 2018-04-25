@@ -175,11 +175,15 @@ begin
     FButtonGlyph.ExternalImages.FreeNotification(Self);
     FButtonGlyph.ExternalImages.RegisterChanges(FImageChangeLink);
   end;
+  InvalidatePreferredSize;
+  AdjustSize;
 end;
 
 procedure TCustomBitBtn.SetImageWidth(const aImageWidth: Integer);
 begin
   FButtonGlyph.ExternalImageWidth := aImageWidth;
+  InvalidatePreferredSize;
+  AdjustSize;
 end;
 
 procedure TCustomBitBtn.GlyphChanged(Sender: TObject);
