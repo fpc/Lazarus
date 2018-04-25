@@ -109,14 +109,14 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    // procedure GetImageIndexAndEffect(State: TButtonState; out AIndex: Integer; out AEffect: TGraphicsDrawEffect); To-Do: enable for backwards compatibility
+    procedure GetImageIndexAndEffect(State: TButtonState; out AIndex: Integer; out AEffect: TGraphicsDrawEffect);
     procedure GetImageIndexAndEffect(State: TButtonState;
       APPI: Integer; const ACanvasScaleFactor: Double;
       out AImageResolution: TScaledImageListResolution;
       out AIndex: Integer; out AEffect: TGraphicsDrawEffect);
-    {function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
+    function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
                   State: TButtonState; Transparent: Boolean;
-                  BiDiFlags: Longint): TRect; To-Do: enable for backwards compatibility }
+                  BiDiFlags: Longint): TRect;
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
                   State: TButtonState; Transparent: Boolean;
                   BiDiFlags, PPI: Longint; const ScaleFactor: Double): TRect;

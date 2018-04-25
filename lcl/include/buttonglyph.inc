@@ -144,6 +144,14 @@ begin
   end;
 end;
 
+procedure TButtonGlyph.GetImageIndexAndEffect(State: TButtonState; out
+  AIndex: Integer; out AEffect: TGraphicsDrawEffect);
+var
+  x: TScaledImageListResolution;
+begin
+  GetImageIndexAndEffect(State, 96, 1, x, AIndex, AEffect);
+end;
+
 function TButtonGlyph.GetNumGlyphs: TNumGlyphs;
 begin
   if Assigned(FExternalImages) then
@@ -283,6 +291,13 @@ begin
     Client.Left + Offset.X, Client.Top + Offset.y, ImgID, AEffect);
 
   // ToDo: VCL returns the text rectangle
+end;
+
+function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
+  const Offset: TPoint; State: TButtonState; Transparent: Boolean;
+  BiDiFlags: Longint): TRect;
+begin
+  Result := Draw(Canvas, Client, Offset, State, Transparent, BiDiFlags, 96, 1);
 end;
 
 procedure TButtonGlyph.Refresh;
