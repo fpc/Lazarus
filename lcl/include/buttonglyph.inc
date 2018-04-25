@@ -278,7 +278,7 @@ begin
   if (ImgRes.Resolution=nil) or (ImgID<0) then
     Exit;
 
-  ImgRes.Resolution.Draw(Canvas,
+  ImgRes.Draw(Canvas,
     Client.Left + Offset.X, Client.Top + Offset.y, ImgID, AEffect);
 
   // ToDo: VCL returns the text rectangle
