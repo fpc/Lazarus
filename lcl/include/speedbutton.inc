@@ -175,7 +175,7 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.SetFlat(const Value : boolean);
+procedure TCustomSpeedButton.SetFlat(const Value: Boolean);
 begin
   if FFlat <> Value then 
   begin
@@ -242,7 +242,7 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.SetMargin(const Value : Integer);
+procedure TCustomSpeedButton.SetMargin(const Value: integer);
 begin
   if FMargin <> Value then
   begin
@@ -275,7 +275,7 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.SetSpacing(const Value : Integer);
+procedure TCustomSpeedButton.SetSpacing(const Value: integer);
 begin
   if FSpacing <> Value then
   begin
@@ -284,7 +284,7 @@ begin
   end;
 end;
 
-procedure TCustomSpeedButton.SetShowAccelChar(Value : Boolean);
+procedure TCustomSpeedButton.SetShowAccelChar(Value: boolean);
 begin
   If FShowAccelChar <> Value then
   begin
@@ -1132,7 +1132,7 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomSpeedButton.CMEnabledChanged(var Message: TLMEssage);
+procedure TCustomSpeedButton.CMEnabledChanged(var Message: TLMessage);
 Begin
   //Should create a new glyph based on the new state
   UpdateState(true);
