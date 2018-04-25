@@ -107,10 +107,10 @@ begin
   Result := FButtonGlyph.ShowMode;
 end;
 
-function TCustomBitBtn.GetImageIndex: Integer;
+function TCustomBitBtn.GetImageIndex: TImageIndex;
 begin
   if FButtonGlyph.ExternalImages=GLCLBtnGlyphs then
-    Result := 0
+    Result := -1
   else
     Result := FButtonGlyph.ExternalImageIndex;
 end;
@@ -162,7 +162,7 @@ begin
   FButtonGlyph.ShowMode := AValue;
 end;
 
-procedure TCustomBitBtn.SetImageIndex(const aImageIndex: Integer);
+procedure TCustomBitBtn.SetImageIndex(const aImageIndex: TImageIndex);
 begin
   FButtonGlyph.ExternalImageIndex := aImageIndex;
 end;

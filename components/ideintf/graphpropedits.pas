@@ -672,7 +672,11 @@ begin
   end
   else
   begin
-    Component := Component.GetParentComponent;
+    if not (
+         (Component is TCustomSpeedButton)
+      or (Component is TCustomBitBtn))
+    then
+      Component := Component.GetParentComponent;
     if Component = nil then
       Exit;
     PropInfo := TypInfo.GetPropInfo(Component, 'Images');

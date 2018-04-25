@@ -67,6 +67,7 @@ begin
   FOriginal := TGlyphBitmap.Create(Self);
   FOriginal.OnChange := @GlyphChanged;
   FNumGlyphs := Low(TNumGlyphs);
+  FExternalImageIndex := -1;
 end;
 
 {------------------------------------------------------------------------------

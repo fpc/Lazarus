@@ -169,8 +169,8 @@ type
     function GetCaptionOfKind(AKind: TBitBtnKind): String;
     function GetImages: TCustomImageList;
     procedure SetImages(const aImages: TCustomImageList);
-    function GetImageIndex: Integer;
-    procedure SetImageIndex(const aImageIndex: Integer);
+    function GetImageIndex: TImageIndex;
+    procedure SetImageIndex(const aImageIndex: TImageIndex);
     function GetImageWidth: Integer;
     procedure SetImageWidth(const aImageWidth: Integer);
   protected
@@ -200,7 +200,7 @@ type
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property Images: TCustomImageList read GetImages write SetImages;
-    property ImageIndex: Integer read GetImageIndex write SetImageIndex default 0;
+    property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
     property ImageWidth: Integer read GetImageWidth write SetImageWidth default 0;
     property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
@@ -325,8 +325,8 @@ type
     procedure WMLButtonDBLCLK(Var Message: TLMLButtonDblClk); message LM_LBUTTONDBLCLK;
     function GetImages: TCustomImageList;
     procedure SetImages(const aImages: TCustomImageList);
-    function GetImageIndex: Integer;
-    procedure SetImageIndex(const aImageIndex: Integer);
+    function GetImageIndex: TImageIndex;
+    procedure SetImageIndex(const aImageIndex: TImageIndex);
     function GetImageWidth: Integer;
     procedure SetImageWidth(const aImageWidth: Integer);
   protected
@@ -384,7 +384,7 @@ type
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property Images: TCustomImageList read GetImages write SetImages;
-    property ImageIndex: Integer read GetImageIndex write SetImageIndex default 0;
+    property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
     property ImageWidth: Integer read GetImageWidth write SetImageWidth default 0;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
