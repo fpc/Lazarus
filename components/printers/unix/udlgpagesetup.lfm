@@ -4,6 +4,7 @@ object dlgPageSetup: TdlgPageSetup
   Top = 113
   Width = 446
   ActiveControl = frmPageSetup.panPreview
+  BorderStyle = bsDialog
   Caption = 'dlgPageSetup'
   ClientHeight = 449
   ClientWidth = 446
