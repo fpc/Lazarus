@@ -87,7 +87,7 @@ procedure TCustomBitBtn.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FButtonGlyph.ExternalImages) then
+  if (Operation = opRemove) and (FButtonGlyph <> nil) and (AComponent = FButtonGlyph.ExternalImages) then
     Images := nil;
 end;
 

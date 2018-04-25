@@ -860,7 +860,7 @@ procedure TCustomSpeedButton.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FGlyph.ExternalImages) then
+  if (Operation = opRemove) and (FGlyph<>nil) and (AComponent = FGlyph.ExternalImages) then
     Images := nil;
 end;
 
