@@ -253,19 +253,21 @@ end;
 
 procedure TSynPoSyn.StringProc;
 var
-  LastQuotePos: longint;
+  FirstQuotePos, LastQuotePos: longint;
 begin
-  LastQuotePos := Run;
+  FirstQuotePos := Run;
+  LastQuotePos := FirstQuotePos;
   fTokenID := tkString;
   while FLine[Run] <> #0 do
   begin
     case FLine[Run] of
       #10, #13: break;
-      #34: LastQuotePos := Run;
+      #34: if FLine[Run - 1] <> '\' then LastQuotePos := Run;
     end;
     inc(Run);
   end;
-  Run := LastQuotePos;
+  if FirstQuotePos <> LastQuotePos then
+    Run := LastQuotePos;
   if FLine[Run] <> #0 then
     inc(Run);
 end;
