@@ -74,13 +74,20 @@ type
     FShowMode: TGlyphShowMode;
     FImageIndexes: array[TButtonState] of Integer;
     FImages: TCustomImageList;
+    FExternalImages: TCustomImageList;
+    FExternalImageIndex: Integer;
+    FExternalImageWidth: Integer;
     FOriginal: TBitmap;
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FImagesCache: TImageListCache;
     FTransparentMode: TGlyphTransparencyMode;         // set by our owner to indicate that the glyphbitmap should be transparent
     function GetHeight: Integer;
+    function GetNumGlyphs: TNumGlyphs;
     function GetWidth: Integer;
+    procedure SetExternalImageIndex(const AExternalImageIndex: Integer);
+    procedure SetExternalImages(const AExternalImages: TCustomImageList);
+    procedure SetExternalImageWidth(const AExternalImageWidth: Integer);
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
     procedure SetShowMode(const AValue: TGlyphShowMode);
@@ -94,6 +101,7 @@ type
     procedure CacheSetImageList(AImageList: TCustomImageList);
     procedure CacheSetImageIndex(AIndex, AImageIndex: Integer);
   protected
+    procedure DoChange; virtual;
     procedure GlyphChanged(Sender: TObject);
     procedure SetTransparentMode(AValue: TGlyphTransparencyMode);
     
@@ -101,15 +109,25 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure GetImageIndexAndEffect(State: TButtonState; out AIndex: Integer; out AEffect: TGraphicsDrawEffect);
+    // procedure GetImageIndexAndEffect(State: TButtonState; out AIndex: Integer; out AEffect: TGraphicsDrawEffect); To-Do: enable for backwards compatibility
+    procedure GetImageIndexAndEffect(State: TButtonState;
+      APPI: Integer; const ACanvasScaleFactor: Double;
+      out AImageResolution: TScaledImageListResolution;
+      out AIndex: Integer; out AEffect: TGraphicsDrawEffect);
+    {function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
+                  State: TButtonState; Transparent: Boolean;
+                  BiDiFlags: Longint): TRect; To-Do: enable for backwards compatibility }
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
                   State: TButtonState; Transparent: Boolean;
-                  BiDiFlags: Longint): TRect;
+                  BiDiFlags, PPI: Longint; const ScaleFactor: Double): TRect;
     procedure Refresh;
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property IsDesigning: Boolean read FIsDesigning write FIsDesigning;
-    property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
+    property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs;
     property Images: TCustomImageList read FImages;
+    property ExternalImages: TCustomImageList read FExternalImages write SetExternalImages;
+    property ExternalImageIndex: Integer read FExternalImageIndex write SetExternalImageIndex;
+    property ExternalImageWidth: Integer read FExternalImageWidth write SetExternalImageWidth;
     property Width: Integer read GetWidth;
     property Height: Integer read GetHeight;
     property ShowMode: TGlyphShowMode read FShowMode write SetShowMode;
@@ -133,9 +151,11 @@ type
     FLayout: TButtonLayout;
     FMargin: integer;
     FSpacing: Integer;
+    FImageChangeLink: TChangeLink;
     function GetGlyph: TBitmap;
     function GetGlyphShowMode: TGlyphShowMode;
     function GetNumGlyphs: Integer;
+    procedure ImageListChange(Sender: TObject);
     function IsGlyphStored: Boolean;
     procedure SetGlyph(AValue: TBitmap);
     procedure SetGlyphShowMode(const AValue: TGlyphShowMode);
@@ -147,6 +167,12 @@ type
     procedure RealizeKind;
     //Return the caption associated with the aKind value.
     function GetCaptionOfKind(AKind: TBitBtnKind): String;
+    function GetImages: TCustomImageList;
+    procedure SetImages(const aImages: TCustomImageList);
+    function GetImageIndex: Integer;
+    procedure SetImageIndex(const aImageIndex: Integer);
+    function GetImageWidth: Integer;
+    procedure SetImageWidth(const aImageWidth: Integer);
   protected
     FButtonGlyph: TButtonGlyph;
     class procedure WSRegisterClass; override;
@@ -155,6 +181,8 @@ type
     procedure InitializeWnd; override;
     function IsCaptionStored: Boolean;
     procedure Loaded; override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
     procedure TextChanged; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
@@ -171,6 +199,9 @@ type
     property DefaultCaption: Boolean read FDefaultCaption write FDefaultCaption default False;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
+    property Images: TCustomImageList read GetImages write SetImages;
+    property ImageIndex: Integer read GetImageIndex write SetImageIndex;
+    property ImageWidth: Integer read GetImageWidth write SetImageWidth;
     property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
@@ -257,6 +288,7 @@ type
   private
     FGlyph: TButtonGlyph;
     FGroupIndex: Integer;
+    FImageChangeLink: TChangeLink;
     FLastDrawDetails: TThemedElementDetails;
     FLayout: TButtonLayout;
     FMargin: integer;
@@ -271,6 +303,7 @@ type
     FFlat: Boolean;
     FMouseInControl: Boolean;
     function GetGlyph: TBitmap;
+    procedure ImageListChange(Sender: TObject);
     function IsGlyphStored: Boolean;
     procedure SetShowCaption(const AValue: boolean);
     procedure UpdateExclusive;
@@ -287,6 +320,12 @@ type
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure WMLButtonDBLCLK(Var Message: TLMLButtonDblClk); message LM_LBUTTONDBLCLK;
+    function GetImages: TCustomImageList;
+    procedure SetImages(const aImages: TCustomImageList);
+    function GetImageIndex: Integer;
+    procedure SetImageIndex(const aImageIndex: Integer);
+    function GetImageWidth: Integer;
+    procedure SetImageWidth(const aImageWidth: Integer);
   protected
     FState: TButtonState;
     class procedure WSRegisterClass; override;
@@ -304,6 +343,8 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
     procedure Paint; override;
     procedure PaintBackground(var PaintRect: TRect); virtual;
     procedure SetDown(Value: Boolean);
@@ -339,6 +380,9 @@ type
     property Flat: Boolean read FFlat write SetFlat default false;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
+    property Images: TCustomImageList read GetImages write SetImages;
+    property ImageIndex: Integer read GetImageIndex write SetImageIndex;
+    property ImageWidth: Integer read GetImageWidth write SetImageWidth;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;

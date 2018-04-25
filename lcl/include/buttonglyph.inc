@@ -84,36 +84,71 @@ begin
   inherited Destroy;
 end;
 
+procedure TButtonGlyph.DoChange;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
 procedure TButtonGlyph.GetImageIndexAndEffect(State: TButtonState;
-  out AIndex: Integer; out AEffect: TGraphicsDrawEffect);
+  APPI: Integer; const ACanvasScaleFactor: Double; out
+  AImageResolution: TScaledImageListResolution; out AIndex: Integer; out
+  AEffect: TGraphicsDrawEffect);
 var
   AStoredState: TButtonState;
   AUseAutoEffects: Integer;
+  AImages: TCustomImageList;
+const
+  CEffects: array[Boolean, TButtonState] of TGraphicsDrawEffect =
+    ((gdeNormal, gdeDisabled, gdeNormal, gdeNormal, gdeNormal),
+     (gdeNormal, gdeDisabled, gdeShadowed, gdeNormal, gdeHighlighted));
 begin
-  AStoredState := bsUp;
-  AEffect := gdeNormal;
   AUseAutoEffects := ThemeServices.GetOption(toUseGlyphEffects);
-  case State of
-    bsDisabled:
-      if NumGlyphs > 1 then
-        AStoredState := State
-      else
-        AEffect := gdeDisabled;
-    bsDown:
-      if NumGlyphs > 2 then
-        AStoredState := State
-      else if AUseAutoEffects > 0 then
-        AEffect := gdeShadowed;
-    bsExclusive:
-      if NumGlyphs > 3 then
-        AStoredState := State;
-    bsHot:
-      if NumGlyphs > 4 then
-        AStoredState := State
-      else if AUseAutoEffects > 0 then
-        AEffect := gdeHighlighted;
+  if Assigned(FExternalImages) then
+  begin
+    AImages := FExternalImages;
+    AIndex := FExternalImageIndex;
+    AEffect := CEffects[AUseAutoEffects > 0, State];
+    AImageResolution := AImages.ResolutionForPPI[FExternalImageWidth, APPI, ACanvasScaleFactor];
+  end else
+  begin
+    AImages := FImages;
+    if AImages<>nil then
+      AImageResolution := AImages.ResolutionForPPI[0, 96, 1]
+    else
+      AImageResolution := TScaledImageListResolution.Create(nil, 1);
+    AStoredState := bsUp;
+    AEffect := gdeNormal;
+    case State of
+      bsDisabled:
+        if NumGlyphs > 1 then
+          AStoredState := State
+        else
+          AEffect := gdeDisabled;
+      bsDown:
+        if NumGlyphs > 2 then
+          AStoredState := State
+        else if AUseAutoEffects > 0 then
+          AEffect := gdeShadowed;
+      bsExclusive:
+        if NumGlyphs > 3 then
+          AStoredState := State;
+      bsHot:
+        if NumGlyphs > 4 then
+          AStoredState := State
+        else if AUseAutoEffects > 0 then
+          AEffect := gdeHighlighted;
+    end;
+    AIndex := FImageIndexes[AStoredState];
   end;
-  AIndex := FImageIndexes[AStoredState];
+end;
+
+function TButtonGlyph.GetNumGlyphs: TNumGlyphs;
+begin
+  if Assigned(FExternalImages) then
+    Result := 1
+  else
+    Result := FNumGlyphs;
 end;
 
 {------------------------------------------------------------------------------
@@ -218,17 +253,17 @@ begin
   end;
 
   if Sender = FOriginal then
-    if Assigned(FOnChange) then
-      FOnChange(Self);
+    DoChange;
 end;
 
 {------------------------------------------------------------------------------
        TButtonGlyph Draw
 ------------------------------------------------------------------------------}
 function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
-  const Offset: TPoint;  State: TButtonState;  Transparent: Boolean;
-  BiDiFlags: Longint): TRect;
+  const Offset: TPoint; State: TButtonState; Transparent: Boolean; BiDiFlags,
+  PPI: Longint; const ScaleFactor: Double): TRect;
 var
+  ImgRes: TScaledImageListResolution;
   ImgID: integer;
   AEffect: TGraphicsDrawEffect;
 begin
@@ -236,14 +271,15 @@ begin
   if (FOriginal = nil) then
     exit;
 
-  if (Width = 0) or (Height = 0) or
-     (Client.Left >= Client.Right) or (Client.Top >= Client.Bottom) then
+  if (Client.Left >= Client.Right) or (Client.Top >= Client.Bottom) then
     Exit;
   
-  GetImageIndexAndEffect(State, ImgID, AEffect);
+  GetImageIndexAndEffect(State, PPI, ScaleFactor, ImgRes, ImgID, AEffect);
+  if (ImgRes.Resolution=nil) or (ImgID<0) then
+    Exit;
 
-  FImages.Draw(Canvas, Client.Left + Offset.X, Client.Top + Offset.y, ImgID,
-    AEffect);
+  ImgRes.Resolution.Draw(Canvas,
+    Client.Left + Offset.X, Client.Top + Offset.y, ImgID, AEffect);
 
   // ToDo: VCL returns the text rectangle
 end;
@@ -251,6 +287,29 @@ end;
 procedure TButtonGlyph.Refresh;
 begin
   GlyphChanged(FOriginal);
+end;
+
+procedure TButtonGlyph.SetExternalImageIndex(const AExternalImageIndex: Integer);
+begin
+  if FExternalImageIndex = AExternalImageIndex then Exit;
+  FExternalImageIndex := AExternalImageIndex;
+  DoChange;
+end;
+
+procedure TButtonGlyph.SetExternalImages(const AExternalImages: TCustomImageList
+  );
+begin
+  if FExternalImages = AExternalImages then Exit;
+  FExternalImages := AExternalImages;
+  DoChange;
+end;
+
+procedure TButtonGlyph.SetExternalImageWidth(const AExternalImageWidth: Integer
+  );
+begin
+  if FExternalImageWidth = AExternalImageWidth then Exit;
+  FExternalImageWidth := AExternalImageWidth;
+  DoChange;
 end;
 
 

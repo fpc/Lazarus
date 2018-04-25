@@ -40,6 +40,8 @@ begin
   FGlyph.ShowMode := gsmAlways;
   FGlyph.SetTransparentMode(gtmTransparent);
   FGlyph.OnChange := @GlyphChanged;
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := @ImageListChange;
 
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
@@ -66,6 +68,7 @@ end;
 destructor TCustomSpeedButton.Destroy;
 begin
   FreeAndNil(FGlyph);
+  FreeAndNil(FImageChangeLink);
   inherited Destroy;
 end;
 
@@ -206,6 +209,31 @@ begin
     FGroupIndex := Value;
     UpdateExclusive;
   end;
+end;
+
+procedure TCustomSpeedButton.SetImageIndex(const aImageIndex: Integer);
+begin
+  FGlyph.ExternalImageIndex := aImageIndex;
+end;
+
+procedure TCustomSpeedButton.SetImages(const aImages: TCustomImageList);
+begin
+  if FGlyph.ExternalImages <> nil then
+  begin
+    FGlyph.ExternalImages.UnRegisterChanges(FImageChangeLink);
+    FGlyph.ExternalImages.RemoveFreeNotification(Self);
+  end;
+  FGlyph.ExternalImages := aImages;
+  if FGlyph.ExternalImages <> nil then
+  begin
+    FGlyph.ExternalImages.FreeNotification(Self);
+    FGlyph.ExternalImages.RegisterChanges(FImageChangeLink);
+  end;
+end;
+
+procedure TCustomSpeedButton.SetImageWidth(const aImageWidth: Integer);
+begin
+  FGlyph.ExternalImageWidth := aImageWidth;
 end;
 
 {------------------------------------------------------------------------------
@@ -486,6 +514,11 @@ procedure TCustomSpeedButton.GlyphChanged(Sender : TObject);
 Begin
   //redraw the button;
   Invalidate;
+end;
+
+procedure TCustomSpeedButton.ImageListChange(Sender: TObject);
+begin
+  if Sender = Images then Invalidate;
 end;
 
 function TCustomSpeedButton.DialogChar(var Message: TLMKey): boolean;
@@ -823,6 +856,14 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
+procedure TCustomSpeedButton.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FGlyph.ExternalImages) then
+    Images := nil;
+end;
+
 {------------------------------------------------------------------------------
        TCustomSpeedButton DoMouseUp  "Event Handler"
 ------------------------------------------------------------------------------}
@@ -1001,9 +1042,37 @@ begin
 end;
 
 function TCustomSpeedButton.GetGlyphSize(Drawing: boolean; PaintRect: TRect): TSize;
+var
+  AImageRes: TScaledImageListResolution;
+  AIndex: Integer;
+  AEffect: TGraphicsDrawEffect;
 begin
-  Result.CX := FGlyph.Glyph.Width;
-  Result.CY := FGlyph.Glyph.Height;
+  if FGlyph.ExternalImages<>nil then
+  begin
+    FGlyph.GetImageIndexAndEffect(Low(TButtonState), Font.PixelsPerInch,
+      GetCanvasScaleFactor, AImageRes, AIndex, AEffect);
+    Result.CX := AImageRes.Width;
+    Result.CY := AImageRes.Height;
+  end else
+  begin
+    Result.CX := FGlyph.Width;
+    Result.CY := FGlyph.Height;
+  end;
+end;
+
+function TCustomSpeedButton.GetImageIndex: Integer;
+begin
+  Result := FGlyph.ExternalImageIndex;
+end;
+
+function TCustomSpeedButton.GetImages: TCustomImageList;
+begin
+  Result := FGlyph.ExternalImages;
+end;
+
+function TCustomSpeedButton.GetImageWidth: Integer;
+begin
+  Result := FGlyph.ExternalImageWidth;
 end;
 
 function TCustomSpeedButton.GetTextSize(Drawing: boolean; PaintRect: TRect): TSize;
@@ -1051,7 +1120,8 @@ function TCustomSpeedButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
   BiDiFlags: Longint): TRect;
 begin
   if Assigned(FGlyph) then
-    Result := FGlyph.Draw(ACanvas, AClient, AOffset, AState, ATransparent, BiDiFlags)
+    Result := FGlyph.Draw(ACanvas, AClient, AOffset, AState, ATransparent, BiDiFlags,
+      Font.PixelsPerInch, GetCanvasScaleFactor)
   else
     Result := Rect(0,0,0,0);
 end;

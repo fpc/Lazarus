@@ -25,6 +25,8 @@ begin
   FButtonGlyph.NumGlyphs := 1;
   FButtonGlyph.OnChange := @GlyphChanged;
   FButtonGlyph.IsDesigning := csDesigning in ComponentState;
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := @ImageListChange;
   Align := alNone;
   RealizeKind;
 end;
@@ -35,6 +37,7 @@ end;
 destructor TCustomBitBtn.Destroy;
 begin
   FreeThenNil(FButtonGlyph);
+  FreeAndNil(FImageChangeLink);
   inherited Destroy;
 end;
 
@@ -80,9 +83,19 @@ begin
   Buttons.LoadGlyphFromStock(FButtonGlyph, idButton);
 end;
 
+procedure TCustomBitBtn.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FButtonGlyph.ExternalImages) then
+    Images := nil;
+end;
+
 function TCustomBitBtn.CanShowGlyph: Boolean;
 begin
-  Result := not Glyph.Empty and (FButtonGlyph.Images <> nil);
+  Result :=
+       (not Glyph.Empty and (FButtonGlyph.Images <> nil))
+    or ((FButtonGlyph.ExternalImages <> nil) and (FButtonGlyph.ExternalImageIndex > -1));
 end;
 
 function TCustomBitBtn.GetGlyph : TBitmap;
@@ -93,6 +106,21 @@ end;
 function TCustomBitBtn.GetGlyphShowMode: TGlyphShowMode;
 begin
   Result := FButtonGlyph.ShowMode;
+end;
+
+function TCustomBitBtn.GetImageIndex: Integer;
+begin
+  Result := FButtonGlyph.ExternalImageIndex;
+end;
+
+function TCustomBitBtn.GetImages: TCustomImageList;
+begin
+  Result := FButtonGlyph.ExternalImages;
+end;
+
+function TCustomBitBtn.GetImageWidth: Integer;
+begin
+  Result := FButtonGlyph.ExternalImageWidth;
 end;
 
 function TCustomBitBtn.GetNumGlyphs: Integer;
@@ -129,12 +157,43 @@ begin
   FButtonGlyph.ShowMode := AValue;
 end;
 
+procedure TCustomBitBtn.SetImageIndex(const aImageIndex: Integer);
+begin
+  FButtonGlyph.ExternalImageIndex := aImageIndex;
+end;
+
+procedure TCustomBitBtn.SetImages(const aImages: TCustomImageList);
+begin
+  if FButtonGlyph.ExternalImages <> nil then
+  begin
+    FButtonGlyph.ExternalImages.UnRegisterChanges(FImageChangeLink);
+    FButtonGlyph.ExternalImages.RemoveFreeNotification(Self);
+  end;
+  FButtonGlyph.ExternalImages := aImages;
+  if FButtonGlyph.ExternalImages <> nil then
+  begin
+    FButtonGlyph.ExternalImages.FreeNotification(Self);
+    FButtonGlyph.ExternalImages.RegisterChanges(FImageChangeLink);
+  end;
+end;
+
+procedure TCustomBitBtn.SetImageWidth(const aImageWidth: Integer);
+begin
+  FButtonGlyph.ExternalImageWidth := aImageWidth;
+end;
+
 procedure TCustomBitBtn.GlyphChanged(Sender: TObject);
 begin
   if HandleAllocated then
     TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, FButtonGlyph);
   InvalidatePreferredSize;
   AdjustSize;
+end;
+
+procedure TCustomBitBtn.ImageListChange(Sender: TObject);
+begin
+  if Sender = Images then
+    GlyphChanged(Sender);
 end;
 
 procedure TCustomBitBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
