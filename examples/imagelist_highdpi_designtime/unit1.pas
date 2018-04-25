@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, ImgList,
-  Menus, ExtCtrls;
+  Menus, ExtCtrls, Buttons;
 
 type
 
@@ -27,6 +27,8 @@ type
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
     TreeView1: TTreeView;
+    BitBtn1: TBitBtn;
+    SpeedButton1: TSpeedButton;
     procedure ImageList1GetWidthForPPI(Sender: TCustomImageList; AImageWidth,
       APPI: Integer; var AResultWidth: Integer);
     procedure RadioGroup1Click(Sender: TObject);

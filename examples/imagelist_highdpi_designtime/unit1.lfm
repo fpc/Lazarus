@@ -1,5 +1,5 @@
 object Form1: TForm1
-  Left = 367
+  Left = 233
   Height = 384
   Top = 275
   Width = 958
@@ -114,10 +114,29 @@ object Form1: TForm1
     OnClick = RadioGroup1Click
     TabOrder = 4
   end
+  object BitBtn1: TBitBtn
+    Left = 16
+    Height = 30
+    Top = 309
+    Width = 75
+    Caption = 'BitBtn1'
+    Images = ImageList1
+    ImageIndex = 1
+    TabOrder = 5
+  end
+  object SpeedButton1: TSpeedButton
+    Left = 104
+    Height = 30
+    Top = 309
+    Width = 30
+    Images = ImageList1
+    ImageIndex = 3
+    ImageWidth = 24
+  end
   object ImageList1: TImageList
     Scaled = True
     OnGetWidthForPPI = ImageList1GetWidthForPPI
-    Left = 24
+    Left = 680
     Top = 296
     Bitmap = {
       4C69050000001000000010000000000000000000000078483671784836FE7848
@@ -1338,7 +1357,7 @@ object Form1: TForm1
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
-    Left = 64
+    Left = 720
     Top = 296
     object MenuItem1: TMenuItem
       Caption = 'MenuItem1'
