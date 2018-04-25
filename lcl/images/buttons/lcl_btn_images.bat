@@ -1,0 +1,1 @@
+..\..\..\tools\lazres ..\..\btn_icons.res @lcl_btn_images_list.txt

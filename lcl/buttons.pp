@@ -164,7 +164,7 @@ type
     procedure SetMargin(const AValue: integer);
     procedure SetNumGlyphs(AValue: Integer);
     procedure SetSpacing(AValue: Integer);
-    procedure RealizeKind;
+    procedure RealizeKind(ForceDefaults: Boolean);
     //Return the caption associated with the aKind value.
     function GetCaptionOfKind(AKind: TBitBtnKind): String;
     function GetImages: TCustomImageList;
@@ -446,6 +446,15 @@ type
     property PopupMenu;
   end;
 
+  TLCLBtnGlyphs = class(TImageList)
+  private
+    FImageIndexes: array[TBitBtnKind] of Integer;
+  public
+    function GetImageIndex(Kind: TBitBtnKind): Integer;
+
+    constructor Create(AOwner: TComponent); override;
+  end;
+
   { To override the default TBitBtn glyphs set GetDefaultBitBtnGlyph below.
     Example:
 
@@ -473,11 +482,13 @@ procedure LoadGlyphFromStock(AGlyph: TButtonGlyph; idButton: Integer);
 
 // helper functions (search LCLType for idButton)
 function GetButtonCaption(idButton: Integer): String;
-function GetDefaultButtonIcon(idButton: Integer): TCustomBitmap;
+function GetDefaultButtonIcon(idButton: Integer; ScalePercent: Integer = 100): TCustomBitmap;
 function GetButtonIcon(idButton: Integer): TCustomBitmap;
 function BidiAdjustButtonLayout(IsRightToLeft: Boolean; Layout: TButtonLayout): TButtonLayout;
 
 function dbgs(Kind: TBitBtnKind): string; overload;
+
+function LCLBtnGlyphs: TLCLBtnGlyphs;
 
 procedure Register;
 
@@ -508,6 +519,9 @@ const
 {idButtonNoToAll } 'btn_no'
   );
 
+var
+  GLCLBtnGlyphs: TLCLBtnGlyphs = nil;
+
 implementation
 
 {$R btn_icons.res}
@@ -520,7 +534,10 @@ begin
   Result := GetDefaultButtonIcon(BitBtnImages[Kind]);
 end;
 
-function GetDefaultButtonIcon(idButton: Integer): TCustomBitmap;
+function GetDefaultButtonIcon(idButton: Integer;
+  ScalePercent: Integer): TCustomBitmap;
+var
+  ResName: string;
 begin
   Result := nil;
   if (idButton < Low(BitBtnResNames)) or (idButton > High(BitBtnResNames)) then
@@ -528,7 +545,10 @@ begin
   if BitBtnResNames[idButton] = '' then
     Exit;
   Result := TPortableNetworkGraphic.Create;
-  Result.LoadFromResourceName(hInstance, BitBtnResNames[idButton]);
+  ResName := BitBtnResNames[idButton];
+  if Application.Scaled and (ScalePercent<>100) then
+    ResName := ResName+'_'+IntToStr(ScalePercent);
+  Result.LoadFromResourceName(hInstance, ResName);
 end;
 
 procedure LoadGlyphFromResourceName(AGlyph: TButtonGlyph; Instance: THandle; const AName: String);
@@ -641,13 +661,70 @@ begin
   writestr(Result,Kind);
 end;
 
+function LCLBtnGlyphs: TLCLBtnGlyphs;
+begin
+  if GLCLBtnGlyphs=nil then
+    GLCLBtnGlyphs := TLCLBtnGlyphs.Create(nil);
+  Result := GLCLBtnGlyphs;
+end;
+
 procedure Register;
 begin
   RegisterComponents('Additional',[TBitBtn,TSpeedButton]);
 end;
 
+{ TLCLBtnGlyphs }
+
+constructor TLCLBtnGlyphs.Create(AOwner: TComponent);
+var
+  K: TBitBtnKind;
+
+  function AddBtnImage(ScalePercent: Integer): Boolean;
+  var
+    G: TCustomBitmap;
+  begin
+    G := GetDefaultButtonIcon(BitBtnImages[K], ScalePercent);
+    Result := G<>nil;
+    if Result then
+    try
+      if ScalePercent=100 then
+        Add(G, nil)
+      else
+        Replace(Count-1, G, nil, False);
+    finally
+      G.Free;
+    end;
+  end;
+begin
+  inherited Create(AOwner);
+
+  RegisterResolutions([16, 24, 32]);
+  for K in TBitBtnKind do
+  begin
+    if AddBtnImage(100) then
+    begin
+      AddBtnImage(150);
+      AddBtnImage(200);
+      FImageIndexes[K] := Count-1;
+    end else
+      FImageIndexes[K] := -1;
+  end;
+
+  Scaled := True;
+end;
+
+function TLCLBtnGlyphs.GetImageIndex(Kind: TBitBtnKind): Integer;
+begin
+  Result := FImageIndexes[Kind];
+end;
+
 {$I bitbtn.inc}
 {$I buttonglyph.inc}
 {$I speedbutton.inc}
+
+initialization
+
+finalization
+  FreeAndNil(GLCLBtnGlyphs);
 
 end.

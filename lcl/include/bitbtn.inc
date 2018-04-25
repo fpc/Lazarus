@@ -28,7 +28,6 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   Align := alNone;
-  RealizeKind;
 end;
 
 {------------------------------------------------------------------------------
@@ -110,12 +109,18 @@ end;
 
 function TCustomBitBtn.GetImageIndex: Integer;
 begin
-  Result := FButtonGlyph.ExternalImageIndex;
+  if FButtonGlyph.ExternalImages=GLCLBtnGlyphs then
+    Result := 0
+  else
+    Result := FButtonGlyph.ExternalImageIndex;
 end;
 
 function TCustomBitBtn.GetImages: TCustomImageList;
 begin
-  Result := FButtonGlyph.ExternalImages;
+  if FButtonGlyph.ExternalImages=GLCLBtnGlyphs then
+    Result := nil
+  else
+    Result := FButtonGlyph.ExternalImages;
 end;
 
 function TCustomBitBtn.GetImageWidth: Integer;
@@ -218,8 +223,8 @@ procedure TCustomBitBtn.SetKind(AValue: TBitBtnKind);
 begin
   if FKind = AValue then Exit;
   FKind := AValue;
-  if FKind <> bkCustom then
-    RealizeKind;
+  if (FKind <> bkCustom) and not (csLoading in ComponentState) then
+    RealizeKind(True);
   if not (csLoading in ComponentState) then
     DefaultCaption := FKind <> bkCustom;
 end;
@@ -270,7 +275,7 @@ begin
     Invalidate;
 end;
 
-procedure TCustomBitBtn.RealizeKind;
+procedure TCustomBitBtn.RealizeKind(ForceDefaults: Boolean);
 var
   GlyphValid, Handled: Boolean;
   CustomGlyph: TGraphic;
@@ -306,17 +311,16 @@ begin
     
     if not GlyphValid then
     begin
-      CustomGlyph := GetLCLDefaultBtnGlyph(Kind);
-      if CustomGlyph <> nil then
+      if ForceDefaults or (Images=nil) then
       begin
-        Glyph.Assign(CustomGlyph);
-        CustomGlyph.Free;
+        Images := LCLBtnGlyphs;
+        ImageIndex := LCLBtnGlyphs.GetImageIndex(Kind);
         GlyphValid := True;
       end;
     end;
   end;
 
-  if not (csLoading in ComponentState) then
+  if ForceDefaults then
   begin
     Caption := GetCaptionOfKind(Kind);
     ModalResult := BitBtnModalResults[Kind];
@@ -358,6 +362,8 @@ end;
 procedure TCustomBitBtn.Loaded;
 begin
   inherited Loaded;
+  if (Kind <> bkCustom) then
+    RealizeKind(False);
   if (Kind <> bkCustom) and DefaultCaption and (Caption = '') then
   begin
     Caption := GetCaptionOfKind(Kind); // Will trigger TextChanged
