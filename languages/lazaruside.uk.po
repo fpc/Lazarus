@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-03-28 15:07+0200\n"
+"PO-Revision-Date: 2018-04-25 18:25+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1047,10 +1047,8 @@ msgid "Command line parameters (without application name)"
 msgstr "Параметри командного рядка (без назви застосунку)"
 
 #: lazarusidestrconsts.dlgcommentalignmaxdefault
-#, fuzzy
-#| msgid "Make default indent for new line if comment opens at column:"
 msgid "Max indent for new line if prefix is based on start of comment on first comment line:"
-msgstr "Зробити типовий відступ у новому рядку, якщо коментар відкривається на стовпці:"
+msgstr "Найбільший відступ нового рядка, якщо префікс прив'язаний до початку першого рядка коментаря:"
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
 msgid "Limit indent to"
@@ -3707,7 +3705,7 @@ msgstr "Тека для збирання пробних проектів"
 
 #: lazarusidestrconsts.dlgtextstyle
 msgid "Text-Style"
-msgstr ""
+msgstr "Стиль тексту"
 
 #: lazarusidestrconsts.dlgtexttofind
 msgctxt "lazarusidestrconsts.dlgtexttofind"
@@ -8625,8 +8623,6 @@ msgid "Editor Colors"
 msgstr "Кольори редактора"
 
 #: lazarusidestrconsts.liseditormacros
-#, fuzzy
-#| msgid "Editor macros"
 msgid "Editor Macros"
 msgstr "Макроси редактора"
 

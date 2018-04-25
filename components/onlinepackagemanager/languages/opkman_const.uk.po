@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2018-02-21 20:39+0200\n"
+"PO-Revision-Date: 2018-04-25 18:28+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -829,11 +829,9 @@ msgid "Install packages"
 msgstr "Встановити пакунки"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
-#, fuzzy
-#| msgid "Open"
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
 msgid "Local repo"
-msgstr "Відкрити"
+msgstr "Локальне сховище"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
 msgid "Open local repository"

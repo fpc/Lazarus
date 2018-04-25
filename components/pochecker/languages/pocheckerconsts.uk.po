@@ -1,15 +1,15 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-07-28 00:44+0300\n"
-"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"PO-Revision-Date: 2018-04-25 18:39+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "Project-Id-Version: \n"
-"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 
 #: pocheckerconsts.rspochecker
@@ -125,20 +125,16 @@ msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translat
 msgstr "Неможливо записати файл%s%s%s%sВи можете натиснути \"Повтор\", щоб знову спробувати оновити цю родину перекладів і продовжити."
 
 #: pocheckerconsts.scheckforduplicateuntranslatedvalues
-#, fuzzy
-#| msgid "Check for duplicate untranslated values"
 msgid "Check for duplicate originals"
-msgstr "Перевірити на повторні неперекладені записи"
+msgstr "Перевірити на повтори оригіналів"
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
 msgid "Check for incompatible format arguments"
 msgstr "Перевірити на несумісні аргументи формату"
 
 #: pocheckerconsts.scheckformismatchesinuntranslatedstrings
-#, fuzzy
-#| msgid "Check for mismatches in untranslated strings"
 msgid "Check for mismatches of originals"
-msgstr "Перевірити на неузгодженості в неперекладених рядках"
+msgstr "Перевірити на невідповідності в оригіналах"
 
 #: pocheckerconsts.scheckmissingidentifiers
 msgid "Check missing identifiers"
@@ -154,7 +150,7 @@ msgstr "Очистити"
 
 #: pocheckerconsts.scopy
 msgid "&Copy"
-msgstr ""
+msgstr "&Копіювати"
 
 #: pocheckerconsts.screatingiconxofy
 msgid "Creating icon nr. %d of %d"
@@ -169,14 +165,12 @@ msgid "[Line %d] %s"
 msgstr "[Рядок %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
-#, fuzzy
-#| msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
 msgid "Original value \"%s\" is used for more than 1 entry:"
-msgstr "(Неперекладене) значення \"%s\" використовується більше як для 1 запису:"
+msgstr "Оригінальне значення \"%s\" використовується більше ніж в 1 записі:"
 
 #: pocheckerconsts.sduplicateoriginalstab
 msgid "Duplicate Originals"
-msgstr ""
+msgstr "Повтори оригіналів"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -202,7 +196,7 @@ msgstr "Помилки / попередження звітовані %s для:"
 
 #: pocheckerconsts.sfile
 msgid "File %s"
-msgstr ""
+msgstr "Файл %s"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""
@@ -214,7 +208,7 @@ msgstr ""
 
 #: pocheckerconsts.sfuzzystrings
 msgid "Fuzzy strings"
-msgstr ""
+msgstr "Неточні рядки"
 
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
@@ -222,7 +216,7 @@ msgstr "Неповні рядки (всього: %s)"
 
 #: pocheckerconsts.sgeneralinfo
 msgid "General Info"
-msgstr ""
+msgstr "Загальні відомості"
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
@@ -242,11 +236,11 @@ msgstr "[Рядок: %d] Несумісні і/або неправильні а�
 
 #: pocheckerconsts.slanguage
 msgid "Language:"
-msgstr ""
+msgstr "Мова:"
 
 #: pocheckerconsts.slastsearchpath
 msgid "Last search path:"
-msgstr ""
+msgstr "Шлях останнього пошуку:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -362,7 +356,7 @@ msgstr "&Запустити вибрані тести"
 
 #: pocheckerconsts.ssaveas
 msgid "Save &As ..."
-msgstr ""
+msgstr "Записати &як ..."
 
 #: pocheckerconsts.ssaveerror
 msgid ""
@@ -421,14 +415,12 @@ msgid "The following %s orphaned .po file(s) found:"
 msgstr "Знайдено такі %s загублених файлів .po:"
 
 #: pocheckerconsts.stotalerrors
-#, fuzzy
-#| msgid "Total errors found: %d"
 msgid "Total errors: %d"
-msgstr "Знайдено помилок: %d"
+msgstr "Всього помилок: %d"
 
 #: pocheckerconsts.stotalerrorsnonfuzzy
 msgid "Total errors: %d (formatting errors in non-fuzzy strings: %d)"
-msgstr ""
+msgstr "Всього помилок: %d (помилок форматування в точних перекладах: %d)"
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
@@ -443,14 +435,12 @@ msgid "Total untranslated strings: %s"
 msgstr "Всього неперекладених рядків: %s"
 
 #: pocheckerconsts.stotalwarnings
-#, fuzzy
-#| msgid "Total warnings found: %d"
 msgid "Total warnings: %d"
-msgstr "Знайдено всього попереджень: %d"
+msgstr "Всього попереджень: %d"
 
 #: pocheckerconsts.stranslatedstrings
 msgid "Translated strings"
-msgstr ""
+msgstr "Перекладені рядки"
 
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
@@ -462,7 +452,7 @@ msgstr "Переклад"
 
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation Statistics"
-msgstr ""
+msgstr "Статистика перекладу"
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"
@@ -478,7 +468,7 @@ msgstr "Зняти вибір зі всіх файлів"
 
 #: pocheckerconsts.suntranslatedstrings
 msgid "Untranslated strings"
-msgstr ""
+msgstr "Неперекладені рядки"
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"
