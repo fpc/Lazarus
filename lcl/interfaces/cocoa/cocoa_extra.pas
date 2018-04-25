@@ -107,6 +107,12 @@ const
   //kCGAssistiveTechHighWindowLevelKey = 20;
   //kCGNumberOfWindowLevelKeys = 21;	{ Must be last. }
 
+const
+  NSWindowCollectionBehaviorFullScreenPrimary = 1 shl 7;  // 10.7
+  NSWindowCollectionBehaviorFullScreenAuxiliary = 1 shl 8;  // 10.7
+  NSWindowCollectionBehaviorFullScreenAllowsTiling = 1 shl 11; // 10.11
+  NSWindowCollectionBehaviorFullScreenDisallowsTiling = 1 shl 12; // 10.11
+
 implementation
 
 end.

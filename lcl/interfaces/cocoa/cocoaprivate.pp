@@ -2164,6 +2164,10 @@ begin
 end;
 
 procedure TCocoaWindow.lclSwitchFullScreen(AEnabled: Boolean);
+const
+  fsmask =  NSWindowCollectionBehaviorFullScreenPrimary
+            or
+            NSWindowCollectionBehaviorFullScreenAuxiliary;
 begin
   if isInFullScreen = AEnabled then Exit; // nothing to do
 
@@ -2174,7 +2178,11 @@ begin
 
   isInFullScreen := AEnabled;
   if NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 then
-    Self.toggleFullScreen(nil)
+  begin
+    if Self.collectionBehavior and fsmask = 0 then
+      Self.setCollectionBehavior(Self.collectionBehavior or NSWindowCollectionBehaviorFullScreenPrimary);
+    Self.toggleFullScreen(nil);
+  end
   else
   begin
     if AEnabled then
