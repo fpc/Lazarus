@@ -24,7 +24,7 @@ uses
   // libs
   MacOSAll, CocoaAll, SysUtils, Math,
   // LCL
-  Classes, Controls, Buttons, LCLType, LCLProc, Graphics, GraphType,
+  Classes, Controls, Buttons, LCLType, LCLProc, Graphics, GraphType, ImgList,
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
   // LCL Cocoa
@@ -124,18 +124,21 @@ var
   lButtonHandle: TCocoaButton;
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
+  AImgRes: TScaledImageListResolution;
 begin
   //WriteLn('[TCocoaWSBitBtn.SetGlyph]');
   Img := nil;
   if ABitBtn.CanShowGlyph then
   begin
     AGlyph := TBitmap.Create;
-    AValue.GetImageIndexAndEffect(bsUp, AIndex, AEffect);
-    AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+    AValue.GetImageIndexAndEffect(bsUp, ABitBtn.Font.PixelsPerInch,
+      ABitBtn.GetCanvasScaleFactor, AImgRes, AIndex, AEffect);
+    AImgRes.GetBitmap(AIndex, AGlyph, AEffect);
     Img := TCocoaBitmap(AGlyph.Handle).image;
     lButtonHandle := TCocoaButton(ABitBtn.Handle);
     lButtonHandle.setImage(Img);
     lButtonHandle.setImagePosition(LCLGlyphPosToCocoa(ABitBtn.Layout));
+    //To-Do: lButtonHandle.setMatchesOnlyOnBestFittingAxis(True);
     if Assigned(lButtonHandle.Glyph) then
       FreeAndNil(lButtonHandle.Glyph);
     lButtonHandle.Glyph := AGlyph;
