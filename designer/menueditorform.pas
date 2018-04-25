@@ -797,7 +797,7 @@ begin
     risCheckedHot:   ted:=FRIGroup.FedCheckedHot;
   end;
   ThemeServices.DrawElement(Canvas.Handle, ted, FRIGroup.FRadioRect);
-  FBGlyph.Draw(Canvas, ClientRect, FRIGroup.FGlyphPt, bsUp, False, 0);
+  FBGlyph.Draw(Canvas, ClientRect, FRIGroup.FGlyphPt, bsUp, False, 0, Font.PixelsPerInch, GetCanvasScaleFactor);
 
   inherited Paint;
 end;
