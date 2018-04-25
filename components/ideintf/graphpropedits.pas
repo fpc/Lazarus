@@ -696,14 +696,17 @@ end;
 procedure TImageIndexPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   Images: TCustomImageList;
-  I: Integer;
+  I, DefValue: Integer;
 begin
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Proc(IntToStr(GetDefaultOrdValue));
+  Proc(IntToStr(-1));
+  DefValue := GetDefaultOrdValue;
+  if (DefValue <> NoDefaultValue) and (DefValue <> -1) then
+    Proc(IntToStr(DefValue));
   Images := GetImageList;
   if Assigned(Images) then
     for I := 0 to Images.Count - 1 do
-      Proc(IntToStr(I));
+      if (I <> DefValue) then
+        Proc(IntToStr(I));
 end;
 
 procedure TImageIndexPropertyEditor.ListMeasureHeight(const AValue: ansistring;
