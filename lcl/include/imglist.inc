@@ -57,8 +57,15 @@ begin
   Result := Default(TScaledImageListResolution);
   Result.FResolution := AResolution;
   Result.FScaleFactor := AScaleFactor;
-  Result.FWidth := Round(AResolution.Width / AScaleFactor);
-  Result.FHeight := Round(AResolution.Height / AScaleFactor);
+  if Assigned(AResolution) then
+  begin
+    Result.FWidth := Round(AResolution.Width / AScaleFactor);
+    Result.FHeight := Round(AResolution.Height / AScaleFactor);
+  end else
+  begin
+    Result.FWidth := 0;
+    Result.FHeight := 0;
+  end;
 end;
 
 procedure TScaledImageListResolution.Draw(ACanvas: TCanvas; AX, AY,
