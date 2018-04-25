@@ -8358,15 +8358,31 @@ lcl/images/dbgridcheckedcb.xpm -text svneol=native#image/x-xpixmap
 lcl/images/dbgridgrayedcb.xpm -text svneol=native#image/x-xpixmap
 lcl/images/dbgriduncheckedcb.xpm -text svneol=native#image/x-xpixmap
 lcl/images/dbnavcancel.png -text svneol=unset#image/png
+lcl/images/dbnavcancel_150.png -text svneol=unset#image/png
+lcl/images/dbnavcancel_200.png -text svneol=unset#image/png
 lcl/images/dbnavdelete.png -text svneol=unset#image/png
+lcl/images/dbnavdelete_150.png -text svneol=unset#image/png
+lcl/images/dbnavdelete_200.png -text svneol=unset#image/png
 lcl/images/dbnavedit.png -text svneol=unset#image/png
 lcl/images/dbnavfirst.png -text svneol=unset#image/png
+lcl/images/dbnavfirst_150.png -text svneol=unset#image/png
+lcl/images/dbnavfirst_200.png -text svneol=unset#image/png
 lcl/images/dbnavinsert.png -text svneol=unset#image/png
+lcl/images/dbnavinsert_150.png -text svneol=unset#image/png
+lcl/images/dbnavinsert_200.png -text svneol=unset#image/png
 lcl/images/dbnavlast.png -text svneol=unset#image/png
+lcl/images/dbnavlast_150.png -text svneol=unset#image/png
+lcl/images/dbnavlast_200.png -text svneol=unset#image/png
 lcl/images/dbnavnext.png -text svneol=unset#image/png
+lcl/images/dbnavnext_150.png -text svneol=unset#image/png
+lcl/images/dbnavnext_200.png -text svneol=unset#image/png
 lcl/images/dbnavpost.png -text svneol=unset#image/png
 lcl/images/dbnavprior.png -text svneol=unset#image/png
+lcl/images/dbnavprior_150.png -text svneol=unset#image/png
+lcl/images/dbnavprior_200.png -text svneol=unset#image/png
 lcl/images/dbnavrefresh.png -text svneol=unset#image/png
+lcl/images/dbnavrefresh_150.png -text svneol=unset#image/png
+lcl/images/dbnavrefresh_200.png -text svneol=unset#image/png
 lcl/images/dialogs/build.bat svneol=native#text/x-msdos-program
 lcl/images/dialogs/dialog_confirmation.png -text svneol=unset#image/png
 lcl/images/dialogs/dialog_error.png -text svneol=unset#image/png
@@ -8395,7 +8411,11 @@ lcl/images/lcl_grid_images.bat svneol=native#text/plain
 lcl/images/lcl_grid_images.sh svneol=native#text/plain
 lcl/images/lcl_grid_images_list.txt svneol=native#text/plain
 lcl/images/sortasc.png -text
+lcl/images/sortasc_150.png -text svneol=unset#image/png
+lcl/images/sortasc_200.png -text svneol=unset#image/png
 lcl/images/sortdesc.png -text
+lcl/images/sortdesc_150.png -text svneol=unset#image/png
+lcl/images/sortdesc_200.png -text svneol=unset#image/png
 lcl/images/wince/build.bat svneol=native#text/x-msdos-program
 lcl/images/wince/wincedialog_cancel.png -text
 lcl/images/wince/wincedialog_ok.PNG -text
