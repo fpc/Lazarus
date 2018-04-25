@@ -24,7 +24,7 @@ uses
   glib2, gtk2, gdk2, gdk2pixbuf,
   // LCL
 ////////////////////////////////////////////////////
-  LCLType, Controls, Buttons, Graphics, GraphType, Classes,
+  LCLType, Controls, Buttons, Graphics, GraphType, ImgList, Classes,
   {$IFDEF DebugLCLComponents}
   LazLoggerBase,
   {$ENDIF}
@@ -348,15 +348,17 @@ var
   AGlyph: TBitmap;
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
+  AImageRes: TScaledImageListResolution;
 begin
   ShowGlyph := ABitBtn.CanShowGlyph;
   if ShowGlyph then
   begin
     ImageWidget := BitBtnInfo^.ImageWidget;
     AGlyph := TBitmap.Create;
-    AValue.GetImageIndexAndEffect(AButtonState, AIndex, AEffect);
-    if (AIndex <> -1) and (AValue.Images <> nil) then
-      AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+    AValue.GetImageIndexAndEffect(AButtonState, ABitBtn.Font.PixelsPerInch,
+      ABitBtn.GetCanvasScaleFactor, AImageRes, AIndex, AEffect);
+    if (AIndex <> -1) and (AImageRes.Resolution <> nil) then
+      AImageRes.GetBitmap(AIndex, AGlyph, AEffect);
     ShowGlyph := not AGlyph.Empty;
     if ShowGlyph then
     begin

@@ -29,7 +29,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Windows, CommCtrl, Classes, Buttons, Graphics, GraphType, Controls,
-  LCLType, LCLMessageGlue, LMessages, LazUTF8, Themes,
+  LCLType, LCLMessageGlue, LMessages, LazUTF8, Themes, ImgList,
 ////////////////////////////////////////////////////
   WSProc, WSButtons, Win32WSControls, Win32WSImgList,
   UxTheme, Win32Themes;
@@ -134,6 +134,9 @@ var
   ButtonImageList: BUTTON_IMAGELIST;
   I: integer;
   ButtonCaptionW: widestring;
+  AIndex: Integer;
+  AImageRes: TScaledImageListResolution;
+  AEffect: TGraphicsDrawEffect;
 
   procedure DrawBitmap(AState: TButtonState; UseThemes, AlphaDraw: Boolean);
   const
@@ -151,8 +154,6 @@ var
     glyphWidth, glyphHeight: integer;
     OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
     OldTextAlign: Integer;
-    AIndex: Integer;
-    AEffect: TGraphicsDrawEffect;
     TmpDC: HDC;
     PaintBuffer: HPAINTBUFFER;
     Options: DTTOpts;
@@ -201,13 +202,15 @@ var
     begin
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
-        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, AIndex, AEffect);
-        TWin32WSCustomImageListResolution.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images.ResolutionForPPI[0, 96, 1].Resolution, AIndex,
-          TmpDC, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
-          TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
-          TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,
-          TBitBtnAceess(BitBtn).FButtonGlyph.Images.DrawingStyle,
-          TBitBtnAceess(BitBtn).FButtonGlyph.Images.ImageType);
+        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
+          AImageRes, AIndex, AEffect);
+        TWin32WSCustomImageListResolution.DrawToDC(
+          AImageRes.Resolution,
+          AIndex, TmpDC, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
+          AImageRes.Resolution.ImageList.BkColor,
+          AImageRes.Resolution.ImageList.BlendColor, AEffect,
+          AImageRes.Resolution.ImageList.DrawingStyle,
+          AImageRes.Resolution.ImageList.ImageType);
       end;
     end else
     begin
@@ -217,7 +220,8 @@ var
 
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
-        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, AIndex, AEffect);
+        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
+          AImageRes, AIndex, AEffect);
         if UseThemes and not AlphaDraw then
         begin
           // non-themed winapi wants white/other as background/picture-disabled colors
@@ -229,12 +233,13 @@ var
         if (AEffect = gdeDisabled) and not AlphaDraw then
           AEffect := gde1Bit;
 
-        TWin32WSCustomImageListResolution.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images.ResolutionForPPI[0, 96, 1].Resolution, AIndex,
-          TmpDC, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
-          TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
-          TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,
-          TBitBtnAceess(BitBtn).FButtonGlyph.Images.DrawingStyle,
-          TBitBtnAceess(BitBtn).FButtonGlyph.Images.ImageType);
+        TWin32WSCustomImageListResolution.DrawToDC(
+          AImageRes.Resolution,
+          AIndex, TmpDC, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
+          AImageRes.Resolution.ImageList.BkColor,
+          AImageRes.Resolution.ImageList.BlendColor, AEffect,
+          AImageRes.Resolution.ImageList.DrawingStyle,
+          AImageRes.Resolution.ImageList.ImageType);
       end;
     end;
     if PaintBuffer = 0 then
@@ -297,10 +302,10 @@ begin
 
   if BitBtn.CanShowGlyph then
   begin
-    srcWidth := BitBtn.Glyph.Width;
-    srcHeight := BitBtn.Glyph.Height;
-    if BitBtn.NumGlyphs > 1 then
-      srcWidth := srcWidth div BitBtn.NumGlyphs;
+    TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
+      AImageRes, AIndex, AEffect);
+    srcWidth := AImageRes.Width;
+    srcHeight := AImageRes.Height;
     if (srcWidth = 0) or (srcHeight = 0) then
       ASpacing := 0;
   end else

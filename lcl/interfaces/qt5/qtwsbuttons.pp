@@ -29,6 +29,7 @@ uses
   SysUtils, Types,
   // LCL
   Controls, LCLType, Forms, InterfaceBase, Buttons, Graphics, GraphType,
+  ImgList,
   // Widgetset
   WSProc, WSButtons, WSLCLClasses;
 
@@ -90,6 +91,7 @@ var
   AEffect: TGraphicsDrawEffect;
   Mode: QIconMode;
   ASize: TSize;
+  AImageRes: TScaledImageListResolution;
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
     Exit;
@@ -103,16 +105,18 @@ begin
 
     for Mode := QIconNormal to QIconSelected do
     begin
-      AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode], AIndex, AEffect);
-      AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+      AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode],
+        ABitBtn.Font.PixelsPerInch, ABitBtn.GetCanvasScaleFactor,
+        AImageRes, AIndex, AEffect);
+      AImageRes.GetBitmap(AIndex, AGlyph, AEffect);
       QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
       QIcon_addPixmap(AIcon, APixmap, Mode, QIconOn);
     end;
     QPixmap_destroy(APixmap);
     AGlyph.Free;
 
-    ASize.cx := AValue.Images.Width;
-    ASize.cy := AValue.Images.Height;
+    ASize.cx := AImageRes.Width;
+    ASize.cy := AImageRes.Height;
     TQtBitBtn(ABitBtn.Handle).setIconSize(@ASize);
   end;
 
