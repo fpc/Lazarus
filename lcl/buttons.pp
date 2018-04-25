@@ -200,8 +200,8 @@ type
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property Images: TCustomImageList read GetImages write SetImages;
-    property ImageIndex: Integer read GetImageIndex write SetImageIndex;
-    property ImageWidth: Integer read GetImageWidth write SetImageWidth;
+    property ImageIndex: Integer read GetImageIndex write SetImageIndex default 0;
+    property ImageWidth: Integer read GetImageWidth write SetImageWidth default 0;
     property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
@@ -236,6 +236,9 @@ type
     property Margin;
     property ModalResult;
     property NumGlyphs;
+    property Images;
+    property ImageIndex;
+    property ImageWidth;
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -381,8 +384,8 @@ type
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property Images: TCustomImageList read GetImages write SetImages;
-    property ImageIndex: Integer read GetImageIndex write SetImageIndex;
-    property ImageWidth: Integer read GetImageWidth write SetImageWidth;
+    property ImageIndex: Integer read GetImageIndex write SetImageIndex default 0;
+    property ImageWidth: Integer read GetImageWidth write SetImageWidth default 0;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
@@ -413,6 +416,9 @@ type
     property Font;
     property Glyph;
     property GroupIndex;
+    property Images;
+    property ImageIndex;
+    property ImageWidth;
     property Layout;
     property Margin;
     property NumGlyphs;
