@@ -18,7 +18,7 @@ interface
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
   LazFileUtils, Graphics, Buttons, Menus, ExtCtrls, Dialogs,
-  LCLIntf, PropEdits, PropEditUtils, ImgList, Math,
+  LCLIntf, PropEdits, PropEditUtils, ImgList, EditBtn, Math,
   GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
 type
@@ -674,7 +674,8 @@ begin
   begin
     if not (
          (Component is TCustomSpeedButton)
-      or (Component is TCustomBitBtn))
+      or (Component is TCustomBitBtn)
+      or (Component is TCustomEditButton))
     then
       Component := Component.GetParentComponent;
     if Component = nil then

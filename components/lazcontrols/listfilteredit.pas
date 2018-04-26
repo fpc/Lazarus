@@ -53,7 +53,7 @@ type
     function ReturnKeyHandled: Boolean; override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
-    function GetDefaultGlyph: TBitmap; override;
+    function GetDefaultGlyphName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,9 +67,6 @@ type
   published
     property FilteredListbox: TCustomListBox read fFilteredListbox write SetFilteredListbox;
   end;
-
-var
-  ListFilterGlyph: TBitmap;
 
 implementation
 
@@ -133,9 +130,9 @@ begin
   MoveTo(0, ASelect);
 end;
 
-function TListFilterEdit.GetDefaultGlyph: TBitmap;
+function TListFilterEdit.GetDefaultGlyphName: string;
 begin
-  Result := ListFilterGlyph;
+  Result := 'btnfiltercancel';
 end;
 
 procedure TListFilterEdit.SetFilteredListbox(const AValue: TCustomListBox);
