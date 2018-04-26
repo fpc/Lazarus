@@ -280,6 +280,7 @@ var
   GlyphValid, Handled: Boolean;
   CustomGlyph: TGraphic;
   BitmapHandle, MaskHandle: HBitmap;
+  idButton: LongInt;
 begin
   if (Kind <> bkCustom) then
   begin
@@ -314,7 +315,12 @@ begin
       if ForceDefaults or (Images=nil) then
       begin
         Images := LCLBtnGlyphs;
-        ImageIndex := LCLBtnGlyphs.GetImageIndex(Kind);
+        idButton := BitBtnImages[Kind];
+        if (idButton >= Low(BitBtnResNames)) and (idButton <= High(BitBtnResNames))
+        and (BitBtnResNames[idButton] <> '') then
+          ImageIndex := LCLBtnGlyphs.GetImageIndex(TCustomBitBtn, idButton, BitBtnResNames[idButton])
+        else
+          ImageIndex := -1;
         GlyphValid := True;
       end;
     end;

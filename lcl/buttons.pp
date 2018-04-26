@@ -34,7 +34,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, LMessages, Forms,
-  Themes, Menus{for ShortCut procedures}, LResources, ImageListCache;
+  Themes, Menus, LResources, ImageListCache, AvgLvlTree, Laz_AVL_Tree;
 
 type
   TButtonLayout =
@@ -448,12 +448,36 @@ type
   end;
 
   TLCLBtnGlyphs = class(TImageList)
+  private type
+    TEntryKey = record
+      ParentClass: TClass;
+      GlyphIndex: Integer;
+    end;
+    PEntryKey = ^TEntryKey;
+
+    TEntry = class
+    public
+      // key
+      ParentClass: TClass; // the component class that registers a glyph
+      GlyphIndex: Integer; // the unique glyph index within the component class
+
+      // value
+      ImageIndex: Integer; // the image index in TLCLBtnGlyphs
+
+      class function Compare(Item1, Item2: Pointer): Integer; static;
+      class function CompareKey(Key, Item: Pointer): Integer; static;
+    end;
+
+  private const
+    CResolutions: array[0..2] of Integer = (16, 24, 32);
   private
-    FImageIndexes: array[TBitBtnKind] of Integer;
+    FImageIndexes: TAvgLvlTree;
   public
-    function GetImageIndex(Kind: TBitBtnKind): Integer;
+    function GetImageIndex(AParentClass: TClass;
+      AGlyphIndex: Integer; const AResourceName: string): Integer;
 
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
   { To override the default TBitBtn glyphs set GetDefaultBitBtnGlyph below.
@@ -484,6 +508,7 @@ procedure LoadGlyphFromStock(AGlyph: TButtonGlyph; idButton: Integer);
 // helper functions (search LCLType for idButton)
 function GetButtonCaption(idButton: Integer): String;
 function GetDefaultButtonIcon(idButton: Integer; ScalePercent: Integer = 100): TCustomBitmap;
+function GetDefaultButtonIcon(ResourceName: string; ScalePercent: Integer = 100): TCustomBitmap;
 function GetButtonIcon(idButton: Integer): TCustomBitmap;
 function BidiAdjustButtonLayout(IsRightToLeft: Boolean; Layout: TButtonLayout): TButtonLayout;
 
@@ -535,6 +560,14 @@ begin
   Result := GetDefaultButtonIcon(BitBtnImages[Kind]);
 end;
 
+function GetDefaultButtonIcon(ResourceName: string; ScalePercent: Integer = 100): TCustomBitmap;
+begin
+  Result := TPortableNetworkGraphic.Create;
+  if Application.Scaled and (ScalePercent<>100) then
+    ResourceName := ResourceName+'_'+IntToStr(ScalePercent);
+  Result.LoadFromResourceName(hInstance, ResourceName);
+end;
+
 function GetDefaultButtonIcon(idButton: Integer;
   ScalePercent: Integer): TCustomBitmap;
 var
@@ -545,11 +578,7 @@ begin
     Exit;
   if BitBtnResNames[idButton] = '' then
     Exit;
-  Result := TPortableNetworkGraphic.Create;
-  ResName := BitBtnResNames[idButton];
-  if Application.Scaled and (ScalePercent<>100) then
-    ResName := ResName+'_'+IntToStr(ScalePercent);
-  Result.LoadFromResourceName(hInstance, ResName);
+  Result := GetDefaultButtonIcon(BitBtnResNames[idButton], ScalePercent);
 end;
 
 procedure LoadGlyphFromResourceName(AGlyph: TButtonGlyph; Instance: THandle; const AName: String);
@@ -674,49 +703,91 @@ begin
   RegisterComponents('Additional',[TBitBtn,TSpeedButton]);
 end;
 
+{ TLCLBtnGlyphs.TEntry }
+
+class function TLCLBtnGlyphs.TEntry.Compare(Item1, Item2: Pointer): Integer;
+var
+  AItem1: TEntry absolute Item1;
+  AItem2: TEntry absolute Item2;
+begin
+  Result := CompareValue(PtrInt(AItem1.ParentClass), PtrInt(AItem2.ParentClass));
+  if Result<>0 then Exit;
+  Result := CompareValue(AItem1.GlyphIndex, AItem2.GlyphIndex);
+end;
+
+class function TLCLBtnGlyphs.TEntry.CompareKey(Key, Item: Pointer): Integer;
+var
+  AKey: PEntryKey absolute Key;
+  AItem: TEntry absolute Item;
+begin
+  Result := CompareValue(PtrInt(AKey^.ParentClass), PtrInt(AItem.ParentClass));
+  if Result<>0 then Exit;
+  Result := CompareValue(AKey^.GlyphIndex, AItem.GlyphIndex);
+end;
+
 { TLCLBtnGlyphs }
 
 constructor TLCLBtnGlyphs.Create(AOwner: TComponent);
-var
-  K: TBitBtnKind;
+begin
+  inherited Create(AOwner);
 
-  function AddBtnImage(ScalePercent: Integer): Boolean;
+  FImageIndexes := TAvgLvlTree.Create(@TEntry.Compare);
+  RegisterResolutions(CResolutions);
+  Scaled := True;
+end;
+
+destructor TLCLBtnGlyphs.Destroy;
+begin
+  FImageIndexes.FreeAndClear;
+  FImageIndexes.Free;
+
+  inherited Destroy;
+end;
+
+function TLCLBtnGlyphs.GetImageIndex(AParentClass: TClass;
+  AGlyphIndex: Integer; const AResourceName: string): Integer;
+
+  function AddBtnImage(ResolutionWidth: Integer): Integer;
   var
     G: TCustomBitmap;
   begin
-    G := GetDefaultButtonIcon(BitBtnImages[K], ScalePercent);
-    Result := G<>nil;
-    if Result then
+    G := GetDefaultButtonIcon(AResourceName, MulDiv(ResolutionWidth, 100, CResolutions[Low(CResolutions)]));
     try
-      if ScalePercent=100 then
-        Add(G, nil)
+      if ResolutionWidth=CResolutions[Low(CResolutions)] then
+        Result := AddSliceCentered(G)
       else
-        Replace(Count-1, G, nil, False);
+      begin
+        Result := Count-1;
+        ReplaceSliceCentered(Result, ResolutionWidth, G, False);
+      end;
     finally
       G.Free;
     end;
   end;
-begin
-  inherited Create(AOwner);
 
-  RegisterResolutions([16, 24, 32]);
-  for K in TBitBtnKind do
+var
+  K: TEntryKey;
+  ANode: TAVLTreeNode;
+  E: TEntry;
+  I: Integer;
+begin
+  K.ParentClass := AParentClass;
+  K.GlyphIndex := AGlyphIndex;
+
+  ANode := FImageIndexes.FindKey(@K, @TEntry.CompareKey);
+  if ANode<>nil then
+    Result := TEntry(ANode.Data).ImageIndex
+  else
   begin
-    if AddBtnImage(100) then
-    begin
-      AddBtnImage(150);
-      AddBtnImage(200);
-      FImageIndexes[K] := Count-1;
-    end else
-      FImageIndexes[K] := -1;
+    E := TEntry.Create;
+    E.ParentClass := AParentClass;
+    E.GlyphIndex := AGlyphIndex;
+    E.ImageIndex := AddBtnImage(CResolutions[Low(CResolutions)]);
+    for I := Low(CResolutions)+1 to High(CResolutions) do
+      AddBtnImage(CResolutions[I]);
+    FImageIndexes.Add(E);
+    Result := E.ImageIndex;
   end;
-
-  Scaled := True;
-end;
-
-function TLCLBtnGlyphs.GetImageIndex(Kind: TBitBtnKind): Integer;
-begin
-  Result := FImageIndexes[Kind];
 end;
 
 {$I bitbtn.inc}
