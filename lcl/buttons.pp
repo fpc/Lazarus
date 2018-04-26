@@ -461,9 +461,6 @@ type
 
       // value
       ImageIndex: Integer; // the image index in TLCLBtnGlyphs
-
-      class function Compare(Item1, Item2: Pointer): Integer; static;
-      class function CompareKey(Key, Item: Pointer): Integer; static;
     end;
 
   private const
@@ -702,18 +699,18 @@ end;
 
 { TLCLBtnGlyphs.TEntry }
 
-class function TLCLBtnGlyphs.TEntry.Compare(Item1, Item2: Pointer): Integer;
+function TLCLBtnGlyphs_TEntry_Compare(Item1, Item2: Pointer): Integer;
 var
-  AItem1: TEntry absolute Item1;
-  AItem2: TEntry absolute Item2;
+  AItem1: TLCLBtnGlyphs.TEntry absolute Item1;
+  AItem2: TLCLBtnGlyphs.TEntry absolute Item2;
 begin
   Result := CompareStr(AItem1.GlyphName, AItem2.GlyphName);
 end;
 
-class function TLCLBtnGlyphs.TEntry.CompareKey(Key, Item: Pointer): Integer;
+function TLCLBtnGlyphs_TEntry_CompareKey(Key, Item: Pointer): Integer;
 var
-  AKey: PEntryKey absolute Key;
-  AItem: TEntry absolute Item;
+  AKey: TLCLBtnGlyphs.PEntryKey absolute Key;
+  AItem: TLCLBtnGlyphs.TEntry absolute Item;
 begin
   Result := CompareStr(AKey^.GlyphName, AItem.GlyphName);
 end;
@@ -724,7 +721,7 @@ constructor TLCLBtnGlyphs.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FImageIndexes := TAvgLvlTree.Create(@TEntry.Compare);
+  FImageIndexes := TAvgLvlTree.Create(@TLCLBtnGlyphs_TEntry_Compare);
   RegisterResolutions(CResolutions);
   Scaled := True;
 end;
@@ -765,7 +762,7 @@ var
 begin
   K.GlyphName := AResourceName;
 
-  ANode := FImageIndexes.FindKey(@K, @TEntry.CompareKey);
+  ANode := FImageIndexes.FindKey(@K, @TLCLBtnGlyphs_TEntry_CompareKey);
   if ANode<>nil then
     Result := TEntry(ANode.Data).ImageIndex
   else
