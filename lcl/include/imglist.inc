@@ -780,7 +780,7 @@ var
         if not Res
         then raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
 
-        TCustomImageList.ScaleImage(ImgHandle, MaskHandle, Rect(0, 0, Width-1, Height-1), Width, Height, ImgData);
+        TCustomImageList.ScaleImage(ImgHandle, MaskHandle, Rect(0, 0, Width, Height), Width, Height, ImgData);
         InternalInsert(Count, @ImgData[0]);
         DeleteObject(ImgHandle);
         DeleteObject(MaskHandle);
@@ -1340,6 +1340,15 @@ begin
   end;
 end;
 
+function TCustomImageList.AddSliceCentered(Image: TCustomBitmap): Integer;
+var
+  ImageRect: TRect;
+begin
+  ImageRect := Rect(0, 0, Width, Height);
+  OffsetRect(ImageRect, (Image.Width-Width) div 2, (Image.Height-Height) div 2);
+  Result := AddSlice(Image, ImageRect);
+end;
+
 function TCustomImageList.AddSliced(Image: TCustomBitmap; AHorizontalCount,
   AVerticalCount: Integer): Integer;
 var
@@ -1360,7 +1369,7 @@ begin
   for L := 0 to AVerticalCount-1 do
     for I := 0 to AHorizontalCount-1 do
     begin
-      Rc := Rect(I*W, L*H, (I+1)*W-1, (L+1)*H-1);
+      Rc := Rect(I*W, L*H, (I+1)*W, (L+1)*H);
       for R in Resolutions do
       begin
         ScaleImage(Image, nil, Rc, R.Width, R.Height, ScBmp);
@@ -1972,7 +1981,7 @@ begin
       else
         msk := 0;
       ScaleImage(SortedIcon.BitmapHandle, msk,
-        Rect(0, 0, SortedIcon.Width-1, SortedIcon.Height-1), R.Width, R.Height, ScBmp);
+        Rect(0, 0, SortedIcon.Width, SortedIcon.Height), R.Width, R.Height, ScBmp);
       R.InternalInsert(AIndex, @ScBmp[0]);
     end;
   finally
@@ -2009,7 +2018,7 @@ begin
     CreateDefaultResolution;
     for R in Resolutions do
     begin
-      ScaleImage(MaskedImage.BitmapHandle, MaskedImage.MaskHandle, Rect(0, 0, MaskedImage.Width-1, MaskedImage.Height-1), R.Width, R.Height, ScBmp);
+      ScaleImage(MaskedImage.BitmapHandle, MaskedImage.MaskHandle, Rect(0, 0, MaskedImage.Width, MaskedImage.Height), R.Width, R.Height, ScBmp);
       R.InternalInsert(Index, @ScBmp[0]);
     end;
   finally
@@ -2021,7 +2030,7 @@ class procedure TCustomImageList.ScaleImage(const ABitmap,
   AMask: TCustomBitmap; TargetWidth, TargetHeight: Integer;
   var AData: TRGBAQuadArray);
 begin
-  ScaleImage(ABitmap, AMask, Rect(0, 0, ABitmap.Width-1, ABitmap.Height-1), TargetWidth, TargetHeight, AData);
+  ScaleImage(ABitmap, AMask, Rect(0, 0, ABitmap.Width, ABitmap.Height), TargetWidth, TargetHeight, AData);
 end;
 
 {------------------------------------------------------------------------------
@@ -2202,10 +2211,10 @@ begin
   try
     II.LoadFromBitmap(ABitmap, AMask);
 
-    FI := TFPCompactImgRGBA8Bit.Create(SourceRect.Right-SourceRect.Left+1, SourceRect.Bottom-SourceRect.Top+1);
+    FI := TFPCompactImgRGBA8Bit.Create(SourceRect.Right-SourceRect.Left, SourceRect.Bottom-SourceRect.Top);
 
-    for X := SourceRect.Left to SourceRect.Right do
-    for Y := SourceRect.Top to SourceRect.Bottom do
+    for X := SourceRect.Left to SourceRect.Right-1 do
+    for Y := SourceRect.Top to SourceRect.Bottom-1 do
     begin
       if (X>=0) and (X<II.Width) and (Y>=0) and (Y<II.Height) then
       begin
@@ -2217,7 +2226,7 @@ begin
       FI.Colors[X-SourceRect.Left, Y-SourceRect.Top] := C;
     end;
 
-    if SourceRect.Right-SourceRect.Left+1=TargetWidth then
+    if SourceRect.Right-SourceRect.Left=TargetWidth then
       ScFI := FI
     else
     begin
@@ -2431,7 +2440,7 @@ begin
       else
         msk := 0;
       ScaleImage(SortedIcon.BitmapHandle, msk,
-        Rect(0, 0, SortedIcon.Width-1, SortedIcon.Height-1), R.Width, R.Height, ScBmp);
+        Rect(0, 0, SortedIcon.Width, SortedIcon.Height), R.Width, R.Height, ScBmp);
       R.InternalReplace(AIndex, @ScBmp[0]);
     end;
   finally
@@ -2482,6 +2491,43 @@ begin
   finally
     Bmp.Free;
   end;
+end;
+
+procedure TCustomImageList.ReplaceSlice(AIndex: Integer; Image: TCustomBitmap;
+  AImageRect: TRect; const AllResolutions: Boolean);
+var
+  R: TCustomImageListResolution;
+  Data: TRGBAQuadArray;
+
+  procedure _Replace;
+  begin
+    ScaleImage(Image, nil, AImageRect, R.Width, R.Height, Data);
+    R.InternalReplace(AIndex, @Data[0]);
+  end;
+begin
+  if Image = nil then Exit;
+
+  if AllResolutions then
+  begin
+    for R in Resolutions do
+      _Replace;
+  end else
+  begin
+    if FindResolution(AImageRect.Right-AImageRect.Left, R) then
+      _Replace;
+  end;
+end;
+
+procedure TCustomImageList.ReplaceSliceCentered(AIndex, AImageWidth: Integer;
+  Image: TCustomBitmap; const AllResolutions: Boolean);
+var
+  ImageRect: TRect;
+  R: TCustomImageListResolution;
+begin
+  if not FindResolution(AImageWidth, R) then Exit;
+  ImageRect := Rect(0, 0, R.Width, R.Height);
+  OffsetRect(ImageRect, (Image.Width-R.Width) div 2, (Image.Height-R.Height) div 2);
+  ReplaceSlice(AIndex, Image, ImageRect, AllResolutions);
 end;
 
 {------------------------------------------------------------------------------

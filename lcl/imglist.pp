@@ -336,6 +336,7 @@ type
     function AddMultipleResolutions(Images: array of TCustomBitmap): Integer; // always pass sorted array from smallest to biggest
     function AddSliced(Image: TCustomBitmap; AHorizontalCount, AVerticalCount: Integer): Integer;
     function AddSlice(Image: TCustomBitmap; AImageRect: TRect): Integer;
+    function AddSliceCentered(Image: TCustomBitmap): Integer;
     function AddIcon(Image: TCustomIcon): Integer;
     procedure AddImages(AValue: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
@@ -376,6 +377,8 @@ type
     procedure Overlay(AIndex: Integer; Overlay: TOverlay);
     property HasOverlays: boolean read fHasOverlays;
     procedure Replace(AIndex: Integer; AImage, AMask: TCustomBitmap; const AllResolutions: Boolean = True);
+    procedure ReplaceSlice(AIndex: Integer; Image: TCustomBitmap; AImageRect: TRect; const AllResolutions: Boolean = True);
+    procedure ReplaceSliceCentered(AIndex, AImageWidth: Integer; Image: TCustomBitmap; const AllResolutions: Boolean = True);
     procedure ReplaceIcon(AIndex: Integer; AIcon: TCustomIcon);
     procedure ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor; const AllResolutions: Boolean = True);
     procedure RegisterChanges(Value: TChangeLink);
