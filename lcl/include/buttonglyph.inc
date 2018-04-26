@@ -170,7 +170,12 @@ begin
   if FOriginal = Value then
     exit;
   if FOriginal = nil then
-    FOriginal := TGlyphBitmap.Create(Self);
+    FOriginal := TGlyphBitmap.Create(Self)
+  else
+  begin
+    FExternalImages := nil;
+    FExternalImageIndex := -1;
+  end;
   FOriginal.OnChange := nil;
   FOriginal.Assign(Value);
   FOriginal.OnChange := @GlyphChanged;
@@ -235,6 +240,8 @@ begin
     FImagesCache := GetImageListCache;
     FImagesCache.RegisterListener(Self);
     FImagesCache.RegisterBitmap(Self, FOriginal, NumGlyphs);
+    FExternalImageIndex := -1;
+    FExternalImages := nil;
   end;
 
   if Sender = FOriginal then
