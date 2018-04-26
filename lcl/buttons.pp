@@ -101,6 +101,7 @@ type
     procedure CacheSetImageList(AImageList: TCustomImageList);
     procedure CacheSetImageIndex(AIndex, AImageIndex: Integer);
   protected
+    function CanShow: Boolean;
     procedure DoChange; virtual;
     procedure GlyphChanged(Sender: TObject);
     procedure SetTransparentMode(AValue: TGlyphTransparencyMode);

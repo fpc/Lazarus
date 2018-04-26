@@ -105,7 +105,7 @@ const
      (gdeNormal, gdeDisabled, gdeShadowed, gdeNormal, gdeHighlighted));
 begin
   AUseAutoEffects := ThemeServices.GetOption(toUseGlyphEffects);
-  if Assigned(FExternalImages) then
+  if Assigned(FExternalImages) and CanShow then
   begin
     AImages := FExternalImages;
     AIndex := FExternalImageIndex;
@@ -222,30 +222,6 @@ begin
 end;
 
 procedure TButtonGlyph.GlyphChanged(Sender: TObject);
-
-  function CanShow: Boolean;
-  begin
-    Result := True;
-    if IsDesigning then
-      Exit;
-    case ShowMode of
-      gsmAlways:
-        Result := True;
-      gsmNever:
-        Result := False;
-      gsmApplication:
-        begin
-          case Application.ShowButtonGlyphs of
-            sbgAlways: Result := True;
-            sbgNever: Result := False;
-            sbgSystem: Result := SystemShowButtonGlyphs;
-          end;
-        end;
-      gsmSystem:
-        Result := SystemShowButtonGlyphs;
-    end;
-  end;
-
 begin
   if FImagesCache <> nil then
   begin
@@ -379,6 +355,29 @@ end;
 procedure TButtonGlyph.CacheSetImageList(AImageList: TCustomImageList);
 begin
   FImages := AImageList;
+end;
+
+function TButtonGlyph.CanShow: Boolean;
+begin
+  Result := True;
+  if IsDesigning then
+    Exit;
+  case ShowMode of
+    gsmAlways:
+      Result := True;
+    gsmNever:
+      Result := False;
+    gsmApplication:
+      begin
+        case Application.ShowButtonGlyphs of
+          sbgAlways: Result := True;
+          sbgNever: Result := False;
+          sbgSystem: Result := SystemShowButtonGlyphs;
+        end;
+      end;
+    gsmSystem:
+      Result := SystemShowButtonGlyphs;
+  end;
 end;
 
 procedure TButtonGlyph.CacheSetImageIndex(AIndex, AImageIndex: Integer);
