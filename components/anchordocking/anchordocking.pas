@@ -927,7 +927,7 @@ function GetDockSplitter(Control: TControl; Side: TAnchorKind; out
 begin
   Result:=false;
   Splitter:=nil;
-  if not (Side in Control.Anchors) then exit;
+  if not assigned(Control) or not (Side in Control.Anchors) then exit;
   Splitter:=TAnchorDockSplitter(Control.AnchorSide[Side].Control);
   if not (Splitter is TAnchorDockSplitter) then begin
     Splitter:=nil;
