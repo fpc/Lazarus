@@ -36,12 +36,13 @@ uses
   LCLProc, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
   LclIntf,
   // CodeTools
-  FileProcs, CTUnitGraph, CodeTree, CodeCache, CodeToolManager,
+  FileProcs, CTUnitGraph, CodeTree, CodeCache, CodeToolManager, BasicCodeTools,
   // LazUtils
   LazFileUtils, LazFileCache, laz2_DOM, AvgLvlTree,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
-  LazIDEIntf, IDEDialogs, InputHistory, SearchResultView, CodeHelp;
+  LazIDEIntf, IDEDialogs, SrcEditorIntf, PackageIntf, InputHistory,
+  SearchResultView, CodeHelp, TransferMacros;
 
 type
 
@@ -92,6 +93,10 @@ procedure CleanUpFileList(Files: TStringList);
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
   const Position: TPoint;
+  AllowRename: boolean; // allow user to disable/enable rename
+  SetRenameActive: boolean; // check rename
+  Options: TFindRenameIdentifierOptions): TModalResult;
+function DoFindRenameIdentifier(
   AllowRename: boolean; // allow user to disable/enable rename
   SetRenameActive: boolean; // check rename
   Options: TFindRenameIdentifierOptions): TModalResult;
@@ -163,6 +168,256 @@ begin
         FindRenameIdentifierDialog.SaveToOptions(Options);
   finally
     FindRenameIdentifierDialog.Free;
+  end;
+end;
+
+function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
+  Options: TFindRenameIdentifierOptions): TModalResult;
+
+  // TODO: replace Files: TStringsList with a AVL tree
+
+  function AddExtraFiles(Files: TStrings): TModalResult;
+  var
+    i: Integer;
+    CurFileMask: string;
+    FileInfo: TSearchRec;
+    CurDirectory: String;
+    CurFilename: String;
+    OnlyPascalSources: Boolean;
+  begin
+    Result:=mrCancel;
+    if (Options.ExtraFiles<>nil) then begin
+      for i:=0 to Options.ExtraFiles.Count-1 do begin
+        CurFileMask:=Options.ExtraFiles[i];
+        if not GlobalMacroList.SubstituteStr(CurFileMask) then exit;
+        CurFileMask:=ChompPathDelim(CurFileMask);
+        if not FilenameIsAbsolute(CurFileMask) then begin
+          if LazarusIDE.ActiveProject.IsVirtual then continue;
+          CurFileMask:=AppendPathDelim(LazarusIDE.ActiveProject.Directory+CurFileMask);
+        end;
+        CurFileMask:=TrimFilename(CurFileMask);
+        OnlyPascalSources:=false;
+        if DirPathExistsCached(CurFileMask) then begin
+          // a whole directory
+          OnlyPascalSources:=true;
+          CurFileMask:=AppendPathDelim(CurFileMask)+AllFilesMask;
+        end else if FileExistsCached(CurFileMask) then begin
+          // single file
+          Files.Add(CurFileMask);
+          continue;
+        end else begin
+          // a mask
+        end;
+        if FindFirstUTF8(CurFileMask,faAnyFile,FileInfo)=0
+        then begin
+          CurDirectory:=AppendPathDelim(ExtractFilePath(CurFileMask));
+          repeat
+            // check if special file
+            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
+            then
+              continue;
+            if OnlyPascalSources and not FilenameIsPascalSource(FileInfo.Name)
+            then
+              continue;
+            CurFilename:=CurDirectory+FileInfo.Name;
+            //debugln(['AddExtraFiles ',CurFilename]);
+            if FileIsText(CurFilename) then
+              Files.Add(CurFilename);
+          until FindNextUTF8(FileInfo)<>0;
+        end;
+        FindCloseUTF8(FileInfo);
+      end;
+    end;
+    Result:=mrOk;
+  end;
+
+var
+  StartSrcEdit: TSourceEditorInterface;
+  DeclCode, StartSrcCode: TCodeBuffer;
+  DeclX, DeclY, DeclTopLine, StartTopLine, i: integer;
+  LogCaretXY, DeclarationCaretXY: TPoint;
+  OwnerList: TFPList;
+  ExtraFiles: TStrings;
+  Files: TStringList;
+  Identifier: string;
+  PascalReferences: TAVLTree;
+  ListOfLazFPDocNode: TFPList;
+  CurUnitname: String;
+  OldChange, Completed: Boolean;
+  Graph: TUsesGraph;
+  Node: TAVLTreeNode;
+  UGUnit: TUGUnit;
+begin
+  Result:=mrCancel;
+  if not LazarusIDE.BeginCodeTools then exit(mrCancel);
+
+  StartSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+  StartSrcCode:=TCodeBuffer(StartSrcEdit.CodeToolsBuffer);
+  StartTopLine:=StartSrcEdit.TopLine;
+
+  // find the main declaration
+  LogCaretXY:=StartSrcEdit.CursorTextXY;
+  if not CodeToolBoss.FindMainDeclaration(StartSrcCode,
+    LogCaretXY.X,LogCaretXY.Y,
+    DeclCode,DeclX,DeclY,DeclTopLine) then
+  begin
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit(mrCancel);
+  end;
+  DeclarationCaretXY:=Point(DeclX,DeclY);
+  Result:=LazarusIDE.DoOpenFileAndJumpToPos(DeclCode.Filename, DeclarationCaretXY,
+    DeclTopLine,-1,-1,[ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
+  if Result<>mrOk then
+    exit;
+
+  CodeToolBoss.GetIdentifierAt(DeclCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
+  CurUnitname:=ExtractFileNameOnly(DeclCode.Filename);
+
+  //debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=x=',dbgs(DeclarationCaretXY.X),' y=',dbgs(DeclarationCaretXY.Y));
+
+  Files:=nil;
+  OwnerList:=nil;
+  PascalReferences:=nil;
+  ListOfLazFPDocNode:=nil;
+  try
+    // let user choose the search scope
+    Result:=ShowFindRenameIdentifierDialog(DeclCode.Filename,DeclarationCaretXY,
+      AllowRename,SetRenameActive,nil);
+    if Result<>mrOk then begin
+      debugln('Error: (lazarus) DoFindRenameIdentifier failed: user cancelled dialog');
+      exit;
+    end;
+
+    // create the file list
+    Files:=TStringList.Create;
+    Files.Add(DeclCode.Filename);
+    if CompareFilenames(DeclCode.Filename,StartSrcCode.Filename)<>0 then
+      Files.Add(DeclCode.Filename);
+
+    Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
+
+    // add packages, projects
+    case Options.Scope of
+    frProject:
+      begin
+        OwnerList:=TFPList.Create;
+        OwnerList.Add(LazarusIDE.ActiveProject);
+      end;
+    frOwnerProjectPackage,frAllOpenProjectsAndPackages:
+      begin
+        OwnerList:=PackageEditingInterface.GetOwnersOfUnit(StartSrcCode.Filename);
+        if (OwnerList<>nil)
+        and (Options.Scope=frAllOpenProjectsAndPackages) then begin
+          PackageEditingInterface.ExtendOwnerListWithUsedByOwners(OwnerList);
+          ReverseList(OwnerList);
+        end;
+      end;
+    end;
+
+    // get source files of packages and projects
+    if OwnerList<>nil then begin
+      // start in all listed files of the package(s)
+      ExtraFiles:=PackageEditingInterface.GetSourceFilesOfOwners(OwnerList);
+      if ExtraFiles<>nil then
+      begin
+        // parse all used units
+        Graph:=CodeToolBoss.CreateUsesGraph;
+        try
+          for i:=0 to ExtraFiles.Count-1 do
+            Graph.AddStartUnit(ExtraFiles[i]);
+          Graph.AddTargetUnit(DeclCode.Filename);
+          Graph.Parse(true,Completed);
+          Node:=Graph.FilesTree.FindLowest;
+          while Node<>nil do begin
+            UGUnit:=TUGUnit(Node.Data);
+            Files.Add(UGUnit.Filename);
+            Node:=Node.Successor;
+          end;
+        finally
+          ExtraFiles.Free;
+          Graph.Free;
+        end;
+      end;
+    end;
+
+    //debugln(['DoFindRenameIdentifier ',Files.Text]);
+
+    // add user defined extra files
+    Result:=AddExtraFiles(Files);
+    if Result<>mrOk then begin
+      debugln('Error: (lazarus) DoFindRenameIdentifier unable to add user defined extra files');
+      exit;
+    end;
+
+    // search pascal source references
+    Result:=GatherIdentifierReferences(Files,DeclCode,
+      DeclarationCaretXY,Options.SearchInComments,PascalReferences);
+    if CodeToolBoss.ErrorMessage<>'' then
+      LazarusIDE.DoJumpToCodeToolBossError;
+    if Result<>mrOk then begin
+      debugln('Error: (lazarus) DoFindRenameIdentifier GatherIdentifierReferences failed');
+      exit;
+    end;
+
+    {$IFDEF EnableFPDocRename}
+    // search fpdoc references
+    Result:=GatherFPDocReferencesForPascalFiles(Files,DeclarationUnitInfo.Source,
+                                  DeclarationCaretXY,ListOfLazFPDocNode);
+    if Result<>mrOk then begin
+      debugln('Error: (lazarus) DoFindRenameIdentifier GatherFPDocReferences failed');
+      exit;
+    end;
+    {$ENDIF}
+
+    // ToDo: search lfm source references
+    // ToDo: search i18n references
+    // ToDo: designer references
+
+    // rename identifier
+    if Options.Rename then begin
+      if CompareIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
+      begin
+        IDEMessageDialog(srkmecRenameIdentifier,
+          lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction,
+          mtInformation,[mbCancel],'');
+        exit(mrCancel);
+      end;
+      OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
+      LazarusIDE.OpenEditorsOnCodeToolChange:=true;
+      try
+        if not CodeToolBoss.RenameIdentifier(PascalReferences,
+          Identifier,Options.RenameTo, DeclCode, @DeclarationCaretXY)
+        then begin
+          LazarusIDE.DoJumpToCodeToolBossError;
+          debugln('Error: (lazarus) DoFindRenameIdentifier unable to commit');
+          Result:=mrCancel;
+          exit;
+        end;
+      finally
+        LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
+      end;
+      if Options.RenameShowResult then
+        Result:=ShowIdentifierReferences(DeclCode,
+          DeclarationCaretXY,PascalReferences);
+    end;
+
+    // show result
+    Result:=mrOk;
+    if (not Options.Rename) or (not SetRenameActive) then begin
+      Result:=ShowIdentifierReferences(DeclCode,
+        DeclarationCaretXY,PascalReferences);
+      if Result<>mrOk then exit;
+    end;
+
+  finally
+    Files.Free;
+    OwnerList.Free;
+    CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
+    FreeListObjects(ListOfLazFPDocNode,true);
+
+    // jump back in source editor
+    Result:=LazarusIDE.DoOpenFileAndJumpToPos(StartSrcCode.Filename, LogCaretXY,
+      StartTopLine,-1,-1,[ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
   end;
 end;
 

@@ -100,6 +100,7 @@ type
   TUsesGraph = class
   private
     FFiles: TAVLTree; // tree of TUGUnit sorted for Filename
+    FIgnoreFiles: TAVLTree; // tree of TUGUnit sorted for Filename
     FQueuedFiles: TAVLTree; // tree of TUGUnit sorted for Filename
     FTargetAll: boolean;
     FTargetFiles: TAVLTree; // tree of TUGUnit sorted for Filename
@@ -122,6 +123,7 @@ type
 
     procedure AddStartUnit(ExpFilename: string);
     procedure AddTargetUnit(ExpFilename: string);
+    procedure AddIgnoreUnit(ExpFilename: string);
     procedure AddSystemUnitAsTarget;
     function Parse(IgnoreErrors: boolean; out Completed: boolean;
                    StopAfterMs: integer = -1): boolean;
@@ -134,6 +136,7 @@ type
     function InsertMissingLinks(UGUnitList: TFPList): boolean;
 
     property FilesTree: TAVLTree read FFiles; // tree of TUGUnit sorted for Filename (all parsed)
+    property IgnoreFilesTree: TAVLTree read FIgnoreFiles; // tree of TUGUnit sorted for Filename
     property QueuedFilesTree: TAVLTree read FQueuedFiles; // tree of TUGUnit sorted for Filename
     property TargetFilesTree: TAVLTree read FTargetFiles; // tree of TUGUnit sorted for Filename
     property TargetAll: boolean read FTargetAll write FTargetAll;
@@ -245,6 +248,7 @@ begin
   FUnitClass:=TUGUnit;
   FUsesClass:=TUGUses;
   FFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
+  FIgnoreFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
   FQueuedFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
   FTargetFiles:=TAVLTree.Create(@CompareUGUnitFilenames);
 end;
@@ -252,6 +256,7 @@ end;
 destructor TUsesGraph.Destroy;
 begin
   Clear;
+  FreeAndNil(FIgnoreFiles);
   FreeAndNil(FQueuedFiles);
   FreeAndNil(FTargetFiles);
   FreeAndNil(FFiles);
@@ -333,14 +338,27 @@ begin
 end;
 
 procedure TUsesGraph.AddTargetUnit(ExpFilename: string);
+var
+  NewUnit: TUGUnit;
 begin
   if ExpFilename='' then exit;
   if FQueuedFiles.FindKey(PChar(ExpFilename),@CompareFilenameAndUGUnit)<>nil then
     exit; // already a start file
   // add to FFiles and FTargetFiles
   //debugln(['TUsesGraph.AddTargetUnit ',ExpFilename]);
-  FTargetFiles.Add(GetUnit(ExpFilename,true));
+  NewUnit:=GetUnit(ExpFilename,true);
+  if FTargetFiles.Find(NewUnit)=nil then
+    FTargetFiles.Add(NewUnit);
   FTargetDirsValid:=false;
+end;
+
+procedure TUsesGraph.AddIgnoreUnit(ExpFilename: string);
+var
+  NewUnit: TUGUnit;
+begin
+  NewUnit:=GetUnit(ExpFilename,true);
+  if FIgnoreFiles.Find(NewUnit)=nil then
+    FIgnoreFiles.Add(NewUnit);
 end;
 
 procedure TUsesGraph.AddSystemUnitAsTarget;
@@ -389,6 +407,7 @@ function TUsesGraph.Parse(IgnoreErrors: boolean; out Completed: boolean;
     ImplementationUsesSection: TStrings;
   begin
     Result:=false;
+    //debugln(['ParseUnit ',CurUnit.Filename,' ',Pos('tcfiler',CurUnit.Filename)]);
     Include(CurUnit.Flags,ugufLoadError);
     // load file
     Abort:=false;
@@ -461,6 +480,7 @@ begin
     CurUnit:=TUGUnit(AVLNode.Data);
     FQueuedFiles.Delete(AVLNode);
     Include(CurUnit.Flags,ugufReached);
+    if FIgnoreFiles.Find(CurUnit)<>nil then continue;
     //debugln(['TUsesGraph.Parse Unit=',CurUnit.Filename,' UnitCanFindTarget=',UnitCanFindTarget(CurUnit.Filename)]);
     if UnitCanFindTarget(CurUnit.Filename) then begin
       ParseUnit(CurUnit);
@@ -527,7 +547,7 @@ begin
 end;
 
 function TUsesGraph.UnitCanFindTarget(ExpFilename: string): boolean;
-// returns true if units search path allows finding a target unit
+// returns true if ExpFilename can find one of the targets via the search paths
 var
   BaseDir: String;
   SrcPath: String;
@@ -561,8 +581,6 @@ var
   AVLNode: TAVLTreeNode;
   CurUnit: TUGUnit;
   Dir: String;
-  p: Integer;
-  TargetDir: String;
 begin
   if FTargetFiles.Count=0 then exit(TargetAll);
 
@@ -585,7 +603,7 @@ begin
         // in virtual directory
         if (FTargetDirs='') or (FTargetDirs[1]<>';') then
           FTargetDirs:=';'+FTargetDirs;
-      end else if not FileIsInPath(Dir,FTargetDirs) then begin
+      end else if FindPathInSearchPath(Dir,FTargetDirs)<1 then begin
         // normal source directory
         if FTargetDirs='' then
           FTargetDirs:=Dir
@@ -598,15 +616,9 @@ begin
 
   Result:=true;
   if TargetAll then exit;
-  if (ExpDir='') and (FTargetDirs[1]=';') then exit;
-  p:=1;
-  repeat
-    TargetDir:=GetNextDelimitedItem(FTargetDirs,';',p);
-    if TargetDir<>'' then begin
-      if CompareFilenames(TargetDir,ExpDir)=0 then exit;
-    end;
-  until p>length(FTargetDirs);
-  Result:=false;
+  if (ExpDir='') and (FTargetDirs[1]=';') then
+    exit; // virtual directory
+  Result:=FindPathInSearchPath(ExpDir,FTargetDirs)>0;
 end;
 
 function TUsesGraph.FindShortestPath(StartUnit, EndUnit: TUGUnit): TFPList;

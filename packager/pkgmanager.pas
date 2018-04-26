@@ -51,10 +51,10 @@ uses
   LCLProc, Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
   // LazUtils
   LazUTF8, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache, StringHashList,
-  Translations, AvgLvlTree,
+  Translations, AvgLvlTree, Laz_AVL_Tree,
   // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,
-  FileProcs, CodeTree,
+  FileProcs, CodeTree, CTUnitGraph,
   // IDE Interface
   NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, PackageLinkIntf,
   CompOptsIntf, MenuIntf, IDEWindowIntf, IDEExternToolIntf, MacroIntf, LazIDEIntf,
@@ -230,6 +230,7 @@ type
     function GetOwnersOfUnit(const UnitFilename: string): TFPList; override;
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); override;
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; override;
+    function GetUnitsOfOwners(OwnerList: TFPList; Flags: TPkgIntfGatherUnitTypes): TStrings; override;
     function GetPossibleOwnersOfUnit(const UnitFilename: string;
                                      Flags: TPkgIntfOwnerSearchFlags): TFPList; override;
     function GetPackageOfCurrentSourceEditor(out APackage: TIDEPackage): TPkgFile;
@@ -4699,6 +4700,128 @@ begin
         CurUnit:=CurUnit.NextPartOfProject;
       end;
     end;
+  end;
+end;
+
+function TPkgManager.GetUnitsOfOwners(OwnerList: TFPList;
+  Flags: TPkgIntfGatherUnitTypes): TStrings;
+var
+  Units: TFilenameToPointerTree;
+  Graph: TUsesGraph;
+
+  procedure AddUnit(ExpFilename: string);
+  begin
+    if not FileExistsCached(ExpFilename) then exit;
+    if Units.Contains(ExpFilename) then exit;
+    Units[ExpFilename]:=nil;
+  end;
+
+  procedure AddStartModule(ExpFilename: string);
+  begin
+    AddUnit(ExpFilename);
+    Graph.AddStartUnit(ExpFilename);
+  end;
+
+var
+  i, j: Integer;
+  CurOwner: TObject;
+  CurProject: TProject;
+  CurPackage: TLazPackage;
+  ProjFile: TLazProjectFile;
+  PkgFile: TPkgFile;
+  Completed: boolean;
+  Node: TAVLTreeNode;
+  UGUnit: TUGUnit;
+begin
+  debugln(['TPkgManager.GetUnitsOfOwners piguListed=',piguListed in Flags,' piguUsed=',piguUsed in Flags,' piguAllUsed=',piguAllUsed in Flags]);
+  Result:=TStringListUTF8.Create;
+  if (OwnerList=nil) or (OwnerList.Count=0) then exit;
+
+  Units:=TFilenameToPointerTree.Create(false);
+  Graph:=TUsesGraph.Create;
+  try
+
+    for i:=0 to OwnerList.Count-1 do
+    begin
+      CurOwner:=TObject(OwnerList[i]);
+      if CurOwner is TProject then
+      begin
+        CurProject:=TProject(CurOwner);
+        if (pfMainUnitIsPascalSource in CurProject.Flags)
+        and (CurProject.MainUnitInfo<>nil) then
+          AddStartModule(CurProject.MainUnitInfo.GetFullFilename);
+        if piguListed in Flags then
+        begin
+          for j:=0 to CurProject.FileCount-1 do
+          begin
+            ProjFile:=CurProject.Files[j];
+            if not FilenameIsPascalUnit(ProjFile.Filename) then continue;
+            AddStartModule(ProjFile.GetFullFilename);
+          end;
+        end;
+      end else if CurOwner is TLazPackage then
+      begin
+        CurPackage:=TLazPackage(CurOwner);
+        if piguListed in Flags then
+        begin
+          for j:=0 to CurPackage.FileCount-1 do
+          begin
+            PkgFile:=CurPackage.Files[j];
+            if not (PkgFile.FileType in PkgFileRealUnitTypes) then continue;
+            AddStartModule(PkgFile.GetFullFilename);
+          end;
+        end;
+      end;
+    end;
+    if Units.Count=0 then
+    begin
+      debugln(['TPkgManager.GetUnitsOfOwners no start modules END']);
+      exit; // no start modules
+    end;
+
+    if [piguUsed,piguAllUsed]*Flags<>[] then
+    begin
+      // parse units recursively
+      Graph.AddSystemUnitAsTarget;
+      if piguAllUsed in Flags then
+      begin
+        // gather all used units
+      end else if piguUsed in Flags then
+      begin
+        // ignore units of other packages
+        for i:=0 to PackageGraph.Count-1 do
+        begin
+          CurPackage:=PackageGraph[i];
+          if OwnerList.IndexOf(CurPackage)>=0 then continue;
+          for j:=0 to CurPackage.FileCount-1 do
+          begin
+            PkgFile:=CurPackage.Files[j];
+            if not (PkgFile.FileType in PkgFileRealUnitTypes) then continue;
+            Graph.AddIgnoreUnit(PkgFile.GetFullFilename);
+          end;
+        end;
+      end;
+
+      // parse
+      Graph.Parse(true,Completed);
+      if Completed then ;
+
+      // add parsed units
+      Node:=Graph.FilesTree.FindLowest;
+      while Node<>nil do
+      begin
+        UGUnit:=TUGUnit(Node.Data);
+        if Graph.IgnoreFilesTree.Find(UGUnit)=nil then
+          Units[UGUnit.Filename]:=nil;
+        Node:=Node.Successor;
+      end;
+    end;
+
+    Units.GetNames(Result);
+
+  finally
+    Graph.Free;
+    Units.Free;
   end;
 end;
 

@@ -250,6 +250,13 @@ type
     );
   TPkgIntfRequiredFlags = set of TPkgIntfRequiredFlag;
 
+  TPkgIntfGatherUnitType = (
+    piguListed, // unit is in list of given Owner, i.e. in lpi, lpk file, this may contain platform specific units
+    piguUsed, // unit is used directly or indirectly by the start module and no currently open package/project is associated with it
+    piguAllUsed // as pigyUsed, except even units associated with another package/project are returned
+    );
+  TPkgIntfGatherUnitTypes = set of TPkgIntfGatherUnitType;
+
   { TPackageEditingInterface }
 
   TPackageEditingInterface = class(TComponent)
@@ -273,6 +280,7 @@ type
     function GetOwnersOfUnit(const UnitFilename: string): TFPList; virtual; abstract;
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); virtual; abstract;
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; virtual; abstract;
+    function GetUnitsOfOwners(OwnerList: TFPList; Flags: TPkgIntfGatherUnitTypes): TStrings; virtual; abstract;
     function GetPossibleOwnersOfUnit(const UnitFilename: string;
                                      Flags: TPkgIntfOwnerSearchFlags): TFPList; virtual; abstract;
     function GetPackageOfSourceEditor(out APackage: TIDEPackage; ASrcEdit: TObject): TLazPackageFile; virtual; abstract;
