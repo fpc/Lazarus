@@ -262,7 +262,7 @@ begin
   begin
     case FLine[Run] of
       #10, #13: break;
-      #34: if FLine[Run - 1] <> '\' then LastQuotePos := Run;
+      #34: if (Run <= 0) or (FLine[Run - 1] <> '\') then LastQuotePos := Run;
     end;
     inc(Run);
   end;
