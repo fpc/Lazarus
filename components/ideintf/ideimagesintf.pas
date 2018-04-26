@@ -320,7 +320,7 @@ begin
         raise Exception.CreateFmt('TIDEImages.LoadImage: %s not found.', [ImageName]);
       if Grp is TCustomBitmap then
       begin
-        Rc := Rect(0, 0, List.Width-1, List.Height-1);
+        Rc := Rect(0, 0, List.Width, List.Height);
         OffsetRect(Rc, (Grp.Width-List.Width) div 2, (Grp.Height-List.Height) div 2);
         Result := List.AddSlice(TCustomBitmap(Grp), Rc);
       end else
