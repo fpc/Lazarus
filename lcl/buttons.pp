@@ -334,7 +334,7 @@ type
     FState: TButtonState;
     class procedure WSRegisterClass; override;
     function GetNumGlyphs: Integer;
-    procedure GlyphChanged(Sender: TObject);
+    procedure GlyphChanged(Sender: TObject); virtual;
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -450,16 +450,14 @@ type
   TLCLBtnGlyphs = class(TImageList)
   private type
     TEntryKey = record
-      ParentClass: TClass;
-      GlyphIndex: Integer;
+      GlyphName: string;
     end;
     PEntryKey = ^TEntryKey;
 
     TEntry = class
     public
       // key
-      ParentClass: TClass; // the component class that registers a glyph
-      GlyphIndex: Integer; // the unique glyph index within the component class
+      GlyphName: string;
 
       // value
       ImageIndex: Integer; // the image index in TLCLBtnGlyphs
@@ -473,8 +471,7 @@ type
   private
     FImageIndexes: TAvgLvlTree;
   public
-    function GetImageIndex(AParentClass: TClass;
-      AGlyphIndex: Integer; const AResourceName: string): Integer;
+    function GetImageIndex(const AResourceName: string): Integer;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -545,15 +542,15 @@ const
 {idButtonNoToAll } 'btn_no'
   );
 
-var
-  GLCLBtnGlyphs: TLCLBtnGlyphs = nil;
-
 implementation
 
 {$R btn_icons.res}
 
 uses
   WSButtons;
+
+var
+  GLCLBtnGlyphs: TLCLBtnGlyphs = nil;
 
 function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
 begin
@@ -710,9 +707,7 @@ var
   AItem1: TEntry absolute Item1;
   AItem2: TEntry absolute Item2;
 begin
-  Result := CompareValue(PtrInt(AItem1.ParentClass), PtrInt(AItem2.ParentClass));
-  if Result<>0 then Exit;
-  Result := CompareValue(AItem1.GlyphIndex, AItem2.GlyphIndex);
+  Result := CompareStr(AItem1.GlyphName, AItem2.GlyphName);
 end;
 
 class function TLCLBtnGlyphs.TEntry.CompareKey(Key, Item: Pointer): Integer;
@@ -720,9 +715,7 @@ var
   AKey: PEntryKey absolute Key;
   AItem: TEntry absolute Item;
 begin
-  Result := CompareValue(PtrInt(AKey^.ParentClass), PtrInt(AItem.ParentClass));
-  if Result<>0 then Exit;
-  Result := CompareValue(AKey^.GlyphIndex, AItem.GlyphIndex);
+  Result := CompareStr(AKey^.GlyphName, AItem.GlyphName);
 end;
 
 { TLCLBtnGlyphs }
@@ -744,8 +737,7 @@ begin
   inherited Destroy;
 end;
 
-function TLCLBtnGlyphs.GetImageIndex(AParentClass: TClass;
-  AGlyphIndex: Integer; const AResourceName: string): Integer;
+function TLCLBtnGlyphs.GetImageIndex(const AResourceName: string): Integer;
 
   function AddBtnImage(ResolutionWidth: Integer): Integer;
   var
@@ -771,8 +763,7 @@ var
   E: TEntry;
   I: Integer;
 begin
-  K.ParentClass := AParentClass;
-  K.GlyphIndex := AGlyphIndex;
+  K.GlyphName := AResourceName;
 
   ANode := FImageIndexes.FindKey(@K, @TEntry.CompareKey);
   if ANode<>nil then
@@ -780,8 +771,7 @@ begin
   else
   begin
     E := TEntry.Create;
-    E.ParentClass := AParentClass;
-    E.GlyphIndex := AGlyphIndex;
+    E.GlyphName := AResourceName;
     E.ImageIndex := AddBtnImage(CResolutions[Low(CResolutions)]);
     for I := Low(CResolutions)+1 to High(CResolutions) do
       AddBtnImage(CResolutions[I]);

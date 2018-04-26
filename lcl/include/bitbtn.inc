@@ -318,7 +318,7 @@ begin
         idButton := BitBtnImages[Kind];
         if (idButton >= Low(BitBtnResNames)) and (idButton <= High(BitBtnResNames))
         and (BitBtnResNames[idButton] <> '') then
-          ImageIndex := LCLBtnGlyphs.GetImageIndex(TCustomBitBtn, idButton, BitBtnResNames[idButton])
+          ImageIndex := LCLBtnGlyphs.GetImageIndex(BitBtnResNames[idButton])
         else
           ImageIndex := -1;
         GlyphValid := True;

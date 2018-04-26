@@ -287,8 +287,7 @@ begin
       end else
       begin //Load default images
         CurButton.Images := LCLBtnGlyphs;
-        CurButton.ImageIndex := LCLBtnGlyphs.GetImageIndex(TDBCustomNavigator,
-          Ord(CurButtonType), DBNavButtonResourceName[CurButtonType]);
+        CurButton.ImageIndex := LCLBtnGlyphs.GetImageIndex(DBNavButtonResourceName[CurButtonType]);
       end;
       CurButton.Parent:=Self;
       CurButton.OnClick:=@ButtonClickHandler;
@@ -324,8 +323,7 @@ begin
       end else
       begin //Load default images
         CurFocusableButton.Images := LCLBtnGlyphs;
-        CurFocusableButton.ImageIndex := LCLBtnGlyphs.GetImageIndex(TDBCustomNavigator,
-          Ord(CurButtonType), DBNavButtonResourceName[CurButtonType]);
+        CurFocusableButton.ImageIndex := LCLBtnGlyphs.GetImageIndex(DBNavButtonResourceName[CurButtonType]);
       end;
       CurFocusableButton.TabStop := True;
       CurFocusableButton.Parent:=Self;
