@@ -107,7 +107,6 @@ begin
   Caption := oisChangeParent;
   chShowClasses.Caption := oisShowClasses;
 
-  TIDEImages.AssignImage(ListFilterEdit.Glyph, 'btnfiltercancel');
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 

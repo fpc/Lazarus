@@ -102,7 +102,6 @@ begin
   UseMsgFileCheckBox.Visible:=false;
   MsgFileEdit.Visible:=false;
   MsgFileBrowseButton.Visible:=false;
-  TIDEImages.AssignImage(editMsgFilter.Glyph, 'btnfiltercancel');
 end;
 
 destructor TCompilerMessagesOptionsFrame.Destroy;

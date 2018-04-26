@@ -548,7 +548,6 @@ end;
 
 procedure TProjectInspectorForm.FormCreate(Sender: TObject);
 begin
-  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
   if OPMInterface <> nil then
     OPMInterface.OnPackageListAvailable := @DoOnPackageListAvailable;
 end;

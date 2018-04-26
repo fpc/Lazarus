@@ -4348,7 +4348,6 @@ begin
   ComponentPanel.Constraints.MinHeight := 8;
   ComponentPanel.Visible := FShowComponentTree;
   CompFilterEdit.FilteredTreeview := ComponentTree;
-  TIDEImages.AssignImage(CompFilterEdit.Glyph, 'btnfiltercancel');
 
   InfoPanel := TPanel.Create(Self);
   with InfoPanel do
@@ -4410,7 +4409,6 @@ begin
     OnAfterFilter := @PropFilterEditAfterFilter;
     OnResize := @PropFilterEditResize;
   end;
-  TIDEImages.AssignImage(PropFilterEdit.Glyph, 'btnfiltercancel');
 
   CreateNoteBook;
   // TabOrder has no effect. TAB key is handled by TObjectInspectorDlg.KeyDown().

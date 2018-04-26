@@ -112,7 +112,6 @@ begin
     end;
   end;
   FilterEdit.OnAfterFilter := @SelectFirstVisible;
-  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
   UpdateIssueList;
 end;
 

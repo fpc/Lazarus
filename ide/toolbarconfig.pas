@@ -178,7 +178,6 @@ begin
   TIDEImages.AssignImage(btnMoveUp.Glyph, 'arrow__darkgreen_up');
   TIDEImages.AssignImage(btnMoveDown.Glyph, 'arrow__darkgreen_down');
   //TIDEImages.AssignImage(btnAddDivider.Glyph, 'menu_divider16');  // uncomment if 'menu_divider16' exists (currently not)
-  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 
   btnAddDivider.Caption := '---';
   btnAdd.Hint       := lisCoolBarAddSelected;

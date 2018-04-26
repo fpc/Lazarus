@@ -96,7 +96,6 @@ begin
   inherited Create(TheOwner);
   Caption:=lisProjAddNewRequirement;
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
-  TIDEImages.AssignImage(DependPkgNameFilter.Glyph, 'btnfiltercancel');
 
   DependPkgNameLabel.Caption:=lisProjAddPackageName;
   DependPkgTypeLabel.Caption:=lisProjAddPackageType;

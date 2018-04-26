@@ -65,7 +65,6 @@ type
     EditorsPanel: TScrollBox;
     FilterEdit: TTreeFilterEdit;
     SettingsPanel: TPanel;
-    procedure FormCreate(Sender: TObject);
     procedure UseBuildModeCheckBoxChange(Sender: TObject);
     procedure BuildModeComboBoxSelect(Sender: TObject);
     procedure BuildModeManageButtonClick(Sender: TObject);
@@ -235,11 +234,6 @@ procedure TIDEOptionsDialog.UseBuildModeCheckBoxChange(Sender: TObject);
 begin
   EnvironmentOptions.UseBuildModes:=(Sender as TCheckBox).Checked;
   UpdateBuildModeButtons;
-end;
-
-procedure TIDEOptionsDialog.FormCreate(Sender: TObject);
-begin
-  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 end;
 
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);

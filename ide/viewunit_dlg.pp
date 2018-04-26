@@ -323,7 +323,6 @@ begin
   ButtonPanel.CancelButton.Caption:=lisCancel;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
   TIDEImages.AssignImage(SortAlphabeticallySpeedButton.Glyph, 'pkg_sortalphabetically');
-  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 end;
 
 procedure TViewUnitDialog.FormDestroy(Sender: TObject);

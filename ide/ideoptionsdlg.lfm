@@ -10,7 +10,6 @@ object IDEOptionsDialog: TIDEOptionsDialog
   ClientWidth = 800
   Constraints.MinHeight = 350
   Constraints.MinWidth = 500
-  OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'
@@ -20,8 +19,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 34
-    Top = 460
+    Height = 33
+    Top = 461
     Width = 788
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -41,7 +40,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   end
   object CatTVSplitter: TSplitter
     Left = 255
-    Height = 460
+    Height = 461
     Top = 0
     Width = 4
   end
@@ -49,12 +48,12 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 460
+    Height = 461
     Top = 0
     Width = 255
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 460
+    ClientHeight = 461
     ClientWidth = 255
     Constraints.MinWidth = 150
     TabOrder = 2
@@ -66,7 +65,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = SettingsPanel
       Left = 6
-      Height = 405
+      Height = 406
       Top = 35
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -100,7 +99,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     object SettingsPanel: TPanel
       Left = 0
       Height = 20
-      Top = 440
+      Top = 441
       Width = 255
       Align = alBottom
       AutoSize = True
@@ -178,7 +177,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 259
-    Height = 420
+    Height = 421
     Top = 40
     Width = 535
     HorzScrollBar.Page = 1

@@ -188,7 +188,6 @@ begin
   EditButton.Enabled:=false;
   ClearButton.Enabled:=false;
   fModified:=False;
-  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 end;
 
 destructor TEditorKeymappingOptionsFrame.Destroy;

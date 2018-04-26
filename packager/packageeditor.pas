@@ -1453,7 +1453,6 @@ begin
   SetupComponents;
   SortAlphabetically := EnvironmentOptions.PackageEditorSortAlphabetically;
   ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;
-  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
 end;
 
 procedure TPackageEditorForm.FormDestroy(Sender: TObject);

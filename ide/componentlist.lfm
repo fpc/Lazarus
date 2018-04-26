@@ -9,10 +9,9 @@ object ComponentListForm: TComponentListForm
   KeyPreview = True
   OnActivate = FormActivate
   OnClose = FormClose
-  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object PageControl: TPageControl
     Left = 0
     Height = 397
@@ -44,7 +43,6 @@ object ComponentListForm: TComponentListForm
           Top = 2
           Width = 288
           Align = alClient
-          DefaultItemHeight = 24
           Images = imListPalette
           Indent = 25
           ReadOnly = True
@@ -82,7 +80,6 @@ object ComponentListForm: TComponentListForm
           Top = 5
           Width = 282
           Align = alClient
-          DefaultItemHeight = 24
           Images = imListPalette
           PopupMenu = pmCollapseExpand
           ReadOnly = True
@@ -119,7 +116,6 @@ object ComponentListForm: TComponentListForm
           Top = 5
           Width = 282
           Align = alClient
-          DefaultItemHeight = 24
           Images = imListPalette
           Indent = 20
           PopupMenu = pmCollapseExpand

@@ -68,7 +68,6 @@ type
     TreeFilterEd: TTreeFilterEdit;
     procedure chbKeepOpenChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ListTreeSelectionChanged(Sender: TObject);
     procedure miCollapseAllClick(Sender: TObject);
@@ -236,11 +235,6 @@ procedure TComponentListForm.FormActivate(Sender: TObject);
 begin
   if Assigned(IDEComponentPalette) and (IDEComponentPalette.ChangeStamp<>PrevChangeStamp) then
     UpdateComponents;
-end;
-
-procedure TComponentListForm.FormCreate(Sender: TObject);
-begin
-  TIDEImages.AssignImage(TreeFilterEd.Glyph, 'btnfiltercancel');
 end;
 
 procedure TComponentListForm.ClearSelection;
