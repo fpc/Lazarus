@@ -134,7 +134,7 @@ type
 
 // Utility WS functions
 
-function EmbedInScrollView(AView: NSView): TCocoaScrollView;
+function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaScrollView;
 
 implementation
 
@@ -146,7 +146,7 @@ var
 
 {$I mackeycodes.inc}
 
-function EmbedInScrollView(AView: NSView): TCocoaScrollView;
+function EmbedInScrollView(AView: NSView; AReleaseView: Boolean): TCocoaScrollView;
 var
   r: TRect;
   p: NSView;
@@ -160,6 +160,7 @@ begin
   Result.lclSetFrame(r);
   Result.setHidden(AView.isHidden);
   Result.setDocumentView(AView);
+  if AReleaseView then AView.release;
   AView.setHidden(false);
   SetViewDefaults(Result);
 end;
