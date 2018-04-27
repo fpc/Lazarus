@@ -62,7 +62,12 @@ type
 
   //the scope groups of pascal methods.
   //please note that Destructor is principally a method and thus is not listed here -> you cannot define "procedure Destroy;" and "destructor Destroy" in one class
-  TPascalMethodGroup = (mgMethod, mgConstructor, mgClassConstructor, mgClassDestructor, mgClassOperator);
+  TPascalMethodGroup = (
+    mgMethod,
+    mgConstructor,
+    mgClassConstructor,
+    mgClassDestructor,
+    mgClassOperator);
 
   TPascalMethodHeader = record
     Name, ResultType: string;
@@ -144,7 +149,7 @@ type
     function ExtractProcedureHeader(CursorPos: TCodeXYPosition;
       Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
     function ExtractClassNameOfProcNode(ProcNode: TCodeTreeNode;
-        AddParentClasses: boolean = true): string;
+        AddParentClasses: boolean = true; KeepGeneric: boolean = false): string;
     function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
         ProcSpec: TProcedureSpecifier): boolean;
     function GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
@@ -704,8 +709,9 @@ begin
         ReadNextAtom;
         if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
         begin
-          while not AtomIsChar('>') and (CurPos.EndPos < SrcLen) do
+          repeat
             ReadNextAtom;
+          until AtomIsChar('>') or (CurPos.EndPos > SrcLen);
           ReadNextAtom;
         end;
         IsClassName:=(CurPos.Flag=cafPoint);
@@ -713,6 +719,13 @@ begin
         if IsClassName then begin
           // read class name
           ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
+          if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
+          begin
+            repeat
+              ExtractNextAtom(false,Attr);
+            until AtomIsChar('>') or (CurPos.EndPos > SrcLen);
+            ExtractNextAtom(false,Attr);
+          end;
           // read '.'
           ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
           if ((not IsOperator)
@@ -721,6 +734,13 @@ begin
         end else begin
           // read name
           ExtractNextAtom(not (phpWithoutName in Attr),Attr);
+          if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
+          begin
+            repeat
+              ExtractNextAtom(false,Attr);
+            until AtomIsChar('>') or (CurPos.EndPos > SrcLen);
+            ExtractNextAtom(false,Attr);
+          end;
           break;
         end;
       until false;
@@ -943,7 +963,7 @@ begin
 end;
 
 function TPascalReaderTool.ExtractClassNameOfProcNode(ProcNode: TCodeTreeNode;
-  AddParentClasses: boolean): string;
+  AddParentClasses: boolean; KeepGeneric: boolean): string;
 var
   Part: String;
 begin
@@ -959,10 +979,12 @@ begin
     ReadNextAtom;
     if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then
     begin { delphi generics }
-      Part := Part + GetAtom;
+      if KeepGeneric then
+        Part := Part + GetAtom;
       repeat
         ReadNextAtom;
-        Part := Part + GetAtom;
+        if KeepGeneric then
+          Part := Part + GetAtom;
       until (CurPos.StartPos > SrcLen) or AtomIsChar('>');
       ReadNextAtom;
     end;

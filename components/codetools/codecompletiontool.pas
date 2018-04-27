@@ -73,7 +73,7 @@ interface
 {$DEFINE VerboseCompletionAdds}
 {off $DEFINE VerboseUpdateProcBodySignatures}
 {off $DEFINE VerboseCompleteMethod}
-{off $DEFINE VerboseCreateMissingClassProcBodies}
+{$DEFINE VerboseCreateMissingClassProcBodies}
 {off $DEFINE VerboseCompleteLocalVarAssign}
 {off $DEFINE VerboseCompleteEventAssign}
 {off $DEFINE EnableCodeCompleteTemplates}
@@ -8679,6 +8679,14 @@ procedure TCodeCompletionCodeTool.GuessProcDefBodyMapping(ProcDefNodes,
   end;
 
 begin
+  {$IFDEF VerboseUpdateProcBodySignatures}
+  debugln(['TCodeCompletionCodeTool.GuessProcDefBodyMapping',
+    ' ProcDefNodes=',ProcDefNodes.Count,
+    ' ProcBodyNodes=',ProcBodyNodes.Count,
+    ' MapByNameOnly=',MapByNameOnly,
+    ' MapLastOne=',MapLastOne
+    ]);
+  {$ENDIF}
   ClearNodeExtData(ProcBodyNodes);
   ClearNodeExtData(ProcDefNodes);
   MapBodiesAndDefsByNameAndParams; // first: map all exact matches between bodies and defs
@@ -8722,7 +8730,7 @@ begin
   TypeSectionNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
   Result:=GatherProcNodes(TypeSectionNode,
                       [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-                       ExtractClassName(ClassNode,true,true,Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]));
+                       ExtractClassName(ClassNode,true,true,false));
 end;
 
 function TCodeCompletionCodeTool.CreateMissingClassProcBodies(
@@ -9026,11 +9034,13 @@ begin
     ProcBodyNodes:=GatherClassProcBodies(CodeCompleteClassNode);
 
     {$IFDEF VerboseCreateMissingClassProcBodies}
+    debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ClassProcs=',ClassProcs.Count]);
     AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
       DebugLn(' Gathered ProcDef ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;
+    debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies ProcBodyNodes=',ProcBodyNodes.Count]);
     AnAVLNode:=ProcBodyNodes.FindLowest;
     while AnAVLNode<>nil do begin
       DebugLn(' Gathered ProcBody ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
