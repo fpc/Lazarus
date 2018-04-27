@@ -36,6 +36,7 @@ type
     procedure TestMethodJump_IntfToImplSingleProcWrongParam;
     procedure TestMethodJump_SingleMethod;
     procedure TestMethodJump_MultiMethodWrongName;
+    procedure TestMethodJump_DelphiGenericClass;
     procedure TestMethodJump_DelphiGenericMethod;
   end;
 
@@ -87,22 +88,17 @@ begin
   if not CodeToolBoss.JumpToMethod(Code,FromPos.X,FromPos.Y,NewCode, NewX, NewY,
     NewTopLine, BlockTopLine, BlockBottomLine, RevertableJump) then begin
     WriteSource(CodeXYPosition(FromPos.X,FromPos.Y,Code));
-    Fail('CodeToolBoss.JumpToMethod failed, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X));
+    Fail('CodeToolBoss.JumpToMethod failed, From {'+FromMarker+'} line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X));
   end;
   if NewCode<>Code then begin
     WriteSource(CodeXYPosition(FromPos.X,FromPos.Y,Code));
-    AssertEquals('JumpToMethod jumped to wrong file, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
+    AssertEquals('JumpToMethod jumped to wrong file, From {'+FromMarker+'} line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
       Code.Filename,NewCode.Filename);
   end;
-  if NewY<>ToPos.Y then begin
+  if (NewY<>ToPos.Y) or (NewX<>ToPos.X) then begin
     WriteSource(CodeXYPosition(ToPos.X,ToPos.Y,Code));
-    AssertEquals('JumpToMethod jumped to wrong line, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
-      ToPos.Y,NewY);
-  end;
-  if NewX<>ToPos.X then begin
-    WriteSource(CodeXYPosition(ToPos.X,ToPos.Y,Code));
-    AssertEquals('JumpToMethod jumped to wrong line, From line='+IntToStr(FromPos.Y)+' col='+IntToStr(FromPos.X),
-      ToPos.X,NewX);
+    Fail('JumpToMethod jumped to wrong line,col. From {'+FromMarker+'} '+dbgs(FromPos)
+      +', expected {'+ToMarker+'} '+dbgs(ToPos)+', actual '+dbgs(Point(NewX,NewY)));
   end;
 end;
 
@@ -250,6 +246,30 @@ begin
   'end;',
   'end.']);
   TestJumpToMethod('a',false,'b',false,2);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_DelphiGenericClass;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode delphi}{$H+}',
+  'interface',
+  'type',
+  '  TBird<T> = class',
+  '    procedure {a}DoIt(s: T);',
+  '    procedure {b}DoIt;',
+  '  end;',
+  'implementation',
+  'procedure TBird<T>.{c}Do2It(s: T);',
+  'begin',
+  'end;',
+  'procedure TBird<T>.DoIt;',
+  'begin',
+  '{d}',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'c',false,2);
+  TestJumpToMethod('b',false,'d',true,0);
 end;
 
 procedure TTestMethodJumpTool.TestMethodJump_DelphiGenericMethod;
