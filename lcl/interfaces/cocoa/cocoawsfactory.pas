@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Controls, ComCtrls, StdCtrls, Spin, PairSplitter,
-  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
+  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Calendar,
   WSLCLClasses,
   CocoaWSCommon,
   CocoaWSButtons,
@@ -17,7 +17,8 @@ uses
   CocoaWSComCtrls,
   CocoaWSDialogs,
   CocoaWSSpin,
-  CocoaWSCheckLst;
+  CocoaWSCheckLst,
+  CocoaWSDatePicker;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
@@ -212,7 +213,8 @@ end;
 // calendar
 function RegisterCustomCalendar: Boolean; alias : 'WSRegisterCustomCalendar';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomCalendar, TCocoaWSCustomCalendar);
+  Result := True;
 end;
 
 // dialogs

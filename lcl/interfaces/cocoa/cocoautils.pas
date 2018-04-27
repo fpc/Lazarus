@@ -97,6 +97,9 @@ function GetMacOSXVersion: Integer;
 
 procedure NSResponderHotKeys(trg: NSResponder; event: NSEvent; var handled: Boolean);
 
+function DateTimeToNSDate(const aDateTime : TDateTime): NSDate;
+function NSDateToDateTime(const aDateTime: NSDate): TDateTime;
+
 implementation
 
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
@@ -725,6 +728,27 @@ begin
     end;
   end;
 end;
+
+function DateTimeToNSDate(const aDateTime : TDateTime): NSDate;
+var
+  ti : NSTimeInterval;
+  d  : NSDate;
+begin
+  ti := (aDateTime - EncodeDate(2001, 1, 1)) * SecsPerDay;
+  d  := NSDate.alloc.init;
+  Result:= d.dateWithTimeIntervalSinceReferenceDate(ti);
+end;
+
+function NSDateToDateTime(const aDateTime: NSDate): TDateTime;
+begin
+  if aDateTime = nil then
+  begin
+    Result:= 0.0;
+    Exit;
+  end;
+  Result:= aDateTime.timeIntervalSince1970 / SecsPerDay + EncodeDate(1970, 1, 1);
+end;
+
 
 end.
 
