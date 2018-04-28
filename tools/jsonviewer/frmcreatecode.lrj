@@ -1,0 +1,15 @@
+{"version":1,"strings":[
+{"hash":70825109,"name":"tcreatecodeform.caption","sourcebytes":[67,114,101,97,116,101,32,112,97,115,99,97,108,32,99,111,100,101],"value":"Create pascal code"},
+{"hash":108725763,"name":"tcreatecodeform.tsoptions.caption","sourcebytes":[79,112,116,105,111,110,115],"value":"Options"},
+{"hash":315429,"name":"tcreatecodeform.lfecode.caption","sourcebytes":[70,105,108,101],"value":"File"},
+{"hash":84192340,"name":"tcreatecodeform.lseindent.caption","sourcebytes":[73,110,100,101,110,116],"value":"Indent"},
+{"hash":6757477,"name":"tcreatecodeform.leunitname.caption","sourcebytes":[85,110,105,116,32,110,97,109,101],"value":"Unit name"},
+{"hash":28802920,"name":"tcreatecodeform.leunitname1.caption","sourcebytes":[70,105,101,108,100,32,80,114,101,102,105,120],"value":"Field Prefix"},
+{"hash":95750072,"name":"tcreatecodeform.lepropertytypesuffix.caption","sourcebytes":[80,114,111,112,101,114,116,121,32,116,121,112,101,32,115,117,102,102,105,120],"value":"Property type suffix"},
+{"hash":244063459,"name":"tcreatecodeform.leconstructorargslabel1.caption","sourcebytes":[67,111,110,115,116,114,117,99,116,111,114,32,97,114,103,117,109,101,110,116,115],"value":"Constructor arguments"},
+{"hash":161151955,"name":"tcreatecodeform.eextraunitnames.texthint","sourcebytes":[85,110,105,116,32,110,97,109,101,115,44,32,115,101,112,97,114,97,116,101,100,32,98,121,32,99,111,109,109,97,115],"value":"Unit names, separated by commas"},
+{"hash":147652499,"name":"tcreatecodeform.lextraunitnames.caption","sourcebytes":[69,120,116,114,97,32,117,110,105,116,115,32,105,110,32,117,115,101,115],"value":"Extra units in uses"},
+{"hash":110238403,"name":"tcreatecodeform.lparentname.caption","sourcebytes":[79,98,106,101,99,116,32,80,97,114,101,110,116,32,99,108,97,115,115],"value":"Object Parent class"},
+{"hash":13910547,"name":"tcreatecodeform.cgoptions.caption","sourcebytes":[79,116,104,101,114,32,111,112,116,105,111,110,115],"value":"Other options"},
+{"hash":126668695,"name":"tcreatecodeform.tscode.caption","sourcebytes":[80,114,101,118,105,101,119],"value":"Preview"}
+]}

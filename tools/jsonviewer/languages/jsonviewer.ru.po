@@ -37,15 +37,11 @@ msgid "JSON document modified"
 msgstr "Документ JSON был изменён"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy
-#| msgid ""
-#| "The JSON data was changed but not saved.\n"
-#| "What do want to do ?\n"
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
-"Данные JSON были изменены, но не сохранены.\n"
+"Данные JSON в \"%s\" были изменены, но не сохранены.\n"
 "Что следует сделать?\n"
 
 #: msgjsonviewer.sduplicatemembername
@@ -54,7 +50,7 @@ msgstr "Элемент с именем \"%s\" уже имеется."
 
 #: msgjsonviewer.sefilenameneeded
 msgid "Filename needed for generated code"
-msgstr ""
+msgstr "Для генерируемого кода требуется имя файла"
 
 #: msgjsonviewer.selement
 msgid "Element nr. %d"
@@ -103,59 +99,59 @@ msgstr "Сохранить изменения"
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"
-msgstr ""
+msgstr "Создание кода на Паскале"
 
 #: tcreatecodeform.cgoptions.caption
 msgid "Other options"
-msgstr ""
+msgstr "Прочие параметры"
 
 #: tcreatecodeform.eextraunitnames.texthint
 msgid "Unit names, separated by commas"
-msgstr ""
+msgstr "Имена модулей, разделённые запятыми"
 
 #: tcreatecodeform.leconstructorargslabel1.caption
 msgid "Constructor arguments"
-msgstr ""
+msgstr "Аргументы конструктора"
 
 #: tcreatecodeform.lepropertytypesuffix.caption
 msgid "Property type suffix"
-msgstr ""
+msgstr "Суффикс типа свойства"
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"
-msgstr ""
+msgstr "Имя модуля"
 
 #: tcreatecodeform.leunitname1.caption
 msgid "Field Prefix"
-msgstr ""
+msgstr "Префикс поля"
 
 #: tcreatecodeform.lextraunitnames.caption
 msgid "Extra units in uses"
-msgstr ""
+msgstr "Дополнительные модули в Uses"
 
 #: tcreatecodeform.lfecode.caption
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: tcreatecodeform.lparentname.caption
 msgid "Object Parent class"
-msgstr ""
+msgstr "Класс предка объекта"
 
 #: tcreatecodeform.lseindent.caption
 msgid "Indent"
-msgstr ""
+msgstr "Отступ"
 
 #: tcreatecodeform.tscode.caption
 msgid "Preview"
-msgstr ""
+msgstr "Предварительный просмотр"
 
 #: tcreatecodeform.tsoptions.caption
 msgid "Options"
-msgstr ""
+msgstr "Параметры"
 
 #: tmainform.aclose.caption
 msgid "&Close"
-msgstr ""
+msgstr "&Закрыть"
 
 #: tmainform.acopy.caption
 msgid "&Copy"
@@ -168,7 +164,7 @@ msgstr "Копировать выбранный элемент в буфер о�
 #: tmainform.acreatecode.caption
 msgctxt "tmainform.acreatecode.caption"
 msgid "Create pascal code"
-msgstr ""
+msgstr "Создать код на Паскале"
 
 #: tmainform.acut.caption
 msgid "C&ut"

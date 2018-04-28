@@ -38,7 +38,7 @@ msgid "JSON document modified"
 msgstr "JSON dokumente yra pakitimų"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy
+#, fuzzy,badformat
 #| msgid ""
 #| "The JSON data was changed but not saved.\n"
 #| "What do want to do ?\n"

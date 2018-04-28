@@ -214,7 +214,6 @@ type
     procedure MISortMembersClick(Sender: TObject);
     procedure MIStrictClick(Sender: TObject);
     procedure PCJSONCloseTabClicked(Sender: TObject);
-    procedure PCJSONGetImageIndex(Sender: TObject; TabIndex: Integer; var ImageIndex: Integer);
     procedure PSMainStoredValues0Restore(Sender: TStoredValue;
       var Value: TStoredType);
     procedure PSMainStoredValues1Restore(Sender: TStoredValue;
@@ -379,11 +378,6 @@ procedure TMainForm.PCJSONCloseTabClicked(Sender: TObject);
 begin
   if CheckClose(Sender as TJSONTab) then
     Application.ReleaseComponent(Sender as TJSONTab);
-end;
-
-procedure TMainForm.PCJSONGetImageIndex(Sender: TObject; TabIndex: Integer; var ImageIndex: Integer);
-begin
-
 end;
 
 procedure TMainForm.PSMainStoredValues0Restore(Sender: TStoredValue;
