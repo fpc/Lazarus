@@ -3786,11 +3786,33 @@ end;
 
 procedure LCLWindowExtension.lclSetFrame(const r: TRect);
 var
-  ns: NSRect;
-  h:integer;
+  ns : NSRect;
+  h  : integer;
+  i  : integer;
+  p  : NSPoint;
+  sc : NSScreen;
+  srect : NSRect;
+  fnd: Boolean;
 begin
-  if Assigned(screen) then
-    LCLToNSRect(r, screen.frame.size.height, ns)
+  fnd := Assigned(screen);
+  if fnd then
+    srect := screen.frame
+  else
+  begin
+    // the window doesn't have screen assigned.
+    // figuring out the placement based of the Left/Top of the rect
+    // and NSrects;
+    p.x:=r.Left;
+    p.y:=r.Top;
+    for sc in NSScreen.screens do begin
+      srect := sc.frame;
+      fnd := NSPointInRect(p, srect);
+      if fnd then Break;
+    end;
+  end;
+
+  if fnd then
+    LCLToNSRect(r, srect.size.height, ns)
   else
     ns := RectToNSRect(r);
 
