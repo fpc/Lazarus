@@ -38,8 +38,12 @@ msgid "JSON document modified"
 msgstr "JSON文件已修改"
 
 #: msgjsonviewer.sdocumentmodifiedaction
+#, fuzzy
+#| msgid ""
+#| "The JSON data was changed but not saved.\n"
+#| "What do want to do ?\n"
 msgid ""
-"The JSON data was changed but not saved.\n"
+"The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
 "JSON数据被更改 但是没有保存.\n"
@@ -92,6 +96,10 @@ msgstr "对象(%d members成员"
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
 msgstr "保存更改"
+
+#: tmainform.aclose.caption
+msgid "&Close"
+msgstr ""
 
 #: tmainform.acopy.caption
 msgid "&Copy"

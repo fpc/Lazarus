@@ -37,8 +37,12 @@ msgid "JSON document modified"
 msgstr "JSON dokumentum módosítva"
 
 #: msgjsonviewer.sdocumentmodifiedaction
+#, fuzzy
+#| msgid ""
+#| "The JSON data was changed but not saved.\n"
+#| "What do want to do ?\n"
 msgid ""
-"The JSON data was changed but not saved.\n"
+"The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
 "A JSON adatok megváltoztak, de nincsenek mentve.\n"
@@ -91,6 +95,10 @@ msgstr "Objektum (%d tag)"
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
 msgstr "Változások mentése"
+
+#: tmainform.aclose.caption
+msgid "&Close"
+msgstr ""
 
 #: tmainform.acopy.caption
 msgid "&Copy"

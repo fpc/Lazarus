@@ -38,8 +38,12 @@ msgid "JSON document modified"
 msgstr "JSON dokument upraven"
 
 #: msgjsonviewer.sdocumentmodifiedaction
+#, fuzzy
+#| msgid ""
+#| "The JSON data was changed but not saved.\n"
+#| "What do want to do ?\n"
 msgid ""
-"The JSON data was changed but not saved.\n"
+"The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
 "Data JSONu byla upravena, ale ne uložena.\n"
@@ -92,6 +96,10 @@ msgstr "Objekt (%d prvků)"
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
 msgstr "Uložit změny"
+
+#: tmainform.aclose.caption
+msgid "&Close"
+msgstr ""
 
 #: tmainform.acopy.caption
 msgid "&Copy"

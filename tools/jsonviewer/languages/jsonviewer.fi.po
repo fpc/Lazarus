@@ -27,8 +27,12 @@ msgid "JSON document modified"
 msgstr "JSON dokumenttia muokattu"
 
 #: msgjsonviewer.sdocumentmodifiedaction
+#, fuzzy
+#| msgid ""
+#| "The JSON data was changed but not saved.\n"
+#| "What do want to do ?\n"
 msgid ""
-"The JSON data was changed but not saved.\n"
+"The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
 "JSON data on muuttunut mutta ei tallennettu.\n"
@@ -81,6 +85,10 @@ msgstr "Olio (%d jäsentä)"
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
 msgstr "Tallenna muutokset"
+
+#: tmainform.aclose.caption
+msgid "&Close"
+msgstr ""
 
 #: tmainform.acopy.caption
 msgid "&Copy"

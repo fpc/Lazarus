@@ -28,7 +28,7 @@ msgstr ""
 
 #: msgjsonviewer.sdocumentmodifiedaction
 msgid ""
-"The JSON data was changed but not saved.\n"
+"The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
 
@@ -78,6 +78,10 @@ msgstr ""
 
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
+msgstr ""
+
+#: tmainform.aclose.caption
+msgid "&Close"
 msgstr ""
 
 #: tmainform.acopy.caption

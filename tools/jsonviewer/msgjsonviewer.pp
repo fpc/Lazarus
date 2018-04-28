@@ -16,7 +16,7 @@ Resourcestring
   SNewMemberName    = 'Enter a name for the new member (type: %s)';
   SElement          = 'Element nr. %d';
   SDocumentModified = 'JSON document modified';
-  SDocumentModifiedAction = 'The JSON data was changed but not saved.'+slinebreak+
+  SDocumentModifiedAction = 'The JSON data in "%s" was changed but not saved.'+slinebreak+
                              'What do want to do ?';
   SDuplicateMemberName = 'Duplicate member name "%s".';
   SErrinvalidValue = 'Invalid value or wrong type: "%s"';

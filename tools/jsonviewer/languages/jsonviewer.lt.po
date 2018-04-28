@@ -38,8 +38,12 @@ msgid "JSON document modified"
 msgstr "JSON dokumente yra pakitimų"
 
 #: msgjsonviewer.sdocumentmodifiedaction
+#, fuzzy
+#| msgid ""
+#| "The JSON data was changed but not saved.\n"
+#| "What do want to do ?\n"
 msgid ""
-"The JSON data was changed but not saved.\n"
+"The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
 "JSON duomenyse yra pakitimų, kurie nėra įrašyti.\n"
@@ -92,6 +96,10 @@ msgstr "Objektas (narių: %d)"
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
 msgstr "Įrašyti pakeitimus"
+
+#: tmainform.aclose.caption
+msgid "&Close"
+msgstr ""
 
 #: tmainform.acopy.caption
 msgid "&Copy"
