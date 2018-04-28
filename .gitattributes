@@ -8294,9 +8294,9 @@ lcl/images/btncalculator_200.png -text svneol=unset#image/png
 lcl/images/btncalendar.png -text svneol=unset#image/png
 lcl/images/btncalendar_150.png -text svneol=unset#image/png
 lcl/images/btncalendar_200.png -text svneol=unset#image/png
-lcl/images/btnfiltercancel.png -text
-lcl/images/btnfiltercancel_150.png -text
-lcl/images/btnfiltercancel_200.png -text
+lcl/images/btnfiltercancel.png -text svneol=unset#image/png
+lcl/images/btnfiltercancel_150.png -text svneol=unset#image/png
+lcl/images/btnfiltercancel_200.png -text svneol=unset#image/png
 lcl/images/btnseldir.png -text svneol=unset#image/png
 lcl/images/btnseldir_150.png -text svneol=unset#image/png
 lcl/images/btnseldir_200.png -text svneol=unset#image/png
@@ -8312,7 +8312,9 @@ lcl/images/buttons/btn_abort_200.png -text svneol=unset#image/png
 lcl/images/buttons/btn_all.png -text svneol=unset#image/png
 lcl/images/buttons/btn_all_150.png -text svneol=unset#image/png
 lcl/images/buttons/btn_all_200.png -text svneol=unset#image/png
-lcl/images/buttons/btn_arrowright.png -text
+lcl/images/buttons/btn_arrowright.png -text svneol=unset#image/png
+lcl/images/buttons/btn_arrowright_150.png -text svneol=unset#image/png
+lcl/images/buttons/btn_arrowright_200.png -text svneol=unset#image/png
 lcl/images/buttons/btn_cancel.png -text svneol=unset#image/png
 lcl/images/buttons/btn_cancel_150.png -text svneol=unset#image/png
 lcl/images/buttons/btn_cancel_200.png -text svneol=unset#image/png
@@ -8414,10 +8416,10 @@ lcl/images/lcl_edbtnimg_list.txt svneol=native#text/plain
 lcl/images/lcl_grid_images.bat svneol=native#text/plain
 lcl/images/lcl_grid_images.sh svneol=native#text/plain
 lcl/images/lcl_grid_images_list.txt svneol=native#text/plain
-lcl/images/sortasc.png -text
+lcl/images/sortasc.png -text svneol=unset#image/png
 lcl/images/sortasc_150.png -text svneol=unset#image/png
 lcl/images/sortasc_200.png -text svneol=unset#image/png
-lcl/images/sortdesc.png -text
+lcl/images/sortdesc.png -text svneol=unset#image/png
 lcl/images/sortdesc_150.png -text svneol=unset#image/png
 lcl/images/sortdesc_200.png -text svneol=unset#image/png
 lcl/images/wince/build.bat svneol=native#text/x-msdos-program

@@ -1,2 +1,6 @@
 sortasc.png
+sortasc_150.png
+sortasc_200.png
 sortdesc.png
+sortdesc_150.png
+sortdesc_200.png

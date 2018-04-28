@@ -29,3 +29,5 @@ btn_yes.png
 btn_yes_150.png
 btn_yes_200.png
 btn_arrowright.png
+btn_arrowright_150.png
+btn_arrowright_200.png
