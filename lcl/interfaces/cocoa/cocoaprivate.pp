@@ -5515,12 +5515,16 @@ begin
 end;
 
 function TCocoaSpinEdit.fittingSize: NSSize;
+var
+  fr : NSRect;
 begin
   Result.width := -1;
+  fr:=frame;
   sizeToFit();
   Result.height := bounds.size.height;
+  if not NSEqualRects(frame, fr) then setFrame(fr); // prevent changes of frame after sizeToFit();
   {$IFDEF COCOA_SPIN_DEBUG}
-  WriteLn('[TCocoaSpinEdit.fittingSize] width=', Result.width, ' height=', Result.height);
+  WriteLn('[TCocoaSpinEdit.fittingSize] width=', Result.width:0:0, ' height=', Result.height:0:0);
   {$ENDIF}
 end;
 
