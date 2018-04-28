@@ -53,6 +53,10 @@ msgstr ""
 msgid "Duplicate member name \"%s\"."
 msgstr "复制成员名\"%s\"."
 
+#: msgjsonviewer.sefilenameneeded
+msgid "Filename needed for generated code"
+msgstr ""
+
 #: msgjsonviewer.selement
 msgid "Element nr. %d"
 msgstr "Element nr. %d"
@@ -97,6 +101,59 @@ msgstr "对象(%d members成员"
 msgid "Save the changes"
 msgstr "保存更改"
 
+#: tcreatecodeform.caption
+msgctxt "tcreatecodeform.caption"
+msgid "Create pascal code"
+msgstr ""
+
+#: tcreatecodeform.cgoptions.caption
+msgid "Other options"
+msgstr ""
+
+#: tcreatecodeform.eextraunitnames.texthint
+msgid "Unit names, separated by commas"
+msgstr ""
+
+#: tcreatecodeform.leconstructorargslabel1.caption
+msgid "Constructor arguments"
+msgstr ""
+
+#: tcreatecodeform.lepropertytypesuffix.caption
+msgid "Property type suffix"
+msgstr ""
+
+#: tcreatecodeform.leunitname.caption
+msgid "Unit name"
+msgstr ""
+
+#: tcreatecodeform.leunitname1.caption
+msgid "Field Prefix"
+msgstr ""
+
+#: tcreatecodeform.lextraunitnames.caption
+msgid "Extra units in uses"
+msgstr ""
+
+#: tcreatecodeform.lfecode.caption
+msgid "File"
+msgstr ""
+
+#: tcreatecodeform.lparentname.caption
+msgid "Object Parent class"
+msgstr ""
+
+#: tcreatecodeform.lseindent.caption
+msgid "Indent"
+msgstr ""
+
+#: tcreatecodeform.tscode.caption
+msgid "Preview"
+msgstr ""
+
+#: tcreatecodeform.tsoptions.caption
+msgid "Options"
+msgstr ""
+
 #: tmainform.aclose.caption
 msgid "&Close"
 msgstr ""
@@ -108,6 +165,11 @@ msgstr "复制(&C)"
 #: tmainform.acopy.hint
 msgid "Copy selected node to clipboard as JSON"
 msgstr "复制选择的节点到剪贴板作为JSON"
+
+#: tmainform.acreatecode.caption
+msgctxt "tmainform.acreatecode.caption"
+msgid "Create pascal code"
+msgstr ""
 
 #: tmainform.acut.caption
 msgid "C&ut"

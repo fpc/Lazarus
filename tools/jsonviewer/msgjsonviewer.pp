@@ -23,6 +23,7 @@ Resourcestring
   SErrNoValidJSONClipBoard = 'The clipboard does not contain valid JSON data';
   SErrCreatingConfigDir = 'Could not create the configuration files directory "%s"';
   SNoMoreMatches = 'No nodes match the criterium';
+  SEFileNameNeeded = 'Filename needed for generated code';
 
   SDiscard = 'Discard changes';
   SSaveData = 'Save the changes';

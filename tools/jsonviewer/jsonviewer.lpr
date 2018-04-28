@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, frmmain, frmNewBoolean, frmnewinteger, frmnewstring, msgjsonviewer
+  Forms, frmmain, frmNewBoolean, frmnewinteger, frmnewstring, msgjsonviewer, frmcreatecode
   { you can add units after this };
 
 {$R *.res}

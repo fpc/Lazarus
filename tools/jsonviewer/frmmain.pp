@@ -35,15 +35,15 @@ type
 
   { TJSONTab }
   TViewerOptions = Class(TObject)
-    {$IF FPC_FULLVERSION>=30002}
-        FOptions : TJSONOptions;
-    {$ELSE}
-        FStrict,
-    {$ENDIF}
-        FQuoteStrings,
-        FSortObjectMembers,
-        FCompact,
-        FNewObject : Boolean;
+  {$IF FPC_FULLVERSION>=30002}
+    FOptions : TJSONOptions;
+  {$ELSE}
+    FStrict,
+  {$ENDIF}
+    FQuoteStrings,
+    FSortObjectMembers,
+    FCompact,
+    FNewObject : Boolean;
   end;
 
   TJSONTab = Class(TTabsheet)
@@ -80,6 +80,7 @@ type
   TMainForm = class(TForm)
     ACopy: TAction;
     AClose: TAction;
+    ACreateCode: TAction;
     AFindNext: TAction;
     AFind: TAction;
     AExpandCurrentContainer: TAction;
@@ -108,6 +109,7 @@ type
     MenuItem12: TMenuItem;
     MenuItem13: TMenuItem;
     MenuItem14: TMenuItem;
+    MIGenCode: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -166,10 +168,13 @@ type
     TBNewNumber: TToolButton;
     TBNewString: TToolButton;
     TBNewArray: TToolButton;
+    ToolButton5: TToolButton;
     procedure ACloseExecute(Sender: TObject);
     procedure ACloseUpdate(Sender: TObject);
     procedure ACopyExecute(Sender: TObject);
     procedure ACopyUpdate(Sender: TObject);
+    procedure ACreateCodeExecute(Sender: TObject);
+    procedure ACreateCodeUpdate(Sender: TObject);
     procedure ACutExecute(Sender: TObject);
     procedure ACutUpdate(Sender: TObject);
     procedure ADeleteValueExecute(Sender: TObject);
@@ -271,7 +276,8 @@ var
 implementation
 
 uses
-  typinfo,msgjsonviewer, lcltype, frmNewBoolean, frmNewINteger, frmNewString, clipbrd;
+  typinfo,  {$IF FPC_FULLVERSION>=30004} frmcreatecode, {$endif}
+msgjsonviewer, lcltype, frmNewBoolean, frmNewINteger, frmNewString, clipbrd;
 
 {$R *.lfm}
 Const
@@ -730,6 +736,18 @@ end;
 procedure TMainForm.ACopyUpdate(Sender: TObject);
 begin
   (Sender as Taction).Enabled:=Assigned(CurrentData);
+end;
+
+procedure TMainForm.ACreateCodeExecute(Sender: TObject);
+begin
+  {$IF FPC_FULLVERSION>=30004}
+  CreateCodeFromJSON(CurrentRoot);
+  {$endif}
+end;
+
+procedure TMainForm.ACreateCodeUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=Assigned(CurrentRoot);
 end;
 
 procedure TMainForm.ACutExecute(Sender: TObject);
@@ -1259,6 +1277,9 @@ begin
   MIAllowTrailingComma.Visible:=False;
   MIAllowComments.Visible:=False;
 {$ENDIF}
+{$IF FPC_FULLVERSION<30004}
+  ACreateCode.Visible:=False;
+{$endif}
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

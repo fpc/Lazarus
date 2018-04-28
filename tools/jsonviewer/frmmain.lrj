@@ -42,6 +42,7 @@
 {"hash":2805828,"name":"tmainform.afind.caption","sourcebytes":[38,70,105,110,100],"value":"&Find"},
 {"hash":127763701,"name":"tmainform.afindnext.caption","sourcebytes":[70,105,110,100,32,38,110,101,120,116,32,111,99,99,117,114,114,101,110,99,101],"value":"Find &next occurrence"},
 {"hash":44709525,"name":"tmainform.aclose.caption","sourcebytes":[38,67,108,111,115,101],"value":"&Close"},
+{"hash":70825109,"name":"tmainform.acreatecode.caption","sourcebytes":[67,114,101,97,116,101,32,112,97,115,99,97,108,32,99,111,100,101],"value":"Create pascal code"},
 {"hash":2805797,"name":"tmainform.mfile.caption","sourcebytes":[38,70,105,108,101],"value":"&File"},
 {"hash":2800388,"name":"tmainform.medit.caption","sourcebytes":[38,69,100,105,116],"value":"&Edit"},
 {"hash":197671907,"name":"tmainform.miinsert.caption","sourcebytes":[38,86,97,108,117,101,115],"value":"&Values"},
