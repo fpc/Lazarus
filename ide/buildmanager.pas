@@ -718,8 +718,9 @@ end;
 
 function TBuildManager.GetProjectUsesAppBundle: Boolean;
 begin
-  Result := (Project1<>nil) and (Project1.RunParameterOptions.GetActiveMode<>nil)
-    and (Project1.RunParameterOptions.GetActiveMode.HostApplicationFilename = '')
+  Result := (Project1<>nil)
+    and ( (Project1.RunParameterOptions.GetActiveMode=nil)
+          or (Project1.RunParameterOptions.GetActiveMode.HostApplicationFilename = ''))
     and (GetTargetOS = 'darwin') and Project1.UseAppBundle;
 end;
 
