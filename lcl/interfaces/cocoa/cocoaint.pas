@@ -198,6 +198,12 @@ procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const 
 procedure NSScrollViewSetScrollInfo(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
 function HandleToNSObject(AHWnd: HWND): id;
 
+
+function CocoaPromptUser(const DialogCaption, DialogMessage: String;
+    DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
+    EscapeResult: Longint;
+    sheetOfWindow: NSWindow = nil): Longint;
+
 implementation
 
 // NSCursor doesn't support any wait cursor, so we need to use a non-native one

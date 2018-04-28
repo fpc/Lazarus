@@ -169,7 +169,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  PromptUser
+  Func:    CocoaPromptUser
   Params:  DialogCaption - Dialog caption
            DialogMessage - Dialog message text
            DialogType    - Type of dialog
@@ -177,18 +177,21 @@ end;
            ButtonCount   - Count of passed buttons
            DefaultIndex  - Index of default button
            EscapeResult  - Result value of escape
+           sheetOfWindow - Shows the prompt as a sheet to the specified NSWindow,
+                           if nil, the prompt is shown as an application modal dialog
   Returns: The result value of pushed button
 
-  Shows modal dialog with the specified caption, message and buttons and prompts
-  user to push one.
+  Shows modal dialog or window sheet with the specified caption, message
+  and buttons and prompts user to push one.
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.PromptUser(const DialogCaption : string;
+function CocoaPromptUser(const DialogCaption : string;
                                      const DialogMessage : string;
                                            DialogType    : LongInt;
                                            Buttons       : PLongInt;
                                            ButtonCount   : LongInt;
                                            DefaultIndex  : LongInt;
-                                           EscapeResult  : LongInt) : LongInt;
+                                           EscapeResult  : LongInt;
+                                           sheetOfWindow : NSWindow) : LongInt;
 {Implements MessageDlg.}
 
 const
@@ -215,13 +218,14 @@ begin
       DbgS(DefaultIndex) + ' EscapeResult: ' + DbgS(EscapeResult));
   {$ENDIF}
   Result := -1;
-  AnAlert :=  NSAlert.alloc.init;
+  AnAlert := NSAlert.alloc.init;
   try
     informativeText := NSStringUtf8(DialogMessage);
     messageText := NSStringUtf8(DialogCaption);
     case DialogType of
       idDialogWarning,
       idDialogError    : anAlert.setAlertStyle(NSCriticalAlertStyle);
+      idDialogInfo     : anAlert.setAlertStyle(NSInformationalAlertStyle);
     end;
 
     try
@@ -263,7 +267,15 @@ begin
         end;
       end;
 
-      result := AnAlert.runModal;
+      if Assigned(sheetOfWindow) then
+      begin
+        anAlert.beginSheetModalForWindow_modalDelegate_didEndSelector_contextInfo(
+          sheetOfWindow, nil, nil, nil
+        );
+        Result := 0;
+      end
+      else
+        Result := AnAlert.runModal;
     finally
       informativeText.release;
       messageText.release;
@@ -276,6 +288,32 @@ begin
   {$IFDEF VerboseLCLIntf}
     DebugLn('TCocoaWidgetSet.PromptUser Result: ' + DbgS(Result));
   {$ENDIF}
+end;  {TCocoaWidgetSet.PromptUser}
+
+{------------------------------------------------------------------------------
+  Method:  PromptUser
+  Params:  DialogCaption - Dialog caption
+           DialogMessage - Dialog message text
+           DialogType    - Type of dialog
+           Buttons       - Pointer to button types
+           ButtonCount   - Count of passed buttons
+           DefaultIndex  - Index of default button
+           EscapeResult  - Result value of escape
+  Returns: The result value of pushed button
+
+  Shows modal dialog with the specified caption, message and buttons and prompts
+  user to push one.
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.PromptUser(const DialogCaption : string;
+                                     const DialogMessage : string;
+                                           DialogType    : LongInt;
+                                           Buttons       : PLongInt;
+                                           ButtonCount   : LongInt;
+                                           DefaultIndex  : LongInt;
+                                           EscapeResult  : LongInt) : LongInt;
+begin
+  Result := CocoaPromptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount,
+    DefaultIndex, EscapeResult);
 end;  {TCocoaWidgetSet.PromptUser}
 
 {------------------------------------------------------------------------------
