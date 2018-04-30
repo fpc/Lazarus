@@ -7032,10 +7032,12 @@ begin
       end;
 
       for i := FRows.Count - 1 downto 0 do
-        FRows[i] := Round(FRows[i] * AYProportion);
+        if FRows[i]>=0 then
+          FRows[i] := Round(FRows[i] * AYProportion);
 
       for i := FCols.Count - 1 downto 0 do
-        FCols[i] := Round(FCols[i] * AXProportion);
+        if FCols[i]>=0 then
+          FCols[i] := Round(FCols[i] * AXProportion);
 
       if DefaultColWidthIsStored then
         DefaultColWidth := Round(DefaultColWidth * AXProportion)
@@ -8954,6 +8956,7 @@ var
 begin
   tmpCanvas := GetWorkingCanvas(Canvas);
   tmpCanvas.Font := Font;
+  tmpCanvas.Font.PixelsPerInch := Font.PixelsPerInch;
   result := tmpCanvas.TextHeight('Fj')+7;
   if tmpCanvas<>Canvas then
     FreeWorkingCanvas(tmpCanvas);
