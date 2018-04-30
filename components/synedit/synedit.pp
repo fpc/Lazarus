@@ -2967,9 +2967,6 @@ procedure TCustomSynEdit.Loaded;
 begin
   inherited Loaded;
   UpdateCaret;
-
-  if not (csDesigning in ComponentState) then
-    DoubleBuffered := DoubleBuffered or (GetSystemMetrics(SM_REMOTESESSION)=0); // force DoubleBuffered if not used in remote session
 end;
 
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
@@ -8202,6 +8199,8 @@ end;
 
 procedure TCustomSynEdit.CreateWnd;
 begin
+  if not (csDesigning in ComponentState) then
+    DoubleBuffered := DoubleBuffered or (GetSystemMetrics(SM_REMOTESESSION)=0); // force DoubleBuffered if not used in remote session
   inherited;
   if (eoDropFiles in fOptions) and not (csDesigning in ComponentState) then
     // ToDo DragAcceptFiles
