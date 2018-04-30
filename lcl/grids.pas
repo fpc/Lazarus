@@ -464,6 +464,7 @@ type
     procedure SetMultiLine(const AValue: Boolean);
     procedure SetPrefixOption(const AValue: TPrefixOption);
     procedure WriteCaption(Writer: TWriter);
+    function GetImageIndex: TImageIndex;
 
     property IsDefaultFont: boolean read FIsDefaultTitleFont;
   protected
@@ -487,7 +488,7 @@ type
     property Caption: TCaption read GetCaption write SetCaption stored IsCaptionStored;
     property Color: TColor read GetColor write SetColor stored IsColorStored;
     property Font: TFont read GetFont write SetFont stored IsFontStored;
-    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
     property ImageLayout: TButtonLayout read FImageLayout write SetImageLayout default blGlyphRight;
     property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
     property MultiLine: Boolean read FMultiLine write SetMultiLine default false;
@@ -812,7 +813,6 @@ type
     procedure SetQuickColRow(AValue: TPoint);
     function  IsCellButtonColumn(ACell: TPoint): boolean;
     function  GetSelectedColumn: TGridColumn;
-    function  IsTitleImageListStored: boolean;
     procedure SetAlternateColor(const AValue: TColor);
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetBorderColor(const AValue: TColor);
@@ -919,6 +919,9 @@ type
     procedure WriteRowHeights(Writer: TWriter);
     procedure WMEraseBkgnd(var message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TLMNoParams); message LM_GETDLGCODE;
+    function GetTitleImageList: TImageList;
+    function GetAscImgInd: TImageIndex;
+    function GetDescImgInd: TImageIndex;
   protected
     fGridState: TGridState;
     function RTLSign: Integer;
@@ -1201,10 +1204,10 @@ type
     property GridWidth: Integer read FGCache.GridWidth;
     property HeaderHotZones: TGridZoneSet read FHeaderHotZones write FHeaderHotZones default [gzFixedCols];
     property HeaderPushZones: TGridZoneSet read FHeaderPushZones write FHeaderPushZones default [gzFixedCols];
-    property ImageIndexSortAsc: TImageIndex read FAscImgInd write FAscImgInd default -1;
-    property ImageIndexSortDesc: TImageIndex read FDescImgInd write FDescImgInd default -1;
+    property ImageIndexSortAsc: TImageIndex read GetAscImgInd write FAscImgInd default -1;
+    property ImageIndexSortDesc: TImageIndex read GetDescImgInd write FDescImgInd default -1;
     property TabAdvance: TAutoAdvance read FTabAdvance write FTabAdvance default aaRightDown;
-    property TitleImageList: TImageList read FTitleImageList write SetTitleImageList;
+    property TitleImageList: TImageList read GetTitleImageList write SetTitleImageList;
     property TitleImageListWidth: Integer read FTitleImageListWidth write SetTitleImageListWidth default 0;
     property InplaceEditor: TWinControl read FEditor;
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
@@ -2492,11 +2495,6 @@ begin
   result := (Button=mbLeft);
 end;
 
-function TCustomGrid.IsTitleImageListStored: boolean;
-begin
-  Result := FTitleImageList <> nil;
-end;
-
 function TCustomGrid.GetLeftCol: Integer;
 begin
   result:=fTopLeft.x;
@@ -3659,23 +3657,15 @@ end;
 procedure TCustomGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 var
   ColOfs: Integer;
-  Bitmap: TPortableNetworkGraphic;
 begin
   if IsColumn and FColumnClickSorts then begin
     // Prepare glyph images if not done already.
     if FTitleImageList = nil then
-      FTitleImageList := TImageList.Create(Self);
-    if FAscImgInd = -1 then
+      FTitleImageList := LCLBtnGlyphs;
+    if (FAscImgInd = -1) and (FTitleImageList = LCLBtnGlyphs) then
     begin
-      Bitmap := TPortableNetworkGraphic.Create;
-      try
-        Bitmap.LoadFromResourceName(hInstance, 'sortasc');
-        FAscImgInd := TitleImageList.Add(Bitmap, nil);
-        Bitmap.LoadFromResourceName(hInstance, 'sortdesc');
-        FDescImgInd := TitleImageList.Add(Bitmap, nil);
-      finally
-        Bitmap.Free;
-      end;
+      FAscImgInd := LCLBtnGlyphs.GetImageIndex('sortasc');
+      FDescImgInd := LCLBtnGlyphs.GetImageIndex('sortdesc');
     end;
     // Determine the sort order.
     if index = FSortColumn then begin
@@ -3695,8 +3685,8 @@ begin
     // Show the sort glyph only if clicked column has a TGridColumn defined.
     ColOfs := index - FFixedCols;
     if (ColOfs > -1) and (ColOfs < FColumns.Count)
-    and (FAscImgInd < TitleImageList.Count)
-    and (FDescImgInd < TitleImageList.Count) then
+    and (FAscImgInd < FTitleImageList.Count)
+    and (FDescImgInd < FTitleImageList.Count) then
       with FColumns[ColOfs].Title do begin
         // Save previous ImageIndex of the clicked column.
         if (index <> FSortColumn) then
@@ -4165,7 +4155,6 @@ procedure TCustomGrid.DrawColumnTitleImage(
   var ARect: TRect; AColumnIndex: Integer);
 var
   w, h, rw, rh, ImgIndex: Integer;
-  needStretch: Boolean;
   r: TRect;
   imgLayout: TButtonLayout;
 begin
@@ -4176,14 +4165,6 @@ begin
 
   rw := ARect.Right - ARect.Left - DEFIMAGEPADDING * 2;
   rh := ARect.Bottom - ARect.Top - DEFIMAGEPADDING * 2;
-  if rw < w then begin
-    w := rw;
-    needStretch := true;
-  end;
-  if rh < h then begin
-    h := rh;
-    needStretch := true;
-  end;
 
   case imgLayout of
     blGlyphRight, blGlyphLeft:
@@ -4209,13 +4190,11 @@ begin
       r.Top := ARect.Bottom + DEFIMAGEPADDING;
     end;
   end;
-  if needStretch then begin
-    r.Right := r.Left + w;
-    r.Bottom := r.Top + h;
-    TitleImageList.StretchDraw(Canvas, ImgIndex, r);
-  end
-  else
-    TitleImageList.Draw(Canvas, r.Left, r.Top, ImgIndex);
+  r.Right := r.Left + w;
+  r.Bottom := r.Top + h;
+
+  FTitleImageList.ResolutionForPPI[TitleImageListWidth, Font.PixelsPerInch, GetCanvasScaleFactor]
+    .StretchDraw(Canvas, ImgIndex, r);
 end;
 
 procedure TCustomGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
@@ -5392,18 +5371,26 @@ var
   aSize: TSize;
 begin
   result := -1;
-  if TitleImageList = nil then exit;
+  if FTitleImageList = nil then exit;
   c := ColumnFromGridColumn(AColumnIndex);
   if
     (c = nil) or
-    not InRange(c.Title.ImageIndex, 0, TitleImageList.Count - 1)
+    not InRange(c.Title.FImageIndex, 0, FTitleImageList.Count - 1)
   then
     exit;
-  aSize := TitleImageList.SizeForPPI[TitleImageListWidth, Font.PixelsPerInch];
+  aSize := FTitleImageList.SizeForPPI[TitleImageListWidth, Font.PixelsPerInch];
   aWidth := aSize.cx;
   aHeight := aSize.cy;
   imgLayout := c.Title.ImageLayout;
-  result := c.Title.ImageIndex;
+  result := c.Title.FImageIndex;
+end;
+
+function TCustomGrid.GetTitleImageList: TImageList;
+begin
+  if FTitleImageList=LCLBtnGlyphs then
+    Result := nil
+  else
+    Result := FTitleImageList;
 end;
 
 procedure TCustomGrid.GetImageForCheckBox(const aCol, aRow: Integer;
@@ -8258,6 +8245,14 @@ begin
   end;
 end;
 
+function TCustomGrid.GetAscImgInd: TImageIndex;
+begin
+  if FTitleImageList=LCLBtnGlyphs then
+    Result := -1
+  else
+    Result := FAscImgInd;
+end;
+
 procedure TCustomGrid.EditorPos;
 var
   msg: TGridMessage;
@@ -8914,6 +8909,14 @@ begin
     ACol := DeltaCol;
     ARow := DeltaRow;
   end;
+end;
+
+function TCustomGrid.GetDescImgInd: TImageIndex;
+begin
+  if FTitleImageList=LCLBtnGlyphs then
+    Result := -1
+  else
+    Result := FDescImgInd;
 end;
 
 function TCustomGrid.GetDefaultColumnAlignment(Column: Integer): TAlignment;
@@ -11657,6 +11660,14 @@ end;
 function TGridColumnTitle.GetFont: TFont;
 begin
   Result := FFont;
+end;
+
+function TGridColumnTitle.GetImageIndex: TImageIndex;
+begin
+  if FColumn.Grid.FTitleImageList = LCLBtnGlyphs then
+    Result := -1
+  else
+    Result := FImageIndex;
 end;
 
 function TGridColumnTitle.GetLayout: TTextLayout;
