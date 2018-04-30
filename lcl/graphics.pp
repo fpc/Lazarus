@@ -203,41 +203,7 @@ type
   TCanvasState = set of TCanvasStates;
   TCanvasOrientation = (csLefttoRight, coRighttoLeft);
 
-  { TProgressEvent is a generic progress notification event which may be
-        used by TGraphic classes with computationally intensive (slow)
-        operations, such as loading, storing, or transforming image data.
-    Event params:
-      Stage - Indicates whether this call to the OnProgress event is to
-        prepare for, process, or clean up after a graphic operation.  If
-        OnProgress is called at all, the first call for a graphic operation
-        will be with Stage = psStarting, to allow the OnProgress event handler
-        to allocate whatever resources it needs to process subsequent progress
-        notifications.  After Stage = psStarting, you are guaranteed that
-        OnProgress will be called again with Stage = psEnding to allow you
-        to free those resources, even if the graphic operation is aborted by
-        an exception.  Zero or more calls to OnProgress with Stage = psRunning
-        may occur between the psStarting and psEnding calls.
-      PercentDone - The ratio of work done to work remaining, on a scale of
-        0 to 100.  Values may repeat or even regress (get smaller) in
-        successive calls.  PercentDone is usually only a guess, and the
-        guess may be dramatically altered as new information is discovered
-        in decoding the image.
-      RedrawNow - Indicates whether the graphic can be/should be redrawn
-        immediately.  Useful for showing successive approximations of
-        an image as data is available instead of waiting for all the data
-        to arrive before drawing anything.  Since there is no message loop
-        activity during graphic operations, you should call Update to force
-        a control to be redrawn immediately in the OnProgress event handler.
-        Redrawing a graphic when RedrawNow = False could corrupt the image
-        and/or cause exceptions.
-      Rect - Area of image that has changed and needs to be redrawn.
-      Msg - Optional text describing in one or two words what the graphic
-        class is currently working on.  Ex:  "Loading" "Storing"
-        "Reducing colors".  The Msg string can also be empty.
-        Msg strings should be resourced for translation,  should not
-        contain trailing periods, and should be used only for
-        display purposes.  (do not: if Msg = 'Loading' then...)
-  }
+  { TProgressEvent }
   TProgressStage = TFPImgProgressStage;
   TProgressEvent = TFPImgProgressEvent;
 
