@@ -2475,9 +2475,9 @@ end;
 
 function TCustomGrid.LoadResBitmapImage(const ResName: string): TBitmap;
 var
-  C: TPixmap;
+  C: TPortableNetworkGraphic;
 begin
-  C := TPixmap.Create;
+  C := TPortableNetworkGraphic.Create;
   try
     C.LoadFromResourceName(hInstance, ResName);
     Result := TBitmap.Create;

@@ -1,3 +1,9 @@
-dbgridcheckedcb.xpm
-dbgridgrayedcb.xpm
-dbgriduncheckedcb.xpm
+dbgridcheckedcb.png
+dbgridcheckedcb_150.png
+dbgridcheckedcb_200.png
+dbgridgrayedcb.png
+dbgridgrayedcb_150.png
+dbgridgrayedcb_200.png
+dbgriduncheckedcb.png
+dbgriduncheckedcb_150.png
+dbgriduncheckedcb_200.png
