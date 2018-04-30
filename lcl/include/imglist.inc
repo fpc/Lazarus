@@ -137,6 +137,12 @@ begin
   Result := FResolution.Count;
 end;
 
+function TScaledImageListResolution.GetSize: TSize;
+begin
+  Result.cx := Width;
+  Result.cy := Height;
+end;
+
 procedure TScaledImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
   AIndex: Integer; AOverlay: TOverlay; ADrawingStyle: TDrawingStyle;
   AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect);

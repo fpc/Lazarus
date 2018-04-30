@@ -32,9 +32,9 @@ unit DBGrids;
 interface
 
 uses
-  Classes, SysUtils, Math, FileUtil, DB,
-  LazUTF8, LazLoggerBase, LCLStrConsts, LCLIntf, LCLType, LMessages, LResources,
-  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants, Clipbrd, Laz2_XMLCfg;
+  Classes, SysUtils, Math, FileUtil, DB, LazUTF8, LazLoggerBase, LCLStrConsts,
+  LCLIntf, LCLType, LMessages, LResources, Controls, StdCtrls, Graphics, Grids,
+  Dialogs, Themes, Variants, Clipbrd, ImgList, Laz2_XMLCfg;
 
 {$if FPC_FULLVERSION<20701}
   {$DEFINE noautomatedbookmark}
@@ -441,8 +441,9 @@ type
     function  GetEditText(aCol, aRow: Longint): string; override;
     function  GetFieldFromGridColumn(Column: Integer): TField;
     function  GetGridColumnFromField(F: TField): Integer;
-    function  GetImageForCheckBox(const aCol,aRow: Integer;
-                                  CheckBoxView: TCheckBoxState): TBitmap; override;
+    procedure GetImageForCheckBox(const aCol, aRow: Integer;
+      CheckBoxView: TCheckBoxState; var ImageList: TCustomImageList;
+      var ImageIndex: TImageIndex; var Bitmap: TBitmap); override;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; override;
     procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); override;
@@ -1606,12 +1607,13 @@ begin
   end;
 end;
 
-function TCustomDBGrid.GetImageForCheckBox(const aCol, aRow: Integer;
-  CheckBoxView: TCheckBoxState): TBitmap;
+procedure TCustomDBGrid.GetImageForCheckBox(const aCol, aRow: Integer;
+  CheckBoxView: TCheckBoxState; var ImageList: TCustomImageList;
+  var ImageIndex: TImageIndex; var Bitmap: TBitmap);
 begin
-  Result:=inherited GetImageForCheckBox(aCol, aRow, CheckBoxView);
+  inherited GetImageForCheckBox(aCol, aRow, CheckBoxView, ImageList, ImageIndex, Bitmap);
   if Assigned(OnUserCheckboxBitmap) then
-    OnUserCheckboxBitmap(Self, CheckBoxView, Result);
+    OnUserCheckboxBitmap(Self, CheckBoxView, Bitmap);
 end;
 
 // obtain the visible field index corresponding to the grid column index

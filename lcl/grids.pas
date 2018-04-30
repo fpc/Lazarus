@@ -794,7 +794,6 @@ type
     FColumnClickSorts: boolean;
     FHeaderHotZones: TGridZoneSet;
     FHeaderPushZones: TGridZoneSet;
-    FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
     FSavedCursor: TCursor;
     FSizing: TSizingRec;
     FRowAutoInserted: Boolean;
@@ -1049,8 +1048,9 @@ type
     function  GetDefaultEditor(Column: Integer): TWinControl; virtual;
     function  GetDefaultRowHeight: integer; virtual;
     function  GetGridDrawState(ACol, ARow: Integer): TGridDrawState;
-    function  GetImageForCheckBox(const aCol,aRow: Integer;
-                                  CheckBoxView: TCheckBoxState): TBitmap; virtual;
+    procedure GetImageForCheckBox(const aCol,aRow: Integer;
+      CheckBoxView: TCheckBoxState; var ImageList: TCustomImageList;
+      var ImageIndex: TImageIndex; var Bitmap: TBitmap); virtual;
     function  GetScrollBarPosition(Which: integer): Integer;
     function  GetSmoothScroll(Which: Integer): Boolean; virtual;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);virtual;
@@ -4518,10 +4518,13 @@ const
 var
   ChkBitmap: TBitmap;
   XPos,YPos: Integer;
-  details: TThemedElementDetails;
+  Details: TThemedElementDetails;
   PaintRect: TRect;
   CSize: TSize;
   bmpAlign: TAlignment;
+  ChkIL: TCustomImageList;
+  ChkII: TImageIndex;
+  ChkILRes: TScaledImageListResolution;
 begin
 
   if Columns.Enabled then
@@ -4529,31 +4532,47 @@ begin
   else
     bmpAlign := taCenter;
 
-  if (TitleStyle=tsNative) and not assigned(OnUserCheckboxBitmap) then begin
+  Details.State := -1;
+  ChkIL := nil;
+  ChkILRes := TScaledImageListResolution.Create(nil, 0);
+  ChkII := -1;
+  ChkBitmap := nil;
+
+  if (TitleStyle=tsNative) and not Assigned(OnUserCheckboxBitmap) then
+  begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
     CSize := ThemeServices.GetDetailSize(Details);
     CSize.cx := MulDiv(CSize.cx, Font.PixelsPerInch, Screen.PixelsPerInch);
     CSize.cy := MulDiv(CSize.cy, Font.PixelsPerInch, Screen.PixelsPerInch);
-    case bmpAlign of
-      taCenter: PaintRect.Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
-      taLeftJustify: PaintRect.Left := ARect.Left + varCellPadding;
-      taRightJustify: PaintRect.Left := ARect.Right - CSize.Cx - varCellPadding - 1;
-    end;
-    PaintRect.Top  := Trunc((aRect.Top + aRect.Bottom - CSize.cy)/2);
-    PaintRect := Bounds(PaintRect.Left, PaintRect.Top, CSize.cx, CSize.cy);
-    ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil);
-  end else begin
-    ChkBitmap := GetImageForCheckBox(aCol, aRow, AState);
-    if ChkBitmap<>nil then begin
-      case bmpAlign of
-        taCenter: XPos := Trunc((aRect.Left+aRect.Right-ChkBitmap.Width)/2);
-        taLeftJustify: XPos := ARect.Left + varCellPadding;
-        taRightJustify: XPos := ARect.Right - ChkBitmap.Width - varCellPadding - 1;
-      end;
-      YPos := Trunc((aRect.Top+aRect.Bottom-ChkBitmap.Height)/2);
-      Canvas.Draw(XPos, YPos, ChkBitmap);
-    end;
+  end else
+  begin
+    GetImageForCheckBox(aCol, aRow, AState, ChkIL, ChkII, ChkBitmap);
+    if Assigned(ChkBitmap) then
+      CSize := Size(ChkBitmap.Width, ChkBitmap.Height)
+    else if (Assigned(ChkIL) and (ChkII>=0)) then
+    begin
+      ChkILRes := ChkIL.ResolutionForPPI[ChkIL.Width, Font.PixelsPerInch, GetCanvasScaleFactor];
+      CSize := ChkILRes.Size;
+    end else
+      Exit;
   end;
+
+  case bmpAlign of
+    taCenter: PaintRect.Left := Trunc((aRect.Left + aRect.Right - CSize.cx)/2);
+    taLeftJustify: PaintRect.Left := ARect.Left + varCellPadding;
+    taRightJustify: PaintRect.Left := ARect.Right - CSize.Cx - varCellPadding - 1;
+  end;
+  PaintRect.Top  := Trunc((aRect.Top + aRect.Bottom - CSize.cy)/2);
+  PaintRect := Bounds(PaintRect.Left, PaintRect.Top, CSize.cx, CSize.cy);
+
+  if Details.State>=0 then
+    ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil)
+  else
+  if Assigned(ChkBitmap) then
+    Canvas.StretchDraw(PaintRect, ChkBitmap)
+  else
+  if Assigned(ChkILRes.Resolution) then
+    ChkILRes.StretchDraw(Canvas, ChkII, PaintRect);
 end;
 
 procedure TCustomGrid.DrawButtonCell(const aCol, aRow: Integer; aRect: TRect;
@@ -5387,18 +5406,23 @@ begin
   result := c.Title.ImageIndex;
 end;
 
-function TCustomGrid.GetImageForCheckBox(const aCol,aRow: Integer;
-    CheckBoxView: TCheckBoxState): TBitmap;
+procedure TCustomGrid.GetImageForCheckBox(const aCol, aRow: Integer;
+  CheckBoxView: TCheckBoxState; var ImageList: TCustomImageList;
+  var ImageIndex: TImageIndex; var Bitmap: TBitmap);
+var
+  ResName: string;
 begin
   if CheckboxView=cbUnchecked then
-    Result := FUncheckedBitmap
+    ResName := 'dbgriduncheckedcb'
   else if CheckboxView=cbChecked then
-    Result := FCheckedBitmap
+    ResName := 'dbgridcheckedcb'
   else
-    Result := FGrayedBitmap;
+    ResName := 'dbgridgrayedcb';
+  ImageList := LCLBtnGlyphs;
+  ImageIndex := LCLBtnGlyphs.GetImageIndex(ResName);
 
   if Assigned(OnUserCheckboxBitmap) then
-    OnUserCheckboxBitmap(Self, aCol, aRow, CheckBoxView, Result);
+    OnUserCheckboxBitmap(Self, aCol, aRow, CheckBoxView, Bitmap);
 end;
 
 procedure TCustomGrid.AdjustInnerCellRect(var ARect: TRect);
@@ -9520,11 +9544,6 @@ begin
   FAscImgInd:=-1;
   FDescImgInd:=-1;
 
-  // Default bitmaps for cbsCheckedColumn
-  FUnCheckedBitmap := LoadResBitmapImage('dbgriduncheckedcb');
-  FCheckedBitmap := LoadResBitmapImage('dbgridcheckedcb');
-  FGrayedBitmap := LoadResBitmapImage('dbgridgrayedcb');
-
   FValidateOnSetSelection := false;
 
   varRubberSpace := MulDiv(constRubberSpace, Screen.PixelsPerInch, 96);
@@ -9535,9 +9554,6 @@ end;
 destructor TCustomGrid.Destroy;
 begin
   {$Ifdef DbgGrid}DebugLn('TCustomGrid.Destroy');{$Endif}
-  FUncheckedBitmap.Free;
-  FCheckedBitmap.Free;
-  FGrayedBitmap.Free;
   FreeThenNil(FButtonStringEditor);
   FreeThenNil(FPickListEditor);
   FreeThenNil(FStringEditor);
