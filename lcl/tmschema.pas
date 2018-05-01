@@ -1846,14 +1846,6 @@ const
 
 
 type
-  HEADERSTATES = longint;
-
-const
-  HDRS_SORTDOWN   = 1;
-  HDRS_SORTUP     = 2;
-
-
-type
   GLYPHSTATES = longint;
 
 const

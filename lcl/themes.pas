@@ -2118,7 +2118,7 @@ begin
     teHeader:
       begin
         if Details.Part = HP_HEADERSORTARROW then
-          DrawTriangle(Details.State = HDRS_SORTDOWN)
+          DrawTriangle(Details.State = HSAS_SORTEDDOWN)
         else
         begin
           ADrawFlags := DFCS_BUTTONPUSH;
