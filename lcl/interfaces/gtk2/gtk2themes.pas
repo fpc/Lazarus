@@ -596,6 +596,11 @@ begin
       end else
         Result := GetBaseDetailsSize(Details);
     {$ENDIF}
+    teHeader:
+      if Details.Part = HP_HEADERSORTARROW then
+        Result := Size(-1, -1) // not yet supported
+      else
+        Result := GetBaseDetailsSize(Details);
     else
       Result := GetBaseDetailsSize(Details);
   end;

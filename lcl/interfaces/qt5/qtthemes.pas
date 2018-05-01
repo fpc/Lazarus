@@ -878,6 +878,11 @@ begin
         Result.cx := QStyle_pixelMetric(Style, QStylePM_MenuButtonIndicator, nil, nil);
       end else
         Result := inherited;
+    teHeader:
+      if Details.Part = HP_HEADERSORTARROW then
+        Result := Size(-1, -1) // not yet supported
+      else
+        Result := inherited;
     else
       Result := inherited;
   end;
