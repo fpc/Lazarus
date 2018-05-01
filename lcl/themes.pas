@@ -1895,6 +1895,9 @@ begin
     teWindow:
       if Details.Part in [WP_SMALLCLOSEBUTTON, WP_MDICLOSEBUTTON, WP_MDIHELPBUTTON, WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, WP_MDISYSBUTTON] then
         Result := Size(9, 9);
+    teHeader:
+      if Details.Part in [HP_HEADERSORTARROW] then
+        Result := Size(8, 5);
   end;
   if (Result.cx>0) then
     Result.cx := MulDiv(Result.cx, ScreenInfo.PixelsPerInchX, 96);
@@ -2048,6 +2051,34 @@ procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; co
     SetBkColor(DC, OldColor1);
     SetTextColor(DC, OldColor2);
   end;
+
+  procedure DrawTriangle(ADown: Boolean);
+  var
+    P: array[0..2] of TPoint;
+    Brush: HBRUSH;
+    OldBrush, OldPen: HGDIOBJ;
+    Pen: HPEN;
+  begin
+    if ADown then
+    begin
+      P[0].x:=R.Left; P[0].y:=R.Top;
+      P[1].x:=R.Left+(R.Right-1-R.Left) div 2; P[1].y:= R.Bottom-1;
+      P[2].x:=R.Right-1; P[2].y:= R.Top;
+    end else
+    begin
+      P[0].x:=R.Right-1; P[0].y:= R.Bottom-1;
+      P[1].x:=R.Left+(R.Right-1-R.Left) div 2; P[1].y:= R.Top-1;
+      P[2].x:=R.Left-1; P[2].y:=R.Bottom-1;
+    end;
+
+    Pen := CreatePen(PS_NULL, 0, 0);
+    OldPen := SelectObject(DC, Pen);
+    Brush := CreateSolidBrush(ColorToRGB(clBtnText));
+    OldBrush := SelectObject(DC, Brush);
+    Polygon(DC, @P[0], 3, False);
+    DeleteObject(SelectObject(DC, OldBrush));
+    DeleteObject(SelectObject(DC, OldPen));
+  end;
   
 var
   ADrawFlags: DWord;
@@ -2086,15 +2117,20 @@ begin
       end;
     teHeader:
       begin
-        ADrawFlags := DFCS_BUTTONPUSH;
-        if IsDisabled(Details) then
-          ADrawFlags := ADrawFlags or DFCS_INACTIVE else
-        if IsPushed(Details) then
-          ADrawFlags := ADrawFlags or DFCS_PUSHED else
-        if IsHot(Details) then
-          ADrawFlags := ADrawFlags or DFCS_HOT;
+        if Details.Part = HP_HEADERSORTARROW then
+          DrawTriangle(Details.State = HDRS_SORTDOWN)
+        else
+        begin
+          ADrawFlags := DFCS_BUTTONPUSH;
+          if IsDisabled(Details) then
+            ADrawFlags := ADrawFlags or DFCS_INACTIVE else
+          if IsPushed(Details) then
+            ADrawFlags := ADrawFlags or DFCS_PUSHED else
+          if IsHot(Details) then
+            ADrawFlags := ADrawFlags or DFCS_HOT;
 
-        WidgetSet.DrawFrameControl(DC, ARect, DFC_BUTTON, ADrawFlags);
+          WidgetSet.DrawFrameControl(DC, ARect, DFC_BUTTON, ADrawFlags);
+        end;
       end;
     teToolBar:
       begin

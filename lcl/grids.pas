@@ -4125,22 +4125,50 @@ procedure TCustomGrid.DrawColumnTitleImage(
 var
   w, h, rw, rh, ImgIndex, ImgListWidth: Integer;
   p: TPoint;
+  r: TRect;
   ImgLayout: TButtonLayout;
   ImgList: TCustomImageList;
   ImgRes: TScaledImageListResolution;
+  s: TSize;
+  Details: TThemedElementDetails;
 begin
-  GetSortTitleImageInfo(AColumnIndex, ImgList, ImgIndex, ImgListWidth);
-  if (ImgList<>nil) and (ImgIndex>=0) then
+  if FSortColumn = AColumnIndex then
   begin
-    ImgRes := ImgList.ResolutionForPPI[ImgListWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
-    w := ImgRes.Width;
-    h := ImgRes.Height;
+    GetSortTitleImageInfo(AColumnIndex, ImgList, ImgIndex, ImgListWidth);
+    if (ImgList=nil) or (ImgIndex<0) then // draw native sort buttons
+    begin
+      case FSortOrder of
+        soAscending: Details := ThemeServices.GetElementDetails(thHeaderSortArrowSortedUp);
+        soDescending: Details := ThemeServices.GetElementDetails(thHeaderSortArrowSortedDown);
+      end;
 
-    Dec(ARect.Right, w + DEFIMAGEPADDING);
-    p.X := ARect.Right;
-    p.Y := ARect.Top + (ARect.Bottom - ARect.Top - h) div 2;
+      s := ThemeServices.GetDetailSize(Details);
+    end else
+      s := Size(-1, -1);
+    if s.Width>0 then // theme services support sorted arrows
+    begin
+      w := Scale96ToFont(s.cx);
+      h := Scale96ToFont(s.cy);
 
-    ImgRes.Draw(Canvas, p.X, p.Y, ImgIndex);
+      Dec(ARect.Right, w);
+      r.Left := ARect.Right - DEFIMAGEPADDING;
+      r.Top := ARect.Top + (ARect.Bottom - ARect.Top - h) div 2;
+      r.Right := r.Left + w;
+      r.Bottom := r.Top + h;
+
+      ThemeServices.DrawElement(Canvas.Handle, Details, r, nil);
+    end else
+    begin
+      ImgRes := ImgList.ResolutionForPPI[ImgListWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
+      w := ImgRes.Width;
+      h := ImgRes.Height;
+
+      Dec(ARect.Right, w);
+      p.X := ARect.Right - DEFIMAGEPADDING;
+      p.Y := ARect.Top + (ARect.Bottom - ARect.Top - h) div 2;
+
+      ImgRes.Draw(Canvas, p.X, p.Y, ImgIndex);
+    end;
   end;
 
   if FTitleImageList<>nil then
@@ -5393,6 +5421,7 @@ begin
     ImgListWidth := FTitleImageListWidth;
     ImgIndex := FDescImgInd;
   end else
+  if (TitleStyle<>tsNative) then// draw native sort buttons
   begin
     ImgList := LCLBtnGlyphs;
     case FSortOrder of
