@@ -730,6 +730,7 @@ type
     FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
     FSortOrder: TSortOrder;
     FSortColumn: Integer;
+    FSortLCLImages: TLCLGlyphs;
     FTabAdvance: TAutoAdvance;
     FTitleImageList: TImageList;
     FTitleImageListWidth: Integer;
@@ -5425,12 +5426,19 @@ begin
     ImgIndex := FDescImgInd;
   end else
   begin
-    ImgList := LCLBtnGlyphs;
+    if FSortLCLImages=nil then
+    begin
+      FSortLCLImages := TLCLGlyphs.Create(Self);
+      FSortLCLImages.Width := 8;
+      FSortLCLImages.Height := 8;
+      FSortLCLImages.RegisterResolutions([8, 12, 16]);
+    end;
+    ImgList := FSortLCLImages;
     case FSortOrder of
       soAscending: ResName := 'sortasc';
       soDescending: ResName := 'sortdesc';
     end;
-    ImgIndex := LCLBtnGlyphs.GetImageIndex(ResName);
+    ImgIndex := FSortLCLImages.GetImageIndex(ResName);
     NativeSortGlyphs := FTitleStyle = tsNative;
   end;
 end;
@@ -5447,8 +5455,8 @@ begin
     ResName := 'dbgridcheckedcb'
   else
     ResName := 'dbgridgrayedcb';
-  ImageList := LCLBtnGlyphs;
-  ImageIndex := LCLBtnGlyphs.GetImageIndex(ResName);
+  ImageList := LCLGlyphs;
+  ImageIndex := LCLGlyphs.GetImageIndex(ResName);
 
   if Assigned(OnUserCheckboxBitmap) then
     OnUserCheckboxBitmap(Self, aCol, aRow, CheckBoxView, Bitmap);

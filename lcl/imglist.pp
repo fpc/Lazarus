@@ -49,7 +49,7 @@ uses
   Types, math, SysUtils, Classes, FPReadBMP, FPimage, FPImgCanv, FPCanvas,
   Contnrs, zstream,
   // LazUtils
-  FPCAdds,
+  FPCAdds, Laz_AVL_Tree, AvgLvlTree,
   // LCL
   LCLStrConsts, LCLIntf, LResources, LCLType, LCLProc, Graphics, GraphType,
   LCLClasses, IntfGraphics,
@@ -387,7 +387,7 @@ type
     procedure StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean = True);
     procedure UnRegisterChanges(Value: TChangeLink);
 
-    procedure RegisterResolutions(const AResolutionWidths: array of Integer);
+    procedure RegisterResolutions(const AResolutionWidths: array of Integer); virtual;
     procedure DeleteResolution(const AWidth: Integer);
     function FindResolution(AImageWidth: Integer; out AResolution: TCustomImageListResolution): Boolean;
   public
@@ -416,6 +416,35 @@ type
     property ImageType: TImageType read FImageType write FImageType default itImage;
     property OnGetWidthForPPI: TCustomImageListGetWidthForPPI read FOnGetWidthForPPI write FOnGetWidthForPPI;
   end;
+
+  TLCLGlyphs = class(TCustomImageList)
+  private type
+    TEntryKey = record
+      GlyphName: string;
+    end;
+    PEntryKey = ^TEntryKey;
+
+    TEntry = class
+    public
+      // key
+      GlyphName: string;
+
+      // value
+      ImageIndex: Integer; // the image index in TLCLGlyphs
+    end;
+  private
+    FImageIndexes: TAvgLvlTree;
+    FLoadResolutions: array of Integer;
+  public
+    function GetImageIndex(const AResourceName: string): Integer;
+    procedure RegisterResolutions(const AResolutionWidths: array of Integer); override;
+
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+function LCLGlyphs: TLCLGlyphs;
+function GetDefaultGlyph(ResourceName: string; ScalePercent: Integer = 100): TCustomBitmap;
 
 implementation
 

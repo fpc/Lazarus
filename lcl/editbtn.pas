@@ -948,7 +948,7 @@ end;
 
 function TCustomEditButton.GetImageIndex: TImageIndex;
 begin
-  if Button.Images=LCLBtnGlyphs then
+  if Button.Images=LCLGlyphs then
     Result := -1
   else
     Result := Button.ImageIndex;
@@ -956,7 +956,7 @@ end;
 
 function TCustomEditButton.GetImages: TCustomImageList;
 begin
-  if Button.Images=LCLBtnGlyphs then
+  if Button.Images=LCLGlyphs then
     Result := nil
   else
     Result := Button.Images;
@@ -991,8 +991,8 @@ begin
   N := GetDefaultGlyphName;
   if N <> '' then
   begin
-    Images := LCLBtnGlyphs;
-    ImageIndex := LCLBtnGlyphs.GetImageIndex(N);
+    Images := LCLGlyphs;
+    ImageIndex := LCLGlyphs.GetImageIndex(N);
   end;
 end;
 

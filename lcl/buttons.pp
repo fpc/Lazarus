@@ -34,7 +34,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, LMessages, Forms,
-  Themes, Menus, LResources, ImageListCache, AvgLvlTree, Laz_AVL_Tree;
+  Themes, Menus, LResources, ImageListCache;
 
 type
   TButtonLayout =
@@ -447,33 +447,6 @@ type
     property PopupMenu;
   end;
 
-  TLCLBtnGlyphs = class(TImageList)
-  private type
-    TEntryKey = record
-      GlyphName: string;
-    end;
-    PEntryKey = ^TEntryKey;
-
-    TEntry = class
-    public
-      // key
-      GlyphName: string;
-
-      // value
-      ImageIndex: Integer; // the image index in TLCLBtnGlyphs
-    end;
-
-  private const
-    CResolutions: array[0..2] of Integer = (16, 24, 32);
-  private
-    FImageIndexes: TAvgLvlTree;
-  public
-    function GetImageIndex(const AResourceName: string): Integer;
-
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-
   { To override the default TBitBtn glyphs set GetDefaultBitBtnGlyph below.
     Example:
 
@@ -502,13 +475,10 @@ procedure LoadGlyphFromStock(AGlyph: TButtonGlyph; idButton: Integer);
 // helper functions (search LCLType for idButton)
 function GetButtonCaption(idButton: Integer): String;
 function GetDefaultButtonIcon(idButton: Integer; ScalePercent: Integer = 100): TCustomBitmap;
-function GetDefaultButtonIcon(ResourceName: string; ScalePercent: Integer = 100): TCustomBitmap;
 function GetButtonIcon(idButton: Integer): TCustomBitmap;
 function BidiAdjustButtonLayout(IsRightToLeft: Boolean; Layout: TButtonLayout): TButtonLayout;
 
 function dbgs(Kind: TBitBtnKind): string; overload;
-
-function LCLBtnGlyphs: TLCLBtnGlyphs;
 
 procedure Register;
 
@@ -546,20 +516,9 @@ implementation
 uses
   WSButtons;
 
-var
-  GLCLBtnGlyphs: TLCLBtnGlyphs = nil;
-
 function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
 begin
   Result := GetDefaultButtonIcon(BitBtnImages[Kind]);
-end;
-
-function GetDefaultButtonIcon(ResourceName: string; ScalePercent: Integer = 100): TCustomBitmap;
-begin
-  Result := TPortableNetworkGraphic.Create;
-  if Application.Scaled and (ScalePercent<>100) then
-    ResourceName := ResourceName+'_'+IntToStr(ScalePercent);
-  Result.LoadFromResourceName(hInstance, ResourceName);
 end;
 
 function GetDefaultButtonIcon(idButton: Integer;
@@ -572,7 +531,7 @@ begin
     Exit;
   if BitBtnResNames[idButton] = '' then
     Exit;
-  Result := GetDefaultButtonIcon(BitBtnResNames[idButton], ScalePercent);
+  Result := GetDefaultGlyph(BitBtnResNames[idButton], ScalePercent);
 end;
 
 procedure LoadGlyphFromResourceName(AGlyph: TButtonGlyph; Instance: THandle; const AName: String);
@@ -685,105 +644,13 @@ begin
   writestr(Result,Kind);
 end;
 
-function LCLBtnGlyphs: TLCLBtnGlyphs;
-begin
-  if GLCLBtnGlyphs=nil then
-    GLCLBtnGlyphs := TLCLBtnGlyphs.Create(nil);
-  Result := GLCLBtnGlyphs;
-end;
-
 procedure Register;
 begin
   RegisterComponents('Additional',[TBitBtn,TSpeedButton]);
 end;
 
-{ TLCLBtnGlyphs.TEntry }
-
-function TLCLBtnGlyphs_TEntry_Compare(Item1, Item2: Pointer): Integer;
-var
-  AItem1: TLCLBtnGlyphs.TEntry absolute Item1;
-  AItem2: TLCLBtnGlyphs.TEntry absolute Item2;
-begin
-  Result := CompareStr(AItem1.GlyphName, AItem2.GlyphName);
-end;
-
-function TLCLBtnGlyphs_TEntry_CompareKey(Key, Item: Pointer): Integer;
-var
-  AKey: TLCLBtnGlyphs.PEntryKey absolute Key;
-  AItem: TLCLBtnGlyphs.TEntry absolute Item;
-begin
-  Result := CompareStr(AKey^.GlyphName, AItem.GlyphName);
-end;
-
-{ TLCLBtnGlyphs }
-
-constructor TLCLBtnGlyphs.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-
-  FImageIndexes := TAvgLvlTree.Create(@TLCLBtnGlyphs_TEntry_Compare);
-  RegisterResolutions(CResolutions);
-  Scaled := True;
-end;
-
-destructor TLCLBtnGlyphs.Destroy;
-begin
-  FImageIndexes.FreeAndClear;
-  FImageIndexes.Free;
-
-  inherited Destroy;
-end;
-
-function TLCLBtnGlyphs.GetImageIndex(const AResourceName: string): Integer;
-
-  function AddBtnImage(ResolutionWidth: Integer): Integer;
-  var
-    G: TCustomBitmap;
-  begin
-    G := GetDefaultButtonIcon(AResourceName, MulDiv(ResolutionWidth, 100, CResolutions[Low(CResolutions)]));
-    try
-      if ResolutionWidth=CResolutions[Low(CResolutions)] then
-        Result := AddSliceCentered(G)
-      else
-      begin
-        Result := Count-1;
-        ReplaceSliceCentered(Result, ResolutionWidth, G, False);
-      end;
-    finally
-      G.Free;
-    end;
-  end;
-
-var
-  K: TEntryKey;
-  ANode: TAVLTreeNode;
-  E: TEntry;
-  I: Integer;
-begin
-  K.GlyphName := AResourceName;
-
-  ANode := FImageIndexes.FindKey(@K, @TLCLBtnGlyphs_TEntry_CompareKey);
-  if ANode<>nil then
-    Result := TEntry(ANode.Data).ImageIndex
-  else
-  begin
-    E := TEntry.Create;
-    E.GlyphName := AResourceName;
-    E.ImageIndex := AddBtnImage(CResolutions[Low(CResolutions)]);
-    for I := Low(CResolutions)+1 to High(CResolutions) do
-      AddBtnImage(CResolutions[I]);
-    FImageIndexes.Add(E);
-    Result := E.ImageIndex;
-  end;
-end;
-
 {$I bitbtn.inc}
 {$I buttonglyph.inc}
 {$I speedbutton.inc}
-
-initialization
-
-finalization
-  FreeAndNil(GLCLBtnGlyphs);
 
 end.

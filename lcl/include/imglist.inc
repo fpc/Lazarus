@@ -29,6 +29,27 @@ const
     gdeNormal
   );
 
+var
+  GLCLGlyphs: TLCLGlyphs = nil;
+
+function LCLGlyphs: TLCLGlyphs;
+begin
+  if GLCLGlyphs=nil then
+  begin
+    GLCLGlyphs := TLCLGlyphs.Create(nil);
+    GLCLGlyphs.RegisterResolutions([16, 24, 32]);
+  end;
+  Result := GLCLGlyphs;
+end;
+
+function GetDefaultGlyph(ResourceName: string; ScalePercent: Integer = 100): TCustomBitmap;
+begin
+  Result := TPortableNetworkGraphic.Create;
+  if ScalePercent<>100 then
+    ResourceName := ResourceName+'_'+IntToStr(ScalePercent);
+  Result.LoadFromResourceName(hInstance, ResourceName);
+end;
+
 {------------------------------------------------------------------------------
   Method:  CopyImage
   Params:  Destination, Source: the destination/source canvas
@@ -2657,5 +2678,101 @@ begin
   if Assigned(FOnDestroyResolutionHandle) then
     FOnDestroyResolutionHandle(FSender, AWidth, AResolutionReference);
 end;
+
+{ TLCLGlyphs.TEntry }
+
+function TLCLGlyphs_TEntry_Compare(Item1, Item2: Pointer): Integer;
+var
+  AItem1: TLCLGlyphs.TEntry absolute Item1;
+  AItem2: TLCLGlyphs.TEntry absolute Item2;
+begin
+  Result := CompareStr(AItem1.GlyphName, AItem2.GlyphName);
+end;
+
+function TLCLGlyphs_TEntry_CompareKey(Key, Item: Pointer): Integer;
+var
+  AKey: TLCLGlyphs.PEntryKey absolute Key;
+  AItem: TLCLGlyphs.TEntry absolute Item;
+begin
+  Result := CompareStr(AKey^.GlyphName, AItem.GlyphName);
+end;
+
+{ TLCLGlyphs }
+
+constructor TLCLGlyphs.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FImageIndexes := TAvgLvlTree.Create(@TLCLGlyphs_TEntry_Compare);
+  Scaled := True;
+end;
+
+destructor TLCLGlyphs.Destroy;
+begin
+  FImageIndexes.FreeAndClear;
+  FImageIndexes.Free;
+
+  inherited Destroy;
+end;
+
+function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
+
+  function AddBtnImage(ResolutionWidth: Integer): Integer;
+  var
+    G: TCustomBitmap;
+  begin
+    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, 16));
+    try
+      if ResolutionWidth=Width then
+        Result := AddSliceCentered(G)
+      else
+      begin
+        Result := Count-1;
+        ReplaceSliceCentered(Result, ResolutionWidth, G, False);
+      end;
+    finally
+      G.Free;
+    end;
+  end;
+
+var
+  K: TEntryKey;
+  ANode: TAVLTreeNode;
+  E: TEntry;
+  I: Integer;
+begin
+  K.GlyphName := AResourceName;
+
+  ANode := FImageIndexes.FindKey(@K, @TLCLGlyphs_TEntry_CompareKey);
+  if ANode<>nil then
+    Result := TEntry(ANode.Data).ImageIndex
+  else
+  begin
+    E := TEntry.Create;
+    E.GlyphName := AResourceName;
+    E.ImageIndex := AddBtnImage(FLoadResolutions[Low(FLoadResolutions)]);
+    for I := Low(FLoadResolutions)+1 to High(FLoadResolutions) do
+      AddBtnImage(FLoadResolutions[I]);
+    FImageIndexes.Add(E);
+    Result := E.ImageIndex;
+  end;
+end;
+
+procedure TLCLGlyphs.RegisterResolutions(
+  const AResolutionWidths: array of Integer);
+var
+  I: Integer;
+begin
+  inherited RegisterResolutions(AResolutionWidths);
+
+  SetLength(FLoadResolutions, Length(AResolutionWidths));
+  for I := Low(FLoadResolutions) to High(FLoadResolutions) do
+    FLoadResolutions[I] := AResolutionWidths[I];
+end;
+
+initialization
+
+finalization
+  FreeAndNil(GLCLGlyphs);
 
 // included by imglist.pp

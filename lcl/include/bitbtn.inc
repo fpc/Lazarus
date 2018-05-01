@@ -109,7 +109,7 @@ end;
 
 function TCustomBitBtn.GetImageIndex: TImageIndex;
 begin
-  if FButtonGlyph.ExternalImages=GLCLBtnGlyphs then
+  if FButtonGlyph.ExternalImages=LCLGlyphs then
     Result := -1
   else
     Result := FButtonGlyph.ExternalImageIndex;
@@ -117,7 +117,7 @@ end;
 
 function TCustomBitBtn.GetImages: TCustomImageList;
 begin
-  if FButtonGlyph.ExternalImages=GLCLBtnGlyphs then
+  if FButtonGlyph.ExternalImages=LCLGlyphs then
     Result := nil
   else
     Result := FButtonGlyph.ExternalImages;
@@ -314,11 +314,11 @@ begin
     begin
       if ForceDefaults or (Images=nil) then
       begin
-        Images := LCLBtnGlyphs;
+        Images := LCLGlyphs;
         idButton := BitBtnImages[Kind];
         if (idButton >= Low(BitBtnResNames)) and (idButton <= High(BitBtnResNames))
         and (BitBtnResNames[idButton] <> '') then
-          ImageIndex := LCLBtnGlyphs.GetImageIndex(BitBtnResNames[idButton])
+          ImageIndex := LCLGlyphs.GetImageIndex(BitBtnResNames[idButton])
         else
           ImageIndex := -1;
         GlyphValid := True;
