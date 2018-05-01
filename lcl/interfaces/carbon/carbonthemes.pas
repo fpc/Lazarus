@@ -605,6 +605,13 @@ begin
         Result.cy := Round(BtnRect.size.height);
       end else
         Result := inherited GetDetailSize(Details);
+    teHeader:
+      if Details.Part=HP_HEADERSORTARROW then
+      begin
+        Result.cx:=-1; // not supported yet
+        Result.cy:=-1;
+      end else
+        Result := inherited GetDetailSize(Details);
   else
     Result := inherited GetDetailSize(Details);
   end;

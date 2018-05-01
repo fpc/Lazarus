@@ -665,6 +665,11 @@ begin
     Result.cy:=Round(sz.height);
   end
   else
+  if (Details.Element=teHeader) and (Details.Part=HP_HEADERSORTARROW) then
+  begin
+    Result.cx:=-1; // not supported yet
+    Result.cy:=-1;
+  end else
     Result:=inherited GetDetailSize(Details);
 end;
 
