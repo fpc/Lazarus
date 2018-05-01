@@ -8425,9 +8425,13 @@ lcl/images/lcl_grid_images_list.txt svneol=native#text/plain
 lcl/images/sortasc.png -text svneol=unset#image/png
 lcl/images/sortasc_150.png -text svneol=unset#image/png
 lcl/images/sortasc_200.png -text svneol=unset#image/png
+lcl/images/sortasc_50.png -text svneol=unset#image/png
+lcl/images/sortasc_75.png -text svneol=unset#image/png
 lcl/images/sortdesc.png -text svneol=unset#image/png
 lcl/images/sortdesc_150.png -text svneol=unset#image/png
 lcl/images/sortdesc_200.png -text svneol=unset#image/png
+lcl/images/sortdesc_50.png -text svneol=unset#image/png
+lcl/images/sortdesc_75.png -text svneol=unset#image/png
 lcl/images/wince/build.bat svneol=native#text/x-msdos-program
 lcl/images/wince/wincedialog_cancel.png -text
 lcl/images/wince/wincedialog_ok.PNG -text
