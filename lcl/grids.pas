@@ -852,7 +852,7 @@ type
     function  GetBorderWidth: Integer;
     procedure GetTitleImageInfo(aColumnIndex:Integer; out ImgIndex: Integer; out ImgLayout: TButtonLayout);
     procedure GetSortTitleImageInfo(aColumnIndex:Integer; out ImgList: TCustomImageList;
-      out ImgIndex, ImgListWidth: Integer);
+      out ImgIndex, ImgListWidth: Integer; out NativeSortGlyphs: Boolean);
     function  GetRowCount: Integer;
     function  GetRowHeights(Arow: Integer): Integer;
     function  GetSelectedRange(AIndex: Integer): TGridRect;
@@ -4131,11 +4131,12 @@ var
   ImgRes: TScaledImageListResolution;
   s: TSize;
   Details: TThemedElementDetails;
+  NativeSortGlyphs: Boolean;
 begin
   if FSortColumn = AColumnIndex then
   begin
-    GetSortTitleImageInfo(AColumnIndex, ImgList, ImgIndex, ImgListWidth);
-    if (ImgList=nil) or (ImgIndex<0) then // draw native sort buttons
+    GetSortTitleImageInfo(AColumnIndex, ImgList, ImgIndex, ImgListWidth, NativeSortGlyphs);
+    if NativeSortGlyphs then// draw native sort buttons
     begin
       case FSortOrder of
         soAscending: Details := ThemeServices.GetElementDetails(thHeaderSortArrowSortedUp);
@@ -5398,10 +5399,12 @@ begin
 end;
 
 procedure TCustomGrid.GetSortTitleImageInfo(aColumnIndex: Integer; out
-  ImgList: TCustomImageList; out ImgIndex, ImgListWidth: Integer);
+  ImgList: TCustomImageList; out ImgIndex, ImgListWidth: Integer; out
+  NativeSortGlyphs: Boolean);
 var
   ResName: string;
 begin
+  NativeSortGlyphs := False;
   ImgIndex := -1;
   ImgList := nil;
   ImgListWidth := 0;
@@ -5421,7 +5424,6 @@ begin
     ImgListWidth := FTitleImageListWidth;
     ImgIndex := FDescImgInd;
   end else
-  if (TitleStyle<>tsNative) then// draw native sort buttons
   begin
     ImgList := LCLBtnGlyphs;
     case FSortOrder of
@@ -5429,6 +5431,7 @@ begin
       soDescending: ResName := 'sortdesc';
     end;
     ImgIndex := LCLBtnGlyphs.GetImageIndex(ResName);
+    NativeSortGlyphs := FTitleStyle = tsNative;
   end;
 end;
 
@@ -11007,7 +11010,7 @@ var
   TmpCanvas: TCanvas;
   C: TGridColumn;
   aRect: TRect;
-  isMultiLine: Boolean;
+  isMultiLine, B: Boolean;
   aText: string;
   aLayout: TButtonLayout;
   imgList: TCustomImageList;
@@ -11020,7 +11023,7 @@ begin
     imgWidth := FTitleImageList.WidthForPPI[FTitleImageListWidth, Font.PixelsPerInch] + 2*DEFIMAGEPADDING
   else
     imgWidth := 0;
-  GetSortTitleImageInfo(aCol, imgList, i, W);
+  GetSortTitleImageInfo(aCol, imgList, i, W, B);
   if (imgList<>nil) and (i>=0) then
     Inc(imgWidth, imgList.WidthForPPI[W, Font.PixelsPerInch] + DEFIMAGEPADDING);
 
