@@ -4147,7 +4147,7 @@ begin
       s := ThemeServices.GetDetailSize(Details);
     end else
       s := Size(-1, -1);
-    if s.Width>0 then // theme services support sorted arrows
+    if s.cx>0 then // theme services support sorted arrows
     begin
       w := Scale96ToFont(s.cx);
       h := Scale96ToFont(s.cy);
