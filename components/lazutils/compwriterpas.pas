@@ -57,6 +57,7 @@ const
   CSPDefaultExecCustomProc = 'ExecCustomCSP';
   CSPDefaultExecCustomProcUnit = 'LazPasReadUtil';
   CSPDefaultMaxColumn = 80;
+  CSPDefaultAssignOp = ':=';
   CWPSkipParentName = '-';
 type
   TCompWriterPas = class;
@@ -71,7 +72,7 @@ type
 
   TCWPOption = (
     cwpoNoSignature,     // do not write Begin, End signatures
-    cwpoNoSelf,// enclose in "with LookupRootname do begin"
+    cwpoNoSelf,          // enclose in "with LookupRootname do begin"
     cwpoSetParentFirst,  // add "SetParentComponent" before setting properties, default: after
     cwpoSrcCodepageUTF8, // target unit uses $codepage utf-8, aka do not convert UTF-8 string literals
     cwpoNoWithBlocks     // do not use with-do
@@ -180,16 +181,18 @@ type
     property OnDefineProperties: TCWPDefinePropertiesEvent read FOnDefineProperties write FOnDefineProperties;
   public
     // code snippets
-    property LineEnding: string read FLineEnding write FLineEnding;
-    property AssignOp: String read FAssignOp write FAssignOp;
-    property SignatureBegin: String read FSignatureBegin write FSignatureBegin;
-    property SignatureEnd: String read FSignatureEnd write FSignatureEnd;
+    property LineEnding: string read FLineEnding write FLineEnding; // default: system.LineEnding
+    property AssignOp: String read FAssignOp write FAssignOp; // default CSPDefaultAssignOp;
+    property SignatureBegin: String read FSignatureBegin write FSignatureBegin; // default CSPDefaultSignatureBegin
+    property SignatureEnd: String read FSignatureEnd write FSignatureEnd; // default CSPDefaultSignatureEnd
     property AccessClass: string read FAccessClass
       write FAccessClass; // classname used to access protected TComponent members like SetChildOrder
-    property NeedAccessClass: boolean read FNeedAccessClass write FNeedAccessClass; // some property needed AccessClass
-    property ExecCustomProc: string read FExecCustomProc write FExecCustomProc;
-    property ExecCustomProcUnit: string read FExecCustomProcUnit write FExecCustomProcUnit;
+    property ExecCustomProc: string read FExecCustomProc write FExecCustomProc; // default CSPDefaultExecCustomProc
+    property ExecCustomProcUnit: string read FExecCustomProcUnit write FExecCustomProcUnit; // default CSPDefaultExecCustomProcUnit
     property MaxColumn: integer read FMaxColumn write FMaxColumn default CSPDefaultMaxColumn;
+  public
+    // set automatically when writing
+    property NeedAccessClass: boolean read FNeedAccessClass write FNeedAccessClass; // some property needed AccessClass
     property NeededUnits: TStrings read FNeededUnits write SetNeededUnits;
   end;
 
@@ -694,7 +697,9 @@ begin
             (MethodValue.Data <> DefMethodValue.Data) then
           begin
             OnGetMethodName(Self,Instance,PropInfo,Ident);
-            OnGetMethodName(Self,Ancestor,PropInfo,s);
+            s:='';
+            if HasAncestor then
+              OnGetMethodName(Self,Ancestor,PropInfo,s);
             if Ident<>s then
             begin
               if Ident='' then
@@ -1436,7 +1441,7 @@ begin
   FIndentStep:=2;
   FStream:=AStream;
   FLineEnding:=system.LineEnding;
-  FAssignOp:=':=';
+  FAssignOp:=CSPDefaultAssignOp;
   FSignatureBegin:=CSPDefaultSignatureBegin;
   FSignatureEnd:=CSPDefaultSignatureEnd;
   FMaxColumn:=CSPDefaultMaxColumn;

@@ -44,7 +44,7 @@ uses
   LCLIntf, LCLType, LCLProc, LResources, LCLMemManager, Controls, Graphics,
   Forms, Menus, Dialogs,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache,
+  FileUtil, LazFileUtils, LazFileCache, CompWriterPas,
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // IDEIntf
@@ -83,6 +83,13 @@ type
                                     ): TAvlTreeNode;
     procedure FrameCompGetCreationClass(Sender: TObject;
       var NewComponentClass: TComponentClass);
+    procedure OnPasWriterFindAncestor(Writer: TCompWriterPas;
+      aComponent: TComponent; const aName: string; var anAncestor,
+      aRootAncestor: TComponent);
+    procedure OnPasWriterGetMethodName(Writer: TCompWriterPas;
+      Instance: TPersistent; PropInfo: PPropInfo; out Name: String);
+    procedure OnPasWriterGetParentProperty(Writer: TCompWriterPas;
+      Component: TComponent; var PropName: string);
     function OnPropHookGetAncestorInstProp(const InstProp: TInstProp;
                                       out AncestorInstProp: TInstProp): boolean;
   protected
@@ -135,6 +142,7 @@ type
     function CutSelectionToClipboard: Boolean; override;
     function PasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
                                          ): Boolean; override;
+
     function GetCurrentObjectInspector: TObjectInspectorDlg; override;
 
     // JIT components
@@ -163,6 +171,7 @@ type
     function SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
       var BinCompStream: TExtMemoryStream): TModalResult;
     function OnGetDanglingMethodName(const AMethod: TMethod; aRootComponent: TObject): string;
+    procedure SaveComponentAsPascal(aDesigner: TIDesigner; Writer: TCompWriterPas); override;
 
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
@@ -439,6 +448,34 @@ end;
 
 { TCustomFormEditor }
 
+procedure OnPasWriterDefinePropertyTStrings(Writer: TCompWriterPas;
+  Instance: TPersistent; const Identifier: string; var Handled: boolean);
+var
+  List: TStrings;
+  HasData: Boolean;
+  i: Integer;
+begin
+  if not (Instance is TStrings) then exit;
+  List:=TStrings(Instance);
+  if Assigned(Writer.Ancestor) then
+    // Only serialize if string list is different from ancestor
+    if Writer.Ancestor.InheritsFrom(TStrings) then
+      HasData := not List.Equals(TStrings(Writer.Ancestor))
+    else
+      HasData := True
+  else
+    HasData := List.Count > 0;
+  if not HasData then exit;
+  Writer.WriteStatement('with '+Identifier+' do begin');
+  Writer.Indent;
+  Writer.WriteStatement('Clear;');
+  for i:=0 to List.Count-1 do
+    Writer.WriteStatement('Add('+Writer.GetStringLiteral(List[i])+');');
+  Writer.Unindent;
+  Writer.WriteStatement('end;');
+  Handled:=true;
+end;
+
 constructor TCustomFormEditor.Create;
 
   procedure InitJITList(List: TJITComponentList);
@@ -475,6 +512,8 @@ begin
   RegisterDesignerBaseClass(TAbstractIDEOptionsEditor);
 
   GlobalDesignHook.AddHandlerGetAncestorInstProp(@OnPropHookGetAncestorInstProp);
+
+  RegisterDefinePropertiesPas(TStrings,@OnPasWriterDefinePropertyTStrings);
 end;
 
 destructor TCustomFormEditor.Destroy;
@@ -1094,6 +1133,15 @@ begin
     if aRootComponent.ClassType=JITMethod.TheClass then
       Result:=JITMethod.TheMethodName;
   end;
+end;
+
+procedure TCustomFormEditor.SaveComponentAsPascal(aDesigner: TIDesigner;
+  Writer: TCompWriterPas);
+begin
+  Writer.OnFindAncestor:=@OnPasWriterFindAncestor;
+  Writer.OnGetParentProperty:=@OnPasWriterGetParentProperty;
+  Writer.OnGetMethodName:=@OnPasWriterGetMethodName;
+  Writer.WriteDescendant(aDesigner.LookupRoot);
 end;
 
 function TCustomFormEditor.DesignerCount: integer;
@@ -2237,6 +2285,43 @@ procedure TCustomFormEditor.FrameCompGetCreationClass(Sender: TObject;
 begin
   if Assigned(OnSelectFrame) then
     OnSelectFrame(Sender,NewComponentClass);
+end;
+
+procedure TCustomFormEditor.OnPasWriterFindAncestor(Writer: TCompWriterPas;
+  aComponent: TComponent; const aName: string; var anAncestor,
+  aRootAncestor: TComponent);
+var
+  C: TComponent;
+begin
+  C:=GetAncestorInstance(aComponent);
+  if C=nil then exit;
+  anAncestor:=C;
+  if C.Owner=nil then
+    aRootAncestor:=C;
+  if Writer=nil then ;
+  if aName='' then ;
+end;
+
+procedure TCustomFormEditor.OnPasWriterGetMethodName(Writer: TCompWriterPas;
+  Instance: TPersistent; PropInfo: PPropInfo; out Name: String);
+var
+  aMethod: TMethod;
+  aJITMethod: TJITMethod;
+begin
+  Name:='';
+  if Instance=nil then exit;
+  aMethod:=GetMethodProp(Instance,PropInfo);
+  if GetJITMethod(aMethod,aJITMethod) then
+    Name:=aJITMethod.TheMethodName;
+  if Writer=nil then ;
+end;
+
+procedure TCustomFormEditor.OnPasWriterGetParentProperty(
+  Writer: TCompWriterPas; Component: TComponent; var PropName: string);
+begin
+  if Component is TControl then
+    PropName:='Parent';
+  if Writer=nil then ;
 end;
 
 function TCustomFormEditor.OnPropHookGetAncestorInstProp(

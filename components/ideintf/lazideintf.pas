@@ -219,7 +219,7 @@ type
     sefsAfterWrite
     );
   TSaveEditorFileEvent = function(Sender: TObject; aFile: TLazProjectFile;
-     SaveStep: TSaveEditorFileStep; TargetFilename: string): TModalResult of object;
+    SaveStep: TSaveEditorFileStep; TargetFilename: string): TModalResult of object;
 
   TShowDesignerFormOfSourceFunction = procedure(Sender: TObject; AEditor: TSourceEditorInterface;
                                  AComponentPaletteClassSelected: Boolean) of object;

@@ -16,8 +16,8 @@ unit FormEditingIntf;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, TypInfo, types, Forms, Controls,
-  LCLClasses, ProjectIntf, ComponentEditors, ObjectInspector, UnitResources;
+  Math, Classes, SysUtils, LCLProc, TypInfo, types, Forms, Controls, LCLClasses,
+  ProjectIntf, ComponentEditors, ObjectInspector, UnitResources, CompWriterPas;
   
 const
   ComponentPaletteImageWidth = 24;
@@ -240,6 +240,7 @@ type
     property StandardDesignerBaseClasses[Index: integer]: TComponentClass read GetStandardDesignerBaseClasses
                                                                          write SetStandardDesignerBaseClasses;
     function StandardDesignerBaseClassesCount: Integer; virtual; abstract;
+
     // designers
     function DesignerCount: integer; virtual; abstract;
     property Designer[Index: integer]: TIDesigner read GetDesigner;
@@ -257,7 +258,7 @@ type
     property DesignerMediators[Index: integer]: TDesignerMediatorClass read GetDesignerMediators;
     function GetDesignerMediatorByComponent(AComponent: TComponent): TDesignerMediator; virtual; abstract;
 
-    // selection
+    // cut, copy, paste
     function SaveSelectionToStream(s: TStream): Boolean; virtual; abstract;
     function InsertFromStream(s: TStream; Parent: TWinControl;
                               Flags: TComponentPasteSelectionFlags
@@ -268,7 +269,9 @@ type
     function CutSelectionToClipboard: Boolean; virtual; abstract;
     function PasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
                                          ): Boolean; virtual; abstract;
+    procedure SaveComponentAsPascal(aDesigner: TIDesigner; Writer: TCompWriterPas); virtual; abstract;
 
+    // designer tool windows
     function GetCurrentObjectInspector: TObjectInspectorDlg; virtual; abstract;
   end;
 

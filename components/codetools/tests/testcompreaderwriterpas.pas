@@ -878,7 +878,7 @@ begin
   if Assigned(Writer.Ancestor) then
     // Only serialize if string list is different from ancestor
     if Writer.Ancestor.InheritsFrom(TStrings) then
-      HasData := not Equals(TStrings(Writer.Ancestor))
+      HasData := not List.Equals(TStrings(Writer.Ancestor))
     else
       HasData := True
   else
