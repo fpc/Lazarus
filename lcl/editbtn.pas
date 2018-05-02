@@ -948,18 +948,12 @@ end;
 
 function TCustomEditButton.GetImageIndex: TImageIndex;
 begin
-  if Button.Images=LCLGlyphs then
-    Result := -1
-  else
-    Result := Button.ImageIndex;
+  Result := Button.ImageIndex;
 end;
 
 function TCustomEditButton.GetImages: TCustomImageList;
 begin
-  if Button.Images=LCLGlyphs then
-    Result := nil
-  else
-    Result := Button.Images;
+  Result := Button.Images;
 end;
 
 function TCustomEditButton.GetImageWidth: Integer;
@@ -980,7 +974,7 @@ end;
 procedure TCustomEditButton.GlyphChanged(Sender: TObject);
 begin
   if ((Button.Glyph=nil) or (Button.Glyph.Empty))
-  and (Button.Images=nil) then
+  and (Button.Images=nil) and (Button.ImageIndex=-1) then
     LoadDefaultGlyph;
 end;
 
@@ -990,10 +984,7 @@ var
 begin
   N := GetDefaultGlyphName;
   if N <> '' then
-  begin
-    Images := LCLGlyphs;
-    ImageIndex := LCLGlyphs.GetImageIndex(N);
-  end;
+    (Button as TEditSpeedButton).ButtonGlyph.LCLGlyphName := N;
 end;
 
 function TCustomEditButton.GetFocusOnButtonClick: Boolean;

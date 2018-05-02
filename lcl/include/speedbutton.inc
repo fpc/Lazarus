@@ -434,6 +434,11 @@ begin
   end;
 end;
 
+function TCustomSpeedButton.ButtonGlyph: TButtonGlyph;
+begin
+  Result := FGlyph;
+end;
+
 function TCustomSpeedButton.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TSpeedButtonActionLink;
@@ -1051,17 +1056,10 @@ var
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
 begin
-  if FGlyph.ExternalImages<>nil then
-  begin
-    FGlyph.GetImageIndexAndEffect(Low(TButtonState), Font.PixelsPerInch,
-      GetCanvasScaleFactor, AImageRes, AIndex, AEffect);
-    Result.CX := AImageRes.Width;
-    Result.CY := AImageRes.Height;
-  end else
-  begin
-    Result.CX := FGlyph.Width;
-    Result.CY := FGlyph.Height;
-  end;
+  FGlyph.GetImageIndexAndEffect(Low(TButtonState), Font.PixelsPerInch,
+    GetCanvasScaleFactor, AImageRes, AIndex, AEffect);
+  Result.CX := AImageRes.Width;
+  Result.CY := AImageRes.Height;
 end;
 
 function TCustomSpeedButton.GetImageIndex: TImageIndex;

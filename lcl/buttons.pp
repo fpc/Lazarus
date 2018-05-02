@@ -338,6 +338,7 @@ type
   protected
     FState: TButtonState;
     class procedure WSRegisterClass; override;
+    function ButtonGlyph: TButtonGlyph;
     function GetNumGlyphs: Integer;
     procedure GlyphChanged(Sender: TObject); virtual;
     function  DialogChar(var Message: TLMKey): boolean; override;
