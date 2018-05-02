@@ -6452,6 +6452,9 @@ examples/openurltest/openurltest.ico -text
 examples/openurltest/openurltest.lpi svneol=native#text/plain
 examples/openurltest/openurltest.lpr svneol=native#text/plain
 examples/openurltest/openurltest.res -text
+examples/pascalstream/CopyAsPasPkg/copyaspasdemounit1.pas svneol=native#text/plain
+examples/pascalstream/CopyAsPasPkg/copyformaspascaldemopkg.lpk svneol=native#text/plain
+examples/pascalstream/CopyAsPasPkg/copyformaspascaldemopkg.pas svneol=native#text/plain
 examples/pascalstream/PascalStream1.lpi svneol=native#text/plain
 examples/pascalstream/PascalStream1.lpr svneol=native#text/plain
 examples/pascalstream/unit1.pas svneol=native#text/plain
