@@ -112,6 +112,13 @@ begin
     AEffect := CEffects[AUseAutoEffects > 0, State];
     AImageResolution := AImages.ResolutionForPPI[FExternalImageWidth, APPI, ACanvasScaleFactor];
   end else
+  if (FLCLGlyphResourceName<>'') and CanShow then
+  begin
+    AImages := LCLGlyphs;
+    AIndex := LCLGlyphs.GetImageIndex(FLCLGlyphResourceName);
+    AEffect := CEffects[AUseAutoEffects > 0, State];
+    AImageResolution := AImages.ResolutionForPPI[0, APPI, ACanvasScaleFactor];
+  end else
   begin
     AImages := FImages;
     if AImages<>nil then
@@ -144,14 +151,6 @@ begin
   end;
 end;
 
-procedure TButtonGlyph.GetImageIndexAndEffect(State: TButtonState; out
-  AIndex: Integer; out AEffect: TGraphicsDrawEffect);
-var
-  x: TScaledImageListResolution;
-begin
-  GetImageIndexAndEffect(State, 96, 1, x, AIndex, AEffect);
-end;
-
 function TButtonGlyph.GetNumGlyphs: TNumGlyphs;
 begin
   if Assigned(FExternalImages) then
@@ -180,6 +179,8 @@ begin
   FOriginal.Assign(Value);
   FOriginal.OnChange := @GlyphChanged;
   FNumGlyphs := 1;
+  if not FOriginal.Empty then
+    ClearLCLGlyph;
   if FOriginal.Height > 0 then
   begin
     if FOriginal.Width mod FOriginal.Height = 0 then
@@ -191,6 +192,21 @@ begin
     end;
   end;
   Refresh;
+end;
+
+procedure TButtonGlyph.SetLCLGlyphName(const ALCLGlyphName: string);
+begin
+  if FLCLGlyphResourceName = ALCLGlyphName then Exit;
+
+  FLCLGlyphResourceName := ALCLGlyphName;
+  if FLCLGlyphResourceName<>'' then
+  begin
+    ClearImages;
+    FExternalImages := nil;
+    FExternalImageIndex := -1;
+    FExternalImageWidth := 0;
+  end;
+  DoChange;
 end;
 
 procedure TButtonGlyph.SetShowMode(const AValue: TGlyphShowMode);
@@ -242,6 +258,7 @@ begin
     FImagesCache.RegisterBitmap(Self, FOriginal, NumGlyphs);
     FExternalImageIndex := -1;
     FExternalImages := nil;
+    ClearLCLGlyph;
   end;
 
   if Sender = FOriginal then
@@ -292,6 +309,8 @@ procedure TButtonGlyph.SetExternalImageIndex(const AExternalImageIndex: Integer)
 begin
   if FExternalImageIndex = AExternalImageIndex then Exit;
   FExternalImageIndex := AExternalImageIndex;
+  if FExternalImageIndex>=0 then
+    ClearLCLGlyph;
   DoChange;
 end;
 
@@ -300,6 +319,8 @@ procedure TButtonGlyph.SetExternalImages(const AExternalImages: TCustomImageList
 begin
   if FExternalImages = AExternalImages then Exit;
   FExternalImages := AExternalImages;
+  if FExternalImages<>nil then
+    ClearLCLGlyph;
   DoChange;
 end;
 
@@ -341,7 +362,13 @@ begin
     FImageIndexes[i] := -1;
 end;
 
-function TButtonGlyph.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
+procedure TButtonGlyph.ClearLCLGlyph;
+begin
+  FLCLGlyphResourceName := '';
+end;
+
+function TButtonGlyph.QueryInterface(constref iid: TGuid; out obj): LongInt;
+  stdcall;
 begin
   if GetInterface(iid, obj) then
     Result := 0
@@ -385,6 +412,14 @@ begin
     gsmSystem:
       Result := SystemShowButtonGlyphs;
   end;
+end;
+
+function TButtonGlyph.CanShowGlyph: Boolean;
+begin
+  Result :=
+       ((FImages <> nil) and (FImageIndexes[Low(TButtonState)]>=0))
+    or (FLCLGlyphResourceName <> '')
+    or ((FExternalImages <> nil) and (FExternalImageIndex > -1));
 end;
 
 procedure TButtonGlyph.CacheSetImageIndex(AIndex, AImageIndex: Integer);

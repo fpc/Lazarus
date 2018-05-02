@@ -77,11 +77,13 @@ type
     FExternalImages: TCustomImageList;
     FExternalImageIndex: Integer;
     FExternalImageWidth: Integer;
+    FLCLGlyphResourceName: string;
     FOriginal: TBitmap;
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FImagesCache: TImageListCache;
     FTransparentMode: TGlyphTransparencyMode;         // set by our owner to indicate that the glyphbitmap should be transparent
+    FLCLGlyphName: string;
     function GetHeight: Integer;
     function GetNumGlyphs: TNumGlyphs;
     function GetWidth: Integer;
@@ -92,6 +94,8 @@ type
     procedure SetNumGlyphs(Value: TNumGlyphs);
     procedure SetShowMode(const AValue: TGlyphShowMode);
     procedure ClearImages;
+    procedure ClearLCLGlyph;
+    procedure SetLCLGlyphName(const ALCLGlyphName: string);
   public
     // IUnknown
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -102,6 +106,7 @@ type
     procedure CacheSetImageIndex(AIndex, AImageIndex: Integer);
   protected
     function CanShow: Boolean;
+    function CanShowGlyph: Boolean;
     procedure DoChange; virtual;
     procedure GlyphChanged(Sender: TObject);
     procedure SetTransparentMode(AValue: TGlyphTransparencyMode);
@@ -110,7 +115,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure GetImageIndexAndEffect(State: TButtonState; out AIndex: Integer; out AEffect: TGraphicsDrawEffect);
     procedure GetImageIndexAndEffect(State: TButtonState;
       APPI: Integer; const ACanvasScaleFactor: Double;
       out AImageResolution: TScaledImageListResolution;
@@ -126,6 +130,7 @@ type
     property IsDesigning: Boolean read FIsDesigning write FIsDesigning;
     property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs;
     property Images: TCustomImageList read FImages;
+    property LCLGlyphName: string read FLCLGlyphName write SetLCLGlyphName;
     property ExternalImages: TCustomImageList read FExternalImages write SetExternalImages;
     property ExternalImageIndex: Integer read FExternalImageIndex write SetExternalImageIndex;
     property ExternalImageWidth: Integer read FExternalImageWidth write SetExternalImageWidth;
