@@ -73,7 +73,7 @@ interface
 {$DEFINE VerboseCompletionAdds}
 {off $DEFINE VerboseUpdateProcBodySignatures}
 {off $DEFINE VerboseCompleteMethod}
-{$DEFINE VerboseCreateMissingClassProcBodies}
+{off $DEFINE VerboseCreateMissingClassProcBodies}
 {off $DEFINE VerboseCompleteLocalVarAssign}
 {off $DEFINE VerboseCompleteEventAssign}
 {off $DEFINE EnableCodeCompleteTemplates}
