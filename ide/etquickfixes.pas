@@ -346,7 +346,7 @@ begin
   LazarusIDE.OpenEditorsOnCodeToolChange:=true;
   try
     Comment:=' : '+TIDEFPCParser.GetFPCMsgPattern(Msg);
-    if not CodeToolBoss.AddUnitWarnDirective(Code,IntToStr(MsgID),Comment,true) then
+    if not CodeToolBoss.AddUnitWarnDirective(Code,IntToStr(MsgID),Comment,false) then
     begin
       DebugLn(['TQuickFix_HideWithCompilerDirective CodeToolBoss.AddUnitWarnDirective failed']);
       LazarusIDE.DoJumpToCodeToolBossError;
