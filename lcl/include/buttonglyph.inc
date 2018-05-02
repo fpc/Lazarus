@@ -367,8 +367,7 @@ begin
   FLCLGlyphResourceName := '';
 end;
 
-function TButtonGlyph.QueryInterface(constref iid: TGuid; out obj): LongInt;
-  stdcall;
+function TButtonGlyph.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   if GetInterface(iid, obj) then
     Result := 0
