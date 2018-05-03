@@ -95,7 +95,7 @@ type
     {$ifdef linux}
     FCacheLine: cardinal;
     FCacheFileName: string;
-    FCacheBreakpoint: FpDbgClasses.TDBGBreakPoint;
+    FCacheBreakpoint: TFpInternalBreakpoint;
     FCacheLocation: TDBGPtr;
     FCacheBoolean: boolean;
     FCachePointer: pointer;
