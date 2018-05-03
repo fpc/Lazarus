@@ -79,7 +79,6 @@ type
   private
     FWatchEvalList: TFPList; // Schedule
     FWatchAsyncQueued: Boolean;
-    FLogAsyncQueued: boolean;
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
@@ -114,7 +113,7 @@ type
     function GetDebugInfo: TDbgInfo;
     procedure DoWatchFreed(Sender: TObject);
     procedure ProcessASyncWatches({%H-}Data: PtrInt);
-    procedure DoLog({%H-}Data: PtrInt);
+    procedure DoLog();
     procedure IncReleaseLock;
     procedure DecReleaseLock;
   protected
@@ -1350,14 +1349,12 @@ begin
     end;
 end;
 
-procedure TFpDebugDebugger.DoLog(Data: PtrInt);
+procedure TFpDebugDebugger.DoLog();
 var
   AMessage: TFpDbgLogMessage;
   AnObjList: TFPObjectList;
   i: Integer;
 begin
-  FLogAsyncQueued:=false;
-
   AnObjList:=TFPObjectList.Create(false);
   try
     EnterCriticalsection(FLogCritSection);
@@ -1682,11 +1679,7 @@ begin
   finally
     LeaveCriticalsection(FLogCritSection);
   end;
-  if not FLogAsyncQueued then
-    begin
-    FLogAsyncQueued:=true;
-    Application.QueueAsyncCall(@DoLog, 0);
-    end;
+  TThread.Queue(nil, @DoLog);
 end;
 
 procedure TFpDebugDebugger.ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod);
@@ -1885,9 +1878,6 @@ end;
 
 destructor TFpDebugDebugger.Destroy;
 begin
-  if FLogAsyncQueued or FWatchAsyncQueued then
-    debugln(['WARNING: TFpDebugDebugger.Destroy FLogAsyncQueued=',FLogAsyncQueued,' FWatchAsyncQueued=',FWatchAsyncQueued]);
-  Application.RemoveAsyncCalls(Self);
   if assigned(FFpDebugThread) then
     FreeDebugThread;
   FreeAndNil(FDbgController);
