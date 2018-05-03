@@ -1813,6 +1813,7 @@ procedure TFpDebugDebugger.FreeBreakpoint(
   const ABreakpoint: TFpInternalBreakpoint);
 begin
 {$ifdef linux}
+  if ABreakpoint = nil then exit;
   FCacheBreakpoint:=ABreakpoint;
   ExecuteInDebugThread(@DoFreeBreakpoint);
 {$else linux}
