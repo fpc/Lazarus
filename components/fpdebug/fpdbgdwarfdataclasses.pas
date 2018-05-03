@@ -3198,6 +3198,7 @@ begin
             DW_LNE_end_sequence: begin
               FEndSequence := True;
               Result := True;
+              Inc(pbyte(FLineInfoPtr), instrlen);
               Exit;
             end;
             DW_LNE_set_address: begin
