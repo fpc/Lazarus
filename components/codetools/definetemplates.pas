@@ -102,6 +102,7 @@ const
   TargetCPUMacro           = '$('+TargetCPUMacroName+')';
   NamespacesMacro          = '$('+NamespacesMacroName+')';
 
+  MacOSMinSDKVersionMacro = 'MAC_OS_X_VERSION_MIN_REQUIRED';
 
   // virtual directories
   VirtualDirectory='VIRTUALDIRECTORY';
@@ -7984,6 +7985,7 @@ var
   i: Integer;
   Param, Namespaces: String;
   p: PChar;
+  MacMinVer: single;
 begin
   Result:=nil;
   if AlwaysCreate then
@@ -8060,6 +8062,13 @@ begin
               AddDefine('Define '+MacroControllerUnit,
                 ctsDefine+MacroControllerUnit,MacroControllerUnit,
                 s);
+          end;
+        'M':
+          begin
+            val(copy(Param,4,255),MacMinVer,m);
+            if m=0 then
+              AddDefine(MacOSMinSDKVersionMacro,MacOSMinSDKVersionMacro,
+                MacOSMinSDKVersionMacro,IntToStr(Round(MacMinVer*100)));
           end;
         end;
 
