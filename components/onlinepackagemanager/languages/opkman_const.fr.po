@@ -3,14 +3,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2017-02-06 11:11+0100\n"
-"PO-Revision-Date: 2017-10-20 16:35+0200\n"
+"PO-Revision-Date: 2018-05-02 08:57+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
@@ -63,11 +63,11 @@ msgstr "Veuillez cocher une ou plusieurs catégories"
 #: opkman_const.rscolors_caption
 msgctxt "opkman_const.rscolors_caption"
 msgid "Colors"
-msgstr ""
+msgstr "Couleurs"
 
 #: opkman_const.rscolors_cd_title
 msgid "Select color"
-msgstr ""
+msgstr "Choisir une couleur"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
@@ -111,7 +111,7 @@ msgstr "Version interne"
 
 #: opkman_const.rscreatejsonforupdatesfrm_error1
 msgid "Cannot create JSON for updates! Error message:"
-msgstr "Impossible de créer les fichiers JSON à jour ! Message d'erreur :"
+msgstr "Impossible de créer les fichiers JSON pour les mises à jour ! Message d'erreur :"
 
 #: opkman_const.rscreatejsonforupdatesfrm_lblinktozip_caption
 msgid "Link to the package zip file"
@@ -607,7 +607,7 @@ msgstr "Par nom"
 
 #: opkman_const.rsmainfrm_micopytoclpbrd
 msgid "Copy to clipboard"
-msgstr "Copier vers le presse-papier"
+msgstr "Copier vers le presse-papiers"
 
 #: opkman_const.rsmainfrm_micreatejsonforupdates
 msgid "Create JSON for updates"
@@ -629,11 +629,11 @@ msgstr "Descendant"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
 msgid "From external source"
-msgstr ""
+msgstr "Depuis une source externe"
 
 #: opkman_const.rsmainfrm_mifromrepository
 msgid "From repository"
-msgstr ""
+msgstr "Depuis le dépôt"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
@@ -676,28 +676,20 @@ msgid "A package with the same name already exists!"
 msgstr "Un paquet portant le même nom existe déjà !"
 
 #: opkman_const.rsmainfrm_packageupdate0
-#, fuzzy
-#| msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
 msgid "The following repository packages are not available externally. The packages will be skipped. Continue?"
-msgstr "Les paquets de dépôt suivants ne sont pas installés ou n'ont pas de lien de téléchargement externe correct. Les paquets seront ignorés. Voulez-vous continuer ?"
+msgstr "Les paquets de dépôt suivants ne sont pas disponibles en externe. Les paquets seront ignorés. Voulez-vous continuer ?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-#, fuzzy
-#| msgid "None of the checked repository packages is installed or has a valid external download link."
 msgid "None of the checked repository packages are available externally."
-msgstr "Aucun des paquets de dépôt cochés n'est installé ou possède un lien de téléchargement correct."
+msgstr "Aucun des paquets de dépôt cochés n'est disponible en externe."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
-#, fuzzy
-#| msgid ""
-#| "Updating packages from external link is not without a risk!\n"
-#| "Only update if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
 "Only install if you trust the package maintainer. Continue?\n"
 msgstr ""
 "La mise à jour depuis un lien externe n'est pas sans risques !\n"
-"Ne procédez au téléchargement que si vous faites confiance au mainteneur. Voulez-vous continuer ?\n"
+"Ne procédez à l'installation que si vous faites confiance au mainteneur. Voulez-vous continuer ?\n"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 msgid "%s packages successfully loaded from file!"
@@ -709,7 +701,7 @@ msgstr "%s paquets ont été enregistrés avec succès dans le fichier !"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
 msgid "Cannot create directory \"%s\". Operation aborted."
-msgstr ""
+msgstr "Impossible de créer le répertoire \"%s\". L'opération a échoué."
 
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
@@ -760,10 +752,8 @@ msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "Le paquet \"%s\" dépend du paquet \"%s\". Faut-il résoudre cette dépendance ?"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-#, fuzzy
-#| msgid "Not resolving dependencies might lead to install failure!"
 msgid "Not resolving dependencies might lead to install failure! Continue?"
-msgstr "La non résolution des dépendances peut conduire à un échec de l'installation !"
+msgstr "La non résolution des dépendances peut conduire à un échec de l'installation ! Voulez-vous continuer ?"
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
@@ -839,11 +829,9 @@ msgid "Install packages"
 msgstr "Installer les paquets"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
-#, fuzzy
-#| msgid "Open"
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
 msgid "Local repo"
-msgstr "Ouvrir"
+msgstr "Dépôt local"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
 msgid "Open local repository"
@@ -919,11 +907,9 @@ msgid "Repository"
 msgstr "Dépôt"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
-#, fuzzy
-#| msgid "Update"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
 msgid "External"
-msgstr "Mettre à jour"
+msgstr "Externe"
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgctxt "opkman_const.rsmainfrm_vsttext_author"
@@ -950,11 +936,9 @@ msgid "Description"
 msgstr "Description"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
-#, fuzzy
-#| msgid "Update link (JSON)"
 msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
 msgid "External link (JSON)"
-msgstr "Mettre à jour le lien (JSON)"
+msgstr "Lien externe (JSON)"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
@@ -1137,15 +1121,13 @@ msgid "Up to date"
 msgstr "Mise à jour"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate6
-#, fuzzy
-#| msgid "New updates available"
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
 msgid "New version available"
-msgstr "Nouvelles mises à jour disponibles"
+msgstr "Nouvelle version disponible"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate7
 msgid "Ahead of OPM"
-msgstr ""
+msgstr "Avant OPM"
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
@@ -1213,25 +1195,24 @@ msgstr "Version"
 
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
-msgstr ""
+msgstr "Afin que les modifications soient effectives, vous devez reconstruire l'EDI. Voulez-vous le faire maintenant ?"
 
 #: opkman_const.rsopmintfpackagelistfrm_caption
 msgid "Install online packages"
-msgstr ""
+msgstr "Installer les paquets en ligne"
 
 #: opkman_const.rsopmintfpackagelistfrm_pninfo
 msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
-msgstr ""
+msgstr "Veuillez vérifier ce qui suit avant l'installation : compatibilité avec FPC et Lazarus, ensembles graphiques supportés (\"widgetsets\"), licence et informations de version."
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
-#, fuzzy
 msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
 msgid "Data"
 msgstr "Données"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package"
-msgstr ""
+msgstr "Paquet Lazarus"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
@@ -1241,7 +1222,7 @@ msgstr "Ajouter"
 #: opkman_const.rsoptions_bcolors_caption
 msgctxt "opkman_const.rsoptions_bcolors_caption"
 msgid "Colors"
-msgstr ""
+msgstr "Couleurs"
 
 #: opkman_const.rsoptions_bdelete_caption
 msgctxt "opkman_const.rsoptions_bdelete_caption"
@@ -1255,7 +1236,7 @@ msgstr "Éditer"
 
 #: opkman_const.rsoptions_bpoptions_bhelp
 msgid "Restore defaults"
-msgstr ""
+msgstr "Valeurs par défaut"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1466,19 +1447,19 @@ msgstr "Veuillez entrer l'adresse du serveur proxy !"
 
 #: opkman_const.rsoptions_rbhintformoptions_caption
 msgid "Quick info for repository packages"
-msgstr ""
+msgstr "Information rapide pour les paquets de dépôt"
 
 #: opkman_const.rsoptions_rbhintformoptions_item0
 msgid "Behaves like a regular hint window"
-msgstr ""
+msgstr "Se comporte comme une fenêtre d'astuce ordinaire"
 
 #: opkman_const.rsoptions_rbhintformoptions_item1
 msgid "It's triggered by SHIFT, moves with the mouse"
-msgstr ""
+msgstr "C'est déclenché par la touche MAJ ; se déplace avec la souris"
 
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
-msgstr ""
+msgstr "Désactivé"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
@@ -1533,7 +1514,7 @@ msgstr "Mettre à jour la liste des paquets"
 
 #: opkman_const.rspackagesfound
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
-msgstr "(%s paquets de dépôt trouvés, contenant %s fichiers \"lpk\" - taille totale : %s))"
+msgstr "(%s paquets de dépôt trouvés, contenant %s fichiers lpk - taille totale : %s))"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
@@ -1783,5 +1764,5 @@ msgstr "Nom"
 
 #: opkman_const.rsrepositorydetailsfrm_mdescription_hint
 msgid "Enter the repository description"
-msgstr "Entrer la description du dépôt"
+msgstr "Entrez la description du dépôt"
 

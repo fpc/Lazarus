@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"PO-Revision-Date: 2017-09-22 10:11+0200\n"
+"PO-Revision-Date: 2018-05-02 08:38+0200\n"
 "Project-Id-Version: lazreport\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.6\n"
 "MIME-Version: 1.0\n"
 "Project-Id-Version: lazreport\n"
 "POT-Creation-Date: \n"
@@ -46,7 +46,7 @@ msgstr "Taille automatique"
 
 #: lr_const.sband
 msgid "Band:"
-msgstr "Bande : "
+msgstr "Bande :"
 
 #: lr_const.sband1
 msgid "Report title"
@@ -82,15 +82,15 @@ msgstr "Pied de page colonne"
 
 #: lr_const.sband17
 msgid "Group header"
-msgstr "En-tête Groupe"
+msgstr "En-tête de groupe"
 
 #: lr_const.sband18
 msgid "Group footer"
-msgstr "Pied de page Groupe"
+msgstr "Pied de page de groupe"
 
 #: lr_const.sband19
 msgid "Cross header"
-msgstr "En-tête tableau"
+msgstr "En-tête de tableau"
 
 #: lr_const.sband2
 msgid "Report summary"
@@ -98,11 +98,11 @@ msgstr "Résumé du rapport"
 
 #: lr_const.sband20
 msgid "Cross data"
-msgstr "Données tableau"
+msgstr "Données de tableau"
 
 #: lr_const.sband21
 msgid "Cross footer"
-msgstr "Pied de page tableau"
+msgstr "Pied de page de tableau"
 
 #: lr_const.sband22
 msgctxt "lr_const.sband22"
@@ -136,11 +136,11 @@ msgstr "Pied de page principal"
 
 #: lr_const.sband8
 msgid "Detail header"
-msgstr "En-tête Détail"
+msgstr "En-tête de détail"
 
 #: lr_const.sband9
 msgid "Detail data"
-msgstr "Données Détail"
+msgstr "Données de détail"
 
 #: lr_const.sbandeditorformcapt
 msgid "Band data source"
@@ -259,141 +259,140 @@ msgstr "Confirmer"
 
 #: lr_const.scrosseditoraverage
 msgid "Average"
-msgstr ""
+msgstr "Moyenne"
 
 #: lr_const.scrosseditorblue
 msgid "Blue"
-msgstr ""
+msgstr "Bleu"
 
 #: lr_const.scrosseditorbluewhite
 msgid "Blue and White"
-msgstr ""
+msgstr "Bleu et blanc"
 
 #: lr_const.scrosseditorcaption
 msgid "Cross tab editor"
-msgstr ""
+msgstr "Éditeur de structure de tableau"
 
 #: lr_const.scrosseditorcount
 msgid "Count"
-msgstr ""
+msgstr "Compter"
 
 #: lr_const.scrosseditorcyan
 msgid "Cyan"
-msgstr ""
+msgstr "Cyan"
 
 #: lr_const.scrosseditorgray
 msgid "Gray"
-msgstr ""
+msgstr "Gris"
 
 #: lr_const.scrosseditorgreen
 msgid "Green"
-msgstr ""
+msgstr "Vert"
 
 #: lr_const.scrosseditorgreenorange
 msgid "Green and Orange"
-msgstr ""
+msgstr "Vert et orange"
 
 #: lr_const.scrosseditormax
 msgid "Max"
-msgstr ""
+msgstr "Maximum"
 
 #: lr_const.scrosseditormin
 msgid "Min"
-msgstr ""
+msgstr "Minimum"
 
 #: lr_const.scrosseditornone
-#, fuzzy
 msgctxt "lr_const.scrosseditornone"
 msgid "None"
 msgstr "Aucun"
 
 #: lr_const.scrosseditororange
 msgid "Orange"
-msgstr ""
+msgstr "Orange"
 
 #: lr_const.scrosseditorshowcolheader
 msgid "Show column header"
-msgstr ""
+msgstr "Montrer l'en-tête de colonne"
 
 #: lr_const.scrosseditorshowcoltotal
 msgid "Show column total"
-msgstr ""
+msgstr "Montrer le total de la colonne"
 
 #: lr_const.scrosseditorshowcorner1
 msgid "Show corner 1"
-msgstr ""
+msgstr "Montrer le coin 1"
 
 #: lr_const.scrosseditorshowcorner2
 msgid "Show corner 2"
-msgstr ""
+msgstr "Montrer le coin 2"
 
 #: lr_const.scrosseditorshowgrantotal
 msgid "Show grand total"
-msgstr ""
+msgstr "Montrer le total général"
 
 #: lr_const.scrosseditorshowrowheader
 msgid "Show row header"
-msgstr ""
+msgstr "Montrer l'en-tête de ligne"
 
 #: lr_const.scrosseditorshowrowtotal
 msgid "Show row total"
-msgstr ""
+msgstr "Montrer le total de la ligne"
 
 #: lr_const.scrosseditorshowtitle
 msgid "Show title"
-msgstr ""
+msgstr "Montrer le titre"
 
 #: lr_const.scrosseditorsource
 msgid "Source data"
-msgstr ""
+msgstr "Données sources"
 
 #: lr_const.scrosseditorstructure
 msgid "Cross-tab structure"
-msgstr ""
+msgstr "Structure de tableau"
 
 #: lr_const.scrosseditorstyle
 msgid "Select style"
-msgstr ""
+msgstr "Choisir le style"
 
 #: lr_const.scrosseditorsum
 msgid "Sum"
-msgstr ""
+msgstr "Somme"
 
 #: lr_const.scrosseditorwhite
 msgid "White"
-msgstr ""
+msgstr "Blanc"
 
 #: lr_const.scrosstabcoltitle
 msgid "Col title"
-msgstr ""
+msgstr "Titre col"
 
 #: lr_const.scrosstabcoltotal
 msgid "Col total"
-msgstr ""
+msgstr "Total col"
 
 #: lr_const.scrosstabdata
 msgid "Data"
-msgstr ""
+msgstr "Données"
 
 #: lr_const.scrosstabgrantotal
 msgid "Grand total"
-msgstr ""
+msgstr "Total général"
 
 #: lr_const.scrosstabrowtitle
 msgid "Row title"
-msgstr ""
+msgstr "Titre de ligne"
 
 #: lr_const.scrosstabrowtotal
 msgid "Row total"
-msgstr ""
+msgstr "Total de ligne"
 
 #: lr_const.scrosstabtotalchcell
 msgid "Total CH cell"
-msgstr ""
+msgstr "Total cellule CH"
 
 #: lr_const.scrosstabtotalrhcell
 msgid "Total RH cell"
-msgstr ""
+msgstr "Total cellule RH"
 
 #: lr_const.scsvfile
 msgid "CSV File"
@@ -401,14 +400,13 @@ msgstr "Fichier CSV"
 
 #: lr_const.scurmemo
 msgid "Memo:"
-msgstr "Mémo : "
+msgstr "Mémo :"
 
 #: lr_const.sdatainspfields
 msgid "Fields"
-msgstr ""
+msgstr "Champs"
 
 #: lr_const.sdatainspvariables
-#, fuzzy
 msgctxt "lr_const.sdatainspvariables"
 msgid "Variables"
 msgstr "Variables"
@@ -443,7 +441,7 @@ msgstr "Imprimante par défaut"
 
 #: lr_const.sdescriptionavg
 msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
-msgstr "AVG(<Expression> [,NomBande [,1]])/Calcule la moyenne de <Expression> pour les lignes dans [NomBande]. Si le paramètre [1] est utilisé, calcule également la moyenne des lignes non visibles.\""
+msgstr "AVG(<Expression> [,NomBande [,1]])/Calcule la moyenne de <Expression> pour les lignes dans [NomBande]. Si le paramètre [1] est utilisé, calcule également la moyenne des lignes non visibles."
 
 #: lr_const.sdescriptioncopy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
@@ -479,7 +477,7 @@ msgstr "FRAC(<Valeur>)/Retourne la partie fractionnaire de <Valeur>."
 
 #: lr_const.sdescriptionif
 msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
-msgstr ""
+msgstr "IF(<expression>, <Value1>, <Value2>)/Retourne <Value1>, si <expression> est vraie ; sinon retourne <Value2>."
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
@@ -487,7 +485,7 @@ msgstr "INC(<Valeur>)/Incrémente <Valeur>."
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
-msgstr "INPUT(<Caption> [,Default])/Affiche une boîte de dialogue avec le titre <Caption> et un champ de saisie. Si le paramètre [Default] est présent, ce texte sera affiché dans le champ de saisie. Lorsque l'utilisateur clique sur \"OK\", le texte est retourné."
+msgstr "INPUT(<Caption> [,Default])/Affiche une boîte de dialogue avec le titre <Caption> et un champ de saisie. Si le paramètre [Default] est présent, ce texte sera affiché dans le champ de saisie. Lorsque l'utilisateur clique sur OK, le texte est retourné."
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
@@ -567,7 +565,7 @@ msgstr "STRTOTIME(<Chaîne>)/Convertit <Chaîne> en heure."
 
 #: lr_const.sdescriptionsum
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
-msgstr "SUM(<Expression> [,NomBande [,1]])/Calcule la somme de  <Expression> pour les lignes de [NomBande]. Si le paramètre [1] est présent, calcule aussi la somme des lignes non visibles."
+msgstr "SUM(<Expression> [,NomBande [,1]])/Calcule la somme de <Expression> pour les lignes de [NomBande]. Si le paramètre [1] est présent, calcule aussi la somme des lignes non visibles."
 
 #: lr_const.sdescriptiontrim
 msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
@@ -583,7 +581,7 @@ msgstr "YEAROF(<Date>)/Retourne l'année de la date <Date>."
 
 #: lr_const.sdesignreport
 msgid "Design report"
-msgstr "Générateur de rapport"
+msgstr "Concepteur de rapport"
 
 #: lr_const.sdesoptionsform18pix
 msgid "&18 pixels (5mm)"
@@ -612,7 +610,7 @@ msgstr "&Contenu"
 #: lr_const.sdesoptionsformdes
 msgctxt "lr_const.sdesoptionsformdes"
 msgid "Designer"
-msgstr "Générateur"
+msgstr "Concepteur"
 
 #: lr_const.sdesoptionsformediting
 msgid "&Editing after insert"
@@ -633,7 +631,7 @@ msgstr "&Pouces"
 
 #: lr_const.sdesoptionsforminplace
 msgid "Use inplace editor"
-msgstr ""
+msgstr "Utiliser l'édition sur place"
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
@@ -675,7 +673,7 @@ msgstr "Unités du rapport"
 
 #: lr_const.sdoc
 msgid "Report:"
-msgstr "Rapport : "
+msgstr "Rapport :"
 
 #: lr_const.sdocautor
 msgid "Author"
@@ -937,7 +935,7 @@ msgstr "&Texte à trouver"
 
 #: lr_const.sfirstpass
 msgid "Performing 1st pass:"
-msgstr "Exécution de la première passe"
+msgstr "Exécution de la première passe :"
 
 #: lr_const.sfmtformdecid
 msgid "&Decimal digits"
@@ -1067,7 +1065,7 @@ msgstr "Inspecteur de données"
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
-msgstr "Vous avez déjà un composant \"TfrDesigner\""
+msgstr "Vous avez déjà un composant TfrDesigner"
 
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
@@ -1638,7 +1636,7 @@ msgstr "Pouces"
 
 #: lr_const.sinsbarcode
 msgid "Insert Barcode object"
-msgstr "Insérer un objet code- barres"
+msgstr "Insérer un objet code-barres"
 
 #: lr_const.sinschart
 msgid "Insert Chart object"
@@ -1650,7 +1648,7 @@ msgstr "Insérer un objet case à cocher"
 
 #: lr_const.sinscrosstab
 msgid "Insert Cross-tab object"
-msgstr ""
+msgstr "Insérer une structure de tableau"
 
 #: lr_const.sinsert
 msgid "Insert"
@@ -1698,7 +1696,7 @@ msgstr "Insérer un rectangle arrondi avec une zone ombrée"
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
-msgstr "Inserer un objet forme géométrique"
+msgstr "Insérer un objet forme géométrique"
 
 #: lr_const.sinterpretator
 msgid "Interpretator"
@@ -2476,7 +2474,7 @@ msgstr "&Page courante"
 
 #: lr_const.sprintforminfo
 msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
-msgstr "Écrire les numéros de page et/ou intervalle de pages, séparés par des virgules. Par exemple, 1,3,5-12"
+msgstr "Écrire les numéros de page et/ou intervalles de pages, séparés par des virgules. Par exemple, 1,3,5-12"
 
 #: lr_const.sprintformnumber
 msgid "&Numbers:"
@@ -2577,7 +2575,7 @@ msgstr "Cliquez ici pour définir la couleur de l'ombre ou les couleurs du dégr
 
 #: lr_const.sroundrectformsample
 msgid "Sample :"
-msgstr "Exemple : "
+msgstr "Exemple :"
 
 #: lr_const.sroundrectformshadow
 msgid "Shadow width"
