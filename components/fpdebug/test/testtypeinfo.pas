@@ -5,9 +5,10 @@ unit TestTypeInfo;
 interface
 
 uses
-  FpPascalParser, FpDbgDwarf, FpDbgInfo, FpdMemoryTools, FpErrorMessages, LazLoggerBase,
-  LazUTF8, sysutils, fpcunit, testregistry, TestHelperClasses, TestDwarfSetup1,
-  TestDwarfSetupBasic, DbgIntfBaseTypes, TestDwarfSetupArray;
+  FpPascalParser, FpDbgDwarf, FpDbgInfo, FpdMemoryTools, FpErrorMessages,
+  FpDbgLoader, LazLoggerBase, LazUTF8, sysutils, fpcunit, testregistry,
+  TestHelperClasses, TestDwarfSetup1, TestDwarfSetupBasic, DbgIntfBaseTypes,
+  TestDwarfSetupArray;
 
 
 type
@@ -24,6 +25,7 @@ type
     FCurrentContext: TFpDbgInfoContext;
     FExpression: TFpPascalExpression;
     FImageLoader: TTestDummyImageLoader;
+    FImageLoaderList: TDbgImageLoaderList;
     FMemReader: TTestMemReader;
     FMemManager: TFpDbgMemManager;
 
@@ -320,9 +322,11 @@ end;
 procedure TTestTypeInfo.InitDwarf(ALoaderClass: TTestDummyImageLoaderClass);
 begin
   FImageLoader := ALoaderClass.Create;
+  FImageLoaderList := TDbgImageLoaderList.Create(True);
+  FImageLoaderList.Add(FImageLoader);
   FMemReader := TTestMemReader.Create;
   FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
-  FDwarfInfo := TFpDwarfInfo.Create(FImageLoader);
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
   FDwarfInfo.MemManager := FMemManager;
   FDwarfInfo.LoadCompilationUnits;
 end;
@@ -331,6 +335,7 @@ procedure TTestTypeInfo.SetUp;
 begin
   inherited SetUp;
   FImageLoader     := nil;
+  FImageLoaderList := nil;
   FMemReader       := nil;
   FMemManager      := nil;
   FDwarfInfo       := nil;
@@ -344,7 +349,7 @@ begin
   FCurrentContext.ReleaseReference;
   FExpression.Free;
   FDwarfInfo.Free;
-  FImageLoader.Free;
+  FImageLoaderList.Free;
   FMemReader.Free;
   if FMemManager <> nil then
     FMemManager.TargetMemConvertor.Free;
@@ -788,6 +793,9 @@ begin
       ExpResult(svfOrdinal, PtrUInt (ImgLoader.TestStackFrame.Obj1));
       case i of
         5,6: ExpResult(svfDataSize, TObject.InstanceSize);
+        // TODO: next line fails in 64 bit, as dummy debug info was created for 32 bit
+        // in 32 bit the Obj has a size of 32 bytes.
+        // TODO: this also depends on FPC version
         else ExpResult(svfDataSize, ImgLoader.TestStackFrame.Obj1.InstanceSize);
       end;
 
