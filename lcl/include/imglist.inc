@@ -1162,7 +1162,10 @@ begin
     FList.Insert(I, Result);
     Result.FImageList := FImageList;
     Result.FWidth := AImageWidth;
-    Result.FHeight := FImageList.Height * AImageWidth div FImageList.Width;
+    if FImageList.Width<>0 then
+      Result.FHeight := FImageList.Height * AImageWidth div FImageList.Width
+    else
+      Result.FHeight := 0;
     Result.FAutoCreatedInDesignTime := AutoCreatedInDesignTime and (AImageWidth<>FImageList.Width);
     if AScaleFromExisting then
     begin
@@ -1806,7 +1809,12 @@ begin
   if FData.Find(AImageWidth, I) then
     Result := FData[I].Height
   else
-    Result := AImageWidth * FHeight div FWidth;
+  begin
+    if FWidth<>0 then
+      Result := AImageWidth * FHeight div FWidth
+    else
+      Result := 0;
+  end;
 end;
 
 procedure TCustomImageList.GetIcon(Index: Integer; Image: TIcon; AEffect: TGraphicsDrawEffect);
