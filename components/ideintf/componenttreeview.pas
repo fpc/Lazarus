@@ -177,16 +177,18 @@ procedure TComponentWalker.AddOwnedPersistent(APers: TPersistent;
   APropName: String; AParentNode: TTreeNode);
 var
   TVNode: TTreeNode;
+  TheRoot: TPersistent;
 begin
   if (APers is TComponent)
   and (csDestroying in TComponent(APers).ComponentState) then Exit;
-  Assert(GetLookupRootForComponent(APers) = FLookupRoot,
-         'TComponentWalker.AddOwnedPersistent: LookupRoot does not match.');
-  if PersistentFoundInNode(APers) then Exit;
+  TheRoot := GetLookupRootForComponent(APers);
   {$IFDEF VerboseComponentTVWalker}
-  DebugLn(['TComponentWalker.AddOwnedPersistent Persistent=',DbgSName(APers),
-           ' PropName=',APropName,' FLookupRoot=',DbgSName(FLookupRoot)]);
+  DebugLn(['TComponentWalker.AddOwnedPersistent'+
+           ' PropName=',APropName,' Persistent=',DbgSName(APers),
+           ' its root=',DbgSName(TheRoot),' FLookupRoot=',DbgSName(FLookupRoot)]);
   {$ENDIF}
+  if TheRoot <> FLookupRoot then Exit;
+  if PersistentFoundInNode(APers) then Exit;
   TVNode := FComponentTV.Items.AddChild(AParentNode,
                           FComponentTV.CreateNodeCaption(APers, APropName));
   TVNode.Data := APers;
