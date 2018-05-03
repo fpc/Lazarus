@@ -666,10 +666,12 @@ begin
       IsHandled:=false;
       IsFinished:=false;
     end;
+    AExit:=true;
     if not IsHandled then
     begin
-{      case FPDEvent of
-        deLoadLibrary :
+     case FPDEvent of
+       deInternalContinue: AExit := False;
+{        deLoadLibrary :
           begin
             if FCurrentProcess.GetLib(FCurrentProcess.LastEventProcessIdentifier, ALib)
             and (GImageInfo <> iiNone)
@@ -681,12 +683,11 @@ begin
             if GBreakOnLibraryLoad
             then GState := dsPause;
 
-          end;
-      end; }{case}
+          end; }
+      end; {case}
     end;
     if IsFinished then
       FreeAndNil(FCommand);
-    AExit:=true;
   until AExit;
 end;
 
