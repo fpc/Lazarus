@@ -2770,9 +2770,11 @@ begin
     FLoadResolutions[I] := AResolutionWidths[I];
 end;
 
-initialization
-
-finalization
+procedure InterfaceFinal;
+begin
   FreeAndNil(GLCLGlyphs);
+end;
 
+initialization
+  RegisterInterfaceFinalizationHandler(@InterfaceFinal);
 // included by imglist.pp
