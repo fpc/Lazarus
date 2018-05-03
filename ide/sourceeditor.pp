@@ -5874,7 +5874,7 @@ procedure TSourceEditor.FillExecutionMarks;
 var
   ASource: String;
   i, idx: integer;
-  Addr: TDBGPtr;
+  HasAddr: Boolean;
   j: Integer;
 begin
   if EditorComponent.IDEGutterMarks.HasDebugMarks then Exit;
@@ -5899,15 +5899,15 @@ begin
   try
     for i := 1 to EditorComponent.Lines.Count do
     begin
-      Addr := DebugBoss.LineInfo.GetAddress(idx, i);
-      if (Addr <> 0) and (j < 0) then
+      HasAddr := DebugBoss.LineInfo.HasAddress(idx, i);
+      if (HasAddr) and (j < 0) then
         j := i;
-      if (Addr = 0) and (j >= 0) then begin
+      if (not HasAddr) and (j >= 0) then begin
         EditorComponent.IDEGutterMarks.SetDebugMarks(j, i-1);
         j := -1;
       end;
     end;
-    if (Addr <> 0) and (j >= 0) then
+    if (HasAddr) and (j >= 0) then
       EditorComponent.IDEGutterMarks.SetDebugMarks(j, EditorComponent.Lines.Count);
   finally
     EditorComponent.IDEGutterMarks.EndSetDebugMarks;

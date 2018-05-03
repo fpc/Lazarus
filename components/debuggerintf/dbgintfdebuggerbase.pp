@@ -859,8 +859,8 @@ type
   public
     constructor Create;
     function Count: Integer; virtual;
-    function GetAddress(const {%H-}AIndex: Integer; const {%H-}ALine: Integer): TDbgPtr; virtual;
-    function GetAddress(const ASource: String; const ALine: Integer): TDbgPtr;
+    function HasAddress(const AIndex: Integer; const ALine: Integer): Boolean; virtual;
+    function HasAddress(const ASource: String; const ALine: Integer): Boolean;
     function GetInfo({%H-}AAddress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; virtual;
     function IndexOf(const {%H-}ASource: String): integer; virtual;
     procedure Request(const {%H-}ASource: String); virtual;
@@ -4254,19 +4254,15 @@ begin
   inherited Create;
 end;
 
-function TBaseLineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
-begin
-  Result := 0;
-end;
-
-function TBaseLineInfo.GetAddress(const ASource: String; const ALine: Integer): TDbgPtr;
+function TBaseLineInfo.HasAddress(const ASource: String; const ALine: Integer
+  ): Boolean;
 var
   idx: Integer;
 begin
   idx := IndexOf(ASource);
   if idx = -1
-  then Result := 0
-  else Result := GetAddress(idx, ALine);
+  then Result := False
+  else Result := HasAddress(idx, ALine);
 end;
 
 function TBaseLineInfo.GetInfo(AAddress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean;
@@ -4286,6 +4282,12 @@ end;
 function TBaseLineInfo.Count: Integer;
 begin
   Result := 0;
+end;
+
+function TBaseLineInfo.HasAddress(const AIndex: Integer; const ALine: Integer
+  ): Boolean;
+begin
+  Result := False;
 end;
 
 { TDBGLineInfo }

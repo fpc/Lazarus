@@ -1070,7 +1070,8 @@ type
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
     function Count: Integer; override;
-    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
+    function HasAddress(const AIndex: Integer; const ALine: Integer): Boolean; override;
+    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
     function GetInfo({%H-}AAdress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
@@ -7075,6 +7076,12 @@ end;
 function TGDBMILineInfo.Count: Integer;
 begin
   Result := FSourceIndex.Count;
+end;
+
+function TGDBMILineInfo.HasAddress(const AIndex: Integer; const ALine: Integer
+  ): Boolean;
+begin
+  Result := GetAddress(AIndex, ALine) <> 0;
 end;
 
 function TGDBMILineInfo.GetSource(const AIndex: integer): String;

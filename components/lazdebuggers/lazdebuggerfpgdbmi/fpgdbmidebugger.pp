@@ -197,7 +197,7 @@ type
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
     function Count: Integer; override;
-    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
+    function HasAddress(const AIndex: Integer; const ALine: Integer): Boolean; override;
     function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
@@ -654,17 +654,19 @@ begin
   Result := FRequestedSources.Count;
 end;
 
-function TFpGDBMILineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
+function TFpGDBMILineInfo.HasAddress(const AIndex: Integer; const ALine: Integer
+  ): Boolean;
 var
   Map: PDWarfLineMap;
+  dummy: TDBGPtrArray;
 begin
-  Result := 0;
+  Result := False;
   if not FpDebugger.HasDwarf then
     exit;
   //Result := FpDebugger.FDwarfInfo.GetLineAddress(FRequestedSources[AIndex], ALine);
   Map := PDWarfLineMap(FRequestedSources.Objects[AIndex]);
   if Map <> nil then
-    Result := Map^.GetAddressForLine(ALine);
+    Result := Map^.GetAddressesForLine(ALine, dummy, True);
 end;
 
 function TFpGDBMILineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine,

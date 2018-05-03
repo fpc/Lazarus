@@ -486,7 +486,7 @@ type
     function FindSymbol(const {%H-}AName: String): TFpDbgSymbol; virtual; deprecated;
     function FindSymbol({%H-}AAddress: TDbgPtr): TFpDbgSymbol; virtual; deprecated;
     property HasInfo: Boolean read FHasInfo;
-    function GetLineAddress(const {%H-}AFileName: String; {%H-}ALine: Cardinal): TDbgPtr; virtual;
+    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
   end;
 
@@ -1379,9 +1379,10 @@ begin
   Result := nil;
 end;
 
-function TDbgInfo.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
+function TDbgInfo.GetLineAddresses(const AFileName: String; ALine: Cardinal;
+  var AResultList: TDBGPtrArray): Boolean;
 begin
-  Result := 0;
+  Result := False;
 end;
 
 procedure TDbgInfo.SetHasInfo;

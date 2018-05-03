@@ -48,7 +48,6 @@ type
     function FindContext(AAddress: TDbgPtr): TFpDbgInfoContext; override;
     function FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol; override;
     function FindSymbol(const AName: String): TFpDbgSymbol; override;
-    function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; override;
     property Image64Bit: boolean read FImage64Bit;
   end;
 
@@ -145,11 +144,6 @@ function TFpSymbolInfo.FindSymbol(const AName: String): TFpDbgSymbol;
 begin
   result := nil;
   //Result:=FContext.FindSymbol(AName);
-end;
-
-function TFpSymbolInfo.GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
-begin
-  Result:=inherited GetLineAddress(AFileName, ALine);
 end;
 
 end.

@@ -90,7 +90,7 @@ type
     property ThreadId: Integer read FThreadId write FThreadId;
     property StackFrame: Integer read FStackFrame write FStackFrame;
 
-    function ApplyContext(AVal: TFpDbgValue): TFpDbgValue; inline;
+    procedure ApplyContext(AVal: TFpDbgValue); inline;
     function SymbolToValue(ASym: TFpDbgSymbol): TFpDbgValue; inline;
     procedure AddRefToVal(AVal: TFpDbgValue); inline;
     function GetSelfParameter: TFpDbgValue; virtual;
@@ -990,7 +990,7 @@ begin
   Result := FDwarf.MemManager;
 end;
 
-function TFpDwarfInfoAddressContext.ApplyContext(AVal: TFpDbgValue): TFpDbgValue;
+procedure TFpDwarfInfoAddressContext.ApplyContext(AVal: TFpDbgValue);
 begin
   if (AVal <> nil) and (TFpDwarfValueBase(AVal).FContext = nil) then
     TFpDwarfValueBase(AVal).FContext := Self;
@@ -1877,7 +1877,7 @@ end;
 function TFpDwarfValueChar.GetAsWideString: WideString;
 begin
   if FSize > 2 then
-    Result := inherited GetAsString
+    Result := inherited GetAsWideString
   else
     Result := WideChar(Word(GetAsCardinal));
 end;

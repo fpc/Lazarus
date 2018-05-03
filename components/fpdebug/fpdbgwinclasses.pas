@@ -71,8 +71,8 @@ type
 
   { TDbgWinBreakpoint }
 
-  TDbgWinBreakpointEvent = procedure(const ASender: TDbgBreakpoint; const AContext: TContext) of object;
-  TDbgWinBreakpoint = class(TDbgBreakpoint)
+  TDbgWinBreakpointEvent = procedure(const ASender: TFpInternalBreakpoint; const AContext: TContext) of object;
+  TDbgWinBreakpoint = class(TFpInternalBreakpoint)
   public
     procedure SetBreak; override;
     procedure ResetBreak; override;
@@ -997,15 +997,21 @@ end;
 { TDbgWinBreakpoint }
 
 procedure TDbgWinBreakpoint.SetBreak;
+var
+  a: TDBGPtr;
 begin
   inherited;
-  FlushInstructionCache(Process.Handle, Pointer(PtrUInt(Location)), 1);
+  for a in Location do
+    FlushInstructionCache(Process.Handle, Pointer(PtrUInt(a)), 1);
 end;
 
 procedure TDbgWinBreakpoint.ResetBreak;
+var
+  a: TDBGPtr;
 begin
   inherited;
-  FlushInstructionCache(Process.Handle, Pointer(PtrUInt(Location)), 1);
+  for a in Location do
+    FlushInstructionCache(Process.Handle, Pointer(PtrUInt(a)), 1);
 end;
 
 { TDbgWinThread }

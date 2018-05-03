@@ -944,7 +944,7 @@ type
     procedure AddNotification(const ANotification: TIDELineInfoNotification);
     procedure RemoveNotification(const ANotification: TIDELineInfoNotification);
     function Count: Integer; override;
-    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
+    function HasAddress(const AIndex: Integer; const ALine: Integer): Boolean; override;
     function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
@@ -6862,11 +6862,12 @@ begin
   else Result := Master.Count;
 end;
 
-function TIDELineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
+function TIDELineInfo.HasAddress(const AIndex: Integer; const ALine: Integer
+  ): Boolean;
 begin
   if Master = nil
-  then Result := inherited GetAddress(AIndex, ALine)
-  else Result := Master.GetAddress(AIndex, ALine);
+  then Result := inherited HasAddress(AIndex, ALine)
+  else Result := Master.HasAddress(AIndex, ALine);
 end;
 
 function TIDELineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine,
