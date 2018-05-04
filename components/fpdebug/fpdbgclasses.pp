@@ -1092,7 +1092,6 @@ end;
 
 procedure TDbgProcess.MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
 var
-  BreakLocation: TDBGPtr;
   Bp: TFpInternalBreakpoint;
   Iterator: TMapIterator;
 begin
