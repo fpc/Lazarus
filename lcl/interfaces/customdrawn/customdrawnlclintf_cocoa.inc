@@ -168,7 +168,9 @@ begin
   ARawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
 
   // Take the screenshot
+  {$IF not defined(MAC_OS_X_VERSION_MIN_REQUIRED) or (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060)}
   screenshotImage := CGDisplayCreateImage(CGMainDisplayID()); // Requires 10.6+
+  {$ENDIF}
 
   // Draw it to our screen bitmap
   lRect := CGRectMake(0, 0, ScreenBitmapWidth, ScreenBitmapHeight);

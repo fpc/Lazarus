@@ -396,6 +396,7 @@ begin
 
   lDataType := ccdtNonStandard;
   // See PredefinedClipboardMimeTypes for the most common mime-types
+  {$IF not defined(MAC_OS_X_VERSION_MIN_REQUIRED) or (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060)}
   case AMimeType of
   'text/plain':
   begin
@@ -415,6 +416,9 @@ begin
     lDataType := ccdtBitmap;
   end;
   else
+  {$ELSE}
+  begin
+  {$ENDIF}
     lNSStr := NSStringUtf8(AMimeType);
     lDataType := ccdtNonStandard;
   end;

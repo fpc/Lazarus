@@ -527,7 +527,9 @@ begin
 
   { Get's a screenshot }
   displayID := CGMainDisplayID();
+  {$IF not defined(MAC_OS_X_VERSION_MIN_REQUIRED) or (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060)}
   ScreenImage := CGDisplayCreateImage(displayID);
+  {$ENDIF}
 
   { Fills the image description }
   ARawImage.Init;
