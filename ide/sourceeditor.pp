@@ -69,7 +69,7 @@ uses
   IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs,
   EditorSyntaxHighlighterDef,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DbgIntfDebuggerBase,
   // IDE units
   IDECmdLine, LazarusIDEStrConsts, IDECommands, MacroIntf, EditorOptions,
   EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
