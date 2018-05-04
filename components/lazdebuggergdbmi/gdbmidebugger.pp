@@ -1868,6 +1868,7 @@ begin
     gdcsAlwaysOn:  ExecuteCommand('-gdb-set case-sensitive on', [], []);
     gdcsGdbDefault: ; // do nothing
   end;
+  Result:=true;
 end;
 
 function TGDBMIDebuggerChangeFilenameBase.DoSetMaxValueMemLimit: Boolean;
@@ -1875,7 +1876,7 @@ var
   i: Integer;
 begin
   if (FTheDebugger.FGDBVersionMajor < 7) then
-    exit;
+    exit(false);
   // available from GDB 7.11
   i := TGDBMIDebuggerProperties(FTheDebugger.GetProperties).GdbValueMemLimit;
   if i > 0 then
@@ -1883,6 +1884,7 @@ begin
   else
   if i = 0 then
     ExecuteCommand('set max-value-size unlimited', [], []);
+  Result:=true;
 end;
 
 
@@ -2909,7 +2911,7 @@ end;
 function TGDBMIDebuggerCommandInitDebugger.DoSetInternalError: Boolean;
 begin
   if (FTheDebugger.FGDBVersionMajor < 7) then
-    exit;
+    exit(false);
   // available from GDB 7.0
   // On w32, it has no effect until GDB 7.7
   ExecuteCommand('maint set internal-error quit no', [], []);
@@ -2919,6 +2921,7 @@ begin
   // available from GDB 7.9
   ExecuteCommand('maint set demangler-warning quit no', [], []);
   ExecuteCommand('maint set demangler-warning corefile no', [], []);
+  Result:=true;
 end;
 
 function TGDBMIDebuggerCommandInitDebugger.DoExecute: Boolean;
