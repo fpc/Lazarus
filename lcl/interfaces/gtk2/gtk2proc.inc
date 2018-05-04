@@ -2242,8 +2242,8 @@ begin
   EventStopped := False;
   HandledByLCL := KeyEventWasHandledByLCL(AEvent, ABeforeEvent);
 
-  {$IFDEF VerboseKeyboard}
-  DebugLn(['[HandleGTKKeyUpDown] ',DbgSName(TControl(AData)),
+  {$IF defined(VerboseKeyboard) or defined(LCLGtk2Fix30544)}
+  DebugLn(['[HandleGTKKeyUpDown] START ',DbgSName(TControl(AData)),
     ' ',(AEvent^. _Type),' Widget=',GetWidgetClassName(AWidget),
     ' Before=',ABeforeEvent,' Down=',AHandleDown,' HandledByLCL=',HandledByLCL]);
   {$ENDIF}
@@ -2300,7 +2300,9 @@ begin
   FillChar(Msg, SizeOf(Msg), 0);
 
   gdk_event_key_get_string(AEvent, EventString{%H-});
-  //DebugLn(['HandleGTKKeyUpDown TargetWidget=',GetWidgetDebugReport(TargetWidget),' ',DbgStr(EventString),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
+  {$IFDEF VerboseKeyboard}
+  DebugLn(['HandleGTKKeyUpDown EVENTSTRING TargetWidget=',GetWidgetDebugReport(TargetWidget),' "',DbgStr(EventString),'" state=',AEvent^.state,' keyval=',AEvent^.keyval]);
+  {$ENDIF}
 
   {$IfDef Gtk2LatinAccents}
   gtk_im_context_filter_keypress (im_context, AEvent);
@@ -2333,7 +2335,7 @@ begin
 
 
     // ssAlt + a key pressed is always a syskey
-    // ssAltGr + a key is only a syskey when the key pressed has no levelshift or when ssHift is pressed to0
+    // ssAltGr + a key is only a syskey when the key pressed has no levelshift or when ssShift is pressed too
     SysKey := (ssAlt in ShiftState);
     if not SysKey then
     begin
