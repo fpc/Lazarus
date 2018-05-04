@@ -998,7 +998,10 @@ begin
     exit;
   Map := PDWarfLineMap(FRequestedSources.Objects[AIndex]);
   if Map <> nil then
+  begin
+    dummy:=nil;
     Result := Map^.GetAddressesForLine(ALine, dummy, True);
+  end;
 end;
 
 function TFpLineInfo.GetInfo(AAddress: TDbgPtr; out ASource, ALine,
@@ -1615,6 +1618,7 @@ begin
         result := false;
         if FDbgController.CurrentProcess.DbgInfo.HasInfo then
           begin
+          addr:=nil;
           if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(AnsiString(AParams[0].VAnsiString), AParams[1].VInteger, addr)
           then begin
             result := true;
