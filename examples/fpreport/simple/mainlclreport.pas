@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, ComCtrls, fpreport;
+  fpreportlclexport, ExtCtrls, ComCtrls, fpreport;
 
 const
   TESTIMAGE = 'powered_by.png';
@@ -40,8 +40,9 @@ type
     FDataParent : TComponent;
     lReportData : TFPReportUserData;
     sl: TStringList;
-    // Exporter
-    rptExporter : TFPReportExporter;
+    // canvas Exporter
+    rptExporter : TFPReportExportCanvas;
+    procedure CheckReport;
     procedure CreateDemoReport;
     procedure GetReportDataEOF(Sender: TObject; var IsEOF: Boolean);
     procedure GetReportDataFirst(Sender: TObject);
@@ -63,7 +64,6 @@ implementation
 uses
   fpTTF,
   fpreportformexport,
-  fpreportlclexport,
   fpreportpdfexport;
 
 {$R *.lfm}
@@ -89,21 +89,18 @@ procedure TFrmSimpleReportLCL.BuRenderCanvasClick(Sender: TObject);
 begin
   ButtonSet(false);
   try
-    CreateDemoReport;
-    FReport.RunReport;
-
-    if Assigned(rptExporter) then
-      FreeAndNil(rptExporter);
-    rptExporter:= TFPReportExportCanvas.Create(nil);
+    CheckReport;
+    if Not Assigned(rptExporter) then
+      rptExporter:= TFPReportExportCanvas.Create(nil);
     rptExporter.Report:= FReport;
     rptExporter.AutoRun:=True;
-    TFPReportExportCanvas(rptExporter).Canvas:= PanelRender.Canvas;
+    rptExporter.Canvas:= PanelRender.Canvas;
     FReport.RenderReport(rptExporter);
     UpDown1.Min:= 0;
-    UpDown1.Max:= TFPReportExportCanvas(rptExporter).PageCount-1;
+    UpDown1.Max:= rptExporter.PageCount-1;
     UpDown1.Position:= 0;
-    TFPReportExportCanvas(rptExporter).PageIndex:=UpDown1.Position;
-    lblPage.Caption:= 'Page: ' + IntToStr(TFPReportExportCanvas(rptExporter).PageIndex);
+    rptExporter.PageIndex:=UpDown1.Position;
+    lblPage.Caption:= 'Page: ' + IntToStr(rptExporter.PageIndex);
     PanelRender.OnPaint:= @PanelRenderPaint;
     Invalidate;
   finally
@@ -112,39 +109,50 @@ begin
 end;
 
 procedure TFrmSimpleReportLCL.BuRenderPdfClick(Sender: TObject);
+
+Var
+   P : TFPReportExportPDF;
+
 begin
   ButtonSet(false);
   try
-    CreateDemoReport;
-    FReport.RunReport;
-
-    if Assigned(rptExporter) then
-      FreeAndNil(rptExporter);
-    rptExporter:= TFPReportExportPDF.Create(nil);
-    TFPReportExportPDF(rptExporter).FileName:= ApplicationName+'-report.pdf';
-    rptExporter.Report:= FReport;
-    rptExporter.AutoRun:=True;
-    FReport.RenderReport(rptExporter);
-    ShowMessage('PDF created: '+TFPReportExportPDF(rptExporter).FileName);
+    CheckReport;
+    P:=TFPReportExportPDF.Create(nil);
+    P.FileName:= ApplicationName+'-report.pdf';
+    P.Report:= FReport;
+    P.AutoRun:=True;
+    FReport.RenderReport(P);
+    ShowMessage('PDF created: '+P.FileName);
   finally
     ButtonSet(true);
   end;
 end;
 
-procedure TFrmSimpleReportLCL.BuRenderPrerviewClick(Sender: TObject);
+procedure TFrmSimpleReportLCL.CheckReport;
+
 begin
+  if Not Assigned(Freport) then
+    CreateDemoReport;
+  if not Freport.Prepared then
+    FReport.RunReport;
+end;
+
+procedure TFrmSimpleReportLCL.BuRenderPrerviewClick(Sender: TObject);
+
+Var
+  P : TFPreportPreviewExport;
+
+begin
+  P:=Nil;
   ButtonSet(false);
   try
-    CreateDemoReport;
-    FReport.RunReport;
-
-    if Assigned(rptExporter) then
-      FreeAndNil(rptExporter);
-    rptExporter:= TFPreportPreviewExport.Create(nil);
-    rptExporter.Report:= FReport;
-    rptExporter.AutoRun:=True;
-    FReport.RenderReport(rptExporter);
+    CheckReport;
+    P:=TFPreportPreviewExport.Create(Self);
+    P.Report:= FReport;
+    P.AutoRun:=True;
+    FReport.RenderReport(P);
   finally
+    P.Free;
     ButtonSet(true);
   end;
 end;
