@@ -223,6 +223,7 @@ begin
   InitialiseData;
 
   FReport:=TFPReport.Create(Self);
+  FReport.ReportData.AddReportData(lReportData);
   FReport.Author := 'Andreas';
   FReport.Title := 'LCL Report Demo';
   FReport.Variables.AddVariable('Var1').AsString:='Value1';
