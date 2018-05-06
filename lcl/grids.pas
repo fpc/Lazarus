@@ -5388,7 +5388,7 @@ var
   ResName: string;
 begin
   c := ColumnFromGridColumn(AColumnIndex);
-  if (c <> nil) and InRange(c.Title.FImageIndex, 0, FTitleImageList.Count - 1) then
+  if (c <> nil) and (FTitleImageList <> nil) and InRange(c.Title.FImageIndex, 0, FTitleImageList.Count - 1) then
   begin
     ImgIndex := c.Title.FImageIndex;
     ImgLayout := c.Title.ImageLayout;
