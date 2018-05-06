@@ -473,23 +473,26 @@ procedure TChartAxis.Draw;
     for j := 0 to Minors.Count - 1 do begin
       minorMarks := Minors[j].GetMarkValues(AMin, AMax);
       if minorMarks = nil then continue;
-      with FHelper.Clone do begin
-        FAxis := Minors[j];
-        // Only draw minor marks strictly inside the major mark interval.
-        FValueMin := Max(FAxisTransf(AMin), FValueMin);
-        FValueMax := Min(FAxisTransf(AMax), FValueMax);
-        if FValueMax <= FValueMin then continue;
-        ExpandRange(FValueMin, FValueMax, -EPS);
-        FClipRangeDelta := 1;
+      with FHelper.Clone do
         try
-          BeginDrawing;
-          for m in minorMarks do
-            DrawMark(AFixedCoord, FHelper.FAxisTransf(m.FValue), m.FText);
-          EndDrawing;
+          FAxis := Minors[j];
+          // Only draw minor marks strictly inside the major mark interval.
+          FValueMin := Max(FAxisTransf(AMin), FValueMin);
+          FValueMax := Min(FAxisTransf(AMax), FValueMax);
+          if FValueMax <= FValueMin then
+            continue;
+          ExpandRange(FValueMin, FValueMax, -EPS);
+          FClipRangeDelta := 1;
+          try
+            BeginDrawing;
+            for m in minorMarks do
+              DrawMark(AFixedCoord, FHelper.FAxisTransf(m.FValue), m.FText);
+          finally
+            EndDrawing;
+          end;
         finally
           Free;
         end;
-      end;
     end;
   end;
 
