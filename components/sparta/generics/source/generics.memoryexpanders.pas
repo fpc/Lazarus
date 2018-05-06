@@ -21,6 +21,8 @@ unit Generics.MemoryExpanders;
 
 {$mode delphi}
 {$MACRO ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
 {.$WARN 5024 OFF}
 {.$WARN 4079 OFF}
 
@@ -38,7 +40,7 @@ type
 
   TLinearProbing = class(TProbeSequence)
   public
-    class function Probe(I, {%H-}M, Hash: UInt32): UInt32; static; inline;
+    class function Probe(I, Hash: UInt32): UInt32; static; inline;
 
     const MAX_LOAD_FACTOR = 1;
     const DEFAULT_LOAD_FACTOR = 0.75;
@@ -47,13 +49,8 @@ type
   { TQuadraticProbing }
 
   TQuadraticProbing = class(TProbeSequence)
-  private
-    class constructor Create;
   public
-    class var C1: UInt32;
-    class var C2: UInt32;
-
-    class function Probe(I, {%H-}M, Hash: UInt32): UInt32; static; inline;
+    class function Probe(I, Hash: UInt32): UInt32; static; inline;
 
     const MAX_LOAD_FACTOR = 0.5;
     const DEFAULT_LOAD_FACTOR = 0.5;
@@ -63,7 +60,7 @@ type
 
   TDoubleHashing = class(TProbeSequence)
   public
-    class function Probe(I, {%H-}M, Hash1: UInt32; Hash2: UInt32 = 1): UInt32; static; inline;
+    class function Probe(I, Hash1: UInt32; Hash2: UInt32 = 1): UInt32; static; inline;
 
     const MAX_LOAD_FACTOR = 1;
     const DEFAULT_LOAD_FACTOR = 0.85;
@@ -207,27 +204,21 @@ end;
 
 { TLinearProbing }
 
-class function TLinearProbing.Probe(I, M, Hash: UInt32): UInt32;
+class function TLinearProbing.Probe(I, Hash: UInt32): UInt32;
 begin
   Result := (Hash + I)
 end;
 
 { TQuadraticProbing }
 
-class constructor TQuadraticProbing.Create;
+class function TQuadraticProbing.Probe(I, Hash: UInt32): UInt32;
 begin
-  C1 := 1;
-  C2 := 1;
-end;
-
-class function TQuadraticProbing.Probe(I, M, Hash: UInt32): UInt32;
-begin
-  Result := (Hash + C1 * I {%H-}+ C2 * Sqr(I));
+  Result := (Hash + Sqr(I));
 end;
 
 { TDoubleHashingNoMod }
 
-class function TDoubleHashing.Probe(I, M, Hash1: UInt32; Hash2: UInt32): UInt32;
+class function TDoubleHashing.Probe(I, Hash1: UInt32; Hash2: UInt32): UInt32;
 begin
   Result := Hash1 + I * Hash2;
 end;

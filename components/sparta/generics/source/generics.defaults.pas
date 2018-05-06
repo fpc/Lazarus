@@ -14,6 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+    Acknowledgment
+
+    Thanks to Sphere 10 Software (http://sphere10.com) for sponsoring
+    many new types and major refactoring of entire library
+
+    Thanks to mORMot (http://synopse.info) project for the best implementations
+    of hashing functions like crc32c and xxHash32 :)
+
  **********************************************************************}
 
 unit Generics.Defaults;
@@ -554,7 +562,7 @@ type
     EqualityComparer_Method_VMT : THashFactory.TEqualityComparerVMT = (STD_RAW_INTERFACE_METHODS; Equals: @TEquals.Method ; GetHashCode: @THashFactory.Method );
     EqualityComparer_Variant_VMT: THashFactory.TEqualityComparerVMT = (STD_RAW_INTERFACE_METHODS; Equals: @TEquals.Variant; GetHashCode: @THashFactory.Variant);
     EqualityComparer_Pointer_VMT: THashFactory.TEqualityComparerVMT = (STD_RAW_INTERFACE_METHODS; Equals: @TEquals.Pointer; GetHashCode: @THashFactory.Pointer);
-{$WARNINGS ON}
+{.$WARNINGS ON} // do not enable warnings ever in this unit, or you will get many warnings about uninitialized TEqualityComparerVMT fields
   private class var
     // IEqualityComparer VMT
     FEqualityComparer_Int8_VMT  : THashFactory.TEqualityComparerVMT;
@@ -673,7 +681,7 @@ type
     ExtendedEqualityComparer_Method_VMT : TExtendedHashFactory.TExtendedEqualityComparerVMT = (STD_RAW_INTERFACE_METHODS; Equals: @TEquals.Method ; GetHashCode: @THashFactory.Method ; GetHashList: @TExtendedHashFactory.Method );
     ExtendedEqualityComparer_Variant_VMT: TExtendedHashFactory.TExtendedEqualityComparerVMT = (STD_RAW_INTERFACE_METHODS; Equals: @TEquals.Variant; GetHashCode: @THashFactory.Variant; GetHashList: @TExtendedHashFactory.Variant);
     ExtendedEqualityComparer_Pointer_VMT: TExtendedHashFactory.TExtendedEqualityComparerVMT = (STD_RAW_INTERFACE_METHODS; Equals: @TEquals.Pointer; GetHashCode: @THashFactory.Pointer; GetHashList: @TExtendedHashFactory.Pointer);
-{$WARNINGS ON}
+{.$WARNINGS ON} // do not enable warnings ever in this unit, or you will get many warnings about uninitialized TEqualityComparerVMT fields
   private class var
     // IExtendedEqualityComparer VMT
     FExtendedEqualityComparer_Int8_VMT  : TExtendedHashFactory.TExtendedEqualityComparerVMT;
@@ -857,6 +865,12 @@ type
     class function GetHashCode(AKey: Pointer; ASize: SizeInt; AInitVal: UInt32 = 0): UInt32; override;
   end;
 
+  TmORMotHashFactory = class(THashFactory)
+  public
+    class function GetHashService: THashServiceClass; override;
+    class function GetHashCode(AKey: Pointer; ASize: SizeInt; AInitVal: UInt32 = 0): UInt32; override;
+  end;
+
   { TAdler32HashFactory }
 
   TAdler32HashFactory = class(THashFactory)
@@ -922,7 +936,7 @@ type
     class procedure GetHashList(AKey: Pointer; ASize: SizeInt; AHashList: PUInt32; AOptions: TGetHashListOptions = []); override;
   end;
 
-  TDefaultHashFactory = TDelphiQuadrupleHashFactory;
+  TDefaultHashFactory = TmORMotHashFactory;
 
   TDefaultGenericInterface = (giComparer, giEqualityComparer, giExtendedEqualityComparer);
 
@@ -2782,6 +2796,18 @@ begin
   Result := DelphiHashLittle(AKey, ASize, AInitVal);
 end;
 
+{ TmORMotHashFactory }
+
+class function TmORMotHashFactory.GetHashService: THashServiceClass;
+begin
+  Result := THashService<TmORMotHashFactory>;
+end;
+
+class function TmORMotHashFactory.GetHashCode(AKey: Pointer; ASize: SizeInt; AInitVal: UInt32): UInt32;
+begin
+  Result := mORMotHasher(AInitVal, AKey, ASize);
+end;
+
 { TAdler32HashFactory }
 
 class function TAdler32HashFactory.GetHashService: THashServiceClass;
@@ -2879,7 +2905,7 @@ begin
   else
     raise EArgumentOutOfRangeException.CreateRes(@SArgumentOutOfRange);
   end;
-{$WARNINGS ON}
+{.$WARNINGS ON} // do not enable warnings ever in this unit, or you will get many warnings about uninitialized TEqualityComparerVMT fields
 end;
 
 { TDelphiQuadrupleHashFactory }
@@ -3255,7 +3281,7 @@ begin
     giEqualityComparer:
       begin
         if AFactory = nil then
-          AFactory := TDelphiHashFactory;
+          AFactory := TDefaultHashFactory;
 
         Exit(
           AFactory.GetHashService.LookupEqualityComparer(ATypeInfo, ASize));

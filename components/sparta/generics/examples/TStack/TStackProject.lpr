@@ -8,7 +8,6 @@ program TStackProject;
 
 uses
   SysUtils,
-  Windows,
   Generics.Collections;
 
 type
