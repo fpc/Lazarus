@@ -590,6 +590,7 @@ begin
   DragMode := dmAutomatic;
   FComponentList:=TBackupComponentList.Create;
   Options := Options + [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly];
+  MultiSelectStyle := MultiSelectStyle + [msShiftSelect];
   FImageList := TImageList.Create(nil);
   FImageList.Width := TIDEImages.ScaledSize;
   FImageList.Height := TIDEImages.ScaledSize;
