@@ -583,6 +583,8 @@ begin
   Scroll.OnScroll := @ScrollScroll;
   Scroll.TabStop := False;
   Scroll.Visible := True;
+  if Application.Scaled then
+    Scroll.Width := ScaleScreenTo96(GetSystemMetrics(SM_CYVSCROLL));
   //Scroll.Align:=alRight;
 
   SizeDrag := TSynBaseCompletionFormSizeDrag.Create(Self);
