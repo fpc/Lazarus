@@ -3779,7 +3779,7 @@ procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst: Integer;
 var
   SrcImg: TLazIntfImage absolute ASource;
   SrcHasMask, DstHasMask: Boolean;
-  x, y, xStop, yStop: Integer;
+  x, y, xStart, yStart, xStop, yStop: Integer;
   c: TFPColor;
 begin
 {
@@ -3798,32 +3798,23 @@ begin
   end;
 
   // copy pixels
-  xStop := ASource.Width;
-  if Width - XDst < xStop
-  then xStop := Width - XDst;
-  yStop := ASource.Height;
-  if Height - YDst < yStop
-  then yStop := Height - YDst;
-  Dec(xStop);
-  Dec(yStop);
+  XStart := IfThen(XDst < 0, -XDst, 0);
+  YStart := IfThen(YDst < 0, -YDst, 0);
+  XStop := IfThen(Width - XDst < ASource.Width, Width - XDst, ASource.Width) - 1;
+  YStop := IfTHen(Height - YDst < ASource.Height, Height - YDst, ASource.Height) - 1;
 
-  if ASource is TLazIntfImage then
-    SrcHasMask := SrcImg.FRawImage.Description.MaskBitsPerPixel > 0
-  else
-    SrcHasMask := False;
-
+  SrcHasMask := (ASource is TLazIntfImage) and (SrcImg.FRawImage.Description.MaskBitsPerPixel > 0);
   DstHasMask := FRawImage.Description.MaskBitsPerPixel > 0;
 
-  if DstHasMask
-  and (ASource is TLazIntfImage)
+  if DstHasMask and (ASource is TLazIntfImage)
   then begin
-    for y:=0 to yStop do
-      for x:=0 to xStop do
+    for y:= yStart to yStop do
+      for x:=xStart to xStop do
         Masked[x+XDst,y+YDst] := SrcHasMask and SrcImg.Masked[x,y];
   end;
 
-  for y:=0 to yStop do
-    for x:=0 to xStop do
+  for y:=yStart to yStop do
+    for x:=xStart to xStop do
     begin
       c := ASource.Colors[x,y];
 
