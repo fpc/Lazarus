@@ -45,7 +45,7 @@ interface
 
 uses
   LCLProc, LCLIntf, LCLType, LazUTF8, LMessages, Classes, Graphics, Forms,
-  Controls, StdCtrls, ExtCtrls, Menus, SysUtils, types,
+  Controls, StdCtrls, ExtCtrls, Menus, SysUtils, types, Themes,
   SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes, SynEditPlugins
   {$IF FPC_FULLVERSION >= 20701}, character{$ENDIF};
 
@@ -576,11 +576,15 @@ end;
 procedure TSynBaseCompletionFormSizeDrag.Paint;
 var
   I: Integer;
+  D: TThemedElementDetails;
 begin
   Canvas.Brush.Color := clBtnFace;
   Canvas.Brush.Style := bsSolid;
   Canvas.FillRect(ClientRect);
   Canvas.Pen.Color := clBtnShadow;
+
+  D := ThemeServices.GetElementDetails(tsUpperTrackVertNormal);
+  ThemeServices.DrawElement(Canvas.Handle, D, ClientRect);
 
   I := 2;
   while I < Height do
