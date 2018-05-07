@@ -601,7 +601,10 @@ begin
     PushEraseBkgndCommand(ecDiscard);
 
   // check if double buffering is requested
-  useDoubleBuffer := (ControlDC = 0) and TWSWinControlClass(TWinControl(lWinControl).WidgetSetClass).GetDoubleBuffered(lWinControl);
+  useDoubleBuffer := (ControlDC = 0) and (
+      ((csDesigning in lWinControl.ComponentState) and (GetSystemMetrics(SM_REMOTESESSION)=0)) // force double buffer in the designer
+    or TWSWinControlClass(TWinControl(lWinControl).WidgetSetClass).GetDoubleBuffered(lWinControl));
+
   if useDoubleBuffer then
     BufferWasSaved := PrepareDoubleBuffer(DoubleBufferBitmapOld)
   else
