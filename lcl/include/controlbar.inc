@@ -66,7 +66,7 @@ begin
   FBands := TCtrlBands.Create(True);
   inherited Create(AOwner);
   ControlStyle := [csAcceptsControls, csAutoSizeKeepChildLeft, csAutoSizeKeepChildTop,
-                   csCaptureMouse, csClickEvents, csDesignInteractive,
+                   csCaptureMouse, csClickEvents,
                    csDoubleClicks, csOpaque, csParentBackground];
   FAutoDrag := True;
   FAutoDock := True;
