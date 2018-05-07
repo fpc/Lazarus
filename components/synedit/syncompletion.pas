@@ -585,7 +585,6 @@ begin
   Scroll.Visible := True;
   if Application.Scaled then
     Scroll.Width := ScaleScreenTo96(GetSystemMetrics(SM_CYVSCROLL));
-  //Scroll.Align:=alRight;
 
   SizeDrag := TSynBaseCompletionFormSizeDrag.Create(Self);
   SizeDrag.Parent := Self;
@@ -601,7 +600,6 @@ begin
   SizeDrag.AnchorSideRight.Control := Self;
   SizeDrag.AnchorSideBottom.Side := asrBottom;
   SizeDrag.AnchorSideBottom.Control := Self;
-  SizeDrag.Height := Max(7, abs(Font.Height) * 2 div 3);
   SizeDrag.Cursor := crSizeNWSE;
   SizeDrag.Visible := False;
 
