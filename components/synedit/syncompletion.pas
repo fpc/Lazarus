@@ -96,12 +96,20 @@ type
   private
     FMouseDownPos, FMouseLastPos, FWinSize: TPoint;
   protected
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure Paint; override;
+  end;
+
+  TSynBaseCompletionFormScrollBar = class(TScrollBar)
+  protected
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
   end;
 
   { TSynBaseCompletionForm }
@@ -475,6 +483,16 @@ begin
   {$ENDIF}
 end;
 
+{ TSynBaseCompletionFormScrollBar }
+
+procedure TSynBaseCompletionFormScrollBar.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double
+  );
+begin
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+    Width := ScaleScreenToFont(GetSystemMetrics(SM_CYVSCROLL));
+end;
+
 { TSynCompletionForm }
 
 procedure TSynCompletionForm.AddCharAtCursor(AUtf8Char: TUTF8Char);
@@ -548,6 +566,13 @@ begin
   FMouseDownPos.y := -1;
 end;
 
+procedure TSynBaseCompletionFormSizeDrag.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy; const AXProportion, AYProportion: Double
+  );
+begin
+  // do nothing
+end;
+
 procedure TSynBaseCompletionFormSizeDrag.Paint;
 var
   I: Integer;
@@ -579,7 +604,7 @@ begin
   // we have no resource => must be constructed using CreateNew
   inherited CreateNew(AOwner, 1);
   FItemList := TStringList.Create;
-  Scroll := TScrollBar.Create(self);
+  Scroll := TSynBaseCompletionFormScrollBar.Create(self);
   Scroll.Kind := sbVertical;
   Scroll.OnChange := @ScrollChange;
   Scroll.Parent := Self;
@@ -587,8 +612,6 @@ begin
   Scroll.OnScroll := @ScrollScroll;
   Scroll.TabStop := False;
   Scroll.Visible := True;
-  if Application.Scaled then
-    Scroll.Width := ScaleScreenTo96(GetSystemMetrics(SM_CYVSCROLL));
 
   SizeDrag := TSynBaseCompletionFormSizeDrag.Create(Self);
   SizeDrag.Parent := Self;
