@@ -549,17 +549,21 @@ begin
 end;
 
 procedure TSynBaseCompletionFormSizeDrag.Paint;
+var
+  I: Integer;
 begin
   Canvas.Brush.Color := clBtnFace;
   Canvas.Brush.Style := bsSolid;
   Canvas.FillRect(ClientRect);
   Canvas.Pen.Color := clBtnShadow;
-  Canvas.MoveTo(ClientRect.Right-2, ClientRect.Bottom-1);
-  Canvas.LineTo(ClientRect.Right-1, ClientRect.Bottom-2);
-  Canvas.MoveTo(ClientRect.Right-5, ClientRect.Bottom-1);
-  Canvas.LineTo(ClientRect.Right-1, ClientRect.Bottom-5);
-  Canvas.MoveTo(ClientRect.Right-8, ClientRect.Bottom-1);
-  Canvas.LineTo(ClientRect.Right-1, ClientRect.Bottom-8);
+
+  I := 2;
+  while I < Height do
+  begin
+    Canvas.MoveTo(ClientRect.Right-I, ClientRect.Bottom-1-1);
+    Canvas.LineTo(ClientRect.Right-1, ClientRect.Bottom-I-1);
+    Inc(I, 3);
+  end;
 end;
 
 { TSynBaseCompletionForm }
