@@ -50,10 +50,12 @@ type
     procedure ApplicationOnIdle(Sender: TObject; var {%H-}Done: boolean);
     procedure ImagePaint(Sender: TObject);
   private
-  protected
+    procedure LoadSplash;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure Show;
   end;
 
 var
@@ -65,7 +67,6 @@ implementation
 {$R ../images/splash_logo.res}
 
 const
-  VersionPos: TPoint = (X:0; Y:281);
   VersionStyle: TTextStyle =
     (
       Alignment  : taCenter;
@@ -86,8 +87,6 @@ const
 constructor TSplashForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
-  Image.Picture.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
 
   Application.AddOnIdleHandler(@ApplicationOnIdle);
 end;
@@ -111,11 +110,29 @@ var
   ATextRect: TRect;
 begin
   // GetLazarusVersionString is too long => use LazarusVersionStr
-  ATextRect.TopLeft := VersionPos;
-  ATextRect.BottomRight := Point(Image.Picture.Width, Image.Picture.Height);
+  ATextRect := Rect(
+    Image.Left,
+    Image.Height - Image.Canvas.TextHeight('Hg')*5 div 4,
+    Image.Width,
+    Image.Height);
   Image.Canvas.Font.Style := VersionFontStyle;
   Image.Canvas.Font.Color := VersionFontColor;
-  Image.Canvas.TextRect(ATextRect, VersionPos.X, VersionPos.Y, LazarusVersionStr, VersionStyle);
+  Image.Canvas.TextRect(ATextRect, ATextRect.Left, ATextRect.Top, LazarusVersionStr, VersionStyle);
+end;
+
+procedure TSplashForm.LoadSplash;
+begin
+  Image.Picture.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
+
+  Width := Scale96ToFont(Image.Picture.Width);
+  Height := Scale96ToFont(Image.Picture.Height);
+end;
+
+procedure TSplashForm.Show;
+begin
+  inherited;
+
+  LoadSplash;
 end;
 
 end.
