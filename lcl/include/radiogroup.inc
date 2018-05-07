@@ -278,13 +278,16 @@ procedure TCustomRadioGroup.ItemKeyDown(Sender: TObject; var Key: Word;
       StepSize := HorzDiff * Rows + VertDiff;
       WrapOffSet := HorzDiff;
     end;
-    NewIndex := ItemIndex + StepSize;
-    if (NewIndex>=Count) or (NewIndex<0) then begin
-      NewIndex := (NewIndex + WrapOffSet + BlockSize) mod BlockSize;
-      // Keep moving in the same direction until in valid range
-      while NewIndex>=Count do
-        NewIndex := (NewIndex + StepSize) mod BlockSize;
-    end;
+    NewIndex := ItemIndex;
+    repeat
+      Inc(NewIndex, StepSize);
+      if (NewIndex >= Count) or (NewIndex < 0) then begin
+        NewIndex := (NewIndex + WrapOffSet + BlockSize) mod BlockSize;
+        // Keep moving in the same direction until in valid range
+        while NewIndex >= Count do
+           NewIndex := (NewIndex + StepSize) mod BlockSize;
+      end;
+    until (NewIndex = ItemIndex) or TRadioButton(FButtonList[NewIndex]).Enabled;
     ItemIndex := NewIndex;
     TRadioButton(FButtonList[ItemIndex]).SetFocus;
     Key := 0;
