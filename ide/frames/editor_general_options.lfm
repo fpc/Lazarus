@@ -65,6 +65,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     BorderSpacing.Top = 6
     Caption = 'UndoAfterSaveCheckBox'
     TabOrder = 2
+    Visible = False
   end
   object ScrollPastEndFileCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
