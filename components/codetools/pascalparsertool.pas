@@ -3729,7 +3729,7 @@ function TPascalParserTool.KeyWordFuncConst: boolean;
       c =4;
       ErrorBase : Pointer = nil;public name 'FPC_ERRORBASE';
       devcfg3: longWord = DEVCFG3_DEFAULT; section '.devcfg3';
-
+      NaN: double; external;
 
     implementation
 
@@ -3931,8 +3931,12 @@ begin
 end;
 
 procedure TPascalParserTool.ReadConst;
+// after reading CurPos is on semicolon or whaterver is behind
 // ErrorBase : Pointer = nil;public name 'FPC_ERRORBASE';
 // devcfg3: longWord = DEVCFG3_DEFAULT; section '.devcfg3';
+// NaN: double; external;
+var
+  IsExternal: Boolean;
 begin
   ReadNextAtom;
   if (CurPos.Flag=cafColon) then begin
@@ -3940,7 +3944,26 @@ begin
     ReadNextAtom;
     ParseType(CurPos.StartPos);
   end;
-  ReadConstExpr;
+  IsExternal:=false;
+  if CurPos.Flag=cafSemicolon then begin
+    ReadNextAtom;
+    if UpAtomIs('EXTERNAL') then begin
+      IsExternal:=true;
+      ReadNextAtom;
+      if CurPos.Flag<>cafSemicolon then begin
+        if not UpAtomIs('NAME') then
+          ReadConstant(true,false,[]);
+        if UpAtomIs('NAME') then begin
+          ReadNextAtom;
+          ReadConstant(true,false,[]);
+        end;
+      end;
+    end else begin
+      UndoReadNextAtom;
+      SaveRaiseCharExpectedButAtomFound(20180507200240,'=');
+    end;
+  end else
+    ReadConstExpr;
   // optional: hint modifier
   if CurPos.Flag=cafWord then
     ReadHintModifiers;
@@ -3949,7 +3972,7 @@ begin
     and (CurNode.Parent.Parent.Desc in AllCodeSections) then begin
       repeat
         ReadNextAtom;
-        if UpAtomIs('PUBLIC') then begin
+        if UpAtomIs('PUBLIC') and not IsExternal then begin
           ReadNextAtom;
           if UpAtomIs('NAME') then begin
             ReadNextAtom;
@@ -3971,7 +3994,7 @@ begin
           if CurPos.Flag<>cafSemicolon then
             SaveRaiseStringExpectedButAtomFound(20170421195728,';');
         end else
-        if UpAtomIs('SECTION') then begin
+        if UpAtomIs('SECTION') and not IsExternal then begin
           ReadNextAtom;
           if not AtomIsStringConstant then
             SaveRaiseStringExpectedButAtomFound(20170421195730,ctsStringConstant);
