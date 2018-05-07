@@ -204,6 +204,8 @@ var
     // if you don't use UTF-8, install a proper widestring manager and set this
     // to false.
 
+function FindAllTranslatedPoFiles(const Filename: string): TStringList;
+
 // translate resource strings for one unit
 function TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
   Lang, FallbackLang: string):TTranslateUnitResult; overload;
