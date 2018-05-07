@@ -2463,6 +2463,21 @@ begin
   end;
   {%endregion TestText12}
 
+  {%region  cache from previous access}
+  PushBaseName('cache');
+  TstSetText('TestText1', TestText1);
+  TheList := FoldedView.FoldProvider.NestedFoldsList;
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+  PrepareLine := -1;
+
+  InitList('All Enabled ',  TheList,  1, 0, [], False, True);
+  TheList.Count; // only access count
+  TheList.Line := 8;
+  TheList.HLNode[0]; // do not crash // group levels are not initialized
+
+  PopBaseName;
+  {%endregion cache}
+
   PopBaseName;PopBaseName;
 end;
 
