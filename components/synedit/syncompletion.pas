@@ -913,7 +913,7 @@ end;
 procedure TSynBaseCompletionForm.Paint;
 var
   i, Ind: integer;
-  PaintWidth, YYY, RightC, BottomC: Integer;
+  PaintWidth, YYY, LeftC, RightC, BottomC: Integer;
   Capt: String;
 begin
 //Writeln('[TSynBaseCompletionForm.Paint]');
@@ -934,18 +934,20 @@ begin
     Scroll.Max := 0;
   end;
 
-  PaintWidth := Width - Scroll.Width;
-  RightC := PaintWidth - DrawBorderWidth;
+  PaintWidth := Width - Scroll.Width - 2*DrawBorderWidth;
+  LeftC := DrawBorderWidth;
+  RightC := LeftC + PaintWidth;
+
   //DebugLn(['TSynBaseCompletionForm.Paint NbLinesInWindow=',NbLinesInWindow,' ItemList.Count=',ItemList.Count]);
   for i := 0 to Min(NbLinesInWindow - 1, ItemList.Count - Scroll.Position - 1) do
   begin
-    YYY := DrawBorderWidth + FFontHeight * i;
+    YYY := LeftC + FFontHeight * i;
     BottomC := (FFontHeight * (i + 1))+1;
     if i + Scroll.Position = Position then
     begin
       Canvas.Brush.Color := clSelect;
       Canvas.Pen.Color := clSelect;
-      Canvas.Rectangle(DrawBorderWidth, YYY, RightC, BottomC);
+      Canvas.Rectangle(LeftC, YYY, RightC, BottomC);
       Canvas.Pen.Color := clBlack;
       Canvas.Font.Color := TextSelectedColor;
       Hint := ItemList[Position];
@@ -954,33 +956,31 @@ begin
     begin
       Canvas.Brush.Color := BackgroundColor;
       Canvas.Font.Color := TextColor;
-      Canvas.FillRect(Rect(DrawBorderWidth, YYY, RightC, BottomC));
+      Canvas.FillRect(Rect(LeftC, YYY, RightC, BottomC));
     end;
     //DebugLn(['TSynBaseCompletionForm.Paint ',i,' ',ItemList[Scroll.Position + i]]);
     Ind := i + Scroll.Position;
     Capt := ItemList[Scroll.Position + i];
     if not Assigned(OnPaintItem)
-    or not OnPaintItem(Capt, Canvas, DrawBorderWidth, YYY, Ind = Position, Ind)
+    or not OnPaintItem(Capt, Canvas, LeftC, YYY, Ind = Position, Ind)
     then
-      Canvas.TextOut(DrawBorderWidth+2, YYY, Capt);
+      Canvas.TextOut(LeftC+2, YYY, Capt);
   end;
   // paint the rest of the background
   if NbLinesInWindow > ItemList.Count - Scroll.Position then
   begin
     Canvas.brush.color := color;
     i:=(FFontHeight * ItemList.Count)+1;
-    Canvas.FillRect(Rect(0, i, PaintWidth, Height));
+    Canvas.FillRect(Rect(LeftC, i, RightC, Height));
   end;
   // draw a rectangle around the window
   if DrawBorderWidth > 0 then
   begin
-    Canvas.Pen.Color := DrawBorderColor;
-    Canvas.Pen.Width := DrawBorderWidth;
-    Canvas.Moveto(0, 0);
-    Canvas.LineTo(Width - 1, 0);
-    Canvas.LineTo(Width - 1, Height - 1);
-    Canvas.LineTo(0, Height - 1);
-    Canvas.LineTo(0, 0);
+    Canvas.Brush.Color := DrawBorderColor;
+    Canvas.FillRect(0, 0, Width, DrawBorderWidth);
+    Canvas.FillRect(Width-DrawBorderWidth, 0, Width, Height);
+    Canvas.FillRect(0, Height-DrawBorderWidth, Width, Height);
+    Canvas.FillRect(0, 0, DrawBorderWidth, Height);
   end;
 end;
 
