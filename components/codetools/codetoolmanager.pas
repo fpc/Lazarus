@@ -1713,7 +1713,7 @@ begin
       Result:=Evaluator[NamespacesMacroName]
     else begin
       FPCFullVersion:=StrToIntDef(Evaluator['FPC_FULLVERSION'],0);
-      if FPCFullVersion>30101 then
+      if FPCFullVersion>=30101 then
         Result:=Evaluator[NamespacesMacroName];
     end;
   end;

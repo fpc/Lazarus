@@ -600,7 +600,7 @@ begin
   writeln('  -e <errormessage>, --error=<error message>');
   writeln('         Change the message of the error directive added to the units.');
   writeln('         You can add this multiple times to add multiple directives.');
-  writeln('         The default error messages are:');
+  writeln('         The default error message is:');
   for i:=0 to FClosedSrcError.Count-1 do
     writeln('   ',FClosedSrcError[i]);
   writeln;

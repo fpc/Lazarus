@@ -886,10 +886,10 @@ begin
       Result := Result + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
   end;
 
-  // library path
+  // namespaces
   CurNamespaces:=InheritedOptionStrings[icoNamespaces];
   if CurNamespaces <> '' then
-    Result := Result + ' -NS'+CurNamespaces;
+    Result := Result + ' -FN'+CurNamespaces;
 
   // object path
   CurObjectPath:=InheritedOptionStrings[icoObjectPath];
@@ -3153,7 +3153,7 @@ begin
     // namespaces
     CurNamespaces:=GetNamespacesParsed(coptParsed);
     if CurNamespaces<>'' then
-      switches := switches +' -NS'+CurNamespaces;
+      switches := switches +' -FN'+CurNamespaces;
 
     // object path
     CurObjectPath:=GetObjectPath(not (ccloAbsolutePaths in Flags),

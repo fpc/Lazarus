@@ -3037,7 +3037,7 @@ begin
       'e': Add('e',PChar(@p[1]),fpkValue);
       'F':
         case p[1] of
-        'a','f','i','l','o','u': Add('Fa',PChar(@p[2]),fpkMultiValue);
+        'a','f','i','l','N','o','u': Add('F'+p[1],PChar(@p[2]),fpkMultiValue);
         'c','C','D','e','E','L','m','M','r','R','U','W','w': Add('F'+p[1],PChar(@p[2]),fpkValue);
         else AddBooleanFlag(p,2);
         end;
@@ -8006,10 +8006,12 @@ begin
       case p[1] of
       'F':
         case p[2] of
-        'u':
-          UnitPath+=';'+copy(Param,4,length(Param));
         'i':
           IncPath+=';'+copy(Param,4,length(Param));
+        'u':
+          UnitPath+=';'+copy(Param,4,length(Param));
+        'N':
+          Namespaces+=';'+copy(Param,4,length(Param));
         end;
 
       'd':
@@ -8048,7 +8050,7 @@ begin
 
       'N':
         case p[2] of
-        'S': Namespaces:=Namespaces+copy(Param,4,length(Param))
+        'S': Namespaces+=';'+copy(Param,4,length(Param))
         end;
 
       'W':
