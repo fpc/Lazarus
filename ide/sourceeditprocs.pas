@@ -251,7 +251,7 @@ var
           if CurForeground=clNone then
             CurForeground:=TColor(ForegroundColor);
           SetFontColor(CurForeground);
-          ACanvas.TextOut(x,y,s);
+          ACanvas.TextOut(x+1,y,s);
           inc(x,ACanvas.TextWidth(s));
         end;
         Highlighter.Next;
