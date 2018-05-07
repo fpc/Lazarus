@@ -6,11 +6,77 @@ object PlayGroundForm: TPlayGroundForm
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
   Caption = 'PlayGroundForm'
+  ClientHeight = 300
+  ClientWidth = 400
+  KeyPreview = True
   OnClose = PlayGroundFormClose
   OnCreate = PlayGroundFormCreate
   OnDestroy = PlayGroundFormDestroy
-  LCLVersion = '0.9.25'
+  LCLVersion = '1.9.0.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 268
+    Top = 0
+    Width = 400
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 0
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 32
+    Top = 268
+    Width = 400
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 32
+    ClientWidth = 400
+    TabOrder = 1
+    object Label1: TLabel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = ComboBox1
+      AnchorSideTop.Side = asrCenter
+      Left = 4
+      Height = 15
+      Top = 9
+      Width = 116
+      BorderSpacing.Left = 4
+      Caption = 'Sprite movement by...'
+      ParentColor = False
+    end
+    object ComboBox1: TComboBox
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      Left = 128
+      Height = 23
+      Top = 5
+      Width = 268
+      Anchors = [akTop, akLeft, akRight]
+      ArrowKeysTraverseList = False
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
+      BorderSpacing.Right = 4
+      BorderSpacing.Bottom = 4
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'code'
+        'arrow keys'
+        'mouse'
+      )
+      OnChange = ComboBox1Change
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'code'
+    end
+  end
   object Timer1: TTimer
+    Enabled = False
     Interval = 100
     OnTimer = Timer1Timer
     left = 164
