@@ -141,7 +141,6 @@ Type
 function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 function ExtractLanguageFromChildName(const AChildName: string): TLangID;
-function FindAllTranslatedPoFiles(const Filename: string): TStringList;
 procedure LocalizePoTestTypeNames;
 
 const
@@ -232,36 +231,6 @@ begin
   Abbr := Copy(AChildName,P1+2,P2-(P1+1));
   Abbr := ExtractFileNameWithoutExt(Abbr);
   Result := LangAbbrToLangId(Abbr);
-end;
-
-function FindAllTranslatedPoFiles(const Filename: string): TStringList;
-var
-  Path: String;
-  Name: String;
-  NameOnly: String;
-  Ext: String;
-  FileInfo: TSearchRec;
-  CurExt: String;
-begin
-  Result := TStringList.Create;
-  Path := ExtractFilePath(Filename);
-  Name := ExtractFilename(Filename);
-  Ext := ExtractFileExt(Filename);
-  NameOnly := LeftStr(Name,length(Name)-length(Ext));
-  if FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then
-  begin
-    repeat
-      if (FileInfo.Name = '.') or (FileInfo.Name = '..') or (FileInfo.Name = '')
-      or (CompareFilenames(FileInfo.Name,Name) = 0) then continue;
-      CurExt:=ExtractFileExt(FileInfo.Name);
-      if (CompareFilenames(CurExt,'.po') <> 0)
-      or (CompareFilenames(LeftStr(FileInfo.Name,length(NameOnly)),NameOnly) <> 0)
-      then
-        continue;
-      Result.Add(Path+FileInfo.Name);
-    until FindNextUTF8(FileInfo)<>0;
-  end;
-  FindCloseUTF8(FileInfo);
 end;
 
 procedure LocalizePoTestTypeNames;
