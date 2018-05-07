@@ -1163,7 +1163,8 @@ function TSynPasSyn.Func39: TtkTokenKind;
 begin
   if KeyComp('For') then begin
     Result := tkKey;
-    StartPascalCodeFoldBlock(cfbtForDo);
+    if TopPascalCodeFoldBlockType in PascalStatementBlocks then
+      StartPascalCodeFoldBlock(cfbtForDo);
   end
   else
     if KeyComp('Shl') then Result := tkKey else Result := tkIdentifier;
