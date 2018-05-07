@@ -1215,6 +1215,10 @@ begin
   if FShowSizeDrag = AValue then exit;
   FShowSizeDrag := AValue;
   SizeDrag.Visible := AValue;
+  if SizeDrag.Visible then
+    Scroll.BorderSpacing.Bottom := 0
+  else
+    Scroll.BorderSpacing.Bottom := FDrawBorderWidth;
 end;
 
 procedure TSynBaseCompletionForm.RegisterHandlers(EditOnly: Boolean);
