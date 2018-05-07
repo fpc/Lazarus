@@ -908,7 +908,7 @@ begin
   end;
 
   PaintWidth := Width - Scroll.Width;
-  RightC := PaintWidth - 2 * DrawBorderWidth;
+  RightC := PaintWidth - DrawBorderWidth;
   //DebugLn(['TSynBaseCompletionForm.Paint NbLinesInWindow=',NbLinesInWindow,' ItemList.Count=',ItemList.Count]);
   for i := 0 to Min(NbLinesInWindow - 1, ItemList.Count - Scroll.Position - 1) do
   begin
