@@ -1781,6 +1781,7 @@ begin
   RealCompilerFilename:='';
   UnitPaths:=nil;
   IncludePaths:=nil;
+  UnitScopes:=nil;
   Defines:=nil;
   Undefines:=nil;
 
@@ -8582,11 +8583,12 @@ procedure TPCTargetConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
     end;
   end;
 
-  procedure LoadSemicolonList(UnitScopes: TStrings; const ASubPath: string);
+  procedure LoadSemicolonList(out UnitScopes: TStrings; const ASubPath: string);
   var
     s, Scope: String;
     p: Integer;
   begin
+    UnitScopes:=TStringList.Create;
     s:=XMLConfig.GetValue(Path+ASubPath,'');
     p:=1;
     while p<=length(s) do begin
