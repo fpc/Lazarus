@@ -978,6 +978,7 @@ type
     function GetUnitSetID: string;
     function GetFirstFPCCfg: string;
     function GetUnitScopes: string;
+    function GetCompilerKind: TPascalCompiler;
   end;
 
   { TCompilerDefinesCache }
@@ -10411,6 +10412,15 @@ begin
     Result:=Result+';'+Scope;
   end;
   Delete(Result,1,1);
+end;
+
+function TFPCUnitSetCache.GetCompilerKind: TPascalCompiler;
+var
+  Cfg: TPCTargetConfigCache;
+begin
+  Cfg:=GetConfigCache(false);
+  if Cfg=nil then exit(pcFPC);
+  Result:=Cfg.Kind;
 end;
 
 initialization

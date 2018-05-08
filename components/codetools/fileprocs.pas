@@ -138,10 +138,6 @@ const
   CTPascalExtension: array[TCTPascalExtType] of string =
     ('', '.pas', '.pp', '.p');
 
-function FileAgeToStr(aFileAge: longint): string;
-
-function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
-
 // store date locale independent, thread safe
 const DateAsCfgStrFormat='YYYYMMDD';
 const DateTimeAsCfgStrFormat='YYYY/MM/DD HH:NN:SS';
@@ -151,6 +147,10 @@ function CfgStrToDate(const s: string; out Date: TDateTime; const aFormat: strin
 procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
 procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
 function SimpleFormat(const Fmt: String; const Args: Array of const): String;
+
+// misc
+function FileAgeToStr(aFileAge: longint): string;
+function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
 // debugging
 var
