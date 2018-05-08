@@ -7072,7 +7072,7 @@ images/actions/arrow_up_200.png -text
 images/actions/autocomplete.png -text
 images/actions/autocomplete_150.png -text
 images/actions/autocomplete_200.png -text
-images/actions/execute.xpm svneol=native#text/plain
+images/actions/execute.png -text
 images/actions/laz_add.png -text svneol=unset#image/png
 images/actions/laz_add_150.png -text
 images/actions/laz_add_200.png -text
@@ -7100,7 +7100,7 @@ images/actions/laz_set_color_default.png -text svneol=unset#image/png
 images/actions/laz_set_colors_default.png -text svneol=unset#image/png
 images/actions/laz_tick.png -text svneol=unset#image/png
 images/actions/laz_wand.png -text svneol=unset#image/png
-images/actions/preferences.xpm svneol=native#text/plain
+images/actions/preferences.png -text
 images/bookmark.res -text
 images/bookmark.sh svneol=native#text/plain
 images/bookmark_images.bat svneol=native#text/plain
@@ -8152,23 +8152,23 @@ images/splash_logo.res -text
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
 images/splash_source/cheetah.jpg -text svneol=unset#image/jpeg
 images/splash_source/paw.png -text svneol=unset#image/png
-images/states/quickfix12x12.png -text
-images/states/state12x12_error.png -text
-images/states/state12x12_fatal.png -text
-images/states/state12x12_hint.png -text
-images/states/state12x12_information.png -text
-images/states/state12x12_note.png -text
-images/states/state12x12_warning.png -text
+images/states/quickfix_75.png -text
 images/states/state_circular_reference.png -text svneol=unset#image/png
 images/states/state_error.png -text svneol=unset#image/png
+images/states/state_error_75.png -text
 images/states/state_fatal.png -text svneol=unset#image/png
+images/states/state_fatal_75.png -text
 images/states/state_hint.png -text svneol=unset#image/png
+images/states/state_hint_75.png -text
 images/states/state_information.png -text svneol=unset#image/png
+images/states/state_information_75.png -text
 images/states/state_not_found.png -text svneol=unset#image/png
 images/states/state_note.png -text svneol=unset#image/png
+images/states/state_note_75.png -text
 images/states/state_unit_circular_reference.png -text svneol=unset#image/png
 images/states/state_unknown.png -text svneol=unset#image/png
 images/states/state_warning.png -text svneol=unset#image/png
+images/states/state_warning_75.png -text
 images/template.png -text svneol=unset#image/png
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
 images/windows/win_formeditor.ico -text

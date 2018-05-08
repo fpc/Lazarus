@@ -34,21 +34,18 @@ type
 
   TIDEImages = class
   private
-    FImages_12: TCustomImageList;
-    FImages_16: TCustomImageList;
-    FImages_24: TCustomImageList;
-    FImageNames_12: TStringList;
-    FImageNames_16: TStringList;
-    FImageNames_24: TStringList;
+    FImages_12: TLCLGlyphs;
+    FImages_16: TLCLGlyphs;
+    FImages_24: TLCLGlyphs;
+    function GetImages(Size: Integer): TLCLGlyphs;
   protected
-    function GetImages_12: TCustomImageList;
-    function GetImages_16: TCustomImageList;
-    function GetImages_24: TCustomImageList;
+    function GetImages_12: TLCLGlyphs;
+    function GetImages_16: TLCLGlyphs;
+    function GetImages_24: TLCLGlyphs;
 
     class function CreateBitmapFromRes(const ImageName: string): TCustomBitmap;
     class function CreateBestBitmapForScalingFromRes(const ImageName: string; const aDefScale: Integer; out aBitmap: TCustomBitmap): Integer;
   public
-    constructor Create;
     destructor Destroy; override;
 
     class function GetScalePercent: Integer;
@@ -67,9 +64,10 @@ type
     function GetImageIndex(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
     function GetImageIndex(ImageName: String; ImageSize: Integer = 16): Integer;
 
-    property Images_12: TCustomImageList read GetImages_12;
-    property Images_16: TCustomImageList read GetImages_16;
-    property Images_24: TCustomImageList read GetImages_24;
+    property Images_12: TLCLGlyphs read GetImages_12;
+    property Images_16: TLCLGlyphs read GetImages_16;
+    property Images_24: TLCLGlyphs read GetImages_24;
+    property Images[Size: Integer]: TLCLGlyphs read GetImages;
   end;
 
 function IDEImages: TIDEImages;
@@ -81,38 +79,38 @@ var
 
 { TIDEImages }
 
-function TIDEImages.GetImages_12: TCustomImageList;
+function TIDEImages.GetImages_12: TLCLGlyphs;
 begin
   if FImages_12 = nil then
   begin
-    FImages_12 := TImageList.Create(nil);
-    FImages_12.Width := MulDiv(12, GetScalePercent, 100);
+    FImages_12 := TLCLGlyphs.Create(nil);
+    FImages_12.RegisterResolutions([12, 16, 24]);
+    FImages_12.Width := 12;
     FImages_12.Height := FImages_12.Width;
-    FImages_12.Scaled := False;
   end;
   Result := FImages_12;
 end;
 
-function TIDEImages.GetImages_16: TCustomImageList;
+function TIDEImages.GetImages_16: TLCLGlyphs;
 begin
   if FImages_16 = nil then
   begin
-    FImages_16 := TImageList.Create(nil);
-    FImages_16.Width := MulDiv(16, GetScalePercent, 100);
+    FImages_16 := TLCLGlyphs.Create(nil);
+    FImages_16.RegisterResolutions([16, 24, 32]);
+    FImages_16.Width := 16;
     FImages_16.Height := FImages_16.Width;
-    FImages_16.Scaled := False;
   end;
   Result := FImages_16;
 end;
 
-function TIDEImages.GetImages_24: TCustomImageList;
+function TIDEImages.GetImages_24: TLCLGlyphs;
 begin
   if FImages_24 = nil then
   begin
-    FImages_24 := TImageList.Create(nil);
-    FImages_24.Width := MulDiv(24, GetScalePercent, 100);
+    FImages_24 := TLCLGlyphs.Create(nil);
+    FImages_24.RegisterResolutions([24, 32, 48]);
+    FImages_24.Width := 24;
     FImages_24.Height := FImages_24.Width;
-    FImages_24.Scaled := False;
   end;
   Result := FImages_24;
 end;
@@ -159,6 +157,14 @@ begin
   Result := nil; // not found
 end;
 
+destructor TIDEImages.Destroy;
+begin
+  FImages_12.Free;
+  FImages_16.Free;
+  FImages_24.Free;
+  inherited Destroy;
+end;
+
 class procedure TIDEImages.AssignImage(const ABitmap: TCustomBitmap;
   ImageName: String; ImageSize: Integer);
 var
@@ -189,19 +195,6 @@ end;
 class function TIDEImages.ScaledSize(ImageSize: Integer): Integer;
 begin
   Result := ImageSize * GetScalePercent div 100;
-end;
-
-constructor TIDEImages.Create;
-begin
-  FImageNames_12 := TStringList.Create;
-  FImageNames_12.Sorted := True;
-  FImageNames_12.Duplicates := dupIgnore;
-  FImageNames_16 := TStringList.Create;
-  FImageNames_16.Sorted := True;
-  FImageNames_16.Duplicates := dupIgnore;
-  FImageNames_24 := TStringList.Create;
-  FImageNames_24.Sorted := True;
-  FImageNames_24.Duplicates := dupIgnore;
 end;
 
 class function TIDEImages.CreateBitmapFromRes(const ImageName: string
@@ -245,17 +238,6 @@ begin
   Result := CreateImage(ImageName, ImageSize);
 end;
 
-destructor TIDEImages.Destroy;
-begin
-  FreeAndNil(FImages_12);
-  FreeAndNil(FImages_16);
-  FreeAndNil(FImages_24);
-  FreeAndNil(FImageNames_12);
-  FreeAndNil(FImageNames_16);
-  FreeAndNil(FImageNames_24);
-  inherited Destroy;
-end;
-
 function TIDEImages.GetImageIndex(ImageSize: Integer; ImageName: String
   ): Integer;
 begin
@@ -265,76 +247,29 @@ end;
 function TIDEImages.GetImageIndex(ImageName: String; ImageSize: Integer
   ): Integer;
 var
-  List: TStringList;
+  List: TLCLGlyphs;
 begin
-  case ImageSize of
-    12: List := FImageNames_12;
-    16: List := FImageNames_16;
-    24: List := FImageNames_24;
-  else
-    List := nil;
-  end;
+  List := Images[ImageSize];
   if List <> nil then
-  begin
-    Result := List.IndexOf(ImageName);
-    if Result <> -1 then
-      Result := PtrInt(List.Objects[Result]);
-  end
+    Result := List.GetImageIndex(ImageName)
   else
     Result := -1;
 end;
 
+function TIDEImages.GetImages(Size: Integer): TLCLGlyphs;
+begin
+  case Size of
+    12: Result := Images_12;
+    16: Result := Images_16;
+    24: Result := Images_24;
+  else
+    Result := nil
+  end;
+end;
+
 function TIDEImages.LoadImage(ImageName: String; ImageSize: Integer): Integer;
-var
-  List: TCustomImageList;
-  Names: TStringList;
-  Grp: TGraphic;
-  Rc: TRect;
 begin
   Result := GetImageIndex(ImageName, ImageSize);
-  if Result <> -1 then Exit;
-
-  case ImageSize of
-    12:
-      begin
-        List := Images_12; // make sure we have a list
-        Names := FImageNames_12;
-      end;
-    16:
-      begin
-        List := Images_16; // make sure we have a list
-        Names := FImageNames_16;
-      end;
-    24:
-      begin
-        List := Images_24; // make sure we have a list
-        Names := FImageNames_24;
-      end;
-  else
-    Exit;
-  end;
-  try
-    Grp := CreateImage(ImageName, ImageSize);
-    try
-      if Grp=nil then
-        raise Exception.CreateFmt('TIDEImages.LoadImage: %s not found.', [ImageName]);
-      if Grp is TCustomBitmap then
-      begin
-        Rc := Rect(0, 0, List.Width, List.Height);
-        OffsetRect(Rc, (Grp.Width-List.Width) div 2, (Grp.Height-List.Height) div 2);
-        Result := List.AddSlice(TCustomBitmap(Grp), Rc);
-      end else
-        Result := List.AddIcon(Grp as TCustomIcon);
-    finally
-      Grp.Free;
-    end;
-  except
-    on E: Exception do begin
-      DebugLn('While loading IDEImages: ' + e.Message);
-      Result := -1;
-    end;
-  end;
-  Names.AddObject(ImageName, TObject(PtrInt(Result)));
 end;
 
 class function TIDEImages.ScaleImage(const AImage: TGraphic; out
