@@ -436,6 +436,9 @@ type
     FIgnoreMissingResources: Boolean;
     FImageIndexes: TAvgLvlTree;
     FLoadResolutions: array of Integer;
+    FSuffix100Scale: Integer;
+
+    function RealSuffix100Scale: Integer;
   public
     function GetImageIndex(const AResourceName: string): Integer;
     procedure RegisterResolutions(const AResolutionWidths: array of Integer); override;
@@ -444,6 +447,7 @@ type
     destructor Destroy; override;
 
     property IgnoreMissingResources: Boolean read FIgnoreMissingResources write FIgnoreMissingResources;
+    property Suffix100Scale: Integer read FSuffix100Scale write FSuffix100Scale;
   end;
 
 function LCLGlyphs: TLCLGlyphs;

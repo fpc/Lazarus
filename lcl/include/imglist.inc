@@ -2737,7 +2737,7 @@ function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
   var
     G: TCustomBitmap;
   begin
-    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, 16), False);
+    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, RealSuffix100Scale), False);
     try
       Result := AddSliceCentered(G);
     finally
@@ -2749,7 +2749,7 @@ function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
   var
     G: TCustomBitmap;
   begin
-    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, 16), FIgnoreMissingResources);
+    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, RealSuffix100Scale), FIgnoreMissingResources);
     if G<>nil then
       try
         ReplaceSliceCentered(ImageIndex, ResolutionWidth, G, False);
@@ -2780,6 +2780,14 @@ begin
     FImageIndexes.Add(E);
     Result := E.ImageIndex;
   end;
+end;
+
+function TLCLGlyphs.RealSuffix100Scale: Integer;
+begin
+  if FSuffix100Scale=0 then
+    Result := Width
+  else
+    Result := FSuffix100Scale;
 end;
 
 procedure TLCLGlyphs.RegisterResolutions(

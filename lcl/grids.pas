@@ -5432,6 +5432,7 @@ begin
       FSortLCLImages.Width := 8;
       FSortLCLImages.Height := 8;
       FSortLCLImages.RegisterResolutions([8, 12, 16]);
+      FSortLCLImages.Suffix100Scale := 16;
     end;
     ImgList := FSortLCLImages;
     case FSortOrder of
