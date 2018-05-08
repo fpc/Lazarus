@@ -859,7 +859,6 @@ function IndexOfCodeInUniqueList(ACode: Pointer;
                                  UniqueSortedCodeList: TList): integer;
 function IndexOfCodeInUniqueList(ACode: Pointer;
                                  UniqueSortedCodeList: TFPList): integer;
-function dbgs(k: TPascalCompiler): string; overload;
 function dbgs(r: TLinkScannerRange): string; overload;
 function dbgs(const ModeSwitches: TCompilerModeSwitches): string; overload;
 function dbgs(k: TSourceLinkKind): string; overload;
@@ -910,11 +909,6 @@ begin
     end;
   end;
   Result:=-1;
-end;
-
-function dbgs(k: TPascalCompiler): string;
-begin
-  WriteStr(Result, k);
 end;
 
 function dbgs(r: TLinkScannerRange): string; overload;

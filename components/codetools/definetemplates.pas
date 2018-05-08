@@ -8411,6 +8411,7 @@ end;
 procedure TPCTargetConfigCache.Clear;
 begin
   // keep keys
+  Kind:=pcFPC;
   CompilerDate:=0;
   RealCompiler:='';
   RealCompilerDate:=0;
@@ -8606,6 +8607,8 @@ procedure TPCTargetConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
     FileList: TStringList;
   begin
     // files: format: ASubPath+Values semicolon separated list of compressed filename
+    if ADest=nil then
+      ADest:=TStringToStringTree.Create(false);
     List:=TStringList.Create;
     FileList:=nil;
     try
@@ -8622,8 +8625,6 @@ procedure TPCTargetConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
           DebugLn(['Warning: [TPCTargetConfigCache.LoadFromXMLConfig] invalid filename "',File_Name,'" in "',XMLConfig.Filename,'" at "',CurPath,'"']);
           continue;
         end;
-        if ADest=nil then
-          ADest:=TStringToStringTree.Create(false);
         ADest[File_Name]:=Filename;
       end;
     finally
@@ -8739,10 +8740,11 @@ procedure TPCTargetConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
     s: String;
   begin
     s:='';
-    for i:=0 to List.Count-1 do
-      s:=s+';'+List[i];
+    if List<>nil then
+      for i:=0 to List.Count-1 do
+        s:=s+';'+List[i];
     delete(s,1,1);
-    XMLConfig.SetDeleteValue(Path+ASubPath+'Value',s,'');
+    XMLConfig.SetDeleteValue(Path+ASubPath,s,'');
   end;
 
   procedure SaveFilesFor(const ASource: TStringToStringTree; const ASubPath: string);
@@ -8782,7 +8784,7 @@ procedure TPCTargetConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
       List.Free;
       FileList.Free;
     end;
-    XMLConfig.SetDeleteValue(Path+ASubPath,s,'');
+    XMLConfig.SetDeleteValue(Path+ASubPath+'Value',s,'');
   end;
 
 var
@@ -8969,7 +8971,7 @@ var
   Infos: TFPCInfoStrings;
   InfoTypes: TFPCInfoTypes;
   BaseDir: String;
-  FullFilename: String;
+  FullFilename, ShortCompiler: String;
 begin
   OldOptions:=TPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
@@ -8984,6 +8986,11 @@ begin
     if FileExistsCached(Compiler) then begin
       ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);
       BaseDir:='';
+
+      // kind
+      ShortCompiler:=lowercase(ExtractFileName(Compiler));
+      if Pos('pas2js',ShortCompiler)>0 then
+        Kind:=pcPas2js;
 
       // get version and real OS and CPU
       InfoTypes:=[fpciTargetOS,fpciTargetProcessor,fpciFullVersion];
@@ -9000,12 +9007,17 @@ begin
         if RealTargetCPU='' then
           RealTargetCPU:=GetCompiledTargetCPU;
       end;
-      RealCompilerInPath:=FindRealCompilerInPath(TargetCPU,true);
+      if Kind=pcFPC then
+        RealCompilerInPath:=FindRealCompilerInPath(TargetCPU,true);
 
-      // run fpc and parse output
+      // run fpc/pas2js and parse output
       HasPPUs:=false;
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
                     IncludePaths,UnitScopes,Defines,Undefines,ExtraOptions);
+      if Defines.Contains('PAS2JS') and Defines.Contains('PAS2JS_FULLVERSION') then
+        Kind:=pcPas2js
+      else
+        Kind:=pcFPC;
       PreparePaths(UnitPaths);
       PreparePaths(IncludePaths);
       // store the real compiler file and date
@@ -9024,7 +9036,7 @@ begin
           Filename:=copy(Filename,2,length(Filename));
           FullFilename:=ExpandFileNameUTF8(TrimFileName(Filename),BaseDir);
           if CfgFileExists<>FileExistsCached(FullFilename) then begin
-            debugln(['Warning: [TPCTargetConfigCache.Update] fpc found cfg a file, the IDE did not: "',Filename,'"']);
+            debugln(['Warning: [TPCTargetConfigCache.Update] '+ExtractFileName(Compiler)+' found cfg a file, the IDE did not: "',Filename,'"']);
             CfgFileExists:=not CfgFileExists;
           end;
           CfgFileDate:=0;
@@ -9032,14 +9044,14 @@ begin
             CfgFileDate:=FileAgeCached(Filename);
           ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
         end;
-      // gather all units in all unit and inc files search paths
+      // gather all units and include files in search paths
       GatherUnitsInSearchPaths(UnitPaths,IncludePaths,OnProgress,Units,Includes,true);
       if (UnitPaths.Count=0) then begin
         if CTConsoleVerbosity>=-1 then
           debugln(['Warning: [TPCTargetConfigCache.Update] no unit paths: ',Compiler,' ',ExtraOptions]);
       end;
       // check if the system ppu exists
-      HasPPUs:=CompareFileExt(Units['system'],'ppu',false)=0;
+      HasPPUs:=(Kind=pcFPC) and (CompareFileExt(Units['system'],'ppu',false)=0);
     end;
     // check for changes
     if not Equals(OldOptions) then begin
@@ -9098,7 +9110,7 @@ begin
   CompiledTargetCPU:=GetCompiledTargetCPU;
   if aTargetCPU='' then
     aTargetCPU:=CompiledTargetCPU;
-  Cross:=aTargetCPU<>CompiledTargetCPU;
+  Cross:=not SameText(aTargetCPU,CompiledTargetCPU);
 
   // The -V<postfix> parameter searches for ppcx64-postfix instead of ppcx64
   Postfix:=GetLastFPCParameter(CompilerOptions,'-V');
@@ -10218,15 +10230,19 @@ begin
   if (fuscfSrcRulesNeedUpdate in fFlags)
   or (fRulesStampOfConfig<>Cfg.ChangeStamp) then begin
     Exclude(fFlags,fuscfSrcRulesNeedUpdate);
-    NewRules:=DefaultFPCSourceRules.Clone;
-    try
-      if Cfg.Units<>nil then
-        AdjustFPCSrcRulesForPPUPaths(Cfg.Units,NewRules);
-      fSourceRules.Assign(NewRules); // increases ChangeStamp if something changed
-      fRulesStampOfConfig:=Cfg.ChangeStamp;
-    finally
-      NewRules.Free;
+    if Cfg.Kind=pcFPC then begin
+      NewRules:=DefaultFPCSourceRules.Clone;
+      try
+        if Cfg.Units<>nil then
+          AdjustFPCSrcRulesForPPUPaths(Cfg.Units,NewRules);
+        fSourceRules.Assign(NewRules); // increases ChangeStamp if something changed
+      finally
+        NewRules.Free;
+      end;
+    end else begin
+      fSourceRules.Clear;
     end;
+    fRulesStampOfConfig:=Cfg.ChangeStamp;
   end;
   Result:=fSourceRules;
 end;
@@ -10244,37 +10260,46 @@ begin
   SrcRules:=GetSourceRules(AutoUpdate);
   ConfigCache:=GetConfigCache(false); // Note: update already done by GetSourceRules(AutoUpdate)
 
-  if (fuscfUnitTreeNeedsUpdate in fFlags)
-  or (fUnitStampOfFPC<>ConfigCache.ChangeStamp)
-  or (fUnitStampOfFiles<>Src.ChangeStamp)
-  or (fUnitStampOfRules<>SrcRules.ChangeStamp)
-  then begin
-    Exclude(fFlags,fuscfUnitTreeNeedsUpdate);
-    NewSrcDuplicates:=nil;
-    NewUnitToSourceTree:=nil;
-    try
-      NewSrcDuplicates:=TStringToStringTree.Create(false);
-      NewUnitToSourceTree:=GatherUnitsInFPCSources(Src.Files,
-                     ConfigCache.RealTargetOS,ConfigCache.RealTargetCPU,
-                     NewSrcDuplicates,SrcRules);
-      if NewUnitToSourceTree=nil then
-        NewUnitToSourceTree:=TStringToStringTree.Create(false);
-      // ToDo: add/replace sources in PPU search paths
-      if not fUnitToSourceTree.Equals(NewUnitToSourceTree) then begin
-        fUnitToSourceTree.Assign(NewUnitToSourceTree);
-        IncreaseChangeStamp;
+  if ConfigCache.Kind=pcFPC then begin
+    if (fuscfUnitTreeNeedsUpdate in fFlags)
+    or (fUnitStampOfFPC<>ConfigCache.ChangeStamp)
+    or (fUnitStampOfFiles<>Src.ChangeStamp)
+    or (fUnitStampOfRules<>SrcRules.ChangeStamp)
+    then begin
+      Exclude(fFlags,fuscfUnitTreeNeedsUpdate);
+      NewSrcDuplicates:=nil;
+      NewUnitToSourceTree:=nil;
+      try
+        NewSrcDuplicates:=TStringToStringTree.Create(false);
+        NewUnitToSourceTree:=GatherUnitsInFPCSources(Src.Files,
+                       ConfigCache.RealTargetOS,ConfigCache.RealTargetCPU,
+                       NewSrcDuplicates,SrcRules);
+        if NewUnitToSourceTree=nil then
+          NewUnitToSourceTree:=TStringToStringTree.Create(false);
+        // ToDo: add/replace sources in PPU search paths
+        if not fUnitToSourceTree.Equals(NewUnitToSourceTree) then begin
+          fUnitToSourceTree.Assign(NewUnitToSourceTree);
+          IncreaseChangeStamp;
+        end;
+        if not fSrcDuplicates.Equals(NewSrcDuplicates) then begin
+          fSrcDuplicates.Assign(NewSrcDuplicates);
+          IncreaseChangeStamp;
+        end;
+        fUnitStampOfFPC:=ConfigCache.ChangeStamp;
+        fUnitStampOfFiles:=Src.ChangeStamp;
+        fUnitStampOfRules:=SrcRules.ChangeStamp;
+      finally
+        NewUnitToSourceTree.Free;
+        NewSrcDuplicates.Free;
       end;
-      if not fSrcDuplicates.Equals(NewSrcDuplicates) then begin
-        fSrcDuplicates.Assign(NewSrcDuplicates);
-        IncreaseChangeStamp;
-      end;
-      fUnitStampOfFPC:=ConfigCache.ChangeStamp;
-      fUnitStampOfFiles:=Src.ChangeStamp;
-      fUnitStampOfRules:=SrcRules.ChangeStamp;
-    finally
-      NewUnitToSourceTree.Free;
-      NewSrcDuplicates.Free;
     end;
+  end else begin
+    fUnitToSourceTree.Clear;
+    fSrcDuplicates.Clear;
+    Exclude(fFlags,fuscfUnitTreeNeedsUpdate);
+    fUnitStampOfFPC:=ConfigCache.ChangeStamp;
+    fUnitStampOfFiles:=Src.ChangeStamp;
+    fUnitStampOfRules:=SrcRules.ChangeStamp;
   end;
   Result:=fUnitToSourceTree;
 end;

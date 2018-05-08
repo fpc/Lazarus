@@ -88,12 +88,11 @@ var
 begin
   if Pas2jsFilename='' then exit;
 
-  exit;
   UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(Pas2jsFilename,
     '','','','',true);
   // parse compiler settings
   UnitSetCache.Init;
-  AssertEquals('compiler kind',dbgs(pcPas2js),dbgs(UnitSetCache.GetCompilerKind));
+  AssertEquals('compiler kind',PascalCompilerNames[pcPas2js],PascalCompilerNames[UnitSetCache.GetCompilerKind]);
 end;
 
 initialization
