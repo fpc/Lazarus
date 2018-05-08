@@ -2713,6 +2713,7 @@ begin
 
   FImageIndexes := TAvgLvlTree.Create(@TLCLGlyphs_TEntry_Compare);
   Scaled := True;
+  FIgnoreMissingResources := True;
 end;
 
 destructor TLCLGlyphs.Destroy;
@@ -2729,6 +2730,10 @@ function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
   var
     G: TCustomBitmap;
   begin
+    if FIgnoreMissingResources and (ResolutionWidth<>Width)
+    and (FindResource(HInstance, PChar(AResourceName), RT_RCDATA)=0) then
+      Exit;
+
     G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, 16));
     try
       if ResolutionWidth=Width then

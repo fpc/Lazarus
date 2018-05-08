@@ -433,6 +433,7 @@ type
       ImageIndex: Integer; // the image index in TLCLGlyphs
     end;
   private
+    FIgnoreMissingResources: Boolean;
     FImageIndexes: TAvgLvlTree;
     FLoadResolutions: array of Integer;
   public
@@ -441,6 +442,8 @@ type
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    property IgnoreMissingResources: Boolean read FIgnoreMissingResources write FIgnoreMissingResources;
   end;
 
 function LCLGlyphs: TLCLGlyphs;
