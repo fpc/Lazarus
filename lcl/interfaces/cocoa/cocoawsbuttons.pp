@@ -132,13 +132,13 @@ begin
   begin
     AGlyph := TBitmap.Create;
     AValue.GetImageIndexAndEffect(bsUp, ABitBtn.Font.PixelsPerInch,
-      ABitBtn.GetCanvasScaleFactor, AImgRes, AIndex, AEffect);
+      1{To-Do: ABitBtn.GetCanvasScaleFactor}, AImgRes, AIndex, AEffect);
     AImgRes.GetBitmap(AIndex, AGlyph, AEffect);
     Img := TCocoaBitmap(AGlyph.Handle).image;
     lButtonHandle := TCocoaButton(ABitBtn.Handle);
     lButtonHandle.setImage(Img);
     lButtonHandle.setImagePosition(LCLGlyphPosToCocoa(ABitBtn.Layout));
-    //To-Do: lButtonHandle.setMatchesOnlyOnBestFittingAxis(True);
+    //To-Do: tell Cocoa lButtonHandle should not scale the image (and enable ABitBtn.GetCanvasScaleFactor above)
     if Assigned(lButtonHandle.Glyph) then
       FreeAndNil(lButtonHandle.Glyph);
     lButtonHandle.Glyph := AGlyph;
