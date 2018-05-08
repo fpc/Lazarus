@@ -273,7 +273,7 @@ var
   IsReadOnly: boolean;
   UseImages: boolean;
   ImageIndex, ImageIndexCC: longint;
-  Prefix: String;
+  Token: String;
   PrefixPosition: Integer;
   HintModifiers: TPascalHintModifiers;
   HintModifier: TPascalHintModifier;
@@ -522,18 +522,28 @@ begin
       Inc(Result.X, 1+ACanvas.TextWidth(s))
     else begin
       //DebugLn(['PaintCompletionItem ',x,',',y,' ',s]);
-      ACanvas.TextOut(x+1,y,s);
       // highlighting the prefix
       if (Colors<>nil) and (Colors^.TextHighLightColor<>clNone)
       and (aCompletion.CurrentString<>'') then
       begin
         PrefixPosition := Pos(LowerCase(aCompletion.CurrentString), LowerCase(s));
-        Prefix := Copy(s, PrefixPosition, Length(aCompletion.CurrentString));
         if PrefixPosition > 0 then
-          PrefixPosition := ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1));
-        SetFontColor(ColorToRGB(Colors^.TextHighLightColor));
-        ACanvas.TextOut(x+PrefixPosition+1,y,Prefix);
-      end;
+        begin
+          // paint before prefix
+          Token := Copy(s, 1, PrefixPosition-1);
+          ACanvas.TextOut(x+1,y,Token);
+          // paint highlight prefix
+          SetFontColor(ColorToRGB(Colors^.TextHighLightColor));
+          Token := Copy(s, PrefixPosition, Length(aCompletion.CurrentString));
+          ACanvas.TextOut(x+1+ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1)),y,Token);
+          // paint after prefix
+          SetFontColor(ForegroundColor);
+          Token := Copy(s, PrefixPosition+Length(aCompletion.CurrentString), High(Integer));
+          ACanvas.TextOut(x+1+ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1+Length(aCompletion.CurrentString))),y,Token);
+        end else
+          ACanvas.TextOut(x+1,y,s);
+      end else
+        ACanvas.TextOut(x+1,y,s);
       inc(x,ACanvas.TextWidth(s)+1);
       if x>MaxX then exit;
     end;
